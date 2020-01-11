@@ -19,6 +19,10 @@ namespace game
     VARP(maxgibs, 0, 4, 100);
 #endif
 
+//getweapon
+//returns the index of the weapon in hand
+//Arguments: none
+//Returns: index of weapon (zero-indexed)
     ICOMMAND(getweapon, "", (), intret(player1->gunselect));
 
     void gunselect(int gun, gameent *d)
@@ -44,6 +48,12 @@ namespace game
         if(gun != player1->gunselect) gunselect(gun, player1);
         else playsound(S_NOAMMO);
     }
+//nextweapon
+//changes player to an adjacent weapon, forwards if no dir is passed
+//Arguments:
+// int *dir: direction (backwards if negative, forwards if positive)
+// int *force: forces change if 1
+//Returns: none
     ICOMMAND(nextweapon, "ii", (int *dir, int *force), nextweapon(*dir, *force!=0));
 
     int getweapon(const char *name)
