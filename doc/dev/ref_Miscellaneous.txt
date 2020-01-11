@@ -1,0 +1,17 @@
+///////////////////////////////////////////////////////////////////////////////
+//  Text String Colors                                                       //
+///////////////////////////////////////////////////////////////////////////////
+
+^f#
+
+Example:   echo "^f1This is blue text, ^f6this is orange text."
+
+0 = green               64, 255, 128   0x40FF80   Player talk
+1 = blue                96, 160, 255   0x60A0FF   "echo" command
+2 = yellow             255, 192,  64   0xFFC040   Gameplay messages
+3 = red                255,  64,  64   0xFF4040   Important errors
+4 = gray               128, 128, 128   0x808080
+5 = magenta            192,  64, 192   0xC040C0
+6 = orange             255, 128,   0   0xFF8000
+7 = white              255, 255, 255   0xFFFFFF
+8 = "Tesseract Blue"    80, 207, 229   0x50CFE5
