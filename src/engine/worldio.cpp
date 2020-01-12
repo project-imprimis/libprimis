@@ -457,6 +457,12 @@ void savevslot(stream *f, VSlot &vs, int prev)
     }
     if(vs.changed & (1<<VSLOT_SCALE)) f->putlil<float>(vs.scale);
     if(vs.changed & (1<<VSLOT_ROTATION)) f->putlil<int>(vs.rotation);
+    if(vs.changed & (1<<VSLOT_ANGLE))
+    {
+        f->putlil<float>(vs.angle.x);
+        f->putlil<float>(vs.angle.y);
+        f->putlil<float>(vs.angle.z);
+    }
     if(vs.changed & (1<<VSLOT_OFFSET))
     {
         loopk(2) f->putlil<int>(vs.offset[k]);
@@ -534,6 +540,10 @@ void loadvslot(stream *f, VSlot &vs, int changed)
     }
     if(vs.changed & (1<<VSLOT_SCALE)) vs.scale = f->getlil<float>();
     if(vs.changed & (1<<VSLOT_ROTATION)) vs.rotation = clamp(f->getlil<int>(), 0, 7);
+    if(vs.changed & (1<<VSLOT_ANGLE))
+    {
+        loopk(3) vs.angle[k] = f->getlil<float>();
+    }
     if(vs.changed & (1<<VSLOT_OFFSET))
     {
         loopk(2) vs.offset[k] = f->getlil<int>();

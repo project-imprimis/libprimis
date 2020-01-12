@@ -2200,6 +2200,16 @@ void vrotate(int *n)
 }
 COMMAND(vrotate, "i");
 
+void vangle(float *a)
+{
+    if(noedit()) return;
+    VSlot ds;
+    ds.changed = 1<<VSLOT_ANGLE;
+    ds.angle = vec(*a, sinf(RAD**a), cosf(RAD**a));
+    mpeditvslot(usevdelta, ds, allfaces, sel, true);
+}
+COMMAND(vangle, "f");
+
 void voffset(int *x, int *y)
 {
     if(noedit()) return;
