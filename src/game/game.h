@@ -89,6 +89,7 @@ enum { ATK_RAIL_SHOOT = 0, ATK_RAIL_MELEE, ATK_PULSE_SHOOT, ATK_PULSE_MELEE, NUM
 #define validact(n) ((n) >= 0 && (n) < NUMACTS)
 #define validatk(n) ((n) >= 0 && (n) < NUMATKS)
 
+//enum of gameplay mechanic flags; bitwise sum determines what a mode's attributes are
 enum
 {
     M_TEAM       = 1<<0,
@@ -109,12 +110,15 @@ static struct gamemodeinfo
     int flags;
     const char *info;
 } gamemodes[] =
+//list of valid game modes with their name/prettyname/game flags/desc
 {
     { "demo", "Demo", M_DEMO | M_LOCAL, NULL},
     { "edit", "Edit", M_EDIT | M_ALL, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
     { "ctf", "CTF", M_CTF | M_TEAM | M_ALL, "Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
 };
 
+//these are the checks for particular mechanics in particular modes
+//e.g. m_rail makes the mode only have railguns
 #define STARTGAMEMODE (-1)
 #define NUMGAMEMODES ((int)(sizeof(gamemodes)/sizeof(gamemodes[0])))
 
