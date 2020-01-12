@@ -140,7 +140,8 @@ namespace server
         void reset()
         {
             if(state!=CS_SPECTATOR) state = editstate = CS_DEAD;
-            maxhealth = 1;
+            //sets client health
+            maxhealth = 10;
             projs.reset();
 
             timeplayed = 0;
