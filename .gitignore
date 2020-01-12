@@ -1,0 +1,11 @@
+*.o
+*.so
+*.gch
+*.pch
+*.dll
+*.a
+*.lib
+*.bak
+bin_unix/*
+src/tess_client
+src/tess_server
