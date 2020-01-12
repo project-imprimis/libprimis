@@ -99,7 +99,8 @@ enum
     M_LOCAL      = 1<<5,
     M_LOBBY      = 1<<6,
     M_RAIL       = 1<<7,
-    M_PULSE      = 1<<8
+    M_PULSE      = 1<<8,
+    M_ALL        = 1<<9
 };
 
 static struct gamemodeinfo
@@ -110,13 +111,8 @@ static struct gamemodeinfo
 } gamemodes[] =
 {
     { "demo", "Demo", M_DEMO | M_LOCAL, NULL},
-    { "edit", "Edit", M_EDIT, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
-    { "rdm", "rDM", M_LOBBY | M_RAIL, "Railgun Deathmatch:\nFrag everyone with railguns to score points." },
-    { "pdm", "pDM", M_LOBBY | M_PULSE, "Pulse Rifle Deathmatch:\nFrag everyone with pulse rifles to score points." },
-    { "rtdm", "rTDM", M_TEAM | M_RAIL, "Railgun Team Deathmatch:\nFrag \fs\f3the enemy team\fr with railguns to score points for \fs\f1your team\fr." },
-    { "ptdm", "pTDM", M_TEAM | M_PULSE, "Pulse Rifle Team Deathmatch:\nFrag \fs\f3the enemy team\fr with pulse rifles to score points for \fs\f1your team\fr." },
-    { "rctf", "rCTF", M_CTF | M_TEAM | M_RAIL, "Railgun Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
-    { "pctf", "pCTF", M_CTF | M_TEAM | M_PULSE, "Pulse Rifle Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
+    { "edit", "Edit", M_EDIT | M_ALL, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
+    { "ctf", "CTF", M_CTF | M_TEAM | M_ALL, "Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
 };
 
 #define STARTGAMEMODE (-1)
@@ -133,6 +129,7 @@ static struct gamemodeinfo
 #define isteam(a,b)    (m_teammode && a==b)
 #define m_rail         (m_check(gamemode, M_RAIL))
 #define m_pulse        (m_check(gamemode, M_PULSE))
+#define m_all          (m_check(gamemode, M_ALL))
 
 #define m_demo         (m_check(gamemode, M_DEMO))
 #define m_edit         (m_check(gamemode, M_EDIT))
@@ -314,7 +311,12 @@ struct gamestate
 
     void spawnstate(int gamemode)
     {
-        if(m_rail)
+        if(m_all)
+        {
+            gunselect = GUN_RAIL;
+            loopi(NUMGUNS) ammo[i] = 1;
+        }
+        else if(m_rail)
         {
             gunselect = GUN_RAIL;
             ammo[GUN_RAIL] = 1;
@@ -323,11 +325,6 @@ struct gamestate
         {
             gunselect = GUN_PULSE;
             ammo[GUN_PULSE] = 1;
-        }
-        else if(m_edit)
-        {
-            gunselect = GUN_RAIL;
-            loopi(NUMGUNS) ammo[i] = 1;
         }
     }
 
