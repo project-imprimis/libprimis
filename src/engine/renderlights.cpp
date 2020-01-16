@@ -1353,8 +1353,9 @@ void viewrefract()
     debugquad(0, 0, w, h, 0, 0, gw, gh);
 }
 
-#define RH_MAXSPLITS 4
-#define RH_MAXGRID 64
+//note that radiance hints is the term for the mechanism by which global illumination is done
+#define RH_MAXSPLITS 4 //maximum number of times that radiance hints can split to increase resolution (note exponential increase in nodes)
+#define RH_MAXGRID 64 //subdivision count for radiance hints
 
 GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 }, rhrb[4] = { 0, 0, 0, 0 }, rhfbo = 0;
 uint rhclearmasks[2][RH_MAXSPLITS][(RH_MAXGRID+2+31)/32];
@@ -1499,7 +1500,7 @@ FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) clean
 FVARR(giaoscale, 0, 3, 1e3f); //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces
 VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`g`lobal `i`llumination toggle: 0 disables global illumination
 
-VAR(debugrsm, 0, 0, 2);
+VAR(debugrsm, 0, 0, 2); //displays the `r`adiance hints `s`hadow `m`ap in the bottom right of the screen; 1 for view from sun pos, 2 for view from sun pos, false color
 void viewrsm()
 {
     int w = min(hudw, hudh)/2, h = (w*hudh)/hudw, x = hudw-w, y = hudh-h;
@@ -1783,6 +1784,7 @@ const matrix4 cubeshadowviewmatrix[6] =
     matrix4(vec(1, 0, 0), vec(0, 1, 0), vec(0, 0,  1))  // -Z
 };
 
+//`s`hadow `m`ap vars
 FVAR(smpolyfactor, -1e3f, 1, 1e3f);
 FVAR(smpolyoffset, -1e3f, 0, 1e3f);
 FVAR(smbias, -1e6f, 0.01f, 1e6f);
@@ -1793,7 +1795,7 @@ FVAR(smprec, 1e-3f, 1, 1e3f);
 FVAR(smcubeprec, 1e-3f, 1, 1e3f);
 FVAR(smspotprec, 1e-3f, 1, 1e3f);
 
-VARFP(smsize, 10, 12, 14, cleanupshadowatlas());
+VARFP(smsize, 10, 12, 14, cleanupshadowatlas()); //size of shadow map: 2^size = x,y dimensions (1024x1024 at 10, 16384x16384 at 14)
 VARFP(smdepthprec, 0, 0, 2, cleanupshadowatlas());
 VAR(smsidecull, 0, 1, 1);
 VAR(smviscull, 0, 1, 1);
@@ -1945,6 +1947,7 @@ static shadowmapinfo *addshadowmap(ushort x, ushort y, int size, int &idx, int l
 
 #define CSM_MAXSPLITS 8
 
+//`c`ascaded `s`hadow `m`ap vars
 VARF(csmmaxsize, 256, 768, 2048, clearshadowcache());
 VARF(csmsplits, 1, 3, CSM_MAXSPLITS, { cleardeferredlightshaders(); clearshadowcache(); });
 FVAR(csmsplitweight, 0.20f, 0.75f, 0.95f);
@@ -1988,9 +1991,9 @@ void cascadedshadowmap::setup()
     getprojmatrix();
     gencullplanes();
 }
-
-VAR(csmnearplane, 1, 1, 16);
-VAR(csmfarplane, 64, 1024, 16384);
+//`c`ascaded `s`hadow `m`ap vars
+VAR(csmnearplane, 1, 1, 16); //short end cutoff of shadow rendering on view frustum
+VAR(csmfarplane, 64, 1024, 16384); //far end cutoff of shadow rendering on view frustum
 FVAR(csmpradiustweak, 1e-3f, 1, 1e3f);
 FVAR(csmdepthrange, 0, 1024, 1e6f);
 FVAR(csmdepthmargin, 0, 0.1f, 1e3f);
