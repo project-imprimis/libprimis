@@ -1468,15 +1468,15 @@ void cleanupradiancehints()
 
     clearrhshaders();
 }
-
+//radiance hints (global illumination) vars
 VARF(rhrect, 0, 0, 1, cleanupradiancehints());
 VARF(rhsplits, 1, 2, RH_MAXSPLITS, { cleardeferredlightshaders(); cleanupradiancehints(); });
 VARF(rhborder, 0, 1, 1, cleanupradiancehints());
-VARF(rsmsize, 64, 384, 2048, cleanupradiancehints());
-VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());
-VARF(rhfarplane, 64, 1024, 16384, clearradiancehintscache());
-FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());
-FVARF(rhpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());
+VARF(rsmsize, 64, 512, 2048, cleanupradiancehints()); //`r`adiance hints `s`hadow `m`ap `size`: resolution (squared) of global illumination
+VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());//`r`adiance `h`ints `near plane`: distance in gridpower 0 cubes before global illumination gets rendered
+VARF(rhfarplane, 64, 1024, 16384, clearradiancehintscache());//`r`adiance `h`ints `far plane`: distance in gridpower 0 cubes whereafter global illumination no longer gets calculated
+FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`adiance hints `s`hadow `m`ap `p`robe `radius tweak`
+FVARF(rhpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`adiance `h`ints `p`robe `radius tweak`
 FVARF(rsmdepthrange, 0, 1024, 1e6f, clearradiancehintscache());
 FVARF(rsmdepthmargin, 0, 0.1f, 1e3f, clearradiancehintscache());
 VARFP(rhprec, 0, 0, 1, cleanupradiancehints());
@@ -1485,19 +1485,19 @@ VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints());
 FVAR(rhnudge, 0, 0.5f, 4);
 FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());
 FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());
-VARF(rhgrid, 3, 27, RH_MAXGRID, cleanupradiancehints());
-FVARF(rsmspread, 0, 0.15f, 1, clearradiancehintscache());
+VARF(rhgrid, 3, 27, RH_MAXGRID, cleanupradiancehints()); //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
+FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache()); //smoothness of `r`adiance hints `s`hadow `m`ap: higher is more blurred
 VAR(rhclipgrid, 0, 1, 1);
 VARF(rhcache, 0, 1, 1, cleanupradiancehints());
 VARF(rhforce, 0, 0, 1, cleanupradiancehints());
 VAR(rsmcull, 0, 1, 1);
-VARFP(rhtaps, 0, 20, 32, cleanupradiancehints());
+VARFP(rhtaps, 0, 20, 32, cleanupradiancehints()); //`r`adiance `h`ints `taps`: number of sample points for global illumination
 VAR(rhdyntex, 0, 0, 1);
 VAR(rhdynmm, 0, 0, 1);
 VARFR(gidist, 0, 384, 1024, { clearradiancehintscache(); cleardeferredlightshaders(); if(!gidist) cleanupradiancehints(); });
-FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); });
-FVARR(giaoscale, 0, 3, 1e3f);
-VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); });
+FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); }); //`g`lobal `i`llumination `scale`
+FVARR(giaoscale, 0, 3, 1e3f); //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces
+VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`g`lobal `i`llumination toggle: 0 disables global illumination
 
 VAR(debugrsm, 0, 0, 2);
 void viewrsm()
