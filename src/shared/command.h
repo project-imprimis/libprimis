@@ -310,12 +310,16 @@ inline void ident::getcval(tagval &v) const
 }
 
 // nasty macros for registering script functions, abuses globals to avoid excessive infrastructure
+
+//command macros
 #define KEYWORD(name, type) UNUSED static bool __dummy_##type = addcommand(#name, (identfun)NULL, NULL, type)
 #define COMMANDKN(name, type, fun, nargs) UNUSED static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)
 #define COMMANDK(name, type, nargs) COMMANDKN(name, type, name, nargs)
 #define COMMANDN(name, fun, nargs) COMMANDKN(name, ID_COMMAND, fun, nargs)
 #define COMMAND(name, nargs) COMMANDN(name, name, nargs)
 
+//integer var macros
+//_VAR, _VARF, _VARM are templates for "normal" macros
 #define _VAR(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist)
 #define VARN(name, global, min, cur, max) _VAR(name, global, min, cur, max, 0)
 #define VARNP(name, global, min, cur, max) _VAR(name, global, min, cur, max, IDF_PERSIST)
@@ -334,6 +338,7 @@ inline void ident::getcval(tagval &v) const
 #define VARMP(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, IDF_PERSIST)
 #define VARMR(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, IDF_OVERRIDE)
 
+//hexadecimal var macros
 #define _HVAR(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist | IDF_HEX)
 #define HVARN(name, global, min, cur, max) _HVAR(name, global, min, cur, max, 0)
 #define HVARNP(name, global, min, cur, max) _HVAR(name, global, min, cur, max, IDF_PERSIST)
@@ -349,6 +354,7 @@ inline void ident::getcval(tagval &v) const
 #define HVARFNP(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, IDF_PERSIST)
 #define HVARFNR(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, IDF_OVERRIDE)
 
+//color var macros
 #define _CVAR(name, cur, init, body, persist) bvec name = bvec::hexcolor(cur); _HVARF(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)
 #define CVARP(name, cur) _CVAR(name, cur, , , IDF_PERSIST)
 #define CVARR(name, cur) _CVAR(name, cur, , , IDF_OVERRIDE)
@@ -365,6 +371,7 @@ inline void ident::getcval(tagval &v) const
 #define CVAR1FP(name, cur, body) _CVAR1(name, cur, body, IDF_PERSIST)
 #define CVAR1FR(name, cur, body) _CVAR1(name, cur, body, IDF_OVERRIDE)
 
+//float var macros
 #define _FVAR(name, global, min, cur, max, persist) float global = fvariable(#name, min, cur, max, &global, NULL, persist)
 #define FVARN(name, global, min, cur, max) _FVAR(name, global, min, cur, max, 0)
 #define FVARNP(name, global, min, cur, max) _FVAR(name, global, min, cur, max, IDF_PERSIST)
@@ -380,6 +387,7 @@ inline void ident::getcval(tagval &v) const
 #define FVARFNP(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, IDF_PERSIST)
 #define FVARFNR(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, IDF_OVERRIDE)
 
+//string var macros
 #define _SVAR(name, global, cur, persist) char *global = svariable(#name, cur, &global, NULL, persist)
 #define SVARN(name, global, cur) _SVAR(name, global, cur, 0)
 #define SVARNP(name, global, cur) _SVAR(name, global, cur, IDF_PERSIST)
