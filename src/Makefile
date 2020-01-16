@@ -15,6 +15,7 @@ endif
 endif
 
 MV=mv
+MKDIR_P=mkdir -p
 
 ifneq (,$(findstring MINGW,$(PLATFORM)))
 WINDRES= windres
@@ -113,6 +114,12 @@ CLIENT_OBJS= \
 
 CLIENT_PCH= shared/cube.h.gch engine/engine.h.gch game/game.h.gch
 
+STANDALONE_PATHS= \
+	standalone/ \
+	standalone/engine/ \
+	standalone/game/ \
+	standalone/shared/
+
 SERVER_INCLUDES= -DSTANDALONE -Istandalone/shared -Istandalone/engine -Istandalone/game $(INCLUDES)
 ifneq (,$(findstring MINGW,$(PLATFORM)))
 SERVER_INCLUDES+= -Iinclude
@@ -146,13 +153,16 @@ SERVER_MASTER_OBJS= $(SERVER_OBJS) $(filter-out $(SERVER_OBJS),$(MASTER_OBJS))
 
 default: all
 
-all: client server
+all: mkpaths client server
 
 clean:
-	-$(RM) $(CLIENT_PCH) $(CLIENT_OBJS) $(SERVER_PCH) $(SERVER_MASTER_OBJS) tess_client tess_server tess_master
+	-$(RM) $(CLIENT_PCH) $(CLIENT_OBJS) $(SERVER_PCH) $(SERVER_MASTER_OBJS) $(STANDALONE_PATHS) tess_client tess_server tess_master
 
 fixspace:
 	sed -i 's/[ \t]*$$//; :rep; s/^\([ ]*\)\t/\1    /g; trep' shared/*.c shared/*.cpp shared/*.h engine/*.cpp engine/*.h game/*.cpp game/*.h
+
+mkpaths:
+	$(MKDIR_P) $(STANDALONE_PATHS)
 
 $(filter-out shared/%,$(CLIENT_PCH)): $(filter shared/%,$(CLIENT_PCH))
 $(CLIENT_PCH): %.h.gch: %.h
