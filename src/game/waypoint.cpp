@@ -8,12 +8,16 @@ namespace ai
 
     vector<waypoint> waypoints;
 
+    //bad kinds of materials for bots to path into: clipping, instadeath, lava
     bool clipped(const vec &o)
     {
         int material = lookupmaterial(o), clipmat = material&MATF_CLIP;
         return clipmat == MAT_CLIP || material&MAT_DEATH || (material&MATF_VOLUME) == MAT_LAVA;
     }
 
+    //weights waypoints by distance from ai
+    //additionally weights deathmat/lava points at 10x normal and liquids at 2x
+    //returns -2 if not in bounds
     int getweight(const vec &o)
     {
         vec pos = o; pos.z += ai::JUMPMIN;
@@ -596,6 +600,7 @@ namespace ai
         if(invalidatedwpcaches) clearwpcache(false);
     }
 
+    //deletes all waypoints on the map
     void clearwaypoints(bool full)
     {
         waypoints.setsize(0);
@@ -674,6 +679,7 @@ namespace ai
         return false;
     }
 
+    //returns true if there's a waypoint file with the same name as the map being edited
     bool getwaypointfile(const char *mname, char *wptname)
     {
         if(!mname || !*mname) mname = getclientmap();
@@ -684,6 +690,7 @@ namespace ai
         return true;
     }
 
+    //loads waypoints from a file with extension .wpt created by running `savewaypoints`
     void loadwaypoints(bool force, const char *mname)
     {
         string wptname;
@@ -725,6 +732,7 @@ namespace ai
     }
     ICOMMAND(loadwaypoints, "s", (char *mname), loadwaypoints(true, mname));
 
+    //writes the waypoints on the map to a file named <mapname>.wpt by default, can also write to a custom file name
     void savewaypoints(bool force, const char *mname)
     {
         if((!dropwaypoints && !force) || waypoints.empty()) return;
@@ -754,6 +762,7 @@ namespace ai
 
     ICOMMAND(savewaypoints, "s", (char *mname), savewaypoints(true, mname));
 
+    //deletes waypoints within bounds of selection (w.o.* >= 0.x etc. are bounds checks)
     void delselwaypoints()
     {
         if(noedit(true)) return;
@@ -778,6 +787,9 @@ namespace ai
     }
     COMMAND(delselwaypoints, "");
 
+    //moves waypoints by a linear translation in x,y,z
+    //(obviously) does nothing if not in edit mode
+    //deletes waypoints entirely if the dx/dy/dz would move a distance larger than map size
     void movewaypoints(const vec &d)
     {
         if(noedit(true)) return;
