@@ -1,3 +1,4 @@
+//player model rendering (both hud player and 3p player rendering)
 #include "game.h"
 
 namespace game
@@ -45,7 +46,7 @@ namespace game
             moveragdoll(d);
         }
     }
-
+    //ffa colours
     static const int playercolors[] =
     {
         0xA12020,
@@ -58,7 +59,7 @@ namespace game
         0x523678,
         0xB3ADA3
     };
-
+    //azul (blue) team allowed colors
     static const int playercolorsazul[] =
     {
         0x27508A,
@@ -66,7 +67,7 @@ namespace game
         0x3B3B80,
         0x5364B5
     };
-
+    //rojo (red) team allowed colors
     static const int playercolorsrojo[] =
     {
         0xAC2C2A,
@@ -118,6 +119,7 @@ namespace game
         }
     }
 
+    //returns colour of a given player given a team (which they may or may not be on)
     ICOMMAND(getplayercolor, "ii", (int *color, int *team), intret(getplayercolor(*team, *color)));
 
     int getplayercolor(gameent *d, int team)
@@ -201,6 +203,8 @@ namespace game
     {
         loopi(sizeof(animnames)/sizeof(animnames[0])) if(matchanim(animnames[i], pattern)) anims.add(i);
     }
+
+    //============================================ 3p/other player rendering =======================//
 
     VAR(animoverride, -1, 0, NUMANIMS-1);
     VAR(testanims, 0, 0, 1);
@@ -359,6 +363,8 @@ namespace game
         renderprojectiles();
         if(cmode) cmode->rendergame();
     }
+
+    //============================================ hud player rendering ============================//
 
     VARP(hudgun, 0, 1, 1);
     VARP(hudgunsway, 0, 1, 1);
