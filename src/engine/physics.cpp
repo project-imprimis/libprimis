@@ -428,7 +428,7 @@ const float STAIRHEIGHT = 4.1f;
 const float FLOORZ = 0.867f;
 const float SLOPEZ = 0.5f;
 const float WALLZ = 0.2f;
-extern const float JUMPVEL = 125.0f;
+extern const float JUMPVEL = 85.0f;
 extern const float GRAVITY = 200.0f;
 
 bool ellipseboxcollide(physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo)
