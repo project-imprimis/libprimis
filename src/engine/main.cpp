@@ -1179,12 +1179,12 @@ int main(int argc, char **argv)
 
     inputgrab(grabinput = true);
     ignoremousemotion();
-
+    //actual loop after main inits itself
     for(;;)
     {
         static int frames = 0;
-        int millis = getclockmillis();
-        limitfps(millis, totalmillis);
+        int millis = getclockmillis(); //gets time at loop
+        limitfps(millis, totalmillis); //caps framerate if necessary
         elapsedtime = millis - totalmillis;
         static int timeerr = 0;
         int scaledtime = game::scaletime(elapsedtime) + timeerr;
@@ -1196,18 +1196,18 @@ int main(int argc, char **argv)
         totalmillis = millis;
         updatetime();
 
-        checkinput();
-        UI::update();
-        menuprocess();
-        tryedit();
+        checkinput(); //go and see if SDL has any new input: mouse, keyboard, screen dimensions
+        UI::update(); //checks cursor and updates uis
+        menuprocess(); //shows main menu if not ingame and not online
+        tryedit(); //checks to see if in edit & blendmapping is enabled; if it is, enter blendmapping mode
 
-        if(lastmillis) game::updateworld();
+        if(lastmillis) game::updateworld(); //main ingame update routine: calculates projectile positions, physics, etc.
 
-        checksleep(lastmillis);
+        checksleep(lastmillis); //checks cubescript for any pending sleep commands
 
-        serverslice(false, 0);
+        serverslice(false, 0); //server main routine; this gets deferred to a dedicated server if online
 
-        if(frames) updatefpshistory(elapsedtime);
+        if(frames) updatefpshistory(elapsedtime); //if collecting framerate history, update with new frame
         frames++;
 
         // miscellaneous general game effects
@@ -1215,14 +1215,14 @@ int main(int argc, char **argv)
         updateparticles();
         updatesounds();
 
-        if(minimized) continue;
+        if(minimized) continue; //let's not render a frame unless there's a screen to be seen
 
-        gl_setupframe(!mainmenu);
+        gl_setupframe(!mainmenu); //also, don't need to set up a frame if on the static main menu
 
-        inbetweenframes = false;
-        gl_drawframe();
+        inbetweenframes = false; //tell other stuff that the frame is starting
+        gl_drawframe(); //rendering magic
         swapbuffers();
-        renderedframe = inbetweenframes = true;
+        renderedframe = inbetweenframes = true; //done!
     }
 
     ASSERT(0);
