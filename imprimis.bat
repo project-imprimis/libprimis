@@ -11,4 +11,4 @@ IF EXIST bin64\tesseract.exe (
     )
 )
 
-start %TESS_BIN%\tesseract.exe "-u$HOME\My Games\Tesseract" -glog.txt %*
+start %TESS_BIN%\tesseract.exe "-u$HOME\My Games\Imprimis" -glog.txt %*

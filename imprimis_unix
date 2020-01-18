@@ -1,15 +1,15 @@
 #!/bin/sh
-# TESS_DATA should refer to the directory in which Tesseract data files are placed.
-#TESS_DATA=~/tesseract
-#TESS_DATA=/usr/local/tesseract
-TESS_DATA=.
+# IMPRIMIS_DATA should refer to the directory in which Imprimis data files are placed.
+#IMPRIMIS_DATA=~/imprimis
+#IMPRIMIS_DATA=/usr/local/imprimis
+IMPRIMIS_DATA=.
 
-# TESS_BIN should refer to the directory in which Tesseract executable files are placed.
-TESS_BIN=${TESS_DATA}/bin_unix
+# IMPRIMIS_BIN should refer to the directory in which Imprimis executable files are placed.
+IMPRIMIS_BIN=${IMPRIMIS_DATA}/bin_unix
 
-# TESS_OPTIONS contains any command line options you would like to start Tesseract with.
-#TESS_OPTIONS=""
-TESS_OPTIONS="-u${HOME}/.tesseract"
+# IMPRIMIS_OPTIONS contains any command line options you would like to start Imprimis with.
+#IMPRIMIS_OPTIONS=""
+IMPRIMIS_OPTIONS="-u${HOME}/.imprimis"
 
 # SYSTEM_NAME should be set to the name of your operating system.
 #SYSTEM_NAME=Linux
@@ -44,18 +44,18 @@ x86_64|amd64)
   ;;
 esac
 
-if [ -x ${TESS_BIN}/native_client ]
+if [ -x ${IMPRIMIS_BIN}/native_client ]
 then
   SYSTEM_NAME=native_
   MACHINE_NAME=
 fi
 
-if [ -x ${TESS_BIN}/${SYSTEM_NAME}${MACHINE_NAME}client ]
+if [ -x ${IMPRIMIS_BIN}/${SYSTEM_NAME}${MACHINE_NAME}client ]
 then
-  cd ${TESS_DATA}
-  exec ${TESS_BIN}/${SYSTEM_NAME}${MACHINE_NAME}client ${TESS_OPTIONS} "$@"
+  cd ${IMPRIMIS_DATA}
+  exec ${IMPRIMIS_BIN}/${SYSTEM_NAME}${MACHINE_NAME}client ${IMPRIMIS_OPTIONS} "$@"
 else
-  echo "Your platform does not have a pre-compiled Tesseract client."
+  echo "Your platform does not have a pre-compiled Imprimis client."
   echo "Please follow the following steps to build a native client:"
   echo "1) Ensure you have the SDL2, SDL2-image, SDL2-mixer, and OpenGL libraries installed."
   echo "2) Type \"make -C src install\"."
