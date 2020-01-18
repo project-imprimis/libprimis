@@ -146,22 +146,51 @@ void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, floa
     gle::end();
 }
 
-void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo)
+// void renderbackgroundview(int, int, const char*, Texture*, const char*, const char*)
+//   Background picture / text handler
+
+/*
+Notes:
+    * Unsure what 'w' and 'h' refers to, maybe screen resolution?
+*/
+
+void renderbackgroundview(
+    int win_w, int win_h,
+    const char *caption,
+    Texture *mapshot,
+    const char *mapname,
+    const char *mapinfo)
 {
-    static int lastupdate = -1, lastw = -1, lasth = -1;
-    static float backgroundu = 0, backgroundv = 0;
-    if((renderedframe && !mainmenu && lastupdate != lastmillis) || lastw != w || lasth != h)
+
+    static int
+        lastupdate  = -1,
+        lastw       = -1,
+        lasth       = -1;
+
+    static float
+        backgroundu = 0,
+        backgroundv = 0;
+
+    const bool needsRefresh =
+        (renderedframe && !mainmenu && lastupdate != lastmillis)
+        || lastw != win_w
+        || lasth != win_h;
+
+    if (needsRefresh)
     {
         lastupdate = lastmillis;
-        lastw = w;
-        lasth = h;
+        lastw = win_w;
+        lasth = win_h;
 
         backgroundu = rndscale(1);
         backgroundv = rndscale(1);
     }
-    else if(lastupdate != lastmillis) lastupdate = lastmillis;
+    else if (lastupdate != lastmillis)
+    {
+        lastupdate = lastmillis;
+    }
 
-    hudmatrix.ortho(0, w, h, 0, -1, 1);
+    hudmatrix.ortho(0, win_w, win_h, 0, -1, 1);
     resethudmatrix();
     resethudshader();
 
@@ -169,54 +198,71 @@ void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, c
     gle::deftexcoord0();
 
     settexture("media/interface/background.png", 0);
-    float bu = w*0.67f/256.0f, bv = h*0.67f/256.0f;
-    bgquad(0, 0, w, h, backgroundu, backgroundv, bu, bv);
+    float bu = win_w*0.67f/256.0f, bv = win_h*0.67f/256.0f;
+    bgquad(0, 0, win_w, win_h, backgroundu, backgroundv, bu, bv);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     settexture("media/interface/shadow.png", 3);
-    bgquad(0, 0, w, h);
+    bgquad(0, 0, win_w, win_h);
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-    float lh = 0.5f*min(w, h), lw = lh*2,
-          lx = 0.5f*(w - lw), ly = 0.5f*(h*0.5f - lh);
-    settexture((maxtexsize ? min(maxtexsize, hwtexsize) : hwtexsize) >= 1024 && (hudw > 1280 || hudh > 800) ? "<premul>media/interface/logo_1024.png" : "<premul>media/interface/logo.png", 3);
-    bgquad(lx, ly, lw, lh);
+
+    // Set position and size of logo
+
+    float logo_h = (1.f/3.f)*min(win_w, win_h),
+          logo_w = logo_h*(2.f/1.f), // Aspect ratio of logo, defined here
+          logo_x = 0.5f*(win_w - logo_w),
+          logo_y = 0.5f*(win_h*0.5f - logo_h);
+
+    settexture(
+        (maxtexsize ? min(maxtexsize, hwtexsize) : hwtexsize) >= 1024 && (hudw > 1280 || hudh > 800)
+            ? "<premul>media/interface/logo_1024.png"
+            : "<premul>media/interface/logo.png",
+        3);
+    bgquad(logo_x, logo_y, logo_w, logo_h);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    if(caption)
+    if (caption)
     {
         int tw = text_width(caption);
-        float tsz = 0.04f*min(w, h)/FONTH,
-              tx = 0.5f*(w - tw*tsz), ty = h - 0.075f*1.5f*min(w, h) - FONTH*tsz;
+        float tsz = 0.04f*min(win_w, win_h)/FONTH,
+              tx = 0.5f*(win_w - tw*tsz), ty = win_h - 0.075f*1.5f*min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
         draw_text(caption, 0, 0);
         pophudmatrix();
     }
-    if(mapshot || mapname)
+
+    if (mapshot || mapname)
     {
-        float infowidth = 14*FONTH, sz = 0.35f*min(w, h), msz = (0.85f*min(w, h) - sz)/(infowidth + FONTH), x = 0.5f*w, y = ly+lh - sz/15, mx = 0, my = 0, mw = 0, mh = 0;
-        if(mapinfo)
+        float infowidth = 14*FONTH, sz = 0.35f*min(win_w, win_h), msz = (0.85f*min(win_w, win_h) - sz)/(infowidth + FONTH), x = 0.5f*win_w, y = logo_y+logo_h - sz/15, mx = 0, my = 0, mw = 0, mh = 0;
+
+        // Prepare text area for map info
+        if (mapinfo)
         {
             text_boundsf(mapinfo, mw, mh, infowidth);
             x -= 0.5f*mw*msz;
-            if(mapshot && mapshot!=notexture)
+            if (mapshot && mapshot!=notexture)
             {
                 x -= 0.5f*FONTH*msz;
                 mx = sz + FONTH*msz;
             }
         }
-        if(mapshot && mapshot!=notexture)
+
+        // Map shot was provided and isn't empty
+        if (mapshot && mapshot!=notexture)
         {
             x -= 0.5f*sz;
             resethudshader();
             glBindTexture(GL_TEXTURE_2D, mapshot->id);
             bgquad(x, y, sz, sz);
         }
-        if(mapname)
+
+        // Map name was provided
+        if (mapname)
         {
             float tw = text_widthf(mapname), tsz = sz/(8*FONTH), tx = max(0.5f*(mw*msz - tw*tsz), 0.0f);
             pushhudtranslate(x+mx+tx, y, tsz);
@@ -224,7 +270,9 @@ void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, c
             pophudmatrix();
             my = 1.5f*FONTH*tsz;
         }
-        if(mapinfo)
+
+        // Map info was provided
+        if (mapinfo)
         {
             pushhudtranslate(x+mx, y+my, msz);
             draw_text(mapinfo, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, -1, infowidth);
