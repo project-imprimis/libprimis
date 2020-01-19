@@ -1227,6 +1227,9 @@ int main(int argc, char **argv)
 
     inputgrab(grabinput = true);
     ignoremousemotion();
+
+    PyScript test_script("imprimis", MAP);
+
     //actual loop after main inits itself
     for(;;)
     {
