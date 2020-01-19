@@ -11,6 +11,8 @@ enum AccessLevel
     GUI         = 1<<3  // Access to UI elements                        (server-side and client-side)
 };
 
+void loadpymodule(const char* modulename);
+
 class PyScript
 {
 private:
