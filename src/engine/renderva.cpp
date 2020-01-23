@@ -498,7 +498,7 @@ void findvisiblemms(const vector<extentity *> &ents, bool doquery)
     }
 }
 
-VAR(oqmm, 0, 4, 8);
+VAR(oqmm, 0, 4, 8); //`o`cclusion `q`uery `m`ap `m`odel
 
 static inline void rendermapmodel(extentity &e)
 {
@@ -604,9 +604,9 @@ bool bboccluded(const ivec &bo, const ivec &br)
     return false;
 }
 
-VAR(outline, 0, 0, 1);
-CVARP(outlinecolour, 0);
-VAR(dtoutline, 0, 1, 1);
+VAR(outline, 0, 0, 1); //vertex/edge highlighting in edit mode
+CVARP(outlinecolour, 0); //color of edit mode outlines
+VAR(dtoutline, 0, 1, 1); //`d`epth `t`est `outline`s
 
 void renderoutline()
 {
