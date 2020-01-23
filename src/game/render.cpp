@@ -46,7 +46,7 @@ namespace game
             moveragdoll(d);
         }
     }
-    //ffa colours
+    //ffa colors
     static const int playercolors[] =
     {
         0xA12020,
@@ -119,7 +119,7 @@ namespace game
         }
     }
 
-    //returns colour of a given player given a team (which they may or may not be on)
+    //returns color of a given player given a team (which they may or may not be on)
     ICOMMAND(getplayercolor, "ii", (int *color, int *team), intret(getplayercolor(*team, *color)));
 
     int getplayercolor(gameent *d, int team)

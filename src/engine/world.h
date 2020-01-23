@@ -15,7 +15,7 @@ struct octaheader
     int headersize;             // sizeof(header)
     int worldsize;
     int numents;
-    int numpvs;
+    int numpvs;                 // no longer used, kept for backwards compatibility
     int lightmaps;
     int blendmap;
     int numvars;
@@ -31,7 +31,7 @@ struct mapheader
     int headersize;             // sizeof(header)
     int worldsize;
     int numents;
-    int numpvs;
+    int numpvs;                 // no longer used, kept for backwards compatibility
     int blendmap;
     int numvars;
     int numvslots;

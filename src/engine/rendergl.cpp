@@ -1846,7 +1846,7 @@ void debugquad(float x, float y, float w, float h, float tx, float ty, float tw,
 }
 
 VARR(fog, 16, 4000, 1000024);
-CVARR(fogcolour, 0x8099B3);
+CVARR(fogcolor, 0x8099B3);
 VAR(fogoverlay, 0, 1, 1);
 
 static float findsurface(int fogmat, const vec &v, int &abovemat)
@@ -1876,7 +1876,7 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
     {
         case MAT_WATER:
         {
-            const bvec &wcol = getwatercolour(fogmat), &wdeepcol = getwaterdeepcolour(fogmat);
+            const bvec &wcol = getwatercolor(fogmat), &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat), wdeep = getwaterdeep(fogmat);
             float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color;
@@ -1888,7 +1888,7 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
 
         case MAT_LAVA:
         {
-            const bvec &lcol = getlavacolour(fogmat);
+            const bvec &lcol = getlavacolor(fogmat);
             int lfog = getlavafog(fogmat);
             fogc.add(lcol.tocolor().mul(blend));
             end += logblend*min(fog, max(lfog*2, 16));
@@ -1896,7 +1896,7 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
         }
 
         default:
-            fogc.add(fogcolour.tocolor().mul(blend));
+            fogc.add(fogcolor.tocolor().mul(blend));
             start += logblend*(fog+64)/8;
             end += logblend*fog;
             break;
@@ -1957,7 +1957,7 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
     {
         case MAT_WATER:
         {
-            const bvec &wcol = getwatercolour(fogmat), &wdeepcol = getwaterdeepcolour(fogmat);
+            const bvec &wcol = getwatercolor(fogmat), &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat), wdeep = getwaterdeep(fogmat);
             float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color = vec(wcol.r, wcol.g, wcol.b).lerp(vec(wdeepcol.r, wdeepcol.g, wdeepcol.b), deepfade);
@@ -1967,7 +1967,7 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
 
         case MAT_LAVA:
         {
-            const bvec &lcol = getlavacolour(fogmat);
+            const bvec &lcol = getlavacolor(fogmat);
             maxc = max(lcol.r, max(lcol.g, lcol.b));
             overlay.add(vec(lcol.r, lcol.g, lcol.b).div(min(32.0f + maxc*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
@@ -2006,11 +2006,11 @@ void clearminimap()
 }
 
 VARR(minimapheight, 0, 0, 2<<16);
-CVARR(minimapcolour, 0);
+CVARR(minimapcolor, 0);
 VARR(minimapclip, 0, 0, 1);
 VARFP(minimapsize, 7, 8, 10, { if(minimaptex) drawminimap(); });
 VARFP(showminimap, 0, 1, 1, { if(minimaptex) drawminimap(); });
-CVARFP(nominimapcolour, 0x101010, { if(minimaptex && !showminimap) drawminimap(); });
+CVARFP(nominimapcolor, 0x101010, { if(minimaptex && !showminimap) drawminimap(); });
 
 void bindminimap()
 {
@@ -2038,7 +2038,7 @@ void drawminimap()
     if(!showminimap)
     {
         if(!minimaptex) glGenTextures(1, &minimaptex);
-        createtexture(minimaptex, 1, 1, nominimapcolour.v, 3, 0, GL_RGB, GL_TEXTURE_2D);
+        createtexture(minimaptex, 1, 1, nominimapcolor.v, 3, 0, GL_RGB, GL_TEXTURE_2D);
         return;
     }
 
@@ -2114,7 +2114,7 @@ void drawminimap()
 
     rendershadowatlas();
 
-    shademinimap(minimapcolour.tocolor().mul(ldrscale));
+    shademinimap(minimapcolor.tocolor().mul(ldrscale));
 
     if(minimapheight > 0 && minimapheight < minimapcenter.z + minimapradius.z)
     {
@@ -2140,7 +2140,7 @@ void drawminimap()
     createtexture(minimaptex, size, size, NULL, 3, 1, GL_RGB5, GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    GLfloat border[4] = { minimapcolour.x/255.0f, minimapcolour.y/255.0f, minimapcolour.z/255.0f, 1.0f };
+    GLfloat border[4] = { minimapcolor.x/255.0f, minimapcolor.y/255.0f, minimapcolor.z/255.0f, 1.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border);
     glBindTexture(GL_TEXTURE_2D, 0);
 
