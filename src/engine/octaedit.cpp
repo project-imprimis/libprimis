@@ -2861,5 +2861,4 @@ EDITSTAT(va, int, allocva);
 EDITSTAT(glde, int, glde);
 EDITSTAT(geombatch, int, gbatches);
 EDITSTAT(oq, int, getnumqueries());
-EDITSTAT(pvs, int, getnumviewcells());
 

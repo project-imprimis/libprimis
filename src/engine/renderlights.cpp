@@ -3459,7 +3459,6 @@ void collectlights()
         if(smviscull)
         {
             if(isfoggedsphere(e->attr1, e->o)) continue;
-            if(pvsoccludedsphere(e->o, e->attr1)) continue;
         }
 
         lightinfo &l = lights.add(lightinfo(i, *e));

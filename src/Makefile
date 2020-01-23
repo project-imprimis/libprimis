@@ -84,7 +84,6 @@ CLIENT_OBJS= \
 	engine/octaedit.o \
 	engine/octarender.o \
 	engine/physics.o \
-	engine/pvs.o \
 	engine/rendergl.o \
 	engine/renderlights.o \
 	engine/rendermodel.o \
@@ -337,10 +336,6 @@ engine/physics.o: shared/ents.h shared/command.h shared/glexts.h
 engine/physics.o: shared/glemu.h shared/iengine.h shared/igame.h
 engine/physics.o: engine/world.h engine/octa.h engine/light.h
 engine/physics.o: engine/texture.h engine/bih.h engine/model.h engine/mpr.h
-engine/pvs.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
-engine/pvs.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
-engine/pvs.o: shared/iengine.h shared/igame.h engine/world.h engine/octa.h
-engine/pvs.o: engine/light.h engine/texture.h engine/bih.h engine/model.h
 engine/rendergl.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/rendergl.o: shared/ents.h shared/command.h shared/glexts.h
 engine/rendergl.o: shared/glemu.h shared/iengine.h shared/igame.h

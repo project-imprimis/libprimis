@@ -104,21 +104,6 @@ extern int compactvslots(bool cull = false);
 extern void reloadtextures();
 extern void cleanuptextures();
 
-// pvs
-extern void clearpvs();
-extern bool pvsoccluded(const ivec &bbmin, const ivec &bbmax);
-extern bool pvsoccludedsphere(const vec &center, float radius);
-extern bool waterpvsoccluded(int height);
-extern void setviewcell(const vec &p);
-extern void savepvs(stream *f);
-extern void loadpvs(stream *f, int numpvs);
-extern int getnumviewcells();
-
-static inline bool pvsoccluded(const ivec &bborigin, int size)
-{
-    return pvsoccluded(bborigin, ivec(bborigin).add(size));
-}
-
 // rendergl
 extern bool hasVAO, hasTR, hasTSW, hasPBO, hasFBO, hasAFBO, hasDS, hasTF, hasCBF, hasS3TC, hasFXT1, hasLATC, hasRGTC, hasAF, hasFBB, hasFBMS, hasTMS, hasMSS, hasFBMSBS, hasUBO, hasMBR, hasDB2, hasDBB, hasTG, hasTQ, hasPF, hasTRG, hasTI, hasHFV, hasHFP, hasDBT, hasDC, hasDBGO, hasEGPU4, hasGPU4, hasGPU5, hasBFE, hasEAL, hasCR, hasOQ2, hasES3, hasCB, hasCI;
 extern int glversion, glslversion, glcompat;

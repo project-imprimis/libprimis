@@ -474,7 +474,7 @@ COMMAND(clearmodel, "s");
 bool modeloccluded(const vec &center, float radius)
 {
     ivec bbmin(vec(center).sub(radius)), bbmax(vec(center).add(radius+1));
-    return pvsoccluded(bbmin, bbmax) || bboccluded(bbmin, bbmax);
+    return bboccluded(bbmin, bbmax);
 }
 
 struct batchedmodel

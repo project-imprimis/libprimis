@@ -52,7 +52,6 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
         hdr.headersize = sizeof(hdr);
         hdr.worldsize = ohdr.worldsize;
         hdr.numents = ohdr.numents;
-        hdr.numpvs = ohdr.numpvs;
         hdr.blendmap = ohdr.blendmap;
         hdr.numvars = ohdr.numvars;
         hdr.numvslots = ohdr.numvslots;
@@ -620,7 +619,6 @@ bool save_world(const char *mname, bool nolms)
     hdr.numents = 0;
     const vector<extentity *> &ents = entities::getents();
     loopv(ents) if(ents[i]->type!=ET_EMPTY || nolms) hdr.numents++;
-    hdr.numpvs = nolms ? 0 : getnumviewcells();
     hdr.blendmap = shouldsaveblendmap();
     hdr.numvars = 0;
     hdr.numvslots = numvslots;
@@ -689,10 +687,6 @@ bool save_world(const char *mname, bool nolms)
     renderprogress(0, "saving octree...");
     savec(worldroot, ivec(0, 0, 0), worldsize>>1, f, nolms);
 
-    if(!nolms)
-    {
-        if(getnumviewcells()>0) { renderprogress(0, "saving pvs..."); savepvs(f); }
-    }
     if(shouldsaveblendmap()) { renderprogress(0, "saving blendmap..."); saveblendmap(f); }
 
     delete f;
@@ -880,7 +874,6 @@ bool load_world(const char *mname, const char *cname)        // still supports a
             f->seek(bpp*LM_PACKW*LM_PACKH, SEEK_CUR);
         }
 
-        if(hdr.numpvs > 0) loadpvs(f, hdr.numpvs);
         if(hdr.blendmap) loadblendmap(f, hdr.blendmap);
     }
 

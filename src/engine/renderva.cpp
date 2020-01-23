@@ -156,11 +156,6 @@ static inline void findvisiblevas(vector<vtxarray *> &vas)
         v.curvfc = fullvis ? VFC_FULL_VISIBLE : isvisiblecube(v.o, v.size);
         if(v.curvfc != VFC_NOT_VISIBLE)
         {
-            if(pvsoccluded(v.o, v.size))
-            {
-                v.curvfc += PVS_FULL_VISIBLE - VFC_FULL_VISIBLE;
-                continue;
-            }
             bool resetchildren = prevvfc >= VFC_NOT_VISIBLE || resetocclude;
             if(resetchildren)
             {
@@ -464,7 +459,7 @@ void findvisiblemms(const vector<extentity *> &ents, bool doquery)
     for(vtxarray *va = visibleva; va; va = va->next) if(va->occluded < OCCLUDE_BB && va->curvfc < VFC_FOGGED) loopv(va->mapmodels)
     {
         octaentities *oe = va->mapmodels[i];
-        if(isfoggedcube(oe->o, oe->size) || pvsoccluded(oe->bbmin, oe->bbmax)) continue;
+        if(isfoggedcube(oe->o, oe->size)) continue;
 
         bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
         if(occluded)
@@ -1744,7 +1739,7 @@ void rendergeom()
                 va->occluded = va->query && va->query->owner == va && checkquery(va->query) ? min(va->occluded+1, int(OCCLUDE_BB)) : OCCLUDE_NOTHING;
                 va->query = newquery(va);
                 if(!va->query || !va->occluded)
-                    va->occluded = pvsoccluded(va->geommin, va->geommax) ? OCCLUDE_GEOM : OCCLUDE_NOTHING;
+                    va->occluded = OCCLUDE_NOTHING;
                 if(va->occluded >= OCCLUDE_GEOM)
                 {
                     if(va->query)
@@ -1759,7 +1754,7 @@ void rendergeom()
             else
             {
                 va->query = NULL;
-                va->occluded = pvsoccluded(va->geommin, va->geommax) ? OCCLUDE_GEOM : OCCLUDE_NOTHING;
+                va->occluded = OCCLUDE_NOTHING;
                 if(va->occluded >= OCCLUDE_GEOM) continue;
             }
 
@@ -1797,7 +1792,7 @@ void rendergeom()
             }
             else
             {
-                va->occluded = pvsoccluded(va->geommin, va->geommax) ? OCCLUDE_GEOM : OCCLUDE_NOTHING;
+                va->occluded = OCCLUDE_NOTHING;
                 if(va->occluded >= OCCLUDE_GEOM) continue;
             }
 
@@ -1813,7 +1808,7 @@ void rendergeom()
         for(vtxarray *va = visibleva; va; va = va->next) if(va->texs)
         {
             va->query = NULL;
-            va->occluded = pvsoccluded(va->geommin, va->geommax) ? OCCLUDE_GEOM : OCCLUDE_NOTHING;
+            va->occluded = OCCLUDE_NOTHING;
             if(va->occluded >= OCCLUDE_GEOM) continue;
             blends += va->blends;
             renderva(cur, va, RENDERPASS_GBUFFER);
@@ -1957,7 +1952,6 @@ int findalphavas()
     for(vtxarray *va = visibleva; va; va = va->next) if(va->alphabacktris || va->alphafronttris || va->refracttris)
     {
         if(va->occluded >= OCCLUDE_BB) continue;
-        if(va->occluded >= OCCLUDE_GEOM && pvsoccluded(va->alphamin, va->alphamax)) continue;
         if(va->curvfc==VFC_FOGGED) continue;
         float sx1 = -1, sx2 = 1, sy1 = -1, sy2 = 1;
         if(!calcbbscissor(va->alphamin, va->alphamax, sx1, sy1, sx2, sy2)) continue;

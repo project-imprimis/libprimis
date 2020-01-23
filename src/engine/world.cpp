@@ -1377,7 +1377,6 @@ void resetmap()
     clearmapsounds();
     resetblendmap();
     clearlights();
-    clearpvs();
     clearslots();
     clearparticles();
     clearstains();

@@ -1477,8 +1477,6 @@ void recomputecamera()
             if(thirdpersonside) camera1->o.add(vec(side).mul(thirdpersonside));
         }
     }
-
-    setviewcell(camera1->o);
 }
 
 float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
@@ -2090,7 +2088,6 @@ void drawminimap()
     cmcamera.pitch = -90;
     cmcamera.roll = 0;
     camera1 = &cmcamera;
-    setviewcell(vec(-1, -1, -1));
 
     float oldldrscale = ldrscale, oldldrscaleb = ldrscaleb;
     int oldfarplane = farplane, oldvieww = vieww, oldviewh = viewh;
@@ -2172,7 +2169,6 @@ void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapsi
     cmcamera.pitch = pitch;
     cmcamera.roll = 0;
     camera1 = &cmcamera;
-    setviewcell(camera1->o);
 
     float fogmargin = 1 + WATER_AMPLITUDE + nearplane;
     int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MATF_VOLUME|MATF_INDEX), abovemat = MAT_AIR;

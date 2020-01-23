@@ -301,9 +301,6 @@ enum
     VFC_PART_VISIBLE,
     VFC_FOGGED,
     VFC_NOT_VISIBLE,
-    PVS_FULL_VISIBLE,
-    PVS_PART_VISIBLE,
-    PVS_FOGGED
 };
 
 #define GENCUBEVERTS(x0,x1, y0,y1, z0,z1) \
