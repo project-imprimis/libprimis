@@ -570,6 +570,7 @@ namespace game
         lasthit = 0;
 
         execident("mapstart");
+        execident("resethud"); //reconfigure hud
     }
 
     void startmap(const char *name)   // called just after a map load
