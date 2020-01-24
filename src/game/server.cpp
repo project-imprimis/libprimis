@@ -1646,9 +1646,9 @@ namespace server
     {
         if(clients.empty() || (!hasnonlocalclients() && !demorecord)) return false;
         enet_uint32 curtime = enet_time_get()-lastsend;
-        if(curtime<40 && !force) return false;
+        if(curtime<7 && !force) return false;
         bool flush = buildworldstate();
-        lastsend += curtime - (curtime%40);
+        lastsend += curtime - (curtime%7); //delay of 7ms between packet reciepts (143fps)
         return flush;
     }
 
