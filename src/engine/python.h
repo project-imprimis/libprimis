@@ -24,6 +24,8 @@ private:
         *py_module,
         *py_func; // TESTING
 
+    bool py_err_get(const char *&type, const char *&value, const char *&traceback);
+
 public:
 
     PyScript(const char* _filename, AccessLevel _level);
