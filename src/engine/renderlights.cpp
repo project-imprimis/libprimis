@@ -231,6 +231,10 @@ void cleanupao()
     clearbilateralshaders();
 }
 
+//debug commands
+//for individual debug commands, see respective functions lower in the file
+VAR(debugfullscreen, 0, 0, 1);
+
 VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); });
 FVARR(aoradius, 0, 5, 256);
 FVAR(aocutoff, 0, 2.0f, 1e3f);
@@ -264,7 +268,8 @@ void initao()
 void viewao()
 {
     if(!ao) return;
-    int w = min(hudw, hudh)/2, h = (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw : min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
+    int h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, aotex[2] ? aotex[2] : aotex[0]);
@@ -1306,7 +1311,8 @@ VAR(debugdepth, 0, 0, 1);
 
 void viewdepth()
 {
-    int w = min(hudw, hudh)/2, h = (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw : min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
+    int h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
@@ -1335,7 +1341,8 @@ void viewstencil()
     glBindFramebuffer_(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, hudw, hudh);
 
-    int w = min(hudw, hudh)/2, h = (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw : min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
+    int h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
@@ -1346,7 +1353,8 @@ VAR(debugrefract, 0, 0, 1);
 
 void viewrefract()
 {
-    int w = min(hudw, hudh)/2, h = (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw : min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
+    int h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, refracttex);
