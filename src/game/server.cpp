@@ -2360,7 +2360,7 @@ namespace server
     };
 
     VAR(modifiedmapspectator, 0, 1, 2);
- 
+
     void checkmaps(int req = -1)
     {
         if(m_edit || !smapname[0]) return;
@@ -2419,7 +2419,7 @@ namespace server
     {
         return !ci->local && ci->warned && modifiedmapspectator && (mcrc || modifiedmapspectator > 1);
     }
- 
+
     void unspectate(clientinfo *ci)
     {
         if(shouldspectate(ci)) return;
@@ -3516,7 +3516,7 @@ namespace server
                 if(ci && ci->state.state!=CS_SPECTATOR) QUEUE_MSG;
                 break;
             }
-  
+
             case N_UNDO:
             case N_REDO:
             {
@@ -3536,7 +3536,7 @@ namespace server
                 sendpacket(-1, 1, q.finalize(), ci->clientnum);
                 break;
             }
- 
+
             case N_SERVCMD:
                 getstring(text, p);
                 break;
