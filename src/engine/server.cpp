@@ -649,7 +649,7 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
         totalmillis = millis;
         updatetime();
     }
-    server::serverupdate();
+    server::serverupdate(); //see game/server.cpp for meat of server update routine
 
     flushmasteroutput();
     checkserversockets();

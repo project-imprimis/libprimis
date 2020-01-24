@@ -2271,16 +2271,19 @@ namespace server
         ci->timesync = false;
     }
 
-    void serverupdate()
+    void serverupdate() //called from engine/server.src
     {
-        if(shouldstep && !gamepaused)
+
+        ////////// This section only is run if people are online //////////
+
+        if(shouldstep && !gamepaused) //if people are online and game is unpaused
         {
-            gamemillis += curtime;
+            gamemillis += curtime; //advance clock if applicable
 
             if(m_demo) readdemo();
             else if(!m_timed || gamemillis < gamelimit)
             {
-                processevents();
+                processevents(); //foreach client flushevents (handle events & clear?)
                 if(curtime)
                 {
                     loopv(sents) if(sents[i].spawntime) // spawn entities when timer reached
@@ -2299,8 +2302,11 @@ namespace server
             }
         }
 
-        while(bannedips.length() && bannedips[0].expire-totalmillis <= 0) bannedips.remove(0);
-        loopv(connects) if(totalmillis-connects[i]->connectmillis>15000) disconnect_client(connects[i]->clientnum, DISC_TIMEOUT);
+        ////////// This section is run regardless of whether there are people are online //////////
+        //         (though the loopv(connects) will always be empty with nobody on)
+
+        while(bannedips.length() && bannedips[0].expire-totalmillis <= 0) bannedips.remove(0); //clear expired ip bans if there are any
+        loopv(connects) if(totalmillis-connects[i]->connectmillis>15000) disconnect_client(connects[i]->clientnum, DISC_TIMEOUT); //remove clients who haven't responded in 15s
 
         if(nextexceeded && gamemillis > nextexceeded && (!m_timed || gamemillis < gamelimit))
         {
@@ -2314,20 +2320,23 @@ namespace server
             }
         }
 
-        if(shouldcheckteamkills) checkteamkills();
+        if(shouldcheckteamkills) checkteamkills(); //check team kills on matches that care
 
-        if(shouldstep && !gamepaused)
+        ////////// This section is only run if there are people online //////////
+
+        if(shouldstep && !gamepaused) //while unpaused & players ingame, check if match should be over
         {
             if(m_timed && smapname[0] && gamemillis-curtime>0) checkintermission();
             if(interm > 0 && gamemillis>interm)
             {
-                if(demorecord) enddemorecord();
+                if(demorecord) enddemorecord(); //close demo if one is being recorded
                 interm = -1;
                 checkvotes(true);
             }
         }
 
-        shouldstep = clients.length() > 0;
+        //check if there are people online for next iteration of loop
+        shouldstep = clients.length() > 0; //don't step if there's nobody online
     }
 
     void forcespectator(clientinfo *ci)
@@ -3502,8 +3511,8 @@ namespace server
                 loopi(size-1) getint(p);
                 if(p.remaining() < 2) { disconnect_client(sender, DISC_MSGERR); return; }
                 int extra = lilswap(*(const ushort *)p.pad(2));
-                if(p.remaining() < extra) { disconnect_client(sender, DISC_MSGERR); return; }                
-                p.pad(extra); 
+                if(p.remaining() < extra) { disconnect_client(sender, DISC_MSGERR); return; }
+                p.pad(extra);
                 if(ci && ci->state.state!=CS_SPECTATOR) QUEUE_MSG;
                 break;
             }
