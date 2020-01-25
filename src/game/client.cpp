@@ -1,5 +1,13 @@
 #include "game.h"
 
+//handles information taken from the server, minimap, and radar
+//includes:
+//getting current information on other players (health, team, kills, deaths, etc.)
+//clientside authentication
+//editing interactions
+//parsing state changes from server
+//demo commands (core logic in game/server.cpp)
+
 namespace game
 {
     VARP(minradarscale, 0, 384, 10000);

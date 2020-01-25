@@ -1,4 +1,6 @@
 // server-side ai manager
+// note that server does not handle actual bot logic,
+// which is offloaded to the clients with the best connection
 namespace aiman
 {
     bool dorefresh = false, botbalance = true;

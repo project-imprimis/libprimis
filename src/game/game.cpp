@@ -1,5 +1,11 @@
 #include "game.h"
 
+//for activites that can take place ingame, such as shooting, spectating, etc;
+//also for:
+//player position extrapolation
+//updating the whole world
+//player statistics (kills, deaths, accuracy)
+
 namespace game
 {
     bool intermission = false;
@@ -164,8 +170,10 @@ namespace game
         return true;
     }
 
-    VARP(smoothmove, 0, 75, 100);
-    VARP(smoothdist, 0, 32, 64);
+// player prediction variables
+
+    VARP(smoothmove, 0, 75, 100); //divisor for smoothing scale
+    VARP(smoothdist, 0, 32, 64); //used in game/client.cpp; distance threshold for player position extrapolation
 
     void predictplayer(gameent *d, bool move)
     {

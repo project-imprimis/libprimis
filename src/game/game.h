@@ -3,6 +3,14 @@
 
 #include "cube.h"
 
+//defines game statics, like animation names, weapon variables, entity properties
+//includes:
+//animation names
+//console message types
+//weapon vars
+//game state information
+//game entity definition
+
 // animations
 
 enum

@@ -1,5 +1,13 @@
-//player model rendering (both hud player and 3p player rendering)
 #include "game.h"
+
+//player model rendering (both hud player and 3p player rendering)
+//for "real" rendering, see /src/engine/render*
+//includes:
+//hud player rendering
+//3p player rendering
+//ragdoll handling
+//player colors
+
 
 namespace game
 {

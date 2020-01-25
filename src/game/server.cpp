@@ -1,5 +1,14 @@
 #include "game.h"
 
+//server game handling
+//includes:
+//game moderation (e.g. bans)
+//main serverupdate function (called from engine/server.cpp)
+//voting
+//parsing of packets for game events
+//map crc checks
+//core demo handling
+
 namespace game
 {
     void parseoptions(vector<const char *> &args)
