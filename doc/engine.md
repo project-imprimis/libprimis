@@ -2,47 +2,72 @@
 
 #### Note that this is a draft and subject to expansion and modification.
 
-## Sections
+## Chapters
 
 #### 1. Standards
-* coding standards
-* default paths
+* 1.1 Coding standards
+* 1.2 Default Paths & Libraries
 
 #### 2. World
-* octree  (+ worldio, materials)
-* actors
-* static entities
-* physics
-* projectiles
+* 2.1 Octree
+* 2.2 Actors
+* 2.3 Physics
+* 2.4 Static entities
+* 2.5 Projectiles
 
 #### 3. Render
-* texturing and shading
-* transparency
-* postprocessing
+* 3.1 Texturing and Shading
+* 3.2 Transparency
+* 3.3 Postprocessing
 
 #### 4. Netcode
-* server
-* client
-* ai
+* 4.1 Server
+* 4.2 Client
+* 4.3 AI
 
 #### 5. User and System Interfaces
-* menus
-* hudgun
-* file i/o & assets
-* console
+* 5.1 Menus
+* 5.2 Hudgun
+* 5.3 File I/O & Assets
+* 5.4 Console
 
+#### 6. Game Implementation
+* 6.1 Weapons
+* 6.2 Game Variables
+* 6.3 Modes
 
 # 1. Standards
 
 ## 1.1 Coding Standards
 
+### 1.1.1 This File
+
+This file is written to be interpreted by GitHub Flavored Markdown (GFM) and
+must satisfy the standards laid out therein.
+
+Text should institute a line break after 80 characters.
+
+Chapters use `#`; sections use `##`; subsections use `###`.
+
+### 1.1.2 C/C++ Standards
+
 Four spaces per indentation, spaces only.
 Opening brackets get their own new line.
 
-## 1.2 Default Paths
+## 1.2 Default Paths & Libraries
 
-Linux: `~/.imprimis` is the "home" directory by default
-Windows: `~/My Games/Imprimis` is the "home" directory by default
+### 1.2.1 Paths
+
+Linux: `~/.imprimis` is the "home" directory by default.
+Windows: `~/My Games/Imprimis` is the "home" directory by default.
+
+### 1.2.2 Libraries
+
+This game requires `libsdl2, libsdl2-mixer, libsdl2-image` to run, including the
+`-dev` versions for those package managers which elect to seperate them if
+compiling the game. As the main way of getting the game is via Git, the best way
+to retrieve the assets for the game is by the command line utility `git`.
+
 
 # 2. World
 
@@ -152,10 +177,10 @@ cube geometry as transparent. The texture's properties determine the effects of
 marking geometry alpha as opposed to the variables of the material itself; alpha
 merely tells the engine what areas to treat specially as transparent.
 
-The remaining three types of materials have no visual effect and instead only act
-on actors and objects in the level. Death material kills all who enter its volume;
-clipping keeps players out while letting particles through, and noclip keeps
-geometry from hampering the travel of projectiles and players.
+The remaining three types of materials have no visual effect and instead only
+act on actors and objects in the level. Death material kills all who enter its
+volume; clipping keeps players out while letting particles through, and noclip
+keeps geometry from hampering the travel of projectiles and players.
 
 
 
