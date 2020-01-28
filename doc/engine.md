@@ -10,10 +10,11 @@
 
 #### 2. World
 * 2.1 Octree
-* 2.2 Actors
-* 2.3 Physics
-* 2.4 Static entities
-* 2.5 Projectiles
+* 2.2 Materials
+* 2.3 Actors
+* 2.4 Physics
+* 2.5 Static entities
+* 2.6 Projectiles
 
 #### 3. Render
 * 3.1 Texturing and Shading
@@ -71,14 +72,14 @@ to retrieve the assets for the game is by the command line utility `git`.
 
 # 2. World
 
-## 2.1 The Octree
+## 2.1 Octree Geometry
 
 ### 2.1.1 Octree Data Structure & Cube Geometry
 
 Imprimis stores its data in an octal tree, in which each cube of edge length *l*
-is divided into eight cubes with edge length *l*/2. This allows for a level to 
+is divided into eight cubes with edge length *l*/2. This allows for a level to
 be efficiently and recursively divided into smaller and smaller pieces. The
-power of this data structure is that large, faraway objects can occupy 
+power of this data structure is that large, faraway objects can occupy
 relatively fewer nodes in the data tree than objects in the level have.
 
 The `gridpower` of a particular octree node (henceforth called simply a "cube")
@@ -99,7 +100,7 @@ lower members of the tree which necessarily are within their parent's node.
 Cubes in Imprimis, the most basic form of geometry in the game, therefore occupy
 the octree; instead of vertices in other engines being determined by their 3D
 vector from the origin, a cube's place in the octal tree determines its
-location. 
+location.
 
 ### 2.1.2 Cube Manipulation
 
@@ -148,7 +149,19 @@ determines the maximum gridpower that can be simplified. Having this value too
 high causes large surfaces to occlude poorly, as the entire face has to be
 textured.
 
-### 2.1.4 Materials
+### 2.1.4 Textures
+
+Textures are applied to the six faces of the cube with a simple planar
+projection; as a result, there is distortion when cubes themselves are
+distorted. This can be allieviated with the more expensive `triplanar` shader,
+but that is beyond the scope of this section.
+
+Each cube has a texture defined for each of its six faces; this means that
+"buried" geometry will after revision cause the storage of meaningless texture
+information for invisible geometry. For this reason, there is a command
+`fixinsidefaces` which can set all invisible faces to the default texture.
+
+## 2.2 Materials
 
 There are several materials in Imprimis which are capable of modifying their
 volume's properties. Materials in general are combinable (though there are many
@@ -182,5 +195,14 @@ act on actors and objects in the level. Death material kills all who enter its
 volume; clipping keeps players out while letting particles through, and noclip
 keeps geometry from hampering the travel of projectiles and players.
 
+### 2.2.1 Air
+
+Air, the name for the lack of materials, unsurprisingly is the default
+"material" for the level. Air can be "placed" by `/editmat air` or `/air`
+whereupon it removes all previously existing materials flagged for that
+selection.
+
+The name "air" does not imply that there is any oxygen mechanics in the game
+and there is no material representing the lack of air.
 
 
