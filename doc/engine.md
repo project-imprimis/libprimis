@@ -1,6 +1,10 @@
-# The Imprimis Engine Specification
+# The Imprimis Engine
 
 #### Note that this is a draft and subject to expansion and modification.
+
+This text is an expository one, describing the *what* and some of the *why*
+things are implemented as they are in the engine. This document does not attempt
+to explain how the game is implemented.
 
 ## Chapters
 
@@ -149,6 +153,11 @@ determines the maximum gridpower that can be simplified. Having this value too
 high causes large surfaces to occlude poorly, as the entire face has to be
 textured.
 
+#### Commands
+
+`remip`: performs a remip calculation on the level
+`maxmerge N`: sets the maximum merge gridpower to N
+
 ### 2.1.4 Textures
 
 Textures are applied to the six faces of the cube with a simple planar
@@ -160,6 +169,10 @@ Each cube has a texture defined for each of its six faces; this means that
 "buried" geometry will after revision cause the storage of meaningless texture
 information for invisible geometry. For this reason, there is a command
 `fixinsidefaces` which can set all invisible faces to the default texture.
+
+#### Commands
+
+`fixinsidefaces [vslot]` Sets all invisible faces to the vslot given.
 
 ## 2.2 Materials
 
@@ -205,4 +218,47 @@ selection.
 The name "air" does not imply that there is any oxygen mechanics in the game
 and there is no material representing the lack of air.
 
+### 2.2.2 Water
 
+Water, the material with the largest change with respect to prior engines, has
+four types that can be modified seperately to apply in different situations
+on the map. As water is a particularly complex material to physically represent,
+there are many visual effects provided in the engine which can be tuned for
+particular situations.
+
+Water is the only place in which screenspace reflection is used in game;
+water materials also have options for caustics, reflection, fog, and
+environment mapping to complement this. The sides of water material have
+different properties (such as lacking screenspace reflection) and are controlled
+by a differnt set of variables (the `water<N>fall` set).
+
+Commands which apply to the four water types seperately are designated
+`water<N>` where N is the water material being edited. There are four water
+materials, and the first one does *not* get appended with a "1" like 2/3/4 all
+do.
+
+#### Commands
+
+* `causticscale`
+* `causticmillis`
+* `causticcontrast`
+* `causticoffset`
+* `caustics`
+* `water<N>color`
+* `water<N>deepcolor`
+* `water<N>deepfade`
+* `water<N>refractcolor`
+* `water<N>fog`
+* `water<N>deep`
+* `water<N>spec`
+* `water<N>refract`
+* `water<N>fallcolor`
+* `water<N>fallrefractcolor`
+* `water<N>fallspec`
+* `water<N>fallrefract`
+* `waterreflect`
+* `waterreflectstep`
+* `waterenvmap`
+* `waterfallenv`
+* `waterlod`
+* `watersubdiv`
