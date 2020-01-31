@@ -281,6 +281,10 @@ be careful about how it is placed such that it falls within the radius of an
 environment map entity. Like water and alpha materials, however, glass is
 capable of screenspace refraction, useful for nonflat materials.
 
+In itself, glass material does not block movement, but in practice it always
+does because clipping material is mandatory for all types of glass. The engine
+will automatically place clip wherever glass is placed.
+
 #### Commands
 
 * `glass<N>color`
@@ -307,3 +311,19 @@ reflections); it is therefore advisable to use water in its place if practical.
 * `lava<N>glowmin`
 * `lava<N>glowmax`
 * `lava<N>spec`
+
+### 2.2.5 Clip
+
+An entirely transparent material, clip, unlike the materials prior, does not
+affect the rendering of the scene in any way. Clip, instead, impedes the ability
+for actors (players, bots) to enter their volumes; it allows for the map to be
+securely blocked off from leaving even without geometry placed. Clip material
+is also recommended for cases where the existing geometry has troublesome
+collision, such as trellis or crosshatched geometry. Clip is also always placed
+wherever glass is, to make it impossible to phase through.
+
+Clip, however, notably does *not* impede the progress of particles or
+projectiles, which allows it to be used for map boundaries without fear of
+random projectiles bouncing or dying on collision with its bounds.
+If it is required that projectiles be deleted upon contact, using death material
+in tandem with clip is a viable solution.
