@@ -286,3 +286,24 @@ capable of screenspace refraction, useful for nonflat materials.
 * `glass<N>color`
 * `glass<N>spec`
 * `glass<N>refract`
+
+### 2.2.4 Lava
+
+The third and final four-variant material, lava offers an animated and solid
+liquid surface that kills all who enter it. This is actually not a property of
+lavamat itself but the required death material that it always comes with.
+
+Lava traces its origins back to the Quake style maps which prominently featured
+it as part of the aesthetic, but is troublesome to use in a modern engine like
+Tesseract as a result of its demand for diffuse lighting. Lava, furthermore,
+does not support many of the interesting reflective features that water and
+glass possess (though, to be fair, lava largely does not need advanced
+reflections); it is therefore advisable to use water in its place if practical.
+
+#### Commands
+
+* `lava<N>color`
+* `lava<N>fog`
+* `lava<N>glowmin`
+* `lava<N>glowmax`
+* `lava<N>spec`
