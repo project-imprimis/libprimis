@@ -262,3 +262,27 @@ do.
 * `waterfallenv`
 * `waterlod`
 * `watersubdiv`
+
+### 2.2.3 Glass
+
+Another one of the four-variant materials, and the second most interesting
+(after water) with respect to engine features, glass is a cheap and effective
+way to create transparent geometry. As opposed to alpha material, glass is
+restricted to rectangular volumes (as with all materials) and therefore is
+somewhat less flexible; additionally glass material is not capable of backface
+transparency like glass is. However, because glass material does not require
+rerendering of parts of the level like alpha does.
+
+Because glass material is expected to be used largely in vertical situations
+where screenspace reflection is a poor choice, it does not have screenspace
+reflection support and instead relies entirey on environment mapping and
+specular mapping for its reflective appearence. This does mean that glass has to
+be careful about how it is placed such that it falls within the radius of an
+environment map entity. Like water and alpha materials, however, glass is
+capable of screenspace refraction, useful for nonflat materials.
+
+#### Commands
+
+* `glass<N>color`
+* `glass<N>spec`
+* `glass<N>refract`
