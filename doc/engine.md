@@ -327,3 +327,20 @@ projectiles, which allows it to be used for map boundaries without fear of
 random projectiles bouncing or dying on collision with its bounds.
 If it is required that projectiles be deleted upon contact, using death material
 in tandem with clip is a viable solution.
+
+### 2.2.6 Noclip
+
+The opposite material to clip (unsurprisingly), noclip instead permits the
+passage of actors through otherwise impenetrable geometry. Noclip additionally
+allows projectiles through surfaces, making the enclosed volume get treated
+essentially as air instead of having whatever collision the geometry within has.
+
+As a result, noclip is of no effect for volumes not containing geometry; there
+must be geometry within the noclip's volume for it to take effect.
+
+Using noclip effectively and not having immersion-breaking visibility problems
+generally limits its use to relatively small applications, like flattening out a
+floor or smoothing a wall out so that it is not obstructing travel. When placing
+noclip, it is advisable to check it by spawning into the level and making sure
+that there is no unseemly visibility issues (where you can see through the wall)
+that would break immersion.
