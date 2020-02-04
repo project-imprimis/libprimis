@@ -15,10 +15,11 @@ to explain how the game is implemented.
 #### 2. World
 * 2.1 Octree
 * 2.2 Materials
-* 2.3 Actors
-* 2.4 Physics
-* 2.5 Static entities
-* 2.6 Projectiles
+* 2.3 Textures
+* 2.4 Actors
+* 2.5 Physics
+* 2.6 Static Entities
+* 2.7 Projectiles
 
 #### 3. Render
 * 3.1 Texturing and Shading
@@ -157,22 +158,6 @@ textured.
 
 `remip`: performs a remip calculation on the level
 `maxmerge N`: sets the maximum merge gridpower to N
-
-### 2.1.4 Textures
-
-Textures are applied to the six faces of the cube with a simple planar
-projection; as a result, there is distortion when cubes themselves are
-distorted. This can be allieviated with the more expensive `triplanar` shader,
-but that is beyond the scope of this section.
-
-Each cube has a texture defined for each of its six faces; this means that
-"buried" geometry will after revision cause the storage of meaningless texture
-information for invisible geometry. For this reason, there is a command
-`fixinsidefaces` which can set all invisible faces to the default texture.
-
-#### Commands
-
-`fixinsidefaces [vslot]` Sets all invisible faces to the vslot given.
 
 ## 2.2 Materials
 
@@ -385,3 +370,87 @@ Alpha material does not support continuous variable opacity, and the opacity
 is always constant for a given texture. While this is certainly a limitation,
 typical transparent objects like windows generally have constant opacity across
 their full area.
+
+## 2.3 Textures
+
+The faces of cubes within the game can be given textures on a cube face by cube
+face basis, allowing for immersive, complete scenes to be generated via cube
+geometry.
+
+Textures are applied to the six faces of the cube with a simple planar
+projection; as a result, there is distortion when cubes themselves are
+distorted. This can be allieviated with the more expensive `triplanar` shader,
+but that is beyond the scope of this section.
+
+Each cube has a texture defined for each of its six faces; this means that
+"buried" geometry will after revision cause the storage of meaningless texture
+information for invisible geometry. For this reason, there is a command
+`fixinsidefaces` which can set all invisible faces to the default texture.
+
+#### Commands
+
+* `fixinsidefaces [vslot]` Sets all invisible faces to the vslot given.
+
+### 2.3.1 Texture Slots
+
+Textures are registered to a file that accompanies the map, generally named
+the same as the map file and with the `.cfg` extension. Texture slots are for
+unique shader combinations (for a description of the shaders see the section on
+texture rendering) and as a result at least one physical slot is required for
+each distinct texture in the game. A texture slot declares the following:
+
+* Shaders used in the texture
+* Modifications to shader paramaters
+* Relevant texture maps
+
+An example of a typical texture declaration is shown below.
+
+```
+setshader bumpenvspecmapglowworld
+setshaderparam envscale  0.7 0.7 0.7
+   texture 0 "nieb/complex/light01_c.png"
+   texture n "nieb/complex/light01_n.png"
+   texture s "nieb/complex/light01_s.png"
+   texture g "nieb/complex/light01_g.png"
+```
+
+This shader is set to `bumpenvspecmapglowworld`, meaning it uses bump (normal),
+environment mapping, specular mapping, and glow mapping. The `world` on the end
+is to declare it as a cube geometry shader as opposed to a decal. Afterwards,
+the four relevant maps are provided for the different shaders that are to be
+applied with the `texture` command;
+
+* 0/c declares a diffuse map
+* n declares a normal map
+* s declares a specular map
+* z declares a height (parallax) map
+* g declares a glow map
+
+These definitions of textures are largely set beforehand and then called with
+`texload` upon running the map's config (automatically run at map load); most
+textures have only a couple of possible appropriate shader combinations anyways.
+
+### 2.3.2 Virtual Slots
+
+Virtual slots encode simple manipulation of textures, such as coloration, scale,
+rotation, and orientation. These do not require declaration upon map generation
+and are generally created dynamically ingame after the execution of a `v`
+command. Virtual slots (vslots) then save only the parent texture index and the
+modifications done to it; they save significant memory space by not requiring
+a modified copy to be stored in video memory.
+
+The modifications that a vslot can store are described below in the V-command
+section.
+
+### 2.3.3 Texture Projection
+
+The standard scaling of textures is such that there are 512 linear pixels per
+gridpower 5 cube, leading to a density of 512/32 = 16 pixels per power 0 cube
+or 512/4 = 128 pixels per meter. This is somewhat low but largely sufficient
+for generic areas which the player does not find themselves particularly close
+to, but may be insufficient for areas the player is near to; for this, the
+V-command `vscale` is very useful.
+
+Textures which are not square are projected faithfully and there is no
+stretching of the shorter axis; this means that trim textures can be made
+skinny and narrow if desired to save space.
