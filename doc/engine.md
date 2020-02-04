@@ -344,3 +344,17 @@ floor or smoothing a wall out so that it is not obstructing travel. When placing
 noclip, it is advisable to check it by spawning into the level and making sure
 that there is no unseemly visibility issues (where you can see through the wall)
 that would break immersion.
+
+### 2.2.7 Death
+
+Death material forces the suicide of those players who enter its bounds,
+instantly killing them. Death material is automatically applied wherever lava
+is and is also usable by itself or with other materials like water.
+
+Death material also destroys particles and projectiles which enter its midst,
+which is potentially useful for culling unnecessary particles that enters its
+region.
+
+The bottom of the map (z < 0) also acts as death material and players who leave
+the bottom of the map automatically are killed. No such effect takes place on
+the sides or top of the map volume.
