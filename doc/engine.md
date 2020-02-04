@@ -368,3 +368,20 @@ useful to combat artifacts in the low-resolution global illumination algorithm.
 Note that those regions beyond the radiance hints far plane (`rhfarplane`) will
 be lit regardless of their No GI status. Keep this in mind whenever placing
 long-distance radiance hints.
+
+### 2.2.9 Alpha
+
+Alpha material is the more versatile but slower companion to glass for the
+creation of transparency. Alpha material draws cube geometry within its bounds
+as transparent, allowing for transparent shapes in forms other than rectangular
+boxes.
+
+Alpha material has its material properties dependent upon the flagged settings
+of the geometry contained therein; using `valpha` allows for changing a
+texture's transparent-ness. The material on its own has no flags or other
+related commands to modify its behavior.
+
+Alpha material does not support continuous variable opacity, and the opacity
+is always constant for a given texture. While this is certainly a limitation,
+typical transparent objects like windows generally have constant opacity across
+their full area.
