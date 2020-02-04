@@ -358,3 +358,13 @@ region.
 The bottom of the map (z < 0) also acts as death material and players who leave
 the bottom of the map automatically are killed. No such effect takes place on
 the sides or top of the map volume.
+
+### 2.2.8 No GI
+
+No GI material flags its volume as not being lit by global illumination. This
+does not have a material impact (or improvement) in performance but may be
+useful to combat artifacts in the low-resolution global illumination algorithm.
+
+Note that those regions beyond the radiance hints far plane (`rhfarplane`) will
+be lit regardless of their No GI status. Keep this in mind whenever placing
+long-distance radiance hints.
