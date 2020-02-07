@@ -454,3 +454,72 @@ V-command `vscale` is very useful.
 Textures which are not square are projected faithfully and there is no
 stretching of the shorter axis; this means that trim textures can be made
 skinny and narrow if desired to save space.
+
+### 2.3.4 Texture Slot Properties
+
+The V-commands are a set of texture modification commands that allow for
+textures to be flipped, rotated, scaled, tinted, and offset as necessary.
+
+The tex-commands are the corresponding commands for standard texture slots
+and have the same effect;
+
+#### `texangle <index>`, `vangle <index>` : fine texture rotation
+
+`angle` rotates the texture by a given angle; capable of rotating textures
+by arbitrary amounts through 360 degrees. If needed, this can be combined with
+`rotate` which works by a different mechanism (and is the only way to get
+flipped/transposed textures).
+
+#### `texcolor <R> <G> <B>`, `vcolor <R> <G> <B>`: texture tinting
+
+`color` changes the color of the texture evenly through the values of the three
+parameters passed to it. `color 1 1 1` is the identity operator (has no effect)
+and values above and below this will change the colors accordingly. As the
+combination of red, green, and blue is the standard basis for additive colors
+(like on a monitor), any color can be created by using the three channels
+appropriately.
+
+#### `texoffset <x> <y>`, `voffset <x> <y>`: translational texture offset
+
+`offset` offsets a texture by a given number of pixels; this means that higher
+resolution textures need larger offsets, and that for standard textures,
+fractional offsets are in powers of 2 (a 1024x texture needs to be offset by
+512 to be shifted by half a texture).
+
+#### `texrotate <index>` `vrotate <index>`: coarse texture rotations/transforms
+
+`rotate` transforms a texture by the possible "simple" 2x2 matrix transforms,
+of which there are seven.
+
+* 1 rotate 90
+* 2 rotate 180
+* 3 rotate 270
+* 4 flip x
+* 5 flip y
+* 6 transpose
+* 7 flip and transpose
+
+Note that flipping and transposing are the same regardless of whether the flip
+is over the x or y axis.
+
+These transforms are basic means of getting new orientations for situations
+which do not require the more granular `vrotate` command and is the only way
+to flip/transpose textures.
+
+#### `texscale <scale>`, `vscale <scale>`: texture scaling
+
+`scale` changes the size of the texture linearly along its axes. As a result,
+a texture at `vscale 4` takes up four times the area as `vscale 2` while having
+linear dimensions twice as great.
+
+The identity setting for `scale` is `scale 1`; the default scale factor,
+perhaps not surprisingly, is unity. The engine does low for scales smaller than
+unity, which corresponds to downscaling the texture to increase its density.
+The limits for scaling correspond to powers of two; the minimum is 2^-3 (1/8)
+and the maximum is 2^3 (8). At these extremes, textures are either way
+overdetailed (1024 pixels per meter) or way underdetailed (16 pixels per meter).
+
+For most applications, it is recommended that the scaling be kept to powers of 2
+such that the texture tiles in sync with the cube grid. Exceptions where other
+scales may be appropriate include instances where 3/2 scaling is desired for a 3
+cube wide area or organic textures which are not intended to noticibly tile.
