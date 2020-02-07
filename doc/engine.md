@@ -459,9 +459,36 @@ skinny and narrow if desired to save space.
 
 The V-commands are a set of texture modification commands that allow for
 textures to be flipped, rotated, scaled, tinted, and offset as necessary.
+These commands, when run while in the editor, create new vslots with the
+modified behavior.
 
-The tex-commands are the corresponding commands for standard texture slots
-and have the same effect;
+The tex-commands are the corresponding commands for standard texture slots and
+have the same effect; these are declared for physical texture slots as opposed
+to being dynamically assigned to virtual slots (vslots).
+
+Other than their means of assigning texture behavior to slots, however, the two
+commands are otherwise identical in their behavior. V-commands are the ones used
+ingame; tex-commands are generally placed in texture definitions.
+
+#### `texalpha <front> <back>`, `valpha <front> <back>`: transparency modifiers
+
+`alpha` sets the amount of transparency to render the texture if it is within
+the volume of placed alpha material. The property has no effect otherwise, and
+so modifying this should only be done while the texture is inside alpha material
+such that the effects of changing `alpha` are apparent.
+
+Textures are set to `0.5 0` alpha by default, meaning they are halfway opaque.
+Notably, the second parameter is zeroed out, such that the backface alpha
+feature of the engine is not enabled. Backface alpha is the closest thing the
+deferred renderer of Tesseract (deferred renderers in general have trouble
+dealing with alpha in expedient ways) to multiple layers of alpha, though it
+is a somewhat limited approach which does not lend itself to wide applicability.
+
+Backface alpha allows the far side of the geometry to also be rendered along
+with the standard front face that is rendered by default. Backface alpha
+requires another geometry pass in the renderer and *is* measurably slower than
+leaving it off, but also is the only way to simulate glass-behind-glass in
+levels.
 
 #### `texangle <index>`, `vangle <index>` : fine texture rotation
 
@@ -523,3 +550,11 @@ For most applications, it is recommended that the scaling be kept to powers of 2
 such that the texture tiles in sync with the cube grid. Exceptions where other
 scales may be appropriate include instances where 3/2 scaling is desired for a 3
 cube wide area or organic textures which are not intended to noticibly tile.
+
+#### `texscroll <x> <y>`, `vscroll <x> <y>`: time-varying translational offset
+
+`scroll` causes the texture to take on a linear time-varying offset such that
+the texture appears to move with respect to the surface it is applied to. The
+scale for this scrolling effect is such that `scroll 1` is 1 texture per second;
+this is usually too large for common scrolling objects (like banners or
+conveyor belts) and as such fractional values here are most commonly employed.
