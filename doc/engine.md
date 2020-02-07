@@ -128,9 +128,14 @@ geometry can occupy the cube which has been deformed. This set of limitations
 can be summarized with the following statement:
 
 * Every octree node is defined to have eight vertices and twelve faces.
+* Each vertex can only be found at one of 512 discrete points within the node.
+* Textures always get an entire face of an octree node.
+* Textures are projected from the node normal, not the deformed surface normal.
 
 Therefore, the only way to increase detail in a given area when using cube
 geometry is to increase the octree node density (by using a smaller gridpower).
+
+For more information on texture projection, see §2.3.3.
 
 ### 2.1.3 Remipping and Subdivision
 
@@ -454,6 +459,16 @@ V-command `vscale` is very useful.
 Textures which are not square are projected faithfully and there is no
 stretching of the shorter axis; this means that trim textures can be made
 skinny and narrow if desired to save space.
+
+Textures are projected onto the parent node normals and not the deformed surface
+normals, which causes distortion of the texture when it is heavily distorted.
+This effect additionally causes attempted blending of faces (like when trying to
+make rounded organic geometry) to have an unseemly seam along these boundaries,
+as these boundaries delimit different texture projection differences.
+
+This problem can be solved with the `triplanar` shader, which forces textures to
+be projected in three different directions such that the true normal caused by
+the distorted cube can be found accurately.
 
 ### 2.3.4 Texture Slot Properties
 
