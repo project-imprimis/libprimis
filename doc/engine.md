@@ -16,15 +16,17 @@ to explain how the game is implemented.
 * 2.1 Octree
 * 2.2 Materials
 * 2.3 Textures
-* 2.4 Actors
-* 2.5 Physics
-* 2.6 Static Entities
-* 2.7 Projectiles
+* 2.4 Global Properties
+* 2.5 Actors
+* 2.6 Physics
+* 2.7 Static Entities
+* 2.8 Projectiles
 
 #### 3. Render
 * 3.1 Texturing and Shading
 * 3.2 Transparency
-* 3.3 Postprocessing
+* 3.3 Screenspace Postfx
+* 3.4 Antialiasing
 
 #### 4. Netcode
 * 4.1 Server
