@@ -11,6 +11,7 @@ to explain how the game is implemented.
 #### 1. Standards
 * 1.1 Coding Standards
 * 1.2 Default Paths & Libraries
+* 1.3 Conventions and Units
 
 #### 2. World
 * 2.1 Octree
@@ -76,6 +77,16 @@ This game requires `libsdl2, libsdl2-mixer, libsdl2-image` to run, including the
 compiling the game. As the main way of getting the game is via Git, the best way
 to retrieve the assets for the game is by the command line utility `git`.
 
+### 1.3 Conventions and Units
+
+Distance is always in the unit of cube units ("cubits"), which is the size of a
+gridpower 0 cube, when not specified. This distance is equal to an eighth of a
+meter, 12.5 centimeters, or approximately five inches (to within a couple %).
+
+Colors which are defined past 0xFFFFFF (hex color for white) are generally
+passed as a set of three paramaters `R G B` where `1.0 1.0 1.0` is 0xFFFFFF.
+These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
+upwards as much as downwards in practice.
 
 # 2. World
 
@@ -614,3 +625,23 @@ color, and location.
 * `sunlightpitch <angle>` Sets the sun's inclination angle above the horizon.
 * `sunlightyaw <angle>` Sets the yaw angle (about z axis) of the sunlight.
 * `sunlightscale <scale>` Sets the intensity scale of the sunlight.
+
+### 2.4.2 Fog
+
+*Note: This is entirely distinct from the *fogdome*, a sky property.*
+
+Fog is an effect that fades objects to a particular color as the distance to
+that object grows larger. Fog is useful for creating a closed, damp ambiance,
+but be aware that it can be easily disabled on client machines, making its use
+as a balance technique inadvisable in light of its lack of security with respect
+to its implementation.
+
+Fog also culls the rendering of entities once they pass into the realm of
+complete obscurance, which is set by the `fogcullintensity` variable.
+
+#### Commands
+
+* `fog <dist>` The characteristic distance for the onset of fog effects.
+* `fogcolor <color>` The color of the fog, as a hex color.
+* `fogcullintensity <scale>` The intensity by which fog culls entity rendering.
+* `fogintensity <scale>` The fog effect intensity (lower values -> more fog).
