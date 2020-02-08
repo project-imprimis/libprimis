@@ -9,7 +9,7 @@ to explain how the game is implemented.
 ## Chapters
 
 #### 1. Standards
-* 1.1 Coding standards
+* 1.1 Coding Standards
 * 1.2 Default Paths & Libraries
 
 #### 2. World
@@ -530,18 +530,27 @@ resolution textures need larger offsets, and that for standard textures,
 fractional offsets are in powers of 2 (a 1024x texture needs to be offset by
 512 to be shifted by half a texture).
 
+#### `texrefract <scale> <R> <G> <B>`, `vrefract <scale> <R> <G> <B>`: refract
+
+`refract` modifies the refractive behaviors of materials that are within alpha
+material. Refraction is the distortion of rays or light traveling through a
+material due to the change in the speed in light at material boundaries, and is
+handled in Imprimis via screenspace effects. The intensity of the refraction
+is handled by the `scale` parameter and the color of the refraction is
+controlled by the `R G B` parameters; `1 1 1` is the default white color.
+
 #### `texrotate <index>` `vrotate <index>`: coarse texture rotations/transforms
 
 `rotate` transforms a texture by the possible "simple" 2x2 matrix transforms,
 of which there are seven.
 
-* 1 rotate 90
-* 2 rotate 180
-* 3 rotate 270
-* 4 flip x
-* 5 flip y
-* 6 transpose
-* 7 flip and transpose
+* **1** rotate 90
+* **2** rotate 180
+* **3** rotate 270
+* **4** flip x
+* **5** flip y
+* **6** transpose
+* **7** flip and transpose
 
 Note that flipping and transposing are the same regardless of whether the flip
 is over the x or y axis.
