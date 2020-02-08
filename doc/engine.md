@@ -584,3 +584,33 @@ the texture appears to move with respect to the surface it is applied to. The
 scale for this scrolling effect is such that `scroll 1` is 1 texture per second;
 this is usually too large for common scrolling objects (like banners or
 conveyor belts) and as such fractional values here are most commonly employed.
+
+## 2.4 Global Properties
+
+The world in Imprimis has many global variables that affect the entire level
+evenly. These include ambient lighting, fog, and skybox settings, as well as
+more technical aspects such as mipping intensity. This section does not include
+the global settings for individual materials, as is covered in §2.2.
+
+### 2.4.1 Sunlight
+
+Sunlight, the cheapest form of bulk lighting in the game, is a dynamic light
+which casts shadows like any other light, but from a projection at infinity.
+Sunlight therefore projects perfect quadrilaterals from rectangular objects
+(as opposed to the trapezoids of point lights on the level).
+
+Sunlight is also the only type of light that takes advantage of Imprimis' global
+illumination capability, as enabling it for standard lights is too expensive.
+Global illumination by sunlight is capable of providing ambient lighting to
+partially lit rooms and is faster than using large numbers of on-level point
+lights.
+
+Sunlight has just four variables controlling its behavior, which set its size,
+color, and location.
+
+#### Commands
+
+* `sunlight <color>` Sets the color of the sunlight, passed as a hex color.
+* `sunlightpitch <angle>` Sets the sun's inclination angle above the horizon.
+* `sunlightyaw <angle>` Sets the yaw angle (about z axis) of the sunlight.
+* `sunlightscale <scale>` Sets the intensity scale of the sunlight.
