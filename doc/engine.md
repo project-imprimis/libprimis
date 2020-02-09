@@ -645,3 +645,22 @@ complete obscurance, which is set by the `fogcullintensity` variable.
 * `fogcolor <color>` The color of the fog, as a hex color.
 * `fogcullintensity <scale>` The intensity by which fog culls entity rendering.
 * `fogintensity <scale>` The fog effect intensity (lower values -> more fog).
+* `fogoverlay`
+
+### 2.4.3 Ambient Lighting
+
+The cheapest type of global lighting, changing the ambient light level for the
+map makes everything at least as bring as the set ambient level. This reduces
+contrast however and makes the shadows less deep, so generally using at least
+global illumination combined with sunlight is preferable whenever possible to
+high ambient settings. A little ambient, however, is advisible to make the scene
+not pitch dark anywhere.
+
+Ambient lighting does not require shading resources like sunlight or point
+lights and so is not a performance issue like the other types of lighting can
+be.
+
+#### Commands
+
+* `ambient` Hex color for ambient color, typically dimmer than `0x333333`
+* `ambientscale` Multiplier for ambient color (usually left at 1)
