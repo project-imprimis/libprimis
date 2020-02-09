@@ -88,6 +88,17 @@ passed as a set of three paramaters `R G B` where `1.0 1.0 1.0` is 0xFFFFFF.
 These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
 upwards as much as downwards in practice.
 
+The world has a set of observer-indepenent coordinates, with 0 degrees set as
+world north. As with standard cardinal directions, 90 degrees is East, 180 is
+South, and 270 degrees is West. The pitch angle, when relevant, is measured as
+an inclination (the horizon is at 0 degrees and straight up is 90 degrees);
+angles count clockwise such that an observer rotating from N to E increases
+their yaw angle by 90 degrees (as with E -> S, S -> W, etc.).
+
+Octree nodes, in particular, are always positive and the origin is located at
+the bottom northwest corner of the map; the coordinates count upwards as you
+move more southerly or easterly from that point.
+
 # 2. World
 
 ## 2.1 Octree Geometry
@@ -664,3 +675,40 @@ be.
 
 * `ambient` Hex color for ambient color, typically dimmer than `0x333333`
 * `ambientscale` Multiplier for ambient color (usually left at 1)
+
+### 2.4.4 Skybox
+
+The skybox is a static rendering of a scene surrounding the map which provides
+a backdrop to the level. The skybox is a cubemap, a type of environment
+projection wherein the viewable area around a point (a full sphere) is seperated
+and projected onto the six faces on a cube. The cubemap projection is
+particularly convenient for its simplicity of projection for the engine and its
+relatively low distortion (as opposed to a single-face projection like Mercator)
+while remaining fairly simple to comprehend.
+
+Skyboxes in Imprimis are passed as a set of six images:
+
+* **bk**: the backside texture (normal facing south)
+* **dn**: the bottom texture (normal facing upwards)
+* **ft**: the front texture (normal facing north)
+* **lf**: the left texture (normal facing west)
+* **rt**: the right texture (normal facing right)
+* **up**: the top texture (normal facing downwards)
+
+Note that these are defined for cases in which the yaw of the skybox is 0; that
+is to say that it it has not been rotationally translated at all. Rotating the
+sky about the z-axis is possible and changes the orientation of the side faces
+of the skybox accordingly.
+
+These six textures are loaded whenever the skybox is set: setting `skybox
+foo/bar` will automatically load `foo/bar_bk`, `foo/bar_dn`, etc. as the skybox.
+Implicit in the path is the location of skyboxes in `/media/sky`.
+
+#### Commands:
+
+* `skybox <path>` Sets the path of the skybox, excluding the _XX and format.
+* `skyboxcolor <color>` Tints the skybox to the given hex color.
+* `skyboxoverbright <scale>` Controls how bright highlights in the skybox are.
+* `skyboxoverbrightmin <scale>` Sets the overbrightness overall of the skybox.
+* `skyboxoverbrightthreshhold <scale>` Sets the min brightness for highlights.
+* `yawsky <angle>` Sets the overall orientation of the skybox in the world.
