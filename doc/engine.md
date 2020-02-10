@@ -111,6 +111,17 @@ octree node is most easily represented with a corner at (0,0,0) rather than
 trying to be centered. As a result, larger maps will have their greater extent
 at larger coordinates; a smaller map will occupy the SE corner of a larger map.
 
+```
+   +z                   +z
+    |   +y               |
+    |  /                 |
+    | /                  |______+x
+    |/_____+x           /
+                       /
+                      /
+                    +y
+  LH Coordinates    RH Coordinates
+```
 
 #### 1.3.3 Colors
 
