@@ -742,7 +742,7 @@ Implicit in the path is the location of skyboxes in `/media/sky`.
 * `skyboxcolor <color>` Tints the skybox to the given hex color.
 * `skyboxoverbright <scale>` Controls how bright highlights in the skybox are.
 * `skyboxoverbrightmin <scale>` Sets the overbrightness overall of the skybox.
-* `skyboxoverbrightthreshhold <scale>` Sets the min brightness for highlights.
+* `skyboxoverbrightthreshhold <scale>` Sets min brightness for highlighting.
 * `yawsky <angle>` Sets the overall orientation of the skybox in the world.
 * `spinsky <angular vel>` Sets the rotation speed of the sky in deg/s.
 
@@ -763,7 +763,38 @@ skybox can be seen behind the cloudbox.
 #### Commands:
 
 * `cloudbox <path>` Sets the path of the cloudbox, excluding the _XX and format.
-* `cloudboxcolor` Tints the cloudbox to the given hex color.
-* `cloudboxalpha` Sets the opacity of the cloudbox (0 -> 1 for clear -> opaque).
+* `cloudboxcolor <color>` Tints the cloudbox to the given hex color.
+* `cloudboxalpha <value>` Sets the opacity of the cloudbox (0..1, 1 for opaque).
 * `yawclouds <angle>` Sets the overall orientation of the cloudbox in the world.
 * `spinclouds <angular vel>` Sets the rotation speed of the sky in deg/s.
+
+### 2.4.6 Cloud Layer
+
+Additionally, the engine supports a single planar layer of clouds. The "height"
+of this layer is adjustable, but there is no parallax regardless of height:
+moving around on the map will not change the relative position of the cloud
+layer. The cloud layer instead gains its apparent closeness from the rate at
+which low-inclination clouds become apparently smaller: lower cloud layer
+heights mean that the center is relatively larger compared to higher cloud
+layer heights. Additionally, lower cloud layers appear to extend closer to the
+horizon than higher ones.
+
+Cloud layers are, unlike the cubemap projections that cloudboxes and skyboxes
+use, able to scroll (have a translational movement with respect to time) in
+addition to being able to spin about the z-axis. This allows for somewhat
+realistic cloud movement when done in moderation.
+
+#### Commands:
+
+* `cloudalpha <value>` Sets the opacity of the cloudlayer (0..1, 1 for opaque).
+* `cloudclip <value` Sets level of clipping passed to envmap draw.
+* `cloudcolor <color>` Tints the cloudbox to the given hex color.
+* `cloudfade <value>` Sets the fade rate
+* `cloudheight <value>` Sets the apparent height of the clouds in the sky.
+* `cloudlayer <path>` Sets the path to the cloud layer, excluding extension.
+* `cloudoffsetx <value>` Sets the x offset amount, in pixels.
+* `cloudoffsety <value>` Sets the y offset amount, in pixels.
+* `cloudscale <value>` Sets the scale factor of the clouds (1 by default).
+* `cloudscrollx <value>` Sets the x scroll amount, in pixels/s.
+* `cloudscrolly <value>` Sets the y scroll amount, in pixels/s.
+* `cloudsubdiv <value>` Sets the number of edges the cloud perimeter has.
