@@ -113,14 +113,15 @@ at larger coordinates; a smaller map will occupy the SE corner of a larger map.
 
 ```
    +z                   +z
-    |   +y               |
+    |   +x               |
     |  /                 |
-    | /                  |______+x
-    |/_____+x           /
+    | /                  |______+y
+    |/_____+y           /
                        /
                       /
-                    +y
+                    +x
   LH Coordinates    RH Coordinates
+    Clockwise      Counterclockwise
 ```
 
 #### 1.3.3 Colors
