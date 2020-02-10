@@ -79,25 +79,45 @@ to retrieve the assets for the game is by the command line utility `git`.
 
 ### 1.3 Conventions and Units
 
+#### 1.3.1 Distances
+
 Distance is always in the unit of cube units ("cubits"), which is the size of a
 gridpower 0 cube, when not specified. This distance is equal to an eighth of a
 meter, 12.5 centimeters, or approximately five inches (to within a couple %).
+
+#### 1.3.2 Coordinates
+
+Octree nodes, in particular, are always positive and the origin is located at
+the bottom northwest corner of the map; the coordinates count upwards as you
+move more southerly or easterly from that point.
+
+The engine uses a **left-handed** coordinate system, which is the opposite
+chirality from typical 3D coordinate systems used in math and engineering. This
+means that the positive orientation is clockwise, and cross products follow the
+left hand rule. This makes the game's coordinates follow the compass orientation
+well and is perhaps more intuitive for those used to maps where degrees count
+clockwise, but be aware that the usual identities for right handed systems are
+mirrored in this coordinate system.
+
+Zero yaw degrees in the engine's coordinate system is facing along the +y axis;
+the +x axis is at 270 degrees (or to the left side of the y axis, hence the name
+of the coordinate system); pitch is measured as an altitude where 0 degrees is
+the horizon, the +z axis is at 90 degrees, and the -z axis is at -90 degrees.
+
+Position coordinates for valid geometry is always positive, as all cubes must be
+placed NE of the origin, located in the lower SE corner of the map. This should
+somewhat simplify coordinate calculations, but is mostly there because the root
+octree node is most easily represented with a corner at (0,0,0) rather than
+trying to be centered. As a result, larger maps will have their greater extent
+at larger coordinates; a smaller map will occupy the SE corner of a larger map.
+
+
+#### 1.3.3 Colors
 
 Colors which are defined past 0xFFFFFF (hex color for white) are generally
 passed as a set of three paramaters `R G B` where `1.0 1.0 1.0` is 0xFFFFFF.
 These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
 upwards as much as downwards in practice.
-
-The world has a set of observer-indepenent coordinates, with 0 degrees set as
-world north. As with standard cardinal directions, 90 degrees is East, 180 is
-South, and 270 degrees is West. The pitch angle, when relevant, is measured as
-an inclination (the horizon is at 0 degrees and straight up is 90 degrees);
-angles count clockwise such that an observer rotating from N to E increases
-their yaw angle by 90 degrees (as with E -> S, S -> W, etc.).
-
-Octree nodes, in particular, are always positive and the origin is located at
-the bottom northwest corner of the map; the coordinates count upwards as you
-move more southerly or easterly from that point.
 
 # 2. World
 
@@ -712,3 +732,26 @@ Implicit in the path is the location of skyboxes in `/media/sky`.
 * `skyboxoverbrightmin <scale>` Sets the overbrightness overall of the skybox.
 * `skyboxoverbrightthreshhold <scale>` Sets the min brightness for highlights.
 * `yawsky <angle>` Sets the overall orientation of the skybox in the world.
+* `spinsky <angular vel>` Sets the rotation speed of the sky in deg/s.
+
+### 2.4.5 Cloudbox
+
+The cloudbox takes a standard skybox and renders it inside the standard skybox.
+The cloudbox accepts all six standard faces that a skybox does (bk,dn,ft,lf,rt,
+up) but only renders the top face and the top half of the sides (the bottom face
+specified is not rendered). This means that for a cloudbox to be seamlessly
+integrated with the skybox, it should have a smooth transition at the horizon;
+this generally makes typical skyboxes inappropriate when pushed into the
+cloudbox role with no tweaking.
+
+The most useful way to use a cloudbox is, unsurprisingly, to simulate clouds.
+This is best accomplished by giving the cloudbox an alpha setting such that the
+skybox can be seen behind the cloudbox.
+
+#### Commands:
+
+* `cloudbox <path>` Sets the path of the cloudbox, excluding the _XX and format.
+* `cloudboxcolor` Tints the cloudbox to the given hex color.
+* `cloudboxalpha` Sets the opacity of the cloudbox (0 -> 1 for clear -> opaque).
+* `yawclouds <angle>` Sets the overall orientation of the cloudbox in the world.
+* `spinclouds <angular vel>` Sets the rotation speed of the sky in deg/s.
