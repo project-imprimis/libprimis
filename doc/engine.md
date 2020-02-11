@@ -798,3 +798,37 @@ realistic cloud movement when done in moderation.
 * `cloudscrollx <value>` Sets the x scroll amount, in pixels/s.
 * `cloudscrolly <value>` Sets the y scroll amount, in pixels/s.
 * `cloudsubdiv <value>` Sets the number of edges the cloud perimeter has.
+
+### 2.4.7 Atmo
+
+Atmo is the way that the game can create a procedural skybox such that the sky
+follows the sun's position and lights itself according to the sun's position.
+The sun (which as noted in §2.4.1 is set by sunlightpitch/sunlightyaw)
+determines the location of the atmo sun in the sky, making the atmo skybox
+always line up with the sun's position and the shadows it throws.
+
+The atmo layer can be blended with the skybox layer with `atmoalpha` and
+as such can be blended with complex scenes while still being capable of dynamic
+positioning whenever needed. Standard skyboxes with fixed light sources are
+restricted to whatever pitch the light source is placed on the skybox (though
+the skybox can be rotated about the z direction) and this limits the ability
+of sunlight to properly light a scene.
+
+Atmo takes many physical parameters which affect the simulated atmosphere that
+is created. These include the opacity of the air, the size of the planet, the
+apparent intensity of the light source, and the characteristic color of the sky.
+
+#### Commands:
+ 
+* `atmoalpha <value>` Sets the opacity of the atmo layer (0..1, 1 for opaque)
+* `atmobright <value>` Sets the overall brightness of the atmo sky.
+* `atmodensity <value>` Sets the diffusion amount of the atmo air.
+* `atmohaze <value>` Sets the scale of haze at the horizon.
+* `atmohazefade <value>` Sets the color that the horizon haze fades to.
+* `atmohazefadescale <value>` Sets the haze transition scale.
+* `atmoheight <value>` Sets the height of the horizon atmospheric effect.
+* `atmoplanetsize <value>` Sets the hardness of the atmo transition.
+* `atmosundiskbright <value>` Sets the brightness of the atmo sun.
+* `atmosundisksize <value>` Sets the diameter of the atmo sun.
+* `atmosunlight <value>` Sets the color of the atmo sun & overall sky color.
+* `atmosunlightscale <value>` Sets the ratio of the sunlight brightness vs atmo.
