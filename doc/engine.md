@@ -18,32 +18,41 @@ to explain how the game is implemented.
 * 2.2 Materials
 * 2.3 Textures
 * 2.4 Global Properties
-* 2.5 Actors
-* 2.6 Physics
-* 2.7 Static Entities
-* 2.8 Projectiles
 
-#### 3. Render
-* 3.1 Texturing and Shading
-* 3.2 Transparency
-* 3.3 Screenspace Postfx
-* 3.4 Antialiasing
+#### 3. Entities
+* 3.1 Actors
+* 3.2 Static Entities
+* 3.3 Projectiles
+* 3.4 Particles
+* 3.5 Physics
 
-#### 4. Netcode
-* 4.1 Server
-* 4.2 Client
-* 4.3 AI
+#### 4. Sound
+* 4.1 Sound Interface
+* 4.2 HUD Sounds
+* 4.3 World Sounds
 
-#### 5. User and System Interfaces
-* 5.1 Menus
-* 5.2 Hudgun
-* 5.3 File I/O & Assets
-* 5.4 Console
+#### 5. Render
+* 5.1 Texturing
+* 5.2 Lighting
+* 5.3 Transparency
+* 5.4 Screenspace Postfx
+* 5.5 Antialiasing
 
-#### 6. Game Implementation
-* 6.1 Weapons
-* 6.2 Game Variables
-* 6.3 Modes
+#### 6. Netcode
+* 6.1 Server
+* 6.2 Client
+* 6.3 AI
+
+#### 7. User and System Interfaces
+* 7.1 Menus
+* 7.2 Hudgun
+* 7.3 File I/O & Assets
+* 7.4 Console
+
+#### 8. Game Implementation
+* 8.1 Weapons
+* 8.2 Game Variables
+* 8.3 Modes
 
 # 1. Standards
 
