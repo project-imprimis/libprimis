@@ -20,8 +20,8 @@ to explain how the game is implemented.
 * 2.4 Global Properties
 
 #### 3. Entities
-* 3.1 Actors
-* 3.2 Static Entities
+* 3.1 Static Entities
+* 3.2 Actors
 * 3.3 Projectiles
 * 3.4 Particles
 * 3.5 Physics
@@ -141,6 +141,16 @@ These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
 upwards as much as downwards in practice.
 
 # 2. World
+
+The *world* is the name for the level that the game is played on, including the
+octree geometry, materials, and cloud/skyboxes. The world does include the
+static entities as well which are placed upon it, but those are instead
+described in the third chapter, which covers entities and actors in more detail.
+
+The world's biggest feature is the octal tree that makes up the primary level
+geometry. This geometry has the advantage of being easily occludable and simple
+to modify on the fly, as opposed to models which are placed on the world as
+static entities.
 
 ## 2.1 Octree Geometry
 
@@ -841,3 +851,23 @@ apparent intensity of the light source, and the characteristic color of the sky.
 * `atmosundisksize <value>` Sets the diameter of the atmo sun.
 * `atmosunlight <value>` Sets the color of the atmo sun & overall sky color.
 * `atmosunlightscale <value>` Sets the ratio of the sunlight brightness vs atmo.
+
+# 3. Entities
+
+## 3.1 Static Entities
+
+The static entities are world elements which get saved to the level and are
+loaded on game start. These entities have the following types:
+
+* light: a point light source
+* mapmodel: a contained piece of geometry
+* playerstart: a location where players spawn from
+* envmap: a point where the engine captures an environment map
+* particles: a location where the engine generates dynamic particles
+* sound: a point sound source
+* spotlight: a linkable modifier for light entities
+* decal: texture application onto a geometry face
+* teleport: a location that moves the player to a teledest
+* teledest: the output location of a teleporter
+* jumppad: object that pushes actors around
+* flag: flag for capture-the-flag gameplay
