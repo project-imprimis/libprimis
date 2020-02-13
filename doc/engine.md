@@ -871,3 +871,59 @@ loaded on game start. These entities have the following types:
 * teledest: the output location of a teleporter
 * jumppad: object that pushes actors around
 * flag: flag for capture-the-flag gameplay
+
+### 3.1.1 Lights
+
+Lights are entities where light appears to eminate from. Lights are point
+entities and the light they cast is as from a perfect point source. Because
+the engine is deferred and dynamically lit, light counts are one of the largest
+influencers of performance, and the engine automatically occludes lights by a
+tile-based algorithm to not render those lights which do not contribute to the
+scene. Light entities' performance is highly related to its radius, and
+therefore use of large light entities for bulk lighting is not recommended and
+use of sunlight and global illumination is recommended in its place.
+
+Light entities do not benefit from the enhancements that screenspace ambient
+occlusion and global illumination have on the sunlight, as these features are
+too expensive to enable on a light-by-light basis. For similar reasons, only
+point lights are supported, as it is in fact *very difficult* to create lights
+with configurations more complex than ideal point radiators.
+
+As lights are one of the key cogs of the deferred renderer used in Imprimis,
+a more technical discussion of their behavior with respect to the rendering
+pipeline can be found in that section.
+
+#### Attributes
+
+Lights have five attributes, the last of which itself has a set of flags
+which control the light's technical behavior.
+
+#### 0 `radius`
+The maximum distance the light entity can cast light; strongly related to
+performance impact of the light and shadow map usage
+
+The radius of the light is, as with other distances, defined in cubits.
+
+#### 1 `red`
+
+The intensity of the red channel of the light's output. Nominally, 255 is "full"
+red, but this can be exceeded for an overbright light.
+
+#### 2 `green`
+
+The intensity of the green channel of the light's output. Nominally, 255 is
+"full" green, but this can be exceeded for an overbright light.
+
+#### 3 `blue`
+
+The intensity of the blue channel of the light's output. Nominally, 255 is
+"full" blue, but this can be exceeded for an overbright light.
+
+#### 4 `flags`
+
+Lights support four flags which can be combined to achieve particular effects.
+
+* 1 `noshadow`: treats geometry/models as transparent, allowing light through
+* 2 `static`: disables shadow map updates, causing static shadows
+* 4 `volumetric`: simulates light reflection off of dust in the air
+* 8 `nospec`: disables specular highlights
