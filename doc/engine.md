@@ -872,6 +872,25 @@ loaded on game start. These entities have the following types:
 * jumppad: object that pushes actors around
 * flag: flag for capture-the-flag gameplay
 
+Entities themselves are point objects which can be placed at any arbitrary
+location within the level. Their effects generally extend to a radius beyond
+just the point that the occupy, including defined radii for entities like lights
+or envmaps or simply having a defined structure as mapmodels do. Entities are
+always themselves static on the level and do not move unless manipulated by an
+editor; however they can have dynamic effects which may make them appear to
+move.
+
+Entities in Imprimis all have five attributes each, though not all attributes
+are necessarily defined for a given model. The consistency of ent attributes is
+designed to make user interface design as straightforward as possible such that
+complex dynamic methods for menus are not necessary to edit entities.
+
+There is no practical limit to the quantity of entities a level can have; for
+many common types of entities, performance concerns make any physical limit
+moot. There exists issues with very excessive numbers of lights overfilling the
+light buffer or very excessive numbers of sounds causing sound issues, but these
+are not a concern until the level is already unplayable.
+
 ### 3.1.1 Lights
 
 Lights are entities where light appears to eminate from. Lights are point
