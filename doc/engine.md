@@ -808,7 +808,7 @@ realistic cloud movement when done in moderation.
 * `cloudalpha <value>` Sets the opacity of the cloudlayer (0..1, 1 for opaque).
 * `cloudclip <value` Sets level of clipping passed to envmap draw.
 * `cloudcolor <color>` Tints the cloudbox to the given hex color.
-* `cloudfade <value>` Sets the fade rate
+* `cloudfade <value>` Sets the fade rate of the cloudbox.
 * `cloudheight <value>` Sets the apparent height of the clouds in the sky.
 * `cloudlayer <path>` Sets the path to the cloud layer, excluding extension.
 * `cloudoffsetx <value>` Sets the x offset amount, in pixels.
@@ -817,6 +817,8 @@ realistic cloud movement when done in moderation.
 * `cloudscrollx <value>` Sets the x scroll amount, in pixels/s.
 * `cloudscrolly <value>` Sets the y scroll amount, in pixels/s.
 * `cloudsubdiv <value>` Sets the number of edges the cloud perimeter has.
+* `spincloudlayer <value>` Sets the spin rate of the clouds in the CW direction.
+* `yawcloudlayer <value>` Sets the yaw angle of the cloud layer.
 
 ### 2.4.7 Atmo
 
