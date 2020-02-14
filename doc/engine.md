@@ -1003,3 +1003,27 @@ the identity point is at 100 (100 is "normal" scale) as opposed to 1 for many
 other engine features; this is because the arguments passed to entities are
 always integers (and obviously setting 1 as unity w/ only integral steps would
 be not quite optimal).
+
+### 3.1.3 Playerstarts
+
+The playerstarts define where players respawn after they are killed.
+Unsurprisingly, playerstarts have a team associated with them which determines
+the group of players who are allowed to spawn there; team spawns only can spawn
+the players belonging to that team.
+
+Playerstarts have parameters which define the orientation of players who spawn
+at them. The playerstart entity has only two relevant parameters; the last three
+attributes have no effect on the behavior of the entity.
+
+#### Parameters
+
+#### 0 `team`
+
+0 for FFA, 1/2 for teams blue and red respectively. Available spawns for any
+arbitrary player are limited to playerstarts who share the same team index.
+
+#### 1 `yaw`
+
+The yaw (azimuthal) angle of the player when they spawn, in left-handed
+(clockwise) degrees. Setting the yaw of the playerstart is important to prevent
+players from spawning facing the wrong way, such as towards a wall.
