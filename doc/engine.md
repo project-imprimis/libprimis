@@ -946,3 +946,58 @@ Lights support four flags which can be combined to achieve particular effects.
 * 2 `static`: disables shadow map updates, causing static shadows
 * 4 `volumetric`: simulates light reflection off of dust in the air
 * 8 `nospec`: disables specular highlights
+
+### 3.1.2 Mapmodels
+
+Mapmodels are entities which represent a 3D model. While this object can be
+animated (e.g. a fan or reciprocating device) it cannot undergo reactive or
+scripted behavior and the entity itself remains at one point at all times.
+
+Mapmodels are usually supplied in the md3 (Quake III), obj (Wavefront), or iqm
+(Inter-Quake Model) formats; they additionally need one or more u,v maps (UV
+maps) to define their surface normals, speculars, and specularity. Unlike level
+geometry, mapmodels do not support parallax mapping.
+
+Mapmodels in Imprimis have support for hitboxes which closely mirror that of the
+physical model; however, mapmodels do not support decals and as a result weapons
+hitting mapmodels do not leave bullet marks like ordinary geometry does.
+
+#### Parameters
+
+Mapmodels have controllable paramaters for their size and orientation; the
+particular mapmodel to be used is given by an index. Note that the possession of
+only three degrees of freedom means that the model can become gimbal locked if
+orientation values are chosen poorly.
+
+#### 0 `index`
+
+Selects the index of the passed models which are loaded into the map to display.
+As usual, this index begins at 0 and counts upwards; the engine will simply
+display nothing if there is no valid model at the index.
+
+Mapmodels are generally defined in map configuration files and therefore the
+specific model assigned to each index is not enforced game-wide.
+
+#### 1 `yaw`
+
+The yaw (azimuthal) angle of the model, in left-handed (clockwise) degrees.
+Values larger than 360 can be passed but are identical to passing in their
+modulus 360.
+
+#### 2 `pitch`
+
+The pitch (altitude) angle of the model, expressed as an inclination from the
+horizon. Negative values can be used to pitch the model towards the -z axis.
+
+#### 3 `roll`
+
+The roll angle of the model, expressed as a right-handed rotation about the
+axis set by the `pitch`/`roll` parameters.
+
+#### 4 `scale`
+
+The scale factor of the model. Scaling is always isotropic (no distortion) and
+the identity point is at 100 (100 is "normal" scale) as opposed to 1 for many
+other engine features; this is because the arguments passed to entities are
+always integers (and obviously setting 1 as unity w/ only integral steps would
+be not quite optimal).
