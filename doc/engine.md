@@ -1028,7 +1028,45 @@ The yaw (azimuthal) angle of the player when they spawn, in left-handed
 (clockwise) degrees. Setting the yaw of the playerstart is important to prevent
 players from spawning facing the wrong way, such as towards a wall.
 
-### 3.1.4 Particles
+### 3.1.4 Envmaps
+
+Envmaps (short for environment maps) are entities that are used by the renderer
+in order to simulate specular reflection originating from surrounding features.
+Environment maps do not require realtime calculation, making them relatively
+inexpensive to render, but due to their large memory footprint (the game saves
+six textures representing a cubemap for each envmap point), the physical envmap
+points need to be placed by the mapper.
+
+Environment maps have no effect unless textures within its radius have the `env`
+shader enabled in their configuration; this means that standard textures have no
+reflection unless specifically enabled to do so. Typical candidates for enabling
+environment mapping include glass and metallic surfaces.
+
+As environment maps are statically calculated, they are required to be refreshed
+manually in order to get them to display properly if they have been moved since
+map load. To do this, the `recalc` command is recommended.
+
+
+#### Commands
+
+`envmapbb <boolean>` Toggles envmaps' bounding regions between spherical/square.
+`envmapsize <n>` (user setting) Sets texture size for envmaps; edge length 2^n.
+`envmapradius <value>` Sets the default radius of an envmap.
+
+#### Parameters
+
+There is only one parameter for environment maps which is not ignored: the radius
+setting controlling the distance at which the envmap has an effect.
+
+#### 0: `radius`
+
+The `radius` parameter sets the range at which the envmap affects geometry
+rendering. If `envmapbb = 1` then this determines half of the edge length of the
+bounding box which determines members of the envmap; if `envmapbb = 0` then this
+value simply sets the radius of the sphere which bounds textures to be
+envmapped.
+
+### 3.1.5 Particles
 
 The six types of implemented particles use their five attributes differently.
 As a result, this section is has its last four parameters' descriptions
