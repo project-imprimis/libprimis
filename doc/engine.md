@@ -55,10 +55,13 @@ to explain how the game is implemented.
 * 8.3 Modes
 
 # 1. Standards
+---
 
 ## 1.1 Coding Standards
+---
 
 ### 1.1.1 This File
+---
 
 This file is written to be interpreted by GitHub Flavored Markdown (GFM) and
 must satisfy the standards laid out therein.
@@ -68,18 +71,22 @@ Text should institute a line break after 80 characters.
 Chapters use `#`; sections use `##`; subsections use `###`.
 
 ### 1.1.2 C/C++ Standards
+---
 
 Four spaces per indentation, spaces only.
 Opening brackets get their own new line.
 
 ## 1.2 Default Paths & Libraries
+---
 
 ### 1.2.1 Paths
+---
 
 Linux: `~/.imprimis` is the "home" directory by default.
 Windows: `~/My Games/Imprimis` is the "home" directory by default.
 
 ### 1.2.2 Libraries
+---
 
 This game requires `libsdl2, libsdl2-mixer, libsdl2-image` to run, including the
 `-dev` versions for those package managers which elect to seperate them if
@@ -87,14 +94,17 @@ compiling the game. As the main way of getting the game is via Git, the best way
 to retrieve the assets for the game is by the command line utility `git`.
 
 ### 1.3 Conventions and Units
+---
 
 #### 1.3.1 Distances
+---
 
 Distance is always in the unit of cube units ("cubits"), which is the size of a
 gridpower 0 cube, when not specified. This distance is equal to an eighth of a
 meter, 12.5 centimeters, or approximately five inches (to within a couple %).
 
 #### 1.3.2 Coordinates
+---
 
 Octree nodes, in particular, are always positive and the origin is located at
 the bottom northwest corner of the map; the coordinates count upwards as you
@@ -134,6 +144,7 @@ at larger coordinates; a smaller map will occupy the SE corner of a larger map.
 ```
 
 #### 1.3.3 Colors
+---
 
 Colors which are defined past 0xFFFFFF (hex color for white) are generally
 passed as a set of three paramaters `R G B` where `1.0 1.0 1.0` is 0xFFFFFF.
@@ -141,6 +152,7 @@ These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
 upwards as much as downwards in practice.
 
 # 2. World
+---
 
 The *world* is the name for the level that the game is played on, including the
 octree geometry, materials, and cloud/skyboxes. The world does include the
@@ -153,8 +165,10 @@ to modify on the fly, as opposed to models which are placed on the world as
 static entities.
 
 ## 2.1 Octree Geometry
+---
 
 ### 2.1.1 Octree Data Structure & Cube Geometry
+---
 
 Imprimis stores its data in an octal tree, in which each cube of edge length *l*
 is divided into eight cubes with edge length *l*/2. This allows for a level to
@@ -183,6 +197,7 @@ vector from the origin, a cube's place in the octal tree determines its
 location.
 
 ### 2.1.2 Cube Manipulation
+---
 
 While octree subdivision allows for the inclusion of small pieces of geometry,
 this is not on its own adequate due to the fact that octree nodes are, well,
@@ -213,6 +228,7 @@ geometry is to increase the octree node density (by using a smaller gridpower).
 For more information on texture projection, see §2.3.3.
 
 ### 2.1.3 Remipping and Subdivision
+---
 
 #### Subdivision
 
@@ -240,6 +256,7 @@ textured.
 `maxmerge N`: sets the maximum merge gridpower to N
 
 ## 2.2 Materials
+---
 
 There are several materials in Imprimis which are capable of modifying their
 volume's properties. Materials in general are combinable (though there are many
@@ -274,6 +291,7 @@ volume; clipping keeps players out while letting particles through, and noclip
 keeps geometry from hampering the travel of projectiles and players.
 
 ### 2.2.1 Air
+---
 
 Air, the name for the lack of materials, unsurprisingly is the default
 "material" for the level. Air can be "placed" by `/editmat air` or `/air`
@@ -284,6 +302,7 @@ The name "air" does not imply that there is any oxygen mechanics in the game
 and there is no material representing the lack of air.
 
 ### 2.2.2 Water
+---
 
 Water, the material with the largest change with respect to prior engines, has
 four types that can be modified seperately to apply in different situations
@@ -329,6 +348,7 @@ do.
 * `watersubdiv`
 
 ### 2.2.3 Glass
+---
 
 Another one of the four-variant materials, and the second most interesting
 (after water) with respect to engine features, glass is a cheap and effective
@@ -357,6 +377,7 @@ will automatically place clip wherever glass is placed.
 * `glass<N>refract`
 
 ### 2.2.4 Lava
+---
 
 The third and final four-variant material, lava offers an animated and solid
 liquid surface that kills all who enter it. This is actually not a property of
@@ -378,6 +399,7 @@ reflections); it is therefore advisable to use water in its place if practical.
 * `lava<N>spec`
 
 ### 2.2.5 Clip
+---
 
 An entirely transparent material, clip, unlike the materials prior, does not
 affect the rendering of the scene in any way. Clip, instead, impedes the ability
@@ -394,6 +416,7 @@ If it is required that projectiles be deleted upon contact, using death material
 in tandem with clip is a viable solution.
 
 ### 2.2.6 Noclip
+---
 
 The opposite material to clip (unsurprisingly), noclip instead permits the
 passage of actors through otherwise impenetrable geometry. Noclip additionally
@@ -411,6 +434,7 @@ that there is no unseemly visibility issues (where you can see through the wall)
 that would break immersion.
 
 ### 2.2.7 Death
+---
 
 Death material forces the suicide of those players who enter its bounds,
 instantly killing them. Death material is automatically applied wherever lava
@@ -425,6 +449,7 @@ the bottom of the map automatically are killed. No such effect takes place on
 the sides or top of the map volume.
 
 ### 2.2.8 No GI
+---
 
 No GI material flags its volume as not being lit by global illumination. This
 does not have a material impact (or improvement) in performance but may be
@@ -435,6 +460,7 @@ be lit regardless of their No GI status. Keep this in mind whenever placing
 long-distance radiance hints.
 
 ### 2.2.9 Alpha
+---
 
 Alpha material is the more versatile but slower companion to glass for the
 creation of transparency. Alpha material draws cube geometry within its bounds
@@ -452,6 +478,7 @@ typical transparent objects like windows generally have constant opacity across
 their full area.
 
 ## 2.3 Textures
+---
 
 The faces of cubes within the game can be given textures on a cube face by cube
 face basis, allowing for immersive, complete scenes to be generated via cube
@@ -472,6 +499,7 @@ information for invisible geometry. For this reason, there is a command
 * `fixinsidefaces [vslot]` Sets all invisible faces to the vslot given.
 
 ### 2.3.1 Texture Slots
+---
 
 Textures are registered to a file that accompanies the map, generally named
 the same as the map file and with the `.cfg` extension. Texture slots are for
@@ -511,6 +539,7 @@ These definitions of textures are largely set beforehand and then called with
 textures have only a couple of possible appropriate shader combinations anyways.
 
 ### 2.3.2 Virtual Slots
+---
 
 Virtual slots encode simple manipulation of textures, such as coloration, scale,
 rotation, and orientation. These do not require declaration upon map generation
@@ -523,6 +552,7 @@ The modifications that a vslot can store are described below in the V-command
 section.
 
 ### 2.3.3 Texture Projection
+---
 
 The standard scaling of textures is such that there are 512 linear pixels per
 gridpower 5 cube, leading to a density of 512/32 = 16 pixels per power 0 cube
@@ -546,6 +576,7 @@ be projected in three different directions such that the true normal caused by
 the distorted cube can be found accurately.
 
 ### 2.3.4 Texture Slot Properties
+---
 
 The V-commands are a set of texture modification commands that allow for
 textures to be flipped, rotated, scaled, tinted, and offset as necessary.
@@ -659,6 +690,7 @@ this is usually too large for common scrolling objects (like banners or
 conveyor belts) and as such fractional values here are most commonly employed.
 
 ## 2.4 Global Properties
+---
 
 The world in Imprimis has many global variables that affect the entire level
 evenly. These include ambient lighting, fog, and skybox settings, as well as
@@ -666,6 +698,7 @@ more technical aspects such as mipping intensity. This section does not include
 the global settings for individual materials, as is covered in §2.2.
 
 ### 2.4.1 Sunlight
+---
 
 Sunlight, the cheapest form of bulk lighting in the game, is a dynamic light
 which casts shadows like any other light, but from a projection at infinity.
@@ -689,6 +722,7 @@ color, and location.
 * `sunlightscale <scale>` Sets the intensity scale of the sunlight.
 
 ### 2.4.2 Fog
+---
 
 *Note: This is entirely distinct from the *fogdome*, a sky property.*
 
@@ -710,6 +744,7 @@ complete obscurance, which is set by the `fogcullintensity` variable.
 * `fogoverlay`
 
 ### 2.4.3 Ambient Lighting
+---
 
 The cheapest type of global lighting, changing the ambient light level for the
 map makes everything at least as bring as the set ambient level. This reduces
@@ -728,6 +763,7 @@ be.
 * `ambientscale` Multiplier for ambient color (usually left at 1)
 
 ### 2.4.4 Skybox
+---
 
 The skybox is a static rendering of a scene surrounding the map which provides
 a backdrop to the level. The skybox is a cubemap, a type of environment
@@ -766,6 +802,7 @@ Implicit in the path is the location of skyboxes in `/media/sky`.
 * `spinsky <angular vel>` Sets the rotation speed of the sky in deg/s.
 
 ### 2.4.5 Cloudbox
+---
 
 The cloudbox takes a standard skybox and renders it inside the standard skybox.
 The cloudbox accepts all six standard faces that a skybox does (bk,dn,ft,lf,rt,
@@ -788,6 +825,7 @@ skybox can be seen behind the cloudbox.
 * `spinclouds <angular vel>` Sets the rotation speed of the sky in deg/s.
 
 ### 2.4.6 Cloud Layer
+---
 
 Additionally, the engine supports a single planar layer of clouds. The "height"
 of this layer is adjustable, but there is no parallax regardless of height:
@@ -821,6 +859,7 @@ realistic cloud movement when done in moderation.
 * `yawcloudlayer <value>` Sets the yaw angle of the cloud layer.
 
 ### 2.4.7 Atmo
+---
 
 Atmo is the way that the game can create a procedural skybox such that the sky
 follows the sun's position and lights itself according to the sun's position.
@@ -840,7 +879,7 @@ is created. These include the opacity of the air, the size of the planet, the
 apparent intensity of the light source, and the characteristic color of the sky.
 
 #### Commands:
- 
+
 * `atmoalpha <value>` Sets the opacity of the atmo layer (0..1, 1 for opaque)
 * `atmobright <value>` Sets the overall brightness of the atmo sky.
 * `atmodensity <value>` Sets the diffusion amount of the atmo air.
@@ -855,8 +894,10 @@ apparent intensity of the light source, and the characteristic color of the sky.
 * `atmosunlightscale <value>` Sets the ratio of the sunlight brightness vs atmo.
 
 # 3. Entities
+---
 
 ## 3.1 Static Entities
+---
 
 The static entities are world elements which get saved to the level and are
 loaded on game start. These entities have the following types:
@@ -894,6 +935,7 @@ light buffer or very excessive numbers of sounds causing sound issues, but these
 are not a concern until the level is already unplayable.
 
 ### 3.1.1 Lights
+---
 
 Lights are entities where light appears to eminate from. Lights are point
 entities and the light they cast is as from a perfect point source. Because
@@ -919,28 +961,28 @@ pipeline can be found in that section.
 Lights have five attributes, the last of which itself has a set of flags
 which control the light's technical behavior.
 
-#### 0 `radius`
+#### 0: `radius`
 The maximum distance the light entity can cast light; strongly related to
 performance impact of the light and shadow map usage
 
 The radius of the light is, as with other distances, defined in cubits.
 
-#### 1 `red`
+#### 1: `red`
 
 The intensity of the red channel of the light's output. Nominally, 255 is "full"
 red, but this can be exceeded for an overbright light.
 
-#### 2 `green`
+#### 2: `green`
 
 The intensity of the green channel of the light's output. Nominally, 255 is
 "full" green, but this can be exceeded for an overbright light.
 
-#### 3 `blue`
+#### 3: `blue`
 
 The intensity of the blue channel of the light's output. Nominally, 255 is
 "full" blue, but this can be exceeded for an overbright light.
 
-#### 4 `flags`
+#### 4: `flags`
 
 Lights support four flags which can be combined to achieve particular effects.
 
@@ -950,6 +992,7 @@ Lights support four flags which can be combined to achieve particular effects.
 * 8 `nospec`: disables specular highlights
 
 ### 3.1.2 Mapmodels
+---
 
 Mapmodels are entities which represent a 3D model. While this object can be
 animated (e.g. a fan or reciprocating device) it cannot undergo reactive or
@@ -971,7 +1014,7 @@ particular mapmodel to be used is given by an index. Note that the possession of
 only three degrees of freedom means that the model can become gimbal locked if
 orientation values are chosen poorly.
 
-#### 0 `index`
+#### 0: `index`
 
 Selects the index of the passed models which are loaded into the map to display.
 As usual, this index begins at 0 and counts upwards; the engine will simply
@@ -980,23 +1023,23 @@ display nothing if there is no valid model at the index.
 Mapmodels are generally defined in map configuration files and therefore the
 specific model assigned to each index is not enforced game-wide.
 
-#### 1 `yaw`
+#### 1: `yaw`
 
 The yaw (azimuthal) angle of the model, in left-handed (clockwise) degrees.
 Values larger than 360 can be passed but are identical to passing in their
 modulus 360.
 
-#### 2 `pitch`
+#### 2: `pitch`
 
 The pitch (altitude) angle of the model, expressed as an inclination from the
 horizon. Negative values can be used to pitch the model towards the -z axis.
 
-#### 3 `roll`
+#### 3: `roll`
 
 The roll angle of the model, expressed as a right-handed rotation about the
 axis set by the `pitch`/`roll` parameters.
 
-#### 4 `scale`
+#### 4: `scale`
 
 The scale factor of the model. Scaling is always isotropic (no distortion) and
 the identity point is at 100 (100 is "normal" scale) as opposed to 1 for many
@@ -1005,6 +1048,7 @@ always integers (and obviously setting 1 as unity w/ only integral steps would
 be not quite optimal).
 
 ### 3.1.3 Playerstarts
+---
 
 The playerstarts define where players respawn after they are killed.
 Unsurprisingly, playerstarts have a team associated with them which determines
@@ -1017,18 +1061,19 @@ attributes have no effect on the behavior of the entity.
 
 #### Parameters
 
-#### 0 `team`
+#### 0: `team`
 
 0 for FFA, 1/2 for teams blue and red respectively. Available spawns for any
 arbitrary player are limited to playerstarts who share the same team index.
 
-#### 1 `yaw`
+#### 1: `yaw`
 
 The yaw (azimuthal) angle of the player when they spawn, in left-handed
 (clockwise) degrees. Setting the yaw of the playerstart is important to prevent
 players from spawning facing the wrong way, such as towards a wall.
 
 ### 3.1.4 Envmaps
+---
 
 Envmaps (short for environment maps) are entities that are used by the renderer
 in order to simulate specular reflection originating from surrounding features.
@@ -1067,6 +1112,7 @@ value simply sets the radius of the sphere which bounds textures to be
 envmapped.
 
 ### 3.1.5 Particles
+---
 
 The six types of implemented particles use their five attributes differently.
 As a result, this section is has its last four parameters' descriptions
@@ -1095,7 +1141,7 @@ unique specifications for each value passed to its first attribute `type`. This
 means that particles cannot have their `type` changed and have attributes
 consistently transfer.
 
-#### 0 `type`
+#### 0: `type`
 
 The type of particle for the game to render. There are six types implemented:
 
@@ -1139,7 +1185,7 @@ their bar color set, but the background and outline colors are fixed.
 Each of these has different parameters 1-4 and obviously shows the particle type
 aformentioned.
 
-#### 1 `radius` (fire, plasma); `dir` (smoke, water, tape); `fill` (status)
+#### 1: `radius` (fire, plasma); `dir` (smoke, water, tape); `fill` (status)
 
 For fire and plasma, the radius paramater controls how large the particle can
 be. For fire, this is the areal size; the size that the "base" of the flame
@@ -1222,7 +1268,7 @@ For a status particle, this parameter defines the particle's fullness, as a
 range between 0 and 100. At 100, the bar is full; values above this have no
 additional effect.
 
-#### 2 `color` (water, plasma, status); `size` (tape, fire); `null` (smoke)
+#### 2: `color` (water, plasma, status); `size` (tape, fire); `null` (smoke)
 
 For water, plasma, and status entities, parameter 2 specifies the particle's
 color. This is passed as a hexadecimal triple (`0x000`...`0xFFF`) which
@@ -1245,7 +1291,7 @@ fixed) and therefore rise to a greater height before fading.
 This parameter has no effect on smoke particles and any value specified will be
 ignored.
 
-#### 3 `color` (tape, fire); `null` (smoke, plasma, water, status)
+#### 3: `color` (tape, fire); `null` (smoke, plasma, water, status)
 
 Tape has its color parameter on the third attribute, and it works in the same
 hexadecimal triple form as the above explaination of color for the other
@@ -1256,7 +1302,7 @@ None of the other entities take this attribute into account and setting a value
 for any of them will be ignored.
 
 
-#### 4 `null` (fire, plasma, smoke, status, water); `fade` (tape)
+#### 4: `null` (fire, plasma, smoke, status, water); `fade` (tape)
 
 Only tape particles take this parameter into account; fade sets the time in
 milliseconds for the particle to delete itself once it has been spawned. Tape
