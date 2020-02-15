@@ -1027,3 +1027,205 @@ arbitrary player are limited to playerstarts who share the same team index.
 The yaw (azimuthal) angle of the player when they spawn, in left-handed
 (clockwise) degrees. Setting the yaw of the playerstart is important to prevent
 players from spawning facing the wrong way, such as towards a wall.
+
+### 3.1.4 Particles
+
+The six types of implemented particles use their five attributes differently.
+As a result, this section is has its last four parameters' descriptions
+seperated into sections by the type of particle in use (which is set by
+parameter 0 `type`).
+
+Particles do not collide with players or are dynamically manipulated by physics;
+they are, however, culled upon collision with cube geometry to minimize wasteful
+rendering of particles which cannot be seen.
+
+Particles are billboards, meaning that they are 2d objects which always have
+their normal vector pointed at the camera. For this reason, particles'
+orientation is determined by the camera, not the scene, and for objects that are
+usually anisotropic (like fire, which only makes sense in one direction), this
+approximation can yield some poor results. For this reason, maximum particle
+size is generally kept fairly small to prevent the obviousness of billboarding.
+
+Additionally, particles are client side effects, meaning that one person's view
+of a particle is not representative of the effect rendered on other people's
+machines.
+
+#### Parameters
+
+Easily the most complex entity with respect to its parameters, particles have
+unique specifications for each value passed to its first attribute `type`. This
+means that particles cannot have their `type` changed and have attributes
+consistently transfer.
+
+#### 0 `type`
+
+The type of particle for the game to render. There are six types implemented:
+
+* 0 fire
+* 1 smoke
+* 2 water
+* 3 plasma
+* 4 tape
+* 5 status
+
+Fire particles create a vertical plume of fire, with customizable footprint,
+particle size/total height, and color. Fire particles also have nonoptional
+smoke which appears at the top of the plume.
+
+Smoke particles create a slightly directional gray cloud of smoke, with a
+direction selectable along six directions (the three coordinate axis directions
+and their negatives). Smoke cannot have its color changed, and is always a
+moderate shade of gray.
+
+Water particles create a small fountain effect which can, like smoke, have its
+direction selectable from the aformentioned six directions. Water can have its
+color changed to suit the liquid being represented, but the physics of the
+particle movement are fixed except for their orientation.
+
+Plasma particles are a large, brightly colored ball of gas which hovers about
+the entity point. Unlike other particles, plasma does not spawn in multitudes
+and then fade; it remains a hovering entity at all times, with its only
+variation being a pulsing effect.
+
+Tape particles are a raylike particle type that creates light beams along a
+specified direction. While they are restricted to the same six directions as
+water and smoke, there is a large variety of modes which they can occupy for
+each direction, including plane, sphere, cone, circle, and ray configurations.
+
+Status particles display a billboard displaying a bar which can be configured
+to be filled between 1 and 100. Through scripting, it is possible to dynamically
+change this value (by manually editing the entity attributes e.g.) to make it
+dynamically display some desired gameplay aspect. Status particles can have
+their bar color set, but the background and outline colors are fixed.
+
+Each of these has different parameters 1-4 and obviously shows the particle type
+aformentioned.
+
+#### 1 `radius` (fire, plasma); `dir` (smoke, water, tape); `fill` (status)
+
+For fire and plasma, the radius paramater controls how large the particle can
+be. For fire, this is the areal size; the size that the "base" of the flame
+occupies. This area is always a perfect square (meaning many entities are
+required for a potential rectangular shape).
+
+Likewise, for plasma, this parameter controls the radius of the sphere bounded
+by the plasma effect.
+
+For smoke, water, and tape, this parameter defines the orientation of the
+particle. Only tape takes into account values above 5 or the directionality of
+the particle; water and smoke are restricted to "ray" type configurations only.
+
+The lowest valid index for each particle configuration is listed in the table
+below:
+
+* The value is the number put in the `type` attribute of the entity.
+* The type is the geometrical shape of the configuration.
+* The orientation describes the way the whole configuration points.
+* The direction is the orientation of individual rays relative to the origin.
+
+| Value | Type       | Orientation | Direction |
+|-------|------------|-------------|-----------|
+| 0     | Ray        | +z          | Away      |
+| 1     | Ray        | +x          | Away      |
+| 2     | Ray        | +y          | Away      |
+| 3     | Ray        | -z          | Away      |
+| 4     | Ray        | -x          | Away      |
+| 5     | Ray        | -y          | Away      |
+| 256   | Circle     | xy plane    | Away      |
+| 257   | Circle     | yz plane    | Away      |
+| 258   | Circle     | xz plane    | Away      |
+| 259   | Ring       | +z          | Normal    |
+| 260   | Ring       | +x          | Normal    |
+| 261   | Ring       | +y          | Normal    |
+| 262   | Cone       | +z          | Away      |
+| 263   | Cone       | +x          | Away      |
+| 264   | Cone       | +y          | Away      |
+| 265   | Cone       | -z          | Away      |
+| 266   | Cone       | -x          | Away      |
+| 267   | Cone       | -y          | Away      |
+| 268   | Plane      | +z          | Normal    |
+| 269   | Plane      | +x          | Normal    |
+| 270   | Plane      | +y          | Normal    |
+| 271   | Line       | xz (+z)     | Away      |
+| 272   | Line       | xy (+x)     | Away      |
+| 273   | Line       | yz (+y)     | Away      |
+| 274   | Line       | yz (+z)     | Away      |
+| 275   | Line       | xz (+x)     | Away      |
+| 276   | Line       | xy (+y)     | Away      |
+| 277   | Sphere     | +z          | Away      |
+| 278   | Sphere     | +x          | Away      |
+| 279   | Sphere     | +y          | Away      |
+| 288   | Circle     | xy plane    | Towards   |
+| 289   | Circle     | yz plane    | Towards   |
+| 290   | Circle     | xz plane    | Towards   |
+| 291   | Ring       | -z          | Normal    |
+| 292   | Ring       | -x          | Normal    |
+| 293   | Ring       | -y          | Normal    |
+| 294   | Cone       | +z          | Towards   |
+| 295   | Cone       | +x          | Towards   |
+| 296   | Cone       | +y          | Towards   |
+| 297   | Cone       | -z          | Towards   |
+| 298   | Cone       | -x          | Towards   |
+| 299   | Cone       | -y          | Towards   |
+| 300   | Plane      | -z          | Normal    |
+| 301   | Plane      | -x          | Normal    |
+| 302   | Plane      | -y          | Normal    |
+| 303   | Line       | xz (+z)     | Towards   |
+| 304   | Line       | xy (+x)     | Towards   |
+| 305   | Line       | yz (+y)     | Towards   |
+| 306   | Line       | yz (+z)     | Towards   |
+| 307   | Line       | xz (+x)     | Towards   |
+| 308   | Line       | xy (+y)     | Towards   |
+| 309   | Sphere     | +z          | Towards   |
+| 310   | Sphere     | +x          | Towards   |
+| 311   | Sphere     | +y          | Towards   |
+
+For a status particle, this parameter defines the particle's fullness, as a
+range between 0 and 100. At 100, the bar is full; values above this have no
+additional effect.
+
+#### 2 `color` (water, plasma, status); `size` (tape, fire); `null` (smoke)
+
+For water, plasma, and status entities, parameter 2 specifies the particle's
+color. This is passed as a hexadecimal triple (`0x000`...`0xFFF`) which
+specifies the color of the particle to four-bit precision. While four bits per
+channel is indeed very low compared to common pictographic formats (typically
+256 colors per channel), in practice particles (which are essentially
+monochromatic) do not need a gigantic amount of distinct colors (there is
+essentially no difference between 0xF00 and 0xE00 that matters when picking a
+slab of color).
+
+For tape particles, this parameter specifies the length of each tape particle.
+This does not meaningfully affect the width of the tape particles, only its
+length, and so the only way to reduce the apparent thickness is instead by its
+`color` parameter.
+
+For fire particles, this parameter defines the height and size of the fire
+particles. Larger fire particles last proportionally longer (and this ratio is
+fixed) and therefore rise to a greater height before fading.
+
+This parameter has no effect on smoke particles and any value specified will be
+ignored.
+
+#### 3 `color` (tape, fire); `null` (smoke, plasma, water, status)
+
+Tape has its color parameter on the third attribute, and it works in the same
+hexadecimal triple form as the above explaination of color for the other
+particle types. In the same way, the color of the fire particles' flames can be
+set. The smoke that fire particles release cannot be modified.
+
+None of the other entities take this attribute into account and setting a value
+for any of them will be ignored.
+
+
+#### 4 `null` (fire, plasma, smoke, status, water); `fade` (tape)
+
+Only tape particles take this parameter into account; fade sets the time in
+milliseconds for the particle to delete itself once it has been spawned. Tape
+particles fade out gradually and do not get jarringly deleted at the specified
+time. Note that the fade out rate is a fixed ratio of the total particle
+lifetime and therefore quicker when the tape particle is set to die out
+relatively quickly.
+
+For all other particle types, this parameter can be set to any value but will be
+ignored.
