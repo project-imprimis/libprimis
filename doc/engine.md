@@ -893,6 +893,28 @@ apparent intensity of the light source, and the characteristic color of the sky.
 * `atmosunlight <value>` Sets the color of the atmo sun & overall sky color.
 * `atmosunlightscale <value>` Sets the ratio of the sunlight brightness vs atmo.
 
+### 2.4.8 Fogdome
+
+The fogdome is a sky effect (rather than one that applies to the world like
+regular fog does) and as such operates much like the `atmo` skybox. The fogdome,
+however, is simpler, and only has one overall color with intensities and limits
+set by the controlling variables below. The fogdome can be cut off at the bottom
+if desired or allowed to smoothly close, and its centering location (the area
+where the fogdome effect is strongest) can be chosen as well.
+
+The fogdome works to create a homogeneous color effect that gradually blends
+itself over the skybox or atmo layer, allowing possible matching with standard
+world fog for a seamless appearance if done carefully.
+
+#### Commands:
+
+* `fogdomecap <boolean>` Toggles enclosement of the bottom of the fogdome.
+* `fogdomeclip <value>` Sets the size at which to cut off the fogdome.
+* `fogdomecolour <color>` Sets the hex color of the fogdome.
+* `fogdomeheight <value>` Sets the height to which the fogdome is centered.
+* `fogdomemax <value>` Sets the max opacity of the fogdome (0..1, 1 is opaque).
+* `fogdomemin <value>` Sets the min opacity of the fogdome (0..1, 1 is opaque).
+
 # 3. Entities
 ---
 
