@@ -1029,9 +1029,9 @@ Mapmodels in Imprimis have support for hitboxes which closely mirror that of the
 physical model; however, mapmodels do not support decals and as a result weapons
 hitting mapmodels do not leave bullet marks like ordinary geometry does.
 
-#### Parameters
+#### Attributes
 
-Mapmodels have controllable paramaters for their size and orientation; the
+Mapmodels have controllable attributes for their size and orientation; the
 particular mapmodel to be used is given by an index. Note that the possession of
 only three degrees of freedom means that the model can become gimbal locked if
 orientation values are chosen poorly.
@@ -1059,7 +1059,7 @@ horizon. Negative values can be used to pitch the model towards the -z axis.
 #### 3: `roll`
 
 The roll angle of the model, expressed as a right-handed rotation about the
-axis set by the `pitch`/`roll` parameters.
+axis set by the `pitch`/`roll` attributes.
 
 #### 4: `scale`
 
@@ -1077,11 +1077,11 @@ Unsurprisingly, playerstarts have a team associated with them which determines
 the group of players who are allowed to spawn there; team spawns only can spawn
 the players belonging to that team.
 
-Playerstarts have parameters which define the orientation of players who spawn
-at them. The playerstart entity has only two relevant parameters; the last three
+Playerstarts have attributes which define the orientation of players who spawn
+at them. The playerstart entity has only two relevant attributes; the last three
 attributes have no effect on the behavior of the entity.
 
-#### Parameters
+#### Attributes
 
 #### 0: `team`
 
@@ -1113,21 +1113,20 @@ As environment maps are statically calculated, they are required to be refreshed
 manually in order to get them to display properly if they have been moved since
 map load. To do this, the `recalc` command is recommended.
 
-
 #### Commands
 
 `envmapbb <boolean>` Toggles envmaps' bounding regions between spherical/square.
 `envmapsize <n>` (user setting) Sets texture size for envmaps; edge length 2^n.
 `envmapradius <value>` Sets the default radius of an envmap.
 
-#### Parameters
+#### Attributes
 
 There is only one parameter for environment maps which is not ignored: the radius
 setting controlling the distance at which the envmap has an effect.
 
 #### 0: `radius`
 
-The `radius` parameter sets the range at which the envmap affects geometry
+The `radius` attribute sets the range at which the envmap affects geometry
 rendering. If `envmapbb = 1` then this determines half of the edge length of the
 bounding box which determines members of the envmap; if `envmapbb = 0` then this
 value simply sets the radius of the sphere which bounds textures to be
@@ -1137,7 +1136,7 @@ envmapped.
 ---
 
 The six types of implemented particles use their five attributes differently.
-As a result, this section is has its last four parameters' descriptions
+As a result, this section is has its last four attributes' descriptions
 seperated into sections by the type of particle in use (which is set by
 parameter 0 `type`).
 
@@ -1156,9 +1155,9 @@ Additionally, particles are client side effects, meaning that one person's view
 of a particle is not representative of the effect rendered on other people's
 machines.
 
-#### Parameters
+#### Attributes
 
-Easily the most complex entity with respect to its parameters, particles have
+Easily the most complex entity with respect to its attributes, particles have
 unique specifications for each value passed to its first attribute `type`. This
 means that particles cannot have their `type` changed and have attributes
 consistently transfer.
@@ -1204,7 +1203,7 @@ change this value (by manually editing the entity attributes e.g.) to make it
 dynamically display some desired gameplay aspect. Status particles can have
 their bar color set, but the background and outline colors are fixed.
 
-Each of these has different parameters 1-4 and obviously shows the particle type
+Each of these has different attributes 1-4 and obviously shows the particle type
 aformentioned.
 
 #### 1: `radius` (fire, plasma); `dir` (smoke, water, tape); `fill` (status)
@@ -1352,9 +1351,9 @@ Sound playback from entities does take into account location of the entity and
 therefore plays back the sound in stereo, with the sound intensity per channel
 defined by the location of the entity.
 
-#### Parameters
+#### Attributes
 
-There are two parameters for the sound entity, the index of the sound and radius
+There are two attributes for the sound entity, the index of the sound and radius
 at which it starts playing.
 
 #### 0: `index`
