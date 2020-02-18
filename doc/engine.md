@@ -1393,3 +1393,36 @@ surface for sound entities is always a simple sphere, represented in edit mode
 by a wireframe bounding indicator. At distances beyond this radius, sound
 playback from the entity is automatically rejected and the sound entity does not
 playback in any form.
+
+### 3.1.7 Spotlights
+---
+
+Spotlight entities require linking to standard entities, such as by `entlink`.
+Once attached to a light, the spotlight acts as a modifier to the light entity,
+creating a directed cone of light. The spotlight's lone attribute controls the
+spread of the cone, and the vector from the light entity to the spotlight sets
+the axis which the spotlight is oriented along. The location of the spotlight
+otherwise has no effect upon the behavior of the spotlight's cast beam.
+
+Notably, spotlights cause the light entity in question to switch from
+cubemapping to planar mapping, resulting in issues when surfaces are normal to
+the plane of the mapping (which is tangent to the point of the cone and normal
+to the axial vector); since the mapping has no detail along the normal
+direction, there exists aliasing issues along that face, and as a result large
+cone sizes which project onto faces parallel with the spotlight vector is not
+recommended.
+
+#### Attributes
+
+The lone attribute for the spotlight entity determines the spread of the cone of
+light. An implicit attribute, the position of the entity, sets the direction of
+the beam (measured relative to the location of the linked light.
+
+#### 0: `angle`
+
+This attribute sets the spread of the cone of light set by the spotlight entity.
+The overall inside angle of the cone is equal to twice the value of this
+attribute; the attribute measures the angle between the edge and center of the
+beam. This attribute is capped at 90 degrees: as a result of single-plane
+mapping, "spotlights" with a cone of light beyond 180 degrees is not
+representable with the projection.
