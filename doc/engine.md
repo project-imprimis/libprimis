@@ -1335,3 +1335,41 @@ relatively quickly.
 
 For all other particle types, this parameter can be set to any value but will be
 ignored.
+
+### 3.1.6 Sound
+---
+
+Sound entities place a static, looping sound effect at the point where the
+entity is placed. Sound entities can only have their volume modulated globally
+and by radius. Sound entities take a sound index which defines the entry in the
+engine's mapsound list which is played; this is generally set in the map's
+configuration file which is executed at map start. This sound entity is then
+triggered upon a player entering its characteristic radius, playing the set
+sound (locally) at them. Sounds are not ensured to sync perfectly across
+different clients.
+
+Sound playback from entities does take into account location of the entity and
+therefore plays back the sound in stereo, with the sound intensity per channel
+defined by the location of the entity.
+
+#### Parameters
+
+There are two parameters for the sound entity, the index of the sound and radius
+at which it starts playing.
+
+#### 0: `index`
+
+The index of the sound entity indicates to the engine which of the set sounds
+declared in the map configuration file is to be played by the entity. This index
+counts up from zero (negative values never index a valid sound) and values
+beyond the number of indexed sounds simply fail silently (heh) and no sound
+effect is played.
+
+#### 1: `radius`
+
+The radius within which the game will play the index-defined sound at the
+player. This radius, as always, is in cube units of 1/8m, and the bounding
+surface for sound entities is always a simple sphere, represented in edit mode
+by a wireframe bounding indicator. At distances beyond this radius, sound
+playback from the entity is automatically rejected and the sound entity does not
+playback in any form.
