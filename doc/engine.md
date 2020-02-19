@@ -1426,3 +1426,60 @@ attribute; the attribute measures the angle between the edge and center of the
 beam. This attribute is capped at 90 degrees: as a result of single-plane
 mapping, "spotlights" with a cone of light beyond 180 degrees is not
 representable with the projection.
+
+#### 3.1.8 Decals
+---
+
+Decals are static entities which act to project an image (specified by an index)
+onto a surface of cube geometry. The limitation to cube geometry is an important
+one, one that extends beyond just the static entity to decals in the engine at
+large; the engine is not capable of placing bullet holes or blood stains onto
+any mapmodel geometry.
+
+Decals are loaded into the map's configuration file in the same manner that
+textures are. The order in which the decals are defined sets their map-specific
+index, which is then referenced when specifying the image used by the decal
+entity.
+
+#### Attributes
+
+Decal entities have all five attributes contribute to the entity's behavior: the
+first is the decal index, declared in the map configuration, while the last four
+determine the orientation (1,2,3) and scale (4) of the decal. This is the same
+set and order of attributes used for the `mapmodel` entity.
+
+#### 0: `index`
+
+Selects the index determining which of the decals that are loaded into the map
+are to be displayed. As usual, this index begins at 0 and counts upwards; the
+engine will simply display nothing if there is no valid decal at the index.
+
+Decals are generally defined in map configuration files and therefore the
+specific decal assigned to each index is not enforced game-wide. The decal's
+index is simply allocated by the position of the decal's reference relative to
+other decal references (the first mapmodel declared in the configuration file is
+indexed 0, the second one 1, etc.).
+
+#### 1: `yaw`
+
+The yaw (azimuthal) angle of the decal, in left-handed (clockwise) degrees.
+Values larger than 360 can be passed but are identical to passing in their
+modulus 360.
+
+#### 2: `pitch`
+
+The pitch (altitude) angle of the decal, expressed as an inclination from the
+horizon. Negative values can be used to pitch the decal towards the -z axis.
+
+#### 3: `roll`
+
+The roll angle of the decal, expressed as a right-handed rotation about the
+axis set by the `pitch`/`roll` attributes.
+
+#### 4: `scale`
+
+The scale factor of the decal. Scaling is always isotropic (no distortion) and
+the identity point is at 100 (100 is "normal" scale) as opposed to 1 for many
+other engine features; this is because the arguments passed to entities are
+always integers (and obviously setting 1 as unity w/ only integral steps would
+be not quite optimal).
