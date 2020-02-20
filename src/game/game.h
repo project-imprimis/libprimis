@@ -67,18 +67,18 @@ enum
 enum                            // static entity types
 {
     NOTUSED = ET_EMPTY,         // entity slot not in use in map
-    LIGHT = ET_LIGHT,           // lightsource, attr1 = radius, attr2 = intensity
-    MAPMODEL = ET_MAPMODEL,     // attr1 = idx, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    LIGHT = ET_LIGHT,           // lightsource, attr1 = radius, attr2 = red, attr3 = green, attr4 = blue, attr5 = flags
+    MAPMODEL = ET_MAPMODEL,     // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
     PLAYERSTART,                // attr1 = angle, attr2 = team
-    ENVMAP = ET_ENVMAP,         // attr1 = radius
-    PARTICLES = ET_PARTICLES,
-    MAPSOUND = ET_SOUND,
-    SPOTLIGHT = ET_SPOTLIGHT,
-    DECAL = ET_DECAL,
-    TELEPORT,                   // attr1 = idx, attr2 = model, attr3 = tag
-    TELEDEST,                   // attr1 = angle, attr2 = idx
+    ENVMAP = ET_ENVMAP,         // attr1 = radius, attr2 = size, attr3 = blur
+    PARTICLES = ET_PARTICLES,   // attr1 = index, attrs2-5 vary on particle index
+    MAPSOUND = ET_SOUND,        // attr1 = index, attr2 = sound
+    SPOTLIGHT = ET_SPOTLIGHT,   // attr1 = angle
+    DECAL = ET_DECAL,           // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    TELEPORT,                   // attr1 = channel, attr2 = model, attr3 = tag
+    TELEDEST,                   // attr1 = yaw, attr2 = channel
     JUMPPAD,                    // attr1 = zpush, attr2 = ypush, attr3 = xpush
-    FLAG,                       // attr1 = angle, attr2 = team
+    FLAG,                       // attr1 = yaw, attr2 = team
     MAXENTTYPES,
 
     I_FIRST = 0,
