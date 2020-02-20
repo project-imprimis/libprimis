@@ -1483,3 +1483,46 @@ the identity point is at 100 (100 is "normal" scale) as opposed to 1 for many
 other engine features; this is because the arguments passed to entities are
 always integers (and obviously setting 1 as unity w/ only integral steps would
 be not quite optimal).
+
+### 3.1.9 Teleporters
+---
+
+Teleporters are entities which serve to move players, actors, and projectiles
+from within their vicinity to a linked `teledest` entity. Teleporters are not
+linked by the usual method of entity linking and instead rely on their first
+attribute to link. As teleporters are single-directional, a pair of teleporters
+are needed for two way teleportation.
+
+Teleporters additionally can have a fixed-size model rendered at their location,
+with its index set by the same means as standard mapmodels. However, this entity
+cannot be used to create models with nonstandard orientations or scales, and as
+a result using a standard mapmodel in tandem with a no-entity teleporter is
+vastly more flexible.
+
+#### Attributes
+
+Teleporters have three attributes, the first of which sets the teleporter
+channel to use (should generally be unique between pairs of teleporter/teledest
+entities). The other two control the index of the representing mapmodel and the
+team that is allowed to use the teleporter in team-based modes.
+
+#### 0: `channel`
+
+Sets the channel which the teleporter should connect to teledests through. The
+teledest will need to be of the same channel as the teleporter entity; if not,
+the teleporter entity will link to multiple teledests with predictibly
+unpredictable results.
+
+#### 1: `model`
+
+Sets the index for the mapmodel used to represent the teleporter. As with
+standard mapmodel entities, this index counts up from 0 through the number of
+entities listed in the map configuration file, and values that are negative or
+larger than are indexed in the map configuration file will not be represented.
+
+#### 2: `team`
+
+Sets the team which can use the teleporter when playing in a team mode. This
+only applies when in a team mode and is ignored otherwise. The teams are indexed
+as 0 for no restriction, 1 for just the first team (blue) and 2 for just the
+second team (red).
