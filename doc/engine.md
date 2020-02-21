@@ -1487,17 +1487,17 @@ be not quite optimal).
 ### 3.1.9 Teleporters
 ---
 
-Teleporters are entities which serve to move players, actors, and projectiles
-from within their vicinity to a linked `teledest` entity. Teleporters are not
-linked by the usual method of entity linking and instead rely on their first
-attribute to link. As teleporters are single-directional, a pair of teleporters
-are needed for two way teleportation.
+Teleporters are entities which serve to move players and actors located within
+their vicinity to a linked `teledest` entity. Teleporters are not linked by the
+usual method of entity linking and instead rely on their first attribute to
+link. As teleporters are single-directional, a pair of teleporters are needed
+for two way teleportation.
 
 Teleporters additionally can have a fixed-size model rendered at their location,
 with its index set by the same means as standard mapmodels. However, this entity
 cannot be used to create models with nonstandard orientations or scales, and as
 a result using a standard mapmodel in tandem with a no-entity teleporter is
-vastly more flexible.
+generally more flexible.
 
 #### Attributes
 
@@ -1512,6 +1512,11 @@ Sets the channel which the teleporter should connect to teledests through. The
 teledest will need to be of the same channel as the teleporter entity; if not,
 the teleporter entity will link to multiple teledests with predictibly
 unpredictable results.
+
+The teleporter entity will send a message indicating that there is `no teleport
+destination for tag N` if no valid teledest entities are connected when a player
+enters its trigger region. To remedy this, add a teledest with the same channel
+number as the teleporter entity.
 
 #### 1: `model`
 
