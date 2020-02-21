@@ -2948,6 +2948,14 @@ void clearenvmaps()
 static GLuint emfbo[3] = { 0, 0, 0 }, emtex[2] = { 0, 0 };
 static int emtexsize = -1;
 
+//generates a six-faced cubemap for a specified location
+//arguments:
+// vec &o: vec object with a world location
+// int envmapsize: size of the envmap (each map has dimensions of (2^n)x(2^n)
+// int blur: 0 for no blur, >1 for blurring
+// bool onlysky: toggles whether to calculate for world geometry (as player sees it) or just skybox
+//returns:
+// tex: cubemap texture
 GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
 {
     int rendersize = 1<<(envmapsize+aaenvmap), sizelimit = min(hwcubetexsize, min(gw, gh));
@@ -2978,7 +2986,7 @@ GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
     loopi(6)
     {
         const cubemapside &side = cubemapsides[i];
-        switch(side.target)
+        switch(side.target) //sets the six faces for which the cubemap is defined
         {
             case GL_TEXTURE_CUBE_MAP_NEGATIVE_X: // lf
                 yaw = 90; pitch = 0; break;
@@ -2993,7 +3001,7 @@ GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
             case GL_TEXTURE_CUBE_MAP_POSITIVE_Z: // up
                 yaw = 270; pitch = 90; break;
         }
-        drawcubemap(rendersize, o, yaw, pitch, side, onlysky);
+        drawcubemap(rendersize, o, yaw, pitch, side, onlysky); //send the real cubemap drawing to drawcubemap()
         copyhdr(rendersize, rendersize, emfbo[0], texsize, texsize, side.flipx, !side.flipy, side.swapxy);
         if(blur > 0)
         {
