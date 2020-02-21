@@ -1531,3 +1531,35 @@ Sets the team which can use the teleporter when playing in a team mode. This
 only applies when in a team mode and is ignored otherwise. The teams are indexed
 as 0 for no restriction, 1 for just the first team (blue) and 2 for just the
 second team (red).
+
+### 3.1.10 Teledests
+---
+
+The complement to the teleporter entity, teledests are the location where a
+player appears after going through a teleporter. Teledests need to be assigned
+to a channel with the same index as the corresponding teleporter in order to
+work; this means that a single pair of teleporter/teledest entities should be
+the exclusive members of a channel. Players and actors who enter a teleporter
+will then reappear instantaneously at the point where the teledest is placed;
+in this respect it behaves somewhat similarly to a playerstart entity.
+
+#### Attributes
+
+Teledests have two attributes, corresponding to the channel that they operate on
+and the yaw orientation of the player as they leave the teledest.
+
+#### 0: `yaw`
+
+The `yaw` attribute of the teledest sets the orientation about the z-axis where
+the player spawns. This orientation is always enforced: players coming through
+the teleporter and appearing at the teledest will always face in this yaw
+direction. As with the rest of the vectors in the game, this angle counts
+clockwise as the degrees increment.
+
+#### 1: `channel`
+
+As with the corresponding attribute in the `teleport` entity, the `channel`
+attribute sets the channel that the teledest will "listen" on to link with a
+teleporter entity. A pair of teleporter/teledest entities should have exclusive
+use of a single channel, but as there is essentially no limit on the size of the
+`channel` index, this should be of little concern.
