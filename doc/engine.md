@@ -1563,3 +1563,48 @@ attribute sets the channel that the teledest will "listen" on to link with a
 teleporter entity. A pair of teleporter/teledest entities should have exclusive
 use of a single channel, but as there is essentially no limit on the size of the
 `channel` index, this should be of little concern.
+
+### 3.1.11 Jumppads
+---
+
+Jumppad entities act to push players and actors with a velocity and direction
+specified in its attributes. Jumppads impart a velocity to the players that
+enter its physical radius, which can be any direction but are generally expected
+to be upwards (hence the name). Jumpers, in a manner somewhat similar to
+teleporters, has the option of taking a sound index which is played when the
+jumper is triggered.
+
+#### Attributes
+
+Jumppads take four attributes, the first three of which set the *components* of
+the push that is delivered when triggered, and the fourth of which optionally
+sets a sound index to be triggered when the jumppad is triggered.
+
+Use of the distance formula in three dimensions to determine overall magnitude
+may be useful: `|r| = sqrt(|x|^2 + |y|^2 + |z|^2)`. The || bars indicate to use
+the magnitudes of the x,y,z component vectors.
+
+#### 0: `z`
+
+The first ennumerated attribute component of jump direction is naturally the
+last component of the Cartesian triple, and corresponds to the vertical
+direction. This controls the extent to which the jumper pushes a player upwards.
+
+#### 1: `y`
+
+The second ennumerated attribute component of jump direction is the y-direction,
+which controls the strength of the push in the y-direction. This corresponds to
+a yaw of 0 degrees.
+
+#### 2: `x`
+
+The third ennumerated attribute component of jump direction is the x direction,
+which controls the strength of the push in the x-direction. This corresponds to
+a yaw of 90 degrees.
+
+#### 3: `sound`
+
+This attribute sets a sound that is played once when the jumppad is triggered;
+like the corresponding mapmodel option for teleporters, this attribute acts much
+like the index attribute for sound entities. The emitted sound is not otherwise
+controllable.
