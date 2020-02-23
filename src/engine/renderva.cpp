@@ -1099,8 +1099,6 @@ void batchshadowmapmodels(bool skipmesh)
     }
 }
 
-VAR(oqdist, 0, 256, 1024);
-
 struct renderstate
 {
     bool colormask, depthmask;
