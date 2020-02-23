@@ -1608,3 +1608,31 @@ This attribute sets a sound that is played once when the jumppad is triggered;
 like the corresponding mapmodel option for teleporters, this attribute acts much
 like the index attribute for sound entities. The emitted sound is not otherwise
 controllable.
+
+### 3.1.12 Flags
+---
+
+Flags are the objective point for capture-the-flag gameplay. A working CTF game
+requires that a flag for each team be placed, as it is not possible to capture
+a flag without a flag point on one's own team to return the flag to. Like the
+other player-interacting entities (jumppads, teleporters), flags do not have a
+modifiable interaction distance and is hard-set for all flag entities.
+
+It is possible to place multiple flag entities for a given team onto a map, but
+players cannot possess more than one opponent's flag entity at a time.
+
+#### Attributes
+
+Flag entities have two attributes controlling their yaw orientation and team.
+
+#### 0: `yaw`
+
+Sets the yaw direction of the flag, in CW degrees from the y-axis, as with other
+yaw parameters. The flag object is fairly anisotropic, so the orientation of the
+flag entity is not particularly important compared to entities such as player
+starts.
+
+#### 1: `team`
+
+Sets the team that owns the flag. Use 1/2 for the two teams (red/blue), as 0 is
+internally set as team neutral.
