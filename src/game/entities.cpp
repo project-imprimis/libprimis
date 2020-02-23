@@ -208,7 +208,7 @@ namespace entities
         for(;;)
         {
             e = findentity(TELEDEST, e+1);
-            if(e==beenhere || e<0) { conoutf(CON_WARN, "no teleport destination for tag %d", tag); return; }
+            if(e==beenhere || e<0) { conoutf(CON_WARN, "no teleport destination for channel %d", tag); return; }
             if(beenhere<0) beenhere = e;
             if(ents[e]->attr2==tag)
             {
