@@ -1638,15 +1638,69 @@ Sets the team that owns the flag. Use 1/2 for the two teams (red/blue), as 0 is
 internally set as team neutral.
 
 ## 3.2 Actors
+---
 
 Actors are the entities that play the game: this includes human controlled
 players and bot controlled players. At this time, no support for nonplayer
 models exists: the only actors supported are ones that take the form of the
 player model.
 
-# 3.2.1 Dimensions
+### 3.2.1 Dimensions
+---
 
 Actors are enlarged humans with a height of 2.5m (8') and a breadth of about 1m
 (3' 3"). This slightly exaggerated size is such that a player can jump onto a 1m
 tall box without being too exaggerated. As a result, players can fit in 3m*1m
 corridors without a problem, and crouch to fit in 2m*1m corridors if necessary.
+
+### 3.2.2 Actor Entity Properties
+
+Actors store the following properties in their object fields:
+
+* int `weight`
+* int `clientnum`
+* int `privilege`
+* int `lastupdate`
+* int `plag`
+* int `ping`
+* int `lifesequence`
+* int `respawned`
+* int `suicided`
+* int `lastpain`
+* int `lastaction`
+* int `lastattack`
+* int `attacking`
+* int `lasttaunt`
+* int `lastpickup`
+* int `lastpickupmillis`
+* int `flagpickup`
+* int `frags`
+* int `flags`
+* int `deaths`
+* int `totaldamage`
+* int `totalshots`
+* int `edit`
+* float `deltayaw`
+* float `deltapitch`
+* float `deltaroll`
+* float `newyaw`
+* float `newpitch`
+* float `newroll`
+* float `smoothmillis`
+* string `name`
+* string `info`
+* int `team`
+* int `playermodel`
+* int `playercolor`
+* ai::aiinfo `ai`
+* int `ownernum`
+* int `lastnode`
+* vec `muzzle`
+
+and the following functions:
+
+* `gameent`
+* void `respawn`
+* `~gameent`
+* void `hitpush`
+* void `startgame`
