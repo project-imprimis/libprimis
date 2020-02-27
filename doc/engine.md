@@ -1645,6 +1645,7 @@ Sets the team that owns the flag. Use 1/2 for the two teams (red/blue), as 0 is
 internally set as team neutral.
 
 ## 3.2 Projectiles
+---
 
 Unlike static entities, projectiles are not created directly by mappers and are
 instead created primarily by weapons as their fired projectiles. Projectiles
@@ -1653,18 +1654,23 @@ carry a number of properties befitting this which are distinct from static
 entities.
 
 ### 3.2.1 Projectile Attributes
+---
+
+Projectiles have eleven attributes encoded within them which define their entire
+behavior from birth to death. Projectiles are created when a weapon fires, and
+as a result they have owners and attack data.
 
 * vec `dir` direction that the projectile is pointed
-* vec `o`
+* vec `o` location of the projectile currently
 * vec `from` world coordinates where the projectile starts
-* vec `to` world coordiantes where the projectile starts
+* vec `to` world coordiantes where the projectile ends
 * vec `offset` displacement from from/to vec path defined
 * float `speed` speed of projectile in cubits/s
 * gameent `*owner` player who created the projectile
-* int `atk`
-* bool `local`
-* int `offsetmillis`
-* int `id`
+* int `atk` attack type of the projectile
+* bool `local` multiplayer sync flag for the projectile
+* int `offsetmillis` time delay for the projectile
+* int `id` unique identifier for the projectile
 
 # 6 Actors
 ---
@@ -1691,7 +1697,9 @@ entities which are directly manipulated by players.
 ---
 
 Actors are stored as an object `gameent` which is the object synced to other
-clients. The information kept for each actor is
+clients. The information kept for each actor is kept regardless of their
+ownership by a human player or a bot AI: they both interact with the engine
+in the same way.
 
 Actors store the following properties in their object fields:
 
