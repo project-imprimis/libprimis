@@ -21,8 +21,8 @@ to explain how the game is implemented.
 
 #### 3. Entities
 * 3.1 Static Entities
-* 3.2 Actors
-* 3.3 Projectiles
+* 3.2 Projectiles
+* 3.3 Bouncers
 * 3.4 Particles
 * 3.5 Physics
 
@@ -38,21 +38,28 @@ to explain how the game is implemented.
 * 5.4 Screenspace Postfx
 * 5.5 Antialiasing
 
-#### 6. Netcode
-* 6.1 Server
-* 6.2 Client
-* 6.3 AI
+#### 6. Actors
+* 6.1 Actor Objects
+* 6.2 Actor Rendering
 
-#### 7. User and System Interfaces
-* 7.1 Menus
-* 7.2 Hudgun
-* 7.3 File I/O & Assets
-* 7.4 Console
+#### 7. Netcode
+* 7.1 Server
+* 7.2 Client
+* 7.3 AI
+* 7.4 Master Server
+* 7.5 Authentication
 
-#### 8. Game Implementation
-* 8.1 Weapons
-* 8.2 Game Variables
-* 8.3 Modes
+
+#### 8. User and System Interfaces
+* 8.1 Menus
+* 8.2 Hudgun
+* 8.3 File I/O & Assets
+* 8.4 Console
+
+#### 9. Game Implementation
+* 9.1 Weapons
+* 9.2 Game Variables
+* 9.3 Modes
 
 # 1. Standards
 ---
@@ -1637,7 +1644,29 @@ starts.
 Sets the team that owns the flag. Use 1/2 for the two teams (red/blue), as 0 is
 internally set as team neutral.
 
-## 3.2 Actors
+## 3.2 Projectiles
+
+Unlike static entities, projectiles are not created directly by mappers and are
+instead created primarily by weapons as their fired projectiles. Projectiles
+are synced across the server (as befitting their usually deadly nature) and
+carry a number of properties befitting this which are distinct from static
+entities.
+
+### 3.2.1 Projectile Attributes
+
+* vec `dir` direction that the projectile is pointed
+* vec `o`
+* vec `from` world coordinates where the projectile starts
+* vec `to` world coordiantes where the projectile starts
+* vec `offset` displacement from from/to vec path defined
+* float `speed` speed of projectile in cubits/s
+* gameent `*owner` player who created the projectile
+* int `atk`
+* bool `local`
+* int `offsetmillis`
+* int `id`
+
+# 6 Actors
 ---
 
 Actors are the entities that play the game: this includes human controlled
@@ -1645,26 +1674,33 @@ players and bot controlled players. At this time, no support for nonplayer
 models exists: the only actors supported are ones that take the form of the
 player model.
 
-### 3.2.1 Dimensions
----
-
 Actors are enlarged humans with a height of 2.5m (8') and a breadth of about 1m
 (3' 3"). This slightly exaggerated size is such that a player can jump onto a 1m
 tall box without being too exaggerated. As a result, players can fit in 3m by 1m
 corridors without a problem, and crouch to fit in 2m by 1m corridors if
 necessary.
 
-### 3.2.2 Actor Entity Properties
+## 6.1 Actor Objects
+
+Actors are objects ingame with a large number of properties kept which are
+synced to other players by the server ingame. This is significantly larger than
+that of conventional entities and is synced much more carefully, as they are the
+entities which are directly manipulated by players.
+
+### 6.1.1 Actor Entity Properties
 ---
+
+Actors are stored as an object `gameent` which is the object synced to other
+clients. The information kept for each actor is
 
 Actors store the following properties in their object fields:
 
-* int `weight`
-* int `clientnum`
-* int `privilege`
-* int `lastupdate`
-* int `plag`
-* int `ping`
+* int `weight` weight of the player for hitboxes
+* int `clientnum` the server ID for the player
+* int `privilege` the level of authentication for the player
+* int `lastupdate` time in ms since the last packet reception
+* int `plag` packet lag (time in ms between packets)
+* int `ping` ping time for client
 * int `lifesequence`
 * int `respawned`
 * int `suicided`
@@ -1676,24 +1712,24 @@ Actors store the following properties in their object fields:
 * int `lastpickup`
 * int `lastpickupmillis`
 * int `flagpickup`
-* int `frags`
-* int `flags`
-* int `deaths`
+* int `frags` frags (kills) so far in the current game match
+* int `flags` flags captured so far in the current game match
+* int `deaths` deaths so far in the current game match
 * int `totaldamage`
 * int `totalshots`
 * int `edit`
-* float `deltayaw`
-* float `deltapitch`
-* float `deltaroll`
+* float `deltayaw` change in yaw since last update
+* float `deltapitch` change in pitch since last update
+* float `deltaroll` change in roll since last update
 * float `newyaw`
 * float `newpitch`
 * float `newroll`
 * float `smoothmillis`
-* string `name`
+* string `name` client name shown to other players
 * string `info`
-* int `team`
-* int `playermodel`
-* int `playercolor`
+* int `team` 1 (blue) or 2 (red): team the player belongs to
+* int `playermodel` index of player model
+* int `playercolor` index of player color (NOT hex color)
 * ai::aiinfo `ai`
 * int `ownernum`
 * int `lastnode`
