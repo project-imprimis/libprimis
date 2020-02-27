@@ -1650,10 +1650,12 @@ player model.
 
 Actors are enlarged humans with a height of 2.5m (8') and a breadth of about 1m
 (3' 3"). This slightly exaggerated size is such that a player can jump onto a 1m
-tall box without being too exaggerated. As a result, players can fit in 3m*1m
-corridors without a problem, and crouch to fit in 2m*1m corridors if necessary.
+tall box without being too exaggerated. As a result, players can fit in 3m by 1m
+corridors without a problem, and crouch to fit in 2m by 1m corridors if
+necessary.
 
 ### 3.2.2 Actor Entity Properties
+---
 
 Actors store the following properties in their object fields:
 
