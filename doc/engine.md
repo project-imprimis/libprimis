@@ -1653,7 +1653,7 @@ are synced across the server (as befitting their usually deadly nature) and
 carry a number of properties befitting this which are distinct from static
 entities.
 
-### 3.2.1 Projectile Attributes
+### 3.2.1 Projectile Attribute Overview
 ---
 
 Projectiles have eleven attributes encoded within them which define their entire
@@ -1671,6 +1671,61 @@ as a result they have owners and attack data.
 * bool `local` multiplayer sync flag for the projectile
 * int `offsetmillis` time delay for the projectile
 * int `id` unique identifier for the projectile
+
+### 3.2.2 Projectile Vector Attributes
+---
+
+There are five vector attributes which describe the orientation and velocity of
+the projectile. These are the `dir`ection, l`o`cation, `from` originating
+position, `to` destination position, and `offset` displacement from path.
+
+#### `dir`ection
+
+The first attribute of these is the `dir`ection, which determines the
+orientation of the projectile. This vector determines the orientation of the
+projectile in space, and is set to point along the direction of the target
+(parallel to the velocity). As this vector does not imply a magnitude, it should
+be a normalized (magnitude of 1) vector. This vector is in world coordinates, as
+there is no independent coordinate system for projectiles defined by their
+movement. As a result, corrections to a projectile entity must come from manual
+changes to the direction of this parameter.
+
+As this attribute is a 3 dimensional vector, there is no way of controlling
+the roll of the projectile. As a result, spiraling projectiles are not possible.
+
+#### l`o`cation
+
+The second attribute is the l`o`cation of the projectile currently. At t=0 this
+parameter is set to be the same as the `from` parameter, and the l`o`cation at
+later times evolves towards the `to` location with respect to time. This vector
+is expressed in the world coordinate system, which is the same for every
+projectile.
+
+#### `from`
+
+The third attribute is the place where the vector is `from`. This is, for a
+weapon-generated projectile, the location that the gun is when the projectile is
+created. This vector is also identical to the l`o`cation vector at the time when
+the projectile is created.
+
+As with the l`o`cation vector, this vector is expressed in terms of world
+coordinates, and all projectiles share the same coordinate system.
+
+#### `to`
+
+The point on the map where the projectile is pointed towards. This is, for a
+weapon-generated projectile, the location that the gun's ray hits on the world.
+This coordinate is, like the l`o`cation and `from` attributes, expressed in
+terms of world coordinates, and all projectiles share the same coordinate
+system.
+
+#### `offset`
+
+The `offset` vector determines the location the projectile appears to originate,
+as a distance away from the actual start position. This is used to make the
+projectile appear from the gun rather than from the player's coordinate, and as
+a result this attribute, unsurprisingly, is a displacement rather than a
+position vector.
 
 # 6 Actors
 ---
