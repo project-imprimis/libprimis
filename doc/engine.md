@@ -1,10 +1,37 @@
 # The Imprimis Engine
 
-#### Note that this is a draft and subject to expansion and modification.
+#### This is a work in progress and subject to modification and additions.
+
+Written and © Alex "molexted" Foster, 2020; released under the WTFPL v2.
+
+Preface
+---
 
 This text is an expository one, describing the *what* and some of the *why*
 things are implemented as they are in the engine. This document does not attempt
 to explain how the game is implemented.
+
+Note that this text is written by someone who did not write the actual code for
+the engine: as a result, it is possible that some of this document is
+misconstrued from the original intent of the code writers. As those people are
+not particularly available, this text represents the best guess of the author.
+
+This text is an attempt to describe the engine in such a way that previous
+Cube-based engines were not. For nearly two decades, the Cube series of engines,
+including the original Cube as well as Cube 2 and Tesseract, have been among the
+most technologically advanced first-person shooter engines available to the open
+source community, but their adoption has been limited by the relative inability
+to understand the source code due to a lack of comprehensive documentation and
+often opaque coding styles. This text is an attempt to lay down the architecture
+of the engine, and provide the skeleton required to understand specific code
+that is written in the engine.
+
+To fully understand this text, it is expected that readers understand the basics
+of functional and object-oriented programming paradigms, as well as have a basic
+knowledge of linear and vector algebra; these mathematical concepts are the core
+of how 3D engines like Imprimis' are designed. A few rendering techniques, such
+as global illumination, additionally use more complex mathematics borrowed from
+linear analysis, including multipole expansions and Fourier series.
 
 ## Chapters
 
@@ -48,7 +75,6 @@ to explain how the game is implemented.
 * 7.3 AI
 * 7.4 Master Server
 * 7.5 Authentication
-
 
 #### 8. User and System Interfaces
 * 8.1 Menus
