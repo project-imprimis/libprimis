@@ -456,30 +456,33 @@ namespace game
     {
         if(projs.empty()) return;
         gameent *noside = hudplayer();
-        loopv(projs)
+        loopv(projs) //loop through all projectiles in the game
         {
             projectile &p = projs[i];
             p.offsetmillis = max(p.offsetmillis-time, 0);
-            vec dv;
+            vec dv; //displacement vector
             float dist = p.to.dist(p.o, dv);
             dv.mul(time/max(dist*1000/p.speed, float(time)));
-            vec v = vec(p.o).add(dv);
+            vec v = vec(p.o).add(dv); //set v as current particle location o plus dv
             bool exploded = false;
             hits.setsize(0);
-            if(p.local)
+            if(p.local) //if projectile belongs to a local client
             {
-                vec halfdv = vec(dv).mul(0.5f), bo = vec(p.o).add(halfdv);
+                vec halfdv = vec(dv).mul(0.5f), bo = vec(p.o).add(halfdv); //half the displacement vector halfdv; set bo like v except with halfdv
                 float br = max(fabs(halfdv.x), fabs(halfdv.y)) + 1 + attacks[p.atk].margin;
-                loopj(numdynents())
+                loopj(numdynents()) //for all dyn ents loop j
                 {
-                    dynent *o = iterdynents(j);
-                    if(p.owner==o || o->o.reject(bo, o->radius + br)) continue;
-                    if(projdamage(o, p, v)) { exploded = true; break; }
+                    dynent *cur = iterdynents(j); //start by setting cur to current dynent in loop
+
+                    //check if dynent in question is the owner of the projectile or is within the bounds of some other dynent (actor)
+                    //if projectile is owned by a player or projectile is not within the bounds of a dynent, skip explode check
+                    if(p.owner==cur || cur->cur.reject(bo, cur->radius + br)) continue;
+                    if(projdamage(cur, p, v)) { exploded = true; break; } //damage check
                 }
             }
-            if(!exploded)
+            if(!exploded) //if we haven't already hit somebody, start checking for collisions with cube geometry
             {
-                if(dist<4)
+                if(dist<4) // dist is the distance to the `to` location
                 {
                     if(p.o!=p.to) // if original target was moving, reevaluate endpoint
                     {
@@ -492,12 +495,12 @@ namespace game
                 {
                     vec pos = vec(p.offset).mul(p.offsetmillis/float(OFFSETMILLIS)).add(v);
                     particle_splash(PART_PULSE_FRONT, 1, 1, pos, 0x50CFE5, 2.4f, 150, 20);
-                    if(p.owner != noside)
+                    if(p.owner != noside) //noside is the hud player, so if the projectile is somebody else's
                     {
-                        float len = min(20.0f, vec(p.offset).add(p.from).dist(pos));
+                        float len = min(20.0f, vec(p.offset).add(p.from).dist(pos)); //projectiles are at least 20u long
                         vec dir = vec(dv).normalize(),
-                            tail = vec(dir).mul(-len).add(pos),
-                            head = vec(dir).mul(2.4f).add(pos);
+                            tail = vec(dir).mul(-len).add(pos), //tail extends >=20u behind projectile point
+                            head = vec(dir).mul(2.4f).add(pos); // head extends 2.4u ahead
                         particle_flare(tail, head, 1, PART_PULSE_SIDE, 0x50CFE5, 2.5f);
                     }
                 }
@@ -509,7 +512,7 @@ namespace game
                             hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf());
                 projs.remove(i--);
             }
-            else p.o = v;
+            else p.o = v; //if no collision stuff happened set the new position
         }
     }
 
