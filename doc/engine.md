@@ -1753,6 +1753,57 @@ projectile appear from the gun rather than from the player's coordinate, and as
 a result this attribute, unsurprisingly, is a displacement rather than a
 position vector.
 
+### 3.2.3 Other Projectile Attributes
+
+The non-vector attributes that projectiles posess include the projectile's speed
+(which does contribute to the not-explicitly-defined velocity vector), the owner
+of the projectile, the attack type of the projectile, the locality flag, the
+delay time for
+
+#### `speed`
+
+The `speed` of the projectile is the rate, in cubits, that the projectile moves
+through the world. This, along with the direction determined by the difference
+of the `to` and `from` vectors, defines the projectile's velocity vector.
+
+#### `*owner`
+
+The pointer to the `gameent` object that the projectile is credited to.
+Projectiles are created by players, so to track accuracy and kills, projectiles
+are always associated with a player object.
+
+#### `atk`
+
+The index for the attack type the projectile embodies. This attack type
+corresponds to a particular weapon's attack, and therefore serves as a proxy for
+the properties that particular weapon attacks have, such as the projectile's
+visible type, size, and damage. As a result, this value can only correspond to
+defined weapon attack types and encodes specific, specified sets of values.
+
+#### `local`
+
+This attribute flags the projectile as being local. Projectiles created by the
+player will have this flag set as true, and projectiles that are created as
+representations of other client's projectiles will have this set to false. This
+flag affects whether the game uses this projectile's location to determine hits
+(as other client's projectiles are not necessarily synced with the root client's
+machine, the game relies on those other clients to hit check their own
+projectiles. While this has some issues with abuse, this does mean that players
+who see their bullets hit a target will always be credited with those hits, even
+if other clients did not see the bullet hit them.
+
+#### `offsetmillis`
+
+As the name indicates, this attribute sets the offset time for the projectile to
+start moving. This attribute is expressed in milliseconds, and needs to always
+be positive to have any meaning.
+
+#### `id`
+
+Each projectile is given a unique tracking id by the engine, which is set by the
+time at which the projectile spawns. This is the handle by which the projectile
+can later be identified (such as to find its owner).
+
 # 6 Actors
 ---
 
