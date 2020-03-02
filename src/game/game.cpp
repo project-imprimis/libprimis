@@ -235,14 +235,14 @@ namespace game
 
         physicsframe();
         ai::navigate();
-        updateweapons(curtime);
+        updateweapons(curtime); //updates projectiles & bouncers
         otherplayers(curtime);
         ai::update();
         moveragdolls();
-        gets2c();
+        gets2c(); //get server to client info
         if(connected)
         {
-            if(player1->state == CS_DEAD)
+            if(player1->state == CS_DEAD) //ragdoll check
             {
                 if(player1->ragdoll) moveragdoll(player1);
                 else if(lastmillis-player1->lastpain<2000)
@@ -251,7 +251,7 @@ namespace game
                     moveplayer(player1, 10, true);
                 }
             }
-            else if(!intermission)
+            else if(!intermission) //nobody moves when it's intermission (between games)
             {
                 if(player1->ragdoll) cleanragdoll(player1);
                 crouchplayer(player1, 10, true);

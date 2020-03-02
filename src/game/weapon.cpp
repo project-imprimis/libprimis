@@ -472,12 +472,12 @@ namespace game
                 float br = max(fabs(halfdv.x), fabs(halfdv.y)) + 1 + attacks[p.atk].margin;
                 loopj(numdynents()) //for all dyn ents loop j
                 {
-                    dynent *cur = iterdynents(j); //start by setting cur to current dynent in loop
+                    dynent *o = iterdynents(j); //start by setting cur to current dynent in loop
 
                     //check if dynent in question is the owner of the projectile or is within the bounds of some other dynent (actor)
                     //if projectile is owned by a player or projectile is not within the bounds of a dynent, skip explode check
-                    if(p.owner==cur || cur->cur.reject(bo, cur->radius + br)) continue;
-                    if(projdamage(cur, p, v)) { exploded = true; break; } //damage check
+                    if(p.owner==o || o->o.reject(bo, o->radius + br)) continue;
+                    if(projdamage(o, p, v)) { exploded = true; break; } //damage check
                 }
             }
             if(!exploded) //if we haven't already hit somebody, start checking for collisions with cube geometry
