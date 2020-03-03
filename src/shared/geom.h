@@ -1,6 +1,7 @@
 struct vec;
 struct vec4;
 
+//2 dimensional vector object with relevant operators
 struct vec2
 {
     union
@@ -76,6 +77,7 @@ struct ivec;
 struct usvec;
 struct svec;
 
+//vector3: three dimensional vector object
 struct vec
 {
     union
@@ -99,30 +101,38 @@ struct vec
 
     vec(float yaw, float pitch) : x(-sinf(yaw)*cosf(pitch)), y(cosf(yaw)*cosf(pitch)), z(sinf(pitch)) {}
 
-    float &operator[](int i)       { return v[i]; }
-    float  operator[](int i) const { return v[i]; }
 
     vec &set(int i, float f) { v[i] = f; return *this; }
 
+    //operator overloads
+    float &operator[](int i)       { return v[i]; }
+    float  operator[](int i) const { return v[i]; }
     bool operator==(const vec &o) const { return x == o.x && y == o.y && z == o.z; }
     bool operator!=(const vec &o) const { return x != o.x || y != o.y || z != o.z; }
 
-    bool iszero() const { return x==0 && y==0 && z==0; }
-    float squaredlen() const { return x*x + y*y + z*z; }
     float dot2(const vec2 &o) const { return x*o.x + y*o.y; }
     float dot2(const vec &o) const { return x*o.x + y*o.y; }
     float dot(const vec &o) const { return x*o.x + y*o.y + z*o.z; }
     float squaredot(const vec &o) const { float k = dot(o); return k*k; }
     float absdot(const vec &o) const { return fabs(x*o.x) + fabs(y*o.y) + fabs(z*o.z); }
     float zdot(const vec &o) const { return z*o.z; }
+
+    //unary operators
+    bool iszero() const { return x==0 && y==0 && z==0; }
+    float squaredlen() const { return x*x + y*y + z*z; }
+    vec &square()            { mul(*this); return *this; }
+    vec &neg2()              { x = -x; y = -y; return *this; }
+    vec &neg()               { x = -x; y = -y; z = -z; return *this; }
+    vec &abs() { x = fabs(x); y = fabs(y); z = fabs(z); return *this; }
+    vec &recip()             { x = 1/x; y = 1/y; z = 1/z; return *this; }
+
+    //elementwise float operators
     vec &mul(const vec &o)   { x *= o.x; y *= o.y; z *= o.z; return *this; }
     vec &mul(float f)        { x *= f; y *= f; z *= f; return *this; }
     vec &mul2(float f)       { x *= f; y *= f; return *this; }
-    vec &square()            { mul(*this); return *this; }
     vec &div(const vec &o)   { x /= o.x; y /= o.y; z /= o.z; return *this; }
     vec &div(float f)        { x /= f; y /= f; z /= f; return *this; }
     vec &div2(float f)       { x /= f; y /= f; return *this; }
-    vec &recip()             { x = 1/x; y = 1/y; z = 1/z; return *this; }
     vec &add(const vec &o)   { x += o.x; y += o.y; z += o.z; return *this; }
     vec &add(float f)        { x += f; y += f; z += f; return *this; }
     vec &add2(float f)       { x += f; y += f; return *this; }
@@ -131,13 +141,10 @@ struct vec
     vec &sub(float f)        { x -= f; y -= f; z -= f; return *this; }
     vec &sub2(float f)       { x -= f; y -= f; return *this; }
     vec &subz(float f)       { z -= f; return *this; }
-    vec &neg2()              { x = -x; y = -y; return *this; }
-    vec &neg()               { x = -x; y = -y; z = -z; return *this; }
     vec &min(const vec &o)   { x = ::min(x, o.x); y = ::min(y, o.y); z = ::min(z, o.z); return *this; }
     vec &max(const vec &o)   { x = ::max(x, o.x); y = ::max(y, o.y); z = ::max(z, o.z); return *this; }
     vec &min(float f)        { x = ::min(x, f); y = ::min(y, f); z = ::min(z, f); return *this; }
     vec &max(float f)        { x = ::max(x, f); y = ::max(y, f); z = ::max(z, f); return *this; }
-    vec &abs() { x = fabs(x); y = fabs(y); z = fabs(z); return *this; }
     vec &clamp(float l, float h) { x = ::clamp(x, l, h); y = ::clamp(y, l, h); z = ::clamp(z, l, h); return *this; }
     float magnitude2() const { return sqrtf(dot2(*this)); }
     float magnitude() const  { return sqrtf(squaredlen()); }
@@ -284,6 +291,7 @@ static inline uint hthash(const vec &k)
     return v + (v>>12);
 }
 
+//vector4: four dimensional vector
 struct vec4
 {
     union
@@ -385,6 +393,8 @@ struct matrix3;
 struct matrix4x3;
 struct matrix4;
 
+//quaternion object: four component "vector" with three imaginary components
+//used for object rotations (quats have 3 DoF)
 struct quat : vec4
 {
     quat() {}
@@ -507,6 +517,8 @@ struct quat : vec4
     }
 };
 
+//dual quaternions: 8 dimensional numbers that are the product of dual numbers and quaternions
+//used for rigid body transformations (like animations) (dualquats have 6 DoF)
 struct dualquat
 {
     quat real, dual;
@@ -1199,6 +1211,7 @@ const int D[3]  = {0, 1, 2}; // depth
 struct ivec4;
 struct ivec2;
 
+//integer vector3
 struct ivec
 {
     union
@@ -1268,6 +1281,7 @@ static inline uint hthash(const ivec &k)
     return k.x^k.y^k.z;
 }
 
+//integer vector2
 struct ivec2
 {
     union
@@ -1321,6 +1335,7 @@ static inline uint hthash(const ivec2 &k)
     return k.x^k.y;
 }
 
+//integer vec4
 struct ivec4
 {
     union
@@ -1353,6 +1368,7 @@ static inline uint hthash(const ivec4 &k)
 
 struct bvec4;
 
+//color vector3 (r,g,b)
 struct bvec
 {
     union
@@ -1420,6 +1436,7 @@ struct bvec
     int tohexcolor() const { return (int(r)<<16)|(int(g)<<8)|int(b); }
 };
 
+//color vector4 (r,g,b,a)
 struct bvec4
 {
     union
