@@ -1770,10 +1770,9 @@ coordinates, and all projectiles share the same coordinate system.
 #### `to`
 
 The point on the map where the projectile is pointed towards. This is, for a
-weapon-generated projectile, the location that the gun's ray hits on the world.
-This coordinate is, like the l`o`cation and `from` attributes, expressed in
-terms of world coordinates, and all projectiles share the same coordinate
-system.
+weapon-generated projectile, the location at a distance given in the `range`
+parameter; this point may be inside geometry, in which case the collision
+checker will destroy the projectile at that point.
 
 #### `offset`
 
@@ -1784,6 +1783,7 @@ a result this attribute, unsurprisingly, is a displacement rather than a
 position vector.
 
 ### 3.2.3 Other Projectile Attributes
+---
 
 The non-vector attributes that projectiles posess include the projectile's speed
 (which does contribute to the not-explicitly-defined velocity vector), the owner
@@ -1833,6 +1833,31 @@ be positive to have any meaning.
 Each projectile is given a unique tracking id by the engine, which is set by the
 time at which the projectile spawns. This is the handle by which the projectile
 can later be identified (such as to find its owner).
+
+#### 3.2.4 Projectile Time Evolution
+---
+
+Projectiles in the engine have simple kinematics, as neither gravity nor drag
+act upon them. As such, projectiles move in straight lines at constant speed,
+and do not drop or slow down over the course of their travel. This movement
+continues until the projectile reaches its `to` point defined in the object or
+collides with something, after which point it is destroyed.
+
+Every physics frame, the projectiles owned by the player's own client are
+checked for collision with players before being checked against the world
+geometry. Those projectiles that collide with players are then eligible to deal
+damage; projectiles that collide with world geometry are discarded after
+potentially throwing decals onto nearby surfaces (like burn marks or bullet
+holes).
+
+As projectile speeds are defined in cubits per second, multiplication by 8
+yields a speed in meters per second. As a result, for reference, the speed of
+sound at standard temperature and pressure (343 m/s) is equivalent to about 2750
+cubits/s.
+
+Since the trajectory of the projectile is parameterized in terms of its end
+location and its speed, the maximum time in flight must be calculated by the
+range by the speed.
 
 # 6 Actors
 ---
