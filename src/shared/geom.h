@@ -100,8 +100,6 @@ struct vec
     explicit vec(const svec &v);
 
     vec(float yaw, float pitch) : x(-sinf(yaw)*cosf(pitch)), y(cosf(yaw)*cosf(pitch)), z(sinf(pitch)) {}
-
-
     vec &set(int i, float f) { v[i] = f; return *this; }
 
     //operator overloads
@@ -110,76 +108,87 @@ struct vec
     bool operator==(const vec &o) const { return x == o.x && y == o.y && z == o.z; }
     bool operator!=(const vec &o) const { return x != o.x || y != o.y || z != o.z; }
 
-    float dot2(const vec2 &o) const { return x*o.x + y*o.y; }
-    float dot2(const vec &o) const { return x*o.x + y*o.y; }
-    float dot(const vec &o) const { return x*o.x + y*o.y + z*o.z; }
-    float squaredot(const vec &o) const { float k = dot(o); return k*k; }
-    float absdot(const vec &o) const { return fabs(x*o.x) + fabs(y*o.y) + fabs(z*o.z); }
-    float zdot(const vec &o) const { return z*o.z; }
-
     //unary operators
     bool iszero() const { return x==0 && y==0 && z==0; }
     float squaredlen() const { return x*x + y*y + z*z; }
     vec &square()            { mul(*this); return *this; }
-    vec &neg2()              { x = -x; y = -y; return *this; }
+    vec &neg2()              { x = -x; y = -y; return *this; } //unused
     vec &neg()               { x = -x; y = -y; z = -z; return *this; }
     vec &abs() { x = fabs(x); y = fabs(y); z = fabs(z); return *this; }
-    vec &recip()             { x = 1/x; y = 1/y; z = 1/z; return *this; }
-
-    //elementwise float operators
-    vec &mul(const vec &o)   { x *= o.x; y *= o.y; z *= o.z; return *this; }
-    vec &mul(float f)        { x *= f; y *= f; z *= f; return *this; }
-    vec &mul2(float f)       { x *= f; y *= f; return *this; }
-    vec &div(const vec &o)   { x /= o.x; y /= o.y; z /= o.z; return *this; }
-    vec &div(float f)        { x /= f; y /= f; z /= f; return *this; }
-    vec &div2(float f)       { x /= f; y /= f; return *this; }
-    vec &add(const vec &o)   { x += o.x; y += o.y; z += o.z; return *this; }
-    vec &add(float f)        { x += f; y += f; z += f; return *this; }
-    vec &add2(float f)       { x += f; y += f; return *this; }
-    vec &addz(float f)       { z += f; return *this; }
-    vec &sub(const vec &o)   { x -= o.x; y -= o.y; z -= o.z; return *this; }
-    vec &sub(float f)        { x -= f; y -= f; z -= f; return *this; }
-    vec &sub2(float f)       { x -= f; y -= f; return *this; }
-    vec &subz(float f)       { z -= f; return *this; }
-    vec &min(const vec &o)   { x = ::min(x, o.x); y = ::min(y, o.y); z = ::min(z, o.z); return *this; }
-    vec &max(const vec &o)   { x = ::max(x, o.x); y = ::max(y, o.y); z = ::max(z, o.z); return *this; }
-    vec &min(float f)        { x = ::min(x, f); y = ::min(y, f); z = ::min(z, f); return *this; }
-    vec &max(float f)        { x = ::max(x, f); y = ::max(y, f); z = ::max(z, f); return *this; }
-    vec &clamp(float l, float h) { x = ::clamp(x, l, h); y = ::clamp(y, l, h); z = ::clamp(z, l, h); return *this; }
+    vec &recip()             { x = 1/x; y = 1/y; z = 1/z; return *this; } //used twice
     float magnitude2() const { return sqrtf(dot2(*this)); }
     float magnitude() const  { return sqrtf(squaredlen()); }
     vec &normalize()         { div(magnitude()); return *this; }
     vec &safenormalize()     { float m = magnitude(); if(m) div(m); return *this; }
     bool isnormalized() const { float m = squaredlen(); return (m>0.99f && m<1.01f); }
+
+    //elementwise float operators
+    vec &mul(float f)        { x *= f; y *= f; z *= f; return *this; }
+    vec &mul2(float f)       { x *= f; y *= f; return *this; } //unused
+    vec &div(float f)        { x /= f; y /= f; z /= f; return *this; }
+    vec &div2(float f)       { x /= f; y /= f; return *this; } //unused
+    vec &add(float f)        { x += f; y += f; z += f; return *this; }
+    vec &add2(float f)       { x += f; y += f; return *this; } //used once
+    vec &addz(float f)       { z += f; return *this; } //unused
+    vec &sub(float f)        { x -= f; y -= f; z -= f; return *this; }
+    vec &sub2(float f)       { x -= f; y -= f; return *this; } //unused
+    vec &subz(float f)       { z -= f; return *this; } //unused
+    vec &min(float f)        { x = ::min(x, f); y = ::min(y, f); z = ::min(z, f); return *this; }
+    vec &max(float f)        { x = ::max(x, f); y = ::max(y, f); z = ::max(z, f); return *this; }
+    vec &clamp(float l, float h) { x = ::clamp(x, l, h); y = ::clamp(y, l, h); z = ::clamp(z, l, h); return *this; }
+
+    //elementwise vector operators
+    vec &mul(const vec &o)   { x *= o.x; y *= o.y; z *= o.z; return *this; }
+    vec &div(const vec &o)   { x /= o.x; y /= o.y; z /= o.z; return *this; }
+    vec &add(const vec &o)   { x += o.x; y += o.y; z += o.z; return *this; }
+    vec &sub(const vec &o)   { x -= o.x; y -= o.y; z -= o.z; return *this; }
+    vec &min(const vec &o)   { x = ::min(x, o.x); y = ::min(y, o.y); z = ::min(z, o.z); return *this; }
+    vec &max(const vec &o)   { x = ::max(x, o.x); y = ::max(y, o.y); z = ::max(z, o.z); return *this; }
+
+    //dot products
+    float dot2(const vec2 &o) const { return x*o.x + y*o.y; }
+    float dot2(const vec &o) const { return x*o.x + y*o.y; }
+    float dot(const vec &o) const { return x*o.x + y*o.y + z*o.z; }
+    float squaredot(const vec &o) const { float k = dot(o); return k*k; } //unused
+    float absdot(const vec &o) const { return fabs(x*o.x) + fabs(y*o.y) + fabs(z*o.z); } //used once
+    float zdot(const vec &o) const { return z*o.z; } //unused
+
+    //distances
     float squaredist(const vec &e) const { return vec(*this).sub(e).squaredlen(); }
     float dist(const vec &e) const { return sqrtf(squaredist(e)); }
     float dist(const vec &e, vec &t) const { t = *this; t.sub(e); return t.magnitude(); }
     float dist2(const vec &o) const { float dx = x-o.x, dy = y-o.y; return sqrtf(dx*dx + dy*dy); }
+
+    //cross products
     template<class T>
     bool reject(const T &o, float r) { return x>o.x+r || x<o.x-r || y>o.y+r || y<o.y-r; }
     template<class A, class B>
     vec &cross(const A &a, const B &b) { x = a.y*b.z-a.z*b.y; y = a.z*b.x-a.x*b.z; z = a.x*b.y-a.y*b.x; return *this; }
     vec &cross(const vec &o, const vec &a, const vec &b) { return cross(vec(a).sub(o), vec(b).sub(o)); }
+
+    //scalar triple product A*(BxC)
     float scalartriple(const vec &a, const vec &b) const { return x*(a.y*b.z-a.z*b.y) + y*(a.z*b.x-a.x*b.z) + z*(a.x*b.y-a.y*b.x); }
-    float zscalartriple(const vec &a, const vec &b) const { return z*(a.x*b.y-a.y*b.x); }
+    float zscalartriple(const vec &a, const vec &b) const { return z*(a.x*b.y-a.y*b.x); } //unused
+
+    //transformations
     vec &reflectz(float rz) { z = 2*rz - z; return *this; }
     vec &reflect(const vec &n) { float k = 2*dot(n); x -= k*n.x; y -= k*n.y; z -= k*n.z; return *this; }
     vec &project(const vec &n) { float k = dot(n); x -= k*n.x; y -= k*n.y; z -= k*n.z; return *this; }
-    vec &projectxydir(const vec &n) { if(n.z) z = -(x*n.x/n.z + y*n.y/n.z); return *this; }
+    vec &projectxydir(const vec &n) { if(n.z) z = -(x*n.x/n.z + y*n.y/n.z); return *this; } //used once
     vec &projectxy(const vec &n)
     {
         float m = squaredlen(), k = dot(n);
         projectxydir(n);
         rescale(sqrtf(::max(m - k*k, 0.0f)));
         return *this;
-    }
+    } //used once
     vec &projectxy(const vec &n, float threshold)
     {
         float m = squaredlen(), k = ::min(dot(n), threshold);
         projectxydir(n);
         rescale(sqrtf(::max(m - k*k, 0.0f)));
         return *this;
-    }
+    } //used once
     vec &lerp(const vec &b, float t) { x += (b.x-x)*t; y += (b.y-y)*t; z += (b.z-z)*t; return *this; }
     vec &lerp(const vec &a, const vec &b, float t) { x = a.x + (b.x-a.x)*t; y = a.y + (b.y-a.y)*t; z = a.z + (b.z-a.z)*t; return *this; }
     vec &avg(const vec &b) { add(b); mul(0.5f); return *this; }
@@ -224,7 +233,7 @@ struct vec
     {
         s.project(*this);
         t.project(*this).project(s);
-    }
+    } //unused
 
     template<class T> bool insidebb(const T &bbmin, const T &bbmax) const
     {
