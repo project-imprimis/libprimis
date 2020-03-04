@@ -176,7 +176,37 @@ at larger coordinates; a smaller map will occupy the SE corner of a larger map.
     Clockwise      Counterclockwise
 ```
 
-#### 1.3.3 Colors
+#### 1.3.3 Mathematical Notes
+----
+
+As a 3D engine is largely defined in terms of vectors and linear algebra, some
+understanding of these concepts is very helpful in understanding positions and
+transformations in the engine as well as the rendering machinery that renders
+images to the screen.
+
+A vector is a set of multiple scalars (standard numbers) which together
+represent a multidimensional location in some space. This space does not have to
+be positional, as concepts like colors are usually also represented as a vector
+(components are `R`ed, `G`reen, and `B`lue). Most vectors in Imprimis are three
+dimensional, but second dimensional, fourth dimensional, complex (quaternions)
+and dual (dualquats) are also represented.
+
+A particular notational standard which will always be implicit is the difference
+between *speed* and *velocity*. Velocity is a vector, which means it carries a
+direction along with its size. On the other hand, speed is merely the size of
+the velocity vector, and does not imply a particular direction.
+
+The complex objects, quaternions and dual quaternions, are not strictly vectors,
+but exist in a higher dimensional space than standard scalars in a similar way.
+The structure of the spaces in which these values live is particularly
+convenient for the constrained values that kinematics problems have, and as such
+are particularly useful in animation and rotation transformations.
+
+Quaternions have four values, designated x, y, z, w; dual quaternions have
+similarly their eight values seperated into dual numbers which are each
+designated x, y, z, w.
+
+#### 1.3.4 Colors
 ---
 
 Colors which are defined past 0xFFFFFF (hex color for white) are generally
