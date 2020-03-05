@@ -209,7 +209,7 @@ namespace game
 
     void updatebouncers(int time)
     {
-        loopv(bouncers)
+        loopv(bouncers) //∀ bouncers currently in the game
         {
             bouncer &bnc = *bouncers[i];
             vec old(bnc.o);
@@ -219,13 +219,14 @@ namespace game
             {
                 int qtime = min(30, rtime);
                 rtime -= qtime;
+                //if bouncer has run out of lifetime, or bounce fxn returns true, turn on the stopping flag
                 if((bnc.lifetime -= qtime)<0 || bounce(&bnc, qtime/1000.0f, 0.6f, 0.5f, 1)) { stopped = true; break; }
             }
-            if(stopped)
+            if(stopped) //kill bouncer object if above check passes
             {
                 delete bouncers.remove(i--);
             }
-            else
+            else //time evolution
             {
                 bnc.roll += old.sub(bnc.o).magnitude()/(4*RAD);
                 bnc.offsetmillis = max(bnc.offsetmillis-time, 0);
