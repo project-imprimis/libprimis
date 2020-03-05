@@ -1859,6 +1859,34 @@ Since the trajectory of the projectile is parameterized in terms of its end
 location and its speed, the maximum time in flight must be calculated by the
 range by the speed.
 
+### 3.3 Bouncers
+
+Bouncers are entirely unrelated to jumppad entities and are the name given to
+the particles which can bounce off of surfaces. Bouncers do not interfere with
+players in any way, and are capable of bouncing off of geometry for an arbitrary
+number of times before being deleted and replaced with a decal.
+
+Bouncers have two implemented types, gibs (bits of dead players) and debris, and
+are defined by a set of twelve unique parameters as well as being a child of the
+general `physent` class of game objects.
+
+Unlike projectiles, which are parameterized in terms of maximum range, bouncers
+are parameterized in terms of their lifetime.
+
+The twelve unique parameters that bouncers have are as follows:
+
+* int `lifetime`
+* int `bounces`
+* float `lastyaw`
+* float `roll`
+* bool `local`
+* gameent `*owner`
+* int `bouncetype`
+* int `variant`
+* vec `offset`
+* int `offsetmillis`
+* int `id`
+
 # 6 Actors
 ---
 
