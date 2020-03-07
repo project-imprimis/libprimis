@@ -1875,17 +1875,17 @@ are parameterized in terms of their lifetime.
 
 The twelve unique parameters that bouncers have are as follows:
 
-* int `lifetime`
-* int `bounces`
-* float `lastyaw`
-* float `roll`
-* bool `local`
-* gameent `*owner`
-* int `bouncetype`
+* int `lifetime` time left until the bouncer dies
+* int `bounces` number of bounces that have been done
+* float `lastyaw` yaw of the projectile at the last timestep
+* float `roll` roll of the projectile at the last timestep
+* bool `local` multiplayer sync flag for the projectile
+* gameent `*owner` gameent which the projectile belongs to
+* int `bouncetype` type of bounce the bouncer does
 * int `variant`
 * vec `offset`
 * int `offsetmillis`
-* int `id`
+* int `id` unique id assigned to each bouncer entity
 
 # 6 Actors
 ---
