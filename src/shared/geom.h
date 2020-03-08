@@ -78,6 +78,8 @@ struct usvec;
 struct svec;
 
 //vector3: three dimensional vector object
+//this object finds uses in nearly every part of the engine,
+//including world geometry, mapmodels, particles, projectiles, actors, ai
 struct vec
 {
     union
@@ -301,6 +303,7 @@ static inline uint hthash(const vec &k)
 }
 
 //vector4: four dimensional vector
+//mostly used for rendering: gi, aa, rendergl, renderlights, and elsewhere
 struct vec4
 {
     union
@@ -660,6 +663,15 @@ struct dualquat
     }
 };
 
+// matrix3: 3x3 matrix
+/* comprised of three vec3 vectors
+ * arranged as follows:
+ * [ a1 b1 c1
+ *   a2 b2 c2
+ *   a3 b3 c3 ]
+ *
+ * used largely in models/anims/ragdolls but also in stuff like bih
+ */
 struct matrix3
 {
     vec a, b, c;
@@ -879,6 +891,15 @@ struct matrix3
     vec rowz() const { return vec(a.z, b.z, c.z); }
 };
 
+/* matrix4x3, 4x3 matrix
+ * defined as four column vectors, a-d
+ * takes the form as follows:
+ * [ a1 b1 c1 d1
+ *   a2 b2 c2 d2
+ *   a3 b3 c3 d3 ]
+ *
+ * used in animation along with dualquats
+ */
 struct matrix4x3
 {
     vec a, b, c, d;
