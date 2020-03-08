@@ -816,6 +816,10 @@ static inline void calctexgen(VSlot &vslot, int orient, vec4 &sgen, vec4 &tgen)
     }
 }
 
+//takes a 3d vec3 and transforms it into a packed ushort vector
+//the output ushort is in base 360 and has yaw in the first place and pitch in the second place
+//the second place has pitch as a range from 0 to 90
+//since this is a normal vector, no magnitude needed
 ushort encodenormal(const vec &n)
 {
     if(n.iszero()) return 0;
@@ -823,6 +827,7 @@ ushort encodenormal(const vec &n)
     return ushort(clamp(pitch + 90, 0, 180)*360 + (yaw < 0 ? yaw%360 + 360 : yaw%360) + 1);
 }
 
+//takes a packed ushort vector and turns it into a vec3 vector object
 vec decodenormal(ushort norm)
 {
     if(!norm) return vec(0, 0, 1);
