@@ -8,7 +8,7 @@ enum { ET_EMPTY=0, ET_LIGHT, ET_MAPMODEL, ET_PLAYERSTART, ET_ENVMAP, ET_PARTICLE
 struct entity                                   // persistent map entity
 {
     vec o;                                      // position
-    short attr1, attr2, attr3, attr4, attr5;
+    short attr1, attr2, attr3, attr4, attr5;    // attributes
     uchar type;                                 // type is one of the above
     uchar reserved;
 };
@@ -198,5 +198,3 @@ struct dynent : physent                         // animated characters, or chara
 
     vec abovehead() { return vec(o).addz(aboveeye+4); }
 };
-
-

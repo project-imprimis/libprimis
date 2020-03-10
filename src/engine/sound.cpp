@@ -516,7 +516,7 @@ void checkmapsounds()
     {
         extentity &e = *ents[i];
         if(e.type!=ET_SOUND) continue;
-        if(camera1->o.dist(e.o) < e.attr2)
+        if(camera1->o.dist(e.o) < e.attr2) //if distance to entity < ent attr 2 (radius)
         {
             if(!(e.flags&EF_SOUND)) playsound(e.attr1, NULL, &e, SND_MAP, -1);
         }
