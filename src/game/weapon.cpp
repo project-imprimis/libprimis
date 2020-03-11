@@ -293,11 +293,12 @@ namespace game
 
     void spawnbouncer(const vec &p, const vec &vel, gameent *d, int type)
     {
-        vec to(rnd(100)-50, rnd(100)-50, rnd(100)-50);
-        if(to.iszero()) to.z += 1;
-        to.normalize();
-        to.add(p);
-        newbouncer(p, to, true, 0, d, type, rnd(1000)+1000, rnd(100)+20);
+        vec to(rnd(100)-50, rnd(100)-50, rnd(100)-50); //x,y,z = [-50,50] to get enough steps to create a good random vector
+        if(to.iszero()) to.z += 1; //if all three are zero (bad luck!), set vector to (0,0,1)
+        to.normalize(); //smash magnitude back to 1
+        to.add(p); //add this random to input &p
+        //newbouncer( from, to, local, id, owner, type, lifetime,       speed)
+        newbouncer(   p,    to, true,  0,  d,     type, rnd(1000)+1000, rnd(100)+20);
     }
 
     void gibeffect(int damage, const vec &vel, gameent *d)
