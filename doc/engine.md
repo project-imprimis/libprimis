@@ -1871,7 +1871,9 @@ are defined by a set of twelve unique parameters as well as being a child of the
 general `physent` class of game objects.
 
 Unlike projectiles, which are parameterized in terms of maximum range, bouncers
-are parameterized in terms of their lifetime.
+are parameterized in terms of their lifetime. Note that while vectors like start
+position are not listed below, they do exist as part of the parent physent
+class.
 
 The twelve unique parameters that bouncers have are as follows:
 
@@ -1882,9 +1884,9 @@ The twelve unique parameters that bouncers have are as follows:
 * bool `local` multiplayer sync flag for the projectile
 * gameent `*owner` gameent which the projectile belongs to
 * int `bouncetype` type of bounce the bouncer does
-* int `variant`
-* vec `offset`
-* int `offsetmillis`
+* int `variant` random variant of bouncer that this bouncer has
+* vec `offset` world offset, starts at bouncer spawn point
+* int `offsetmillis` time of projectile creation
 * int `id` unique id assigned to each bouncer entity
 
 # 6 Actors
