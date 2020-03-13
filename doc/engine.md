@@ -87,6 +87,9 @@ linear analysis, including multipole expansions and Fourier series.
 * 9.2 Game Variables
 * 9.3 Modes
 
+#### 10. Internal Objects
+* 10.1 Vector Objects
+
 # 1. Standards
 ---
 
@@ -1967,3 +1970,56 @@ and the following functions:
 * `~gameent`
 * void `hitpush`
 * void `startgame`
+
+# 10 Internal Objects
+---
+
+A number of C++ objects are defined in the engine to facilitate manipulation in
+a replicable way. Many of these are geometry constructs which carry with them
+the algebra and geometry of the structures they describe.
+
+The game also has many specific-purpose objects which are described in their
+particular section. This chapter is reserved for general, extensible objects
+with utility in many potential parts of the engine.
+
+## 10.1 Vector Objects
+
+A large number of vector objects exist in the game to facilitate working with
+objects in 2D, 3D, 4D, quaternion, and dual quaternion vector spaces.
+
+#### 10.1.1 `vec`
+
+`vec` is an incredibly ubiquitous object in the engine, where it is referenced
+thousands of times over essentially every part of the game code. Key features of
+the vec object:
+
+* `vec` is always 3 dimensional, and has three defining float values.
+* `vec` has its three arguments as either `x,y,z` or `r,g,b` (in a union)
+* `vec` has many linear algebra operators defined for it: see `shared/geom.h`
+
+As the `vec` object is only defined for a 3-vector, seperate classes like `vec2`
+and `vec4` are used to do two or four dimensional linear algebra. However, these
+objects are much less common and also have less operators defined for it,
+befitting a 3d engine where locations of objects in the world are nearly always
+defined as a 3d vector.
+
+#### 10.1.2 `bvec`
+
+`bvec` is a 3d color vector object. As opposed to the standard `vec` object,
+which is useful mainly in world geometry, the `bvec` vector is intended for use
+in the color vector space. In this space, the three basis vectors are R/G/B.
+
+`bvec` does not inherit properties from the standard `vec` object and is not
+capable of doing standard linear algebra operations like `vec` can; for this
+reason, it is not suitable for use in standard geometric constructions.
+
+Important properties of the `bvec` object:
+
+* `bvec` is always 3 dimensional, and has three defining character values.
+* `bvec` has its three arguments as either `x,y,z` or `r,g,b` (in a union)
+* `bvec` has mostly color conversion operators defined and few normal operators
+
+Critically, values in a `bvec` are of type `char`, meaning they are one byte
+long and can encode values between 0 and 255. There is no notion of sign with a
+`char`, and indeed having colors with negative values in its channels makes no
+sense either.
