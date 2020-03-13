@@ -197,7 +197,7 @@ struct polysurfacecompat
 
 static int savemapprogress = 0;
 
-void savec(cube *c, const ivec &o, int size, stream *f, bool nolms)
+void savec(cube *c, const ivec &o, int size, stream *f)
 {
     if((savemapprogress++&0xFFF)==0) renderprogress(float(savemapprogress)/allocnodes, "saving octree...");
 
@@ -207,7 +207,7 @@ void savec(cube *c, const ivec &o, int size, stream *f, bool nolms)
         if(c[i].children)
         {
             f->putchar(OCTSAV_CHILDREN);
-            savec(c[i].children, co, size>>1, f, nolms);
+            savec(c[i].children, co, size>>1, f);
         }
         else
         {
@@ -216,17 +216,14 @@ void savec(cube *c, const ivec &o, int size, stream *f, bool nolms)
             if(isempty(c[i])) f->putchar(oflags | OCTSAV_EMPTY);
             else
             {
-                if(!nolms)
+                if(c[i].merged) oflags |= 0x80;
+                if(c[i].ext) loopj(6)
                 {
-                    if(c[i].merged) oflags |= 0x80;
-                    if(c[i].ext) loopj(6)
-                    {
-                        const surfaceinfo &surf = c[i].ext->surfaces[j];
-                        if(!surf.used()) continue;
-                        oflags |= 0x20;
-                        surfmask |= 1<<j;
-                        totalverts += surf.totalverts();
-                    }
+                    const surfaceinfo &surf = c[i].ext->surfaces[j];
+                    if(!surf.used()) continue;
+                    oflags |= 0x20;
+                    surfmask |= 1<<j;
+                    totalverts += surf.totalverts();
                 }
 
                 if(isentirelysolid(c[i])) f->putchar(oflags | OCTSAV_SOLID);
@@ -593,7 +590,7 @@ void loadvslots(stream *f, int numvslots)
     delete[] prev;
 }
 
-bool save_world(const char *mname, bool nolms)
+bool save_world(const char *mname)
 {
     if(!*mname) mname = game::getclientmap();
     setmapfilenames(*mname ? mname : "untitled");
@@ -602,7 +599,7 @@ bool save_world(const char *mname, bool nolms)
     if(!f) { conoutf(CON_WARN, "could not write map to %s", ogzname); return false; }
 
     int numvslots = vslots.length();
-    if(!nolms && !multiplayer(false))
+    if(!multiplayer(false))
     {
         numvslots = compactvslots();
         allchanged();
@@ -618,7 +615,7 @@ bool save_world(const char *mname, bool nolms)
     hdr.worldsize = worldsize;
     hdr.numents = 0;
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents) if(ents[i]->type!=ET_EMPTY || nolms) hdr.numents++;
+    loopv(ents) if(ents[i]->type!=ET_EMPTY) hdr.numents++;
     hdr.blendmap = shouldsaveblendmap();
     hdr.numvars = 0;
     hdr.numvslots = numvslots;
@@ -670,7 +667,7 @@ bool save_world(const char *mname, bool nolms)
     char *ebuf = new char[entities::extraentinfosize()];
     loopv(ents)
     {
-        if(ents[i]->type!=ET_EMPTY || nolms)
+        if(ents[i]->type!=ET_EMPTY)
         {
             entity tmp = *ents[i];
             lilswap(&tmp.o.x, 3);
@@ -685,7 +682,7 @@ bool save_world(const char *mname, bool nolms)
     savevslots(f, numvslots);
 
     renderprogress(0, "saving octree...");
-    savec(worldroot, ivec(0, 0, 0), worldsize>>1, f, nolms);
+    savec(worldroot, ivec(0, 0, 0), worldsize>>1, f);
 
     if(shouldsaveblendmap()) { renderprogress(0, "saving blendmap..."); saveblendmap(f); }
 

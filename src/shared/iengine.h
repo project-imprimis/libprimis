@@ -370,7 +370,7 @@ static inline void addstain(int type, const vec &center, const vec &surface, flo
 
 // worldio
 extern bool load_world(const char *mname, const char *cname = NULL);
-extern bool save_world(const char *mname, bool nolms = false);
+extern bool save_world(const char *mname);
 extern void fixmapname(char *name);
 extern uint getmapcrc();
 extern void clearmapcrc();
