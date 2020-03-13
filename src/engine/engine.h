@@ -587,7 +587,7 @@ enum
     INIT_LOAD,
     INIT_RESET
 };
-extern int initing, numcpus;
+extern int initing;
 
 enum
 {

@@ -1060,8 +1060,6 @@ int getclockmillis()
     return max(millis, totalmillis);
 }
 
-VAR(numcpus, 1, 1, 16);
-
 int main(int argc, char **argv)
 {
     #ifdef WIN32
@@ -1119,8 +1117,6 @@ int main(int argc, char **argv)
         }
         else gameargs.add(argv[i]);
     }
-
-    numcpus = clamp(SDL_GetCPUCount(), 1, 16);
 
     if(dedicated <= 1)
     {
