@@ -1232,7 +1232,7 @@ void nearestent()
             closedist = dist;
         }
     }
-    if(closest >= 0) entadd(closest);
+    if(closest >= 0 && entgroup.find(closest) < 0) entadd(closest);
 }
 
 ICOMMAND(enthavesel,"",  (), addimplicit(intret(entgroup.length())));
