@@ -50,8 +50,9 @@ linear analysis, including multipole expansions and Fourier series.
 * 3.1 Static Entities
 * 3.2 Projectiles
 * 3.3 Bouncers
-* 3.4 Particles
-* 3.5 Physics
+* 3.4 Stains
+* 3.5 Particles
+* 3.6 Physics
 
 #### 4. Sound
 * 4.1 Sound Interface
@@ -1498,9 +1499,9 @@ representable with the projection.
 
 Decals are static entities which act to project an image (specified by an index)
 onto a surface of cube geometry. The limitation to cube geometry is an important
-one, one that extends beyond just the static entity to decals in the engine at
-large; the engine is not capable of placing bullet holes or blood stains onto
-any mapmodel geometry.
+one, one that precludes the usage of mapmodels that can be manipulated easily
+within the engine. Stains, which are used by weapons, can place their images
+upon any type of geometry, including mapmodels.
 
 Decals are loaded into the map's configuration file in the same manner that
 textures are. The order in which the decals are defined sets their map-specific
@@ -1891,6 +1892,23 @@ The twelve unique parameters that bouncers have are as follows:
 * vec `offset` world offset, starts at bouncer spawn point
 * int `offsetmillis` time of projectile creation
 * int `id` unique id assigned to each bouncer entity
+
+### 3.4 Stains
+
+Stains are a type of decal that is generally applied by the effect of another
+entity's death. Examples of this include the bullet holes left behind when a
+projectile makes contact with a surface or the blood stains left behind by a
+dead actor's giblet.
+
+#### 3.4.1 Stain Objects
+
+Stain objects have the following properties in their individual objects:
+
+* int `millis` The time when the stain spawns
+* bvec `color` The color of the stain texture.
+* uchar `owner`
+* ushort `startvert`
+* ushort `endvert`
 
 # 6 Actors
 ---
