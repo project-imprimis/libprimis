@@ -540,7 +540,8 @@ VARFNP(gamma, reqgamma, 30, 100, 300,
 
 void restoregamma()
 {
-    if(initing || curgamma == 100) return;
+    if(initing || reqgamma == 100) return;
+    curgamma = reqgamma;
     setgamma(curgamma);
 }
 
