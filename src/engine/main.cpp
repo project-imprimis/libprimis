@@ -91,11 +91,11 @@ bool initwarning(const char *desc, int level, int type)
     return false;
 }
 
-#define SCR_MINW 320
-#define SCR_MINH 200
-#define SCR_MAXW 10000
-#define SCR_MAXH 10000
-#define SCR_DEFAULTW 1024
+#define SCR_MINW 320 //minimum screen resolution
+#define SCR_MINH 200 //minumum screen resolution
+#define SCR_MAXW 16384
+#define SCR_MAXH 16384
+#define SCR_DEFAULTW 1366 //smallest typical screens are 1366x768
 #define SCR_DEFAULTH 768
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
@@ -197,18 +197,17 @@ void renderbackgroundview(
     gle::defvertex(2);
     gle::deftexcoord0();
 
-    settexture("media/interface/background.png", 0);
+    settexture("media/interface/background.png", 0); //main menu background
     float bu = win_w*0.67f/256.0f, bv = win_h*0.67f/256.0f;
     bgquad(0, 0, win_w, win_h, backgroundu, backgroundv, bu, bv);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    settexture("media/interface/shadow.png", 3);
+    settexture("media/interface/shadow.png", 3); //peripheral shadow effect
     bgquad(0, 0, win_w, win_h);
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
 
     // Set position and size of logo
 
@@ -219,8 +218,8 @@ void renderbackgroundview(
 
     settexture(
         (maxtexsize ? min(maxtexsize, hwtexsize) : hwtexsize) >= 1024 && (hudw > 1280 || hudh > 800)
-            ? "<premul>media/interface/logo_1024.png"
-            : "<premul>media/interface/logo.png",
+            ? "<premul>media/interface/logo_1024.png" //1024x wide logo
+            : "<premul>media/interface/logo.png", //512x wide logo for small screens
         3);
     bgquad(logo_x, logo_y, logo_w, logo_h);
 
