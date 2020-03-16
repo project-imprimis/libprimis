@@ -1904,11 +1904,27 @@ dead actor's giblet.
 
 Stain objects have the following properties in their individual objects:
 
-* int `millis` The time when the stain spawns
-* bvec `color` The color of the stain texture.
-* uchar `owner`
-* ushort `startvert`
-* ushort `endvert`
+* int `millis` The game time when the stain spawns
+* bvec `color` The color of the stain texture
+* uchar `owner` The stain buffer the stain belongs to
+* ushort `startvert` The vertex in the buffer the stain starts at
+* ushort `endvert` The vertex in the buffer the stain ends at
+
+#### 3.4.2 Stain Settings
+
+Unlike typical particles and decals, stains, by virtue of their entirely
+cosmetic nature, have user-configurable settings to control their impact on
+visuals and performance. For this reason, stains should never be assumed as they
+can be turned off or modified client-side.
+
+The commands:
+
+* `stainfade <value>` time in s before stains fade away
+* `stains <bool>` toggles rendering of stains
+* `dbgstain <bool>` toggles debug output for stains
+
+There are some Cubescript aliases which relate to shaders; those are not user
+commands and are not covered here.
 
 # 6 Actors
 ---
