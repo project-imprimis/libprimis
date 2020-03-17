@@ -845,6 +845,7 @@ extern float blursigma;
 extern void setupblurkernel(int radius, float *weights, float *offsets);
 extern void setblurshader(int pass, int size, int radius, float *weights, float *offsets, GLenum target = GL_TEXTURE_2D);
 
+extern SDL_Surface *loadsurface(const char *name);
 extern void savepng(const char *filename, ImageData &image, bool flip = false);
 extern void savetga(const char *filename, ImageData &image, bool flip = false);
 extern bool loaddds(const char *filename, ImageData &image, int force = 0);

@@ -603,7 +603,15 @@ void setupscreen()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
     //create new screen       title          x     y     w     h  flags
     screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
+
     if(!screen) fatal("failed to create OpenGL window: %s", SDL_GetError());
+
+    SDL_Surface *icon = loadsurface("media/interface/icon.png"); //path to taskbar icon
+    if(icon)
+    {
+        SDL_SetWindowIcon(screen, icon);
+        SDL_FreeSurface(icon); //don't need it any more
+    }
 
     SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
     SDL_SetWindowMaximumSize(screen, SCR_MAXW, SCR_MAXH);
