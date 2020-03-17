@@ -917,7 +917,7 @@ void writeobj(char *name)
     defformatstring(fname, "%s.obj", name);
     stream *f = openfile(path(fname), "w");
     if(!f) return;
-    f->printf("# obj file of Cube 2 level\n\n");
+    f->printf("# obj file of Imprimis level\n\n");
     defformatstring(mtlname, "%s.mtl", name);
     path(mtlname);
     f->printf("mtllib %s\n\n", mtlname);
@@ -993,7 +993,7 @@ void writeobj(char *name)
 
     f = openfile(mtlname, "w");
     if(!f) return;
-    f->printf("# mtl file of Cube 2 level\n\n");
+    f->printf("# mtl file of Imprimis level\n\n");
     loopv(usedmtl)
     {
         VSlot &vslot = lookupvslot(usedmtl[i], false);
@@ -1099,7 +1099,7 @@ void writecollideobj(char *name)
     defformatstring(fname, "%s.obj", name);
     stream *f = openfile(path(fname), "w");
     if(!f) return;
-    f->printf("# obj file of Cube 2 collide model\n\n");
+    f->printf("# obj file of Imprimis collide model\n\n");
     loopv(verts)
     {
         vec v = xform.transform(verts[i]);
