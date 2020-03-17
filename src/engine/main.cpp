@@ -565,6 +565,7 @@ VAR(dbgmodes, 0, 0, 1);
 
 void setupscreen()
 {
+    //clear prior gl context/screen if present
     if(glcontext)
     {
         SDL_GL_DeleteContext(glcontext);
@@ -600,6 +601,7 @@ void setupscreen()
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+    //create new screen       title          x     y     w     h  flags
     screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
     if(!screen) fatal("failed to create OpenGL window: %s", SDL_GetError());
 
@@ -629,6 +631,7 @@ void setupscreen()
     hudh = screenh;
 }
 
+//full reset of renderer
 void resetgl()
 {
     clearchanges(CHANGE_GFX|CHANGE_SHADERS);
@@ -655,6 +658,7 @@ void resetgl()
     gl_init();
 
     inbetweenframes = false;
+    //texture reloading
     if(!reloadtexture(*notexture) ||
        !reloadtexture("<premul>media/interface/logo.png") ||
        !reloadtexture("<premul>media/interface/logo_1024.png") ||
