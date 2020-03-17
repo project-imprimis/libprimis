@@ -24,3 +24,17 @@ Imprimis' Tesseract base provides a bunch of new rendering features such as:
 * runs on both OpenGL Core (3.0+) and legacy (2.0+) contexts
 
 For documentation on the engine, see `doc/engine.md`.
+
+To get the game, `git` is required. Using `git`, get the repository and its sumodules with
+
+`git clone https://github.com/project-imprimis/imprimis.git --recurse-submodules`
+
+The `imprimis` folder will now be visible in the current directory.
+
+To compile the game, use `make -C src install -jN` from the directory in which this file is located.
+Set N to the number of threads to compile with. For example, for a quad-core processor, set -j4.
+
+(to reach this directory use `cd imprimis`)
+
+This game requires `libsdl2`, `libsdl2-image`, `libsdl2-mixer`, and drivers for OpenGL (usually already installed).
+To compile the game, the development versions of the libraries are required (on distros that seperate standard and dev packages).
