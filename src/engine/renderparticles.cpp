@@ -126,20 +126,20 @@ const char *partnames[] = { "part", "tape", "trail", "text", "textup", "meter", 
 
 struct particle
 {
-    vec o, d;
-    int gravity, fade, millis;
-    bvec color;
-    uchar flags;
-    float size;
-    union
+    vec o, d;                  //o: origin d: dir
+    int gravity, fade, millis; //gravity intensity, fade rate, lifetime
+    bvec color;                //color vector triple
+    uchar flags;               //particle-specific flags
+    float size;                //radius or scale factor
+    union                      //for unique properties of particular entities
     {
-        const char *text;
-        float val;
-        physent *owner;
-        struct
+        const char *text;      //text particle
+        float val;             //fireball particle
+        physent *owner;        //flare particle
+        struct                 //meter particle
         {
-            uchar color2[3];
-            uchar progress;
+            uchar color2[3];   //color of bar
+            uchar progress;    //bar fill %
         };
     };
 };
