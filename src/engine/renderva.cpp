@@ -1628,7 +1628,7 @@ void renderzpass(renderstate &cur, vtxarray *va)
     drawvatris(va, 3*numtris, offset);
 }
 
-#define startvaquery(va, flush) \
+#define STARTVAQUERY(va, flush) \
     do { \
         if(va->query) \
         { \
@@ -1638,7 +1638,7 @@ void renderzpass(renderstate &cur, vtxarray *va)
     } while(0)
 
 
-#define endvaquery(va, flush) \
+#define ENDVAQUERY(va, flush) \
     do { \
         if(va->query) \
         { \
@@ -1655,16 +1655,16 @@ void renderva(renderstate &cur, vtxarray *va, int pass = RENDERPASS_GBUFFER, boo
     {
         case RENDERPASS_GBUFFER:
             if(!cur.alphaing) vverts += va->verts;
-            if(doquery) startvaquery(va, { if(geombatches.length()) renderbatches(cur, pass); });
+            if(doquery) STARTVAQUERY(va, { if(geombatches.length()) renderbatches(cur, pass); });
             mergetexs(cur, va);
-            if(doquery) endvaquery(va, { if(geombatches.length()) renderbatches(cur, pass); });
+            if(doquery) ENDVAQUERY(va, { if(geombatches.length()) renderbatches(cur, pass); });
             else if(!batchgeom && geombatches.length()) renderbatches(cur, pass);
             break;
 
         case RENDERPASS_GBUFFER_BLEND:
-            if(doquery) startvaquery(va, { if(geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER); });
+            if(doquery) STARTVAQUERY(va, { if(geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER); });
             mergetexs(cur, va, &va->texelems[va->texs], va->blends, 3*va->tris);
-            if(doquery) endvaquery(va, { if(geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER); });
+            if(doquery) ENDVAQUERY(va, { if(geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER); });
             else if(!batchgeom && geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER);
             break;
 
@@ -1676,9 +1676,9 @@ void renderva(renderstate &cur, vtxarray *va, int pass = RENDERPASS_GBUFFER, boo
             break;
 
         case RENDERPASS_Z:
-            if(doquery) startvaquery(va, );
+            if(doquery) STARTVAQUERY(va, );
             renderzpass(cur, va);
-            if(doquery) endvaquery(va, );
+            if(doquery) ENDVAQUERY(va, );
             break;
 
         case RENDERPASS_RSM:
