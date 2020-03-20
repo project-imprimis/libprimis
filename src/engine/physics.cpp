@@ -299,7 +299,7 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
 
         cube &c = *lc;
         if((dist>0 || !(mode&RAY_SKIPFIRST)) &&
-           (((mode&RAY_CLIPMAT) && isclipped(c.material&MATF_VOLUME)) ||
+           (((mode&RAY_CLIPMAT) && IS_CLIPPED(c.material&MATF_VOLUME)) ||
             ((mode&RAY_EDITMAT) && c.material != MAT_AIR) ||
             (!(mode&RAY_PASS) && lsize==size && !isempty(c)) ||
             isentirelysolid(c) ||
@@ -1102,7 +1102,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
             switch(c[i].material&MATF_CLIP)
             {
                 case MAT_NOCLIP: continue;
-                case MAT_CLIP: if(isclipped(c[i].material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
+                case MAT_CLIP: if(IS_CLIPPED(c[i].material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
             }
             if(!solid && isempty(c[i])) continue;
             if(cubecollide(d, dir, cutoff, c[i], o, size, solid)) return true;
@@ -1131,7 +1131,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
     switch(c->material&MATF_CLIP)
     {
         case MAT_NOCLIP: return false;
-        case MAT_CLIP: if(isclipped(c->material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
+        case MAT_CLIP: if(IS_CLIPPED(c->material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
     }
     if(!solid && isempty(*c)) return false;
     int csize = 2<<scale, cmask = ~(csize-1);
@@ -1555,7 +1555,7 @@ bool bounce(physent *d, float secs, float elasticity, float waterfric, float gra
     // make sure bouncers don't start inside geometry
     if(d->physstate!=PHYS_BOUNCE && collide(d, vec(0, 0, 0), 0, false)) return true;
     int mat = lookupmaterial(vec(d->o.x, d->o.y, d->o.z + (d->aboveeye - d->eyeheight)/2));
-    bool water = isliquid(mat);
+    bool water = IS_LIQUID(mat);
     if(water)
     {
         d->vel.z -= grav*GRAVITY/16*secs;
@@ -1832,7 +1832,7 @@ void modifygravity(physent *pl, bool water, int curtime)
 bool moveplayer(physent *pl, int moveres, bool local, int curtime)
 {
     int material = lookupmaterial(vec(pl->o.x, pl->o.y, pl->o.z + (3*pl->aboveeye - pl->eyeheight)/4));
-    bool water = isliquid(material&MATF_VOLUME);
+    bool water = IS_LIQUID(material&MATF_VOLUME);
     bool floating = pl->type==ENT_PLAYER && (pl->state==CS_EDITING || pl->state==CS_SPECTATOR);
     float secs = curtime/1000.f;
 
@@ -1884,7 +1884,7 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
     if(pl->inwater && !water)
     {
         material = lookupmaterial(vec(pl->o.x, pl->o.y, pl->o.z + (pl->aboveeye - pl->eyeheight)/2));
-        water = isliquid(material&MATF_VOLUME);
+        water = IS_LIQUID(material&MATF_VOLUME);
     }
     if(!pl->inwater && water) game::physicstrigger(pl, local, 0, -1, material&MATF_VOLUME);
     else if(pl->inwater && !water) game::physicstrigger(pl, local, 0, 1, pl->inwater);

@@ -36,9 +36,9 @@ enum // cube empty-space materials
     MAT_ALPHA    = 4 << MATF_FLAG_SHIFT   // alpha blended
 };
 
-#define isliquid(mat) ((mat)==MAT_WATER || (mat)==MAT_LAVA)
-#define isclipped(mat) ((mat)==MAT_GLASS)
-#define isdeadly(mat) ((mat)==MAT_LAVA)
+#define IS_LIQUID(mat) ((mat)==MAT_WATER || (mat)==MAT_LAVA)
+#define IS_CLIPPED(mat) ((mat)==MAT_GLASS) //materials that are obligate clipping (always also get clipped)
+#define IS_DEADLY(mat) ((mat)==MAT_LAVA) //materials thare are obligate deadly (always also have deatmat)
 
 extern void lightent(extentity &e, float height = 8.0f);
 extern void lightreaching(const vec &target, vec &color, vec &dir, bool fast = false, extentity *e = 0, float minambient = 0.4f);

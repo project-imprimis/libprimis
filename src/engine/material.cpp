@@ -323,7 +323,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
                cur->visible == start->visible &&
                cur->o[dim] == start->o[dim])
             ++cur;
-         if(!isliquid(start->material&MATF_VOLUME) || start->orient != O_TOP || !vertwater)
+         if(!IS_LIQUID(start->material&MATF_VOLUME) || start->orient != O_TOP || !vertwater)
          {
             if(start!=matbuf) memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
             matbuf += mergemats(matbuf, cur-start);
@@ -367,7 +367,7 @@ void setupmaterials(int start, int len)
         {
             materialsurface &m = va->matbuf[j];
             int matvol = m.material&MATF_VOLUME;
-            if(isliquid(matvol) && m.orient!=O_BOTTOM && m.orient!=O_TOP)
+            if(IS_LIQUID(matvol) && m.orient!=O_BOTTOM && m.orient!=O_TOP)
             {
                 m.ends = 0;
                 int dim = dimension(m.orient), coord = dimcoord(m.orient);
@@ -380,7 +380,7 @@ void setupmaterials(int start, int len)
                 while(o[dim^1] < maxc)
                 {
                     cube &c = lookupcube(o, 0, co, csize);
-                    if(isliquid(c.material&MATF_VOLUME)) { m.ends |= 1; break; }
+                    if(IS_LIQUID(c.material&MATF_VOLUME)) { m.ends |= 1; break; }
                     o[dim^1] += csize;
                 }
                 o[dim^1] = minc;
