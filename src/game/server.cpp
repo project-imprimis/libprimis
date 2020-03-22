@@ -766,7 +766,7 @@ namespace server
     void sendservmsgf(const char *fmt, ...) PRINTFARGS(1, 2);
     void sendservmsgf(const char *fmt, ...)
     {
-         defvformatstring(s, fmt, fmt);
+         DEFV_FORMAT_STRING(s, fmt, fmt);
          sendf(-1, 1, "ris", N_SERVMSG, s);
     }
 
@@ -1130,7 +1130,7 @@ namespace server
         demoheader hdr;
         string msg;
         msg[0] = '\0';
-        defformatstring(file, "%s.dmo", smapname);
+        DEF_FORMAT_STRING(file, "%s.dmo", smapname);
         demoplayback = opengzfile(file, "rb");
         if(!demoplayback) formatstring(msg, "could not read demo \"%s\"", file);
         else if(demoplayback->read(&hdr, sizeof(demoheader))!=sizeof(demoheader) || memcmp(hdr.magic, DEMO_MAGIC, sizeof(hdr.magic)))
@@ -2624,7 +2624,7 @@ namespace server
             userinfo *u = users.access(userkey(ci->authname, ci->authdesc));
             if(u)
             {
-                uint seed[3] = { ::hthash(serverauth) + detrnd(size_t(ci) + size_t(user) + size_t(desc), 0x10000), uint(totalmillis), randomMT() };
+                uint seed[3] = { ::hthash(serverauth) + DET_RND(size_t(ci) + size_t(user) + size_t(desc), 0x10000), uint(totalmillis), randomMT() };
                 vector<char> buf;
                 ci->authchallenge = genchallenge(u->pubkey, seed, sizeof(seed), buf);
                 sendf(ci->clientnum, 1, "risis", N_AUTHCHAL, desc, ci->authreq, buf.getbuf());

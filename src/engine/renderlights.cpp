@@ -115,7 +115,7 @@ Shader *loadbilateralshader(int pass)
     if(aopackdepth) opts[optslen++] = 'p';
     opts[optslen] = '\0';
 
-    defformatstring(name, "bilateral%c%s%d", 'x' + pass, opts, aobilateral);
+    DEF_FORMAT_STRING(name, "bilateral%c%s%d", 'x' + pass, opts, aobilateral);
     return generateshader(name, "bilateralshader \"%s\" %d %d", opts, aobilateral, reduce ? aoreduce : 0);
 }
 
@@ -154,7 +154,7 @@ Shader *loadambientobscuranceshader()
     if(aobilateral && aopackdepth) opts[optslen++] = 'p';
     opts[optslen] = '\0';
 
-    defformatstring(name, "ambientobscurance%s%d", opts, aotaps);
+    DEF_FORMAT_STRING(name, "ambientobscurance%s%d", opts, aotaps);
     return generateshader(name, "ambientobscuranceshader \"%s\" %d", opts, aotaps);
 }
 
@@ -1376,7 +1376,7 @@ Shader *rsmworldshader = NULL;
 
 Shader *loadradiancehintsshader()
 {
-    defformatstring(name, "radiancehints%d", rhtaps);
+    DEF_FORMAT_STRING(name, "radiancehints%d", rhtaps);
     return generateshader(name, "radiancehintsshader %d", rhtaps);
 }
 
@@ -2433,7 +2433,7 @@ Shader *loadvolumetricshader()
     shadow[shadowlen++] = 'p';
     shadow[shadowlen] = '\0';
 
-    defformatstring(name, "volumetric%s%s%d", common, shadow, volsteps);
+    DEF_FORMAT_STRING(name, "volumetric%s%s%d", common, shadow, volsteps);
     return generateshader(name, "volumetricshader \"%s\" \"%s\" %d", common, shadow, volsteps);
 }
 
@@ -2443,7 +2443,7 @@ void loadvolumetricshaders()
 
     if(volbilateral) loopi(2)
     {
-        defformatstring(name, "volumetricbilateral%c%d%d", 'x' + i, volbilateral, volreduce);
+        DEF_FORMAT_STRING(name, "volumetricbilateral%c%d%d", 'x' + i, volbilateral, volreduce);
         volumetricbilateralshader[i] = generateshader(name, "volumetricbilateralshader %d %d", volbilateral, volreduce);
     }
 }
@@ -2566,7 +2566,7 @@ Shader *loaddeferredlightshader(const char *type = NULL)
     }
     sun[sunlen] = '\0';
 
-    defformatstring(name, "deferredlight%s%s%s", common, shadow, sun);
+    DEF_FORMAT_STRING(name, "deferredlight%s%s%s", common, shadow, sun);
     return generateshader(name, "deferredlightshader \"%s\" \"%s\" \"%s\" %d %d %d", common, shadow, sun, usecsm, userh, !minimap ? lighttilebatch : 0);
 }
 

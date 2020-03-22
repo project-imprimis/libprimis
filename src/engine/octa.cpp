@@ -141,7 +141,7 @@ void getcubevector(cube &c, int d, int x, int y, int z, ivec &p)
     ivec v(d, x, y, z);
 
     loopi(3)
-        p[i] = edgeget(cubeedge(c, i, v[R[i]], v[C[i]]), v[D[i]]);
+        p[i] = edgeget(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]]);
 }
 
 void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
@@ -149,21 +149,21 @@ void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
     ivec v(d, x, y, z);
 
     loopi(3)
-        edgeset(cubeedge(c, i, v[R[i]], v[C[i]]), v[D[i]], p[i]);
+        edgeset(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]], p[i]);
 }
 
 static inline void getcubevector(cube &c, int i, ivec &p)
 {
-    p.x = edgeget(cubeedge(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
-    p.y = edgeget(cubeedge(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
-    p.z = edgeget(cubeedge(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1);
+    p.x = edgeget(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
+    p.y = edgeget(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
+    p.z = edgeget(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1);
 }
 
 static inline void setcubevector(cube &c, int i, const ivec &p)
 {
-    edgeset(cubeedge(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1, p.x);
-    edgeset(cubeedge(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1, p.y);
-    edgeset(cubeedge(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
+    edgeset(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1, p.x);
+    edgeset(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1, p.y);
+    edgeset(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
 }
 
 void optiface(uchar *p, cube &c)
@@ -278,9 +278,9 @@ int neighbourdepth = -1;
 const cube &neighbourcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
 {
     ivec n = co;
-    int dim = dimension(orient);
+    int dim = DIMENSION(orient);
     uint diff = n[dim];
-    if(dimcoord(orient)) n[dim] += size; else n[dim] -= size;
+    if(DIM_COORD(orient)) n[dim] += size; else n[dim] -= size;
     diff ^= n[dim];
     if(diff >= uint(worldsize)) { ro = n; rsize = size; return emptycube; }
     int scale = worldscale;
@@ -309,7 +309,7 @@ const cube &neighbourcube(const cube &c, int orient, const ivec &co, int size, i
 int getmippedtexture(const cube &p, int orient)
 {
     cube *c = p.children;
-    int d = dimension(orient), dc = dimcoord(orient), texs[4] = { -1, -1, -1, -1 }, numtexs = 0;
+    int d = DIMENSION(orient), dc = DIM_COORD(orient), texs[4] = { -1, -1, -1, -1 }, numtexs = 0;
     loop(x, 2) loop(y, 2)
     {
         int n = octaindex(d, x, y, dc);
@@ -401,7 +401,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
 
     loopj(6)
     {
-        int d = dimension(j), z = dimcoord(j);
+        int d = DIMENSION(j), z = DIM_COORD(j);
         const ivec &v00 = v[octaindex(d, 0, 0, z)],
                    &v10 = v[octaindex(d, 1, 0, z)],
                    &v01 = v[octaindex(d, 0, 1, z)],
@@ -436,10 +436,10 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         {
             ch[i].texture[j] = c.texture[j];
             int rd = (i>>R[d])&1, cd = (i>>C[d])&1, dd = (i>>D[d])&1;
-            edgeset(cubeedge(ch[i], d, 0, 0), z, clamp(e[rd][cd] - dd*8, 0, 8));
-            edgeset(cubeedge(ch[i], d, 1, 0), z, clamp(e[1+rd][cd] - dd*8, 0, 8));
-            edgeset(cubeedge(ch[i], d, 0, 1), z, clamp(e[rd][1+cd] - dd*8, 0, 8));
-            edgeset(cubeedge(ch[i], d, 1, 1), z, clamp(e[1+rd][1+cd] - dd*8, 0, 8));
+            edgeset(CUBE_EDGE(ch[i], d, 0, 0), z, clamp(e[rd][cd] - dd*8, 0, 8));
+            edgeset(CUBE_EDGE(ch[i], d, 1, 0), z, clamp(e[1+rd][cd] - dd*8, 0, 8));
+            edgeset(CUBE_EDGE(ch[i], d, 0, 1), z, clamp(e[rd][1+cd] - dd*8, 0, 8));
+            edgeset(CUBE_EDGE(ch[i], d, 1, 1), z, clamp(e[1+rd][1+cd] - dd*8, 0, 8));
         }
     }
 
@@ -550,7 +550,7 @@ bool remip(cube &c, const ivec &co, int size)
     if(mipvis) loop(orient, 6)
     {
         int mask = 0;
-        loop(x, 2) loop(y, 2) mask |= 1<<octaindex(dimension(orient), x, y, dimcoord(orient));
+        loop(x, 2) loop(y, 2) mask |= 1<<octaindex(DIMENSION(orient), x, y, DIM_COORD(orient));
         if(vis[orient]&mask && (vis[orient]&mask)!=mask) { freeocta(nh); return false; }
     }
 
@@ -601,9 +601,9 @@ static inline void gencubevert(const cube &c, int i, T &v)
         default:
 #define GENCUBEVERT(n, x, y, z) \
         case n: \
-            v = T(edgeget(cubeedge(c, 0, y, z), x), \
-                  edgeget(cubeedge(c, 1, z, x), y), \
-                  edgeget(cubeedge(c, 2, x, y), z)); \
+            v = T(edgeget(CUBE_EDGE(c, 0, y, z), x), \
+                  edgeget(CUBE_EDGE(c, 1, z, x), y), \
+                  edgeget(CUBE_EDGE(c, 2, x, y), z)); \
             break;
         GENCUBEVERTS(0, 1, 0, 1, 0, 1)
 #undef GENCUBEVERT
@@ -618,9 +618,9 @@ void genfaceverts(const cube &c, int orient, ivec v[4])
 #define GENFACEORIENT(o, v0, v1, v2, v3) \
         case o: v0 v1 v2 v3 break;
 #define GENFACEVERT(o, n, x,y,z, xv,yv,zv) \
-            v[n] = ivec(edgeget(cubeedge(c, 0, y, z), x), \
-                        edgeget(cubeedge(c, 1, z, x), y), \
-                        edgeget(cubeedge(c, 2, x, y), z));
+            v[n] = ivec(edgeget(CUBE_EDGE(c, 0, y, z), x), \
+                        edgeget(CUBE_EDGE(c, 1, z, x), y), \
+                        edgeget(CUBE_EDGE(c, 2, x, y), z));
         GENFACEVERTS(0, 1, 0, 1, 0, 1, , , , , , )
     #undef GENFACEORIENT
     #undef GENFACEVERT
@@ -672,8 +672,8 @@ const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
 
 bool flataxisface(const cube &c, int orient)
 {
-    uint face = c.faces[dimension(orient)];
-    if(dimcoord(orient)) face >>= 4;
+    uint face = c.faces[DIMENSION(orient)];
+    if(DIM_COORD(orient)) face >>= 4;
     return (face&0x0F0F0F0F) == 0x01010101*(face&0x0F);
 }
 
@@ -691,14 +691,14 @@ bool collideface(const cube &c, int orient)
 
 bool touchingface(const cube &c, int orient)
 {
-    uint face = c.faces[dimension(orient)];
-    return dimcoord(orient) ? (face&0xF0F0F0F0)==0x80808080 : (face&0x0F0F0F0F)==0;
+    uint face = c.faces[DIMENSION(orient)];
+    return DIM_COORD(orient) ? (face&0xF0F0F0F0)==0x80808080 : (face&0x0F0F0F0F)==0;
 }
 
 bool notouchingface(const cube &c, int orient)
 {
-    uint face = c.faces[dimension(orient)];
-    return dimcoord(orient) ? (face&0x80808080)==0 : ((0x88888888-face)&0x08080808) == 0;
+    uint face = c.faces[DIMENSION(orient)];
+    return DIM_COORD(orient) ? (face&0x80808080)==0 : ((0x88888888-face)&0x08080808) == 0;
 }
 
 int faceconvexity(const ivec v[4])
@@ -775,7 +775,7 @@ static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int s
         #define GENFACEORIENT(orient, v0, v1, v2, v3) \
             case orient: \
             { \
-                if(dimcoord(orient)) { v0 v1 v2 v3 } else { v3 v2 v1 v0 } \
+                if(DIM_COORD(orient)) { v0 v1 v2 v3 } else { v3 v2 v1 v0 } \
                 break; \
             }
         #define GENFACEVERT(orient, vert, xv,yv,zv, x,y,z) \
@@ -795,7 +795,7 @@ static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int s
             const ivec &e = v[vert]; \
             ivec ef; \
             ef.dx = e.sx; ef.dy = e.sy; ef.dz = e.sz; \
-            if(ef.z == dimcoord(orient)*8) \
+            if(ef.z == DIM_COORD(orient)*8) \
             { \
                 ivec2 &f = fvecs[i]; \
                 ivec pf; \
@@ -905,10 +905,10 @@ bool collapsedface(const cube &c, int orient)
 {
     int e0 = c.edges[faceedgesidx[orient][0]], e1 = c.edges[faceedgesidx[orient][1]],
         e2 = c.edges[faceedgesidx[orient][2]], e3 = c.edges[faceedgesidx[orient][3]],
-        face = dimension(orient)*4,
+        face = DIMENSION(orient)*4,
         f0 = c.edges[face+0], f1 = c.edges[face+1],
         f2 = c.edges[face+2], f3 = c.edges[face+3];
-    if(dimcoord(orient)) { f0 >>= 4; f1 >>= 4; f2 >>= 4; f3 >>= 4; }
+    if(DIM_COORD(orient)) { f0 >>= 4; f1 >>= 4; f2 >>= 4; f3 >>= 4; }
     else { f0 &= 0xF; f1 &= 0xF; f2 &= 0xF; f3 &= 0xF; }
     ivec v0(e0&0xF, e2&0xF, f0),
          v1(e0>>4, e3&0xF, f1),
@@ -920,7 +920,7 @@ bool collapsedface(const cube &c, int orient)
 
 static inline bool occludesface(const cube &c, int orient, const ivec &o, int size, const ivec &vo, int vsize, ushort vmat, ushort nmat, ushort matmask, const ivec2 *vf, int numv)
 {
-    int dim = dimension(orient);
+    int dim = DIMENSION(orient);
     if(!c.children)
     {
         if(c.material)
@@ -944,7 +944,7 @@ static inline bool occludesface(const cube &c, int orient, const ivec &o, int si
     }
 
     size >>= 1;
-    int coord = dimcoord(orient);
+    int coord = DIM_COORD(orient);
     loopi(8) if(octacoord(dim, i) == coord)
     {
         if(!occludesface(c.children[i], orient, ivec(i, o, size), size, vo, vsize, vmat, nmat, matmask, vf, numv)) return false;
@@ -1101,7 +1101,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
         else if(n.iszero()) { vis = 2; touching = 0xF&~(1<<1); }
     }
 
-    int dim = dimension(orient), coord = dimcoord(orient);
+    int dim = DIMENSION(orient), coord = DIM_COORD(orient);
     if(v[0][dim] != coord*8) touching &= ~(1<<0);
     if(v[1][dim] != coord*8) touching &= ~(1<<1);
     if(v[2][dim] != coord*8) touching &= ~(1<<2);
@@ -1336,11 +1336,11 @@ static inline uint hthash(const cfkey &k)
 
 void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask)
 {
-    int dim = dimension(orient);
+    int dim = DIMENSION(orient);
     if(cu.children)
     {
         size >>= 1;
-        int coord = dimcoord(orient);
+        int coord = DIM_COORD(orient);
         loopi(8) if(octacoord(dim, i) == coord)
             mincubeface(cu.children[i], orient, ivec(i, o, size), size, orig, cf, nmat, matmask);
         return;
@@ -1502,7 +1502,7 @@ bool clippoly(poly &p, const facebounds &b)
 
 bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, int &offset, poly &p)
 {
-    int dim = dimension(orient), coord = dimcoord(orient);
+    int dim = DIMENSION(orient), coord = DIM_COORD(orient);
     ivec v[4];
     genfaceverts(cu, orient, v);
     if(flataxisface(cu, orient))
@@ -1666,13 +1666,13 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
     cu.merged |= 1<<orient;
     if(!p.numverts)
     {
-        if(cu.ext) cu.ext->surfaces[orient] = ambientsurface;
+        if(cu.ext) cu.ext->surfaces[orient] = AMBIENT_SURFACE;
         return;
     }
-    surfaceinfo surf = brightsurface;
+    surfaceinfo surf = BRIGHT_SURFACE;
     vertinfo verts[MAXFACEVERTS];
     surf.numverts |= p.numverts;
-    int dim = dimension(orient), coord = dimcoord(orient), c = C[dim], r = R[dim];
+    int dim = DIMENSION(orient), coord = DIM_COORD(orient), c = C[dim], r = R[dim];
     loopk(p.numverts)
     {
         pvert &src = p.verts[coord ? k : p.numverts-1-k];
@@ -1711,7 +1711,7 @@ static inline void clearmerge(cube &c, int orient)
     if(c.merged&(1<<orient))
     {
         c.merged &= ~(1<<orient);
-        if(c.ext) c.ext->surfaces[orient] = brightsurface;
+        if(c.ext) c.ext->surfaces[orient] = BRIGHT_SURFACE;
     }
 }
 

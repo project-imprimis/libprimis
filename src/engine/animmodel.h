@@ -178,7 +178,7 @@ struct animmodel : model
                 if(!cullface) opts[optslen++] = 'c';
                 opts[optslen++] = '\0';
 
-                defformatstring(name, "rsmmodel%s", opts);
+                DEF_FORMAT_STRING(name, "rsmmodel%s", opts);
                 rsmshader = generateshader(name, "rsmmodelshader \"%s\"", opts);
                 return rsmshader;
             }
@@ -195,7 +195,7 @@ struct animmodel : model
             if(!cullface) opts[optslen++] = 'c';
             opts[optslen++] = '\0';
 
-            defformatstring(name, "model%s", opts);
+            DEF_FORMAT_STRING(name, "model%s", opts);
             shader = generateshader(name, "modelshader \"%s\"", opts);
             return shader;
         }
@@ -1725,7 +1725,7 @@ template<class MDL, class BASE> struct modelloader : BASE
     bool loadconfig()
     {
         formatstring(dir, "media/model/%s", BASE::name);
-        defformatstring(cfgname, "media/model/%s/%s.cfg", BASE::name, MDL::formatname());
+        DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::name, MDL::formatname());
 
         identflags &= ~IDF_PERSIST;
         bool success = execfile(cfgname, false);
@@ -1867,7 +1867,7 @@ template<class MDL, class MESH> struct modelcommands
 
     template<class F> void modelcommand(F *fun, const char *suffix, const char *args)
     {
-        defformatstring(name, "%s%s", MDL::formatname(), suffix);
+        DEF_FORMAT_STRING(name, "%s%s", MDL::formatname(), suffix);
         addcommand(newstring(name), (identfun)fun, args);
     }
 

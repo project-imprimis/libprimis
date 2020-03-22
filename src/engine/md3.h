@@ -160,11 +160,11 @@ struct md3 : vertloader<md3>
     {
         const char *pname = parentdir(name);
         part &mdl = addpart();
-        defformatstring(name1, "media/model/%s/tris.md3", name);
+        DEF_FORMAT_STRING(name1, "media/model/%s/tris.md3", name);
         mdl.meshes = sharemeshes(path(name1));
         if(!mdl.meshes)
         {
-            defformatstring(name2, "media/model/%s/tris.md3", pname);    // try md3 in parent folder (vert sharing)
+            DEF_FORMAT_STRING(name2, "media/model/%s/tris.md3", pname);    // try md3 in parent folder (vert sharing)
             mdl.meshes = sharemeshes(path(name2));
             if(!mdl.meshes) return false;
         }

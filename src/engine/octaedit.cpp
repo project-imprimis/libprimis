@@ -6,7 +6,7 @@ bool boxoutline = false;
 
 void boxs(int orient, vec o, const vec &s, float size)
 {   
-    int d = dimension(orient), dc = dimcoord(orient);
+    int d = DIMENSION(orient), dc = DIM_COORD(orient);
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
     o[D[d]] += dc * s[D[d]] + f;
 
@@ -36,7 +36,7 @@ void boxs(int orient, vec o, const vec &s, float size)
 
 void boxs(int orient, vec o, const vec &s)
 {
-    int d = dimension(orient), dc = dimcoord(orient);
+    int d = DIMENSION(orient), dc = DIM_COORD(orient);
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
     o[D[d]] += dc * s[D[d]] + f;
 
@@ -60,7 +60,7 @@ void boxs3D(const vec &o, vec s, int g)
 
 void boxsgrid(int orient, vec o, vec s, int g)
 {
-    int d = dimension(orient), dc = dimcoord(orient);
+    int d = DIMENSION(orient), dc = DIM_COORD(orient);
     float ox = o[R[d]],
           oy = o[C[d]],
           xs = s[R[d]],
@@ -200,8 +200,8 @@ void reorient()
 {
     sel.cx = 0;
     sel.cy = 0;
-    sel.cxs = sel.s[R[dimension(orient)]]*2;
-    sel.cys = sel.s[C[dimension(orient)]]*2;
+    sel.cxs = sel.s[R[DIMENSION(orient)]]*2;
+    sel.cys = sel.s[C[DIMENSION(orient)]]*2;
     sel.orient = orient;
 }
 
@@ -238,15 +238,15 @@ ICOMMAND(selswap, "", (), { if(noedit(true)) return; swap(sel, savedsel); });
 
 cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a world cube, based on coordinates mapped by the block
 {
-    int dim = dimension(b.orient), dc = dimcoord(b.orient);
+    int dim = DIMENSION(b.orient), dc = DIM_COORD(b.orient);
     ivec s(dim, x*b.grid, y*b.grid, dc*(b.s[dim]-1)*b.grid);
     s.add(b.o);
     if(dc) s[dim] -= z*b.grid; else s[dim] += z*b.grid;
     return lookupcube(s, rgrid);
 }
 
-#define loopxy(b)        loop(y,(b).s[C[dimension((b).orient)]]) loop(x,(b).s[R[dimension((b).orient)]])
-#define loopxyz(b, r, f) { loop(z,(b).s[D[dimension((b).orient)]]) loopxy((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
+#define loopxy(b)        loop(y,(b).s[C[DIMENSION((b).orient)]]) loop(x,(b).s[R[DIMENSION((b).orient)]])
+#define loopxyz(b, r, f) { loop(z,(b).s[D[DIMENSION((b).orient)]]) loopxy((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
 #define loopselxyz(f)    { if(local) makeundo(); loopxyz(sel, sel.grid, f); changed(sel); }
 #define selcube(x, y, z) blockcube(x, y, z, sel, sel.grid)
 
@@ -328,9 +328,9 @@ VAR(passthroughcube, 0, 1, 1);
 
 void rendereditcursor()
 {
-    int d   = dimension(sel.orient),
-        od  = dimension(orient),
-        odc = dimcoord(orient);
+    int d   = DIMENSION(sel.orient),
+        od  = DIMENSION(orient),
+        odc = DIM_COORD(orient);
 
     bool hidecursor = UI::hascursor() || blendpaintmode, hovering = false;
     hmapsel = false;
@@ -407,14 +407,14 @@ void rendereditcursor()
             if(sdist == 0 || sdist > wdist) rayboxintersect(vec(lu), vec(gridsize), player->o, camdir, t=0, orient); // just getting orient
             cur = lu;
             cor = ivec(vec(w).mul(2).div(gridsize));
-            od = dimension(orient);
-            d = dimension(sel.orient);
+            od = DIMENSION(orient);
+            d = DIMENSION(sel.orient);
 
-            if(hmapedit==1 && dimcoord(horient) == (camdir[dimension(horient)]<0))
+            if(hmapedit==1 && DIM_COORD(horient) == (camdir[DIMENSION(horient)]<0))
             {
-                hmapsel = hmap::isheightmap(horient, dimension(horient), false, c);
+                hmapsel = hmap::isheightmap(horient, DIMENSION(horient), false, c);
                 if(hmapsel)
-                    od = dimension(orient = horient);
+                    od = DIMENSION(orient = horient);
             }
 
             if(dragging)
@@ -493,7 +493,7 @@ void rendereditcursor()
     // selections
     if(havesel || moving)
     {
-        d = dimension(sel.orient);
+        d = DIMENSION(sel.orient);
         gle::colorub(50,50,50);   // grid
         boxsgrid(sel.orient, vec(sel.o), vec(sel.s), sel.grid);
         gle::colorub(200,0,0);    // 0 reference
@@ -641,7 +641,7 @@ void freeblock(block3 *b, bool alloced = true)
 
 void selgridmap(const selinfo &sel, uchar *g)                           // generates a map of the cube sizes at each grid point
 {
-    loopxyz(sel, -sel.grid, (*g++ = bitscan(lusize), (void)c));
+    loopxyz(sel, -sel.grid, (*g++ = BITSCAN(lusize), (void)c));
 }
 
 void freeundo(undoblock *u)
@@ -1208,7 +1208,7 @@ void saveprefab(char *name)
     if(b->copy) freeblock(b->copy);
     protectsel(b->copy = blockcopy(block3(sel), sel.grid));
     changed(sel);
-    defformatstring(filename, "media/prefab/%s.obr", name);
+    DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "wb");
     if(!f) { conoutf(CON_ERROR, "could not write prefab to %s", filename); return; }
@@ -1239,7 +1239,7 @@ prefab *loadprefab(const char *name, bool msg = true)
    prefab *b = prefabs.access(name);
    if(b) return b;
 
-   defformatstring(filename, "media/prefab/%s.obr", name);
+   DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
    path(filename);
    stream *f = opengzfile(filename, "rb");
    if(!f) { if(msg) conoutf(CON_ERROR, "could not read prefab %s", filename); return NULL; }
@@ -1770,7 +1770,7 @@ namespace hmap
                         pushside(*c[k], d, i, j, 0);
                         pushside(*c[k], d, i, j, 1);
                     }
-                    edgeset(cubeedge(*c[k], d, i, j), dc, dc ? f : 8-f);
+                    edgeset(CUBE_EDGE(*c[k], d, i, j), dc, dc ? f : 8-f);
                 }
             }
             else
@@ -1828,8 +1828,8 @@ namespace hmap
 
     void run(int dir, int mode)
     {
-        d  = dimension(sel.orient);
-        dc = dimcoord(sel.orient);
+        d  = DIMENSION(sel.orient);
+        dc = DIM_COORD(sel.orient);
         dcr= dc ? 1 : -1;
         dr = dir>0 ? 1 : -1;
         br = dir>0 ? 0x08080808 : 0;
@@ -1918,7 +1918,7 @@ void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
     {
         getcubevector(c, d, i, j, dc, p);
         if(v==p)
-            pushedge(cubeedge(c, d, i, j), dir, dc);
+            pushedge(CUBE_EDGE(c, d, i, j), dir, dc);
     }
 }
 
@@ -1938,8 +1938,8 @@ VAR(invalidcubeguard, 0, 1, 1);
 void mpeditface(int dir, int mode, selinfo &sel, bool local)
 {
     if(mode==1 && (sel.cx || sel.cy || sel.cxs&1 || sel.cys&1)) mode = 0;
-    int d = dimension(sel.orient);
-    int dc = dimcoord(sel.orient);
+    int d = DIMENSION(sel.orient);
+    int dc = DIM_COORD(sel.orient);
     int seldir = dc ? -dir : dir;
 
     if(local)
@@ -2028,8 +2028,8 @@ VAR(selectionsurf, 0, 0, 1);
 void pushsel(int *dir)
 {
     if(noedit(moving!=0)) return;
-    int d = dimension(orient);
-    int s = dimcoord(orient) ? -*dir : *dir;
+    int d = DIMENSION(orient);
+    int s = DIM_COORD(orient) ? -*dir : *dir;
     sel.o[d] += s*sel.grid;
     if(selectionsurf==1)
     {
@@ -2596,10 +2596,10 @@ void mpflip(selinfo &sel, bool local)
         game::edittrigger(sel, EDIT_FLIP);
         makeundo();
     }
-    int zs = sel.s[dimension(sel.orient)];
+    int zs = sel.s[DIMENSION(sel.orient)];
     loopxy(sel)
     {
-        loop(z,zs) flipcube(selcube(x, y, z), dimension(sel.orient));
+        loop(z,zs) flipcube(selcube(x, y, z), DIMENSION(sel.orient));
         loop(z,zs/2)
         {
             cube &a = selcube(x, y, z);
@@ -2619,8 +2619,8 @@ void flip()
 void mprotate(int cw, selinfo &sel, bool local)
 {
     if(local) game::edittrigger(sel, EDIT_ROTATE, cw);
-    int d = dimension(sel.orient);
-    if(!dimcoord(sel.orient)) cw = -cw;
+    int d = DIMENSION(sel.orient);
+    if(!DIM_COORD(sel.orient)) cw = -cw;
     int m = sel.s[C[d]] < sel.s[R[d]] ? C[d] : R[d];
     int ss = sel.s[m] = max(sel.s[R[d]], sel.s[C[d]]);
     if(local) makeundo();

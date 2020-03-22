@@ -258,7 +258,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
     if(cmd) concatstring(tmp, cmd);
     if(dir)
     {
-        defformatstring(pname, "%s/%s", dir, file);
+        DEF_FORMAT_STRING(pname, "%s/%s", dir, file);
         concatstring(tmp, pname);
     }
     else concatstring(tmp, file);
@@ -458,7 +458,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
 {
     size_t extsize = ext ? strlen(ext)+1 : 0;
 #ifdef WIN32
-    defformatstring(pathname, rel ? ".\\%s\\*.%s" : "%s\\*.%s", dirname, ext ? ext : "*");
+    DEF_FORMAT_STRING(pathname, rel ? ".\\%s\\*.%s" : "%s\\*.%s", dirname, ext ? ext : "*");
     WIN32_FIND_DATA FindFileData;
     HANDLE Find = FindFirstFile(pathname, &FindFileData);
     if(Find != INVALID_HANDLE_VALUE)
@@ -480,7 +480,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
         return true;
     }
 #else
-    defformatstring(pathname, rel ? "./%s" : "%s", dirname);
+    DEF_FORMAT_STRING(pathname, rel ? "./%s" : "%s", dirname);
     DIR *d = opendir(pathname);
     if(d)
     {

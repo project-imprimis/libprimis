@@ -2001,12 +2001,14 @@ void updatephysstate(physent *d)
     d->o = old;
 }
 
-#define dir(name,v,d,s,os) ICOMMAND(name, "D", (int *down), { player->s = *down!=0; player->v = player->s ? d : (player->os ? -(d) : 0); });
+#define DIR(name,v,d,s,os) ICOMMAND(name, "D", (int *down), { player->s = *down!=0; player->v = player->s ? d : (player->os ? -(d) : 0); });
 
-dir(backward, move,   -1, k_down,  k_up);
-dir(forward,  move,    1, k_up,    k_down);
-dir(left,     strafe,  1, k_left,  k_right);
-dir(right,    strafe, -1, k_right, k_left);
+DIR(backward, move,   -1, k_down,  k_up);
+DIR(forward,  move,    1, k_up,    k_down);
+DIR(left,     strafe,  1, k_left,  k_right);
+DIR(right,    strafe, -1, k_right, k_left);
+
+#undef DIR
 
 ICOMMAND(jump,   "D", (int *down), { if(!*down || game::canjump()) player->jumping = *down!=0; });
 ICOMMAND(crouch, "D", (int *down), { if(!*down) player->crouching = abs(player->crouching); else if(game::cancrouch()) player->crouching = -1; });

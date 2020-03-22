@@ -252,7 +252,7 @@ namespace entities
                 if(!teleteam && m_teammode) break;
                 if(ents[n]->attr3 > 0)
                 {
-                    defformatstring(hookname, "can_teleport_%d", ents[n]->attr3);
+                    DEF_FORMAT_STRING(hookname, "can_teleport_%d", ents[n]->attr3);
                     if(!execidentbool(hookname, true)) break;
                 }
                 d->lastpickup = ents[n]->type;

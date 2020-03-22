@@ -31,7 +31,7 @@ void fatal(const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-uint bigswap(uint n)
+uint BIG_SWAP(uint n)
 {
     const int islittleendian = 1;
     return *(const uchar *)&islittleendian ? (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000) : n;
@@ -39,7 +39,7 @@ uint bigswap(uint n)
 
 size_t writebig(FILE *f, uint n)
 {
-    n = bigswap(n);
+    n = BIG_SWAP(n);
     return fwrite(&n, 1, sizeof(n), f);
 }
 
@@ -74,8 +74,8 @@ void savepng(const char *filename, uchar *data, int w, int h, int bpp, int flip)
     int i, j;
 
     memset(&ihdr, 0, sizeof(ihdr));
-    ihdr.width = bigswap(w);
-    ihdr.height = bigswap(h);
+    ihdr.width = BIG_SWAP(w);
+    ihdr.height = BIG_SWAP(h);
     ihdr.bitdepth = 8;
     switch(bpp)
     {

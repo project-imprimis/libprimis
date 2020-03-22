@@ -432,7 +432,7 @@ namespace game
         const playermodelinfo &mdl = getplayermodelinfo(d);
         int team = m_teammode && validteam(d->team) ? d->team : 0,
             color = getplayercolor(d, team);
-        defformatstring(gunname, "%s/%s", mdl.hudguns[team], file);
+        DEF_FORMAT_STRING(gunname, "%s/%s", mdl.hudguns[team], file);
         modelattach a[2];
         d->muzzle = vec(-1, -1, -1);
         a[0] = modelattach("tag_muzzle", &d->muzzle);

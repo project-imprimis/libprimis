@@ -458,7 +458,7 @@ template<class MDL> struct vertcommands : modelcommands<MDL, struct MDL::vertmes
     static void loadpart(char *model, float *smooth)
     {
         if(!MDL::loading) { conoutf("not loading an %s", MDL::formatname()); return; }
-        defformatstring(filename, "%s/%s", MDL::dir, model);
+        DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, model);
         part &mdl = MDL::loading->addpart();
         if(mdl.index) mdl.disablepitch();
         mdl.meshes = MDL::loading->sharemeshes(path(filename), *smooth > 0 ? cosf(clamp(*smooth, 0.0f, 180.0f)*RAD) : 2);

@@ -195,7 +195,7 @@ COMMAND(tabify, "si");
 
 void draw_textf(const char *fstr, float left, float top, ...)
 {
-    defvformatstring(str, top, fstr);
+    DEFV_FORMAT_STRING(str, top, fstr);
     draw_text(str, left, top);
 }
 

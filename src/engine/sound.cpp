@@ -266,7 +266,7 @@ void startmusic(char *name, char *cmd)
     stopmusic();
     if(soundvol && musicvol && *name)
     {
-        defformatstring(file, "media/%s", name);
+        DEF_FORMAT_STRING(file, "media/%s", name);
         path(file);
         if(loadmusic(file))
         {
@@ -829,7 +829,7 @@ void initmumble()
             if(mumbleinfo) wcsncpy(mumbleinfo->name, L"Tesseract", 256);
         }
     #elif defined(_POSIX_SHARED_MEMORY_OBJECTS)
-        defformatstring(shmname, "/MumbleLink.%d", getuid());
+        DEF_FORMAT_STRING(shmname, "/MumbleLink.%d", getuid());
         mumblelink = shm_open(shmname, O_RDWR, 0);
         if(mumblelink >= 0)
         {

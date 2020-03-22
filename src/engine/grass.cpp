@@ -257,7 +257,7 @@ Shader *loadgrassshader()
 
     opts[optslen] = '\0';
 
-    defformatstring(name, "grass%s", opts);
+    DEF_FORMAT_STRING(name, "grass%s", opts);
     return generateshader(name, "grassshader \"%s\"", opts);
     
 }

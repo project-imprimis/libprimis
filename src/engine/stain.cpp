@@ -481,7 +481,7 @@ struct stainrenderer
             {
             #define GENFACEORIENT(orient, v0, v1, v2, v3) \
                 case orient: \
-                    planes[0][dimension(orient)] = dimcoord(orient) ? 1 : -1; \
+                    planes[0][DIMENSION(orient)] = DIM_COORD(orient) ? 1 : -1; \
                     v0 v1 v2 v3 \
                     break;
             #define GENFACEVERT(orient, vert, x,y,z, xv,yv,zv) \
@@ -591,7 +591,7 @@ struct stainrenderer
         {
             materialsurface &m = matbuf[i];
             if(!IS_CLIPPED(m.material&MATF_VOLUME)) { i += m.skip; continue; }
-            int dim = dimension(m.orient), dc = dimcoord(m.orient);
+            int dim = DIMENSION(m.orient), dc = DIM_COORD(m.orient);
             if(dc ? stainnormal[dim] <= 0 : stainnormal[dim] >= 0) { i += m.skip; continue; }
             int c = C[dim], r = R[dim];
             for(;;)

@@ -188,7 +188,7 @@ static bool initidents()
     initedidents = true;
     for(int i = 0; i < MAXARGS; i++)
     {
-        defformatstring(argname, "arg%d", i+1);
+        DEF_FORMAT_STRING(argname, "arg%d", i+1);
         newident(argname, IDF_ARG);
     }
     dummyident = newident("//dummy", IDF_UNKNOWN);
@@ -2881,6 +2881,9 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
         case ID_ALIAS:
             if(id->index < MAXARGS && !(aliasstack->usedargs&(1<<id->index))) break;
             if(id->valtype==VAL_NULL) break;
+            //C++ preprocessor abuse
+            //uses CALLALIAS form but substitutes in a bunch of special values
+            //and then undefines them immediately after
             #define callargs numargs
             #define offset 0
             #define op RET_NULL
@@ -4081,7 +4084,7 @@ MINMAXCMD(max, i, int, max);
 MINMAXCMD(minf, f, float, min);
 MINMAXCMD(maxf, f, float, max);
 
-ICOMMAND(bitscan, "i", (int *n), intret(bitscan(*n)));
+ICOMMAND(bitscan, "i", (int *n), intret(BITSCAN(*n)));
 
 ICOMMAND(abs, "i", (int *n), intret(abs(*n)));
 ICOMMAND(absf, "f", (float *n), floatret(fabs(*n)));

@@ -35,12 +35,12 @@ void setupsunlight()
 
 static const surfaceinfo brightsurfaces[6] =
 {
-    brightsurface,
-    brightsurface,
-    brightsurface,
-    brightsurface,
-    brightsurface,
-    brightsurface
+    BRIGHT_SURFACE,
+    BRIGHT_SURFACE,
+    BRIGHT_SURFACE,
+    BRIGHT_SURFACE,
+    BRIGHT_SURFACE,
+    BRIGHT_SURFACE
 };
 
 void brightencube(cube &c)
@@ -347,7 +347,7 @@ void check_calclight_canceled()
 void show_calclight_progress()
 {
     float bar1 = float(lightprogress) / float(allocnodes);
-    defformatstring(text1, "%d%%", int(bar1 * 100));
+    DEF_FORMAT_STRING(text1, "%d%%", int(bar1 * 100));
 
     renderprogress(bar1, text1);
 }

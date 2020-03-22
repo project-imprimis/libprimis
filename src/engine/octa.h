@@ -65,8 +65,8 @@ struct surfaceinfo
 
 static const surfaceinfo topsurface = {0, LAYER_TOP};
 static const surfaceinfo bottomsurface = {0, LAYER_BOTTOM};
-#define brightsurface topsurface
-#define ambientsurface topsurface
+#define BRIGHT_SURFACE topsurface
+#define AMBIENT_SURFACE topsurface
 
 struct grasstri
 {
@@ -256,7 +256,7 @@ const uint F_SOLID = 0x80808080;    // all edges in the range (0,8)
 #define edgeget(edge, coord) ((coord) ? (edge)>>4 : (edge)&0xF)
 #define edgeset(edge, coord, val) ((edge) = ((coord) ? ((edge)&0xF)|((val)<<4) : ((edge)&0xF0)|(val)))
 
-#define cubeedge(c, d, x, y) ((c).edges[(((d)<<2)+((y)<<1)+(x))])
+#define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)<<2)+((y)<<1)+(x))])
 
 #define octadim(d)          (1<<(d))                    // creates mask for bit of given dimension
 #define octacoord(d, i)     (((i)&octadim(d))>>(d))
@@ -291,8 +291,8 @@ enum
     O_ANY
 };
 
-#define dimension(orient) ((orient)>>1)
-#define dimcoord(orient)  ((orient)&1)
+#define DIMENSION(orient) ((orient)>>1)
+#define DIM_COORD(orient)  ((orient)&1)
 #define opposite(orient)  ((orient)^1)
 
 enum

@@ -70,7 +70,7 @@ void fatal(const char *fmt, ...)
 {
     void cleanupserver();
     cleanupserver();
-    defvformatstring(msg,fmt,fmt);
+    DEFV_FORMAT_STRING(msg,fmt,fmt);
     if(logfile) logoutf("%s", msg);
 #ifdef WIN32
     MessageBox(NULL, msg, "Tesseract fatal error", MB_OK|MB_SYSTEMMODAL);
@@ -440,7 +440,7 @@ bool requestmaster(const char *req)
 
 bool requestmasterf(const char *fmt, ...)
 {
-    defvformatstring(req, fmt, fmt);
+    DEFV_FORMAT_STRING(req, fmt, fmt);
     return requestmaster(req);
 }
 

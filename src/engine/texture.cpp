@@ -2550,7 +2550,7 @@ static void addname(vector<char> &key, Slot &slot, Slot::Tex &t, bool combined =
 {
     if(combined) key.add('&');
     if(prefix) { while(*prefix) key.add(*prefix++); }
-    defformatstring(tname, "%s/%s", slot.texturedir(), t.name);
+    DEF_FORMAT_STRING(tname, "%s/%s", slot.texturedir(), t.name);
     for(const char *s = path(tname); *s; key.add(*s++));
 }
 
@@ -2724,7 +2724,7 @@ Texture *Slot::loadthumbnail()
     if(vslot.colorscale == vec(1, 1, 1)) addname(name, *this, sts[0], false, "<thumbnail>");
     else
     {
-        defformatstring(prefix, "<thumbnail:%.2f/%.2f/%.2f>", vslot.colorscale.x, vslot.colorscale.y, vslot.colorscale.z);
+        DEF_FORMAT_STRING(prefix, "<thumbnail:%.2f/%.2f/%.2f>", vslot.colorscale.x, vslot.colorscale.y, vslot.colorscale.z);
         addname(name, *this, sts[0], false, prefix);
     }
     int glow = -1;
@@ -2733,7 +2733,7 @@ Texture *Slot::loadthumbnail()
         loopvj(sts) if(sts[j].type==TEX_GLOW) { glow = j; break; }
         if(glow >= 0)
         {
-            defformatstring(prefix, "<glow:%.2f/%.2f/%.2f>", vslot.glowcolor.x, vslot.glowcolor.y, vslot.glowcolor.z);
+            DEF_FORMAT_STRING(prefix, "<glow:%.2f/%.2f/%.2f>", vslot.glowcolor.x, vslot.glowcolor.y, vslot.glowcolor.z);
             addname(name, *this, sts[glow], true, prefix);
         }
     }
@@ -2743,7 +2743,7 @@ Texture *Slot::loadthumbnail()
         if(layer->colorscale == vec(1, 1, 1)) addname(name, *layer->slot, layer->slot->sts[0], true, "<layer>");
         else
         {
-            defformatstring(prefix, "<layer:%.2f/%.2f/%.2f>", layer->colorscale.x, layer->colorscale.y, layer->colorscale.z);
+            DEF_FORMAT_STRING(prefix, "<layer:%.2f/%.2f/%.2f>", layer->colorscale.x, layer->colorscale.y, layer->colorscale.z);
             addname(name, *layer->slot, layer->slot->sts[0], true, prefix);
         }
     }
@@ -2924,11 +2924,11 @@ Texture *cubemapload(const char *name, bool mipit, bool msg, bool transient)
     Texture *t = NULL;
     if(!strchr(pname, '*'))
     {
-        defformatstring(jpgname, "%s_*.jpg", pname);
+        DEF_FORMAT_STRING(jpgname, "%s_*.jpg", pname);
         t = cubemaploadwildcard(NULL, jpgname, mipit, false, transient);
         if(!t)
         {
-            defformatstring(pngname, "%s_*.png", pname);
+            DEF_FORMAT_STRING(pngname, "%s_*.png", pname);
             t = cubemaploadwildcard(NULL, pngname, mipit, false, transient);
             if(!t && msg) conoutf(CON_ERROR, "could not load envmap %s", name);
         }
@@ -2969,7 +2969,7 @@ static int emtexsize = -1;
 //generates a six-faced cubemap for a specified location
 //arguments:
 // vec &o: vec object with a world location
-// int envmapsize: size of the envmap (each map has dimensions of (2^n)x(2^n)
+// int envmapsize: size of the envmap (each map has dimensions of (2^n)x(2^n))
 // int blur: 0 for no blur, >1 for blurring
 // bool onlysky: toggles whether to calculate for world geometry (as player sees it) or just skybox
 //returns:
@@ -3148,8 +3148,8 @@ ushort closestenvmap(const vec &o)
 ushort closestenvmap(int orient, const ivec &co, int size)
 {
     vec loc(co);
-    int dim = dimension(orient);
-    if(dimcoord(orient)) loc[dim] += size;
+    int dim = DIMENSION(orient);
+    if(DIM_COORD(orient)) loc[dim] += size;
     loc[R[dim]] += size/2;
     loc[C[dim]] += size/2;
     return closestenvmap(loc);
@@ -3537,7 +3537,7 @@ void gendds(char *infile, char *outfile)
 
     glHint(GL_TEXTURE_COMPRESSION_HINT, GL_NICEST);
 
-    defformatstring(cfile, "<compress>%s", infile);
+    DEF_FORMAT_STRING(cfile, "<compress>%s", infile);
     extern void reloadtex(char *name);
     Texture *t = textures.access(path(cfile));
     if(t) reloadtex(cfile);
@@ -3666,7 +3666,7 @@ void savepng(const char *filename, ImageData &image, bool flip)
     {
         uint width, height;
         uchar bitdepth, colortype, compress, filter, interlace;
-    } ihdr = { bigswap<uint>(image.w), bigswap<uint>(image.h), 8, ctype, 0, 0, 0 };
+    } ihdr = { BIG_SWAP<uint>(image.w), BIG_SWAP<uint>(image.h), 8, ctype, 0, 0, 0 };
     writepngchunk(f, "IHDR", (uchar *)&ihdr, 13);
 
     stream::offset idat = f->tell();

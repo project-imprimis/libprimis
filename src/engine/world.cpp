@@ -461,7 +461,7 @@ void attachentities()
 // convenience macros implicitly define:
 // e         entity, currently edited ent
 // n         int,    index to currently edited ent
-#define addimplicit(f)    { if(entgroup.empty() && enthover>=0) { entadd(enthover); undonext = (enthover != oldhover); f; entgroup.drop(); } else f; }
+#define ADD_IMPLICIT(f)    { if(entgroup.empty() && enthover>=0) { entadd(enthover); undonext = (enthover != oldhover); f; entgroup.drop(); } else f; }
 #define entfocusv(i, f, v){ int n = efocus = (i); if(n>=0) { extentity &e = *v[n]; f; } }
 #define entfocus(i, f)    entfocusv(i, f, entities::getents())
 #define enteditv(i, f, v) \
@@ -478,12 +478,12 @@ void attachentities()
     }, v); \
 }
 #define entedit(i, f)   enteditv(i, f, entities::getents())
-#define addgroup(exp)   { vector<extentity *> &ents = entities::getents(); loopv(ents) entfocusv(i, if(exp) entadd(n), ents); }
-#define setgroup(exp)   { entcancel(); addgroup(exp); }
+#define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); loopv(ents) entfocusv(i, if(exp) entadd(n), ents); }
+#define setgroup(exp)   { entcancel(); ADD_GROUP(exp); }
 #define groupeditloop(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; loopv(entgroup) enteditv(entgroup[i], f, ents); efocus = _; entlooplevel--; }
 #define groupeditpure(f){ if(entlooplevel>0) { entedit(efocus, f); } else { groupeditloop(f); commitchanges(); } }
 #define groupeditundo(f){ makeundoent(); groupeditpure(f); }
-#define groupedit(f)    { addimplicit(groupeditundo(f)); }
+#define groupedit(f)    { ADD_IMPLICIT(groupeditundo(f)); }
 
 vec getselpos()
 {
@@ -523,7 +523,7 @@ void pasteundoents(undoblock *u)
 void entflip()
 {
     if(noentedit()) return;
-    int d = dimension(sel.orient);
+    int d = DIMENSION(sel.orient);
     float mid = sel.s[d]*sel.grid/2+sel.o[d];
     groupeditundo(e.o[d] -= (e.o[d]-mid)*2);
 }
@@ -531,8 +531,8 @@ void entflip()
 void entrotate(int *cw)
 {
     if(noentedit()) return;
-    int d = dimension(sel.orient);
-    int dd = (*cw<0) == dimcoord(sel.orient) ? R[d] : C[d];
+    int d = DIMENSION(sel.orient);
+    int dd = (*cw<0) == DIM_COORD(sel.orient) ? R[d] : C[d];
     float mid = sel.s[dd]*sel.grid/2+sel.o[dd];
     vec s(sel.o.v);
     groupeditundo(
@@ -595,8 +595,8 @@ void entdrag(const vec &ray)
     float r = 0, c = 0;
     static vec dest, handle;
     vec eo, es;
-    int d = dimension(entorient),
-        dc= dimcoord(entorient);
+    int d = DIMENSION(entorient),
+        dc= DIM_COORD(entorient);
 
     entfocus(entgroup.last(),
         entselectionbox(e, eo, es);
@@ -939,8 +939,8 @@ ICOMMAND(entmoving, "b", (int *n),
 void entpush(int *dir)
 {
     if(noentedit()) return;
-    int d = dimension(entorient);
-    int s = dimcoord(entorient) ? -*dir : *dir;
+    int d = DIMENSION(entorient);
+    int s = DIM_COORD(entorient) ? -*dir : *dir;
     if(entmoving)
     {
         groupeditpure(e.o[d] += float(s*sel.grid)); // editdrag supplies the undo
@@ -1025,7 +1025,7 @@ bool dropentity(entity &e, int drop = -1)
             cy = (sel.cy ? 1 : -1) * sel.grid / 2;
         }
         e.o = vec(sel.o);
-        int d = dimension(sel.orient), dc = dimcoord(sel.orient);
+        int d = DIMENSION(sel.orient), dc = DIM_COORD(sel.orient);
         e.o[R[d]] += sel.grid / 2 + cx;
         e.o[C[d]] += sel.grid / 2 + cy;
         if(!dc)
@@ -1134,7 +1134,7 @@ void entcopy()
     if(noentedit()) return;
     entcopygrid = sel.grid;
     entcopybuf.shrink(0);
-    addimplicit({
+    ADD_IMPLICIT({
         loopv(entgroup) entfocus(entgroup[i], entcopybuf.add(e).o.sub(vec(sel.o)));
     });
 }
@@ -1235,9 +1235,9 @@ void nearestent()
     if(closest >= 0 && entgroup.find(closest) < 0) entadd(closest);
 }
 
-ICOMMAND(enthavesel,"",  (), addimplicit(intret(entgroup.length())));
-ICOMMAND(entselect, "e", (uint *body), if(!noentedit()) addgroup(e.type != ET_EMPTY && entgroup.find(n)<0 && executebool(body)));
-ICOMMAND(entloop,   "e", (uint *body), if(!noentedit()) addimplicit(groupeditloop(((void)e, execute(body)))));
+ICOMMAND(enthavesel,"",  (), ADD_IMPLICIT(intret(entgroup.length())));
+ICOMMAND(entselect, "e", (uint *body), if(!noentedit()) ADD_GROUP(e.type != ET_EMPTY && entgroup.find(n)<0 && executebool(body)));
+ICOMMAND(entloop,   "e", (uint *body), if(!noentedit()) ADD_IMPLICIT(groupeditloop(((void)e, execute(body)))));
 ICOMMAND(insel,     "",  (), entfocus(efocus, intret(pointinsel(sel, e.o))));
 ICOMMAND(entget,    "",  (), entfocus(efocus, string s; printent(e, s, sizeof(s)); result(s)));
 ICOMMAND(entindex,  "",  (), intret(efocus));

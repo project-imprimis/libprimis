@@ -1357,7 +1357,7 @@ namespace ai
                 if(aidebug >= 4) drawroute(d, 4.f*(float(alive)/float(total)));
                 if(aidebug >= 3)
                 {
-                    defformatstring(q, "node: %d route: %d (%d)",
+                    DEF_FORMAT_STRING(q, "node: %d route: %d (%d)",
                         d->lastnode,
                         !d->ai->route.empty() ? d->ai->route[0] : -1,
                         d->ai->route.length()
@@ -1369,7 +1369,7 @@ namespace ai
                 loopvrev(d->ai->state)
                 {
                     aistate &b = d->ai->state[i];
-                    defformatstring(s, "%s%s (%d ms) %s:%d",
+                    DEF_FORMAT_STRING(s, "%s%s (%d ms) %s:%d",
                         top ? "\fg" : "\fy",
                         stnames[b.type],
                         lastmillis-b.millis,

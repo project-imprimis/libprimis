@@ -75,7 +75,7 @@ namespace game
 
     void setbliptex(int team, const char *type = "")
     {
-        defformatstring(blipname, "media/interface/radar/blip%s%s.png", teamblipcolor[validteam(team) ? team : 0], type);
+        DEF_FORMAT_STRING(blipname, "media/interface/radar/blip%s%s.png", teamblipcolor[validteam(team) ? team : 0], type);
         settexture(blipname, 3);
     }
 
@@ -2024,7 +2024,7 @@ namespace game
             case N_DEMOPACKET: return;
             case N_SENDDEMO:
             {
-                defformatstring(fname, "%d.dmo", lastmillis);
+                DEF_FORMAT_STRING(fname, "%d.dmo", lastmillis);
                 stream *demo = openrawfile(fname, "wb");
                 if(!demo) return;
                 conoutf("received demo \"%s\"", fname);
@@ -2039,8 +2039,8 @@ namespace game
                 if(!m_edit) return;
                 string oldname;
                 copystring(oldname, getclientmap());
-                defformatstring(mname, "getmap_%d", lastmillis);
-                defformatstring(fname, "media/map/%s.ogz", mname);
+                DEF_FORMAT_STRING(mname, "getmap_%d", lastmillis);
+                DEF_FORMAT_STRING(fname, "media/map/%s.ogz", mname);
                 stream *map = openrawfile(path(fname), "wb");
                 if(!map) return;
                 conoutf("received map");
@@ -2126,9 +2126,9 @@ namespace game
     {
         if(!m_edit || (player1->state==CS_SPECTATOR && remote && !player1->privilege)) { conoutf(CON_ERROR, "\"sendmap\" only works in coop edit mode"); return; }
         conoutf("sending map...");
-        defformatstring(mname, "sendmap_%d", lastmillis);
+        DEF_FORMAT_STRING(mname, "sendmap_%d", lastmillis);
         save_world(mname);
-        defformatstring(fname, "media/map/%s.ogz", mname);
+        DEF_FORMAT_STRING(fname, "media/map/%s.ogz", mname);
         stream *map = openrawfile(path(fname), "rb");
         if(map)
         {

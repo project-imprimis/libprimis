@@ -46,7 +46,7 @@ void fatal(const char *s, ...)    // failure exit
 
     if(errors <= 2) // print up to one extra recursive error
     {
-        defvformatstring(msg,s,s);
+        DEFV_FORMAT_STRING(msg,s,s);
         logoutf("%s", msg);
 
         if(errors <= 1) // avoid recursion

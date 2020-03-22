@@ -495,7 +495,7 @@ struct textrenderer : listrenderer
     void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
     {
         float scale = p->size/80.0f, xoff = -text_width(p->text)/2, yoff = 0;
-        if((type&0xFF)==PT_TEXTUP) { xoff += detrnd((size_t)p, 100)-50; yoff -= detrnd((size_t)p, 101); }
+        if((type&0xFF)==PT_TEXTUP) { xoff += DET_RND((size_t)p, 100)-50; yoff -= DET_RND((size_t)p, 101); }
 
         matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
         m.scale(scale);
@@ -1333,7 +1333,7 @@ static void makeparticles(entity &e)
         default:
             if(!editmode)
             {
-                defformatstring(ds, "particles %d?", e.attr1);
+                DEF_FORMAT_STRING(ds, "particles %d?", e.attr1);
                 particle_textcopy(e.o, ds, PART_TEXT, 1, 0x6496FF, 2.0f);
             }
             break;

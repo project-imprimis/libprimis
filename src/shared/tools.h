@@ -83,17 +83,17 @@ static inline T clamp(T a, U b, U c)
 }
 
 #ifdef __GNUC__
-#define bitscan(mask) (__builtin_ffs(mask)-1)
+#define BITSCAN(mask) (__builtin_ffs(mask)-1)
 #else
 #ifdef WIN32
 #pragma intrinsic(_BitScanForward)
-static inline int bitscan(uint mask)
+static inline int BITSCAN(uint mask)
 {
     ulong i;
     return _BitScanForward(&i, mask) ? i : -1;
 }
 #else
-static inline int bitscan(uint mask)
+static inline int BITSCAN(uint mask)
 {   
     if(!mask) return -1;
     int i = 1;
@@ -108,7 +108,8 @@ static inline int bitscan(uint mask)
 
 #define rnd(x) ((int)(randomMT()&0x7FFFFFFF)%(x))
 #define rndscale(x) (float((randomMT()&0x7FFFFFFF)*double(x)/double(0x7FFFFFFF)))
-#define detrnd(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
+//1103515245+12345 are magic constants for LCG psuedorandom generator
+#define DET_RND(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
 
 #define loop(v,m) for(int v = 0; v < int(m); ++v)
 #define loopi(m) loop(i,m)
@@ -222,8 +223,8 @@ template<size_t N> inline void concformatstring(char (&d)[N], const char *fmt, .
 
 extern char *tempformatstring(const char *fmt, ...) PRINTFARGS(1, 2);
 
-#define defformatstring(d,...) string d; formatstring(d, __VA_ARGS__)
-#define defvformatstring(d,last,fmt) string d; { va_list ap; va_start(ap, last); vformatstring(d, fmt, ap); va_end(ap); }
+#define DEF_FORMAT_STRING(d,...) string d; formatstring(d, __VA_ARGS__)
+#define DEFV_FORMAT_STRING(d,last,fmt) string d; { va_list ap; va_start(ap, last); vformatstring(d, fmt, ap); va_end(ap); }
 
 template<size_t N> inline bool matchstring(const char *s, size_t len, const char (&d)[N])
 {
@@ -1221,24 +1222,24 @@ template<class T> inline void endiansame(T *buf, size_t len) {}
 #ifdef SDL_BYTEORDER
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define lilswap endiansame
-#define bigswap endianswap
+#define BIG_SWAP endianswap
 #else
 #define lilswap endianswap
-#define bigswap endiansame
+#define BIG_SWAP endiansame
 #endif
 #elif defined(__BYTE_ORDER__)
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #define lilswap endiansame
-#define bigswap endianswap
+#define BIG_SWAP endianswap
 #else
 #define lilswap endianswap
-#define bigswap endiansame 
+#define BIG_SWAP endiansame
 #endif
 #else
 template<class T> inline T lilswap(T n) { return islittleendian() ? n : endianswap(n); }
 template<class T> inline void lilswap(T *buf, size_t len) { if(!islittleendian()) endianswap(buf, len); }
-template<class T> inline T bigswap(T n) { return islittleendian() ? endianswap(n) : n; }
-template<class T> inline void bigswap(T *buf, size_t len) { if(islittleendian()) endianswap(buf, len); }
+template<class T> inline T BIG_SWAP(T n) { return islittleendian() ? endianswap(n) : n; }
+template<class T> inline void BIG_SWAP(T *buf, size_t len) { if(islittleendian()) endianswap(buf, len); }
 #endif
 
 /* workaround for some C platforms that have these two functions as macros - not used anywhere */
@@ -1283,12 +1284,12 @@ struct stream
     template<class T> size_t put(const T *v, size_t n) { return write(v, n*sizeof(T))/sizeof(T); }
     template<class T> bool put(T n) { return write(&n, sizeof(n)) == sizeof(n); }
     template<class T> bool putlil(T n) { return put<T>(lilswap(n)); }
-    template<class T> bool putbig(T n) { return put<T>(bigswap(n)); }
+    template<class T> bool putbig(T n) { return put<T>(BIG_SWAP(n)); }
 
     template<class T> size_t get(T *v, size_t n) { return read(v, n*sizeof(T))/sizeof(T); }
     template<class T> T get() { T n; return read(&n, sizeof(n)) == sizeof(n) ? n : 0; }
     template<class T> T getlil() { return lilswap(get<T>()); }
-    template<class T> T getbig() { return bigswap(get<T>()); }
+    template<class T> T getbig() { return BIG_SWAP(get<T>()); }
 
 #ifndef STANDALONE
     SDL_RWops *rwops();

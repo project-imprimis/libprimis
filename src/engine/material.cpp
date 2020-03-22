@@ -53,7 +53,7 @@ struct QuadNode
         m.visible = visible;
         m.csize = size;
         m.rsize = size;
-        int dim = dimension(orient);
+        int dim = DIMENSION(orient);
         m.o[C[dim]] = x;
         m.o[R[dim]] = y;
         m.o[dim] = z;
@@ -186,7 +186,7 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
                 m.visible = vis;
                 m.o = co;
                 m.csize = m.rsize = size;
-                if(dimcoord(i)) m.o[dimension(i)] += size;
+                if(DIM_COORD(i)) m.o[DIMENSION(i)] += size;
                 matsurfs.add(m);
                 break;
             }
@@ -196,9 +196,9 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
 
 static inline void addmatbb(ivec &matmin, ivec &matmax, const materialsurface &m)
 {
-    int dim = dimension(m.orient);
+    int dim = DIMENSION(m.orient);
     ivec mmin(m.o), mmax(m.o);
-    if(dimcoord(m.orient)) mmin[dim] -= 2; else mmax[dim] += 2;
+    if(DIM_COORD(m.orient)) mmin[dim] -= 2; else mmax[dim] += 2;
     mmax[R[dim]] += m.rsize;
     mmax[C[dim]] += m.csize;
     matmin.min(mmin);
@@ -236,7 +236,7 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
 
 static inline bool mergematcmp(const materialsurface &x, const materialsurface &y)
 {
-    int dim = dimension(x.orient), c = C[dim], r = R[dim];
+    int dim = DIMENSION(x.orient), c = C[dim], r = R[dim];
     if(x.o[r] + x.rsize < y.o[r] + y.rsize) return true;
     if(x.o[r] + x.rsize > y.o[r] + y.rsize) return false;
     return x.o[c] < y.o[c];
@@ -244,7 +244,7 @@ static inline bool mergematcmp(const materialsurface &x, const materialsurface &
 
 static int mergematr(materialsurface *m, int sz, materialsurface &n)
 {
-    int dim = dimension(n.orient), c = C[dim], r = R[dim];
+    int dim = DIMENSION(n.orient), c = C[dim], r = R[dim];
     for(int i = sz-1; i >= 0; --i)
     {
         if(m[i].o[r] + m[i].rsize < n.o[r]) break;
@@ -261,7 +261,7 @@ static int mergematr(materialsurface *m, int sz, materialsurface &n)
 
 static int mergematc(materialsurface &m, materialsurface &n)
 {
-    int dim = dimension(n.orient), c = C[dim], r = R[dim];
+    int dim = DIMENSION(n.orient), c = C[dim], r = R[dim];
     if(m.o[r] == n.o[r] && m.rsize == n.rsize && m.o[c] + m.csize == n.o[c])
     {
         n.o[c] = m.o[c];
@@ -302,7 +302,7 @@ static inline bool optmatcmp(const materialsurface &x, const materialsurface &y)
     if(x.material > y.material) return false;
     if(x.orient > y.orient) return true;
     if(x.orient < y.orient) return false;
-    int dim = dimension(x.orient);
+    int dim = DIMENSION(x.orient);
     return x.o[dim] < y.o[dim];
 }
 
@@ -316,7 +316,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
     while(cur < end)
     {
          materialsurface *start = cur++;
-         int dim = dimension(start->orient);
+         int dim = DIMENSION(start->orient);
          while(cur < end &&
                cur->material == start->material &&
                cur->orient == start->orient &&
@@ -370,7 +370,7 @@ void setupmaterials(int start, int len)
             if(IS_LIQUID(matvol) && m.orient!=O_BOTTOM && m.orient!=O_TOP)
             {
                 m.ends = 0;
-                int dim = dimension(m.orient), coord = dimcoord(m.orient);
+                int dim = DIMENSION(m.orient), coord = DIM_COORD(m.orient);
                 ivec o(m.o);
                 o.z -= 1;
                 o[dim] += coord ? 1 : -1;
@@ -395,7 +395,7 @@ void setupmaterials(int start, int len)
             }
             else if(matvol==MAT_GLASS)
             {
-                int dim = dimension(m.orient);
+                int dim = DIMENSION(m.orient);
                 vec center(m.o);
                 center[R[dim]] += m.rsize/2;
                 center[C[dim]] += m.csize/2;
@@ -435,7 +435,7 @@ static ivec sortorigin;
 
 static inline bool editmatcmp(const materialsurface &x, const materialsurface &y)
 {
-    int xdim = dimension(x.orient), ydim = dimension(y.orient);
+    int xdim = DIMENSION(x.orient), ydim = DIMENSION(y.orient);
     loopi(3)
     {
         int dim = sortdim[i], xmin, xmax, ymin, ymax;
