@@ -299,7 +299,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
     }
 }
 
-#define writetex(t, body) do \
+#define WRITE_TEX(t,body) do \
     { \
         uchar *dstrow = t.data; \
         loop(y, t.h) \
@@ -312,7 +312,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
         } \
     } while(0)
 
-#define readwritetex(t, s, body) do \
+#define READ_WRITE_TEX(t, s, body) do \
     { \
         uchar *dstrow = t.data, *srcrow = s.data; \
         loop(y, t.h) \
@@ -326,7 +326,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
         } \
     } while(0)
 
-#define read2writetex(t, s1, src1, s2, src2, body) do \
+#define READ_2_WRITE_TEX(t, s1, src1, s2, src2, body) do \
     { \
         uchar *dstrow = t.data, *src1row = s1.data, *src2row = s2.data; \
         loop(y, t.h) \
@@ -341,13 +341,13 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
         } \
     } while(0)
 
-#define readwritergbtex(t, s, body) \
+#define READ_WRITE_RGB_TEX(t, s, body) \
     { \
-        if(t.bpp >= 3) readwritetex(t, s, body); \
+        if(t.bpp >= 3) READ_WRITE_TEX(t, s, body); \
         else \
         { \
             ImageData rgb(t.w, t.h, 3); \
-            read2writetex(rgb, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
+            READ_2_WRITE_TEX(rgb, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
             t.replace(rgb); \
         } \
     }
@@ -356,18 +356,18 @@ void forcergbimage(ImageData &s)
 {
     if(s.bpp >= 3) return;
     ImageData d(s.w, s.h, 3);
-    readwritetex(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
+    READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
     s.replace(d);
 }
 
-#define readwritergbatex(t, s, body) \
+#define READ_WRITE_RGBA_TEX(t, s, body) \
     { \
-        if(t.bpp >= 4) { readwritetex(t, s, body); } \
+        if(t.bpp >= 4) { READ_WRITE_TEX(t, s, body); } \
         else \
         { \
             ImageData rgba(t.w, t.h, 4); \
-            if(t.bpp==3) read2writetex(rgba, t, orig, s, src, { dst[0] = orig[0]; dst[1] = orig[1]; dst[2] = orig[2]; body; }); \
-            else read2writetex(rgba, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
+            if(t.bpp==3) READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = orig[0]; dst[1] = orig[1]; dst[2] = orig[2]; body; }); \
+            else READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
             t.replace(rgba); \
         } \
     }
@@ -376,8 +376,8 @@ void forcergbaimage(ImageData &s)
 {
     if(s.bpp >= 4) return;
     ImageData d(s.w, s.h, 4);
-    if(s.bpp==3) readwritetex(d, s, { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; });
-    else readwritetex(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
+    if(s.bpp==3) READ_WRITE_TEX(d, s, { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; });
+    else READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
     s.replace(d);
 }
 
@@ -386,13 +386,13 @@ void swizzleimage(ImageData &s)
     if(s.bpp==2)
     {
         ImageData d(s.w, s.h, 4);
-        readwritetex(d, s, { dst[0] = dst[1] = dst[2] = src[0]; dst[3] = src[1]; });
+        READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; dst[3] = src[1]; });
         s.replace(d);
     }
     else if(s.bpp==1)
     {
         ImageData d(s.w, s.h, 3);
-        readwritetex(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
+        READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
         s.replace(d);
     }
 }
@@ -508,7 +508,7 @@ void texmad(ImageData &s, const vec &mul, const vec &add)
     if(s.bpp < 3 && (mul.x != mul.y || mul.y != mul.z || add.x != add.y || add.y != add.z))
         swizzleimage(s);
     int maxk = min(int(s.bpp), 3);
-    writetex(s,
+    WRITE_TEX(s,
         loopk(maxk) dst[k] = uchar(clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
     );
 }
@@ -517,7 +517,7 @@ void texcolorify(ImageData &s, const vec &color, vec weights)
 {
     if(s.bpp < 3) return;
     if(weights.iszero()) weights = vec(0.21f, 0.72f, 0.07f);
-    writetex(s,
+    WRITE_TEX(s,
         float lum = dst[0]*weights.x + dst[1]*weights.y + dst[2]*weights.z;
         loopk(3) dst[k] = uchar(clamp(lum*color[k], 0.0f, 255.0f));
     );
@@ -527,7 +527,7 @@ void texcolormask(ImageData &s, const vec &color1, const vec &color2)
 {
     if(s.bpp < 4) return;
     ImageData d(s.w, s.h, 3);
-    readwritetex(d, s,
+    READ_WRITE_TEX(d, s,
         vec color;
         color.lerp(color2, color1, src[3]/255.0f);
         loopk(3) dst[k] = uchar(clamp(color[k]*src[k], 0.0f, 255.0f));
@@ -538,7 +538,7 @@ void texcolormask(ImageData &s, const vec &color1, const vec &color2)
 void texdup(ImageData &s, int srcchan, int dstchan)
 {
     if(srcchan==dstchan || max(srcchan, dstchan) >= s.bpp) return;
-    writetex(s, dst[dstchan] = dst[srcchan]);
+    WRITE_TEX(s, dst[dstchan] = dst[srcchan]);
 }
 
 void texmix(ImageData &s, int c1, int c2, int c3, int c4)
@@ -546,7 +546,7 @@ void texmix(ImageData &s, int c1, int c2, int c3, int c4)
     int numchans = c1 < 0 ? 0 : (c2 < 0 ? 1 : (c3 < 0 ? 2 : (c4 < 0 ? 3 : 4)));
     if(numchans <= 0) return;
     ImageData d(s.w, s.h, numchans);
-    readwritetex(d, s,
+    READ_WRITE_TEX(d, s,
         switch(numchans)
         {
             case 4: dst[3] = src[c4];
@@ -564,14 +564,14 @@ void texgrey(ImageData &s)
     ImageData d(s.w, s.h, s.bpp >= 4 ? 2 : 1);
     if(s.bpp >= 4)
     {
-        readwritetex(d, s,
+        READ_WRITE_TEX(d, s,
             dst[0] = src[0];
             dst[1] = src[3];
         );
     }
     else
     {
-        readwritetex(d, s, dst[0] = src[0]);
+        READ_WRITE_TEX(d, s, dst[0] = src[0]);
     }
     s.replace(d);
 }
@@ -581,12 +581,12 @@ void texpremul(ImageData &s)
     switch(s.bpp)
     {
         case 2:
-            writetex(s,
+            WRITE_TEX(s,
                 dst[0] = uchar((uint(dst[0])*uint(dst[1]))/255);
             );
             break;
         case 4:
-            writetex(s,
+            WRITE_TEX(s,
                 uint alpha = dst[3];
                 dst[0] = uchar((uint(dst[0])*alpha)/255);
                 dst[1] = uchar((uint(dst[1])*alpha)/255);
@@ -642,12 +642,12 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
             if(d.bpp < 3) swizzleimage(d);
         }
         else return;
-        if(d.bpp < 3) readwritetex(d, s,
+        if(d.bpp < 3) READ_WRITE_TEX(d, s,
             int srcblend = src[1];
             int dstblend = 255 - srcblend;
             dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
         );
-        else readwritetex(d, s,
+        else READ_WRITE_TEX(d, s,
             int srcblend = src[3];
             int dstblend = 255 - srcblend;
             dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
@@ -662,12 +662,12 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
             if(d.bpp >= 3) swizzleimage(s);
         }
         else if(d.bpp < 3) swizzleimage(d);
-        if(d.bpp < 3) read2writetex(d, s, src, m, mask,
+        if(d.bpp < 3) READ_2_WRITE_TEX(d, s, src, m, mask,
             int srcblend = mask[0];
             int dstblend = 255 - srcblend;
             dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
         );
-        else read2writetex(d, s, src, m, mask, 
+        else READ_2_WRITE_TEX(d, s, src, m, mask,
             int srcblend = mask[0];
             int dstblend = 255 - srcblend;
             dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
@@ -2452,13 +2452,13 @@ static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
 {
     if(g.bpp < 3)
     {
-        readwritergbtex(c, g,
+        READ_WRITE_RGB_TEX(c, g,
             loopk(3) dst[k] = clamp(int(dst[k]) + int(src[0]*glowcolor[k]), 0, 255);
         );
     }
     else
     {
-        readwritergbtex(c, g,
+        READ_WRITE_RGB_TEX(c, g,
             loopk(3) dst[k] = clamp(int(dst[k]) + int(src[k]*glowcolor[k]), 0, 255);
         );
     }
@@ -2468,13 +2468,13 @@ static void mergespec(ImageData &c, ImageData &s)
 {
     if(s.bpp < 3)
     {
-        readwritergbatex(c, s,
+        READ_WRITE_RGBA_TEX(c, s,
             dst[3] = src[0];
         );
     }
     else
     {
-        readwritergbatex(c, s,
+        READ_WRITE_RGBA_TEX(c, s,
             dst[3] = (int(src[0]) + int(src[1]) + int(src[2]))/3;
         );
     }
@@ -2482,7 +2482,7 @@ static void mergespec(ImageData &c, ImageData &s)
 
 static void mergedepth(ImageData &c, ImageData &z)
 {
-    readwritergbatex(c, z,
+    READ_WRITE_RGBA_TEX(c, z,
         dst[3] = src[0];
     );
 }
@@ -2491,13 +2491,13 @@ static void mergealpha(ImageData &c, ImageData &s)
 {
     if(s.bpp < 3)
     {
-        readwritergbatex(c, s,
+        READ_WRITE_RGBA_TEX(c, s,
             dst[3] = src[0];
         );
     }
     else
     {
-        readwritergbatex(c, s,
+        READ_WRITE_RGBA_TEX(c, s,
             dst[3] = src[3];
         );
     }
@@ -2506,8 +2506,8 @@ static void mergealpha(ImageData &c, ImageData &s)
 static void collapsespec(ImageData &s)
 {
     ImageData d(s.w, s.h, 1);
-    if(s.bpp >= 3) readwritetex(d, s, { dst[0] = (int(src[0]) + int(src[1]) + int(src[2]))/3; });
-    else readwritetex(d, s, { dst[0] = src[0]; });
+    if(s.bpp >= 3) READ_WRITE_TEX(d, s, { dst[0] = (int(src[0]) + int(src[1]) + int(src[2]))/3; });
+    else READ_WRITE_TEX(d, s, { dst[0] = src[0]; });
     s.replace(d);
 }
 
@@ -3943,7 +3943,7 @@ void flipnormalmapy(char *destfile, char *normalfile) // jpg/png/tga-> tga
     ImageData ns;
     if(!loadimage(normalfile, ns)) return;
     ImageData d(ns.w, ns.h, 3);
-    readwritetex(d, ns,
+    READ_WRITE_TEX(d, ns,
         dst[0] = src[0];
         dst[1] = 255 - src[1];
         dst[2] = src[2];
@@ -3956,7 +3956,7 @@ void mergenormalmaps(char *heightfile, char *normalfile) // jpg/png/tga + tga ->
     ImageData hs, ns;
     if(!loadimage(heightfile, hs) || !loadimage(normalfile, ns) || hs.w != ns.w || hs.h != ns.h) return;
     ImageData d(ns.w, ns.h, 3);
-    read2writetex(d, hs, srch, ns, srcn,
+    READ_2_WRITE_TEX(d, hs, srch, ns, srcn,
         *(bvec *)dst = bvec(((bvec *)srcn)->tonormal().mul(2).add(((bvec *)srch)->tonormal()).normalize());
     );
     saveimage(normalfile, guessimageformat(normalfile, IMG_TGA), d);
@@ -3967,7 +3967,7 @@ void normalizenormalmap(char *destfile, char *normalfile) // jpg/png/tga-> tga
     ImageData ns;
     if(!loadimage(normalfile, ns)) return;
     ImageData d(ns.w, ns.h, 3);
-    readwritetex(d, ns,
+    READ_WRITE_TEX(d, ns,
         *(bvec *)dst = bvec(src[0], src[1], src[2]).normalize();
     );
     saveimage(destfile, guessimageformat(destfile, IMG_TGA), d);
@@ -3978,7 +3978,7 @@ void removealphachannel(char *destfile, char *rgbafile)
     ImageData ns;
     if(!loadimage(rgbafile, ns)) return;
     ImageData d(ns.w, ns.h, 3);
-    readwritetex(d, ns,
+    READ_WRITE_TEX(d, ns,
         dst[0] = src[0];
         dst[1] = src[1];
         dst[2] = src[2];
