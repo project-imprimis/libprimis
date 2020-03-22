@@ -113,6 +113,32 @@ Chapters use `#`; sections use `##`; subsections use `###`.
 Four spaces per indentation, spaces only.
 Opening brackets get their own new line.
 
+#### Capitalization
+
+Macros are always fully capitalized and seperated with underscores:
+
+`#define MACRO_NAME`
+`#define MACRO_FUNCTION(a, b)`
+
+Variables are always lowercase:
+
+`int varname`
+
+Functions are always lowercase:
+
+`void functionname()`
+
+Enum elements are in PascalCase:
+
+```
+enum
+{
+    ElementOne   = 1;
+    ElementTwo   = 2;
+    ElementThree = 3;
+};
+```
+
 ## 1.2 Default Paths & Libraries
 ---
 
@@ -1925,6 +1951,196 @@ The commands:
 
 There are some Cubescript aliases which relate to shaders; those are not user
 commands and are not covered here.
+
+## 3.5 Particles
+
+Particles are billboarded objects which are rendered clientside and simulate
+small objects of various types. Particles broadly have three types: traditional
+pointlike particles, linear "tape"-like particles, and meters.
+
+As billboards, particles always face towards the player and therefore are always
+viewed face-on. As a result, particle rendering is unique to each player and
+is not shared across the server (as a point will have different facing vectors
+to different actors' cameras.
+
+Particles are not physents and do not bounce off of geometry nor interact with
+the world in any particular way. Particles do, however, cull themselves upon
+contact with geometry to prevent excessive resource usage.
+
+### 3.5.1 Particle Types
+
+Particles have many specific types which behave in different ways.
+
+* `part` a point-like particle, such as puffs of smoke or flames
+* `tape` an unanimated line particle that extends between two points
+* `trail`
+* `text` a text billboard, such as a player's name
+* `textup`
+* `meter` a meter with a fill between 0 and 100
+* `metervs`
+* `fireball` an animated fireball
+* `lightning` an animated tape particle, used for lightning effects
+* `flare` a lens flare
+
+### 3.5.2 Particle Properties
+
+* vec `o` origin vector triple
+* vec `d` direction vector triple
+* int `gravity` gravity scale (<0 for upwards floaters)
+* int `fade` fade scale
+* int `millis` time in ms before fade
+* bvec `color` color vector triple
+* uchar `flags` particle-specific flags
+* float `size` radius of particle
+* union `(char *text, float val, physent *owner, (uchar color2[3], progress)`
+
+The union type has a whole pile of objects inside it, and its structure is
+outlined below:
+
+```
+|-----------------------------*text----------------------------|
+|-------------val--------------|
+|----------------------------*owner----------------------------|
+|color2||color2||color2||-prog-|
+```
+
+The union is set as one of the four rows depending on the type of particle
+present:
+
+* `*text` pointer for a text entity
+* `val` float for a fireball
+* `*owner` pointer for a lens flare
+* `color2[3]` array and `progress` values for a meter
+
+### 3.5.3 Pointlike Particles
+
+The pointlike particles are internally refered to as being of the type `part`;
+they are the particles that are most accurately refered to as a "particle".
+Pointlike particles generally are created with some velocity along an axis and
+additionally have some gravitational term which causes them to move in the z
+direction.
+
+Particle static entities of type `water`, `fire`, `smoke` are rendered as
+pointlike particles.
+
+### 3.5.4 Tape Particles
+
+Tape particles are called `tape` for their resemblance to barricade tape in its
+stationary, straight appearance, and act to create beam-like effects in the
+level. The static particle entity which uses tape particles also goes by the
+name `tape`; it creates tape particles along a certain direction.
+
+### 3.5.5 Trail Particles
+
+Trail particles create a number of standard particles radiating out from a
+region of space. The `water` static particle entity type uses a particle trail.
+Trail particles are potentially useful for following a projectile.
+
+### 3.5.6 Text and Textup Particles
+
+Text particles are most notably used ingame to render player names above their
+heads. They also make an appearance while editing entities, as the entity type
+is rendered as a particle above the entity origin.
+
+Text particles have settable string, color, size and blend options to control
+the content, transparency, font size, and color of the rendered text. There font
+size is proportional to the particle's size parameter and does not follow
+typesetting convention (as these don't make much sense with a 3D engine).
+
+### 3.5.7 Meter and Metervs Particles
+
+Meters are a status particle used to show the size of a particular value passed
+to its `progress` value. `progress` is capped to values up to 100, and as a
+result meters are restricted to integral percents in their representation.
+
+More resolution is not particularly important for these particles, as they do
+not display the actual value passed as a value, and those reading a meter
+particle ingame would have trouble discerning values within a percent.
+
+### 3.5.8 Fireball Particles
+
+Fireballs are animated billboards which appear as a large ball of bright gas.
+They are round and their general appearance is isotropic (no particular
+orientation). Fireballs pulsate and have their surface change with time, which
+makes them particularly suitable for relatively large sizes (normal particles
+are static and hence fairly boring if they are multiple meters across.)
+
+Fireballs are perhaps the particle least obviously a 2d billboard, as a result
+its constant animation and scale change.
+
+### 3.5.9 Lightning Particles
+
+Lightning particles are somewhat similar to tape particles, being essentially
+a straight line, but have the added effect of being animated. As should be
+apparent from the name, lightning particles dance from between its endpoints
+like an electrical arc might.
+
+### 3.5.10 Flare Particles
+
+Flare particles simulate two different optical phenomena: sunstars and lens
+flare. Sunstars are an apeture effect present in essentially all optical systems
+(including eyes), while lens flare is a simulation of an effect only found in
+uncoated optics (cheap or old cameras).
+
+Sunstars are caused by small apeture sizes and result in a series of lines
+extending beyond a bright source (the Sun being the easiest of these to find in
+nature). The shape of the sunstar in Imprimis is most closely related to that of
+the eye's natural stringly response to a bright object; more regular pointed
+stars are typical of mechanical apetures (like a camera's).
+
+Lens flares are an effect caused by light bouncing around the inside of an
+optical instrument without proper coatings; the one created by Imprimis is that
+of a six-element device. Lens flares should not be present if the scene is
+viewed by an unaided human observer, as this effect doesn't occur without
+multiple elements.
+
+## 3.6 Physics
+
+Physics apply to game entities called `physents`. Physents have a large number
+of properties which affect their time evolution, and additionally are able to
+realistically collide with surfaces.
+
+Physents include item drops, players, non-player actors, and bouncers. These
+entities also have additional properties unique to their respective entity
+types, as they are all seperate children of the physent class.
+
+### 3.6.1 Physent Properties
+
+Physents all have the following properties:
+
+* vec `o` origin vector (location displacement vector from origin)
+* vec `vel` velocity vector
+* vec `falling` gravity vector
+* vec `deltapos` position displacement
+* vec `newpos` interpolated next position
+* float `yaw` yaw angle (around horizon CW)
+* float `pitch` pitch angle (up/down; -90 down; 0 horizon; 90 up)
+* float `roll` roll angle (CW about yaw+pitch vector)
+* float `maxspeed` speed limit for this object (clamp speed to this level)
+* int `timeinair` time spent without being on the ground in ms
+* float `radius` size of entity
+* float `eyeheight` height of eyes (default player = 18(/8) = 2.25m)
+* float `maxheight` vertical size of entity (default palyer 18(/8) = 2.25m)
+* float `aboveeye` clearance above eyes (default player 2(/8) = .25m)
+* float `xradius` x hitbox radius
+* float `yradius` y hitbox radius
+* float `zmargin` z hitbox margin
+* vec `floor` orientation of floor below physent
+* int `inwater` material name of liquid that physent is in (0 otherwise)
+* bool `jumping` whether the ent is in the process of jumping
+* char `move` forwards and reverse movement
+* char `strafe` side to side movement
+* char `crouching` crouching (players)
+* uchar `physstate` type of behavior physent is undergoing (e.g. falling)
+* uchar `state` in normal play, state of physent (e.g. alive, spectating)
+* uchar `editstate` in edit, state of physent (e.g. alive, spectating)
+* uchar `type` type of entity (e.g. player)
+* uchar `collidetype` bounding box type (e.g. elliptical)
+* bool `blocked` toggles whether the ai should consider the physent blocked
+
+### 3.6.2 Collision
+
+
 
 # 6 Actors
 ---
