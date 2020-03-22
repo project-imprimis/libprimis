@@ -170,12 +170,12 @@ static inline void reorienttexture(uchar * RESTRICT src, int sw, int sh, int str
 }
 
 static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
-{   
+{
     switch(bpp)
     {
         case 1: return reorienttexture<1>(src, sw, sh, stride, dst, flipx, flipy, swapxy);
         case 2: return reorienttexture<2>(src, sw, sh, stride, dst, flipx, flipy, swapxy);
-        case 3: return reorienttexture<3>(src, sw, sh, stride, dst, flipx, flipy, swapxy); 
+        case 3: return reorienttexture<3>(src, sw, sh, stride, dst, flipx, flipy, swapxy);
         case 4: return reorienttexture<4>(src, sw, sh, stride, dst, flipx, flipy, swapxy);
     }
 }
@@ -299,7 +299,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
     }
 }
 
-#define WRITE_TEX(t,body) do \
+#define WRITE_TEX(t, body) do \
     { \
         uchar *dstrow = t.data; \
         loop(y, t.h) \
@@ -653,7 +653,7 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
             dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
             dst[1] = uchar((dst[1]*dstblend + src[1]*srcblend)/255);
             dst[2] = uchar((dst[2]*dstblend + src[2]*srcblend)/255);
-        ); 
+        );
     }
     else
     {
@@ -673,7 +673,7 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
             dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
             dst[1] = uchar((dst[1]*dstblend + src[1]*srcblend)/255);
             dst[2] = uchar((dst[2]*dstblend + src[2]*srcblend)/255);
-        ); 
+        );
     }
 }
 
@@ -1453,7 +1453,7 @@ SDL_Surface *loadsurface(const char *name)
         if(rw)
         {
             const char *ext = strrchr(name, '.');
-            if(ext) ++ext; 
+            if(ext) ++ext;
             s = IMG_LoadTyped_RW(rw, 0, ext);
             SDL_FreeRW(rw);
         }
@@ -2187,13 +2187,13 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             }
             default:
                 return false;
-        } 
+        }
         dst.changed |= 1<<changed;
     }
     if(buf.overread()) return false;
-    return true; 
+    return true;
 }
- 
+
 VSlot *findvslot(Slot &slot, const VSlot &src, const VSlot &delta)
 {
     for(VSlot *dst = slot.variants; dst; dst = dst->next)
@@ -2300,7 +2300,7 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
     {
         tnum = TEX_DIFFUSE;
         defslot = &materialslots[matslot];
-        defslot->reset(); 
+        defslot->reset();
     }
     else if(!defslot) return;
     else if(tnum < 0) tnum = TEX_UNKNOWN;
