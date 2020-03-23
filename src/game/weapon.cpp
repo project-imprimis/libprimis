@@ -324,9 +324,9 @@ namespace game
         f->lastpain = lastmillis;
         if(at->type==ENT_PLAYER && !IS_TEAM(at->team, f->team)) at->totaldamage += damage;
 
-        if(!m_mp(gamemode) || f==at) f->hitpush(damage, vel, at, atk);
+        if(!MODE_MP(gamemode) || f==at) f->hitpush(damage, vel, at, atk);
 
-        if(!m_mp(gamemode)) damaged(damage, f, at);
+        if(!MODE_MP(gamemode)) damaged(damage, f, at);
         else
         {
             hitmsg &h = hits.add();

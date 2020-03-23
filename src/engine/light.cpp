@@ -537,7 +537,7 @@ static inline bool previewblends(cube &c, const ivec &o, int size)
 static bool previewblends(cube *c, const ivec &co, int size, const ivec &bo, const ivec &bs)
 {
     bool changed = false;
-    loopoctabox(co, size, bo, bs)
+    LOOP_OCTA_BOX(co, size, bo, bs)
     {
         ivec o(i, co, size);
         cubeext *ext = c[i].ext;

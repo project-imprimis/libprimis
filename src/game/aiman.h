@@ -106,7 +106,7 @@ namespace aiman
             }
         }
         else { cn = bots.length(); bots.add(NULL); }
-        int team = m_teammode ? chooseteam() : 0;
+        int team = MODE_TEAMMODE ? chooseteam() : 0;
         if(!bots[cn]) bots[cn] = new clientinfo;
         clientinfo *ci = bots[cn];
         ci->clientnum = MAXCLIENTS + cn;
@@ -207,7 +207,7 @@ namespace aiman
 
     void checksetup()
     {
-        if(m_teammode && botbalance) balanceteams();
+        if(MODE_TEAMMODE && botbalance) balanceteams();
         loopvrev(bots) if(bots[i]) reinitai(bots[i]);
     }
 
@@ -220,7 +220,7 @@ namespace aiman
     {
         if(!dorefresh) return;
         dorefresh = false;
-        if(m_botmode && numclients(-1, false, true))
+        if(MODE_BOTMODE && numclients(-1, false, true))
         {
             checksetup();
             while(reassignai());

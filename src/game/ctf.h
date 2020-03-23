@@ -531,7 +531,7 @@ struct ctfclientmode : clientmode
 
     void trydropflag()
     {
-        if(!m_ctf) return;
+        if(!MODE_CTF) return;
         loopv(flags) if(flags[i].owner == player1)
         {
             addmsg(N_TRYDROPFLAG, "rc", player1);
@@ -934,7 +934,7 @@ case N_INITFLAGS:
 
 case N_INITFLAGS:
 {
-    ctfmode.parseflags(p, m_ctf);
+    ctfmode.parseflags(p, MODE_CTF);
     break;
 }
 
@@ -944,7 +944,7 @@ case N_DROPFLAG:
     vec droploc;
     loopk(3) droploc[k] = getint(p)/DMF;
     gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
-    if(o && m_ctf) ctfmode.dropflag(o, flag, version, droploc);
+    if(o && MODE_CTF) ctfmode.dropflag(o, flag, version, droploc);
     break;
 }
 
@@ -952,7 +952,7 @@ case N_SCOREFLAG:
 {
     int ocn = getint(p), relayflag = getint(p), relayversion = getint(p), goalflag = getint(p), goalversion = getint(p), team = getint(p), score = getint(p), oflags = getint(p);
     gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
-    if(o && m_ctf) ctfmode.scoreflag(o, relayflag, relayversion, goalflag, goalversion, team, score, oflags);
+    if(o && MODE_CTF) ctfmode.scoreflag(o, relayflag, relayversion, goalflag, goalversion, team, score, oflags);
     break;
 }
 
@@ -960,7 +960,7 @@ case N_RETURNFLAG:
 {
     int ocn = getint(p), flag = getint(p), version = getint(p);
     gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
-    if(o && m_ctf) ctfmode.returnflag(o, flag, version);
+    if(o && MODE_CTF) ctfmode.returnflag(o, flag, version);
     break;
 }
 
@@ -968,14 +968,14 @@ case N_TAKEFLAG:
 {
     int ocn = getint(p), flag = getint(p), version = getint(p);
     gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
-    if(o && m_ctf) ctfmode.takeflag(o, flag, version);
+    if(o && MODE_CTF) ctfmode.takeflag(o, flag, version);
     break;
 }
 
 case N_RESETFLAG:
 {
     int flag = getint(p), version = getint(p);
-    if(m_ctf) ctfmode.resetflag(flag, version);
+    if(MODE_CTF) ctfmode.resetflag(flag, version);
     break;
 }
 

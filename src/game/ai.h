@@ -98,7 +98,7 @@ namespace ai
 
         void avoidnear(void *owner, float above, const vec &pos, float limit);
 
-        #define loopavoid(v, d, body) \
+        #define LOOP_AVOID(v, d, body) \
             if(!(v).obstacles.empty()) \
             { \
                 int cur = 0; \
@@ -120,7 +120,7 @@ namespace ai
 
         bool find(int n, gameent *d) const
         {
-            loopavoid(*this, d, { if(wp == n) return true; });
+            LOOP_AVOID(*this, d, { if(wp == n) return true; });
             return false;
         }
 

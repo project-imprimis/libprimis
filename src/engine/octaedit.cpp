@@ -245,9 +245,9 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
     return lookupcube(s, rgrid);
 }
 
-#define loopxy(b)        loop(y,(b).s[C[DIMENSION((b).orient)]]) loop(x,(b).s[R[DIMENSION((b).orient)]])
-#define loopxyz(b, r, f) { loop(z,(b).s[D[DIMENSION((b).orient)]]) loopxy((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
-#define loopselxyz(f)    { if(local) makeundo(); loopxyz(sel, sel.grid, f); changed(sel); }
+#define LOOP_XY(b)        loop(y,(b).s[C[DIMENSION((b).orient)]]) loop(x,(b).s[R[DIMENSION((b).orient)]])
+#define LOOP_XYZ(b, r, f) { loop(z,(b).s[D[DIMENSION((b).orient)]]) LOOP_XY((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
+#define LOOP_SEL_XYZ(f)    { if(local) makeundo(); LOOP_XYZ(sel, sel.grid, f); changed(sel); }
 #define selcube(x, y, z) blockcube(x, y, z, sel, sel.grid)
 
 ////////////// cursor ///////////////
@@ -261,7 +261,7 @@ ICOMMAND(selchildmat, "s", (char *prefix), { if(selchildmat > 0) result(getmater
 void countselchild(cube *c, const ivec &cor, int size)
 {
     ivec ss = ivec(sel.s).mul(sel.grid);
-    loopoctaboxsize(cor, size, sel.o, ss)
+    LOOP_OCTA_BOX_SIZE(cor, size, sel.o, ss)
     {
         ivec o(i, cor, size);
         if(c[i].children) countselchild(c[i].children, o, size/2);
@@ -534,7 +534,7 @@ static bool haschanged = false;
 
 void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor, int size)
 {
-    loopoctabox(cor, size, bbmin, bbmax)
+    LOOP_OCTA_BOX(cor, size, bbmin, bbmax)
     {
         ivec o(i, cor, size);
         if(c[i].ext)
@@ -620,7 +620,7 @@ void blockcopy(const block3 &s, int rgrid, block3 *b)
 {
     *b = s;
     cube *q = b->c();
-    loopxyz(s, rgrid, copycube(c, *q++));
+    LOOP_XYZ(s, rgrid, copycube(c, *q++));
 }
 
 block3 *blockcopy(const block3 &s, int rgrid)
@@ -641,7 +641,7 @@ void freeblock(block3 *b, bool alloced = true)
 
 void selgridmap(const selinfo &sel, uchar *g)                           // generates a map of the cube sizes at each grid point
 {
-    loopxyz(sel, -sel.grid, (*g++ = BITSCAN(lusize), (void)c));
+    LOOP_XYZ(sel, -sel.grid, (*g++ = BITSCAN(lusize), (void)c));
 }
 
 void freeundo(undoblock *u)
@@ -653,7 +653,7 @@ void freeundo(undoblock *u)
 void pasteundoblock(block3 *b, uchar *g)
 {
     cube *s = b->c();
-    loopxyz(*b, 1<<min(int(*g++), worldscale-1), pastecube(*s++, c));
+    LOOP_XYZ(*b, 1<<min(int(*g++), worldscale-1), pastecube(*s++, c));
 }
 
 void pasteundo(undoblock *u)
@@ -863,7 +863,7 @@ static void packcube(cube &c, B &buf)
     else
     {
         cube data = c;
-        lilswap(data.texture, 6);
+        LIL_ENDIAN_SWAP(data.texture, 6);
         buf.put(c.material&0xFF);
         buf.put(c.material>>8);
         buf.put(data.edges, sizeof(data.edges));
@@ -876,10 +876,10 @@ static bool packblock(block3 &b, B &buf)
 {
     if(b.size() <= 0 || b.size() > (1<<20)) return false;
     block3 hdr = b;
-    lilswap(hdr.o.v, 3);
-    lilswap(hdr.s.v, 3);
-    lilswap(&hdr.grid, 1);
-    lilswap(&hdr.orient, 1);
+    LIL_ENDIAN_SWAP(hdr.o.v, 3);
+    LIL_ENDIAN_SWAP(hdr.s.v, 3);
+    LIL_ENDIAN_SWAP(&hdr.grid, 1);
+    LIL_ENDIAN_SWAP(&hdr.orient, 1);
     buf.put((const uchar *)&hdr, sizeof(hdr));
     cube *c = b.c();
     loopi(b.size()) packcube(c[i], buf);
@@ -908,7 +908,7 @@ static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
             vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));         
             hdr.index = index;
             hdr.slot = vs.slot->index;
-            lilswap(&hdr.index, 2);
+            LIL_ENDIAN_SWAP(&hdr.index, 2);
             packvslot(buf, vs);
         }
     }
@@ -936,7 +936,7 @@ static void unpackcube(cube &c, B &buf)
         c.material = mat | (buf.get()<<8);
         buf.get(c.edges, sizeof(c.edges));
         buf.get((uchar *)c.texture, sizeof(c.texture));
-        lilswap(c.texture, 6);
+        LIL_ENDIAN_SWAP(c.texture, 6);
     }
 }
 
@@ -946,10 +946,10 @@ static bool unpackblock(block3 *&b, B &buf)
     if(b) { freeblock(b); b = NULL; }
     block3 hdr;
     if(buf.get((uchar *)&hdr, sizeof(hdr)) < int(sizeof(hdr))) return false;
-    lilswap(hdr.o.v, 3);
-    lilswap(hdr.s.v, 3);
-    lilswap(&hdr.grid, 1);
-    lilswap(&hdr.orient, 1);
+    LIL_ENDIAN_SWAP(hdr.o.v, 3);
+    LIL_ENDIAN_SWAP(hdr.s.v, 3);
+    LIL_ENDIAN_SWAP(&hdr.grid, 1);
+    LIL_ENDIAN_SWAP(&hdr.orient, 1);
     if(hdr.size() > (1<<20) || hdr.grid <= 0 || hdr.grid > (1<<12)) return false;
     b = (block3 *)new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)];
     if(!b) return false;
@@ -988,7 +988,7 @@ static void unpackvslots(block3 &b, ucharbuf &buf)
     while(buf.remaining() >= int(sizeof(vslothdr)))
     {
         vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
-        lilswap(&hdr.index, 2);
+        LIL_ENDIAN_SWAP(&hdr.index, 2);
         if(!hdr.index) break;
         VSlot &vs = *lookupslot(hdr.slot, false).variants;
         VSlot ds;
@@ -1073,17 +1073,17 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
     buf.reserve(512);
-    *(ushort *)buf.pad(2) = lilswap(ushort(u->numents));
+    *(ushort *)buf.pad(2) = LIL_ENDIAN_SWAP(ushort(u->numents));
     if(u->numents)
     {
         undoent *ue = u->ents();
         loopi(u->numents)
         {
-            *(ushort *)buf.pad(2) = lilswap(ushort(ue[i].i));
+            *(ushort *)buf.pad(2) = LIL_ENDIAN_SWAP(ushort(ue[i].i));
             entity &e = *(entity *)buf.pad(sizeof(entity));
             e = ue[i].e;
-            lilswap(&e.o.x, 3);
-            lilswap(&e.attr1, 5); 
+            LIL_ENDIAN_SWAP(&e.o.x, 3);
+            LIL_ENDIAN_SWAP(&e.attr1, 5);
         }
     }
     else
@@ -1107,7 +1107,7 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
         delete[] outbuf;
         return false;
     }
-    int numents = lilswap(*(const ushort *)buf.pad(2));
+    int numents = LIL_ENDIAN_SWAP(*(const ushort *)buf.pad(2));
     if(numents)
     {
         if(buf.remaining() < numents*int(2 + sizeof(entity)))
@@ -1117,10 +1117,10 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
         }
         loopi(numents)
         {
-            int idx = lilswap(*(const ushort *)buf.pad(2));
+            int idx = LIL_ENDIAN_SWAP(*(const ushort *)buf.pad(2));
             entity &e = *(entity *)buf.pad(sizeof(entity));
-            lilswap(&e.o.x, 3);
-            lilswap(&e.attr1, 5);
+            LIL_ENDIAN_SWAP(&e.o.x, 3);
+            LIL_ENDIAN_SWAP(&e.attr1, 5);
             pasteundoent(idx, e);
         }
     }
@@ -1215,7 +1215,7 @@ void saveprefab(char *name)
     prefabheader hdr;
     memcpy(hdr.magic, "OEBR", 4);
     hdr.version = 0;
-    lilswap(&hdr.version, 1);
+    LIL_ENDIAN_SWAP(&hdr.version, 1);
     f->write(&hdr, sizeof(hdr));
     streambuf<uchar> s(f);
     if(!packblock(*b->copy, s)) { delete f; conoutf(CON_ERROR, "could not pack prefab %s", filename); return; }
@@ -1230,7 +1230,7 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
     int o = sel.orient;
     sel.orient = b.orient;
     cube *s = b.c();
-    loopselxyz(if(!IS_EMPTY(*s) || s->children || s->material != MAT_AIR) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
+    LOOP_SEL_XYZ(if(!IS_EMPTY(*s) || s->children || s->material != MAT_AIR) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
     sel.orient = o;
 }
 
@@ -1245,7 +1245,7 @@ prefab *loadprefab(const char *name, bool msg = true)
    if(!f) { if(msg) conoutf(CON_ERROR, "could not read prefab %s", filename); return NULL; }
    prefabheader hdr;
    if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4)) { delete f; if(msg) conoutf(CON_ERROR, "prefab %s has malformatted header", filename); return NULL; }
-   lilswap(&hdr.version, 1);
+   LIL_ENDIAN_SWAP(&hdr.version, 1);
    if(hdr.version != 0) { delete f; if(msg) conoutf(CON_ERROR, "prefab %s uses unsupported version", filename); return NULL; }
    streambuf<uchar> s(f);
    block3 *copy = NULL;
@@ -1381,7 +1381,7 @@ void genprefabmesh(prefab &p)
     }
 
     cube *s = p.copy->c();
-    loopxyz(b, b.grid, if(!IS_EMPTY(*s) || s->children) pastecube(*s, c); s++);
+    LOOP_XYZ(b, b.grid, if(!IS_EMPTY(*s) || s->children) pastecube(*s, c); s++);
 
     prefabmesh r;
     neighbourstack[++neighbourdepth] = worldroot;
@@ -1796,18 +1796,20 @@ namespace hmap
         DIAGONAL_RIPPLE(+1, -1, (x<nx && y>my));
     }
 
-#define loopbrush(i) for(int x=bmx; x<=bnx+i; x++) for(int y=bmy; y<=bny+i; y++)
+#undef DIAGONAL_RIPPLE
+
+#define LOOP_BRUSH(i) for(int x=bmx; x<=bnx+i; x++) for(int y=bmy; y<=bny+i; y++)
 
     void paint()
     {
-        loopbrush(1)
+        LOOP_BRUSH(1)
             map[x][y] -= dr * brush[x][y];
     }
 
     void smooth()
     {
         int sum, div;
-        loopbrush(-2)
+        LOOP_BRUSH(-2)
         {
             sum = 0;
             div = 9;
@@ -1822,9 +1824,11 @@ namespace hmap
 
     void rippleandset()
     {
-        loopbrush(0)
+        LOOP_BRUSH(0)
             ripple(x, y, gz, false);
     }
+
+#undef LOOP_BRUSH
 
     void run(int dir, int mode)
     {
@@ -1955,7 +1959,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
     if(dc) sel.o[d] += sel.us(d)-sel.grid;
     sel.s[d] = 1;
 
-    loopselxyz(
+    LOOP_SEL_XYZ(
         if(c.children) solidfaces(c);
         ushort mat = getmaterial(c);
         discardchildren(c, true);
@@ -2041,7 +2045,7 @@ void pushsel(int *dir)
 void mpdelcube(selinfo &sel, bool local)
 {
     if(local) game::edittrigger(sel, EDIT_DELCUBE);
-    loopselxyz(discardchildren(c, true); EMPTY_FACES(c));
+    LOOP_SEL_XYZ(discardchildren(c, true); EMPTY_FACES(c));
 }
 
 void delcube()
@@ -2154,7 +2158,7 @@ void mpeditvslot(int delta, VSlot &ds, int allfaces, selinfo &sel, bool local)
     }
     bool findrep = local && !allfaces && reptex < 0;
     VSlot *findedit = NULL;
-    loopselxyz(remapvslots(c, delta != 0, ds, allfaces ? -1 : sel.orient, findrep, findedit));
+    LOOP_SEL_XYZ(remapvslots(c, delta != 0, ds, allfaces ? -1 : sel.orient, findrep, findedit));
     remappedvslots.setsize(0);
     if(local && findedit)
     {
@@ -2337,7 +2341,7 @@ void mpedittex(int tex, int allfaces, selinfo &sel, bool local)
         repsel = sel;
     }
     bool findrep = local && !allfaces && reptex < 0;
-    loopselxyz(edittexcube(c, tex, allfaces ? -1 : sel.orient, findrep));
+    LOOP_SEL_XYZ(edittexcube(c, tex, allfaces ? -1 : sel.orient, findrep));
 }
 
 static int unpacktex(int &tex, ucharbuf &buf, bool insert = true)
@@ -2438,7 +2442,7 @@ void gettex()
     if(noedit(true)) return;
     filltexlist();
     int tex = -1;
-    loopxyz(sel, sel.grid, tex = c.texture[sel.orient]);
+    LOOP_XYZ(sel, sel.grid, tex = c.texture[sel.orient]);
     loopv(texmru) if(texmru[i]==tex)
     {
         curtexindex = i;
@@ -2490,7 +2494,7 @@ COMMAND(gettexname, "ii");
 ICOMMAND(texmru, "b", (int *idx), { filltexlist(); intret(texmru.inrange(*idx) ? texmru[*idx] : texmru.length()); });
 ICOMMAND(looptexmru, "re", (ident *id, uint *body),
 {
-    loopstart(id, stack);
+    LOOP_START(id, stack);
     filltexlist();
     loopv(texmru) { loopiter(id, stack, texmru[i]); execute(body); }
     loopend(id, stack);
@@ -2511,7 +2515,7 @@ void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local)
     if(local) game::edittrigger(sel, EDIT_REPLACE, oldtex, newtex, insel ? 1 : 0);
     if(insel)
     {
-        loopselxyz(replacetexcube(c, oldtex, newtex));
+        LOOP_SEL_XYZ(replacetexcube(c, oldtex, newtex));
     }
     else
     {
@@ -2597,7 +2601,7 @@ void mpflip(selinfo &sel, bool local)
         makeundo();
     }
     int zs = sel.s[DIMENSION(sel.orient)];
-    loopxy(sel)
+    LOOP_XY(sel)
     {
         loop(z,zs) flipcube(selcube(x, y, z), DIMENSION(sel.orient));
         loop(z,zs/2)
@@ -2626,7 +2630,7 @@ void mprotate(int cw, selinfo &sel, bool local)
     if(local) makeundo();
     loop(z,sel.s[D[d]]) loopi(cw>0 ? 1 : 3)
     {
-        loopxy(sel) rotatecube(selcube(x,y,z), d);
+        LOOP_XY(sel) rotatecube(selcube(x,y,z), d);
         loop(y,ss/2) loop(x,ss-1-y*2) rotatequad
         (
             selcube(ss-1-y, x+y, z),
@@ -2703,7 +2707,7 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
         if(IS_CLIPPED(matid&MATF_VOLUME)) matid |= MAT_CLIP;
         if(IS_DEADLY(matid&MATF_VOLUME)) matid |= MAT_DEATH;
     }
-    loopselxyz(setmat(c, matid, matmask, filtermat, filtermask, filtergeom));
+    LOOP_SEL_XYZ(setmat(c, matid, matmask, filtermat, filtermask, filtergeom));
 }
 
 void editmat(char *name, char *filtername)

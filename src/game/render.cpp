@@ -197,7 +197,7 @@ namespace game
             const playermodelinfo *mdl = getplayermodelinfo(i);
             if(!mdl) break;
             if(i != playermodel && (!multiplayer(false) || forceplayermodels)) continue;
-            if(m_teammode)
+            if(MODE_TEAMMODE)
             {
                 loopj(MAXTEAMS) preloadmodel(mdl->model[1+j]);
             }
@@ -324,7 +324,7 @@ namespace game
 
     static inline void renderplayer(gameent *d, float fade = 1, int flags = 0)
     {
-        int team = m_teammode && validteam(d->team) ? d->team : 0;
+        int team = MODE_TEAMMODE && validteam(d->team) ? d->team : 0;
         renderplayer(d, getplayermodelinfo(d), getplayercolor(d, team), team, fade, flags);
     }
 
@@ -336,7 +336,7 @@ namespace game
         {
             bestteams.shrink(0);
             bestplayers.shrink(0);
-            if(m_teammode) getbestteams(bestteams);
+            if(MODE_TEAMMODE) getbestteams(bestteams);
             else getbestplayers(bestplayers);
         }
 
@@ -350,7 +350,7 @@ namespace game
             copystring(d->info, colorname(d));
             if(d->state!=CS_DEAD)
             {
-                int team = m_teammode && validteam(d->team) ? d->team : 0;
+                int team = MODE_TEAMMODE && validteam(d->team) ? d->team : 0;
                 particle_text(d->abovehead(), d->info, PART_TEXT, 1, teamtextcolor[team], 2.0f);
             }
         }
@@ -430,7 +430,7 @@ namespace game
         if(!hudgunsway) sway = d->o;
 
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        int team = m_teammode && validteam(d->team) ? d->team : 0,
+        int team = MODE_TEAMMODE && validteam(d->team) ? d->team : 0,
             color = getplayercolor(d, team);
         DEF_FORMAT_STRING(gunname, "%s/%s", mdl.hudguns[team], file);
         modelattach a[2];
@@ -514,7 +514,7 @@ namespace game
             const char *file = guns[i].file;
             if(!file) continue;
             string fname;
-            if(m_teammode)
+            if(MODE_TEAMMODE)
             {
                 loopj(MAXTEAMS)
                 {

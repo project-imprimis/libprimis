@@ -214,7 +214,7 @@ namespace UI
             children.deletecontents();
         }
 
-        #define loopchildren(o, body) do { \
+        #define LOOP_CHILDREN(o, body) do { \
             loopv(children) \
             { \
                 Object *o = children[i]; \
@@ -222,7 +222,7 @@ namespace UI
             } \
         } while(0)
 
-        #define loopchildrenrev(o, body) do { \
+        #define LOOP_CHILDREN_REV(o, body) do { \
             loopvrev(children) \
             { \
                 Object *o = children[i]; \
@@ -230,7 +230,7 @@ namespace UI
             } \
         } while(0)
 
-        #define loopchildrange(start, end, o, body) do { \
+        #define LOOP_CHILD_RANGE(start, end, o, body) do { \
             for(int i = start; i < end; i++) \
             { \
                 Object *o = children[i]; \
@@ -238,34 +238,10 @@ namespace UI
             } \
         } while(0)
 
-        #define loopinchildren(o, cx, cy, inbody, outbody) \
-            loopchildren(o, \
-            { \
-                float o##x = cx - o->x; \
-                float o##y = cy - o->y; \
-                if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \
-                { \
-                    inbody; \
-                } \
-                outbody; \
-            })
-
-        #define loopinchildrenrev(o, cx, cy, inbody, outbody) \
-            loopchildrenrev(o, \
-            { \
-                float o##x = cx - o->x; \
-                float o##y = cy - o->y; \
-                if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \
-                { \
-                    inbody; \
-                } \
-                outbody; \
-            })
-
         virtual void layout()
         {
             w = h = 0;
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->x = o->y = 0;
                 o->layout();
@@ -276,7 +252,7 @@ namespace UI
 
         void adjustchildrento(float px, float py, float pw, float ph)
         {
-            loopchildren(o, o->adjustlayout(px, py, pw, ph));
+            LOOP_CHILDREN(o, o->adjustlayout(px, py, pw, ph));
         }
 
         virtual void adjustchildren()
@@ -334,7 +310,7 @@ namespace UI
 
         virtual bool rawkey(int code, bool isdown)
         {
-            loopchildrenrev(o,
+            LOOP_CHILDREN_REV(o,
             {
                 if(o->rawkey(code, isdown)) return true;
             });
@@ -343,7 +319,7 @@ namespace UI
 
         virtual bool key(int code, bool isdown)
         {
-            loopchildrenrev(o,
+            LOOP_CHILDREN_REV(o,
             {
                 if(o->key(code, isdown)) return true;
             });
@@ -352,7 +328,7 @@ namespace UI
 
         virtual bool textinput(const char *str, int len)
         {
-            loopchildrenrev(o,
+            LOOP_CHILDREN_REV(o,
             {
                 if(o->textinput(str, len)) return true;
             });
@@ -393,7 +369,7 @@ namespace UI
 
         virtual void draw(float sx, float sy)
         {
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                     o->draw(sx + o->x, sy + o->y);
@@ -408,7 +384,7 @@ namespace UI
         void resetchildstate()
         {
             resetstate();
-            loopchildren(o, o->resetchildstate());
+            LOOP_CHILDREN(o, o->resetchildstate());
         }
 
         bool hasstate(int flags) const { return ((state & ~childstate) & flags) != 0; }
@@ -444,13 +420,13 @@ namespace UI
             state &= ~flags;
             if(childstate & flags)
             {
-                loopchildren(o, { if((o->state | o->childstate) & flags) o->clearstate(flags); });
+                LOOP_CHILDREN(o, { if((o->state | o->childstate) & flags) o->clearstate(flags); });
                 childstate &= ~flags;
             }
         }
 
         #define propagatestate(o, cx, cy, mask, inside, body) \
-            loopchildrenrev(o, \
+            LOOP_CHILDREN_REV(o, \
             { \
                 if(((o->state | o->childstate) & mask) != mask) continue; \
                 float o##x = cx - o->x; \
@@ -492,11 +468,11 @@ namespace UI
 
         Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
         {
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 if(o != exclude && o->isnamed(name)) return o;
             });
-            if(recurse) loopchildren(o,
+            if(recurse) LOOP_CHILDREN(o,
             {
                 if(o != exclude)
                 {
@@ -740,7 +716,7 @@ namespace UI
         static const char *typestr() { return "#World"; }
         const char *gettype() const { return typestr(); }
 
-        #define loopwindows(o, body) do { \
+        #define LOOP_WINDOWS(o, body) do { \
             loopv(children) \
             { \
                 Window *o = (Window *)children[i]; \
@@ -748,7 +724,7 @@ namespace UI
             } \
         } while(0)
 
-        #define loopwindowsrev(o, body) do { \
+        #define LOOP_WINDOWS_REV(o, body) do { \
             loopvrev(children) \
             { \
                 Window *o = (Window *)children[i]; \
@@ -758,13 +734,13 @@ namespace UI
 
         void adjustchildren()
         {
-            loopwindows(w, w->adjustlayout());
+            LOOP_WINDOWS(w, w->adjustlayout());
         }
 
         #define DOSTATE(flags, func) \
             void func##children(float cx, float cy, int mask, bool inside, int setflags) \
             { \
-                loopwindowsrev(w, \
+                LOOP_WINDOWS_REV(w, \
                 { \
                     if(((w->state | w->childstate) & mask) != mask) continue; \
                     w->func##children(cx, cy, mask, inside, setflags); \
@@ -779,7 +755,7 @@ namespace UI
         {
             reset();
             setup();
-            loopwindows(w,
+            LOOP_WINDOWS(w,
             {
                 w->build();
                 if(!children.inrange(i)) break;
@@ -801,7 +777,7 @@ namespace UI
         {
             children.remove(index);
             childstate = 0;
-            loopchildren(o, childstate |= o->state | o->childstate);
+            LOOP_CHILDREN(o, childstate |= o->state | o->childstate);
             w->hide();
         }
 
@@ -815,14 +791,14 @@ namespace UI
 
         bool hidetop()
         {
-            loopwindowsrev(w, { if(w->allowinput && !(w->state&STATE_HIDDEN)) { hide(w, i); return true; } });
+            LOOP_WINDOWS_REV(w, { if(w->allowinput && !(w->state&STATE_HIDDEN)) { hide(w, i); return true; } });
             return false;
         }
 
         int hideall()
         {
             int hidden = 0;
-            loopwindowsrev(w,
+            LOOP_WINDOWS_REV(w,
             {
                 hide(w, i);
                 hidden++;
@@ -830,7 +806,7 @@ namespace UI
             return hidden;
         }
 
-        bool allowinput() const { loopwindows(w, { if(w->allowinput && !(w->state&STATE_HIDDEN)) return true; }); return false; }
+        bool allowinput() const { LOOP_WINDOWS(w, { if(w->allowinput && !(w->state&STATE_HIDDEN)) return true; }); return false; }
 
         void draw(float sx, float sy) {}
 
@@ -838,16 +814,19 @@ namespace UI
         {
             if(children.empty()) return;
 
-            loopwindows(w, w->draw());
+            LOOP_WINDOWS(w, w->draw());
         }
 
         float abovehud()
         {
             float y = 1;
-            loopwindows(w, { if(w->abovehud && !(w->state&STATE_HIDDEN)) y = min(y, w->calcabovehud()); });
+            LOOP_WINDOWS(w, { if(w->abovehud && !(w->state&STATE_HIDDEN)) y = min(y, w->calcabovehud()); });
             return y;
         }
     };
+
+#undef LOOP_WINDOWS_REV
+#undef LOOP_WINDOWS
 
     static World *world = NULL;
 
@@ -883,7 +862,7 @@ namespace UI
         void layout()
         {
             subw = h = 0;
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->x = subw;
                 o->y = 0;
@@ -929,7 +908,7 @@ namespace UI
         void layout()
         {
             w = subh = 0;
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->x = 0;
                 o->y = subh;
@@ -945,7 +924,7 @@ namespace UI
             if(children.empty()) return;
 
             float offset = 0, sy = 0, rspace = (h - subh) / max(children.length() - 1, 1), rstep = (h - subh) / children.length();
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->y = offset;
                 offset += o->h + rspace;
@@ -981,7 +960,7 @@ namespace UI
             heights.setsize(0);
 
             int column = 0, row = 0;
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->layout();
                 if(column >= widths.length()) widths.add(o->w);
@@ -1009,7 +988,7 @@ namespace UI
                   cstep = (w - subw) / widths.length(),
                   rspace = (h - subh) / max(heights.length() - 1, 1),
                   rstep = (h - subh) / heights.length();
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->x = offsetx;
                 o->y = offsety;
@@ -1059,17 +1038,17 @@ namespace UI
 
         void adjustchildren()
         {
-            loopchildrange(columns, children.length(), o, o->adjustlayout(0, 0, w, h));
+            LOOP_CHILD_RANGE(columns, children.length(), o, o->adjustlayout(0, 0, w, h));
         }
 
         void draw(float sx, float sy)
         {
-            loopchildrange(columns, children.length(), o,
+            LOOP_CHILD_RANGE(columns, children.length(), o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                     o->draw(sx + o->x, sy + o->y);
             });
-            loopchildrange(0, columns, o,
+            LOOP_CHILD_RANGE(0, columns, o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                     o->draw(sx + o->x, sy + o->y);
@@ -1119,7 +1098,7 @@ namespace UI
             widths.setsize(0);
 
             w = subh = 0;
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->layout();
                 int cols = o->childcolumns();
@@ -1148,7 +1127,7 @@ namespace UI
                   cstep = (w - subw) / widths.length(),
                   rspace = (h - subh) / max(children.length() - 1, 1),
                   rstep = (h - subh) / children.length();
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->x = 0;
                 o->y = offsety;
@@ -1192,7 +1171,7 @@ namespace UI
         {
             w = spacew;
             h = spaceh;
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->x = spacew;
                 o->y = spaceh;
@@ -1228,7 +1207,7 @@ namespace UI
         {
             Object::layout();
 
-            loopchildren(o,
+            LOOP_CHILDREN(o,
             {
                 o->x += offsetx;
                 o->y += offsety;
@@ -3583,3 +3562,6 @@ namespace UI
     }
 }
 
+#undef LOOP_CHILDREN
+#undef LOOP_CHILDREN_REV
+#undef LOOP_CHILD_RANGE

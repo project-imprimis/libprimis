@@ -489,7 +489,7 @@ namespace ai
         }
 #endif
         if(cmode) cmode->aifind(d, b, interests);
-        if(m_teammode) assist(d, b, interests);
+        if(MODE_TEAMMODE) assist(d, b, interests);
         return parseinterests(d, b, interests, override);
     }
 

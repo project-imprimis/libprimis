@@ -132,7 +132,7 @@ struct md2 : vertloader<md2>
 
             md2_header header;
             file->read(&header, sizeof(md2_header));
-            lilswap(&header.magic, sizeof(md2_header)/sizeof(int));
+            LIL_ENDIAN_SWAP(&header.magic, sizeof(md2_header)/sizeof(int));
 
             if(header.magic!=844121161 || header.version!=8 ||
                header.numframes <= 0 || header.numframes > 1000 ||
@@ -154,7 +154,7 @@ struct md2 : vertloader<md2>
             int *glcommands = new int[header.numglcommands];
             file->seek(header.offsetglcommands, SEEK_SET);
             int numglcommands = file->read(glcommands, header.numglcommands*sizeof(int))/sizeof(int);
-            lilswap(glcommands, numglcommands);
+            LIL_ENDIAN_SWAP(glcommands, numglcommands);
             if(numglcommands < header.numglcommands) memset(&glcommands[numglcommands], 0, (header.numglcommands-numglcommands)*sizeof(int));
 
             vector<tcvert> tcgen;
@@ -181,7 +181,7 @@ struct md2 : vertloader<md2>
                 md2_frame frame;
                 file->seek(frame_offset, SEEK_SET);
                 file->read(&frame, sizeof(md2_frame));
-                lilswap(frame.scale, 6);
+                LIL_ENDIAN_SWAP(frame.scale, 6);
 
                 file->read(tmpverts, header.numvertices*sizeof(md2_vertex));
                 loopj(m.numverts)

@@ -109,7 +109,7 @@ namespace game
     void respawnself()
     {
         if(ispaused()) return;
-        if(m_mp(gamemode))
+        if(MODE_MP(gamemode))
         {
             int seq = (player1->lifesequence<<16)|((lastmillis/1000)&0xFFFF);
             if(player1->respawned!=seq) { addmsg(N_TRYSPAWN, "rc", player1); player1->respawned = seq; }
@@ -150,7 +150,7 @@ namespace game
 
     bool allowthirdperson()
     {
-        return !multiplayer(false) || player1->state==CS_SPECTATOR || player1->state==CS_EDITING || m_edit;
+        return !multiplayer(false) || player1->state==CS_SPECTATOR || player1->state==CS_EDITING || MODE_EDIT;
     }
 
     bool detachcamera()
@@ -267,7 +267,7 @@ namespace game
     void spawnplayer(gameent *d)   // place at random spawn
     {
         if(cmode) cmode->pickspawn(d);
-        else findplayerspawn(d, -1, m_teammode ? d->team : 0);
+        else findplayerspawn(d, -1, MODE_TEAMMODE ? d->team : 0);
         spawnstate(d);
         if(d==player1)
         {
@@ -416,7 +416,7 @@ namespace game
         if(!h) h = player1;
         int contype = d==h || actor==h ? CON_FRAG_SELF : CON_FRAG_OTHER;
         const char *dname = "", *aname = "";
-        if(m_teammode && teamcolorfrags)
+        if(MODE_TEAMMODE && teamcolorfrags)
         {
             dname = teamcolorname(d, "you");
             aname = teamcolorname(actor, "you");
@@ -457,7 +457,7 @@ namespace game
             if(cmode) cmode->gameover();
             conoutf(CON_GAMEINFO, "\f2intermission:");
             conoutf(CON_GAMEINFO, "\f2game has ended!");
-            if(m_ctf) conoutf(CON_GAMEINFO, "\f2player frags: %d, flags: %d, deaths: %d", player1->frags, player1->flags, player1->deaths);
+            if(MODE_CTF) conoutf(CON_GAMEINFO, "\f2player frags: %d, flags: %d, deaths: %d", player1->frags, player1->flags, player1->deaths);
             else conoutf(CON_GAMEINFO, "\f2player frags: %d, deaths: %d", player1->frags, player1->deaths);
             int accuracy = (player1->totaldamage*100)/max(player1->totalshots, 1);
             conoutf(CON_GAMEINFO, "\f2player total damage dealt: %d, damage wasted: %d, accuracy(%%): %d", player1->totaldamage, player1->totalshots-player1->totaldamage, accuracy);
@@ -568,7 +568,7 @@ namespace game
 
         conoutf(CON_GAMEINFO, "\f2game mode is %s", server::modeprettyname(gamemode));
 
-        const char *info = m_valid(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
+        const char *info = MODE_VALID(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
         if(showmodeinfo && info) conoutf(CON_GAMEINFO, "\f0%s", info);
 
         syncplayer();
@@ -586,8 +586,8 @@ namespace game
         ai::savewaypoints();
         ai::clearwaypoints(true);
 
-        if(!m_mp(gamemode)) spawnplayer(player1);
-        else findplayerspawn(player1, -1, m_teammode ? player1->team : 0);
+        if(!MODE_MP(gamemode)) spawnplayer(player1);
+        else findplayerspawn(player1, -1, MODE_TEAMMODE ? player1->team : 0);
         entities::resetspawns();
         copystring(clientmap, name ? name : "");
 
@@ -596,7 +596,7 @@ namespace game
 
     const char *getmapinfo()
     {
-        return showmodeinfo && m_valid(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
+        return showmodeinfo && MODE_VALID(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
     }
 
     const char *getscreenshotinfo()
@@ -663,13 +663,13 @@ namespace game
 
     const char *teamcolorname(gameent *d, const char *alt)
     {
-        if(!teamcolortext || !m_teammode || !validteam(d->team) || d->state == CS_SPECTATOR) return colorname(d, NULL, alt);
+        if(!teamcolortext || !MODE_TEAMMODE || !validteam(d->team) || d->state == CS_SPECTATOR) return colorname(d, NULL, alt);
         return colorname(d, NULL, alt, teamtextcode[d->team]);
     }
 
     const char *teamcolor(const char *prefix, const char *suffix, int team, const char *alt)
     {
-        if(!teamcolortext || !m_teammode || !validteam(team)) return alt;
+        if(!teamcolortext || !MODE_TEAMMODE || !validteam(team)) return alt;
         return tempformatstring("\fs%s%s%s%s\fr", teamtextcode[team], prefix, teamnames[team], suffix);
     }
 
@@ -677,7 +677,7 @@ namespace game
 
     void teamsound(bool sameteam, int n, const vec *loc)
     {
-        playsound(n, loc, NULL, teamsounds ? (m_teammode && sameteam ? SND_USE_ALT : SND_NO_ALT) : 0);
+        playsound(n, loc, NULL, teamsounds ? (MODE_TEAMMODE && sameteam ? SND_USE_ALT : SND_NO_ALT) : 0);
     }
 
     void teamsound(gameent *d, int n, const vec *loc)
@@ -691,7 +691,7 @@ namespace game
         {
             if(d->state!=CS_ALIVE) return;
             gameent *pl = (gameent *)d;
-            if(!m_mp(gamemode)) killed(pl, pl);
+            if(!MODE_MP(gamemode)) killed(pl, pl);
             else
             {
                 int seq = (pl->lifesequence<<16)|((lastmillis/1000)&0xFFFF);
@@ -701,7 +701,7 @@ namespace game
     }
     ICOMMAND(suicide, "", (), suicide(player1));
 
-    bool needminimap() { return m_ctf; }
+    bool needminimap() { return MODE_CTF; }
 
     void drawicon(int icon, float x, float y, float sz)
     {
@@ -816,7 +816,7 @@ namespace game
 
         int crosshair = 0;
         if(lasthit && lastmillis - lasthit < hitcrosshair) crosshair = 2;
-        else if(teamcrosshair && m_teammode)
+        else if(teamcrosshair && MODE_TEAMMODE)
         {
             dynent *o = intersectclosest(d->o, worldpos, d);
             if(o && o->type==ENT_PLAYER && validteam(d->team) && ((gameent *)o)->team == d->team)

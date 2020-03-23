@@ -192,7 +192,7 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
         {
             if(format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT)
             {
-                ullong salpha = lilswap(*(const ullong *)src), dalpha = 0;
+                ullong salpha = LIL_ENDIAN_SWAP(*(const ullong *)src), dalpha = 0;
                 uint xmask = flipx ? 15 : 0, ymask = flipy ? 15 : 0, xshift = 2, yshift = 4;
                 if(swapxy) swap(xshift, yshift);
                 for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
@@ -200,14 +200,14 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
                     dalpha |= ((salpha&15) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
                     salpha >>= 4;
                 }
-                *(ullong *)curdst = lilswap(dalpha);
+                *(ullong *)curdst = LIL_ENDIAN_SWAP(dalpha);
                 src += 8;
                 curdst += 8;
             }
             else if(format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
             {
                 uchar alpha1 = src[0], alpha2 = src[1];
-                ullong salpha = lilswap(*(const ushort *)&src[2]) + ((ullong)lilswap(*(const uint *)&src[4]) << 16), dalpha = 0;
+                ullong salpha = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]) + ((ullong)LIL_ENDIAN_SWAP(*(const uint *)&src[4]) << 16), dalpha = 0;
                 uint xmask = flipx ? 7 : 0, ymask = flipy ? 7 : 0, xshift = 0, yshift = 2;
                 if(swapxy) swap(xshift, yshift);
                 for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
@@ -217,15 +217,15 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
                 }
                 curdst[0] = alpha1;
                 curdst[1] = alpha2;
-                *(ushort *)&curdst[2] = lilswap(ushort(dalpha));
-                *(ushort *)&curdst[4] = lilswap(ushort(dalpha>>16));
-                *(ushort *)&curdst[6] = lilswap(ushort(dalpha>>32));
+                *(ushort *)&curdst[2] = LIL_ENDIAN_SWAP(ushort(dalpha));
+                *(ushort *)&curdst[4] = LIL_ENDIAN_SWAP(ushort(dalpha>>16));
+                *(ushort *)&curdst[6] = LIL_ENDIAN_SWAP(ushort(dalpha>>32));
                 src += 8;
                 curdst += 8;
             }
 
-            ushort color1 = lilswap(*(const ushort *)src), color2 = lilswap(*(const ushort *)&src[2]);
-            uint sbits = lilswap(*(const uint *)&src[4]);
+            ushort color1 = LIL_ENDIAN_SWAP(*(const ushort *)src), color2 = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]);
+            uint sbits = LIL_ENDIAN_SWAP(*(const uint *)&src[4]);
             if(normals)
             {
                 ushort ncolor1 = color1, ncolor2 = color2;
@@ -254,9 +254,9 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
                 dbits |= ((sbits&3) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
                 sbits >>= 2;
             }
-            *(ushort *)curdst = lilswap(color1);
-            *(ushort *)&curdst[2] = lilswap(color2);
-            *(uint *)&curdst[4] = lilswap(dbits);
+            *(ushort *)curdst = LIL_ENDIAN_SWAP(color1);
+            *(ushort *)&curdst[2] = LIL_ENDIAN_SWAP(color2);
+            *(uint *)&curdst[4] = LIL_ENDIAN_SWAP(dbits);
 
             if(blocksize > 8) { src -= 8; curdst -= 8; }
         }
@@ -278,7 +278,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
             loopj(blocksize/8)
             {
                 uchar val1 = src[0], val2 = src[1];
-                ullong sval = lilswap(*(const ushort *)&src[2]) + ((ullong)lilswap(*(const uint *)&src[4] )<< 16), dval = 0;
+                ullong sval = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]) + ((ullong)LIL_ENDIAN_SWAP(*(const uint *)&src[4] )<< 16), dval = 0;
                 uint xmask = flipx ? 7 : 0, ymask = flipy ? 7 : 0, xshift = 0, yshift = 2;
                 if(swapxy) swap(xshift, yshift);
                 for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
@@ -288,9 +288,9 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
                 }
                 curdst[0] = val1;
                 curdst[1] = val2;
-                *(ushort *)&curdst[2] = lilswap(ushort(dval));
-                *(ushort *)&curdst[4] = lilswap(ushort(dval>>16));
-                *(ushort *)&curdst[6] = lilswap(ushort(dval>>32));
+                *(ushort *)&curdst[2] = LIL_ENDIAN_SWAP(ushort(dval));
+                *(ushort *)&curdst[4] = LIL_ENDIAN_SWAP(ushort(dval>>16));
+                *(ushort *)&curdst[6] = LIL_ENDIAN_SWAP(ushort(dval>>32));
                 src += 8;
                 curdst += 8;
             }
@@ -3342,9 +3342,9 @@ static void name(ImageData &s) \
 }
 
 DECODEDDS(decodedxt1, s.compressed == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 4 : 3,
-    ushort color0 = lilswap(*(const ushort *)src);
-    ushort color1 = lilswap(*(const ushort *)&src[2]);
-    uint bits = lilswap(*(const uint *)&src[4]);
+    ushort color0 = LIL_ENDIAN_SWAP(*(const ushort *)src);
+    ushort color1 = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]);
+    uint bits = LIL_ENDIAN_SWAP(*(const uint *)&src[4]);
     bvec4 rgba[4];
     rgba[0] = bvec4(bvec::from565(color0), 0xFF);
     rgba[1] = bvec4(bvec::from565(color1), 0xFF);
@@ -3365,10 +3365,10 @@ DECODEDDS(decodedxt1, s.compressed == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 4 : 3,
 );
 
 DECODEDDS(decodedxt3, 4,
-    ullong alpha = lilswap(*(const ullong *)src);
-    ushort color0 = lilswap(*(const ushort *)&src[8]);
-    ushort color1 = lilswap(*(const ushort *)&src[10]);
-    uint bits = lilswap(*(const uint *)&src[12]);
+    ullong alpha = LIL_ENDIAN_SWAP(*(const ullong *)src);
+    ushort color0 = LIL_ENDIAN_SWAP(*(const ushort *)&src[8]);
+    ushort color1 = LIL_ENDIAN_SWAP(*(const ushort *)&src[10]);
+    uint bits = LIL_ENDIAN_SWAP(*(const uint *)&src[12]);
     bvec rgb[4];
     rgb[0] = bvec::from565(color0);
     rgb[1] = bvec::from565(color1);
@@ -3409,10 +3409,10 @@ static inline void decodealpha(uchar alpha0, uchar alpha1, uchar alpha[8])
 DECODEDDS(decodedxt5, 4,
     uchar alpha[8];
     decodealpha(src[0], src[1], alpha);
-    ullong alphabits = lilswap(*(const ushort *)&src[2]) + ((ullong)lilswap(*(const uint *)&src[4]) << 16);
-    ushort color0 = lilswap(*(const ushort *)&src[8]);
-    ushort color1 = lilswap(*(const ushort *)&src[10]);
-    uint bits = lilswap(*(const uint *)&src[12]);
+    ullong alphabits = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]) + ((ullong)LIL_ENDIAN_SWAP(*(const uint *)&src[4]) << 16);
+    ushort color0 = LIL_ENDIAN_SWAP(*(const ushort *)&src[8]);
+    ushort color1 = LIL_ENDIAN_SWAP(*(const ushort *)&src[10]);
+    uint bits = LIL_ENDIAN_SWAP(*(const uint *)&src[12]);
     bvec rgb[4];
     rgb[0] = bvec::from565(color0);
     rgb[1] = bvec::from565(color1);
@@ -3429,7 +3429,7 @@ DECODEDDS(decodedxt5, 4,
 DECODEDDS(decodergtc1, 1,
     uchar red[8];
     decodealpha(src[0], src[1], red);
-    ullong redbits = lilswap(*(const ushort *)&src[2]) + ((ullong)lilswap(*(const uint *)&src[4]) << 16);
+    ullong redbits = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]) + ((ullong)LIL_ENDIAN_SWAP(*(const uint *)&src[4]) << 16);
 ,
     dst[0] = red[redbits&7];
 ,
@@ -3439,10 +3439,10 @@ DECODEDDS(decodergtc1, 1,
 DECODEDDS(decodergtc2, 2,
     uchar red[8];
     decodealpha(src[0], src[1], red);
-    ullong redbits = lilswap(*(const ushort *)&src[2]) + ((ullong)lilswap(*(const uint *)&src[4]) << 16);
+    ullong redbits = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]) + ((ullong)LIL_ENDIAN_SWAP(*(const uint *)&src[4]) << 16);
     uchar green[8];
     decodealpha(src[8], src[9], green);
-    ullong greenbits = lilswap(*(const ushort *)&src[10]) + ((ullong)lilswap(*(const uint *)&src[12]) << 16);
+    ullong greenbits = LIL_ENDIAN_SWAP(*(const ushort *)&src[10]) + ((ullong)LIL_ENDIAN_SWAP(*(const uint *)&src[12]) << 16);
 ,
     dst[0] = red[redbits&7];
     dst[1] = green[greenbits&7];
@@ -3460,7 +3460,7 @@ bool loaddds(const char *filename, ImageData &image, int force)
     if(f->read(magic, 4) != 4 || memcmp(magic, "DDS ", 4)) { delete f; return false; }
     DDSURFACEDESC2 d;
     if(f->read(&d, sizeof(d)) != sizeof(d)) { delete f; return false; }
-    lilswap((uint *)&d, sizeof(d)/sizeof(uint));
+    LIL_ENDIAN_SWAP((uint *)&d, sizeof(d)/sizeof(uint));
     if(d.dwSize != sizeof(DDSURFACEDESC2) || d.ddpfPixelFormat.dwSize != sizeof(DDPIXELFORMAT)) { delete f; return false; }
     bool supported = false;
     if(d.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
@@ -3616,7 +3616,7 @@ void gendds(char *infile, char *outfile)
         if(lh > 1) lh /= 2;
     }
 
-    lilswap((uint *)&d, sizeof(d)/sizeof(uint));
+    LIL_ENDIAN_SWAP((uint *)&d, sizeof(d)/sizeof(uint));
 
     f->write("DDS ", 4);
     f->write(&d, sizeof(d));

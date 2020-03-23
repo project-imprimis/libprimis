@@ -83,7 +83,7 @@ enum
 
 void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = NULL)
 {
-    loopoctabox(cor, size, bo, br)
+    LOOP_OCTA_BOX(cor, size, bo, br)
     {
         ivec o(i, cor, size);
         vtxarray *va = c[i].ext && c[i].ext->va ? c[i].ext->va : lastva;
@@ -285,7 +285,7 @@ static inline void findents(octaentities &oe, int low, int high, bool notspawned
 
 static inline void findents(cube *c, const ivec &o, int size, const ivec &bo, const ivec &br, int low, int high, bool notspawned, const vec &pos, const vec &invradius, vector<int> &found)
 {
-    loopoctabox(o, size, bo, br)
+    LOOP_OCTA_BOX(o, size, bo, br)
     {
         if(c[i].ext && c[i].ext->ents) findents(*c[i].ext->ents, low, high, notspawned, pos, invradius, found);
         if(c[i].children && size > octaentsize)

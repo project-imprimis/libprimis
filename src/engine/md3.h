@@ -60,8 +60,8 @@ struct md3 : vertloader<md3>
             if(!f) return false;
             md3header header;
             f->read(&header, sizeof(md3header));
-            lilswap(&header.version, 1);
-            lilswap(&header.flags, 9);
+            LIL_ENDIAN_SWAP(&header.version, 1);
+            LIL_ENDIAN_SWAP(&header.flags, 9);
             if(strncmp(header.id, "IDP3", 4) != 0 || header.version != 15) // header check
             {
                 delete f;
@@ -83,7 +83,7 @@ struct md3 : vertloader<md3>
                 md3meshheader mheader;
                 f->seek(mesh_offset, SEEK_SET);
                 f->read(&mheader, sizeof(md3meshheader));
-                lilswap(&mheader.flags, 10);
+                LIL_ENDIAN_SWAP(&mheader.flags, 10);
 
                 m.name = newstring(mheader.name);
 
@@ -94,7 +94,7 @@ struct md3 : vertloader<md3>
                 {
                     md3triangle tri;
                     f->read(&tri, sizeof(md3triangle)); // read the triangles
-                    lilswap(tri.vertexindices, 3);
+                    LIL_ENDIAN_SWAP(tri.vertexindices, 3);
                     loopk(3) m.tris[j].vert[k] = (ushort)tri.vertexindices[k];
                 }
 
@@ -102,7 +102,7 @@ struct md3 : vertloader<md3>
                 m.tcverts = new tcvert[m.numverts];
                 f->seek(mesh_offset + mheader.ofs_uv , SEEK_SET);
                 f->read(m.tcverts, m.numverts*2*sizeof(float)); // read the UV data
-                lilswap(&m.tcverts[0].tc.x, 2*m.numverts);
+                LIL_ENDIAN_SWAP(&m.tcverts[0].tc.x, 2*m.numverts);
 
                 m.verts = new vert[numframes*m.numverts];
                 f->seek(mesh_offset + mheader.ofs_vertices, SEEK_SET);
@@ -110,7 +110,7 @@ struct md3 : vertloader<md3>
                 {
                     md3vertex v;
                     f->read(&v, sizeof(md3vertex)); // read the vertices
-                    lilswap(v.vertex, 4);
+                    LIL_ENDIAN_SWAP(v.vertex, 4);
 
                     m.verts[j].pos = vec(v.vertex[0]/64.0f, -v.vertex[1]/64.0f, v.vertex[2]/64.0f);
 
@@ -134,7 +134,7 @@ struct md3 : vertloader<md3>
                 loopi(header.numframes*header.numtags)
                 {
                     f->read(&tag, sizeof(md3tag));
-                    lilswap(tag.translation, 12);
+                    LIL_ENDIAN_SWAP(tag.translation, 12);
                     if(tag.name[0] && i<header.numtags) tags[i].name = newstring(tag.name);
                     matrix4x3 &m = tags[i].matrix;
                     tag.translation[1] *= -1;

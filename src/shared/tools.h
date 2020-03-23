@@ -1221,23 +1221,23 @@ template<class T> inline T endiansame(T n) { return n; }
 template<class T> inline void endiansame(T *buf, size_t len) {}
 #ifdef SDL_BYTEORDER
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#define lilswap endiansame
+#define LIL_ENDIAN_SWAP endiansame
 #define BIG_SWAP endianswap
 #else
-#define lilswap endianswap
+#define LIL_ENDIAN_SWAP endianswap
 #define BIG_SWAP endiansame
 #endif
 #elif defined(__BYTE_ORDER__)
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#define lilswap endiansame
+#define LIL_ENDIAN_SWAP endiansame
 #define BIG_SWAP endianswap
 #else
-#define lilswap endianswap
+#define LIL_ENDIAN_SWAP endianswap
 #define BIG_SWAP endiansame
 #endif
 #else
-template<class T> inline T lilswap(T n) { return islittleendian() ? n : endianswap(n); }
-template<class T> inline void lilswap(T *buf, size_t len) { if(!islittleendian()) endianswap(buf, len); }
+template<class T> inline T LIL_ENDIAN_SWAP(T n) { return islittleendian() ? n : endianswap(n); }
+template<class T> inline void LIL_ENDIAN_SWAP(T *buf, size_t len) { if(!islittleendian()) endianswap(buf, len); }
 template<class T> inline T BIG_SWAP(T n) { return islittleendian() ? endianswap(n) : n; }
 template<class T> inline void BIG_SWAP(T *buf, size_t len) { if(islittleendian()) endianswap(buf, len); }
 #endif
@@ -1283,12 +1283,12 @@ struct stream
 
     template<class T> size_t put(const T *v, size_t n) { return write(v, n*sizeof(T))/sizeof(T); }
     template<class T> bool put(T n) { return write(&n, sizeof(n)) == sizeof(n); }
-    template<class T> bool putlil(T n) { return put<T>(lilswap(n)); }
+    template<class T> bool putlil(T n) { return put<T>(LIL_ENDIAN_SWAP(n)); }
     template<class T> bool putbig(T n) { return put<T>(BIG_SWAP(n)); }
 
     template<class T> size_t get(T *v, size_t n) { return read(v, n*sizeof(T))/sizeof(T); }
     template<class T> T get() { T n; return read(&n, sizeof(n)) == sizeof(n) ? n : 0; }
-    template<class T> T getlil() { return lilswap(get<T>()); }
+    template<class T> T getlil() { return LIL_ENDIAN_SWAP(get<T>()); }
     template<class T> T getbig() { return BIG_SWAP(get<T>()); }
 
 #ifndef STANDALONE

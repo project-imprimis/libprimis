@@ -1160,10 +1160,10 @@ struct skelmodel : animmodel
                 }
 
                 vertsize = sizeof(vvert);
-                looprendermeshes(skelmesh, m, vlen += m.genvbo(idxs, vlen));
+                LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen));
                 DELETEA(vdata);
                 vdata = new uchar[vlen*vertsize];
-                looprendermeshes(skelmesh, m,
+                LOOP_RENDER_MESHES(skelmesh, m,
                 {
                     m.fillverts((vvert *)vdata);
                 });
@@ -1193,7 +1193,7 @@ struct skelmodel : animmodel
                     { \
                         vertsize = sizeof(type); \
                         vector<type> vverts; \
-                        looprendermeshes(skelmesh, m, vlen += m.genvbo args); \
+                        LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo args); \
                         glBufferData_(GL_ARRAY_BUFFER, vverts.length()*sizeof(type), vverts.getbuf(), GL_STATIC_DRAW); \
                     } while(0)
                 #define GENVBOANIM(type) GENVBO(type, (idxs, vlen, vverts))
@@ -1202,7 +1202,7 @@ struct skelmodel : animmodel
                 else
                 {
                     int numverts = 0, htlen = 128;
-                    looprendermeshes(skelmesh, m, numverts += m.numverts);
+                    LOOP_RENDER_MESHES(skelmesh, m, numverts += m.numverts);
                     while(htlen < numverts) htlen *= 2;
                     if(numverts*4 > htlen*3) htlen *= 2;
                     int *htdata = new int[htlen];
@@ -1276,7 +1276,7 @@ struct skelmodel : animmodel
             blendcombos.sort(blendcombo::sortcmp);
             int *remap = new int[blendcombos.length()];
             loopv(blendcombos) remap[blendcombos[i].interpindex] = i;
-            looprendermeshes(skelmesh, m,
+            LOOP_RENDER_MESHES(skelmesh, m,
             {
                 loopj(m.numverts)
                 {
@@ -1415,7 +1415,7 @@ struct skelmodel : animmodel
                 {
                     if(!vbocache->vbuf) genvbo(*vbocache);
                     bindvbo(as, p, *vbocache);
-                    looprendermeshes(skelmesh, m,
+                    LOOP_RENDER_MESHES(skelmesh, m,
                     {
                         p->skins[i].bind(m, as);
                         m.render(as, p->skins[i], *vbocache);
@@ -1448,7 +1448,7 @@ struct skelmodel : animmodel
                 {
                     vc.owner = owner;
                     (animcacheentry &)vc = sc;
-                    looprendermeshes(skelmesh, m,
+                    LOOP_RENDER_MESHES(skelmesh, m,
                     {
                         m.interpverts(sc.bdata, bc ? bc->bdata : NULL, (vvert *)vdata, p->skins[i]);
                     });
@@ -1458,7 +1458,7 @@ struct skelmodel : animmodel
 
                 bindvbo(as, p, vc, &sc, bc);
 
-                looprendermeshes(skelmesh, m,
+                LOOP_RENDER_MESHES(skelmesh, m,
                 {
                     p->skins[i].bind(m, as);
                     if(skel->usegpuskel) skel->setgpubones(sc, bc, vblends);

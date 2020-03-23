@@ -563,7 +563,7 @@ static inline bool bbinsideva(const ivec &bo, const ivec &br, vtxarray *va)
 
 static inline bool bboccluded(const ivec &bo, const ivec &br, cube *c, const ivec &o, int size)
 {
-    loopoctabox(o, size, bo, br)
+    LOOP_OCTA_BOX(o, size, bo, br)
     {
         ivec co(i, o, size);
         if(c[i].ext && c[i].ext->va)

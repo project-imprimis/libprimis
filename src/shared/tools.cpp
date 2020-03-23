@@ -156,7 +156,7 @@ int getuint(ucharbuf &p)
 template<class T>
 static inline void putfloat_(T &p, float f)
 {
-    lilswap(&f, 1);
+    LIL_ENDIAN_SWAP(&f, 1);
     p.put((uchar *)&f, sizeof(float));
 }
 void putfloat(ucharbuf &p, float f) { putfloat_(p, f); }
@@ -167,7 +167,7 @@ float getfloat(ucharbuf &p)
 {
     float f;
     p.get((uchar *)&f, sizeof(float));
-    return lilswap(f);
+    return LIL_ENDIAN_SWAP(f);
 }
 
 template<class T>

@@ -137,7 +137,7 @@ namespace game
 
     void setclientmode()
     {
-        if(m_ctf) cmode = &ctfmode;
+        if(MODE_CTF) cmode = &ctfmode;
         else cmode = NULL;
     }
 
@@ -177,16 +177,16 @@ namespace game
     }
     void printteam()
     {
-        if((player1->clientnum >= 0 && !m_teammode) || !validteam(player1->team)) conoutf("you are not in a team");
+        if((player1->clientnum >= 0 && !MODE_TEAMMODE) || !validteam(player1->team)) conoutf("you are not in a team");
         else conoutf("your team is: \fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]);
     }
     ICOMMAND(team, "sN", (char *s, int *numargs),
     {
         if(*numargs > 0) switchteam(s);
         else if(!*numargs) printteam();
-        else if((player1->clientnum < 0 || m_teammode) && validteam(player1->team)) result(tempformatstring("\fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]));
+        else if((player1->clientnum < 0 || MODE_TEAMMODE) && validteam(player1->team)) result(tempformatstring("\fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]));
     });
-    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || m_teammode) && validteam(player1->team) ? player1->team : 0));
+    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || MODE_TEAMMODE) && validteam(player1->team) ? player1->team : 0));
     ICOMMAND(getteamname, "i", (int *num), result(teamname(*num)));
 
     struct authkey
@@ -285,7 +285,7 @@ namespace game
     bool allowedittoggle()
     {
         if(editmode) return true;
-        if(isconnected() && multiplayer(false) && !m_edit)
+        if(isconnected() && multiplayer(false) && !MODE_EDIT)
         {
             conoutf(CON_ERROR, "editing in multiplayer requires edit mode");
             return false;
@@ -319,7 +319,7 @@ namespace game
     int getclientteam(int cn)
     {
         gameent *d = getclient(cn);
-        return m_teammode && d && validteam(d->team) ? d->team : 0;
+        return MODE_TEAMMODE && d && validteam(d->team) ? d->team : 0;
     }
     ICOMMAND(getclientteam, "i", (int *cn), intret(getclientteam(*cn)));
 
@@ -335,14 +335,14 @@ namespace game
         gameent *d = getclient(cn);
         if(!d || d->state==CS_SPECTATOR) return "spectator";
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        return m_teammode && validteam(d->team) ? mdl.icon[d->team] : mdl.icon[0];
+        return MODE_TEAMMODE && validteam(d->team) ? mdl.icon[d->team] : mdl.icon[0];
     }
     ICOMMAND(getclienticon, "i", (int *cn), result(getclienticon(*cn)));
 
     int getclientcolor(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->state!=CS_SPECTATOR ? getplayercolor(d, m_teammode && validteam(d->team) ? d->team : 0) : 0xFFFFFF;
+        return d && d->state!=CS_SPECTATOR ? getplayercolor(d, MODE_TEAMMODE && validteam(d->team) ? d->team : 0) : 0xFFFFFF;
     }
     ICOMMAND(getclientcolor, "i", (int *cn), intret(getclientcolor(*cn)));
 
@@ -588,17 +588,17 @@ namespace game
 
     void changemapserv(const char *name, int mode)        // forced map change from the server
     {
-        if(multiplayer(false) && !m_mp(mode))
+        if(multiplayer(false) && !MODE_MP(mode))
         {
             conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
-            loopi(NUMGAMEMODES) if(m_mp(STARTGAMEMODE + i)) { mode = STARTGAMEMODE + i; break; }
+            loopi(NUMGAMEMODES) if(MODE_MP(STARTGAMEMODE + i)) { mode = STARTGAMEMODE + i; break; }
         }
 
         gamemode = mode;
         nextmode = mode;
         if(editmode) toggleedit();
-        if(m_demo) { entities::resetspawns(); return; }
-        if((m_edit && !name[0]) || !load_world(name))
+        if(MODE_DEMO) { entities::resetspawns(); return; }
+        if((MODE_EDIT && !name[0]) || !load_world(name))
         {
             emptymap(0, true, name);
             senditemstoserver = false;
@@ -608,7 +608,7 @@ namespace game
 
     void setmode(int mode)
     {
-        if(multiplayer(false) && !m_mp(mode))
+        if(multiplayer(false) && !MODE_MP(mode))
         {
             conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer",  server::modeprettyname(mode), mode);
             intret(0);
@@ -619,7 +619,7 @@ namespace game
     }
     ICOMMAND(mode, "i", (int *val), setmode(*val));
     ICOMMAND(getmode, "", (), intret(gamemode));
-    ICOMMAND(getnextmode, "", (), intret(m_valid(nextmode) ? nextmode : (remote ? 1 : 0)));
+    ICOMMAND(getnextmode, "", (), intret(MODE_VALID(nextmode) ? nextmode : (remote ? 1 : 0)));
     ICOMMAND(getmodename, "i", (int *mode), result(server::modename(*mode, "")));
     ICOMMAND(getmodeprettyname, "i", (int *mode), result(server::modeprettyname(*mode, "")));
     ICOMMAND(timeremaining, "i", (int *formatted),
@@ -630,14 +630,14 @@ namespace game
     });
     ICOMMAND(intermission, "", (), intret(intermission ? 1 : 0));
 
-    ICOMMANDS("m_ctf", "i", (int *mode), { int gamemode = *mode; intret(m_ctf); });
-    ICOMMANDS("m_teammode", "i", (int *mode), { int gamemode = *mode; intret(m_teammode); });
-    ICOMMANDS("m_rail", "i", (int *mode), { int gamemode = *mode; intret(m_rail); });
-    ICOMMANDS("m_pulse", "i", (int *mode), { int gamemode = *mode; intret(m_pulse); });
-    ICOMMANDS("m_demo", "i", (int *mode), { int gamemode = *mode; intret(m_demo); });
-    ICOMMANDS("m_edit", "i", (int *mode), { int gamemode = *mode; intret(m_edit); });
-    ICOMMANDS("m_lobby", "i", (int *mode), { int gamemode = *mode; intret(m_lobby); });
-    ICOMMANDS("m_timed", "i", (int *mode), { int gamemode = *mode; intret(m_timed); });
+    ICOMMANDS("MODE_CTF", "i", (int *mode), { int gamemode = *mode; intret(MODE_CTF); });
+    ICOMMANDS("MODE_TEAMMODE", "i", (int *mode), { int gamemode = *mode; intret(MODE_TEAMMODE); });
+    ICOMMANDS("MODE_RAIL", "i", (int *mode), { int gamemode = *mode; intret(MODE_RAIL); });
+    ICOMMANDS("MODE_PULSE", "i", (int *mode), { int gamemode = *mode; intret(MODE_PULSE); });
+    ICOMMANDS("MODE_DEMO", "i", (int *mode), { int gamemode = *mode; intret(MODE_DEMO); });
+    ICOMMANDS("MODE_EDIT", "i", (int *mode), { int gamemode = *mode; intret(MODE_EDIT); });
+    ICOMMANDS("MODE_LOBBY", "i", (int *mode), { int gamemode = *mode; intret(MODE_LOBBY); });
+    ICOMMANDS("MODE_TIMED", "i", (int *mode), { int gamemode = *mode; intret(MODE_TIMED); });
 
     void changemap(const char *name, int mode) // request map change, server may ignore
     {
@@ -650,7 +650,7 @@ namespace game
     }
     void changemap(const char *name)
     {
-        changemap(name, m_valid(nextmode) ? nextmode : (remote ? 1 : 0));
+        changemap(name, MODE_VALID(nextmode) ? nextmode : (remote ? 1 : 0));
     }
     ICOMMAND(map, "s", (char *name), changemap(name));
 
@@ -686,7 +686,7 @@ namespace game
 
     void edittrigger(const selinfo &sel, int op, int arg1, int arg2, int arg3, const VSlot *vs)
     {
-        if(m_edit) switch(op)
+        if(MODE_EDIT) switch(op)
         {
             case EDIT_FLIP:
             case EDIT_COPY:
@@ -737,7 +737,7 @@ namespace game
                     messages.pad(2);
                     int offset = messages.length();
                     if(tex1) packvslot(messages, arg1);
-                    *(ushort *)&messages[offset-2] = lilswap(ushort(messages.length() - offset));
+                    *(ushort *)&messages[offset-2] = LIL_ENDIAN_SWAP(ushort(messages.length() - offset));
                 }
                 break;
             }
@@ -753,7 +753,7 @@ namespace game
                     int offset = messages.length();
                     if(tex1) packvslot(messages, arg1);
                     if(tex2) packvslot(messages, arg2);
-                    *(ushort *)&messages[offset-2] = lilswap(ushort(messages.length() - offset));
+                    *(ushort *)&messages[offset-2] = LIL_ENDIAN_SWAP(ushort(messages.length() - offset));
                 }
                 break;
             }
@@ -773,7 +773,7 @@ namespace game
                     messages.pad(2);
                     int offset = messages.length();
                     packvslot(messages, vs);
-                    *(ushort *)&messages[offset-2] = lilswap(ushort(messages.length() - offset));
+                    *(ushort *)&messages[offset-2] = LIL_ENDIAN_SWAP(ushort(messages.length() - offset));
                 }
                 break;
             }
@@ -820,7 +820,7 @@ namespace game
 
     void vartrigger(ident *id)
     {
-        if(!m_edit) return;
+        if(!MODE_EDIT) return;
         switch(id->type)
         {
             case ID_VAR:
@@ -855,7 +855,7 @@ namespace game
 
     bool ispaused() { return gamepaused; }
 
-    bool allowmouselook() { return !gamepaused || !remote || m_edit; }
+    bool allowmouselook() { return !gamepaused || !remote || MODE_EDIT; }
 
     void changegamespeed(int val)
     {
@@ -990,7 +990,7 @@ namespace game
     void toserver(char *text) { conoutf(CON_CHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[0], text); addmsg(N_TEXT, "rcs", player1, text); }
     COMMANDN(say, toserver, "C");
 
-    void sayteam(char *text) { if(!m_teammode || !validteam(player1->team)) return; conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[player1->team], text); addmsg(N_SAYTEAM, "rcs", player1, text); }
+    void sayteam(char *text) { if(!MODE_TEAMMODE || !validteam(player1->team)) return; conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[player1->team], text); addmsg(N_SAYTEAM, "rcs", player1, text); }
     COMMAND(sayteam, "C");
 
     ICOMMAND(servcmd, "C", (char *cmd), addmsg(N_SERVCMD, "rs", cmd));
@@ -1542,7 +1542,7 @@ namespace game
                 parsestate(s, p);
                 s->state = CS_ALIVE;
                 if(cmode) cmode->pickspawn(s);
-                else findplayerspawn(s, -1, m_teammode ? s->team : 0);
+                else findplayerspawn(s, -1, MODE_TEAMMODE ? s->team : 0);
                 if(s == player1)
                 {
                     showscores(false);
@@ -1615,7 +1615,7 @@ namespace game
                        *actor = getclient(acn);
                 if(!actor) break;
                 actor->frags = frags;
-                if(m_teammode) setteaminfo(actor->team, tfrags);
+                if(MODE_TEAMMODE) setteaminfo(actor->team, tfrags);
 #if 0
                 extern int hidefrags;
                 if(actor!=player1 && (!cmode || !cmode->hidefrags() || !hidefrags))
@@ -1630,7 +1630,7 @@ namespace game
                 loopi(MAXTEAMS)
                 {
                     int frags = getint(p);
-                    if(m_teammode) setteaminfo(1+i, frags);
+                    if(MODE_TEAMMODE) setteaminfo(1+i, frags);
                 }
                 break;
 
@@ -1731,7 +1731,7 @@ namespace game
                         int tex = getint(p),
                             allfaces = getint(p);
                         if(p.remaining() < 2) return;
-                        int extra = lilswap(*(const ushort *)p.pad(2));
+                        int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
                         if(p.remaining() < extra) return;
                         ucharbuf ebuf = p.subbuf(extra);
                         if(sel.validate()) mpedittex(tex, allfaces, sel, ebuf);
@@ -1748,7 +1748,7 @@ namespace game
                             newtex = getint(p),
                             insel = getint(p);
                         if(p.remaining() < 2) return;
-                        int extra = lilswap(*(const ushort *)p.pad(2));
+                        int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
                         if(p.remaining() < extra) return;
                         ucharbuf ebuf = p.subbuf(extra);
                         if(sel.validate()) mpreplacetex(oldtex, newtex, insel>0, sel, ebuf);
@@ -1760,7 +1760,7 @@ namespace game
                         int delta = getint(p),
                             allfaces = getint(p);
                         if(p.remaining() < 2) return;
-                        int extra = lilswap(*(const ushort *)p.pad(2));
+                        int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
                         if(p.remaining() < extra) return;
                         ucharbuf ebuf = p.subbuf(extra);
                         if(sel.validate()) mpeditvslot(delta, allfaces, sel, ebuf);
@@ -2036,7 +2036,7 @@ namespace game
 
             case N_SENDMAP:
             {
-                if(!m_edit) return;
+                if(!MODE_EDIT) return;
                 string oldname;
                 copystring(oldname, getclientmap());
                 DEF_FORMAT_STRING(mname, "getmap_%d", lastmillis);
@@ -2076,7 +2076,7 @@ namespace game
 
     void getmap()
     {
-        if(!m_edit) { conoutf(CON_ERROR, "\"getmap\" only works in edit mode"); return; }
+        if(!MODE_EDIT) { conoutf(CON_ERROR, "\"getmap\" only works in edit mode"); return; }
         conoutf("getting map...");
         addmsg(N_GETMAP, "r");
     }
@@ -2124,7 +2124,7 @@ namespace game
 
     void sendmap()
     {
-        if(!m_edit || (player1->state==CS_SPECTATOR && remote && !player1->privilege)) { conoutf(CON_ERROR, "\"sendmap\" only works in coop edit mode"); return; }
+        if(!MODE_EDIT || (player1->state==CS_SPECTATOR && remote && !player1->privilege)) { conoutf(CON_ERROR, "\"sendmap\" only works in coop edit mode"); return; }
         conoutf("sending map...");
         DEF_FORMAT_STRING(mname, "sendmap_%d", lastmillis);
         save_world(mname);

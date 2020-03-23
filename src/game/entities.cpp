@@ -249,7 +249,7 @@ namespace entities
             case TELEPORT:
             {
                 if(d->lastpickup==ents[n]->type && lastmillis-d->lastpickupmillis<500) break;
-                if(!teleteam && m_teammode) break;
+                if(!teleteam && MODE_TEAMMODE) break;
                 if(ents[n]->attr3 > 0)
                 {
                     DEF_FORMAT_STRING(hookname, "can_teleport_%d", ents[n]->attr3);

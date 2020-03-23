@@ -34,7 +34,7 @@ namespace game
             else return false;
         }
         else if(b->state==CS_SPECTATOR) return true;
-        if(m_ctf)
+        if(MODE_CTF)
         {
             if(a->flags > b->flags) return true;
             if(a->flags < b->flags) return false;
@@ -92,7 +92,7 @@ namespace game
             gameent *o = players[i];
             if(!showconnecting && !o->name[0]) continue;
             if(o->state==CS_SPECTATOR) { spectators.add(o); continue; }
-            int team = m_teammode && validteam(o->team) ? o->team : 0;
+            int team = MODE_TEAMMODE && validteam(o->team) ? o->team : 0;
             teamplayers[team].add(o);
         }
         loopi(1+MAXTEAMS) teamplayers[i].sort(playersort);
@@ -115,7 +115,7 @@ namespace game
     ICOMMAND(loopscoreboard, "rie", (ident *id, int *team, uint *body),
     {
         if(*team > MAXTEAMS) return;
-        loopstart(id, stack);
+        LOOP_START(id, stack);
         vector<gameent *> &p = *team < 0 ? spectators : teamplayers[*team];
         loopv(p)
         {
@@ -196,7 +196,7 @@ namespace game
 
     ICOMMAND(scoreboardtime, "", (),
     {
-        if(m_timed && getclientmap() && (maplimit >= 0 || intermission))
+        if(MODE_TIMED && getclientmap() && (maplimit >= 0 || intermission))
         {
             if(intermission) result("intermission");
             else
@@ -209,7 +209,7 @@ namespace game
 
     ICOMMAND(getteamscore, "i", (int *team),
     {
-        if(m_teammode && validteam(*team))
+        if(MODE_TEAMMODE && validteam(*team))
         {
             if(cmode && cmode->hidefrags()) intret(cmode->getteamscore(*team));
             else intret(teaminfos[*team-1].frags);

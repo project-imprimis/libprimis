@@ -447,7 +447,7 @@ namespace ai
             }
             if(retries <= 0)
             {
-                loopavoid(obstacles, d,
+                LOOP_AVOID(obstacles, d,
                 {
                     if(iswaypoint(wp) && wp != node && wp != goal && waypoints[node].find(wp) < 0 && waypoints[goal].find(wp) < 0)
                     {

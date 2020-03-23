@@ -126,29 +126,28 @@ static struct gamemodeinfo
 };
 
 //these are the checks for particular mechanics in particular modes
-//e.g. m_rail makes the mode only have railguns
+//e.g. MODE_RAIL makes the mode only have railguns
 #define STARTGAMEMODE (-1)
 #define NUMGAMEMODES ((int)(sizeof(gamemodes)/sizeof(gamemodes[0])))
 
-#define m_valid(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
-#define m_check(mode, flag)    (m_valid(mode) && gamemodes[(mode) - STARTGAMEMODE].flags&(flag))
-#define m_checknot(mode, flag) (m_valid(mode) && !(gamemodes[(mode) - STARTGAMEMODE].flags&(flag)))
-#define m_checkall(mode, flag) (m_valid(mode) && (gamemodes[(mode) - STARTGAMEMODE].flags&(flag)) == (flag))
+#define MODE_VALID(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
+#define MODE_CHECK(mode, flag)    (MODE_VALID(mode) && gamemodes[(mode) - STARTGAMEMODE].flags&(flag))
+#define MODE_CHECK_NOT(mode, flag) (MODE_VALID(mode) && !(gamemodes[(mode) - STARTGAMEMODE].flags&(flag)))
 
-#define m_ctf          (m_check(gamemode, M_CTF))
-#define m_teammode     (m_check(gamemode, M_TEAM))
-#define m_overtime     (m_check(gamemode, M_OVERTIME))
-#define IS_TEAM(a,b)    (m_teammode && a==b)
-#define m_rail         (m_check(gamemode, M_RAIL))
-#define m_pulse        (m_check(gamemode, M_PULSE))
-#define m_all          (m_check(gamemode, M_ALL))
+#define MODE_CTF       (MODE_CHECK(gamemode, M_CTF))
+#define MODE_TEAMMODE  (MODE_CHECK(gamemode, M_TEAM))
+#define MODE_OVERTIME  (MODE_CHECK(gamemode, M_OVERTIME))
+#define IS_TEAM(a,b)   (MODE_TEAMMODE && a==b)
+#define MODE_RAIL      (MODE_CHECK(gamemode, M_RAIL))
+#define MODE_PULSE     (MODE_CHECK(gamemode, M_PULSE))
+#define MODE_ALL       (MODE_CHECK(gamemode, M_ALL))
 
-#define m_demo         (m_check(gamemode, M_DEMO))
-#define m_edit         (m_check(gamemode, M_EDIT))
-#define m_lobby        (m_check(gamemode, M_LOBBY))
-#define m_timed        (m_checknot(gamemode, M_DEMO|M_EDIT|M_LOCAL))
-#define m_botmode      (m_checknot(gamemode, M_DEMO|M_LOCAL))
-#define m_mp(mode)     (m_checknot(mode, M_LOCAL))
+#define MODE_DEMO      (MODE_CHECK(gamemode, M_DEMO))
+#define MODE_EDIT      (MODE_CHECK(gamemode, M_EDIT))
+#define MODE_LOBBY     (MODE_CHECK(gamemode, M_LOBBY))
+#define MODE_TIMED        (MODE_CHECK_NOT(gamemode, M_DEMO|M_EDIT|M_LOCAL))
+#define MODE_BOTMODE   (MODE_CHECK_NOT(gamemode, M_DEMO|M_LOCAL))
+#define MODE_MP(mode)  (MODE_CHECK_NOT(mode, M_LOCAL))
 
 enum { MM_AUTH = -1, MM_OPEN = 0, MM_VETO, MM_LOCKED, MM_PRIVATE, MM_PASSWORD, MM_START = MM_AUTH, MM_INVALID = MM_START - 1 };
 
@@ -323,17 +322,17 @@ struct gamestate
 
     void spawnstate(int gamemode)
     {
-        if(m_all)
+        if(MODE_ALL)
         {
             gunselect = GUN_RAIL;
             loopi(NUMGUNS) ammo[i] = 1;
         }
-        else if(m_rail)
+        else if(MODE_RAIL)
         {
             gunselect = GUN_RAIL;
             ammo[GUN_RAIL] = 1;
         }
-        else if(m_pulse)
+        else if(MODE_PULSE)
         {
             gunselect = GUN_PULSE;
             ammo[GUN_PULSE] = 1;
@@ -492,7 +491,7 @@ namespace game
         virtual void setup() {}
         virtual void checkitems(gameent *d) {}
         virtual int respawnwait(gameent *d) { return 0; }
-        virtual void pickspawn(gameent *d) { findplayerspawn(d, -1, m_teammode ? d->team : 0); }
+        virtual void pickspawn(gameent *d) { findplayerspawn(d, -1, MODE_TEAMMODE ? d->team : 0); }
         virtual void senditems(packetbuf &p) {}
         virtual void removeplayer(gameent *d) {}
         virtual void gameover() {}

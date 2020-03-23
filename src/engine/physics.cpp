@@ -1089,7 +1089,7 @@ static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const c
 
 static inline bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cube *c, const ivec &cor, int size) // collide with octants
 {
-    loopoctabox(cor, size, bo, bs)
+    LOOP_OCTA_BOX(cor, size, bo, bs)
     {
         if(c[i].ext && c[i].ext->ents) if(mmcollide(d, dir, cutoff, *c[i].ext->ents)) return true;
         ivec o(i, cor, size);

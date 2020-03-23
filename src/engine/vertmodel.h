@@ -287,10 +287,10 @@ struct vertmodel : animmodel
             if(numframes>1)
             {
                 vertsize = sizeof(vvert);
-                looprendermeshes(vertmesh, m, vlen += m.genvbo(idxs, vlen));
+                LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen));
                 DELETEA(vdata);
                 vdata = new uchar[vlen*vertsize];
-                looprendermeshes(vertmesh, m,
+                LOOP_RENDER_MESHES(vertmesh, m,
                 {
                     m.fillverts((vvert *)vdata);
                 });
@@ -303,11 +303,11 @@ struct vertmodel : animmodel
                     do \
                     { \
                         vector<type> vverts; \
-                        looprendermeshes(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen)); \
+                        LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen)); \
                         glBufferData_(GL_ARRAY_BUFFER, vverts.length()*sizeof(type), vverts.getbuf(), GL_STATIC_DRAW); \
                     } while(0)
                 int numverts = 0, htlen = 128;
-                looprendermeshes(vertmesh, m, numverts += m.numverts);
+                LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
                 while(htlen < numverts) htlen *= 2;
                 if(numverts*4 > htlen*3) htlen *= 2;
                 int *htdata = new int[htlen];
@@ -395,7 +395,7 @@ struct vertmodel : animmodel
                 {
                     vc->as = *as;
                     vc->millis = lastmillis;
-                    looprendermeshes(vertmesh, m,
+                    LOOP_RENDER_MESHES(vertmesh, m,
                     {
                         m.interpverts(*as, (vvert *)vdata, p->skins[i]);
                     });
@@ -407,7 +407,7 @@ struct vertmodel : animmodel
 
             bindvbo(as, p, *vc);
 
-            looprendermeshes(vertmesh, m,
+            LOOP_RENDER_MESHES(vertmesh, m,
             {
                 p->skins[i].bind(m, as);
                 m.render(as, p->skins[i], *vc);

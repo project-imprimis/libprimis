@@ -32,20 +32,20 @@ static void fixent(entity &e, int version)
 static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr)
 {
     if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
-    lilswap(&hdr.version, 2);
+    LIL_ENDIAN_SWAP(&hdr.version, 2);
 
     if(!memcmp(hdr.magic, "TMAP", 4))
     {
         if(hdr.version>MAPVERSION) { conoutf(CON_ERROR, "map %s requires a newer version of Tesseract", ogzname); return false; }
         if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
-        lilswap(&hdr.worldsize, 6);
+        LIL_ENDIAN_SWAP(&hdr.worldsize, 6);
         if(hdr.worldsize <= 0|| hdr.numents < 0) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
     }
     else if(!memcmp(hdr.magic, "OCTA", 4))
     {
         if(hdr.version!=OCTAVERSION) { conoutf(CON_ERROR, "map %s uses an unsupported map format version", ogzname); return false; }
         if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
-        lilswap(&ohdr.worldsize, 7);
+        LIL_ENDIAN_SWAP(&ohdr.worldsize, 7);
         if(ohdr.worldsize <= 0|| ohdr.numents < 0) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
         memcpy(hdr.magic, "TMAP", 4);
         hdr.version = 0;
@@ -107,8 +107,8 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     {
         entity &e = ents.add();
         f->read(&e, sizeof(entity));
-        lilswap(&e.o.x, 3);
-        lilswap(&e.attr1, 5);
+        LIL_ENDIAN_SWAP(&e.o.x, 3);
+        LIL_ENDIAN_SWAP(&e.attr1, 5);
         fixent(e, hdr.version);
         if(eif > 0) f->seek(eif, SEEK_CUR);
         if(samegame)
@@ -623,7 +623,7 @@ bool save_world(const char *mname)
     {
         if((id.type == ID_VAR || id.type == ID_FVAR || id.type == ID_SVAR) && id.flags&IDF_OVERRIDE && !(id.flags&IDF_READONLY) && id.flags&IDF_OVERRIDDEN) hdr.numvars++;
     });
-    lilswap(&hdr.version, 8);
+    LIL_ENDIAN_SWAP(&hdr.version, 8);
     f->write(&hdr, sizeof(hdr));
 
     ENUMERATE(idents, ident, id,
@@ -670,8 +670,8 @@ bool save_world(const char *mname)
         if(ents[i]->type!=ET_EMPTY)
         {
             entity tmp = *ents[i];
-            lilswap(&tmp.o.x, 3);
-            lilswap(&tmp.attr1, 5);
+            LIL_ENDIAN_SWAP(&tmp.o.x, 3);
+            LIL_ENDIAN_SWAP(&tmp.attr1, 5);
             f->write(&tmp, sizeof(entity));
             entities::writeent(*ents[i], ebuf);
             if(entities::extraentinfosize()) f->write(ebuf, entities::extraentinfosize());
@@ -812,8 +812,8 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         extentity &e = *entities::newentity();
         ents.add(&e);
         f->read(&e, sizeof(entity));
-        lilswap(&e.o.x, 3);
-        lilswap(&e.attr1, 5);
+        LIL_ENDIAN_SWAP(&e.o.x, 3);
+        LIL_ENDIAN_SWAP(&e.attr1, 5);
         fixent(e, hdr.version);
         if(samegame)
         {

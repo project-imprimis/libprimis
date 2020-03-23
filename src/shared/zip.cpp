@@ -79,7 +79,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     uchar buf[1024], *src = NULL;
     long end = max(offset - 0xFFFFL - ZIP_DIRECTORY_SIZE, 0L);
     size_t len = 0;
-    const uint signature = lilswap<uint>(ZIP_DIRECTORY_SIGNATURE);
+    const uint signature = LIL_ENDIAN_SWAP<uint>(ZIP_DIRECTORY_SIGNATURE);
 
     while(offset > end)
     {
@@ -95,14 +95,14 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
 
     if(!src || &buf[len] - src < ZIP_DIRECTORY_SIZE) return false;
 
-    hdr.signature = lilswap(*(uint *)src); src += 4;
-    hdr.disknumber = lilswap(*(ushort *)src); src += 2;
-    hdr.directorydisk = lilswap(*(ushort *)src); src += 2;
-    hdr.diskentries = lilswap(*(ushort *)src); src += 2;
-    hdr.entries = lilswap(*(ushort *)src); src += 2;
-    hdr.size = lilswap(*(uint *)src); src += 4;
-    hdr.offset = lilswap(*(uint *)src); src += 4;
-    hdr.commentlength = lilswap(*(ushort *)src); src += 2;
+    hdr.signature = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+    hdr.disknumber = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    hdr.directorydisk = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    hdr.diskentries = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    hdr.entries = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    hdr.size = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+    hdr.offset = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+    hdr.commentlength = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
 
     if(hdr.signature != ZIP_DIRECTORY_SIGNATURE || hdr.disknumber != hdr.directorydisk || hdr.diskentries != hdr.entries) return false;
 
@@ -122,23 +122,23 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
         if(src + ZIP_FILE_SIZE > &buf[size]) break;
 
         zipfileheader hdr;
-        hdr.signature = lilswap(*(uint *)src); src += 4;
-        hdr.version = lilswap(*(ushort *)src); src += 2;
-        hdr.needversion = lilswap(*(ushort *)src); src += 2;
-        hdr.flags = lilswap(*(ushort *)src); src += 2;
-        hdr.compression = lilswap(*(ushort *)src); src += 2;
-        hdr.modtime = lilswap(*(ushort *)src); src += 2;
-        hdr.moddate = lilswap(*(ushort *)src); src += 2;
-        hdr.crc32 = lilswap(*(uint *)src); src += 4;
-        hdr.compressedsize = lilswap(*(uint *)src); src += 4;
-        hdr.uncompressedsize = lilswap(*(uint *)src); src += 4;
-        hdr.namelength = lilswap(*(ushort *)src); src += 2;
-        hdr.extralength = lilswap(*(ushort *)src); src += 2;
-        hdr.commentlength = lilswap(*(ushort *)src); src += 2;
-        hdr.disknumber = lilswap(*(ushort *)src); src += 2;
-        hdr.internalattribs = lilswap(*(ushort *)src); src += 2;
-        hdr.externalattribs = lilswap(*(uint *)src); src += 4;
-        hdr.offset = lilswap(*(uint *)src); src += 4;
+        hdr.signature = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+        hdr.version = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.needversion = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.flags = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.compression = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.modtime = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.moddate = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.crc32 = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+        hdr.compressedsize = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+        hdr.uncompressedsize = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+        hdr.namelength = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.extralength = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.commentlength = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.disknumber = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.internalattribs = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+        hdr.externalattribs = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+        hdr.offset = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
         if(hdr.signature != ZIP_FILE_SIGNATURE) break;
         if(!hdr.namelength || !hdr.uncompressedsize || (hdr.compression && (hdr.compression != Z_DEFLATED || !hdr.compressedsize)))
         {
@@ -176,17 +176,17 @@ static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
     if(fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, ZIP_LOCAL_FILE_SIZE, f) != ZIP_LOCAL_FILE_SIZE)
         return false;
     uchar *src = buf;
-    h.signature = lilswap(*(uint *)src); src += 4;
-    h.version = lilswap(*(ushort *)src); src += 2;
-    h.flags = lilswap(*(ushort *)src); src += 2;
-    h.compression = lilswap(*(ushort *)src); src += 2;
-    h.modtime = lilswap(*(ushort *)src); src += 2;
-    h.moddate = lilswap(*(ushort *)src); src += 2;
-    h.crc32 = lilswap(*(uint *)src); src += 4;
-    h.compressedsize = lilswap(*(uint *)src); src += 4;
-    h.uncompressedsize = lilswap(*(uint *)src); src += 4;
-    h.namelength = lilswap(*(ushort *)src); src += 2;
-    h.extralength = lilswap(*(ushort *)src); src += 2;
+    h.signature = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+    h.version = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    h.flags = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    h.compression = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    h.modtime = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    h.moddate = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    h.crc32 = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+    h.compressedsize = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+    h.uncompressedsize = LIL_ENDIAN_SWAP(*(uint *)src); src += 4;
+    h.namelength = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
+    h.extralength = LIL_ENDIAN_SWAP(*(ushort *)src); src += 2;
     if(h.signature != ZIP_LOCAL_FILE_SIGNATURE) return false;
     // h.uncompressedsize or h.compressedsize may be zero - so don't validate
     return true;

@@ -520,7 +520,7 @@ struct animmodel : model
         virtual int findtag(const char *name) { return -1; }
         virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
 
-        #define looprendermeshes(type, name, body) do { \
+        #define LOOP_RENDER_MESHES(type, name, body) do { \
             loopv(meshes) \
             { \
                 type &name = *(type *)meshes[i]; \
@@ -530,7 +530,7 @@ struct animmodel : model
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
         {
-            looprendermeshes(mesh, m, m.calcbb(bbmin, bbmax, t));
+            LOOP_RENDER_MESHES(mesh, m, m.calcbb(bbmin, bbmax, t));
         }
 
         void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
@@ -540,7 +540,7 @@ struct animmodel : model
 
         void genshadowmesh(vector<triangle> &tris, const matrix4x3 &t)
         {
-            looprendermeshes(mesh, m, m.genshadowmesh(tris, t));
+            LOOP_RENDER_MESHES(mesh, m, m.genshadowmesh(tris, t));
         }
 
         virtual void *animkey() { return this; }
@@ -1748,7 +1748,7 @@ template<class MDL, class MESH> struct modelcommands
         formatstring(MDL::dir, "media/model/%s", name);
     }
 
-    #define loopmeshes(meshname, m, body) do { \
+    #define LOOP_MESHES(meshname, m, body) do { \
         if(!MDL::loading || MDL::loading->parts.empty()) { conoutf("not loading an %s", MDL::formatname()); return; } \
         part &mdl = *MDL::loading->parts.last(); \
         if(!mdl.meshes) return; \
@@ -1762,11 +1762,11 @@ template<class MDL, class MESH> struct modelcommands
         } \
     } while(0)
 
-    #define loopskins(meshname, s, body) loopmeshes(meshname, m, { skin &s = mdl.skins[i]; body; })
+    #define LOOP_SKINS(meshname, s, body) LOOP_MESHES(meshname, m, { skin &s = mdl.skins[i]; body; })
 
     static void setskin(char *meshname, char *tex, char *masks, float *envmapmax, float *envmapmin)
     {
-        loopskins(meshname, s,
+        LOOP_SKINS(meshname, s,
             s.tex = textureload(makerelpath(MDL::dir, tex), 0, true, false);
             if(*masks)
             {
@@ -1780,83 +1780,86 @@ template<class MDL, class MESH> struct modelcommands
     static void setspec(char *meshname, float *percent)
     {
         float spec = *percent > 0 ? *percent/100.0f : 0.0f;
-        loopskins(meshname, s, s.spec = spec);
+        LOOP_SKINS(meshname, s, s.spec = spec);
     }
 
     static void setgloss(char *meshname, int *gloss)
     {
-        loopskins(meshname, s, s.gloss = clamp(*gloss, 0, 2));
+        LOOP_SKINS(meshname, s, s.gloss = clamp(*gloss, 0, 2));
     }
 
     static void setglow(char *meshname, float *percent, float *delta, float *pulse)
     {
         float glow = *percent > 0 ? *percent/100.0f : 0.0f, glowdelta = *delta/100.0f, glowpulse = *pulse > 0 ? *pulse/1000.0f : 0;
         glowdelta -= glow;
-        loopskins(meshname, s, { s.glow = glow; s.glowdelta = glowdelta; s.glowpulse = glowpulse; });
+        LOOP_SKINS(meshname, s, { s.glow = glow; s.glowdelta = glowdelta; s.glowpulse = glowpulse; });
     }
 
     static void setalphatest(char *meshname, float *cutoff)
     {
-        loopskins(meshname, s, s.alphatest = max(0.0f, min(1.0f, *cutoff)));
+        LOOP_SKINS(meshname, s, s.alphatest = max(0.0f, min(1.0f, *cutoff)));
     }
 
     static void setcullface(char *meshname, int *cullface)
     {
-        loopskins(meshname, s, s.cullface = *cullface);
+        LOOP_SKINS(meshname, s, s.cullface = *cullface);
     }
 
     static void setcolor(char *meshname, float *r, float *g, float *b)
     {
-        loopskins(meshname, s, s.color = vec(*r, *g, *b));
+        LOOP_SKINS(meshname, s, s.color = vec(*r, *g, *b));
     }
 
     static void setenvmap(char *meshname, char *envmap)
     {
         Texture *tex = cubemapload(envmap);
-        loopskins(meshname, s, s.envmap = tex);
+        LOOP_SKINS(meshname, s, s.envmap = tex);
     }
 
     static void setbumpmap(char *meshname, char *normalmapfile)
     {
         Texture *normalmaptex = textureload(makerelpath(MDL::dir, normalmapfile), 0, true, false);
-        loopskins(meshname, s, s.normalmap = normalmaptex);
+        LOOP_SKINS(meshname, s, s.normalmap = normalmaptex);
     }
 
     static void setdecal(char *meshname, char *decal)
     {
-        loopskins(meshname, s,
+        LOOP_SKINS(meshname, s,
             s.decal = textureload(makerelpath(MDL::dir, decal), 0, true, false);
         );
     }
 
     static void setfullbright(char *meshname, float *fullbright)
     {
-        loopskins(meshname, s, s.fullbright = *fullbright);
+        LOOP_SKINS(meshname, s, s.fullbright = *fullbright);
     }
 
     static void setshader(char *meshname, char *shader)
     {
-        loopskins(meshname, s, s.shader = lookupshaderbyname(shader));
+        LOOP_SKINS(meshname, s, s.shader = lookupshaderbyname(shader));
     }
 
     static void setscroll(char *meshname, float *scrollu, float *scrollv)
     {
-        loopskins(meshname, s, { s.scrollu = *scrollu; s.scrollv = *scrollv; });
+        LOOP_SKINS(meshname, s, { s.scrollu = *scrollu; s.scrollv = *scrollv; });
     }
 
     static void setnoclip(char *meshname, int *noclip)
     {
-        loopmeshes(meshname, m, m.noclip = *noclip!=0);
+        LOOP_MESHES(meshname, m, m.noclip = *noclip!=0);
     }
 
     static void settricollide(char *meshname)
     {
         bool init = true;
-        loopmeshes("*", m, { if(!m.cancollide) init = false; });
-        if(init) loopmeshes("*", m, m.cancollide = false);
-        loopmeshes(meshname, m, { m.cancollide = true; m.canrender = false; });
+        LOOP_MESHES("*", m, { if(!m.cancollide) init = false; });
+        if(init) LOOP_MESHES("*", m, m.cancollide = false);
+        LOOP_MESHES(meshname, m, { m.cancollide = true; m.canrender = false; });
         MDL::loading->collide = COLLIDE_TRI;
     }
+
+#undef LOOP_MESHES
+#undef LOOP_SKINS
 
     static void setlink(int *parent, int *child, char *tagname, float *x, float *y, float *z)
     {

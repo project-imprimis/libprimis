@@ -109,10 +109,10 @@ struct iqm : skelloader<iqm>
 
         bool loadiqmmeshes(const char *filename, const iqmheader &hdr, uchar *buf)
         {
-            lilswap((uint *)&buf[hdr.ofs_vertexarrays], hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
-            lilswap((uint *)&buf[hdr.ofs_triangles], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
-            lilswap((uint *)&buf[hdr.ofs_meshes], hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint));
-            lilswap((uint *)&buf[hdr.ofs_joints], hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
+            LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_vertexarrays], hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
+            LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_triangles], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+            LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_meshes], hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint));
+            LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_joints], hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
 
             const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
             float *vpos = NULL, *vnorm = NULL, *vtan = NULL, *vtc = NULL;
@@ -123,10 +123,10 @@ struct iqm : skelloader<iqm>
                 iqmvertexarray &va = vas[i];
                 switch(va.type)
                 {
-                    case IQM_POSITION: if(va.format != IQM_FLOAT || va.size != 3) return false; vpos = (float *)&buf[va.offset]; lilswap(vpos, 3*hdr.num_vertexes); break;
-                    case IQM_NORMAL: if(va.format != IQM_FLOAT || va.size != 3) return false; vnorm = (float *)&buf[va.offset]; lilswap(vnorm, 3*hdr.num_vertexes); break;
-                    case IQM_TANGENT: if(va.format != IQM_FLOAT || va.size != 4) return false; vtan = (float *)&buf[va.offset]; lilswap(vtan, 4*hdr.num_vertexes); break;
-                    case IQM_TEXCOORD: if(va.format != IQM_FLOAT || va.size != 2) return false; vtc = (float *)&buf[va.offset]; lilswap(vtc, 2*hdr.num_vertexes); break;
+                    case IQM_POSITION: if(va.format != IQM_FLOAT || va.size != 3) return false; vpos = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vpos, 3*hdr.num_vertexes); break;
+                    case IQM_NORMAL: if(va.format != IQM_FLOAT || va.size != 3) return false; vnorm = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vnorm, 3*hdr.num_vertexes); break;
+                    case IQM_TANGENT: if(va.format != IQM_FLOAT || va.size != 4) return false; vtan = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtan, 4*hdr.num_vertexes); break;
+                    case IQM_TEXCOORD: if(va.format != IQM_FLOAT || va.size != 2) return false; vtc = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtc, 2*hdr.num_vertexes); break;
                     case IQM_BLENDINDEXES: if(va.format != IQM_UBYTE || va.size != 4) return false; vindex = (uchar *)&buf[va.offset]; break;
                     case IQM_BLENDWEIGHTS: if(va.format != IQM_UBYTE || va.size != 4) return false; vweight = (uchar *)&buf[va.offset]; break;
                 }
@@ -253,9 +253,9 @@ struct iqm : skelloader<iqm>
 
         bool loadiqmanims(const char *filename, const iqmheader &hdr, uchar *buf)
         {
-            lilswap((uint *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint));
-            lilswap((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
-            lilswap((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
+            LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint));
+            LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
+            LIL_ENDIAN_SWAP((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
 
             const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
             iqmpose *poses = (iqmpose *)&buf[hdr.ofs_poses];
@@ -328,7 +328,7 @@ struct iqm : skelloader<iqm>
             uchar *buf = NULL;
             iqmheader hdr;
             if(f->read(&hdr, sizeof(hdr)) != sizeof(hdr) || memcmp(hdr.magic, "INTERQUAKEMODEL", sizeof(hdr.magic))) goto error;
-            lilswap(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
+            LIL_ENDIAN_SWAP(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
             if(hdr.version != 2) goto error;
             if(hdr.filesize > (16<<20)) goto error; // sanity check... don't load files bigger than 16 MB
             buf = new (false) uchar[hdr.filesize];
