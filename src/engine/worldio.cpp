@@ -213,7 +213,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
         {
             int oflags = 0, surfmask = 0, totalverts = 0;
             if(c[i].material!=MAT_AIR) oflags |= 0x40;
-            if(isempty(c[i])) f->putchar(oflags | OCTSAV_EMPTY);
+            if(IS_EMPTY(c[i])) f->putchar(oflags | OCTSAV_EMPTY);
             else
             {
                 if(c[i].merged) oflags |= 0x80;
@@ -226,7 +226,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                     totalverts += surf.totalverts();
                 }
 
-                if(isentirelysolid(c[i])) f->putchar(oflags | OCTSAV_SOLID);
+                if(IS_ENTIRELY_SOLID(c[i])) f->putchar(oflags | OCTSAV_SOLID);
                 else
                 {
                     f->putchar(oflags | OCTSAV_NORMAL);
@@ -324,7 +324,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             c.children = loadchildren(f, co, size>>1, failed);
             return;
 
-        case OCTSAV_EMPTY:  emptyfaces(c);        break;
+        case OCTSAV_EMPTY:  EMPTY_FACES(c);       break;
         case OCTSAV_SOLID:  solidfaces(c);        break;
         case OCTSAV_NORMAL: f->read(c.edges, 12); break;
         default: failed = true; return;
@@ -619,14 +619,14 @@ bool save_world(const char *mname)
     hdr.blendmap = shouldsaveblendmap();
     hdr.numvars = 0;
     hdr.numvslots = numvslots;
-    enumerate(idents, ident, id,
+    ENUMERATE(idents, ident, id,
     {
         if((id.type == ID_VAR || id.type == ID_FVAR || id.type == ID_SVAR) && id.flags&IDF_OVERRIDE && !(id.flags&IDF_READONLY) && id.flags&IDF_OVERRIDDEN) hdr.numvars++;
     });
     lilswap(&hdr.version, 8);
     f->write(&hdr, sizeof(hdr));
 
-    enumerate(idents, ident, id,
+    ENUMERATE(idents, ident, id,
     {
         if((id.type!=ID_VAR && id.type!=ID_FVAR && id.type!=ID_SVAR) || !(id.flags&IDF_OVERRIDE) || id.flags&IDF_READONLY || !(id.flags&IDF_OVERRIDDEN)) continue;
         f->putchar(id.type);

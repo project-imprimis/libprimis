@@ -157,12 +157,12 @@ struct vertmodel : animmodel
                        * RESTRICT vert2 = &verts[as.cur.fr2 * numverts],
                        * RESTRICT pvert1 = as.interp<1 ? &verts[as.prev.fr1 * numverts] : NULL,
                        * RESTRICT pvert2 = as.interp<1 ? &verts[as.prev.fr2 * numverts] : NULL;
-            #define ipvert(attrib, type) v.attrib.lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t)
-            #define ipvertp(attrib, type) v.attrib.lerp(type().lerp(pvert1[i].attrib, pvert2[i].attrib, as.prev.t), type().lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t), as.interp)
-            if(as.interp<1) loopi(numverts) { T &v = vdata[i]; ipvertp(pos, vec); ipvertp(tangent, vec4); }
-            else loopi(numverts) { T &v = vdata[i]; ipvert(pos, vec); ipvert(tangent, vec4); }
-            #undef ipvert
-            #undef ipvertp
+            #define IP_VERT(attrib, type) v.attrib.lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t)
+            #define IP_VERT_P(attrib, type) v.attrib.lerp(type().lerp(pvert1[i].attrib, pvert2[i].attrib, as.prev.t), type().lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t), as.interp)
+            if(as.interp<1) loopi(numverts) { T &v = vdata[i]; IP_VERT_P(pos, vec); IP_VERT_P(tangent, vec4); }
+            else loopi(numverts) { T &v = vdata[i]; IP_VERT(pos, vec); IP_VERT(tangent, vec4); }
+            #undef IP_VERT
+            #undef IP_VERT_P
         }
 
         void render(const animstate *as, skin &s, vbocacheentry &vc)

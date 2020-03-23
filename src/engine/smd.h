@@ -208,7 +208,7 @@ struct smd : skelloader<smd>
                 curmesh->tris.add(curtri);
             }
         endsection:
-            enumerate(materials, smdmeshdata, data, data.finalize());
+            ENUMERATE(materials, smdmeshdata, data, data.finalize());
         }
 
         void readskeleton(stream *f, char *buf, size_t bufsize)

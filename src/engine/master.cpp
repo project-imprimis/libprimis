@@ -44,7 +44,7 @@ COMMAND(adduser, "ss");
 
 void clearusers()
 {
-    enumerate(users, userinfo, u, { delete[] u.name; freepubkey(u.pubkey); });
+    ENUMERATE(users, userinfo, u, { delete[] u.name; freepubkey(u.pubkey); });
     users.clear();
 }
 COMMAND(clearusers, "");

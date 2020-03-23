@@ -135,7 +135,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
     float dist = radius, f = 0.0f;
     const vector<extentity *> &ents = entities::getents();
 
-    #define entintersect(type, func) do { \
+    #define ENT_INTERSECT(type, func) do { \
         loopv(oc->type) \
         { \
             extentity &e = *ents[oc->type[i]]; \
@@ -150,23 +150,24 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
         } \
     } while(0)
 
-    if((mode&RAY_POLY) == RAY_POLY) entintersect(mapmodels,
+    if((mode&RAY_POLY) == RAY_POLY) ENT_INTERSECT(mapmodels,
     {
         if(!mmintersect(e, o, ray, radius, mode, f)) continue;
     });
 
-    #define entselintersect(type) entintersect(type, { \
+    #define ENT_SEL_INTERSECT(type) ENT_INTERSECT(type, { \
         entselectionbox(e, eo, es); \
         if(!rayboxintersect(eo, es, o, ray, f, orient)) continue; \
     })
 
     if((mode&RAY_ENTS) == RAY_ENTS)
     {
-        entselintersect(other);
-        entselintersect(mapmodels);
-        entselintersect(decals);
+        ENT_SEL_INTERSECT(other);
+        ENT_SEL_INTERSECT(mapmodels);
+        ENT_SEL_INTERSECT(decals);
     }
 
+    #undef ENT_SEL_INTERSECT
     return dist;
 }
 
@@ -301,8 +302,8 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
         if((dist>0 || !(mode&RAY_SKIPFIRST)) &&
            (((mode&RAY_CLIPMAT) && IS_CLIPPED(c.material&MATF_VOLUME)) ||
             ((mode&RAY_EDITMAT) && c.material != MAT_AIR) ||
-            (!(mode&RAY_PASS) && lsize==size && !isempty(c)) ||
-            isentirelysolid(c) ||
+            (!(mode&RAY_PASS) && lsize==size && !IS_EMPTY(c)) ||
+            IS_ENTIRELY_SOLID(c) ||
             dent < dist) &&
             (!(mode&RAY_CLIPMAT) || (c.material&MATF_CLIP)!=MAT_NOCLIP))
         {
@@ -324,7 +325,7 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
 
         ivec lo(x&(~0U<<lshift), y&(~0U<<lshift), z&(~0U<<lshift));
 
-        if(!isempty(c))
+        if(!IS_EMPTY(c))
         {
             const clipplanes &p = getclipplanes(c, lo, lsize);
             float f = 0;
@@ -354,9 +355,9 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
         cube &c = *lc;
         ivec lo(x&(~0U<<lshift), y&(~0U<<lshift), z&(~0U<<lshift));
 
-        if(!isempty(c) && !(c.material&MAT_ALPHA))
+        if(!IS_EMPTY(c) && !(c.material&MAT_ALPHA))
         {
-            if(isentirelysolid(c)) return c.texture[side]==DEFAULT_SKY && mode&RAY_SKIPSKY ? radius : dist;
+            if(IS_ENTIRELY_SOLID(c)) return c.texture[side]==DEFAULT_SKY && mode&RAY_SKIPSKY ? radius : dist;
             const clipplanes &p = getclipplanes(c, lo, 1<<lshift);
             INTERSECTPLANES(side = p.side[i], goto nextcube);
             INTERSECTBOX(side = (i<<1) + 1 - lsizemask[i], goto nextcube);
@@ -1077,10 +1078,10 @@ static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const c
     switch(d->collidetype)
     {
     case COLLIDE_OBB:
-        if(isentirelysolid(c) || solid) return cubecollidesolid<mpr::EntOBB>(d, dir, cutoff, c, co, size);
+        if(IS_ENTIRELY_SOLID(c) || solid) return cubecollidesolid<mpr::EntOBB>(d, dir, cutoff, c, co, size);
         else return cubecollideplanes<mpr::EntOBB>(d, dir, cutoff, c, co, size);
     case COLLIDE_ELLIPSE:
-        if(isentirelysolid(c) || solid) return fuzzycollidesolid<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
+        if(IS_ENTIRELY_SOLID(c) || solid) return fuzzycollidesolid<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
         else return fuzzycollideplanes<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
     default: return false;
     }
@@ -1104,7 +1105,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
                 case MAT_NOCLIP: continue;
                 case MAT_CLIP: if(IS_CLIPPED(c[i].material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
             }
-            if(!solid && isempty(c[i])) continue;
+            if(!solid && IS_EMPTY(c[i])) continue;
             if(cubecollide(d, dir, cutoff, c[i], o, size, solid)) return true;
         }
     }
@@ -1133,7 +1134,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
         case MAT_NOCLIP: return false;
         case MAT_CLIP: if(IS_CLIPPED(c->material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
     }
-    if(!solid && isempty(*c)) return false;
+    if(!solid && IS_EMPTY(*c)) return false;
     int csize = 2<<scale, cmask = ~(csize-1);
     return cubecollide(d, dir, cutoff, *c, ivec(bo).mask(cmask), csize, solid);
 }

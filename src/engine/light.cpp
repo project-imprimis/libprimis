@@ -495,7 +495,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
         ivec o(i, co, size);
         if(c[i].children)
             calcsurfaces(c[i].children, o, size >> 1);
-        else if(!isempty(c[i]))
+        else if(!IS_EMPTY(c[i]))
         {
             if(c[i].ext)
             {
@@ -513,7 +513,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 
 static inline bool previewblends(cube &c, const ivec &o, int size)
 {
-    if(isempty(c) || c.material&MAT_ALPHA) return false;
+    if(IS_EMPTY(c) || c.material&MAT_ALPHA) return false;
     int usefacemask = 0;
     loopj(6) if(c.texture[j] != DEFAULT_SKY && lookupvslot(c.texture[j], false).layer)
         usefacemask |= visibletris(c, j, o, size)<<(4*j);

@@ -141,7 +141,7 @@ void getcubevector(cube &c, int d, int x, int y, int z, ivec &p)
     ivec v(d, x, y, z);
 
     loopi(3)
-        p[i] = edgeget(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]]);
+        p[i] = EDGE_GET(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]]);
 }
 
 void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
@@ -149,27 +149,27 @@ void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
     ivec v(d, x, y, z);
 
     loopi(3)
-        edgeset(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]], p[i]);
+        EDGE_SET(CUBE_EDGE(c, i, v[R[i]], v[C[i]]), v[D[i]], p[i]);
 }
 
 static inline void getcubevector(cube &c, int i, ivec &p)
 {
-    p.x = edgeget(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
-    p.y = edgeget(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
-    p.z = edgeget(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1);
+    p.x = EDGE_GET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
+    p.y = EDGE_GET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
+    p.z = EDGE_GET(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1);
 }
 
 static inline void setcubevector(cube &c, int i, const ivec &p)
 {
-    edgeset(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1, p.x);
-    edgeset(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1, p.y);
-    edgeset(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
+    EDGE_SET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1, p.x);
+    EDGE_SET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1, p.y);
+    EDGE_SET(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1, p.z);
 }
 
 void optiface(uchar *p, cube &c)
 {
     uint f = *(uint *)p;
-    if(((f>>4)&0x0F0F0F0FU) == (f&0x0F0F0F0FU)) emptyfaces(c);
+    if(((f>>4)&0x0F0F0F0FU) == (f&0x0F0F0F0FU)) EMPTY_FACES(c);
 }
 
 void printcube()
@@ -221,7 +221,7 @@ void validatec(cube *c, int size)
                 uint f = c[i].faces[j], e0 = f&0x0F0F0F0FU, e1 = (f>>4)&0x0F0F0F0FU;
                 if(e0 == e1 || ((e1+0x07070707U)|(e1-e0))&0xF0F0F0F0U)
                 {
-                    emptyfaces(c[i]);
+                    EMPTY_FACES(c[i]);
                     break;
                 }
             }
@@ -313,10 +313,10 @@ int getmippedtexture(const cube &p, int orient)
     loop(x, 2) loop(y, 2)
     {
         int n = octaindex(d, x, y, dc);
-        if(isempty(c[n]))
+        if(IS_EMPTY(c[n]))
         {
             n = oppositeocta(d, n);
-            if(isempty(c[n]))
+            if(IS_EMPTY(c[n]))
                 continue;
         }
         int tex = c[n].texture[orient];
@@ -330,12 +330,12 @@ int getmippedtexture(const cube &p, int orient)
 void forcemip(cube &c, bool fixtex)
 {
     cube *ch = c.children;
-    emptyfaces(c);
+    EMPTY_FACES(c);
 
     loopi(8) loopj(8)
     {
         int n = i^(j==3 ? 4 : (j==4 ? 3 : j));
-        if(!isempty(ch[n])) // breadth first search for cube near vert
+        if(!IS_EMPTY(ch[n])) // breadth first search for cube near vert
         {
             ivec v;
             getcubevector(ch[n], i, v);
@@ -380,13 +380,13 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
 {
     if(c.children) return true;
     if(c.ext) memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
-    if(isempty(c) || isentirelysolid(c))
+    if(IS_EMPTY(c) || IS_ENTIRELY_SOLID(c))
     {
-        c.children = newcubes(isempty(c) ? F_EMPTY : F_SOLID, c.material);
+        c.children = newcubes(IS_EMPTY(c) ? F_EMPTY : F_SOLID, c.material);
         loopi(8)
         {
             loopl(6) c.children[i].texture[l] = c.texture[l];
-            if(brighten && !isempty(c)) brightencube(c.children[i]);
+            if(brighten && !IS_EMPTY(c)) brightencube(c.children[i]);
         }
         return true;
     }
@@ -436,20 +436,20 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         {
             ch[i].texture[j] = c.texture[j];
             int rd = (i>>R[d])&1, cd = (i>>C[d])&1, dd = (i>>D[d])&1;
-            edgeset(CUBE_EDGE(ch[i], d, 0, 0), z, clamp(e[rd][cd] - dd*8, 0, 8));
-            edgeset(CUBE_EDGE(ch[i], d, 1, 0), z, clamp(e[1+rd][cd] - dd*8, 0, 8));
-            edgeset(CUBE_EDGE(ch[i], d, 0, 1), z, clamp(e[rd][1+cd] - dd*8, 0, 8));
-            edgeset(CUBE_EDGE(ch[i], d, 1, 1), z, clamp(e[1+rd][1+cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 0, 0), z, clamp(e[rd][cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 1, 0), z, clamp(e[1+rd][cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 0, 1), z, clamp(e[rd][1+cd] - dd*8, 0, 8));
+            EDGE_SET(CUBE_EDGE(ch[i], d, 1, 1), z, clamp(e[1+rd][1+cd] - dd*8, 0, 8));
         }
     }
 
     validatec(ch);
     if(fullcheck) loopi(8) if(!isvalidcube(ch[i])) // not so good...
     {
-        emptyfaces(ch[i]);
+        EMPTY_FACES(ch[i]);
         perfect=false;
     }
-    if(brighten) loopi(8) if(!isempty(ch[i])) brightencube(ch[i]);
+    if(brighten) loopi(8) if(!IS_EMPTY(ch[i])) brightencube(ch[i]);
     return perfect;
 }
 
@@ -510,12 +510,12 @@ bool remip(cube &c, const ivec &co, int size)
             while(++i < 8) if(ch[i].material != mat) return false;
             break;
         }
-        else if(!isentirelysolid(ch[i]))
+        else if(!IS_ENTIRELY_SOLID(ch[i]))
         {
             while(++i < 8)
             {
                 int omat = ch[i].material;
-                if(isentirelysolid(ch[i]) ? (omat&MATF_CLIP) == MAT_NOCLIP || omat&MAT_ALPHA : mat != omat) return false;
+                if(IS_ENTIRELY_SOLID(ch[i]) ? (omat&MATF_CLIP) == MAT_NOCLIP || omat&MAT_ALPHA : mat != omat) return false;
             }
             break;
         }
@@ -537,7 +537,7 @@ bool remip(cube &c, const ivec &co, int size)
            ch[i].faces[2] != nh[i].faces[2])
             { freeocta(nh); return false; }
 
-        if(isempty(ch[i]) && isempty(nh[i])) continue;
+        if(IS_EMPTY(ch[i]) && IS_EMPTY(nh[i])) continue;
 
         ivec o(i, co, size);
         loop(orient, 6)
@@ -601,9 +601,9 @@ static inline void gencubevert(const cube &c, int i, T &v)
         default:
 #define GENCUBEVERT(n, x, y, z) \
         case n: \
-            v = T(edgeget(CUBE_EDGE(c, 0, y, z), x), \
-                  edgeget(CUBE_EDGE(c, 1, z, x), y), \
-                  edgeget(CUBE_EDGE(c, 2, x, y), z)); \
+            v = T(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
+                  EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
+                  EDGE_GET(CUBE_EDGE(c, 2, x, y), z)); \
             break;
         GENCUBEVERTS(0, 1, 0, 1, 0, 1)
 #undef GENCUBEVERT
@@ -618,9 +618,9 @@ void genfaceverts(const cube &c, int orient, ivec v[4])
 #define GENFACEORIENT(o, v0, v1, v2, v3) \
         case o: v0 v1 v2 v3 break;
 #define GENFACEVERT(o, n, x,y,z, xv,yv,zv) \
-            v[n] = ivec(edgeget(CUBE_EDGE(c, 0, y, z), x), \
-                        edgeget(CUBE_EDGE(c, 1, z, x), y), \
-                        edgeget(CUBE_EDGE(c, 2, x, y), z));
+            v[n] = ivec(EDGE_GET(CUBE_EDGE(c, 0, y, z), x), \
+                        EDGE_GET(CUBE_EDGE(c, 1, z, x), y), \
+                        EDGE_GET(CUBE_EDGE(c, 2, x, y), z));
         GENFACEVERTS(0, 1, 0, 1, 0, 1, , , , , , )
     #undef GENFACEORIENT
     #undef GENFACEVERT
@@ -932,12 +932,12 @@ static inline bool occludesface(const cube &c, int orient, const ivec &o, int si
             }
             if(vmat != MAT_AIR && ((c.material&matmask) == vmat || (IS_LIQUID(vmat) && IS_CLIPPED(c.material&MATF_VOLUME)))) return true;
         }
-        if(isentirelysolid(c)) return true;
+        if(IS_ENTIRELY_SOLID(c)) return true;
         if(touchingface(c, orient) && faceedges(c, orient) == F_SOLID) return true;
         ivec2 cf[8];
         int numc = clipfacevecs(vf, numv, o[C[dim]], o[R[dim]], size, cf);
         if(numc < 3) return true;
-        if(isempty(c) || notouchingface(c, orient)) return false;
+        if(IS_EMPTY(c) || notouchingface(c, orient)) return false;
         ivec2 of[4];
         int numo = genfacevecs(c, orient, o, size, false, of);
         return numo >= 3 && insideface(cf, numc, of, numo);
@@ -977,8 +977,8 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
             if(nmat != MAT_AIR && (o.material&matmask) == nmat) return true;
             if(mat != MAT_AIR && ((o.material&matmask) == mat || (IS_LIQUID(mat) && IS_CLIPPED(o.material&MATF_VOLUME)))) return false;
         }
-        if(isentirelysolid(o)) return false;
-        if(isempty(o) || notouchingface(o, opp)) return true;
+        if(IS_ENTIRELY_SOLID(o)) return false;
+        if(IS_EMPTY(o) || notouchingface(o, opp)) return true;
         if(touchingface(o, opp) && faceedges(o, opp) == F_SOLID) return false;
 
         ivec vo = ivec(co).mask(0xFFF);
@@ -1005,7 +1005,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     case MAT_NOCLIP: vismask = 0; break;
     case MAT_CLIP: solid = true; break;
     }
-    if(isempty(c) || collapsedface(c, orient))
+    if(IS_EMPTY(c) || collapsedface(c, orient))
     {
         if(!vismask) return 0;
     }
@@ -1037,9 +1037,9 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                 case MAT_NOCLIP: forcevis |= vismask&2; vismask &= ~2; break;
             }
         }
-        if(vismask && !isentirelysolid(o))
+        if(vismask && !IS_ENTIRELY_SOLID(o))
         {
-            if(isempty(o) || notouchingface(o, opp)) forcevis |= vismask;
+            if(IS_EMPTY(o) || notouchingface(o, opp)) forcevis |= vismask;
             else if(!touchingface(o, opp) || faceedges(o, opp) != F_SOLID)
             {
                 ivec vo = ivec(co).mask(0xFFF);
@@ -1133,8 +1133,8 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
             if(vmat != MAT_AIR && (o.material&matmask) == vmat) return vis&notouch;
             if(nmat != MAT_AIR && (o.material&matmask) == nmat) return vis;
         }
-        if(isempty(o) || notouchingface(o, opp)) return vis;
-        if(isentirelysolid(o) || (touchingface(o, opp) && faceedges(o, opp) == F_SOLID)) return vis&notouch;
+        if(IS_EMPTY(o) || notouchingface(o, opp)) return vis;
+        if(IS_ENTIRELY_SOLID(o) || (touchingface(o, opp) && faceedges(o, opp) == F_SOLID)) return vis&notouch;
 
         numc = genfacevecs(c, orient, vo, size, false, cf, v);
         numo = genfacevecs(o, opp, no, nsize, false, of);
@@ -1352,7 +1352,7 @@ void mincubeface(const cube &cu, int orient, const ivec &o, int size, const face
     uc2 = min(uc2, orig.u2);
     vc1 = max(vc1, orig.v1);
     vc2 = min(vc2, orig.v2);
-    if(!isempty(cu) && touchingface(cu, orient) && !(nmat!=MAT_AIR && (cu.material&matmask)==nmat))
+    if(!IS_EMPTY(cu) && touchingface(cu, orient) && !(nmat!=MAT_AIR && (cu.material&matmask)==nmat))
     {
         uchar r1 = cu.edges[faceedgesidx[orient][0]], r2 = cu.edges[faceedgesidx[orient][1]],
               c1 = cu.edges[faceedgesidx[orient][2]], c2 = cu.edges[faceedgesidx[orient][3]];
@@ -1778,7 +1778,7 @@ void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = wo
         ivec co(i, o, size);
         int vis;
         if(c[i].children) genmerges(c[i].children, co, size>>1);
-        else if(!isempty(c[i])) loopj(6) if((vis = visibletris(c[i], j, co, size)))
+        else if(!IS_EMPTY(c[i])) loopj(6) if((vis = visibletris(c[i], j, co, size)))
         {
             cfkey k;
             poly p;
@@ -1805,7 +1805,7 @@ void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = wo
         }
         if((size == 1<<maxmerge || c == worldroot) && cpolys.numelems)
         {
-            enumeratekt(cpolys, cfkey, key, cfpolys, val,
+            ENUMERATE_KT(cpolys, cfkey, key, cfpolys, val,
             {
                 mergepolys(key.orient, co, key.n, key.offset, val.polys);
             });

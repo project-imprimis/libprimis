@@ -119,7 +119,7 @@ tagval noret = nullval, *commandret = &noret;
 
 void clear_command()
 {
-    enumerate(idents, ident, i,
+    ENUMERATE(idents, ident, i,
     {
         if(i.type==ID_ALIAS)
         {
@@ -164,7 +164,7 @@ void clearoverride(ident &i)
 
 void clearoverrides()
 {
-    enumerate(idents, ident, i, clearoverride(i));
+    ENUMERATE(idents, ident, i, clearoverride(i));
 }
 
 static bool initedidents = false;
@@ -3118,7 +3118,7 @@ void writecfg(const char *name)
     f->printf("\n");
     writecrosshairs(f);
     vector<ident *> ids;
-    enumerate(idents, ident, id, ids.add(&id));
+    ENUMERATE(idents, ident, id, ids.add(&id));
     ids.sortname();
     loopv(ids)
     {
@@ -3157,7 +3157,7 @@ COMMAND(writecfg, "s");
 void changedvars()
 {
     vector<ident *> ids;
-    enumerate(idents, ident, id, if(id.flags&IDF_OVERRIDDEN) ids.add(&id));
+    ENUMERATE(idents, ident, id, if(id.flags&IDF_OVERRIDDEN) ids.add(&id));
     ids.sortname();
     loopv(ids) printvar(ids[i]);
 }

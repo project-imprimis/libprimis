@@ -462,11 +462,11 @@ void attachentities()
 // e         entity, currently edited ent
 // n         int,    index to currently edited ent
 #define ADD_IMPLICIT(f)    { if(entgroup.empty() && enthover>=0) { entadd(enthover); undonext = (enthover != oldhover); f; entgroup.drop(); } else f; }
-#define entfocusv(i, f, v){ int n = efocus = (i); if(n>=0) { extentity &e = *v[n]; f; } }
-#define entfocus(i, f)    entfocusv(i, f, entities::getents())
-#define enteditv(i, f, v) \
+#define ENT_FOCUS_V(i, f, v){ int n = efocus = (i); if(n>=0) { extentity &e = *v[n]; f; } }
+#define ENT_FOCUS(i, f)    ENT_FOCUS_V(i, f, entities::getents())
+#define ENT_EDIT_V(i, f, v) \
 { \
-    entfocusv(i, \
+    ENT_FOCUS_V(i, \
     { \
         int oldtype = e.type; \
         removeentityedit(n);  \
@@ -477,13 +477,13 @@ void attachentities()
         clearshadowcache(); \
     }, v); \
 }
-#define entedit(i, f)   enteditv(i, f, entities::getents())
-#define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); loopv(ents) entfocusv(i, if(exp) entadd(n), ents); }
+#define ENT_EDIT(i, f)   ENT_EDIT_V(i, f, entities::getents())
+#define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); loopv(ents) ENT_FOCUS_V(i, if(exp) entadd(n), ents); }
 #define setgroup(exp)   { entcancel(); ADD_GROUP(exp); }
-#define groupeditloop(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; loopv(entgroup) enteditv(entgroup[i], f, ents); efocus = _; entlooplevel--; }
-#define groupeditpure(f){ if(entlooplevel>0) { entedit(efocus, f); } else { groupeditloop(f); commitchanges(); } }
-#define groupeditundo(f){ makeundoent(); groupeditpure(f); }
-#define groupedit(f)    { ADD_IMPLICIT(groupeditundo(f)); }
+#define GROUP_EDIT_LOOP(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; loopv(entgroup) ENT_EDIT_V(entgroup[i], f, ents); efocus = _; entlooplevel--; }
+#define GROUP_EDIT_PURE(f){ if(entlooplevel>0) { ENT_EDIT(efocus, f); } else { GROUP_EDIT_LOOP(f); commitchanges(); } }
+#define GROUP_EDIT_UNDO(f){ makeundoent(); GROUP_EDIT_PURE(f); }
+#define GROUP_EDIT(f)    { ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); }
 
 vec getselpos()
 {
@@ -511,7 +511,7 @@ void pasteundoent(int idx, const entity &ue)
     vector<extentity *> &ents = entities::getents();
     while(ents.length() < idx) ents.add(entities::newentity())->type = ET_EMPTY;
     int efocus = -1;
-    entedit(idx, (entity &)e = ue);
+    ENT_EDIT(idx, (entity &)e = ue);
 }
 
 void pasteundoents(undoblock *u)
@@ -525,7 +525,7 @@ void entflip()
     if(noentedit()) return;
     int d = DIMENSION(sel.orient);
     float mid = sel.s[d]*sel.grid/2+sel.o[d];
-    groupeditundo(e.o[d] -= (e.o[d]-mid)*2);
+    GROUP_EDIT_UNDO(e.o[d] -= (e.o[d]-mid)*2);
 }
 
 void entrotate(int *cw)
@@ -535,7 +535,7 @@ void entrotate(int *cw)
     int dd = (*cw<0) == DIM_COORD(sel.orient) ? R[d] : C[d];
     float mid = sel.s[dd]*sel.grid/2+sel.o[dd];
     vec s(sel.o.v);
-    groupeditundo(
+    GROUP_EDIT_UNDO(
         e.o[dd] -= (e.o[dd]-mid)*2;
         e.o.sub(s);
         swap(e.o[R[d]], e.o[C[d]]);
@@ -598,7 +598,7 @@ void entdrag(const vec &ray)
     int d = DIMENSION(entorient),
         dc= DIM_COORD(entorient);
 
-    entfocus(entgroup.last(),
+    ENT_FOCUS(entgroup.last(),
         entselectionbox(e, eo, es);
 
         if(!editmoveplane(e.o, ray, d, eo[d] + (dc ? es[d] : 0), handle, dest, entmoving==1))
@@ -614,7 +614,7 @@ void entdrag(const vec &ray)
     );
 
     if(entmoving==1) makeundoent();
-    groupeditpure(e.o[R[d]] += r; e.o[C[d]] += c);
+    GROUP_EDIT_PURE(e.o[R[d]] += r; e.o[C[d]] += c);
     entmoving = 2;
 }
 
@@ -846,7 +846,7 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
         gle::colorub(0, 40, 0);
         gle::defvertex();
         gle::begin(GL_LINES, entgroup.length()*24);
-        loopv(entgroup) entfocus(entgroup[i],
+        loopv(entgroup) ENT_FOCUS(entgroup[i],
             entselectionbox(e, eo, es);
             renderentbox(eo, es);
         );
@@ -856,7 +856,7 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
     if(enthover >= 0)
     {
         gle::colorub(0, 40, 0);
-        entfocus(enthover, entselectionbox(e, eo, es)); // also ensures enthover is back in focus
+        ENT_FOCUS(enthover, entselectionbox(e, eo, es)); // also ensures enthover is back in focus
         boxs3D(eo, es, 1);
         if(entmoving && entmovingshadow==1)
         {
@@ -875,11 +875,11 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
     {
         glDepthFunc(GL_GREATER);
         gle::colorf(0.25f, 0.25f, 0.25f);
-        loopv(entgroup) entfocus(entgroup[i], renderentradius(e, false));
-        if(enthover>=0) entfocus(enthover, renderentradius(e, false));
+        loopv(entgroup) ENT_FOCUS(entgroup[i], renderentradius(e, false));
+        if(enthover>=0) ENT_FOCUS(enthover, renderentradius(e, false));
         glDepthFunc(GL_LESS);
-        loopv(entgroup) entfocus(entgroup[i], renderentradius(e, true));
-        if(enthover>=0) entfocus(enthover, renderentradius(e, true));
+        loopv(entgroup) ENT_FOCUS(entgroup[i], renderentradius(e, true));
+        if(enthover>=0) ENT_FOCUS(enthover, renderentradius(e, true));
     }
 }
 
@@ -943,10 +943,10 @@ void entpush(int *dir)
     int s = DIM_COORD(entorient) ? -*dir : *dir;
     if(entmoving)
     {
-        groupeditpure(e.o[d] += float(s*sel.grid)); // editdrag supplies the undo
+        GROUP_EDIT_PURE(e.o[d] += float(s*sel.grid)); // editdrag supplies the undo
     }
     else
-        groupedit(e.o[d] += float(s*sel.grid));
+        GROUP_EDIT(e.o[d] += float(s*sel.grid));
     if(entitysurf==1)
     {
         player->o[d] += float(s*sel.grid);
@@ -966,7 +966,7 @@ void entautoview(int *dir)
     int t = s + *dir;
     s = abs(t) % entgroup.length();
     if(t<0 && s>0) s = entgroup.length() - s;
-    entfocus(entgroup[s],
+    ENT_FOCUS(entgroup[s],
         v.add(e.o);
         player->o = v;
         player->resetinterp();
@@ -981,7 +981,7 @@ COMMAND(entpush, "i");
 void delent()
 {
     if(noentedit()) return;
-    groupedit(e.type = ET_EMPTY;);
+    GROUP_EDIT(e.type = ET_EMPTY;);
     entcancel();
 }
 
@@ -1043,13 +1043,13 @@ bool dropentity(entity &e, int drop = -1)
 void dropent()
 {
     if(noentedit()) return;
-    groupedit(dropentity(e));
+    GROUP_EDIT(dropentity(e));
 }
 
 void attachent()
 {
     if(noentedit()) return;
-    groupedit(attachentity(e));
+    GROUP_EDIT(attachentity(e));
 }
 
 COMMAND(attachent, "");
@@ -1114,7 +1114,7 @@ void newentity(int type, int a1, int a2, int a3, int a4, int a5, bool fix = true
     t->type = ET_EMPTY;
     enttoggle(idx);
     makeundoent();
-    entedit(idx, e.type = type);
+    ENT_EDIT(idx, e.type = type);
     commitchanges();
 }
 
@@ -1135,7 +1135,7 @@ void entcopy()
     entcopygrid = sel.grid;
     entcopybuf.shrink(0);
     ADD_IMPLICIT({
-        loopv(entgroup) entfocus(entgroup[i], entcopybuf.add(e).o.sub(vec(sel.o)));
+        loopv(entgroup) ENT_FOCUS(entgroup[i], entcopybuf.add(e).o.sub(vec(sel.o)));
     });
 }
 
@@ -1156,7 +1156,7 @@ void entpaste()
     }
     keepents = 0;
     int j = 0;
-    groupeditundo(e.type = entcopybuf[j++].type;);
+    GROUP_EDIT_UNDO(e.type = entcopybuf[j++].type;);
 }
 
 void entreplace()
@@ -1165,7 +1165,7 @@ void entreplace()
     const entity &c = entcopybuf[0];
     if(entgroup.length() || enthover >= 0)
     {
-        groupedit({
+        GROUP_EDIT({
             e.type = c.type;
             e.attr1 = c.attr1;
             e.attr2 = c.attr2;
@@ -1192,7 +1192,7 @@ void entset(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
     if(noentedit()) return;
     int type = findtype(what);
     if(type != ET_EMPTY)
-        groupedit(e.type=type;
+        GROUP_EDIT(e.type=type;
                   e.attr1=*a1;
                   e.attr2=*a2;
                   e.attr3=*a3;
@@ -1237,9 +1237,9 @@ void nearestent()
 
 ICOMMAND(enthavesel,"",  (), ADD_IMPLICIT(intret(entgroup.length())));
 ICOMMAND(entselect, "e", (uint *body), if(!noentedit()) ADD_GROUP(e.type != ET_EMPTY && entgroup.find(n)<0 && executebool(body)));
-ICOMMAND(entloop,   "e", (uint *body), if(!noentedit()) ADD_IMPLICIT(groupeditloop(((void)e, execute(body)))));
-ICOMMAND(insel,     "",  (), entfocus(efocus, intret(pointinsel(sel, e.o))));
-ICOMMAND(entget,    "",  (), entfocus(efocus, string s; printent(e, s, sizeof(s)); result(s)));
+ICOMMAND(entloop,   "e", (uint *body), if(!noentedit()) ADD_IMPLICIT(GROUP_EDIT_LOOP(((void)e, execute(body)))));
+ICOMMAND(insel,     "",  (), ENT_FOCUS(efocus, intret(pointinsel(sel, e.o))));
+ICOMMAND(entget,    "",  (), ENT_FOCUS(efocus, string s; printent(e, s, sizeof(s)); result(s)));
 ICOMMAND(entindex,  "",  (), intret(efocus));
 COMMAND(entset, "siiiii");
 COMMAND(nearestent, "");
@@ -1249,9 +1249,9 @@ void enttype(char *type, int *numargs)
     if(*numargs >= 1)
     {
         int typeidx = findtype(type);
-        if(typeidx != ET_EMPTY) groupedit(e.type = typeidx);
+        if(typeidx != ET_EMPTY) GROUP_EDIT(e.type = typeidx);
     }
-    else entfocus(efocus,
+    else ENT_FOCUS(efocus,
     {
         result(entities::entname(e.type));
     })
@@ -1262,7 +1262,7 @@ void entattr(int *attr, int *val, int *numargs)
     if(*numargs >= 2)
     {
         if(*attr >= 0 && *attr <= 4)
-            groupedit(
+            GROUP_EDIT(
                 switch(*attr)
                 {
                     case 0: e.attr1 = *val; break;
@@ -1273,7 +1273,7 @@ void entattr(int *attr, int *val, int *numargs)
                 }
             );
     }
-    else entfocus(efocus,
+    else ENT_FOCUS(efocus,
     {
         switch(*attr)
         {
@@ -1366,7 +1366,7 @@ void splitocta(cube *c, int size)
     if(size <= 0x1000) return;
     loopi(8)
     {
-        if(!c[i].children) c[i].children = newcubes(isempty(c[i]) ? F_EMPTY : F_SOLID);
+        if(!c[i].children) c[i].children = newcubes(IS_EMPTY(c[i]) ? F_EMPTY : F_SOLID);
         splitocta(c[i].children, size>>1);
     }
 }
@@ -1463,7 +1463,7 @@ bool enlargemap(bool force)
 
 static bool isallempty(cube &c)
 {
-    if(!c.children) return isempty(c);
+    if(!c.children) return IS_EMPTY(c);
     loopi(8) if(!isallempty(c.children[i])) return false;
     return true;
 }

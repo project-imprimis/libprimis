@@ -94,7 +94,7 @@ struct animmodel : model
             version = lastversion;
             if(++lastversion <= 0)
             {
-                enumerate(keys, shaderparamskey, key, key.version = -1);
+                ENUMERATE(keys, shaderparamskey, key, key.version = -1);
                 firstversion = 0;
                 lastversion = 1;
                 version = 0;

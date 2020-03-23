@@ -429,7 +429,7 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
 
 void reloadfonts()
 {
-    enumerate(fonts, font, f,
+    ENUMERATE(fonts, font, f,
         loopv(f.texs) if(!reloadtexture(*f.texs[i])) fatal("failed to reload font texture");
     );
 }

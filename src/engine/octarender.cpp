@@ -307,7 +307,7 @@ struct vacollect : verthash
 
     void optimize()
     {
-        enumeratekt(indices, sortkey, k, sortval, t,
+        ENUMERATE_KT(indices, sortkey, k, sortval, t,
         {
             if(t.tris.length()) texs.add(k);
         });
@@ -439,7 +439,7 @@ struct vacollect : verthash
                 if(e.flags&EF_RENDER) e.flags &= ~EF_RENDER;
             }
         }
-        enumeratekt(decalindices, decalkey, k, sortval, t,
+        ENUMERATE_KT(decalindices, decalkey, k, sortval, t,
         {
             if(t.tris.length()) decaltexs.add(k);
         });
@@ -1082,7 +1082,7 @@ void gencubeedges(cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size 
         ivec o(i, co, size);
         if(c[i].ext) c[i].ext->tjoints = -1;
         if(c[i].children) gencubeedges(c[i].children, o, size>>1);
-        else if(!isempty(c[i])) gencubeedges(c[i], o, size);
+        else if(!IS_EMPTY(c[i])) gencubeedges(c[i], o, size);
     }
     --neighbourdepth;
 }
@@ -1304,7 +1304,7 @@ static vector<mergedface> vamerges[MAXMERGELEVEL+1];
 
 int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
 {
-    if(!c.ext || isempty(c)) return -1;
+    if(!c.ext || IS_EMPTY(c)) return -1;
     int tj = c.ext->tjoints, maxlevel = -1;
     loopi(6) if(c.merged&(1<<i))
     {
@@ -1441,7 +1441,7 @@ void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // cr
         return;
     }
 
-    if(!isempty(c))
+    if(!IS_EMPTY(c))
     {
         gencubeverts(c, co, size, csi);
         if(c.merged) maxlevel = max(maxlevel, genmergedfaces(c, co, size));
@@ -1522,7 +1522,7 @@ void setva(cube &c, const ivec &co, int size, int csi)
 
 static inline int setcubevisibility(cube &c, const ivec &co, int size)
 {
-    if(isempty(c) && (c.material&MATF_CLIP) != MAT_CLIP) return 0;
+    if(IS_EMPTY(c) && (c.material&MATF_CLIP) != MAT_CLIP) return 0;
     int numvis = 0, vismask = 0, collidemask = 0, checkmask = 0;
     loopi(6)
     {
@@ -1679,7 +1679,7 @@ void findtjoints()
     recalcprogress = 0;
     gencubeedges();
     tjoints.setsize(0);
-    enumeratekt(edgegroups, edgegroup, g, int, e, findtjoints(e, g));
+    ENUMERATE_KT(edgegroups, edgegroup, g, int, e, findtjoints(e, g));
     cubeedges.setsize(0);
     edgegroups.clear();
 }

@@ -2023,7 +2023,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
     {
         ivec o(i, co, size);
         if(c[i].children) clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
-        else if(!isentirelysolid(c[i]) && (c[i].material&MATF_CLIP)!=MAT_CLIP)
+        else if(!IS_ENTIRELY_SOLID(c[i]) && (c[i].material&MATF_CLIP)!=MAT_CLIP)
         {
             loopk(3) bbmin[k] = min(bbmin[k], o[k]);
             loopk(3) bbmax[k] = max(bbmax[k], o[k] + size);

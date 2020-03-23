@@ -445,12 +445,12 @@ model *loadmodel(const char *name, int i, bool msg)
 
 void clear_models()
 {
-    enumerate(models, model *, m, delete m);
+    ENUMERATE(models, model *, m, delete m);
 }
 
 void cleanupmodels()
 {
-    enumerate(models, model *, m, m->cleanup());
+    ENUMERATE(models, model *, m, m->cleanup());
 }
 
 void clearmodel(char *name)
@@ -1091,15 +1091,15 @@ ICOMMAND(findanims, "s", (char *name),
 
 void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks) // model skin sharing
 {
-#define ifnoload(tex, path) if((tex = textureload(path, 0, true, false))==notexture)
-#define tryload(tex, prefix, cmd, name) \
-    ifnoload(tex, makerelpath(mdir, name ".jpg", prefix, cmd)) \
+#define IF_NO_LOAD(tex, path) if((tex = textureload(path, 0, true, false))==notexture)
+#define TRY_LOAD(tex, prefix, cmd, name) \
+    IF_NO_LOAD(tex, makerelpath(mdir, name ".jpg", prefix, cmd)) \
     { \
-        ifnoload(tex, makerelpath(mdir, name ".png", prefix, cmd)) \
+        IF_NO_LOAD(tex, makerelpath(mdir, name ".png", prefix, cmd)) \
         { \
-            ifnoload(tex, makerelpath(maltdir, name ".jpg", prefix, cmd)) \
+            IF_NO_LOAD(tex, makerelpath(maltdir, name ".jpg", prefix, cmd)) \
             { \
-                ifnoload(tex, makerelpath(maltdir, name ".png", prefix, cmd)) return; \
+                IF_NO_LOAD(tex, makerelpath(maltdir, name ".png", prefix, cmd)) return; \
             } \
         } \
     }
@@ -1107,9 +1107,12 @@ void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&mas
     DEF_FORMAT_STRING(mdir, "media/model/%s", dir);
     DEF_FORMAT_STRING(maltdir, "media/model/%s", altdir);
     masks = notexture;
-    tryload(skin, NULL, NULL, "skin");
-    tryload(masks, NULL, NULL, "masks");
+    TRY_LOAD(skin, NULL, NULL, "skin");
+    TRY_LOAD(masks, NULL, NULL, "masks");
 }
+
+#undef IF_NO_LOAD
+#undef TRY_LOAD
 
 void setbbfrommodel(dynent *d, const char *mdl)
 {

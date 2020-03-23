@@ -830,7 +830,7 @@ namespace server
         virtual void spawned(clientinfo *ci) {}
         virtual int fragvalue(clientinfo *victim, clientinfo *actor)
         {
-            if(victim==actor || isteam(victim->team, actor->team)) return -1;
+            if(victim==actor || IS_TEAM(victim->team, actor->team)) return -1;
             return 1;
         }
         virtual void died(clientinfo *victim, clientinfo *actor) {}
@@ -2080,7 +2080,7 @@ namespace server
     {
         servstate &ts = target->state;
         ts.dodamage(damage);
-        if(target!=actor && !isteam(target->team, actor->team)) actor->state.damage += damage;
+        if(target!=actor && !IS_TEAM(target->team, actor->team)) actor->state.damage += damage;
         sendf(-1, 1, "ri5", N_DAMAGE, target->clientnum, actor->clientnum, damage, ts.health);
         if(target==actor) target->setpushed();
         else if(!hitpush.iszero())
@@ -2092,7 +2092,7 @@ namespace server
         if(ts.health<=0)
         {
             target->state.deaths++;
-            int fragvalue = smode ? smode->fragvalue(target, actor) : (target==actor || isteam(target->team, actor->team) ? -1 : 1);
+            int fragvalue = smode ? smode->fragvalue(target, actor) : (target==actor || IS_TEAM(target->team, actor->team) ? -1 : 1);
             actor->state.frags += fragvalue;
             if(fragvalue>0)
             {

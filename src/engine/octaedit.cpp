@@ -1181,7 +1181,7 @@ static hashnameset<prefab> prefabs;
 
 void cleanupprefabs()
 {
-    enumerate(prefabs, prefab, p, p.cleanup());
+    ENUMERATE(prefabs, prefab, p, p.cleanup());
 }
 
 void delprefab(char *name)
@@ -1230,7 +1230,7 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
     int o = sel.orient;
     sel.orient = b.orient;
     cube *s = b.c();
-    loopselxyz(if(!isempty(*s) || s->children || s->material != MAT_AIR) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
+    loopselxyz(if(!IS_EMPTY(*s) || s->children || s->material != MAT_AIR) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
     sel.orient = o;
 }
 
@@ -1335,7 +1335,7 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
         }
         --neighbourdepth;
     }
-    else if(!isempty(c))
+    else if(!IS_EMPTY(c))
     {
         int vis;
         loopi(6) if((vis = visibletris(c, i, co, size)))
@@ -1381,7 +1381,7 @@ void genprefabmesh(prefab &p)
     }
 
     cube *s = p.copy->c();
-    loopxyz(b, b.grid, if(!isempty(*s) || s->children) pastecube(*s, c); s++);
+    loopxyz(b, b.grid, if(!IS_EMPTY(*s) || s->children) pastecube(*s, c); s++);
 
     prefabmesh r;
     neighbourstack[++neighbourdepth] = worldroot;
@@ -1521,7 +1521,7 @@ struct vslotref
     vslotref(int &index) { editingvslots.add(&index); }
     ~vslotref() { editingvslots.pop(); }
 };
-#define editingvslot(...) vslotref vslotrefs[] = { __VA_ARGS__ }; (void)vslotrefs;
+#define EDITING_VSLOT(...) vslotref vslotrefs[] = { __VA_ARGS__ }; (void)vslotrefs;
  
 void compacteditvslots()
 {
@@ -1561,7 +1561,7 @@ namespace hmap
     inline bool isheightmap(int o, int d, bool empty, cube *c)
     {
         return havesel ||
-            (empty && isempty(*c)) ||
+            (empty && IS_EMPTY(*c)) ||
             textures.empty() ||
             textures.find(c->texture[o]) >= 0;
     }
@@ -1665,11 +1665,11 @@ namespace hmap
         cube **c = cmap[x][y];
         loopk(4) c[k] = NULL;
         c[1] = getcube(t, 0);
-        if(!c[1] || !isempty(*c[1]))
+        if(!c[1] || !IS_EMPTY(*c[1]))
         {   // try up
             c[2] = c[1];
             c[1] = getcube(t, 1);
-            if(!c[1] || isempty(*c[1])) { c[0] = c[1]; c[1] = c[2]; c[2] = NULL; }
+            if(!c[1] || IS_EMPTY(*c[1])) { c[0] = c[1]; c[1] = c[2]; c[2] = NULL; }
             else { z++; t[d]+=fg; }
         }
         else // drop down
@@ -1680,7 +1680,7 @@ namespace hmap
             c[1] = getcube(t, 0);
         }
 
-        if(!c[1] || isempty(*c[1])) { flags[x][y] |= NOTHMAP; return; }
+        if(!c[1] || IS_EMPTY(*c[1])) { flags[x][y] |= NOTHMAP; return; }
 
         flags[x][y] |= PAINTED;
         mapz [x][y]  = z;
@@ -1688,11 +1688,11 @@ namespace hmap
         if(!c[0]) c[0] = getcube(t, 1);
         if(!c[2]) c[2] = getcube(t, -1);
         c[3] = getcube(t, -2);
-        c[2] = !c[2] || isempty(*c[2]) ? NULL : c[2];
-        c[3] = !c[3] || isempty(*c[3]) ? NULL : c[3];
+        c[2] = !c[2] || IS_EMPTY(*c[2]) ? NULL : c[2];
+        c[3] = !c[3] || IS_EMPTY(*c[3]) ? NULL : c[3];
 
         uint face = getface(c[1], d);
-        if(face == 0x08080808 && (!c[0] || !isempty(*c[0]))) { flags[x][y] |= NOTHMAP; return; }
+        if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0]))) { flags[x][y] |= NOTHMAP; return; }
         if(c[1]->faces[R[d]] == F_SOLID)   // was single
             face += 0x08080808;
         else                               // was pair
@@ -1770,11 +1770,11 @@ namespace hmap
                         pushside(*c[k], d, i, j, 0);
                         pushside(*c[k], d, i, j, 1);
                     }
-                    edgeset(CUBE_EDGE(*c[k], d, i, j), dc, dc ? f : 8-f);
+                    EDGE_SET(CUBE_EDGE(*c[k], d, i, j), dc, dc ? f : 8-f);
                 }
             }
             else
-                emptyfaces(*c[k]);
+                EMPTY_FACES(*c[k]);
         }
 
         if(!changed) return;
@@ -1903,10 +1903,10 @@ int bounded(int n) { return n<0 ? 0 : (n>8 ? 8 : n); }
 
 void pushedge(uchar &edge, int dir, int dc)
 {
-    int ne = bounded(edgeget(edge, dc)+dir);
-    edgeset(edge, dc, ne);
-    int oe = edgeget(edge, 1-dc);
-    if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne)) edgeset(edge, 1-dc, ne);
+    int ne = bounded(EDGE_GET(edge, dc)+dir);
+    EDGE_SET(edge, dc, ne);
+    int oe = EDGE_GET(edge, 1-dc);
+    if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne)) EDGE_SET(edge, 1-dc, ne);
 }
 
 void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
@@ -1970,7 +1970,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                     c.texture[i] = o.children ? DEFAULT_GEOM : o.texture[i];
             }
             else
-                emptyfaces(c);
+                EMPTY_FACES(c);
         }
         else
         {
@@ -2041,7 +2041,7 @@ void pushsel(int *dir)
 void mpdelcube(selinfo &sel, bool local)
 {
     if(local) game::edittrigger(sel, EDIT_DELCUBE);
-    loopselxyz(discardchildren(c, true); emptyfaces(c));
+    loopselxyz(discardchildren(c, true); EMPTY_FACES(c));
 }
 
 void delcube()
@@ -2173,7 +2173,7 @@ bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf)
 {
     VSlot ds;
     if(!unpackvslot(buf, ds, delta != 0)) return false;
-    editingvslot(ds.layer, ds.detail);
+    EDITING_VSLOT(ds.layer, ds.detail);
     mpeditvslot(delta, ds, allfaces, sel, false);
     return true;
 }
@@ -2250,7 +2250,7 @@ void vlayer(int *n)
         ds.layer = *n;
         if(vslots[ds.layer]->changed && nompedit && multiplayer()) return;
     }
-    editingvslot(ds.layer);
+    EDITING_VSLOT(ds.layer);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vlayer, "i");
@@ -2265,7 +2265,7 @@ void vdetail(int *n)
         ds.detail = *n;
         if(vslots[ds.detail]->changed && nompedit && multiplayer()) return;
     }
-    editingvslot(ds.detail);
+    EDITING_VSLOT(ds.detail);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vdetail, "i");
@@ -2460,7 +2460,7 @@ void getseltex()
 {
     if(noedit(true)) return;
     cube &c = lookupcube(sel.o, -sel.grid);
-    if(c.children || isempty(c)) return;
+    if(c.children || IS_EMPTY(c)) return;
     intret(c.texture[sel.orient]);
 }
 
@@ -2523,7 +2523,7 @@ void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local)
 bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf)
 {
     if(!unpacktex(oldtex, buf, false)) return false;
-    editingvslot(oldtex);
+    EDITING_VSLOT(oldtex);
     if(!unpacktex(newtex, buf)) return false;
     mpreplacetex(oldtex, newtex, insel, sel, false);
     return true;
@@ -2664,10 +2664,10 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
     {
         switch(filtergeom)
         {
-            case EDITMATF_EMPTY: if(isempty(c)) break; return;
-            case EDITMATF_NOTEMPTY: if(!isempty(c)) break; return;
-            case EDITMATF_SOLID: if(isentirelysolid(c)) break; return;
-            case EDITMATF_NOTSOLID: if(!isentirelysolid(c)) break; return;
+            case EDITMATF_EMPTY: if(IS_EMPTY(c)) break; return;
+            case EDITMATF_NOTEMPTY: if(!IS_EMPTY(c)) break; return;
+            case EDITMATF_SOLID: if(IS_ENTIRELY_SOLID(c)) break; return;
+            case EDITMATF_NOTSOLID: if(!IS_ENTIRELY_SOLID(c)) break; return;
         }
         if(mat!=MAT_AIR)
         {

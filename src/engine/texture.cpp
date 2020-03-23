@@ -3188,7 +3188,7 @@ void cleanuptextures()
     loopv(vslots) vslots[i]->cleanup();
     loopi((MATF_VOLUME|MATF_INDEX)+1) materialslots[i].cleanup();
     loopv(decalslots) decalslots[i]->cleanup();
-    enumerate(textures, Texture, tex, cleanuptexture(&tex));
+    ENUMERATE(textures, Texture, tex, cleanuptexture(&tex));
 }
 
 bool reloadtexture(const char *name)
@@ -3239,7 +3239,7 @@ COMMAND(reloadtex, "s");
 void reloadtextures()
 {
     int reloaded = 0;
-    enumerate(textures, Texture, tex,
+    ENUMERATE(textures, Texture, tex,
     {
         loadprogress = float(++reloaded)/textures.numelems;
         reloadtexture(tex);

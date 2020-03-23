@@ -428,7 +428,7 @@ namespace game
         }
         if(d==actor)
             conoutf(contype, "\f2%s suicided%s", dname, d==player1 ? "!" : "");
-        else if(isteam(d->team, actor->team))
+        else if(IS_TEAM(d->team, actor->team))
         {
             contype |= CON_TEAMKILL;
             if(actor==player1) conoutf(contype, "\f6%s fragged a teammate (%s)", aname, dname);
@@ -682,7 +682,7 @@ namespace game
 
     void teamsound(gameent *d, int n, const vec *loc)
     {
-        teamsound(isteam(d->team, player1->team), n, loc);
+        teamsound(IS_TEAM(d->team, player1->team), n, loc);
     }
 
     void suicide(physent *d)

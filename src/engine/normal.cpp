@@ -163,7 +163,7 @@ void addnormals(cube &c, const ivec &o, int size)
         loopi(8) addnormals(c.children[i], ivec(i, o, size), size);
         return;
     }
-    else if(isempty(c)) return;
+    else if(IS_EMPTY(c)) return;
 
     vec pos[MAXFACEVERTS];
     int norms[MAXFACEVERTS];

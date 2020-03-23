@@ -246,15 +246,14 @@ extern int allocnodes, allocva, selchildcount, selchildmat;
 const uint F_EMPTY = 0;             // all edges in the range (0,0)
 const uint F_SOLID = 0x80808080;    // all edges in the range (0,8)
 
-#define isempty(c) ((c).faces[0]==F_EMPTY)
-#define isentirelysolid(c) ((c).faces[0]==F_SOLID && (c).faces[1]==F_SOLID && (c).faces[2]==F_SOLID)
+#define IS_EMPTY(c) ((c).faces[0]==F_EMPTY)
+#define IS_ENTIRELY_SOLID(c) ((c).faces[0]==F_SOLID && (c).faces[1]==F_SOLID && (c).faces[2]==F_SOLID)
 #define setfaces(c, face) { (c).faces[0] = (c).faces[1] = (c).faces[2] = face; }
 #define solidfaces(c) setfaces(c, F_SOLID)
-#define emptyfaces(c) setfaces(c, F_EMPTY)
+#define EMPTY_FACES(c) setfaces(c, F_EMPTY)
 
-#define edgemake(a, b) ((b)<<4|a)
-#define edgeget(edge, coord) ((coord) ? (edge)>>4 : (edge)&0xF)
-#define edgeset(edge, coord, val) ((edge) = ((coord) ? ((edge)&0xF)|((val)<<4) : ((edge)&0xF0)|(val)))
+#define EDGE_GET(edge, coord) ((coord) ? (edge)>>4 : (edge)&0xF)
+#define EDGE_SET(edge, coord, val) ((edge) = ((coord) ? ((edge)&0xF)|((val)<<4) : ((edge)&0xF0)|(val)))
 
 #define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)<<2)+((y)<<1)+(x))])
 

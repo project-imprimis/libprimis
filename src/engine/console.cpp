@@ -220,7 +220,7 @@ const char *getkeyname(int code)
 void searchbinds(char *action, int type)
 {
     vector<char> names;
-    enumerate(keyms, keym, km,
+    ENUMERATE(keyms, keym, km,
     {
         if(!strcmp(km.actions[type], action))
         {
@@ -234,7 +234,7 @@ void searchbinds(char *action, int type)
 
 keym *findbind(char *key)
 {
-    enumerate(keyms, keym, km,
+    ENUMERATE(keyms, keym, km,
     {
         if(!strcasecmp(km.name, key)) return &km;
     });
@@ -281,10 +281,10 @@ void keym::clear(int type)
     }
 }
 
-ICOMMAND(clearbinds, "", (), enumerate(keyms, keym, km, km.clear(keym::ACTION_DEFAULT)));
-ICOMMAND(clearspecbinds, "", (), enumerate(keyms, keym, km, km.clear(keym::ACTION_SPECTATOR)));
-ICOMMAND(cleareditbinds, "", (), enumerate(keyms, keym, km, km.clear(keym::ACTION_EDITING)));
-ICOMMAND(clearallbinds, "", (), enumerate(keyms, keym, km, km.clear()));
+ICOMMAND(clearbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::ACTION_DEFAULT)));
+ICOMMAND(clearspecbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::ACTION_SPECTATOR)));
+ICOMMAND(cleareditbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::ACTION_EDITING)));
+ICOMMAND(clearallbinds, "", (), ENUMERATE(keyms, keym, km, km.clear()));
 
 void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *flags = NULL) // turns input to the command line on or off
 {
@@ -625,7 +625,7 @@ void writebinds(stream *f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
     vector<keym *> binds;
-    enumerate(keyms, keym, km, binds.add(&km));
+    ENUMERATE(keyms, keym, km, binds.add(&km));
     binds.sortname();
     loopj(3)
     {
@@ -778,7 +778,7 @@ void complete(char *s, int maxlen, const char *cmdprefix)
     }
     else // complete using command names
     {
-        enumerate(idents, ident, id,
+        ENUMERATE(idents, ident, id,
             if(strncmp(id.name, &s[cmdlen], completesize)==0 &&
                (!lastcomplete || strcmp(id.name, lastcomplete) > 0) && (!nextcomplete || strcmp(id.name, nextcomplete) < 0))
                 nextcomplete = id.name;
@@ -797,7 +797,7 @@ void complete(char *s, int maxlen, const char *cmdprefix)
 void writecompletions(stream *f)
 {
     vector<char *> cmds;
-    enumeratekt(completions, char *, k, filesval *, v, { if(v) cmds.add(k); });
+    ENUMERATE_KT(completions, char *, k, filesval *, v, { if(v) cmds.add(k); });
     cmds.sort();
     loopv(cmds)
     {

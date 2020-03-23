@@ -701,7 +701,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         info.add(&zi);
     }
     int leafzones = info.length();
-    enumerate(infomap, skelzoneinfo, zi, { if(zi.index < 0) info.add(&zi); });
+    ENUMERATE(infomap, skelzoneinfo, zi, { if(zi.index < 0) info.add(&zi); });
     for(int i = leafzones; i < info.length(); i++)
     {
         skelzoneinfo &zi = *info[i];

@@ -587,7 +587,7 @@ int GlobalShaderParamState::nextversion = 0;
 
 void GlobalShaderParamState::resetversions()
 {
-    enumerate(shaders, Shader, s,
+    ENUMERATE(shaders, Shader, s,
     {
         loopv(s.globalparams)
         {
@@ -596,8 +596,8 @@ void GlobalShaderParamState::resetversions()
         }
     });
     nextversion = 0;
-    enumerate(globalparams, GlobalShaderParamState, g, { g.version = ++nextversion; });
-    enumerate(shaders, Shader, s,
+    ENUMERATE(globalparams, GlobalShaderParamState, g, { g.version = ++nextversion; });
+    ENUMERATE(shaders, Shader, s,
     {
         loopv(s.globalparams)
         {
@@ -1111,7 +1111,7 @@ int Shader::uniformlocversion()
     static int version = 0;
     if(++version >= 0) return version;
     version = 0;
-    enumerate(shaders, Shader, s, { loopvj(s.uniformlocs) s.uniformlocs[j].version = -1; });
+    ENUMERATE(shaders, Shader, s, { loopvj(s.uniformlocs) s.uniformlocs[j].version = -1; });
     return version;
 }
 
@@ -1520,7 +1520,7 @@ void cleanupshaders()
 
     loadedshaders = false;
     nullshader = hudshader = hudnotextureshader = NULL;
-    enumerate(shaders, Shader, s, s.cleanup());
+    ENUMERATE(shaders, Shader, s, s.cleanup());
     Shader::lastshader = NULL;
     glUseProgram_(0);
 }
@@ -1532,7 +1532,7 @@ void reloadshaders()
     identflags |= IDF_PERSIST;
 
     linkslotshaders();
-    enumerate(shaders, Shader, s,
+    ENUMERATE(shaders, Shader, s,
     {
         if(!s.standard && s.loaded() && !s.variantshader)
         {

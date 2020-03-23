@@ -412,7 +412,7 @@ static struct soundtype
 
     void cleanupsamples()
     {
-        enumerate(samples, soundsample, s, s.cleanup());
+        ENUMERATE(samples, soundsample, s, s.cleanup());
     }
 
     void cleanup()

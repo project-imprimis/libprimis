@@ -138,7 +138,7 @@ static struct gamemodeinfo
 #define m_ctf          (m_check(gamemode, M_CTF))
 #define m_teammode     (m_check(gamemode, M_TEAM))
 #define m_overtime     (m_check(gamemode, M_OVERTIME))
-#define isteam(a,b)    (m_teammode && a==b)
+#define IS_TEAM(a,b)    (m_teammode && a==b)
 #define m_rail         (m_check(gamemode, M_RAIL))
 #define m_pulse        (m_check(gamemode, M_PULSE))
 #define m_all          (m_check(gamemode, M_ALL))

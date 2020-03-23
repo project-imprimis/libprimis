@@ -3539,7 +3539,7 @@ namespace UI
     void cleanup()
     {
         world->children.setsize(0);
-        enumerate(windows, Window *, w, delete w);
+        ENUMERATE(windows, Window *, w, delete w);
         windows.clear();
         DELETEP(world);
     }

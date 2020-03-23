@@ -558,7 +558,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
     {
         ziparchive *arch = archives[i];
         int oldsize = files.length();
-        enumerate(arch->files, zipfile, f,
+        ENUMERATE(arch->files, zipfile, f,
         {
             if(strncmp(f.name, dir, dirsize)) continue;
             const char *name = f.name + dirsize;
