@@ -143,18 +143,18 @@ struct ctfclientmode : clientmode
 
     int totalscore(int team)
     {
-        return validteam(team) ? scores[team-1] : 0;
+        return VALID_TEAM(team) ? scores[team-1] : 0;
     }
 
     int setscore(int team, int score)
     {
-        if(validteam(team)) return scores[team-1] = score;
+        if(VALID_TEAM(team)) return scores[team-1] = score;
         return 0;
     }
 
     int addscore(int team, int score)
     {
-        if(validteam(team)) return scores[team-1] += score;
+        if(VALID_TEAM(team)) return scores[team-1] += score;
         return 0;
     }
 
@@ -195,7 +195,7 @@ struct ctfclientmode : clientmode
         loopv(ments)
         {
             entity &e = ments[i];
-            if(e.type != FLAG || !validteam(e.attr2)) continue;
+            if(e.type != FLAG || !VALID_TEAM(e.attr2)) continue;
             if(!addflag(flags.length(), e.o, e.attr2)) break;
         }
         notgotflags = false;
@@ -258,7 +258,7 @@ struct ctfclientmode : clientmode
     {
         if(notgotflags || !flags.inrange(i) || ci->state.state!=CS_ALIVE || !ci->team) return;
         flag &f = flags[i];
-        if(!validteam(f.team) || f.owner>=0 || f.version != version || (f.droptime && f.dropper == ci->clientnum && f.dropcount >= 3)) return;
+        if(!VALID_TEAM(f.team) || f.owner>=0 || f.version != version || (f.droptime && f.dropper == ci->clientnum && f.dropcount >= 3)) return;
         if(f.team!=ci->team)
         {
             loopvj(flags) if(flags[j].owner==ci->clientnum) return;
@@ -404,7 +404,7 @@ struct ctfclientmode : clientmode
         loopv(flags)
         {
             flag &f = flags[i];
-            if(!validteam(f.team)) continue;
+            if(!VALID_TEAM(f.team)) continue;
             if(f.owner)
             {
                 if(lastmillis%1000 >= 500) continue;
@@ -477,7 +477,7 @@ struct ctfclientmode : clientmode
         loopv(entities::ents)
         {
             extentity *e = entities::ents[i];
-            if(e->type!=FLAG || !validteam(e->attr2)) continue;
+            if(e->type!=FLAG || !VALID_TEAM(e->attr2)) continue;
             int index = flags.length();
             if(!addflag(index, e->o, e->attr2)) continue;
             flags[index].spawnangle = e->attr1;
@@ -655,7 +655,7 @@ struct ctfclientmode : clientmode
         loopv(flags)
         {
             flag &f = flags[i];
-            if(!validteam(f.team) || f.team==player1->team || f.owner || (f.droptime && f.droploc.x<0)) continue;
+            if(!VALID_TEAM(f.team) || f.team==player1->team || f.owner || (f.droptime && f.droploc.x<0)) continue;
             const vec &loc = f.droptime ? f.droploc : f.spawnloc;
             if(o.dist(loc) < FLAGRADIUS)
             {
@@ -672,7 +672,7 @@ struct ctfclientmode : clientmode
         loopv(flags)
         {
             flag &f = flags[i];
-            if(!validteam(f.team) || f.team!=player1->team || f.owner || (f.droptime && f.droploc.x<0)) continue;
+            if(!VALID_TEAM(f.team) || f.team!=player1->team || f.owner || (f.droptime && f.droploc.x<0)) continue;
             const vec &loc = f.droptime ? f.droploc : f.spawnloc;
             if(o.dist(loc) < FLAGRADIUS)
             {
@@ -692,7 +692,7 @@ struct ctfclientmode : clientmode
         loopv(flags)
         {
             flag &f = flags[i];
-            if(!validteam(f.team) || f.owner || (f.droptime && f.droploc.x<0)) continue;
+            if(!VALID_TEAM(f.team) || f.owner || (f.droptime && f.droploc.x<0)) continue;
             if(o.dist(f.droptime ? f.droploc : f.spawnloc) < FLAGRADIUS) d->flagpickup |= 1<<f.id;
        }
     }
@@ -745,7 +745,7 @@ struct ctfclientmode : clientmode
         }
         if(!ai::badhealth(d) && !takenflags.empty())
         {
-            int flag = takenflags.length() > 2 ? rnd(takenflags.length()) : 0;
+            int flag = takenflags.length() > 2 ? RANDOM_INT(takenflags.length()) : 0;
             d->ai->switchstate(b, ai::AI_S_PURSUE, ai::AI_T_AFFINITY, takenflags[flag]);
             return true;
         }

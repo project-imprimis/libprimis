@@ -242,7 +242,7 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
         for(;;) \
         { \
             lshift--; \
-            lc += octastep(x, y, z, lshift); \
+            lc += OCTA_STEP(x, y, z, lshift); \
             if(lc->ext && lc->ext->ents && lshift < elvl) \
             { \
                 float edist = disttoent(lc->ext->ents, o, ray, dent, mode, t); \
@@ -1118,12 +1118,12 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
         scale = worldscale-1;
     if(diff&~((1<<scale)-1) || uint(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= uint(worldsize))
        return octacollide(d, dir, cutoff, bo, bs, worldroot, ivec(0, 0, 0), worldsize>>1);
-    const cube *c = &worldroot[octastep(bo.x, bo.y, bo.z, scale)];
+    const cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents)) return true;
     scale--;
     while(c->children && !(diff&(1<<scale)))
     {
-        c = &c->children[octastep(bo.x, bo.y, bo.z, scale)];
+        c = &c->children[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
         if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents)) return true;
         scale--;
     }
@@ -2023,9 +2023,9 @@ bool entinmap(dynent *d, bool avoidplayers)        // brute force but effective 
         if(i)
         {
             d->o = orig;
-            d->o.x += (rnd(21)-10)*i/5;  // increasing distance
-            d->o.y += (rnd(21)-10)*i/5;
-            d->o.z += (rnd(21)-10)*i/5;
+            d->o.x += (RANDOM_INT(21)-10)*i/5;  // increasing distance
+            d->o.y += (RANDOM_INT(21)-10)*i/5;
+            d->o.z += (RANDOM_INT(21)-10)*i/5;
         }
 
         if(!collide(d) && !collideinside)

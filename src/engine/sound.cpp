@@ -41,8 +41,8 @@ struct soundconfig
     int chooseslot(int flags) const
     {
         if(flags&SND_NO_ALT || numslots <= 1) return slots;
-        if(flags&SND_USE_ALT) return slots + 1 + rnd(numslots - 1);
-        return slots + rnd(numslots);
+        if(flags&SND_USE_ALT) return slots + 1 + RANDOM_INT(numslots - 1);
+        return slots + RANDOM_INT(numslots);
     }
 };
 

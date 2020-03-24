@@ -11,7 +11,7 @@ static struct emptycube : cube
         visible = 0;
         merged = 0;
         material = MAT_AIR;
-        setfaces(*this, F_EMPTY);
+        SET_FACES(*this, F_EMPTY);
         loopi(6) texture[i] = DEFAULT_SKY;
     }
 } emptycube;
@@ -72,7 +72,7 @@ cube *newcubes(uint face, int mat)
         c->ext = NULL;
         c->visible = 0;
         c->merged = 0;
-        setfaces(*c, face);
+        SET_FACES(*c, face);
         loopl(6) c->texture[l] = DEFAULT_GEOM;
         c->material = mat;
         c++;
@@ -204,7 +204,7 @@ void validatec(cube *c, int size)
         {
             if(size<=1)
             {
-                solidfaces(c[i]);
+                SOLID_FACES(c[i]);
                 discardchildren(c[i], true);
             }
             else validatec(c[i].children, size>>1);
@@ -237,7 +237,7 @@ cube &lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
         ty = clamp(to.y, 0, worldsize-1),
         tz = clamp(to.z, 0, worldsize-1);
     int scale = worldscale-1, csize = abs(tsize);
-    cube *c = &worldroot[octastep(tx, ty, tz, scale)];
+    cube *c = &worldroot[OCTA_STEP(tx, ty, tz, scale)];
     if(!(csize>>scale)) do
     {
         if(!c->children)
@@ -246,12 +246,12 @@ cube &lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
             {
                 subdividecube(*c);
                 scale--;
-                c = &c->children[octastep(tx, ty, tz, scale)];
+                c = &c->children[OCTA_STEP(tx, ty, tz, scale)];
             } while(!(csize>>scale));
             break;
         }
         scale--;
-        c = &c->children[octastep(tx, ty, tz, scale)];
+        c = &c->children[OCTA_STEP(tx, ty, tz, scale)];
     } while(!(csize>>scale));
     ro = ivec(tx, ty, tz).mask(~0U<<scale);
     rsize = 1<<scale;
@@ -263,11 +263,11 @@ int lookupmaterial(const vec &v)
     ivec o(v);
     if(!insideworld(o)) return MAT_AIR;
     int scale = worldscale-1;
-    cube *c = &worldroot[octastep(o.x, o.y, o.z, scale)];
+    cube *c = &worldroot[OCTA_STEP(o.x, o.y, o.z, scale)];
     while(c->children)
     {
         scale--;
-        c = &c->children[octastep(o.x, o.y, o.z, scale)];
+        c = &c->children[OCTA_STEP(o.x, o.y, o.z, scale)];
     }
     return c->material;
 }
@@ -293,11 +293,11 @@ const cube &neighbourcube(const cube &c, int orient, const ivec &co, int size, i
         nc = neighbourstack[worldscale - scale];
     }
     scale--;
-    nc = &nc[octastep(n.x, n.y, n.z, scale)];
+    nc = &nc[OCTA_STEP(n.x, n.y, n.z, scale)];
     if(!(size>>scale) && nc->children) do
     {
         scale--;
-        nc = &nc->children[octastep(n.x, n.y, n.z, scale)];
+        nc = &nc->children[OCTA_STEP(n.x, n.y, n.z, scale)];
     } while(!(size>>scale) && nc->children);
     ro = n.mask(~0U<<scale);
     rsize = 1<<scale;
@@ -312,10 +312,10 @@ int getmippedtexture(const cube &p, int orient)
     int d = DIMENSION(orient), dc = DIM_COORD(orient), texs[4] = { -1, -1, -1, -1 }, numtexs = 0;
     loop(x, 2) loop(y, 2)
     {
-        int n = octaindex(d, x, y, dc);
+        int n = OCTA_INDEX(d, x, y, dc);
         if(IS_EMPTY(c[n]))
         {
-            n = oppositeocta(d, n);
+            n = OPPOSITE_OCTA(d, n);
             if(IS_EMPTY(c[n]))
                 continue;
         }
@@ -402,10 +402,10 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     loopj(6)
     {
         int d = DIMENSION(j), z = DIM_COORD(j);
-        const ivec &v00 = v[octaindex(d, 0, 0, z)],
-                   &v10 = v[octaindex(d, 1, 0, z)],
-                   &v01 = v[octaindex(d, 0, 1, z)],
-                   &v11 = v[octaindex(d, 1, 1, z)];
+        const ivec &v00 = v[OCTA_INDEX(d, 0, 0, z)],
+                   &v10 = v[OCTA_INDEX(d, 1, 0, z)],
+                   &v01 = v[OCTA_INDEX(d, 0, 1, z)],
+                   &v11 = v[OCTA_INDEX(d, 1, 1, z)];
         int e[3][3];
         // corners
         e[0][0] = v00[d];
@@ -493,7 +493,7 @@ bool remip(cube &c, const ivec &co, int size)
         if(!remip(ch[i], o, size>>1)) perfect = false;
     }
 
-    solidfaces(c); // so texmip is more consistent
+    SOLID_FACES(c); // so texmip is more consistent
     loopj(6)
         c.texture[j] = getmippedtexture(c, j); // parents get child texs regardless
 
@@ -550,7 +550,7 @@ bool remip(cube &c, const ivec &co, int size)
     if(mipvis) loop(orient, 6)
     {
         int mask = 0;
-        loop(x, 2) loop(y, 2) mask |= 1<<octaindex(DIMENSION(orient), x, y, DIM_COORD(orient));
+        loop(x, 2) loop(y, 2) mask |= 1<<OCTA_INDEX(DIMENSION(orient), x, y, DIM_COORD(orient));
         if(vis[orient]&mask && (vis[orient]&mask)!=mask) { freeocta(nh); return false; }
     }
 
@@ -945,7 +945,7 @@ static inline bool occludesface(const cube &c, int orient, const ivec &o, int si
 
     size >>= 1;
     int coord = DIM_COORD(orient);
-    loopi(8) if(octacoord(dim, i) == coord)
+    loopi(8) if(OCTA_COORD(dim, i) == coord)
     {
         if(!occludesface(c.children[i], orient, ivec(i, o, size), size, vo, vsize, vmat, nmat, matmask, vf, numv)) return false;
     }
@@ -969,7 +969,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
     int nsize;
     const cube &o = neighbourcube(c, orient, co, size, no, nsize);
 
-    int opp = opposite(orient);
+    int opp = OPPOSITE(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
         if(o.material)
@@ -1025,7 +1025,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     const cube &o = neighbourcube(c, orient, co, size, no, nsize);
     if(&o==&c) return 0;
 
-    int opp = opposite(orient);
+    int opp = OPPOSITE(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
         if(o.material)
@@ -1125,7 +1125,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     ivec vo = ivec(co).mask(0xFFF);
     no.mask(0xFFF);
     ivec2 cf[4], of[4];
-    int opp = opposite(orient), numo = 0, numc;
+    int opp = OPPOSITE(orient), numo = 0, numc;
     if(nsize > size || (nsize == size && !o.children))
     {
         if(o.material)
@@ -1341,7 +1341,7 @@ void mincubeface(const cube &cu, int orient, const ivec &o, int size, const face
     {
         size >>= 1;
         int coord = DIM_COORD(orient);
-        loopi(8) if(octacoord(dim, i) == coord)
+        loopi(8) if(OCTA_COORD(dim, i) == coord)
             mincubeface(cu.children[i], orient, ivec(i, o, size), size, orig, cf, nmat, matmask);
         return;
     }
@@ -1391,7 +1391,7 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
     mincf.u2 = orig.u1;
     mincf.v1 = orig.v2;
     mincf.v2 = orig.v1;
-    mincubeface(nc, opposite(orient), no, nsize, orig, mincf, cu.material&MAT_ALPHA ? MAT_AIR : MAT_ALPHA, MAT_ALPHA);
+    mincubeface(nc, OPPOSITE(orient), no, nsize, orig, mincf, cu.material&MAT_ALPHA ? MAT_AIR : MAT_ALPHA, MAT_ALPHA);
     bool smaller = false;
     if(mincf.u1 > orig.u1) { orig.u1 = mincf.u1; smaller = true; }
     if(mincf.u2 < orig.u2) { orig.u2 = mincf.u2; smaller = true; }
@@ -1400,7 +1400,7 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
     return smaller;
 }
 
-VAR(maxmerge, 0, 6, 12);
+VAR(maxmerge, 0, 6, 12); //max gridpower to remip merge
 VAR(minface, 0, 4, 12);
 
 struct pvert

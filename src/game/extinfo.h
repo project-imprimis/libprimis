@@ -38,7 +38,7 @@
         putint(q, ci->clientnum); //add player id
         putint(q, ci->ping);
         sendstring(ci->name, q);
-        sendstring(teamname(MODE_TEAMMODE ? ci->team : 0), q);
+        sendstring(TEAM_NAME(MODE_TEAMMODE ? ci->team : 0), q);
         putint(q, ci->state.frags);
         putint(q, ci->state.flags);
         putint(q, ci->state.deaths);
@@ -56,7 +56,7 @@
 
     static inline void extinfoteamscore(ucharbuf &p, int team, int score)
     {
-        sendstring(teamname(team), p);
+        sendstring(TEAM_NAME(team), p);
         putint(p, score);
         if(!smode || !smode->extinfoteam(team, p))
             putint(p,-1); //no bases follow
@@ -74,7 +74,7 @@
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.state!=CS_SPECTATOR && validteam(ci->team) && scores.htfind(ci->team) < 0)
+            if(ci->state.state!=CS_SPECTATOR && VALID_TEAM(ci->team) && scores.htfind(ci->team) < 0)
             {
                 if(smode && smode->hidefrags()) scores.add(teamscore(ci->team, 0));
                 else { teaminfo &t = teaminfos[ci->team-1]; scores.add(teamscore(ci->team, t.frags)); }

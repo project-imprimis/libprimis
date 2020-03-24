@@ -95,7 +95,7 @@ namespace ai
 
     bool hastarget(gameent *d, int atk, aistate &b, gameent *e, float yaw, float pitch, float dist)
     { // add margins of error
-        if(attackrange(d, atk, dist) || (d->skill <= 100 && !rnd(d->skill)))
+        if(attackrange(d, atk, dist) || (d->skill <= 100 && !RANDOM_INT(d->skill)))
         {
             float skew = clamp(float(lastmillis-d->ai->enemymillis)/float((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
                 offy = yaw-d->yaw, offp = pitch-d->pitch;
@@ -122,10 +122,11 @@ namespace ai
                     case ATK_PULSE_SHOOT: aiskew = 20; break;
                     default: break;
                 }
-                #define rndaioffset(r) ((rnd(int(r*aiskew*2)+1)-(r*aiskew))*(1.f/float(max(d->skill, 1))))
-                loopk(3) d->ai->aimrnd[k] = rndaioffset(e->radius);
+                #define RANDOM_AI_OFFSET(r) ((RANDOM_INT(int(r*aiskew*2)+1)-(r*aiskew))*(1.f/float(max(d->skill, 1))))
+                loopk(3) d->ai->aimrnd[k] = RANDOM_AI_OFFSET(e->radius);
+                #undef RANDOM_AI_OFFSET
                 int dur = (d->skill+10)*10;
-                d->ai->lastaimrnd = lastmillis+dur+rnd(dur);
+                d->ai->lastaimrnd = lastmillis+dur+RANDOM_INT(dur);
             }
             loopk(3) o[k] += d->ai->aimrnd[k];
         }
@@ -168,7 +169,7 @@ namespace ai
         }
 
         copystring(d->name, name, MAXNAMELEN+1);
-        d->team = validteam(team) ? team : 0;
+        d->team = VALID_TEAM(team) ? team : 0;
         d->ownernum = ocn;
         d->plag = 0;
         d->skill = sk;
@@ -258,7 +259,7 @@ namespace ai
 
         while(!candidates.empty())
         {
-            int w = rnd(candidates.length()), n = candidates.removeunordered(w);
+            int w = RANDOM_INT(candidates.length()), n = candidates.removeunordered(w);
             if(n != d->lastnode && !d->ai->hasprevnode(n) && !obstacles.find(n, d) && makeroute(d, b, n)) return true;
         }
         return false;
@@ -556,7 +557,7 @@ namespace ai
         d->ai->reset(true);
         d->ai->lastrun = lastmillis;
         if(forcegun >= 0 && forcegun < NUMGUNS) d->ai->weappref = forcegun;
-        else d->ai->weappref = rnd(NUMGUNS);
+        else d->ai->weappref = RANDOM_INT(NUMGUNS);
         vec dp = d->headpos();
         findorientation(dp, d->yaw, d->pitch, d->ai->target);
     }
@@ -575,7 +576,7 @@ namespace ai
     {
         if(!entities::ents.inrange(ent)) return;
         extentity &e = *entities::ents[ent];
-        if(validitem(e.type))
+        if(VALID_ITEM(e.type))
         {
             loopv(players) if(players[i] && players[i]->ai && players[i]->aitype == AI_BOT && players[i]->canpickup(e.type))
             {
@@ -668,7 +669,7 @@ namespace ai
                 if(entities::ents.inrange(b.target))
                 {
                     extentity &e = *(extentity *)entities::ents[b.target];
-                    if(!e.spawned() || !validitem(e.type)) return 0;
+                    if(!e.spawned() || !VALID_ITEM(e.type)) return 0;
                     //if(d->feetpos().squaredist(e.o) <= CLOSEDIST*CLOSEDIST)
                     //{
                     //    b.idle = 1;
@@ -768,7 +769,7 @@ namespace ai
                 if(iswaypoint(w.links[i]) && !d->ai->hasprevnode(w.links[i]) && d->ai->route.find(w.links[i]) < 0)
                     linkmap.add(w.links[i]);
             }
-            if(!linkmap.empty()) return linkmap[rnd(linkmap.length())];
+            if(!linkmap.empty()) return linkmap[RANDOM_INT(linkmap.length())];
         }
         return -1;
     }
@@ -884,9 +885,9 @@ namespace ai
         {
             d->jumping = true;
             int seed = (111-d->skill)*(d->inwater ? 3 : 5);
-            d->ai->jumpseed = lastmillis+seed+rnd(seed);
+            d->ai->jumpseed = lastmillis+seed+RANDOM_INT(seed);
             seed *= b.idle ? 50 : 25;
-            d->ai->jumprand = lastmillis+seed+rnd(seed);
+            d->ai->jumprand = lastmillis+seed+RANDOM_INT(seed);
         }
     }
 
@@ -964,7 +965,7 @@ namespace ai
 
     int process(gameent *d, aistate &b)
     {
-        int result = 0, stupify = d->skill <= 10+rnd(15) ? rnd(d->skill*1000) : 0, skmod = 101-d->skill;
+        int result = 0, stupify = d->skill <= 10+RANDOM_INT(15) ? RANDOM_INT(d->skill*1000) : 0, skmod = 101-d->skill;
         float frame = d->skill <= 100 ? float(lastmillis-d->ai->lastrun)/float(max(skmod,1)*10) : 1;
         vec dp = d->headpos();
 

@@ -179,7 +179,7 @@ void setupao(int w, int h)
 
     if(!aonoisetex) glGenTextures(1, &aonoisetex);
     bvec *noise = new bvec[(1<<aonoise)*(1<<aonoise)];
-    loopk((1<<aonoise)*(1<<aonoise)) noise[k] = bvec(vec(rndscale(2)-1, rndscale(2)-1, 0).normalize());
+    loopk((1<<aonoise)*(1<<aonoise)) noise[k] = bvec(vec(RANDOM_FLOAT(2)-1, RANDOM_FLOAT(2)-1, 0).normalize());
     createtexture(aonoisetex, 1<<aonoise, 1<<aonoise, noise, 0, 0, GL_RGB, GL_TEXTURE_2D);
     delete[] noise;
 

@@ -27,7 +27,7 @@ namespace entities
         return NULL;
 #if 0
         int t = ents[i]->type;
-        if(!validitem(t)) return NULL;
+        if(!VALID_ITEM(t)) return NULL;
         return itemstats[t-I_FIRST].name;
 #endif
     }
@@ -37,7 +37,7 @@ namespace entities
         return -1;
 #if 0
         int t = ents[i]->type;
-        if(!validitem(t)) return -1;
+        if(!VALID_ITEM(t)) return -1;
         return itemstats[t-I_FIRST].icon;
 #endif
     }
@@ -97,7 +97,7 @@ namespace entities
                     if(e.attr2 < 0) continue;
                     break;
                 default:
-                    if(!e.spawned() || !validitem(e.type)) continue;
+                    if(!e.spawned() || !VALID_ITEM(e.type)) continue;
                     break;
             }
             const char *mdlname = entmodel(e);
@@ -128,7 +128,7 @@ namespace entities
 #if 0
         if(!ents.inrange(n)) return;
         int type = ents[n]->type;
-        if(!validitem(type)) return;
+        if(!VALID_ITEM(type)) return;
         ents[n]->clearspawned();
         if(!d) return;
         itemstat &is = itemstats[type-I_FIRST];
@@ -294,7 +294,7 @@ namespace entities
     void putitems(packetbuf &p)            // puts items in network stream and also spawns them locally
     {
         putint(p, N_ITEMLIST);
-        loopv(ents) if(validitem(ents[i]->type))
+        loopv(ents) if(VALID_ITEM(ents[i]->type))
         {
             putint(p, i);
             putint(p, ents[i]->type);
@@ -306,7 +306,7 @@ namespace entities
 
     void spawnitems(bool force)
     {
-        loopv(ents) if(validitem(ents[i]->type))
+        loopv(ents) if(VALID_ITEM(ents[i]->type))
         {
             ents[i]->setspawned(force || !server::delayspawn(ents[i]->type));
         }

@@ -248,20 +248,20 @@ const uint F_SOLID = 0x80808080;    // all edges in the range (0,8)
 
 #define IS_EMPTY(c) ((c).faces[0]==F_EMPTY)
 #define IS_ENTIRELY_SOLID(c) ((c).faces[0]==F_SOLID && (c).faces[1]==F_SOLID && (c).faces[2]==F_SOLID)
-#define setfaces(c, face) { (c).faces[0] = (c).faces[1] = (c).faces[2] = face; }
-#define solidfaces(c) setfaces(c, F_SOLID)
-#define EMPTY_FACES(c) setfaces(c, F_EMPTY)
+#define SET_FACES(c, face) { (c).faces[0] = (c).faces[1] = (c).faces[2] = face; }
+#define SOLID_FACES(c) SET_FACES(c, F_SOLID)
+#define EMPTY_FACES(c) SET_FACES(c, F_EMPTY)
 
 #define EDGE_GET(edge, coord) ((coord) ? (edge)>>4 : (edge)&0xF)
 #define EDGE_SET(edge, coord, val) ((edge) = ((coord) ? ((edge)&0xF)|((val)<<4) : ((edge)&0xF0)|(val)))
 
 #define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)<<2)+((y)<<1)+(x))])
 
-#define octadim(d)          (1<<(d))                    // creates mask for bit of given dimension
-#define octacoord(d, i)     (((i)&octadim(d))>>(d))
-#define oppositeocta(d, i)  ((i)^octadim(D[d]))
-#define octaindex(d,x,y,z)  (((z)<<D[d])+((y)<<C[d])+((x)<<R[d]))
-#define octastep(x, y, z, scale) (((((z)>>(scale))&1)<<2) | ((((y)>>(scale))&1)<<1) | (((x)>>(scale))&1))
+#define OCTA_DIM(d)          (1<<(d))                    // creates mask for bit of given dimension
+#define OCTA_COORD(d, i)     (((i)&OCTA_DIM(d))>>(d))
+#define OPPOSITE_OCTA(d, i)  ((i)^OCTA_DIM(D[d]))
+#define OCTA_INDEX(d,x,y,z)  (((z)<<D[d])+((y)<<C[d])+((x)<<R[d]))
+#define OCTA_STEP(x, y, z, scale) (((((z)>>(scale))&1)<<2) | ((((y)>>(scale))&1)<<1) | (((x)>>(scale))&1))
 
 static inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const ivec &bbmax)
 {
@@ -292,7 +292,7 @@ enum
 
 #define DIMENSION(orient) ((orient)>>1)
 #define DIM_COORD(orient)  ((orient)&1)
-#define opposite(orient)  ((orient)^1)
+#define OPPOSITE(orient)  ((orient)^1)
 
 enum
 {

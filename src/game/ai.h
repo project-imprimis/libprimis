@@ -226,7 +226,7 @@ namespace ai
         void clean(bool tryit = false)
         {
             if(!tryit) becareful = dontmove = false;
-            targyaw = rnd(360);
+            targyaw = RANDOM_INT(360);
             targpitch = 0.f;
             tryreset = tryit;
         }

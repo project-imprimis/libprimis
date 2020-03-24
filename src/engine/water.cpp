@@ -208,7 +208,7 @@ VERTWN(vertln, {
     gle::attribf(wxscale*(v1+wscroll), wyscale*(v2+wscroll));
 })
 
-#define renderwaterstrips(vertw, z) { \
+#define RENDER_WATER_STRIPS(vertw, z) { \
     def##vertw(); \
     gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv); \
     for(int x = wx1; x<wx2; x += subdiv) \
@@ -242,18 +242,20 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
         case MAT_WATER:
         {
             whoffset = fmod(float(lastmillis/600.0f/(2*M_PI)), 1.0f);
-            renderwaterstrips(vertwt, z);
+            RENDER_WATER_STRIPS(vertwt, z);
             break;
         }
 
         case MAT_LAVA:
         {
             whoffset = fmod(float(lastmillis/2000.0f/(2*M_PI)), 1.0f);
-            renderwaterstrips(vertl, z);
+            RENDER_WATER_STRIPS(vertl, z);
             break;
         }
     }
 }
+
+#undef RENDER_WATER_STRIPS
 
 int calcwatersubdiv(int x, int y, int z, int size)
 {
@@ -307,7 +309,7 @@ int renderwaterlod(int x, int y, int z, int size, int mat)
     }
 }
 
-#define renderwaterquad(vertwn, z) \
+#define RENDER_WATER_QUAD(vertwn, z) \
     { \
         if(gle::attribbuf.empty()) { def##vertwn(); gle::begin(GL_QUADS); } \
         vertwn(x, y, z); \
@@ -322,14 +324,16 @@ void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
     switch(mat)
     {
         case MAT_WATER:
-            renderwaterquad(vertwtn, z);
+            RENDER_WATER_QUAD(vertwtn, z);
             break;
 
         case MAT_LAVA:
-            renderwaterquad(vertln, z);
+            RENDER_WATER_QUAD(vertln, z);
             break;
     }
 }
+
+#undef RENDER_WATER_QUAD
 
 VARFP(vertwater, 0, 1, 1, allchanged());
 

@@ -182,8 +182,8 @@ void renderbackgroundview(
         lastw = win_w;
         lasth = win_h;
 
-        backgroundu = rndscale(1);
-        backgroundv = rndscale(1);
+        backgroundu = RANDOM_FLOAT(1);
+        backgroundv = RANDOM_FLOAT(1);
     }
     else if (lastupdate != lastmillis)
     {

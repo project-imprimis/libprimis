@@ -425,7 +425,7 @@ namespace UI
             }
         }
 
-        #define propagatestate(o, cx, cy, mask, inside, body) \
+        #define PROPAGATE_STATE(o, cx, cy, mask, inside, body) \
             LOOP_CHILDREN_REV(o, \
             { \
                 if(((o->state | o->childstate) & mask) != mask) continue; \
@@ -446,7 +446,7 @@ namespace UI
         #define DOSTATE(flags, func) \
             virtual void func##children(float cx, float cy, int mask, bool inside, int setflags) \
             { \
-                propagatestate(o, cx, cy, mask, inside, \
+                PROPAGATE_STATE(o, cx, cy, mask, inside, \
                 { \
                     o->func##children(ox, oy, mask, inside, setflags); \
                     childstate |= (o->state | o->childstate) & (setflags); \
@@ -456,6 +456,7 @@ namespace UI
             } \
             virtual void func(float cx, float cy) {}
         DOSTATES
+        #undef PROPAGATE_STATE
         #undef DOSTATE
 
         static const char *typestr() { return "#Object"; }

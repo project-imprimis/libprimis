@@ -70,7 +70,7 @@ namespace game
     void setweapon(const char *name, bool force = false)
     {
         int gun = getweapon(name);
-        if(player1->state!=CS_ALIVE || !validgun(gun)) return;
+        if(player1->state!=CS_ALIVE || !VALID_GUN(gun)) return;
         if(force || player1->ammo[gun]) gunselect(gun, player1);
         else playsound(S_NOAMMO);
     }
@@ -118,7 +118,7 @@ namespace game
             if(name[0])
             {
                 int gun = getweapon(name);
-                if(validgun(gun) && gun != player1->gunselect && player1->ammo[gun]) { gunselect(gun, player1); return; }
+                if(VALID_GUN(gun) && gun != player1->gunselect && player1->ammo[gun]) { gunselect(gun, player1); return; }
             } else { weaponswitch(player1); return; }
         }
         playsound(S_NOAMMO);
@@ -127,7 +127,7 @@ namespace game
     void offsetray(const vec &from, const vec &to, int spread, float range, vec &dest)
     {
         vec offset;
-        do offset = vec(rndscale(1), rndscale(1), rndscale(1)).sub(0.5f);
+        do offset = vec(RANDOM_FLOAT(1), RANDOM_FLOAT(1), RANDOM_FLOAT(1)).sub(0.5f);
         while(offset.squaredlen() > 0.5f*0.5f);
         offset.mul((to.dist(from)/1024)*spread);
         offset.z /= 2;
@@ -180,8 +180,8 @@ namespace game
 
         switch(type)
         {
-            case BNC_DEBRIS: bnc.variant = rnd(4); break;
-            case BNC_GIBS: bnc.variant = rnd(3); break;
+            case BNC_DEBRIS: bnc.variant = RANDOM_INT(4); break;
+            case BNC_GIBS: bnc.variant = RANDOM_INT(3); break;
         }
 
         vec dir(to);
@@ -204,7 +204,7 @@ namespace game
         bouncer *b = (bouncer *)d;
         if(b->bouncetype != BNC_GIBS || b->bounces >= 2) return;
         b->bounces++;
-        addstain(STAIN_BLOOD, vec(b->o).sub(vec(surface).mul(b->radius)), surface, 2.96f/b->bounces, bvec(0x60, 0xFF, 0xFF), rnd(4));
+        addstain(STAIN_BLOOD, vec(b->o).sub(vec(surface).mul(b->radius)), surface, 2.96f/b->bounces, bvec(0x60, 0xFF, 0xFF), RANDOM_INT(4));
     }
 
     void updatebouncers(int time)
@@ -285,7 +285,7 @@ namespace game
     {
         vec p = d->o;
         p.z += 0.6f*(d->eyeheight + d->aboveeye) - d->eyeheight;
-        if(blood) particle_splash(PART_BLOOD, max(damage/10, rnd(3)+1), 1000, p, 0x60FFFF, 2.96f);
+        if(blood) particle_splash(PART_BLOOD, max(damage/10, RANDOM_INT(3)+1), 1000, p, 0x60FFFF, 2.96f);
 #if 0
         if(thirdperson) particle_textcopy(d->abovehead(), tempformatstring("%d", damage), PART_TEXT, 2000, 0xFF4B19, 4.0f, -8);
 #endif
@@ -293,12 +293,12 @@ namespace game
 
     void spawnbouncer(const vec &p, const vec &vel, gameent *d, int type)
     {
-        vec to(rnd(100)-50, rnd(100)-50, rnd(100)-50); //x,y,z = [-50,50] to get enough steps to create a good random vector
+        vec to(RANDOM_INT(100)-50, RANDOM_INT(100)-50, RANDOM_INT(100)-50); //x,y,z = [-50,50] to get enough steps to create a good random vector
         if(to.iszero()) to.z += 1; //if all three are zero (bad luck!), set vector to (0,0,1)
         to.normalize(); //smash magnitude back to 1
         to.add(p); //add this random to input &p
         //newbouncer( from, to, local, id, owner, type, lifetime,       speed)
-        newbouncer(   p,    to, true,  0,  d,     type, rnd(1000)+1000, rnd(100)+20);
+        newbouncer(   p,    to, true,  0,  d,     type, RANDOM_INT(1000)+1000, RANDOM_INT(100)+20);
     }
 
     void gibeffect(int damage, const vec &vel, gameent *d)
@@ -306,7 +306,7 @@ namespace game
 #if 0
         if(!blood || !maxgibs || damage < 0) return;
         vec from = d->abovehead();
-        loopi(rnd(maxgibs)+1) spawnbouncer(from, vel, d, BNC_GIBS);
+        loopi(RANDOM_INT(maxgibs)+1) spawnbouncer(from, vel, d, BNC_GIBS);
 #endif
     }
 
@@ -387,7 +387,7 @@ namespace game
         vec debrisorigin = vec(v).sub(vec(vel).mul(5));
         adddynlight(safe ? v : debrisorigin, 2*attacks[atk].exprad, vec(1.0f, 3.0f, 4.0f), 350, 40, 0, attacks[atk].exprad/2, vec(0.5f, 1.5f, 2.0f));
 #if 0
-        int numdebris = maxdebris > MINDEBRIS ? rnd(maxdebris-MINDEBRIS)+MINDEBRIS : min(maxdebris, MINDEBRIS);
+        int numdebris = maxdebris > MINDEBRIS ? RANDOM_INT(maxdebris-MINDEBRIS)+MINDEBRIS : min(maxdebris, MINDEBRIS);
         if(numdebris)
         {
             vec debrisvel = vec(vel).neg();
@@ -708,7 +708,7 @@ namespace game
         }
 
         d->gunwait = attacks[atk].attackdelay;
-        if(attacks[atk].action != ACT_MELEE && d->ai) d->gunwait += int(d->gunwait*(((101-d->skill)+rnd(111-d->skill))/100.f));
+        if(attacks[atk].action != ACT_MELEE && d->ai) d->gunwait += int(d->gunwait*(((101-d->skill)+RANDOM_INT(111-d->skill))/100.f));
         d->totalshots += attacks[atk].damage*attacks[atk].rays;
     }
 

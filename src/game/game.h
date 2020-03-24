@@ -93,9 +93,8 @@ enum { GUN_RAIL = 0, GUN_PULSE, NUMGUNS };
 enum { ACT_IDLE = 0, ACT_SHOOT, ACT_MELEE, NUMACTS };
 enum { ATK_RAIL_SHOOT = 0, ATK_RAIL_MELEE, ATK_PULSE_SHOOT, ATK_PULSE_MELEE, NUMATKS };
 
-#define validgun(n) ((n) >= 0 && (n) < NUMGUNS)
-#define validact(n) ((n) >= 0 && (n) < NUMACTS)
-#define validatk(n) ((n) >= 0 && (n) < NUMATKS)
+#define VALID_GUN(n) ((n) >= 0 && (n) < NUMGUNS)
+#define VALID_ATTACK(n) ((n) >= 0 && (n) < NUMATKS)
 
 //enum of gameplay mechanic flags; bitwise sum determines what a mode's attributes are
 enum
@@ -267,7 +266,7 @@ static struct itemstat { int add, max, sound; const char *name; int icon, info; 
 };
 #endif
 
-#define validitem(n) false
+#define VALID_ITEM(n) false //no items in this game thus far
 
 #define MAXRAYS 1
 #define EXP_SELFDAMDIV 2
@@ -305,7 +304,7 @@ struct gamestate
 
     bool canpickup(int type)
     {
-        return validitem(type);
+        return VALID_ITEM(type);
     }
 
     void pickup(int type)
@@ -348,7 +347,7 @@ struct gamestate
 
     int hasammo(int gun, int exclude = -1)
     {
-        return validgun(gun) && gun != exclude && ammo[gun] > 0;
+        return VALID_GUN(gun) && gun != exclude && ammo[gun] > 0;
     }
 };
 
@@ -359,8 +358,8 @@ static const int teamtextcolor[1+MAXTEAMS] = { 0x1EC850, 0x6496FF, 0xFF4B19 };
 static const int teamscoreboardcolor[1+MAXTEAMS] = { 0, 0x3030C0, 0xC03030 };
 static const char * const teamblipcolor[1+MAXTEAMS] = { "_neutral", "_blue", "_red" };
 static inline int teamnumber(const char *name) { loopi(MAXTEAMS) if(!strcmp(teamnames[1+i], name)) return 1+i; return 0; }
-#define validteam(n) ((n) >= 1 && (n) <= MAXTEAMS)
-#define teamname(n) (teamnames[validteam(n) ? (n) : 0])
+#define VALID_TEAM(n) ((n) >= 1 && (n) <= MAXTEAMS)
+#define TEAM_NAME(n) (teamnames[VALID_TEAM(n) ? (n) : 0])
 
 struct gameent : dynent, gamestate
 {

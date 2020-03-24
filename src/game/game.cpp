@@ -663,13 +663,13 @@ namespace game
 
     const char *teamcolorname(gameent *d, const char *alt)
     {
-        if(!teamcolortext || !MODE_TEAMMODE || !validteam(d->team) || d->state == CS_SPECTATOR) return colorname(d, NULL, alt);
+        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(d->team) || d->state == CS_SPECTATOR) return colorname(d, NULL, alt);
         return colorname(d, NULL, alt, teamtextcode[d->team]);
     }
 
     const char *teamcolor(const char *prefix, const char *suffix, int team, const char *alt)
     {
-        if(!teamcolortext || !MODE_TEAMMODE || !validteam(team)) return alt;
+        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(team)) return alt;
         return tempformatstring("\fs%s%s%s%s\fr", teamtextcode[team], prefix, teamnames[team], suffix);
     }
 
@@ -819,7 +819,7 @@ namespace game
         else if(teamcrosshair && MODE_TEAMMODE)
         {
             dynent *o = intersectclosest(d->o, worldpos, d);
-            if(o && o->type==ENT_PLAYER && validteam(d->team) && ((gameent *)o)->team == d->team)
+            if(o && o->type==ENT_PLAYER && VALID_TEAM(d->team) && ((gameent *)o)->team == d->team)
             {
                 crosshair = 1;
 

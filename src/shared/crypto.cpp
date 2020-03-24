@@ -48,22 +48,22 @@ namespace tiger
                 x4 -= x3 ^ ((~x2)>>23); x5 ^= x4; x6 += x5; x7 -= x6 ^ 0x0123456789ABCDEFULL;
             }
 
-#define sb1 (sboxes)
-#define sb2 (sboxes+256)
-#define sb3 (sboxes+256*2)
-#define sb4 (sboxes+256*3)
+#define SB_1 (sboxes)
+#define SB_2 (sboxes+256)
+#define SB_3 (sboxes+256*2)
+#define SB_4 (sboxes+256*3)
 
-#define round(a, b, c, x) \
+#define ROUND(a, b, c, x) \
       c ^= x; \
-      a -= sb1[((c)>>(0*8))&0xFF] ^ sb2[((c)>>(2*8))&0xFF] ^ \
-       sb3[((c)>>(4*8))&0xFF] ^ sb4[((c)>>(6*8))&0xFF] ; \
-      b += sb4[((c)>>(1*8))&0xFF] ^ sb3[((c)>>(3*8))&0xFF] ^ \
-       sb2[((c)>>(5*8))&0xFF] ^ sb1[((c)>>(7*8))&0xFF] ; \
+      a -= SB_1[((c)>>(0*8))&0xFF] ^ SB_2[((c)>>(2*8))&0xFF] ^ \
+       SB_3[((c)>>(4*8))&0xFF] ^ SB_4[((c)>>(6*8))&0xFF] ; \
+      b += SB_4[((c)>>(1*8))&0xFF] ^ SB_3[((c)>>(3*8))&0xFF] ^ \
+       SB_2[((c)>>(5*8))&0xFF] ^ SB_1[((c)>>(7*8))&0xFF] ; \
       b *= mul;
 
             uint mul = !pass_no ? 5 : (pass_no==1 ? 7 : 9);
-            round(a, b, c, x0) round(b, c, a, x1) round(c, a, b, x2) round(a, b, c, x3)
-            round(b, c, a, x4) round(c, a, b, x5) round(a, b, c, x6) round(b, c, a, x7)
+            ROUND(a, b, c, x0) ROUND(b, c, a, x1) ROUND(c, a, b, x2) ROUND(a, b, c, x3)
+            ROUND(b, c, a, x4) ROUND(c, a, b, x5) ROUND(a, b, c, x6) ROUND(b, c, a, x7)
 
             chunk tmp = a; a = c; c = b; b = tmp;
         }
@@ -76,6 +76,12 @@ namespace tiger
         state[1] = b;
         state[2] = c;
     }
+#undef ROUND
+
+#undef SB_1
+#undef SB_2
+#undef SB_3
+#undef SB_4
 
     void gensboxes()
     {

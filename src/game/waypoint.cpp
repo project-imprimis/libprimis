@@ -528,7 +528,7 @@ namespace ai
             if(a.links[i] == n) return;
             if(!a.links[i]) { a.links[i] = n; return; }
         }
-        a.links[rnd(MAXWAYPOINTLINKS)] = n;
+        a.links[RANDOM_INT(MAXWAYPOINTLINKS)] = n;
     }
 
     string loadedwaypoints = "";
@@ -625,7 +625,7 @@ namespace ai
                     addwaypoint(e.o);
                     break;
                 default:
-                    if(validitem(e.type)) addwaypoint(e.o);
+                    if(VALID_ITEM(e.type)) addwaypoint(e.o);
                     break;
             }
         }

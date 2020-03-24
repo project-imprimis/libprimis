@@ -854,7 +854,7 @@ namespace server
     ctfservmode ctfmode;
     servmode *smode = NULL;
 
-    bool canspawnitem(int type) { return validitem(type); }
+    bool canspawnitem(int type) { return VALID_ITEM(type); }
 
     int spawntime(int type)
     {
@@ -955,7 +955,7 @@ namespace server
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci==exclude || ci->state.aitype!=AI_NONE || ci->state.state==CS_SPECTATOR || !validteam(ci->team)) continue;
+            if(ci==exclude || ci->state.aitype!=AI_NONE || ci->state.state==CS_SPECTATOR || !VALID_TEAM(ci->team)) continue;
 
             ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
             ci->state.lasttimeplayed = lastmillis;
@@ -2003,7 +2003,7 @@ namespace server
             vc->count++;
         }
         votecount *best = NULL;
-        loopv(votes) if(!best || votes[i].count > best->count || (votes[i].count == best->count && rnd(2))) best = &votes[i];
+        loopv(votes) if(!best || votes[i].count > best->count || (votes[i].count == best->count && RANDOM_INT(2))) best = &votes[i];
         if(force || (best && best->count > maxvotes/2))
         {
             if(demorecord) enddemorecord();
@@ -2101,7 +2101,7 @@ namespace server
                 else { friends = 1; enemies = clients.length()-1; }
                 actor->state.effectiveness += fragvalue*friends/float(max(enemies, 1));
             }
-            teaminfo *t = MODE_TEAMMODE && validteam(actor->team) ? &teaminfos[actor->team-1] : NULL;
+            teaminfo *t = MODE_TEAMMODE && VALID_TEAM(actor->team) ? &teaminfos[actor->team-1] : NULL;
             if(t) t->frags += fragvalue;
             sendf(-1, 1, "ri5", N_DIED, target->clientnum, actor->clientnum, actor->state.frags, t ? t->frags : 0);
             target->position.setsize(0);
@@ -2126,7 +2126,7 @@ namespace server
         int fragvalue = smode ? smode->fragvalue(ci, ci) : -1;
         ci->state.frags += fragvalue;
         ci->state.deaths++;
-        teaminfo *t = MODE_TEAMMODE && validteam(ci->team) ? &teaminfos[ci->team-1] : NULL;
+        teaminfo *t = MODE_TEAMMODE && VALID_TEAM(ci->team) ? &teaminfos[ci->team-1] : NULL;
         if(t) t->frags += fragvalue;
         sendf(-1, 1, "ri5", N_DIED, ci->clientnum, ci->clientnum, gs.frags, t ? t->frags : 0);
         ci->position.setsize(0);
@@ -2176,7 +2176,7 @@ namespace server
         int wait = millis - gs.lastshot;
         if(!gs.isalive(gamemillis) ||
            wait<gs.gunwait ||
-           !validatk(atk))
+           !VALID_ATTACK(atk))
             return;
         int gun = attacks[atk].gun;
         if(gs.ammo[gun]<=0 || (attacks[atk].range && from.dist(to) > attacks[atk].range + 1))
@@ -2457,7 +2457,7 @@ namespace server
         clientinfo *ci = getinfo(n);
         ci->clientnum = ci->ownernum = n;
         ci->connectmillis = totalmillis;
-        ci->sessionid = (rnd(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
+        ci->sessionid = (RANDOM_INT(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
         ci->local = true;
 
         connects.add(ci);
@@ -2475,7 +2475,7 @@ namespace server
         clientinfo *ci = getinfo(n);
         ci->clientnum = ci->ownernum = n;
         ci->connectmillis = totalmillis;
-        ci->sessionid = (rnd(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
+        ci->sessionid = (RANDOM_INT(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
 
         connects.add(ci);
         if(!MODE_MP(gamemode)) return DISC_LOCAL;
@@ -2995,7 +2995,7 @@ namespace server
             case N_GUNSELECT:
             {
                 int gunselect = getint(p);
-                if(!cq || cq->state.state!=CS_ALIVE || !validgun(gunselect)) break;
+                if(!cq || cq->state.state!=CS_ALIVE || !VALID_GUN(gunselect)) break;
                 cq->state.gunselect = gunselect;
                 QUEUE_AI;
                 QUEUE_MSG;
@@ -3005,7 +3005,7 @@ namespace server
             case N_SPAWN:
             {
                 int ls = getint(p), gunselect = getint(p);
-                if(!cq || (cq->state.state!=CS_ALIVE && cq->state.state!=CS_DEAD && cq->state.state!=CS_EDITING) || ls!=cq->state.lifesequence || cq->state.lastspawn<0 || !validgun(gunselect)) break;
+                if(!cq || (cq->state.state!=CS_ALIVE && cq->state.state!=CS_DEAD && cq->state.state!=CS_EDITING) || ls!=cq->state.lifesequence || cq->state.lastspawn<0 || !VALID_GUN(gunselect)) break;
                 cq->state.lastspawn = -1;
                 cq->state.state = CS_ALIVE;
                 cq->state.gunselect = gunselect;
@@ -3100,7 +3100,7 @@ namespace server
             case N_SAYTEAM:
             {
                 getstring(text, p);
-                if(!ci || !cq || (ci->state.state==CS_SPECTATOR && !ci->local && !ci->privilege) || !MODE_TEAMMODE || !validteam(cq->team)) break;
+                if(!ci || !cq || (ci->state.state==CS_SPECTATOR && !ci->local && !ci->privilege) || !MODE_TEAMMODE || !VALID_TEAM(cq->team)) break;
                 filtertext(text, text, true, true);
                 loopv(clients)
                 {
@@ -3139,7 +3139,7 @@ namespace server
             case N_SWITCHTEAM:
             {
                 int team = getint(p);
-                if(MODE_TEAMMODE && validteam(team) && ci->team != team && (!smode || smode->canchangeteam(ci, ci->team, team)))
+                if(MODE_TEAMMODE && VALID_TEAM(team) && ci->team != team && (!smode || smode->canchangeteam(ci, ci->team, team)))
                 {
                     if(ci->state.state==CS_ALIVE) suicide(ci);
                     ci->team = team;
@@ -3293,7 +3293,7 @@ namespace server
                 int who = getint(p), team = getint(p);
                 if(!ci->privilege && !ci->local) break;
                 clientinfo *wi = getinfo(who);
-                if(!MODE_TEAMMODE || !validteam(team) || !wi || !wi->connected || wi->team == team) break;
+                if(!MODE_TEAMMODE || !VALID_TEAM(team) || !wi || !wi->connected || wi->team == team) break;
                 if(!smode || smode->canchangeteam(wi, wi->team, team))
                 {
                     if(wi->state.state==CS_ALIVE) suicide(wi);

@@ -75,7 +75,7 @@ namespace game
 
     void setbliptex(int team, const char *type = "")
     {
-        DEF_FORMAT_STRING(blipname, "media/interface/radar/blip%s%s.png", teamblipcolor[validteam(team) ? team : 0], type);
+        DEF_FORMAT_STRING(blipname, "media/interface/radar/blip%s%s.png", teamblipcolor[VALID_TEAM(team) ? team : 0], type);
         settexture(blipname, 3);
     }
 
@@ -171,23 +171,23 @@ namespace game
     void switchteam(const char *team)
     {
         int num = isdigit(team[0]) ? parseint(team) : teamnumber(team);
-        if(!validteam(num)) return;
+        if(!VALID_TEAM(num)) return;
         if(player1->clientnum < 0) player1->team = num;
         else addmsg(N_SWITCHTEAM, "ri", num);
     }
     void printteam()
     {
-        if((player1->clientnum >= 0 && !MODE_TEAMMODE) || !validteam(player1->team)) conoutf("you are not in a team");
+        if((player1->clientnum >= 0 && !MODE_TEAMMODE) || !VALID_TEAM(player1->team)) conoutf("you are not in a team");
         else conoutf("your team is: \fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]);
     }
     ICOMMAND(team, "sN", (char *s, int *numargs),
     {
         if(*numargs > 0) switchteam(s);
         else if(!*numargs) printteam();
-        else if((player1->clientnum < 0 || MODE_TEAMMODE) && validteam(player1->team)) result(tempformatstring("\fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]));
+        else if((player1->clientnum < 0 || MODE_TEAMMODE) && VALID_TEAM(player1->team)) result(tempformatstring("\fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]));
     });
-    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || MODE_TEAMMODE) && validteam(player1->team) ? player1->team : 0));
-    ICOMMAND(getteamname, "i", (int *num), result(teamname(*num)));
+    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || MODE_TEAMMODE) && VALID_TEAM(player1->team) ? player1->team : 0));
+    ICOMMAND(getteamname, "i", (int *num), result(TEAM_NAME(*num)));
 
     struct authkey
     {
@@ -319,7 +319,7 @@ namespace game
     int getclientteam(int cn)
     {
         gameent *d = getclient(cn);
-        return MODE_TEAMMODE && d && validteam(d->team) ? d->team : 0;
+        return MODE_TEAMMODE && d && VALID_TEAM(d->team) ? d->team : 0;
     }
     ICOMMAND(getclientteam, "i", (int *cn), intret(getclientteam(*cn)));
 
@@ -335,14 +335,14 @@ namespace game
         gameent *d = getclient(cn);
         if(!d || d->state==CS_SPECTATOR) return "spectator";
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        return MODE_TEAMMODE && validteam(d->team) ? mdl.icon[d->team] : mdl.icon[0];
+        return MODE_TEAMMODE && VALID_TEAM(d->team) ? mdl.icon[d->team] : mdl.icon[0];
     }
     ICOMMAND(getclienticon, "i", (int *cn), result(getclienticon(*cn)));
 
     int getclientcolor(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->state!=CS_SPECTATOR ? getplayercolor(d, MODE_TEAMMODE && validteam(d->team) ? d->team : 0) : 0xFFFFFF;
+        return d && d->state!=CS_SPECTATOR ? getplayercolor(d, MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0) : 0xFFFFFF;
     }
     ICOMMAND(getclientcolor, "i", (int *cn), intret(getclientcolor(*cn)));
 
@@ -525,7 +525,7 @@ namespace game
         int i = parseplayer(who);
         if(i < 0) return;
         int num = isdigit(team[0]) ? parseint(team) : teamnumber(team);
-        if(!validteam(num)) return;
+        if(!VALID_TEAM(num)) return;
         addmsg(N_SETTEAM, "rii", i, num);
     }
     COMMAND(setteam, "ss");
@@ -990,7 +990,7 @@ namespace game
     void toserver(char *text) { conoutf(CON_CHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[0], text); addmsg(N_TEXT, "rcs", player1, text); }
     COMMANDN(say, toserver, "C");
 
-    void sayteam(char *text) { if(!MODE_TEAMMODE || !validteam(player1->team)) return; conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[player1->team], text); addmsg(N_SAYTEAM, "rcs", player1, text); }
+    void sayteam(char *text) { if(!MODE_TEAMMODE || !VALID_TEAM(player1->team)) return; conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[player1->team], text); addmsg(N_SAYTEAM, "rcs", player1, text); }
     COMMAND(sayteam, "C");
 
     ICOMMAND(servcmd, "C", (char *cmd), addmsg(N_SERVCMD, "rs", cmd));
@@ -1402,7 +1402,7 @@ namespace game
                 getstring(text, p);
                 filtertext(text, text, true, true);
                 if(!t || isignored(t->clientnum)) break;
-                int team = validteam(t->team) ? t->team : 0;
+                int team = VALID_TEAM(t->team) ? t->team : 0;
                 if(t->state!=CS_DEAD && t->state!=CS_SPECTATOR)
                     particle_textcopy(t->abovehead(), text, PART_TEXT, 2000, teamtextcolor[team], 4.0f, -8);
                 conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
@@ -1471,7 +1471,7 @@ namespace game
                 }
                 copystring(d->name, text, MAXNAMELEN+1);
                 d->team = getint(p);
-                if(!validteam(d->team)) d->team = 0;
+                if(!VALID_TEAM(d->team)) d->team = 0;
                 d->playermodel = getint(p);
                 d->playercolor = getint(p);
                 break;
@@ -1562,7 +1562,7 @@ namespace game
                 loopk(3) from[k] = getint(p)/DMF;
                 loopk(3) to[k] = getint(p)/DMF;
                 gameent *s = getclient(scn);
-                if(!s || !validatk(atk)) break;
+                if(!s || !VALID_ATTACK(atk)) break;
                 int gun = attacks[atk].gun;
                 s->gunselect = gun;
                 s->ammo[gun] -= attacks[atk].use;
@@ -1578,7 +1578,7 @@ namespace game
             {
                 int ecn = getint(p), atk = getint(p), id = getint(p);
                 gameent *e = getclient(ecn);
-                if(!e || !validatk(atk)) break;
+                if(!e || !VALID_ATTACK(atk)) break;
                 explodeeffects(atk, e, false, id);
                 break;
             }
@@ -1603,7 +1603,7 @@ namespace game
                 gameent *target = getclient(tcn);
                 vec dir;
                 loopk(3) dir[k] = getint(p)/DNF;
-                if(!target || !validatk(atk)) break;
+                if(!target || !VALID_ATTACK(atk)) break;
                 target->hitpush(damage * (target->health<=0 ? deadpush : 1), dir, NULL, atk);
                 break;
             }
@@ -1638,7 +1638,7 @@ namespace game
             {
                 if(!d) return;
                 int gun = getint(p);
-                if(!validgun(gun)) return;
+                if(!VALID_GUN(gun)) return;
                 d->gunselect = gun;
                 playsound(S_WEAPLOAD, &d->o);
                 break;
@@ -1941,7 +1941,7 @@ namespace game
                 int wn = getint(p), team = getint(p), reason = getint(p);
                 gameent *w = getclient(wn);
                 if(!w) return;
-                w->team = validteam(team) ? team : 0;
+                w->team = VALID_TEAM(team) ? team : 0;
                 static const char * const fmt[2] = { "%s switched to team %s", "%s forced to team %s"};
                 if(reason >= 0 && size_t(reason) < sizeof(fmt)/sizeof(fmt[0]))
                     conoutf(fmt[reason], colorname(w), teamnames[w->team]);

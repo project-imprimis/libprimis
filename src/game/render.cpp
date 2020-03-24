@@ -229,7 +229,7 @@ namespace game
         if(intermission && d->state!=CS_DEAD)
         {
             anim = attack = ANIM_LOSE|ANIM_LOOP;
-            if(validteam(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0) anim = attack = ANIM_WIN|ANIM_LOOP;
+            if(VALID_TEAM(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0) anim = attack = ANIM_WIN|ANIM_LOOP;
         }
         else if(d->state==CS_ALIVE && d->lasttaunt && lastmillis-d->lasttaunt<1000 && lastmillis-d->lastaction>delay)
         {
@@ -254,7 +254,7 @@ namespace game
             d->muzzle = vec(-1, -1, -1);
             if(guns[d->gunselect].vwep) a[ai++] = modelattach("tag_muzzle", &d->muzzle);
         }
-        const char *mdlname = mdl.model[validteam(team) ? team : 0];
+        const char *mdlname = mdl.model[VALID_TEAM(team) ? team : 0];
         float yaw = testanims && d==player1 ? 0 : d->yaw,
               pitch = testpitch && d==player1 ? testpitch : d->pitch;
         vec o = d->feetpos();
@@ -324,7 +324,7 @@ namespace game
 
     static inline void renderplayer(gameent *d, float fade = 1, int flags = 0)
     {
-        int team = MODE_TEAMMODE && validteam(d->team) ? d->team : 0;
+        int team = MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0;
         renderplayer(d, getplayermodelinfo(d), getplayercolor(d, team), team, fade, flags);
     }
 
@@ -350,7 +350,7 @@ namespace game
             copystring(d->info, colorname(d));
             if(d->state!=CS_DEAD)
             {
-                int team = MODE_TEAMMODE && validteam(d->team) ? d->team : 0;
+                int team = MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0;
                 particle_text(d->abovehead(), d->info, PART_TEXT, 1, teamtextcolor[team], 2.0f);
             }
         }
@@ -430,7 +430,7 @@ namespace game
         if(!hudgunsway) sway = d->o;
 
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        int team = MODE_TEAMMODE && validteam(d->team) ? d->team : 0,
+        int team = MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0,
             color = getplayercolor(d, team);
         DEF_FORMAT_STRING(gunname, "%s/%s", mdl.hudguns[team], file);
         modelattach a[2];
@@ -475,7 +475,7 @@ namespace game
               zrad = height/2;
         vec2 xyrad = vec2(previewent->xradius, previewent->yradius).max(height/4);
         previewent->o = calcmodelpreviewpos(vec(xyrad, zrad), previewent->yaw).addz(previewent->eyeheight - zrad);
-        previewent->gunselect = validgun(weap) ? weap : GUN_RAIL;
+        previewent->gunselect = VALID_GUN(weap) ? weap : GUN_RAIL;
         const playermodelinfo *mdlinfo = getplayermodelinfo(model);
         if(!mdlinfo) return;
         renderplayer(previewent, *mdlinfo, getplayercolor(team, color), team, 1, 0, false);

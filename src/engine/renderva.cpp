@@ -583,7 +583,7 @@ bool bboccluded(const ivec &bo, const ivec &br)
     if(diff&~((1<<worldscale)-1)) return false;
     int scale = worldscale-1;
     if(diff&(1<<scale)) return bboccluded(bo, br, worldroot, ivec(0, 0, 0), 1<<scale);
-    cube *c = &worldroot[octastep(bo.x, bo.y, bo.z, scale)];
+    cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->va)
     {
         vtxarray *va = c->ext->va;
@@ -592,7 +592,7 @@ bool bboccluded(const ivec &bo, const ivec &br)
     scale--;
     while(c->children && !(diff&(1<<scale)))
     {
-        c = &c->children[octastep(bo.x, bo.y, bo.z, scale)];
+        c = &c->children[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
         if(c->ext && c->ext->va)
         {
             vtxarray *va = c->ext->va;

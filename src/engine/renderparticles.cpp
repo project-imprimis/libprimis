@@ -673,7 +673,7 @@ struct varenderer : partrenderer
 
     particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity)
     {
-        particle *p = parts + (numparts < maxparts ? numparts++ : rnd(maxparts)); //next free slot, or kill a random kitten
+        particle *p = parts + (numparts < maxparts ? numparts++ : RANDOM_INT(maxparts)); //next free slot, or kill a random kitten
         p->o = o;
         p->d = d;
         p->gravity = gravity;
@@ -682,7 +682,7 @@ struct varenderer : partrenderer
         p->color = bvec::hexcolor(color);
         p->size = size;
         p->owner = NULL;
-        p->flags = 0x80 | (rndmask ? rnd(0x80) & rndmask : 0);
+        p->flags = 0x80 | (rndmask ? RANDOM_INT(0x80) & rndmask : 0);
         lastupdate = -1;
         return p;
     }
@@ -1013,20 +1013,20 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
         int x, y, z;
         do
         {
-            x = rnd(radius*2)-radius;
-            y = rnd(radius*2)-radius;
-            z = rnd(radius*2)-radius;
+            x = RANDOM_INT(radius*2)-radius;
+            y = RANDOM_INT(radius*2)-radius;
+            z = RANDOM_INT(radius*2)-radius;
         }
         while(x*x+y*y+z*z>radius*radius);
         vec tmp = vec((float)x, (float)y, (float)z);
-        int f = (num < 10) ? (fmin + rnd(fmax)) : (fmax - (i*(fmax-fmin))/(num-1)); //help deallocater by using fade distribution rather than random
+        int f = (num < 10) ? (fmin + RANDOM_INT(fmax)) : (fmax - (i*(fmax-fmin))/(num-1)); //help deallocater by using fade distribution rather than random
         newparticle(p, tmp, f, type, color, size, gravity)->val = collidez;
     }
 }
 
 static void regularsplash(int type, int color, int radius, int num, int fade, const vec &p, float size, int gravity, int delay = 0)
 {
-    if(!canemitparticles() || (delay > 0 && rnd(delay) != 0)) return;
+    if(!canemitparticles() || (delay > 0 && RANDOM_INT(delay) != 0)) return;
     splash(type, color, radius, num, fade, p, size, gravity);
 }
 
@@ -1060,8 +1060,8 @@ void particle_trail(int type, int fade, const vec &s, const vec &e, int color, f
     loopi(steps)
     {
         p.add(v);
-        vec tmp = vec(float(rnd(11)-5), float(rnd(11)-5), float(rnd(11)-5));
-        newparticle(p, tmp, rnd(fade)+fade, type, color, size, gravity);
+        vec tmp = vec(float(RANDOM_INT(11)-5), float(RANDOM_INT(11)-5), float(RANDOM_INT(11)-5));
+        newparticle(p, tmp, RANDOM_INT(fade)+fade, type, color, size, gravity);
     }
 }
 
@@ -1154,7 +1154,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         vec to, from;
         if(dir < 12)
         {
-            const vec2 &sc = sincos360[rnd(360)];
+            const vec2 &sc = sincos360[RANDOM_INT(360)];
             to[dir%3] = sc.y*radius;
             to[(dir+1)%3] = sc.x*radius;
             to[(dir+2)%3] = 0.0;
@@ -1175,8 +1175,8 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         else if(dir < 15) //plane
         {
-            to[dir%3] = float(rnd(radius<<4)-(radius<<3))/8.0;
-            to[(dir+1)%3] = float(rnd(radius<<4)-(radius<<3))/8.0;
+            to[dir%3] = float(RANDOM_INT(radius<<4)-(radius<<3))/8.0;
+            to[(dir+1)%3] = float(RANDOM_INT(radius<<4)-(radius<<3))/8.0;
             to[(dir+2)%3] = radius;
             to.add(p);
             from = to;
@@ -1186,13 +1186,13 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         {
             if(dir < 18)
             {
-                to[dir%3] = float(rnd(radius<<4)-(radius<<3))/8.0;
+                to[dir%3] = float(RANDOM_INT(radius<<4)-(radius<<3))/8.0;
                 to[(dir+1)%3] = 0.0;
             }
             else
             {
                 to[dir%3] = 0.0;
-                to[(dir+1)%3] = float(rnd(radius<<4)-(radius<<3))/8.0;
+                to[(dir+1)%3] = float(RANDOM_INT(radius<<4)-(radius<<3))/8.0;
             }
             to[(dir+2)%3] = 0.0;
             to.add(p);
@@ -1201,14 +1201,14 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         else if(dir < 24) //sphere
         {
-            to = vec(2*M_PI*float(rnd(1000))/1000.0, M_PI*float(rnd(1000)-500)/1000.0).mul(radius);
+            to = vec(2*M_PI*float(RANDOM_INT(1000))/1000.0, M_PI*float(RANDOM_INT(1000)-500)/1000.0).mul(radius);
             to.add(p);
             from = p;
         }
         else if(dir < 27) // flat plane
         {
-            to[dir%3] = float(rndscale(2*radius)-radius);
-            to[(dir+1)%3] = float(rndscale(2*radius)-radius);
+            to[dir%3] = float(RANDOM_FLOAT(2*radius)-radius);
+            to[(dir+1)%3] = float(RANDOM_FLOAT(2*radius)-radius);
             to[(dir+2)%3] = 0.0;
             to.add(p);
             from = to;
@@ -1223,16 +1223,16 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
             if(dist > 0.2f)
             {
                 dist = 1 - (dist - 0.2f)/0.8f;
-                if(rnd(0x10000) > dist*dist*0xFFFF) continue;
+                if(RANDOM_INT(0x10000) > dist*dist*0xFFFF) continue;
             }
         }
 
         if(flare)
-            newparticle(from, to, rnd(fade*3)+1, type, color, size, gravity);
+            newparticle(from, to, RANDOM_INT(fade*3)+1, type, color, size, gravity);
         else
         {
             vec d = vec(to).sub(from).rescale(vel); //velocity
-            particle *n = newparticle(from, d, rnd(fade*3)+1, type, color, size, gravity);
+            particle *n = newparticle(from, d, RANDOM_INT(fade*3)+1, type, color, size, gravity);
             if(parts[type]->type&PT_COLLIDE)
                 n->val = from.z - raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ? COLLIDERADIUS : max(from.z, 0.0f), RAY_CLIPMAT) + (parts[type]->stain >= 0 ? COLLIDEERROR : 0);
         }
@@ -1248,9 +1248,9 @@ static void regularflame(int type, const vec &p, float radius, float height, int
     loopi(density)
     {
         vec s = p;
-        s.x += rndscale(radius*2.0f)-radius;
-        s.y += rndscale(radius*2.0f)-radius;
-        newparticle(s, v, rnd(max(int(fade*height), 1))+1, type, color, size, gravity);
+        s.x += RANDOM_FLOAT(radius*2.0f)-radius;
+        s.y += RANDOM_FLOAT(radius*2.0f)-radius;
+        newparticle(s, v, RANDOM_INT(max(int(fade*height), 1))+1, type, color, size, gravity);
     }
 }
 
@@ -1273,7 +1273,7 @@ static void makeparticles(entity &e)
             break;
         }
         case 1: //steam vent - <dir>
-            regularsplash(PART_STEAM, 0x897661, 50, 1, 200, offsetvec(e.o, e.attr2, rnd(10)), 2.4f, -20);
+            regularsplash(PART_STEAM, 0x897661, 50, 1, 200, offsetvec(e.o, e.attr2, RANDOM_INT(10)), 2.4f, -20);
             break;
         case 2: //water fountain - <dir>
         {
@@ -1285,7 +1285,7 @@ static void makeparticles(entity &e)
                 color = getwaterfallcolor(mat).tohexcolor();
                 if(!color) color = getwatercolor(mat).tohexcolor();
             }
-            regularsplash(PART_WATER, color, 150, 4, 200, offsetvec(e.o, e.attr2, rnd(10)), 0.6f, 2);
+            regularsplash(PART_WATER, color, 150, 4, 200, offsetvec(e.o, e.attr2, RANDOM_INT(10)), 0.6f, 2);
             break;
         }
         case 3: //fire ball - <size> <rgb>

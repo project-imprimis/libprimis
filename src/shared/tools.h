@@ -106,8 +106,8 @@ static inline int BITSCAN(uint mask)
 #endif
 #endif
 
-#define rnd(x) ((int)(randomMT()&0x7FFFFFFF)%(x))
-#define rndscale(x) (float((randomMT()&0x7FFFFFFF)*double(x)/double(0x7FFFFFFF)))
+#define RANDOM_INT(x) ((int)(randomMT()&0x7FFFFFFF)%(x))
+#define RANDOM_FLOAT(x) (float((randomMT()&0x7FFFFFFF)*double(x)/double(0x7FFFFFFF)))
 //1103515245+12345 are magic constants for LCG psuedorandom generator
 #define DET_RND(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
 

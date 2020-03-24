@@ -21,7 +21,7 @@ namespace game
 
     void setteaminfo(int team, int frags)
     {
-        if(!validteam(team)) return;
+        if(!VALID_TEAM(team)) return;
         teaminfo &t = teaminfos[team-1];
         t.frags = frags;
     }
@@ -92,7 +92,7 @@ namespace game
             gameent *o = players[i];
             if(!showconnecting && !o->name[0]) continue;
             if(o->state==CS_SPECTATOR) { spectators.add(o); continue; }
-            int team = MODE_TEAMMODE && validteam(o->team) ? o->team : 0;
+            int team = MODE_TEAMMODE && VALID_TEAM(o->team) ? o->team : 0;
             teamplayers[team].add(o);
         }
         loopi(1+MAXTEAMS) teamplayers[i].sort(playersort);
@@ -209,7 +209,7 @@ namespace game
 
     ICOMMAND(getteamscore, "i", (int *team),
     {
-        if(MODE_TEAMMODE && validteam(*team))
+        if(MODE_TEAMMODE && VALID_TEAM(*team))
         {
             if(cmode && cmode->hidefrags()) intret(cmode->getteamscore(*team));
             else intret(teaminfos[*team-1].frags);

@@ -248,7 +248,7 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 #define LOOP_XY(b)        loop(y,(b).s[C[DIMENSION((b).orient)]]) loop(x,(b).s[R[DIMENSION((b).orient)]])
 #define LOOP_XYZ(b, r, f) { loop(z,(b).s[D[DIMENSION((b).orient)]]) LOOP_XY((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
 #define LOOP_SEL_XYZ(f)    { if(local) makeundo(); LOOP_XYZ(sel, sel.grid, f); changed(sel); }
-#define selcube(x, y, z) blockcube(x, y, z, sel, sel.grid)
+#define SELECT_CUBE(x, y, z) blockcube(x, y, z, sel, sel.grid)
 
 ////////////// cursor ///////////////
 
@@ -553,7 +553,7 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
         {
             if(size<=1)
             {
-                solidfaces(c[i]);
+                SOLID_FACES(c[i]);
                 discardchildren(c[i], true);
                 brightencube(c[i]);
             }
@@ -847,7 +847,7 @@ void editundo() { swapundo(undos, redos, EDIT_UNDO); }
 void editredo() { swapundo(redos, undos, EDIT_REDO); }
 
 // guard against subdivision
-#define protectsel(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundo(_u); freeundo(_u); } }
+#define PROTECT_SEL(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundo(_u); freeundo(_u); } }
 
 vector<editinfo *> editinfos;
 editinfo *localedit = NULL;
@@ -1206,7 +1206,7 @@ void saveprefab(char *name)
         b->name = newstring(name);
     }
     if(b->copy) freeblock(b->copy);
-    protectsel(b->copy = blockcopy(block3(sel), sel.grid));
+    PROTECT_SEL(b->copy = blockcopy(block3(sel), sel.grid));
     changed(sel);
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
@@ -1478,7 +1478,7 @@ void mpcopy(editinfo *&e, selinfo &sel, bool local)
     if(e==NULL) e = editinfos.add(new editinfo);
     if(e->copy) freeblock(e->copy);
     e->copy = NULL;
-    protectsel(e->copy = blockcopy(block3(sel), sel.grid));
+    PROTECT_SEL(e->copy = blockcopy(block3(sel), sel.grid));
     changed(sel);
 }
 
@@ -1721,7 +1721,7 @@ namespace hmap
         bool changed = false;
         int *o[4], best, par, q = 0;
         loopi(2) loopj(2) o[i+j*2] = &map[x+i][y+j];
-        #define pullhmap(I, LT, GT, M, N, A) do { \
+        #define PULL_HEIGHTMAP(I, LT, GT, M, N, A) do { \
             best = I; \
             loopi(4) if(*o[i] LT best) best = *o[q = i] - M; \
             par = (best&(~7)) + N; \
@@ -1742,9 +1742,11 @@ namespace hmap
         } while(0)
 
         if(biasup)
-            pullhmap(0, >, <, 1, 0, -);
+            PULL_HEIGHTMAP(0, >, <, 1, 0, -);
         else
-            pullhmap(worldsize*8, <, >, 0, 8, +);
+            PULL_HEIGHTMAP(worldsize*8, <, >, 0, 8, +);
+
+        #undef PULL_HEIGHTMAP
 
         cube **c  = cmap[x][y];
         int e[2][2];
@@ -1760,7 +1762,7 @@ namespace hmap
             if(notempty)
             {
                 c[k]->texture[sel.orient] = c[1]->texture[sel.orient];
-                solidfaces(*c[k]);
+                SOLID_FACES(*c[k]);
                 loopi(2) loopj(2)
                 {
                     int f = e[i][j];
@@ -1960,7 +1962,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
     sel.s[d] = 1;
 
     LOOP_SEL_XYZ(
-        if(c.children) solidfaces(c);
+        if(c.children) SOLID_FACES(c);
         ushort mat = getmaterial(c);
         discardchildren(c, true);
         c.material = mat;
@@ -1968,7 +1970,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
         {
             if(dir<0)
             {
-                solidfaces(c);
+                SOLID_FACES(c);
                 cube &o = blockcube(x, y, 1, sel, -sel.grid);
                 loopi(6)
                     c.texture[i] = o.children ? DEFAULT_GEOM : o.texture[i];
@@ -2557,7 +2559,7 @@ void flipcube(cube &c, int d)
     c.faces[R[d]] = rflip(c.faces[R[d]]);
     if(c.children)
     {
-        loopi(8) if(i&octadim(d)) swap(c.children[i], c.children[i-octadim(d)]);
+        loopi(8) if(i&OCTA_DIM(d)) swap(c.children[i], c.children[i-OCTA_DIM(d)]);
         loopi(8) flipcube(c.children[i], d);
     }
 }
@@ -2580,9 +2582,9 @@ void rotatecube(cube &c, int d)   // rotates cube clockwise. see pics in cvs for
 
     if(c.children)
     {
-        int row = octadim(R[d]);
-        int col = octadim(C[d]);
-        for(int i=0; i<=octadim(d); i+=octadim(d)) rotatequad
+        int row = OCTA_DIM(R[d]);
+        int col = OCTA_DIM(C[d]);
+        for(int i=0; i<=OCTA_DIM(d); i+=OCTA_DIM(d)) rotatequad
         (
             c.children[i+row],
             c.children[i],
@@ -2603,11 +2605,11 @@ void mpflip(selinfo &sel, bool local)
     int zs = sel.s[DIMENSION(sel.orient)];
     LOOP_XY(sel)
     {
-        loop(z,zs) flipcube(selcube(x, y, z), DIMENSION(sel.orient));
+        loop(z,zs) flipcube(SELECT_CUBE(x, y, z), DIMENSION(sel.orient));
         loop(z,zs/2)
         {
-            cube &a = selcube(x, y, z);
-            cube &b = selcube(x, y, zs-z-1);
+            cube &a = SELECT_CUBE(x, y, z);
+            cube &b = SELECT_CUBE(x, y, zs-z-1);
             swap(a, b);
         }
     }
@@ -2630,13 +2632,13 @@ void mprotate(int cw, selinfo &sel, bool local)
     if(local) makeundo();
     loop(z,sel.s[D[d]]) loopi(cw>0 ? 1 : 3)
     {
-        LOOP_XY(sel) rotatecube(selcube(x,y,z), d);
+        LOOP_XY(sel) rotatecube(SELECT_CUBE(x,y,z), d);
         loop(y,ss/2) loop(x,ss-1-y*2) rotatequad
         (
-            selcube(ss-1-y, x+y, z),
-            selcube(x+y, y, z),
-            selcube(y, ss-1-x-y, z),
-            selcube(ss-1-x-y, ss-1-y, z)
+            SELECT_CUBE(ss-1-y, x+y, z),
+            SELECT_CUBE(x+y, y, z),
+            SELECT_CUBE(y, ss-1-x-y, z),
+            SELECT_CUBE(ss-1-x-y, ss-1-y, z)
         );
     }
     changed(sel);

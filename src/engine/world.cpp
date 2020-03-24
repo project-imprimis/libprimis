@@ -308,12 +308,12 @@ void findents(int low, int high, bool notspawned, const vec &pos, const vec &rad
         findents(worldroot, ivec(0, 0, 0), 1<<scale, bo, br, low, high, notspawned, pos, invradius, found);
         return;
     }
-    cube *c = &worldroot[octastep(bo.x, bo.y, bo.z, scale)];
+    cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->ents) findents(*c->ext->ents, low, high, notspawned, pos, invradius, found);
     scale--;
     while(c->children && !(diff&(1<<scale)))
     {
-        c = &c->children[octastep(bo.x, bo.y, bo.z, scale)];
+        c = &c->children[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
         if(c->ext && c->ext->ents) findents(*c->ext->ents, low, high, notspawned, pos, invradius, found);
         scale--;
     }
@@ -479,7 +479,6 @@ void attachentities()
 }
 #define ENT_EDIT(i, f)   ENT_EDIT_V(i, f, entities::getents())
 #define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); loopv(ents) ENT_FOCUS_V(i, if(exp) entadd(n), ents); }
-#define setgroup(exp)   { entcancel(); ADD_GROUP(exp); }
 #define GROUP_EDIT_LOOP(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; loopv(entgroup) ENT_EDIT_V(entgroup[i], f, ents); efocus = _; entlooplevel--; }
 #define GROUP_EDIT_PURE(f){ if(entlooplevel>0) { ENT_EDIT(efocus, f); } else { GROUP_EDIT_LOOP(f); commitchanges(); } }
 #define GROUP_EDIT_UNDO(f){ makeundoent(); GROUP_EDIT_PURE(f); }
@@ -1315,7 +1314,7 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
     int pick = forceent;
     if(pick<0)
     {
-        int r = rnd(10)+1;
+        int r = RANDOM_INT(10)+1;
         pick = spawncycle;
         loopi(r)
         {
@@ -1414,7 +1413,7 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
     texmru.shrink(0);
     freeocta(worldroot);
     worldroot = newcubes(F_EMPTY);
-    loopi(4) solidfaces(worldroot[i]);
+    loopi(4) SOLID_FACES(worldroot[i]);
 
     if(worldsize > 0x1000) splitocta(worldroot, worldsize>>1);
 
@@ -1449,7 +1448,7 @@ bool enlargemap(bool force)
     worldsize *= 2;
     cube *c = newcubes(F_EMPTY);
     c[0].children = worldroot;
-    loopi(3) solidfaces(c[i+1]);
+    loopi(3) SOLID_FACES(c[i+1]);
     worldroot = c;
 
     if(worldsize > 0x1000) splitocta(worldroot, worldsize>>1);

@@ -12,7 +12,7 @@ namespace aiman
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.state==CS_SPECTATOR || !validteam(ci->team)) continue;
+            if(ci->state.state==CS_SPECTATOR || !VALID_TEAM(ci->team)) continue;
             teamscore *t = NULL;
             loopvj(teams) if(teams[j].team == ci->team) { t = &teams[j]; break; }
             if(t) t->score++;
@@ -114,14 +114,14 @@ namespace aiman
         clientinfo *owner = findaiclient();
         ci->ownernum = owner ? owner->clientnum : -1;
         if(owner) owner->bots.add(ci);
-        ci->state.skill = skill <= 0 ? rnd(50) + 51 : clamp(skill, 1, 101);
+        ci->state.skill = skill <= 0 ? RANDOM_INT(50) + 51 : clamp(skill, 1, 101);
         clients.add(ci);
         ci->state.lasttimeplayed = lastmillis;
         copystring(ci->name, "bot", MAXNAMELEN+1);
         ci->state.state = CS_DEAD;
         ci->team = team;
-        ci->playermodel = rnd(128);
-        ci->playercolor = rnd(0x8000);
+        ci->playermodel = RANDOM_INT(128);
+        ci->playercolor = RANDOM_INT(0x8000);
         ci->aireinit = 2;
         ci->connected = true;
         dorefresh = true;

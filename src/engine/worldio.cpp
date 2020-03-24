@@ -325,7 +325,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             return;
 
         case OCTSAV_EMPTY:  EMPTY_FACES(c);       break;
-        case OCTSAV_SOLID:  solidfaces(c);        break;
+        case OCTSAV_SOLID:  SOLID_FACES(c);        break;
         case OCTSAV_NORMAL: f->read(c.edges, 12); break;
         default: failed = true; return;
     }
