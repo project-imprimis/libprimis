@@ -138,6 +138,7 @@ enum
     ElementThree = 3;
 };
 ```
+Enums also are always expanded with a single element per line.
 
 ## 1.2 Default Paths & Libraries
 ---

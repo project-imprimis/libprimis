@@ -520,7 +520,7 @@ namespace UI
 
         void buildchildren(uint *contents)
         {
-            if((*contents&CODE_OP_MASK) == CODE_EXIT) children.deletecontents();
+            if((*contents&CodeOpMask) == CodeExit) children.deletecontents();
             else
             {
                 Object *oldparent = buildparent;
@@ -1030,7 +1030,7 @@ namespace UI
             executeret(columndata);
             if(columns != buildchild) while(children.length() > buildchild) delete children.pop();
             columns = buildchild;
-            if((*contents&CODE_OP_MASK) != CODE_EXIT) executeret(contents);
+            if((*contents&CodeOpMask) != CodeExit) executeret(contents);
             while(children.length() > buildchild) delete children.pop();
             buildparent = oldparent;
             buildchild = oldchild;
@@ -2368,7 +2368,7 @@ namespace UI
                 break;
             }
         }
-        if(onchange && (*onchange&CODE_OP_MASK) != CODE_EXIT) execute(onchange);
+        if(onchange && (*onchange&CodeOpMask) != CodeExit) execute(onchange);
     }
 
     struct Slider : Object
@@ -2742,7 +2742,7 @@ namespace UI
                 break;
             }
         }
-        if(onchange && (*onchange&CODE_OP_MASK) != CODE_EXIT) execute(onchange);
+        if(onchange && (*onchange&CodeOpMask) != CodeExit) execute(onchange);
     }
 
     struct Field : TextEditor
@@ -3119,7 +3119,7 @@ namespace UI
     ICOMMAND(uivisible, "s", (char *name), intret(uivisible(name) ? 1 : 0));
     ICOMMAND(uiname, "", (), { if(window) result(window->name); });
 
-    #define IFSTATEVAL(state,t,f) { if(state) { if(t->type == VAL_NULL) intret(1); else result(*t); } else if(f->type == VAL_NULL) intret(0); else result(*f); }
+    #define IFSTATEVAL(state,t,f) { if(state) { if(t->type == ValueNull) intret(1); else result(*t); } else if(f->type == ValueNull) intret(0); else result(*f); }
     #define DOSTATE(flags, func) \
         ICOMMANDNS("ui!" #func, uinot##func##_, "ee", (uint *t, uint *f), \
             executeret(buildparent && buildparent->hasstate(flags) ? t : f)); \
@@ -3315,15 +3315,15 @@ namespace UI
         scale *= scalemod;
         switch(t.type)
         {
-            case VAL_INT:
+            case ValueInteger:
                 BUILD(TextInt, o, o->setup(t.i, scale, color, wrap), children);
                 break;
-            case VAL_FLOAT:
+            case ValueFloat:
                 BUILD(TextFloat, o, o->setup(t.f, scale, color, wrap), children);
                 break;
-            case VAL_CSTR:
-            case VAL_MACRO:
-            case VAL_STR:
+            case ValueCString:
+            case ValueMacro:
+            case ValueString:
                 if(t.s[0])
                 {
                     BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
@@ -3393,9 +3393,9 @@ namespace UI
     {
         switch(t->type)
         {
-            case VAL_INT: return t->i;
-            case VAL_FLOAT: return t->f;
-            case VAL_NULL: return 0;
+            case ValueInteger: return t->i;
+            case ValueFloat: return t->f;
+            case ValueNull: return 0;
             default:
             {
                 const char *s = t->getstr();

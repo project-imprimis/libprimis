@@ -650,10 +650,10 @@ namespace game
     const char *colorname(gameent *d, const char *name, const char * alt, const char *color)
     {
         if(!name) name = alt && d == player1 ? alt : d->name;
-        bool dup = !name[0] || duplicatename(d, name, alt) || d->aitype != AI_NONE;
+        bool dup = !name[0] || duplicatename(d, name, alt) || d->aitype != AINone;
         if(dup || color[0])
         {
-            if(dup) return tempformatstring(d->aitype == AI_NONE ? "\fs%s%s \f5(%d)\fr" : "\fs%s%s \f5[%d]\fr", color, name, d->clientnum);
+            if(dup) return tempformatstring(d->aitype == AINone ? "\fs%s%s \f5(%d)\fr" : "\fs%s%s \f5[%d]\fr", color, name, d->clientnum);
             return tempformatstring("\fs%s%s\fr", color, name);
         }
         return name;

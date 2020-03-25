@@ -719,14 +719,14 @@ struct ctfclientmode : clientmode
             }
             if(flags.inrange(goal) && ai::makeroute(d, b, flags[goal].pos()))
             {
-                d->ai->switchstate(b, ai::AI_S_PURSUE, ai::AI_T_AFFINITY, goal);
+                d->ai->switchstate(b, ai::AIStatePursue, ai::AITravelAffinity, goal);
                 return true;
             }
         }
-        if(b.type == ai::AI_S_INTEREST && b.targtype == ai::AI_T_NODE) return true; // we already did this..
+        if(b.type == ai::AIStateInterest && b.targtype == ai::AITravelNode) return true; // we already did this..
         if(randomnode(d, b, ai::SIGHTMIN, 1e16f))
         {
-            d->ai->switchstate(b, ai::AI_S_INTEREST, ai::AI_T_NODE, d->ai->route[0]);
+            d->ai->switchstate(b, ai::AIStateInterest, ai::AITravelNode, d->ai->route[0]);
             return true;
         }
         return false;
@@ -746,7 +746,7 @@ struct ctfclientmode : clientmode
         if(!ai::badhealth(d) && !takenflags.empty())
         {
             int flag = takenflags.length() > 2 ? RANDOM_INT(takenflags.length()) : 0;
-            d->ai->switchstate(b, ai::AI_S_PURSUE, ai::AI_T_AFFINITY, takenflags[flag]);
+            d->ai->switchstate(b, ai::AIStatePursue, ai::AITravelAffinity, takenflags[flag]);
             return true;
         }
         return false;
@@ -763,7 +763,7 @@ struct ctfclientmode : clientmode
                 static vector<int> targets; // build a list of others who are interested in this
                 targets.setsize(0);
                 bool home = f.team == d->team;
-                ai::checkothers(targets, d, home ? ai::AI_S_DEFEND : ai::AI_S_PURSUE, ai::AI_T_AFFINITY, j, true);
+                ai::checkothers(targets, d, home ? ai::AIStateDefend : ai::AIStatePursue, ai::AITravelAffinity, j, true);
                 gameent *e = NULL;
                 loopi(numdynents()) if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && IS_TEAM(d->team, e->team))
                 { // try to guess what non ai are doing
@@ -792,10 +792,10 @@ struct ctfclientmode : clientmode
                     if(guard)
                     { // defend the flag
                         ai::interest &n = interests.add();
-                        n.state = ai::AI_S_DEFEND;
+                        n.state = ai::AIStateDefend;
                         n.node = ai::closestwaypoint(f.pos(), ai::SIGHTMIN, true);
                         n.target = j;
-                        n.targtype = ai::AI_T_AFFINITY;
+                        n.targtype = ai::AITravelAffinity;
                         n.score = pos.squaredist(f.pos())/100.f;
                     }
                 }
@@ -804,10 +804,10 @@ struct ctfclientmode : clientmode
                     if(targets.empty())
                     { // attack the flag
                         ai::interest &n = interests.add();
-                        n.state = ai::AI_S_PURSUE;
+                        n.state = ai::AIStatePursue;
                         n.node = ai::closestwaypoint(f.pos(), ai::SIGHTMIN, true);
                         n.target = j;
-                        n.targtype = ai::AI_T_AFFINITY;
+                        n.targtype = ai::AITravelAffinity;
                         n.score = pos.squaredist(f.pos());
                     }
                     else
@@ -816,10 +816,10 @@ struct ctfclientmode : clientmode
                         loopvk(targets) if((t = getclient(targets[k])))
                         {
                             ai::interest &n = interests.add();
-                            n.state = ai::AI_S_DEFEND;
+                            n.state = ai::AIStateDefend;
                             n.node = t->lastnode;
                             n.target = t->clientnum;
-                            n.targtype = ai::AI_T_PLAYER;
+                            n.targtype = ai::AITravelPlayer;
                             n.score = d->o.squaredist(t->o);
                         }
                     }
@@ -845,7 +845,7 @@ struct ctfclientmode : clientmode
             {
                 static vector<int> targets; // build a list of others who are interested in this
                 targets.setsize(0);
-                ai::checkothers(targets, d, ai::AI_S_DEFEND, ai::AI_T_AFFINITY, b.target, true);
+                ai::checkothers(targets, d, ai::AIStateDefend, ai::AITravelAffinity, b.target, true);
                 gameent *e = NULL;
                 loopi(numdynents()) if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && IS_TEAM(d->team, e->team))
                 { // try to guess what non ai are doing

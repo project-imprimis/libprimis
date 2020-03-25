@@ -1,51 +1,126 @@
 // script binding functionality
 
-enum { VAL_NULL = 0, VAL_INT, VAL_FLOAT, VAL_STR, VAL_ANY, VAL_CODE, VAL_MACRO, VAL_IDENT, VAL_CSTR, VAL_CANY, VAL_WORD, VAL_POP, VAL_COND };
+enum
+{
+    ValueNull = 0,
+    ValueInteger,
+    ValueFloat,
+    ValueString,
+    ValueAny,
+    ValueCode,
+    ValueMacro,
+    ValueIdent,
+    ValueCString,
+    ValueCAny,
+    ValueWord,
+    ValuePop,
+    ValueCond,
+};
 
 enum
 {
-    CODE_START = 0,
-    CODE_OFFSET,
-    CODE_NULL, CODE_TRUE, CODE_FALSE, CODE_NOT,
-    CODE_POP,
-    CODE_ENTER, CODE_ENTER_RESULT,
-    CODE_EXIT, CODE_RESULT_ARG,
-    CODE_VAL, CODE_VALI,
-    CODE_DUP,
-    CODE_MACRO,
-    CODE_BOOL,
-    CODE_BLOCK, CODE_EMPTY,
-    CODE_COMPILE, CODE_COND,
-    CODE_FORCE,
-    CODE_RESULT,
-    CODE_IDENT, CODE_IDENTU, CODE_IDENTARG,
-    CODE_COM, CODE_COMD, CODE_COMC, CODE_COMV,
-    CODE_CONC, CODE_CONCW, CODE_CONCM, CODE_DOWN,
-    CODE_SVAR, CODE_SVARM, CODE_SVAR1,
-    CODE_IVAR, CODE_IVAR1, CODE_IVAR2, CODE_IVAR3,
-    CODE_FVAR, CODE_FVAR1,
-    CODE_LOOKUP, CODE_LOOKUPU, CODE_LOOKUPARG,
-    CODE_LOOKUPM, CODE_LOOKUPMU, CODE_LOOKUPMARG,
-    CODE_ALIAS, CODE_ALIASU, CODE_ALIASARG, CODE_CALL, CODE_CALLU, CODE_CALLARG,
-    CODE_PRINT,
-    CODE_LOCAL,
-    CODE_DO, CODE_DOARGS,
-    CODE_JUMP, CODE_JUMP_TRUE, CODE_JUMP_FALSE, CODE_JUMP_RESULT_TRUE, CODE_JUMP_RESULT_FALSE,
+    CodeStart = 0,          //0
+    CodeOffset,
+    CodeNull,
+    CodeTrue,
+    CodeFalse,
+    CodeNot,               //5
+    CodePop,
+    CodeEnter,
+    CodeEnterResult,
+    CodeExit,
+    CodeResultArg,       //10
+    CodeVal,
+    CodeValI,
+    CodeDup,
+    CodeMacro,
+    CodeBool,            //15 (unused)
+    CodeBlock,
+    CodeEmpty,
+    CodeCompile,
+    CodeCond,
+    CodeForce,           //20
+    CodeResult,
+    CodeIdent,
+    CodeIdentU,
+    CodeIdentArg,
+    CodeCom,             //25
+    CodeComD,
+    CodeComC,
+    CodeComV,
+    CodeConC,
+    CodeConCW,           //30
+    CodeConCM,
+    CodeDown, // (unused)
+    CodeStrVar,
+    CodeStrVarM,
+    CodeStrVar1,         //35
+    CodeIntVar,
+    CodeIntVar1,
+    CodeIntVar2,
+    CodeIntVar3,
+    CodeFloatVar,        //40
+    CodeFloatVar1,
+    CodeLookup,
+    CodeLookupU,
+    CodeLookupArg,
+    CodeLookupM,         //45
+    CodeLookupMU,
+    CodeLookupMArg,
+    CodeAlias,
+    CodeAliasU,
+    CodeAliasArg,        //50
+    CodeCall,
+    CodeCallU,
+    CodeCallArg,
+    CodePrint,
+    CodeLocal,           //55
+    CodeDo,
+    CodeDoArgs,
+    CodeJump,
+    CodeJumpTrue,
+    CodeJumpFalse,
+    CodeJumpResultTrue,  //60
+    CodeJumpResultFalse,
 
-    CODE_OP_MASK = 0x3F,
-    CODE_RET = 6,
-    CODE_RET_MASK = 0xC0,
+    CodeOpMask = 0x3F,
+    CodeRet = 6,
+    CodeRetMask = 0xC0,
 
     /* return type flags */
-    RET_NULL   = VAL_NULL<<CODE_RET,
-    RET_STR    = VAL_STR<<CODE_RET,
-    RET_INT    = VAL_INT<<CODE_RET,
-    RET_FLOAT  = VAL_FLOAT<<CODE_RET,
+    RetNull   = ValueNull<<CodeRet,
+    RetString    = ValueString<<CodeRet,
+    RetInteger    = ValueInteger<<CodeRet,
+    RetFloat  = ValueFloat<<CodeRet,
 };
 
-enum { ID_VAR, ID_FVAR, ID_SVAR, ID_COMMAND, ID_ALIAS, ID_LOCAL, ID_DO, ID_DOARGS, ID_IF, ID_RESULT, ID_NOT, ID_AND, ID_OR };
+enum
+{
+    ID_VAR,     //1
+    ID_FVAR,
+    ID_SVAR,
+    ID_COMMAND,
+    ID_ALIAS,   //5
+    ID_LOCAL,
+    ID_DO,
+    ID_DOARGS,
+    ID_IF,
+    ID_RESULT,  //10
+    ID_NOT,
+    ID_AND,
+    ID_OR,      //13
+};
 
-enum { IDF_PERSIST = 1<<0, IDF_OVERRIDE = 1<<1, IDF_HEX = 1<<2, IDF_READONLY = 1<<3, IDF_OVERRIDDEN = 1<<4, IDF_UNKNOWN = 1<<5, IDF_ARG = 1<<6 };
+enum
+{
+    IDF_PERSIST    = 1<<0,
+    IDF_OVERRIDE   = 1<<1,
+    IDF_HEX        = 1<<2,
+    IDF_READONLY   = 1<<3,
+    IDF_OVERRIDDEN = 1<<4,
+    IDF_UNKNOWN    = 1<<5,
+    IDF_ARG        = 1<<6,
+};
 
 struct ident;
 
@@ -53,12 +128,12 @@ struct identval
 {
     union
     {
-        int i;      // ID_VAR, VAL_INT
-        float f;    // ID_FVAR, VAL_FLOAT
-        char *s;    // ID_SVAR, VAL_STR
-        const uint *code; // VAL_CODE
-        ident *id;  // VAL_IDENT
-        const char *cstr; // VAL_CSTR
+        int i;      // ID_VAR, ValueInteger
+        float f;    // ID_FVAR, ValueFloat
+        char *s;    // ID_SVAR, ValueString
+        const uint *code; // ValueCode
+        ident *id;  // ValueIdent
+        const char *cstr; // ValueCString
     };
 };
 
@@ -66,15 +141,15 @@ struct tagval : identval
 {
     int type;
 
-    void setint(int val) { type = VAL_INT; i = val; }
-    void setfloat(float val) { type = VAL_FLOAT; f = val; }
-    void setnumber(double val) { i = int(val); if(val == i) type = VAL_INT; else { type = VAL_FLOAT; f = val; } }
-    void setstr(char *val) { type = VAL_STR; s = val; }
-    void setnull() { type = VAL_NULL; i = 0; }
-    void setcode(const uint *val) { type = VAL_CODE; code = val; }
-    void setmacro(const uint *val) { type = VAL_MACRO; code = val; }
-    void setcstr(const char *val) { type = VAL_CSTR; cstr = val; }
-    void setident(ident *val) { type = VAL_IDENT; id = val; }
+    void setint(int val) { type = ValueInteger; i = val; }
+    void setfloat(float val) { type = ValueFloat; f = val; }
+    void setnumber(double val) { i = int(val); if(val == i) type = ValueInteger; else { type = ValueFloat; f = val; } }
+    void setstr(char *val) { type = ValueString; s = val; }
+    void setnull() { type = ValueNull; i = 0; }
+    void setcode(const uint *val) { type = ValueCode; code = val; }
+    void setmacro(const uint *val) { type = ValueMacro; code = val; }
+    void setcstr(const char *val) { type = ValueCString; cstr = val; }
+    void setident(ident *val) { type = ValueIdent; id = val; }
 
     const char *getstr() const;
     int getint() const;
@@ -112,7 +187,7 @@ struct ident
         uchar numargs; // ID_COMMAND
     };
     ushort flags;
-    int index;   
+    int index;
     const char *name;
     union
     {
@@ -155,16 +230,16 @@ struct ident
     { storage.s = s; }
     // ID_ALIAS
     ident(int t, const char *n, char *a, int flags)
-        : type(t), valtype(VAL_STR), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(ValueString), flags(flags), name(n), code(NULL), stack(NULL)
     { val.s = a; }
     ident(int t, const char *n, int a, int flags)
-        : type(t), valtype(VAL_INT), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(ValueInteger), flags(flags), name(n), code(NULL), stack(NULL)
     { val.i = a; }
     ident(int t, const char *n, float a, int flags)
-        : type(t), valtype(VAL_FLOAT), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(ValueFloat), flags(flags), name(n), code(NULL), stack(NULL)
     { val.f = a; }
     ident(int t, const char *n, int flags)
-        : type(t), valtype(VAL_NULL), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(ValueNull), flags(flags), name(n), code(NULL), stack(NULL)
     {}
     ident(int t, const char *n, const tagval &v, int flags)
         : type(t), valtype(v.type), flags(flags), name(n), code(NULL), stack(NULL)
@@ -190,8 +265,8 @@ struct ident
 
     void forcenull()
     {
-        if(valtype==VAL_STR) delete[] val.s;
-        valtype = VAL_NULL;
+        if(valtype==ValueString) delete[] val.s;
+        valtype = ValueNull;
     }
 
     float getfloat() const;
@@ -245,9 +320,9 @@ static inline const char *getstr(const identval &v, int type)
 {
     switch(type)
     {
-        case VAL_STR: case VAL_MACRO: case VAL_CSTR: return v.s;
-        case VAL_INT: return intstr(v.i);
-        case VAL_FLOAT: return floatstr(v.f);
+        case ValueString: case ValueMacro: case ValueCString: return v.s;
+        case ValueInteger: return intstr(v.i);
+        case ValueFloat: return floatstr(v.f);
         default: return "";
     }
 }
@@ -259,9 +334,9 @@ inline const char *ident::getstr() const { return ::getstr(val, valtype); }
     { \
         switch(type) \
         { \
-            case VAL_FLOAT: return ret(v.f); \
-            case VAL_INT: return ret(v.i); \
-            case VAL_STR: case VAL_MACRO: case VAL_CSTR: return parse##name(v.s); \
+            case ValueFloat: return ret(v.f); \
+            case ValueInteger: return ret(v.i); \
+            case ValueString: case ValueMacro: case ValueCString: return parse##name(v.s); \
             default: return ret(0); \
         } \
     } \
@@ -275,9 +350,9 @@ static inline void getval(const identval &v, int type, tagval &r)
 {
     switch(type)
     {
-        case VAL_STR: case VAL_MACRO: case VAL_CSTR: r.setstr(newstring(v.s)); break;
-        case VAL_INT: r.setint(v.i); break;
-        case VAL_FLOAT: r.setfloat(v.f); break;
+        case ValueString: case ValueMacro: case ValueCString: r.setstr(newstring(v.s)); break;
+        case ValueInteger: r.setint(v.i); break;
+        case ValueFloat: r.setfloat(v.f); break;
         default: r.setnull(); break;
     }
 }
@@ -289,10 +364,10 @@ inline void ident::getcstr(tagval &v) const
 {
     switch(valtype)
     {
-        case VAL_MACRO: v.setmacro(val.code); break;
-        case VAL_STR: case VAL_CSTR: v.setcstr(val.s); break;
-        case VAL_INT: v.setstr(newstring(intstr(val.i))); break;
-        case VAL_FLOAT: v.setstr(newstring(floatstr(val.f))); break;
+        case ValueMacro: v.setmacro(val.code); break;
+        case ValueString: case ValueCString: v.setcstr(val.s); break;
+        case ValueInteger: v.setstr(newstring(intstr(val.i))); break;
+        case ValueFloat: v.setstr(newstring(floatstr(val.f))); break;
         default: v.setcstr(""); break;
     }
 }
@@ -301,10 +376,10 @@ inline void ident::getcval(tagval &v) const
 {
     switch(valtype)
     {
-        case VAL_MACRO: v.setmacro(val.code); break;
-        case VAL_STR: case VAL_CSTR: v.setcstr(val.s); break;
-        case VAL_INT: v.setint(val.i); break;
-        case VAL_FLOAT: v.setfloat(val.f); break;
+        case ValueMacro: v.setmacro(val.code); break;
+        case ValueString: case ValueCString: v.setcstr(val.s); break;
+        case ValueInteger: v.setint(val.i); break;
+        case ValueFloat: v.setfloat(val.f); break;
         default: v.setnull(); break;
     }
 }

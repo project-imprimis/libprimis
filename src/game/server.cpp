@@ -423,7 +423,7 @@ namespace server
         loopvrev(clients)
         {
             clientinfo &c = *clients[i];
-            if(c.state.aitype != AI_NONE || c.privilege >= PRIV_ADMIN || c.local) continue;
+            if(c.state.aitype != AINone || c.privilege >= PRIV_ADMIN || c.local) continue;
             if(actor && ((c.privilege > priv && !actor->local) || c.clientnum == actor->clientnum)) continue;
             if(getclientip(c.clientnum) == ip) disconnect_client(c.clientnum, DISC_KICK);
         }
@@ -676,7 +676,7 @@ namespace server
 
     void addteamkill(clientinfo *actor, clientinfo *victim, int n)
     {
-        if(!MODE_TIMED || actor->state.aitype != AI_NONE || actor->local || actor->privilege || (victim && victim->state.aitype != AI_NONE)) return;
+        if(!MODE_TIMED || actor->state.aitype != AINone || actor->local || actor->privilege || (victim && victim->state.aitype != AINone)) return;
         shouldcheckteamkills = true;
         uint ip = getclientip(actor->clientnum);
         loopv(teamkills) if(teamkills[i].ip == ip)
@@ -795,7 +795,7 @@ namespace server
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->clientnum!=exclude && (!nospec || ci->state.state!=CS_SPECTATOR || (priv && (ci->privilege || ci->local))) && (!noai || ci->state.aitype == AI_NONE)) n++;
+            if(ci->clientnum!=exclude && (!nospec || ci->state.state!=CS_SPECTATOR || (priv && (ci->privilege || ci->local))) && (!noai || ci->state.aitype == AINone)) n++;
         }
         return n;
     }
@@ -810,11 +810,11 @@ namespace server
     const char *colorname(clientinfo *ci, const char *name = NULL)
     {
         if(!name) name = ci->name;
-        if(name[0] && !duplicatename(ci, name) && ci->state.aitype == AI_NONE) return name;
+        if(name[0] && !duplicatename(ci, name) && ci->state.aitype == AINone) return name;
         static string cname[3];
         static int cidx = 0;
         cidx = (cidx+1)%3;
-        formatstring(cname[cidx], ci->state.aitype == AI_NONE ? "%s \fs\f5(%d)\fr" : "%s \fs\f5[%d]\fr", name, ci->clientnum);
+        formatstring(cname[cidx], ci->state.aitype == AINone ? "%s \fs\f5(%d)\fr" : "%s \fs\f5[%d]\fr", name, ci->clientnum);
         return cname[cidx];
     }
 
@@ -955,7 +955,7 @@ namespace server
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci==exclude || ci->state.aitype!=AI_NONE || ci->state.state==CS_SPECTATOR || !VALID_TEAM(ci->team)) continue;
+            if(ci==exclude || ci->state.aitype!=AINone || ci->state.state==CS_SPECTATOR || !VALID_TEAM(ci->team)) continue;
 
             ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
             ci->state.lasttimeplayed = lastmillis;
@@ -1545,7 +1545,7 @@ namespace server
         loopv(clients)
         {
             clientinfo &ci = *clients[i];
-            if(ci.state.aitype != AI_NONE) continue;
+            if(ci.state.aitype != AINone) continue;
             uchar *data = wsbuf.buf;
             int size = wslen;
             if(ci.wsdata >= wsbuf.buf) { data = ci.wsdata + ci.wslen; size -= ci.wslen; }
@@ -1579,7 +1579,7 @@ namespace server
         loopv(clients)
         {
             clientinfo &ci = *clients[i];
-            if(ci.state.aitype != AI_NONE) continue;
+            if(ci.state.aitype != AINone) continue;
             uchar *data = wsbuf.buf;
             int size = wslen;
             if(ci.wsdata >= wsbuf.buf) { data = ci.wsdata + ci.wslen; size -= ci.wslen; }
@@ -1631,7 +1631,7 @@ namespace server
         loopv(clients)
         {
             clientinfo &ci = *clients[i];
-            if(ci.state.aitype != AI_NONE) continue;
+            if(ci.state.aitype != AINone) continue;
             addposition(ws, wsbuf, mtu, ci, ci);
             loopvj(ci.bots) addposition(ws, wsbuf, mtu, *ci.bots[j], ci);
         }
@@ -1639,7 +1639,7 @@ namespace server
         loopv(clients)
         {
             clientinfo &ci = *clients[i];
-            if(ci.state.aitype != AI_NONE) continue;
+            if(ci.state.aitype != AINone) continue;
             addmessages(ws, wsbuf, mtu, ci, ci);
             loopvj(ci.bots) addmessages(ws, wsbuf, mtu, *ci.bots[j], ci);
         }
@@ -1697,7 +1697,7 @@ namespace server
 
     void putinitclient(clientinfo *ci, packetbuf &p)
     {
-        if(ci->state.aitype != AI_NONE)
+        if(ci->state.aitype != AINone)
         {
             putint(p, N_INITAI);
             putint(p, ci->clientnum);
@@ -1990,7 +1990,7 @@ namespace server
         {
             clientinfo *oi = clients[i];
             if(oi->state.state==CS_SPECTATOR && !oi->privilege && !oi->local) continue;
-            if(oi->state.aitype!=AI_NONE) continue;
+            if(oi->state.aitype!=AINone) continue;
             maxvotes++;
             if(!MODE_VALID(oi->modevote)) continue;
             votecount *vc = NULL;
@@ -2323,7 +2323,7 @@ namespace server
             loopvrev(clients)
             {
                 clientinfo &c = *clients[i];
-                if(c.state.aitype != AI_NONE) continue;
+                if(c.state.aitype != AINone) continue;
                 if(c.checkexceeded()) disconnect_client(c.clientnum, DISC_MSGERR);
                 else c.scheduleexceeded();
             }
@@ -2379,7 +2379,7 @@ namespace server
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AI_NONE) continue;
+            if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AINone) continue;
             total++;
             if(!ci->clientmap[0])
             {
@@ -2400,7 +2400,7 @@ namespace server
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AI_NONE || ci->clientmap[0] || ci->mapcrc >= 0 || (req < 0 && ci->warned)) continue;
+            if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AINone || ci->clientmap[0] || ci->mapcrc >= 0 || (req < 0 && ci->warned)) continue;
             formatstring(msg, "%s has modified map \"%s\"", colorname(ci), smapname);
             sendf(req, 1, "ris", N_SERVMSG, msg);
             if(req < 0) ci->warned = true;
@@ -2411,7 +2411,7 @@ namespace server
             if(i || info.matches <= crcs[i+1].matches) loopvj(clients)
             {
                 clientinfo *ci = clients[j];
-                if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AI_NONE || !ci->clientmap[0] || ci->mapcrc != info.crc || (req < 0 && ci->warned)) continue;
+                if(ci->state.state==CS_SPECTATOR || ci->state.aitype != AINone || !ci->clientmap[0] || ci->mapcrc != info.crc || (req < 0 && ci->warned)) continue;
                 formatstring(msg, "%s has modified map \"%s\"", colorname(ci), smapname);
                 sendf(req, 1, "ris", N_SERVMSG, msg);
                 if(req < 0) ci->warned = true;
@@ -2539,7 +2539,7 @@ namespace server
         loopvrev(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.aitype != AI_NONE || ci->local || ci->privilege >= PRIV_ADMIN) continue;
+            if(ci->state.aitype != AINone || ci->local || ci->privilege >= PRIV_ADMIN) continue;
             if(checkbans(getclientip(ci->clientnum))) disconnect_client(ci->clientnum, DISC_IPBAN);
         }
     }
@@ -3105,7 +3105,7 @@ namespace server
                 loopv(clients)
                 {
                     clientinfo *t = clients[i];
-                    if(t==cq || t->state.state==CS_SPECTATOR || t->state.aitype != AI_NONE || cq->team != t->team) continue;
+                    if(t==cq || t->state.state==CS_SPECTATOR || t->state.aitype != AINone || cq->team != t->team) continue;
                     sendf(t->clientnum, 1, "riis", N_SAYTEAM, cq->clientnum, text);
                 }
                 if(isdedicatedserver() && cq) logoutf("%s <%s>: %s", colorname(cq), teamnames[cq->team], text);

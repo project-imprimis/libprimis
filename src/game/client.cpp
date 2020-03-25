@@ -417,7 +417,7 @@ namespace game
     bool isai(int cn, int type)
     {
         gameent *d = getclient(cn);
-        int aitype = type > 0 && type < AI_MAX ? type : AI_BOT;
+        int aitype = type > 0 && type < AIMax ? type : AIBot;
         return d && d->aitype==aitype;
     }
     ICOMMAND(isai, "ii", (int *cn, int *type), intret(isai(*cn, *type) ? 1 : 0));
@@ -458,7 +458,7 @@ namespace game
             buf.put(cn, strlen(cn));
             numclients++;
         }
-        loopv(clients) if(clients[i] && (bots || clients[i]->aitype == AI_NONE))
+        loopv(clients) if(clients[i] && (bots || clients[i]->aitype == AINone))
         {
             formatstring(cn, "%d", clients[i]->clientnum);
             if(numclients++) buf.add(' ');

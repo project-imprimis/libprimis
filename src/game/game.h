@@ -300,7 +300,7 @@ struct gamestate
     int ammo[NUMGUNS];
     int aitype, skill;
 
-    gamestate() : maxhealth(1), aitype(AI_NONE), skill(0) {}
+    gamestate() : maxhealth(1), aitype(AINone), skill(0) {}
 
     bool canpickup(int type)
     {

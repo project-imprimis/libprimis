@@ -2,7 +2,12 @@ struct gameent;
 
 #define MAXBOTS 32
 
-enum { AI_NONE = 0, AI_BOT, AI_MAX };
+enum
+{
+    AINone = 0,
+    AIBot,
+    AIMax
+};
 
 namespace ai
 {
@@ -137,20 +142,20 @@ namespace ai
     // ai state information for the owner client
     enum
     {
-        AI_S_WAIT = 0,      // waiting for next command
-        AI_S_DEFEND,        // defend goal target
-        AI_S_PURSUE,        // pursue goal target
-        AI_S_INTEREST,      // interest in goal entity
-        AI_S_MAX
+        AIStateWait = 0,      // waiting for next command
+        AIStateDefend,        // defend goal target
+        AIStatePursue,        // pursue goal target
+        AIStateInterest,      // interest in goal entity
+        AIStateMax
     };
 
     enum
-    {
-        AI_T_NODE,
-        AI_T_PLAYER,
-        AI_T_AFFINITY,
-        AI_T_ENTITY,
-        AI_T_MAX
+    { //renamed to Travel, but "T" could mean something else
+        AITravelNode,
+        AITravelPlayer,
+        AITravelAffinity,
+        AITravelEntity,
+        AITravelMax
     };
 
     struct interest
@@ -219,7 +224,7 @@ namespace ai
         {
             clear(prev);
             state.setsize(0);
-            addstate(AI_S_WAIT);
+            addstate(AIStateWait);
             trywipe = false;
         }
 
@@ -257,7 +262,7 @@ namespace ai
         {
             if(index < 0) state.pop();
             else if(state.inrange(index)) state.remove(index);
-            if(!state.length()) addstate(AI_S_WAIT);
+            if(!state.length()) addstate(AIStateWait);
         }
 
         aistate &getstate(int idx = -1)
@@ -268,7 +273,7 @@ namespace ai
 
         aistate &switchstate(aistate &b, int t, int r = -1, int v = -1)
         {
-            if((b.type == t && b.targtype == r) || (b.type == AI_S_INTEREST && b.targtype == AI_T_NODE))
+            if((b.type == t && b.targtype == r) || (b.type == AIStateInterest && b.targtype == AITravelNode))
             {
                 b.millis = lastmillis;
                 b.target = v;

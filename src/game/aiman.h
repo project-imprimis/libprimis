@@ -66,7 +66,7 @@ namespace aiman
 
     static inline bool validaiclient(clientinfo *ci)
     {
-        return ci->clientnum >= 0 && ci->state.aitype == AI_NONE && (ci->state.state!=CS_SPECTATOR || ci->local || (ci->privilege && !ci->warned));
+        return ci->clientnum >= 0 && ci->state.aitype == AINone && (ci->state.state!=CS_SPECTATOR || ci->local || (ci->privilege && !ci->warned));
     }
 
     clientinfo *findaiclient(clientinfo *exclude = NULL)
@@ -110,7 +110,7 @@ namespace aiman
         if(!bots[cn]) bots[cn] = new clientinfo;
         clientinfo *ci = bots[cn];
         ci->clientnum = MAXCLIENTS + cn;
-        ci->state.aitype = AI_BOT;
+        ci->state.aitype = AIBot;
         clientinfo *owner = findaiclient();
         ci->ownernum = owner ? owner->clientnum : -1;
         if(owner) owner->bots.add(ci);
@@ -268,11 +268,11 @@ namespace aiman
 
     void addclient(clientinfo *ci)
     {
-        if(ci->state.aitype == AI_NONE) dorefresh = true;
+        if(ci->state.aitype == AINone) dorefresh = true;
     }
 
     void changeteam(clientinfo *ci)
     {
-        if(ci->state.aitype == AI_NONE) dorefresh = true;
+        if(ci->state.aitype == AINone) dorefresh = true;
     }
 }
