@@ -634,7 +634,7 @@ int findmaterials()
                 i += m.skip;
             }
         }
-        if(drawtex != DRAWTEX_ENVMAP && va->glassmin.x <= va->glassmax.x && calcbbscissor(va->glassmin, va->glassmax, sx1, sy1, sx2, sy2))
+        if(drawtex != Draw_TexEnvmap && va->glassmin.x <= va->glassmax.x && calcbbscissor(va->glassmin, va->glassmax, sx1, sy1, sx2, sy2))
         {
             matsolidsx1 = min(matsolidsx1, sx1);
             matsolidsy1 = min(matsolidsy1, sy1);

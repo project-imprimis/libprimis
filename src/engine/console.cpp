@@ -9,7 +9,12 @@ reversequeue<cline, MAXCONLINES> conlines;
 int commandmillis = -1;
 string commandbuf;
 char *commandaction = NULL, *commandprompt = NULL;
-enum { CF_COMPLETE = 1<<0, CF_EXECUTE = 1<<1 };
+enum
+{
+    CmdFlags_Complete = 1<<0,
+    CmdFlags_Execute  = 1<<1,
+};
+
 int commandflags = 0, commandpos = -1;
 
 VARFP(maxcon, 10, 200, MAXCONLINES, { while(conlines.length() > maxcon) delete[] conlines.pop().line; });
@@ -199,7 +204,7 @@ hashtable<int, keym> keyms(128);
 
 void keymap(int *code, char *key)
 {
-    if(identflags&IDF_OVERRIDDEN) { conoutf(CON_ERROR, "cannot override keymap %d", *code); return; }
+    if(identflags&Idf_Overridden) { conoutf(CON_ERROR, "cannot override keymap %d", *code); return; }
     keym &km = keyms[*code];
     km.code = *code;
     DELETEA(km.name);
@@ -249,7 +254,7 @@ void getbind(char *key, int type)
 
 void bindkey(char *key, char *action, int state, const char *cmd)
 {
-    if(identflags&IDF_OVERRIDDEN) { conoutf(CON_ERROR, "cannot override %s \"%s\"", cmd, key); return; }
+    if(identflags&Idf_Overridden) { conoutf(CON_ERROR, "cannot override %s \"%s\"", cmd, key); return; }
     keym *km = findbind(key);
     if(!km) { conoutf(CON_ERROR, "unknown key \"%s\"", key); return; }
     char *&binding = km->actions[state];
@@ -289,8 +294,8 @@ ICOMMAND(clearallbinds, "", (), ENUMERATE(keyms, keym, km, km.clear()));
 void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *flags = NULL) // turns input to the command line on or off
 {
     commandmillis = init ? totalmillis : -1;
-    textinput(commandmillis >= 0, TI_CONSOLE);
-    keyrepeat(commandmillis >= 0, KR_CONSOLE);
+    textinput(commandmillis >= 0, TextInput_Console);
+    keyrepeat(commandmillis >= 0, KeyRepeat_Console);
     copystring(commandbuf, init ? init : "");
     DELETEA(commandaction);
     DELETEA(commandprompt);
@@ -300,11 +305,11 @@ void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *fl
     commandflags = 0;
     if(flags) while(*flags) switch(*flags++)
     {
-        case 'c': commandflags |= CF_COMPLETE; break;
-        case 'x': commandflags |= CF_EXECUTE; break;
-        case 's': commandflags |= CF_COMPLETE|CF_EXECUTE; break;
+        case 'c': commandflags |= CmdFlags_Complete; break;
+        case 'x': commandflags |= CmdFlags_Execute; break;
+        case 's': commandflags |= CmdFlags_Complete|CmdFlags_Execute; break;
     }
-    else if(init) commandflags |= CF_COMPLETE|CF_EXECUTE;
+    else if(init) commandflags |= CmdFlags_Complete|CmdFlags_Execute;
 }
 
 ICOMMAND(saycommand, "C", (char *init), inputcommand(init));
@@ -364,7 +369,7 @@ struct hline
 
     void run()
     {
-        if(flags&CF_EXECUTE && buf[0]=='/') execute(buf+1);
+        if(flags&CmdFlags_Execute && buf[0]=='/') execute(buf+1);
         else if(action)
         {
             alias("commandbuf", buf);
@@ -453,7 +458,7 @@ void execbind(keym &k, bool isdown)
         if(!mainmenu)
         {
             if(editmode) state = keym::ACTION_EDITING;
-            else if(player->state==CS_SPECTATOR) state = keym::ACTION_SPECTATOR;
+            else if(player->state==ClientState_Spectator) state = keym::ACTION_SPECTATOR;
         }
         char *&action = k.actions[state][0] ? k.actions[state] : k.actions[keym::ACTION_DEFAULT];
         keyaction = action;
@@ -553,9 +558,9 @@ bool consolekey(int code, bool isdown)
                 break;
 
             case SDLK_TAB:
-                if(commandflags&CF_COMPLETE)
+                if(commandflags&CmdFlags_Complete)
                 {
-                    complete(commandbuf, sizeof(commandbuf), commandflags&CF_EXECUTE ? "/" : NULL);
+                    complete(commandbuf, sizeof(commandbuf), commandflags&CmdFlags_Execute ? "/" : NULL);
                     if(commandpos>=0 && commandpos>=(int)strlen(commandbuf)) commandpos = -1;
                 }
                 break;
@@ -643,7 +648,11 @@ void writebinds(stream *f)
 
 // tab-completion of all idents and base maps
 
-enum { FILES_DIR = 0, FILES_LIST };
+enum
+{
+    Files_Directory = 0,
+    Files_List,
+};
 
 struct fileskey
 {
@@ -666,7 +675,7 @@ struct filesval
 
     void update()
     {
-        if(type!=FILES_DIR || millis >= commandmillis) return;
+        if(type!=Files_Directory || millis >= commandmillis) return;
         files.deletearrays();
         listfiles(dir, ext, files);
         files.sort();
@@ -695,7 +704,7 @@ void resetcomplete() { completesize = 0; }
 
 void addcomplete(char *command, int type, char *dir, char *ext)
 {
-    if(identflags&IDF_OVERRIDDEN)
+    if(identflags&Idf_Overridden)
     {
         conoutf(CON_ERROR, "cannot override complete %s", command);
         return;
@@ -706,7 +715,7 @@ void addcomplete(char *command, int type, char *dir, char *ext)
         if(hasfiles) *hasfiles = NULL;
         return;
     }
-    if(type==FILES_DIR)
+    if(type==Files_Directory)
     {
         int dirlen = (int)strlen(dir);
         while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
@@ -722,7 +731,7 @@ void addcomplete(char *command, int type, char *dir, char *ext)
     if(!val)
     {
         filesval *f = new filesval(type, dir, ext);
-        if(type==FILES_LIST) explodelist(dir, f->files);
+        if(type==Files_List) explodelist(dir, f->files);
         val = &completefiles[fileskey(type, f->dir, f->ext)];
         *val = f;
     }
@@ -733,12 +742,12 @@ void addcomplete(char *command, int type, char *dir, char *ext)
 
 void addfilecomplete(char *command, char *dir, char *ext)
 {
-    addcomplete(command, FILES_DIR, dir, ext);
+    addcomplete(command, Files_Directory, dir, ext);
 }
 
 void addlistcomplete(char *command, char *list)
 {
-    addcomplete(command, FILES_LIST, list, NULL);
+    addcomplete(command, Files_List, list, NULL);
 }
 
 COMMANDN(complete, addfilecomplete, "sss");
@@ -803,7 +812,7 @@ void writecompletions(stream *f)
     {
         char *k = cmds[i];
         filesval *v = completions[k];
-        if(v->type==FILES_LIST)
+        if(v->type==Files_List)
         {
             if(validateblock(v->dir)) f->printf("listcomplete %s [%s]\n", escapeid(k), v->dir);
             else f->printf("listcomplete %s %s\n", escapeid(k), escapestring(v->dir));

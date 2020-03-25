@@ -25,7 +25,7 @@ static void fixent(entity &e, int version)
 {
     if(version <= 0)
     {
-        if(e.type >= ET_DECAL) e.type++;
+        if(e.type >= Ent_Decal) e.type++;
     }
 }
 
@@ -80,9 +80,9 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         f->seek(ilen, SEEK_CUR);
         switch(type)
         {
-            case ID_VAR: f->getlil<int>(); break;
-            case ID_FVAR: f->getlil<float>(); break;
-            case ID_SVAR: { int slen = f->getlil<ushort>(); f->seek(slen, SEEK_CUR); break; }
+            case Id_Var: f->getlil<int>(); break;
+            case Id_FloatVar: f->getlil<float>(); break;
+            case Id_StringVar: { int slen = f->getlil<ushort>(); f->seek(slen, SEEK_CUR); break; }
         }
     }
 
@@ -115,7 +115,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         {
             entities::readent(e, NULL, hdr.version);
         }
-        else if(e.type>=ET_GAMESPECIFIC)
+        else if(e.type>=Ent_GameSpecific)
         {
             ents.pop();
             continue;
@@ -615,36 +615,36 @@ bool save_world(const char *mname)
     hdr.worldsize = worldsize;
     hdr.numents = 0;
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents) if(ents[i]->type!=ET_EMPTY) hdr.numents++;
+    loopv(ents) if(ents[i]->type!=Ent_Empty) hdr.numents++;
     hdr.blendmap = shouldsaveblendmap();
     hdr.numvars = 0;
     hdr.numvslots = numvslots;
     ENUMERATE(idents, ident, id,
     {
-        if((id.type == ID_VAR || id.type == ID_FVAR || id.type == ID_SVAR) && id.flags&IDF_OVERRIDE && !(id.flags&IDF_READONLY) && id.flags&IDF_OVERRIDDEN) hdr.numvars++;
+        if((id.type == Id_Var || id.type == Id_FloatVar || id.type == Id_StringVar) && id.flags&Idf_Override && !(id.flags&Idf_ReadOnly) && id.flags&Idf_Overridden) hdr.numvars++;
     });
     LIL_ENDIAN_SWAP(&hdr.version, 8);
     f->write(&hdr, sizeof(hdr));
 
     ENUMERATE(idents, ident, id,
     {
-        if((id.type!=ID_VAR && id.type!=ID_FVAR && id.type!=ID_SVAR) || !(id.flags&IDF_OVERRIDE) || id.flags&IDF_READONLY || !(id.flags&IDF_OVERRIDDEN)) continue;
+        if((id.type!=Id_Var && id.type!=Id_FloatVar && id.type!=Id_StringVar) || !(id.flags&Idf_Override) || id.flags&Idf_ReadOnly || !(id.flags&Idf_Overridden)) continue;
         f->putchar(id.type);
         f->putlil<ushort>(strlen(id.name));
         f->write(id.name, strlen(id.name));
         switch(id.type)
         {
-            case ID_VAR:
+            case Id_Var:
                 if(dbgvars) conoutf(CON_DEBUG, "wrote var %s: %d", id.name, *id.storage.i);
                 f->putlil<int>(*id.storage.i);
                 break;
 
-            case ID_FVAR:
+            case Id_FloatVar:
                 if(dbgvars) conoutf(CON_DEBUG, "wrote fvar %s: %f", id.name, *id.storage.f);
                 f->putlil<float>(*id.storage.f);
                 break;
 
-            case ID_SVAR:
+            case Id_StringVar:
                 if(dbgvars) conoutf(CON_DEBUG, "wrote svar %s: %s", id.name, *id.storage.s);
                 f->putlil<ushort>(strlen(*id.storage.s));
                 f->write(*id.storage.s, strlen(*id.storage.s));
@@ -667,7 +667,7 @@ bool save_world(const char *mname)
     char *ebuf = new char[entities::extraentinfosize()];
     loopv(ents)
     {
-        if(ents[i]->type!=ET_EMPTY)
+        if(ents[i]->type!=Ent_Empty)
         {
             entity tmp = *ents[i];
             LIL_ENDIAN_SWAP(&tmp.o.x, 3);
@@ -739,9 +739,9 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         string str;
         switch(type)
         {
-            case ID_VAR: val.setint(f->getlil<int>()); break;
-            case ID_FVAR: val.setfloat(f->getlil<float>()); break;
-            case ID_SVAR:
+            case Id_Var: val.setint(f->getlil<int>()); break;
+            case Id_FloatVar: val.setfloat(f->getlil<float>()); break;
+            case Id_StringVar:
             {
                 int slen = f->getlil<ushort>();
                 f->read(str, min(slen, MAXSTRLEN-1));
@@ -752,9 +752,9 @@ bool load_world(const char *mname, const char *cname)        // still supports a
             }
             default: continue;
         }
-        if(id && id->flags&IDF_OVERRIDE) switch(id->type)
+        if(id && id->flags&Idf_Override) switch(id->type)
         {
-            case ID_VAR:
+            case Id_Var:
             {
                 int i = val.getint();
                 if(id->minval <= id->maxval && i >= id->minval && i <= id->maxval)
@@ -764,7 +764,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
                 }
                 break;
             }
-            case ID_FVAR:
+            case Id_FloatVar:
             {
                 float f = val.getfloat();
                 if(id->minvalf <= id->maxvalf && f >= id->minvalf && f <= id->maxvalf)
@@ -774,7 +774,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
                 }
                 break;
             }
-            case ID_SVAR:
+            case Id_StringVar:
                 setsvar(name, val.getstr());
                 if(dbgvars) conoutf(CON_DEBUG, "read svar %s: %s", name, val.getstr());
                 break;
@@ -823,7 +823,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         else
         {
             if(eif > 0) f->seek(eif, SEEK_CUR);
-            if(e.type>=ET_GAMESPECIFIC)
+            if(e.type>=Ent_GameSpecific)
             {
                 entities::deleteentity(ents.pop());
                 continue;
@@ -831,7 +831,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         }
         if(!insideworld(e.o))
         {
-            if(e.type != ET_LIGHT && e.type != ET_SPOTLIGHT)
+            if(e.type != Ent_Light && e.type != Ent_Spotlight)
             {
                 conoutf(CON_WARN, "warning: ent outside of world: enttype[%s] index %d (%f, %f, %f)", entities::entname(e.type), i, e.o.x, e.o.y, e.o.z);
             }
@@ -881,10 +881,10 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     clearmainmenu();
 
-    identflags |= IDF_OVERRIDDEN;
+    identflags |= Idf_Overridden;
     execfile("config/default_map_settings.cfg", false);
     execfile(cfgname, false);
-    identflags &= ~IDF_OVERRIDDEN;
+    identflags &= ~Idf_Overridden;
 
     preloadusedmapmodels(true);
 
@@ -1022,14 +1022,14 @@ void writecollideobj(char *name)
     loopv(entgroup)
     {
         extentity &e = *ents[entgroup[i]];
-        if(e.type != ET_MAPMODEL || !pointinsel(sel, e.o)) continue;
+        if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
         mm = &e;
         break;
     }
     if(!mm) loopv(ents)
     {
         extentity &e = *ents[i];
-        if(e.type != ET_MAPMODEL || !pointinsel(sel, e.o)) continue;
+        if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
         mm = &e;
         break;
     }

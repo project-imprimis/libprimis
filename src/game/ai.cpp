@@ -35,7 +35,7 @@ namespace ai
 
     bool canmove(gameent *d)
     {
-        return d->state != CS_DEAD && !intermission;
+        return d->state != ClientState_Dead && !intermission;
     }
 
     float attackmindist(int atk)
@@ -57,7 +57,7 @@ namespace ai
     bool targetable(gameent *d, gameent *e)
     {
         if(d == e || !canmove(d)) return false;
-        return e->state == CS_ALIVE && !IS_TEAM(d->team, e->team);
+        return e->state == ClientState_Alive && !IS_TEAM(d->team, e->team);
     }
 
     bool getsight(vec &o, float yaw, float pitch, vec &q, vec &v, float mdist, float fovx, float fovy)
@@ -76,7 +76,7 @@ namespace ai
     bool cansee(gameent *d, vec &x, vec &y, vec &targ)
     {
         aistate &b = d->ai->getstate();
-        if(canmove(d) && b.type != AIStateWait)
+        if(canmove(d) && b.type != AIState_Wait)
             return getsight(x, d->yaw, d->pitch, y, targ, d->ai->views[2], d->ai->views[0], d->ai->views[1]);
         return false;
     }
@@ -221,7 +221,7 @@ namespace ai
             if(targets.find(e->clientnum) >= 0) continue;
             if(teams && d && !IS_TEAM(d->team, e->team)) continue;
             if(members) (*members)++;
-            if(e == d || !e->ai || e->state != CS_ALIVE) continue;
+            if(e == d || !e->ai || e->state != ClientState_Alive) continue;
             aistate &b = e->ai->getstate();
             if(state >= 0 && b.type != state) continue;
             if(target >= 0 && b.target != target) continue;
@@ -344,8 +344,8 @@ namespace ai
         {
             if(pursue)
             {
-                if((b.targtype != AITravelAffinity || !(pursue%2)) && makeroute(d, b, e->lastnode))
-                    d->ai->switchstate(b, AIStatePursue, AITravelPlayer, e->clientnum);
+                if((b.targtype != AITravel_Affinity || !(pursue%2)) && makeroute(d, b, e->lastnode))
+                    d->ai->switchstate(b, AIState_Pursue, AITravel_Player, e->clientnum);
                 else if(pursue >= 3) return false; // can't pursue
             }
             if(d->ai->enemy != e->clientnum)
@@ -403,12 +403,12 @@ namespace ai
         loopv(players)
         {
             gameent *e = players[i];
-            if(e == d || (!all && e->aitype != AINone) || !IS_TEAM(d->team, e->team)) continue;
+            if(e == d || (!all && e->aitype != AI_None) || !IS_TEAM(d->team, e->team)) continue;
             interest &n = interests.add();
-            n.state = AIStateDefend;
+            n.state = AIState_Defend;
             n.node = e->lastnode;
             n.target = e->clientnum;
-            n.targtype = AITravelPlayer;
+            n.targtype = AITravel_Player;
             n.score = e->o.squaredist(d->o)/(hasgoodammo(d) ? 1e8f : (force ? 1e4f : 1e2f));
         }
     }
@@ -422,10 +422,10 @@ namespace ai
         if(score != 0)
         {
             interest &n = interests.add();
-            n.state = AIStateInterest;
+            n.state = AIState_Interest;
             n.node = closestwaypoint(e.o, SIGHTMIN, true);
             n.target = id;
-            n.targtype = AITravelEntity;
+            n.targtype = AITravel_Entity;
             n.score = d->feetpos().squaredist(e.o)/(force ? -1 : score);
         }
     }
@@ -452,7 +452,7 @@ namespace ai
             bool proceed = true;
             if(!ignore) switch(n.state)
             {
-                case AIStateDefend: // don't get into herds
+                case AIState_Defend: // don't get into herds
                 {
                     int members = 0;
                     proceed = !checkothers(targets, d, n.state, n.targtype, n.target, true, &members) && members > 1;
@@ -507,7 +507,7 @@ namespace ai
             bool proceed = true;
             switch(n.state)
             {
-                case AIStateDefend: // don't get into herds
+                case AIState_Defend: // don't get into herds
                 {
                     int members = 0;
                     proceed = !checkothers(targets, d, n.state, n.targtype, n.target, true, &members) && members > 1;
@@ -531,7 +531,7 @@ namespace ai
             aistate &b = d->ai->getstate();
             if(violence(d, b, e)) return;
         }
-        if(checkothers(targets, d, AIStateDefend, AITravelPlayer, d->clientnum, true))
+        if(checkothers(targets, d, AIState_Defend, AITravel_Player, d->clientnum, true))
         {
             loopv(targets)
             {
@@ -578,7 +578,7 @@ namespace ai
         extentity &e = *entities::ents[ent];
         if(VALID_ITEM(e.type))
         {
-            loopv(players) if(players[i] && players[i]->ai && players[i]->aitype == AIBot && players[i]->canpickup(e.type))
+            loopv(players) if(players[i] && players[i]->ai && players[i]->aitype == AI_Bot && players[i]->canpickup(e.type))
             {
                 gameent *d = players[i];
                 bool wantsitem = false;
@@ -588,17 +588,17 @@ namespace ai
                 if(wantsitem)
                 {
                     aistate &b = d->ai->getstate();
-                    if(b.targtype == AITravelAffinity) continue;
-                    if(b.type == AIStateInterest && b.targtype == AITravelEntity)
+                    if(b.targtype == AITravel_Affinity) continue;
+                    if(b.type == AIState_Interest && b.targtype == AITravel_Entity)
                     {
                         if(entities::ents.inrange(b.target))
                         {
                             if(d->o.squaredist(entities::ents[ent]->o) < d->o.squaredist(entities::ents[b.target]->o))
-                                d->ai->switchstate(b, AIStateInterest, AITravelEntity, ent);
+                                d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
                         }
                         continue;
                     }
-                    d->ai->switchstate(b, AIStateInterest, AITravelEntity, ent);
+                    d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
                 }
             }
         }
@@ -618,7 +618,7 @@ namespace ai
         if(target(d, b, 4, true)) return 1;
         if(randomnode(d, b, SIGHTMIN, 1e16f))
         {
-            d->ai->switchstate(b, AIStateInterest, AITravelNode, d->ai->route[0]);
+            d->ai->switchstate(b, AIState_Interest, AITravel_Node, d->ai->route[0]);
             return 1;
         }
         return 0; // but don't pop the state
@@ -626,26 +626,26 @@ namespace ai
 
     int dodefend(gameent *d, aistate &b)
     {
-        if(d->state == CS_ALIVE)
+        if(d->state == ClientState_Alive)
         {
             switch(b.targtype)
             {
-                case AITravelNode:
+                case AITravel_Node:
                     if(check(d, b)) return 1;
                     if(iswaypoint(b.target)) return defend(d, b, waypoints[b.target].o) ? 1 : 0;
                     break;
-                case AITravelEntity:
+                case AITravel_Entity:
                     if(check(d, b)) return 1;
                     if(entities::ents.inrange(b.target)) return defend(d, b, entities::ents[b.target]->o) ? 1 : 0;
                     break;
-                case AITravelAffinity:
+                case AITravel_Affinity:
                     if(cmode) return cmode->aidefend(d, b) ? 1 : 0;
                     break;
-                case AITravelPlayer:
+                case AITravel_Player:
                 {
                     if(check(d, b)) return 1;
                     gameent *e = getclient(b.target);
-                    if(e && e->state == CS_ALIVE) return defend(d, b, e->feetpos()) ? 1 : 0;
+                    if(e && e->state == ClientState_Alive) return defend(d, b, e->feetpos()) ? 1 : 0;
                     break;
                 }
                 default: break;
@@ -656,16 +656,16 @@ namespace ai
 
     int dointerest(gameent *d, aistate &b)
     {
-        if(d->state != CS_ALIVE) return 0;
+        if(d->state != ClientState_Alive) return 0;
         switch(b.targtype)
         {
-            case AITravelNode: // this is like a wait state without sitting still..
+            case AITravel_Node: // this is like a wait state without sitting still..
                 if(check(d, b) || find(d, b)) return 1;
                 if(target(d, b, 4, true)) return 1;
                 if(iswaypoint(b.target) && vec(waypoints[b.target].o).sub(d->feetpos()).magnitude() > CLOSEDIST)
                     return makeroute(d, b, waypoints[b.target].o) ? 1 : 0;
                 break;
-            case AITravelEntity:
+            case AITravel_Entity:
                 if(entities::ents.inrange(b.target))
                 {
                     extentity &e = *(extentity *)entities::ents[b.target];
@@ -684,11 +684,11 @@ namespace ai
 
     int dopursue(gameent *d, aistate &b)
     {
-        if(d->state == CS_ALIVE)
+        if(d->state == ClientState_Alive)
         {
             switch(b.targtype)
             {
-                case AITravelNode:
+                case AITravel_Node:
                 {
                     if(check(d, b)) return 1;
                     if(iswaypoint(b.target))
@@ -696,17 +696,17 @@ namespace ai
                     break;
                 }
 
-                case AITravelAffinity:
+                case AITravel_Affinity:
                 {
                     if(cmode) return cmode->aipursue(d, b) ? 1 : 0;
                     break;
                 }
 
-                case AITravelPlayer:
+                case AITravel_Player:
                 {
                     //if(check(d, b)) return 1;
                     gameent *e = getclient(b.target);
-                    if(e && e->state == CS_ALIVE)
+                    if(e && e->state == ClientState_Alive)
                     {
                         int atk = guns[d->gunselect].attacks[ACT_SHOOT];
                         float guard = SIGHTMIN, wander = attacks[atk].range;
@@ -1066,7 +1066,7 @@ namespace ai
         fixrange(d->ai->targyaw, d->ai->targpitch);
         if(!result) scaleyawpitch(d->yaw, d->pitch, d->ai->targyaw, d->ai->targpitch, frame*0.25f, 1.f);
 
-        if(d->ai->becareful && d->physstate == PHYS_FALL)
+        if(d->ai->becareful && d->physstate == PhysEntState_Fall)
         {
             float offyaw, offpitch;
             vectoyawpitch(d->vel, offyaw, offpitch);
@@ -1201,9 +1201,9 @@ namespace ai
 
     void logic(gameent *d, aistate &b, bool run)
     {
-        bool allowmove = canmove(d) && b.type != AIStateWait;
-        if(d->state != CS_ALIVE || !allowmove) d->stopmoving();
-        if(d->state == CS_ALIVE)
+        bool allowmove = canmove(d) && b.type != AIState_Wait;
+        if(d->state != ClientState_Alive || !allowmove) d->stopmoving();
+        if(d->state == ClientState_Alive)
         {
             if(allowmove)
             {
@@ -1219,7 +1219,7 @@ namespace ai
                 if(cmode) cmode->checkitems(d);
             }
         }
-        else if(d->state == CS_DEAD)
+        else if(d->state == ClientState_Dead)
         {
             if(d->ragdoll) moveragdoll(d);
             else if(lastmillis-d->lastpain<2000)
@@ -1240,7 +1240,7 @@ namespace ai
         loopv(players)
         {
             dynent *d = players[i];
-            if(d->state != CS_ALIVE) continue;
+            if(d->state != ClientState_Alive) continue;
             obstacles.avoidnear(d, d->o.z + d->aboveeye + 1, d->feetpos(), guessradius + d->radius);
         }
         extern avoidset wpavoid;
@@ -1254,7 +1254,7 @@ namespace ai
         // others spawn new commands to the stack the ai reads the top command from the stack and executes
         // it or pops the stack and goes back along the history until it finds a suitable command to execute
         bool cleannext = false;
-        if(d->ai->state.empty()) d->ai->addstate(AIStateWait);
+        if(d->ai->state.empty()) d->ai->addstate(AIState_Wait);
         loopvrev(d->ai->state)
         {
             aistate &c = d->ai->state[i];
@@ -1264,26 +1264,26 @@ namespace ai
                 c.override = false;
                 cleannext = false;
             }
-            if(d->state == CS_DEAD && d->respawned!=d->lifesequence && (!cmode || cmode->respawnwait(d) <= 0) && lastmillis - d->lastpain >= 500)
+            if(d->state == ClientState_Dead && d->respawned!=d->lifesequence && (!cmode || cmode->respawnwait(d) <= 0) && lastmillis - d->lastpain >= 500)
             {
                 addmsg(N_TRYSPAWN, "rc", d);
                 d->respawned = d->lifesequence;
             }
-            else if(d->state == CS_ALIVE && run)
+            else if(d->state == ClientState_Alive && run)
             {
                 int result = 0;
                 c.idle = 0;
                 switch(c.type)
                 {
-                    case AIStateWait: result = dowait(d, c); break;
-                    case AIStateDefend: result = dodefend(d, c); break;
-                    case AIStatePursue: result = dopursue(d, c); break;
-                    case AIStateInterest: result = dointerest(d, c); break;
+                    case AIState_Wait: result = dowait(d, c); break;
+                    case AIState_Defend: result = dodefend(d, c); break;
+                    case AIState_Pursue: result = dopursue(d, c); break;
+                    case AIState_Interest: result = dointerest(d, c); break;
                     default: result = 0; break;
                 }
                 if(result <= 0)
                 {
-                    if(c.type != AIStateWait)
+                    if(c.type != AIState_Wait)
                     {
                         switch(result)
                         {
@@ -1338,9 +1338,9 @@ namespace ai
     VAR(showwaypoints, 0, 0, 1);
     VAR(showwaypointsradius, 0, 200, 10000);
 
-    const char *stnames[AIStateMax] = {
+    const char *stnames[AIState_Max] = {
         "wait", "defend", "pursue", "interest"
-    }, *sttypes[AITravelMax+1] = {
+    }, *sttypes[AITravel_Max+1] = {
         "none", "node", "player", "affinity", "entity"
     };
     void render()
@@ -1349,7 +1349,7 @@ namespace ai
         {
             int total = 0, alive = 0;
             loopv(players) if(players[i]->ai) total++;
-            loopv(players) if(players[i]->state == CS_ALIVE && players[i]->ai)
+            loopv(players) if(players[i]->state == ClientState_Alive && players[i]->ai)
             {
                 gameent *d = players[i];
                 vec pos = d->abovehead();

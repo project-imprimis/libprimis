@@ -1091,7 +1091,7 @@ void Shader::force()
     int oldflags = identflags;
     standardshaders = standard;
     forceshaders = false;
-    identflags &= ~IDF_PERSIST;
+    identflags &= ~Idf_Persist;
     slotparams.shrink(0);
     execute(cmd);
     identflags = oldflags;
@@ -1527,9 +1527,9 @@ void cleanupshaders()
 
 void reloadshaders()
 {
-    identflags &= ~IDF_PERSIST;
+    identflags &= ~Idf_Persist;
     loadshaders();
-    identflags |= IDF_PERSIST;
+    identflags |= Idf_Persist;
 
     linkslotshaders();
     ENUMERATE(shaders, Shader, s,
@@ -1554,7 +1554,7 @@ void reloadshaders()
 
 void resetshaders()
 {
-    clearchanges(CHANGE_SHADERS);
+    clearchanges(Change_Shaders);
 
     cleanuplights();
     cleanupmodels();

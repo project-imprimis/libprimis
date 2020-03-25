@@ -520,7 +520,7 @@ namespace UI
 
         void buildchildren(uint *contents)
         {
-            if((*contents&CodeOpMask) == CodeExit) children.deletecontents();
+            if((*contents&Code_OpMask) == Code_Exit) children.deletecontents();
             else
             {
                 Object *oldparent = buildparent;
@@ -1030,7 +1030,7 @@ namespace UI
             executeret(columndata);
             if(columns != buildchild) while(children.length() > buildchild) delete children.pop();
             columns = buildchild;
-            if((*contents&CodeOpMask) != CodeExit) executeret(contents);
+            if((*contents&Code_OpMask) != Code_Exit) executeret(contents);
             while(children.length() > buildchild) delete children.pop();
             buildparent = oldparent;
             buildchild = oldchild;
@@ -2336,11 +2336,11 @@ namespace UI
     {
         switch(id->type)
         {
-            case ID_VAR: val = *id->storage.i; break;
-            case ID_FVAR: val = *id->storage.f; break;
-            case ID_SVAR: val = parsenumber(*id->storage.s); break;
-            case ID_ALIAS: val = id->getnumber(); break;
-            case ID_COMMAND:
+            case Id_Var: val = *id->storage.i; break;
+            case Id_FloatVar: val = *id->storage.f; break;
+            case Id_StringVar: val = parsenumber(*id->storage.s); break;
+            case Id_Alias: val = id->getnumber(); break;
+            case Id_Command:
             {
                 tagval t;
                 executeret(id, NULL, 0, true, t);
@@ -2356,11 +2356,11 @@ namespace UI
     {
         switch(id->type)
         {
-            case ID_VAR: setvarchecked(id, int(clamp(val, double(INT_MIN), double(INT_MAX)))); break;
-            case ID_FVAR: setfvarchecked(id, val); break;
-            case ID_SVAR: setsvarchecked(id, numberstr(val)); break;
-            case ID_ALIAS: alias(id->name, numberstr(val)); break;
-            case ID_COMMAND:
+            case Id_Var: setvarchecked(id, int(clamp(val, double(INT_MIN), double(INT_MAX)))); break;
+            case Id_FloatVar: setfvarchecked(id, val); break;
+            case Id_StringVar: setsvarchecked(id, numberstr(val)); break;
+            case Id_Alias: alias(id->name, numberstr(val)); break;
+            case Id_Command:
             {
                 tagval t;
                 t.setnumber(val);
@@ -2368,7 +2368,7 @@ namespace UI
                 break;
             }
         }
-        if(onchange && (*onchange&CodeOpMask) != CodeExit) execute(onchange);
+        if(onchange && (*onchange&Code_OpMask) != Code_Exit) execute(onchange);
     }
 
     struct Slider : Object
@@ -2384,8 +2384,8 @@ namespace UI
             Object::setup();
             if(!vmin_ && !vmax_) switch(id_->type)
             {
-                case ID_VAR: vmin_ = id_->minval; vmax_ = id_->maxval; break;
-                case ID_FVAR: vmin_ = id_->minvalf; vmax_ = id_->maxvalf; break;
+                case Id_Var: vmin_ = id_->minval; vmax_ = id_->maxval; break;
+                case Id_FloatVar: vmin_ = id_->minvalf; vmax_ = id_->maxvalf; break;
             }
             if(id != id_) changed = false;
             id = id_;
@@ -2583,8 +2583,8 @@ namespace UI
             if(focus == e) return;
             focus = e;
             bool allowtextinput = focus!=NULL && focus->allowtextinput();
-            ::textinput(allowtextinput, TI_GUI);
-            ::keyrepeat(allowtextinput, KR_GUI);
+            ::textinput(allowtextinput, TextInput_GUI);
+            ::keyrepeat(allowtextinput, KeyRepeat_GUI);
         }
         void setfocus() { setfocus(this); }
         void clearfocus() { if(focus == this) setfocus(NULL); }
@@ -2717,11 +2717,11 @@ namespace UI
     {
         switch(id->type)
         {
-            case ID_VAR: val = intstr(*id->storage.i); break;
-            case ID_FVAR: val = floatstr(*id->storage.f); break;
-            case ID_SVAR: val = *id->storage.s; break;
-            case ID_ALIAS: val = id->getstr(); break;
-            case ID_COMMAND: val = executestr(id, NULL, 0, true); shouldfree = true; break;
+            case Id_Var: val = intstr(*id->storage.i); break;
+            case Id_FloatVar: val = floatstr(*id->storage.f); break;
+            case Id_StringVar: val = *id->storage.s; break;
+            case Id_Alias: val = id->getstr(); break;
+            case Id_Command: val = executestr(id, NULL, 0, true); shouldfree = true; break;
         }
         return val;
     }
@@ -2730,11 +2730,11 @@ namespace UI
     {
         switch(id->type)
         {
-            case ID_VAR: setvarchecked(id, parseint(val)); break;
-            case ID_FVAR: setfvarchecked(id, parsefloat(val)); break;
-            case ID_SVAR: setsvarchecked(id, val); break;
-            case ID_ALIAS: alias(id->name, val); break;
-            case ID_COMMAND:
+            case Id_Var: setvarchecked(id, parseint(val)); break;
+            case Id_FloatVar: setfvarchecked(id, parsefloat(val)); break;
+            case Id_StringVar: setsvarchecked(id, val); break;
+            case Id_Alias: alias(id->name, val); break;
+            case Id_Command:
             {
                 tagval t;
                 t.setstr(newstring(val));
@@ -2742,7 +2742,7 @@ namespace UI
                 break;
             }
         }
-        if(onchange && (*onchange&CodeOpMask) != CodeExit) execute(onchange);
+        if(onchange && (*onchange&Code_OpMask) != Code_Exit) execute(onchange);
     }
 
     struct Field : TextEditor
@@ -3119,7 +3119,7 @@ namespace UI
     ICOMMAND(uivisible, "s", (char *name), intret(uivisible(name) ? 1 : 0));
     ICOMMAND(uiname, "", (), { if(window) result(window->name); });
 
-    #define IFSTATEVAL(state,t,f) { if(state) { if(t->type == ValueNull) intret(1); else result(*t); } else if(f->type == ValueNull) intret(0); else result(*f); }
+    #define IFSTATEVAL(state,t,f) { if(state) { if(t->type == Value_Null) intret(1); else result(*t); } else if(f->type == Value_Null) intret(0); else result(*f); }
     #define DOSTATE(flags, func) \
         ICOMMANDNS("ui!" #func, uinot##func##_, "ee", (uint *t, uint *f), \
             executeret(buildparent && buildparent->hasstate(flags) ? t : f)); \
@@ -3315,15 +3315,15 @@ namespace UI
         scale *= scalemod;
         switch(t.type)
         {
-            case ValueInteger:
+            case Value_Integer:
                 BUILD(TextInt, o, o->setup(t.i, scale, color, wrap), children);
                 break;
-            case ValueFloat:
+            case Value_Float:
                 BUILD(TextFloat, o, o->setup(t.f, scale, color, wrap), children);
                 break;
-            case ValueCString:
-            case ValueMacro:
-            case ValueString:
+            case Value_CString:
+            case Value_Macro:
+            case Value_String:
                 if(t.s[0])
                 {
                     BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
@@ -3393,9 +3393,9 @@ namespace UI
     {
         switch(t->type)
         {
-            case ValueInteger: return t->i;
-            case ValueFloat: return t->f;
-            case ValueNull: return 0;
+            case Value_Integer: return t->i;
+            case Value_Float: return t->f;
+            case Value_Null: return 0;
             default:
             {
                 const char *s = t->getstr();

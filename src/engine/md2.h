@@ -226,14 +226,14 @@ struct md2 : vertloader<md2>
         loadskin(name, pname, tex, masks);
         mdl.initskins(tex, masks);
         if(tex==notexture) conoutf("could not load model skin for %s", name1);
-        identflags &= ~IDF_PERSIST;
+        identflags &= ~Idf_Persist;
         DEF_FORMAT_STRING(name3, "media/model/%s/md2.cfg", name);
         if(!execfile(name3, false))
         {
             formatstring(name3, "media/model/%s/md2.cfg", pname);
             execfile(name3, false);
         }
-        identflags |= IDF_PERSIST;
+        identflags |= Idf_Persist;
         return true;
     }
 };

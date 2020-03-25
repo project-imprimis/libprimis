@@ -716,7 +716,7 @@ static editor *useeditor(const char *name, int mode, bool focus, const char *ini
 
 
 #define TEXTCOMMAND(f, s, d, body) ICOMMAND(f, s, d,\
-    if(!textfocus || identflags&IDF_OVERRIDDEN) return;\
+    if(!textfocus || identflags&Idf_Overridden) return;\
     body\
 )
 
@@ -737,7 +737,7 @@ TEXTCOMMAND(textshow, "", (), // @DEBUG return the start of the buffer
     line.clear();
 );
 ICOMMAND(textfocus, "si", (char *name, int *mode), // focus on a (or create a persistent) specific editor, else returns current name
-    if(identflags&IDF_OVERRIDDEN) return;
+    if(identflags&Idf_Overridden) return;
     if(*name) useeditor(name, *mode<=0 ? EDITORFOREVER : *mode, true);
     else if(editors.length() > 0) result(editors.last()->name);
 );
@@ -760,7 +760,7 @@ TEXTCOMMAND(textload, "s", (char *file), // loads into the textfocusmost editor,
 );
 ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into named editor if no file assigned and editor has been rendered
 {
-    if(identflags&IDF_OVERRIDDEN) return;
+    if(identflags&Idf_Overridden) return;
     editor *e = NULL;
     loopv(editors) if(!strcmp(editors[i]->name, name)) { e = editors[i]; break; }
     if(e && e->rendered && !e->filename && *file && (e->lines.empty() || (e->lines.length() == 1 && !strcmp(e->lines[0].text, initval))))

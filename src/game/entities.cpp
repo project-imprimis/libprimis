@@ -105,7 +105,7 @@ namespace entities
             {
                 vec p = e.o;
                 p.z += 1+sinf(lastmillis/100.0+e.o.x+e.o.y)/20;
-                rendermodel(mdlname, ANIM_MAPMODEL|ANIM_LOOP, p, lastmillis/(float)revs, 0, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
+                rendermodel(mdlname, Anim_Mapmodel|ANIM_LOOP, p, lastmillis/(float)revs, 0, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
             }
         }
     }
@@ -269,7 +269,7 @@ namespace entities
                 jumppadeffects(d, n, true);
                 if(d->ai) d->ai->becareful = true;
                 d->falling = vec(0, 0, 0);
-                d->physstate = PHYS_FALL;
+                d->physstate = PhysEntState_Fall;
                 d->timeinair = 1;
                 d->vel = vec(ents[n]->attr3*10.0f, ents[n]->attr2*10.0f, ents[n]->attr1*12.5f);
                 break;
@@ -279,7 +279,7 @@ namespace entities
 
     void checkitems(gameent *d)
     {
-        if(d->state!=CS_ALIVE) return;
+        if(d->state!=ClientState_Alive) return;
         vec o = d->feetpos();
         loopv(ents)
         {

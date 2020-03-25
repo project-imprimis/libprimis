@@ -314,9 +314,9 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     if(!m) return false;
     if(mode&RAY_SHADOW)
     {
-        if(!m->shadow || e.flags&EF_NOSHADOW) return false;
+        if(!m->shadow || e.flags&EntFlag_NoShadow) return false;
     }
-    else if((mode&RAY_ENTS)!=RAY_ENTS && (!m->collide || e.flags&EF_NOCOLLIDE)) return false;
+    else if((mode&RAY_ENTS)!=RAY_ENTS && (!m->collide || e.flags&EntFlag_NoCollide)) return false;
     if(!m->bih && !m->setBIH()) return false;
     float scale = e.attr5 ? 100.0f/e.attr5 : 1.0f;
     vec mo = vec(o).sub(e.o).mul(scale), mray(ray);
@@ -490,7 +490,7 @@ static inline bool triboxoverlap(const vec &radius, const vec &a, const vec &b, 
 }
 
 template<>
-inline void BIH::tricollide<COLLIDE_ELLIPSE>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+inline void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br)) return; 
 
@@ -511,7 +511,7 @@ inline void BIH::tricollide<COLLIDE_ELLIPSE>(const mesh &m, int tidx, physent *d
     if(!dir.iszero())
     {
         if(n.dot(dir) >= -cutoff*dir.magnitude()) return;
-        if(d->type==ENT_PLAYER &&
+        if(d->type==PhysEnt_Player &&
             pdist < (dir.z*n.z < 0 ?
                2*radius.z*(d->zmargin/(d->aboveeye+d->eyeheight)-(dir.z < 0 ? 1/3.0f : 1/4.0f)) :
                (dir.x*n.x < 0 || dir.y*n.y < 0 ? -radius.x : 0)))
@@ -523,7 +523,7 @@ inline void BIH::tricollide<COLLIDE_ELLIPSE>(const mesh &m, int tidx, physent *d
 }
 
 template<>
-inline void BIH::tricollide<COLLIDE_OBB>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+inline void BIH::tricollide<Collide_OBB>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br)) return;
 
@@ -544,7 +544,7 @@ inline void BIH::tricollide<COLLIDE_OBB>(const mesh &m, int tidx, physent *d, co
     if(!dir.iszero())
     {
         if(n.dot(dir) >= -cutoff*dir.magnitude()) return;
-        if(d->type==ENT_PLAYER &&
+        if(d->type==PhysEnt_Player &&
             pdist < (dir.z*n.z < 0 ?
                2*radius.z*(d->zmargin/(d->aboveeye+d->eyeheight)-(dir.z < 0 ? 1/3.0f : 1/4.0f)) :
                (dir.x*n.x < 0 || dir.y*n.y < 0 ? -max(radius.x, radius.y) : 0)))
@@ -652,7 +652,7 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
         if(!(m.flags&MESH_COLLIDE) || m.flags&MESH_NOCLIP) continue;
         matrix4x3 morient;
         morient.mul(orient, m.xform);
-        collide<COLLIDE_ELLIPSE>(m, d, dir, cutoff, m.invxform.transform(bo), radius, morient, dist, m.nodes, icenter, iradius);
+        collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform.transform(bo), radius, morient, dist, m.nodes, icenter, iradius);
     }
     return dist > -1e9f;
 }
@@ -693,7 +693,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
         if(!(m.flags&MESH_COLLIDE) || m.flags&MESH_NOCLIP) continue;
         matrix4x3 morient;
         morient.mul(dorient, dcenter, m.xform);
-        collide<COLLIDE_OBB>(m, d, ddir, cutoff, center, radius, morient, dist, m.nodes, icenter, iradius);
+        collide<Collide_OBB>(m, d, ddir, cutoff, center, radius, morient, dist, m.nodes, icenter, iradius);
     }
     if(dist > -1e9f)
     {

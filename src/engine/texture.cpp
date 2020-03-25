@@ -682,14 +682,14 @@ VAR(hwcubetexsize, 1, 0, 0);
 VAR(hwmaxaniso, 1, 0, 0);
 VAR(hwtexunits, 1, 0, 0);
 VAR(hwvtexunits, 1, 0, 0);
-VARFP(maxtexsize, 0, 0, 1<<12, initwarning("texture quality", INIT_LOAD));
-VARFP(reducefilter, 0, 1, 1, initwarning("texture quality", INIT_LOAD));
-VARFP(texreduce, 0, 0, 12, initwarning("texture quality", INIT_LOAD));
-VARFP(texcompress, 0, 1536, 1<<12, initwarning("texture quality", INIT_LOAD));
+VARFP(maxtexsize, 0, 0, 1<<12, initwarning("texture quality", Init_Load));
+VARFP(reducefilter, 0, 1, 1, initwarning("texture quality", Init_Load));
+VARFP(texreduce, 0, 0, 12, initwarning("texture quality", Init_Load));
+VARFP(texcompress, 0, 1536, 1<<12, initwarning("texture quality", Init_Load));
 VARFP(texcompressquality, -1, -1, 1, setuptexcompress());
-VARF(trilinear, 0, 1, 1, initwarning("texture filtering", INIT_LOAD));
-VARF(bilinear, 0, 1, 1, initwarning("texture filtering", INIT_LOAD));
-VARFP(aniso, 0, 0, 16, initwarning("texture filtering", INIT_LOAD));
+VARF(trilinear, 0, 1, 1, initwarning("texture filtering", Init_Load));
+VARF(bilinear, 0, 1, 1, initwarning("texture filtering", Init_Load));
+VARFP(aniso, 0, 0, 16, initwarning("texture filtering", Init_Load));
 
 extern int usetexcompress;
 
@@ -742,7 +742,7 @@ int formatsize(GLenum format)
     }
 }
 
-VARFP(usenp2, 0, 1, 1, initwarning("texture quality", INIT_LOAD));
+VARFP(usenp2, 0, 1, 1, initwarning("texture quality", Init_Load));
 
 void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int compress, int &tw, int &th)
 {
@@ -1678,7 +1678,7 @@ const char *DecalSlot::name() const { return tempformatstring("decal slot %d", S
 
 void texturereset(int *n)
 {
-    if(!(identflags&IDF_OVERRIDDEN) && !game::allowedittoggle()) return;
+    if(!(identflags&Idf_Overridden) && !game::allowedittoggle()) return;
     defslot = NULL;
     resetslotshader();
     int limit = clamp(*n, 0, slots.length());
@@ -1701,7 +1701,7 @@ COMMAND(texturereset, "i");
 
 void materialreset()
 {
-    if(!(identflags&IDF_OVERRIDDEN) && !game::allowedittoggle()) return;
+    if(!(identflags&Idf_Overridden) && !game::allowedittoggle()) return;
     defslot = NULL;
     loopi((MATF_VOLUME|MATF_INDEX)+1) materialslots[i].reset();
 }
@@ -1710,7 +1710,7 @@ COMMAND(materialreset, "");
 
 void decalreset(int *n)
 {
-    if(!(identflags&IDF_OVERRIDDEN) && !game::allowedittoggle()) return;
+    if(!(identflags&Idf_Overridden) && !game::allowedittoggle()) return;
     defslot = NULL;
     resetslotshader();
     decalslots.deletecontents(*n);
@@ -3086,7 +3086,7 @@ void initenvmaps()
     loopv(ents)
     {
         const extentity &ent = *ents[i];
-        if(ent.type != ET_ENVMAP) continue;
+        if(ent.type != Ent_Envmap) continue;
         envmap &em = envmaps.add();
         em.radius = ent.attr1 ? clamp(int(ent.attr1), 0, 10000) : envmapradius;
         em.size = ent.attr2 ? clamp(int(ent.attr2), 4, 9) : 0;

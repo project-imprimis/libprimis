@@ -4,9 +4,9 @@ struct gameent;
 
 enum
 {
-    AINone = 0,
-    AIBot,
-    AIMax
+    AI_None = 0,
+    AI_Bot,
+    AI_Max
 };
 
 namespace ai
@@ -142,20 +142,20 @@ namespace ai
     // ai state information for the owner client
     enum
     {
-        AIStateWait = 0,      // waiting for next command
-        AIStateDefend,        // defend goal target
-        AIStatePursue,        // pursue goal target
-        AIStateInterest,      // interest in goal entity
-        AIStateMax
+        AIState_Wait = 0,      // waiting for next command
+        AIState_Defend,        // defend goal target
+        AIState_Pursue,        // pursue goal target
+        AIState_Interest,      // interest in goal entity
+        AIState_Max,
     };
 
     enum
     { //renamed to Travel, but "T" could mean something else
-        AITravelNode,
-        AITravelPlayer,
-        AITravelAffinity,
-        AITravelEntity,
-        AITravelMax
+        AITravel_Node,
+        AITravel_Player,
+        AITravel_Affinity,
+        AITravel_Entity,
+        AITravel_Max,
     };
 
     struct interest
@@ -224,7 +224,7 @@ namespace ai
         {
             clear(prev);
             state.setsize(0);
-            addstate(AIStateWait);
+            addstate(AIState_Wait);
             trywipe = false;
         }
 
@@ -262,7 +262,7 @@ namespace ai
         {
             if(index < 0) state.pop();
             else if(state.inrange(index)) state.remove(index);
-            if(!state.length()) addstate(AIStateWait);
+            if(!state.length()) addstate(AIState_Wait);
         }
 
         aistate &getstate(int idx = -1)
@@ -273,7 +273,7 @@ namespace ai
 
         aistate &switchstate(aistate &b, int t, int r = -1, int v = -1)
         {
-            if((b.type == t && b.targtype == r) || (b.type == AIStateInterest && b.targtype == AITravelNode))
+            if((b.type == t && b.targtype == r) || (b.type == AIState_Interest && b.targtype == AITravel_Node))
             {
                 b.millis = lastmillis;
                 b.target = v;

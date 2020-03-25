@@ -79,7 +79,7 @@ int curtime = 0, lastmillis = 1, elapsedtime = 0, totalmillis = 1;
 
 dynent *player = NULL;
 
-int initing = NOT_INITING;
+int initing = Init_Not;
 
 bool initwarning(const char *desc, int level, int type)
 {
@@ -642,7 +642,7 @@ void setupscreen()
 //full reset of renderer
 void resetgl()
 {
-    clearchanges(CHANGE_GFX|CHANGE_SHADERS);
+    clearchanges(Change_Graphics|Change_Shaders);
 
     renderbackground("resetting OpenGL");
 
@@ -1088,7 +1088,7 @@ int main(int argc, char **argv)
     int dedicated = 0;
     char *load = NULL, *initscript = NULL;
 
-    initing = INIT_RESET;
+    initing = Init_Reset;
     // set home dir first
     for(int i = 1; i<argc; i++) if(argv[i][0]=='-' && argv[i][1] == 'u') { sethomedir(&argv[i][2]); break; }
     // set log after home dir, but before anything else
@@ -1181,7 +1181,7 @@ int main(int argc, char **argv)
     initsound();
 
     logoutf("init: cfg");
-    initing = INIT_LOAD;
+    initing = Init_Load;
     execfile("config/keymap.cfg");
     execfile("config/stdedit.cfg");
     execfile(game::gameconfig());
@@ -1191,7 +1191,7 @@ int main(int argc, char **argv)
     execfile("config/blendbrush.cfg");
     if(game::savedservers()) execfile(game::savedservers(), false);
 
-    identflags |= IDF_PERSIST;
+    identflags |= Idf_Persist;
 
     if(!execfile(game::savedconfig(), false))
     {
@@ -1200,12 +1200,12 @@ int main(int argc, char **argv)
     }
     execfile(game::autoexec(), false);
 
-    identflags &= ~IDF_PERSIST;
+    identflags &= ~Idf_Persist;
 
-    initing = INIT_GAME;
+    initing = Init_Game;
     game::loadconfigs();
 
-    initing = NOT_INITING;
+    initing = Init_Not;
 
     logoutf("init: render");
     restoregamma();
@@ -1215,7 +1215,7 @@ int main(int argc, char **argv)
     initparticles();
     initstains();
 
-    identflags |= IDF_PERSIST;
+    identflags |= Idf_Persist;
 
     logoutf("init: mainloop");
 

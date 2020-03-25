@@ -476,8 +476,8 @@ void findvisiblemms(const vector<extentity *> &ents, bool doquery)
             loopv(oe->mapmodels)
             {
                 extentity &e = *ents[oe->mapmodels[i]];
-                if(e.flags&EF_NOVIS) continue;
-                e.flags |= EF_RENDER;
+                if(e.flags&EntFlag_NoVis) continue;
+                e.flags |= EntFlag_Render;
                 ++visible;
             }
             if(!visible) continue;
@@ -502,8 +502,8 @@ VAR(oqmm, 0, 4, 8); //`o`cclusion `q`uery `m`ap `m`odel
 
 static inline void rendermapmodel(extentity &e)
 {
-    int anim = ANIM_MAPMODEL|ANIM_LOOP, basetime = 0;
-    if(e.flags&EF_ANIM) entities::animatemapmodel(e, anim, basetime);
+    int anim = Anim_Mapmodel|ANIM_LOOP, basetime = 0;
+    if(e.flags&EntFlag_Anim) entities::animatemapmodel(e, anim, basetime);
     rendermapmodel(e.attr1, anim, e.o, e.attr2, e.attr3, e.attr4, MDL_CULL_VFC | MDL_CULL_DIST, basetime, e.attr5 > 0 ? e.attr5/100.0f : 1.0f);
 }
 
@@ -520,7 +520,7 @@ void rendermapmodels()
         loopv(oe->mapmodels)
         {
             extentity &e = *ents[oe->mapmodels[i]];
-            if(!(e.flags&EF_RENDER)) continue;
+            if(!(e.flags&EntFlag_Render)) continue;
             if(!rendered)
             {
                 rendered = true;
@@ -528,7 +528,7 @@ void rendermapmodels()
                 if(oe->query) startmodelquery(oe->query);
             }
             rendermapmodel(e);
-            e.flags &= ~EF_RENDER;
+            e.flags &= ~EntFlag_Render;
         }
         if(rendered && oe->query) endmodelquery();
     }
@@ -988,10 +988,10 @@ void findshadowvas()
     memset(vasort, 0, sizeof(vasort));
     switch(shadowmapping)
     {
-        case SM_REFLECT: findrsmshadowvas(varoot); break;
-        case SM_CUBEMAP: findshadowvas(varoot); break;
-        case SM_CASCADE: findcsmshadowvas(varoot); break;
-        case SM_SPOT: findspotshadowvas(varoot); break;
+        case ShadowMap_Reflect: findrsmshadowvas(varoot); break;
+        case ShadowMap_CubeMap: findshadowvas(varoot); break;
+        case ShadowMap_Cascade: findcsmshadowvas(varoot); break;
+        case ShadowMap_Spot: findspotshadowvas(varoot); break;
     }
     sortshadowvas();
 }
@@ -1055,17 +1055,17 @@ void findshadowmms()
         octaentities *oe = va->mapmodels[j];
         switch(shadowmapping)
         {
-            case SM_REFLECT:
+            case ShadowMap_Reflect:
                 break;
-            case SM_CASCADE:
+            case ShadowMap_Cascade:
                 if(!calcbbcsmsplits(oe->bbmin, oe->bbmax))
                     continue;
                 break;
-            case SM_CUBEMAP:
+            case ShadowMap_CubeMap:
                 if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
                     continue;
                 break;
-            case SM_SPOT:
+            case ShadowMap_Spot:
                 if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
                     continue;
                 if(smbbcull && !bbinsidespot(shadoworigin, shadowdir, shadowspot, oe->bbmin, oe->bbmax))
@@ -1081,21 +1081,21 @@ void findshadowmms()
 void batchshadowmapmodels(bool skipmesh)
 {
     if(!shadowmms) return;
-    int nflags = EF_NOVIS|EF_NOSHADOW;
-    if(skipmesh) nflags |= EF_SHADOWMESH;
+    int nflags = EntFlag_NoVis|EntFlag_NoShadow;
+    if(skipmesh) nflags |= EntFlag_ShadowMesh;
     const vector<extentity *> &ents = entities::getents();
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvk(oe->mapmodels)
     {
         extentity &e = *ents[oe->mapmodels[k]];
         if(e.flags&nflags) continue;
-        e.flags |= EF_RENDER;
+        e.flags |= EntFlag_Render;
     }
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvj(oe->mapmodels)
     {
         extentity &e = *ents[oe->mapmodels[j]];
-        if(!(e.flags&EF_RENDER)) continue;
+        if(!(e.flags&EntFlag_Render)) continue;
         rendermapmodel(e);
-        e.flags &= ~EF_RENDER;
+        e.flags &= ~EntFlag_Render;
     }
 }
 
@@ -2562,8 +2562,8 @@ static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo dra
     int sidemask = 0;
     switch(m.type)
     {
-        case SM_SPOT: sidemask = bbinsidespot(shadoworigin, shadowdir, shadowspot, ivec(vec(v0).min(v1).min(v2)), ivec(vec(v0).max(v1).max(v2).add(1))) ? 1 : 0; break;
-        case SM_CUBEMAP: sidemask = calctrisidemask(l0.div(shadowradius), l1.div(shadowradius), l2.div(shadowradius), shadowbias); break;
+        case ShadowMap_Spot: sidemask = bbinsidespot(shadoworigin, shadowdir, shadowspot, ivec(vec(v0).min(v1).min(v2)), ivec(vec(v0).max(v1).max(v2).add(1))) ? 1 : 0; break;
+        case ShadowMap_CubeMap: sidemask = calctrisidemask(l0.div(shadowradius), l1.div(shadowradius), l2.div(shadowradius), shadowbias); break;
     }
     if(!sidemask) return;
     if(shadowverts.verts.length() + 3 >= USHRT_MAX) flushshadowmeshdraws(m, sides, draws);
@@ -2591,15 +2591,15 @@ static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draw
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvk(oe->mapmodels)
     {
         extentity &e = *ents[oe->mapmodels[k]];
-        if(e.flags&(EF_NOVIS|EF_NOSHADOW)) continue;
-        e.flags |= EF_RENDER;
+        if(e.flags&(EntFlag_NoVis|EntFlag_NoShadow)) continue;
+        e.flags |= EntFlag_Render;
     }
     vector<triangle> tris;
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvj(oe->mapmodels)
     {
         extentity &e = *ents[oe->mapmodels[j]];
-        if(!(e.flags&EF_RENDER)) continue;
-        e.flags &= ~EF_RENDER;
+        if(!(e.flags&EntFlag_Render)) continue;
+        e.flags &= ~EntFlag_Render;
 
 
         model *mm = loadmapmodel(e.attr1);
@@ -2621,7 +2621,7 @@ static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draw
             addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);
         }
 
-        e.flags |= EF_SHADOWMESH;
+        e.flags |= EntFlag_ShadowMesh;
     }
 }
 
@@ -2635,13 +2635,13 @@ static void genshadowmesh(int idx, extentity &e)
     shadowmapping = m.type;
     shadoworigin = m.origin;
     shadowradius = m.radius;
-    shadowdir = m.type == SM_SPOT ? vec(m.spotloc).sub(m.origin).normalize() : vec(0, 0, 0);
+    shadowdir = m.type == ShadowMap_Spot ? vec(m.spotloc).sub(m.origin).normalize() : vec(0, 0, 0);
     shadowspot = m.spotangle;
 
     findshadowvas();
     findshadowmms();
 
-    int sides = m.type == SM_SPOT ? 1 : 6;
+    int sides = m.type == ShadowMap_Spot ? 1 : 6;
     shadowdrawinfo draws[6];
     for(vtxarray *va = shadowva; va; va = va->rnext) if(va->shadowmask)
     {
@@ -2665,7 +2665,7 @@ void clearshadowmeshes()
         loopv(ents)
         {
             extentity &e = *ents[i];
-            if(e.flags&EF_SHADOWMESH) e.flags &= ~EF_SHADOWMESH;
+            if(e.flags&EntFlag_ShadowMesh) e.flags &= ~EntFlag_ShadowMesh;
         }
     }
     shadowmeshes.clear();
@@ -2686,7 +2686,7 @@ void genshadowmeshes()
     loopv(ents)
     {
         extentity &e = *ents[i];
-        if(e.type != ET_LIGHT) continue;
+        if(e.type != Ent_Light) continue;
         genshadowmesh(i, e);
     }
 }
@@ -2697,8 +2697,8 @@ shadowmesh *findshadowmesh(int idx, extentity &e)
     if(!m || m->type != shadowmapping || m->origin != shadoworigin || m->radius < shadowradius) return NULL;
     switch(m->type)
     {
-        case SM_SPOT:
-            if(!e.attached || e.attached->type != ET_SPOTLIGHT || m->spotloc != e.attached->o || m->spotangle < clamp(int(e.attached->attr1), 1, 89))
+        case ShadowMap_Spot:
+            if(!e.attached || e.attached->type != Ent_Spotlight || m->spotloc != e.attached->o || m->spotangle < clamp(int(e.attached->attr1), 1, 89))
                 return NULL;
             break;
     }

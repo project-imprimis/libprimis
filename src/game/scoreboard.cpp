@@ -28,12 +28,12 @@ namespace game
 
     static inline bool playersort(const gameent *a, const gameent *b)
     {
-        if(a->state==CS_SPECTATOR)
+        if(a->state==ClientState_Spectator)
         {
-            if(b->state==CS_SPECTATOR) return strcmp(a->name, b->name) < 0;
+            if(b->state==ClientState_Spectator) return strcmp(a->name, b->name) < 0;
             else return false;
         }
-        else if(b->state==CS_SPECTATOR) return true;
+        else if(b->state==ClientState_Spectator) return true;
         if(MODE_CTF)
         {
             if(a->flags > b->flags) return true;
@@ -49,7 +49,7 @@ namespace game
         loopv(players)
         {
             gameent *o = players[i];
-            if(o->state!=CS_SPECTATOR) best.add(o);
+            if(o->state!=ClientState_Spectator) best.add(o);
         }
         best.sort(playersort);
         while(best.length() > 1 && best.last()->frags < best[0]->frags) best.drop();
@@ -91,7 +91,7 @@ namespace game
         {
             gameent *o = players[i];
             if(!showconnecting && !o->name[0]) continue;
-            if(o->state==CS_SPECTATOR) { spectators.add(o); continue; }
+            if(o->state==ClientState_Spectator) { spectators.add(o); continue; }
             int team = MODE_TEAMMODE && VALID_TEAM(o->team) ? o->team : 0;
             teamplayers[team].add(o);
         }
@@ -130,11 +130,11 @@ namespace game
         gameent *d = getclient(*cn);
         if(d)
         {
-            int status = d->state!=CS_DEAD ? 0xFFFFFF : 0x606060;
+            int status = d->state!=ClientState_Dead ? 0xFFFFFF : 0x606060;
             if(d->privilege)
             {
                 status = d->privilege>=PRIV_ADMIN ? 0xFF8000 : 0x40FF80;
-                if(d->state==CS_DEAD) status = (status>>1)&0x7F7F7F;
+                if(d->state==ClientState_Dead) status = (status>>1)&0x7F7F7F;
             }
             intret(status);
         }
@@ -145,7 +145,7 @@ namespace game
         gameent *d = getclient(*cn);
         if(d && d != player1)
         {
-            if(d->state==CS_LAGGED) result("LAG");
+            if(d->state==ClientState_Lagged) result("LAG");
             else intret(d->plag);
         }
     });
@@ -155,7 +155,7 @@ namespace game
         gameent *d = getclient(*cn);
         if(d)
         {
-            if(!showpj && d->state==CS_LAGGED) result("LAG");
+            if(!showpj && d->state==ClientState_Lagged) result("LAG");
             else intret(d->ping);
         }
     });

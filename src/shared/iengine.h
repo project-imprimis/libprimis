@@ -132,7 +132,7 @@ extern ident *getident(const char *name);
 extern ident *newident(const char *name, int flags = 0);
 extern ident *readident(const char *name);
 extern ident *writeident(const char *name, int flags = 0);
-extern bool addcommand(const char *name, identfun fun, const char *narg, int type = ID_COMMAND);
+extern bool addcommand(const char *name, identfun fun, const char *narg, int type = Id_Command);
 extern uint *compilecode(const char *p);
 extern void keepcode(uint *p);
 extern void freecode(uint *p);
@@ -175,7 +175,7 @@ extern float clampfvar(ident *id, float f, float minval, float maxval);
 extern void loopiter(ident *id, identstack &stack, const tagval &v);
 extern void loopend(ident *id, identstack &stack);
 
-#define LOOP_START(id, stack) if((id)->type != ID_ALIAS) return; identstack stack;
+#define LOOP_START(id, stack) if((id)->type != Id_Alias) return; identstack stack;
 static inline void loopiter(ident *id, identstack &stack, int i) { tagval v; v.setint(i); loopiter(id, stack, v); }
 static inline void loopiter(ident *id, identstack &stack, float f) { tagval v; v.setfloat(f); loopiter(id, stack, v); }
 static inline void loopiter(ident *id, identstack &stack, const char *s) { tagval v; v.setstr(newstring(s)); loopiter(id, stack, v); }

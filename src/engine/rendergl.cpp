@@ -1438,7 +1438,7 @@ void recomputecamera()
             detachedcamera = shoulddetach;
         }
         camera1->reset();
-        camera1->type = ENT_CAMERA;
+        camera1->type = PhysEnt_Camera;
         camera1->move = -1;
         camera1->eyeheight = camera1->aboveeye = camera1->radius = camera1->xradius = camera1->yradius = 2;
 
@@ -1481,7 +1481,7 @@ void recomputecamera()
 
 float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
 {
-    if(drawtex == DRAWTEX_MINIMAP)
+    if(drawtex == Draw_TexMinimap)
     {
         center = minimapcenter;
         return minimapradius.magnitude();
@@ -1578,7 +1578,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     vec e;
     cammatrix.transform(center, e);
     if(e.z > 2*size) { sx1 = sy1 = sz1 = 1; sx2 = sy2 = sz2 = -1; return false; }
-    if(drawtex == DRAWTEX_MINIMAP)
+    if(drawtex == Draw_TexMinimap)
     {
         vec dir(size, size, size);
         if(projmatrix.a.x < 0) dir.x = -dir.x;
@@ -2045,7 +2045,7 @@ void drawminimap()
     GLERROR;
     renderprogress(0, "generating mini-map...", !renderedframe);
 
-    drawtex = DRAWTEX_MINIMAP;
+    drawtex = Draw_TexMinimap;
 
     GLERROR;
     gl_setupframe(true);
@@ -2082,7 +2082,7 @@ void drawminimap()
     static physent cmcamera;
     cmcamera = *player;
     cmcamera.reset();
-    cmcamera.type = ENT_CAMERA;
+    cmcamera.type = PhysEnt_Camera;
     cmcamera.o = vec(minimapcenter.x, minimapcenter.y, minimapheight > 0 ? minimapheight : minimapcenter.z + minimapradius.z + 1);
     cmcamera.yaw = 0;
     cmcamera.pitch = -90;
@@ -2157,13 +2157,13 @@ void drawminimap()
 
 void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapside &side, bool onlysky)
 {
-    drawtex = DRAWTEX_ENVMAP;
+    drawtex = Draw_TexEnvmap;
 
     physent *oldcamera = camera1;
     static physent cmcamera;
     cmcamera = *player;
     cmcamera.reset();
-    cmcamera.type = ENT_CAMERA;
+    cmcamera.type = PhysEnt_Camera;
     cmcamera.o = o;
     cmcamera.yaw = yaw;
     cmcamera.pitch = pitch;
@@ -2283,12 +2283,12 @@ namespace modelpreview
 
         useshaderbyname("modelpreview");
 
-        drawtex = DRAWTEX_MODELPREVIEW;
+        drawtex = Draw_TexModelPreview;
 
         oldcamera = camera1;
         camera = *camera1;
         camera.reset();
-        camera.type = ENT_CAMERA;
+        camera.type = PhysEnt_Camera;
         camera.o = vec(0, 0, 0);
         camera.yaw = 0;
         camera.pitch = modelpreviewpitch;

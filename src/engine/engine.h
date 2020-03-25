@@ -109,7 +109,13 @@ extern bool hasVAO, hasTR, hasTSW, hasPBO, hasFBO, hasAFBO, hasDS, hasTF, hasCBF
 extern int glversion, glslversion, glcompat;
 extern int maxdrawbufs, maxdualdrawbufs;
 
-enum { DRAWTEX_NONE = 0, DRAWTEX_ENVMAP, DRAWTEX_MINIMAP, DRAWTEX_MODELPREVIEW };
+enum
+{
+    Draw_TexNone = 0, //unused
+    Draw_TexEnvmap,
+    Draw_TexMinimap,
+    Draw_TexModelPreview,
+};
 
 extern int vieww, viewh;
 extern int fov;
@@ -258,7 +264,14 @@ static inline void masktiles(uint *tiles, float sx1, float sy1, float sx2, float
     for(int ty = ty1; ty < ty2; ty++) tiles[ty] |= ((1<<(tx2-tx1))-1)<<tx1;
 }
 
-enum { SM_NONE = 0, SM_REFLECT, SM_CUBEMAP, SM_CASCADE, SM_SPOT };
+enum
+{
+    ShadowMap_None = 0,
+    ShadowMap_Reflect,
+    ShadowMap_CubeMap,
+    ShadowMap_Cascade,
+    ShadowMap_Spot,
+};
 
 extern int shadowmapping;
 
@@ -319,7 +332,15 @@ extern GLuint gdepthtex, gcolortex, gnormaltex, gglowtex, gdepthrb, gstencilrb;
 extern int msaasamples, msaalight;
 extern GLuint msdepthtex, mscolortex, msnormaltex, msglowtex, msdepthrb, msstencilrb;
 extern vector<vec2> msaapositions;
-enum { AA_UNUSED = 0, AA_LUMA, AA_MASKED, AA_SPLIT, AA_SPLIT_LUMA, AA_SPLIT_MASKED };
+enum
+{
+    AA_Unused = 0,
+    AA_Luma,
+    AA_Masked,
+    AA_Split,
+    AA_SplitLuma,
+    AA_SplitMasked,
+};
 
 extern void cleanupgbuffer();
 extern void initgbuffer();
@@ -334,8 +355,8 @@ extern void shademinimap(const vec &color = vec(-1, -1, -1));
 extern void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
 extern void rendertransparent();
 extern void renderao();
-extern void loadhdrshaders(int aa = AA_UNUSED);
-extern void processhdr(GLuint outfbo = 0, int aa = AA_UNUSED);
+extern void loadhdrshaders(int aa = AA_Unused);
+extern void processhdr(GLuint outfbo = 0, int aa = AA_Unused);
 extern void copyhdr(int sw, int sh, GLuint fbo, int dw = 0, int dh = 0, bool flipx = false, bool flipy = false, bool swapxy = false);
 extern void setuplights();
 extern void setupgbuffer();
@@ -582,20 +603,20 @@ extern void writecompletions(stream *f);
 // main
 enum
 {
-    NOT_INITING = 0,
-    INIT_GAME,
-    INIT_LOAD,
-    INIT_RESET
+    Init_Not = 0,
+    Init_Game,
+    Init_Load,
+    Init_Reset,
 };
 extern int initing;
 
 enum
 {
-    CHANGE_GFX     = 1<<0,
-    CHANGE_SOUND   = 1<<1,
-    CHANGE_SHADERS = 1<<2
+    Change_Graphics   = 1<<0,
+    Change_Sound      = 1<<1,
+    Change_Shaders    = 1<<2,
 };
-extern bool initwarning(const char *desc, int level = INIT_RESET, int type = CHANGE_GFX);
+extern bool initwarning(const char *desc, int level = Init_Reset, int type = Change_Graphics);
 
 extern bool grabinput, minimized;
 
@@ -611,11 +632,20 @@ extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 extern void swapbuffers(bool overlay = true);
 extern int getclockmillis();
 
-enum { KR_CONSOLE = 1<<0, KR_GUI = 1<<1, KR_EDITMODE = 1<<2 };
+enum
+{
+    KeyRepeat_Console  = 1<<0,
+    KeyRepeat_GUI      = 1<<1,
+    KeyRepeat_EditMode = 1<<2,
+};
 
 extern void keyrepeat(bool on, int mask = ~0);
 
-enum { TI_CONSOLE = 1<<0, TI_GUI = 1<<1 };
+enum
+{
+    TextInput_Console = 1<<0,
+    TextInput_GUI     = 1<<1,
+};
 
 extern void textinput(bool on, int mask = ~0);
 
@@ -678,7 +708,13 @@ static inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &ma
 // renderparticles
 extern int particlelayers;
 
-enum { PL_ALL = 0, PL_UNDER, PL_OVER, PL_NOLAYER };
+enum
+{
+    ParticleLayer_All = 0,
+    ParticleLayer_Under,
+    ParticleLayer_Over,
+    ParticleLayer_NoLayer,
+};
 
 extern void initparticles();
 extern void clearparticles();
@@ -686,12 +722,18 @@ extern void clearparticleemitters();
 extern void seedparticles();
 extern void updateparticles();
 extern void debugparticles();
-extern void renderparticles(int layer = PL_ALL);
+extern void renderparticles(int layer = ParticleLayer_All);
 extern bool printparticles(extentity &e, char *buf, int len);
 extern void cleanupparticles();
 
 // stain
-enum { STAINBUF_OPAQUE = 0, STAINBUF_TRANSPARENT, STAINBUF_MAPMODEL, NUMSTAINBUFS };
+enum
+{
+    StainBuffer_Opaque = 0,
+    StainBuffer_Transparent,
+    StainBuffer_Mapmodel,
+    StainBuffer_Number,
+};
 
 struct stainrenderer;
 

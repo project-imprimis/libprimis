@@ -421,8 +421,8 @@ struct vacollect : verthash
             loopvj(oe->decals)
             {
                 extentity &e = *ents[oe->decals[j]];
-                if(e.flags&EF_RENDER) continue;
-                e.flags |= EF_RENDER;
+                if(e.flags&EntFlag_Render) continue;
+                e.flags |= EntFlag_Render;
                 DecalSlot &s = lookupdecalslot(e.attr1, true);
                 if(!s.shader) continue;
                 ushort envmap = s.shader->type&SHADER_ENVMAP ? (s.texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(e.o)) : EMID_NONE;
@@ -436,7 +436,7 @@ struct vacollect : verthash
             loopvj(oe->decals)
             {
                 extentity &e = *ents[oe->decals[j]];
-                if(e.flags&EF_RENDER) e.flags &= ~EF_RENDER;
+                if(e.flags&EntFlag_Render) e.flags &= ~EntFlag_Render;
             }
         }
         ENUMERATE_KT(decalindices, decalkey, k, sortval, t,

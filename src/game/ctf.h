@@ -256,7 +256,7 @@ struct ctfclientmode : clientmode
 
     void takeflag(clientinfo *ci, int i, int version)
     {
-        if(notgotflags || !flags.inrange(i) || ci->state.state!=CS_ALIVE || !ci->team) return;
+        if(notgotflags || !flags.inrange(i) || ci->state.state!=ClientState_Alive || !ci->team) return;
         flag &f = flags[i];
         if(!VALID_TEAM(f.team) || f.owner>=0 || f.version != version || (f.droptime && f.dropper == ci->clientnum && f.dropcount >= 3)) return;
         if(f.team!=ci->team)
@@ -372,7 +372,7 @@ struct ctfclientmode : clientmode
 
     void drawhud(gameent *d, int w, int h)
     {
-        if(d->state == CS_ALIVE)
+        if(d->state == ClientState_Alive)
         {
             loopv(flags) if(flags[i].owner == d)
             {
@@ -413,7 +413,7 @@ struct ctfclientmode : clientmode
             drawblip(d, x, y, s, i, true);
         }
         drawteammates(d, x, y, s);
-        if(d->state == CS_DEAD)
+        if(d->state == ClientState_Dead)
         {
             int wait = respawnwait(d);
             if(wait>=0)
@@ -465,7 +465,7 @@ struct ctfclientmode : clientmode
             const char *flagname = f.team==1 ? "game/flag/azul" : "game/flag/rojo";
             float angle;
             vec pos = interpflagpos(f, angle);
-            rendermodel(flagname, ANIM_MAPMODEL|ANIM_LOOP,
+            rendermodel(flagname, Anim_Mapmodel|ANIM_LOOP,
                         pos, angle, 0, 0,
                         MDL_CULL_VFC | MDL_CULL_OCCLUDED);
         }
@@ -649,7 +649,7 @@ struct ctfclientmode : clientmode
 
     void checkitems(gameent *d)
     {
-        if(d->state!=CS_ALIVE) return;
+        if(d->state!=ClientState_Alive) return;
         vec o = d->feetpos();
         bool tookflag = false;
         loopv(flags)
@@ -719,14 +719,14 @@ struct ctfclientmode : clientmode
             }
             if(flags.inrange(goal) && ai::makeroute(d, b, flags[goal].pos()))
             {
-                d->ai->switchstate(b, ai::AIStatePursue, ai::AITravelAffinity, goal);
+                d->ai->switchstate(b, ai::AIState_Pursue, ai::AITravel_Affinity, goal);
                 return true;
             }
         }
-        if(b.type == ai::AIStateInterest && b.targtype == ai::AITravelNode) return true; // we already did this..
+        if(b.type == ai::AIState_Interest && b.targtype == ai::AITravel_Node) return true; // we already did this..
         if(randomnode(d, b, ai::SIGHTMIN, 1e16f))
         {
-            d->ai->switchstate(b, ai::AIStateInterest, ai::AITravelNode, d->ai->route[0]);
+            d->ai->switchstate(b, ai::AIState_Interest, ai::AITravel_Node, d->ai->route[0]);
             return true;
         }
         return false;
@@ -746,7 +746,7 @@ struct ctfclientmode : clientmode
         if(!ai::badhealth(d) && !takenflags.empty())
         {
             int flag = takenflags.length() > 2 ? RANDOM_INT(takenflags.length()) : 0;
-            d->ai->switchstate(b, ai::AIStatePursue, ai::AITravelAffinity, takenflags[flag]);
+            d->ai->switchstate(b, ai::AIState_Pursue, ai::AITravel_Affinity, takenflags[flag]);
             return true;
         }
         return false;
@@ -763,9 +763,9 @@ struct ctfclientmode : clientmode
                 static vector<int> targets; // build a list of others who are interested in this
                 targets.setsize(0);
                 bool home = f.team == d->team;
-                ai::checkothers(targets, d, home ? ai::AIStateDefend : ai::AIStatePursue, ai::AITravelAffinity, j, true);
+                ai::checkothers(targets, d, home ? ai::AIState_Defend : ai::AIState_Pursue, ai::AITravel_Affinity, j, true);
                 gameent *e = NULL;
-                loopi(numdynents()) if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && IS_TEAM(d->team, e->team))
+                loopi(numdynents()) if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == ClientState_Alive && IS_TEAM(d->team, e->team))
                 { // try to guess what non ai are doing
                     vec ep = e->feetpos();
                     if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.pos()) <= (FLAGRADIUS*FLAGRADIUS*4) || f.owner == e))
@@ -792,10 +792,10 @@ struct ctfclientmode : clientmode
                     if(guard)
                     { // defend the flag
                         ai::interest &n = interests.add();
-                        n.state = ai::AIStateDefend;
+                        n.state = ai::AIState_Defend;
                         n.node = ai::closestwaypoint(f.pos(), ai::SIGHTMIN, true);
                         n.target = j;
-                        n.targtype = ai::AITravelAffinity;
+                        n.targtype = ai::AITravel_Affinity;
                         n.score = pos.squaredist(f.pos())/100.f;
                     }
                 }
@@ -804,10 +804,10 @@ struct ctfclientmode : clientmode
                     if(targets.empty())
                     { // attack the flag
                         ai::interest &n = interests.add();
-                        n.state = ai::AIStatePursue;
+                        n.state = ai::AIState_Pursue;
                         n.node = ai::closestwaypoint(f.pos(), ai::SIGHTMIN, true);
                         n.target = j;
-                        n.targtype = ai::AITravelAffinity;
+                        n.targtype = ai::AITravel_Affinity;
                         n.score = pos.squaredist(f.pos());
                     }
                     else
@@ -816,10 +816,10 @@ struct ctfclientmode : clientmode
                         loopvk(targets) if((t = getclient(targets[k])))
                         {
                             ai::interest &n = interests.add();
-                            n.state = ai::AIStateDefend;
+                            n.state = ai::AIState_Defend;
                             n.node = t->lastnode;
                             n.target = t->clientnum;
-                            n.targtype = ai::AITravelPlayer;
+                            n.targtype = ai::AITravel_Player;
                             n.score = d->o.squaredist(t->o);
                         }
                     }
@@ -845,9 +845,9 @@ struct ctfclientmode : clientmode
             {
                 static vector<int> targets; // build a list of others who are interested in this
                 targets.setsize(0);
-                ai::checkothers(targets, d, ai::AIStateDefend, ai::AITravelAffinity, b.target, true);
+                ai::checkothers(targets, d, ai::AIState_Defend, ai::AITravel_Affinity, b.target, true);
                 gameent *e = NULL;
-                loopi(numdynents()) if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == CS_ALIVE && IS_TEAM(d->team, e->team))
+                loopi(numdynents()) if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == ClientState_Alive && IS_TEAM(d->team, e->team))
                 { // try to guess what non ai are doing
                     vec ep = e->feetpos();
                     if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.pos()) <= (FLAGRADIUS*FLAGRADIUS*4) || f.owner == e))
@@ -915,19 +915,19 @@ ICOMMAND(dropflag, "", (), { ctfmode.trydropflag(); });
 
 case N_TRYDROPFLAG:
 {
-    if((ci->state.state!=CS_SPECTATOR || ci->local || ci->privilege) && cq && smode==&ctfmode) ctfmode.dropflag(cq);
+    if((ci->state.state!=ClientState_Spectator || ci->local || ci->privilege) && cq && smode==&ctfmode) ctfmode.dropflag(cq);
     break;
 }
 
 case N_TAKEFLAG:
 {
     int flag = getint(p), version = getint(p);
-    if((ci->state.state!=CS_SPECTATOR || ci->local || ci->privilege) && cq && smode==&ctfmode) ctfmode.takeflag(cq, flag, version);
+    if((ci->state.state!=ClientState_Spectator || ci->local || ci->privilege) && cq && smode==&ctfmode) ctfmode.takeflag(cq, flag, version);
     break;
 }
 
 case N_INITFLAGS:
-    if(smode==&ctfmode) ctfmode.parseflags(p, (ci->state.state!=CS_SPECTATOR || ci->privilege || ci->local) && !strcmp(ci->clientmap, smapname));
+    if(smode==&ctfmode) ctfmode.parseflags(p, (ci->state.state!=ClientState_Spectator || ci->privilege || ci->local) && !strcmp(ci->clientmap, smapname));
     break;
 
 #else

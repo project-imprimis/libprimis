@@ -37,7 +37,7 @@ namespace game
 
     void nextweapon(int dir, bool force = false)
     {
-        if(player1->state!=CS_ALIVE) return;
+        if(player1->state!=ClientState_Alive) return;
         dir = (dir < 0 ? NUMGUNS-1 : 1);
         int gun = player1->gunselect;
         loopi(NUMGUNS)
@@ -70,7 +70,7 @@ namespace game
     void setweapon(const char *name, bool force = false)
     {
         int gun = getweapon(name);
-        if(player1->state!=CS_ALIVE || !VALID_GUN(gun)) return;
+        if(player1->state!=ClientState_Alive || !VALID_GUN(gun)) return;
         if(force || player1->ammo[gun]) gunselect(gun, player1);
         else playsound(S_NOAMMO);
     }
@@ -78,7 +78,7 @@ namespace game
 
     void cycleweapon(int numguns, int *guns, bool force = false)
     {
-        if(numguns<=0 || player1->state!=CS_ALIVE) return;
+        if(numguns<=0 || player1->state!=ClientState_Alive) return;
         int offset = 0;
         loopi(numguns) if(guns[i] == player1->gunselect) { offset = i+1; break; }
         loopi(numguns)
@@ -102,7 +102,7 @@ namespace game
 
     void weaponswitch(gameent *d)
     {
-        if(d->state!=CS_ALIVE) return;
+        if(d->state!=ClientState_Alive) return;
         int s = d->gunselect;
         if(s!=GUN_PULSE && d->ammo[GUN_PULSE])     s = GUN_PULSE;
         else if(s!=GUN_RAIL && d->ammo[GUN_RAIL])  s = GUN_RAIL;
@@ -111,7 +111,7 @@ namespace game
 
     ICOMMAND(weapon, "V", (tagval *args, int numargs),
     {
-        if(player1->state!=CS_ALIVE) return;
+        if(player1->state!=ClientState_Alive) return;
         loopi(3)
         {
             const char *name = i < numargs ? args[i].getstr() : "";
@@ -159,7 +159,7 @@ namespace game
 
         bouncer() : bounces(0), roll(0), variant(0)
         {
-            type = ENT_BOUNCE;
+            type = PhysEnt_Bounce;
         }
     };
 
@@ -200,7 +200,7 @@ namespace game
 
     void bounced(physent *d, const vec &surface)
     {
-        if(d->type != ENT_BOUNCE) return;
+        if(d->type != PhysEnt_Bounce) return;
         bouncer *b = (bouncer *)d;
         if(b->bouncetype != BNC_GIBS || b->bounces >= 2) return;
         b->bounces++;
@@ -322,7 +322,7 @@ namespace game
         gameent *f = (gameent *)d;
 
         f->lastpain = lastmillis;
-        if(at->type==ENT_PLAYER && !IS_TEAM(at->team, f->team)) at->totaldamage += damage;
+        if(at->type==PhysEnt_Player && !IS_TEAM(at->team, f->team)) at->totaldamage += damage;
 
         if(!MODE_MP(gamemode) || f==at) f->hitpush(damage, vel, at, atk);
 
@@ -368,7 +368,7 @@ namespace game
 
     void radialeffect(dynent *o, const vec &v, const vec &vel, int qdam, gameent *at, int atk)
     {
-        if(o->state!=CS_ALIVE) return;
+        if(o->state!=ClientState_Alive) return;
         vec dir;
         float dist = projdist(o, dir, v, vel);
         if(dist<attacks[atk].exprad)
@@ -445,7 +445,7 @@ namespace game
 
     bool projdamage(dynent *o, projectile &p, const vec &v)
     {
-        if(o->state!=CS_ALIVE) return false;
+        if(o->state!=ClientState_Alive) return false;
         if(!intersect(o, p.o, v, attacks[p.atk].margin)) return false;
         projsplash(p, v, o);
         vec dir;
@@ -559,7 +559,7 @@ namespace game
 
     void particletrack(physent *owner, vec &o, vec &d)
     {
-        if(owner->type!=ENT_PLAYER) return;
+        if(owner->type!=PhysEnt_Player) return;
         gameent *pl = (gameent *)owner;
         if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect) return;
         float dist = o.dist(d);
@@ -575,7 +575,7 @@ namespace game
 
     void dynlighttrack(physent *owner, vec &o, vec &hud)
     {
-        if(owner->type!=ENT_PLAYER) return;
+        if(owner->type!=PhysEnt_Player) return;
         gameent *pl = (gameent *)owner;
         if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect) return;
         o = pl->muzzle;
@@ -599,7 +599,7 @@ namespace game
         loopi(numdynents())
         {
             dynent *o = iterdynents(i);
-            if(o==at || o->state!=CS_ALIVE) continue;
+            if(o==at || o->state!=ClientState_Alive) continue;
             float dist;
             if(!intersect(o, from, to, margin, dist)) continue;
             if(dist<bestdist)
@@ -679,7 +679,7 @@ namespace game
 
         vec from = d->o, to = targ, dir = vec(to).sub(from).safenormalize();
         float dist = to.dist(from);
-        if(!(d->physstate >= PHYS_SLOPE && d->crouching && d->crouched()))
+        if(!(d->physstate >= PhysEntState_Slope && d->crouching && d->crouched()))
         {
             vec kickback = vec(dir).mul(attacks[atk].kickamount*-2.5f);
             d->vel.add(kickback);
@@ -766,7 +766,7 @@ namespace game
 #endif
                 default: continue;
             }
-            rendermodel(mdl, ANIM_MAPMODEL|ANIM_LOOP, pos, yaw, pitch, 0, cull, NULL, NULL, 0, 0, fade);
+            rendermodel(mdl, Anim_Mapmodel|ANIM_LOOP, pos, yaw, pitch, 0, cull, NULL, NULL, 0, 0, fade);
         }
     }
 
@@ -783,7 +783,7 @@ namespace game
     void updateweapons(int curtime)
     {
         updateprojectiles(curtime);
-        if(player1->clientnum>=0 && player1->state==CS_ALIVE) shoot(player1, worldpos); // only shoot when connected to server
+        if(player1->clientnum>=0 && player1->state==ClientState_Alive) shoot(player1, worldpos); // only shoot when connected to server
         updatebouncers(curtime); // need to do this after the player shoots so bouncers don't end up inside player's BB next frame
     }
 

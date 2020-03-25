@@ -2,124 +2,124 @@
 
 enum
 {
-    ValueNull = 0,
-    ValueInteger,
-    ValueFloat,
-    ValueString,
-    ValueAny,
-    ValueCode,
-    ValueMacro,
-    ValueIdent,
-    ValueCString,
-    ValueCAny,
-    ValueWord,
-    ValuePop,
-    ValueCond,
+    Value_Null = 0,
+    Value_Integer,
+    Value_Float,
+    Value_String,
+    Value_Any,
+    Value_Code,
+    Value_Macro,
+    Value_Ident,
+    Value_CString,
+    Value_CAny,
+    Value_Word,
+    Value_Pop,
+    Value_Cond,
 };
 
 enum
 {
-    CodeStart = 0,          //0
-    CodeOffset,
-    CodeNull,
-    CodeTrue,
-    CodeFalse,
-    CodeNot,               //5
-    CodePop,
-    CodeEnter,
-    CodeEnterResult,
-    CodeExit,
-    CodeResultArg,       //10
-    CodeVal,
-    CodeValI,
-    CodeDup,
-    CodeMacro,
-    CodeBool,            //15 (unused)
-    CodeBlock,
-    CodeEmpty,
-    CodeCompile,
-    CodeCond,
-    CodeForce,           //20
-    CodeResult,
-    CodeIdent,
-    CodeIdentU,
-    CodeIdentArg,
-    CodeCom,             //25
-    CodeComD,
-    CodeComC,
-    CodeComV,
-    CodeConC,
-    CodeConCW,           //30
-    CodeConCM,
-    CodeDown, // (unused)
-    CodeStrVar,
-    CodeStrVarM,
-    CodeStrVar1,         //35
-    CodeIntVar,
-    CodeIntVar1,
-    CodeIntVar2,
-    CodeIntVar3,
-    CodeFloatVar,        //40
-    CodeFloatVar1,
-    CodeLookup,
-    CodeLookupU,
-    CodeLookupArg,
-    CodeLookupM,         //45
-    CodeLookupMU,
-    CodeLookupMArg,
-    CodeAlias,
-    CodeAliasU,
-    CodeAliasArg,        //50
-    CodeCall,
-    CodeCallU,
-    CodeCallArg,
-    CodePrint,
-    CodeLocal,           //55
-    CodeDo,
-    CodeDoArgs,
-    CodeJump,
-    CodeJumpTrue,
-    CodeJumpFalse,
-    CodeJumpResultTrue,  //60
-    CodeJumpResultFalse,
+    Code_Start = 0,          //0
+    Code_Offset,
+    Code_Null,
+    Code_True,
+    Code_False,
+    Code_Not,               //5
+    Code_Pop,
+    Code_Enter,
+    Code_EnterResult,
+    Code_Exit,
+    Code_ResultArg,       //10
+    Code_Val,
+    Code_ValI,
+    Code_Dup,
+    Code_Macro,
+    Code_Bool,            //15 (unused)
+    Code_Block,
+    Code_Empty,
+    Code_Compile,
+    Code_Cond,
+    Code_Force,           //20
+    Code_Result,
+    Code_Ident,
+    Code_IdentU,
+    Code_IdentArg,
+    Code_Com,             //25
+    Code_ComD,
+    Code_ComC,
+    Code_ComV,
+    Code_ConC,
+    Code_ConCW,           //30
+    Code_ConCM,
+    Code_Down, // (unused)
+    Code_StrVar,
+    Code_StrVarM,
+    Code_StrVar1,         //35
+    Code_IntVar,
+    Code_IntVar1,
+    Code_IntVar2,
+    Code_IntVar3,
+    Code_FloatVar,        //40
+    Code_FloatVar1,
+    Code_Lookup,
+    Code_LookupU,
+    Code_LookupArg,
+    Code_LookupM,         //45
+    Code_LookupMU,
+    Code_LookupMArg,
+    Code_Alias,
+    Code_AliasU,
+    Code_AliasArg,        //50
+    Code_Call,
+    Code_CallU,
+    Code_CallArg,
+    Code_Print,
+    Code_Local,           //55
+    Code_Do,
+    Code_DoArgs,
+    Code_Jump,
+    Code_JumpTrue,
+    Code_JumpFalse,
+    Code_JumpResultTrue,  //60
+    Code_JumpResultFalse,
 
-    CodeOpMask = 0x3F,
-    CodeRet = 6,
-    CodeRetMask = 0xC0,
+    Code_OpMask = 0x3F,
+    Code_Ret = 6,
+    Code_RetMask = 0xC0,
 
     /* return type flags */
-    RetNull   = ValueNull<<CodeRet,
-    RetString    = ValueString<<CodeRet,
-    RetInteger    = ValueInteger<<CodeRet,
-    RetFloat  = ValueFloat<<CodeRet,
+    Ret_Null    = Value_Null<<Code_Ret,
+    Ret_String  = Value_String<<Code_Ret,
+    Ret_Integer = Value_Integer<<Code_Ret,
+    Ret_Float   = Value_Float<<Code_Ret,
 };
 
 enum
 {
-    ID_VAR,     //1
-    ID_FVAR,
-    ID_SVAR,
-    ID_COMMAND,
-    ID_ALIAS,   //5
-    ID_LOCAL,
-    ID_DO,
-    ID_DOARGS,
-    ID_IF,
-    ID_RESULT,  //10
-    ID_NOT,
-    ID_AND,
-    ID_OR,      //13
+    Id_Var,     //1
+    Id_FloatVar,
+    Id_StringVar,
+    Id_Command,
+    Id_Alias,   //5
+    Id_Local,
+    Id_Do,
+    Id_DoArgs,
+    Id_If,
+    Id_Result,  //10
+    Id_Not,
+    Id_And,
+    Id_Or,      //13
 };
 
 enum
 {
-    IDF_PERSIST    = 1<<0,
-    IDF_OVERRIDE   = 1<<1,
-    IDF_HEX        = 1<<2,
-    IDF_READONLY   = 1<<3,
-    IDF_OVERRIDDEN = 1<<4,
-    IDF_UNKNOWN    = 1<<5,
-    IDF_ARG        = 1<<6,
+    Idf_Persist    = 1<<0,
+    Idf_Override   = 1<<1,
+    Idf_Hex        = 1<<2,
+    Idf_ReadOnly   = 1<<3,
+    Idf_Overridden = 1<<4,
+    Idf_Unknown    = 1<<5,
+    Idf_Arg        = 1<<6,
 };
 
 struct ident;
@@ -128,9 +128,9 @@ struct identval
 {
     union
     {
-        int i;      // ID_VAR, ValueInteger
-        float f;    // ID_FVAR, ValueFloat
-        char *s;    // ID_SVAR, ValueString
+        int i;      // Id_Var, ValueInteger
+        float f;    // Id_FloatVar, ValueFloat
+        char *s;    // Id_StringVar, ValueString
         const uint *code; // ValueCode
         ident *id;  // ValueIdent
         const char *cstr; // ValueCString
@@ -141,15 +141,15 @@ struct tagval : identval
 {
     int type;
 
-    void setint(int val) { type = ValueInteger; i = val; }
-    void setfloat(float val) { type = ValueFloat; f = val; }
-    void setnumber(double val) { i = int(val); if(val == i) type = ValueInteger; else { type = ValueFloat; f = val; } }
-    void setstr(char *val) { type = ValueString; s = val; }
-    void setnull() { type = ValueNull; i = 0; }
-    void setcode(const uint *val) { type = ValueCode; code = val; }
-    void setmacro(const uint *val) { type = ValueMacro; code = val; }
-    void setcstr(const char *val) { type = ValueCString; cstr = val; }
-    void setident(ident *val) { type = ValueIdent; id = val; }
+    void setint(int val) { type = Value_Integer; i = val; }
+    void setfloat(float val) { type = Value_Float; f = val; }
+    void setnumber(double val) { i = int(val); if(val == i) type = Value_Integer; else { type = Value_Float; f = val; } }
+    void setstr(char *val) { type = Value_String; s = val; }
+    void setnull() { type = Value_Null; i = 0; }
+    void setcode(const uint *val) { type = Value_Code; code = val; }
+    void setmacro(const uint *val) { type = Value_Macro; code = val; }
+    void setcstr(const char *val) { type = Value_CString; cstr = val; }
+    void setident(ident *val) { type = Value_Ident; id = val; }
 
     const char *getstr() const;
     int getint() const;
@@ -171,9 +171,9 @@ struct identstack
 union identvalptr
 {
     void *p;  // ID_*VAR
-    int *i;   // ID_VAR
-    float *f; // ID_FVAR
-    char **s; // ID_SVAR
+    int *i;   // Id_Var
+    float *f; // Id_FloatVar
+    char **s; // Id_StringVar
 };
 
 typedef void (__cdecl *identfun)(ident *id);
@@ -183,68 +183,68 @@ struct ident
     uchar type; // one of ID_* above
     union
     {
-        uchar valtype; // ID_ALIAS
-        uchar numargs; // ID_COMMAND
+        uchar valtype; // Id_Alias
+        uchar numargs; // Id_Command
     };
     ushort flags;
     int index;
     const char *name;
     union
     {
-        struct // ID_VAR, ID_FVAR, ID_SVAR
+        struct // Id_Var, Id_FloatVar, Id_StringVar
         {
             union
             {
-                struct { int minval, maxval; };     // ID_VAR
-                struct { float minvalf, maxvalf; }; // ID_FVAR
+                struct { int minval, maxval; };     // Id_Var
+                struct { float minvalf, maxvalf; }; // Id_FloatVar
             };
             identvalptr storage;
             identval overrideval;
         };
-        struct // ID_ALIAS
+        struct // Id_Alias
         {
             uint *code;
             identval val;
             identstack *stack;
         };
-        struct // ID_COMMAND
+        struct // Id_Command
         {
             const char *args;
             uint argmask;
         };
     };
-    identfun fun; // ID_VAR, ID_FVAR, ID_SVAR, ID_COMMAND
+    identfun fun; // Id_Var, Id_FloatVar, Id_StringVar, Id_Command
 
     ident() {}
-    // ID_VAR
+    // Id_Var
     ident(int t, const char *n, int m, int x, int *s, void *f = NULL, int flags = 0)
-        : type(t), flags(flags | (m > x ? IDF_READONLY : 0)), name(n), minval(m), maxval(x), fun((identfun)f)
+        : type(t), flags(flags | (m > x ? Idf_ReadOnly : 0)), name(n), minval(m), maxval(x), fun((identfun)f)
     { storage.i = s; }
-    // ID_FVAR
+    // Id_FloatVar
     ident(int t, const char *n, float m, float x, float *s, void *f = NULL, int flags = 0)
-        : type(t), flags(flags | (m > x ? IDF_READONLY : 0)), name(n), minvalf(m), maxvalf(x), fun((identfun)f)
+        : type(t), flags(flags | (m > x ? Idf_ReadOnly : 0)), name(n), minvalf(m), maxvalf(x), fun((identfun)f)
     { storage.f = s; }
-    // ID_SVAR
+    // Id_StringVar
     ident(int t, const char *n, char **s, void *f = NULL, int flags = 0)
         : type(t), flags(flags), name(n), fun((identfun)f)
     { storage.s = s; }
-    // ID_ALIAS
+    // Id_Alias
     ident(int t, const char *n, char *a, int flags)
-        : type(t), valtype(ValueString), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(Value_String), flags(flags), name(n), code(NULL), stack(NULL)
     { val.s = a; }
     ident(int t, const char *n, int a, int flags)
-        : type(t), valtype(ValueInteger), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(Value_Integer), flags(flags), name(n), code(NULL), stack(NULL)
     { val.i = a; }
     ident(int t, const char *n, float a, int flags)
-        : type(t), valtype(ValueFloat), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(Value_Float), flags(flags), name(n), code(NULL), stack(NULL)
     { val.f = a; }
     ident(int t, const char *n, int flags)
-        : type(t), valtype(ValueNull), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), valtype(Value_Null), flags(flags), name(n), code(NULL), stack(NULL)
     {}
     ident(int t, const char *n, const tagval &v, int flags)
         : type(t), valtype(v.type), flags(flags), name(n), code(NULL), stack(NULL)
     { val = v; }
-    // ID_COMMAND
+    // Id_Command
     ident(int t, const char *n, const char *args, uint argmask, int numargs, void *f = NULL, int flags = 0)
         : type(t), numargs(numargs), flags(flags), name(n), args(args), argmask(argmask), fun((identfun)f)
     {}
@@ -265,8 +265,8 @@ struct ident
 
     void forcenull()
     {
-        if(valtype==ValueString) delete[] val.s;
-        valtype = ValueNull;
+        if(valtype==Value_String) delete[] val.s;
+        valtype = Value_Null;
     }
 
     float getfloat() const;
@@ -320,9 +320,9 @@ static inline const char *getstr(const identval &v, int type)
 {
     switch(type)
     {
-        case ValueString: case ValueMacro: case ValueCString: return v.s;
-        case ValueInteger: return intstr(v.i);
-        case ValueFloat: return floatstr(v.f);
+        case Value_String: case Value_Macro: case Value_CString: return v.s;
+        case Value_Integer: return intstr(v.i);
+        case Value_Float: return floatstr(v.f);
         default: return "";
     }
 }
@@ -334,9 +334,9 @@ inline const char *ident::getstr() const { return ::getstr(val, valtype); }
     { \
         switch(type) \
         { \
-            case ValueFloat: return ret(v.f); \
-            case ValueInteger: return ret(v.i); \
-            case ValueString: case ValueMacro: case ValueCString: return parse##name(v.s); \
+            case Value_Float: return ret(v.f); \
+            case Value_Integer: return ret(v.i); \
+            case Value_String: case Value_Macro: case Value_CString: return parse##name(v.s); \
             default: return ret(0); \
         } \
     } \
@@ -350,9 +350,9 @@ static inline void getval(const identval &v, int type, tagval &r)
 {
     switch(type)
     {
-        case ValueString: case ValueMacro: case ValueCString: r.setstr(newstring(v.s)); break;
-        case ValueInteger: r.setint(v.i); break;
-        case ValueFloat: r.setfloat(v.f); break;
+        case Value_String: case Value_Macro: case Value_CString: r.setstr(newstring(v.s)); break;
+        case Value_Integer: r.setint(v.i); break;
+        case Value_Float: r.setfloat(v.f); break;
         default: r.setnull(); break;
     }
 }
@@ -364,10 +364,10 @@ inline void ident::getcstr(tagval &v) const
 {
     switch(valtype)
     {
-        case ValueMacro: v.setmacro(val.code); break;
-        case ValueString: case ValueCString: v.setcstr(val.s); break;
-        case ValueInteger: v.setstr(newstring(intstr(val.i))); break;
-        case ValueFloat: v.setstr(newstring(floatstr(val.f))); break;
+        case Value_Macro: v.setmacro(val.code); break;
+        case Value_String: case Value_CString: v.setcstr(val.s); break;
+        case Value_Integer: v.setstr(newstring(intstr(val.i))); break;
+        case Value_Float: v.setstr(newstring(floatstr(val.f))); break;
         default: v.setcstr(""); break;
     }
 }
@@ -376,10 +376,10 @@ inline void ident::getcval(tagval &v) const
 {
     switch(valtype)
     {
-        case ValueMacro: v.setmacro(val.code); break;
-        case ValueString: case ValueCString: v.setcstr(val.s); break;
-        case ValueInteger: v.setint(val.i); break;
-        case ValueFloat: v.setfloat(val.f); break;
+        case Value_Macro: v.setmacro(val.code); break;
+        case Value_String: case Value_CString: v.setcstr(val.s); break;
+        case Value_Integer: v.setint(val.i); break;
+        case Value_Float: v.setfloat(val.f); break;
         default: v.setnull(); break;
     }
 }
@@ -390,93 +390,93 @@ inline void ident::getcval(tagval &v) const
 #define KEYWORD(name, type) UNUSED static bool __dummy_##type = addcommand(#name, (identfun)NULL, NULL, type)
 #define COMMANDKN(name, type, fun, nargs) UNUSED static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)
 #define COMMANDK(name, type, nargs) COMMANDKN(name, type, name, nargs)
-#define COMMANDN(name, fun, nargs) COMMANDKN(name, ID_COMMAND, fun, nargs)
+#define COMMANDN(name, fun, nargs) COMMANDKN(name, Id_Command, fun, nargs)
 #define COMMAND(name, nargs) COMMANDN(name, name, nargs)
 
 //integer var macros
 //_VAR, _VARF, _VARM are templates for "normal" macros
 #define _VAR(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist)
 #define VARN(name, global, min, cur, max) _VAR(name, global, min, cur, max, 0)
-#define VARNP(name, global, min, cur, max) _VAR(name, global, min, cur, max, IDF_PERSIST)
-#define VARNR(name, global, min, cur, max) _VAR(name, global, min, cur, max, IDF_OVERRIDE)
+#define VARNP(name, global, min, cur, max) _VAR(name, global, min, cur, max, Idf_Persist)
+#define VARNR(name, global, min, cur, max) _VAR(name, global, min, cur, max, Idf_Override)
 #define VAR(name, min, cur, max) _VAR(name, name, min, cur, max, 0)
-#define VARP(name, min, cur, max) _VAR(name, name, min, cur, max, IDF_PERSIST)
-#define VARR(name, min, cur, max) _VAR(name, name, min, cur, max, IDF_OVERRIDE)
+#define VARP(name, min, cur, max) _VAR(name, name, min, cur, max, Idf_Persist)
+#define VARR(name, min, cur, max) _VAR(name, name, min, cur, max, Idf_Override)
 #define _VARF(name, global, min, cur, max, body, persist)  void var_##name(ident *id); int global = variable(#name, min, cur, max, &global, var_##name, persist); void var_##name(ident *id) { body; }
 #define VARFN(name, global, min, cur, max, body) _VARF(name, global, min, cur, max, body, 0)
 #define VARF(name, min, cur, max, body) _VARF(name, name, min, cur, max, body, 0)
-#define VARFP(name, min, cur, max, body) _VARF(name, name, min, cur, max, body, IDF_PERSIST)
-#define VARFR(name, min, cur, max, body) _VARF(name, name, min, cur, max, body, IDF_OVERRIDE)
-#define VARFNP(name, global, min, cur, max, body) _VARF(name, global, min, cur, max, body, IDF_PERSIST)
-#define VARFNR(name, global, min, cur, max, body) _VARF(name, global, min, cur, max, body, IDF_OVERRIDE)
+#define VARFP(name, min, cur, max, body) _VARF(name, name, min, cur, max, body, Idf_Persist)
+#define VARFR(name, min, cur, max, body) _VARF(name, name, min, cur, max, body, Idf_Override)
+#define VARFNP(name, global, min, cur, max, body) _VARF(name, global, min, cur, max, body, Idf_Persist)
+#define VARFNR(name, global, min, cur, max, body) _VARF(name, global, min, cur, max, body, Idf_Override)
 #define _VARM(name, min, cur, max, scale, persist) int name = cur * scale; _VARF(name, _##name, min, cur, max, { name = _##name * scale; }, persist)
-#define VARMP(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, IDF_PERSIST)
-#define VARMR(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, IDF_OVERRIDE)
+#define VARMP(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, Idf_Persist)
+#define VARMR(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, Idf_Override)
 
 //hexadecimal var macros
-#define _HVAR(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist | IDF_HEX)
+#define _HVAR(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist | Idf_Hex)
 #define HVARN(name, global, min, cur, max) _HVAR(name, global, min, cur, max, 0)
-#define HVARNP(name, global, min, cur, max) _HVAR(name, global, min, cur, max, IDF_PERSIST)
-#define HVARNR(name, global, min, cur, max) _HVAR(name, global, min, cur, max, IDF_OVERRIDE)
+#define HVARNP(name, global, min, cur, max) _HVAR(name, global, min, cur, max, Idf_Persist)
+#define HVARNR(name, global, min, cur, max) _HVAR(name, global, min, cur, max, Idf_Override)
 #define HVAR(name, min, cur, max) _HVAR(name, name, min, cur, max, 0)
-#define HVARP(name, min, cur, max) _HVAR(name, name, min, cur, max, IDF_PERSIST)
-#define HVARR(name, min, cur, max) _HVAR(name, name, min, cur, max, IDF_OVERRIDE)
-#define _HVARF(name, global, min, cur, max, body, persist)  void var_##name(ident *id); int global = variable(#name, min, cur, max, &global, var_##name, persist | IDF_HEX); void var_##name(ident *id) { body; }
+#define HVARP(name, min, cur, max) _HVAR(name, name, min, cur, max, Idf_Persist)
+#define HVARR(name, min, cur, max) _HVAR(name, name, min, cur, max, Idf_Override)
+#define _HVARF(name, global, min, cur, max, body, persist)  void var_##name(ident *id); int global = variable(#name, min, cur, max, &global, var_##name, persist | Idf_Hex); void var_##name(ident *id) { body; }
 #define HVARFN(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, 0)
 #define HVARF(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, 0)
-#define HVARFP(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, IDF_PERSIST)
-#define HVARFR(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, IDF_OVERRIDE)
-#define HVARFNP(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, IDF_PERSIST)
-#define HVARFNR(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, IDF_OVERRIDE)
+#define HVARFP(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, Idf_Persist)
+#define HVARFR(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, Idf_Override)
+#define HVARFNP(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, Idf_Persist)
+#define HVARFNR(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, Idf_Override)
 
 //color var macros
 #define _CVAR(name, cur, init, body, persist) bvec name = bvec::hexcolor(cur); _HVARF(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)
-#define CVARP(name, cur) _CVAR(name, cur, , , IDF_PERSIST)
-#define CVARR(name, cur) _CVAR(name, cur, , , IDF_OVERRIDE)
-#define CVARFP(name, cur, body) _CVAR(name, cur, , body, IDF_PERSIST)
-#define CVARFR(name, cur, body) _CVAR(name, cur, , body, IDF_OVERRIDE)
+#define CVARP(name, cur) _CVAR(name, cur, , , Idf_Persist)
+#define CVARR(name, cur) _CVAR(name, cur, , , Idf_Override)
+#define CVARFP(name, cur, body) _CVAR(name, cur, , body, Idf_Persist)
+#define CVARFR(name, cur, body) _CVAR(name, cur, , body, Idf_Override)
 #define _CVAR0(name, cur, body, persist) _CVAR(name, cur, { if(!_##name) _##name = cur; }, body, persist)
-#define CVAR0P(name, cur) _CVAR0(name, cur, , IDF_PERSIST)
-#define CVAR0R(name, cur) _CVAR0(name, cur, , IDF_OVERRIDE)
-#define CVAR0FP(name, cur, body) _CVAR0(name, cur, body, IDF_PERSIST)
-#define CVAR0FR(name, cur, body) _CVAR0(name, cur, body, IDF_OVERRIDE)
+#define CVAR0P(name, cur) _CVAR0(name, cur, , Idf_Persist)
+#define CVAR0R(name, cur) _CVAR0(name, cur, , Idf_Override)
+#define CVAR0FP(name, cur, body) _CVAR0(name, cur, body, Idf_Persist)
+#define CVAR0FR(name, cur, body) _CVAR0(name, cur, body, Idf_Override)
 #define _CVAR1(name, cur, body, persist) _CVAR(name, cur, { if(_##name <= 255) _##name |= (_##name<<8) | (_##name<<16); }, body, persist)
-#define CVAR1P(name, cur) _CVAR1(name, cur, , IDF_PERSIST)
-#define CVAR1R(name, cur) _CVAR1(name, cur, , IDF_OVERRIDE)
-#define CVAR1FP(name, cur, body) _CVAR1(name, cur, body, IDF_PERSIST)
-#define CVAR1FR(name, cur, body) _CVAR1(name, cur, body, IDF_OVERRIDE)
+#define CVAR1P(name, cur) _CVAR1(name, cur, , Idf_Persist)
+#define CVAR1R(name, cur) _CVAR1(name, cur, , Idf_Override)
+#define CVAR1FP(name, cur, body) _CVAR1(name, cur, body, Idf_Persist)
+#define CVAR1FR(name, cur, body) _CVAR1(name, cur, body, Idf_Override)
 
 //float var macros
 #define _FVAR(name, global, min, cur, max, persist) float global = fvariable(#name, min, cur, max, &global, NULL, persist)
 #define FVARN(name, global, min, cur, max) _FVAR(name, global, min, cur, max, 0)
-#define FVARNP(name, global, min, cur, max) _FVAR(name, global, min, cur, max, IDF_PERSIST)
-#define FVARNR(name, global, min, cur, max) _FVAR(name, global, min, cur, max, IDF_OVERRIDE)
+#define FVARNP(name, global, min, cur, max) _FVAR(name, global, min, cur, max, Idf_Persist)
+#define FVARNR(name, global, min, cur, max) _FVAR(name, global, min, cur, max, Idf_Override)
 #define FVAR(name, min, cur, max) _FVAR(name, name, min, cur, max, 0)
-#define FVARP(name, min, cur, max) _FVAR(name, name, min, cur, max, IDF_PERSIST)
-#define FVARR(name, min, cur, max) _FVAR(name, name, min, cur, max, IDF_OVERRIDE)
+#define FVARP(name, min, cur, max) _FVAR(name, name, min, cur, max, Idf_Persist)
+#define FVARR(name, min, cur, max) _FVAR(name, name, min, cur, max, Idf_Override)
 #define _FVARF(name, global, min, cur, max, body, persist) void var_##name(ident *id); float global = fvariable(#name, min, cur, max, &global, var_##name, persist); void var_##name(ident *id) { body; }
 #define FVARFN(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, 0)
 #define FVARF(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, 0)
-#define FVARFP(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, IDF_PERSIST)
-#define FVARFR(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, IDF_OVERRIDE)
-#define FVARFNP(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, IDF_PERSIST)
-#define FVARFNR(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, IDF_OVERRIDE)
+#define FVARFP(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, Idf_Persist)
+#define FVARFR(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, Idf_Override)
+#define FVARFNP(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, Idf_Persist)
+#define FVARFNR(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, Idf_Override)
 
 //string var macros
 #define _SVAR(name, global, cur, persist) char *global = svariable(#name, cur, &global, NULL, persist)
 #define SVARN(name, global, cur) _SVAR(name, global, cur, 0)
-#define SVARNP(name, global, cur) _SVAR(name, global, cur, IDF_PERSIST)
-#define SVARNR(name, global, cur) _SVAR(name, global, cur, IDF_OVERRIDE)
+#define SVARNP(name, global, cur) _SVAR(name, global, cur, Idf_Persist)
+#define SVARNR(name, global, cur) _SVAR(name, global, cur, Idf_Override)
 #define SVAR(name, cur) _SVAR(name, name, cur, 0)
-#define SVARP(name, cur) _SVAR(name, name, cur, IDF_PERSIST)
-#define SVARR(name, cur) _SVAR(name, name, cur, IDF_OVERRIDE)
+#define SVARP(name, cur) _SVAR(name, name, cur, Idf_Persist)
+#define SVARR(name, cur) _SVAR(name, name, cur, Idf_Override)
 #define _SVARF(name, global, cur, body, persist) void var_##name(ident *id); char *global = svariable(#name, cur, &global, var_##name, persist); void var_##name(ident *id) { body; }
 #define SVARFN(name, global, cur, body) _SVARF(name, global, cur, body, 0)
 #define SVARF(name, cur, body) _SVARF(name, name, cur, body, 0)
-#define SVARFP(name, cur, body) _SVARF(name, name, cur, body, IDF_PERSIST)
-#define SVARFR(name, cur, body) _SVARF(name, name, cur, body, IDF_OVERRIDE)
-#define SVARFNP(name, global, cur, body) _SVARF(name, global, cur, body, IDF_PERSIST)
-#define SVARFNR(name, global, cur, body) _SVARF(name, global, cur, body, IDF_OVERRIDE)
+#define SVARFP(name, cur, body) _SVARF(name, name, cur, body, Idf_Persist)
+#define SVARFR(name, cur, body) _SVARF(name, name, cur, body, Idf_Override)
+#define SVARFNP(name, global, cur, body) _SVARF(name, global, cur, body, Idf_Persist)
+#define SVARFNR(name, global, cur, body) _SVARF(name, global, cur, body, Idf_Override)
 
 // anonymous inline commands, uses nasty template trick with line numbers to keep names unique
 #define ICOMMANDNAME(name) _icmd_##name
@@ -486,8 +486,7 @@ inline void ident::getcval(tagval &v) const
 #define ICOMMANDKN(name, type, cmdname, nargs, proto, b) ICOMMANDKNS(#name, type, cmdname, nargs, proto, b)
 #define ICOMMANDK(name, type, nargs, proto, b) ICOMMANDKN(name, type, ICOMMANDNAME(name), nargs, proto, b)
 #define ICOMMANDKS(name, type, nargs, proto, b) ICOMMANDKNS(name, type, ICOMMANDSNAME, nargs, proto, b)
-#define ICOMMANDNS(name, cmdname, nargs, proto, b) ICOMMANDKNS(name, ID_COMMAND, cmdname, nargs, proto, b)
+#define ICOMMANDNS(name, cmdname, nargs, proto, b) ICOMMANDKNS(name, Id_Command, cmdname, nargs, proto, b)
 #define ICOMMANDN(name, cmdname, nargs, proto, b) ICOMMANDNS(#name, cmdname, nargs, proto, b)
 #define ICOMMAND(name, nargs, proto, b) ICOMMANDN(name, ICOMMANDNAME(name), nargs, proto, b)
 #define ICOMMANDS(name, nargs, proto, b) ICOMMANDNS(name, ICOMMANDSNAME, nargs, proto, b)
-

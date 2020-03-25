@@ -238,7 +238,7 @@ struct ragdolldata
         {
             vertent()
             {
-                type = ENT_BOUNCE;
+                type = PhysEnt_Bounce;
                 radius = xradius = yradius = eyeheight = aboveeye = 1;
             }
         } v;

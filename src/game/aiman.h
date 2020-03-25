@@ -12,7 +12,7 @@ namespace aiman
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.state==CS_SPECTATOR || !VALID_TEAM(ci->team)) continue;
+            if(ci->state.state==ClientState_Spectator || !VALID_TEAM(ci->team)) continue;
             teamscore *t = NULL;
             loopvj(teams) if(teams[j].team == ci->team) { t = &teams[j]; break; }
             if(t) t->score++;
@@ -49,7 +49,7 @@ namespace aiman
             }
             if(bot)
             {
-                if(smode && bot->state.state==CS_ALIVE) smode->changeteam(bot, bot->team, t.team);
+                if(smode && bot->state.state==ClientState_Alive) smode->changeteam(bot, bot->team, t.team);
                 bot->team = t.team;
                 sendf(-1, 1, "riiii", N_SETTEAM, bot->clientnum, bot->team, 0);
             }
@@ -66,7 +66,7 @@ namespace aiman
 
     static inline bool validaiclient(clientinfo *ci)
     {
-        return ci->clientnum >= 0 && ci->state.aitype == AINone && (ci->state.state!=CS_SPECTATOR || ci->local || (ci->privilege && !ci->warned));
+        return ci->clientnum >= 0 && ci->state.aitype == AI_None && (ci->state.state!=ClientState_Spectator || ci->local || (ci->privilege && !ci->warned));
     }
 
     clientinfo *findaiclient(clientinfo *exclude = NULL)
@@ -110,7 +110,7 @@ namespace aiman
         if(!bots[cn]) bots[cn] = new clientinfo;
         clientinfo *ci = bots[cn];
         ci->clientnum = MAXCLIENTS + cn;
-        ci->state.aitype = AIBot;
+        ci->state.aitype = AI_Bot;
         clientinfo *owner = findaiclient();
         ci->ownernum = owner ? owner->clientnum : -1;
         if(owner) owner->bots.add(ci);
@@ -118,7 +118,7 @@ namespace aiman
         clients.add(ci);
         ci->state.lasttimeplayed = lastmillis;
         copystring(ci->name, "bot", MAXNAMELEN+1);
-        ci->state.state = CS_DEAD;
+        ci->state.state = ClientState_Dead;
         ci->team = team;
         ci->playermodel = RANDOM_INT(128);
         ci->playercolor = RANDOM_INT(0x8000);
@@ -160,7 +160,7 @@ namespace aiman
             if(ci->aireinit == 2)
             {
                 ci->reassign();
-                if(ci->state.state==CS_ALIVE) sendspawn(ci);
+                if(ci->state.state==ClientState_Alive) sendspawn(ci);
                 else sendresume(ci);
             }
             ci->aireinit = 0;
@@ -268,11 +268,11 @@ namespace aiman
 
     void addclient(clientinfo *ci)
     {
-        if(ci->state.aitype == AINone) dorefresh = true;
+        if(ci->state.aitype == AI_None) dorefresh = true;
     }
 
     void changeteam(clientinfo *ci)
     {
-        if(ci->state.aitype == AINone) dorefresh = true;
+        if(ci->state.aitype == AI_None) dorefresh = true;
     }
 }

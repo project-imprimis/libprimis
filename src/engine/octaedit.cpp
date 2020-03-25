@@ -160,7 +160,7 @@ void toggleedit(bool force)
     if(!force)
     {
         if(!isconnected()) return;
-        if(player->state!=CS_ALIVE && player->state!=CS_DEAD && player->state!=CS_EDITING) return; // do not allow dead players to edit to avoid state confusion
+        if(player->state!=ClientState_Alive && player->state!=ClientState_Dead && player->state!=ClientState_Editing) return; // do not allow dead players to edit to avoid state confusion
         if(!game::allowedittoggle()) return;         // not in most multiplayer modes
     }
     if(!(editmode = !editmode))
@@ -173,11 +173,11 @@ void toggleedit(bool force)
     {
         game::resetgamestate();
         player->editstate = player->state;
-        player->state = CS_EDITING;
+        player->state = ClientState_Editing;
     }
     cancelsel();
     stoppaintblendmap();
-    keyrepeat(editmode, KR_EDITMODE);
+    keyrepeat(editmode, KeyRepeat_EditMode);
     editing = entediting = editmode;
     if(!force) game::edittoggled(editmode);
     execident("resethud");

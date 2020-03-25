@@ -168,7 +168,7 @@ struct animmodel : model
             #define LOADMODELSHADER(name) DOMODELSHADER(name, return name##shader)
             #define SETMODELSHADER(m, name) DOMODELSHADER(name, (m).setshader(name##shader))
 
-            if(shadowmapping == SM_REFLECT)
+            if(shadowmapping == ShadowMap_Reflect)
             {
                 if(rsmshader) return rsmshader;
 
@@ -1727,9 +1727,9 @@ template<class MDL, class BASE> struct modelloader : BASE
         formatstring(dir, "media/model/%s", BASE::name);
         DEF_FORMAT_STRING(cfgname, "media/model/%s/%s.cfg", BASE::name, MDL::formatname());
 
-        identflags &= ~IDF_PERSIST;
+        identflags &= ~Idf_Persist;
         bool success = execfile(cfgname, false);
-        identflags |= IDF_PERSIST;
+        identflags |= Idf_Persist;
         return success;
     }
 };
@@ -1855,7 +1855,7 @@ template<class MDL, class MESH> struct modelcommands
         LOOP_MESHES("*", m, { if(!m.cancollide) init = false; });
         if(init) LOOP_MESHES("*", m, m.cancollide = false);
         LOOP_MESHES(meshname, m, { m.cancollide = true; m.canrender = false; });
-        MDL::loading->collide = COLLIDE_TRI;
+        MDL::loading->collide = Collide_TRI;
     }
 
 #undef LOOP_MESHES

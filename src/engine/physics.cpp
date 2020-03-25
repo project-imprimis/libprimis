@@ -25,7 +25,7 @@ static inline clipplanes &getclipbounds(const cube &c, const ivec &o, int size, 
 
 static inline clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent *d)
 {
-    int offset = !(c.visible&0x80) || d->type==ENT_PLAYER ? 0 : 1;
+    int offset = !(c.visible&0x80) || d->type==PhysEnt_Player ? 0 : 1;
     return getclipbounds(c, o, size, offset);
 }
 
@@ -139,7 +139,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
         loopv(oc->type) \
         { \
             extentity &e = *ents[oc->type[i]]; \
-            if(!(e.flags&EF_OCTA) || &e==t) continue; \
+            if(!(e.flags&EntFlag_Octa) || &e==t) continue; \
             func; \
             if(f<dist && f>0 && vec(ray).mul(f).add(o).insidebb(oc->o, oc->size)) \
             { \
@@ -180,7 +180,7 @@ static float disttooutsideent(const vec &o, const vec &ray, float radius, int mo
     loopv(outsideents)
     {
         extentity &e = *ents[outsideents[i]];
-        if(!(e.flags&EF_OCTA) || &e == t) continue;
+        if(!(e.flags&EntFlag_Octa) || &e == t) continue;
         entselectionbox(e, eo, es);
         if(!rayboxintersect(eo, es, o, ray, f, orient)) continue;
         if(f<dist && f>0)
@@ -201,7 +201,7 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
     loopv(oc->mapmodels)
     {
         extentity &e = *ents[oc->mapmodels[i]];
-        if(!(e.flags&EF_OCTA) || &e==t) continue;
+        if(!(e.flags&EntFlag_Octa) || &e==t) continue;
         if(!mmintersect(e, o, ray, radius, mode, f)) continue;
         if(f>0 && f<dist) dist = f;
     }
@@ -471,13 +471,13 @@ bool ellipseboxcollide(physent *d, const vec &dir, const vec &o, const vec &cent
         }
         if(yo.z < 0)
         {
-            if(dir.iszero() || (dir.z > 0 && (d->type!=ENT_PLAYER || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
+            if(dir.iszero() || (dir.z > 0 && (d->type!=PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
             {
                 collidewall = vec(0, 0, -1);
                 return true;
             }
         }
-        else if(dir.iszero() || (dir.z < 0 && (d->type!=ENT_PLAYER || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
+        else if(dir.iszero() || (dir.z < 0 && (d->type!=PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
         {
             collidewall = vec(0, 0, 1);
             return true;
@@ -509,13 +509,13 @@ bool ellipsecollide(physent *d, const vec &dir, const vec &o, const vec &center,
         }
         if(d->o.z < yo.z)
         {
-            if(dir.iszero() || (dir.z > 0 && (d->type!=ENT_PLAYER || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
+            if(dir.iszero() || (dir.z > 0 && (d->type!=PhysEnt_Player || below >= d->zmargin-(d->eyeheight+d->aboveeye)/4.0f)))
             {
                 collidewall = vec(0, 0, -1);
                 return true;
             }
         }
-        else if(dir.iszero() || (dir.z < 0 && (d->type!=ENT_PLAYER || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
+        else if(dir.iszero() || (dir.z < 0 && (d->type!=PhysEnt_Player || above >= d->zmargin-(d->eyeheight+d->aboveeye)/3.0f)))
         {
             collidewall = vec(0, 0, 1);
             return true;
@@ -559,7 +559,7 @@ const vector<physent *> &checkdynentcache(int x, int y)
     loopi(numdyns)
     {
         dynent *d = game::iterdynents(i);
-        if(d->state != CS_ALIVE ||
+        if(d->state != ClientState_Alive ||
            d->o.x+d->radius <= dx || d->o.x-d->radius >= dx+dsize ||
            d->o.y+d->radius <= dy || d->o.y-d->radius >= dy+dsize)
             continue;
@@ -616,11 +616,11 @@ static inline bool plcollide(physent *d, const vec &dir, physent *o)
 {
     switch(d->collidetype)
     {
-        case COLLIDE_ELLIPSE:
-            if(o->collidetype == COLLIDE_ELLIPSE) return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
+        case Collide_Ellipse:
+            if(o->collidetype == Collide_Ellipse) return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
             else return ellipseboxcollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
-        case COLLIDE_OBB:
-            if(o->collidetype == COLLIDE_ELLIPSE) return plcollide<mpr::EntOBB, mpr::EntCylinder>(d, dir, o);
+        case Collide_OBB:
+            if(o->collidetype == Collide_Ellipse) return plcollide<mpr::EntOBB, mpr::EntCylinder>(d, dir, o);
             else return plcollide<mpr::EntOBB, mpr::EntOBB>(d, dir, o);
         default: return false;
     }
@@ -628,7 +628,7 @@ static inline bool plcollide(physent *d, const vec &dir, physent *o)
 
 bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide with player
 {
-    if(d->type==ENT_CAMERA || d->state!=CS_ALIVE) return false;
+    if(d->type==PhysEnt_Camera || d->state!=ClientState_Alive) return false;
     int lastinside = collideinside;
     physent *insideplayer = NULL;
     loopdynentcache(x, y, d->o, d->radius)
@@ -723,7 +723,7 @@ static bool fuzzycollidebox(physent *d, const vec &dir, float cutoff, const vec 
         if(!dir.iszero())
         {
             if(w.dot(dir) >= -cutoff*dir.magnitude()) continue;
-            if(d->type==ENT_PLAYER &&
+            if(d->type==PhysEnt_Player &&
                 dist < (dir.z*w.z < 0 ?
                     d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                     (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -781,7 +781,7 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
         if(!dir.iszero())
         {
             if(w.dot(dir) >= -cutoff*dir.magnitude()) continue;
-            if(d->type==ENT_PLAYER &&
+            if(d->type==PhysEnt_Player &&
                 dist < (dir.z*w.z < 0 ?
                     d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                     (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -805,7 +805,7 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
     loopv(oc.mapmodels)
     {
         extentity &e = *ents[oc.mapmodels[i]];
-        if(e.flags&EF_NOCOLLIDE || !mapmodels.inrange(e.attr1)) continue;
+        if(e.flags&EntFlag_NoCollide || !mapmodels.inrange(e.attr1)) continue;
         mapmodelinfo &mmi = mapmodels[e.attr1];
         model *m = mmi.collide;
         if(!m)
@@ -824,15 +824,15 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
         if(d->o.reject(vec(e.o).add(center), d->radius + rejectradius*scale)) continue;
 
         int yaw = e.attr2, pitch = e.attr3, roll = e.attr4;
-        if(mcol == COLLIDE_TRI || testtricol)
+        if(mcol == Collide_TRI || testtricol)
         {
             if(!m->bih && !m->setBIH()) continue;
             switch(testtricol ? testtricol : d->collidetype)
             {
-                case COLLIDE_ELLIPSE:
+                case Collide_Ellipse:
                     if(m->bih->ellipsecollide(d, dir, cutoff, e.o, yaw, pitch, roll, scale)) return true;
                     break;
-                case COLLIDE_OBB:
+                case Collide_OBB:
                     if(m->bih->boxcollide(d, dir, cutoff, e.o, yaw, pitch, roll, scale)) return true;
                     break;
                 default: continue;
@@ -843,8 +843,8 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
             radius.mul(scale);
             switch(d->collidetype)
             {
-                case COLLIDE_ELLIPSE:
-                    if(mcol == COLLIDE_ELLIPSE)
+                case Collide_Ellipse:
+                    if(mcol == Collide_Ellipse)
                     {
                         if(pitch || roll)
                         {
@@ -858,8 +858,8 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
                     }
                     else if(ellipseboxcollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z)) return true;
                     break;
-                case COLLIDE_OBB:
-                    if(mcol == COLLIDE_ELLIPSE)
+                case Collide_OBB:
+                    if(mcol == Collide_Ellipse)
                     {
                         if(mmcollide<mpr::EntOBB, mpr::ModelEllipse>(d, dir, e, center, radius, yaw, pitch, roll)) return true;
                     }
@@ -882,7 +882,7 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
 
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
-    int visible = !(c.visible&0x80) || d->type==ENT_PLAYER ? c.visible : 0xFF;
+    int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
     #define CHECKSIDE(side, distval, dotval, margin, normal) if(visible&(1<<side)) do \
     { \
         float dist = distval; \
@@ -891,7 +891,7 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
         if(!dir.iszero()) \
         { \
             if(dotval >= -cutoff*dir.magnitude()) continue; \
-            if(d->type==ENT_PLAYER && dotval < 0 && dist < margin) continue; \
+            if(d->type==PhysEnt_Player && dotval < 0 && dist < margin) continue; \
         } \
         collidewall = normal; \
         bestdist = dist; \
@@ -971,7 +971,7 @@ static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const c
         if(!dir.iszero())
         {
             if(w.dot(dir) >= -cutoff*dir.magnitude()) continue;
-            if(d->type==ENT_PLAYER &&
+            if(d->type==PhysEnt_Player &&
                 dist < (dir.z*w.z < 0 ?
                     d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                     (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -1004,7 +1004,7 @@ static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cub
 
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
-    int visible = !(c.visible&0x80) || d->type==ENT_PLAYER ? c.visible : 0xFF;
+    int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
     CHECKSIDE(O_LEFT, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0));
     CHECKSIDE(O_RIGHT, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0));
     CHECKSIDE(O_BACK, co.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0));
@@ -1054,7 +1054,7 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
         if(!dir.iszero())
         {
             if(w.dot(dir) >= -cutoff*dir.magnitude()) continue;
-            if(d->type==ENT_PLAYER &&
+            if(d->type==PhysEnt_Player &&
                 dist < (dir.z*w.z < 0 ?
                     d->zmargin-(d->eyeheight+d->aboveeye)/(dir.z < 0 ? 3.0f : 4.0f) :
                     (dir.x*w.x < 0 || dir.y*w.y < 0 ? -d->radius : 0)))
@@ -1077,10 +1077,10 @@ static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const c
 {
     switch(d->collidetype)
     {
-    case COLLIDE_OBB:
+    case Collide_OBB:
         if(IS_ENTIRELY_SOLID(c) || solid) return cubecollidesolid<mpr::EntOBB>(d, dir, cutoff, c, co, size);
         else return cubecollideplanes<mpr::EntOBB>(d, dir, cutoff, c, co, size);
-    case COLLIDE_ELLIPSE:
+    case Collide_Ellipse:
         if(IS_ENTIRELY_SOLID(c) || solid) return fuzzycollidesolid<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
         else return fuzzycollideplanes<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
     default: return false;
@@ -1103,7 +1103,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
             switch(c[i].material&MATF_CLIP)
             {
                 case MAT_NOCLIP: continue;
-                case MAT_CLIP: if(IS_CLIPPED(c[i].material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
+                case MAT_CLIP: if(IS_CLIPPED(c[i].material&MATF_VOLUME) || d->type==PhysEnt_Player) solid = true; break;
             }
             if(!solid && IS_EMPTY(c[i])) continue;
             if(cubecollide(d, dir, cutoff, c[i], o, size, solid)) return true;
@@ -1132,7 +1132,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
     switch(c->material&MATF_CLIP)
     {
         case MAT_NOCLIP: return false;
-        case MAT_CLIP: if(IS_CLIPPED(c->material&MATF_VOLUME) || d->type==ENT_PLAYER) solid = true; break;
+        case MAT_CLIP: if(IS_CLIPPED(c->material&MATF_VOLUME) || d->type==PhysEnt_Player) solid = true; break;
     }
     if(!solid && IS_EMPTY(*c)) return false;
     int csize = 2<<scale, cmask = ~(csize-1);
@@ -1186,7 +1186,7 @@ void switchfloor(physent *d, vec &dir, const vec &floor)
     oldvel.add(d->falling);
     if(dir.dot(floor) >= 0)
     {
-        if(d->physstate < PHYS_SLIDE || fabs(dir.dot(d->floor)) > 0.01f*dir.magnitude()) return;
+        if(d->physstate < PhysEntState_Slide || fabs(dir.dot(d->floor)) > 0.01f*dir.magnitude()) return;
         d->vel.projectxy(floor, 0.0f);
     }
     else d->vel.projectxy(floor);
@@ -1199,7 +1199,7 @@ bool trystepup(physent *d, vec &dir, const vec &obstacle, float maxstep, const v
     vec old(d->o), stairdir = (obstacle.z >= 0 && obstacle.z < SLOPEZ ? vec(-obstacle.x, -obstacle.y, 0) : vec(dir.x, dir.y, 0)).rescale(1);
     bool cansmooth = true;
     /* check if there is space atop the stair to move to */
-    if(d->physstate != PHYS_STEP_UP)
+    if(d->physstate != PhysEntState_StepUp)
     {
         vec checkdir = stairdir;
         checkdir.mul(0.1f);
@@ -1255,13 +1255,13 @@ bool trystepup(physent *d, vec &dir, const vec &obstacle, float maxstep, const v
             if(!collide(d, smoothdir))
             {
                 d->o.z -= maxstep + 0.1f;
-                if(d->physstate == PHYS_FALL || d->floor != floor)
+                if(d->physstate == PhysEntState_Fall || d->floor != floor)
                 {
                     d->timeinair = 0;
                     d->floor = floor;
                     switchfloor(d, dir, d->floor);
                 }
-                d->physstate = PHYS_STEP_UP;
+                d->physstate = PhysEntState_StepUp;
                 return true;
             }
         }
@@ -1272,13 +1272,13 @@ bool trystepup(physent *d, vec &dir, const vec &obstacle, float maxstep, const v
     d->o.z += dir.magnitude();
     if(!collide(d, vec(0, 0, 1)))
     {
-        if(d->physstate == PHYS_FALL || d->floor != floor)
+        if(d->physstate == PhysEntState_Fall || d->floor != floor)
         {
             d->timeinair = 0;
             d->floor = floor;
             switchfloor(d, dir, d->floor);
         }
-        if(cansmooth) d->physstate = PHYS_STEP_UP;
+        if(cansmooth) d->physstate = PhysEntState_StepUp;
         return true;
     }
     d->o = old;
@@ -1305,7 +1305,7 @@ bool trystepdown(physent *d, vec &dir, float step, float xy, float z, bool init 
             vec stepfloor(stepdir);
             stepfloor.mul(-stepfloor.z).z += 1;
             stepfloor.normalize();
-            if(d->physstate >= PHYS_SLOPE && d->floor != stepfloor)
+            if(d->physstate >= PhysEntState_Slope && d->floor != stepfloor)
             {
                 // prevent alternating step-down/step-up states if player would keep bumping into the same floor
                 vec stepped(d->o);
@@ -1316,7 +1316,7 @@ bool trystepdown(physent *d, vec &dir, float step, float xy, float z, bool init 
                     d->o = old;
                     if(!init) { d->o.x += dir.x; d->o.y += dir.y; if(dir.z <= 0 || collide(d, dir)) d->o.z += dir.z; }
                     d->zmargin = 0;
-                    d->physstate = PHYS_STEP_DOWN;
+                    d->physstate = PhysEntState_StepDown;
                     d->timeinair = 0;
                     return true;
                 }
@@ -1326,7 +1326,7 @@ bool trystepdown(physent *d, vec &dir, float step, float xy, float z, bool init 
             else if(init) d->o = old;
             switchfloor(d, dir, stepfloor);
             d->floor = stepfloor;
-            d->physstate = PHYS_STEP_DOWN;
+            d->physstate = PhysEntState_StepDown;
             d->timeinair = 0;
             return true;
         }
@@ -1368,17 +1368,17 @@ void falling(physent *d, vec &dir, const vec &floor)
     {
         if(floor.z >= WALLZ) switchfloor(d, dir, floor);
         d->timeinair = 0;
-        d->physstate = PHYS_SLIDE;
+        d->physstate = PhysEntState_Slide;
         d->floor = floor;
     }
-    else if(d->physstate < PHYS_SLOPE || dir.dot(d->floor) > 0.01f*dir.magnitude() || (floor.z != 0.0f && floor.z != 1.0f) || !trystepdown(d, dir, true))
-        d->physstate = PHYS_FALL;
+    else if(d->physstate < PhysEntState_Slope || dir.dot(d->floor) > 0.01f*dir.magnitude() || (floor.z != 0.0f && floor.z != 1.0f) || !trystepdown(d, dir, true))
+        d->physstate = PhysEntState_Fall;
 }
 
 void landing(physent *d, vec &dir, const vec &floor, bool collided)
 {
 #if 0
-    if(d->physstate == PHYS_FALL)
+    if(d->physstate == PhysEntState_Fall)
     {
         d->timeinair = 0;
         if(dir.z < 0.0f) dir.z = d->vel.z = 0.0f;
@@ -1386,8 +1386,8 @@ void landing(physent *d, vec &dir, const vec &floor, bool collided)
 #endif
     switchfloor(d, dir, floor);
     d->timeinair = 0;
-    if((d->physstate!=PHYS_STEP_UP && d->physstate!=PHYS_STEP_DOWN) || !collided)
-        d->physstate = floor.z >= FLOORZ ? PHYS_FLOOR : PHYS_SLOPE;
+    if((d->physstate!=PhysEntState_StepUp && d->physstate!=PhysEntState_StepDown) || !collided)
+        d->physstate = floor.z >= FLOORZ ? PhysEntState_Floor : PhysEntState_Slope;
     d->floor = floor;
 }
 
@@ -1396,9 +1396,9 @@ bool findfloor(physent *d, const vec &dir, bool collided, const vec &obstacle, b
     bool found = false;
     vec moved(d->o);
     d->o.z -= 0.1f;
-    if(collide(d, vec(0, 0, -1), d->physstate == PHYS_SLOPE || d->physstate == PHYS_STEP_DOWN ? SLOPEZ : FLOORZ))
+    if(collide(d, vec(0, 0, -1), d->physstate == PhysEntState_Slope || d->physstate == PhysEntState_StepDown ? SLOPEZ : FLOORZ))
     {
-        if(d->physstate == PHYS_STEP_UP && d->floor != collidewall)
+        if(d->physstate == PhysEntState_StepUp && d->floor != collidewall)
         {
             vec old(d->o), checkfloor(collidewall), checkdir = vec(dir).projectxydir(checkfloor).rescale(dir.magnitude());
             d->o.add(checkdir);
@@ -1423,7 +1423,7 @@ bool findfloor(physent *d, const vec &dir, bool collided, const vec &obstacle, b
         found = true;
         slide = false;
     }
-    else if(d->physstate == PHYS_STEP_UP || d->physstate == PHYS_SLIDE)
+    else if(d->physstate == PhysEntState_StepUp || d->physstate == PhysEntState_Slide)
     {
         if(collide(d, vec(0, 0, -1)) && collidewall.z > 0.0f)
         {
@@ -1431,7 +1431,7 @@ bool findfloor(physent *d, const vec &dir, bool collided, const vec &obstacle, b
             if(floor.z >= SLOPEZ) found = true;
         }
     }
-    else if(d->physstate >= PHYS_SLOPE && d->floor.z < 1.0f)
+    else if(d->physstate >= PhysEntState_Slope && d->floor.z < 1.0f)
     {
         if(collide(d, vec(d->floor).neg(), 0.95f) || collide(d, vec(0, 0, -1)))
         {
@@ -1459,7 +1459,7 @@ bool move(physent *d, vec &dir)
     {
         obstacle = collidewall;
         /* check to see if there is an obstacle that would prevent this one from being used as a floor (or ceiling bump) */
-        if(d->type==ENT_PLAYER && ((collidewall.z>=SLOPEZ && dir.z<0) || (collidewall.z<=-SLOPEZ && dir.z>0)) && (dir.x || dir.y) && collide(d, vec(dir.x, dir.y, 0)))
+        if(d->type==PhysEnt_Player && ((collidewall.z>=SLOPEZ && dir.z<0) || (collidewall.z<=-SLOPEZ && dir.z>0)) && (dir.x || dir.y) && collide(d, vec(dir.x, dir.y, 0)))
         {
             if(collidewall.dot(dir) >= 0) slidecollide = true;
             obstacle = collidewall;
@@ -1467,11 +1467,11 @@ bool move(physent *d, vec &dir)
         d->o = old;
         d->o.z -= STAIRHEIGHT;
         d->zmargin = -STAIRHEIGHT;
-        if(d->physstate == PHYS_SLOPE || d->physstate == PHYS_FLOOR || (collide(d, vec(0, 0, -1), SLOPEZ) && (d->physstate==PHYS_STEP_UP || d->physstate==PHYS_STEP_DOWN || collidewall.z>=FLOORZ)))
+        if(d->physstate == PhysEntState_Slope || d->physstate == PhysEntState_Floor || (collide(d, vec(0, 0, -1), SLOPEZ) && (d->physstate==PhysEntState_StepUp || d->physstate==PhysEntState_StepDown || collidewall.z>=FLOORZ)))
         {
             d->o = old;
             d->zmargin = 0;
-            if(trystepup(d, dir, obstacle, STAIRHEIGHT, d->physstate == PHYS_SLOPE || d->physstate == PHYS_FLOOR ? d->floor : vec(collidewall))) return true;
+            if(trystepup(d, dir, obstacle, STAIRHEIGHT, d->physstate == PhysEntState_Slope || d->physstate == PhysEntState_Floor ? d->floor : vec(collidewall))) return true;
         }
         else
         {
@@ -1481,7 +1481,7 @@ bool move(physent *d, vec &dir)
         /* can't step over the obstacle, so just slide against it */
         collided = true;
     }
-    else if(d->physstate == PHYS_STEP_UP)
+    else if(d->physstate == PhysEntState_StepUp)
     {
         if(collide(d, vec(0, 0, -1), SLOPEZ))
         {
@@ -1490,7 +1490,7 @@ bool move(physent *d, vec &dir)
             d->o.add(dir);
         }
     }
-    else if(d->physstate == PHYS_STEP_DOWN && dir.dot(d->floor) <= 1e-6f)
+    else if(d->physstate == PhysEntState_StepDown && dir.dot(d->floor) <= 1e-6f)
     {
         vec moved(d->o);
         d->o = old;
@@ -1520,7 +1520,7 @@ void crouchplayer(physent *pl, int moveres, bool local)
         {
             float diff = min(pl->eyeheight - minheight, speed);
             pl->eyeheight -= diff;
-            if(pl->physstate > PHYS_FALL)
+            if(pl->physstate > PhysEntState_Fall)
             {
                 pl->o.z -= diff;
                 pl->newpos.z -= diff;
@@ -1531,7 +1531,7 @@ void crouchplayer(physent *pl, int moveres, bool local)
     {
         float diff = min(pl->maxheight - pl->eyeheight, speed), step = diff/moveres;
         pl->eyeheight += diff;
-        if(pl->physstate > PHYS_FALL)
+        if(pl->physstate > PhysEntState_Fall)
         {
             pl->o.z += diff;
             pl->newpos.z += diff;
@@ -1539,10 +1539,10 @@ void crouchplayer(physent *pl, int moveres, bool local)
         pl->crouching = 0;
         loopi(moveres)
         {
-            if(!collide(pl, vec(0, 0, pl->physstate <= PHYS_FALL ? -1 : 1), 0, true)) break;
+            if(!collide(pl, vec(0, 0, pl->physstate <= PhysEntState_Fall ? -1 : 1), 0, true)) break;
             pl->crouching = 1;
             pl->eyeheight -= step;
-            if(pl->physstate > PHYS_FALL)
+            if(pl->physstate > PhysEntState_Fall)
             {
                 pl->o.z -= step;
                 pl->newpos.z -= step;
@@ -1554,7 +1554,7 @@ void crouchplayer(physent *pl, int moveres, bool local)
 bool bounce(physent *d, float secs, float elasticity, float waterfric, float grav)
 {
     // make sure bouncers don't start inside geometry
-    if(d->physstate!=PHYS_BOUNCE && collide(d, vec(0, 0, 0), 0, false)) return true;
+    if(d->physstate!=PhysEntState_Bounce && collide(d, vec(0, 0, 0), 0, false)) return true;
     int mat = lookupmaterial(vec(d->o.x, d->o.y, d->o.z + (d->aboveeye - d->eyeheight)/2));
     bool water = IS_LIQUID(mat);
     if(water)
@@ -1586,11 +1586,11 @@ bool bounce(physent *d, float secs, float elasticity, float waterfric, float gra
         d->vel.mul(k);
         d->vel.sub(vec(collidewall).mul(elasticity*2.0f*c));
     }
-    if(d->physstate!=PHYS_BOUNCE)
+    if(d->physstate!=PhysEntState_Bounce)
     {
         // make sure bouncers don't start inside geometry
         if(d->o == old) return !collideplayer;
-        d->physstate = PHYS_BOUNCE;
+        d->physstate = PhysEntState_Bounce;
     }
     return collideplayer!=NULL;
 }
@@ -1646,7 +1646,7 @@ bool droptofloor(vec &o, float radius, float height)
     {
         dropent()
         {
-            type = ENT_BOUNCE;
+            type = PhysEnt_Bounce;
             vel = vec(0, 0, -1);
         }
     } d;
@@ -1675,10 +1675,10 @@ float dropheight(entity &e)
 {
     switch(e.type)
     {
-        case ET_PARTICLES:
-        case ET_MAPMODEL: return 0.0f;
+        case Ent_Particles:
+        case Ent_Mapmodel: return 0.0f;
         default:
-            if(e.type >= ET_GAMESPECIFIC) return entities::dropheight(e);
+            if(e.type >= Ent_GameSpecific) return entities::dropheight(e);
             return 4.0f;
     }
 }
@@ -1749,7 +1749,7 @@ void modifyvelocity(physent *pl, bool local, bool water, bool floating, int curt
             pl->vel.z = max(pl->vel.z, JUMPVEL);
         }
     }
-    else if(pl->physstate >= PHYS_SLOPE || water)
+    else if(pl->physstate >= PhysEntState_Slope || water)
     {
         if(water && !pl->inwater) pl->vel.div(8);
         if(pl->jumping && allowmove)
@@ -1762,14 +1762,14 @@ void modifyvelocity(physent *pl, bool local, bool water, bool floating, int curt
             game::physicstrigger(pl, local, 1, 0);
         }
     }
-    if(!floating && pl->physstate == PHYS_FALL) pl->timeinair += curtime;
+    if(!floating && pl->physstate == PhysEntState_Fall) pl->timeinair += curtime;
 
     vec m(0.0f, 0.0f, 0.0f);
     if((pl->move || pl->strafe) && allowmove)
     {
-        vecfromyawpitch(pl->yaw, floating || water || pl->type==ENT_CAMERA ? pl->pitch : 0, pl->move, pl->strafe, m);
+        vecfromyawpitch(pl->yaw, floating || water || pl->type==PhysEnt_Camera ? pl->pitch : 0, pl->move, pl->strafe, m);
 
-        if(!floating && pl->physstate >= PHYS_SLOPE)
+        if(!floating && pl->physstate >= PhysEntState_Slope)
         {
             /* move up or down slopes in air
              * but only move up slopes in water
@@ -1783,7 +1783,7 @@ void modifyvelocity(physent *pl, bool local, bool water, bool floating, int curt
 
     vec d(m);
     d.mul(pl->maxspeed);
-    if(pl->type==ENT_PLAYER)
+    if(pl->type==PhysEnt_Player)
     {
         if(floating)
         {
@@ -1791,10 +1791,10 @@ void modifyvelocity(physent *pl, bool local, bool water, bool floating, int curt
         }
         else if(pl->crouching) d.mul(0.4f);
     }
-    float fric = water && !floating ? 20.0f : (pl->physstate >= PHYS_SLOPE || floating ? 6.0f : 30.0f);
+    float fric = water && !floating ? 20.0f : (pl->physstate >= PhysEntState_Slope || floating ? 6.0f : 30.0f);
     pl->vel.lerp(d, pl->vel, pow(1 - 1/fric, curtime/20.0f));
 // old fps friction
-//    float friction = water && !floating ? 20.0f : (pl->physstate >= PHYS_SLOPE || floating ? 6.0f : 30.0f);
+//    float friction = water && !floating ? 20.0f : (pl->physstate >= PhysEntState_Slope || floating ? 6.0f : 30.0f);
 //    float fpsfric = min(curtime/(20.0f*friction), 1.0f);
 //    pl->vel.lerp(pl->vel, d, fpsfric);
 }
@@ -1803,7 +1803,7 @@ void modifygravity(physent *pl, bool water, int curtime)
 {
     float secs = curtime/1000.0f;
     vec g(0, 0, 0);
-    if(pl->physstate == PHYS_FALL) g.z -= GRAVITY*secs;
+    if(pl->physstate == PhysEntState_Fall) g.z -= GRAVITY*secs;
     else if(pl->floor.z > 0 && pl->floor.z < FLOORZ)
     {
         g.z = -1;
@@ -1813,7 +1813,7 @@ void modifygravity(physent *pl, bool water, int curtime)
     }
     if(!water || !game::allowmove(pl) || (!pl->move && !pl->strafe)) pl->falling.add(g);
 
-    if(water || pl->physstate >= PHYS_SLOPE)
+    if(water || pl->physstate >= PhysEntState_Slope)
     {
         float fric = water ? 2.0f : 6.0f,
               c = water ? 1.0f : clamp((pl->floor.z - SLOPEZ)/(FLOORZ-SLOPEZ), 0.0f, 1.0f);
@@ -1834,7 +1834,7 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
 {
     int material = lookupmaterial(vec(pl->o.x, pl->o.y, pl->o.z + (3*pl->aboveeye - pl->eyeheight)/4));
     bool water = IS_LIQUID(material&MATF_VOLUME);
-    bool floating = pl->type==ENT_PLAYER && (pl->state==CS_EDITING || pl->state==CS_SPECTATOR);
+    bool floating = pl->type==PhysEnt_Player && (pl->state==ClientState_Editing || pl->state==ClientState_Spectator);
     float secs = curtime/1000.f;
 
     // apply gravity
@@ -1851,9 +1851,9 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
 
     if(floating)                // just apply velocity
     {
-        if(pl->physstate != PHYS_FLOAT)
+        if(pl->physstate != PhysEntState_Float)
         {
-            pl->physstate = PHYS_FLOAT;
+            pl->physstate = PhysEntState_Float;
             pl->timeinair = 0;
             pl->falling = vec(0, 0, 0);
         }
@@ -1873,7 +1873,7 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
         }
     }
 
-    if(pl->state==CS_ALIVE) updatedynentcache(pl);
+    if(pl->state==ClientState_Alive) updatedynentcache(pl);
 
     // automatically apply smooth roll when strafing
 
@@ -1891,7 +1891,7 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
     else if(pl->inwater && !water) game::physicstrigger(pl, local, 0, 1, pl->inwater);
     pl->inwater = water ? material&MATF_VOLUME : MAT_AIR;
 
-    if(pl->state==CS_ALIVE && (pl->o.z < 0 || material&MAT_DEATH)) game::suicide(pl);
+    if(pl->state==ClientState_Alive && (pl->o.z < 0 || material&MAT_DEATH)) game::suicide(pl);
 
     return true;
 }
@@ -1969,7 +1969,7 @@ bool bounce(physent *d, float elasticity, float waterfric, float grav)
 
 void updatephysstate(physent *d)
 {
-    if(d->physstate == PHYS_FALL) return;
+    if(d->physstate == PhysEntState_Fall) return;
     d->timeinair = 0;
     vec old(d->o);
     /* Attempt to reconstruct the floor state.
@@ -1978,27 +1978,27 @@ void updatephysstate(physent *d)
      */
     switch(d->physstate)
     {
-        case PHYS_SLOPE:
-        case PHYS_FLOOR:
-        case PHYS_STEP_DOWN:
+        case PhysEntState_Slope:
+        case PhysEntState_Floor:
+        case PhysEntState_StepDown:
             d->o.z -= 0.15f;
-            if(collide(d, vec(0, 0, -1), d->physstate == PHYS_SLOPE || d->physstate == PHYS_STEP_DOWN ? SLOPEZ : FLOORZ))
+            if(collide(d, vec(0, 0, -1), d->physstate == PhysEntState_Slope || d->physstate == PhysEntState_StepDown ? SLOPEZ : FLOORZ))
                 d->floor = collidewall;
             break;
 
-        case PHYS_STEP_UP:
+        case PhysEntState_StepUp:
             d->o.z -= STAIRHEIGHT+0.15f;
             if(collide(d, vec(0, 0, -1), SLOPEZ))
                 d->floor = collidewall;
             break;
 
-        case PHYS_SLIDE:
+        case PhysEntState_Slide:
             d->o.z -= 0.15f;
             if(collide(d, vec(0, 0, -1)) && collidewall.z < SLOPEZ)
                 d->floor = collidewall;
             break;
     }
-    if(d->physstate > PHYS_FALL && d->floor.z <= 0) d->floor = vec(0, 0, 1);
+    if(d->physstate > PhysEntState_Fall && d->floor.z <= 0) d->floor = vec(0, 0, 1);
     d->o = old;
 }
 

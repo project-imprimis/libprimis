@@ -25,9 +25,9 @@ namespace game
 
     gameent *followingplayer()
     {
-        if(player1->state!=CS_SPECTATOR || following<0) return NULL;
+        if(player1->state!=ClientState_Spectator || following<0) return NULL;
         gameent *target = getclient(following);
-        if(target && target->state!=CS_SPECTATOR) return target;
+        if(target && target->state!=ClientState_Spectator) return target;
         return NULL;
     }
 
@@ -48,7 +48,7 @@ namespace game
         int cn = -1;
         if(arg[0])
         {
-            if(player1->state != CS_SPECTATOR) return;
+            if(player1->state != ClientState_Spectator) return;
             cn = parseplayer(arg);
             if(cn == player1->clientnum) cn = -1;
         }
@@ -59,12 +59,12 @@ namespace game
 
     void nextfollow(int dir)
     {
-        if(player1->state!=CS_SPECTATOR) return;
+        if(player1->state!=ClientState_Spectator) return;
         int cur = following >= 0 ? following : (dir < 0 ? clients.length() - 1 : 0);
         loopv(clients)
         {
             cur = (cur + dir + clients.length()) % clients.length();
-            if(clients[cur] && clients[cur]->state!=CS_SPECTATOR)
+            if(clients[cur] && clients[cur]->state!=ClientState_Spectator)
             {
                 following = cur;
                 return;
@@ -76,7 +76,7 @@ namespace game
 
     void checkfollow()
     {
-        if(player1->state != CS_SPECTATOR)
+        if(player1->state != ClientState_Spectator)
         {
             if(following >= 0) stopfollowing();
         }
@@ -85,7 +85,7 @@ namespace game
             if(following >= 0)
             {
                 gameent *d = clients.inrange(following) ? clients[following] : NULL;
-                if(!d || d->state == CS_SPECTATOR) stopfollowing();
+                if(!d || d->state == ClientState_Spectator) stopfollowing();
             }
             if(following < 0 && specmode) nextfollow();
         }
@@ -142,7 +142,7 @@ namespace game
         if(target)
         {
             player1->yaw = target->yaw;
-            player1->pitch = target->state==CS_DEAD ? 0 : target->pitch;
+            player1->pitch = target->state==ClientState_Dead ? 0 : target->pitch;
             player1->o = target->o;
             player1->resetinterp();
         }
@@ -150,22 +150,22 @@ namespace game
 
     bool allowthirdperson()
     {
-        return !multiplayer(false) || player1->state==CS_SPECTATOR || player1->state==CS_EDITING || MODE_EDIT;
+        return !multiplayer(false) || player1->state==ClientState_Spectator || player1->state==ClientState_Editing || MODE_EDIT;
     }
 
     bool detachcamera()
     {
         gameent *d = followingplayer();
-        if(d) return specmode > 1 || d->state == CS_DEAD;
-        return player1->state == CS_DEAD;
+        if(d) return specmode > 1 || d->state == ClientState_Dead;
+        return player1->state == ClientState_Dead;
     }
 
     bool collidecamera()
     {
         switch(player1->state)
         {
-            case CS_EDITING: return false;
-            case CS_SPECTATOR: return followingplayer()!=NULL;
+            case ClientState_Editing: return false;
+            case ClientState_Spectator: return followingplayer()!=NULL;
         }
         return true;
     }
@@ -205,7 +205,7 @@ namespace game
             gameent *d = players[i];
             if(d == player1 || d->ai) continue;
 
-            if(d->state==CS_DEAD && d->ragdoll) moveragdoll(d);
+            if(d->state==ClientState_Dead && d->ragdoll) moveragdoll(d);
             else if(!intermission)
             {
                 if(lastmillis - d->lastaction >= d->gunwait) d->gunwait = 0;
@@ -213,18 +213,18 @@ namespace game
 
             const int lagtime = totalmillis-d->lastupdate;
             if(!lagtime || intermission) continue;
-            else if(lagtime>1000 && d->state==CS_ALIVE)
+            else if(lagtime>1000 && d->state==ClientState_Alive)
             {
-                d->state = CS_LAGGED;
+                d->state = ClientState_Lagged;
                 continue;
             }
-            if(d->state==CS_ALIVE || d->state==CS_EDITING)
+            if(d->state==ClientState_Alive || d->state==ClientState_Editing)
             {
                 crouchplayer(d, 10, false);
                 if(smoothmove && d->smoothmillis>0) predictplayer(d, true);
                 else moveplayer(d, 1, false);
             }
-            else if(d->state==CS_DEAD && !d->ragdoll && lastmillis-d->lastpain<2000) moveplayer(d, 1, true);
+            else if(d->state==ClientState_Dead && !d->ragdoll && lastmillis-d->lastpain<2000) moveplayer(d, 1, true);
         }
     }
 
@@ -242,7 +242,7 @@ namespace game
         gets2c(); //get server to client info
         if(connected)
         {
-            if(player1->state == CS_DEAD) //ragdoll check
+            if(player1->state == ClientState_Dead) //ragdoll check
             {
                 if(player1->ragdoll) moveragdoll(player1);
                 else if(lastmillis-player1->lastpain<2000)
@@ -271,10 +271,10 @@ namespace game
         spawnstate(d);
         if(d==player1)
         {
-            if(editmode) d->state = CS_EDITING;
-            else if(d->state != CS_SPECTATOR) d->state = CS_ALIVE;
+            if(editmode) d->state = ClientState_Editing;
+            else if(d->state != ClientState_Spectator) d->state = ClientState_Alive;
         }
-        else d->state = CS_ALIVE;
+        else d->state = ClientState_Alive;
         checkfollow();
     }
 
@@ -282,7 +282,7 @@ namespace game
 
     void respawn()
     {
-        if(player1->state==CS_DEAD)
+        if(player1->state==ClientState_Dead)
         {
             player1->attacking = ACT_IDLE;
             int wait = cmode ? cmode->respawnwait(player1) : 0;
@@ -317,24 +317,24 @@ namespace game
     {
         if(!connected || intermission) return false;
         if(jumpspawn) respawn();
-        return player1->state!=CS_DEAD;
+        return player1->state!=ClientState_Dead;
     }
 
     bool cancrouch()
     {
         if(!connected || intermission) return false;
-        return player1->state!=CS_DEAD;
+        return player1->state!=ClientState_Dead;
     }
 
     bool allowmove(physent *d)
     {
-        if(d->type!=ENT_PLAYER) return true;
+        if(d->type!=PhysEnt_Player) return true;
         return !((gameent *)d)->lasttaunt || lastmillis-((gameent *)d)->lasttaunt>=1000;
     }
 
     void taunt()
     {
-        if(player1->state!=CS_ALIVE || player1->physstate<PHYS_SLOPE) return;
+        if(player1->state!=ClientState_Alive || player1->physstate<PhysEntState_Slope) return;
         if(lastmillis-player1->lasttaunt<1000) return;
         player1->lasttaunt = lastmillis;
         addmsg(N_TAUNT, "rc", player1);
@@ -345,7 +345,7 @@ namespace game
 
     void damaged(int damage, gameent *d, gameent *actor, bool local)
     {
-        if((d->state!=CS_ALIVE && d->state != CS_LAGGED && d->state != CS_SPAWNING) || intermission) return;
+        if((d->state!=ClientState_Alive && d->state != ClientState_Lagged && d->state != ClientState_Spawning) || intermission) return;
 
         if(local) damage = d->dodamage(damage);
         else if(actor==player1) return;
@@ -374,7 +374,7 @@ namespace game
 
     void deathstate(gameent *d, bool restore)
     {
-        d->state = CS_DEAD;
+        d->state = ClientState_Dead;
         d->lastpain = lastmillis;
         if(!restore)
         {
@@ -403,14 +403,14 @@ namespace game
 
     void killed(gameent *d, gameent *actor)
     {
-        if(d->state==CS_EDITING)
+        if(d->state==ClientState_Editing)
         {
-            d->editstate = CS_DEAD;
+            d->editstate = ClientState_Dead;
             d->deaths++;
             if(d!=player1) d->resetinterp();
             return;
         }
-        else if((d->state!=CS_ALIVE && d->state != CS_LAGGED && d->state != CS_SPAWNING) || intermission) return;
+        else if((d->state!=ClientState_Alive && d->state != ClientState_Lagged && d->state != ClientState_Spawning) || intermission) return;
 
         gameent *h = followingplayer();
         if(!h) h = player1;
@@ -608,8 +608,8 @@ namespace game
     {
         if     (waterlevel>0) { if(material!=MAT_LAVA) playsound(S_SPLASHOUT, d==player1 ? NULL : &d->o); }
         else if(waterlevel<0) playsound(material==MAT_LAVA ? S_BURN : S_SPLASHIN, d==player1 ? NULL : &d->o);
-        if     (floorlevel>0) { if(d==player1 || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_JUMP, d); }
-        else if(floorlevel<0) { if(d==player1 || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_LAND, d); }
+        if     (floorlevel>0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(S_JUMP, d); }
+        else if(floorlevel<0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(S_LAND, d); }
     }
 
     void dynentcollide(physent *d, physent *o, const vec &dir)
@@ -625,7 +625,7 @@ namespace game
         }
         else
         {
-            if(d->type==ENT_PLAYER && ((gameent *)d)->ai)
+            if(d->type==PhysEnt_Player && ((gameent *)d)->ai)
                 addmsg(N_SOUND, "ci", d, n);
             playsound(n, &d->o);
         }
@@ -650,10 +650,10 @@ namespace game
     const char *colorname(gameent *d, const char *name, const char * alt, const char *color)
     {
         if(!name) name = alt && d == player1 ? alt : d->name;
-        bool dup = !name[0] || duplicatename(d, name, alt) || d->aitype != AINone;
+        bool dup = !name[0] || duplicatename(d, name, alt) || d->aitype != AI_None;
         if(dup || color[0])
         {
-            if(dup) return tempformatstring(d->aitype == AINone ? "\fs%s%s \f5(%d)\fr" : "\fs%s%s \f5[%d]\fr", color, name, d->clientnum);
+            if(dup) return tempformatstring(d->aitype == AI_None ? "\fs%s%s \f5(%d)\fr" : "\fs%s%s \f5[%d]\fr", color, name, d->clientnum);
             return tempformatstring("\fs%s%s\fr", color, name);
         }
         return name;
@@ -663,7 +663,7 @@ namespace game
 
     const char *teamcolorname(gameent *d, const char *alt)
     {
-        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(d->team) || d->state == CS_SPECTATOR) return colorname(d, NULL, alt);
+        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(d->team) || d->state == ClientState_Spectator) return colorname(d, NULL, alt);
         return colorname(d, NULL, alt, teamtextcode[d->team]);
     }
 
@@ -687,9 +687,9 @@ namespace game
 
     void suicide(physent *d)
     {
-        if(d==player1 || (d->type==ENT_PLAYER && ((gameent *)d)->ai))
+        if(d==player1 || (d->type==PhysEnt_Player && ((gameent *)d)->ai))
         {
-            if(d->state!=CS_ALIVE) return;
+            if(d->state!=ClientState_Alive) return;
             gameent *pl = (gameent *)d;
             if(!MODE_MP(gamemode)) killed(pl, pl);
             else
@@ -721,8 +721,8 @@ namespace game
     {
         switch(hudplayer()->state)
         {
-            case CS_EDITING:
-            case CS_SPECTATOR:
+            case ClientState_Editing:
+            case ClientState_Spectator:
                 return 1;
             default:
                 return 1650.0f/1800.0f;
@@ -734,8 +734,8 @@ namespace game
 #if 0
         pushhudscale(2);
 
-        draw_textf("%d", (HICON_X + HICON_SIZE + HICON_SPACE)/2, HICON_TEXTY/2, d->state==CS_DEAD ? 0 : d->health);
-        if(d->state!=CS_DEAD)
+        draw_textf("%d", (HICON_X + HICON_SIZE + HICON_SPACE)/2, HICON_TEXTY/2, d->state==ClientState_Dead ? 0 : d->health);
+        if(d->state!=ClientState_Dead)
         {
             draw_textf("%d", (HICON_X + 2*HICON_STEP + HICON_SIZE + HICON_SPACE)/2, HICON_TEXTY/2, d->ammo[d->gunselect]);
         }
@@ -744,7 +744,7 @@ namespace game
         resethudshader();
 
         drawicon(HICON_HEALTH, HICON_X, HICON_Y);
-        if(d->state!=CS_DEAD)
+        if(d->state!=ClientState_Dead)
         {
             drawicon(HICON_MELEE+d->gunselect, HICON_X + 2*HICON_STEP, HICON_Y);
         }
@@ -755,7 +755,7 @@ namespace game
     {
         pushhudscale(h/1800.0f);
 
-        if(player1->state==CS_SPECTATOR)
+        if(player1->state==ClientState_Spectator)
         {
             float pw, ph, tw, th, fw, fh;
             text_boundsf("  ", pw, ph);
@@ -767,11 +767,11 @@ namespace game
             draw_text("SPECTATOR", w*1800/h - tw - pw, 1650 - th - fh);
             if(f)
             {
-                int color = f->state!=CS_DEAD ? 0xFFFFFF : 0x606060;
+                int color = f->state!=ClientState_Dead ? 0xFFFFFF : 0x606060;
                 if(f->privilege)
                 {
                     color = f->privilege>=PRIV_ADMIN ? 0xFF8000 : 0x40FF80;
-                    if(f->state==CS_DEAD) color = (color>>1)&0x7F7F7F;
+                    if(f->state==ClientState_Dead) color = (color>>1)&0x7F7F7F;
                 }
                 draw_text(colorname(f), w*1800/h - fw - pw, 1650 - fh, (color>>16)&0xFF, (color>>8)&0xFF, color&0xFF);
             }
@@ -779,9 +779,9 @@ namespace game
         }
 
         gameent *d = hudplayer();
-        if(d->state!=CS_EDITING)
+        if(d->state!=ClientState_Editing)
         {
-            if(d->state!=CS_SPECTATOR) drawhudicons(d);
+            if(d->state!=ClientState_Spectator) drawhudicons(d);
             if(cmode) cmode->drawhud(d, w, h);
         }
 
@@ -810,16 +810,16 @@ namespace game
     int selectcrosshair(vec &col)
     {
         gameent *d = hudplayer();
-        if(d->state==CS_SPECTATOR || d->state==CS_DEAD || UI::uivisible("scoreboard")) return -1;
+        if(d->state==ClientState_Spectator || d->state==ClientState_Dead || UI::uivisible("scoreboard")) return -1;
 
-        if(d->state!=CS_ALIVE) return 0;
+        if(d->state!=ClientState_Alive) return 0;
 
         int crosshair = 0;
         if(lasthit && lastmillis - lasthit < hitcrosshair) crosshair = 2;
         else if(teamcrosshair && MODE_TEAMMODE)
         {
             dynent *o = intersectclosest(d->o, worldpos, d);
-            if(o && o->type==ENT_PLAYER && VALID_TEAM(d->team) && ((gameent *)o)->team == d->team)
+            if(o && o->type==PhysEnt_Player && VALID_TEAM(d->team) && ((gameent *)o)->team == d->team)
             {
                 crosshair = 1;
 

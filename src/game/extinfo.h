@@ -74,7 +74,7 @@
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.state!=CS_SPECTATOR && VALID_TEAM(ci->team) && scores.htfind(ci->team) < 0)
+            if(ci->state.state!=ClientState_Spectator && VALID_TEAM(ci->team) && scores.htfind(ci->team) < 0)
             {
                 if(smode && smode->hidefrags()) scores.add(teamscore(ci->team, 0));
                 else { teaminfo &t = teaminfos[ci->team-1]; scores.add(teamscore(ci->team, t.frags)); }

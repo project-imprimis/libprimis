@@ -59,14 +59,14 @@ COMMAND(mdlcolor, "fff");
 void mdlcollide(int *collide)
 {
     CHECK_MDL;
-    loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : COLLIDE_OBB) : COLLIDE_NONE;
+    loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OBB) : Collide_None;
 }
 COMMAND(mdlcollide, "i");
 
 void mdlellipsecollide(int *collide)
 {
     CHECK_MDL;
-    loadingmodel->collide = *collide!=0 ? COLLIDE_ELLIPSE : COLLIDE_NONE;
+    loadingmodel->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
 }
 COMMAND(mdlellipsecollide, "i");
 
@@ -77,7 +77,7 @@ void mdltricollide(char *collide)
     char *end = NULL;
     int val = strtol(collide, &end, 0);
     if(*end) { val = 1; loadingmodel->collidemodel = newstring(collide); }
-    loadingmodel->collide = val ? COLLIDE_TRI : COLLIDE_NONE;
+    loadingmodel->collide = val ? Collide_TRI : Collide_None;
 }
 COMMAND(mdltricollide, "s");
 
@@ -320,7 +320,7 @@ void mapmodel(char *name)
 
 void mapmodelreset(int *n)
 {
-    if(!(identflags&IDF_OVERRIDDEN) && !game::allowedittoggle()) return;
+    if(!(identflags&Idf_Overridden) && !game::allowedittoggle()) return;
     mapmodels.shrink(clamp(*n, 0, mapmodels.length()));
 }
 
@@ -369,7 +369,7 @@ void preloadusedmapmodels(bool msg, bool bih)
     loopv(ents)
     {
         extentity &e = *ents[i];
-        if(e.type==ET_MAPMODEL && e.attr1 >= 0 && used.find(e.attr1) < 0) used.add(e.attr1);
+        if(e.type==Ent_Mapmodel && e.attr1 >= 0 && used.find(e.attr1) < 0) used.add(e.attr1);
     }
 
     vector<const char *> col;
@@ -385,7 +385,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         else
         {
             if(bih) m->preloadBIH();
-            else if(m->collide == COLLIDE_TRI && !m->collidemodel && m->bih) m->setBIH();
+            else if(m->collide == Collide_TRI && !m->collidemodel && m->bih) m->setBIH();
             m->preloadmeshes();
             m->preloadshaders();
             if(m->collidemodel && col.htfind(m->collidemodel) < 0) col.add(m->collidemodel);
@@ -535,7 +535,7 @@ static inline void renderbatchedmodel(model *m, const batchedmodel &b)
     if(b.attached>=0) a = &modelattached[b.attached];
 
     int anim = b.anim;
-    if(shadowmapping > SM_REFLECT)
+    if(shadowmapping > ShadowMap_Reflect)
     {
         anim |= ANIM_NOSKIN;
     }
@@ -589,18 +589,18 @@ static inline int shadowmaskmodel(const vec &center, float radius)
 {
     switch(shadowmapping)
     {
-        case SM_REFLECT:
+        case ShadowMap_Reflect:
             return calcspherersmsplits(center, radius);
-        case SM_CUBEMAP:
+        case ShadowMap_CubeMap:
         {
             vec scenter = vec(center).sub(shadoworigin);
             float sradius = radius + shadowradius;
             if(scenter.squaredlen() >= sradius*sradius) return 0;
             return calcspheresidemask(scenter, radius, shadowbias);
         }
-        case SM_CASCADE:
+        case ShadowMap_Cascade:
             return calcspherecsmsplits(center, radius);
-        case SM_SPOT:
+        case ShadowMap_Spot:
         {
             vec scenter = vec(center).sub(shadoworigin);
             float sradius = radius + shadowradius;
@@ -1120,10 +1120,10 @@ void setbbfrommodel(dynent *d, const char *mdl)
     if(!m) return;
     vec center, radius;
     m->collisionbox(center, radius);
-    if(m->collide != COLLIDE_ELLIPSE) d->collidetype = COLLIDE_OBB;
+    if(m->collide != Collide_Ellipse) d->collidetype = Collide_OBB;
     d->xradius   = radius.x + fabs(center.x);
     d->yradius   = radius.y + fabs(center.y);
-    d->radius    = d->collidetype==COLLIDE_OBB ? sqrtf(d->xradius*d->xradius + d->yradius*d->yradius) : max(d->xradius, d->yradius);
+    d->radius    = d->collidetype==Collide_OBB ? sqrtf(d->xradius*d->xradius + d->yradius*d->yradius) : max(d->xradius, d->yradius);
     d->eyeheight = (center.z-radius.z) + radius.z*2*m->eyeheight;
     d->aboveeye  = radius.z*2*(1.0f-m->eyeheight);
     if (d->aboveeye + d->eyeheight <= 0.5f)

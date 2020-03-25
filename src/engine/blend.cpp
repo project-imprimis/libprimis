@@ -2,9 +2,9 @@
 
 enum
 {
-    BMBranch = 0,
-    BMSolid,
-    BMImage
+    BM_Branch = 0,
+    BM_Solid,
+    BM_Image,
 };
 
 struct BlendMapBranch;
@@ -56,8 +56,8 @@ void BlendMapNode::cleanup(int type)
 {
     switch(type)
     {
-        case BMBranch: delete branch; break;
-        case BMImage: delete image; break;
+        case BM_Branch: delete branch; break;
+        case BM_Image: delete image; break;
     }
 }
 
@@ -74,11 +74,11 @@ static BlendMapSolid bmsolids[256] =
 void BlendMapNode::splitsolid(uchar &type, uchar val)
 {
     cleanup(type);
-    type = BMBranch;
+    type = BM_Branch;
     branch = new BlendMapBranch;
     loopi(4)
     {
-        branch->type[i] = BMSolid;
+        branch->type[i] = BM_Solid;
         branch->children[i].solid = &bmsolids[val];
     }
 }
@@ -87,7 +87,7 @@ uchar BlendMapBranch::shrink(BlendMapNode &child, int quadrant)
 {
     uchar childtype = type[quadrant];
     child = children[quadrant];
-    type[quadrant] = BMSolid;
+    type[quadrant] = BM_Solid;
     children[quadrant].solid = &bmsolids[0];
     return childtype;
 }
@@ -96,14 +96,14 @@ struct BlendMapRoot : BlendMapNode
 {
     uchar type;
 
-    BlendMapRoot() : type(BMSolid) { solid = &bmsolids[0xFF]; }
+    BlendMapRoot() : type(BM_Solid) { solid = &bmsolids[0xFF]; }
     BlendMapRoot(uchar type, const BlendMapNode &node) : BlendMapNode(node), type(type) {}
 
     void cleanup() { BlendMapNode::cleanup(type); }
 
     void shrink(int quadrant)
     {
-        if(type == BMBranch)
+        if(type == BM_Branch)
         {
             BlendMapRoot oldroot = *this;
             type = branch->shrink(*this, quadrant);
@@ -127,7 +127,7 @@ void freeblendmapcache(BlendMapCache *&cache) { delete cache; cache = NULL; }
 
 bool setblendmaporigin(BlendMapCache *cache, const ivec &o, int size)
 {
-    if(blendmap.type!=BMBranch)
+    if(blendmap.type!=BM_Branch)
     {
         cache->node = blendmap;
         cache->scale = worldscale-BM_SCALE;
@@ -146,7 +146,7 @@ bool setblendmaporigin(BlendMapCache *cache, const ivec &o, int size)
     {
         bmscale--;
         int n = (((y1>>bmscale)&1)<<1) | ((x1>>bmscale)&1);
-        if(bm->type[n]!=BMBranch)
+        if(bm->type[n]!=BM_Branch)
         {
             cache->node = BlendMapRoot(bm->type[n], bm->children[n]);
             cache->scale = bmscale;
@@ -156,7 +156,7 @@ bool setblendmaporigin(BlendMapCache *cache, const ivec &o, int size)
         bm = bm->children[n].branch;
     }
 
-    cache->node.type = BMBranch;
+    cache->node.type = BM_Branch;
     cache->node.branch = bm;
     cache->scale = bmscale;
     cache->origin = ivec2(x1&(~0U<<bmscale), y1&(~0U<<bmscale));
@@ -176,8 +176,8 @@ static uchar lookupblendmap(int x, int y, BlendMapBranch *bm, int bmscale)
         int n = (((y>>bmscale)&1)<<1) | ((x>>bmscale)&1);
         switch(bm->type[n])
         {
-            case BMSolid: return bm->children[n].solid->val;
-            case BMImage: return bm->children[n].image->data[(y&((1<<bmscale)-1))*BM_IMAGE_SIZE + (x&((1<<bmscale)-1))];
+            case BM_Solid: return bm->children[n].solid->val;
+            case BM_Image: return bm->children[n].image->data[(y&((1<<bmscale)-1))*BM_IMAGE_SIZE + (x&((1<<bmscale)-1))];
         }
         bm = bm->children[n].branch;
     }
@@ -185,7 +185,7 @@ static uchar lookupblendmap(int x, int y, BlendMapBranch *bm, int bmscale)
 
 uchar lookupblendmap(BlendMapCache *cache, const vec &pos)
 {
-    if(cache->node.type==BMSolid) return cache->node.solid->val;
+    if(cache->node.type==BM_Solid) return cache->node.solid->val;
 
     uchar vals[4], *val = vals;
     float bx = pos.x/(1<<BM_SCALE) - 0.5f, by = pos.y/(1<<BM_SCALE) - 0.5f;
@@ -194,7 +194,7 @@ uchar lookupblendmap(BlendMapCache *cache, const vec &pos)
     loop(vy, 2) loop(vx, 2)
     {
         int cx = clamp(rx+vx, 0, (1<<cache->scale)-1), cy = clamp(ry+vy, 0, (1<<cache->scale)-1);
-        if(cache->node.type==BMImage)
+        if(cache->node.type==BM_Image)
             *val++ = cache->node.image->data[cy*BM_IMAGE_SIZE + cx];
         else *val++ = lookupblendmap(cx, cy, cache->node.branch, cache->scale);
     }
@@ -208,12 +208,12 @@ static void fillblendmap(uchar &type, BlendMapNode &node, int size, uchar val, i
     if(max(x1, y1) <= 0 && min(x2, y2) >= size)
     {
         node.cleanup(type);
-        type = BMSolid;
+        type = BM_Solid;
         node.solid = &bmsolids[val];
         return;
     }
 
-    if(type==BMBranch)
+    if(type==BM_Branch)
     {
         size /= 2;
         if(y1 < size)
@@ -230,13 +230,13 @@ static void fillblendmap(uchar &type, BlendMapNode &node, int size, uchar val, i
             if(x2 > size) fillblendmap(node.branch->type[3], node.branch->children[3], size, val,
                                         max(x1-size, 0), max(y1-size, 0), x2-size, y2-size);
         }
-        loopi(4) if(node.branch->type[i]!=BMSolid || node.branch->children[i].solid->val!=val) return;
+        loopi(4) if(node.branch->type[i]!=BM_Solid || node.branch->children[i].solid->val!=val) return;
         node.cleanup(type);
-        type = BMSolid;
+        type = BM_Solid;
         node.solid = &bmsolids[val];
         return;
     }
-    else if(type==BMSolid)
+    else if(type==BM_Solid)
     {
         uchar oldval = node.solid->val;
         if(oldval==val) return;
@@ -248,7 +248,7 @@ static void fillblendmap(uchar &type, BlendMapNode &node, int size, uchar val, i
             return;
         }
 
-        type = BMImage;
+        type = BM_Image;
         node.image = new BlendMapImage;
         memset(node.image->data, oldval, sizeof(node.image->data));
     }
@@ -274,7 +274,7 @@ void fillblendmap(int x, int y, int w, int h, uchar val)
 
 static void invertblendmap(uchar &type, BlendMapNode &node, int size, int x1, int y1, int x2, int y2)
 {
-    if(type==BMBranch)
+    if(type==BM_Branch)
     {
         size /= 2;
         if(y1 < size)
@@ -293,11 +293,11 @@ static void invertblendmap(uchar &type, BlendMapNode &node, int size, int x1, in
         }
         return;
     }
-    else if(type==BMSolid)
+    else if(type==BM_Solid)
     {
         fillblendmap(type, node, size, 255-node.solid->val, x1, y1, x2, y2);
     }
-    else if(type==BMImage)
+    else if(type==BM_Image)
     {
         uchar *dst = &node.image->data[y1*BM_IMAGE_SIZE + x1];
         loopi(y2-y1)
@@ -323,7 +323,7 @@ static void optimizeblendmap(uchar &type, BlendMapNode &node)
 {
     switch(type)
     {
-        case BMImage:
+        case BM_Image:
         {
             uint val = node.image->data[0];
             val |= val<<8;
@@ -331,18 +331,18 @@ static void optimizeblendmap(uchar &type, BlendMapNode &node)
             for(uint *data = (uint *)node.image->data, *end = &data[sizeof(node.image->data)/sizeof(uint)]; data < end; data++)
                 if(*data != val) return;
             node.cleanup(type);
-            type = BMSolid;
+            type = BM_Solid;
             node.solid = &bmsolids[val&0xFF];
             break;
         }
-        case BMBranch:
+        case BM_Branch:
         {
             loopi(4) optimizeblendmap(node.branch->type[i], node.branch->children[i]);
-            if(node.branch->type[3]!=BMSolid) return;
+            if(node.branch->type[3]!=BM_Solid) return;
             uint val = node.branch->children[3].solid->val;
-            loopi(3) if(node.branch->type[i]!=BMSolid || node.branch->children[i].solid->val != val) return;
+            loopi(3) if(node.branch->type[i]!=BM_Solid || node.branch->children[i].solid->val != val) return;
             node.cleanup(type);
-            type = BMSolid;
+            type = BM_Solid;
             node.solid = &bmsolids[val];
             break;
         }
@@ -363,7 +363,7 @@ VARF(blendpaintmode, 0, 0, 5,
 
 static void blitblendmap(uchar &type, BlendMapNode &node, int bmx, int bmy, int bmsize, uchar *src, int sx, int sy, int sw, int sh, int smode)
 {
-    if(type==BMBranch)
+    if(type==BM_Branch)
     {
         bmsize /= 2;
         if(sy < bmy + bmsize)
@@ -378,7 +378,7 @@ static void blitblendmap(uchar &type, BlendMapNode &node, int bmx, int bmy, int 
         }
         return;
     }
-    if(type==BMSolid)
+    if(type==BM_Solid)
     {
         uchar val = node.solid->val;
         if(bmsize > BM_IMAGE_SIZE)
@@ -388,7 +388,7 @@ static void blitblendmap(uchar &type, BlendMapNode &node, int bmx, int bmy, int 
             return;
         }
 
-        type = BMImage;
+        type = BM_Image;
         node.image = new BlendMapImage;
         memset(node.image->data, val, sizeof(node.image->data));
     }
@@ -437,22 +437,22 @@ void resetblendmap()
 {
     clearblendtextures();
     blendmap.cleanup();
-    blendmap.type = BMSolid;
+    blendmap.type = BM_Solid;
     blendmap.solid = &bmsolids[0xFF];
 }
 
 void enlargeblendmap()
 {
-    if(blendmap.type == BMSolid) return;
+    if(blendmap.type == BM_Solid) return;
     BlendMapBranch *branch = new BlendMapBranch;
     branch->type[0] = blendmap.type;
     branch->children[0] = blendmap;
     loopi(3)
     {
-        branch->type[i+1] = BMSolid;
+        branch->type[i+1] = BM_Solid;
         branch->children[i+1].solid = &bmsolids[0xFF];
     }
-    blendmap.type = BMBranch;
+    blendmap.type = BM_Branch;
     blendmap.branch = branch;
 }
 
@@ -463,7 +463,7 @@ void shrinkblendmap(int octant)
 
 static int calcblendlayer(uchar &type, BlendMapNode &node, int bmx, int bmy, int bmsize, int cx, int cy, int cw, int ch)
 {
-    if(type==BMBranch)
+    if(type==BM_Branch)
     {
         bmsize /= 2;
         int layer = -1;
@@ -496,7 +496,7 @@ static int calcblendlayer(uchar &type, BlendMapNode &node, int bmx, int bmy, int
         return layer >= 0 ? layer : LAYER_TOP;
     }
     uchar val;
-    if(type == BMSolid) val = node.solid->val;
+    if(type == BM_Solid) val = node.solid->val;
     else
     {
         int x1 = clamp(cx - bmx, 0, bmsize), y1 = clamp(cy - bmy, 0, bmsize),
@@ -530,7 +530,7 @@ int calcblendlayer(int x1, int y1, int x2, int y2)
 
 void moveblendmap(uchar type, BlendMapNode &node, int size, int x, int y, int dx, int dy)
 {
-    if(type == BMBranch)
+    if(type == BM_Branch)
     {
         size /= 2;
         moveblendmap(node.branch->type[0], node.branch->children[0], size, x, y, dx, dy);
@@ -539,11 +539,11 @@ void moveblendmap(uchar type, BlendMapNode &node, int size, int x, int y, int dx
         moveblendmap(node.branch->type[3], node.branch->children[3], size, x + size, y + size, dx, dy);
         return;
     }
-    else if(type == BMSolid)
+    else if(type == BM_Solid)
     {
         fillblendmap(x+dx, y+dy, size, size, node.solid->val);
     }
-    else if(type == BMImage)
+    else if(type == BM_Image)
     {
         blitblendmap(node.image->data, x+dx, y+dy, size, size, 1);
     }
@@ -552,7 +552,7 @@ void moveblendmap(uchar type, BlendMapNode &node, int size, int x, int y, int dx
 void moveblendmap(int dx, int dy)
 {
     BlendMapRoot old = blendmap;
-    blendmap.type = BMSolid;
+    blendmap.type = BM_Solid;
     blendmap.solid = &bmsolids[0xFF];
     moveblendmap(old.type, old, worldsize>>BM_SCALE, 0, 0, dx, dy);
     old.cleanup();
@@ -694,7 +694,7 @@ COMMAND(dumpblendtexs, "");
 
 static void renderblendtexture(uchar &type, BlendMapNode &node, int bmx, int bmy, int bmsize, uchar *dst, int dsize, int dx, int dy, int dw, int dh)
 {
-    if(type==BMBranch)
+    if(type==BM_Branch)
     {
         bmsize /= 2;
         if(dy < bmy + bmsize)
@@ -715,7 +715,7 @@ static void renderblendtexture(uchar &type, BlendMapNode &node, int bmx, int bmy
         tsize = 1<<(min(worldscale, 12)-BM_SCALE),
         step = tsize/dsize, stepw = (x2 - x1)/step, steph = (y2 - y1)/step;
     dst += max(bmy - dy, 0)/step*dsize + max(bmx - dx, 0)/step;
-    if(type == BMSolid) loopi(steph)
+    if(type == BM_Solid) loopi(steph)
     {
         memset(dst, node.solid->val, stepw);
         dst += dsize;
@@ -742,7 +742,7 @@ void renderblendtexture(uchar *dst, int dsize, int dx, int dy, int dw, int dh)
 
 static bool usesblendmap(uchar &type, BlendMapNode &node, int bmx, int bmy, int bmsize, int ux, int uy, int uw, int uh)
 {
-    if(type==BMBranch)
+    if(type==BM_Branch)
     {
         bmsize /= 2;
         if(uy < bmy + bmsize)
@@ -761,7 +761,7 @@ static bool usesblendmap(uchar &type, BlendMapNode &node, int bmx, int bmy, int 
         }
         return false;
     }
-    return type!=BMSolid || node.solid->val != 0xFF;
+    return type!=BM_Solid || node.solid->val != 0xFF;
 }
 
 bool usesblendmap(int x1, int y1, int x2, int y2)
@@ -789,7 +789,7 @@ void bindblendtexture(const ivec &p)
 
 static void updateblendtextures(uchar &type, BlendMapNode &node, int bmx, int bmy, int bmsize, int ux, int uy, int uw, int uh)
 {
-    if(type==BMBranch)
+    if(type==BM_Branch)
     {
         if(bmsize > 0x1000>>BM_SCALE)
         {
@@ -808,7 +808,7 @@ static void updateblendtextures(uchar &type, BlendMapNode &node, int bmx, int bm
         }
         if(!usesblendmap(type, node, bmx, bmy, bmsize, ux, uy, uw, uh)) return;
     }
-    else if(type==BMSolid && node.solid->val == 0xFF) return;
+    else if(type==BM_Solid && node.solid->val == 0xFF) return;
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -1095,7 +1095,7 @@ bool loadblendmap(stream *f, uchar &type, BlendMapNode &node)
     type = f->getchar();
     switch(type)
     {
-        case BMSolid:
+        case BM_Solid:
         {
             int val = f->getchar();
             if(val<0 || val>0xFF) return false;
@@ -1103,21 +1103,21 @@ bool loadblendmap(stream *f, uchar &type, BlendMapNode &node)
             break;
         }
 
-        case BMImage:
+        case BM_Image:
             node.image = new BlendMapImage;
             if(f->read(node.image->data, sizeof(node.image->data)) != sizeof(node.image->data))
                 return false;
             break;
 
-        case BMBranch:
+        case BM_Branch:
             node.branch = new BlendMapBranch;
-            loopi(4) { node.branch->type[i] = BMSolid; node.branch->children[i].solid = &bmsolids[0xFF]; }
+            loopi(4) { node.branch->type[i] = BM_Solid; node.branch->children[i].solid = &bmsolids[0xFF]; }
             loopi(4) if(!loadblendmap(f, node.branch->type[i], node.branch->children[i]))
                 return false;
             break;
 
         default:
-            type = BMSolid;
+            type = BM_Solid;
             node.solid = &bmsolids[0xFF];
             return false;
     }
@@ -1135,15 +1135,15 @@ void saveblendmap(stream *f, uchar type, BlendMapNode &node)
     f->putchar(type);
     switch(type)
     {
-        case BMSolid:
+        case BM_Solid:
             f->putchar(node.solid->val);
             break;
 
-        case BMImage:
+        case BM_Image:
             f->write(node.image->data, sizeof(node.image->data));
             break;
 
-        case BMBranch:
+        case BM_Branch:
             loopi(4) saveblendmap(f, node.branch->type[i], node.branch->children[i]);
             break;
     }

@@ -205,7 +205,7 @@ namespace game
         }
     }
 
-    int numanims() { return NUMANIMS; }
+    int numanims() { return Anim_NumAnims; }
 
     void findanims(const char *pattern, vector<int> &anims)
     {
@@ -214,34 +214,34 @@ namespace game
 
     //============================================ 3p/other player rendering =======================//
 
-    VAR(animoverride, -1, 0, NUMANIMS-1);
+    VAR(animoverride, -1, 0, Anim_NumAnims-1);
     VAR(testanims, 0, 0, 1);
     VAR(testpitch, -90, 0, 90);
 
     void renderplayer(gameent *d, const playermodelinfo &mdl, int color, int team, float fade, int flags = 0, bool mainpass = true)
     {
-        int lastaction = d->lastaction, anim = ANIM_IDLE|ANIM_LOOP, attack = 0, delay = 0;
+        int lastaction = d->lastaction, anim = Anim_Idle|ANIM_LOOP, attack = 0, delay = 0;
         if(d->lastattack >= 0)
         {
             attack = attacks[d->lastattack].anim;
             delay = attacks[d->lastattack].attackdelay+50;
         }
-        if(intermission && d->state!=CS_DEAD)
+        if(intermission && d->state!=ClientState_Dead)
         {
-            anim = attack = ANIM_LOSE|ANIM_LOOP;
-            if(VALID_TEAM(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0) anim = attack = ANIM_WIN|ANIM_LOOP;
+            anim = attack = Anim_Lose|ANIM_LOOP;
+            if(VALID_TEAM(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0) anim = attack = Anim_Win|ANIM_LOOP;
         }
-        else if(d->state==CS_ALIVE && d->lasttaunt && lastmillis-d->lasttaunt<1000 && lastmillis-d->lastaction>delay)
+        else if(d->state==ClientState_Alive && d->lasttaunt && lastmillis-d->lasttaunt<1000 && lastmillis-d->lastaction>delay)
         {
             lastaction = d->lasttaunt;
-            anim = attack = ANIM_TAUNT;
+            anim = attack = Anim_Taunt;
             delay = 1000;
         }
         modelattach a[5];
         int ai = 0;
         if(guns[d->gunselect].vwep)
         {
-            int vanim = ANIM_VWEP_IDLE|ANIM_LOOP, vtime = 0;
+            int vanim = Anim_VWepIdle|ANIM_LOOP, vtime = 0;
             if(lastaction && d->lastattack >= 0 && attacks[d->lastattack].gun==d->gunselect && lastmillis < lastaction + delay)
             {
                 vanim = attacks[d->lastattack].vwepanim;
@@ -260,20 +260,20 @@ namespace game
         vec o = d->feetpos();
         int basetime = 0;
         if(animoverride) anim = (animoverride<0 ? ANIM_ALL : animoverride)|ANIM_LOOP;
-        else if(d->state==CS_DEAD)
+        else if(d->state==ClientState_Dead)
         {
-            anim = ANIM_DYING|ANIM_NOPITCH;
+            anim = Anim_Dying|ANIM_NOPITCH;
             basetime = d->lastpain;
             if(ragdoll && mdl.ragdoll) anim |= ANIM_RAGDOLL;
-            else if(lastmillis-basetime>1000) anim = ANIM_DEAD|ANIM_LOOP|ANIM_NOPITCH;
+            else if(lastmillis-basetime>1000) anim = Anim_Dead|ANIM_LOOP|ANIM_NOPITCH;
         }
-        else if(d->state==CS_EDITING || d->state==CS_SPECTATOR) anim = ANIM_EDIT|ANIM_LOOP;
-        else if(d->state==CS_LAGGED)                            anim = ANIM_LAG|ANIM_LOOP;
+        else if(d->state==ClientState_Editing || d->state==ClientState_Spectator) anim = Anim_Edit|ANIM_LOOP;
+        else if(d->state==ClientState_Lagged)                            anim = Anim_Lag|ANIM_LOOP;
         else if(!intermission)
         {
             if(lastmillis-d->lastpain < 300)
             {
-                anim = ANIM_PAIN;
+                anim = Anim_Pain;
                 basetime = d->lastpain;
             }
             else if(d->lastpain < lastaction && lastmillis-lastaction < delay)
@@ -282,43 +282,43 @@ namespace game
                 basetime = lastaction;
             }
 
-            if(d->inwater && d->physstate<=PHYS_FALL) anim |= (((game::allowmove(d) && (d->move || d->strafe)) || d->vel.z+d->falling.z>0 ? ANIM_SWIM : ANIM_SINK)|ANIM_LOOP)<<ANIM_SECONDARY;
+            if(d->inwater && d->physstate<=PhysEntState_Fall) anim |= (((game::allowmove(d) && (d->move || d->strafe)) || d->vel.z+d->falling.z>0 ? Anim_Swim : Anim_Sink)|ANIM_LOOP)<<ANIM_SECONDARY;
             else
             {
                 static const int dirs[9] =
                 {
-                    ANIM_RUN_SE, ANIM_RUN_S, ANIM_RUN_SW,
-                    ANIM_RUN_E,  0,          ANIM_RUN_W,
-                    ANIM_RUN_NE, ANIM_RUN_N, ANIM_RUN_NW
+                    Anim_RunSE, Anim_RunS, Anim_RunSW,
+                    Anim_RunE,  0,          Anim_RunSE,
+                    Anim_RunNE, Anim_RunN, Anim_RunNW
                 };
                 int dir = dirs[(d->move+1)*3 + (d->strafe+1)];
-                if(d->timeinair>100) anim |= ((dir ? dir+ANIM_JUMP_N-ANIM_RUN_N : ANIM_JUMP) | ANIM_END) << ANIM_SECONDARY;
+                if(d->timeinair>100) anim |= ((dir ? dir+Anim_JumpN-Anim_RunN : Anim_Jump) | ANIM_END) << ANIM_SECONDARY;
                 else if(dir && game::allowmove(d)) anim |= (dir | ANIM_LOOP) << ANIM_SECONDARY;
             }
 
             if(d->crouching) switch((anim>>ANIM_SECONDARY)&ANIM_INDEX)
             {
-                case ANIM_IDLE: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= ANIM_CROUCH<<ANIM_SECONDARY; break;
-                case ANIM_JUMP: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= ANIM_CROUCH_JUMP<<ANIM_SECONDARY; break;
-                case ANIM_SWIM: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= ANIM_CROUCH_SWIM<<ANIM_SECONDARY; break;
-                case ANIM_SINK: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= ANIM_CROUCH_SINK<<ANIM_SECONDARY; break;
-                case 0: anim |= (ANIM_CROUCH|ANIM_LOOP)<<ANIM_SECONDARY; break;
-                case ANIM_RUN_N: case ANIM_RUN_NE: case ANIM_RUN_E: case ANIM_RUN_SE: case ANIM_RUN_S: case ANIM_RUN_SW: case ANIM_RUN_W: case ANIM_RUN_NW:
-                    anim += (ANIM_CROUCH_N - ANIM_RUN_N) << ANIM_SECONDARY;
+                case Anim_Idle: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_Crouch<<ANIM_SECONDARY; break;
+                case Anim_Jump: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_CrouchJump<<ANIM_SECONDARY; break;
+                case Anim_Swim: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_CrouchSwim<<ANIM_SECONDARY; break;
+                case Anim_Sink: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_CrouchSink<<ANIM_SECONDARY; break;
+                case 0: anim |= (Anim_Crouch|ANIM_LOOP)<<ANIM_SECONDARY; break;
+                case Anim_RunN: case Anim_RunNE: case Anim_RunE: case Anim_RunSE: case Anim_RunS: case Anim_RunSW: case Anim_RunW: case Anim_RunNW:
+                    anim += (Anim_CrouchN - Anim_RunN) << ANIM_SECONDARY;
                     break;
-                case ANIM_JUMP_N: case ANIM_JUMP_NE: case ANIM_JUMP_E: case ANIM_JUMP_SE: case ANIM_JUMP_S: case ANIM_JUMP_SW: case ANIM_JUMP_W: case ANIM_JUMP_NW:
-                    anim += (ANIM_CROUCH_JUMP_N - ANIM_JUMP_N) << ANIM_SECONDARY;
+                case Anim_JumpN: case Anim_JumpNE: case Anim_JumpE: case Anim_JumpSE: case Anim_JumpS: case Anim_JumpSW: case Anim_JumpW: case Anim_JumpNW:
+                    anim += (Anim_CrouchJumpN - Anim_JumpN) << ANIM_SECONDARY;
                     break;
             }
 
-            if((anim&ANIM_INDEX)==ANIM_IDLE && (anim>>ANIM_SECONDARY)&ANIM_INDEX) anim >>= ANIM_SECONDARY;
+            if((anim&ANIM_INDEX)==Anim_Idle && (anim>>ANIM_SECONDARY)&ANIM_INDEX) anim >>= ANIM_SECONDARY;
         }
-        if(!((anim>>ANIM_SECONDARY)&ANIM_INDEX)) anim |= (ANIM_IDLE|ANIM_LOOP)<<ANIM_SECONDARY;
+        if(!((anim>>ANIM_SECONDARY)&ANIM_INDEX)) anim |= (Anim_Idle|ANIM_LOOP)<<ANIM_SECONDARY;
         if(d!=player1) flags |= MDL_CULL_VFC | MDL_CULL_OCCLUDED | MDL_CULL_QUERY;
-        if(d->type==ENT_PLAYER) flags |= MDL_FULLBRIGHT;
+        if(d->type==PhysEnt_Player) flags |= MDL_FULLBRIGHT;
         else flags |= MDL_CULL_DIST;
         if(!mainpass) flags &= ~(MDL_FULLBRIGHT | MDL_CULL_VFC | MDL_CULL_OCCLUDED | MDL_CULL_QUERY | MDL_CULL_DIST);
-        float trans = d->state == CS_LAGGED ? 0.5f : 1.0f;
+        float trans = d->state == ClientState_Lagged ? 0.5f : 1.0f;
         rendermodel(mdlname, anim, o, yaw, pitch, 0, flags, d, a[0].tag ? a : NULL, basetime, 0, fade, vec4(vec::hexcolor(color), trans));
     }
 
@@ -345,10 +345,10 @@ namespace game
         loopv(players)
         {
             gameent *d = players[i];
-            if(d == player1 || d->state==CS_SPECTATOR || d->state==CS_SPAWNING || d->lifesequence < 0 || d == exclude || (d->state==CS_DEAD && hidedead)) continue;
+            if(d == player1 || d->state==ClientState_Spectator || d->state==ClientState_Spawning || d->lifesequence < 0 || d == exclude || (d->state==ClientState_Dead && hidedead)) continue;
             renderplayer(d);
             copystring(d->info, colorname(d));
-            if(d->state!=CS_DEAD)
+            if(d->state!=ClientState_Dead)
             {
                 int team = MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0;
                 particle_text(d->abovehead(), d->info, PART_TEXT, 1, teamtextcolor[team], 2.0f);
@@ -364,7 +364,7 @@ namespace game
         }
         if(exclude)
             renderplayer(exclude, 1, MDL_ONLYSHADOW);
-        else if(!f && (player1->state==CS_ALIVE || (player1->state==CS_EDITING && third) || (player1->state==CS_DEAD && !hidedead)))
+        else if(!f && (player1->state==ClientState_Alive || (player1->state==ClientState_Editing && third) || (player1->state==ClientState_Dead && !hidedead)))
             renderplayer(player1, 1, third ? 0 : MDL_ONLYSHADOW);
         entities::renderentities();
         renderbouncers();
@@ -387,9 +387,9 @@ namespace game
     void swayhudgun(int curtime)
     {
         gameent *d = hudplayer();
-        if(d->state != CS_SPECTATOR)
+        if(d->state != ClientState_Spectator)
         {
-            if(d->physstate >= PHYS_SLOPE)
+            if(d->physstate >= PhysEntState_Slope)
             {
                 swayspeed = min(sqrtf(d->vel.x*d->vel.x + d->vel.y*d->vel.y), d->maxspeed);
                 swaydist += swayspeed*curtime/1000.0f;
@@ -413,7 +413,7 @@ namespace game
 
     struct hudent : dynent
     {
-        hudent() { type = ENT_CAMERA; }
+        hudent() { type = PhysEnt_Camera; }
     } guninterp;
 
     void drawhudmodel(gameent *d, int anim, int basetime)
@@ -443,13 +443,13 @@ namespace game
     void drawhudgun()
     {
         gameent *d = hudplayer();
-        if(d->state==CS_SPECTATOR || d->state==CS_EDITING || !hudgun || editmode)
+        if(d->state==ClientState_Spectator || d->state==ClientState_Editing || !hudgun || editmode)
         {
             d->muzzle = player1->muzzle = vec(-1, -1, -1);
             return;
         }
 
-        int anim = ANIM_GUN_IDLE|ANIM_LOOP, basetime = 0;
+        int anim = Anim_GunIdle|ANIM_LOOP, basetime = 0;
         if(d->lastaction && d->lastattack >= 0 && attacks[d->lastattack].gun==d->gunselect && lastmillis-d->lastaction<attacks[d->lastattack].attackdelay)
         {
             anim = attacks[d->lastattack].hudanim;

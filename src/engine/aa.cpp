@@ -18,7 +18,7 @@ int tqaatype = -1;
 
 void loadtqaashaders()
 {
-    tqaatype = tqaamovemask ? AA_MASKED : AA_UNUSED;
+    tqaatype = tqaamovemask ? AA_Masked : AA_Unused;
     loadhdrshaders(tqaatype);
 
     useshaderbyname("tqaaresolve");
@@ -127,7 +127,7 @@ static Shader *fxaashader = NULL;
 
 void loadfxaashaders()
 {
-    fxaatype = tqaatype >= 0 ? tqaatype : (!fxaagreenluma && !intel_texalpha_bug ? AA_LUMA : AA_UNUSED);
+    fxaatype = tqaatype >= 0 ? tqaatype : (!fxaagreenluma && !intel_texalpha_bug ? AA_Luma : AA_Unused);
     loadhdrshaders(fxaatype);
 
     string opts;
@@ -196,8 +196,8 @@ static Shader *smaalumaedgeshader = NULL, *smaacoloredgeshader = NULL, *smaablen
 
 void loadsmaashaders(bool split = false)
 {
-    smaatype = tqaatype >= 0 ? tqaatype : (!smaagreenluma && !intel_texalpha_bug && !smaacoloredge ? AA_LUMA : AA_UNUSED);
-    if(split) smaatype += AA_SPLIT;
+    smaatype = tqaatype >= 0 ? tqaatype : (!smaagreenluma && !intel_texalpha_bug && !smaacoloredge ? AA_Luma : AA_Unused);
+    if(split) smaatype += AA_Split;
     loadhdrshaders(smaatype);
 
     string opts;
@@ -753,7 +753,7 @@ void doaa(GLuint outfbo, void (*resolve)(GLuint, int))
     }
     else if(fxaa) { resolve(fxaafbo, fxaatype); dofxaa(outfbo); }
     else if(tqaa) { resolve(tqaafbo[0], tqaatype); dotqaa(outfbo); }
-    else resolve(outfbo, AA_UNUSED);
+    else resolve(outfbo, AA_Unused);
 }
 
 bool debugaa()

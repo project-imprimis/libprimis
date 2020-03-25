@@ -536,7 +536,7 @@ namespace ai
     static inline bool shouldnavigate()
     {
         if(dropwaypoints) return true;
-        loopvrev(players) if(players[i]->aitype != AINone) return true;
+        loopvrev(players) if(players[i]->aitype != AI_None) return true;
         return false;
     }
 
@@ -569,7 +569,7 @@ namespace ai
     void navigate(gameent *d)
     {
         vec v(d->feetpos());
-        if(d->state != CS_ALIVE) { d->lastnode = -1; return; }
+        if(d->state != ClientState_Alive) { d->lastnode = -1; return; }
         bool dropping = shoulddrop(d);
         int mat = lookupmaterial(v);
         if((mat&MATF_CLIP) == MAT_CLIP || (mat&MATF_VOLUME) == MAT_LAVA || mat&MAT_DEATH) dropping = false;

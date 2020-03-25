@@ -339,7 +339,7 @@ VARFP(vertwater, 0, 1, 1, allchanged());
 
 static inline void renderwater(const materialsurface &m, int mat = MAT_WATER)
 {
-    if(!vertwater || drawtex == DRAWTEX_MINIMAP) renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
+    if(!vertwater || drawtex == Draw_TexMinimap) renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
     else if(renderwaterlod(m.o.x, m.o.y, m.o.z, m.csize, mat) >= int(m.csize) * 2)
         rendervertwater(m.csize, m.o.x, m.o.y, m.o.z, m.csize, mat);
 }
@@ -482,7 +482,7 @@ void renderlava()
 {
     loopk(4)
     {
-        if(lavasurfs[k].empty() && (drawtex == DRAWTEX_MINIMAP || lavafallsurfs[k].empty())) continue;
+        if(lavasurfs[k].empty() && (drawtex == Draw_TexMinimap || lavafallsurfs[k].empty())) continue;
 
         MatSlot &lslot = lookupmaterialslot(MAT_LAVA+k);
 
@@ -515,7 +515,7 @@ void renderlava()
             xtraverts += gle::end();
         }
 
-        if(drawtex != DRAWTEX_MINIMAP && lavafallsurfs[k].length())
+        if(drawtex != Draw_TexMinimap && lavafallsurfs[k].length())
         {
             Texture *tex = lslot.sts.inrange(2) ? lslot.sts[2].t : (lslot.sts.inrange(0) ? lslot.sts[0].t : notexture);
             float angle = fmod(float(lastmillis/2000.0f/(2*M_PI)), 1.0f),
@@ -610,7 +610,7 @@ void renderwater()
         glActiveTexture_(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.inrange(1) ? wslot.sts[1].t->id : notexture->id);
         if(caustics && causticscale && causticmillis) setupcaustics(2);
-        if(waterenvmap && !waterreflect && drawtex != DRAWTEX_MINIMAP)
+        if(waterenvmap && !waterreflect && drawtex != Draw_TexMinimap)
         {
             glActiveTexture_(GL_TEXTURE4);
             glBindTexture(GL_TEXTURE_CUBE_MAP, lookupenvmap(wslot));
@@ -645,7 +645,7 @@ void renderwater()
         } while(0)
 
         Shader *aboveshader = NULL;
-        if(drawtex == DRAWTEX_MINIMAP) SETWATERSHADER(above, waterminimap);
+        if(drawtex == Draw_TexMinimap) SETWATERSHADER(above, waterminimap);
         else if(caustics && causticscale && causticmillis)
         {
             if(waterreflect) SETWATERSHADER(above, waterreflectcaustics);
@@ -660,7 +660,7 @@ void renderwater()
         }
 
         Shader *belowshader = NULL;
-        if(drawtex != DRAWTEX_MINIMAP) SETWATERSHADER(below, underwater);
+        if(drawtex != Draw_TexMinimap) SETWATERSHADER(below, underwater);
 
         aboveshader->set();
         loopv(surfs)

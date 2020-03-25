@@ -12,22 +12,66 @@
 //game entity definition
 
 // animations
-
+// used in render.cpp
 enum
 {
-    ANIM_DEAD = ANIM_GAMESPECIFIC, ANIM_DYING,
-    ANIM_IDLE, ANIM_RUN_N, ANIM_RUN_NE, ANIM_RUN_E, ANIM_RUN_SE, ANIM_RUN_S, ANIM_RUN_SW, ANIM_RUN_W, ANIM_RUN_NW,
-    ANIM_JUMP, ANIM_JUMP_N, ANIM_JUMP_NE, ANIM_JUMP_E, ANIM_JUMP_SE, ANIM_JUMP_S, ANIM_JUMP_SW, ANIM_JUMP_W, ANIM_JUMP_NW,
-    ANIM_SINK, ANIM_SWIM,
-    ANIM_CROUCH, ANIM_CROUCH_N, ANIM_CROUCH_NE, ANIM_CROUCH_E, ANIM_CROUCH_SE, ANIM_CROUCH_S, ANIM_CROUCH_SW, ANIM_CROUCH_W, ANIM_CROUCH_NW,
-    ANIM_CROUCH_JUMP, ANIM_CROUCH_JUMP_N, ANIM_CROUCH_JUMP_NE, ANIM_CROUCH_JUMP_E, ANIM_CROUCH_JUMP_SE, ANIM_CROUCH_JUMP_S, ANIM_CROUCH_JUMP_SW, ANIM_CROUCH_JUMP_W, ANIM_CROUCH_JUMP_NW,
-    ANIM_CROUCH_SINK, ANIM_CROUCH_SWIM,
-    ANIM_SHOOT, ANIM_MELEE,
-    ANIM_PAIN,
-    ANIM_EDIT, ANIM_LAG, ANIM_TAUNT, ANIM_WIN, ANIM_LOSE,
-    ANIM_GUN_IDLE, ANIM_GUN_SHOOT, ANIM_GUN_MELEE,
-    ANIM_VWEP_IDLE, ANIM_VWEP_SHOOT, ANIM_VWEP_MELEE,
-    NUMANIMS
+    Anim_Dead = Anim_GameSpecific, //1
+    Anim_Dying,
+    Anim_Idle,
+    Anim_RunN,
+    Anim_RunNE,
+    Anim_RunE,
+    Anim_RunSE,
+    Anim_RunS,
+    Anim_RunSW,
+    Anim_RunW, //10
+    Anim_RunNW,
+    Anim_Jump,
+    Anim_JumpN,
+    Anim_JumpNE,
+    Anim_JumpE,
+    Anim_JumpSE,
+    Anim_JumpS,
+    Anim_JumpSW,
+    Anim_JumpW,
+    Anim_JumpNW, //20
+    Anim_Sink,
+    Anim_Swim,
+    Anim_Crouch,
+    Anim_CrouchN,
+    Anim_CrouchNE,//unused
+    Anim_CrouchE,//unused
+    Anim_CrouchSE,//unused
+    Anim_CrouchS,//unused
+    Anim_CrouchSW,//unused
+    Anim_CrouchW, //30 (unused)
+    Anim_CrouchNW,//unused
+    Anim_CrouchJump,
+    Anim_CrouchJumpN,
+    Anim_CrouchJumpNE,//unused
+    Anim_CrouchJumpE,//unused
+    Anim_CrouchJumpSE,//unused
+    Anim_CrouchJumpS,//unused
+    Anim_CrouchJumpSW,//unused
+    Anim_CrouchJumpW,//unused
+    Anim_CrouchJumpNW, //40 (unused)
+    Anim_CrouchSink,
+    Anim_CrouchSwim,
+    Anim_Shoot,
+    Anim_Melee,
+    Anim_Pain,
+    Anim_Edit,
+    Anim_Lag,
+    Anim_Taunt,
+    Anim_Win,
+    Anim_Lose, //50
+    Anim_GunIdle,
+    Anim_GunShoot,
+    Anim_GunMelee,
+    Anim_VWepIdle,
+    Anim_VWepShoot,
+    Anim_VWepMelee,
+    Anim_NumAnims //57
 };
 
 static const char * const animnames[] =
@@ -66,15 +110,15 @@ enum
 
 enum                            // static entity types
 {
-    NOTUSED = ET_EMPTY,         // entity slot not in use in map
-    LIGHT = ET_LIGHT,           // lightsource, attr1 = radius, attr2 = red, attr3 = green, attr4 = blue, attr5 = flags
-    MAPMODEL = ET_MAPMODEL,     // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    NOTUSED = Ent_Empty,         // entity slot not in use in map
+    LIGHT = Ent_Light,           // lightsource, attr1 = radius, attr2 = red, attr3 = green, attr4 = blue, attr5 = flags
+    MAPMODEL = Ent_Mapmodel,     // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
     PLAYERSTART,                // attr1 = angle, attr2 = team
-    ENVMAP = ET_ENVMAP,         // attr1 = radius, attr2 = size, attr3 = blur
-    PARTICLES = ET_PARTICLES,   // attr1 = index, attrs2-5 vary on particle index
-    MAPSOUND = ET_SOUND,        // attr1 = index, attr2 = sound
-    SPOTLIGHT = ET_SPOTLIGHT,   // attr1 = angle
-    DECAL = ET_DECAL,           // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    ENVMAP = Ent_Envmap,         // attr1 = radius, attr2 = size, attr3 = blur
+    PARTICLES = Ent_Particles,   // attr1 = index, attrs2-5 vary on particle index
+    MAPSOUND = Ent_Sound,        // attr1 = index, attr2 = sound
+    SPOTLIGHT = Ent_Spotlight,   // attr1 = angle
+    DECAL = Ent_Decal,           // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
     TELEPORT,                   // attr1 = channel, attr2 = model, attr3 = tag
     TELEDEST,                   // attr1 = yaw, attr2 = channel
     JUMPPAD,                    // attr1 = zpush, attr2 = ypush, attr3 = xpush
@@ -278,10 +322,10 @@ static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound
 
 //    1          2          3           4                5               6         7        8     9  10 11    12  13    14 15    16  17 18 19
 {
-    { GUN_RAIL,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_RAIL1,  S_RAIL2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
-    { GUN_RAIL,  ACT_MELEE, ANIM_MELEE, ANIM_VWEP_MELEE, ANIM_GUN_MELEE, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { GUN_PULSE, ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PULSE1, S_PULSE2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
-    { GUN_PULSE, ACT_MELEE, ANIM_MELEE, ANIM_VWEP_MELEE, ANIM_GUN_MELEE, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
+    { GUN_RAIL,  ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_RAIL1,  S_RAIL2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
+    { GUN_RAIL,  ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
+    { GUN_PULSE, ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_PULSE1, S_PULSE2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
+    { GUN_PULSE, ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
 };
 
 static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACTS]; } guns[NUMGUNS] =
@@ -300,7 +344,7 @@ struct gamestate
     int ammo[NUMGUNS];
     int aitype, skill;
 
-    gamestate() : maxhealth(1), aitype(AINone), skill(0) {}
+    gamestate() : maxhealth(1), aitype(AI_None), skill(0) {}
 
     bool canpickup(int type)
     {

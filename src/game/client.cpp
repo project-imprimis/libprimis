@@ -81,9 +81,9 @@ namespace game
 
     void drawplayerblip(gameent *d, float x, float y, float s, float blipsize = 1)
     {
-        if(d->state != CS_ALIVE && d->state != CS_DEAD) return;
+        if(d->state != ClientState_Alive && d->state != ClientState_Dead) return;
         float scale = calcradarscale();
-        setbliptex(d->team, d->state == CS_DEAD ? "_dead" : "_alive");
+        setbliptex(d->team, d->state == ClientState_Dead ? "_dead" : "_alive");
         gle::defvertex(2);
         gle::deftexcoord0();
         gle::begin(GL_QUADS);
@@ -99,7 +99,7 @@ namespace game
         loopv(players)
         {
             gameent *o = players[i];
-            if(o != d && o->state == CS_ALIVE && o->team == d->team)
+            if(o != d && o->state == ClientState_Alive && o->team == d->team)
             {
                 if(!alive++)
                 {
@@ -115,7 +115,7 @@ namespace game
         loopv(players)
         {
             gameent *o = players[i];
-            if(o != d && o->state == CS_DEAD && o->team == d->team)
+            if(o != d && o->state == ClientState_Dead && o->team == d->team)
             {
                 if(!dead++)
                 {
@@ -274,7 +274,7 @@ namespace game
     {
         if(!connected) return;
         sendcrc = true;
-        if(player1->state!=CS_SPECTATOR || player1->privilege || !remote) senditemstoserver = true;
+        if(player1->state!=ClientState_Spectator || player1->privilege || !remote) senditemstoserver = true;
     }
 
     void writeclientinfo(stream *f)
@@ -296,8 +296,8 @@ namespace game
     void edittoggled(bool on)
     {
         addmsg(N_EDITMODE, "ri", on ? 1 : 0);
-        if(player1->state==CS_DEAD) deathstate(player1, true);
-        else if(player1->state==CS_EDITING && player1->editstate==CS_DEAD) showscores(false);
+        if(player1->state==ClientState_Dead) deathstate(player1, true);
+        else if(player1->state==ClientState_Editing && player1->editstate==ClientState_Dead) showscores(false);
         disablezoom();
         player1->suicided = player1->respawned = -2;
         checkfollow();
@@ -333,7 +333,7 @@ namespace game
     const char *getclienticon(int cn)
     {
         gameent *d = getclient(cn);
-        if(!d || d->state==CS_SPECTATOR) return "spectator";
+        if(!d || d->state==ClientState_Spectator) return "spectator";
         const playermodelinfo &mdl = getplayermodelinfo(d);
         return MODE_TEAMMODE && VALID_TEAM(d->team) ? mdl.icon[d->team] : mdl.icon[0];
     }
@@ -342,7 +342,7 @@ namespace game
     int getclientcolor(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->state!=CS_SPECTATOR ? getplayercolor(d, MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0) : 0xFFFFFF;
+        return d && d->state!=ClientState_Spectator ? getplayercolor(d, MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0) : 0xFFFFFF;
     }
     ICOMMAND(getclientcolor, "i", (int *cn), intret(getclientcolor(*cn)));
 
@@ -398,26 +398,26 @@ namespace game
     bool isspectator(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->state==CS_SPECTATOR;
+        return d && d->state==ClientState_Spectator;
     }
     ICOMMAND(isspectator, "i", (int *cn), intret(isspectator(*cn) ? 1 : 0));
 
     ICOMMAND(islagged, "i", (int *cn),
     {
         gameent *d = getclient(*cn);
-        if(d) intret(d->state==CS_LAGGED ? 1 : 0);
+        if(d) intret(d->state==ClientState_Lagged ? 1 : 0);
     });
 
     ICOMMAND(isdead, "i", (int *cn),
     {
         gameent *d = getclient(*cn);
-        if(d) intret(d->state==CS_DEAD ? 1 : 0);
+        if(d) intret(d->state==ClientState_Dead ? 1 : 0);
     });
 
     bool isai(int cn, int type)
     {
         gameent *d = getclient(cn);
-        int aitype = type > 0 && type < AIMax ? type : AIBot;
+        int aitype = type > 0 && type < AI_Max ? type : AI_Bot;
         return d && d->aitype==aitype;
     }
     ICOMMAND(isai, "ii", (int *cn, int *type), intret(isai(*cn, *type) ? 1 : 0));
@@ -458,7 +458,7 @@ namespace game
             buf.put(cn, strlen(cn));
             numclients++;
         }
-        loopv(clients) if(clients[i] && (bots || clients[i]->aitype == AINone))
+        loopv(clients) if(clients[i] && (bots || clients[i]->aitype == AI_None))
         {
             formatstring(cn, "%d", clients[i]->clientnum);
             if(numclients++) buf.add(' ');
@@ -646,7 +646,7 @@ namespace game
             server::forcemap(name, mode);
             if(!isconnected()) localconnect();
         }
-        else if(player1->state!=CS_SPECTATOR || player1->privilege) addmsg(N_MAPVOTE, "rsi", name, mode);
+        else if(player1->state!=ClientState_Spectator || player1->privilege) addmsg(N_MAPVOTE, "rsi", name, mode);
     }
     void changemap(const char *name)
     {
@@ -796,23 +796,23 @@ namespace game
     {
         if(id) switch(id->type)
         {
-            case ID_VAR:
+            case Id_Var:
             {
                 int val = *id->storage.i;
                 string str;
                 if(val < 0)
                     formatstring(str, "%d", val);
-                else if(id->flags&IDF_HEX && id->maxval==0xFFFFFF)
+                else if(id->flags&Idf_Hex && id->maxval==0xFFFFFF)
                     formatstring(str, "0x%.6X (%d, %d, %d)", val, (val>>16)&0xFF, (val>>8)&0xFF, val&0xFF);
                 else
-                    formatstring(str, id->flags&IDF_HEX ? "0x%X" : "%d", val);
+                    formatstring(str, id->flags&Idf_Hex ? "0x%X" : "%d", val);
                 conoutf("%s set map var \"%s\" to %s", colorname(d), id->name, str);
                 break;
             }
-            case ID_FVAR:
+            case Id_FloatVar:
                 conoutf("%s set map var \"%s\" to %s", colorname(d), id->name, floatstr(*id->storage.f));
                 break;
-            case ID_SVAR:
+            case Id_StringVar:
                 conoutf("%s set map var \"%s\" to \"%s\"", colorname(d), id->name, *id->storage.s);
                 break;
         }
@@ -823,16 +823,16 @@ namespace game
         if(!MODE_EDIT) return;
         switch(id->type)
         {
-            case ID_VAR:
-                addmsg(N_EDITVAR, "risi", ID_VAR, id->name, *id->storage.i);
+            case Id_Var:
+                addmsg(N_EDITVAR, "risi", Id_Var, id->name, *id->storage.i);
                 break;
 
-            case ID_FVAR:
-                addmsg(N_EDITVAR, "risf", ID_FVAR, id->name, *id->storage.f);
+            case Id_FloatVar:
+                addmsg(N_EDITVAR, "risf", Id_FloatVar, id->name, *id->storage.f);
                 break;
 
-            case ID_SVAR:
-                addmsg(N_EDITVAR, "riss", ID_SVAR, id->name, *id->storage.s);
+            case Id_StringVar:
+                addmsg(N_EDITVAR, "riss", Id_StringVar, id->name, *id->storage.s);
                 break;
             default: return;
         }
@@ -970,7 +970,7 @@ namespace game
         messagecn = -1;
         player1->respawn();
         player1->lifesequence = 0;
-        player1->state = CS_ALIVE;
+        player1->state = ClientState_Alive;
         player1->privilege = PRIV_NONE;
         sendcrc = senditemstoserver = false;
         demoplayback = false;
@@ -1053,7 +1053,7 @@ namespace game
 
     void sendposition(gameent *d, bool reliable)
     {
-        if(d->state != CS_ALIVE && d->state != CS_EDITING) return;
+        if(d->state != ClientState_Alive && d->state != ClientState_Editing) return;
         packetbuf q(100, reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
         sendposition(d, q);
         sendclientpacket(q.finalize(), 0);
@@ -1064,14 +1064,14 @@ namespace game
         loopv(players)
         {
             gameent *d = players[i];
-            if((d == player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
+            if((d == player1 || d->ai) && (d->state == ClientState_Alive || d->state == ClientState_Editing))
             {
                 packetbuf q(100);
                 sendposition(d, q);
                 for(int j = i+1; j < players.length(); j++)
                 {
                     gameent *d = players[j];
-                    if((d == player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
+                    if((d == player1 || d->ai) && (d->state == ClientState_Alive || d->state == ClientState_Editing))
                         sendposition(d, q);
                 }
                 sendclientpacket(q.finalize(), 0);
@@ -1167,7 +1167,7 @@ namespace game
         const float dz = player1->o.z-d->o.z;
         const float rz = player1->aboveeye+d->eyeheight;
         const float fx = (float)fabs(dx), fy = (float)fabs(dy), fz = (float)fabs(dz);
-        if(fx<r && fy<r && fz<rz && player1->state!=CS_SPECTATOR && d->state!=CS_DEAD)
+        if(fx<r && fy<r && fz<rz && player1->state!=ClientState_Spectator && d->state!=ClientState_Dead)
         {
             if(fx<fy) d->o.y += dy<0 ? r-fy : -(r-fy);  // push aside
             else      d->o.x += dx<0 ? r-fx : -(r-fx);
@@ -1175,7 +1175,7 @@ namespace game
         int lagtime = totalmillis-d->lastupdate;
         if(lagtime)
         {
-            if(d->state!=CS_SPAWNING && d->lastupdate) d->plag = (d->plag*5+lagtime)/6;
+            if(d->state!=ClientState_Spawning && d->lastupdate) d->plag = (d->plag*5+lagtime)/6;
             d->lastupdate = totalmillis;
         }
     }
@@ -1218,7 +1218,7 @@ namespace game
                 else falling = vec(0, 0, 0);
                 int seqcolor = (physstate>>3)&1;
                 gameent *d = getclient(cn);
-                if(!d || d->lifesequence < 0 || seqcolor!=(d->lifesequence&1) || d->state==CS_DEAD) continue;
+                if(!d || d->lifesequence < 0 || seqcolor!=(d->lifesequence&1) || d->state==ClientState_Dead) continue;
                 float oldyaw = d->yaw, oldpitch = d->pitch, oldroll = d->roll;
                 d->yaw = yaw;
                 d->pitch = pitch;
@@ -1253,7 +1253,7 @@ namespace game
                     d->smoothmillis = lastmillis;
                 }
                 else d->smoothmillis = 0;
-                if(d->state==CS_LAGGED || d->state==CS_SPAWNING) d->state = CS_ALIVE;
+                if(d->state==ClientState_Lagged || d->state==ClientState_Spawning) d->state = ClientState_Alive;
                 break;
             }
 
@@ -1261,7 +1261,7 @@ namespace game
             {
                 int cn = getint(p), tp = getint(p), td = getint(p);
                 gameent *d = getclient(cn);
-                if(!d || d->lifesequence < 0 || d->state==CS_DEAD) continue;
+                if(!d || d->lifesequence < 0 || d->state==ClientState_Dead) continue;
                 entities::teleporteffects(d, tp, td, false);
                 break;
             }
@@ -1270,7 +1270,7 @@ namespace game
             {
                 int cn = getint(p), jp = getint(p);
                 gameent *d = getclient(cn);
-                if(!d || d->lifesequence < 0 || d->state==CS_DEAD) continue;
+                if(!d || d->lifesequence < 0 || d->state==ClientState_Dead) continue;
                 entities::jumppadeffects(d, jp, false);
                 break;
             }
@@ -1389,7 +1389,7 @@ namespace game
                 getstring(text, p);
                 filtertext(text, text, true, true);
                 if(isignored(d->clientnum)) break;
-                if(d->state!=CS_DEAD && d->state!=CS_SPECTATOR)
+                if(d->state!=ClientState_Dead && d->state!=ClientState_Spectator)
                     particle_textcopy(d->abovehead(), text, PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
                 conoutf(CON_CHAT, "%s:%s %s", chatcolorname(d), teamtextcode[0], text);
                 break;
@@ -1403,7 +1403,7 @@ namespace game
                 filtertext(text, text, true, true);
                 if(!t || isignored(t->clientnum)) break;
                 int team = VALID_TEAM(t->team) ? t->team : 0;
-                if(t->state!=CS_DEAD && t->state!=CS_SPECTATOR)
+                if(t->state!=ClientState_Dead && t->state!=ClientState_Spectator)
                     particle_textcopy(t->abovehead(), text, PART_TEXT, 2000, teamtextcolor[team], 4.0f, -8);
                 conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
                 break;
@@ -1428,7 +1428,7 @@ namespace game
                     if(deathscore) showscores(true);
                 }
                 else d->resetinterp();
-                d->state = CS_DEAD;
+                d->state = ClientState_Dead;
                 checkfollow();
                 break;
             }
@@ -1517,12 +1517,12 @@ namespace game
             {
                 if(d)
                 {
-                    if(d->state==CS_DEAD && d->lastpain) saveragdoll(d);
+                    if(d->state==ClientState_Dead && d->lastpain) saveragdoll(d);
                     d->respawn();
                 }
                 parsestate(d, p);
                 if(!d) break;
-                d->state = CS_SPAWNING;
+                d->state = ClientState_Spawning;
                 if(d == followingplayer()) lasthit = 0;
                 checkfollow();
                 break;
@@ -1533,14 +1533,14 @@ namespace game
                 int scn = getint(p);
                 gameent *s = getclient(scn);
                 if(!s) { parsestate(NULL, p); break; }
-                if(s->state==CS_DEAD && s->lastpain) saveragdoll(s);
+                if(s->state==ClientState_Dead && s->lastpain) saveragdoll(s);
                 if(s==player1)
                 {
                     if(editmode) toggleedit();
                 }
                 s->respawn();
                 parsestate(s, p);
-                s->state = CS_ALIVE;
+                s->state = ClientState_Alive;
                 if(cmode) cmode->pickspawn(s);
                 else findplayerspawn(s, -1, MODE_TEAMMODE ? s->team : 0);
                 if(s == player1)
@@ -1592,7 +1592,7 @@ namespace game
                        *actor = getclient(acn);
                 if(!target || !actor) break;
                 target->health = health;
-                if(target->state == CS_ALIVE && actor != player1) target->lastpain = lastmillis;
+                if(target->state == ClientState_Alive && actor != player1) target->lastpain = lastmillis;
                 damaged(damage, target, actor, false);
                 break;
             }
@@ -1800,22 +1800,22 @@ namespace game
                 ident *id = getident(name);
                 switch(type)
                 {
-                    case ID_VAR:
+                    case Id_Var:
                     {
                         int val = getint(p);
-                        if(id && id->flags&IDF_OVERRIDE && !(id->flags&IDF_READONLY)) setvar(name, val);
+                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly)) setvar(name, val);
                         break;
                     }
-                    case ID_FVAR:
+                    case Id_FloatVar:
                     {
                         float val = getfloat(p);
-                        if(id && id->flags&IDF_OVERRIDE && !(id->flags&IDF_READONLY)) setfvar(name, val);
+                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly)) setfvar(name, val);
                         break;
                     }
-                    case ID_SVAR:
+                    case Id_StringVar:
                     {
                         getstring(text, p);
-                        if(id && id->flags&IDF_OVERRIDE && !(id->flags&IDF_READONLY)) setsvar(name, text);
+                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly)) setsvar(name, text);
                         break;
                     }
                 }
@@ -1857,7 +1857,7 @@ namespace game
             case N_DEMOPLAYBACK:
             {
                 int on = getint(p);
-                if(on) player1->state = CS_SPECTATOR;
+                if(on) player1->state = ClientState_Spectator;
                 else clearclients();
                 demoplayback = on!=0;
                 player1->clientnum = getint(p);
@@ -1899,12 +1899,12 @@ namespace game
                 if(val)
                 {
                     d->editstate = d->state;
-                    d->state = CS_EDITING;
+                    d->state = ClientState_Editing;
                 }
                 else
                 {
                     d->state = d->editstate;
-                    if(d->state==CS_DEAD) deathstate(d, true);
+                    if(d->state==ClientState_Dead) deathstate(d, true);
                 }
                 checkfollow();
                 break;
@@ -1926,12 +1926,12 @@ namespace game
                     if(s==player1)
                     {
                         if(editmode) toggleedit();
-                        if(s->state==CS_DEAD) showscores(false);
+                        if(s->state==ClientState_Dead) showscores(false);
                         disablezoom();
                     }
-                    s->state = CS_SPECTATOR;
+                    s->state = ClientState_Spectator;
                 }
-                else if(s->state==CS_SPECTATOR) deathstate(s, true);
+                else if(s->state==ClientState_Spectator) deathstate(s, true);
                 checkfollow();
                 break;
             }
@@ -2124,7 +2124,7 @@ namespace game
 
     void sendmap()
     {
-        if(!MODE_EDIT || (player1->state==CS_SPECTATOR && remote && !player1->privilege)) { conoutf(CON_ERROR, "\"sendmap\" only works in coop edit mode"); return; }
+        if(!MODE_EDIT || (player1->state==ClientState_Spectator && remote && !player1->privilege)) { conoutf(CON_ERROR, "\"sendmap\" only works in coop edit mode"); return; }
         conoutf("sending map...");
         DEF_FORMAT_STRING(mname, "sendmap_%d", lastmillis);
         save_world(mname);
@@ -2149,7 +2149,7 @@ namespace game
 
     void gotoplayer(const char *arg)
     {
-        if(player1->state!=CS_SPECTATOR && player1->state!=CS_EDITING) return;
+        if(player1->state!=ClientState_Spectator && player1->state!=ClientState_Editing) return;
         int i = parseplayer(arg);
         if(i>=0)
         {
@@ -2166,7 +2166,7 @@ namespace game
 
     void gotosel()
     {
-        if(player1->state!=CS_EDITING) return;
+        if(player1->state!=ClientState_Editing) return;
         player1->o = getselpos();
         vec dir;
         vecfromyawpitch(player1->yaw, player1->pitch, 1, 0, dir);

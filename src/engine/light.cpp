@@ -311,7 +311,7 @@ const vector<int> &checklightcache(int x, int y)
         const extentity &light = *ents[i];
         switch(light.type)
         {
-            case ET_LIGHT:
+            case Ent_Light:
             {
                 int radius = light.attr1;
                 if(radius <= 0 ||
@@ -644,7 +644,7 @@ void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity
     loopv(lights)
     {
         extentity &e = *ents[lights[i]];
-        if(e.type != ET_LIGHT || e.attr1 <= 0)
+        if(e.type != Ent_Light || e.attr1 <= 0)
             continue;
 
         vec ray(target);
@@ -662,7 +662,7 @@ void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity
         }
 
         float intensity = 1 - mag / float(e.attr1);
-        if(e.attached && e.attached->type==ET_SPOTLIGHT)
+        if(e.attached && e.attached->type==Ent_Spotlight)
         {
             vec spot = vec(e.attached->o).sub(e.o).normalize();
             float spotatten = 1 - (1 - ray.dot(spot)) / (1 - cos360(clamp(int(e.attached->attr1), 1, 89)));

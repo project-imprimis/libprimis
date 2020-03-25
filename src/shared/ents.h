@@ -1,9 +1,21 @@
 // this file defines static map entities ("entity") and dynamic entities (players/monsters, "dynent")
 // the gamecode extends these types to add game specific functionality
 
-// ET_*: the only static entity types dictated by the engine... rest are gamecode dependent
+// Ent_*: the only static entity types dictated by the engine... rest are gamecode dependent
 
-enum { ET_EMPTY=0, ET_LIGHT, ET_MAPMODEL, ET_PLAYERSTART, ET_ENVMAP, ET_PARTICLES, ET_SOUND, ET_SPOTLIGHT, ET_DECAL, ET_GAMESPECIFIC };
+enum
+{
+    Ent_Empty=0,
+    Ent_Light,
+    Ent_Mapmodel,
+    Ent_Playerstart,
+    Ent_Envmap,
+    Ent_Particles,
+    Ent_Sound,
+    Ent_Spotlight,
+    Ent_Decal,
+    Ent_GameSpecific,
+};
 
 struct entity                                   // persistent map entity
 {
@@ -15,15 +27,15 @@ struct entity                                   // persistent map entity
 
 enum
 {
-    EF_NOVIS      = 1<<0,
-    EF_NOSHADOW   = 1<<1,
-    EF_NOCOLLIDE  = 1<<2,
-    EF_ANIM       = 1<<3,
-    EF_SHADOWMESH = 1<<4,
-    EF_OCTA       = 1<<5,
-    EF_RENDER     = 1<<6,
-    EF_SOUND      = 1<<7,
-    EF_SPAWNED    = 1<<8
+    EntFlag_NoVis      = 1<<0,
+    EntFlag_NoShadow   = 1<<1,
+    EntFlag_NoCollide  = 1<<2,
+    EntFlag_Anim       = 1<<3,
+    EntFlag_ShadowMesh = 1<<4,
+    EntFlag_Octa       = 1<<5,
+    EntFlag_Render     = 1<<6,
+    EntFlag_Sound      = 1<<7,
+    EntFlag_Spawned    = 1<<8,
 
 };
 
@@ -34,23 +46,52 @@ struct extentity : entity                       // part of the entity that doesn
 
     extentity() : flags(0), attached(NULL) {}
 
-    bool spawned() const { return (flags&EF_SPAWNED) != 0; }
-    void setspawned(bool val) { if(val) flags |= EF_SPAWNED; else flags &= ~EF_SPAWNED; }
-    void setspawned() { flags |= EF_SPAWNED; }
-    void clearspawned() { flags &= ~EF_SPAWNED; }
+    bool spawned() const { return (flags&EntFlag_Spawned) != 0; }
+    void setspawned(bool val) { if(val) flags |= EntFlag_Spawned; else flags &= ~EntFlag_Spawned; }
+    void setspawned() { flags |= EntFlag_Spawned; }
+    void clearspawned() { flags &= ~EntFlag_Spawned; }
 };
 
 #define MAXENTS 10000
 
 //extern vector<extentity *> ents;                // map entities
 
-enum { CS_ALIVE = 0, CS_DEAD, CS_SPAWNING, CS_LAGGED, CS_EDITING, CS_SPECTATOR };
+enum
+{
+    ClientState_Alive = 0,
+    ClientState_Dead,
+    ClientState_Spawning,
+    ClientState_Lagged,
+    ClientState_Editing,
+    ClientState_Spectator,
+};
 
-enum { PHYS_FLOAT = 0, PHYS_FALL, PHYS_SLIDE, PHYS_SLOPE, PHYS_FLOOR, PHYS_STEP_UP, PHYS_STEP_DOWN, PHYS_BOUNCE };
+enum
+{
+    PhysEntState_Float = 0,
+    PhysEntState_Fall,
+    PhysEntState_Slide,
+    PhysEntState_Slope,
+    PhysEntState_Floor,
+    PhysEntState_StepUp,
+    PhysEntState_StepDown,
+    PhysEntState_Bounce,
+};
 
-enum { ENT_PLAYER = 0, ENT_CAMERA, ENT_BOUNCE };
+enum
+{
+    PhysEnt_Player = 0,
+    PhysEnt_Camera,
+    PhysEnt_Bounce,
+};
 
-enum { COLLIDE_NONE = 0, COLLIDE_ELLIPSE, COLLIDE_OBB, COLLIDE_TRI };
+enum
+{
+    Collide_None = 0,
+    Collide_Ellipse,
+    Collide_OBB,
+    Collide_TRI
+};
 
 #define CROUCHTIME 200
 #define CROUCHHEIGHT 0.75f
@@ -79,8 +120,8 @@ struct physent                                  // base entity type, can be affe
 
     physent() : o(0, 0, 0), deltapos(0, 0, 0), newpos(0, 0, 0), yaw(0), pitch(0), roll(0), maxspeed(100),
                radius(4.1f), eyeheight(18), maxheight(18), aboveeye(2), xradius(4.1f), yradius(4.1f), zmargin(0),
-               state(CS_ALIVE), editstate(CS_ALIVE), type(ENT_PLAYER),
-               collidetype(COLLIDE_ELLIPSE),
+               state(ClientState_Alive), editstate(ClientState_Alive), type(PhysEnt_Player),
+               collidetype(Collide_Ellipse),
                blocked(false)
                { reset(); }
 
@@ -97,7 +138,7 @@ struct physent                                  // base entity type, can be affe
         eyeheight = maxheight;
         jumping = false;
         strafe = move = crouching = 0;
-        physstate = PHYS_FALL;
+        physstate = PhysEntState_Fall;
         vel = falling = vec(0, 0, 0);
         floor = vec(0, 0, 1);
     }
@@ -110,8 +151,8 @@ struct physent                                  // base entity type, can be affe
 
 enum
 {
-    ANIM_MAPMODEL = 0,
-    ANIM_GAMESPECIFIC
+    Anim_Mapmodel = 0,
+    Anim_GameSpecific
 };
 
 #define ANIM_ALL         0x1FF

@@ -248,7 +248,7 @@ VARP(aoblur, 0, 4, 7);
 VARP(aoiter, 0, 0, 4);
 VARFP(aoreduce, 0, 1, 2, cleanupao());
 VARF(aoreducedepth, 0, 1, 2, cleanupao());
-VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", Init_Load, Change_Shaders));
 VARFP(aoprec, 0, 1, 1, cleanupao());
 VAR(aodepthformat, 1, 0, 0);
 VARF(aonoise, 0, 5, 8, cleanupao());
@@ -450,16 +450,16 @@ void doscale(GLuint outfbo)
     endtimer(scaletimer);
 }
 
-VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", Init_Load, Change_Shaders));
 VAR(gdepthformat, 1, 0, 0);
-VARF(gstencil, 0, 0, 1, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
-VARF(gdepthstencil, 0, 2, 2, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(gstencil, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));
+VARF(gdepthstencil, 0, 2, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));
 VAR(ghasstencil, 1, 0, 0);
-VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
-VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
-VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", Init_Load, Change_Shaders));
+VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", Init_Load, Change_Shaders));
+VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));
 VARF(msaaedgedetect, 0, 1, 1, cleanupgbuffer());
-VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", Init_Load, Change_Shaders));
 VARFP(msaatonemap, 0, 0, 1, cleanupgbuffer());
 VARF(msaatonemapblit, 0, 0, 1, cleanupgbuffer());
 VAR(msaamaxsamples, 1, 0, 0);
@@ -468,7 +468,7 @@ VAR(msaamaxcolortexsamples, 1, 0, 0);
 VAR(msaaminsamples, 1, 0, 0);
 VAR(msaasamples, 1, 0, 0);
 VAR(msaalight, 1, 0, 0);
-VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));
 
 void checkmsaasamples()
 {
@@ -534,7 +534,7 @@ void initgbuffer()
     initao();
 }
 
-VARF(forcepacknorm, 0, 0, 1, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(forcepacknorm, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));
 
 bool usepacknorm() { return forcepacknorm || msaasamples || !useavatarmask(); }
 ICOMMAND(usepacknorm, "", (), intret(usepacknorm() ? 1 : 0));
@@ -951,13 +951,13 @@ FVAR(hdraccumscale, 0, 0.98f, 1);
 VAR(hdraccummillis, 1, 33, 1000);
 VAR(hdrreduce, 0, 2, 2);
 VARFP(hdrprec, 0, 2, 3, cleanupgbuffer());
-FVARFP(hdrgamma, 1e-3f, 2, 1e3f, initwarning("HDR setup", INIT_LOAD, CHANGE_SHADERS));
+FVARFP(hdrgamma, 1e-3f, 2, 1e3f, initwarning("HDR setup", Init_Load, Change_Shaders));
 FVARR(hdrbright, 1e-4f, 1.0f, 1e4f);
 FVAR(hdrsaturate, 1e-3f, 0.8f, 1e3f);
 VARFP(gscale, 25, 100, 100, cleanupgbuffer());
 VARFP(gscalecubic, 0, 0, 1, cleanupgbuffer());
 VARFP(gscalenearest, 0, 0, 1, cleanupgbuffer());
-FVARFP(gscalecubicsoft, 0, 0, 1, initwarning("scaling setup", INIT_LOAD, CHANGE_SHADERS));
+FVARFP(gscalecubicsoft, 0, 0, 1, initwarning("scaling setup", Init_Load, Change_Shaders));
 
 float ldrscale = 1.0f, ldrscaleb = 1.0f/255;
 
@@ -991,12 +991,12 @@ void loadhdrshaders(int aa)
 {
     switch(aa)
     {
-        case AA_LUMA:
+        case AA_Luma:
             useshaderbyname("hdrtonemapluma");
             useshaderbyname("hdrnopluma");
             if(msaalight > 1 && msaatonemap) useshaderbyname("msaatonemapluma");
             break;
-        case AA_MASKED:
+        case AA_Masked:
             if(!msaasamples && ghasstencil) useshaderbyname("hdrtonemapstencil");
             else
             {
@@ -1005,13 +1005,13 @@ void loadhdrshaders(int aa)
                 if(msaalight > 1 && msaatonemap) useshaderbyname("msaatonemapmasked");
             }
             break;
-        case AA_SPLIT:
+        case AA_Split:
             useshaderbyname("msaatonemapsplit");
             break;
-        case AA_SPLIT_LUMA:
+        case AA_SplitLuma:
             useshaderbyname("msaatonemapsplitluma");
             break;
-        case AA_SPLIT_MASKED:
+        case AA_SplitMasked:
             useshaderbyname("msaatonemapsplitmasked");
             break;
         default:
@@ -1030,7 +1030,7 @@ void processhdr(GLuint outfbo, int aa)
         pw = vieww, ph = viewh;
     if(msaalight)
     {
-        if(aa < AA_SPLIT && (msaalight <= 1 || !msaatonemap))
+        if(aa < AA_Split && (msaalight <= 1 || !msaatonemap))
         {
             glBindFramebuffer_(GL_READ_FRAMEBUFFER, mshdrfbo);
             glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, hdrfbo);
@@ -1200,7 +1200,7 @@ void processhdr(GLuint outfbo, int aa)
         }
     }
 
-    if(aa >= AA_SPLIT)
+    if(aa >= AA_Split)
     {
         glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, vieww, viewh);
@@ -1210,8 +1210,8 @@ void processhdr(GLuint outfbo, int aa)
         glActiveTexture_(GL_TEXTURE0);
         switch(aa)
         {
-            case AA_SPLIT_LUMA: SETSHADER(msaatonemapsplitluma); break;
-            case AA_SPLIT_MASKED:
+            case AA_SplitLuma: SETSHADER(msaatonemapsplitluma); break;
+            case AA_SplitMasked:
                 SETSHADER(msaatonemapsplitmasked);
                 setaavelocityparams(GL_TEXTURE3);
                 break;
@@ -1229,8 +1229,8 @@ void processhdr(GLuint outfbo, int aa)
         glActiveTexture_(GL_TEXTURE0);
         switch(aa)
         {
-            case AA_LUMA: SETSHADER(hdrtonemapluma); break;
-            case AA_MASKED:
+            case AA_Luma: SETSHADER(hdrtonemapluma); break;
+            case AA_Masked:
                 if(!msaasamples && ghasstencil)
                 {
                     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
@@ -1266,8 +1266,8 @@ void processhdr(GLuint outfbo, int aa)
         if(blit) SETSHADER(msaatonemapsample);
         else switch(aa)
         {
-            case AA_LUMA: SETSHADER(msaatonemapluma); break;
-            case AA_MASKED:
+            case AA_Luma: SETSHADER(msaatonemapluma); break;
+            case AA_Masked:
                 SETSHADER(msaatonemapmasked);
                 setaavelocityparams(GL_TEXTURE3);
                 break;
@@ -1288,8 +1288,8 @@ void processhdr(GLuint outfbo, int aa)
                 if(!blit) SETSHADER(hdrnop);
                 else switch(aa)
                 {
-                    case AA_LUMA: SETSHADER(hdrnopluma); break;
-                    case AA_MASKED:
+                    case AA_Luma: SETSHADER(hdrnopluma); break;
+                    case AA_Masked:
                         SETSHADER(hdrnopmasked);
                         setaavelocityparams(GL_TEXTURE3);
                         break;
@@ -1583,7 +1583,7 @@ struct lightinfo
         o(e.o), color(vec(e.attr2, e.attr3, e.attr4).max(0)), radius(e.attr1), dist(camera1->o.dist(e.o)),
         dir(0, 0, 0), spot(0), query(NULL)
     {
-        if(e.attached && e.attached->type == ET_SPOTLIGHT)
+        if(e.attached && e.attached->type == Ent_Spotlight)
         {
             dir = vec(e.attached->o).sub(e.o).normalize();
             spot = clamp(int(e.attached->attr1), 1, 89);
@@ -2379,7 +2379,7 @@ bool useradiancehints()
 
 FVAR(avatarshadowdist, 0, 12, 100);
 FVAR(avatarshadowbias, 0, 8, 100);
-VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));
 
 int avatarmask = 0;
 
@@ -3113,7 +3113,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
 
 void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 = 1, const uint *tilemask = NULL, int stencilmask = 0, int msaapass = 0, bool transparent = false)
 {
-    Shader *s = drawtex == DRAWTEX_MINIMAP ? deferredminimapshader : (msaapass <= 0 ? deferredlightshader : (msaapass > 1 ? deferredmsaasampleshader : deferredmsaapixelshader));
+    Shader *s = drawtex == Draw_TexMinimap ? deferredminimapshader : (msaapass <= 0 ? deferredlightshader : (msaapass > 1 ? deferredmsaasampleshader : deferredmsaapixelshader));
     if(!s || s == nullshader) return;
 
     bool depth = true;
@@ -3168,7 +3168,7 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
 
     if(hasDBT && depthtestlights > 1) glEnable(GL_DEPTH_BOUNDS_TEST_EXT);
 
-    bool sunpass = !lighttilebatch || drawtex == DRAWTEX_MINIMAP || (!sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0));
+    bool sunpass = !lighttilebatch || drawtex == Draw_TexMinimap || (!sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0));
     if(sunpass)
     {
         if(depthtestlights && depth) { glDisable(GL_DEPTH_TEST); depth = false; }
@@ -3177,7 +3177,7 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
 
     if(depthtestlights && !depth) { glEnable(GL_DEPTH_TEST); depth = true; }
 
-    if(!lighttilebatch || drawtex == DRAWTEX_MINIMAP)
+    if(!lighttilebatch || drawtex == Draw_TexMinimap)
     {
         renderlightsnobatch(s, stencilref, transparent, bsx1, bsy1, bsx2, bsy2);
     }
@@ -3432,7 +3432,7 @@ void viewlightscissor()
     loopv(entgroup)
     {
         int idx = entgroup[i];
-        if(ents.inrange(idx) && ents[idx]->type == ET_LIGHT)
+        if(ents.inrange(idx) && ents[idx]->type == Ent_Light)
         {
             extentity &e = *ents[idx];
             loopvj(lights) if(lights[j].o == e.o)
@@ -3462,7 +3462,7 @@ void collectlights()
     if(!editmode || !fullbright) loopv(ents)
     {
         const extentity *e = ents[i];
-        if(e->type != ET_LIGHT || e->attr1 <= 0) continue;
+        if(e->type != Ent_Light || e->attr1 <= 0) continue;
 
         if(smviscull)
         {
@@ -3689,7 +3689,7 @@ static void batchlights()
     lightbatchstacksused = 0;
     lightbatchrectsused = 0;
 
-    if(lighttilebatch && drawtex != DRAWTEX_MINIMAP)
+    if(lighttilebatch && drawtex != Draw_TexMinimap)
     {
         lightbatcher.recycle();
         batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.length()));
@@ -4169,7 +4169,7 @@ void renderradiancehints()
     rh.setup();
     rsm.setup();
 
-    shadowmapping = SM_REFLECT;
+    shadowmapping = ShadowMap_Reflect;
     shadowside = 0;
     shadoworigin = vec(0, 0, 0);
     shadowdir = rsm.lightview;
@@ -4242,7 +4242,7 @@ void rendercsmshadowmaps()
 
     csm.setup();
 
-    shadowmapping = SM_CASCADE;
+    shadowmapping = ShadowMap_Cascade;
     shadoworigin = vec(0, 0, 0);
     shadowdir = csm.lightview;
     shadowbias = csm.lightview.project_bb(worldmin, worldmax);
@@ -4300,15 +4300,15 @@ void rendercsmshadowmaps()
 
 int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc, int &spotangle, float &bias)
 {
-    if(e.attr5&L_NOSHADOW || e.attr1 <= smminradius) return SM_NONE;
+    if(e.attr5&L_NOSHADOW || e.attr1 <= smminradius) return ShadowMap_None;
 
     origin = e.o;
     radius = e.attr1;
     int type, w, border;
     float lod;
-    if(e.attached && e.attached->type == ET_SPOTLIGHT)
+    if(e.attached && e.attached->type == Ent_Spotlight)
     {
-        type = SM_SPOT;
+        type = ShadowMap_Spot;
         w = 1;
         border = 0;
         lod = smspotprec;
@@ -4317,7 +4317,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
     }
     else
     {
-        type = SM_CUBEMAP;
+        type = ShadowMap_CubeMap;
         w = 3;
         lod = smcubeprec;
         border = smfilter > 2 ? smborder2 : smborder;
@@ -4369,15 +4369,15 @@ void rendershadowmaps(int offset = 0)
         int border, sidemask;
         if(l.spot)
         {
-            shadowmapping = SM_SPOT;
+            shadowmapping = ShadowMap_Spot;
             border = 0;
             sidemask = 1;
         }
         else
         {
-            shadowmapping = SM_CUBEMAP;
+            shadowmapping = ShadowMap_CubeMap;
             border = smfilter > 2 ? smborder2 : smborder;
-            sidemask = drawtex == DRAWTEX_MINIMAP ? 0x2F : (smsidecull ? cullfrustumsides(l.o, l.radius, sm.size, border) : 0x3F);
+            sidemask = drawtex == Draw_TexMinimap ? 0x2F : (smsidecull ? cullfrustumsides(l.o, l.radius, sm.size, border) : 0x3F);
         }
 
         sm.sidemask = sidemask;
@@ -4419,7 +4419,7 @@ void rendershadowmaps(int offset = 0)
                               vec4(0, 0, -(smfarclip + smnearclip) / (smfarclip - smnearclip), -1),
                               vec4(0, 0, -2*smnearclip*smfarclip / (smfarclip - smnearclip), 0));
 
-        if(shadowmapping == SM_SPOT)
+        if(shadowmapping == ShadowMap_Spot)
         {
             glViewport(sm.x, sm.y, sm.size, sm.size);
             glScissor(sm.x, sm.y, sm.size, sm.size);
@@ -4557,7 +4557,7 @@ void rendertransparent()
         return;
     }
 
-    if(!editmode && particlelayers && ghasstencil) renderparticles(PL_UNDER);
+    if(!editmode && particlelayers && ghasstencil) renderparticles(ParticleLayer_Under);
 
     timer *transtimer = begintimer("transparent");
 
@@ -4695,7 +4695,7 @@ void rendertransparent()
         case 2:
             if(hasalphavas&2) renderalphageom(2);
             if(hasmats&2) rendersolidmaterials();
-            renderstains(STAINBUF_TRANSPARENT, true, layer+1);
+            renderstains(StainBuffer_Transparent, true, layer+1);
             break;
         case 3:
             rendertransparentmodelbatches(layer+1);
@@ -4719,7 +4719,7 @@ void rendertransparent()
         switch(layer)
         {
         case 2:
-            renderstains(STAINBUF_TRANSPARENT, false, layer+1);
+            renderstains(StainBuffer_Transparent, false, layer+1);
             break;
         }
     }
@@ -4745,11 +4745,11 @@ void rendertransparent()
         glStencilFunc(GL_NOTEQUAL, 0, 0x07);
         glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
         glEnable(GL_STENCIL_TEST);
-        renderparticles(PL_OVER);
+        renderparticles(ParticleLayer_Over);
         glDisable(GL_STENCIL_TEST);
         if(scissor) glDisable(GL_SCISSOR_TEST);
 
-        renderparticles(PL_NOLAYER);
+        renderparticles(ParticleLayer_NoLayer);
     }
     else renderparticles();
 }
@@ -4787,7 +4787,7 @@ void preparegbuffer(bool depthclear)
     invscreenmatrix.settranslation(-1.0f, -1.0f, -1.0f);
     invscreenmatrix.setscale(2.0f/vieww, 2.0f/viewh, 2.0f);
     eyematrix.muld(invprojmatrix, invscreenmatrix);
-    if(drawtex == DRAWTEX_MINIMAP)
+    if(drawtex == Draw_TexMinimap)
     {
         linearworldmatrix.muld(invcamprojmatrix, invscreenmatrix);
         if(!gdepthformat) worldmatrix = linearworldmatrix;
@@ -4853,7 +4853,7 @@ void rendergbuffer(bool depthclear)
     rendermapmodels();
     GLERROR;
 
-    if(drawtex == DRAWTEX_MINIMAP)
+    if(drawtex == Draw_TexMinimap)
     {
         if(depthclear) findmaterials();
         renderminimapmaterials();
@@ -4863,8 +4863,8 @@ void rendergbuffer(bool depthclear)
     {
         rendermodelbatches();
         GLERROR;
-        renderstains(STAINBUF_OPAQUE, true);
-        renderstains(STAINBUF_MAPMODEL, true);
+        renderstains(StainBuffer_Opaque, true);
+        renderstains(StainBuffer_Mapmodel, true);
         GLERROR;
         //renderavatar();
         //GLERROR;
@@ -4957,8 +4957,8 @@ void shadegbuffer()
 
     if(!drawtex)
     {
-        renderstains(STAINBUF_OPAQUE, false);
-        renderstains(STAINBUF_MAPMODEL, false);
+        renderstains(StainBuffer_Opaque, false);
+        renderstains(StainBuffer_Mapmodel, false);
     }
 
     endtimer(shtimer);
@@ -4975,7 +4975,7 @@ void setuplights()
     if(!shadowatlasfbo) setupshadowatlas();
     if(useradiancehints() && !rhfbo) setupradiancehints();
     if(!deferredlightshader) loaddeferredlightshaders();
-    if(drawtex == DRAWTEX_MINIMAP && !deferredminimapshader) deferredminimapshader = loaddeferredlightshader(msaalight ? "mM" : "m");
+    if(drawtex == Draw_TexMinimap && !deferredminimapshader) deferredminimapshader = loaddeferredlightshader(msaalight ? "mM" : "m");
     setupaa(gw, gh);
     GLERROR;
 }

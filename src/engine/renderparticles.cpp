@@ -84,7 +84,7 @@ void addparticleemitters()
     loopv(ents)
     {
         extentity &e = *ents[i];
-        if(e.type != ET_PARTICLES) continue;
+        if(e.type != Ent_Particles) continue;
         emitters.add(particleemitter(&e));
     }
     regenemitters = false;
@@ -914,15 +914,15 @@ void debugparticles()
 
 void renderparticles(int layer)
 {
-    canstep = layer != PL_UNDER;
+    canstep = layer != ParticleLayer_Under;
 
     //want to debug BEFORE the lastpass render (that would delete particles)
-    if(dbgparts && (layer == PL_ALL || layer == PL_UNDER)) loopi(sizeof(parts)/sizeof(parts[0])) parts[i]->debuginfo();
+    if(dbgparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under)) loopi(sizeof(parts)/sizeof(parts[0])) parts[i]->debuginfo();
 
     bool rendered = false;
     uint lastflags = PT_LERP|PT_SHADER,
          flagmask = PT_LERP|PT_MOD|PT_BRIGHT|PT_NOTEX|PT_SOFT|PT_SHADER,
-         excludemask = layer == PL_ALL ? ~0 : (layer != PL_NOLAYER ? PT_NOLAYER : 0);
+         excludemask = layer == ParticleLayer_All ? ~0 : (layer != ParticleLayer_NoLayer ? PT_NOLAYER : 0);
 
     loopi(sizeof(parts)/sizeof(parts[0]))
     {
@@ -1433,7 +1433,7 @@ void updateparticles()
         loopv(ents)
         {
             entity &e = *ents[i];
-            if(e.type==ET_EMPTY) continue;
+            if(e.type==Ent_Empty) continue;
             particle_textcopy(e.o, entname(e), PART_TEXT, 1, 0x1EC850, 2.0f);
             regular_particle_splash(PART_EDIT, 2, 40, e.o, 0x3232FF, 0.32f*particlesize/100.0f);
         }

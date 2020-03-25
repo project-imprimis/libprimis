@@ -180,7 +180,7 @@ struct stainrenderer
     Texture *tex;
     staininfo *stains;
     int maxstains, startstain, endstain;
-    stainbuffer verts[NUMSTAINBUFS];
+    stainbuffer verts[StainBuffer_Number];
 
     stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
         : texname(texname), flags(flags),
@@ -207,7 +207,7 @@ struct stainrenderer
         }
         stains = new staininfo[tris];
         maxstains = tris;
-        loopi(NUMSTAINBUFS) verts[i].init(i == STAINBUF_TRANSPARENT ? tris/2 : tris);
+        loopi(StainBuffer_Number) verts[i].init(i == StainBuffer_Transparent ? tris/2 : tris);
     }
 
     void preload()
@@ -228,7 +228,7 @@ struct stainrenderer
     void clearstains()
     {
         startstain = endstain = 0;
-        loopi(NUMSTAINBUFS) verts[i].clear();
+        loopi(StainBuffer_Number) verts[i].clear();
     }
 
     int freestain()
@@ -256,15 +256,15 @@ struct stainrenderer
         int threshold = lastmillis - (timetolive>=0 ? timetolive : stainfade) - fadeouttime;
         staininfo *d = &stains[startstain],
                   *end = &stains[endstain < startstain ? maxstains : endstain],
-                  *cleared[NUMSTAINBUFS] = { NULL };
+                  *cleared[StainBuffer_Number] = { NULL };
         for(; d < end && d->millis <= threshold; d++)
             cleared[d->owner] = d;
         if(d >= end && endstain < startstain)
             for(d = stains, end = &stains[endstain]; d < end && d->millis <= threshold; d++)
                 cleared[d->owner] = d;
         startstain = d - stains;
-        if(startstain == endstain) loopi(NUMSTAINBUFS) verts[i].clear();
-        else loopi(NUMSTAINBUFS) if(cleared[i]) verts[i].clearstains(*cleared[i]);
+        if(startstain == endstain) loopi(StainBuffer_Number) verts[i].clear();
+        else loopi(StainBuffer_Number) if(cleared[i]) verts[i].clearstains(*cleared[i]);
     }
 
     void fadeinstains()
@@ -323,7 +323,7 @@ struct stainrenderer
 
     static void setuprenderstate(int sbuf, bool gbuf, int layer)
     {
-        if(gbuf) maskgbuffer(sbuf == STAINBUF_TRANSPARENT ? "cg" : "c");
+        if(gbuf) maskgbuffer(sbuf == StainBuffer_Transparent ? "cg" : "c");
         else zerofogcolor();
 
         if(layer && ghasstencil)
@@ -359,13 +359,13 @@ struct stainrenderer
 
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-        if(gbuf) maskgbuffer(sbuf == STAINBUF_TRANSPARENT ? "cndg" : "cnd");
+        if(gbuf) maskgbuffer(sbuf == StainBuffer_Transparent ? "cndg" : "cnd");
         else resetfogcolor();
     }
 
     void cleanup()
     {
-        loopi(NUMSTAINBUFS) verts[i].cleanup();
+        loopi(StainBuffer_Number) verts[i].cleanup();
     }
 
     void render(int sbuf)
@@ -374,7 +374,7 @@ struct stainrenderer
         if(flags&SF_OVERBRIGHT)
         {
             glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-            SETVARIANT(overbrightstain, sbuf == STAINBUF_TRANSPARENT ? 0 : -1, 0);
+            SETVARIANT(overbrightstain, sbuf == StainBuffer_Transparent ? 0 : -1, 0);
         }
         else if(flags&SF_GLOW)
         {
@@ -395,7 +395,7 @@ struct stainrenderer
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             colorscale = ldrscale;
             if(flags&SF_SATURATE) colorscale *= 2;
-            SETVARIANT(stain, sbuf == STAINBUF_TRANSPARENT ? 0 : -1, 0);
+            SETVARIANT(stain, sbuf == StainBuffer_Transparent ? 0 : -1, 0);
         }
         LOCALPARAMF(colorscale, colorscale, colorscale, colorscale, alphascale);
 
@@ -445,9 +445,9 @@ struct stainrenderer
             stainv = 0.5f*((info>>1)&1);
         }
 
-        loopi(NUMSTAINBUFS) verts[i].lastvert = verts[i].endvert;
+        loopi(StainBuffer_Number) verts[i].lastvert = verts[i].endvert;
         gentris(worldroot, ivec(0, 0, 0), worldsize>>1);
-        loopi(NUMSTAINBUFS)
+        loopi(StainBuffer_Number)
         {
             stainbuffer &buf = verts[i];
             if(buf.endvert == buf.lastvert) continue;
@@ -455,7 +455,7 @@ struct stainrenderer
             if(dbgstain)
             {
                 int nverts = buf.nextverts();
-                static const char * const sbufname[NUMSTAINBUFS] = { "opaque", "transparent", "mapmodel" };
+                static const char * const sbufname[StainBuffer_Number] = { "opaque", "transparent", "mapmodel" };
                 conoutf(CON_DEBUG, "tris = %d, verts = %d, total tris = %d, %s", nverts/3, nverts, buf.totaltris(), sbufname[i]);
             }
 
@@ -520,7 +520,7 @@ struct stainrenderer
         }
         else return;
 
-        stainbuffer &buf = verts[mat || cu.material&MAT_ALPHA ? STAINBUF_TRANSPARENT : STAINBUF_OPAQUE];
+        stainbuffer &buf = verts[mat || cu.material&MAT_ALPHA ? StainBuffer_Transparent : StainBuffer_Opaque];
         loopl(numplanes)
         {
             const vec &n = planes[l];
@@ -666,7 +666,7 @@ struct stainrenderer
         stainvert dv1 = { v2[0], staincolor, vec2(pt.dot(v2[0]) + tu, pb.dot(v2[0]) + tv) },
                   dv2 = { v2[1], staincolor, vec2(pt.dot(v2[1]) + tu, pb.dot(v2[1]) + tv) };
         int totalverts = 3*(numv-2);
-        stainbuffer &buf = verts[STAINBUF_MAPMODEL];
+        stainbuffer &buf = verts[StainBuffer_Mapmodel];
         if(totalverts > buf.maxverts-3) return;
         while(buf.availverts < totalverts)
         {
@@ -779,7 +779,7 @@ bool renderstains(int sbuf, bool gbuf, int layer)
     {
         stainrenderer &d = stains[i];
         if(d.usegbuffer() != gbuf) continue;
-        if(sbuf == STAINBUF_OPAQUE)
+        if(sbuf == StainBuffer_Opaque)
         {
             d.clearfadedstains();
             d.fadeinstains();

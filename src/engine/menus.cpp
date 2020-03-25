@@ -54,9 +54,9 @@ void applychanges()
 {
     int changetypes = 0;
     loopv(needsapply) changetypes |= needsapply[i].type;
-    if(changetypes&CHANGE_GFX) execident("resetgl");
-    else if(changetypes&CHANGE_SHADERS) execident("resetshaders");
-    if(changetypes&CHANGE_SOUND) execident("resetsound");
+    if(changetypes&Change_Graphics) execident("resetgl");
+    else if(changetypes&Change_Shaders) execident("resetshaders");
+    if(changetypes&Change_Sound) execident("resetsound");
 }
 
 //executes applychanges()
