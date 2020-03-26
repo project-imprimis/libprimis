@@ -314,7 +314,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
         return;
     }
 
-    loopi(3)
+    for(int i = 0; i < 3; ++i)
     {
         renderbackgroundview(w, h, caption, mapshot, mapname, mapinfo);
         swapbuffers(false);
@@ -621,7 +621,7 @@ void setupscreen()
 #else
     static const int glversions[] = { 40, 33, 32, 31, 30, 20 };
 #endif
-    loopi(sizeof(glversions)/sizeof(glversions[0]))
+    for(int i = 0; i < int(sizeof(glversions)/sizeof(glversions[0])); ++i)
     {
         glcompat = glversions[i] <= 30 ? 1 : 0;
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i] / 10);
@@ -996,7 +996,10 @@ int fpspos = 0, fpshistory[MAXFPSHISTORY];
 
 void resetfpshistory()
 {
-    loopi(MAXFPSHISTORY) fpshistory[i] = 1;
+    for(int i = 0; i < MAXFPSHISTORY; ++i)
+    {
+        fpshistory[i] = 1;
+    }
     fpspos = 0;
 }
 
@@ -1009,7 +1012,7 @@ void updatefpshistory(int millis)
 void getframemillis(float &avg, float &bestdiff, float &worstdiff)
 {
     int total = fpshistory[MAXFPSHISTORY-1], best = total, worst = total;
-    loopi(MAXFPSHISTORY-1)
+    for(int i = 0; i < MAXFPSHISTORY-1; ++i)
     {
         int millis = fpshistory[i];
         total += millis;
@@ -1025,7 +1028,7 @@ void getframemillis(float &avg, float &bestdiff, float &worstdiff)
 void getfps(int &fps, int &bestdiff, int &worstdiff)
 {
     int total = fpshistory[MAXFPSHISTORY-1], best = total, worst = total;
-    loopi(MAXFPSHISTORY-1)
+    for(int i = 0; i < MAXFPSHISTORY-1; ++i)
     {
         int millis = fpshistory[i];
         total += millis;

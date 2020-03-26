@@ -241,7 +241,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         left = right = numindices/2;
         splitleft = SHRT_MIN;
         splitright = SHRT_MAX;
-        loopi(numindices)
+        for(int i = 0; i < numindices; ++i)
         {
             tri &tri = tris[indices[i]];
             skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
@@ -285,7 +285,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
 skelbih::skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris)
   : nodes(NULL), numnodes(0), tris(tris), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f)
 {
-    loopi(numtris)
+    for(int i = 0; i < numtris; ++i)
     {
         tri &tri = tris[i];
         skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
@@ -297,7 +297,10 @@ skelbih::skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris)
     {
         nodes = new node[numtris];
         ushort *indices = new ushort[numtris];
-        loopi(numtris) indices[i] = i;
+        for(int i = 0; i < numtris; ++i)
+        {
+            indices[i] = i;
+        }
         build(m, indices, numtris, bbmin, bbmax);
         delete[] indices;
     }
@@ -362,11 +365,17 @@ struct skelhitzone
         }
         else if(shellintersect(o, ray))
         {
-            loopi(numtris) triintersect(m, s, bdata1, bdata2, numblends, tris[i], o, ray);
-            loopi(numchildren) if(children[i]->visited != visited)
+            for(int i = 0; i < numtris; ++i)
             {
-                children[i]->visited = visited;
-                children[i]->intersect(m, s, bdata1, bdata2, numblends, o, ray);
+                triintersect(m, s, bdata1, bdata2, numblends, tris[i], o, ray);
+            }
+            for(int i = 0; i < numchildren; ++i)
+            {
+                if(children[i]->visited != visited)
+                {
+                    children[i]->visited = visited;
+                    children[i]->intersect(m, s, bdata1, bdata2, numblends, o, ray);
+                }
             }
         }
     }
@@ -382,7 +391,7 @@ struct skelhitzone
         {
             animcenter = children[numchildren-1]->animcenter;
             radius = children[numchildren-1]->radius;
-            loopi(numchildren-1)
+            for(int i = 0; i < numchildren-1; ++i)
             {
                 skelhitzone *child = children[i];
                 vec n = child->animcenter;
@@ -431,7 +440,7 @@ struct skelzonekey
     bool includes(const skelzonekey &o)
     {
         int j = 0;
-        loopi(sizeof(bones))
+        for(int i = 0; i < int(sizeof(bones)); ++i)
         {
             if(bones[i] > o.bones[j]) return false;
             if(bones[i] == o.bones[j]) j++;
@@ -442,7 +451,7 @@ struct skelzonekey
     void subtract(const skelzonekey &o)
     {
         int len = 0, j = 0;
-        loopi(sizeof(bones))
+        for(int i = 0; i < int(sizeof(bones)); ++i)
         {
         retry:
             if(j >= (int)sizeof(o.bones) || bones[i] < o.bones[j]) { bones[len++] = bones[i]; continue; }
@@ -455,7 +464,7 @@ struct skelzonekey
 
     bool hasbone(int n)
     {
-        loopi(sizeof(bones))
+        for(int i = 0; i < int(sizeof(bones)); ++i)
         {
             if(bones[i] == n) return true;
             if(bones[i] == 0xFF) break;
@@ -465,13 +474,19 @@ struct skelzonekey
 
     int numbones()
     {
-        loopi(sizeof(bones)) if(bones[i] == 0xFF) return i;
+        for(int i = 0; i < int(sizeof(bones)); ++i)
+        {
+            if(bones[i] == 0xFF)
+            {
+                return i;
+            }
+        }
         return sizeof(bones);
     }
 
     void addbone(int n)
     {
-        loopi(sizeof(bones))
+        for(int i = 0; i < int(sizeof(bones)); ++i)
         {
             if(n <= bones[i])
             {
@@ -490,13 +505,22 @@ struct skelzonekey
         skelmodel::skelmeshgroup *g = (skelmodel::skelmeshgroup *)m->group;
         int b0 = m->verts[t.vert[0]].blend, b1 = m->verts[t.vert[1]].blend, b2 = m->verts[t.vert[1]].blend;
         const skelmodel::blendcombo &c0 = g->blendcombos[b0];
-        loopi(4) if(c0.weights[i]) addbone(c0.bones[i]);
+        for(int i = 0; i < 4; ++i)
+        {
+            if(c0.weights[i]) addbone(c0.bones[i]);
+        }
         if(b0 != b1 || b0 != b2)
         {
             const skelmodel::blendcombo &c1 = g->blendcombos[b1];
-            loopi(4) if(c1.weights[i]) addbone(c1.bones[i]);
+            for(int i = 0; i < 4; ++i)
+            {
+                if(c1.weights[i]) addbone(c1.bones[i]);
+            }
             const skelmodel::blendcombo &c2 = g->blendcombos[b2];
-            loopi(4) if(c2.weights[i]) addbone(c2.bones[i]);
+            for(int i = 0; i < 4; ++i)
+            {
+                if(c2.weights[i]) addbone(c2.bones[i]);
+            }
         }
         else blend = b0;
     }
@@ -581,7 +605,7 @@ struct skelhitdata
     void propagate(skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2)
     {
         visited = 0;
-        loopi(numzones)
+        for(int i = 0; i < numzones; ++i)
         {
             zones[i].visited = -1;
             zones[i].propagate(m, bdata1, bdata2, numblends);
@@ -593,7 +617,10 @@ struct skelhitdata
         if(++visited < 0)
         {
             visited = 0;
-            loopi(numzones) zones[i].visited = -1;
+            for(int i = 0; i < numzones; ++i)
+            {
+                zones[i].visited = -1;
+            }
         }
         for(int i = numzones - rootzones; i < numzones; i++)
         {
@@ -640,7 +667,14 @@ uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m,
         loopl(4) if(c.weights[l])
         {
             uchar id = ids[c.bones[l]];
-            loopi(numused) if(used[i] == id) { weights[i] += c.weights[l]; goto nextbone; }
+            for(int i = 0; i < numused; ++i)
+            {
+                if(used[i] == id)
+                {
+                    weights[i] += c.weights[l];
+                    goto nextbone;
+                }
+            }
             used[numused] = id;
             weights[numused] = c.weights[l];
             numused++;
@@ -649,10 +683,13 @@ uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m,
     }
     uchar bestid = 0xFF;
     float bestweight = 0;
-    loopi(numused) if(weights[i] > bestweight || (weights[i] == bestweight && used[i] < bestid))
+    for(int i = 0; i < numused; ++i)
     {
-        bestid = used[i];
-        bestweight = weights[i];
+        if(weights[i] > bestweight || (weights[i] == bestweight && used[i] < bestid))
+        {
+            bestid = used[i];
+            bestweight = weights[i];
+        }
     }
     return bestid;
 }
@@ -667,7 +704,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     numblends = g->blendcombos.length();
     loopv(g->blendcombos) if(!g->blendcombos[i].weights[1]) { numblends = i; break; }
     blendcache.bdata = numblends > 0 ? new dualquat[numblends] : NULL;
-    loopi(min(g->meshes.length(), 0x100))
+    for(int i = 0; i < min(g->meshes.length(), 0x100); ++i)
     {
         skelmodel::skelmesh *m = (skelmodel::skelmesh *)g->meshes[i];
         loopj(m->numtris)
@@ -692,7 +729,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             memcpy(zt.vert, t.vert, sizeof(zt.vert));
         }
     }
-    loopi(g->skel->numbones)
+    for(int i = 0; i < (g->skel->numbones); ++i)
     {
         if(bounds[i].empty() || bounds[i].owner >= 0) continue;
         skelzonekey key(i);
@@ -787,7 +824,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     tris = new skelhitzone::tri[numtris];
     skelhitzone **curlink = links;
     skelhitzone::tri *curtris = tris;
-    loopi(numzones)
+    for(int i = 0; i < numzones; ++i)
     {
         skelhitzone &z = zones[i];
         skelzoneinfo &zi = *info[info.length()-1 - i];
@@ -820,7 +857,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         loopvj(zi.children) z.children[j] = &zones[info.length()-1 - zi.children[j]->index];
         curlink += zi.children.length();
     }
-    loopi(numzones)
+    for(int i = 0; i < numzones; ++i)
     {
         skelhitzone &z = zones[i];
         loopj(z.numchildren) z.children[j]->parents[z.children[j]->numparents++] = &z;

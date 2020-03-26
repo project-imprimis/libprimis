@@ -17,7 +17,7 @@ namespace sphere
         numverts = (stacks+1)*(slices+1);
         verts = new vert[numverts];
         float ds = 1.0f/slices, dt = 1.0f/stacks, t = 1.0f;
-        loopi(stacks+1)
+        for(int i = 0; i < stacks+1; ++i)
         {
             float rho = M_PI*(1-t), s = 0.0f, sinrho = i && i < stacks ? sin(rho) : 0, cosrho = !i ? 1 : (i < stacks ? cos(rho) : -1);
             loopj(slices+1)
@@ -35,7 +35,7 @@ namespace sphere
         numindices = (stacks-1)*slices*3*2;
         indices = new ushort[numindices];
         GLushort *curindex = indices;
-        loopi(stacks)
+        for(int i = 0; i < stacks; ++i)
         {
             loopk(slices)
             {
@@ -183,7 +183,7 @@ struct fireballrenderer : listrenderer
         vec color = p->color.tocolor().mul(ldrscale);
         float alpha = blend/255.0f;
 
-        loopi(inside ? 2 : 1)
+        for(int i = 0; i < (inside ? 2 : 1); ++i)
         {
             gle::color(color, i ? alpha/2 : alpha);
             if(i) glDepthFunc(GL_GEQUAL);

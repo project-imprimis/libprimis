@@ -14,7 +14,7 @@ namespace mpr
         {
             int besti = 7;
             float bestd = n.dot(p.v[7]);
-            loopi(7)
+            for(int i = 0; i < 7; ++i)
             {
                 float d = n.dot(p.v[i]);
                 if(d > bestd) { besti = i; bestd = d; }
@@ -300,7 +300,7 @@ namespace mpr
         ///
         // Phase One: Find a valid portal
 
-        loopi(100)
+        for(int i = 0; i < 100; ++i)
         {
             // Obtain the next support point
             vec v3 = p2.supportpoint(n).sub(p1.supportpoint(vec(n).neg()));
@@ -422,7 +422,7 @@ namespace mpr
         ///
         // Phase One: Identify a portal
 
-        loopi(100)
+        for(int i = 0; i < 100; ++i)
         {
             // Obtain the support point in a direction perpendicular to the existing plane
             // Note: This point is guaranteed to lie off the plane

@@ -241,7 +241,10 @@ struct aviwriter
         f->putlil<uint>(0); // buffersize
         f->putlil<uint>(videow); // video width
         f->putlil<uint>(videoh); // video height
-        loopi(4) f->putlil<uint>(0); // reserved
+        for(int i = 0; i < 4; ++i)
+        {
+            f->putlil<uint>(0); // reserved
+        }
         endchunk(); // avih
 
         listchunk("LIST", "strl");
@@ -289,7 +292,7 @@ struct aviwriter
         f->putlil<uint>(0); // reserved 1
         f->putlil<uint>(0); // reserved 2
         f->putlil<uint>(0); // reserved 3
-        loopi(MAX_SUPER_INDEX)
+        for(int i = 0; i < MAX_SUPER_INDEX; ++i)
         {
             f->putlil<uint>(0); // offset low
             f->putlil<uint>(0); // offset high
@@ -368,7 +371,7 @@ struct aviwriter
             f->putlil<uint>(0); // reserved 1
             f->putlil<uint>(0); // reserved 2
             f->putlil<uint>(0); // reserved 3
-            loopi(MAX_SUPER_INDEX)
+            for(int i = 0; i < MAX_SUPER_INDEX; ++i)
             {
                 f->putlil<uint>(0); // offset low
                 f->putlil<uint>(0); // offset high
@@ -870,7 +873,7 @@ namespace recorder
                     if(s.frame > m.frame) break; // sync with video
                 }
                 SDL_UnlockMutex(soundlock);
-                loopi(numsound)
+                for(int i = 0; i < numsound; ++i)
                 {
                     soundbuffer &s = soundbuffers.removing(i);
                     if(!file->writesound(s.sound, s.size, s.frame)) state = REC_FILERROR;
@@ -938,13 +941,16 @@ namespace recorder
         conoutf("movie recording to: %s %dx%d @ %dfps%s", file->filename, file->videow, file->videoh, file->videofps, (file->soundfrequency>0)?" + sound":"");
 
         starttime = gettime();
-        loopi(file->videofps) stats[i] = 0;
+        for(int i = 0; i < int(file->videofps); ++i)
+        {
+            stats[i] = 0;
+        }
         statsindex = 0;
         dps = 0;
 
         lastframe = ~0U;
         videobuffers.clear();
-        loopi(MAXVIDEOBUFFERS)
+        for(int i = 0; i < MAXVIDEOBUFFERS; ++i)
         {
             uint w = screenw, h = screenw;
             videobuffers.data[i].init(w, h, 4);
@@ -984,8 +990,14 @@ namespace recorder
 
         cleanup();
 
-        loopi(MAXVIDEOBUFFERS) videobuffers.data[i].cleanup();
-        loopi(MAXSOUNDBUFFERS) soundbuffers.data[i].cleanup();
+        for(int i = 0; i < MAXVIDEOBUFFERS; ++i)
+        {
+            videobuffers.data[i].cleanup();
+        }
+        for(int i = 0; i < MAXSOUNDBUFFERS; ++i)
+        {
+            soundbuffers.data[i].cleanup();
+        }
 
         SDL_DestroyMutex(soundlock);
         SDL_DestroyMutex(videolock);
@@ -1021,7 +1033,7 @@ namespace recorder
             if(tw != scalew || th != scaleh)
             {
                 if(!scalefb) glGenFramebuffers_(1, &scalefb);
-                loopi(2)
+                for(int i = 0; i < 2; ++i)
                 {
                     if(!scaletex[i]) glGenTextures(1, &scaletex[i]);
                     createtexture(scaletex[i], tw, th, NULL, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);

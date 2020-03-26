@@ -74,7 +74,7 @@ struct md3 : vertloader<md3>
             numframes = header.numframes;
 
             int mesh_offset = header.ofs_meshes;
-            loopi(header.nummeshes)
+            for(int i = 0; i < header.nummeshes; ++i)
             {
                 vertmesh &m = *new vertmesh;
                 m.group = this;
@@ -131,7 +131,7 @@ struct md3 : vertloader<md3>
                 f->seek(header.ofs_tags, SEEK_SET);
                 md3tag tag;
 
-                loopi(header.numframes*header.numtags)
+                for(int i = 0; i < header.numframes*header.numtags; ++i)
                 {
                     f->read(&tag, sizeof(md3tag));
                     LIL_ENDIAN_SWAP(tag.translation, 12);

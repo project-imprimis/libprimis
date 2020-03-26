@@ -26,7 +26,7 @@ void loadtqaashaders()
 
 void setuptqaa(int w, int h)
 {
-    loopi(2)
+    for(int i = 0; i < 2; ++i)
     {
         if(!tqaatex[i]) glGenTextures(1, &tqaatex[i]);
         if(!tqaafbo[i]) glGenFramebuffers_(1, &tqaafbo[i]);
@@ -47,8 +47,22 @@ void setuptqaa(int w, int h)
 void cleanuptqaa()
 {
     tqaatype = -1;
-    loopi(2) if(tqaatex[i]) { glDeleteTextures(1, &tqaatex[i]); tqaatex[i] = 0; }
-    loopi(2) if(tqaafbo[i]) { glDeleteFramebuffers_(1, &tqaafbo[i]); tqaafbo[i] = 0; }
+    for(int i = 0; i < 2; ++i)
+    {
+        if(tqaatex[i])
+        {
+            glDeleteTextures(1, &tqaatex[i]);
+            tqaatex[i] = 0;
+        }
+    }
+    for(int i = 0; i < 2; ++i)
+    {
+        if(tqaafbo[i])
+        {
+            glDeleteFramebuffers_(1, &tqaafbo[i]);
+            tqaafbo[i] = 0;
+        }
+    }
     tqaaframe = 0;
 }
 
@@ -512,7 +526,7 @@ void setupsmaa(int w, int h)
     smaat2x = tqaa ? 1 : 0;
     smaas2x = split ? 1 : 0;
     smaa4x = tqaa && split ? 1 : 0;
-    loopi(split ? 4 : 3)
+    for(int i = 0; i < (split ? 4 : 3); ++i)
     {
         if(!smaatex[i]) glGenTextures(1, &smaatex[i]);
         if(!smaafbo[i]) glGenFramebuffers_(1, &smaafbo[i]);
@@ -545,10 +559,28 @@ void setupsmaa(int w, int h)
 
 void cleanupsmaa()
 {
-    if(smaaareatex) { glDeleteTextures(1, &smaaareatex); smaaareatex = 0; }
+    if(smaaareatex)
+    { 
+        glDeleteTextures(1, &smaaareatex);
+        smaaareatex = 0;
+    }
     if(smaasearchtex) { glDeleteTextures(1, &smaasearchtex); smaasearchtex = 0; }
-    loopi(4) if(smaafbo[i]) { glDeleteFramebuffers_(1, &smaafbo[i]); smaafbo[i] = 0; }
-    loopi(5) if(smaatex[i]) { glDeleteTextures(1, &smaatex[i]); smaatex[i] = 0; }
+    for(int i = 0; i < 4; ++i)
+    {
+        if(smaafbo[i])
+        {
+            glDeleteFramebuffers_(1, &smaafbo[i]);
+            smaafbo[i] = 0;
+        }
+    }
+    for(int i = 0; i < 5; ++i)
+    {
+        if(smaatex[i])
+        {
+            glDeleteTextures(1, &smaatex[i]);
+            smaatex[i] = 0;
+        }
+    }
     smaasubsampleorder = -1;
     smaat2x = smaas2x = smaa4x = 0;
 

@@ -871,7 +871,7 @@ static char *conc(vector<char> &buf, tagval *v, int n, bool space, const char *p
         buf.put(prefix, prefixlen);
         if(space && n) buf.add(' ');
     }
-    loopi(n)
+    for(int i = 0; i < n; ++i)
     {
         const char *s = "";
         int len = 0;
@@ -1040,7 +1040,10 @@ static inline void compilestr(vector<uint> &code, const char *word, int len, boo
     if(len <= 3 && !macro)
     {
         uint op = Code_ValI|Ret_String;
-        loopi(len) op |= uint(uchar(word[i]))<<((i+1)*8);
+        for(int i = 0; i < len; ++i)
+        {
+            op |= uint(uchar(word[i]))<<((i+1)*8);
+        }
         code.add(op);
         return;
     }
@@ -2165,7 +2168,14 @@ static inline void copyarg(tagval &dst, const tagval &src)
 static inline void addreleaseaction(ident *id, tagval *args, int numargs)
 {
     tagval *dst = addreleaseaction(id, numargs+1);
-    if(dst) { args[numargs].setint(1); loopi(numargs+1) copyarg(dst[i], args[i]); }
+    if(dst)
+    {
+        args[numargs].setint(1);
+        for(int i = 0; i < numargs+1; ++i)
+        {
+            copyarg(dst[i], args[i]); 
+        }
+    }
     else args[numargs].setint(0);
 }
 #endif
@@ -2313,7 +2323,10 @@ static const uint *runcode(const uint *code, tagval &result)
                 freearg(result);
                 int numlocals = op>>8, offset = numargs-numlocals;
                 identstack locals[Max_Args];
-                loopi(numlocals) pushalias(*args[offset+i].id, locals[i]);
+                for(int i = 0; i < numlocals; ++i)
+                {
+                    pushalias(*args[offset+i].id, locals[i]);
+                }
                 code = runcode(code, result);
                 for(int i = offset; i < numargs; i++) popalias(*args[i].id);
                 goto exit;
@@ -3288,7 +3301,7 @@ static inline void doloop(ident &id, int offset, int n, int step, uint *body)
 {
     if(n <= 0 || id.type != Id_Alias) return;
     identstack stack;
-    loopi(n)
+    for(int i = 0; i < n; ++i)
     {
         setiter(id, offset + i*step, stack);
         execute(body);
@@ -3304,7 +3317,7 @@ static inline void loopwhile(ident &id, int offset, int n, int step, uint *cond,
 {
     if(n <= 0 || id.type!=Id_Alias) return;
     identstack stack;
-    loopi(n)
+    for(int i = 0; i < n; ++i)
     {
         setiter(id, offset + i*step, stack);
         if(!executebool(cond)) break;
@@ -3324,7 +3337,7 @@ static inline void loopconc(ident &id, int offset, int n, int step, uint *body, 
     if(n <= 0 || id.type != Id_Alias) return;
     identstack stack;
     vector<char> s;
-    loopi(n)
+    for(int i = 0; i < n; ++i)
     {
         setiter(id, offset + i*step, stack);
         tagval v;
@@ -3484,7 +3497,10 @@ void explodelist(const char *s, vector<char *> &elems, int limit)
 
 char *indexlist(const char *s, int pos)
 {
-    loopi(pos) if(!parselist(s)) return newstring("");
+    for(int i = 0; i < pos; ++i)
+    {
+        if(!parselist(s)) return newstring("");
+    }
     const char *start, *end, *qstart;
     return parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring("");
 }
@@ -3522,7 +3538,13 @@ COMMAND(substr, "siiN");
 void sublist(const char *s, int *skip, int *count, int *numargs)
 {
     int offset = max(*skip, 0), len = *numargs >= 3 ? max(*count, 0) : -1;
-    loopi(offset) if(!parselist(s)) break;
+    for(int i = 0; i < offset; ++i)
+    {
+        if(!parselist(s))
+        {
+            break;
+        }
+    }
     if(len < 0) { if(offset > 0) skiplist(s); commandret->setstr(newstring(s)); return; }
     const char *list = s, *start, *end, *qstart, *qend = s;
     if(len > 0 && parselist(s, start, end, list, qend)) while(--len > 0 && parselist(s, start, end, qstart, qend));
@@ -3597,7 +3619,7 @@ COMMAND(listassoc, "rse");
         for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++) \
         { \
             if(cmp) { intret(n); return; } \
-            loopi(*skip) { if(!parselist(s)) goto notfound; n++; } \
+            for(int i = 0; i < int(*skip); ++i) { if(!parselist(s)) goto notfound; n++; } \
         } \
     notfound: \
         intret(-1); \
@@ -3794,7 +3816,13 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
 {
     int offset = max(*skip, 0), len = max(*count, 0);
     const char *list = s, *start, *end, *qstart, *qend = s;
-    loopi(offset) if(!parselist(s, start, end, qstart, qend)) break;
+    for(int i = 0; i < offset; ++i)
+    {
+        if(!parselist(s, start, end, qstart, qend))
+        {
+            break;
+        }
+    }
     vector<char> p;
     if(qend > list) p.put(list, qend-list);
     if(*vals)
@@ -3802,7 +3830,13 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
         if(!p.empty()) p.add(' ');
         p.put(vals, strlen(vals));
     }
-    loopi(len) if(!parselist(s)) break;
+    for(int i = 0; i < len; ++i)
+    {
+        if(!parselist(s))
+        {
+            break;
+        }
+    }
     skiplist(s);
     switch(*s)
     {
@@ -4028,24 +4062,36 @@ CMPFCMD(>=);
 ICOMMANDK(!, Id_Not, "t", (tagval *a), intret(getbool(*a) ? 0 : 1));
 ICOMMANDK(&&, Id_And, "E1V", (tagval *args, int numargs),
 {
-    if(!numargs) intret(1);
-    else loopi(numargs)
+    if(!numargs)
     {
-        if(i) freearg(*commandret);
-        if(args[i].type == Value_Code) executeret(args[i].code, *commandret);
-        else *commandret = args[i];
-        if(!getbool(*commandret)) break;
+        intret(1);
+    }
+    else
+    {
+        for(int i = 0; i < numargs; ++i)
+        {
+            if(i) freearg(*commandret);
+            if(args[i].type == Value_Code) executeret(args[i].code, *commandret);
+            else *commandret = args[i];
+            if(!getbool(*commandret)) break;
+        }
     }
 });
 ICOMMANDK(||, Id_Or, "E1V", (tagval *args, int numargs),
 {
-    if(!numargs) intret(0);
-    else loopi(numargs)
+    if(!numargs)
     {
-        if(i) freearg(*commandret);
-        if(args[i].type == Value_Code) executeret(args[i].code, *commandret);
-        else *commandret = args[i];
-        if(getbool(*commandret)) break;
+        intret(0);
+    }
+    else 
+    {
+        for(int i = 0; i < numargs; ++i)
+        {
+            if(i) freearg(*commandret);
+            if(args[i].type == Value_Code) executeret(args[i].code, *commandret);
+            else *commandret = args[i];
+            if(getbool(*commandret)) break;
+        }
     }
 });
 
@@ -4204,7 +4250,7 @@ ICOMMAND(unistr, "i", (int *i), { char *s = newstring(1); s[0] = uni2cube(*i); s
     { \
         int len = strlen(s); \
         char *m = newstring(len); \
-        loopi(len) m[i] = map(s[i]); \
+        for(int i = 0; i < int(len); ++i) m[i] = map(s[i]); \
         m[len] = '\0'; \
         stringret(m); \
     })

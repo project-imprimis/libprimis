@@ -6,11 +6,20 @@ struct QuadNode
     uint filled;
     QuadNode *child[4];
 
-    QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0) { loopi(4) child[i] = 0; }
+    QuadNode(int x, int y, int size) : x(x), y(y), size(size), filled(0)
+    {
+        for(int i = 0; i < 4; ++i)
+        {
+            child[i] = 0;
+        }
+    }
 
     void clear()
     {
-        loopi(4) DELETEP(child[i]);
+        for(int i = 0; i < 4; ++i)
+        {
+            DELETEP(child[i]);
+        }
     }
 
     ~QuadNode()
@@ -65,10 +74,22 @@ struct QuadNode
         else if(filled)
         {
             int csize = size>>1;
-            loopi(4) if(filled & (1 << i))
-                genmatsurf(mat, orient, visible, i&1 ? x+csize : x, i&2 ? y+csize : y, z, csize, matbuf);
+            for(int i = 0; i < 4; ++i)
+            {
+                if(filled & (1 << i))
+                {
+                    genmatsurf(mat, orient, visible, i&1 ? x+csize : x, i&2 ? y+csize : y, z, csize, matbuf);
+                }
+                
+            }
         }
-        loopi(4) if(child[i]) child[i]->genmatsurfs(mat, orient, visible, z, matbuf);
+        for(int i = 0; i < 4; ++i)
+        {
+            if(child[i])
+            {
+                child[i]->genmatsurfs(mat, orient, visible, z, matbuf);
+            }
+        }
     }
 };
 
@@ -112,16 +133,22 @@ const struct material
 
 int findmaterial(const char *name)
 {
-    loopi(sizeof(materials)/sizeof(material))
+    for(int i = 0; i < int(sizeof(materials)/sizeof(material)); ++i)
     {
-        if(!strcmp(materials[i].name, name)) return materials[i].id;
+        if(!strcmp(materials[i].name, name))
+        {
+            return materials[i].id;
+        }
     }
     return -1;
 }
 
 const char *findmaterialname(int mat)
 {
-    loopi(sizeof(materials)/sizeof(materials[0])) if(materials[i].id == mat) return materials[i].name;
+    for(int i = 0; i < int(sizeof(materials)/sizeof(materials[0])); ++i)
+    {
+        if(materials[i].id == mat) return materials[i].name;
+    }
     return NULL;
 }
 
@@ -130,13 +157,16 @@ const char *getmaterialdesc(int mat, const char *prefix)
     static const ushort matmasks[] = { MATF_VOLUME|MATF_INDEX, MATF_CLIP, MAT_DEATH, MAT_NOGI, MAT_ALPHA };
     static string desc;
     desc[0] = '\0';
-    loopi(sizeof(matmasks)/sizeof(matmasks[0])) if(mat&matmasks[i])
+    for(int i = 0; i < int(sizeof(matmasks)/sizeof(matmasks[0])); ++i)
     {
-        const char *matname = findmaterialname(mat&matmasks[i]);
-        if(matname)
+        if(mat&matmasks[i])
         {
-            concatstring(desc, desc[0] ? ", " : prefix);
-            concatstring(desc, matname);
+            const char *matname = findmaterialname(mat&matmasks[i]);
+            if(matname)
+            {
+                concatstring(desc, desc[0] ? ", " : prefix);
+                concatstring(desc, matname);
+            }
         }
     }
     return desc;
@@ -171,7 +201,7 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
 
 void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface> &matsurfs)
 {
-    loopi(6)
+    for(int i = 0; i < 6; ++i)
     {
         static const ushort matmasks[] = { MATF_VOLUME|MATF_INDEX, MATF_CLIP, MAT_DEATH, MAT_NOGI, MAT_ALPHA };
         loopj(sizeof(matmasks)/sizeof(matmasks[0]))
@@ -292,7 +322,10 @@ static int mergemats(materialsurface *m, int sz)
     quicksort(m, sz, mergematcmp);
 
     int nsz = 0;
-    loopi(sz) nsz = mergemat(m, nsz, m[i]);
+    for(int i = 0; i < sz; ++i)
+    {
+        nsz = mergemat(m, nsz, m[i]);
+    }
     return nsz;
 }
 
@@ -331,7 +364,10 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
          else if(cur-start>=4)
          {
             QuadNode vmats(0, 0, worldsize);
-            loopi(cur-start) vmats.insert(start[i].o[C[dim]], start[i].o[R[dim]], start[i].csize);
+            for(int i = 0; i < cur-start; ++i)
+            {
+                vmats.insert(start[i].o[C[dim]], start[i].o[R[dim]], start[i].csize);
+            }
             vmats.genmatsurfs(start->material, start->orient, start->visible, start->o[dim], matbuf);
          }
          else
@@ -413,18 +449,36 @@ void setupmaterials(int start, int len)
     {
         loadcaustics(true);
         preloadwatershaders(true);
-        loopi(4) if(hasmat&(1<<(MAT_WATER+i))) lookupmaterialslot(MAT_WATER+i);
+        for(int i = 0; i < 4; ++i)
+        {
+            if(hasmat&(1<<(MAT_WATER+i)))
+            {
+                lookupmaterialslot(MAT_WATER+i);
+            }
+        }
     }
     if(hasmat&(0xF<<MAT_LAVA))
     {
         useshaderbyname("lava");
         useshaderbyname("waterfog"); //lava uses water's fog shader while inside volume
-        loopi(4) if(hasmat&(1<<(MAT_LAVA+i))) lookupmaterialslot(MAT_LAVA+i);
+        for(int i = 0; i < 4; ++i)
+        {
+            if(hasmat&(1<<(MAT_LAVA+i)))
+            {
+                lookupmaterialslot(MAT_LAVA+i);
+            }
+        }
     }
     if(hasmat&(0xF<<MAT_GLASS))
     {
         preloadglassshaders(true);
-        loopi(4) if(hasmat&(1<<(MAT_GLASS+i))) lookupmaterialslot(MAT_GLASS+i);
+        for(int i = 0; i < 4; ++i)
+        {
+            if(hasmat&(1<<(MAT_GLASS+i)))
+            {
+                lookupmaterialslot(MAT_GLASS+i);
+            }
+        }
     }
 }
 
@@ -436,7 +490,7 @@ static ivec sortorigin;
 static inline bool editmatcmp(const materialsurface &x, const materialsurface &y)
 {
     int xdim = DIMENSION(x.orient), ydim = DIMENSION(y.orient);
-    loopi(3)
+    for(int i = 0; i < 3; ++i)
     {
         int dim = sortdim[i], xmin, xmax, ymin, ymax;
         xmin = xmax = x.o[dim];
@@ -465,7 +519,10 @@ void sorteditmaterials()
 {
     sortorigin = ivec(camera1->o);
     vec dir = vec(camdir).abs();
-    loopi(3) sortdim[i] = i;
+    for(int i = 0; i < 3; ++i)
+    {
+        sortdim[i] = i;
+    }
     if(dir[sortdim[2]] > dir[sortdim[1]]) swap(sortdim[2], sortdim[1]);
     if(dir[sortdim[1]] > dir[sortdim[0]]) swap(sortdim[1], sortdim[0]);
     if(dir[sortdim[2]] > dir[sortdim[1]]) swap(sortdim[2], sortdim[1]);
@@ -574,7 +631,7 @@ uint matliquidtiles[LIGHTTILE_MAXH], matsolidtiles[LIGHTTILE_MAXH];
 int findmaterials()
 {
     editsurfs.setsize(0);
-    loopi(4)
+    for(int i = 0; i < 4; ++i)
     {
         glasssurfs[i].setsize(0);
         watersurfs[i].setsize(0);
@@ -592,7 +649,10 @@ int findmaterials()
         if(!va->matsurfs || va->occluded >= OCCLUDE_BB || va->curvfc >= VFC_FOGGED) continue;
         if(editmode && showmat && !drawtex)
         {
-            loopi(va->matsurfs) editsurfs.add(va->matbuf[i]);
+            for(int i = 0; i < va->matsurfs; ++i)
+            {
+                editsurfs.add(va->matbuf[i]);
+            }
             continue;
         }
         float sx1, sy1, sx2, sy2;
@@ -603,7 +663,7 @@ int findmaterials()
             matliquidsx2 = max(matliquidsx2, sx2);
             matliquidsy2 = max(matliquidsy2, sy2);
             masktiles(matliquidtiles, sx1, sy1, sx2, sy2);
-            loopi(va->matsurfs)
+            for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
                 if((m.material&MATF_VOLUME) != MAT_LAVA || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
@@ -624,7 +684,7 @@ int findmaterials()
             matrefractsy1 = min(matrefractsy1, sy1);
             matrefractsx2 = max(matrefractsx2, sx2);
             matrefractsy2 = max(matrefractsy2, sy2);
-            loopi(va->matsurfs)
+            for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
                 if((m.material&MATF_VOLUME) != MAT_WATER || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
@@ -645,7 +705,7 @@ int findmaterials()
             matrefractsy1 = min(matrefractsy1, sy1);
             matrefractsx2 = max(matrefractsx2, sx2);
             matrefractsy2 = max(matrefractsy2, sy2);
-            loopi(va->matsurfs)
+            for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
                 if((m.material&MATF_VOLUME) != MAT_GLASS) { i += m.skip; continue; }

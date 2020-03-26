@@ -353,13 +353,13 @@ struct animmodel : model
             if(!numverts) return;
             smoothdata *smooth = new smoothdata[numverts];
             hashtable<vec, int> share;
-            loopi(numverts)
+            for(int i = 0; i < numverts; ++i)
             {
                 V &v = verts[i];
                 int &idx = share.access(v.pos, i);
                 if(idx != i) { smooth[i].next = idx; idx = i; }
             }
-            loopi(numtris)
+            for(int i = 0; i < numtris; ++i)
             {
                 T &t = tris[i];
                 int v1 = t.vert[0], v2 = t.vert[1], v3 = t.vert[2];
@@ -370,8 +370,11 @@ struct animmodel : model
                 smooth[v2].norm.add(norm);
                 smooth[v3].norm.add(norm);
             }
-            loopi(numverts) verts[i].norm = vec(0, 0, 0);
-            loopi(numverts)
+            for(int i = 0; i < numverts; ++i)
+            {
+                verts[i].norm = vec(0, 0, 0);
+            }
+            for(int i = 0; i < numverts; ++i)
             {
                 const smoothdata &n = smooth[i];
                 verts[i].norm.add(n.norm);
@@ -390,15 +393,21 @@ struct animmodel : model
                     }
                 }
             }
-            loopi(numverts) verts[i].norm.normalize();
+            for(int i = 0; i < numverts; ++i)
+            {
+                verts[i].norm.normalize();
+            }
             delete[] smooth;
         }
 
         template<class V, class T> void buildnorms(V *verts, int numverts, T *tris, int numtris, bool areaweight)
         {
             if(!numverts) return;
-            loopi(numverts) verts[i].norm = vec(0, 0, 0);
-            loopi(numtris)
+            for(int i = 0; i < numverts; ++i)
+            {
+                verts[i].norm = vec(0, 0, 0);
+            }
+            for(int i = 0; i < numtris; ++i)
             {
                 T &t = tris[i];
                 V &v1 = verts[t.vert[0]], &v2 = verts[t.vert[1]], &v3 = verts[t.vert[2]];
@@ -409,13 +418,19 @@ struct animmodel : model
                 v2.norm.add(norm);
                 v3.norm.add(norm);
             }
-            loopi(numverts) verts[i].norm.normalize();
+            for(int i = 0; i < numverts; ++i)
+            {
+                verts[i].norm.normalize();
+            }
         }
 
         template<class V, class T> void buildnorms(V *verts, int numverts, T *tris, int numtris, bool areaweight, int numframes)
         {
             if(!numverts) return;
-            loopi(numframes) buildnorms(&verts[i*numverts], numverts, tris, numtris, areaweight);
+            for(int i = 0; i < numframes; ++i)
+            {
+                buildnorms(&verts[i*numverts], numverts, tris, numtris, areaweight);
+            }
         }
 
         static inline void fixqtangent(quat &q, float bt)
@@ -444,7 +459,7 @@ struct animmodel : model
         {
             vec *tangent = new vec[2*numverts], *bitangent = tangent+numverts;
             memclear(tangent, 2*numverts);
-            loopi(numtris)
+            for(int i = 0; i < numtris; ++i)
             {
                 const T &t = tris[i];
                 const vec &e0 = verts[t.vert[0]].pos;
@@ -477,7 +492,7 @@ struct animmodel : model
                     bitangent[t.vert[j]].add(v);
                 }
             }
-            loopi(numverts)
+            for(int i = 0; i < numverts; ++i)
             {
                 V &v = verts[i];
                 const vec &t = tangent[i],
@@ -495,7 +510,10 @@ struct animmodel : model
 
         template<class V, class TC, class T> void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight, int numframes)
         {
-            loopi(numframes) calctangents(&verts[i*numverts], tcverts, numverts, tris, numtris, areaweight);
+            for(int i = 0; i < numframes; ++i)
+            {
+                calctangents(&verts[i*numverts], tcverts, numverts, tris, numtris, areaweight);
+            }
         }
     };
 
@@ -869,22 +887,25 @@ struct animmodel : model
 
         void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, animstate *as)
         {
-            if((anim&ANIM_REUSE) != ANIM_REUSE) loopi(numanimparts)
+            if((anim&ANIM_REUSE) != ANIM_REUSE)
             {
-                animinfo info;
-                int interp = d && index+numanimparts<=MAXANIMPARTS ? index+i : -1, aitime = animationinterpolationtime;
-                if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime)) return;
-                animstate &p = as[i];
-                p.owner = this;
-                p.cur.setframes(info);
-                p.interp = 1;
-                if(interp>=0 && d->animinterp[interp].prev.range>0)
+                for(int i = 0; i < numanimparts; ++i)
                 {
-                    int diff = lastmillis-d->animinterp[interp].lastswitch;
-                    if(diff<aitime)
+                    animinfo info;
+                    int interp = d && index+numanimparts<=MAXANIMPARTS ? index+i : -1, aitime = animationinterpolationtime;
+                    if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime)) return;
+                    animstate &p = as[i];
+                    p.owner = this;
+                    p.cur.setframes(info);
+                    p.interp = 1;
+                    if(interp>=0 && d->animinterp[interp].prev.range>0)
                     {
-                        p.prev.setframes(d->animinterp[interp].prev);
-                        p.interp = diff/float(aitime);
+                        int diff = lastmillis-d->animinterp[interp].lastswitch;
+                        if(diff<aitime)
+                        {
+                            p.prev.setframes(d->animinterp[interp].prev);
+                            p.interp = diff/float(aitime);
+                        }
                     }
                 }
             }
@@ -955,22 +976,25 @@ struct animmodel : model
 
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, animstate *as)
         {
-            if((anim&ANIM_REUSE) != ANIM_REUSE) loopi(numanimparts)
+            if((anim&ANIM_REUSE) != ANIM_REUSE)
             {
-                animinfo info;
-                int interp = d && index+numanimparts<=MAXANIMPARTS ? index+i : -1, aitime = animationinterpolationtime;
-                if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime)) return;
-                animstate &p = as[i];
-                p.owner = this;
-                p.cur.setframes(info);
-                p.interp = 1;
-                if(interp>=0 && d->animinterp[interp].prev.range>0)
+                for(int i = 0; i < numanimparts; ++i)
                 {
-                    int diff = lastmillis-d->animinterp[interp].lastswitch;
-                    if(diff<aitime)
+                    animinfo info;
+                    int interp = d && index+numanimparts<=MAXANIMPARTS ? index+i : -1, aitime = animationinterpolationtime;
+                    if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime)) return;
+                    animstate &p = as[i];
+                    p.owner = this;
+                    p.cur.setframes(info);
+                    p.interp = 1;
+                    if(interp>=0 && d->animinterp[interp].prev.range>0)
                     {
-                        p.prev.setframes(d->animinterp[interp].prev);
-                        p.interp = diff/float(aitime);
+                        int diff = lastmillis-d->animinterp[interp].lastswitch;
+                        if(diff<aitime)
+                        {
+                            p.prev.setframes(d->animinterp[interp].prev);
+                            p.interp = diff/float(aitime);
+                        }
                     }
                 }
             }
@@ -1072,7 +1096,10 @@ struct animmodel : model
 
         bool animated() const
         {
-            loopi(MAXANIMPARTS) if(anims[i]) return true;
+            for(int i = 0; i < MAXANIMPARTS; ++i)
+            {
+                if(anims[i]) return true;
+            }
             return false;
         }
 

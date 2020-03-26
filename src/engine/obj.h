@@ -15,7 +15,7 @@ struct obj : vertloader<obj>
         {
             vec &v = out.add(vec(0, 0, 0));
             while(isalpha(*s)) s++;
-            loopi(3)
+            for(int i = 0; i < 3; ++i)
             {
                 v[i] = strtod(s, &s);
                 while(isspace(*s)) s++;
@@ -115,7 +115,7 @@ struct obj : vertloader<obj>
                             while(isspace(*c)) c++;
                             if(!*c) break;
                             ivec vkey(-1, -1, -1);
-                            loopi(3)
+                            for(int i = 0; i < 3; ++i)
                             {
                                 vkey[i] = strtol(c, &c, 10);
                                 if(vkey[i] < 0) vkey[i] = attrib[i].length() + vkey[i];

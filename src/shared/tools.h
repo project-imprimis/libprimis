@@ -571,7 +571,10 @@ static inline uint memhash(const void *ptr, int len)
 {
     const uchar *data = (const uchar *)ptr;
     uint h = 5381;
-    loopi(len) h = ((h<<5)+h)^data[i];
+    for(int i = 0; i < int(len); ++i)
+    {
+        h = ((h<<5)+h)^data[i]; 
+    }
     return h;
 }
 
@@ -774,7 +777,13 @@ template <class T> struct vector
     template<class U>
     int find(const U &o)
     {
-        loopi(ulen) if(buf[i]==o) return i;
+        for(int i = 0; i < ulen; ++i)
+        { 
+            if(buf[i]==o) 
+            {
+                return i;
+            }
+        }
         return -1;
     }
 
@@ -785,24 +794,36 @@ template <class T> struct vector
 
     void removeobj(const T &o)
     {
-        loopi(ulen) if(buf[i] == o)
+        for(int i = 0; i < int(ulen); ++i)
         {
-            int dst = i;
-            for(int j = i+1; j < ulen; j++) if(!(buf[j] == o)) buf[dst++] = buf[j];
-            setsize(dst);
-            break;
+            if(buf[i] == o)
+            {
+                int dst = i;
+                for(int j = i+1; j < ulen; j++) 
+                {
+                    if(!(buf[j] == o))
+                    {
+                        buf[dst++] = buf[j];
+                    }
+                }
+                setsize(dst);
+                break;
+            }
         }
     }
 
     void replacewithlast(const T &o)
     {
         if(!ulen) return;
-        loopi(ulen-1) if(buf[i]==o)
+        for(int i = 0; i < int(ulen-1); ++i)
         {
-            buf[i] = buf[ulen-1];
-            break;
+            if(buf[i]==o)
+            {
+                buf[i] = buf[ulen-1];
+                break;
+            }
+            ulen--;
         }
-        ulen--;
     }
 
     T &insert(int i, const T &e)
@@ -824,7 +845,10 @@ template <class T> struct vector
 
     void reverse()
     {
-        loopi(ulen/2) swap(buf[i], buf[ulen-1-i]);
+        for(int i = 0; i < int(ulen/2); ++i)
+        {
+            swap(buf[i], buf[ulen-1-i]);
+        }
     }
 
     static int heapparent(int i) { return (i - 1) >> 1; }
@@ -883,7 +907,13 @@ template <class T> struct vector
     template<class K>
     int htfind(const K &key)
     {
-        loopi(ulen) if(htcmp(key, buf[i])) return i;
+        for(int i = 0; i < int(ulen); ++i)
+        {
+            if(htcmp(key, buf[i])) 
+            {
+                return i;
+            }
+        }
         return -1;
     }
 
@@ -953,7 +983,10 @@ template<class H, class E, class K, class T> struct hashbase
             chainchunk *chunk = new chainchunk;
             chunk->next = chunks;
             chunks = chunk;
-            loopi(CHUNKSIZE-1) chunk->chains[i].next = &chunk->chains[i+1];
+            for(int i = 0; i < int(CHUNKSIZE-1); ++i)
+            {
+                chunk->chains[i].next = &chunk->chains[i+1];
+            }
             chunk->chains[CHUNKSIZE-1].next = unused;
             unused = chunk->chains;
         }
@@ -1034,7 +1067,7 @@ template<class H, class E, class K, class T> struct hashbase
     void recycle()
     {
         if(!numelems) return;
-        loopi(size)
+        for(int i = 0; i < int(size); ++i)
         {
             chain *c = chains[i];
             if(!c) continue;
@@ -1136,8 +1169,8 @@ template<class K, class T> struct hashtable : hashbase<hashtable<K, T>, hashtabl
     template<class U> static inline void setkey(elemtype &elem, const U &key) { elem.key = key; }
 };
 
-#define ENUMERATE_KT(ht,k,e,t,f,b) loopi((ht).size) for(void *ec = (ht).chains[i]; ec;) { k &e = (ht).enumkey(ec); t &f = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
-#define ENUMERATE(ht,t,e,b)       loopi((ht).size) for(void *ec = (ht).chains[i]; ec;) { t &e = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
+#define ENUMERATE_KT(ht,k,e,t,f,b) for(int i = 0; i < int((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { k &e = (ht).enumkey(ec); t &f = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
+#define ENUMERATE(ht,t,e,b)       for(int i = 0; i < int((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { t &e = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
 
 template <class T, int SIZE> struct queue
 {

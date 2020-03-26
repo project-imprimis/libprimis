@@ -63,7 +63,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
     else
     {
         int numbefore = 0, beforeoffset = 0;
-        loopi(orient)
+        for(int i = 0; i < orient; ++i)
         {
             surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
@@ -95,7 +95,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
                 if(numbefore && c.ext != ext) memcpy(ext->verts(), c.ext->verts(), numbefore*sizeof(vertinfo));
                 offset = numbefore;
             }
-            else loopi(orient)
+            for(int i = 0; i < orient; ++i)
             {
                 surfaceinfo &surf = ext->surfaces[i];
                 int numverts = surf.totalverts();
@@ -232,7 +232,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
 
 static void clearsurfaces(cube *c)
 {
-    loopi(8)
+    for(int i = 0; i < 8; ++i)
     {
         if(c[i].ext)
         {
@@ -358,7 +358,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     vertinfo litverts[6*2*MAXFACEVERTS];
     int numlitverts = 0;
     memset(surfaces, 0, sizeof(surfaces));
-    loopi(6)
+    for(int i = 0; i < 6; ++i)
     {
         int usefaces = usefacemask&0xF;
         usefacemask >>= 4;
@@ -490,7 +490,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 
     lightprogress++;
 
-    loopi(8)
+    for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
         if(c[i].children)
@@ -523,10 +523,13 @@ static inline bool previewblends(cube &c, const ivec &o, int size)
     {
         if(!c.ext) return false;
         bool blends = false;
-        loopi(6) if(c.ext->surfaces[i].numverts&LAYER_BOTTOM)
+        for(int i = 0; i < 6; ++i)
         {
-            c.ext->surfaces[i].brighten();
-            blends = true;
+            if(c.ext->surfaces[i].numverts&LAYER_BOTTOM)
+            {
+                c.ext->surfaces[i].brighten();
+                blends = true;
+            }
         }
         return blends;
     }

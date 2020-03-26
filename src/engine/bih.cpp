@@ -125,7 +125,7 @@ inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec
 inline bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode)
 {
     vec invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f);
-    loopi(nummeshes)
+    for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
         if(!(m.flags&MESH_RENDER) || (!(mode&RAY_SHADOW) && m.flags&MESH_NOCLIP)) continue;
@@ -191,7 +191,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
         left = right = numindices/2;
         splitleft = SHRT_MIN;
         splitright = SHRT_MAX;
-        loopi(numindices)
+        for(int i = 0; i < numindices; ++i)
         {
             const tribb &tri = m.tribbs[indices[i]];
             ivec trimin = ivec(tri.center).sub(ivec(tri.radius)),
@@ -243,7 +243,7 @@ BIH::BIH(vector<mesh> &buildmeshes)
     memcpy(meshes, buildmeshes.getbuf(), sizeof(mesh)*buildmeshes.length());
     tribbs = new tribb[numtris];
     tribb *dsttri = tribbs;
-    loopi(nummeshes)
+    for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
         m.scale = m.xform.a.magnitude();
@@ -289,7 +289,7 @@ BIH::BIH(vector<mesh> &buildmeshes)
     nodes = new node[numtris];
     node *curnode = nodes;
     ushort *indices = new ushort[numtris];
-    loopi(nummeshes)
+    for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
         m.nodes = curnode;
@@ -646,7 +646,7 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
          iradius = ivec(imax).sub(imin).add(1).div(2);
 
     float dist = -1e10f;
-    loopi(nummeshes)
+    for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
         if(!(m.flags&MESH_COLLIDE) || m.flags&MESH_NOCLIP) continue;
@@ -687,7 +687,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
     dorient.mul(drot, orient);
 
     float dist = -1e10f;
-    loopi(nummeshes)
+    for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
         if(!(m.flags&MESH_COLLIDE) || m.flags&MESH_NOCLIP) continue;
@@ -807,7 +807,7 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
          icenter = ivec(imin).add(imax).div(2),
          iradius = ivec(imax).sub(imin).add(1).div(2);
 
-    loopi(nummeshes)
+    for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
         if(!(m.flags&MESH_RENDER) || m.flags&MESH_ALPHA) continue;
