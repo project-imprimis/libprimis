@@ -217,7 +217,7 @@ void ipmask::parse(const char *name)
     union { uchar b[sizeof(enet_uint32)]; enet_uint32 i; } ipconv, maskconv;
     ipconv.i = 0;
     maskconv.i = 0;
-    loopi(4)
+    for(int i = 0; i < 4; ++i)
     {
         char *end = NULL;
         int n = strtol(name, &end, 10);
@@ -248,12 +248,18 @@ int ipmask::print(char *buf) const
     ipconv.i = ip;
     maskconv.i = mask;
     int lastdigit = -1;
-    loopi(4) if(maskconv.b[i])
+    for(int i = 0; i < 4; ++i)
     {
-        if(lastdigit >= 0) *buf++ = '.';
-        loopj(i - lastdigit - 1) { *buf++ = '*'; *buf++ = '.'; }
-        buf += sprintf(buf, "%d", ipconv.b[i]);
-        lastdigit = i;
+        if(maskconv.b[i])
+        {
+            if(lastdigit >= 0)
+            {
+                *buf++ = '.';
+            }
+            loopj(i - lastdigit - 1) { *buf++ = '*'; *buf++ = '.'; }
+            buf += sprintf(buf, "%d", ipconv.b[i]);
+            lastdigit = i;
+        }
     }
     enet_uint32 bits = ~ENET_NET_TO_HOST_32(mask);
     int range = 32;

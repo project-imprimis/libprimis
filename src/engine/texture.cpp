@@ -2349,7 +2349,7 @@ const struct slottex
 
 int findslottex(const char *name)
 {
-    for(int i = 0; i < (sizeof(slottexs)/sizeof(slottex)); ++i)
+    for(int i = 0; i < int(sizeof(slottexs)/sizeof(slottex)); ++i)
     {
         if(!strcmp(slottexs[i].name, name)) return slottexs[i].id;
     }

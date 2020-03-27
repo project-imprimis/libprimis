@@ -91,18 +91,27 @@ namespace tiger
 
         if(!islittleendian()) loopj(64) temp[j^7] = str[j];
         else loopj(64) temp[j] = str[j];
-        loopi(1024) loop(col, 8) ((uchar *)&sboxes[i])[col] = i&0xFF;
+        for(int i = 0; i < 1024; ++i)
+        {
+            loop(col, 8) ((uchar *)&sboxes[i])[col] = i&0xFF;
+        }
 
         int abc = 2;
-        loop(pass, 5) loopi(256) for(int sb = 0; sb < 1024; sb += 256)
+        loop(pass, 5)
         {
-            abc++;
-            if(abc >= 3) { abc = 0; compress((chunk *)temp, state); }
-            loop(col, 8)
+            for(int i = 0; i < 256; ++i)
             {
-                uchar val = ((uchar *)&sboxes[sb+i])[col];
-                ((uchar *)&sboxes[sb+i])[col] = ((uchar *)&sboxes[sb + ((uchar *)&state[abc])[col]])[col];
-                ((uchar *)&sboxes[sb + ((uchar *)&state[abc])[col]])[col] = val;
+                for(int sb = 0; sb < 1024; sb += 256)
+                {
+                    abc++;
+                    if(abc >= 3) { abc = 0; compress((chunk *)temp, state); }
+                    loop(col, 8)
+                    {
+                        uchar val = ((uchar *)&sboxes[sb+i])[col];
+                        ((uchar *)&sboxes[sb+i])[col] = ((uchar *)&sboxes[sb + ((uchar *)&state[abc])[col]])[col];
+                        ((uchar *)&sboxes[sb + ((uchar *)&state[abc])[col]])[col] = val;
+                    }
+                }
             }
         }
     }
@@ -188,7 +197,7 @@ template<int BI_DIGITS> struct bigint
         int len = (slen+2*sizeof(ushort)-1)/(2*sizeof(ushort));
         if(len>maxlen) return 0;
         memset(digits, 0, len*sizeof(ushort));
-        loopi(slen)
+        for(int i = 0; i < slen; ++i)
         {
             int c = s[slen-i-1];
             if(isalpha(c)) c = toupper(c) - 'A' + 10;
@@ -216,7 +225,7 @@ template<int BI_DIGITS> struct bigint
 
     void printdigits(vector<char> &buf) const
     {
-        loopi(len)
+        for(int i = 0; i < len; ++i)
         {
             digit d = digits[len-i-1];
             loopj(BI_DIGIT_BITS/4)
@@ -310,7 +319,7 @@ template<int BI_DIGITS> struct bigint
     {
         if(!x.len || !y.len) { len = 0; return *this; }
         memset(digits, 0, y.len*sizeof(digit));
-        loopi(x.len)
+        for(int i = 0; i < x.len; ++i)
         {
             dbldigit carry = 0;
             loopj(y.len)
@@ -878,9 +887,12 @@ void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr)
 bool hashstring(const char *str, char *result, int maxlen)
 {
     tiger::hashval hv;
-    if(maxlen < 2*(int)sizeof(hv.bytes) + 1) return false;
+    if(maxlen < 2*(int)sizeof(hv.bytes) + 1)
+    {
+        return false;
+    }
     tiger::hash((uchar *)str, strlen(str), hv);
-    loopi(sizeof(hv.bytes))
+    for(int i = 0; i < int(sizeof(hv.bytes)); ++i)
     {
         uchar c = hv.bytes[i];
         *result++ = "0123456789abcdef"[c>>4];

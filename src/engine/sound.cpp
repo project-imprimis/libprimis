@@ -313,7 +313,7 @@ bool soundsample::load(const char *dir, bool msg)
 
     static const char * const exts[] = { "", ".wav", ".ogg" };
     string filename;
-    for(int i = 0; i < (sizeof(exts)/sizeof(exts[0])); ++i)
+    for(int i = 0; i < int(sizeof(exts)/sizeof(exts[0])); ++i)
     {
         formatstring(filename, "media/sound/%s%s%s", dir, name, exts[i]);
         if(msg && !i) renderprogress(0, filename);

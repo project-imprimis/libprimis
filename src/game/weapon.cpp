@@ -37,16 +37,28 @@ namespace game
 
     void nextweapon(int dir, bool force = false)
     {
-        if(player1->state!=ClientState_Alive) return;
+        if(player1->state!=ClientState_Alive)
+        {
+            return;
+        }
         dir = (dir < 0 ? NUMGUNS-1 : 1);
         int gun = player1->gunselect;
-        loopi(NUMGUNS)
+        for(int i = 0; i < NUMGUNS; ++i)
         {
             gun = (gun + dir)%NUMGUNS;
-            if(force || player1->ammo[gun]) break;
+            if(force || player1->ammo[gun])
+            {
+                break;
+            }
         }
-        if(gun != player1->gunselect) gunselect(gun, player1);
-        else playsound(S_NOAMMO);
+        if(gun != player1->gunselect)
+        {
+            gunselect(gun, player1);
+        }
+        else
+        {
+            playsound(S_NOAMMO);
+        }
     }
 //nextweapon
 //changes player to an adjacent weapon, forwards if no dir is passed
@@ -58,11 +70,20 @@ namespace game
 
     int getweapon(const char *name)
     {
-        if(isdigit(name[0])) return parseint(name);
+        if(isdigit(name[0]))
+        {
+            return parseint(name);
+        }
         else
         {
             int len = strlen(name);
-            loopi(sizeof(guns)/sizeof(guns[0])) if(!strncasecmp(guns[i].name, name, len)) return i;
+            for(int i = 0; i < int(sizeof(guns)/sizeof(guns[0])); ++i)
+            {
+                if(!strncasecmp(guns[i].name, name, len))
+                {
+                    return i;
+                }
+            }
         }
         return -1;
     }
@@ -78,10 +99,20 @@ namespace game
 
     void cycleweapon(int numguns, int *guns, bool force = false)
     {
-        if(numguns<=0 || player1->state!=ClientState_Alive) return;
+        if(numguns<=0 || player1->state!=ClientState_Alive)
+        {
+            return;
+        }
         int offset = 0;
-        loopi(numguns) if(guns[i] == player1->gunselect) { offset = i+1; break; }
-        loopi(numguns)
+        for(int i = 0; i < numguns; ++i)
+        {
+            if(guns[i] == player1->gunselect)
+            {
+                offset = i+1;
+                break;
+            }
+        }
+        for(int i = 0; i < numguns; ++i)
         {
             int gun = guns[(i+offset)%numguns];
             if(gun>=0 && gun<NUMGUNS && (force || player1->ammo[gun]))
@@ -96,7 +127,10 @@ namespace game
     {
          int numguns = min(numargs, 3);
          int guns[3];
-         loopi(numguns) guns[i] = getweapon(args[i].getstr());
+         for(int i = 0; i < numguns; ++i)
+         {
+             guns[i] = getweapon(args[i].getstr());
+         }
          cycleweapon(numguns, guns);
     });
 
@@ -112,14 +146,23 @@ namespace game
     ICOMMAND(weapon, "V", (tagval *args, int numargs),
     {
         if(player1->state!=ClientState_Alive) return;
-        loopi(3)
+        for(int i = 0; i < 3; ++i)
         {
             const char *name = i < numargs ? args[i].getstr() : "";
             if(name[0])
             {
                 int gun = getweapon(name);
-                if(VALID_GUN(gun) && gun != player1->gunselect && player1->ammo[gun]) { gunselect(gun, player1); return; }
-            } else { weaponswitch(player1); return; }
+                if(VALID_GUN(gun) && gun != player1->gunselect && player1->ammo[gun])
+                {
+                    gunselect(gun, player1);
+                    return;
+                }
+            }
+            else
+            {
+                weaponswitch(player1);
+                return;
+            }
         }
         playsound(S_NOAMMO);
     });
@@ -141,7 +184,10 @@ namespace game
 
     void createrays(int atk, const vec &from, const vec &to)             // create random spread of rays
     {
-        loopi(attacks[atk].rays) offsetray(from, to, attacks[atk].spread, attacks[atk].range, rays[i]);
+        for(int i = 0; i < attacks[atk].rays; ++i)
+        {
+            offsetray(from, to, attacks[atk].spread, attacks[atk].range, rays[i]);
+        }
     }
 
     enum { BNC_GIBS, BNC_DEBRIS };
@@ -276,7 +322,14 @@ namespace game
     {
         // can't use loopv here due to strange GCC optimizer bug
         int len = projs.length();
-        loopi(len) if(projs[i].owner==owner) { projs.remove(i--); len--; }
+        for(int i = 0; i < len; ++i)
+        {
+            if(projs[i].owner==owner)
+            {
+                projs.remove(i--);
+                len--;
+            }
+        }
     }
 
     VARP(blood, 0, 1, 1);
@@ -304,9 +357,15 @@ namespace game
     void gibeffect(int damage, const vec &vel, gameent *d)
     {
 #if 0
-        if(!blood || !maxgibs || damage < 0) return;
+        if(!blood || !maxgibs || damage < 0)
+        {
+            return;
+        }
         vec from = d->abovehead();
-        loopi(RANDOM_INT(maxgibs)+1) spawnbouncer(from, vel, d, BNC_GIBS);
+        for(int i = 0; i < RANDOM_INT(maxgibs)+1); ++i)
+        {
+            spawnbouncer(from, vel, d, BNC_GIBS);
+        }
 #endif
     }
 
@@ -391,13 +450,15 @@ namespace game
         if(numdebris)
         {
             vec debrisvel = vec(vel).neg();
-            loopi(numdebris)
+            for(int i = 0; i < numdebris; ++i)
+            {
                 spawnbouncer(debrisorigin, debrisvel, owner, BNC_DEBRIS);
+            }
         }
 #endif
         if(!local) return;
         int numdyn = numdynents();
-        loopi(numdyn)
+        for(int i = 0; i < numdyn; ++i)
         {
             dynent *o = iterdynents(i);
             if(o->o.reject(v, o->radius + attacks[atk].exprad) || o==safe) continue;
@@ -596,7 +657,7 @@ namespace game
     {
         dynent *best = NULL;
         bestdist = 1e16f;
-        loopi(numdynents())
+        for(int i = 0; i < numdynents(); ++i)
         {
             dynent *o = iterdynents(i);
             if(o==at || o->state!=ClientState_Alive) continue;
@@ -624,7 +685,7 @@ namespace game
         if(attacks[atk].rays > 1)
         {
             dynent *hits[MAXRAYS];
-            loopi(maxrays)
+            for(int i = 0; i < maxrays; ++i)
             {
                 if((hits[i] = intersectclosest(from, rays[i], d, margin, dist)))
                 {
@@ -633,17 +694,20 @@ namespace game
                 }
                 else railhit(from, rays[i]);
             }
-            loopi(maxrays) if(hits[i])
+            for(int i = 0; i < maxrays; ++i)
             {
-                o = hits[i];
-                hits[i] = NULL;
-                int numhits = 1;
-                for(int j = i+1; j < maxrays; j++) if(hits[j] == o)
+                if(hits[i])
                 {
-                    hits[j] = NULL;
-                    numhits++;
+                    o = hits[i];
+                    hits[i] = NULL;
+                    int numhits = 1;
+                    for(int j = i+1; j < maxrays; j++) if(hits[j] == o)
+                    {
+                        hits[j] = NULL;
+                        numhits++;
+                    }
+                    hitpush(numhits*attacks[atk].damage, o, d, from, to, atk, numhits);
                 }
-                hitpush(numhits*attacks[atk].damage, o, d, from, to, atk, numhits);
             }
         }
         else if((o = intersectclosest(from, to, d, margin, dist)))
@@ -732,8 +796,14 @@ namespace game
     void preloadbouncers()
     {
 #if 0
-        loopi(sizeof(gibnames)/sizeof(gibnames[0])) preloadmodel(gibnames[i]);
-        loopi(sizeof(debrisnames)/sizeof(debrisnames[0])) preloadmodel(debrisnames[i]);
+        for(int i = 0; i < int(sizeof(gibnames)/sizeof(gibnames[0])); ++i)
+        {
+            preloadmodel(gibnames[i]);
+        }
+        for(int i = 0; i < int(sizeof(debrisnames)/sizeof(debrisnames[0])); ++i)
+        {
+            preloadmodel(debrisnames[i]);
+        }
 #endif
     }
 

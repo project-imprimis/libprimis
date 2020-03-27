@@ -134,7 +134,7 @@ int polyclip(const vec *in, int numin, const vec &dir, float below, float above,
     int numout = 0;
     const vec *p = &in[numin-1];
     float pc = dir.dot(*p);
-    loopi(numin)
+    for(int i = 0; i < numin; ++i)
     {
         const vec &v = in[i];
         float c = dir.dot(v);

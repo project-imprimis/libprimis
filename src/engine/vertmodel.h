@@ -96,7 +96,7 @@ struct vertmodel : animmodel
             voffset = offset;
             eoffset = idxs.length();
             minvert = 0xFFFF;
-            loopi(numtris)
+            for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
                 loopj(3)
@@ -125,7 +125,7 @@ struct vertmodel : animmodel
         {
             voffset = offset;
             eoffset = idxs.length();
-            loopi(numtris)
+            for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
                 loopj(3) idxs.add(voffset+t.vert[j]);
@@ -146,7 +146,10 @@ struct vertmodel : animmodel
         void fillverts(T *vdata)
         {
             vdata += voffset;
-            loopi(numverts) fillvert(vdata[i], i, tcverts[i], verts[i]);
+            for(int i = 0; i < numverts; ++i)
+            {
+                fillvert(vdata[i], i, tcverts[i], verts[i]);
+            }
         }
 
         template<class T>
@@ -159,8 +162,24 @@ struct vertmodel : animmodel
                        * RESTRICT pvert2 = as.interp<1 ? &verts[as.prev.fr2 * numverts] : NULL;
             #define IP_VERT(attrib, type) v.attrib.lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t)
             #define IP_VERT_P(attrib, type) v.attrib.lerp(type().lerp(pvert1[i].attrib, pvert2[i].attrib, as.prev.t), type().lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t), as.interp)
-            if(as.interp<1) loopi(numverts) { T &v = vdata[i]; IP_VERT_P(pos, vec); IP_VERT_P(tangent, vec4); }
-            else loopi(numverts) { T &v = vdata[i]; IP_VERT(pos, vec); IP_VERT(tangent, vec4); }
+            if(as.interp<1)
+            {
+                for(int i = 0; i < numverts; ++i)
+                {
+                    T &v = vdata[i];
+                    IP_VERT_P(pos, vec);
+                    IP_VERT_P(tangent, vec4);
+                }
+            }
+            else
+            {
+                for(int i = 0; i < numverts; ++i)
+                {
+                    T &v = vdata[i];
+                    IP_VERT(pos, vec);
+                    IP_VERT(tangent, vec4);
+                }
+            }
             #undef IP_VERT
             #undef IP_VERT_P
         }
@@ -205,16 +224,25 @@ struct vertmodel : animmodel
         {
             DELETEA(tags);
             if(ebuf) glDeleteBuffers_(1, &ebuf);
-            loopi(MAXVBOCACHE)
+            for(int i = 0; i < MAXVBOCACHE; ++i)
             {
-                if(vbocache[i].vbuf) glDeleteBuffers_(1, &vbocache[i].vbuf);
+                if(vbocache[i].vbuf)
+                {
+                    glDeleteBuffers_(1, &vbocache[i].vbuf);
+                }
             }
             DELETEA(vdata);
         }
 
         int findtag(const char *name)
         {
-            loopi(numtags) if(!strcmp(tags[i].name, name)) return i;
+            for(int i = 0; i < numtags; ++i)
+            {
+                if(!strcmp(tags[i].name, name))
+                {
+                    return i;
+                }
+            }
             return -1;
         }
 
@@ -223,8 +251,11 @@ struct vertmodel : animmodel
             int idx = findtag(name);
             if(idx >= 0)
             {
-                if(!testtags) return false;
-                loopi(numframes)
+                if(!testtags)
+                {
+                    return false;
+                }
+                for(int i = 0; i < numframes; ++i)
                 {
                     tag &t = tags[i*numtags + idx];
                     t.matrix = matrix;
@@ -233,7 +264,7 @@ struct vertmodel : animmodel
             else
             {
                 tag *newtags = new tag[(numtags+1)*numframes];
-                loopi(numframes)
+                for(int i = 0; i < numframes; ++i)
                 {
                     tag *dst = &newtags[(numtags+1)*i], *src = &tags[numtags*i];
                     if(!i)
@@ -244,7 +275,10 @@ struct vertmodel : animmodel
                     loopj(numtags) dst[j].matrix = src[j].matrix;
                     dst[numtags].matrix = matrix;
                 }
-                if(tags) delete[] tags;
+                if(tags)
+                {
+                    delete[] tags;
+                }
                 tags = newtags;
                 numtags++;
             }
@@ -353,7 +387,7 @@ struct vertmodel : animmodel
 
         void cleanup()
         {
-            loopi(MAXVBOCACHE)
+            for(int i = 0; i < MAXVBOCACHE; ++i)
             {
                 vbocacheentry &c = vbocache[i];
                 if(c.vbuf) { glDeleteBuffers_(1, &c.vbuf); c.vbuf = 0; }
@@ -380,13 +414,23 @@ struct vertmodel : animmodel
             if(numframes<=1) vc = vbocache;
             else
             {
-                loopi(MAXVBOCACHE)
+                for(int i = 0; i < MAXVBOCACHE; ++i)
                 {
                     vbocacheentry &c = vbocache[i];
                     if(!c.vbuf) continue;
                     if(c.as==*as) { vc = &c; break; }
                 }
-                if(!vc) loopi(MAXVBOCACHE) { vc = &vbocache[i]; if(!vc->vbuf || vc->millis < lastmillis) break; }
+                if(!vc)
+                {
+                    for(int i = 0; i < MAXVBOCACHE; ++i)
+                    {
+                        vc = &vbocache[i];
+                        if(!vc->vbuf || vc->millis < lastmillis)
+                        {
+                            break;
+                        }
+                    }
+                }
             }
             if(!vc->vbuf) genvbo(*vc);
             if(numframes>1)

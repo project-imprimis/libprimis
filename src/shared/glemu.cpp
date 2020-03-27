@@ -184,13 +184,16 @@ namespace gle
         if(forceattribs || changedattribs)
         {
             int diffmask = enabled & lastattribmask & ~attribmask;
-            if(diffmask) loopi(numlastattribs)
+            if(diffmask)
             {
-                const attribinfo &a = lastattribs[i];
-                if(diffmask & (1<<a.type)) unsetattrib(a);
+                for(int i = 0; i < numlastattribs; ++i)
+                {
+                    const attribinfo &a = lastattribs[i];
+                    if(diffmask & (1<<a.type)) unsetattrib(a);
+                }
             }
             uchar *src = buf;
-            loopi(numattribs)
+            for(int i = 0; i < numattribs; ++i)
             {
                 const attribinfo &a = attribdefs[i];
                 if(forceattribs || a != lastattribs[i])

@@ -21,7 +21,13 @@ namespace aiman
         teams.sort(teamscore::compare);
         if(teams.length() < MAXTEAMS)
         {
-            loopi(MAXTEAMS) if(teams.htfind(1+i) < 0) teams.add(teamscore(1+i, 0));
+            for(int i = 0; i < MAXTEAMS; ++i)
+            {
+                if(teams.htfind(1+i) < 0)
+                {
+                    teams.add(teamscore(1+i, 0));
+                }
+            }
         }
     }
 

@@ -234,7 +234,10 @@ struct dynent : physent                         // animated characters, or chara
     {
         physent::reset();
         stopmoving();
-        loopi(MAXANIMPARTS) animinterp[i].reset();
+        for(int i = 0; i < MAXANIMPARTS; ++i)
+        {
+            animinterp[i].reset();
+        }
     }
 
     vec abovehead() { return vec(o).addz(aboveeye+4); }

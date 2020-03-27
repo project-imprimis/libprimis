@@ -114,10 +114,13 @@ namespace server
 
         bool remove(int val)
         {
-            loopi(numprojs) if(projs[i]==val)
+            for(int i = 0; i < numprojs; ++i)
             {
-                projs[i] = projs[--numprojs];
-                return true;
+                if(projs[i]==val)
+                {
+                    projs[i] = projs[--numprojs];
+                    return true;
+                }
             }
             return false;
         }
@@ -440,7 +443,16 @@ namespace server
 
         int findmode(int mode) const
         {
-            if(!hasmode(mode)) loopi(NUMGAMEMODES) if(hasmode(i, 0)) return i+STARTGAMEMODE;
+            if(!hasmode(mode))
+            {
+                for(int i = 0; i < NUMGAMEMODES; ++i)
+                {
+                    if(hasmode(i, 0))
+                    {
+                        return i+STARTGAMEMODE;
+                    }
+                }
+            }
             return mode;
         }
 
@@ -892,7 +904,10 @@ namespace server
 
     void clearteaminfo()
     {
-        loopi(MAXTEAMS) teaminfos[i].reset();
+        for(int i = 0; i < MAXTEAMS; ++i)
+        {
+            teaminfos[i].reset();
+        }
     }
 
     clientinfo *choosebestclient(float &bestrank)
@@ -932,12 +947,15 @@ namespace server
             if(!selected) break;
             remaining -= selected;
         }
-        loopi(MAXTEAMS) loopvj(team[i])
+        for(int i = 0; i < MAXTEAMS; ++i)
         {
-            clientinfo *ci = team[i][j];
-            if(ci->team == 1+i) continue;
-            ci->team = 1+i;
-            sendf(-1, 1, "riiii", N_SETTEAM, ci->clientnum, ci->team, -1);
+            loopvj(team[i])
+            {
+                clientinfo *ci = team[i][j];
+                if(ci->team == 1+i) continue;
+                ci->team = 1+i;
+                sendf(-1, 1, "riiii", N_SETTEAM, ci->clientnum, ci->team, -1);
+            }
         }
     }
 
@@ -980,8 +998,14 @@ namespace server
     void prunedemos(int extra = 0)
     {
         int n = clamp(demos.length() + extra - maxdemos, 0, demos.length());
-        if(n <= 0) return;
-        loopi(n) delete[] demos[i].data;
+        if(n <= 0)
+        {
+            return;
+        }
+        for(int i = 0; i < n; ++i)
+        {
+            delete[] demos[i].data;
+        }
         demos.remove(0, n);
     }
 
@@ -1668,7 +1692,10 @@ namespace server
         putint(p, gs.health);
         putint(p, gs.maxhealth);
         putint(p, gs.gunselect);
-        loopi(NUMGUNS) putint(p, gs.ammo[i]);
+        for(int i = 0; i < NUMGUNS; ++i)
+        {
+            putint(p, gs.ammo[i]);
+        }
     }
 
     void spawnstate(clientinfo *ci)
@@ -1793,7 +1820,7 @@ namespace server
         if(MODE_TEAMMODE)
         {
             putint(p, N_TEAMINFO);
-            loopi(MAXTEAMS)
+            for(int i = 0; i < MAXTEAMS; ++i)
             {
                 teaminfo &t = teaminfos[i];
                 putint(p, t.frags);
@@ -3516,13 +3543,31 @@ namespace server
             case N_EDITVSLOT:
             {
                 int size = server::msgsizelookup(type);
-                if(size<=0) { disconnect_client(sender, DISC_MSGERR); return; }
-                loopi(size-1) getint(p);
-                if(p.remaining() < 2) { disconnect_client(sender, DISC_MSGERR); return; }
+                if(size<=0)
+                {
+                    disconnect_client(sender, DISC_MSGERR);
+                    return;
+                }
+                for(int i = 0; i < size-1; ++i)
+                {
+                    getint(p);
+                }
+                if(p.remaining() < 2)
+                {
+                    disconnect_client(sender, DISC_MSGERR);
+                    return;
+                }
                 int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
-                if(p.remaining() < extra) { disconnect_client(sender, DISC_MSGERR); return; }
+                if(p.remaining() < extra)
+                {
+                    disconnect_client(sender, DISC_MSGERR);
+                    return;
+                }
                 p.pad(extra);
-                if(ci && ci->state.state!=ClientState_Spectator) QUEUE_MSG;
+                if(ci && ci->state.state!=ClientState_Spectator)
+                {
+                    QUEUE_MSG;
+                }
                 break;
             }
 
@@ -3565,8 +3610,15 @@ namespace server
             default: genericmsg:
             {
                 int size = server::msgsizelookup(type);
-                if(size<=0) { disconnect_client(sender, DISC_MSGERR); return; }
-                loopi(size-1) getint(p);
+                if(size<=0)
+                {
+                    disconnect_client(sender, DISC_MSGERR);
+                    return;
+                }
+                for(int i = 0; i < size-1; ++i)
+                {
+                    getint(p);
+                }
                 if(ci) switch(msgfilter[type])
                 {
                     case 2: case 3: if(ci->state.state != ClientState_Spectator) QUEUE_MSG; break;

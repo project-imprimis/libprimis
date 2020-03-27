@@ -394,7 +394,13 @@ namespace ai
     bool hasgoodammo(gameent *d)
     {
         static const int goodguns[] = { GUN_PULSE, GUN_RAIL };
-        loopi(sizeof(goodguns)/sizeof(goodguns[0])) if(d->hasammo(goodguns[0])) return true;
+        for(int i = 0; i < int(sizeof(goodguns)/sizeof(goodguns[0])); ++i)
+        {
+            if(d->hasammo(goodguns[0]))
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -447,7 +453,13 @@ namespace ai
         while(!interests.empty())
         {
             int q = interests.length()-1;
-            loopi(interests.length()-1) if(interests[i].score < interests[q].score) q = i;
+            for(int i = 0; i < interests.length()-1; ++i)
+            {
+                if(interests[i].score < interests[q].score)
+                {
+                    q = i;
+                }
+            }
             interest n = interests.removeunordered(q);
             bool proceed = true;
             if(!ignore) switch(n.state)
@@ -502,7 +514,13 @@ namespace ai
         while(!interests.empty())
         {
             int q = interests.length()-1;
-            loopi(interests.length()-1) if(interests[i].score < interests[q].score) q = i;
+            for(int i = 0; i < interests.length()-1; ++i)
+            {
+                if(interests[i].score < interests[q].score)
+                {
+                    q = i;
+                }
+            }
             interest n = interests.removeunordered(q);
             bool proceed = true;
             switch(n.state)
@@ -763,7 +781,7 @@ namespace ai
         {
             waypoint &w = waypoints[n];
             static vector<int> linkmap; linkmap.setsize(0);
-            loopi(MAXWAYPOINTLINKS)
+            for(int i = 0; i < MAXWAYPOINTLINKS; ++i)
             {
                 if(!w.links[i]) break;
                 if(iswaypoint(w.links[i]) && !d->ai->hasprevnode(w.links[i]) && d->ai->route.find(w.links[i]) < 0)
@@ -784,7 +802,7 @@ namespace ai
             {
                 d->ai->route.add(n);
                 d->ai->route.add(d->lastnode);
-                loopi(len)
+                for(int i = 0; i < len; ++i)
                 {
                     n = randomlink(d, n);
                     if(iswaypoint(n)) d->ai->route.insert(0, n);
@@ -1125,13 +1143,19 @@ namespace ai
             if(d->hasammo(d->ai->weappref) && hasrange(d, e, d->ai->weappref)) gun = d->ai->weappref;
             else
             {
-                loopi(sizeof(gunprefs)/sizeof(gunprefs[0])) if(d->hasammo(gunprefs[i]) && hasrange(d, e, gunprefs[i]))
+                for(int i = 0; i < int(sizeof(gunprefs)/sizeof(gunprefs[0])); ++i)
                 {
-                    gun = gunprefs[i];
-                    break;
+                    if(d->hasammo(gunprefs[i]) && hasrange(d, e, gunprefs[i]))
+                    {
+                        gun = gunprefs[i];
+                        break;
+                    }
                 }
             }
-            if(gun >= 0 && gun != d->gunselect) gunselect(gun, d);
+            if(gun >= 0 && gun != d->gunselect)
+            {
+                gunselect(gun, d);
+            }
         }
         return process(d, b) >= 2;
     }
@@ -1322,15 +1346,25 @@ namespace ai
         if(aidebug >= 5)
         {
             vec pos = d->feetpos();
-            if(d->ai->spot != vec(0, 0, 0)) particle_flare(pos, d->ai->spot, 1, PART_LIGHTNING, 0x00FFFF);
-            if(iswaypoint(d->ai->targnode))
-                particle_flare(pos, waypoints[d->ai->targnode].o, 1, PART_LIGHTNING, 0xFF00FF);
-            if(iswaypoint(d->lastnode))
-                particle_flare(pos, waypoints[d->lastnode].o, 1, PART_LIGHTNING, 0xFFFF00);
-            loopi(NUMPREVNODES) if(iswaypoint(d->ai->prevnodes[i]))
+            if(d->ai->spot != vec(0, 0, 0))
             {
-                particle_flare(pos, waypoints[d->ai->prevnodes[i]].o, 1, PART_LIGHTNING, 0x884400);
-                pos = waypoints[d->ai->prevnodes[i]].o;
+                particle_flare(pos, d->ai->spot, 1, PART_LIGHTNING, 0x00FFFF);
+            }
+            if(iswaypoint(d->ai->targnode))
+            {
+                particle_flare(pos, waypoints[d->ai->targnode].o, 1, PART_LIGHTNING, 0xFF00FF);
+            }
+            if(iswaypoint(d->lastnode))
+            {
+                particle_flare(pos, waypoints[d->lastnode].o, 1, PART_LIGHTNING, 0xFFFF00);
+            }
+            for(int i = 0; i < NUMPREVNODES; ++i)
+            {
+                if(iswaypoint(d->ai->prevnodes[i]))
+                {
+                    particle_flare(pos, waypoints[d->ai->prevnodes[i]].o, 1, PART_LIGHTNING, 0x884400);
+                    pos = waypoints[d->ai->prevnodes[i]].o;
+                }
             }
         }
     }
@@ -1425,7 +1459,7 @@ namespace ai
                 findwaypointswithin(camera1->o, 0, showwaypointsradius, close);
                 len = close.length();
             }
-            loopi(len)
+            for(int i = 0; i < len; ++i)
             {
                 waypoint &w = waypoints[showwaypointsradius ? close[i] : i];
                 loopj(MAXWAYPOINTLINKS)

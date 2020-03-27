@@ -1551,7 +1551,7 @@ namespace UI
             float splitw = (minw ? min(minw, w) : w) / 2,
                   splith = (minh ? min(minh, h) : h) / 2,
                   vy = sy, ty = 0;
-            loopi(3)
+            for(int i = 0; i < 3; ++i)
             {
                 float vh = 0, th = 0;
                 switch(i)
@@ -1620,7 +1620,7 @@ namespace UI
             bindtex();
 
             float vy = sy, ty = 0;
-            loopi(3)
+            for(int i = 0; i < 3; ++i)
             {
                 float vh = 0, th = 0;
                 switch(i)
@@ -3159,7 +3159,13 @@ namespace UI
     });
     ICOMMANDNS("uialign*", uialign__, "ii", (int *xalign, int *yalign),
     {
-        if(buildparent) loopi(buildchild) buildparent->children[i]->setalign(*xalign, *yalign);
+        if(buildparent)
+        {
+            for(int i = 0; i < buildchild; ++i)
+            {
+                buildparent->children[i]->setalign(*xalign, *yalign);
+            }
+        }
     });
 
     ICOMMAND(uiclamp, "iiii", (int *left, int *right, int *top, int *bottom),
@@ -3172,7 +3178,13 @@ namespace UI
     });
     ICOMMANDNS("uiclamp*", uiclamp__, "iiii", (int *left, int *right, int *top, int *bottom),
     {
-        if(buildparent) loopi(buildchild) buildparent->children[i]->setclamp(*left, *right, *top, *bottom);
+        if(buildparent)
+        {
+            for(int i = 0; i < buildchild; ++i)
+            {
+                buildparent->children[i]->setclamp(*left, *right, *top, *bottom);
+            }
+        }
     });
 
     ICOMMAND(uigroup, "e", (uint *children),

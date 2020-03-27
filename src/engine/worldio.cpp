@@ -6,14 +6,24 @@ void validmapname(char *dst, const char *src, const char *prefix = NULL, const c
 {
     if(prefix) while(*prefix) *dst++ = *prefix++;
     const char *start = dst;
-    if(src) loopi(maxlen)
+    if(src)
     {
-        char c = *src++;
-        if(iscubealnum(c) || c == '_' || c == '-' || c == '/' || c == '\\') *dst++ = c;
-        else break;
+        for(int i = 0; i < int(maxlen); ++i)
+        {
+            char c = *src++;
+            if(iscubealnum(c) || c == '_' || c == '-' || c == '/' || c == '\\') *dst++ = c;
+            else break;
+        }
     }
-    if(dst > start) *dst = '\0';
-    else if(dst != alt) copystring(dst, alt, maxlen);
+
+    if(dst > start)
+    {
+        *dst = '\0';
+    }
+    else if(dst != alt)
+    {
+        copystring(dst, alt, maxlen);
+    }
 }
 
 void fixmapname(char *name)
@@ -68,13 +78,20 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     DEF_FORMAT_STRING(ogzname, "media/map/%s.ogz", name);
     path(ogzname);
     stream *f = opengzfile(ogzname, "rb");
-    if(!f) return false;
+    if(!f)
+    {
+        return false;
+    }
 
     mapheader hdr;
     octaheader ohdr;
-    if(!loadmapheader(f, ogzname, hdr, ohdr)) { delete f; return false; }
+    if(!loadmapheader(f, ogzname, hdr, ohdr))
+    {
+        delete f;
+        return false;
+    }
 
-    loopi(hdr.numvars)
+    for(int i = 0; i < hdr.numvars; ++i)
     {
         int type = f->getchar(), ilen = f->getlil<ushort>();
         f->seek(ilen, SEEK_CUR);
@@ -89,7 +106,10 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     string gametype;
     bool samegame = true;
     int len = f->getchar();
-    if(len >= 0) f->read(gametype, len+1);
+    if(len >= 0)
+    {
+        f->read(gametype, len+1);
+    }
     gametype[max(len, 0)] = '\0';
     if(strcmp(gametype, game::gameident()))
     {
@@ -103,7 +123,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     ushort nummru = f->getlil<ushort>();
     f->seek(nummru*sizeof(ushort), SEEK_CUR);
 
-    loopi(min(hdr.numents, MAXENTS))
+    for(int i = 0; i < min(hdr.numents, MAXENTS); ++i)
     {
         entity &e = ents.add();
         f->read(&e, sizeof(entity));
@@ -201,7 +221,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
 {
     if((savemapprogress++&0xFFF)==0) renderprogress(float(savemapprogress)/allocnodes, "saving octree...");
 
-    loopi(8)
+    for(int i = 0; i < 8; ++i)
     {
         ivec co(i, o, size);
         if(c[i].children)
@@ -329,7 +349,10 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
         case OCTSAV_NORMAL: f->read(c.edges, 12); break;
         default: failed = true; return;
     }
-    loopi(6) c.texture[i] = f->getlil<ushort>();
+    for(int i = 0; i < 6; ++i)
+    {
+        c.texture[i] = f->getlil<ushort>();
+    }
     if(octsav&0x40) c.material = f->getlil<ushort>();
     if(octsav&0x80) c.merged = f->getchar();
     if(octsav&0x20)
@@ -341,84 +364,87 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
         memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
         memset(c.ext->verts(), 0, totalverts*sizeof(vertinfo));
         int offset = 0;
-        loopi(6) if(surfmask&(1<<i))
+        for(int i = 0; i < 6; ++i)
         {
-            surfaceinfo &surf = c.ext->surfaces[i];
-            if(mapversion <= 0)
+            if(surfmask&(1<<i))
             {
-                polysurfacecompat psurf;
-                f->read(&psurf, sizeof(polysurfacecompat));
-                surf.verts = psurf.verts;
-                surf.numverts = psurf.numverts;
-            }
-            else f->read(&surf, sizeof(surf));
-            int vertmask = surf.verts, numverts = surf.totalverts();
-            if(!numverts) { surf.verts = 0; continue; }
-            surf.verts = offset;
-            vertinfo *verts = c.ext->verts() + offset;
-            offset += numverts;
-            ivec v[4], n, vo = ivec(co).mask(0xFFF).shl(3);
-            int layerverts = surf.numverts&MAXFACEVERTS, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
-            genfaceverts(c, i, v);
-            bool hasxyz = (vertmask&0x04)!=0, hasuv = mapversion <= 0 && (vertmask&0x40)!=0, hasnorm = (vertmask&0x80)!=0;
-            if(hasxyz)
-            {
-                ivec e1, e2, e3;
-                n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
-                if(n.iszero()) n.cross(e2, (e3 = v[3]).sub(v[0]));
-                bias = -n.dot(ivec(v[0]).mul(size).add(vo));
-            }
-            else
-            {
-                int vis = layerverts < 4 ? (vertmask&0x02 ? 2 : 1) : 3, order = vertmask&0x01 ? 1 : 0, k = 0;
-                verts[k++].setxyz(v[order].mul(size).add(vo));
-                if(vis&1) verts[k++].setxyz(v[order+1].mul(size).add(vo));
-                verts[k++].setxyz(v[order+2].mul(size).add(vo));
-                if(vis&2) verts[k++].setxyz(v[(order+3)&3].mul(size).add(vo));
-            }
-            if(layerverts == 4)
-            {
-                if(hasxyz && vertmask&0x01)
+                surfaceinfo &surf = c.ext->surfaces[i];
+                if(mapversion <= 0)
                 {
-                    ushort c1 = f->getlil<ushort>(), r1 = f->getlil<ushort>(), c2 = f->getlil<ushort>(), r2 = f->getlil<ushort>();
-                    ivec xyz;
-                    xyz[vc] = c1; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                    verts[0].setxyz(xyz);
-                    xyz[vc] = c1; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                    verts[1].setxyz(xyz);
-                    xyz[vc] = c2; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                    verts[2].setxyz(xyz);
-                    xyz[vc] = c2; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                    verts[3].setxyz(xyz);
-                    hasxyz = false;
+                    polysurfacecompat psurf;
+                    f->read(&psurf, sizeof(polysurfacecompat));
+                    surf.verts = psurf.verts;
+                    surf.numverts = psurf.numverts;
                 }
-                if(hasuv && vertmask&0x02)
-                {
-                    loopk(4) f->getlil<ushort>();
-                    if(surf.numverts&LAYER_DUP) loopk(4) f->getlil<ushort>();
-                    hasuv = false;
-                }
-            }
-            if(hasnorm && vertmask&0x08)
-            {
-                ushort norm = f->getlil<ushort>();
-                loopk(layerverts) verts[k].norm = norm;
-                hasnorm = false;
-            }
-            if(hasxyz || hasuv || hasnorm) loopk(layerverts)
-            {
-                vertinfo &v = verts[k];
+                else f->read(&surf, sizeof(surf));
+                int vertmask = surf.verts, numverts = surf.totalverts();
+                if(!numverts) { surf.verts = 0; continue; }
+                surf.verts = offset;
+                vertinfo *verts = c.ext->verts() + offset;
+                offset += numverts;
+                ivec v[4], n, vo = ivec(co).mask(0xFFF).shl(3);
+                int layerverts = surf.numverts&MAXFACEVERTS, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
+                genfaceverts(c, i, v);
+                bool hasxyz = (vertmask&0x04)!=0, hasuv = mapversion <= 0 && (vertmask&0x40)!=0, hasnorm = (vertmask&0x80)!=0;
                 if(hasxyz)
                 {
-                    ivec xyz;
-                    xyz[vc] = f->getlil<ushort>(); xyz[vr] = f->getlil<ushort>();
-                    xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                    v.setxyz(xyz);
+                    ivec e1, e2, e3;
+                    n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
+                    if(n.iszero()) n.cross(e2, (e3 = v[3]).sub(v[0]));
+                    bias = -n.dot(ivec(v[0]).mul(size).add(vo));
                 }
-                if(hasuv) { f->getlil<ushort>(); f->getlil<ushort>(); }
-                if(hasnorm) v.norm = f->getlil<ushort>();
+                else
+                {
+                    int vis = layerverts < 4 ? (vertmask&0x02 ? 2 : 1) : 3, order = vertmask&0x01 ? 1 : 0, k = 0;
+                    verts[k++].setxyz(v[order].mul(size).add(vo));
+                    if(vis&1) verts[k++].setxyz(v[order+1].mul(size).add(vo));
+                    verts[k++].setxyz(v[order+2].mul(size).add(vo));
+                    if(vis&2) verts[k++].setxyz(v[(order+3)&3].mul(size).add(vo));
+                }
+                if(layerverts == 4)
+                {
+                    if(hasxyz && vertmask&0x01)
+                    {
+                        ushort c1 = f->getlil<ushort>(), r1 = f->getlil<ushort>(), c2 = f->getlil<ushort>(), r2 = f->getlil<ushort>();
+                        ivec xyz;
+                        xyz[vc] = c1; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        verts[0].setxyz(xyz);
+                        xyz[vc] = c1; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        verts[1].setxyz(xyz);
+                        xyz[vc] = c2; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        verts[2].setxyz(xyz);
+                        xyz[vc] = c2; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        verts[3].setxyz(xyz);
+                        hasxyz = false;
+                    }
+                    if(hasuv && vertmask&0x02)
+                    {
+                        loopk(4) f->getlil<ushort>();
+                        if(surf.numverts&LAYER_DUP) loopk(4) f->getlil<ushort>();
+                        hasuv = false;
+                    }
+                }
+                if(hasnorm && vertmask&0x08)
+                {
+                    ushort norm = f->getlil<ushort>();
+                    loopk(layerverts) verts[k].norm = norm;
+                    hasnorm = false;
+                }
+                if(hasxyz || hasuv || hasnorm) loopk(layerverts)
+                {
+                    vertinfo &v = verts[k];
+                    if(hasxyz)
+                    {
+                        ivec xyz;
+                        xyz[vc] = f->getlil<ushort>(); xyz[vr] = f->getlil<ushort>();
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        v.setxyz(xyz);
+                    }
+                    if(hasuv) { f->getlil<ushort>(); f->getlil<ushort>(); }
+                    if(hasnorm) v.norm = f->getlil<ushort>();
+                }
+                if(hasuv && surf.numverts&LAYER_DUP) loopk(layerverts) { f->getlil<ushort>(); f->getlil<ushort>(); }
             }
-            if(hasuv && surf.numverts&LAYER_DUP) loopk(layerverts) { f->getlil<ushort>(); f->getlil<ushort>(); }
         }
     }
 }
@@ -426,7 +452,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 cube *loadchildren(stream *f, const ivec &co, int size, bool &failed)
 {
     cube *c = newcubes();
-    loopi(8)
+    for(int i = 0; i < 8; ++i)
     {
         loadc(f, c[i], ivec(i, co, size), size, failed);
         if(failed) break;
@@ -490,7 +516,7 @@ void savevslots(stream *f, int numvslots)
     if(vslots.empty()) return;
     int *prev = new int[numvslots];
     memset(prev, -1, numvslots*sizeof(int));
-    loopi(numvslots)
+    for(int i = 0; i < numvslots; ++i)
     {
         VSlot *vs = vslots[i];
         if(vs->changed) continue;
@@ -498,20 +524,32 @@ void savevslots(stream *f, int numvslots)
         {
             VSlot *cur = vs;
             do vs = vs->next; while(vs && vs->index >= numvslots);
-            if(!vs) break;
+            if(!vs)
+            {
+                break;
+            }
             prev[vs->index] = cur->index;
         }
     }
     int lastroot = 0;
-    loopi(numvslots)
+    for(int i = 0; i < numvslots; ++i)
     {
         VSlot &vs = *vslots[i];
-        if(!vs.changed) continue;
-        if(lastroot < i) f->putlil<int>(-(i - lastroot));
+        if(!vs.changed)
+        {
+            continue;
+        }
+        if(lastroot < i)
+        {
+            f->putlil<int>(-(i - lastroot));
+        }
         savevslot(f, vs, prev[i]);
         lastroot = i+1;
     }
-    if(lastroot < numvslots) f->putlil<int>(-(numvslots - lastroot));
+    if(lastroot < numvslots)
+    {
+        f->putlil<int>(-(numvslots - lastroot));
+    }
     delete[] prev;
 }
 
@@ -522,20 +560,29 @@ void loadvslot(stream *f, VSlot &vs, int changed)
     {
         int numparams = f->getlil<ushort>();
         string name;
-        loopi(numparams)
+        for(int i = 0; i < numparams; ++i)
         {
             SlotShaderParam &p = vs.params.add();
             int nlen = f->getlil<ushort>();
             f->read(name, min(nlen, MAXSTRLEN-1));
             name[min(nlen, MAXSTRLEN-1)] = '\0';
-            if(nlen >= MAXSTRLEN) f->seek(nlen - (MAXSTRLEN-1), SEEK_CUR);
+            if(nlen >= MAXSTRLEN)
+            {
+                f->seek(nlen - (MAXSTRLEN-1), SEEK_CUR);
+            }
             p.name = getshaderparamname(name);
             p.loc = -1;
             loopk(4) p.val[k] = f->getlil<float>();
         }
     }
-    if(vs.changed & (1<<VSLOT_SCALE)) vs.scale = f->getlil<float>();
-    if(vs.changed & (1<<VSLOT_ROTATION)) vs.rotation = clamp(f->getlil<int>(), 0, 7);
+    if(vs.changed & (1<<VSLOT_SCALE))
+    {
+        vs.scale = f->getlil<float>();
+    }
+    if(vs.changed & (1<<VSLOT_ROTATION))
+    {
+        vs.rotation = clamp(f->getlil<int>(), 0, 7);
+    }
     if(vs.changed & (1<<VSLOT_ANGLE))
     {
         loopk(3) vs.angle[k] = f->getlil<float>();
@@ -548,7 +595,10 @@ void loadvslot(stream *f, VSlot &vs, int changed)
     {
         loopk(2) vs.scroll[k] = f->getlil<float>();
     }
-    if(vs.changed & (1<<VSLOT_LAYER)) vs.layer = f->getlil<int>();
+    if(vs.changed & (1<<VSLOT_LAYER))
+    {
+        vs.layer = f->getlil<int>();
+    }
     if(vs.changed & (1<<VSLOT_ALPHA))
     {
         vs.alphafront = f->getlil<float>();
@@ -563,20 +613,29 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         vs.refractscale = f->getlil<float>();
         loopk(3) vs.refractcolor[k] = f->getlil<float>();
     }
-    if(vs.changed & (1<<VSLOT_DETAIL)) vs.detail = f->getlil<int>();
+    if(vs.changed & (1<<VSLOT_DETAIL))
+    {
+        vs.detail = f->getlil<int>();
+    }
 }
 
 void loadvslots(stream *f, int numvslots)
 {
     int *prev = new (false) int[numvslots];
-    if(!prev) return;
+    if(!prev)
+    {
+        return;
+    }
     memset(prev, -1, numvslots*sizeof(int));
     while(numvslots > 0)
     {
         int changed = f->getlil<int>();
         if(changed < 0)
         {
-            loopi(-changed) vslots.add(new VSlot(NULL, vslots.length()));
+            for(int i = 0; i < -changed; ++i)
+            {
+                vslots.add(new VSlot(NULL, vslots.length()));
+            }
             numvslots += changed;
         }
         else
@@ -727,13 +786,16 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     renderprogress(0, "loading vars...");
 
-    loopi(hdr.numvars)
+    for(int i = 0; i < hdr.numvars; ++i)
     {
         int type = f->getchar(), ilen = f->getlil<ushort>();
         string name;
         f->read(name, min(ilen, MAXSTRLEN-1));
         name[min(ilen, MAXSTRLEN-1)] = '\0';
-        if(ilen >= MAXSTRLEN) f->seek(ilen - (MAXSTRLEN-1), SEEK_CUR);
+        if(ilen >= MAXSTRLEN)
+        {
+            f->seek(ilen - (MAXSTRLEN-1), SEEK_CUR);
+        }
         ident *id = getident(name);
         tagval val;
         string str;
@@ -800,14 +862,17 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     texmru.shrink(0);
     ushort nummru = f->getlil<ushort>();
-    loopi(nummru) texmru.add(f->getlil<ushort>());
+    for(int i = 0; i < nummru; ++i)
+    {
+        texmru.add(f->getlil<ushort>());
+    }
 
     renderprogress(0, "loading entities...");
 
     vector<extentity *> &ents = entities::getents();
     int einfosize = entities::extraentinfosize();
     char *ebuf = einfosize > 0 ? new char[einfosize] : NULL;
-    loopi(min(hdr.numents, MAXENTS))
+    for(int i = 0; i < (min(hdr.numents, MAXENTS)); ++i)
     {
         extentity &e = *entities::newentity();
         ents.add(&e);
@@ -858,19 +923,21 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     if(!failed)
     {
-        if(mapversion <= 0) loopi(ohdr.lightmaps)
+        if(mapversion <= 0)
         {
-            int type = f->getchar();
-            if(type&0x80)
+            for(int i = 0; i < ohdr.lightmaps; ++i)
             {
-                f->getlil<ushort>();
-                f->getlil<ushort>();
+                int type = f->getchar();
+                if(type&0x80)
+                {
+                    f->getlil<ushort>();
+                    f->getlil<ushort>();
+                }
+                int bpp = 3;
+                if(type&(1<<4) && (type&0x0F)!=2) bpp = 4;
+                f->seek(bpp*LM_PACKW*LM_PACKH, SEEK_CUR);
             }
-            int bpp = 3;
-            if(type&(1<<4) && (type&0x0F)!=2) bpp = 4;
-            f->seek(bpp*LM_PACKW*LM_PACKH, SEEK_CUR);
         }
-
         if(hdr.blendmap) loadblendmap(f, hdr.blendmap);
     }
 

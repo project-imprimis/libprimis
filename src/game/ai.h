@@ -40,7 +40,13 @@ namespace ai
 
         int find(int wp)
         {
-            loopi(MAXWAYPOINTLINKS) if(links[i] == wp) return i;
+            for(int i = 0; i < MAXWAYPOINTLINKS; ++i)
+            {
+                if(links[i] == wp)
+                {
+                    return i;
+                }
+            }
             return -1;
         }
 
@@ -240,7 +246,13 @@ namespace ai
 
         bool hasprevnode(int n) const
         {
-            loopi(NUMPREVNODES) if(prevnodes[i] == n) return true;
+            for(int i = 0; i < NUMPREVNODES; ++i)
+            {
+                if(prevnodes[i] == n)
+                {
+                    return true;
+                }
+            }
             return false;
         }
 

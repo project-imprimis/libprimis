@@ -65,7 +65,7 @@ namespace entities
 
     void preloadentities()
     {
-        loopi(MAXENTTYPES)
+        for(int i = 0; i < MAXENTTYPES; ++i)
         {
             const char *mdl = entmdlname(i);
             if(!mdl) continue;

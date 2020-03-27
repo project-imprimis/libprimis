@@ -7,11 +7,20 @@ static Texture *caustictex[NUMCAUSTICS] = { NULL };
 void loadcaustics(bool force)
 {
     static bool needcaustics = false;
-    if(force) needcaustics = true;
-    if(!caustics || !needcaustics) return;
+    if(force)
+    {
+        needcaustics = true;
+    }
+    if(!caustics || !needcaustics)
+    {
+        return;
+    }
     useshaderbyname("caustics");
-    if(caustictex[0]) return;
-    loopi(NUMCAUSTICS)
+    if(caustictex[0])
+    {
+        return;
+    }
+    for(int i = 0; i < NUMCAUSTICS; ++i)
     {
         DEF_FORMAT_STRING(name, "<grey><noswizzle>media/texture/mat_water/caustic/caust%.2d.png", i);
         caustictex[i] = textureload(name);
@@ -20,7 +29,10 @@ void loadcaustics(bool force)
 
 void cleanupcaustics()
 {
-    loopi(NUMCAUSTICS) caustictex[i] = NULL;
+    for(int i = 0; i < NUMCAUSTICS; ++i)
+    {
+        caustictex[i] = NULL;
+    }
 }
 
 VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
@@ -36,7 +48,7 @@ void setupcaustics(int tmu, float surface = -1e16f)
     vec s = vec(0.011f, 0, 0.0066f).mul(100.0f/causticscale), t = vec(0, 0.011f, 0.0066f).mul(100.0f/causticscale);
     int tex = (lastmillis/causticmillis)%NUMCAUSTICS;
     float frac = float(lastmillis%causticmillis)/causticmillis;
-    loopi(2)
+    for(int i = 0; i < 2; ++i)
     {
         glActiveTexture_(GL_TEXTURE0+tmu+i);
         glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%NUMCAUSTICS]->id);

@@ -165,7 +165,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         { 130, "#version 130\n" },
         { 120, "#version 120\n" }
     };
-    for(int i = 0; i < (sizeof(glslversions)/sizeof(glslversions[0])); ++i)
+    for(int i = 0; i < int(sizeof(glslversions)/sizeof(glslversions[0])); ++i)
     {
         if(glslversion >= glslversions[i].version)
         {

@@ -783,11 +783,11 @@ stainrenderer stains[] =
 void initstains()
 {
     if(initing) return;
-    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stains[i].init(maxstaintris);
     }
-    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         loadprogress = float(i+1)/(sizeof(stains)/sizeof(stains[0]));
         stains[i].preload();
@@ -797,7 +797,7 @@ void initstains()
 
 void clearstains()
 {
-    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stains[i].clearstains();
     }
@@ -808,7 +808,7 @@ VARNP(stains, showstains, 0, 1, 1);
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
     bool rendered = false;
-    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stainrenderer &d = stains[i];
         if(d.usegbuffer() != gbuf) continue;
@@ -833,7 +833,7 @@ bool renderstains(int sbuf, bool gbuf, int layer)
 
 void cleanupstains()
 {
-    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stains[i].cleanup();
     }

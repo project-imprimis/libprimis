@@ -898,11 +898,11 @@ void initparticles()
     if(!particlenotextureshader) particlenotextureshader = lookupshaderbyname("particlenotexture");
     if(!particlesoftshader) particlesoftshader = lookupshaderbyname("particlesoft");
     if(!particletextshader) particletextshader = lookupshaderbyname("particletext");
-    for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->init(parts[i]->type&PT_FEW ? min(fewparticles, maxparticles) : maxparticles);
     }
-    for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         loadprogress = float(i+1)/(sizeof(parts)/sizeof(parts[0]));
         parts[i]->preload();
@@ -912,7 +912,7 @@ void initparticles()
 
 void clearparticles()
 {
-    for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->reset();
     }
@@ -921,7 +921,7 @@ void clearparticles()
 
 void cleanupparticles()
 {
-    for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->cleanup();
     }
@@ -929,7 +929,7 @@ void cleanupparticles()
 
 void removetrackedparticles(physent *owner)
 {
-    for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->resettracked(owner);
     }
@@ -958,7 +958,7 @@ void renderparticles(int layer)
     //want to debug BEFORE the lastpass render (that would delete particles)
     if(dbgparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
     {
-        for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+        for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
         {
             parts[i]->debuginfo();
         }
@@ -969,7 +969,7 @@ void renderparticles(int layer)
          flagmask = PT_LERP|PT_MOD|PT_BRIGHT|PT_NOTEX|PT_SOFT|PT_SHADER,
          excludemask = layer == ParticleLayer_All ? ~0 : (layer != ParticleLayer_NoLayer ? PT_NOLAYER : 0);
 
-    for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         partrenderer *p = parts[i];
         if((p->type&PT_NOLAYER) == excludemask || !p->haswork())
@@ -1442,7 +1442,7 @@ void updateparticles()
     }
     else canemit = false;
 
-    for(int i = 0; i < (sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->update();
     }

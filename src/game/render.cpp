@@ -192,7 +192,7 @@ namespace game
 
     void preloadplayermodel()
     {
-        loopi(sizeof(playermodels)/sizeof(playermodels[0]))
+        for(int i = 0; i < int(sizeof(playermodels)/sizeof(playermodels[0])); ++i)
         {
             const playermodelinfo *mdl = getplayermodelinfo(i);
             if(!mdl) break;
@@ -209,7 +209,13 @@ namespace game
 
     void findanims(const char *pattern, vector<int> &anims)
     {
-        loopi(sizeof(animnames)/sizeof(animnames[0])) if(matchanim(animnames[i], pattern)) anims.add(i);
+        for(int i = 0; i < int(sizeof(animnames)/sizeof(animnames[0])); ++i)
+        {
+            if(matchanim(animnames[i], pattern))
+            {
+                anims.add(i);
+            }
+        }
     }
 
     //============================================ 3p/other player rendering =======================//
@@ -469,7 +475,10 @@ namespace game
         if(!previewent)
         {
             previewent = new gameent;
-            loopi(NUMGUNS) previewent->ammo[i] = 1;
+            for(int i = 0; i < NUMGUNS; ++i)
+            {
+                previewent->ammo[i] = 1;
+            }
         }
         float height = previewent->eyeheight + previewent->aboveeye,
               zrad = height/2;
@@ -509,7 +518,7 @@ namespace game
     void preloadweapons()
     {
         const playermodelinfo &mdl = getplayermodelinfo(player1);
-        loopi(NUMGUNS)
+        for(int i = 0; i < NUMGUNS; ++i)
         {
             const char *file = guns[i].file;
             if(!file) continue;

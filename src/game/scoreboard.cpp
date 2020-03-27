@@ -16,7 +16,10 @@ namespace game
 
     void clearteaminfo()
     {
-        loopi(MAXTEAMS) teaminfos[i].reset();
+        for(int i = 0; i < MAXTEAMS; ++i)
+        {
+            teaminfos[i].reset();
+        }
     }
 
     void setteaminfo(int team, int frags)
@@ -68,12 +71,12 @@ namespace game
         else
         {
             int bestfrags = INT_MIN;
-            loopi(MAXTEAMS)
+            for(int i = 0; i < MAXTEAMS; ++i)
             {
                 teaminfo &t = teaminfos[i];
                 bestfrags = max(bestfrags, t.frags);
             }
-            loopi(MAXTEAMS)
+            for(int i = 0; i < MAXTEAMS; ++i)
             {
                 teaminfo &t = teaminfos[i];
                 if(t.frags >= bestfrags) best.add(1+i);
@@ -85,7 +88,10 @@ namespace game
 
     static void groupplayers()
     {
-        loopi(1+MAXTEAMS) teamplayers[i].setsize(0);
+        for(int i = 0; i < 1+MAXTEAMS; ++i)
+        {
+            teamplayers[i].setsize(0);
+        }
         spectators.setsize(0);
         loopv(players)
         {
@@ -95,13 +101,19 @@ namespace game
             int team = MODE_TEAMMODE && VALID_TEAM(o->team) ? o->team : 0;
             teamplayers[team].add(o);
         }
-        loopi(1+MAXTEAMS) teamplayers[i].sort(playersort);
+        for(int i = 0; i < 1+MAXTEAMS; ++i)
+        {
+            teamplayers[i].sort(playersort);
+        }
         spectators.sort(playersort);
     }
 
     void removegroupedplayer(gameent *d)
     {
-        loopi(1+MAXTEAMS) teamplayers[i].removeobj(d);
+        for(int i = 0; i < 1+MAXTEAMS; ++i)
+        {
+            teamplayers[i].removeobj(d);
+        }
         spectators.removeobj(d);
     }
 
