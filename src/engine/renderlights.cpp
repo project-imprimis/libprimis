@@ -42,9 +42,21 @@ void setupbloom(int w, int h)
     bloomw = w;
     bloomh = h;
 
-    loopi(5) if(!bloomtex[i]) glGenTextures(1, &bloomtex[i]);
+    for(int i = 0; i < 5; ++i)
+    {
+        if(!bloomtex[i])
+        {
+            glGenTextures(1, &bloomtex[i]);
+        }
+    }
 
-    loopi(5) if(!bloomfbo[i]) glGenFramebuffers_(1, &bloomfbo[i]);
+    for(int i = 0; i < 5; ++i)
+    {
+        if(!bloomfbo[i])
+        {
+            glGenFramebuffers_(1, &bloomfbo[i]);
+        }
+    }
 
     bloomformat = gethdrformat(bloomprec);
     createtexture(bloomtex[0], max(gw/2, bloomw), max(gh/2, bloomh), NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
@@ -70,7 +82,7 @@ void setupbloom(int w, int h)
     static const float grayf[12] = { 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f };
     createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, hasTF ? (const void *)grayf : (const void *)gray, 3, 1, hasTF ? (hasTRG ? GL_R16F : GL_RGB16F) : (hasTRG ? GL_R16 : GL_RGB16));
 
-    loopi(5 + (bloomformat != GL_RGB ? 1 : 0))
+    for(int i = 0; i < (5 + (bloomformat != GL_RGB ? 1 : 0)); ++i)
     {
         glBindFramebuffer_(GL_FRAMEBUFFER, bloomfbo[i]);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i==4 ? GL_TEXTURE_2D : GL_TEXTURE_RECTANGLE, bloomtex[i], 0);
@@ -85,8 +97,22 @@ void setupbloom(int w, int h)
 void cleanupbloom()
 {
     if(bloompbo) { glDeleteBuffers_(1, &bloompbo); bloompbo = 0; }
-    loopi(6) if(bloomfbo[i]) { glDeleteFramebuffers_(1, &bloomfbo[i]); bloomfbo[i] = 0; }
-    loopi(6) if(bloomtex[i]) { glDeleteTextures(1, &bloomtex[i]); bloomtex[i] = 0; }
+    for(int i = 0; i < 6; ++i)
+    {
+        if(bloomfbo[i])
+        {
+            glDeleteFramebuffers_(1, &bloomfbo[i]);
+            bloomfbo[i] = 0;
+        }
+    }
+    for(int i = 0; i < 6; ++i)
+    {
+        if(bloomtex[i])
+        {
+            glDeleteTextures(1, &bloomtex[i]);
+            bloomtex[i] = 0;
+        }
+    }
     bloomw = bloomh = -1;
     lasthdraccum = 0;
 }
@@ -187,7 +213,7 @@ void setupao(int w, int h)
     GLenum format = aoprec && hasTRG ? GL_R8 : GL_RGBA8,
            packformat = aobilateral && aopackdepth ? (aodepthformat ? GL_RG16F : GL_RGBA8) : format;
     int packfilter = upscale && aopackdepth && !aodepthformat ? 0 : 1;
-    loopi(upscale ? 3 : 2)
+    for(int i = 0; i < (upscale ? 3 : 2); ++i)
     {
         if(!aotex[i]) glGenTextures(1, &aotex[i]);
         if(!aofbo[i]) glGenFramebuffers_(1, &aofbo[i]);
@@ -222,9 +248,27 @@ void setupao(int w, int h)
 
 void cleanupao()
 {
-    loopi(4) if(aofbo[i]) { glDeleteFramebuffers_(1, &aofbo[i]); aofbo[i] = 0; }
-    loopi(4) if(aotex[i]) { glDeleteTextures(1, &aotex[i]); aotex[i] = 0; }
-    if(aonoisetex) { glDeleteTextures(1, &aonoisetex); aonoisetex = 0; }
+    for(int i = 0; i < 4; ++i)
+    {
+        if(aofbo[i])
+        {
+            glDeleteFramebuffers_(1, &aofbo[i]);
+            aofbo[i] = 0;
+        }
+    }
+    for(int i = 0; i < 4; ++i)
+    {
+        if(aotex[i])
+        {
+            glDeleteTextures(1, &aotex[i]);
+            aotex[i] = 0;
+        }
+    }
+    if(aonoisetex)
+    {
+        glDeleteTextures(1, &aonoisetex);
+        aonoisetex = 0;
+    }
     aow = aoh = -1;
 
     clearaoshaders();
@@ -329,37 +373,58 @@ void renderao()
 
     if(aobilateral)
     {
-        if(aoreduce && aobilateralupscale) loopi(2)
+        if(aoreduce && aobilateralupscale)
         {
-            setbilateralshader(aobilateral, i, aobilateraldepth);
-            glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[i+1]);
-            glViewport(0, 0, vieww, i ? viewh : aoh);
-            glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i]);
-            glActiveTexture_(GL_TEXTURE1);
-            if(msaasamples) glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
-            else glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
-            glActiveTexture_(GL_TEXTURE0);
-            screenquad(vieww, viewh, i ? vieww : aow, aoh);
+            for(int i = 0; i < 2; ++i)
+            {
+                setbilateralshader(aobilateral, i, aobilateraldepth);
+                glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[i+1]);
+                glViewport(0, 0, vieww, i ? viewh : aoh);
+                glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i]);
+                glActiveTexture_(GL_TEXTURE1);
+                if(msaasamples)
+                {
+                    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
+                }
+                else
+                {
+                    glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
+                }
+                glActiveTexture_(GL_TEXTURE0);
+                screenquad(vieww, viewh, i ? vieww : aow, aoh);
+            }
         }
-        else loopi(2 + 2*aoiter)
+        else
         {
-            setbilateralshader(aobilateral, i%2, aobilateraldepth);
-            glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
-            glViewport(0, 0, aow, aoh);
-            glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i%2]);
-            glActiveTexture_(GL_TEXTURE1);
-            if(linear) glBindTexture(GL_TEXTURE_RECTANGLE, aotex[3]);
-            else if(msaasamples) glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
-            else glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
-            glActiveTexture_(GL_TEXTURE0);
-            screenquad(vieww, viewh);
+            for(int i = 0; i < 2 + 2*aoiter; ++i)
+            {
+                setbilateralshader(aobilateral, i%2, aobilateraldepth);
+                glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
+                glViewport(0, 0, aow, aoh);
+                glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i%2]);
+                glActiveTexture_(GL_TEXTURE1);
+                if(linear)
+                {
+                    glBindTexture(GL_TEXTURE_RECTANGLE, aotex[3]);
+                }
+                else if(msaasamples)
+                {
+                    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msdepthtex);
+                }
+                else
+                {
+                    glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
+                }
+                glActiveTexture_(GL_TEXTURE0);
+                screenquad(vieww, viewh);
+            }
         }
     }
     else if(aoblur)
     {
         float blurweights[MAXBLURRADIUS+1], bluroffsets[MAXBLURRADIUS+1];
         setupblurkernel(aoblur, blurweights, bluroffsets);
-        loopi(2 + 2*aoiter)
+        for(int i = 0; i < 2+2*aoiter; ++i)
         {
             glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
             glViewport(0, 0, aow, aoh);
@@ -377,8 +442,22 @@ void renderao()
 
 void cleanupscale()
 {
-    loopi(2) if(scalefbo[i]) { glDeleteFramebuffers_(1, &scalefbo[i]); scalefbo[i] = 0; }
-    loopi(2) if(scaletex[i]) { glDeleteTextures(1, &scaletex[i]); scaletex[i] = 0; }
+    for(int i = 0; i < 2; ++i)
+    {
+        if(scalefbo[i])
+        {
+            glDeleteFramebuffers_(1, &scalefbo[i]);
+            scalefbo[i] = 0;
+        }
+    }
+    for(int i = 0; i < 2; ++i)
+    {
+        if(scaletex[i])
+        {
+            glDeleteTextures(1, &scaletex[i]);
+            scaletex[i] = 0;
+        }
+    }
     scalew = scaleh = -1;
 }
 
@@ -389,7 +468,7 @@ void setupscale(int sw, int sh, int w, int h)
     scalew = w;
     scaleh = h;
 
-    loopi(gscalecubic ? 2 : 1)
+    for(int i = 0; i < (gscalecubic ? 2 : 1); ++i)
     {
         if(!scaletex[i]) glGenTextures(1, &scaletex[i]);
         if(!scalefbo[i]) glGenFramebuffers_(1, &scalefbo[i]);
@@ -654,7 +733,7 @@ void setupmsbuffer(int w, int h)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | (ghasstencil ? GL_STENCIL_BUFFER_BIT : 0));
 
     msaapositions.setsize(0);
-    loopi(msaasamples)
+    for(int i = 0; i < msaasamples; ++i)
     {
         GLfloat vals[2];
         glGetMultisamplefv_(GL_SAMPLE_POSITION, i, vals);
@@ -1186,7 +1265,7 @@ void processhdr(GLuint outfbo, int aa)
     {
         float blurweights[MAXBLURRADIUS+1], bluroffsets[MAXBLURRADIUS+1];
         setupblurkernel(bloomblur, blurweights, bluroffsets);
-        loopi(2 + 2*bloomiter)
+        for(int i = 0; i < (2 + 2*bloomiter); ++i)
         {
             glBindFramebuffer_(GL_FRAMEBUFFER, b1fbo);
             glViewport(0, 0, b1w, b1h);
@@ -1400,9 +1479,12 @@ void setupradiancehints()
 {
     GLenum rhformat = hasTF && rhprec >= 1 ? GL_RGBA16F : GL_RGBA8;
 
-    loopi(!rhrect && rhcache ? 8 : 4)
+    for(int i = 0; i < (!rhrect && rhcache ? 8 : 4); ++i)
     {
-        if(!rhtex[i]) glGenTextures(1, &rhtex[i]);
+        if(!rhtex[i])
+        {
+            glGenTextures(1, &rhtex[i]);
+        }
         create3dtexture(rhtex[i], rhgrid+2*rhborder, rhgrid+2*rhborder, (rhgrid+2*rhborder)*rhsplits, NULL, 7, 1, rhformat);
         if(rhborder)
         {
@@ -1417,15 +1499,24 @@ void setupradiancehints()
     if(!rhfbo) glGenFramebuffers_(1, &rhfbo);
     glBindFramebuffer_(GL_FRAMEBUFFER, rhfbo);
 
-    if(rhrect) loopi(4)
+    if(rhrect)
     {
-        if(!rhrb[i]) glGenRenderbuffers_(1, &rhrb[i]);
-        glBindRenderbuffer_(GL_RENDERBUFFER, rhrb[i]);
-        glRenderbufferStorage_(GL_RENDERBUFFER, rhformat, (rhgrid + 2*rhborder)*(rhgrid + 2*rhborder), (rhgrid + 2*rhborder)*rhsplits);
-        glBindRenderbuffer_(GL_RENDERBUFFER, 0);
-        glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, rhrb[i]);
+        for(int i = 0; i < 4; ++i)
+        {
+            if(!rhrb[i]) glGenRenderbuffers_(1, &rhrb[i]);
+            glBindRenderbuffer_(GL_RENDERBUFFER, rhrb[i]);
+            glRenderbufferStorage_(GL_RENDERBUFFER, rhformat, (rhgrid + 2*rhborder)*(rhgrid + 2*rhborder), (rhgrid + 2*rhborder)*rhsplits);
+            glBindRenderbuffer_(GL_RENDERBUFFER, 0);
+            glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, rhrb[i]);
+        }
     }
-    else loopi(4) glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_3D, rhtex[i], 0, 0);
+    else
+    {
+        for(int i = 0; i < 4; ++i)
+        {
+            glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_3D, rhtex[i], 0, 0);
+        }
+    }
 
     static const GLenum drawbufs[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
     glDrawBuffers_(4, drawbufs);
@@ -1467,13 +1558,45 @@ void cleanupradiancehints()
 {
     clearradiancehintscache();
 
-    loopi(8) if(rhtex[i]) { glDeleteTextures(1, &rhtex[i]); rhtex[i] = 0; }
-    loopi(4) if(rhrb[i]) { glDeleteRenderbuffers_(1, &rhrb[i]); rhrb[i] = 0; }
-    if(rhfbo) { glDeleteFramebuffers_(1, &rhfbo); rhfbo = 0; }
-    if(rsmdepthtex) { glDeleteTextures(1, &rsmdepthtex); rsmdepthtex = 0; }
-    if(rsmcolortex) { glDeleteTextures(1, &rsmcolortex); rsmcolortex = 0; }
-    if(rsmnormaltex) { glDeleteTextures(1, &rsmnormaltex); rsmnormaltex = 0; }
-    if(rsmfbo) { glDeleteFramebuffers_(1, &rsmfbo); rsmfbo = 0; }
+    for(int i = 0; i < 8; ++i)
+    {
+        if(rhtex[i])
+        {
+            glDeleteTextures(1, &rhtex[i]);
+            rhtex[i] = 0;
+        }
+    }
+    for(int i = 0; i < 4; ++i)
+    {
+        if(rhrb[i])
+        {
+            glDeleteRenderbuffers_(1, &rhrb[i]); rhrb[i] = 0;
+        }
+    }
+    if(rhfbo)
+    {
+        glDeleteFramebuffers_(1, &rhfbo);
+        rhfbo = 0;
+    }
+    if(rsmdepthtex)
+    {
+        glDeleteTextures(1, &rsmdepthtex);
+        rsmdepthtex = 0;
+    }
+    if(rsmcolortex)
+    {
+        glDeleteTextures(1, &rsmcolortex);
+        rsmcolortex = 0;
+    }
+    if(rsmnormaltex)
+    {
+        glDeleteTextures(1, &rsmnormaltex);
+        rsmnormaltex = 0;
+    }
+    if(rsmfbo)
+    {
+        glDeleteFramebuffers_(1, &rsmfbo); rsmfbo = 0;
+    }
 
     clearrhshaders();
 }
@@ -1915,7 +2038,10 @@ static inline void htrecycle(lightbatch &l)
 static inline uint hthash(const lightbatchkey &l)
 {
     uint h = 0;
-    loopi(l.numlights) h = ((h<<8)+h)^l.lights[i];
+    for(int i = 0; i < l.numlights; ++i)
+    {
+        h = ((h<<8)+h)^l.lights[i];
+    }
     return h;
 }
 
@@ -1988,7 +2114,7 @@ struct cascadedshadowmap
 void cascadedshadowmap::setup()
 {
     int size = (csmmaxsize * shadowatlaspacker.w) / SHADOWATLAS_SIZE;
-    loopi(csmsplits)
+    for(int i = 0; i < csmsplits; ++i)
     {
         ushort smx = USHRT_MAX, smy = USHRT_MAX;
         splits[i].idx = -1;
@@ -2047,7 +2173,7 @@ void cascadedshadowmap::getprojmatrix()
     maxz += zmargin;
 
     // compute each split projection matrix
-    loopi(csmsplits)
+    for(int i = 0; i < csmsplits; ++i)
     {
         splitinfo &split = splits[i];
         if(split.idx < 0) continue;
@@ -2080,7 +2206,7 @@ void cascadedshadowmap::getprojmatrix()
 
 void cascadedshadowmap::gencullplanes()
 {
-    loopi(csmsplits)
+    for(int i = 0; i < csmsplits; ++i)
     {
         splitinfo &split = splits[i];
         matrix4 mvp;
@@ -2100,7 +2226,7 @@ void cascadedshadowmap::bindparams()
     static GlobalShaderParam csmtc("csmtc"), csmoffset("csmoffset");
     vec4 *csmtcv = csmtc.reserve<vec4>(csmsplits);
     vec *csmoffsetv = csmoffset.reserve<vec>(csmsplits);
-    loopi(csmsplits)
+    for(int i = 0; i < csmsplits; ++i)
     {   
         cascadedshadowmap::splitinfo &split = splits[i];
         if(split.idx < 0) continue;
@@ -2120,7 +2246,7 @@ int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
 {
     int mask = (1<<csmsplits)-1;
     if(!csmcull) return mask;
-    loopi(csmsplits)
+    for(int i = 0; i < csmsplits; ++i)
     {
         const cascadedshadowmap::splitinfo &split = csm.splits[i];
         int k;
@@ -2152,7 +2278,7 @@ int calcspherecsmsplits(const vec &center, float radius)
 {
     int mask = (1<<csmsplits)-1;
     if(!csmcull) return mask;
-    loopi(csmsplits)
+    for(int i = 0; i < csmsplits; ++i)
     {
         const cascadedshadowmap::splitinfo &split = csm.splits[i];
         int k;
@@ -2306,8 +2432,23 @@ struct radiancehints
     void bindparams();
     void renderslices();
 
-    void clearcache() { loopi(RH_MAXSPLITS) splits[i].clearcache(); }
-    bool allcached() const { loopi(rhsplits) if(splits[i].cached != splits[i].center) return false; return true; }
+    void clearcache()
+    {
+        for(int i = 0; i < RH_MAXSPLITS; ++i)
+        {
+            splits[i].clearcache();
+        }
+    }
+    bool allcached() const {
+        for(int i = 0; i < rhsplits; ++i)
+        {
+            if(splits[i].cached != splits[i].center)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 } rh;
 
 void clearradiancehintscache()
@@ -2333,7 +2474,7 @@ void radiancehints::setup()
 {
     updatesplitdist();
 
-    loopi(rhsplits)
+    for(int i = 0; i < rhsplits; ++i)
     {
         splitinfo &split = splits[i];
 
@@ -2364,7 +2505,7 @@ void radiancehints::bindparams()
 
     static GlobalShaderParam rhtc("rhtc");
     vec4 *rhtcv = rhtc.reserve<vec4>(rhsplits);
-    loopi(rhsplits)
+    for(int i = 0; i < rhsplits; ++i)
     {
         splitinfo &split = splits[i];
         rhtcv[i] = vec4(vec(split.center).mul(-split.scale.x), split.scale.x);//split.bounds*(1 + rhborder*2*0.5f/rhgrid));
@@ -2415,7 +2556,10 @@ void clearvolumetricshaders()
 {
     volumetricshader = NULL;
 
-    loopi(2) volumetricbilateralshader[i] = NULL;
+    for(int i = 0; i < 2; ++i)
+    {
+        volumetricbilateralshader[i] = NULL;
+    }
 }
 
 extern int volsteps, volbilateral, volblur, volreduce;
@@ -2441,10 +2585,13 @@ void loadvolumetricshaders()
 {
     volumetricshader = loadvolumetricshader();
 
-    if(volbilateral) loopi(2)
+    if(volbilateral)
     {
-        DEF_FORMAT_STRING(name, "volumetricbilateral%c%d%d", 'x' + i, volbilateral, volreduce);
-        volumetricbilateralshader[i] = generateshader(name, "volumetricbilateralshader %d %d", volbilateral, volreduce);
+        for(int i = 0; i < 2; ++i)
+        {
+            DEF_FORMAT_STRING(name, "volumetricbilateral%c%d%d", 'x' + i, volbilateral, volreduce);
+            volumetricbilateralshader[i] = generateshader(name, "volumetricbilateralshader %d %d", volbilateral, volreduce);
+        }
     }
 }
 
@@ -2456,7 +2603,7 @@ void setupvolumetric(int w, int h)
     volw = w>>volreduce;
     volh = h>>volreduce;
 
-    loopi(volbilateral || volblur ? 2 : 1)
+    for(int i = 0; i < (volbilateral || volblur ? 2 : 1); ++i)
     {
         if(!voltex[i]) glGenTextures(1, &voltex[i]);
         if(!volfbo[i]) glGenFramebuffers_(1, &volfbo[i]);
@@ -2478,8 +2625,22 @@ void setupvolumetric(int w, int h)
 
 void cleanupvolumetric()
 {
-    loopi(2) if(volfbo[i]) { glDeleteFramebuffers_(1, &volfbo[i]); volfbo[i] = 0; }
-    loopi(2) if(voltex[i]) { glDeleteTextures(1, &voltex[i]); voltex[i] = 0; }
+    for(int i = 0; i < 2; ++i)
+    {
+        if(volfbo[i])
+        {
+            glDeleteFramebuffers_(1, &volfbo[i]);
+            volfbo[i] = 0;
+        }
+    }
+    for(int i = 0; i < 2; ++i)
+    {
+        if(voltex[i])
+        {
+            glDeleteTextures(1, &voltex[i]);
+            voltex[i] = 0;
+        }
+    }
     volw = volh = -1;
 
     clearvolumetricshaders();
@@ -2661,7 +2822,7 @@ namespace lightsphere
         numverts = (stacks+1)*(slices+1);
         verts = new vec[numverts];
         float ds = 1.0f/slices, dt = 1.0f/stacks, t = 1.0f;
-        loopi(stacks+1)
+        for(int i = 0; i < stacks+1; ++i)
         {
             float rho = M_PI*(1-t), s = 0.0f, sinrho = i && i < stacks ? sin(rho) : 0, cosrho = !i ? 1 : (i < stacks ? cos(rho) : -1);
             loopj(slices+1)
@@ -2676,7 +2837,7 @@ namespace lightsphere
         numindices = (stacks-1)*slices*3*2;
         indices = new ushort[numindices];
         GLushort *curindex = indices;
-        loopi(stacks)
+        for(int i = 0; i < stacks; ++i)
         {
             loopk(slices)
             {
@@ -2822,10 +2983,13 @@ static void bindlighttexs(int msaapass = 0, bool transparent = false)
         glActiveTexture_(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_RECTANGLE, aotex[2] ? aotex[2] : aotex[0]);
     }
-    if(useradiancehints()) loopi(4)
+    if(useradiancehints())
     {
-        glActiveTexture_(GL_TEXTURE6 + i);
-        glBindTexture(GL_TEXTURE_3D, rhtex[i]);
+        for(int i = 0; i < 4; ++i)
+        {
+            glActiveTexture_(GL_TEXTURE6 + i);
+            glBindTexture(GL_TEXTURE_3D, rhtex[i]);
+        }
     }
     glActiveTexture_(GL_TEXTURE0);
 }
@@ -3356,20 +3520,23 @@ void rendervolumetric()
 
         glDisable(GL_BLEND);
 
-        if(volbilateral) loopi(2)
+        if(volbilateral)
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, volfbo[(i+1)%2]);
-            glViewport(0, 0, volw, volh);
-            volumetricbilateralshader[i]->set();
-            setbilateralparams(volbilateral, volbilateraldepth);
-            glBindTexture(GL_TEXTURE_RECTANGLE, voltex[i%2]);
-            screenquadoffset(0.25f, 0.25f, vieww, viewh);
+            for(int i = 0; i < 2; ++i)
+            {
+                glBindFramebuffer_(GL_FRAMEBUFFER, volfbo[(i+1)%2]);
+                glViewport(0, 0, volw, volh);
+                volumetricbilateralshader[i]->set();
+                setbilateralparams(volbilateral, volbilateraldepth);
+                glBindTexture(GL_TEXTURE_RECTANGLE, voltex[i%2]);
+                screenquadoffset(0.25f, 0.25f, vieww, viewh);
+            }
         }
         else
         {
             float blurweights[MAXBLURRADIUS+1], bluroffsets[MAXBLURRADIUS+1];
             setupblurkernel(volblur, blurweights, bluroffsets);
-            loopi(2)
+            for(int i = 0; i < 2; ++i)
             {
                 glBindFramebuffer_(GL_FRAMEBUFFER, volfbo[(i+1)%2]);
                 glViewport(0, 0, volw, volh);
@@ -3479,41 +3646,49 @@ void collectlights()
         updatedynlights();
         numdynlights = finddynlights();
     }
-    loopi(numdynlights)
+    for(int i = 0; i < numdynlights; ++i)
     {
         vec o, color, dir;
         float radius;
         int spot, flags;
-        if(!getdynlight(i, o, radius, color, dir, spot, flags)) continue;
-
+        if(!getdynlight(i, o, radius, color, dir, spot, flags))
+        {
+            continue;
+        }
         lightinfo &l = lights.add(lightinfo(o, vec(color).mul(255).max(0), radius, flags, dir, spot));
-        if(l.validscissor()) lightorder.add(lights.length()-1);
+        if(l.validscissor())
+        {
+            lightorder.add(lights.length()-1);
+        }
     }
 
     lightorder.sort(sortlights);
 
     bool queried = false;
-    if(!drawtex && smquery && oqfrags && oqlights) loopv(lightorder)
+    if(!drawtex && smquery && oqfrags && oqlights)
     {
-        int idx = lightorder[i];
-        lightinfo &l = lights[idx];
-        if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= worldsize) continue;
-        vec bbmin, bbmax;
-        l.calcbb(bbmin, bbmax);
-        if(!camera1->o.insidebb(bbmin, bbmax, 2))
+        loopv(lightorder)
         {
-            l.query = newquery(&l);
-            if(l.query)
+            int idx = lightorder[i];
+            lightinfo &l = lights[idx];
+            if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= worldsize) continue;
+            vec bbmin, bbmax;
+            l.calcbb(bbmin, bbmax);
+            if(!camera1->o.insidebb(bbmin, bbmax, 2))
             {
-                if(!queried)
+                l.query = newquery(&l);
+                if(l.query)
                 {
-                    startbb(false);
-                    queried = true;
+                    if(!queried)
+                    {
+                        startbb(false);
+                        queried = true;
+                    }
+                    startquery(l.query);
+                    ivec bo(bbmin), br = ivec(bbmax).sub(bo).add(1);
+                    drawbb(bo, br);
+                    endquery(l.query);
                 }
-                startquery(l.query);
-                ivec bo(bbmin), br = ivec(bbmax).sub(bo).add(1);
-                drawbb(bo, br);
-                endquery(l.query);
             }
         }
     }
@@ -3641,7 +3816,7 @@ static void batchlights(const batchstack &initstack)
             int n = min(groups[g], lighttilebatch);
             groups[g] -= n;
             key.numlights = n;
-            loopi(n)
+            for(int i = 0; i < n; ++i)
             {
                 int best = -1;
                 ushort bestidx = USHRT_MAX;
@@ -3848,7 +4023,10 @@ void radiancehints::renderslices()
         glViewport(0, 0, sw, sh);
         if(rhcache)
         {
-            loopi(4) swap(rhtex[i], rhtex[i+4]);
+            for(int i = 0; i < 4; ++i)
+            {
+                swap(rhtex[i], rhtex[i+4]);
+            }
             uint clearmasks[RH_MAXSPLITS][(RH_MAXGRID+2+31)/32]; 
             memcpy(clearmasks, rhclearmasks[0], sizeof(clearmasks));
             memcpy(rhclearmasks[0], rhclearmasks[1], sizeof(clearmasks));
@@ -3878,15 +4056,21 @@ void radiancehints::renderslices()
     glBindTexture(GL_TEXTURE_RECTANGLE, rsmcolortex);
     glActiveTexture_(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_RECTANGLE, rsmnormaltex);
-    if(rhborder) loopi(4)
+    if(rhborder)
     {
-        glActiveTexture_(GL_TEXTURE3 + i);
-        glBindTexture(GL_TEXTURE_3D, rhtex[i]);
+        for(int i = 0; i < 4; ++i)
+        {
+            glActiveTexture_(GL_TEXTURE3 + i);
+            glBindTexture(GL_TEXTURE_3D, rhtex[i]);
+        }
     }
-    if(rhcache) loopi(4)
+    if(rhcache)
     {
-        glActiveTexture_(GL_TEXTURE7 + i);
-        glBindTexture(GL_TEXTURE_3D, rhtex[rhrect ? i : 4+i]);
+        for(int i = 0; i < 4; ++i)
+        {
+            glActiveTexture_(GL_TEXTURE7 + i);
+            glBindTexture(GL_TEXTURE_3D, rhtex[rhrect ? i : 4+i]);
+        }
     }
     glActiveTexture_(GL_TEXTURE0);
 
@@ -4264,21 +4448,24 @@ void rendercsmshadowmaps()
     shadowmaskbatchedmodels(smdynshadow!=0);
     batchshadowmapmodels();
 
-    loopi(csmsplits) if(csm.splits[i].idx >= 0)
+    for(int i = 0; i < csmsplits; ++i)
     {
-        const shadowmapinfo &sm = shadowmaps[csm.splits[i].idx];
+        if(csm.splits[i].idx >= 0)
+        {
+            const shadowmapinfo &sm = shadowmaps[csm.splits[i].idx];
 
-        shadowmatrix.mul(csm.splits[i].proj, csm.model);
-        GLOBALPARAM(shadowmatrix, shadowmatrix);
+            shadowmatrix.mul(csm.splits[i].proj, csm.model);
+            GLOBALPARAM(shadowmatrix, shadowmatrix);
 
-        glViewport(sm.x, sm.y, sm.size, sm.size);
-        glScissor(sm.x, sm.y, sm.size, sm.size);
-        glClear(GL_DEPTH_BUFFER_BIT);
+            glViewport(sm.x, sm.y, sm.size, sm.size);
+            glScissor(sm.x, sm.y, sm.size, sm.size);
+            glClear(GL_DEPTH_BUFFER_BIT);
 
-        shadowside = i;
+            shadowside = i;
 
-        rendershadowmapworld();
-        rendershadowmodelbatches();
+            rendershadowmapworld();
+            rendershadowmodelbatches();
+        }
     }
 
     clearbatchedmapmodels();
@@ -4686,20 +4873,29 @@ void rendertransparent()
 
         switch(layer)
         {
-        case 0:
-            renderliquidmaterials();
-            break;
-        case 1:
-            renderalphageom(1);
-            break;
-        case 2:
-            if(hasalphavas&2) renderalphageom(2);
-            if(hasmats&2) rendersolidmaterials();
-            renderstains(StainBuffer_Transparent, true, layer+1);
-            break;
-        case 3:
-            rendertransparentmodelbatches(layer+1);
-            break;
+            case 0:
+                renderliquidmaterials();
+                break;
+
+            case 1:
+                renderalphageom(1);
+                break;
+
+            case 2:
+                if(hasalphavas&2)
+                {
+                    renderalphageom(2);
+                }
+                if(hasmats&2)
+                {
+                    rendersolidmaterials();
+                }
+                renderstains(StainBuffer_Transparent, true, layer+1);
+                break;
+
+            case 3:
+                rendertransparentmodelbatches(layer+1);
+                break;
         }
 
         if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -4707,8 +4903,17 @@ void rendertransparent()
         if(msaalight)
         {
             glBindFramebuffer_(GL_FRAMEBUFFER, mshdrfbo);
-            if((ghasstencil && msaaedgedetect) || msaalight==2) loopi(2) renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, i+1, true);
-            else renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, 3, true);
+            if((ghasstencil && msaaedgedetect) || msaalight==2)
+            {
+                for(int i = 0; i < 2; ++i)
+                {
+                    renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, i+1, true);
+                }
+            }
+            else
+            {
+                renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, 3, true);
+            }
         }
         else
         {
@@ -4718,9 +4923,9 @@ void rendertransparent()
 
         switch(layer)
         {
-        case 2:
-            renderstains(StainBuffer_Transparent, false, layer+1);
-            break;
+            case 2:
+                renderstains(StainBuffer_Transparent, false, layer+1);
+                break;
         }
     }
 
@@ -4949,8 +5154,17 @@ void shadegbuffer()
 
     if(msaasamples && (msaalight || !drawtex))
     {
-        if((ghasstencil && msaaedgedetect) || msaalight==2) loopi(2) renderlights(-1, -1, 1, 1, NULL, 0, i+1);
-        else renderlights(-1, -1, 1, 1, NULL, 0, drawtex ? -1 : 3);
+        if((ghasstencil && msaaedgedetect) || msaalight==2)
+        {
+            for(int i = 0; i < 2; ++i)
+            {
+                renderlights(-1, -1, 1, 1, NULL, 0, i+1);
+            }
+        }
+        else
+        {
+            renderlights(-1, -1, 1, 1, NULL, 0, drawtex ? -1 : 3);
+        }
     }
     else renderlights();
     GLERROR;

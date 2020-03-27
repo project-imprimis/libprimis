@@ -312,7 +312,7 @@ void parseglexts()
     {
         GLint numexts = 0;
         glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
-        loopi(numexts)
+        for(int i = 0; i < numexts; ++i)
         {
             const char *ext = (const char *)glGetStringi_(GL_EXTENSIONS, i);
             glexts.add(newstring(ext));
@@ -1659,7 +1659,7 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
     camprojmatrix.transform(vec(bbmax.x, bbmax.y, bbmax.z), v[7]);
     ADDXYSCISSOR(v[7]);
     if(sx1 > sx2 || sy1 > sy2) return false;
-    loopi(8)
+    for(int i = 0; i < 8; ++i)
     {
         const vec4 &p = v[i];
         if(p.z >= -p.w) continue;
@@ -1717,7 +1717,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     camprojmatrix.transform(origin, v[4]);
     ADDXYZSCISSOR(v[4]);
     if(sx1 > sx2 || sy1 > sy2 || sz1 > sz2) return false;
-    loopi(4)
+    for(int i = 0; i < 4; ++i)
     {
         const vec4 &p = v[i];
         if(p.z >= -p.w) continue;
@@ -2019,7 +2019,7 @@ void bindminimap()
 
 void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
 {
-    loopi(8)
+    for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
         if(c[i].children) clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
@@ -2503,36 +2503,42 @@ void drawdamagecompass(int w, int h)
 
     int dirs = 0;
     float size = damagecompasssize/100.0f*min(h, w)/2.0f;
-    loopi(8) if(damagedirs[i]>0)
+    for(int i = 0; i < 8; ++i)
     {
-        if(!dirs)
+        if(damagedirs[i]>0)
         {
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            gle::colorf(1, 0, 0, damagecompassalpha/100.0f);
-            gle::defvertex();
-            gle::begin(GL_TRIANGLES);
+            if(!dirs)
+            {
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                gle::colorf(1, 0, 0, damagecompassalpha/100.0f);
+                gle::defvertex();
+                gle::begin(GL_TRIANGLES);
+            }
+            dirs++;
+
+            float logscale = 32,
+                  scale = log(1 + (logscale - 1)*damagedirs[i]) / log(logscale),
+                  offset = -size/2.0f-min(h, w)/4.0f;
+            matrix4x3 m;
+            m.identity();
+            m.settranslation(w/2, h/2, 0);
+            m.rotate_around_z(i*45*RAD);
+            m.translate(0, offset, 0);
+            m.scale(size*scale);
+
+            gle::attrib(m.transform(vec2(1, 1)));
+            gle::attrib(m.transform(vec2(-1, 1)));
+            gle::attrib(m.transform(vec2(0, 0)));
+
+            // fade in log space so short blips don't disappear too quickly
+            scale -= float(curtime)/damagecompassfade;
+            damagedirs[i] = scale > 0 ? (pow(logscale, scale) - 1) / (logscale - 1) : 0;
         }
-        dirs++;
-
-        float logscale = 32,
-              scale = log(1 + (logscale - 1)*damagedirs[i]) / log(logscale),
-              offset = -size/2.0f-min(h, w)/4.0f;
-        matrix4x3 m;
-        m.identity();
-        m.settranslation(w/2, h/2, 0);
-        m.rotate_around_z(i*45*RAD);
-        m.translate(0, offset, 0);
-        m.scale(size*scale);
-
-        gle::attrib(m.transform(vec2(1, 1)));
-        gle::attrib(m.transform(vec2(-1, 1)));
-        gle::attrib(m.transform(vec2(0, 0)));
-
-        // fade in log space so short blips don't disappear too quickly
-        scale -= float(curtime)/damagecompassfade;
-        damagedirs[i] = scale > 0 ? (pow(logscale, scale) - 1) / (logscale - 1) : 0;
     }
-    if(dirs) gle::end();
+    if(dirs)
+    {
+        gle::end();
+    }
 }
 
 int damageblendmillis = 0;
@@ -2613,8 +2619,13 @@ ICOMMAND(getcrosshair, "i", (int *i),
 
 void writecrosshairs(stream *f)
 {
-    loopi(MAXCROSSHAIRS) if(crosshairs[i] && crosshairs[i]!=notexture)
-        f->printf("loadcrosshair %s %d\n", escapestring(crosshairs[i]->name), i);
+    for(int i = 0; i < MAXCROSSHAIRS; ++i)
+    {
+        if(crosshairs[i] && crosshairs[i]!=notexture)
+        {
+            f->printf("loadcrosshair %s %d\n", escapestring(crosshairs[i]->name), i);
+        }
+    }
     f->printf("\n");
 }
 
@@ -2721,9 +2732,21 @@ void gl_drawhud()
                 }
                 int nextfps[3];
                 getfps(nextfps[0], nextfps[1], nextfps[2]);
-                loopi(3) if(prevfps[i]==curfps[i]) curfps[i] = nextfps[i];
-                if(showfpsrange) draw_textf("fps %d+%d-%d", conw-7*FONTH, conh-FONTH*3/2, curfps[0], curfps[1], curfps[2]);
-                else draw_textf("fps %d", conw-5*FONTH, conh-FONTH*3/2, curfps[0]);
+                for(int i = 0; i < 3; ++i)
+                {
+                    if(prevfps[i]==curfps[i])
+                    {
+                        curfps[i] = nextfps[i];
+                    }
+                }
+                if(showfpsrange)
+                {
+                    draw_textf("fps %d+%d-%d", conw-7*FONTH, conh-FONTH*3/2, curfps[0], curfps[1], curfps[2]);
+                }
+                else
+                {
+                    draw_textf("fps %d", conw-5*FONTH, conh-FONTH*3/2, curfps[0]);
+                }
                 roffset += FONTH;
             }
 
