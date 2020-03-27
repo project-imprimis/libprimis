@@ -169,7 +169,7 @@ struct smd : skelloader<smd>
                     }
                 }
                 tri curtri;
-                loopi(3)
+                for(int i = 0; i < 3; ++i)
                 {
                     char *curbuf;
                     do
@@ -308,7 +308,10 @@ struct smd : skelloader<smd>
                     if(nextframe >= numframes)
                     {
                         databuf<dualquat> framebones = animbones.reserve(skel->numbones * (nextframe + 1 - numframes));
-                        loopi(nextframe - numframes) framebones.put(animbones.getbuf(), skel->numbones);
+                        for(int i = 0; i < nextframe - numframes; ++i)
+                        {
+                            framebones.put(animbones.getbuf(), skel->numbones);
+                        }
                         animbones.addbuf(framebones);
                         animbones.advance(skel->numbones);
                         numframes = nextframe + 1;

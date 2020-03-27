@@ -63,7 +63,7 @@ void resolverinit()
     resultcond = SDL_CreateCond();
 
     SDL_LockMutex(resolvermutex);
-    loopi(RESOLVERTHREADS)
+    for(int i = 0; i < RESOLVERTHREADS; ++i)
     {
         resolverthread &rt = resolverthreads.add();
         rt.query = NULL;
@@ -444,7 +444,7 @@ void pingservers()
 
     static int lastping = 0;
     if(lastping >= servers.length()) lastping = 0;
-    loopi(maxservpings ? min(servers.length(), maxservpings) : servers.length())
+    for(int i = 0; i < (maxservpings ? min(servers.length(), maxservpings) : servers.length()); ++i)
     {
         serverinfo &si = *servers[lastping];
         if(++lastping >= servers.length()) lastping = 0;

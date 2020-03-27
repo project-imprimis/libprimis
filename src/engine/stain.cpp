@@ -207,7 +207,10 @@ struct stainrenderer
         }
         stains = new staininfo[tris];
         maxstains = tris;
-        loopi(StainBuffer_Number) verts[i].init(i == StainBuffer_Transparent ? tris/2 : tris);
+        for(int i = 0; i < StainBuffer_Number; ++i)
+        {
+            verts[i].init(i == StainBuffer_Transparent ? tris/2 : tris);
+        }
     }
 
     void preload()
@@ -228,7 +231,10 @@ struct stainrenderer
     void clearstains()
     {
         startstain = endstain = 0;
-        loopi(StainBuffer_Number) verts[i].clear();
+        for(int i = 0; i < StainBuffer_Number; ++i)
+        {
+            verts[i].clear();
+        }
     }
 
     int freestain()
@@ -263,8 +269,23 @@ struct stainrenderer
             for(d = stains, end = &stains[endstain]; d < end && d->millis <= threshold; d++)
                 cleared[d->owner] = d;
         startstain = d - stains;
-        if(startstain == endstain) loopi(StainBuffer_Number) verts[i].clear();
-        else loopi(StainBuffer_Number) if(cleared[i]) verts[i].clearstains(*cleared[i]);
+        if(startstain == endstain)
+        {
+            for(int i = 0; i < StainBuffer_Number; ++i)
+            {
+                verts[i].clear();
+            }
+        }
+        else
+        {
+            for(int i = 0; i < StainBuffer_Number; ++i)
+            {
+                if(cleared[i])
+                {
+                    verts[i].clearstains(*cleared[i]);
+                }
+            }
+        }
     }
 
     void fadeinstains()
@@ -365,7 +386,10 @@ struct stainrenderer
 
     void cleanup()
     {
-        loopi(StainBuffer_Number) verts[i].cleanup();
+        for(int i = 0; i < StainBuffer_Number; ++i)
+        {
+            verts[i].cleanup();
+        }
     }
 
     void render(int sbuf)
@@ -445,9 +469,12 @@ struct stainrenderer
             stainv = 0.5f*((info>>1)&1);
         }
 
-        loopi(StainBuffer_Number) verts[i].lastvert = verts[i].endvert;
+        for(int i = 0; i < StainBuffer_Number; ++i)
+        {
+            verts[i].lastvert = verts[i].endvert;
+        }
         gentris(worldroot, ivec(0, 0, 0), worldsize>>1);
-        loopi(StainBuffer_Number)
+        for(int i = 0; i < StainBuffer_Number; ++i)
         {
             stainbuffer &buf = verts[i];
             if(buf.endvert == buf.lastvert) continue;
@@ -587,7 +614,7 @@ struct stainrenderer
     {
         materialsurface *matbuf = va->matbuf;
         int matsurfs = va->matsurfs;
-        loopi(matsurfs)
+        for(int i = 0; i < matsurfs; ++i)
         {
             materialsurface &m = matbuf[i];
             if(!IS_CLIPPED(m.material&MATF_VOLUME)) { i += m.skip; continue; }
@@ -614,7 +641,7 @@ struct stainrenderer
 
     void findescaped(cube *c, const ivec &o, int size, int escaped)
     {
-        loopi(8)
+        for(int i = 0; i < 8; ++i)
         {
             cube &cu = c[i];
             if(escaped&(1<<i))
@@ -708,7 +735,7 @@ struct stainrenderer
     void gentris(cube *c, const ivec &o, int size, int escaped = 0)
     {
         int overlap = octaboxoverlap(o, size, bbmin, bbmax);
-        loopi(8)
+        for(int i = 0; i < 8; ++i)
         {
             cube &cu = c[i];
             if(overlap&(1<<i))
@@ -756,8 +783,11 @@ stainrenderer stains[] =
 void initstains()
 {
     if(initing) return;
-    loopi(sizeof(stains)/sizeof(stains[0])) stains[i].init(maxstaintris);
-    loopi(sizeof(stains)/sizeof(stains[0]))
+    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    {
+        stains[i].init(maxstaintris);
+    }
+    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
     {
         loadprogress = float(i+1)/(sizeof(stains)/sizeof(stains[0]));
         stains[i].preload();
@@ -767,7 +797,10 @@ void initstains()
 
 void clearstains()
 {
-    loopi(sizeof(stains)/sizeof(stains[0])) stains[i].clearstains();
+    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    {
+        stains[i].clearstains();
+    }
 }
 
 VARNP(stains, showstains, 0, 1, 1);
@@ -775,7 +808,7 @@ VARNP(stains, showstains, 0, 1, 1);
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
     bool rendered = false;
-    loopi(sizeof(stains)/sizeof(stains[0]))
+    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stainrenderer &d = stains[i];
         if(d.usegbuffer() != gbuf) continue;
@@ -800,7 +833,10 @@ bool renderstains(int sbuf, bool gbuf, int layer)
 
 void cleanupstains()
 {
-    loopi(sizeof(stains)/sizeof(stains[0])) stains[i].cleanup();
+    for(int i = 0; i < (sizeof(stains)/sizeof(stains[0])); ++i)
+    {
+        stains[i].cleanup();
+    }
 }
 
 VARP(maxstaindistance, 1, 512, 10000);

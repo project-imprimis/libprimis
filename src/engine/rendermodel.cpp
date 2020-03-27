@@ -423,12 +423,18 @@ model *loadmodel(const char *name, int i, bool msg)
             DEF_FORMAT_STRING(filename, "media/model/%s", name);
             renderprogress(loadprogress, filename);
         }
-        loopi(NUMMODELTYPES)
+        for(int i = 0; i < NUMMODELTYPES; ++i)
         {
             m = modeltypes[i](name);
-            if(!m) continue;
+            if(!m)
+            {
+                continue;
+            }
             loadingmodel = m;
-            if(m->load()) break;
+            if(m->load())
+            {
+                break;
+            }
             DELETEP(m);
         }
         loadingmodel = NULL;

@@ -89,7 +89,7 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
             fprintf(l, "%s\n", log);
             bool partlines = log[0] != '0';
             int line = 0;
-            loopi(numparts)
+            for(int i = 0; i < numparts; ++i)
             {
                 const char *part = parts[i];
                 int startline = line;
@@ -165,10 +165,13 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         { 130, "#version 130\n" },
         { 120, "#version 120\n" }
     };
-    loopi(sizeof(glslversions)/sizeof(glslversions[0])) if(glslversion >= glslversions[i].version)
+    for(int i = 0; i < (sizeof(glslversions)/sizeof(glslversions[0])); ++i)
     {
-        parts[numparts++] = glslversions[i].header;
-        break;
+        if(glslversion >= glslversions[i].version)
+        {
+            parts[numparts++] = glslversions[i].header;
+            break;
+        }
     }
     if(glslversion < 140)
     {
@@ -361,7 +364,13 @@ static void linkglslprogram(Shader &s, bool msg = true)
             glBindAttribLocation_(s.program, a.loc, a.name);
             attribs |= 1<<a.loc;
         }
-        loopi(gle::MAXATTRIBS) if(!(attribs&(1<<i))) glBindAttribLocation_(s.program, i, gle::attribnames[i]);
+        for(int i = 0; i < gle::MAXATTRIBS; ++i)
+        {
+            if(!(attribs&(1<<i)))
+            {
+                glBindAttribLocation_(s.program, i, gle::attribnames[i]);
+            }
+        }
         if(hasGPU4 && ((glslversion < 330 && (glslversion < 150 || !hasEAL)) || amd_eal_bug)) loopv(s.fragdatalocs)
         {
             FragDataLoc &d = s.fragdatalocs[i];
@@ -377,7 +386,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
     if(success)
     {
         glUseProgram_(s.program);
-        loopi(16)
+        for(int i = 0; i < 16; ++i)
         {
             static const char * const texnames[16] = { "tex0", "tex1", "tex2", "tex3", "tex4", "tex5", "tex6", "tex7", "tex8", "tex9", "tex10", "tex11", "tex12", "tex13", "tex14", "tex15" };
             GLint loc = glGetUniformLocation_(s.program, texnames[i]);
@@ -563,17 +572,23 @@ static void allocglslactiveuniforms(Shader &s)
     GLint numactive = 0;
     glGetProgramiv_(s.program, GL_ACTIVE_UNIFORMS, &numactive);
     string name;
-    loopi(numactive)
+    for(int i = 0; i < numactive; ++i)
     {
         GLsizei namelen = 0;
         GLint size = 0;
         GLenum format = GL_FLOAT_VEC4;
         name[0] = '\0';
         glGetActiveUniform_(s.program, i, sizeof(name)-1, &namelen, &size, &format, name);
-        if(namelen <= 0 || size <= 0) continue;
+        if(namelen <= 0 || size <= 0)
+        {
+            continue;
+        }
         name[clamp(int(namelen), 0, (int)sizeof(name)-2)] = '\0';
         char *brak = strchr(name, '[');
-        if(brak) *brak = '\0';
+        if(brak)
+        {
+            *brak = '\0';
+        }
         setglsluniformformat(s, name, format, size);
     }
 }
@@ -1392,10 +1407,16 @@ GLuint setuppostfx(int w, int h, GLuint outfbo)
         postfxh = h;
     }
 
-    loopi(NUMPOSTFXBINDS) postfxbinds[i] = -1;
+    for(int i = 0; i < NUMPOSTFXBINDS; ++i)
+    {
+        postfxbinds[i] = -1;
+    }
     loopv(postfxtexs) postfxtexs[i].used = -1;
 
-    if(!postfxfb) glGenFramebuffers_(1, &postfxfb);
+    if(!postfxfb)
+    {
+        glGenFramebuffers_(1, &postfxfb);
+    }
     glBindFramebuffer_(GL_FRAMEBUFFER, postfxfb);
     int tex = allocatepostfxtex(0);
     glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
@@ -1571,13 +1592,16 @@ FVAR(blursigma, 0.005f, 0.5f, 2.0f);
 
 void setupblurkernel(int radius, float *weights, float *offsets)
 {
-    if(radius<1 || radius>MAXBLURRADIUS) return;
+    if(radius<1 || radius>MAXBLURRADIUS)
+    {
+        return;
+    }
     float sigma = blursigma*2*radius, total = 1.0f/sigma;
     weights[0] = total;
     offsets[0] = 0;
     // rely on bilinear filtering to sample 2 pixels at once
     // transforms a*X + b*Y into (u+v)*[X*u/(u+v) + Y*(1 - u/(u+v))]
-    loopi(radius)
+    for(int i = 0; i < radius; ++i)
     {
         float weight1 = exp(-((2*i)*(2*i)) / (2*sigma*sigma)) / sigma,
               weight2 = exp(-((2*i+1)*(2*i+1)) / (2*sigma*sigma)) / sigma,
@@ -1587,8 +1611,14 @@ void setupblurkernel(int radius, float *weights, float *offsets)
         offsets[i+1] = offset;
         total += 2*scale;
     }
-    loopi(radius+1) weights[i] /= total;
-    for(int i = radius+1; i <= MAXBLURRADIUS; i++) weights[i] = offsets[i] = 0;
+    for(int i = 0; i < radius+1; ++i)
+    {
+        weights[i] /= total;
+    }
+    for(int i = radius+1; i <= MAXBLURRADIUS; i++)
+    {
+        weights[i] = offsets[i] = 0;
+    }
 }
 
 void setblurshader(int pass, int size, int radius, float *weights, float *offsets, GLenum target)

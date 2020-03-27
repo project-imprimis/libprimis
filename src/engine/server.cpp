@@ -225,30 +225,42 @@ ENetPacket *sendf(int cn, int chan, const char *format, ...)
     while(*format) switch(*format++)
     {
         case 'x':
+        {
             exclude = va_arg(args, int);
             break;
-
+        }
         case 'v':
         {
             int n = va_arg(args, int);
             int *v = va_arg(args, int *);
-            loopi(n) putint(p, v[i]);
+            for(int i = 0; i < n; ++i)
+            {
+                putint(p, v[i]);
+            }
             break;
         }
-
         case 'i':
         {
             int n = isdigit(*format) ? *format++-'0' : 1;
-            loopi(n) putint(p, va_arg(args, int));
+            for(int i = 0; i < n; ++i)
+            {
+                putint(p, va_arg(args, int));
+            }
             break;
         }
         case 'f':
         {
             int n = isdigit(*format) ? *format++-'0' : 1;
-            loopi(n) putfloat(p, (float)va_arg(args, double));
+            for(int i = 0; i < n; ++i)
+            {
+                putfloat(p, (float)va_arg(args, double));
+            }
             break;
         }
-        case 's': sendstring(va_arg(args, const char *), p); break;
+        case 's':
+        {
+            sendstring(va_arg(args, const char *), p); break;
+        }
         case 'm':
         {
             int n = va_arg(args, int);
@@ -283,11 +295,20 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
         case 'i':
         {
             int n = isdigit(*format) ? *format++-'0' : 1;
-            loopi(n) putint(p, va_arg(args, int));
+            for(int i = 0; i < n; ++i)
+            {
+                putint(p, va_arg(args, int));
+            }
             break;
         }
-        case 's': sendstring(va_arg(args, const char *), p); break;
-        case 'l': putint(p, len); break;
+        case 's':
+        {
+            sendstring(va_arg(args, const char *), p); break;
+        }
+        case 'l':
+        {
+            putint(p, len); break;
+        }
     }
     va_end(args);
 

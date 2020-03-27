@@ -28,9 +28,15 @@ vtxarray *visibleva = NULL;
 
 bool isfoggedsphere(float rad, const vec &cv)
 {
-    loopi(4) if(vfcP[i].dist(cv) < -rad) return true;
+    for(int i = 0; i < 4; ++i)
+    {
+        if(vfcP[i].dist(cv) < -rad)
+        {
+            return true;
+        }
+    }
     float dist = vfcP[4].dist(cv);
-    return dist < -rad || dist > vfcDfog + rad;
+    return dist < -rad || dist > vfcDfog + rad; // true if abs(dist) is large
 }
 
 int isvisiblesphere(float rad, const vec &cv)
@@ -38,7 +44,7 @@ int isvisiblesphere(float rad, const vec &cv)
     int v = VFC_FULL_VISIBLE;
     float dist;
 
-    loopi(5)
+    for(int i = 0; i < 5; ++i)
     {
         dist = vfcP[i].dist(cv);
         if(dist < -rad) return VFC_NOT_VISIBLE;
@@ -54,13 +60,25 @@ int isvisiblesphere(float rad, const vec &cv)
 
 static inline int ishiddencube(const ivec &o, int size)
 {
-    loopi(5) if(o.dist(vfcP[i]) < -vfcDfar[i]*size) return true;
+    for(int i = 0; i < 5; ++i)
+    {
+        if(o.dist(vfcP[i]) < -vfcDfar[i]*size)
+        {
+            return true;
+        }
+    }
     return false;
 }
 
 static inline int isfoggedcube(const ivec &o, int size)
 {
-    loopi(4) if(o.dist(vfcP[i]) < -vfcDfar[i]*size) return true;
+    for(int i = 0; i < 4; ++i)
+    {
+        if(o.dist(vfcP[i]) < -vfcDfar[i]*size)
+        {
+            return true;
+        }
+    }
     float dist = o.dist(vfcP[4]);
     return dist < -vfcDfar[4]*size || dist > vfcDfog - vfcDnear[4]*size;
 }
@@ -70,7 +88,7 @@ int isvisiblecube(const ivec &o, int size)
     int v = VFC_FULL_VISIBLE;
     float dist;
 
-    loopi(5)
+    for(int i = 0; i < 5; ++i)
     {
         dist = o.dist(vfcP[i]);
         if(dist < -vfcDfar[i]*size) return VFC_NOT_VISIBLE;
@@ -89,7 +107,7 @@ int isvisiblebb(const ivec &bo, const ivec &br)
     int v = VFC_FULL_VISIBLE;
     float dnear, dfar;
 
-    loopi(5)
+    for(int i = 0; i < 5; ++i)
     {
         const plane &p = vfcP[i];
         dnear = dfar = bo.dist(p);
@@ -137,12 +155,18 @@ void sortvisiblevas()
 {
     visibleva = NULL;
     vtxarray **last = &visibleva;
-    loopi(VASORTSIZE) if(vasort[i])
+    for(int i = 0; i < VASORTSIZE; ++i)
     {
-        vtxarray *va = vasort[i];
-        *last = va;
-        while(va->next) va = va->next;
-        last = &va->next;
+        if(vasort[i])
+        {
+            vtxarray *va = vasort[i];
+            *last = va;
+            while(va->next)
+            {
+                va = va->next;
+            }
+            last = &va->next;
+        }
     }
 }
 
@@ -186,7 +210,7 @@ void findvisiblevas()
 
 void calcvfcD()
 {
-    loopi(5)
+    for(int i = 0; i < 5; ++i)
     {
         plane &p = vfcP[i];
         vfcDnear[i] = vfcDfar[i] = 0;
@@ -264,7 +288,10 @@ struct queryframe
 
     void flip()
     {
-        loopi(cur) queries[i].owner = NULL;
+        for(int i = 0; i < cur; ++i)
+        {
+            queries[i].owner = NULL;
+        }
         for(; defer > 0 && max < MAXQUERY; defer--)
         {
             queries[max].owner = NULL;
@@ -292,11 +319,17 @@ struct queryframe
         return query;
     }
 
-    void reset() { loopi(max) queries[i].owner = NULL; }
+    void reset()
+    {
+        for(int i = 0; i < max; ++i)
+        {
+            queries[i].owner = NULL;
+        }
+    }
 
     void cleanup()
     {
-        loopi(max)
+        for(int i = 0; i < max; ++i)
         {
             glDeleteQueries_(1, &queries[i].id);
             queries[i].owner = NULL;
@@ -326,12 +359,18 @@ occludequery *newquery(void *owner)
 
 void resetqueries()
 {
-    loopi(MAXQUERYFRAMES) queryframes[i].reset();
+    for(int i = 0; i < MAXQUERYFRAMES; ++i)
+    {
+        queryframes[i].reset();
+    }
 }
 
 void clearqueries()
 {
-    loopi(MAXQUERYFRAMES) queryframes[i].cleanup();
+    for(int i = 0; i < MAXQUERYFRAMES; ++i)
+    {
+        queryframes[i].cleanup();
+    }
 }
 
 VARF(oqany, 0, 0, 2, clearqueries());
@@ -380,7 +419,10 @@ static void setupbb()
         glGenBuffers_(1, &bbvbo);
         gle::bindvbo(bbvbo);
         vec verts[8];
-        loopi(8) verts[i] = vec(i&1, (i>>1)&1, (i>>2)&1);
+        for(int i = 0; i < 8; ++i)
+        {
+            verts[i] = vec(i&1, (i>>1)&1, (i>>2)&1);
+        }
         glBufferData_(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
         gle::clearvbo();
     }
@@ -821,13 +863,16 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
     float scale = (size - 2*border)/size, bias = border / (float)(size - border);
     // check if cone enclosing side would cross frustum plane
     scale = 2 / (scale*scale + 2);
-    loopi(5) if(vfcP[i].dist(lightpos) <= -0.03125f)
+    for(int i = 0; i < 5; ++i)
     {
-        vec n = vec(vfcP[i]).div(lightradius);
-        float len = scale*n.squaredlen();
-        if(n.x*n.x > len) sides &= n.x < 0 ? ~(1<<0) : ~(2 << 0);
-        if(n.y*n.y > len) sides &= n.y < 0 ? ~(1<<2) : ~(2 << 2);
-        if(n.z*n.z > len) sides &= n.z < 0 ? ~(1<<4) : ~(2 << 4);
+        if(vfcP[i].dist(lightpos) <= -0.03125f)
+        {
+            vec n = vec(vfcP[i]).div(lightradius);
+            float len = scale*n.squaredlen();
+            if(n.x*n.x > len) sides &= n.x < 0 ? ~(1<<0) : ~(2 << 0);
+            if(n.y*n.y > len) sides &= n.y < 0 ? ~(1<<2) : ~(2 << 2);
+            if(n.z*n.z > len) sides &= n.z < 0 ? ~(1<<4) : ~(2 << 4);
+        }
     }
     if (vfcP[4].dist(lightpos) >= vfcDfog + 0.03125f)
     {
@@ -850,7 +895,7 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
     dp = p.z + p.x, dn = p.z - p.x, ap = fabs(dp), an = fabs(dn);
     masks[4] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0));
     masks[5] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0));
-    loopi(4)
+    for(int i = 0; i < 4; ++i)
     {
         vec n;
         switch(i)
@@ -904,12 +949,15 @@ void sortshadowvas()
 {
     shadowva = NULL;
     vtxarray **last = &shadowva;
-    loopi(VASORTSIZE) if(vasort[i])
+    for(int i = 0; i < VASORTSIZE; ++i)
     {
-        vtxarray *va = vasort[i];
-        *last = va;
-        while(va->rnext) va = va->rnext;
-        last = &va->rnext;
+        if(vasort[i])
+        {
+            vtxarray *va = vasort[i];
+            *last = va;
+            while(va->rnext) va = va->rnext;
+            last = &va->rnext;
+        }
     }
 }
 
@@ -1231,7 +1279,7 @@ static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, i
     {
         firstbatch = geombatches.length();
         numbatches = numtexs;
-        loopi(numtexs-1)
+        for(int i = 0; i < numtexs-1; ++i)
         {
             geombatches.add(geombatch(texs[i], offset, va)).next = i+1;
             offset += texs[i].length;
@@ -2108,7 +2156,10 @@ struct decalrenderer
 
     decalrenderer() : vbuf(0), colorscale(1, 1, 1), globals(-1), tmu(-1), slot(NULL)
     {
-        loopi(7) textures[i] = 0;
+        for(int i = 0; i < 7; ++i)
+        {
+            textures[i] = 0;
+        }
     }
 };
 
@@ -2154,7 +2205,7 @@ static void mergedecals(decalrenderer &cur, vtxarray *va)
     {
         firstbatch = decalbatches.length();
         numbatches = numtexs;
-        loopi(numtexs-1)
+        for(int i = 0; i < numtexs-1; ++i)
         {
             decalbatches.add(decalbatch(texs[i], offset, va)).next = i+1;
             offset += texs[i].length;
@@ -2506,34 +2557,43 @@ struct shadowdrawinfo
 static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[6])
 {
     int numindexes = 0;
-    loopi(sides) numindexes += shadowtris[i].length();
-    if(!numindexes) return;
+    for(int i = 0; i < sides; ++i)
+    {
+        numindexes += shadowtris[i].length();
+    }
+    if(!numindexes)
+    {
+        return;
+    }
 
     GLuint ebuf = 0, vbuf = 0;
     glGenBuffers_(1, &ebuf);
     glGenBuffers_(1, &vbuf);
     ushort *indexes = new ushort[numindexes];
     int offset = 0;
-    loopi(sides) if(shadowtris[i].length())
+    for(int i = 0; i < sides; ++i)
     {
-        if(draws[i].last < 0) m.draws[i] = shadowdraws.length();
-        else shadowdraws[draws[i].last].next = shadowdraws.length();
-        draws[i].last = shadowdraws.length();
+        if(shadowtris[i].length())
+        {
+            if(draws[i].last < 0) m.draws[i] = shadowdraws.length();
+            else shadowdraws[draws[i].last].next = shadowdraws.length();
+            draws[i].last = shadowdraws.length();
 
-        shadowdraw &d = shadowdraws.add();
-        d.ebuf = ebuf;
-        d.vbuf = vbuf;
-        d.offset = offset;
-        d.tris = shadowtris[i].length()/3;
-        d.minvert = draws[i].minvert;
-        d.maxvert = draws[i].maxvert;
-        d.next = -1;
+            shadowdraw &d = shadowdraws.add();
+            d.ebuf = ebuf;
+            d.vbuf = vbuf;
+            d.offset = offset;
+            d.tris = shadowtris[i].length()/3;
+            d.minvert = draws[i].minvert;
+            d.maxvert = draws[i].maxvert;
+            d.next = -1;
 
-        memcpy(indexes + offset, shadowtris[i].getbuf(), shadowtris[i].length()*sizeof(ushort));
-        offset += shadowtris[i].length();
+            memcpy(indexes + offset, shadowtris[i].getbuf(), shadowtris[i].length()*sizeof(ushort));
+            offset += shadowtris[i].length();
 
-        shadowtris[i].setsize(0);
-        draws[i].reset();
+            shadowtris[i].setsize(0);
+            draws[i].reset();
+        }
     }
 
     gle::bindebo(ebuf);
@@ -2582,7 +2642,10 @@ static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo dra
 
 static void genshadowmeshtris(shadowmesh &m, int sides, shadowdrawinfo draws[6], ushort *edata, int numtris, vertex *vdata)
 {
-    for(int j = 0; j < 3*numtris; j += 3) addshadowmeshtri(m, sides, draws, vdata[edata[j]].pos, vdata[edata[j+1]].pos, vdata[edata[j+2]].pos);
+    for(int j = 0; j < 3*numtris; j += 3)
+    {
+        addshadowmeshtri(m, sides, draws, vdata[edata[j]].pos, vdata[edata[j+1]].pos, vdata[edata[j+2]].pos);
+    }
 }
 
 static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draws[6])

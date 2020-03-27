@@ -512,12 +512,21 @@ struct ImageData
         if(!align) return w*h*bpp;
         int lw = w, lh = h,
             size = 0;
-        loopi(levels)
+        for(int i = 0; i < levels; ++i)
         {
-            if(lw<=0) lw = 1;
-            if(lh<=0) lh = 1;
+            if(lw<=0)
+            {
+                lw = 1;
+            }
+            if(lh<=0)
+            {
+                lh = 1;
+            }
             size += ((lw+align-1)/align)*((lh+align-1)/align)*bpp;
-            if(lw*lh==1) break;
+            if(lw*lh==1)
+            {
+                break;
+            }
             lw >>= 1;
             lh >>= 1;
         }

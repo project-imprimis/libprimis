@@ -281,9 +281,12 @@ struct editor
         b->clear(NULL);
         int sx, sy, ex, ey;
         region(sx, sy, ex, ey);
-        loopi(1+ey-sy)
+        for(int i = 0; i < 1+ey-sy; ++i)
         {
-            if(b->maxy != -1 && b->lines.length() >= b->maxy) break;
+            if(b->maxy != -1 && b->lines.length() >= b->maxy)
+            {
+                break;
+            }
             int y = sy+i;
             char *line = lines[y].text;
             int len = lines[y].len;
@@ -321,7 +324,7 @@ struct editor
         vector<char> buf;
         int sx, sy, ex, ey;
         region(sx, sy, ex, ey);
-        loopi(1+ey-sy)
+        for(int i = 0; i < 1+ey-sy; ++i)
         {
             int y = sy+i;
             char *line = lines[y].text;
@@ -342,7 +345,10 @@ struct editor
 
     void removelines(int start, int count)
     {
-        loopi(count) lines[start+i].clear();
+        for(int i = 0; i < count; ++i)
+        {
+            lines[start+i].clear();
+        }
         lines.remove(start, count);
     }
 
@@ -538,7 +544,10 @@ struct editor
 
     void input(const char *str, int len)
     {
-        loopi(len) insert(str[i]);
+        for(int i = 0; i < len; ++i)
+        {
+            insert(str[i]);
+        }
     }
 
     void hit(int hitx, int hity, bool dragged)

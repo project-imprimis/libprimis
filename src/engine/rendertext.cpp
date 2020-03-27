@@ -84,8 +84,11 @@ void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *off
 
 void fontskip(int *n)
 {
-    if(!fontdef) return;
-    loopi(max(*n, 1))
+    if(!fontdef)
+    {
+        return;
+    }
+    for(int i = 0; i < max(*n, 1); ++i)
     {
         font::charinfo &c = fontdef->chars.add();
         c.x = c.y = c.w = c.h = c.offsetx = c.offsety = c.advance = 0;
