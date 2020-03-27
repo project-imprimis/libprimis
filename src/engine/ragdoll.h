@@ -14,7 +14,7 @@ struct ragdollskel
         {
             for(int i = 0; i < 3; ++i)
             {
-                loopj(3)
+                for(int j = 0; j < 3; ++j)
                 {
                     if(vert[i] == t.vert[j])
                     {

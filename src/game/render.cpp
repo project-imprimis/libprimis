@@ -195,11 +195,20 @@ namespace game
         for(int i = 0; i < int(sizeof(playermodels)/sizeof(playermodels[0])); ++i)
         {
             const playermodelinfo *mdl = getplayermodelinfo(i);
-            if(!mdl) break;
-            if(i != playermodel && (!multiplayer(false) || forceplayermodels)) continue;
+            if(!mdl) //don't preload a model that isn't there
+            {
+                break;
+            }
+            if(i != playermodel && (!multiplayer(false) || forceplayermodels))
+            {
+                continue;
+            }
             if(MODE_TEAMMODE)
             {
-                loopj(MAXTEAMS) preloadmodel(mdl->model[1+j]);
+                for(int j = 0; j < MAXTEAMS; ++j)
+                {
+                    preloadmodel(mdl->model[1+j]);
+                }
             }
             else preloadmodel(mdl->model[0]);
         }
@@ -521,11 +530,14 @@ namespace game
         for(int i = 0; i < NUMGUNS; ++i)
         {
             const char *file = guns[i].file;
-            if(!file) continue;
+            if(!file)
+            {
+                continue;
+            }
             string fname;
             if(MODE_TEAMMODE)
             {
-                loopj(MAXTEAMS)
+                for(int j = 0; j < MAXTEAMS; ++j)
                 {
                     formatstring(fname, "%s/%s", mdl.hudguns[1+j], file);
                     preloadmodel(fname);

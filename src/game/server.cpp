@@ -2185,11 +2185,24 @@ namespace server
         {
             hitinfo &h = hits[i];
             clientinfo *target = getinfo(h.target);
-            if(!target || target->state.state!=ClientState_Alive || h.lifesequence!=target->state.lifesequence || h.dist<0 || h.dist>attacks[atk].exprad) continue;
+            if(!target || target->state.state!=ClientState_Alive || h.lifesequence!=target->state.lifesequence || h.dist<0 || h.dist>attacks[atk].exprad)
+            {
+                continue;
+            }
 
             bool dup = false;
-            loopj(i) if(hits[j].target==h.target) { dup = true; break; }
-            if(dup) continue;
+            for(int j = 0; j < i; ++j)
+            {
+                if(hits[j].target==h.target)
+                {
+                    dup = true;
+                    break;
+                }
+            }
+            if(dup)
+            {
+                continue;
+            }
 
             float damage = attacks[atk].damage*(1-h.dist/EXP_DISTSCALE/attacks[atk].exprad);
             if(target==ci) damage /= EXP_SELFDAMDIV;

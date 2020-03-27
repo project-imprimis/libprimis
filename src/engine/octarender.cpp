@@ -1006,13 +1006,16 @@ void gencubeedges(cube &c, const ivec &co, int size)
             {
                 vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
                 ivec vo = ivec(co).mask(~0xFFF).shl(3);
-                loopj(numverts)
+                for(int j = 0; j < numverts; ++j)
                 {
                     vertinfo &v = verts[j];
                     pos[j] = ivec(v.x, v.y, v.z).add(vo);
                 }
             }
-            else if(c.merged&(1<<i)) continue;
+            else if(c.merged&(1<<i))
+            {
+                continue;
+            }
             else
             {
                 ivec v[4];
@@ -1024,7 +1027,7 @@ void gencubeedges(cube &c, const ivec &co, int size)
                 pos[numverts++] = v[order+2].mul(size).add(vo);
                 if(vis&2) pos[numverts++] = v[(order+3)&3].mul(size).add(vo);
             }
-            loopj(numverts)
+            for(int j = 0; j < numverts; ++j)
             {
                 int e1 = j, e2 = j+1 < numverts ? j+1 : 0;
                 ivec d = pos[e2];
@@ -1131,7 +1134,10 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
             {
                 verts = c.ext->verts() + c.ext->surfaces[i].verts;
                 vec vo(ivec(co).mask(~0xFFF));
-                loopj(numverts) pos[j] = vec(verts[j].getxyz()).mul(1.0f/8).add(vo);
+                for(int j = 0; j < numverts; ++j)
+                {
+                    pos[j] = vec(verts[j].getxyz()).mul(1.0f/8).add(vo);
+                }
                 if(!flataxisface(c, i)) convex = faceconvexity(verts, numverts, size);
             }
             else
@@ -1747,7 +1753,7 @@ void precachetextures()
     loopv(valist)
     {
         vtxarray *va = valist[i];
-        loopj(va->texs + va->blends)
+        for(int j = 0; j < va->texs+va->blends; ++j)
         {
             int tex = va->texelems[j].texture;
             if(texs.find(tex) < 0)

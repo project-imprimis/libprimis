@@ -184,7 +184,7 @@ void addnormals(cube &c, const ivec &o, int size)
             {
                 vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
                 vec vo(ivec(o).mask(~0xFFF));
-                loopj(numverts)
+                for(int j = 0; j < numverts; ++j)
                 {
                     vertinfo &v = verts[j];
                     pos[j] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);

@@ -112,14 +112,7 @@ static inline int BITSCAN(uint mask)
 #define DET_RND(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
 
 #define loop(v,m) for(int v = 0; v < int(m); ++v)
-#define loopj(m) loop(j,m)
 #define loopk(m) loop(k,m)
-#define loopl(m) loop(l,m)
-#define looprev(v,m) for(int v = int(m); --v >= 0;)
-#define loopirev(m) looprev(i,m)
-#define loopjrev(m) looprev(j,m)
-#define loopkrev(m) looprev(k,m)
-#define looplrev(m) looprev(l,m)
 
 #define DELETEP(p) if(p) { delete   p; p = 0; }
 #define DELETEA(p) if(p) { delete[] p; p = 0; }
@@ -836,9 +829,18 @@ template <class T> struct vector
     T *insert(int i, const T *e, int n)
     {
         if(alen-ulen < n) growbuf(ulen+n);
-        loopj(n) add(T());
-        for(int p = ulen-1; p>=i+n; p--) buf[p] = buf[p-n];
-        loopj(n) buf[i+j] = e[j];
+        for(int j = 0; j < n; ++j)
+        {
+            add(T());
+        }
+        for(int p = ulen-1; p>=i+n; p--)
+        {
+            buf[p] = buf[p-n];
+        }
+        for(int j = 0; j < n; ++j)
+        {
+            buf[i+j] = e[j];
+        }
         return &buf[i];
     }
 

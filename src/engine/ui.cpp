@@ -1104,7 +1104,7 @@ namespace UI
                 o->layout();
                 int cols = o->childcolumns();
                 while(widths.length() < cols) widths.add(0);
-                loopj(cols)
+                for(int j = 0; j < cols; ++j)
                 {
                     Object *c = o->children[j];
                     if(c->w > widths[j]) widths[j] = c->w;
@@ -1141,7 +1141,7 @@ namespace UI
                 float offsetx = 0;
                 float sx = 0;
                 int cols = o->childcolumns();
-                loopj(cols)
+                for(int j = 0; j < cols; ++j)
                 {
                     Object *c = o->children[j];
                     c->x = offsetx;
@@ -1561,7 +1561,7 @@ namespace UI
                     case 2: vh = splith; th = 0.5f; break;
                 }
                 float vx = sx, tx = 0;
-                loopj(3)
+                for(int j = 0; j < 3; ++j)
                 {
                     float vw = 0, tw = 0;
                     switch(j)
@@ -1630,7 +1630,7 @@ namespace UI
                     case 2: vh = screenborder; th = texborder; break;
                 }
                 float vx = sx, tx = 0;
-                loopj(3)
+                for(int j = 0; j < 3; ++j)
                 {
                     float vw = 0, tw = 0;
                     switch(j)

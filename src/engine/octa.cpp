@@ -76,7 +76,10 @@ cube *newcubes(uint face, int mat)
         c->visible = 0;
         c->merged = 0;
         SET_FACES(*c, face);
-        loopl(6) c->texture[l] = DEFAULT_GEOM;
+        for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
+        {
+            c->texture[l] = DEFAULT_GEOM;
+        }
         c->material = mat;
         c++;
     }
@@ -214,7 +217,13 @@ bool isvalidcube(const cube &c)
     for(int i = 0; i < 8; ++i)
     {
         vec v = p.v[i];
-        loopj(p.size) if(p.p[j].dist(v)>1e-3f) return false;
+        for(int j = 0; j < p.size; ++j)
+        {
+            if(p.p[j].dist(v)>1e-3f)
+            {
+                return false;
+            }
+        }
     }
     return true;
 }
@@ -239,7 +248,7 @@ void validatec(cube *c, int size)
         }
         else
         {
-            loopj(3)
+            for(int j = 0; j < 3; ++j)
             {
                 uint f = c[i].faces[j], e0 = f&0x0F0F0F0FU, e1 = (f>>4)&0x0F0F0F0FU;
                 if(e0 == e1 || ((e1+0x07070707U)|(e1-e0))&0xF0F0F0F0U)
@@ -364,7 +373,13 @@ int getmippedtexture(const cube &p, int orient)
         }
         texs[numtexs++] = tex;
     }
-    loopirev(numtexs) if(!i || texs[i] > DEFAULT_SKY) return texs[i];
+    for(int i = numtexs; --i >= 0;) //note reverse iteration
+    {
+        if(!i || texs[i] > DEFAULT_SKY)
+        {
+            return texs[i];
+        }
+    }
     return DEFAULT_GEOM;
 }
 
@@ -389,8 +404,13 @@ void forcemip(cube &c, bool fixtex)
         }
     }
 
-    if(fixtex) loopj(6)
-        c.texture[j] = getmippedtexture(c, j);
+    if(fixtex)
+    {
+        for(int j = 0; j < 6; ++j)
+        {
+            c.texture[j] = getmippedtexture(c, j);
+        }
+    }
 }
 
 static int midedge(const ivec &a, const ivec &b, int xd, int yd, bool &perfect)
@@ -429,8 +449,14 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         c.children = newcubes(IS_EMPTY(c) ? F_EMPTY : F_SOLID, c.material);
         for(int i = 0; i < 8; ++i)
         {
-            loopl(6) c.children[i].texture[l] = c.texture[l];
-            if(brighten && !IS_EMPTY(c)) brightencube(c.children[i]);
+            for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
+            {
+                c.children[i].texture[l] = c.texture[l];
+            }
+            if(brighten && !IS_EMPTY(c))
+            {
+                brightencube(c.children[i]);
+            }
         }
         return true;
     }
@@ -443,7 +469,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         v[i].mul(2);
     }
 
-    loopj(6)
+    for(int j = 0; j < 6; ++j)
     {
         int d = DIMENSION(j), z = DIM_COORD(j);
         const ivec &v00 = v[OCTA_INDEX(d, 0, 0, z)],
@@ -520,7 +546,7 @@ int visibleorient(const cube &c, int orient)
     {
         int a = faceedgesidx[orient][i*2 + 0];
         int b = faceedgesidx[orient][i*2 + 1];
-        loopj(2)
+        for(int j = 0; j < 2; ++j)
         {
             if(crushededge(c.edges[a],j) &&
                crushededge(c.edges[b],j) &&
@@ -553,8 +579,10 @@ bool remip(cube &c, const ivec &co, int size)
     }
 
     SOLID_FACES(c); // so texmip is more consistent
-    loopj(6)
+    for(int j = 0; j < 6; ++j)
+    {
         c.texture[j] = getmippedtexture(c, j); // parents get child texs regardless
+    }
 
     if(!perfect) return false;
     if(size<<1 > 0x1000) return false;
@@ -942,7 +970,13 @@ static inline bool insideface(const ivec2 *p, int nump, const ivec2 *o, int numo
         const ivec2 &cur = o[i];
         ivec2 dir = ivec2(cur).sub(prev);
         int offset = dir.cross(prev);
-        loopj(nump) if(dir.cross(p[j]) > offset) return false;
+        for(int j = 0; j < nump; ++j)
+        {
+            if(dir.cross(p[j]) > offset)
+            {
+                return false;
+            }
+        }
         bounds++;
         prev = cur;
     }
@@ -1786,7 +1820,7 @@ bool mergepolys(int orient, hashset<plink> &links, vector<plink *> &queue, int o
     memcpy(p.verts, verts, numverts*sizeof(pvert));
 
     int prev = p.numverts-1;
-    loopj(p.numverts)
+    for(int j = 0; j < p.numverts; ++j)
     {
         pedge e(p.verts[prev], p.verts[j]);
         int order = e.from.x > e.to.x || (e.from.x == e.to.x && e.from.y > e.to.y) ? 1 : 0;
@@ -1831,14 +1865,17 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
         {
             ivec v0 = verts[0].getxyz();
             const vertinfo *oldverts = cu.ext->verts() + oldsurf.verts;
-            loopj(numverts) if(v0 == oldverts[j].getxyz())
+            for(int j = 0; j < numverts; ++j)
             {
-                for(int k = 1; k < numverts; k++)
+                if(v0 == oldverts[j].getxyz())
                 {
-                    if(++j >= numverts) j = 0;
-                    if(verts[k].getxyz() != oldverts[j].getxyz()) goto nomatch;
+                    for(int k = 1; k < numverts; ++k)
+                    {
+                        if(++j >= numverts) j = 0;
+                        if(verts[k].getxyz() != oldverts[j].getxyz()) goto nomatch;
+                    }
+                    return;
                 }
-                return;
             }
         nomatch:;
         }
@@ -1874,14 +1911,20 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, vector<po
     {
         poly &p = polys[i];
         int prev = p.numverts-1;
-        loopj(p.numverts)
+        for(int j = 0; j < p.numverts; ++j)
         {
             pedge e(p.verts[prev], p.verts[j]);
             int order = e.from.x > e.to.x || (e.from.x == e.to.x && e.from.y > e.to.y) ? 1 : 0;
-            if(order) swap(e.from, e.to);
+            if(order)
+            {
+                swap(e.from, e.to);
+            }
             plink &l = links.access(e, e);
             l.polys[order] = i;
-            if(l.polys[0] >= 0 && l.polys[1] >= 0) queue.add(&l);
+            if(l.polys[0] >= 0 && l.polys[1] >= 0)
+            {
+                queue.add(&l);
+            }
             prev = j;
         }
     }
@@ -1917,31 +1960,40 @@ void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = wo
     {
         ivec co(i, o, size);
         int vis;
-        if(c[i].children) genmerges(c[i].children, co, size>>1);
-        else if(!IS_EMPTY(c[i])) loopj(6) if((vis = visibletris(c[i], j, co, size)))
+        if(c[i].children)
         {
-            cfkey k;
-            poly p;
-            if(size < 1<<maxmerge && c != worldroot)
+            genmerges(c[i].children, co, size>>1);
+        }
+        else if(!IS_EMPTY(c[i]))
+        {
+            for(int j = 0; j < 6; ++j)
             {
-                if(genpoly(c[i], j, co, size, vis, k.n, k.offset, p))
+                if((vis = visibletris(c[i], j, co, size)))
                 {
-                    k.orient = j;
-                    k.tex = c[i].texture[j];
-                    k.material = c[i].material&MAT_ALPHA;
-                    cpolys[k].polys.add(p);
-                    continue;
+                    cfkey k;
+                    poly p;
+                    if(size < 1<<maxmerge && c != worldroot)
+                    {
+                        if(genpoly(c[i], j, co, size, vis, k.n, k.offset, p))
+                        {
+                            k.orient = j;
+                            k.tex = c[i].texture[j];
+                            k.material = c[i].material&MAT_ALPHA;
+                            cpolys[k].polys.add(p);
+                            continue;
+                        }
+                    }
+                    else if(minface && size >= 1<<minface && touchingface(c[i], j))
+                    {
+                        if(genpoly(c[i], j, co, size, vis, k.n, k.offset, p) && p.merged)
+                        {
+                            addmerge(c[i], j, co, k.n, k.offset, p);
+                            continue;
+                        }
+                    }
+                    clearmerge(c[i], j);
                 }
             }
-            else if(minface && size >= 1<<minface && touchingface(c[i], j))
-            {
-                if(genpoly(c[i], j, co, size, vis, k.n, k.offset, p) && p.merged)
-                {
-                    addmerge(c[i], j, co, k.n, k.offset, p);
-                    continue;
-                }
-            }
-            clearmerge(c[i], j);
         }
         if((size == 1<<maxmerge || c == worldroot) && cpolys.numelems)
         {

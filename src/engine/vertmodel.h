@@ -54,7 +54,7 @@ struct vertmodel : animmodel
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
         {
-            loopj(numverts)
+            for(int j = 0; j < numverts; ++j)
             {
                 vec v = m.transform(verts[j].pos);
                 bbmin.min(v);
@@ -74,7 +74,7 @@ struct vertmodel : animmodel
 
         void genshadowmesh(vector<triangle> &out, const matrix4x3 &m)
         {
-            loopj(numtris)
+            for(int j = 0; j < numtris; ++j)
             {
                 triangle &t = out.add();
                 t.a = m.transform(verts[tris[j].vert[0]].pos);
@@ -99,7 +99,7 @@ struct vertmodel : animmodel
             for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
-                loopj(3)
+                for(int j = 0; j < 3; ++j)
                 {
                     int index = t.vert[j];
                     vert &v = verts[index];
@@ -110,8 +110,17 @@ struct vertmodel : animmodel
                     loopk(htlen)
                     {
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
-                        if(vidx < 0) { vidx = idxs.add(ushort(vverts.length())); vverts.add(vv); break; }
-                        else if(!memcmp(&vverts[vidx], &vv, sizeof(vv))) { minvert = min(minvert, idxs.add(ushort(vidx))); break; }
+                        if(vidx < 0)
+                        {
+                            vidx = idxs.add(ushort(vverts.length()));
+                            vverts.add(vv);
+                            break;
+                        }
+                        else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
+                        {
+                            minvert = min(minvert, idxs.add(ushort(vidx)));
+                            break;
+                        }
                     }
                 }
             }
@@ -128,7 +137,10 @@ struct vertmodel : animmodel
             for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
-                loopj(3) idxs.add(voffset+t.vert[j]);
+                for(int j = 0; j < 3; ++j)
+                {
+                    idxs.add(voffset+t.vert[j]);
+                }
             }
             minvert = voffset;
             maxvert = voffset + numverts-1;
@@ -269,10 +281,16 @@ struct vertmodel : animmodel
                     tag *dst = &newtags[(numtags+1)*i], *src = &tags[numtags*i];
                     if(!i)
                     {
-                        loopj(numtags) swap(dst[j].name, src[j].name);
+                        for(int j = 0; j < numtags; ++j)
+                        {
+                            swap(dst[j].name, src[j].name);
+                        }
                         dst[numtags].name = newstring(name);
                     }
-                    loopj(numtags) dst[j].matrix = src[j].matrix;
+                    for(int j = 0; j < numtags; ++j)
+                    {
+                        dst[j].matrix = src[j].matrix;
+                    }
                     dst[numtags].matrix = matrix;
                 }
                 if(tags)

@@ -89,8 +89,20 @@ namespace tiger
         chunk state[3] = { 0x0123456789ABCDEFULL, 0xFEDCBA9876543210ULL, 0xF096A5B4C3B2E187ULL };
         uchar temp[64];
 
-        if(!islittleendian()) loopj(64) temp[j^7] = str[j];
-        else loopj(64) temp[j] = str[j];
+        if(!islittleendian()) //for big endian CPUs (POWER e.g.) calc temp differently
+        {
+            for(int j = 0; j < 64; ++j)
+            {
+                temp[j^7] = str[j];
+            }
+        }
+        else //little endian CPUs (x86, ARM)
+        {
+            for(int j = 0; j < 64; ++j)
+            {
+                temp[j] = str[j];
+            }
+        }
         for(int i = 0; i < 1024; ++i)
         {
             loop(col, 8) ((uchar *)&sboxes[i])[col] = i&0xFF;
@@ -130,31 +142,46 @@ namespace tiger
         int i = length;
         for(; i >= 64; i -= 64, str += 64)
         {
-            if(!islittleendian())
+            if(!islittleendian()) //big endian (POWER)
             {
-                loopj(64) temp[j^7] = str[j];
+                for(int j = 0; j < 64; ++j)
+                {
+                    temp[j^7] = str[j];
+                }
                 compress((chunk *)temp, val.chunks);
             }
-            else compress((chunk *)str, val.chunks);
+            else //little endian
+            {
+                compress((chunk *)str, val.chunks);
+            }
         }
 
         int j;
-        if(!islittleendian())
+        if(!islittleendian()) //big endian
         {
-            for(j = 0; j < i; j++) temp[j^7] = str[j];
+            for(j = 0; j < i; j++)
+            {
+                temp[j^7] = str[j];
+            }
             temp[j^7] = 0x01;
             while(++j&7) temp[j^7] = 0;
         }
-        else
+        else //little endian
         {
-            for(j = 0; j < i; j++) temp[j] = str[j];
+            for(j = 0; j < i; j++)
+            {
+                temp[j] = str[j];
+            }
             temp[j] = 0x01;
             while(++j&7) temp[j] = 0;
         }
 
         if(j > 56)
         {
-            while(j < 64) temp[j++] = 0;
+            while(j < 64)
+            {
+                temp[j++] = 0;
+            }
             compress((chunk *)temp, val.chunks);
             j = 0;
         }
@@ -166,7 +193,10 @@ namespace tiger
             loopk(3)
             {
                 uchar *c = &val.bytes[k*sizeof(chunk)];
-                loopl(sizeof(chunk)/2) swap(c[l], c[sizeof(chunk)-1-l]);
+                for(int l = 0; l < int(sizeof(chunk)/2); ++l) //note this is a loop l (level 4)
+                {
+                    swap(c[l], c[sizeof(chunk)-1-l]);
+                }
             }
         }
     }
@@ -228,12 +258,18 @@ template<int BI_DIGITS> struct bigint
         for(int i = 0; i < len; ++i)
         {
             digit d = digits[len-i-1];
-            loopj(BI_DIGIT_BITS/4)
+            for(int j = 0; j < BI_DIGIT_BITS/4; ++j)
             {
                 uint shift = BI_DIGIT_BITS - (j+1)*4;
                 int val = (d >> shift) & 0xF;
-                if(val < 10) buf.add('0' + val);
-                else buf.add('a' + val - 10);
+                if(val < 10)
+                {
+                    buf.add('0' + val);
+                }
+                else
+                {
+                    buf.add('a' + val - 10);
+                }
             }
         }
     }
@@ -322,7 +358,7 @@ template<int BI_DIGITS> struct bigint
         for(int i = 0; i < x.len; ++i)
         {
             dbldigit carry = 0;
-            loopj(y.len)
+            for(int j = 0; j < y.len; ++j)
             {
                 carry += (dbldigit)x.digits[i] * (dbldigit)y.digits[j] + (dbldigit)digits[i+j];
                 digits[i+j] = (digit)carry;
@@ -338,8 +374,15 @@ template<int BI_DIGITS> struct bigint
     bigint &rshift(int n)
     {
         assert(len <= BI_DIGITS);
-        if(!len || n<=0) return *this;
-        if(n >= len*BI_DIGIT_BITS) { len = 0; return *this; }
+        if(!len || n<=0)
+        {
+            return *this;
+        }
+        if(n >= len*BI_DIGIT_BITS)
+        {
+            len = 0;
+            return *this;
+        }
         int dig = (n-1)/BI_DIGIT_BITS;
         n = ((n-1) % BI_DIGIT_BITS)+1;
         digit carry = digit(digits[dig]>>n);
@@ -361,7 +404,7 @@ template<int BI_DIGITS> struct bigint
         int dig = n/BI_DIGIT_BITS;
         n %= BI_DIGIT_BITS;
         digit carry = 0;
-        loopirev(len)
+        for(int i = len; --i >= 0;) //note reverse iteration
         {
             digit tmp = digits[i];
             digits[i+dig] = digit((tmp<<n) | carry);
@@ -405,18 +448,36 @@ template<int BI_DIGITS> struct bigint
     template<int Y_DIGITS> bool operator==(const bigint<Y_DIGITS> &y) const
     {
         if(len!=y.len) return false;
-        loopirev(len) if(digits[i]!=y.digits[i]) return false;
+        for(int i = len; --i >= 0;) //note reverse iteration
+        {
+            if(digits[i]!=y.digits[i])
+            {
+                return false;
+            }
+        }
         return true;
     }
     template<int Y_DIGITS> bool operator!=(const bigint<Y_DIGITS> &y) const { return !(*this==y); }
     template<int Y_DIGITS> bool operator<(const bigint<Y_DIGITS> &y) const
     {
-        if(len<y.len) return true;
-        if(len>y.len) return false;
-        loopirev(len)
+        if(len<y.len)
         {
-            if(digits[i]<y.digits[i]) return true;
-            if(digits[i]>y.digits[i]) return false;
+            return true;
+        }
+        if(len>y.len)
+        {
+            return false;
+        }
+        for(int i = len; --i >= 0;) //note reverse iteration
+        {
+            if(digits[i]<y.digits[i])
+            {
+                return true;
+            }
+            if(digits[i]>y.digits[i])
+            {
+                return false;
+            }
         }
         return false;
     }
@@ -767,10 +828,13 @@ struct ecjacobian
     template<int Q_DIGITS> void mul(const ecjacobian &p, const bigint<Q_DIGITS> &q)
     {
         *this = origin;
-        loopirev(q.numbits())
+        for(int i = q.numbits(); --i >= 0;) //note reverse iteration
         {
             mul2();
-            if(q.hasbit(i)) add(p);
+            if(q.hasbit(i))
+            {
+                add(p);
+            }
         }
     }
     template<int Q_DIGITS> void mul(const bigint<Q_DIGITS> &q) { ecjacobian tmp(*this); mul(tmp, q); }

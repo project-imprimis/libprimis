@@ -2825,7 +2825,7 @@ namespace lightsphere
         for(int i = 0; i < stacks+1; ++i)
         {
             float rho = M_PI*(1-t), s = 0.0f, sinrho = i && i < stacks ? sin(rho) : 0, cosrho = !i ? 1 : (i < stacks ? cos(rho) : -1);
-            loopj(slices+1)
+            for(int j = 0; j < slices+1; ++j)
             {
                 float theta = j==slices ? 0 : 2*M_PI*s;
                 verts[i*(slices+1) + j] = vec(-sin(theta)*sinrho, -cos(theta)*sinrho, cosrho);
@@ -3196,7 +3196,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
 
         int n = batch.numlights;
         float sx1 = 1, sy1 = 1, sx2 = -1, sy2 = -1, sz1 = 1, sz2 = -1;
-        loopj(n)
+        for(int j = 0; j < n; ++j)
         {
             const lightinfo &l = lights[batch.lights[j]];
             setlightparams(j, l);
@@ -3204,7 +3204,15 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
         }
 
         bool baselight = !(batch.flags & BF_NOSUN) && !sunpass;
-        if(baselight) { sx1 = bsx1; sy1 = bsy1; sx2 = bsx2; sy2 = bsy2; sz1 = -1; sz2 = 1; }
+        if(baselight)
+        {
+            sx1 = bsx1;
+            sy1 = bsy1;
+            sx2 = bsx2;
+            sy2 = bsy2;
+            sz1 = -1;
+            sz2 = 1;
+        }
         else
         {
             sx1 = max(sx1, bsx1); sy1 = max(sy1, bsy1); sx2 = min(sx2, bsx2); sy2 = min(sy2, bsy2);
@@ -4082,7 +4090,7 @@ void radiancehints::renderslices()
 
     bool prevcached = true;
     int cx = -1, cy = -1;
-    loopirev(rhsplits)
+    for(int i = rhsplits; --i >= 0;) //reverse iterate through rhsplits
     {
         splitinfo &split = splits[i];
         float cellradius = split.bounds/rhgrid, step = 2*cellradius, nudge = rhnudge*2*splits[0].bounds/rhgrid + rhworldbias*step;
@@ -4139,7 +4147,7 @@ void radiancehints::renderslices()
         memset(clearmasks, 0xFF, sizeof(clearmasks));
 
         int sy = rhrect ? i*sh : 0;
-        loopjrev(sh)
+        for(int j = sh; --j >= 0;) //note reverse iteration
         {
             int sx = rhrect ? j*sw : 0;
 
@@ -4326,7 +4334,7 @@ void radiancehints::renderslices()
         {
             glReadBuffer(GL_COLOR_ATTACHMENT0+k);
             glBindTexture(GL_TEXTURE_3D, rhtex[k]);
-            loopj(sh)
+            for(int j = 0; j < sh; ++j)
             {
                 if(clearmasks[j/32] & (1 << (j%32)))
                 {
@@ -4823,9 +4831,13 @@ void rendertransparent()
                 sy1 = min(sy1, matsolidsy1);
                 sx2 = max(sx2, matsolidsx2);
                 sy2 = max(sy2, matsolidsy2);
-                loopj(LIGHTTILE_MAXH) tiles[j] |= matsolidtiles[j];
+                for(int j = 0; j < LIGHTTILE_MAXH; ++j)
+                {
+                    tiles[j] |= matsolidtiles[j];
+                }
             }
             break;
+
         case 3:
             if(!hasmodels) continue;
             sx1 = transmdlsx1; sy1 = transmdlsy1; sx2 = transmdlsx2; sy2 = transmdlsy2;

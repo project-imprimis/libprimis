@@ -664,21 +664,24 @@ uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m,
     {
         const skelmodel::vert &v = m->verts[t.vert[k]];
         const skelmodel::blendcombo &c = g->blendcombos[v.blend];
-        loopl(4) if(c.weights[l])
+        for(int l = 0; l < 4; ++l) //note this is a loop l (level 4)
         {
-            uchar id = ids[c.bones[l]];
-            for(int i = 0; i < numused; ++i)
+            if(c.weights[l])
             {
-                if(used[i] == id)
+                uchar id = ids[c.bones[l]];
+                for(int i = 0; i < numused; ++i)
                 {
-                    weights[i] += c.weights[l];
-                    goto nextbone;
+                    if(used[i] == id)
+                    {
+                        weights[i] += c.weights[l];
+                        goto nextbone;
+                    }
                 }
+                used[numused] = id;
+                weights[numused] = c.weights[l];
+                numused++;
+            nextbone:;
             }
-            used[numused] = id;
-            weights[numused] = c.weights[l];
-            numused++;
-        nextbone:;
         }
     }
     uchar bestid = 0xFF;
@@ -707,14 +710,20 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     for(int i = 0; i < min(g->meshes.length(), 0x100); ++i)
     {
         skelmodel::skelmesh *m = (skelmodel::skelmesh *)g->meshes[i];
-        loopj(m->numtris)
+        for(int j = 0; j < m->numtris; ++j)
         {
             const skelmodel::tri &t = m->tris[j];
             loopk(3)
             {
                 const skelmodel::vert &v = m->verts[t.vert[k]];
                 const skelmodel::blendcombo &c = g->blendcombos[v.blend];
-                loopl(4) if(c.weights[l]) bounds[c.bones[l]].addvert(v.pos);
+                for(int l = 0; l < 4; ++l) //note this is a loop l (level 4)
+                {
+                    if(c.weights[l])
+                    {
+                        bounds[c.bones[l]].addvert(v.pos);
+                    }
+                }
             }
             skelzonekey key(m, t);
             skelzoneinfo &zi = infomap.access(key, key);
@@ -769,9 +778,12 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             skelzoneinfo &zj = *zi.children[j];
             if(zj.key.blend < 0 || zj.key.blend >= numblends) deps.subtract(zj.key);
         }
-        loopj(sizeof(deps.bones))
+        for(int j = 0; j < int(sizeof(deps.bones)); ++j)
         {
-            if(deps.bones[j]==0xFF) break;
+            if(deps.bones[j]==0xFF)
+            {
+                break;
+            }
             skelzonekey dep(deps.bones[j]);
             skelzoneinfo &zj = infomap.access(dep, dep);
             zj.parents++;
@@ -860,7 +872,10 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     for(int i = 0; i < numzones; ++i)
     {
         skelhitzone &z = zones[i];
-        loopj(z.numchildren) z.children[j]->parents[z.children[j]->numparents++] = &z;
+        for(int j = 0; j < z.numchildren; ++j)
+        {
+            z.children[j]->parents[z.children[j]->numparents++] = &z;
+        }
     }
     delete[] bounds;
 }

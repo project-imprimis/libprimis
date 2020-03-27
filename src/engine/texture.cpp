@@ -307,16 +307,19 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
     {
         for(uchar *curdst = dst, *end = &src[bw*blocksize]; src < end; curdst += stridex)
         {
-            loopj(blocksize/8)
+            for(int j = 0; j < blocksize/8; ++j)
             {
                 uchar val1 = src[0], val2 = src[1];
                 ullong sval = LIL_ENDIAN_SWAP(*(const ushort *)&src[2]) + ((ullong)LIL_ENDIAN_SWAP(*(const uint *)&src[4] )<< 16), dval = 0;
                 uint xmask = flipx ? 7 : 0, ymask = flipy ? 7 : 0, xshift = 0, yshift = 2;
                 if(swapxy) swap(xshift, yshift);
-                for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
+                for(int y = by1; y < by2; y++)
                 {
-                    dval |= ((sval&7) << (3*((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                    sval >>= 3;
+                    for(int x = bx1; x < bx2; x++)
+                    {
+                        dval |= ((sval&7) << (3*((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
+                        sval >>= 3;
+                    }
                 }
                 curdst[0] = val1;
                 curdst[1] = val2;
@@ -1798,8 +1801,14 @@ static void assignvslot(VSlot &vs);
 
 static inline void assignvslotlayer(VSlot &vs)
 {
-    if(vs.layer && vslots.inrange(vs.layer) && vslots[vs.layer]->index < 0) assignvslot(*vslots[vs.layer]);
-    if(vs.detail && vslots.inrange(vs.detail) && vslots[vs.detail]->index < 0) assignvslot(*vslots[vs.detail]);
+    if(vs.layer && vslots.inrange(vs.layer) && vslots[vs.layer]->index < 0)
+    {
+        assignvslot(*vslots[vs.layer]);
+    }
+    if(vs.detail && vslots.inrange(vs.detail) && vslots[vs.detail]->index < 0)
+    {
+        assignvslot(*vslots[vs.detail]);
+    }
 }
 
 static void assignvslot(VSlot &vs)
@@ -1825,15 +1834,33 @@ void compactvslot(VSlot &vs)
 
 void compactvslots(cube *c, int n)
 {
-    if((compactvslotsprogress++&0xFFF)==0) renderprogress(min(float(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
+    if((compactvslotsprogress++&0xFFF)==0)
+    {
+        renderprogress(min(float(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
+    }
     for(int i = 0; i < n; ++i)
     {
-        if(c[i].children) compactvslots(c[i].children);
-        else loopj(6) if(vslots.inrange(c[i].texture[j]))
+        if(c[i].children)
         {
-            VSlot &vs = *vslots[c[i].texture[j]];
-            if(vs.index < 0) assignvslot(vs);
-            if(!markingvslots) c[i].texture[j] = vs.index;
+            compactvslots(c[i].children);
+        }
+        else
+        {
+            for(int j = 0; j < 6; ++j)
+            {
+                if(vslots.inrange(c[i].texture[j]))
+                {
+                    VSlot &vs = *vslots[c[i].texture[j]];
+                    if(vs.index < 0)
+                    {
+                        assignvslot(vs);
+                    }
+                    if(!markingvslots)
+                    {
+                        c[i].texture[j] = vs.index;
+                    }
+                }
+            }
         }
     }
 }
@@ -2108,7 +2135,10 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
             const SlotShaderParam &p = src.params[i];
             buf.put(VSLOT_SHPARAM);
             sendstring(p.name, buf);
-            loopj(4) putfloat(buf, p.val[j]);
+            for(int j = 0; j < 4; ++j)
+            {
+                putfloat(buf, p.val[j]);
+            }
         }
     }
     if(src.changed & (1<<VSLOT_SCALE))
@@ -2176,14 +2206,26 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
 
 void packvslot(vector<uchar> &buf, int index)
 {
-    if(vslots.inrange(index)) packvslot(buf, *vslots[index]);
-    else buf.put(0xFF);
+    if(vslots.inrange(index))
+    {
+        packvslot(buf, *vslots[index]);
+    }
+    else
+    {
+        buf.put(0xFF);
+    }
 }
 
 void packvslot(vector<uchar> &buf, const VSlot *vs)
 {
-    if(vs) packvslot(buf, *vs);
-    else buf.put(0xFF);
+    if(vs)
+    {
+        packvslot(buf, *vs);
+    }
+    else
+    {
+        buf.put(0xFF);
+    }
 }
 
 bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
@@ -2191,7 +2233,10 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
     while(buf.remaining())
     {
         int changed = buf.get();
-        if(changed >= 0x80) break;
+        if(changed >= 0x80)
+        {
+            break;
+        }
         switch(changed)
         {
             case VSLOT_SHPARAM:
@@ -2314,9 +2359,20 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
     for(int i = 0; i < 8; ++i)
     {
         ivec co(i, o, size);
-        if(c[i].children) fixinsidefaces(c[i].children, co, size>>1, tex);
-        else loopj(6) if(!visibletris(c[i], j, co, size))
-            c[i].texture[j] = tex;
+        if(c[i].children)
+        {
+            fixinsidefaces(c[i].children, co, size>>1, tex);
+        }
+        else
+        {
+            for(int j = 0; j < 6; ++j)
+            {
+                if(!visibletris(c[i], j, co, size))
+                {
+                    c[i].texture[j] = tex;
+                }
+            }
+        }
     }
 }
 
@@ -3119,7 +3175,7 @@ GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
         {
             float blurweights[MAXBLURRADIUS+1], bluroffsets[MAXBLURRADIUS+1];
             setupblurkernel(blur, blurweights, bluroffsets);
-            loopj(2)
+            for(int j = 0; j < 2; ++j)
             {
                 glBindFramebuffer_(GL_FRAMEBUFFER, emfbo[1]);
                 glViewport(0, 0, texsize, texsize);
@@ -3787,13 +3843,14 @@ void savepng(const char *filename, ImageData &image, bool flip)
     for(int i = 0; i < image.h; ++i)
     {
         uchar filter = 0;
-        loopj(2)
+        for(int j = 0; j < 2; ++j)
         {
             z.next_in = j ? (Bytef *)image.data + (flip ? image.h-i-1 : i)*image.pitch : (Bytef *)&filter;
             z.avail_in = j ? image.w*image.bpp : 1;
             while(z.avail_in > 0)
             {
                 if(deflate(&z, Z_NO_FLUSH) != Z_OK) goto cleanuperror;
+//========================================================================FLUSHZ
                 #define FLUSHZ do { \
                     int flush = sizeof(buf) - z.avail_out; \
                     crc = crc32(crc, buf, flush); \
@@ -3814,7 +3871,8 @@ void savepng(const char *filename, ImageData &image, bool flip)
         FLUSHZ;
         if(err == Z_STREAM_END) break;
     }
-
+#undef FLUSHZ
+//==============================================================================
     deflateEnd(&z);
 
     f->seek(idat, SEEK_SET);
@@ -3908,7 +3966,7 @@ void savetga(const char *filename, ImageData &image, bool flip)
             }
             else raw = min(remaining, 128);
             uchar *dst = buf;
-            loopj(raw)
+            for(int j = 0; j < raw; ++j)
             {
                 dst[0] = src[2];
                 dst[1] = src[1];

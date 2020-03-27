@@ -1,3 +1,4 @@
+//bounding interval hierarchy (BIH)
 #include "engine.h"
 
 extern vec hitsurface;
@@ -256,7 +257,7 @@ BIH::BIH(vector<mesh> &buildmeshes)
         m.tribbs = dsttri;
         const tri *srctri = m.tris;
         vec mmin(1e16f, 1e16f, 1e16f), mmax(-1e16f, -1e16f, -1e16f);
-        loopj(m.numtris)
+        for(int j = 0; j < m.numtris; ++j)
         {
             vec s0 = m.getpos(srctri->vert[0]), s1 = m.getpos(srctri->vert[1]), s2 = m.getpos(srctri->vert[2]),
                 v0 = m.xform.transform(s0), v1 = m.xform.transform(s1), v2 = m.xform.transform(s2),
@@ -293,7 +294,10 @@ BIH::BIH(vector<mesh> &buildmeshes)
     {
         mesh &m = meshes[i];
         m.nodes = curnode;
-        loopj(m.numtris) indices[j] = j;
+        for(int j = 0; j < m.numtris; ++j)
+        {
+            indices[j] = j;
+        }
         build(m, indices, m.numtris, ivec::floor(m.bbmin), ivec::ceil(m.bbmax));
         curnode += m.numnodes;
     }

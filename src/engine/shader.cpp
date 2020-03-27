@@ -1448,30 +1448,39 @@ void renderpostfx(GLuint outfbo)
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
         }
 
-        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
-            h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
+        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw;
+        int h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
         glViewport(0, 0, w, h);
         p.shader->set();
         LOCALPARAM(params, p.params);
         int tw = w, th = h, tmu = 0;
-        loopj(NUMPOSTFXBINDS) if(p.inputs&(1<<j) && postfxbinds[j] >= 0)
+        for(int j = 0; j < NUMPOSTFXBINDS; ++j)
         {
-            if(!tmu)
+            if(p.inputs&(1<<j) && postfxbinds[j] >= 0)
             {
-                tw = max(postfxw>>postfxtexs[postfxbinds[j]].scale, 1);
-                th = max(postfxh>>postfxtexs[postfxbinds[j]].scale, 1);
+                if(!tmu)
+                {
+                    tw = max(postfxw>>postfxtexs[postfxbinds[j]].scale, 1);
+                    th = max(postfxh>>postfxtexs[postfxbinds[j]].scale, 1);
+                }
+                else
+                {
+                    glActiveTexture_(GL_TEXTURE0 + tmu);
+                }
+                glBindTexture(GL_TEXTURE_RECTANGLE, postfxtexs[postfxbinds[j]].id);
+                ++tmu;
             }
-            else glActiveTexture_(GL_TEXTURE0 + tmu);
-            glBindTexture(GL_TEXTURE_RECTANGLE, postfxtexs[postfxbinds[j]].id);
-            ++tmu;
         }
         if(tmu) glActiveTexture_(GL_TEXTURE0);
         screenquad(tw, th);
 
-        loopj(NUMPOSTFXBINDS) if(p.freeinputs&(1<<j) && postfxbinds[j] >= 0)
+        for(int j = 0; j < NUMPOSTFXBINDS; ++j)
         {
-            postfxtexs[postfxbinds[j]].used = -1;
-            postfxbinds[j] = -1;
+            if(p.freeinputs&(1<<j) && postfxbinds[j] >= 0)
+            {
+                postfxtexs[postfxbinds[j]].used = -1;
+                postfxbinds[j] = -1;
+            }
         }
         if(tex >= 0)
         {

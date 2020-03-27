@@ -923,7 +923,7 @@ overflow:
         offset += prefixlen;
         if(space && i) buf[offset++] = ' ';
     }
-    loopj(i)
+    for(int j = 0; j < i; ++j)
     {
         if(v[j].type == Value_Integer || v[j].type == Value_Float)
         {
@@ -2815,9 +2815,15 @@ static const uint *runcode(const uint *code, tagval &result)
                     {
                         identstack locals[Max_Args];
                         freearg(idarg);
-                        loopj(callargs) pushalias(*forceident(args[offset+j]), locals[j]);
+                        for(int j = 0; j < callargs; ++j)
+                        {
+                            pushalias(*forceident(args[offset+j]), locals[j]);
+                        }
                         code = runcode(code, result);
-                        loopj(callargs) popalias(*args[offset+j].id);
+                        for(int j = 0; j < callargs; ++j)
+                        {
+                            popalias(*args[offset+j].id);
+                        }
                         goto exit;
                     }
                     case Id_Var:
@@ -3957,7 +3963,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         for(int i = 1; i < items.length(); i++)
         {
             sortitem &item = items[i];
-            loopj(i)
+            for(int j = 0; j < i; ++j)
             {
                 sortitem &prev = items[j];
                 if(prev.quotestart && f(item, prev)) { item.quotestart = NULL; break; }

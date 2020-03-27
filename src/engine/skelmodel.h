@@ -76,12 +76,25 @@ struct skelmodel : animmodel
 
         void finalize(int sorted)
         {
-            loopj(4-sorted) { weights[sorted+j] = 0; bones[sorted+j] = 0; }
-            if(sorted <= 0) return;
+            for(int j = 0; j < 4-sorted; ++j)
+            {
+                weights[sorted+j] = 0;
+                bones[sorted+j] = 0;
+            }
+            if(sorted <= 0)
+            {
+                return;
+            }
             float total = 0;
-            loopj(sorted) total += weights[j];
+            for(int j = 0; j < sorted; ++j)
+            {
+                total += weights[j];
+            }
             total = 1.0f/total;
-            loopj(sorted) weights[j] *= total;
+            for(int j = 0; j < sorted; ++j)
+            {
+                weights[j] *= total;
+            }
         }
 
         template<class T>
@@ -215,7 +228,7 @@ struct skelmodel : animmodel
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
         {
-            loopj(numverts)
+            for(int j = 0; j < numverts; ++j)
             {
                 vec v = m.transform(verts[j].pos);
                 bbmin.min(v);
@@ -235,7 +248,7 @@ struct skelmodel : animmodel
 
         void genshadowmesh(vector<triangle> &out, const matrix4x3 &m)
         {
-            loopj(numtris)
+            for(int j = 0; j < numtris; ++j)
             {
                 triangle &t = out.add();
                 t.a = m.transform(verts[tris[j].vert[0]].pos);
@@ -271,7 +284,7 @@ struct skelmodel : animmodel
             }
             for(int i = 0; i < numtris; ++i)
             {
-                loopj(3)
+                for(int j = 0; j < 3; ++j)
                 {
                     idxs.add(voffset + tris[i].vert[j]);
                 }
@@ -291,7 +304,7 @@ struct skelmodel : animmodel
             for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
-                loopj(3)
+                for(int j = 0; j < 3; ++j)
                 {
                     int index = t.vert[j];
                     vert &v = verts[index];
@@ -333,7 +346,10 @@ struct skelmodel : animmodel
             for(int i = 0; i < numtris; ++i)
             {
                 tri &t = tris[i];
-                loopj(3) idxs.add(voffset+t.vert[j]);
+                for(int j = 0; j < 3; ++j)
+                {
+                    idxs.add(voffset+t.vert[j]);
+                }
             }
             minvert = voffset;
             maxvert = voffset + numverts-1;
@@ -572,16 +588,25 @@ struct skelmodel : animmodel
             {
                 int bone = schedule[i];
                 const boneinfo &info = bones[bone];
-                loopj(numbones) if(abs(bones[j].group) == bone && bones[j].scheduled < 0)
+                for(int j = 0; j < numbones; ++j)
                 {
-                    antipodes.add(antipode(info.interpindex, bones[j].interpindex));
-                    bones[j].scheduled = schedule.length();
-                    schedule.add(j);
+                    if(abs(bones[j].group) == bone && bones[j].scheduled < 0)
+                    {
+                        antipodes.add(antipode(info.interpindex, bones[j].interpindex));
+                        bones[j].scheduled = schedule.length();
+                        schedule.add(j);
+                    }
                 }
                 if(i + 1 == schedule.length())
                 {
                     int conflict = INT_MAX;
-                    loopj(numbones) if(bones[j].group < numbones && bones[j].scheduled < 0) conflict = min(conflict, abs(bones[j].group));
+                    for(int j = 0; j < numbones; ++j)
+                    {
+                        if(bones[j].group < numbones && bones[j].scheduled < 0)
+                        {
+                            conflict = min(conflict, abs(bones[j].group));
+                        }
+                    }
                     if(conflict < numbones)
                     {
                         bones[conflict].scheduled = schedule.length();
@@ -613,7 +638,7 @@ struct skelmodel : animmodel
                         if(info.interpindex < 0) info.interpindex = numgpubones++;
                         c.interpbones[k] = info.interpindex;
                         if(info.group < 0) continue;
-                        loopl(4)
+                        for(int l = 0; l < 4; ++l) //note this is a loop l (level 4)
                         {
                             if(!c.weights[l]) break;
                             if(l == k) continue;
@@ -1013,12 +1038,18 @@ struct skelmodel : animmodel
             loopv(skelcache)
             {
                 skelcacheentry &sc = skelcache[i];
-                loopj(MAXANIMPARTS) sc.as[j].cur.fr1 = -1;
+                for(int j = 0; j < MAXANIMPARTS; ++j)
+                {
+                    sc.as[j].cur.fr1 = -1;
+                }
                 DELETEA(sc.bdata);
             }
             skelcache.setsize(0);
             blendoffsets.clear();
-            if(full) loopv(users) users[i]->cleanup();
+            if(full)
+            {
+                loopv(users) users[i]->cleanup();
+            }
         }
 
         bool canpreload() { return !numframes || gpuaccelerate(); }
@@ -1046,8 +1077,17 @@ struct skelmodel : animmodel
             loopv(skelcache)
             {
                 skelcacheentry &c = skelcache[i];
-                loopj(numanimparts) if(c.as[j]!=as[j]) goto mismatch;
-                if(c.pitch != pitch || c.partmask != partmask || c.ragdoll != rdata || (rdata && c.millis < rdata->lastmove)) goto mismatch;
+                for(int j = 0; j < numanimparts; ++j)
+                {
+                    if(c.as[j]!=as[j])
+                    {
+                        goto mismatch;
+                    }
+                }
+                if(c.pitch != pitch || c.partmask != partmask || c.ragdoll != rdata || (rdata && c.millis < rdata->lastmove))
+                {
+                    goto mismatch;
+                }
                 match = true;
                 sc = &c;
                 break;
@@ -1326,7 +1366,7 @@ struct skelmodel : animmodel
             loopv(blendcombos) remap[blendcombos[i].interpindex] = i;
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                loopj(m.numverts)
+                for(int j = 0; j < m.numverts; ++j)
                 {
                     vert &v = m.verts[j];
                     v.blend = remap[v.blend];

@@ -232,21 +232,37 @@ void savec(cube *c, const ivec &o, int size, stream *f)
         else
         {
             int oflags = 0, surfmask = 0, totalverts = 0;
-            if(c[i].material!=MAT_AIR) oflags |= 0x40;
-            if(IS_EMPTY(c[i])) f->putchar(oflags | OCTSAV_EMPTY);
+            if(c[i].material!=MAT_AIR)
+            {
+                oflags |= 0x40;
+            }
+            if(IS_EMPTY(c[i]))
+            {
+                f->putchar(oflags | OCTSAV_EMPTY);
+            }
             else
             {
-                if(c[i].merged) oflags |= 0x80;
-                if(c[i].ext) loopj(6)
+                if(c[i].merged)
                 {
-                    const surfaceinfo &surf = c[i].ext->surfaces[j];
-                    if(!surf.used()) continue;
-                    oflags |= 0x20;
-                    surfmask |= 1<<j;
-                    totalverts += surf.totalverts();
+                    oflags |= 0x80;
                 }
-
-                if(IS_ENTIRELY_SOLID(c[i])) f->putchar(oflags | OCTSAV_SOLID);
+                if(c[i].ext)
+                {
+                    for(int j = 0; j < 6; ++j)
+                    {
+                        {
+                            const surfaceinfo &surf = c[i].ext->surfaces[j];
+                            if(!surf.used()) continue;
+                            oflags |= 0x20;
+                            surfmask |= 1<<j;
+                            totalverts += surf.totalverts();
+                        }
+                    }
+                }
+                if(IS_ENTIRELY_SOLID(c[i]))
+                {
+                    f->putchar(oflags | OCTSAV_SOLID);
+                }
                 else
                 {
                     f->putchar(oflags | OCTSAV_NORMAL);
@@ -254,7 +270,10 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                 }
             }
 
-            loopj(6) f->putlil<ushort>(c[i].texture[j]);
+            for(int j = 0; j < 6; ++j)
+            {
+                f->putlil<ushort>(c[i].texture[j]);
+            }
 
             if(oflags&0x40) f->putlil<ushort>(c[i].material);
             if(oflags&0x80) f->putchar(c[i].merged);
@@ -262,70 +281,73 @@ void savec(cube *c, const ivec &o, int size, stream *f)
             {
                 f->putchar(surfmask);
                 f->putchar(totalverts);
-                loopj(6) if(surfmask&(1<<j))
+                for(int j = 0; j < 6; ++j)
                 {
-                    surfaceinfo surf = c[i].ext->surfaces[j];
-                    vertinfo *verts = c[i].ext->verts() + surf.verts;
-                    int layerverts = surf.numverts&MAXFACEVERTS, numverts = surf.totalverts(),
-                        vertmask = 0, vertorder = 0,
-                        dim = DIMENSION(j), vc = C[dim], vr = R[dim];
-                    if(numverts)
+                    if(surfmask&(1<<j))
                     {
-                        if(c[i].merged&(1<<j))
+                        surfaceinfo surf = c[i].ext->surfaces[j];
+                        vertinfo *verts = c[i].ext->verts() + surf.verts;
+                        int layerverts = surf.numverts&MAXFACEVERTS, numverts = surf.totalverts(),
+                            vertmask = 0, vertorder = 0,
+                            dim = DIMENSION(j), vc = C[dim], vr = R[dim];
+                        if(numverts)
                         {
-                            vertmask |= 0x04;
-                            if(layerverts == 4)
+                            if(c[i].merged&(1<<j))
                             {
-                                ivec v[4] = { verts[0].getxyz(), verts[1].getxyz(), verts[2].getxyz(), verts[3].getxyz() };
-                                loopk(4)
+                                vertmask |= 0x04;
+                                if(layerverts == 4)
                                 {
-                                    const ivec &v0 = v[k], &v1 = v[(k+1)&3], &v2 = v[(k+2)&3], &v3 = v[(k+3)&3];
-                                    if(v1[vc] == v0[vc] && v1[vr] == v2[vr] && v3[vc] == v2[vc] && v3[vr] == v0[vr])
+                                    ivec v[4] = { verts[0].getxyz(), verts[1].getxyz(), verts[2].getxyz(), verts[3].getxyz() };
+                                    loopk(4)
                                     {
-                                        vertmask |= 0x01;
-                                        vertorder = k;
-                                        break;
+                                        const ivec &v0 = v[k], &v1 = v[(k+1)&3], &v2 = v[(k+2)&3], &v3 = v[(k+3)&3];
+                                        if(v1[vc] == v0[vc] && v1[vr] == v2[vr] && v3[vc] == v2[vc] && v3[vr] == v0[vr])
+                                        {
+                                            vertmask |= 0x01;
+                                            vertorder = k;
+                                            break;
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                int vis = visibletris(c[i], j, co, size);
+                                if(vis&4 || faceconvexity(c[i], j) < 0) vertmask |= 0x01;
+                                if(layerverts < 4 && vis&2) vertmask |= 0x02;
+                            }
+                            bool matchnorm = true;
+                            loopk(numverts)
+                            {
+                                const vertinfo &v = verts[k];
+                                if(v.norm) { vertmask |= 0x80; if(v.norm != verts[0].norm) matchnorm = false; }
+                            }
+                            if(matchnorm) vertmask |= 0x08;
                         }
-                        else
+                        surf.verts = vertmask;
+                        f->write(&surf, sizeof(surf));
+                        bool hasxyz = (vertmask&0x04)!=0, hasnorm = (vertmask&0x80)!=0;
+                        if(layerverts == 4)
                         {
-                            int vis = visibletris(c[i], j, co, size);
-                            if(vis&4 || faceconvexity(c[i], j) < 0) vertmask |= 0x01;
-                            if(layerverts < 4 && vis&2) vertmask |= 0x02;
+                            if(hasxyz && vertmask&0x01)
+                            {
+                                ivec v0 = verts[vertorder].getxyz(), v2 = verts[(vertorder+2)&3].getxyz();
+                                f->putlil<ushort>(v0[vc]); f->putlil<ushort>(v0[vr]);
+                                f->putlil<ushort>(v2[vc]); f->putlil<ushort>(v2[vr]);
+                                hasxyz = false;
+                            }
                         }
-                        bool matchnorm = true;
-                        loopk(numverts)
+                        if(hasnorm && vertmask&0x08) { f->putlil<ushort>(verts[0].norm); hasnorm = false; }
+                        if(hasxyz || hasnorm) loopk(layerverts)
                         {
-                            const vertinfo &v = verts[k];
-                            if(v.norm) { vertmask |= 0x80; if(v.norm != verts[0].norm) matchnorm = false; }
+                            const vertinfo &v = verts[(k+vertorder)%layerverts];
+                            if(hasxyz)
+                            {
+                                ivec xyz = v.getxyz();
+                                f->putlil<ushort>(xyz[vc]); f->putlil<ushort>(xyz[vr]);
+                            }
+                            if(hasnorm) f->putlil<ushort>(v.norm);
                         }
-                        if(matchnorm) vertmask |= 0x08;
-                    }
-                    surf.verts = vertmask;
-                    f->write(&surf, sizeof(surf));
-                    bool hasxyz = (vertmask&0x04)!=0, hasnorm = (vertmask&0x80)!=0;
-                    if(layerverts == 4)
-                    {
-                        if(hasxyz && vertmask&0x01)
-                        {
-                            ivec v0 = verts[vertorder].getxyz(), v2 = verts[(vertorder+2)&3].getxyz();
-                            f->putlil<ushort>(v0[vc]); f->putlil<ushort>(v0[vr]);
-                            f->putlil<ushort>(v2[vc]); f->putlil<ushort>(v2[vr]);
-                            hasxyz = false;
-                        }
-                    }
-                    if(hasnorm && vertmask&0x08) { f->putlil<ushort>(verts[0].norm); hasnorm = false; }
-                    if(hasxyz || hasnorm) loopk(layerverts)
-                    {
-                        const vertinfo &v = verts[(k+vertorder)%layerverts];
-                        if(hasxyz)
-                        {
-                            ivec xyz = v.getxyz();
-                            f->putlil<ushort>(xyz[vc]); f->putlil<ushort>(xyz[vr]);
-                        }
-                        if(hasnorm) f->putlil<ushort>(v.norm);
                     }
                 }
             }
@@ -1000,7 +1022,7 @@ void writeobj(char *name)
         ushort *edata = va.edata + va.eoffset;
         vertex *vdata = va.vdata;
         ushort *idx = edata;
-        loopj(va.texs)
+        for(int j = 0; j < va.texs; ++j)
         {
             elementset &es = va.texelems[j];
             if(usedmtl.find(es.texture) < 0) usedmtl.add(es.texture);
@@ -1141,7 +1163,7 @@ void writecollideobj(char *name)
         ushort *edata = va.edata + va.eoffset;
         vertex *vdata = va.vdata;
         ushort *idx = edata;
-        loopj(va.texs)
+        for(int j = 0; j < va.texs; ++j)
         {
             elementset &es = va.texelems[j];
             for(int k = 0; k < es.length; k += 3)

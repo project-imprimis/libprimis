@@ -119,7 +119,7 @@ struct flarerenderer : partrenderer
             const flare &f = flares[i];
             vec axis = vec(f.o).sub(f.center);
             bvec4 color(f.color, 255);
-            loopj(f.sparkle?12:9)
+            for(int j = 0; j < (f.sparkle ? 12 : 9); ++j)
             {
                 const flaretype &ft = flaretypes[j];
                 vec o = vec(axis).mul(ft.loc).add(f.center);

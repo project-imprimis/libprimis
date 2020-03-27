@@ -42,14 +42,20 @@ struct QuadNode
             filled |= (1 << i);
             return;
         }
-        if(!child[i]) child[i] = new QuadNode(i&1 ? x+csize : x, i&2 ? y+csize : y, csize);
-        child[i]->insert(mx, my, msize);
-        loopj(4) if(child[j])
+        if(!child[i])
         {
-            if(child[j]->filled == 0xF)
+            child[i] = new QuadNode(i&1 ? x+csize : x, i&2 ? y+csize : y, csize);
+        }
+        child[i]->insert(mx, my, msize);
+        for(int j = 0; j < 4; ++j)
+        {
+            if(child[j])
             {
-                DELETEP(child[j]);
-                filled |= (1 << j);
+                if(child[j]->filled == 0xF)
+                {
+                    DELETEP(child[j]);
+                    filled |= (1 << j);
+                }
             }
         }
     }
@@ -204,7 +210,7 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
     for(int i = 0; i < 6; ++i)
     {
         static const ushort matmasks[] = { MATF_VOLUME|MATF_INDEX, MATF_CLIP, MAT_DEATH, MAT_NOGI, MAT_ALPHA };
-        loopj(sizeof(matmasks)/sizeof(matmasks[0]))
+        for(int j = 0; j < int(sizeof(matmasks)/sizeof(matmasks[0])); ++j)
         {
             ushort matmask = matmasks[j];
             int vis = visiblematerial(c, i, co, size, matmask&~MATF_INDEX);
@@ -399,7 +405,7 @@ void setupmaterials(int start, int len)
     {
         vtxarray *va = valist[i];
         materialsurface *skip = NULL;
-        loopj(va->matsurfs)
+        for(int j = 0; j < va -> matsurfs; ++j)
         {
             materialsurface &m = va->matbuf[j];
             int matvol = m.material&MATF_VOLUME;

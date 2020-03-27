@@ -1662,8 +1662,11 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
     for(int i = 0; i < 8; ++i)
     {
         const vec4 &p = v[i];
-        if(p.z >= -p.w) continue;
-        loopj(3)
+        if(p.z >= -p.w)
+        {
+            continue;
+        }
+        for(int j = 0; j < 3; ++j)
         {
             const vec4 &o = v[i^(1<<j)];
             if(o.z <= -o.w) continue;
@@ -1721,7 +1724,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     {
         const vec4 &p = v[i];
         if(p.z >= -p.w) continue;
-        loopj(2)
+        for(int j = 0; j < 2; ++j)
         {
             const vec4 &o = v[i^(1<<j)];
             if(o.z <= -o.w) continue;
@@ -1740,11 +1743,17 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
         }
         if(v[4].z > -v[4].w) INTERPXYZSCISSOR(p, v[4]);
     }
-    if(v[4].z < -v[4].w) loopj(4)
+    if(v[4].z < -v[4].w)
     {
-        const vec4 &o = v[j];
-        if(o.z <= -o.w) continue;
-        INTERPXYZSCISSOR(v[4], o);
+        for(int j = 0; j < 4; ++j)
+        {
+            const vec4 &o = v[j];
+            if(o.z <= -o.w)
+            {
+                continue;
+            }
+            INTERPXYZSCISSOR(v[4], o);
+        }
     }
     sx1 = max(sx1, -1.0f);
     sy1 = max(sy1, -1.0f);

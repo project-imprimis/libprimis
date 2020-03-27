@@ -236,7 +236,7 @@ static void clearsurfaces(cube *c)
     {
         if(c[i].ext)
         {
-            loopj(6)
+            for(int j = 0; j < 6; ++j)
             {
                 surfaceinfo &surf = c[i].ext->surfaces[j];
                 if(!surf.used()) continue;
@@ -244,7 +244,11 @@ static void clearsurfaces(cube *c)
                 int numverts = surf.numverts&MAXFACEVERTS;
                 if(numverts)
                 {
-                    if(!(c[i].merged&(1<<j))) { surf.numverts &= ~MAXFACEVERTS; continue; }
+                    if(!(c[i].merged&(1<<j)))
+                    {
+                        surf.numverts &= ~MAXFACEVERTS;
+                        continue;
+                    }
 
                     vertinfo *verts = c[i].ext->verts() + surf.verts;
                     loopk(numverts)
@@ -391,7 +395,10 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         if(numverts)
         {
             vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
-            loopj(numverts) curlitverts[j].set(verts[j].getxyz());
+            for(int j = 0; j < numverts; ++j)
+            {
+                curlitverts[j].set(verts[j].getxyz());
+            }
             if(c.merged&(1<<i))
             {
                 msz = 1<<calcmergedsize(i, mo, size, verts, numverts);
@@ -420,7 +427,10 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         }
 
         vec pos[MAXFACEVERTS], n[MAXFACEVERTS], po(ivec(co).mask(~0xFFF));
-        loopj(numverts) pos[j] = vec(curlitverts[j].getxyz()).mul(1.0f/8).add(po);
+        for(int j = 0; j < numverts; ++j)
+        {
+            pos[j] = vec(curlitverts[j].getxyz()).mul(1.0f/8).add(po);
+        }
 
         int smooth = vslot.slot->smooth;
         plane planes[2];
@@ -451,7 +461,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         if(vslot.layer)
         {
             int x1 = curlitverts[numverts-1].x, y1 = curlitverts[numverts-1].y, x2 = x1, y2 = y1;
-            loopj(numverts-1)
+            for(int j = 0; j < numverts-1; ++j)
             {
                 const vertinfo &v = curlitverts[j];
                 x1 = min(x1, int(v.x));
@@ -494,19 +504,30 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
     {
         ivec o(i, co, size);
         if(c[i].children)
+        {
             calcsurfaces(c[i].children, o, size >> 1);
+        }
         else if(!IS_EMPTY(c[i]))
         {
             if(c[i].ext)
             {
-                loopj(6) c[i].ext->surfaces[j].clear();
+                for(int j = 0; j < 6; ++j)
+                {
+                    c[i].ext->surfaces[j].clear();
+                }
             }
             int usefacemask = 0;
-            loopj(6) if(c[i].texture[j] != DEFAULT_SKY && (!(c[i].merged&(1<<j)) || (c[i].ext && c[i].ext->surfaces[j].numverts&MAXFACEVERTS)))
+            for(int j = 0; j < 6; ++j)
             {
-                usefacemask |= visibletris(c[i], j, o, size)<<(4*j);
+                if(c[i].texture[j] != DEFAULT_SKY && (!(c[i].merged&(1<<j)) || (c[i].ext && c[i].ext->surfaces[j].numverts&MAXFACEVERTS)))
+                {
+                    usefacemask |= visibletris(c[i], j, o, size)<<(4*j);
+                }
             }
-            if(usefacemask) calcsurfaces(c[i], o, size, usefacemask);
+            if(usefacemask)
+            {
+                calcsurfaces(c[i], o, size, usefacemask);
+            }
         }
     }
 }
@@ -515,8 +536,13 @@ static inline bool previewblends(cube &c, const ivec &o, int size)
 {
     if(IS_EMPTY(c) || c.material&MAT_ALPHA) return false;
     int usefacemask = 0;
-    loopj(6) if(c.texture[j] != DEFAULT_SKY && lookupvslot(c.texture[j], false).layer)
-        usefacemask |= visibletris(c, j, o, size)<<(4*j);
+    for(int j = 0; j < 6; ++j)
+    {
+        if(c.texture[j] != DEFAULT_SKY && lookupvslot(c.texture[j], false).layer)
+        {
+            usefacemask |= visibletris(c, j, o, size)<<(4*j);
+        }
+    }
     if(!usefacemask) return false;
     int layer = calcblendlayer(o.x, o.y, o.x + size, o.y + size);
     if(!(layer&LAYER_BOTTOM))

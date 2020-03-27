@@ -530,13 +530,24 @@ void checkpings()
             millis = lanpings.decodeping(millis);
         }
         int rtt = clamp(totalmillis - millis, 0, min(servpingdecay, totalmillis));
-        if(millis >= lastreset && rtt < servpingdecay) si->addping(rtt, millis);
+        if(millis >= lastreset && rtt < servpingdecay)
+        {
+            si->addping(rtt, millis);
+        }
         si->protocol = getint(p);
         si->numplayers = getint(p);
         si->maxplayers = getint(p);
         int numattr = getint(p);
         si->attr.setsize(0);
-        loopj(numattr) { int attr = getint(p); if(p.overread()) break; si->attr.add(attr); }
+        for(int j = 0; j < numattr; ++j)
+        {
+            int attr = getint(p);
+            if(p.overread())
+            {
+                break;
+            }
+            si->attr.add(attr);
+        }
         getstring(text, p);
         filtertext(si->map, text, false);
         getstring(text, p);
@@ -556,7 +567,10 @@ VARP(autoupdateservers, 0, 1, 1);
 void refreshservers()
 {
     static int lastrefresh = 0;
-    if(lastrefresh==totalmillis) return;
+    if(lastrefresh==totalmillis)
+    {
+        return;
+    }
     if(totalmillis - lastrefresh > 1000)
     {
         loopv(servers) servers[i]->reset();
@@ -566,8 +580,14 @@ void refreshservers()
 
     checkresolver();
     checkpings();
-    if(totalmillis - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
-    if(autosortservers) sortservers();
+    if(totalmillis - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1))
+    {
+        pingservers();
+    }
+    if(autosortservers)
+    {
+        sortservers();
+    }
 }
 
 ICOMMAND(numservers, "", (), intret(servers.length()))

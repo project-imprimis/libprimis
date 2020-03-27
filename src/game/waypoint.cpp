@@ -802,9 +802,19 @@ namespace ai
             f->putlil<float>(w.o.y);
             f->putlil<float>(w.o.z);
             int numlinks = 0;
-            loopj(MAXWAYPOINTLINKS) { if(!w.links[j]) break; numlinks++; }
+            for(int j = 0; j < MAXWAYPOINTLINKS; ++j)
+            {
+                if(!w.links[j])
+                {
+                    break;
+                }
+                numlinks++;
+            }
             f->putchar(numlinks);
-            loopj(numlinks) f->putlil<ushort>(w.links[j]);
+            for(int j = 0; j < numlinks; ++j)
+            {
+                f->putlil<ushort>(w.links[j]);
+            }
         }
 
         delete f;
@@ -816,7 +826,10 @@ namespace ai
     //deletes waypoints within bounds of selection (w.o.* >= 0.x etc. are bounds checks)
     void delselwaypoints()
     {
-        if(noedit(true)) return;
+        if(noedit(true))
+        {
+            return;
+        }
         vec o = vec(sel.o).sub(0.1f), s = vec(sel.s).mul(sel.grid).add(o).add(0.1f);
         int cleared = 0;
         for(int i = 1; i < waypoints.length(); i++)

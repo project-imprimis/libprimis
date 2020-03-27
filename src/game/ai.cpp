@@ -821,14 +821,15 @@ namespace ai
         if(last < 500 || n < 3) return false; // route length is too short
         d->ai->lastcheck = lastmillis;
         int w = iswaypoint(d->lastnode) ? d->lastnode : d->ai->route[n], c = min(n-1, NUMPREVNODES);
-        loopj(c) // check ahead to see if we need to go around something
+        // check ahead to see if we need to go around something
+        for(int j = 0; j < c; ++j)
         {
             int p = n-j-1, v = d->ai->route[p];
             if(d->ai->hasprevnode(v) || obstacles.find(v, d)) // something is in the way, try to remap around it
             {
                 int m = p-1;
                 if(m < 3) return false; // route length is too short from this point
-                loopirev(m)
+                for(int i = m; --i >= 0;) //note reverse iteration
                 {
                     int t = d->ai->route[i];
                     if(!d->ai->hasprevnode(t) && !obstacles.find(t, d))
@@ -1462,14 +1463,16 @@ namespace ai
             for(int i = 0; i < len; ++i)
             {
                 waypoint &w = waypoints[showwaypointsradius ? close[i] : i];
-                loopj(MAXWAYPOINTLINKS)
+                for(int j = 0; j < MAXWAYPOINTLINKS; ++j)
                 {
                      int link = w.links[j];
-                     if(!link) break;
+                     if(!link)
+                     {
+                         break;
+                     }
                      particle_flare(w.o, waypoints[link].o, 1, PART_STREAK, 0x0000FF);
                 }
             }
-
         }
     }
 }

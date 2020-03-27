@@ -518,12 +518,18 @@ struct stainrenderer
             #undef GENFACEVERT
             }
         }
-        else if(cu.texture[orient] == DEFAULT_SKY) return;
+        else if(cu.texture[orient] == DEFAULT_SKY)
+        {
+            return;
+        }
         else if(cu.ext && (numverts = cu.ext->surfaces[orient].numverts&MAXFACEVERTS))
         {
             vertinfo *verts = cu.ext->verts() + cu.ext->surfaces[orient].verts;
             ivec vo = ivec(o).mask(~0xFFF).shl(3);
-            loopj(numverts) pos[j] = vec(verts[j].getxyz().add(vo)).mul(1/8.0f);
+            for(int j = 0; j < numverts; ++j)
+            {
+                pos[j] = vec(verts[j].getxyz().add(vo)).mul(1/8.0f);
+            }
             planes[0].cross(pos[0], pos[1], pos[2]).normalize();
             if(numverts >= 4 && !(cu.merged&(1<<orient)) && !flataxisface(cu, orient) && faceconvexity(verts, numverts, size))
             {
@@ -531,7 +537,10 @@ struct stainrenderer
                 numplanes++;
             }
         }
-        else if(cu.merged&(1<<orient)) return;
+        else if(cu.merged&(1<<orient))
+        {
+            return;
+        }
         else if(!vismask || (vismask&0x40 && visibleface(cu, orient, o, size, MAT_AIR, (cu.material&MAT_ALPHA)^MAT_ALPHA, MAT_ALPHA)))
         {
             ivec v[4];
@@ -539,25 +548,44 @@ struct stainrenderer
             int vis = 3, convex = faceconvexity(v, vis), order = convex < 0 ? 1 : 0;
             vec vo(o);
             pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
-            if(vis&1) pos[numverts++] = vec(v[order+1]).mul(size/8.0f).add(vo);
+            if(vis&1)
+            {
+                pos[numverts++] = vec(v[order+1]).mul(size/8.0f).add(vo);
+            }
             pos[numverts++] = vec(v[order+2]).mul(size/8.0f).add(vo);
-            if(vis&2) pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
+            if(vis&2)
+            {
+                pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
+            }
             planes[0].cross(pos[0], pos[1], pos[2]).normalize();
-            if(convex) { planes[1].cross(pos[0], pos[2], pos[3]).normalize(); numplanes++; }
+            if(convex)
+            {
+                planes[1].cross(pos[0], pos[2], pos[3]).normalize();
+                numplanes++;
+            }
         }
-        else return;
+        else
+        {
+            return;
+        }
 
         stainbuffer &buf = verts[mat || cu.material&MAT_ALPHA ? StainBuffer_Transparent : StainBuffer_Opaque];
-        loopl(numplanes)
+        for(int l = 0; l < numplanes; ++l) //note this is a loop l (level 4)
         {
             const vec &n = planes[l];
             float facing = n.dot(stainnormal);
-            if(facing <= 0) continue;
+            if(facing <= 0)
+            {
+                continue;
+            }
             vec p = vec(pos[0]).sub(staincenter);
 #if 0
             // intersect ray along stain normal with plane
             float dist = n.dot(p) / facing;
-            if(fabs(dist) > stainradius) continue;
+            if(fabs(dist) > stainradius)
+            {
+                continue;
+            }
             vec pcenter = vec(stainnormal).mul(dist).add(staincenter);
 #else
             // travel back along plane normal from the stain center
@@ -647,11 +675,23 @@ struct stainrenderer
             if(escaped&(1<<i))
             {
                 ivec co(i, o, size);
-                if(cu.children) findescaped(cu.children, co, size>>1, cu.escaped);
+                if(cu.children)
+                {
+                    findescaped(cu.children, co, size>>1, cu.escaped);
+                }
                 else
                 {
                     int vismask = cu.merged;
-                    if(vismask) loopj(6) if(vismask&(1<<j)) gentris(cu, j, co, size);
+                    if(vismask)
+                    {
+                        for(int j = 0; j < 6; ++j)
+                        {
+                            if(vismask&(1<<j))
+                            {
+                                gentris(cu, j, co, size);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -749,11 +789,26 @@ struct stainrenderer
                 if(cu.children) gentris(cu.children, co, size>>1, cu.escaped);
                 else
                 {
-                    int vismask = cu.visible;
+                    int vismask = cu.visible; //visibility mask
                     if(vismask&0xC0)
                     {
-                        if(vismask&0x80) loopj(6) gentris(cu, j, co, size, NULL, vismask);
-                        else loopj(6) if(vismask&(1<<j)) gentris(cu, j, co, size);
+                        if(vismask&0x80)
+                        {
+                            for(int j = 0; j < 6; ++j)
+                            {
+                                gentris(cu, j, co, size, NULL, vismask);
+                            }
+                        }
+                        else
+                        {
+                            for(int j = 0; j < 6; ++j)
+                            {
+                                if(vismask&(1<<j))
+                                {
+                                    gentris(cu, j, co, size);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -763,8 +818,17 @@ struct stainrenderer
                 if(cu.children) findescaped(cu.children, co, size>>1, cu.escaped);
                 else
                 {
-                    int vismask = cu.merged;
-                    if(vismask) loopj(6) if(vismask&(1<<j)) gentris(cu, j, co, size);
+                    int vismask = cu.merged; //visibility mask
+                    if(vismask)
+                    {
+                        for(int j = 0; j < 6; ++j)
+                        {
+                            if(vismask&(1<<j))
+                            {
+                                gentris(cu, j, co, size);
+                            }
+                        }
+                    }
                 }
             }
         }
