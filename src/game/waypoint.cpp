@@ -6,7 +6,7 @@ namespace ai
 {
     using namespace game;
 
-    vector<waypoint> waypoints;
+    vector<waypoint> waypoints; //this is the box that all waypoints go into
 
     //bad kinds of materials for bots to path into: clipping, instadeath, lava
     bool clipped(const vec &o)
@@ -50,9 +50,15 @@ namespace ai
             float split[2];
             uint child[2];
 
-            int axis() const { return child[0]>>30; }
-            int childindex(int which) const { return child[which]&0x3FFFFFFF; }
-            bool isleaf(int which) const { return (child[1]&(1<<(30+which)))!=0; }
+            int axis() const { return child[0]>>30; } //right shift 30?
+            int childindex(int which) const
+            {
+                return child[which]&0x3FFFFFFF;
+            }//bitwise AND with magic 0x3FFFFFFF?
+            bool isleaf(int which) const
+            {
+                return (child[1]&(1<<(30+which)))!=0;
+            }//child elem 1 AND'd by 1 bitshifted right by 30+which places is not equal to 0?
         };
 
         vector<node> nodes;
@@ -69,11 +75,16 @@ namespace ai
             bbmax = vec(-1e16f, -1e16f, -1e16f);
         }
 
+        // note: waypoints is a vector<waypoint>
         void build(int first = 0, int last = -1)
         {
-            if(last < 0) last = waypoints.length();
+            if(last < 0) //if list has been cleared
+            {
+                last = waypoints.length();
+            }
             vector<int> indices;
-            for(int i = first; i < last; i++)
+            //go and populate the vector<int> indices with this loop
+            for(int i = first; i < last; i++) //if cleared, 0 to waypoints.length
             {
                 waypoint &w = waypoints[i];
                 indices.add(i);
@@ -83,20 +94,32 @@ namespace ai
                 bbmax.max(vec(w.o).add(radius));
             }
             if(first < last) lastwp = max(lastwp, last-1);
-            if(indices.length())
+            if(indices.length()) //if this above loop yielded something useful
             {
-                nodes.reserve(indices.length());
-                build(indices.getbuf(), indices.length(), bbmin, bbmax);
+                nodes.reserve(indices.length());//create some space
+                build(indices.getbuf(), indices.length(), bbmin, bbmax);//build() calls an unrelated build() because that's what makes sense in this timeline
             }
         }
-
+        //takes from above build() call
         void build(int *indices, int numindices, const vec &vmin, const vec &vmax)
         {
             int axis = 2;
-            loopk(2) if(vmax[k] - vmin[k] > vmax[axis] - vmin[axis]) axis = k;
+            loopk(2)
+            {
+                if(vmax[k] - vmin[k] > vmax[axis] - vmin[axis])
+                {
+                    axis = k;
+                }
+            }
+            //declare some bounding vec objects
+            vec leftmin(1e16f, 1e16f, 1e16f),
+                leftmax(-1e16f, -1e16f, -1e16f),
+                rightmin(1e16f, 1e16f, 1e16f),
+                rightmax(-1e16f, -1e16f, -1e16f);
 
-            vec leftmin(1e16f, 1e16f, 1e16f), leftmax(-1e16f, -1e16f, -1e16f), rightmin(1e16f, 1e16f, 1e16f), rightmax(-1e16f, -1e16f, -1e16f);
-            float split = 0.5f*(vmax[axis] + vmin[axis]), splitleft = -1e16f, splitright = 1e16f;
+            float split = 0.5f*(vmax[axis] + vmin[axis]),
+                  splitleft = -1e16f,
+                  splitright = 1e16f;
             int left, right;
             for(left = 0, right = numindices; left < right;)
             {
@@ -106,7 +129,7 @@ namespace ai
                 {
                     ++left;
                     splitleft = max(splitleft, w.o[axis]+radius);
-                    leftmin.min(vec(w.o).sub(radius));
+                    leftmin.min(vec(w.o).sub(radius)); //floors & ceils vectors with bounding vecs
                     leftmax.max(vec(w.o).add(radius));
                 }
                 else
@@ -114,12 +137,12 @@ namespace ai
                     --right;
                     swap(indices[left], indices[right]);
                     splitright = min(splitright, w.o[axis]-radius);
-                    rightmin.min(vec(w.o).sub(radius));
+                    rightmin.min(vec(w.o).sub(radius)); //floors & ceils again
                     rightmax.max(vec(w.o).add(radius));
                 }
             }
 
-            if(!left || right==numindices)
+            if(!left || right==numindices) //if we didn't manage to move centerwards with the ++left/--right above
             {
                 leftmin = rightmin = vec(1e16f, 1e16f, 1e16f);
                 leftmax = rightmax = vec(-1e16f, -1e16f, -1e16f);
@@ -133,13 +156,13 @@ namespace ai
                     if(i < left)
                     {
                         splitleft = max(splitleft, w.o[axis]+radius);
-                        leftmin.min(vec(w.o).sub(radius));
+                        leftmin.min(vec(w.o).sub(radius)); //more floors & ceils
                         leftmax.max(vec(w.o).add(radius));
                     }
                     else
                     {
                         splitright = min(splitright, w.o[axis]-radius);
-                        rightmin.min(vec(w.o).sub(radius));
+                        rightmin.min(vec(w.o).sub(radius)); //more floors & ceils
                         rightmax.max(vec(w.o).add(radius));
                     }
                 }
@@ -164,6 +187,7 @@ namespace ai
                 if(numindices-right) build(&indices[right], numindices-right, rightmin, rightmax);
             }
         }
+
     } wpcaches[NUMWPCACHES];
 
     static int invalidatedwpcaches = 0, clearedwpcaches = (1<<NUMWPCACHES)-1, numinvalidatewpcaches = 0, lastwpcache = 0;
@@ -234,62 +258,89 @@ namespace ai
 
     vector<wpcache::node *> wpcachestack;
 
+
     int closestwaypoint(const vec &pos, float mindist, bool links, gameent *d)
     {
         if(waypoints.empty()) return -1;
         if(clearedwpcaches) buildwpcache();
-
+//==================================================================CHECKCLOSEST
         #define CHECKCLOSEST(index) do { \
-            int n = (index); \
-            if(n < waypoints.length()) \
+            if(index < waypoints.length()) \
             { \
-                const waypoint &w = waypoints[n]; \
+                const waypoint &w = waypoints[index]; \
                 if(!links || w.links[0]) \
                 { \
                     float dist = w.o.squaredist(pos); \
-                    if(dist < mindist*mindist) { closest = n; mindist = sqrtf(dist); } \
+                    if(dist < mindist*mindist) { closest = index; mindist = sqrtf(dist); } \
                 } \
             } \
         } while(0)
+//=====
         int closest = -1;
-        wpcache::node *curnode;
-        loop(which, NUMWPCACHES) if(wpcaches[which].firstwp >= 0) for(curnode = &wpcaches[which].nodes[0], wpcachestack.setsize(0);;)
+        wpcache::node *curnode; //define current node
+        loop(i, NUMWPCACHES) //NUMWPCACHES = 2
         {
-            int axis = curnode->axis();
-            float dist1 = pos[axis] - curnode->split[0], dist2 = curnode->split[1] - pos[axis];
-            if(dist1 >= mindist)
+            if(wpcaches[i].firstwp >= 0) //if the first waypoint in the enumerated (by i) cache is not -1 (-1 set by clearing)
             {
-                if(dist2 < mindist)
+                for(curnode = &wpcaches[i].nodes[0], wpcachestack.setsize(0);;) //for cache[i] node 0, set the cachestack size to 0
                 {
-                    if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
-                    CHECKCLOSEST(curnode->childindex(1));
+                    int axis = curnode->axis(); //axis property from wpcache struct
+                    float dist1 = pos[axis] - curnode->split[0];
+                    float dist2 = curnode->split[1] - pos[axis];
+                    if(dist1 >= mindist)
+                    {
+                        if(dist2 < mindist)
+                        {
+                            if(!curnode->isleaf(1))
+                            {
+                                curnode += curnode->childindex(1);
+                                continue;
+                            }
+                            CHECKCLOSEST(curnode->childindex(1));
+                        }
+                    }
+                    else if(curnode->isleaf(0))
+                    {
+                        CHECKCLOSEST(curnode->childindex(0));
+                        if(dist2 < mindist)
+                        {
+                            if(!curnode->isleaf(1))
+                            {
+                                curnode += curnode->childindex(1);
+                                continue;
+                            }
+                            CHECKCLOSEST(curnode->childindex(1));
+                        }
+                    }
+                    else
+                    {
+                        if(dist2 < mindist)
+                        {
+                            if(!curnode->isleaf(1))
+                            {
+                                wpcachestack.add(curnode + curnode->childindex(1));
+                            }
+                            else
+                            {
+                                CHECKCLOSEST(curnode->childindex(1));
+                            }
+                        }
+                        curnode += curnode->childindex(0);
+                        continue;
+                    }
+                    if(wpcachestack.empty()) break;
+                    curnode = wpcachestack.pop();
                 }
             }
-            else if(curnode->isleaf(0))
-            {
-                CHECKCLOSEST(curnode->childindex(0));
-                if(dist2 < mindist)
-                {
-                    if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
-                    CHECKCLOSEST(curnode->childindex(1));
-                }
-            }
-            else
-            {
-                if(dist2 < mindist)
-                {
-                    if(!curnode->isleaf(1)) wpcachestack.add(curnode + curnode->childindex(1));
-                    else CHECKCLOSEST(curnode->childindex(1));
-                }
-                curnode += curnode->childindex(0);
-                continue;
-            }
-            if(wpcachestack.empty()) break;
-            curnode = wpcachestack.pop();
         }
-        for(int i = lastwpcache; i < waypoints.length(); i++) { CHECKCLOSEST(i); }
+        for(int i = lastwpcache; i < waypoints.length(); i++)
+        {
+            CHECKCLOSEST(i);
+        }
         return closest;
     }
+#undef CHECKCLOSEST
+//==============================================================================
 
     void findwaypointswithin(const vec &pos, float mindist, float maxdist, vector<int> &results)
     {
