@@ -214,8 +214,17 @@ void calcvfcD()
     {
         plane &p = vfcP[i];
         vfcDnear[i] = vfcDfar[i] = 0;
-        loopk(3) if(p[k] > 0) vfcDfar[i] += p[k];
-        else vfcDnear[i] += p[k];
+        for(int k = 0; k < 3; ++k)
+        {
+            if(p[k] > 0)
+            {
+                vfcDfar[i] += p[k];
+            }
+            else
+            {
+                vfcDnear[i] += p[k];
+            }
+        }
     }
 }
 
@@ -1168,7 +1177,10 @@ struct renderstate
 
     renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false), vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0), refractcolor(1, 1, 1), blend(false), blendx(-1), blendy(-1), globals(-1), tmu(-1), slot(NULL), texgenslot(NULL), vslot(NULL), texgenvslot(NULL), texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
     {
-        loopk(7) textures[k] = 0;
+        for(int k = 0; k < 7; ++k)
+        {
+            textures[k] = 0;
+        }
     }
 };
 
@@ -2629,14 +2641,17 @@ static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo dra
     if(shadowverts.verts.length() + 3 >= USHRT_MAX) flushshadowmeshdraws(m, sides, draws);
     int i0 = shadowverts.add(v0), i1 = shadowverts.add(v1), i2 = shadowverts.add(v2);
     ushort minvert = min(i0, min(i1, i2)), maxvert = max(i0, max(i1, i2));
-    loopk(sides) if(sidemask&(1<<k))
+    for(int k = 0; k < sides; ++k)
     {
-        shadowdrawinfo &d = draws[k];
-        d.minvert = min(d.minvert, minvert);
-        d.maxvert = max(d.maxvert, maxvert);
-        shadowtris[k].add(i0);
-        shadowtris[k].add(i1);
-        shadowtris[k].add(i2);
+        if(sidemask&(1<<k))
+        {
+            shadowdrawinfo &d = draws[k];
+            d.minvert = min(d.minvert, minvert);
+            d.maxvert = max(d.maxvert, maxvert);
+            shadowtris[k].add(i0);
+            shadowtris[k].add(i1);
+            shadowtris[k].add(i2);
+        }
     }
 }
 

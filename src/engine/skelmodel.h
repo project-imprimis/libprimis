@@ -28,8 +28,20 @@ struct skelmodel : animmodel
 
         bool operator==(const blendcombo &c) const
         {
-            loopk(4) if(bones[k] != c.bones[k]) return false;
-            loopk(4) if(weights[k] != c.weights[k]) return false;
+            for(int k = 0; k < 4; ++k)
+            {
+                if(bones[k] != c.bones[k])
+                {
+                    return false;
+                }
+            }
+            for(int k = 0; k < 4; ++k)
+            {
+                if(weights[k] != c.weights[k])
+                {
+                    return false;
+                }
+            }
             return true;
         }
 
@@ -56,17 +68,23 @@ struct skelmodel : animmodel
 
         int addweight(int sorted, float weight, int bone)
         {
-            if(weight <= 1e-3f) return sorted;
-            loopk(sorted) if(weight > weights[k])
+            if(weight <= 1e-3f)
             {
-                for(int l = min(sorted-1, 2); l >= k; l--)
+                return sorted;
+            }
+            for(int k = 0; k < sorted; ++k)
+            {
+                if(weight > weights[k])
                 {
-                    weights[l+1] = weights[l];
-                    bones[l+1] = bones[l];
+                    for(int l = min(sorted-1, 2); l >= k; l--)
+                    {
+                        weights[l+1] = weights[l];
+                        bones[l+1] = bones[l];
+                    }
+                    weights[k] = weight;
+                    bones[k] = bone;
+                    return sorted<4 ? sorted+1 : sorted;
                 }
-                weights[k] = weight;
-                bones[k] = bone;
-                return sorted<4 ? sorted+1 : sorted;
             }
             if(sorted>=4) return sorted;
             weights[sorted] = weight;
@@ -103,23 +121,49 @@ struct skelmodel : animmodel
             if(interpindex >= 0)
             {
                 v.weights[0] = 255;
-                loopk(3) v.weights[k+1] = 0;
+                for(int k = 0; k < 3; ++k)
+                {
+                    v.weights[k+1] = 0;
+                }
                 v.bones[0] = 2*interpindex;
-                loopk(3) v.bones[k+1] = v.bones[0];
+                for(int k = 0; k < 3; ++k)
+                {
+                    v.bones[k+1] = v.bones[0];
+                }
             }
             else
             {
                 int total = 0;
-                loopk(4) total += (v.weights[k] = uchar(0.5f + weights[k]*255));
+                for(int k = 0; k < 4; ++k)
+                {
+                    total += (v.weights[k] = uchar(0.5f + weights[k]*255));
+                }
                 while(total > 255)
                 {
-                    loopk(4) if(v.weights[k] > 0 && total > 255) { v.weights[k]--; total--; }
+                    for(int k = 0; k < 4; ++k)
+                    {
+                        if(v.weights[k] > 0 && total > 255)
+                        {
+                            v.weights[k]--;
+                            total--;
+                        }
+                    }
                 }
                 while(total < 255)
                 {
-                    loopk(4) if(v.weights[k] < 255 && total < 255) { v.weights[k]++; total++; }
+                    for(int k = 0; k < 4; ++k)
+                    {
+                        if(v.weights[k] < 255 && total < 255)
+                        {
+                            v.weights[k]++;
+                            total++;
+                        }
+                    }
                 }
-                loopk(4) v.bones[k] = 2*interpbones[k];
+                for(int k = 0; k < 4; ++k)
+                {
+                    v.bones[k] = 2*interpbones[k];
+                }
             }
         }
     };
@@ -135,7 +179,10 @@ struct skelmodel : animmodel
 
         animcacheentry() : ragdoll(NULL)
         {
-            loopk(MAXANIMPARTS) as[k].cur.fr1 = as[k].prev.fr1 = -1;
+            for(int k = 0; k < MAXANIMPARTS; ++k)
+            {
+                as[k].cur.fr1 = as[k].prev.fr1 = -1;
+            }
         }
 
         bool operator==(const animcacheentry &c) const
@@ -311,7 +358,7 @@ struct skelmodel : animmodel
                     T vv;
                     assignvert(vv, index, v, ((skelmeshgroup *)group)->blendcombos[v.blend]);
                     int htidx = hthash(v.pos)&(htlen-1);
-                    loopk(htlen)
+                    for(int k = 0; k < htlen; ++k)
                     {
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
                         if(vidx < 0)
@@ -618,7 +665,7 @@ struct skelmodel : animmodel
 
         void remapbones()
         {
-            for(int i = 0; i < numbones; ++i)
+            for(int i = 0; i < numbones; ++i)//loop i
             {
                 boneinfo &info = bones[i];
                 info.interpindex = -1;
@@ -628,26 +675,55 @@ struct skelmodel : animmodel
             loopv(users)
             {
                 skelmeshgroup *group = users[i];
-                loopvj(group->blendcombos)
+                loopvj(group->blendcombos) //loopj
                 {
                     blendcombo &c = group->blendcombos[j];
-                    loopk(4)
+                    for(int k = 0; k < 4; ++k) //loopk
                     {
-                        if(!c.weights[k]) { c.interpbones[k] = k > 0 ? c.interpbones[k-1] : 0; continue; }
+                        if(!c.weights[k])
+                        {
+                            c.interpbones[k] = k > 0 ? c.interpbones[k-1] : 0;
+                            continue;
+                        }
                         boneinfo &info = bones[c.bones[k]];
-                        if(info.interpindex < 0) info.interpindex = numgpubones++;
+                        if(info.interpindex < 0)
+                        {
+                            info.interpindex = numgpubones++;
+                        }
                         c.interpbones[k] = info.interpindex;
-                        if(info.group < 0) continue;
+                        if(info.group < 0)
+                        {
+                            continue;
+                        }
                         for(int l = 0; l < 4; ++l) //note this is a loop l (level 4)
                         {
-                            if(!c.weights[l]) break;
-                            if(l == k) continue;
+                            if(!c.weights[l])
+                            {
+                                break;
+                            }
+                            if(l == k)
+                            {
+                                continue;
+                            }
                             int parent = c.bones[l];
-                            if(info.parent == parent || (info.parent >= 0 && info.parent == bones[parent].parent)) { info.group = -info.parent; break; }
-                            if(info.group <= parent) continue;
+                            if(info.parent == parent || (info.parent >= 0 && info.parent == bones[parent].parent))
+                            {
+                                info.group = -info.parent;
+                                break;
+                            }
+                            if(info.group <= parent)
+                            {
+                                continue;
+                            }
                             int child = c.bones[k];
-                            while(parent > child) parent = bones[parent].parent;
-                            if(parent != child) info.group = c.bones[l];
+                            while(parent > child)
+                            {
+                                parent = bones[parent].parent;
+                            }
+                            if(parent != child)
+                            {
+                                info.group = c.bones[l];
+                            }
                         }
                     }
                 }
@@ -956,11 +1032,14 @@ struct skelmodel : animmodel
                 const ragdollskel::joint &j = ragdoll->joints[i];
                 const boneinfo &b = bones[j.bone];
                 const dualquat &q = bdata[b.interpindex];
-                loopk(3) if(j.vert[k] >= 0)
+                for(int k = 0; k < 3; ++k)
                 {
-                    ragdollskel::vert &v = ragdoll->verts[j.vert[k]];
-                    ragdolldata::vert &dv = d.verts[j.vert[k]];
-                    dv.pos.add(q.transform(v.pos).mul(v.weight));
+                    if(j.vert[k] >= 0)
+                    {
+                        ragdollskel::vert &v = ragdoll->verts[j.vert[k]];
+                        ragdolldata::vert &dv = d.verts[j.vert[k]];
+                        dv.pos.add(q.transform(v.pos).mul(v.weight));
+                    }
                 }
             }
             if(ragdoll->animjoints) loopv(ragdoll->joints)
@@ -994,7 +1073,13 @@ struct skelmodel : animmodel
                 const ragdollskel::joint &j = ragdoll->joints[i];
                 const boneinfo &b = bones[j.bone];
                 vec pos(0, 0, 0);
-                loopk(3) if(j.vert[k]>=0) pos.add(d.verts[j.vert[k]].pos);
+                for(int k = 0; k < 3; ++k)
+                {
+                    if(j.vert[k]>=0)
+                    {
+                        pos.add(d.verts[j.vert[k]].pos);
+                    }
+                }
                 pos.mul(j.weight/p->model->scale).sub(trans);
                 matrix4x3 m;
                 m.mul(d.tris[j.tri], pos, d.animjoints ? d.animjoints[i] : j.orient);

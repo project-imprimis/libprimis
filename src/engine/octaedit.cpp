@@ -1744,7 +1744,10 @@ namespace hmap
         makeundo(hundo);
 
         cube **c = cmap[x][y];
-        loopk(4) c[k] = NULL;
+        for(int k = 0; k < 4; ++k)
+        {
+            c[k] = NULL;
+        }
         c[1] = getcube(t, 0);
         if(!c[1] || !IS_EMPTY(*c[1]))
         {   // try up
@@ -1846,40 +1849,43 @@ namespace hmap
         int e[2][2];
         int notempty = 0;
 
-        loopk(4) if(c[k])
+        for(int k = 0; k < 4; ++k)
         {
-            for(int i = 0; i < 2; ++i)
+            if(c[k])
             {
-                for(int j = 0; j < 2; ++j)
-                {
-                    {
-                        e[i][j] = min(8, map[x+i][y+j] - (mapz[x][y]+3-k)*8);
-                        notempty |= e[i][j] > 0;
-                    }
-                }
-            }
-            if(notempty)
-            {
-                c[k]->texture[sel.orient] = c[1]->texture[sel.orient];
-                SOLID_FACES(*c[k]);
                 for(int i = 0; i < 2; ++i)
                 {
                     for(int j = 0; j < 2; ++j)
                     {
-                        int f = e[i][j];
-                        if(f<0 || (f==0 && e[1-i][j]==0 && e[i][1-j]==0))
                         {
-                            f=0;
-                            pushside(*c[k], d, i, j, 0);
-                            pushside(*c[k], d, i, j, 1);
+                            e[i][j] = min(8, map[x+i][y+j] - (mapz[x][y]+3-k)*8);
+                            notempty |= e[i][j] > 0;
                         }
-                        EDGE_SET(CUBE_EDGE(*c[k], d, i, j), dc, dc ? f : 8-f);
                     }
                 }
-            }
-            else
-            {
-                EMPTY_FACES(*c[k]);
+                if(notempty)
+                {
+                    c[k]->texture[sel.orient] = c[1]->texture[sel.orient];
+                    SOLID_FACES(*c[k]);
+                    for(int i = 0; i < 2; ++i)
+                    {
+                        for(int j = 0; j < 2; ++j)
+                        {
+                            int f = e[i][j];
+                            if(f<0 || (f==0 && e[1-i][j]==0 && e[i][1-j]==0))
+                            {
+                                f=0;
+                                pushside(*c[k], d, i, j, 0);
+                                pushside(*c[k], d, i, j, 1);
+                            }
+                            EDGE_SET(CUBE_EDGE(*c[k], d, i, j), dc, dc ? f : 8-f);
+                        }
+                    }
+                }
+                else
+                {
+                    EMPTY_FACES(*c[k]);
+                }
             }
         }
 
@@ -2130,12 +2136,15 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                 uint newbak = c.faces[d];
                 uchar *m = (uchar *)&bak;
                 uchar *n = (uchar *)&newbak;
-                loopk(4) if(n[k] != m[k]) // tries to find partial edit that is valid
+                for(int k = 0; k < 4; ++k)
                 {
-                    c.faces[d] = bak;
-                    c.edges[d*4+k] = n[k];
-                    if(isvalidcube(c))
-                        m[k] = n[k];
+                    if(n[k] != m[k]) // tries to find partial edit that is valid
+                    {
+                        c.faces[d] = bak;
+                        c.edges[d*4+k] = n[k];
+                        if(isvalidcube(c))
+                            m[k] = n[k];
+                    }
                 }
                 c.faces[d] = bak;
             }
@@ -2977,11 +2986,36 @@ void rendertexturepanel(int w, int h)
                 if(vslot.rotation)
                 {
                     const texrotation &r = texrotations[vslot.rotation];
-                    if(r.swapxy) { swap(xoff, yoff); loopk(4) swap(tc[k].x, tc[k].y); }
-                    if(r.flipx) { xoff *= -1; loopk(4) tc[k].x *= -1; }
-                    if(r.flipy) { yoff *= -1; loopk(4) tc[k].y *= -1; }
+                    if(r.swapxy)
+                    {
+                        swap(xoff, yoff);
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            swap(tc[k].x, tc[k].y);
+                        }
+                    }
+                    if(r.flipx)
+                    {
+                        xoff *= -1;
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            tc[k].x *= -1;
+                        }
+                    }
+                    if(r.flipy)
+                    {
+                        yoff *= -1;
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            tc[k].y *= -1;
+                        }
+                    }
                 }
-                loopk(4) { tc[k].x = tc[k].x/sx - xoff/tex->xs; tc[k].y = tc[k].y/sy - yoff/tex->ys; }
+                for(int k = 0; k < 4; ++k)
+                {
+                    tc[k].x = tc[k].x/sx - xoff/tex->xs;
+                    tc[k].y = tc[k].y/sy - yoff/tex->ys;
+                }
                 glBindTexture(GL_TEXTURE_2D, tex->id);
                 for(int j = 0; j < (glowtex ? 3 : 2); ++j)
                 {

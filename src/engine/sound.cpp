@@ -425,9 +425,15 @@ static struct soundtype
 
     void preloadsound(int n)
     {
-        if(nosound || !configs.inrange(n)) return;
+        if(nosound || !configs.inrange(n))
+        {
+            return;
+        }
         soundconfig &config = configs[n];
-        loopk(config.numslots) slots[config.slots+k].sample->load(dir, true);
+        for(int k = 0; k < config.numslots; ++k)
+        {
+            slots[config.slots+k].sample->load(dir, true);
+        }
     }
 
     bool playing(const soundchannel &chan, const soundconfig &config) const

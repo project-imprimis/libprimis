@@ -385,7 +385,7 @@ struct vacollect : verthash
                 vec e1 = vec(v1).sub(v0), e2 = vec(v2).sub(v0);
                 float d11 = e1.dot(e1), d12 = e1.dot(e2), d22 = e2.dot(e2);
                 int idx[9];
-                loopk(nump)
+                for(int k = 0; k < nump; ++k)
                 {
                     vertex v;
                     v.pos = p2[k];
@@ -402,12 +402,15 @@ struct vacollect : verthash
                     idx[k] = addvert(v);
                 }
                 vector<ushort> &tris = decalindices[tkey].tris;
-                loopk(nump-2) if(idx[0] != idx[k+1] && idx[k+1] != idx[k+2] && idx[k+2] != idx[0])
+                for(int k = 0; k < nump-2; ++k)
                 {
-                    tris.add(idx[0]);
-                    tris.add(idx[k+1]);
-                    tris.add(idx[k+2]);
-                    decaltris += 3;
+                    if(idx[0] != idx[k+1] && idx[k+1] != idx[k+2] && idx[k+2] != idx[0])
+                    {
+                        tris.add(idx[0]);
+                        tris.add(idx[k+1]);
+                        tris.add(idx[k+2]);
+                        decaltris += 3;
+                    }
                 }
             }
         }
@@ -690,7 +693,7 @@ void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *i
         {
             vector<ushort> &idxs = key.tex==DEFAULT_SKY ? vc.skyindices : vc.indices[key].tris;
             int left = index[0], mid = index[i+1], right = index[i+2], start = left, i0 = left, i1 = -1;
-            loopk(4)
+            for(int k = 0; k < 4; ++k)
             {
                 int i2 = -1, ctj = -1, cedge = -1;
                 switch(k)
@@ -790,11 +793,16 @@ void addgrasstri(int face, vertex *verts, int numv, ushort texture, int layer)
     g.maxz = max(max(g.v[0].z, g.v[1].z), max(g.v[2].z, g.v[3].z));
 
     g.center = vec(0, 0, 0);
-    loopk(numv) g.center.add(g.v[k]);
+    for(int k = 0; k < numv; ++k)
+    {
+        g.center.add(g.v[k]);
+    }
     g.center.div(numv);
     g.radius = 0;
-    loopk(numv) g.radius = max(g.radius, g.v[k].dist(g.center));
-
+    for(int k = 0; k < numv; ++k)
+    {
+        g.radius = max(g.radius, g.v[k].dist(g.center));
+    }
     g.texture = texture;
     g.blend = layer == LAYER_BLEND ? ((int(g.center.x)>>12)+1) | (((int(g.center.y)>>12)+1)<<8) : 0;
 }
@@ -860,20 +868,29 @@ void guessnormals(const vec *pos, int numverts, vec *normals)
     if(numverts != 4)
     {
         n1.normalize();
-        loopk(numverts) normals[k] = n1;
+        for(int k = 0; k < numverts; ++k)
+        {
+            normals[k] = n1;
+        }
         return;
     }
     n2.cross(pos[0], pos[2], pos[3]);
     if(n1.iszero())
     {
         n2.normalize();
-        loopk(4) normals[k] = n2;
+        for(int k = 0; k < 4; ++k)
+        {
+            normals[k] = n2;
+        }
         return;
     }
     else n1.normalize();
     if(n2.iszero())
     {
-        loopk(4) normals[k] = n1;
+        for(int k = 0; k < 4; ++k)
+        {
+            normals[k] = n1;
+        }
         return;
     }
     else n2.normalize();
@@ -891,7 +908,7 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
     vertex verts[MAXFACEVERTS];
     int index[MAXFACEVERTS];
     vec normals[MAXFACEVERTS];
-    loopk(numverts)
+    for(int k = 0; k < numverts; ++k)
     {
         vertex &v = verts[k];
         v.pos = pos[k];
@@ -923,8 +940,19 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
 
     if(alpha)
     {
-        loopk(numverts) { vc.alphamin.min(pos[k]); vc.alphamax.max(pos[k]); }
-        if(vslot.refractscale > 0) loopk(numverts) { vc.refractmin.min(pos[k]); vc.refractmax.max(pos[k]); }
+        for(int k = 0; k < numverts; ++k)
+        {
+            vc.alphamin.min(pos[k]);
+            vc.alphamax.max(pos[k]);
+        }
+        if(vslot.refractscale > 0)
+        {
+            for(int k = 0; k < numverts; ++k)
+            {
+                vc.refractmin.min(pos[k]);
+                vc.refractmax.max(pos[k]);
+            }
+        }
     }
     if(texture == DEFAULT_SKY)
     {
@@ -932,7 +960,11 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
         {
             if(pos[i][orient>>1] != ((orient&1)<<worldscale))
             {
-                loopk(numverts) { vc.skymin.min(pos[k]); vc.skymax.max(pos[k]); }
+                for(int k = 0; k < numverts; ++k)
+                {
+                    vc.skymin.min(pos[k]);
+                    vc.skymax.max(pos[k]);
+                }
                 break;
             }
         }

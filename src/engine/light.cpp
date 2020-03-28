@@ -23,7 +23,13 @@ FVARFR(sunlightpitch, -90, 90, 90, setsunlightdir());
 void setsunlightdir()
 {
     sunlightdir = vec(sunlightyaw*RAD, sunlightpitch*RAD);
-    loopk(3) if(fabs(sunlightdir[k]) < 1e-5f) sunlightdir[k] = 0;
+    for(int k = 0; k < 3; ++k)
+    {
+        if(fabs(sunlightdir[k]) < 1e-5f)
+        {
+            sunlightdir[k] = 0;
+        }
+    }
     sunlightdir.normalize();
     setupsunlight();
 }
@@ -251,7 +257,7 @@ static void clearsurfaces(cube *c)
                     }
 
                     vertinfo *verts = c[i].ext->verts() + surf.verts;
-                    loopk(numverts)
+                    for(int k = 0; k < numverts; ++k)
                     {
                         vertinfo &v = verts[k];
                         v.norm = 0;
@@ -436,7 +442,13 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         plane planes[2];
         int numplanes = 0;
         planes[numplanes++].toplane(pos[0], pos[1], pos[2]);
-        if(numverts < 4 || !convex) loopk(numverts) findnormal(pos[k], smooth, planes[0], n[k]);
+        if(numverts < 4 || !convex)
+        {
+            for(int k = 0; k < numverts; ++k)
+            {
+                findnormal(pos[k], smooth, planes[0], n[k]);
+            }
+        }
         else
         {
             planes[numplanes++].toplane(pos[0], pos[2], pos[3]);
@@ -447,7 +459,10 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             for(int k = 3; k < numverts; k++) findnormal(pos[k], smooth, planes[1], n[k]);
         }
 
-        loopk(numverts) curlitverts[k].norm = encodenormal(n[k]);
+        for(int k = 0; k < numverts; ++k)
+        {
+            curlitverts[k].norm = encodenormal(n[k]);
+        }
         if(!(surf.numverts&MAXFACEVERTS))
         {
             surf.verts = numlitverts;
@@ -479,17 +494,26 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         }
         surf.numverts |= surflayer;
     }
-    if(preview) setsurfaces(c, surfaces, litverts, numlitverts);
-    else loopk(6)
+    if(preview)
     {
-        surfaceinfo &surf = surfaces[k];
-        if(surf.used())
+        setsurfaces(c, surfaces, litverts, numlitverts);
+    }
+    else
+    {
+        for(int k = 0; k < 6; ++k)
         {
-            cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
-            memcpy(ext->surfaces, surfaces, sizeof(ext->surfaces));
-            memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
-            if(c.ext != ext) setcubeext(c, ext);
-            break;
+            surfaceinfo &surf = surfaces[k];
+            if(surf.used())
+            {
+                cubeext *ext = c.ext && c.ext->maxverts >= numlitverts ? c.ext : growcubeext(c.ext, numlitverts);
+                memcpy(ext->surfaces, surfaces, sizeof(ext->surfaces));
+                memcpy(ext->verts(), litverts, numlitverts*sizeof(vertinfo));
+                if(c.ext != ext)
+                {
+                    setcubeext(c, ext);
+                }
+                break;
+            }
         }
     }
 }

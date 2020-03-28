@@ -190,7 +190,7 @@ namespace tiger
         compress((chunk *)temp, val.chunks);
         if(!islittleendian())
         {
-            loopk(3)
+            for(int k = 0; k < 3; ++k)
             {
                 uchar *c = &val.bytes[k*sizeof(chunk)];
                 for(int l = 0; l < int(sizeof(chunk)/2); ++l) //note this is a loop l (level 4)

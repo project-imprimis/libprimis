@@ -2237,8 +2237,14 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
     CALLCOM(i)
     #undef OFFSETARG
 cleanup:
-    loopk(i) freearg(args[k]);
-    for(; i < numargs; i++) freearg(args[i]);
+    for(int k = 0; k < i; ++k)
+    {
+        freearg(args[k]);
+    }
+    for(; i < numargs; i++)
+    {
+        freearg(args[i]);
+    }
 }
 
 #define MAXRUNDEPTH 255

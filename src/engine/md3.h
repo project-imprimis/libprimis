@@ -95,7 +95,10 @@ struct md3 : vertloader<md3>
                     md3triangle tri;
                     f->read(&tri, sizeof(md3triangle)); // read the triangles
                     LIL_ENDIAN_SWAP(tri.vertexindices, 3);
-                    loopk(3) m.tris[j].vert[k] = (ushort)tri.vertexindices[k];
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        m.tris[j].vert[k] = (ushort)tri.vertexindices[k];
+                    }
                 }
 
                 m.numverts = mheader.numvertices;

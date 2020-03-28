@@ -122,13 +122,17 @@ namespace ai
                     case ATK_PULSE_SHOOT: aiskew = 20; break;
                     default: break;
                 }
-                #define RANDOM_AI_OFFSET(r) ((RANDOM_INT(int(r*aiskew*2)+1)-(r*aiskew))*(1.f/float(max(d->skill, 1))))
-                loopk(3) d->ai->aimrnd[k] = RANDOM_AI_OFFSET(e->radius);
-                #undef RANDOM_AI_OFFSET
+                for(int k = 0; k < 3; ++k)
+                {//e->radius is what's being plugged in here
+                    d->ai->aimrnd[k] = ((RANDOM_INT(int((e->radius)*aiskew*2)+1)-((e->radius)*aiskew))*(1.f/float(max(d->skill, 1))));
+                }
                 int dur = (d->skill+10)*10;
                 d->ai->lastaimrnd = lastmillis+dur+RANDOM_INT(dur);
             }
-            loopk(3) o[k] += d->ai->aimrnd[k];
+            for(int k = 0; k < 3; ++k)
+            {
+                o[k] += d->ai->aimrnd[k];
+            }
         }
         return o;
     }
@@ -761,15 +765,18 @@ namespace ai
 
     int wpspot(gameent *d, int n, bool check = false)
     {
-        if(iswaypoint(n)) loopk(2)
+        if(iswaypoint(n))
         {
-            vec epos = waypoints[n].o;
-            int entid = obstacles.remap(d, n, epos, k!=0);
-            if(iswaypoint(entid))
+            for(int k = 0; k < 2; ++k)
             {
-                d->ai->spot = epos;
-                d->ai->targnode = entid;
-                return !check || d->feetpos().squaredist(epos) > MINWPDIST*MINWPDIST ? 1 : 2;
+                vec epos = waypoints[n].o;
+                int entid = obstacles.remap(d, n, epos, k!=0);
+                if(iswaypoint(entid))
+                {
+                    d->ai->spot = epos;
+                    d->ai->targnode = entid;
+                    return !check || d->feetpos().squaredist(epos) > MINWPDIST*MINWPDIST ? 1 : 2;
+                }
             }
         }
         return 0;
@@ -794,21 +801,27 @@ namespace ai
 
     bool anynode(gameent *d, aistate &b, int len = NUMPREVNODES)
     {
-        if(iswaypoint(d->lastnode)) loopk(2)
+        if(iswaypoint(d->lastnode))
         {
-            d->ai->clear(k ? true : false);
-            int n = randomlink(d, d->lastnode);
-            if(wpspot(d, n))
+            for(int k = 0; k < 2; ++k)
             {
-                d->ai->route.add(n);
-                d->ai->route.add(d->lastnode);
-                for(int i = 0; i < len; ++i)
+                d->ai->clear(k ? true : false);
+                int n = randomlink(d, d->lastnode);
+                if(wpspot(d, n))
                 {
-                    n = randomlink(d, n);
-                    if(iswaypoint(n)) d->ai->route.insert(0, n);
-                    else break;
+                    d->ai->route.add(n);
+                    d->ai->route.add(d->lastnode);
+                    for(int i = 0; i < len; ++i)
+                    {
+                        n = randomlink(d, n);
+                        if(iswaypoint(n))
+                        {
+                            d->ai->route.insert(0, n);
+                        }
+                        else break;
+                    }
+                    return true;
                 }
-                return true;
             }
         }
         return false;

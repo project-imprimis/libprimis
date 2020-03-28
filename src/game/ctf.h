@@ -66,7 +66,10 @@ struct ctfclientmode : clientmode
     void resetflags()
     {
         flags.shrink(0);
-        loopk(MAXTEAMS) scores[k] = 0;
+        for(int k = 0; k < MAXTEAMS; ++k)
+        {
+            scores[k] = 0;
+        }
     }
 
 #ifdef SERVMODE
@@ -167,7 +170,13 @@ struct ctfclientmode : clientmode
 
     void getteamscores(vector<teamscore> &tscores)
     {
-        loopk(MAXTEAMS) if(scores[k]) tscores.add(teamscore(k+1, scores[k]));
+        for(int k = 0; k < MAXTEAMS; ++k)
+        {
+            if(scores[k])
+            {
+                tscores.add(teamscore(k+1, scores[k]));
+            }
+        }
     }
 
 #ifdef SERVMODE
@@ -293,7 +302,10 @@ struct ctfclientmode : clientmode
     void initclient(clientinfo *ci, packetbuf &p, bool connecting)
     {
         putint(p, N_INITFLAGS);
-        loopk(2) putint(p, scores[k]);
+        for(int k = 0; k < 2; ++k)
+        {
+            putint(p, scores[k]);
+        }
         putint(p, flags.length());
         loopv(flags)
         {
@@ -320,8 +332,14 @@ struct ctfclientmode : clientmode
         {
             int team = getint(p);
             vec o;
-            loopk(3) o[k] = max(getint(p)/DMF, 0.0f);
-            if(p.overread()) break;
+            for(int k = 0; k < 3; ++k)
+            {
+                o[k] = max(getint(p)/DMF, 0.0f);
+            }
+            if(p.overread())
+            {
+                break;
+            }
             if(commit && notgotflags)
             {
                 addflag(i, o, team);
@@ -492,16 +510,22 @@ struct ctfclientmode : clientmode
         {
             flag &f = flags[i];
             putint(p, f.team);
-            loopk(3) putint(p, int(f.spawnloc[k]*DMF));
+            for(int k = 0; k < 3; ++k)
+            {
+                putint(p, int(f.spawnloc[k]*DMF));
+            }
         }
     }
 
     void parseflags(ucharbuf &p, bool commit)
     {
-        loopk(2)
+        for(int k = 0; k < 2; ++k)
         {
             int score = getint(p);
-            if(commit) scores[k] = score;
+            if(commit)
+            {
+                scores[k] = score;
+            }
         }
         int numflags = getint(p);
         for(int i = 0; i < numflags; ++i)
@@ -511,9 +535,18 @@ struct ctfclientmode : clientmode
             if(owner<0)
             {
                 dropped = getint(p);
-                if(dropped) loopk(3) droploc[k] = getint(p)/DMF;
+                if(dropped)
+                {
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        droploc[k] = getint(p)/DMF;
+                    }
+                }
             }
-            if(p.overread()) break;
+            if(p.overread())
+            {
+                break;
+            }
             if(commit && flags.inrange(i))
             {
                 flag &f = flags[i];
@@ -705,7 +738,7 @@ struct ctfclientmode : clientmode
     bool aihomerun(gameent *d, ai::aistate &b)
     {
         vec pos = d->feetpos();
-        loopk(2)
+        for(int k = 0; k < 2; ++k)
         {
             int goal = -1;
             loopv(flags)
@@ -952,7 +985,10 @@ case N_DROPFLAG:
 {
     int ocn = getint(p), flag = getint(p), version = getint(p);
     vec droploc;
-    loopk(3) droploc[k] = getint(p)/DMF;
+    for(int k = 0; k < 3; ++k)
+    {
+        droploc[k] = getint(p)/DMF;
+    }
     gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
     if(o && MODE_CTF) ctfmode.dropflag(o, flag, version, droploc);
     break;

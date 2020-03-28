@@ -1035,7 +1035,7 @@ namespace game
         if((lookupmaterial(d->feetpos())&MATF_CLIP) == MAT_GAMECLIP) flags |= 1<<7;
         if(d->crouching < 0) flags |= 1<<8;
         putuint(q, flags);
-        loopk(3)
+        for(int k = 0; k < 3; ++k)
         {
             q.put(o[k]&0xFF);
             q.put((o[k]>>8)&0xFF);
@@ -1207,7 +1207,7 @@ namespace game
                 int cn = getuint(p), physstate = p.get(), flags = getuint(p);
                 vec o, vel, falling;
                 float yaw, pitch, roll;
-                loopk(3)
+                for(int k = 0; k < 3; ++k)
                 {
                     int n = p.get(); n |= p.get()<<8; if(flags&(1<<k)) { n |= p.get()<<16; if(n&0x800000) n |= ~0U<<24; }
                     o[k] = n/DMF;
@@ -1581,8 +1581,14 @@ namespace game
             {
                 int scn = getint(p), atk = getint(p), id = getint(p);
                 vec from, to;
-                loopk(3) from[k] = getint(p)/DMF;
-                loopk(3) to[k] = getint(p)/DMF;
+                for(int k = 0; k < 3; ++k)
+                {
+                    from[k] = getint(p)/DMF;
+                }
+                for(int k = 0; k < 3; ++k)
+                {
+                    to[k] = getint(p)/DMF;
+                }
                 gameent *s = getclient(scn);
                 if(!s || !VALID_ATTACK(atk)) break;
                 int gun = attacks[atk].gun;
@@ -1624,8 +1630,14 @@ namespace game
                 int tcn = getint(p), atk = getint(p), damage = getint(p);
                 gameent *target = getclient(tcn);
                 vec dir;
-                loopk(3) dir[k] = getint(p)/DNF;
-                if(!target || !VALID_ATTACK(atk)) break;
+                for(int k = 0; k < 3; ++k)
+                {
+                    dir[k] = getint(p)/DNF;
+                }
+                if(!target || !VALID_ATTACK(atk))
+                {
+                    break;
+                }
                 target->hitpush(damage * (target->health<=0 ? deadpush : 1), dir, NULL, atk);
                 break;
             }

@@ -727,9 +727,18 @@ int findmaterials()
 void rendermaterialmask()
 {
     glDisable(GL_CULL_FACE);
-    loopk(4) { vector<materialsurface> &surfs = glasssurfs[k]; loopv(surfs) drawmaterial(surfs[i], 0.1f); }
-    loopk(4) { vector<materialsurface> &surfs = watersurfs[k]; loopv(surfs) drawmaterial(surfs[i], WATER_OFFSET); }
-    loopk(4) { vector<materialsurface> &surfs = waterfallsurfs[k]; loopv(surfs) drawmaterial(surfs[i], 0.1f); }
+    for(int k = 0; k < 4; ++k)
+    {
+        vector<materialsurface> &surfs = glasssurfs[k]; loopv(surfs) drawmaterial(surfs[i], 0.1f);
+    }
+    for(int k = 0; k < 4; ++k)
+    {
+        vector<materialsurface> &surfs = watersurfs[k]; loopv(surfs) drawmaterial(surfs[i], WATER_OFFSET);
+    }
+    for(int k = 0; k < 4; ++k)
+    {
+        vector<materialsurface> &surfs = waterfallsurfs[k]; loopv(surfs) drawmaterial(surfs[i], 0.1f);
+    }
     xtraverts += gle::end();
     glEnable(GL_CULL_FACE);
 }
@@ -762,7 +771,7 @@ VARFP(glassenv, 0, 1, 1, preloadglassshaders());
 
 void renderglass()
 {
-    loopk(4)
+    for(int k = 0; k < 4; ++k)
     {
         vector<materialsurface> &surfs = glasssurfs[k];
         if(surfs.empty()) continue;

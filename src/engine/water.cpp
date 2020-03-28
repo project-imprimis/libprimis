@@ -492,9 +492,12 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
 
 void renderlava()
 {
-    loopk(4)
+    for(int k = 0; k < 4; ++k)
     {
-        if(lavasurfs[k].empty() && (drawtex == Draw_TexMinimap || lavafallsurfs[k].empty())) continue;
+        if(lavasurfs[k].empty() && (drawtex == Draw_TexMinimap || lavafallsurfs[k].empty()))
+        {
+            continue;
+        }
 
         MatSlot &lslot = lookupmaterialslot(MAT_LAVA+k);
 
@@ -556,7 +559,7 @@ void renderlava()
 
 void renderwaterfalls()
 {
-    loopk(4)
+    for(int k = 0; k < 4; ++k)
     {
         vector<materialsurface> &surfs = waterfallsurfs[k];
         if(surfs.empty()) continue;
@@ -606,7 +609,7 @@ void renderwaterfalls()
 
 void renderwater()
 {
-    loopk(4)
+    for(int k = 0; k < 4; ++k)
     {
         vector<materialsurface> &surfs = watersurfs[k];
         if(surfs.empty()) continue;

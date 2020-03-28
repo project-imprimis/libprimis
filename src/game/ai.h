@@ -206,7 +206,10 @@ namespace ai
         {
             clearsetup();
             reset();
-            loopk(3) views[k] = 0.f;
+            for(int k = 0; k < 3; ++k)
+            {
+                views[k] = 0.f;
+            }
         }
         ~aiinfo() {}
 

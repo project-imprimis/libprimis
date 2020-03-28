@@ -39,7 +39,7 @@ namespace sphere
         GLushort *curindex = indices;
         for(int i = 0; i < stacks; ++i)
         {
-            loopk(slices)
+            for(int k = 0; k < slices; ++k)
             {
                 int j = i%2 ? slices-k-1 : k;
                 if(i)

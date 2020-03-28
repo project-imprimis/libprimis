@@ -420,7 +420,7 @@ struct meterrenderer : listrenderer
         {
             gle::colorf(0, 0.8f, 0);
             gle::begin(GL_TRIANGLE_STRIP);
-            loopk(10)
+            for(int k = 0; k < 10; ++k)
             {
                 const vec2 &sc = sincos360[k*(180/(10-1))];
                 float c = (0.5f + 0.1f)*sc.y, s = 0.5f - (0.5f + 0.1f)*sc.x;
@@ -433,7 +433,7 @@ struct meterrenderer : listrenderer
         if(basetype==PT_METERVS) gle::colorub(p->color2[0], p->color2[1], p->color2[2]);
         else gle::colorf(0, 0, 0);
         gle::begin(GL_TRIANGLE_STRIP);
-        loopk(10)
+        for(int k = 0; k < 10; ++k)
         {
             const vec2 &sc = sincos360[k*(180/(10-1))];
             float c = 0.5f*sc.y, s = 0.5f - 0.5f*sc.x;
@@ -446,7 +446,7 @@ struct meterrenderer : listrenderer
         {
             gle::colorf(0, 0.8f, 0);
             gle::begin(GL_TRIANGLE_FAN);
-            loopk(10)
+            for(int k = 0; k < 10; ++k)
             {
                 const vec2 &sc = sincos360[k*(180/(10-1))];
                 float c = (0.5f + 0.1f)*sc.y, s = 0.5f - (0.5f + 0.1f)*sc.x;
@@ -457,7 +457,7 @@ struct meterrenderer : listrenderer
 
         gle::color(p->color);
         gle::begin(GL_TRIANGLE_STRIP);
-        loopk(10)
+        for(int k = 0; k < 10; ++k)
         {
             const vec2 &sc = sincos360[k*(180/(10-1))];
             float c = 0.5f*sc.y, s = 0.5f - 0.5f*sc.x;

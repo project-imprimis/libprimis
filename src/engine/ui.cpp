@@ -2973,13 +2973,19 @@ namespace UI
 
         void previewslot(Slot &slot, VSlot &vslot, float x, float y)
         {
-            if(slot.sts.empty()) return;
+            if(slot.sts.empty())
+            {
+                return;
+            }
             VSlot *layer = NULL, *detail = NULL;
             Texture *t = NULL, *glowtex = NULL, *layertex = NULL, *detailtex = NULL;
             if(slot.loaded)
             {
                 t = slot.sts[0].t;
-                if(t == notexture) return;
+                if(t == notexture)
+                {
+                    return;
+                }
                 Slot &slot = *vslot.slot;
                 if(slot.texmask&(1<<TEX_GLOW)) { loopvj(slot.sts) if(slot.sts[j].type==TEX_GLOW) { glowtex = slot.sts[j].t; break; } }
                 if(vslot.layer)
@@ -3013,14 +3019,43 @@ namespace UI
             if(vslot.rotation)
             {
                 const texrotation &r = texrotations[vslot.rotation];
-                if(r.swapxy) { swap(xoff, yoff); loopk(4) swap(tc[k].x, tc[k].y); }
-                if(r.flipx) { xoff *= -1; loopk(4) tc[k].x *= -1; }
-                if(r.flipy) { yoff *= -1; loopk(4) tc[k].y *= -1; }
+                if(r.swapxy)
+                {
+                    swap(xoff, yoff);
+                    for(int k = 0; k < 4; ++k)
+                    {
+                        swap(tc[k].x, tc[k].y);
+                    }
+                }
+                if(r.flipx)
+                {
+                    xoff *= -1;
+                    for(int k = 0; k < 4; ++k)
+                    {
+                        tc[k].x *= -1;
+                    }
+                }
+                if(r.flipy)
+                {
+                    yoff *= -1;
+                    for(int k = 0; k < 4; ++k)
+                    {
+                        tc[k].y *= -1;
+                    }
+                }
             }
-            float xt = min(1.0f, t->xs/float(t->ys)), yt = min(1.0f, t->ys/float(t->xs));
-            loopk(4) { tc[k].x = tc[k].x/xt - float(xoff)/t->xs; tc[k].y = tc[k].y/yt - float(yoff)/t->ys; }
+            float xt = min(1.0f, t->xs/float(t->ys)),
+                  yt = min(1.0f, t->ys/float(t->xs));
+            for(int k = 0; k < 4; ++k)
+            {
+                tc[k].x = tc[k].x/xt - float(xoff)/t->xs;
+                tc[k].y = tc[k].y/yt - float(yoff)/t->ys;
+            }
             glBindTexture(GL_TEXTURE_2D, t->id);
-            if(slot.loaded) gle::color(vslot.colorscale);
+            if(slot.loaded)
+            {
+                gle::color(vslot.colorscale);
+            }
             else gle::colorf(1, 1, 1);
             quad(x, y, w, h, tc);
             if(detailtex)

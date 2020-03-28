@@ -330,14 +330,15 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
         if(dbgubo) conoutf(CON_DEBUG, "UBO: %s:%s:%d, offset: %d, size: %d, stride: %d", u.name, u.blockname, u.binding, offsetval, sizeval, strideval);
     }
 }
-
-static void bindworldtexlocs(Shader &s)
-{
+//====================================================================UNIFORMTEX
 #define UNIFORMTEX(name, tmu) \
     do { \
         int loc = glGetUniformLocation_(s.program, name); \
         if(loc != -1) { glUniform1i_(loc, tmu); } \
     } while(0)
+
+static void bindworldtexlocs(Shader &s)
+{
     UNIFORMTEX("diffusemap", TEX_DIFFUSE);
     UNIFORMTEX("normalmap", TEX_NORMAL);
     UNIFORMTEX("glowmap", TEX_GLOW);
@@ -348,7 +349,8 @@ static void bindworldtexlocs(Shader &s)
     UNIFORMTEX("refractmask", 7);
     UNIFORMTEX("refractlight", 8);
 }
-
+#undef UNIFORMTEX
+//==============================================================================
 static void linkglslprogram(Shader &s, bool msg = true)
 {
     s.program = s.vsobj && s.psobj ? glCreateProgram_() : 0;
@@ -669,7 +671,7 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
         case GL_UNSIGNED_INT_VEC4: glUniform4ui_(l.loc, uint(val[0]), uint(val[1]), uint(val[2]), uint(val[3])); break;
     }
 }
-
+//===================================SETSLOTPARAM SETSLOTPARAMS SETDEFAULTPARAMS
 #define SETSLOTPARAM(l, mask, i, val) do { \
     if(!(mask&(1<<i))) { \
         mask |= 1<<i; \
@@ -718,7 +720,10 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
         }
     }
 }
-
+#undef SETSLOTPARAM
+#undef SETSLOTPARAMS
+#undef SETDEFAULTPARAMS
+//==============================================================================
 void Shader::bindprograms()
 {
     if(this == lastshader || !loaded()) return;
@@ -739,9 +744,26 @@ bool Shader::compile()
 void Shader::cleanup(bool full)
 {
     used = false;
-    if(vsobj) { if(!reusevs) glDeleteShader_(vsobj); vsobj = 0; }
-    if(psobj) { if(!reuseps) glDeleteShader_(psobj); psobj = 0; }
-    if(program) { glDeleteProgram_(program); program = 0; }
+    if(vsobj)
+    {
+        if(!reusevs)
+        {
+            glDeleteShader_(vsobj); vsobj = 0;
+        }
+    }
+    if(psobj)
+    {
+        if(!reuseps)
+        {
+            glDeleteShader_(psobj);
+            psobj = 0;
+        }
+    }
+    if(program)
+    {
+        glDeleteProgram_(program);
+        program = 0;
+    }
     localparams.setsize(0);
     localparamremap.setsize(0);
     globalparams.setsize(0);
@@ -759,7 +781,13 @@ void Shader::cleanup(bool full)
         uniformlocs.setsize(0);
         reusevs = reuseps = NULL;
     }
-    else loopv(defaultparams) defaultparams[i].loc = -1;
+    else
+    {
+        loopv(defaultparams)
+        {
+            defaultparams[i].loc = -1;
+        }
+    }
 }
 
 static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
@@ -767,7 +795,10 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
     static int len = strlen("//:attrib");
     string name;
     int loc;
-    if(reusevs) s.attriblocs = reusevs->attriblocs;
+    if(reusevs)
+    {
+        s.attriblocs = reusevs->attriblocs;
+    }
     else while((vs = strstr(vs, "//:attrib")))
     {
         if(sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
@@ -781,12 +812,21 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *re
     static int len = strlen("//:uniform");
     string name, blockname;
     int binding, stride;
-    if(reusevs) s.uniformlocs = reusevs->uniformlocs;
+    if(reusevs)
+    {
+        s.uniformlocs = reusevs->uniformlocs;
+    }
     else while((vs = strstr(vs, "//:uniform")))
     {
         int numargs = sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
-        if(numargs >= 3) s.uniformlocs.add(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
-        else if(numargs >= 1) s.uniformlocs.add(UniformLoc(getshaderparamname(name)));
+        if(numargs >= 3)
+        {
+            s.uniformlocs.add(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
+        }
+        else if(numargs >= 1)
+        {
+            s.uniformlocs.add(UniformLoc(getshaderparamname(name)));
+        }
         vs += len;
     }
 }
@@ -848,8 +888,22 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
 static const char *findglslmain(const char *s)
 {
     const char *main = strstr(s, "main");
-    if(!main) return NULL;
-    for(; main >= s; main--) switch(*main) { case '\r': case '\n': case ';': return main + 1; }
+    if(!main)
+    {
+        return NULL;
+    }
+    for(; main >= s; main--)
+    {
+        switch(*main)
+        {
+            case '\r':
+            case '\n':
+            case ';':
+                {
+                    return main + 1;
+                }
+        }
+    }
     return s;
 }
 
@@ -866,7 +920,10 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     {
         vspragma = strstr(vspragma, "//:variant");
         if(!vspragma) break;
-        if(sscanf(vspragma + len, "row %d", &rowoffset) == 1) continue;
+        if(sscanf(vspragma + len, "row %d", &rowoffset) == 1)
+        {
+            continue;
+        }
         memset(vspragma, ' ', len);
         vspragma += len;
         if(!strncmp(vspragma, "override", olen))
@@ -882,8 +939,14 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     for(char *pspragma = psv.getbuf();; pschanged = true)
     {
         pspragma = strstr(pspragma, "//:variant");
-        if(!pspragma) break;
-        if(sscanf(pspragma + len, "row %d", &rowoffset) == 1) continue;
+        if(!pspragma)
+        {
+            break;
+        }
+        if(sscanf(pspragma + len, "row %d", &rowoffset) == 1)
+        {
+            continue;
+        }
         memset(pspragma, ' ', len);
         pspragma += len;
         if(!strncmp(pspragma, "override", olen))
@@ -909,7 +972,10 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
 static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *vs, const char *ps)
 {
     const char *vspragma = strstr(vs, "//:fog"), *pspragma = strstr(ps, "//:fog");
-    if(!vspragma && !pspragma) return;
+    if(!vspragma && !pspragma)
+    {
+        return;
+    }
     static const int pragmalen = strlen("//:fog");
     const char *vsmain = findglslmain(vs), *vsend = strrchr(vs, '}');
     if(vsmain && vsend)
@@ -955,7 +1021,11 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
             pspragma += strspn(pspragma, " \t\v\f");
             clen = strcspn(pspragma, "\r\n");
         }
-        if(clen <= 0) { pspragma = "fogcolor"; clen = strlen(pspragma); }
+        if(clen <= 0)
+        {
+            pspragma = "fogcolor";
+            clen = strlen(pspragma);
+        }
         psbuf.put(psdef, strlen(psdef));
         psbuf.put(pspragma, clen);
         psbuf.put(psfog, strlen(psfog));
@@ -967,7 +1037,10 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
 {
     if(variant ? variant->defaultparams.empty() : slotparams.empty()) return;
     const char *vsmain = findglslmain(vs), *psmain = findglslmain(ps);
-    if(!vsmain || !psmain) return;
+    if(!vsmain || !psmain)
+    {
+        return;
+    }
     vsbuf.put(vs, vsmain - vs);
     psbuf.put(ps, psmain - ps);
     if(variant) loopv(variant->defaultparams)
@@ -1140,13 +1213,7 @@ Shader *useshaderbyname(const char *name)
 }
 ICOMMAND(forceshader, "s", (const char *name), useshaderbyname(name));
 
-void shader(int *type, char *name, char *vs, char *ps)
-{
-    if(lookupshaderbyname(name)) return;
-
-    DEF_FORMAT_STRING(info, "shader %s", name);
-    renderprogress(loadprogress, info);
-    vector<char> vsbuf, psbuf, vsbak, psbak;
+//=====================================================================GENSHADER
 #define GENSHADER(cond, body) \
     if(cond) \
     { \
@@ -1156,6 +1223,14 @@ void shader(int *type, char *name, char *vs, char *ps)
         if(vsbuf.length()) vs = vsbuf.getbuf(); \
         if(psbuf.length()) ps = psbuf.getbuf(); \
     }
+
+void shader(int *type, char *name, char *vs, char *ps)
+{
+    if(lookupshaderbyname(name)) return;
+
+    DEF_FORMAT_STRING(info, "shader %s", name);
+    renderprogress(loadprogress, info);
+    vector<char> vsbuf, psbuf, vsbak, psbak;
     GENSHADER(slotparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps));
     GENSHADER(strstr(vs, "//:fog") || strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
     Shader *s = newshader(*type, name, vs, ps);
@@ -1194,6 +1269,8 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
         if(strstr(ps, "//:variant") || strstr(vs, "//:variant")) gengenericvariant(*s, varname, vs, ps, *row);
     }
 }
+#undef GENSHADER
+//==============================================================================
 COMMAND(variantshader, "isissi");
 
 void setshader(char *name)
@@ -1204,7 +1281,10 @@ void setshader(char *name)
     {
         conoutf(CON_ERROR, "no such shader: %s", name);
     }
-    else slotshader = s;
+    else
+    {
+        slotshader = s;
+    }
 }
 COMMAND(setshader, "s");
 
@@ -1247,21 +1327,28 @@ static void linkslotshaderparams(vector<SlotShaderParam> &params, Shader *sh, bo
 
 void linkslotshader(Slot &s, bool load)
 {
-    if(!s.shader) return;
-
-    if(load && s.shader->deferred()) s.shader->force();
-
+    if(!s.shader)
+    {
+        return;
+    }
+    if(load && s.shader->deferred())
+    {
+        s.shader->force();
+    }
     linkslotshaderparams(s.params, s.shader, load);
 }
 
 void linkvslotshader(VSlot &s, bool load)
 {
-    if(!s.slot->shader) return;
-
+    if(!s.slot->shader)
+    {
+        return;
+    }
     linkslotshaderparams(s.params, s.slot->shader, load);
-
-    if(!s.slot->shader->loaded()) return;
-
+    if(!s.slot->shader->loaded())
+    {
+        return;
+    }
     if(s.slot->texmask&(1<<TEX_GLOW))
     {
         static const char *paramname = getshaderparamname("glowcolor");
@@ -1398,7 +1485,10 @@ void cleanuppostfx(bool fullclean)
 
 GLuint setuppostfx(int w, int h, GLuint outfbo)
 {
-    if(postfxpasses.empty()) return outfbo;
+    if(postfxpasses.empty())
+    {
+        return outfbo;
+    }
 
     if(postfxw != w || postfxh != h)
     {
@@ -1484,7 +1574,10 @@ void renderpostfx(GLuint outfbo)
         }
         if(tex >= 0)
         {
-            if(postfxbinds[p.outputbind] >= 0) postfxtexs[postfxbinds[p.outputbind]].used = -1;
+            if(postfxbinds[p.outputbind] >= 0)
+            {
+                postfxtexs[postfxbinds[p.outputbind]].used = -1;
+            }
             postfxbinds[p.outputbind] = tex;
             postfxtexs[tex].used = p.outputbind;
         }
@@ -1541,7 +1634,10 @@ ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs
 ICOMMAND(setpostfx, "sffff", (char *name, float *x, float *y, float *z, float *w),
 {
     clearpostfx();
-    if(name[0]) addpostfx(name, 0, 0, 1, 1, vec4(*x, *y, *z, *w));
+    if(name[0])
+    {
+        addpostfx(name, 0, 0, 1, 1, vec4(*x, *y, *z, *w));
+    }
 });
 
 void cleanupshaders()
@@ -1644,7 +1740,10 @@ void setblurshader(int pass, int size, int radius, float *weights, float *offset
     s->set();
     LOCALPARAMV(weights, weights, 8);
     float scaledoffsets[8];
-    loopk(8) scaledoffsets[k] = offsets[k]/size;
+    for(int k = 0; k < 8; ++k)
+    {
+        scaledoffsets[k] = offsets[k]/size;
+    }
     LOCALPARAMV(offsets, scaledoffsets, 8);
 }
 

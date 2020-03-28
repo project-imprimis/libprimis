@@ -548,23 +548,45 @@ namespace server
             {
                 case '*':
                     modemask |= 1<<NUMGAMEMODES;
-                    loopk(NUMGAMEMODES) if(MODE_CHECK_NOT(k+STARTGAMEMODE, M_DEMO|M_EDIT|M_LOCAL)) modemask |= 1<<k;
+                    for(int k = 0; k < NUMGAMEMODES; ++k)
+                    {
+                        if(MODE_CHECK_NOT(k+STARTGAMEMODE, M_DEMO|M_EDIT|M_LOCAL))
+                        {
+                            modemask |= 1<<k;
+                        }
+                    }
                     continue;
                 case '!':
                     mode++;
                     if(mode[0] != '?') break;
                 case '?':
                     mode++;
-                    loopk(NUMGAMEMODES) if(searchmodename(gamemodes[k].name, mode))
+                    for(int k = 0; k < NUMGAMEMODES; ++k)
                     {
-                        if(op == '!') modemask &= ~(1<<k);
-                        else modemask |= 1<<k;
+                        if(searchmodename(gamemodes[k].name, mode))
+                        {
+                            if(op == '!') modemask &= ~(1<<k);
+                            else modemask |= 1<<k;
+                        }
                     }
                     continue;
             }
             int modenum = INT_MAX;
-            if(isdigit(mode[0])) modenum = atoi(mode);
-            else loopk(NUMGAMEMODES) if(searchmodename(gamemodes[k].name, mode)) { modenum = k+STARTGAMEMODE; break; }
+            if(isdigit(mode[0]))
+            {
+                modenum = atoi(mode);
+            }
+            else
+            {
+                for(int k = 0; k < NUMGAMEMODES; ++k)
+                {
+                    if(searchmodename(gamemodes[k].name, mode))
+                    {
+                        modenum = k+STARTGAMEMODE;
+                        break;
+                    }
+                }
+            }
             if(!MODE_VALID(modenum)) continue;
             switch(op)
             {
@@ -577,7 +599,16 @@ namespace server
 
     bool addmaprotation(int modemask, const char *map)
     {
-        if(!map[0]) loopk(NUMGAMEMODES) if(modemask&(1<<k) && !MODE_CHECK(k+STARTGAMEMODE, M_EDIT)) modemask &= ~(1<<k);
+        if(!map[0])
+        {
+            for(int k = 0; k < NUMGAMEMODES; ++k)
+            {
+                if(modemask&(1<<k) && !MODE_CHECK(k+STARTGAMEMODE, M_EDIT))
+                {
+                    modemask &= ~(1<<k);
+                }
+            }
+        }
         if(!modemask) return false;
         if(!(modemask&(1<<NUMGAMEMODES))) maprotation::exclude |= modemask;
         maprotation &rot = maprotations.add();
@@ -2897,19 +2928,32 @@ namespace server
                 clientinfo *cp = getinfo(pcn);
                 if(cp && pcn != sender && cp->ownernum != sender) cp = NULL;
                 vec pos;
-                loopk(3)
+                for(int k = 0; k < 3; ++k)
                 {
                     int n = p.get(); n |= p.get()<<8; if(flags&(1<<k)) { n |= p.get()<<16; if(n&0x800000) n |= ~0U<<24; }
                     pos[k] = n/DMF;
                 }
-                loopk(3) p.get();
-                int mag = p.get(); if(flags&(1<<3)) mag |= p.get()<<8;
+                for(int k = 0; k < 3; ++k)
+                {
+                    p.get();
+                }
+                int mag = p.get();
+                if(flags&(1<<3))
+                {
+                    mag |= p.get()<<8;
+                }
                 int dir = p.get(); dir |= p.get()<<8;
                 vec vel = vec((dir%360)*RAD, (clamp(dir/360, 0, 180)-90)*RAD).mul(mag/DVELF);
                 if(flags&(1<<4))
                 {
                     p.get(); if(flags&(1<<5)) p.get();
-                    if(flags&(1<<6)) loopk(2) p.get();
+                    if(flags&(1<<6))
+                    {
+                        for(int k = 0; k < 2; ++k)
+                        {
+                            p.get();
+                        }
+                    }
                 }
                 if(cp)
                 {
@@ -2920,7 +2964,10 @@ namespace server
                         cp->position.setsize(0);
                         while(curmsg<p.length()) cp->position.add(p.buf[curmsg++]);
                     }
-                    if(smode && cp->state.state==ClientState_Alive) smode->moved(cp, cp->state.o, cp->gameclip, pos, (flags&0x80)!=0);
+                    if(smode && cp->state.state==ClientState_Alive)
+                    {
+                        smode->moved(cp, cp->state.o, cp->gameclip, pos, (flags&0x80)!=0);
+                    }
                     cp->state.o = pos;
                     cp->gameclip = (flags&0x80)!=0;
                 }
@@ -2931,7 +2978,10 @@ namespace server
             {
                 int pcn = getint(p), teleport = getint(p), teledest = getint(p);
                 clientinfo *cp = getinfo(pcn);
-                if(cp && pcn != sender && cp->ownernum != sender) cp = NULL;
+                if(cp && pcn != sender && cp->ownernum != sender)
+                {
+                    cp = NULL;
+                }
                 if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
                 {
                     flushclientposition(*cp);
@@ -3071,10 +3121,16 @@ namespace server
                 shot->id = getint(p);
                 shot->millis = cq ? cq->geteventmillis(gamemillis, shot->id) : 0;
                 shot->atk = getint(p);
-                loopk(3) shot->from[k] = getint(p)/DMF;
-                loopk(3) shot->to[k] = getint(p)/DMF;
+                for(int k = 0; k < 3; ++k)
+                {
+                    shot->from[k] = getint(p)/DMF;
+                }
+                for(int k = 0; k < 3; ++k)
+                {
+                    shot->to[k] = getint(p)/DMF;
+                }
                 int hits = getint(p);
-                loopk(hits)
+                for(int k = 0; k < hits; ++k)
                 {
                     if(p.overread()) break;
                     hitinfo &hit = shot->hits.add();
@@ -3082,14 +3138,20 @@ namespace server
                     hit.lifesequence = getint(p);
                     hit.dist = getint(p)/DMF;
                     hit.rays = getint(p);
-                    loopk(3) hit.dir[k] = getint(p)/DNF;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        hit.dir[k] = getint(p)/DNF;
+                    }
                 }
                 if(cq)
                 {
                     cq->addevent(shot);
                     cq->setpushed();
                 }
-                else delete shot;
+                else
+                {
+                    delete shot;
+                }
                 break;
             }
 
@@ -3101,7 +3163,7 @@ namespace server
                 exp->atk = getint(p);
                 exp->id = getint(p);
                 int hits = getint(p);
-                loopk(hits)
+                for(int k = 0; k < hits; ++k)
                 {
                     if(p.overread()) break;
                     hitinfo &hit = exp->hits.add();
@@ -3109,10 +3171,19 @@ namespace server
                     hit.lifesequence = getint(p);
                     hit.dist = getint(p)/DMF;
                     hit.rays = getint(p);
-                    loopk(3) hit.dir[k] = getint(p)/DNF;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        hit.dir[k] = getint(p)/DNF;
+                    }
                 }
-                if(cq) cq->addevent(exp);
-                else delete exp;
+                if(cq)
+                {
+                    cq->addevent(exp);
+                }
+                else
+                {
+                    delete exp;
+                }
                 break;
             }
 
@@ -3221,9 +3292,15 @@ namespace server
             case N_EDITENT:
             {
                 int i = getint(p);
-                loopk(3) getint(p);
+                for(int k = 0; k < 3; ++k)
+                {
+                    getint(p);
+                }
                 int type = getint(p);
-                loopk(5) getint(p);
+                for(int k = 0; k < 5; ++k)
+                {
+                    getint(p);
+                }
                 if(!ci || ci->state.state==ClientState_Spectator) break;
                 QUEUE_MSG;
                 bool canspawn = canspawnitem(type);

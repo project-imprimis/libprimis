@@ -298,7 +298,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                                 if(layerverts == 4)
                                 {
                                     ivec v[4] = { verts[0].getxyz(), verts[1].getxyz(), verts[2].getxyz(), verts[3].getxyz() };
-                                    loopk(4)
+                                    for(int k = 0; k < 4; ++k)
                                     {
                                         const ivec &v0 = v[k], &v1 = v[(k+1)&3], &v2 = v[(k+2)&3], &v3 = v[(k+3)&3];
                                         if(v1[vc] == v0[vc] && v1[vr] == v2[vr] && v3[vc] == v2[vc] && v3[vr] == v0[vr])
@@ -313,16 +313,32 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                             else
                             {
                                 int vis = visibletris(c[i], j, co, size);
-                                if(vis&4 || faceconvexity(c[i], j) < 0) vertmask |= 0x01;
-                                if(layerverts < 4 && vis&2) vertmask |= 0x02;
+                                if(vis&4 || faceconvexity(c[i], j) < 0)
+                                {
+                                    vertmask |= 0x01;
+                                }
+                                if(layerverts < 4 && vis&2)
+                                {
+                                    vertmask |= 0x02;
+                                }
                             }
                             bool matchnorm = true;
-                            loopk(numverts)
+                            for(int k = 0; k < numverts; ++k)
                             {
                                 const vertinfo &v = verts[k];
-                                if(v.norm) { vertmask |= 0x80; if(v.norm != verts[0].norm) matchnorm = false; }
+                                if(v.norm)
+                                {
+                                    vertmask |= 0x80;
+                                    if(v.norm != verts[0].norm)
+                                    {
+                                        matchnorm = false;
+                                    }
+                                }
                             }
-                            if(matchnorm) vertmask |= 0x08;
+                            if(matchnorm)
+                            {
+                                vertmask |= 0x08;
+                            }
                         }
                         surf.verts = vertmask;
                         f->write(&surf, sizeof(surf));
@@ -337,16 +353,26 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                                 hasxyz = false;
                             }
                         }
-                        if(hasnorm && vertmask&0x08) { f->putlil<ushort>(verts[0].norm); hasnorm = false; }
-                        if(hasxyz || hasnorm) loopk(layerverts)
+                        if(hasnorm && vertmask&0x08)
                         {
-                            const vertinfo &v = verts[(k+vertorder)%layerverts];
-                            if(hasxyz)
+                            f->putlil<ushort>(verts[0].norm);
+                            hasnorm = false;
+                        }
+                        if(hasxyz || hasnorm)
+                        {
+                            for(int k = 0; k < layerverts; ++k)
                             {
-                                ivec xyz = v.getxyz();
-                                f->putlil<ushort>(xyz[vc]); f->putlil<ushort>(xyz[vr]);
+                                const vertinfo &v = verts[(k+vertorder)%layerverts];
+                                if(hasxyz)
+                                {
+                                    ivec xyz = v.getxyz();
+                                    f->putlil<ushort>(xyz[vc]); f->putlil<ushort>(xyz[vr]);
+                                }
+                                if(hasnorm)
+                                {
+                                    f->putlil<ushort>(v.norm);
+                                }
                             }
-                            if(hasnorm) f->putlil<ushort>(v.norm);
                         }
                     }
                 }
@@ -441,31 +467,60 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                     }
                     if(hasuv && vertmask&0x02)
                     {
-                        loopk(4) f->getlil<ushort>();
-                        if(surf.numverts&LAYER_DUP) loopk(4) f->getlil<ushort>();
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            f->getlil<ushort>();
+                        }
+                        if(surf.numverts&LAYER_DUP)
+                        {
+                            for(int k = 0; k < 4; ++k)
+                            {
+                                f->getlil<ushort>();
+                            }
+                        }
                         hasuv = false;
                     }
                 }
                 if(hasnorm && vertmask&0x08)
                 {
                     ushort norm = f->getlil<ushort>();
-                    loopk(layerverts) verts[k].norm = norm;
+                    for(int k = 0; k < layerverts; ++k)
+                    {
+                        verts[k].norm = norm;
+                    }
                     hasnorm = false;
                 }
-                if(hasxyz || hasuv || hasnorm) loopk(layerverts)
+                if(hasxyz || hasuv || hasnorm)
                 {
-                    vertinfo &v = verts[k];
-                    if(hasxyz)
+                    for(int k = 0; k < layerverts; ++k)
                     {
-                        ivec xyz;
-                        xyz[vc] = f->getlil<ushort>(); xyz[vr] = f->getlil<ushort>();
-                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
-                        v.setxyz(xyz);
+                        vertinfo &v = verts[k];
+                        if(hasxyz)
+                        {
+                            ivec xyz;
+                            xyz[vc] = f->getlil<ushort>(); xyz[vr] = f->getlil<ushort>();
+                            xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                            v.setxyz(xyz);
+                        }
+                        if(hasuv)
+                        {
+                            f->getlil<ushort>();
+                            f->getlil<ushort>();
+                        }
+                        if(hasnorm)
+                        {
+                            v.norm = f->getlil<ushort>();
+                        }
                     }
-                    if(hasuv) { f->getlil<ushort>(); f->getlil<ushort>(); }
-                    if(hasnorm) v.norm = f->getlil<ushort>();
                 }
-                if(hasuv && surf.numverts&LAYER_DUP) loopk(layerverts) { f->getlil<ushort>(); f->getlil<ushort>(); }
+                if(hasuv && surf.numverts&LAYER_DUP)
+                {
+                    for(int k = 0; k < layerverts; ++k)
+                    {
+                        f->getlil<ushort>();
+                        f->getlil<ushort>();
+                    }
+                }
             }
         }
     }
@@ -496,7 +551,10 @@ void savevslot(stream *f, VSlot &vs, int prev)
             SlotShaderParam &p = vs.params[i];
             f->putlil<ushort>(strlen(p.name));
             f->write(p.name, strlen(p.name));
-            loopk(4) f->putlil<float>(p.val[k]);
+            for(int k = 0; k < 4; ++k)
+            {
+                f->putlil<float>(p.val[k]);
+            }
         }
     }
     if(vs.changed & (1<<VSLOT_SCALE)) f->putlil<float>(vs.scale);
@@ -509,13 +567,22 @@ void savevslot(stream *f, VSlot &vs, int prev)
     }
     if(vs.changed & (1<<VSLOT_OFFSET))
     {
-        loopk(2) f->putlil<int>(vs.offset[k]);
+        for(int k = 0; k < 2; ++k)
+        {
+            f->putlil<int>(vs.offset[k]);
+        }
     }
     if(vs.changed & (1<<VSLOT_SCROLL))
     {
-        loopk(2) f->putlil<float>(vs.scroll[k]);
+        for(int k = 0; k < 2; ++k)
+        {
+            f->putlil<float>(vs.scroll[k]);
+        }
     }
-    if(vs.changed & (1<<VSLOT_LAYER)) f->putlil<int>(vs.layer);
+    if(vs.changed & (1<<VSLOT_LAYER))
+    {
+        f->putlil<int>(vs.layer);
+    }
     if(vs.changed & (1<<VSLOT_ALPHA))
     {
         f->putlil<float>(vs.alphafront);
@@ -523,12 +590,18 @@ void savevslot(stream *f, VSlot &vs, int prev)
     }
     if(vs.changed & (1<<VSLOT_COLOR))
     {
-        loopk(3) f->putlil<float>(vs.colorscale[k]);
+        for(int k = 0; k < 3; ++k)
+        {
+            f->putlil<float>(vs.colorscale[k]);
+        }
     }
     if(vs.changed & (1<<VSLOT_REFRACT))
     {
         f->putlil<float>(vs.refractscale);
-        loopk(3) f->putlil<float>(vs.refractcolor[k]);
+        for(int k = 0; k < 3; ++k)
+        {
+            f->putlil<float>(vs.refractcolor[k]);
+        }
     }
     if(vs.changed & (1<<VSLOT_DETAIL)) f->putlil<int>(vs.detail);
 }
@@ -594,48 +667,71 @@ void loadvslot(stream *f, VSlot &vs, int changed)
             }
             p.name = getshaderparamname(name);
             p.loc = -1;
-            loopk(4) p.val[k] = f->getlil<float>();
+            for(int k = 0; k < 4; ++k)
+            {
+                p.val[k] = f->getlil<float>();
+            }
         }
     }
-    if(vs.changed & (1<<VSLOT_SCALE))
+    //vslot properties (set by e.g. v-commands)
+    if(vs.changed & (1<<VSLOT_SCALE)) //scale <factor>
     {
         vs.scale = f->getlil<float>();
     }
-    if(vs.changed & (1<<VSLOT_ROTATION))
+    if(vs.changed & (1<<VSLOT_ROTATION)) //rotate <index>
     {
         vs.rotation = clamp(f->getlil<int>(), 0, 7);
     }
-    if(vs.changed & (1<<VSLOT_ANGLE))
+    /*
+     * angle uses three parameters to prebak sine/cos values for the angle it
+     * stores despite there being only one parameter (angle) passed
+     */
+    if(vs.changed & (1<<VSLOT_ANGLE)) //angle <angle>
     {
-        loopk(3) vs.angle[k] = f->getlil<float>();
+        for(int k = 0; k < 3; ++k)
+        {
+            vs.angle[k] = f->getlil<float>();
+        }
     }
-    if(vs.changed & (1<<VSLOT_OFFSET))
+    if(vs.changed & (1<<VSLOT_OFFSET)) //offset <x> <y>
     {
-        loopk(2) vs.offset[k] = f->getlil<int>();
+        for(int k = 0; k < 2; ++k)
+        {
+            vs.offset[k] = f->getlil<int>();
+        }
     }
-    if(vs.changed & (1<<VSLOT_SCROLL))
+    if(vs.changed & (1<<VSLOT_SCROLL)) //scroll <x> <y>
     {
-        loopk(2) vs.scroll[k] = f->getlil<float>();
+        for(int k = 0; k < 2; ++k)
+        {
+            vs.scroll[k] = f->getlil<float>();
+        }
     }
-    if(vs.changed & (1<<VSLOT_LAYER))
+    if(vs.changed & (1<<VSLOT_LAYER)) //layer <index>
     {
         vs.layer = f->getlil<int>();
     }
-    if(vs.changed & (1<<VSLOT_ALPHA))
+    if(vs.changed & (1<<VSLOT_ALPHA)) //alpha <f> <b>
     {
         vs.alphafront = f->getlil<float>();
         vs.alphaback = f->getlil<float>();
     }
-    if(vs.changed & (1<<VSLOT_COLOR))
+    if(vs.changed & (1<<VSLOT_COLOR)) //color <r> <g> <b>
     {
-        loopk(3) vs.colorscale[k] = f->getlil<float>();
+        for(int k = 0; k < 3; ++k)
+        {
+            vs.colorscale[k] = f->getlil<float>();
+        }
     }
-    if(vs.changed & (1<<VSLOT_REFRACT))
+    if(vs.changed & (1<<VSLOT_REFRACT)) //refract <r> <g> <b>
     {
         vs.refractscale = f->getlil<float>();
-        loopk(3) vs.refractcolor[k] = f->getlil<float>();
+        for(int k = 0; k < 3; ++k)
+        {
+            vs.refractcolor[k] = f->getlil<float>();
+        }
     }
-    if(vs.changed & (1<<VSLOT_DETAIL))
+    if(vs.changed & (1<<VSLOT_DETAIL)) //detail <index>
     {
         vs.detail = f->getlil<int>();
     }
@@ -1025,9 +1121,12 @@ void writeobj(char *name)
         for(int j = 0; j < va.texs; ++j)
         {
             elementset &es = va.texelems[j];
-            if(usedmtl.find(es.texture) < 0) usedmtl.add(es.texture);
+            if(usedmtl.find(es.texture) < 0)
+            {
+                usedmtl.add(es.texture);
+            }
             vector<ivec2> &keys = mtls[es.texture];
-            loopk(es.length)
+            for(int k = 0; k < es.length; ++k)
             {
                 const vertex &v = vdata[idx[k]];
                 const vec &pos = v.pos;
@@ -1073,7 +1172,10 @@ void writeobj(char *name)
         for(int i = 0; i < keys.length(); i += 3)
         {
             f->printf("f");
-            loopk(3) f->printf(" %d/%d", keys[i+2-k].x+1, keys[i+2-k].y+1);
+            for(int k = 0; k < 3; ++k)
+            {
+                f->printf(" %d/%d", keys[i+2-k].x+1, keys[i+2-k].y+1);
+            }
             f->printf("\n");
         }
         f->printf("\n");

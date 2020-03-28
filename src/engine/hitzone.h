@@ -197,12 +197,18 @@ void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const v
 void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax)
 {
     int axis = 2;
-    loopk(2) if(vmax[k] - vmin[k] > vmax[axis] - vmin[axis]) axis = k;
+    for(int k = 0; k < 2; ++k)
+    {
+        if(vmax[k] - vmin[k] > vmax[axis] - vmin[axis])
+        {
+            axis = k;
+        }
+    }
 
     vec leftmin, leftmax, rightmin, rightmax;
     float splitleft, splitright;
     int left, right;
-    loopk(3)
+    for(int k = 0; k < 3; ++k)
     {
         leftmin = rightmin = vec(1e16f, 1e16f, 1e16f);
         leftmax = rightmax = vec(-1e16f, -1e16f, -1e16f);
@@ -660,7 +666,7 @@ uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m,
     int numused = 0;
     uchar used[12];
     float weights[12];
-    loopk(3)
+    for(int k = 0; k < 3; ++k)
     {
         const skelmodel::vert &v = m->verts[t.vert[k]];
         const skelmodel::blendcombo &c = g->blendcombos[v.blend];
@@ -713,7 +719,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         for(int j = 0; j < m->numtris; ++j)
         {
             const skelmodel::tri &t = m->tris[j];
-            loopk(3)
+            for(int k = 0; k < 3; ++k)
             {
                 const skelmodel::vert &v = m->verts[t.vert[k]];
                 const skelmodel::blendcombo &c = g->blendcombos[v.blend];

@@ -112,7 +112,6 @@ static inline int BITSCAN(uint mask)
 #define DET_RND(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
 
 #define loop(v,m) for(int v = 0; v < int(m); ++v)
-#define loopk(m) loop(k,m)
 
 #define DELETEP(p) if(p) { delete   p; p = 0; }
 #define DELETEA(p) if(p) { delete[] p; p = 0; }

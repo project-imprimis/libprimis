@@ -104,7 +104,7 @@ namespace ai
         void build(int *indices, int numindices, const vec &vmin, const vec &vmax)
         {
             int axis = 2;
-            loopk(2)
+            for(int k = 0; k < 2; ++k)
             {
                 if(vmax[k] - vmin[k] > vmax[axis] - vmin[axis])
                 {

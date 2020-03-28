@@ -147,12 +147,18 @@ Shader *loadbilateralshader(int pass)
 
 void loadbilateralshaders()
 {
-    loopk(2) bilateralshader[k] = loadbilateralshader(k);
+    for(int k = 0; k < 2; ++k)
+    {
+        bilateralshader[k] = loadbilateralshader(k);
+    }
 }
 
 void clearbilateralshaders()
 {
-    loopk(2) bilateralshader[k] = NULL;
+    for(int k = 0; k < 2; ++k)
+    {
+        bilateralshader[k] = NULL;
+    }
 }
 
 void setbilateralparams(int radius, float depth)
@@ -205,7 +211,10 @@ void setupao(int w, int h)
 
     if(!aonoisetex) glGenTextures(1, &aonoisetex);
     bvec *noise = new bvec[(1<<aonoise)*(1<<aonoise)];
-    loopk((1<<aonoise)*(1<<aonoise)) noise[k] = bvec(vec(RANDOM_FLOAT(2)-1, RANDOM_FLOAT(2)-1, 0).normalize());
+    for(int k = 0; k < (1<<aonoise)*(1<<aonoise); ++k)
+    {
+        noise[k] = bvec(vec(RANDOM_FLOAT(2)-1, RANDOM_FLOAT(2)-1, 0).normalize());
+    }
     createtexture(aonoisetex, 1<<aonoise, 1<<aonoise, noise, 0, 0, GL_RGB, GL_TEXTURE_2D);
     delete[] noise;
 
@@ -2374,7 +2383,7 @@ void reflectiveshadowmap::gencullplanes()
 int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax)
 {
     if(!rsmcull) return 1;
-    loopk(4)
+    for(int k = 0; k < 4; ++k)
     {
         const plane &p = rsm.cull[k];
         ivec omin, omax;
@@ -2395,7 +2404,7 @@ int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax)
 int calcspherersmsplits(const vec &center, float radius)
 {
     if(!rsmcull) return 1;
-    loopk(4)
+    for(int k = 0; k < 4; ++k)
     {
         const plane &p = rsm.cull[k];
         float dist = p.dist(center);
@@ -2839,7 +2848,7 @@ namespace lightsphere
         GLushort *curindex = indices;
         for(int i = 0; i < stacks; ++i)
         {
-            loopk(slices)
+            for(int k = 0; k < slices; ++k)
             {
                 int j = i%2 ? slices-k-1 : k;
                 if(i)
@@ -4095,20 +4104,26 @@ void radiancehints::renderslices()
         splitinfo &split = splits[i];
         float cellradius = split.bounds/rhgrid, step = 2*cellradius, nudge = rhnudge*2*splits[0].bounds/rhgrid + rhworldbias*step;
         vec cmin, cmax, dmin(1e16f, 1e16f, 1e16f), dmax(-1e16f, -1e16f, -1e16f), bmin(1e16f, 1e16f, 1e16f), bmax(-1e16f, -1e16f, -1e16f);
-        loopk(3)
+        for(int k = 0; k < 3; ++k)
         {
             cmin[k] = floor((worldmin[k] - nudge - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
             cmax[k] = ceil((worldmax[k] + nudge - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
         }
-        if(prevdynmin.z < prevdynmax.z) loopk(3)
+        if(prevdynmin.z < prevdynmax.z)
         {
-            dmin[k] = min(dmin[k], (float)floor((prevdynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
-            dmax[k] = max(dmax[k], (float)ceil((prevdynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+            for(int k = 0; k < 3; ++k)
+            {
+                dmin[k] = min(dmin[k], (float)floor((prevdynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+                dmax[k] = max(dmax[k], (float)ceil((prevdynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+            }
         }
-        if(dynmin.z < dynmax.z) loopk(3)
+        if(dynmin.z < dynmax.z)
         {
-            dmin[k] = min(dmin[k], (float)floor((dynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
-            dmax[k] = max(dmax[k], (float)ceil((dynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+            for(int k = 0; k < 3; ++k)
+            {
+                dmin[k] = min(dmin[k], (float)floor((dynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+                dmax[k] = max(dmax[k], (float)ceil((dynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+            }
         }
 
         if((rhrect || !rhcache || hasCI) && split.cached == split.center && (!rhborder || prevcached) && !rhforce &&
@@ -4118,7 +4133,10 @@ void radiancehints::renderslices()
         {
             if(rhrect || !rhcache || split.copied) continue;
             split.copied = true;
-            loopk(4) glCopyImageSubData_(rhtex[4+k], GL_TEXTURE_3D, 0, 0, 0, i*sh, rhtex[k], GL_TEXTURE_3D, 0, 0, 0, i*sh, sw, sh, sh);
+            for(int k = 0; k < 4; ++k)
+            {
+                glCopyImageSubData_(rhtex[4+k], GL_TEXTURE_3D, 0, 0, 0, i*sh, rhtex[k], GL_TEXTURE_3D, 0, 0, 0, i*sh, sw, sh, sh);
+            }
             continue;
         }
 
@@ -4136,7 +4154,7 @@ void radiancehints::renderslices()
             GLOBALPARAMF(borderscale, rhgrid+2, rhgrid+2, (rhgrid+2)*rhsplits);
 
             splitinfo &next = splits[i+1];
-            loopk(3)
+            for(int k = 0; k < 3; ++k)
             {
                 bmin[k] = floor((max(float(worldmin[k] - nudge), next.center[k] - next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
                 bmax[k] = ceil((min(float(worldmax[k] + nudge), next.center[k] + next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
@@ -4330,20 +4348,24 @@ void radiancehints::renderslices()
             gle::defvertex(2);
             gle::deftexcoord0(3);
         }
-        if(rhrect) loopk(4)
-        {
-            glReadBuffer(GL_COLOR_ATTACHMENT0+k);
-            glBindTexture(GL_TEXTURE_3D, rhtex[k]);
-            for(int j = 0; j < sh; ++j)
+        if(rhrect)
+            for(int k = 0; k < 4; ++k)
             {
-                if(clearmasks[j/32] & (1 << (j%32)))
+                glReadBuffer(GL_COLOR_ATTACHMENT0+k);
+                glBindTexture(GL_TEXTURE_3D, rhtex[k]);
+                for(int j = 0; j < sh; ++j)
                 {
-                    if(!(rhclearmasks[0][i][j/32] & (1 << (j%32)))) glCopyTexSubImage3D_(GL_TEXTURE_3D, 0, 0, 0, sy+j, cx, cy, sw, sh);
-                    continue;
+                    if(clearmasks[j/32] & (1 << (j%32)))
+                    {
+                        if(!(rhclearmasks[0][i][j/32] & (1 << (j%32))))
+                        {
+                            glCopyTexSubImage3D_(GL_TEXTURE_3D, 0, 0, 0, sy+j, cx, cy, sw, sh);
+                        }
+                        continue;
+                    }
+                    glCopyTexSubImage3D_(GL_TEXTURE_3D, 0, 0, 0, sy+j, j*sw, sy, sw, sh);
                 }
-                glCopyTexSubImage3D_(GL_TEXTURE_3D, 0, 0, 0, sy+j, j*sw, sy, sw, sh);
             }
-        }
         memcpy(rhclearmasks[0][i], clearmasks, sizeof(clearmasks));
     }
 

@@ -217,7 +217,10 @@ struct iqm : skelloader<iqm>
                     {
                         blendcombo c;
                         int sorted = 0;
-                        loopk(4) sorted = c.addweight(sorted, mweight[k], mindex[k]);
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            sorted = c.addweight(sorted, mweight[k], mindex[k]);
+                        }
                         mweight += 4;
                         mindex += 4;
                         c.finalize(sorted);
@@ -286,7 +289,7 @@ struct iqm : skelloader<iqm>
                 for(int j = 0; j < int(a.num_frames); ++j)
                 {
                     dualquat *frame = &animbones[j*skel->numbones];
-                    loopk(skel->numbones)
+                    for(int k = 0; k < skel->numbones; ++k)
                     {
                         iqmpose &p = poses[k];
                         vec pos;

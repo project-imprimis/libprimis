@@ -214,8 +214,20 @@ void addnormals(cube &c, const ivec &o, int size)
             VSlot &vslot = lookupvslot(c.texture[i], false);
             int smooth = vslot.slot->smooth;
 
-            if(!numplanes) loopk(numverts) norms[k] = addnormal(pos[k], smooth, i);
-            else if(numplanes==1) loopk(numverts) norms[k] = addnormal(pos[k], smooth, planes[0]);
+            if(!numplanes)
+            {
+                for(int k = 0; k < numverts; ++k)
+                {
+                    norms[k] = addnormal(pos[k], smooth, i);
+                }
+            }
+            else if(numplanes==1)
+            {
+                for(int k = 0; k < numverts; ++k)
+                {
+                    norms[k] = addnormal(pos[k], smooth, planes[0]);
+                }
+            }
             else
             {
                 vec avg = vec(planes[0]).add(planes[1]).normalize();

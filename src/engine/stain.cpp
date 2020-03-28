@@ -614,19 +614,30 @@ struct stainrenderer
                 if(numv<3) continue;
             }
             numv = polyclip(v1, numv, pb, pbc - stainradius, pbc + stainradius, v2);
-            if(numv<3) continue;
-            float tsz = flags&SF_RND4 ? 0.5f : 1.0f, scale = tsz*0.5f/stainradius,
-                  tu = stainu + tsz*0.5f - ptc*scale, tv = stainv + tsz*0.5f - pbc*scale;
+            if(numv<3)
+            {
+                continue;
+            }
+            float tsz = flags&SF_RND4 ? 0.5f : 1.0f,
+                  scale = tsz*0.5f/stainradius,
+                  tu = stainu + tsz*0.5f - ptc*scale,
+                  tv = stainv + tsz*0.5f - pbc*scale;
             pt.mul(scale); pb.mul(scale);
             stainvert dv1 = { v2[0], staincolor, vec2(pt.dot(v2[0]) + tu, pb.dot(v2[0]) + tv) },
                       dv2 = { v2[1], staincolor, vec2(pt.dot(v2[1]) + tu, pb.dot(v2[1]) + tv) };
             int totalverts = 3*(numv-2);
-            if(totalverts > buf.maxverts-3) return;
+            if(totalverts > buf.maxverts-3)
+            {
+                return;
+            }
             while(buf.availverts < totalverts)
             {
-                if(!freestain()) return;
+                if(!freestain())
+                {
+                    return;
+                }
             }
-            loopk(numv-2)
+            for(int k = 0; k < numv-2; ++k)
             {
                 stainvert *tri = buf.addtri();
                 tri[0] = dv1;
@@ -724,9 +735,15 @@ struct stainrenderer
         vec v1[3+4], v2[3+4];
         float ptc = pt.dot(pcenter), pbc = pb.dot(pcenter);
         int numv = polyclip(v, 3, pt, ptc - stainradius, ptc + stainradius, v1);
-        if(numv<3) return;
+        if(numv<3) //check with v1
+        {
+            return;
+        }
         numv = polyclip(v1, numv, pb, pbc - stainradius, pbc + stainradius, v2);
-        if(numv<3) return;
+        if(numv<3) //check again with v2
+        {
+            return;
+        }
         float tsz = flags&SF_RND4 ? 0.5f : 1.0f, scale = tsz*0.5f/stainradius,
               tu = stainu + tsz*0.5f - ptc*scale, tv = stainv + tsz*0.5f - pbc*scale;
         pt.mul(scale); pb.mul(scale);
@@ -737,9 +754,12 @@ struct stainrenderer
         if(totalverts > buf.maxverts-3) return;
         while(buf.availverts < totalverts)
         {
-            if(!freestain()) return;
+            if(!freestain())
+            {
+                return;
+            }
         }
-        loopk(numv-2)
+        for(int k = 0; k < numv-2; ++k)
         {
             stainvert *tri = buf.addtri();
             tri[0] = dv1;
