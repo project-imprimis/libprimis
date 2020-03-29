@@ -654,8 +654,20 @@ servinfo *getservinfo(int i)
 void clearservers(bool full = false)
 {
     resolverclear();
-    if(full) servers.deletecontents();
-    else loopvrev(servers) if(!servers[i]->keep) delete servers.remove(i);
+    if(full)
+    {
+        servers.deletecontents();
+    }
+    else
+    {
+        for(int i = servers.length(); --i >=0;) //note reverse iteration
+        {
+            if(!servers[i]->keep)
+            {
+                delete servers.remove(i);
+            }
+        }
+    }
 }
 
 #define RETRIEVELIMIT 20000

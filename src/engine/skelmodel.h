@@ -675,10 +675,10 @@ struct skelmodel : animmodel
             loopv(users)
             {
                 skelmeshgroup *group = users[i];
-                loopvj(group->blendcombos) //loopj
+                for(int j = 0; j < group->blendcombos.length(); j++) //loop j
                 {
                     blendcombo &c = group->blendcombos[j];
-                    for(int k = 0; k < 4; ++k) //loopk
+                    for(int k = 0; k < 4; ++k) //loop k
                     {
                         if(!c.weights[k])
                         {
@@ -777,13 +777,16 @@ struct skelmodel : animmodel
             for(; bone >= 0; bone = bones[bone].parent)
             {
                 int pos = pitchdeps.length();
-                loopvj(pitchdeps) if(bone <= pitchdeps[j].bone)
+                for(int j = 0; j < pitchdeps.length(); j++)
                 {
-                    if(bone == pitchdeps[j].bone) goto nextbone;
-                    pos = j;
-                    break;
+                    if(bone <= pitchdeps[j].bone)
+                    {
+                        if(bone == pitchdeps[j].bone) goto nextbone;
+                        pos = j;
+                        break;
+                    }
                 }
-                {
+                { //if goto nextbone not called (note: no control logic w/ braces)
                     pitchdep d;
                     d.bone = bone;
                     d.parent = -1;
@@ -936,27 +939,42 @@ struct skelmodel : animmodel
                 pitchcorrect &c = pitchcorrects[i];
                 c.pitchangle = c.pitchtotal = 0;
             }
-            loopvj(pitchtargets)
+            for(int j = 0; j < pitchtargets.length(); j++)
             {
                 pitchtarget &t = pitchtargets[j];
                 float tpitch = pitch - t.deviated;
                 for(int parent = t.corrects; parent >= 0; parent = pitchcorrects[parent].parent)
                     tpitch -= pitchcorrects[parent].pitchangle;
-                if(t.pitchmin || t.pitchmax) tpitch = clamp(tpitch, t.pitchmin, t.pitchmax);
+                if(t.pitchmin || t.pitchmax)
+                {
+                    tpitch = clamp(tpitch, t.pitchmin, t.pitchmax);
+                }
                 loopv(pitchcorrects)
                 {
                     pitchcorrect &c = pitchcorrects[i];
-                    if(c.target != j) continue;
+                    if(c.target != j)
+                    {
+                        continue;
+                    }
                     float total = c.parent >= 0 ? pitchcorrects[c.parent].pitchtotal : 0,
                           avail = tpitch - total,
                           used = tpitch*c.pitchscale;
                     if(c.pitchmin || c.pitchmax)
                     {
-                        if(used < 0) used = clamp(c.pitchmin, used, 0.0f);
+                        if(used < 0)
+                        {
+                            used = clamp(c.pitchmin, used, 0.0f);
+                        }
                         else used = clamp(c.pitchmax, 0.0f, used);
                     }
-                    if(used < 0) used = clamp(avail, used, 0.0f);
-                    else used = clamp(avail, 0.0f, used);
+                    if(used < 0)
+                    {
+                        used = clamp(avail, used, 0.0f);
+                    }
+                    else
+                    {
+                        used = clamp(avail, 0.0f, used);
+                    }
                     c.pitchangle = used;
                     c.pitchtotal = used + total;
                 }
@@ -1013,11 +1031,26 @@ struct skelmodel : animmodel
                     else sc.bdata[b.interpindex].mul(sc.bdata[b.interpparent], d);
 
                     float angle;
-                    if(b.pitchscale) { angle = b.pitchscale*pitch + b.pitchoffset; if(b.pitchmin || b.pitchmax) angle = clamp(angle, b.pitchmin, b.pitchmax); }
-                    else if(b.correctindex >= 0) angle = pitchcorrects[b.correctindex].pitchangle;
-                    else continue;
+                    if(b.pitchscale)
+                    {
+                        angle = b.pitchscale*pitch + b.pitchoffset;
+                        if(b.pitchmin || b.pitchmax)
+                        {
+                            angle = clamp(angle, b.pitchmin, b.pitchmax);
+                        }
+                    }
+                    else if(b.correctindex >= 0)
+                    {
+                        angle = pitchcorrects[b.correctindex].pitchangle;
+                    }
+                    else
+                    {
+                        continue;
+                    }
                     if(as->cur.anim&ANIM_NOPITCH || (as->interp < 1 && as->prev.anim&ANIM_NOPITCH))
+                    {
                         angle *= (as->cur.anim&ANIM_NOPITCH ? 0 : as->interp) + (as->interp < 1 && as->prev.anim&ANIM_NOPITCH ? 0 : 1-as->interp);
+                    }
                     sc.bdata[b.interpindex].mulorient(quat(axis, angle*RAD), b.base);
                 }
             }

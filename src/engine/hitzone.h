@@ -757,29 +757,45 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     for(int i = leafzones; i < info.length(); i++)
     {
         skelzoneinfo &zi = *info[i];
-        if(zi.key.blend >= 0) continue;
-        loopvj(info) if(i != j && zi.key.includes(info[j]->key))
+        if(zi.key.blend >= 0)
         {
-            skelzoneinfo &zj = *info[j];
-            loopvk(zi.children)
+            continue;
+        }
+        for(int j = 0; j < info.length(); j++)
+        {
+            if(i != j && zi.key.includes(info[j]->key))
             {
-                skelzoneinfo &zk = *zi.children[k];
-                if(zk.key.includes(zj.key)) goto nextzone;
-                if(zj.key.includes(zk.key))
+                skelzoneinfo &zj = *info[j];
+                for(int k = 0; k< zi.children.length(); k++)
                 {
-                    zk.parents--;
-                    zj.parents++;
-                    zi.children[k] = &zj;
-                    while(++k < zi.children.length()) if(zj.key.includes(zi.children[k]->key)) { zi.children[k]->parents--; zi.children.removeunordered(k--); }
-                    goto nextzone;
+                    skelzoneinfo &zk = *zi.children[k];
+                    if(zk.key.includes(zj.key))
+                    {
+                        goto nextzone; //basically `continue` except for the top level loop
+                    }
+                    if(zj.key.includes(zk.key))
+                    {
+                        zk.parents--;
+                        zj.parents++;
+                        zi.children[k] = &zj;
+                        while(++k < zi.children.length())
+                        {
+                            if(zj.key.includes(zi.children[k]->key))
+                            {
+                                zi.children[k]->parents--;
+                                zi.children.removeunordered(k--);
+                            }
+                        }
+                        goto nextzone; //basically `continue` except for the top level loop
+                    }
                 }
+                zj.parents++;
+                zi.children.add(&zj);
+            nextzone:;
             }
-            zj.parents++;
-            zi.children.add(&zj);
-        nextzone:;
         }
         skelzonekey deps = zi.key;
-        loopvj(zi.children)
+        for(int j = 0; j < zi.children.length(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
             if(zj.key.blend < 0 || zj.key.blend >= numblends) deps.subtract(zj.key);
@@ -799,7 +815,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     for(int i = leafzones; i < info.length(); i++)
     {
         skelzoneinfo &zi = *info[i];
-        loopvj(zi.children)
+        for(int j = 0; j < zi.children.length(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
             if(zj.tris.length() <= 2 && zj.parents == 1)
@@ -817,10 +833,13 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         }
     }
     int numlinks = 0, numtris = 0;
-    loopvrev(info)
+    for(int i = info.length(); --i >=0;) //note reverse iteration
     {
         skelzoneinfo &zi = *info[i];
-        if(zi.parents || zi.tris.empty()) info.removeunordered(i);
+        if(zi.parents || zi.tris.empty())
+        {
+            info.removeunordered(i);
+        }
         zi.conflicts = zi.parents;
         numlinks += zi.parents + zi.children.length();
         numtris += zi.tris.length();
@@ -830,7 +849,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     {
         skelzoneinfo &zi = *info[i];
         zi.index = i;
-        loopvj(zi.children)
+        for(int j = 0; j < zi.children.length(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
             if(!--zj.conflicts) info.add(&zj);
@@ -872,7 +891,10 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         curlink += zi.parents;
         z.numchildren = zi.children.length();
         z.children = curlink;
-        loopvj(zi.children) z.children[j] = &zones[info.length()-1 - zi.children[j]->index];
+        for(int j = 0; j < zi.children.length(); j++)
+        {
+            z.children[j] = &zones[info.length()-1 - zi.children[j]->index];
+        }
         curlink += zi.children.length();
     }
     for(int i = 0; i < numzones; ++i)

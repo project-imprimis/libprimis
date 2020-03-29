@@ -424,7 +424,7 @@ void ragdolldata::constrain()
     for(int i = 0; i < ragdollconstrain; ++i)
     {
         constraindist();
-        loopvj(skel->verts)
+        for(int j = 0; j < skel->verts.length(); j++)
         {
             vert &v = verts[j];
             v.undo = v.pos;
@@ -437,7 +437,7 @@ void ragdolldata::constrain()
         }
 
         constrainrot();
-        loopvj(skel->verts)
+        for(int j = 0; j < skel->verts.length(); j++)
         {
             vert &v = verts[j];
             if(v.weight)

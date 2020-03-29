@@ -851,7 +851,10 @@ namespace ai
                         if(route(d, w, t, remap, obstacles))
                         { // kill what we don't want and put the remap in
                             while(d->ai->route.length() > i) d->ai->route.pop();
-                            loopvk(remap) d->ai->route.add(remap[k]);
+                            for(int k = 0; k < remap.length(); k++)
+                            {
+                                d->ai->route.add(remap[k]);
+                            }
                             return true;
                         }
                         return false; // we failed
@@ -1292,8 +1295,11 @@ namespace ai
         // others spawn new commands to the stack the ai reads the top command from the stack and executes
         // it or pops the stack and goes back along the history until it finds a suitable command to execute
         bool cleannext = false;
-        if(d->ai->state.empty()) d->ai->addstate(AIState_Wait);
-        loopvrev(d->ai->state)
+        if(d->ai->state.empty())
+        {
+            d->ai->addstate(AIState_Wait);
+        }
+        for(int i = d->ai->state.length(); --i >=0;) //note reverse iteration
         {
             aistate &c = d->ai->state[i];
             if(cleannext)
@@ -1342,7 +1348,7 @@ namespace ai
     void drawroute(gameent *d, float amt = 1.f)
     {
         int last = -1;
-        loopvrev(d->ai->route)
+        for(int i = d->ai->route.length(); --i >=0;) //note reverse iteration
         {
             if(d->ai->route.inrange(last))
             {
@@ -1415,7 +1421,7 @@ namespace ai
                     pos.z += 2;
                 }
                 bool top = true;
-                loopvrev(d->ai->state)
+                for(int i = d->ai->state.length(); --i >=0;) //note reverse iteration
                 {
                     aistate &b = d->ai->state[i];
                     DEF_FORMAT_STRING(s, "%s%s (%d ms) %s:%d",

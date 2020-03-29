@@ -588,7 +588,17 @@ namespace ai
                         if(link == goal) goto foundgoal;
                         queue.addheap(&n);
                     }
-                    else loopvj(queue) if(queue[j] == &n) { queue.upheap(j); break; }
+                    else
+                    {
+                        for(int j = 0; j < queue.length(); j++)
+                        {
+                            if(queue[j] == &n)
+                            {
+                                queue.upheap(j);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -637,8 +647,17 @@ namespace ai
 
     static inline bool shouldnavigate()
     {
-        if(dropwaypoints) return true;
-        loopvrev(players) if(players[i]->aitype != AI_None) return true;
+        if(dropwaypoints)
+        {
+            return true;
+        }
+        for(int i = players.length(); --i >=0;) //note reverse iteration
+        {
+            if(players[i]->aitype != AI_None)
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -737,9 +756,12 @@ namespace ai
     {
         vector<ushort> remap;
         int total = 0;
-        loopv(waypoints) remap.add(waypoints[i].links[1] == 0xFFFF ? 0 : total++);
+        loopv(waypoints)
+        {
+            remap.add(waypoints[i].links[1] == 0xFFFF ? 0 : total++);
+        }
         total = 0;
-        loopvj(waypoints)
+        for(int j = 0; j < waypoints.length(); j++)
         {
             if(waypoints[j].links[1] == 0xFFFF) continue;
             waypoint &w = waypoints[total];

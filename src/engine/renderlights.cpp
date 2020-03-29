@@ -3239,7 +3239,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
 
         if(hasDBT && depthtestlights > 1) glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
         gle::begin(GL_QUADS);
-        loopvj(batch.rects)
+        for(int j = 0; j < batch.rects.length(); j++)
         {
             const lightrect &r = batch.rects[j];
             int x1 = max(int(r.x1), btx1), y1 = max(int(r.y1), bty1),
@@ -3619,19 +3619,22 @@ void viewlightscissor()
         if(ents.inrange(idx) && ents[idx]->type == Ent_Light)
         {
             extentity &e = *ents[idx];
-            loopvj(lights) if(lights[j].o == e.o)
+            for(int j = 0; j < lights.length(); j++)
             {
-                lightinfo &l = lights[j];
-                if(!l.validscissor()) break;
-                gle::colorf(l.color.x/255, l.color.y/255, l.color.z/255);
-                float x1 = (l.sx1+1)/2*hudw, x2 = (l.sx2+1)/2*hudw,
-                      y1 = (1-l.sy1)/2*hudh, y2 = (1-l.sy2)/2*hudh;
-                gle::begin(GL_TRIANGLE_STRIP);
-                gle::attribf(x1, y1);
-                gle::attribf(x2, y1);
-                gle::attribf(x1, y2);
-                gle::attribf(x2, y2);
-                gle::end();
+                if(lights[j].o == e.o)
+                {
+                    lightinfo &l = lights[j];
+                    if(!l.validscissor()) break;
+                    gle::colorf(l.color.x/255, l.color.y/255, l.color.z/255);
+                    float x1 = (l.sx1+1)/2*hudw, x2 = (l.sx2+1)/2*hudw,
+                          y1 = (1-l.sy1)/2*hudh, y2 = (1-l.sy2)/2*hudh;
+                    gle::begin(GL_TRIANGLE_STRIP);
+                    gle::attribf(x1, y1);
+                    gle::attribf(x2, y1);
+                    gle::attribf(x1, y2);
+                    gle::attribf(x2, y2);
+                    gle::end();
+                }
             }
         }
     }

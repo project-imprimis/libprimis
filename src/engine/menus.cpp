@@ -37,7 +37,7 @@ void addchange(const char *desc, int type)
 //clears out pending changes added by addchange()
 void clearchanges(int type)
 {
-    loopvrev(needsapply)
+    for(int i = needsapply.length(); --i >=0;) //note reverse iteration
     {
         change &c = needsapply[i];
         if(c.type&type)

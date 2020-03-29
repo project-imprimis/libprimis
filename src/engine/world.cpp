@@ -135,11 +135,14 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     if(va)
                     {
                         va->bbmin.x = -1;
-                        if(oe.decals.empty()) va->decals.removeobj(&oe);
+                        if(oe.decals.empty())
+                        {
+                            va->decals.removeobj(&oe);
+                        }
                     }
                     oe.bbmin = oe.bbmax = oe.o;
                     oe.bbmin.add(oe.size);
-                    loopvj(oe.decals)
+                    for(int j = 0; j < oe.decals.length(); j++)
                     {
                         extentity &e = *entities::getents()[oe.decals[j]];
                         ivec eo, er;
@@ -159,11 +162,14 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         if(va)
                         {
                             va->bbmin.x = -1;
-                            if(oe.mapmodels.empty()) va->mapmodels.removeobj(&oe);
+                            if(oe.mapmodels.empty())
+                            {
+                                va->mapmodels.removeobj(&oe);
+                            }
                         }
                         oe.bbmin = oe.bbmax = oe.o;
                         oe.bbmin.add(oe.size);
-                        loopvj(oe.mapmodels)
+                        for(int j = 0; j < oe.mapmodels.length(); j++)
                         {
                             extentity &e = *entities::getents()[oe.mapmodels[j]];
                             ivec eo, er;

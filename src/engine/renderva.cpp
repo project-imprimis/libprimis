@@ -1107,31 +1107,50 @@ void findshadowmms()
 {
     shadowmms = NULL;
     octaentities **lastmms = &shadowmms;
-    for(vtxarray *va = shadowva; va; va = va->rnext) loopvj(va->mapmodels)
+    for(vtxarray *va = shadowva; va; va = va->rnext)
     {
-        octaentities *oe = va->mapmodels[j];
-        switch(shadowmapping)
+        for(int j = 0; j < va->mapmodels.length(); j++)
         {
-            case ShadowMap_Reflect:
-                break;
-            case ShadowMap_Cascade:
-                if(!calcbbcsmsplits(oe->bbmin, oe->bbmax))
-                    continue;
-                break;
-            case ShadowMap_CubeMap:
-                if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
-                    continue;
-                break;
-            case ShadowMap_Spot:
-                if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
-                    continue;
-                if(smbbcull && !bbinsidespot(shadoworigin, shadowdir, shadowspot, oe->bbmin, oe->bbmax))
-                    continue;
-                break;
+            octaentities *oe = va->mapmodels[j];
+            switch(shadowmapping)
+            {
+                case ShadowMap_Reflect:
+                {
+                    break;
+                }
+                case ShadowMap_Cascade:
+                {
+                    if(!calcbbcsmsplits(oe->bbmin, oe->bbmax))
+                    {
+                        continue;
+                    }
+                    break;
+                }
+                case ShadowMap_CubeMap:
+                {
+                    if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
+                    {
+                        continue;
+                    }
+                    break;
+                }
+                case ShadowMap_Spot:
+                {
+                    if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
+                    {
+                        continue;
+                    }
+                    if(smbbcull && !bbinsidespot(shadoworigin, shadowdir, shadowspot, oe->bbmin, oe->bbmax))
+                    {
+                        continue;
+                    }
+                    break;
+                }
+            }
+            oe->rnext = NULL;
+            *lastmms = oe;
+            lastmms = &oe->rnext;
         }
-        oe->rnext = NULL;
-        *lastmms = oe;
-        lastmms = &oe->rnext;
     }
 }
 
@@ -1141,18 +1160,24 @@ void batchshadowmapmodels(bool skipmesh)
     int nflags = EntFlag_NoVis|EntFlag_NoShadow;
     if(skipmesh) nflags |= EntFlag_ShadowMesh;
     const vector<extentity *> &ents = entities::getents();
-    for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvk(oe->mapmodels)
+    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        extentity &e = *ents[oe->mapmodels[k]];
-        if(e.flags&nflags) continue;
-        e.flags |= EntFlag_Render;
+        for(int k = 0; k < oe->mapmodels.length(); k++)
+        {
+            extentity &e = *ents[oe->mapmodels[k]];
+            if(e.flags&nflags) continue;
+            e.flags |= EntFlag_Render;
+        }
     }
-    for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvj(oe->mapmodels)
+    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        extentity &e = *ents[oe->mapmodels[j]];
-        if(!(e.flags&EntFlag_Render)) continue;
-        rendermapmodel(e);
-        e.flags &= ~EntFlag_Render;
+        for(int j = 0; j < oe->mapmodels.length(); j++)
+        {
+            extentity &e = *ents[oe->mapmodels[j]];
+            if(!(e.flags&EntFlag_Render)) continue;
+            rendermapmodel(e);
+            e.flags &= ~EntFlag_Render;
+        }
     }
 }
 
@@ -1492,39 +1517,49 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
         GLOBALPARAMF(colorparams, vslot.colorscale.x, vslot.colorscale.y, vslot.colorscale.z, 1);
     }
 
-    loopvj(slot.sts)
+    for(int j = 0; j < slot.sts.length(); j++)
     {
         Slot::Tex &t = slot.sts[j];
         switch(t.type)
         {
             case TEX_ENVMAP:
-                if(t.t) bindslottex(cur, t.type, t.t, GL_TEXTURE_CUBE_MAP);
+            {
+                if(t.t)
+                {
+                    bindslottex(cur, t.type, t.t, GL_TEXTURE_CUBE_MAP);
+                }
                 break;
+            }
             case TEX_NORMAL:
             case TEX_GLOW:
+            {
                 bindslottex(cur, t.type, t.t);
                 break;
+            }
         }
     }
 
     if(pass == RENDERPASS_GBUFFER && vslot.detail)
     {
         VSlot &detail = lookupvslot(vslot.detail);
-        loopvj(detail.slot->sts)
+        for(int j = 0; j < detail.slot->sts.length(); j++)
         {
             Slot::Tex &t = detail.slot->sts[j];
             switch(t.type)
             {
                 case TEX_DIFFUSE:
+                {
                     if(slot.shader->type&SHADER_TRIPLANAR)
                     {
                         float scale = TEX_SCALE/detail.scale;
                         GLOBALPARAMF(detailscale, scale/t.t->xs, scale/t.t->ys);
                     }
-                    // fall-through
+                }// fall-through
                 case TEX_NORMAL:
+                {
                     bindslottex(cur, TEX_DETAIL + t.type, t.t);
                     break;
+                }
             }
         }
     }
@@ -2666,40 +2701,52 @@ static void genshadowmeshtris(shadowmesh &m, int sides, shadowdrawinfo draws[6],
 static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draws[6])
 {
     const vector<extentity *> &ents = entities::getents();
-    for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvk(oe->mapmodels)
+    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        extentity &e = *ents[oe->mapmodels[k]];
-        if(e.flags&(EntFlag_NoVis|EntFlag_NoShadow)) continue;
-        e.flags |= EntFlag_Render;
+        for(int k = 0; k < oe->mapmodels.length(); k++)
+        {
+            extentity &e = *ents[oe->mapmodels[k]];
+            if(e.flags&(EntFlag_NoVis|EntFlag_NoShadow)) continue;
+            e.flags |= EntFlag_Render;
+        }
     }
     vector<triangle> tris;
-    for(octaentities *oe = shadowmms; oe; oe = oe->rnext) loopvj(oe->mapmodels)
+    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
-        extentity &e = *ents[oe->mapmodels[j]];
-        if(!(e.flags&EntFlag_Render)) continue;
-        e.flags &= ~EntFlag_Render;
-
-
-        model *mm = loadmapmodel(e.attr1);
-        if(!mm || !mm->shadow || mm->animated() || (mm->alphashadow && mm->alphatested())) continue;
-
-        matrix4x3 orient;
-        orient.identity();
-        if(e.attr2) orient.rotate_around_z(sincosmod360(e.attr2));
-        if(e.attr3) orient.rotate_around_x(sincosmod360(e.attr3));
-        if(e.attr4) orient.rotate_around_y(sincosmod360(-e.attr4));
-        if(e.attr5 > 0) orient.scale(e.attr5/100.0f);
-        orient.settranslation(e.o);
-        tris.setsize(0);
-        mm->genshadowmesh(tris, orient);
-
-        loopv(tris)
+        for(int j = 0; j < oe->mapmodels.length(); j++)
         {
-            triangle &t = tris[i];
-            addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);
-        }
+            extentity &e = *ents[oe->mapmodels[j]];
+            if(!(e.flags&EntFlag_Render))
+            {
+                continue;
+            }
+            e.flags &= ~EntFlag_Render;
 
-        e.flags |= EntFlag_ShadowMesh;
+
+            model *mm = loadmapmodel(e.attr1);
+            if(!mm || !mm->shadow || mm->animated() || (mm->alphashadow && mm->alphatested()))
+            {
+                continue;
+            }
+
+            matrix4x3 orient;
+            orient.identity();
+            if(e.attr2) orient.rotate_around_z(sincosmod360(e.attr2));
+            if(e.attr3) orient.rotate_around_x(sincosmod360(e.attr3));
+            if(e.attr4) orient.rotate_around_y(sincosmod360(-e.attr4));
+            if(e.attr5 > 0) orient.scale(e.attr5/100.0f);
+            orient.settranslation(e.o);
+            tris.setsize(0);
+            mm->genshadowmesh(tris, orient);
+
+            loopv(tris)
+            {
+                triangle &t = tris[i];
+                addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);
+            }
+
+            e.flags |= EntFlag_ShadowMesh;
+        }
     }
 }
 

@@ -22,15 +22,19 @@ void boxs(int orient, vec o, const vec &s, float size)
     gle::defvertex();
     gle::begin(GL_TRIANGLE_STRIP);
     gle::attrib(vec(v1).sub(r).sub(c));
-        gle::attrib(vec(v1).add(r).add(c));
+    gle::attrib(vec(v1).add(r).add(c));
+
     gle::attrib(vec(v2).add(r).sub(c));
-        gle::attrib(vec(v2).sub(r).add(c));
+    gle::attrib(vec(v2).sub(r).add(c));
+
     gle::attrib(vec(v3).add(r).add(c));
-        gle::attrib(vec(v3).sub(r).sub(c));
+    gle::attrib(vec(v3).sub(r).sub(c));
+
     gle::attrib(vec(v4).sub(r).add(c));
-        gle::attrib(vec(v4).add(r).sub(c));
+    gle::attrib(vec(v4).add(r).sub(c));
+
     gle::attrib(vec(v1).sub(r).sub(c));
-        gle::attrib(vec(v1).add(r).add(c));
+    gle::attrib(vec(v1).add(r).add(c));
     xtraverts += gle::end();
 }
 
@@ -1035,7 +1039,14 @@ static void unpackvslots(cube &c, ucharbuf &buf)
         for(int i = 0; i < 6; ++i)
         {
             ushort tex = c.texture[i];
-            loopvj(unpackingvslots) if(unpackingvslots[j].index == tex) { c.texture[i] = unpackingvslots[j].vslot->index; break; }
+            for(int j = 0; j < unpackingvslots.length(); j++)
+            {
+                if(unpackingvslots[j].index == tex)
+                {
+                    c.texture[i] = unpackingvslots[j].vslot->index;
+                    break;
+                }
+            }
         }
     }
 }
@@ -1299,34 +1310,64 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
 
 prefab *loadprefab(const char *name, bool msg = true)
 {
-   prefab *b = prefabs.access(name);
-   if(b) return b;
+    prefab *b = prefabs.access(name);
+    if(b) return b;
 
-   DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
-   path(filename);
-   stream *f = opengzfile(filename, "rb");
-   if(!f) { if(msg) conoutf(CON_ERROR, "could not read prefab %s", filename); return NULL; }
-   prefabheader hdr;
-   if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4)) { delete f; if(msg) conoutf(CON_ERROR, "prefab %s has malformatted header", filename); return NULL; }
-   LIL_ENDIAN_SWAP(&hdr.version, 1);
-   if(hdr.version != 0) { delete f; if(msg) conoutf(CON_ERROR, "prefab %s uses unsupported version", filename); return NULL; }
-   streambuf<uchar> s(f);
-   block3 *copy = NULL;
-   if(!unpackblock(copy, s)) { delete f; if(msg) conoutf(CON_ERROR, "could not unpack prefab %s", filename); return NULL; }
-   delete f;
+    DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
+    path(filename);
+    stream *f = opengzfile(filename, "rb");
+    if(!f) { if(msg) conoutf(CON_ERROR, "could not read prefab %s", filename); return NULL; }
+    prefabheader hdr;
+    if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4))
+    {
+        delete f;
+        if(msg)
+        {
+            conoutf(CON_ERROR, "prefab %s has malformatted header", filename);
+            return NULL;
+        }
+    }
+    LIL_ENDIAN_SWAP(&hdr.version, 1);
+    if(hdr.version != 0)
+    {
+        delete f;
+        if(msg)
+        {
+           conoutf(CON_ERROR, "prefab %s uses unsupported version", filename);
+           return NULL;
+        }
+    }
+    streambuf<uchar> s(f);
+    block3 *copy = NULL;
+    if(!unpackblock(copy, s))
+    {
+        delete f;
+        if(msg)
+        {
+            conoutf(CON_ERROR, "could not unpack prefab %s", filename);
+            return NULL;
+        }
+    }
+    delete f;
 
-   b = &prefabs[name];
-   b->name = newstring(name);
-   b->copy = copy;
+    b = &prefabs[name];
+    b->name = newstring(name);
+    b->copy = copy;
 
-   return b;
+    return b;
 }
 
 void pasteprefab(char *name)
 {
-    if(!name[0] || noedit() || (nompedit && multiplayer())) return;
+    if(!name[0] || noedit() || (nompedit && multiplayer()))
+    {
+        return;
+    }
     prefab *b = loadprefab(name, true);
-    if(b) pasteblock(*b->copy, sel, true);
+    if(b)
+    {
+        pasteblock(*b->copy, sel, true);
+    }
 }
 COMMAND(pasteprefab, "s");
 
@@ -1362,7 +1403,7 @@ struct prefabmesh
         vtx.pos = pos;
         vtx.norm = norm;
         return addvert(vtx);
-   }
+    }
 
     void setup(prefab &p)
     {
@@ -2541,20 +2582,35 @@ static void filltexlist()
 {
     if(texmru.length()!=vslots.length())
     {
-        loopvrev(texmru) if(texmru[i]>=vslots.length())
+        for(int i = texmru.length(); --i >=0;) //note reverse iteration
         {
-            if(curtexindex > i) curtexindex--;
-            else if(curtexindex == i) curtexindex = -1;
-            texmru.remove(i);
+            if(texmru[i]>=vslots.length())
+            {
+                if(curtexindex > i)
+                {
+                    curtexindex--;
+                }
+                else if(curtexindex == i)
+                {
+                    curtexindex = -1;
+                }
+                texmru.remove(i);
+            }
         }
-        loopv(vslots) if(texmru.find(i)<0) texmru.add(i);
+        loopv(vslots)
+        {
+            if(texmru.find(i)<0)
+            {
+                texmru.add(i);
+            }
+        }
     }
 }
 
 void compactmruvslots()
 {
     remappedvslots.setsize(0);
-    loopvrev(texmru)
+    for(int i = texmru.length(); --i >=0;) //note reverse iteration
     {
         if(vslots.inrange(texmru[i]))
         {
@@ -2584,7 +2640,14 @@ void edittex(int i, bool save = true)
     lasttexmillis = totalmillis;
     if(save)
     {
-        loopvj(texmru) if(texmru[j]==lasttex) { curtexindex = j; break; }
+        for(int j = 0; j < texmru.length(); j++)
+        {
+            if(texmru[j]==lasttex)
+            {
+                curtexindex = j;
+                break;
+            }
+        }
     }
     mpedittex(i, allfaces, sel, true);
 }
@@ -2991,7 +3054,14 @@ void rendertexturepanel(int w, int h)
                 Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t, *glowtex = NULL, *layertex = NULL, *detailtex = NULL;
                 if(slot.texmask&(1<<TEX_GLOW))
                 {
-                    loopvj(slot.sts) if(slot.sts[j].type==TEX_GLOW) { glowtex = slot.sts[j].t; break; }
+                    for(int j = 0; j < slot.sts.length(); j++)
+                    {
+                        if(slot.sts[j].type==TEX_GLOW)
+                        {
+                            glowtex = slot.sts[j].t;
+                            break;
+                        }
+                    }
                 }
                 if(vslot.layer)
                 {

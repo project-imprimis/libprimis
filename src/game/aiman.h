@@ -12,11 +12,27 @@ namespace aiman
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(ci->state.state==ClientState_Spectator || !VALID_TEAM(ci->team)) continue;
+            if(ci->state.state==ClientState_Spectator || !VALID_TEAM(ci->team))
+            {
+                continue;
+            }
             teamscore *t = NULL;
-            loopvj(teams) if(teams[j].team == ci->team) { t = &teams[j]; break; }
-            if(t) t->score++;
-            else teams.add(teamscore(ci->team, 1));
+            for(int j = 0; j < teams.length(); j++)
+            {
+                if(teams[j].team == ci->team)
+                {
+                    t = &teams[j];
+                    break;
+                }
+            }
+            if(t)
+            {
+                t->score++;
+            }
+            else
+            {
+                teams.add(teamscore(ci->team, 1));
+            }
         }
         teams.sort(teamscore::compare);
         if(teams.length() < MAXTEAMS)
@@ -149,10 +165,13 @@ namespace aiman
 
     bool deleteai()
     {
-        loopvrev(bots) if(bots[i] && bots[i]->ownernum >= 0)
+        for(int i = bots.length(); --i >=0;) //note reverse iteration
         {
-            deleteai(bots[i]);
-            return true;
+            if(bots[i] && bots[i]->ownernum >= 0)
+            {
+                deleteai(bots[i]);
+                return true;
+            }
         }
         return false;
     }
@@ -186,7 +205,10 @@ namespace aiman
     void removeai(clientinfo *ci)
     { // either schedules a removal, or someone else to assign to
 
-        loopvrev(ci->bots) shiftai(ci->bots[i], findaiclient(ci));
+        for(int i = ci->bots.length(); --i >=0;) //note reverse iteration
+        {
+            shiftai(ci->bots[i], findaiclient(ci));
+        }
     }
 
     bool reassignai()
@@ -201,7 +223,7 @@ namespace aiman
         }
         if(hi && lo && hi->bots.length() - lo->bots.length() > 1)
         {
-            loopvrev(hi->bots)
+            for(int i = hi->bots.length(); --i >=0;) //note reverse iteration
             {
                 shiftai(hi->bots[i], lo);
                 return true;
@@ -214,12 +236,24 @@ namespace aiman
     void checksetup()
     {
         if(MODE_TEAMMODE && botbalance) balanceteams();
-        loopvrev(bots) if(bots[i]) reinitai(bots[i]);
+        for(int i = bots.length(); --i >=0;) //note reverse iteration
+        {
+            if(bots[i])
+            {
+                reinitai(bots[i]);
+            }
+        }
     }
 
     void clearai()
     { // clear and remove all ai immediately
-        loopvrev(bots) if(bots[i]) deleteai(bots[i]);
+        for(int i = bots.length(); --i >=0;) //note reverse iteration
+        {
+            if(bots[i])
+            {
+                deleteai(bots[i]);
+            }
+        }
     }
 
     void checkai()

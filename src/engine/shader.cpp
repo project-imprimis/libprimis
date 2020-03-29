@@ -553,15 +553,39 @@ static void setglsluniformformat(Shader &s, const char *name, GLenum format, int
     if(!strncmp(name, "gl_", 3)) return;
 
     int loc = glGetUniformLocation_(s.program, name);
-    if(loc < 0) return;
-    loopvj(s.defaultparams) if(s.defaultparams[j].loc == loc)
+    if(loc < 0)
     {
-        s.defaultparams[j].format = format;
         return;
     }
-    loopvj(s.uniformlocs) if(s.uniformlocs[j].loc == loc) return;
-    loopvj(s.globalparams) if(s.globalparams[j].loc == loc) return;
-    loopvj(s.localparams) if(s.localparams[j].loc == loc) return;
+    for(int j = 0; j < s.defaultparams.length(); j++)
+    {
+        if(s.defaultparams[j].loc == loc)
+        {
+            s.defaultparams[j].format = format;
+            return;
+        }
+    }
+    for(int j = 0; j < s.uniformlocs.length(); j++)
+    {
+        if(s.uniformlocs[j].loc == loc)
+        {
+            return;
+        }
+    }
+    for(int j = 0; j < s.globalparams.length(); j++)
+    {
+        if(s.globalparams[j].loc == loc)
+        {
+            return;
+        }
+    }
+    for(int j = 0; j < s.localparams.length(); j++)
+    {
+        if(s.localparams[j].loc == loc)
+        {
+            return;
+        }
+    }
 
     name = getshaderparamname(name);
     GlobalShaderParamState *param = globalparams.access(name);
@@ -1199,7 +1223,13 @@ int Shader::uniformlocversion()
     static int version = 0;
     if(++version >= 0) return version;
     version = 0;
-    ENUMERATE(shaders, Shader, s, { loopvj(s.uniformlocs) s.uniformlocs[j].version = -1; });
+    ENUMERATE(shaders, Shader, s,
+    {
+        for(int j = 0; j < s.uniformlocs.length(); j++)
+        {
+            s.uniformlocs[j].version = -1;
+        }
+    });
     return version;
 }
 
@@ -1370,7 +1400,13 @@ bool shouldreuseparams(Slot &s, VSlot &p)
             const float *val = findslotparam(p, param.name);
             if(val && memcmp(param.val, val, sizeof(param.val)))
             {
-                loopvj(s.params) if(s.params[j].name == param.name) goto notreused; 
+                for(int j = 0; j < s.params.length(); j++)
+                {
+                    if(s.params[j].name == param.name)
+                    {
+                        goto notreused; //bail out of loop
+                    }
+                }
                 return true;
             notreused:;
             }

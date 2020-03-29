@@ -699,11 +699,14 @@ static void readyeditors()
 
 static void flusheditors()
 {
-    loopvrev(editors) if(!editors[i]->active)
+    for(int i = editors.length(); --i >=0;) //note reverse iteration
     {
-        editor *e = editors.remove(i);
-        if(e == textfocus) textfocus = NULL;
-        delete e;
+        if(!editors[i]->active)
+        {
+            editor *e = editors.remove(i);
+            if(e == textfocus) textfocus = NULL;
+            delete e;
+        }
     }
 }
 

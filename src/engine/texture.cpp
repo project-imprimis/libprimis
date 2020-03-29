@@ -1986,7 +1986,13 @@ int compactvslots(bool cull)
     }
     if(cull)
     {
-        loopvrev(slots) if(slots[i]->variants->index < 0) delete slots.remove(i);
+        for(int i = slots.length(); --i >=0;) //note reverse iteration
+        {
+            if(slots[i]->variants->index < 0)
+            {
+                delete slots.remove(i);
+            }
+        }
         loopv(slots) slots[i]->index = i;
     }
     loopv(vslots)
@@ -2068,13 +2074,13 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
     if(diff & (1<<VSLOT_SHPARAM)) loopv(src.params)
     {
         const SlotShaderParam &sp = src.params[i];
-        loopvj(dst.params)
+        for(int j = 0; j < dst.params.length(); j++)
         {
             SlotShaderParam &dp = dst.params[j];
             if(sp.name == dp.name)
             {
                 memcpy(dp.val, sp.val, sizeof(dp.val));
-                goto nextparam;
+                goto nextparam; //bail out of loop
             }
         }
         dst.params.add(sp);
@@ -2089,20 +2095,32 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
         dst.rotation = clamp(dst.rotation + src.rotation, 0, 7);
         if(!dst.offset.iszero()) clampvslotoffset(dst, slot);
     }
-    if(diff & (1<<VSLOT_ANGLE)) dst.angle.add(src.angle);
+    if(diff & (1<<VSLOT_ANGLE))
+    {
+        dst.angle.add(src.angle);
+    }
     if(diff & (1<<VSLOT_OFFSET))
     {
         dst.offset.add(src.offset);
         clampvslotoffset(dst, slot);
     }
-    if(diff & (1<<VSLOT_SCROLL)) dst.scroll.add(src.scroll);
-    if(diff & (1<<VSLOT_LAYER)) dst.layer = src.layer;
+    if(diff & (1<<VSLOT_SCROLL))
+    {
+        dst.scroll.add(src.scroll);
+    }
+    if(diff & (1<<VSLOT_LAYER))
+    {
+        dst.layer = src.layer;
+    }
     if(diff & (1<<VSLOT_ALPHA))
     {
         dst.alphafront = src.alphafront;
         dst.alphaback = src.alphaback;
     }
-    if(diff & (1<<VSLOT_COLOR)) dst.colorscale.mul(src.colorscale);
+    if(diff & (1<<VSLOT_COLOR))
+    {
+        dst.colorscale.mul(src.colorscale);
+    }
     if(diff & (1<<VSLOT_REFRACT))
     {
         dst.refractscale *= src.refractscale;
@@ -2134,8 +2152,21 @@ static VSlot *reassignvslot(Slot &owner, VSlot *vs)
 static VSlot *emptyvslot(Slot &owner)
 {
     int offset = 0;
-    loopvrev(slots) if(slots[i]->variants) { offset = slots[i]->variants->index + 1; break; }
-    for(int i = offset; i < vslots.length(); i++) if(!vslots[i]->changed) return reassignvslot(owner, vslots[i]);
+    for(int i = slots.length(); --i >=0;) //note reverse iteration
+    {
+        if(slots[i]->variants)
+        {
+            offset = slots[i]->variants->index + 1;
+            break;
+        }
+    }
+    for(int i = offset; i < vslots.length(); i++)
+    {
+        if(!vslots[i]->changed)
+        {
+            return reassignvslot(owner, vslots[i]);
+        }
+    }
     return vslots.add(new VSlot(&owner, vslots.length()));
 }
 
@@ -2916,7 +2947,14 @@ Texture *Slot::loadthumbnail()
     int glow = -1;
     if(texmask&(1<<TEX_GLOW))
     {
-        loopvj(sts) if(sts[j].type==TEX_GLOW) { glow = j; break; }
+        for(int j = 0; j < sts.length(); j++)
+        {
+            if(sts[j].type==TEX_GLOW)
+            {
+                glow = j;
+                break;
+            }
+        }
         if(glow >= 0)
         {
             DEF_FORMAT_STRING(prefix, "<glow:%.2f/%.2f/%.2f>", vslot.glowcolor.x, vslot.glowcolor.y, vslot.glowcolor.z);

@@ -424,13 +424,19 @@ struct vacollect : verthash
         loopv(extdecals)
         {
             octaentities *oe = extdecals[i];
-            loopvj(oe->decals)
+            for(int j = 0; j < oe->decals.length(); j++)
             {
                 extentity &e = *ents[oe->decals[j]];
-                if(e.flags&EntFlag_Render) continue;
+                if(e.flags&EntFlag_Render)
+                {
+                    continue;
+                }
                 e.flags |= EntFlag_Render;
                 DecalSlot &s = lookupdecalslot(e.attr1, true);
-                if(!s.shader) continue;
+                if(!s.shader)
+                {
+                    continue;
+                }
                 ushort envmap = s.shader->type&SHADER_ENVMAP ? (s.texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(e.o)) : EMID_NONE;
                 decalkey k(e.attr1, envmap);
                 gendecal(e, s, k);
@@ -439,7 +445,7 @@ struct vacollect : verthash
         loopv(extdecals)
         {
             octaentities *oe = extdecals[i];
-            loopvj(oe->decals)
+            for(int j = 0; j < oe->decals.length(); j++)
             {
                 extentity &e = *ents[oe->decals[j]];
                 if(e.flags&EntFlag_Render) e.flags &= ~EntFlag_Render;
@@ -548,22 +554,50 @@ struct vacollect : verthash
                 if(t.tris.length())
                 {
                     memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
-
-                    loopvj(t.tris)
+                    for(int j = 0; j < t.tris.length(); j++)
                     {
                         curbuf[j] += va->voffset;
                         e.minvert = min(e.minvert, curbuf[j]);
                         e.maxvert = max(e.maxvert, curbuf[j]);
                     }
-
                     curbuf += t.tris.length();
                 }
                 e.length = curbuf-startbuf;
 
-                if(k.layer==LAYER_BLEND) { va->texs--; va->tris -= e.length/3; va->blends++; va->blendtris += e.length/3; }
-                else if(k.alpha==ALPHA_BACK) { va->texs--; va->tris -= e.length/3; va->alphaback++; va->alphabacktris += e.length/3; }
-                else if(k.alpha==ALPHA_FRONT) { va->texs--; va->tris -= e.length/3; va->alphafront++; va->alphafronttris += e.length/3; }
-                else if(k.alpha==ALPHA_REFRACT) { va->texs--; va->tris -= e.length/3; va->refract++; va->refracttris += e.length/3; }
+                if(k.layer==LAYER_BLEND)
+                {
+                    va->texs--;
+                    va->tris -= e.length/3;
+                    va->blends++;
+                    va->blendtris += e.length/3;
+                }
+                else
+                {
+                    switch(k.alpha)
+                    {
+                        case ALPHA_BACK:
+                        {
+                            va->texs--;
+                            va->tris -= e.length/3;
+                            va->alphaback++;
+                            va->alphabacktris += e.length/3;
+                        }
+                        case ALPHA_FRONT:
+                        {
+                            va->texs--;
+                            va->tris -= e.length/3;
+                            va->alphafront++;
+                            va->alphafronttris += e.length/3;
+                        }
+                        case ALPHA_REFRACT:
+                        {
+                            va->texs--;
+                            va->tris -= e.length/3;
+                            va->refract++;
+                            va->refracttris += e.length/3;
+                        }
+                    }
+                }
             }
         }
 
@@ -572,10 +606,19 @@ struct vacollect : verthash
         for(int i = 0; i < (va->texs+va->blends+va->alphaback+va->alphafront+va->refract); ++i)
         {
             VSlot &vslot = lookupvslot(va->texelems[i].texture, false);
-            if(vslot.isdynamic()) va->dyntexs++;
+            if(vslot.isdynamic())
+            {
+                va->dyntexs++;
+            }
             Slot &slot = *vslot.slot;
-            loopvj(slot.sts) va->texmask |= 1<<slot.sts[j].type;
-            if(slot.shader->type&SHADER_ENVMAP) va->texmask |= 1<<TEX_ENVMAP;
+            for(int j = 0; j < slot.sts.length(); j++)
+            {
+                va->texmask |= 1<<slot.sts[j].type;
+            }
+            if(slot.shader->type&SHADER_ENVMAP)
+            {
+                va->texmask |= 1<<TEX_ENVMAP;
+            }
         }
 
         va->decalbuf = 0;
@@ -603,14 +646,12 @@ struct vacollect : verthash
                 if(t.tris.length())
                 {
                     memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
-
-                    loopvj(t.tris)
+                    for(int j = 0; j < t.tris.length(); j++)
                     {
                         curbuf[j] += va->voffset;
                         e.minvert = min(e.minvert, curbuf[j]);
                         e.maxvert = max(e.maxvert, curbuf[j]);
                     }
-
                     curbuf += t.tris.length();
                 }
                 e.length = curbuf-startbuf;

@@ -221,9 +221,9 @@ namespace UI
                 body; \
             } \
         } while(0)
-
+        //note reverse iteration
         #define LOOP_CHILDREN_REV(o, body) do { \
-            loopvrev(children) \
+            for(int i = children.length(); --i >=0;) \
             { \
                 Object *o = children[i]; \
                 body; \
@@ -724,9 +724,9 @@ namespace UI
                 body; \
             } \
         } while(0)
-
+        //note reverse iteration
         #define LOOP_WINDOWS_REV(o, body) do { \
-            loopvrev(children) \
+            for(int i = children.length(); --i >=0;) \
             { \
                 Window *o = (Window *)children[i]; \
                 body; \
@@ -2987,7 +2987,17 @@ namespace UI
                     return;
                 }
                 Slot &slot = *vslot.slot;
-                if(slot.texmask&(1<<TEX_GLOW)) { loopvj(slot.sts) if(slot.sts[j].type==TEX_GLOW) { glowtex = slot.sts[j].t; break; } }
+                if(slot.texmask&(1<<TEX_GLOW))
+                {
+                    for(int j = 0; j < slot.sts.length(); j++)
+                    {
+                        if(slot.sts[j].type==TEX_GLOW)
+                        {
+                            glowtex = slot.sts[j].t;
+                            break;
+                        }
+                    }
+                }
                 if(vslot.layer)
                 {
                     layer = &lookupvslot(vslot.layer);

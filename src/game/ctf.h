@@ -270,7 +270,13 @@ struct ctfclientmode : clientmode
         if(!VALID_TEAM(f.team) || f.owner>=0 || f.version != version || (f.droptime && f.dropper == ci->clientnum && f.dropcount >= 3)) return;
         if(f.team!=ci->team)
         {
-            loopvj(flags) if(flags[j].owner==ci->clientnum) return;
+            for(int j = 0; j < flags.length(); j++)
+            {
+                if(flags[j].owner==ci->clientnum)
+                {
+                    return;
+                }
+            }
             ownflag(i, ci->clientnum, lastmillis);
             sendf(-1, 1, "ri4", N_TAKEFLAG, ci->clientnum, i, ++f.version);
         }
@@ -281,7 +287,14 @@ struct ctfclientmode : clientmode
         }
         else
         {
-            loopvj(flags) if(flags[j].owner==ci->clientnum) { scoreflag(ci, i, j); break; }
+            for(int j = 0; j < flags.length(); j++)
+            {
+                if(flags[j].owner==ci->clientnum)
+                {
+                    scoreflag(ci, i, j);
+                    break;
+                }
+            }
         }
     }
 
@@ -788,7 +801,7 @@ struct ctfclientmode : clientmode
     void aifind(gameent *d, ai::aistate &b, vector<ai::interest> &interests)
     {
         vec pos = d->feetpos();
-        loopvj(flags)
+        for(int j = 0; j < flags.length(); j++)
         {
             flag &f = flags[j];
             if(f.owner != d)
@@ -817,12 +830,15 @@ struct ctfclientmode : clientmode
                     else if(d->hasammo(d->ai->weappref))
                     { // see if we can relieve someone who only has a piece of crap
                         gameent *t;
-                        loopvk(targets) if((t = getclient(targets[k])))
+                        for(int k = 0; k< targets.length(); k++)
                         {
-                            if((t->ai && !t->hasammo(t->ai->weappref)) || (!t->ai && t->gunselect == GUN_MELEE))
+                            if((t = getclient(targets[k])))
                             {
-                                guard = true;
-                                break;
+                                if((t->ai && !t->hasammo(t->ai->weappref)) || (!t->ai && t->gunselect == GUN_MELEE))
+                                {
+                                    guard = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -851,14 +867,17 @@ struct ctfclientmode : clientmode
                     else
                     { // help by defending the attacker
                         gameent *t;
-                        loopvk(targets) if((t = getclient(targets[k])))
+                        for(int k = 0; k < targets.length(); k++)
                         {
-                            ai::interest &n = interests.add();
-                            n.state = ai::AIState_Defend;
-                            n.node = t->lastnode;
-                            n.target = t->clientnum;
-                            n.targtype = ai::AITravel_Player;
-                            n.score = d->o.squaredist(t->o);
+                            if((t = getclient(targets[k])))
+                            {
+                                ai::interest &n = interests.add();
+                                n.state = ai::AIState_Defend;
+                                n.node = t->lastnode;
+                                n.target = t->clientnum;
+                                n.targtype = ai::AITravel_Player;
+                                n.score = d->o.squaredist(t->o);
+                            }
                         }
                     }
                 }

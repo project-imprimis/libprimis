@@ -540,7 +540,7 @@ void rendermatgrid()
     enablepolygonoffset(GL_POLYGON_OFFSET_LINE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     int lastmat = -1;
-    loopvrev(editsurfs)
+    for(int i = editsurfs.length(); --i >=0;) //note reverse iteration
     {
         materialsurface &m = editsurfs[i];
         if(m.material != lastmat)

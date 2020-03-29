@@ -747,7 +747,14 @@ struct animmodel : model
 
         bool unlink(part *p)
         {
-            loopvrev(links) if(links[i].p==p) { links.remove(i, 1); return true; }
+            for(int i = links.length(); --i >=0;) //note reverse iteration
+            {
+                if(links[i].p==p)
+                {
+                    links.remove(i, 1);
+                    return true;
+                }
+            }
             loopv(links) if(links[i].p && links[i].p->unlink(p)) return true;
             return false;
         }
@@ -1490,7 +1497,16 @@ struct animmodel : model
 
     bool envmapped() const
     {
-        loopv(parts) loopvj(parts[i]->skins) if(parts[i]->skins[j].envmapped()) return true;
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                if(parts[i]->skins[j].envmapped())
+                {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -1547,71 +1563,140 @@ struct animmodel : model
 
     void setshader(Shader *shader)
     {
-        if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins) parts[i]->skins[j].shader = shader;
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                parts[i]->skins[j].shader = shader;
+            }
+        }
     }
 
     void setenvmap(float envmapmin, float envmapmax, Texture *envmap)
     {
         if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins)
+        loopv(parts)
         {
-            skin &s = parts[i]->skins[j];
-            if(envmapmax)
+            for(int j = 0; j < parts[i]->skins.length(); j++)
             {
-                s.envmapmin = envmapmin;
-                s.envmapmax = envmapmax;
+                skin &s = parts[i]->skins[j];
+                if(envmapmax)
+                {
+                    s.envmapmin = envmapmin;
+                    s.envmapmax = envmapmax;
+                }
+                if(envmap)
+                {
+                    s.envmap = envmap;
+                }
             }
-            if(envmap) s.envmap = envmap;
         }
     }
 
     void setspec(float spec)
     {
-        if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins) parts[i]->skins[j].spec = spec;
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                parts[i]->skins[j].spec = spec;
+            }
+        }
     }
 
     void setgloss(int gloss)
     {
-        if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins) parts[i]->skins[j].gloss = gloss;
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                parts[i]->skins[j].gloss = gloss;
+            }
+        }
     }
 
     void setglow(float glow, float delta, float pulse)
     {
         if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins)
+        loopv(parts)
         {
-            skin &s = parts[i]->skins[j];
-            s.glow = glow;
-            s.glowdelta = delta;
-            s.glowpulse = pulse;
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                skin &s = parts[i]->skins[j];
+                s.glow = glow;
+                s.glowdelta = delta;
+                s.glowpulse = pulse;
+            }
         }
     }
 
     void setalphatest(float alphatest)
     {
         if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins) parts[i]->skins[j].alphatest = alphatest;
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                parts[i]->skins[j].alphatest = alphatest;
+            }
+        }
     }
 
     void setfullbright(float fullbright)
     {
-        if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins) parts[i]->skins[j].fullbright = fullbright;
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                parts[i]->skins[j].fullbright = fullbright;
+            }
+        }
     }
 
     void setcullface(int cullface)
     {
-        if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins) parts[i]->skins[j].cullface = cullface;
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                parts[i]->skins[j].cullface = cullface;
+            }
+        }
     }
 
     void setcolor(const vec &color)
     {
-        if(parts.empty()) loaddefaultparts();
-        loopv(parts) loopvj(parts[i]->skins) parts[i]->skins[j].color = color;
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
+        loopv(parts)
+        {
+            for(int j = 0; j < parts[i]->skins.length(); j++)
+            {
+                parts[i]->skins[j].color = color;
+            }
+        }
     }
 
     void calcbb(vec &center, vec &radius)

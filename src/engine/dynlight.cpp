@@ -58,7 +58,14 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     if(o.dist(camera1->o) > dynlightdist || radius <= 0) return;
 
     int insert = 0, expire = fade + peak + lastmillis;
-    loopvrev(dynlights) if(expire>=dynlights[i].expire) { insert = i+1; break; }
+    for(int i = dynlights.length(); --i >=0;) //note reverse iteration
+    {
+        if(expire>=dynlights[i].expire)
+        {
+            insert = i+1;
+            break;
+        }
+    }
     dynlight d;
     d.o = d.hud = o;
     d.radius = radius;
@@ -85,7 +92,13 @@ void cleardynlights()
 
 void removetrackeddynlights(physent *owner)
 {
-    loopvrev(dynlights) if(owner ? dynlights[i].owner == owner : dynlights[i].owner != NULL) dynlights.remove(i);
+    for(int i = dynlights.length(); --i >=0;) //note reverse iteration
+    {
+        if(owner ? dynlights[i].owner == owner : dynlights[i].owner != NULL)
+        {
+            dynlights.remove(i);
+        }
+    }
 }
 
 void updatedynlights()
@@ -108,7 +121,7 @@ int finddynlights()
     if(!usedynlights) return 0;
     physent e;
     e.type = PhysEnt_Camera;
-    loopvj(dynlights)
+    for(int j = 0; j < dynlights.length(); j++)
     {
         dynlight &d = dynlights[j];
         if(d.curradius <= 0) continue;
@@ -120,7 +133,14 @@ int finddynlights()
         if(!collide(&e, vec(0, 0, 0), 0, false)) continue;
 
         int insert = 0;
-        loopvrev(closedynlights) if(d.dist >= closedynlights[i]->dist) { insert = i+1; break; }
+        for(int i = closedynlights.length(); --i >=0;) //note reverse iteration
+        {
+            if(d.dist >= closedynlights[i]->dist)
+            {
+                insert = i+1;
+                break;
+            }
+        }
         closedynlights.insert(insert, &d);
     }
     return closedynlights.length();

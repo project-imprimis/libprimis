@@ -390,10 +390,13 @@ void checkserverpongs()
 
 void bangameservers()
 {
-    loopvrev(gameservers) if(checkban(servbans, gameservers[i]->address.host))
+    for(int i = gameservers.length(); --i >=0;) //note reverse iteration
     {
-        delete gameservers.remove(i);
-        updateserverlist = true;
+        if(checkban(servbans, gameservers[i]->address.host))
+        {
+            delete gameservers.remove(i);
+            updateserverlist = true;
+        }
     }
 }
 
@@ -675,7 +678,10 @@ void checkclients()
 
 void banclients()
 {
-    loopvrev(clients) if(checkban(bans, clients[i]->address.host)) purgeclient(i);
+    for(int i = clients.length(); --i >=0;) //note reverse iteration
+    {
+        if(checkban(bans, clients[i]->address.host)) purgeclient(i);
+    }
 }
 
 volatile int reloadcfg = 1;

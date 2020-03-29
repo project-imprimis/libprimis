@@ -423,12 +423,21 @@ namespace server
 
     void kickclients(uint ip, clientinfo *actor = NULL, int priv = PRIV_NONE)
     {
-        loopvrev(clients)
+        for(int i = clients.length(); --i >=0;) //note reverse iteration
         {
             clientinfo &c = *clients[i];
-            if(c.state.aitype != AI_None || c.privilege >= PRIV_ADMIN || c.local) continue;
-            if(actor && ((c.privilege > priv && !actor->local) || c.clientnum == actor->clientnum)) continue;
-            if(getclientip(c.clientnum) == ip) disconnect_client(c.clientnum, DISC_KICK);
+            if(c.state.aitype != AI_None || c.privilege >= PRIV_ADMIN || c.local)
+            {
+                continue;
+            }
+            if(actor && ((c.privilege > priv && !actor->local) || c.clientnum == actor->clientnum))
+            {
+                continue;
+            }
+            if(getclientip(c.clientnum) == ip)
+            {
+                disconnect_client(c.clientnum, DISC_KICK);
+            }
         }
     }
 
@@ -625,8 +634,17 @@ namespace server
             explodelist(args[i].getstr(), modes);
             explodelist(args[i+1].getstr(), maps);
             int modemask = genmodemask(modes);
-            if(maps.length()) loopvj(maps) addmaprotation(modemask, maps[j]);
-            else addmaprotation(modemask, "");
+            if(maps.length())
+            {
+                for(int j = 0; j < maps.length(); j++)
+                {
+                    addmaprotation(modemask, maps[j]);
+                }
+            }
+            else
+            {
+                addmaprotation(modemask, "");
+            }
             modes.deletearrays();
             maps.deletearrays();
         }
@@ -732,19 +750,25 @@ namespace server
         tk.teamkills = n;
     }
 
-    void checkteamkills()
+    void checkteamkills() //players who do too many teamkills may get kicked from the server
     {
         teamkillkick *kick = NULL;
         if(MODE_TIMED) loopv(teamkillkicks) if(teamkillkicks[i].match(gamemode) && (!kick || kick->includes(teamkillkicks[i])))
             kick = &teamkillkicks[i];
-        if(kick) loopvrev(teamkills)
+        if(kick)
         {
-            teamkillinfo &tk = teamkills[i];
-            if(tk.teamkills >= kick->limit)
+            for(int i = teamkills.length(); --i >=0;) //note reverse iteration
             {
-                if(kick->ban > 0) addban(tk.ip, kick->ban);
-                kickclients(tk.ip);
-                teamkills.removeunordered(i);
+                teamkillinfo &tk = teamkills[i];
+                if(tk.teamkills >= kick->limit)
+                {
+                    if(kick->ban > 0)
+                    {
+                        addban(tk.ip, kick->ban);
+                    }
+                    kickclients(tk.ip);
+                    teamkills.removeunordered(i);
+                }
             }
         }
         shouldcheckteamkills = false;
@@ -966,24 +990,45 @@ namespace server
             {
                 float rank;
                 clientinfo *ci = choosebestclient(rank);
-                if(!ci) break;
-                if(smode && smode->hidefrags()) rank = 1;
-                else if(selected && rank<=0) break;
+                if(!ci)
+                {
+                    break;
+                }
+                if(smode && smode->hidefrags())
+                {
+                    rank = 1;
+                }
+                else if(selected && rank<=0)
+                {
+                    break;
+                }
                 ci->state.timeplayed = -1;
                 team[first].add(ci);
-                if(rank>0) teamrank[first] += rank;
+                if(rank>0)
+                {
+                    teamrank[first] += rank;
+                }
                 selected++;
-                if(rank<=0) break;
+                if(rank<=0)
+                {
+                    break;
+                }
             }
-            if(!selected) break;
+            if(!selected)
+            {
+                break;
+            }
             remaining -= selected;
         }
         for(int i = 0; i < MAXTEAMS; ++i)
         {
-            loopvj(team[i])
+            for(int j = 0; j < team[i].length(); j++)
             {
                 clientinfo *ci = team[i][j];
-                if(ci->team == 1+i) continue;
+                if(ci->team == 1+i)
+                {
+                    continue;
+                }
                 ci->team = 1+i;
                 sendf(-1, 1, "riiii", N_SETTEAM, ci->clientnum, ci->team, -1);
             }
@@ -1688,15 +1733,24 @@ namespace server
             clientinfo &ci = *clients[i];
             if(ci.state.aitype != AI_None) continue;
             addposition(ws, wsbuf, mtu, ci, ci);
-            loopvj(ci.bots) addposition(ws, wsbuf, mtu, *ci.bots[j], ci);
+            for(int j = 0; j < ci.bots.length(); j++)
+            {
+                addposition(ws, wsbuf, mtu, *ci.bots[j], ci);
+            }
         }
         sendpositions(ws, wsbuf);
         loopv(clients)
         {
             clientinfo &ci = *clients[i];
-            if(ci.state.aitype != AI_None) continue;
+            if(ci.state.aitype != AI_None)
+            {
+                continue;
+            }
             addmessages(ws, wsbuf, mtu, ci, ci);
-            loopvj(ci.bots) addmessages(ws, wsbuf, mtu, *ci.bots[j], ci);
+            for(int j = 0; j < ci.bots.length(); j++)
+            {
+                addmessages(ws, wsbuf, mtu, *ci.bots[j], ci);
+            }
         }
         sendmessages(ws, wsbuf);
         reliablemessages = false;
@@ -2052,12 +2106,18 @@ namespace server
             maxvotes++;
             if(!MODE_VALID(oi->modevote)) continue;
             votecount *vc = NULL;
-            loopvj(votes) if(!strcmp(oi->mapvote, votes[j].map) && oi->modevote==votes[j].mode)
+            for(int j = 0; j < votes.length(); j++)
             {
-                vc = &votes[j];
-                break;
+                if(!strcmp(oi->mapvote, votes[j].map) && oi->modevote==votes[j].mode)
+                {
+                    vc = &votes[j];
+                    break;
+                }
             }
-            if(!vc) vc = &votes.add(votecount(oi->mapvote, oi->modevote));
+            if(!vc)
+            {
+                vc = &votes.add(votecount(oi->mapvote, oi->modevote));
+            }
             vc->count++;
         }
         votecount *best = NULL;
@@ -2391,7 +2451,7 @@ namespace server
         if(nextexceeded && gamemillis > nextexceeded && (!MODE_TIMED || gamemillis < gamelimit))
         {
             nextexceeded = 0;
-            loopvrev(clients)
+            for(int i = clients.length(); --i >=0;) //note reverse iteration
             {
                 clientinfo &c = *clients[i];
                 if(c.state.aitype != AI_None) continue;
@@ -2460,9 +2520,22 @@ namespace server
             else
             {
                 crcinfo *match = NULL;
-                loopvj(crcs) if(crcs[j].crc == ci->mapcrc) { match = &crcs[j]; break; }
-                if(!match) crcs.add(crcinfo(ci->mapcrc, 1));
-                else match->matches++;
+                for(int j = 0; j < crcs.length(); j++)
+                {
+                    if(crcs[j].crc == ci->mapcrc)
+                    {
+                        match = &crcs[j];
+                        break;
+                    }
+                }
+                if(!match)
+                {
+                    crcs.add(crcinfo(ci->mapcrc, 1));
+                }
+                else
+                {
+                    match->matches++;
+                }
             }
         }
         if(!mcrc && total - unsent < min(total, 4)) return;
@@ -2479,13 +2552,22 @@ namespace server
         if(crcs.length() >= 2) loopv(crcs)
         {
             crcinfo &info = crcs[i];
-            if(i || info.matches <= crcs[i+1].matches) loopvj(clients)
+            if(i || info.matches <= crcs[i+1].matches)
             {
-                clientinfo *ci = clients[j];
-                if(ci->state.state==ClientState_Spectator || ci->state.aitype != AI_None || !ci->clientmap[0] || ci->mapcrc != info.crc || (req < 0 && ci->warned)) continue;
-                formatstring(msg, "%s has modified map \"%s\"", colorname(ci), smapname);
-                sendf(req, 1, "ris", N_SERVMSG, msg);
-                if(req < 0) ci->warned = true;
+                for(int j = 0; j < clients.length(); j++)
+                {
+                    clientinfo *ci = clients[j];
+                    if(ci->state.state==ClientState_Spectator || ci->state.aitype != AI_None || !ci->clientmap[0] || ci->mapcrc != info.crc || (req < 0 && ci->warned))
+                    {
+                        continue;
+                    }
+                    formatstring(msg, "%s has modified map \"%s\"", colorname(ci), smapname);
+                    sendf(req, 1, "ris", N_SERVMSG, msg);
+                    if(req < 0)
+                    {
+                        ci->warned = true;
+                    }
+                }
             }
         }
         if(req < 0 && modifiedmapspectator && (mcrc || modifiedmapspectator > 1)) loopv(clients)
@@ -2607,7 +2689,7 @@ namespace server
 
     void verifybans()
     {
-        loopvrev(clients)
+        for(int i = clients.length(); --i >=0;) //note reverse iteration
         {
             clientinfo *ci = clients[i];
             if(ci->state.aitype != AI_None || ci->local || ci->privilege >= PRIV_ADMIN) continue;
@@ -2755,7 +2837,7 @@ namespace server
 
     void masterdisconnected()
     {
-        loopvrev(clients)
+        for(int i = clients.length(); --i >=0;) //note reverse iteration
         {
             clientinfo *ci = clients[i];
             if(ci->authreq) authfailed(ci);
@@ -3752,7 +3834,10 @@ namespace server
         sendserverinforeply(p);
     }
 
-    int protocolversion() { return PROTOCOL_VERSION; }
+    int protocolversion()
+    {
+        return PROTOCOL_VERSION;
+    }
 
     #include "aiman.h"
 }

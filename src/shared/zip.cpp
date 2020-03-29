@@ -527,8 +527,11 @@ struct zipstream : stream
 
 stream *openzipfile(const char *name, const char *mode)
 {
-    for(; *mode; mode++) if(*mode=='w' || *mode=='a') return NULL;
-    loopvrev(archives)
+    for(; *mode; mode++) if(*mode=='w' || *mode=='a')
+    {
+        return NULL;
+    }
+    for(int i = archives.length(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
         zipfile *f = arch->files.access(name);
@@ -542,7 +545,7 @@ stream *openzipfile(const char *name, const char *mode)
 
 bool findzipfile(const char *name)
 {
-    loopvrev(archives)
+    for(int i = archives.length(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
         if(arch->files.access(name)) return true;
@@ -554,7 +557,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
 {
     size_t extsize = ext ? strlen(ext)+1 : 0, dirsize = strlen(dir);
     int dirs = 0;
-    loopvrev(archives)
+    for(int i = archives.length(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
         int oldsize = files.length();
