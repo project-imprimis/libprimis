@@ -278,7 +278,7 @@ namespace ai
 //=====
         int closest = -1;
         wpcache::node *curnode; //define current node
-        loop(i, NUMWPCACHES) //NUMWPCACHES = 2
+        for(int i = 0; i < NUMWPCACHES; ++i) //NUMWPCACHES = 2
         {
             if(wpcaches[i].firstwp >= 0) //if the first waypoint in the enumerated (by i) cache is not -1 (-1 set by clearing)
             {
@@ -358,39 +358,45 @@ namespace ai
             } \
         } while(0)
         wpcache::node *curnode;
-        loop(which, NUMWPCACHES) if(wpcaches[which].firstwp >= 0) for(curnode = &wpcaches[which].nodes[0], wpcachestack.setsize(0);;)
+        for(int which = 0; which < NUMWPCACHES; ++which)
         {
-            int axis = curnode->axis();
-            float dist1 = pos[axis] - curnode->split[0], dist2 = curnode->split[1] - pos[axis];
-            if(dist1 >= maxdist)
+            if(wpcaches[which].firstwp >= 0)
             {
-                if(dist2 < maxdist)
+                for(curnode = &wpcaches[which].nodes[0], wpcachestack.setsize(0);;)
                 {
-                    if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
-                    CHECKWITHIN(curnode->childindex(1));
+                    int axis = curnode->axis();
+                    float dist1 = pos[axis] - curnode->split[0], dist2 = curnode->split[1] - pos[axis];
+                    if(dist1 >= maxdist)
+                    {
+                        if(dist2 < maxdist)
+                        {
+                            if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
+                            CHECKWITHIN(curnode->childindex(1));
+                        }
+                    }
+                    else if(curnode->isleaf(0))
+                    {
+                        CHECKWITHIN(curnode->childindex(0));
+                        if(dist2 < maxdist)
+                        {
+                            if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
+                            CHECKWITHIN(curnode->childindex(1));
+                        }
+                    }
+                    else
+                    {
+                        if(dist2 < maxdist)
+                        {
+                            if(!curnode->isleaf(1)) wpcachestack.add(curnode + curnode->childindex(1));
+                            else CHECKWITHIN(curnode->childindex(1));
+                        }
+                        curnode += curnode->childindex(0);
+                        continue;
+                    }
+                    if(wpcachestack.empty()) break;
+                    curnode = wpcachestack.pop();
                 }
             }
-            else if(curnode->isleaf(0))
-            {
-                CHECKWITHIN(curnode->childindex(0));
-                if(dist2 < maxdist)
-                {
-                    if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
-                    CHECKWITHIN(curnode->childindex(1));
-                }
-            }
-            else
-            {
-                if(dist2 < maxdist)
-                {
-                    if(!curnode->isleaf(1)) wpcachestack.add(curnode + curnode->childindex(1));
-                    else CHECKWITHIN(curnode->childindex(1));
-                }
-                curnode += curnode->childindex(0);
-                continue;
-            }
-            if(wpcachestack.empty()) break;
-            curnode = wpcachestack.pop();
         }
         for(int i = lastwpcache; i < waypoints.length(); i++) { CHECKWITHIN(i); }
     }
@@ -410,39 +416,45 @@ namespace ai
             } \
         } while(0)
         wpcache::node *curnode;
-        loop(which, NUMWPCACHES) if(wpcaches[which].firstwp >= 0) for(curnode = &wpcaches[which].nodes[0], wpcachestack.setsize(0);;)
+        for(int which = 0; which < NUMWPCACHES; ++which)
         {
-            int axis = curnode->axis();
-            float dist1 = pos[axis] - curnode->split[0], dist2 = curnode->split[1] - pos[axis];
-            if(dist1 >= limit)
+            if(wpcaches[which].firstwp >= 0)
             {
-                if(dist2 < limit)
+                for(curnode = &wpcaches[which].nodes[0], wpcachestack.setsize(0);;)
                 {
-                    if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
-                    CHECKNEAR(curnode->childindex(1));
+                    int axis = curnode->axis();
+                    float dist1 = pos[axis] - curnode->split[0], dist2 = curnode->split[1] - pos[axis];
+                    if(dist1 >= limit)
+                    {
+                        if(dist2 < limit)
+                        {
+                            if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
+                            CHECKNEAR(curnode->childindex(1));
+                        }
+                    }
+                    else if(curnode->isleaf(0))
+                    {
+                        CHECKNEAR(curnode->childindex(0));
+                        if(dist2 < limit)
+                        {
+                            if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
+                            CHECKNEAR(curnode->childindex(1));
+                        }
+                    }
+                    else
+                    {
+                        if(dist2 < limit)
+                        {
+                            if(!curnode->isleaf(1)) wpcachestack.add(curnode + curnode->childindex(1));
+                            else CHECKNEAR(curnode->childindex(1));
+                        }
+                        curnode += curnode->childindex(0);
+                        continue;
+                    }
+                    if(wpcachestack.empty()) break;
+                    curnode = wpcachestack.pop();
                 }
             }
-            else if(curnode->isleaf(0))
-            {
-                CHECKNEAR(curnode->childindex(0));
-                if(dist2 < limit)
-                {
-                    if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
-                    CHECKNEAR(curnode->childindex(1));
-                }
-            }
-            else
-            {
-                if(dist2 < limit)
-                {
-                    if(!curnode->isleaf(1)) wpcachestack.add(curnode + curnode->childindex(1));
-                    else CHECKNEAR(curnode->childindex(1));
-                }
-                curnode += curnode->childindex(0);
-                continue;
-            }
-            if(wpcachestack.empty()) break;
-            curnode = wpcachestack.pop();
         }
         for(int i = lastwpcache; i < waypoints.length(); i++) { CHECKNEAR(i); }
     }

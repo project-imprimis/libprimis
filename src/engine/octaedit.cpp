@@ -73,7 +73,7 @@ void boxsgrid(int orient, vec o, vec s, int g)
 
     gle::defvertex();
     gle::begin(GL_LINES);
-    loop(x, xs)
+    for(int x = 0; x < xs; ++x)
     {
         o[R[d]] += g;
         gle::attrib(o);
@@ -81,7 +81,7 @@ void boxsgrid(int orient, vec o, vec s, int g)
         gle::attrib(o);
         o[C[d]] = oy;
     }
-    loop(y, ys)
+    for(int y = 0; y < ys; ++y)
     {
         o[C[d]] += g;
         o[R[d]] = ox;
@@ -246,9 +246,9 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
     if(dc) s[dim] -= z*b.grid; else s[dim] += z*b.grid;
     return lookupcube(s, rgrid);
 }
-
-#define LOOP_XY(b)        loop(y,(b).s[C[DIMENSION((b).orient)]]) loop(x,(b).s[R[DIMENSION((b).orient)]])
-#define LOOP_XYZ(b, r, f) { loop(z,(b).s[D[DIMENSION((b).orient)]]) LOOP_XY((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
+//note that these macros actually loop in the opposite order: e.g. loopxy runs a for loop of x inside y
+#define LOOP_XY(b)        for(int y = 0; y < (b).s[C[DIMENSION((b).orient)]]; ++y) for(int x = 0; x < (b).s[R[DIMENSION((b).orient)]]; ++x)
+#define LOOP_XYZ(b, r, f) { for(int z = 0; z < (b).s[D[DIMENSION((b).orient)]]; ++z) LOOP_XY((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
 #define LOOP_SEL_XYZ(f)    { if(local) makeundo(); LOOP_XYZ(sel, sel.grid, f); changed(sel); }
 #define SELECT_CUBE(x, y, z) blockcube(x, y, z, sel, sel.grid)
 
@@ -2118,15 +2118,18 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                 linkedpush(c, d, sel.corner&1, sel.corner>>1, dc, seldir); // corner command
             else
             {
-                loop(mx,2) loop(my,2)                                       // pull/push edges command
+                for(int mx = 0; mx < 2; ++mx) // pull/push edges command
                 {
-                    if(x==0 && mx==0 && sel.cx) continue;
-                    if(y==0 && my==0 && sel.cy) continue;
-                    if(x==sel.s[R[d]]-1 && mx==1 && (sel.cx+sel.cxs)&1) continue;
-                    if(y==sel.s[C[d]]-1 && my==1 && (sel.cy+sel.cys)&1) continue;
-                    if(p[mx+my*2] != ((uchar *)&bak)[mx+my*2]) continue;
+                    for(int my = 0; my < 2; ++my)
+                    {
+                        if(x==0 && mx==0 && sel.cx) continue;
+                        if(y==0 && my==0 && sel.cy) continue;
+                        if(x==sel.s[R[d]]-1 && mx==1 && (sel.cx+sel.cxs)&1) continue;
+                        if(y==sel.s[C[d]]-1 && my==1 && (sel.cy+sel.cys)&1) continue;
+                        if(p[mx+my*2] != ((uchar *)&bak)[mx+my*2]) continue;
 
-                    linkedpush(c, d, mx, my, dc, seldir);
+                        linkedpush(c, d, mx, my, dc, seldir);
+                    }
                 }
             }
 
@@ -2790,8 +2793,11 @@ void mpflip(selinfo &sel, bool local)
     int zs = sel.s[DIMENSION(sel.orient)];
     LOOP_XY(sel)
     {
-        loop(z,zs) flipcube(SELECT_CUBE(x, y, z), DIMENSION(sel.orient));
-        loop(z,zs/2)
+        for(int z = 0; z < zs; ++z)
+        {
+            flipcube(SELECT_CUBE(x, y, z), DIMENSION(sel.orient));
+        }
+        for(int z = 0; z < zs/2; ++z)
         {
             cube &a = SELECT_CUBE(x, y, z);
             cube &b = SELECT_CUBE(x, y, zs-z-1);
@@ -2809,24 +2815,42 @@ void flip()
 
 void mprotate(int cw, selinfo &sel, bool local)
 {
-    if(local) game::edittrigger(sel, EDIT_ROTATE, cw);
+    if(local)
+    {
+        game::edittrigger(sel, EDIT_ROTATE, cw);
+    }
     int d = DIMENSION(sel.orient);
-    if(!DIM_COORD(sel.orient)) cw = -cw;
+    if(!DIM_COORD(sel.orient))
+    {
+        cw = -cw;
+    }
     int m = sel.s[C[d]] < sel.s[R[d]] ? C[d] : R[d];
     int ss = sel.s[m] = max(sel.s[R[d]], sel.s[C[d]]);
-    if(local) makeundo();
-    loop(z,sel.s[D[d]])
+    if(local)
+    {
+        makeundo();
+    }
+    for(int z = 0; z < sel.s[D[d]]; ++z)
     {
         for(int i = 0; i < (cw>0 ? 1 : 3); ++i)
         {
-            LOOP_XY(sel) rotatecube(SELECT_CUBE(x,y,z), d);
-            loop(y,ss/2) loop(x,ss-1-y*2) rotatequad
-            (
-                SELECT_CUBE(ss-1-y, x+y, z),
-                SELECT_CUBE(x+y, y, z),
-                SELECT_CUBE(y, ss-1-x-y, z),
-                SELECT_CUBE(ss-1-x-y, ss-1-y, z)
-            );
+            LOOP_XY(sel)
+            {
+                rotatecube(SELECT_CUBE(x,y,z), d);
+            }
+            for(int y = 0; y < ss/2; ++y)
+            {
+                for(int x = 0; x < ss-1-2*y; ++x)
+                {
+                    rotatequad
+                    (
+                        SELECT_CUBE(ss-1-y, x+y, z),
+                        SELECT_CUBE(x+y, y, z),
+                        SELECT_CUBE(y, ss-1-x-y, z),
+                        SELECT_CUBE(ss-1-x-y, ss-1-y, z)
+                    );
+                }
+            }
         }
     }
     changed(sel);

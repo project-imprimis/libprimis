@@ -355,7 +355,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
 #define WRITE_TEX(t, body) do \
     { \
         uchar *dstrow = t.data; \
-        loop(y, t.h) \
+        for(int y = 0; y < t.h; ++y) \
         { \
             for(uchar *dst = dstrow, *end = &dstrow[t.w*t.bpp]; dst < end; dst += t.bpp) \
             { \
@@ -368,7 +368,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
 #define READ_WRITE_TEX(t, s, body) do \
     { \
         uchar *dstrow = t.data, *srcrow = s.data; \
-        loop(y, t.h) \
+        for(int y = 0; y < t.h; ++y) \
         { \
             for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.w*s.bpp]; src < end; dst += t.bpp, src += s.bpp) \
             { \
@@ -382,7 +382,7 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
 #define READ_2_WRITE_TEX(t, s1, src1, s2, src2, body) do \
     { \
         uchar *dstrow = t.data, *src1row = s1.data, *src2row = s2.data; \
-        loop(y, t.h) \
+        for(int y = 0; y < t.h; ++y) \
         { \
             for(uchar *dst = dstrow, *end = &dstrow[t.w*t.bpp], *src1 = src1row, *src2 = src2row; dst < end; dst += t.bpp, src1 += s1.bpp, src2 += s2.bpp) \
             { \
@@ -528,7 +528,7 @@ void texoffset(ImageData &s, int xoffset, int yoffset)
     if(!xoffset && !yoffset) return;
     ImageData d(s.w, s.h, s.bpp);
     uchar *src = s.data;
-    loop(y, s.h)
+    for(int y = 0; y < s.h; ++y)
     {
         uchar *dst = (uchar *)d.data+((y+yoffset)%d.h)*d.pitch;
         memcpy(dst+xoffset*s.bpp, src, (s.w-xoffset)*s.bpp);
@@ -547,7 +547,7 @@ void texcrop(ImageData &s, int x, int y, int w, int h)
     if(!w || !h) return;
     ImageData d(w, h, s.bpp);
     uchar *src = s.data + y*s.pitch + x*s.bpp, *dst = d.data;
-    loop(y, h)
+    for(int y = 0; y < h; ++y)
     {
         memcpy(dst, src, w*s.bpp);
         src += s.pitch;
@@ -1402,17 +1402,20 @@ void texnormal(ImageData &s, int emphasis)
 {
     ImageData d(s.w, s.h, 3);
     uchar *src = s.data, *dst = d.data;
-    loop(y, s.h) loop(x, s.w)
+    for(int y = 0; y < s.h; ++y)
     {
-        vec normal(0.0f, 0.0f, 255.0f/emphasis);
-        normal.x += src[y*s.pitch + ((x+s.w-1)%s.w)*s.bpp];
-        normal.x -= src[y*s.pitch + ((x+1)%s.w)*s.bpp];
-        normal.y += src[((y+s.h-1)%s.h)*s.pitch + x*s.bpp];
-        normal.y -= src[((y+1)%s.h)*s.pitch + x*s.bpp];
-        normal.normalize();
-        *dst++ = uchar(127.5f + normal.x*127.5f);
-        *dst++ = uchar(127.5f + normal.y*127.5f);
-        *dst++ = uchar(127.5f + normal.z*127.5f);
+        for(int x = 0; x < s.w; ++x)
+        {
+            vec normal(0.0f, 0.0f, 255.0f/emphasis);
+            normal.x += src[y*s.pitch + ((x+s.w-1)%s.w)*s.bpp];
+            normal.x -= src[y*s.pitch + ((x+1)%s.w)*s.bpp];
+            normal.y += src[((y+s.h-1)%s.h)*s.pitch + x*s.bpp];
+            normal.y -= src[((y+1)%s.h)*s.pitch + x*s.bpp];
+            normal.normalize();
+            *dst++ = uchar(127.5f + normal.x*127.5f);
+            *dst++ = uchar(127.5f + normal.y*127.5f);
+            *dst++ = uchar(127.5f + normal.z*127.5f);
+        }
     }
     s.replace(d);
 }
@@ -1718,14 +1721,20 @@ uchar *loadalphamask(Texture *t)
     if(!texturedata(s, t->name, false) || !s.data || s.compressed) return NULL;
     t->alphamask = new uchar[s.h * ((s.w+7)/8)];
     uchar *srcrow = s.data, *dst = t->alphamask-1;
-    loop(y, s.h)
+    for(int y = 0; y < s.h; ++y)
     {
         uchar *src = srcrow+s.bpp-1;
-        loop(x, s.w)
+        for(int x = 0; x < s.w; ++x)
         {
             int offset = x%8;
-            if(!offset) *++dst = 0;
-            if(*src) *dst |= 1<<offset;
+            if(!offset)
+            {
+                *++dst = 0;
+            }
+            if(*src)
+            {
+                *dst |= 1<<offset;
+            }
             src += s.bpp;
         }
         srcrow += s.pitch;
@@ -2872,7 +2881,7 @@ static void blitthumbnail(ImageData &d, ImageData &s, int x, int y)
     forcergbimage(d);
     forcergbimage(s);
     uchar *dstrow = &d.data[d.pitch*y + d.bpp*x], *srcrow = s.data;
-    loop(y, s.h)
+    for(int y = 0; y < s.h; ++y)
     {
         for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.w*s.bpp]; src < end; dst += d.bpp, src += s.bpp)
         {
@@ -3519,7 +3528,7 @@ static void name(ImageData &s) \
         { \
             int maxy = min(d.h - by, s.align), maxx = min(d.w - bx, s.align); \
             initblock; \
-            loop(y, maxy) \
+            for(int y = 0; y < maxy; ++y) \
             { \
                 int x; \
                 for(x = 0; x < maxx; ++x) \

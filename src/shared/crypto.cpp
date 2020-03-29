@@ -38,7 +38,7 @@ namespace tiger
         bb = b;
         cc = c;
 
-        loop(pass_no, TIGER_PASSES)
+        for(int pass_no = 0; pass_no < TIGER_PASSES; ++pass_no)
         {
             if(pass_no)
             {
@@ -105,19 +105,25 @@ namespace tiger
         }
         for(int i = 0; i < 1024; ++i)
         {
-            loop(col, 8) ((uchar *)&sboxes[i])[col] = i&0xFF;
+            for(int col = 0; col < 2; ++col)
+            {
+                ((uchar *)&sboxes[i])[col] = i&0xFF;
+            }
         }
 
         int abc = 2;
-        loop(pass, 5)
+        for(int pass = 0; pass < 5; ++pass)
         {
             for(int i = 0; i < 256; ++i)
             {
                 for(int sb = 0; sb < 1024; sb += 256)
                 {
                     abc++;
-                    if(abc >= 3) { abc = 0; compress((chunk *)temp, state); }
-                    loop(col, 8)
+                    if(abc >= 3)
+                    {
+                        abc = 0; compress((chunk *)temp, state);
+                    }
+                    for(int col = 0; col < 8; ++col)
                     {
                         uchar val = ((uchar *)&sboxes[sb+i])[col];
                         ((uchar *)&sboxes[sb+i])[col] = ((uchar *)&sboxes[sb + ((uchar *)&state[abc])[col]])[col];

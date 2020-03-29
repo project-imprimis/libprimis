@@ -194,12 +194,16 @@ uchar lookupblendmap(BlendMapCache *cache, const vec &pos)
     float bx = pos.x/(1<<BM_SCALE) - 0.5f, by = pos.y/(1<<BM_SCALE) - 0.5f;
     int ix = (int)floor(bx), iy = (int)floor(by),
         rx = ix-cache->origin.x, ry = iy-cache->origin.y;
-    loop(vy, 2) loop(vx, 2)
+    for(int vy = 0; vy < 2; ++vy)
     {
-        int cx = clamp(rx+vx, 0, (1<<cache->scale)-1), cy = clamp(ry+vy, 0, (1<<cache->scale)-1);
-        if(cache->node.type==BM_Image)
-            *val++ = cache->node.image->data[cy*BM_IMAGE_SIZE + cx];
-        else *val++ = lookupblendmap(cx, cy, cache->node.branch, cache->scale);
+        for(int vx = 0; vx < 2; ++vx)
+        {
+            int cx = clamp(rx+vx, 0, (1<<cache->scale)-1),
+                cy = clamp(ry+vy, 0, (1<<cache->scale)-1);
+            if(cache->node.type==BM_Image)
+                *val++ = cache->node.image->data[cy*BM_IMAGE_SIZE + cx];
+            else *val++ = lookupblendmap(cx, cy, cache->node.branch, cache->scale);
+        }
     }
     float fx = bx - ix, fy = by - iy;
     return uchar((1-fy)*((1-fx)*vals[0] + fx*vals[1]) +
@@ -221,10 +225,16 @@ static void fillblendmap(uchar &type, BlendMapNode &node, int size, uchar val, i
         size /= 2;
         if(y1 < size)
         {
-            if(x1 < size) fillblendmap(node.branch->type[0], node.branch->children[0], size, val,
+            if(x1 < size)
+            {
+                fillblendmap(node.branch->type[0], node.branch->children[0], size, val,
                                         x1, y1, min(x2, size), min(y2, size));
-            if(x2 > size) fillblendmap(node.branch->type[1], node.branch->children[1], size, val,
+            }
+            if(x2 > size)
+            {
+                fillblendmap(node.branch->type[1], node.branch->children[1], size, val,
                                         max(x1-size, 0), y1, x2-size, min(y2, size));
+            }
         }
         if(y2 > size)
         {

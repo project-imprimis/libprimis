@@ -64,18 +64,21 @@ bool raysphereintersect(const vec &center, float radius, const vec &o, const vec
 
 bool rayboxintersect(const vec &b, const vec &s, const vec &o, const vec &ray, float &dist, int &orient)
 {
-    loop(d, 3) if(ray[d])
+    for(int d = 0; d < 3; ++d)
     {
-        int dc = ray[d]<0 ? 1 : 0;
-        float pdist = (b[d]+s[d]*dc - o[d]) / ray[d];
-        vec v(ray);
-        v.mul(pdist).add(o);
-        if(v[R[d]] >= b[R[d]] && v[R[d]] <= b[R[d]]+s[R[d]]
-        && v[C[d]] >= b[C[d]] && v[C[d]] <= b[C[d]]+s[C[d]])
+        if(ray[d])
         {
-            dist = pdist;
-            orient = 2*d+dc;
-            return true;
+            int dc = ray[d]<0 ? 1 : 0;
+            float pdist = (b[d]+s[d]*dc - o[d]) / ray[d];
+            vec v(ray);
+            v.mul(pdist).add(o);
+            if(v[R[d]] >= b[R[d]] && v[R[d]] <= b[R[d]]+s[R[d]]
+            && v[C[d]] >= b[C[d]] && v[C[d]] <= b[C[d]]+s[C[d]])
+            {
+                dist = pdist;
+                orient = 2*d+dc;
+                return true;
+            }
         }
     }
     return false;
@@ -90,8 +93,14 @@ bool linecylinderintersect(const vec &from, const vec &to, const vec &start, con
     float md = m.dot(d),
           nd = n.dot(d),
           dd = d.squaredlen();
-    if(md < 0 && md + nd < 0) return false;
-    if(md > dd && md + nd > dd) return false;
+    if(md < 0 && md + nd < 0)
+    {
+        return false;
+    }
+    if(md > dd && md + nd > dd)
+    {
+        return false;
+    }
     float nn = n.squaredlen(),
           mn = m.dot(n),
           a = dd*nn - nd*nd,
@@ -99,32 +108,62 @@ bool linecylinderintersect(const vec &from, const vec &to, const vec &start, con
           c = dd*k - md*md;
     if(fabs(a) < 0.005f)
     {
-        if(c > 0) return false;
-        if(md < 0) dist = -mn / nn;
-        else if(md > dd) dist = (nd - mn) / nn;
-        else dist = 0;
+        if(c > 0)
+        {
+            return false;
+        }
+        if(md < 0)
+        {
+            dist = -mn / nn;
+        }
+        else if(md > dd)
+        {
+            dist = (nd - mn) / nn;
+        }
+        else
+        {
+            dist = 0;
+        }
         return true;
     }
     else if(c > 0)
     {
         float b = dd*mn - nd*md,
               discrim = b*b - a*c;
-        if(discrim < 0) return false;
+        if(discrim < 0)
+        {
+            return false;
+        }
         dist = (-b - sqrtf(discrim)) / a;
     }
-    else dist = 0;
+    else
+    {
+        dist = 0;
+    }
     float offset = md + dist*nd;
     if(offset < 0)
     {
-        if(nd <= 0) return false;
+        if(nd <= 0)
+        {
+            return false;
+        }
         dist = -md / nd;
-        if(k + dist*(2*mn + dist*nn) > 0) return false;
+        if(k + dist*(2*mn + dist*nn) > 0)
+        {
+            return false;
+        }
     }
     else if(offset > dd)
     {
-        if(nd >= 0) return false;
+        if(nd >= 0)
+        {
+            return false;
+        }
         dist = (dd - md) / nd;
-        if(k + dd - 2*md + dist*(2*(mn-nd) + dist*nn) > 0) return false;
+        if(k + dd - 2*md + dist*(2*(mn-nd) + dist*nn) > 0)
+        {
+            return false;
+        }
     }
     return dist >= 0 && dist <= 1;
 }

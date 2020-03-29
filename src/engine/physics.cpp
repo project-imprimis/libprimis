@@ -59,6 +59,7 @@ void resetclipplanes()
 
 /////////////////////////  ray - cube collision ///////////////////////////////////////////////
 
+//==================================================INTERSECTPLANES INTERSECTBOX
 #define INTERSECTPLANES(setentry, exit) \
     float enterdist = -1e16f, exitdist = 1e16f; \
     for(int i = 0; i < p.size; ++i) \
@@ -87,7 +88,7 @@ void resetclipplanes()
     }
 
 #define INTERSECTBOX(setentry, exit) \
-    loop(i, 3) \
+    for(int i = 0; i < 3; ++i) \
     { \
         if(ray[i]) \
         { \
@@ -134,7 +135,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
     int orient = -1;
     float dist = radius, f = 0.0f;
     const vector<extentity *> &ents = entities::getents();
-
+//=======ENT_SEL_INTERSECT ENT_INTERSECT
     #define ENT_INTERSECT(type, func) do { \
         loopv(oc->type) \
         { \
@@ -167,10 +168,11 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
         ENT_SEL_INTERSECT(decals);
     }
 
-    #undef ENT_SEL_INTERSECT
     return dist;
 }
-
+#undef ENT_INTERSECT
+#undef ENT_SEL_INTERSECT
+//======================================
 static float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, extentity *t)
 {
     vec eo, es;
@@ -207,7 +209,7 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
     }
     return dist;
 }
-
+//==================INITRAYCUBE CHECKINSIDEWORLD DOWNOCTREE FINDCLOSEST UPOCTREE
 #define INITRAYCUBE \
     float dist = 0, dent = radius > 0 ? radius : 1e16f; \
     vec v(o), invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f); \
@@ -372,7 +374,14 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
         UPOCTREE(return radius);
     }
 }
-
+#undef FINDCLOSEST
+#undef INITRAYCUBE
+#undef CHECKINSIDEWORLD
+#undef UPOCTREE
+#undef DOWNOCTREE
+#undef INTERSECTBOX
+#undef INTERSECTPLANES
+//==============================================================================
 float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int &orient, int &ent)
 {
     hitent = -1;

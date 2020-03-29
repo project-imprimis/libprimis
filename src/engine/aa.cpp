@@ -264,20 +264,50 @@ void gensmaasearchdata()
     if(smaasearchdatainited) return;
     int edges[33];
     memset(edges, -1, sizeof(edges));
-    loop(a, 2) loop(b, 2) loop(c, 2) loop(d, 2) edges[(a*1 + b*3) + (c*7 + d*21)] = a + (b<<1) + (c<<2) + (d<<3);
-    memset(smaasearchdata, 0, sizeof(smaasearchdata));
-    loop(y, 33) loop(x, 33)
+    for(int i = 0; i < 2; ++i)
     {
-        int left = edges[x], top = edges[y];
-        if(left < 0 || top < 0) continue;
-        uchar deltaLeft = 0;
-        if(top&(1<<3)) deltaLeft++;
-        if(deltaLeft && top&(1<<2) && !(left&(1<<1)) && !(left&(1<<3))) deltaLeft++;
-        smaasearchdata[y*66 + x] = deltaLeft;
-        uchar deltaRight = 0;
-        if(top&(1<<3) && !(left&(1<<1)) && !(left&(1<<3))) deltaRight++;
-        if(deltaRight && top&(1<<2) && !(left&(1<<0)) && !(left&(1<<2))) deltaRight++;
-        smaasearchdata[y*66 + 33 + x] = deltaRight;
+        for(int j = 0; j < 2; ++j)
+        {
+            for(int k = 0; k < 2; ++k)
+            {
+                for(int l = 0; l < 2; ++l)
+                {
+                    edges[(i*1 + j*3) + (k*7 + l*21)] = i + (j<<1) + (k<<2) + (l<<3);
+                }
+            }
+        }
+    }
+    memset(smaasearchdata, 0, sizeof(smaasearchdata));
+    for(int y = 0; y < 33; ++y)
+    {
+        for(int x = 0; x < 33; ++x)
+        {
+            int left = edges[x], top = edges[y];
+            if(left < 0 || top < 0)
+            {
+                continue;
+            }
+            uchar deltaLeft = 0;
+            if(top&(1<<3))
+            {
+                deltaLeft++;
+            }
+            if(deltaLeft && top&(1<<2) && !(left&(1<<1)) && !(left&(1<<3)))
+            {
+                deltaLeft++;
+            }
+            smaasearchdata[y*66 + x] = deltaLeft;
+            uchar deltaRight = 0;
+            if(top&(1<<3) && !(left&(1<<1)) && !(left&(1<<3)))
+            {
+                deltaRight++;
+            }
+            if(deltaRight && top&(1<<2) && !(left&(1<<0)) && !(left&(1<<2)))
+            {
+                deltaRight++;
+            }
+            smaasearchdata[y*66 + 33 + x] = deltaRight;
+        }
     }
     smaasearchdatainited = true;
 }
@@ -474,36 +504,42 @@ void gensmaaareadata()
 {
     if(smaaareadatainited) return;
     memset(smaaareadata, 0, sizeof(smaaareadata));
-    loop(offset, sizeof(offsetsortho)/sizeof(offsetsortho[0])) loop(pattern, 16)
+    for(int offset = 0; offset < int(sizeof(offsetsortho)/sizeof(offsetsortho[0])); ++offset)
     {
-        int px = edgesortho[pattern][0]*16, py = (5*offset + edgesortho[pattern][1])*16;
-        uchar *dst = &smaaareadata[(py*SMAA_AREATEX_WIDTH + px)*2];
-        loop(y, 16)
+        for(int pattern = 0; pattern < 16; ++pattern)
         {
-            loop(x, 16)
+            int px = edgesortho[pattern][0]*16, py = (5*offset + edgesortho[pattern][1])*16;
+            uchar *dst = &smaaareadata[(py*SMAA_AREATEX_WIDTH + px)*2];
+            for(int y = 0; y < 16; ++y)
             {
-                vec2 a = areaortho(pattern, x*x, y*y, offsetsortho[offset]);
-                dst[0] = uchar(255*a.x);
-                dst[1] = uchar(255*a.y);
-                dst += 2;
+                for(int x = 0; x < 16; ++x)
+                {
+                    vec2 a = areaortho(pattern, x*x, y*y, offsetsortho[offset]);
+                    dst[0] = uchar(255*a.x);
+                    dst[1] = uchar(255*a.y);
+                    dst += 2;
+                }
+                dst += (SMAA_AREATEX_WIDTH-16)*2;
             }
-            dst += (SMAA_AREATEX_WIDTH-16)*2;
         }
     }
-    loop(offset, sizeof(offsetsdiag)/sizeof(offsetsdiag[0])) loop(pattern, 16)
+    for(int offset = 0; offset < int(sizeof(offsetsdiag)/sizeof(offsetsdiag[0])); ++offset)
     {
-        int px = 5*16 + edgesdiag[pattern][0]*20, py = (4*offset + edgesdiag[pattern][1])*20;
-        uchar *dst = &smaaareadata[(py*SMAA_AREATEX_WIDTH + px)*2];
-        loop(y, 20)
+        for(int pattern = 0; pattern < 16; ++pattern)
         {
-            loop(x, 20)
+            int px = 5*16 + edgesdiag[pattern][0]*20, py = (4*offset + edgesdiag[pattern][1])*20;
+            uchar *dst = &smaaareadata[(py*SMAA_AREATEX_WIDTH + px)*2];
+            for(int y = 0; y < 20; ++y)
             {
-                vec2 a = areadiag(pattern, x, y, vec2(offsetsdiag[offset][0], offsetsdiag[offset][1]));
-                dst[0] = uchar(255*a.x);
-                dst[1] = uchar(255*a.y);
-                dst += 2;
+                for(int x = 0; x < 20; ++x)
+                {
+                    vec2 a = areadiag(pattern, x, y, vec2(offsetsdiag[offset][0], offsetsdiag[offset][1]));
+                    dst[0] = uchar(255*a.x);
+                    dst[1] = uchar(255*a.y);
+                    dst += 2;
+                }
+                dst += (SMAA_AREATEX_WIDTH-20)*2;
             }
-            dst += (SMAA_AREATEX_WIDTH-20)*2;
         }
     }
     smaaareadatainited = true;
@@ -619,7 +655,7 @@ void dosmaa(GLuint outfbo = 0, bool split = false)
     int cleardepth = msaalight ? GL_DEPTH_BUFFER_BIT | (ghasstencil > 1 ? GL_STENCIL_BUFFER_BIT : 0) : 0;
     bool depthmask = smaadepthmask && (!tqaa || msaalight),
          stencil = smaastencil && ghasstencil > (msaasamples ? 1 : 0);
-    loop(pass, split ? 2 : 1)
+    for(int pass = 0; pass < (split ? 2 : 1); ++pass)
     {
         glBindFramebuffer_(GL_FRAMEBUFFER, smaafbo[1]);
         if(depthmask || stencil)

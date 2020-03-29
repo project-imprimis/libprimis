@@ -351,27 +351,30 @@ int getmippedtexture(const cube &p, int orient)
 {
     cube *c = p.children;
     int d = DIMENSION(orient), dc = DIM_COORD(orient), texs[4] = { -1, -1, -1, -1 }, numtexs = 0;
-    loop(x, 2) loop(y, 2)
+    for(int x = 0; x < 2; ++x)
     {
-        int n = OCTA_INDEX(d, x, y, dc);
-        if(IS_EMPTY(c[n]))
+        for(int y = 0; y < 2; ++y)
         {
-            n = OPPOSITE_OCTA(d, n);
+            int n = OCTA_INDEX(d, x, y, dc);
             if(IS_EMPTY(c[n]))
-                continue;
-        }
-        int tex = c[n].texture[orient];
-        if(tex > DEFAULT_SKY)
-        {
-            for(int i = 0; i < numtexs; ++i)
             {
-                if(texs[i] == tex)
+                n = OPPOSITE_OCTA(d, n);
+                if(IS_EMPTY(c[n]))
+                    continue;
+            }
+            int tex = c[n].texture[orient];
+            if(tex > DEFAULT_SKY)
+            {
+                for(int i = 0; i < numtexs; ++i)
                 {
-                    return tex;
+                    if(texs[i] == tex)
+                    {
+                        return tex;
+                    }
                 }
             }
+            texs[numtexs++] = tex;
         }
-        texs[numtexs++] = tex;
     }
     for(int i = numtexs; --i >= 0;) //note reverse iteration
     {
@@ -627,18 +630,35 @@ bool remip(cube &c, const ivec &co, int size)
         if(IS_EMPTY(ch[i]) && IS_EMPTY(nh[i])) continue;
 
         ivec o(i, co, size);
-        loop(orient, 6)
+        for(int orient = 0; orient < 6; ++orient)
             if(visibleface(ch[i], orient, o, size, MAT_AIR, (mat&MAT_ALPHA)^MAT_ALPHA, MAT_ALPHA))
             {
-                if(ch[i].texture[orient] != n.texture[orient]) { freeocta(nh); return false; }
+                if(ch[i].texture[orient] != n.texture[orient])
+                {
+                    freeocta(nh);
+                    return false;
+                }
                 vis[orient] |= 1<<i;
             }
     }
-    if(mipvis) loop(orient, 6)
+    if(mipvis)
     {
-        int mask = 0;
-        loop(x, 2) loop(y, 2) mask |= 1<<OCTA_INDEX(DIMENSION(orient), x, y, DIM_COORD(orient));
-        if(vis[orient]&mask && (vis[orient]&mask)!=mask) { freeocta(nh); return false; }
+        for(int orient = 0; orient < 6; ++orient)
+        {
+            int mask = 0;
+            for(int x = 0; x < 2; ++x)
+            {
+                for(int y = 0; y < 2; ++y)
+                {
+                    mask |= 1<<OCTA_INDEX(DIMENSION(orient), x, y, DIM_COORD(orient));
+                }
+            }
+            if(vis[orient]&mask && (vis[orient]&mask)!=mask)
+            {
+                freeocta(nh);
+                return false;
+            }
+        }
     }
 
     freeocta(nh);

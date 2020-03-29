@@ -3132,7 +3132,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
     glEnable(GL_SCISSOR_TEST);
 
     bool outside = true;
-    loop(avatarpass, stencilref >= 0 ? 2 : 1)
+    for(int avatarpass = 0; avatarpass < (stencilref >= 0 ? 2 : 1); ++avatarpass)
     {
         if(avatarpass) setavatarstencil(stencilref, true);
 
@@ -3717,42 +3717,45 @@ void collectlights()
 
     smused = 0;
 
-    if(smcache && !smnoshadow && shadowcache.numelems) loop(mismatched, 2) loopv(lightorder)
+    if(smcache && !smnoshadow && shadowcache.numelems)
+    for(int mismatched = 0; mismatched < 2; ++mismatched)
     {
-        int idx = lightorder[i];
-        lightinfo &l = lights[idx];
-        if(l.noshadow()) continue;
-
-        shadowcacheval *cached = shadowcache.access(l);
-        if(!cached) continue;
-
-        float prec = smprec, lod;
-        int w, h;
-        if(l.spot) { w = 1; h = 1; prec *= tan360(l.spot); lod = smspotprec; }
-        else { w = 3; h = 2; lod = smcubeprec; }
-        lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), float(smminsize), float(smmaxsize));
-        int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
-        w *= size;
-        h *= size;
-
-        if(mismatched)
+        loopv(lightorder)
         {
-            if(cached->size == size) continue;
+            int idx = lightorder[i];
+            lightinfo &l = lights[idx];
+            if(l.noshadow()) continue;
 
-            ushort x = USHRT_MAX, y = USHRT_MAX;
-            if(!shadowatlaspacker.insert(x, y, w, h)) continue;
-            addshadowmap(x, y, size, l.shadowmap, idx);
+            shadowcacheval *cached = shadowcache.access(l);
+            if(!cached) continue;
+
+            float prec = smprec, lod;
+            int w, h;
+            if(l.spot) { w = 1; h = 1; prec *= tan360(l.spot); lod = smspotprec; }
+            else { w = 3; h = 2; lod = smcubeprec; }
+            lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), float(smminsize), float(smmaxsize));
+            int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+            w *= size;
+            h *= size;
+
+            if(mismatched)
+            {
+                if(cached->size == size) continue;
+
+                ushort x = USHRT_MAX, y = USHRT_MAX;
+                if(!shadowatlaspacker.insert(x, y, w, h)) continue;
+                addshadowmap(x, y, size, l.shadowmap, idx);
+            }
+            else
+            {
+                if(cached->size != size) continue;
+
+                ushort x = cached->x, y = cached->y;
+                shadowatlaspacker.reserve(x, y, w, h);
+                addshadowmap(x, y, size, l.shadowmap, idx, cached);
+            }
+            smused += w*h;
         }
-        else
-        {
-            if(cached->size != size) continue;
-
-            ushort x = cached->x, y = cached->y;
-            shadowatlaspacker.reserve(x, y, w, h);
-            addshadowmap(x, y, size, l.shadowmap, idx, cached);
-        }
-
-        smused += w*h;
     }
 }
 
@@ -3824,34 +3827,46 @@ static void batchlights(const batchstack &initstack)
 
         uchar flags = s.flags;
         int batched = s.offset + s.numrects;
-        loop(g, BF_NOSUN) while(groups[g] >= lighttilebatch || (inside == outside && (groups[g] || !(flags & BF_NOSUN))))
+        for(int g = 0; g < BF_NOSHADOW; ++g)
         {
-            lightbatchkey key;
-            key.flags = flags | g;
-            flags |= BF_NOSUN;
-
-            int n = min(groups[g], lighttilebatch);
-            groups[g] -= n;
-            key.numlights = n;
-            for(int i = 0; i < n; ++i)
+            while(groups[g] >= lighttilebatch || (inside == outside && (groups[g] || !(flags & BF_NOSUN))))
             {
-                int best = -1;
-                ushort bestidx = USHRT_MAX;
-                for(int j = inside; j < batched; ++j) { const batchrect &r = batchrects[j]; if(r.group == g && r.idx < bestidx) { best = j; bestidx = r.idx; } }        
-                key.lights[i] = lightorder[bestidx];
-                swap(batchrects[best], batchrects[--batched]); 
-            }
+                lightbatchkey key;
+                key.flags = flags | g;
+                flags |= BF_NOSUN;
 
-            lightbatch &batch = lightbatcher[key];
-            if(batch.rects.empty())
-            {
-                (lightbatchkey &)batch = key;
-                lightbatches.add(&batch);
+                int n = min(groups[g], lighttilebatch);
+                groups[g] -= n;
+                key.numlights = n;
+                for(int i = 0; i < n; ++i)
+                {
+                    int best = -1;
+                    ushort bestidx = USHRT_MAX;
+                    for(int j = inside; j < batched; ++j)
+                    {
+                        const batchrect &r = batchrects[j];
+                        {
+                            if(r.group == g && r.idx < bestidx)
+                            {
+                                best = j;
+                                bestidx = r.idx;
+                            }
+                        }
+                    }
+                    key.lights[i] = lightorder[bestidx];
+                    swap(batchrects[best], batchrects[--batched]);
+                }
+
+                lightbatch &batch = lightbatcher[key];
+                if(batch.rects.empty())
+                {
+                    (lightbatchkey &)batch = key;
+                    lightbatches.add(&batch);
+                }
+                batch.rects.add(s);
+                ++lightbatchrectsused;
             }
-            batch.rects.add(s);
-            ++lightbatchrectsused;
         }
-
         if(splitidx != USHRT_MAX)
         {
             int numoverlap = batched - outside;
@@ -4666,25 +4681,28 @@ void rendershadowmaps(int offset = 0)
                 glScissor(sm.x + cx1, sm.y + cy1, cx2 - cx1, cy2 - cy1);
                 glClear(GL_DEPTH_BUFFER_BIT);
             }
-            loop(side, 6) if(sidemask&(1<<side))
+            for(int side = 0; side < 6; ++side)
             {
-                int sidex = (side>>1)*sm.size, sidey = (side&1)*sm.size;
-                glViewport(sm.x + sidex, sm.y + sidey, sm.size, sm.size);
-                glScissor(sm.x + sidex, sm.y + sidey, sm.size, sm.size);
-                if(cachemask) glClear(GL_DEPTH_BUFFER_BIT);
+                if(sidemask&(1<<side))
+                {
+                    int sidex = (side>>1)*sm.size, sidey = (side&1)*sm.size;
+                    glViewport(sm.x + sidex, sm.y + sidey, sm.size, sm.size);
+                    glScissor(sm.x + sidex, sm.y + sidey, sm.size, sm.size);
+                    if(cachemask) glClear(GL_DEPTH_BUFFER_BIT);
 
-                matrix4 cubematrix(cubeshadowviewmatrix[side]);
-                cubematrix.scale(1.0f/l.radius);
-                cubematrix.translate(vec(l.o).neg());
-                shadowmatrix.mul(smprojmatrix, cubematrix);
-                GLOBALPARAM(shadowmatrix, shadowmatrix);
+                    matrix4 cubematrix(cubeshadowviewmatrix[side]);
+                    cubematrix.scale(1.0f/l.radius);
+                    cubematrix.translate(vec(l.o).neg());
+                    shadowmatrix.mul(smprojmatrix, cubematrix);
+                    GLOBALPARAM(shadowmatrix, shadowmatrix);
 
-                glCullFace((side & 1) ^ (side >> 2) ^ smcullside ? GL_FRONT : GL_BACK);
+                    glCullFace((side & 1) ^ (side >> 2) ^ smcullside ? GL_FRONT : GL_BACK);
 
-                shadowside = side;
+                    shadowside = side;
 
-                if(mesh) rendershadowmesh(mesh); else rendershadowmapworld();
-                rendershadowmodelbatches();
+                    if(mesh) rendershadowmesh(mesh); else rendershadowmapworld();
+                    rendershadowmodelbatches();
+                }
             }
         }
 
@@ -4827,9 +4845,10 @@ void rendertransparent()
     GLOBALPARAM(linearworldmatrix, linearworldmatrix);
 
     uint tiles[LIGHTTILE_MAXH];
-    float allsx1 = 1, allsy1 = 1, allsx2 = -1, allsy2 = -1, sx1, sy1, sx2, sy2;
+    float allsx1 = 1, allsy1 = 1, allsx2 = -1, allsy2 = -1;
+    float sx1, sy1, sx2, sy2;
 
-    loop(layer, 4)
+    for(int layer = 0; layer < 4; ++layer)
     {
         switch(layer)
         {
