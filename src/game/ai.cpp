@@ -196,7 +196,16 @@ namespace ai
 
     void update()
     {
-        if(intermission) { loopv(players) if(players[i]->ai) players[i]->stopmoving(); }
+        if(intermission)
+        {
+            loopv(players)
+            {
+                if(players[i]->ai)
+                {
+                    players[i]->stopmoving();
+                }
+            }
+        }
         else // fixed rate logic done out-of-sequence at 1 frame per second for each ai
         {
             if(totalmillis-updatemillis > 1000)
@@ -211,8 +220,17 @@ namespace ai
                 itermillis = totalmillis;
             }
             int count = 0;
-            loopv(players) if(players[i]->ai) think(players[i], ++count == iteration ? true : false);
-            if(++iteration > count) iteration = 0;
+            loopv(players)
+            {
+                if(players[i]->ai)
+                {
+                    think(players[i], ++count == iteration ? true : false);
+                }
+            }
+            if(++iteration > count)
+            {
+                iteration = 0;
+            }
         }
     }
 
@@ -222,14 +240,35 @@ namespace ai
         loopv(players)
         {
             gameent *e = players[i];
-            if(targets.find(e->clientnum) >= 0) continue;
-            if(teams && d && !IS_TEAM(d->team, e->team)) continue;
-            if(members) (*members)++;
-            if(e == d || !e->ai || e->state != ClientState_Alive) continue;
+            if(targets.find(e->clientnum) >= 0)
+            {
+                continue;
+            }
+            if(teams && d && !IS_TEAM(d->team, e->team))
+            {
+                continue;
+            }
+            if(members)
+            {
+                (*members)++;
+            }
+            if(e == d || !e->ai || e->state != ClientState_Alive)
+            {
+                continue;
+            }
             aistate &b = e->ai->getstate();
-            if(state >= 0 && b.type != state) continue;
-            if(target >= 0 && b.target != target) continue;
-            if(targtype >=0 && b.targtype != targtype) continue;
+            if(state >= 0 && b.type != state)
+            {
+                continue;
+            }
+            if(target >= 0 && b.target != target)
+            {
+                continue;
+            }
+            if(targtype >=0 && b.targtype != targtype)
+            {
+                continue;
+            }
             targets.add(e->clientnum);
         }
         return !targets.empty();
@@ -600,27 +639,30 @@ namespace ai
         extentity &e = *entities::ents[ent];
         if(VALID_ITEM(e.type))
         {
-            loopv(players) if(players[i] && players[i]->ai && players[i]->aitype == AI_Bot && players[i]->canpickup(e.type))
+            loopv(players)
             {
-                gameent *d = players[i];
-                bool wantsitem = false;
-                switch(e.type)
+                if(players[i] && players[i]->ai && players[i]->aitype == AI_Bot && players[i]->canpickup(e.type))
                 {
-                }
-                if(wantsitem)
-                {
-                    aistate &b = d->ai->getstate();
-                    if(b.targtype == AITravel_Affinity) continue;
-                    if(b.type == AIState_Interest && b.targtype == AITravel_Entity)
+                    gameent *d = players[i];
+                    bool wantsitem = false;
+                    if(wantsitem)
                     {
-                        if(entities::ents.inrange(b.target))
+                        aistate &b = d->ai->getstate();
+                        if(b.targtype == AITravel_Affinity)
                         {
-                            if(d->o.squaredist(entities::ents[ent]->o) < d->o.squaredist(entities::ents[b.target]->o))
-                                d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
+                            continue;
                         }
-                        continue;
+                        if(b.type == AIState_Interest && b.targtype == AITravel_Entity)
+                        {
+                            if(entities::ents.inrange(b.target))
+                            {
+                                if(d->o.squaredist(entities::ents[ent]->o) < d->o.squaredist(entities::ents[b.target]->o))
+                                    d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
+                            }
+                            continue;
+                        }
+                        d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
                     }
-                    d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
                 }
             }
         }
@@ -747,18 +789,32 @@ namespace ai
         vec pos = d->feetpos();
         int node1 = -1, node2 = -1;
         float mindist1 = CLOSEDIST*CLOSEDIST, mindist2 = CLOSEDIST*CLOSEDIST;
-        loopv(d->ai->route) if(iswaypoint(d->ai->route[i]))
+        loopv(d->ai->route)
         {
-            vec epos = waypoints[d->ai->route[i]].o;
-            float dist = epos.squaredist(pos);
-            if(dist > FARDIST*FARDIST) continue;
-            int entid = obstacles.remap(d, d->ai->route[i], epos);
-            if(entid >= 0)
+            if(iswaypoint(d->ai->route[i]))
             {
-                if(entid != i) dist = epos.squaredist(pos);
-                if(dist < mindist1) { node1 = i; mindist1 = dist; }
+                vec epos = waypoints[d->ai->route[i]].o;
+                float dist = epos.squaredist(pos);
+                if(dist > FARDIST*FARDIST) continue;
+                int entid = obstacles.remap(d, d->ai->route[i], epos);
+                if(entid >= 0)
+                {
+                    if(entid != i)
+                    {
+                        dist = epos.squaredist(pos);
+                    }
+                    if(dist < mindist1)
+                    {
+                        node1 = i;
+                        mindist1 = dist;
+                    }
+                }
+                else if(dist < mindist2)
+                {
+                    node2 = i;
+                    mindist2 = dist;
+                }
             }
-            else if(dist < mindist2) { node2 = i; mindist2 = dist; }
         }
         return node1 >= 0 ? node1 : node2;
     }
@@ -909,10 +965,17 @@ namespace ai
             if(jump)
             {
                 float radius = 18*18;
-                loopv(entities::ents) if(entities::ents[i]->type == JUMPPAD)
+                loopv(entities::ents)
                 {
-                    gameentity &e = *(gameentity *)entities::ents[i];
-                    if(e.o.squaredist(pos) <= radius) { jump = false; break; }
+                    if(entities::ents[i]->type == JUMPPAD)
+                    {
+                        gameentity &e = *(gameentity *)entities::ents[i];
+                        if(e.o.squaredist(pos) <= radius)
+                        {
+                            jump = false;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -1281,7 +1344,10 @@ namespace ai
         loopv(players)
         {
             dynent *d = players[i];
-            if(d->state != ClientState_Alive) continue;
+            if(d->state != ClientState_Alive)
+            {
+                continue;
+            }
             obstacles.avoidnear(d, d->o.z + d->aboveeye + 1, d->feetpos(), guessradius + d->radius);
         }
         extern avoidset wpavoid;
@@ -1402,54 +1468,63 @@ namespace ai
         if(aidebug > 1)
         {
             int total = 0, alive = 0;
-            loopv(players) if(players[i]->ai) total++;
-            loopv(players) if(players[i]->state == ClientState_Alive && players[i]->ai)
+            loopv(players)
             {
-                gameent *d = players[i];
-                vec pos = d->abovehead();
-                pos.z += 3;
-                alive++;
-                if(aidebug >= 4) drawroute(d, 4.f*(float(alive)/float(total)));
-                if(aidebug >= 3)
+                if(players[i]->ai)
                 {
-                    DEF_FORMAT_STRING(q, "node: %d route: %d (%d)",
-                        d->lastnode,
-                        !d->ai->route.empty() ? d->ai->route[0] : -1,
-                        d->ai->route.length()
-                    );
-                    particle_textcopy(pos, q, PART_TEXT, 1);
-                    pos.z += 2;
+                    total++;
                 }
-                bool top = true;
-                for(int i = d->ai->state.length(); --i >=0;) //note reverse iteration
+            }
+            loopv(players)
+            {
+                if(players[i]->state == ClientState_Alive && players[i]->ai)
                 {
-                    aistate &b = d->ai->state[i];
-                    DEF_FORMAT_STRING(s, "%s%s (%d ms) %s:%d",
-                        top ? "\fg" : "\fy",
-                        stnames[b.type],
-                        lastmillis-b.millis,
-                        sttypes[b.targtype+1], b.target
-                    );
-                    particle_textcopy(pos, s, PART_TEXT, 1);
-                    pos.z += 2;
-                    if(top)
+                    gameent *d = players[i];
+                    vec pos = d->abovehead();
+                    pos.z += 3;
+                    alive++;
+                    if(aidebug >= 4) drawroute(d, 4.f*(float(alive)/float(total)));
+                    if(aidebug >= 3)
                     {
-                        if(aidebug >= 3) top = false;
-                        else break;
-                    }
-                }
-                if(aidebug >= 3)
-                {
-                    if(d->ai->weappref >= 0 && d->ai->weappref < NUMGUNS)
-                    {
-                        particle_textcopy(pos, guns[d->ai->weappref].name, PART_TEXT, 1);
+                        DEF_FORMAT_STRING(q, "node: %d route: %d (%d)",
+                            d->lastnode,
+                            !d->ai->route.empty() ? d->ai->route[0] : -1,
+                            d->ai->route.length()
+                        );
+                        particle_textcopy(pos, q, PART_TEXT, 1);
                         pos.z += 2;
                     }
-                    gameent *e = getclient(d->ai->enemy);
-                    if(e)
+                    bool top = true;
+                    for(int i = d->ai->state.length(); --i >=0;) //note reverse iteration
                     {
-                        particle_textcopy(pos, colorname(e), PART_TEXT, 1);
+                        aistate &b = d->ai->state[i];
+                        DEF_FORMAT_STRING(s, "%s%s (%d ms) %s:%d",
+                            top ? "\fg" : "\fy",
+                            stnames[b.type],
+                            lastmillis-b.millis,
+                            sttypes[b.targtype+1], b.target
+                        );
+                        particle_textcopy(pos, s, PART_TEXT, 1);
                         pos.z += 2;
+                        if(top)
+                        {
+                            if(aidebug >= 3) top = false;
+                            else break;
+                        }
+                    }
+                    if(aidebug >= 3)
+                    {
+                        if(d->ai->weappref >= 0 && d->ai->weappref < NUMGUNS)
+                        {
+                            particle_textcopy(pos, guns[d->ai->weappref].name, PART_TEXT, 1);
+                            pos.z += 2;
+                        }
+                        gameent *e = getclient(d->ai->enemy);
+                        if(e)
+                        {
+                            particle_textcopy(pos, colorname(e), PART_TEXT, 1);
+                            pos.z += 2;
+                        }
                     }
                 }
             }

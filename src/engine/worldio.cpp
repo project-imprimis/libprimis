@@ -763,7 +763,13 @@ void loadvslots(stream *f, int numvslots)
             numvslots--;
         }
     }
-    loopv(vslots) if(vslots.inrange(prev[i])) vslots[prev[i]]->next = vslots[i];
+    loopv(vslots)
+    {
+        if(vslots.inrange(prev[i]))
+        {
+            vslots[prev[i]]->next = vslots[i];
+        }
+    }
     delete[] prev;
 }
 
@@ -792,7 +798,13 @@ bool save_world(const char *mname)
     hdr.worldsize = worldsize;
     hdr.numents = 0;
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents) if(ents[i]->type!=Ent_Empty) hdr.numents++;
+    loopv(ents)
+    {
+        if(ents[i]->type!=Ent_Empty)
+        {
+            hdr.numents++;
+        }
+    }
     hdr.blendmap = shouldsaveblendmap();
     hdr.numvars = 0;
     hdr.numvslots = numvslots;
@@ -840,7 +852,10 @@ bool save_world(const char *mname)
     f->write(extras.getbuf(), extras.length());
 
     f->putlil<ushort>(texmru.length());
-    loopv(texmru) f->putlil<ushort>(texmru[i]);
+    loopv(texmru)
+    {
+        f->putlil<ushort>(texmru[i]);
+    }
     char *ebuf = new char[entities::extraentinfosize()];
     loopv(ents)
     {
@@ -1217,12 +1232,15 @@ void writecollideobj(char *name)
         mm = &e;
         break;
     }
-    if(!mm) loopv(ents)
+    if(!mm)
     {
-        extentity &e = *ents[i];
-        if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
-        mm = &e;
-        break;
+        loopv(ents)
+        {
+            extentity &e = *ents[i];
+            if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
+            mm = &e;
+            break;
+        }
     }
     if(!mm)
     {

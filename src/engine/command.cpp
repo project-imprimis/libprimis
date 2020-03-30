@@ -194,7 +194,10 @@ static bool initidents()
     dummyident = newident("//dummy", Idf_Unknown);
     if(identinits)
     {
-        loopv(*identinits) addident((*identinits)[i]);
+        loopv(*identinits)
+        {
+            addident((*identinits)[i]);
+        }
         DELETEP(identinits);
     }
     return true;
@@ -3148,11 +3151,26 @@ void writecfg(const char *name)
     loopv(ids)
     {
         ident &id = *ids[i];
-        if(id.flags&Idf_Persist) switch(id.type)
+        if(id.flags&Idf_Persist) 
         {
-            case Id_Var: f->printf("%s %d\n", escapeid(id), *id.storage.i); break;
-            case Id_FloatVar: f->printf("%s %s\n", escapeid(id), floatstr(*id.storage.f)); break;
-            case Id_StringVar: f->printf("%s %s\n", escapeid(id), escapestring(*id.storage.s)); break;
+            switch(id.type)
+            {
+                case Id_Var:
+                {
+                    f->printf("%s %d\n", escapeid(id), *id.storage.i);
+                    break;
+                }
+                case Id_FloatVar:
+                {
+                    f->printf("%s %s\n", escapeid(id), floatstr(*id.storage.f));
+                    break;
+                }
+                case Id_StringVar:
+                {
+                    f->printf("%s %s\n", escapeid(id), escapestring(*id.storage.s));
+                    break;
+                }
+            }
         }
     }
     f->printf("\n");
@@ -3184,7 +3202,10 @@ void changedvars()
     vector<ident *> ids;
     ENUMERATE(idents, ident, id, if(id.flags&Idf_Overridden) ids.add(&id));
     ids.sortname();
-    loopv(ids) printvar(ids[i]);
+    loopv(ids)
+    {
+        printvar(ids[i]);
+    }
 }
 COMMAND(changedvars, "");
 
@@ -4353,10 +4374,19 @@ void checksleep(int millis)
 void clearsleep(bool clearoverrides)
 {
     int len = 0;
-    loopv(sleepcmds) if(sleepcmds[i].command)
+    loopv(sleepcmds)
     {
-        if(clearoverrides && !(sleepcmds[i].flags&Idf_Overridden)) sleepcmds[len++] = sleepcmds[i];
-        else delete[] sleepcmds[i].command;
+        if(sleepcmds[i].command)
+        {
+            if(clearoverrides && !(sleepcmds[i].flags&Idf_Overridden))
+            {
+                sleepcmds[len++] = sleepcmds[i];
+            }
+            else
+            {
+                delete[] sleepcmds[i].command;
+            }
+        }
     }
     sleepcmds.shrink(len);
 }

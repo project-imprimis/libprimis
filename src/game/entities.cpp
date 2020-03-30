@@ -294,21 +294,33 @@ namespace entities
     void putitems(packetbuf &p)            // puts items in network stream and also spawns them locally
     {
         putint(p, N_ITEMLIST);
-        loopv(ents) if(VALID_ITEM(ents[i]->type))
+        loopv(ents)
         {
-            putint(p, i);
-            putint(p, ents[i]->type);
+            if(VALID_ITEM(ents[i]->type))
+            {
+                putint(p, i);
+                putint(p, ents[i]->type);
+            }
         }
         putint(p, -1);
     }
 
-    void resetspawns() { loopv(ents) ents[i]->clearspawned(); }
+    void resetspawns()
+    {
+        loopv(ents)
+        {
+            ents[i]->clearspawned();
+        }
+    }
 
     void spawnitems(bool force)
     {
-        loopv(ents) if(VALID_ITEM(ents[i]->type))
+        loopv(ents)
         {
-            ents[i]->setspawned(force || !server::delayspawn(ents[i]->type));
+            if(VALID_ITEM(ents[i]->type))
+            {
+                ents[i]->setspawned(force || !server::delayspawn(ents[i]->type));
+            }
         }
     }
 
@@ -346,10 +358,13 @@ namespace entities
         switch(e.type)
         {
             case TELEPORT:
-                loopv(ents) if(ents[i]->type == TELEDEST && e.attr1==ents[i]->attr2)
+                loopv(ents)
                 {
-                    renderentarrow(e, vec(ents[i]->o).sub(e.o).normalize(), e.o.dist(ents[i]->o));
-                    break;
+                    if(ents[i]->type == TELEDEST && e.attr1==ents[i]->attr2)
+                    {
+                        renderentarrow(e, vec(ents[i]->o).sub(e.o).normalize(), e.o.dist(ents[i]->o));
+                        break;
+                    }
                 }
                 break;
 

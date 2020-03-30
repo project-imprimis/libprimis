@@ -153,26 +153,41 @@ bool resolverwait(const char *name, ENetAddress *address)
     for(;;)
     {
         SDL_CondWaitTimeout(resultcond, resolvermutex, 250);
-        loopv(resolverresults) if(resolverresults[i].query == name)
+        loopv(resolverresults)
         {
-            address->host = resolverresults[i].address.host;
-            resolverresults.remove(i);
-            resolved = true;
+            if(resolverresults[i].query == name)
+            {
+                address->host = resolverresults[i].address.host;
+                resolverresults.remove(i);
+                resolved = true;
+                break;
+            }
+        }
+        if(resolved)
+        {
             break;
         }
-        if(resolved) break;
-
         timeout = SDL_GetTicks() - starttime;
         renderprogress(min(float(timeout)/RESOLVERLIMIT, 1.0f), text);
-        if(interceptkey(SDLK_ESCAPE)) timeout = RESOLVERLIMIT + 1;
-        if(timeout > RESOLVERLIMIT) break;
+        if(interceptkey(SDLK_ESCAPE))
+        {
+            timeout = RESOLVERLIMIT + 1;
+        }
+        if(timeout > RESOLVERLIMIT)
+        {
+            break;
+        }
     }
     if(!resolved && timeout > RESOLVERLIMIT)
     {
         loopv(resolverthreads)
         {
             resolverthread &rt = resolverthreads[i];
-            if(rt.query == name) { resolverstop(rt); break; }
+            if(rt.query == name)
+            {
+                resolverstop(rt);
+                break;
+            }
         }
     }
     SDL_UnlockMutex(resolvermutex);
@@ -409,22 +424,37 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
 
 void addserver(const char *name, int port, const char *password, bool keep)
 {
-    if(port <= 0) port = server::serverport();
+    if(port <= 0)
+    {
+        port = server::serverport();
+    }
     loopv(servers)
     {
         serverinfo *s = servers[i];
-        if(strcmp(s->name, name) || s->address.port != port) continue;
+        if(strcmp(s->name, name) || s->address.port != port)
+        {
+            continue;
+        }
         if(password && (!s->password || strcmp(s->password, password)))
         {
             DELETEA(s->password);
             s->password = newstring(password);
         }
-        if(keep && !s->keep) s->keep = true;
+        if(keep && !s->keep)
+        {
+            s->keep = true;
+        }
         return;
     }
     serverinfo *s = newserver(name, port);
-    if(!s) return;
-    if(password) s->password = newstring(password);
+    if(!s)
+    {
+        return;
+    }
+    if(password)
+    {
+        s->password = newstring(password);
+    }
     s->keep = keep;
 }
 
@@ -492,20 +522,32 @@ void checkresolver()
     loopv(servers)
     {
         serverinfo &si = *servers[i];
-        if(si.resolved == RESOLVED) continue;
+        if(si.resolved == RESOLVED)
+        {
+            continue;
+        }
         if(si.address.host == ENET_HOST_ANY)
         {
-            if(si.resolved == UNRESOLVED) { si.resolved = RESOLVING; resolverquery(si.name); }
+            if(si.resolved == UNRESOLVED)
+            {
+                si.resolved = RESOLVING;
+                resolverquery(si.name);
+            }
             resolving++;
         }
     }
-    if(!resolving) return;
-
+    if(!resolving)
+    {
+        return;
+    }
     const char *name = NULL;
     for(;;)
     {
         ENetAddress addr = { ENET_HOST_ANY, ENET_PORT_ANY };
-        if(!resolvercheck(&name, &addr)) break;
+        if(!resolvercheck(&name, &addr))
+        {
+            break;
+        }
         loopv(servers)
         {
             serverinfo &si = *servers[i];
@@ -538,13 +580,26 @@ void checkpings()
         ucharbuf p(ping, len);
         int millis = getint(p);
         serverinfo *si = NULL;
-        loopv(servers) if(addr.host == servers[i]->address.host && addr.port == servers[i]->address.port) { si = servers[i]; break; }
+        loopv(servers)
+        {
+            if(addr.host == servers[i]->address.host && addr.port == servers[i]->address.port)
+            {
+                si = servers[i];
+                break;
+            }
+        }
         if(si)
         {
-            if(!si->checkattempt(millis)) continue;
+            if(!si->checkattempt(millis))
+            {
+                continue;
+            }
             millis = si->decodeping(millis);
         }
-        else if(!searchlan || !lanpings.checkattempt(millis, false)) continue;
+        else if(!searchlan || !lanpings.checkattempt(millis, false))
+        {
+            continue;
+        }
         else
         {
             si = newserver(NULL, addr.port, addr.host);
@@ -594,7 +649,10 @@ void refreshservers()
     }
     if(totalmillis - lastrefresh > 1000)
     {
-        loopv(servers) servers[i]->reset();
+        loopv(servers)
+        {
+            servers[i]->reset();
+        }
         lastreset = totalmillis;
     }
     lastrefresh = totalmillis;

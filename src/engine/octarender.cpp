@@ -1386,7 +1386,10 @@ void updatevabbs(bool force)
     {
         worldmin = nogimin = ivec(worldsize, worldsize, worldsize);
         worldmax = nogimax = ivec(0, 0, 0);
-        loopv(varoot) updatevabb(varoot[i], true);
+        loopv(varoot)
+        {
+            updatevabb(varoot[i], true);
+        }
         if(worldmin.x >= worldmax.x)
         {
             worldmin = ivec(0, 0, 0);
@@ -1410,8 +1413,12 @@ static vector<mergedface> vamerges[MAXMERGELEVEL+1];
 
 int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
 {
-    if(!c.ext || IS_EMPTY(c)) return -1;
-    int tj = c.ext->tjoints, maxlevel = -1;
+    if(!c.ext || IS_EMPTY(c))
+    {
+        return -1;
+    }
+    int tj = c.ext->tjoints,
+        maxlevel = -1;
     for(int i = 0; i < 6; ++i)
     {
         if(c.merged&(1<<i))
@@ -1510,8 +1517,14 @@ static inline void finddecals(vtxarray *va)
 {
     if(va->hasmerges&(MERGE_ORIGIN|MERGE_PART))
     {
-        loopv(va->decals) vc.extdecals.add(va->decals[i]);
-        loopv(va->children) finddecals(va->children[i]);
+        loopv(va->decals)
+        {
+            vc.extdecals.add(va->decals[i]);
+        }
+        loopv(va->children)
+        {
+            finddecals(va->children[i]);
+        }
     }
 }
 

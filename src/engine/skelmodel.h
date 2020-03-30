@@ -594,7 +594,13 @@ struct skelmodel : animmodel
 
         int findtag(const char *name)
         {
-            loopv(tags) if(!strcmp(tags[i].name, name)) return i;
+            loopv(tags)
+            {
+                if(!strcmp(tags[i].name, name))
+                {
+                    return i;
+                }
+            }
             return -1;
         }
 
@@ -799,20 +805,35 @@ struct skelmodel : animmodel
 
         int findpitchdep(int bone)
         {
-            loopv(pitchdeps) if(bone <= pitchdeps[i].bone) return bone == pitchdeps[i].bone ? i : -1;
+            loopv(pitchdeps)
+            {
+                if(bone <= pitchdeps[i].bone)
+                {
+                    return bone == pitchdeps[i].bone ? i : -1;
+                }
+            }
             return -1;
         }
 
         int findpitchcorrect(int bone)
         {
-            loopv(pitchcorrects) if(bone <= pitchcorrects[i].bone) return bone == pitchcorrects[i].bone ? i : -1;
+            loopv(pitchcorrects)
+            {
+                if(bone <= pitchcorrects[i].bone)
+                {
+                    return bone == pitchcorrects[i].bone ? i : -1;
+                }
+            }
             return -1;
         }
 
         void initpitchdeps()
         {
             pitchdeps.setsize(0);
-            if(pitchtargets.empty()) return;
+            if(pitchtargets.empty())
+            {
+                return;
+            }
             loopv(pitchtargets)
             {
                 pitchtarget &t = pitchtargets[i];
@@ -1054,7 +1075,10 @@ struct skelmodel : animmodel
                     sc.bdata[b.interpindex].mulorient(quat(axis, angle*RAD), b.base);
                 }
             }
-            loopv(antipodes) sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+            loopv(antipodes)
+            {
+                sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+            }
         }
 
         void initragdoll(ragdolldata &d, skelcacheentry &sc, part *p)
@@ -1075,12 +1099,15 @@ struct skelmodel : animmodel
                     }
                 }
             }
-            if(ragdoll->animjoints) loopv(ragdoll->joints)
+            if(ragdoll->animjoints)
             {
-                const ragdollskel::joint &j = ragdoll->joints[i];
-                const boneinfo &b = bones[j.bone];
-                const dualquat &q = bdata[b.interpindex];
-                d.calcanimjoint(i, matrix4x3(q));
+                loopv(ragdoll->joints)
+                {
+                    const ragdollskel::joint &j = ragdoll->joints[i];
+                    const boneinfo &b = bones[j.bone];
+                    const dualquat &q = bdata[b.interpindex];
+                    d.calcanimjoint(i, matrix4x3(q));
+                }
             }
             loopv(ragdoll->verts)
             {
@@ -1125,7 +1152,10 @@ struct skelmodel : animmodel
                 const boneinfo &br = bones[r.bone], &bj = bones[j.bone];
                 sc.bdata[br.interpindex].mul(sc.bdata[bj.interpindex], d.reljoints[i]);
             }
-            loopv(antipodes) sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+            loopv(antipodes)
+            {
+                sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
+            }
         }
 
         void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
@@ -1166,7 +1196,10 @@ struct skelmodel : animmodel
             blendoffsets.clear();
             if(full)
             {
-                loopv(users) users[i]->cleanup();
+                loopv(users)
+                {
+                    users[i]->cleanup();
+                }
             }
         }
 
@@ -1390,7 +1423,10 @@ struct skelmodel : animmodel
                 else
                 {
                     vweights = 0;
-                    loopv(blendcombos) blendcombos[i].interpindex = -1;
+                    loopv(blendcombos)
+                    {
+                        blendcombos[i].interpindex = -1;
+                    }
                 }
 
                 gle::bindvbo(vc.vbuf);
@@ -1467,10 +1503,13 @@ struct skelmodel : animmodel
 
         int addblendcombo(const blendcombo &c)
         {
-            loopv(blendcombos) if(blendcombos[i]==c)
+            loopv(blendcombos)
             {
-                blendcombos[i].uses += c.uses;
-                return i;
+                if(blendcombos[i]==c)
+                {
+                    blendcombos[i].uses += c.uses;
+                    return i;
+                }
             }
             numblends[c.size()-1]++;
             blendcombo &a = blendcombos.add(c);
@@ -1481,7 +1520,10 @@ struct skelmodel : animmodel
         {
             blendcombos.sort(blendcombo::sortcmp);
             int *remap = new int[blendcombos.length()];
-            loopv(blendcombos) remap[blendcombos[i].interpindex] = i;
+            loopv(blendcombos)
+            {
+                remap[blendcombos[i].interpindex] = i;
+            }
             LOOP_RENDER_MESHES(skelmesh, m,
             {
                 for(int j = 0; j < m.numverts; ++j)
@@ -1959,7 +2001,13 @@ template<class MDL> struct skelcommands : modelcommands<MDL, struct MDL::skelmes
             conoutf("\frcould not find bone %s to pitch target", name);
             return;
         }
-        loopv(skel->pitchtargets) if(skel->pitchtargets[i].bone == bone) return;
+        loopv(skel->pitchtargets)
+        {
+            if(skel->pitchtargets[i].bone == bone)
+            {
+                return;
+            }
+        }
         pitchtarget &t = skel->pitchtargets.add();
         t.bone = bone;
         t.frame = sa->frame + clamp(*frameoffset, 0, sa->range-1);
@@ -1981,7 +2029,17 @@ template<class MDL> struct skelcommands : modelcommands<MDL, struct MDL::skelmes
         }
         if(skel->findpitchcorrect(bone) >= 0) return;
         int targetbone = skel->findbone(targetname), target = -1;
-        if(targetbone >= 0) loopv(skel->pitchtargets) if(skel->pitchtargets[i].bone == targetbone) { target = i; break; }
+        if(targetbone >= 0)
+        {
+            loopv(skel->pitchtargets)
+            {
+                if(skel->pitchtargets[i].bone == targetbone)
+                {
+                    target = i;
+                    break;
+                }
+            }
+        }
         if(target < 0)
         {
             conoutf("\frcould not find pitch target %s to pitch correct %s", targetname, name);
@@ -1994,7 +2052,14 @@ template<class MDL> struct skelcommands : modelcommands<MDL, struct MDL::skelmes
         c.pitchmax = *pitchmax;
         c.pitchscale = *scale;
         int pos = skel->pitchcorrects.length();
-        loopv(skel->pitchcorrects) if(bone <= skel->pitchcorrects[i].bone) { pos = i; break; }
+        loopv(skel->pitchcorrects)
+        {
+            if(bone <= skel->pitchcorrects[i].bone)
+            {
+                pos = i;
+                break;
+            }
+        }
         skel->pitchcorrects.insert(pos, c);
     }
 
@@ -2004,23 +2069,47 @@ template<class MDL> struct skelcommands : modelcommands<MDL, struct MDL::skelmes
 
         vector<int> anims;
         game::findanims(anim, anims);
-        if(anims.empty()) conoutf("could not find animation %s", anim);
+        if(anims.empty())
+        {
+            conoutf("could not find animation %s", anim);
+        }
         else
         {
             part *p = (part *)MDL::loading->parts.last();
-            if(!p->meshes) return;
+            if(!p->meshes)
+            {
+                return;
+            }
             DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
             animspec *sa = ((meshgroup *)p->meshes)->loadanim(path(filename));
-            if(!sa) conoutf("could not load %s anim file %s", MDL::formatname(), filename);
-            else loopv(anims)
+            if(!sa)
             {
-                int start = sa->frame, end = sa->range;
-                if(*startoffset > 0) start += min(*startoffset, end-1);
-                else if(*startoffset < 0) start += max(end + *startoffset, 0);
-                end -= start - sa->frame;
-                if(*endoffset > 0) end = min(end, *endoffset);
-                else if(*endoffset < 0) end = max(end + *endoffset, 1);
-                MDL::loading->parts.last()->setanim(p->numanimparts-1, anims[i], start, end, *speed, *priority);
+                conoutf("could not load %s anim file %s", MDL::formatname(), filename);
+            }
+            else
+            {
+                loopv(anims)
+                {
+                    int start = sa->frame, end = sa->range;
+                    if(*startoffset > 0)
+                    {
+                        start += min(*startoffset, end-1);
+                    }
+                    else if(*startoffset < 0)
+                    {
+                        start += max(end + *startoffset, 0);
+                    }
+                    end -= start - sa->frame;
+                    if(*endoffset > 0)
+                    {
+                        end = min(end, *endoffset);
+                    }
+                    else if(*endoffset < 0)
+                    {
+                        end = max(end + *endoffset, 1);
+                    }
+                    MDL::loading->parts.last()->setanim(p->numanimparts-1, anims[i], start, end, *speed, *priority);
+                }
             }
         }
     }

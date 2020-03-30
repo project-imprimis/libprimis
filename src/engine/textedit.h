@@ -180,7 +180,10 @@ struct editor
     {
         cx = cy = 0;
         mark(false);
-        loopv(lines) lines[i].clear();
+        loopv(lines)
+        {
+            lines[i].clear();
+        }
         lines.shrink(0);
         if(init) lines.add().set(init);
     }
@@ -221,7 +224,10 @@ struct editor
         if(!filename) return;
         stream *file = openutf8file(filename, "w");
         if(!file) return;
-        loopv(lines) file->putline(lines[i].text);
+        loopv(lines)
+        {
+            file->putline(lines[i].text);
+        }
         delete file;
     }
 
@@ -305,7 +311,10 @@ struct editor
     char *tostring()
     {
         int len = 0;
-        loopv(lines) len += lines[i].len + 1;
+        loopv(lines)
+        {
+            len += lines[i].len + 1;
+        }
         char *str = newstring(len);
         int offset = 0;
         loopv(lines)
@@ -694,7 +703,10 @@ static editor *textfocus = NULL;
 
 static void readyeditors()
 {
-    loopv(editors) editors[i]->active = (editors[i]->mode==EDITORFOREVER);
+    loopv(editors)
+    {
+        editors[i]->active = (editors[i]->mode==EDITORFOREVER);
+    }
 }
 
 static void flusheditors()
@@ -712,17 +724,26 @@ static void flusheditors()
 
 static editor *useeditor(const char *name, int mode, bool focus, const char *initval = NULL)
 {
-    loopv(editors) if(!strcmp(editors[i]->name, name))
+    loopv(editors)
     {
-        editor *e = editors[i];
-        if(focus) textfocus = e;
-        e->active = true;
-        return e;
+        if(!strcmp(editors[i]->name, name))
+        {
+            editor *e = editors[i];
+            if(focus) textfocus = e;
+            e->active = true;
+            return e;
+        }
     }
-    if(mode < 0) return NULL;
+    if(mode < 0)
+    {
+        return NULL;
+    }
     editor *e = new editor(name, mode, initval);
     editors.add(e);
-    if(focus) textfocus = e;
+    if(focus)
+    {
+        textfocus = e;
+    }
     return e;
 }
 
@@ -774,7 +795,14 @@ ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into
 {
     if(identflags&Idf_Overridden) return;
     editor *e = NULL;
-    loopv(editors) if(!strcmp(editors[i]->name, name)) { e = editors[i]; break; }
+    loopv(editors)
+    {
+        if(!strcmp(editors[i]->name, name))
+        {
+            e = editors[i];
+            break;
+        }
+    }
     if(e && e->rendered && !e->filename && *file && (e->lines.empty() || (e->lines.length() == 1 && !strcmp(e->lines[0].text, initval))))
     {
         e->setfile(path(file, true));

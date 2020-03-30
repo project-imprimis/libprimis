@@ -1411,14 +1411,23 @@ struct prefabmesh
 
         p.cleanup();
 
-        loopv(verts) verts[i].norm.flip();
-        if(!p.vbo) glGenBuffers_(1, &p.vbo);
+        loopv(verts)
+        {
+            verts[i].norm.flip();
+        }
+        if(!p.vbo)
+        {
+            glGenBuffers_(1, &p.vbo);
+        }
         gle::bindvbo(p.vbo);
         glBufferData_(GL_ARRAY_BUFFER, verts.length()*sizeof(vertex), verts.getbuf(), GL_STATIC_DRAW);
         gle::clearvbo();
         p.numverts = verts.length();
 
-        if(!p.ebo) glGenBuffers_(1, &p.ebo);
+        if(!p.ebo)
+        {
+            glGenBuffers_(1, &p.ebo);
+        }
         gle::bindebo(p.ebo);
         glBufferData_(GL_ELEMENT_ARRAY_BUFFER, tris.length()*sizeof(ushort), tris.getbuf(), GL_STATIC_DRAW);
         gle::clearebo();
@@ -1647,8 +1656,17 @@ struct vslotref
 
 void compacteditvslots()
 {
-    loopv(editingvslots) if(*editingvslots[i]) compactvslot(*editingvslots[i]);
-    loopv(unpackingvslots) compactvslot(*unpackingvslots[i].vslot);
+    loopv(editingvslots)
+    {
+        if(*editingvslots[i])
+        {
+            compactvslot(*editingvslots[i]);
+        }
+    }
+    loopv(unpackingvslots)
+    {
+        compactvslot(*unpackingvslots[i].vslot);
+    }
     loopv(editinfos)
     {
         editinfo *e = editinfos[i];
@@ -2261,9 +2279,18 @@ static vector<vslotmap> remappedvslots;
 
 static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 {
-    loopv(remappedvslots) if(remappedvslots[i].index == index) return remappedvslots[i].vslot;
+    loopv(remappedvslots)
+    {
+        if(remappedvslots[i].index == index)
+        {
+            return remappedvslots[i].vslot;
+        }
+    }
     VSlot &vs = lookupvslot(index, false);
-    if(vs.index < 0 || vs.index == DEFAULT_SKY) return NULL;
+    if(vs.index < 0 || vs.index == DEFAULT_SKY)
+    {
+        return NULL;
+    }
     VSlot *edit = NULL;
     if(delta)
     {
@@ -2271,8 +2298,14 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
         mergevslot(ms, vs, ds);
         edit = ms.changed ? editvslot(vs, ms) : vs.slot->variants;
     }
-    else edit = ds.changed ? editvslot(vs, ds) : vs.slot->variants;
-    if(!edit) edit = &vs;
+    else
+    {
+        edit = ds.changed ? editvslot(vs, ds) : vs.slot->variants;
+    }
+    if(!edit)
+    {
+        edit = &vs;
+    }
     remappedvslots.add(vslotmap(vs.index, edit));
     return edit;
 }
@@ -2669,11 +2702,14 @@ void gettex()
     filltexlist();
     int tex = -1;
     LOOP_XYZ(sel, sel.grid, tex = c.texture[sel.orient]);
-    loopv(texmru) if(texmru[i]==tex)
+    loopv(texmru)
     {
-        curtexindex = i;
-        tofronttex();
-        return;
+        if(texmru[i]==tex)
+        {
+            curtexindex = i;
+            tofronttex();
+            return;
+        }
     }
 }
 
@@ -2722,7 +2758,10 @@ ICOMMAND(looptexmru, "re", (ident *id, uint *body),
 {
     LOOP_START(id, stack);
     filltexlist();
-    loopv(texmru) { loopiter(id, stack, texmru[i]); execute(body); }
+    loopv(texmru)
+    {
+        loopiter(id, stack, texmru[i]); execute(body);
+    }
     loopend(id, stack);
 });
 ICOMMAND(numvslots, "", (), intret(vslots.length()));

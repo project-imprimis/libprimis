@@ -211,8 +211,20 @@ namespace game
 
     authkey *findauthkey(const char *desc = "")
     {
-        loopv(authkeys) if(!strcmp(authkeys[i]->desc, desc) && !strcasecmp(authkeys[i]->name, player1->name)) return authkeys[i];
-        loopv(authkeys) if(!strcmp(authkeys[i]->desc, desc)) return authkeys[i];
+        loopv(authkeys)
+        {
+            if(!strcmp(authkeys[i]->desc, desc) && !strcasecmp(authkeys[i]->name, player1->name))
+            {
+                return authkeys[i];
+            }
+        }
+        loopv(authkeys)
+        {
+            if(!strcmp(authkeys[i]->desc, desc))
+            {
+                return authkeys[i];
+            }
+        }
         return NULL;
     }
 
@@ -473,11 +485,17 @@ namespace game
             buf.put(cn, strlen(cn));
             numclients++;
         }
-        loopv(clients) if(clients[i] && (bots || clients[i]->aitype == AI_None))
+        loopv(clients)
         {
-            formatstring(cn, "%d", clients[i]->clientnum);
-            if(numclients++) buf.add(' ');
-            buf.put(cn, strlen(cn));
+            if(clients[i] && (bots || clients[i]->aitype == AI_None))
+            {
+                formatstring(cn, "%d", clients[i]->clientnum);
+                if(numclients++)
+                {
+                    buf.add(' ');
+                }
+                buf.put(cn, strlen(cn));
+            }
         }
         buf.add('\0');
         result(buf.getbuf());
@@ -1922,7 +1940,10 @@ namespace game
             case N_CURRENTMASTER:
             {
                 int mm = getint(p), mn;
-                loopv(players) players[i]->privilege = PRIV_NONE;
+                loopv(players)
+                {
+                    players[i]->privilege = PRIV_NONE;
+                }
                 while((mn = getint(p))>=0 && !p.overread())
                 {
                     gameent *m = mn==player1->clientnum ? player1 : newclient(mn);

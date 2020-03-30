@@ -125,7 +125,13 @@ namespace game
 
     gameent *pointatplayer()
     {
-        loopv(players) if(players[i] != player1 && intersect(players[i], player1->o, worldpos)) return players[i];
+        loopv(players)
+        {
+            if(players[i] != player1 && intersect(players[i], player1->o, worldpos))
+            {
+                return players[i];
+            }
+        }
         return NULL;
     }
 
@@ -531,7 +537,13 @@ namespace game
 
     void clearclients(bool notify)
     {
-        loopv(clients) if(clients[i]) clientdisconnected(i, notify);
+        loopv(clients)
+        {
+            if(clients[i])
+            {
+                clientdisconnected(i, notify);
+            }
+        }
     }
 
     void initclient()
@@ -552,7 +564,10 @@ namespace game
         clearteaminfo();
 
         // reset perma-state
-        loopv(players) players[i]->startgame();
+        loopv(players)
+        {
+            players[i]->startgame();
+        }
 
         setclientmode();
 
@@ -641,19 +656,37 @@ namespace game
 
     bool duplicatename(gameent *d, const char *name = NULL, const char *alt = NULL)
     {
-        if(!name) name = d->name;
-        if(alt && d != player1 && !strcmp(name, alt)) return true;
-        loopv(players) if(d!=players[i] && !strcmp(name, players[i]->name)) return true;
+        if(!name)
+        {
+            name = d->name;
+        }
+        if(alt && d != player1 && !strcmp(name, alt))
+        {
+            return true;
+        }
+        loopv(players)
+        {
+            if(d!=players[i] && !strcmp(name, players[i]->name))
+            {
+                return true;
+            }
+        }
         return false;
     }
 
     const char *colorname(gameent *d, const char *name, const char * alt, const char *color)
     {
-        if(!name) name = alt && d == player1 ? alt : d->name;
+        if(!name)
+        {
+            name = alt && d == player1 ? alt : d->name;
+        }
         bool dup = !name[0] || duplicatename(d, name, alt) || d->aitype != AI_None;
         if(dup || color[0])
         {
-            if(dup) return tempformatstring(d->aitype == AI_None ? "\fs%s%s \f5(%d)\fr" : "\fs%s%s \f5[%d]\fr", color, name, d->clientnum);
+            if(dup)
+            {
+                return tempformatstring(d->aitype == AI_None ? "\fs%s%s \f5(%d)\fr" : "\fs%s%s \f5[%d]\fr", color, name, d->clientnum);
+            }
             return tempformatstring("\fs%s%s\fr", color, name);
         }
         return name;
@@ -663,13 +696,19 @@ namespace game
 
     const char *teamcolorname(gameent *d, const char *alt)
     {
-        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(d->team) || d->state == ClientState_Spectator) return colorname(d, NULL, alt);
+        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(d->team) || d->state == ClientState_Spectator)
+        {
+            return colorname(d, NULL, alt);
+        }
         return colorname(d, NULL, alt, teamtextcode[d->team]);
     }
 
     const char *teamcolor(const char *prefix, const char *suffix, int team, const char *alt)
     {
-        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(team)) return alt;
+        if(!teamcolortext || !MODE_TEAMMODE || !VALID_TEAM(team))
+        {
+            return alt;
+        }
         return tempformatstring("\fs%s%s%s%s\fr", teamtextcode[team], prefix, teamnames[team], suffix);
     }
 

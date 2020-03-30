@@ -442,7 +442,10 @@ const char *findfile(const char *filename, const char *mode)
             return s;
         }
     }
-    if(mode[0]=='w' || mode[0]=='a') return filename;
+    if(mode[0]=='w' || mode[0]=='a')
+    {
+        return filename;
+    }
     loopv(packagedirs)
     {
         packagedir &pf = packagedirs[i];
@@ -450,7 +453,10 @@ const char *findfile(const char *filename, const char *mode)
         formatstring(s, "%s%s", pf.dir, filename);
         if(fileexists(s, mode)) return s;
     }
-    if(mode[0]=='e') return NULL;
+    if(mode[0]=='e')
+    {
+        return NULL;
+    }
     return filename;
 }
 

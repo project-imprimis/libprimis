@@ -191,11 +191,23 @@ static inline void findvisiblevas(vector<vtxarray *> &vas)
             {
                 if(fullvis || v.curvfc == VFC_FULL_VISIBLE)
                 {
-                    if(resetchildren) findvisiblevas<true, true>(v.children);
-                    else findvisiblevas<true, false>(v.children);
+                    if(resetchildren)
+                    {
+                        findvisiblevas<true, true>(v.children);
+                    }
+                    else
+                    {
+                        findvisiblevas<true, false>(v.children);
+                    }
                 }
-                else if(resetchildren) findvisiblevas<false, true>(v.children);
-                else findvisiblevas<false, false>(v.children);
+                else if(resetchildren)
+                {
+                    findvisiblevas<false, true>(v.children);
+                }
+                else
+                {
+                    findvisiblevas<false, false>(v.children);
+                }
             }
         }
     }
@@ -507,44 +519,47 @@ void findvisiblemms(const vector<extentity *> &ents, bool doquery)
 {
     visiblemms = NULL;
     lastvisiblemms = &visiblemms;
-    for(vtxarray *va = visibleva; va; va = va->next) if(va->occluded < OCCLUDE_BB && va->curvfc < VFC_FOGGED) loopv(va->mapmodels)
+    for(vtxarray *va = visibleva; va; va = va->next)
     {
-        octaentities *oe = va->mapmodels[i];
-        if(isfoggedcube(oe->o, oe->size)) continue;
-
-        bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
-        if(occluded)
+        if(va->occluded < OCCLUDE_BB && va->curvfc < VFC_FOGGED) loopv(va->mapmodels)
         {
-            oe->distance = -1;
+            octaentities *oe = va->mapmodels[i];
+            if(isfoggedcube(oe->o, oe->size)) continue;
 
-            oe->next = NULL;
-            *lastvisiblemms = oe;
-            lastvisiblemms = &oe->next;
-        }
-        else
-        {
-            int visible = 0;
-            loopv(oe->mapmodels)
+            bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
+            if(occluded)
             {
-                extentity &e = *ents[oe->mapmodels[i]];
-                if(e.flags&EntFlag_NoVis) continue;
-                e.flags |= EntFlag_Render;
-                ++visible;
+                oe->distance = -1;
+
+                oe->next = NULL;
+                *lastvisiblemms = oe;
+                lastvisiblemms = &oe->next;
             }
-            if(!visible) continue;
-
-            oe->distance = int(camera1->o.dist_to_bb(oe->o, oe->size));
-
-            octaentities **prev = &visiblemms, *cur = visiblemms;
-            while(cur && cur->distance >= 0 && oe->distance > cur->distance)
+            else
             {
-                prev = &cur->next;
-                cur = cur->next;
-            }
+                int visible = 0;
+                loopv(oe->mapmodels)
+                {
+                    extentity &e = *ents[oe->mapmodels[i]];
+                    if(e.flags&EntFlag_NoVis) continue;
+                    e.flags |= EntFlag_Render;
+                    ++visible;
+                }
+                if(!visible) continue;
 
-            if(*prev == NULL) lastvisiblemms = &oe->next;
-            oe->next = *prev;
-            *prev = oe;
+                oe->distance = int(camera1->o.dist_to_bb(oe->o, oe->size));
+
+                octaentities **prev = &visiblemms, *cur = visiblemms;
+                while(cur && cur->distance >= 0 && oe->distance > cur->distance)
+                {
+                    prev = &cur->next;
+                    cur = cur->next;
+                }
+
+                if(*prev == NULL) lastvisiblemms = &oe->next;
+                oe->next = *prev;
+                *prev = oe;
+            }
         }
     }
 }
@@ -571,17 +586,26 @@ void rendermapmodels()
         loopv(oe->mapmodels)
         {
             extentity &e = *ents[oe->mapmodels[i]];
-            if(!(e.flags&EntFlag_Render)) continue;
+            if(!(e.flags&EntFlag_Render))
+            {
+                continue;
+            }
             if(!rendered)
             {
                 rendered = true;
                 oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? newquery(oe) : NULL;
-                if(oe->query) startmodelquery(oe->query);
+                if(oe->query)
+                {
+                    startmodelquery(oe->query);
+                }
             }
             rendermapmodel(e);
             e.flags &= ~EntFlag_Render;
         }
-        if(rendered && oe->query) endmodelquery();
+        if(rendered && oe->query)
+        {
+            endmodelquery();
+        }
     }
     rendermapmodelbatches();
     clearbatchedmapmodels();
@@ -2116,14 +2140,29 @@ void renderalphageom(int side)
 
     if(side == 2)
     {
-        loopv(alphavas) renderva(cur, alphavas[i], RENDERPASS_GBUFFER);
-        if(geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER);
+        loopv(alphavas)
+        {
+            renderva(cur, alphavas[i], RENDERPASS_GBUFFER);
+        }
+        if(geombatches.length())
+        {
+            renderbatches(cur, RENDERPASS_GBUFFER);
+        }
     }
     else
     {
         glCullFace(GL_FRONT);
-        loopv(alphavas) if(alphavas[i]->alphabacktris) renderva(cur, alphavas[i], RENDERPASS_GBUFFER);
-        if(geombatches.length()) renderbatches(cur, RENDERPASS_GBUFFER);
+        loopv(alphavas)
+        {
+            if(alphavas[i]->alphabacktris)
+            {
+                renderva(cur, alphavas[i], RENDERPASS_GBUFFER);
+            }
+        }
+        if(geombatches.length())
+        {
+            renderbatches(cur, RENDERPASS_GBUFFER);
+        }
         glCullFace(GL_BACK);
     }
 
@@ -2372,15 +2411,27 @@ static void changeslottmus(decalrenderer &cur, int pass, DecalSlot &slot)
         switch(t.type)
         {
             case TEX_ENVMAP:
-                if(t.t) bindslottex(cur, t.type, t.t, GL_TEXTURE_CUBE_MAP);
+            {
+                if(t.t)
+                {
+                    bindslottex(cur, t.type, t.t, GL_TEXTURE_CUBE_MAP);
+                }
                 break;
+            }
             case TEX_NORMAL:
             case TEX_GLOW:
+            {
                 bindslottex(cur, t.type, t.t);
                 break;
+            }
             case TEX_SPEC:
-                if(t.combined < 0) bindslottex(cur, TEX_GLOW, t.t);
+            {
+                if(t.combined < 0)
+                {
+                    bindslottex(cur, TEX_GLOW, t.t);
+                }
                 break;
+            }
         }
     }
     if(cur.tmu != 0)
@@ -2783,14 +2834,21 @@ static void genshadowmesh(int idx, extentity &e)
 
 void clearshadowmeshes()
 {
-    if(shadowvbos.length()) { glDeleteBuffers_(shadowvbos.length(), shadowvbos.getbuf()); shadowvbos.setsize(0); }
+    if(shadowvbos.length())
+    {
+        glDeleteBuffers_(shadowvbos.length(), shadowvbos.getbuf());
+        shadowvbos.setsize(0);
+    }
     if(shadowmeshes.numelems)
     {
         vector<extentity *> &ents = entities::getents();
         loopv(ents)
         {
             extentity &e = *ents[i];
-            if(e.flags&EntFlag_ShadowMesh) e.flags &= ~EntFlag_ShadowMesh;
+            if(e.flags&EntFlag_ShadowMesh)
+            {
+                e.flags &= ~EntFlag_ShadowMesh;
+            }
         }
     }
     shadowmeshes.clear();
@@ -2811,7 +2869,10 @@ void genshadowmeshes()
     loopv(ents)
     {
         extentity &e = *ents[i];
-        if(e.type != Ent_Light) continue;
+        if(e.type != Ent_Light)
+        {
+            continue;
+        }
         genshadowmesh(i, e);
     }
 }

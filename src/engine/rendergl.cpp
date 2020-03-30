@@ -1078,18 +1078,24 @@ extern int usetimers;
 
 timer *findtimer(const char *name, bool gpu)
 {
-    loopv(timers) if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
+    loopv(timers)
     {
-        timerorder.removeobj(i);
-        timerorder.add(i);
-        return &timers[i];
+        if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
+        {
+            timerorder.removeobj(i);
+            timerorder.add(i);
+            return &timers[i];
+        }
     }
     timerorder.add(timers.length());
     timer &t = timers.add();
     t.name = name;
     t.gpu = gpu;
     memset(t.query, 0, sizeof(t.query));
-    if(gpu) glGenQueries_(timer::MAXQUERY, t.query);
+    if(gpu)
+    {
+        glGenQueries_(timer::MAXQUERY, t.query);
+    }
     t.waiting = 0;
     t.starttime = 0;
     t.result = -1;
@@ -1099,7 +1105,10 @@ timer *findtimer(const char *name, bool gpu)
 
 timer *begintimer(const char *name, bool gpu)
 {
-    if(!usetimers || inbetweenframes || (gpu && (!hasTQ || deferquery))) return NULL;
+    if(!usetimers || inbetweenframes || (gpu && (!hasTQ || deferquery)))
+    {
+        return NULL;
+    }
     timer *t = findtimer(name, gpu);
     if(t->gpu)
     {
@@ -1171,13 +1180,16 @@ void printtimers(int conw, int conh)
         draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printmillis);
         offset++;
     }
-    if(usetimers) loopv(timerorder)
+    if(usetimers)
     {
-        timer &t = timers[timerorder[i]];
-        if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200) t.print = t.result;
-        if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timercycle)))) continue;
-        draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
-        offset++;
+        loopv(timerorder)
+        {
+            timer &t = timers[timerorder[i]];
+            if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200) t.print = t.result;
+            if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timercycle)))) continue;
+            draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
+            offset++;
+        }
     }
     if(totalmillis - lastprint >= 200) lastprint = totalmillis;
 }

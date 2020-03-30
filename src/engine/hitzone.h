@@ -711,7 +711,14 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     vector<skelzoneinfo *> info;
     skelzonebounds *bounds = new skelzonebounds[g->skel->numbones];
     numblends = g->blendcombos.length();
-    loopv(g->blendcombos) if(!g->blendcombos[i].weights[1]) { numblends = i; break; }
+    loopv(g->blendcombos)
+    {
+        if(!g->blendcombos[i].weights[1])
+        {
+            numblends = i;
+            break;
+        }
+    }
     blendcache.bdata = numblends > 0 ? new dualquat[numblends] : NULL;
     for(int i = 0; i < min(g->meshes.length(), 0x100); ++i)
     {

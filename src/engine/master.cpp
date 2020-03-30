@@ -71,7 +71,13 @@ ICOMMAND(gban, "s", (char *name), addban(gbans, name));
 
 bool checkban(vector<ipmask> &bans, enet_uint32 host)
 {
-    loopv(bans) if(bans[i].check(host)) return true;
+    loopv(bans)
+    {
+        if(bans[i].check(host))
+        {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -510,23 +516,26 @@ void confauth(client &c, uint id, const char *val)
 {
     purgeauths(c);
 
-    loopv(c.authreqs) if(c.authreqs[i].id == id)
+    loopv(c.authreqs)
     {
-        string ip;
-        if(enet_address_get_host_ip(&c.address, ip, sizeof(ip)) < 0) copystring(ip, "-");
-        if(checkchallenge(val, c.authreqs[i].answer))
+        if(c.authreqs[i].id == id)
         {
-            outputf(c, "succauth %u\n", id);
-            conoutf("succeeded %u from %s", id, ip);
+            string ip;
+            if(enet_address_get_host_ip(&c.address, ip, sizeof(ip)) < 0) copystring(ip, "-");
+            if(checkchallenge(val, c.authreqs[i].answer))
+            {
+                outputf(c, "succauth %u\n", id);
+                conoutf("succeeded %u from %s", id, ip);
+            }
+            else
+            {
+                outputf(c, "failauth %u\n", id);
+                conoutf("failed %u from %s", id, ip);
+            }
+            freechallenge(c.authreqs[i].answer);
+            c.authreqs.remove(i--);
+            return;
         }
-        else
-        {
-            outputf(c, "failauth %u\n", id);
-            conoutf("failed %u from %s", id, ip);
-        }
-        freechallenge(c.authreqs[i].answer);
-        c.authreqs.remove(i--);
-        return;
     }
     outputf(c, "failauth %u\n", id);
 }
@@ -609,12 +618,18 @@ void checkclients()
         else if(clientsocket!=ENET_SOCKET_NULL)
         {
             int dups = 0, oldest = -1;
-            loopv(clients) if(clients[i]->address.host == address.host)
+            loopv(clients)
             {
-                dups++;
-                if(oldest<0 || clients[i]->connecttime < clients[oldest]->connecttime) oldest = i;
+                if(clients[i]->address.host == address.host)
+                {
+                    dups++;
+                    if(oldest<0 || clients[i]->connecttime < clients[oldest]->connecttime) oldest = i;
+                }
             }
-            if(dups >= DUP_LIMIT) purgeclient(oldest);
+            if(dups >= DUP_LIMIT)
+            {
+                purgeclient(oldest);
+            }
 
             client *c = new client;
             c->address = address;

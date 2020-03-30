@@ -553,7 +553,10 @@ struct animmodel : model
 
         void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
         {
-            loopv(meshes) meshes[i]->genBIH(skins[i], bih, t);
+            loopv(meshes)
+            {
+                meshes[i]->genBIH(skins[i], bih, t);
+            }
         }
 
         void genshadowmesh(vector<triangle> &tris, const matrix4x3 &t)
@@ -676,8 +679,14 @@ struct animmodel : model
 
         virtual void cleanup()
         {
-            if(meshes) meshes->cleanup();
-            loopv(skins) skins[i].cleanup();
+            if(meshes)
+            {
+                meshes->cleanup();
+            }
+            loopv(skins)
+            {
+                skins[i].cleanup();
+            }
         }
 
         void disablepitch()
@@ -732,7 +741,13 @@ struct animmodel : model
             int i = meshes ? meshes->findtag(tag) : -1;
             if(i<0)
             {
-                loopv(links) if(links[i].p && links[i].p->link(p, tag, translate, anim, basetime, pos)) return true;
+                loopv(links)
+                {
+                    if(links[i].p && links[i].p->link(p, tag, translate, anim, basetime, pos))
+                    {
+                        return true;
+                    }
+                }
                 return false;
             }
             linkedpart &l = links.add();
@@ -755,7 +770,13 @@ struct animmodel : model
                     return true;
                 }
             }
-            loopv(links) if(links[i].p && links[i].p->unlink(p)) return true;
+            loopv(links)
+            {
+                if(links[i].p && links[i].p->unlink(p))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -777,23 +798,38 @@ struct animmodel : model
 
         bool alphatested() const
         {
-            loopv(skins) if(skins[i].alphatested()) return true;
+            loopv(skins)
+            {
+                if(skins[i].alphatested())
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
         void preloadBIH()
         {
-            loopv(skins) skins[i].preloadBIH();
+            loopv(skins)
+            {
+                skins[i].preloadBIH();
+            }
         }
 
         void preloadshaders()
         {
-            loopv(skins) skins[i].preloadshader();
+            loopv(skins)
+            {
+                skins[i].preloadshader();
+            }
         }
 
         void preloadmeshes()
         {
-            if(meshes) meshes->preload(this);
+            if(meshes)
+            {
+                meshes->preload(this);
+            }
         }
 
         virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d)
@@ -1119,7 +1155,10 @@ struct animmodel : model
         virtual void loaded()
         {
             meshes->shared++;
-            loopv(skins) skins[i].setkey();
+            loopv(skins)
+            {
+                skins[i].setkey();
+            }
         }
     };
 
@@ -1347,10 +1386,22 @@ struct animmodel : model
             if(roll && !usepitch) matrixstack[0].rotate_around_y(-roll*RAD);
             matrixstack[0].transformnormal(vec(axis), axis);
             matrixstack[0].transformnormal(vec(forward), forward);
-            if(roll && usepitch) matrixstack[0].rotate_around_y(-roll*RAD);
-            if(offsetyaw) matrixstack[0].rotate_around_z(offsetyaw*RAD);
-            if(offsetpitch) matrixstack[0].rotate_around_x(offsetpitch*RAD);
-            if(offsetroll) matrixstack[0].rotate_around_y(-offsetroll*RAD);
+            if(roll && usepitch)
+            {
+                matrixstack[0].rotate_around_y(-roll*RAD);
+            }
+            if(offsetyaw)
+            {
+                matrixstack[0].rotate_around_z(offsetyaw*RAD);
+            }
+            if(offsetpitch)
+            {
+                matrixstack[0].rotate_around_x(offsetpitch*RAD);
+            }
+            if(offsetroll)
+            {
+                matrixstack[0].rotate_around_y(-offsetroll*RAD);
+            }
         }
         else
         {
@@ -1363,7 +1414,10 @@ struct animmodel : model
         if(anim&ANIM_NORENDER)
         {
             render(anim, basetime, basetime2, pitch, axis, forward, d, a);
-            if(d) d->lastrendered = lastmillis;
+            if(d)
+            {
+                d->lastrendered = lastmillis;
+            }
             return;
         }
 
@@ -1375,11 +1429,20 @@ struct animmodel : model
                 shaderparamskey::invalidate();
             }
 
-            if(envmapped()) closestenvmaptex = lookupenvmap(closestenvmap(o));
-            else if(a) for(int i = 0; a[i].tag; i++) if(a[i].m && a[i].m->envmapped())
+            if(envmapped())
             {
                 closestenvmaptex = lookupenvmap(closestenvmap(o));
-                break;
+            }
+            else if(a)
+            {
+                for(int i = 0; a[i].tag; i++)
+                {
+                    if(a[i].m && a[i].m->envmapped())
+                    {
+                        closestenvmaptex = lookupenvmap(closestenvmap(o));
+                        break;
+                    }
+                }
             }
         }
 
@@ -1407,7 +1470,10 @@ struct animmodel : model
 
     void cleanup()
     {
-        loopv(parts) parts[i]->cleanup();
+        loopv(parts)
+        {
+            parts[i]->cleanup();
+        }
     }
 
     virtual void flushpart() {}
@@ -1471,7 +1537,13 @@ struct animmodel : model
     void preloadBIH()
     {
         model::preloadBIH();
-        if(bih) loopv(parts) parts[i]->preloadBIH();
+        if(bih)
+        {
+            loopv(parts)
+            {
+                parts[i]->preloadBIH();
+            }
+        }
     }
 
     BIH *setBIH()
@@ -1512,8 +1584,17 @@ struct animmodel : model
 
     bool animated() const
     {
-        if(spinyaw || spinpitch || spinroll) return true;
-        loopv(parts) if(parts[i]->animated()) return true;
+        if(spinyaw || spinpitch || spinroll)
+        {
+            return true;
+        }
+        loopv(parts)
+        {
+            if(parts[i]->animated())
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -1524,7 +1605,13 @@ struct animmodel : model
 
     bool alphatested() const
     {
-        loopv(parts) if(parts[i]->alphatested()) return true;
+        loopv(parts)
+        {
+            if(parts[i]->alphatested())
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -1545,20 +1632,31 @@ struct animmodel : model
         if(flipy()) translate.y = -translate.y;
 
         if(!success) return false;
-        loopv(parts) if(!parts[i]->meshes) return false;
-
+        loopv(parts)
+        {
+            if(!parts[i]->meshes)
+            {
+                return false;
+            }
+        }
         loaded();
         return true;
     }
 
     void preloadshaders()
     {
-        loopv(parts) parts[i]->preloadshaders();
+        loopv(parts)
+        {
+            parts[i]->preloadshaders();
+        }
     }
 
     void preloadmeshes()
     {
-        loopv(parts) parts[i]->preloadmeshes();
+        loopv(parts)
+        {
+            parts[i]->preloadmeshes();
+        }
     }
 
     void setshader(Shader *shader)
@@ -1578,7 +1676,10 @@ struct animmodel : model
 
     void setenvmap(float envmapmin, float envmapmax, Texture *envmap)
     {
-        if(parts.empty()) loaddefaultparts();
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
         loopv(parts)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
@@ -1629,7 +1730,10 @@ struct animmodel : model
 
     void setglow(float glow, float delta, float pulse)
     {
-        if(parts.empty()) loaddefaultparts();
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
         loopv(parts)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
@@ -1732,7 +1836,10 @@ struct animmodel : model
 
     virtual void loaded()
     {
-        loopv(parts) parts[i]->loaded();
+        loopv(parts)
+        {
+            parts[i]->loaded();
+        }
     }
 
     static bool enabletc, enablecullface, enabletangents, enablebones, enabledepthoffset;

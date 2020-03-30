@@ -973,8 +973,14 @@ namespace UI
             });
 
             subw = subh = 0;
-            loopv(widths) subw += widths[i];
-            loopv(heights) subh += heights[i];
+            loopv(widths)
+            {
+                subw += widths[i];
+            }
+            loopv(heights)
+            {
+                subh += heights[i];
+            }
             w = subw + spacew*max(widths.length() - 1, 0);
             h = subh + spaceh*max(heights.length() - 1, 0);
         }
@@ -1114,7 +1120,10 @@ namespace UI
             });
 
             subw = 0;
-            loopv(widths) subw += widths[i];
+            loopv(widths)
+            {
+                subw += widths[i];
+            }
             w = max(w, subw + spacew*max(widths.length() - 1, 0));
             h = subh + spaceh*max(children.length() - 1, 0);
         }

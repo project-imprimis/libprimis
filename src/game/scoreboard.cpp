@@ -66,7 +66,10 @@ namespace game
             cmode->getteamscores(teamscores);
             teamscores.sort(teamscore::compare);
             while(teamscores.length() > 1 && teamscores.last().score < teamscores[0].score) teamscores.drop();
-            loopv(teamscores) best.add(teamscores[i].team);
+            loopv(teamscores)
+            {
+                best.add(teamscores[i].team);
+            }
         }
         else
         {

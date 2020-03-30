@@ -1088,7 +1088,10 @@ ICOMMAND(findanims, "s", (char *name),
     loopv(anims)
     {
         formatstring(num, "%d", anims[i]);
-        if(i > 0) buf.add(' ');
+        if(i > 0)
+        {
+            buf.add(' ');
+        }
         buf.put(num, strlen(num));
     }
     buf.add('\0');

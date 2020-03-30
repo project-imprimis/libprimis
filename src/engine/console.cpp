@@ -474,10 +474,16 @@ void execbind(keym &k, bool isdown)
         {
             if(ra.numargs < 0)
             {
-                if(!isdown) execute(ra.action);
+                if(!isdown)
+                {
+                    execute(ra.action);
+                }
                 delete[] ra.action;
             }
-            else execute(isdown ? NULL : ra.id, ra.args, ra.numargs);
+            else
+            {
+                execute(isdown ? NULL : ra.id, ra.args, ra.numargs);
+            }
             releaseactions.remove(i--);
         }
     }
@@ -671,8 +677,14 @@ void writebinds(stream *f)
             keym &km = *binds[i];
             if(*km.actions[j])
             {
-                if(validateblock(km.actions[j])) f->printf("%s %s [%s]\n", cmds[j], escapestring(km.name), km.actions[j]);
-                else f->printf("%s %s %s\n", cmds[j], escapestring(km.name), escapestring(km.actions[j]));
+                if(validateblock(km.actions[j]))
+                {
+                    f->printf("%s %s [%s]\n", cmds[j], escapestring(km.name), km.actions[j]);
+                }
+                else
+                {
+                    f->printf("%s %s %s\n", cmds[j], escapestring(km.name), escapestring(km.actions[j]));
+                }
             }
         }
     }
@@ -711,7 +723,13 @@ struct filesval
         files.deletearrays();
         listfiles(dir, ext, files);
         files.sort();
-        loopv(files) if(i && !strcmp(files[i], files[i-1])) delete[] files.remove(i--);
+        loopv(files)
+        {
+            if(i && !strcmp(files[i], files[i-1]))
+            {
+                delete[] files.remove(i--);
+            }
+        }
         millis = totalmillis;
     }
 };
@@ -811,7 +829,8 @@ void complete(char *s, int maxlen, const char *cmdprefix)
         loopv(f->files)
         {
             if(strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
-               (!lastcomplete || strcmp(f->files[i], lastcomplete) > 0) && (!nextcomplete || strcmp(f->files[i], nextcomplete) < 0))
+                      (!lastcomplete || strcmp(f->files[i], lastcomplete) > 0) &&
+                      (!nextcomplete || strcmp(f->files[i], nextcomplete) < 0))
                 nextcomplete = f->files[i];
         }
         cmdprefix = s;
@@ -821,7 +840,8 @@ void complete(char *s, int maxlen, const char *cmdprefix)
     {
         ENUMERATE(idents, ident, id,
             if(strncmp(id.name, &s[cmdlen], completesize)==0 &&
-               (!lastcomplete || strcmp(id.name, lastcomplete) > 0) && (!nextcomplete || strcmp(id.name, nextcomplete) < 0))
+                      (!lastcomplete || strcmp(id.name, lastcomplete) > 0) &&
+                      (!nextcomplete || strcmp(id.name, nextcomplete) < 0))
                 nextcomplete = id.name;
         );
     }

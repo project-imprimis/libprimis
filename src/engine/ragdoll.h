@@ -71,7 +71,10 @@ struct ragdollskel
 
     void setupjoints()
     {
-        loopv(verts) verts[i].weight = 0;
+        loopv(verts)
+        {
+            verts[i].weight = 0;
+        }
         loopv(joints)
         {
             joint &j = joints[i];
@@ -103,18 +106,30 @@ struct ragdollskel
             m.d = pos;
             m.transpose();
         }
-        loopv(verts) if(verts[i].weight) verts[i].weight = 1/verts[i].weight;
+        loopv(verts)
+        {
+            if(verts[i].weight)
+            {
+                verts[i].weight = 1/verts[i].weight;
+            }
+        }
         reljoints.shrink(0);
     }
 
     void setuprotfrictions()
     {
         rotfrictions.shrink(0);
-        loopv(tris) for(int j = i+1; j < tris.length(); j++) if(tris[i].shareverts(tris[j]))
+        loopv(tris)
         {
-            rotfriction &r = rotfrictions.add();
-            r.tri[0] = i;
-            r.tri[1] = j;
+            for(int j = i+1; j < tris.length(); j++)
+            {
+                if(tris[i].shareverts(tris[j]))
+                {
+                    rotfriction &r = rotfrictions.add();
+                    r.tri[0] = i;
+                    r.tri[1] = j;
+                }
+            }
         }
     }
 
@@ -224,17 +239,26 @@ struct ragdolldata
     void calcboundsphere()
     {
         center = vec(0, 0, 0);
-        loopv(skel->verts) center.add(verts[i].pos);
+        loopv(skel->verts)
+        {
+            center.add(verts[i].pos);
+        }
         center.div(skel->verts.length());
         radius = 0;
-        loopv(skel->verts) radius = max(radius, verts[i].pos.dist(center));
+        loopv(skel->verts)
+        {
+            radius = max(radius, verts[i].pos.dist(center));
+        }
     }
 
     void init(dynent *d)
     {
         extern int ragdolltimestepmin;
         float ts = ragdolltimestepmin/1000.0f;
-        loopv(skel->verts) (verts[i].oldpos = verts[i].pos).sub(vec(d->vel).add(d->falling).mul(ts));
+        loopv(skel->verts)
+        {
+            (verts[i].oldpos = verts[i].pos).sub(vec(d->vel).add(d->falling).mul(ts));
+        }
         timestep = ts;
 
         calctris();
@@ -264,7 +288,10 @@ struct ragdolldata
             }
         } v;
         v.o = pos;
-        if(v.radius != radius) v.radius = v.xradius = v.yradius = v.eyeheight = v.aboveeye = radius;
+        if(v.radius != radius)
+        {
+            v.radius = v.xradius = v.yradius = v.eyeheight = v.aboveeye = radius;
+        }
         return collide(&v, dir, 0, false);
     }
 };

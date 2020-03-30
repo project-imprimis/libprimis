@@ -424,7 +424,10 @@ struct vertmodel : animmodel
         {
             if(as->cur.anim&ANIM_NORENDER)
             {
-                loopv(p->links) calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
+                loopv(p->links)
+                {
+                    calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
+                }
                 return;
             }
 
@@ -475,7 +478,10 @@ struct vertmodel : animmodel
                 m.render(as, p->skins[i], *vc);
             });
 
-            loopv(p->links) calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
+            loopv(p->links)
+            {
+                calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
+            }
         }
 
         virtual bool load(const char *name, float smooth) = 0;

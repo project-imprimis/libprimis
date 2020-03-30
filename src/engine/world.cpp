@@ -275,7 +275,10 @@ void freeoctaentities(cube &c)
 void entitiesinoctanodes()
 {
     vector<extentity *> &ents = entities::getents();
-    loopv(ents) modifyoctaent(MODOE_ADD, i, *ents[i]);
+    loopv(ents)
+    {
+        modifyoctaent(MODOE_ADD, i, *ents[i]);
+    }
 }
 
 static inline void findents(octaentities &oe, int low, int high, bool notspawned, const vec &pos, const vec &invradius, vector<int> &found)
@@ -461,7 +464,10 @@ void attachentity(extentity &e)
 void attachentities()
 {
     vector<extentity *> &ents = entities::getents();
-    loopv(ents) attachentity(*ents[i]);
+    loopv(ents)
+    {
+        attachentity(*ents[i]);
+    }
 }
 
 // convenience macros implicitly define:
@@ -879,10 +885,13 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
         gle::colorub(0, 40, 0);
         gle::defvertex();
         gle::begin(GL_LINES, entgroup.length()*24);
-        loopv(entgroup) ENT_FOCUS(entgroup[i],
-            entselectionbox(e, eo, es);
-            renderentbox(eo, es);
-        );
+        loopv(entgroup)
+        {
+            ENT_FOCUS(entgroup[i],
+                entselectionbox(e, eo, es);
+                renderentbox(eo, es);
+            );
+        }
         xtraverts += gle::end();
     }
 
@@ -908,10 +917,16 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
     {
         glDepthFunc(GL_GREATER);
         gle::colorf(0.25f, 0.25f, 0.25f);
-        loopv(entgroup) ENT_FOCUS(entgroup[i], renderentradius(e, false));
+        loopv(entgroup)
+        {
+            ENT_FOCUS(entgroup[i], renderentradius(e, false));
+        }
         if(enthover>=0) ENT_FOCUS(enthover, renderentradius(e, false));
         glDepthFunc(GL_LESS);
-        loopv(entgroup) ENT_FOCUS(entgroup[i], renderentradius(e, true));
+        loopv(entgroup)
+        {
+            ENT_FOCUS(entgroup[i], renderentradius(e, true));
+        }
         if(enthover>=0) ENT_FOCUS(enthover, renderentradius(e, true));
     }
 }
@@ -1168,7 +1183,10 @@ void entcopy()
     entcopygrid = sel.grid;
     entcopybuf.shrink(0);
     ADD_IMPLICIT({
-        loopv(entgroup) ENT_FOCUS(entgroup[i], entcopybuf.add(e).o.sub(vec(sel.o)));
+        loopv(entgroup)
+        {
+            ENT_FOCUS(entgroup[i], entcopybuf.add(e).o.sub(vec(sel.o)));
+        }
     });
 }
 
@@ -1564,7 +1582,10 @@ void shrinkmap()
 
     ivec offset(octant, ivec(0, 0, 0), worldsize);
     vector<extentity *> &ents = entities::getents();
-    loopv(ents) ents[i]->o.sub(vec(offset));
+    loopv(ents)
+    {
+        ents[i]->o.sub(vec(offset));
+    }
 
     shrinkblendmap(octant);
 
@@ -1602,7 +1623,10 @@ void mpeditent(int i, const vec &o, int type, int attr1, int attr2, int attr3, i
         extentity &e = *ents[i];
         removeentityedit(i);
         int oldtype = e.type;
-        if(oldtype!=type) detachentity(e);
+        if(oldtype!=type)
+        {
+            detachentity(e);
+        }
         e.type = type;
         e.o = o;
         e.attr1 = attr1; e.attr2 = attr2; e.attr3 = attr3; e.attr4 = attr4; e.attr5 = attr5;

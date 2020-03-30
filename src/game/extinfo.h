@@ -80,7 +80,10 @@
                 else { teaminfo &t = teaminfos[ci->team-1]; scores.add(teamscore(ci->team, t.frags)); }
             }
         }
-        loopv(scores) extinfoteamscore(p, scores[i].team, scores[i].score);
+        loopv(scores)
+        {
+            extinfoteamscore(p, scores[i].team, scores[i].score);
+        }
     }
 
     void extserverinforeply(ucharbuf &req, ucharbuf &p)
@@ -106,7 +109,14 @@
                 clientinfo *ci = NULL;
                 if(cn >= 0)
                 {
-                    loopv(clients) if(clients[i]->clientnum == cn) { ci = clients[i]; break; }
+                    loopv(clients)
+                    {
+                        if(clients[i]->clientnum == cn)
+                        {
+                            ci = clients[i];
+                            break;
+                        }
+                    }
                     if(!ci)
                     {
                         putint(p, EXT_ERROR); //client requested by id was not found
@@ -119,12 +129,30 @@
 
                 ucharbuf q = p; //remember buffer position
                 putint(q, EXT_PLAYERSTATS_RESP_IDS); //send player ids following
-                if(ci) putint(q, ci->clientnum);
-                else loopv(clients) putint(q, clients[i]->clientnum);
+                if(ci)
+                {
+                    putint(q, ci->clientnum);
+                }
+                else
+                {
+                    loopv(clients)
+                    {
+                        putint(q, clients[i]->clientnum);
+                    }
+                }
                 sendserverinforeply(q);
 
-                if(ci) extinfoplayer(p, ci);
-                else loopv(clients) extinfoplayer(p, clients[i]);
+                if(ci)
+                {
+                    extinfoplayer(p, ci);
+                }
+                else
+                {
+                    loopv(clients)
+                    {
+                        extinfoplayer(p, clients[i]);
+                    }
+                }
                 return;
             }
 

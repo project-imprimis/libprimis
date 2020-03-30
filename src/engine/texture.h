@@ -180,21 +180,46 @@ struct Shader
 
     void flushparams(Slot *slot = NULL)
     {
-        if(!used) { allocparams(slot); used = true; }
-        loopv(globalparams) globalparams[i].flush();
+        if(!used)
+        {
+            allocparams(slot);
+            used = true;
+        }
+        loopv(globalparams)
+        {
+            globalparams[i].flush();
+        }
     }
 
     void force();
 
-    bool invalid() const { return (type&SHADER_INVALID)!=0; }
-    bool deferred() const { return (type&SHADER_DEFERRED)!=0; }
-    bool loaded() const { return !(type&(SHADER_DEFERRED|SHADER_INVALID)); }
+    bool invalid() const
+    {
+        return (type&SHADER_INVALID)!=0;
+    }
+    bool deferred() const
+    {
+        return (type&SHADER_DEFERRED)!=0;
+    }
+    bool loaded() const
+    {
+        return !(type&(SHADER_DEFERRED|SHADER_INVALID));
+    }
 
-    bool hasoption() const { return (type&SHADER_OPTION)!=0; }
+    bool hasoption() const
+    {
+        return (type&SHADER_OPTION)!=0;
+    }
 
-    bool isdynamic() const { return (type&SHADER_DYNAMIC)!=0; }
+    bool isdynamic() const
+    {
+        return (type&SHADER_DYNAMIC)!=0;
+    }
 
-    static inline bool isnull(const Shader *s) { return !s; }
+    static inline bool isnull(const Shader *s)
+    {
+        return !s;
+    }
 
     bool isnull() const { return isnull(this); }
 

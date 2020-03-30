@@ -52,30 +52,48 @@ namespace aiman
         vector<teamscore> teams;
         calcteams(teams);
         vector<clientinfo *> reassign;
-        loopv(bots) if(bots[i]) reassign.add(bots[i]);
+        loopv(bots)
+        {
+            if(bots[i])
+            {
+                reassign.add(bots[i]);
+            }
+        }
         while(reassign.length() && teams.length() && teams[0].score > teams.last().score + 1)
         {
             teamscore &t = teams.last();
             clientinfo *bot = NULL;
-            loopv(reassign) if(reassign[i] && reassign[i]->team != teams[0].team)
+            loopv(reassign)
             {
-                bot = reassign.removeunordered(i);
-                teams[0].score--;
-                t.score++;
-                for(int j = teams.length() - 2; j >= 0; j--)
+                if(reassign[i] && reassign[i]->team != teams[0].team)
                 {
-                    if(teams[j].score >= teams[j+1].score) break;
-                    swap(teams[j], teams[j+1]);
+                    bot = reassign.removeunordered(i);
+                    teams[0].score--;
+                    t.score++;
+                    for(int j = teams.length() - 2; j >= 0; j--)
+                    {
+                        if(teams[j].score >= teams[j+1].score)
+                        {
+                            break;
+                        }
+                        swap(teams[j], teams[j+1]);
+                    }
+                    break;
                 }
-                break;
             }
             if(bot)
             {
-                if(smode && bot->state.state==ClientState_Alive) smode->changeteam(bot, bot->team, t.team);
+                if(smode && bot->state.state==ClientState_Alive)
+                {
+                    smode->changeteam(bot, bot->team, t.team);
+                }
                 bot->team = t.team;
                 sendf(-1, 1, "riiii", N_SETTEAM, bot->clientnum, bot->team, 0);
             }
-            else teams.remove(0, 1);
+            else
+            {
+                teams.remove(0, 1);
+            }
         }
     }
 
@@ -302,8 +320,17 @@ namespace aiman
     void changemap()
     {
         dorefresh = true;
-        loopv(clients) if(clients[i]->local || clients[i]->privilege) return;
-        if(botbalance != (serverbotbalance != 0)) setbotbalance(NULL, serverbotbalance != 0);
+        loopv(clients)
+        {
+            if(clients[i]->local || clients[i]->privilege)
+            {
+                return;
+            }
+        }
+        if(botbalance != (serverbotbalance != 0))
+        {
+            setbotbalance(NULL, serverbotbalance != 0);
+        }
     }
 
     void addclient(clientinfo *ci)

@@ -282,7 +282,14 @@ namespace game
 
     void removebouncers(gameent *owner)
     {
-        loopv(bouncers) if(bouncers[i]->owner==owner) { delete bouncers[i]; bouncers.remove(i--); }
+        loopv(bouncers)
+        {
+            if(bouncers[i]->owner==owner)
+            {
+                delete bouncers[i];
+                bouncers.remove(i--);
+            }
+        }
     }
 
     void clearbouncers() { bouncers.deletecontents(); }

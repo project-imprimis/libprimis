@@ -28,10 +28,22 @@ VAR(hidechanges, 0, 0, 1);
 //if hidechanges = 0 then this functin does not display changes UI at the end
 void addchange(const char *desc, int type)
 {
-    if(!applydialog) return;
-    loopv(needsapply) if(!strcmp(needsapply[i].desc, desc)) return;
+    if(!applydialog)
+    {
+        return;
+    }
+    loopv(needsapply)
+    {
+        if(!strcmp(needsapply[i].desc, desc))
+        {
+            return;
+        }
+    }
     needsapply.add(change(type, desc));
-    if(!hidechanges) UI::showui("changes");
+    if(!hidechanges)
+    {
+        UI::showui("changes");
+    }
 }
 
 //clears out pending changes added by addchange()
@@ -46,17 +58,32 @@ void clearchanges(int type)
             if(!c.type) needsapply.remove(i);
         }
     }
-    if(needsapply.empty()) UI::hideui("changes");
+    if(needsapply.empty())
+    {
+        UI::hideui("changes");
+    }
 }
 
 //goes through and applies changes that are enqueued
 void applychanges()
 {
     int changetypes = 0;
-    loopv(needsapply) changetypes |= needsapply[i].type;
-    if(changetypes&Change_Graphics) execident("resetgl");
-    else if(changetypes&Change_Shaders) execident("resetshaders");
-    if(changetypes&Change_Sound) execident("resetsound");
+    loopv(needsapply)
+    {
+        changetypes |= needsapply[i].type;
+    }
+    if(changetypes&Change_Graphics)
+    {
+        execident("resetgl");
+    }
+    else if(changetypes&Change_Shaders)
+    {
+        execident("resetshaders");
+    }
+    if(changetypes&Change_Sound)
+    {
+        execident("resetsound");
+    }
 }
 
 //executes applychanges()
@@ -75,7 +102,10 @@ void menuprocess()
         lastmainmenu = mainmenu;
         execident("mainmenutoggled");
     }
-    if(mainmenu && !isconnected(true) && !UI::hascursor()) UI::showui("main");
+    if(mainmenu && !isconnected(true) && !UI::hascursor())
+    {
+        UI::showui("main");
+    }
 }
 
 //toggles if the main menu is shown

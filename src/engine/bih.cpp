@@ -241,9 +241,18 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
 BIH::BIH(vector<mesh> &buildmeshes)
   : meshes(NULL), nummeshes(0), nodes(NULL), numnodes(0), tribbs(NULL), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0), entradius(0)
 {
-    if(buildmeshes.empty()) return;
-    loopv(buildmeshes) numtris += buildmeshes[i].numtris;
-    if(!numtris) return;
+    if(buildmeshes.empty())
+    {
+        return;
+    }
+    loopv(buildmeshes)
+    {
+        numtris += buildmeshes[i].numtris;
+    }
+    if(!numtris)
+    {
+        return;
+    }
 
     nummeshes = buildmeshes.length();
     meshes = new mesh[nummeshes];

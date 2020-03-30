@@ -2033,8 +2033,17 @@ struct lightbatch : lightbatchkey
 
     bool overlaps(int tx1, int ty1, int tx2, int ty2, const uint *tilemask) const
     {
-        if(!tx1 && !ty1 && tx2 >= lighttilew && ty2 >= lighttileh && !tilemask) return true;
-        loopv(rects) if(rects[i].overlaps(tx1, ty1, tx2, ty2, tilemask)) return true;
+        if(!tx1 && !ty1 && tx2 >= lighttilew && ty2 >= lighttileh && !tilemask)
+        {
+            return true;
+        }
+        loopv(rects)
+        {
+            if(rects[i].overlaps(tx1, ty1, tx2, ty2, tilemask))
+            {
+                return true;
+            }
+        }
         return false;
     }
 };
@@ -3646,18 +3655,25 @@ void collectlights()
 
     // point lights processed here
     const vector<extentity *> &ents = entities::getents();
-    if(!editmode || !fullbright) loopv(ents)
+    if(!editmode || !fullbright)
     {
-        const extentity *e = ents[i];
-        if(e->type != Ent_Light || e->attr1 <= 0) continue;
-
-        if(smviscull)
+        loopv(ents)
         {
-            if(isfoggedsphere(e->attr1, e->o)) continue;
+            const extentity *e = ents[i];
+            if(e->type != Ent_Light || e->attr1 <= 0)
+            {
+                continue;
+            }
+            if(smviscull && isfoggedsphere(e->attr1, e->o))
+            {
+                continue;
+            }
+            lightinfo &l = lights.add(lightinfo(i, *e));
+            if(l.validscissor())
+            {
+                lightorder.add(lights.length()-1);
+            }
         }
-
-        lightinfo &l = lights.add(lightinfo(i, *e));
-        if(l.validscissor()) lightorder.add(lights.length()-1);
     }
 
     int numdynlights = 0;
@@ -3691,7 +3707,10 @@ void collectlights()
         {
             int idx = lightorder[i];
             lightinfo &l = lights[idx];
-            if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= worldsize) continue;
+            if((l.noshadow() && (!oqvol || !l.volumetric())) || l.radius >= worldsize)
+            {
+                continue;
+            }
             vec bbmin, bbmax;
             l.calcbb(bbmin, bbmax);
             if(!camera1->o.insidebb(bbmin, bbmax, 2))
@@ -3721,43 +3740,66 @@ void collectlights()
     smused = 0;
 
     if(smcache && !smnoshadow && shadowcache.numelems)
-    for(int mismatched = 0; mismatched < 2; ++mismatched)
     {
-        loopv(lightorder)
+        for(int mismatched = 0; mismatched < 2; ++mismatched)
         {
-            int idx = lightorder[i];
-            lightinfo &l = lights[idx];
-            if(l.noshadow()) continue;
-
-            shadowcacheval *cached = shadowcache.access(l);
-            if(!cached) continue;
-
-            float prec = smprec, lod;
-            int w, h;
-            if(l.spot) { w = 1; h = 1; prec *= tan360(l.spot); lod = smspotprec; }
-            else { w = 3; h = 2; lod = smcubeprec; }
-            lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), float(smminsize), float(smmaxsize));
-            int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
-            w *= size;
-            h *= size;
-
-            if(mismatched)
+            loopv(lightorder)
             {
-                if(cached->size == size) continue;
-
-                ushort x = USHRT_MAX, y = USHRT_MAX;
-                if(!shadowatlaspacker.insert(x, y, w, h)) continue;
-                addshadowmap(x, y, size, l.shadowmap, idx);
+                int idx = lightorder[i];
+                lightinfo &l = lights[idx];
+                if(l.noshadow())
+                {
+                    continue;
+                }
+                shadowcacheval *cached = shadowcache.access(l);
+                if(!cached)
+                {
+                    continue;
+                }
+                float prec = smprec, lod;
+                int w, h;
+                if(l.spot)
+                {
+                    w = 1;
+                    h = 1;
+                    prec *= tan360(l.spot);
+                    lod = smspotprec;
+                }
+                else
+                {
+                    w = 3;
+                    h = 2;
+                    lod = smcubeprec;
+                }
+                lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), float(smminsize), float(smmaxsize));
+                int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+                w *= size;
+                h *= size;
+                if(mismatched)
+                {
+                    if(cached->size == size)
+                    {
+                        continue;
+                    }
+                    ushort x = USHRT_MAX, y = USHRT_MAX;
+                    if(!shadowatlaspacker.insert(x, y, w, h))
+                    {
+                        continue;
+                    }
+                    addshadowmap(x, y, size, l.shadowmap, idx);
+                }
+                else
+                {
+                    if(cached->size != size)
+                    {
+                        continue;
+                    }
+                    ushort x = cached->x, y = cached->y;
+                    shadowatlaspacker.reserve(x, y, w, h);
+                    addshadowmap(x, y, size, l.shadowmap, idx, cached);
+                }
+                smused += w*h;
             }
-            else
-            {
-                if(cached->size != size) continue;
-
-                ushort x = cached->x, y = cached->y;
-                shadowatlaspacker.reserve(x, y, w, h);
-                addshadowmap(x, y, size, l.shadowmap, idx, cached);
-            }
-            smused += w*h;
         }
     }
 }
@@ -3817,7 +3859,10 @@ static void batchlights(const batchstack &initstack)
             const batchrect &r = batchrects[i];
             if(r.outside(s))
             {
-                if(i != outside) swap(batchrects[i], batchrects[outside]);
+                if(i != outside)
+                {
+                    swap(batchrects[i], batchrects[outside]);
+                }
                 ++outside;
             }
             else if(s.inside(r))
@@ -3825,7 +3870,11 @@ static void batchlights(const batchstack &initstack)
                 ++groups[r.group];
                 swap(batchrects[i--], batchrects[--inside]);
             }
-            else if(r.idx < splitidx) { split = r; splitidx = r.idx; }
+            else if(r.idx < splitidx)
+            {
+                split = r;
+                splitidx = r.idx;
+            }
         }
 
         uchar flags = s.flags;
@@ -3934,8 +3983,19 @@ void packlights()
         {
             float prec = smprec, lod;
             int w, h;
-            if(l.spot) { w = 1; h = 1; prec *= tan360(l.spot); lod = smspotprec; }
-            else { w = 3; h = 2; lod = smcubeprec; }
+            if(l.spot)
+            {
+                w = 1;
+                h = 1;
+                prec *= tan360(l.spot);
+                lod = smspotprec;
+            }
+            else
+            {
+                w = 3;
+                h = 2;
+                lod = smcubeprec;
+            }
             lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), float(smminsize), float(smmaxsize));
             int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
             w *= size;
@@ -3946,7 +4006,10 @@ void packlights()
                 addshadowmap(x, y, size, l.shadowmap, idx);
                 smused += w*h;
             }
-            else if(smcache) shadowcachefull = true;
+            else if(smcache)
+            {
+                shadowcachefull = true;
+            }
         }
 
         batchrects.add(batchrect(l, i));

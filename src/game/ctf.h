@@ -39,7 +39,13 @@ struct ctfclientmode : clientmode
             owner = dropper = -1;
             owntime = 0;
 #else
-            if(id >= 0) loopv(players) players[i]->flagpickup &= ~(1<<id);
+            if(id >= 0)
+            {
+                loopv(players)
+                {
+                    players[i]->flagpickup &= ~(1<<id);
+                }
+            }
             owner = NULL;
             dropangle = spawnangle = 0;
             interploc = vec(0, 0, 0);
@@ -102,7 +108,10 @@ struct ctfclientmode : clientmode
         else f.dropcount = 0;
         f.dropper = -1;
 #else
-        loopv(players) players[i]->flagpickup &= ~(1<<f.id);
+        loopv(players)
+        {
+            players[i]->flagpickup &= ~(1<<f.id);
+        }
 #endif
     }
 
@@ -121,7 +130,10 @@ struct ctfclientmode : clientmode
         f.dropper = dropper;
         f.owner = -1;
 #else
-        loopv(players) players[i]->flagpickup &= ~(1<<f.id);
+        loopv(players)
+        {
+            players[i]->flagpickup &= ~(1<<f.id);
+        }
         f.owner = NULL;
         f.dropangle = yaw;
 #endif
@@ -139,7 +151,10 @@ struct ctfclientmode : clientmode
         f.dropcount = 0;
         f.owner = f.dropper = -1;
 #else
-        loopv(players) players[i]->flagpickup &= ~(1<<f.id);
+        loopv(players)
+        {
+            players[i]->flagpickup &= ~(1<<f.id);
+        }
         f.owner = NULL;
 #endif
     }
@@ -218,25 +233,42 @@ struct ctfclientmode : clientmode
     void dropflag(clientinfo *ci, clientinfo *dropper = NULL)
     {
         if(notgotflags) return;
-        loopv(flags) if(flags[i].owner==ci->clientnum)
+        loopv(flags)
         {
-            flag &f = flags[i];
-            ivec o(vec(ci->state.o).mul(DMF));
-            sendf(-1, 1, "ri7", N_DROPFLAG, ci->clientnum, i, ++f.version, o.x, o.y, o.z);
-            dropflag(i, vec(o).div(DMF), lastmillis, dropper ? dropper->clientnum : ci->clientnum, dropper && dropper!=ci);
+            if(flags[i].owner==ci->clientnum)
+            {
+                flag &f = flags[i];
+                ivec o(vec(ci->state.o).mul(DMF));
+                sendf(-1, 1, "ri7", N_DROPFLAG, ci->clientnum, i, ++f.version, o.x, o.y, o.z);
+                dropflag(i, vec(o).div(DMF), lastmillis, dropper ? dropper->clientnum : ci->clientnum, dropper && dropper!=ci);
+            }
         }
     }
 
     void leavegame(clientinfo *ci, bool disconnecting = false)
     {
         dropflag(ci);
-        loopv(flags) if(flags[i].dropper == ci->clientnum) { flags[i].dropper = -1; flags[i].dropcount = 0; }
+        loopv(flags)
+        {
+            if(flags[i].dropper == ci->clientnum)
+            {
+                flags[i].dropper = -1;
+                flags[i].dropcount = 0;
+            }
+        }
     }
 
     void died(clientinfo *ci, clientinfo *actor)
     {
         dropflag(ci, ctftkpenalty && actor && actor != ci && IS_TEAM(actor->team, ci->team) ? actor : NULL);
-        loopv(flags) if(flags[i].dropper == ci->clientnum) { flags[i].dropper = -1; flags[i].dropcount = 0; }
+        loopv(flags)
+        {
+            if(flags[i].dropper == ci->clientnum)
+            {
+                flags[i].dropper = -1;
+                flags[i].dropcount = 0;
+            }
+        }
     }
 
     bool canspawn(clientinfo *ci, bool connecting)
@@ -405,11 +437,14 @@ struct ctfclientmode : clientmode
     {
         if(d->state == ClientState_Alive)
         {
-            loopv(flags) if(flags[i].owner == d)
+            loopv(flags)
             {
-                float x = 1800*w/h*0.5f-HICON_SIZE/2, y = 1800*0.95f-HICON_SIZE/2;
-                drawicon(flags[i].team==1 ? HICON_BLUE_FLAG : HICON_RED_FLAG, x, y);
-                break;
+                if(flags[i].owner == d)
+                {
+                    float x = 1800*w/h*0.5f-HICON_SIZE/2, y = 1800*0.95f-HICON_SIZE/2;
+                    drawicon(flags[i].team==1 ? HICON_BLUE_FLAG : HICON_RED_FLAG, x, y);
+                    break;
+                }
             }
         }
 
@@ -435,7 +470,10 @@ struct ctfclientmode : clientmode
         loopv(flags)
         {
             flag &f = flags[i];
-            if(!VALID_TEAM(f.team)) continue;
+            if(!VALID_TEAM(f.team))
+            {
+                continue;
+            }
             if(f.owner)
             {
                 if(lastmillis%1000 >= 500) continue;
@@ -460,12 +498,15 @@ struct ctfclientmode : clientmode
 
     void removeplayer(gameent *d)
     {
-        loopv(flags) if(flags[i].owner == d)
+        loopv(flags)
         {
-            flag &f = flags[i];
-            f.interploc.x = -1;
-            f.interptime = 0;
-            dropflag(i, f.owner->o, f.owner->yaw, 1);
+            if(flags[i].owner == d)
+            {
+                flag &f = flags[i];
+                f.interploc.x = -1;
+                f.interptime = 0;
+                dropflag(i, f.owner->o, f.owner->yaw, 1);
+            }
         }
     }
 
@@ -577,11 +618,17 @@ struct ctfclientmode : clientmode
 
     void trydropflag()
     {
-        if(!MODE_CTF) return;
-        loopv(flags) if(flags[i].owner == player1)
+        if(!MODE_CTF)
         {
-            addmsg(N_TRYDROPFLAG, "rc", player1);
             return;
+        }
+        loopv(flags)
+        {
+            if(flags[i].owner == player1)
+            {
+                addmsg(N_TRYDROPFLAG, "rc", player1);
+                return;
+            }
         }
     }
 

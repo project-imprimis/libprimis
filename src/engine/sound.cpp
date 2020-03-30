@@ -117,7 +117,10 @@ void stopchannels()
     loopv(channels)
     {
         soundchannel &chan = channels[i];
-        if(!chan.inuse) continue;
+        if(!chan.inuse)
+        {
+            continue;
+        }
         Mix_HaltChannel(i);
         freechannel(i);
     }
@@ -363,11 +366,16 @@ static struct soundtype
         int oldlen = slots.length();
         soundslot &slot = slots.add();
         // soundslots.add() may relocate slot pointers
-        if(slots.getbuf() != oldslots) loopv(channels)
+        if(slots.getbuf() != oldslots)
         {
-            soundchannel &chan = channels[i];
-            if(chan.inuse && chan.slot >= oldslots && chan.slot < &oldslots[oldlen])
-                chan.slot = &slots[chan.slot - oldslots];
+            loopv(channels)
+            {
+                soundchannel &chan = channels[i];
+                if(chan.inuse && chan.slot >= oldslots && chan.slot < &oldslots[oldlen])
+                {
+                    chan.slot = &slots[chan.slot - oldslots];
+                }
+            }
         }
         slot.sample = s;
         slot.volume = vol ? vol : 100;
@@ -471,7 +479,13 @@ COMMAND(mapsoundreset, "");
 
 void resetchannels()
 {
-    loopv(channels) if(channels[i].inuse) freechannel(i);
+    loopv(channels)
+    {
+        if(channels[i].inuse)
+        {
+            freechannel(i);
+        }
+    }
     channels.shrink(0);
 }
 
@@ -489,10 +503,13 @@ void clear_sound()
 
 void stopmapsounds()
 {
-    loopv(channels) if(channels[i].inuse && channels[i].ent)
+    loopv(channels)
     {
-        Mix_HaltChannel(i);
-        freechannel(i);
+        if(channels[i].inuse && channels[i].ent)
+        {
+            Mix_HaltChannel(i);
+            freechannel(i);
+        }
     }
 }
 
@@ -660,14 +677,29 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
         if(config.maxuses)
         {
             int uses = 0;
-            loopv(channels) if(sounds.playing(channels[i], config) && ++uses >= config.maxuses) return -1;
+            loopv(channels)
+            {
+                if(sounds.playing(channels[i], config) && ++uses >= config.maxuses)
+                {
+                    return -1;
+                }
+            }
         }
-
         // avoid bursts of sounds with heavy packetloss and in sp
         static int soundsatonce = 0, lastsoundmillis = 0;
-        if(totalmillis == lastsoundmillis) soundsatonce++; else soundsatonce = 1;
+        if(totalmillis == lastsoundmillis)
+        {
+            soundsatonce++;
+        }
+        else
+        {
+            soundsatonce = 1;
+        }
         lastsoundmillis = totalmillis;
-        if(maxsoundsatonce && soundsatonce > maxsoundsatonce) return -1;
+        if(maxsoundsatonce && soundsatonce > maxsoundsatonce)
+        {
+            return -1;
+        }
     }
 
     if(channels.inrange(chanid))
@@ -675,8 +707,14 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
         soundchannel &chan = channels[chanid];
         if(sounds.playing(chan, config))
         {
-            if(loc) chan.loc = *loc;
-            else if(chan.hasloc()) chan.clearloc();
+            if(loc)
+            {
+                chan.loc = *loc;
+            }
+            else if(chan.hasloc())
+            {
+                chan.clearloc();
+            }
             return chanid;
         }
     }
@@ -688,11 +726,35 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     if(dbgsound) conoutf("sound: %s%s", sounds.dir, slot.sample->name);
 
     chanid = -1;
-    loopv(channels) if(!channels[i].inuse) { chanid = i; break; }
-    if(chanid < 0 && channels.length() < maxchannels) chanid = channels.length();
-    if(chanid < 0) loopv(channels) if(!channels[i].volume) { Mix_HaltChannel(i); freechannel(i); chanid = i; break; }
-    if(chanid < 0) return -1;
-
+    loopv(channels)
+    {
+        if(!channels[i].inuse)
+        {
+            chanid = i;
+            break;
+        }
+    }
+    if(chanid < 0 && channels.length() < maxchannels)
+    {
+        chanid = channels.length();
+    }
+    if(chanid < 0)
+    {
+        loopv(channels)
+        {
+            if(!channels[i].volume)
+            {
+                Mix_HaltChannel(i);
+                freechannel(i);
+                chanid = i;
+                break;
+            }
+        }
+    }
+    if(chanid < 0)
+    {
+        return -1;
+    }
     soundchannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
     updatechannel(chan);
     int playing = -1;
@@ -701,25 +763,43 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
         Mix_Volume(chanid, chan.volume);
         playing = expire >= 0 ? Mix_FadeInChannelTimed(chanid, slot.sample->chunk, loops, fade, expire) : Mix_FadeInChannel(chanid, slot.sample->chunk, loops, fade);
     }
-    else playing = expire >= 0 ? Mix_PlayChannelTimed(chanid, slot.sample->chunk, loops, expire) : Mix_PlayChannel(chanid, slot.sample->chunk, loops);
-    if(playing >= 0) syncchannel(chan);
-    else freechannel(chanid);
+    else
+    {
+        playing = expire >= 0 ? Mix_PlayChannelTimed(chanid, slot.sample->chunk, loops, expire) : Mix_PlayChannel(chanid, slot.sample->chunk, loops);
+    }
+    if(playing >= 0)
+    {
+        syncchannel(chan);
+    }
+    else
+    {
+        freechannel(chanid);
+    }
     return playing;
 }
 
 void stopsounds()
 {
-    loopv(channels) if(channels[i].inuse)
+    loopv(channels)
     {
-        Mix_HaltChannel(i);
-        freechannel(i);
+        if(channels[i].inuse)
+        {
+            Mix_HaltChannel(i);
+            freechannel(i);
+        }
     }
 }
 
 bool stopsound(int n, int chanid, int fade)
 {
-    if(!gamesounds.configs.inrange(n) || !channels.inrange(chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n])) return false;
-    if(dbgsound) conoutf("stopsound: %s%s", gamesounds.dir, channels[chanid].slot->sample->name);
+    if(!gamesounds.configs.inrange(n) || !channels.inrange(chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
+    {
+        return false;
+    }
+    if(dbgsound)
+    {
+        conoutf("stopsound: %s%s", gamesounds.dir, channels[chanid].slot->sample->name);
+    }
     if(!fade || !Mix_FadeOutChannel(chanid, fade))
     {
         Mix_HaltChannel(chanid);

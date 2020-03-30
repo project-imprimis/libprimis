@@ -247,7 +247,13 @@ namespace ai
         lastwpcache = waypoints.length();
 
         wpavoid.clear();
-        loopv(waypoints) if(waypoints[i].weight < 0) wpavoid.avoidnear(NULL, waypoints[i].o.z + WAYPOINTRADIUS, waypoints[i].o, WAYPOINTRADIUS);
+        loopv(waypoints)
+        {
+            if(waypoints[i].weight < 0)
+            {
+                wpavoid.avoidnear(NULL, waypoints[i].o.z + WAYPOINTRADIUS, waypoints[i].o, WAYPOINTRADIUS);
+            }
+        }
     }
 
     struct wpcachestack
@@ -519,7 +525,10 @@ namespace ai
 
         if(!routeid)
         {
-            loopv(waypoints) waypoints[i].route = 0;
+            loopv(waypoints)
+            {
+                waypoints[i].route = 0;
+            }
             routeid = 1;
         }
 
@@ -717,8 +726,14 @@ namespace ai
 
     void navigate()
     {
-        if(shouldnavigate()) loopv(players) ai::navigate(players[i]);
-        if(invalidatedwpcaches) clearwpcache(false);
+        if(shouldnavigate())
+        {
+            loopv(players) ai::navigate(players[i]);
+        }
+        if(invalidatedwpcaches)
+        {
+            clearwpcache(false);
+        }
     }
 
     //deletes all waypoints on the map
@@ -804,7 +819,13 @@ namespace ai
         if(cleared)
         {
             player1->lastnode = -1;
-            loopv(players) if(players[i]) players[i]->lastnode = -1;
+            loopv(players)
+            {
+                if(players[i])
+                {
+                    players[i]->lastnode = -1;
+                }
+            }
             remapwaypoints();
             clearwpcache();
             return true;

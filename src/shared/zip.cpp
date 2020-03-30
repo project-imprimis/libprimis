@@ -196,7 +196,13 @@ static vector<ziparchive *> archives;
 
 ziparchive *findzip(const char *name)
 {
-    loopv(archives) if(!strcmp(name, archives[i]->name)) return archives[i];
+    loopv(archives)
+    {
+        if(!strcmp(name, archives[i]->name))
+        {
+            return archives[i];
+        }
+    }
     return NULL;
 }
 
@@ -204,7 +210,10 @@ static bool checkprefix(vector<zipfile> &files, const char *prefix, int prefixle
 {
     loopv(files)
     {
-        if(!strncmp(files[i].name, prefix, prefixlen)) return false;
+        if(!strncmp(files[i].name, prefix, prefixlen))
+        {
+            return false;
+        }
     }
     return true;
 }
@@ -214,33 +223,36 @@ static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mount
     string packagesdir = "media/";
     path(packagesdir);
     size_t striplen = stripdir ? strlen(stripdir) : 0;
-    if(!mountdir && !stripdir) loopv(files)
+    if(!mountdir && !stripdir)
     {
-        zipfile &f = files[i];
-        const char *foundpackages = strstr(f.name, packagesdir);
-        if(foundpackages)
+        loopv(files)
         {
-            if(foundpackages > f.name)
+            zipfile &f = files[i];
+            const char *foundpackages = strstr(f.name, packagesdir);
+            if(foundpackages)
             {
-                stripdir = f.name;
-                striplen = foundpackages - f.name;
-            }
-            break;
-        }
-        const char *foundogz = strstr(f.name, ".ogz");
-        if(foundogz)
-        {
-            const char *ogzdir = foundogz;
-            while(--ogzdir >= f.name && *ogzdir != PATHDIV);
-            if(ogzdir < f.name || checkprefix(files, f.name, ogzdir + 1 - f.name))
-            {
-                if(ogzdir >= f.name)
+                if(foundpackages > f.name)
                 {
                     stripdir = f.name;
-                    striplen = ogzdir + 1 - f.name;
+                    striplen = foundpackages - f.name;
                 }
-                if(!mountdir) mountdir = "media/map/";
                 break;
+            }
+            const char *foundogz = strstr(f.name, ".ogz");
+            if(foundogz)
+            {
+                const char *ogzdir = foundogz;
+                while(--ogzdir >= f.name && *ogzdir != PATHDIV);
+                if(ogzdir < f.name || checkprefix(files, f.name, ogzdir + 1 - f.name))
+                {
+                    if(ogzdir >= f.name)
+                    {
+                        stripdir = f.name;
+                        striplen = ogzdir + 1 - f.name;
+                    }
+                    if(!mountdir) mountdir = "media/map/";
+                    break;
+                }
             }
         }
     }
@@ -248,13 +260,19 @@ static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mount
     if(mountdir)
     {
         copystring(mdir, mountdir);
-        if(fixpackagedir(mdir) <= 1) mdir[0] = '\0';
+        if(fixpackagedir(mdir) <= 1)
+        {
+            mdir[0] = '\0';
+        }
     }
     loopv(files)
     {
         zipfile &f = files[i];
         formatstring(fname, "%s%s", mdir, striplen && !strncmp(f.name, stripdir, striplen) ? &f.name[striplen] : f.name);
-        if(arch.files.access(fname)) continue;
+        if(arch.files.access(fname))
+        {
+            continue;
+        }
         char *mname = newstring(fname);
         zipfile &mf = arch.files[mname];
         mf = f;

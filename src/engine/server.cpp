@@ -124,16 +124,25 @@ ENetSocket lansock = ENET_SOCKET_NULL;
 
 int localclients = 0, nonlocalclients = 0;
 
-bool hasnonlocalclients() { return nonlocalclients!=0; }
-bool haslocalclients() { return localclients!=0; }
+bool hasnonlocalclients()
+{
+    return nonlocalclients!=0;
+}
+bool haslocalclients()
+{
+    return localclients!=0;
+}
 
 client &addclient(int type)
 {
     client *c = NULL;
-    loopv(clients) if(clients[i]->type==ST_EMPTY)
+    loopv(clients)
     {
-        c = clients[i];
-        break;
+        if(clients[i]->type==ST_EMPTY)
+        {
+            c = clients[i];
+            break;
+        }
     }
     if(!c)
     {
@@ -195,7 +204,13 @@ void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
     if(n<0)
     {
         server::recordpacket(chan, packet->data, packet->dataLength);
-        loopv(clients) if(i!=exclude && server::allowbroadcast(i)) sendpacket(i, chan, packet);
+        loopv(clients)
+        {
+            if(i!=exclude && server::allowbroadcast(i))
+            {
+                sendpacket(i, chan, packet);
+            }
+        }
         return;
     }
     switch(clients[n]->type)
@@ -205,11 +220,12 @@ void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
             enet_peer_send(clients[n]->peer, chan, packet);
             break;
         }
-
 #ifndef STANDALONE
         case ST_LOCAL:
+        {
             localservertoclient(chan, packet);
             break;
+        }
 #endif
     }
 }
@@ -357,7 +373,10 @@ void disconnect_client(int n, int reason)
 
 void kicknonlocalclients(int reason)
 {
-    loopv(clients) if(clients[i]->type==ST_TCPIP) disconnect_client(i, reason);
+    loopv(clients)
+    {
+        if(clients[i]->type==ST_TCPIP) disconnect_client(i, reason);
+    }
 }
 
 void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
@@ -370,8 +389,18 @@ void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
 void localclienttoserver(int chan, ENetPacket *packet)
 {
     client *c = NULL;
-    loopv(clients) if(clients[i]->type==ST_LOCAL) { c = clients[i]; break; }
-    if(c) process(packet, c->num, chan);
+    loopv(clients)
+    {
+        if(clients[i]->type==ST_LOCAL)
+        {
+            c = clients[i];
+            break;
+        }
+    }
+    if(c)
+    {
+        process(packet, c->num, chan);
+    }
 }
 
 #ifdef STANDALONE
@@ -740,13 +769,19 @@ void flushserver(bool force)
 void localdisconnect(bool cleanup)
 {
     bool disconnected = false;
-    loopv(clients) if(clients[i]->type==ST_LOCAL)
+    loopv(clients)
     {
-        server::localdisconnect(i);
-        delclient(clients[i]);
-        disconnected = true;
+        if(clients[i]->type==ST_LOCAL)
+        {
+            server::localdisconnect(i);
+            delclient(clients[i]);
+            disconnected = true;
+        }
     }
-    if(!disconnected) return;
+    if(!disconnected)
+    {
+        return;
+    }
     game::gamedisconnect(cleanup);
     mainmenu = 1;
 }
@@ -859,8 +894,14 @@ static void writeline(logline &line)
 
 static void setupconsole()
 {
-    if(conwindow) return;
-    if(!AllocConsole()) return;
+    if(conwindow)
+    {
+        return;
+    }
+    if(!AllocConsole())
+    {
+        return;
+    }
     SetConsoleCtrlHandler(consolehandler, TRUE);
     conwindow = GetConsoleWindow();
     SetConsoleTitle(apptip);
@@ -873,7 +914,10 @@ static void setupconsole()
     SetConsoleScreenBufferSize(outhandle, coninfo.dwSize);
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
-    loopv(loglines) writeline(loglines[i]);
+    loopv(loglines)
+    {
+        writeline(loglines[i]);
+    }
 }
 
 enum
@@ -893,7 +937,7 @@ static LRESULT CALLBACK handlemessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
             switch(lParam)
             {
                 //case WM_MOUSEMOVE:
-                //	break;
+                //  break;
                 case WM_LBUTTONUP:
                 case WM_RBUTTONUP:
                 {

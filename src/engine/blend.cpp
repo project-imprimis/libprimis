@@ -843,13 +843,16 @@ bool usesblendmap(int x1, int y1, int x2, int y2)
 
 void bindblendtexture(const ivec &p)
 {
-    loopv(blendtexs) if(blendtexs[i].contains(p))
+    loopv(blendtexs)
     {
-        BlendTexture &bt = blendtexs[i];
-        int tsize = 1<<min(worldscale, 12);
-        GLOBALPARAMF(blendmapparams, bt.x, bt.y, 1.0f/tsize, 1.0f/tsize);
-        glBindTexture(GL_TEXTURE_2D, bt.tex);
-        break;
+        if(blendtexs[i].contains(p))
+        {
+            BlendTexture &bt = blendtexs[i];
+            int tsize = 1<<min(worldscale, 12);
+            GLOBALPARAMF(blendmapparams, bt.x, bt.y, 1.0f/tsize, 1.0f/tsize);
+            glBindTexture(GL_TEXTURE_2D, bt.tex);
+            break;
+        }
     }
 }
 
@@ -885,7 +888,14 @@ static void updateblendtextures(uchar &type, BlendMapNode &node, int bmx, int bm
     for(int ty = ty1; ty < ty2; ty += 0x1000>>BM_SCALE) for(int tx = tx1; tx < tx2; tx += 0x1000>>BM_SCALE)
     {
         BlendTexture *bt = NULL;
-        loopv(blendtexs) if(blendtexs[i].contains(tx<<BM_SCALE, ty<<BM_SCALE)) { bt = &blendtexs[i]; break; }
+        loopv(blendtexs)
+        {
+            if(blendtexs[i].contains(tx<<BM_SCALE, ty<<BM_SCALE))
+            {
+                bt = &blendtexs[i];
+                break;
+            }
+        }
         if(!bt)
         {
             bt = &blendtexs.add();
@@ -927,28 +937,43 @@ void updateblendtextures(int x1, int y1, int x2, int y2)
 
 void clearblendtextures()
 {
-    loopv(blendtexs) blendtexs[i].cleanup();
+    loopv(blendtexs)
+    {
+        blendtexs[i].cleanup();
+    }
     blendtexs.shrink(0);
 }
 
 void cleanupblendmap()
 {
-    loopv(brushes) brushes[i]->cleanup();
-    loopv(blendtexs) blendtexs[i].cleanup();
+    loopv(brushes)
+    {
+        brushes[i]->cleanup();
+    }
+    loopv(blendtexs)
+    {
+        blendtexs[i].cleanup();
+    }
 }
 
 ICOMMAND(clearblendbrushes, "", (),
 {
-    while(brushes.length()) delete brushes.pop();
+    while(brushes.length())
+    {
+        delete brushes.pop();
+    }
     curbrush = -1;
 });
 
 void delblendbrush(const char *name)
 {
-    loopv(brushes) if(!strcmp(brushes[i]->name, name))
+    loopv(brushes)
     {
-        delete brushes[i];
-        brushes.remove(i--);
+        if(!strcmp(brushes[i]->name, name))
+        {
+            delete brushes[i];
+            brushes.remove(i--);
+        }
     }
     curbrush = brushes.empty() ? -1 : clamp(curbrush, 0, brushes.length()-1);
 }
@@ -996,7 +1021,14 @@ ICOMMAND(nextblendbrush, "i", (int *dir),
 
 ICOMMAND(setblendbrush, "s", (char *name),
 {
-    loopv(brushes) if(!strcmp(brushes[i]->name, name)) { curbrush = i; break; }
+    loopv(brushes)
+    {
+        if(!strcmp(brushes[i]->name, name))
+        {
+            curbrush = i;
+            break;
+        }
+    }
 });
 
 ICOMMAND(getblendbrushname, "i", (int *n),
