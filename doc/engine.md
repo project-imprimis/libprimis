@@ -111,9 +111,9 @@ Chapters use `#`; sections use `##`; subsections use `###`.
 ---
 
 Four spaces per indentation, spaces only.
-Opening brackets get their own new line.
+Opening brackets get their own new line; this is called "Allman style".
 
-#### Capitalization
+#### Symbol Names
 
 Macros are always fully capitalized and seperated with underscores:
 
@@ -133,12 +133,173 @@ Enum elements are in PascalCase:
 ```
 enum
 {
-    ElementOne   = 1;
-    ElementTwo   = 2;
-    ElementThree = 3;
+    Name_ElementOne   = 1,
+    Name_ElementTwo   = 2,
+    Name_ElementThree = 3,
 };
 ```
-Enums also are always expanded with a single element per line.
+
+#### Enums
+
+Enums also are always expanded with a single element per line. For aesthetics,
+it is best to place all the equals in the same location (as above). Imprimis
+uses no named enums besides those inhereted from ENet.
+
+#### `for` loops
+
+The accepted conventional variables for loops are the single letter `i`,`j`,`k,
+`l` temp vars. Use later loop variables only if the earlier ones are already
+present (don't use a loop over `j` unless it's inside a loop over `i`).
+
+The convention for incrementing loops (counting upwards) is as follows:
+
+```
+for(int i = 0; i < N; ++i)
+```
+Change the value passed to `N` rather than using a less than or equals sign `<=`
+so as to keep all for() statements clear as to their termination point
+immediately.
+
+For decrementing loops (counting downwards):
+
+```
+for(int i = N; --i >= 0;)
+```
+
+For loops over the length of a vector, use
+
+```
+for(int j = 0; j < N.length(); j++) //forward iteration
+for(int v = m; --v >= 0;) //reverse iteration
+
+```
+#### Indentation and Bracing
+
+The codebase uses the Allman style; that is, statements are enclosed in brackets
+on newlines. Case statements are indented one tab past their opening switch
+statement.
+
+```
+namespace MyNamespace
+{
+    enum
+    {
+        Name_ElementOne   = 1,
+        Name_ElementTwo   = 2,
+        Name_ElementThree = 3,
+    };
+
+    struct baz
+    {
+        int var1;
+        char var2;
+        union
+        {
+            char var3[8];
+            int var4;
+        };
+    }
+
+    if(foo)
+    {
+        int a;
+        int b;
+        doStuff;
+        doMoreStuff;
+    }
+    else
+    {
+        doStuff;
+    }
+
+    do
+    {
+        doStuff;
+    } while(bar)
+
+    while(foo)
+    {
+        doStuff;
+    }
+
+    int MyFunction()
+    {
+        for(int i; i < N; ++N)
+        {
+            if(bar)
+            {
+                switch(n)
+                {
+                    case 1:
+                        doStuff;
+
+                    case 2:
+                        doStuff;
+
+                    case 3:
+                    case 4:
+                    case N:
+                        doStuff;
+                }
+            }
+        }
+        return a;
+    }
+}
+```
+
+Control flow statements (if/while/do-while etc.) should get their own line;
+don't do stuff like
+
+```
+if(foo) for(int i; i < N; ++i) { doStuff; doMoreStuff }
+```
+
+In addition, always delimit statements after control expressions with curly
+braces, even if there is only one expression:
+
+```
+//do this
+if(foo)
+{
+    doStuff;
+}
+
+//not this
+if(foo)
+    doStuff;
+```
+
+#### Spacing
+
+Ternaries and boolean operators should be spaced out between each element:
+
+```
+foo ? bar : baz
+foo >= bar
+foo || bar
+```
+
+Arithmetic can be done without spaces, however:
+
+```
+foo+1
+3*bar
+```
+
+Operators should remain packed against their parentheses:
+
+```
+if(foo)
+{
+    stuff
+}
+
+while(bar)
+{
+    stuff
+}
+```
 
 ## 1.2 Default Paths & Libraries
 ---
