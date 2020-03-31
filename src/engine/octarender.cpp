@@ -322,7 +322,7 @@ struct vacollect : verthash
 #define GENVERTS(type, ptr, body) do \
     { \
         type *f = (type *)ptr; \
-        loopv(verts) \
+        for(int i = 0; i < verts.length(); i++) \
         { \
             const vertex &v = verts[i]; \
             body; \
@@ -353,7 +353,7 @@ struct vacollect : verthash
         vec center = orient.transform(vec(0, size.y*0.5f, 0)).add(e.o), radius = orient.abstransform(vec(size).mul(0.5f));
         vec bbmin = vec(center).sub(radius), bbmax = vec(center).add(radius);
         vec clipoffset = orient.transposedtransform(center).msub(size, 0.5f);
-        loopv(texs)
+        for(int i = 0; i < texs.length(); i++)
         {
             const sortkey &k = texs[i];
             if(k.layer == LAYER_BLEND || k.alpha != NO_ALPHA) continue;
@@ -421,7 +421,7 @@ struct vacollect : verthash
         if(decals.length()) extdecals.put(decals.getbuf(), decals.length());
         if(extdecals.empty()) return;
         vector<extentity *> &ents = entities::getents();
-        loopv(extdecals)
+        for(int i = 0; i < extdecals.length(); i++)
         {
             octaentities *oe = extdecals[i];
             for(int j = 0; j < oe->decals.length(); j++)
@@ -442,7 +442,7 @@ struct vacollect : verthash
                 gendecal(e, s, k);
             }
         }
-        loopv(extdecals)
+        for(int i = 0; i < extdecals.length(); i++)
         {
             octaentities *oe = extdecals[i];
             for(int j = 0; j < oe->decals.length(); j++)
@@ -491,7 +491,7 @@ struct vacollect : verthash
         {
             va->matbuf = new materialsurface[matsurfs.length()];
             memcpy(va->matbuf, matsurfs.getbuf(), matsurfs.length()*sizeof(materialsurface));
-            loopv(matsurfs)
+            for(int i = 0; i < matsurfs.length(); i++)
             {
                 materialsurface &m = matsurfs[i];
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
@@ -538,7 +538,7 @@ struct vacollect : verthash
         {
             va->texelems = new elementset[va->texs];
             ushort *edata = (ushort *)addvbo(va, VBO_EBUF, worldtris, sizeof(ushort)), *curbuf = edata;
-            loopv(texs)
+            for(int i = 0; i < texs.length(); i++)
             {
                 const sortkey &k = texs[i];
                 const sortval &t = indices[k];
@@ -631,7 +631,7 @@ struct vacollect : verthash
         {
             va->decalelems = new elementset[va->decaltexs];
             ushort *edata = (ushort *)addvbo(va, VBO_DECALBUF, decaltris, sizeof(ushort)), *curbuf = edata;
-            loopv(decaltexs)
+            for(int i = 0; i < decaltexs.length(); i++)
             {
                 const decalkey &k = decaltexs[i];
                 const sortval &t = decalindices[k];
@@ -1308,7 +1308,7 @@ void destroyva(vtxarray *va, bool reparent)
     if(reparent)
     {
         if(va->parent) va->parent->children.removeobj(va);
-        loopv(va->children)
+        for(int i = 0; i < va->children.length(); i++)
         {
             vtxarray *child = va->children[i];
             child->parent = va->parent;
@@ -1353,20 +1353,20 @@ void updatevabb(vtxarray *va, bool force)
     va->bbmax.max(va->watermax);
     va->bbmin.min(va->glassmin);
     va->bbmax.max(va->glassmax);
-    loopv(va->children)
+    for(int i = 0; i < va->children.length(); i++)
     {
         vtxarray *child = va->children[i];
         updatevabb(child, force);
         va->bbmin.min(child->bbmin);
         va->bbmax.max(child->bbmax);
     }
-    loopv(va->mapmodels)
+    for(int i = 0; i < va->mapmodels.length(); i++)
     {
         octaentities *oe = va->mapmodels[i];
         va->bbmin.min(oe->bbmin);
         va->bbmax.max(oe->bbmax);
     }
-    loopv(va->decals)
+    for(int i = 0; i < va->decals.length(); i++)
     {
         octaentities *oe = va->decals[i];
         va->bbmin.min(oe->bbmin);
@@ -1386,7 +1386,7 @@ void updatevabbs(bool force)
     {
         worldmin = nogimin = ivec(worldsize, worldsize, worldsize);
         worldmax = nogimax = ivec(0, 0, 0);
-        loopv(varoot)
+        for(int i = 0; i < varoot.length(); i++)
         {
             updatevabb(varoot[i], true);
         }
@@ -1396,7 +1396,13 @@ void updatevabbs(bool force)
             worldmax = ivec(worldsize, worldsize, worldsize);
         }
     }
-    else loopv(varoot) updatevabb(varoot[i]);
+    else
+    {
+        for(int i = 0; i < varoot.length(); i++)
+        {
+            updatevabb(varoot[i]);
+        }
+    }
 }
 
 struct mergedface
@@ -1496,7 +1502,7 @@ void addmergedverts(int level, const ivec &o)
     if(mfl.empty()) return;
     vec vo(ivec(o).mask(~0xFFF));
     vec pos[MAXFACEVERTS];
-    loopv(mfl)
+    for(int i = 0; i < mfl.length(); i++)
     {
         mergedface &mf = mfl[i];
         int numverts = mf.numverts&MAXFACEVERTS;
@@ -1517,11 +1523,11 @@ static inline void finddecals(vtxarray *va)
 {
     if(va->hasmerges&(MERGE_ORIGIN|MERGE_PART))
     {
-        loopv(va->decals)
+        for(int i = 0; i < va->decals.length(); i++)
         {
             vc.extdecals.add(va->decals[i]);
         }
-        loopv(va->children)
+        for(int i = 0; i < va->children.length(); i++)
         {
             finddecals(va->children[i]);
         }
@@ -1592,7 +1598,7 @@ void calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax)
     vec vmin(co), vmax = vmin;
     vmin.add(size);
 
-    loopv(vc.verts)
+    for(int i = 0; i < vc.verts.length(); i++)
     {
         const vec &v = vc.verts[i].pos;
         vmin.min(v);
@@ -1824,7 +1830,7 @@ void octarender()                               // creates va s for all leaf cub
     flushvbo();
 
     explicitsky = 0;
-    loopv(valist)
+    for(int i = 0; i < valist.length(); i++)
     {
         vtxarray *va = valist[i];
         explicitsky += va->sky;
@@ -1836,7 +1842,7 @@ void octarender()                               // creates va s for all leaf cub
 void precachetextures()
 {
     vector<int> texs;
-    loopv(valist)
+    for(int i = 0; i < valist.length(); i++)
     {
         vtxarray *va = valist[i];
         for(int j = 0; j < va->texs+va->blends; ++j)
@@ -1852,7 +1858,7 @@ void precachetextures()
             }
         }
     }
-    loopv(texs)
+    for(int i = 0; i < texs.length(); i++)
     {
         loadprogress = float(i+1)/texs.length();
         lookupvslot(texs[i]);

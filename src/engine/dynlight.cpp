@@ -85,7 +85,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
 void cleardynlights()
 {
     int faded = -1;
-    loopv(dynlights)
+    for(int i = 0; i < dynlights.length(); i++)
     {
         if(lastmillis<dynlights[i].expire)
         {
@@ -119,7 +119,7 @@ void updatedynlights()
     cleardynlights();
     game::adddynlights();
 
-    loopv(dynlights)
+    for(int i = 0; i < dynlights.length(); i++)
     {
         dynlight &d = dynlights[i];
         if(d.owner) game::dynlighttrack(d.owner, d.o, d.hud);
@@ -175,7 +175,7 @@ bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, 
 void dynlightreaching(const vec &target, vec &color, vec &dir, bool hud)
 {
     vec dyncolor(0, 0, 0);//, dyndir(0, 0, 0);
-    loopv(dynlights)
+    for(int i = 0; i < dynlights.length(); i++)
     {
         dynlight &d = dynlights[i];
         if(d.curradius<=0)

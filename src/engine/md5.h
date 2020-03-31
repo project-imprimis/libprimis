@@ -237,7 +237,7 @@ struct md5 : skelloader<md5>
             if(skel->shared <= 1)
             {
                 skel->linkchildren();
-                loopv(basejoints)
+                for(int i = 0; i < basejoints.length(); i++)
                 {
                     boneinfo &b = skel->bones[i];
                     b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
@@ -245,7 +245,7 @@ struct md5 : skelloader<md5>
                 }
             }
 
-            loopv(meshes)
+            for(int i = 0; i < meshes.length(); i++)
             {
                 md5mesh &m = *(md5mesh *)meshes[i];
                 m.buildverts(basejoints);
@@ -349,7 +349,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     dualquat *frame = &animbones[tmp*skel->numbones];
-                    loopv(basejoints)
+                    for(int i = 0; i < basejoints.length(); i++)
                     {
                         md5hierarchy &h = hierarchy[i];
                         md5joint j = basejoints[i];

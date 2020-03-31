@@ -71,7 +71,7 @@ ICOMMAND(gban, "s", (char *name), addban(gbans, name));
 
 bool checkban(vector<ipmask> &bans, enet_uint32 host)
 {
-    loopv(bans)
+    for(int i = 0; i < bans.length(); i++)
     {
         if(bans[i].check(host))
         {
@@ -254,7 +254,7 @@ void genserverlist()
     while(gameserverlists.length() && gameserverlists.last()->refs<=0)
         delete gameserverlists.pop();
     messagebuf *l = new messagebuf(gameserverlists);
-    loopv(gameservers)
+    for(int i = 0; i < gameservers.length(); i++)
     {
         gameserver &s = *gameservers[i];
         if(!s.lastpong) continue;
@@ -273,7 +273,7 @@ void gengbanlist()
     l->buf.put(header, strlen(header));
     string cmd = "addgban ";
     int cmdlen = strlen(cmd);
-    loopv(gbans)
+    for(int i = 0; i < gbans.length(); i++)
     {
         ipmask &b = gbans[i];
         l->buf.put(cmd, cmdlen + b.print(&cmd[cmdlen]));        
@@ -286,13 +286,13 @@ void gengbanlist()
     }
     while(gbanlists.length() && gbanlists.last()->refs<=0)
         delete gbanlists.pop();
-    loopv(gbanlists)
+    for(int i = 0; i < gbanlists.length(); i++)
     {
         messagebuf *m = gbanlists[i];
         if(m->refs > 0 && !m->endswith(*l)) m->concat(*l);
     }
     gbanlists.add(l);
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         client &c = *clients[i];
         if(c.servport >= 0 && !c.message)
@@ -307,7 +307,7 @@ void addgameserver(client &c)
 {
     if(gameservers.length() >= SERVER_LIMIT) return;
     int dups = 0;
-    loopv(gameservers)
+    for(int i = 0; i < gameservers.length(); i++)
     {
         gameserver &s = *gameservers[i];
         if(s.address.host != c.address.host) continue; 
@@ -341,7 +341,7 @@ void addgameserver(client &c)
 
 client *findclient(gameserver &s)
 {
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         client &c = *clients[i];
         if(s.address.host == c.address.host && s.port == c.servport)
@@ -367,7 +367,7 @@ void checkserverpongs()
         buf.dataLength = sizeof(pong);
         int len = enet_socket_receive(pingsocket, &addr, &buf, 1);
         if(len <= 0) break;
-        loopv(gameservers)
+        for(int i = 0; i < gameservers.length(); i++)
         {
             gameserver &s = *gameservers[i];
             if(s.address.host == addr.host && s.address.port == addr.port)
@@ -409,7 +409,7 @@ void bangameservers()
 void checkgameservers()
 {
     ENetBuffer buf;
-    loopv(gameservers)
+    for(int i = 0; i < gameservers.length(); i++)
     {
         gameserver &s = *gameservers[i];
         if(s.lastping && s.lastpong && ENET_TIME_LESS_EQUAL(s.lastping, s.lastpong))
@@ -454,7 +454,7 @@ void messagebuf::purge()
 void purgeauths(client &c)
 {
     int expired = 0;
-    loopv(c.authreqs)
+    for(int i = 0; i < c.authreqs.length(); i++)
     {
         if(ENET_TIME_DIFFERENCE(servtime, c.authreqs[i].reqtime) >= AUTH_TIME)
         {
@@ -516,7 +516,7 @@ void confauth(client &c, uint id, const char *val)
 {
     purgeauths(c);
 
-    loopv(c.authreqs)
+    for(int i = 0; i < c.authreqs.length(); i++)
     {
         if(c.authreqs[i].id == id)
         {
@@ -599,7 +599,7 @@ void checkclients()
     ENET_SOCKETSET_EMPTY(writeset);
     ENET_SOCKETSET_ADD(readset, serversocket);
     ENET_SOCKETSET_ADD(readset, pingsocket);
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         client &c = *clients[i];
         if(c.authreqs.length()) purgeauths(c);
@@ -618,7 +618,7 @@ void checkclients()
         else if(clientsocket!=ENET_SOCKET_NULL)
         {
             int dups = 0, oldest = -1;
-            loopv(clients)
+            for(int i = 0; i < clients.length(); i++)
             {
                 if(clients[i]->address.host == address.host)
                 {
@@ -640,7 +640,7 @@ void checkclients()
         }
     }
 
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         client &c = *clients[i];
         if((c.message || c.output.length()) && ENET_SOCKETSET_CHECK(writeset, c.socket))

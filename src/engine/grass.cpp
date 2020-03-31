@@ -193,7 +193,7 @@ static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstr
 
 static void gengrassquads(vtxarray *va)
 {
-    loopv(va->grasstris)
+    for(int i = 0; i < va->grasstris.length(); i++)
     {
         grasstri &g = va->grasstris[i];
         if(isfoggedsphere(g.radius, g.center)) continue;
@@ -301,7 +301,7 @@ void rendergrass()
     GLOBALPARAMF(grasstest, grasstest);
 
     int texid = -1, blend = -1;
-    loopv(grassgroups)
+    for(int i = 0; i < grassgroups.length(); i++)
     {
         grassgroup &g = grassgroups[i];
 

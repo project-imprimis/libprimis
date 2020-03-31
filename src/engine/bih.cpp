@@ -245,7 +245,7 @@ BIH::BIH(vector<mesh> &buildmeshes)
     {
         return;
     }
-    loopv(buildmeshes)
+    for(int i = 0; i < buildmeshes.length(); i++)
     {
         numtris += buildmeshes[i].numtris;
     }

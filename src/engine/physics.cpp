@@ -137,7 +137,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
     const vector<extentity *> &ents = entities::getents();
 //=======ENT_SEL_INTERSECT ENT_INTERSECT
     #define ENT_INTERSECT(type, func) do { \
-        loopv(oc->type) \
+        for(int i = 0; i < oc->type.length(); i++) \
         { \
             extentity &e = *ents[oc->type[i]]; \
             if(!(e.flags&EntFlag_Octa) || &e==t) continue; \
@@ -179,7 +179,7 @@ static float disttooutsideent(const vec &o, const vec &ray, float radius, int mo
     int orient;
     float dist = radius, f = 0.0f;
     const vector<extentity *> &ents = entities::getents();
-    loopv(outsideents)
+    for(int i = 0; i < outsideents.length(); i++)
     {
         extentity &e = *ents[outsideents[i]];
         if(!(e.flags&EntFlag_Octa) || &e == t) continue;
@@ -200,7 +200,7 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
 {
     float dist = radius, f = 0.0f;
     const vector<extentity *> &ents = entities::getents();
-    loopv(oc->mapmodels)
+    for(int i = 0; i < oc->mapmodels.length(); i++)
     {
         extentity &e = *ents[oc->mapmodels[i]];
         if(!(e.flags&EntFlag_Octa) || &e==t) continue;
@@ -602,7 +602,7 @@ bool overlapsdynent(const vec &o, float radius)
     loopdynentcache(x, y, o, radius)
     {
         const vector<physent *> &dynents = checkdynentcache(x, y);
-        loopv(dynents)
+        for(int i = 0; i < dynents.length(); i++)
         {
             physent *d = dynents[i];
             if(o.dist(d->o)-d->radius < radius) return true;
@@ -649,7 +649,7 @@ bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide w
     loopdynentcache(x, y, d->o, d->radius)
     {
         const vector<physent *> &dynents = checkdynentcache(x, y);
-        loopv(dynents)
+        for(int i = 0; i < dynents.length(); i++)
         {
             physent *o = dynents[i];
             if(o==d || d->o.reject(o->o, d->radius+o->radius)) continue;
@@ -825,7 +825,7 @@ VAR(testtricol, 0, 0, 2);
 bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // collide with a mapmodel
 {
     const vector<extentity *> &ents = entities::getents();
-    loopv(oc.mapmodels)
+    for(int i = 0; i < oc.mapmodels.length(); i++)
     {
         extentity &e = *ents[oc.mapmodels[i]];
         if(e.flags&EntFlag_NoCollide || !mapmodels.inrange(e.attr1)) continue;

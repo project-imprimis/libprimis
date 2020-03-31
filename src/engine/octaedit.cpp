@@ -1411,7 +1411,7 @@ struct prefabmesh
 
         p.cleanup();
 
-        loopv(verts)
+        for(int i = 0; i < verts.length(); i++)
         {
             verts[i].norm.flip();
         }
@@ -1656,18 +1656,18 @@ struct vslotref
 
 void compacteditvslots()
 {
-    loopv(editingvslots)
+    for(int i = 0; i < editingvslots.length(); i++)
     {
         if(*editingvslots[i])
         {
             compactvslot(*editingvslots[i]);
         }
     }
-    loopv(unpackingvslots)
+    for(int i = 0; i < unpackingvslots.length(); i++)
     {
         compactvslot(*unpackingvslots[i].vslot);
     }
-    loopv(editinfos)
+    for(int i = 0; i < editinfos.length(); i++)
     {
         editinfo *e = editinfos[i];
         compactvslots(e->copy->c(), e->copy->size());
@@ -2279,7 +2279,7 @@ static vector<vslotmap> remappedvslots;
 
 static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 {
-    loopv(remappedvslots)
+    for(int i = 0; i < remappedvslots.length(); i++)
     {
         if(remappedvslots[i].index == index)
         {
@@ -2630,7 +2630,7 @@ static void filltexlist()
                 texmru.remove(i);
             }
         }
-        loopv(vslots)
+        for(int i = 0; i < vslots.length(); i++)
         {
             if(texmru.find(i)<0)
             {
@@ -2702,7 +2702,7 @@ void gettex()
     filltexlist();
     int tex = -1;
     LOOP_XYZ(sel, sel.grid, tex = c.texture[sel.orient]);
-    loopv(texmru)
+    for(int i = 0; i < texmru.length(); i++)
     {
         if(texmru[i]==tex)
         {
@@ -2758,7 +2758,7 @@ ICOMMAND(looptexmru, "re", (ident *id, uint *body),
 {
     LOOP_START(id, stack);
     filltexlist();
-    loopv(texmru)
+    for(int i = 0; i < texmru.length(); i++)
     {
         loopiter(id, stack, texmru[i]); execute(body);
     }

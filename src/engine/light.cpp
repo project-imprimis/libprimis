@@ -316,7 +316,7 @@ const vector<int> &checklightcache(int x, int y)
     lce.lights.setsize(0);
     int csize = 1<<lightcachesize, cx = x<<lightcachesize, cy = y<<lightcachesize;
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         const extentity &light = *ents[i];
         switch(light.type)
@@ -694,7 +694,7 @@ void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity
     color = dir = vec(0, 0, 0);
     const vector<extentity *> &ents = entities::getents();
     const vector<int> &lights = checklightcache(int(target.x), int(target.y));
-    loopv(lights)
+    for(int i = 0; i < lights.length(); i++)
     {
         extentity &e = *ents[lights[i]];
         if(e.type != Ent_Light || e.attr1 <= 0)

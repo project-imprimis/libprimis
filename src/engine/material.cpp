@@ -245,7 +245,7 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
 {
     va->lavamax = va->watermax = va->glassmax = co;
     va->lavamin = va->watermin = va->glassmin = ivec(co).add(size);
-    loopv(matsurfs)
+    for(int i = 0; i < matsurfs.length(); i++)
     {
         materialsurface &m = matsurfs[i];
         switch(m.material&MATF_VOLUME)
@@ -730,7 +730,7 @@ void rendermaterialmask()
     for(int k = 0; k < 4; ++k)
     {
         vector<materialsurface> &surfs = glasssurfs[k];
-        loopv(surfs)
+        for(int i = 0; i < surfs.length(); i++)
         {
             drawmaterial(surfs[i], 0.1f);
         }
@@ -738,7 +738,7 @@ void rendermaterialmask()
     for(int k = 0; k < 4; ++k)
     {
         vector<materialsurface> &surfs = watersurfs[k];
-        loopv(surfs)
+        for(int i = 0; i < surfs.length(); i++)
         {
             drawmaterial(surfs[i], WATER_OFFSET);
         }
@@ -746,7 +746,7 @@ void rendermaterialmask()
     for(int k = 0; k < 4; ++k)
     {
         vector<materialsurface> &surfs = waterfallsurfs[k];
-        loopv(surfs)
+        for(int i = 0; i < surfs.length(); i++)
         {
             drawmaterial(surfs[i], 0.1f);
         }
@@ -807,7 +807,7 @@ void renderglass()
 
         short envmap = EMID_NONE;
         if(!glassenv) SETSHADER(glass);
-        loopv(surfs)
+        for(int i = 0; i < surfs.length(); i++)
         {
             materialsurface &m = surfs[i];
             if(m.envmap != envmap && glassenv)
@@ -860,7 +860,7 @@ void rendereditmaterials()
     glEnable(GL_BLEND);
 
     int lastmat = -1;
-    loopv(editsurfs)
+    for(int i = 0; i < editsurfs.length(); i++)
     {
         const materialsurface &m = editsurfs[i];
         if(lastmat!=m.material)

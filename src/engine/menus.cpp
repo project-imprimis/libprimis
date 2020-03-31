@@ -32,7 +32,7 @@ void addchange(const char *desc, int type)
     {
         return;
     }
-    loopv(needsapply)
+    for(int i = 0; i < needsapply.length(); i++)
     {
         if(!strcmp(needsapply[i].desc, desc))
         {
@@ -68,7 +68,7 @@ void clearchanges(int type)
 void applychanges()
 {
     int changetypes = 0;
-    loopv(needsapply)
+    for(int i = 0; i < needsapply.length(); i++)
     {
         changetypes |= needsapply[i].type;
     }

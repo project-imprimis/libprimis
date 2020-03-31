@@ -539,7 +539,7 @@ struct animmodel : model
         virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
 
         #define LOOP_RENDER_MESHES(type, name, body) do { \
-            loopv(meshes) \
+            for(int i = 0; i < meshes.length(); i++) \
             { \
                 type &name = *(type *)meshes[i]; \
                 if(name.canrender || dbgcolmesh) { body; } \
@@ -553,7 +553,7 @@ struct animmodel : model
 
         void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
         {
-            loopv(meshes)
+            for(int i = 0; i < meshes.length(); i++)
             {
                 meshes[i]->genBIH(skins[i], bih, t);
             }
@@ -683,7 +683,7 @@ struct animmodel : model
             {
                 meshes->cleanup();
             }
-            loopv(skins)
+            for(int i = 0; i < skins.length(); i++)
             {
                 skins[i].cleanup();
             }
@@ -699,7 +699,7 @@ struct animmodel : model
             matrix4x3 t = m;
             t.scale(model->scale);
             meshes->calcbb(bbmin, bbmax, t);
-            loopv(links)
+            for(int i = 0; i < links.length(); i++)
             {
                 matrix4x3 n;
                 meshes->concattagtransform(this, links[i].tag, m, n);
@@ -713,7 +713,7 @@ struct animmodel : model
             matrix4x3 t = m;
             t.scale(model->scale);
             meshes->genBIH(skins, bih, t);
-            loopv(links)
+            for(int i = 0; i < links.length(); i++)
             {
                 matrix4x3 n;
                 meshes->concattagtransform(this, links[i].tag, m, n);
@@ -727,7 +727,7 @@ struct animmodel : model
             matrix4x3 t = m;
             t.scale(model->scale);
             meshes->genshadowmesh(tris, t);
-            loopv(links)
+            for(int i = 0; i < links.length(); i++)
             {
                 matrix4x3 n;
                 meshes->concattagtransform(this, links[i].tag, m, n);
@@ -741,7 +741,7 @@ struct animmodel : model
             int i = meshes ? meshes->findtag(tag) : -1;
             if(i<0)
             {
-                loopv(links)
+                for(int i = 0; i < links.length(); i++)
                 {
                     if(links[i].p && links[i].p->link(p, tag, translate, anim, basetime, pos))
                     {
@@ -770,7 +770,7 @@ struct animmodel : model
                     return true;
                 }
             }
-            loopv(links)
+            for(int i = 0; i < links.length(); i++)
             {
                 if(links[i].p && links[i].p->unlink(p))
                 {
@@ -798,7 +798,7 @@ struct animmodel : model
 
         bool alphatested() const
         {
-            loopv(skins)
+            for(int i = 0; i < skins.length(); i++)
             {
                 if(skins[i].alphatested())
                 {
@@ -810,7 +810,7 @@ struct animmodel : model
 
         void preloadBIH()
         {
-            loopv(skins)
+            for(int i = 0; i < skins.length(); i++)
             {
                 skins[i].preloadBIH();
             }
@@ -818,7 +818,7 @@ struct animmodel : model
 
         void preloadshaders()
         {
-            loopv(skins)
+            for(int i = 0; i < skins.length(); i++)
             {
                 skins[i].preloadshader();
             }
@@ -992,7 +992,7 @@ struct animmodel : model
 
             if((anim&ANIM_REUSE) != ANIM_REUSE)
             {
-                loopv(links)
+                for(int i = 0; i < links.length(); i++)
                 {
                     linkedpart &link = links[i];
                     if(!link.p) continue;
@@ -1095,7 +1095,7 @@ struct animmodel : model
 
             if((anim&ANIM_REUSE) != ANIM_REUSE)
             {
-                loopv(links)
+                for(int i = 0; i < links.length(); i++)
                 {
                     linkedpart &link = links[i];
                     link.matrix.translate(link.translate, resize);
@@ -1103,7 +1103,10 @@ struct animmodel : model
                     matrixpos++;
                     matrixstack[matrixpos].mul(matrixstack[matrixpos-1], link.matrix);
 
-                    if(link.pos) *link.pos = matrixstack[matrixpos].gettranslation();
+                    if(link.pos)
+                    {
+                        *link.pos = matrixstack[matrixpos].gettranslation();
+                    }
 
                     if(!link.p)
                     {
@@ -1155,7 +1158,7 @@ struct animmodel : model
         virtual void loaded()
         {
             meshes->shared++;
-            loopv(skins)
+            for(int i = 0; i < skins.length(); i++)
             {
                 skins[i].setkey();
             }
@@ -1470,7 +1473,7 @@ struct animmodel : model
 
     void cleanup()
     {
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             parts[i]->cleanup();
         }
@@ -1539,7 +1542,7 @@ struct animmodel : model
         model::preloadBIH();
         if(bih)
         {
-            loopv(parts)
+            for(int i = 0; i < parts.length(); i++)
             {
                 parts[i]->preloadBIH();
             }
@@ -1569,7 +1572,7 @@ struct animmodel : model
 
     bool envmapped() const
     {
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1588,7 +1591,7 @@ struct animmodel : model
         {
             return true;
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             if(parts[i]->animated())
             {
@@ -1605,7 +1608,7 @@ struct animmodel : model
 
     bool alphatested() const
     {
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             if(parts[i]->alphatested())
             {
@@ -1631,8 +1634,11 @@ struct animmodel : model
         endload();
         if(flipy()) translate.y = -translate.y;
 
-        if(!success) return false;
-        loopv(parts)
+        if(!success)
+        {
+            return false;
+        }
+        for(int i = 0; i < parts.length(); i++)
         {
             if(!parts[i]->meshes)
             {
@@ -1645,7 +1651,7 @@ struct animmodel : model
 
     void preloadshaders()
     {
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             parts[i]->preloadshaders();
         }
@@ -1653,7 +1659,7 @@ struct animmodel : model
 
     void preloadmeshes()
     {
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             parts[i]->preloadmeshes();
         }
@@ -1665,7 +1671,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1680,7 +1686,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1704,7 +1710,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1719,7 +1725,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1734,7 +1740,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1748,8 +1754,11 @@ struct animmodel : model
 
     void setalphatest(float alphatest)
     {
-        if(parts.empty()) loaddefaultparts();
-        loopv(parts)
+        if(parts.empty())
+        {
+            loaddefaultparts();
+        }
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1764,7 +1773,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1779,7 +1788,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1794,7 +1803,7 @@ struct animmodel : model
         {
             loaddefaultparts();
         }
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
@@ -1836,7 +1845,7 @@ struct animmodel : model
 
     virtual void loaded()
     {
-        loopv(parts)
+        for(int i = 0; i < parts.length(); i++)
         {
             parts[i]->loaded();
         }
@@ -1977,7 +1986,7 @@ template<class MDL, class MESH> struct modelcommands
         if(!MDL::loading || MDL::loading->parts.empty()) { conoutf("not loading an %s", MDL::formatname()); return; } \
         part &mdl = *MDL::loading->parts.last(); \
         if(!mdl.meshes) return; \
-        loopv(mdl.meshes->meshes) \
+        for(int i = 0; i < mdl.meshes->meshes.length(); i++) \
         { \
             MESH &m = *(MESH *)mdl.meshes->meshes[i]; \
             if(!strcmp(meshname, "*") || (m.name && !strcmp(m.name, meshname))) \

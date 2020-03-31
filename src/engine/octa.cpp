@@ -1920,7 +1920,7 @@ static inline void clearmerge(cube &c, int orient)
 
 void addmerges(int orient, const ivec &co, const ivec &n, int offset, vector<poly> &polys)
 {
-    loopv(polys)
+    for(int i = 0; i < polys.length(); i++)
     {
         poly &p = polys[i];
         if(p.merged) addmerge(*p.c, orient, co, n, offset, p);
@@ -1933,7 +1933,7 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, vector<po
     if(polys.length() <= 1) { addmerges(orient, co, n, offset, polys); return; }
     hashset<plink> links(polys.length() <= 32 ? 128 : 1024);
     vector<plink *> queue;
-    loopv(polys)
+    for(int i = 0; i < polys.length(); i++)
     {
         poly &p = polys[i];
         int prev = p.numverts-1;
@@ -1957,7 +1957,7 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, vector<po
     vector<plink *> nextqueue;
     while(queue.length())
     {
-        loopv(queue)
+        for(int i = 0; i < queue.length(); i++)
         {
             plink &l = *queue[i];
             if(l.polys[0] >= 0 && l.polys[1] >= 0)

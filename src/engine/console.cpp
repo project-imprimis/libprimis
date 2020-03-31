@@ -467,7 +467,7 @@ COMMAND(onrelease, "s");
 
 void execbind(keym &k, bool isdown)
 {
-    loopv(releaseactions)
+    for(int i = 0; i < releaseactions.length(); i++)
     {
         releaseaction &ra = releaseactions[i];
         if(ra.key==&k)
@@ -672,7 +672,7 @@ void writebinds(stream *f)
     binds.sortname();
     for(int j = 0; j < 3; ++j)
     {
-        loopv(binds)
+        for(int i = 0; i < binds.length(); i++)
         {
             keym &km = *binds[i];
             if(*km.actions[j])
@@ -723,7 +723,7 @@ struct filesval
         files.deletearrays();
         listfiles(dir, ext, files);
         files.sort();
-        loopv(files)
+        for(int i = 0; i < files.length(); i++)
         {
             if(i && !strcmp(files[i], files[i-1]))
             {
@@ -826,7 +826,7 @@ void complete(char *s, int maxlen, const char *cmdprefix)
     {
         int commandsize = strchr(&s[cmdlen], ' ')+1-s;
         f->update();
-        loopv(f->files)
+        for(int i = 0; i < f->files.length(); i++)
         {
             if(strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
                       (!lastcomplete || strcmp(f->files[i], lastcomplete) > 0) &&
@@ -860,7 +860,7 @@ void writecompletions(stream *f)
     vector<char *> cmds;
     ENUMERATE_KT(completions, char *, k, filesval *, v, { if(v) cmds.add(k); });
     cmds.sort();
-    loopv(cmds)
+    for(int i = 0; i < cmds.length(); i++)
     {
         char *k = cmds[i];
         filesval *v = completions[k];

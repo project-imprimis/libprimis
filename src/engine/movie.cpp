@@ -123,7 +123,7 @@ struct aviwriter
         flushsegment();
 
         uint soundindexes = 0, videoindexes = 0, soundframes = 0, videoframes = 0, indexframes = 0;
-        loopv(segments)
+        for(int i = 0; i < segments.length(); i++)
         {
             avisegmentinfo &seg = segments[i];
             if(seg.soundindexsize) soundindexes++;
@@ -148,7 +148,7 @@ struct aviwriter
         f->seek(superindexvideooffset + 2 + 2, SEEK_SET);
         f->putlil<uint>(videoindexes);
         f->seek(superindexvideooffset + 2 + 2 + 4 + 4 + 4 + 4 + 4, SEEK_SET);
-        loopv(segments)
+        for(int i = 0; i < segments.length(); i++)
         {
             avisegmentinfo &seg = segments[i];
             f->putlil<uint>(seg.videoindexoffset&stream::offset(0xFFFFFFFFU));
@@ -162,7 +162,7 @@ struct aviwriter
             f->seek(superindexsoundoffset + 2 + 2, SEEK_SET);
             f->putlil<uint>(soundindexes);
             f->seek(superindexsoundoffset + 2 + 2 + 4 + 4 + 4 + 4 + 4, SEEK_SET);
-            loopv(segments)
+            for(int i = 0; i < segments.length(); i++)
             {
                 avisegmentinfo &seg = segments[i];
                 if(!seg.soundindexsize) continue;
@@ -661,7 +661,7 @@ struct aviwriter
         if(segments.length() == 1)
         {
             startchunk("idx1", index.length()*16);
-            loopv(index)
+            for(int i = 0; i < index.length(); i++)
             {
                 aviindexentry &entry = index[i];
                 // printf("%3d %s %08x\n", i, (entry.type==1)?"s":"v", entry.offset);

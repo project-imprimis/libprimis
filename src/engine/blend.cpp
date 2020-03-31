@@ -742,7 +742,7 @@ static vector<BlendTexture> blendtexs;
 
 void dumpblendtexs()
 {
-    loopv(blendtexs)
+    for(int i = 0; i < blendtexs.length(); i++)
     {
         BlendTexture &bt = blendtexs[i];
         if(!bt.size || !bt.valid) continue;
@@ -843,7 +843,7 @@ bool usesblendmap(int x1, int y1, int x2, int y2)
 
 void bindblendtexture(const ivec &p)
 {
-    loopv(blendtexs)
+    for(int i = 0; i < blendtexs.length(); i++)
     {
         if(blendtexs[i].contains(p))
         {
@@ -888,7 +888,7 @@ static void updateblendtextures(uchar &type, BlendMapNode &node, int bmx, int bm
     for(int ty = ty1; ty < ty2; ty += 0x1000>>BM_SCALE) for(int tx = tx1; tx < tx2; tx += 0x1000>>BM_SCALE)
     {
         BlendTexture *bt = NULL;
-        loopv(blendtexs)
+        for(int i = 0; i < blendtexs.length(); i++)
         {
             if(blendtexs[i].contains(tx<<BM_SCALE, ty<<BM_SCALE))
             {
@@ -937,7 +937,7 @@ void updateblendtextures(int x1, int y1, int x2, int y2)
 
 void clearblendtextures()
 {
-    loopv(blendtexs)
+    for(int i = 0; i < blendtexs.length(); i++)
     {
         blendtexs[i].cleanup();
     }
@@ -946,11 +946,11 @@ void clearblendtextures()
 
 void cleanupblendmap()
 {
-    loopv(brushes)
+    for(int i = 0; i < brushes.length(); i++)
     {
         brushes[i]->cleanup();
     }
-    loopv(blendtexs)
+    for(int i = 0; i < blendtexs.length(); i++)
     {
         blendtexs[i].cleanup();
     }
@@ -967,7 +967,7 @@ ICOMMAND(clearblendbrushes, "", (),
 
 void delblendbrush(const char *name)
 {
-    loopv(brushes)
+    for(int i = 0; i < brushes.length(); i++)
     {
         if(!strcmp(brushes[i]->name, name))
         {
@@ -1021,7 +1021,7 @@ ICOMMAND(nextblendbrush, "i", (int *dir),
 
 ICOMMAND(setblendbrush, "s", (char *name),
 {
-    loopv(brushes)
+    for(int i = 0; i < brushes.length(); i++)
     {
         if(!strcmp(brushes[i]->name, name))
         {

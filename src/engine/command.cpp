@@ -194,7 +194,7 @@ static bool initidents()
     dummyident = newident("//dummy", Idf_Unknown);
     if(identinits)
     {
-        loopv(*identinits)
+        for(int i = 0; i < (*identinits).length(); i++)
         {
             addident((*identinits)[i]);
         }
@@ -3148,7 +3148,7 @@ void writecfg(const char *name)
     vector<ident *> ids;
     ENUMERATE(idents, ident, id, ids.add(&id));
     ids.sortname();
-    loopv(ids)
+    for(int i = 0; i < ids.length(); i++)
     {
         ident &id = *ids[i];
         if(id.flags&Idf_Persist) 
@@ -3176,7 +3176,7 @@ void writecfg(const char *name)
     f->printf("\n");
     writebinds(f);
     f->printf("\n");
-    loopv(ids)
+    for(int i = 0; i < ids.length(); i++)
     {
         ident &id = *ids[i];
         if(id.type==Id_Alias && id.flags&Idf_Persist && !(id.flags&Idf_Overridden)) switch(id.valtype)
@@ -3202,7 +3202,7 @@ void changedvars()
     vector<ident *> ids;
     ENUMERATE(idents, ident, id, if(id.flags&Idf_Overridden) ids.add(&id));
     ids.sortname();
-    loopv(ids)
+    for(int i = 0; i < ids.length(); i++)
     {
         printvar(ids[i]);
     }
@@ -3892,7 +3892,7 @@ ICOMMAND(loopfiles, "rsse", (ident *id, char *dir, char *ext, uint *body),
     listfiles(dir, ext[0] ? ext : NULL, files);
     files.sort();
     files.uniquedeletearrays();
-    loopv(files)
+    for(int i = 0; i < files.length(); i++)
     {
         setiter(*id, files[i], stack);
         execute(body);
@@ -4011,7 +4011,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     }
 
     int offset = 0;
-    loopv(items)
+    for(int i = 0; i < items.length(); i++)
     {
         sortitem &item = items[i];
         if(!item.quotestart) continue;
@@ -4354,7 +4354,7 @@ COMMANDN(sleep, addsleep, "is");
 
 void checksleep(int millis)
 {
-    loopv(sleepcmds)
+    for(int i = 0; i < sleepcmds.length(); i++)
     {
         sleepcmd &s = sleepcmds[i];
         if(millis - s.millis >= s.delay)
@@ -4374,7 +4374,7 @@ void checksleep(int millis)
 void clearsleep(bool clearoverrides)
 {
     int len = 0;
-    loopv(sleepcmds)
+    for(int i = 0; i < sleepcmds.length(); i++)
     {
         if(sleepcmds[i].command)
         {
