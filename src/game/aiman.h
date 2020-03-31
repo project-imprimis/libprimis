@@ -115,8 +115,14 @@ namespace aiman
         loopv(clients)
         {
             clientinfo *ci = clients[i];
-            if(!validaiclient(ci) || ci==exclude) continue;
-            if(!least || ci->bots.length() < least->bots.length()) least = ci;
+            if(!validaiclient(ci) || ci==exclude)
+            {
+                continue;
+            }
+            if(!least || ci->bots.length() < least->bots.length())
+            {
+                least = ci;
+            }
         }
         return least;
     }
@@ -130,7 +136,10 @@ namespace aiman
             if(!ci || ci->ownernum < 0) { if(cn < 0) cn = i; continue; }
             numai++;
         }
-        if(numai >= maxai) return false;
+        if(numai >= maxai)
+        {
+            return false;
+        }
         if(bots.inrange(cn))
         {
             clientinfo *ci = bots[cn];
@@ -147,13 +156,19 @@ namespace aiman
         }
         else { cn = bots.length(); bots.add(NULL); }
         int team = MODE_TEAMMODE ? chooseteam() : 0;
-        if(!bots[cn]) bots[cn] = new clientinfo;
+        if(!bots[cn])
+        {
+            bots[cn] = new clientinfo;
+        }
         clientinfo *ci = bots[cn];
         ci->clientnum = MAXCLIENTS + cn;
         ci->state.aitype = AI_Bot;
         clientinfo *owner = findaiclient();
         ci->ownernum = owner ? owner->clientnum : -1;
-        if(owner) owner->bots.add(ci);
+        if(owner)
+        {
+            owner->bots.add(ci);
+        }
         ci->state.skill = skill <= 0 ? RANDOM_INT(50) + 51 : clamp(skill, 1, 101);
         clients.add(ci);
         ci->state.lasttimeplayed = lastmillis;
@@ -171,11 +186,20 @@ namespace aiman
     void deleteai(clientinfo *ci)
     {
         int cn = ci->clientnum - MAXCLIENTS;
-        if(!bots.inrange(cn)) return;
-        if(ci->ownernum >= 0 && !ci->aireinit && smode) smode->leavegame(ci, true);
+        if(!bots.inrange(cn))
+        {
+            return;
+        }
+        if(ci->ownernum >= 0 && !ci->aireinit && smode)
+        {
+            smode->leavegame(ci, true);
+        }
         sendf(-1, 1, "ri2", N_CDIS, ci->clientnum);
         clientinfo *owner = (clientinfo *)getclientinfo(ci->ownernum);
-        if(owner) owner->bots.removeobj(ci);
+        if(owner)
+        {
+            owner->bots.removeobj(ci);
+        }
         clients.removeobj(ci);
         DELETEP(bots[cn]);
         dorefresh = true;
@@ -203,8 +227,14 @@ namespace aiman
             if(ci->aireinit == 2)
             {
                 ci->reassign();
-                if(ci->state.state==ClientState_Alive) sendspawn(ci);
-                else sendresume(ci);
+                if(ci->state.state==ClientState_Alive)
+                {
+                    sendspawn(ci);
+                }
+                else
+                {
+                    sendresume(ci);
+                }
             }
             ci->aireinit = 0;
         }
@@ -212,11 +242,26 @@ namespace aiman
 
     void shiftai(clientinfo *ci, clientinfo *owner = NULL)
     {
-        if(ci->ownernum >= 0 && !ci->aireinit && smode) smode->leavegame(ci, true);
+        if(ci->ownernum >= 0 && !ci->aireinit && smode)
+        {
+            smode->leavegame(ci, true);
+        }
         clientinfo *prevowner = (clientinfo *)getclientinfo(ci->ownernum);
-        if(prevowner) prevowner->bots.removeobj(ci);
-        if(!owner) { ci->aireinit = 0; ci->ownernum = -1; }
-        else if(ci->ownernum != owner->clientnum) { ci->aireinit = 2; ci->ownernum = owner->clientnum; owner->bots.add(ci); }
+        if(prevowner)
+        {
+            prevowner->bots.removeobj(ci);
+        }
+        if(!owner)
+        {
+            ci->aireinit = 0;
+            ci->ownernum = -1;
+        }
+        else if(ci->ownernum != owner->clientnum)
+        {
+            ci->aireinit = 2;
+            ci->ownernum = owner->clientnum;
+            owner->bots.add(ci);
+        }
         dorefresh = true;
     }
 
@@ -236,8 +281,14 @@ namespace aiman
         {
             clientinfo *ci = clients[i];
             if(!validaiclient(ci)) continue;
-            if(!lo || ci->bots.length() < lo->bots.length()) lo = ci;
-            if(!hi || ci->bots.length() > hi->bots.length()) hi = ci;
+            if(!lo || ci->bots.length() < lo->bots.length())
+            {
+                lo = ci;
+            }
+            if(!hi || ci->bots.length() > hi->bots.length())
+            {
+                hi = ci;
+            }
         }
         if(hi && lo && hi->bots.length() - lo->bots.length() > 1)
         {
@@ -253,7 +304,10 @@ namespace aiman
 
     void checksetup()
     {
-        if(MODE_TEAMMODE && botbalance) balanceteams();
+        if(MODE_TEAMMODE && botbalance)
+        {
+            balanceteams();
+        }
         for(int i = bots.length(); --i >=0;) //note reverse iteration
         {
             if(bots[i])
@@ -276,31 +330,51 @@ namespace aiman
 
     void checkai()
     {
-        if(!dorefresh) return;
+        if(!dorefresh)
+        {
+            return;
+        }
         dorefresh = false;
         if(MODE_BOTMODE && numclients(-1, false, true))
         {
             checksetup();
-            while(reassignai());
         }
-        else clearai();
+        else
+        {
+            clearai();
+        }
     }
 
     void reqadd(clientinfo *ci, int skill)
     {
-        if(!ci->local && !ci->privilege) return;
-        if(!addai(skill, !ci->local && ci->privilege < PRIV_ADMIN ? botlimit : -1)) sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to create or assign bot");
+        if(!ci->local && !ci->privilege)
+        {
+            return;
+        }
+        if(!addai(skill, !ci->local && ci->privilege < PRIV_ADMIN ? botlimit : -1))
+        {
+            sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to create or assign bot");
+        }
     }
 
     void reqdel(clientinfo *ci)
     {
-        if(!ci->local && !ci->privilege) return;
-        if(!deleteai()) sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to remove any bots");
+        if(!ci->local && !ci->privilege)
+        {
+            return;
+        }
+        if(!deleteai())
+        {
+            sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to remove any bots");
+        }
     }
 
     void setbotlimit(clientinfo *ci, int limit)
     {
-        if(ci && !ci->local && ci->privilege < PRIV_ADMIN) return;
+        if(ci && !ci->local && ci->privilege < PRIV_ADMIN)
+        {
+            return;
+        }
         botlimit = clamp(limit, 0, MAXBOTS);
         dorefresh = true;
         DEF_FORMAT_STRING(msg, "bot limit is now %d", botlimit);
@@ -309,7 +383,10 @@ namespace aiman
 
     void setbotbalance(clientinfo *ci, bool balance)
     {
-        if(ci && !ci->local && !ci->privilege) return;
+        if(ci && !ci->local && !ci->privilege)
+        {
+            return;
+        }
         botbalance = balance ? 1 : 0;
         dorefresh = true;
         DEF_FORMAT_STRING(msg, "bot team balancing is now %s", botbalance ? "enabled" : "disabled");
@@ -335,11 +412,17 @@ namespace aiman
 
     void addclient(clientinfo *ci)
     {
-        if(ci->state.aitype == AI_None) dorefresh = true;
+        if(ci->state.aitype == AI_None)
+        {
+            dorefresh = true;
+        }
     }
 
     void changeteam(clientinfo *ci)
     {
-        if(ci->state.aitype == AI_None) dorefresh = true;
+        if(ci->state.aitype == AI_None)
+        {
+            dorefresh = true;
+        }
     }
 }

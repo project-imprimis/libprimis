@@ -91,7 +91,10 @@ namespace ai
 
         void add(void *owner, float above, int wp)
         {
-            if(obstacles.empty() || owner != obstacles.last().owner) add(owner, above);
+            if(obstacles.empty() || owner != obstacles.last().owner)
+            {
+                add(owner, above);
+            }
             obstacles.last().numwaypoints++;
             waypoints.add(wp);
         }
@@ -239,7 +242,10 @@ namespace ai
 
         void clean(bool tryit = false)
         {
-            if(!tryit) becareful = dontmove = false;
+            if(!tryit)
+            {
+                becareful = dontmove = false;
+            }
             targyaw = RANDOM_INT(360);
             targpitch = 0.f;
             tryreset = tryit;
@@ -282,7 +288,10 @@ namespace ai
 
         aistate &getstate(int idx = -1)
         {
-            if(state.inrange(idx)) return state[idx];
+            if(state.inrange(idx))
+            {
+                return state[idx];
+            }
             return state.last();
         }
 

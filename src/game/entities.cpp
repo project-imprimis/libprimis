@@ -126,11 +126,20 @@ namespace entities
     void pickupeffects(int n, gameent *d)
     {
 #if 0
-        if(!ents.inrange(n)) return;
+        if(!ents.inrange(n))
+        {
+            return;
+        }
         int type = ents[n]->type;
-        if(!VALID_ITEM(type)) return;
+        if(!VALID_ITEM(type))
+        {
+            return;
+        }
         ents[n]->clearspawned();
-        if(!d) return;
+        if(!d)
+        {
+            return;
+        }
         itemstat &is = itemstats[type-I_FIRST];
         if(d!=player1 || isthirdperson())
         {
@@ -139,9 +148,6 @@ namespace entities
         }
         playsound(itemstats[type-I_FIRST].sound, d!=player1 ? &d->o : NULL, NULL, 0, 0, 0, -1, 0, 1500);
         d->pickup(type);
-        if(d==player1) switch(type)
-        {
-        }
 #endif
     }
 
@@ -155,8 +161,14 @@ namespace entities
             if(e.attr4 >= 0)
             {
                 int snd = S_TELEPORT, flags = 0;
-                if(e.attr4 > 0) { snd = e.attr4; flags = SND_MAP; }
-                if(d == player1) playsound(snd, NULL, NULL, flags);
+                if(e.attr4 > 0)
+                {
+                    snd = e.attr4; flags = SND_MAP;
+                }
+                if(d == player1)
+                {
+                    playsound(snd, NULL, NULL, flags);
+                }
                 else
                 {
                     playsound(snd, &e.o, NULL, flags);
@@ -185,9 +197,19 @@ namespace entities
             if(e.attr4 >= 0)
             {
                 int snd = S_JUMPPAD, flags = 0;
-                if(e.attr4 > 0) { snd = e.attr4; flags = SND_MAP; }
-                if(d == player1) playsound(snd, NULL, NULL, flags);
-                else playsound(snd, &e.o, NULL, flags);
+                if(e.attr4 > 0)
+                {
+                    snd = e.attr4;
+                    flags = SND_MAP;
+                }
+                if(d == player1)
+                {
+                    playsound(snd, NULL, NULL, flags);
+                }
+                else
+                {
+                    playsound(snd, &e.o, NULL, flags);
+                }
             }
         }
         if(local && d->clientnum >= 0)
@@ -208,8 +230,15 @@ namespace entities
         for(;;)
         {
             e = findentity(TELEDEST, e+1);
-            if(e==beenhere || e<0) { conoutf(CON_WARN, "no teleport destination for channel %d", tag); return; }
-            if(beenhere<0) beenhere = e;
+            if(e==beenhere || e<0)
+            {
+                conoutf(CON_WARN, "no teleport destination for channel %d", tag);
+                return;
+            }
+            if(beenhere<0)
+            {
+                beenhere = e;
+            }
             if(ents[e]->attr2==tag)
             {
                 teleporteffects(d, n, e, true);
@@ -223,7 +252,10 @@ namespace entities
                     d->vel.x = dir.x*speed;
                     d->vel.y = dir.y*speed;
                 }
-                else d->vel = vec(0, 0, 0);
+                else
+                {
+                    d->vel = vec(0, 0, 0);
+                }
                 entinmap(d);
                 updatedynentcache(d);
                 ai::inferwaypoints(d, ents[n]->o, ents[e]->o, 16.f);
@@ -248,12 +280,21 @@ namespace entities
 
             case TELEPORT:
             {
-                if(d->lastpickup==ents[n]->type && lastmillis-d->lastpickupmillis<500) break;
-                if(!teleteam && MODE_TEAMMODE) break;
+                if(d->lastpickup==ents[n]->type && lastmillis-d->lastpickupmillis<500)
+                {
+                    break;
+                }
+                if(!teleteam && MODE_TEAMMODE)
+                {
+                    break;
+                }
                 if(ents[n]->attr3 > 0)
                 {
                     DEF_FORMAT_STRING(hookname, "can_teleport_%d", ents[n]->attr3);
-                    if(!execidentbool(hookname, true)) break;
+                    if(!execidentbool(hookname, true))
+                    {
+                        break;
+                    }
                 }
                 d->lastpickup = ents[n]->type;
                 d->lastpickupmillis = lastmillis;
@@ -263,11 +304,17 @@ namespace entities
 
             case JUMPPAD:
             {
-                if(d->lastpickup==ents[n]->type && lastmillis-d->lastpickupmillis<300) break;
+                if(d->lastpickup==ents[n]->type && lastmillis-d->lastpickupmillis<300)
+                {
+                    break;
+                }
                 d->lastpickup = ents[n]->type;
                 d->lastpickupmillis = lastmillis;
                 jumppadeffects(d, n, true);
-                if(d->ai) d->ai->becareful = true;
+                if(d->ai)
+                {
+                    d->ai->becareful = true;
+                }
                 d->falling = vec(0, 0, 0);
                 d->physstate = PhysEntState_Fall;
                 d->timeinair = 1;
@@ -279,15 +326,27 @@ namespace entities
 
     void checkitems(gameent *d)
     {
-        if(d->state!=ClientState_Alive) return;
+        if(d->state!=ClientState_Alive)
+        {
+            return;
+        }
         vec o = d->feetpos();
         loopv(ents)
         {
             extentity &e = *ents[i];
-            if(e.type==NOTUSED) continue;
-            if(!e.spawned() && e.type!=TELEPORT && e.type!=JUMPPAD) continue;
+            if(e.type==NOTUSED)
+            {
+                continue;
+            }
+            if(!e.spawned() && e.type!=TELEPORT && e.type!=JUMPPAD)
+            {
+                continue;
+            }
             float dist = e.o.dist(o);
-            if(dist<(e.type==TELEPORT ? 16 : 12)) trypickup(i, d);
+            if(dist<(e.type==TELEPORT ? 16 : 12))
+            {
+                trypickup(i, d);
+            }
         }
     }
 
@@ -331,7 +390,10 @@ namespace entities
 
     void clearents()
     {
-        while(ents.length()) deleteentity(ents.pop());
+        while(ents.length())
+        {
+            deleteentity(ents.pop());
+        }
     }
 
     void animatemapmodel(const extentity &e, int &anim, int &basetime)
@@ -404,12 +466,18 @@ namespace entities
     {
         extentity &e = *ents[i];
         //e.flags = 0;
-        if(local) addmsg(N_EDITENT, "rii3ii5", i, (int)(e.o.x*DMF), (int)(e.o.y*DMF), (int)(e.o.z*DMF), e.type, e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+        if(local)
+        {
+            addmsg(N_EDITENT, "rii3ii5", i, (int)(e.o.x*DMF), (int)(e.o.y*DMF), (int)(e.o.z*DMF), e.type, e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+        }
     }
 
     float dropheight(entity &e)
     {
-        if(e.type==FLAG) return 0.0f;
+        if(e.type==FLAG)
+        {
+            return 0.0f;
+        }
         return 4.0f;
     }
 #endif
