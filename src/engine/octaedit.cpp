@@ -2101,7 +2101,7 @@ void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
 
     for(int i = 0; i < 2; ++i)
     {
-        for(int j = 0; j < 3; ++j)
+        for(int j = 0; j < 2; ++j)
         {
             getcubevector(c, d, i, j, dc, p);
             if(v==p)
@@ -2181,11 +2181,26 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                 {
                     for(int my = 0; my < 2; ++my)
                     {
-                        if(x==0 && mx==0 && sel.cx) continue;
-                        if(y==0 && my==0 && sel.cy) continue;
-                        if(x==sel.s[R[d]]-1 && mx==1 && (sel.cx+sel.cxs)&1) continue;
-                        if(y==sel.s[C[d]]-1 && my==1 && (sel.cy+sel.cys)&1) continue;
-                        if(p[mx+my*2] != ((uchar *)&bak)[mx+my*2]) continue;
+                        if(x==0 && mx==0 && sel.cx)
+                        {
+                            continue;
+                        }
+                        if(y==0 && my==0 && sel.cy)
+                        {
+                            continue;
+                        }
+                        if(x==sel.s[R[d]]-1 && mx==1 && (sel.cx+sel.cxs)&1)
+                        {
+                            continue;
+                        }
+                        if(y==sel.s[C[d]]-1 && my==1 && (sel.cy+sel.cys)&1)
+                        {
+                            continue;
+                        }
+                        if(p[mx+my*2] != ((uchar *)&bak)[mx+my*2])
+                        {
+                            continue;
+                        }
 
                         linkedpush(c, d, mx, my, dc, seldir);
                     }
@@ -2205,7 +2220,9 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                         c.faces[d] = bak;
                         c.edges[d*4+k] = n[k];
                         if(isvalidcube(c))
+                        {
                             m[k] = n[k];
+                        }
                     }
                 }
                 c.faces[d] = bak;
@@ -2213,23 +2230,35 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
         }
     );
     if (mode==1 && dir>0)
+    {
         sel.o[d] += sel.grid * seldir;
+    }
 }
 
 void editface(int *dir, int *mode)
 {
-    if(noedit(moving!=0)) return;
+    if(noedit(moving!=0))
+    {
+        return;
+    }
     if(hmapedit!=1)
+    {
         mpeditface(*dir, *mode, sel, true);
+    }
     else
+    {
         edithmap(*dir, *mode);
+    }
 }
 
 VAR(selectionsurf, 0, 0, 1);
 
 void pushsel(int *dir)
 {
-    if(noedit(moving!=0)) return;
+    if(noedit(moving!=0))
+    {
+        return;
+    }
     int d = DIMENSION(orient);
     int s = DIM_COORD(orient) ? -*dir : *dir;
     sel.o[d] += s*sel.grid;
@@ -2242,13 +2271,19 @@ void pushsel(int *dir)
 
 void mpdelcube(selinfo &sel, bool local)
 {
-    if(local) game::edittrigger(sel, EDIT_DELCUBE);
+    if(local)
+    {
+        game::edittrigger(sel, EDIT_DELCUBE);
+    }
     LOOP_SEL_XYZ(discardchildren(c, true); EMPTY_FACES(c));
 }
 
 void delcube()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     mpdelcube(sel, true);
 }
 
@@ -2329,7 +2364,10 @@ static void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &
             if(edit)
             {
                 c.texture[i] = edit->index;
-                if(!findedit) findedit = edit;
+                if(!findedit)
+                {
+                    findedit = edit;
+                }
             }
         }
     }
@@ -2341,11 +2379,20 @@ static void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &
         {
             if(findrep)
             {
-                if(reptex < 0) reptex = c.texture[i];
-                else if(reptex != c.texture[i]) findrep = false;
+                if(reptex < 0)
+                {
+                    reptex = c.texture[i];
+                }
+                else if(reptex != c.texture[i])
+                {
+                    findrep = false;
+                }
             }
             c.texture[i] = edit->index;
-            if(!findedit) findedit = edit;
+            if(!findedit)
+            {
+                findedit = edit;
+            }
         }
     }
 }
@@ -2389,8 +2436,14 @@ void mpeditvslot(int delta, VSlot &ds, int allfaces, selinfo &sel, bool local)
     if(local)
     {
         game::edittrigger(sel, EDIT_VSLOT, delta, allfaces, 0, &ds);
-        if(!(lastsel==sel)) tofronttex();
-        if(allfaces || !(repsel == sel)) reptex = -1;
+        if(!(lastsel==sel))
+        {
+            tofronttex();
+        }
+        if(allfaces || !(repsel == sel))
+        {
+            reptex = -1;
+        }
         repsel = sel;
     }
     bool findrep = local && !allfaces && reptex < 0;
@@ -2413,7 +2466,10 @@ void mpeditvslot(int delta, VSlot &ds, int allfaces, selinfo &sel, bool local)
 bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf)
 {
     VSlot ds;
-    if(!unpackvslot(buf, ds, delta != 0)) return false;
+    if(!unpackvslot(buf, ds, delta != 0))
+    {
+        return false;
+    }
     EDITING_VSLOT(ds.layer, ds.detail);
     mpeditvslot(delta, ds, allfaces, sel, false);
     return true;
@@ -2424,7 +2480,10 @@ VAR(usevdelta, 1, 0, 0);
 
 void vdelta(uint *body)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     usevdelta++;
     execute(body);
     usevdelta--;
@@ -2433,7 +2492,10 @@ COMMAND(vdelta, "e");
 
 void vrotate(int *n)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_ROTATION;
     ds.rotation = usevdelta ? *n : clamp(*n, 0, 7);
@@ -2443,7 +2505,10 @@ COMMAND(vrotate, "i");
 
 void vangle(float *a)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_ANGLE;
     ds.angle = vec(*a, sinf(RAD**a), cosf(RAD**a));
@@ -2453,7 +2518,10 @@ COMMAND(vangle, "f");
 
 void voffset(int *x, int *y)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_OFFSET;
     ds.offset = usevdelta ? ivec2(*x, *y) : ivec2(*x, *y).max(0);
@@ -2463,7 +2531,10 @@ COMMAND(voffset, "ii");
 
 void vscroll(float *s, float *t)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_SCROLL;
     ds.scroll = vec2(*s/1000.0f, *t/1000.0f);
@@ -2473,7 +2544,10 @@ COMMAND(vscroll, "ff");
 
 void vscale(float *scale)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_SCALE;
     ds.scale = *scale <= 0 ? 1 : (usevdelta ? *scale : clamp(*scale, 1/8.0f, 8.0f));
@@ -2483,13 +2557,19 @@ COMMAND(vscale, "f");
 
 void vlayer(int *n)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_LAYER;
     if(vslots.inrange(*n))
     {
         ds.layer = *n;
-        if(vslots[ds.layer]->changed && nompedit && multiplayer()) return;
+        if(vslots[ds.layer]->changed && nompedit && multiplayer())
+        {
+            return;
+        }
     }
     EDITING_VSLOT(ds.layer);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
@@ -2498,13 +2578,19 @@ COMMAND(vlayer, "i");
 
 void vdetail(int *n)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_DETAIL;
     if(vslots.inrange(*n))
     {
         ds.detail = *n;
-        if(vslots[ds.detail]->changed && nompedit && multiplayer()) return;
+        if(vslots[ds.detail]->changed && nompedit && multiplayer())
+        {
+            return;
+        }
     }
     EDITING_VSLOT(ds.detail);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
@@ -2513,7 +2599,10 @@ COMMAND(vdetail, "i");
 
 void valpha(float *front, float *back)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_ALPHA;
     ds.alphafront = clamp(*front, 0.0f, 1.0f);
@@ -2524,7 +2613,10 @@ COMMAND(valpha, "ff");
 
 void vcolor(float *r, float *g, float *b)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_COLOR;
     ds.colorscale = vec(clamp(*r, 0.0f, 2.0f), clamp(*g, 0.0f, 2.0f), clamp(*b, 0.0f, 2.0f));
@@ -2534,14 +2626,21 @@ COMMAND(vcolor, "fff");
 
 void vrefract(float *k, float *r, float *g, float *b)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_REFRACT;
     ds.refractscale = clamp(*k, 0.0f, 1.0f);
     if(ds.refractscale > 0 && (*r > 0 || *g > 0 || *b > 0))
+    {
         ds.refractcolor = vec(clamp(*r, 0.0f, 1.0f), clamp(*g, 0.0f, 1.0f), clamp(*b, 0.0f, 1.0f));
+    }
     else
+    {
         ds.refractcolor = vec(1, 1, 1);
+    }
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 
 }
@@ -2549,7 +2648,10 @@ COMMAND(vrefract, "ffff");
 
 void vreset()
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2557,7 +2659,10 @@ COMMAND(vreset, "");
 
 void vshaderparam(const char *name, float *x, float *y, float *z, float *w)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     VSlot ds;
     ds.changed = 1<<VSLOT_SHPARAM;
     if(name[0])
@@ -2574,7 +2679,10 @@ void mpedittex(int tex, int allfaces, selinfo &sel, bool local)
     if(local)
     {
         game::edittrigger(sel, EDIT_TEX, tex, allfaces);
-        if(allfaces || !(repsel == sel)) reptex = -1;
+        if(allfaces || !(repsel == sel))
+        {
+            reptex = -1;
+        }
         repsel = sel;
     }
     bool findrep = local && !allfaces && reptex < 0;
@@ -2583,13 +2691,25 @@ void mpedittex(int tex, int allfaces, selinfo &sel, bool local)
 
 static int unpacktex(int &tex, ucharbuf &buf, bool insert = true)
 {
-    if(tex < 0x10000) return true;
+    if(tex < 0x10000)
+    {
+        return true;
+    }
     VSlot ds;
-    if(!unpackvslot(buf, ds, false)) return false;
+    if(!unpackvslot(buf, ds, false))
+    {
+        return false;
+    }
     VSlot &vs = *lookupslot(tex & 0xFFFF, false).variants;
-    if(vs.index < 0 || vs.index == DEFAULT_SKY) return false;
+    if(vs.index < 0 || vs.index == DEFAULT_SKY)
+    {
+        return false;
+    }
     VSlot *edit = insert ? editvslot(vs, ds) : findvslot(*vs.slot, vs, ds);
-    if(!edit) return false;
+    if(!edit)
+    {
+        return false;
+    }
     tex = edit->index;
     return true;
 }
@@ -2599,7 +2719,10 @@ int shouldpacktex(int index)
     if(vslots.inrange(index))
     {
         VSlot &vs = *vslots[index];
-        if(vs.changed) return 0x10000 + vs.slot->index;
+        if(vs.changed)
+        {
+            return 0x10000 + vs.slot->index;
+        }
     }
     return 0;
 }
@@ -2654,8 +2777,14 @@ void compactmruvslots()
                 continue;
             }
         }
-        if(curtexindex > i) curtexindex--;
-        else if(curtexindex == i) curtexindex = -1;
+        if(curtexindex > i)
+        {
+            curtexindex--;
+        }
+        else if(curtexindex == i)
+        {
+            curtexindex = -1;
+        }
         texmru.remove(i);
     }
     if(vslots.inrange(lasttex))
@@ -2663,7 +2792,10 @@ void compactmruvslots()
         VSlot &vs = *vslots[lasttex];
         lasttex = vs.index >= 0 ? vs.index : 0;
     }
-    else lasttex = 0;
+    else
+    {
+        lasttex = 0;
+    }
     reptex = vslots.inrange(reptex) ? vslots[reptex]->index : -1;
 }
 
@@ -2687,18 +2819,30 @@ void edittex(int i, bool save = true)
 
 void edittex_(int *dir)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     filltexlist();
-    if(texmru.empty()) return;
+    if(texmru.empty())
+    {
+        return;
+    }
     texpaneltimer = 5000;
-    if(!(lastsel==sel)) tofronttex();
+    if(!(lastsel==sel))
+    {
+        tofronttex();
+    }
     curtexindex = clamp(curtexindex<0 ? 0 : curtexindex+*dir, 0, texmru.length()-1);
     edittex(texmru[curtexindex], false);
 }
 
 void gettex()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     filltexlist();
     int tex = -1;
     LOOP_XYZ(sel, sel.grid, tex = c.texture[sel.orient]);
@@ -2715,33 +2859,55 @@ void gettex()
 
 void getcurtex()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     filltexlist();
     int index = curtexindex < 0 ? 0 : curtexindex;
-    if(!texmru.inrange(index)) return;
+    if(!texmru.inrange(index))
+    {
+        return;
+    }
     intret(texmru[index]);
 }
 
 void getseltex()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     cube &c = lookupcube(sel.o, -sel.grid);
-    if(c.children || IS_EMPTY(c)) return;
+    if(c.children || IS_EMPTY(c))
+    {
+        return;
+    }
     intret(c.texture[sel.orient]);
 }
 
 void gettexname(int *tex, int *subslot)
 {
-    if(*tex<0) return;
+    if(*tex<0)
+    {
+        return;
+    }
     VSlot &vslot = lookupvslot(*tex, false);
     Slot &slot = *vslot.slot;
-    if(!slot.sts.inrange(*subslot)) return;
+    if(!slot.sts.inrange(*subslot))
+    {
+        return;
+    }
     result(slot.sts[*subslot].name);
 }
 
 void getslottex(int *idx)
 {
-    if(*idx < 0 || !slots.inrange(*idx)) { intret(-1); return; }
+    if(*idx < 0 || !slots.inrange(*idx))
+    {
+        intret(-1);
+        return;
+    }
     Slot &slot = lookupslot(*idx, false);
     intret(slot.variants->index);
 }
@@ -2773,7 +2939,10 @@ void replacetexcube(cube &c, int oldtex, int newtex)
 {
     for(int i = 0; i < 6; ++i)
     {
-        if(c.texture[i] == oldtex) c.texture[i] = newtex;
+        if(c.texture[i] == oldtex)
+        {
+            c.texture[i] = newtex;
+        }
     }
     if(c.children)
     {
@@ -2806,17 +2975,30 @@ void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local)
 
 bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf)
 {
-    if(!unpacktex(oldtex, buf, false)) return false;
+    if(!unpacktex(oldtex, buf, false))
+    {
+        return false;
+    }
     EDITING_VSLOT(oldtex);
-    if(!unpacktex(newtex, buf)) return false;
+    if(!unpacktex(newtex, buf))
+    {
+        return false;
+    }
     mpreplacetex(oldtex, newtex, insel, sel, false);
     return true;
 }
 
 void replace(bool insel)
 {
-    if(noedit()) return;
-    if(reptex < 0) { conoutf(CON_ERROR, "can only replace after a texture edit"); return; }
+    if(noedit())
+    {
+        return;
+    }
+    if(reptex < 0)
+    {
+        conoutf(CON_ERROR, "can only replace after a texture edit");
+        return;
+    }
     mpreplacetex(reptex, lasttex, insel, sel, true);
 }
 
@@ -2989,23 +3171,57 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
     {
         switch(filtergeom)
         {
-            case EDITMATF_EMPTY: if(IS_EMPTY(c)) break; return;
-            case EDITMATF_NOTEMPTY: if(!IS_EMPTY(c)) break; return;
-            case EDITMATF_SOLID: if(IS_ENTIRELY_SOLID(c)) break; return;
-            case EDITMATF_NOTSOLID: if(!IS_ENTIRELY_SOLID(c)) break; return;
+            case EDITMATF_EMPTY:
+            {
+                if(IS_EMPTY(c))
+                {
+                    break;
+                }
+                return;
+            }
+            case EDITMATF_NOTEMPTY:
+            {
+                if(!IS_EMPTY(c))
+                {
+                    break;
+                }
+                return;
+            }
+            case EDITMATF_SOLID:
+            {
+                if(IS_ENTIRELY_SOLID(c))
+                {
+                    break;
+                }
+                return;
+            }
+            case EDITMATF_NOTSOLID:
+            {
+                if(!IS_ENTIRELY_SOLID(c))
+                {
+                    break;
+                }
+                return;
+            }
         }
         if(mat!=MAT_AIR)
         {
             c.material &= matmask;
             c.material |= mat;
         }
-        else c.material = MAT_AIR;
+        else
+        {
+            c.material = MAT_AIR;
+        }
     }
 }
 
 void mpeditmat(int matid, int filter, selinfo &sel, bool local)
 {
-    if(local) game::edittrigger(sel, EDIT_MAT, matid, filter);
+    if(local)
+    {
+        game::edittrigger(sel, EDIT_MAT, matid, filter);
+    }
 
     ushort filtermat = 0, filtermask = 0, matmask;
     int filtergeom = 0;
@@ -3019,21 +3235,36 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
     {
         matid = 0;
         matmask = filtermask;
-        if(IS_CLIPPED(filtermat&MATF_VOLUME)) matmask &= ~MATF_CLIP;
-        if(IS_DEADLY(filtermat&MATF_VOLUME)) matmask &= ~MAT_DEATH;
+        if(IS_CLIPPED(filtermat&MATF_VOLUME))
+        {
+            matmask &= ~MATF_CLIP;
+        }
+        if(IS_DEADLY(filtermat&MATF_VOLUME))
+        {
+            matmask &= ~MAT_DEATH;
+        }
     }
     else
     {
         matmask = matid&(MATF_VOLUME|MATF_INDEX) ? 0 : (matid&MATF_CLIP ? ~MATF_CLIP : ~matid);
-        if(IS_CLIPPED(matid&MATF_VOLUME)) matid |= MAT_CLIP;
-        if(IS_DEADLY(matid&MATF_VOLUME)) matid |= MAT_DEATH;
+        if(IS_CLIPPED(matid&MATF_VOLUME))
+        {
+            matid |= MAT_CLIP;
+        }
+        if(IS_DEADLY(matid&MATF_VOLUME))
+        {
+            matid |= MAT_DEATH;
+        }
     }
     LOOP_SEL_XYZ(setmat(c, matid, matmask, filtermat, filtermask, filtergeom));
 }
 
 void editmat(char *name, char *filtername)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     int filter = -1;
     if(filtername[0])
     {
@@ -3059,7 +3290,11 @@ void editmat(char *name, char *filtername)
     if(name[0] || filter < 0)
     {
         id = findmaterial(name);
-        if(id<0) { conoutf(CON_ERROR, "unknown material \"%s\"", name); return; }
+        if(id<0)
+        {
+            conoutf(CON_ERROR, "unknown material \"%s\"", name);
+            return;
+        }
     }
     mpeditmat(id, filter, sel, true);
 }
@@ -3152,7 +3387,10 @@ void rendertexturepanel(int w, int h)
                 glBindTexture(GL_TEXTURE_2D, tex->id);
                 for(int j = 0; j < (glowtex ? 3 : 2); ++j)
                 {
-                    if(j < 2) gle::color(vec(vslot.colorscale).mul(j), texpaneltimer/1000.0f);
+                    if(j < 2)
+                    {
+                        gle::color(vec(vslot.colorscale).mul(j), texpaneltimer/1000.0f);
+                    }
                     else
                     {
                         glBindTexture(GL_TEXTURE_2D, glowtex->id);
@@ -3192,7 +3430,10 @@ void rendertexturepanel(int w, int h)
                         x += 5;
                         y += 5;
                     }
-                    else if(j == 2) glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    else if(j == 2)
+                    {
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    }
                 }
             }
             y += s+gap;
