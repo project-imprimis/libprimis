@@ -136,7 +136,7 @@ bool haslocalclients()
 client &addclient(int type)
 {
     client *c = NULL;
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         if(clients[i]->type==ST_EMPTY)
         {
@@ -204,7 +204,7 @@ void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
     if(n<0)
     {
         server::recordpacket(chan, packet->data, packet->dataLength);
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             if(i!=exclude && server::allowbroadcast(i))
             {
@@ -373,7 +373,7 @@ void disconnect_client(int n, int reason)
 
 void kicknonlocalclients(int reason)
 {
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         if(clients[i]->type==ST_TCPIP) disconnect_client(i, reason);
     }
@@ -389,7 +389,7 @@ void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
 void localclienttoserver(int chan, ENetPacket *packet)
 {
     client *c = NULL;
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         if(clients[i]->type==ST_LOCAL)
         {
@@ -769,7 +769,7 @@ void flushserver(bool force)
 void localdisconnect(bool cleanup)
 {
     bool disconnected = false;
-    loopv(clients)
+    for(int i = 0; i < clients.length(); i++)
     {
         if(clients[i]->type==ST_LOCAL)
         {
@@ -914,7 +914,7 @@ static void setupconsole()
     SetConsoleScreenBufferSize(outhandle, coninfo.dwSize);
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
-    loopv(loglines)
+    for(int i = 0; i < loglines.length(); i++)
     {
         writeline(loglines[i]);
     }

@@ -268,7 +268,7 @@ struct smd : skelloader<smd>
                     if(bones.empty()) continue;
                     skel->numbones = bones.length();
                     skel->bones = new boneinfo[skel->numbones];
-                    loopv(bones)
+                    for(int i = 0; i < bones.length(); i++)
                     {
                         boneinfo &dst = skel->bones[i];
                         smdbone &src = bones[i];

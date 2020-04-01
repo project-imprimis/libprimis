@@ -262,7 +262,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         }
         else
         {
-            loopv(s.fragdatalocs)
+            for(int i = 0; i < s.fragdatalocs.length(); i++)
             {
                 FragDataLoc &d = s.fragdatalocs[i];
                 if(d.index) continue;
@@ -363,7 +363,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
         glAttachShader_(s.program, s.vsobj);
         glAttachShader_(s.program, s.psobj);
         uint attribs = 0;
-        loopv(s.attriblocs)
+        for(int i = 0; i < s.attriblocs.length(); i++)
         {
             AttribLoc &a = s.attriblocs[i];
             glBindAttribLocation_(s.program, a.loc, a.name);
@@ -378,7 +378,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
         }
         if(hasGPU4 && ((glslversion < 330 && (glslversion < 150 || !hasEAL)) || amd_eal_bug))
         {
-            loopv(s.fragdatalocs)
+            for(int i = 0; i < s.fragdatalocs.length(); i++)
             {
                 FragDataLoc &d = s.fragdatalocs[i];
                 if(d.index)
@@ -404,12 +404,12 @@ static void linkglslprogram(Shader &s, bool msg = true)
             }
         }
         if(s.type & SHADER_WORLD) bindworldtexlocs(s);
-        loopv(s.defaultparams)
+        for(int i = 0; i < s.defaultparams.length(); i++)
         {
             SlotShaderParamState &param = s.defaultparams[i];
             param.loc = glGetUniformLocation_(s.program, param.name);
         }
-        loopv(s.uniformlocs)
+        for(int i = 0; i < s.uniformlocs.length(); i++)
         {
             bindglsluniform(s, s.uniformlocs[i]);
         }
@@ -645,7 +645,7 @@ void GlobalShaderParamState::resetversions()
 {
     ENUMERATE(shaders, Shader, s,
     {
-        loopv(s.globalparams)
+        for(int i = 0; i < s.globalparams.length(); i++)
         {
             GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version != u.param->version) u.version = -2;
@@ -655,7 +655,7 @@ void GlobalShaderParamState::resetversions()
     ENUMERATE(globalparams, GlobalShaderParamState, g, { g.version = ++nextversion; });
     ENUMERATE(shaders, Shader, s,
     {
-        loopv(s.globalparams)
+        for(int i = 0; i < s.globalparams.length(); i++)
         {
             GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version >= 0) u.version = u.param->version;
@@ -665,12 +665,12 @@ void GlobalShaderParamState::resetversions()
 
 static float *findslotparam(Slot &s, const char *name, float *noval = NULL)
 {
-    loopv(s.params)
+    for(int i = 0; i < s.params.length(); i++)
     {
         SlotShaderParam &param = s.params[i];
         if(name == param.name) return param.val;
     }
-    loopv(s.shader->defaultparams)
+    for(int i = 0; i < s.shader->defaultparams.length(); i++)
     {
         SlotShaderParamState &param = s.shader->defaultparams[i];
         if(name == param.name) return param.val;
@@ -680,7 +680,7 @@ static float *findslotparam(Slot &s, const char *name, float *noval = NULL)
 
 static float *findslotparam(VSlot &s, const char *name, float *noval = NULL)
 {
-    loopv(s.params)
+    for(int i = 0; i < s.params.length(); i++)
     {
         SlotShaderParam &param = s.params[i];
         if(name == param.name) return param.val;
@@ -719,7 +719,7 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
 } while(0)
 
 #define SETSLOTPARAMS(slotparams) \
-    loopv(slotparams) \
+    for(int i = 0; i < slotparams.length(); i++) \
     { \
         SlotShaderParam &p = slotparams[i]; \
         if(!defaultparams.inrange(p.loc)) continue; \
@@ -727,7 +727,7 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
         SETSLOTPARAM(l, unimask, p.loc, p.val); \
     }
 #define SETDEFAULTPARAMS \
-    loopv(defaultparams) \
+    for(int i = 0; i < defaultparams.length(); i++) \
     { \
         SlotShaderParamState &l = defaultparams[i]; \
         SETSLOTPARAM(l, unimask, i, l.val); \
@@ -752,7 +752,7 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
     else
     {
         SETSLOTPARAMS(slot.params)
-        loopv(defaultparams)
+        for(int i = 0; i < defaultparams.length(); i++)
         {
             SlotShaderParamState &l = defaultparams[i];
             SETSLOTPARAM(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
@@ -822,7 +822,7 @@ void Shader::cleanup(bool full)
     }
     else
     {
-        loopv(defaultparams)
+        for(int i = 0; i < defaultparams.length(); i++)
         {
             defaultparams[i].loc = -1;
         }
@@ -907,14 +907,17 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     }
     if(variant)
     {
-        loopv(variant->defaultparams)
+        for(int i = 0; i < variant->defaultparams.length(); i++)
         {
             s.defaultparams.add(variant->defaultparams[i]);
         }
     }
     else
     {
-        loopv(slotparams) s.defaultparams.add(slotparams[i]);
+        for(int i = 0; i < slotparams.length(); i++)
+        {
+            s.defaultparams.add(slotparams[i]);
+        }
     }
     s.attriblocs.setsize(0);
     s.uniformlocs.setsize(0);
@@ -1105,7 +1108,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     psbuf.put(ps, psmain - ps);
     if(variant)
     {
-        loopv(variant->defaultparams)
+        for(int i = 0; i < variant->defaultparams.length(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", variant->defaultparams[i].name);
             vsbuf.put(uni, strlen(uni));
@@ -1114,7 +1117,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     }
     else
     {
-        loopv(slotparams)
+        for(int i = 0; i < slotparams.length(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", slotparams[i].name);
             vsbuf.put(uni, strlen(uni));
@@ -1374,7 +1377,7 @@ void setslotshader(Slot &s)
         s.shader = stdworldshader;
         return;
     }
-    loopv(slotparams)
+    for(int i = 0; i < slotparams.length(); i++)
     {
         s.params.add(slotparams[i]);
     }
@@ -1384,11 +1387,11 @@ static void linkslotshaderparams(vector<SlotShaderParam> &params, Shader *sh, bo
 {
     if(sh->loaded())
     {
-        loopv(params)
+        for(int i = 0; i < params.length(); i++)
         {
             int loc = -1;
             SlotShaderParam &param = params[i];
-            loopv(sh->defaultparams)
+            for(int i = 0; i < sh->defaultparams.length(); i++)
             {
                 SlotShaderParamState &dparam = sh->defaultparams[i];
                 if(dparam.name==param.name)
@@ -1402,7 +1405,7 @@ static void linkslotshaderparams(vector<SlotShaderParam> &params, Shader *sh, bo
     }
     else if(load)
     {
-        loopv(params)
+        for(int i = 0; i < params.length(); i++)
         {
             params[i].loc = -1;
         }
@@ -1446,7 +1449,7 @@ bool shouldreuseparams(Slot &s, VSlot &p)
     if(!s.shader) return false;
     
     Shader &sh = *s.shader;
-    loopv(sh.defaultparams)
+    for(int i = 0; i < sh.defaultparams.length(); i++)
     {
         SlotShaderParamState &param = sh.defaultparams[i];
         if(param.flags & SlotShaderParam::REUSE)
@@ -1500,7 +1503,7 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     {
         name = getshaderparamname(name);
     }
-    loopv(slotparams)
+    for(int i = 0; i < slotparams.length(); i++)
     {
         SlotShaderParam &param = slotparams[i];
         if(param.name==name)
@@ -1549,7 +1552,7 @@ vector<postfxpass> postfxpasses;
 
 static int allocatepostfxtex(int scale)
 {
-    loopv(postfxtexs)
+    for(int i = 0; i < postfxtexs.length(); i++)
     {
         postfxtex &t = postfxtexs[i];
         if(t.scale==scale && t.used < 0) return i;
@@ -1569,7 +1572,7 @@ void cleanuppostfx(bool fullclean)
         postfxfb = 0;
     }
 
-    loopv(postfxtexs)
+    for(int i = 0; i < postfxtexs.length(); i++)
     {
         glDeleteTextures(1, &postfxtexs[i].id);
     }
@@ -1597,7 +1600,7 @@ GLuint setuppostfx(int w, int h, GLuint outfbo)
     {
         postfxbinds[i] = -1;
     }
-    loopv(postfxtexs)
+    for(int i = 0; i < postfxtexs.length(); i++)
     {
         postfxtexs[i].used = -1;
     }
@@ -1622,7 +1625,7 @@ void renderpostfx(GLuint outfbo)
     if(postfxpasses.empty()) return;
 
     timer *postfxtimer = begintimer("postfx");
-    loopv(postfxpasses)
+    for(int i = 0; i < postfxpasses.length(); i++)
     {
         postfxpass &p = postfxpasses[i];
 
@@ -1764,7 +1767,7 @@ void reloadshaders()
             DEF_FORMAT_STRING(info, "shader %s", s.name);
             renderprogress(0.0, info);
             if(!s.compile()) s.cleanup(true);
-            loopv(s.variants)
+            for(int i = 0; i < s.variants.length(); i++)
             {
                 Shader *v = s.variants[i];
                 if((v->reusevs && v->reusevs->invalid()) ||

@@ -114,7 +114,7 @@ void syncchannel(soundchannel &chan)
 
 void stopchannels()
 {
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         soundchannel &chan = channels[i];
         if(!chan.inuse)
@@ -182,7 +182,7 @@ bool initaudio()
     {
         vector<char*> drivers;
         explodelist(audiodriver, drivers);
-        loopv(drivers)
+        for(int i = 0; i < drivers.length(); i++)
         {
             SDL_setenv("SDL_AUDIODRIVER", drivers[i], 1);
             if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0)
@@ -340,7 +340,7 @@ static struct soundtype
 
     int findsound(const char *name, int vol)
     {
-        loopv(configs)
+        for(int i = 0; i < configs.length(); i++)
         {
             soundconfig &s = configs[i];
             for(int j = 0; j < s.numslots; ++j)
@@ -368,7 +368,7 @@ static struct soundtype
         // soundslots.add() may relocate slot pointers
         if(slots.getbuf() != oldslots)
         {
-            loopv(channels)
+            for(int i = 0; i < channels.length(); i++)
             {
                 soundchannel &chan = channels[i];
                 if(chan.inuse && chan.slot >= oldslots && chan.slot < &oldslots[oldlen])
@@ -406,7 +406,7 @@ static struct soundtype
 
     void reset()
     {
-        loopv(channels)
+        for(int i = 0; i < channels.length(); i++)
         {
             soundchannel &chan = channels[i];
             if(chan.inuse && slots.inbuf(chan.slot))
@@ -479,7 +479,7 @@ COMMAND(mapsoundreset, "");
 
 void resetchannels()
 {
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         if(channels[i].inuse)
         {
@@ -503,7 +503,7 @@ void clear_sound()
 
 void stopmapsounds()
 {
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         if(channels[i].inuse && channels[i].ent)
         {
@@ -521,7 +521,7 @@ void clearmapsounds()
 
 void stopmapsound(extentity *e)
 {
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         soundchannel &chan = channels[i];
         if(chan.inuse && chan.ent == e)
@@ -535,7 +535,7 @@ void stopmapsound(extentity *e)
 void checkmapsounds()
 {
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
         if(e.type!=Ent_Sound) continue;
@@ -588,7 +588,7 @@ bool updatechannel(soundchannel &chan)
 
 void reclaimchannels()
 {
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         soundchannel &chan = channels[i];
         if(chan.inuse && !Mix_Playing(i)) freechannel(i);
@@ -597,7 +597,7 @@ void reclaimchannels()
 
 void syncchannels()
 {
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         soundchannel &chan = channels[i];
         if(chan.inuse && chan.hasloc() && updatechannel(chan)) syncchannel(chan);
@@ -642,7 +642,7 @@ void preloadmapsound(int n)
 void preloadmapsounds()
 {
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
         if(e.type==Ent_Sound) mapsounds.preloadsound(e.attr1);
@@ -677,7 +677,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
         if(config.maxuses)
         {
             int uses = 0;
-            loopv(channels)
+            for(int i = 0; i < channels.length(); i++)
             {
                 if(sounds.playing(channels[i], config) && ++uses >= config.maxuses)
                 {
@@ -726,7 +726,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     if(dbgsound) conoutf("sound: %s%s", sounds.dir, slot.sample->name);
 
     chanid = -1;
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         if(!channels[i].inuse)
         {
@@ -740,7 +740,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     }
     if(chanid < 0)
     {
-        loopv(channels)
+        for(int i = 0; i < channels.length(); i++)
         {
             if(!channels[i].volume)
             {
@@ -780,7 +780,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
 
 void stopsounds()
 {
-    loopv(channels)
+    for(int i = 0; i < channels.length(); i++)
     {
         if(channels[i].inuse)
         {

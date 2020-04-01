@@ -347,7 +347,7 @@ void preloadmodel(const char *name)
 
 void flushpreloadedmodels(bool msg)
 {
-    loopv(preloadmodels)
+    for(int i = 0; i < preloadmodels.length(); i++)
     {
         loadprogress = float(i+1)/preloadmodels.length();
         model *m = loadmodel(preloadmodels[i], -1, msg);
@@ -366,14 +366,14 @@ void preloadusedmapmodels(bool msg, bool bih)
 {
     vector<extentity *> &ents = entities::getents();
     vector<int> used;
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
         if(e.type==Ent_Mapmodel && e.attr1 >= 0 && used.find(e.attr1) < 0) used.add(e.attr1);
     }
 
     vector<const char *> col;
-    loopv(used)
+    for(int i = 0; i < used.length(); i++)
     {
         loadprogress = float(i+1)/used.length();
         int mmindex = used[i];
@@ -392,7 +392,7 @@ void preloadusedmapmodels(bool msg, bool bih)
         }
     }
 
-    loopv(col)
+    for(int i = 0; i < col.length(); i++)
     {
         loadprogress = float(i+1)/col.length();
         model *m = loadmodel(col[i], -1, msg);
@@ -463,7 +463,7 @@ void clearmodel(char *name)
 {
     model *m = models.find(name, NULL);
     if(!m) { conoutf("model %s is not loaded", name); return; }
-    loopv(mapmodels)
+    for(int i = 0; i < mapmodels.length(); i++)
     {
         mapmodelinfo &mmi = mapmodels[i];
         if(mmi.m == m) mmi.m = NULL;
@@ -618,7 +618,7 @@ static inline int shadowmaskmodel(const vec &center, float radius)
 
 void shadowmaskbatchedmodels(bool dynshadow)
 {
-    loopv(batchedmodels)
+    for(int i = 0; i < batchedmodels.length(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&(MDL_MAPMODEL | MDL_NOSHADOW)) break;
@@ -629,13 +629,13 @@ void shadowmaskbatchedmodels(bool dynshadow)
 int batcheddynamicmodels()
 {
     int visible = 0;
-    loopv(batchedmodels)
+    for(int i = 0; i < batchedmodels.length(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&MDL_MAPMODEL) break;
         visible |= b.visible;
     }
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         if(!(b.flags&MDL_MAPMODEL) || !b.m->animated()) continue;
@@ -652,7 +652,7 @@ int batcheddynamicmodels()
 int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 {
     int vis = 0;
-    loopv(batchedmodels)
+    for(int i = 0; i < batchedmodels.length(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&MDL_MAPMODEL) break;
@@ -663,7 +663,7 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
             ++vis;
         }
     }
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         if(!(b.flags&MDL_MAPMODEL) || !b.m->animated()) continue;
@@ -684,7 +684,7 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 
 void rendershadowmodelbatches(bool dynmodel)
 {
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         if(!b.m->shadow || (!dynmodel && (!(b.flags&MDL_MAPMODEL) || b.m->animated()))) continue;
@@ -704,7 +704,7 @@ void rendershadowmodelbatches(bool dynmodel)
 void rendermapmodelbatches()
 {
     enableaamask();
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         if(!(b.flags&MDL_MAPMODEL)) continue;
@@ -731,7 +731,7 @@ void rendermodelbatches()
     memset(transmdltiles, 0, sizeof(transmdltiles));
 
     enableaamask();
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         if(b.flags&MDL_MAPMODEL) continue;
@@ -803,7 +803,7 @@ void rendermodelbatches()
 void rendertransparentmodelbatches(int stencil)
 {
     enableaamask(stencil);
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         if(b.flags&MDL_MAPMODEL) continue;
@@ -859,7 +859,7 @@ void endmodelquery()
     }
     enableaamask();
     startquery(modelquery);
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         int j = b.batched;
@@ -886,7 +886,7 @@ void endmodelquery()
 
 void clearbatchedmapmodels()
 {
-    loopv(batches)
+    for(int i = 0; i < batches.length(); i++)
     {
         modelbatch &b = batches[i];
         if(b.flags&MDL_MAPMODEL)
@@ -1085,7 +1085,7 @@ ICOMMAND(findanims, "s", (char *name),
     game::findanims(name, anims);
     vector<char> buf;
     string num;
-    loopv(anims)
+    for(int i = 0; i < anims.length(); i++)
     {
         formatstring(num, "%d", anims[i]);
         if(i > 0)

@@ -773,7 +773,7 @@ struct stainrenderer
     void genmmtris(octaentities &oe)
     {
         const vector<extentity *> &ents = entities::getents();
-        loopv(oe.mapmodels)
+        for(int i = 0; i < oe.mapmodels.length(); i++)
         {
             extentity &e = *ents[oe.mapmodels[i]];
             model *m = loadmapmodel(e.attr1);

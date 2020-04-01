@@ -2037,7 +2037,7 @@ struct lightbatch : lightbatchkey
         {
             return true;
         }
-        loopv(rects)
+        for(int i = 0; i < rects.length(); i++)
         {
             if(rects[i].overlaps(tx1, ty1, tx2, ty2, tilemask))
             {
@@ -2800,7 +2800,7 @@ void resetlights()
             evicty = ((evictshadowcache/SHADOWCACHE_EVICT)*shadowatlaspacker.h)/SHADOWCACHE_EVICT,
             evictx2 = (((evictshadowcache%SHADOWCACHE_EVICT)+1)*shadowatlaspacker.w)/SHADOWCACHE_EVICT,
             evicty2 = (((evictshadowcache/SHADOWCACHE_EVICT)+1)*shadowatlaspacker.h)/SHADOWCACHE_EVICT;
-        loopv(shadowmaps)
+        for(int i = 0; i < shadowmaps.length(); i++)
         {
             shadowmapinfo &sm = shadowmaps[i];
             if(sm.light < 0) continue;
@@ -3145,7 +3145,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
     {
         if(avatarpass) setavatarstencil(stencilref, true);
 
-        loopv(lightorder)
+        for(int i = 0; i < lightorder.length(); i++)
         {
             const lightinfo &l = lights[lightorder[i]];
             float sx1 = max(bsx1, l.sx1), sy1 = max(bsy1, l.sy1),
@@ -3207,7 +3207,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
     bool sunpass = !sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0);
     int btx1, bty1, btx2, bty2;
     calctilebounds(bsx1, bsy1, bsx2, bsy2, btx1, bty1, btx2, bty2);
-    loopv(lightbatches)
+    for(int i = 0; i < lightbatches.length(); i++)
     {
         lightbatch &batch = *lightbatches[i];
         if(!batch.overlaps(btx1, bty1, btx2, bty2, tilemask)) continue;
@@ -3404,7 +3404,7 @@ void rendervolumetric()
     if(!volumetric || !volumetriclights || !volscale) return;
 
     float bsx1 = 1, bsy1 = 1, bsx2 = -1, bsy2 = -1;
-    loopv(lightorder)
+    for(int i = 0; i < lightorder.length(); i++)
     {
         const lightinfo &l = lights[lightorder[i]];
         if(!l.volumetric() || l.checkquery()) continue;
@@ -3446,7 +3446,7 @@ void rendervolumetric()
     glEnable(GL_SCISSOR_TEST);
 
     bool outside = true;
-    loopv(lightorder)
+    for(int i = 0; i < lightorder.length(); i++)
     {
         const lightinfo &l = lights[lightorder[i]];
         if(!l.volumetric() || l.checkquery()) continue;
@@ -3622,7 +3622,7 @@ void viewlightscissor()
 {
     vector<extentity *> &ents = entities::getents();
     gle::defvertex(2);
-    loopv(entgroup)
+    for(int i = 0; i < entgroup.length(); i++)
     {
         int idx = entgroup[i];
         if(ents.inrange(idx) && ents[idx]->type == Ent_Light)
@@ -3657,7 +3657,7 @@ void collectlights()
     const vector<extentity *> &ents = entities::getents();
     if(!editmode || !fullbright)
     {
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             const extentity *e = ents[i];
             if(e->type != Ent_Light || e->attr1 <= 0)
@@ -3703,7 +3703,7 @@ void collectlights()
     bool queried = false;
     if(!drawtex && smquery && oqfrags && oqlights)
     {
-        loopv(lightorder)
+        for(int i = 0; i < lightorder.length(); i++)
         {
             int idx = lightorder[i];
             lightinfo &l = lights[idx];
@@ -3743,7 +3743,7 @@ void collectlights()
     {
         for(int mismatched = 0; mismatched < 2; ++mismatched)
         {
-            loopv(lightorder)
+            for(int i = 0; i < lightorder.length(); i++)
             {
                 int idx = lightorder[i];
                 lightinfo &l = lights[idx];
@@ -3964,7 +3964,7 @@ void packlights()
     lightpassesused = 0;
     batchrects.setsize(0);
 
-    loopv(lightorder)
+    for(int i = 0; i < lightorder.length(); i++)
     {
         int idx = lightorder[i];
         lightinfo &l = lights[idx];

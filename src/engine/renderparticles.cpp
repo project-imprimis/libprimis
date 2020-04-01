@@ -81,7 +81,7 @@ void addparticleemitters()
 {
     emitters.setsize(0);
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
         if(e.type != Ent_Particles) continue;
@@ -1409,7 +1409,7 @@ void seedparticles()
     renderprogress(0, "seeding particles");
     addparticleemitters();
     canemit = true;
-    loopv(emitters)
+    for(int i = 0; i < emitters.length(); i++)
     {
         particleemitter &pe = emitters[i];
         extentity &e = *pe.ent;
@@ -1451,7 +1451,7 @@ void updateparticles()
     {
         int emitted = 0, replayed = 0;
         addedparticles = 0;
-        loopv(emitters)
+        for(int i = 0; i < emitters.length(); i++)
         {
             particleemitter &pe = emitters[i];
             extentity &e = *pe.ent;
@@ -1479,12 +1479,12 @@ void updateparticles()
     {
         const vector<extentity *> &ents = entities::getents();
         // note: order matters in this case as particles of the same type are drawn in the reverse order that they are added
-        loopv(entgroup)
+        for(int i = 0; i < entgroup.length(); i++)
         {
             entity &e = *ents[entgroup[i]];
             particle_textcopy(e.o, entname(e), PART_TEXT, 1, 0xFF4B19, 2.0f);
         }
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             entity &e = *ents[i];
             if(e.type==Ent_Empty) continue;

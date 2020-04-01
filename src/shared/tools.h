@@ -615,7 +615,7 @@ template <class T> struct vector
     {
         shrink(0);
         if(v.length() > alen) growbuf(v.length());
-        loopv(v) add(v[i]);
+        for(int i = 0; i < v.length(); i++) add(v[i]);
         return *this;
     }
 

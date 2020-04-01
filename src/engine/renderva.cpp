@@ -173,7 +173,7 @@ void sortvisiblevas()
 template<bool fullvis, bool resetocclude>
 static inline void findvisiblevas(vector<vtxarray *> &vas)
 {
-    loopv(vas)
+    for(int i = 0; i < vas.length(); i++)
     {
         vtxarray &v = *vas[i];
         int prevvfc = v.curvfc;
@@ -280,7 +280,7 @@ void visiblecubes(bool cull)
         memset(vfcDnear, 0, sizeof(vfcDnear));
         memset(vfcDfar, 0, sizeof(vfcDfar));
         visibleva = NULL;
-        loopv(valist)
+        for(int i = 0; i < valist.length(); i++)
         {
             vtxarray *va = valist[i];
             va->distance = 0;
@@ -521,44 +521,47 @@ void findvisiblemms(const vector<extentity *> &ents, bool doquery)
     lastvisiblemms = &visiblemms;
     for(vtxarray *va = visibleva; va; va = va->next)
     {
-        if(va->occluded < OCCLUDE_BB && va->curvfc < VFC_FOGGED) loopv(va->mapmodels)
+        if(va->occluded < OCCLUDE_BB && va->curvfc < VFC_FOGGED)
         {
-            octaentities *oe = va->mapmodels[i];
-            if(isfoggedcube(oe->o, oe->size)) continue;
-
-            bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
-            if(occluded)
+            for(int i = 0; i < va->mapmodels.length(); i++)
             {
-                oe->distance = -1;
+                octaentities *oe = va->mapmodels[i];
+                if(isfoggedcube(oe->o, oe->size)) continue;
 
-                oe->next = NULL;
-                *lastvisiblemms = oe;
-                lastvisiblemms = &oe->next;
-            }
-            else
-            {
-                int visible = 0;
-                loopv(oe->mapmodels)
+                bool occluded = doquery && oe->query && oe->query->owner == oe && checkquery(oe->query);
+                if(occluded)
                 {
-                    extentity &e = *ents[oe->mapmodels[i]];
-                    if(e.flags&EntFlag_NoVis) continue;
-                    e.flags |= EntFlag_Render;
-                    ++visible;
+                    oe->distance = -1;
+
+                    oe->next = NULL;
+                    *lastvisiblemms = oe;
+                    lastvisiblemms = &oe->next;
                 }
-                if(!visible) continue;
-
-                oe->distance = int(camera1->o.dist_to_bb(oe->o, oe->size));
-
-                octaentities **prev = &visiblemms, *cur = visiblemms;
-                while(cur && cur->distance >= 0 && oe->distance > cur->distance)
+                else
                 {
-                    prev = &cur->next;
-                    cur = cur->next;
-                }
+                    int visible = 0;
+                    for(int i = 0; i < oe->mapmodels.length(); i++)
+                    {
+                        extentity &e = *ents[oe->mapmodels[i]];
+                        if(e.flags&EntFlag_NoVis) continue;
+                        e.flags |= EntFlag_Render;
+                        ++visible;
+                    }
+                    if(!visible) continue;
 
-                if(*prev == NULL) lastvisiblemms = &oe->next;
-                oe->next = *prev;
-                *prev = oe;
+                    oe->distance = int(camera1->o.dist_to_bb(oe->o, oe->size));
+
+                    octaentities **prev = &visiblemms, *cur = visiblemms;
+                    while(cur && cur->distance >= 0 && oe->distance > cur->distance)
+                    {
+                        prev = &cur->next;
+                        cur = cur->next;
+                    }
+
+                    if(*prev == NULL) lastvisiblemms = &oe->next;
+                    oe->next = *prev;
+                    *prev = oe;
+                }
             }
         }
     }
@@ -583,7 +586,7 @@ void rendermapmodels()
     for(octaentities *oe = visiblemms; oe; oe = oe->next) if(oe->distance>=0)
     {
         bool rendered = false;
-        loopv(oe->mapmodels)
+        for(int i = 0; i < oe->mapmodels.length(); i++)
         {
             extentity &e = *ents[oe->mapmodels[i]];
             if(!(e.flags&EntFlag_Render))
@@ -996,7 +999,7 @@ void sortshadowvas()
 
 void findshadowvas(vector<vtxarray *> &vas)
 {
-    loopv(vas)
+    for(int i = 0; i < vas.length(); i++)
     {
         vtxarray &v = *vas[i];
         float dist = vadist(&v, shadoworigin);
@@ -1013,7 +1016,7 @@ void findshadowvas(vector<vtxarray *> &vas)
 
 void findcsmshadowvas(vector<vtxarray *> &vas)
 {
-    loopv(vas)
+    for(int i = 0; i < vas.length(); i++)
     {
         vtxarray &v = *vas[i];
         ivec bbmin, bbmax;
@@ -1031,7 +1034,7 @@ void findcsmshadowvas(vector<vtxarray *> &vas)
 
 void findrsmshadowvas(vector<vtxarray *> &vas)
 {
-    loopv(vas)
+    for(int i = 0; i < vas.length(); i++)
     {
         vtxarray &v = *vas[i];
         ivec bbmin, bbmax;
@@ -1049,7 +1052,7 @@ void findrsmshadowvas(vector<vtxarray *> &vas)
 
 void findspotshadowvas(vector<vtxarray *> &vas)
 {
-    loopv(vas)
+    for(int i = 0; i < vas.length(); i++)
     {
         vtxarray &v = *vas[i];
         float dist = vadist(&v, shadoworigin);
@@ -2104,7 +2107,7 @@ void renderrefractmask()
     gle::enablevertex();
 
     vtxarray *prev = NULL;
-    loopv(alphavas)
+    for(int i = 0; i < alphavas.length(); i++)
     {
         vtxarray *va = alphavas[i];
         if(!va->refracttris) continue;
@@ -2140,7 +2143,7 @@ void renderalphageom(int side)
 
     if(side == 2)
     {
-        loopv(alphavas)
+        for(int i = 0; i < alphavas.length(); i++)
         {
             renderva(cur, alphavas[i], RENDERPASS_GBUFFER);
         }
@@ -2152,7 +2155,7 @@ void renderalphageom(int side)
     else
     {
         glCullFace(GL_FRONT);
-        loopv(alphavas)
+        for(int i = 0; i < alphavas.length(); i++)
         {
             if(alphavas[i]->alphabacktris)
             {
@@ -2405,7 +2408,7 @@ static void changeslottmus(decalrenderer &cur, int pass, DecalSlot &slot)
     Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
     bindslottex(cur, TEX_DIFFUSE, diffuse);
 
-    loopv(slot.sts)
+    for(int i = 0; i < slot.sts.length(); i++)
     {
         Slot::Tex &t = slot.sts[i];
         switch(t.type)
@@ -2790,7 +2793,7 @@ static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draw
             tris.setsize(0);
             mm->genshadowmesh(tris, orient);
 
-            loopv(tris)
+            for(int i = 0; i < tris.length(); i++)
             {
                 triangle &t = tris[i];
                 addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);
@@ -2842,7 +2845,7 @@ void clearshadowmeshes()
     if(shadowmeshes.numelems)
     {
         vector<extentity *> &ents = entities::getents();
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
             if(e.flags&EntFlag_ShadowMesh)
@@ -2866,7 +2869,7 @@ void genshadowmeshes()
     renderprogress(0, "generating shadow meshes..");
 
     vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
         if(e.type != Ent_Light)

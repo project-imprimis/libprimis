@@ -95,7 +95,7 @@ void resolverclear()
     SDL_LockMutex(resolvermutex);
     resolverqueries.shrink(0);
     resolverresults.shrink(0);
-    loopv(resolverthreads)
+    for(int i = 0; i < resolverthreads.length(); i++)
     {
         resolverthread &rt = resolverthreads[i];
         resolverstop(rt);
@@ -124,14 +124,17 @@ bool resolvercheck(const char **name, ENetAddress *address)
         address->host = rr.address.host;
         resolved = true;
     }
-    else loopv(resolverthreads)
+    else
     {
-        resolverthread &rt = resolverthreads[i];
-        if(rt.query && totalmillis - rt.starttime > RESOLVERLIMIT)
+        for(int i = 0; i < resolverthreads.length(); i++)
         {
-            resolverstop(rt);
-            *name = rt.query;
-            resolved = true;
+            resolverthread &rt = resolverthreads[i];
+            if(rt.query && totalmillis - rt.starttime > RESOLVERLIMIT)
+            {
+                resolverstop(rt);
+                *name = rt.query;
+                resolved = true;
+            }
         }
     }
     SDL_UnlockMutex(resolvermutex);
@@ -153,7 +156,7 @@ bool resolverwait(const char *name, ENetAddress *address)
     for(;;)
     {
         SDL_CondWaitTimeout(resultcond, resolvermutex, 250);
-        loopv(resolverresults)
+        for(int i = 0; i < resolverresults.length(); i++)
         {
             if(resolverresults[i].query == name)
             {
@@ -180,7 +183,7 @@ bool resolverwait(const char *name, ENetAddress *address)
     }
     if(!resolved && timeout > RESOLVERLIMIT)
     {
-        loopv(resolverthreads)
+        for(int i = 0; i < resolverthreads.length(); i++)
         {
             resolverthread &rt = resolverthreads[i];
             if(rt.query == name)
@@ -428,7 +431,7 @@ void addserver(const char *name, int port, const char *password, bool keep)
     {
         port = server::serverport();
     }
-    loopv(servers)
+    for(int i = 0; i < servers.length(); i++)
     {
         serverinfo *s = servers[i];
         if(strcmp(s->name, name) || s->address.port != port)
@@ -519,7 +522,7 @@ void pingservers()
 void checkresolver()
 {
     int resolving = 0;
-    loopv(servers)
+    for(int i = 0; i < servers.length(); i++)
     {
         serverinfo &si = *servers[i];
         if(si.resolved == RESOLVED)
@@ -548,7 +551,7 @@ void checkresolver()
         {
             break;
         }
-        loopv(servers)
+        for(int i = 0; i < servers.length(); i++)
         {
             serverinfo &si = *servers[i];
             if(name == si.name)
@@ -580,7 +583,7 @@ void checkpings()
         ucharbuf p(ping, len);
         int millis = getint(p);
         serverinfo *si = NULL;
-        loopv(servers)
+        for(int i = 0; i < servers.length(); i++)
         {
             if(addr.host == servers[i]->address.host && addr.port == servers[i]->address.port)
             {
@@ -649,7 +652,7 @@ void refreshservers()
     }
     if(totalmillis - lastrefresh > 1000)
     {
-        loopv(servers)
+        for(int i = 0; i < servers.length(); i++)
         {
             servers[i]->reset();
         }
@@ -818,7 +821,7 @@ void writeservercfg()
     stream *f = openutf8file(path(game::savedservers(), true), "w");
     if(!f) return;
     int kept = 0;
-    loopv(servers)
+    for(int i = 0; i < servers.length(); i++)
     {
         serverinfo *s = servers[i];
         if(s->keep)
@@ -831,7 +834,7 @@ void writeservercfg()
     }
     if(kept) f->printf("\n");
     f->printf("// servers connected to are added here automatically\n\n");
-    loopv(servers)
+    for(int i = 0; i < servers.length(); i++)
     {
         serverinfo *s = servers[i];
         if(!s->keep)

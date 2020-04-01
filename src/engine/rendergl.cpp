@@ -1078,7 +1078,7 @@ extern int usetimers;
 
 timer *findtimer(const char *name, bool gpu)
 {
-    loopv(timers)
+    for(int i = 0; i < timers.length(); i++)
     {
         if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
         {
@@ -1135,7 +1135,7 @@ void synctimers()
 {
     timercycle = (timercycle + 1) % timer::MAXQUERY;
 
-    loopv(timers)
+    for(int i = 0; i < timers.length(); i++)
     {
         timer &t = timers[i];
         if(t.waiting&(1<<timercycle))
@@ -1154,7 +1154,7 @@ void synctimers()
 
 void cleanuptimers()
 {
-    loopv(timers)
+    for(int i = 0; i < timers.length(); i++)
     {
         timer &t = timers[i];
         if(t.gpu) glDeleteQueries_(timer::MAXQUERY, t.query);
@@ -1182,7 +1182,7 @@ void printtimers(int conw, int conh)
     }
     if(usetimers)
     {
-        loopv(timerorder)
+        for(int i = 0; i < timerorder.length(); i++)
         {
             timer &t = timers[timerorder[i]];
             if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200) t.print = t.result;
@@ -2082,7 +2082,7 @@ void drawminimap()
     if(!minimaptex) glGenTextures(1, &minimaptex);
 
     ivec bbmin(worldsize, worldsize, worldsize), bbmax(0, 0, 0);
-    loopv(valist)
+    for(int i = 0; i < valist.length(); i++)
     {
         vtxarray *va = valist[i];
         for(int k = 0; k < 3; ++k)

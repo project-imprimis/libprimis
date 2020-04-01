@@ -62,7 +62,7 @@ void fonttex(char *s)
     if(!fontdef) return;
 
     Texture *t = textureload(s);
-    loopv(fontdef->texs)
+    for(int i = 0; i < fontdef->texs.length(); i++)
     {
         if(fontdef->texs[i] == t)
         {
@@ -440,7 +440,7 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
 void reloadfonts()
 {
     ENUMERATE(fonts, font, f,
-        loopv(f.texs)
+        for(int i = 0; i < f.texs.length(); i++)
         {
             if(!reloadtexture(*f.texs[i]))
             {
