@@ -239,7 +239,7 @@ namespace ai
     {
         if(intermission)
         {
-            loopv(players)
+            for(int i = 0; i < players.length(); i++)
             {
                 if(players[i]->ai)
                 {
@@ -261,7 +261,7 @@ namespace ai
                 itermillis = totalmillis;
             }
             int count = 0;
-            loopv(players)
+            for(int i = 0; i < players.length(); i++)
             {
                 if(players[i]->ai)
                 {
@@ -278,7 +278,7 @@ namespace ai
     bool checkothers(vector<int> &targets, gameent *d, int state, int targtype, int target, bool teams, int *members)
     { // checks the states of other ai for a match
         targets.setsize(0);
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *e = players[i];
             if(targets.find(e->clientnum) >= 0)
@@ -378,7 +378,7 @@ namespace ai
         vec dp = d->headpos();
         float mindist = guard*guard, bestdist = 1e16f;
         int atk = guns[d->gunselect].attacks[ACT_SHOOT];
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *e = players[i];
             if(e == d || !targetable(d, e))
@@ -474,7 +474,7 @@ namespace ai
             float dist = 1e16f;
             gameent *t = NULL;
             int atk = guns[d->gunselect].attacks[ACT_SHOOT];
-            loopv(players)
+            for(int i = 0; i < players.length(); i++)
             {
                 gameent *e = players[i];
                 if(e == d || hastried.find(e) >= 0 || !targetable(d, e)) continue;
@@ -522,7 +522,7 @@ namespace ai
 
     void assist(gameent *d, aistate &b, vector<interest> &interests, bool all, bool force)
     {
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *e = players[i];
             if(e == d || (!all && e->aitype != AI_None) || !IS_TEAM(d->team, e->team))
@@ -554,7 +554,7 @@ namespace ai
 
     void items(gameent *d, aistate &b, vector<interest> &interests, bool force = false)
     {
-        loopv(entities::ents)
+        for(int i = 0; i < entities::ents.length(); i++)
         {
             extentity &e = *(extentity *)entities::ents[i];
             if(!e.spawned() || !d->canpickup(e.type))
@@ -614,7 +614,7 @@ namespace ai
             static vector<int> nearby;
             nearby.setsize(0);
             findents(I_FIRST, I_LAST, false, d->feetpos(), vec(32, 32, 24), nearby);
-            loopv(nearby)
+            for(int i = 0; i < nearby.length(); i++)
             {
                 int id = nearby[i];
                 extentity &e = *(extentity *)entities::ents[id];
@@ -687,7 +687,7 @@ namespace ai
         }
         if(checkothers(targets, d, AIState_Defend, AITravel_Player, d->clientnum, true))
         {
-            loopv(targets)
+            for(int i = 0; i < targets.length(); i++)
             {
                 gameent *t = getclient(targets[i]);
                 if(!t->ai || !canmove(t) || !targetable(t, e))
@@ -753,7 +753,7 @@ namespace ai
         extentity &e = *entities::ents[ent];
         if(VALID_ITEM(e.type))
         {
-            loopv(players)
+            for(int i = 0; i < players.length(); i++)
             {
                 if(players[i] && players[i]->ai && players[i]->aitype == AI_Bot && players[i]->canpickup(e.type))
                 {
@@ -964,7 +964,7 @@ namespace ai
         int node1 = -1, node2 = -1;
         float mindist1 = CLOSEDIST*CLOSEDIST, //close_dist not closed_ist
               mindist2 = CLOSEDIST*CLOSEDIST;
-        loopv(d->ai->route)
+        for(int i = 0; i < d->ai->route.length(); i++)
         {
             if(iswaypoint(d->ai->route[i]))
             {
@@ -1184,13 +1184,13 @@ namespace ai
             d->o = old;
             if(jump)
             {
-                float radius = 18*18;
-                loopv(entities::ents)
+                float squareradius = 324; //324 = 18^2; float because squaredist is also a float
+                for(int i = 0; i < entities::ents.length(); i++)
                 {
                     if(entities::ents[i]->type == JUMPPAD)
                     {
                         gameentity &e = *(gameentity *)entities::ents[i];
-                        if(e.o.squaredist(pos) <= radius)
+                        if(e.o.squaredist(pos) <= squareradius)
                         {
                             jump = false;
                             break;
@@ -1723,7 +1723,7 @@ namespace ai
         // guess as to the radius of ai and other critters relying on the avoid set for now
         float guessradius = player1->radius;
         obstacles.clear();
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             dynent *d = players[i];
             if(d->state != ClientState_Alive)
@@ -1862,14 +1862,14 @@ namespace ai
         if(aidebug > 1)
         {
             int total = 0, alive = 0;
-            loopv(players)
+            for(int i = 0; i < players.length(); i++)
             {
                 if(players[i]->ai)
                 {
                     total++;
                 }
             }
-            loopv(players)
+            for(int i = 0; i < players.length(); i++)
             {
                 if(players[i]->state == ClientState_Alive && players[i]->ai)
                 {
@@ -1934,7 +1934,7 @@ namespace ai
             if(aidebug >= 4)
             {
                 int cur = 0;
-                loopv(obstacles.obstacles)
+                for(int i = 0; i < obstacles.obstacles.length(); i++)
                 {
                     const avoidset::obstacle &ob = obstacles.obstacles[i];
                     int next = cur + ob.numwaypoints;

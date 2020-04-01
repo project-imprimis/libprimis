@@ -43,7 +43,7 @@ namespace game
 
     void moveragdolls()
     {
-        loopv(ragdolls)
+        for(int i = 0; i < ragdolls.length(); i++)
         {
             gameent *d = ragdolls[i];
             if(lastmillis > d->lastupdate + ragdollmillis)
@@ -145,7 +145,7 @@ namespace game
     {
         if(player1->clientnum < 0) player1->playermodel = playermodel;
         if(player1->ragdoll) cleanragdoll(player1);
-        loopv(ragdolls)
+        for(int i = 0; i < ragdolls.length(); i++)
         {
             gameent *d = ragdolls[i];
             if(!d->ragdoll) continue;
@@ -156,7 +156,7 @@ namespace game
             }
             cleanragdoll(d);
         }
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *d = players[i];
             if(d == player1 || !d->ragdoll) continue;
@@ -357,7 +357,7 @@ namespace game
 
         bool third = isthirdperson();
         gameent *f = followingplayer(), *exclude = third ? NULL : f;
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *d = players[i];
             if(d == player1 || d->state==ClientState_Spectator || d->state==ClientState_Spawning || d->lifesequence < 0 || d == exclude || (d->state==ClientState_Dead && hidedead)) continue;
@@ -369,7 +369,7 @@ namespace game
                 particle_text(d->abovehead(), d->info, PART_TEXT, 1, teamtextcolor[team], 2.0f);
             }
         }
-        loopv(ragdolls)
+        for(int i = 0; i < ragdolls.length(); i++)
         {
             gameent *d = ragdolls[i];
             float fade = 1.0f;

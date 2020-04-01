@@ -1914,7 +1914,7 @@ int compactvslots(bool cull)
     markingvslots = cull;
     compactedvslots = 0;
     compactvslotsprogress = 0;
-    loopv(vslots)
+    for(int i = 0; i < vslots.length(); i++)
     {
         vslots[i]->index = -1;
     }
@@ -1932,15 +1932,15 @@ int compactvslots(bool cull)
     }
     else
     {
-        loopv(slots)
+        for(int i = 0; i < slots.length(); i++)
         {
             slots[i]->variants->index = compactedvslots++;
         }
-        loopv(slots)
+        for(int i = 0; i < slots.length(); i++)
         {
             assignvslotlayer(*slots[i]->variants);
         }
-        loopv(vslots)
+        for(int i = 0; i < vslots.length(); i++)
         {
             VSlot &vs = *vslots[i];
             if(!vs.changed && vs.index < 0)
@@ -1953,7 +1953,7 @@ int compactvslots(bool cull)
     compactvslots(worldroot);
     int total = compactedvslots;
     compacteditvslots();
-    loopv(vslots)
+    for(int i = 0; i < vslots.length(); i++)
     {
         VSlot *vs = vslots[i];
         if(vs->changed) continue;
@@ -1969,7 +1969,7 @@ int compactvslots(bool cull)
         compactedvslots = 0;
         compactvslotsprogress = 0;
         int lastdiscard = 0;
-        loopv(vslots)
+        for(int i = 0; i < vslots.length(); i++)
         {
             VSlot &vs = *vslots[i];
             if(vs.changed || (vs.index < 0 && !vs.next)) vs.index = -1;
@@ -1988,7 +1988,7 @@ int compactvslots(bool cull)
         compacteditvslots();
     }
     compactmruvslots();
-    loopv(vslots)
+    for(int i = 0; i < vslots.length(); i++)
     {
         VSlot &vs = *vslots[i];
         if(vs.index >= 0)
@@ -2006,12 +2006,12 @@ int compactvslots(bool cull)
                 delete slots.remove(i);
             }
         }
-        loopv(slots)
+        for(int i = 0; i < slots.length(); i++)
         {
             slots[i]->index = i;
         }
     }
-    loopv(vslots)
+    for(int i = 0; i < vslots.length(); i++)
     {
         while(vslots[i]->index >= 0 && vslots[i]->index != i)
         {
@@ -2054,7 +2054,7 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
 {
     if(diff & (1<<VSLOT_SHPARAM))
     {
-        loopv(src.params)
+        for(int i = 0; i < src.params.length(); i++)
         {
             dst.params.add(src.params[i]);
         }
@@ -2118,7 +2118,7 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
 {
     if(diff & (1<<VSLOT_SHPARAM))
     {
-        loopv(src.params)
+        for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &sp = src.params[i];
             for(int j = 0; j < dst.params.length(); j++)
@@ -2228,7 +2228,7 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
     if(diff & (1<<VSLOT_SHPARAM))
     {
         if(src.params.length() != dst.params.length()) return false;
-        loopv(src.params)
+        for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &sp = src.params[i], &dp = dst.params[i];
             if(sp.name != dp.name || memcmp(sp.val, dp.val, sizeof(sp.val))) return false;
@@ -2251,7 +2251,7 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
 {
     if(src.changed & (1<<VSLOT_SHPARAM))
     {
-        loopv(src.params)
+        for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &p = src.params[i];
             buf.put(VSLOT_SHPARAM);
@@ -2816,7 +2816,7 @@ void Slot::load(int index, Slot::Tex &t)
     vector<char> key;
     addname(key, *this, t, false, shouldpremul(t.type) ? "<premul>" : NULL);
     Slot::Tex *combine = NULL;
-    loopv(sts)
+    for(int i = 0; i < sts.length(); i++)
     {
         Slot::Tex &c = sts[i];
         if(c.combined == index)
@@ -2867,7 +2867,7 @@ void Slot::load(int index, Slot::Tex &t)
 void Slot::load()
 {
     linkslotshader(*this);
-    loopv(sts)
+    for(int i = 0; i < sts.length(); i++)
     {
         Slot::Tex &t = sts[i];
         if(t.combined >= 0) continue;
@@ -2878,7 +2878,7 @@ void Slot::load()
             c.combined = i;
         }
     }
-    loopv(sts)
+    for(int i = 0; i < sts.length(); i++)
     {
         Slot::Tex &t = sts[i];
         if(t.combined >= 0) continue;
@@ -2941,14 +2941,14 @@ DecalSlot &lookupdecalslot(int index, bool load)
 
 void linkslotshaders()
 {
-    loopv(slots)
+    for(int i = 0; i < slots.length(); i++)
     {
         if(slots[i]->loaded)
         {
             linkslotshader(*slots[i]);
         }
     }
-    loopv(vslots)
+    for(int i = 0; i < vslots.length(); i++)
     {
         if(vslots[i]->linked)
         {
@@ -2963,7 +2963,7 @@ void linkslotshaders()
             linkvslotshader(materialslots[i]);
         }
     }
-    loopv(decalslots)
+    for(int i = 0; i < decalslots.length(); i++)
     {
         if(decalslots[i]->loaded)
         {
@@ -3252,7 +3252,7 @@ static vector<envmap> envmaps;
 
 void clearenvmaps()
 {
-    loopv(envmaps)
+    for(int i = 0; i < envmaps.length(); i++)
     {
         envmaps[i].clear();
     }
@@ -3393,7 +3393,7 @@ void initenvmaps()
     clearenvmaps();
     envmaps.add().size = hasskybox() ? 0 : 1;
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         const extentity &ent = *ents[i];
         if(ent.type != Ent_Envmap)
@@ -3414,7 +3414,7 @@ void genenvmaps()
     renderprogress(0, "generating environment maps...");
     int lastprogress = SDL_GetTicks();
     gl_setupframe(true);
-    loopv(envmaps)
+    for(int i = 0; i < envmaps.length(); i++)
     {
         envmap &em = envmaps[i];
         em.tex = genenvmap(em.o, em.size ? min(em.size, envmapsize) : envmapsize, em.blur, em.radius < 0);
@@ -3446,7 +3446,7 @@ ushort closestenvmap(const vec &o)
 {
     ushort minemid = EMID_SKY;
     float mindist = 1e16f;
-    loopv(envmaps)
+    for(int i = 0; i < envmaps.length(); i++)
     {
         envmap &em = envmaps[i];
         float dist;
@@ -3489,7 +3489,7 @@ static inline GLuint lookupskyenvmap()
 
 GLuint lookupenvmap(Slot &slot)
 {
-    loopv(slot.sts)
+    for(int i = 0; i < slot.sts.length(); i++)
     {
         if(slot.sts[i].type==TEX_ENVMAP && slot.sts[i].t)
         {
@@ -3517,11 +3517,11 @@ void cleanuptexture(Texture *t)
 void cleanuptextures()
 {
     clearenvmaps();
-    loopv(slots)
+    for(int i = 0; i < slots.length(); i++)
     {
         slots[i]->cleanup();
     }
-    loopv(vslots)
+    for(int i = 0; i < vslots.length(); i++)
     {
         vslots[i]->cleanup();
     }
@@ -3529,7 +3529,7 @@ void cleanuptextures()
     {
         materialslots[i].cleanup();
     }
-    loopv(decalslots)
+    for(int i = 0; i < decalslots.length(); i++)
     {
         decalslots[i]->cleanup();
     }

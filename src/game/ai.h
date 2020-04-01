@@ -102,7 +102,7 @@ namespace ai
         void add(avoidset &avoid)
         {
             waypoints.put(avoid.waypoints.getbuf(), avoid.waypoints.length());
-            loopv(avoid.obstacles)
+            for(int i = 0; i < avoid.obstacles.length(); i++)
             {
                 obstacle &o = avoid.obstacles[i];
                 if(obstacles.empty() || o.owner != obstacles.last().owner) add(o.owner, o.above);
@@ -116,7 +116,7 @@ namespace ai
             if(!(v).obstacles.empty()) \
             { \
                 int cur = 0; \
-                loopv((v).obstacles) \
+                for(int i = 0; i < (v).obstacles.length(); i++) \
                 { \
                     const ai::avoidset::obstacle &ob = (v).obstacles[i]; \
                     int next = cur + ob.numwaypoints; \

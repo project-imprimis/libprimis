@@ -41,7 +41,7 @@ struct ctfclientmode : clientmode
 #else
             if(id >= 0)
             {
-                loopv(players)
+                for(int i = 0; i < players.length(); i++)
                 {
                     players[i]->flagpickup &= ~(1<<id);
                 }
@@ -108,7 +108,7 @@ struct ctfclientmode : clientmode
         else f.dropcount = 0;
         f.dropper = -1;
 #else
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             players[i]->flagpickup &= ~(1<<f.id);
         }
@@ -130,7 +130,7 @@ struct ctfclientmode : clientmode
         f.dropper = dropper;
         f.owner = -1;
 #else
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             players[i]->flagpickup &= ~(1<<f.id);
         }
@@ -151,7 +151,7 @@ struct ctfclientmode : clientmode
         f.dropcount = 0;
         f.owner = f.dropper = -1;
 #else
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             players[i]->flagpickup &= ~(1<<f.id);
         }
@@ -216,7 +216,7 @@ struct ctfclientmode : clientmode
     {
         reset(false);
         if(notgotitems || ments.empty()) return;
-        loopv(ments)
+        for(int i = 0; i < ments.length(); i++)
         {
             entity &e = ments[i];
             if(e.type != FLAG || !VALID_TEAM(e.attr2)) continue;
@@ -233,7 +233,7 @@ struct ctfclientmode : clientmode
     void dropflag(clientinfo *ci, clientinfo *dropper = NULL)
     {
         if(notgotflags) return;
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             if(flags[i].owner==ci->clientnum)
             {
@@ -248,7 +248,7 @@ struct ctfclientmode : clientmode
     void leavegame(clientinfo *ci, bool disconnecting = false)
     {
         dropflag(ci);
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             if(flags[i].dropper == ci->clientnum)
             {
@@ -261,7 +261,7 @@ struct ctfclientmode : clientmode
     void died(clientinfo *ci, clientinfo *actor)
     {
         dropflag(ci, ctftkpenalty && actor && actor != ci && IS_TEAM(actor->team, ci->team) ? actor : NULL);
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             if(flags[i].dropper == ci->clientnum)
             {
@@ -333,7 +333,7 @@ struct ctfclientmode : clientmode
     void update()
     {
         if(gamemillis>=gamelimit || notgotflags) return;
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             if(f.owner<0 && f.droptime && lastmillis - f.droptime >= RESETFLAGTIME)
@@ -352,7 +352,7 @@ struct ctfclientmode : clientmode
             putint(p, scores[k]);
         }
         putint(p, flags.length());
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             putint(p, f.version);
@@ -437,7 +437,7 @@ struct ctfclientmode : clientmode
     {
         if(d->state == ClientState_Alive)
         {
-            loopv(flags)
+            for(int i = 0; i < flags.length(); i++)
             {
                 if(flags[i].owner == d)
                 {
@@ -467,7 +467,7 @@ struct ctfclientmode : clientmode
         drawradar(-0.5f*rsize, -0.5f*rsize, rsize);
         pophudmatrix();
         drawplayerblip(d, x, y, s, 1.5f);
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             if(!VALID_TEAM(f.team))
@@ -498,7 +498,7 @@ struct ctfclientmode : clientmode
 
     void removeplayer(gameent *d)
     {
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             if(flags[i].owner == d)
             {
@@ -530,7 +530,7 @@ struct ctfclientmode : clientmode
 
     void rendergame()
     {
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             if(!f.owner && f.droptime && f.droploc.x < 0) continue;
@@ -546,7 +546,7 @@ struct ctfclientmode : clientmode
     void setup()
     {
         resetflags();
-        loopv(entities::ents)
+        for(int i = 0; i < entities::ents.length(); i++)
         {
             extentity *e = entities::ents[i];
             if(e->type!=FLAG || !VALID_TEAM(e->attr2)) continue;
@@ -560,7 +560,7 @@ struct ctfclientmode : clientmode
     {
         putint(p, N_INITFLAGS);
         putint(p, flags.length());
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             putint(p, f.team);
@@ -622,7 +622,7 @@ struct ctfclientmode : clientmode
         {
             return;
         }
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             if(flags[i].owner == player1)
             {
@@ -745,7 +745,7 @@ struct ctfclientmode : clientmode
         if(d->state!=ClientState_Alive) return;
         vec o = d->feetpos();
         bool tookflag = false;
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             if(!VALID_TEAM(f.team) || f.team==player1->team || f.owner || (f.droptime && f.droploc.x<0)) continue;
@@ -762,7 +762,7 @@ struct ctfclientmode : clientmode
             }
             else d->flagpickup &= ~(1<<f.id);
         }
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             if(!VALID_TEAM(f.team) || f.team!=player1->team || f.owner || (f.droptime && f.droploc.x<0)) continue;
@@ -782,7 +782,7 @@ struct ctfclientmode : clientmode
     {
         vec o = d->feetpos();
         d->flagpickup = 0;
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
             if(!VALID_TEAM(f.team) || f.owner || (f.droptime && f.droploc.x<0)) continue;
@@ -801,7 +801,7 @@ struct ctfclientmode : clientmode
         for(int k = 0; k < 2; ++k)
         {
             int goal = -1;
-            loopv(flags)
+            for(int i = 0; i < flags.length(); i++)
             {
                 flag &g = flags[i];
                 if(g.team == d->team && (k || (!g.owner && !g.droptime)) &&
@@ -829,7 +829,7 @@ struct ctfclientmode : clientmode
     {
         static vector<int> takenflags;
         takenflags.setsize(0);
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &g = flags[i];
             if(g.owner == d) return aihomerun(d, b);
@@ -934,7 +934,7 @@ struct ctfclientmode : clientmode
 
     bool aidefend(gameent *d, ai::aistate &b)
     {
-        loopv(flags)
+        for(int i = 0; i < flags.length(); i++)
         {
             flag &g = flags[i];
             if(g.owner == d) return aihomerun(d, b);
@@ -975,7 +975,7 @@ struct ctfclientmode : clientmode
             }
             vec pos = d->feetpos();
             float mindist = float(FLAGRADIUS*FLAGRADIUS*8);
-            loopv(flags)
+            for(int i = 0; i < flags.length(); i++)
             { // get out of the way of the returnee!
                 flag &g = flags[i];
                 if(pos.squaredist(g.pos()) <= mindist)
@@ -999,7 +999,7 @@ struct ctfclientmode : clientmode
             {
                 if(f.droptime) return ai::makeroute(d, b, f.pos());
                 if(f.owner) return ai::violence(d, b, f.owner, 4);
-                loopv(flags)
+                for(int i = 0; i < flags.length(); i++)
                 {
                     flag &g = flags[i];
                     if(g.owner == d) return ai::makeroute(d, b, f.pos());

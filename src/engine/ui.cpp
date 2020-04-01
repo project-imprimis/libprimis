@@ -215,7 +215,7 @@ namespace UI
         }
 
         #define LOOP_CHILDREN(o, body) do { \
-            loopv(children) \
+            for(int i = 0; i < children.length(); i++) \
             { \
                 Object *o = children[i]; \
                 body; \
@@ -718,7 +718,7 @@ namespace UI
         const char *gettype() const { return typestr(); }
 
         #define LOOP_WINDOWS(o, body) do { \
-            loopv(children) \
+            for(int i = 0; i < children.length(); i++) \
             { \
                 Window *o = (Window *)children[i]; \
                 body; \
@@ -973,11 +973,11 @@ namespace UI
             });
 
             subw = subh = 0;
-            loopv(widths)
+            for(int i = 0; i < widths.length(); i++)
             {
                 subw += widths[i];
             }
-            loopv(heights)
+            for(int i = 0; i < heights.length(); i++)
             {
                 subh += heights[i];
             }
@@ -1120,7 +1120,7 @@ namespace UI
             });
 
             subw = 0;
-            loopv(widths)
+            for(int i = 0; i < widths.length(); i++)
             {
                 subw += widths[i];
             }

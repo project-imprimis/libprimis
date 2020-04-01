@@ -105,7 +105,7 @@ namespace game
         }
         float scale = calcradarscale();
         int alive = 0, dead = 0;
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *o = players[i];
             if(o != d && o->state == ClientState_Alive && o->team == d->team)
@@ -124,7 +124,7 @@ namespace game
         {
             gle::end();
         }
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *o = players[i];
             if(o != d && o->state == ClientState_Dead && o->team == d->team)
@@ -268,14 +268,14 @@ namespace game
 
     authkey *findauthkey(const char *desc = "")
     {
-        loopv(authkeys)
+        for(int i = 0; i < authkeys.length(); i++)
         {
             if(!strcmp(authkeys[i]->desc, desc) && !strcasecmp(authkeys[i]->name, player1->name))
             {
                 return authkeys[i];
             }
         }
-        loopv(authkeys)
+        for(int i = 0; i < authkeys.length(); i++)
         {
             if(!strcmp(authkeys[i]->desc, desc))
             {
@@ -370,7 +370,7 @@ namespace game
             conoutf(CON_ERROR, "failed to open %s for writing", fname);
             return;
         }
-        loopv(authkeys)
+        for(int i = 0; i < authkeys.length(); i++)
         {
             authkey *a = authkeys[i];
             f->printf("authkey %s %s %s\n", escapestring(a->name), escapestring(a->key), escapestring(a->desc));
@@ -584,7 +584,7 @@ namespace game
             return n;
         }
         // try case sensitive first
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *o = players[i];
             if(!strcmp(arg, o->name))
@@ -593,7 +593,7 @@ namespace game
             }
         }
         // nothing found, try case insensitive
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *o = players[i];
             if(!strcasecmp(arg, o->name))
@@ -616,7 +616,7 @@ namespace game
             buf.put(cn, strlen(cn));
             numclients++;
         }
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             if(clients[i] && (bots || clients[i]->aitype == AI_None))
             {
@@ -1414,7 +1414,7 @@ namespace game
 
     void sendpositions()
     {
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *d = players[i];
             if((d == player1 || d->ai) && (d->state == ClientState_Alive || d->state == ClientState_Editing))
@@ -2556,7 +2556,7 @@ namespace game
             case N_CURRENTMASTER:
             {
                 int mm = getint(p), mn;
-                loopv(players)
+                for(int i = 0; i < players.length(); i++)
                 {
                     players[i]->privilege = PRIV_NONE;
                 }

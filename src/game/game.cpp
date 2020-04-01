@@ -61,7 +61,7 @@ namespace game
     {
         if(player1->state!=ClientState_Spectator) return;
         int cur = following >= 0 ? following : (dir < 0 ? clients.length() - 1 : 0);
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             cur = (cur + dir + clients.length()) % clients.length();
             if(clients[cur] && clients[cur]->state!=ClientState_Spectator)
@@ -125,7 +125,7 @@ namespace game
 
     gameent *pointatplayer()
     {
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             if(players[i] != player1 && intersect(players[i], player1->o, worldpos))
             {
@@ -206,7 +206,7 @@ namespace game
 
     void otherplayers(int curtime)
     {
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *d = players[i];
             if(d == player1 || d->ai) continue;
@@ -537,7 +537,7 @@ namespace game
 
     void clearclients(bool notify)
     {
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             if(clients[i])
             {
@@ -564,7 +564,7 @@ namespace game
         clearteaminfo();
 
         // reset perma-state
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             players[i]->startgame();
         }
@@ -664,7 +664,7 @@ namespace game
         {
             return true;
         }
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             if(d!=players[i] && !strcmp(name, players[i]->name))
             {

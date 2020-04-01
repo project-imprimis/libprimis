@@ -247,7 +247,7 @@ namespace ai
         lastwpcache = waypoints.length();
 
         wpavoid.clear();
-        loopv(waypoints)
+        for(int i = 0; i < waypoints.length(); i++)
         {
             if(waypoints[i].weight < 0)
             {
@@ -470,7 +470,7 @@ namespace ai
         if(!obstacles.empty())
         {
             int cur = 0;
-            loopv(obstacles)
+            for(int i = 0; i < obstacles.length(); i++)
             {
                 obstacle &ob = obstacles[i];
                 int next = cur + ob.numwaypoints;
@@ -525,7 +525,7 @@ namespace ai
 
         if(!routeid)
         {
-            loopv(waypoints)
+            for(int i = 0; i < waypoints.length(); i++)
             {
                 waypoints[i].route = 0;
             }
@@ -728,7 +728,10 @@ namespace ai
     {
         if(shouldnavigate())
         {
-            loopv(players) ai::navigate(players[i]);
+            for(int i = 0; i < players.length(); i++)
+            {
+                ai::navigate(players[i]);
+            }
         }
         if(invalidatedwpcaches)
         {
@@ -752,7 +755,7 @@ namespace ai
     void seedwaypoints()
     {
         if(waypoints.empty()) addwaypoint(vec(0, 0, 0));
-        loopv(entities::ents)
+        for(int i = 0; i < entities::ents.length(); i++)
         {
             extentity &e = *entities::ents[i];
             switch(e.type)
@@ -771,7 +774,7 @@ namespace ai
     {
         vector<ushort> remap;
         int total = 0;
-        loopv(waypoints)
+        for(int i = 0; i < waypoints.length(); i++)
         {
             remap.add(waypoints[i].links[1] == 0xFFFF ? 0 : total++);
         }
@@ -819,7 +822,7 @@ namespace ai
         if(cleared)
         {
             player1->lastnode = -1;
-            loopv(players)
+            for(int i = 0; i < players.length(); i++)
             {
                 if(players[i])
                 {

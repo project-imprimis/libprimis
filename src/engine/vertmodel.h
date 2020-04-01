@@ -424,7 +424,7 @@ struct vertmodel : animmodel
         {
             if(as->cur.anim&ANIM_NORENDER)
             {
-                loopv(p->links)
+                for(int i = 0; i < p->links.length(); i++)
                 {
                     calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
                 }
@@ -478,7 +478,7 @@ struct vertmodel : animmodel
                 m.render(as, p->skins[i], *vc);
             });
 
-            loopv(p->links)
+            for(int i = 0; i < p->links.length(); i++)
             {
                 calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
             }
@@ -571,9 +571,12 @@ template<class MDL> struct vertcommands : modelcommands<MDL, struct MDL::vertmes
         vector<int> anims;
         game::findanims(anim, anims);
         if(anims.empty()) conoutf("could not find animation %s", anim);
-        else loopv(anims)
+        else
         {
-            MDL::loading->parts.last()->setanim(0, anims[i], *frame, *range, *speed, *priority);
+            for(int i = 0; i < anims.length(); i++)
+            {
+                MDL::loading->parts.last()->setanim(0, anims[i], *frame, *range, *speed, *priority);
+            }
         }
     }
 

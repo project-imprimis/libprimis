@@ -185,7 +185,7 @@ struct Shader
             allocparams(slot);
             used = true;
         }
-        loopv(globalparams)
+        for(int i = 0; i < globalparams.length(); i++)
         {
             globalparams[i].flush();
         }
@@ -764,7 +764,7 @@ struct Slot
         loaded = false;
         grasstex = NULL;
         thumbnail = NULL;
-        loopv(sts)
+        for(int i = 0; i < sts.length(); i++)
         {
             Tex &t = sts[i];
             t.t = NULL;

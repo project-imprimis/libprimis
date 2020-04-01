@@ -71,7 +71,7 @@
 
         vector<teamscore> scores;
         if(smode && smode->hidefrags()) smode->getteamscores(scores);
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
             if(ci->state.state!=ClientState_Spectator && VALID_TEAM(ci->team) && scores.htfind(ci->team) < 0)
@@ -80,7 +80,7 @@
                 else { teaminfo &t = teaminfos[ci->team-1]; scores.add(teamscore(ci->team, t.frags)); }
             }
         }
-        loopv(scores)
+        for(int i = 0; i < scores.length(); i++)
         {
             extinfoteamscore(p, scores[i].team, scores[i].score);
         }
@@ -109,7 +109,7 @@
                 clientinfo *ci = NULL;
                 if(cn >= 0)
                 {
-                    loopv(clients)
+                    for(int i = 0; i < clients.length(); i++)
                     {
                         if(clients[i]->clientnum == cn)
                         {
@@ -135,7 +135,7 @@
                 }
                 else
                 {
-                    loopv(clients)
+                    for(int i = 0; i < clients.length(); i++)
                     {
                         putint(q, clients[i]->clientnum);
                     }
@@ -148,7 +148,7 @@
                 }
                 else
                 {
-                    loopv(clients)
+                    for(int i = 0; i < clients.length(); i++)
                     {
                         extinfoplayer(p, clients[i]);
                     }

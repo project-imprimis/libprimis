@@ -196,7 +196,7 @@ static vector<ziparchive *> archives;
 
 ziparchive *findzip(const char *name)
 {
-    loopv(archives)
+    for(int i = 0; i < archives.length(); i++)
     {
         if(!strcmp(name, archives[i]->name))
         {
@@ -208,7 +208,7 @@ ziparchive *findzip(const char *name)
 
 static bool checkprefix(vector<zipfile> &files, const char *prefix, int prefixlen)
 {
-    loopv(files)
+    for(int i = 0; i < files.length(); i++)
     {
         if(!strncmp(files[i].name, prefix, prefixlen))
         {
@@ -225,7 +225,7 @@ static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mount
     size_t striplen = stripdir ? strlen(stripdir) : 0;
     if(!mountdir && !stripdir)
     {
-        loopv(files)
+        for(int i = 0; i < files.length(); i++)
         {
             zipfile &f = files[i];
             const char *foundpackages = strstr(f.name, packagesdir);
@@ -265,7 +265,7 @@ static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mount
             mdir[0] = '\0';
         }
     }
-    loopv(files)
+    for(int i = 0; i < files.length(); i++)
     {
         zipfile &f = files[i];
         formatstring(fname, "%s%s", mdir, striplen && !strncmp(f.name, stripdir, striplen) ? &f.name[striplen] : f.name);

@@ -234,8 +234,6 @@ inline char *newconcatstring(const char *s, const char *t)
     return r;
 }
 
-#define loopv(v)    for(int i = 0; i<(v).length(); i++)
-
 template<class T> inline void memclear(T *p, size_t n) { memset((void *)p, 0, n * sizeof(T)); }
 template<class T> inline void memclear(T &p) { memset((void *)&p, 0, sizeof(T)); }
 template<class T, size_t N> inline void memclear(T (&p)[N]) { memset((void *)p, 0, N * sizeof(T)); }

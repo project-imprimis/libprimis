@@ -128,11 +128,14 @@ struct editline
     void combinelines(vector<editline> &src)
     {
         if(src.empty()) set("");
-        else loopv(src)
+        else
         {
-            if(i) append("\n");
-            if(!i) set(src[i].text, src[i].len);
-            else insert(src[i].text, len, src[i].len);
+            for(int i = 0; i < src.length(); i++)
+            {
+                if(i) append("\n");
+                if(!i) set(src[i].text, src[i].len);
+                else insert(src[i].text, len, src[i].len);
+            }
         }
     }
 };
@@ -180,7 +183,7 @@ struct editor
     {
         cx = cy = 0;
         mark(false);
-        loopv(lines)
+        for(int i = 0; i < lines.length(); i++)
         {
             lines[i].clear();
         }
@@ -224,7 +227,7 @@ struct editor
         if(!filename) return;
         stream *file = openutf8file(filename, "w");
         if(!file) return;
-        loopv(lines)
+        for(int i = 0; i < lines.length(); i++)
         {
             file->putline(lines[i].text);
         }
@@ -311,13 +314,13 @@ struct editor
     char *tostring()
     {
         int len = 0;
-        loopv(lines)
+        for(int i = 0; i < lines.length(); i++)
         {
             len += lines[i].len + 1;
         }
         char *str = newstring(len);
         int offset = 0;
-        loopv(lines)
+        for(int i = 0; i < lines.length(); i++)
         {
             editline &l = lines[i];
             memcpy(&str[offset], l.text, l.len);
@@ -444,7 +447,7 @@ struct editor
         }
         else
         {
-            loopv(b->lines)
+            for(int i = 0; i < b->lines.length(); i++)
             {
                 if(!i)
                 {
@@ -703,7 +706,7 @@ static editor *textfocus = NULL;
 
 static void readyeditors()
 {
-    loopv(editors)
+    for(int i = 0; i < editors.length(); i++)
     {
         editors[i]->active = (editors[i]->mode==EDITORFOREVER);
     }
@@ -724,7 +727,7 @@ static void flusheditors()
 
 static editor *useeditor(const char *name, int mode, bool focus, const char *initval = NULL)
 {
-    loopv(editors)
+    for(int i = 0; i < editors.length(); i++)
     {
         if(!strcmp(editors[i]->name, name))
         {
@@ -755,7 +758,7 @@ static editor *useeditor(const char *name, int mode, bool focus, const char *ini
 
 ICOMMAND(textlist, "", (), // @DEBUG return list of all the editors
     vector<char> s;
-    loopv(editors)
+    for(int i = 0; i < editors.length(); i++)
     {
         if(i > 0) s.put(", ", 2);
         s.put(editors[i]->name, strlen(editors[i]->name));
@@ -795,7 +798,7 @@ ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into
 {
     if(identflags&Idf_Overridden) return;
     editor *e = NULL;
-    loopv(editors)
+    for(int i = 0; i < editors.length(); i++)
     {
         if(!strcmp(editors[i]->name, name))
         {

@@ -49,7 +49,7 @@ namespace game
 
     void getbestplayers(vector<gameent *> &best)
     {
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *o = players[i];
             if(o->state!=ClientState_Spectator) best.add(o);
@@ -66,7 +66,7 @@ namespace game
             cmode->getteamscores(teamscores);
             teamscores.sort(teamscore::compare);
             while(teamscores.length() > 1 && teamscores.last().score < teamscores[0].score) teamscores.drop();
-            loopv(teamscores)
+            for(int i = 0; i < teamscores.length(); i++)
             {
                 best.add(teamscores[i].team);
             }
@@ -96,7 +96,7 @@ namespace game
             teamplayers[i].setsize(0);
         }
         spectators.setsize(0);
-        loopv(players)
+        for(int i = 0; i < players.length(); i++)
         {
             gameent *o = players[i];
             if(!showconnecting && !o->name[0]) continue;
@@ -132,7 +132,7 @@ namespace game
         if(*team > MAXTEAMS) return;
         LOOP_START(id, stack);
         vector<gameent *> &p = *team < 0 ? spectators : teamplayers[*team];
-        loopv(p)
+        for(int i = 0; i < p.length(); i++)
         {
             loopiter(id, stack, p[i]->clientnum);
             execute(body);

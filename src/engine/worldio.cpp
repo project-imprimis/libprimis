@@ -546,7 +546,7 @@ void savevslot(stream *f, VSlot &vs, int prev)
     if(vs.changed & (1<<VSLOT_SHPARAM))
     {
         f->putlil<ushort>(vs.params.length());
-        loopv(vs.params)
+        for(int i = 0; i < vs.params.length(); i++)
         {
             SlotShaderParam &p = vs.params[i];
             f->putlil<ushort>(strlen(p.name));
@@ -763,7 +763,7 @@ void loadvslots(stream *f, int numvslots)
             numvslots--;
         }
     }
-    loopv(vslots)
+    for(int i = 0; i < vslots.length(); i++)
     {
         if(vslots.inrange(prev[i]))
         {
@@ -798,7 +798,7 @@ bool save_world(const char *mname)
     hdr.worldsize = worldsize;
     hdr.numents = 0;
     const vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         if(ents[i]->type!=Ent_Empty)
         {
@@ -852,12 +852,12 @@ bool save_world(const char *mname)
     f->write(extras.getbuf(), extras.length());
 
     f->putlil<ushort>(texmru.length());
-    loopv(texmru)
+    for(int i = 0; i < texmru.length(); i++)
     {
         f->putlil<ushort>(texmru[i]);
     }
     char *ebuf = new char[entities::extraentinfosize()];
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         if(ents[i]->type!=Ent_Empty)
         {
@@ -1126,7 +1126,7 @@ void writeobj(char *name)
     hashtable<int, vector<ivec2> > mtls(1<<8);
     vector<int> usedmtl;
     vec bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f);
-    loopv(valist)
+    for(int i = 0; i < valist.length(); i++)
     {
         vtxarray &va = *valist[i];
         if(!va.edata || !va.vdata) continue;
@@ -1162,7 +1162,7 @@ void writeobj(char *name)
     }
 
     vec center(-(bbmax.x + bbmin.x)/2, -(bbmax.y + bbmin.y)/2, -bbmin.z);
-    loopv(verts)
+    for(int i = 0; i < verts.length(); i++)
     {
         vec v = verts[i];
         v.add(center);
@@ -1171,7 +1171,7 @@ void writeobj(char *name)
         if(v.x != floor(v.x)) f->printf("%.3f\n", v.x); else f->printf("%d\n", int(v.x));
     }
     f->printf("\n");
-    loopv(texcoords)
+    for(int i = 0; i < texcoords.length(); i++)
     {
         const vec &tc = texcoords[i];
         f->printf("vt %.6f %.6f\n", tc.x, 1-tc.y);
@@ -1179,7 +1179,7 @@ void writeobj(char *name)
     f->printf("\n");
 
     usedmtl.sort();
-    loopv(usedmtl)
+    for(int i = 0; i < usedmtl.length(); i++)
     {
         vector<ivec2> &keys = mtls[usedmtl[i]];
         f->printf("g slot%d\n", usedmtl[i]);
@@ -1200,7 +1200,7 @@ void writeobj(char *name)
     f = openfile(mtlname, "w");
     if(!f) return;
     f->printf("# mtl file of Imprimis level\n\n");
-    loopv(usedmtl)
+    for(int i = 0; i < usedmtl.length(); i++)
     {
         VSlot &vslot = lookupvslot(usedmtl[i], false);
         f->printf("newmtl slot%d\n", usedmtl[i]);
@@ -1225,7 +1225,7 @@ void writecollideobj(char *name)
     }
     vector<extentity *> &ents = entities::getents();
     extentity *mm = NULL;
-    loopv(entgroup)
+    for(int i = 0; i < entgroup.length(); i++)
     {
         extentity &e = *ents[entgroup[i]];
         if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
@@ -1234,7 +1234,7 @@ void writecollideobj(char *name)
     }
     if(!mm)
     {
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
             if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
@@ -1273,7 +1273,7 @@ void writecollideobj(char *name)
     vector<vec> verts;
     hashtable<vec, int> shareverts;
     vector<int> tris;
-    loopv(valist)
+    for(int i = 0; i < valist.length(); i++)
     {
         vtxarray &va = *valist[i];
         if(va.geommin.x > selmax.x || va.geommin.y > selmax.y || va.geommin.z > selmax.z ||
@@ -1309,7 +1309,7 @@ void writecollideobj(char *name)
     stream *f = openfile(path(fname), "w");
     if(!f) return;
     f->printf("# obj file of Imprimis collide model\n\n");
-    loopv(verts)
+    for(int i = 0; i < verts.length(); i++)
     {
         vec v = xform.transform(verts[i]);
         if(v.y != floor(v.y)) f->printf("v %.3f ", -v.y); else f->printf("v %d ", int(-v.y));

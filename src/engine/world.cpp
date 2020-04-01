@@ -275,7 +275,7 @@ void freeoctaentities(cube &c)
 void entitiesinoctanodes()
 {
     vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         modifyoctaent(MODOE_ADD, i, *ents[i]);
     }
@@ -284,7 +284,7 @@ void entitiesinoctanodes()
 static inline void findents(octaentities &oe, int low, int high, bool notspawned, const vec &pos, const vec &invradius, vector<int> &found)
 {
     vector<extentity *> &ents = entities::getents();
-    loopv(oe.other)
+    for(int i = 0; i < oe.other.length(); i++)
     {
         int id = oe.other[i];
         extentity &e = *ents[id];
@@ -391,7 +391,7 @@ undoblock *newundoent()
     undoblock *u = (undoblock *)new uchar[sizeof(undoblock) + numents*sizeof(undoent)];
     u->numents = numents;
     undoent *e = (undoent *)(u + 1);
-    loopv(entgroup)
+    for(int i = 0; i < entgroup.length(); i++)
     {
         e->i = entgroup[i];
         e->e = *entities::getents()[entgroup[i]];
@@ -435,7 +435,7 @@ void attachentity(extentity &e)
     vector<extentity *> &ents = entities::getents();
     int closest = -1;
     float closedist = 1e10f;
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         extentity *a = ents[i];
         if(a->attached) continue;
@@ -464,7 +464,7 @@ void attachentity(extentity &e)
 void attachentities()
 {
     vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         attachentity(*ents[i]);
     }
@@ -490,8 +490,8 @@ void attachentities()
     }, v); \
 }
 #define ENT_EDIT(i, f)   ENT_EDIT_V(i, f, entities::getents())
-#define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); loopv(ents) ENT_FOCUS_V(i, if(exp) entadd(n), ents); }
-#define GROUP_EDIT_LOOP(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; loopv(entgroup) ENT_EDIT_V(entgroup[i], f, ents); efocus = _; entlooplevel--; }
+#define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); for(int i = 0; i < ents.length(); i++) ENT_FOCUS_V(i, if(exp) entadd(n), ents); }
+#define GROUP_EDIT_LOOP(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; for(int i = 0; i < entgroup.length(); i++) ENT_EDIT_V(entgroup[i], f, ents); efocus = _; entlooplevel--; }
 #define GROUP_EDIT_PURE(f){ if(entlooplevel>0) { ENT_EDIT(efocus, f); } else { GROUP_EDIT_LOOP(f); commitchanges(); } }
 #define GROUP_EDIT_UNDO(f){ makeundoent(); GROUP_EDIT_PURE(f); }
 #define GROUP_EDIT(f)    { ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); }
@@ -885,7 +885,7 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
         gle::colorub(0, 40, 0);
         gle::defvertex();
         gle::begin(GL_LINES, entgroup.length()*24);
-        loopv(entgroup)
+        for(int i = 0; i < entgroup.length(); i++)
         {
             ENT_FOCUS(entgroup[i],
                 entselectionbox(e, eo, es);
@@ -917,13 +917,13 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
     {
         glDepthFunc(GL_GREATER);
         gle::colorf(0.25f, 0.25f, 0.25f);
-        loopv(entgroup)
+        for(int i = 0; i < entgroup.length(); i++)
         {
             ENT_FOCUS(entgroup[i], renderentradius(e, false));
         }
         if(enthover>=0) ENT_FOCUS(enthover, renderentradius(e, false));
         glDepthFunc(GL_LESS);
-        loopv(entgroup)
+        for(int i = 0; i < entgroup.length(); i++)
         {
             ENT_FOCUS(entgroup[i], renderentradius(e, true));
         }
@@ -1183,7 +1183,7 @@ void entcopy()
     entcopygrid = sel.grid;
     entcopybuf.shrink(0);
     ADD_IMPLICIT({
-        loopv(entgroup)
+        for(int i = 0; i < entgroup.length(); i++)
         {
             ENT_FOCUS(entgroup[i], entcopybuf.add(e).o.sub(vec(sel.o)));
         }
@@ -1195,7 +1195,7 @@ void entpaste()
     if(noentedit() || entcopybuf.empty()) return;
     entcancel();
     float m = float(sel.grid)/float(entcopygrid);
-    loopv(entcopybuf)
+    for(int i = 0; i < entcopybuf.length(); i++)
     {
         const entity &c = entcopybuf[i];
         vec o = vec(c.o).mul(m).add(vec(sel.o));
@@ -1272,7 +1272,7 @@ void nearestent()
     int closest = -1;
     float closedist = 1e16f;
     vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
         if(e.type == Ent_Empty) continue;
@@ -1582,7 +1582,7 @@ void shrinkmap()
 
     ivec offset(octant, ivec(0, 0, 0), worldsize);
     vector<extentity *> &ents = entities::getents();
-    loopv(ents)
+    for(int i = 0; i < ents.length(); i++)
     {
         ents[i]->o.sub(vec(offset));
     }

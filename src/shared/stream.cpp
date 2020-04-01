@@ -446,7 +446,7 @@ const char *findfile(const char *filename, const char *mode)
     {
         return filename;
     }
-    loopv(packagedirs)
+    for(int i = 0; i < packagedirs.length(); i++)
     {
         packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(filename, pf.filter, pf.filterlen)) continue;
@@ -527,7 +527,7 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
         formatstring(s, "%s%s", homedir, dirname);
         if(listdir(s, false, ext, files)) dirs++;
     }
-    loopv(packagedirs)
+    for(int i = 0; i < packagedirs.length(); i++)
     {
         packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))

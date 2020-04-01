@@ -526,7 +526,10 @@ void renderlava()
             gle::normal(vec(0, 0, 1));
 
             vector<materialsurface> &surfs = lavasurfs[k];
-            loopv(surfs) renderwater(surfs[i], MAT_LAVA);
+            for(int i = 0; i < surfs.length(); i++)
+            {
+                renderwater(surfs[i], MAT_LAVA);
+            }
             xtraverts += gle::end();
         }
 
@@ -547,7 +550,7 @@ void renderlava()
             glActiveTexture_(GL_TEXTURE0);
 
             vector<materialsurface> &surfs = lavafallsurfs[k];
-            loopv(surfs)
+            for(int i = 0; i < surfs.length(); i++)
             {
                 materialsurface &m = surfs[i];
                 renderwaterfall(m, 0.1f, &matnormals[m.orient]);
@@ -598,7 +601,7 @@ void renderwaterfalls()
         }
         glActiveTexture_(GL_TEXTURE0);
 
-        loopv(surfs)
+        for(int i = 0; i < surfs.length(); i++)
         {
             materialsurface &m = surfs[i];
             renderwaterfall(m, 0.1f, &matnormals[m.orient]);
@@ -678,7 +681,7 @@ void renderwater()
         if(drawtex != Draw_TexMinimap) SETWATERSHADER(below, underwater);
 
         aboveshader->set();
-        loopv(surfs)
+        for(int i = 0; i < surfs.length(); i++)
         {
             materialsurface &m = surfs[i];
             if(camera1->o.z < m.o.z - WATER_OFFSET) continue;
@@ -689,7 +692,7 @@ void renderwater()
         if(belowshader)
         {
             belowshader->set();
-            loopv(surfs)
+            for(int i = 0; i < surfs.length(); i++)
             {
                 materialsurface &m = surfs[i];
                 if(camera1->o.z >= m.o.z - WATER_OFFSET) continue;

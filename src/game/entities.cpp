@@ -71,7 +71,7 @@ namespace entities
             if(!mdl) continue;
             preloadmodel(mdl);
         }
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
             switch(e.type)
@@ -87,7 +87,7 @@ namespace entities
 
     void renderentities()
     {
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
             int revs = 10;
@@ -331,7 +331,7 @@ namespace entities
             return;
         }
         vec o = d->feetpos();
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
             if(e.type==NOTUSED)
@@ -353,7 +353,7 @@ namespace entities
     void putitems(packetbuf &p)            // puts items in network stream and also spawns them locally
     {
         putint(p, N_ITEMLIST);
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             if(VALID_ITEM(ents[i]->type))
             {
@@ -366,7 +366,7 @@ namespace entities
 
     void resetspawns()
     {
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             ents[i]->clearspawned();
         }
@@ -374,7 +374,7 @@ namespace entities
 
     void spawnitems(bool force)
     {
-        loopv(ents)
+        for(int i = 0; i < ents.length(); i++)
         {
             if(VALID_ITEM(ents[i]->type))
             {
@@ -420,7 +420,7 @@ namespace entities
         switch(e.type)
         {
             case TELEPORT:
-                loopv(ents)
+                for(int i = 0; i < ents.length(); i++)
                 {
                     if(ents[i]->type == TELEDEST && e.attr1==ents[i]->attr2)
                     {

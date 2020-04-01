@@ -9,7 +9,7 @@ namespace aiman
 
     void calcteams(vector<teamscore> &teams)
     {
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
             if(ci->state.state==ClientState_Spectator || !VALID_TEAM(ci->team))
@@ -52,7 +52,7 @@ namespace aiman
         vector<teamscore> teams;
         calcteams(teams);
         vector<clientinfo *> reassign;
-        loopv(bots)
+        for(int i = 0; i < bots.length(); i++)
         {
             if(bots[i])
             {
@@ -63,7 +63,7 @@ namespace aiman
         {
             teamscore &t = teams.last();
             clientinfo *bot = NULL;
-            loopv(reassign)
+            for(int i = 0; i < reassign.length(); i++)
             {
                 if(reassign[i] && reassign[i]->team != teams[0].team)
                 {
@@ -112,7 +112,7 @@ namespace aiman
     clientinfo *findaiclient(clientinfo *exclude = NULL)
     {
         clientinfo *least = NULL;
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
             if(!validaiclient(ci) || ci==exclude)
@@ -130,7 +130,7 @@ namespace aiman
     bool addai(int skill, int limit)
     {
         int numai = 0, cn = -1, maxai = limit >= 0 ? min(limit, MAXBOTS) : MAXBOTS;
-        loopv(bots)
+        for(int i = 0; i < bots.length(); i++)
         {
             clientinfo *ci = bots[i];
             if(!ci || ci->ownernum < 0) { if(cn < 0) cn = i; continue; }
@@ -277,7 +277,7 @@ namespace aiman
     bool reassignai()
     {
         clientinfo *hi = NULL, *lo = NULL;
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
             if(!validaiclient(ci)) continue;
@@ -397,7 +397,7 @@ namespace aiman
     void changemap()
     {
         dorefresh = true;
-        loopv(clients)
+        for(int i = 0; i < clients.length(); i++)
         {
             if(clients[i]->local || clients[i]->privilege)
             {

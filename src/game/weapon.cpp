@@ -255,7 +255,7 @@ namespace game
 
     void updatebouncers(int time)
     {
-        loopv(bouncers) //∀ bouncers currently in the game
+        for(int i = 0; i < bouncers.length(); i++) //∀ bouncers currently in the game
         {
             bouncer &bnc = *bouncers[i];
             vec old(bnc.o);
@@ -282,7 +282,7 @@ namespace game
 
     void removebouncers(gameent *owner)
     {
-        loopv(bouncers)
+        for(int i = 0; i < bouncers.length(); i++)
         {
             if(bouncers[i]->owner==owner)
             {
@@ -327,7 +327,6 @@ namespace game
 
     void removeprojectiles(gameent *owner)
     {
-        // can't use loopv here due to strange GCC optimizer bug
         int len = projs.length();
         for(int i = 0; i < len; ++i)
         {
@@ -493,7 +492,7 @@ namespace game
         switch(atk)
         {
             case ATK_PULSE_SHOOT:
-                loopv(projs)
+                for(int i = 0; i < projs.length(); i++)
                 {
                     projectile &p = projs[i];
                     if(p.atk == atk && p.owner == d && p.id == id && !p.local)
@@ -526,7 +525,7 @@ namespace game
     {
         if(projs.empty()) return;
         gameent *noside = hudplayer();
-        loopv(projs) //loop through all projectiles in the game
+        for(int i = 0; i < projs.length(); i++) //loop through all projectiles in the game
         {
             projectile &p = projs[i];
             p.offsetmillis = max(p.offsetmillis-time, 0);
@@ -792,7 +791,7 @@ namespace game
 
     void adddynlights()
     {
-        loopv(projs)
+        for(int i = 0; i < projs.length(); i++)
         {
             projectile &p = projs[i];
             if(p.atk!=ATK_PULSE_SHOOT) continue;
@@ -824,7 +823,7 @@ namespace game
     void renderbouncers()
     {
         float yaw, pitch;
-        loopv(bouncers)
+        for(int i = 0; i < bouncers.length(); i++)
         {
             bouncer &bnc = *bouncers[i];
             vec pos(bnc.o);
@@ -873,7 +872,7 @@ namespace game
 
     void avoidweapons(ai::avoidset &obstacles, float radius)
     {
-        loopv(projs)
+        for(int i = 0; i < projs.length(); i++)
         {
             projectile &p = projs[i];
             obstacles.avoidnear(NULL, p.o.z + attacks[p.atk].exprad + 1, p.o, radius + attacks[p.atk].exprad);
