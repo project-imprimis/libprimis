@@ -369,7 +369,7 @@ void preloadusedmapmodels(bool msg, bool bih)
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type==Ent_Mapmodel && e.attr1 >= 0 && used.find(e.attr1) < 0) used.add(e.attr1);
+        if(e.type==EngineEnt_Mapmodel && e.attr1 >= 0 && used.find(e.attr1) < 0) used.add(e.attr1);
     }
 
     vector<const char *> col;

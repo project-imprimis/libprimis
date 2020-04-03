@@ -41,9 +41,9 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
 {
     switch(e.type)
     {
-        case Ent_Empty:
+        case EngineEnt_Empty:
             return false;
-        case Ent_Decal:
+        case EngineEnt_Decal:
             {
                 DecalSlot &s = lookupdecalslot(e.attr1, false);
                 vec center, radius;
@@ -54,7 +54,7 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
                 r = ivec(vec(center).add(radius).add(1));
                 break;
             }
-        case Ent_Mapmodel:
+        case EngineEnt_Mapmodel:
             if(model *m = loadmapmodel(e.attr1))
             {
                 vec center, radius;
@@ -95,7 +95,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
             octaentities &oe = *c[i].ext->ents;
             switch(e.type)
             {
-                case Ent_Decal:
+                case EngineEnt_Decal:
                     if(va)
                     {
                         va->bbmin.x = -1;
@@ -105,7 +105,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     oe.bbmin.min(bo).max(oe.o);
                     oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
                     break;
-                case Ent_Mapmodel:
+                case EngineEnt_Mapmodel:
                     if(loadmapmodel(e.attr1))
                     {
                         if(va)
@@ -130,7 +130,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
             octaentities &oe = *c[i].ext->ents;
             switch(e.type)
             {
-                case Ent_Decal:
+                case EngineEnt_Decal:
                     oe.decals.removeobj(id);
                     if(va)
                     {
@@ -155,7 +155,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     oe.bbmin.max(oe.o);
                     oe.bbmax.min(ivec(oe.o).add(oe.size));
                     break;
-                case Ent_Mapmodel:
+                case EngineEnt_Mapmodel:
                     if(loadmapmodel(e.attr1))
                     {
                         oe.mapmodels.removeobj(id);
@@ -233,14 +233,14 @@ static bool modifyoctaent(int flags, int id, extentity &e)
     e.flags ^= EntFlag_Octa;
     switch(e.type)
     {
-        case Ent_Light:
+        case EngineEnt_Light:
             clearlightcache(id);
             if(e.attr5&L_VOLUMETRIC) { if(flags&MODOE_ADD) volumetriclights++; else --volumetriclights; }
             if(e.attr5&L_NOSPEC) { if(!(flags&MODOE_ADD ? nospeclights++ : --nospeclights)) cleardeferredlightshaders(); }
             break;
-        case Ent_Spotlight: if(!(flags&MODOE_ADD ? spotlights++ : --spotlights)) { cleardeferredlightshaders(); cleanupvolumetric(); } break;
-        case Ent_Particles: clearparticleemitters(); break;
-        case Ent_Decal: if(flags&MODOE_CHANGED) changed(o, r, false); break;
+        case EngineEnt_Spotlight: if(!(flags&MODOE_ADD ? spotlights++ : --spotlights)) { cleardeferredlightshaders(); cleanupvolumetric(); } break;
+        case EngineEnt_Particles: clearparticleemitters(); break;
+        case EngineEnt_Decal: if(flags&MODOE_CHANGED) changed(o, r, false); break;
     }
     return true;
 }
@@ -422,11 +422,11 @@ void attachentity(extentity &e)
 {
     switch(e.type)
     {
-        case Ent_Spotlight:
+        case EngineEnt_Spotlight:
             break;
 
         default:
-            if(e.type<Ent_GameSpecific || !entities::mayattach(e)) return;
+            if(e.type<EngineEnt_GameSpecific || !entities::mayattach(e)) return;
             break;
     }
 
@@ -441,12 +441,12 @@ void attachentity(extentity &e)
         if(a->attached) continue;
         switch(e.type)
         {
-            case Ent_Spotlight:
-                if(a->type!=Ent_Light) continue;
+            case EngineEnt_Spotlight:
+                if(a->type!=EngineEnt_Light) continue;
                 break;
 
             default:
-                if(e.type<Ent_GameSpecific || !entities::attachent(e, *a)) continue;
+                if(e.type<EngineEnt_GameSpecific || !entities::attachent(e, *a)) continue;
                 break;
         }
         float dist = e.o.dist(a->o);
@@ -484,7 +484,7 @@ void attachentities()
         removeentityedit(n);  \
         f; \
         if(oldtype!=e.type) detachentity(e); \
-        if(e.type!=Ent_Empty) { addentityedit(n); if(oldtype!=e.type) attachentity(e); } \
+        if(e.type!=EngineEnt_Empty) { addentityedit(n); if(oldtype!=e.type) attachentity(e); } \
         entities::editent(n, true); \
         clearshadowcache(); \
     }, v); \
@@ -515,7 +515,7 @@ undoblock *copyundoents(undoblock *u)
     undoblock *c = newundoent();
     for(int i = 0; i < u->numents; ++i)
     {
-        if(e[i].e.type==Ent_Empty)
+        if(e[i].e.type==EngineEnt_Empty)
         {
             entgroup.removeobj(e[i].i);
         }
@@ -527,7 +527,7 @@ void pasteundoent(int idx, const entity &ue)
 {
     if(idx < 0 || idx >= MAXENTS) return;
     vector<extentity *> &ents = entities::getents();
-    while(ents.length() < idx) ents.add(entities::newentity())->type = Ent_Empty;
+    while(ents.length() < idx) ents.add(entities::newentity())->type = EngineEnt_Empty;
     int efocus = -1;
     ENT_EDIT(idx, (entity &)e = ue);
 }
@@ -577,13 +577,13 @@ void entselectionbox(const entity &e, vec &eo, vec &es)
         eo.y += e.o.y;
         eo.z = e.o.z - entselradius + es.z;
     }
-    else if(e.type == Ent_Mapmodel && (m = loadmapmodel(e.attr1)))
+    else if(e.type == EngineEnt_Mapmodel && (m = loadmapmodel(e.attr1)))
     {
         mmcollisionbox(e, m, eo, es);
         es.max(entselradius);
         eo.add(e.o);
     }
-    else if(e.type == Ent_Decal)
+    else if(e.type == EngineEnt_Decal)
     {
         DecalSlot &s = lookupdecalslot(e.attr1, false);
         decalboundbox(e, s, eo, es);
@@ -781,13 +781,13 @@ void renderentradius(extentity &e, bool color)
 {
     switch(e.type)
     {
-        case Ent_Light:
+        case EngineEnt_Light:
             if(e.attr1 <= 0) break;
             if(color) gle::colorf(e.attr2/255.0f, e.attr3/255.0f, e.attr4/255.0f);
             renderentsphere(e, e.attr1);
             break;
 
-        case Ent_Spotlight:
+        case EngineEnt_Spotlight:
             if(e.attached)
             {
                 if(color) gle::colorf(0, 1, 1);
@@ -800,12 +800,12 @@ void renderentradius(extentity &e, bool color)
             }
             break;
 
-        case Ent_Sound:
+        case EngineEnt_Sound:
             if(color) gle::colorf(0, 1, 1);
             renderentsphere(e, e.attr2);
             break;
 
-        case Ent_Envmap:
+        case EngineEnt_Envmap:
         {
             extern int envmapradius;
             if(color) gle::colorf(0, 1, 1);
@@ -813,7 +813,7 @@ void renderentradius(extentity &e, bool color)
             break;
         }
 
-        case Ent_Mapmodel:
+        case EngineEnt_Mapmodel:
         {
             if(color) gle::colorf(0, 1, 1);
             entities::entradius(e, color);
@@ -823,7 +823,7 @@ void renderentradius(extentity &e, bool color)
             break;
         }
 
-        case Ent_Playerstart:
+        case EngineEnt_Playerstart:
         {
             if(color) gle::colorf(0, 1, 1);
             entities::entradius(e, color);
@@ -833,7 +833,7 @@ void renderentradius(extentity &e, bool color)
             break;
         }
 
-        case Ent_Decal:
+        case EngineEnt_Decal:
         {
             if(color) gle::colorf(0, 1, 1);
             DecalSlot &s = lookupdecalslot(e.attr1, false);
@@ -843,7 +843,7 @@ void renderentradius(extentity &e, bool color)
         }
 
         default:
-            if(e.type>=Ent_GameSpecific)
+            if(e.type>=EngineEnt_GameSpecific)
             {
                 if(color) gle::colorf(0, 1, 1);
                 entities::entradius(e, color);
@@ -1029,7 +1029,7 @@ COMMAND(entpush, "i");
 void delent()
 {
     if(noentedit()) return;
-    GROUP_EDIT(e.type = Ent_Empty;);
+    GROUP_EDIT(e.type = EngineEnt_Empty;);
     entcancel();
 }
 
@@ -1037,7 +1037,7 @@ int findtype(char *what)
 {
     for(int i = 0; *entities::entname(i); i++) if(strcmp(what, entities::entname(i))==0) return i;
     conoutf(CON_ERROR, "unknown entity type \"%s\"", what);
-    return Ent_Empty;
+    return EngineEnt_Empty;
 }
 
 VAR(entdrop, 0, 2, 3);
@@ -1046,7 +1046,7 @@ bool dropentity(entity &e, int drop = -1)
 {
     vec radius(4.0f, 4.0f, 4.0f);
     if(drop<0) drop = entdrop;
-    if(e.type == Ent_Mapmodel)
+    if(e.type == EngineEnt_Mapmodel)
     {
         model *m = loadmapmodel(e.attr1);
         if(m)
@@ -1061,7 +1061,7 @@ bool dropentity(entity &e, int drop = -1)
     switch(drop)
     {
     case 1:
-        if(e.type != Ent_Light && e.type != Ent_Spotlight)
+        if(e.type != EngineEnt_Light && e.type != EngineEnt_Spotlight)
             dropenttofloor(&e);
         break;
     case 2:
@@ -1110,10 +1110,10 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
     if(local)
     {
         idx = -1;
-        for(int i = keepents; i < ents.length(); i++) if(ents[i]->type == Ent_Empty) { idx = i; break; }
+        for(int i = keepents; i < ents.length(); i++) if(ents[i]->type == EngineEnt_Empty) { idx = i; break; }
         if(idx < 0 && ents.length() >= MAXENTS) { conoutf("too many entities"); return NULL; }
     }
-    else while(ents.length() < idx) ents.add(entities::newentity())->type = Ent_Empty;
+    else while(ents.length() < idx) ents.add(entities::newentity())->type = EngineEnt_Empty;
     extentity &e = *entities::newentity();
     e.o = o;
     e.attr1 = v1;
@@ -1127,7 +1127,7 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
     {
         switch(type)
         {
-                case Ent_Decal:
+                case EngineEnt_Decal:
                     if(!e.attr2 && !e.attr3 && !e.attr4)
                     {
                         e.attr2 = (int)camera1->yaw;
@@ -1135,10 +1135,10 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
                         e.attr4 = (int)camera1->roll;
                     }
                     break;
-                case Ent_Mapmodel:
+                case EngineEnt_Mapmodel:
                     if(!e.attr2) e.attr2 = (int)camera1->yaw;
                     break;
-                case Ent_Playerstart:
+                case EngineEnt_Playerstart:
                     e.attr5 = e.attr4;
                     e.attr4 = e.attr3;
                     e.attr3 = e.attr2;
@@ -1159,7 +1159,7 @@ void newentity(int type, int a1, int a2, int a3, int a4, int a5, bool fix = true
     extentity *t = newentity(true, player->o, type, a1, a2, a3, a4, a5, idx, fix);
     if(!t) return;
     dropentity(*t);
-    t->type = Ent_Empty;
+    t->type = EngineEnt_Empty;
     enttoggle(idx);
     makeundoent();
     ENT_EDIT(idx, e.type = type);
@@ -1170,7 +1170,7 @@ void newent(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
 {
     if(noentedit()) return;
     int type = findtype(what);
-    if(type != Ent_Empty)
+    if(type != EngineEnt_Empty)
         newentity(type, *a1, *a2, *a3, *a4, *a5);
 }
 
@@ -1200,7 +1200,7 @@ void entpaste()
         const entity &c = entcopybuf[i];
         vec o = vec(c.o).mul(m).add(vec(sel.o));
         int idx;
-        extentity *e = newentity(true, o, Ent_Empty, c.attr1, c.attr2, c.attr3, c.attr4, c.attr5, idx);
+        extentity *e = newentity(true, o, EngineEnt_Empty, c.attr1, c.attr2, c.attr3, c.attr4, c.attr5, idx);
         if(!e) continue;
         entadd(idx);
         keepents = max(keepents, idx+1);
@@ -1242,7 +1242,7 @@ void entset(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
 {
     if(noentedit()) return;
     int type = findtype(what);
-    if(type != Ent_Empty)
+    if(type != EngineEnt_Empty)
         GROUP_EDIT(e.type=type;
                   e.attr1=*a1;
                   e.attr2=*a2;
@@ -1255,12 +1255,12 @@ void printent(extentity &e, char *buf, int len)
 {
     switch(e.type)
     {
-        case Ent_Particles:
+        case EngineEnt_Particles:
             if(printparticles(e, buf, len)) return;
             break;
 
         default:
-            if(e.type >= Ent_GameSpecific && entities::printent(e, buf, len)) return;
+            if(e.type >= EngineEnt_GameSpecific && entities::printent(e, buf, len)) return;
             break;
     }
     nformatstring(buf, len, "%s %d %d %d %d %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
@@ -1275,7 +1275,7 @@ void nearestent()
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type == Ent_Empty) continue;
+        if(e.type == EngineEnt_Empty) continue;
         float dist = e.o.dist(player->o);
         if(dist < closedist)
         {
@@ -1287,7 +1287,7 @@ void nearestent()
 }
 
 ICOMMAND(enthavesel,"",  (), ADD_IMPLICIT(intret(entgroup.length())));
-ICOMMAND(entselect, "e", (uint *body), if(!noentedit()) ADD_GROUP(e.type != Ent_Empty && entgroup.find(n)<0 && executebool(body)));
+ICOMMAND(entselect, "e", (uint *body), if(!noentedit()) ADD_GROUP(e.type != EngineEnt_Empty && entgroup.find(n)<0 && executebool(body)));
 ICOMMAND(entloop,   "e", (uint *body), if(!noentedit()) ADD_IMPLICIT(GROUP_EDIT_LOOP(((void)e, execute(body)))));
 ICOMMAND(insel,     "",  (), ENT_FOCUS(efocus, intret(pointinsel(sel, e.o))));
 ICOMMAND(entget,    "",  (), ENT_FOCUS(efocus, string s; printent(e, s, sizeof(s)); result(s)));
@@ -1300,7 +1300,7 @@ void enttype(char *type, int *numargs)
     if(*numargs >= 1)
     {
         int typeidx = findtype(type);
-        if(typeidx != Ent_Empty) GROUP_EDIT(e.type = typeidx);
+        if(typeidx != EngineEnt_Empty) GROUP_EDIT(e.type = typeidx);
     }
     else ENT_FOCUS(efocus,
     {
@@ -1374,7 +1374,7 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
         pick = spawncycle;
         for(int i = 0; i < r; ++i)
         {
-            pick = findentity(Ent_Playerstart, pick+1, -1, tag);
+            pick = findentity(EngineEnt_Playerstart, pick+1, -1, tag);
             if(pick < 0)
             {
                 break;
@@ -1385,7 +1385,7 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
             pick = spawncycle;
             for(int i = 0; i < r; ++i)
             {
-                pick = findentity(Ent_Playerstart, pick+1, -1, 0);
+                pick = findentity(EngineEnt_Playerstart, pick+1, -1, 0);
                 if(pick < 0)
                 {
                     break;
@@ -1407,7 +1407,7 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
             d->o = ents[attempt]->o;
             d->yaw = ents[attempt]->attr1;
             if(entinmap(d, true)) break;
-            attempt = findentity(Ent_Playerstart, attempt+1, -1, tag);
+            attempt = findentity(EngineEnt_Playerstart, attempt+1, -1, tag);
             if(attempt<0 || attempt==pick)
             {
                 d->o = ents[pick]->o;

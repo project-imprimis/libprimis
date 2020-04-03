@@ -1710,10 +1710,10 @@ float dropheight(entity &e)
 {
     switch(e.type)
     {
-        case Ent_Particles:
-        case Ent_Mapmodel: return 0.0f;
+        case EngineEnt_Particles:
+        case EngineEnt_Mapmodel: return 0.0f;
         default:
-            if(e.type >= Ent_GameSpecific) return entities::dropheight(e);
+            if(e.type >= EngineEnt_GameSpecific) return entities::dropheight(e);
             return 4.0f;
     }
 }

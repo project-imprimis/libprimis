@@ -760,7 +760,7 @@ namespace ai
             extentity &e = *entities::ents[i];
             switch(e.type)
             {
-                case PLAYERSTART: case TELEPORT: case JUMPPAD: case FLAG:
+                case GamecodeEnt_Playerstart: case GamecodeEnt_Teleport: case GamecodeEnt_Jumppad: case GamecodeEnt_Flag:
                     addwaypoint(e.o);
                     break;
                 default:

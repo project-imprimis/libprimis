@@ -84,7 +84,7 @@ void addparticleemitters()
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type != Ent_Particles) continue;
+        if(e.type != EngineEnt_Particles) continue;
         emitters.add(particleemitter(&e));
     }
     regenemitters = false;
@@ -1487,7 +1487,7 @@ void updateparticles()
         for(int i = 0; i < ents.length(); i++)
         {
             entity &e = *ents[i];
-            if(e.type==Ent_Empty) continue;
+            if(e.type==EngineEnt_Empty) continue;
             particle_textcopy(e.o, entname(e), PART_TEXT, 1, 0x1EC850, 2.0f);
             regular_particle_splash(PART_EDIT, 2, 40, e.o, 0x3232FF, 0.32f*particlesize/100.0f);
         }

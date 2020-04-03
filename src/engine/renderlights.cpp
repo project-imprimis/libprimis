@@ -1715,7 +1715,7 @@ struct lightinfo
         o(e.o), color(vec(e.attr2, e.attr3, e.attr4).max(0)), radius(e.attr1), dist(camera1->o.dist(e.o)),
         dir(0, 0, 0), spot(0), query(NULL)
     {
-        if(e.attached && e.attached->type == Ent_Spotlight)
+        if(e.attached && e.attached->type == EngineEnt_Spotlight)
         {
             dir = vec(e.attached->o).sub(e.o).normalize();
             spot = clamp(int(e.attached->attr1), 1, 89);
@@ -3625,7 +3625,7 @@ void viewlightscissor()
     for(int i = 0; i < entgroup.length(); i++)
     {
         int idx = entgroup[i];
-        if(ents.inrange(idx) && ents[idx]->type == Ent_Light)
+        if(ents.inrange(idx) && ents[idx]->type == EngineEnt_Light)
         {
             extentity &e = *ents[idx];
             for(int j = 0; j < lights.length(); j++)
@@ -3660,7 +3660,7 @@ void collectlights()
         for(int i = 0; i < ents.length(); i++)
         {
             const extentity *e = ents[i];
-            if(e->type != Ent_Light || e->attr1 <= 0)
+            if(e->type != EngineEnt_Light || e->attr1 <= 0)
             {
                 continue;
             }
@@ -4604,7 +4604,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
     radius = e.attr1;
     int type, w, border;
     float lod;
-    if(e.attached && e.attached->type == Ent_Spotlight)
+    if(e.attached && e.attached->type == EngineEnt_Spotlight)
     {
         type = ShadowMap_Spot;
         w = 1;

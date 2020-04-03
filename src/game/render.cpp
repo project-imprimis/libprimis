@@ -203,7 +203,7 @@ namespace game
             {
                 continue;
             }
-            if(MODE_TEAMMODE)
+            if(modecheck(gamemode, Mode_Team))
             {
                 for(int j = 0; j < MAXTEAMS; ++j)
                 {
@@ -339,7 +339,7 @@ namespace game
 
     static inline void renderplayer(gameent *d, float fade = 1, int flags = 0)
     {
-        int team = MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0;
+        int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0;
         renderplayer(d, getplayermodelinfo(d), getplayercolor(d, team), team, fade, flags);
     }
 
@@ -351,7 +351,7 @@ namespace game
         {
             bestteams.shrink(0);
             bestplayers.shrink(0);
-            if(MODE_TEAMMODE) getbestteams(bestteams);
+            if(modecheck(gamemode, Mode_Team)) getbestteams(bestteams);
             else getbestplayers(bestplayers);
         }
 
@@ -365,7 +365,7 @@ namespace game
             copystring(d->info, colorname(d));
             if(d->state!=ClientState_Dead)
             {
-                int team = MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0;
+                int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0;
                 particle_text(d->abovehead(), d->info, PART_TEXT, 1, teamtextcolor[team], 2.0f);
             }
         }
@@ -445,7 +445,7 @@ namespace game
         if(!hudgunsway) sway = d->o;
 
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        int team = MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0,
+        int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0,
             color = getplayercolor(d, team);
         DEF_FORMAT_STRING(gunname, "%s/%s", mdl.hudguns[team], file);
         modelattach a[2];
@@ -484,7 +484,7 @@ namespace game
         if(!previewent)
         {
             previewent = new gameent;
-            for(int i = 0; i < NUMGUNS; ++i)
+            for(int i = 0; i < Gun_NumGuns; ++i)
             {
                 previewent->ammo[i] = 1;
             }
@@ -493,7 +493,7 @@ namespace game
               zrad = height/2;
         vec2 xyrad = vec2(previewent->xradius, previewent->yradius).max(height/4);
         previewent->o = calcmodelpreviewpos(vec(xyrad, zrad), previewent->yaw).addz(previewent->eyeheight - zrad);
-        previewent->gunselect = VALID_GUN(weap) ? weap : GUN_RAIL;
+        previewent->gunselect = VALID_GUN(weap) ? weap : Gun_Rail;
         const playermodelinfo *mdlinfo = getplayermodelinfo(model);
         if(!mdlinfo) return;
         renderplayer(previewent, *mdlinfo, getplayercolor(team, color), team, 1, 0, false);
@@ -527,7 +527,7 @@ namespace game
     void preloadweapons()
     {
         const playermodelinfo &mdl = getplayermodelinfo(player1);
-        for(int i = 0; i < NUMGUNS; ++i)
+        for(int i = 0; i < Gun_NumGuns; ++i)
         {
             const char *file = guns[i].file;
             if(!file)
@@ -535,7 +535,7 @@ namespace game
                 continue;
             }
             string fname;
-            if(MODE_TEAMMODE)
+            if(modecheck(gamemode, Mode_Team))
             {
                 for(int j = 0; j < MAXTEAMS; ++j)
                 {

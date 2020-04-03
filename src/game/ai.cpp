@@ -11,7 +11,7 @@ namespace ai
     vec aitarget(0, 0, 0);
 
     VAR(aidebug, 0, 0, 6);
-    VAR(aiforcegun, -1, -1, NUMGUNS-1);
+    VAR(aiforcegun, -1, -1, Gun_NumGuns-1);
 
     ICOMMAND(addbot, "s", (char *s), addmsg(N_ADDBOT, "ri", *s ? clamp(parseint(s), 1, 101) : -1));
     ICOMMAND(delbot, "", (), addmsg(N_DELBOT, "r"));
@@ -54,13 +54,15 @@ namespace ai
         return dist >= mindist*mindist && dist <= maxdist*maxdist;
     }
 
+    //check if a player is alive and can be a valid target for another player (don't shoot up teammates)
     bool targetable(gameent *d, gameent *e)
     {
         if(d == e || !canmove(d))
         {
             return false;
         }
-        return e->state == ClientState_Alive && !IS_TEAM(d->team, e->team);
+         //if player is alive and not on the same team
+        return e->state == ClientState_Alive && !(modecheck(gamemode, Mode_Team) && d->team == e->team);
     }
 
     bool getsight(vec &o, float yaw, float pitch, vec &q, vec &v, float mdist, float fovx, float fovy)
@@ -285,7 +287,7 @@ namespace ai
             {
                 continue;
             }
-            if(teams && d && !IS_TEAM(d->team, e->team))
+            if(teams && d && !(modecheck(gamemode, Mode_Team) && d->team == e->team))
             {
                 continue;
             }
@@ -504,12 +506,12 @@ namespace ai
 
     int isgoodammo(int gun)
     {
-        return gun == GUN_PULSE || gun == GUN_RAIL;
+        return gun == Gun_Pulse || gun == Gun_Rail;
     }
 
     bool hasgoodammo(gameent *d)
     {
-        static const int goodguns[] = { GUN_PULSE, GUN_RAIL };
+        static const int goodguns[] = { Gun_Pulse, Gun_Rail };
         for(int i = 0; i < int(sizeof(goodguns)/sizeof(goodguns[0])); ++i)
         {
             if(d->hasammo(goodguns[0]))
@@ -522,10 +524,11 @@ namespace ai
 
     void assist(gameent *d, aistate &b, vector<interest> &interests, bool all, bool force)
     {
-        for(int i = 0; i < players.length(); i++)
+        for(int i = 0; i < players.length(); i++) //loop through all players
         {
             gameent *e = players[i];
-            if(e == d || (!all && e->aitype != AI_None) || !IS_TEAM(d->team, e->team))
+            //skip if player is a valid target (don't assist enemies)
+            if(e == d || (!all && e->aitype != AI_None) || !(modecheck(gamemode, Mode_Team) && d->team == e->team))
             {
                 continue;
             }
@@ -629,7 +632,7 @@ namespace ai
         {
             cmode->aifind(d, b, interests);
         }
-        if(MODE_TEAMMODE)
+        if(modecheck(gamemode, Mode_Team))
         {
             assist(d, b, interests);
         }
@@ -716,13 +719,13 @@ namespace ai
         d->ai->clearsetup();
         d->ai->reset(true);
         d->ai->lastrun = lastmillis;
-        if(forcegun >= 0 && forcegun < NUMGUNS)
+        if(forcegun >= 0 && forcegun < Gun_NumGuns)
         {
             d->ai->weappref = forcegun;
         }
         else
         {
-            d->ai->weappref = RANDOM_INT(NUMGUNS);
+            d->ai->weappref = RANDOM_INT(Gun_NumGuns);
         }
         vec dp = d->headpos();
         findorientation(dp, d->yaw, d->pitch, d->ai->target);
@@ -1187,7 +1190,7 @@ namespace ai
                 float squareradius = 324; //324 = 18^2; float because squaredist is also a float
                 for(int i = 0; i < entities::ents.length(); i++)
                 {
-                    if(entities::ents[i]->type == JUMPPAD)
+                    if(entities::ents[i]->type == GamecodeEnt_Jumppad)
                     {
                         gameentity &e = *(gameentity *)entities::ents[i];
                         if(e.o.squaredist(pos) <= squareradius)
@@ -1527,8 +1530,8 @@ namespace ai
         {
             static const int gunprefs[] =
             {
-                GUN_PULSE,
-                GUN_RAIL
+                Gun_Pulse,
+                Gun_Rail
             };
             int gun = -1;
             if(d->hasammo(d->ai->weappref) && hasrange(d, e, d->ai->weappref))
@@ -1917,7 +1920,7 @@ namespace ai
                     }
                     if(aidebug >= 3)
                     {
-                        if(d->ai->weappref >= 0 && d->ai->weappref < NUMGUNS)
+                        if(d->ai->weappref >= 0 && d->ai->weappref < Gun_NumGuns)
                         {
                             particle_textcopy(pos, guns[d->ai->weappref].name, PART_TEXT, 1);
                             pos.z += 2;

@@ -5,16 +5,16 @@
 
 enum
 {
-    Ent_Empty=0,
-    Ent_Light,
-    Ent_Mapmodel,
-    Ent_Playerstart,
-    Ent_Envmap,
-    Ent_Particles,
-    Ent_Sound,
-    Ent_Spotlight,
-    Ent_Decal,
-    Ent_GameSpecific,
+    EngineEnt_Empty=0,
+    EngineEnt_Light,
+    EngineEnt_Mapmodel,
+    EngineEnt_Playerstart,
+    EngineEnt_Envmap,
+    EngineEnt_Particles,
+    EngineEnt_Sound,
+    EngineEnt_Spotlight,
+    EngineEnt_Decal,
+    EngineEnt_GameSpecific,
 };
 
 struct entity                                   // persistent map entity

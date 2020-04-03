@@ -218,7 +218,7 @@ namespace ai
 
         void clearsetup()
         {
-            weappref = GUN_RAIL;
+            weappref = Gun_Rail;
             spot = target = vec(0, 0, 0);
             lastaction = lasthunt = lastcheck = enemyseen = enemymillis = blocktime = huntseq = blockseq = targtime = targseq = lastaimrnd = 0;
             lastrun = jumpseed = lastmillis;

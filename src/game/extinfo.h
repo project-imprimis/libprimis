@@ -38,7 +38,7 @@
         putint(q, ci->clientnum); //add player id
         putint(q, ci->ping);
         sendstring(ci->name, q);
-        sendstring(TEAM_NAME(MODE_TEAMMODE ? ci->team : 0), q);
+        sendstring(TEAM_NAME(modecheck(gamemode, Mode_Team) ? ci->team : 0), q);
         putint(q, ci->state.frags);
         putint(q, ci->state.flags);
         putint(q, ci->state.deaths);
@@ -64,10 +64,10 @@
 
     void extinfoteams(ucharbuf &p)
     {
-        putint(p, MODE_TEAMMODE ? 0 : 1);
+        putint(p, modecheck(gamemode, Mode_Team) ? 0 : 1);
         putint(p, gamemode);
         putint(p, max((gamelimit - gamemillis)/1000, 0));
-        if(!MODE_TEAMMODE) return;
+        if(!modecheck(gamemode, Mode_Team)) return;
 
         vector<teamscore> scores;
         if(smode && smode->hidefrags()) smode->getteamscores(scores);

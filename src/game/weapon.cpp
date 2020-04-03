@@ -41,11 +41,11 @@ namespace game
         {
             return;
         }
-        dir = (dir < 0 ? NUMGUNS-1 : 1);
+        dir = (dir < 0 ? Gun_NumGuns-1 : 1);
         int gun = player1->gunselect;
-        for(int i = 0; i < NUMGUNS; ++i)
+        for(int i = 0; i < Gun_NumGuns; ++i)
         {
-            gun = (gun + dir)%NUMGUNS;
+            gun = (gun + dir)%Gun_NumGuns;
             if(force || player1->ammo[gun])
             {
                 break;
@@ -115,7 +115,7 @@ namespace game
         for(int i = 0; i < numguns; ++i)
         {
             int gun = guns[(i+offset)%numguns];
-            if(gun>=0 && gun<NUMGUNS && (force || player1->ammo[gun]))
+            if(gun>=0 && gun<Gun_NumGuns && (force || player1->ammo[gun]))
             {
                 gunselect(gun, player1);
                 return;
@@ -138,8 +138,8 @@ namespace game
     {
         if(d->state!=ClientState_Alive) return;
         int s = d->gunselect;
-        if(s!=GUN_PULSE && d->ammo[GUN_PULSE])     s = GUN_PULSE;
-        else if(s!=GUN_RAIL && d->ammo[GUN_RAIL])  s = GUN_RAIL;
+        if(s!=Gun_Pulse && d->ammo[Gun_Pulse])     s = Gun_Pulse;
+        else if(s!=Gun_Rail && d->ammo[Gun_Rail])  s = Gun_Rail;
         gunselect(s, d);
     }
 
@@ -387,11 +387,11 @@ namespace game
         gameent *f = (gameent *)d;
 
         f->lastpain = lastmillis;
-        if(at->type==PhysEnt_Player && !IS_TEAM(at->team, f->team)) at->totaldamage += damage;
+        if(at->type==PhysEnt_Player && !modecheck(gamemode, Mode_Team) && at->team != f->team) at->totaldamage += damage;
 
-        if(!MODE_MP(gamemode) || f==at) f->hitpush(damage, vel, at, atk);
+        if(modecheck(gamemode, Mode_LocalOnly) || f==at) f->hitpush(damage, vel, at, atk);
 
-        if(!MODE_MP(gamemode)) damaged(damage, f, at);
+        if(modecheck(gamemode, Mode_LocalOnly)) damaged(damage, f, at);
         else
         {
             hitmsg &h = hits.add();

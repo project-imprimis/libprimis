@@ -95,12 +95,12 @@ static const char * const animnames[] =
 
 enum
 {
-    CON_CHAT       = 1<<8,
-    CON_TEAMCHAT   = 1<<9,
-    CON_GAMEINFO   = 1<<10,
-    CON_FRAG_SELF  = 1<<11,
-    CON_FRAG_OTHER = 1<<12,
-    CON_TEAMKILL   = 1<<13
+    ConsoleMsg_Chat       = 1<<8,
+    ConsoleMsg_TeamChat   = 1<<9,
+    ConsoleMsg_GameInfo   = 1<<10,
+    ConsoleMsg_FragSelf   = 1<<11,
+    ConsoleMsg_FragOther  = 1<<12,
+    ConsoleMsg_TeamKill   = 1<<13
 };
 
 // network quantization scale
@@ -108,51 +108,75 @@ enum
 #define DNF 100.0f              // for normalized vectors
 #define DVELF 1.0f              // for playerspeed based velocity vectors
 
+//these are called "GamecodeEnt" to avoid name collision (as opposed to gameents or engine static ents)
 enum                            // static entity types
 {
-    NOTUSED = Ent_Empty,         // entity slot not in use in map
-    LIGHT = Ent_Light,           // lightsource, attr1 = radius, attr2 = red, attr3 = green, attr4 = blue, attr5 = flags
-    MAPMODEL = Ent_Mapmodel,     // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
-    PLAYERSTART,                // attr1 = angle, attr2 = team
-    ENVMAP = Ent_Envmap,         // attr1 = radius, attr2 = size, attr3 = blur
-    PARTICLES = Ent_Particles,   // attr1 = index, attrs2-5 vary on particle index
-    MAPSOUND = Ent_Sound,        // attr1 = index, attr2 = sound
-    SPOTLIGHT = Ent_Spotlight,   // attr1 = angle
-    DECAL = Ent_Decal,           // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
-    TELEPORT,                   // attr1 = channel, attr2 = model, attr3 = tag
-    TELEDEST,                   // attr1 = yaw, attr2 = channel
-    JUMPPAD,                    // attr1 = zpush, attr2 = ypush, attr3 = xpush
-    FLAG,                       // attr1 = yaw, attr2 = team
-    MAXENTTYPES,
-
-    I_FIRST = 0,
-    I_LAST = -1
+    GamecodeEnt_NotUsed              = EngineEnt_Empty,        // entity slot not in use in map
+    GamecodeEnt_Light                = EngineEnt_Light,        // lightsource, attr1 = radius, attr2 = red, attr3 = green, attr4 = blue, attr5 = flags
+    GamecodeEnt_Mapmodel             = EngineEnt_Mapmodel,     // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    GamecodeEnt_Playerstart,                                   // attr1 = angle, attr2 = team
+    GamecodeEnt_Envmap               = EngineEnt_Envmap,       // attr1 = radius, attr2 = size, attr3 = blur
+    GamecodeEnt_Particles            = EngineEnt_Particles,    // attr1 = index, attrs2-5 vary on particle index
+    GamecodeEnt_MapSound             = EngineEnt_Sound,        // attr1 = index, attr2 = sound
+    GamecodeEnt_Spotlight            = EngineEnt_Spotlight,    // attr1 = angle
+    GamecodeEnt_Decal                = EngineEnt_Decal,        // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    GamecodeEnt_Teleport,                                      // attr1 = channel, attr2 = model, attr3 = tag
+    GamecodeEnt_Teledest,                                      // attr1 = yaw, attr2 = channel
+    GamecodeEnt_Jumppad,                                       // attr1 = zpush, attr2 = ypush, attr3 = xpush
+    GamecodeEnt_Flag,                                          // attr1 = yaw, attr2 = team
+    GamecodeEnt_MaxEntTypes,                                   // used for looping through full enum
 };
 
+//the equivalent of the engine's extentity (and identical)
 struct gameentity : extentity
 {
 };
 
-enum { GUN_RAIL = 0, GUN_PULSE, NUMGUNS };
-enum { ACT_IDLE = 0, ACT_SHOOT, ACT_MELEE, NUMACTS };
-enum { ATK_RAIL_SHOOT = 0, ATK_RAIL_MELEE, ATK_PULSE_SHOOT, ATK_PULSE_MELEE, NUMATKS };
+enum
+{
+    Gun_Rail = 0,
+    Gun_Pulse,
+    Gun_NumGuns
+};
+enum
+{
+    ACT_IDLE = 0,
+    ACT_SHOOT,
+    ACT_MELEE,
+    NUMACTS
+};
 
-#define VALID_GUN(n) ((n) >= 0 && (n) < NUMGUNS)
+enum
+{
+    ATK_RAIL_SHOOT = 0,
+    ATK_RAIL_MELEE,
+    ATK_PULSE_SHOOT,
+    ATK_PULSE_MELEE,
+    NUMATKS
+};
+
+#define VALID_GUN(n) ((n) >= 0 && (n) < Gun_NumGuns)
 #define VALID_ATTACK(n) ((n) >= 0 && (n) < NUMATKS)
 
 //enum of gameplay mechanic flags; bitwise sum determines what a mode's attributes are
 enum
 {
-    M_TEAM       = 1<<0,
-    M_CTF        = 1<<1,
-    M_OVERTIME   = 1<<2,
-    M_EDIT       = 1<<3,
-    M_DEMO       = 1<<4,
-    M_LOCAL      = 1<<5,
-    M_LOBBY      = 1<<6,
-    M_RAIL       = 1<<7,
-    M_PULSE      = 1<<8,
-    M_ALL        = 1<<9
+    Mode_Team           = 1<<0,
+    Mode_CTF            = 1<<1,
+    Mode_AllowOvertime  = 1<<2,
+    Mode_Edit           = 1<<3,
+    Mode_Demo           = 1<<4,
+    Mode_LocalOnly      = 1<<5,
+    Mode_Lobby          = 1<<6,
+    Mode_Rail           = 1<<7,
+    Mode_Pulse          = 1<<8,
+    Mode_All            = 1<<9
+};
+
+enum
+{
+    Mode_Untimed         = Mode_Edit|Mode_LocalOnly|Mode_Demo,
+    Mode_Bot             = Mode_LocalOnly|Mode_Demo,
 };
 
 static struct gamemodeinfo
@@ -163,34 +187,31 @@ static struct gamemodeinfo
 } gamemodes[] =
 //list of valid game modes with their name/prettyname/game flags/desc
 {
-    { "demo", "Demo", M_DEMO | M_LOCAL, NULL},
-    { "edit", "Edit", M_EDIT | M_ALL, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
-    { "ctf", "CTF", M_CTF | M_TEAM | M_ALL, "Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
+    { "demo", "Demo", Mode_Demo | Mode_LocalOnly, NULL},
+    { "edit", "Edit", Mode_Edit | Mode_All, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
+    { "ctf", "CTF", Mode_CTF | Mode_Team | Mode_All, "Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
 };
 
 //these are the checks for particular mechanics in particular modes
-//e.g. MODE_RAIL makes the mode only have railguns
+//e.g. MODE_RAIL sees if the mode only have railguns
 #define STARTGAMEMODE (-1)
 #define NUMGAMEMODES ((int)(sizeof(gamemodes)/sizeof(gamemodes[0])))
 
+//check fxn
+static inline bool modecheck(int mode, int flag)
+{
+    if((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES) //make sure input is within valid range
+    {
+        if(gamemodes[(mode) - STARTGAMEMODE].flags&(flag))
+        {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+
 #define MODE_VALID(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
-#define MODE_CHECK(mode, flag)    (MODE_VALID(mode) && gamemodes[(mode) - STARTGAMEMODE].flags&(flag))
-#define MODE_CHECK_NOT(mode, flag) (MODE_VALID(mode) && !(gamemodes[(mode) - STARTGAMEMODE].flags&(flag)))
-
-#define MODE_CTF       (MODE_CHECK(gamemode, M_CTF))
-#define MODE_TEAMMODE  (MODE_CHECK(gamemode, M_TEAM))
-#define MODE_OVERTIME  (MODE_CHECK(gamemode, M_OVERTIME))
-#define IS_TEAM(a,b)   (MODE_TEAMMODE && a==b)
-#define MODE_RAIL      (MODE_CHECK(gamemode, M_RAIL))
-#define MODE_PULSE     (MODE_CHECK(gamemode, M_PULSE))
-#define MODE_ALL       (MODE_CHECK(gamemode, M_ALL))
-
-#define MODE_DEMO      (MODE_CHECK(gamemode, M_DEMO))
-#define MODE_EDIT      (MODE_CHECK(gamemode, M_EDIT))
-#define MODE_LOBBY     (MODE_CHECK(gamemode, M_LOBBY))
-#define MODE_TIMED        (MODE_CHECK_NOT(gamemode, M_DEMO|M_EDIT|M_LOCAL))
-#define MODE_BOTMODE   (MODE_CHECK_NOT(gamemode, M_DEMO|M_LOCAL))
-#define MODE_MP(mode)  (MODE_CHECK_NOT(mode, M_LOCAL))
 
 enum { MM_AUTH = -1, MM_OPEN = 0, MM_VETO, MM_LOCKED, MM_PRIVATE, MM_PASSWORD, MM_START = MM_AUTH, MM_INVALID = MM_START - 1 };
 
@@ -322,13 +343,13 @@ static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound
 
 //    1          2          3           4                5               6         7        8     9  10 11    12  13    14 15    16  17 18 19
 {
-    { GUN_RAIL,  ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_RAIL1,  S_RAIL2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
-    { GUN_RAIL,  ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { GUN_PULSE, ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_PULSE1, S_PULSE2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
-    { GUN_PULSE, ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
+    { Gun_Rail,  ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_RAIL1,  S_RAIL2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
+    { Gun_Rail,  ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
+    { Gun_Pulse, ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_PULSE1, S_PULSE2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
+    { Gun_Pulse, ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
 };
 
-static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACTS]; } guns[NUMGUNS] =
+static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACTS]; } guns[Gun_NumGuns] =
 {
     { "railgun", "railgun", "worldgun/railgun", { -1, ATK_RAIL_SHOOT, ATK_RAIL_MELEE }, },
     { "pulse rifle", "pulserifle", "worldgun/pulserifle", { -1, ATK_PULSE_SHOOT, ATK_PULSE_MELEE } }
@@ -341,7 +362,7 @@ struct gamestate
 {
     int health, maxhealth;
     int gunselect, gunwait;
-    int ammo[NUMGUNS];
+    int ammo[Gun_NumGuns];
     int aitype, skill;
 
     gamestate() : maxhealth(1), aitype(AI_None), skill(0) {}
@@ -358,9 +379,9 @@ struct gamestate
     void respawn()
     {
         health = maxhealth;
-        gunselect = GUN_RAIL;
+        gunselect = Gun_Rail;
         gunwait = 0;
-        for(int i = 0; i < NUMGUNS; ++i)
+        for(int i = 0; i < Gun_NumGuns; ++i)
         {
             ammo[i] = 0;
         }
@@ -368,23 +389,23 @@ struct gamestate
 
     void spawnstate(int gamemode)
     {
-        if(MODE_ALL)
+        if(modecheck(gamemode, Mode_All))
         {
-            gunselect = GUN_RAIL;
-            for(int i = 0; i < NUMGUNS; ++i)
+            gunselect = Gun_Rail;
+            for(int i = 0; i < Gun_NumGuns; ++i)
             {
                 ammo[i] = 1;
             }
         }
-        else if(MODE_RAIL)
+        else if(modecheck(gamemode, Mode_Rail))
         {
-            gunselect = GUN_RAIL;
-            ammo[GUN_RAIL] = 1;
+            gunselect = Gun_Rail;
+            ammo[Gun_Rail] = 1;
         }
-        else if(MODE_PULSE)
+        else if(modecheck(gamemode, Mode_Pulse))
         {
-            gunselect = GUN_PULSE;
-            ammo[GUN_PULSE] = 1;
+            gunselect = Gun_Pulse;
+            ammo[Gun_Pulse] = 1;
         }
     }
 
@@ -418,8 +439,12 @@ static inline int teamnumber(const char *name)
     }
     return 0;
 }
+
 #define VALID_TEAM(n) ((n) >= 1 && (n) <= MAXTEAMS)
 #define TEAM_NAME(n) (teamnames[VALID_TEAM(n) ? (n) : 0])
+
+//pass "true" to check if not
+
 
 struct gameent : dynent, gamestate
 {
@@ -550,7 +575,7 @@ namespace game
         virtual void setup() {}
         virtual void checkitems(gameent *d) {}
         virtual int respawnwait(gameent *d) { return 0; }
-        virtual void pickspawn(gameent *d) { findplayerspawn(d, -1, MODE_TEAMMODE ? d->team : 0); }
+        virtual void pickspawn(gameent *d) { findplayerspawn(d, -1, modecheck(gamemode, Mode_Team) ? d->team : 0); }
         virtual void senditems(packetbuf &p) {}
         virtual void removeplayer(gameent *d) {}
         virtual void gameover() {}

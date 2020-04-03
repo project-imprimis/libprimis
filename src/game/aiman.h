@@ -155,7 +155,7 @@ namespace aiman
             }
         }
         else { cn = bots.length(); bots.add(NULL); }
-        int team = MODE_TEAMMODE ? chooseteam() : 0;
+        int team = modecheck(gamemode, Mode_Team) ? chooseteam() : 0;
         if(!bots[cn])
         {
             bots[cn] = new clientinfo;
@@ -304,7 +304,7 @@ namespace aiman
 
     void checksetup()
     {
-        if(MODE_TEAMMODE && botbalance)
+        if(modecheck(gamemode, Mode_Team) && botbalance)
         {
             balanceteams();
         }
@@ -335,7 +335,7 @@ namespace aiman
             return;
         }
         dorefresh = false;
-        if(MODE_BOTMODE && numclients(-1, false, true))
+        if(!modecheck(gamemode, Mode_Bot) && numclients(-1, false, true))
         {
             checksetup();
         }

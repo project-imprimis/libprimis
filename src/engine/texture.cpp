@@ -3396,7 +3396,7 @@ void initenvmaps()
     for(int i = 0; i < ents.length(); i++)
     {
         const extentity &ent = *ents[i];
-        if(ent.type != Ent_Envmap)
+        if(ent.type != EngineEnt_Envmap)
         {
             continue;
         }

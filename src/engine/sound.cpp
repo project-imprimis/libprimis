@@ -538,7 +538,7 @@ void checkmapsounds()
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type!=Ent_Sound) continue;
+        if(e.type!=EngineEnt_Sound) continue;
         if(camera1->o.dist(e.o) < e.attr2) //if distance to entity < ent attr 2 (radius)
         {
             if(!(e.flags&EntFlag_Sound)) playsound(e.attr1, NULL, &e, SND_MAP, -1);
@@ -645,7 +645,7 @@ void preloadmapsounds()
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type==Ent_Sound) mapsounds.preloadsound(e.attr1);
+        if(e.type==EngineEnt_Sound) mapsounds.preloadsound(e.attr1);
     }
 }
 

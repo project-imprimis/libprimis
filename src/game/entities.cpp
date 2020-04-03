@@ -44,7 +44,7 @@ namespace entities
 
     const char *entmdlname(int type)
     {
-        static const char * const entmdlnames[MAXENTTYPES] =
+        static const char * const entmdlnames[GamecodeEnt_MaxEntTypes] =
         {
             NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
             "game/teleport", NULL, NULL,
@@ -55,17 +55,17 @@ namespace entities
 
     const char *entmodel(const entity &e)
     {
-        if(e.type == TELEPORT)
+        if(e.type == GamecodeEnt_Teleport)
         {
             if(e.attr2 > 0) return mapmodelname(e.attr2);
             if(e.attr2 < 0) return NULL;
         }
-        return e.type < MAXENTTYPES ? entmdlname(e.type) : NULL;
+        return e.type < GamecodeEnt_MaxEntTypes ? entmdlname(e.type) : NULL;
     }
 
     void preloadentities()
     {
-        for(int i = 0; i < MAXENTTYPES; ++i)
+        for(int i = 0; i < GamecodeEnt_MaxEntTypes; ++i)
         {
             const char *mdl = entmdlname(i);
             if(!mdl) continue;
@@ -76,9 +76,9 @@ namespace entities
             extentity &e = *ents[i];
             switch(e.type)
             {
-                case TELEPORT:
+                case GamecodeEnt_Teleport:
                     if(e.attr2 > 0) preloadmodel(mapmodelname(e.attr2));
-                case JUMPPAD:
+                case GamecodeEnt_Jumppad:
                     if(e.attr4 > 0) preloadmapsound(e.attr4);
                     break;
             }
@@ -93,7 +93,7 @@ namespace entities
             int revs = 10;
             switch(e.type)
             {
-                case TELEPORT:
+                case GamecodeEnt_Teleport:
                     if(e.attr2 < 0) continue;
                     break;
                 default:
@@ -155,7 +155,7 @@ namespace entities
 
     void teleporteffects(gameent *d, int tp, int td, bool local)
     {
-        if(ents.inrange(tp) && ents[tp]->type == TELEPORT)
+        if(ents.inrange(tp) && ents[tp]->type == GamecodeEnt_Teleport)
         {
             extentity &e = *ents[tp];
             if(e.attr4 >= 0)
@@ -172,7 +172,7 @@ namespace entities
                 else
                 {
                     playsound(snd, &e.o, NULL, flags);
-                    if(ents.inrange(td) && ents[td]->type == TELEDEST) playsound(snd, &ents[td]->o, NULL, flags);
+                    if(ents.inrange(td) && ents[td]->type == GamecodeEnt_Teledest) playsound(snd, &ents[td]->o, NULL, flags);
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace entities
 
     void jumppadeffects(gameent *d, int jp, bool local)
     {
-        if(ents.inrange(jp) && ents[jp]->type == JUMPPAD)
+        if(ents.inrange(jp) && ents[jp]->type == GamecodeEnt_Jumppad)
         {
             extentity &e = *ents[jp];
             if(e.attr4 >= 0)
@@ -229,7 +229,7 @@ namespace entities
         int e = -1, tag = ents[n]->attr1, beenhere = -1;
         for(;;)
         {
-            e = findentity(TELEDEST, e+1);
+            e = findentity(GamecodeEnt_Teledest, e+1);
             if(e==beenhere || e<0)
             {
                 conoutf(CON_WARN, "no teleport destination for channel %d", tag);
@@ -278,13 +278,13 @@ namespace entities
                 }
                 break;
 
-            case TELEPORT:
+            case GamecodeEnt_Teleport:
             {
                 if(d->lastpickup==ents[n]->type && lastmillis-d->lastpickupmillis<500)
                 {
                     break;
                 }
-                if(!teleteam && MODE_TEAMMODE)
+                if(!teleteam && modecheck(gamemode, Mode_Team))
                 {
                     break;
                 }
@@ -302,7 +302,7 @@ namespace entities
                 break;
             }
 
-            case JUMPPAD:
+            case GamecodeEnt_Jumppad:
             {
                 if(d->lastpickup==ents[n]->type && lastmillis-d->lastpickupmillis<300)
                 {
@@ -334,16 +334,16 @@ namespace entities
         for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
-            if(e.type==NOTUSED)
+            if(e.type==GamecodeEnt_NotUsed)
             {
                 continue;
             }
-            if(!e.spawned() && e.type!=TELEPORT && e.type!=JUMPPAD)
+            if(!e.spawned() && e.type!=GamecodeEnt_Teleport && e.type!=GamecodeEnt_Jumppad)
             {
                 continue;
             }
             float dist = e.o.dist(o);
-            if(dist<(e.type==TELEPORT ? 16 : 12))
+            if(dist<(e.type==GamecodeEnt_Teleport ? 16 : 12))
             {
                 trypickup(i, d);
             }
@@ -384,7 +384,7 @@ namespace entities
     }
 
     void setspawn(int i, bool on) { if(ents.inrange(i)) ents[i]->setspawned(on); }
-
+    
     extentity *newentity() { return new gameentity(); }
     void deleteentity(extentity *e) { delete (gameentity *)e; }
 
@@ -404,10 +404,10 @@ namespace entities
     {
         switch(e.type)
         {
-            case FLAG:
+            case GamecodeEnt_Flag:
                 e.attr5 = e.attr4;
                 e.attr4 = e.attr3;
-            case TELEDEST:
+            case GamecodeEnt_Teledest:
                 e.attr3 = e.attr2;
                 e.attr2 = e.attr1;
                 e.attr1 = (int)player1->yaw;
@@ -419,10 +419,10 @@ namespace entities
     {
         switch(e.type)
         {
-            case TELEPORT:
+            case GamecodeEnt_Teleport:
                 for(int i = 0; i < ents.length(); i++)
                 {
-                    if(ents[i]->type == TELEDEST && e.attr1==ents[i]->attr2)
+                    if(ents[i]->type == GamecodeEnt_Teledest && e.attr1==ents[i]->attr2)
                     {
                         renderentarrow(e, vec(ents[i]->o).sub(e.o).normalize(), e.o.dist(ents[i]->o));
                         break;
@@ -430,12 +430,12 @@ namespace entities
                 }
                 break;
 
-            case JUMPPAD:
+            case GamecodeEnt_Jumppad:
                 renderentarrow(e, vec((int)(char)e.attr3*10.0f, (int)(char)e.attr2*10.0f, e.attr1*12.5f).normalize(), 4);
                 break;
 
-            case FLAG:
-            case TELEDEST:
+            case GamecodeEnt_Flag:
+            case GamecodeEnt_Teledest:
             {
                 vec dir;
                 vecfromyawpitch(e.attr1, 0, 1, 0, dir);
@@ -453,7 +453,7 @@ namespace entities
     const char *entnameinfo(entity &e) { return ""; }
     const char *entname(int i)
     {
-        static const char * const entnames[MAXENTTYPES] =
+        static const char * const entnames[GamecodeEnt_MaxEntTypes] =
         {
             "none?", "light", "mapmodel", "playerstart", "envmap", "particles", "sound", "spotlight", "decal",
             "teleport", "teledest", "jumppad",
@@ -474,7 +474,7 @@ namespace entities
 
     float dropheight(entity &e)
     {
-        if(e.type==FLAG)
+        if(e.type==GamecodeEnt_Flag)
         {
             return 0.0f;
         }

@@ -2872,7 +2872,7 @@ void genshadowmeshes()
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type != Ent_Light)
+        if(e.type != EngineEnt_Light)
         {
             continue;
         }
@@ -2887,7 +2887,7 @@ shadowmesh *findshadowmesh(int idx, extentity &e)
     switch(m->type)
     {
         case ShadowMap_Spot:
-            if(!e.attached || e.attached->type != Ent_Spotlight || m->spotloc != e.attached->o || m->spotangle < clamp(int(e.attached->attr1), 1, 89))
+            if(!e.attached || e.attached->type != EngineEnt_Spotlight || m->spotloc != e.attached->o || m->spotangle < clamp(int(e.attached->attr1), 1, 89))
                 return NULL;
             break;
     }

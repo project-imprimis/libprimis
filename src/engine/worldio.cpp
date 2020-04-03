@@ -35,7 +35,7 @@ static void fixent(entity &e, int version)
 {
     if(version <= 0)
     {
-        if(e.type >= Ent_Decal) e.type++;
+        if(e.type >= EngineEnt_Decal) e.type++;
     }
 }
 
@@ -135,7 +135,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         {
             entities::readent(e, NULL, hdr.version);
         }
-        else if(e.type>=Ent_GameSpecific)
+        else if(e.type>=EngineEnt_GameSpecific)
         {
             ents.pop();
             continue;
@@ -800,7 +800,7 @@ bool save_world(const char *mname)
     const vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
-        if(ents[i]->type!=Ent_Empty)
+        if(ents[i]->type!=EngineEnt_Empty)
         {
             hdr.numents++;
         }
@@ -859,7 +859,7 @@ bool save_world(const char *mname)
     char *ebuf = new char[entities::extraentinfosize()];
     for(int i = 0; i < ents.length(); i++)
     {
-        if(ents[i]->type!=Ent_Empty)
+        if(ents[i]->type!=EngineEnt_Empty)
         {
             entity tmp = *ents[i];
             LIL_ENDIAN_SWAP(&tmp.o.x, 3);
@@ -1021,7 +1021,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         else
         {
             if(eif > 0) f->seek(eif, SEEK_CUR);
-            if(e.type>=Ent_GameSpecific)
+            if(e.type>=EngineEnt_GameSpecific)
             {
                 entities::deleteentity(ents.pop());
                 continue;
@@ -1029,7 +1029,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         }
         if(!insideworld(e.o))
         {
-            if(e.type != Ent_Light && e.type != Ent_Spotlight)
+            if(e.type != EngineEnt_Light && e.type != EngineEnt_Spotlight)
             {
                 conoutf(CON_WARN, "warning: ent outside of world: enttype[%s] index %d (%f, %f, %f)", entities::entname(e.type), i, e.o.x, e.o.y, e.o.z);
             }
@@ -1228,7 +1228,7 @@ void writecollideobj(char *name)
     for(int i = 0; i < entgroup.length(); i++)
     {
         extentity &e = *ents[entgroup[i]];
-        if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
+        if(e.type != EngineEnt_Mapmodel || !pointinsel(sel, e.o)) continue;
         mm = &e;
         break;
     }
@@ -1237,7 +1237,7 @@ void writecollideobj(char *name)
         for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
-            if(e.type != Ent_Mapmodel || !pointinsel(sel, e.o)) continue;
+            if(e.type != EngineEnt_Mapmodel || !pointinsel(sel, e.o)) continue;
             mm = &e;
             break;
         }

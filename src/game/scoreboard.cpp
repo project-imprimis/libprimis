@@ -37,7 +37,7 @@ namespace game
             else return false;
         }
         else if(b->state==ClientState_Spectator) return true;
-        if(MODE_CTF)
+        if(modecheck(gamemode, Mode_CTF))
         {
             if(a->flags > b->flags) return true;
             if(a->flags < b->flags) return false;
@@ -101,7 +101,7 @@ namespace game
             gameent *o = players[i];
             if(!showconnecting && !o->name[0]) continue;
             if(o->state==ClientState_Spectator) { spectators.add(o); continue; }
-            int team = MODE_TEAMMODE && VALID_TEAM(o->team) ? o->team : 0;
+            int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(o->team) ? o->team : 0;
             teamplayers[team].add(o);
         }
         for(int i = 0; i < 1+MAXTEAMS; ++i)
@@ -211,7 +211,7 @@ namespace game
 
     ICOMMAND(scoreboardtime, "", (),
     {
-        if(MODE_TIMED && getclientmap() && (maplimit >= 0 || intermission))
+        if(!modecheck(gamemode, Mode_Untimed) && getclientmap() && (maplimit >= 0 || intermission))
         {
             if(intermission) result("intermission");
             else
@@ -224,7 +224,7 @@ namespace game
 
     ICOMMAND(getteamscore, "i", (int *team),
     {
-        if(MODE_TEAMMODE && VALID_TEAM(*team))
+        if(modecheck(gamemode, Mode_Team) && VALID_TEAM(*team))
         {
             if(cmode && cmode->hidefrags()) intret(cmode->getteamscore(*team));
             else intret(teaminfos[*team-1].frags);

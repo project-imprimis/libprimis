@@ -152,7 +152,7 @@ namespace game
 
     void setclientmode()
     {
-        if(MODE_CTF)
+        if(modecheck(gamemode, Mode_CTF))
         {
             cmode = &ctfmode;
         }
@@ -219,7 +219,7 @@ namespace game
     }
     void printteam()
     {
-        if((player1->clientnum >= 0 && !MODE_TEAMMODE) || !VALID_TEAM(player1->team))
+        if((player1->clientnum >= 0 && !modecheck(gamemode, Mode_Team)) || !VALID_TEAM(player1->team))
         {
             conoutf("you are not in a team");
         }
@@ -238,12 +238,12 @@ namespace game
         {
             printteam();
         }
-        else if((player1->clientnum < 0 || MODE_TEAMMODE) && VALID_TEAM(player1->team))
+        else if((player1->clientnum < 0 || modecheck(gamemode, Mode_Team)) && VALID_TEAM(player1->team))
         {
             result(tempformatstring("\fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]));
         }
     });
-    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || MODE_TEAMMODE) && VALID_TEAM(player1->team) ? player1->team : 0));
+    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || modecheck(gamemode, Mode_Team)) && VALID_TEAM(player1->team) ? player1->team : 0));
     ICOMMAND(getteamname, "i", (int *num), result(TEAM_NAME(*num)));
 
     struct authkey
@@ -404,7 +404,7 @@ namespace game
         {
             return true;
         }
-        if(isconnected() && multiplayer(false) && !MODE_EDIT)
+        if(isconnected() && multiplayer(false) && !modecheck(gamemode, Mode_Edit))
         {
             conoutf(CON_ERROR, "editing in multiplayer requires edit mode");
             return false;
@@ -447,7 +447,7 @@ namespace game
     int getclientteam(int cn)
     {
         gameent *d = getclient(cn);
-        return MODE_TEAMMODE && d && VALID_TEAM(d->team) ? d->team : 0;
+        return modecheck(gamemode, Mode_Team) && d && VALID_TEAM(d->team) ? d->team : 0;
     }
     ICOMMAND(getclientteam, "i", (int *cn), intret(getclientteam(*cn)));
 
@@ -466,14 +466,14 @@ namespace game
             return "spectator";
         }
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        return MODE_TEAMMODE && VALID_TEAM(d->team) ? mdl.icon[d->team] : mdl.icon[0];
+        return modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? mdl.icon[d->team] : mdl.icon[0];
     }
     ICOMMAND(getclienticon, "i", (int *cn), result(getclienticon(*cn)));
 
     int getclientcolor(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->state!=ClientState_Spectator ? getplayercolor(d, MODE_TEAMMODE && VALID_TEAM(d->team) ? d->team : 0) : 0xFFFFFF;
+        return d && d->state!=ClientState_Spectator ? getplayercolor(d, modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0) : 0xFFFFFF;
     }
     ICOMMAND(getclientcolor, "i", (int *cn), intret(getclientcolor(*cn)));
 
@@ -791,12 +791,12 @@ namespace game
 
     void changemapserv(const char *name, int mode)        // forced map change from the server
     {
-        if(multiplayer(false) && !MODE_MP(mode))
+        if(multiplayer(false) && modecheck(mode, Mode_LocalOnly))
         {
             conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
             for(int i = 0; i < NUMGAMEMODES; ++i)
             {
-                if(MODE_MP(STARTGAMEMODE + i))
+                if(!modecheck(STARTGAMEMODE + i, Mode_LocalOnly))
                 {
                     mode = STARTGAMEMODE + i;
                     break;
@@ -810,12 +810,12 @@ namespace game
         {
             toggleedit();
         }
-        if(MODE_DEMO)
+        if(modecheck(gamemode, Mode_Demo))
         {
             entities::resetspawns();
             return;
         }
-        if((MODE_EDIT && !name[0]) || !load_world(name))
+        if((modecheck(gamemode, Mode_Edit) && !name[0]) || !load_world(name))
         {
             emptymap(0, true, name);
             senditemstoserver = false;
@@ -825,7 +825,7 @@ namespace game
 
     void setmode(int mode)
     {
-        if(multiplayer(false) && !MODE_MP(mode))
+        if(multiplayer(false) && modecheck(mode, Mode_LocalOnly))
         {
             conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer",  server::modeprettyname(mode), mode);
             intret(0);
@@ -853,14 +853,14 @@ namespace game
     });
     ICOMMAND(intermission, "", (), intret(intermission ? 1 : 0));
 
-    ICOMMANDS("MODE_CTF", "i", (int *mode), { int gamemode = *mode; intret(MODE_CTF); });
-    ICOMMANDS("MODE_TEAMMODE", "i", (int *mode), { int gamemode = *mode; intret(MODE_TEAMMODE); });
-    ICOMMANDS("MODE_RAIL", "i", (int *mode), { int gamemode = *mode; intret(MODE_RAIL); });
-    ICOMMANDS("MODE_PULSE", "i", (int *mode), { int gamemode = *mode; intret(MODE_PULSE); });
-    ICOMMANDS("MODE_DEMO", "i", (int *mode), { int gamemode = *mode; intret(MODE_DEMO); });
-    ICOMMANDS("MODE_EDIT", "i", (int *mode), { int gamemode = *mode; intret(MODE_EDIT); });
-    ICOMMANDS("MODE_LOBBY", "i", (int *mode), { int gamemode = *mode; intret(MODE_LOBBY); });
-    ICOMMANDS("MODE_TIMED", "i", (int *mode), { int gamemode = *mode; intret(MODE_TIMED); });
+    ICOMMANDS("MODE_CTF", "i", (int *mode), { int gamemode = *mode; modecheck(gamemode, Mode_CTF); });
+    ICOMMANDS("MODE_TEAMMODE", "i", (int *mode), { int gamemode = *mode; modecheck(gamemode, Mode_Team); });
+    ICOMMANDS("MODE_RAIL", "i", (int *mode), { int gamemode = *mode; modecheck(gamemode, Mode_Rail); });
+    ICOMMANDS("MODE_PULSE", "i", (int *mode), { int gamemode = *mode; modecheck(gamemode, Mode_Pulse); });
+    ICOMMANDS("MODE_DEMO", "i", (int *mode), { int gamemode = *mode; modecheck(gamemode, Mode_Demo); });
+    ICOMMANDS("MODE_EDIT", "i", (int *mode), { int gamemode = *mode; modecheck(gamemode, Mode_Edit); });
+    ICOMMANDS("MODE_LOBBY", "i", (int *mode), { int gamemode = *mode; modecheck(gamemode, Mode_Lobby); });
+    ICOMMANDS("MODE_TIMED", "i", (int *mode), { int gamemode = *mode; !modecheck(gamemode, Mode_Demo|Mode_Edit|Mode_LocalOnly); });
 
     void changemap(const char *name, int mode) // request map change, server may ignore
     {
@@ -918,7 +918,7 @@ namespace game
 
     void edittrigger(const selinfo &sel, int op, int arg1, int arg2, int arg3, const VSlot *vs)
     {
-        if(MODE_EDIT) switch(op)
+        if(modecheck(gamemode, Mode_Edit)) switch(op)
         {
             case EDIT_FLIP:
             case EDIT_COPY:
@@ -1061,7 +1061,7 @@ namespace game
 
     void vartrigger(ident *id)
     {
-        if(!MODE_EDIT) return;
+        if(!modecheck(gamemode, Mode_Edit)) return;
         switch(id->type)
         {
             case Id_Var:
@@ -1114,7 +1114,7 @@ namespace game
 
     bool ispaused() { return gamepaused; }
 
-    bool allowmouselook() { return !gamepaused || !remote || MODE_EDIT; }
+    bool allowmouselook() { return !gamepaused || !remote || modecheck(gamemode, Mode_Edit); }
 
     void changegamespeed(int val)
     {
@@ -1294,18 +1294,18 @@ namespace game
     }
     void toserver(char *text)
     {
-        conoutf(CON_CHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[0], text);
+        conoutf(ConsoleMsg_Chat, "%s:%s %s", chatcolorname(player1), teamtextcode[0], text);
         addmsg(N_TEXT, "rcs", player1, text);
     }
     COMMANDN(say, toserver, "C");
 
     void sayteam(char *text)
     {
-        if(!MODE_TEAMMODE || !VALID_TEAM(player1->team))
+        if(!modecheck(gamemode, Mode_Team) || !VALID_TEAM(player1->team))
         {
             return;
         }
-        conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(player1), teamtextcode[player1->team], text);
+        conoutf(ConsoleMsg_TeamChat, "%s:%s %s", chatcolorname(player1), teamtextcode[player1->team], text);
         addmsg(N_SAYTEAM, "rcs", player1, text);
     }
     COMMAND(sayteam, "C");
@@ -1706,7 +1706,7 @@ namespace game
         if(resume && d==player1)
         {
             getint(p);
-            for(int i = 0; i < NUMGUNS; ++i)
+            for(int i = 0; i < Gun_NumGuns; ++i)
             {
                 getint(p);
             }
@@ -1714,8 +1714,8 @@ namespace game
         else
         {
             int gun = getint(p);
-            d->gunselect = clamp(gun, 0, NUMGUNS-1);
-            for(int i = 0; i < NUMGUNS; ++i)
+            d->gunselect = clamp(gun, 0, Gun_NumGuns-1);
+            for(int i = 0; i < Gun_NumGuns; ++i)
             {
                 d->ammo[i] = getint(p);
             }
@@ -1834,7 +1834,7 @@ namespace game
                 {
                     particle_textcopy(d->abovehead(), text, PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
                 }
-                conoutf(CON_CHAT, "%s:%s %s", chatcolorname(d), teamtextcode[0], text);
+                conoutf(ConsoleMsg_Chat, "%s:%s %s", chatcolorname(d), teamtextcode[0], text);
                 break;
             }
 
@@ -1853,7 +1853,7 @@ namespace game
                 {
                     particle_textcopy(t->abovehead(), text, PART_TEXT, 2000, teamtextcolor[team], 4.0f, -8);
                 }
-                conoutf(CON_TEAMCHAT, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
+                conoutf(ConsoleMsg_TeamChat, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
                 break;
             }
 
@@ -2058,7 +2058,7 @@ namespace game
                 }
                 else
                 {
-                    findplayerspawn(s, -1, MODE_TEAMMODE ? s->team : 0);
+                    findplayerspawn(s, -1, modecheck(gamemode, Mode_Team) ? s->team : 0);
                 }
                 if(s == player1)
                 {
@@ -2162,7 +2162,7 @@ namespace game
                     break;
                 }
                 actor->frags = frags;
-                if(MODE_TEAMMODE)
+                if(modecheck(gamemode, Mode_Team))
                 {
                     setteaminfo(actor->team, tfrags);
                 }
@@ -2185,7 +2185,7 @@ namespace game
                 for(int i = 0; i < MAXTEAMS; ++i)
                 {
                     int frags = getint(p);
-                    if(MODE_TEAMMODE)
+                    if(modecheck(gamemode, Mode_Team))
                     {
                         setteaminfo(1+i, frags);
                     }
@@ -2775,7 +2775,7 @@ namespace game
             }
             case N_SENDMAP:
             {
-                if(!MODE_EDIT)
+                if(!modecheck(gamemode, Mode_Edit))
                 {
                     return;
                 }
@@ -2830,7 +2830,7 @@ namespace game
 
     void getmap()
     {
-        if(!MODE_EDIT)
+        if(!modecheck(gamemode, Mode_Edit))
         {
             conoutf(CON_ERROR, "\"getmap\" only works in edit mode");
             return;
@@ -2900,7 +2900,7 @@ namespace game
 
     void sendmap()
     {
-        if(!MODE_EDIT || (player1->state==ClientState_Spectator && remote && !player1->privilege))
+        if(!modecheck(gamemode, Mode_Edit) || (player1->state==ClientState_Spectator && remote && !player1->privilege))
         {
             conoutf(CON_ERROR, "\"sendmap\" only works in coop edit mode");
             return;
