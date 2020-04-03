@@ -79,12 +79,46 @@ static inline void findnormal(const normalgroup &g, float lerpthreshold, const v
 {
     v = vec(0, 0, 0);
     int total = 0;
-    if(surface.x >= lerpthreshold) { int n = (g.flat>>4)&0xF; v.x += n; total += n; }
-    else if(surface.x <= -lerpthreshold) { int n = g.flat&0xF; v.x -= n; total += n; }
-    if(surface.y >= lerpthreshold) { int n = (g.flat>>12)&0xF; v.y += n; total += n; }
-    else if(surface.y <= -lerpthreshold) { int n = (g.flat>>8)&0xF; v.y -= n; total += n; }
-    if(surface.z >= lerpthreshold) { int n = (g.flat>>20)&0xF; v.z += n; total += n; }
-    else if(surface.z <= -lerpthreshold) { int n = (g.flat>>16)&0xF; v.z -= n; total += n; }
+    //check if abs value of x component of the surface normal is greater than the lerp threshold
+    //note the assignments to the int n are bitshifted to pack all three axes within a single int
+    if(surface.x >= lerpthreshold)
+    {
+        int n = (g.flat>>4)&0xF;
+        v.x += n; total += n;
+    }
+    else if(surface.x <= -lerpthreshold)
+    {
+        int n = g.flat&0xF;
+        v.x -= n;
+        total += n;
+    }
+    //ditto y component
+    if(surface.y >= lerpthreshold)
+    {
+        int n = (g.flat>>12)&0xF;
+        v.y += n;
+        total += n;
+    }
+    else if(surface.y <= -lerpthreshold)
+    {
+        int n = (g.flat>>8)&0xF;
+        v.y -= n;
+        total += n;
+    }
+    //ditto z component
+    if(surface.z >= lerpthreshold)
+    {
+        int n = (g.flat>>20)&0xF;
+        v.z += n;
+        total += n;
+    }
+    else if(surface.z <= -lerpthreshold)
+    {
+        int n = (g.flat>>16)&0xF;
+        v.z -= n;
+        total += n;
+    }
+
     for(int cur = g.normals; cur >= 0;)
     {
         normal &o = normals[cur];
@@ -95,8 +129,14 @@ static inline void findnormal(const normalgroup &g, float lerpthreshold, const v
         }
         cur = o.next;
     }
-    if(total > 1) v.normalize();
-    else if(!total) v = surface;
+    if(total > 1)
+    {
+        v.normalize();
+    }
+    else if(!total)
+    {
+        v = surface;
+    }
 }
 
 static inline bool findtnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
@@ -119,7 +159,10 @@ static inline bool findtnormal(const normalgroup &g, float lerpthreshold, const 
         }
         cur = o.next;
     }
-    if(!bestnorm) return false;
+    if(!bestnorm)
+    {
+        return false;
+    }
     vec n1, n2;
     findnormal(*bestnorm->groups[0], lerpthreshold, surface, n1);
     findnormal(*bestnorm->groups[1], lerpthreshold, surface, n2);
@@ -136,7 +179,9 @@ void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
         int angle = smoothgroups.inrange(smooth) && smoothgroups[smooth] >= 0 ? smoothgroups[smooth] : lerpangle;
         float lerpthreshold = cos360(angle) - 1e-5f;
         if(g->tnormals < 0 || !findtnormal(*g, lerpthreshold, surface, v))
+        {
             findnormal(*g, lerpthreshold, surface, v);
+        }
     }
     else v = surface;
 }
@@ -166,7 +211,10 @@ void addnormals(cube &c, const ivec &o, int size)
         }
         return;
     }
-    else if(IS_EMPTY(c)) return;
+    else if(IS_EMPTY(c))
+    {
+        return;
+    }
 
     vec pos[MAXFACEVERTS];
     int norms[MAXFACEVERTS];
@@ -176,7 +224,10 @@ void addnormals(cube &c, const ivec &o, int size)
         if((vis = visibletris(c, i, o, size)))
         {
             CHECK_CALCLIGHT_PROGRESS(return, show_addnormals_progress);
-            if(c.texture[i] == DEFAULT_SKY) continue;
+            if(c.texture[i] == DEFAULT_SKY)
+            {
+                continue;
+            }
 
             vec planes[2];
             int numverts = c.ext ? c.ext->surfaces[i].numverts&MAXFACEVERTS : 0, convex = 0, numplanes = 0;
@@ -189,26 +240,44 @@ void addnormals(cube &c, const ivec &o, int size)
                     vertinfo &v = verts[j];
                     pos[j] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
                 }
-                if(!(c.merged&(1<<i)) && !flataxisface(c, i)) convex = faceconvexity(verts, numverts, size);
+                if(!(c.merged&(1<<i)) && !flataxisface(c, i))
+                {
+                    convex = faceconvexity(verts, numverts, size);
+                }
             }
-            else if(c.merged&(1<<i)) continue;
+            else if(c.merged&(1<<i))
+            {
+                continue;
+            }
             else
             {
                 ivec v[4];
                 genfaceverts(c, i, v);
-                if(!flataxisface(c, i)) convex = faceconvexity(v);
+                if(!flataxisface(c, i))
+                {
+                    convex = faceconvexity(v);
+                }
                 int order = vis&4 || convex < 0 ? 1 : 0;
                 vec vo(o);
                 pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
-                if(vis&1) pos[numverts++] = vec(v[order+1]).mul(size/8.0f).add(vo);
+                if(vis&1)
+                {
+                    pos[numverts++] = vec(v[order+1]).mul(size/8.0f).add(vo);
+                }
                 pos[numverts++] = vec(v[order+2]).mul(size/8.0f).add(vo);
-                if(vis&2) pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
+                if(vis&2)
+                {
+                    pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
+                }
             }
 
             if(!flataxisface(c, i))
             {
                 planes[numplanes++].cross(pos[0], pos[1], pos[2]).normalize();
-                if(convex) planes[numplanes++].cross(pos[0], pos[2], pos[3]).normalize();
+                if(convex)
+                {
+                    planes[numplanes++].cross(pos[0], pos[2], pos[3]).normalize();
+                }
             }
 
             VSlot &vslot = lookupvslot(c.texture[i], false);
@@ -244,7 +313,10 @@ void addnormals(cube &c, const ivec &o, int size)
                 const vec &v1 = pos[e1], &v2 = pos[e2];
                 ivec d(vec(v2).sub(v1).mul(8));
                 int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
-                if(d[axis] < 0) d.neg();
+                if(d[axis] < 0)
+                {
+                    d.neg();
+                }
                 reduceslope(d);
                 int origin = int(min(v1[axis], v2[axis])*8)&~0x7FFF,
                     offset1 = (int(v1[axis]*8) - origin) / d[axis],
@@ -255,7 +327,10 @@ void addnormals(cube &c, const ivec &o, int size)
                 while(tj >= 0)
                 {
                     tjoint &t = tjoints[tj];
-                    if(t.edge != edge) break;
+                    if(t.edge != edge)
+                    {
+                        break;
+                    }
                     float offset = (t.offset - offset1) * doffset;
                     vec tpos = vec(d).mul(t.offset/8.0f).add(o);
                     addtnormal(tpos, smooth, offset, norms[e1], norms[e2], v1, v2);
@@ -269,7 +344,10 @@ void addnormals(cube &c, const ivec &o, int size)
 void calcnormals(bool lerptjoints)
 {
     usetnormals = lerptjoints;
-    if(usetnormals) findtjoints();
+    if(usetnormals)
+    {
+        findtjoints();
+    }
     normalprogress = 1;
     for(int i = 0; i < 8; ++i)
     {
@@ -291,10 +369,22 @@ void resetsmoothgroups()
 
 int smoothangle(int id, int angle)
 {
-    if(id < 0) id = smoothgroups.length();
-    if(id >= 10000) return -1;
-    while(smoothgroups.length() <= id) smoothgroups.add(-1);
-    if(angle >= 0) smoothgroups[id] = min(angle, 180);
+    if(id < 0)
+    {
+        id = smoothgroups.length();
+    }
+    if(id >= 10000)
+    {
+        return -1;
+    }
+    while(smoothgroups.length() <= id)
+    {
+        smoothgroups.add(-1);
+    }
+    if(angle >= 0)
+    {
+        smoothgroups[id] = min(angle, 180);
+    }
     return id;
 }
 
