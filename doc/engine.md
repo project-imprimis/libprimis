@@ -422,6 +422,13 @@ static entities.
 ## 2.1 Octree Geometry
 ---
 
+The Imprimis engine's geometry system is very different than most engines and
+has different strengths and weaknesses with respect to typical polygon soup
+engines such as Unreal or the Quake family of engines. Imprimis' octal tree
+geometry does not record map vertices in terms of typical positon vectors, as
+the vast majority of 3D rendering software uses, instead opting to use an octal
+tree format.
+
 ### 2.1.1 Octree Data Structure & Cube Geometry
 ---
 
@@ -441,17 +448,101 @@ default map is 2^10 = 2^7m = 128m on edge. Due to limitations of the renderer's
 z-buffer precision, distances beyond about half a kilometer on edge are not
 generally recommended.
 
-The recursive nature of octree nodes are most useful for the simplicity of
-occlusion queries. Occlusion queries are made significantly faster by being able
-to discard members of the tree near the root and therefore skipping all the
-lower members of the tree which necessarily are within their parent's node.
-
 Cubes in Imprimis, the most basic form of geometry in the game, therefore occupy
 the octree; instead of vertices in other engines being determined by their 3D
 vector from the origin, a cube's place in the octal tree determines its
 location.
 
-### 2.1.2 Cube Manipulation
+### 2.1.2 Child Nodes
+---
+
+As mentioned above, each node can have *children* defined for them which
+themselves can have their own child nodes. The maximum depth of this tree is
+equal to the `mapsize`: a map of size 2^10 = 1024 cubes (128m square) can have
+child nodes up to 10 deep.
+
+```
+               ^ +z
+               |
+             __________
+            /  4 /  5 /
+           /____/____/.
+          /  6 /  7 / .
+         /____/____/  .
+        .    _____.___.
+        .   /  0 /. 1 /     +x
+        .  /____/_.__/    ->
+        . /  2 / 3. /
+        ./____/___./
+
+
+            / +y
+           |/
+```
+
+The assignment of child nodes is outlined above. The node with the lowest x,y,z
+coordinates is assigned as child node #0, and counts upwards to node 7, which is
+at the largest x,y,z coordinates. A child node might be found in this way within
+the engine:
+
+```
+level 0 128m                   worldroot
+                 __________________|_________________
+                 |    |    |    |    |    |    |    |
+level 1 64m      0    1    2    3    4    5    6    7
+                             __________________|_________________
+                             |    |    |    |    |    |    |    |
+level 2 32m                  0    1    2    3    4    5    6    7
+                                    __________________|_________________
+                                    |    |    |    |    |    |    |    |
+level 3 16m                         0    1    2    3    4    5    6    7
+                       __________________|_________________
+                       |    |    |    |    |    |    |    |
+level 4 8m             0    1    2    3    4    5    6    7
+                                                     ^
+                                                     | (6,5,1,6)
+                                                This is an 8*8*8m cube node.
+```
+
+The "gridpower" of a cube is related to the distance down the tree that a cube
+is, and therefore its size as a power of two. The bottom of the tree is always
+at gridpower 0, and is located eleven rungs down (0,1,2,3,4,5,6,7,8,9,10) the
+world octree on a standard power 10 map (128m on edge).
+
+In this view, the ease of discarding smaller nodes is apparent: the cube
+selected (7,5,1,6) could be discarded easily if it was found that cube (7,5) was
+occluded, since its "address" includes all the larger cubes that occupy its
+volume. This is very fast compared to a pile of vectors which need to be
+individually treated in order to ensure they can be excluded from the render
+process.
+
+### 2.1.3 World Root
+---
+
+The worldroot, indicated in the octal tree diagram above at the top, is the
+master cube inside which all geometry fits. Geometry may not leave the area
+bounded by the worldroot cube, as all geometry is carved out of the worldroot's
+children nodes (all cubes in a level are child cubes of the worldroot cube).
+
+Because of this, maps always have the following properties:
+
+* Maps are always square. Cube nodes are all sqaure, and thus the largest cube
+node is as well.
+* Maps are of fixed size. The size of the worldroot defines the map's size.
+* Maps' range of gridpowers allowed is determined by the size of the worldroot
+cube.
+
+#### Map Expansion
+
+There is a command, `mapenlarge`, that can grow a map such that the worldroot
+takes up a larger volume. The existing map, accordingly, is placed as child 0 of
+the new world root, leading to the map expansition occupying space in the +x,
++y, and +z direction from the location of the existing map. This may be slightly
+inconvenient for those seeking to expand the scenery bounds of their level
+uniformly; a copy and paste of the geometry is needed to re-center the old level
+if desired.
+
+### 2.1.4 Cube Manipulation
 ---
 
 While octree subdivision allows for the inclusion of small pieces of geometry,
@@ -460,10 +551,10 @@ cubes. To allow for maps which have shapes that are not all boxes, Imprimis,
 like other games in the Cube family, allows for limited, discrete deformation of
 octree nodes.
 
-Each corner, of which there are eight on a cube, can be deformed in steps of
-1/8th of the total cube size. This allows for decent approximations of many
-curves when done carefully, and using different gridpowers prudently can allow
-for some limited compound curvature.
+Each corner, of which there are eight on a cube, can be deformed along all three
+directions in steps of 1/8th of the total cube size. This allows for decent
+approximations of many curves when done carefully, and using different
+gridpowers prudently can allow for some limited compound curvature.
 
 This deformation, when carried out by all four corners of a cube, can allow for
 faces which do not align with their boundaries; indeed, all six faces can be
@@ -476,13 +567,14 @@ can be summarized with the following statement:
 * Each vertex can only be found at one of 512 discrete points within the node.
 * Textures always get an entire face of an octree node.
 * Textures are projected from the node normal, not the deformed surface normal.
+* Cubes' deformed shapes may not extend past their original undeformed volume.
 
 Therefore, the only way to increase detail in a given area when using cube
 geometry is to increase the octree node density (by using a smaller gridpower).
 
 For more information on texture projection, see §2.3.3.
 
-### 2.1.3 Remipping and Subdivision
+### 2.1.5 Remipping and Subdivision
 ---
 
 #### Subdivision
@@ -516,9 +608,9 @@ textured.
 There are several materials in Imprimis which are capable of modifying their
 volume's properties. Materials in general are combinable (though there are many
 exceptions) so that multiple effects on the geometry can be combined. Because
-materials do not have the same deformation ability as geometry, materials
-are restricted to occupying rectangular shapes and cannot approximate the forms
-that geometry can.
+materials do not have the same deformation ability as geometry, materials are
+restricted to occupying rectangular shapes and cannot approximate the forms that
+geometry can.
 
 The most visible apparent materials are the water and lava materials. Water and
 lava materials (of which there are eight, four of each type) create rectangular
