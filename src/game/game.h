@@ -127,7 +127,7 @@ enum                            // static entity types
     GamecodeEnt_MaxEntTypes,                                   // used for looping through full enum
 };
 
-//the equivalent of the engine's extentity (and identical)
+//the equivalent of the engine's extentity (and identical, as it inherits gamentity without doing anything to extend it)
 struct gameentity : extentity
 {
 };
@@ -140,23 +140,23 @@ enum
 };
 enum
 {
-    ACT_IDLE = 0,
-    ACT_SHOOT,
-    ACT_MELEE,
-    NUMACTS
+    Act_Idle = 0,
+    Act_Shoot,
+    Act_Melee,
+    Act_NumActs
 };
 
 enum
 {
-    ATK_RAIL_SHOOT = 0,
-    ATK_RAIL_MELEE,
-    ATK_PULSE_SHOOT,
-    ATK_PULSE_MELEE,
-    NUMATKS
+    Attack_RailShot = 0,
+    Attack_RailMelee,
+    Attack_PulseShoot,
+    Attack_PulseMelee,
+    Attack_NumAttacks
 };
 
 #define VALID_GUN(n) ((n) >= 0 && (n) < Gun_NumGuns)
-#define VALID_ATTACK(n) ((n) >= 0 && (n) < NUMATKS)
+#define VALID_ATTACK(n) ((n) >= 0 && (n) < Attack_NumAttacks)
 
 //enum of gameplay mechanic flags; bitwise sum determines what a mode's attributes are
 enum
@@ -176,7 +176,7 @@ enum
 enum
 {
     Mode_Untimed         = Mode_Edit|Mode_LocalOnly|Mode_Demo,
-    Mode_Bot             = Mode_LocalOnly|Mode_Demo,
+    Mode_Bot             = Mode_LocalOnly|Mode_Demo
 };
 
 static struct gamemodeinfo
@@ -213,7 +213,16 @@ static inline bool modecheck(int mode, int flag)
 
 #define MODE_VALID(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
 
-enum { MM_AUTH = -1, MM_OPEN = 0, MM_VETO, MM_LOCKED, MM_PRIVATE, MM_PASSWORD, MM_START = MM_AUTH, MM_INVALID = MM_START - 1 };
+enum {
+    MasterMode_Auth = -1,
+    MasterMode_Open = 0,
+    MasterMode_Veto,
+    MasterMode_Locked,
+    MasterMode_Private,
+    MasterMode_Password,
+    MasterMode_Start = MasterMode_Auth,
+    MasterMode_Invalid = MasterMode_Start - 1
+};
 
 static const char * const mastermodenames[] =  { "auth",   "open",   "veto",       "locked",     "private",    "password" };
 static const char * const mastermodecolors[] = { "",       "\f0",    "\f2",        "\f2",        "\f3",        "\f3" };
@@ -222,12 +231,27 @@ static const char * const mastermodeicons[] =  { "server", "server", "serverlock
 // hardcoded sounds, defined in sounds.cfg
 enum
 {
-    S_JUMP = 0, S_LAND,
-    S_SPLASHIN, S_SPLASHOUT, S_BURN,
-    S_ITEMSPAWN, S_TELEPORT, S_JUMPPAD,
-    S_MELEE, S_PULSE1, S_PULSE2, S_PULSEEXPLODE, S_RAIL1, S_RAIL2,
-    S_WEAPLOAD, S_NOAMMO, S_HIT,
-    S_PAIN1, S_PAIN2, S_DIE1, S_DIE2,
+    S_JUMP = 0,
+    S_LAND,
+    S_SPLASHIN,
+    S_SPLASHOUT,
+    S_BURN,
+    S_ITEMSPAWN,
+    S_TELEPORT,
+    S_JUMPPAD,
+    S_MELEE,
+    S_PULSE1,
+    S_PULSE2,
+    S_PULSEEXPLODE,
+    S_RAIL1,
+    S_RAIL2,
+    S_WEAPLOAD,
+    S_NOAMMO,
+    S_HIT,
+    S_PAIN1,
+    S_PAIN2,
+    S_DIE1,
+    S_DIE2,
 
     S_FLAGPICKUP,
     S_FLAGDROP,
@@ -239,67 +263,242 @@ enum
 
 // network messages codes, c2s, c2c, s2c
 
-enum { PRIV_NONE = 0, PRIV_MASTER, PRIV_AUTH, PRIV_ADMIN };
+enum
+{
+    Priv_None = 0,
+    Priv_Master,
+    Priv_Auth,
+    Priv_Admin
+};
 
 enum
 {
-    N_CONNECT = 0, N_SERVINFO, N_WELCOME, N_INITCLIENT, N_POS, N_TEXT, N_SOUND, N_CDIS,
-    N_SHOOT, N_EXPLODE, N_SUICIDE,
-    N_DIED, N_DAMAGE, N_HITPUSH, N_SHOTFX, N_EXPLODEFX,
-    N_TRYSPAWN, N_SPAWNSTATE, N_SPAWN, N_FORCEDEATH,
-    N_GUNSELECT, N_TAUNT,
-    N_MAPCHANGE, N_MAPVOTE, N_TEAMINFO, N_ITEMSPAWN, N_ITEMPICKUP, N_ITEMACC, N_TELEPORT, N_JUMPPAD,
-    N_PING, N_PONG, N_CLIENTPING,
-    N_TIMEUP, N_FORCEINTERMISSION,
-    N_SERVMSG, N_ITEMLIST, N_RESUME,
-    N_EDITMODE, N_EDITENT, N_EDITF, N_EDITT, N_EDITM, N_FLIP, N_COPY, N_PASTE, N_ROTATE, N_REPLACE, N_DELCUBE, N_CALCLIGHT, N_REMIP, N_EDITVSLOT, N_UNDO, N_REDO, N_NEWMAP, N_GETMAP, N_SENDMAP, N_CLIPBOARD, N_EDITVAR,
-    N_MASTERMODE, N_KICK, N_CLEARBANS, N_CURRENTMASTER, N_SPECTATOR, N_SETMASTER, N_SETTEAM,
-    N_LISTDEMOS, N_SENDDEMOLIST, N_GETDEMO, N_SENDDEMO,
-    N_DEMOPLAYBACK, N_RECORDDEMO, N_STOPDEMO, N_CLEARDEMOS,
-    N_TAKEFLAG, N_RETURNFLAG, N_RESETFLAG, N_TRYDROPFLAG, N_DROPFLAG, N_SCOREFLAG, N_INITFLAGS,
+    N_CONNECT = 0,
+    N_SERVINFO,
+    N_WELCOME,
+    N_INITCLIENT,
+    N_POS,
+    N_TEXT,
+    N_SOUND,
+    N_CDIS,
+    N_SHOOT,
+    //game
+    N_EXPLODE,
+    N_SUICIDE, //10
+    N_DIED,
+    N_DAMAGE,
+    N_HITPUSH,
+    N_SHOTFX,
+    N_EXPLODEFX,
+    N_TRYSPAWN,
+    N_SPAWNSTATE,
+    N_SPAWN,
+    N_FORCEDEATH,
+    N_GUNSELECT, //20
+    N_TAUNT,
+    N_MAPCHANGE,
+    N_MAPVOTE,
+    N_TEAMINFO,
+    N_ITEMSPAWN,
+    N_ITEMPICKUP,
+    N_ITEMACC,
+    N_TELEPORT,
+    N_JUMPPAD,
+
+    N_PING, //30
+    N_PONG,
+    N_CLIENTPING,
+    N_TIMEUP,
+    N_FORCEINTERMISSION,
+    N_SERVMSG,
+    N_ITEMLIST,
+    N_RESUME,
+    //edit
+    N_EDITMODE,
+    N_EDITENT,
+    N_EDITF, //40
+    N_EDITT,
+    N_EDITM,
+    N_FLIP,
+    N_COPY,
+    N_PASTE,
+    N_ROTATE,
+    N_REPLACE,
+    N_DELCUBE,
+    N_CALCLIGHT,
+    N_REMIP, //50
+    N_EDITVSLOT,
+    N_UNDO,
+    N_REDO,
+    N_NEWMAP,
+    N_GETMAP,
+    N_SENDMAP,
+    N_CLIPBOARD,
+    N_EDITVAR,
+    //master
+    N_MASTERMODE,
+    N_KICK, //60
+    N_CLEARBANS,
+    N_CURRENTMASTER,
+    N_SPECTATOR,
+    N_SETMASTER,
+    N_SETTEAM,
+    //demo
+    N_LISTDEMOS,
+    N_SENDDEMOLIST,
+    N_GETDEMO,
+    N_SENDDEMO,
+    N_DEMOPLAYBACK, //70
+    N_RECORDDEMO,
+    N_STOPDEMO,
+    N_CLEARDEMOS,
+    //flag
+    N_TAKEFLAG,
+    N_RETURNFLAG,
+    N_RESETFLAG,
+    N_TRYDROPFLAG,
+    N_DROPFLAG,
+    N_SCOREFLAG,
+    N_INITFLAGS, //80
+    //misc
     N_SAYTEAM,
     N_CLIENT,
-    N_AUTHTRY, N_AUTHKICK, N_AUTHCHAL, N_AUTHANS, N_REQAUTH,
-    N_PAUSEGAME, N_GAMESPEED,
-    N_ADDBOT, N_DELBOT, N_INITAI, N_FROMAI, N_BOTLIMIT, N_BOTBALANCE,
-    N_MAPCRC, N_CHECKMAPS,
-    N_SWITCHNAME, N_SWITCHMODEL, N_SWITCHCOLOR, N_SWITCHTEAM,
+    N_AUTHTRY,
+    N_AUTHKICK,
+    N_AUTHCHAL,
+    N_AUTHANS,
+    N_REQAUTH,
+    N_PAUSEGAME,
+    N_GAMESPEED,
+    N_ADDBOT, //90
+    N_DELBOT,
+    N_INITAI,
+    N_FROMAI,
+    N_BOTLIMIT,
+    N_BOTBALANCE,
+    N_MAPCRC,
+    N_CHECKMAPS,
+    N_SWITCHNAME,
+    N_SWITCHMODEL,
+    N_SWITCHCOLOR, //100
+    N_SWITCHTEAM,
     N_SERVCMD,
     N_DEMOPACKET,
-    NUMMSG
+    NUMMSG //104
 };
 
 static const int msgsizes[] =               // size inclusive message token, 0 for variable or not-checked sizes
 {
-    N_CONNECT, 0, N_SERVINFO, 0, N_WELCOME, 1, N_INITCLIENT, 0, N_POS, 0, N_TEXT, 0, N_SOUND, 2, N_CDIS, 2,
-    N_SHOOT, 0, N_EXPLODE, 0, N_SUICIDE, 1,
-    N_DIED, 5, N_DAMAGE, 5, N_HITPUSH, 7, N_SHOTFX, 10, N_EXPLODEFX, 4,
-    N_TRYSPAWN, 1, N_SPAWNSTATE, 8, N_SPAWN, 3, N_FORCEDEATH, 2,
-    N_GUNSELECT, 2, N_TAUNT, 1,
-    N_MAPCHANGE, 0, N_MAPVOTE, 0, N_TEAMINFO, 0, N_ITEMSPAWN, 2, N_ITEMPICKUP, 2, N_ITEMACC, 3,
-    N_PING, 2, N_PONG, 2, N_CLIENTPING, 2,
-    N_TIMEUP, 2, N_FORCEINTERMISSION, 1,
-    N_SERVMSG, 0, N_ITEMLIST, 0, N_RESUME, 0,
-    N_EDITMODE, 2, N_EDITENT, 11, N_EDITF, 16, N_EDITT, 16, N_EDITM, 16, N_FLIP, 14, N_COPY, 14, N_PASTE, 14, N_ROTATE, 15, N_REPLACE, 17, N_DELCUBE, 14, N_CALCLIGHT, 1, N_REMIP, 1, N_EDITVSLOT, 16, N_UNDO, 0, N_REDO, 0, N_NEWMAP, 2, N_GETMAP, 1, N_SENDMAP, 0, N_EDITVAR, 0, 
-    N_MASTERMODE, 2, N_KICK, 0, N_CLEARBANS, 1, N_CURRENTMASTER, 0, N_SPECTATOR, 3, N_SETMASTER, 0, N_SETTEAM, 0,
-    N_LISTDEMOS, 1, N_SENDDEMOLIST, 0, N_GETDEMO, 2, N_SENDDEMO, 0,
-    N_DEMOPLAYBACK, 3, N_RECORDDEMO, 2, N_STOPDEMO, 1, N_CLEARDEMOS, 2,
-    N_TAKEFLAG, 3, N_RETURNFLAG, 4, N_RESETFLAG, 3, N_TRYDROPFLAG, 1, N_DROPFLAG, 7, N_SCOREFLAG, 9, N_INITFLAGS, 0,
+    N_CONNECT, 0,
+    N_SERVINFO, 0,
+    N_WELCOME, 1,
+    N_INITCLIENT, 0,
+    N_POS, 0,
+    N_TEXT, 0,
+    N_SOUND, 2,
+    N_CDIS, 2,
+    N_SHOOT, 0,
+    N_EXPLODE, 0,
+    N_SUICIDE, 1,
+    N_DIED, 5,
+    N_DAMAGE, 5,
+    N_HITPUSH, 7,
+    N_SHOTFX, 10,
+    N_EXPLODEFX, 4,
+    N_TRYSPAWN, 1,
+    N_SPAWNSTATE, 8,
+    N_SPAWN, 3,
+    N_FORCEDEATH, 2,
+    N_GUNSELECT, 2,
+    N_TAUNT, 1,
+    N_MAPCHANGE, 0,
+    N_MAPVOTE, 0,
+    N_TEAMINFO, 0,
+    N_ITEMSPAWN, 2,
+    N_ITEMPICKUP, 2,
+    N_ITEMACC, 3,
+    N_PING, 2,
+    N_PONG, 2,
+    N_CLIENTPING, 2,
+    N_TIMEUP, 2,
+    N_FORCEINTERMISSION, 1,
+    N_SERVMSG, 0,
+    N_ITEMLIST, 0,
+    N_RESUME, 0,
+    N_EDITMODE, 2,
+    N_EDITENT, 11,
+    N_EDITF, 16,
+    N_EDITT, 16,
+    N_EDITM, 16,
+    N_FLIP, 14,
+    N_COPY, 14,
+    N_PASTE, 14,
+    N_ROTATE, 15,
+    N_REPLACE, 17,
+    N_DELCUBE, 14,
+    N_CALCLIGHT, 1,
+    N_REMIP, 1,
+    N_EDITVSLOT, 16,
+    N_UNDO, 0,
+    N_REDO, 0,
+    N_NEWMAP, 2,
+    N_GETMAP, 1,
+    N_SENDMAP, 0,
+    N_EDITVAR, 0,
+
+    N_MASTERMODE, 2,
+    N_KICK, 0,
+    N_CLEARBANS, 1,
+    N_CURRENTMASTER, 0,
+    N_SPECTATOR, 3,
+    N_SETMASTER, 0,
+    N_SETTEAM, 0,
+    N_LISTDEMOS, 1,
+    N_SENDDEMOLIST, 0,
+    N_GETDEMO, 2,
+    N_SENDDEMO, 0,
+    N_DEMOPLAYBACK, 3,
+    N_RECORDDEMO, 2,
+    N_STOPDEMO, 1,
+    N_CLEARDEMOS, 2,
+    
+    N_TAKEFLAG, 3,
+    N_RETURNFLAG, 4,
+    N_RESETFLAG, 3,
+    N_TRYDROPFLAG, 1,
+    N_DROPFLAG, 7,
+    N_SCOREFLAG, 9,
+    N_INITFLAGS, 0,
+
     N_SAYTEAM, 0,
     N_CLIENT, 0,
-    N_AUTHTRY, 0, N_AUTHKICK, 0, N_AUTHCHAL, 0, N_AUTHANS, 0, N_REQAUTH, 0,
-    N_PAUSEGAME, 0, N_GAMESPEED, 0,
-    N_ADDBOT, 2, N_DELBOT, 1, N_INITAI, 0, N_FROMAI, 2, N_BOTLIMIT, 2, N_BOTBALANCE, 2,
-    N_MAPCRC, 0, N_CHECKMAPS, 1,
-    N_SWITCHNAME, 0, N_SWITCHMODEL, 2, N_SWITCHCOLOR, 2, N_SWITCHTEAM, 2,
+    N_AUTHTRY, 0,
+    N_AUTHKICK, 0,
+    N_AUTHCHAL, 0,
+    N_AUTHANS, 0,
+    N_REQAUTH, 0,
+    N_PAUSEGAME, 0,
+    N_GAMESPEED, 0,
+    N_ADDBOT, 2,
+    N_DELBOT, 1,
+    N_INITAI, 0,
+    N_FROMAI, 2,
+    N_BOTLIMIT, 2,
+    N_BOTBALANCE, 2,
+    N_MAPCRC, 0,
+    N_CHECKMAPS, 1,
+    N_SWITCHNAME, 0,
+    N_SWITCHMODEL, 2,
+    N_SWITCHCOLOR, 2,
+    N_SWITCHTEAM, 2,
     N_SERVCMD, 0,
     N_DEMOPACKET, 0,
     -1
 };
 
-#define TESSERACT_SERVER_PORT 42000
-#define TESSERACT_LANINFO_PORT 41998
-#define TESSERACT_MASTER_PORT 41999
+#define TESSERACT_SERVER_PORT 42069
+#define TESSERACT_LANINFO_PORT 42067
+#define TESSERACT_MASTER_PORT 42068
 #define PROTOCOL_VERSION 2              // bump when protocol changes
 #define DEMO_VERSION 1                  // bump when demo format changes
 #define DEMO_MAGIC "TESSERACT_DEMO\0\0"
@@ -339,20 +538,20 @@ static struct itemstat { int add, max, sound; const char *name; int icon, info; 
 #define EXP_DISTSCALE 0.5f
 // this defines weapon properties
 //                                   1    2       3     4         5        6      7         8            9       10      11      12         13          14     15    16       17      18   19
-static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use; } attacks[NUMATKS] =
+static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use; } attacks[Attack_NumAttacks] =
 
-//    1          2          3           4                5               6         7        8     9  10 11    12  13    14 15    16  17 18 19
+//    1          2          3           4                5               6         7        8     9  10   11   12  13    14 15    16  17 18 19
 {
-    { Gun_Rail,  ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_RAIL1,  S_RAIL2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
-    { Gun_Rail,  ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { Gun_Pulse, ACT_SHOOT, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_PULSE1, S_PULSE2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
-    { Gun_Pulse, ACT_MELEE, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
+    { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_RAIL1,  S_RAIL2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
+    { Gun_Rail,  Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
+    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_PULSE1, S_PULSE2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
+    { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
 };
 
-static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACTS]; } guns[Gun_NumGuns] =
+static const struct guninfo { const char *name, *file, *vwep; int attacks[Act_NumActs]; } guns[Gun_NumGuns] =
 {
-    { "railgun", "railgun", "worldgun/railgun", { -1, ATK_RAIL_SHOOT, ATK_RAIL_MELEE }, },
-    { "pulse rifle", "pulserifle", "worldgun/pulserifle", { -1, ATK_PULSE_SHOOT, ATK_PULSE_MELEE } }
+    { "railgun", "railgun", "worldgun/railgun", { -1, Attack_RailShot, Attack_RailMelee }, },
+    { "pulse rifle", "pulserifle", "worldgun/pulserifle", { -1, Attack_PulseShoot, Attack_PulseMelee } }
 };
 
 #include "ai.h"
@@ -443,9 +642,6 @@ static inline int teamnumber(const char *name)
 #define VALID_TEAM(n) ((n) >= 1 && (n) <= MAXTEAMS)
 #define TEAM_NAME(n) (teamnames[VALID_TEAM(n) ? (n) : 0])
 
-//pass "true" to check if not
-
-
 struct gameent : dynent, gamestate
 {
     int weight;                         // affects the effectiveness of hitpush
@@ -469,7 +665,7 @@ struct gameent : dynent, gamestate
 
     vec muzzle;
 
-    gameent() : weight(100), clientnum(-1), privilege(PRIV_NONE), lastupdate(0), plag(0), ping(0), lifesequence(0), respawned(-1), suicided(-1), lastpain(0), frags(0), flags(0), deaths(0), totaldamage(0), totalshots(0), edit(NULL), smoothmillis(-1), team(0), playermodel(-1), playercolor(0), ai(NULL), ownernum(-1), muzzle(-1, -1, -1)
+    gameent() : weight(100), clientnum(-1), privilege(Priv_None), lastupdate(0), plag(0), ping(0), lifesequence(0), respawned(-1), suicided(-1), lastpain(0), frags(0), flags(0), deaths(0), totaldamage(0), totalshots(0), edit(NULL), smoothmillis(-1), team(0), playermodel(-1), playercolor(0), ai(NULL), ownernum(-1), muzzle(-1, -1, -1)
     {
         name[0] = info[0] = 0;
         respawn();
@@ -494,7 +690,7 @@ struct gameent : dynent, gamestate
         respawned = suicided = -1;
         lastaction = 0;
         lastattack = -1;
-        attacking = ACT_IDLE;
+        attacking = Act_Idle;
         lasttaunt = 0;
         lastpickup = -1;
         lastpickupmillis = 0;

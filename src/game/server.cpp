@@ -343,7 +343,7 @@ namespace server
             team = 0;
             playermodel = -1;
             playercolor = 0;
-            privilege = PRIV_NONE;
+            privilege = Priv_None;
             connected = local = false;
             connectauth = 0;
             position.setsize(0);
@@ -391,8 +391,8 @@ namespace server
     #define MM_MODE 0xF
     #define MM_AUTOAPPROVE 0x1000
     #define MM_PRIVSERV (MM_MODE | MM_AUTOAPPROVE)
-    #define MM_PUBSERV ((1<<MM_OPEN) | (1<<MM_VETO))
-    #define MM_COOPSERV (MM_AUTOAPPROVE | MM_PUBSERV | (1<<MM_LOCKED))
+    #define MM_PUBSERV ((1<<MasterMode_Open) | (1<<MasterMode_Veto))
+    #define MM_COOPSERV (MM_AUTOAPPROVE | MM_PUBSERV | (1<<MasterMode_Locked))
 
     bool notgotitems = true;        // true when map has changed and waiting for clients to send item
     int gamemode = 0;
@@ -402,7 +402,7 @@ namespace server
     string smapname = "";
     int interm = 0;
     enet_uint32 lastsend = 0;
-    int mastermode = MM_OPEN, mastermask = MM_PRIVSERV;
+    int mastermode = MasterMode_Open, mastermask = MM_PRIVSERV;
     stream *mapdata = NULL;
 
     vector<uint> allowedips;
@@ -428,12 +428,12 @@ namespace server
 
     vector<clientinfo *> connects, clients, bots;
 
-    void kickclients(uint ip, clientinfo *actor = NULL, int priv = PRIV_NONE)
+    void kickclients(uint ip, clientinfo *actor = NULL, int priv = Priv_None)
     {
         for(int i = clients.length(); --i >=0;) //note reverse iteration
         {
             clientinfo &c = *clients[i];
-            if(c.state.aitype != AI_None || c.privilege >= PRIV_ADMIN || c.local)
+            if(c.state.aitype != AI_None || c.privilege >= Priv_Admin || c.local)
             {
                 continue;
             }
@@ -832,16 +832,16 @@ namespace server
 
     const char *mastermodename(int n, const char *unknown)
     {
-        return (n>=MM_START && size_t(n-MM_START)<sizeof(mastermodenames)/sizeof(mastermodenames[0])) ? mastermodenames[n-MM_START] : unknown;
+        return (n>=MasterMode_Start && size_t(n-MasterMode_Start)<sizeof(mastermodenames)/sizeof(mastermodenames[0])) ? mastermodenames[n-MasterMode_Start] : unknown;
     }
 
     const char *privname(int type)
     {
         switch(type)
         {
-            case PRIV_ADMIN: return "admin";
-            case PRIV_AUTH: return "auth";
-            case PRIV_MASTER: return "master";
+            case Priv_Admin: return "admin";
+            case Priv_Auth: return "auth";
+            case Priv_Master: return "master";
             default: return "unknown";
         }
     }
@@ -1360,7 +1360,7 @@ namespace server
         int admins = 0;
         for(int i = 0; i < clients.length(); i++)
         {
-            if(clients[i]->privilege >= (restrictpausegame ? PRIV_ADMIN : PRIV_MASTER) || clients[i]->local)
+            if(clients[i]->privilege >= (restrictpausegame ? Priv_Admin : Priv_Master) || clients[i]->local)
             {
                 admins++;
             }
@@ -1412,7 +1412,7 @@ namespace server
         void *pubkey;
         int privilege;
 
-        userinfo() : pubkey(NULL), privilege(PRIV_NONE) {}
+        userinfo() : pubkey(NULL), privilege(Priv_None) {}
         ~userinfo() { delete[] name; delete[] desc; if(pubkey) freepubkey(pubkey); }
     };
     hashset<userinfo> users;
@@ -1427,9 +1427,9 @@ namespace server
         u.pubkey = parsepubkey(pubkey);
         switch(priv[0])
         {
-            case 'a': case 'A': u.privilege = PRIV_ADMIN; break;
-            case 'm': case 'M': default: u.privilege = PRIV_AUTH; break;
-            case 'n': case 'N': u.privilege = PRIV_NONE; break;
+            case 'a': case 'A': u.privilege = Priv_Admin; break;
+            case 'm': case 'M': default: u.privilege = Priv_Auth; break;
+            case 'n': case 'N': u.privilege = Priv_None; break;
         }
     }
     COMMAND(adduser, "ssss");
@@ -1456,22 +1456,22 @@ namespace server
 
     void revokemaster(clientinfo *ci)
     {
-        ci->privilege = PRIV_NONE;
+        ci->privilege = Priv_None;
         if(ci->state.state==ClientState_Spectator && !ci->local) aiman::removeai(ci);
     }
 
     extern void connected(clientinfo *ci);
 
-    bool setmaster(clientinfo *ci, bool val, const char *pass = "", const char *authname = NULL, const char *authdesc = NULL, int authpriv = PRIV_MASTER, bool force = false, bool trial = false)
+    bool setmaster(clientinfo *ci, bool val, const char *pass = "", const char *authname = NULL, const char *authdesc = NULL, int authpriv = Priv_Master, bool force = false, bool trial = false)
     {
         if(authname && !val) return false;
         const char *name = "";
         if(val)
         {
             bool haspass = adminpass[0] && checkpassword(ci, adminpass, pass);
-            int wantpriv = ci->local || haspass ? PRIV_ADMIN : authpriv;
+            int wantpriv = ci->local || haspass ? Priv_Admin : authpriv;
             if(wantpriv <= ci->privilege) return true;
-            else if(wantpriv <= PRIV_MASTER && !force)
+            else if(wantpriv <= Priv_Master && !force)
             {
                 if(ci->state.state==ClientState_Spectator)
                 {
@@ -1509,14 +1509,14 @@ namespace server
         bool hasmaster = false;
         for(int i = 0; i < clients.length(); i++)
         {
-            if(clients[i]->local || clients[i]->privilege >= PRIV_MASTER)
+            if(clients[i]->local || clients[i]->privilege >= Priv_Master)
             {
                 hasmaster = true;
             }
         }
         if(!hasmaster)
         {
-            mastermode = MM_OPEN;
+            mastermode = MasterMode_Open;
             allowedips.shrink(0);
         }
         string msg;
@@ -1539,7 +1539,7 @@ namespace server
         putint(p, mastermode);
         for(int i = 0; i < clients.length(); i++)
         {
-            if(clients[i]->privilege >= PRIV_MASTER)
+            if(clients[i]->privilege >= Priv_Master)
             {
                 putint(p, clients[i]->clientnum);
                 putint(p, clients[i]->privilege);
@@ -1551,7 +1551,7 @@ namespace server
         return true;
     }
 
-    bool trykick(clientinfo *ci, int victim, const char *reason = NULL, const char *authname = NULL, const char *authdesc = NULL, int authpriv = PRIV_NONE, bool trial = false)
+    bool trykick(clientinfo *ci, int victim, const char *reason = NULL, const char *authname = NULL, const char *authdesc = NULL, int authpriv = Priv_None, bool trial = false)
     {
         int priv = ci->privilege;
         if(authname)
@@ -1562,7 +1562,7 @@ namespace server
         if((priv || ci->local) && ci->clientnum!=victim)
         {
             clientinfo *vinfo = (clientinfo *)getclientinfo(victim);
-            if(vinfo && vinfo->connected && (priv >= vinfo->privilege || ci->local) && vinfo->privilege < PRIV_ADMIN && !vinfo->local)
+            if(vinfo && vinfo->connected && (priv >= vinfo->privilege || ci->local) && vinfo->privilege < Priv_Admin && !vinfo->local)
             {
                 if(trial) return true;
                 string kicker;
@@ -1953,7 +1953,7 @@ namespace server
             putint(p, -1);
         }
         bool hasmaster = false;
-        if(mastermode != MM_OPEN)
+        if(mastermode != MasterMode_Open)
         {
             putint(p, N_CURRENTMASTER);
             putint(p, mastermode);
@@ -1961,7 +1961,7 @@ namespace server
         }
         for(int i = 0; i < clients.length(); i++)
         {
-            if(clients[i]->privilege >= PRIV_MASTER)
+            if(clients[i]->privilege >= Priv_Master)
             {
                 if(!hasmaster)
                 {
@@ -2259,14 +2259,14 @@ namespace server
             if(idx < 0) return;
             map = maprotations[idx].map;
         }
-        if(lockmaprotation && !ci->local && ci->privilege < (lockmaprotation > 1 ? PRIV_ADMIN : PRIV_MASTER) && findmaprotation(reqmode, map) < 0)
+        if(lockmaprotation && !ci->local && ci->privilege < (lockmaprotation > 1 ? Priv_Admin : Priv_Master) && findmaprotation(reqmode, map) < 0)
         {
             sendf(sender, 1, "ris", N_SERVMSG, "This server has locked the map rotation.");
             return;
         }
         copystring(ci->mapvote, map);
         ci->modevote = reqmode;
-        if(ci->local || (ci->privilege && mastermode>=MM_VETO))
+        if(ci->local || (ci->privilege && mastermode>=MasterMode_Veto))
         {
             if(demorecord) enddemorecord();
             if(!ci->local || hasnonlocalclients())
@@ -2380,7 +2380,7 @@ namespace server
         servstate &gs = ci->state;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT:
+            case Attack_PulseShoot:
                 if(!gs.projs.remove(id)) return;
                 break;
 
@@ -2438,7 +2438,7 @@ namespace server
         gs.shotdamage += attacks[atk].damage*attacks[atk].rays;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT: gs.projs.add(id); break;
+            case Attack_PulseShoot: gs.projs.add(id); break;
             default:
             {
                 int totalrays = 0, maxrays = attacks[atk].rays;
@@ -2877,7 +2877,7 @@ namespace server
         for(int i = clients.length(); --i >=0;) //note reverse iteration
         {
             clientinfo *ci = clients[i];
-            if(ci->state.aitype != AI_None || ci->local || ci->privilege >= PRIV_ADMIN) continue;
+            if(ci->state.aitype != AI_None || ci->local || ci->privilege >= Priv_Admin) continue;
             if(checkbans(getclientip(ci->clientnum))) disconnect_client(ci->clientnum, DISC_IPBAN);
         }
     }
@@ -2898,7 +2898,7 @@ namespace server
         if(numclients(-1, false, true)>=maxclients) return DISC_MAXCLIENTS;
         uint ip = getclientip(ci->clientnum);
         if(checkbans(ip)) return DISC_IPBAN;
-        if(mastermode>=MM_PRIVATE && allowedips.find(ip)<0) return DISC_PRIVATE;
+        if(mastermode>=MasterMode_Private && allowedips.find(ip)<0) return DISC_PRIVATE;
         return DISC_NONE;
     }
 
@@ -2946,11 +2946,11 @@ namespace server
         if(ci->connectauth) connected(ci);
         if(ci->authkickvictim >= 0)
         {
-            if(setmaster(ci, true, "", ci->authname, NULL, PRIV_AUTH, false, true))
-                trykick(ci, ci->authkickvictim, ci->authkickreason, ci->authname, NULL, PRIV_AUTH);
+            if(setmaster(ci, true, "", ci->authname, NULL, Priv_Auth, false, true))
+                trykick(ci, ci->authkickvictim, ci->authkickreason, ci->authname, NULL, Priv_Auth);
             ci->cleanauthkick();
         }
-        else setmaster(ci, true, "", ci->authname, NULL, PRIV_AUTH);
+        else setmaster(ci, true, "", ci->authname, NULL, Priv_Auth);
     }
 
     void authchallenged(uint id, const char *val, const char *desc = "")
@@ -3102,7 +3102,7 @@ namespace server
         ci->connectauth = 0;
         ci->connected = true;
         ci->needclipboard = totalmillis ? totalmillis : 1;
-        if(mastermode>=MM_LOCKED) ci->state.state = ClientState_Spectator;
+        if(mastermode>=MasterMode_Locked) ci->state.state = ClientState_Spectator;
         ci->state.lasttimeplayed = lastmillis;
 
         ci->team = modecheck(gamemode, Mode_Team) ? chooseworstteam(ci) : 0;
@@ -3640,13 +3640,13 @@ namespace server
             case N_MASTERMODE:
             {
                 int mm = getint(p);
-                if((ci->privilege || ci->local) && mm>=MM_OPEN && mm<=MM_PRIVATE)
+                if((ci->privilege || ci->local) && mm>=MasterMode_Open && mm<=MasterMode_Private)
                 {
-                    if((ci->privilege>=PRIV_ADMIN || ci->local) || (mastermask&(1<<mm)))
+                    if((ci->privilege>=Priv_Admin || ci->local) || (mastermask&(1<<mm)))
                     {
                         mastermode = mm;
                         allowedips.shrink(0);
-                        if(mm>=MM_PRIVATE)
+                        if(mm>=MasterMode_Private)
                         {
                             for(int i = 0; i < clients.length(); i++)
                             {
@@ -3686,7 +3686,7 @@ namespace server
             case N_SPECTATOR:
             {
                 int spectator = getint(p), val = getint(p);
-                if(!ci->privilege && !ci->local && (spectator!=sender || (ci->state.state==ClientState_Spectator && mastermode>=MM_LOCKED))) break;
+                if(!ci->privilege && !ci->local && (spectator!=sender || (ci->state.state==ClientState_Spectator && mastermode>=MasterMode_Locked))) break;
                 clientinfo *spinfo = (clientinfo *)getclientinfo(spectator); // no bots
                 if(!spinfo || !spinfo->connected || (spinfo->state.state==ClientState_Spectator ? val : !val)) break;
 
@@ -3720,7 +3720,7 @@ namespace server
             case N_RECORDDEMO:
             {
                 int val = getint(p);
-                if(ci->privilege < (restrictdemos ? PRIV_ADMIN : PRIV_MASTER) && !ci->local) break;
+                if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
                 if(!maxdemos || !maxdemosize)
                 {
                     sendf(ci->clientnum, 1, "ris", N_SERVMSG, "the server has disabled demo recording");
@@ -3733,7 +3733,7 @@ namespace server
 
             case N_STOPDEMO:
             {
-                if(ci->privilege < (restrictdemos ? PRIV_ADMIN : PRIV_MASTER) && !ci->local) break;
+                if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
                 stopdemo();
                 break;
             }
@@ -3741,7 +3741,7 @@ namespace server
             case N_CLEARDEMOS:
             {
                 int demo = getint(p);
-                if(ci->privilege < (restrictdemos ? PRIV_ADMIN : PRIV_MASTER) && !ci->local) break;
+                if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
                 cleardemos(demo);
                 break;
             }
@@ -3795,7 +3795,7 @@ namespace server
                     if(!ci->privilege && !ci->local) break;
                     clientinfo *minfo = (clientinfo *)getclientinfo(mn);
                     if(!minfo || !minfo->connected || (!ci->local && minfo->privilege >= ci->privilege) || (val && minfo->privilege)) break;
-                    setmaster(minfo, val!=0, "", NULL, NULL, PRIV_MASTER, true);
+                    setmaster(minfo, val!=0, "", NULL, NULL, Priv_Master, true);
                 }
                 else setmaster(ci, val!=0, text);
                 // don't broadcast the master password
@@ -3845,7 +3845,7 @@ namespace server
                 int victim = getint(p);
                 getstring(text, p);
                 filtertext(text, text);
-                int authpriv = PRIV_AUTH;
+                int authpriv = Priv_Auth;
                 if(desc[0])
                 {
                     userinfo *u = users.access(userkey(name, desc));
@@ -3873,7 +3873,7 @@ namespace server
             case N_PAUSEGAME:
             {
                 int val = getint(p);
-                if(ci->privilege < (restrictpausegame ? PRIV_ADMIN : PRIV_MASTER) && !ci->local) break;
+                if(ci->privilege < (restrictpausegame ? Priv_Admin : Priv_Master) && !ci->local) break;
                 pausegame(val > 0, ci);
                 break;
             }
@@ -3881,7 +3881,7 @@ namespace server
             case N_GAMESPEED:
             {
                 int val = getint(p);
-                if(ci->privilege < (restrictgamespeed ? PRIV_ADMIN : PRIV_MASTER) && !ci->local) break;
+                if(ci->privilege < (restrictgamespeed ? Priv_Admin : Priv_Master) && !ci->local) break;
                 changegamespeed(val, ci);
                 break;
             }
@@ -4033,7 +4033,7 @@ namespace server
         putint(p, gamepaused || gamespeed != 100 ? 5 : 3); // number of attrs following
         putint(p, gamemode);
         putint(p, !modecheck(gamemode, Mode_Untimed) ? max((gamelimit - gamemillis)/1000, 0) : 0);
-        putint(p, serverpass[0] ? MM_PASSWORD : (modecheck(gamemode, Mode_LocalOnly) ? MM_PRIVATE : (mastermode || mastermask&MM_AUTOAPPROVE ? mastermode : MM_AUTH)));
+        putint(p, serverpass[0] ? MasterMode_Password : (modecheck(gamemode, Mode_LocalOnly) ? MasterMode_Private : (mastermode || mastermask&MM_AUTOAPPROVE ? mastermode : MasterMode_Auth)));
         if(gamepaused || gamespeed != 100)
         {
             putint(p, gamepaused ? 1 : 0);

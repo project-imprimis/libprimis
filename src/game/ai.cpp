@@ -128,7 +128,7 @@ namespace ai
     vec getaimpos(gameent *d, int atk, gameent *e)
     {
         vec o = e->o;
-        if(atk == ATK_PULSE_SHOOT)
+        if(atk == Attack_PulseShoot)
         {
             o.z += (e->aboveeye*0.2f)-(0.8f*d->eyeheight);
         }
@@ -143,8 +143,8 @@ namespace ai
                 int aiskew = 1;
                 switch(atk)
                 {
-                    case ATK_RAIL_SHOOT: aiskew = 5; break;
-                    case ATK_PULSE_SHOOT: aiskew = 20; break;
+                    case Attack_RailShot: aiskew = 5; break;
+                    case Attack_PulseShoot: aiskew = 20; break;
                     default: break;
                 }
                 for(int k = 0; k < 3; ++k)
@@ -379,7 +379,7 @@ namespace ai
         gameent *t = NULL;
         vec dp = d->headpos();
         float mindist = guard*guard, bestdist = 1e16f;
-        int atk = guns[d->gunselect].attacks[ACT_SHOOT];
+        int atk = guns[d->gunselect].attacks[Act_Shoot];
         for(int i = 0; i < players.length(); i++)
         {
             gameent *e = players[i];
@@ -475,7 +475,7 @@ namespace ai
         {
             float dist = 1e16f;
             gameent *t = NULL;
-            int atk = guns[d->gunselect].attacks[ACT_SHOOT];
+            int atk = guns[d->gunselect].attacks[Act_Shoot];
             for(int i = 0; i < players.length(); i++)
             {
                 gameent *e = players[i];
@@ -946,7 +946,7 @@ namespace ai
                     gameent *e = getclient(b.target);
                     if(e && e->state == ClientState_Alive)
                     {
-                        int atk = guns[d->gunselect].attacks[ACT_SHOOT];
+                        int atk = guns[d->gunselect].attacks[Act_Shoot];
                         float guard = SIGHTMIN, wander = attacks[atk].range;
                         return patrol(d, b, e->feetpos(), guard, wander) ? 1 : 0;
                     }
@@ -1323,7 +1323,7 @@ namespace ai
 
     bool lockon(gameent *d, int atk, gameent *e, float maxdist)
     {
-        if(attacks[atk].action == ACT_MELEE && !d->blocked && !d->timeinair)
+        if(attacks[atk].action == Act_Melee && !d->blocked && !d->timeinair)
         {
             vec dir = vec(e->o).sub(d->o);
             float xydist = dir.x*dir.x+dir.y*dir.y, zdist = dir.z*dir.z, mdist = maxdist*maxdist, ddist = d->radius*d->radius+e->radius*e->radius;
@@ -1388,7 +1388,7 @@ namespace ai
         }
         if(enemyok)
         {
-            int atk = guns[d->gunselect].attacks[ACT_SHOOT];
+            int atk = guns[d->gunselect].attacks[Act_Shoot];
             vec ep = getaimpos(d, atk, e);
             float yaw, pitch;
             getyawpitch(dp, ep, yaw, pitch);
@@ -1512,7 +1512,7 @@ namespace ai
         }
         if(targetable(d, e))
         {
-            int atk = guns[weap].attacks[ACT_SHOOT];
+            int atk = guns[weap].attacks[Act_Shoot];
             vec ep = getaimpos(d, atk, e);
             float dist = ep.squaredist(d->headpos());
             if(attackrange(d, atk, dist))
@@ -1717,7 +1717,7 @@ namespace ai
                 moveplayer(d, 10, false);
             }
         }
-        d->attacking = ACT_IDLE;
+        d->attacking = Act_Idle;
         d->jumping = false;
     }
 

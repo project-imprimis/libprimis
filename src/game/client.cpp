@@ -166,7 +166,7 @@ namespace game
     int lastping = 0;
 
     bool connected = false, remote = false, demoplayback = false, gamepaused = false;
-    int sessionid = 0, mastermode = MM_OPEN, gamespeed = 100;
+    int sessionid = 0, mastermode = MasterMode_Open, gamespeed = 100;
     string servdesc = "", servauth = "", connectpass = "";
 
     VARP(deadpush, 1, 2, 20);
@@ -517,21 +517,21 @@ namespace game
     bool ismaster(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->privilege >= PRIV_MASTER;
+        return d && d->privilege >= Priv_Master;
     }
     ICOMMAND(ismaster, "i", (int *cn), intret(ismaster(*cn) ? 1 : 0));
 
     bool isauth(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->privilege >= PRIV_AUTH;
+        return d && d->privilege >= Priv_Auth;
     }
     ICOMMAND(isauth, "i", (int *cn), intret(isauth(*cn) ? 1 : 0));
 
     bool isadmin(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->privilege >= PRIV_ADMIN;
+        return d && d->privilege >= Priv_Admin;
     }
     ICOMMAND(isadmin, "i", (int *cn), intret(isadmin(*cn) ? 1 : 0));
 
@@ -1267,14 +1267,14 @@ namespace game
             toggleedit();
         }
         sessionid = 0;
-        mastermode = MM_OPEN;
+        mastermode = MasterMode_Open;
         messages.setsize(0);
         messagereliable = false;
         messagecn = -1;
         player1->respawn();
         player1->lifesequence = 0;
         player1->state = ClientState_Alive;
-        player1->privilege = PRIV_NONE;
+        player1->privilege = Priv_None;
         sendcrc = senditemstoserver = false;
         demoplayback = false;
         gamepaused = false;
@@ -1770,7 +1770,7 @@ namespace game
                 if(!demopacket)
                 {
                     gamepaused = val;
-                    player1->attacking = ACT_IDLE;
+                    player1->attacking = Act_Idle;
                 }
                 if(a)
                 {
@@ -2558,7 +2558,7 @@ namespace game
                 int mm = getint(p), mn;
                 for(int i = 0; i < players.length(); i++)
                 {
-                    players[i]->privilege = PRIV_NONE;
+                    players[i]->privilege = Priv_None;
                 }
                 while((mn = getint(p))>=0 && !p.overread())
                 {
@@ -2844,7 +2844,7 @@ namespace game
     {
         if(remote)
         {
-            if(player1->privilege<PRIV_MASTER)
+            if(player1->privilege<Priv_Master)
             {
                 return;
             }
@@ -2859,7 +2859,7 @@ namespace game
 
     void recorddemo(int val)
     {
-        if(remote && player1->privilege<PRIV_MASTER)
+        if(remote && player1->privilege<Priv_Master)
         {
             return;
         }
@@ -2869,7 +2869,7 @@ namespace game
 
     void cleardemos(int val)
     {
-        if(remote && player1->privilege<PRIV_MASTER)
+        if(remote && player1->privilege<Priv_Master)
         {
             return;
         }

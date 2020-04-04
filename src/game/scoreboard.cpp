@@ -148,7 +148,7 @@ namespace game
             int status = d->state!=ClientState_Dead ? 0xFFFFFF : 0x606060;
             if(d->privilege)
             {
-                status = d->privilege>=PRIV_ADMIN ? 0xFF8000 : 0x40FF80;
+                status = d->privilege>=Priv_Admin ? 0xFF8000 : 0x40FF80;
                 if(d->state==ClientState_Dead) status = (status>>1)&0x7F7F7F;
             }
             intret(status);
@@ -176,7 +176,7 @@ namespace game
     });
 
     ICOMMAND(scoreboardshowfrags, "", (), intret(cmode && cmode->hidefrags() && hidefrags ? 0 : 1));
-    ICOMMAND(scoreboardshowclientnum, "", (), intret(showclientnum || player1->privilege>=PRIV_MASTER ? 1 : 0));
+    ICOMMAND(scoreboardshowclientnum, "", (), intret(showclientnum || player1->privilege>=Priv_Master ? 1 : 0));
     ICOMMAND(scoreboardmultiplayer, "", (), intret(multiplayer(false) || demoplayback ? 1 : 0));
 
     ICOMMAND(scoreboardhighlight, "i", (int *cn),

@@ -290,7 +290,7 @@ namespace game
     {
         if(player1->state==ClientState_Dead)
         {
-            player1->attacking = ACT_IDLE;
+            player1->attacking = Act_Idle;
             int wait = cmode ? cmode->respawnwait(player1) : 0;
             if(wait>0)
             {
@@ -314,8 +314,8 @@ namespace game
         if((player1->attacking = act) && attackspawn) respawn();
     }
 
-    ICOMMAND(shoot, "D", (int *down), doaction(*down ? ACT_SHOOT : ACT_IDLE));
-    ICOMMAND(melee, "D", (int *down), doaction(*down ? ACT_MELEE : ACT_IDLE));
+    ICOMMAND(shoot, "D", (int *down), doaction(*down ? Act_Shoot : Act_Idle));
+    ICOMMAND(melee, "D", (int *down), doaction(*down ? Act_Melee : Act_Idle));
 
     VARP(jumpspawn, 0, 1, 1);
 
@@ -391,7 +391,7 @@ namespace game
         {
             if(deathscore) showscores(true);
             disablezoom();
-            d->attacking = ACT_IDLE;
+            d->attacking = Act_Idle;
             //d->pitch = 0;
             d->roll = 0;
             playsound(S_DIE2);
@@ -459,7 +459,7 @@ namespace game
         else
         {
             intermission = true;
-            player1->attacking = ACT_IDLE;
+            player1->attacking = Act_Idle;
             if(cmode) cmode->gameover();
             conoutf(ConsoleMsg_GameInfo, "\f2intermission:");
             conoutf(ConsoleMsg_GameInfo, "\f2game has ended!");
@@ -809,7 +809,7 @@ namespace game
                 int color = f->state!=ClientState_Dead ? 0xFFFFFF : 0x606060;
                 if(f->privilege)
                 {
-                    color = f->privilege>=PRIV_ADMIN ? 0xFF8000 : 0x40FF80;
+                    color = f->privilege>=Priv_Admin ? 0xFF8000 : 0x40FF80;
                     if(f->state==ClientState_Dead) color = (color>>1)&0x7F7F7F;
                 }
                 draw_text(colorname(f), w*1800/h - fw - pw, 1650 - fh, (color>>16)&0xFF, (color>>8)&0xFF, color&0xFF);
@@ -879,12 +879,12 @@ namespace game
 
     const char *mastermodecolor(int n, const char *unknown)
     {
-        return (n>=MM_START && size_t(n-MM_START)<sizeof(mastermodecolors)/sizeof(mastermodecolors[0])) ? mastermodecolors[n-MM_START] : unknown;
+        return (n>=MasterMode_Start && size_t(n-MasterMode_Start)<sizeof(mastermodecolors)/sizeof(mastermodecolors[0])) ? mastermodecolors[n-MasterMode_Start] : unknown;
     }
 
     const char *mastermodeicon(int n, const char *unknown)
     {
-        return (n>=MM_START && size_t(n-MM_START)<sizeof(mastermodeicons)/sizeof(mastermodeicons[0])) ? mastermodeicons[n-MM_START] : unknown;
+        return (n>=MasterMode_Start && size_t(n-MasterMode_Start)<sizeof(mastermodeicons)/sizeof(mastermodeicons[0])) ? mastermodeicons[n-MasterMode_Start] : unknown;
     }
 
     ICOMMAND(servinfomode, "i", (int *i), GETSERVINFOATTR(*i, 0, mode, intret(mode)));
@@ -916,7 +916,7 @@ namespace game
     ICOMMAND(servinfoicon, "i", (int *i),
         GETSERVINFO(*i, si,
         {
-            int mm = si->attr.inrange(2) ? si->attr[2] : MM_INVALID;
+            int mm = si->attr.inrange(2) ? si->attr[2] : MasterMode_Invalid;
             result(si->maxplayers > 0 && si->numplayers >= si->maxplayers ? "serverfull" : mastermodeicon(mm, "serverunk"));
         }));
 

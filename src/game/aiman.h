@@ -351,7 +351,7 @@ namespace aiman
         {
             return;
         }
-        if(!addai(skill, !ci->local && ci->privilege < PRIV_ADMIN ? botlimit : -1))
+        if(!addai(skill, !ci->local && ci->privilege < Priv_Admin ? botlimit : -1))
         {
             sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to create or assign bot");
         }
@@ -371,7 +371,7 @@ namespace aiman
 
     void setbotlimit(clientinfo *ci, int limit)
     {
-        if(ci && !ci->local && ci->privilege < PRIV_ADMIN)
+        if(ci && !ci->local && ci->privilege < Priv_Admin)
         {
             return;
         }

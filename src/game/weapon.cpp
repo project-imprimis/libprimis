@@ -491,7 +491,7 @@ namespace game
         if(local) return;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT:
+            case Attack_PulseShoot:
                 for(int i = 0; i < projs.length(); i++)
                 {
                     projectile &p = projs[i];
@@ -608,13 +608,13 @@ namespace game
         int gun = attacks[atk].gun;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT:
+            case Attack_PulseShoot:
                 if(d->muzzle.x >= 0)
                     particle_flare(d->muzzle, d->muzzle, 140, PART_PULSE_MUZZLE_FLASH, 0x50CFE5, 3.50f, d);
                 newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
                 break;
 
-            case ATK_RAIL_SHOOT:
+            case Attack_RailShot:
                 particle_splash(PART_SPARK, 200, 250, to, 0x50CFE5, 0.45f);
                 particle_flare(hudgunorigin(gun, from, to, d), to, 500, PART_RAIL_TRAIL, 0x50CFE5, 0.5f);
                 if(d->muzzle.x >= 0)
@@ -729,7 +729,7 @@ namespace game
             railhit(from, to, false);
             hitpush(attacks[atk].damage, o, d, from, to, atk, 1);
         }
-        else if(attacks[atk].action!=ACT_MELEE) railhit(from, to);
+        else if(attacks[atk].action!=Act_Melee) railhit(from, to);
     }
 
     void shoot(gameent *d, const vec &targ)
@@ -785,7 +785,7 @@ namespace game
         }
 
         d->gunwait = attacks[atk].attackdelay;
-        if(attacks[atk].action != ACT_MELEE && d->ai) d->gunwait += int(d->gunwait*(((101-d->skill)+RANDOM_INT(111-d->skill))/100.f));
+        if(attacks[atk].action != Act_Melee && d->ai) d->gunwait += int(d->gunwait*(((101-d->skill)+RANDOM_INT(111-d->skill))/100.f));
         d->totalshots += attacks[atk].damage*attacks[atk].rays;
     }
 
@@ -794,7 +794,7 @@ namespace game
         for(int i = 0; i < projs.length(); i++)
         {
             projectile &p = projs[i];
-            if(p.atk!=ATK_PULSE_SHOOT) continue;
+            if(p.atk!=Attack_PulseShoot) continue;
             vec pos(p.o);
             pos.add(vec(p.offset).mul(p.offsetmillis/float(OFFSETMILLIS)));
             adddynlight(pos, 20, vec(0.25f, 0.75f, 1.0f));
