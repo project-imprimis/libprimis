@@ -180,7 +180,7 @@ namespace entities
         {
             sendposition(d);
             packetbuf p(32, ENET_PACKET_FLAG_RELIABLE);
-            putint(p, N_TELEPORT);
+            putint(p, NetMsg_Teleport);
             putint(p, d->clientnum);
             putint(p, tp);
             putint(p, td);
@@ -216,7 +216,7 @@ namespace entities
         {
             sendposition(d);
             packetbuf p(16, ENET_PACKET_FLAG_RELIABLE);
-            putint(p, N_JUMPPAD);
+            putint(p, NetMsg_Jumppad);
             putint(p, d->clientnum);
             putint(p, jp);
             sendclientpacket(p.finalize(), 0);
@@ -273,7 +273,7 @@ namespace entities
             default:
                 if(d->canpickup(ents[n]->type))
                 {
-                    addmsg(N_ITEMPICKUP, "rci", d, n);
+                    addmsg(NetMsg_ItemPickup, "rci", d, n);
                     ents[n]->clearspawned(); // even if someone else gets it first
                 }
                 break;
@@ -352,7 +352,7 @@ namespace entities
 
     void putitems(packetbuf &p)            // puts items in network stream and also spawns them locally
     {
-        putint(p, N_ITEMLIST);
+        putint(p, NetMsg_ItemList);
         for(int i = 0; i < ents.length(); i++)
         {
             if(VALID_ITEM(ents[i]->type))
@@ -384,7 +384,7 @@ namespace entities
     }
 
     void setspawn(int i, bool on) { if(ents.inrange(i)) ents[i]->setspawned(on); }
-    
+
     extentity *newentity() { return new gameentity(); }
     void deleteentity(extentity *e) { delete (gameentity *)e; }
 
@@ -468,7 +468,7 @@ namespace entities
         //e.flags = 0;
         if(local)
         {
-            addmsg(N_EDITENT, "rii3ii5", i, (int)(e.o.x*DMF), (int)(e.o.y*DMF), (int)(e.o.z*DMF), e.type, e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+            addmsg(NetMsg_EditEnt, "rii3ii5", i, (int)(e.o.x*DMF), (int)(e.o.y*DMF), (int)(e.o.z*DMF), e.type, e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
         }
     }
 

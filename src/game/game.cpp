@@ -112,7 +112,7 @@ namespace game
         if(!modecheck(gamemode, Mode_LocalOnly))
         {
             int seq = (player1->lifesequence<<16)|((lastmillis/1000)&0xFFFF);
-            if(player1->respawned!=seq) { addmsg(N_TRYSPAWN, "rc", player1); player1->respawned = seq; }
+            if(player1->respawned!=seq) { addmsg(NetMsg_TrySpawn, "rc", player1); player1->respawned = seq; }
         }
         else
         {
@@ -343,7 +343,7 @@ namespace game
         if(player1->state!=ClientState_Alive || player1->physstate<PhysEntState_Slope) return;
         if(lastmillis-player1->lasttaunt<1000) return;
         player1->lasttaunt = lastmillis;
-        addmsg(N_TAUNT, "rc", player1);
+        addmsg(NetMsg_Taunt, "rc", player1);
     }
     COMMAND(taunt, "");
 
@@ -635,13 +635,13 @@ namespace game
     {
         if(!d || d==player1)
         {
-            addmsg(N_SOUND, "ci", d, n);
+            addmsg(NetMsg_Sound, "ci", d, n);
             playsound(n);
         }
         else
         {
             if(d->type==PhysEnt_Player && ((gameent *)d)->ai)
-                addmsg(N_SOUND, "ci", d, n);
+                addmsg(NetMsg_Sound, "ci", d, n);
             playsound(n, &d->o);
         }
     }
@@ -734,7 +734,7 @@ namespace game
             else
             {
                 int seq = (pl->lifesequence<<16)|((lastmillis/1000)&0xFFFF);
-                if(pl->suicided!=seq) { addmsg(N_SUICIDE, "rc", pl); pl->suicided = seq; }
+                if(pl->suicided!=seq) { addmsg(NetMsg_Suicide, "rc", pl); pl->suicided = seq; }
             }
         }
     }

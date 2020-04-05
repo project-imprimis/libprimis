@@ -179,14 +179,14 @@ namespace game
         if(player1->playermodel != playermodel)
         {
             player1->playermodel = playermodel;
-            addmsg(N_SWITCHMODEL, "ri", player1->playermodel);
+            addmsg(NetMsg_SwitchModel, "ri", player1->playermodel);
         }
 
         int col = playercolor | (playercolorazul<<5) | (playercolorrojo<<10);
         if(player1->playercolor != col)
         {
             player1->playercolor = col;
-            addmsg(N_SWITCHCOLOR, "ri", player1->playercolor);
+            addmsg(NetMsg_SwitchColor, "ri", player1->playercolor);
         }
     }
 

@@ -29,7 +29,7 @@ namespace game
     {
         if(gun!=d->gunselect)
         {
-            addmsg(N_GUNSELECT, "rci", d, gun);
+            addmsg(NetMsg_GunSelect, "rci", d, gun);
             playsound(S_WEAPLOAD, d == player1 ? NULL : &d->o);
         }
         d->gunselect = gun;
@@ -584,7 +584,7 @@ namespace game
             if(exploded)
             {
                 if(p.local)
-                    addmsg(N_EXPLODE, "rci3iv", p.owner, lastmillis-maptime, p.atk, p.id-maptime,
+                    addmsg(NetMsg_Explode, "rci3iv", p.owner, lastmillis-maptime, p.atk, p.id-maptime,
                             hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf());
                 projs.remove(i--);
             }
@@ -778,7 +778,7 @@ namespace game
 
         if(d==player1 || d->ai)
         {
-            addmsg(N_SHOOT, "rci2i6iv", d, lastmillis-maptime, atk,
+            addmsg(NetMsg_Shoot, "rci2i6iv", d, lastmillis-maptime, atk,
                    (int)(from.x*DMF), (int)(from.y*DMF), (int)(from.z*DMF),
                    (int)(to.x*DMF), (int)(to.y*DMF), (int)(to.z*DMF),
                    hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf());

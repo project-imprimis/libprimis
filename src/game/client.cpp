@@ -178,7 +178,7 @@ namespace game
         {
             copystring(player1->name, "unnamed");
         }
-        addmsg(N_SWITCHNAME, "rs", player1->name);
+        addmsg(NetMsg_SwitchName, "rs", player1->name);
     }
     void printname()
     {
@@ -214,7 +214,7 @@ namespace game
         }
         else
         {
-            addmsg(N_SWITCHTEAM, "ri", num);
+            addmsg(NetMsg_SwitchTeam, "ri", num);
         }
     }
     void printteam()
@@ -414,7 +414,7 @@ namespace game
 
     void edittoggled(bool on)
     {
-        addmsg(N_EDITMODE, "ri", on ? 1 : 0);
+        addmsg(NetMsg_EditMode, "ri", on ? 1 : 0);
         if(player1->state==ClientState_Dead)
         {
             deathstate(player1, true);
@@ -635,7 +635,7 @@ namespace game
 
     void clearbans()
     {
-        addmsg(N_CLEARBANS, "r");
+        addmsg(NetMsg_ClearBans, "r");
     }
     COMMAND(clearbans, "");
 
@@ -644,7 +644,7 @@ namespace game
         int vn = parseplayer(victim);
         if(vn>=0 && vn!=player1->clientnum)
         {
-            addmsg(N_KICK, "ris", vn, reason);
+            addmsg(NetMsg_Kick, "ris", vn, reason);
         }
     }
     COMMAND(kick, "ss");
@@ -656,7 +656,7 @@ namespace game
         if(a && vn>=0 && vn!=player1->clientnum)
         {
             a->lastauth = lastmillis;
-            addmsg(N_AUTHKICK, "rssis", a->desc, a->name, vn, reason);
+            addmsg(NetMsg_AuthKick, "rssis", a->desc, a->name, vn, reason);
         }
     }
     ICOMMAND(authkick, "ss", (const char *victim, const char *reason), authkick("", victim, reason));
@@ -711,7 +711,7 @@ namespace game
         {
             return;
         }
-        addmsg(N_SETTEAM, "rii", i, num);
+        addmsg(NetMsg_SetTeam, "rii", i, num);
     }
     COMMAND(setteam, "ss");
 
@@ -752,10 +752,10 @@ namespace game
             }
             server::hashpassword(player1->clientnum, sessionid, arg, hash);
         }
-        addmsg(N_SETMASTER, "riis", cn, val, hash);
+        addmsg(NetMsg_SetMasterMaster, "riis", cn, val, hash);
     }
     COMMAND(setmaster, "ss");
-    ICOMMAND(mastermode, "i", (int *val), addmsg(N_MASTERMODE, "ri", *val));
+    ICOMMAND(mastermode, "i", (int *val), addmsg(NetMsg_MasterMode, "ri", *val));
 
     bool tryauth(const char *desc)
     {
@@ -765,7 +765,7 @@ namespace game
             return false;
         }
         a->lastauth = lastmillis;
-        addmsg(N_AUTHTRY, "rss", a->desc, a->name);
+        addmsg(NetMsg_AuthTry, "rss", a->desc, a->name);
         return true;
     }
     ICOMMAND(auth, "s", (char *desc), tryauth(desc));
@@ -779,12 +779,12 @@ namespace game
         int i = who[0] ? parseplayer(who) : player1->clientnum;
         if(i>=0)
         {
-            addmsg(N_SPECTATOR, "rii", i, val);
+            addmsg(NetMsg_Spectator, "rii", i, val);
         }
     }
     ICOMMAND(spectator, "is", (int *val, char *who), togglespectator(*val, who));
 
-    ICOMMAND(checkmaps, "", (), addmsg(N_CHECKMAPS, "r"));
+    ICOMMAND(checkmaps, "", (), addmsg(NetMsg_CheckMaps, "r"));
 
     int gamemode = INT_MAX, nextmode = INT_MAX;
     string clientmap = "";
@@ -874,7 +874,7 @@ namespace game
         }
         else if(player1->state!=ClientState_Spectator || player1->privilege)
         {
-            addmsg(N_MAPVOTE, "rsi", name, mode);
+            addmsg(NetMsg_MapVote, "rsi", name, mode);
         }
     }
     void changemap(const char *name)
@@ -890,7 +890,7 @@ namespace game
 
     void newmap(int size)
     {
-        addmsg(N_NEWMAP, "ri", size);
+        addmsg(NetMsg_Newmap, "ri", size);
     }
 
     int needclipboard = -1;
@@ -905,7 +905,7 @@ namespace game
             inlen = outlen = 0;
         }
         packetbuf p(16 + outlen, ENET_PACKET_FLAG_RELIABLE);
-        putint(p, N_CLIPBOARD);
+        putint(p, NetMsg_Clipboard);
         putint(p, inlen);
         putint(p, outlen);
         if(outlen > 0)
@@ -936,14 +936,14 @@ namespace game
                         }
                         break;
                 }
-                addmsg(N_EDITF + op, "ri9i4",
+                addmsg(NetMsg_EditFace + op, "ri9i4",
                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
                    sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner);
                 break;
             }
             case EDIT_ROTATE:
             {
-                addmsg(N_EDITF + op, "ri9i5",
+                addmsg(NetMsg_EditFace + op, "ri9i5",
                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
                    sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
                    arg1);
@@ -952,7 +952,7 @@ namespace game
             case EDIT_MAT:
             case EDIT_FACE:
             {
-                addmsg(N_EDITF + op, "ri9i6",
+                addmsg(NetMsg_EditFace + op, "ri9i6",
                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
                    sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
                    arg1, arg2);
@@ -961,7 +961,7 @@ namespace game
             case EDIT_TEX:
             {
                 int tex1 = shouldpacktex(arg1);
-                if(addmsg(N_EDITF + op, "ri9i6",
+                if(addmsg(NetMsg_EditFace + op, "ri9i6",
                     sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
                     sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
                     tex1 ? tex1 : arg1, arg2))
@@ -979,7 +979,7 @@ namespace game
             case EDIT_REPLACE:
             {
                 int tex1 = shouldpacktex(arg1), tex2 = shouldpacktex(arg2);
-                if(addmsg(N_EDITF + op, "ri9i7",
+                if(addmsg(NetMsg_EditFace + op, "ri9i7",
                     sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
                     sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
                     tex1 ? tex1 : arg1, tex2 ? tex2 : arg2, arg3))
@@ -995,12 +995,12 @@ namespace game
             case EDIT_CALCLIGHT:
             case EDIT_REMIP:
             {
-                addmsg(N_EDITF + op, "r");
+                addmsg(NetMsg_EditFace + op, "r");
                 break;
             }
             case EDIT_VSLOT:
             {
-                if(addmsg(N_EDITF + op, "ri9i6",
+                if(addmsg(NetMsg_EditFace + op, "ri9i6",
                     sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
                     sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
                     arg1, arg2))
@@ -1019,7 +1019,7 @@ namespace game
                 int inlen = 0, outlen = 0;
                 if(packundo(op, inlen, outbuf, outlen))
                 {
-                    if(addmsg(N_EDITF + op, "ri2", inlen, outlen)) messages.put(outbuf, outlen);
+                    if(addmsg(NetMsg_EditFace + op, "ri2", inlen, outlen)) messages.put(outbuf, outlen);
                     delete[] outbuf;
                 }
                 break;
@@ -1065,15 +1065,15 @@ namespace game
         switch(id->type)
         {
             case Id_Var:
-                addmsg(N_EDITVAR, "risi", Id_Var, id->name, *id->storage.i);
+                addmsg(NetMsg_EditVar, "risi", Id_Var, id->name, *id->storage.i);
                 break;
 
             case Id_FloatVar:
-                addmsg(N_EDITVAR, "risf", Id_FloatVar, id->name, *id->storage.f);
+                addmsg(NetMsg_EditVar, "risf", Id_FloatVar, id->name, *id->storage.f);
                 break;
 
             case Id_StringVar:
-                addmsg(N_EDITVAR, "riss", Id_StringVar, id->name, *id->storage.s);
+                addmsg(NetMsg_EditVar, "riss", Id_StringVar, id->name, *id->storage.s);
                 break;
             default: return;
         }
@@ -1092,7 +1092,7 @@ namespace game
         }
         else
         {
-            addmsg(N_PAUSEGAME, "ri", val ? 1 : 0);
+            addmsg(NetMsg_PauseGame, "ri", val ? 1 : 0);
         }
     }
     ICOMMAND(pausegame, "i", (int *val), pausegame(*val > 0));
@@ -1128,7 +1128,7 @@ namespace game
         }
         else
         {
-            addmsg(N_GAMESPEED, "ri", val);
+            addmsg(NetMsg_GameSpeed, "ri", val);
         }
     }
     ICOMMAND(gamespeed, "iN$", (int *val, int *numargs, ident *id),
@@ -1229,7 +1229,7 @@ namespace game
         {
             static uchar mbuf[16];
             ucharbuf m(mbuf, sizeof(mbuf));
-            putint(m, N_FROMAI);
+            putint(m, NetMsg_FromAI);
             putint(m, mcn);
             messages.put(mbuf, m.length());
             messagecn = mcn;
@@ -1295,7 +1295,7 @@ namespace game
     void toserver(char *text)
     {
         conoutf(ConsoleMsg_Chat, "%s:%s %s", chatcolorname(player1), teamtextcode[0], text);
-        addmsg(N_TEXT, "rcs", player1, text);
+        addmsg(NetMsg_Text, "rcs", player1, text);
     }
     COMMANDN(say, toserver, "C");
 
@@ -1306,15 +1306,15 @@ namespace game
             return;
         }
         conoutf(ConsoleMsg_TeamChat, "%s:%s %s", chatcolorname(player1), teamtextcode[player1->team], text);
-        addmsg(N_SAYTEAM, "rcs", player1, text);
+        addmsg(NetMsg_SayTeam, "rcs", player1, text);
     }
     COMMAND(sayteam, "C");
 
-    ICOMMAND(servcmd, "C", (char *cmd), addmsg(N_SERVCMD, "rs", cmd));
+    ICOMMAND(servcmd, "C", (char *cmd), addmsg(NetMsg_ServerCommand, "rs", cmd));
 
     static void sendposition(gameent *d, packetbuf &q)
     {
-        putint(q, N_POS);
+        putint(q, NetMsg_Pos);
         putuint(q, d->clientnum);
         // 3 bits phys state, 1 bit life sequence, 2 bits move, 2 bits strafe
         uchar physstate = d->physstate | ((d->lifesequence&1)<<3) | ((d->move&3)<<4) | ((d->strafe&3)<<6);
@@ -1443,7 +1443,7 @@ namespace game
             p.reliable();
             sendcrc = false;
             const char *mname = getclientmap();
-            putint(p, N_MAPCRC);
+            putint(p, NetMsg_MapCRC);
             sendstring(mname, p);
             putint(p, mname[0] ? getmapcrc() : 0);
         }
@@ -1467,7 +1467,7 @@ namespace game
         }
         if(totalmillis-lastping>250)
         {
-            putint(p, N_PING);
+            putint(p, NetMsg_Ping);
             putint(p, totalmillis);
             lastping = totalmillis;
         }
@@ -1490,7 +1490,7 @@ namespace game
     void sendintro()
     {
         packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        putint(p, N_CONNECT);
+        putint(p, NetMsg_Connect);
         sendstring(player1->name, p);
         putint(p, player1->playermodel);
         putint(p, player1->playercolor);
@@ -1555,8 +1555,8 @@ namespace game
         int type;
         while(p.remaining()) switch(type = getint(p))
         {
-            case N_DEMOPACKET: break;
-            case N_POS:                        // position of another client
+            case NetMsg_DemoPacket: break;
+            case NetMsg_Pos:                        // position of another client
             {
                 int cn = getuint(p), physstate = p.get(), flags = getuint(p);
                 vec o, vel, falling;
@@ -1649,7 +1649,7 @@ namespace game
                 break;
             }
 
-            case N_TELEPORT:
+            case NetMsg_Teleport:
             {
                 int cn = getint(p), tp = getint(p), td = getint(p);
                 gameent *d = getclient(cn);
@@ -1661,7 +1661,7 @@ namespace game
                 break;
             }
 
-            case N_JUMPPAD:
+            case NetMsg_Jumppad:
             {
                 int cn = getint(p), jp = getint(p);
                 gameent *d = getclient(cn);
@@ -1732,9 +1732,9 @@ namespace game
 
         while(p.remaining()) switch(type = getint(p))
         {
-            case N_DEMOPACKET: demopacket = true; break;
+            case NetMsg_DemoPacket: demopacket = true; break;
 
-            case N_SERVINFO:                   // welcome messsage from the server
+            case NetMsg_ServerInfo:                   // welcome messsage from the server
             {
                 int mycn = getint(p), prot = getint(p);
                 if(prot!=PROTOCOL_VERSION)
@@ -1755,14 +1755,14 @@ namespace game
                 break;
             }
 
-            case N_WELCOME:
+            case NetMsg_Welcome:
             {
                 connected = true;
                 notifywelcome();
                 break;
             }
 
-            case N_PAUSEGAME:
+            case NetMsg_PauseGame:
             {
                 bool val = getint(p) > 0;
                 int cn = getint(p);
@@ -1783,7 +1783,7 @@ namespace game
                 break;
             }
 
-            case N_GAMESPEED:
+            case NetMsg_GameSpeed:
             {
                 int val = clamp(getint(p), 10, 1000), cn = getint(p);
                 gameent *a = cn >= 0 ? getclient(cn) : NULL;
@@ -1802,7 +1802,7 @@ namespace game
                 break;
             }
 
-            case N_CLIENT:
+            case NetMsg_Client:
             {
                 int cn = getint(p), len = getuint(p);
                 ucharbuf q = p.subbuf(len);
@@ -1810,7 +1810,7 @@ namespace game
                 break;
             }
 
-            case N_SOUND:
+            case NetMsg_Sound:
                 if(!d)
                 {
                     return;
@@ -1818,7 +1818,7 @@ namespace game
                 playsound(getint(p), &d->o);
                 break;
 
-            case N_TEXT:
+            case NetMsg_Text:
             {
                 if(!d)
                 {
@@ -1838,7 +1838,7 @@ namespace game
                 break;
             }
 
-            case N_SAYTEAM:
+            case NetMsg_SayTeam:
             {
                 int tcn = getint(p);
                 gameent *t = getclient(tcn);
@@ -1857,7 +1857,7 @@ namespace game
                 break;
             }
 
-            case N_MAPCHANGE:
+            case NetMsg_MapChange:
                 getstring(text, p);
                 changemapserv(text, getint(p));
                 mapchanged = true;
@@ -1871,7 +1871,7 @@ namespace game
                 }
                 break;
 
-            case N_FORCEDEATH:
+            case NetMsg_ForceDeath:
             {
                 int cn = getint(p);
                 gameent *d = cn==player1->clientnum ? player1 : newclient(cn);
@@ -1899,7 +1899,7 @@ namespace game
                 break;
             }
 
-            case N_ITEMLIST:
+            case NetMsg_ItemList:
             {
                 int n;
                 while((n = getint(p))>=0 && !p.overread())
@@ -1913,7 +1913,7 @@ namespace game
                 break;
             }
 
-            case N_INITCLIENT:            // another client either connected or changed name/team
+            case NetMsg_InitClient:            // another client either connected or changed name/team
             {
                 int cn = getint(p);
                 gameent *d = newclient(cn);
@@ -1957,7 +1957,7 @@ namespace game
                 break;
             }
 
-            case N_SWITCHNAME:
+            case NetMsg_SwitchName:
                 getstring(text, p);
                 if(d)
                 {
@@ -1977,7 +1977,7 @@ namespace game
                 }
                 break;
 
-            case N_SWITCHMODEL:
+            case NetMsg_SwitchModel:
             {
                 int model = getint(p);
                 if(d)
@@ -1991,7 +1991,7 @@ namespace game
                 break;
             }
 
-            case N_SWITCHCOLOR:
+            case NetMsg_SwitchColor:
             {
                 int color = getint(p);
                 if(d)
@@ -2001,11 +2001,11 @@ namespace game
                 break;
             }
 
-            case N_CDIS:
+            case NetMsg_ClientDiscon:
                 clientdisconnected(getint(p));
                 break;
 
-            case N_SPAWN:
+            case NetMsg_Spawn:
             {
                 if(d)
                 {
@@ -2029,7 +2029,7 @@ namespace game
                 break;
             }
 
-            case N_SPAWNSTATE:
+            case NetMsg_SpawnState:
             {
                 int scn = getint(p);
                 gameent *s = getclient(scn);
@@ -2071,11 +2071,11 @@ namespace game
                 }
                 ai::spawned(s);
                 checkfollow();
-                addmsg(N_SPAWN, "rcii", s, s->lifesequence, s->gunselect);
+                addmsg(NetMsg_Spawn, "rcii", s, s->lifesequence, s->gunselect);
                 break;
             }
 
-            case N_SHOTFX:
+            case NetMsg_ShotFX:
             {
                 int scn = getint(p), atk = getint(p), id = getint(p);
                 vec from, to;
@@ -2103,7 +2103,7 @@ namespace game
                 break;
             }
 
-            case N_EXPLODEFX:
+            case NetMsg_ExplodeFX:
             {
                 int ecn = getint(p), atk = getint(p), id = getint(p);
                 gameent *e = getclient(ecn);
@@ -2114,7 +2114,7 @@ namespace game
                 explodeeffects(atk, e, false, id);
                 break;
             }
-            case N_DAMAGE:
+            case NetMsg_Damage:
             {
                 int tcn = getint(p),
                     acn = getint(p),
@@ -2135,7 +2135,7 @@ namespace game
                 break;
             }
 
-            case N_HITPUSH:
+            case NetMsg_Hitpush:
             {
                 int tcn = getint(p), atk = getint(p), damage = getint(p);
                 gameent *target = getclient(tcn);
@@ -2152,7 +2152,7 @@ namespace game
                 break;
             }
 
-            case N_DIED:
+            case NetMsg_Died:
             {
                 int vcn = getint(p), acn = getint(p), frags = getint(p), tfrags = getint(p);
                 gameent *victim = getclient(vcn),
@@ -2181,7 +2181,7 @@ namespace game
                 break;
             }
 
-            case N_TEAMINFO:
+            case NetMsg_TeamInfo:
                 for(int i = 0; i < MAXTEAMS; ++i)
                 {
                     int frags = getint(p);
@@ -2192,7 +2192,7 @@ namespace game
                 }
                 break;
 
-            case N_GUNSELECT:
+            case NetMsg_GunSelect:
             {
                 if(!d)
                 {
@@ -2208,7 +2208,7 @@ namespace game
                 break;
             }
 
-            case N_TAUNT:
+            case NetMsg_Taunt:
             {
                 if(!d)
                 {
@@ -2218,7 +2218,7 @@ namespace game
                 break;
             }
 
-            case N_RESUME:
+            case NetMsg_Resume:
             {
                 for(;;)
                 {
@@ -2233,7 +2233,7 @@ namespace game
                 break;
             }
 
-            case N_ITEMSPAWN:
+            case NetMsg_ItemSpawn:
             {
                 int i = getint(p);
                 if(!entities::ents.inrange(i))
@@ -2255,7 +2255,7 @@ namespace game
                 break;
             }
 
-            case N_ITEMACC:            // server acknowledges that I picked up this item
+            case NetMsg_ItemAcceptance:            // server acknowledges that I picked up this item
             {
                 int i = getint(p), cn = getint(p);
                 gameent *d = getclient(cn);
@@ -2263,7 +2263,7 @@ namespace game
                 break;
             }
 
-            case N_CLIPBOARD:
+            case NetMsg_Clipboard:
             {
                 int cn = getint(p), unpacklen = getint(p), packlen = getint(p);
                 gameent *d = getclient(cn);
@@ -2274,8 +2274,8 @@ namespace game
                 }
                 break;
             }
-            case N_UNDO:
-            case N_REDO:
+            case NetMsg_Undo:
+            case NetMsg_Redo:
             {
                 int cn = getint(p), unpacklen = getint(p), packlen = getint(p);
                 gameent *d = getclient(cn);
@@ -2287,16 +2287,16 @@ namespace game
                 break;
             }
 
-            case N_EDITF:              // coop editing messages
-            case N_EDITT:
-            case N_EDITM:
-            case N_FLIP:
-            case N_COPY:
-            case N_PASTE:
-            case N_ROTATE:
-            case N_REPLACE:
-            case N_DELCUBE:
-            case N_EDITVSLOT:
+            case NetMsg_EditFace:              // coop editing messages
+            case NetMsg_EditTex:
+            case NetMsg_EditMat:
+            case NetMsg_EditFlip:
+            case NetMsg_Copy:
+            case NetMsg_Paste:
+            case NetMsg_Rotate:
+            case NetMsg_Replace:
+            case NetMsg_DelCube:
+            case NetMsg_EditVSlot:
             {
                 if(!d)
                 {
@@ -2310,8 +2310,8 @@ namespace game
                 sel.corner = getint(p);
                 switch(type)
                 {
-                    case N_EDITF: { int dir = getint(p), mode = getint(p); if(sel.validate()) mpeditface(dir, mode, sel, false); break; }
-                    case N_EDITT:
+                    case NetMsg_EditFace: { int dir = getint(p), mode = getint(p); if(sel.validate()) mpeditface(dir, mode, sel, false); break; }
+                    case NetMsg_EditTex:
                     {
                         int tex = getint(p),
                             allfaces = getint(p);
@@ -2331,7 +2331,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_EDITM:
+                    case NetMsg_EditMat:
                     {
                         int mat = getint(p), filter = getint(p);
                         if(sel.validate())
@@ -2340,7 +2340,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_FLIP:
+                    case NetMsg_EditFlip:
                     {
                         if(sel.validate())
                         {
@@ -2348,7 +2348,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_COPY:
+                    case NetMsg_Copy:
                     {
                         if(d && sel.validate())
                         {
@@ -2356,7 +2356,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_PASTE:
+                    case NetMsg_Paste:
                     {
                         if(d && sel.validate())
                         {
@@ -2364,7 +2364,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_ROTATE:
+                    case NetMsg_Rotate:
                     {
                         int dir = getint(p);
                         if(sel.validate())
@@ -2373,7 +2373,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_REPLACE:
+                    case NetMsg_Replace:
                     {
                         int oldtex = getint(p),
                             newtex = getint(p),
@@ -2394,7 +2394,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_DELCUBE:
+                    case NetMsg_DelCube:
                     {
                         if(sel.validate())
                         {
@@ -2402,7 +2402,7 @@ namespace game
                         }
                         break;
                     }
-                    case N_EDITVSLOT:
+                    case NetMsg_EditVSlot:
                     {
                         int delta = getint(p),
                             allfaces = getint(p);
@@ -2425,7 +2425,7 @@ namespace game
                 }
                 break;
             }
-            case N_REMIP:
+            case NetMsg_Remip:
                 if(!d)
                 {
                     return;
@@ -2433,7 +2433,7 @@ namespace game
                 conoutf("%s remipped", colorname(d));
                 mpremip(false);
                 break;
-            case N_CALCLIGHT:
+            case NetMsg_CalcLight:
                 if(!d)
                 {
                     return;
@@ -2441,7 +2441,7 @@ namespace game
                 conoutf("%s calced lights", colorname(d));
                 mpcalclight(false);
                 break;
-            case N_EDITENT:            // coop edit of ent
+            case NetMsg_EditEnt:            // coop edit of ent
             {
                 if(!d)
                 {
@@ -2455,7 +2455,7 @@ namespace game
                 mpeditent(i, vec(x, y, z), type, attr1, attr2, attr3, attr4, attr5, false);
                 break;
             }
-            case N_EDITVAR:
+            case NetMsg_EditVar:
             {
                 if(!d)
                 {
@@ -2491,11 +2491,11 @@ namespace game
                 break;
             }
 
-            case N_PONG:
-                addmsg(N_CLIENTPING, "i", player1->ping = (player1->ping*5+totalmillis-getint(p))/6);
+            case NetMsg_Pong:
+                addmsg(NetMsg_ClientPing, "i", player1->ping = (player1->ping*5+totalmillis-getint(p))/6);
                 break;
 
-            case N_CLIENTPING:
+            case NetMsg_ClientPing:
                 if(!d)
                 {
                     return;
@@ -2503,16 +2503,16 @@ namespace game
                 d->ping = getint(p);
                 break;
 
-            case N_TIMEUP:
+            case NetMsg_TimeUp:
                 timeupdate(getint(p));
                 break;
 
-            case N_SERVMSG:
+            case NetMsg_ServerMsg:
                 getstring(text, p);
                 conoutf("%s", text);
                 break;
 
-            case N_SENDDEMOLIST:
+            case NetMsg_SendDemoList:
             {
                 int demos = getint(p);
                 if(demos <= 0)
@@ -2534,7 +2534,7 @@ namespace game
                 break;
             }
 
-            case N_DEMOPLAYBACK:
+            case NetMsg_DemoPlayback:
             {
                 int on = getint(p);
                 if(on)
@@ -2553,7 +2553,7 @@ namespace game
                 break;
             }
 
-            case N_CURRENTMASTER:
+            case NetMsg_CurrentMaster:
             {
                 int mm = getint(p), mn;
                 for(int i = 0; i < players.length(); i++)
@@ -2577,14 +2577,14 @@ namespace game
                 break;
             }
 
-            case N_MASTERMODE:
+            case NetMsg_MasterMode:
             {
                 mastermode = getint(p);
                 conoutf("mastermode is %s (%d)", server::mastermodename(mastermode), mastermode);
                 break;
             }
 
-            case N_EDITMODE:
+            case NetMsg_EditMode:
             {
                 int val = getint(p);
                 if(!d)
@@ -2608,7 +2608,7 @@ namespace game
                 break;
             }
 
-            case N_SPECTATOR:
+            case NetMsg_Spectator:
             {
                 int sn = getint(p), val = getint(p);
                 gameent *s;
@@ -2646,7 +2646,7 @@ namespace game
                 break;
             }
 
-            case N_SETTEAM:
+            case NetMsg_SetTeam:
             {
                 int wn = getint(p), team = getint(p), reason = getint(p);
                 gameent *w = getclient(wn);
@@ -2671,7 +2671,7 @@ namespace game
             #include "ctf.h"
             #undef PARSEMESSAGES
 
-            case N_NEWMAP:
+            case NetMsg_Newmap:
             {
                 int size = getint(p);
                 if(size>=0)
@@ -2693,7 +2693,7 @@ namespace game
                 }
                 break;
             }
-            case N_REQAUTH:
+            case NetMsg_ReqAuth:
             {
                 getstring(text, p);
                 if(autoauth && text[0] && tryauth(text))
@@ -2703,7 +2703,7 @@ namespace game
                 break;
             }
 
-            case N_AUTHCHAL:
+            case NetMsg_AuthChallenge:
             {
                 getstring(text, p);
                 authkey *a = findauthkey(text);
@@ -2715,7 +2715,7 @@ namespace game
                     answerchallenge(a->key, text, buf);
                     //conoutf(CON_DEBUG, "answering %u, challenge %s with %s", id, text, buf.getbuf());
                     packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-                    putint(p, N_AUTHANS);
+                    putint(p, NetMsg_AuthAnswer);
                     sendstring(a->desc, p);
                     putint(p, id);
                     sendstring(buf.getbuf(), p);
@@ -2723,7 +2723,7 @@ namespace game
                 }
                 break;
             }
-            case N_INITAI:
+            case NetMsg_InitAI:
             {
                 int bn = getint(p), on = getint(p), at = getint(p), sk = clamp(getint(p), 1, 101), pm = getint(p), col = getint(p), team = getint(p);
                 string name;
@@ -2737,7 +2737,7 @@ namespace game
                 ai::init(b, at, on, sk, bn, pm, col, name, team);
                 break;
             }
-            case N_SERVCMD:
+            case NetMsg_ServerCommand:
             {
                 getstring(text, p);
                 break;
@@ -2755,11 +2755,11 @@ namespace game
         int type;
         while(p.remaining()) switch(type = getint(p))
         {
-            case N_DEMOPACKET:
+            case NetMsg_DemoPacket:
             {
                 return;
             }
-            case N_SENDDEMO:
+            case NetMsg_SendDemo:
             {
                 DEF_FORMAT_STRING(fname, "%d.dmo", lastmillis);
                 stream *demo = openrawfile(fname, "wb");
@@ -2773,7 +2773,7 @@ namespace game
                 delete demo;
                 break;
             }
-            case N_SENDMAP:
+            case NetMsg_SendMap:
             {
                 if(!modecheck(gamemode, Mode_Edit))
                 {
@@ -2836,7 +2836,7 @@ namespace game
             return;
         }
         conoutf("getting map...");
-        addmsg(N_GETMAP, "r");
+        addmsg(NetMsg_GetMap, "r");
     }
     COMMAND(getmap, "");
 
@@ -2848,7 +2848,7 @@ namespace game
             {
                 return;
             }
-            addmsg(N_STOPDEMO, "r");
+            addmsg(NetMsg_StopDemo, "r");
         }
         else
         {
@@ -2863,7 +2863,7 @@ namespace game
         {
             return;
         }
-        addmsg(N_RECORDDEMO, "ri", val);
+        addmsg(NetMsg_RecordDemo, "ri", val);
     }
     ICOMMAND(recorddemo, "i", (int *val), recorddemo(*val));
 
@@ -2873,7 +2873,7 @@ namespace game
         {
             return;
         }
-        addmsg(N_CLEARDEMOS, "ri", val);
+        addmsg(NetMsg_ClearDemos, "ri", val);
     }
     ICOMMAND(cleardemos, "i", (int *val), cleardemos(*val));
 
@@ -2887,14 +2887,14 @@ namespace game
         {
             conoutf("getting demo %d...", i);
         }
-        addmsg(N_GETDEMO, "ri", i);
+        addmsg(NetMsg_GetDemo, "ri", i);
     }
     ICOMMAND(getdemo, "i", (int *val), getdemo(*val));
 
     void listdemos()
     {
         conoutf("listing demos...");
-        addmsg(N_LISTDEMOS, "r");
+        addmsg(NetMsg_ListDemos, "r");
     }
     COMMAND(listdemos, "");
 

@@ -88,7 +88,7 @@ namespace aiman
                     smode->changeteam(bot, bot->team, t.team);
                 }
                 bot->team = t.team;
-                sendf(-1, 1, "riiii", N_SETTEAM, bot->clientnum, bot->team, 0);
+                sendf(-1, 1, "riiii", NetMsg_SetTeam, bot->clientnum, bot->team, 0);
             }
             else
             {
@@ -194,7 +194,7 @@ namespace aiman
         {
             smode->leavegame(ci, true);
         }
-        sendf(-1, 1, "ri2", N_CDIS, ci->clientnum);
+        sendf(-1, 1, "ri2", NetMsg_ClientDiscon, ci->clientnum);
         clientinfo *owner = (clientinfo *)getclientinfo(ci->ownernum);
         if(owner)
         {
@@ -223,7 +223,7 @@ namespace aiman
         if(ci->ownernum < 0) deleteai(ci);
         else if(ci->aireinit >= 1)
         {
-            sendf(-1, 1, "ri8s", N_INITAI, ci->clientnum, ci->ownernum, ci->state.aitype, ci->state.skill, ci->playermodel, ci->playercolor, ci->team, ci->name);
+            sendf(-1, 1, "ri8s", NetMsg_InitAI, ci->clientnum, ci->ownernum, ci->state.aitype, ci->state.skill, ci->playermodel, ci->playercolor, ci->team, ci->name);
             if(ci->aireinit == 2)
             {
                 ci->reassign();
@@ -353,7 +353,7 @@ namespace aiman
         }
         if(!addai(skill, !ci->local && ci->privilege < Priv_Admin ? botlimit : -1))
         {
-            sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to create or assign bot");
+            sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "failed to create or assign bot");
         }
     }
 
@@ -365,7 +365,7 @@ namespace aiman
         }
         if(!deleteai())
         {
-            sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to remove any bots");
+            sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "failed to remove any bots");
         }
     }
 

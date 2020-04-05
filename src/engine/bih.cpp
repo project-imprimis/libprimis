@@ -761,7 +761,7 @@ inline void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d
 }
 
 template<>
-inline void BIH::tricollide<Collide_OBB>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+inline void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -979,7 +979,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
         }
         matrix4x3 morient;
         morient.mul(dorient, dcenter, m.xform);
-        collide<Collide_OBB>(m, d, ddir, cutoff, center, radius, morient, dist, m.nodes, icenter, iradius);
+        collide<Collide_OrientedBoundingBox>(m, d, ddir, cutoff, center, radius, morient, dist, m.nodes, icenter, iradius);
     }
     if(dist > -1e9f)
     {

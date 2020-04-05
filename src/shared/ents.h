@@ -89,7 +89,7 @@ enum
 {
     Collide_None = 0,
     Collide_Ellipse,
-    Collide_OBB,
+    Collide_OrientedBoundingBox,
     Collide_TRI
 };
 

@@ -59,7 +59,7 @@ COMMAND(mdlcolor, "fff");
 void mdlcollide(int *collide)
 {
     CHECK_MDL;
-    loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OBB) : Collide_None;
+    loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OrientedBoundingBox) : Collide_None;
 }
 COMMAND(mdlcollide, "i");
 
@@ -1129,10 +1129,10 @@ void setbbfrommodel(dynent *d, const char *mdl)
     if(!m) return;
     vec center, radius;
     m->collisionbox(center, radius);
-    if(m->collide != Collide_Ellipse) d->collidetype = Collide_OBB;
+    if(m->collide != Collide_Ellipse) d->collidetype = Collide_OrientedBoundingBox;
     d->xradius   = radius.x + fabs(center.x);
     d->yradius   = radius.y + fabs(center.y);
-    d->radius    = d->collidetype==Collide_OBB ? sqrtf(d->xradius*d->xradius + d->yradius*d->yradius) : max(d->xradius, d->yradius);
+    d->radius    = d->collidetype==Collide_OrientedBoundingBox ? sqrtf(d->xradius*d->xradius + d->yradius*d->yradius) : max(d->xradius, d->yradius);
     d->eyeheight = (center.z-radius.z) + radius.z*2*m->eyeheight;
     d->aboveeye  = radius.z*2*(1.0f-m->eyeheight);
     if (d->aboveeye + d->eyeheight <= 0.5f)

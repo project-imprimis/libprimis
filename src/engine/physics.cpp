@@ -634,7 +634,7 @@ static inline bool plcollide(physent *d, const vec &dir, physent *o)
         case Collide_Ellipse:
             if(o->collidetype == Collide_Ellipse) return ellipsecollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
             else return ellipseboxcollide(d, dir, o->o, vec(0, 0, 0), o->yaw, o->xradius, o->yradius, o->aboveeye, o->eyeheight);
-        case Collide_OBB:
+        case Collide_OrientedBoundingBox:
             if(o->collidetype == Collide_Ellipse) return plcollide<mpr::EntOBB, mpr::EntCylinder>(d, dir, o);
             else return plcollide<mpr::EntOBB, mpr::EntOBB>(d, dir, o);
         default: return false;
@@ -855,7 +855,7 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
                 case Collide_Ellipse:
                     if(m->bih->ellipsecollide(d, dir, cutoff, e.o, yaw, pitch, roll, scale)) return true;
                     break;
-                case Collide_OBB:
+                case Collide_OrientedBoundingBox:
                     if(m->bih->boxcollide(d, dir, cutoff, e.o, yaw, pitch, roll, scale)) return true;
                     break;
                 default: continue;
@@ -881,7 +881,7 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
                     }
                     else if(ellipseboxcollide(d, dir, e.o, center, yaw, radius.x, radius.y, radius.z, radius.z)) return true;
                     break;
-                case Collide_OBB:
+                case Collide_OrientedBoundingBox:
                     if(mcol == Collide_Ellipse)
                     {
                         if(mmcollide<mpr::EntOBB, mpr::ModelEllipse>(d, dir, e, center, radius, yaw, pitch, roll)) return true;
@@ -1100,7 +1100,7 @@ static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const c
 {
     switch(d->collidetype)
     {
-    case Collide_OBB:
+    case Collide_OrientedBoundingBox:
         if(IS_ENTIRELY_SOLID(c) || solid) return cubecollidesolid<mpr::EntOBB>(d, dir, cutoff, c, co, size);
         else return cubecollideplanes<mpr::EntOBB>(d, dir, cutoff, c, co, size);
     case Collide_Ellipse:

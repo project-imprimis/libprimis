@@ -809,13 +809,13 @@ namespace server
 
     int msgsizelookup(int msg)
     {
-        static int sizetable[NUMMSG] = { -1 };
+        static int sizetable[NetMsg_NumMsgs] = { -1 };
         if(sizetable[0] < 0)
         {
             memset(sizetable, -1, sizeof(sizetable));
             for(const int *p = msgsizes; *p >= 0; p += 2) sizetable[p[0]] = p[1];
         }
-        return msg >= 0 && msg < NUMMSG ? sizetable[msg] : -1;
+        return msg >= 0 && msg < NetMsg_NumMsgs ? sizetable[msg] : -1;
     }
 
     const char *modename(int n, const char *unknown)
@@ -846,13 +846,13 @@ namespace server
         }
     }
 
-    void sendservmsg(const char *s) { sendf(-1, 1, "ris", N_SERVMSG, s); }
+    void sendservmsg(const char *s) { sendf(-1, 1, "ris", NetMsg_ServerMsg, s); }
 
     void sendservmsgf(const char *fmt, ...) PRINTFARGS(1, 2);
     void sendservmsgf(const char *fmt, ...)
     {
          DEFV_FORMAT_STRING(s, fmt, fmt);
-         sendf(-1, 1, "ris", N_SERVMSG, s);
+         sendf(-1, 1, "ris", NetMsg_ServerMsg, s);
     }
 
     void resetitems()
@@ -980,7 +980,7 @@ namespace server
         if(!ci || (!ci->local && !ci->state.canpickup(sents[i].type))) return false;
         sents[i].spawned = false;
         sents[i].spawntime = spawntime(sents[i].type);
-        sendf(-1, 1, "ri3", N_ITEMACC, i, sender);
+        sendf(-1, 1, "ri3", NetMsg_ItemAcceptance, i, sender);
         ci->state.pickup(sents[i].type);
         return true;
     }
@@ -1060,7 +1060,7 @@ namespace server
                     continue;
                 }
                 ci->team = 1+i;
-                sendf(-1, 1, "riiii", N_SETTEAM, ci->clientnum, ci->team, -1);
+                sendf(-1, 1, "riiii", NetMsg_SetTeam, ci->clientnum, ci->team, -1);
             }
         }
     }
@@ -1192,7 +1192,7 @@ namespace server
     void listdemos(int cn)
     {
         packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        putint(p, N_SENDDEMOLIST);
+        putint(p, NetMsg_SendDemoList);
         putint(p, demos.length());
         for(int i = 0; i < demos.length(); i++)
         {
@@ -1244,7 +1244,7 @@ namespace server
         if(!num) num = demos.length();
         if(!demos.inrange(num-1)) return;
         demofile &d = demos[num-1];
-        if((ci->getdemo = sendf(ci->clientnum, 2, "rim", N_SENDDEMO, d.len, d.data)))
+        if((ci->getdemo = sendf(ci->clientnum, 2, "rim", NetMsg_SendDemo, d.len, d.data)))
             ci->getdemo->freeCallback = freegetdemo;
     }
 
@@ -1255,7 +1255,7 @@ namespace server
 
         for(int i = 0; i < clients.length(); i++)
         {
-            sendf(clients[i]->clientnum, 1, "ri3", N_DEMOPLAYBACK, 0, clients[i]->clientnum);
+            sendf(clients[i]->clientnum, 1, "ri3", NetMsg_DemoPlayback, 0, clients[i]->clientnum);
         }
 
         sendservmsg("demo playback finished");
@@ -1293,7 +1293,7 @@ namespace server
         sendservmsgf("playing demo \"%s\"", file);
 
         demomillis = 0;
-        sendf(-1, 1, "ri3", N_DEMOPLAYBACK, 1, -1);
+        sendf(-1, 1, "ri3", NetMsg_DemoPlayback, 1, -1);
 
         if(demoplayback->read(&nextplayback, sizeof(nextplayback))!=sizeof(nextplayback))
         {
@@ -1325,7 +1325,7 @@ namespace server
                 enddemoplayback();
                 return;
             }
-            packet->data[0] = N_DEMOPACKET;
+            packet->data[0] = NetMsg_DemoPacket;
             sendpacket(-1, chan, packet);
             if(!packet->referenceCount) enet_packet_destroy(packet);
             if(!demoplayback) break;
@@ -1348,7 +1348,7 @@ namespace server
     {
         if(gamepaused==val) return;
         gamepaused = val;
-        sendf(-1, 1, "riii", N_PAUSEGAME, gamepaused ? 1 : 0, ci ? ci->clientnum : -1);
+        sendf(-1, 1, "riii", NetMsg_PauseGame, gamepaused ? 1 : 0, ci ? ci->clientnum : -1);
     }
 
     void checkpausegame()
@@ -1383,7 +1383,7 @@ namespace server
         val = clamp(val, 10, 1000);
         if(gamespeed==val) return;
         gamespeed = val;
-        sendf(-1, 1, "riii", N_GAMESPEED, gamespeed, ci ? ci->clientnum : -1);
+        sendf(-1, 1, "riii", NetMsg_GameSpeed, gamespeed, ci ? ci->clientnum : -1);
     }
 
     void forcegamespeed(int speed)
@@ -1475,20 +1475,20 @@ namespace server
             {
                 if(ci->state.state==ClientState_Spectator)
                 {
-                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "Spectators may not claim master.");
+                    sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "Spectators may not claim master.");
                     return false;
                 }
                 for(int i = 0; i < clients.length(); i++)
                 {
                     if(ci!=clients[i] && clients[i]->privilege)
                     {
-                        sendf(ci->clientnum, 1, "ris", N_SERVMSG, "Master is already claimed.");
+                        sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "Master is already claimed.");
                         return false;
                     }
                 }
                 if(!authname && !(mastermask&MM_AUTOAPPROVE) && !ci->privilege && !ci->local)
                 {
-                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "This server requires you to use the \"/auth\" command to claim master.");
+                    sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "This server requires you to use the \"/auth\" command to claim master.");
                     return false;
                 }
             }
@@ -1533,9 +1533,9 @@ namespace server
         }
         else formatstring(msg, "%s %s %s", colorname(ci), val ? "claimed" : "relinquished", name);
         packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        putint(p, N_SERVMSG);
+        putint(p, NetMsg_ServerMsg);
         sendstring(msg, p);
-        putint(p, N_CURRENTMASTER);
+        putint(p, NetMsg_CurrentMaster);
         putint(p, mastermode);
         for(int i = 0; i < clients.length(); i++)
         {
@@ -1624,14 +1624,14 @@ namespace server
 
     static struct msgfilter
     {
-        uchar msgmask[NUMMSG];
+        uchar msgmask[NetMsg_NumMsgs];
 
         msgfilter(int msg, ...)
         {
             memset(msgmask, 0, sizeof(msgmask));
             va_list msgs;
             va_start(msgs, msg);
-            for(uchar val = 1; msg < NUMMSG; msg = va_arg(msgs, int))
+            for(uchar val = 1; msg < NetMsg_NumMsgs; msg = va_arg(msgs, int))
             {
                 if(msg < 0) val = uchar(-msg);
                 else msgmask[msg] = val;
@@ -1639,9 +1639,9 @@ namespace server
             va_end(msgs);
         }
 
-        uchar operator[](int msg) const { return msg >= 0 && msg < NUMMSG ? msgmask[msg] : 0; }
-    } msgfilter(-1, N_CONNECT, N_SERVINFO, N_INITCLIENT, N_WELCOME, N_MAPCHANGE, N_SERVMSG, N_DAMAGE, N_HITPUSH, N_SHOTFX, N_EXPLODEFX, N_DIED, N_SPAWNSTATE, N_FORCEDEATH, N_TEAMINFO, N_ITEMACC, N_ITEMSPAWN, N_TIMEUP, N_CDIS, N_CURRENTMASTER, N_PONG, N_RESUME, N_SENDDEMOLIST, N_SENDDEMO, N_DEMOPLAYBACK, N_SENDMAP, N_DROPFLAG, N_SCOREFLAG, N_RETURNFLAG, N_RESETFLAG, N_CLIENT, N_AUTHCHAL, N_INITAI, N_DEMOPACKET, -2, N_CALCLIGHT, N_REMIP, N_NEWMAP, N_GETMAP, N_SENDMAP, N_CLIPBOARD, -3, N_EDITENT, N_EDITF, N_EDITT, N_EDITM, N_FLIP, N_COPY, N_PASTE, N_ROTATE, N_REPLACE, N_DELCUBE, N_EDITVAR, N_EDITVSLOT, N_UNDO, N_REDO, -4, N_POS, NUMMSG),
-      connectfilter(-1, N_CONNECT, -2, N_AUTHANS, -3, N_PING, NUMMSG);
+        uchar operator[](int msg) const { return msg >= 0 && msg < NetMsg_NumMsgs ? msgmask[msg] : 0; }
+    } msgfilter(-1, NetMsg_Connect, NetMsg_ServerInfo, NetMsg_InitClient, NetMsg_Welcome, NetMsg_MapChange, NetMsg_ServerMsg, NetMsg_Damage, NetMsg_Hitpush, NetMsg_ShotFX, NetMsg_ExplodeFX, NetMsg_Died, NetMsg_SpawnState, NetMsg_ForceDeath, NetMsg_TeamInfo, NetMsg_ItemAcceptance, NetMsg_ItemSpawn, NetMsg_TimeUp, NetMsg_ClientDiscon, NetMsg_CurrentMaster, NetMsg_Pong, NetMsg_Resume, NetMsg_SendDemoList, NetMsg_SendDemo, NetMsg_DemoPlayback, NetMsg_SendMap, NetMsg_DropFlag, NetMsg_ScoreFlag, NetMsg_ReturnFlag, NetMsg_ResetFlag, NetMsg_Client, NetMsg_AuthChallenge, NetMsg_InitAI, NetMsg_DemoPacket, -2, NetMsg_CalcLight, NetMsg_Remip, NetMsg_Newmap, NetMsg_GetMap, NetMsg_SendMap, NetMsg_Clipboard, -3, NetMsg_EditEnt, NetMsg_EditFace, NetMsg_EditTex, NetMsg_EditMat, NetMsg_EditFlip, NetMsg_Copy, NetMsg_Paste, NetMsg_Rotate, NetMsg_Replace, NetMsg_DelCube, NetMsg_EditVar, NetMsg_EditVSlot, NetMsg_Undo, NetMsg_Redo, -4, NetMsg_Pos, NetMsg_NumMsgs),
+      connectfilter(-1, NetMsg_Connect, -2, NetMsg_AuthAnswer, -3, NetMsg_Ping, NetMsg_NumMsgs);
 
     int checktype(int type, clientinfo *ci)
     {
@@ -1775,7 +1775,7 @@ namespace server
         if(bi.messages.empty()) return;
         if(wsbuf.length() + 10 + bi.messages.length() > mtu) sendmessages(ws, wsbuf);
         int offset = wsbuf.length();
-        putint(wsbuf, N_CLIENT);
+        putint(wsbuf, NetMsg_Client);
         putint(wsbuf, bi.clientnum);
         putuint(wsbuf, bi.messages.length());
         wsbuf.put(bi.messages.getbuf(), bi.messages.length());
@@ -1872,7 +1872,7 @@ namespace server
     {
         servstate &gs = ci->state;
         spawnstate(ci);
-        sendf(ci->ownernum, 1, "rii5v", N_SPAWNSTATE, ci->clientnum, gs.lifesequence,
+        sendf(ci->ownernum, 1, "rii5v", NetMsg_SpawnState, ci->clientnum, gs.lifesequence,
             gs.health, gs.maxhealth,
             gs.gunselect, Gun_NumGuns, gs.ammo);
         gs.lastspawn = gamemillis;
@@ -1889,7 +1889,7 @@ namespace server
     {
         if(ci->state.aitype != AI_None)
         {
-            putint(p, N_INITAI);
+            putint(p, NetMsg_InitAI);
             putint(p, ci->clientnum);
             putint(p, ci->ownernum);
             putint(p, ci->state.aitype);
@@ -1901,7 +1901,7 @@ namespace server
         }
         else
         {
-            putint(p, N_INITCLIENT);
+            putint(p, NetMsg_InitClient);
             putint(p, ci->clientnum);
             sendstring(ci->name, p);
             putint(p, ci->team);
@@ -1929,19 +1929,19 @@ namespace server
 
     int welcomepacket(packetbuf &p, clientinfo *ci)
     {
-        putint(p, N_WELCOME);
-        putint(p, N_MAPCHANGE);
+        putint(p, NetMsg_Welcome);
+        putint(p, NetMsg_MapChange);
         sendstring(smapname, p);
         putint(p, gamemode);
         putint(p, notgotitems ? 1 : 0);
         if(!ci || (!modecheck(gamemode, Mode_Untimed) && smapname[0]))
         {
-            putint(p, N_TIMEUP);
+            putint(p, NetMsg_TimeUp);
             putint(p, gamemillis < gamelimit && !interm ? max((gamelimit - gamemillis)/1000, 1) : 0);
         }
         if(!notgotitems)
         {
-            putint(p, N_ITEMLIST);
+            putint(p, NetMsg_ItemList);
             for(int i = 0; i < sents.length(); i++)
             {
                 if(sents[i].spawned)
@@ -1955,7 +1955,7 @@ namespace server
         bool hasmaster = false;
         if(mastermode != MasterMode_Open)
         {
-            putint(p, N_CURRENTMASTER);
+            putint(p, NetMsg_CurrentMaster);
             putint(p, mastermode);
             hasmaster = true;
         }
@@ -1965,7 +1965,7 @@ namespace server
             {
                 if(!hasmaster)
                 {
-                    putint(p, N_CURRENTMASTER);
+                    putint(p, NetMsg_CurrentMaster);
                     putint(p, mastermode);
                     hasmaster = true;
                 }
@@ -1979,19 +1979,19 @@ namespace server
         }
         if(gamepaused)
         {
-            putint(p, N_PAUSEGAME);
+            putint(p, NetMsg_PauseGame);
             putint(p, 1);
             putint(p, -1);
         }
         if(gamespeed != 100)
         {
-            putint(p, N_GAMESPEED);
+            putint(p, NetMsg_GameSpeed);
             putint(p, gamespeed);
             putint(p, -1);
         }
         if(modecheck(gamemode, Mode_Team))
         {
-            putint(p, N_TEAMINFO);
+            putint(p, NetMsg_TeamInfo);
             for(int i = 0; i < MAXTEAMS; ++i)
             {
                 teaminfo &t = teaminfos[i];
@@ -2000,7 +2000,7 @@ namespace server
         }
         if(ci)
         {
-            putint(p, N_SETTEAM);
+            putint(p, NetMsg_SetTeam);
             putint(p, ci->clientnum);
             putint(p, ci->team);
             putint(p, -1);
@@ -2010,15 +2010,15 @@ namespace server
             if(smode && !smode->canspawn(ci, true))
             {
                 ci->state.state = ClientState_Dead;
-                putint(p, N_FORCEDEATH);
+                putint(p, NetMsg_ForceDeath);
                 putint(p, ci->clientnum);
-                sendf(-1, 1, "ri2x", N_FORCEDEATH, ci->clientnum, ci->clientnum);
+                sendf(-1, 1, "ri2x", NetMsg_ForceDeath, ci->clientnum, ci->clientnum);
             }
             else
             {
                 servstate &gs = ci->state;
                 spawnstate(ci);
-                putint(p, N_SPAWNSTATE);
+                putint(p, NetMsg_SpawnState);
                 putint(p, ci->clientnum);
                 sendstate(gs, p);
                 gs.lastspawn = gamemillis;
@@ -2026,14 +2026,14 @@ namespace server
         }
         if(ci && ci->state.state==ClientState_Spectator)
         {
-            putint(p, N_SPECTATOR);
+            putint(p, NetMsg_Spectator);
             putint(p, ci->clientnum);
             putint(p, 1);
-            sendf(-1, 1, "ri3x", N_SPECTATOR, ci->clientnum, 1, ci->clientnum);
+            sendf(-1, 1, "ri3x", NetMsg_Spectator, ci->clientnum, 1, ci->clientnum);
         }
         if(!ci || clients.length()>1)
         {
-            putint(p, N_RESUME);
+            putint(p, NetMsg_Resume);
             for(int i = 0; i < clients.length(); i++)
             {
                 clientinfo *oi = clients[i];
@@ -2070,7 +2070,7 @@ namespace server
     void sendresume(clientinfo *ci)
     {
         servstate &gs = ci->state;
-        sendf(-1, 1, "ri3i7vi", N_RESUME, ci->clientnum, gs.state,
+        sendf(-1, 1, "ri3i7vi", NetMsg_Resume, ci->clientnum, gs.state,
             gs.frags, gs.flags, gs.deaths,
             gs.lifesequence,
             gs.health, gs.maxhealth,
@@ -2130,7 +2130,7 @@ namespace server
 
         if(modecheck(gamemode, Mode_LocalOnly)) kicknonlocalclients(DISC_LOCAL);
 
-        sendf(-1, 1, "risii", N_MAPCHANGE, smapname, gamemode, 1);
+        sendf(-1, 1, "risii", NetMsg_MapChange, smapname, gamemode, 1);
 
         clearteaminfo();
         if(modecheck(gamemode, Mode_Team)) autoteam();
@@ -2138,7 +2138,7 @@ namespace server
         if(modecheck(gamemode, Mode_CTF)) smode = &ctfmode;
         else smode = NULL;
 
-        if(!modecheck(gamemode, Mode_Untimed) && smapname[0]) sendf(-1, 1, "ri2", N_TIMEUP, gamemillis < gamelimit && !interm ? max((gamelimit - gamemillis)/1000, 1) : 0);
+        if(!modecheck(gamemode, Mode_Untimed) && smapname[0]) sendf(-1, 1, "ri2", NetMsg_TimeUp, gamemillis < gamelimit && !interm ? max((gamelimit - gamemillis)/1000, 1) : 0);
         for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
@@ -2261,7 +2261,7 @@ namespace server
         }
         if(lockmaprotation && !ci->local && ci->privilege < (lockmaprotation > 1 ? Priv_Admin : Priv_Master) && findmaprotation(reqmode, map) < 0)
         {
-            sendf(sender, 1, "ris", N_SERVMSG, "This server has locked the map rotation.");
+            sendf(sender, 1, "ris", NetMsg_ServerMsg, "This server has locked the map rotation.");
             return;
         }
         copystring(ci->mapvote, map);
@@ -2284,7 +2284,7 @@ namespace server
     {
         if(gamemillis >= gamelimit && !interm)
         {
-            sendf(-1, 1, "ri2", N_TIMEUP, 0);
+            sendf(-1, 1, "ri2", NetMsg_TimeUp, 0);
             if(smode) smode->intermission();
             changegamespeed(100);
             interm = gamemillis + 10000;
@@ -2298,12 +2298,12 @@ namespace server
         servstate &ts = target->state;
         ts.dodamage(damage);
         if(target!=actor && !modecheck(gamemode, Mode_Team) && target->team != actor->team) actor->state.damage += damage;
-        sendf(-1, 1, "ri5", N_DAMAGE, target->clientnum, actor->clientnum, damage, ts.health);
+        sendf(-1, 1, "ri5", NetMsg_Damage, target->clientnum, actor->clientnum, damage, ts.health);
         if(target==actor) target->setpushed();
         else if(!hitpush.iszero())
         {
             ivec v(vec(hitpush).rescale(DNF));
-            sendf(ts.health<=0 ? -1 : target->ownernum, 1, "ri7", N_HITPUSH, target->clientnum, atk, damage, v.x, v.y, v.z);
+            sendf(ts.health<=0 ? -1 : target->ownernum, 1, "ri7", NetMsg_Hitpush, target->clientnum, atk, damage, v.x, v.y, v.z);
             target->setpushed();
         }
         if(ts.health<=0)
@@ -2337,7 +2337,7 @@ namespace server
             }
             teaminfo *t = modecheck(gamemode, Mode_Team) && VALID_TEAM(actor->team) ? &teaminfos[actor->team-1] : NULL;
             if(t) t->frags += fragvalue;
-            sendf(-1, 1, "ri5", N_DIED, target->clientnum, actor->clientnum, actor->state.frags, t ? t->frags : 0);
+            sendf(-1, 1, "ri5", NetMsg_Died, target->clientnum, actor->clientnum, actor->state.frags, t ? t->frags : 0);
             target->position.setsize(0);
             if(smode) smode->died(target, actor);
             ts.state = ClientState_Dead;
@@ -2362,7 +2362,7 @@ namespace server
         ci->state.deaths++;
         teaminfo *t = modecheck(gamemode, Mode_Team) && VALID_TEAM(ci->team) ? &teaminfos[ci->team-1] : NULL;
         if(t) t->frags += fragvalue;
-        sendf(-1, 1, "ri5", N_DIED, ci->clientnum, ci->clientnum, gs.frags, t ? t->frags : 0);
+        sendf(-1, 1, "ri5", NetMsg_Died, ci->clientnum, ci->clientnum, gs.frags, t ? t->frags : 0);
         ci->position.setsize(0);
         if(smode) smode->died(ci, NULL);
         gs.state = ClientState_Dead;
@@ -2387,7 +2387,7 @@ namespace server
             default:
                 return;
         }
-        sendf(-1, 1, "ri4x", N_EXPLODEFX, ci->clientnum, atk, id, ci->ownernum);
+        sendf(-1, 1, "ri4x", NetMsg_ExplodeFX, ci->clientnum, atk, id, ci->ownernum);
         for(int i = 0; i < hits.length(); i++)
         {
             hitinfo &h = hits[i];
@@ -2431,7 +2431,7 @@ namespace server
         gs.ammo[gun] -= attacks[atk].use;
         gs.lastshot = millis;
         gs.gunwait = attacks[atk].attackdelay;
-        sendf(-1, 1, "rii9x", N_SHOTFX, ci->clientnum, atk, id,
+        sendf(-1, 1, "rii9x", NetMsg_ShotFX, ci->clientnum, atk, id,
                 int(from.x*DMF), int(from.y*DMF), int(from.z*DMF),
                 int(to.x*DMF), int(to.y*DMF), int(to.z*DMF),
                 ci->ownernum);
@@ -2551,7 +2551,7 @@ namespace server
                             {
                                 sents[i].spawntime = 0;
                                 sents[i].spawned = true;
-                                sendf(-1, 1, "ri2", N_ITEMSPAWN, i);
+                                sendf(-1, 1, "ri2", NetMsg_ItemSpawn, i);
                             }
                         }
                     }
@@ -2620,7 +2620,7 @@ namespace server
         ci->state.state = ClientState_Spectator;
         ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
         if(!ci->local && (!ci->privilege || ci->warned)) aiman::removeai(ci);
-        sendf(-1, 1, "ri3", N_SPECTATOR, ci->clientnum, 1);
+        sendf(-1, 1, "ri3", NetMsg_Spectator, ci->clientnum, 1);
     }
 
     struct crcinfo
@@ -2689,7 +2689,7 @@ namespace server
             clientinfo *ci = clients[i];
             if(ci->state.state==ClientState_Spectator || ci->state.aitype != AI_None || ci->clientmap[0] || ci->mapcrc >= 0 || (req < 0 && ci->warned)) continue;
             formatstring(msg, "%s has modified map \"%s\"", colorname(ci), smapname);
-            sendf(req, 1, "ris", N_SERVMSG, msg);
+            sendf(req, 1, "ris", NetMsg_ServerMsg, msg);
             if(req < 0) ci->warned = true;
         }
         if(crcs.length() >= 2)
@@ -2707,7 +2707,7 @@ namespace server
                             continue;
                         }
                         formatstring(msg, "%s has modified map \"%s\"", colorname(ci), smapname);
-                        sendf(req, 1, "ris", N_SERVMSG, msg);
+                        sendf(req, 1, "ris", NetMsg_ServerMsg, msg);
                         if(req < 0)
                         {
                             ci->warned = true;
@@ -2741,14 +2741,14 @@ namespace server
         ci->state.respawn();
         ci->state.lasttimeplayed = lastmillis;
         aiman::addclient(ci);
-        sendf(-1, 1, "ri3", N_SPECTATOR, ci->clientnum, 0);
+        sendf(-1, 1, "ri3", NetMsg_Spectator, ci->clientnum, 0);
         if(ci->clientmap[0] || ci->mapcrc) checkmaps();
         if(!hasmap(ci)) rotatemap(true);
     }
 
     void sendservinfo(clientinfo *ci)
     {
-        sendf(ci->clientnum, 1, "ri5ss", N_SERVINFO, ci->clientnum, PROTOCOL_VERSION, ci->sessionid, serverpass[0] ? 1 : 0, serverdesc, serverauth);
+        sendf(ci->clientnum, 1, "ri5ss", NetMsg_ServerInfo, ci->clientnum, PROTOCOL_VERSION, ci->sessionid, serverpass[0] ? 1 : 0, serverdesc, serverauth);
     }
 
     void noclients()
@@ -2807,7 +2807,7 @@ namespace server
             }
             ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
             savescore(ci);
-            sendf(-1, 1, "ri2", N_CDIS, n);
+            sendf(-1, 1, "ri2", NetMsg_ClientDiscon, n);
             clients.removeobj(ci);
             aiman::removeai(ci);
             if(!numclients(-1, false, true))
@@ -2957,7 +2957,7 @@ namespace server
     {
         clientinfo *ci = findauth(id);
         if(!ci) return;
-        sendf(ci->clientnum, 1, "risis", N_AUTHCHAL, desc, id, val);
+        sendf(ci->clientnum, 1, "risis", NetMsg_AuthChallenge, desc, id, val);
     }
 
     uint nextauthreq = 0;
@@ -2977,14 +2977,14 @@ namespace server
                 uint seed[3] = { ::hthash(serverauth) + DET_RND(size_t(ci) + size_t(user) + size_t(desc), 0x10000), uint(totalmillis), randomMT() };
                 vector<char> buf;
                 ci->authchallenge = genchallenge(u->pubkey, seed, sizeof(seed), buf);
-                sendf(ci->clientnum, 1, "risis", N_AUTHCHAL, desc, ci->authreq, buf.getbuf());
+                sendf(ci->clientnum, 1, "risis", NetMsg_AuthChallenge, desc, ci->authreq, buf.getbuf());
             }
             else ci->cleanauth();
         }
         else if(!requestmasterf("reqauth %u %s\n", ci->authreq, ci->authname))
         {
             ci->cleanauth();
-            sendf(ci->clientnum, 1, "ris", N_SERVMSG, "not connected to authentication server");
+            sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "not connected to authentication server");
         }
         if(ci->authreq) return true;
         if(ci->connectauth) disconnect_client(ci->clientnum, ci->connectauth);
@@ -3023,7 +3023,7 @@ namespace server
         else if(!requestmasterf("confauth %u %s\n", id, val))
         {
             ci->cleanauth();
-            sendf(ci->clientnum, 1, "ris", N_SERVMSG, "not connected to authentication server");
+            sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "not connected to authentication server");
         }
         return ci->authreq || !ci->connectauth;
     }
@@ -3064,7 +3064,7 @@ namespace server
         if(ci->state.state==ClientState_Spectator && !ci->privilege && !ci->local) return;
         if(mapdata) DELETEP(mapdata);
         mapdata = opentempfile("mapdata", "w+b");
-        if(!mapdata) { sendf(sender, 1, "ris", N_SERVMSG, "failed to open temporary file for map"); return; }
+        if(!mapdata) { sendf(sender, 1, "ris", NetMsg_ServerMsg, "failed to open temporary file for map"); return; }
         mapdata->write(data, len);
         sendservmsgf("[%s sent a map to server, \"/getmap\" to receive it]", colorname(ci));
     }
@@ -3115,7 +3115,7 @@ namespace server
 
         if(modecheck(gamemode, Mode_Demo)) setupdemoplayback();
 
-        if(servermotd[0]) sendf(ci->clientnum, 1, "ris", N_SERVMSG, servermotd);
+        if(servermotd[0]) sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, servermotd);
     }
 
     void parsepacket(int sender, int chan, packetbuf &p)     // has to parse exactly each byte of the packet
@@ -3130,7 +3130,7 @@ namespace server
             else if(chan!=1) { disconnect_client(sender, DISC_MSGERR); return; }
             else while(p.length() < p.maxlen) switch(checktype(getint(p), ci))
             {
-                case N_CONNECT:
+                case NetMsg_Connect:
                 {
                     getstring(text, p);
                     filtertext(text, text, false, false, MAXNAMELEN);
@@ -3157,7 +3157,7 @@ namespace server
                     break;
                 }
 
-                case N_AUTHANS:
+                case NetMsg_AuthAnswer:
                 {
                     string desc, ans;
                     getstring(desc, p, sizeof(desc));
@@ -3171,7 +3171,7 @@ namespace server
                     break;
                 }
 
-                case N_PING:
+                case NetMsg_Ping:
                     getint(p);
                     break;
 
@@ -3203,7 +3203,7 @@ namespace server
         int curmsg;
         while((curmsg = p.length()) < p.maxlen) switch(type = checktype(getint(p), ci))
         {
-            case N_POS:
+            case NetMsg_Pos:
             {
                 int pcn = getuint(p);
                 p.get();
@@ -3257,7 +3257,7 @@ namespace server
                 break;
             }
 
-            case N_TELEPORT:
+            case NetMsg_Teleport:
             {
                 int pcn = getint(p), teleport = getint(p), teledest = getint(p);
                 clientinfo *cp = getinfo(pcn);
@@ -3268,12 +3268,12 @@ namespace server
                 if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
                 {
                     flushclientposition(*cp);
-                    sendf(-1, 0, "ri4x", N_TELEPORT, pcn, teleport, teledest, cp->ownernum);
+                    sendf(-1, 0, "ri4x", NetMsg_Teleport, pcn, teleport, teledest, cp->ownernum);
                 }
                 break;
             }
 
-            case N_JUMPPAD:
+            case NetMsg_Jumppad:
             {
                 int pcn = getint(p), jumppad = getint(p);
                 clientinfo *cp = getinfo(pcn);
@@ -3282,12 +3282,12 @@ namespace server
                 {
                     cp->setpushed();
                     flushclientposition(*cp);
-                    sendf(-1, 0, "ri3x", N_JUMPPAD, pcn, jumppad, cp->ownernum);
+                    sendf(-1, 0, "ri3x", NetMsg_Jumppad, pcn, jumppad, cp->ownernum);
                 }
                 break;
             }
 
-            case N_FROMAI:
+            case NetMsg_FromAI:
             {
                 int qcn = getint(p);
                 if(qcn < 0) cq = ci;
@@ -3299,7 +3299,7 @@ namespace server
                 break;
             }
 
-            case N_EDITMODE:
+            case NetMsg_EditMode:
             {
                 int val = getint(p);
                 if(!ci->local && !modecheck(gamemode, Mode_Edit)) break;
@@ -3321,7 +3321,7 @@ namespace server
                 break;
             }
 
-            case N_MAPCRC:
+            case NetMsg_MapCRC:
             {
                 getstring(text, p);
                 int crc = getint(p);
@@ -3343,11 +3343,11 @@ namespace server
                 break;
             }
 
-            case N_CHECKMAPS:
+            case NetMsg_CheckMaps:
                 checkmaps(sender);
                 break;
 
-            case N_TRYSPAWN:
+            case NetMsg_TrySpawn:
                 if(!ci || !cq || cq->state.state!=ClientState_Dead || cq->state.lastspawn>=0 || (smode && !smode->canspawn(cq))) break;
                 if(!ci->clientmap[0] && !ci->mapcrc)
                 {
@@ -3365,7 +3365,7 @@ namespace server
                 sendspawn(cq);
                 break;
 
-            case N_GUNSELECT:
+            case NetMsg_GunSelect:
             {
                 int gunselect = getint(p);
                 if(!cq || cq->state.state!=ClientState_Alive || !VALID_GUN(gunselect)) break;
@@ -3375,7 +3375,7 @@ namespace server
                 break;
             }
 
-            case N_SPAWN:
+            case NetMsg_Spawn:
             {
                 int ls = getint(p), gunselect = getint(p);
                 if(!cq || (cq->state.state!=ClientState_Alive && cq->state.state!=ClientState_Dead && cq->state.state!=ClientState_Editing) || ls!=cq->state.lifesequence || cq->state.lastspawn<0 || !VALID_GUN(gunselect)) break;
@@ -3386,19 +3386,19 @@ namespace server
                 if(smode) smode->spawned(cq);
                 QUEUE_AI;
                 QUEUE_BUF({
-                    putint(cm->messages, N_SPAWN);
+                    putint(cm->messages, NetMsg_Spawn);
                     sendstate(cq->state, cm->messages);
                 });
                 break;
             }
 
-            case N_SUICIDE:
+            case NetMsg_Suicide:
             {
                 if(cq) cq->addevent(new suicideevent);
                 break;
             }
 
-            case N_SHOOT:
+            case NetMsg_Shoot:
             {
                 shotevent *shot = new shotevent;
                 shot->id = getint(p);
@@ -3438,7 +3438,7 @@ namespace server
                 break;
             }
 
-            case N_EXPLODE:
+            case NetMsg_Explode:
             {
                 explodeevent *exp = new explodeevent;
                 int cmillis = getint(p);
@@ -3470,7 +3470,7 @@ namespace server
                 break;
             }
 
-            case N_ITEMPICKUP:
+            case NetMsg_ItemPickup:
             {
                 int n = getint(p);
                 if(!cq) break;
@@ -3480,7 +3480,7 @@ namespace server
                 break;
             }
 
-            case N_TEXT:
+            case NetMsg_Text:
             {
                 QUEUE_AI;
                 QUEUE_MSG;
@@ -3491,7 +3491,7 @@ namespace server
                 break;
             }
 
-            case N_SAYTEAM:
+            case NetMsg_SayTeam:
             {
                 getstring(text, p);
                 if(!ci || !cq || (ci->state.state==ClientState_Spectator && !ci->local && !ci->privilege) || !modecheck(gamemode, Mode_Team) || !VALID_TEAM(cq->team)) break;
@@ -3500,7 +3500,7 @@ namespace server
                 {
                     clientinfo *t = clients[i];
                     if(t==cq || t->state.state==ClientState_Spectator || t->state.aitype != AI_None || cq->team != t->team) continue;
-                    sendf(t->clientnum, 1, "riis", N_SAYTEAM, cq->clientnum, text);
+                    sendf(t->clientnum, 1, "riis", NetMsg_SayTeam, cq->clientnum, text);
                 }
                 if(isdedicatedserver() && cq)
                 {
@@ -3509,7 +3509,7 @@ namespace server
                 break;
             }
 
-            case N_SWITCHNAME:
+            case NetMsg_SwitchName:
             {
                 QUEUE_MSG;
                 getstring(text, p);
@@ -3519,21 +3519,21 @@ namespace server
                 break;
             }
 
-            case N_SWITCHMODEL:
+            case NetMsg_SwitchModel:
             {
                 ci->playermodel = getint(p);
                 QUEUE_MSG;
                 break;
             }
 
-            case N_SWITCHCOLOR:
+            case NetMsg_SwitchColor:
             {
                 ci->playercolor = getint(p);
                 QUEUE_MSG;
                 break;
             }
 
-            case N_SWITCHTEAM:
+            case NetMsg_SwitchTeam:
             {
                 int team = getint(p);
                 if(modecheck(gamemode, Mode_Team) && VALID_TEAM(team) && ci->team != team && (!smode || smode->canchangeteam(ci, ci->team, team)))
@@ -3541,12 +3541,12 @@ namespace server
                     if(ci->state.state==ClientState_Alive) suicide(ci);
                     ci->team = team;
                     aiman::changeteam(ci);
-                    sendf(-1, 1, "riiii", N_SETTEAM, sender, ci->team, ci->state.state==ClientState_Spectator ? -1 : 0);
+                    sendf(-1, 1, "riiii", NetMsg_SetTeam, sender, ci->team, ci->state.state==ClientState_Spectator ? -1 : 0);
                 }
                 break;
             }
 
-            case N_MAPVOTE:
+            case NetMsg_MapVote:
             {
                 getstring(text, p);
                 filtertext(text, text, false);
@@ -3556,7 +3556,7 @@ namespace server
                 break;
             }
 
-            case N_ITEMLIST:
+            case NetMsg_ItemList:
             {
                 if((ci->state.state==ClientState_Spectator && !ci->privilege && !ci->local) || !notgotitems || strcmp(ci->clientmap, smapname)) { while(getint(p)>=0 && !p.overread()) getint(p); break; }
                 int n;
@@ -3575,7 +3575,7 @@ namespace server
                 break;
             }
 
-            case N_EDITENT:
+            case NetMsg_EditEnt:
             {
                 int i = getint(p);
                 for(int k = 0; k < 3; ++k)
@@ -3604,7 +3604,7 @@ namespace server
                 break;
             }
 
-            case N_EDITVAR:
+            case NetMsg_EditVar:
             {
                 int type = getint(p);
                 getstring(text, p);
@@ -3618,11 +3618,11 @@ namespace server
                 break;
             }
 
-            case N_PING:
-                sendf(sender, 1, "i2", N_PONG, getint(p));
+            case NetMsg_Ping:
+                sendf(sender, 1, "i2", NetMsg_Pong, getint(p));
                 break;
 
-            case N_CLIENTPING:
+            case NetMsg_ClientPing:
             {
                 int ping = getint(p);
                 if(ci)
@@ -3637,7 +3637,7 @@ namespace server
                 break;
             }
 
-            case N_MASTERMODE:
+            case NetMsg_MasterMode:
             {
                 int mm = getint(p);
                 if((ci->privilege || ci->local) && mm>=MasterMode_Open && mm<=MasterMode_Private)
@@ -3653,18 +3653,18 @@ namespace server
                                 allowedips.add(getclientip(clients[i]->clientnum));
                             }
                         }
-                        sendf(-1, 1, "rii", N_MASTERMODE, mastermode);
+                        sendf(-1, 1, "rii", NetMsg_MasterMode, mastermode);
                         //sendservmsgf("mastermode is now %s (%d)", mastermodename(mastermode), mastermode);
                     }
                     else
                     {
-                        sendf(sender, 1, "ris", N_SERVMSG, tempformatstring("mastermode %d is disabled on this server", mm));
+                        sendf(sender, 1, "ris", NetMsg_ServerMsg, tempformatstring("mastermode %d is disabled on this server", mm));
                     }
                 }
                 break;
             }
 
-            case N_CLEARBANS:
+            case NetMsg_ClearBans:
             {
                 if(ci->privilege || ci->local)
                 {
@@ -3674,7 +3674,7 @@ namespace server
                 break;
             }
 
-            case N_KICK:
+            case NetMsg_Kick:
             {
                 int victim = getint(p);
                 getstring(text, p);
@@ -3683,7 +3683,7 @@ namespace server
                 break;
             }
 
-            case N_SPECTATOR:
+            case NetMsg_Spectator:
             {
                 int spectator = getint(p), val = getint(p);
                 if(!ci->privilege && !ci->local && (spectator!=sender || (ci->state.state==ClientState_Spectator && mastermode>=MasterMode_Locked))) break;
@@ -3697,7 +3697,7 @@ namespace server
                 break;
             }
 
-            case N_SETTEAM:
+            case NetMsg_SetTeam:
             {
                 int who = getint(p), team = getint(p);
                 if(!ci->privilege && !ci->local) break;
@@ -3709,21 +3709,21 @@ namespace server
                     wi->team = team;
                 }
                 aiman::changeteam(wi);
-                sendf(-1, 1, "riiii", N_SETTEAM, who, wi->team, 1);
+                sendf(-1, 1, "riiii", NetMsg_SetTeam, who, wi->team, 1);
                 break;
             }
 
-            case N_FORCEINTERMISSION:
+            case NetMsg_ForceIntermission:
                 if(ci->local && !hasnonlocalclients()) startintermission();
                 break;
 
-            case N_RECORDDEMO:
+            case NetMsg_RecordDemo:
             {
                 int val = getint(p);
                 if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
                 if(!maxdemos || !maxdemosize)
                 {
-                    sendf(ci->clientnum, 1, "ris", N_SERVMSG, "the server has disabled demo recording");
+                    sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "the server has disabled demo recording");
                     break;
                 }
                 demonextmatch = val!=0;
@@ -3731,14 +3731,14 @@ namespace server
                 break;
             }
 
-            case N_STOPDEMO:
+            case NetMsg_StopDemo:
             {
                 if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
                 stopdemo();
                 break;
             }
 
-            case N_CLEARDEMOS:
+            case NetMsg_ClearDemos:
             {
                 int demo = getint(p);
                 if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
@@ -3746,12 +3746,12 @@ namespace server
                 break;
             }
 
-            case N_LISTDEMOS:
+            case NetMsg_ListDemos:
                 if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator) break;
                 listdemos(sender);
                 break;
 
-            case N_GETDEMO:
+            case NetMsg_GetDemo:
             {
                 int n = getint(p);
                 if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator) break;
@@ -3759,19 +3759,19 @@ namespace server
                 break;
             }
 
-            case N_GETMAP:
-                if(!mapdata) sendf(sender, 1, "ris", N_SERVMSG, "no map to send");
-                else if(ci->getmap) sendf(sender, 1, "ris", N_SERVMSG, "already sending map");
+            case NetMsg_GetMap:
+                if(!mapdata) sendf(sender, 1, "ris", NetMsg_ServerMsg, "no map to send");
+                else if(ci->getmap) sendf(sender, 1, "ris", NetMsg_ServerMsg, "already sending map");
                 else
                 {
                     sendservmsgf("[%s is getting the map]", colorname(ci));
-                    if((ci->getmap = sendfile(sender, 2, mapdata, "ri", N_SENDMAP)))
+                    if((ci->getmap = sendfile(sender, 2, mapdata, "ri", NetMsg_SendMap)))
                         ci->getmap->freeCallback = freegetmap;
                     ci->needclipboard = totalmillis ? totalmillis : 1;
                 }
                 break;
 
-            case N_NEWMAP:
+            case NetMsg_Newmap:
             {
                 int size = getint(p);
                 if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator) break;
@@ -3786,7 +3786,7 @@ namespace server
                 break;
             }
 
-            case N_SETMASTER:
+            case NetMsg_SetMasterMaster:
             {
                 int mn = getint(p), val = getint(p);
                 getstring(text, p);
@@ -3802,33 +3802,33 @@ namespace server
                 break;
             }
 
-            case N_ADDBOT:
+            case NetMsg_AddBot:
             {
                 aiman::reqadd(ci, getint(p));
                 break;
             }
 
-            case N_DELBOT:
+            case NetMsg_DelBot:
             {
                 aiman::reqdel(ci);
                 break;
             }
 
-            case N_BOTLIMIT:
+            case NetMsg_BotLimit:
             {
                 int limit = getint(p);
                 if(ci) aiman::setbotlimit(ci, limit);
                 break;
             }
 
-            case N_BOTBALANCE:
+            case NetMsg_BotBalance:
             {
                 int balance = getint(p);
                 if(ci) aiman::setbotbalance(ci, balance!=0);
                 break;
             }
 
-            case N_AUTHTRY:
+            case NetMsg_AuthTry:
             {
                 string desc, name;
                 getstring(desc, p, sizeof(desc));
@@ -3837,7 +3837,7 @@ namespace server
                 break;
             }
 
-            case N_AUTHKICK:
+            case NetMsg_AuthKick:
             {
                 string desc, name;
                 getstring(desc, p, sizeof(desc));
@@ -3860,7 +3860,7 @@ namespace server
                 break;
             }
 
-            case N_AUTHANS:
+            case NetMsg_AuthAnswer:
             {
                 string desc, ans;
                 getstring(desc, p, sizeof(desc));
@@ -3870,7 +3870,7 @@ namespace server
                 break;
             }
 
-            case N_PAUSEGAME:
+            case NetMsg_PauseGame:
             {
                 int val = getint(p);
                 if(ci->privilege < (restrictpausegame ? Priv_Admin : Priv_Master) && !ci->local) break;
@@ -3878,7 +3878,7 @@ namespace server
                 break;
             }
 
-            case N_GAMESPEED:
+            case NetMsg_GameSpeed:
             {
                 int val = getint(p);
                 if(ci->privilege < (restrictgamespeed ? Priv_Admin : Priv_Master) && !ci->local) break;
@@ -3886,16 +3886,16 @@ namespace server
                 break;
             }
 
-            case N_COPY:
+            case NetMsg_Copy:
                 ci->cleanclipboard();
                 ci->lastclipboard = totalmillis ? totalmillis : 1;
                 goto genericmsg;
 
-            case N_PASTE:
+            case NetMsg_Paste:
                 if(ci->state.state!=ClientState_Spectator) sendclipboard(ci);
                 goto genericmsg;
 
-            case N_CLIPBOARD:
+            case NetMsg_Clipboard:
             {
                 int unpacklen = getint(p), packlen = getint(p);
                 ci->cleanclipboard(false);
@@ -3910,7 +3910,7 @@ namespace server
                     packlen = unpacklen = 0;
                 }
                 packetbuf q(32 + packlen, ENET_PACKET_FLAG_RELIABLE);
-                putint(q, N_CLIPBOARD);
+                putint(q, NetMsg_Clipboard);
                 putint(q, ci->clientnum);
                 putint(q, unpacklen);
                 putint(q, packlen);
@@ -3920,9 +3920,9 @@ namespace server
                 break;
             }
 
-            case N_EDITT:
-            case N_REPLACE:
-            case N_EDITVSLOT:
+            case NetMsg_EditTex:
+            case NetMsg_Replace:
+            case NetMsg_EditVSlot:
             {
                 int size = server::msgsizelookup(type);
                 if(size<=0)
@@ -3953,8 +3953,8 @@ namespace server
                 break;
             }
 
-            case N_UNDO:
-            case N_REDO:
+            case NetMsg_Undo:
+            case NetMsg_Redo:
             {
                 int unpacklen = getint(p), packlen = getint(p);
                 if(!ci || ci->state.state==ClientState_Spectator || packlen <= 0 || packlen > (1<<16) || unpacklen <= 0)
@@ -3973,7 +3973,7 @@ namespace server
                 break;
             }
 
-            case N_SERVCMD:
+            case NetMsg_ServerCommand:
                 getstring(text, p);
                 break;
 
