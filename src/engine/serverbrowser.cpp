@@ -29,11 +29,16 @@ int resolverloop(void * data)
     SDL_Thread *thread = rt->thread;
     SDL_UnlockMutex(resolvermutex);
     if(!thread || SDL_GetThreadID(thread) != SDL_ThreadID())
+    {
         return 0;
+    }
     while(thread == rt->thread)
     {
         SDL_LockMutex(resolvermutex);
-        while(resolverqueries.empty()) SDL_CondWait(querycond, resolvermutex);
+        while(resolverqueries.empty())
+        {
+            SDL_CondWait(querycond, resolvermutex);
+        }
         rt->query = resolverqueries.pop();
         rt->starttime = totalmillis;
         SDL_UnlockMutex(resolvermutex);
@@ -90,8 +95,10 @@ void resolverstop(resolverthread &rt)
 
 void resolverclear()
 {
-    if(resolverthreads.empty()) return;
-
+    if(resolverthreads.empty())
+    {
+        return;
+    }
     SDL_LockMutex(resolvermutex);
     resolverqueries.shrink(0);
     resolverresults.shrink(0);
@@ -105,8 +112,10 @@ void resolverclear()
 
 void resolverquery(const char *name)
 {
-    if(resolverthreads.empty()) resolverinit();
-
+    if(resolverthreads.empty())
+    {
+        resolverinit();
+    }
     SDL_LockMutex(resolvermutex);
     resolverqueries.add(name);
     SDL_CondSignal(querycond);
@@ -143,8 +152,10 @@ bool resolvercheck(const char **name, ENetAddress *address)
 
 bool resolverwait(const char *name, ENetAddress *address)
 {
-    if(resolverthreads.empty()) resolverinit();
-
+    if(resolverthreads.empty())
+    {
+        resolverinit();
+    }
     DEF_FORMAT_STRING(text, "resolving %s... (esc to abort)", name);
     renderprogress(0, text);
 
@@ -212,19 +223,28 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
         ENET_SOCKETSET_ADD(readset, sock);
         ENET_SOCKETSET_ADD(writeset, sock);
         int result = enet_socketset_select(sock, &readset, &writeset, 250);
-        if(result < 0) break;
+        if(result < 0)
+        {
+            break;
+        }
         else if(result > 0)
         {
             if(ENET_SOCKETSET_CHECK(readset, sock) || ENET_SOCKETSET_CHECK(writeset, sock))
             {
                 int error = 0;
-                if(enet_socket_get_option(sock, ENET_SOCKOPT_ERROR, &error) < 0 || error) break;
+                if(enet_socket_get_option(sock, ENET_SOCKOPT_ERROR, &error) < 0 || error)
+                {
+                    break;
+                }
                 return 0;
             }
         }
         timeout = SDL_GetTicks() - starttime;
         renderprogress(min(float(timeout)/CONNLIMIT, 1.0f), text);
-        if(interceptkey(SDLK_ESCAPE)) break;
+        if(interceptkey(SDLK_ESCAPE))
+        {
+            break;
+        }
     }
 
     return -1;
@@ -232,15 +252,24 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
 
 struct pingattempts
 {
-    enum { MAXATTEMPTS = 2 };
+    enum
+    {
+        MAXATTEMPTS = 2
+    };
 
     int offset, attempts[MAXATTEMPTS];
 
     pingattempts() : offset(0) { clearattempts(); }
 
-    void clearattempts() { memset(attempts, 0, sizeof(attempts)); }
+    void clearattempts()
+    {
+        memset(attempts, 0, sizeof(attempts));
+    }
 
-    void setoffset() { offset = 1 + RANDOM_INT(0xFFFFFF); }
+    void setoffset()
+    {
+        offset = 1 + RANDOM_INT(0xFFFFFF);
+    }
 
     int encodeping(int millis)
     {
@@ -287,7 +316,12 @@ struct pingattempts
 
 static int currentprotocol = server::protocolversion();
 
-enum { UNRESOLVED = 0, RESOLVING, RESOLVED };
+enum
+{
+    UNRESOLVED = 0,
+    RESOLVING,
+    RESOLVED
+};
 
 struct serverinfo : servinfo, pingattempts
 {
@@ -344,8 +378,13 @@ struct serverinfo : servinfo, pingattempts
     void checkdecay(int decay)
     {
         if(lastping >= 0 && totalmillis - lastping >= decay)
+        {
             cleanup();
-        if(lastping < 0) lastping = totalmillis;
+        }
+        if(lastping < 0)
+        {
+            lastping = totalmillis;
+        }
     }
 
     void calcping()
@@ -363,7 +402,10 @@ struct serverinfo : servinfo, pingattempts
 
     void addping(int rtt, int millis)
     {
-        if(millis >= lastping) lastping = -1;
+        if(millis >= lastping)
+        {
+            lastping = -1;
+        }
         pings[nextping] = rtt;
         nextping = (nextping+1)%MAXPINGS;
         calcping();
@@ -371,10 +413,22 @@ struct serverinfo : servinfo, pingattempts
 
     const char *status() const
     {
-        if(address.host == ENET_HOST_ANY) return "[unknown host]";
-        if(ping == WAITING) return "[waiting for response]";
-        if(protocol < currentprotocol) return "[older protocol]";
-        if(protocol > currentprotocol) return "[newer protocol]";
+        if(address.host == ENET_HOST_ANY)
+        {
+            return "[unknown host]";
+        }
+        if(ping == WAITING)
+        {
+            return "[waiting for response]";
+        }
+        if(protocol < currentprotocol)
+        {
+            return "[older protocol]";
+        }
+        if(protocol > currentprotocol)
+        {
+            return "[newer protocol]";
+        }
         return NULL;
     }
 
@@ -384,19 +438,52 @@ struct serverinfo : servinfo, pingattempts
     {
         if(a->protocol == currentprotocol)
         {
-            if(b->protocol != currentprotocol) return true;
+            if(b->protocol != currentprotocol)
+            {
+                return true;
+            }
         }
-        else if(b->protocol == currentprotocol) return false;
-        if(a->keep > b->keep) return true;
-        if(a->keep < b->keep) return false;
-        if(a->numplayers < b->numplayers) return false;
-        if(a->numplayers > b->numplayers) return true;
-        if(a->ping > b->ping) return false;
-        if(a->ping < b->ping) return true;
+        else if(b->protocol == currentprotocol)
+        {
+            return false;
+        }
+        if(a->keep > b->keep)
+        {
+            return true;
+        }
+        if(a->keep < b->keep)
+        {
+            return false;
+        }
+        if(a->numplayers < b->numplayers)
+        {
+            return false;
+        }
+        if(a->numplayers > b->numplayers)
+        {
+            return true;
+        }
+        if(a->ping > b->ping)
+        {
+            return false;
+        }
+        if(a->ping < b->ping)
+        {
+            return true;
+        }
         int cmp = strcmp(a->name, b->name);
-        if(cmp != 0) return cmp < 0;
-        if(a->address.port < b->address.port) return true;
-        if(a->address.port > b->address.port) return false;
+        if(cmp != 0)
+        {
+            return cmp < 0;
+        }
+        if(a->address.port < b->address.port)
+        {
+            return true;
+        }
+        if(a->address.port > b->address.port)
+        {
+            return false;
+        }
         return false;
     }
 };
@@ -410,18 +497,21 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
     serverinfo *si = new serverinfo;
     si->address.host = ip;
     si->address.port = port;
-    if(ip!=ENET_HOST_ANY) si->resolved = RESOLVED;
-
-    if(name) copystring(si->name, name);
+    if(ip!=ENET_HOST_ANY)
+    {
+        si->resolved = RESOLVED;
+    }
+    if(name)
+    {
+        copystring(si->name, name);
+    }
     else if(ip==ENET_HOST_ANY || enet_address_get_host_ip(&si->address, si->name, sizeof(si->name)) < 0)
     {
         delete si;
         return NULL;
 
     }
-
     servers.add(si);
-
     return si;
 }
 
@@ -497,12 +587,21 @@ void pingservers()
     uchar ping[MAXTRANS];
 
     static int lastping = 0;
-    if(lastping >= servers.length()) lastping = 0;
+    if(lastping >= servers.length())
+    {
+        lastping = 0;
+    }
     for(int i = 0; i < (maxservpings ? min(servers.length(), maxservpings) : servers.length()); ++i)
     {
         serverinfo &si = *servers[lastping];
-        if(++lastping >= servers.length()) lastping = 0;
-        if(si.address.host == ENET_HOST_ANY) continue;
+        if(++lastping >= servers.length())
+        {
+            lastping = 0;
+        }
+        if(si.address.host == ENET_HOST_ANY)
+        {
+            continue;
+        }
         buildping(buf, ping, si);
         enet_socket_send(pingsock, &si.address, &buf, 1);
 
@@ -568,7 +667,10 @@ static int lastreset = 0;
 
 void checkpings()
 {
-    if(pingsock==ENET_SOCKET_NULL) return;
+    if(pingsock==ENET_SOCKET_NULL)
+    {
+        return;
+    }
     enet_uint32 events = ENET_SOCKET_WAIT_RECEIVE;
     ENetBuffer buf;
     ENetAddress addr;
@@ -579,7 +681,10 @@ void checkpings()
     while(enet_socket_wait(pingsock, &events, 0) >= 0 && events)
     {
         int len = enet_socket_receive(pingsock, &addr, &buf, 1);
-        if(len <= 0) return;
+        if(len <= 0)
+        {
+            return;
+        }
         ucharbuf p(ping, len);
         int millis = getint(p);
         serverinfo *si = NULL;
@@ -700,8 +805,14 @@ ICOMMAND(servinfomaxplayers, "i", (int *i), GETSERVERINFO(*i, si, intret(si.maxp
 ICOMMAND(servinfoplayers, "i", (int *i),
     GETSERVERINFO(*i, si,
     {
-        if(si.maxplayers <= 0) intret(si.numplayers);
-        else result(tempformatstring(si.numplayers >= si.maxplayers ? "\f3%d/%d" : "%d/%d", si.numplayers, si.maxplayers));
+        if(si.maxplayers <= 0)
+        {
+            intret(si.numplayers);
+        }
+        else
+        {
+            result(tempformatstring(si.numplayers >= si.maxplayers ? "\f3%d/%d" : "%d/%d", si.numplayers, si.maxplayers));
+        }
     }));
 ICOMMAND(servinfoattr, "ii", (int *i, int *n), GETSERVERINFO(*i, si, { if(si.attr.inrange(*n)) intret(si.attr[*n]); }));
 
@@ -736,7 +847,10 @@ void clearservers(bool full = false)
 void retrieveservers(vector<char> &data)
 {
     ENetSocket sock = connectmaster(true);
-    if(sock == ENET_SOCKET_NULL) return;
+    if(sock == ENET_SOCKET_NULL)
+    {
+        return;
+    }
 
     extern char *mastername;
     DEF_FORMAT_STRING(text, "retrieving servers from %s... (esc to abort)", mastername);
@@ -754,36 +868,66 @@ void retrieveservers(vector<char> &data)
             buf.data = (void *)req;
             buf.dataLength = reqlen;
             int sent = enet_socket_send(sock, NULL, &buf, 1);
-            if(sent < 0) break;
+            if(sent < 0)
+            {
+                break;
+            }
             req += sent;
             reqlen -= sent;
-            if(reqlen <= 0) break;
+            if(reqlen <= 0)
+            {
+                break;
+            }
         }
         timeout = SDL_GetTicks() - starttime;
         renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
-        if(interceptkey(SDLK_ESCAPE)) timeout = RETRIEVELIMIT + 1;
-        if(timeout > RETRIEVELIMIT) break;
-    }
-
-    if(reqlen <= 0) for(;;)
-    {
-        enet_uint32 events = ENET_SOCKET_WAIT_RECEIVE;
-        if(enet_socket_wait(sock, &events, 250) >= 0 && events)
+        if(interceptkey(SDLK_ESCAPE))
         {
-            if(data.length() >= data.capacity()) data.reserve(4096);
-            buf.data = data.getbuf() + data.length();
-            buf.dataLength = data.capacity() - data.length();
-            int recv = enet_socket_receive(sock, NULL, &buf, 1);
-            if(recv <= 0) break;
-            data.advance(recv);
+            timeout = RETRIEVELIMIT + 1;
         }
-        timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
-        if(interceptkey(SDLK_ESCAPE)) timeout = RETRIEVELIMIT + 1;
-        if(timeout > RETRIEVELIMIT) break;
+        if(timeout > RETRIEVELIMIT)
+        {
+            break;
+        }
     }
 
-    if(data.length()) data.add('\0');
+    if(reqlen <= 0)
+    {
+        for(;;)
+        {
+            enet_uint32 events = ENET_SOCKET_WAIT_RECEIVE;
+            if(enet_socket_wait(sock, &events, 250) >= 0 && events)
+            {
+                if(data.length() >= data.capacity())
+                {
+                    data.reserve(4096);
+                }
+                buf.data = data.getbuf() + data.length();
+                buf.dataLength = data.capacity() - data.length();
+                int recv = enet_socket_receive(sock, NULL, &buf, 1);
+                if(recv <= 0)
+                {
+                    break;
+                }
+                data.advance(recv);
+            }
+            timeout = SDL_GetTicks() - starttime;
+            renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
+            if(interceptkey(SDLK_ESCAPE))
+            {
+                timeout = RETRIEVELIMIT + 1;
+            }
+            if(timeout > RETRIEVELIMIT)
+            {
+                break;
+            }
+        }
+    }
+
+    if(data.length())
+    {
+        data.add('\0');
+    }
     enet_socket_destroy(sock);
 }
 
@@ -793,7 +937,10 @@ void updatefrommaster()
 {
     vector<char> data;
     retrieveservers(data);
-    if(data.empty()) conoutf("master server not replying");
+    if(data.empty())
+    {
+        conoutf("master server not replying");
+    }
     else
     {
         clearservers();
@@ -805,7 +952,10 @@ void updatefrommaster()
 
 void initservers()
 {
-    if(autoupdateservers && !updatedservers) updatefrommaster();
+    if(autoupdateservers && !updatedservers)
+    {
+        updatefrommaster();
+    }
 }
 
 ICOMMAND(addserver, "sis", (const char *name, int *port, const char *password), addserver(name, *port, password[0] ? password : NULL));
@@ -817,30 +967,54 @@ COMMAND(refreshservers, "");
 
 void writeservercfg()
 {
-    if(!game::savedservers()) return;
+    if(!game::savedservers())
+    {
+        return;
+    }
     stream *f = openutf8file(path(game::savedservers(), true), "w");
-    if(!f) return;
+    if(!f)
+    {
+        return;
+    }
     int kept = 0;
     for(int i = 0; i < servers.length(); i++)
     {
         serverinfo *s = servers[i];
         if(s->keep)
         {
-            if(!kept) f->printf("// servers that should never be cleared from the server list\n\n");
-            if(s->password) f->printf("keepserver %s %d %s\n", escapeid(s->name), s->address.port, escapestring(s->password));
-            else f->printf("keepserver %s %d\n", escapeid(s->name), s->address.port);
+            if(!kept)
+            {
+                f->printf("// servers that should never be cleared from the server list\n\n");
+            }
+            if(s->password)
+            {
+                f->printf("keepserver %s %d %s\n", escapeid(s->name), s->address.port, escapestring(s->password));
+            }
+            else
+            {
+                f->printf("keepserver %s %d\n", escapeid(s->name), s->address.port);
+            }
             kept++;
         }
     }
-    if(kept) f->printf("\n");
+    if(kept)
+    {
+        f->printf("\n");
+    }
     f->printf("// servers connected to are added here automatically\n\n");
     for(int i = 0; i < servers.length(); i++)
     {
         serverinfo *s = servers[i];
         if(!s->keep)
         {
-            if(s->password) f->printf("addserver %s %d %s\n", escapeid(s->name), s->address.port, escapestring(s->password));
-            else f->printf("addserver %s %d\n", escapeid(s->name), s->address.port);
+            if(s->password)
+            {
+                f->printf("addserver %s %d %s\n", escapeid(s->name), s->address.port, escapestring(s->password));
+            }
+            else
+            {
+                f->printf("addserver %s %d\n", escapeid(s->name), s->address.port);
+            }
         }
     }
     delete f;
