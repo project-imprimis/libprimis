@@ -404,7 +404,7 @@ struct ctfclientmode : clientmode
     {
         preloadmodel("game/flag/rojo");
         preloadmodel("game/flag/azul");
-        for(int i = S_FLAGPICKUP; i <= S_FLAGFAIL; i++) preloadsound(i);
+        for(int i = Sound_FlagPickup; i <= Sound_FlagFail; i++) preloadsound(i);
     }
 
     void drawblip(gameent *d, float x, float y, float s, const vec &pos, bool flagblip)
@@ -441,8 +441,8 @@ struct ctfclientmode : clientmode
             {
                 if(flags[i].owner == d)
                 {
-                    float x = 1800*w/h*0.5f-HICON_SIZE/2, y = 1800*0.95f-HICON_SIZE/2;
-                    drawicon(flags[i].team==1 ? HICON_BLUE_FLAG : HICON_RED_FLAG, x, y);
+                    float x = 1800*w/h*0.5f-HudIcon_Size/2, y = 1800*0.95f-HudIcon_Size/2;
+                    drawicon(flags[i].team==1 ? HudIcon_BlueFlag : HudIcon_RedFlag, x, y);
                     break;
                 }
             }
@@ -652,7 +652,7 @@ struct ctfclientmode : clientmode
             f.interptime = 0;
         }
         conoutf(ConsoleMsg_GameInfo, "%s dropped %s", teamcolorname(d), teamcolorflag(f));
-        teamsound(d, S_FLAGDROP);
+        teamsound(d, Sound_FlagDrop);
     }
 
     void flagexplosion(int i, int team, const vec &loc)
@@ -686,7 +686,7 @@ struct ctfclientmode : clientmode
         f.interptime = 0;
         returnflag(i);
         conoutf(ConsoleMsg_GameInfo, "%s returned %s", teamcolorname(d), teamcolorflag(f));
-        teamsound(d, S_FLAGRETURN);
+        teamsound(d, Sound_FlagReturn);
     }
 
     void resetflag(int i, int version)
@@ -698,7 +698,7 @@ struct ctfclientmode : clientmode
         f.interptime = 0;
         returnflag(i);
         conoutf(ConsoleMsg_GameInfo, "%s reset", teamcolorflag(f));
-        teamsound(f.team == player1->team, S_FLAGRESET);
+        teamsound(f.team == player1->team, Sound_FlagReset);
     }
 
     void scoreflag(gameent *d, int relay, int relayversion, int goal, int goalversion, int team, int score, int dflags)
@@ -722,7 +722,7 @@ struct ctfclientmode : clientmode
         if(d!=player1) particle_textcopy(d->abovehead(), tempformatstring("%d", score), PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
         d->flags = dflags;
         conoutf(ConsoleMsg_GameInfo, "%s scored for %s", teamcolorname(d), teamcolor("team ", "", team, "a team"));
-        playsound(team==player1->team ? S_FLAGSCORE : S_FLAGFAIL);
+        playsound(team==player1->team ? Sound_FlagScore : Sound_FlagFail);
 
         if(score >= FLAGLIMIT) conoutf(ConsoleMsg_GameInfo, "%s captured %d flags", teamcolor("team ", "", team, "a team"), score);
     }
@@ -737,7 +737,7 @@ struct ctfclientmode : clientmode
         if(f.droptime) conoutf(ConsoleMsg_GameInfo, "%s picked up %s", teamcolorname(d), teamcolorflag(f));
         else conoutf(ConsoleMsg_GameInfo, "%s stole %s", teamcolorname(d), teamcolorflag(f));
         ownflag(i, d, lastmillis);
-        teamsound(d, S_FLAGPICKUP);
+        teamsound(d, Sound_FlagPickup);
     }
 
     void checkitems(gameent *d)

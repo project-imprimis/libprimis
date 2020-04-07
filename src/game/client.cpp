@@ -2204,7 +2204,7 @@ namespace game
                     return;
                 }
                 d->gunselect = gun;
-                playsound(S_WEAPLOAD, &d->o);
+                playsound(Sound_WeapLoad, &d->o);
                 break;
             }
 
@@ -2242,7 +2242,7 @@ namespace game
                 }
                 entities::setspawn(i, true);
                 ai::itemspawned(i);
-                playsound(S_ITEMSPAWN, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
+                playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
                 #if 0
                 const char *name = entities::itemname(i);
                 if(name) particle_text(entities::ents[i]->o, name, PART_TEXT, 2000, 0x32FF64, 4.0f, -8);

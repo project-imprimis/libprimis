@@ -160,7 +160,7 @@ namespace entities
             extentity &e = *ents[tp];
             if(e.attr4 >= 0)
             {
-                int snd = S_TELEPORT, flags = 0;
+                int snd = Sound_Teleport, flags = 0;
                 if(e.attr4 > 0)
                 {
                     snd = e.attr4; flags = SND_MAP;
@@ -196,7 +196,7 @@ namespace entities
             extentity &e = *ents[jp];
             if(e.attr4 >= 0)
             {
-                int snd = S_JUMPPAD, flags = 0;
+                int snd = Sound_JumpPad, flags = 0;
                 if(e.attr4 > 0)
                 {
                     snd = e.attr4;

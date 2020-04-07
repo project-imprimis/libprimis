@@ -231,34 +231,34 @@ static const char * const mastermodeicons[] =  { "server", "server", "serverlock
 // hardcoded sounds, defined in sounds.cfg
 enum
 {
-    S_JUMP = 0,
-    S_LAND,
-    S_SPLASHIN,
-    S_SPLASHOUT,
-    S_BURN,
-    S_ITEMSPAWN,
-    S_TELEPORT,
-    S_JUMPPAD,
-    S_MELEE,
-    S_PULSE1,
-    S_PULSE2,
-    S_PULSEEXPLODE,
-    S_RAIL1,
-    S_RAIL2,
-    S_WEAPLOAD,
-    S_NOAMMO,
-    S_HIT,
-    S_PAIN1,
-    S_PAIN2,
-    S_DIE1,
-    S_DIE2,
+    Sound_Jump = 0,
+    Sound_Land,
+    Sound_SplashIn,
+    Sound_SplashOut,
+    Sound_Burn,
+    Sound_ItemSpawn,
+    Sound_Teleport,
+    Sound_JumpPad,
+    Sound_Melee,
+    Sound_Pulse1,
+    Sound_Pulse2,
+    Sound_PulseExplode,
+    Sound_Rail1,
+    Sound_Rail2,
+    Sound_WeapLoad,
+    Sound_NoAmmo,
+    Sound_Hit,
+    Sound_Pain1,
+    Sound_Pain2,
+    Sound_Die1,
+    Sound_Die2,
 
-    S_FLAGPICKUP,
-    S_FLAGDROP,
-    S_FLAGRETURN,
-    S_FLAGSCORE,
-    S_FLAGRESET,
-    S_FLAGFAIL
+    Sound_FlagPickup,
+    Sound_FlagDrop,
+    Sound_FlagReturn,
+    Sound_FlagScore,
+    Sound_FlagReset,
+    Sound_FlagFail
 };
 
 // network messages codes, c2s, c2c, s2c
@@ -516,15 +516,10 @@ struct demoheader
 
 enum
 {
-    HICON_RED_FLAG = 0,
-    HICON_BLUE_FLAG,
+    HudIcon_RedFlag = 0,
+    HudIcon_BlueFlag,
 
-    HICON_X       = 20,
-    HICON_Y       = 1650,
-    HICON_TEXTY   = 1644,
-    HICON_STEP    = 490,
-    HICON_SIZE    = 120,
-    HICON_SPACE   = 40
+    HudIcon_Size    = 120,
 };
 
 #if 0
@@ -545,10 +540,10 @@ static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound
 
 //    1          2          3           4                5               6         7        8     9  10 11    12  13    14 15    16  17 18 19
 {
-    { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_RAIL1,  S_RAIL2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
-    { Gun_Rail,  Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, S_PULSE1, S_PULSE2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
-    { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, S_MELEE,  S_MELEE,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
+    { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Rail1,  Sound_Rail2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
+    { Gun_Rail,  Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
+    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Pulse1, Sound_Pulse2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
+    { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
 };
 
 static const struct guninfo { const char *name, *file, *vwep; int attacks[Act_NumActs]; } guns[Gun_NumGuns] =

@@ -555,7 +555,7 @@ namespace game
 
     void preloadsounds()
     {
-        for(int i = S_JUMP; i <= S_DIE2; i++) preloadsound(i);
+        for(int i = Sound_Jump; i <= Sound_Die2; i++) preloadsound(i);
     }
 
     void preload()

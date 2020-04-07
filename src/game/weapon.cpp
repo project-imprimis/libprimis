@@ -30,7 +30,7 @@ namespace game
         if(gun!=d->gunselect)
         {
             addmsg(NetMsg_GunSelect, "rci", d, gun);
-            playsound(S_WEAPLOAD, d == player1 ? NULL : &d->o);
+            playsound(Sound_WeapLoad, d == player1 ? NULL : &d->o);
         }
         d->gunselect = gun;
     }
@@ -57,7 +57,7 @@ namespace game
         }
         else
         {
-            playsound(S_NOAMMO);
+            playsound(Sound_NoAmmo);
         }
     }
 //nextweapon
@@ -93,7 +93,7 @@ namespace game
         int gun = getweapon(name);
         if(player1->state!=ClientState_Alive || !VALID_GUN(gun)) return;
         if(force || player1->ammo[gun]) gunselect(gun, player1);
-        else playsound(S_NOAMMO);
+        else playsound(Sound_NoAmmo);
     }
     ICOMMAND(setweapon, "si", (char *name, int *force), setweapon(name, *force!=0));
 
@@ -121,7 +121,7 @@ namespace game
                 return;
             }
         }
-        playsound(S_NOAMMO);
+        playsound(Sound_NoAmmo);
     }
     ICOMMAND(cycleweapon, "V", (tagval *args, int numargs),
     {
@@ -164,7 +164,7 @@ namespace game
                 return;
             }
         }
-        playsound(S_NOAMMO);
+        playsound(Sound_NoAmmo);
     });
 
     void offsetray(const vec &from, const vec &to, int spread, float range, vec &dest)
@@ -380,7 +380,7 @@ namespace game
         if(at==player1 && d!=at)
         {
             extern int hitsound;
-            if(hitsound && lasthit != lastmillis) playsound(S_HIT);
+            if(hitsound && lasthit != lastmillis) playsound(Sound_Hit);
             lasthit = lastmillis;
         }
 
@@ -407,9 +407,9 @@ namespace game
                 {
                     damageblend(damage);
                     damagecompass(damage, at ? at->o : f->o);
-                    playsound(S_PAIN2);
+                    playsound(Sound_Pain2);
                 }
-                else playsound(S_PAIN1, &f->o);
+                else playsound(Sound_Pain1, &f->o);
             }
         }
     }
@@ -447,7 +447,7 @@ namespace game
     void explode(bool local, gameent *owner, const vec &v, const vec &vel, dynent *safe, int damage, int atk)
     {
         particle_splash(PART_SPARK, 200, 300, v, 0x50CFE5, 0.45f);
-        playsound(S_PULSEEXPLODE, &v);
+        playsound(Sound_PulseExplode, &v);
         particle_fireball(v, 1.15f*attacks[atk].exprad, PART_PULSE_BURST, int(attacks[atk].exprad*20), 0x50CFE5, 4.0f);
         vec debrisorigin = vec(v).sub(vec(vel).mul(5));
         adddynlight(safe ? v : debrisorigin, 2*attacks[atk].exprad, vec(1.0f, 3.0f, 4.0f), 350, 40, 0, attacks[atk].exprad/2, vec(0.5f, 1.5f, 2.0f));
@@ -745,7 +745,7 @@ namespace game
         {
             if(d==player1)
             {
-                msgsound(S_NOAMMO, d);
+                msgsound(Sound_NoAmmo, d);
                 d->gunwait = 600;
                 d->lastattack = -1;
                 weaponswitch(d);

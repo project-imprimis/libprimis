@@ -359,7 +359,7 @@ namespace game
         gameent *h = hudplayer();
         if(h!=player1 && actor==h && d!=actor)
         {
-            if(hitsound && lasthit != lastmillis) playsound(S_HIT);
+            if(hitsound && lasthit != lastmillis) playsound(Sound_Hit);
             lasthit = lastmillis;
         }
         if(d==h)
@@ -372,8 +372,8 @@ namespace game
         ai::damaged(d, actor);
 
         if(d->health<=0) { if(local) killed(d, actor); }
-        else if(d==h) playsound(S_PAIN2);
-        else playsound(S_PAIN1, &d->o);
+        else if(d==h) playsound(Sound_Pain2);
+        else playsound(Sound_Pain1, &d->o);
     }
 
     VARP(deathscore, 0, 1, 1);
@@ -394,14 +394,14 @@ namespace game
             d->attacking = Act_Idle;
             //d->pitch = 0;
             d->roll = 0;
-            playsound(S_DIE2);
+            playsound(Sound_Die2);
         }
         else
         {
             d->move = d->strafe = 0;
             d->resetinterp();
             d->smoothmillis = 0;
-            playsound(S_DIE1, &d->o);
+            playsound(Sound_Die1, &d->o);
         }
     }
 
@@ -621,10 +621,10 @@ namespace game
 
     void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material)
     {
-        if     (waterlevel>0) { if(material!=MAT_LAVA) playsound(S_SPLASHOUT, d==player1 ? NULL : &d->o); }
-        else if(waterlevel<0) playsound(material==MAT_LAVA ? S_BURN : S_SPLASHIN, d==player1 ? NULL : &d->o);
-        if     (floorlevel>0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(S_JUMP, d); }
-        else if(floorlevel<0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(S_LAND, d); }
+        if     (waterlevel>0) { if(material!=MAT_LAVA) playsound(Sound_SplashOut, d==player1 ? NULL : &d->o); }
+        else if(waterlevel<0) playsound(material==MAT_LAVA ? Sound_Burn : Sound_SplashIn, d==player1 ? NULL : &d->o);
+        if     (floorlevel>0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(Sound_Jump, d); }
+        else if(floorlevel<0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(Sound_Land, d); }
     }
 
     void dynentcollide(physent *d, physent *o, const vec &dir)
