@@ -372,8 +372,8 @@ void gl_checkextensions()
     const char *vendor = (const char *)glGetString(GL_VENDOR);
     const char *renderer = (const char *)glGetString(GL_RENDERER);
     const char *version = (const char *)glGetString(GL_VERSION);
-    conoutf(CON_INIT, "Renderer: %s (%s)", renderer, vendor);
-    conoutf(CON_INIT, "Driver: %s", version);
+    conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
+    conoutf(Console_Init, "Driver: %s", version);
 
 #ifdef __APPLE__
     // extern int mac_osversion();
@@ -522,7 +522,7 @@ void gl_checkextensions()
     }
 
     const char *glslstr = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
-    conoutf(CON_INIT, "GLSL: %s", glslstr ? glslstr : "unknown");
+    conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
 
     uint glslmajorversion, glslminorversion;
     if(glslstr && sscanf(glslstr, " %u.%u", &glslmajorversion, &glslminorversion) == 2) glslversion = glslmajorversion*100 + glslminorversion;
@@ -553,7 +553,7 @@ void gl_checkextensions()
     if(glversion >= 210 || hasext("GL_ARB_pixel_buffer_object") || hasext("GL_EXT_pixel_buffer_object"))
     {
         hasPBO = true;
-        if(glversion < 210 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_pixel_buffer_object extension.");
+        if(glversion < 210 && dbgexts) conoutf(Console_Init, "Using GL_ARB_pixel_buffer_object extension.");
     }
     else fatal("Pixel buffer object support is required!");
 
@@ -564,7 +564,7 @@ void gl_checkextensions()
         glGenVertexArrays_ =    (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
         glIsVertexArray_ =      (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArray");
         hasVAO = true;
-        if(glversion < 300 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_vertex_array_object extension.");
+        if(glversion < 300 && dbgexts) conoutf(Console_Init, "Using GL_ARB_vertex_array_object extension.");
     }
     else if(hasext("GL_APPLE_vertex_array_object"))
     {
@@ -573,7 +573,7 @@ void gl_checkextensions()
         glGenVertexArrays_ =    (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArraysAPPLE");
         glIsVertexArray_ =      (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArrayAPPLE");
         hasVAO = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_APPLE_vertex_array_object extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_APPLE_vertex_array_object extension.");
     }
 
     if(glversion >= 300)
@@ -598,7 +598,7 @@ void gl_checkextensions()
         if(hasext("GL_EXT_gpu_shader4"))
         {
             hasEGPU4 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_gpu_shader4 extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
         }
 
         glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
@@ -624,22 +624,22 @@ void gl_checkextensions()
         if(hasext("GL_ARB_texture_float"))
         {
             hasTF = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_float extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_texture_float extension.");
         }
         if(hasext("GL_ARB_texture_rg"))
         {
             hasTRG = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_rg extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_texture_rg extension.");
         }
         if(hasext("GL_ARB_texture_compression_rgtc") || hasext("GL_EXT_texture_compression_rgtc"))
         {
             hasRGTC = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_compression_rgtc extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_texture_compression_rgtc extension.");
         }
         if(hasext("GL_EXT_packed_float"))
         {
             hasPF = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_packed_float extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_packed_float extension.");
         }
         if(hasext("GL_EXT_gpu_shader4"))
         {
@@ -653,13 +653,13 @@ void gl_checkextensions()
             glUniform3uiv_ =          (PFNGLUNIFORM3UIVPROC)         getprocaddress("glUniform3uivEXT");
             glUniform4uiv_ =          (PFNGLUNIFORM4UIVPROC)         getprocaddress("glUniform4uivEXT");
             hasEGPU4 = hasGPU4 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_gpu_shader4 extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
         }
         if(hasext("GL_ARB_color_buffer_float"))
         {
             glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColorARB");
             hasCBF = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_color_buffer_float extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_color_buffer_float extension.");
         }
         if(hasext("GL_EXT_draw_buffers2"))
         {
@@ -667,14 +667,14 @@ void gl_checkextensions()
             glEnablei_ =    (PFNGLENABLEIPROC)   getprocaddress("glEnableIndexedEXT");
             glDisablei_ =   (PFNGLENABLEIPROC)   getprocaddress("glDisableIndexedEXT");
             hasDB2 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_draw_buffers2 extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_draw_buffers2 extension.");
         }
         if(hasext("GL_NV_conditional_render"))
         {
             glBeginConditionalRender_ = (PFNGLBEGINCONDITIONALRENDERPROC)getprocaddress("glBeginConditionalRenderNV");
             glEndConditionalRender_ =   (PFNGLENDCONDITIONALRENDERPROC)  getprocaddress("glEndConditionalRenderNV");
             hasCR = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_NV_conditional_render extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_NV_conditional_render extension.");
         }
         if(hasext("GL_EXT_texture_integer"))
         {
@@ -685,24 +685,24 @@ void gl_checkextensions()
             glClearColorIi_ =        (PFNGLCLEARCOLORIIEXTPROC)    getprocaddress("glClearColorIiEXT");
             glClearColorIui_ =       (PFNGLCLEARCOLORIUIEXTPROC)   getprocaddress("glClearColorIuiEXT");
             hasTI = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_integer extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_integer extension.");
         }
         if(hasext("GL_NV_half_float"))
         {
             hasHFV = hasHFP = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_NV_half_float extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_NV_half_float extension.");
         }
         else
         {
             if(hasext("GL_ARB_half_float_vertex"))
             {
                 hasHFV = true;
-                if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_half_float_vertex extension.");
+                if(dbgexts) conoutf(Console_Init, "Using GL_ARB_half_float_vertex extension.");
             }
             if(hasext("GL_ARB_half_float_pixel"))
             {
                 hasHFP = true;
-                if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_half_float_pixel extension.");
+                if(dbgexts) conoutf(Console_Init, "Using GL_ARB_half_float_pixel extension.");
             }
         }
     }
@@ -729,7 +729,7 @@ void gl_checkextensions()
         glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
         hasAFBO = hasFBO = hasFBB = hasFBMS = hasDS = true;
-        if(glversion < 300 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_framebuffer_object extension.");
+        if(glversion < 300 && dbgexts) conoutf(Console_Init, "Using GL_ARB_framebuffer_object extension.");
     }
     else if(hasext("GL_EXT_framebuffer_object"))
     {
@@ -748,24 +748,24 @@ void gl_checkextensions()
         glFramebufferRenderbuffer_    = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)   getprocaddress("glFramebufferRenderbufferEXT");
         glGenerateMipmap_             = (PFNGLGENERATEMIPMAPPROC)            getprocaddress("glGenerateMipmapEXT");
         hasFBO = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_object extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_framebuffer_object extension.");
 
         if(hasext("GL_EXT_framebuffer_blit"))
         {
             glBlitFramebuffer_     = (PFNGLBLITFRAMEBUFFERPROC)        getprocaddress("glBlitFramebufferEXT");
             hasFBB = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_blit extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_framebuffer_blit extension.");
         }
         if(hasext("GL_EXT_framebuffer_multisample"))
         {
             glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisampleEXT");
             hasFBMS = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_multisample extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_framebuffer_multisample extension.");
         }
         if(hasext("GL_EXT_packed_depth_stencil") || hasext("GL_NV_packed_depth_stencil"))
         {
             hasDS = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_packed_depth_stencil extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_packed_depth_stencil extension.");
         }
     }
     else fatal("Framebuffer object support is required!");
@@ -775,7 +775,7 @@ void gl_checkextensions()
         glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
         glFlushMappedBufferRange_ = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC)getprocaddress("glFlushMappedBufferRange");
         hasMBR = true;
-        if(glversion < 300 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_map_buffer_range.");
+        if(glversion < 300 && dbgexts) conoutf(Console_Init, "Using GL_ARB_map_buffer_range.");
     }
 
     if(glversion >= 310 || hasext("GL_ARB_uniform_buffer_object"))
@@ -790,13 +790,13 @@ void gl_checkextensions()
 
         useubo = 1;
         hasUBO = true;
-        if(glversion < 310 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_uniform_buffer_object extension.");
+        if(glversion < 310 && dbgexts) conoutf(Console_Init, "Using GL_ARB_uniform_buffer_object extension.");
     }
 
     if(glversion >= 310 || hasext("GL_ARB_texture_rectangle"))
     {
         hasTR = true;
-        if(glversion < 310 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_rectangle extension.");
+        if(glversion < 310 && dbgexts) conoutf(Console_Init, "Using GL_ARB_texture_rectangle extension.");
     }
     else fatal("Texture rectangle support is required!");
 
@@ -804,7 +804,7 @@ void gl_checkextensions()
     {
         glCopyBufferSubData_ = (PFNGLCOPYBUFFERSUBDATAPROC)getprocaddress("glCopyBufferSubData");
         hasCB = true;
-        if(glversion < 310 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_copy_buffer extension.");
+        if(glversion < 310 && dbgexts) conoutf(Console_Init, "Using GL_ARB_copy_buffer extension.");
     }
 
     if(glversion >= 320 || hasext("GL_ARB_texture_multisample"))
@@ -814,12 +814,12 @@ void gl_checkextensions()
         glGetMultisamplefv_      = (PFNGLGETMULTISAMPLEFVPROC)     getprocaddress("glGetMultisamplefv");
         glSampleMaski_           = (PFNGLSAMPLEMASKIPROC)          getprocaddress("glSampleMaski");
         hasTMS = true;
-        if(glversion < 320 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_multisample extension.");
+        if(glversion < 320 && dbgexts) conoutf(Console_Init, "Using GL_ARB_texture_multisample extension.");
     }
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
     }
 
     if(hasext("GL_EXT_timer_query"))
@@ -827,14 +827,14 @@ void gl_checkextensions()
         glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64vEXT");
         glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64vEXT");
         hasTQ = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_timer_query extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
     }
     else if(glversion >= 330 || hasext("GL_ARB_timer_query"))
     {
         glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64v");
         glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
         hasTQ = true;
-        if(glversion < 330 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_timer_query extension.");
+        if(glversion < 330 && dbgexts) conoutf(Console_Init, "Using GL_ARB_timer_query extension.");
     }
 
     if(hasext("GL_EXT_texture_compression_s3tc"))
@@ -845,23 +845,23 @@ void gl_checkextensions()
 #else
         if(!mesa) usetexcompress = 2;
 #endif
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_compression_s3tc extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_s3tc extension.");
     }
     else if(hasext("GL_EXT_texture_compression_dxt1") && hasext("GL_ANGLE_texture_compression_dxt3") && hasext("GL_ANGLE_texture_compression_dxt5"))
     {
         hasS3TC = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_compression_dxt1 extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_dxt1 extension.");
     }
     if(hasext("GL_3DFX_texture_compression_FXT1"))
     {
         hasFXT1 = true;
         if(mesa) usetexcompress = max(usetexcompress, 1);
-        if(dbgexts) conoutf(CON_INIT, "Using GL_3DFX_texture_compression_FXT1.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_3DFX_texture_compression_FXT1.");
     }
     if(hasext("GL_EXT_texture_compression_latc"))
     {
         hasLATC = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_compression_latc extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_latc extension.");
     }
 
     if(hasext("GL_EXT_texture_filter_anisotropic"))
@@ -870,25 +870,25 @@ void gl_checkextensions()
        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val);
        hwmaxaniso = val;
        hasAF = true;
-       if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_filter_anisotropic extension.");
+       if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_filter_anisotropic extension.");
     }
 
     if(hasext("GL_EXT_depth_bounds_test"))
     {
         glDepthBounds_ = (PFNGLDEPTHBOUNDSEXTPROC) getprocaddress("glDepthBoundsEXT");
         hasDBT = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_depth_bounds_test extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_depth_bounds_test extension.");
     }
 
     if(glversion >= 320 || hasext("GL_ARB_depth_clamp"))
     {
         hasDC = true;
-        if(glversion < 320 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_depth_clamp extension.");
+        if(glversion < 320 && dbgexts) conoutf(Console_Init, "Using GL_ARB_depth_clamp extension.");
     }
     else if(hasext("GL_NV_depth_clamp"))
     {
         hasDC = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_NV_depth_clamp extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_NV_depth_clamp extension.");
     }
 
     if(glversion >= 330)
@@ -900,17 +900,17 @@ void gl_checkextensions()
         if(hasext("GL_ARB_texture_swizzle") || hasext("GL_EXT_texture_swizzle"))
         {
             hasTSW = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_swizzle extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_texture_swizzle extension.");
         }
         if(hasext("GL_ARB_explicit_attrib_location"))
         {
             hasEAL = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_explicit_attrib_location extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_explicit_attrib_location extension.");
         }
         if(hasext("GL_ARB_occlusion_query2"))
         {
             hasOQ2 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_occlusion_query2 extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_occlusion_query2 extension.");
         }
     }
 
@@ -926,7 +926,7 @@ void gl_checkextensions()
         }
 
         hasBFE = true;
-        if(glversion < 330 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_blend_func_extended extension.");
+        if(glversion < 330 && dbgexts) conoutf(Console_Init, "Using GL_ARB_blend_func_extended extension.");
     }
 
     if(glversion >= 400)
@@ -947,18 +947,18 @@ void gl_checkextensions()
         if(hasext("GL_ARB_texture_gather"))
         {
             hasTG = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_gather extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_texture_gather extension.");
         }
         if(hasext("GL_ARB_gpu_shader5"))
         {
             hasGPU5 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_gpu_shader5 extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_gpu_shader5 extension.");
         }
         if(hasext("GL_ARB_sample_shading"))
         {
             glMinSampleShading_ = (PFNGLMINSAMPLESHADINGPROC)getprocaddress("glMinSampleShadingARB");
             hasMSS = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_sample_shading extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_sample_shading extension.");
         }
         if(hasext("GL_ARB_draw_buffers_blend"))
         {
@@ -967,7 +967,7 @@ void gl_checkextensions()
             glBlendFunci_ =             (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunciARB");
             glBlendFuncSeparatei_ =     (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparateiARB");
             hasDBB = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_draw_buffers_blend extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_draw_buffers_blend extension.");
         }
     }
     if(hasTG) usetexgather = hasGPU5 && !intel && !nvidia ? 2 : 1;
@@ -975,7 +975,7 @@ void gl_checkextensions()
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
     {
         hasES3 = true;
-        if(glversion < 430 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_ES3_compatibility extension.");
+        if(glversion < 430 && dbgexts) conoutf(Console_Init, "Using GL_ARB_ES3_compatibility extension.");
     }
 
     if(glversion >= 430)
@@ -995,7 +995,7 @@ void gl_checkextensions()
             glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallbackARB");
             glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLogARB");
             hasDBGO = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_debug_output extension.");
+            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
         }
     }
 
@@ -1004,14 +1004,14 @@ void gl_checkextensions()
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubData");
 
         hasCI = true;
-        if(glversion < 430 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_copy_image extension.");
+        if(glversion < 430 && dbgexts) conoutf(Console_Init, "Using GL_ARB_copy_image extension.");
     }
     else if(hasext("GL_NV_copy_image"))
     {
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubDataNV");
 
         hasCI = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_NV_copy_image extension.");
+        if(dbgexts) conoutf(Console_Init, "Using GL_NV_copy_image extension.");
     }
 
     extern int gdepthstencil, gstencil, glineardepth, msaadepthstencil, msaalineardepth, batchsunlight, smgather, rhrect, tqaaresolvegather;

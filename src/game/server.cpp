@@ -18,7 +18,7 @@ namespace game
             if(!game::clientoption(args[i]))
 #endif
             if(!server::serveroption(args[i]))
-                conoutf(CON_ERROR, "unknown command-line option: %s", args[i]);
+                conoutf(Console_Error, "unknown command-line option: %s", args[i]);
     }
 
     const char *gameident() { return "Tesseract"; }

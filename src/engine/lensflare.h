@@ -110,9 +110,9 @@ struct flarerenderer : partrenderer
     {
         glDisable(GL_DEPTH_TEST);
         glBindTexture(GL_TEXTURE_2D, tex->id);
-        gle::defattrib(gle::ATTRIB_VERTEX, 3, GL_FLOAT);
-        gle::defattrib(gle::ATTRIB_TEXCOORD0, 2, GL_FLOAT);
-        gle::defattrib(gle::ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE);
+        gle::defattrib(gle::Attribute_Vertex, 3, GL_FLOAT);
+        gle::defattrib(gle::Attribute_TexCoord0, 2, GL_FLOAT);
+        gle::defattrib(gle::Attribute_Color, 4, GL_UNSIGNED_BYTE);
         gle::begin(GL_QUADS);
         for(int i = 0; i < numflares; ++i)
         {

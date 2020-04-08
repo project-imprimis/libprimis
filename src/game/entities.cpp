@@ -163,7 +163,7 @@ namespace entities
                 int snd = Sound_Teleport, flags = 0;
                 if(e.attr4 > 0)
                 {
-                    snd = e.attr4; flags = SND_MAP;
+                    snd = e.attr4; flags = Music_Map;
                 }
                 if(d == player1)
                 {
@@ -200,7 +200,7 @@ namespace entities
                 if(e.attr4 > 0)
                 {
                     snd = e.attr4;
-                    flags = SND_MAP;
+                    flags = Music_Map;
                 }
                 if(d == player1)
                 {
@@ -232,7 +232,7 @@ namespace entities
             e = findentity(GamecodeEnt_Teledest, e+1);
             if(e==beenhere || e<0)
             {
-                conoutf(CON_WARN, "no teleport destination for channel %d", tag);
+                conoutf(Console_Warn, "no teleport destination for channel %d", tag);
                 return;
             }
             if(beenhere<0)

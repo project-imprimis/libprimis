@@ -1731,9 +1731,18 @@ struct lightinfo
         spoty = orient.invertedrotate(vec(0, 1, 0));
     }
 
-    bool noshadow() const { return flags&L_NOSHADOW || radius <= smminradius; }
-    bool nospec() const { return (flags&L_NOSPEC) != 0; }
-    bool volumetric() const { return (flags&L_VOLUMETRIC) != 0; }
+    bool noshadow() const
+    {
+        return flags&LightEnt_NoShadow || radius <= smminradius;
+    }
+    bool nospec() const
+    {
+        return (flags&LightEnt_NoSpecular) != 0;
+    }
+    bool volumetric() const
+    {
+        return (flags&LightEnt_Volumetric) != 0;
+    }
 
     void addscissor(float &dx1, float &dy1, float &dx2, float &dy2) const
     {
@@ -4598,7 +4607,7 @@ void rendercsmshadowmaps()
 
 int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc, int &spotangle, float &bias)
 {
-    if(e.attr5&L_NOSHADOW || e.attr1 <= smminradius) return ShadowMap_None;
+    if(e.attr5&LightEnt_NoShadow || e.attr1 <= smminradius) return ShadowMap_None;
 
     origin = e.o;
     radius = e.attr1;
@@ -4691,7 +4700,7 @@ void rendershadowmaps(int offset = 0)
         findshadowvas();
         findshadowmms();
 
-        shadowmaskbatchedmodels(!(l.flags&L_NODYNSHADOW) && smdynshadow);
+        shadowmaskbatchedmodels(!(l.flags&LightEnt_Static) && smdynshadow);
         batchshadowmapmodels(mesh != NULL);
 
         shadowcacheval *cached = NULL;

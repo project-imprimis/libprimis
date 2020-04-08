@@ -200,10 +200,10 @@ void optiface(uchar *p, cube &c)
 void printcube()
 {
     cube &c = lookupcube(lu); // assume this is cube being pointed at
-    conoutf(CON_DEBUG, "= %p = (%d, %d, %d) @ %d", (void *)&c, lu.x, lu.y, lu.z, lusize);
-    conoutf(CON_DEBUG, " x  %.8x", c.faces[0]);
-    conoutf(CON_DEBUG, " y  %.8x", c.faces[1]);
-    conoutf(CON_DEBUG, " z  %.8x", c.faces[2]);
+    conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", (void *)&c, lu.x, lu.y, lu.z, lusize);
+    conoutf(Console_Debug, " x  %.8x", c.faces[0]);
+    conoutf(Console_Debug, " y  %.8x", c.faces[1]);
+    conoutf(Console_Debug, " z  %.8x", c.faces[2]);
 }
 
 COMMAND(printcube, "");
@@ -695,7 +695,7 @@ void remip()
 void mpremip(bool local)
 {
     extern selinfo sel;
-    if(local) game::edittrigger(sel, EDIT_REMIP);
+    if(local) game::edittrigger(sel, Edit_Remip);
     remip();
     allchanged();
 }

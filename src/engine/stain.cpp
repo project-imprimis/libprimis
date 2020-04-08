@@ -483,7 +483,7 @@ struct stainrenderer
             {
                 int nverts = buf.nextverts();
                 static const char * const sbufname[StainBuffer_Number] = { "opaque", "transparent", "mapmodel" };
-                conoutf(CON_DEBUG, "tris = %d, verts = %d, total tris = %d, %s", nverts/3, nverts, buf.totaltris(), sbufname[i]);
+                conoutf(Console_Debug, "tris = %d, verts = %d, total tris = %d, %s", nverts/3, nverts, buf.totaltris(), sbufname[i]);
             }
 
             staininfo &d = newstain();

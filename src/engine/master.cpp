@@ -172,7 +172,7 @@ void conoutf(const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    conoutfv(CON_INFO, fmt, args);
+    conoutfv(Console_Info, fmt, args);
     va_end(args);
 }
 

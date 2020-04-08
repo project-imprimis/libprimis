@@ -716,7 +716,7 @@ namespace game
 
     void teamsound(bool sameteam, int n, const vec *loc)
     {
-        playsound(n, loc, NULL, teamsounds ? (Mode_Team && sameteam ? SND_USE_ALT : SND_NO_ALT) : 0);
+        playsound(n, loc, NULL, teamsounds ? (Mode_Team && sameteam ? Music_UseAlt : Music_NoAlt) : 0);
     }
 
     void teamsound(gameent *d, int n, const vec *loc)

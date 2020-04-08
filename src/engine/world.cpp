@@ -235,8 +235,8 @@ static bool modifyoctaent(int flags, int id, extentity &e)
     {
         case EngineEnt_Light:
             clearlightcache(id);
-            if(e.attr5&L_VOLUMETRIC) { if(flags&MODOE_ADD) volumetriclights++; else --volumetriclights; }
-            if(e.attr5&L_NOSPEC) { if(!(flags&MODOE_ADD ? nospeclights++ : --nospeclights)) cleardeferredlightshaders(); }
+            if(e.attr5&LightEnt_Volumetric) { if(flags&MODOE_ADD) volumetriclights++; else --volumetriclights; }
+            if(e.attr5&LightEnt_NoSpecular) { if(!(flags&MODOE_ADD ? nospeclights++ : --nospeclights)) cleardeferredlightshaders(); }
             break;
         case EngineEnt_Spotlight: if(!(flags&MODOE_ADD ? spotlights++ : --spotlights)) { cleardeferredlightshaders(); cleanupvolumetric(); } break;
         case EngineEnt_Particles: clearparticleemitters(); break;
@@ -352,7 +352,7 @@ VARF(entediting, 0, 0, 1, { if(!entediting) { entcancel(); efocus = enthover = -
 
 bool noentedit()
 {
-    if(!editmode) { conoutf(CON_ERROR, "operation only allowed in edit mode"); return true; }
+    if(!editmode) { conoutf(Console_Error, "operation only allowed in edit mode"); return true; }
     return !entediting;
 }
 
@@ -1036,7 +1036,7 @@ void delent()
 int findtype(char *what)
 {
     for(int i = 0; *entities::entname(i); i++) if(strcmp(what, entities::entname(i))==0) return i;
-    conoutf(CON_ERROR, "unknown entity type \"%s\"", what);
+    conoutf(Console_Error, "unknown entity type \"%s\"", what);
     return EngineEnt_Empty;
 }
 
@@ -1465,7 +1465,7 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
 {
     if(!force && !editmode)
     {
-        conoutf(CON_ERROR, "newmap only allowed in edit mode");
+        conoutf(Console_Error, "newmap only allowed in edit mode");
         return false;
     }
 
@@ -1505,7 +1505,7 @@ bool enlargemap(bool force)
 {
     if(!force && !editmode)
     {
-        conoutf(CON_ERROR, "mapenlarge only allowed in edit mode");
+        conoutf(Console_Error, "mapenlarge only allowed in edit mode");
         return false;
     }
     if(worldsize >= 1<<16) return false;

@@ -26,7 +26,7 @@ void loadsky(const char *basename, Texture *texs[6])
                 texs[i] = textureload(name, 3, true, false);
             }
         }
-        if(texs[i]==notexture) conoutf(CON_ERROR, "could not load side %s of sky texture %s", side, basename);
+        if(texs[i]==notexture) conoutf(Console_Error, "could not load side %s of sky texture %s", side, basename);
     }
 }
 
@@ -48,7 +48,7 @@ Texture *loadskyoverlay(const char *basename)
             t = textureload(name, 0, true, false);
         }
     }
-    if(t==notexture) conoutf(CON_ERROR, "could not load sky overlay texture %s", basename);
+    if(t==notexture) conoutf(Console_Error, "could not load sky overlay texture %s", basename);
     return t;
 }
 

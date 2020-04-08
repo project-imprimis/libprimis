@@ -852,11 +852,11 @@ struct gzstream : stream
             }
             if(checkcrc != crc)
             {
-                conoutf(CON_DEBUG, "gzip crc check failed: read %X, calculated %X", checkcrc, crc);
+                conoutf(Console_Debug, "gzip crc check failed: read %X, calculated %X", checkcrc, crc);
             }
             if(checksize != zfile.total_out)
             {
-                conoutf(CON_DEBUG, "gzip size check failed: read %u, calculated %u", checksize, uint(zfile.total_out));
+                conoutf(Console_Debug, "gzip size check failed: read %u, calculated %u", checksize, uint(zfile.total_out));
             }
         }
 #endif

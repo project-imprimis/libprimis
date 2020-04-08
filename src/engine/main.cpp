@@ -526,7 +526,7 @@ ICOMMAND(screenres, "ii", (int *w, int *h), screenres(*w, *h));
 
 static void setgamma(int val)
 {
-    if(screen && SDL_SetWindowBrightness(screen, val/100.0f) < 0) conoutf(CON_ERROR, "Could not set gamma: %s", SDL_GetError());
+    if(screen && SDL_SetWindowBrightness(screen, val/100.0f) < 0) conoutf(Console_Error, "Could not set gamma: %s", SDL_GetError());
 }
 
 static int curgamma = 100;

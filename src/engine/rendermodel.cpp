@@ -40,7 +40,7 @@ MODELTYPE(MDL_OBJ, obj);
 MODELTYPE(MDL_SMD, smd);
 MODELTYPE(MDL_IQM, iqm);
 
-#define CHECK_MDL if(!loadingmodel) { conoutf(CON_ERROR, "not loading a model"); return; }
+#define CHECK_MDL if(!loadingmodel) { conoutf(Console_Error, "not loading a model"); return; }
 
 void mdlcullface(int *cullface)
 {
@@ -224,7 +224,7 @@ COMMAND(mdlname, "");
 
 #define CHECK_RAGDOLL \
     CHECK_MDL; \
-    if(!loadingmodel->skeletal()) { conoutf(CON_ERROR, "not loading a skeletal model"); return; } \
+    if(!loadingmodel->skeletal()) { conoutf(Console_Error, "not loading a skeletal model"); return; } \
     skelmodel *m = (skelmodel *)loadingmodel; \
     if(m->parts.empty()) return; \
     skelmodel::skelmeshgroup *meshes = (skelmodel::skelmeshgroup *)m->parts.last()->meshes; \
@@ -351,7 +351,7 @@ void flushpreloadedmodels(bool msg)
     {
         loadprogress = float(i+1)/preloadmodels.length();
         model *m = loadmodel(preloadmodels[i], -1, msg);
-        if(!m) { if(msg) conoutf(CON_WARN, "could not load model: %s", preloadmodels[i]); }
+        if(!m) { if(msg) conoutf(Console_Warn, "could not load model: %s", preloadmodels[i]); }
         else
         {
             m->preloadmeshes();
@@ -377,11 +377,11 @@ void preloadusedmapmodels(bool msg, bool bih)
     {
         loadprogress = float(i+1)/used.length();
         int mmindex = used[i];
-        if(!mapmodels.inrange(mmindex)) { if(msg) conoutf(CON_WARN, "could not find map model: %d", mmindex); continue; }
+        if(!mapmodels.inrange(mmindex)) { if(msg) conoutf(Console_Warn, "could not find map model: %d", mmindex); continue; }
         mapmodelinfo &mmi = mapmodels[mmindex];
         if(!mmi.name[0]) continue;
         model *m = loadmodel(NULL, mmindex, msg);
-        if(!m) { if(msg) conoutf(CON_WARN, "could not load map model: %s", mmi.name); }
+        if(!m) { if(msg) conoutf(Console_Warn, "could not load map model: %s", mmi.name); }
         else
         {
             if(bih) m->preloadBIH();
@@ -396,7 +396,7 @@ void preloadusedmapmodels(bool msg, bool bih)
     {
         loadprogress = float(i+1)/col.length();
         model *m = loadmodel(col[i], -1, msg);
-        if(!m) { if(msg) conoutf(CON_WARN, "could not load collide model: %s", col[i]); }
+        if(!m) { if(msg) conoutf(Console_Warn, "could not load collide model: %s", col[i]); }
         else if(!m->bih) m->setBIH();
     }
 

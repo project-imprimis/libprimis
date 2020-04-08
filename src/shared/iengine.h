@@ -43,7 +43,19 @@ enum // cube empty-space materials
 extern void lightent(extentity &e, float height = 8.0f);
 extern void lightreaching(const vec &target, vec &color, vec &dir, bool fast = false, extentity *e = 0, float minambient = 0.4f);
 
-enum { RAY_BB = 1, RAY_POLY = 3, RAY_ALPHAPOLY = 7, RAY_ENTS = 9, RAY_CLIPMAT = 16, RAY_SKIPFIRST = 32, RAY_EDITMAT = 64, RAY_SHADOW = 128, RAY_PASS = 256, RAY_SKIPSKY = 512 };
+enum
+{
+    RAY_BB = 1,
+    RAY_POLY = 3,
+    RAY_ALPHAPOLY = 7,
+    RAY_ENTS = 9,
+    RAY_CLIPMAT = 16,
+    RAY_SKIPFIRST = 32,
+    RAY_EDITMAT = 64,
+    RAY_SHADOW = 128,
+    RAY_PASS = 256,
+    RAY_SKIPSKY = 512
+};
 
 extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = RAY_CLIPMAT, int size = 0, extentity *t = 0);
 extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = RAY_CLIPMAT, int size = 0);
@@ -57,7 +69,23 @@ extern bool settexture(const char *name, int clamp = 0);
 
 // octaedit
 
-enum { EDIT_FACE = 0, EDIT_TEX, EDIT_MAT, EDIT_FLIP, EDIT_COPY, EDIT_PASTE, EDIT_ROTATE, EDIT_REPLACE, EDIT_DELCUBE, EDIT_CALCLIGHT, EDIT_REMIP, EDIT_VSLOT, EDIT_UNDO, EDIT_REDO };
+enum
+{
+    Edit_Face = 0,
+    Edit_Tex,
+    Edit_Mat,
+    Edit_Flip,
+    Edit_Copy,
+    Edit_Paste,
+    Edit_Rotate,
+    Edit_Replace,
+    Edit_DelCube,
+    Edit_CalcLight,
+    Edit_Remip,
+    Edit_VSlot,
+    Edit_Undo,
+    Edit_Redo
+};
 
 struct selinfo
 {
@@ -72,11 +100,29 @@ struct selinfo
     bool validate()
     {
         extern int worldsize;
-        if(grid <= 0 || grid >= worldsize) return false;
-        if(o.x >= worldsize || o.y >= worldsize || o.z >= worldsize) return false;
-        if(o.x < 0) { s.x -= (grid - 1 - o.x)/grid; o.x = 0; }
-        if(o.y < 0) { s.y -= (grid - 1 - o.y)/grid; o.y = 0; }
-        if(o.z < 0) { s.z -= (grid - 1 - o.z)/grid; o.z = 0; }
+        if(grid <= 0 || grid >= worldsize)
+        {
+            return false;
+        }
+        if(o.x >= worldsize || o.y >= worldsize || o.z >= worldsize)
+        {
+            return false;
+        }
+        if(o.x < 0)
+        {
+            s.x -= (grid - 1 - o.x)/grid;
+            o.x = 0;
+        }
+        if(o.y < 0)
+        {
+            s.y -= (grid - 1 - o.y)/grid;
+            o.y = 0;
+        }
+        if(o.z < 0)
+        {
+            s.z -= (grid - 1 - o.z)/grid;
+            o.z = 0;
+        }
         s.x = clamp(s.x, 0, (worldsize - o.x)/grid);
         s.y = clamp(s.y, 0, (worldsize - o.y)/grid);
         s.z = clamp(s.z, 0, (worldsize - o.z)/grid);
@@ -184,12 +230,12 @@ static inline void loopiter(ident *id, identstack &stack, const char *s) { tagva
 
 enum
 {
-    CON_INFO  = 1<<0,
-    CON_WARN  = 1<<1,
-    CON_ERROR = 1<<2,
-    CON_DEBUG = 1<<3,
-    CON_INIT  = 1<<4,
-    CON_ECHO  = 1<<5
+    Console_Info  = 1<<0,
+    Console_Warn  = 1<<1,
+    Console_Error = 1<<2,
+    Console_Debug = 1<<3,
+    Console_Init  = 1<<4,
+    Console_Echo  = 1<<5
 };
 
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
@@ -277,14 +323,20 @@ extern void packvslot(vector<uchar> &buf, const VSlot *vs);
 
 // renderlights
 
-enum { L_NOSHADOW = 1<<0, L_NODYNSHADOW = 1<<1, L_VOLUMETRIC = 1<<2, L_NOSPEC = 1<<3 };
+enum
+{
+    LightEnt_NoShadow   = 1<<0,
+    LightEnt_Static     = 1<<1,
+    LightEnt_Volumetric = 1<<2,
+    LightEnt_NoSpecular = 1<<3
+};
 
 // dynlight
 enum
 {
-    DL_SHRINK = 1<<8,
-    DL_EXPAND = 1<<9,
-    DL_FLASH  = 1<<10
+    DynLight_Shrink = 1<<8,
+    DynLight_Expand = 1<<9,
+    DynLight_Flash  = 1<<10
 };
 
 extern void adddynlight(const vec &o, float radius, const vec &color, int fade = 0, int peak = 0, int flags = 0, float initradius = 0, const vec &initcolor = vec(0, 0, 0), physent *owner = NULL, const vec &dir = vec(0, 0, 0), int spot = 0);
@@ -325,16 +377,22 @@ enum
     PART_STEAM,
     PART_FLAME,
     PART_STREAK,
-    PART_RAIL_TRAIL, PART_PULSE_SIDE, PART_PULSE_FRONT,
+    PART_RAIL_TRAIL,
+    PART_PULSE_SIDE,
+    PART_PULSE_FRONT,
     PART_LIGHTNING,
-    PART_EXPLOSION, PART_PULSE_BURST,
-    PART_SPARK, PART_EDIT,
+    PART_EXPLOSION,
+    PART_PULSE_BURST,
+    PART_SPARK,
+    PART_EDIT,
     PART_SNOW,
-    PART_RAIL_MUZZLE_FLASH, PART_PULSE_MUZZLE_FLASH,
+    PART_RAIL_MUZZLE_FLASH,
+    PART_PULSE_MUZZLE_FLASH,
     PART_HUD_ICON,
     PART_HUD_ICON_GREY,
     PART_TEXT,
-    PART_METER, PART_METER_VS,
+    PART_METER,
+    PART_METER_VS,
     PART_LENS_FLARE
 };
 
@@ -405,9 +463,9 @@ extern void findplayerspawn(dynent *d, int forceent = -1, int tag = 0);
 // sound
 enum
 {
-    SND_MAP     = 1<<0,
-    SND_NO_ALT  = 1<<1,
-    SND_USE_ALT = 1<<2
+    Music_Map     = 1<<0,
+    Music_NoAlt  = 1<<1,
+    Music_UseAlt = 1<<2
 };
 
 extern int playsound(int n, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
@@ -419,7 +477,21 @@ extern void stopsounds();
 extern void initsound();
 
 // rendermodel
-enum { MDL_CULL_VFC = 1<<0, MDL_CULL_DIST = 1<<1, MDL_CULL_OCCLUDED = 1<<2, MDL_CULL_QUERY = 1<<3, MDL_FULLBRIGHT = 1<<4, MDL_NORENDER = 1<<5, MDL_MAPMODEL = 1<<6, MDL_NOBATCH = 1<<7, MDL_ONLYSHADOW = 1<<8, MDL_NOSHADOW = 1<<9, MDL_FORCESHADOW = 1<<10, MDL_FORCETRANSPARENT = 1<<11 };
+enum
+{
+    MDL_CULL_VFC = 1<<0,
+    MDL_CULL_DIST = 1<<1,
+    MDL_CULL_OCCLUDED = 1<<2,
+    MDL_CULL_QUERY = 1<<3,
+    MDL_FULLBRIGHT = 1<<4,
+    MDL_NORENDER = 1<<5,
+    MDL_MAPMODEL = 1<<6,
+    MDL_NOBATCH = 1<<7,
+    MDL_ONLYSHADOW = 1<<8,
+    MDL_NOSHADOW = 1<<9,
+    MDL_FORCESHADOW = 1<<10,
+    MDL_FORCETRANSPARENT = 1<<11
+};
 
 struct model;
 struct modelattach
@@ -468,7 +540,21 @@ extern void cleanragdoll(dynent *d);
 
 extern int maxclients;
 
-enum { DISC_NONE = 0, DISC_EOP, DISC_LOCAL, DISC_KICK, DISC_MSGERR, DISC_IPBAN, DISC_PRIVATE, DISC_MAXCLIENTS, DISC_TIMEOUT, DISC_OVERFLOW, DISC_PASSWORD, DISC_NUM };
+enum
+{
+    DISC_NONE = 0,
+    DISC_EOP,
+    DISC_LOCAL,
+    DISC_KICK,
+    DISC_MSGERR,
+    DISC_IPBAN,
+    DISC_PRIVATE,
+    DISC_MAXCLIENTS,
+    DISC_TIMEOUT,
+    DISC_OVERFLOW,
+    DISC_PASSWORD,
+    DISC_NUM
+};
 
 extern void *getclientinfo(int i);
 extern ENetPeer *getclientpeer(int i);

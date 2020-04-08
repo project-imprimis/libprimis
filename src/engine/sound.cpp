@@ -40,8 +40,8 @@ struct soundconfig
 
     int chooseslot(int flags) const
     {
-        if(flags&SND_NO_ALT || numslots <= 1) return slots;
-        if(flags&SND_USE_ALT) return slots + 1 + RANDOM_INT(numslots - 1);
+        if(flags&Music_NoAlt || numslots <= 1) return slots;
+        if(flags&Music_UseAlt) return slots + 1 + RANDOM_INT(numslots - 1);
         return slots + RANDOM_INT(numslots);
     }
 };
@@ -195,7 +195,7 @@ bool initaudio()
     }
     SDL_setenv("SDL_AUDIODRIVER", fallback, 1);
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0) return true;
-    conoutf(CON_ERROR, "sound init failed: %s", SDL_GetError());
+    conoutf(Console_Error, "sound init failed: %s", SDL_GetError());
     return false;
 }
 
@@ -206,7 +206,7 @@ void initsound()
     if(version.major == 2 && version.minor == 0 && version.patch == 6)
     {
         nosound = true;
-        if(sound) conoutf(CON_ERROR, "audio is broken in SDL 2.0.6");
+        if(sound) conoutf(Console_Error, "audio is broken in SDL 2.0.6");
         return;
     }
 
@@ -224,7 +224,7 @@ void initsound()
     if(Mix_OpenAudio(soundfreq, MIX_DEFAULT_FORMAT, 2, soundbufferlen)<0)
     {
         nosound = true;
-        conoutf(CON_ERROR, "sound init failed (SDL_mixer): %s", Mix_GetError());
+        conoutf(Console_Error, "sound init failed (SDL_mixer): %s", Mix_GetError());
         return;
     }
     Mix_AllocateChannels(soundchans);
@@ -283,7 +283,7 @@ void startmusic(char *name, char *cmd)
         }
         else
         {
-            conoutf(CON_ERROR, "could not play music: %s", file);
+            conoutf(Console_Error, "could not play music: %s", file);
             intret(0);
         }
     }
@@ -325,7 +325,7 @@ bool soundsample::load(const char *dir, bool msg)
         if(chunk) return true;
     }
 
-    conoutf(CON_ERROR, "failed to load sample: media/sound/%s%s", dir, name);
+    conoutf(Console_Error, "failed to load sample: media/sound/%s%s", dir, name);
     return false;
 }
 
@@ -541,7 +541,7 @@ void checkmapsounds()
         if(e.type!=EngineEnt_Sound) continue;
         if(camera1->o.dist(e.o) < e.attr2) //if distance to entity < ent attr 2 (radius)
         {
-            if(!(e.flags&EntFlag_Sound)) playsound(e.attr1, NULL, &e, SND_MAP, -1);
+            if(!(e.flags&EntFlag_Sound)) playsound(e.attr1, NULL, &e, Music_Map, -1);
         }
         else if(e.flags&EntFlag_Sound) stopmapsound(&e);
     }
@@ -653,8 +653,8 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
 {
     if(nosound || !soundvol || (minimized && !minimizedsounds)) return -1;
 
-    soundtype &sounds = ent || flags&SND_MAP ? mapsounds : gamesounds;
-    if(!sounds.configs.inrange(n)) { conoutf(CON_WARN, "unregistered sound: %d", n); return -1; }
+    soundtype &sounds = ent || flags&Music_Map ? mapsounds : gamesounds;
+    if(!sounds.configs.inrange(n)) { conoutf(Console_Warn, "unregistered sound: %d", n); return -1; }
     soundconfig &config = sounds.configs[n];
 
     if(loc && (maxsoundradius || radius > 0))
@@ -925,7 +925,7 @@ void initmumble()
     #endif
     if(!VALID_MUMBLELINK) closemumble();
 #else
-    conoutf(CON_ERROR, "Mumble positional audio is not available on this platform.");
+    conoutf(Console_Error, "Mumble positional audio is not available on this platform.");
 #endif
 }
 

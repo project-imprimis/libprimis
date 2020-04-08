@@ -90,7 +90,7 @@ void conoutf(const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    conoutfv(CON_INFO, fmt, args);
+    conoutfv(Console_Info, fmt, args);
     va_end(args);
 }
 
@@ -509,7 +509,7 @@ void processmasterinput()
         while(args < end && iscubespace(*args)) args++;
 
         if(matchstring(input, cmdlen, "failreg"))
-            conoutf(CON_ERROR, "master server registration failed: %s", args);
+            conoutf(Console_Error, "master server registration failed: %s", args);
         else if(matchstring(input, cmdlen, "succreg"))
             conoutf("master server registration succeeded");
         else server::processmasterinput(input, cmdlen, args);
@@ -1109,7 +1109,7 @@ bool servererror(bool dedicated, const char *desc)
 #ifndef STANDALONE
     if(!dedicated)
     {
-        conoutf(CON_ERROR, "%s", desc);
+        conoutf(Console_Error, "%s", desc);
         cleanupserver();
     }
     else
@@ -1123,7 +1123,7 @@ bool setuplistenserver(bool dedicated)
     ENetAddress address = { ENET_HOST_ANY, enet_uint16(serverport <= 0 ? server::serverport() : serverport) };
     if(*serverip)
     {
-        if(enet_address_set_host(&address, serverip)<0) conoutf(CON_WARN, "WARNING: server ip not resolved");
+        if(enet_address_set_host(&address, serverip)<0) conoutf(Console_Warn, "WARNING: server ip not resolved");
         else serveraddress.host = address.host;
     }
     serverhost = enet_host_create(&address, min(maxclients + server::reserveclients(), MAXCLIENTS), server::numchannels(), 0, serveruprate);
@@ -1137,7 +1137,7 @@ bool setuplistenserver(bool dedicated)
         enet_socket_destroy(lansock);
         lansock = ENET_SOCKET_NULL;
     }
-    if(lansock == ENET_SOCKET_NULL) conoutf(CON_WARN, "WARNING: could not create LAN server info socket");
+    if(lansock == ENET_SOCKET_NULL) conoutf(Console_Warn, "WARNING: could not create LAN server info socket");
     else enet_socket_set_option(lansock, ENET_SOCKOPT_NONBLOCK, 1);
     return true;
 }
@@ -1171,7 +1171,7 @@ void initserver(bool listen, bool dedicated)
 #ifndef STANDALONE
 void startlistenserver(int *usemaster)
 {
-    if(serverhost) { conoutf(CON_ERROR, "listen server is already running"); return; }
+    if(serverhost) { conoutf(Console_Error, "listen server is already running"); return; }
 
     allowupdatemaster = *usemaster>0 ? 1 : 0;
 
@@ -1185,7 +1185,7 @@ COMMAND(startlistenserver, "i");
 
 void stoplistenserver()
 {
-    if(!serverhost) { conoutf(CON_ERROR, "listen server is not running"); return; }
+    if(!serverhost) { conoutf(Console_Error, "listen server is not running"); return; }
 
     kicknonlocalclients();
     enet_host_flush(serverhost);

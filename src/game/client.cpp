@@ -325,7 +325,7 @@ namespace game
     {
         if(!secret[0])
         {
-            conoutf(CON_ERROR, "you must specify a secret password");
+            conoutf(Console_Error, "you must specify a secret password");
             return;
         }
         vector<char> privkey, pubkey;
@@ -367,7 +367,7 @@ namespace game
         stream *f = openfile(path(fname), "w");
         if(!f)
         {
-            conoutf(CON_ERROR, "failed to open %s for writing", fname);
+            conoutf(Console_Error, "failed to open %s for writing", fname);
             return;
         }
         for(int i = 0; i < authkeys.length(); i++)
@@ -406,7 +406,7 @@ namespace game
         }
         if(isconnected() && multiplayer(false) && !modecheck(gamemode, Mode_Edit))
         {
-            conoutf(CON_ERROR, "editing in multiplayer requires edit mode");
+            conoutf(Console_Error, "editing in multiplayer requires edit mode");
             return false;
         }
         return execidentbool("allowedittoggle", true);
@@ -793,7 +793,7 @@ namespace game
     {
         if(multiplayer(false) && modecheck(mode, Mode_LocalOnly))
         {
-            conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
+            conoutf(Console_Error, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
             for(int i = 0; i < NUMGAMEMODES; ++i)
             {
                 if(!modecheck(STARTGAMEMODE + i, Mode_LocalOnly))
@@ -827,7 +827,7 @@ namespace game
     {
         if(multiplayer(false) && modecheck(mode, Mode_LocalOnly))
         {
-            conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer",  server::modeprettyname(mode), mode);
+            conoutf(Console_Error, "mode %s (%d) not supported in multiplayer",  server::modeprettyname(mode), mode);
             intret(0);
             return;
         }
@@ -920,15 +920,15 @@ namespace game
     {
         if(modecheck(gamemode, Mode_Edit)) switch(op)
         {
-            case EDIT_FLIP:
-            case EDIT_COPY:
-            case EDIT_PASTE:
-            case EDIT_DELCUBE:
+            case Edit_Flip:
+            case Edit_Copy:
+            case Edit_Paste:
+            case Edit_DelCube:
             {
                 switch(op)
                 {
-                    case EDIT_COPY: needclipboard = 0; break;
-                    case EDIT_PASTE:
+                    case Edit_Copy: needclipboard = 0; break;
+                    case Edit_Paste:
                         if(needclipboard > 0)
                         {
                             c2sinfo(true);
@@ -941,7 +941,7 @@ namespace game
                    sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner);
                 break;
             }
-            case EDIT_ROTATE:
+            case Edit_Rotate:
             {
                 addmsg(NetMsg_EditFace + op, "ri9i5",
                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
@@ -949,8 +949,8 @@ namespace game
                    arg1);
                 break;
             }
-            case EDIT_MAT:
-            case EDIT_FACE:
+            case Edit_Mat:
+            case Edit_Face:
             {
                 addmsg(NetMsg_EditFace + op, "ri9i6",
                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
@@ -958,7 +958,7 @@ namespace game
                    arg1, arg2);
                 break;
             }
-            case EDIT_TEX:
+            case Edit_Tex:
             {
                 int tex1 = shouldpacktex(arg1);
                 if(addmsg(NetMsg_EditFace + op, "ri9i6",
@@ -976,7 +976,7 @@ namespace game
                 }
                 break;
             }
-            case EDIT_REPLACE:
+            case Edit_Replace:
             {
                 int tex1 = shouldpacktex(arg1), tex2 = shouldpacktex(arg2);
                 if(addmsg(NetMsg_EditFace + op, "ri9i7",
@@ -992,13 +992,13 @@ namespace game
                 }
                 break;
             }
-            case EDIT_CALCLIGHT:
-            case EDIT_REMIP:
+            case Edit_CalcLight:
+            case Edit_Remip:
             {
                 addmsg(NetMsg_EditFace + op, "r");
                 break;
             }
-            case EDIT_VSLOT:
+            case Edit_VSlot:
             {
                 if(addmsg(NetMsg_EditFace + op, "ri9i6",
                     sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
@@ -1012,8 +1012,8 @@ namespace game
                 }
                 break;
             }
-            case EDIT_UNDO:
-            case EDIT_REDO:
+            case Edit_Undo:
+            case Edit_Redo:
             {
                 uchar *outbuf = NULL;
                 int inlen = 0, outlen = 0;
@@ -1739,7 +1739,7 @@ namespace game
                 int mycn = getint(p), prot = getint(p);
                 if(prot!=PROTOCOL_VERSION)
                 {
-                    conoutf(CON_ERROR, "you are using a different game protocol (you: %d, server: %d)", PROTOCOL_VERSION, prot);
+                    conoutf(Console_Error, "you are using a different game protocol (you: %d, server: %d)", PROTOCOL_VERSION, prot);
                     disconnect();
                     return;
                 }
@@ -2832,7 +2832,7 @@ namespace game
     {
         if(!modecheck(gamemode, Mode_Edit))
         {
-            conoutf(CON_ERROR, "\"getmap\" only works in edit mode");
+            conoutf(Console_Error, "\"getmap\" only works in edit mode");
             return;
         }
         conoutf("getting map...");
@@ -2902,7 +2902,7 @@ namespace game
     {
         if(!modecheck(gamemode, Mode_Edit) || (player1->state==ClientState_Spectator && remote && !player1->privilege))
         {
-            conoutf(CON_ERROR, "\"sendmap\" only works in coop edit mode");
+            conoutf(Console_Error, "\"sendmap\" only works in coop edit mode");
             return;
         }
         conoutf("sending map...");
@@ -2915,11 +2915,11 @@ namespace game
             stream::offset len = map->size();
             if(len > 4*1024*1024)
             {
-                conoutf(CON_ERROR, "map is too large");
+                conoutf(Console_Error, "map is too large");
             }
             else if(len <= 0)
             {
-                conoutf(CON_ERROR, "could not read map");
+                conoutf(Console_Error, "could not read map");
             }
             else
             {
@@ -2933,7 +2933,7 @@ namespace game
         }
         else
         {
-            conoutf(CON_ERROR, "could not read map");
+            conoutf(Console_Error, "could not read map");
         }
         remove(findfile(fname, "rb"));
     }

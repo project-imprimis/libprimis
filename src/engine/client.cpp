@@ -9,7 +9,7 @@ int connmillis = 0, connattempts = 0, discmillis = 0;
 bool multiplayer(bool msg)
 {
     bool val = curpeer || hasnonlocalclients();
-    if(val && msg) conoutf(CON_ERROR, "operation not available in multiplayer");
+    if(val && msg) conoutf(Console_Error, "operation not available in multiplayer");
     return val;
 }
 
@@ -129,7 +129,7 @@ void reconnect(const char *serverpassword)
 {
     if(!connectname[0] || connectport <= 0)
     {
-        conoutf(CON_ERROR, "no previous connection");
+        conoutf(Console_Error, "no previous connection");
         return;
     }
 
@@ -200,7 +200,7 @@ void flushclient()
 
 void neterr(const char *s, bool disc)
 {
-    conoutf(CON_ERROR, "\f3illegal network message (%s)", s);
+    conoutf(Console_Error, "\f3illegal network message (%s)", s);
     if(disc) disconnect();
 }
 

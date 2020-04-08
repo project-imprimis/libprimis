@@ -18,11 +18,11 @@ struct dynlight
         if(fade + peak > 0)
         {
             int remaining = expire - lastmillis;
-            if(flags&DL_EXPAND)
+            if(flags&DynLight_Expand)
                 curradius = initradius + (radius - initradius) * (1.0f - remaining/float(fade + peak));
-            else if(!(flags&DL_FLASH) && remaining > fade)
+            else if(!(flags&DynLight_Flash) && remaining > fade)
                 curradius = initradius + (radius - initradius) * (1.0f - float(remaining - fade)/peak);
-            else if(flags&DL_SHRINK)
+            else if(flags&DynLight_Shrink)
                 curradius = (radius*remaining)/fade;
             else curradius = radius;
         }
@@ -31,7 +31,7 @@ struct dynlight
 
     void calccolor()
     {
-        if(flags&DL_FLASH || peak <= 0) curcolor = color;
+        if(flags&DynLight_Flash || peak <= 0) curcolor = color;
         else
         {
             int peaking = expire - lastmillis - fade;

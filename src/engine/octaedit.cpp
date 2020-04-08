@@ -191,14 +191,14 @@ void toggleedit(bool force)
 
 bool noedit(bool view, bool msg)
 {
-    if(!editmode) { if(msg) conoutf(CON_ERROR, "operation only allowed in edit mode"); return true; }
+    if(!editmode) { if(msg) conoutf(Console_Error, "operation only allowed in edit mode"); return true; }
     if(view || haveselent()) return false;
     vec o(sel.o), s(sel.s);
     s.mul(sel.grid / 2.0f);
     o.add(s);
     float r = max(s.x, s.y, s.z);
     bool viewable = (isvisiblesphere(r, o) != VFC_NOT_VISIBLE);
-    if(!viewable && msg) conoutf(CON_ERROR, "selection not in view");
+    if(!viewable && msg) conoutf(Console_Error, "selection not in view");
     return !viewable;
 }
 
@@ -822,7 +822,7 @@ static int countblock(block3 *b) { return countblock(b->c(), b->size()); }
 void swapundo(undolist &a, undolist &b, int op)
 {
     if(noedit()) return;
-    if(a.empty()) { conoutf(CON_WARN, "nothing more to %s", op == EDIT_REDO ? "redo" : "undo"); return; }
+    if(a.empty()) { conoutf(Console_Warn, "nothing more to %s", op == Edit_Redo ? "redo" : "undo"); return; }
     int ts = a.last->timestamp;
     if(multiplayer(false))
     {
@@ -833,7 +833,7 @@ void swapundo(undolist &a, undolist &b, int op)
             n += u->numents ? u->numents : countblock(u->block());
             if(ops > 10 || n > 2500)
             {
-                conoutf(CON_WARN, "undo too big for multiplayer");
+                conoutf(Console_Warn, "undo too big for multiplayer");
                 if(nompedit) { multiplayer(); return; }
                 op = -1;
                 break;
@@ -874,8 +874,8 @@ void swapundo(undolist &a, undolist &b, int op)
     forcenextundo();
 }
 
-void editundo() { swapundo(undos, redos, EDIT_UNDO); }
-void editredo() { swapundo(redos, undos, EDIT_REDO); }
+void editundo() { swapundo(undos, redos, Edit_Undo); }
+void editredo() { swapundo(redos, undos, Edit_Redo); }
 
 // guard against subdivision
 #define PROTECT_SEL(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundo(_u); freeundo(_u); } }
@@ -1222,8 +1222,8 @@ bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen)
 {
     switch(op)
     {
-        case EDIT_UNDO: return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
-        case EDIT_REDO: return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
+        case Edit_Undo: return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
+        case Edit_Redo: return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
         default: return false;
     }
 }
@@ -1285,14 +1285,14 @@ void saveprefab(char *name)
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "wb");
-    if(!f) { conoutf(CON_ERROR, "could not write prefab to %s", filename); return; }
+    if(!f) { conoutf(Console_Error, "could not write prefab to %s", filename); return; }
     prefabheader hdr;
     memcpy(hdr.magic, "OEBR", 4);
     hdr.version = 0;
     LIL_ENDIAN_SWAP(&hdr.version, 1);
     f->write(&hdr, sizeof(hdr));
     streambuf<uchar> s(f);
-    if(!packblock(*b->copy, s)) { delete f; conoutf(CON_ERROR, "could not pack prefab %s", filename); return; }
+    if(!packblock(*b->copy, s)) { delete f; conoutf(Console_Error, "could not pack prefab %s", filename); return; }
     delete f;
     conoutf("wrote prefab file %s", filename);
 }
@@ -1316,14 +1316,14 @@ prefab *loadprefab(const char *name, bool msg = true)
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "rb");
-    if(!f) { if(msg) conoutf(CON_ERROR, "could not read prefab %s", filename); return NULL; }
+    if(!f) { if(msg) conoutf(Console_Error, "could not read prefab %s", filename); return NULL; }
     prefabheader hdr;
     if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4))
     {
         delete f;
         if(msg)
         {
-            conoutf(CON_ERROR, "prefab %s has malformatted header", filename);
+            conoutf(Console_Error, "prefab %s has malformatted header", filename);
             return NULL;
         }
     }
@@ -1333,7 +1333,7 @@ prefab *loadprefab(const char *name, bool msg = true)
         delete f;
         if(msg)
         {
-           conoutf(CON_ERROR, "prefab %s uses unsupported version", filename);
+           conoutf(Console_Error, "prefab %s uses unsupported version", filename);
            return NULL;
         }
     }
@@ -1344,7 +1344,7 @@ prefab *loadprefab(const char *name, bool msg = true)
         delete f;
         if(msg)
         {
-            conoutf(CON_ERROR, "could not unpack prefab %s", filename);
+            conoutf(Console_Error, "could not unpack prefab %s", filename);
             return NULL;
         }
     }
@@ -1605,7 +1605,7 @@ void previewprefab(const char *name, const vec &color)
 
 void mpcopy(editinfo *&e, selinfo &sel, bool local)
 {
-    if(local) game::edittrigger(sel, EDIT_COPY);
+    if(local) game::edittrigger(sel, Edit_Copy);
     if(e==NULL) e = editinfos.add(new editinfo);
     if(e->copy) freeblock(e->copy);
     e->copy = NULL;
@@ -1616,7 +1616,7 @@ void mpcopy(editinfo *&e, selinfo &sel, bool local)
 void mppaste(editinfo *&e, selinfo &sel, bool local)
 {
     if(e==NULL) return;
-    if(local) game::edittrigger(sel, EDIT_PASTE);
+    if(local) game::edittrigger(sel, Edit_Paste);
     if(e->copy) pasteblock(*e->copy, sel, local);
 }
 
@@ -2137,7 +2137,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
     int seldir = dc ? -dir : dir;
 
     if(local)
-        game::edittrigger(sel, EDIT_FACE, dir, mode);
+        game::edittrigger(sel, Edit_Face, dir, mode);
 
     if(mode==1)
     {
@@ -2273,7 +2273,7 @@ void mpdelcube(selinfo &sel, bool local)
 {
     if(local)
     {
-        game::edittrigger(sel, EDIT_DELCUBE);
+        game::edittrigger(sel, Edit_DelCube);
     }
     LOOP_SEL_XYZ(discardchildren(c, true); EMPTY_FACES(c));
 }
@@ -2435,7 +2435,7 @@ void mpeditvslot(int delta, VSlot &ds, int allfaces, selinfo &sel, bool local)
 {
     if(local)
     {
-        game::edittrigger(sel, EDIT_VSLOT, delta, allfaces, 0, &ds);
+        game::edittrigger(sel, Edit_VSlot, delta, allfaces, 0, &ds);
         if(!(lastsel==sel))
         {
             tofronttex();
@@ -2678,7 +2678,7 @@ void mpedittex(int tex, int allfaces, selinfo &sel, bool local)
 {
     if(local)
     {
-        game::edittrigger(sel, EDIT_TEX, tex, allfaces);
+        game::edittrigger(sel, Edit_Tex, tex, allfaces);
         if(allfaces || !(repsel == sel))
         {
             reptex = -1;
@@ -2957,7 +2957,7 @@ void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local)
 {
     if(local)
     {
-        game::edittrigger(sel, EDIT_REPLACE, oldtex, newtex, insel ? 1 : 0);
+        game::edittrigger(sel, Edit_Replace, oldtex, newtex, insel ? 1 : 0);
     }
     if(insel)
     {
@@ -2996,7 +2996,7 @@ void replace(bool insel)
     }
     if(reptex < 0)
     {
-        conoutf(CON_ERROR, "can only replace after a texture edit");
+        conoutf(Console_Error, "can only replace after a texture edit");
         return;
     }
     mpreplacetex(reptex, lasttex, insel, sel, true);
@@ -3071,7 +3071,7 @@ void mpflip(selinfo &sel, bool local)
 {
     if(local)
     {
-        game::edittrigger(sel, EDIT_FLIP);
+        game::edittrigger(sel, Edit_Flip);
         makeundo();
     }
     int zs = sel.s[DIMENSION(sel.orient)];
@@ -3101,7 +3101,7 @@ void mprotate(int cw, selinfo &sel, bool local)
 {
     if(local)
     {
-        game::edittrigger(sel, EDIT_ROTATE, cw);
+        game::edittrigger(sel, Edit_Rotate, cw);
     }
     int d = DIMENSION(sel.orient);
     if(!DIM_COORD(sel.orient))
@@ -3220,7 +3220,7 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
 {
     if(local)
     {
-        game::edittrigger(sel, EDIT_MAT, matid, filter);
+        game::edittrigger(sel, Edit_Mat, matid, filter);
     }
 
     ushort filtermat = 0, filtermask = 0, matmask;
@@ -3282,7 +3282,7 @@ void editmat(char *name, char *filtername)
         }
         if(filter < 0)
         {
-            conoutf(CON_ERROR, "unknown material \"%s\"", filtername);
+            conoutf(Console_Error, "unknown material \"%s\"", filtername);
             return;
         }
     }
@@ -3292,7 +3292,7 @@ void editmat(char *name, char *filtername)
         id = findmaterial(name);
         if(id<0)
         {
-            conoutf(CON_ERROR, "unknown material \"%s\"", name);
+            conoutf(Console_Error, "unknown material \"%s\"", name);
             return;
         }
     }

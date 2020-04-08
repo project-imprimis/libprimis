@@ -41,22 +41,22 @@ static void fixent(entity &e, int version)
 
 static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr)
 {
-    if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+    if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int)) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
     LIL_ENDIAN_SWAP(&hdr.version, 2);
 
     if(!memcmp(hdr.magic, "TMAP", 4))
     {
-        if(hdr.version>MAPVERSION) { conoutf(CON_ERROR, "map %s requires a newer version of Tesseract", ogzname); return false; }
-        if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.version>MAPVERSION) { conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzname); return false; }
+        if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int)) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
         LIL_ENDIAN_SWAP(&hdr.worldsize, 6);
-        if(hdr.worldsize <= 0|| hdr.numents < 0) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.worldsize <= 0|| hdr.numents < 0) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
     }
     else if(!memcmp(hdr.magic, "OCTA", 4))
     {
-        if(hdr.version!=OCTAVERSION) { conoutf(CON_ERROR, "map %s uses an unsupported map format version", ogzname); return false; }
-        if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.version!=OCTAVERSION) { conoutf(Console_Error, "map %s uses an unsupported map format version", ogzname); return false; }
+        if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int)) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
         LIL_ENDIAN_SWAP(&ohdr.worldsize, 7);
-        if(ohdr.worldsize <= 0|| ohdr.numents < 0) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+        if(ohdr.worldsize <= 0|| ohdr.numents < 0) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
         memcpy(hdr.magic, "TMAP", 4);
         hdr.version = 0;
         hdr.headersize = sizeof(hdr);
@@ -66,7 +66,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
         hdr.numvars = ohdr.numvars;
         hdr.numvslots = ohdr.numvslots;
     }
-    else { conoutf(CON_ERROR, "map %s uses an unsupported map type", ogzname); return false; }
+    else { conoutf(Console_Error, "map %s uses an unsupported map type", ogzname); return false; }
 
     return true;
 }
@@ -114,7 +114,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     if(strcmp(gametype, game::gameident()))
     {
         samegame = false;
-        conoutf(CON_WARN, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
+        conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
     }
     int eif = f->getlil<ushort>();
     int extrasize = f->getlil<ushort>();
@@ -779,7 +779,7 @@ bool save_world(const char *mname)
     setmapfilenames(*mname ? mname : "untitled");
     if(savebak) backup(ogzname, bakname);
     stream *f = opengzfile(ogzname, "wb");
-    if(!f) { conoutf(CON_WARN, "could not write map to %s", ogzname); return false; }
+    if(!f) { conoutf(Console_Warn, "could not write map to %s", ogzname); return false; }
 
     int numvslots = vslots.length();
     if(!multiplayer(false))
@@ -824,24 +824,24 @@ bool save_world(const char *mname)
         switch(id.type)
         {
             case Id_Var:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote var %s: %d", id.name, *id.storage.i);
+                if(dbgvars) conoutf(Console_Debug, "wrote var %s: %d", id.name, *id.storage.i);
                 f->putlil<int>(*id.storage.i);
                 break;
 
             case Id_FloatVar:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote fvar %s: %f", id.name, *id.storage.f);
+                if(dbgvars) conoutf(Console_Debug, "wrote fvar %s: %f", id.name, *id.storage.f);
                 f->putlil<float>(*id.storage.f);
                 break;
 
             case Id_StringVar:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote svar %s: %s", id.name, *id.storage.s);
+                if(dbgvars) conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.storage.s);
                 f->putlil<ushort>(strlen(*id.storage.s));
                 f->write(*id.storage.s, strlen(*id.storage.s));
                 break;
         }
     });
 
-    if(dbgvars) conoutf(CON_DEBUG, "wrote %d vars", hdr.numvars);
+    if(dbgvars) conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
 
     f->putchar((int)strlen(game::gameident()));
     f->write(game::gameident(), (int)strlen(game::gameident())+1);
@@ -893,7 +893,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);
     stream *f = opengzfile(ogzname, "rb");
-    if(!f) { conoutf(CON_ERROR, "could not read map %s", ogzname); return false; }
+    if(!f) { conoutf(Console_Error, "could not read map %s", ogzname); return false; }
 
     mapheader hdr;
     octaheader ohdr;
@@ -955,7 +955,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
                 if(id->minval <= id->maxval && i >= id->minval && i <= id->maxval)
                 {
                     setvar(name, i);
-                    if(dbgvars) conoutf(CON_DEBUG, "read var %s: %d", name, i);
+                    if(dbgvars) conoutf(Console_Debug, "read var %s: %d", name, i);
                 }
                 break;
             }
@@ -965,17 +965,17 @@ bool load_world(const char *mname, const char *cname)        // still supports a
                 if(id->minvalf <= id->maxvalf && f >= id->minvalf && f <= id->maxvalf)
                 {
                     setfvar(name, f);
-                    if(dbgvars) conoutf(CON_DEBUG, "read fvar %s: %f", name, f);
+                    if(dbgvars) conoutf(Console_Debug, "read fvar %s: %f", name, f);
                 }
                 break;
             }
             case Id_StringVar:
                 setsvar(name, val.getstr());
-                if(dbgvars) conoutf(CON_DEBUG, "read svar %s: %s", name, val.getstr());
+                if(dbgvars) conoutf(Console_Debug, "read svar %s: %s", name, val.getstr());
                 break;
         }
     }
-    if(dbgvars) conoutf(CON_DEBUG, "read %d vars", hdr.numvars);
+    if(dbgvars) conoutf(Console_Debug, "read %d vars", hdr.numvars);
 
     string gametype;
     bool samegame = true;
@@ -985,7 +985,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     if(strcmp(gametype, game::gameident())!=0)
     {
         samegame = false;
-        conoutf(CON_WARN, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
+        conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
     }
     int eif = f->getlil<ushort>();
     int extrasize = f->getlil<ushort>();
@@ -1031,7 +1031,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         {
             if(e.type != EngineEnt_Light && e.type != EngineEnt_Spotlight)
             {
-                conoutf(CON_WARN, "warning: ent outside of world: enttype[%s] index %d (%f, %f, %f)", entities::entname(e.type), i, e.o.x, e.o.y, e.o.z);
+                conoutf(Console_Warn, "warning: ent outside of world: enttype[%s] index %d (%f, %f, %f)", entities::entname(e.type), i, e.o.x, e.o.y, e.o.z);
             }
         }
     }
@@ -1039,7 +1039,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     if(hdr.numents > MAXENTS)
     {
-        conoutf(CON_WARN, "warning: map has %d entities", hdr.numents);
+        conoutf(Console_Warn, "warning: map has %d entities", hdr.numents);
         f->seek((hdr.numents-MAXENTS)*(samegame ? sizeof(entity) + einfosize : eif), SEEK_CUR);
     }
 
@@ -1049,7 +1049,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     renderprogress(0, "loading octree...");
     bool failed = false;
     worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
-    if(failed) conoutf(CON_ERROR, "garbage in map");
+    if(failed) conoutf(Console_Error, "garbage in map");
 
     renderprogress(0, "validating...");
     validatec(worldroot, hdr.worldsize>>1);
@@ -1099,7 +1099,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     renderbackground("loading...", mapshot, mname, game::getmapinfo());
 
-    if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown")) conoutf(CON_ECHO, "%s", maptitle);
+    if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown")) conoutf(Console_Echo, "%s", maptitle);
 
     startmap(cname ? cname : mname);
 
@@ -1220,7 +1220,7 @@ void writecollideobj(char *name)
     extern selinfo sel;
     if(!havesel)
     {
-        conoutf(CON_ERROR, "geometry for collide model not selected");
+        conoutf(Console_Error, "geometry for collide model not selected");
         return;
     }
     vector<extentity *> &ents = entities::getents();
@@ -1244,15 +1244,15 @@ void writecollideobj(char *name)
     }
     if(!mm)
     {
-        conoutf(CON_ERROR, "could not find map model in selection");
+        conoutf(Console_Error, "could not find map model in selection");
         return;
     }
     model *m = loadmapmodel(mm->attr1);
     if(!m)
     {
         mapmodelinfo *mmi = getmminfo(mm->attr1);
-        if(mmi) conoutf(CON_ERROR, "could not load map model: %s", mmi->name);
-        else conoutf(CON_ERROR, "could not find map model: %d", mm->attr1);
+        if(mmi) conoutf(Console_Error, "could not load map model: %s", mmi->name);
+        else conoutf(Console_Error, "could not find map model: %d", mm->attr1);
         return;
     }
 

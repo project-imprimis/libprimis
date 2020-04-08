@@ -2,18 +2,18 @@ namespace gle
 {
     enum
     {
-        ATTRIB_VERTEX       = 0,
-        ATTRIB_COLOR        = 1,
-        ATTRIB_TEXCOORD0    = 2,
-        ATTRIB_TEXCOORD1    = 3,
-        ATTRIB_NORMAL       = 4,
-        ATTRIB_TANGENT      = 5,
-        ATTRIB_BONEWEIGHT   = 6,
-        ATTRIB_BONEINDEX    = 7,
-        MAXATTRIBS          = 8
+        Attribute_Vertex        = 0,
+        Attribute_Color         = 1,
+        Attribute_TexCoord0     = 2,
+        Attribute_TexCoord1     = 3,
+        Attribute_Normal        = 4,
+        Attribute_Tangent       = 5,
+        Attribute_BoneWeight    = 6,
+        Attribute_BoneIndex     = 7,
+        Attribute_NumAttributes = 8
     };
 
-    extern const char * const attribnames[MAXATTRIBS];
+    extern const char * const attribnames[Attribute_NumAttributes];
     extern ucharbuf attribbuf;
 
     extern int enabled;
@@ -29,14 +29,14 @@ namespace gle
     #define GLE_DEFATTRIB(name, type, defaultsize, defaultformat) \
         static inline void def##name(int size = defaultsize, int format = defaultformat) { defattrib(type, size, format); }
 
-    GLE_DEFATTRIB(vertex, ATTRIB_VERTEX, 3, GL_FLOAT)
-    GLE_DEFATTRIB(color, ATTRIB_COLOR, 3, GL_FLOAT)
-    GLE_DEFATTRIB(texcoord0, ATTRIB_TEXCOORD0, 2, GL_FLOAT)
-    GLE_DEFATTRIB(texcoord1, ATTRIB_TEXCOORD1, 2, GL_FLOAT)
-    GLE_DEFATTRIB(normal, ATTRIB_NORMAL, 3, GL_FLOAT)
-    GLE_DEFATTRIB(tangent, ATTRIB_TANGENT, 4, GL_FLOAT)
-    GLE_DEFATTRIB(boneweight, ATTRIB_BONEWEIGHT, 4, GL_UNSIGNED_BYTE)
-    GLE_DEFATTRIB(boneindex, ATTRIB_BONEINDEX, 4, GL_UNSIGNED_BYTE)
+    GLE_DEFATTRIB(vertex, Attribute_Vertex, 3, GL_FLOAT)
+    GLE_DEFATTRIB(color, Attribute_Color, 3, GL_FLOAT)
+    GLE_DEFATTRIB(texcoord0, Attribute_TexCoord0, 2, GL_FLOAT)
+    GLE_DEFATTRIB(texcoord1, Attribute_TexCoord1, 2, GL_FLOAT)
+    GLE_DEFATTRIB(normal, Attribute_Normal, 3, GL_FLOAT)
+    GLE_DEFATTRIB(tangent, Attribute_Tangent, 4, GL_FLOAT)
+    GLE_DEFATTRIB(boneweight, Attribute_BoneWeight, 4, GL_UNSIGNED_BYTE)
+    GLE_DEFATTRIB(boneindex, Attribute_BoneIndex, 4, GL_UNSIGNED_BYTE)
 
     #define GLE_INITATTRIB(name, index, suffix, type) \
         static inline void name##suffix(type x) { glVertexAttrib1##suffix##_(index, x); } \
@@ -52,18 +52,18 @@ namespace gle
     #define GLE_INITATTRIBN(name, index, suffix, type, defaultw) \
         static inline void name##suffix(type x, type y, type z, type w = defaultw) { glVertexAttrib4N##suffix##_(index, x, y, z, w); }
 
-    GLE_INITATTRIBF(vertex, ATTRIB_VERTEX)
-    GLE_INITATTRIBF(color, ATTRIB_COLOR)
-    GLE_INITATTRIBN(color, ATTRIB_COLOR, ub, uchar, 255)
-    static inline void color(const bvec &v, uchar alpha = 255) { glVertexAttrib4Nub_(ATTRIB_COLOR, v.x, v.y, v.z, alpha); }
-    static inline void color(const bvec4 &v) { glVertexAttrib4Nubv_(ATTRIB_COLOR, v.v); }
-    GLE_INITATTRIBF(texcoord0, ATTRIB_TEXCOORD0)
-    GLE_INITATTRIBF(texcoord1, ATTRIB_TEXCOORD1)
-    static inline void normal(float x, float y, float z) { glVertexAttrib4f_(ATTRIB_NORMAL, x, y, z, 0.0f); }
-    static inline void normal(const vec &v) { glVertexAttrib4f_(ATTRIB_NORMAL, v.x, v.y, v.z, 0.0f); }
-    static inline void tangent(float x, float y, float z, float w = 1.0f) { glVertexAttrib4f_(ATTRIB_TANGENT, x, y, z, w); }
-    static inline void tangent(const vec &v, float w = 1.0f) { glVertexAttrib4f_(ATTRIB_TANGENT, v.x, v.y, v.z, w); }
-    static inline void tangent(const vec4 &v) { glVertexAttrib4fv_(ATTRIB_TANGENT, v.v); }
+    GLE_INITATTRIBF(vertex, Attribute_Vertex)
+    GLE_INITATTRIBF(color, Attribute_Color)
+    GLE_INITATTRIBN(color, Attribute_Color, ub, uchar, 255)
+    static inline void color(const bvec &v, uchar alpha = 255) { glVertexAttrib4Nub_(Attribute_Color, v.x, v.y, v.z, alpha); }
+    static inline void color(const bvec4 &v) { glVertexAttrib4Nubv_(Attribute_Color, v.v); }
+    GLE_INITATTRIBF(texcoord0, Attribute_TexCoord0)
+    GLE_INITATTRIBF(texcoord1, Attribute_TexCoord1)
+    static inline void normal(float x, float y, float z) { glVertexAttrib4f_(Attribute_Normal, x, y, z, 0.0f); }
+    static inline void normal(const vec &v) { glVertexAttrib4f_(Attribute_Normal, v.x, v.y, v.z, 0.0f); }
+    static inline void tangent(float x, float y, float z, float w = 1.0f) { glVertexAttrib4f_(Attribute_Tangent, x, y, z, w); }
+    static inline void tangent(const vec &v, float w = 1.0f) { glVertexAttrib4f_(Attribute_Tangent, v.x, v.y, v.z, w); }
+    static inline void tangent(const vec4 &v) { glVertexAttrib4fv_(Attribute_Tangent, v.v); }
 
     #define GLE_ATTRIBPOINTER(name, index, defaultnormalized, defaultsize, defaulttype, prepare) \
         static inline void enable##name() { prepare; glEnableVertexAttribArray_(index); } \
@@ -75,14 +75,14 @@ namespace gle
 
     static inline void enableattrib(int index) { disable(); glEnableVertexAttribArray_(index); }
     static inline void disableattrib(int index) { glDisableVertexAttribArray_(index); }
-    GLE_ATTRIBPOINTER(vertex, ATTRIB_VERTEX, GL_FALSE, 3, GL_FLOAT, disable())
-    GLE_ATTRIBPOINTER(color, ATTRIB_COLOR, GL_TRUE, 4, GL_UNSIGNED_BYTE, )
-    GLE_ATTRIBPOINTER(texcoord0, ATTRIB_TEXCOORD0, GL_FALSE, 2, GL_FLOAT, )
-    GLE_ATTRIBPOINTER(texcoord1, ATTRIB_TEXCOORD1, GL_FALSE, 2, GL_FLOAT, )
-    GLE_ATTRIBPOINTER(normal, ATTRIB_NORMAL, GL_TRUE, 3, GL_FLOAT, )
-    GLE_ATTRIBPOINTER(tangent, ATTRIB_TANGENT, GL_TRUE, 4, GL_FLOAT, )
-    GLE_ATTRIBPOINTER(boneweight, ATTRIB_BONEWEIGHT, GL_TRUE, 4, GL_UNSIGNED_BYTE, )
-    GLE_ATTRIBPOINTER(boneindex, ATTRIB_BONEINDEX, GL_FALSE, 4, GL_UNSIGNED_BYTE, )
+    GLE_ATTRIBPOINTER(vertex, Attribute_Vertex, GL_FALSE, 3, GL_FLOAT, disable())
+    GLE_ATTRIBPOINTER(color, Attribute_Color, GL_TRUE, 4, GL_UNSIGNED_BYTE, )
+    GLE_ATTRIBPOINTER(texcoord0, Attribute_TexCoord0, GL_FALSE, 2, GL_FLOAT, )
+    GLE_ATTRIBPOINTER(texcoord1, Attribute_TexCoord1, GL_FALSE, 2, GL_FLOAT, )
+    GLE_ATTRIBPOINTER(normal, Attribute_Normal, GL_TRUE, 3, GL_FLOAT, )
+    GLE_ATTRIBPOINTER(tangent, Attribute_Tangent, GL_TRUE, 4, GL_FLOAT, )
+    GLE_ATTRIBPOINTER(boneweight, Attribute_BoneWeight, GL_TRUE, 4, GL_UNSIGNED_BYTE, )
+    GLE_ATTRIBPOINTER(boneindex, Attribute_BoneIndex, GL_FALSE, 4, GL_UNSIGNED_BYTE, )
 
     static inline void bindebo(GLuint ebo) { disable(); glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, ebo); }
     static inline void clearebo() { glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, 0); }

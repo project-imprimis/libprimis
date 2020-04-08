@@ -22,10 +22,10 @@ namespace gle
         }
     };
 
-    extern const char * const attribnames[MAXATTRIBS] = { "vvertex", "vcolor", "vtexcoord0", "vtexcoord1", "vnormal", "vtangent", "vboneweight", "vboneindex" };
+    extern const char * const attribnames[Attribute_NumAttributes] = { "vvertex", "vcolor", "vtexcoord0", "vtexcoord1", "vnormal", "vtangent", "vboneweight", "vboneindex" };
     ucharbuf attribbuf;
     static uchar *attribdata;
-    static attribinfo attribdefs[MAXATTRIBS], lastattribs[MAXATTRIBS];
+    static attribinfo attribdefs[Attribute_NumAttributes], lastattribs[Attribute_NumAttributes];
     int enabled = 0;
     static int numattribs = 0, attribmask = 0, numlastattribs = 0, lastattribmask = 0, vertexsize = 0, lastvertexsize = 0;
     static GLenum primtype = GL_TRIANGLES;
@@ -99,7 +99,7 @@ namespace gle
 
     void defattrib(int type, int size, int format)
     {
-        if(type == ATTRIB_VERTEX)
+        if(type == Attribute_Vertex)
         {
             numattribs = attribmask = 0;
             vertexsize = 0;
@@ -134,14 +134,14 @@ namespace gle
             GLenum format;
             switch(fmt[0])
             {
-                case 'v': format = ATTRIB_VERTEX; break;
-                case 'c': format = ATTRIB_COLOR; break;
-                case 't': format = ATTRIB_TEXCOORD0; break;
-                case 'T': format = ATTRIB_TEXCOORD1; break;
-                case 'n': format = ATTRIB_NORMAL; break;
-                case 'x': format = ATTRIB_TANGENT; break;
-                case 'w': format = ATTRIB_BONEWEIGHT; break;
-                case 'i': format = ATTRIB_BONEINDEX; break;
+                case 'v': format = Attribute_Vertex; break;
+                case 'c': format = Attribute_Color; break;
+                case 't': format = Attribute_TexCoord0; break;
+                case 'T': format = Attribute_TexCoord1; break;
+                case 'n': format = Attribute_Normal; break;
+                case 'x': format = Attribute_Tangent; break;
+                case 'w': format = Attribute_BoneWeight; break;
+                case 'i': format = Attribute_BoneIndex; break;
                 default: return;
             }
             defattrib(format, fmt[1]-'0', fmt[2]);
@@ -152,16 +152,16 @@ namespace gle
     {
         switch(a.type)
         {
-            case ATTRIB_VERTEX:
-            case ATTRIB_TEXCOORD0:
-            case ATTRIB_TEXCOORD1:
-            case ATTRIB_BONEINDEX:
+            case Attribute_Vertex:
+            case Attribute_TexCoord0:
+            case Attribute_TexCoord1:
+            case Attribute_BoneIndex:
                 glVertexAttribPointer_(a.type, a.size, a.format, GL_FALSE, vertexsize, buf);
                 break;
-            case ATTRIB_COLOR:
-            case ATTRIB_NORMAL:
-            case ATTRIB_TANGENT:
-            case ATTRIB_BONEWEIGHT:
+            case Attribute_Color:
+            case Attribute_Normal:
+            case Attribute_Tangent:
+            case Attribute_BoneWeight:
                 glVertexAttribPointer_(a.type, a.size, a.format, GL_TRUE, vertexsize, buf);
                 break;
         }

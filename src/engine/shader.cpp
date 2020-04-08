@@ -79,7 +79,7 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     else glGetProgramiv_(obj, GL_INFO_LOG_LENGTH, &length);
     if(length > 1)
     {
-        conoutf(CON_ERROR, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "VS" : (type == GL_FRAGMENT_SHADER ? "FS" : "PROG"), name);
+        conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "VS" : (type == GL_FRAGMENT_SHADER ? "FS" : "PROG"), name);
         FILE *l = getlogfile();
         if(l)
         {
@@ -330,7 +330,7 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
         u.offset = offsetval;
         u.size = sizeval;
         glUniformBlockBinding_(s.program, bidx, u.binding);
-        if(dbgubo) conoutf(CON_DEBUG, "UBO: %s:%s:%d, offset: %d, size: %d, stride: %d", u.name, u.blockname, u.binding, offsetval, sizeval, strideval);
+        if(dbgubo) conoutf(Console_Debug, "UBO: %s:%s:%d, offset: %d, size: %d, stride: %d", u.name, u.blockname, u.binding, offsetval, sizeval, strideval);
     }
 }
 //====================================================================UNIFORMTEX
@@ -369,7 +369,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
             glBindAttribLocation_(s.program, a.loc, a.name);
             attribs |= 1<<a.loc;
         }
-        for(int i = 0; i < gle::MAXATTRIBS; ++i)
+        for(int i = 0; i < gle::Attribute_NumAttributes; ++i)
         {
             if(!(attribs&(1<<i)))
             {
@@ -1354,7 +1354,7 @@ void setshader(char *name)
     Shader *s = shaders.access(name);
     if(!s)
     {
-        conoutf(CON_ERROR, "no such shader: %s", name);
+        conoutf(Console_Error, "no such shader: %s", name);
     }
     else
     {
@@ -1693,7 +1693,7 @@ static bool addpostfx(const char *name, int outputbind, int outputscale, uint in
     Shader *s = useshaderbyname(name);
     if(!s)
     {
-        conoutf(CON_ERROR, "no such postfx shader: %s", name);
+        conoutf(Console_Error, "no such postfx shader: %s", name);
         return false;
     }
     postfxpass &p = postfxpasses.add();

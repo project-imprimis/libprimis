@@ -658,7 +658,7 @@ void calclight()
 void mpcalclight(bool local)
 {
     extern selinfo sel;
-    if(local) game::edittrigger(sel, EDIT_CALCLIGHT);
+    if(local) game::edittrigger(sel, Edit_CalcLight);
     calclight();
 }
 

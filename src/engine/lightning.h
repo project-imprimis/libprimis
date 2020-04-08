@@ -90,8 +90,8 @@ struct lightningrenderer : listrenderer
         setuplightning();
 
         glDisable(GL_CULL_FACE);
-        gle::defattrib(gle::ATTRIB_VERTEX, 3, GL_FLOAT);
-        gle::defattrib(gle::ATTRIB_TEXCOORD0, 2, GL_FLOAT);
+        gle::defattrib(gle::Attribute_Vertex, 3, GL_FLOAT);
+        gle::defattrib(gle::Attribute_TexCoord0, 2, GL_FLOAT);
     }
 
     void endrender()

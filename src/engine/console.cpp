@@ -43,7 +43,7 @@ void conoutf(const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    conoutfv(CON_INFO, fmt, args);
+    conoutfv(Console_Info, fmt, args);
     va_end(args);
 }
 
@@ -233,7 +233,7 @@ hashtable<int, keym> keyms(128);
 
 void keymap(int *code, char *key)
 {
-    if(identflags&Idf_Overridden) { conoutf(CON_ERROR, "cannot override keymap %d", *code); return; }
+    if(identflags&Idf_Overridden) { conoutf(Console_Error, "cannot override keymap %d", *code); return; }
     keym &km = keyms[*code];
     km.code = *code;
     DELETEA(km.name);
@@ -283,9 +283,9 @@ void getbind(char *key, int type)
 
 void bindkey(char *key, char *action, int state, const char *cmd)
 {
-    if(identflags&Idf_Overridden) { conoutf(CON_ERROR, "cannot override %s \"%s\"", cmd, key); return; }
+    if(identflags&Idf_Overridden) { conoutf(Console_Error, "cannot override %s \"%s\"", cmd, key); return; }
     keym *km = findbind(key);
-    if(!km) { conoutf(CON_ERROR, "unknown key \"%s\"", key); return; }
+    if(!km) { conoutf(Console_Error, "unknown key \"%s\"", key); return; }
     char *&binding = km->actions[state];
     if(!keypressed || keyaction!=binding) delete[] binding;
     // trim white-space to make searchbinds more reliable
@@ -756,7 +756,7 @@ void addcomplete(char *command, int type, char *dir, char *ext)
 {
     if(identflags&Idf_Overridden)
     {
-        conoutf(CON_ERROR, "cannot override complete %s", command);
+        conoutf(Console_Error, "cannot override complete %s", command);
         return;
     }
     if(!dir[0])

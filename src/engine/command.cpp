@@ -248,8 +248,8 @@ static void debugalias()
     {
         ident *id = l->id;
         ++depth;
-        if(depth < dbgalias) conoutf(CON_ERROR, "  %d) %s", total-depth+1, id->name);
-        else if(l->next == &noalias) conoutf(CON_ERROR, depth == dbgalias ? "  %d) %s" : "  ..%d) %s", total-depth+1, id->name);
+        if(depth < dbgalias) conoutf(Console_Error, "  %d) %s", total-depth+1, id->name);
+        else if(l->next == &noalias) conoutf(Console_Error, depth == dbgalias ? "  %d) %s" : "  ..%d) %s", total-depth+1, id->name);
     }
 }
 
@@ -263,7 +263,7 @@ static void debugcode(const char *fmt, ...)
 
     va_list args;
     va_start(args, fmt);
-    conoutfv(CON_ERROR, fmt, args);
+    conoutfv(Console_Error, fmt, args);
     va_end(args);
 
     debugalias();
@@ -277,7 +277,7 @@ static void debugcodeline(const char *p, const char *fmt, ...)
 
     va_list args;
     va_start(args, fmt);
-    conoutfv(CON_ERROR, debugline(p, fmt), args);
+    conoutfv(Console_Error, debugline(p, fmt), args);
     va_end(args);
 
     debugalias();
@@ -3071,7 +3071,7 @@ bool execfile(const char *cfgfile, bool msg)
     char *buf = loadfile(path(s), NULL);
     if(!buf)
     {
-        if(msg) conoutf(CON_ERROR, "could not read \"%s\"", cfgfile);
+        if(msg) conoutf(Console_Error, "could not read \"%s\"", cfgfile);
         return false;
     }
     const char *oldsourcefile = sourcefile, *oldsourcestr = sourcestr;
@@ -4270,7 +4270,7 @@ CMPSCMD(<=s, <=);
 CMPSCMD(>=s, >=);
 
 ICOMMAND(echo, "C", (char *s), conoutf("\f1%s", s));
-ICOMMAND(error, "C", (char *s), conoutf(CON_ERROR, "%s", s));
+ICOMMAND(error, "C", (char *s), conoutf(Console_Error, "%s", s));
 ICOMMAND(strstr, "ss", (char *a, char *b), { char *s = strstr(a, b); intret(s ? s-a : -1); });
 ICOMMAND(strlen, "s", (char *s), intret(strlen(s)));
 ICOMMAND(strcode, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : uchar(s[*i])) : uchar(s[0])));
