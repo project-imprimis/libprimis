@@ -13,7 +13,12 @@ void loadsky(const char *basename, Texture *texs[6])
         if(wildcard)
         {
             char *chop = strchr(name, '*');
-            if(chop) { *chop = '\0'; concatstring(name, side); concatstring(name, wildcard+1); }
+            if(chop)
+            {
+                *chop = '\0';
+                concatstring(name, side);
+                concatstring(name, wildcard+1);
+            }
             texs[i] = textureload(name, 3, true, false);
         }
         else
@@ -26,7 +31,10 @@ void loadsky(const char *basename, Texture *texs[6])
                 texs[i] = textureload(name, 3, true, false);
             }
         }
-        if(texs[i]==notexture) conoutf(Console_Error, "could not load side %s of sky texture %s", side, basename);
+        if(texs[i]==notexture)
+        {
+            conoutf(Console_Error, "could not load side %s of sky texture %s", side, basename);
+        }
     }
 }
 
@@ -38,7 +46,10 @@ Texture *loadskyoverlay(const char *basename)
     string name;
     copystring(name, makerelpath("media/sky", basename));
     Texture *t = notexture;
-    if(ext) t = textureload(name, 0, true, false);
+    if(ext)
+    {
+        t = textureload(name, 0, true, false);
+    }
     else
     {
         concatstring(name, ".jpg");
@@ -48,7 +59,10 @@ Texture *loadskyoverlay(const char *basename)
             t = textureload(name, 0, true, false);
         }
     }
-    if(t==notexture) conoutf(Console_Error, "could not load sky overlay texture %s", basename);
+    if(t==notexture)
+    {
+        conoutf(Console_Error, "could not load sky overlay texture %s", basename);
+    }
     return t;
 }
 
@@ -96,8 +110,10 @@ void drawenvboxface(float s0, float t0, int x0, int y0, int z0,
 
 void drawenvbox(Texture **sky = NULL, float z1clip = 0.0f, float z2clip = 1.0f, int faces = 0x3F)
 {
-    if(z1clip >= z2clip) return;
-
+    if(z1clip >= z2clip)
+    {
+        return;
+    }
     float v1 = 1-z1clip, v2 = 1-z2clip;
     int w = farplane/2, z1 = int(ceil(2*w*(z1clip-0.5f))), z2 = int(ceil(2*w*(z2clip-0.5f)));
 
@@ -105,40 +121,47 @@ void drawenvbox(Texture **sky = NULL, float z1clip = 0.0f, float z2clip = 1.0f, 
     gle::deftexcoord0();
 
     if(faces&0x01)
+    {
         drawenvboxface(1.0f, v2,  -w, -w, z2,
                        0.0f, v2,  -w,  w, z2,
                        0.0f, v1,  -w,  w, z1,
                        1.0f, v1,  -w, -w, z1, sky[0]);
-
+    }
     if(faces&0x02)
+    {
         drawenvboxface(0.0f, v1, w, -w, z1,
                        1.0f, v1, w,  w, z1,
                        1.0f, v2, w,  w, z2,
                        0.0f, v2, w, -w, z2, sky[1]);
-
+    }
     if(faces&0x04)
+    {
         drawenvboxface(0.0f, v1, -w, -w, z1,
                        1.0f, v1,  w, -w, z1,
                        1.0f, v2,  w, -w, z2,
                        0.0f, v2, -w, -w, z2, sky[2]);
-
+    }
     if(faces&0x08)
+    {
         drawenvboxface(0.0f, v1,  w,  w, z1,
                        1.0f, v1, -w,  w, z1,
                        1.0f, v2, -w,  w, z2,
                        0.0f, v2,  w,  w, z2, sky[3]);
-
+    }
     if(z1clip <= 0 && faces&0x10)
+    {
         drawenvboxface(1.0f, 1.0f, -w,  w,  -w,
                        1.0f, 0.0f,  w,  w,  -w,
                        0.0f, 0.0f,  w, -w,  -w,
                        0.0f, 1.0f, -w, -w,  -w, sky[4]);
-
+    }
     if(z2clip >= 1 && faces&0x20)
+    {
         drawenvboxface(1.0f, 1.0f,  w,  w, w,
                        1.0f, 0.0f, -w,  w, w,
                        0.0f, 0.0f, -w, -w, w,
                        0.0f, 1.0f,  w, -w, w, sky[5]);
+    }
 }
 
 void drawenvoverlay(Texture *overlay = NULL, float tx = 0, float ty = 0)
@@ -199,7 +222,10 @@ namespace fogdome
         }
         vert(const vert &v0, const vert &v1) : pos(vec(v0.pos).add(v1.pos).normalize()), color(v0.color)
         {
-            if(v0.pos.z != v1.pos.z) color.a += uchar((v1.color.a - v0.color.a) * (pos.z - v0.pos.z) / (v1.pos.z - v0.pos.z));
+            if(v0.pos.z != v1.pos.z)
+            {
+                color.a += uchar((v1.color.a - v0.color.a) * (pos.z - v0.pos.z) / (v1.pos.z - v0.pos.z));
+            }
         }
     } *verts = NULL;
     GLushort *indices = NULL;
@@ -221,7 +247,10 @@ namespace fogdome
 
     void subdivide(int depth, int face)
     {
-        if(depth-- <= 0) return;
+        if(depth-- <= 0)
+        {
+            return;
+        }
         int idx[6];
         for(int i = 0; i < 3; ++i)
         {
@@ -313,13 +342,18 @@ namespace fogdome
                 capindices += 3;
             }
         }
-
-        if(!vbuf) glGenBuffers_(1, &vbuf);
+        if(!vbuf)
+        {
+            glGenBuffers_(1, &vbuf);
+        }
         gle::bindvbo(vbuf);
         glBufferData_(GL_ARRAY_BUFFER, numverts*sizeof(vert), verts, GL_STATIC_DRAW);
         DELETEA(verts);
 
-        if(!ebuf) glGenBuffers_(1, &ebuf);
+        if(!ebuf)
+        {
+            glGenBuffers_(1, &ebuf);
+        }
         gle::bindebo(ebuf);
         glBufferData_(GL_ELEMENT_ARRAY_BUFFER, (numindices + capindices)*sizeof(GLushort), indices, GL_STATIC_DRAW);
         DELETEA(indices);
@@ -328,8 +362,16 @@ namespace fogdome
     void cleanup()
     {
         numverts = numindices = 0;
-        if(vbuf) { glDeleteBuffers_(1, &vbuf); vbuf = 0; }
-        if(ebuf) { glDeleteBuffers_(1, &ebuf); ebuf = 0; }
+        if(vbuf)
+        {
+            glDeleteBuffers_(1, &vbuf);
+            vbuf = 0;
+        }
+        if(ebuf)
+        {
+            glDeleteBuffers_(1, &ebuf);
+            ebuf = 0;
+        }
     }
 
     void draw()
@@ -345,7 +387,6 @@ namespace fogdome
             lastcapsize = capsize;
             lastclipz = fogdomeclip;
         }
-
         gle::bindvbo(vbuf);
         gle::bindebo(ebuf);
 
@@ -485,16 +526,16 @@ void drawskybox(bool clear)
         glDepthFunc(GL_LEQUAL);
         glDepthMask(GL_FALSE);
     }
-
-    if(clampsky) glDepthRange(1, 1);
-
+    if(clampsky)
+    {
+        glDepthRange(1, 1);
+    }
     if(clear || (!skybox[0] && (!atmo || atmoalpha < 1)))
     {
         vec skyboxcol = skyboxcolor.tocolor().mul(ldrscale); //local skyboxcol was skyboxcolor before skyboxcolour -> skyboxcolor uniformity change
         glClearColor(skyboxcol.x, skyboxcol.y, skyboxcol.z, 0);
         glClear(GL_COLOR_BUFFER_BIT);
     }
-
     if(skybox[0])
     {
         if(ldrscale < 1 && (skyboxoverbrightmin != 1 || (skyboxoverbright > 1 && skyboxoverbrightthreshold < 1)))
@@ -502,8 +543,10 @@ void drawskybox(bool clear)
             SETSHADER(skyboxoverbright);
             LOCALPARAMF(overbrightparams, skyboxoverbrightmin, max(skyboxoverbright, skyboxoverbrightmin), skyboxoverbrightthreshold);
         }
-        else SETSHADER(skybox);
-
+        else
+        {
+            SETSHADER(skybox);
+        }
         gle::color(skyboxcolor);
 
         matrix4 skymatrix = cammatrix, skyprojmatrix;
@@ -514,7 +557,6 @@ void drawskybox(bool clear)
 
         drawenvbox(sky);
     }
-
     if(atmo && (!skybox[0] || atmoalpha < 1))
     {
         if(atmoalpha < 1)
@@ -525,14 +567,15 @@ void drawskybox(bool clear)
 
         drawatmosphere();
 
-        if(atmoalpha < 1) glDisable(GL_BLEND);
+        if(atmoalpha < 1)
+        {
+            glDisable(GL_BLEND);
+        }
     }
-
     if(fogdomemax && !fogdomeclouds)
     {
         drawfogdome();
     }
-
     if(cloudbox[0])
     {
         SETSHADER(skybox);
@@ -552,7 +595,6 @@ void drawskybox(bool clear)
 
         glDisable(GL_BLEND);
     }
-
     if(cloudlayer[0] && cloudheight)
     {
         SETSHADER(skybox);
@@ -574,14 +616,14 @@ void drawskybox(bool clear)
 
         glEnable(GL_CULL_FACE);
     }
-
     if(fogdomemax && fogdomeclouds)
     {
         drawfogdome();
     }
-
-    if(clampsky) glDepthRange(0, 1);
-
+    if(clampsky)
+    {
+        glDepthRange(0, 1);
+    }
     if(limited)
     {
         glEnable(GL_DEPTH_TEST);
