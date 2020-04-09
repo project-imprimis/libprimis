@@ -264,7 +264,7 @@ namespace game
             }
             a[ai++] = modelattach("tag_weapon", guns[d->gunselect].vwep, vanim, vtime);
         }
-        if(mainpass && !(flags&MDL_ONLYSHADOW))
+        if(mainpass && !(flags&Model_OnlyShadow))
         {
             d->muzzle = vec(-1, -1, -1);
             if(guns[d->gunselect].vwep) a[ai++] = modelattach("tag_muzzle", &d->muzzle);
@@ -329,10 +329,10 @@ namespace game
             if((anim&ANIM_INDEX)==Anim_Idle && (anim>>ANIM_SECONDARY)&ANIM_INDEX) anim >>= ANIM_SECONDARY;
         }
         if(!((anim>>ANIM_SECONDARY)&ANIM_INDEX)) anim |= (Anim_Idle|ANIM_LOOP)<<ANIM_SECONDARY;
-        if(d!=player1) flags |= MDL_CULL_VFC | MDL_CULL_OCCLUDED | MDL_CULL_QUERY;
-        if(d->type==PhysEnt_Player) flags |= MDL_FULLBRIGHT;
-        else flags |= MDL_CULL_DIST;
-        if(!mainpass) flags &= ~(MDL_FULLBRIGHT | MDL_CULL_VFC | MDL_CULL_OCCLUDED | MDL_CULL_QUERY | MDL_CULL_DIST);
+        if(d!=player1) flags |= Model_CullVFC | Model_CullOccluded | Model_CullQuery;
+        if(d->type==PhysEnt_Player) flags |= Model_FullBright;
+        else flags |= Model_CullDist;
+        if(!mainpass) flags &= ~(Model_FullBright | Model_CullVFC | Model_CullOccluded | Model_CullQuery | Model_CullDist);
         float trans = d->state == ClientState_Lagged ? 0.5f : 1.0f;
         rendermodel(mdlname, anim, o, yaw, pitch, 0, flags, d, a[0].tag ? a : NULL, basetime, 0, fade, vec4(vec::hexcolor(color), trans));
     }
@@ -366,7 +366,7 @@ namespace game
             if(d->state!=ClientState_Dead)
             {
                 int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0;
-                particle_text(d->abovehead(), d->info, PART_TEXT, 1, teamtextcolor[team], 2.0f);
+                particle_text(d->abovehead(), d->info, Part_Text, 1, teamtextcolor[team], 2.0f);
             }
         }
         for(int i = 0; i < ragdolls.length(); i++)
@@ -378,9 +378,9 @@ namespace game
             renderplayer(d, fade);
         }
         if(exclude)
-            renderplayer(exclude, 1, MDL_ONLYSHADOW);
+            renderplayer(exclude, 1, Model_OnlyShadow);
         else if(!f && (player1->state==ClientState_Alive || (player1->state==ClientState_Editing && third) || (player1->state==ClientState_Dead && !hidedead)))
-            renderplayer(player1, 1, third ? 0 : MDL_ONLYSHADOW);
+            renderplayer(player1, 1, third ? 0 : Model_OnlyShadow);
         entities::renderentities();
         renderbouncers();
         renderprojectiles();
@@ -451,7 +451,7 @@ namespace game
         modelattach a[2];
         d->muzzle = vec(-1, -1, -1);
         a[0] = modelattach("tag_muzzle", &d->muzzle);
-        rendermodel(gunname, anim, sway, d->yaw, d->pitch, 0, MDL_NOBATCH, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
+        rendermodel(gunname, anim, sway, d->yaw, d->pitch, 0, Model_NoBatch, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
         if(d->muzzle.x >= 0) d->muzzle = calcavatarpos(d->muzzle, 12);
     }
 

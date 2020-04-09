@@ -274,10 +274,10 @@ void countselchild(cube *c, const ivec &cor, int size)
         else
         {
             selchildcount++;
-            if(c[i].material != MAT_AIR && selchildmat != MAT_AIR)
+            if(c[i].material != Mat_Air && selchildmat != Mat_Air)
             {
                 if(selchildmat < 0) selchildmat = c[i].material;
-                else if(selchildmat != c[i].material) selchildmat = MAT_AIR;
+                else if(selchildmat != c[i].material) selchildmat = Mat_Air;
             }
         }
     }
@@ -369,10 +369,10 @@ void rendereditcursor()
         int entorient = 0, ent = -1;
 
         wdist = rayent(player->o, camdir, 1e16f,
-                       (editmode && showmat ? RAY_EDITMAT : 0)   // select cubes first
-                       | (!dragging && entediting ? RAY_ENTS : 0)
-                       | RAY_SKIPFIRST
-                       | (passthroughcube==1 ? RAY_PASS : 0), gridsize, entorient, ent);
+                       (editmode && showmat ? Ray_EditMat : 0)   // select cubes first
+                       | (!dragging && entediting ? Ray_Ents : 0)
+                       | Ray_SkipFirst
+                       | (passthroughcube==1 ? Ray_Pass : 0), gridsize, entorient, ent);
 
         if((havesel || dragging) && !passthroughsel && !hmapedit)     // now try selecting the selection
             if(rayboxintersect(vec(sel.o), vec(sel.s).mul(sel.grid), player->o, camdir, sdist, orient))
@@ -1304,7 +1304,7 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
     int o = sel.orient;
     sel.orient = b.orient;
     cube *s = b.c();
-    LOOP_SEL_XYZ(if(!IS_EMPTY(*s) || s->children || s->material != MAT_AIR) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
+    LOOP_SEL_XYZ(if(!IS_EMPTY(*s) || s->children || s->material != Mat_Air) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
     sel.orient = o;
 }
 
@@ -2119,7 +2119,7 @@ static ushort getmaterial(cube &c)
         {
             if(mat != getmaterial(c.children[i]))
             {
-                return MAT_AIR;
+                return Mat_Air;
             }
         }
         return mat;
@@ -3204,14 +3204,14 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
                 return;
             }
         }
-        if(mat!=MAT_AIR)
+        if(mat!=Mat_Air)
         {
             c.material &= matmask;
             c.material |= mat;
         }
         else
         {
-            c.material = MAT_AIR;
+            c.material = Mat_Air;
         }
     }
 }
@@ -3228,32 +3228,32 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
     if(filter >= 0)
     {
         filtermat = filter&0xFF;
-        filtermask = filtermat&(MATF_VOLUME|MATF_INDEX) ? MATF_VOLUME|MATF_INDEX : (filtermat&MATF_CLIP ? MATF_CLIP : filtermat);
+        filtermask = filtermat&(MatFlag_Volume|MatFlag_Index) ? MatFlag_Volume|MatFlag_Index : (filtermat&MatFlag_Clip ? MatFlag_Clip : filtermat);
         filtergeom = filter&~0xFF;
     }
     if(matid < 0)
     {
         matid = 0;
         matmask = filtermask;
-        if(IS_CLIPPED(filtermat&MATF_VOLUME))
+        if(IS_CLIPPED(filtermat&MatFlag_Volume))
         {
-            matmask &= ~MATF_CLIP;
+            matmask &= ~MatFlag_Clip;
         }
-        if(IS_DEADLY(filtermat&MATF_VOLUME))
+        if(IS_DEADLY(filtermat&MatFlag_Volume))
         {
-            matmask &= ~MAT_DEATH;
+            matmask &= ~Mat_Death;
         }
     }
     else
     {
-        matmask = matid&(MATF_VOLUME|MATF_INDEX) ? 0 : (matid&MATF_CLIP ? ~MATF_CLIP : ~matid);
-        if(IS_CLIPPED(matid&MATF_VOLUME))
+        matmask = matid&(MatFlag_Volume|MatFlag_Index) ? 0 : (matid&MatFlag_Clip ? ~MatFlag_Clip : ~matid);
+        if(IS_CLIPPED(matid&MatFlag_Volume))
         {
-            matid |= MAT_CLIP;
+            matid |= Mat_Clip;
         }
-        if(IS_DEADLY(matid&MATF_VOLUME))
+        if(IS_DEADLY(matid&MatFlag_Volume))
         {
-            matid |= MAT_DEATH;
+            matid |= Mat_Death;
         }
     }
     LOOP_SEL_XYZ(setmat(c, matid, matmask, filtermat, filtermask, filtergeom));

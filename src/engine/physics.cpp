@@ -151,7 +151,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
         } \
     } while(0)
 
-    if((mode&RAY_POLY) == RAY_POLY) ENT_INTERSECT(mapmodels,
+    if((mode&Ray_Poly) == Ray_Poly) ENT_INTERSECT(mapmodels,
     {
         if(!mmintersect(e, o, ray, radius, mode, f)) continue;
     });
@@ -161,7 +161,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
         if(!rayboxintersect(eo, es, o, ray, f, orient)) continue; \
     })
 
-    if((mode&RAY_ENTS) == RAY_ENTS)
+    if((mode&Ray_Ents) == Ray_Ents)
     {
         ENT_SEL_INTERSECT(other);
         ENT_SEL_INTERSECT(mapmodels);
@@ -215,7 +215,7 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
     vec v(o), invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f); \
     cube *levels[20]; \
     levels[worldscale] = worldroot; \
-    int lshift = worldscale, elvl = mode&RAY_BB ? worldscale : 0; \
+    int lshift = worldscale, elvl = mode&Ray_BB ? worldscale : 0; \
     ivec lsizemask(invray.x>0 ? 1 : 0, invray.y>0 ? 1 : 0, invray.z>0 ? 1 : 0); \
 
 #define CHECKINSIDEWORLD \
@@ -296,18 +296,18 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
     int closest = -1, x = int(v.x), y = int(v.y), z = int(v.z);
     for(;;)
     {
-        DOWNOCTREE(disttoent, if(mode&RAY_SHADOW));
+        DOWNOCTREE(disttoent, if(mode&Ray_Shadow));
 
         int lsize = 1<<lshift;
 
         cube &c = *lc;
-        if((dist>0 || !(mode&RAY_SKIPFIRST)) &&
-           (((mode&RAY_CLIPMAT) && IS_CLIPPED(c.material&MATF_VOLUME)) ||
-            ((mode&RAY_EDITMAT) && c.material != MAT_AIR) ||
-            (!(mode&RAY_PASS) && lsize==size && !IS_EMPTY(c)) ||
+        if((dist>0 || !(mode&Ray_SkipFirst)) &&
+           (((mode&Ray_ClipMat) && IS_CLIPPED(c.material&MatFlag_Volume)) ||
+            ((mode&Ray_EditMat) && c.material != Mat_Air) ||
+            (!(mode&Ray_Pass) && lsize==size && !IS_EMPTY(c)) ||
             IS_ENTIRELY_SOLID(c) ||
             dent < dist) &&
-            (!(mode&RAY_CLIPMAT) || (c.material&MATF_CLIP)!=MAT_NOCLIP))
+            (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
         {
             if(dist < dent)
             {
@@ -331,7 +331,7 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
         {
             const clipplanes &p = getclipplanes(c, lo, lsize);
             float f = 0;
-            if(raycubeintersect(p, c, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&RAY_SKIPFIRST)) && (!(mode&RAY_CLIPMAT) || (c.material&MATF_CLIP)!=MAT_NOCLIP))
+            if(raycubeintersect(p, c, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
                 return min(dent, dist+f);
         }
 
@@ -357,13 +357,13 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
         cube &c = *lc;
         ivec lo(x&(~0U<<lshift), y&(~0U<<lshift), z&(~0U<<lshift));
 
-        if(!IS_EMPTY(c) && !(c.material&MAT_ALPHA))
+        if(!IS_EMPTY(c) && !(c.material&Mat_Alpha))
         {
-            if(IS_ENTIRELY_SOLID(c)) return c.texture[side]==DEFAULT_SKY && mode&RAY_SKIPSKY ? radius : dist;
+            if(IS_ENTIRELY_SOLID(c)) return c.texture[side]==DEFAULT_SKY && mode&Ray_SkipSky ? radius : dist;
             const clipplanes &p = getclipplanes(c, lo, 1<<lshift);
             INTERSECTPLANES(side = p.side[i], goto nextcube);
             INTERSECTBOX(side = (i<<1) + 1 - lsizemask[i], goto nextcube);
-            if(exitdist >= 0) return c.texture[side]==DEFAULT_SKY && mode&RAY_SKIPSKY ? radius : dist+max(enterdist+0.1f, 0.0f);
+            if(exitdist >= 0) return c.texture[side]==DEFAULT_SKY && mode&Ray_SkipSky ? radius : dist+max(enterdist+0.1f, 0.0f);
         }
 
     nextcube:
@@ -388,7 +388,7 @@ float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int
     hitentdist = radius;
     hitorient = -1;
     float dist = raycube(o, ray, radius, mode, size);
-    if((mode&RAY_ENTS) == RAY_ENTS)
+    if((mode&Ray_Ents) == Ray_Ents)
     {
         float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, NULL);
         if(dent < 1e15f && (dist < 0 || dent < dist)) dist = dent;
@@ -413,7 +413,7 @@ bool raycubelos(const vec &o, const vec &dest, vec &hitpos)
     ray.sub(o);
     float mag = ray.magnitude();
     ray.mul(1/mag);
-    float distance = raycubepos(o, ray, hitpos, mag, RAY_CLIPMAT|RAY_POLY);
+    float distance = raycubepos(o, ray, hitpos, mag, Ray_ClipMat|Ray_Poly);
     return distance >= mag;
 }
 
@@ -1123,10 +1123,10 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
         else
         {
             bool solid = false;
-            switch(c[i].material&MATF_CLIP)
+            switch(c[i].material&MatFlag_Clip)
             {
-                case MAT_NOCLIP: continue;
-                case MAT_CLIP: if(IS_CLIPPED(c[i].material&MATF_VOLUME) || d->type==PhysEnt_Player) solid = true; break;
+                case Mat_NoClip: continue;
+                case Mat_Clip: if(IS_CLIPPED(c[i].material&MatFlag_Volume) || d->type==PhysEnt_Player) solid = true; break;
             }
             if(!solid && IS_EMPTY(c[i])) continue;
             if(cubecollide(d, dir, cutoff, c[i], o, size, solid)) return true;
@@ -1152,10 +1152,10 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
     }
     if(c->children) return octacollide(d, dir, cutoff, bo, bs, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
     bool solid = false;
-    switch(c->material&MATF_CLIP)
+    switch(c->material&MatFlag_Clip)
     {
-        case MAT_NOCLIP: return false;
-        case MAT_CLIP: if(IS_CLIPPED(c->material&MATF_VOLUME) || d->type==PhysEnt_Player) solid = true; break;
+        case Mat_NoClip: return false;
+        case Mat_Clip: if(IS_CLIPPED(c->material&MatFlag_Volume) || d->type==PhysEnt_Player) solid = true; break;
     }
     if(!solid && IS_EMPTY(*c)) return false;
     int csize = 2<<scale, cmask = ~(csize-1);
@@ -1868,7 +1868,7 @@ void modifygravity(physent *pl, bool water, int curtime)
 bool moveplayer(physent *pl, int moveres, bool local, int curtime)
 {
     int material = lookupmaterial(vec(pl->o.x, pl->o.y, pl->o.z + (3*pl->aboveeye - pl->eyeheight)/4));
-    bool water = IS_LIQUID(material&MATF_VOLUME);
+    bool water = IS_LIQUID(material&MatFlag_Volume);
     bool floating = pl->type==PhysEnt_Player && (pl->state==ClientState_Editing || pl->state==ClientState_Spectator);
     float secs = curtime/1000.f;
 
@@ -1932,19 +1932,20 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
     if(pl->inwater && !water)
     {
         material = lookupmaterial(vec(pl->o.x, pl->o.y, pl->o.z + (pl->aboveeye - pl->eyeheight)/2));
-        water = IS_LIQUID(material&MATF_VOLUME);
+        water = IS_LIQUID(material&MatFlag_Volume);
     }
     if(!pl->inwater && water)
     {
-        game::physicstrigger(pl, local, 0, -1, material&MATF_VOLUME);
+        game::physicstrigger(pl, local, 0, -1, material&MatFlag_Volume);
     }
     else if(pl->inwater && !water)
     {
         game::physicstrigger(pl, local, 0, 1, pl->inwater);
     }
-    pl->inwater = water ? material&MATF_VOLUME : MAT_AIR;
+    pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 
-    if(pl->state==ClientState_Alive && (pl->o.z < 0 || material&MAT_DEATH)) game::suicide(pl);
+    //tell players who enter deatmat who are alive to kill themselves
+    if(pl->state==ClientState_Alive && (pl->o.z < 0 || material&Mat_Death)) game::suicide(pl);
 
     return true;
 }

@@ -178,7 +178,7 @@ namespace game
         if(dest != from)
         {
             vec dir = vec(dest).sub(from).normalize();
-            raycubepos(from, dir, dest, range, RAY_CLIPMAT|RAY_ALPHAPOLY);
+            raycubepos(from, dir, dest, range, Ray_ClipMat|Ray_AlphaPoly);
         }
     }
 
@@ -250,7 +250,7 @@ namespace game
         bouncer *b = (bouncer *)d;
         if(b->bouncetype != BNC_GIBS || b->bounces >= 2) return;
         b->bounces++;
-        addstain(STAIN_BLOOD, vec(b->o).sub(vec(surface).mul(b->radius)), surface, 2.96f/b->bounces, bvec(0x60, 0xFF, 0xFF), RANDOM_INT(4));
+        addstain(Stain_Blood, vec(b->o).sub(vec(surface).mul(b->radius)), surface, 2.96f/b->bounces, bvec(0x60, 0xFF, 0xFF), RANDOM_INT(4));
     }
 
     void updatebouncers(int time)
@@ -344,9 +344,9 @@ namespace game
     {
         vec p = d->o;
         p.z += 0.6f*(d->eyeheight + d->aboveeye) - d->eyeheight;
-        if(blood) particle_splash(PART_BLOOD, max(damage/10, RANDOM_INT(3)+1), 1000, p, 0x60FFFF, 2.96f);
+        if(blood) particle_splash(Part_Blood, max(damage/10, RANDOM_INT(3)+1), 1000, p, 0x60FFFF, 2.96f);
 #if 0
-        if(thirdperson) particle_textcopy(d->abovehead(), tempformatstring("%d", damage), PART_TEXT, 2000, 0xFF4B19, 4.0f, -8);
+        if(thirdperson) particle_textcopy(d->abovehead(), tempformatstring("%d", damage), Part_Text, 2000, 0xFF4B19, 4.0f, -8);
 #endif
     }
 
@@ -446,9 +446,9 @@ namespace game
 
     void explode(bool local, gameent *owner, const vec &v, const vec &vel, dynent *safe, int damage, int atk)
     {
-        particle_splash(PART_SPARK, 200, 300, v, 0x50CFE5, 0.45f);
+        particle_splash(Part_Spark, 200, 300, v, 0x50CFE5, 0.45f);
         playsound(Sound_PulseExplode, &v);
-        particle_fireball(v, 1.15f*attacks[atk].exprad, PART_PULSE_BURST, int(attacks[atk].exprad*20), 0x50CFE5, 4.0f);
+        particle_fireball(v, 1.15f*attacks[atk].exprad, Part_PulseBurst, int(attacks[atk].exprad*20), 0x50CFE5, 4.0f);
         vec debrisorigin = vec(v).sub(vec(vel).mul(5));
         adddynlight(safe ? v : debrisorigin, 2*attacks[atk].exprad, vec(1.0f, 3.0f, 4.0f), 350, 40, 0, attacks[atk].exprad/2, vec(0.5f, 1.5f, 2.0f));
 #if 0
@@ -476,8 +476,8 @@ namespace game
     {
         vec dir = vec(p.dir).neg();
         float rad = attacks[p.atk].exprad*0.75f;
-        addstain(STAIN_PULSE_SCORCH, pos, dir, rad);
-        addstain(STAIN_PULSE_GLOW, pos, dir, rad, 0x50CFE5);
+        addstain(Stain_PulseScorch, pos, dir, rad);
+        addstain(Stain_PulseGlow, pos, dir, rad, 0x50CFE5);
     }
 
     void projsplash(projectile &p, const vec &v, dynent *safe)
@@ -562,7 +562,7 @@ namespace game
                 {
                     if(p.o!=p.to) // if original target was moving, reevaluate endpoint
                     {
-                        if(raycubepos(p.o, p.dir, p.to, 0, RAY_CLIPMAT|RAY_ALPHAPOLY)>=4) continue;
+                        if(raycubepos(p.o, p.dir, p.to, 0, Ray_ClipMat|Ray_AlphaPoly)>=4) continue;
                     }
                     projsplash(p, v, NULL);
                     exploded = true;
@@ -570,14 +570,14 @@ namespace game
                 else
                 {
                     vec pos = vec(p.offset).mul(p.offsetmillis/float(OFFSETMILLIS)).add(v);
-                    particle_splash(PART_PULSE_FRONT, 1, 1, pos, 0x50CFE5, 2.4f, 150, 20);
+                    particle_splash(Part_PulseFront, 1, 1, pos, 0x50CFE5, 2.4f, 150, 20);
                     if(p.owner != noside) //noside is the hud player, so if the projectile is somebody else's
                     {
                         float len = min(20.0f, vec(p.offset).add(p.from).dist(pos)); //projectiles are at least 20u long
                         vec dir = vec(dv).normalize(),
                             tail = vec(dir).mul(-len).add(pos), //tail extends >=20u behind projectile point
                             head = vec(dir).mul(2.4f).add(pos); // head extends 2.4u ahead
-                        particle_flare(tail, head, 1, PART_PULSE_SIDE, 0x50CFE5, 2.5f);
+                        particle_flare(tail, head, 1, Part_PulseSide, 0x50CFE5, 2.5f);
                     }
                 }
             }
@@ -597,8 +597,8 @@ namespace game
         vec dir = vec(from).sub(to).safenormalize();
         if(stain)
         {
-            addstain(STAIN_RAIL_HOLE, to, dir, 2.0f);
-            addstain(STAIN_RAIL_GLOW, to, dir, 2.5f, 0x50CFE5);
+            addstain(Stain_RailHole, to, dir, 2.0f);
+            addstain(Stain_RailGlow, to, dir, 2.5f, 0x50CFE5);
         }
         adddynlight(vec(to).madd(dir, 4), 10, vec(0.25f, 0.75f, 1.0f), 225, 75);
     }
@@ -610,15 +610,15 @@ namespace game
         {
             case Attack_PulseShoot:
                 if(d->muzzle.x >= 0)
-                    particle_flare(d->muzzle, d->muzzle, 140, PART_PULSE_MUZZLE_FLASH, 0x50CFE5, 3.50f, d);
+                    particle_flare(d->muzzle, d->muzzle, 140, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d);
                 newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
                 break;
 
             case Attack_RailShot:
-                particle_splash(PART_SPARK, 200, 250, to, 0x50CFE5, 0.45f);
-                particle_flare(hudgunorigin(gun, from, to, d), to, 500, PART_RAIL_TRAIL, 0x50CFE5, 0.5f);
+                particle_splash(Part_Spark, 200, 250, to, 0x50CFE5, 0.45f);
+                particle_flare(hudgunorigin(gun, from, to, d), to, 500, Part_RailTrail, 0x50CFE5, 0.5f);
                 if(d->muzzle.x >= 0)
-                    particle_flare(d->muzzle, d->muzzle, 140, PART_RAIL_MUZZLE_FLASH, 0x50CFE5, 2.75f, d);
+                    particle_flare(d->muzzle, d->muzzle, 140, Part_RailMuzzleFlash, 0x50CFE5, 2.75f, d);
                 adddynlight(hudgunorigin(gun, d->o, to, d), 35, vec(0.25f, 0.75f, 1.0f), 75, 75, DynLight_Flash, 0, vec(0, 0, 0), d);
                 if(!local) railhit(from, to);
                 break;
@@ -642,7 +642,7 @@ namespace game
         else
         {
             vecfromyawpitch(owner->yaw, owner->pitch, 1, 0, d);
-            float newdist = raycube(owner->o, d, dist, RAY_CLIPMAT|RAY_ALPHAPOLY);
+            float newdist = raycube(owner->o, d, dist, Ray_ClipMat|Ray_AlphaPoly);
             d.mul(min(newdist, dist)).add(owner->o);
         }
     }
@@ -762,7 +762,7 @@ namespace game
             d->vel.add(kickback);
         }
         float shorten = attacks[atk].range && dist > attacks[atk].range ? attacks[atk].range : 0,
-              barrier = raycube(d->o, dir, dist, RAY_CLIPMAT|RAY_ALPHAPOLY);
+              barrier = raycube(d->o, dir, dist, Ray_ClipMat|Ray_AlphaPoly);
         if(barrier > 0 && barrier < dist && (!shorten || barrier < shorten))
             shorten = barrier;
         if(shorten) to = vec(dir).mul(shorten).add(from);
@@ -838,7 +838,7 @@ namespace game
             }
             pitch = -bnc.roll;
             const char *mdl = NULL;
-            int cull = MDL_CULL_VFC|MDL_CULL_DIST|MDL_CULL_OCCLUDED;
+            int cull = Model_CullVFC|Model_CullDist|Model_CullOccluded;
             float fade = 1;
             if(bnc.lifetime < 250) fade = bnc.lifetime/250.0f;
             switch(bnc.bouncetype)

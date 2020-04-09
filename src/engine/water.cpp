@@ -114,7 +114,7 @@ void renderwaterfog(int mat, float surface)
           syl = p[1].z > p[0].z ? 2*(bz - p[0].z)/(p[1].z - p[0].z) - 1 : 1,
           syr = p[3].z > p[2].z ? 2*(bz - p[2].z)/(p[3].z - p[2].z) - 1 : 1;
 
-    if((mat&MATF_VOLUME) == MAT_WATER)
+    if((mat&MatFlag_Volume) == Mat_Water)
     {
         const bvec &deepcolor = getwaterdeepcolor(mat);
         int deep = getwaterdeep(mat);
@@ -251,14 +251,14 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
 
     switch(mat)
     {
-        case MAT_WATER:
+        case Mat_Water:
         {
             whoffset = fmod(float(lastmillis/600.0f/(2*M_PI)), 1.0f);
             RENDER_WATER_STRIPS(vertwt, z);
             break;
         }
 
-        case MAT_LAVA:
+        case Mat_Lava:
         {
             whoffset = fmod(float(lastmillis/2000.0f/(2*M_PI)), 1.0f);
             RENDER_WATER_STRIPS(vertl, z);
@@ -335,11 +335,11 @@ void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
 {
     switch(mat)
     {
-        case MAT_WATER:
+        case Mat_Water:
             RENDER_WATER_QUAD(vertwtn, z);
             break;
 
-        case MAT_LAVA:
+        case Mat_Lava:
             RENDER_WATER_QUAD(vertln, z);
             break;
     }
@@ -349,7 +349,7 @@ void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
 
 VARFP(vertwater, 0, 1, 1, allchanged());
 
-static inline void renderwater(const materialsurface &m, int mat = MAT_WATER)
+static inline void renderwater(const materialsurface &m, int mat = Mat_Water)
 {
     if(!vertwater || drawtex == Draw_TexMinimap) renderflatwater(m.o.x, m.o.y, m.o.z, m.rsize, m.csize, mat);
     else if(renderwaterlod(m.o.x, m.o.y, m.o.z, m.csize, mat) >= int(m.csize) * 2)
@@ -499,7 +499,7 @@ void renderlava()
             continue;
         }
 
-        MatSlot &lslot = lookupmaterialslot(MAT_LAVA+k);
+        MatSlot &lslot = lookupmaterialslot(Mat_Lava+k);
 
         SETSHADER(lava);
         float t = lastmillis/2000.0f;
@@ -528,7 +528,7 @@ void renderlava()
             vector<materialsurface> &surfs = lavasurfs[k];
             for(int i = 0; i < surfs.length(); i++)
             {
-                renderwater(surfs[i], MAT_LAVA);
+                renderwater(surfs[i], Mat_Lava);
             }
             xtraverts += gle::end();
         }
@@ -567,7 +567,7 @@ void renderwaterfalls()
         vector<materialsurface> &surfs = waterfallsurfs[k];
         if(surfs.empty()) continue;
 
-        MatSlot &wslot = lookupmaterialslot(MAT_WATER+k);
+        MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
         Texture *tex = wslot.sts.inrange(2) ? wslot.sts[2].t : (wslot.sts.inrange(0) ? wslot.sts[0].t : notexture);
         float angle = fmod(float(lastmillis/600.0f/(2*M_PI)), 1.0f),
@@ -617,7 +617,7 @@ void renderwater()
         vector<materialsurface> &surfs = watersurfs[k];
         if(surfs.empty()) continue;
 
-        MatSlot &wslot = lookupmaterialslot(MAT_WATER+k);
+        MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
         Texture *tex = wslot.sts.inrange(0) ? wslot.sts[0].t: notexture;
         wxscale = TEX_SCALE/(tex->xs*wslot.scale);

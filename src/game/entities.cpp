@@ -105,7 +105,7 @@ namespace entities
             {
                 vec p = e.o;
                 p.z += 1+sinf(lastmillis/100.0+e.o.x+e.o.y)/20;
-                rendermodel(mdlname, Anim_Mapmodel|ANIM_LOOP, p, lastmillis/(float)revs, 0, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
+                rendermodel(mdlname, Anim_Mapmodel|ANIM_LOOP, p, lastmillis/(float)revs, 0, 0, Model_CullVFC | Model_CullDist | Model_CullOccluded);
             }
         }
     }

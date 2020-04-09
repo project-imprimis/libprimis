@@ -539,7 +539,7 @@ struct ctfclientmode : clientmode
             vec pos = interpflagpos(f, angle);
             rendermodel(flagname, Anim_Mapmodel|ANIM_LOOP,
                         pos, angle, 0, 0,
-                        MDL_CULL_VFC | MDL_CULL_OCCLUDED);
+                        Model_CullVFC | Model_CullOccluded);
         }
     }
 
@@ -661,9 +661,9 @@ struct ctfclientmode : clientmode
         vec color;
         if(team==1) { fcolor = 0x2020FF; color = vec(0.25f, 0.25f, 1); }
         else { fcolor = 0x802020; color = vec(1, 0.25f, 0.25f); }
-        particle_fireball(loc, 30, PART_EXPLOSION, -1, fcolor, 4.8f);
+        particle_fireball(loc, 30, Part_Explosion, -1, fcolor, 4.8f);
         adddynlight(loc, 35, color, 900, 100);
-        particle_splash(PART_SPARK, 150, 300, loc, fcolor, 0.24f);
+        particle_splash(Part_Spark, 150, 300, loc, fcolor, 0.24f);
     }
 
     void flageffect(int i, int team, const vec &from, const vec &to)
@@ -674,7 +674,7 @@ struct ctfclientmode : clientmode
         if(to.x >= 0)
             flagexplosion(i, team, to);
         if(from.x >= 0 && to.x >= 0)
-            particle_flare(from, to, 600, PART_LIGHTNING, team==1 ? 0x2222FF : 0xFF2222, 1.0f);
+            particle_flare(from, to, 600, Part_Lightning, team==1 ? 0x2222FF : 0xFF2222, 1.0f);
     }
 
     void returnflag(gameent *d, int i, int version)
@@ -719,7 +719,7 @@ struct ctfclientmode : clientmode
             d->flagpickup &= ~(1<<f.id);
             if(d->feetpos().dist(f.spawnloc) < FLAGRADIUS) d->flagpickup |= 1<<f.id;
         }
-        if(d!=player1) particle_textcopy(d->abovehead(), tempformatstring("%d", score), PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
+        if(d!=player1) particle_textcopy(d->abovehead(), tempformatstring("%d", score), Part_Text, 2000, 0x32FF64, 4.0f, -8);
         d->flags = dflags;
         conoutf(ConsoleMsg_GameInfo, "%s scored for %s", teamcolorname(d), teamcolor("team ", "", team, "a team"));
         playsound(team==player1->team ? Sound_FlagScore : Sound_FlagFail);
@@ -753,7 +753,7 @@ struct ctfclientmode : clientmode
             if(o.dist(loc) < FLAGRADIUS)
             {
                 if(d->flagpickup&(1<<f.id)) continue;
-                if((lookupmaterial(o)&MATF_CLIP) != MAT_GAMECLIP && (lookupmaterial(loc)&MATF_CLIP) != MAT_GAMECLIP)
+                if((lookupmaterial(o)&MatFlag_Clip) != Mat_GameClip && (lookupmaterial(loc)&MatFlag_Clip) != Mat_GameClip)
                 {
                     tookflag = true;
                     addmsg(NetMsg_TakeFlag, "rcii", d, i, f.version);
@@ -770,7 +770,7 @@ struct ctfclientmode : clientmode
             if(o.dist(loc) < FLAGRADIUS)
             {
                 if(!tookflag && d->flagpickup&(1<<f.id)) continue;
-                if((lookupmaterial(o)&MATF_CLIP) != MAT_GAMECLIP && (lookupmaterial(loc)&MATF_CLIP) != MAT_GAMECLIP)
+                if((lookupmaterial(o)&MatFlag_Clip) != Mat_GameClip && (lookupmaterial(loc)&MatFlag_Clip) != Mat_GameClip)
                     addmsg(NetMsg_TakeFlag, "rcii", d, i, f.version);
                 d->flagpickup |= 1<<f.id;
             }

@@ -142,7 +142,7 @@ void disconnect(bool async, bool cleanup)
     {
         if(!discmillis)
         {
-            enet_peer_disconnect(curpeer, DISC_NONE);
+            enet_peer_disconnect(curpeer, Discon_None);
             enet_host_flush(clienthost);
             discmillis = totalmillis;
         }
@@ -249,7 +249,7 @@ void gets2c()           // get updates from the server
             break;
 
         case ENET_EVENT_TYPE_DISCONNECT:
-            if(event.data>=DISC_NUM) event.data = DISC_NONE;
+            if(event.data>=Discon_NumDiscons) event.data = Discon_None;
             if(event.peer==connpeer)
             {
                 conoutf("\f3could not connect to server");

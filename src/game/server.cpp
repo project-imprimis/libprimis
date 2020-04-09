@@ -443,7 +443,7 @@ namespace server
             }
             if(getclientip(c.clientnum) == ip)
             {
-                disconnect_client(c.clientnum, DISC_KICK);
+                disconnect_client(c.clientnum, Discon_Kick);
             }
         }
     }
@@ -2128,7 +2128,7 @@ namespace server
             ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
         }
 
-        if(modecheck(gamemode, Mode_LocalOnly)) kicknonlocalclients(DISC_LOCAL);
+        if(modecheck(gamemode, Mode_LocalOnly)) kicknonlocalclients(Discon_Local);
 
         sendf(-1, 1, "risii", NetMsg_MapChange, smapname, gamemode, 1);
 
@@ -2569,7 +2569,7 @@ namespace server
         {
             if(totalmillis-connects[i]->connectmillis>15000)
             {
-                disconnect_client(connects[i]->clientnum, DISC_TIMEOUT); //remove clients who haven't responded in 15s
+                disconnect_client(connects[i]->clientnum, Discon_Timeout); //remove clients who haven't responded in 15s
             }
         }
 
@@ -2585,7 +2585,7 @@ namespace server
                 }
                 if(c.checkexceeded())
                 {
-                    disconnect_client(c.clientnum, DISC_MSGERR);
+                    disconnect_client(c.clientnum, Discon_MsgError);
                 }
                 else
                 {
@@ -2783,9 +2783,9 @@ namespace server
         ci->sessionid = (RANDOM_INT(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
 
         connects.add(ci);
-        if(modecheck(gamemode, Mode_LocalOnly)) return DISC_LOCAL;
+        if(modecheck(gamemode, Mode_LocalOnly)) return Discon_Local;
         sendservinfo(ci);
-        return DISC_NONE;
+        return Discon_None;
     }
 
     void clientdisconnect(int n)
@@ -2878,7 +2878,7 @@ namespace server
         {
             clientinfo *ci = clients[i];
             if(ci->state.aitype != AI_None || ci->local || ci->privilege >= Priv_Admin) continue;
-            if(checkbans(getclientip(ci->clientnum))) disconnect_client(ci->clientnum, DISC_IPBAN);
+            if(checkbans(getclientip(ci->clientnum))) disconnect_client(ci->clientnum, Discon_IPBan);
         }
     }
 
@@ -2887,19 +2887,19 @@ namespace server
 
     int allowconnect(clientinfo *ci, const char *pwd = "")
     {
-        if(ci->local) return DISC_NONE;
-        if(modecheck(gamemode, Mode_LocalOnly)) return DISC_LOCAL;
+        if(ci->local) return Discon_None;
+        if(modecheck(gamemode, Mode_LocalOnly)) return Discon_Local;
         if(serverpass[0])
         {
-            if(!checkpassword(ci, serverpass, pwd)) return DISC_PASSWORD;
-            return DISC_NONE;
+            if(!checkpassword(ci, serverpass, pwd)) return Discon_Password;
+            return Discon_None;
         }
-        if(adminpass[0] && checkpassword(ci, adminpass, pwd)) return DISC_NONE;
-        if(numclients(-1, false, true)>=maxclients) return DISC_MAXCLIENTS;
+        if(adminpass[0] && checkpassword(ci, adminpass, pwd)) return Discon_None;
+        if(numclients(-1, false, true)>=maxclients) return Discon_MaxClients;
         uint ip = getclientip(ci->clientnum);
-        if(checkbans(ip)) return DISC_IPBAN;
-        if(mastermode>=MasterMode_Private && allowedips.find(ip)<0) return DISC_PRIVATE;
-        return DISC_NONE;
+        if(checkbans(ip)) return Discon_IPBan;
+        if(mastermode>=MasterMode_Private && allowedips.find(ip)<0) return Discon_Private;
+        return Discon_None;
     }
 
     bool allowbroadcast(int n)
@@ -3127,7 +3127,7 @@ namespace server
         if(ci && !ci->connected)
         {
             if(chan==0) return;
-            else if(chan!=1) { disconnect_client(sender, DISC_MSGERR); return; }
+            else if(chan!=1) { disconnect_client(sender, Discon_MsgError); return; }
             else while(p.length() < p.maxlen) switch(checktype(getint(p), ci))
             {
                 case NetMsg_Connect:
@@ -3146,7 +3146,7 @@ namespace server
                     int disc = allowconnect(ci, password);
                     if(disc)
                     {
-                        if(disc == DISC_LOCAL || !serverauth[0] || strcmp(serverauth, authdesc) || !tryauth(ci, authname, authdesc))
+                        if(disc == Discon_Local || !serverauth[0] || strcmp(serverauth, authdesc) || !tryauth(ci, authname, authdesc))
                         {
                             disconnect_client(sender, disc);
                             return;
@@ -3176,7 +3176,7 @@ namespace server
                     break;
 
                 default:
-                    disconnect_client(sender, DISC_MSGERR);
+                    disconnect_client(sender, Discon_MsgError);
                     return;
             }
             return;
@@ -3927,7 +3927,7 @@ namespace server
                 int size = server::msgsizelookup(type);
                 if(size<=0)
                 {
-                    disconnect_client(sender, DISC_MSGERR);
+                    disconnect_client(sender, Discon_MsgError);
                     return;
                 }
                 for(int i = 0; i < size-1; ++i)
@@ -3936,13 +3936,13 @@ namespace server
                 }
                 if(p.remaining() < 2)
                 {
-                    disconnect_client(sender, DISC_MSGERR);
+                    disconnect_client(sender, Discon_MsgError);
                     return;
                 }
                 int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
                 if(p.remaining() < extra)
                 {
-                    disconnect_client(sender, DISC_MSGERR);
+                    disconnect_client(sender, Discon_MsgError);
                     return;
                 }
                 p.pad(extra);
@@ -3962,7 +3962,7 @@ namespace server
                     if(packlen > 0) p.subbuf(packlen);
                     break;
                 }
-                if(p.remaining() < packlen) { disconnect_client(sender, DISC_MSGERR); return; }
+                if(p.remaining() < packlen) { disconnect_client(sender, Discon_MsgError); return; }
                 packetbuf q(32 + packlen, ENET_PACKET_FLAG_RELIABLE);
                 putint(q, type);
                 putint(q, ci->clientnum);
@@ -3982,11 +3982,11 @@ namespace server
             #undef PARSEMESSAGES
 
             case -1:
-                disconnect_client(sender, DISC_MSGERR);
+                disconnect_client(sender, Discon_MsgError);
                 return;
 
             case -2:
-                disconnect_client(sender, DISC_OVERFLOW);
+                disconnect_client(sender, Discon_Overflow);
                 return;
 
             default: genericmsg:
@@ -3994,7 +3994,7 @@ namespace server
                 int size = server::msgsizelookup(type);
                 if(size<=0)
                 {
-                    disconnect_client(sender, DISC_MSGERR);
+                    disconnect_client(sender, Discon_MsgError);
                     return;
                 }
                 for(int i = 0; i < size-1; ++i)

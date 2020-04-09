@@ -497,7 +497,7 @@ struct vacollect : verthash
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
                 switch(m.material)
                 {
-                    case MAT_GLASS: case MAT_LAVA: case MAT_WATER: break;
+                    case Mat_Glass: case Mat_Lava: case Mat_Water: break;
                     default: continue;
                 }
                 va->matmask |= 1<<m.material;
@@ -1227,19 +1227,19 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
             }
 
             VSlot &vslot = lookupvslot(c.texture[i], true),
-                  *layer = vslot.layer && !(c.material&MAT_ALPHA) ? &lookupvslot(vslot.layer, true) : NULL;
+                  *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, true) : NULL;
             ushort envmap = vslot.slot->shader->type&SHADER_ENVMAP ? (vslot.slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size)) : EMID_NONE,
                    envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size)) : EMID_NONE;
             while(tj >= 0 && tjoints[tj].edge < i*(MAXFACEVERTS+1)) tj = tjoints[tj].next;
             int hastj = tj >= 0 && tjoints[tj].edge < (i+1)*(MAXFACEVERTS+1) ? tj : -1;
             int grassy = vslot.slot->grass && i!=O_BOTTOM ? (vis!=3 || convex ? 1 : 2) : 0;
             if(!c.ext)
-                addcubeverts(vslot, i, size, pos, convex, c.texture[i], NULL, numverts, hastj, envmap, grassy, (c.material&MAT_ALPHA)!=0);
+                addcubeverts(vslot, i, size, pos, convex, c.texture[i], NULL, numverts, hastj, envmap, grassy, (c.material&Mat_Alpha)!=0);
             else
             {
                 const surfaceinfo &surf = c.ext->surfaces[i];
                 if(!surf.numverts || surf.numverts&LAYER_TOP)
-                    addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, envmap, grassy, (c.material&MAT_ALPHA)!=0, surf.numverts&LAYER_BLEND);
+                    addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, envmap, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&LAYER_BLEND);
                 if(surf.numverts&LAYER_BOTTOM)
                     addcubeverts(layer ? *layer : vslot, i, size, pos, convex, vslot.layer, verts, numverts, hastj, envmap2, 0, false, surf.numverts&LAYER_TOP ? LAYER_BOTTOM : LAYER_TOP);
             }
@@ -1453,7 +1453,7 @@ int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
                 if(tj >= 0 && tjoints[tj].edge < (i+1)*(MAXFACEVERTS+1)) mf.tjoints = tj;
 
                 VSlot &vslot = lookupvslot(mf.tex, true),
-                      *layer = vslot.layer && !(c.material&MAT_ALPHA) ? &lookupvslot(vslot.layer, true) : NULL;
+                      *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, true) : NULL;
                 if(vslot.slot->shader->type&SHADER_ENVMAP)
                     mf.envmap = vslot.slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size);
                 ushort envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size)) : EMID_NONE;
@@ -1513,7 +1513,7 @@ void addmergedverts(int level, const ivec &o)
         }
         VSlot &vslot = lookupvslot(mf.tex, true);
         int grassy = vslot.slot->grass && mf.orient!=O_BOTTOM && mf.numverts&LAYER_TOP ? 2 : 0;
-        addcubeverts(vslot, mf.orient, 1<<level, pos, 0, mf.tex, mf.verts, numverts, mf.tjoints, mf.envmap, grassy, (mf.mat&MAT_ALPHA)!=0, mf.numverts&LAYER_BLEND);
+        addcubeverts(vslot, mf.orient, 1<<level, pos, 0, mf.tex, mf.verts, numverts, mf.tjoints, mf.envmap, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&LAYER_BLEND);
         vahasmerges |= MERGE_USE;
     }
     mfl.setsize(0);
@@ -1574,10 +1574,10 @@ void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // cr
         gencubeverts(c, co, size, csi);
         if(c.merged) maxlevel = max(maxlevel, genmergedfaces(c, co, size));
     }
-    if(c.material != MAT_AIR)
+    if(c.material != Mat_Air)
     {
         genmatsurfs(c, co, size, vc.matsurfs);
-        if(c.material&MAT_NOGI)
+        if(c.material&Mat_NoGI)
         {
             vc.nogimin.min(co);
             vc.nogimax.max(ivec(co).add(size));
@@ -1656,7 +1656,7 @@ void setva(cube &c, const ivec &co, int size, int csi)
 
 static inline int setcubevisibility(cube &c, const ivec &co, int size)
 {
-    if(IS_EMPTY(c) && (c.material&MATF_CLIP) != MAT_CLIP) return 0;
+    if(IS_EMPTY(c) && (c.material&MatFlag_Clip) != Mat_Clip) return 0;
     int numvis = 0, vismask = 0, collidemask = 0, checkmask = 0;
     for(int i = 0; i < 6; ++i)
     {

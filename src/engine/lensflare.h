@@ -59,7 +59,7 @@ struct flarerenderer : partrenderer
         vec dir = vec(camera1->o).sub(o);
         float dist = dir.magnitude();
         dir.mul(1/dist);
-        if(raycube(o, dir, dist, RAY_CLIPMAT|RAY_POLY) < dist) return;
+        if(raycube(o, dir, dist, Ray_ClipMat|Ray_Poly) < dist) return;
         flare &f = flares[numflares++];
         f.o = o;
         f.center = center;

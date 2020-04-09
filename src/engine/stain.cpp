@@ -541,7 +541,7 @@ struct stainrenderer
         {
             return;
         }
-        else if(!vismask || (vismask&0x40 && visibleface(cu, orient, o, size, MAT_AIR, (cu.material&MAT_ALPHA)^MAT_ALPHA, MAT_ALPHA)))
+        else if(!vismask || (vismask&0x40 && visibleface(cu, orient, o, size, Mat_Air, (cu.material&Mat_Alpha)^Mat_Alpha, Mat_Alpha)))
         {
             ivec v[4];
             genfaceverts(cu, orient, v);
@@ -569,7 +569,7 @@ struct stainrenderer
             return;
         }
 
-        stainbuffer &buf = verts[mat || cu.material&MAT_ALPHA ? StainBuffer_Transparent : StainBuffer_Opaque];
+        stainbuffer &buf = verts[mat || cu.material&Mat_Alpha ? StainBuffer_Transparent : StainBuffer_Opaque];
         for(int l = 0; l < numplanes; ++l) //note this is a loop l (level 4)
         {
             const vec &n = planes[l];
@@ -656,7 +656,7 @@ struct stainrenderer
         for(int i = 0; i < matsurfs; ++i)
         {
             materialsurface &m = matbuf[i];
-            if(!IS_CLIPPED(m.material&MATF_VOLUME)) { i += m.skip; continue; }
+            if(!IS_CLIPPED(m.material&MatFlag_Volume)) { i += m.skip; continue; }
             int dim = DIMENSION(m.orient), dc = DIM_COORD(m.orient);
             if(dc ? stainnormal[dim] <= 0 : stainnormal[dim] >= 0) { i += m.skip; continue; }
             int c = C[dim], r = R[dim];

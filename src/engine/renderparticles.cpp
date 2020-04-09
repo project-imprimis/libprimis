@@ -221,7 +221,7 @@ struct partrenderer
                 if(stain >= 0)
                 {
                     vec surface;
-                    float floorz = rayfloor(vec(o.x, o.y, p->val), surface, RAY_CLIPMAT, COLLIDERADIUS);
+                    float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, COLLIDERADIUS);
                     float collidez = floorz<0 ? o.z-COLLIDERADIUS : p->val - floorz;
                     if(o.z >= collidez+COLLIDEERROR)
                         p->val = collidez+COLLIDEERROR;
@@ -863,7 +863,7 @@ struct softquadrenderer : quadrenderer
 
 static partrenderer *parts[] =
 {
-    new quadrenderer("<grey>media/particle/blood.png", PT_PART|PT_FLIP|PT_MOD|PT_RND4|PT_COLLIDE, STAIN_BLOOD), // blood spats (note: rgb is inverted)
+    new quadrenderer("<grey>media/particle/blood.png", PT_PART|PT_FLIP|PT_MOD|PT_RND4|PT_COLLIDE, Stain_Blood), // blood spats (note: rgb is inverted)
     new trailrenderer("media/particle/base.png", PT_TRAIL|PT_LERP),                            // water, entity
     new quadrenderer("<grey>media/particle/smoke.png", PT_PART|PT_FLIP|PT_LERP),               // smoke
     new quadrenderer("<grey>media/particle/steam.png", PT_PART|PT_FLIP),                       // steam
@@ -1052,7 +1052,7 @@ VARP(maxparticledistance, 256, 1024, 4096);
 static void splash(int type, int color, int radius, int num, int fade, const vec &p, float size, int gravity)
 {
     if(camera1->o.dist(p) > maxparticledistance && !seedemitter) return;
-    float collidez = parts[type]->type&PT_COLLIDE ? p.z - raycube(p, vec(0, 0, -1), COLLIDERADIUS, RAY_CLIPMAT) + (parts[type]->stain >= 0 ? COLLIDEERROR : 0) : -1;
+    float collidez = parts[type]->type&PT_COLLIDE ? p.z - raycube(p, vec(0, 0, -1), COLLIDERADIUS, Ray_ClipMat) + (parts[type]->stain >= 0 ? COLLIDEERROR : 0) : -1;
     int fmin = 1;
     int fmax = fade*3;
     for(int i = 0; i < num; ++i)
@@ -1281,7 +1281,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
             vec d = vec(to).sub(from).rescale(vel); //velocity
             particle *n = newparticle(from, d, RANDOM_INT(fade*3)+1, type, color, size, gravity);
             if(parts[type]->type&PT_COLLIDE)
-                n->val = from.z - raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ? COLLIDERADIUS : max(from.z, 0.0f), RAY_CLIPMAT) + (parts[type]->stain >= 0 ? COLLIDEERROR : 0);
+                n->val = from.z - raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ? COLLIDERADIUS : max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->stain >= 0 ? COLLIDEERROR : 0);
         }
     }
 }
@@ -1315,12 +1315,12 @@ static void makeparticles(entity &e)
         {
             float radius = e.attr2 ? float(e.attr2)/100.0f : 1.5f,
                   height = e.attr3 ? float(e.attr3)/100.0f : radius/3;
-            regularflame(PART_FLAME, e.o, radius, height, e.attr4 ? colorfromattr(e.attr4) : 0x903020, 3, 2.0f);
-            regularflame(PART_SMOKE, vec(e.o.x, e.o.y, e.o.z + 4.0f*min(radius, height)), radius, height, 0x303020, 1, 4.0f, 100.0f, 2000.0f, -20);
+            regularflame(Part_Flame, e.o, radius, height, e.attr4 ? colorfromattr(e.attr4) : 0x903020, 3, 2.0f);
+            regularflame(Part_Smoke, vec(e.o.x, e.o.y, e.o.z + 4.0f*min(radius, height)), radius, height, 0x303020, 1, 4.0f, 100.0f, 2000.0f, -20);
             break;
         }
         case 1: //steam vent - <dir>
-            regularsplash(PART_STEAM, 0x897661, 50, 1, 200, offsetvec(e.o, e.attr2, RANDOM_INT(10)), 2.4f, -20);
+            regularsplash(Part_Steam, 0x897661, 50, 1, 200, offsetvec(e.o, e.attr2, RANDOM_INT(10)), 2.4f, -20);
             break;
         case 2: //water fountain - <dir>
         {
@@ -1328,15 +1328,15 @@ static void makeparticles(entity &e)
             if(e.attr3 > 0) color = colorfromattr(e.attr3);
             else
             {
-                int mat = MAT_WATER + clamp(-e.attr3, 0, 3);
+                int mat = Mat_Water + clamp(-e.attr3, 0, 3);
                 color = getwaterfallcolor(mat).tohexcolor();
                 if(!color) color = getwatercolor(mat).tohexcolor();
             }
-            regularsplash(PART_WATER, color, 150, 4, 200, offsetvec(e.o, e.attr2, RANDOM_INT(10)), 0.6f, 2);
+            regularsplash(Part_Water, color, 150, 4, 200, offsetvec(e.o, e.attr2, RANDOM_INT(10)), 0.6f, 2);
             break;
         }
         case 3: //fire ball - <size> <rgb>
-            newparticle(e.o, vec(0, 0, 1), 1, PART_EXPLOSION, colorfromattr(e.attr3), 4.0f)->val = 1+e.attr2;
+            newparticle(e.o, vec(0, 0, 1), 1, Part_Explosion, colorfromattr(e.attr3), 4.0f)->val = 1+e.attr2;
             break;
         case 4:  //tape - <dir> <length> <rgb>
         case 7:  //lightning
@@ -1344,7 +1344,7 @@ static void makeparticles(entity &e)
         case 10: //water
         case 13: //snow
         {
-            static const int typemap[]   = { PART_STREAK, -1, -1, PART_LIGHTNING, -1, PART_STEAM, PART_WATER, -1, -1, PART_SNOW };
+            static const int typemap[]   = { Part_Streak, -1, -1, Part_Lightning, -1, Part_Steam, Part_Water, -1, -1, Part_Snow };
             static const float sizemap[] = { 0.28f, 0.0f, 0.0f, 1.0f, 0.0f, 2.4f, 0.60f, 0.0f, 0.0f, 0.5f };
             static const int gravmap[] = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
             int type = typemap[e.attr1-4];
@@ -1357,7 +1357,7 @@ static void makeparticles(entity &e)
         case 5: //meter, metervs - <percent> <rgb> <rgb2>
         case 6:
         {
-            particle *p = newparticle(e.o, vec(0, 0, 1), 1, e.attr1==5 ? PART_METER : PART_METER_VS, colorfromattr(e.attr3), 2.0f);
+            particle *p = newparticle(e.o, vec(0, 0, 1), 1, e.attr1==5 ? Part_Meter : Part_MeterVS, colorfromattr(e.attr3), 2.0f);
             int color2 = colorfromattr(e.attr4);
             p->color2[0] = color2>>16;
             p->color2[1] = (color2>>8)&0xFF;
@@ -1366,10 +1366,10 @@ static void makeparticles(entity &e)
             break;
         }
         case 11: // flame <radius> <height> <rgb> - radius=100, height=100 is the classic size
-            regularflame(PART_FLAME, e.o, float(e.attr2)/100.0f, float(e.attr3)/100.0f, colorfromattr(e.attr4), 3, 2.0f);
+            regularflame(Part_Flame, e.o, float(e.attr2)/100.0f, float(e.attr3)/100.0f, colorfromattr(e.attr4), 3, 2.0f);
             break;
         case 12: // smoke plume <radius> <height> <rgb>
-            regularflame(PART_SMOKE, e.o, float(e.attr2)/100.0f, float(e.attr3)/100.0f, colorfromattr(e.attr4), 1, 4.0f, 100.0f, 2000.0f, -20);
+            regularflame(Part_Smoke, e.o, float(e.attr2)/100.0f, float(e.attr3)/100.0f, colorfromattr(e.attr4), 1, 4.0f, 100.0f, 2000.0f, -20);
             break;
         case 32: //lens flares - plain/sparkle/sun/sparklesun <red> <green> <blue>
         case 33:
@@ -1381,7 +1381,7 @@ static void makeparticles(entity &e)
             if(!editmode)
             {
                 DEF_FORMAT_STRING(ds, "particles %d?", e.attr1);
-                particle_textcopy(e.o, ds, PART_TEXT, 1, 0x6496FF, 2.0f);
+                particle_textcopy(e.o, ds, Part_Text, 1, 0x6496FF, 2.0f);
             }
             break;
     }
@@ -1482,14 +1482,14 @@ void updateparticles()
         for(int i = 0; i < entgroup.length(); i++)
         {
             entity &e = *ents[entgroup[i]];
-            particle_textcopy(e.o, entname(e), PART_TEXT, 1, 0xFF4B19, 2.0f);
+            particle_textcopy(e.o, entname(e), Part_Text, 1, 0xFF4B19, 2.0f);
         }
         for(int i = 0; i < ents.length(); i++)
         {
             entity &e = *ents[i];
             if(e.type==EngineEnt_Empty) continue;
-            particle_textcopy(e.o, entname(e), PART_TEXT, 1, 0x1EC850, 2.0f);
-            regular_particle_splash(PART_EDIT, 2, 40, e.o, 0x3232FF, 0.32f*particlesize/100.0f);
+            particle_textcopy(e.o, entname(e), Part_Text, 1, 0x1EC850, 2.0f);
+            regular_particle_splash(Part_Edit, 2, 40, e.o, 0x3232FF, 0.32f*particlesize/100.0f);
         }
     }
 }

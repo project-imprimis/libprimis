@@ -125,16 +125,16 @@ const struct material
     ushort id;
 } materials[] =
 {
-    {"air", MAT_AIR},
-    {"water", MAT_WATER}, {"water1", MAT_WATER}, {"water2", MAT_WATER+1}, {"water3", MAT_WATER+2}, {"water4", MAT_WATER+3},
-    {"glass", MAT_GLASS}, {"glass1", MAT_GLASS}, {"glass2", MAT_GLASS+1}, {"glass3", MAT_GLASS+2}, {"glass4", MAT_GLASS+3},
-    {"lava", MAT_LAVA}, {"lava1", MAT_LAVA}, {"lava2", MAT_LAVA+1}, {"lava3", MAT_LAVA+2}, {"lava4", MAT_LAVA+3},
-    {"clip", MAT_CLIP},
-    {"noclip", MAT_NOCLIP},
-    {"gameclip", MAT_GAMECLIP},
-    {"death", MAT_DEATH},
-    {"nogi", MAT_NOGI},
-    {"alpha", MAT_ALPHA}
+    {"air", Mat_Air},
+    {"water", Mat_Water}, {"water1", Mat_Water}, {"water2", Mat_Water+1}, {"water3", Mat_Water+2}, {"water4", Mat_Water+3},
+    {"glass", Mat_Glass}, {"glass1", Mat_Glass}, {"glass2", Mat_Glass+1}, {"glass3", Mat_Glass+2}, {"glass4", Mat_Glass+3},
+    {"lava", Mat_Lava}, {"lava1", Mat_Lava}, {"lava2", Mat_Lava+1}, {"lava3", Mat_Lava+2}, {"lava4", Mat_Lava+3},
+    {"clip", Mat_Clip},
+    {"noclip", Mat_NoClip},
+    {"gameclip", Mat_GameClip},
+    {"death", Mat_Death},
+    {"nogi", Mat_NoGI},
+    {"alpha", Mat_Alpha}
 };
 
 int findmaterial(const char *name)
@@ -160,7 +160,7 @@ const char *findmaterialname(int mat)
 
 const char *getmaterialdesc(int mat, const char *prefix)
 {
-    static const ushort matmasks[] = { MATF_VOLUME|MATF_INDEX, MATF_CLIP, MAT_DEATH, MAT_NOGI, MAT_ALPHA };
+    static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_NoGI, Mat_Alpha };
     static string desc;
     desc[0] = '\0';
     for(int i = 0; i < int(sizeof(matmasks)/sizeof(matmasks[0])); ++i)
@@ -183,22 +183,22 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
     ushort mat = c.material&matmask;
     switch(mat)
     {
-    case MAT_AIR:
+    case Mat_Air:
          break;
 
-    case MAT_LAVA:
-    case MAT_WATER:
-        if(visibleface(c, orient, co, size, mat, MAT_AIR, matmask))
+    case Mat_Lava:
+    case Mat_Water:
+        if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
             return (orient != O_BOTTOM ? MATSURF_VISIBLE : MATSURF_EDIT_ONLY);
         break;
 
-    case MAT_GLASS:
-        if(visibleface(c, orient, co, size, MAT_GLASS, MAT_AIR, matmask))
+    case Mat_Glass:
+        if(visibleface(c, orient, co, size, Mat_Glass, Mat_Air, matmask))
             return MATSURF_VISIBLE;
         break;
 
     default:
-        if(visibleface(c, orient, co, size, mat, MAT_AIR, matmask))
+        if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
             return MATSURF_EDIT_ONLY;
         break;
     }
@@ -209,11 +209,11 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
 {
     for(int i = 0; i < 6; ++i)
     {
-        static const ushort matmasks[] = { MATF_VOLUME|MATF_INDEX, MATF_CLIP, MAT_DEATH, MAT_NOGI, MAT_ALPHA };
+        static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_NoGI, Mat_Alpha };
         for(int j = 0; j < int(sizeof(matmasks)/sizeof(matmasks[0])); ++j)
         {
             ushort matmask = matmasks[j];
-            int vis = visiblematerial(c, i, co, size, matmask&~MATF_INDEX);
+            int vis = visiblematerial(c, i, co, size, matmask&~MatFlag_Index);
             if(vis != MATSURF_NOT_VISIBLE)
             {
                 materialsurface m;
@@ -248,19 +248,19 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
     for(int i = 0; i < matsurfs.length(); i++)
     {
         materialsurface &m = matsurfs[i];
-        switch(m.material&MATF_VOLUME)
+        switch(m.material&MatFlag_Volume)
         {
-            case MAT_LAVA:
+            case Mat_Lava:
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
                 addmatbb(va->lavamin, va->lavamax, m);
                 break;
 
-            case MAT_WATER:
+            case Mat_Water:
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
                 addmatbb(va->watermin, va->watermax, m);
                 break;
 
-            case MAT_GLASS:
+            case Mat_Glass:
                 addmatbb(va->glassmin, va->glassmax, m);
                 break;
 
@@ -362,7 +362,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
                cur->visible == start->visible &&
                cur->o[dim] == start->o[dim])
             ++cur;
-         if(!IS_LIQUID(start->material&MATF_VOLUME) || start->orient != O_TOP || !vertwater)
+         if(!IS_LIQUID(start->material&MatFlag_Volume) || start->orient != O_TOP || !vertwater)
          {
             if(start!=matbuf) memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
             matbuf += mergemats(matbuf, cur-start);
@@ -408,7 +408,7 @@ void setupmaterials(int start, int len)
         for(int j = 0; j < va -> matsurfs; ++j)
         {
             materialsurface &m = va->matbuf[j];
-            int matvol = m.material&MATF_VOLUME;
+            int matvol = m.material&MatFlag_Volume;
             if(IS_LIQUID(matvol) && m.orient!=O_BOTTOM && m.orient!=O_TOP)
             {
                 m.ends = 0;
@@ -422,7 +422,7 @@ void setupmaterials(int start, int len)
                 while(o[dim^1] < maxc)
                 {
                     cube &c = lookupcube(o, 0, co, csize);
-                    if(IS_LIQUID(c.material&MATF_VOLUME)) { m.ends |= 1; break; }
+                    if(IS_LIQUID(c.material&MatFlag_Volume)) { m.ends |= 1; break; }
                     o[dim^1] += csize;
                 }
                 o[dim^1] = minc;
@@ -435,7 +435,7 @@ void setupmaterials(int start, int len)
                     o[dim^1] += csize;
                 }
             }
-            else if(matvol==MAT_GLASS)
+            else if(matvol==Mat_Glass)
             {
                 int dim = DIMENSION(m.orient);
                 vec center(m.o);
@@ -451,38 +451,38 @@ void setupmaterials(int start, int len)
                 skip = &m;
         }
     }
-    if(hasmat&(0xF<<MAT_WATER))
+    if(hasmat&(0xF<<Mat_Water))
     {
         loadcaustics(true);
         preloadwatershaders(true);
         for(int i = 0; i < 4; ++i)
         {
-            if(hasmat&(1<<(MAT_WATER+i)))
+            if(hasmat&(1<<(Mat_Water+i)))
             {
-                lookupmaterialslot(MAT_WATER+i);
+                lookupmaterialslot(Mat_Water+i);
             }
         }
     }
-    if(hasmat&(0xF<<MAT_LAVA))
+    if(hasmat&(0xF<<Mat_Lava))
     {
         useshaderbyname("lava");
         useshaderbyname("waterfog"); //lava uses water's fog shader while inside volume
         for(int i = 0; i < 4; ++i)
         {
-            if(hasmat&(1<<(MAT_LAVA+i)))
+            if(hasmat&(1<<(Mat_Lava+i)))
             {
-                lookupmaterialslot(MAT_LAVA+i);
+                lookupmaterialslot(Mat_Lava+i);
             }
         }
     }
-    if(hasmat&(0xF<<MAT_GLASS))
+    if(hasmat&(0xF<<Mat_Glass))
     {
         preloadglassshaders(true);
         for(int i = 0; i < 4; ++i)
         {
-            if(hasmat&(1<<(MAT_GLASS+i)))
+            if(hasmat&(1<<(Mat_Glass+i)))
             {
-                lookupmaterialslot(MAT_GLASS+i);
+                lookupmaterialslot(Mat_Glass+i);
             }
         }
     }
@@ -547,17 +547,17 @@ void rendermatgrid()
         {
             xtraverts += gle::end();
             bvec color;
-            switch(m.material&~MATF_INDEX)
+            switch(m.material&~MatFlag_Index)
             {
-                case MAT_WATER:    color = bvec( 0,  0, 85); break; // blue
-                case MAT_CLIP:     color = bvec(85,  0,  0); break; // red
-                case MAT_GLASS:    color = bvec( 0, 85, 85); break; // cyan
-                case MAT_NOCLIP:   color = bvec( 0, 85,  0); break; // green
-                case MAT_LAVA:     color = bvec(85, 40,  0); break; // orange
-                case MAT_GAMECLIP: color = bvec(85, 85,  0); break; // yellow
-                case MAT_DEATH:    color = bvec(40, 40, 40); break; // black
-                case MAT_NOGI:     color = bvec(40, 30,  0); break; // brown
-                case MAT_ALPHA:    color = bvec(85,  0, 85); break; // pink
+                case Mat_Water:    color = bvec( 0,  0, 85); break; // blue
+                case Mat_Clip:     color = bvec(85,  0,  0); break; // red
+                case Mat_Glass:    color = bvec( 0, 85, 85); break; // cyan
+                case Mat_NoClip:   color = bvec( 0, 85,  0); break; // green
+                case Mat_Lava:     color = bvec(85, 40,  0); break; // orange
+                case Mat_GameClip: color = bvec(85, 85,  0); break; // yellow
+                case Mat_Death:    color = bvec(40, 40, 40); break; // black
+                case Mat_NoGI:     color = bvec(40, 30,  0); break; // brown
+                case Mat_Alpha:    color = bvec(85,  0, 85); break; // pink
                 default: continue;
             }
             gle::colorf(color.x*ldrscaleb, color.y*ldrscaleb, color.z*ldrscaleb);
@@ -672,10 +672,10 @@ int findmaterials()
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
-                if((m.material&MATF_VOLUME) != MAT_LAVA || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
+                if((m.material&MatFlag_Volume) != Mat_Lava || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
                 hasmats |= 1;
-                if(m.orient == O_TOP) lavasurfs[m.material&MATF_INDEX].put(&m, 1+int(m.skip));
-                else lavafallsurfs[m.material&MATF_INDEX].put(&m, 1+int(m.skip));
+                if(m.orient == O_TOP) lavasurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                else lavafallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 i += m.skip;
             }
         }
@@ -693,10 +693,10 @@ int findmaterials()
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
-                if((m.material&MATF_VOLUME) != MAT_WATER || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
+                if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
                 hasmats |= 4|1;
-                if(m.orient == O_TOP) watersurfs[m.material&MATF_INDEX].put(&m, 1+int(m.skip));
-                else waterfallsurfs[m.material&MATF_INDEX].put(&m, 1+int(m.skip));
+                if(m.orient == O_TOP) watersurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                else waterfallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 i += m.skip;
             }
         }
@@ -714,9 +714,9 @@ int findmaterials()
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
-                if((m.material&MATF_VOLUME) != MAT_GLASS) { i += m.skip; continue; }
+                if((m.material&MatFlag_Volume) != Mat_Glass) { i += m.skip; continue; }
                 hasmats |= 4|2;
-                glasssurfs[m.material&MATF_INDEX].put(&m, 1+int(m.skip));
+                glasssurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 i += m.skip;
             }
         }
@@ -788,7 +788,7 @@ void renderglass()
         vector<materialsurface> &surfs = glasssurfs[k];
         if(surfs.empty()) continue;
 
-        MatSlot &gslot = lookupmaterialslot(MAT_GLASS+k);
+        MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
         Texture *tex = gslot.sts.inrange(0) ? gslot.sts[0].t : notexture;
         glassxscale = TEX_SCALE/(tex->xs*gslot.scale);
@@ -867,17 +867,17 @@ void rendereditmaterials()
         {
             xtraverts += gle::end();
             bvec color;
-            switch(m.material&~MATF_INDEX)
+            switch(m.material&~MatFlag_Index)
             {
-                case MAT_WATER:    color = bvec(255, 128,   0); break; // blue
-                case MAT_CLIP:     color = bvec(  0, 255, 255); break; // red
-                case MAT_GLASS:    color = bvec(255,   0,   0); break; // cyan
-                case MAT_NOCLIP:   color = bvec(255,   0, 255); break; // green
-                case MAT_LAVA:     color = bvec(  0, 128, 255); break; // orange
-                case MAT_GAMECLIP: color = bvec(  0,   0, 255); break; // yellow
-                case MAT_DEATH:    color = bvec(192, 192, 192); break; // black
-                case MAT_NOGI:     color = bvec(128, 160, 255); break; // brown
-                case MAT_ALPHA:    color = bvec(  0, 255,   0); break; // pink
+                case Mat_Water:    color = bvec(255, 128,   0); break; // blue
+                case Mat_Clip:     color = bvec(  0, 255, 255); break; // red
+                case Mat_Glass:    color = bvec(255,   0,   0); break; // cyan
+                case Mat_NoClip:   color = bvec(255,   0, 255); break; // green
+                case Mat_Lava:     color = bvec(  0, 128, 255); break; // orange
+                case Mat_GameClip: color = bvec(  0,   0, 255); break; // yellow
+                case Mat_Death:    color = bvec(192, 192, 192); break; // black
+                case Mat_NoGI:     color = bvec(128, 160, 255); break; // brown
+                case Mat_Alpha:    color = bvec(  0, 255,   0); break; // pink
                 default: continue;
             }
             gle::color(color);

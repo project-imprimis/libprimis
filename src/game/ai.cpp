@@ -710,7 +710,7 @@ namespace ai
     {
         vec dir;
         vecfromyawpitch(yaw, pitch, 1, 0, dir);
-        if(raycubepos(o, dir, pos, 0, RAY_CLIPMAT|RAY_SKIPFIRST) == -1)
+        if(raycubepos(o, dir, pos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
             pos = dir.mul(2*getworldsize()).add(o); //otherwise 3dgui won't work when outside of map
     }
 
@@ -1821,7 +1821,7 @@ namespace ai
                     waypoint &e = waypoints[index], &f = waypoints[prev];
                     vec fr = f.o, dr = e.o;
                     fr.z += amt; dr.z += amt;
-                    particle_flare(fr, dr, 1, PART_STREAK, 0xFFFFFF);
+                    particle_flare(fr, dr, 1, Part_Streak, 0xFFFFFF);
                 }
             }
             last = i;
@@ -1831,21 +1831,21 @@ namespace ai
             vec pos = d->feetpos();
             if(d->ai->spot != vec(0, 0, 0))
             {
-                particle_flare(pos, d->ai->spot, 1, PART_LIGHTNING, 0x00FFFF);
+                particle_flare(pos, d->ai->spot, 1, Part_Lightning, 0x00FFFF);
             }
             if(iswaypoint(d->ai->targnode))
             {
-                particle_flare(pos, waypoints[d->ai->targnode].o, 1, PART_LIGHTNING, 0xFF00FF);
+                particle_flare(pos, waypoints[d->ai->targnode].o, 1, Part_Lightning, 0xFF00FF);
             }
             if(iswaypoint(d->lastnode))
             {
-                particle_flare(pos, waypoints[d->lastnode].o, 1, PART_LIGHTNING, 0xFFFF00);
+                particle_flare(pos, waypoints[d->lastnode].o, 1, Part_Lightning, 0xFFFF00);
             }
             for(int i = 0; i < NUMPREVNODES; ++i)
             {
                 if(iswaypoint(d->ai->prevnodes[i]))
                 {
-                    particle_flare(pos, waypoints[d->ai->prevnodes[i]].o, 1, PART_LIGHTNING, 0x884400);
+                    particle_flare(pos, waypoints[d->ai->prevnodes[i]].o, 1, Part_Lightning, 0x884400);
                     pos = waypoints[d->ai->prevnodes[i]].o;
                 }
             }
@@ -1891,7 +1891,7 @@ namespace ai
                             !d->ai->route.empty() ? d->ai->route[0] : -1,
                             d->ai->route.length()
                         );
-                        particle_textcopy(pos, q, PART_TEXT, 1);
+                        particle_textcopy(pos, q, Part_Text, 1);
                         pos.z += 2;
                     }
                     bool top = true;
@@ -1904,7 +1904,7 @@ namespace ai
                             lastmillis-b.millis,
                             sttypes[b.targtype+1], b.target
                         );
-                        particle_textcopy(pos, s, PART_TEXT, 1);
+                        particle_textcopy(pos, s, Part_Text, 1);
                         pos.z += 2;
                         if(top)
                         {
@@ -1922,13 +1922,13 @@ namespace ai
                     {
                         if(d->ai->weappref >= 0 && d->ai->weappref < Gun_NumGuns)
                         {
-                            particle_textcopy(pos, guns[d->ai->weappref].name, PART_TEXT, 1);
+                            particle_textcopy(pos, guns[d->ai->weappref].name, Part_Text, 1);
                             pos.z += 2;
                         }
                         gameent *e = getclient(d->ai->enemy);
                         if(e)
                         {
-                            particle_textcopy(pos, colorname(e), PART_TEXT, 1);
+                            particle_textcopy(pos, colorname(e), Part_Text, 1);
                             pos.z += 2;
                         }
                     }
@@ -1945,7 +1945,7 @@ namespace ai
                     {
                         int ent = obstacles.waypoints[cur];
                         if(iswaypoint(ent))
-                            regular_particle_splash(PART_EDIT, 2, 40, waypoints[ent].o, 0xFF6600, 1.5f);
+                            regular_particle_splash(Part_Edit, 2, 40, waypoints[ent].o, 0xFF6600, 1.5f);
                     }
                     cur = next;
                 }
@@ -1970,7 +1970,7 @@ namespace ai
                      {
                          break;
                      }
-                     particle_flare(w.o, waypoints[link].o, 1, PART_STREAK, 0x0000FF);
+                     particle_flare(w.o, waypoints[link].o, 1, Part_Streak, 0x0000FF);
                 }
             }
         }

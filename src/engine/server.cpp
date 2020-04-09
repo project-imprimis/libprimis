@@ -343,16 +343,16 @@ const char *disconnectreason(int reason)
 {
     switch(reason)
     {
-        case DISC_EOP: return "end of packet";
-        case DISC_LOCAL: return "server is in local mode";
-        case DISC_KICK: return "kicked/banned";
-        case DISC_MSGERR: return "message error";
-        case DISC_IPBAN: return "ip is banned";
-        case DISC_PRIVATE: return "server is in private mode";
-        case DISC_MAXCLIENTS: return "server FULL";
-        case DISC_TIMEOUT: return "connection timed out";
-        case DISC_OVERFLOW: return "overflow";
-        case DISC_PASSWORD: return "invalid password";
+        case Discon_EndOfPacket: return "end of packet";
+        case Discon_Local: return "server is in local mode";
+        case Discon_Kick: return "kicked/banned";
+        case Discon_MsgError: return "message error";
+        case Discon_IPBan: return "ip is banned";
+        case Discon_Private: return "server is in private mode";
+        case Discon_MaxClients: return "server FULL";
+        case Discon_Timeout: return "connection timed out";
+        case Discon_Overflow: return "overflow";
+        case Discon_Password: return "invalid password";
         default: return NULL;
     }
 }
@@ -383,7 +383,7 @@ void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
 {
     packetbuf p(packet);
     server::parsepacket(sender, chan, p);
-    if(p.overread()) { disconnect_client(sender, DISC_EOP); return; }
+    if(p.overread()) { disconnect_client(sender, Discon_EndOfPacket); return; }
 }
 
 void localclienttoserver(int chan, ENetPacket *packet)

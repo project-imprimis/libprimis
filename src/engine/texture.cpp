@@ -1763,7 +1763,7 @@ bool settexture(const char *name, int clamp)
 
 vector<VSlot *> vslots;
 vector<Slot *> slots;
-MatSlot materialslots[(MATF_VOLUME|MATF_INDEX)+1];
+MatSlot materialslots[(MatFlag_Volume|MatFlag_Index)+1];
 Slot dummyslot;
 VSlot dummyvslot(&dummyslot);
 vector<DecalSlot *> decalslots;
@@ -1804,7 +1804,7 @@ void materialreset()
 {
     if(!(identflags&Idf_Overridden) && !game::allowedittoggle()) return;
     defslot = NULL;
-    for(int i = 0; i < (MATF_VOLUME|MATF_INDEX)+1; ++i)
+    for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].reset();
     }
@@ -1831,7 +1831,7 @@ void clearslots()
     resetslotshader();
     slots.deletecontents();
     vslots.deletecontents();
-    for(int i = 0; i < (MATF_VOLUME|MATF_INDEX)+1; ++i)
+    for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].reset();
     }
@@ -2955,7 +2955,7 @@ void linkslotshaders()
             linkvslotshader(*vslots[i]);
         }
     }
-    for(int i = 0; i < (MATF_VOLUME|MATF_INDEX)+1; ++i)
+    for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         if(materialslots[i].loaded)
         {
@@ -3525,7 +3525,7 @@ void cleanuptextures()
     {
         vslots[i]->cleanup();
     }
-    for(int i = 0; i < (MATF_VOLUME|MATF_INDEX)+1; ++i)
+    for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].cleanup();
     }

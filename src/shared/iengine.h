@@ -9,56 +9,56 @@ extern int gamespeed, paused;
 
 enum
 {
-    MATF_INDEX_SHIFT  = 0,
-    MATF_VOLUME_SHIFT = 2,
-    MATF_CLIP_SHIFT   = 5,
-    MATF_FLAG_SHIFT   = 8,
+    MatFlag_IndexShift  = 0,
+    MatFlag_VolumeShift = 2,
+    MatFlag_ClipShift   = 5,
+    MatFlag_FlagShift   = 8,
 
-    MATF_INDEX  = 3 << MATF_INDEX_SHIFT,
-    MATF_VOLUME = 7 << MATF_VOLUME_SHIFT,
-    MATF_CLIP   = 7 << MATF_CLIP_SHIFT,
-    MATF_FLAGS  = 0xFF << MATF_FLAG_SHIFT
+    MatFlag_Index  = 3 << MatFlag_IndexShift,
+    MatFlag_Volume = 7 << MatFlag_VolumeShift,
+    MatFlag_Clip   = 7 << MatFlag_ClipShift,
+    MatFlag_Flags  = 0xFF << MatFlag_FlagShift
 };
 
 enum // cube empty-space materials
 {
-    MAT_AIR      = 0,                      // the default, fill the empty space with air
-    MAT_WATER    = 1 << MATF_VOLUME_SHIFT, // fill with water, showing waves at the surface
-    MAT_LAVA     = 2 << MATF_VOLUME_SHIFT, // fill with lava
-    MAT_GLASS    = 3 << MATF_VOLUME_SHIFT, // behaves like clip but is blended blueish
+    Mat_Air      = 0,                      // the default, fill the empty space with air
+    Mat_Water    = 1 << MatFlag_VolumeShift, // fill with water, showing waves at the surface
+    Mat_Lava     = 2 << MatFlag_VolumeShift, // fill with lava
+    Mat_Glass    = 3 << MatFlag_VolumeShift, // behaves like clip but is blended blueish
 
-    MAT_NOCLIP   = 1 << MATF_CLIP_SHIFT,  // collisions always treat cube as empty
-    MAT_CLIP     = 2 << MATF_CLIP_SHIFT,  // collisions always treat cube as solid
-    MAT_GAMECLIP = 3 << MATF_CLIP_SHIFT,  // game specific clip material
+    Mat_NoClip   = 1 << MatFlag_ClipShift,  // collisions always treat cube as empty
+    Mat_Clip     = 2 << MatFlag_ClipShift,  // collisions always treat cube as solid
+    Mat_GameClip = 3 << MatFlag_ClipShift,  // game specific clip material
 
-    MAT_DEATH    = 1 << MATF_FLAG_SHIFT,  // force player suicide
-    MAT_NOGI     = 2 << MATF_FLAG_SHIFT,  // disable global illumination
-    MAT_ALPHA    = 4 << MATF_FLAG_SHIFT   // alpha blended
+    Mat_Death    = 1 << MatFlag_FlagShift,  // force player suicide
+    Mat_NoGI     = 2 << MatFlag_FlagShift,  // disable global illumination
+    Mat_Alpha    = 4 << MatFlag_FlagShift   // alpha blended
 };
 
-#define IS_LIQUID(mat) ((mat)==MAT_WATER || (mat)==MAT_LAVA)
-#define IS_CLIPPED(mat) ((mat)==MAT_GLASS) //materials that are obligate clipping (always also get clipped)
-#define IS_DEADLY(mat) ((mat)==MAT_LAVA) //materials thare are obligate deadly (always also have deatmat)
+#define IS_LIQUID(mat) ((mat)==Mat_Water || (mat)==Mat_Lava)
+#define IS_CLIPPED(mat) ((mat)==Mat_Glass) //materials that are obligate clipping (always also get clipped)
+#define IS_DEADLY(mat) ((mat)==Mat_Lava) //materials thare are obligate deadly (always also have deatmat)
 
 extern void lightent(extentity &e, float height = 8.0f);
 extern void lightreaching(const vec &target, vec &color, vec &dir, bool fast = false, extentity *e = 0, float minambient = 0.4f);
 
 enum
 {
-    RAY_BB = 1,
-    RAY_POLY = 3,
-    RAY_ALPHAPOLY = 7,
-    RAY_ENTS = 9,
-    RAY_CLIPMAT = 16,
-    RAY_SKIPFIRST = 32,
-    RAY_EDITMAT = 64,
-    RAY_SHADOW = 128,
-    RAY_PASS = 256,
-    RAY_SKIPSKY = 512
+    Ray_BB = 1,
+    Ray_Poly = 3,
+    Ray_AlphaPoly = 7,
+    Ray_Ents = 9,
+    Ray_ClipMat = 16,
+    Ray_SkipFirst = 32,
+    Ray_EditMat = 64,
+    Ray_Shadow = 128,
+    Ray_Pass = 256,
+    Ray_SkipSky = 512
 };
 
-extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = RAY_CLIPMAT, int size = 0, extentity *t = 0);
-extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = RAY_CLIPMAT, int size = 0);
+extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = Ray_ClipMat, int size = 0, extentity *t = 0);
+extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
 extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
 extern bool  raycubelos(const vec &o, const vec &dest, vec &hitpos);
 
@@ -371,29 +371,29 @@ extern void resethudshader();
 // renderparticles
 enum
 {
-    PART_BLOOD = 0,
-    PART_WATER,
-    PART_SMOKE,
-    PART_STEAM,
-    PART_FLAME,
-    PART_STREAK,
-    PART_RAIL_TRAIL,
-    PART_PULSE_SIDE,
-    PART_PULSE_FRONT,
-    PART_LIGHTNING,
-    PART_EXPLOSION,
-    PART_PULSE_BURST,
-    PART_SPARK,
-    PART_EDIT,
-    PART_SNOW,
-    PART_RAIL_MUZZLE_FLASH,
-    PART_PULSE_MUZZLE_FLASH,
-    PART_HUD_ICON,
-    PART_HUD_ICON_GREY,
-    PART_TEXT,
-    PART_METER,
-    PART_METER_VS,
-    PART_LENS_FLARE
+    Part_Blood = 0,
+    Part_Water,
+    Part_Smoke,
+    Part_Steam,
+    Part_Flame,
+    Part_Streak,
+    Part_RailTrail,
+    Part_PulseSide,
+    Part_PulseFront,
+    Part_Lightning,
+    Part_Explosion,
+    Part_PulseBurst,
+    Part_Spark,
+    Part_Edit,
+    Part_Snow,
+    Part_RailMuzzleFlash,
+    Part_PulseMuzzleFlash,
+    Part_HUDIcon,
+    Part_HUDIconGrey,
+    Part_Text,
+    Part_Meter,
+    Part_MeterVS,
+    Part_LensFlare
 };
 
 extern bool canaddparticles();
@@ -412,11 +412,11 @@ extern void removetrackedparticles(physent *owner = NULL);
 // stain
 enum
 {
-    STAIN_BLOOD = 0,
-    STAIN_PULSE_SCORCH,
-    STAIN_RAIL_HOLE,
-    STAIN_PULSE_GLOW,
-    STAIN_RAIL_GLOW
+    Stain_Blood = 0,
+    Stain_PulseScorch,
+    Stain_RailHole,
+    Stain_PulseGlow,
+    Stain_RailGlow
 };
 
 extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
@@ -479,18 +479,18 @@ extern void initsound();
 // rendermodel
 enum
 {
-    MDL_CULL_VFC = 1<<0,
-    MDL_CULL_DIST = 1<<1,
-    MDL_CULL_OCCLUDED = 1<<2,
-    MDL_CULL_QUERY = 1<<3,
-    MDL_FULLBRIGHT = 1<<4,
-    MDL_NORENDER = 1<<5,
-    MDL_MAPMODEL = 1<<6,
-    MDL_NOBATCH = 1<<7,
-    MDL_ONLYSHADOW = 1<<8,
-    MDL_NOSHADOW = 1<<9,
-    MDL_FORCESHADOW = 1<<10,
-    MDL_FORCETRANSPARENT = 1<<11
+    Model_CullVFC          = 1<<0,
+    Model_CullDist         = 1<<1,
+    Model_CullOccluded     = 1<<2,
+    Model_CullQuery        = 1<<3,
+    Model_FullBright       = 1<<4,
+    Model_NoRender         = 1<<5,
+    Model_Mapmodel         = 1<<6,
+    Model_NoBatch          = 1<<7,
+    Model_OnlyShadow       = 1<<8,
+    Model_NoShadow         = 1<<9,
+    Model_ForceShadow      = 1<<10,
+    Model_ForceTransparent = 1<<11
 };
 
 struct model;
@@ -506,7 +506,7 @@ struct modelattach
     modelattach(const char *tag, vec *pos) : tag(tag), name(NULL), anim(-1), basetime(0), pos(pos), m(NULL) {}
 };
 
-extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
+extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
 extern int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode = 0, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1);
 extern void abovemodel(vec &o, const char *mdl);
 extern void renderclient(dynent *d, const char *mdlname, modelattach *attachments, int hold, int attack, int attackdelay, int lastaction, int lastpain, float scale = 1, bool ragdoll = false, float trans = 1);
@@ -542,18 +542,18 @@ extern int maxclients;
 
 enum
 {
-    DISC_NONE = 0,
-    DISC_EOP,
-    DISC_LOCAL,
-    DISC_KICK,
-    DISC_MSGERR,
-    DISC_IPBAN,
-    DISC_PRIVATE,
-    DISC_MAXCLIENTS,
-    DISC_TIMEOUT,
-    DISC_OVERFLOW,
-    DISC_PASSWORD,
-    DISC_NUM
+    Discon_None = 0,
+    Discon_EndOfPacket,
+    Discon_Local,
+    Discon_Kick,
+    Discon_MsgError,
+    Discon_IPBan,
+    Discon_Private,
+    Discon_MaxClients,
+    Discon_Timeout,
+    Discon_Overflow,
+    Discon_Password,
+    Discon_NumDiscons
 };
 
 extern void *getclientinfo(int i);
@@ -568,7 +568,7 @@ extern uint getclientip(int n);
 extern void localconnect();
 extern const char *disconnectreason(int reason);
 extern void disconnect_client(int n, int reason);
-extern void kicknonlocalclients(int reason = DISC_NONE);
+extern void kicknonlocalclients(int reason = Discon_None);
 extern bool hasnonlocalclients();
 extern bool haslocalclients();
 extern void sendserverinforeply(ucharbuf &p);

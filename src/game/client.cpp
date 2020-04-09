@@ -1351,7 +1351,7 @@ namespace game
                 flags |= 1<<6;
             }
         }
-        if((lookupmaterial(d->feetpos())&MATF_CLIP) == MAT_GAMECLIP)
+        if((lookupmaterial(d->feetpos())&MatFlag_Clip) == Mat_GameClip)
         {
             flags |= 1<<7;
         }
@@ -1832,7 +1832,7 @@ namespace game
                 }
                 if(d->state!=ClientState_Dead && d->state!=ClientState_Spectator)
                 {
-                    particle_textcopy(d->abovehead(), text, PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
+                    particle_textcopy(d->abovehead(), text, Part_Text, 2000, 0x32FF64, 4.0f, -8);
                 }
                 conoutf(ConsoleMsg_Chat, "%s:%s %s", chatcolorname(d), teamtextcode[0], text);
                 break;
@@ -1851,7 +1851,7 @@ namespace game
                 int team = VALID_TEAM(t->team) ? t->team : 0;
                 if(t->state!=ClientState_Dead && t->state!=ClientState_Spectator)
                 {
-                    particle_textcopy(t->abovehead(), text, PART_TEXT, 2000, teamtextcolor[team], 4.0f, -8);
+                    particle_textcopy(t->abovehead(), text, Part_Text, 2000, teamtextcolor[team], 4.0f, -8);
                 }
                 conoutf(ConsoleMsg_TeamChat, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
                 break;
@@ -2170,7 +2170,7 @@ namespace game
                 extern int hidefrags;
                 if(actor!=player1 && (!cmode || !cmode->hidefrags() || !hidefrags))
                 {
-                    particle_textcopy(actor->abovehead(), tempformatstring("%d", actor->frags), PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
+                    particle_textcopy(actor->abovehead(), tempformatstring("%d", actor->frags), Part_Text, 2000, 0x32FF64, 4.0f, -8);
                 }
 #endif
                 if(!victim)
@@ -2245,12 +2245,12 @@ namespace game
                 playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
                 #if 0
                 const char *name = entities::itemname(i);
-                if(name) particle_text(entities::ents[i]->o, name, PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
+                if(name) particle_text(entities::ents[i]->o, name, Part_Text, 2000, 0x32FF64, 4.0f, -8);
                 #endif
                 int icon = entities::itemicon(i);
                 if(icon >= 0)
                 {
-                    particle_icon(vec(0.0f, 0.0f, 4.0f).add(entities::ents[i]->o), icon%4, icon/4, PART_HUD_ICON, 2000, 0xFFFFFF, 2.0f, -8);
+                    particle_icon(vec(0.0f, 0.0f, 4.0f).add(entities::ents[i]->o), icon%4, icon/4, Part_HUDIcon, 2000, 0xFFFFFF, 2.0f, -8);
                 }
                 break;
             }

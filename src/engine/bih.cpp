@@ -30,7 +30,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
     float v, w, f;
     if(det >= 0)
     {
-        if(!(mode&RAY_SHADOW) && m.flags&MESH_CULLFACE)
+        if(!(mode&Ray_Shadow) && m.flags&MESH_CULLFACE)
         {
             return false;
         }
@@ -69,7 +69,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
         }
     }
     float invdet = 1/det;
-    if(m.flags&MESH_ALPHA && (mode&RAY_ALPHAPOLY)==RAY_ALPHAPOLY && (m.tex->alphamask || loadalphamask(m.tex)))
+    if(m.flags&MESH_ALPHA && (mode&Ray_Shadow)==Ray_Shadow && (m.tex->alphamask || loadalphamask(m.tex)))
     {
         vec2 at = m.gettc(t.vert[0]), bt = m.gettc(t.vert[1]).sub(at).mul(v*invdet), ct = m.gettc(t.vert[2]).sub(at).mul(w*invdet);
         at.add(bt).add(ct);
@@ -80,7 +80,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
             return false;
         }
     }
-    if(!(mode&RAY_SHADOW))
+    if(!(mode&Ray_Shadow))
     {
         hitsurface = m.xformnorm.transform(n).normalize();
     }
@@ -190,7 +190,7 @@ inline bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &di
     for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
-        if(!(m.flags&MESH_RENDER) || (!(mode&RAY_SHADOW) && m.flags&MESH_NOCLIP)) continue;
+        if(!(m.flags&MESH_RENDER) || (!(mode&Ray_Shadow) && m.flags&MESH_NOCLIP)) continue;
         float t1 = (m.bbmin.x - o.x)*invray.x,
               t2 = (m.bbmax.x - o.x)*invray.x,
               tmin, tmax;
@@ -437,14 +437,14 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     {
         return false;
     }
-    if(mode&RAY_SHADOW)
+    if(mode&Ray_Shadow)
     {
         if(!m->shadow || e.flags&EntFlag_NoShadow)
         {
             return false;
         }
     }
-    else if((mode&RAY_ENTS)!=RAY_ENTS && (!m->collide || e.flags&EntFlag_NoCollide))
+    else if((mode&Ray_Ents)!=Ray_Ents && (!m->collide || e.flags&EntFlag_NoCollide))
     {
         return false;
     }
@@ -484,7 +484,7 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     if(m->bih->traverse(mo, mray, maxdist ? maxdist*scale : 1e16f, dist, mode))
     {
         dist /= scale;
-        if(!(mode&RAY_SHADOW))
+        if(!(mode&Ray_Shadow))
         {
             //reorientation
             if(roll != 0)

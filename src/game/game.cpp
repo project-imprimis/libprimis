@@ -621,8 +621,8 @@ namespace game
 
     void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material)
     {
-        if     (waterlevel>0) { if(material!=MAT_LAVA) playsound(Sound_SplashOut, d==player1 ? NULL : &d->o); }
-        else if(waterlevel<0) playsound(material==MAT_LAVA ? Sound_Burn : Sound_SplashIn, d==player1 ? NULL : &d->o);
+        if     (waterlevel>0) { if(material!=Mat_Lava) playsound(Sound_SplashOut, d==player1 ? NULL : &d->o); }
+        else if(waterlevel<0) playsound(material==Mat_Lava ? Sound_Burn : Sound_SplashIn, d==player1 ? NULL : &d->o);
         if     (floorlevel>0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(Sound_Jump, d); }
         else if(floorlevel<0) { if(d==player1 || d->type!=PhysEnt_Player || ((gameent *)d)->ai) msgsound(Sound_Land, d); }
     }

@@ -388,7 +388,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         }
 
         VSlot &vslot = lookupvslot(c.texture[i], false),
-             *layer = vslot.layer && !(c.material&MAT_ALPHA) ? &lookupvslot(vslot.layer, false) : NULL;
+             *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, false) : NULL;
         Shader *shader = vslot.slot->shader;
         int shadertype = shader->type;
         if(layer) shadertype |= layer->slot->shader->type;
@@ -558,7 +558,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 
 static inline bool previewblends(cube &c, const ivec &o, int size)
 {
-    if(IS_EMPTY(c) || c.material&MAT_ALPHA) return false;
+    if(IS_EMPTY(c) || c.material&Mat_Alpha) return false;
     int usefacemask = 0;
     for(int j = 0; j < 6; ++j)
     {
@@ -710,7 +710,7 @@ void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity
         else
         {
             ray.div(mag);
-            if(shadowray(e.o, ray, mag, RAY_SHADOW | RAY_POLY, t) < mag)
+            if(shadowray(e.o, ray, mag, Ray_Shadow | Ray_Poly, t) < mag)
                 continue;
         }
 
@@ -732,7 +732,7 @@ void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity
         color.add(vec(lightcol).mul(intensity));
         dir.add(vec(ray).mul(-intensity*lightcol.x*lightcol.y*lightcol.z));
     }
-    if(!sunlight.iszero() && shadowray(target, sunlightdir, 1e16f, RAY_SHADOW | RAY_POLY, t) > 1e15f)
+    if(!sunlight.iszero() && shadowray(target, sunlightdir, 1e16f, Ray_Shadow | Ray_Poly, t) > 1e15f)
     {
         vec lightcol = sunlight.tocolor().mul(sunlightscale);
         color.add(lightcol);

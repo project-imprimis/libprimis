@@ -500,15 +500,15 @@ void ragdolldata::move(dynent *pl, float ts)
     if(collidemillis && lastmillis > collidemillis) return;
 
     int material = lookupmaterial(vec(center.x, center.y, center.z + radius/2));
-    bool water = IS_LIQUID(material&MATF_VOLUME);
-    if(!pl->inwater && water) game::physicstrigger(pl, true, 0, -1, material&MATF_VOLUME);
+    bool water = IS_LIQUID(material&MatFlag_Volume);
+    if(!pl->inwater && water) game::physicstrigger(pl, true, 0, -1, material&MatFlag_Volume);
     else if(pl->inwater && !water)
     {
         material = lookupmaterial(center);
-        water = IS_LIQUID(material&MATF_VOLUME);
+        water = IS_LIQUID(material&MatFlag_Volume);
         if(!water) game::physicstrigger(pl, true, 0, 1, pl->inwater);
     }
-    pl->inwater = water ? material&MATF_VOLUME : MAT_AIR;
+    pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 
     calcrotfriction();
     float tsfric = timestep ? ts/timestep : 1,

@@ -4045,14 +4045,14 @@ static inline bool rendernogi(cube *c, const ivec &o, int size, const ivec &bbmi
     {
         if(bbmin.x < mid.x)
         {
-            if((bbmin.z < mid.z && (c[0].children ? rendernogi(c[0].children, ivec(o.x, o.y, o.z), size>>1, bbmin, bbmax, minsize) : c[0].material&MAT_NOGI)) ||
-               (bbmax.z > mid.z && (c[4].children ? rendernogi(c[4].children, ivec(o.x, o.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[4].material&MAT_NOGI)))
+            if((bbmin.z < mid.z && (c[0].children ? rendernogi(c[0].children, ivec(o.x, o.y, o.z), size>>1, bbmin, bbmax, minsize) : c[0].material&Mat_NoGI)) ||
+               (bbmax.z > mid.z && (c[4].children ? rendernogi(c[4].children, ivec(o.x, o.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[4].material&Mat_NoGI)))
                 overlap |= 1;
         }
         if(bbmax.x > mid.x)
         {
-            if((bbmin.z < mid.z && (c[1].children ? rendernogi(c[1].children, ivec(mid.x, o.y, o.z), size>>1, bbmin, bbmax, minsize) : c[1].material&MAT_NOGI)) ||
-               (bbmax.z > mid.z && (c[5].children ? rendernogi(c[5].children, ivec(mid.x, o.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[5].material&MAT_NOGI)))
+            if((bbmin.z < mid.z && (c[1].children ? rendernogi(c[1].children, ivec(mid.x, o.y, o.z), size>>1, bbmin, bbmax, minsize) : c[1].material&Mat_NoGI)) ||
+               (bbmax.z > mid.z && (c[5].children ? rendernogi(c[5].children, ivec(mid.x, o.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[5].material&Mat_NoGI)))
                 overlap |= 2;
         }
     }
@@ -4060,14 +4060,14 @@ static inline bool rendernogi(cube *c, const ivec &o, int size, const ivec &bbmi
     {
         if(bbmin.x < mid.x)
         {
-            if((bbmin.z < mid.z && (c[2].children ? rendernogi(c[2].children, ivec(o.x, mid.y, o.z), size>>1, bbmin, bbmax, minsize) : c[2].material&MAT_NOGI)) ||
-               (bbmax.z > mid.z && (c[6].children ? rendernogi(c[6].children, ivec(o.x, mid.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[6].material&MAT_NOGI)))
+            if((bbmin.z < mid.z && (c[2].children ? rendernogi(c[2].children, ivec(o.x, mid.y, o.z), size>>1, bbmin, bbmax, minsize) : c[2].material&Mat_NoGI)) ||
+               (bbmax.z > mid.z && (c[6].children ? rendernogi(c[6].children, ivec(o.x, mid.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[6].material&Mat_NoGI)))
                 overlap |= 4;
         }
         if(bbmax.x > mid.x)
         {
-            if((bbmin.z < mid.z && (c[3].children ? rendernogi(c[3].children, ivec(mid.x, mid.y, o.z), size>>1, bbmin, bbmax, minsize) : c[3].material&MAT_NOGI)) ||
-               (bbmax.z > mid.z && (c[7].children ? rendernogi(c[7].children, ivec(mid.x, mid.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[7].material&MAT_NOGI)))
+            if((bbmin.z < mid.z && (c[3].children ? rendernogi(c[3].children, ivec(mid.x, mid.y, o.z), size>>1, bbmin, bbmax, minsize) : c[3].material&Mat_NoGI)) ||
+               (bbmax.z > mid.z && (c[7].children ? rendernogi(c[7].children, ivec(mid.x, mid.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[7].material&Mat_NoGI)))
                 overlap |= 8;
         }
     }

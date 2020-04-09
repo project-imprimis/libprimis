@@ -184,7 +184,7 @@ extern void endtimer(timer *t);
 extern void render3dbox(vec &o, float tofloor, float toceil, float xradius, float yradius = 0);
 
 // octa
-extern cube *newcubes(uint face = F_EMPTY, int mat = MAT_AIR);
+extern cube *newcubes(uint face = F_EMPTY, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);
 extern cubeext *newcubeext(cube &c, int maxverts = 0, bool init = true);
@@ -220,16 +220,16 @@ extern bool collideface(const cube &c, int orient);
 extern void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p);
 extern int genclipplane(const cube &c, int i, vec *v, plane *clip);
 extern void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool collide = true, bool noclip = false);
-extern bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat = MAT_AIR, ushort nmat = MAT_AIR, ushort matmask = MATF_VOLUME);
+extern bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat = Mat_Air, ushort nmat = Mat_Air, ushort matmask = MatFlag_Volume);
 extern int classifyface(const cube &c, int orient, const ivec &co, int size);
-extern int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat = MAT_AIR, ushort nmat = MAT_ALPHA, ushort matmask = MAT_ALPHA);
+extern int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat = Mat_Air, ushort nmat = Mat_Alpha, ushort matmask = Mat_Alpha);
 extern int visibleorient(const cube &c, int orient);
 extern void genfaceverts(const cube &c, int orient, ivec v[4]);
 extern int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts);
 extern void invalidatemerges(cube &c, const ivec &co, int size, bool msg);
 extern void calcmerges();
 extern int mergefaces(int orient, facebounds *m, int sz);
-extern void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat = MAT_AIR, ushort matmask = MATF_VOLUME);
+extern void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat = Mat_Air, ushort matmask = MatFlag_Volume);
 extern void remip();
 
 static inline cubeext &ext(cube &c)
@@ -497,7 +497,7 @@ extern void renderliquidmaterials();
 extern void rendersolidmaterials();
 extern void rendereditmaterials();
 extern void renderminimapmaterials();
-extern int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort matmask = MATF_VOLUME);
+extern int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort matmask = MatFlag_Volume);
 
 // water
 extern int vertwater, waterreflect, caustics;
@@ -506,7 +506,7 @@ extern float watersx1, watersy1, watersx2, watersy2;
 #define GETMATIDXVAR(name, var, type) \
     type get##name##var(int mat) \
     { \
-        switch(mat&MATF_INDEX) \
+        switch(mat&MatFlag_Index) \
         { \
             default: case 0: return name##var; \
             case 1: return name##2##var; \
@@ -686,7 +686,7 @@ extern void shadowmaskbatchedmodels(bool dynshadow = true);
 extern void rendermapmodelbatches();
 extern void rendermodelbatches();
 extern void rendertransparentmodelbatches(int stencil = 0);
-extern void rendermapmodel(int idx, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int flags = MDL_CULL_VFC | MDL_CULL_DIST, int basetime = 0, float size = 1);
+extern void rendermapmodel(int idx, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int flags = Model_CullVFC | Model_CullDist, int basetime = 0, float size = 1);
 extern void clearbatchedmapmodels();
 extern void preloadusedmapmodels(bool msg = false, bool bih = false);
 extern int batcheddynamicmodels();

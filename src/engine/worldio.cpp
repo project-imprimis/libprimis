@@ -232,7 +232,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
         else
         {
             int oflags = 0, surfmask = 0, totalverts = 0;
-            if(c[i].material!=MAT_AIR)
+            if(c[i].material!=Mat_Air)
             {
                 oflags |= 0x40;
             }

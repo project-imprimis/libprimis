@@ -11,8 +11,8 @@ namespace ai
     //bad kinds of materials for bots to path into: clipping, instadeath, lava
     bool clipped(const vec &o)
     {
-        int material = lookupmaterial(o), clipmat = material&MATF_CLIP;
-        return clipmat == MAT_CLIP || material&MAT_DEATH || (material&MATF_VOLUME) == MAT_LAVA;
+        int material = lookupmaterial(o), clipmat = material&MatFlag_Clip;
+        return clipmat == Mat_Clip || material&Mat_Death || (material&MatFlag_Volume) == Mat_Lava;
     }
 
     //weights waypoints by distance from ai
@@ -22,16 +22,16 @@ namespace ai
     {
         vec pos = o; pos.z += ai::JUMPMIN;
         if(!insideworld(vec(pos.x, pos.y, min(pos.z, getworldsize() - 1e-3f)))) return -2;
-        float dist = raycube(pos, vec(0, 0, -1), 0, RAY_CLIPMAT);
+        float dist = raycube(pos, vec(0, 0, -1), 0, Ray_ClipMat);
         int posmat = lookupmaterial(pos), weight = 1;
-        if(IS_LIQUID(posmat&MATF_VOLUME)) weight *= 5;
+        if(IS_LIQUID(posmat&MatFlag_Volume)) weight *= 5;
         if(dist >= 0)
         {
             weight = int(dist/ai::JUMPMIN);
             pos.z -= clamp(dist-8.0f, 0.0f, pos.z);
             int trgmat = lookupmaterial(pos);
-            if(trgmat&MAT_DEATH || (trgmat&MATF_VOLUME) == MAT_LAVA) weight *= 10;
-            else if(IS_LIQUID(trgmat&MATF_VOLUME)) weight *= 2;
+            if(trgmat&Mat_Death || (trgmat&MatFlag_Volume) == Mat_Lava) weight *= 10;
+            else if(IS_LIQUID(trgmat&MatFlag_Volume)) weight *= 2;
         }
         return weight;
     }
@@ -702,7 +702,7 @@ namespace ai
         if(d->state != ClientState_Alive) { d->lastnode = -1; return; }
         bool dropping = shoulddrop(d);
         int mat = lookupmaterial(v);
-        if((mat&MATF_CLIP) == MAT_CLIP || (mat&MATF_VOLUME) == MAT_LAVA || mat&MAT_DEATH) dropping = false;
+        if((mat&MatFlag_Clip) == Mat_Clip || (mat&MatFlag_Volume) == Mat_Lava || mat&Mat_Death) dropping = false;
         float dist = dropping ? WAYPOINTRADIUS : (d->ai ? WAYPOINTRADIUS : SIGHTMIN);
         int curnode = closestwaypoint(v, dist, false, d), prevnode = d->lastnode;
         if(!iswaypoint(curnode) && dropping)
