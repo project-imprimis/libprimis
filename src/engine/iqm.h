@@ -28,27 +28,27 @@ struct iqmmesh
 
 enum
 {
-    IQM_POSITION     = 0,
-    IQM_TEXCOORD     = 1,
-    IQM_NORMAL       = 2,
-    IQM_TANGENT      = 3,
-    IQM_BLENDINDEXES = 4,
-    IQM_BLENDWEIGHTS = 5,
-    IQM_COLOR        = 6,
-    IQM_CUSTOM       = 0x10
+    IQM_Position     = 0,
+    IQM_TexCoord     = 1,
+    IQM_Normal       = 2,
+    IQM_Tangent      = 3,
+    IQM_BlendIndices = 4,
+    IQM_BlendWeights = 5,
+    IQM_Color        = 6,
+    IQM_Custom       = 0x10
 };
 
 enum
 {
-    IQM_BYTE   = 0,
-    IQM_UBYTE  = 1,
-    IQM_SHORT  = 2,
-    IQM_USHORT = 3,
-    IQM_INT    = 4,
-    IQM_UINT   = 5,
-    IQM_HALF   = 6,
-    IQM_FLOAT  = 7,
-    IQM_DOUBLE = 8,
+    IQM_Byte   = 0,
+    IQM_UByte  = 1,
+    IQM_Short  = 2,
+    IQM_UShort = 3,
+    IQM_Int    = 4,
+    IQM_UInt   = 5,
+    IQM_Half   = 6,
+    IQM_Float  = 7,
+    IQM_Double = 8,
 };
 
 struct iqmtriangle
@@ -123,12 +123,12 @@ struct iqm : skelloader<iqm>
                 iqmvertexarray &va = vas[i];
                 switch(va.type)
                 {
-                    case IQM_POSITION: if(va.format != IQM_FLOAT || va.size != 3) return false; vpos = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vpos, 3*hdr.num_vertexes); break;
-                    case IQM_NORMAL: if(va.format != IQM_FLOAT || va.size != 3) return false; vnorm = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vnorm, 3*hdr.num_vertexes); break;
-                    case IQM_TANGENT: if(va.format != IQM_FLOAT || va.size != 4) return false; vtan = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtan, 4*hdr.num_vertexes); break;
-                    case IQM_TEXCOORD: if(va.format != IQM_FLOAT || va.size != 2) return false; vtc = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtc, 2*hdr.num_vertexes); break;
-                    case IQM_BLENDINDEXES: if(va.format != IQM_UBYTE || va.size != 4) return false; vindex = (uchar *)&buf[va.offset]; break;
-                    case IQM_BLENDWEIGHTS: if(va.format != IQM_UBYTE || va.size != 4) return false; vweight = (uchar *)&buf[va.offset]; break;
+                    case IQM_Position: if(va.format != IQM_Float || va.size != 3) return false; vpos = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vpos, 3*hdr.num_vertexes); break;
+                    case IQM_Normal: if(va.format != IQM_Float || va.size != 3) return false; vnorm = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vnorm, 3*hdr.num_vertexes); break;
+                    case IQM_Tangent: if(va.format != IQM_Float || va.size != 4) return false; vtan = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtan, 4*hdr.num_vertexes); break;
+                    case IQM_TexCoord: if(va.format != IQM_Float || va.size != 2) return false; vtc = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtc, 2*hdr.num_vertexes); break;
+                    case IQM_BlendIndices: if(va.format != IQM_UByte || va.size != 4) return false; vindex = (uchar *)&buf[va.offset]; break;
+                    case IQM_BlendWeights: if(va.format != IQM_UByte || va.size != 4) return false; vweight = (uchar *)&buf[va.offset]; break;
                 }
             }
             if(!vpos) return false;

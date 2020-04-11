@@ -11,7 +11,7 @@ model *loadingmodel = NULL;
 #include "skelmodel.h"
 #include "hitzone.h"
 
-static model *(__cdecl *modeltypes[NUMMODELTYPES])(const char *);
+static model *(__cdecl *modeltypes[MDL_NumMDLTypes])(const char *);
 
 static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
 {
@@ -423,7 +423,7 @@ model *loadmodel(const char *name, int i, bool msg)
             DEF_FORMAT_STRING(filename, "media/model/%s", name);
             renderprogress(loadprogress, filename);
         }
-        for(int i = 0; i < NUMMODELTYPES; ++i)
+        for(int i = 0; i < MDL_NumMDLTypes; ++i)
         {
             m = modeltypes[i](name);
             if(!m)
