@@ -349,7 +349,7 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
     INITRAYCUBE;
     CHECKINSIDEWORLD;
 
-    int side = O_BOTTOM, x = int(v.x), y = int(v.y), z = int(v.z);
+    int side = Orient_Bottom, x = int(v.x), y = int(v.y), z = int(v.z);
     for(;;)
     {
         DOWNOCTREE(shadowent, );
@@ -367,7 +367,7 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
         }
 
     nextcube:
-        FINDCLOSEST(side = O_RIGHT - lsizemask.x, side = O_FRONT - lsizemask.y, side = O_TOP - lsizemask.z);
+        FINDCLOSEST(side = Orient_Right - lsizemask.x, side = Orient_Front - lsizemask.y, side = Orient_Top - lsizemask.z);
 
         if(dist>=radius) return dist;
 
@@ -919,12 +919,12 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
         collidewall = normal; \
         bestdist = dist; \
     } while(0)
-    CHECKSIDE(O_LEFT, co.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(O_RIGHT, d->o.x - d->radius - (co.x + size), dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(O_BACK, co.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(O_FRONT, d->o.y - d->radius - (co.y + size), dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(O_BOTTOM, co.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(O_TOP, d->o.z - d->eyeheight - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+    CHECKSIDE(Orient_Left, co.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0));
+    CHECKSIDE(Orient_Right, d->o.x - d->radius - (co.x + size), dir.x, -d->radius, vec(1, 0, 0));
+    CHECKSIDE(Orient_Back, co.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0));
+    CHECKSIDE(Orient_Front, d->o.y - d->radius - (co.y + size), dir.y, -d->radius, vec(0, 1, 0));
+    CHECKSIDE(Orient_Bottom, co.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
+    CHECKSIDE(Orient_Top, d->o.z - d->eyeheight - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
 
     if(collidewall.iszero())
     {
@@ -973,12 +973,12 @@ static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const c
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = forceclipplanes(c, co, size, p);
-    CHECKSIDE(O_LEFT, p.o.x - p.r.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(O_RIGHT, d->o.x - d->radius - (p.o.x + p.r.x), dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(O_BACK, p.o.y - p.r.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(O_FRONT, d->o.y - d->radius - (p.o.y + p.r.y), dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(O_BOTTOM, p.o.z - p.r.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(O_TOP, d->o.z - d->eyeheight - (p.o.z + p.r.z), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+    CHECKSIDE(Orient_Left, p.o.x - p.r.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0));
+    CHECKSIDE(Orient_Right, d->o.x - d->radius - (p.o.x + p.r.x), dir.x, -d->radius, vec(1, 0, 0));
+    CHECKSIDE(Orient_Back, p.o.y - p.r.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0));
+    CHECKSIDE(Orient_Front, d->o.y - d->radius - (p.o.y + p.r.y), dir.y, -d->radius, vec(0, 1, 0));
+    CHECKSIDE(Orient_Bottom, p.o.z - p.r.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
+    CHECKSIDE(Orient_Top, d->o.z - d->eyeheight - (p.o.z + p.r.z), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
 
     E entvol(d);
     int bestplane = -1;
@@ -1028,12 +1028,12 @@ static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cub
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
-    CHECKSIDE(O_LEFT, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(O_RIGHT, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(O_BACK, co.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(O_FRONT, entvol.back() - (co.y + size), dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(O_BOTTOM, co.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(O_TOP, entvol.bottom() - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+    CHECKSIDE(Orient_Left, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0));
+    CHECKSIDE(Orient_Right, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0));
+    CHECKSIDE(Orient_Back, co.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0));
+    CHECKSIDE(Orient_Front, entvol.back() - (co.y + size), dir.y, -d->radius, vec(0, 1, 0));
+    CHECKSIDE(Orient_Bottom, co.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
+    CHECKSIDE(Orient_Top, entvol.bottom() - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
 
     if(collidewall.iszero())
     {
@@ -1058,12 +1058,12 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = forceclipplanes(c, co, size, p);
-    CHECKSIDE(O_LEFT, p.o.x - p.r.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(O_RIGHT, entvol.left() - (p.o.x + p.r.x), dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(O_BACK, p.o.y - p.r.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(O_FRONT, entvol.back() - (p.o.y + p.r.y), dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(O_BOTTOM, p.o.z - p.r.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(O_TOP, entvol.bottom() - (p.o.z + p.r.z), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+    CHECKSIDE(Orient_Left, p.o.x - p.r.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0));
+    CHECKSIDE(Orient_Right, entvol.left() - (p.o.x + p.r.x), dir.x, -d->radius, vec(1, 0, 0));
+    CHECKSIDE(Orient_Back, p.o.y - p.r.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0));
+    CHECKSIDE(Orient_Front, entvol.back() - (p.o.y + p.r.y), dir.y, -d->radius, vec(0, 1, 0));
+    CHECKSIDE(Orient_Bottom, p.o.z - p.r.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
+    CHECKSIDE(Orient_Top, entvol.bottom() - (p.o.z + p.r.z), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
 
     int bestplane = -1;
     for(int i = 0; i < p.size; ++i)

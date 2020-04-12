@@ -498,7 +498,7 @@ struct stainrenderer
 
     void gentris(cube &cu, int orient, const ivec &o, int size, materialsurface *mat = NULL, int vismask = 0)
     {
-        vec pos[MAXFACEVERTS+4];
+        vec pos[Face_MaxVerts+4];
         int numverts = 0, numplanes = 1;
         vec planes[2];
         if(mat)
@@ -522,7 +522,7 @@ struct stainrenderer
         {
             return;
         }
-        else if(cu.ext && (numverts = cu.ext->surfaces[orient].numverts&MAXFACEVERTS))
+        else if(cu.ext && (numverts = cu.ext->surfaces[orient].numverts&Face_MaxVerts))
         {
             vertinfo *verts = cu.ext->verts() + cu.ext->surfaces[orient].verts;
             ivec vo = ivec(o).mask(~0xFFF).shl(3);
@@ -599,7 +599,7 @@ struct stainrenderer
             fb.cross(ft, n);
             vec pt = vec(ft).mul(ft.dot(staintangent)).add(vec(fb).mul(fb.dot(staintangent))).normalize(),
                 pb = vec(ft).mul(ft.dot(stainbitangent)).add(vec(fb).mul(fb.dot(stainbitangent))).project(pt).normalize();
-            vec v1[MAXFACEVERTS+4], v2[MAXFACEVERTS+4];
+            vec v1[Face_MaxVerts+4], v2[Face_MaxVerts+4];
             float ptc = pt.dot(pcenter), pbc = pb.dot(pcenter);
             int numv;
             if(numplanes >= 2)

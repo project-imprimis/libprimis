@@ -241,7 +241,7 @@ void generategrass()
 
     for(vtxarray *va = visibleva; va; va = va->next)
     {
-        if(va->grasstris.empty() || va->occluded >= OCCLUDE_GEOM) continue;
+        if(va->grasstris.empty() || va->occluded >= Occlude_Geom) continue;
         if(va->distance > grassdist) continue;
         gengrassquads(va);
     }

@@ -509,8 +509,8 @@ void drawskybox(bool clear)
     bool limited = false;
     if(limitsky()) for(vtxarray *va = visibleva; va; va = va->next)
     {
-        if(va->sky && va->occluded < OCCLUDE_BB &&
-           ((va->skymax.x >= 0 && isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != VFC_NOT_VISIBLE) ||
+        if(va->sky && va->occluded < Occlude_BB &&
+           ((va->skymax.x >= 0 && isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
             !insideworld(camera1->o)))
         {
             limited = true;

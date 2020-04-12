@@ -197,7 +197,7 @@ bool noedit(bool view, bool msg)
     s.mul(sel.grid / 2.0f);
     o.add(s);
     float r = max(s.x, s.y, s.z);
-    bool viewable = (isvisiblesphere(r, o) != VFC_NOT_VISIBLE);
+    bool viewable = (isvisiblesphere(r, o) != ViewFrustumCull_NotVisible);
     if(!viewable && msg) conoutf(Console_Error, "selection not in view");
     return !viewable;
 }
@@ -3149,13 +3149,19 @@ void rotate(int *cw)
 COMMAND(flip, "");
 COMMAND(rotate, "i");
 
-enum { EDITMATF_EMPTY = 0x10000, EDITMATF_NOTEMPTY = 0x20000, EDITMATF_SOLID = 0x30000, EDITMATF_NOTSOLID = 0x40000 };
+enum
+{
+    EditMatFlag_Empty = 0x10000,
+    EditMatFlag_NotEmpty = 0x20000,
+    EditMatFlag_Solid = 0x30000,
+    EditMatFlag_NotSolid = 0x40000
+};
 static const struct { const char *name; int filter; } editmatfilters[] =
 {
-    { "empty", EDITMATF_EMPTY },
-    { "notempty", EDITMATF_NOTEMPTY },
-    { "solid", EDITMATF_SOLID },
-    { "notsolid", EDITMATF_NOTSOLID }
+    { "empty", EditMatFlag_Empty },
+    { "notempty", EditMatFlag_NotEmpty },
+    { "solid", EditMatFlag_Solid },
+    { "notsolid", EditMatFlag_NotSolid }
 };
 
 void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)
@@ -3171,7 +3177,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
     {
         switch(filtergeom)
         {
-            case EDITMATF_EMPTY:
+            case EditMatFlag_Empty:
             {
                 if(IS_EMPTY(c))
                 {
@@ -3179,7 +3185,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
                 }
                 return;
             }
-            case EDITMATF_NOTEMPTY:
+            case EditMatFlag_NotEmpty:
             {
                 if(!IS_EMPTY(c))
                 {
@@ -3187,7 +3193,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
                 }
                 return;
             }
-            case EDITMATF_SOLID:
+            case EditMatFlag_Solid:
             {
                 if(IS_ENTIRELY_SOLID(c))
                 {
@@ -3195,7 +3201,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
                 }
                 return;
             }
-            case EDITMATF_NOTSOLID:
+            case EditMatFlag_NotSolid:
             {
                 if(!IS_ENTIRELY_SOLID(c))
                 {

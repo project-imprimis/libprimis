@@ -13,10 +13,10 @@ struct elementset
 
 enum
 {
-    EMID_NONE = 0,
-    EMID_CUSTOM,
-    EMID_SKY,
-    EMID_RESERVED
+    EnvmapID_None = 0,
+    EnvmapID_Custom,
+    EnvmapID_Sky,
+    EnvmapID_Reserved
 };
 
 struct materialsurface
@@ -45,26 +45,25 @@ struct vertinfo
 
 enum
 {
-    LAYER_TOP    = (1<<5),
-    LAYER_BOTTOM = (1<<6),
-
-    LAYER_BLEND  = LAYER_TOP|LAYER_BOTTOM,
-
-    MAXFACEVERTS = 15
+    BlendLayer_Top    = (1<<5),
+    BlendLayer_Bottom = (1<<6),
+    BlendLayer_Blend  = BlendLayer_Top|BlendLayer_Bottom,
 };
+
+static const int Face_MaxVerts = 15;
 
 struct surfaceinfo
 {
     uchar verts, numverts;
 
-    int totalverts() const { return numverts&MAXFACEVERTS; }
-    bool used() const { return (numverts&~LAYER_TOP) != 0; }
-    void clear() { numverts = (numverts&MAXFACEVERTS) | LAYER_TOP; }
+    int totalverts() const { return numverts&Face_MaxVerts; }
+    bool used() const { return (numverts&~BlendLayer_Top) != 0; }
+    void clear() { numverts = (numverts&Face_MaxVerts) | BlendLayer_Top; }
     void brighten() { clear(); }
 };
 
-static const surfaceinfo topsurface = {0, LAYER_TOP};
-static const surfaceinfo bottomsurface = {0, LAYER_BOTTOM};
+static const surfaceinfo topsurface = {0, BlendLayer_Top};
+static const surfaceinfo bottomsurface = {0, BlendLayer_Bottom};
 #define BRIGHT_SURFACE topsurface
 #define AMBIENT_SURFACE topsurface
 
@@ -106,17 +105,17 @@ struct octaentities
 
 enum
 {
-    OCCLUDE_NOTHING = 0,
-    OCCLUDE_GEOM,
-    OCCLUDE_BB,
-    OCCLUDE_PARENT
+    Occlude_Nothing = 0,
+    Occlude_Geom,
+    Occlude_BB,
+    Occlude_Parent
 };
 
 enum
 {
-    MERGE_ORIGIN = 1<<0,
-    MERGE_PART   = 1<<1,
-    MERGE_USE    = 1<<2
+    Merge_Origin = 1<<0,
+    Merge_Part   = 1<<1,
+    Merge_Use    = 1<<2
 };
 
 struct vtxarray
@@ -281,13 +280,13 @@ static inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, c
 
 enum
 {
-    O_LEFT = 0,
-    O_RIGHT,
-    O_BACK,
-    O_FRONT,
-    O_BOTTOM,
-    O_TOP,
-    O_ANY
+    Orient_Left = 0,
+    Orient_Right,
+    Orient_Back,
+    Orient_Front,
+    Orient_Bottom,
+    Orient_Top,
+    Orient_Any
 };
 
 #define DIMENSION(orient) ((orient)>>1)
@@ -296,10 +295,10 @@ enum
 
 enum
 {
-    VFC_FULL_VISIBLE = 0,
-    VFC_PART_VISIBLE,
-    VFC_FOGGED,
-    VFC_NOT_VISIBLE,
+    ViewFrustumCull_FullyVisible = 0,
+    ViewFrustumCull_PartlyVisible,
+    ViewFrustumCull_Fogged,
+    ViewFrustumCull_NotVisible,
 };
 
 #define GENCUBEVERTS(x0,x1, y0,y1, z0,z1) \

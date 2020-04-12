@@ -1969,12 +1969,9 @@ VARN(lightbatches, lightbatchesused, 1, 0, 0);
 VARN(lightbatchrects, lightbatchrectsused, 1, 0, 0);
 VARN(lightbatchstacks, lightbatchstacksused, 1, 0, 0);
 
-enum
-{
-    MAXLIGHTTILEBATCH = 8
-};
+static const int LightTile_MaxBatch = 8; //also used in lightbatchkey below
 
-VARF(lighttilebatch, 0, MAXLIGHTTILEBATCH, MAXLIGHTTILEBATCH, cleardeferredlightshaders());
+VARF(lighttilebatch, 0, LightTile_MaxBatch, LightTile_MaxBatch, cleardeferredlightshaders());
 VARF(batchsunlight, 0, 2, 2, cleardeferredlightshaders());
 
 int shadowmapping = 0;
@@ -2018,17 +2015,18 @@ struct lightrect
     }
 };
 
+//batchflag enum is local to this file
 enum
 {
-    BF_SPOTLIGHT = 1<<0,
-    BF_NOSHADOW  = 1<<1,
-    BF_NOSUN     = 1<<2
+    BatchFlag_Spotlight = 1<<0,
+    BatchFlag_NoShadow  = 1<<1,
+    BatchFlag_NoSun     = 1<<2
 };
 
 struct lightbatchkey
 {
     uchar flags, numlights;
-    ushort lights[MAXLIGHTTILEBATCH];
+    ushort lights[LightTile_MaxBatch];
 };
  
 struct lightbatch : lightbatchkey
@@ -3230,7 +3228,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
             l.addscissor(sx1, sy1, sx2, sy2, sz1, sz2);
         }
 
-        bool baselight = !(batch.flags & BF_NOSUN) && !sunpass;
+        bool baselight = !(batch.flags & BatchFlag_NoSun) && !sunpass;
         if(baselight)
         {
             sx1 = bsx1;
@@ -3248,7 +3246,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
 
         if(n)
         {
-            bool shadowmap = !(batch.flags & BF_NOSHADOW), spotlight = (batch.flags & BF_SPOTLIGHT) != 0;
+            bool shadowmap = !(batch.flags & BatchFlag_NoShadow), spotlight = (batch.flags & BatchFlag_Spotlight) != 0;
             setlightshader(s, n, baselight, shadowmap, spotlight, transparent);
         }
         else s->setvariant(transparent ? 0 : -1, 16);
@@ -3831,7 +3829,7 @@ struct batchrect : lightrect
     batchrect() {}
     batchrect(const lightinfo &l, ushort idx)
       : lightrect(l),
-        group((l.shadowmap < 0 ? BF_NOSHADOW : 0) | (l.spot > 0 ? BF_SPOTLIGHT : 0)),
+        group((l.shadowmap < 0 ? BatchFlag_NoShadow : 0) | (l.spot > 0 ? BatchFlag_Spotlight : 0)),
         idx(idx)
     {}
 };
@@ -3859,7 +3857,7 @@ static void batchlights(const batchstack &initstack)
         if(numstack + 5 > sizeof(stack)/sizeof(stack[0])) { batchlights(s); continue; }
         
         ++lightbatchstacksused;
-        int groups[BF_NOSUN] = { 0 };
+        int groups[BatchFlag_NoSun] = { 0 };
         lightrect split(s);
         ushort splitidx = USHRT_MAX;
         int outside = s.offset, inside = s.offset + s.numrects;
@@ -3888,13 +3886,13 @@ static void batchlights(const batchstack &initstack)
 
         uchar flags = s.flags;
         int batched = s.offset + s.numrects;
-        for(int g = 0; g < BF_NOSHADOW; ++g)
+        for(int g = 0; g < BatchFlag_NoShadow; ++g)
         {
-            while(groups[g] >= lighttilebatch || (inside == outside && (groups[g] || !(flags & BF_NOSUN))))
+            while(groups[g] >= lighttilebatch || (inside == outside && (groups[g] || !(flags & BatchFlag_NoSun))))
             {
                 lightbatchkey key;
                 key.flags = flags | g;
-                flags |= BF_NOSUN;
+                flags |= BatchFlag_NoSun;
 
                 int n = min(groups[g], lighttilebatch);
                 groups[g] -= n;

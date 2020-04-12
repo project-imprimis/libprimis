@@ -105,7 +105,12 @@ void conoutf(int type, const char *fmt, ...)
 
 #define DEFAULTCLIENTS 8
 
-enum { ST_EMPTY, ST_LOCAL, ST_TCPIP };
+enum
+{
+    ServerClient_Empty,
+    ServerClient_Local,
+    ServerClient_Remote
+};
 
 struct client                   // server side version of "dynent" type
 {
@@ -138,7 +143,7 @@ client &addclient(int type)
     client *c = NULL;
     for(int i = 0; i < clients.length(); i++)
     {
-        if(clients[i]->type==ST_EMPTY)
+        if(clients[i]->type==ServerClient_Empty)
         {
             c = clients[i];
             break;
@@ -154,8 +159,8 @@ client &addclient(int type)
     c->type = type;
     switch(type)
     {
-        case ST_TCPIP: nonlocalclients++; break;
-        case ST_LOCAL: localclients++; break;
+        case ServerClient_Remote: nonlocalclients++; break;
+        case ServerClient_Local: localclients++; break;
     }
     return *c;
 }
@@ -165,11 +170,11 @@ void delclient(client *c)
     if(!c) return;
     switch(c->type)
     {
-        case ST_TCPIP: nonlocalclients--; if(c->peer) c->peer->data = NULL; break;
-        case ST_LOCAL: localclients--; break;
-        case ST_EMPTY: return;
+        case ServerClient_Remote: nonlocalclients--; if(c->peer) c->peer->data = NULL; break;
+        case ServerClient_Local: localclients--; break;
+        case ServerClient_Empty: return;
     }
-    c->type = ST_EMPTY;
+    c->type = ServerClient_Empty;
     c->peer = NULL;
     if(c->info)
     {
@@ -194,10 +199,10 @@ void process(ENetPacket *packet, int sender, int chan);
 //void disconnect_client(int n, int reason);
 
 int getservermtu() { return serverhost ? serverhost->mtu : -1; }
-void *getclientinfo(int i) { return !clients.inrange(i) || clients[i]->type==ST_EMPTY ? NULL : clients[i]->info; }
-ENetPeer *getclientpeer(int i) { return clients.inrange(i) && clients[i]->type==ST_TCPIP ? clients[i]->peer : NULL; }
+void *getclientinfo(int i) { return !clients.inrange(i) || clients[i]->type==ServerClient_Empty ? NULL : clients[i]->info; }
+ENetPeer *getclientpeer(int i) { return clients.inrange(i) && clients[i]->type==ServerClient_Remote ? clients[i]->peer : NULL; }
 int getnumclients()        { return clients.length(); }
-uint getclientip(int n)    { return clients.inrange(n) && clients[n]->type==ST_TCPIP ? clients[n]->peer->address.host : 0; }
+uint getclientip(int n)    { return clients.inrange(n) && clients[n]->type==ServerClient_Remote ? clients[n]->peer->address.host : 0; }
 
 void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
 {
@@ -215,13 +220,13 @@ void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
     }
     switch(clients[n]->type)
     {
-        case ST_TCPIP:
+        case ServerClient_Remote:
         {
             enet_peer_send(clients[n]->peer, chan, packet);
             break;
         }
 #ifndef STANDALONE
-        case ST_LOCAL:
+        case ServerClient_Local:
         {
             localservertoclient(chan, packet);
             break;
@@ -359,7 +364,7 @@ const char *disconnectreason(int reason)
 
 void disconnect_client(int n, int reason)
 {
-    if(!clients.inrange(n) || clients[n]->type!=ST_TCPIP) return;
+    if(!clients.inrange(n) || clients[n]->type!=ServerClient_Remote) return;
     enet_peer_disconnect(clients[n]->peer, reason);
     server::clientdisconnect(n);
     delclient(clients[n]);
@@ -375,7 +380,7 @@ void kicknonlocalclients(int reason)
 {
     for(int i = 0; i < clients.length(); i++)
     {
-        if(clients[i]->type==ST_TCPIP) disconnect_client(i, reason);
+        if(clients[i]->type==ServerClient_Remote) disconnect_client(i, reason);
     }
 }
 
@@ -391,7 +396,7 @@ void localclienttoserver(int chan, ENetPacket *packet)
     client *c = NULL;
     for(int i = 0; i < clients.length(); i++)
     {
-        if(clients[i]->type==ST_LOCAL)
+        if(clients[i]->type==ServerClient_Local)
         {
             c = clients[i];
             break;
@@ -727,7 +732,7 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
         {
             case ENET_EVENT_TYPE_CONNECT:
             {
-                client &c = addclient(ST_TCPIP);
+                client &c = addclient(ServerClient_Remote);
                 c.peer = event.peer;
                 c.peer->data = &c;
                 string hn;
@@ -771,7 +776,7 @@ void localdisconnect(bool cleanup)
     bool disconnected = false;
     for(int i = 0; i < clients.length(); i++)
     {
-        if(clients[i]->type==ST_LOCAL)
+        if(clients[i]->type==ServerClient_Local)
         {
             server::localdisconnect(i);
             delclient(clients[i]);
@@ -788,7 +793,7 @@ void localdisconnect(bool cleanup)
 
 void localconnect()
 {
-    client &c = addclient(ST_LOCAL);
+    client &c = addclient(ServerClient_Local);
     copystring(c.hostname, "local");
     game::gameconnect(false);
     server::localconnect(c.num);

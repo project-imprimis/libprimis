@@ -518,12 +518,12 @@ static int calcblendlayer(uchar &type, BlendMapNode &node, int bmx, int bmy, int
             if(cx < bmx + bmsize)
             {
                 int clayer = calcblendlayer(node.branch->type[0], node.branch->children[0], bmx, bmy, bmsize, cx, cy, cw, ch);
-                if(layer < 0) layer = clayer; else if(clayer != layer) return LAYER_BLEND;
+                if(layer < 0) layer = clayer; else if(clayer != layer) return BlendLayer_Blend;
             }
             if(cx + cw > bmx + bmsize)
             {
                 int clayer = calcblendlayer(node.branch->type[1], node.branch->children[1], bmx+bmsize, bmy, bmsize, cx, cy, cw, ch);
-                if(layer < 0) layer = clayer; else if(clayer != layer) return LAYER_BLEND;
+                if(layer < 0) layer = clayer; else if(clayer != layer) return BlendLayer_Blend;
             }
         }
         if(cy + ch > bmy + bmsize)
@@ -531,15 +531,15 @@ static int calcblendlayer(uchar &type, BlendMapNode &node, int bmx, int bmy, int
             if(cx < bmx + bmsize)
             {
                 int clayer = calcblendlayer(node.branch->type[2], node.branch->children[2], bmx, bmy+bmsize, bmsize, cx, cy, cw, ch);
-                if(layer < 0) layer = clayer; else if(clayer != layer) return LAYER_BLEND;
+                if(layer < 0) layer = clayer; else if(clayer != layer) return BlendLayer_Blend;
             }
             if(cx + cw > bmx + bmsize)
             {
                 int clayer = calcblendlayer(node.branch->type[3], node.branch->children[3], bmx+bmsize, bmy+bmsize, bmsize, cx, cy, cw, ch);
-                if(layer < 0) layer = clayer; else if(clayer != layer) return LAYER_BLEND;
+                if(layer < 0) layer = clayer; else if(clayer != layer) return BlendLayer_Blend;
             }
         }
-        return layer >= 0 ? layer : LAYER_TOP;
+        return layer >= 0 ? layer : BlendLayer_Top;
     }
     uchar val;
     if(type == BM_Solid) val = node.solid->val;
@@ -555,7 +555,7 @@ static int calcblendlayer(uchar &type, BlendMapNode &node, int bmx, int bmy, int
             {
                 if(src[j] != val)
                 {
-                    return LAYER_BLEND;
+                    return BlendLayer_Blend;
                 }
             }
             src += BM_IMAGE_SIZE;
@@ -563,9 +563,9 @@ static int calcblendlayer(uchar &type, BlendMapNode &node, int bmx, int bmy, int
     }
     switch(val)
     {
-        case 0xFF: return LAYER_TOP;
-        case 0: return LAYER_BOTTOM;
-        default: return LAYER_BLEND;
+        case 0xFF: return BlendLayer_Top;
+        case 0: return BlendLayer_Bottom;
+        default: return BlendLayer_Blend;
     }
 }
 
@@ -576,7 +576,7 @@ int calcblendlayer(int x1, int y1, int x2, int y2)
         ux2 = (min(x2, worldsize) + (1<<BM_SCALE)-1) >> BM_SCALE,
         uy1 = max(y1, 0) >> BM_SCALE,
         uy2 = (min(y2, worldsize) + (1<<BM_SCALE)-1) >> BM_SCALE;
-    if(ux1 >= ux2 || uy1 >= uy2) return LAYER_TOP;
+    if(ux1 >= ux2 || uy1 >= uy2) return BlendLayer_Top;
     return calcblendlayer(blendmap.type, blendmap, 0, 0, bmsize, ux1, uy1, ux2-ux1, uy2-uy1);
 }
 

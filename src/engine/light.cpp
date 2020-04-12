@@ -247,12 +247,12 @@ static void clearsurfaces(cube *c)
                 surfaceinfo &surf = c[i].ext->surfaces[j];
                 if(!surf.used()) continue;
                 surf.clear();
-                int numverts = surf.numverts&MAXFACEVERTS;
+                int numverts = surf.numverts&Face_MaxVerts;
                 if(numverts)
                 {
                     if(!(c[i].merged&(1<<j)))
                     {
-                        surf.numverts &= ~MAXFACEVERTS;
+                        surf.numverts &= ~Face_MaxVerts;
                         continue;
                     }
 
@@ -365,7 +365,7 @@ void show_calclight_progress()
 static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
 {
     surfaceinfo surfaces[6];
-    vertinfo litverts[6*2*MAXFACEVERTS];
+    vertinfo litverts[6*2*Face_MaxVerts];
     int numlitverts = 0;
     memset(surfaces, 0, sizeof(surfaces));
     for(int i = 0; i < 6; ++i)
@@ -395,7 +395,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
 
         surfaceinfo &surf = surfaces[i];
         vertinfo *curlitverts = &litverts[numlitverts];
-        int numverts = c.ext ? c.ext->surfaces[i].numverts&MAXFACEVERTS : 0;
+        int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0;
         ivec mo(co);
         int msz = size, convex = 0;
         if(numverts)
@@ -410,7 +410,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
                 msz = 1<<calcmergedsize(i, mo, size, verts, numverts);
                 mo.mask(~(msz-1));
 
-                if(!(surf.numverts&MAXFACEVERTS))
+                if(!(surf.numverts&Face_MaxVerts))
                 {
                     surf.verts = numlitverts;
                     surf.numverts |= numverts;
@@ -432,7 +432,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             if(usefaces&2) curlitverts[numverts++].set(v[(order+3)&3].mul(size).add(vo));
         }
 
-        vec pos[MAXFACEVERTS], n[MAXFACEVERTS], po(ivec(co).mask(~0xFFF));
+        vec pos[Face_MaxVerts], n[Face_MaxVerts], po(ivec(co).mask(~0xFFF));
         for(int j = 0; j < numverts; ++j)
         {
             pos[j] = vec(curlitverts[j].getxyz()).mul(1.0f/8).add(po);
@@ -463,7 +463,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         {
             curlitverts[k].norm = encodenormal(n[k]);
         }
-        if(!(surf.numverts&MAXFACEVERTS))
+        if(!(surf.numverts&Face_MaxVerts))
         {
             surf.verts = numlitverts;
             surf.numverts |= numverts;
@@ -472,7 +472,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
 
         if(preview) { surf.numverts |= preview; continue; }
 
-        int surflayer = LAYER_TOP;
+        int surflayer = BlendLayer_Top;
         if(vslot.layer)
         {
             int x1 = curlitverts[numverts-1].x, y1 = curlitverts[numverts-1].y, x2 = x1, y2 = y1;
@@ -543,7 +543,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
             int usefacemask = 0;
             for(int j = 0; j < 6; ++j)
             {
-                if(c[i].texture[j] != DEFAULT_SKY && (!(c[i].merged&(1<<j)) || (c[i].ext && c[i].ext->surfaces[j].numverts&MAXFACEVERTS)))
+                if(c[i].texture[j] != DEFAULT_SKY && (!(c[i].merged&(1<<j)) || (c[i].ext && c[i].ext->surfaces[j].numverts&Face_MaxVerts)))
                 {
                     usefacemask |= visibletris(c[i], j, o, size)<<(4*j);
                 }
@@ -569,13 +569,13 @@ static inline bool previewblends(cube &c, const ivec &o, int size)
     }
     if(!usefacemask) return false;
     int layer = calcblendlayer(o.x, o.y, o.x + size, o.y + size);
-    if(!(layer&LAYER_BOTTOM))
+    if(!(layer&BlendLayer_Bottom))
     {
         if(!c.ext) return false;
         bool blends = false;
         for(int i = 0; i < 6; ++i)
         {
-            if(c.ext->surfaces[i].numverts&LAYER_BOTTOM)
+            if(c.ext->surfaces[i].numverts&BlendLayer_Bottom)
             {
                 c.ext->surfaces[i].brighten();
                 blends = true;

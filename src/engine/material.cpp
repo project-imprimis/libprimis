@@ -189,7 +189,7 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
     case Mat_Lava:
     case Mat_Water:
         if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
-            return (orient != O_BOTTOM ? MATSURF_VISIBLE : MATSURF_EDIT_ONLY);
+            return (orient != Orient_Bottom ? MATSURF_VISIBLE : MATSURF_EDIT_ONLY);
         break;
 
     case Mat_Glass:
@@ -362,7 +362,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
                cur->visible == start->visible &&
                cur->o[dim] == start->o[dim])
             ++cur;
-         if(!IS_LIQUID(start->material&MatFlag_Volume) || start->orient != O_TOP || !vertwater)
+         if(!IS_LIQUID(start->material&MatFlag_Volume) || start->orient != Orient_Top || !vertwater)
          {
             if(start!=matbuf) memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
             matbuf += mergemats(matbuf, cur-start);
@@ -409,7 +409,7 @@ void setupmaterials(int start, int len)
         {
             materialsurface &m = va->matbuf[j];
             int matvol = m.material&MatFlag_Volume;
-            if(IS_LIQUID(matvol) && m.orient!=O_BOTTOM && m.orient!=O_TOP)
+            if(IS_LIQUID(matvol) && m.orient!=Orient_Bottom && m.orient!=Orient_Top)
             {
                 m.ends = 0;
                 int dim = DIMENSION(m.orient), coord = DIM_COORD(m.orient);
@@ -431,7 +431,7 @@ void setupmaterials(int start, int len)
                 while(o[dim^1] < maxc)
                 {
                     cube &c = lookupcube(o, 0, co, csize);
-                    if(visiblematerial(c, O_TOP, co, csize)) { m.ends |= 2; break; }
+                    if(visiblematerial(c, Orient_Top, co, csize)) { m.ends |= 2; break; }
                     o[dim^1] += csize;
                 }
             }
@@ -652,7 +652,7 @@ int findmaterials()
     int hasmats = 0;
     for(vtxarray *va = visibleva; va; va = va->next)
     {
-        if(!va->matsurfs || va->occluded >= OCCLUDE_BB || va->curvfc >= VFC_FOGGED) continue;
+        if(!va->matsurfs || va->occluded >= Occlude_BB || va->curvfc >= ViewFrustumCull_Fogged) continue;
         if(editmode && showmat && !drawtex)
         {
             for(int i = 0; i < va->matsurfs; ++i)
@@ -674,7 +674,7 @@ int findmaterials()
                 materialsurface &m = va->matbuf[i];
                 if((m.material&MatFlag_Volume) != Mat_Lava || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
                 hasmats |= 1;
-                if(m.orient == O_TOP) lavasurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                if(m.orient == Orient_Top) lavasurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 else lavafallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 i += m.skip;
             }
@@ -695,7 +695,7 @@ int findmaterials()
                 materialsurface &m = va->matbuf[i];
                 if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
                 hasmats |= 4|1;
-                if(m.orient == O_TOP) watersurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                if(m.orient == Orient_Top) watersurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 else waterfallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 i += m.skip;
             }
@@ -805,7 +805,7 @@ void renderglass()
         GLOBALPARAMF(glassrefract, col.x*refractscale, col.y*refractscale, col.z*refractscale, refract*viewh);
         GLOBALPARAMF(glassspec, spec/100.0f);
 
-        short envmap = EMID_NONE;
+        short envmap = EnvmapID_None;
         if(!glassenv) SETSHADER(glass);
         for(int i = 0; i < surfs.length(); i++)
         {
@@ -813,7 +813,7 @@ void renderglass()
             if(m.envmap != envmap && glassenv)
             {
                 xtraverts += gle::end();
-                if(m.envmap != EMID_NONE && glassenv) SETSHADER(glassenv);
+                if(m.envmap != EnvmapID_None && glassenv) SETSHADER(glassenv);
                 else SETSHADER(glass);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, lookupenvmap(m.envmap));
                 envmap = m.envmap;

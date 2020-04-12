@@ -13,18 +13,19 @@ hashtable<GLuint, vboinfo> vbos;
 VAR(printvbo, 0, 0, 1);
 VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, allchanged());
 
+//vbo (vertex buffer object) enum is local to this file
 enum
 {
-    VBO_VBUF = 0,
-    VBO_EBUF,
-    VBO_SKYBUF,
-    VBO_DECALBUF,
-    NUMVBO
+    VBO_VBuf = 0,
+    VBO_EBuf,
+    VBO_SkyBuf,
+    VBO_DecalBuf,
+    VBO_NumVBOs
 };
 
-static vector<uchar> vbodata[NUMVBO];
-static vector<vtxarray *> vbovas[NUMVBO];
-static int vbosize[NUMVBO];
+static vector<uchar> vbodata[VBO_NumVBOs];
+static vector<vtxarray *> vbovas[VBO_NumVBOs];
+static int vbosize[VBO_NumVBOs];
 
 void destroyvbo(GLuint vbo)
 {
@@ -47,7 +48,7 @@ void genvbo(int type, void *buf, int len, vtxarray **vas, int numva)
 
     GLuint vbo;
     glGenBuffers_(1, &vbo);
-    GLenum target = type==VBO_VBUF ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
+    GLenum target = type==VBO_VBuf ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
     glBindBuffer_(target, vbo);
     glBufferData_(target, len, buf, GL_STATIC_DRAW);
     glBindBuffer_(target, 0);
@@ -64,19 +65,19 @@ void genvbo(int type, void *buf, int len, vtxarray **vas, int numva)
         vtxarray *va = vas[i];
         switch(type)
         {
-            case VBO_VBUF:
+            case VBO_VBuf:
                 va->vbuf = vbo;
                 va->vdata = (vertex *)vbi.data;
                 break;
-            case VBO_EBUF:
+            case VBO_EBuf:
                 va->ebuf = vbo;
                 va->edata = (ushort *)vbi.data;
                 break;
-            case VBO_SKYBUF:
+            case VBO_SkyBuf:
                 va->skybuf = vbo;
                 va->skydata = (ushort *)vbi.data;
                 break;
-            case VBO_DECALBUF:
+            case VBO_DecalBuf:
                 va->decalbuf = vbo;
                 va->decaldata = (ushort *)vbi.data;
                 break;
@@ -88,7 +89,7 @@ void flushvbo(int type = -1)
 {
     if(type < 0)
     {
-        for(int i = 0; i < NUMVBO; ++i)
+        for(int i = 0; i < VBO_NumVBOs; ++i)
         {
             flushvbo(i);
         }
@@ -108,10 +109,10 @@ uchar *addvbo(vtxarray *va, int type, int numelems, int elemsize)
 {
     switch(type)
     {
-        case VBO_VBUF: va->voffset = vbosize[type]; break;
-        case VBO_EBUF: va->eoffset = vbosize[type]; break;
-        case VBO_SKYBUF: va->skyoffset = vbosize[type]; break;
-        case VBO_DECALBUF: va->decaloffset = vbosize[type]; break;
+        case VBO_VBuf: va->voffset = vbosize[type]; break;
+        case VBO_EBuf: va->eoffset = vbosize[type]; break;
+        case VBO_SkyBuf: va->skyoffset = vbosize[type]; break;
+        case VBO_DecalBuf: va->decaloffset = vbosize[type]; break;
     }
 
     vbosize[type] += numelems;
@@ -169,12 +170,13 @@ struct verthash
     }
 };
 
+//alpha enum local to this file
 enum
 {
-    NO_ALPHA = 0,
-    ALPHA_BACK,
-    ALPHA_FRONT,
-    ALPHA_REFRACT
+    Alpha_None = 0,
+    Alpha_Back,
+    Alpha_Front,
+    Alpha_Refract
 };
 
 struct sortkey
@@ -183,7 +185,7 @@ struct sortkey
     uchar orient, layer, alpha;
 
     sortkey() {}
-    sortkey(ushort tex, uchar orient, uchar layer = LAYER_TOP, ushort envmap = EMID_NONE, uchar alpha = NO_ALPHA)
+    sortkey(ushort tex, uchar orient, uchar layer = BlendLayer_Top, ushort envmap = EnvmapID_None, uchar alpha = Alpha_None)
      : tex(tex), envmap(envmap), orient(orient), layer(layer), alpha(alpha)
     {}
 
@@ -228,7 +230,7 @@ struct decalkey
     ushort tex, envmap, reuse;
 
     decalkey() {}
-    decalkey(ushort tex, ushort envmap = EMID_NONE, ushort reuse = 0)
+    decalkey(ushort tex, ushort envmap = EnvmapID_None, ushort reuse = 0)
      : tex(tex), envmap(envmap), reuse(reuse)
     {}
 
@@ -356,7 +358,7 @@ struct vacollect : verthash
         for(int i = 0; i < texs.length(); i++)
         {
             const sortkey &k = texs[i];
-            if(k.layer == LAYER_BLEND || k.alpha != NO_ALPHA) continue;
+            if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None) continue;
             const sortval &t = indices[k];
             if(t.tris.empty()) continue;
             decalkey tkey(key);
@@ -437,7 +439,7 @@ struct vacollect : verthash
                 {
                     continue;
                 }
-                ushort envmap = s.shader->type&SHADER_ENVMAP ? (s.texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(e.o)) : EMID_NONE;
+                ushort envmap = s.shader->type&SHADER_ENVMAP ? (s.texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(e.o)) : EnvmapID_None;
                 decalkey k(e.attr1, envmap);
                 gendecal(e, s, k);
             }
@@ -472,13 +474,13 @@ struct vacollect : verthash
         va->voffset = 0;
         if(va->verts)
         {
-            if(vbosize[VBO_VBUF] + verts.length() > maxvbosize ||
-               vbosize[VBO_EBUF] + worldtris > USHRT_MAX ||
-               vbosize[VBO_SKYBUF] + skytris > USHRT_MAX ||
-               vbosize[VBO_DECALBUF] + decaltris > USHRT_MAX)
+            if(vbosize[VBO_VBuf] + verts.length() > maxvbosize ||
+               vbosize[VBO_EBuf] + worldtris > USHRT_MAX ||
+               vbosize[VBO_SkyBuf] + skytris > USHRT_MAX ||
+               vbosize[VBO_DecalBuf] + decaltris > USHRT_MAX)
                 flushvbo();
 
-            uchar *vdata = addvbo(va, VBO_VBUF, va->verts, sizeof(vertex));
+            uchar *vdata = addvbo(va, VBO_VBuf, va->verts, sizeof(vertex));
             genverts(vdata);
             va->minvert += va->voffset;
             va->maxvert += va->voffset;
@@ -510,7 +512,7 @@ struct vacollect : verthash
         va->sky = skyindices.length();
         if(va->sky)
         {
-            ushort *skydata = (ushort *)addvbo(va, VBO_SKYBUF, va->sky, sizeof(ushort));
+            ushort *skydata = (ushort *)addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort));
             memcpy(skydata, skyindices.getbuf(), va->sky*sizeof(ushort));
             if(va->voffset)
             {
@@ -537,7 +539,7 @@ struct vacollect : verthash
         if(va->texs)
         {
             va->texelems = new elementset[va->texs];
-            ushort *edata = (ushort *)addvbo(va, VBO_EBUF, worldtris, sizeof(ushort)), *curbuf = edata;
+            ushort *edata = (ushort *)addvbo(va, VBO_EBuf, worldtris, sizeof(ushort)), *curbuf = edata;
             for(int i = 0; i < texs.length(); i++)
             {
                 const sortkey &k = texs[i];
@@ -564,7 +566,7 @@ struct vacollect : verthash
                 }
                 e.length = curbuf-startbuf;
 
-                if(k.layer==LAYER_BLEND)
+                if(k.layer==BlendLayer_Blend)
                 {
                     va->texs--;
                     va->tris -= e.length/3;
@@ -575,21 +577,21 @@ struct vacollect : verthash
                 {
                     switch(k.alpha)
                     {
-                        case ALPHA_BACK:
+                        case Alpha_Back:
                         {
                             va->texs--;
                             va->tris -= e.length/3;
                             va->alphaback++;
                             va->alphabacktris += e.length/3;
                         }
-                        case ALPHA_FRONT:
+                        case Alpha_Front:
                         {
                             va->texs--;
                             va->tris -= e.length/3;
                             va->alphafront++;
                             va->alphafronttris += e.length/3;
                         }
-                        case ALPHA_REFRACT:
+                        case Alpha_Refract:
                         {
                             va->texs--;
                             va->tris -= e.length/3;
@@ -630,7 +632,7 @@ struct vacollect : verthash
         if(va->decaltexs)
         {
             va->decalelems = new elementset[va->decaltexs];
-            ushort *edata = (ushort *)addvbo(va, VBO_DECALBUF, decaltris, sizeof(ushort)), *curbuf = edata;
+            ushort *edata = (ushort *)addvbo(va, VBO_DecalBuf, decaltris, sizeof(ushort)), *curbuf = edata;
             for(int i = 0; i < decaltexs.length(); i++)
             {
                 const decalkey &k = decaltexs[i];
@@ -727,7 +729,7 @@ extern const vec orientation_bitangent[8][6] =
 void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *index, int numverts, int convex, int tj)
 {
     int &total = key.tex==DEFAULT_SKY ? vc.skytris : vc.worldtris;
-    int edge = orient*(MAXFACEVERTS+1);
+    int edge = orient*(Face_MaxVerts+1);
     for(int i = 0; i < numverts-2; ++i)
     {
         if(index[0]!=index[i+1] && index[i+1]!=index[i+2] && index[i+2]!=index[0])
@@ -765,7 +767,7 @@ void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *i
                 }
                 if(ctj >= 0)
                 {
-                    int e1 = cedge%(MAXFACEVERTS+1), e2 = (e1+1)%numverts;
+                    int e1 = cedge%(Face_MaxVerts+1), e2 = (e1+1)%numverts;
                     vertex &v1 = verts[e1], &v2 = verts[e2];
                     ivec d(vec(v2.pos).sub(v1.pos).mul(8));
                     int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
@@ -845,7 +847,7 @@ void addgrasstri(int face, vertex *verts, int numv, ushort texture, int layer)
         g.radius = max(g.radius, g.v[k].dist(g.center));
     }
     g.texture = texture;
-    g.blend = layer == LAYER_BLEND ? ((int(g.center.x)>>12)+1) | (((int(g.center.y)>>12)+1)<<8) : 0;
+    g.blend = layer == BlendLayer_Blend ? ((int(g.center.x)>>12)+1) | (((int(g.center.y)>>12)+1)<<8) : 0;
 }
 
 static inline void calctexgen(VSlot &vslot, int orient, vec4 &sgen, vec4 &tgen)
@@ -942,13 +944,13 @@ void guessnormals(const vec *pos, int numverts, vec *normals)
     normals[3] = n2;
 }
 
-void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, ushort envmap = EMID_NONE, int grassy = 0, bool alpha = false, int layer = LAYER_TOP)
+void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, ushort envmap = EnvmapID_None, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
 {
     vec4 sgen, tgen;
     calctexgen(vslot, orient, sgen, tgen);
-    vertex verts[MAXFACEVERTS];
-    int index[MAXFACEVERTS];
-    vec normals[MAXFACEVERTS];
+    vertex verts[Face_MaxVerts];
+    int index[Face_MaxVerts];
+    vec normals[Face_MaxVerts];
     for(int k = 0; k < numverts; ++k)
     {
         vertex &v = verts[k];
@@ -1011,7 +1013,7 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
         }
     }
 
-    sortkey key(texture, vslot.scroll.iszero() ? O_ANY : orient, layer&LAYER_BOTTOM ? layer : LAYER_TOP, envmap, alpha ? (vslot.refractscale > 0 ? ALPHA_REFRACT : (vslot.alphaback ? ALPHA_BACK : ALPHA_FRONT)) : NO_ALPHA);
+    sortkey key(texture, vslot.scroll.iszero() ? Orient_Any : orient, layer&BlendLayer_Bottom ? layer : BlendLayer_Top, envmap, alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
     addtris(vslot, orient, key, verts, index, numverts, convex, tj);
 
     if(grassy)
@@ -1047,12 +1049,13 @@ static inline bool htcmp(const edgegroup &x, const edgegroup &y)
     return x.slope==y.slope && x.origin==y.origin;
 }
 
+//cubedge enum is local to this file
 enum
 {
-    CE_START = 1<<0,
-    CE_END   = 1<<1,
-    CE_FLIP  = 1<<2,
-    CE_DUP   = 1<<3
+    CubeEdge_Start = 1<<0,
+    CubeEdge_End   = 1<<1,
+    CubeEdge_Flip  = 1<<2,
+    CubeEdge_Dup   = 1<<3
 };
 
 struct cubeedge
@@ -1068,13 +1071,13 @@ hashtable<edgegroup, int> edgegroups(1<<13);
 
 void gencubeedges(cube &c, const ivec &co, int size)
 {
-    ivec pos[MAXFACEVERTS];
+    ivec pos[Face_MaxVerts];
     int vis;
     for(int i = 0; i < 6; ++i)
     {
         if((vis = visibletris(c, i, co, size)))
         {
-            int numverts = c.ext ? c.ext->surfaces[i].numverts&MAXFACEVERTS : 0;
+            int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0;
             if(numverts)
             {
                 vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
@@ -1124,8 +1127,8 @@ void gencubeedges(cube &c, const ivec &co, int size)
                 ce.c = &c;
                 ce.offset = t1;
                 ce.size = t2 - t1;
-                ce.index = i*(MAXFACEVERTS+1)+j;
-                ce.flags = CE_START | CE_END | (e1!=j ? CE_FLIP : 0);
+                ce.index = i*(Face_MaxVerts+1)+j;
+                ce.flags = CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0);
                 ce.next = -1;
 
                 bool insert = true;
@@ -1136,17 +1139,17 @@ void gencubeedges(cube &c, const ivec &co, int size)
                     while(cur >= 0)
                     {
                         cubeedge &p = cubeedges[cur];
-                        if(p.flags&CE_DUP ?
+                        if(p.flags&CubeEdge_Dup ?
                             ce.offset>=p.offset && ce.offset+ce.size<=p.offset+p.size :
                             ce.offset==p.offset && ce.size==p.size)
                         {
-                            p.flags |= CE_DUP;
+                            p.flags |= CubeEdge_Dup;
                             insert = false;
                             break;
                         }
                         else if(ce.offset >= p.offset)
                         {
-                            if(ce.offset == p.offset+p.size) ce.flags &= ~CE_START;
+                            if(ce.offset == p.offset+p.size) ce.flags &= ~CubeEdge_Start;
                             prev = cur;
                             cur = p.next;
                         }
@@ -1158,7 +1161,7 @@ void gencubeedges(cube &c, const ivec &co, int size)
                         while(cur >= 0)
                         {
                             cubeedge &p = cubeedges[cur];
-                            if(ce.offset+ce.size==p.offset) { ce.flags &= ~CE_END; break; }
+                            if(ce.offset+ce.size==p.offset) { ce.flags &= ~CubeEdge_End; break; }
                             cur = p.next;
                         }
                         if(prev>=0) cubeedges[prev].next = cubeedges.length();
@@ -1200,9 +1203,9 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
     {
         if(vismask&(1<<i) && (vis = visibletris(c, i, co, size)))
         {
-            vec pos[MAXFACEVERTS];
+            vec pos[Face_MaxVerts];
             vertinfo *verts = NULL;
-            int numverts = c.ext ? c.ext->surfaces[i].numverts&MAXFACEVERTS : 0, convex = 0;
+            int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0, convex = 0;
             if(numverts)
             {
                 verts = c.ext->verts() + c.ext->surfaces[i].verts;
@@ -1228,20 +1231,20 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
 
             VSlot &vslot = lookupvslot(c.texture[i], true),
                   *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, true) : NULL;
-            ushort envmap = vslot.slot->shader->type&SHADER_ENVMAP ? (vslot.slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size)) : EMID_NONE,
-                   envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size)) : EMID_NONE;
-            while(tj >= 0 && tjoints[tj].edge < i*(MAXFACEVERTS+1)) tj = tjoints[tj].next;
-            int hastj = tj >= 0 && tjoints[tj].edge < (i+1)*(MAXFACEVERTS+1) ? tj : -1;
-            int grassy = vslot.slot->grass && i!=O_BOTTOM ? (vis!=3 || convex ? 1 : 2) : 0;
+            ushort envmap = vslot.slot->shader->type&SHADER_ENVMAP ? (vslot.slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size)) : EnvmapID_None,
+                   envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size)) : EnvmapID_None;
+            while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
+            int hastj = tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1) ? tj : -1;
+            int grassy = vslot.slot->grass && i!=Orient_Bottom ? (vis!=3 || convex ? 1 : 2) : 0;
             if(!c.ext)
                 addcubeverts(vslot, i, size, pos, convex, c.texture[i], NULL, numverts, hastj, envmap, grassy, (c.material&Mat_Alpha)!=0);
             else
             {
                 const surfaceinfo &surf = c.ext->surfaces[i];
-                if(!surf.numverts || surf.numverts&LAYER_TOP)
-                    addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, envmap, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&LAYER_BLEND);
-                if(surf.numverts&LAYER_BOTTOM)
-                    addcubeverts(layer ? *layer : vslot, i, size, pos, convex, vslot.layer, verts, numverts, hastj, envmap2, 0, false, surf.numverts&LAYER_TOP ? LAYER_BOTTOM : LAYER_TOP);
+                if(!surf.numverts || surf.numverts&BlendLayer_Top)
+                    addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, envmap, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&BlendLayer_Blend);
+                if(surf.numverts&BlendLayer_Bottom)
+                    addcubeverts(layer ? *layer : vslot, i, size, pos, convex, vslot.layer, verts, numverts, hastj, envmap2, 0, false, surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top);
             }
         }
     }
@@ -1259,8 +1262,8 @@ vtxarray *newva(const ivec &o, int size)
     va->parent = NULL;
     va->o = o;
     va->size = size;
-    va->curvfc = VFC_NOT_VISIBLE;
-    va->occluded = OCCLUDE_NOTHING;
+    va->curvfc = ViewFrustumCull_NotVisible;
+    va->occluded = Occlude_Nothing;
     va->query = NULL;
     va->bbmin = va->alphamin = va->refractmin = va->skymin = ivec(-1, -1, -1);
     va->bbmax = va->alphamax = va->refractmax = va->skymax = ivec(-1, -1, -1);
@@ -1430,41 +1433,41 @@ int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
         if(c.merged&(1<<i))
         {
             surfaceinfo &surf = c.ext->surfaces[i];
-            int numverts = surf.numverts&MAXFACEVERTS;
+            int numverts = surf.numverts&Face_MaxVerts;
             if(!numverts)
             {
-                if(minlevel < 0) vahasmerges |= MERGE_PART;
+                if(minlevel < 0) vahasmerges |= Merge_Part;
                 continue;
             }
             mergedface mf;
             mf.orient = i;
             mf.mat = c.material;
             mf.tex = c.texture[i];
-            mf.envmap = EMID_NONE;
+            mf.envmap = EnvmapID_None;
             mf.numverts = surf.numverts;
             mf.verts = c.ext->verts() + surf.verts;
             mf.tjoints = -1;
-            int level = calcmergedsize(i, co, size, mf.verts, mf.numverts&MAXFACEVERTS);
+            int level = calcmergedsize(i, co, size, mf.verts, mf.numverts&Face_MaxVerts);
             if(level > minlevel)
             {
                 maxlevel = max(maxlevel, level);
 
-                while(tj >= 0 && tjoints[tj].edge < i*(MAXFACEVERTS+1)) tj = tjoints[tj].next;
-                if(tj >= 0 && tjoints[tj].edge < (i+1)*(MAXFACEVERTS+1)) mf.tjoints = tj;
+                while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
+                if(tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1)) mf.tjoints = tj;
 
                 VSlot &vslot = lookupvslot(mf.tex, true),
                       *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, true) : NULL;
                 if(vslot.slot->shader->type&SHADER_ENVMAP)
-                    mf.envmap = vslot.slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size);
-                ushort envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EMID_CUSTOM : closestenvmap(i, co, size)) : EMID_NONE;
+                    mf.envmap = vslot.slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size);
+                ushort envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size)) : EnvmapID_None;
 
-                if(surf.numverts&LAYER_TOP) vamerges[level].add(mf);
-                if(surf.numverts&LAYER_BOTTOM)
+                if(surf.numverts&BlendLayer_Top) vamerges[level].add(mf);
+                if(surf.numverts&BlendLayer_Bottom)
                 {
                     mf.tex = vslot.layer;
                     mf.envmap = envmap2;
-                    mf.numverts &= ~LAYER_BLEND;
-                    mf.numverts |= surf.numverts&LAYER_TOP ? LAYER_BOTTOM : LAYER_TOP;
+                    mf.numverts &= ~BlendLayer_Blend;
+                    mf.numverts |= surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top;
                     vamerges[level].add(mf);
                 }
             }
@@ -1473,14 +1476,14 @@ int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
     if(maxlevel >= 0)
     {
         vamergemax = max(vamergemax, maxlevel);
-        vahasmerges |= MERGE_ORIGIN;
+        vahasmerges |= Merge_Origin;
     }
     return maxlevel;
 }
 
 int findmergedfaces(cube &c, const ivec &co, int size, int csi, int minlevel)
 {
-    if(c.ext && c.ext->va && !(c.ext->va->hasmerges&MERGE_ORIGIN)) return c.ext->va->mergelevel;
+    if(c.ext && c.ext->va && !(c.ext->va->hasmerges&Merge_Origin)) return c.ext->va->mergelevel;
     else if(c.children)
     {
         int maxlevel = -1;
@@ -1501,27 +1504,27 @@ void addmergedverts(int level, const ivec &o)
     vector<mergedface> &mfl = vamerges[level];
     if(mfl.empty()) return;
     vec vo(ivec(o).mask(~0xFFF));
-    vec pos[MAXFACEVERTS];
+    vec pos[Face_MaxVerts];
     for(int i = 0; i < mfl.length(); i++)
     {
         mergedface &mf = mfl[i];
-        int numverts = mf.numverts&MAXFACEVERTS;
+        int numverts = mf.numverts&Face_MaxVerts;
         for(int i = 0; i < numverts; ++i)
         {
             vertinfo &v = mf.verts[i];
             pos[i] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
         }
         VSlot &vslot = lookupvslot(mf.tex, true);
-        int grassy = vslot.slot->grass && mf.orient!=O_BOTTOM && mf.numverts&LAYER_TOP ? 2 : 0;
-        addcubeverts(vslot, mf.orient, 1<<level, pos, 0, mf.tex, mf.verts, numverts, mf.tjoints, mf.envmap, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&LAYER_BLEND);
-        vahasmerges |= MERGE_USE;
+        int grassy = vslot.slot->grass && mf.orient!=Orient_Bottom && mf.numverts&BlendLayer_Top ? 2 : 0;
+        addcubeverts(vslot, mf.orient, 1<<level, pos, 0, mf.tex, mf.verts, numverts, mf.tjoints, mf.envmap, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&BlendLayer_Blend);
+        vahasmerges |= Merge_Use;
     }
     mfl.setsize(0);
 }
 
 static inline void finddecals(vtxarray *va)
 {
-    if(va->hasmerges&(MERGE_ORIGIN|MERGE_PART))
+    if(va->hasmerges&(Merge_Origin|Merge_Part))
     {
         for(int i = 0; i < va->decals.length(); i++)
         {
@@ -1666,12 +1669,12 @@ static inline int setcubevisibility(cube &c, const ivec &co, int size)
             vismask |= 1<<i;
             if(c.merged&(1<<i))
             {
-                if(c.ext && c.ext->surfaces[i].numverts&MAXFACEVERTS) numvis++;
+                if(c.ext && c.ext->surfaces[i].numverts&Face_MaxVerts) numvis++;
             }
             else
             {
                 numvis++;
-                if(c.texture[i] != DEFAULT_SKY && !(c.ext && c.ext->surfaces[i].numverts&MAXFACEVERTS)) checkmask |= 1<<i;
+                if(c.texture[i] != DEFAULT_SKY && !(c.ext && c.ext->surfaces[i].numverts&Face_MaxVerts)) checkmask |= 1<<i;
             }
         }
         if(facemask&2) collidemask |= 1<<i;
@@ -1698,7 +1701,7 @@ int updateva(cube *c, const ivec &co, int size, int csi)
         if(c[i].ext && c[i].ext->va)
         {
             varoot.add(c[i].ext->va);
-            if(c[i].ext->va->hasmerges&MERGE_ORIGIN) findmergedfaces(c[i], o, size, csi, csi);
+            if(c[i].ext->va->hasmerges&Merge_Origin) findmergedfaces(c[i], o, size, csi, csi);
         }
         else
         {
@@ -1726,7 +1729,7 @@ int updateva(cube *c, const ivec &co, int size, int csi)
                     if(vamergemax > size)
                     {
                         cmergemax = max(cmergemax, vamergemax);
-                        chasmerges |= vahasmerges&~MERGE_USE;
+                        chasmerges |= vahasmerges&~Merge_Use;
                     }
                     continue;
                 }
@@ -1756,7 +1759,7 @@ void addtjoint(const edgegroup &g, const cubeedge &e, int offset)
     while(cur >= 0)
     {
         tjoint &o = tjoints[cur];
-        if(tj.edge < o.edge || (tj.edge==o.edge && (e.flags&CE_FLIP ? tj.offset > o.offset : tj.offset < o.offset))) break;
+        if(tj.edge < o.edge || (tj.edge==o.edge && (e.flags&CubeEdge_Flip ? tj.offset > o.offset : tj.offset < o.offset))) break;
         prev = cur;
         cur = o.next;
     }
@@ -1784,18 +1787,18 @@ void findtjoints(int cur, const edgegroup &g)
             else
             {
                 prevactive = curactive;
-                if(!(a.flags&CE_DUP))
+                if(!(a.flags&CubeEdge_Dup))
                 {
-                    if(e.flags&CE_START && e.offset > a.offset && e.offset < a.offset+a.size)
+                    if(e.flags&CubeEdge_Start && e.offset > a.offset && e.offset < a.offset+a.size)
                         addtjoint(g, a, e.offset);
-                    if(e.flags&CE_END && e.offset+e.size > a.offset && e.offset+e.size < a.offset+a.size)
+                    if(e.flags&CubeEdge_End && e.offset+e.size > a.offset && e.offset+e.size < a.offset+a.size)
                         addtjoint(g, a, e.offset+e.size);
                 }
-                if(!(e.flags&CE_DUP))
+                if(!(e.flags&CubeEdge_Dup))
                 {
-                    if(a.flags&CE_START && a.offset > e.offset && a.offset < e.offset+e.size)
+                    if(a.flags&CubeEdge_Start && a.offset > e.offset && a.offset < e.offset+e.size)
                         addtjoint(g, e, a.offset);
-                    if(a.flags&CE_END && a.offset+a.size > e.offset && a.offset+a.size < e.offset+e.size)
+                    if(a.flags&CubeEdge_End && a.offset+a.size > e.offset && a.offset+a.size < e.offset+e.size)
                         addtjoint(g, e, a.offset+a.size);
                 }
             }

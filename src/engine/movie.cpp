@@ -54,8 +54,12 @@ struct aviwriter
 
     stream::offset fileframesoffset, fileextframesoffset, filevideooffset, filesoundoffset, superindexvideooffset, superindexsoundoffset;
 
-    enum { MAX_CHUNK_DEPTH = 16, MAX_SUPER_INDEX = 1024 };
-    stream::offset chunkoffsets[MAX_CHUNK_DEPTH];
+    enum
+    {
+        AVI_MaxChunkDepth = 16,
+        AVI_MaxSuperIndex = 1024
+    };
+    stream::offset chunkoffsets[AVI_MaxChunkDepth];
     int chunkdepth;
 
     aviindexentry &addindex(int frame, int type, int size)
@@ -283,7 +287,7 @@ struct aviwriter
         f->putlil<uint>(0); // colorsrequired
         endchunk(); // strf
 
-        startchunk("indx", 24 + 16*MAX_SUPER_INDEX);
+        startchunk("indx", 24 + 16*AVI_MaxSuperIndex);
         superindexvideooffset = f->tell();
         f->putlil<ushort>(4); // longs per entry
         f->putlil<ushort>(0); // index of indexes
@@ -292,7 +296,7 @@ struct aviwriter
         f->putlil<uint>(0); // reserved 1
         f->putlil<uint>(0); // reserved 2
         f->putlil<uint>(0); // reserved 3
-        for(int i = 0; i < MAX_SUPER_INDEX; ++i)
+        for(int i = 0; i < AVI_MaxSuperIndex; ++i)
         {
             f->putlil<uint>(0); // offset low
             f->putlil<uint>(0); // offset high
@@ -362,7 +366,7 @@ struct aviwriter
             f->putlil<ushort>(0); // size
             endchunk(); //strf
 
-            startchunk("indx", 24 + 16*MAX_SUPER_INDEX);
+            startchunk("indx", 24 + 16*AVI_MaxSuperIndex);
             superindexsoundoffset = f->tell();
             f->putlil<ushort>(4); // longs per entry
             f->putlil<ushort>(0); // index of indexes
@@ -371,7 +375,7 @@ struct aviwriter
             f->putlil<uint>(0); // reserved 1
             f->putlil<uint>(0); // reserved 2
             f->putlil<uint>(0); // reserved 3
-            for(int i = 0; i < MAX_SUPER_INDEX; ++i)
+            for(int i = 0; i < AVI_MaxSuperIndex; ++i)
             {
                 f->putlil<uint>(0); // offset low
                 f->putlil<uint>(0); // offset high
@@ -634,9 +638,9 @@ struct aviwriter
 
     enum
     {
-        VID_RGB = 0,
-        VID_YUV,
-        VID_YUV420
+        Video_RGB = 0,
+        Video_YUV,
+        Video_YUV420
     };
 
     void flushsegment()
@@ -723,7 +727,7 @@ struct aviwriter
     {
         if(segments.length())
         {
-            if(segments.length() >= MAX_SUPER_INDEX) return false;
+            if(segments.length() >= AVI_MaxSuperIndex) return false;
             flushsegment();
             listchunk("RIFF", "AVIX");
         }
@@ -738,11 +742,11 @@ struct aviwriter
 
         switch(format)
         {
-            case VID_RGB:
+            case Video_RGB:
                 if(srcw != videow || srch != videoh) scaleyuv(pixels, srcw, srch);
                 else encodeyuv(pixels);
                 break;
-            case VID_YUV:
+            case Video_YUV:
                 compressyuv(pixels);
                 break;
         }
@@ -752,7 +756,7 @@ struct aviwriter
 
         while(videoframes <= frame) addindex(videoframes++, 0, framesize);
 
-        writechunk("00dc", format == VID_YUV420 ? pixels : yuv, framesize);
+        writechunk("00dc", format == Video_YUV420 ? pixels : yuv, framesize);
 
         return true;
     }
@@ -767,7 +771,13 @@ FVARP(movieminquality, 0, 0, 1);
 
 namespace recorder
 {
-    static enum { REC_OK = 0, REC_USERHALT, REC_TOOSLOW, REC_FILERROR } state = REC_OK;
+    static enum
+    {
+        Rec_OK = 0,
+        Rec_UserHalt,
+        Rec_TooSlow,
+        Rec_FileError
+    } state = Rec_OK;
 
     static aviwriter *file = NULL;
     static int starttime = 0;
@@ -776,7 +786,11 @@ namespace recorder
     static int statsindex = 0;
     static uint dps = 0; // dropped frames per sample
 
-    enum { MAXSOUNDBUFFERS = 128 }; // sounds queue up until there is a video frame, so at low fps you'll need a bigger queue
+    enum
+    {
+        Rec_MaxSoundBuffers = 128,
+        Rec_MaxVideoBuffers = 2
+    }; // sounds queue up until there is a video frame, so at low fps you'll need a bigger queue
     struct soundbuffer
     {
         uchar *sound;
@@ -801,10 +815,9 @@ namespace recorder
 
         void cleanup() { DELETEA(sound); maxsize = 0; }
     };
-    static queue<soundbuffer, MAXSOUNDBUFFERS> soundbuffers;
+    static queue<soundbuffer, Rec_MaxSoundBuffers> soundbuffers;
     static SDL_mutex *soundlock = NULL;
 
-    enum { MAXVIDEOBUFFERS = 2 }; // double buffer
     struct videobuffer
     {
         uchar *video;
@@ -826,7 +839,7 @@ namespace recorder
 
         void cleanup() { DELETEA(video); }
     };
-    static queue<videobuffer, MAXVIDEOBUFFERS> videobuffers;
+    static queue<videobuffer, Rec_MaxVideoBuffers> videobuffers;
     static uint lastframe = ~0U;
 
     static GLuint scalefb = 0, scaletex[2] = { 0, 0 };
@@ -856,8 +869,8 @@ namespace recorder
             SDL_LockMutex(videolock);
             for(; numvid > 0; numvid--) videobuffers.remove();
             SDL_CondSignal(shouldread);
-            while(videobuffers.empty() && state == REC_OK) SDL_CondWait(shouldencode, videolock);
-            if(state != REC_OK) { SDL_UnlockMutex(videolock); break; }
+            while(videobuffers.empty() && state == Rec_OK) SDL_CondWait(shouldencode, videolock);
+            if(state != Rec_OK) { SDL_UnlockMutex(videolock); break; }
             videobuffer &m = videobuffers.removing();
             numvid++;
             SDL_UnlockMutex(videolock);
@@ -876,7 +889,7 @@ namespace recorder
                 for(int i = 0; i < numsound; ++i)
                 {
                     soundbuffer &s = soundbuffers.removing(i);
-                    if(!file->writesound(s.sound, s.size, s.frame)) state = REC_FILERROR;
+                    if(!file->writesound(s.sound, s.size, s.frame)) state = Rec_FileError;
                 }
             }
 
@@ -889,8 +902,8 @@ namespace recorder
                 statsindex = (statsindex+1)%file->videofps;
             }
             //printf("frame %d->%d (%d dps): sound = %d bytes\n", file->videoframes, nextframenum, dps, m.soundlength);
-            if(calcquality() < movieminquality) state = REC_TOOSLOW;
-            else if(!file->writevideoframe(m.video, m.w, m.h, m.format, m.frame)) state = REC_FILERROR;
+            if(calcquality() < movieminquality) state = Rec_TooSlow;
+            else if(!file->writevideoframe(m.video, m.w, m.h, m.format, m.frame)) state = Rec_FileError;
 
             m.frame = ~0U;
         }
@@ -903,9 +916,9 @@ namespace recorder
         SDL_LockMutex(soundlock);
         if(soundbuffers.full())
         {
-            if(movieminquality >= 1) state = REC_TOOSLOW;
+            if(movieminquality >= 1) state = Rec_TooSlow;
         }
-        else if(state == REC_OK)
+        else if(state == Rec_OK)
         {
             uint nextframe = (max(gettime() - starttime, 0)*file->videofps)/1000;
             soundbuffer &s = soundbuffers.add();
@@ -950,7 +963,7 @@ namespace recorder
 
         lastframe = ~0U;
         videobuffers.clear();
-        for(int i = 0; i < MAXVIDEOBUFFERS; ++i)
+        for(int i = 0; i < Rec_MaxVideoBuffers; ++i)
         {
             uint w = screenw, h = screenw;
             videobuffers.data[i].init(w, h, 4);
@@ -979,7 +992,7 @@ namespace recorder
     void stop()
     {
         if(!file) return;
-        if(state == REC_OK) state = REC_USERHALT;
+        if(state == Rec_OK) state = Rec_UserHalt;
         if(file->soundfrequency > 0) Mix_SetPostMix(NULL, NULL);
 
         SDL_LockMutex(videolock); // wakeup thread enough to kill it
@@ -990,11 +1003,11 @@ namespace recorder
 
         cleanup();
 
-        for(int i = 0; i < MAXVIDEOBUFFERS; ++i)
+        for(int i = 0; i < Rec_MaxVideoBuffers; ++i)
         {
             videobuffers.data[i].cleanup();
         }
-        for(int i = 0; i < MAXSOUNDBUFFERS; ++i)
+        for(int i = 0; i < Rec_MaxSoundBuffers; ++i)
         {
             soundbuffers.data[i].cleanup();
         }
@@ -1012,7 +1025,7 @@ namespace recorder
         conoutf("movie recording halted: %s, %d frames", mesgs[state], file->videoframes);
 
         DELETEP(file);
-        state = REC_OK;
+        state = Rec_OK;
     }
 
     void readbuffer(videobuffer &m, uint nextframe)
@@ -1022,7 +1035,7 @@ namespace recorder
         uint w = screenw, h = screenh;
         if(usefbo) { w = file->videow; h = file->videoh; }
         if(w != m.w || h != m.h) m.init(w, h, 4);
-        m.format = aviwriter::VID_RGB;
+        m.format = aviwriter::Video_RGB;
         m.frame = nextframe;
 
         glPixelStorei(GL_PACK_ALIGNMENT, texalign(m.video, m.w, 4));
@@ -1076,7 +1089,7 @@ namespace recorder
                     glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, scaletex[1], 0);
                     glViewport(0, 0, dw, dh);
                     glBindTexture(GL_TEXTURE_RECTANGLE, scaletex[0]);
-                    if(dw == m.w && dh == m.h && !accelyuv) { SETSHADER(movieyuv); m.format = aviwriter::VID_YUV; }
+                    if(dw == m.w && dh == m.h && !accelyuv) { SETSHADER(movieyuv); m.format = aviwriter::Video_YUV; }
                     else SETSHADER(moviergb);
                     screenquad(tw, th);
                     tw = dw;
@@ -1098,7 +1111,7 @@ namespace recorder
                 glReadPixels(m.w/4, 0, m.w/8, m.h/2, GL_BGRA, GL_UNSIGNED_BYTE, &m.video[planesize]);
                 glPixelStorei(GL_PACK_ALIGNMENT, texalign(&m.video[planesize + planesize/4], m.w/8, 4));
                 glReadPixels(m.w/4, m.h/2, m.w/8, m.h/2, GL_BGRA, GL_UNSIGNED_BYTE, &m.video[planesize + planesize/4]);
-                m.format = aviwriter::VID_YUV420;
+                m.format = aviwriter::Video_YUV420;
             }
             else
             {
@@ -1115,7 +1128,7 @@ namespace recorder
     bool readbuffer()
     {
         if(!file) return false;
-        if(state != REC_OK)
+        if(state != Rec_OK)
         {
             stop();
             return false;

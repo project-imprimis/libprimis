@@ -71,7 +71,7 @@ struct flarerenderer : partrenderer
     void addflare(vec &o, uchar r, uchar g, uchar b, bool sun, bool sparkle)
     {
         //frustrum + fog check
-        if(isvisiblesphere(0.0f, o) > (sun?VFC_FOGGED:VFC_FULL_VISIBLE)) return;
+        if(isvisiblesphere(0.0f, o) > (sun?ViewFrustumCull_Fogged:ViewFrustumCull_FullyVisible)) return;
         //find closest point between camera line of sight and flare pos
         vec flaredir = vec(o).sub(camera1->o);
         vec center = vec(camdir).mul(flaredir.dot(camdir)).add(camera1->o);

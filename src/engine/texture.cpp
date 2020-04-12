@@ -3444,7 +3444,7 @@ void genenvmaps()
 
 ushort closestenvmap(const vec &o)
 {
-    ushort minemid = EMID_SKY;
+    ushort minemid = EnvmapID_Sky;
     float mindist = 1e16f;
     for(int i = 0; i < envmaps.length(); i++)
     {
@@ -3465,7 +3465,7 @@ ushort closestenvmap(const vec &o)
         }
         if(dist < mindist)
         {
-            minemid = EMID_RESERVED + i;
+            minemid = EnvmapID_Reserved + i;
             mindist = dist;
         }
     }
@@ -3501,9 +3501,9 @@ GLuint lookupenvmap(Slot &slot)
 
 GLuint lookupenvmap(ushort emid)
 {
-    if(emid==EMID_SKY || emid==EMID_CUSTOM || drawtex) return lookupskyenvmap();
-    if(emid==EMID_NONE || !envmaps.inrange(emid-EMID_RESERVED)) return 0;
-    GLuint tex = envmaps[emid-EMID_RESERVED].tex;
+    if(emid==EnvmapID_Sky || emid==EnvmapID_Custom || drawtex) return lookupskyenvmap();
+    if(emid==EnvmapID_None || !envmaps.inrange(emid-EnvmapID_Reserved)) return 0;
+    GLuint tex = envmaps[emid-EnvmapID_Reserved].tex;
     return tex ? tex : lookupskyenvmap();
 }
 

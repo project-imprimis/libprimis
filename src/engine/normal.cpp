@@ -216,8 +216,8 @@ void addnormals(cube &c, const ivec &o, int size)
         return;
     }
 
-    vec pos[MAXFACEVERTS];
-    int norms[MAXFACEVERTS];
+    vec pos[Face_MaxVerts];
+    int norms[Face_MaxVerts];
     int tj = usetnormals && c.ext ? c.ext->tjoints : -1, vis;
     for(int i = 0; i < 6; ++i)
     {
@@ -230,7 +230,7 @@ void addnormals(cube &c, const ivec &o, int size)
             }
 
             vec planes[2];
-            int numverts = c.ext ? c.ext->surfaces[i].numverts&MAXFACEVERTS : 0, convex = 0, numplanes = 0;
+            int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0, convex = 0, numplanes = 0;
             if(numverts)
             {
                 vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
@@ -306,10 +306,10 @@ void addnormals(cube &c, const ivec &o, int size)
                 for(int k = 3; k < numverts; k++) norms[k] = addnormal(pos[k], smooth, planes[1]);
             }
 
-            while(tj >= 0 && tjoints[tj].edge < i*(MAXFACEVERTS+1)) tj = tjoints[tj].next;
-            while(tj >= 0 && tjoints[tj].edge < (i+1)*(MAXFACEVERTS+1))
+            while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
+            while(tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1))
             {
-                int edge = tjoints[tj].edge, e1 = edge%(MAXFACEVERTS+1), e2 = (e1+1)%numverts;
+                int edge = tjoints[tj].edge, e1 = edge%(Face_MaxVerts+1), e2 = (e1+1)%numverts;
                 const vec &v1 = pos[e1], &v2 = pos[e2];
                 ivec d(vec(v2).sub(v1).mul(8));
                 int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);

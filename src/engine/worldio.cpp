@@ -287,7 +287,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                     {
                         surfaceinfo surf = c[i].ext->surfaces[j];
                         vertinfo *verts = c[i].ext->verts() + surf.verts;
-                        int layerverts = surf.numverts&MAXFACEVERTS, numverts = surf.totalverts(),
+                        int layerverts = surf.numverts&Face_MaxVerts, numverts = surf.totalverts(),
                             vertmask = 0, vertorder = 0,
                             dim = DIMENSION(j), vc = C[dim], vr = R[dim];
                         if(numverts)
@@ -431,7 +431,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 vertinfo *verts = c.ext->verts() + offset;
                 offset += numverts;
                 ivec v[4], n, vo = ivec(co).mask(0xFFF).shl(3);
-                int layerverts = surf.numverts&MAXFACEVERTS, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
+                int layerverts = surf.numverts&Face_MaxVerts, dim = DIMENSION(i), vc = C[dim], vr = R[dim], bias = 0;
                 genfaceverts(c, i, v);
                 bool hasxyz = (vertmask&0x04)!=0, hasuv = mapversion <= 0 && (vertmask&0x40)!=0, hasnorm = (vertmask&0x80)!=0;
                 if(hasxyz)

@@ -1581,12 +1581,12 @@ struct poly
     cube *c;
     int numverts;
     bool merged;
-    pvert verts[MAXFACEVERTS];
+    pvert verts[Face_MaxVerts];
 };
 
 bool clippoly(poly &p, const facebounds &b)
 {
-    pvert verts1[MAXFACEVERTS+4], verts2[MAXFACEVERTS+4];
+    pvert verts1[Face_MaxVerts+4], verts2[Face_MaxVerts+4];
     int numverts1 = 0, numverts2 = 0, px = p.verts[p.numverts-1].x, py = p.verts[p.numverts-1].y;
     for(int i = 0; i < p.numverts; ++i)
     {
@@ -1642,7 +1642,7 @@ bool clippoly(poly &p, const facebounds &b)
         py = y;
     }
     if(numverts2 < 3) return false;
-    if(numverts2 > MAXFACEVERTS) return false;
+    if(numverts2 > Face_MaxVerts) return false;
     memcpy(p.verts, verts2, numverts2*sizeof(pvert));
     p.numverts = numverts2;
     return true;
@@ -1781,7 +1781,7 @@ bool mergepolys(int orient, hashset<plink> &links, vector<plink *> &queue, int o
      *  |  P |
      *  b----a
      */
-    pvert verts[2*MAXFACEVERTS];
+    pvert verts[2*Face_MaxVerts];
     int numverts = 0;
     int index = pe+2; // starts at A = T+1, ends at F = T+p.numverts
     for(int i = 0; i < p.numverts-1; ++i)
@@ -1833,7 +1833,7 @@ bool mergepolys(int orient, hashset<plink> &links, vector<plink *> &queue, int o
         numverts--;
     }
 
-    if(numverts > MAXFACEVERTS)
+    if(numverts > Face_MaxVerts)
     {
         return false;
     }
@@ -1870,7 +1870,7 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
         return;
     }
     surfaceinfo surf = BRIGHT_SURFACE;
-    vertinfo verts[MAXFACEVERTS];
+    vertinfo verts[Face_MaxVerts];
     surf.numverts |= p.numverts;
     int dim = DIMENSION(orient), coord = DIM_COORD(orient), c = C[dim], r = R[dim];
     for(int k = 0; k < p.numverts; ++k)
@@ -1886,7 +1886,7 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
     if(cu.ext)
     {
         const surfaceinfo &oldsurf = cu.ext->surfaces[orient];
-        int numverts = oldsurf.numverts&MAXFACEVERTS;
+        int numverts = oldsurf.numverts&Face_MaxVerts;
         if(numverts == p.numverts)
         {
             ivec v0 = verts[0].getxyz();
@@ -2076,7 +2076,7 @@ static void invalidatemerges(cube &c)
     {
         if(c.ext->va)
         {
-            if(!(c.ext->va->hasmerges&(MERGE_PART | MERGE_ORIGIN))) return;
+            if(!(c.ext->va->hasmerges&(Merge_Part | Merge_Origin))) return;
             destroyva(c.ext->va);
             c.ext->va = NULL;
         }
