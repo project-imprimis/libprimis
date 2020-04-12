@@ -106,10 +106,10 @@ static inline int BITSCAN(uint mask)
 #endif
 #endif
 
-#define RANDOM_INT(x) ((int)(randomMT()&0x7FFFFFFF)%(x))
-#define RANDOM_FLOAT(x) (float((randomMT()&0x7FFFFFFF)*double(x)/double(0x7FFFFFFF)))
+#define RANDOM_INT(x) (rand()%(x))
+#define RANDOM_FLOAT(x) (float(rand()*double(x)/double(0x7FFFFFFF)))
 //1103515245+12345 are magic constants for LCG psuedorandom generator
-#define DET_RND(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
+#define DET_RND(s, x) (int(((uint(s)*1103515245+12345)>>16)%(x)))
 
 #define DELETEP(p) if(p) { delete   p; p = 0; }
 #define DELETEA(p) if(p) { delete[] p; p = 0; }
@@ -1401,8 +1401,6 @@ extern char *loadfile(const char *fn, size_t *size, bool utf8 = true);
 extern bool listdir(const char *dir, bool rel, const char *ext, vector<char *> &files);
 extern int listfiles(const char *dir, const char *ext, vector<char *> &files);
 extern int listzipfiles(const char *dir, const char *ext, vector<char *> &files);
-extern void seedMT(uint seed);
-extern uint randomMT();
 
 extern void putint(ucharbuf &p, int n);
 extern void putint(packetbuf &p, int n);

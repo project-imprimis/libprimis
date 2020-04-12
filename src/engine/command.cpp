@@ -4229,7 +4229,7 @@ ICOMMAND(rndstr, "i", (int *len),
     char *s = newstring(n);
     for(int i = 0; i < n;)
     {
-        uint r = randomMT();
+        int r = rand();
         for(int j = min(i + 4, n); i < j; i++)
         {
             s[i] = (r%255) + 1;
