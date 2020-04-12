@@ -169,14 +169,14 @@ namespace aiman
         {
             owner->bots.add(ci);
         }
-        ci->state.skill = skill <= 0 ? RANDOM_INT(50) + 51 : clamp(skill, 1, 101);
+        ci->state.skill = skill <= 0 ? randomint(50) + 51 : clamp(skill, 1, 101);
         clients.add(ci);
         ci->state.lasttimeplayed = lastmillis;
         copystring(ci->name, "bot", MAXNAMELEN+1);
         ci->state.state = ClientState_Dead;
         ci->team = team;
-        ci->playermodel = RANDOM_INT(128);
-        ci->playercolor = RANDOM_INT(0x8000);
+        ci->playermodel = randomint(128);
+        ci->playercolor = randomint(0x8000);
         ci->aireinit = 2;
         ci->connected = true;
         dorefresh = true;

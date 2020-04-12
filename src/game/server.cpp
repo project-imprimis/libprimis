@@ -2216,7 +2216,7 @@ namespace server
         votecount *best = NULL;
         for(int i = 0; i < votes.length(); i++)
         {
-            if(!best || votes[i].count > best->count || (votes[i].count == best->count && RANDOM_INT(2)))
+            if(!best || votes[i].count > best->count || (votes[i].count == best->count && randomint(2)))
             {
                 best = &votes[i];
             }
@@ -2762,7 +2762,7 @@ namespace server
         clientinfo *ci = getinfo(n);
         ci->clientnum = ci->ownernum = n;
         ci->connectmillis = totalmillis;
-        ci->sessionid = (RANDOM_INT(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
+        ci->sessionid = (randomint(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
         ci->local = true;
 
         connects.add(ci);
@@ -2780,7 +2780,7 @@ namespace server
         clientinfo *ci = getinfo(n);
         ci->clientnum = ci->ownernum = n;
         ci->connectmillis = totalmillis;
-        ci->sessionid = (RANDOM_INT(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
+        ci->sessionid = (randomint(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
 
         connects.add(ci);
         if(modecheck(gamemode, Mode_LocalOnly)) return Discon_Local;

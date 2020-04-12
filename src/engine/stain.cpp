@@ -460,7 +460,7 @@ struct stainrenderer
         staintangent = vec(dir.z, -dir.x, dir.y);
         staintangent.project(dir);
 #endif
-        if(flags&SF_ROTATE) staintangent.rotate(sincos360[RANDOM_INT(360)], dir);
+        if(flags&SF_ROTATE) staintangent.rotate(sincos360[randomint(360)], dir);
         staintangent.normalize();
         stainbitangent.cross(staintangent, dir);
         if(flags&SF_RND4)

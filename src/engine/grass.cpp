@@ -228,7 +228,7 @@ void generategrass()
     {
         for(int i = 0; i < NUMGRASSOFFSETS; ++i)
         {
-            grassoffsets[i] = RANDOM_INT(0x1000000)/float(0x1000000);
+            grassoffsets[i] = randomint(0x1000000)/float(0x1000000);
         }
     }
 

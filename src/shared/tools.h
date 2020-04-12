@@ -106,8 +106,14 @@ static inline int BITSCAN(uint mask)
 #endif
 #endif
 
-#define RANDOM_INT(x) (rand()%(x))
-#define RANDOM_FLOAT(x) (float(rand()*double(x)/double(0x7FFFFFFF)))
+static inline int randomint(int x)
+{
+    return rand()%(x);
+}
+static inline float randomfloat(int x)
+{
+    return (float((rand()*float(x))/float(RAND_MAX)));
+}
 //1103515245+12345 are magic constants for LCG psuedorandom generator
 #define DET_RND(s, x) (int(((uint(s)*1103515245+12345)>>16)%(x)))
 

@@ -213,7 +213,7 @@ void setupao(int w, int h)
     bvec *noise = new bvec[(1<<aonoise)*(1<<aonoise)];
     for(int k = 0; k < (1<<aonoise)*(1<<aonoise); ++k)
     {
-        noise[k] = bvec(vec(RANDOM_FLOAT(2)-1, RANDOM_FLOAT(2)-1, 0).normalize());
+        noise[k] = bvec(vec(randomfloat(2)-1, randomfloat(2)-1, 0).normalize());
     }
     createtexture(aonoisetex, 1<<aonoise, 1<<aonoise, noise, 0, 0, GL_RGB, GL_TEXTURE_2D);
     delete[] noise;

@@ -1370,7 +1370,7 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
     int pick = forceent;
     if(pick<0)
     {
-        int r = RANDOM_INT(10)+1;
+        int r = randomint(10)+1;
         pick = spawncycle;
         for(int i = 0; i < r; ++i)
         {

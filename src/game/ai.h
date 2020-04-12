@@ -246,7 +246,7 @@ namespace ai
             {
                 becareful = dontmove = false;
             }
-            targyaw = RANDOM_INT(360);
+            targyaw = randomint(360);
             targpitch = 0.f;
             tryreset = tryit;
         }

@@ -4222,7 +4222,7 @@ CASECOMMAND(case, "i", int, args[0].getint(), args[i].type == Value_Null || args
 CASECOMMAND(casef, "f", float, args[0].getfloat(), args[i].type == Value_Null || args[i].getfloat() == val);
 CASECOMMAND(cases, "s", const char *, args[0].getstr(), args[i].type == Value_Null || !strcmp(args[i].getstr(), val));
 
-ICOMMAND(rnd, "ii", (int *a, int *b), intret(*a - *b > 0 ? RANDOM_INT(*a - *b) + *b : *b));
+ICOMMAND(rnd, "ii", (int *a, int *b), intret(*a - *b > 0 ? randomint(*a - *b) + *b : *b));
 ICOMMAND(rndstr, "i", (int *len),
 {
     int n = clamp(*len, 0, 10000);

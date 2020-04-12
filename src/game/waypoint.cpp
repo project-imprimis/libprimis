@@ -649,7 +649,7 @@ namespace ai
                 return;
             }
         }
-        a.links[RANDOM_INT(MAXWAYPOINTLINKS)] = n;
+        a.links[randomint(MAXWAYPOINTLINKS)] = n;
     }
 
     string loadedwaypoints = "";

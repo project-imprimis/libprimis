@@ -14,8 +14,8 @@ static void calclightningjitter(int frame)
 {
     for(int i = 0; i < MAXLIGHTNINGSTEPS; ++i)
     {
-        lnjitterx[lnjitterframe][i] = -lnjitterradius + RANDOM_INT(2*lnjitterradius + 1);
-        lnjittery[lnjitterframe][i] = -lnjitterradius + RANDOM_INT(2*lnjitterradius + 1);
+        lnjitterx[lnjitterframe][i] = -lnjitterradius + randomint(2*lnjitterradius + 1);
+        lnjittery[lnjitterframe][i] = -lnjitterradius + randomint(2*lnjitterradius + 1);
     }
 }
 

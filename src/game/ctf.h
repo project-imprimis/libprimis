@@ -838,7 +838,7 @@ struct ctfclientmode : clientmode
         }
         if(!ai::badhealth(d) && !takenflags.empty())
         {
-            int flag = takenflags.length() > 2 ? RANDOM_INT(takenflags.length()) : 0;
+            int flag = takenflags.length() > 2 ? randomint(takenflags.length()) : 0;
             d->ai->switchstate(b, ai::AIState_Pursue, ai::AITravel_Affinity, takenflags[flag]);
             return true;
         }

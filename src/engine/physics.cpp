@@ -2081,9 +2081,9 @@ bool entinmap(dynent *d, bool avoidplayers)        // brute force but effective 
         if(i)
         {
             d->o = orig;
-            d->o.x += (RANDOM_INT(21)-10)*i/5;  // increasing distance
-            d->o.y += (RANDOM_INT(21)-10)*i/5;
-            d->o.z += (RANDOM_INT(21)-10)*i/5;
+            d->o.x += (randomint(21)-10)*i/5;  // increasing distance
+            d->o.y += (randomint(21)-10)*i/5;
+            d->o.z += (randomint(21)-10)*i/5;
         }
 
         if(!collide(d) && !collideinside)
