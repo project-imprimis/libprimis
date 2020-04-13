@@ -519,7 +519,7 @@ void ragdolldata::move(dynent *pl, float ts)
         vert &v = verts[i];
         vec dpos = vec(v.pos).sub(v.oldpos);
         dpos.z -= GRAVITY*ts*ts;
-        if(water) dpos.z += 0.25f*sinf(DET_RND(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
+        if(water) dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
         dpos.mul(pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
         v.oldpos = v.pos;
         v.pos.add(dpos);

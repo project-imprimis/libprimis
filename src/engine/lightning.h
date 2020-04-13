@@ -36,7 +36,7 @@ static void renderlightning(Texture *tex, const vec &o, const vec &d, float sz)
     float len = step.magnitude();
     int numsteps = clamp(int(ceil(len/LIGHTNINGSTEP)), 2, MAXLIGHTNINGSTEPS);
     step.div(numsteps+1);
-    int jitteroffset = DET_RND(int(d.x+d.y+d.z), MAXLIGHTNINGSTEPS);
+    int jitteroffset = detrnd(uint(d.x+d.y+d.z), MAXLIGHTNINGSTEPS);
     vec cur(o), up, right;
     up.orthogonal(step);
     up.normalize();

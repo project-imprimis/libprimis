@@ -115,7 +115,10 @@ static inline float randomfloat(int x)
     return (float((rand()*float(x))/float(RAND_MAX)));
 }
 //1103515245+12345 are magic constants for LCG psuedorandom generator
-#define DET_RND(s, x) (int(((uint(s)*1103515245+12345)>>16)%(x)))
+static inline float detrnd(uint s, int x)
+{
+    return int(((s*1103515245+12345)>>16)%x);
+}
 
 #define DELETEP(p) if(p) { delete   p; p = 0; }
 #define DELETEA(p) if(p) { delete[] p; p = 0; }

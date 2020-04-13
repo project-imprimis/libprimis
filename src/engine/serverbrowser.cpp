@@ -268,7 +268,7 @@ struct pingattempts
 
     void setoffset()
     {
-        offset = 1 + RANDOM_INT(0xFFFFFF);
+        offset = 1 + randomint(0xFFFFFF);
     }
 
     int encodeping(int millis)

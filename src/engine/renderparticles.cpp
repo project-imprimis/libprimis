@@ -498,7 +498,7 @@ struct textrenderer : listrenderer
     void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
     {
         float scale = p->size/80.0f, xoff = -text_width(p->text)/2, yoff = 0;
-        if((type&0xFF)==PT_TEXTUP) { xoff += DET_RND((size_t)p, 100)-50; yoff -= DET_RND((size_t)p, 101); }
+        if((type&0xFF)==PT_TEXTUP) { xoff += detrnd((size_t)p, 100)-50; yoff -= detrnd((size_t)p, 101); }
 
         matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
         m.scale(scale);
