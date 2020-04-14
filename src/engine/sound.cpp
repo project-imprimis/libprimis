@@ -18,7 +18,15 @@ struct soundsample
     soundsample() : name(NULL), chunk(NULL) {}
     ~soundsample() { DELETEA(name); }
 
-    void cleanup() { if(chunk) { Mix_FreeChunk(chunk); chunk = NULL; } }
+    void cleanup()
+    {
+        if(chunk)
+        {
+            Mix_FreeChunk(chunk);
+            chunk = NULL;
+        }
+    }
+
     bool load(const char *dir, bool msg = false);
 };
 
@@ -40,12 +48,20 @@ struct soundconfig
 
     int chooseslot(int flags) const
     {
-        if(flags&Music_NoAlt || numslots <= 1) return slots;
-        if(flags&Music_UseAlt) return slots + 1 + randomint(numslots - 1);
+        if(flags&Music_NoAlt || numslots <= 1)
+        {
+            return slots;
+        }
+        if(flags&Music_UseAlt)
+        {
+            return slots + 1 + randomint(numslots - 1);
+        }
         return slots + randomint(numslots);
     }
 };
 
+//sound channel object that is allocated to every sound emitter in use
+//(entities, players, weapons, etc.)
 struct soundchannel
 {
     int id;
@@ -58,8 +74,15 @@ struct soundchannel
 
     soundchannel(int id) : id(id) { reset(); }
 
-    bool hasloc() const { return loc.x >= -1e15f; }
-    void clearloc() { loc = vec(-1e16f, -1e16f, -1e16f); }
+    bool hasloc() const
+    {
+        return loc.x >= -1e15f;
+    }
+
+    void clearloc()
+    {
+        loc = vec(-1e16f, -1e16f, -1e16f);
+    }
 
     void reset()
     {
@@ -77,6 +100,7 @@ struct soundchannel
 vector<soundchannel> channels;
 int maxchannels = 0;
 
+//creates a new soundchannel object with passed properties
 soundchannel &newchannel(int n, soundslot *slot, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int radius = 0)
 {
     if(ent)
@@ -84,11 +108,17 @@ soundchannel &newchannel(int n, soundslot *slot, const vec *loc = NULL, extentit
         loc = &ent->o;
         ent->flags |= EntFlag_Sound;
     }
-    while(!channels.inrange(n)) channels.add(channels.length());
+    while(!channels.inrange(n))
+    {
+        channels.add(channels.length());
+    }
     soundchannel &chan = channels[n];
     chan.reset();
     chan.inuse = true;
-    if(loc) chan.loc = *loc;
+    if(loc)
+    {
+        chan.loc = *loc;
+    }
     chan.slot = slot;
     chan.ent = ent;
     chan.flags = 0;
@@ -96,18 +126,31 @@ soundchannel &newchannel(int n, soundslot *slot, const vec *loc = NULL, extentit
     return chan;
 }
 
+//sets a channel as not being in use
 void freechannel(int n)
 {
-    if(!channels.inrange(n) || !channels[n].inuse) return;
+    if(!channels.inrange(n) || !channels[n].inuse)
+    {
+        return;
+    }
     soundchannel &chan = channels[n];
     chan.inuse = false;
-    if(chan.ent) chan.ent->flags &= ~EntFlag_Sound;
+    if(chan.ent)
+    {
+        chan.ent->flags &= ~EntFlag_Sound;
+    }
 }
 
 void syncchannel(soundchannel &chan)
 {
-    if(!chan.dirty) return;
-    if(!Mix_FadingChannel(chan.id)) Mix_Volume(chan.id, chan.volume);
+    if(!chan.dirty)
+    {
+        return;
+    }
+    if(!Mix_FadingChannel(chan.id))
+    {
+        Mix_Volume(chan.id, chan.volume);
+    }
     Mix_SetPanning(chan.id, 255-chan.pan, chan.pan);
     chan.dirty = false;
 }
@@ -117,7 +160,7 @@ void stopchannels()
     for(int i = 0; i < channels.length(); i++)
     {
         soundchannel &chan = channels[i];
-        if(!chan.inuse)
+        if(!chan.inuse) //don't clear channels that are already flagged as unused
         {
             continue;
         }
@@ -127,8 +170,12 @@ void stopchannels()
 }
 
 void setmusicvol(int musicvol);
-VARFP(soundvol, 0, 255, 255, if(!soundvol) { stopchannels(); setmusicvol(0); });
-VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0));
+VARFP(soundvol, 0, 255, 255, if(!soundvol)
+{ //don't use sound infrastructure if volume is 0
+    stopchannels();
+    setmusicvol(0);
+});
+VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
 char *musicfile = NULL, *musicdonecmd = NULL;
 
@@ -138,13 +185,22 @@ stream *musicstream = NULL;
 
 void setmusicvol(int musicvol)
 {
-    if(nosound) return;
-    if(music) Mix_VolumeMusic((musicvol*MIX_MAX_VOLUME)/255);
+    if(nosound) //don't modulate music that isn't there
+    {
+        return;
+    }
+    if(music)
+    {
+        Mix_VolumeMusic((musicvol*MIX_MAX_VOLUME)/255);
+    }
 }
 
 void stopmusic()
 {
-    if(nosound) return;
+    if(nosound) //don't stop music that isn't there
+    {
+        return;
+    }
     DELETEA(musicfile);
     DELETEA(musicdonecmd);
     if(music)
@@ -153,7 +209,11 @@ void stopmusic()
         Mix_FreeMusic(music);
         music = NULL;
     }
-    if(musicrw) { SDL_FreeRW(musicrw); musicrw = NULL; }
+    if(musicrw)
+    {
+        SDL_FreeRW(musicrw);
+        musicrw = NULL;
+    }
     DELETEP(musicstream);
 }
 
@@ -176,7 +236,10 @@ bool initaudio()
     if(initfallback)
     {
         initfallback = false;
-        if(char *env = SDL_getenv("SDL_AUDIODRIVER")) copystring(fallback, env);
+        if(char *env = SDL_getenv("SDL_AUDIODRIVER"))
+        {
+            copystring(fallback, env);
+        }
     }
     if(!fallback[0] && audiodriver[0])
     {
@@ -194,26 +257,37 @@ bool initaudio()
         drivers.deletearrays();
     }
     SDL_setenv("SDL_AUDIODRIVER", fallback, 1);
-    if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0) return true;
+    if(SDL_InitSubSystem(SDL_INIT_AUDIO) >= 0)
+    {
+        return true;
+    }
     conoutf(Console_Error, "sound init failed: %s", SDL_GetError());
     return false;
 }
 
 void initsound()
 {
+    //get sdl version info
     SDL_version version;
     SDL_GetVersion(&version);
+    //SDL 2.0.6 error check: 2.0.6 audio doesn't work
     if(version.major == 2 && version.minor == 0 && version.patch == 6)
     {
         nosound = true;
-        if(sound) conoutf(Console_Error, "audio is broken in SDL 2.0.6");
+        if(sound)
+        {
+            conoutf(Console_Error, "audio is broken in SDL 2.0.6");
+        }
         return;
     }
 
     if(shouldinitaudio)
     {
-        shouldinitaudio = false;
-        if(SDL_WasInit(SDL_INIT_AUDIO)) SDL_QuitSubSystem(SDL_INIT_AUDIO);
+        shouldinitaudio = false; //don't init more than once
+        if(SDL_WasInit(SDL_INIT_AUDIO))
+        {
+            SDL_QuitSubSystem(SDL_INIT_AUDIO);
+        }
         if(!sound || !initaudio())
         {
             nosound = true;
@@ -232,32 +306,65 @@ void initsound()
     nosound = false;
 }
 
+//clears and deletes cached music for playback
 void musicdone()
 {
-    if(music) { Mix_HaltMusic(); Mix_FreeMusic(music); music = NULL; }
-    if(musicrw) { SDL_FreeRW(musicrw); musicrw = NULL; }
+    if(music)
+    {
+        Mix_HaltMusic();
+        Mix_FreeMusic(music);
+        music = NULL;
+    }
+    if(musicrw)
+    {
+        SDL_FreeRW(musicrw);
+        musicrw = NULL;
+    }
     DELETEP(musicstream);
     DELETEA(musicfile);
-    if(!musicdonecmd) return;
+    if(!musicdonecmd)
+    {
+        return;
+    }
     char *cmd = musicdonecmd;
     musicdonecmd = NULL;
     execute(cmd);
     delete[] cmd;
 }
 
+//uses Mix_Music object from libSDL
 Mix_Music *loadmusic(const char *name)
 {
-    if(!musicstream) musicstream = openzipfile(name, "rb");
+    if(!musicstream)
+    {
+        musicstream = openzipfile(name, "rb");
+    }
     if(musicstream)
     {
-        if(!musicrw) musicrw = musicstream->rwops();
-        if(!musicrw) DELETEP(musicstream);
+        if(!musicrw)
+        {
+            musicrw = musicstream->rwops();
+        }
+        if(!musicrw)
+        {
+            DELETEP(musicstream);
+        }
     }
-    if(musicrw) music = Mix_LoadMUSType_RW(musicrw, MUS_NONE, 0);
-    else music = Mix_LoadMUS(findfile(name, "rb"));
+    if(musicrw)
+    {
+        music = Mix_LoadMUSType_RW(musicrw, MUS_NONE, 0);
+    }
+    else
+    {
+        music = Mix_LoadMUS(findfile(name, "rb"));
+    }
     if(!music)
     {
-        if(musicrw) { SDL_FreeRW(musicrw); musicrw = NULL; }
+        if(musicrw)
+        {
+            SDL_FreeRW(musicrw);
+            musicrw = NULL;
+        }
         DELETEP(musicstream);
     }
     return music;
@@ -265,7 +372,10 @@ Mix_Music *loadmusic(const char *name)
 
 void startmusic(char *name, char *cmd)
 {
-    if(nosound) return;
+    if(nosound)
+    {
+        return;
+    }
     stopmusic();
     if(soundvol && musicvol && *name)
     {
@@ -276,7 +386,10 @@ void startmusic(char *name, char *cmd)
             DELETEA(musicfile);
             DELETEA(musicdonecmd);
             musicfile = newstring(file);
-            if(cmd[0]) musicdonecmd = newstring(cmd);
+            if(cmd[0])
+            {
+                musicdonecmd = newstring(cmd);
+            }
             Mix_PlayMusic(music, cmd[0] ? 0 : -1);
             Mix_VolumeMusic((musicvol*MIX_MAX_VOLUME)/255);
             intret(1);
@@ -305,24 +418,39 @@ static Mix_Chunk *loadwav(const char *name)
         }
         delete z;
     }
-    if(!c) c = Mix_LoadWAV(findfile(name, "rb"));
+    if(!c)
+    {
+        c = Mix_LoadWAV(findfile(name, "rb"));
+    }
     return c;
 }
 
 bool soundsample::load(const char *dir, bool msg)
 {
-    if(chunk) return true;
-    if(!name[0]) return false;
+    if(chunk)
+    {
+        return true;
+    }
+    if(!name[0])
+    {
+        return false;
+    }
 
     static const char * const exts[] = { "", ".wav", ".ogg" };
     string filename;
     for(int i = 0; i < int(sizeof(exts)/sizeof(exts[0])); ++i)
     {
         formatstring(filename, "media/sound/%s%s%s", dir, name, exts[i]);
-        if(msg && !i) renderprogress(0, filename);
+        if(msg && !i)
+        {
+            renderprogress(0, filename);
+        }
         path(filename);
         chunk = loadwav(filename);
-        if(chunk) return true;
+        if(chunk)
+        {
+            return true;
+        }
     }
 
     conoutf(Console_Error, "failed to load sample: media/sound/%s%s", dir, name);
@@ -346,7 +474,10 @@ static struct soundtype
             for(int j = 0; j < s.numslots; ++j)
             {
                 soundslot &c = slots[s.slots+j];
-                if(!strcmp(c.sample->name, name) && (!vol || c.volume==vol)) return i;
+                if(!strcmp(c.sample->name, name) && (!vol || c.volume==vol))
+                {
+                    return i;
+                }
             }
         }
         return -1;
@@ -393,7 +524,10 @@ static struct soundtype
 
     void addalt(const char *name, int vol)
     {
-        if(configs.empty()) return;
+        if(configs.empty())
+        {
+            return;
+        }
         addslot(name, vol);
         configs.last().numslots++;
     }
@@ -477,6 +611,7 @@ void mapsoundreset()
 }
 COMMAND(mapsoundreset, "");
 
+//free all channels
 void resetchannels()
 {
     for(int i = 0; i < channels.length(); i++)
@@ -492,7 +627,10 @@ void resetchannels()
 void clear_sound()
 {
     closemumble();
-    if(nosound) return;
+    if(nosound) //don't bother closing stuff that isn't there
+    {
+        return;
+    }
     stopmusic();
 
     gamesounds.cleanup();
@@ -532,13 +670,17 @@ void stopmapsound(extentity *e)
     }
 }
 
+//check map entities to see what sounds need to be played because of them
 void checkmapsounds()
 {
     const vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type!=EngineEnt_Sound) continue;
+        if(e.type!=EngineEnt_Sound) //ents that aren't soundents don't make sound (!)
+        {
+            continue;
+        }
         if(camera1->o.dist(e.o) < e.attr2) //if distance to entity < ent attr 2 (radius)
         {
             if(!(e.flags&EntFlag_Sound)) playsound(e.attr1, NULL, &e, Music_Map, -1);
@@ -549,11 +691,15 @@ void checkmapsounds()
 
 VAR(stereo, 0, 1, 1);
 
+//distance in cubits: how far away sound entities can start (340 = 42.5m)
 VAR(maxsoundradius, 1, 340, 0);
 
 bool updatechannel(soundchannel &chan)
 {
-    if(!chan.slot) return false;
+    if(!chan.slot)
+    {
+        return false;
+    }
     int vol = soundvol, pan = 255/2;
     if(chan.hasloc())
     {
@@ -569,8 +715,14 @@ bool updatechannel(soundchannel &chan)
                 dist -= chan.ent->attr3;
             }
         }
-        else if(chan.radius > 0) rad = maxsoundradius ? min(maxsoundradius, chan.radius) : chan.radius;
-        if(rad > 0) vol -= int(clamp(dist/rad, 0.0f, 1.0f)*soundvol); // simple mono distance attenuation
+        else if(chan.radius > 0)
+        {
+            rad = maxsoundradius ? min(maxsoundradius, chan.radius) : chan.radius;
+        }
+        if(rad > 0) //rad = 0 means no attenuation ever
+        {
+            vol -= int(clamp(dist/rad, 0.0f, 1.0f)*soundvol); // simple mono distance attenuation
+        }
         if(stereo && (v.x != 0 || v.y != 0) && dist>0)
         {
             v.rotate_around_z(-camera1->yaw*RAD);
@@ -579,19 +731,26 @@ bool updatechannel(soundchannel &chan)
     }
     vol = (vol*MIX_MAX_VOLUME*chan.slot->volume)/255/255;
     vol = min(vol, MIX_MAX_VOLUME);
-    if(vol == chan.volume && pan == chan.pan) return false;
+    if(vol == chan.volume && pan == chan.pan)
+    {
+        return false;
+    }
     chan.volume = vol;
     chan.pan = pan;
     chan.dirty = true;
     return true;
 }
 
+//free channels that are not playing sounds
 void reclaimchannels()
 {
     for(int i = 0; i < channels.length(); i++)
     {
         soundchannel &chan = channels[i];
-        if(chan.inuse && !Mix_Playing(i)) freechannel(i);
+        if(chan.inuse && !Mix_Playing(i))
+        {
+            freechannel(i);
+        }
     }
 }
 
@@ -600,34 +759,52 @@ void syncchannels()
     for(int i = 0; i < channels.length(); i++)
     {
         soundchannel &chan = channels[i];
-        if(chan.inuse && chan.hasloc() && updatechannel(chan)) syncchannel(chan);
+        if(chan.inuse && chan.hasloc() && updatechannel(chan))
+        {
+            syncchannel(chan);
+        }
     }
 }
 
-VARP(minimizedsounds, 0, 0, 1);
+VARP(minimizedsounds, 0, 0, 1); //toggles playing sound when window minimized
 
 void updatesounds()
 {
     updatemumble();
-    if(nosound) return;
-    if(minimized && !minimizedsounds) stopsounds();
+    if(nosound) //don't update sounds if disabled
+    {
+        return;
+    }
+    if(minimized && !minimizedsounds)//minimizedsounds check
+    {
+        stopsounds();
+    }
     else
     {
-        reclaimchannels();
-        if(mainmenu) stopmapsounds();
+        reclaimchannels(); //cull channels first
+        if(mainmenu) //turn off map sounds if you reach main menu
+        {
+            stopmapsounds();
+        }
         else checkmapsounds();
         syncchannels();
     }
     if(music)
     {
-        if(!Mix_PlayingMusic()) musicdone();
-        else if(Mix_PausedMusic()) Mix_ResumeMusic();
+        if(!Mix_PlayingMusic())
+        {
+            musicdone();
+        }
+        else if(Mix_PausedMusic())
+        {
+            Mix_ResumeMusic();
+        }
     }
 }
 
 VARP(maxsoundsatonce, 0, 7, 100);
 
-VAR(dbgsound, 0, 0, 1);
+VAR(dbgsound, 0, 0, 1); //toggles console debug messages
 
 void preloadsound(int n)
 {
@@ -645,21 +822,31 @@ void preloadmapsounds()
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type==EngineEnt_Sound) mapsounds.preloadsound(e.attr1);
+        if(e.type==EngineEnt_Sound)
+        {
+            mapsounds.preloadsound(e.attr1); //load sounds by first ent attr (index)
+        }
     }
 }
 
 int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int fade, int chanid, int radius, int expire)
 {
-    if(nosound || !soundvol || (minimized && !minimizedsounds)) return -1;
-
+    if(nosound || !soundvol || (minimized && !minimizedsounds)) //mute check
+    {
+        return -1;
+    }
     soundtype &sounds = ent || flags&Music_Map ? mapsounds : gamesounds;
-    if(!sounds.configs.inrange(n)) { conoutf(Console_Warn, "unregistered sound: %d", n); return -1; }
+    if(!sounds.configs.inrange(n)) //sound isn't within index
+    {
+        conoutf(Console_Warn, "unregistered sound: %d", n);
+        return -1;
+    }
     soundconfig &config = sounds.configs[n];
 
     if(loc && (maxsoundradius || radius > 0))
     {
         // cull sounds that are unlikely to be heard
+        //if radius is greater than zero, clamp to maxsoundradius if maxsound radius is nonzero; if radius is zero, clamp to maxsoundradius
         int rad = radius > 0 ? (maxsoundradius ? min(maxsoundradius, radius) : radius) : maxsoundradius;
         if(camera1->o.dist(*loc) > 1.5f*rad)
         {
@@ -718,12 +905,20 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
             return chanid;
         }
     }
-    if(fade < 0) return -1;
-
+    if(fade < 0) //attenuation past zero
+    {
+        return -1;
+    }
     soundslot &slot = sounds.slots[config.chooseslot(flags)];
-    if(!slot.sample->chunk && !slot.sample->load(sounds.dir)) return -1;
+    if(!slot.sample->chunk && !slot.sample->load(sounds.dir))
+    {
+        return -1;
+    }
 
-    if(dbgsound) conoutf("sound: %s%s", sounds.dir, slot.sample->name);
+    if(dbgsound)
+    {
+        conoutf("sound: %s%s", sounds.dir, slot.sample->name);
+    }
 
     chanid = -1;
     for(int i = 0; i < channels.length(); i++)
@@ -800,7 +995,7 @@ bool stopsound(int n, int chanid, int fade)
     {
         conoutf("stopsound: %s%s", gamesounds.dir, channels[chanid].slot->sample->name);
     }
-    if(!fade || !Mix_FadeOutChannel(chanid, fade))
+    if(!fade || !Mix_FadeOutChannel(chanid, fade)) //clear and free channel allocation
     {
         Mix_HaltChannel(chanid);
         freechannel(chanid);
@@ -810,9 +1005,15 @@ bool stopsound(int n, int chanid, int fade)
 
 int playsoundname(const char *s, const vec *loc, int vol, int flags, int loops, int fade, int chanid, int radius, int expire)
 {
-    if(!vol) vol = 100;
+    if(!vol) //default to 100 volume
+    {
+        vol = 100;
+    }
     int id = gamesounds.findsound(s, vol);
-    if(id < 0) id = gamesounds.addsound(s, vol);
+    if(id < 0)
+    {
+        id = gamesounds.addsound(s, vol);
+    }
     return playsound(id, loc, NULL, flags, loops, fade, chanid, radius, expire);
 }
 
@@ -896,17 +1097,42 @@ static MumbleInfo *mumbleinfo = (MumbleInfo *)-1;
 #endif
 
 #ifdef VALID_MUMBLELINK
-VARFP(mumble, 0, 1, 1, { if(mumble) initmumble(); else closemumble(); });
+VARFP(mumble, 0, 1, 1,
+{
+    if(mumble)
+    {
+        initmumble();
+    }
+    else
+    {
+        closemumble();
+    }
+});
 #else
-VARFP(mumble, 0, 0, 1, { if(mumble) initmumble(); else closemumble(); });
+VARFP(mumble, 0, 0, 1,
+{
+    if(mumble)
+    {
+        initmumble();
+    }
+    else
+    {
+        closemumble();
+    }
+});
 #endif
 
 void initmumble()
 {
-    if(!mumble) return;
+    if(!mumble)
+    {
+        return;
+    }
 #ifdef VALID_MUMBLELINK
-    if(VALID_MUMBLELINK) return;
-
+    if(VALID_MUMBLELINK)
+    {
+        return;
+    }
     #ifdef WIN32
         mumblelink = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, "MumbleLink");
         if(mumblelink)
@@ -920,10 +1146,16 @@ void initmumble()
         if(mumblelink >= 0)
         {
             mumbleinfo = (MumbleInfo *)mmap(NULL, sizeof(MumbleInfo), PROT_READ|PROT_WRITE, MAP_SHARED, mumblelink, 0);
-            if(mumbleinfo != (MumbleInfo *)-1) wcsncpy(mumbleinfo->name, L"Tesseract", 256);
+            if(mumbleinfo != (MumbleInfo *)-1)
+            {
+                wcsncpy(mumbleinfo->name, L"Tesseract", 256);
+            }
         }
     #endif
-    if(!VALID_MUMBLELINK) closemumble();
+    if(!VALID_MUMBLELINK)
+    {
+        closemumble();
+    }
 #else
     conoutf(Console_Error, "Mumble positional audio is not available on this platform.");
 #endif
@@ -932,11 +1164,27 @@ void initmumble()
 void closemumble()
 {
 #ifdef WIN32
-    if(mumbleinfo) { UnmapViewOfFile(mumbleinfo); mumbleinfo = NULL; }
-    if(mumblelink) { CloseHandle(mumblelink); mumblelink = NULL; }
+    if(mumbleinfo)
+    {
+        UnmapViewOfFile(mumbleinfo);
+        mumbleinfo = NULL;
+    }
+    if(mumblelink)
+    {
+        CloseHandle(mumblelink);
+        mumblelink = NULL;
+    }
 #elif defined(_POSIX_SHARED_MEMORY_OBJECTS)
-    if(mumbleinfo != (MumbleInfo *)-1) { munmap(mumbleinfo, sizeof(MumbleInfo)); mumbleinfo = (MumbleInfo *)-1; }
-    if(mumblelink >= 0) { close(mumblelink); mumblelink = -1; }
+    if(mumbleinfo != (MumbleInfo *)-1)
+    {
+        munmap(mumbleinfo, sizeof(MumbleInfo));
+        mumbleinfo = (MumbleInfo *)-1;
+    }
+    if(mumblelink >= 0)
+    {
+        close(mumblelink);
+        mumblelink = -1;
+    }
 #endif
 }
 
@@ -945,14 +1193,20 @@ static inline vec mumblevec(const vec &v, bool pos = false)
     // change from X left, Z up, Y forward to X right, Y up, Z forward
     // 8 cube units = 1 meter
     vec m(-v.x, v.z, v.y);
-    if(pos) m.div(8);
+    if(pos)
+    {
+        m.div(8);
+    }
     return m;
 }
 
 void updatemumble()
 {
 #ifdef VALID_MUMBLELINK
-    if(!VALID_MUMBLELINK) return;
+    if(!VALID_MUMBLELINK)
+    {
+        return;
+    }
 
     static int timestamp = 0;
 
