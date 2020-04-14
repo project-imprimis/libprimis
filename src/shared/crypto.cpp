@@ -137,7 +137,11 @@ namespace tiger
     void hash(const uchar *str, int length, hashval &val)
     {
         static bool init = false;
-        if(!init) { gensboxes(); init = true; }
+        if(!init)
+        {
+            gensboxes();
+            init = true;
+        }
 
         uchar temp[64];
 
@@ -222,23 +226,55 @@ template<int BI_DIGITS> struct bigint
     digit digits[BI_DIGITS];
 
     bigint() {}
-    bigint(digit n) { if(n) { len = 1; digits[0] = n; } else len = 0; }
-    bigint(const char *s) { parse(s); }
-    template<int Y_DIGITS> bigint(const bigint<Y_DIGITS> &y) { *this = y; }
+    bigint(digit n)
+    {
+        if(n)
+        {
+            len = 1;
+            digits[0] = n;
+        }
+        else
+        {
+            len = 0;
+        }
+    }
+    bigint(const char *s)
+    {
+        parse(s);
+    }
+    template<int Y_DIGITS> bigint(const bigint<Y_DIGITS> &y)
+    {
+        *this = y;
+    }
 
     static int parsedigits(ushort *digits, int maxlen, const char *s)
     {
         int slen = 0;
-        while(isxdigit(s[slen])) slen++;
+        while(isxdigit(s[slen]))
+        {
+            slen++;
+        }
         int len = (slen+2*sizeof(ushort)-1)/(2*sizeof(ushort));
-        if(len>maxlen) return 0;
+        if(len>maxlen)
+        {
+            return 0;
+        }
         memset(digits, 0, len*sizeof(ushort));
         for(int i = 0; i < slen; ++i)
         {
             int c = s[slen-i-1];
-            if(isalpha(c)) c = toupper(c) - 'A' + 10;
-            else if(isdigit(c)) c -= '0';
-            else return 0;
+            if(isalpha(c))
+            {
+                c = toupper(c) - 'A' + 10;
+            }
+            else if(isdigit(c))
+            {
+                c -= '0';
+            }
+            else
+            {
+                return 0;
+            }
             digits[i/(2*sizeof(ushort))] |= c<<(4*(i%(2*sizeof(ushort))));
         }
         return len;
@@ -287,26 +323,45 @@ template<int BI_DIGITS> struct bigint
         return *this;
     }
 
-    bool iszero() const { return !len; }
-    bool isone() const { return len==1 && digits[0]==1; }
+    bool iszero() const
+    {
+        return !len;
+    }
+
+    bool isone() const
+    {
+        return len==1 && digits[0]==1;
+    }
 
     int numbits() const
     {
-        if(!len) return 0;
+        if(!len)
+        {
+            return 0;
+        }
         int bits = len*BI_DIGIT_BITS;
         digit last = digits[len-1], mask = 1<<(BI_DIGIT_BITS-1);
         while(mask)
         {
-            if(last&mask) return bits;
+            if(last&mask)
+            {
+                return bits;
+            }
             bits--;
             mask >>= 1;
         }
         return 0;
     }
 
-    bool hasbit(int n) const { return n/BI_DIGIT_BITS < len && ((digits[n/BI_DIGIT_BITS]>>(n%BI_DIGIT_BITS))&1); }
+    bool hasbit(int n) const
+    {
+        return n/BI_DIGIT_BITS < len && ((digits[n/BI_DIGIT_BITS]>>(n%BI_DIGIT_BITS))&1);
+    }
 
-    bool morebits(int n) const { return len > n/BI_DIGIT_BITS; }
+    bool morebits(int n) const
+    {
+        return len > n/BI_DIGIT_BITS;
+    }
 
     template<int X_DIGITS, int Y_DIGITS> bigint &add(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
     {
@@ -318,7 +373,10 @@ template<int BI_DIGITS> struct bigint
              digits[i] = (digit)carry;
              carry >>= BI_DIGIT_BITS;
         }
-        if(i < x.len && this != &x) memcpy(&digits[i], &x.digits[i], (x.len - i)*sizeof(digit));
+        if(i < x.len && this != &x)
+        {
+            memcpy(&digits[i], &x.digits[i], (x.len - i)*sizeof(digit));
+        }
         len = max(i, maxlen);
         return *this;
     }
@@ -335,7 +393,10 @@ template<int BI_DIGITS> struct bigint
              digits[i] = (digit)borrow;
              borrow = (borrow>>BI_DIGIT_BITS)^1;
         }
-        if(i < x.len && this != &x) memcpy(&digits[i], &x.digits[i], (x.len - i)*sizeof(digit));
+        if(i < x.len && this != &x)
+        {
+            memcpy(&digits[i], &x.digits[i], (x.len - i)*sizeof(digit));
+        }
         len = x.len;
         shrink();
         return *this;
@@ -359,7 +420,11 @@ template<int BI_DIGITS> struct bigint
 
     template<int X_DIGITS, int Y_DIGITS> bigint &mul(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
     {
-        if(!x.len || !y.len) { len = 0; return *this; }
+        if(!x.len || !y.len)
+        {
+            len = 0;
+            return *this;
+        }
         memset(digits, 0, y.len*sizeof(digit));
         for(int i = 0; i < x.len; ++i)
         {
@@ -406,7 +471,10 @@ template<int BI_DIGITS> struct bigint
 
     bigint &lshift(int n)
     {
-        if(!len || n<=0) return *this;
+        if(!len || n<=0)
+        {
+            return *this;
+        }
         int dig = n/BI_DIGIT_BITS;
         n %= BI_DIGIT_BITS;
         digit carry = 0;
@@ -417,8 +485,14 @@ template<int BI_DIGITS> struct bigint
             carry = digit(tmp>>(BI_DIGIT_BITS-n));
         }
         len += dig;
-        if(carry) digits[len++] = carry;
-        if(dig) memset(digits, 0, dig*sizeof(digit));
+        if(carry)
+        {
+            digits[len++] = carry;
+        }
+        if(dig)
+        {
+            memset(digits, 0, dig*sizeof(digit));
+        }
         return *this;
     }
 
@@ -435,7 +509,10 @@ template<int BI_DIGITS> struct bigint
     {
         int avail = min(y.len-from, n);
         memcpy(&digits[to], &y.digits[from], avail*sizeof(digit));
-        if(avail < n) memset(&digits[to+avail], 0, (n-avail)*sizeof(digit));
+        if(avail < n)
+        {
+            memset(&digits[to+avail], 0, (n-avail)*sizeof(digit));
+        }
     }
     template<int Y_DIGITS> void copybits(int to, const bigint<Y_DIGITS> &y, int from, int n)
     {
@@ -453,7 +530,10 @@ template<int BI_DIGITS> struct bigint
 
     template<int Y_DIGITS> bool operator==(const bigint<Y_DIGITS> &y) const
     {
-        if(len!=y.len) return false;
+        if(len!=y.len)
+        {
+            return false;
+        }
         for(int i = len; --i >= 0;) //note reverse iteration
         {
             if(digits[i]!=y.digits[i])
@@ -529,7 +609,10 @@ struct gfield : gfint
 
     gfield &div2()
     {
-        if(hasbit(0)) gfint::add(*this, P);
+        if(hasbit(0))
+        {
+            gfint::add(*this, P);
+        }
         rshift(1);
         return *this;
     }
@@ -571,7 +654,6 @@ struct gfield : gfint
 #if GF_BITS==192
         // B = T + S1 + S2 + S3 mod p
         copyshrinkdigits(result, GF_DIGITS); // T
-
         if(result.morebits(192))
         {
             gfield s;
@@ -579,7 +661,6 @@ struct gfield : gfint
             s.dupbits(64, 0, 64);
             s.shrinkbits(128);
             add(s); // S1
-
             if(result.morebits(256))
             {
                 s.zerobits(0, 64);
@@ -587,7 +668,6 @@ struct gfield : gfint
                 s.dupbits(128, 64, 64);
                 s.shrinkdigits(GF_DIGITS);
                 add(s); // S2
-
                 if(result.morebits(320))
                 {
                     s.copybits(0, result, 320, 64);
@@ -598,7 +678,10 @@ struct gfield : gfint
                 }
             }
         }
-        else if(*this >= P) gfint::sub(*this, P);
+        else if(*this >= P)
+        {
+            gfint::sub(*this, P);
+        }
 #elif GF_BITS==256
         // B = T + 2*S1 + 2*S2 + S3 + S4 - D1 - D2 - D3 - D4 mod p
         copyshrinkdigits(result, GF_DIGITS); // T
@@ -664,7 +747,10 @@ struct gfield : gfint
             s.shrinkdigits(GF_DIGITS);
             sub(s); // D4
         }
-        else if(*this >= P) gfint::sub(*this, P);
+        else if(*this >= P)
+        {
+            gfint::sub(*this, P);
+        }
 #else
 #error Unsupported GF
 #endif
@@ -673,17 +759,26 @@ struct gfield : gfint
     template<int X_DIGITS, int Y_DIGITS> gfield &pow(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
     {
         gfield a(x);
-        if(y.hasbit(0)) *this = a;
+        if(y.hasbit(0))
+        {
+            *this = a;
+        }
         else
         {
             len = 1;
             digits[0] = 1;
-            if(!y.len) return *this;
+            if(!y.len)
+            {
+                return *this;
+            }
         }
         for(int i = 1, j = y.numbits(); i < j; i++)
         {
             a.square();
-            if(y.hasbit(i)) mul(a);
+            if(y.hasbit(i))
+            {
+                mul(a);
+            }
         }
         return *this;
     }
@@ -701,41 +796,74 @@ struct gfield : gfint
                 ushift++;
                 if(A.hasbit(ashift))
                 {
-                    if(ashift) { A.rshift(ashift); ashift = 0; }
+                    if(ashift)\
+                    {
+                        A.rshift(ashift);
+                        ashift = 0;
+                    }
                     A.add(P);
                 }
                 ashift++;
             }
-            if(ushift) u.rshift(ushift);
-            if(ashift) A.rshift(ashift);
+            if(ushift)
+            {
+                u.rshift(ushift);
+            }
+            if(ashift)
+            {
+                A.rshift(ashift);
+            }
             int vshift = 0, cshift = 0;
             while(!v.hasbit(vshift))
             {
                 vshift++;
                 if(C.hasbit(cshift))
                 {
-                    if(cshift) { C.rshift(cshift); cshift = 0; }
+                    if(cshift)
+                    {
+                        C.rshift(cshift);
+                        cshift = 0;
+                    }
                     C.add(P);
                 }
                 cshift++;
             }
-            if(vshift) v.rshift(vshift);
-            if(cshift) C.rshift(cshift);
+            if(vshift)
+            {
+                v.rshift(vshift);
+            }
+            if(cshift)
+            {
+                C.rshift(cshift);
+            }
             if(u >= v)
             {
                 u.sub(v);
-                if(A < C) A.add(P);
+                if(A < C)
+                {
+                    A.add(P);
+                }
                 A.sub(C);
             }
             else
             {
                 v.sub(v, u);
-                if(C < A) C.add(P);
+                if(C < A)
+                {
+                    C.add(P);
+                }
                 C.sub(A);
             }
         }
-        if(C >= P) gfint::sub(C, P);
-        else { len = C.len; memcpy(digits, C.digits, len*sizeof(digit)); }
+        if(C >= P)
+        {
+            gfint::sub(C, P);
+        }
+        else
+        {
+            len = C.len;
+            memcpy(digits, C.digits, len*sizeof(digit));
+        }
         ASSERT(*this < P);
         return true;
     }
@@ -746,15 +874,28 @@ struct gfield : gfint
         static const gfint Psub1div2(gfint(P).sub(bigint<1>(1)).rshift(1));
         gfield L;
         L.pow(x, Psub1div2);
-        if(!L.len) return 0;
-        if(L.len==1) return 1;
+        if(!L.len)
+        {
+            return 0;
+        }
+        if(L.len==1)
+        {
+            return 1;
+        }
         return -1;
     }
-    int legendre() const { return legendre(*this); }
+    int legendre() const
+    {
+        return legendre(*this);
+    }
 
     bool sqrt(const gfield &x)
     {
-        if(!x.len) { len = 0; return true; }
+        if(!x.len)
+        {
+            len = 0;
+            return true;
+        }
 #if GF_BITS==224
 #error Unsupported GF
 #else
@@ -762,13 +903,27 @@ struct gfield : gfint
         static const gfint Padd1div4(gfint(P).add(bigint<1>(1)).rshift(2));
         switch(legendre(x))
         {
-            case 0: len = 0; return true;
-            case -1: return false;
-            default: pow(x, Padd1div4); return true;
+            case 0:
+            {
+                len = 0;
+                return true;
+            }
+            case -1:
+            {
+                return false;
+            }
+            default:
+            {
+                pow(x, Padd1div4);
+                return true;
+            }
         }
 #endif
     }
-    bool sqrt() { return sqrt(*this); }
+    bool sqrt()
+    {
+        return sqrt(*this);
+    }
 };
 
 struct ecjacobian
@@ -785,8 +940,15 @@ struct ecjacobian
 
     void mul2()
     {
-        if(z.iszero()) return;
-        else if(y.iszero()) { *this = origin; return; }
+        if(z.iszero())
+        {
+            return;
+        }
+        else if(y.iszero())
+        {
+            *this = origin;
+            return;
+        }
         gfield a, b, c, d;
         d.sub(x, c.square(z));
         d.mul(c.add(x));
@@ -802,8 +964,15 @@ struct ecjacobian
 
     void add(const ecjacobian &q)
     {
-        if(q.z.iszero()) return;
-        else if(z.iszero()) { *this = q; return; }
+        if(q.z.iszero())
+        {
+            return;
+        }
+        else if(z.iszero())
+        {
+            *this = q;
+            return;
+        }
         gfield a, b, c, d, e, f;
         a.square(z);
         b.mul(q.y, a).mul(z);
@@ -824,8 +993,22 @@ struct ecjacobian
             a.sub(e, a);
             b.sub(f, b);
         }
-        if(a.iszero()) { if(b.iszero()) mul2(); else *this = origin; return; }
-        if(!q.z.isone()) z.mul(q.z);
+        if(a.iszero())
+        {
+            if(b.iszero())
+            {
+                mul2();
+            }
+            else
+            {
+                *this = origin;
+            }
+            return;
+        }
+        if(!q.z.isone())
+        {
+            z.mul(q.z);
+        }
         z.mul(a);
         x.square(b).sub(f.mul(c, e.square(a)));
         y.sub(f, x).sub(x).mul(b).sub(e.mul(a).mul(d)).div2();
@@ -847,7 +1030,10 @@ struct ecjacobian
 
     void normalize()
     {
-        if(z.iszero() || z.isone()) return;
+        if(z.iszero() || z.isone())
+        {
+            return;
+        }
         gfield tmp;
         z.invert();
         tmp.square(z);
@@ -860,8 +1046,15 @@ struct ecjacobian
     {
         gfield y2, tmp;
         y2.square(x).mul(x).sub(tmp.add(x, x).add(x)).add(B);
-        if(!y.sqrt(y2)) { y.zero(); return false; }
-        if(y.hasbit(0) != ybit) y.neg();
+        if(!y.sqrt(y2))
+        {
+            y.zero();
+            return false;
+        }
+        if(y.hasbit(0) != ybit)
+        {
+            y.neg();
+        }
         return true;
     }
 
@@ -933,7 +1126,10 @@ void calcpubkey(gfint privkey, vector<char> &pubstr)
 
 bool calcpubkey(const char *privstr, vector<char> &pubstr)
 {
-    if(!privstr[0]) return false;
+    if(!privstr[0])
+    {
+        return false;
+    }
     gfint privkey;
     privkey.parse(privstr);
     calcpubkey(privkey, pubstr);
