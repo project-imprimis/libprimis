@@ -455,8 +455,8 @@ static const int msgsizes[] =               // size inclusive message token, 0 f
     NetMsg_Spectator, 3,
     NetMsg_SetMasterMaster, 0,
     NetMsg_SetTeam, 0,
-    NetMsg_EditFace, 1,
 
+    NetMsg_ListDemos, 1,
     NetMsg_SendDemoList, 0,
     NetMsg_GetDemo, 2,
     NetMsg_SendDemo, 0,

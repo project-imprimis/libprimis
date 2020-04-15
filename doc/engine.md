@@ -2475,6 +2475,106 @@ and the following functions:
 * void `hitpush`
 * void `startgame`
 
+# 7 Netcode
+---
+
+Like Tesseract and Cube 2, Imprimis runs a very client-heavy server that
+minimizes the workload for the server itself. The server does little more than
+redirect packets, while the individual clients have the burden of interpreting
+what is passed to them by other clients.
+
+As a result, Imprimis trades a good deal of security for a very simple and
+responsive networking experience. It is not particularly difficult to create
+clients which exploit this behavior, but server-mediated behavior is problematic
+for a first person shooter where reaction time is paramount.
+
+## 7.1 Server
+---
+
+The server in Imprimis is always present, even in singleplayer, and relays
+information between clients. In singleplayer or in multiplayer games with bots,
+these bots have full client status and their information is relayed to the
+player via the server.
+
+The server is very sparse in its function, and only a handful of system
+resources are required to run one: Raspberry Pis are generally adequate for this
+task.
+
+A server instance does not check the contents of the packets which it sees and
+essentially only radios what the clients tell it to other clients. A server's
+control over the game is limited to its control over the gamemode and game end
+time (ensuring that no one client can try to end the match at its whim) and
+managing client bans and other holds.
+
+### 7.1.1 Protocol
+
+The server talks to clients via UDP using the ENet library. As the game uses
+the UDP protocol, the job of making packets is left to the ENet library, which
+allows for skipping the time consuming checks that TCP requires.
+
+ENet is IP v4 only currently, and therefore the game cannot resolve IP v6
+addresses.
+
+### 7.2.2 Server State
+
+The state of a server, or the contents which it "knows" at any given time, is
+quite limited. Servers know the following:
+
+* Time left in the match
+* Addresses of connected clients
+* Type of client (local, remote, bot)
+* Master server listing status
+* Time since master server listing confirmation
+* Location and status of server entities (pickup items)
+
+## 7.2 Client
+---
+
+Clients are vastly more fleshed out in the Imprimis multiplayer system. Clients
+manage not only actors (players) but also their projectiles. In this way, all
+deterministic dynamic gameplay events are controlled by clients. Clients have
+their own "clients" and "servers" which refer to the side of the netcode that
+sends events (client) and those that recieve the events (server).
+
+### 7.2.1 Packets
+---
+
+Clients send messages to other clients (via the server) in packets with one of
+over one hundred `types` which encode what kind of action the packet applies to.
+Some message types are of a fixed length (e.g. cube modification), but others
+are of variable length (e.g. chat messages).
+
+### 7.2.2 Client Scope
+---
+
+The scope of an individual client is quite large, as the clients alone must bear
+the full weight of all dynamic deterministic events in the game. This includes:
+
+* Player movement
+* Projectile movement
+* Hit/Kill Determination
+* Geometry and Entity Modification
+* Global Variable Changes
+
+This does not include non-deterministic or non-dynamic behavior, such as:
+
+* Static entity rendering (e.g. particle entities)
+* Aesthetic rendering (ragdolls, stains, projectiles)
+
+#### Hit/Kill Determination
+
+Clients tell others when they've hit somebody else, rather than the reverse
+(clients telling others when they've been hit). As a result, hit confirmation
+should always look "right" for clients: the body that confirms the hit is the
+one who fired the projectile.
+
+This is notable because network lag can cause a player's broadcasted position to
+differ from the position that the client itself believes it is at. As a result
+of this, clients dealing with a laggy client don't have to trust that client's
+percieved position to record a hit.
+
+
+
 # 10 Internal Objects
 ---
 
