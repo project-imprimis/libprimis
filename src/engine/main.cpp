@@ -10,7 +10,10 @@ void cleanup()
     cleanupserver();
     SDL_ShowCursor(SDL_TRUE);
     SDL_SetRelativeMouseMode(SDL_FALSE);
-    if(screen) SDL_SetWindowGrab(screen, SDL_FALSE);
+    if(screen)
+    {
+        SDL_SetWindowGrab(screen, SDL_FALSE);
+    }
     cleargamma();
     freeocta(worldroot);
     UI::cleanup();
@@ -20,7 +23,10 @@ void cleanup()
     extern void clear_sound();   clear_sound();
     closelogfile();
     #ifdef __APPLE__
-        if(screen) SDL_SetWindowFullscreen(screen, 0);
+        if(screen)
+        {
+            SDL_SetWindowFullscreen(screen, 0);
+        }
     #endif
     SDL_Quit();
 }
@@ -55,10 +61,16 @@ void fatal(const char *s, ...)    // failure exit
             {
                 SDL_ShowCursor(SDL_TRUE);
                 SDL_SetRelativeMouseMode(SDL_FALSE);
-                if(screen) SDL_SetWindowGrab(screen, SDL_FALSE);
+                if(screen)
+                {
+                    SDL_SetWindowGrab(screen, SDL_FALSE);
+                }
                 cleargamma();
                 #ifdef __APPLE__
-                    if(screen) SDL_SetWindowFullscreen(screen, 0);
+                    if(screen)
+                    {
+                        SDL_SetWindowFullscreen(screen, 0);
+                    }
                 #endif
             }
             SDL_Quit();
@@ -71,11 +83,15 @@ void fatal(const char *s, ...)    // failure exit
 
 VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
-int screenw = 0, screenh = 0;
+int screenw = 0,
+    screenh = 0;
 SDL_Window *screen = NULL;
 SDL_GLContext glcontext = NULL;
 
-int curtime = 0, lastmillis = 1, elapsedtime = 0, totalmillis = 1;
+int curtime = 0,
+    lastmillis = 1,
+    elapsedtime = 0,
+    totalmillis = 1;
 
 dynent *player = NULL;
 
@@ -103,7 +119,10 @@ VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 void writeinitcfg()
 {
     stream *f = openutf8file("config/init.cfg", "w");
-    if(!f) return;
+    if(!f)
+    {
+        return;
+    }
     f->printf("// automatically written on exit, DO NOT MODIFY\n// modify settings in game\n");
     extern int fullscreen;
     f->printf("fullscreen %d\n", fullscreen);
@@ -115,7 +134,10 @@ void writeinitcfg()
     f->printf("soundchans %d\n", soundchans);
     f->printf("soundfreq %d\n", soundfreq);
     f->printf("soundbufferlen %d\n", soundbufferlen);
-    if(audiodriver[0]) f->printf("audiodriver %s\n", escapestring(audiodriver));
+    if(audiodriver[0])
+    {
+        f->printf("audiodriver %s\n", escapestring(audiodriver));
+    }
     delete f;
 }
 
@@ -124,8 +146,14 @@ COMMAND(quit, "");
 static void getbackgroundres(int &w, int &h)
 {
     float wk = 1, hk = 1;
-    if(w < 1024) wk = 1024.0f/w;
-    if(h < 768) hk = 768.0f/h;
+    if(w < 1024)
+    {
+        wk = 1024.0f/w;
+    }
+    if(h < 768)
+    {
+        hk = 768.0f/h;
+    }
     wk = hk = max(wk, hk);
     w = int(ceil(w*wk));
     h = int(ceil(h*hk));
@@ -155,7 +183,8 @@ Notes:
 */
 
 void renderbackgroundview(
-    int win_w, int win_h,
+    int win_w,
+    int win_h,
     const char *caption,
     Texture *mapshot,
     const char *mapname,
@@ -198,7 +227,8 @@ void renderbackgroundview(
     gle::deftexcoord0();
 
     settexture("media/interface/background.png", 0); //main menu background
-    float bu = win_w*0.67f/256.0f, bv = win_h*0.67f/256.0f;
+    float bu = win_w*0.67f/256.0f,
+          bv = win_h*0.67f/256.0f;
     bgquad(0, 0, win_w, win_h, backgroundu, backgroundv, bu, bv);
 
     glEnable(GL_BLEND);
@@ -229,16 +259,23 @@ void renderbackgroundview(
     {
         int tw = text_width(caption);
         float tsz = 0.04f*min(win_w, win_h)/FONTH,
-              tx = 0.5f*(win_w - tw*tsz), ty = win_h - 0.075f*1.5f*min(win_w, win_h) - FONTH*tsz;
+              tx = 0.5f*(win_w - tw*tsz),
+              ty = win_h - 0.075f*1.5f*min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
         draw_text(caption, 0, 0);
         pophudmatrix();
     }
-
     if (mapshot || mapname)
     {
-        float infowidth = 14*FONTH, sz = 0.35f*min(win_w, win_h), msz = (0.85f*min(win_w, win_h) - sz)/(infowidth + FONTH), x = 0.5f*win_w, y = logo_y+logo_h - sz/15, mx = 0, my = 0, mw = 0, mh = 0;
-
+        float infowidth = 14*FONTH,
+              sz = 0.35f*min(win_w, win_h),
+              msz = (0.85f*min(win_w, win_h) - sz)/(infowidth + FONTH),
+              x = 0.5f*win_w,
+              y = logo_y+logo_h - sz/15,
+              mx = 0,
+              my = 0,
+              mw = 0,
+              mh = 0;
         // Prepare text area for map info
         if (mapinfo)
         {
@@ -263,7 +300,9 @@ void renderbackgroundview(
         // Map name was provided
         if (mapname)
         {
-            float tw = text_widthf(mapname), tsz = sz/(8*FONTH), tx = max(0.5f*(mw*msz - tw*tsz), 0.0f);
+            float tw = text_widthf(mapname),
+                  tsz = sz/(8*FONTH),
+                  tx = max(0.5f*(mw*msz - tw*tsz), 0.0f);
             pushhudtranslate(x+mx+tx, y, tsz);
             draw_text(mapname, 0, 0);
             pophudmatrix();
@@ -293,33 +332,40 @@ void setbackgroundinfo(const char *caption = NULL, Texture *mapshot = NULL, cons
     if(mapinfo != backgroundmapinfo)
     {
         DELETEA(backgroundmapinfo);
-        if(mapinfo) backgroundmapinfo = newstring(mapinfo);
+        if(mapinfo)
+        {
+            backgroundmapinfo = newstring(mapinfo);
+        }
     }
 }
 
 void renderbackground(const char *caption, Texture *mapshot, const char *mapname, const char *mapinfo, bool force)
 {
-    if(!inbetweenframes && !force) return;
-
-    if(menumute) stopsounds(); // stop sounds while loading
-
+    if(!inbetweenframes && !force)
+    {
+        return;
+    }
+    if(menumute)
+    {
+        stopsounds(); // stop sounds while loading
+    }
     int w = hudw, h = hudh;
-    if(forceaspect) w = int(ceil(h*forceaspect));
+    if(forceaspect)
+    {
+        w = int(ceil(h*forceaspect));
+    }
     getbackgroundres(w, h);
     gettextres(w, h);
-
     if(force)
     {
         renderbackgroundview(w, h, caption, mapshot, mapname, mapinfo);
         return;
     }
-
     for(int i = 0; i < 3; ++i)
     {
         renderbackgroundview(w, h, caption, mapshot, mapname, mapinfo);
         swapbuffers(false);
     }
-
     setbackgroundinfo(caption, mapshot, mapname, mapinfo);
 }
 
@@ -327,7 +373,10 @@ void restorebackground(int w, int h, bool force = false)
 {
     if(renderedframe)
     {
-        if(!force) return;
+        if(!force)
+        {
+            return;
+        }
         setbackgroundinfo();
     }
     renderbackgroundview(w, h, backgroundcaption[0] ? backgroundcaption : NULL, backgroundmapshot, backgroundmapname[0] ? backgroundmapname : NULL, backgroundmapinfo);
@@ -344,7 +393,8 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     gle::defvertex(2);
     gle::deftexcoord0();
 
-    float fh = 0.060f*min(w, h), fw = fh*15,
+    float fh = 0.060f*min(w, h),
+          fw = fh*15,
           fx = renderedframe ? w - fw - fh/4 : 0.5f*(w - fw),
           fy = renderedframe ? fh/4 : h - fh*1.5f;
     settexture("media/interface/loading_frame.png", 3);
@@ -353,10 +403,16 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    float bw = fw*(512 - 2*8)/512.0f, bh = fh*20/32.0f,
-          bx = fx + fw*8/512.0f, by = fy + fh*6/32.0f,
-          su1 = 0/32.0f, su2 = 8/32.0f, sw = fw*8/512.0f,
-          eu1 = 24/32.0f, eu2 = 32/32.0f, ew = fw*8/512.0f,
+    float bw = fw*(512 - 2*8)/512.0f,
+          bh = fh*20/32.0f,
+          bx = fx + fw*8/512.0f,
+          by = fy + fh*6/32.0f,
+          su1 = 0/32.0f,
+          su2 = 8/32.0f,
+          sw = fw*8/512.0f,
+          eu1 = 24/32.0f,
+          eu2 = 32/32.0f,
+          ew = fw*8/512.0f,
           mw = bw - sw - ew,
           ex = bx+sw + max(mw*bar, fw*8/512.0f);
     if(bar > 0)
@@ -371,13 +427,14 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     {
         int tw = text_width(text);
         float tsz = bh*0.6f/FONTH;
-        if(tw*tsz > mw) tsz = mw/tw;
-    
+        if(tw*tsz > mw)
+        {
+            tsz = mw/tw;
+        }
         pushhudtranslate(bx+sw, by + (bh - FONTH*tsz)/2, tsz);
         draw_text(text, 0, 0);
         pophudmatrix();
     }
-
     glDisable(GL_BLEND);
 }
 
@@ -385,48 +442,68 @@ VAR(progressbackground, 0, 0, 1);
 
 void renderprogress(float bar, const char *text, bool background)   // also used during loading
 {
-    if(!inbetweenframes || drawtex) return;
-
+    if(!inbetweenframes || drawtex)
+    {
+        return;
+    }
     extern int menufps, maxfps;
     int fps = menufps ? (maxfps ? min(maxfps, menufps) : menufps) : maxfps;
     if(fps)
     {
         static int lastprogress = 0;
-        int ticks = SDL_GetTicks(), diff = ticks - lastprogress;
-        if(bar > 0 && diff >= 0 && diff < (1000 + fps-1)/fps) return;
+        int ticks = SDL_GetTicks(),
+            diff = ticks - lastprogress;
+        if(bar > 0 && diff >= 0 && diff < (1000 + fps-1)/fps)
+        {
+            return;
+        }
         lastprogress = ticks;
     }
-
     clientkeepalive();      // make sure our connection doesn't time out while loading maps etc.
-
     #ifdef __APPLE__
     interceptkey(SDLK_UNKNOWN); // keep the event queue awake to avoid 'beachball' cursor
     #endif
-
-    int w = hudw, h = hudh;
-    if(forceaspect) w = int(ceil(h*forceaspect));
+    int w = hudw,
+        h = hudh;
+    if(forceaspect)
+    {
+        w = int(ceil(h*forceaspect));
+    }
     getbackgroundres(w, h);
     gettextres(w, h);
 
     extern int mesa_swap_bug, curvsync;
     bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || totalmillis==1));
-    if(background || forcebackground) restorebackground(w, h, forcebackground);
-
+    if(background || forcebackground)
+    {
+        restorebackground(w, h, forcebackground);
+    }
     renderprogressview(w, h, bar, text);
     swapbuffers(false);
 }
 
 VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
-bool shouldgrab = false, grabinput = false, minimized = false, canrelativemouse = true, relativemouse = false;
-int keyrepeatmask = 0, textinputmask = 0;
+bool shouldgrab = false,
+     grabinput = false,
+     minimized = false,
+     canrelativemouse = true,
+     relativemouse = false;
+int keyrepeatmask = 0,
+    textinputmask = 0;
 Uint32 textinputtime = 0;
 VAR(textinputfilter, 0, 5, 1000);
 
 void keyrepeat(bool on, int mask)
 {
-    if(on) keyrepeatmask |= mask;
-    else keyrepeatmask &= ~mask;
+    if(on)
+    {
+        keyrepeatmask |= mask;
+    }
+    else
+    {
+        keyrepeatmask &= ~mask;
+    }
 }
 
 void textinput(bool on, int mask)
@@ -443,7 +520,10 @@ void textinput(bool on, int mask)
     else
     {
         textinputmask &= ~mask;
-        if(!textinputmask) SDL_StopTextInput();
+        if(!textinputmask)
+        {
+            SDL_StopTextInput();
+        }
     }
 }
 
@@ -484,7 +564,10 @@ bool initwindowpos = false;
 
 void setfullscreen(bool enable)
 {
-    if(!screen) return;
+    if(!screen)
+    {
+        return;
+    }
     //initwarning(enable ? "fullscreen" : "windowed");
     SDL_SetWindowFullscreen(screen, enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
     if(!enable)
@@ -492,7 +575,8 @@ void setfullscreen(bool enable)
         SDL_SetWindowSize(screen, scr_w, scr_h);
         if(initwindowpos)
         {
-            int winx = SDL_WINDOWPOS_CENTERED, winy = SDL_WINDOWPOS_CENTERED;
+            int winx = SDL_WINDOWPOS_CENTERED,
+                winy = SDL_WINDOWPOS_CENTERED;
             SDL_SetWindowPosition(screen, winx, winy);
             initwindowpos = false;
         }
@@ -513,8 +597,14 @@ void screenres(int w, int h)
     {
         scr_w = min(scr_w, desktopw);
         scr_h = min(scr_h, desktoph);
-        if(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN) gl_resize();
-        else SDL_SetWindowSize(screen, scr_w, scr_h);
+        if(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN)
+        {
+            gl_resize();
+        }
+        else
+        {
+            SDL_SetWindowSize(screen, scr_w, scr_h);
+        }
     }
     else
     {
@@ -526,36 +616,53 @@ ICOMMAND(screenres, "ii", (int *w, int *h), screenres(*w, *h));
 
 static void setgamma(int val)
 {
-    if(screen && SDL_SetWindowBrightness(screen, val/100.0f) < 0) conoutf(Console_Error, "Could not set gamma: %s", SDL_GetError());
+    if(screen && SDL_SetWindowBrightness(screen, val/100.0f) < 0)
+    {
+        conoutf(Console_Error, "Could not set gamma: %s", SDL_GetError());
+    }
 }
 
 static int curgamma = 100;
 VARFNP(gamma, reqgamma, 30, 100, 300,
 {
-    if(initing || reqgamma == curgamma) return;
+    if(initing || reqgamma == curgamma)
+    {
+        return;
+    }
     curgamma = reqgamma;
     setgamma(curgamma);
 });
 
 void restoregamma()
 {
-    if(initing || reqgamma == 100) return;
+    if(initing || reqgamma == 100)
+    {
+        return;
+    }
     curgamma = reqgamma;
     setgamma(curgamma);
 }
 
 void cleargamma()
 {
-    if(curgamma != 100 && screen) SDL_SetWindowBrightness(screen, 1.0f);
+    if(curgamma != 100 && screen)
+    {
+        SDL_SetWindowBrightness(screen, 1.0f);
+    }
 }
 
 int curvsync = -1;
 void restorevsync()
 {
-    if(initing || !glcontext) return;
+    if(initing || !glcontext)
+    {
+        return;
+    }
     extern int vsync, vsynctear;
     if(!SDL_GL_SetSwapInterval(vsync ? (vsynctear ? -1 : 1) : 0))
+    {
         curvsync = vsync;
+    }
 }
 
 VARFP(vsync, 0, 0, 1, restorevsync());
@@ -579,16 +686,29 @@ void setupscreen()
     curvsync = -1;
 
     SDL_Rect desktop;
-    if(SDL_GetDisplayBounds(0, &desktop) < 0) fatal("failed querying desktop bounds: %s", SDL_GetError());
+    if(SDL_GetDisplayBounds(0, &desktop) < 0)
+    {
+        fatal("failed querying desktop bounds: %s", SDL_GetError());
+    }
     desktopw = desktop.w;
     desktoph = desktop.h;
 
-    if(scr_h < 0) scr_h = SCR_DEFAULTH;
-    if(scr_w < 0) scr_w = (scr_h*desktopw)/desktoph;
+    if(scr_h < 0)
+    {
+        scr_h = SCR_DEFAULTH;
+    }
+    if(scr_w < 0)
+    {
+        scr_w = (scr_h*desktopw)/desktoph;
+    }
     scr_w = min(scr_w, desktopw);
     scr_h = min(scr_h, desktoph);
 
-    int winx = SDL_WINDOWPOS_UNDEFINED, winy = SDL_WINDOWPOS_UNDEFINED, winw = scr_w, winh = scr_h, flags = SDL_WINDOW_RESIZABLE;
+    int winx = SDL_WINDOWPOS_UNDEFINED,
+        winy = SDL_WINDOWPOS_UNDEFINED,
+        winw = scr_w,
+        winh = scr_h,
+        flags = SDL_WINDOW_RESIZABLE;
     if(fullscreen)
     {
         winw = desktopw;
@@ -604,8 +724,10 @@ void setupscreen()
     //create new screen       title          x     y     w     h  flags
     screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
 
-    if(!screen) fatal("failed to create OpenGL window: %s", SDL_GetError());
-
+    if(!screen)
+    {
+        fatal("failed to create OpenGL window: %s", SDL_GetError());
+    }
     SDL_Surface *icon = loadsurface("media/interface/icon.png"); //path to taskbar icon
     if(icon)
     {
@@ -626,12 +748,17 @@ void setupscreen()
         glcompat = glversions[i] <= 30 ? 1 : 0;
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i] / 10);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, glversions[i] % 10);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glversions[i] >= 32 ? SDL_GL_CONTEXT_PROFILE_CORE : 0); 
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glversions[i] >= 32 ? SDL_GL_CONTEXT_PROFILE_CORE : 0);
         glcontext = SDL_GL_CreateContext(screen);
-        if(glcontext) break;
+        if(glcontext)
+        {
+            break;
+        }
     }
-    if(!glcontext) fatal("failed to create OpenGL context: %s", SDL_GetError());
-
+    if(!glcontext)
+    {
+        fatal("failed to create OpenGL context: %s", SDL_GetError());
+    }
     SDL_GetWindowSize(screen, &screenw, &screenh);
     renderw = min(scr_w, screenw);
     renderh = min(scr_h, screenh);
@@ -675,7 +802,9 @@ void resetgl()
        !reloadtexture("media/interface/mapshot_frame.png") ||
        !reloadtexture("media/interface/loading_frame.png") ||
        !reloadtexture("media/interface/loading_bar.png"))
+    {
         fatal("failed to reload core texture");
+    }
     reloadfonts();
     inbetweenframes = true;
     renderbackground("initializing...");
@@ -704,10 +833,14 @@ static bool filterevent(const SDL_Event &event)
             if(grabinput && !relativemouse && !(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN))
             {
                 if(event.motion.x == screenw / 2 && event.motion.y == screenh / 2)
+                {
                     return false;  // ignore any motion events generated by SDL_WarpMouse
+                }
                 #ifdef __APPLE__
                 if(event.motion.y == 0)
+                {
                     return false;  // let mac users drag windows via the title bar
+                }
                 #endif
             }
             break;
@@ -719,7 +852,10 @@ static inline bool pollevent(SDL_Event &event)
 {
     while(SDL_PollEvent(&event))
     {
-        if(filterevent(event)) return true;
+        if(filterevent(event))
+        {
+            return true;
+        }
     }
     return false;
 }
@@ -733,14 +869,28 @@ bool interceptkey(int sym)
     {
         switch(event.type)
         {
-            case SDL_MOUSEMOTION: break;
-            default: pushevent(event); break;
+            case SDL_MOUSEMOTION:
+            {
+                break;
+            }
+            default:
+            {
+                pushevent(event);
+                break;
+            }
         }
     }
     lastintercept = sym;
-    if(sym != SDLK_UNKNOWN) for(int i = len; i < events.length(); i++)
+    if(sym != SDLK_UNKNOWN)
     {
-        if(events[i].type == SDL_KEYDOWN && events[i].key.keysym.sym == sym) { events.remove(i); return true; }
+        for(int i = len; i < events.length(); i++)
+        {
+            if(events[i].type == SDL_KEYDOWN && events[i].key.keysym.sym == sym)
+            {
+                events.remove(i);
+                return true;
+            }
+        }
     }
     return false;
 }
@@ -749,7 +899,10 @@ static void ignoremousemotion()
 {
     SDL_Event e;
     SDL_PumpEvents();
-    while(SDL_PeepEvents(&e, 1, SDL_GETEVENT, SDL_MOUSEMOTION, SDL_MOUSEMOTION));
+    while(SDL_PeepEvents(&e, 1, SDL_GETEVENT, SDL_MOUSEMOTION, SDL_MOUSEMOTION))
+    {
+        //(empty body)
+    }
 }
 
 static void resetmousemotion()
@@ -767,7 +920,10 @@ static void checkmousemotion(int &dx, int &dy)
         SDL_Event &event = events[i];
         if(event.type != SDL_MOUSEMOTION)
         {
-            if(i > 0) events.remove(0, i);
+            if(i > 0)
+            {
+                events.remove(0, i);
+            }
             return;
         }
         dx += event.motion.xrel;
@@ -794,61 +950,81 @@ void checkinput()
     bool mousemoved = false;
     while(events.length() || pollevent(event))
     {
-        if(events.length()) event = events.remove(0);
-
+        if(events.length())
+        {
+            event = events.remove(0);
+        }
         switch(event.type)
         {
             case SDL_QUIT:
+            {
                 quit();
                 return;
-
+            }
             case SDL_TEXTINPUT:
+            {
                 if(textinputmask && int(event.text.timestamp-textinputtime) >= textinputfilter)
-                {   
+                {
                     uchar buf[SDL_TEXTINPUTEVENT_TEXT_SIZE+1];
                     size_t len = decodeutf8(buf, sizeof(buf)-1, (const uchar *)event.text.text, strlen(event.text.text));
-                    if(len > 0) { buf[len] = '\0'; processtextinput((const char *)buf, len); }
+                    if(len > 0)
+                    {
+                        buf[len] = '\0';
+                        processtextinput((const char *)buf, len);
+                    }
                 }
                 break;
-
+            }
             case SDL_KEYDOWN:
             case SDL_KEYUP:
+            {
                 if(keyrepeatmask || !event.key.repeat)
+                {
                     processkey(event.key.keysym.sym, event.key.state==SDL_PRESSED);
+                }
                 break;
-
+            }
             case SDL_WINDOWEVENT:
                 switch(event.window.event)
                 {
                     case SDL_WINDOWEVENT_CLOSE:
+                    {
                         quit();
                         break;
-
+                    }
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    {
                         shouldgrab = true;
                         break;
+                    }
                     case SDL_WINDOWEVENT_ENTER:
+                    {
                         inputgrab(grabinput = true);
                         break;
-
+                    }
                     case SDL_WINDOWEVENT_LEAVE:
                     case SDL_WINDOWEVENT_FOCUS_LOST:
+                    {
                         inputgrab(grabinput = false);
                         break;
-
+                    }
                     case SDL_WINDOWEVENT_MINIMIZED:
+                    {
                         minimized = true;
                         break;
-
+                    }
                     case SDL_WINDOWEVENT_MAXIMIZED:
                     case SDL_WINDOWEVENT_RESTORED:
+                    {
                         minimized = false;
                         break;
-
+                    }
                     case SDL_WINDOWEVENT_RESIZED:
+                    {
                         break;
-
+                    }
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    {
                         SDL_GetWindowSize(screen, &screenw, &screenh);
                         if(!(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN))
                         {
@@ -857,42 +1033,84 @@ void checkinput()
                         }
                         gl_resize();
                         break;
+                    }
                 }
                 break;
 
             case SDL_MOUSEMOTION:
                 if(grabinput)
                 {
-                    int dx = event.motion.xrel, dy = event.motion.yrel;
+                    int dx = event.motion.xrel,
+                        dy = event.motion.yrel;
                     checkmousemotion(dx, dy);
-                    if(!UI::movecursor(dx, dy)) mousemove(dx, dy);
+                    if(!UI::movecursor(dx, dy))
+                    {
+                        mousemove(dx, dy);
+                    }
                     mousemoved = true;
                 }
-                else if(shouldgrab) inputgrab(grabinput = true);
+                else if(shouldgrab)
+                {
+                    inputgrab(grabinput = true);
+                }
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
+            {
                 //if(lasttype==event.type && lastbut==event.button.button) break; // why?? get event twice without it
                 switch(event.button.button)
                 {
-                    case SDL_BUTTON_LEFT: processkey(-1, event.button.state==SDL_PRESSED); break;
-                    case SDL_BUTTON_MIDDLE: processkey(-2, event.button.state==SDL_PRESSED); break;
-                    case SDL_BUTTON_RIGHT: processkey(-3, event.button.state==SDL_PRESSED); break;
-                    case SDL_BUTTON_X1: processkey(-6, event.button.state==SDL_PRESSED); break;
-                    case SDL_BUTTON_X2: processkey(-7, event.button.state==SDL_PRESSED); break;
+                    case SDL_BUTTON_LEFT:
+                    {
+                        processkey(-1, event.button.state==SDL_PRESSED);
+                        break;
+                    }
+                    case SDL_BUTTON_MIDDLE:
+                    {
+                        processkey(-2, event.button.state==SDL_PRESSED);
+                        break;
+                    }
+                    case SDL_BUTTON_RIGHT:
+                    {
+                        processkey(-3, event.button.state==SDL_PRESSED);
+                        break;
+                    }
+                    case SDL_BUTTON_X1:
+                    {
+                        processkey(-6, event.button.state==SDL_PRESSED);
+                        break;
+                    }
+                    case SDL_BUTTON_X2:
+                    {
+                        processkey(-7, event.button.state==SDL_PRESSED);
+                        break;
+                    }
                 }
                 //lasttype = event.type;
                 //lastbut = event.button.button;
                 break;
-
+            }
             case SDL_MOUSEWHEEL:
-                if(event.wheel.y > 0) { processkey(-4, true); processkey(-4, false); }
-                else if(event.wheel.y < 0) { processkey(-5, true); processkey(-5, false); }
+            {
+                if(event.wheel.y > 0)
+                {
+                    processkey(-4, true);
+                    processkey(-4, false);
+                }
+                else if(event.wheel.y < 0)
+                {
+                    processkey(-5, true);
+                    processkey(-5, false);
+                }
                 break;
+            }
         }
     }
-    if(mousemoved) resetmousemotion();
+    if(mousemoved)
+    {
+        resetmousemotion();
+    }
 }
 
 void swapbuffers(bool overlay)
@@ -908,10 +1126,16 @@ VARP(maxfps, 0, 125, 1000);
 void limitfps(int &millis, int curmillis)
 {
     int limit = (mainmenu || minimized) && menufps ? (maxfps ? min(maxfps, menufps) : menufps) : maxfps;
-    if(!limit) return;
+    if(!limit)
+    {
+        return;
+    }
     static int fpserror = 0;
     int delay = 1000/limit - (millis-curmillis);
-    if(delay < 0) fpserror = 0;
+    if(delay < 0)
+    {
+        fpserror = 0;
+    }
     else
     {
         fpserror += 1000%limit;
@@ -933,7 +1157,7 @@ void limitfps(int &millis, int curmillis)
 extern "C"
 {
 #ifdef __GNUC__
-__attribute__((dllexport))    
+__attribute__((dllexport))
 #else
 __declspec(dllexport)
 #endif
@@ -951,7 +1175,10 @@ __declspec(dllexport)
 #if defined(WIN32) && !defined(_DEBUG) && !defined(__GNUC__)
 void stackdumper(unsigned int type, EXCEPTION_POINTERS *ep)
 {
-    if(!ep) fatal("unknown type");
+    if(!ep)
+    {
+        fatal("unknown type");
+    }
     EXCEPTION_RECORD *er = ep->ExceptionRecord;
     CONTEXT *context = ep->ContextRecord;
     char out[512];
@@ -961,7 +1188,11 @@ void stackdumper(unsigned int type, EXCEPTION_POINTERS *ep)
     STACKFRAME64 sf = {{context->Rip, 0, AddrModeFlat}, {}, {context->Rbp, 0, AddrModeFlat}, {context->Rsp, 0, AddrModeFlat}, 0};
     while(::StackWalk64(IMAGE_FILE_MACHINE_AMD64, GetCurrentProcess(), GetCurrentThread(), &sf, context, NULL, ::SymFunctionTableAccess, ::SymGetModuleBase, NULL))
     {
-        union { IMAGEHLP_SYMBOL64 sym; char symext[sizeof(IMAGEHLP_SYMBOL64) + sizeof(string)]; };
+        union
+        {
+            IMAGEHLP_SYMBOL64 sym;
+            char symext[sizeof(IMAGEHLP_SYMBOL64) + sizeof(string)];
+        };
         sym.SizeOfStruct = sizeof(sym);
         sym.MaxNameLength = sizeof(symext) - sizeof(sym);
         IMAGEHLP_LINE64 line;
@@ -973,7 +1204,11 @@ void stackdumper(unsigned int type, EXCEPTION_POINTERS *ep)
     STACKFRAME sf = {{context->Eip, 0, AddrModeFlat}, {}, {context->Ebp, 0, AddrModeFlat}, {context->Esp, 0, AddrModeFlat}, 0};
     while(::StackWalk(IMAGE_FILE_MACHINE_I386, GetCurrentProcess(), GetCurrentThread(), &sf, context, NULL, ::SymFunctionTableAccess, ::SymGetModuleBase, NULL))
     {
-        union { IMAGEHLP_SYMBOL sym; char symext[sizeof(IMAGEHLP_SYMBOL) + sizeof(string)]; };
+        union
+        {
+            IMAGEHLP_SYMBOL sym;
+            char symext[sizeof(IMAGEHLP_SYMBOL) + sizeof(string)];
+        };
         sym.SizeOfStruct = sizeof(sym);
         sym.MaxNameLength = sizeof(symext) - sizeof(sym);
         IMAGEHLP_LINE line;
@@ -1006,20 +1241,30 @@ void resetfpshistory()
 void updatefpshistory(int millis)
 {
     fpshistory[fpspos++] = max(1, min(1000, millis));
-    if(fpspos>=MAXFPSHISTORY) fpspos = 0;
+    if(fpspos>=MAXFPSHISTORY)
+    {
+        fpspos = 0;
+    }
 }
 
 void getframemillis(float &avg, float &bestdiff, float &worstdiff)
 {
-    int total = fpshistory[MAXFPSHISTORY-1], best = total, worst = total;
+    int total = fpshistory[MAXFPSHISTORY-1],
+        best = total,
+        worst = total;
     for(int i = 0; i < MAXFPSHISTORY-1; ++i)
     {
         int millis = fpshistory[i];
         total += millis;
-        if(millis < best) best = millis;
-        if(millis > worst) worst = millis;
+        if(millis < best)
+        {
+            best = millis;
+        }
+        if(millis > worst)
+        {
+            worst = millis;
+        }
     }
-
     avg = total/float(MAXFPSHISTORY);
     best = best - avg;
     worstdiff = avg - worst;
@@ -1027,15 +1272,22 @@ void getframemillis(float &avg, float &bestdiff, float &worstdiff)
 
 void getfps(int &fps, int &bestdiff, int &worstdiff)
 {
-    int total = fpshistory[MAXFPSHISTORY-1], best = total, worst = total;
+    int total = fpshistory[MAXFPSHISTORY-1],
+        best = total,
+        worst = total;
     for(int i = 0; i < MAXFPSHISTORY-1; ++i)
     {
         int millis = fpshistory[i];
         total += millis;
-        if(millis < best) best = millis;
-        if(millis > worst) worst = millis;
+        if(millis < best)
+        {
+            best = millis;
+        }
+        if(millis > worst)
+        {
+            worst = millis;
+        }
     }
-
     fps = (1000*MAXFPSHISTORY)/total;
     bestdiff = 1000/best-fps;
     worstdiff = fps-1000/worst;
@@ -1043,7 +1295,10 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
 
 void getfps_(int *raw)
 {
-    if(*raw) floatret(1000.0f/fpshistory[(fpspos+MAXFPSHISTORY-1)%MAXFPSHISTORY]);
+    if(*raw)
+    {
+        floatret(1000.0f/fpshistory[(fpspos+MAXFPSHISTORY-1)%MAXFPSHISTORY]);
+    }
     else
     {
         int fps, bestdiff, worstdiff;
@@ -1058,19 +1313,32 @@ bool inbetweenframes = false, renderedframe = true;
 
 static bool findarg(int argc, char **argv, const char *str)
 {
-    for(int i = 1; i<argc; i++) if(strstr(argv[i], str)==argv[i]) return true;
+    for(int i = 1; i<argc; i++)
+    {
+        if(strstr(argv[i], str)==argv[i])
+        {
+            return true;
+        }
+    }
     return false;
 }
 
 static int clockrealbase = 0, clockvirtbase = 0;
-static void clockreset() { clockrealbase = SDL_GetTicks(); clockvirtbase = totalmillis; }
+static void clockreset()
+{
+    clockrealbase = SDL_GetTicks();
+    clockvirtbase = totalmillis;
+}
 VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
 VARFP(clockfix, 0, 0, 1, clockreset());
 
 int getclockmillis()
 {
     int millis = SDL_GetTicks() - clockrealbase;
-    if(clockfix) millis = int(millis*(double(clockerror)/1000000));
+    if(clockfix)
+    {
+        millis = int(millis*(double(clockerror)/1000000));
+    }
     millis += clockvirtbase;
     return max(millis, totalmillis);
 }
@@ -1093,55 +1361,136 @@ int main(int argc, char **argv)
 
     initing = Init_Reset;
     // set home dir first
-    for(int i = 1; i<argc; i++) if(argv[i][0]=='-' && argv[i][1] == 'u') { sethomedir(&argv[i][2]); break; }
-    // set log after home dir, but before anything else
-    for(int i = 1; i<argc; i++) if(argv[i][0]=='-' && argv[i][1] == 'g')
+    for(int i = 1; i<argc; i++)
     {
-        const char *file = argv[i][2] ? &argv[i][2] : "log.txt";
-        setlogfile(file);
-        logoutf("Setting log file: %s", file);
-        break;
+        if(argv[i][0]=='-' && argv[i][1] == 'u')
+        {
+            sethomedir(&argv[i][2]);
+            break;
+        }
+    }
+    // set log after home dir, but before anything else
+    for(int i = 1; i<argc; i++)
+    {
+        if(argv[i][0]=='-' && argv[i][1] == 'g')
+        {
+            const char *file = argv[i][2] ? &argv[i][2] : "log.txt";
+            setlogfile(file);
+            logoutf("Setting log file: %s", file);
+            break;
+        }
     }
     execfile("config/init.cfg", false);
     for(int i = 1; i<argc; i++)
     {
-        if(argv[i][0]=='-') switch(argv[i][1])
+        if(argv[i][0]=='-')
         {
-            case 'u': if(homedir[0]) logoutf("Using home directory: %s", homedir); break;
-            case 'k':
+            switch(argv[i][1])
             {
-                const char *dir = addpackagedir(&argv[i][2]);
-                if(dir) logoutf("Adding package directory: %s", dir);
-                break;
+                case 'u':
+                {
+                    if(homedir[0])
+                    {
+                        logoutf("Using home directory: %s", homedir);
+                        break;
+                    }
+                }
+                case 'k':
+                {
+                    const char *dir = addpackagedir(&argv[i][2]);
+                    if(dir)
+                    {
+                        logoutf("Adding package directory: %s", dir);
+                    }
+                    break;
+                }
+                case 'g':
+                {
+                    break;
+                }
+                case 'd': dedicated = atoi(&argv[i][2]);
+                {
+                    if(dedicated<=0)
+                    {
+                        dedicated = 2;
+                        break;
+                    }
+                }
+                case 'w':
+                {
+                    scr_w = clamp(atoi(&argv[i][2]), SCR_MINW, SCR_MAXW);
+                    if(!findarg(argc, argv, "-h"))
+                    {
+                        scr_h = -1;
+                    }
+                    break;
+                }
+                case 'h':
+                {
+                    scr_h = clamp(atoi(&argv[i][2]), SCR_MINH, SCR_MAXH);
+                    {
+                        if(!findarg(argc, argv, "-w"))
+                        {
+                            scr_w = -1;
+                            break;
+                        }
+                    }
+                }
+                case 'f':
+                {
+                    fullscreen = atoi(&argv[i][2]);
+                    break;
+                }
+                case 'l':
+                {
+                    char pkgdir[] = "media/";
+                    load = strstr(path(&argv[i][2]), path(pkgdir));
+                    if(load)
+                    {
+                        load += sizeof(pkgdir)-1;
+                    }
+                    else
+                    {
+                        load = &argv[i][2];
+                    }
+                    break;
+                }
+                case 'x':
+                {
+                    initscript = &argv[i][2];
+                    break;
+                }
+                default:
+                {
+                    if(!serveroption(argv[i]))
+                    {
+                        gameargs.add(argv[i]);
+                        break;
+                    }
+                }
             }
-            case 'g': break;
-            case 'd': dedicated = atoi(&argv[i][2]); if(dedicated<=0) dedicated = 2; break;
-            case 'w': scr_w = clamp(atoi(&argv[i][2]), SCR_MINW, SCR_MAXW); if(!findarg(argc, argv, "-h")) scr_h = -1; break;
-            case 'h': scr_h = clamp(atoi(&argv[i][2]), SCR_MINH, SCR_MAXH); if(!findarg(argc, argv, "-w")) scr_w = -1; break;
-            case 'f': fullscreen = atoi(&argv[i][2]); break;
-            case 'l':
-            {
-                char pkgdir[] = "media/";
-                load = strstr(path(&argv[i][2]), path(pkgdir));
-                if(load) load += sizeof(pkgdir)-1;
-                else load = &argv[i][2];
-                break;
-            }
-            case 'x': initscript = &argv[i][2]; break;
-            default: if(!serveroption(argv[i])) gameargs.add(argv[i]); break;
         }
-        else gameargs.add(argv[i]);
+        else
+        {
+            gameargs.add(argv[i]);
+        }
     }
 
     if(dedicated <= 1)
     {
         logoutf("init: sdl");
 
-        if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0) fatal("Unable to initialize SDL: %s", SDL_GetError());
+        if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
+        {
+            fatal("Unable to initialize SDL: %s", SDL_GetError());
+        }
     }
 
     logoutf("init: net");
-    if(enet_initialize()<0) fatal("Unable to initialise network module");
+    if(enet_initialize()<0)
+    {
+        fatal("Unable to initialise network module");
+    }
     atexit(enet_deinitialize);
     enet_time_set(0);
 
@@ -1164,13 +1513,24 @@ int main(int argc, char **argv)
     gl_checkextensions();
     gl_init();
     notexture = textureload("media/texture/game/notexture.png");
-    if(!notexture) fatal("could not find core textures");
+    if(!notexture)
+    {
+        fatal("could not find core textures");
+    }
 
     logoutf("init: console");
-    if(!execfile("config/stdlib.cfg", false)) fatal("cannot find data files (you are running from the wrong folder, try .bat file in the main folder)");   // this is the first file we load.
-    if(!execfile("config/font.cfg", false)) fatal("cannot find font definitions");
-    if(!setfont("default")) fatal("no default font specified");
-
+    if(!execfile("config/stdlib.cfg", false))
+    {
+        fatal("cannot find data files (you are running from the wrong folder, try .bat file in the main folder)");   // this is the first file we load.
+    }
+    if(!execfile("config/font.cfg", false))
+    {
+        fatal("cannot find font definitions");
+    }
+    if(!setfont("default"))
+    {
+        fatal("no default font specified");
+    }
     UI::setup();
 
     inbetweenframes = true;
@@ -1192,8 +1552,10 @@ int main(int argc, char **argv)
     execfile("config/ui.cfg");
     execfile("config/heightmap.cfg");
     execfile("config/blendbrush.cfg");
-    if(game::savedservers()) execfile(game::savedservers(), false);
-
+    if(game::savedservers())
+    {
+        execfile(game::savedservers(), false);
+    }
     identflags |= Idf_Persist;
 
     if(!execfile(game::savedconfig(), false))
@@ -1222,8 +1584,10 @@ int main(int argc, char **argv)
 
     logoutf("init: mainloop");
 
-    if(execfile("once.cfg", false)) remove(findfile("once.cfg", "rb"));
-
+    if(execfile("once.cfg", false))
+    {
+        remove(findfile("once.cfg", "rb"));
+    }
     if(load)
     {
         logoutf("init: localconnect");
@@ -1249,8 +1613,14 @@ int main(int argc, char **argv)
         int scaledtime = game::scaletime(elapsedtime) + timeerr;
         curtime = scaledtime/100;
         timeerr = scaledtime%100;
-        if(!multiplayer(false) && curtime>200) curtime = 200;
-        if(game::ispaused()) curtime = 0;
+        if(!multiplayer(false) && curtime>200)
+        {
+            curtime = 200;
+        }
+        if(game::ispaused())
+        {
+            curtime = 0;
+        }
         lastmillis += curtime;
         totalmillis = millis;
         updatetime();
@@ -1260,13 +1630,18 @@ int main(int argc, char **argv)
         menuprocess(); //shows main menu if not ingame and not online
         tryedit(); //checks to see if in edit & blendmapping is enabled; if it is, enter blendmapping mode
 
-        if(lastmillis) game::updateworld(); //main ingame update routine: calculates projectile positions, physics, etc.
-
+        if(lastmillis)
+        {
+            game::updateworld(); //main ingame update routine: calculates projectile positions, physics, etc.
+        }
         checksleep(lastmillis); //checks cubescript for any pending sleep commands
 
         serverslice(false, 0); //server main routine; this gets deferred to a dedicated server if online
 
-        if(frames) updatefpshistory(elapsedtime); //if collecting framerate history, update with new frame
+        if(frames)
+        {
+            updatefpshistory(elapsedtime); //if collecting framerate history, update with new frame
+        }
         frames++;
 
         // miscellaneous general game effects
@@ -1274,8 +1649,10 @@ int main(int argc, char **argv)
         updateparticles();
         updatesounds();
 
-        if(minimized) continue; //let's not render a frame unless there's a screen to be seen
-
+        if(minimized)
+        {
+            continue; //let's not render a frame unless there's a screen to be seen
+        }
         gl_setupframe(!mainmenu); //also, don't need to set up a frame if on the static main menu
 
         inbetweenframes = false; //tell other stuff that the frame is starting
