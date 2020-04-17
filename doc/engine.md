@@ -182,6 +182,12 @@ statement.
 ```
 namespace MyNamespace
 {
+    int var1, var2, var3;
+
+    int var4 = foo(myfunction()),
+        var5 = bar(foo()),
+        var6 = foo(foo() || foo(bar) || foo(baz));
+
     enum
     {
         Name_ElementOne   = 1,
@@ -200,7 +206,7 @@ namespace MyNamespace
         };
     }
 
-    if(foo)
+    if(foo())
     {
         int a;
         int b;
@@ -221,8 +227,9 @@ namespace MyNamespace
     {
         doStuff;
     }
-
-    int MyFunction()
+//=====================================================================MACRONAME
+#define MACRO_NAME(a,b) stuff(a,b)
+    int myfunction(int a, int b = 0)
     {
         for(int i; i < N; ++N)
         {
@@ -231,21 +238,28 @@ namespace MyNamespace
                 switch(n)
                 {
                     case 1:
+                    {
                         doStuff;
-
+                    }
                     case 2:
+                    {
                         doStuff;
-
+                    }
                     case 3:
                     case 4:
                     case N:
+                    {
                         doStuff;
+                    }
                 }
             }
         }
+        MACRO_NAME(a,b)
         return a;
     }
 }
+#undef MACRONAME
+//==============================================================================
 ```
 
 Control flow statements (if/while/do-while etc.) should get their own line;
@@ -2118,7 +2132,7 @@ Each projectile is given a unique tracking id by the engine, which is set by the
 time at which the projectile spawns. This is the handle by which the projectile
 can later be identified (such as to find its owner).
 
-#### 3.2.4 Projectile Time Evolution
+### 3.2.4 Projectile Time Evolution
 ---
 
 Projectiles in the engine have simple kinematics, as neither gravity nor drag
@@ -2143,7 +2157,8 @@ Since the trajectory of the projectile is parameterized in terms of its end
 location and its speed, the maximum time in flight must be calculated by the
 range by the speed.
 
-### 3.3 Bouncers
+## 3.3 Bouncers
+---
 
 Bouncers are entirely unrelated to jumppad entities and are the name given to
 the particles which can bounce off of surfaces. Bouncers do not interfere with
@@ -2173,14 +2188,15 @@ The twelve unique parameters that bouncers have are as follows:
 * int `offsetmillis` time of projectile creation
 * int `id` unique id assigned to each bouncer entity
 
-### 3.4 Stains
+## 3.4 Stains
 
 Stains are a type of decal that is generally applied by the effect of another
 entity's death. Examples of this include the bullet holes left behind when a
 projectile makes contact with a surface or the blood stains left behind by a
 dead actor's giblet.
 
-#### 3.4.1 Stain Objects
+### 3.4.1 Stain Objects
+---
 
 Stain objects have the following properties in their individual objects:
 
@@ -2190,7 +2206,8 @@ Stain objects have the following properties in their individual objects:
 * ushort `startvert` The vertex in the buffer the stain starts at
 * ushort `endvert` The vertex in the buffer the stain ends at
 
-#### 3.4.2 Stain Settings
+### 3.4.2 Stain Settings
+---
 
 Unlike typical particles and decals, stains, by virtue of their entirely
 cosmetic nature, have user-configurable settings to control their impact on
@@ -2207,6 +2224,7 @@ There are some Cubescript aliases which relate to shaders; those are not user
 commands and are not covered here.
 
 ## 3.5 Particles
+---
 
 Particles are billboarded objects which are rendered clientside and simulate
 small objects of various types. Particles broadly have three types: traditional
@@ -2222,6 +2240,7 @@ the world in any particular way. Particles do, however, cull themselves upon
 contact with geometry to prevent excessive resource usage.
 
 ### 3.5.1 Particle Types
+---
 
 Particles have many specific types which behave in different ways.
 
@@ -2237,6 +2256,7 @@ Particles have many specific types which behave in different ways.
 * `flare` a lens flare
 
 ### 3.5.2 Particle Properties
+---
 
 * vec `o` origin vector triple
 * vec `d` direction vector triple
@@ -2267,6 +2287,7 @@ present:
 * `color2[3]` array and `progress` values for a meter
 
 ### 3.5.3 Pointlike Particles
+---
 
 The pointlike particles are internally refered to as being of the type `part`;
 they are the particles that are most accurately refered to as a "particle".
@@ -2278,6 +2299,7 @@ Particle static entities of type `water`, `fire`, `smoke` are rendered as
 pointlike particles.
 
 ### 3.5.4 Tape Particles
+---
 
 Tape particles are called `tape` for their resemblance to barricade tape in its
 stationary, straight appearance, and act to create beam-like effects in the
@@ -2285,12 +2307,14 @@ level. The static particle entity which uses tape particles also goes by the
 name `tape`; it creates tape particles along a certain direction.
 
 ### 3.5.5 Trail Particles
+---
 
 Trail particles create a number of standard particles radiating out from a
 region of space. The `water` static particle entity type uses a particle trail.
 Trail particles are potentially useful for following a projectile.
 
 ### 3.5.6 Text and Textup Particles
+---
 
 Text particles are most notably used ingame to render player names above their
 heads. They also make an appearance while editing entities, as the entity type
@@ -2302,6 +2326,7 @@ size is proportional to the particle's size parameter and does not follow
 typesetting convention (as these don't make much sense with a 3D engine).
 
 ### 3.5.7 Meter and Metervs Particles
+---
 
 Meters are a status particle used to show the size of a particular value passed
 to its `progress` value. `progress` is capped to values up to 100, and as a
@@ -2312,6 +2337,7 @@ not display the actual value passed as a value, and those reading a meter
 particle ingame would have trouble discerning values within a percent.
 
 ### 3.5.8 Fireball Particles
+---
 
 Fireballs are animated billboards which appear as a large ball of bright gas.
 They are round and their general appearance is isotropic (no particular
@@ -2323,6 +2349,7 @@ Fireballs are perhaps the particle least obviously a 2d billboard, as a result
 its constant animation and scale change.
 
 ### 3.5.9 Lightning Particles
+---
 
 Lightning particles are somewhat similar to tape particles, being essentially
 a straight line, but have the added effect of being animated. As should be
@@ -2330,6 +2357,7 @@ apparent from the name, lightning particles dance from between its endpoints
 like an electrical arc might.
 
 ### 3.5.10 Flare Particles
+---
 
 Flare particles simulate two different optical phenomena: sunstars and lens
 flare. Sunstars are an apeture effect present in essentially all optical systems
@@ -2349,6 +2377,7 @@ viewed by an unaided human observer, as this effect doesn't occur without
 multiple elements.
 
 ## 3.6 Physics
+---
 
 Physics apply to game entities called `physents`. Physents have a large number
 of properties which affect their time evolution, and additionally are able to
@@ -2359,6 +2388,7 @@ entities also have additional properties unique to their respective entity
 types, as they are all seperate children of the physent class.
 
 ### 3.6.1 Physent Properties
+---
 
 Physents all have the following properties:
 
@@ -2527,6 +2557,9 @@ quite limited. Servers know the following:
 * Time since master server listing confirmation
 * Location and status of server entities (pickup items)
 
+The server does not know where players are and does not keep track of projectile
+locations.
+
 ## 7.2 Client
 ---
 
@@ -2573,8 +2606,6 @@ differ from the position that the client itself believes it is at. As a result
 of this, clients dealing with a laggy client don't have to trust that client's
 percieved position to record a hit.
 
-
-
 # 10 Internal Objects
 ---
 
@@ -2592,6 +2623,7 @@ A large number of vector objects exist in the game to facilitate working with
 objects in 2D, 3D, 4D, quaternion, and dual quaternion vector spaces.
 
 #### 10.1.1 `vec`
+---
 
 `vec` is an incredibly ubiquitous object in the engine, where it is referenced
 thousands of times over essentially every part of the game code. Key features of
@@ -2608,6 +2640,7 @@ befitting a 3d engine where locations of objects in the world are nearly always
 defined as a 3d vector.
 
 #### 10.1.2 `bvec`
+---
 
 `bvec` is a 3d color vector object. As opposed to the standard `vec` object,
 which is useful mainly in world geometry, the `bvec` vector is intended for use
