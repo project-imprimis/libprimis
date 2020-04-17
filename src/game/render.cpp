@@ -26,12 +26,18 @@ namespace game
 
     void saveragdoll(gameent *d)
     {
-        if(!d->ragdoll || !ragdollmillis || (!ragdollfade && lastmillis > d->lastpain + ragdollmillis)) return;
+        if(!d->ragdoll || !ragdollmillis || (!ragdollfade && lastmillis > d->lastpain + ragdollmillis))
+        {
+            return;
+        }
         gameent *r = new gameent(*d);
         r->lastupdate = ragdollfade && lastmillis > d->lastpain + max(ragdollmillis - ragdollfade, 0) ? lastmillis - max(ragdollmillis - ragdollfade, 0) : d->lastpain;
         r->edit = NULL;
         r->ai = NULL;
-        if(d==player1) r->playermodel = playermodel;
+        if(d==player1)
+        {
+            r->playermodel = playermodel;
+        }
         ragdolls.add(r);
         d->ragdoll = NULL;
     }
@@ -104,14 +110,20 @@ namespace game
 
     const playermodelinfo *getplayermodelinfo(int n)
     {
-        if(size_t(n) >= sizeof(playermodels)/sizeof(playermodels[0])) return NULL;
+        if(size_t(n) >= sizeof(playermodels)/sizeof(playermodels[0]))
+        {
+            return NULL;
+        }
         return &playermodels[n];
     }
 
     const playermodelinfo &getplayermodelinfo(gameent *d)
     {
         const playermodelinfo *mdl = getplayermodelinfo(d==player1 || forceplayermodels ? playermodel : d->playermodel);
-        if(!mdl) mdl = getplayermodelinfo(playermodel);
+        if(!mdl)
+        {
+            mdl = getplayermodelinfo(playermodel);
+        }
         return *mdl;
     }
 
@@ -121,9 +133,18 @@ namespace game
             return playercolors[color%(sizeof(playercolors)/sizeof(playercolors[0]))];
         switch(team)
         {
-            case 1: GETPLAYERCOLOR(playercolorsazul)
-            case 2: GETPLAYERCOLOR(playercolorsrojo)
-            default: GETPLAYERCOLOR(playercolors)
+            case 1:
+            {
+                GETPLAYERCOLOR(playercolorsazul)
+            }
+            case 2:
+            {
+                GETPLAYERCOLOR(playercolorsrojo)
+            }
+            default:
+            {
+                GETPLAYERCOLOR(playercolors)
+            }
         }
     }
 
@@ -134,36 +155,66 @@ namespace game
     {
         if(d==player1) switch(team)
         {
-            case 1: return getplayercolor(1, playercolorazul);
-            case 2: return getplayercolor(2, playercolorrojo);
-            default: return getplayercolor(0, playercolor);
+            case 1:
+            {
+                return getplayercolor(1, playercolorazul);
+            }
+            case 2:
+            {
+                return getplayercolor(2, playercolorrojo);
+            }
+            default:
+            {
+                return getplayercolor(0, playercolor);
+            }
         }
-        else return getplayercolor(team, (d->playercolor>>(5*team))&0x1F);
+        else
+        {
+            return getplayercolor(team, (d->playercolor>>(5*team))&0x1F);
+        }
     }
 
     void changedplayermodel()
     {
-        if(player1->clientnum < 0) player1->playermodel = playermodel;
-        if(player1->ragdoll) cleanragdoll(player1);
+        if(player1->clientnum < 0)
+        {
+            player1->playermodel = playermodel;
+        }
+        if(player1->ragdoll)
+        {
+            cleanragdoll(player1);
+        }
         for(int i = 0; i < ragdolls.length(); i++)
         {
             gameent *d = ragdolls[i];
-            if(!d->ragdoll) continue;
+            if(!d->ragdoll)
+            {
+                continue;
+            }
             if(!forceplayermodels)
             {
                 const playermodelinfo *mdl = getplayermodelinfo(d->playermodel);
-                if(mdl) continue;
+                if(mdl)
+                {
+                    continue;
+                }
             }
             cleanragdoll(d);
         }
         for(int i = 0; i < players.length(); i++)
         {
             gameent *d = players[i];
-            if(d == player1 || !d->ragdoll) continue;
+            if(d == player1 || !d->ragdoll)
+            {
+                continue;
+            }
             if(!forceplayermodels)
             {
                 const playermodelinfo *mdl = getplayermodelinfo(d->playermodel);
-                if(mdl) continue;
+                if(mdl)
+                {
+                    continue;
+                }
             }
             cleanragdoll(d);
         }
@@ -171,7 +222,10 @@ namespace game
 
     void changedplayercolor()
     {
-        if(player1->clientnum < 0) player1->playercolor = playercolor | (playercolorazul<<5) | (playercolorrojo<<10);
+        if(player1->clientnum < 0)
+        {
+            player1->playercolor = playercolor | (playercolorazul<<5) | (playercolorrojo<<10);
+        }
     }
 
     void syncplayer()
@@ -214,7 +268,10 @@ namespace game
         }
     }
 
-    int numanims() { return Anim_NumAnims; }
+    int numanims()
+    {
+        return Anim_NumAnims;
+    }
 
     void findanims(const char *pattern, vector<int> &anims)
     {
@@ -244,7 +301,10 @@ namespace game
         if(intermission && d->state!=ClientState_Dead)
         {
             anim = attack = Anim_Lose|ANIM_LOOP;
-            if(VALID_TEAM(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0) anim = attack = Anim_Win|ANIM_LOOP;
+            if(VALID_TEAM(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0)
+            {
+                anim = attack = Anim_Win|ANIM_LOOP;
+            }
         }
         else if(d->state==ClientState_Alive && d->lasttaunt && lastmillis-d->lasttaunt<1000 && lastmillis-d->lastaction>delay)
         {
@@ -267,7 +327,10 @@ namespace game
         if(mainpass && !(flags&Model_OnlyShadow))
         {
             d->muzzle = vec(-1, -1, -1);
-            if(guns[d->gunselect].vwep) a[ai++] = modelattach("tag_muzzle", &d->muzzle);
+            if(guns[d->gunselect].vwep)
+            {
+                a[ai++] = modelattach("tag_muzzle", &d->muzzle);
+            }
         }
         const char *mdlname = mdl.model[VALID_TEAM(team) ? team : 0];
         float yaw = testanims && d==player1 ? 0 : d->yaw,
@@ -282,8 +345,14 @@ namespace game
             if(ragdoll && mdl.ragdoll) anim |= ANIM_RAGDOLL;
             else if(lastmillis-basetime>1000) anim = Anim_Dead|ANIM_LOOP|ANIM_NOPITCH;
         }
-        else if(d->state==ClientState_Editing || d->state==ClientState_Spectator) anim = Anim_Edit|ANIM_LOOP;
-        else if(d->state==ClientState_Lagged)                            anim = Anim_Lag|ANIM_LOOP;
+        else if(d->state==ClientState_Editing || d->state==ClientState_Spectator)
+        {
+            anim = Anim_Edit|ANIM_LOOP;
+        }
+        else if(d->state==ClientState_Lagged)
+        {
+            anim = Anim_Lag|ANIM_LOOP;
+        }
         else if(!intermission)
         {
             if(lastmillis-d->lastpain < 300)
@@ -297,7 +366,10 @@ namespace game
                 basetime = lastaction;
             }
 
-            if(d->inwater && d->physstate<=PhysEntState_Fall) anim |= (((game::allowmove(d) && (d->move || d->strafe)) || d->vel.z+d->falling.z>0 ? Anim_Swim : Anim_Sink)|ANIM_LOOP)<<ANIM_SECONDARY;
+            if(d->inwater && d->physstate<=PhysEntState_Fall)
+            {
+                anim |= (((game::allowmove(d) && (d->move || d->strafe)) || d->vel.z+d->falling.z>0 ? Anim_Swim : Anim_Sink)|ANIM_LOOP)<<ANIM_SECONDARY;
+            }
             else
             {
                 static const int dirs[9] =
@@ -307,32 +379,99 @@ namespace game
                     Anim_RunNE, Anim_RunN, Anim_RunNW
                 };
                 int dir = dirs[(d->move+1)*3 + (d->strafe+1)];
-                if(d->timeinair>100) anim |= ((dir ? dir+Anim_JumpN-Anim_RunN : Anim_Jump) | ANIM_END) << ANIM_SECONDARY;
-                else if(dir && game::allowmove(d)) anim |= (dir | ANIM_LOOP) << ANIM_SECONDARY;
+                if(d->timeinair>100)
+                {
+                    anim |= ((dir ? dir+Anim_JumpN-Anim_RunN : Anim_Jump) | ANIM_END) << ANIM_SECONDARY;
+                }
+                else if(dir && game::allowmove(d))
+                {
+                    anim |= (dir | ANIM_LOOP) << ANIM_SECONDARY;
+                }
             }
-
-            if(d->crouching) switch((anim>>ANIM_SECONDARY)&ANIM_INDEX)
+            if(d->crouching)
             {
-                case Anim_Idle: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_Crouch<<ANIM_SECONDARY; break;
-                case Anim_Jump: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_CrouchJump<<ANIM_SECONDARY; break;
-                case Anim_Swim: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_CrouchSwim<<ANIM_SECONDARY; break;
-                case Anim_Sink: anim &= ~(ANIM_INDEX<<ANIM_SECONDARY); anim |= Anim_CrouchSink<<ANIM_SECONDARY; break;
-                case 0: anim |= (Anim_Crouch|ANIM_LOOP)<<ANIM_SECONDARY; break;
-                case Anim_RunN: case Anim_RunNE: case Anim_RunE: case Anim_RunSE: case Anim_RunS: case Anim_RunSW: case Anim_RunW: case Anim_RunNW:
-                    anim += (Anim_CrouchN - Anim_RunN) << ANIM_SECONDARY;
-                    break;
-                case Anim_JumpN: case Anim_JumpNE: case Anim_JumpE: case Anim_JumpSE: case Anim_JumpS: case Anim_JumpSW: case Anim_JumpW: case Anim_JumpNW:
-                    anim += (Anim_CrouchJumpN - Anim_JumpN) << ANIM_SECONDARY;
-                    break;
+                switch((anim>>ANIM_SECONDARY)&ANIM_INDEX)
+                {
+                    case Anim_Idle:
+                    {
+                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
+                        anim |= Anim_Crouch<<ANIM_SECONDARY;
+                        break;
+                    }
+                    case Anim_Jump:
+                    {
+                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
+                        anim |= Anim_CrouchJump<<ANIM_SECONDARY;
+                        break;
+                    }
+                    case Anim_Swim:
+                    {
+                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
+                        anim |= Anim_CrouchSwim<<ANIM_SECONDARY;
+                        break;
+                    }
+                    case Anim_Sink:
+                    {
+                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
+                        anim |= Anim_CrouchSink<<ANIM_SECONDARY;
+                        break;
+                    }
+                    case 0:
+                    {
+                        anim |= (Anim_Crouch|ANIM_LOOP)<<ANIM_SECONDARY;
+                        break;
+                    }
+                    case Anim_RunN:
+                    case Anim_RunNE:
+                    case Anim_RunE:
+                    case Anim_RunSE:
+                    case Anim_RunS:
+                    case Anim_RunSW:
+                    case Anim_RunW:
+                    case Anim_RunNW:
+                    {
+                        anim += (Anim_CrouchN - Anim_RunN) << ANIM_SECONDARY;
+                        break;
+                    }
+                    case Anim_JumpN:
+                    case Anim_JumpNE:
+                    case Anim_JumpE:
+                    case Anim_JumpSE:
+                    case Anim_JumpS:
+                    case Anim_JumpSW:
+                    case Anim_JumpW:
+                    case Anim_JumpNW:
+                    {
+                        anim += (Anim_CrouchJumpN - Anim_JumpN) << ANIM_SECONDARY;
+                        break;
+                    }
+                }
             }
-
-            if((anim&ANIM_INDEX)==Anim_Idle && (anim>>ANIM_SECONDARY)&ANIM_INDEX) anim >>= ANIM_SECONDARY;
+            if((anim&ANIM_INDEX)==Anim_Idle && (anim>>ANIM_SECONDARY)&ANIM_INDEX)
+            {
+                anim >>= ANIM_SECONDARY;
+            }
         }
-        if(!((anim>>ANIM_SECONDARY)&ANIM_INDEX)) anim |= (Anim_Idle|ANIM_LOOP)<<ANIM_SECONDARY;
-        if(d!=player1) flags |= Model_CullVFC | Model_CullOccluded | Model_CullQuery;
-        if(d->type==PhysEnt_Player) flags |= Model_FullBright;
-        else flags |= Model_CullDist;
-        if(!mainpass) flags &= ~(Model_FullBright | Model_CullVFC | Model_CullOccluded | Model_CullQuery | Model_CullDist);
+        if(!((anim>>ANIM_SECONDARY)&ANIM_INDEX))
+        {
+            anim |= (Anim_Idle|ANIM_LOOP)<<ANIM_SECONDARY;
+        }
+        if(d!=player1)
+        {
+            flags |= Model_CullVFC | Model_CullOccluded | Model_CullQuery;
+        }
+        if(d->type==PhysEnt_Player)
+        {
+            flags |= Model_FullBright;
+        }
+        else
+        {
+            flags |= Model_CullDist;
+        }
+        if(!mainpass)
+        {
+            flags &= ~(Model_FullBright | Model_CullVFC | Model_CullOccluded | Model_CullQuery | Model_CullDist);
+        }
         float trans = d->state == ClientState_Lagged ? 0.5f : 1.0f;
         rendermodel(mdlname, anim, o, yaw, pitch, 0, flags, d, a[0].tag ? a : NULL, basetime, 0, fade, vec4(vec::hexcolor(color), trans));
     }
@@ -346,21 +485,30 @@ namespace game
     void rendergame()
     {
         ai::render();
-
         if(intermission)
         {
             bestteams.shrink(0);
             bestplayers.shrink(0);
-            if(modecheck(gamemode, Mode_Team)) getbestteams(bestteams);
-            else getbestplayers(bestplayers);
+            if(modecheck(gamemode, Mode_Team))
+            {
+                getbestteams(bestteams);
+            }
+            else
+            {
+                getbestplayers(bestplayers);
+            }
         }
 
         bool third = isthirdperson();
-        gameent *f = followingplayer(), *exclude = third ? NULL : f;
+        gameent *f = followingplayer(),
+                *exclude = third ? NULL : f;
         for(int i = 0; i < players.length(); i++)
         {
             gameent *d = players[i];
-            if(d == player1 || d->state==ClientState_Spectator || d->state==ClientState_Spawning || d->lifesequence < 0 || d == exclude || (d->state==ClientState_Dead && hidedead)) continue;
+            if(d == player1 || d->state==ClientState_Spectator || d->state==ClientState_Spawning || d->lifesequence < 0 || d == exclude || (d->state==ClientState_Dead && hidedead))
+            {
+                continue;
+            }
             renderplayer(d);
             copystring(d->info, colorname(d));
             if(d->state!=ClientState_Dead)
@@ -378,13 +526,20 @@ namespace game
             renderplayer(d, fade);
         }
         if(exclude)
+        {
             renderplayer(exclude, 1, Model_OnlyShadow);
+        }
         else if(!f && (player1->state==ClientState_Alive || (player1->state==ClientState_Editing && third) || (player1->state==ClientState_Dead && !hidedead)))
+        {
             renderplayer(player1, 1, third ? 0 : Model_OnlyShadow);
+        }
         entities::renderentities();
         renderbouncers();
         renderprojectiles();
-        if(cmode) cmode->rendergame();
+        if(cmode)
+        {
+            cmode->rendergame();
+        }
     }
 
     //============================================ hud player rendering ============================//
@@ -434,16 +589,20 @@ namespace game
     void drawhudmodel(gameent *d, int anim, int basetime)
     {
         const char *file = guns[d->gunselect].file;
-        if(!file) return;
-
+        if(!file)
+        {
+            return;
+        }
         vec sway;
         vecfromyawpitch(d->yaw, 0, 0, 1, sway);
         float steps = swaydist/swaystep*M_PI;
         sway.mul(swayside*cosf(steps));
         sway.z = swayup*(fabs(sinf(steps)) - 1);
         sway.add(swaydir).add(d->o);
-        if(!hudgunsway) sway = d->o;
-
+        if(!hudgunsway)
+        {
+            sway = d->o;
+        }
         const playermodelinfo &mdl = getplayermodelinfo(d);
         int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0,
             color = getplayercolor(d, team);
@@ -452,7 +611,10 @@ namespace game
         d->muzzle = vec(-1, -1, -1);
         a[0] = modelattach("tag_muzzle", &d->muzzle);
         rendermodel(gunname, anim, sway, d->yaw, d->pitch, 0, Model_NoBatch, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
-        if(d->muzzle.x >= 0) d->muzzle = calcavatarpos(d->muzzle, 12);
+        if(d->muzzle.x >= 0)
+        {
+            d->muzzle = calcavatarpos(d->muzzle, 12);
+        }
     }
 
     void drawhudgun()
@@ -495,13 +657,19 @@ namespace game
         previewent->o = calcmodelpreviewpos(vec(xyrad, zrad), previewent->yaw).addz(previewent->eyeheight - zrad);
         previewent->gunselect = VALID_GUN(weap) ? weap : Gun_Rail;
         const playermodelinfo *mdlinfo = getplayermodelinfo(model);
-        if(!mdlinfo) return;
+        if(!mdlinfo)
+        {
+            return;
+        }
         renderplayer(previewent, *mdlinfo, getplayercolor(team, color), team, 1, 0, false);
     }
 
     vec hudgunorigin(int gun, const vec &from, const vec &to, gameent *d)
     {
-        if(d->muzzle.x >= 0) return d->muzzle;
+        if(d->muzzle.x >= 0)
+        {
+            return d->muzzle;
+        }
         vec offset(from);
         if(d!=hudplayer() || isthirdperson())
         {
@@ -520,7 +688,10 @@ namespace game
             offset.sub(vec(camup).mul(1.0f));
             offset.add(vec(camright).mul(0.8f));
         }
-        else offset.sub(vec(camup).mul(0.8f));
+        else
+        {
+            offset.sub(vec(camup).mul(0.8f));
+        }
         return offset;
     }
 
@@ -555,12 +726,18 @@ namespace game
 
     void preloadsounds()
     {
-        for(int i = Sound_Jump; i <= Sound_Die2; i++) preloadsound(i);
+        for(int i = Sound_Jump; i <= Sound_Die2; i++)
+        {
+            preloadsound(i);
+        }
     }
 
     void preload()
     {
-        if(hudgun) preloadweapons();
+        if(hudgun)
+        {
+            preloadweapons();
+        }
         preloadbouncers();
         preloadplayermodel();
         preloadsounds();
