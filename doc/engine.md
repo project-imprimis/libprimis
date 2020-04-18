@@ -69,11 +69,12 @@ linear analysis, including multipole expansions and Fourier series.
 #### 6. Actors
 * 6.1 Actor Objects
 * 6.2 Actor Rendering
+* 6.3 AI
 
 #### 7. Netcode
-* 7.1 Server
-* 7.2 Client
-* 7.3 AI
+* 7.1 Topology
+* 7.2 Server
+* 7.3 Client
 * 7.4 Master Server
 * 7.5 Authentication
 
@@ -2508,17 +2509,51 @@ and the following functions:
 # 7 Netcode
 ---
 
-Like Tesseract and Cube 2, Imprimis runs a very client-heavy server that
-minimizes the workload for the server itself. The server does little more than
-redirect packets, while the individual clients have the burden of interpreting
-what is passed to them by other clients.
+Like Tesseract and Cube 2, Imprimis runs a very client-heavy network topology
+that minimizes the workload for the server itself. The server does little more
+than redirect packets, while the individual clients have the burden of
+interpreting what is passed to them by other clients.
 
 As a result, Imprimis trades a good deal of security for a very simple and
 responsive networking experience. It is not particularly difficult to create
 clients which exploit this behavior, but server-mediated behavior is problematic
 for a first person shooter where reaction time is paramount.
 
-## 7.1 Server
+# 7.1 Topology
+
+The general topology of networking and its relation to the state of game state
+(variables and information) is outlined below.
+
+```
++------------------------+------------------------+------------------------+
+| Local Client           | Dedicated Server       | Remote Clients         |
++------------------------+------------------------+------------------------+
+|                  Synchronous &            Synchronous &                  |
+| +-------+         ratelimited              ratelimited         +-------+ |
+| |       +-----------+  .  +------------------+  .  +-----------+ Non   | |
+| | Local |  Client   |  .  |                  |  .  |  Client   | Local | |
+| | State | Broadcast |---->|- - - - - - - - ->|---->|   Server  | Remote| |
+| |       +-----------+  .  |                  |  .  +-----------+ State | |
+| +-------+              .  |   Multicaster    |  .              +-------+ |
+| |  Non  +-----------+  .  |                  |  .  +-----------+       | |
+| | Local |  Client   |<----|<- - - - - - - - -|<----|  Client   | Local | |
+| | State |   Server  |  .  |                  |  .  | Broadcast | Remote| |
+| |       +-----------+  .  +------------------+  .  +-----------+ State | |
+| +-------+              .                        .              +-------+ |
++------------------------+------------------------+------------------------+
+```
+
+As indicated in the diagram, the dedicated server does not control the game
+state; it merely shuffles packets between clients which update their nonlocal
+state. All dynamic and detministic objects in the game are assigned to a client
+as part of their local state, which other clients ("remote clients") read and
+copy to their nonlocal state information.
+
+Clients are not charged with interpreting the behavior of game objects outside
+of their local state: they accept the results that they recieve to their
+nonlocal state information.
+
+## 7.2 Server
 ---
 
 The server in Imprimis is always present, even in singleplayer, and relays
@@ -2536,7 +2571,8 @@ control over the game is limited to its control over the gamemode and game end
 time (ensuring that no one client can try to end the match at its whim) and
 managing client bans and other holds.
 
-### 7.1.1 Protocol
+### 7.2.1 Protocol
+---
 
 The server talks to clients via UDP using the ENet library. As the game uses
 the UDP protocol, the job of making packets is left to the ENet library, which
@@ -2546,6 +2582,7 @@ ENet is IP v4 only currently, and therefore the game cannot resolve IP v6
 addresses.
 
 ### 7.2.2 Server State
+---
 
 The state of a server, or the contents which it "knows" at any given time, is
 quite limited. Servers know the following:
@@ -2560,7 +2597,17 @@ quite limited. Servers know the following:
 The server does not know where players are and does not keep track of projectile
 locations.
 
-## 7.2 Client
+### 7.2.3 Ratelimiting
+---
+
+To prevent server bandwith packet spam attacks, the server limits packets to one
+every 7ms (143/s). This is somewhat lower than the maximum packet transmission
+speed of clients, but is sufficiently higher than refresh rates and reaction
+times of players that this is not a significant problem. By doing so, dedicated
+servers cannot be innundated with a client sending many packets in very short
+succession.
+
+## 7.3 Client
 ---
 
 Clients are vastly more fleshed out in the Imprimis multiplayer system. Clients
@@ -2569,7 +2616,7 @@ deterministic dynamic gameplay events are controlled by clients. Clients have
 their own "clients" and "servers" which refer to the side of the netcode that
 sends events (client) and those that recieve the events (server).
 
-### 7.2.1 Packets
+### 7.3.1 Packets
 ---
 
 Clients send messages to other clients (via the server) in packets with one of
@@ -2577,7 +2624,7 @@ over one hundred `types` which encode what kind of action the packet applies to.
 Some message types are of a fixed length (e.g. cube modification), but others
 are of variable length (e.g. chat messages).
 
-### 7.2.2 Client Scope
+### 7.3.2 Client Scope
 ---
 
 The scope of an individual client is quite large, as the clients alone must bear
