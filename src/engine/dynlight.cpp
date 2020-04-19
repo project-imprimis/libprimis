@@ -206,21 +206,7 @@ void dynlightreaching(const vec &target, vec &color, vec &dir, bool hud)
         dyncolor.add(color);
         //dyndir.add(ray.mul(intensity/mag));
     }
-#if 0
-    if(!dyndir.iszero())
-    {
-        dyndir.normalize();
-        float x = dyncolor.magnitude(), y = color.magnitude();
-        if(x+y>0)
-        {
-            dir.mul(x);
-            dyndir.mul(y);
-            dir.add(dyndir).div(x+y);
-            if(dir.iszero()) dir = vec(0, 0, 1);
-            else dir.normalize();
-        }
-    }
-#endif
+
     color.add(dyncolor);
 }
 

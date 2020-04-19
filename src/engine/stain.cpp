@@ -454,12 +454,10 @@ struct stainrenderer
         staincenter = center;
         stainradius = radius;
         stainnormal = dir;
-#if 0
-        staintangent.orthogonal(dir);
-#else
+
         staintangent = vec(dir.z, -dir.x, dir.y);
         staintangent.project(dir);
-#endif
+
         if(flags&SF_ROTATE) staintangent.rotate(sincos360[randomint(360)], dir);
         staintangent.normalize();
         stainbitangent.cross(staintangent, dir);
@@ -579,20 +577,12 @@ struct stainrenderer
                 continue;
             }
             vec p = vec(pos[0]).sub(staincenter);
-#if 0
-            // intersect ray along stain normal with plane
-            float dist = n.dot(p) / facing;
-            if(fabs(dist) > stainradius)
-            {
-                continue;
-            }
-            vec pcenter = vec(stainnormal).mul(dist).add(staincenter);
-#else
+
             // travel back along plane normal from the stain center
             float dist = n.dot(p);
             if(fabs(dist) > stainradius) continue;
             vec pcenter = vec(n).mul(dist).add(staincenter);
-#endif
+
             vec ft, fb;
             ft.orthogonal(n);
             ft.normalize();
@@ -716,15 +706,10 @@ struct stainrenderer
         if(facing <= 0) return;
 
         vec p = vec(v[0]).sub(staincenter);
-#if 0
-        float dist = n.dot(p) / facing;
-        if(fabs(dist) > stainradius) return;
-        vec pcenter = vec(stainnormal).mul(dist).add(staincenter);
-#else
+
         float dist = n.dot(p);
         if(fabs(dist) > stainradius) return;
         vec pcenter = vec(n).mul(dist).add(staincenter);
-#endif
 
         vec ft, fb;
         ft.orthogonal(n);

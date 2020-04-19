@@ -1091,19 +1091,7 @@ static bool setupsystemtray(UINT uCallbackMessage)
     return true;
 }
 
-#if 0
-static bool modifysystemtray()
-{
-    NOTIFYICONDATA nid;
-    memset(&nid, 0, sizeof(nid));
-    nid.cbSize = sizeof(nid);
-    nid.hWnd = appwindow;
-    nid.uID = IDI_ICON1;
-    nid.uFlags = NIF_TIP;
-    strcpy(nid.szTip, apptip);
-    return Shell_NotifyIcon(NIM_MODIFY, &nid) == TRUE;
-}
-#endif
+
 
 static void cleanupwindow()
 {

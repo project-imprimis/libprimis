@@ -2166,13 +2166,7 @@ namespace game
                 {
                     setteaminfo(actor->team, tfrags);
                 }
-#if 0
-                extern int hidefrags;
-                if(actor!=player1 && (!cmode || !cmode->hidefrags() || !hidefrags))
-                {
-                    particle_textcopy(actor->abovehead(), tempformatstring("%d", actor->frags), Part_Text, 2000, 0x32FF64, 4.0f, -8);
-                }
-#endif
+
                 if(!victim)
                 {
                     break;
@@ -2243,10 +2237,7 @@ namespace game
                 entities::setspawn(i, true);
                 ai::itemspawned(i);
                 playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
-                #if 0
-                const char *name = entities::itemname(i);
-                if(name) particle_text(entities::ents[i]->o, name, Part_Text, 2000, 0x32FF64, 4.0f, -8);
-                #endif
+                
                 int icon = entities::itemicon(i);
                 if(icon >= 0)
                 {

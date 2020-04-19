@@ -873,23 +873,7 @@ struct ctfclientmode : clientmode
                 {
                     bool guard = false;
                     if((f.owner && f.team != f.owner->team) || f.droptime || targets.empty()) guard = true;
-#if 0
-                    else if(d->hasammo(d->ai->weappref))
-                    { // see if we can relieve someone who only has a piece of crap
-                        gameent *t;
-                        for(int k = 0; k< targets.length(); k++)
-                        {
-                            if((t = getclient(targets[k])))
-                            {
-                                if((t->ai && !t->hasammo(t->ai->weappref)) || (!t->ai && t->gunselect == GUN_MELEE))
-                                {
-                                    guard = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-#endif
+
                     if(guard)
                     { // defend the flag
                         ai::interest &n = interests.add();

@@ -522,11 +522,7 @@ enum
     HudIcon_Size    = 120,
 };
 
-#if 0
-static struct itemstat { int add, max, sound; const char *name; int icon, info; } itemstats[] =
-{
-};
-#endif
+
 
 #define VALID_ITEM(n) false //no items in this game thus far
 

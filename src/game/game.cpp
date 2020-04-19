@@ -1052,24 +1052,7 @@ namespace game
 
     void drawhudicons(gameent *d)
     {
-#if 0
-        pushhudscale(2);
 
-        draw_textf("%d", (HICON_X + HICON_SIZE + HICON_SPACE)/2, HICON_TEXTY/2, d->state==ClientState_Dead ? 0 : d->health);
-        if(d->state!=ClientState_Dead)
-        {
-            draw_textf("%d", (HICON_X + 2*HICON_STEP + HICON_SIZE + HICON_SPACE)/2, HICON_TEXTY/2, d->ammo[d->gunselect]);
-        }
-
-        pophudmatrix();
-        resethudshader();
-
-        drawicon(HICON_HEALTH, HICON_X, HICON_Y);
-        if(d->state!=ClientState_Dead)
-        {
-            drawicon(HICON_MELEE+d->gunselect, HICON_X + 2*HICON_STEP, HICON_Y);
-        }
-#endif
     }
 
     void gameplayhud(int w, int h)
@@ -1175,22 +1158,7 @@ namespace game
             }
         }
 
-#if 0
-        if(crosshair!=1 && !editmode)
-        {
-            if(d->health<=25)
-            {
-                r = 1.0f;
-                g = b = 0;
-            }
-            else if(d->health<=50)
-            {
-                r = 1.0f;
-                g = 0.5f;
-                b = 0;
-            }
-        }
-#endif
+
         if(d->gunwait)
         {
             col.mul(0.5f);

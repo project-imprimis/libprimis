@@ -1400,13 +1400,7 @@ void falling(physent *d, vec &dir, const vec &floor)
 
 void landing(physent *d, vec &dir, const vec &floor, bool collided)
 {
-#if 0
-    if(d->physstate == PhysEntState_Fall)
-    {
-        d->timeinair = 0;
-        if(dir.z < 0.0f) dir.z = d->vel.z = 0.0f;
-    }
-#endif
+
     switchfloor(d, dir, floor);
     d->timeinair = 0;
     if((d->physstate!=PhysEntState_StepUp && d->physstate!=PhysEntState_StepDown) || !collided)
