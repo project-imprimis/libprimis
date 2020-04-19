@@ -1,9 +1,9 @@
 #ifndef PARSEMESSAGES
 
-#ifdef SERVMODE
+#ifdef SERVERMODE
 VAR(ctftkpenalty, 0, 1, 1);
 
-struct ctfservmode : servmode
+struct ctfservermode : servermode
 #else
 struct ctfclientmode : clientmode
 #endif
@@ -18,7 +18,7 @@ struct ctfclientmode : clientmode
         int id, version;
         vec droploc, spawnloc;
         int team, droptime, owntime;
-#ifdef SERVMODE
+#ifdef SERVERMODE
         int owner, dropcount, dropper;
 #else
         gameent *owner;
@@ -34,7 +34,7 @@ struct ctfclientmode : clientmode
         {
             version = 0;
             droploc = spawnloc = vec(0, 0, 0);
-#ifdef SERVMODE
+#ifdef SERVERMODE
             dropcount = 0;
             owner = dropper = -1;
             owntime = 0;
@@ -56,7 +56,7 @@ struct ctfclientmode : clientmode
             droptime = owntime = 0;
         }
 
-#ifndef SERVMODE
+#ifndef SERVERMODE
         vec pos() const
         {
             if(owner) return vec(owner->o).sub(owner->eyeheight);
@@ -78,7 +78,7 @@ struct ctfclientmode : clientmode
         }
     }
 
-#ifdef SERVMODE
+#ifdef SERVERMODE
     bool addflag(int i, const vec &o, int team)
 #else
     bool addflag(int i, const vec &o, int team)
@@ -94,7 +94,7 @@ struct ctfclientmode : clientmode
         return true;
     }
 
-#ifdef SERVMODE
+#ifdef SERVERMODE
     void ownflag(int i, int owner, int owntime)
 #else
     void ownflag(int i, gameent *owner, int owntime)
@@ -103,7 +103,7 @@ struct ctfclientmode : clientmode
         flag &f = flags[i];
         f.owner = owner;
         f.owntime = owntime;
-#ifdef SERVMODE
+#ifdef SERVERMODE
         if(owner == f.dropper) { if(f.dropcount < INT_MAX) f.dropcount++; }
         else f.dropcount = 0;
         f.dropper = -1;
@@ -115,7 +115,7 @@ struct ctfclientmode : clientmode
 #endif
     }
 
-#ifdef SERVMODE
+#ifdef SERVERMODE
     void dropflag(int i, const vec &o, int droptime, int dropper = -1, bool penalty = false)
 #else
     void dropflag(int i, const vec &o, float yaw, int droptime)
@@ -124,7 +124,7 @@ struct ctfclientmode : clientmode
         flag &f = flags[i];
         f.droploc = o;
         f.droptime = droptime;
-#ifdef SERVMODE
+#ifdef SERVERMODE
         if(dropper < 0) f.dropcount = 0;
         else if(penalty) f.dropcount = INT_MAX;
         f.dropper = dropper;
@@ -139,7 +139,7 @@ struct ctfclientmode : clientmode
 #endif
     }
 
-#ifdef SERVMODE
+#ifdef SERVERMODE
     void returnflag(int i)
 #else
     void returnflag(int i)
@@ -147,7 +147,7 @@ struct ctfclientmode : clientmode
     {
         flag &f = flags[i];
         f.droptime = 0;
-#ifdef SERVMODE
+#ifdef SERVERMODE
         f.dropcount = 0;
         f.owner = f.dropper = -1;
 #else
@@ -194,12 +194,12 @@ struct ctfclientmode : clientmode
         }
     }
 
-#ifdef SERVMODE
+#ifdef SERVERMODE
     static const int RESETFLAGTIME = 10000;
 
     bool notgotflags;
 
-    ctfservmode() : notgotflags(false) {}
+    ctfservermode() : notgotflags(false) {}
 
     void reset(bool empty)
     {
@@ -1004,7 +1004,7 @@ ICOMMAND(dropflag, "", (), { ctfmode.trydropflag(); });
 
 #endif
 
-#elif SERVMODE
+#elif SERVERMODE
 
 case NetMsg_TryDropFlag:
 {

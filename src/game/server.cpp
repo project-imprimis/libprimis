@@ -915,9 +915,9 @@ namespace server
         return cname[cidx];
     }
 
-    struct servmode
+    struct servermode
     {
-        virtual ~servmode() {}
+        virtual ~servermode() {}
 
         virtual void entergame(clientinfo *ci) {}
         virtual void leavegame(clientinfo *ci, bool disconnecting = false) {}
@@ -945,11 +945,11 @@ namespace server
         virtual bool extinfoteam(int team, ucharbuf &p) { return false; }
     };
 
-    #define SERVMODE 1
+    #define SERVERMODE 1
     #include "ctf.h"
 
-    ctfservmode ctfmode;
-    servmode *smode = NULL;
+    ctfservermode ctfmode;
+    servermode *smode = NULL;
 
     bool canspawnitem(int type) { return VALID_ITEM(type); }
 
