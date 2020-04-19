@@ -3128,56 +3128,62 @@ namespace server
         {
             if(chan==0) return;
             else if(chan!=1) { disconnect_client(sender, Discon_MsgError); return; }
-            else while(p.length() < p.maxlen) switch(checktype(getint(p), ci))
+            else
             {
-                case NetMsg_Connect:
+                while(p.length() < p.maxlen)
                 {
-                    getstring(text, p);
-                    filtertext(text, text, false, false, MAXNAMELEN);
-                    if(!text[0]) copystring(text, "unnamed");
-                    copystring(ci->name, text, MAXNAMELEN+1);
-                    ci->playermodel = getint(p);
-                    ci->playercolor = getint(p);
-
-                    string password, authdesc, authname;
-                    getstring(password, p, sizeof(password));
-                    getstring(authdesc, p, sizeof(authdesc));
-                    getstring(authname, p, sizeof(authname));
-                    int disc = allowconnect(ci, password);
-                    if(disc)
+                    switch(checktype(getint(p), ci))
                     {
-                        if(disc == Discon_Local || !serverauth[0] || strcmp(serverauth, authdesc) || !tryauth(ci, authname, authdesc))
+                        case NetMsg_Connect:
                         {
-                            disconnect_client(sender, disc);
-                            return;
+                            getstring(text, p);
+                            filtertext(text, text, false, false, MAXNAMELEN);
+                            if(!text[0]) copystring(text, "unnamed");
+                            copystring(ci->name, text, MAXNAMELEN+1);
+                            ci->playermodel = getint(p);
+                            ci->playercolor = getint(p);
+
+                            string password, authdesc, authname;
+                            getstring(password, p, sizeof(password));
+                            getstring(authdesc, p, sizeof(authdesc));
+                            getstring(authname, p, sizeof(authname));
+                            int disc = allowconnect(ci, password);
+                            if(disc)
+                            {
+                                if(disc == Discon_Local || !serverauth[0] || strcmp(serverauth, authdesc) || !tryauth(ci, authname, authdesc))
+                                {
+                                    disconnect_client(sender, disc);
+                                    return;
+                                }
+                                ci->connectauth = disc;
+                            }
+                            else connected(ci);
+                            break;
                         }
-                        ci->connectauth = disc;
+
+                        case NetMsg_AuthAnswer:
+                        {
+                            string desc, ans;
+                            getstring(desc, p, sizeof(desc));
+                            uint id = (uint)getint(p);
+                            getstring(ans, p, sizeof(ans));
+                            if(!answerchallenge(ci, id, ans, desc))
+                            {
+                                disconnect_client(sender, ci->connectauth);
+                                return;
+                            }
+                            break;
+                        }
+
+                        case NetMsg_Ping:
+                            getint(p);
+                            break;
+
+                        default:
+                            disconnect_client(sender, Discon_MsgError);
+                            return;
                     }
-                    else connected(ci);
-                    break;
                 }
-
-                case NetMsg_AuthAnswer:
-                {
-                    string desc, ans;
-                    getstring(desc, p, sizeof(desc));
-                    uint id = (uint)getint(p);
-                    getstring(ans, p, sizeof(ans));
-                    if(!answerchallenge(ci, id, ans, desc))
-                    {
-                        disconnect_client(sender, ci->connectauth);
-                        return;
-                    }
-                    break;
-                }
-
-                case NetMsg_Ping:
-                    getint(p);
-                    break;
-
-                default:
-                    disconnect_client(sender, Discon_MsgError);
-                    return;
             }
             return;
         }
@@ -3201,812 +3207,1030 @@ namespace server
         #define QUEUE_UINT(n) QUEUE_BUF(putuint(cm->messages, n))
         #define QUEUE_STR(text) QUEUE_BUF(sendstring(text, cm->messages))
         int curmsg;
-        while((curmsg = p.length()) < p.maxlen) switch(type = checktype(getint(p), ci))
+        while((curmsg = p.length()) < p.maxlen)
         {
-            case NetMsg_Pos:
+            switch(type = checktype(getint(p), ci))
             {
-                int pcn = getuint(p);
-                p.get();
-                uint flags = getuint(p);
-                clientinfo *cp = getinfo(pcn);
-                if(cp && pcn != sender && cp->ownernum != sender) cp = NULL;
-                vec pos;
-                for(int k = 0; k < 3; ++k)
+                case NetMsg_Pos:
                 {
-                    int n = p.get(); n |= p.get()<<8; if(flags&(1<<k)) { n |= p.get()<<16; if(n&0x800000) n |= ~0U<<24; }
-                    pos[k] = n/DMF;
-                }
-                for(int k = 0; k < 3; ++k)
-                {
+                    int pcn = getuint(p);
                     p.get();
-                }
-                int mag = p.get();
-                if(flags&(1<<3))
-                {
-                    mag |= p.get()<<8;
-                }
-                int dir = p.get(); dir |= p.get()<<8;
-                vec vel = vec((dir%360)*RAD, (clamp(dir/360, 0, 180)-90)*RAD).mul(mag/DVELF);
-                if(flags&(1<<4))
-                {
-                    p.get(); if(flags&(1<<5)) p.get();
-                    if(flags&(1<<6))
+                    uint flags = getuint(p);
+                    clientinfo *cp = getinfo(pcn);
+                    if(cp && pcn != sender && cp->ownernum != sender)
                     {
-                        for(int k = 0; k < 2; ++k)
+                        cp = NULL;
+                    }
+                    vec pos;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        int n = p.get();
+                        n |= p.get()<<8;
+                        if(flags&(1<<k))
+                        {
+                            n |= p.get()<<16;
+                            if(n&0x800000)
+                            {
+                                n |= ~0U<<24;
+                            }
+                        }
+                        pos[k] = n/DMF;
+                    }
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        p.get();
+                    }
+                    int mag = p.get();
+                    if(flags&(1<<3))
+                    {
+                        mag |= p.get()<<8;
+                    }
+                    int dir = p.get(); dir |= p.get()<<8;
+                    vec vel = vec((dir%360)*RAD, (clamp(dir/360, 0, 180)-90)*RAD).mul(mag/DVELF);
+                    if(flags&(1<<4))
+                    {
+                        p.get();
+                        if(flags&(1<<5))
                         {
                             p.get();
                         }
-                    }
-                }
-                if(cp)
-                {
-                    if((!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
-                    {
-                        if(!ci->local && !modecheck(gamemode, Mode_Edit) && max(vel.magnitude2(), (float)fabs(vel.z)) >= 180)
-                            cp->setexceeded();
-                        cp->position.setsize(0);
-                        while(curmsg<p.length()) cp->position.add(p.buf[curmsg++]);
-                    }
-                    if(smode && cp->state.state==ClientState_Alive)
-                    {
-                        smode->moved(cp, cp->state.o, cp->gameclip, pos, (flags&0x80)!=0);
-                    }
-                    cp->state.o = pos;
-                    cp->gameclip = (flags&0x80)!=0;
-                }
-                break;
-            }
-
-            case NetMsg_Teleport:
-            {
-                int pcn = getint(p), teleport = getint(p), teledest = getint(p);
-                clientinfo *cp = getinfo(pcn);
-                if(cp && pcn != sender && cp->ownernum != sender)
-                {
-                    cp = NULL;
-                }
-                if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
-                {
-                    flushclientposition(*cp);
-                    sendf(-1, 0, "ri4x", NetMsg_Teleport, pcn, teleport, teledest, cp->ownernum);
-                }
-                break;
-            }
-
-            case NetMsg_Jumppad:
-            {
-                int pcn = getint(p), jumppad = getint(p);
-                clientinfo *cp = getinfo(pcn);
-                if(cp && pcn != sender && cp->ownernum != sender) cp = NULL;
-                if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
-                {
-                    cp->setpushed();
-                    flushclientposition(*cp);
-                    sendf(-1, 0, "ri3x", NetMsg_Jumppad, pcn, jumppad, cp->ownernum);
-                }
-                break;
-            }
-
-            case NetMsg_FromAI:
-            {
-                int qcn = getint(p);
-                if(qcn < 0) cq = ci;
-                else
-                {
-                    cq = getinfo(qcn);
-                    if(cq && qcn != sender && cq->ownernum != sender) cq = NULL;
-                }
-                break;
-            }
-
-            case NetMsg_EditMode:
-            {
-                int val = getint(p);
-                if(!ci->local && !modecheck(gamemode, Mode_Edit)) break;
-                if(val ? ci->state.state!=ClientState_Alive && ci->state.state!=ClientState_Dead : ci->state.state!=ClientState_Editing) break;
-                if(smode)
-                {
-                    if(val) smode->leavegame(ci);
-                    else smode->entergame(ci);
-                }
-                if(val)
-                {
-                    ci->state.editstate = ci->state.state;
-                    ci->state.state = ClientState_Editing;
-                    ci->events.setsize(0);
-                    ci->state.projs.reset();
-                }
-                else ci->state.state = ci->state.editstate;
-                QUEUE_MSG;
-                break;
-            }
-
-            case NetMsg_MapCRC:
-            {
-                getstring(text, p);
-                int crc = getint(p);
-                if(!ci) break;
-                if(strcmp(text, smapname))
-                {
-                    if(ci->clientmap[0])
-                    {
-                        ci->clientmap[0] = '\0';
-                        ci->mapcrc = 0;
-                    }
-                    else if(ci->mapcrc > 0) ci->mapcrc = 0;
-                    break;
-                }
-                copystring(ci->clientmap, text);
-                ci->mapcrc = text[0] ? crc : 1;
-                checkmaps();
-                if(cq && cq != ci && cq->ownernum != ci->clientnum) cq = NULL;
-                break;
-            }
-
-            case NetMsg_CheckMaps:
-                checkmaps(sender);
-                break;
-
-            case NetMsg_TrySpawn:
-                if(!ci || !cq || cq->state.state!=ClientState_Dead || cq->state.lastspawn>=0 || (smode && !smode->canspawn(cq))) break;
-                if(!ci->clientmap[0] && !ci->mapcrc)
-                {
-                    ci->mapcrc = -1;
-                    checkmaps();
-                    if(ci == cq) { if(ci->state.state != ClientState_Dead) break; }
-                    else if(cq->ownernum != ci->clientnum) { cq = NULL; break; }
-                }
-                if(cq->state.deadflush)
-                {
-                    flushevents(cq, cq->state.deadflush);
-                    cq->state.respawn();
-                }
-                cleartimedevents(cq);
-                sendspawn(cq);
-                break;
-
-            case NetMsg_GunSelect:
-            {
-                int gunselect = getint(p);
-                if(!cq || cq->state.state!=ClientState_Alive || !VALID_GUN(gunselect)) break;
-                cq->state.gunselect = gunselect;
-                QUEUE_AI;
-                QUEUE_MSG;
-                break;
-            }
-
-            case NetMsg_Spawn:
-            {
-                int ls = getint(p), gunselect = getint(p);
-                if(!cq || (cq->state.state!=ClientState_Alive && cq->state.state!=ClientState_Dead && cq->state.state!=ClientState_Editing) || ls!=cq->state.lifesequence || cq->state.lastspawn<0 || !VALID_GUN(gunselect)) break;
-                cq->state.lastspawn = -1;
-                cq->state.state = ClientState_Alive;
-                cq->state.gunselect = gunselect;
-                cq->exceeded = 0;
-                if(smode) smode->spawned(cq);
-                QUEUE_AI;
-                QUEUE_BUF({
-                    putint(cm->messages, NetMsg_Spawn);
-                    sendstate(cq->state, cm->messages);
-                });
-                break;
-            }
-
-            case NetMsg_Suicide:
-            {
-                if(cq) cq->addevent(new suicideevent);
-                break;
-            }
-
-            case NetMsg_Shoot:
-            {
-                shotevent *shot = new shotevent;
-                shot->id = getint(p);
-                shot->millis = cq ? cq->geteventmillis(gamemillis, shot->id) : 0;
-                shot->atk = getint(p);
-                for(int k = 0; k < 3; ++k)
-                {
-                    shot->from[k] = getint(p)/DMF;
-                }
-                for(int k = 0; k < 3; ++k)
-                {
-                    shot->to[k] = getint(p)/DMF;
-                }
-                int hits = getint(p);
-                for(int k = 0; k < hits; ++k)
-                {
-                    if(p.overread()) break;
-                    hitinfo &hit = shot->hits.add();
-                    hit.target = getint(p);
-                    hit.lifesequence = getint(p);
-                    hit.dist = getint(p)/DMF;
-                    hit.rays = getint(p);
-                    for(int k = 0; k < 3; ++k)
-                    {
-                        hit.dir[k] = getint(p)/DNF;
-                    }
-                }
-                if(cq)
-                {
-                    cq->addevent(shot);
-                    cq->setpushed();
-                }
-                else
-                {
-                    delete shot;
-                }
-                break;
-            }
-
-            case NetMsg_Explode:
-            {
-                explodeevent *exp = new explodeevent;
-                int cmillis = getint(p);
-                exp->millis = cq ? cq->geteventmillis(gamemillis, cmillis) : 0;
-                exp->atk = getint(p);
-                exp->id = getint(p);
-                int hits = getint(p);
-                for(int k = 0; k < hits; ++k)
-                {
-                    if(p.overread()) break;
-                    hitinfo &hit = exp->hits.add();
-                    hit.target = getint(p);
-                    hit.lifesequence = getint(p);
-                    hit.dist = getint(p)/DMF;
-                    hit.rays = getint(p);
-                    for(int k = 0; k < 3; ++k)
-                    {
-                        hit.dir[k] = getint(p)/DNF;
-                    }
-                }
-                if(cq)
-                {
-                    cq->addevent(exp);
-                }
-                else
-                {
-                    delete exp;
-                }
-                break;
-            }
-
-            case NetMsg_ItemPickup:
-            {
-                int n = getint(p);
-                if(!cq) break;
-                pickupevent *pickup = new pickupevent;
-                pickup->ent = n;
-                cq->addevent(pickup);
-                break;
-            }
-
-            case NetMsg_Text:
-            {
-                QUEUE_AI;
-                QUEUE_MSG;
-                getstring(text, p);
-                filtertext(text, text, true, true);
-                QUEUE_STR(text);
-                if(isdedicatedserver() && cq) logoutf("%s: %s", colorname(cq), text);
-                break;
-            }
-
-            case NetMsg_SayTeam:
-            {
-                getstring(text, p);
-                if(!ci || !cq || (ci->state.state==ClientState_Spectator && !ci->local && !ci->privilege) || !modecheck(gamemode, Mode_Team) || !VALID_TEAM(cq->team)) break;
-                filtertext(text, text, true, true);
-                for(int i = 0; i < clients.length(); i++)
-                {
-                    clientinfo *t = clients[i];
-                    if(t==cq || t->state.state==ClientState_Spectator || t->state.aitype != AI_None || cq->team != t->team) continue;
-                    sendf(t->clientnum, 1, "riis", NetMsg_SayTeam, cq->clientnum, text);
-                }
-                if(isdedicatedserver() && cq)
-                {
-                    logoutf("%s <%s>: %s", colorname(cq), teamnames[cq->team], text);
-                }
-                break;
-            }
-
-            case NetMsg_SwitchName:
-            {
-                QUEUE_MSG;
-                getstring(text, p);
-                filtertext(ci->name, text, false, false, MAXNAMELEN);
-                if(!ci->name[0]) copystring(ci->name, "unnamed");
-                QUEUE_STR(ci->name);
-                break;
-            }
-
-            case NetMsg_SwitchModel:
-            {
-                ci->playermodel = getint(p);
-                QUEUE_MSG;
-                break;
-            }
-
-            case NetMsg_SwitchColor:
-            {
-                ci->playercolor = getint(p);
-                QUEUE_MSG;
-                break;
-            }
-
-            case NetMsg_SwitchTeam:
-            {
-                int team = getint(p);
-                if(modecheck(gamemode, Mode_Team) && VALID_TEAM(team) && ci->team != team && (!smode || smode->canchangeteam(ci, ci->team, team)))
-                {
-                    if(ci->state.state==ClientState_Alive) suicide(ci);
-                    ci->team = team;
-                    aiman::changeteam(ci);
-                    sendf(-1, 1, "riiii", NetMsg_SetTeam, sender, ci->team, ci->state.state==ClientState_Spectator ? -1 : 0);
-                }
-                break;
-            }
-
-            case NetMsg_MapVote:
-            {
-                getstring(text, p);
-                filtertext(text, text, false);
-                fixmapname(text);
-                int reqmode = getint(p);
-                vote(text, reqmode, sender);
-                break;
-            }
-
-            case NetMsg_ItemList:
-            {
-                if((ci->state.state==ClientState_Spectator && !ci->privilege && !ci->local) || !notgotitems || strcmp(ci->clientmap, smapname)) { while(getint(p)>=0 && !p.overread()) getint(p); break; }
-                int n;
-                while((n = getint(p))>=0 && n<MAXENTS && !p.overread())
-                {
-                    server_entity se = { GamecodeEnt_NotUsed, 0, false };
-                    while(sents.length()<=n) sents.add(se);
-                    sents[n].type = getint(p);
-                    if(canspawnitem(sents[n].type))
-                    {
-                        if(!modecheck(gamemode, Mode_LocalOnly) && delayspawn(sents[n].type)) sents[n].spawntime = spawntime(sents[n].type);
-                        else sents[n].spawned = true;
-                    }
-                }
-                notgotitems = false;
-                break;
-            }
-
-            case NetMsg_EditEnt:
-            {
-                int i = getint(p);
-                for(int k = 0; k < 3; ++k)
-                {
-                    getint(p);
-                }
-                int type = getint(p);
-                for(int k = 0; k < 5; ++k)
-                {
-                    getint(p);
-                }
-                if(!ci || ci->state.state==ClientState_Spectator) break;
-                QUEUE_MSG;
-                bool canspawn = canspawnitem(type);
-                if(i<MAXENTS && (sents.inrange(i) || canspawnitem(type)))
-                {
-                    server_entity se = { GamecodeEnt_NotUsed, 0, false };
-                    while(sents.length()<=i) sents.add(se);
-                    sents[i].type = type;
-                    if(canspawn ? !sents[i].spawned : (sents[i].spawned || sents[i].spawntime))
-                    {
-                        sents[i].spawntime = canspawn ? 1 : 0;
-                        sents[i].spawned = false;
-                    }
-                }
-                break;
-            }
-
-            case NetMsg_EditVar:
-            {
-                int type = getint(p);
-                getstring(text, p);
-                switch(type)
-                {
-                    case Id_Var: getint(p); break;
-                    case Id_FloatVar: getfloat(p); break;
-                    case Id_StringVar: getstring(text, p);
-                }
-                if(ci && ci->state.state!=ClientState_Spectator) QUEUE_MSG;
-                break;
-            }
-
-            case NetMsg_Ping:
-                sendf(sender, 1, "i2", NetMsg_Pong, getint(p));
-                break;
-
-            case NetMsg_ClientPing:
-            {
-                int ping = getint(p);
-                if(ci)
-                {
-                    ci->ping = ping;
-                    for(int i = 0; i < ci->bots.length(); i++)
-                    {
-                        ci->bots[i]->ping = ping;
-                    }
-                }
-                QUEUE_MSG;
-                break;
-            }
-
-            case NetMsg_MasterMode:
-            {
-                int mm = getint(p);
-                if((ci->privilege || ci->local) && mm>=MasterMode_Open && mm<=MasterMode_Private)
-                {
-                    if((ci->privilege>=Priv_Admin || ci->local) || (mastermask&(1<<mm)))
-                    {
-                        mastermode = mm;
-                        allowedips.shrink(0);
-                        if(mm>=MasterMode_Private)
+                        if(flags&(1<<6))
                         {
-                            for(int i = 0; i < clients.length(); i++)
+                            for(int k = 0; k < 2; ++k)
                             {
-                                allowedips.add(getclientip(clients[i]->clientnum));
+                                p.get();
                             }
                         }
-                        sendf(-1, 1, "rii", NetMsg_MasterMode, mastermode);
-                        //sendservmsgf("mastermode is now %s (%d)", mastermodename(mastermode), mastermode);
+                    }
+                    if(cp)
+                    {
+                        if((!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
+                        {
+                            if(!ci->local && !modecheck(gamemode, Mode_Edit) && max(vel.magnitude2(), (float)fabs(vel.z)) >= 180)
+                                cp->setexceeded();
+                            cp->position.setsize(0);
+                            while(curmsg<p.length())
+                            {
+                                cp->position.add(p.buf[curmsg++]);
+                            }
+                        }
+                        if(smode && cp->state.state==ClientState_Alive)
+                        {
+                            smode->moved(cp, cp->state.o, cp->gameclip, pos, (flags&0x80)!=0);
+                        }
+                        cp->state.o = pos;
+                        cp->gameclip = (flags&0x80)!=0;
+                    }
+                    break;
+                }
+                case NetMsg_Teleport:
+                {
+                    int pcn = getint(p),
+                        teleport = getint(p),
+                        teledest = getint(p);
+                    clientinfo *cp = getinfo(pcn);
+                    if(cp && pcn != sender && cp->ownernum != sender)
+                    {
+                        cp = NULL;
+                    }
+                    if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
+                    {
+                        flushclientposition(*cp);
+                        sendf(-1, 0, "ri4x", NetMsg_Teleport, pcn, teleport, teledest, cp->ownernum);
+                    }
+                    break;
+                }
+                case NetMsg_Jumppad:
+                {
+                    int pcn = getint(p),
+                        jumppad = getint(p);
+                    clientinfo *cp = getinfo(pcn);
+                    if(cp && pcn != sender && cp->ownernum != sender)
+                    {
+                        cp = NULL;
+                    }
+                    if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==ClientState_Alive || cp->state.state==ClientState_Editing))
+                    {
+                        cp->setpushed();
+                        flushclientposition(*cp);
+                        sendf(-1, 0, "ri3x", NetMsg_Jumppad, pcn, jumppad, cp->ownernum);
+                    }
+                    break;
+                }
+                case NetMsg_FromAI:
+                {
+                    int qcn = getint(p);
+                    if(qcn < 0)
+                    {
+                        cq = ci;
                     }
                     else
                     {
-                        sendf(sender, 1, "ris", NetMsg_ServerMsg, tempformatstring("mastermode %d is disabled on this server", mm));
+                        cq = getinfo(qcn);
+                        if(cq && qcn != sender && cq->ownernum != sender)
+                        {
+                            cq = NULL;
+                        }
                     }
-                }
-                break;
-            }
-
-            case NetMsg_ClearBans:
-            {
-                if(ci->privilege || ci->local)
-                {
-                    bannedips.shrink(0);
-                    sendservmsg("cleared all bans");
-                }
-                break;
-            }
-
-            case NetMsg_Kick:
-            {
-                int victim = getint(p);
-                getstring(text, p);
-                filtertext(text, text);
-                trykick(ci, victim, text);
-                break;
-            }
-
-            case NetMsg_Spectator:
-            {
-                int spectator = getint(p), val = getint(p);
-                if(!ci->privilege && !ci->local && (spectator!=sender || (ci->state.state==ClientState_Spectator && mastermode>=MasterMode_Locked))) break;
-                clientinfo *spinfo = (clientinfo *)getclientinfo(spectator); // no bots
-                if(!spinfo || !spinfo->connected || (spinfo->state.state==ClientState_Spectator ? val : !val)) break;
-
-                if(spinfo->state.state!=ClientState_Spectator && val) forcespectator(spinfo);
-                else if(spinfo->state.state==ClientState_Spectator && !val) unspectate(spinfo);
-
-                if(cq && cq != ci && cq->ownernum != ci->clientnum) cq = NULL;
-                break;
-            }
-
-            case NetMsg_SetTeam:
-            {
-                int who = getint(p), team = getint(p);
-                if(!ci->privilege && !ci->local) break;
-                clientinfo *wi = getinfo(who);
-                if(!modecheck(gamemode, Mode_Team) || !VALID_TEAM(team) || !wi || !wi->connected || wi->team == team) break;
-                if(!smode || smode->canchangeteam(wi, wi->team, team))
-                {
-                    if(wi->state.state==ClientState_Alive) suicide(wi);
-                    wi->team = team;
-                }
-                aiman::changeteam(wi);
-                sendf(-1, 1, "riiii", NetMsg_SetTeam, who, wi->team, 1);
-                break;
-            }
-
-            case NetMsg_ForceIntermission:
-                if(ci->local && !hasnonlocalclients()) startintermission();
-                break;
-
-            case NetMsg_RecordDemo:
-            {
-                int val = getint(p);
-                if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
-                if(!maxdemos || !maxdemosize)
-                {
-                    sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "the server has disabled demo recording");
                     break;
                 }
-                demonextmatch = val!=0;
-                sendservmsgf("demo recording is %s for next match", demonextmatch ? "enabled" : "disabled");
-                break;
-            }
-
-            case NetMsg_StopDemo:
-            {
-                if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
-                stopdemo();
-                break;
-            }
-
-            case NetMsg_ClearDemos:
-            {
-                int demo = getint(p);
-                if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local) break;
-                cleardemos(demo);
-                break;
-            }
-
-            case NetMsg_ListDemos:
-                if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator) break;
-                listdemos(sender);
-                break;
-
-            case NetMsg_GetDemo:
-            {
-                int n = getint(p);
-                if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator) break;
-                senddemo(ci, n);
-                break;
-            }
-
-            case NetMsg_GetMap:
-                if(!mapdata) sendf(sender, 1, "ris", NetMsg_ServerMsg, "no map to send");
-                else if(ci->getmap) sendf(sender, 1, "ris", NetMsg_ServerMsg, "already sending map");
-                else
+                case NetMsg_EditMode:
                 {
-                    sendservmsgf("[%s is getting the map]", colorname(ci));
-                    if((ci->getmap = sendfile(sender, 2, mapdata, "ri", NetMsg_SendMap)))
-                        ci->getmap->freeCallback = freegetmap;
-                    ci->needclipboard = totalmillis ? totalmillis : 1;
-                }
-                break;
-
-            case NetMsg_Newmap:
-            {
-                int size = getint(p);
-                if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator) break;
-                if(size>=0)
-                {
-                    smapname[0] = '\0';
-                    resetitems();
-                    notgotitems = false;
-                    if(smode) smode->newmap();
-                }
-                QUEUE_MSG;
-                break;
-            }
-
-            case NetMsg_SetMasterMaster:
-            {
-                int mn = getint(p), val = getint(p);
-                getstring(text, p);
-                if(mn != ci->clientnum)
-                {
-                    if(!ci->privilege && !ci->local) break;
-                    clientinfo *minfo = (clientinfo *)getclientinfo(mn);
-                    if(!minfo || !minfo->connected || (!ci->local && minfo->privilege >= ci->privilege) || (val && minfo->privilege)) break;
-                    setmaster(minfo, val!=0, "", NULL, NULL, Priv_Master, true);
-                }
-                else setmaster(ci, val!=0, text);
-                // don't broadcast the master password
-                break;
-            }
-
-            case NetMsg_AddBot:
-            {
-                aiman::reqadd(ci, getint(p));
-                break;
-            }
-
-            case NetMsg_DelBot:
-            {
-                aiman::reqdel(ci);
-                break;
-            }
-
-            case NetMsg_BotLimit:
-            {
-                int limit = getint(p);
-                if(ci) aiman::setbotlimit(ci, limit);
-                break;
-            }
-
-            case NetMsg_BotBalance:
-            {
-                int balance = getint(p);
-                if(ci) aiman::setbotbalance(ci, balance!=0);
-                break;
-            }
-
-            case NetMsg_AuthTry:
-            {
-                string desc, name;
-                getstring(desc, p, sizeof(desc));
-                getstring(name, p, sizeof(name));
-                tryauth(ci, name, desc);
-                break;
-            }
-
-            case NetMsg_AuthKick:
-            {
-                string desc, name;
-                getstring(desc, p, sizeof(desc));
-                getstring(name, p, sizeof(name));
-                int victim = getint(p);
-                getstring(text, p);
-                filtertext(text, text);
-                int authpriv = Priv_Auth;
-                if(desc[0])
-                {
-                    userinfo *u = users.access(userkey(name, desc));
-                    if(u) authpriv = u->privilege; else break;
-                }
-                if(ci->local || ci->privilege >= authpriv) trykick(ci, victim, text);
-                else if(trykick(ci, victim, text, name, desc, authpriv, true) && tryauth(ci, name, desc))
-                {
-                    ci->authkickvictim = victim;
-                    ci->authkickreason = newstring(text);
-                }
-                break;
-            }
-
-            case NetMsg_AuthAnswer:
-            {
-                string desc, ans;
-                getstring(desc, p, sizeof(desc));
-                uint id = (uint)getint(p);
-                getstring(ans, p, sizeof(ans));
-                answerchallenge(ci, id, ans, desc);
-                break;
-            }
-
-            case NetMsg_PauseGame:
-            {
-                int val = getint(p);
-                if(ci->privilege < (restrictpausegame ? Priv_Admin : Priv_Master) && !ci->local) break;
-                pausegame(val > 0, ci);
-                break;
-            }
-
-            case NetMsg_GameSpeed:
-            {
-                int val = getint(p);
-                if(ci->privilege < (restrictgamespeed ? Priv_Admin : Priv_Master) && !ci->local) break;
-                changegamespeed(val, ci);
-                break;
-            }
-
-            case NetMsg_Copy:
-                ci->cleanclipboard();
-                ci->lastclipboard = totalmillis ? totalmillis : 1;
-                goto genericmsg;
-
-            case NetMsg_Paste:
-                if(ci->state.state!=ClientState_Spectator) sendclipboard(ci);
-                goto genericmsg;
-
-            case NetMsg_Clipboard:
-            {
-                int unpacklen = getint(p), packlen = getint(p);
-                ci->cleanclipboard(false);
-                if(ci->state.state==ClientState_Spectator)
-                {
-                    if(packlen > 0) p.subbuf(packlen);
+                    int val = getint(p);
+                    if(!ci->local && !modecheck(gamemode, Mode_Edit))
+                    {
+                        break;
+                    }
+                    if(val ? ci->state.state!=ClientState_Alive && ci->state.state!=ClientState_Dead : ci->state.state!=ClientState_Editing)
+                    {
+                        break;
+                    }
+                    if(smode)
+                    {
+                        if(val)
+                        {
+                            smode->leavegame(ci);
+                        }
+                        else
+                        {
+                            smode->entergame(ci);
+                        }
+                    }
+                    if(val)
+                    {
+                        ci->state.editstate = ci->state.state;
+                        ci->state.state = ClientState_Editing;
+                        ci->events.setsize(0);
+                        ci->state.projs.reset();
+                    }
+                    else
+                    {
+                        ci->state.state = ci->state.editstate;
+                    }
+                    QUEUE_MSG;
                     break;
                 }
-                if(packlen <= 0 || packlen > (1<<16) || unpacklen <= 0)
+                case NetMsg_MapCRC:
                 {
-                    if(packlen > 0) p.subbuf(packlen);
-                    packlen = unpacklen = 0;
+                    getstring(text, p);
+                    int crc = getint(p);
+                    if(!ci)
+                    {
+                        break;
+                    }
+                    if(strcmp(text, smapname))
+                    {
+                        if(ci->clientmap[0])
+                        {
+                            ci->clientmap[0] = '\0';
+                            ci->mapcrc = 0;
+                        }
+                        else if(ci->mapcrc > 0)
+                        {
+                            ci->mapcrc = 0;
+                        }
+                        break;
+                    }
+                    copystring(ci->clientmap, text);
+                    ci->mapcrc = text[0] ? crc : 1;
+                    checkmaps();
+                    if(cq && cq != ci && cq->ownernum != ci->clientnum)
+                    {
+                        cq = NULL;
+                    }
+                    break;
                 }
-                packetbuf q(32 + packlen, ENET_PACKET_FLAG_RELIABLE);
-                putint(q, NetMsg_Clipboard);
-                putint(q, ci->clientnum);
-                putint(q, unpacklen);
-                putint(q, packlen);
-                if(packlen > 0) p.get(q.subbuf(packlen).buf, packlen);
-                ci->clipboard = q.finalize();
-                ci->clipboard->referenceCount++;
-                break;
-            }
-
-            case NetMsg_EditTex:
-            case NetMsg_Replace:
-            case NetMsg_EditVSlot:
-            {
-                int size = server::msgsizelookup(type);
-                if(size<=0)
+                case NetMsg_CheckMaps:
                 {
-                    disconnect_client(sender, Discon_MsgError);
-                    return;
+                    checkmaps(sender);
+                    break;
                 }
-                for(int i = 0; i < size-1; ++i)
+                case NetMsg_TrySpawn:
+                    if(!ci || !cq || cq->state.state!=ClientState_Dead || cq->state.lastspawn>=0 || (smode && !smode->canspawn(cq)))
+                    {
+                        break;
+                    }
+                    if(!ci->clientmap[0] && !ci->mapcrc)
+                    {
+                        ci->mapcrc = -1;
+                        checkmaps();
+                        if(ci == cq)
+                        {
+                            if(ci->state.state != ClientState_Dead)
+                            {
+                                break;
+                            }
+                        }
+                        else if(cq->ownernum != ci->clientnum)
+                        {
+                            cq = NULL;
+                            break;
+                        }
+                    }
+                    if(cq->state.deadflush)
+                    {
+                        flushevents(cq, cq->state.deadflush);
+                        cq->state.respawn();
+                    }
+                    cleartimedevents(cq);
+                    sendspawn(cq);
+                    break;
+                case NetMsg_GunSelect:
                 {
-                    getint(p);
+                    int gunselect = getint(p);
+                    if(!cq || cq->state.state!=ClientState_Alive || !VALID_GUN(gunselect))
+                    {
+                        break;
+                    }
+                    cq->state.gunselect = gunselect;
+                    QUEUE_AI;
+                    QUEUE_MSG;
+                    break;
                 }
-                if(p.remaining() < 2)
+                case NetMsg_Spawn:
                 {
-                    disconnect_client(sender, Discon_MsgError);
-                    return;
+                    int ls = getint(p), gunselect = getint(p);
+                    if(!cq || (cq->state.state!=ClientState_Alive && cq->state.state!=ClientState_Dead && cq->state.state!=ClientState_Editing) || ls!=cq->state.lifesequence || cq->state.lastspawn<0 || !VALID_GUN(gunselect))
+                    {
+                        break;
+                    }
+                    cq->state.lastspawn = -1;
+                    cq->state.state = ClientState_Alive;
+                    cq->state.gunselect = gunselect;
+                    cq->exceeded = 0;
+                    if(smode)
+                    {
+                        smode->spawned(cq);
+                    }
+                    QUEUE_AI;
+                    QUEUE_BUF({
+                        putint(cm->messages, NetMsg_Spawn);
+                        sendstate(cq->state, cm->messages);
+                    });
+                    break;
                 }
-                int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
-                if(p.remaining() < extra)
+                case NetMsg_Suicide:
                 {
-                    disconnect_client(sender, Discon_MsgError);
-                    return;
+                    if(cq)
+                    {
+                        cq->addevent(new suicideevent);
+                    }
+                    break;
                 }
-                p.pad(extra);
-                if(ci && ci->state.state!=ClientState_Spectator)
+                case NetMsg_Shoot:
+                {
+                    shotevent *shot = new shotevent;
+                    shot->id = getint(p);
+                    shot->millis = cq ? cq->geteventmillis(gamemillis, shot->id) : 0;
+                    shot->atk = getint(p);
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        shot->from[k] = getint(p)/DMF;
+                    }
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        shot->to[k] = getint(p)/DMF;
+                    }
+                    int hits = getint(p);
+                    for(int k = 0; k < hits; ++k)
+                    {
+                        if(p.overread())
+                        {
+                            break;
+                        }
+                        hitinfo &hit = shot->hits.add();
+                        hit.target = getint(p);
+                        hit.lifesequence = getint(p);
+                        hit.dist = getint(p)/DMF;
+                        hit.rays = getint(p);
+                        for(int k = 0; k < 3; ++k)
+                        {
+                            hit.dir[k] = getint(p)/DNF;
+                        }
+                    }
+                    if(cq)
+                    {
+                        cq->addevent(shot);
+                        cq->setpushed();
+                    }
+                    else
+                    {
+                        delete shot;
+                    }
+                    break;
+                }
+                case NetMsg_Explode:
+                {
+                    explodeevent *exp = new explodeevent;
+                    int cmillis = getint(p);
+                    exp->millis = cq ? cq->geteventmillis(gamemillis, cmillis) : 0;
+                    exp->atk = getint(p);
+                    exp->id = getint(p);
+                    int hits = getint(p);
+                    for(int k = 0; k < hits; ++k)
+                    {
+                        if(p.overread())
+                        {
+                            break;
+                        }
+                        hitinfo &hit = exp->hits.add();
+                        hit.target = getint(p);
+                        hit.lifesequence = getint(p);
+                        hit.dist = getint(p)/DMF;
+                        hit.rays = getint(p);
+                        for(int k = 0; k < 3; ++k)
+                        {
+                            hit.dir[k] = getint(p)/DNF;
+                        }
+                    }
+                    if(cq)
+                    {
+                        cq->addevent(exp);
+                    }
+                    else
+                    {
+                        delete exp;
+                    }
+                    break;
+                }
+                case NetMsg_ItemPickup:
+                {
+                    int n = getint(p);
+                    if(!cq)
+                    {
+                        break;
+                    }
+                    pickupevent *pickup = new pickupevent;
+                    pickup->ent = n;
+                    cq->addevent(pickup);
+                    break;
+                }
+                case NetMsg_Text:
+                {
+                    QUEUE_AI;
+                    QUEUE_MSG;
+                    getstring(text, p);
+                    filtertext(text, text, true, true);
+                    QUEUE_STR(text);
+                    if(isdedicatedserver() && cq)
+                    {
+                        logoutf("%s: %s", colorname(cq), text);
+                    }
+                    break;
+                }
+                case NetMsg_SayTeam:
+                {
+                    getstring(text, p);
+                    if(!ci || !cq || (ci->state.state==ClientState_Spectator && !ci->local && !ci->privilege) || !modecheck(gamemode, Mode_Team) || !VALID_TEAM(cq->team))
+                    {
+                        break;
+                    }
+                    filtertext(text, text, true, true);
+                    for(int i = 0; i < clients.length(); i++)
+                    {
+                        clientinfo *t = clients[i];
+                        if(t==cq || t->state.state==ClientState_Spectator || t->state.aitype != AI_None || cq->team != t->team)
+                        {
+                            continue;
+                        }
+                        sendf(t->clientnum, 1, "riis", NetMsg_SayTeam, cq->clientnum, text);
+                    }
+                    if(isdedicatedserver() && cq)
+                    {
+                        logoutf("%s <%s>: %s", colorname(cq), teamnames[cq->team], text);
+                    }
+                    break;
+                }
+                case NetMsg_SwitchName:
                 {
                     QUEUE_MSG;
-                }
-                break;
-            }
-
-            case NetMsg_Undo:
-            case NetMsg_Redo:
-            {
-                int unpacklen = getint(p), packlen = getint(p);
-                if(!ci || ci->state.state==ClientState_Spectator || packlen <= 0 || packlen > (1<<16) || unpacklen <= 0)
-                {
-                    if(packlen > 0) p.subbuf(packlen);
+                    getstring(text, p);
+                    filtertext(ci->name, text, false, false, MAXNAMELEN);
+                    if(!ci->name[0])
+                    {
+                        copystring(ci->name, "unnamed");
+                    }
+                    QUEUE_STR(ci->name);
                     break;
                 }
-                if(p.remaining() < packlen) { disconnect_client(sender, Discon_MsgError); return; }
-                packetbuf q(32 + packlen, ENET_PACKET_FLAG_RELIABLE);
-                putint(q, type);
-                putint(q, ci->clientnum);
-                putint(q, unpacklen);
-                putint(q, packlen);
-                if(packlen > 0) p.get(q.subbuf(packlen).buf, packlen);
-                sendpacket(-1, 1, q.finalize(), ci->clientnum);
-                break;
-            }
+                case NetMsg_SwitchModel:
+                {
+                    ci->playermodel = getint(p);
+                    QUEUE_MSG;
+                    break;
+                }
+                case NetMsg_SwitchColor:
+                {
+                    ci->playercolor = getint(p);
+                    QUEUE_MSG;
+                    break;
+                }
+                case NetMsg_SwitchTeam:
+                {
+                    int team = getint(p);
+                    if(modecheck(gamemode, Mode_Team) && VALID_TEAM(team) && ci->team != team && (!smode || smode->canchangeteam(ci, ci->team, team)))
+                    {
+                        if(ci->state.state==ClientState_Alive)
+                        {
+                            suicide(ci);
+                        }
+                        ci->team = team;
+                        aiman::changeteam(ci);
+                        sendf(-1, 1, "riiii", NetMsg_SetTeam, sender, ci->team, ci->state.state==ClientState_Spectator ? -1 : 0);
+                    }
+                    break;
+                }
+                case NetMsg_MapVote:
+                {
+                    getstring(text, p);
+                    filtertext(text, text, false);
+                    fixmapname(text);
+                    int reqmode = getint(p);
+                    vote(text, reqmode, sender);
+                    break;
+                }
+                case NetMsg_ItemList:
+                {
+                    if((ci->state.state==ClientState_Spectator && !ci->privilege && !ci->local) || !notgotitems || strcmp(ci->clientmap, smapname))
+                    {
+                        while(getint(p)>=0 && !p.overread())
+                        {
+                            getint(p);
+                        }
+                        break;
+                    }
+                    int n;
+                    while((n = getint(p))>=0 && n<MAXENTS && !p.overread())
+                    {
+                        server_entity se = { GamecodeEnt_NotUsed, 0, false };
+                        while(sents.length()<=n)
+                        {
+                            sents.add(se);
+                        }
+                        sents[n].type = getint(p);
+                        if(canspawnitem(sents[n].type))
+                        {
+                            if(!modecheck(gamemode, Mode_LocalOnly) && delayspawn(sents[n].type))
+                            {
+                                sents[n].spawntime = spawntime(sents[n].type);
+                            }
+                            else
+                            {
+                                sents[n].spawned = true;
+                            }
+                        }
+                    }
+                    notgotitems = false;
+                    break;
+                }
+                case NetMsg_EditEnt:
+                {
+                    int i = getint(p);
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        getint(p);
+                    }
+                    int type = getint(p);
+                    for(int k = 0; k < 5; ++k)
+                    {
+                        getint(p);
+                    }
+                    if(!ci || ci->state.state==ClientState_Spectator) break;
+                    QUEUE_MSG;
+                    bool canspawn = canspawnitem(type);
+                    if(i<MAXENTS && (sents.inrange(i) || canspawnitem(type)))
+                    {
+                        server_entity se = { GamecodeEnt_NotUsed, 0, false };
+                        while(sents.length()<=i)
+                        {
+                            sents.add(se);
+                        }
+                        sents[i].type = type;
+                        if(canspawn ? !sents[i].spawned : (sents[i].spawned || sents[i].spawntime))
+                        {
+                            sents[i].spawntime = canspawn ? 1 : 0;
+                            sents[i].spawned = false;
+                        }
+                    }
+                    break;
+                }
+                case NetMsg_EditVar:
+                {
+                    int type = getint(p);
+                    getstring(text, p);
+                    switch(type)
+                    {
+                        case Id_Var:
+                        {
+                            getint(p);
+                            break;
+                        }
+                        case Id_FloatVar:
+                        {
+                            getfloat(p);
+                            break;
+                        }
+                        case Id_StringVar:
+                        {
+                            getstring(text, p);
+                        }
+                    }
+                    if(ci && ci->state.state!=ClientState_Spectator)
+                    {
+                        QUEUE_MSG;
+                    }
+                    break;
+                }
+                case NetMsg_Ping:
+                {
+                    sendf(sender, 1, "i2", NetMsg_Pong, getint(p));
+                    break;
+                }
+                case NetMsg_ClientPing:
+                {
+                    int ping = getint(p);
+                    if(ci)
+                    {
+                        ci->ping = ping;
+                        for(int i = 0; i < ci->bots.length(); i++)
+                        {
+                            ci->bots[i]->ping = ping;
+                        }
+                    }
+                    QUEUE_MSG;
+                    break;
+                }
+                case NetMsg_MasterMode:
+                {
+                    int mm = getint(p);
+                    if((ci->privilege || ci->local) && mm>=MasterMode_Open && mm<=MasterMode_Private)
+                    {
+                        if((ci->privilege>=Priv_Admin || ci->local) || (mastermask&(1<<mm)))
+                        {
+                            mastermode = mm;
+                            allowedips.shrink(0);
+                            if(mm>=MasterMode_Private)
+                            {
+                                for(int i = 0; i < clients.length(); i++)
+                                {
+                                    allowedips.add(getclientip(clients[i]->clientnum));
+                                }
+                            }
+                            sendf(-1, 1, "rii", NetMsg_MasterMode, mastermode);
+                            //sendservmsgf("mastermode is now %s (%d)", mastermodename(mastermode), mastermode);
+                        }
+                        else
+                        {
+                            sendf(sender, 1, "ris", NetMsg_ServerMsg, tempformatstring("mastermode %d is disabled on this server", mm));
+                        }
+                    }
+                    break;
+                }
+                case NetMsg_ClearBans:
+                {
+                    if(ci->privilege || ci->local)
+                    {
+                        bannedips.shrink(0);
+                        sendservmsg("cleared all bans");
+                    }
+                    break;
+                }
+                case NetMsg_Kick:
+                {
+                    int victim = getint(p);
+                    getstring(text, p);
+                    filtertext(text, text);
+                    trykick(ci, victim, text);
+                    break;
+                }
+                case NetMsg_Spectator:
+                {
+                    int spectator = getint(p), val = getint(p);
+                    if(!ci->privilege && !ci->local && (spectator!=sender || (ci->state.state==ClientState_Spectator && mastermode>=MasterMode_Locked)))
+                    {
+                        break;
+                    }
+                    clientinfo *spinfo = (clientinfo *)getclientinfo(spectator); // no bots
+                    if(!spinfo || !spinfo->connected || (spinfo->state.state==ClientState_Spectator ? val : !val))
+                    {
+                        break;
+                    }
+                    if(spinfo->state.state!=ClientState_Spectator && val)
+                    {
+                        forcespectator(spinfo);
+                    }
+                    else if(spinfo->state.state==ClientState_Spectator && !val)
+                    {
+                        unspectate(spinfo);
+                    }
+                    if(cq && cq != ci && cq->ownernum != ci->clientnum)
+                    {
+                        cq = NULL;
+                    }
+                    break;
+                }
+                case NetMsg_SetTeam:
+                {
+                    int who = getint(p),
+                        team = getint(p);
+                    if(!ci->privilege && !ci->local)
+                    {
+                        break;
+                    }
+                    clientinfo *wi = getinfo(who);
+                    if(!modecheck(gamemode, Mode_Team) || !VALID_TEAM(team) || !wi || !wi->connected || wi->team == team)
+                    {
+                        break;
+                    }
+                    if(!smode || smode->canchangeteam(wi, wi->team, team))
+                    {
+                        if(wi->state.state==ClientState_Alive)
+                        {
+                            suicide(wi);
+                        }
+                        wi->team = team;
+                    }
+                    aiman::changeteam(wi);
+                    sendf(-1, 1, "riiii", NetMsg_SetTeam, who, wi->team, 1);
+                    break;
+                }
+                case NetMsg_ForceIntermission:
+                    if(ci->local && !hasnonlocalclients())
+                    {
+                        startintermission();
+                    }
+                    break;
+                case NetMsg_RecordDemo:
+                {
+                    int val = getint(p);
+                    if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local)
+                    {
+                        break;
+                    }
+                    if(!maxdemos || !maxdemosize)
+                    {
+                        sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "the server has disabled demo recording");
+                        break;
+                    }
+                    demonextmatch = val!=0;
+                    sendservmsgf("demo recording is %s for next match", demonextmatch ? "enabled" : "disabled");
+                    break;
+                }
+                case NetMsg_StopDemo:
+                {
+                    if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local)
+                    {
+                        break;
+                    }
+                    stopdemo();
+                    break;
+                }
+                case NetMsg_ClearDemos:
+                {
+                    int demo = getint(p);
+                    if(ci->privilege < (restrictdemos ? Priv_Admin : Priv_Master) && !ci->local)
+                    {
+                        break;
+                    }
+                    cleardemos(demo);
+                    break;
+                }
+                case NetMsg_ListDemos:
+                    if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator)
+                    {
+                        break;
+                    }
+                    listdemos(sender);
+                    break;
+                case NetMsg_GetDemo:
+                {
+                    int n = getint(p);
+                    if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator)
+                    {
+                        break;
+                    }
+                    senddemo(ci, n);
+                    break;
+                }
+                case NetMsg_GetMap:
+                    if(!mapdata)
+                    {
+                        sendf(sender, 1, "ris", NetMsg_ServerMsg, "no map to send");
+                    }
+                    else if(ci->getmap)
+                    {
+                        sendf(sender, 1, "ris", NetMsg_ServerMsg, "already sending map");
+                    }
+                    else
+                    {
+                        sendservmsgf("[%s is getting the map]", colorname(ci));
+                        if((ci->getmap = sendfile(sender, 2, mapdata, "ri", NetMsg_SendMap)))
+                        {
+                            ci->getmap->freeCallback = freegetmap;
+                        }
+                        ci->needclipboard = totalmillis ? totalmillis : 1;
+                    }
+                    break;
+                case NetMsg_Newmap:
+                {
+                    int size = getint(p);
+                    if(!ci->privilege && !ci->local && ci->state.state==ClientState_Spectator)
+                    {
+                        break;
+                    }
+                    if(size>=0)
+                    {
+                        smapname[0] = '\0';
+                        resetitems();
+                        notgotitems = false;
+                        if(smode)
+                        {
+                            smode->newmap();
+                        }
+                    }
+                    QUEUE_MSG;
+                    break;
+                }
+                case NetMsg_SetMasterMaster:
+                {
+                    int mn = getint(p), val = getint(p);
+                    getstring(text, p);
+                    if(mn != ci->clientnum)
+                    {
+                        if(!ci->privilege && !ci->local)
+                        {
+                            break;
+                        }
+                        clientinfo *minfo = (clientinfo *)getclientinfo(mn);
+                        if(!minfo || !minfo->connected || (!ci->local && minfo->privilege >= ci->privilege) || (val && minfo->privilege))
+                        {
+                            break;
+                        }
+                        setmaster(minfo, val!=0, "", NULL, NULL, Priv_Master, true);
+                    }
+                    else setmaster(ci, val!=0, text);
+                    // don't broadcast the master password
+                    break;
+                }
+                case NetMsg_AddBot:
+                {
+                    aiman::reqadd(ci, getint(p));
+                    break;
+                }
+                case NetMsg_DelBot:
+                {
+                    aiman::reqdel(ci);
+                    break;
+                }
+                case NetMsg_BotLimit:
+                {
+                    int limit = getint(p);
+                    if(ci)
+                    {
+                        aiman::setbotlimit(ci, limit);
+                    }
+                    break;
+                }
+                case NetMsg_BotBalance:
+                {
+                    int balance = getint(p);
+                    if(ci)
+                    {
+                        aiman::setbotbalance(ci, balance!=0);
+                    }
+                    break;
+                }
+                case NetMsg_AuthTry:
+                {
+                    string desc, name;
+                    getstring(desc, p, sizeof(desc));
+                    getstring(name, p, sizeof(name));
+                    tryauth(ci, name, desc);
+                    break;
+                }
+                case NetMsg_AuthKick:
+                {
+                    string desc, name;
+                    getstring(desc, p, sizeof(desc));
+                    getstring(name, p, sizeof(name));
+                    int victim = getint(p);
+                    getstring(text, p);
+                    filtertext(text, text);
+                    int authpriv = Priv_Auth;
+                    if(desc[0])
+                    {
+                        userinfo *u = users.access(userkey(name, desc));
+                        if(u)
+                        {
+                            authpriv = u->privilege;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    if(ci->local || ci->privilege >= authpriv)
+                    {
+                        trykick(ci, victim, text);
+                    }
+                    else if(trykick(ci, victim, text, name, desc, authpriv, true) && tryauth(ci, name, desc))
+                    {
+                        ci->authkickvictim = victim;
+                        ci->authkickreason = newstring(text);
+                    }
+                    break;
+                }
+                case NetMsg_AuthAnswer:
+                {
+                    string desc, ans;
+                    getstring(desc, p, sizeof(desc));
+                    uint id = (uint)getint(p);
+                    getstring(ans, p, sizeof(ans));
+                    answerchallenge(ci, id, ans, desc);
+                    break;
+                }
+                case NetMsg_PauseGame:
+                {
+                    int val = getint(p);
+                    if(ci->privilege < (restrictpausegame ? Priv_Admin : Priv_Master) && !ci->local)
+                    {
+                        break;
+                    }
+                    pausegame(val > 0, ci);
+                    break;
+                }
 
-            case NetMsg_ServerCommand:
-                getstring(text, p);
-                break;
-
-            #define PARSEMESSAGES 1
-            #include "ctf.h"
-            #undef PARSEMESSAGES
-
-            case -1:
-                disconnect_client(sender, Discon_MsgError);
-                return;
-
-            case -2:
-                disconnect_client(sender, Discon_Overflow);
-                return;
-
-            default: genericmsg:
-            {
-                int size = server::msgsizelookup(type);
-                if(size<=0)
+                case NetMsg_GameSpeed:
+                {
+                    int val = getint(p);
+                    if(ci->privilege < (restrictgamespeed ? Priv_Admin : Priv_Master) && !ci->local)
+                    {
+                        break;
+                    }
+                    changegamespeed(val, ci);
+                    break;
+                }
+                case NetMsg_Copy:
+                {
+                    ci->cleanclipboard();
+                    ci->lastclipboard = totalmillis ? totalmillis : 1;
+                    goto genericmsg; //you ALSO have to do a generic message for an edit copy (see bottom of switch statement)
+                }
+                case NetMsg_Paste:
+                {
+                    if(ci->state.state!=ClientState_Spectator) sendclipboard(ci);
+                    goto genericmsg; //yeets you to the bottom as with copy
+                }
+                case NetMsg_Clipboard:
+                {
+                    int unpacklen = getint(p), packlen = getint(p);
+                    ci->cleanclipboard(false);
+                    if(ci->state.state==ClientState_Spectator)
+                    {
+                        if(packlen > 0)
+                        {
+                            p.subbuf(packlen);
+                        }
+                        break;
+                    }
+                    if(packlen <= 0 || packlen > (1<<16) || unpacklen <= 0)
+                    {
+                        if(packlen > 0)
+                        {
+                            p.subbuf(packlen);
+                        }
+                        packlen = unpacklen = 0;
+                    }
+                    packetbuf q(32 + packlen, ENET_PACKET_FLAG_RELIABLE);
+                    putint(q, NetMsg_Clipboard);
+                    putint(q, ci->clientnum);
+                    putint(q, unpacklen);
+                    putint(q, packlen);
+                    if(packlen > 0)
+                    {
+                        p.get(q.subbuf(packlen).buf, packlen);
+                    }
+                    ci->clipboard = q.finalize();
+                    ci->clipboard->referenceCount++;
+                    break;
+                }
+                case NetMsg_EditTex:
+                case NetMsg_Replace:
+                case NetMsg_EditVSlot:
+                {
+                    int size = server::msgsizelookup(type);
+                    if(size<=0)
+                    {
+                        disconnect_client(sender, Discon_MsgError);
+                        return;
+                    }
+                    for(int i = 0; i < size-1; ++i)
+                    {
+                        getint(p);
+                    }
+                    if(p.remaining() < 2)
+                    {
+                        disconnect_client(sender, Discon_MsgError);
+                        return;
+                    }
+                    int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
+                    if(p.remaining() < extra)
+                    {
+                        disconnect_client(sender, Discon_MsgError);
+                        return;
+                    }
+                    p.pad(extra);
+                    if(ci && ci->state.state!=ClientState_Spectator)
+                    {
+                        QUEUE_MSG;
+                    }
+                    break;
+                }
+                case NetMsg_Undo:
+                case NetMsg_Redo:
+                {
+                    int unpacklen = getint(p), packlen = getint(p);
+                    if(!ci || ci->state.state==ClientState_Spectator || packlen <= 0 || packlen > (1<<16) || unpacklen <= 0)
+                    {
+                        if(packlen > 0)
+                        {
+                            p.subbuf(packlen);
+                        }
+                        break;
+                    }
+                    if(p.remaining() < packlen)
+                    {
+                        disconnect_client(sender, Discon_MsgError);
+                        return;
+                    }
+                    packetbuf q(32 + packlen, ENET_PACKET_FLAG_RELIABLE);
+                    putint(q, type);
+                    putint(q, ci->clientnum);
+                    putint(q, unpacklen);
+                    putint(q, packlen);
+                    if(packlen > 0)
+                    {
+                        p.get(q.subbuf(packlen).buf, packlen);
+                    }
+                    sendpacket(-1, 1, q.finalize(), ci->clientnum);
+                    break;
+                }
+                case NetMsg_ServerCommand:
+                {
+                    getstring(text, p);
+                    break;
+                }
+                #define PARSEMESSAGES 1
+                #include "ctf.h"
+                #undef PARSEMESSAGES
+                case -1:
                 {
                     disconnect_client(sender, Discon_MsgError);
                     return;
                 }
-                for(int i = 0; i < size-1; ++i)
+                case -2:
                 {
-                    getint(p);
+                    disconnect_client(sender, Discon_Overflow);
+                    return;
                 }
-                if(ci) switch(msgfilter[type])
+                default: genericmsg:
                 {
-                    case 2: case 3: if(ci->state.state != ClientState_Spectator) QUEUE_MSG; break;
-                    default: if(cq && (ci != cq || ci->state.state!=ClientState_Spectator)) { QUEUE_AI; QUEUE_MSG; } break;
+                    int size = server::msgsizelookup(type);
+                    if(size<=0)
+                    {
+                        disconnect_client(sender, Discon_MsgError);
+                        return;
+                    }
+                    for(int i = 0; i < size-1; ++i)
+                    {
+                        getint(p);
+                    }
+                    if(ci)
+                    {
+                        switch(msgfilter[type]) //msgfilter[] returns msgmask[msg] or 0
+                        {
+                            case 2:
+                            case 3:
+                            {
+                                if(ci->state.state != ClientState_Spectator)
+                                {
+                                    QUEUE_MSG;
+                                }
+                                break;
+                            }
+                            default:
+                            {
+                                if(cq && (ci != cq || ci->state.state!=ClientState_Spectator))
+                                {
+                                    QUEUE_AI;
+                                    QUEUE_MSG;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
                 }
-                break;
             }
         }
     }
