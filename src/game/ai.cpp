@@ -607,27 +607,7 @@ namespace ai
     {
         static vector<interest> interests;
         interests.setsize(0);
-#if 0
-        if(!hasgoodammo(d) || d->health < min(d->skill - 15, 75))
-        {
-            items(d, b, interests);
-        }
-        else
-        {
-            static vector<int> nearby;
-            nearby.setsize(0);
-            findents(I_FIRST, I_LAST, false, d->feetpos(), vec(32, 32, 24), nearby);
-            for(int i = 0; i < nearby.length(); i++)
-            {
-                int id = nearby[i];
-                extentity &e = *(extentity *)entities::ents[id];
-                if(d->canpickup(e.type))
-                {
-                    tryitem(d, e, id, b, interests);
-                }
-            }
-        }
-#endif
+
         if(cmode)
         {
             cmode->aifind(d, b, interests);
