@@ -3195,7 +3195,6 @@ namespace server
         }
 
         if(p.packet->flags&ENET_PACKET_FLAG_RELIABLE) reliablemessages = true;
-        #define QUEUE_AI clientinfo *cm = cq;
         #define QUEUE_MSG { if(cm && (!cm->local || demorecord || hasnonlocalclients())) while(curmsg<p.length()) cm->messages.add(p.buf[curmsg++]); }
         #define QUEUE_BUF(body) { \
             if(cm && (!cm->local || demorecord || hasnonlocalclients())) \
@@ -3204,8 +3203,6 @@ namespace server
                 { body; } \
             } \
         }
-        #define QUEUE_INT(n) QUEUE_BUF(putint(cm->messages, n))
-        #define QUEUE_UINT(n) QUEUE_BUF(putuint(cm->messages, n))
         #define QUEUE_STR(text) QUEUE_BUF(sendstring(text, cm->messages))
         int curmsg;
         while((curmsg = p.length()) < p.maxlen)
@@ -3444,7 +3441,7 @@ namespace server
                         break;
                     }
                     cq->state.gunselect = gunselect;
-                    QUEUE_AI;
+                    clientinfo *cm = cq;
                     QUEUE_MSG;
                     break;
                 }
@@ -3463,7 +3460,7 @@ namespace server
                     {
                         smode->spawned(cq);
                     }
-                    QUEUE_AI;
+                    clientinfo *cm = cq;
                     QUEUE_BUF({
                         putint(cm->messages, NetMsg_Spawn);
                         sendstate(cq->state, cm->messages);
@@ -3568,7 +3565,7 @@ namespace server
                 }
                 case NetMsg_Text:
                 {
-                    QUEUE_AI;
+                    clientinfo *cm = cq;
                     QUEUE_MSG;
                     getstring(text, p);
                     filtertext(text, text, true, true);
@@ -4223,7 +4220,7 @@ namespace server
                             {
                                 if(cq && (ci != cq || ci->state.state!=ClientState_Spectator))
                                 {
-                                    QUEUE_AI;
+                                    clientinfo *cm = cq;
                                     QUEUE_MSG;
                                 }
                                 break;
@@ -4235,6 +4232,9 @@ namespace server
             }
         }
     }
+#undef QUEUE_STR
+#undef QUEUE_BUF
+#undef QUEUE_MSG
 
     int laninfoport() { return TESSERACT_LANINFO_PORT; }
     int serverport() { return TESSERACT_SERVER_PORT; }
