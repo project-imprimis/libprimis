@@ -61,7 +61,11 @@ struct stainbuffer
 
     void cleanup()
     {
-        if(vbo) { glDeleteBuffers_(1, &vbo); vbo = 0; }
+        if(vbo)
+        {
+            glDeleteBuffers_(1, &vbo);
+            vbo = 0;
+        }
     }
 
     void clear()
@@ -75,7 +79,10 @@ struct stainbuffer
     {
         int removed = d.endvert < d.startvert ? maxverts - (d.startvert - d.endvert) : d.endvert - d.startvert;
         startvert = d.endvert;
-        if(startvert==endvert) startvert = endvert = lastvert = 0;
+        if(startvert==endvert)
+        {
+            startvert = endvert = lastvert = 0;
+        }
         availverts += removed;
         return removed;
     }
@@ -87,7 +94,10 @@ struct stainbuffer
         dirty = true;
     }
 
-    bool faded(const staininfo &d) const { return verts[d.startvert].color.a < 255; }
+    bool faded(const staininfo &d) const
+    {
+        return verts[d.startvert].color.a < 255;
+    }
 
     void fadestain(const staininfo &d, const bvec4 &color)
     {
@@ -113,11 +123,16 @@ struct stainbuffer
 
     void render()
     {
-        if(startvert == endvert) return;
-
-        if(!vbo) { glGenBuffers_(1, &vbo); dirty = true; }
+        if(startvert == endvert)
+        {
+            return;
+        }
+        if(!vbo)
+        {
+            glGenBuffers_(1, &vbo);
+            dirty = true;
+        }
         gle::bindvbo(vbo);
-
         int count = endvert < startvert ? maxverts - startvert : endvert - startvert;
         if(dirty)
         {
@@ -130,8 +145,10 @@ struct stainbuffer
             }
             dirty = false;
         }
-        else if(endvert < startvert) count += endvert;
-
+        else if(endvert < startvert)
+        {
+            count += endvert;
+        }
         const stainvert *ptr = 0;
         gle::vertexpointer(sizeof(stainvert), ptr->pos.v);
         gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
@@ -146,7 +163,10 @@ struct stainbuffer
         stainvert *tri = &verts[endvert];
         availverts -= 3;
         endvert += 3;
-        if(endvert >= maxverts) endvert = 0;
+        if(endvert >= maxverts)
+        {
+            endvert = 0;
+        }
         return tri;
     }
 
@@ -155,7 +175,10 @@ struct stainbuffer
         dirty = true;
     }
 
-    bool hasverts() const { return startvert != endvert; }
+    bool hasverts() const
+    {
+        return startvert != endvert;
+    }
 
     int nextverts() const
     {
@@ -239,21 +262,31 @@ struct stainrenderer
 
     int freestain()
     {
-        if(startstain==endstain) return 0;
-
+        if(startstain==endstain)
+        {
+            return 0;
+        }
         staininfo &d = stains[startstain];
         startstain++;
-        if(startstain >= maxstains) startstain = 0;
-
+        if(startstain >= maxstains)
+        {
+            startstain = 0;
+        }
         return verts[d.owner].freestain(d);
     }
 
-    bool faded(const staininfo &d) const { return verts[d.owner].faded(d); }
+    bool faded(const staininfo &d) const
+    {
+        return verts[d.owner].faded(d);
+    }
 
     void fadestain(const staininfo &d, uchar alpha)
     {
         bvec color = d.color;
-        if(flags&(SF_OVERBRIGHT|SF_GLOW|SF_INVMOD)) color.scale(alpha, 255);
+        if(flags&(SF_OVERBRIGHT|SF_GLOW|SF_INVMOD))
+        {
+            color.scale(alpha, 255);
+        }
         verts[d.owner].fadestain(d, bvec4(color, alpha));
     }
 
@@ -266,8 +299,12 @@ struct stainrenderer
         for(; d < end && d->millis <= threshold; d++)
             cleared[d->owner] = d;
         if(d >= end && endstain < startstain)
+        {
             for(d = stains, end = &stains[endstain]; d < end && d->millis <= threshold; d++)
+            {
                 cleared[d->owner] = d;
+            }
+        }
         startstain = d - stains;
         if(startstain == endstain)
         {
@@ -290,16 +327,28 @@ struct stainrenderer
 
     void fadeinstains()
     {
-        if(!fadeintime) return;
+        if(!fadeintime)
+        {
+            return;
+        }
         staininfo *d = &stains[endstain],
                   *end = &stains[endstain < startstain ? 0 : startstain];
         while(d > end)
         {
             d--;
             int fade = lastmillis - d->millis;
-            if(fade < fadeintime) fadestain(*d, (fade<<8)/fadeintime);
-            else if(faded(*d)) fadestain(*d, 255);
-            else return;
+            if(fade < fadeintime)
+            {
+                fadestain(*d, (fade<<8)/fadeintime);
+            }
+            else if(faded(*d))
+            {
+                fadestain(*d, 255);
+            }
+            else
+            {
+                return;
+            }
         }
         if(endstain < startstain)
         {
@@ -309,9 +358,18 @@ struct stainrenderer
             {
                 d--;
                 int fade = lastmillis - d->millis;
-                if(fade < fadeintime) fadestain(*d, (fade<<8)/fadeintime);
-                else if(faded(*d)) fadestain(*d, 255);
-                else return;
+                if(fade < fadeintime)
+                {
+                    fadestain(*d, (fade<<8)/fadeintime);
+                }
+                else if(faded(*d))
+                {
+                    fadestain(*d, 255);
+                }
+                else
+                {
+                    return;
+                }
             }
         }
     }
@@ -324,7 +382,10 @@ struct stainrenderer
         while(d < end)
         {
             int fade = d->millis + offset;
-            if(fade >= fadeouttime) return;
+            if(fade >= fadeouttime)
+            {
+                return;
+            }
             fadestain(*d, (fade<<8)/fadeouttime);
             d++;
         }
@@ -335,7 +396,10 @@ struct stainrenderer
             while(d < end)
             {
                 int fade = d->millis + offset;
-                if(fade >= fadeouttime) return;
+                if(fade >= fadeouttime)
+                {
+                    return;
+                }
                 fadestain(*d, (fade<<8)/fadeouttime);
                 d++;
             }
@@ -344,8 +408,14 @@ struct stainrenderer
 
     static void setuprenderstate(int sbuf, bool gbuf, int layer)
     {
-        if(gbuf) maskgbuffer(sbuf == StainBuffer_Transparent ? "cg" : "c");
-        else zerofogcolor();
+        if(gbuf)
+        {
+            maskgbuffer(sbuf == StainBuffer_Transparent ? "cg" : "c");
+        }
+        else
+        {
+            zerofogcolor();
+        }
 
         if(layer && ghasstencil)
         {
@@ -404,7 +474,10 @@ struct stainrenderer
         {
             glBlendFunc(GL_ONE, GL_ONE);
             colorscale = ldrscale;
-            if(flags&SF_SATURATE) colorscale *= 2;
+            if(flags&SF_SATURATE)
+            {
+                colorscale *= 2;
+            }
             alphascale = 0;
             SETSHADER(foggedstain);
         }
@@ -418,7 +491,10 @@ struct stainrenderer
         {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             colorscale = ldrscale;
-            if(flags&SF_SATURATE) colorscale *= 2;
+            if(flags&SF_SATURATE)
+            {
+                colorscale *= 2;
+            }
             SETVARIANT(stain, sbuf == StainBuffer_Transparent ? 0 : -1, 0);
         }
         LOCALPARAMF(colorscale, colorscale, colorscale, colorscale, alphascale);
@@ -432,8 +508,14 @@ struct stainrenderer
     {
         staininfo &d = stains[endstain];
         int next = endstain + 1;
-        if(next>=maxstains) next = 0;
-        if(next==startstain) freestain();
+        if(next>=maxstains)
+        {
+            next = 0;
+        }
+        if(next==startstain)
+        {
+            freestain();
+        }
         endstain = next;
         return d;
     }
@@ -445,8 +527,10 @@ struct stainrenderer
 
     void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info)
     {
-        if(dir.iszero()) return;
-
+        if(dir.iszero())
+        {
+            return;
+        }
         bbmin = ivec(center).sub(radius);
         bbmax = ivec(center).add(radius).add(1);
 
@@ -458,7 +542,10 @@ struct stainrenderer
         staintangent = vec(dir.z, -dir.x, dir.y);
         staintangent.project(dir);
 
-        if(flags&SF_ROTATE) staintangent.rotate(sincos360[randomint(360)], dir);
+        if(flags&SF_ROTATE)
+        {
+            staintangent.rotate(sincos360[randomint(360)], dir);
+        }
         staintangent.normalize();
         stainbitangent.cross(staintangent, dir);
         if(flags&SF_RND4)
@@ -475,8 +562,10 @@ struct stainrenderer
         for(int i = 0; i < StainBuffer_Number; ++i)
         {
             stainbuffer &buf = verts[i];
-            if(buf.endvert == buf.lastvert) continue;
-
+            if(buf.endvert == buf.lastvert)
+            {
+                continue;
+            }
             if(dbgstain)
             {
                 int nverts = buf.nextverts();
@@ -497,7 +586,8 @@ struct stainrenderer
     void gentris(cube &cu, int orient, const ivec &o, int size, materialsurface *mat = NULL, int vismask = 0)
     {
         vec pos[Face_MaxVerts+4];
-        int numverts = 0, numplanes = 1;
+        int numverts = 0,
+            numplanes = 1;
         vec planes[2];
         if(mat)
         {
@@ -543,7 +633,9 @@ struct stainrenderer
         {
             ivec v[4];
             genfaceverts(cu, orient, v);
-            int vis = 3, convex = faceconvexity(v, vis), order = convex < 0 ? 1 : 0;
+            int vis = 3,
+                convex = faceconvexity(v, vis),
+                order = convex < 0 ? 1 : 0;
             vec vo(o);
             pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
             if(vis&1)
@@ -577,31 +669,44 @@ struct stainrenderer
                 continue;
             }
             vec p = vec(pos[0]).sub(staincenter);
-
             // travel back along plane normal from the stain center
             float dist = n.dot(p);
-            if(fabs(dist) > stainradius) continue;
+            if(fabs(dist) > stainradius)
+            {
+                continue;
+            }
             vec pcenter = vec(n).mul(dist).add(staincenter);
-
             vec ft, fb;
             ft.orthogonal(n);
             ft.normalize();
             fb.cross(ft, n);
             vec pt = vec(ft).mul(ft.dot(staintangent)).add(vec(fb).mul(fb.dot(staintangent))).normalize(),
                 pb = vec(ft).mul(ft.dot(stainbitangent)).add(vec(fb).mul(fb.dot(stainbitangent))).project(pt).normalize();
-            vec v1[Face_MaxVerts+4], v2[Face_MaxVerts+4];
-            float ptc = pt.dot(pcenter), pbc = pb.dot(pcenter);
+            vec v1[Face_MaxVerts+4],
+                v2[Face_MaxVerts+4];
+            float ptc = pt.dot(pcenter),
+                  pbc = pb.dot(pcenter);
             int numv;
             if(numplanes >= 2)
             {
-                if(l) { pos[1] = pos[2]; pos[2] = pos[3]; }
+                if(l)
+                {
+                    pos[1] = pos[2];
+                    pos[2] = pos[3];
+                }
                 numv = polyclip(pos, 3, pt, ptc - stainradius, ptc + stainradius, v1);
-                if(numv<3) continue;
+                if(numv<3)
+                {
+                    continue;
+                }
             }
             else
             {
                 numv = polyclip(pos, numverts, pt, ptc - stainradius, ptc + stainradius, v1);
-                if(numv<3) continue;
+                if(numv<3)
+                {
+                    continue;
+                }
             }
             numv = polyclip(v1, numv, pb, pbc - stainradius, pbc + stainradius, v2);
             if(numv<3)
@@ -646,9 +751,17 @@ struct stainrenderer
         for(int i = 0; i < matsurfs; ++i)
         {
             materialsurface &m = matbuf[i];
-            if(!IS_CLIPPED(m.material&MatFlag_Volume)) { i += m.skip; continue; }
+            if(!IS_CLIPPED(m.material&MatFlag_Volume))
+            {
+                i += m.skip;
+                continue;
+            }
             int dim = DIMENSION(m.orient), dc = DIM_COORD(m.orient);
-            if(dc ? stainnormal[dim] <= 0 : stainnormal[dim] >= 0) { i += m.skip; continue; }
+            if(dc ? stainnormal[dim] <= 0 : stainnormal[dim] >= 0)
+            {
+                i += m.skip;
+                continue;
+            }
             int c = C[dim], r = R[dim];
             for(;;)
             {
@@ -660,9 +773,15 @@ struct stainrenderer
                     static cube dummy;
                     gentris(dummy, m.orient, m.o, max(m.csize, m.rsize), &m);
                 }
-                if(i+1 >= matsurfs) break;
+                if(i+1 >= matsurfs)
+                {
+                    break;
+                }
                 materialsurface &n = matbuf[i+1];
-                if(n.material != m.material || n.orient != m.orient) break;
+                if(n.material != m.material || n.orient != m.orient)
+                {
+                    break;
+                }
                 i++;
             }
         }
@@ -703,22 +822,27 @@ struct stainrenderer
         vec n;
         n.cross(v[0], v[1], v[2]).normalize();
         float facing = n.dot(stainnormal);
-        if(facing <= 0) return;
-
+        if(facing <= 0)
+        {
+            return;
+        }
         vec p = vec(v[0]).sub(staincenter);
-
         float dist = n.dot(p);
-        if(fabs(dist) > stainradius) return;
+        if(fabs(dist) > stainradius)
+        {
+            return;
+        }
         vec pcenter = vec(n).mul(dist).add(staincenter);
-
         vec ft, fb;
         ft.orthogonal(n);
         ft.normalize();
         fb.cross(ft, n);
         vec pt = vec(ft).mul(ft.dot(staintangent)).add(vec(fb).mul(fb.dot(staintangent))).normalize(),
             pb = vec(ft).mul(ft.dot(stainbitangent)).add(vec(fb).mul(fb.dot(stainbitangent))).project(pt).normalize();
-        vec v1[3+4], v2[3+4];
-        float ptc = pt.dot(pcenter), pbc = pb.dot(pcenter);
+        vec v1[3+4],
+            v2[3+4];
+        float ptc = pt.dot(pcenter),
+              pbc = pb.dot(pcenter);
         int numv = polyclip(v, 3, pt, ptc - stainradius, ptc + stainradius, v1);
         if(numv<3) //check with v1
         {
@@ -729,14 +853,19 @@ struct stainrenderer
         {
             return;
         }
-        float tsz = flags&SF_RND4 ? 0.5f : 1.0f, scale = tsz*0.5f/stainradius,
-              tu = stainu + tsz*0.5f - ptc*scale, tv = stainv + tsz*0.5f - pbc*scale;
+        float tsz = flags&SF_RND4 ? 0.5f : 1.0f,
+              scale = tsz*0.5f/stainradius,
+              tu = stainu + tsz*0.5f - ptc*scale,
+              tv = stainv + tsz*0.5f - pbc*scale;
         pt.mul(scale); pb.mul(scale);
         stainvert dv1 = { v2[0], staincolor, vec2(pt.dot(v2[0]) + tu, pb.dot(v2[0]) + tv) },
                   dv2 = { v2[1], staincolor, vec2(pt.dot(v2[1]) + tu, pb.dot(v2[1]) + tv) };
         int totalverts = 3*(numv-2);
         stainbuffer &buf = verts[StainBuffer_Mapmodel];
-        if(totalverts > buf.maxverts-3) return;
+        if(totalverts > buf.maxverts-3)
+        {
+            return;
+        }
         while(buf.availverts < totalverts)
         {
             if(!freestain())
@@ -762,21 +891,29 @@ struct stainrenderer
         {
             extentity &e = *ents[oe.mapmodels[i]];
             model *m = loadmapmodel(e.attr1);
-            if(!m) continue;
-
+            if(!m)
+            {
+                continue;
+            }
             vec center, radius;
-            float rejectradius = m->collisionbox(center, radius), scale = e.attr5 > 0 ? e.attr5/100.0f : 1;
+            float rejectradius = m->collisionbox(center, radius),
+                  scale = e.attr5 > 0 ? e.attr5/100.0f : 1;
             center.mul(scale);
-            if(staincenter.reject(vec(e.o).add(center), stainradius + rejectradius*scale)) continue;
-
-            if(m->animated() || (!m->bih && !m->setBIH())) continue; 
-
-            int yaw = e.attr2, pitch = e.attr3, roll = e.attr4;
-
+            if(staincenter.reject(vec(e.o).add(center), stainradius + rejectradius*scale))
+            {
+                continue;
+            }
+            if(m->animated() || (!m->bih && !m->setBIH()))
+            {
+                continue;
+            }
+            int yaw = e.attr2,
+                pitch = e.attr3,
+                roll = e.attr4;
             m->bih->genstaintris(this, staincenter, stainradius, e.o, yaw, pitch, roll, scale);
         }
     }
-    
+
     void gentris(cube *c, const ivec &o, int size, int escaped = 0)
     {
         int overlap = octaboxoverlap(o, size, bbmin, bbmax);
@@ -788,10 +925,19 @@ struct stainrenderer
                 ivec co(i, o, size);
                 if(cu.ext)
                 {
-                    if(cu.ext->va && cu.ext->va->matsurfs) findmaterials(cu.ext->va);
-                    if(cu.ext->ents && cu.ext->ents->mapmodels.length()) genmmtris(*cu.ext->ents);            
+                    if(cu.ext->va && cu.ext->va->matsurfs)
+                    {
+                        findmaterials(cu.ext->va);
+                    }
+                    if(cu.ext->ents && cu.ext->ents->mapmodels.length())
+                    {
+                        genmmtris(*cu.ext->ents);
+                    }
                 }
-                if(cu.children) gentris(cu.children, co, size>>1, cu.escaped);
+                if(cu.children)
+                {
+                    gentris(cu.children, co, size>>1, cu.escaped);
+                }
                 else
                 {
                     int vismask = cu.visible; //visibility mask
@@ -820,7 +966,10 @@ struct stainrenderer
             else if(escaped&(1<<i))
             {
                 ivec co(i, o, size);
-                if(cu.children) findescaped(cu.children, co, size>>1, cu.escaped);
+                if(cu.children)
+                {
+                    findescaped(cu.children, co, size>>1, cu.escaped);
+                }
                 else
                 {
                     int vismask = cu.merged; //visibility mask
@@ -851,14 +1000,17 @@ stainrenderer stains[] =
 
 void initstains()
 {
-    if(initing) return;
-    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
+    if(initing)
+    {
+        return;
+    }
+    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stains[i].init(maxstaintris);
     }
-    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
     {
-        loadprogress = float(i+1)/(sizeof(stains)/sizeof(stains[0]));
+        loadprogress = static_cast<float>(i+1)/(sizeof(stains)/sizeof(stains[0]));
         stains[i].preload();
     }
     loadprogress = 0;
@@ -866,7 +1018,7 @@ void initstains()
 
 void clearstains()
 {
-    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stains[i].clearstains();
     }
@@ -877,17 +1029,23 @@ VARNP(stains, showstains, 0, 1, 1);
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
     bool rendered = false;
-    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stainrenderer &d = stains[i];
-        if(d.usegbuffer() != gbuf) continue;
+        if(d.usegbuffer() != gbuf)
+        {
+            continue;
+        }
         if(sbuf == StainBuffer_Opaque)
         {
             d.clearfadedstains();
             d.fadeinstains();
             d.fadeoutstains();
         }
-        if(!showstains || !d.hasstains(sbuf)) continue;
+        if(!showstains || !d.hasstains(sbuf))
+        {
+            continue;
+        }
         if(!rendered)
         {
             rendered = true;
@@ -895,14 +1053,17 @@ bool renderstains(int sbuf, bool gbuf, int layer)
         }
         d.render(sbuf);
     }
-    if(!rendered) return false;
+    if(!rendered)
+    {
+        return false;
+    }
     stainrenderer::cleanuprenderstate(sbuf, gbuf, layer);
     return true;
 }
 
 void cleanupstains()
 {
-    for(int i = 0; i < int(sizeof(stains)/sizeof(stains[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
     {
         stains[i].cleanup();
     }
@@ -912,7 +1073,10 @@ VARP(maxstaindistance, 1, 512, 10000);
 
 void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color, int info)
 {
-    if(!showstains || type<0 || (size_t)type>=sizeof(stains)/sizeof(stains[0]) || center.dist(camera1->o) - radius > maxstaindistance) return;
+    if(!showstains || type<0 || (size_t)type>=sizeof(stains)/sizeof(stains[0]) || center.dist(camera1->o) - radius > maxstaindistance)
+    {
+        return;
+    }
     stainrenderer &d = stains[type];
     d.addstain(center, surface, radius, color, info);
 }
