@@ -123,10 +123,8 @@ SERVER_INCLUDES= -DSTANDALONE -Istandalone/shared -Istandalone/engine -Istandalo
 ifneq (,$(findstring MINGW,$(PLATFORM)))
 SERVER_INCLUDES+= -Iinclude
 SERVER_LIBS= -mwindows $(STD_LIBS) -L$(WINBIN) -L$(WINLIB) -lzlib1 -lenet -lws2_32 -lwinmm
-MASTER_LIBS= $(STD_LIBS) -L$(WINBIN) -L$(WINLIB) -lzlib1 -lenet -lws2_32 -lwinmm
 else
 SERVER_LIBS= -Lenet -lenet -lz
-MASTER_LIBS= $(SERVER_LIBS)
 endif
 
 SERVER_OBJS= \
@@ -141,21 +139,12 @@ SERVER_OBJS= \
 
 SERVER_PCH= standalone/shared/cube.h.gch standalone/engine/engine.h.gch standalone/game/game.h.gch
 
-MASTER_OBJS= \
-	standalone/shared/crypto.o \
-	standalone/shared/stream.o \
-	standalone/shared/tools.o \
-	standalone/engine/command.o \
-	standalone/engine/master.o
-
-SERVER_MASTER_OBJS= $(SERVER_OBJS) $(filter-out $(SERVER_OBJS),$(MASTER_OBJS))
-
 default: all
 
 all: mkpaths client server
 
 clean:
-	-$(RM) -r $(CLIENT_PCH) $(CLIENT_OBJS) $(SERVER_PCH) $(SERVER_MASTER_OBJS) $(STANDALONE_PATHS) tess_client tess_server tess_master
+	-$(RM) -r $(CLIENT_PCH) $(CLIENT_OBJS) $(SERVER_PCH) $(STANDALONE_PATHS) tess_client tess_server
 
 fixspace:
 	sed -i 's/[ \t]*$$//; :rep; s/^\([ ]*\)\t/\1    /g; trep' shared/*.c shared/*.cpp shared/*.h engine/*.cpp engine/*.h game/*.cpp game/*.h
@@ -178,14 +167,6 @@ $(SERVER_PCH): standalone/%.h.gch: %.h
 	$(CXX) $(CXXFLAGS) -x c++-header -o $@.tmp $<
 	$(MV) $@.tmp $@
 
-$(SERVER_MASTER_OBJS): CXXFLAGS += $(SERVER_INCLUDES)
-$(filter standalone/shared/%,$(SERVER_MASTER_OBJS)): $(filter standalone/shared/%,$(SERVER_PCH))
-$(filter standalone/engine/%,$(SERVER_MASTER_OBJS)): $(filter standalone/engine/%,$(SERVER_PCH))
-$(filter standalone/game/%,$(SERVER_MASTER_OBJS)): $(filter standalone/game/%,$(SERVER_PCH))
-
-$(SERVER_MASTER_OBJS): standalone/%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
 ifneq (,$(findstring MINGW,$(PLATFORM)))
 client: $(CLIENT_OBJS)
 	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff 
@@ -195,9 +176,6 @@ server: $(SERVER_OBJS)
 	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff
 	$(CXX) $(CXXFLAGS) -o $(WINBIN)/tess_server.exe vcpp/mingw.res $(SERVER_OBJS) $(SERVER_LIBS)
 
-master: $(MASTER_OBJS)
-	$(CXX) $(CXXFLAGS) -o $(WINBIN)/tess_master.exe $(MASTER_OBJS) $(MASTER_LIBS)
-
 install: all
 else
 client:	libenet $(CLIENT_OBJS)
@@ -205,9 +183,6 @@ client:	libenet $(CLIENT_OBJS)
 
 server:	libenet $(SERVER_OBJS)
 	$(CXX) $(CXXFLAGS) -o tess_server $(SERVER_OBJS) $(SERVER_LIBS)  
-	
-master: libenet $(MASTER_OBJS)
-	$(CXX) $(CXXFLAGS) -o tess_master $(MASTER_OBJS) $(MASTER_LIBS)  
 
 shared/tessfont.o: shared/tessfont.c
 	$(CXX) $(CXXFLAGS) -c -o $@ $< `freetype-config --cflags`
@@ -231,7 +206,6 @@ libenet: enet/libenet.a
 depend:
 	makedepend -Y -Ishared -Iengine -Igame $(CLIENT_OBJS:.o=.cpp)
 	makedepend -a -o.h.gch -Y -Ishared -Iengine -Igame $(CLIENT_PCH:.h.gch=.h)
-	makedepend -a -pstandalone/ -Y -DSTANDALONE -Ishared -Iengine -Igame $(SERVER_MASTER_OBJS:standalone/%.o=%.cpp)
 	makedepend -a -pstandalone/ -o.h.gch -Y -DSTANDALONE -Ishared -Iengine -Igame $(SERVER_PCH:standalone/%.h.gch=%.h)
 
 # DO NOT DELETE
@@ -493,9 +467,6 @@ standalone/game/server.o: game/game.h shared/cube.h shared/tools.h
 standalone/game/server.o: shared/geom.h shared/ents.h shared/command.h
 standalone/game/server.o: shared/iengine.h shared/igame.h game/ai.h
 standalone/game/server.o: game/ctf.h game/extinfo.h
-standalone/engine/master.o: shared/cube.h shared/tools.h shared/geom.h
-standalone/engine/master.o: shared/ents.h shared/command.h shared/iengine.h
-standalone/engine/master.o: shared/igame.h
 
 standalone/shared/cube.h.gch: shared/tools.h shared/geom.h shared/ents.h
 standalone/shared/cube.h.gch: shared/command.h shared/iengine.h
