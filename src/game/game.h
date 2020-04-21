@@ -499,9 +499,9 @@ static const int msgsizes[] =               // size inclusive message token, 0 f
     -1
 };
 
-#define TESSERACT_SERVER_PORT 42000
-#define TESSERACT_LANINFO_PORT 41998
-#define TESSERACT_MASTER_PORT 41999
+#define TESSERACT_SERVER_PORT 42069
+#define TESSERACT_LANINFO_PORT 42067
+#define TESSERACT_MASTER_PORT 42068
 #define PROTOCOL_VERSION 2              // bump when protocol changes
 #define DEMO_VERSION 1                  // bump when demo format changes
 #define DEMO_MAGIC "TESSERACT_DEMO\0\0"
