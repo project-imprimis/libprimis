@@ -139,12 +139,14 @@ SERVER_OBJS= \
 
 SERVER_PCH= standalone/shared/cube.h.gch standalone/engine/engine.h.gch standalone/game/game.h.gch
 
+SERVER_MASTER_OBJS= $(SERVER_OBJS) $(filter-out $(SERVER_OBJS),$(MASTER_OBJS))
+
 default: all
 
 all: mkpaths client server
 
 clean:
-	-$(RM) -r $(CLIENT_PCH) $(CLIENT_OBJS) $(SERVER_PCH) $(STANDALONE_PATHS) tess_client tess_server
+	-$(RM) -r $(CLIENT_PCH) $(CLIENT_OBJS) $(SERVER_PCH) $(SERVER_MASTER_OBJS) $(STANDALONE_PATHS) tess_client tess_server tess_master
 
 fixspace:
 	sed -i 's/[ \t]*$$//; :rep; s/^\([ ]*\)\t/\1    /g; trep' shared/*.c shared/*.cpp shared/*.h engine/*.cpp engine/*.h game/*.cpp game/*.h
@@ -167,6 +169,14 @@ $(SERVER_PCH): standalone/%.h.gch: %.h
 	$(CXX) $(CXXFLAGS) -x c++-header -o $@.tmp $<
 	$(MV) $@.tmp $@
 
+$(SERVER_MASTER_OBJS): CXXFLAGS += $(SERVER_INCLUDES)
+$(filter standalone/shared/%,$(SERVER_MASTER_OBJS)): $(filter standalone/shared/%,$(SERVER_PCH))
+$(filter standalone/engine/%,$(SERVER_MASTER_OBJS)): $(filter standalone/engine/%,$(SERVER_PCH))
+$(filter standalone/game/%,$(SERVER_MASTER_OBJS)): $(filter standalone/game/%,$(SERVER_PCH))
+
+$(SERVER_MASTER_OBJS): standalone/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
 ifneq (,$(findstring MINGW,$(PLATFORM)))
 client: $(CLIENT_OBJS)
 	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff 
@@ -175,6 +185,7 @@ client: $(CLIENT_OBJS)
 server: $(SERVER_OBJS)
 	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff
 	$(CXX) $(CXXFLAGS) -o $(WINBIN)/tess_server.exe vcpp/mingw.res $(SERVER_OBJS) $(SERVER_LIBS)
+
 
 install: all
 else
@@ -206,6 +217,7 @@ libenet: enet/libenet.a
 depend:
 	makedepend -Y -Ishared -Iengine -Igame $(CLIENT_OBJS:.o=.cpp)
 	makedepend -a -o.h.gch -Y -Ishared -Iengine -Igame $(CLIENT_PCH:.h.gch=.h)
+	makedepend -a -pstandalone/ -Y -DSTANDALONE -Ishared -Iengine -Igame $(SERVER_MASTER_OBJS:standalone/%.o=%.cpp)
 	makedepend -a -pstandalone/ -o.h.gch -Y -DSTANDALONE -Ishared -Iengine -Igame $(SERVER_PCH:standalone/%.h.gch=%.h)
 
 # DO NOT DELETE
