@@ -155,8 +155,8 @@ static void getbackgroundres(int &w, int &h)
         hk = 768.0f/h;
     }
     wk = hk = max(wk, hk);
-    w = int(ceil(w*wk));
-    h = int(ceil(h*hk));
+    w = static_cast<int>(ceil(w*wk));
+    h = static_cast<int>(ceil(h*hk));
 }
 
 string backgroundcaption = "";
@@ -352,7 +352,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     int w = hudw, h = hudh;
     if(forceaspect)
     {
-        w = int(ceil(h*forceaspect));
+        w = static_cast<int>(ceil(h*forceaspect));
     }
     getbackgroundres(w, h);
     gettextres(w, h);
@@ -467,7 +467,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         h = hudh;
     if(forceaspect)
     {
-        w = int(ceil(h*forceaspect));
+        w = static_cast<int>(ceil(h*forceaspect));
     }
     getbackgroundres(w, h);
     gettextres(w, h);
@@ -743,7 +743,7 @@ void setupscreen()
 #else
     static const int glversions[] = { 40, 33, 32, 31, 30, 20 };
 #endif
-    for(int i = 0; i < int(sizeof(glversions)/sizeof(glversions[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(glversions)/sizeof(glversions[0])); ++i)
     {
         glcompat = glversions[i] <= 30 ? 1 : 0;
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i] / 10);
@@ -963,7 +963,7 @@ void checkinput()
             }
             case SDL_TEXTINPUT:
             {
-                if(textinputmask && int(event.text.timestamp-textinputtime) >= textinputfilter)
+                if(textinputmask && static_cast<int>(event.text.timestamp-textinputtime) >= textinputfilter)
                 {
                     uchar buf[SDL_TEXTINPUTEVENT_TEXT_SIZE+1];
                     size_t len = decodeutf8(buf, sizeof(buf)-1, (const uchar *)event.text.text, strlen(event.text.text));
@@ -1265,7 +1265,7 @@ void getframemillis(float &avg, float &bestdiff, float &worstdiff)
             worst = millis;
         }
     }
-    avg = total/float(MAXFPSHISTORY);
+    avg = total/static_cast<float>(MAXFPSHISTORY);
     best = best - avg;
     worstdiff = avg - worst;
 }
@@ -1337,7 +1337,7 @@ int getclockmillis()
     int millis = SDL_GetTicks() - clockrealbase;
     if(clockfix)
     {
-        millis = int(millis*(double(clockerror)/1000000));
+        millis = static_cast<int>(millis*(double(clockerror)/1000000));
     }
     millis += clockvirtbase;
     return max(millis, totalmillis);
