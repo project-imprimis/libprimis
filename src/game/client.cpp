@@ -10,14 +10,15 @@
 
 namespace game
 {
-    VARP(minradarscale, 0, 384, 10000);
-    VARP(maxradarscale, 1, 1024, 10000);
-    VARP(radarteammates, 0, 1, 1);
+    VARP(minimapminscale, 0, 384, 10000);
+    VARP(minimapmaxscale, 1, 1024, 10000);
+    VARP(minimapshowteammates, 0, 1, 1);
     FVARP(minimapalpha, 0, 1, 1);
 
     float calcradarscale()
     {
-        return clamp(max(minimapradius.x, minimapradius.y)/3, float(minradarscale), float(maxradarscale));
+        //clamp minimapradius/3 to within min/max radar scale
+        return clamp(max(minimapradius.x, minimapradius.y)/3, float(minimapminscale), float(minimapmaxscale));
     }
 
     void drawminimap(gameent *d, float x, float y, float s)
@@ -99,7 +100,7 @@ namespace game
 
     void drawteammates(gameent *d, float x, float y, float s)
     {
-        if(!radarteammates)
+        if(!minimapshowteammates)
         {
             return;
         }
