@@ -34,9 +34,16 @@ struct QuadNode
             filled = 0xF;
             return;
         }
-        int csize = size>>1, i = 0;
-        if(mx >= x+csize) i |= 1;
-        if(my >= y+csize) i |= 2;
+        int csize = size>>1,
+            i = 0;
+        if(mx >= x+csize)
+        {
+            i |= 1;
+        }
+        if(my >= y+csize)
+        {
+            i |= 2;
+        }
         if(csize == msize)
         {
             filled |= (1 << i);
@@ -106,7 +113,11 @@ static void drawmaterial(const materialsurface &m, float offset)
         gle::defvertex();
         gle::begin(GL_QUADS);
     }
-    float x = m.o.x, y = m.o.y, z = m.o.z, csize = m.csize, rsize = m.rsize;
+    float x = m.o.x,
+          y = m.o.y,
+          z = m.o.z,
+          csize = m.csize,
+          rsize = m.rsize;
     switch(m.orient)
     {
 #define GENFACEORIENT(orient, v0, v1, v2, v3) \
@@ -153,7 +164,10 @@ const char *findmaterialname(int mat)
 {
     for(int i = 0; i < int(sizeof(materials)/sizeof(materials[0])); ++i)
     {
-        if(materials[i].id == mat) return materials[i].name;
+        if(materials[i].id == mat)
+        {
+            return materials[i].name;
+        }
     }
     return NULL;
 }
@@ -183,24 +197,35 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
     ushort mat = c.material&matmask;
     switch(mat)
     {
-    case Mat_Air:
-         break;
-
-    case Mat_Lava:
-    case Mat_Water:
-        if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
-            return (orient != Orient_Bottom ? MATSURF_VISIBLE : MATSURF_EDIT_ONLY);
-        break;
-
-    case Mat_Glass:
-        if(visibleface(c, orient, co, size, Mat_Glass, Mat_Air, matmask))
-            return MATSURF_VISIBLE;
-        break;
-
-    default:
-        if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
-            return MATSURF_EDIT_ONLY;
-        break;
+        case Mat_Air:
+        {
+             break;
+        }
+        case Mat_Lava:
+        case Mat_Water:
+        {
+            if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
+            {
+                return (orient != Orient_Bottom ? MATSURF_VISIBLE : MATSURF_EDIT_ONLY);
+            }
+            break;
+        }
+        case Mat_Glass:
+        {
+            if(visibleface(c, orient, co, size, Mat_Glass, Mat_Air, matmask))
+            {
+                return MATSURF_VISIBLE;
+            }
+            break;
+        }
+        default:
+        {
+            if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
+            {
+                return MATSURF_EDIT_ONLY;
+            }
+            break;
+        }
     }
     return MATSURF_NOT_VISIBLE;
 }
@@ -222,7 +247,10 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
                 m.visible = vis;
                 m.o = co;
                 m.csize = m.rsize = size;
-                if(DIM_COORD(i)) m.o[DIMENSION(i)] += size;
+                if(DIM_COORD(i))
+                {
+                    m.o[DIMENSION(i)] += size;
+                }
                 matsurfs.add(m);
                 break;
             }
@@ -234,7 +262,14 @@ static inline void addmatbb(ivec &matmin, ivec &matmax, const materialsurface &m
 {
     int dim = DIMENSION(m.orient);
     ivec mmin(m.o), mmax(m.o);
-    if(DIM_COORD(m.orient)) mmin[dim] -= 2; else mmax[dim] += 2;
+    if(DIM_COORD(m.orient))
+    {
+        mmin[dim] -= 2;
+    }
+    else
+    {
+        mmax[dim] += 2;
+    }
     mmax[R[dim]] += m.rsize;
     mmax[C[dim]] += m.csize;
     matmin.min(mmin);
@@ -251,21 +286,26 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
         switch(m.material&MatFlag_Volume)
         {
             case Mat_Lava:
+            {
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
                 addmatbb(va->lavamin, va->lavamax, m);
                 break;
-
+            }
             case Mat_Water:
+            {
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
                 addmatbb(va->watermin, va->watermax, m);
                 break;
-
+            }
             case Mat_Glass:
+            {
                 addmatbb(va->glassmin, va->glassmax, m);
                 break;
-
+            }
             default:
+            {
                 continue;
+            }
         }
     }
 }
@@ -273,17 +313,28 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
 static inline bool mergematcmp(const materialsurface &x, const materialsurface &y)
 {
     int dim = DIMENSION(x.orient), c = C[dim], r = R[dim];
-    if(x.o[r] + x.rsize < y.o[r] + y.rsize) return true;
-    if(x.o[r] + x.rsize > y.o[r] + y.rsize) return false;
+    if(x.o[r] + x.rsize < y.o[r] + y.rsize)
+    {
+        return true;
+    }
+    if(x.o[r] + x.rsize > y.o[r] + y.rsize)
+    {
+        return false;
+    }
     return x.o[c] < y.o[c];
 }
 
 static int mergematr(materialsurface *m, int sz, materialsurface &n)
 {
-    int dim = DIMENSION(n.orient), c = C[dim], r = R[dim];
+    int dim = DIMENSION(n.orient),
+        c = C[dim],
+        r = R[dim];
     for(int i = sz-1; i >= 0; --i)
     {
-        if(m[i].o[r] + m[i].rsize < n.o[r]) break;
+        if(m[i].o[r] + m[i].rsize < n.o[r])
+        {
+            break;
+        }
         if(m[i].o[r] + m[i].rsize == n.o[r] && m[i].o[c] == n.o[c] && m[i].csize == n.csize)
         {
             n.o[r] = m[i].o[r];
@@ -297,7 +348,9 @@ static int mergematr(materialsurface *m, int sz, materialsurface &n)
 
 static int mergematc(materialsurface &m, materialsurface &n)
 {
-    int dim = DIMENSION(n.orient), c = C[dim], r = R[dim];
+    int dim = DIMENSION(n.orient),
+        c = C[dim],
+        r = R[dim];
     if(m.o[r] == n.o[r] && m.rsize == n.rsize && m.o[c] + m.csize == n.o[c])
     {
         n.o[c] = m.o[c];
@@ -313,11 +366,20 @@ static int mergemat(materialsurface *m, int sz, materialsurface &n)
     {
         int rmerged = mergematr(m, sz, n);
         sz -= rmerged;
-        if(!rmerged && merged) break;
-        if(!sz) break;
+        if(!rmerged && merged)
+        {
+            break;
+        }
+        if(!sz)
+        {
+            break;
+        }
         int cmerged = mergematc(m[sz-1], n);
         sz -= cmerged;
-        if(!cmerged) break;
+        if(!cmerged)
+        {
+            break;
+        }
     }
     m[sz++] = n;
     return sz;
@@ -337,10 +399,22 @@ static int mergemats(materialsurface *m, int sz)
 
 static inline bool optmatcmp(const materialsurface &x, const materialsurface &y)
 {
-    if(x.material < y.material) return true;
-    if(x.material > y.material) return false;
-    if(x.orient > y.orient) return true;
-    if(x.orient < y.orient) return false;
+    if(x.material < y.material)
+    {
+        return true;
+    }
+    if(x.material > y.material)
+    {
+        return false;
+    }
+    if(x.orient > y.orient)
+    {
+        return true;
+    }
+    if(x.orient < y.orient)
+    {
+        return false;
+    }
     int dim = DIMENSION(x.orient);
     return x.o[dim] < y.o[dim];
 }
@@ -350,7 +424,10 @@ VARF(optmats, 0, 1, 1, allchanged());
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
     quicksort(matbuf, matsurfs, optmatcmp);
-    if(!optmats) return matsurfs;
+    if(!optmats)
+    {
+        return matsurfs;
+    }
     materialsurface *cur = matbuf, *end = matbuf+matsurfs;
     while(cur < end)
     {
@@ -361,26 +438,31 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
                cur->orient == start->orient &&
                cur->visible == start->visible &&
                cur->o[dim] == start->o[dim])
+        {
             ++cur;
-         if(!IS_LIQUID(start->material&MatFlag_Volume) || start->orient != Orient_Top || !vertwater)
-         {
+        }
+        if(!IS_LIQUID(start->material&MatFlag_Volume) || start->orient != Orient_Top || !vertwater)
+        {
             if(start!=matbuf) memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
             matbuf += mergemats(matbuf, cur-start);
-         }
-         else if(cur-start>=4)
-         {
+        }
+        else if(cur-start>=4)
+        {
             QuadNode vmats(0, 0, worldsize);
             for(int i = 0; i < cur-start; ++i)
             {
                 vmats.insert(start[i].o[C[dim]], start[i].o[R[dim]], start[i].csize);
             }
             vmats.genmatsurfs(start->material, start->orient, start->visible, start->o[dim], matbuf);
-         }
-         else
-         {
-            if(start!=matbuf) memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+        }
+        else
+        {
+            if(start!=matbuf)
+            {
+                memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+            }
             matbuf += cur-start;
-         }
+        }
     }
     return matsurfs - (end-matbuf);
 }
@@ -388,19 +470,31 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 void preloadglassshaders(bool force = false)
 {
     static bool needglass = false;
-    if(force) needglass = true;
-    if(!needglass) return;
+    if(force)
+    {
+        needglass = true;
+    }
+    if(!needglass)
+    {
+        return;
+    }
 
     useshaderbyname("glass");
 
     extern int glassenv;
-    if(glassenv) useshaderbyname("glassenv");
+    if(glassenv)
+    {
+        useshaderbyname("glassenv");
+    }
 }
 
 void setupmaterials(int start, int len)
 {
     int hasmat = 0;
-    if(!len) len = valist.length();
+    if(!len)
+    {
+        len = valist.length();
+    }
     for(int i = start; i < len; i++)
     {
         vtxarray *va = valist[i];
@@ -416,13 +510,18 @@ void setupmaterials(int start, int len)
                 ivec o(m.o);
                 o.z -= 1;
                 o[dim] += coord ? 1 : -1;
-                int minc = o[dim^1], maxc = minc + (C[dim]==2 ? m.rsize : m.csize);
+                int minc = o[dim^1],
+                    maxc = minc + (C[dim]==2 ? m.rsize : m.csize);
                 ivec co;
                 int csize;
                 while(o[dim^1] < maxc)
                 {
                     cube &c = lookupcube(o, 0, co, csize);
-                    if(IS_LIQUID(c.material&MatFlag_Volume)) { m.ends |= 1; break; }
+                    if(IS_LIQUID(c.material&MatFlag_Volume))
+                    {
+                        m.ends |= 1;
+                        break;
+                    }
                     o[dim^1] += csize;
                 }
                 o[dim^1] = minc;
@@ -431,7 +530,11 @@ void setupmaterials(int start, int len)
                 while(o[dim^1] < maxc)
                 {
                     cube &c = lookupcube(o, 0, co, csize);
-                    if(visiblematerial(c, Orient_Top, co, csize)) { m.ends |= 2; break; }
+                    if(visiblematerial(c, Orient_Top, co, csize))
+                    {
+                        m.ends |= 2;
+                        break;
+                    }
                     o[dim^1] += csize;
                 }
             }
@@ -443,10 +546,15 @@ void setupmaterials(int start, int len)
                 center[C[dim]] += m.csize/2;
                 m.envmap = closestenvmap(center);
             }
-            if(matvol) hasmat |= 1<<m.material;
+            if(matvol)
+            {
+                hasmat |= 1<<m.material;
+            }
             m.skip = 0;
             if(skip && m.material == skip->material && m.orient == skip->orient && skip->skip < 0xFFFF)
+            {
                 skip->skip++;
+            }
             else
                 skip = &m;
         }
@@ -500,23 +608,53 @@ static inline bool editmatcmp(const materialsurface &x, const materialsurface &y
     {
         int dim = sortdim[i], xmin, xmax, ymin, ymax;
         xmin = xmax = x.o[dim];
-        if(dim==C[xdim]) xmax += x.csize;
-        else if(dim==R[xdim]) xmax += x.rsize;
+        if(dim==C[xdim])
+        {
+            xmax += x.csize;
+        }
+        else if(dim==R[xdim])
+        {
+            xmax += x.rsize;
+        }
         ymin = ymax = y.o[dim];
-        if(dim==C[ydim]) ymax += y.csize;
-        else if(dim==R[ydim]) ymax += y.rsize;
-        if(xmax > ymin && ymax > xmin) continue;
+        if(dim==C[ydim])
+        {
+            ymax += y.csize;
+        }
+        else if(dim==R[ydim])
+        {
+            ymax += y.rsize;
+        }
+        if(xmax > ymin && ymax > xmin)
+        {
+            continue;
+        }
         int c = sortorigin[dim];
-        if(c > xmin && c < xmax) return true;
-        if(c > ymin && c < ymax) return false;
+        if(c > xmin && c < xmax)
+        {
+            return true;
+        }
+        if(c > ymin && c < ymax)
+        {
+            return false;
+        }
         xmin = abs(xmin - c);
         xmax = abs(xmax - c);
         ymin = abs(ymin - c);
         ymax = abs(ymax - c);
-        if(max(xmin, xmax) <= min(ymin, ymax)) return true;
-        else if(max(ymin, ymax) <= min(xmin, xmax)) return false;
+        if(max(xmin, xmax) <= min(ymin, ymax))
+        {
+            return true;
+        }
+        else if(max(ymin, ymax) <= min(xmin, xmax))
+        {
+            return false;
+        }
     }
-    if(x.material < y.material) return true;
+    if(x.material < y.material)
+    {
+        return true;
+    }
     //if(x.material > y.material) return false;
     return false;
 }
@@ -529,9 +667,18 @@ void sorteditmaterials()
     {
         sortdim[i] = i;
     }
-    if(dir[sortdim[2]] > dir[sortdim[1]]) swap(sortdim[2], sortdim[1]);
-    if(dir[sortdim[1]] > dir[sortdim[0]]) swap(sortdim[1], sortdim[0]);
-    if(dir[sortdim[2]] > dir[sortdim[1]]) swap(sortdim[2], sortdim[1]);
+    if(dir[sortdim[2]] > dir[sortdim[1]])
+    {
+        swap(sortdim[2], sortdim[1]);
+    }
+    if(dir[sortdim[1]] > dir[sortdim[0]])
+    {
+        swap(sortdim[1], sortdim[0]);
+    }
+    if(dir[sortdim[2]] > dir[sortdim[1]])
+    {
+        swap(sortdim[2], sortdim[1]);
+    }
     editsurfs.sort(editmatcmp);
 }
 
@@ -548,17 +695,56 @@ void rendermatgrid()
             xtraverts += gle::end();
             bvec color;
             switch(m.material&~MatFlag_Index)
-            {
-                case Mat_Water:    color = bvec( 0,  0, 85); break; // blue
-                case Mat_Clip:     color = bvec(85,  0,  0); break; // red
-                case Mat_Glass:    color = bvec( 0, 85, 85); break; // cyan
-                case Mat_NoClip:   color = bvec( 0, 85,  0); break; // green
-                case Mat_Lava:     color = bvec(85, 40,  0); break; // orange
-                case Mat_GameClip: color = bvec(85, 85,  0); break; // yellow
-                case Mat_Death:    color = bvec(40, 40, 40); break; // black
-                case Mat_NoGI:     color = bvec(40, 30,  0); break; // brown
-                case Mat_Alpha:    color = bvec(85,  0, 85); break; // pink
-                default: continue;
+            {   //colors of materials lines in edit mode
+                case Mat_Water:
+                {
+                    color = bvec( 0,  0, 85);
+                    break; // blue
+                }
+                case Mat_Clip:
+                {
+                    color = bvec(85,  0,  0);
+                    break; // red
+                }
+                case Mat_Glass:
+                {
+                    color = bvec( 0, 85, 85);
+                    break; // cyan
+                }
+                case Mat_NoClip:
+                {
+                    color = bvec( 0, 85,  0);
+                    break; // green
+                }
+                case Mat_Lava:
+                {
+                    color = bvec(85, 40,  0);
+                    break; // orange
+                }
+                case Mat_GameClip:
+                {
+                    color = bvec(85, 85,  0);
+                    break; // yellow
+                }
+                case Mat_Death:
+                {
+                    color = bvec(40, 40, 40);
+                    break; // black
+                }
+                case Mat_NoGI:
+                {
+                    color = bvec(40, 30,  0);
+                    break; // brown
+                }
+                case Mat_Alpha:
+                {
+                    color = bvec(85,  0, 85);
+                    break; // pink
+                }
+                default:
+                {
+                    continue;
+                }
             }
             gle::colorf(color.x*ldrscaleb, color.y*ldrscaleb, color.z*ldrscaleb);
             lastmat = m.material;
@@ -577,7 +763,10 @@ static void drawglass(const materialsurface &m, float offset, const vec *normal 
     if(gle::attribbuf.empty())
     {
         gle::defvertex();
-        if(normal) gle::defnormal();
+        if(normal)
+        {
+            gle::defnormal();
+        }
         gle::deftexcoord0();
         gle::begin(GL_QUADS);
     }
@@ -608,15 +797,28 @@ static void drawglass(const materialsurface &m, float offset, const vec *normal 
             gle::attribf(glassxscale*v.x, glassyscale*v.y); \
         }
     #define GENFACENORMAL gle::attribf(n.x, n.y, n.z);
-    float x = m.o.x, y = m.o.y, z = m.o.z, csize = m.csize, rsize = m.rsize;
+    float x = m.o.x,
+          y = m.o.y,
+          z = m.o.z,
+          csize = m.csize,
+          rsize = m.rsize;
     if(normal)
     {
         vec n = *normal;
-        switch(m.orient) { GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) }
+        switch(m.orient)
+        {
+            GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset)
+        }
     }
     #undef GENFACENORMAL
     #define GENFACENORMAL
-    else switch(m.orient) { GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) }
+    else
+    {
+        switch(m.orient)
+        {
+            GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset)
+        }
+    }
     #undef GENFACENORMAL
     #undef GENFACEORIENT
     #undef GENFACEVERTX
@@ -629,10 +831,20 @@ static void drawglass(const materialsurface &m, float offset, const vec *normal 
 
 vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4], lavasurfs[4], lavafallsurfs[4];
 
-float matliquidsx1 = -1, matliquidsy1 = -1, matliquidsx2 = 1, matliquidsy2 = 1;
-float matsolidsx1 = -1, matsolidsy1 = -1, matsolidsx2 = 1, matsolidsy2 = 1;
-float matrefractsx1 = -1, matrefractsy1 = -1, matrefractsx2 = 1, matrefractsy2 = 1;
-uint matliquidtiles[LIGHTTILE_MAXH], matsolidtiles[LIGHTTILE_MAXH];
+float matliquidsx1 = -1,
+      matliquidsy1 = -1,
+      matliquidsx2 = 1,
+      matliquidsy2 = 1;
+float matsolidsx1 = -1,
+      matsolidsy1 = -1,
+      matsolidsx2 = 1,
+      matsolidsy2 = 1;
+float matrefractsx1 = -1,
+      matrefractsy1 = -1,
+      matrefractsx2 = 1,
+      matrefractsy2 = 1;
+uint matliquidtiles[LIGHTTILE_MAXH],
+     matsolidtiles[LIGHTTILE_MAXH];
 
 int findmaterials()
 {
@@ -652,7 +864,10 @@ int findmaterials()
     int hasmats = 0;
     for(vtxarray *va = visibleva; va; va = va->next)
     {
-        if(!va->matsurfs || va->occluded >= Occlude_BB || va->curvfc >= ViewFrustumCull_Fogged) continue;
+        if(!va->matsurfs || va->occluded >= Occlude_BB || va->curvfc >= ViewFrustumCull_Fogged)
+        {
+            continue;
+        }
         if(editmode && showmat && !drawtex)
         {
             for(int i = 0; i < va->matsurfs; ++i)
@@ -672,10 +887,20 @@ int findmaterials()
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
-                if((m.material&MatFlag_Volume) != Mat_Lava || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
+                if((m.material&MatFlag_Volume) != Mat_Lava || m.visible == MATSURF_EDIT_ONLY)
+                {
+                    i += m.skip;
+                    continue;
+                }
                 hasmats |= 1;
-                if(m.orient == Orient_Top) lavasurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
-                else lavafallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                if(m.orient == Orient_Top)
+                {
+                    lavasurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                }
+                else
+                {
+                    lavafallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                }
                 i += m.skip;
             }
         }
@@ -693,10 +918,20 @@ int findmaterials()
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
-                if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MATSURF_EDIT_ONLY) { i += m.skip; continue; }
+                if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MATSURF_EDIT_ONLY)
+                {
+                    i += m.skip;
+                    continue;
+                }
                 hasmats |= 4|1;
-                if(m.orient == Orient_Top) watersurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
-                else waterfallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                if(m.orient == Orient_Top)
+                {
+                    watersurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                }
+                else
+                {
+                    waterfallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                }
                 i += m.skip;
             }
         }
@@ -714,7 +949,11 @@ int findmaterials()
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
-                if((m.material&MatFlag_Volume) != Mat_Glass) { i += m.skip; continue; }
+                if((m.material&MatFlag_Volume) != Mat_Glass)
+                {
+                    i += m.skip;
+                    continue;
+                }
                 hasmats |= 4|2;
                 glasssurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
                 i += m.skip;
@@ -786,7 +1025,10 @@ void renderglass()
     for(int k = 0; k < 4; ++k)
     {
         vector<materialsurface> &surfs = glasssurfs[k];
-        if(surfs.empty()) continue;
+        if(surfs.empty())
+        {
+            continue;
+        }
 
         MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
@@ -806,15 +1048,24 @@ void renderglass()
         GLOBALPARAMF(glassspec, spec/100.0f);
 
         short envmap = EnvmapID_None;
-        if(!glassenv) SETSHADER(glass);
+        if(!glassenv)
+        {
+            SETSHADER(glass);
+        }
         for(int i = 0; i < surfs.length(); i++)
         {
             materialsurface &m = surfs[i];
             if(m.envmap != envmap && glassenv)
             {
                 xtraverts += gle::end();
-                if(m.envmap != EnvmapID_None && glassenv) SETSHADER(glassenv);
-                else SETSHADER(glass);
+                if(m.envmap != EnvmapID_None && glassenv)
+                {
+                    SETSHADER(glassenv);
+                }
+                else
+                {
+                    SETSHADER(glass);
+                }
                 glBindTexture(GL_TEXTURE_CUBE_MAP, lookupenvmap(m.envmap));
                 envmap = m.envmap;
             }
@@ -846,8 +1097,10 @@ void rendersolidmaterials()
 
 void rendereditmaterials()
 {
-    if(editsurfs.empty()) return;
-
+    if(editsurfs.empty())
+    {
+        return;
+    }
     sorteditmaterials();
 
     glDisable(GL_CULL_FACE);
@@ -869,16 +1122,56 @@ void rendereditmaterials()
             bvec color;
             switch(m.material&~MatFlag_Index)
             {
-                case Mat_Water:    color = bvec(255, 128,   0); break; // blue
-                case Mat_Clip:     color = bvec(  0, 255, 255); break; // red
-                case Mat_Glass:    color = bvec(255,   0,   0); break; // cyan
-                case Mat_NoClip:   color = bvec(255,   0, 255); break; // green
-                case Mat_Lava:     color = bvec(  0, 128, 255); break; // orange
-                case Mat_GameClip: color = bvec(  0,   0, 255); break; // yellow
-                case Mat_Death:    color = bvec(192, 192, 192); break; // black
-                case Mat_NoGI:     color = bvec(128, 160, 255); break; // brown
-                case Mat_Alpha:    color = bvec(  0, 255,   0); break; // pink
-                default: continue;
+                //note inverted colors
+                case Mat_Water:
+                {
+                    color = bvec(255, 128,   0);
+                    break; // blue
+                }
+                case Mat_Clip:
+                {
+                    color = bvec(  0, 255, 255);
+                    break; // red
+                }
+                case Mat_Glass:
+                {
+                    color = bvec(255,   0,   0);
+                    break; // cyan
+                }
+                case Mat_NoClip:
+                {
+                    color = bvec(255,   0, 255);
+                    break; // green
+                }
+                case Mat_Lava:
+                {
+                    color = bvec(  0, 128, 255);
+                    break; // orange
+                }
+                case Mat_GameClip:
+                {
+                    color = bvec(  0,   0, 255);
+                    break; // yellow
+                }
+                case Mat_Death:
+                {
+                    color = bvec(192, 192, 192);
+                    break; // black
+                }
+                case Mat_NoGI:
+                {
+                    color = bvec(128, 160, 255);
+                    break; // brown
+                }
+                case Mat_Alpha:
+                {
+                    color = bvec(  0, 255,   0);
+                    break; // pink
+                }
+                default:
+                {
+                    continue;
+                }
             }
             gle::color(color);
             lastmat = m.material;
@@ -887,23 +1180,17 @@ void rendereditmaterials()
     }
 
     xtraverts += gle::end();
-
     glDisable(GL_BLEND);
-
     resetfogcolor();
-
     rendermatgrid();
-
     glEnable(GL_CULL_FACE);
 }
 
 void renderminimapmaterials()
 {
     glDisable(GL_CULL_FACE);
-
     renderlava();
     renderwater();
-
     glEnable(GL_CULL_FACE);
 }
 
