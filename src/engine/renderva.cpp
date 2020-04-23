@@ -1498,9 +1498,9 @@ static inline void bindslottex(renderstate &cur, int type, Texture *tex, GLenum 
 
 static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
 {
+    Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
     if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
     {
-        Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
         bindslottex(cur, TEX_DIFFUSE, diffuse);
 
         if(pass == RenderPass_GBuffer)
@@ -1590,9 +1590,7 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
             }
         }
     }
-
-    GLOBALPARAM(rotate, vec2(vslot.angle.y, vslot.angle.z));
-
+    GLOBALPARAM(rotate, vec(vslot.angle.y, vslot.angle.z, diffuse->ratio));
     if(cur.tmu != 0)
     {
         cur.tmu = 0;

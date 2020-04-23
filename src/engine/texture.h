@@ -611,6 +611,7 @@ struct Texture
 
     char *name;
     int type, w, h, xs, ys, bpp, clamp;
+    float ratio;
     bool mipmap, canreduce;
     GLuint id;
     uchar *alphamask;

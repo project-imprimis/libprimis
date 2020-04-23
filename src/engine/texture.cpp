@@ -1258,7 +1258,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     if(alphaformat(format)) t->type |= Texture::ALPHA;
     t->w = t->xs = s.w;
     t->h = t->ys = s.h;
-
+    t->ratio = t->w / (float)t->h;
     int filter = !canreduce || reducefilter ? (mipit ? 2 : 1) : 0;
     glGenTextures(1, &t->id);
     if(s.compressed)
