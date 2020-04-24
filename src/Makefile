@@ -434,7 +434,6 @@ game/scoreboard.o: shared/glemu.h shared/iengine.h shared/igame.h game/ai.h
 game/server.o: game/game.h shared/cube.h shared/tools.h shared/geom.h
 game/server.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 game/server.o: shared/iengine.h shared/igame.h game/ai.h game/ctf.h
-game/server.o: game/extinfo.h
 game/waypoint.o: game/game.h shared/cube.h shared/tools.h shared/geom.h
 game/waypoint.o: shared/ents.h shared/command.h shared/glexts.h
 game/waypoint.o: shared/glemu.h shared/iengine.h shared/igame.h game/ai.h
@@ -478,7 +477,7 @@ standalone/game/entities.o: shared/iengine.h shared/igame.h game/ai.h
 standalone/game/server.o: game/game.h shared/cube.h shared/tools.h
 standalone/game/server.o: shared/geom.h shared/ents.h shared/command.h
 standalone/game/server.o: shared/iengine.h shared/igame.h game/ai.h
-standalone/game/server.o: game/ctf.h game/extinfo.h
+standalone/game/server.o: game/ctf.h
 
 standalone/shared/cube.h.gch: shared/tools.h shared/geom.h shared/ents.h
 standalone/shared/cube.h.gch: shared/command.h shared/iengine.h
