@@ -4303,7 +4303,9 @@ namespace server
         sendstring(TEAM_NAME(team), p);
         putint(p, score);
         if(!smode || !smode->extinfoteam(team, p))
+        {
             putint(p,-1); //no bases follow
+        }
     }
 
     void extinfoteams(ucharbuf &p)
@@ -4311,17 +4313,30 @@ namespace server
         putint(p, modecheck(gamemode, Mode_Team) ? 0 : 1);
         putint(p, gamemode);
         putint(p, max((gamelimit - gamemillis)/1000, 0));
-        if(!modecheck(gamemode, Mode_Team)) return;
+        if(!modecheck(gamemode, Mode_Team))
+        {
+            return;
+        }
 
         vector<teamscore> scores;
-        if(smode && smode->hidefrags()) smode->getteamscores(scores);
+        if(smode && smode->hidefrags())
+        {
+            smode->getteamscores(scores);
+        }
         for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
             if(ci->state.state!=ClientState_Spectator && VALID_TEAM(ci->team) && scores.htfind(ci->team) < 0)
             {
-                if(smode && smode->hidefrags()) scores.add(teamscore(ci->team, 0));
-                else { teaminfo &t = teaminfos[ci->team-1]; scores.add(teamscore(ci->team, t.frags)); }
+                if(smode && smode->hidefrags())
+                {
+                    scores.add(teamscore(ci->team, 0));
+                }
+                else
+                {
+                    teaminfo &t = teaminfos[ci->team-1];
+                    scores.add(teamscore(ci->team, t.frags));
+                }
             }
         }
         for(int i = 0; i < scores.length(); i++)
@@ -4333,11 +4348,9 @@ namespace server
     void extserverinforeply(ucharbuf &req, ucharbuf &p)
     {
         int extcmd = getint(req); // extended commands
-
         //Build a new packet
         putint(p, EXT_ACK); //send ack
         putint(p, EXT_VERSION); //send version of extended info
-
         switch(extcmd)
         {
             case EXT_UPTIME:
@@ -4345,11 +4358,9 @@ namespace server
                 putint(p, totalsecs); //in seconds
                 break;
             }
-
             case EXT_PLAYERSTATS:
             {
                 int cn = getint(req); //a special player, -1 for all
-
                 clientinfo *ci = NULL;
                 if(cn >= 0)
                 {
@@ -4368,9 +4379,7 @@ namespace server
                         return;
                     }
                 }
-
                 putint(p, EXT_NO_ERROR); //so far no error can happen anymore
-
                 ucharbuf q = p; //remember buffer position
                 putint(q, EXT_PLAYERSTATS_RESP_IDS); //send player ids following
                 if(ci)
@@ -4385,7 +4394,6 @@ namespace server
                     }
                 }
                 sendserverinforeply(q);
-
                 if(ci)
                 {
                     extinfoplayer(p, ci);
@@ -4399,13 +4407,11 @@ namespace server
                 }
                 return;
             }
-
             case EXT_TEAMSCORE:
             {
                 extinfoteams(p);
                 break;
             }
-
             default:
             {
                 putint(p, EXT_ERROR);
@@ -4415,7 +4421,6 @@ namespace server
         sendserverinforeply(p);
     }
 //end of extinfo
-
     void serverinforeply(ucharbuf &req, ucharbuf &p)
     {
         if(req.remaining() && !getint(req))
@@ -4423,7 +4428,6 @@ namespace server
             extserverinforeply(req, p);
             return;
         }
-
         putint(p, PROTOCOL_VERSION);
         putint(p, numclients(-1, false, true));
         putint(p, maxclients);
@@ -4440,12 +4444,10 @@ namespace server
         sendstring(serverdesc, p);
         sendserverinforeply(p);
     }
-
     int protocolversion()
     {
         return PROTOCOL_VERSION;
     }
-
     // server-side ai manager
     // note that server does not handle actual bot logic,
     // which is offloaded to the clients with the best connection
@@ -4518,7 +4520,7 @@ namespace server
                         bot = reassign.removeunordered(i);
                         teams[0].score--;
                         t.score++;
-                        for(int j = teams.length() - 2; j >= 0; j--)
+                        for(int j = teams.length() - 2; j >= 0; j--) //note reverse iteration
                         {
                             if(teams[j].score >= teams[j+1].score)
                             {
@@ -4552,9 +4554,17 @@ namespace server
             return teams.length() ? teams.last().team : 0;
         }
 
+        //this fxn could be entirely in the return statement but is seperated for clarity
         static inline bool validaiclient(clientinfo *ci)
         {
-            return ci->clientnum >= 0 && ci->state.aitype == AI_None && (ci->state.state!=ClientState_Spectator || ci->local || (ci->privilege && !ci->warned));
+            if(ci->clientnum >= 0 && ci->state.aitype == AI_None)
+            {
+                if(ci->state.state!=ClientState_Spectator || ci->local || (ci->privilege && !ci->warned))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         clientinfo *findaiclient(clientinfo *exclude = NULL)
@@ -4577,11 +4587,20 @@ namespace server
 
         bool addai(int skill, int limit)
         {
-            int numai = 0, cn = -1, maxai = limit >= 0 ? min(limit, MAXBOTS) : MAXBOTS;
+            int numai = 0,
+                cn = -1,
+                maxai = limit >= 0 ? min(limit, MAXBOTS) : MAXBOTS;
             for(int i = 0; i < bots.length(); i++)
             {
                 clientinfo *ci = bots[i];
-                if(!ci || ci->ownernum < 0) { if(cn < 0) cn = i; continue; }
+                if(!ci || ci->ownernum < 0)
+                {
+                    if(cn < 0)
+                    {
+                        cn = i;
+                        continue;
+                    }
+                }
                 numai++;
             }
             if(numai >= maxai)
@@ -4596,13 +4615,20 @@ namespace server
 
                     clientinfo *owner = findaiclient();
                     ci->ownernum = owner ? owner->clientnum : -1;
-                    if(owner) owner->bots.add(ci);
+                    if(owner)
+                    {
+                        owner->bots.add(ci);
+                    }
                     ci->aireinit = 2;
                     dorefresh = true;
                     return true;
                 }
             }
-            else { cn = bots.length(); bots.add(NULL); }
+            else
+            {
+                cn = bots.length();
+                bots.add(NULL);
+            }
             int team = modecheck(gamemode, Mode_Team) ? chooseteam() : 0;
             if(!bots[cn])
             {
@@ -4668,9 +4694,13 @@ namespace server
 
         void reinitai(clientinfo *ci)
         {
-            if(ci->ownernum < 0) deleteai(ci);
+            if(ci->ownernum < 0)
+            {
+                deleteai(ci);
+            }
             else if(ci->aireinit >= 1)
             {
+                //send packet out w/ info
                 sendf(-1, 1, "ri8s", NetMsg_InitAI, ci->clientnum, ci->ownernum, ci->state.aitype, ci->state.skill, ci->playermodel, ci->playercolor, ci->team, ci->name);
                 if(ci->aireinit == 2)
                 {
@@ -4728,7 +4758,10 @@ namespace server
             for(int i = 0; i < clients.length(); i++)
             {
                 clientinfo *ci = clients[i];
-                if(!validaiclient(ci)) continue;
+                if(!validaiclient(ci))
+                {
+                    continue;
+                }
                 if(!lo || ci->bots.length() < lo->bots.length())
                 {
                     lo = ci;
