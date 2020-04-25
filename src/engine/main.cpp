@@ -1594,7 +1594,6 @@ int main(int argc, char **argv)
 
     if(initscript) execute(initscript);
 
-    initmumble();
     resetfpshistory();
 
     inputgrab(grabinput = true);
