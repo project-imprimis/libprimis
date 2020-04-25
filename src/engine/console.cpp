@@ -3,7 +3,11 @@
 #include "engine.h"
 
 #define MAXCONLINES 1000
-struct cline { char *line; int type, outtime; };
+struct cline
+{
+    char *line;
+    int type, outtime;
+};
 reversequeue<cline, MAXCONLINES> conlines;
 
 int commandmillis = -1;
@@ -15,9 +19,16 @@ enum
     CmdFlags_Execute  = 1<<1,
 };
 
-int commandflags = 0, commandpos = -1;
+int commandflags = 0,
+    commandpos = -1;
 
-VARFP(maxcon, 10, 200, MAXCONLINES, { while(conlines.length() > maxcon) delete[] conlines.pop().line; });
+VARFP(maxcon, 10, 200, MAXCONLINES,
+{
+    while(conlines.length() > maxcon)
+    {
+        delete[] conlines.pop().line;
+    }
+});
 
 #define CONSTRLEN 512
 
@@ -57,24 +68,34 @@ void conoutf(int type, const char *fmt, ...)
 
 ICOMMAND(fullconsole, "iN$", (int *val, int *numargs, ident *id),
 {
-    if(*numargs > 0) UI::holdui("fullconsole", *val!=0);
+    if(*numargs > 0)
+    {
+        UI::holdui("fullconsole", *val!=0);
+    }
     else
     {
         int vis = UI::uivisible("fullconsole") ? 1 : 0;
-        if(*numargs < 0) intret(vis);
-        else printvar(id, vis);
+        if(*numargs < 0)
+        {
+            intret(vis);
+        }
+        else
+        {
+            printvar(id, vis);
+        }
     }
 });
 ICOMMAND(toggleconsole, "", (), UI::toggleui("fullconsole"));
 
 float rendercommand(float x, float y, float w)
 {
-    if(commandmillis < 0) return 0;
-
+    if(commandmillis < 0)
+    {
+        return 0;
+    }
     char buf[CONSTRLEN];
     const char *prompt = commandprompt ? commandprompt : ">";
     formatstring(buf, "%s %s", prompt, commandbuf);
-
     float width, height;
     text_boundsf(buf, width, height, w);
     y -= height;
@@ -92,13 +113,15 @@ HVARP(confilter, 0, 0xFFFFFF, 0xFFFFFF);
 HVARP(fullconfilter, 0, 0xFFFFFF, 0xFFFFFF);
 HVARP(miniconfilter, 0, 0, 0xFFFFFF);
 
-int conskip = 0, miniconskip = 0;
+int conskip = 0,
+    miniconskip = 0;
 
 void setconskip(int &skip, int filter, int n)
 {
-    int offset = abs(n), dir = n < 0 ? -1 : 1;
+    int offsetnum = abs(n),
+        dir = n < 0 ? -1 : 1;
     skip = clamp(skip, 0, conlines.length()-1);
-    while(offset)
+    while(offsetnum)
     {
         skip += dir;
         if(!conlines.inrange(skip))
@@ -106,19 +129,28 @@ void setconskip(int &skip, int filter, int n)
             skip = clamp(skip, 0, conlines.length()-1);
             return;
         }
-        if(conlines[skip].type&filter) --offset;
+        if(conlines[skip].type&filter)
+        {
+            --offsetnum;
+        }
     }
 }
 
 ICOMMAND(conskip, "i", (int *n), setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n));
 ICOMMAND(miniconskip, "i", (int *n), setconskip(miniconskip, miniconfilter, *n));
 
-ICOMMAND(clearconsole, "", (), { while(conlines.length()) delete[] conlines.pop().line; });
+ICOMMAND(clearconsole, "", (),
+{
+    while(conlines.length())
+    {
+        delete[] conlines.pop().line;
+    }
+});
 
 float drawconlines(int conskip, int confade, float conwidth, float conheight, float conoff, int filter, float y = 0, int dir = 1)
 {
-    int numl = conlines.length(), offset = min(conskip, numl);
-
+    int numl = conlines.length(),
+        offsetlines = min(conskip, numl);
     if(confade)
     {
         if(!conskip)
@@ -135,7 +167,7 @@ float drawconlines(int conskip, int confade, float conwidth, float conheight, fl
         }
         else
         {
-            offset--;
+            offsetlines--;
         }
     }
 
@@ -143,25 +175,45 @@ float drawconlines(int conskip, int confade, float conwidth, float conheight, fl
     for(int i = 0; i < numl; ++i) //determine visible height
     {
         // shuffle backwards to fill if necessary
-        int idx = offset+i < numl ? offset+i : --offset;
-        if(!(conlines[idx].type&filter)) continue;
+        int idx = offsetlines+i < numl ? offsetlines+i : --offsetlines;
+        if(!(conlines[idx].type&filter))
+        {
+            continue;
+        }
         char *line = conlines[idx].line;
         float width, height;
         text_boundsf(line, width, height, conwidth);
-        if(totalheight + height > conheight) { numl = i; if(offset == idx) ++offset; break; }
+        if(totalheight + height > conheight)
+        {
+            numl = i;
+            if(offsetlines == idx)
+            {
+                ++offsetlines;
+            }
+            break;
+        }
         totalheight += height;
     }
     if(dir > 0) y = conoff;
     for(int i = 0; i < numl; ++i)
     {
-        int idx = offset + (dir > 0 ? numl-i-1 : i);
-        if(!(conlines[idx].type&filter)) continue;
+        int idx = offsetlines + (dir > 0 ? numl-i-1 : i);
+        if(!(conlines[idx].type&filter))
+        {
+            continue;
+        }
         char *line = conlines[idx].line;
         float width, height;
         text_boundsf(line, width, height, conwidth);
-        if(dir <= 0) y -= height;
+        if(dir <= 0)
+        {
+            y -= height;
+        }
         draw_text(line, conoff, y, 0xFF, 0xFF, 0xFF, 0xFF, -1, conwidth);
-        if(dir > 0) y += height;
+        if(dir > 0)
+        {
+            y += height;
+        }
     }
     return y+conoff;
 }
@@ -182,7 +234,9 @@ float renderconsole(float w, float h, float abovehud)
           conwidth = w - 2*conpad - game::clipconsole(w, h);
     float y = drawconlines(conskip, confade, conwidth, conheight, conpad, confilter);
     if(miniconsize && miniconwidth)
-        drawconlines(miniconskip, miniconfade, (miniconwidth*(w - 2*conpad))/100, min(float(FONTH*miniconsize), abovehud - y), conpad, miniconfilter, abovehud, -1);
+    {
+        drawconlines(miniconskip, miniconfade, (miniconwidth*(w - 2*conpad))/100, min(static_cast<float>(FONTH*miniconsize), abovehud - y), conpad, miniconfilter, abovehud, -1);
+    }
     return y;
 }
 
@@ -233,7 +287,11 @@ hashtable<int, keym> keyms(128);
 
 void keymap(int *code, char *key)
 {
-    if(identflags&Idf_Overridden) { conoutf(Console_Error, "cannot override keymap %d", *code); return; }
+    if(identflags&Idf_Overridden)
+    {
+        conoutf(Console_Error, "cannot override keymap %d", *code);
+        return;
+    }
     keym &km = keyms[*code];
     km.code = *code;
     DELETEA(km.name);
@@ -270,7 +328,10 @@ keym *findbind(char *key)
 {
     ENUMERATE(keyms, keym, km,
     {
-        if(!strcasecmp(km.name, key)) return &km;
+        if(!strcasecmp(km.name, key))
+        {
+            return &km;
+        }
     });
     return NULL;
 }
@@ -283,15 +344,32 @@ void getbind(char *key, int type)
 
 void bindkey(char *key, char *action, int state, const char *cmd)
 {
-    if(identflags&Idf_Overridden) { conoutf(Console_Error, "cannot override %s \"%s\"", cmd, key); return; }
+    if(identflags&Idf_Overridden)
+    {
+        conoutf(Console_Error, "cannot override %s \"%s\"", cmd, key);
+        return;
+    }
     keym *km = findbind(key);
-    if(!km) { conoutf(Console_Error, "unknown key \"%s\"", key); return; }
+    if(!km)
+    {
+        conoutf(Console_Error, "unknown key \"%s\"", key);
+        return;
+    }
     char *&binding = km->actions[state];
-    if(!keypressed || keyaction!=binding) delete[] binding;
+    if(!keypressed || keyaction!=binding)
+    {
+        delete[] binding;
+    }
     // trim white-space to make searchbinds more reliable
-    while(iscubespace(*action)) action++;
+    while(iscubespace(*action))
+    {
+        action++;
+    }
     int len = strlen(action);
-    while(len>0 && iscubespace(action[len-1])) len--;
+    while(len>0 && iscubespace(action[len-1]))
+    {
+        len--;
+    }
     binding = newstring(action, len);
 }
 
@@ -310,7 +388,10 @@ void keym::clear(int type)
     char *&binding = actions[type];
     if(binding[0])
     {
-        if(!keypressed || keyaction!=binding) delete[] binding;
+        if(!keypressed || keyaction!=binding)
+        {
+            delete[] binding;
+        }
         binding = newstring("");
     }
 }
@@ -329,16 +410,31 @@ void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *fl
     DELETEA(commandaction);
     DELETEA(commandprompt);
     commandpos = -1;
-    if(action && action[0]) commandaction = newstring(action);
-    if(prompt && prompt[0]) commandprompt = newstring(prompt);
-    commandflags = 0;
-    if(flags) while(*flags) switch(*flags++)
+    if(action && action[0])
     {
-        case 'c': commandflags |= CmdFlags_Complete; break;
-        case 'x': commandflags |= CmdFlags_Execute; break;
-        case 's': commandflags |= CmdFlags_Complete|CmdFlags_Execute; break;
+        commandaction = newstring(action);
     }
-    else if(init) commandflags |= CmdFlags_Complete|CmdFlags_Execute;
+    if(prompt && prompt[0])
+    {
+        commandprompt = newstring(prompt);
+    }
+    commandflags = 0;
+    if(flags)
+    {
+        while(*flags)
+        {
+            switch(*flags++)
+            {
+                case 'c': commandflags |= CmdFlags_Complete; break;
+                case 'x': commandflags |= CmdFlags_Execute; break;
+                case 's': commandflags |= CmdFlags_Complete|CmdFlags_Execute; break;
+            }
+        }
+    }
+    else if(init)
+    {
+        commandflags |= CmdFlags_Complete|CmdFlags_Execute;
+    }
 }
 
 ICOMMAND(saycommand, "C", (char *init), inputcommand(init));
@@ -346,9 +442,15 @@ COMMAND(inputcommand, "ssss");
 
 void pasteconsole()
 {
-    if(!SDL_HasClipboardText()) return;
+    if(!SDL_HasClipboardText())
+    {
+        return;
+    }
     char *cb = SDL_GetClipboardText();
-    if(!cb) return;
+    if(!cb)
+    {
+        return;
+    }
     size_t cblen = strlen(cb),
            commandlen = strlen(commandbuf),
            decoded = decodeutf8((uchar *)&commandbuf[commandlen], sizeof(commandbuf)-1-commandlen, (const uchar *)cb, cblen);
@@ -372,11 +474,20 @@ struct hline
     void restore()
     {
         copystring(commandbuf, buf);
-        if(commandpos >= (int)strlen(commandbuf)) commandpos = -1;
+        if(commandpos >= static_cast<int>(strlen(commandbuf)))
+        {
+            commandpos = -1;
+        }
         DELETEA(commandaction);
         DELETEA(commandprompt);
-        if(action) commandaction = newstring(action);
-        if(prompt) commandprompt = newstring(prompt);
+        if(action)
+        {
+            commandaction = newstring(action);
+        }
+        if(prompt)
+        {
+            commandprompt = newstring(prompt);
+        }
         commandflags = flags;
     }
 
@@ -391,14 +502,23 @@ struct hline
     void save()
     {
         buf = newstring(commandbuf);
-        if(commandaction) action = newstring(commandaction);
-        if(commandprompt) prompt = newstring(commandprompt);
+        if(commandaction)
+        {
+            action = newstring(commandaction);
+        }
+        if(commandprompt)
+        {
+            prompt = newstring(commandprompt);
+        }
         flags = commandflags;
     }
 
     void run()
     {
-        if(flags&CmdFlags_Execute && buf[0]=='/') execute(buf+1);
+        if(flags&CmdFlags_Execute && buf[0]=='/')
+        {
+            execute(buf+1);
+        }
         else if(action)
         {
             alias("commandbuf", buf);
@@ -440,7 +560,11 @@ vector<releaseaction> releaseactions;
 
 const char *addreleaseaction(char *s)
 {
-    if(!keypressed) { delete[] s; return NULL; }
+    if(!keypressed)
+    {
+        delete[] s;
+        return NULL;
+    }
     releaseaction &ra = releaseactions.add();
     ra.key = keypressed;
     ra.action = s;
@@ -450,7 +574,10 @@ const char *addreleaseaction(char *s)
 
 tagval *addreleaseaction(ident *id, int numargs)
 {
-    if(!keypressed || numargs > 3) return NULL;
+    if(!keypressed || numargs > 3)
+    {
+        return NULL;
+    }
     releaseaction &ra = releaseactions.add();
     ra.key = keypressed;
     ra.id = id;
@@ -492,25 +619,37 @@ void execbind(keym &k, bool isdown)
         int state = keym::ACTION_DEFAULT;
         if(!mainmenu)
         {
-            if(editmode) state = keym::ACTION_EDITING;
-            else if(player->state==ClientState_Spectator) state = keym::ACTION_SPECTATOR;
+            if(editmode)
+            {
+                state = keym::ACTION_EDITING;
+            }
+            else if(player->state==ClientState_Spectator)
+            {
+                state = keym::ACTION_SPECTATOR;
+            }
         }
         char *&action = k.actions[state][0] ? k.actions[state] : k.actions[keym::ACTION_DEFAULT];
         keyaction = action;
         keypressed = &k;
         execute(keyaction);
         keypressed = NULL;
-        if(keyaction!=action) delete[] keyaction;
+        if(keyaction!=action)
+        {
+            delete[] keyaction;
+        }
     }
     k.pressed = isdown;
 }
 
 bool consoleinput(const char *str, int len)
 {
-    if(commandmillis < 0) return false;
-
+    if(commandmillis < 0)
+    {
+        return false;
+    }
     resetcomplete();
-    int cmdlen = (int)strlen(commandbuf), cmdspace = int(sizeof(commandbuf)) - (cmdlen+1);
+    int cmdlen = static_cast<int>(strlen(commandbuf)),
+        cmdspace = static_cast<int>(sizeof(commandbuf)) - (cmdlen+1);
     len = min(len, cmdspace);
     if(commandpos<0)
     {
@@ -529,8 +668,10 @@ bool consoleinput(const char *str, int len)
 
 bool consolekey(int code, bool isdown)
 {
-    if(commandmillis < 0) return false;
-
+    if(commandmillis < 0)
+    {
+        return false;
+    }
     #ifdef __APPLE__
         #define MOD_KEYS (KMOD_LGUI|KMOD_RGUI)
     #else
@@ -546,7 +687,10 @@ bool consolekey(int code, bool isdown)
                 break;
 
             case SDLK_HOME:
-                if(strlen(commandbuf)) commandpos = 0;
+                if(strlen(commandbuf))
+                {
+                    commandpos = 0;
+                }
                 break;
 
             case SDLK_END:
@@ -555,54 +699,100 @@ bool consolekey(int code, bool isdown)
 
             case SDLK_DELETE:
             {
-                int len = (int)strlen(commandbuf);
-                if(commandpos<0) break;
+                int len = static_cast<int>(strlen(commandbuf));
+                if(commandpos<0)
+                {
+                    break;
+                }
                 memmove(&commandbuf[commandpos], &commandbuf[commandpos+1], len - commandpos);
                 resetcomplete();
-                if(commandpos>=len-1) commandpos = -1;
+                if(commandpos>=len-1)
+                {
+                    commandpos = -1;
+                }
                 break;
             }
 
             case SDLK_BACKSPACE:
             {
-                int len = (int)strlen(commandbuf), i = commandpos>=0 ? commandpos : len;
-                if(i<1) break;
+                int len = static_cast<int>(strlen(commandbuf)),
+                    i = commandpos>=0 ? commandpos : len;
+                if(i<1)
+                {
+                    break;
+                }
                 memmove(&commandbuf[i-1], &commandbuf[i], len - i + 1);
                 resetcomplete();
-                if(commandpos>0) commandpos--;
-                else if(!commandpos && len<=1) commandpos = -1;
+                if(commandpos>0)
+                {
+                    commandpos--;
+                }
+                else if(!commandpos && len<=1)
+                {
+                    commandpos = -1;
+                }
                 break;
             }
-
             case SDLK_LEFT:
-                if(commandpos>0) commandpos--;
-                else if(commandpos<0) commandpos = (int)strlen(commandbuf)-1;
+            {
+                if(commandpos>0)
+                {
+                    commandpos--;
+                }
+                else if(commandpos<0)
+                {
+                    commandpos = static_cast<int>(strlen(commandbuf))-1;
+                }
                 break;
-
+            }
             case SDLK_RIGHT:
-                if(commandpos>=0 && ++commandpos>=(int)strlen(commandbuf)) commandpos = -1;
+            {
+                if(commandpos>=0 && ++commandpos >= static_cast<int>(strlen(commandbuf)))
+                {
+                    commandpos = -1;
+                }
                 break;
-
+            }
             case SDLK_UP:
-                if(histpos > history.length()) histpos = history.length();
-                if(histpos > 0) history[--histpos]->restore();
+            {
+                if(histpos > history.length())
+                {
+                    histpos = history.length();
+                }
+                if(histpos > 0)
+                {
+                    history[--histpos]->restore();
+                }
                 break;
-
+            }
             case SDLK_DOWN:
-                if(histpos + 1 < history.length()) history[++histpos]->restore();
+            {
+                if(histpos + 1 < history.length())
+                {
+                    history[++histpos]->restore();
+                }
                 break;
-
+            }
             case SDLK_TAB:
+            {
                 if(commandflags&CmdFlags_Complete)
                 {
                     complete(commandbuf, sizeof(commandbuf), commandflags&CmdFlags_Execute ? "/" : NULL);
-                    if(commandpos>=0 && commandpos>=(int)strlen(commandbuf)) commandpos = -1;
+                    if(commandpos>=0 && commandpos >= static_cast<int>(strlen(commandbuf)))
+                    {
+                        commandpos = -1;
+                    }
                 }
                 break;
-
+            }
             case SDLK_v:
-                if(SDL_GetModState()&MOD_KEYS) pasteconsole();
+            {
+                if(SDL_GetModState()&MOD_KEYS)
+                {
+                    pasteconsole();
+                }
                 break;
+            }
         }
     }
     else
@@ -628,7 +818,10 @@ bool consolekey(int code, bool isdown)
             }
             histpos = history.length();
             inputcommand(NULL);
-            if(h) h->run();
+            if(h)
+            {
+                h->run();
+            }
         }
         else if(code==SDLK_ESCAPE)
         {
@@ -643,18 +836,26 @@ bool consolekey(int code, bool isdown)
 void processtextinput(const char *str, int len)
 {
     if(!UI::textinput(str, len))
+    {
         consoleinput(str, len);
+    }
 }
 
 void processkey(int code, bool isdown)
 {
     keym *haskey = keyms.access(code);
-    if(haskey && haskey->pressed) execbind(*haskey, isdown); // allow pressed keys to release
+    if(haskey && haskey->pressed)
+    {
+        execbind(*haskey, isdown); // allow pressed keys to release
+    }
     else if(!UI::keypress(code, isdown)) // UI key intercept
     {
         if(!consolekey(code, isdown))
         {
-            if(haskey) execbind(*haskey, isdown);
+            if(haskey)
+            {
+                execbind(*haskey, isdown);
+            }
         }
     }
 }
@@ -719,7 +920,10 @@ struct filesval
 
     void update()
     {
-        if(type!=Files_Directory || millis >= commandmillis) return;
+        if(type!=Files_Directory || millis >= commandmillis)
+        {
+            return;
+        }
         files.deletearrays();
         listfiles(dir, ext, files);
         files.sort();
@@ -736,7 +940,7 @@ struct filesval
 
 static inline bool htcmp(const fileskey &x, const fileskey &y)
 {
-    return x.type==y.type && !strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !strcmp(x.ext, y.ext)));
+    return x.type == y.type && !strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !strcmp(x.ext, y.ext)));
 }
 
 static inline uint hthash(const fileskey &k)
@@ -750,7 +954,10 @@ static hashtable<char *, filesval *> completions;
 int completesize = 0;
 char *lastcomplete = NULL;
 
-void resetcomplete() { completesize = 0; }
+void resetcomplete()
+{
+    completesize = 0;
+}
 
 void addcomplete(char *command, int type, char *dir, char *ext)
 {
@@ -762,18 +969,29 @@ void addcomplete(char *command, int type, char *dir, char *ext)
     if(!dir[0])
     {
         filesval **hasfiles = completions.access(command);
-        if(hasfiles) *hasfiles = NULL;
+        if(hasfiles)
+        {
+            *hasfiles = NULL;
+        }
         return;
     }
     if(type==Files_Directory)
     {
-        int dirlen = (int)strlen(dir);
+        int dirlen = static_cast<int>(strlen(dir));
         while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
+        {
             dir[--dirlen] = '\0';
+        }
         if(ext)
         {
-            if(strchr(ext, '*')) ext[0] = '\0';
-            if(!ext[0]) ext = NULL;
+            if(strchr(ext, '*'))
+            {
+                ext[0] = '\0';
+            }
+            if(!ext[0])
+            {
+                ext = NULL;
+            }
         }
     }
     fileskey key(type, dir, ext);
@@ -781,13 +999,22 @@ void addcomplete(char *command, int type, char *dir, char *ext)
     if(!val)
     {
         filesval *f = new filesval(type, dir, ext);
-        if(type==Files_List) explodelist(dir, f->files);
+        if(type==Files_List)
+        {
+            explodelist(dir, f->files);
+        }
         val = &completefiles[fileskey(type, f->dir, f->ext)];
         *val = f;
     }
     filesval **hasfiles = completions.access(command);
-    if(hasfiles) *hasfiles = *val;
-    else completions[newstring(command)] = *val;
+    if(hasfiles)
+    {
+        *hasfiles = *val;
+    }
+    else
+    {
+        completions[newstring(command)] = *val;
+    }
 }
 
 void addfilecomplete(char *command, char *dir, char *ext)
@@ -809,18 +1036,26 @@ void complete(char *s, int maxlen, const char *cmdprefix)
     if(cmdprefix)
     {
         cmdlen = strlen(cmdprefix);
-        if(strncmp(s, cmdprefix, cmdlen)) prependstring(s, cmdprefix, maxlen);
+        if(strncmp(s, cmdprefix, cmdlen))
+        {
+            prependstring(s, cmdprefix, maxlen);
+        }
     }
-    if(!s[cmdlen]) return;
-    if(!completesize) { completesize = (int)strlen(&s[cmdlen]); DELETEA(lastcomplete); }
-
+    if(!s[cmdlen])
+    {
+        return;
+    }
+    if(!completesize)
+    {
+        completesize = static_cast<int>(strlen(&s[cmdlen]));
+        DELETEA(lastcomplete);
+    }
     filesval *f = NULL;
     if(completesize)
     {
         char *end = strchr(&s[cmdlen], ' ');
         if(end) f = completions.find(stringslice(&s[cmdlen], end), NULL);
     }
-
     const char *nextcomplete = NULL;
     if(f) // complete using filenames
     {
@@ -831,7 +1066,9 @@ void complete(char *s, int maxlen, const char *cmdprefix)
             if(strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
                       (!lastcomplete || strcmp(f->files[i], lastcomplete) > 0) &&
                       (!nextcomplete || strcmp(f->files[i], nextcomplete) < 0))
+            {
                 nextcomplete = f->files[i];
+            }
         }
         cmdprefix = s;
         cmdlen = commandsize;
@@ -842,14 +1079,19 @@ void complete(char *s, int maxlen, const char *cmdprefix)
             if(strncmp(id.name, &s[cmdlen], completesize)==0 &&
                       (!lastcomplete || strcmp(id.name, lastcomplete) > 0) &&
                       (!nextcomplete || strcmp(id.name, nextcomplete) < 0))
+            {
                 nextcomplete = id.name;
+            }
         );
     }
     DELETEA(lastcomplete);
     if(nextcomplete)
     {
         cmdlen = min(cmdlen, maxlen-1);
-        if(cmdlen) memmove(s, cmdprefix, cmdlen);
+        if(cmdlen)
+        {
+            memmove(s, cmdprefix, cmdlen);
+        }
         copystring(&s[cmdlen], nextcomplete, maxlen-cmdlen);
         lastcomplete = newstring(nextcomplete);
     }
@@ -866,10 +1108,19 @@ void writecompletions(stream *f)
         filesval *v = completions[k];
         if(v->type==Files_List)
         {
-            if(validateblock(v->dir)) f->printf("listcomplete %s [%s]\n", escapeid(k), v->dir);
-            else f->printf("listcomplete %s %s\n", escapeid(k), escapestring(v->dir));
+            if(validateblock(v->dir))
+            {
+                f->printf("listcomplete %s [%s]\n", escapeid(k), v->dir);
+            }
+            else
+            {
+                f->printf("listcomplete %s %s\n", escapeid(k), escapestring(v->dir));
+            }
         }
-        else f->printf("complete %s %s %s\n", escapeid(k), escapestring(v->dir), escapestring(v->ext ? v->ext : "*"));
+        else
+        {
+            f->printf("complete %s %s %s\n", escapeid(k), escapestring(v->dir), escapestring(v->ext ? v->ext : "*"));
+        }
     }
 }
 
