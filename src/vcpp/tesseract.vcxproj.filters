@@ -58,9 +58,6 @@
     <ClCompile Include="..\engine\menus.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\movie.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\engine\normal.cpp">
       <Filter>engine</Filter>
     </ClCompile>

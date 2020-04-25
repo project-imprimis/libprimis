@@ -6,7 +6,6 @@ extern void cleargamma();
 
 void cleanup()
 {
-    recorder::stop();
     cleanupserver();
     SDL_ShowCursor(SDL_TRUE);
     SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -773,7 +772,6 @@ void resetgl()
 
     renderbackground("resetting OpenGL");
 
-    recorder::cleanup();
     cleanupva();
     cleanupparticles();
     cleanupstains();
@@ -1115,7 +1113,6 @@ void checkinput()
 
 void swapbuffers(bool overlay)
 {
-    recorder::capture(overlay);
     gle::disable();
     SDL_GL_SwapWindow(screen);
 }

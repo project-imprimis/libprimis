@@ -36,7 +36,6 @@
 		D1FCB15118832B7500AFC227 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1FCB0FA18832B7500AFC227 /* main.cpp */; };
 		D1FCB15318832B7500AFC227 /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1FCB0FC18832B7500AFC227 /* material.cpp */; };
 		D1FCB15418832B7500AFC227 /* menus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1FCB10018832B7500AFC227 /* menus.cpp */; };
-		D1FCB15518832B7500AFC227 /* movie.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1FCB10218832B7500AFC227 /* movie.cpp */; };
 		D1FCB15618832B7500AFC227 /* normal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1FCB10418832B7500AFC227 /* normal.cpp */; };
 		D1FCB15718832B7500AFC227 /* octa.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1FCB10618832B7500AFC227 /* octa.cpp */; };
 		D1FCB15818832B7500AFC227 /* octaedit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1FCB10818832B7500AFC227 /* octaedit.cpp */; };
@@ -157,7 +156,6 @@
 		D1FCB0FF18832B7500AFC227 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		D1FCB10018832B7500AFC227 /* menus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = menus.cpp; sourceTree = "<group>"; };
 		D1FCB10118832B7500AFC227 /* model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model.h; sourceTree = "<group>"; };
-		D1FCB10218832B7500AFC227 /* movie.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = movie.cpp; sourceTree = "<group>"; };
 		D1FCB10318832B7500AFC227 /* mpr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpr.h; sourceTree = "<group>"; };
 		D1FCB10418832B7500AFC227 /* normal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normal.cpp; sourceTree = "<group>"; };
 		D1FCB10518832B7500AFC227 /* obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = obj.h; sourceTree = "<group>"; };
@@ -394,7 +392,6 @@
 				D1FCB0FF18832B7500AFC227 /* md5.h */,
 				D1FCB10018832B7500AFC227 /* menus.cpp */,
 				D1FCB10118832B7500AFC227 /* model.h */,
-				D1FCB10218832B7500AFC227 /* movie.cpp */,
 				D1FCB10318832B7500AFC227 /* mpr.h */,
 				D1FCB10418832B7500AFC227 /* normal.cpp */,
 				D1FCB10518832B7500AFC227 /* obj.h */,
@@ -589,7 +586,6 @@
 				D1FCB15118832B7500AFC227 /* main.cpp in Sources */,
 				D1FCB15318832B7500AFC227 /* material.cpp in Sources */,
 				D1FCB15418832B7500AFC227 /* menus.cpp in Sources */,
-				D1FCB15518832B7500AFC227 /* movie.cpp in Sources */,
 				D1FCB15618832B7500AFC227 /* normal.cpp in Sources */,
 				D1FCB15718832B7500AFC227 /* octa.cpp in Sources */,
 				D1FCB15818832B7500AFC227 /* octaedit.cpp in Sources */,
