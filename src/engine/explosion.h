@@ -9,8 +9,10 @@ namespace sphere
         ushort s, t;
     } *verts = NULL;
     GLushort *indices = NULL;
-    int numverts = 0, numindices = 0;
-    GLuint vbuf = 0, ebuf = 0;
+    int numverts = 0,
+        numindices = 0;
+    GLuint vbuf = 0,
+           ebuf = 0;
 
     void init(int slices, int stacks)
     {
@@ -19,16 +21,17 @@ namespace sphere
         float ds = 1.0f/slices, dt = 1.0f/stacks, t = 1.0f;
         for(int i = 0; i < stacks+1; ++i)
         {
-            float rho = M_PI*(1-t), s = 0.0f;
-            float sinrho = i && i < stacks ? sin(rho) : 0;
-            float cosrho = !i ? 1 : (i < stacks ? cos(rho) : -1);
+            float rho = M_PI*(1-t),
+                  s = 0.0f,
+                  sinrho = i && i < stacks ? sin(rho) : 0,
+                  cosrho = !i ? 1 : (i < stacks ? cos(rho) : -1);
             for(int j = 0; j < slices+1; ++j)
             {
                 float theta = j==slices ? 0 : 2*M_PI*s;
                 vert &v = verts[i*(slices+1) + j];
                 v.pos = vec(sin(theta)*sinrho, cos(theta)*sinrho, -cosrho);
-                v.s = ushort(s*0xFFFF);
-                v.t = ushort(t*0xFFFF);
+                v.s = static_cast<ushort>(s*0xFFFF);
+                v.t = static_cast<ushort>(t*0xFFFF);
                 s += ds;
             }
             t -= dt;
@@ -56,13 +59,17 @@ namespace sphere
                 }
             }
         }
-
-        if(!vbuf) glGenBuffers_(1, &vbuf);
+        if(!vbuf)
+        {
+            glGenBuffers_(1, &vbuf);
+        }
         gle::bindvbo(vbuf);
         glBufferData_(GL_ARRAY_BUFFER, numverts*sizeof(vert), verts, GL_STATIC_DRAW);
         DELETEA(verts);
-
-        if(!ebuf) glGenBuffers_(1, &ebuf);
+        if(!ebuf)
+        {
+            glGenBuffers_(1, &ebuf);
+        }
         gle::bindebo(ebuf);
         glBufferData_(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
         DELETEA(indices);
@@ -70,14 +77,24 @@ namespace sphere
 
     void cleanup()
     {
-        if(vbuf) { glDeleteBuffers_(1, &vbuf); vbuf = 0; }
-        if(ebuf) { glDeleteBuffers_(1, &ebuf); ebuf = 0; }
+        if(vbuf)
+        {
+            glDeleteBuffers_(1, &vbuf);
+            vbuf = 0;
+        }
+        if(ebuf)
+        {
+            glDeleteBuffers_(1, &ebuf);
+            ebuf = 0;
+        }
     }
 
     void enable()
     {
-        if(!vbuf) init(12, 6);
-
+        if(!vbuf)
+        {
+            init(12, 6); //12 slices, 6 stacks
+        }
         gle::bindvbo(vbuf);
         gle::bindebo(ebuf);
 
@@ -114,9 +131,14 @@ struct fireballrenderer : listrenderer
 
     void startrender()
     {
-        if(softparticles && softexplosion) SETSHADER(explosionsoft);
-        else SETSHADER(explosion);
-
+        if(softparticles && softexplosion)
+        {
+            SETSHADER(explosionsoft);
+        }
+        else
+        {
+            SETSHADER(explosion);
+        }
         sphere::enable();
     }
 
@@ -139,12 +161,14 @@ struct fireballrenderer : listrenderer
     void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
     {
         float pmax = p->val,
-              size = p->fade ? float(ts)/p->fade : 1,
+              size = p->fade ? static_cast<float>(ts)/p->fade : 1,
               psize = p->size + pmax * size;
 
-        if(isfoggedsphere(psize*WOBBLE, p->o)) return;
-
-        vec dir = vec(o).sub(camera1->o), s, t;
+        if(isfoggedsphere(psize*WOBBLE, p->o))
+        {
+            return;
+        }
+        vec dir = static_cast<vec>(o).sub(camera1->o), s, t;
         float dist = dir.magnitude();
         bool inside = dist <= psize*WOBBLE;
         if(inside)
@@ -188,9 +212,15 @@ struct fireballrenderer : listrenderer
         for(int i = 0; i < (inside ? 2 : 1); ++i)
         {
             gle::color(color, i ? alpha/2 : alpha);
-            if(i) glDepthFunc(GL_GEQUAL);
+            if(i)
+            {
+                glDepthFunc(GL_GEQUAL);
+            }
             sphere::draw();
-            if(i) glDepthFunc(GL_LESS);
+            if(i)
+            {
+                glDepthFunc(GL_LESS);
+            }
         }
     }
 };

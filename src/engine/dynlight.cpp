@@ -19,31 +19,54 @@ struct dynlight
         {
             int remaining = expire - lastmillis;
             if(flags&DynLight_Expand)
-                curradius = initradius + (radius - initradius) * (1.0f - remaining/float(fade + peak));
+            {
+                curradius = initradius + (radius - initradius) * (1.0f - remaining/static_cast<float>(fade + peak));
+            }
             else if(!(flags&DynLight_Flash) && remaining > fade)
-                curradius = initradius + (radius - initradius) * (1.0f - float(remaining - fade)/peak);
+            {
+                curradius = initradius + (radius - initradius) * (1.0f - static_cast<float>(remaining - fade)/peak);
+            }
             else if(flags&DynLight_Shrink)
+            {
                 curradius = (radius*remaining)/fade;
-            else curradius = radius;
+            }
+            else
+            {
+                curradius = radius;
+            }
         }
-        else curradius = radius;
+        else
+        {
+            curradius = radius;
+        }
     }
 
     void calccolor()
     {
-        if(flags&DynLight_Flash || peak <= 0) curcolor = color;
+        if(flags&DynLight_Flash || peak <= 0)
+        {
+            curcolor = color;
+        }
         else
         {
             int peaking = expire - lastmillis - fade;
-            if(peaking <= 0) curcolor = color;
-            else curcolor.lerp(initcolor, color, 1.0f - float(peaking)/peak);
+            if(peaking <= 0)
+            {
+                curcolor = color;
+            }
+            else
+            {
+                curcolor.lerp(initcolor, color, 1.0f - static_cast<float>(peaking)/peak);
+            }
         }
-
         float intensity = 1.0f;
         if(fade > 0)
         {
             int fading = expire - lastmillis;
-            if(fading < fade) intensity = float(fading)/fade;
+            if(fading < fade)
+            {
+                intensity = static_cast<float>(fading)/fade;
+            }
         }
         curcolor.mul(intensity);
     }
@@ -54,9 +77,14 @@ vector<dynlight *> closedynlights;
 
 void adddynlight(const vec &o, float radius, const vec &color, int fade, int peak, int flags, float initradius, const vec &initcolor, physent *owner, const vec &dir, int spot)
 {
-    if(!usedynlights) return;
-    if(o.dist(camera1->o) > dynlightdist || radius <= 0) return;
-
+    if(!usedynlights)
+    {
+        return;
+    }
+    if(o.dist(camera1->o) > dynlightdist || radius <= 0)
+    {
+        return;
+    }
     int insert = 0, expire = fade + peak + lastmillis;
     for(int i = dynlights.length(); --i >=0;) //note reverse iteration
     {
@@ -131,16 +159,24 @@ void updatedynlights()
 int finddynlights()
 {
     closedynlights.setsize(0);
-    if(!usedynlights) return 0;
+    if(!usedynlights)
+    {
+        return 0;
+    }
     physent e;
     e.type = PhysEnt_Camera;
     for(int j = 0; j < dynlights.length(); j++)
     {
         dynlight &d = dynlights[j];
-        if(d.curradius <= 0) continue;
+        if(d.curradius <= 0)
+        {
+            continue;
+        }
         d.dist = camera1->o.dist(d.o) - d.curradius;
         if(d.dist > dynlightdist || isfoggedsphere(d.curradius, d.o))
+        {
             continue;
+        }
         e.o = d.o;
         e.radius = e.xradius = e.yradius = e.eyeheight = e.aboveeye = d.curradius;
         if(!collide(&e, vec(0, 0, 0), 0, false)) continue;
@@ -161,7 +197,10 @@ int finddynlights()
 
 bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
 {
-    if(!closedynlights.inrange(n)) return false;
+    if(!closedynlights.inrange(n))
+    {
+        return false;
+    }
     dynlight &d = *closedynlights[n];
     o = d.o;
     radius = d.curradius;
@@ -200,7 +239,6 @@ void dynlightreaching(const vec &target, vec &color, vec &dir, bool hud)
             }
             intensity *= spotatten;
         }
-
         vec color = d.curcolor;
         color.mul(intensity);
         dyncolor.add(color);
