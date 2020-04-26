@@ -144,7 +144,8 @@ COMMAND(quit, "");
 
 static void getbackgroundres(int &w, int &h)
 {
-    float wk = 1, hk = 1;
+    float wk = 1,
+          hk = 1;
     if(w < 1024)
     {
         wk = 1024.0f/w;
@@ -279,44 +280,40 @@ void renderbackgroundview(
         if (mapinfo)
         {
             text_boundsf(mapinfo, mw, mh, infowidth);
-            x -= 0.5f*mw*msz;
+            x -= 0.5f * mw * msz;
             if (mapshot && mapshot!=notexture)
             {
-                x -= 0.5f*FONTH*msz;
-                mx = sz + FONTH*msz;
+                x -= 0.5f*FONTH * msz;
+                mx = sz + FONTH * msz;
             }
         }
-
         // Map shot was provided and isn't empty
         if (mapshot && mapshot!=notexture)
         {
-            x -= 0.5f*sz;
+            x -= 0.5f * sz;
             resethudshader();
             glBindTexture(GL_TEXTURE_2D, mapshot->id);
             bgquad(x, y, sz, sz);
         }
-
         // Map name was provided
         if (mapname)
         {
             float tw = text_widthf(mapname),
                   tsz = sz/(8*FONTH),
-                  tx = max(0.5f*(mw*msz - tw*tsz), 0.0f);
-            pushhudtranslate(x+mx+tx, y, tsz);
+                  tx = max(0.5f * (mw*msz - tw * tsz), 0.0f);
+            pushhudtranslate(x + mx + tx, y, tsz);
             draw_text(mapname, 0, 0);
             pophudmatrix();
             my = 1.5f*FONTH*tsz;
         }
-
         // Map info was provided
         if (mapinfo)
         {
-            pushhudtranslate(x+mx, y+my, msz);
+            pushhudtranslate(x + mx, y + my, msz);
             draw_text(mapinfo, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, -1, infowidth);
             pophudmatrix();
         }
     }
-
     glDisable(GL_BLEND);
 }
 
@@ -393,27 +390,27 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     gle::deftexcoord0();
 
     float fh = 0.060f*min(w, h),
-          fw = fh*15,
-          fx = renderedframe ? w - fw - fh/4 : 0.5f*(w - fw),
-          fy = renderedframe ? fh/4 : h - fh*1.5f;
+          fw = fh * 15,
+          fx = renderedframe ? w - fw - fh/4 : 0.5f * (w - fw),
+          fy = renderedframe ? fh/4 : h - fh * 1.5f;
     settexture("media/interface/loading_frame.png", 3);
     bgquad(fx, fy, fw, fh);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    float bw = fw*(512 - 2*8)/512.0f,
-          bh = fh*20/32.0f,
-          bx = fx + fw*8/512.0f,
-          by = fy + fh*6/32.0f,
+    float bw = fw * (512 - 2*8)/512.0f,
+          bh = fh * 20/32.0f,
+          bx = fx + fw * 8/512.0f,
+          by = fy + fh * 6/32.0f,
           su1 = 0/32.0f,
           su2 = 8/32.0f,
-          sw = fw*8/512.0f,
+          sw = fw * 8/512.0f,
           eu1 = 24/32.0f,
           eu2 = 32/32.0f,
-          ew = fw*8/512.0f,
+          ew = fw * 8/512.0f,
           mw = bw - sw - ew,
-          ex = bx+sw + max(mw*bar, fw*8/512.0f);
+          ex = bx+sw + max(mw*bar, fw * 8/512.0f);
     if(bar > 0)
     {
         settexture("media/interface/loading_bar.png", 3);
@@ -421,12 +418,11 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
         bgquad(bx+sw, by, ex-(bx+sw), bh, su2, 0, eu1-su2, 1);
         bgquad(ex, by, ew, bh, eu1, 0, eu2-eu1, 1);
     }
-
     if(text)
     {
         int tw = text_width(text);
-        float tsz = bh*0.6f/FONTH;
-        if(tw*tsz > mw)
+        float tsz = bh * 0.6f/FONTH;
+        if(tw * tsz > mw)
         {
             tsz = mw/tw;
         }
@@ -491,6 +487,7 @@ bool shouldgrab = false,
 int keyrepeatmask = 0,
     textinputmask = 0;
 Uint32 textinputtime = 0;
+
 VAR(textinputfilter, 0, 5, 1000);
 
 void keyrepeat(bool on, int mask)
@@ -1334,7 +1331,7 @@ int getclockmillis()
     int millis = SDL_GetTicks() - clockrealbase;
     if(clockfix)
     {
-        millis = static_cast<int>(millis*(double(clockerror)/1000000));
+        millis = static_cast<int>(millis*(static_cast<double>(clockerror)/1000000));
     }
     millis += clockvirtbase;
     return max(millis, totalmillis);
@@ -1367,7 +1364,7 @@ int main(int argc, char **argv)
         }
     }
     // set log after home dir, but before anything else
-    for(int i = 1; i<argc; i++)
+    for(int i = 1; i < argc; i++)
     {
         if(argv[i][0]=='-' && argv[i][1] == 'g')
         {

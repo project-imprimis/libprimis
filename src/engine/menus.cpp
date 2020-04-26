@@ -55,7 +55,10 @@ void clearchanges(int type)
         if(c.type&type)
         {
             c.type &= ~type;
-            if(!c.type) needsapply.remove(i);
+            if(!c.type)
+            {
+                needsapply.remove(i);
+            }
         }
     }
     if(needsapply.empty())
@@ -90,7 +93,17 @@ void applychanges()
 COMMAND(applychanges, "");
 
 //returns if there are pending changes or not enqueued
-ICOMMAND(pendingchanges, "b", (int *idx), { if(needsapply.inrange(*idx)) result(needsapply[*idx].desc); else if(*idx < 0) intret(needsapply.length()); });
+ICOMMAND(pendingchanges, "b", (int *idx),
+{
+    if(needsapply.inrange(*idx))
+    {
+        result(needsapply[*idx].desc);
+    }
+    else if(*idx < 0)
+    {
+        intret(needsapply.length());
+    }
+});
 
 static int lastmainmenu = -1;
 
