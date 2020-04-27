@@ -2845,9 +2845,9 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         }
                                         compileint(code);
                                         fakeargs++;
-                                        numargs++;
-                                        break;
                                     }
+                                    numargs++;
+                                    break;
                                 }
                                 case 'b':
                                 {
@@ -2933,9 +2933,9 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         if(rep)
                                         {
                                             break;
-                                            compilenull(code);
-                                            fakeargs++;
                                         }
+                                        compilenull(code);
+                                        fakeargs++;
                                     }
                                     numargs++;
                                     break;
@@ -2951,9 +2951,9 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         if(rep)
                                         {
                                             break;
-                                            compileblock(code);
-                                            fakeargs++;
                                         }
+                                        compileblock(code);
+                                        fakeargs++;
                                     }
                                     numargs++;
                                     break;
@@ -3005,8 +3005,8 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         {
                                             numargs++;
                                         }
-                                        goto compilecomv;
                                     }
+                                    goto compilecomv;
                                 }
                                 case 'V':
                                 {
@@ -3017,8 +3017,8 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         {
                                             numargs++;
                                         }
-                                        goto compilecomv;
                                     }
+                                    goto compilecomv;
                                 }
                                 case '1':
                                 case '2':
