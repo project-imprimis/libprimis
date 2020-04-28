@@ -73,13 +73,35 @@ struct md2 : vertloader<md2>
 
     md2(const char *name) : vertloader(name) {}
 
-    static const char *formatname() { return "md2"; }
-    static bool multiparted() { return false; }
-    static bool multimeshed() { return false; }
-    bool flipy() const { return true; }
-    int type() const { return MDL_MD2; }
+    static const char *formatname()
+    {
+        return "md2";
+    }
 
-    int linktype(animmodel *m, part *p) const { return LINK_COOP; }
+    static bool multiparted()
+    {
+        return false;
+    }
+
+    static bool multimeshed()
+    {
+        return false;
+    }
+
+    bool flipy() const
+    {
+        return true;
+    }
+
+    int type() const
+    {
+        return MDL_MD2;
+    }
+
+    int linktype(animmodel *m, part *p) const
+    {
+        return LINK_COOP;
+    }
 
     struct md2meshgroup : vertmeshgroup
     {
@@ -95,7 +117,11 @@ struct md2 : vertloader<md2>
                 idxs.setsize(0);
                 for(int i = 0; i < numvertex; ++i)
                 {
-                    union { int i; float f; } u, v;
+                    union
+                    {
+                        int i;
+                        float f;
+                    } u, v;
                     u.i = *command++;
                     v.i = *command++;
                     int vindex = *command++;
@@ -134,8 +160,10 @@ struct md2 : vertloader<md2>
         bool load(const char *filename, float smooth)
         {
             stream *file = openfile(filename, "rb");
-            if(!file) return false;
-
+            if(!file)
+            {
+                return false;
+            }
             md2_header header;
             file->read(&header, sizeof(md2_header));
             LIL_ENDIAN_SWAP(&header.magic, sizeof(md2_header)/sizeof(int));
@@ -148,9 +176,7 @@ struct md2 : vertloader<md2>
                 delete file;
                 return false;
             }
-
             name = newstring(filename);
-
             numframes = header.numframes;
 
             vertmesh &m = *new vertmesh;
@@ -159,10 +185,13 @@ struct md2 : vertloader<md2>
 
             int *glcommands = new int[header.numglcommands];
             file->seek(header.offsetglcommands, SEEK_SET);
+            //note that sizeof(int) should always be 4: we no longer use 16 bit CPUs
             int numglcommands = file->read(glcommands, header.numglcommands*sizeof(int))/sizeof(int);
             LIL_ENDIAN_SWAP(glcommands, numglcommands);
-            if(numglcommands < header.numglcommands) memset(&glcommands[numglcommands], 0, (header.numglcommands-numglcommands)*sizeof(int));
-
+            if(numglcommands < header.numglcommands)
+            {
+                memset(&glcommands[numglcommands], 0, (header.numglcommands-numglcommands)*sizeof(int));
+            }
             vector<tcvert> tcgen;
             vector<ushort> vgen;
             vector<tri> trigen;
@@ -194,7 +223,7 @@ struct md2 : vertloader<md2>
                 {
                     const md2_vertex &v = tmpverts[vgen[j]];
                     curvert->pos = vec(v.vertex[0]*frame.scale[0]+frame.translate[0],
-                                       -(v.vertex[1]*frame.scale[1]+frame.translate[1]),
+                                     -(v.vertex[1]*frame.scale[1]+frame.translate[1]),
                                        v.vertex[2]*frame.scale[2]+frame.translate[2]);
                     const float *norm = md2normaltable[v.normalindex];
                     curvert->norm = vec(norm[0], -norm[1], norm[2]);
@@ -203,11 +232,8 @@ struct md2 : vertloader<md2>
                 frame_offset += header.framesize;
             }
             delete[] tmpverts;
-
             m.calctangents();
-
             delete file;
-
             return true;
         }
     };
@@ -226,12 +252,18 @@ struct md2 : vertloader<md2>
         {
             DEF_FORMAT_STRING(name2, "media/model/%s/tris.md2", pname);    // try md2 in parent folder (vert sharing)
             mdl.meshes = sharemeshes(path(name2));
-            if(!mdl.meshes) return false;
+            if(!mdl.meshes)
+            {
+                return false;
+            }
         }
         Texture *tex, *masks;
         loadskin(name, pname, tex, masks);
         mdl.initskins(tex, masks);
-        if(tex==notexture) conoutf("could not load model skin for %s", name1);
+        if(tex==notexture)
+        {
+            conoutf("could not load model skin for %s", name1);
+        }
         identflags &= ~Idf_Persist;
         DEF_FORMAT_STRING(name3, "media/model/%s/md2.cfg", name);
         if(!execfile(name3, false))

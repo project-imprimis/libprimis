@@ -48,16 +48,30 @@ struct md3 : vertloader<md3>
 {
     md3(const char *name) : vertloader(name) {}
 
-    static const char *formatname() { return "md3"; }
-    bool flipy() const { return true; }
-    int type() const { return MDL_MD3; }
+    static const char *formatname()
+    {
+        return "md3";
+    }
+
+    bool flipy() const
+    {
+        return true;
+    }
+
+    int type() const
+    {
+        return MDL_MD3;
+    }
 
     struct md3meshgroup : vertmeshgroup
     {
         bool load(const char *path, float smooth)
         {
             stream *f = openfile(path, "rb");
-            if(!f) return false;
+            if(!f)
+            {
+                return false;
+            }
             md3header header;
             f->read(&header, sizeof(md3header));
             LIL_ENDIAN_SWAP(&header.version, 1);
@@ -175,12 +189,18 @@ struct md3 : vertloader<md3>
         {
             DEF_FORMAT_STRING(name2, "media/model/%s/tris.md3", pname);    // try md3 in parent folder (vert sharing)
             mdl.meshes = sharemeshes(path(name2));
-            if(!mdl.meshes) return false;
+            if(!mdl.meshes)
+            {
+                return false;
+            }
         }
         Texture *tex, *masks;
         loadskin(name, pname, tex, masks);
         mdl.initskins(tex, masks);
-        if(tex==notexture) conoutf("could not load model skin for %s", name1);
+        if(tex==notexture)
+        {
+            conoutf("could not load model skin for %s", name1);
+        }
         return true;
     }
 };
