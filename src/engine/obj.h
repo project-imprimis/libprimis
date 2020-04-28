@@ -4,45 +4,66 @@ struct obj : vertloader<obj>
 {
     obj(const char *name) : vertloader(name) {}
 
-    static const char *formatname() { return "obj"; }
-    static bool cananimate() { return false; }
-    bool flipy() const { return true; }
-    int type() const { return MDL_OBJ; }
+    static const char *formatname()
+    {
+        return "obj";
+    }
+    static bool cananimate()
+    {
+        return false;
+    }
+    bool flipy() const
+    {
+        return true;
+    }
+    int type() const
+    {
+        return MDL_OBJ;
+    }
 
     struct objmeshgroup : vertmeshgroup
     {
         void parsevert(char *s, vector<vec> &out)
         {
             vec &v = out.add(vec(0, 0, 0));
-            while(isalpha(*s)) s++;
+            while(isalpha(*s))
+            {
+                s++;
+            }
             for(int i = 0; i < 3; ++i)
             {
                 v[i] = strtod(s, &s);
-                while(isspace(*s)) s++;
-                if(!*s) break;
+                while(isspace(*s))
+                {
+                    s++;
+                }
+                if(!*s)
+                {
+                    break;
+                }
             }
         }
 
         bool load(const char *filename, float smooth)
         {
             int len = strlen(filename);
-            if(len < 4 || strcasecmp(&filename[len-4], ".obj")) return false;
-
+            if(len < 4 || strcasecmp(&filename[len-4], ".obj"))
+            {
+                return false;
+            }
             stream *file = openfile(filename, "rb");
-            if(!file) return false;
-
+            if(!file)
+            {
+                return false;
+            }
             name = newstring(filename);
-
             numframes = 1;
-
             vector<vec> attrib[3];
             char buf[512];
-
             hashtable<ivec, int> verthash(1<<11);
             vector<vert> verts;
             vector<tcvert> tcverts;
             vector<tri> tris;
-
             #define STARTMESH do { \
                 vertmesh &m = *new vertmesh; \
                 m.group = this; \
@@ -54,7 +75,6 @@ struct obj : vertloader<obj>
                 tcverts.setsize(0); \
                 tris.setsize(0); \
             } while(0)
-
             #define FLUSHMESH do { \
                 curmesh->numverts = verts.length(); \
                 if(verts.length()) \
@@ -77,7 +97,6 @@ struct obj : vertloader<obj>
                 } \
                 curmesh->calctangents(); \
             } while(0)
-
             string meshname = "";
             vertmesh *curmesh = NULL;
             while(file->getline(buf, sizeof(buf)))
@@ -86,42 +105,90 @@ struct obj : vertloader<obj>
                 while(isspace(*c)) c++;
                 switch(*c)
                 {
-                    case '#': continue;
+                    case '#':
+                    {
+                        continue;
+                    }
                     case 'v':
-                        if(isspace(c[1])) parsevert(c, attrib[0]);
-                        else if(c[1]=='t') parsevert(c, attrib[1]);
-                        else if(c[1]=='n') parsevert(c, attrib[2]);
+                        if(isspace(c[1]))
+                        {
+                            parsevert(c, attrib[0]);
+                        }
+                        else if(c[1]=='t')
+                        {
+                            parsevert(c, attrib[1]);
+                        }
+                        else if(c[1]=='n')
+                        {
+                            parsevert(c, attrib[2]);
+                        }
                         break;
                     case 'g':
                     {
-                        while(isalpha(*c)) c++;
-                        while(isspace(*c)) c++;
+                        while(isalpha(*c))
+                        {
+                            c++;
+                        }
+                        while(isspace(*c))
+                        {
+                            c++;
+                        }
                         char *name = c;
                         size_t namelen = strlen(name);
-                        while(namelen > 0 && isspace(name[namelen-1])) namelen--;
+                        while(namelen > 0 && isspace(name[namelen-1]))
+                        {
+                            namelen--;
+                        }
                         copystring(meshname, name, min(namelen+1, sizeof(meshname)));
-
-                        if(curmesh) FLUSHMESH;
+                        if(curmesh)
+                        {
+                            FLUSHMESH;
+                        }
                         curmesh = NULL;
                         break;
                     }
                     case 'f':
                     {
-                        if(!curmesh) STARTMESH;
-                        int v0 = -1, v1 = -1;
-                        while(isalpha(*c)) c++;
+                        if(!curmesh)
+                        {
+                            STARTMESH;
+                        }
+                        int v0 = -1,
+                            v1 = -1;
+                        while(isalpha(*c))
+                        {
+                            c++;
+                        }
                         for(;;)
                         {
-                            while(isspace(*c)) c++;
-                            if(!*c) break;
+                            while(isspace(*c))
+                            {
+                                c++;
+                            }
+                            if(!*c)
+                            {
+                                break;
+                            }
                             ivec vkey(-1, -1, -1);
                             for(int i = 0; i < 3; ++i)
                             {
                                 vkey[i] = strtol(c, &c, 10);
-                                if(vkey[i] < 0) vkey[i] = attrib[i].length() + vkey[i];
-                                else vkey[i]--;
-                                if(!attrib[i].inrange(vkey[i])) vkey[i] = -1;
-                                if(*c!='/') break;
+                                if(vkey[i] < 0)
+                                {
+                                    vkey[i] = attrib[i].length() + vkey[i];
+                                }
+                                else
+                                {
+                                    vkey[i]--;
+                                }
+                                if(!attrib[i].inrange(vkey[i]))
+                                {
+                                    vkey[i] = -1;
+                                }
+                                if(*c!='/')
+                                {
+                                    break;
+                                }
                                 c++;
                             }
                             int *index = verthash.access(vkey);
@@ -137,8 +204,14 @@ struct obj : vertloader<obj>
                                 tcvert &tcv = tcverts.add();
                                 tcv.tc = vkey.y < 0 ? vec2(0, 0) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y);
                             }
-                            if(v0 < 0) v0 = *index;
-                            else if(v1 < 0) v1 = *index;
+                            if(v0 < 0)
+                            {
+                                v0 = *index;
+                            }
+                            else if(v1 < 0)
+                            {
+                                v1 = *index;
+                            }
                             else
                             {
                                 tri &t = tris.add();
@@ -153,15 +226,19 @@ struct obj : vertloader<obj>
                 }
             }
 
-            if(curmesh) FLUSHMESH;
-
+            if(curmesh)
+            {
+                FLUSHMESH;
+            }
             delete file;
-
             return true;
         }
     };
 
-    vertmeshgroup *newmeshes() { return new objmeshgroup; }
+    vertmeshgroup *newmeshes()
+    {
+        return new objmeshgroup;
+    }
 
     bool loaddefaultparts()
     {
@@ -173,12 +250,18 @@ struct obj : vertloader<obj>
         {
             DEF_FORMAT_STRING(name2, "media/model/%s/tris.obj", pname);    // try obj in parent folder (vert sharing)
             mdl.meshes = sharemeshes(path(name2));
-            if(!mdl.meshes) return false;
+            if(!mdl.meshes)
+            {
+                return false;
+            }
         }
         Texture *tex, *masks;
         loadskin(name, pname, tex, masks);
         mdl.initskins(tex, masks);
-        if(tex==notexture) conoutf("could not load model skin for %s", name1);
+        if(tex==notexture)
+        {
+            conoutf("could not load model skin for %s", name1);
+        }
         return true;
     }
 };
