@@ -17,7 +17,10 @@ struct normalgroup
     normalgroup(const normalkey &key) : pos(key.pos), smooth(key.smooth), flat(0), normals(-1), tnormals(-1) {}
 };
 
-static inline bool htcmp(const normalkey &k, const normalgroup &n) { return k.pos == n.pos && k.smooth == n.smooth; }
+static inline bool htcmp(const normalkey &k, const normalgroup &n)
+{
+    return k.pos == n.pos && k.smooth == n.smooth;
+}
 
 struct normal
 {
@@ -193,7 +196,7 @@ static uint normalprogress = 0;
 
 void show_addnormals_progress()
 {
-    float bar1 = float(normalprogress) / float(allocnodes);
+    float bar1 = static_cast<float>(normalprogress) / static_cast<float>(allocnodes);
     renderprogress(bar1, "computing normals...");
 }
 
@@ -215,7 +218,6 @@ void addnormals(cube &c, const ivec &o, int size)
     {
         return;
     }
-
     vec pos[Face_MaxVerts];
     int norms[Face_MaxVerts];
     int tj = usetnormals && c.ext ? c.ext->tjoints : -1, vis;
@@ -230,7 +232,9 @@ void addnormals(cube &c, const ivec &o, int size)
             }
 
             vec planes[2];
-            int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0, convex = 0, numplanes = 0;
+            int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0,
+                convex = 0,
+                numplanes = 0;
             if(numverts)
             {
                 vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
@@ -303,13 +307,21 @@ void addnormals(cube &c, const ivec &o, int size)
                 norms[0] = addnormal(pos[0], smooth, avg);
                 norms[1] = addnormal(pos[1], smooth, planes[0]);
                 norms[2] = addnormal(pos[2], smooth, avg);
-                for(int k = 3; k < numverts; k++) norms[k] = addnormal(pos[k], smooth, planes[1]);
+                for(int k = 3; k < numverts; k++)
+                {
+                    norms[k] = addnormal(pos[k], smooth, planes[1]);
+                }
             }
 
-            while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
+            while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1))
+            {
+                tj = tjoints[tj].next;
+            }
             while(tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1))
             {
-                int edge = tjoints[tj].edge, e1 = edge%(Face_MaxVerts+1), e2 = (e1+1)%numverts;
+                int edge = tjoints[tj].edge,
+                    e1 = edge%(Face_MaxVerts+1),
+                    e2 = (e1+1)%numverts;
                 const vec &v1 = pos[e1], &v2 = pos[e2];
                 ivec d(vec(v2).sub(v1).mul(8));
                 int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
@@ -318,12 +330,12 @@ void addnormals(cube &c, const ivec &o, int size)
                     d.neg();
                 }
                 reduceslope(d);
-                int origin = int(min(v1[axis], v2[axis])*8)&~0x7FFF,
-                    offset1 = (int(v1[axis]*8) - origin) / d[axis],
-                    offset2 = (int(v2[axis]*8) - origin) / d[axis];
-                vec o = vec(v1).sub(vec(d).mul(offset1/8.0f)), n1, n2;
+                int origin = static_cast<int>(min(v1[axis], v2[axis])*8)&~0x7FFF,
+                    offset1 = (static_cast<int>(v1[axis]*8) - origin) / d[axis],
+                    offset2 = (static_cast<int>(v2[axis]*8) - origin) / d[axis];
+                vec o = vec(v1).sub(vec(d).mul(offset1/8.0f)),
+                    n1, n2;
                 float doffset = 1.0f / (offset2 - offset1);
-
                 while(tj >= 0)
                 {
                     tjoint &t = tjoints[tj];

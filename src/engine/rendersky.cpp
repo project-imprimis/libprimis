@@ -5,7 +5,7 @@ Texture *sky[6] = { 0, 0, 0, 0, 0, 0 }, *clouds[6] = { 0, 0, 0, 0, 0, 0 };
 void loadsky(const char *basename, Texture *texs[6])
 {
     const char *wildcard = strchr(basename, '*');
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 6; ++i) //six sides for a cubemap
     {
         const char *side = cubemapsides[i].name;
         string name;
@@ -167,7 +167,9 @@ void drawenvbox(Texture **sky = NULL, float z1clip = 0.0f, float z2clip = 1.0f, 
 void drawenvoverlay(Texture *overlay = NULL, float tx = 0, float ty = 0)
 {
     int w = farplane/2;
-    float z = w*cloudheight, tsz = 0.5f*(1-cloudfade)/cloudscale, psz = w*(1-cloudfade);
+    float z = w*cloudheight,
+          tsz = 0.5f*(1-cloudfade)/cloudscale,
+          psz = w*(1-cloudfade);
     glBindTexture(GL_TEXTURE_2D, (overlay ? overlay : notexture)->id);
     vec color = cloudcolor.tocolor();
     gle::color(color, cloudalpha);
@@ -179,7 +181,7 @@ void drawenvoverlay(Texture *overlay = NULL, float tx = 0, float ty = 0)
         vec p(1, 1, 0);
         p.rotate_around_z((-2.0f*M_PI*i)/cloudsubdiv);
         gle::attribf(p.x*psz, p.y*psz, z);
-            gle::attribf(tx - p.x*tsz, ty + p.y*tsz);
+        gle::attribf(tx - p.x*tsz, ty + p.y*tsz);
     }
     xtraverts += gle::end();
     float tsz2 = 0.5f/cloudscale;
@@ -192,11 +194,11 @@ void drawenvoverlay(Texture *overlay = NULL, float tx = 0, float ty = 0)
         vec p(1, 1, 0);
         p.rotate_around_z((-2.0f*M_PI*i)/cloudsubdiv);
         gle::attribf(p.x*psz, p.y*psz, z);
-            gle::attribf(tx - p.x*tsz, ty + p.y*tsz);
-            gle::attrib(color, cloudalpha);
+        gle::attribf(tx - p.x*tsz, ty + p.y*tsz);
+        gle::attrib(color, cloudalpha);
         gle::attribf(p.x*w, p.y*w, z);
-            gle::attribf(tx - p.x*tsz2, ty + p.y*tsz2);
-            gle::attrib(color, 0.0f);
+        gle::attribf(tx - p.x*tsz2, ty + p.y*tsz2);
+        gle::attrib(color, 0.0f);
     }
     xtraverts += gle::end();
 }
@@ -229,10 +231,15 @@ namespace fogdome
         }
     } *verts = NULL;
     GLushort *indices = NULL;
-    int numverts = 0, numindices = 0, capindices = 0;
+    int numverts = 0,
+        numindices = 0,
+        capindices = 0;
     GLuint vbuf = 0, ebuf = 0;
     bvec lastcolor(0, 0, 0);
-    float lastminalpha = 0, lastmaxalpha = 0, lastcapsize = -1, lastclipz = 1;
+    float lastminalpha = 0,
+          lastmaxalpha = 0,
+          lastcapsize = -1,
+          lastclipz = 1;
 
     void subdivide(int depth, int face);
 
@@ -273,7 +280,7 @@ namespace fogdome
     static inline int sortcap(GLushort x, GLushort y)
     {
         const vec &xv = verts[x].pos, &yv = verts[y].pos;
-        return xv.y < 0 ? yv.y >= 0 || xv.x < yv.x : yv.y >= 0 && xv.x > yv.x;
+        return (xv.y < 0) ? (yv.y >= 0 || xv.x < yv.x) : (yv.y >= 0 && xv.x > yv.x);
     }
 
     static void init(const bvec &color, float minalpha = 0.0f, float maxalpha = 1.0f, float capsize = -1, float clipz = 1, int hres = 16, int depth = 2)
@@ -376,8 +383,9 @@ namespace fogdome
 
     void draw()
     {
-        float capsize = fogdomecap && fogdomeheight < 1 ? (1 + fogdomeheight) / (1 - fogdomeheight) : -1;
+        float capsize = (fogdomecap && fogdomeheight < 1) ? ((1 + fogdomeheight) / (1 - fogdomeheight)) : -1;
         bvec color = !fogdomecolor.iszero() ? fogdomecolor : fogcolor;
+        //if numverts is zero or color, minalpha, maxalpha, capsize, fogdome has changed, run init and set all delta variables to be equal to master ones
         if(!numverts || lastcolor != color || lastminalpha != fogdomemin || lastmaxalpha != fogdomemax || lastcapsize != capsize || lastclipz != fogdomeclip)
         {
             init(color, min(fogdomemin, fogdomemax), fogdomemax, capsize, fogdomeclip);
@@ -464,8 +472,10 @@ static void drawatmosphere()
     sundiskparams.z = atmosundiskbright;
     LOCALPARAM(sundiskparams, sundiskparams);
 
-    const float earthradius = 6.371e6f, earthatmoheight = 0.1e6f;
-    float planetradius = earthradius*atmoplanetsize, atmoradius = planetradius + earthatmoheight*atmoheight;
+    const float earthradius = 6.371e6f, //radius of earth in meters
+                earthatmoheight = 100e3f; //atmospheric height (100km)
+    float planetradius = earthradius*atmoplanetsize,
+          atmoradius = planetradius + earthatmoheight*atmoheight;
     LOCALPARAMF(atmoradius, planetradius, atmoradius*atmoradius, atmoradius*atmoradius - planetradius*planetradius);
 
     float gm = (1 - atmohaze)*0.2f + 0.75f;

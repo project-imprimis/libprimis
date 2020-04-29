@@ -20,7 +20,6 @@ struct BIH
     struct tribb
     {
         svec center, radius;
-
         bool outside(const ivec &bo, const ivec &br) const
         {
             return abs(bo.x - center.x) > br.x + radius.x ||
@@ -29,12 +28,21 @@ struct BIH
         }
     };
 
-    enum { MESH_RENDER = 1<<1, MESH_NOCLIP = 1<<2, MESH_ALPHA = 1<<3, MESH_COLLIDE = 1<<4, MESH_CULLFACE = 1<<5 };
+    enum
+    {
+        MESH_RENDER = 1<<1,
+        MESH_NOCLIP = 1<<2,
+        MESH_ALPHA = 1<<3,
+        MESH_COLLIDE = 1<<4,
+        MESH_CULLFACE = 1<<5
+    };
 
     struct mesh
     {
-        enum { MAXTRIS = 1<<14 };
-
+        enum
+        {
+            MAXTRIS = 1<<14
+        };
         matrix4x3 xform, invxform;
         matrix3 xformnorm, invxformnorm;
         float scale, invscale;
@@ -51,8 +59,14 @@ struct BIH
 
         mesh() : numnodes(0), numtris(0), tex(NULL), flags(0) {}
 
-        vec getpos(int i) const { return *(const vec *)(pos + i*posstride); }
-        vec2 gettc(int i) const { return *(const vec2 *)(tc + i*tcstride); }
+        vec getpos(int i) const
+        {
+            return *(const vec *)(pos + i*posstride);
+        }
+        vec2 gettc(int i) const
+        {
+            return *(const vec2 *)(tc + i*tcstride);
+        }
     };
 
     mesh *meshes;
