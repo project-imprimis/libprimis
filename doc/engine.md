@@ -76,7 +76,6 @@ linear analysis, including multipole expansions and Fourier series.
 * 7.2 Server
 * 7.3 Client
 * 7.4 Master Server
-* 7.5 Authentication
 
 #### 8. User and System Interfaces
 * 8.1 Menus
@@ -2652,6 +2651,23 @@ This is notable because network lag can cause a player's broadcasted position to
 differ from the position that the client itself believes it is at. As a result
 of this, clients dealing with a laggy client don't have to trust that client's
 percieved position to record a hit.
+
+## 7.4 Master Server
+---
+
+The master server is a seperate piece of software which can serve as a directory
+for clients to find game servers with. The master server does not host game
+servers itself; it is a service hosted by an organization (such as the official
+Imprimis project) that can be used for clients to see where servers are located.
+
+The server browser in the game gets a list of currently listed servers from a
+master server (defaulting to the official one) and then presents them in the
+server browser. Game servers periodically send a sync message to the master
+server, allowing for the master server to automatically delist stale servers
+that have not recently responded.
+
+There is additional functionality in the master server to support centralized
+authentication, but due to archtectural concerns this usage is depreciated.
 
 # 10 Internal Objects
 ---
