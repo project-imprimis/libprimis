@@ -2424,7 +2424,136 @@ Physents all have the following properties:
 
 ### 3.6.2 Collision
 
+# 5 Render
+---
 
+The core of the Imprimis engine is its renderer. The renderer is what transforms
+the abstract objects in the world into visuals onscreen.
+
+Imprimis' rendering capabilities are essentially a subset of Tesseract's, as
+many static features in the Tesseract engine are not possible in Imprimis'
+dynamic use case. The renderer is deferred, as opposed to forward as with
+engines like Cube 2, and is capable of large numbers of dynamic lights onscreen
+due to its architecture.
+
+## 5.1 Texturing
+---
+
+Textures on world geometry can have one or several shaders applied to it which
+affects its appearance. These effects are usually defined per-texture and
+therefore immutable ingame, and can be modified on a per-map basis.
+
+### 5.1.1 Shader Overview
+---
+
+#### Diffuse mapping (`stdworld`)
+
+This is the standard color image of the texture, and what the texture browser
+displays in its tiles. All other shaders also implicity present the diffuse map.
+
+It is not possible (nor sensible) to have a texture without diffuse mapping, as
+it provides the base image upon which other shaders may take effect.
+
+#### Normal mapping (`bumpworld`)
+
+This is mapping the surface normals (the actual orientation of the surfaces) and
+calculating how the diffuse map's irradiated light changes because of the
+orientation of the texture (regions pointing away from you are going to have
+less area to shine light at you).
+
+Normal mapping is a staple of 3D graphics, and nearly all surfaces have some
+normal direction variance (macroscopic variance). Only where surfaces are
+homogeneous and smooth (think lacquered surfaces) might it be applicable to
+forgo a normal map.
+
+Normal maps have three channels, corresponding to the three components of the
+normal vector at any given point. By packing these three channels into a texture
+file, it's possible to encode normal vector information for an entire surface.
+
+#### Specular highlights (`specworld`)
+
+This creates a specular reflection (where the surface reflects light sources
+like a mirror) over the entire surface uniformly. The specular reflection
+borrows none of its color from the underlying texture, and all of it from the
+light it originally came from.
+
+Specular highlights are homogeneous and do not take into account the
+reflectivity of the surface, which is taken to be a defined constant. Most
+real-world surfaces are not this homogeneous, and require a more complex shader,
+outlined immediately below.
+
+#### Specular mapping (`specmapworld`)
+
+This maps out certain areas of the texture to have more specular reflection than
+others: some parts of a texture, e.g. metal parts or areas worn smooth, are
+going to specularly reflect more than other parts of a texture.
+
+A specular map is a single channel grayscale file encoding how reflective an
+area is for all locations on the surface.
+
+#### Parallax mapping (`bumpparallaxworld`)*
+
+* Note that bump is currently required to assign parallax to a texture, even
+though the two are not necessarily required to be together. There are very few
+circumstances in which it is possible to justify having parallax and not normal
+mapping.
+
+Parallax mapping changes how visible parts of the texture are depending on the
+observers' position relative to them. This is different than normal mapping in
+that normal mapping merely reduces the intensity of light from regions facing
+away from you, while parallax mapping reduces its visible size. Together,
+parallax and normal mapping can create a fairly convincing substitute for actual
+geometry, though both have visible issues in their approximations at shallow
+angles.
+
+A parallax map (also called a heightmap, as it encodes vertical position) is a
+single channel, which can be either its own grayscale file or the alpha channel
+of the normal map.
+
+#### Triplanar mapping (`triplanarworld`)
+
+Triplanar mapping involves mapping the texture from three directions (x,y,z)
+rather than one and using the information from those three orientations to allow
+the texture to be mapped accurately at any orientation (rather than having
+significant error at any orientation other than that of the cube face it
+occupies). This is most useful for patching seams in compound curvature where no
+patching of the seam with `voffset` or `vrotate` is possible.
+
+Because triplanar mapping is fairly expensive, it is not recommended to be used
+unless it is visibly needed. Triplanar mapping also disallows texture transforms
+such as `vrotate`, so it cannot be used where texture rotations are needed.
+
+#### Triplanar detail mapping (`triplanardetailworld`)
+
+While standard triplanar mapping is useful for blending a texture with itself,
+blending a texture with another according to angle is possibly useful (maybe???)
+to smoothly transition without blendmaps.
+
+The most plausible use case for `triplanardetailworld` would be to blend three
+textures together on rough terrain, using the two textures for triplanar detail
+mapping and laying a blendmap over the top of it for the third. Otherwise, just
+using blendmap is preferable unless under some very strict map size restrictions
+or consistency of the blend with respect to angle is critical.
+
+To add the triplanar detail shader to a texture, setting the shader to
+`triplanardetail*world` and declaring any normal/spec/etc. maps should be done
+as usual.
+
+The vslot to be blended should then be declared using `texdetail <vslot>` along
+with other texture commands (e.g. `texscale`) at the end.
+
+#### Glow mapping (`glowworld`)
+
+Glow mapping makes certain of the textures always be lit. This is typical for
+lights fixtures and computer equipment textures as well as other objects which
+are always lit.
+
+The glow map is an intensity map of the areas for the engine to glow. It can be
+given in full RGB color for colored glow effects.
+
+Note that this glow effect merely fixes the brightness of the texture to a
+specified level. It does not actually create a light entity or light nearby
+areas, which must be done with an actual light entity.
 
 # 6 Actors
 ---
