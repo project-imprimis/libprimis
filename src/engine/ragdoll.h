@@ -9,7 +9,6 @@ struct ragdollskel
     struct tri
     {
         int vert[3];
-
         bool shareverts(const tri &t) const
         {
             for(int i = 0; i < 3; ++i)
@@ -156,7 +155,6 @@ struct ragdolldata
         vec oldpos, pos, newpos, undo;
         float weight;
         bool collided, stuck;
-
         vert() : oldpos(0, 0, 0), pos(0, 0, 0), newpos(0, 0, 0), undo(0, 0, 0), weight(0), collided(false), stuck(true) {}
     };
 
@@ -191,13 +189,22 @@ struct ragdolldata
     {
         delete[] verts;
         delete[] tris;
-        if(animjoints) delete[] animjoints;
-        if(reljoints) delete[] reljoints;
+        if(animjoints)
+        {
+            delete[] animjoints;
+        }
+        if(reljoints)
+        {
+            delete[] reljoints;
+        }
     }
 
     void calcanimjoint(int i, const matrix4x3 &anim)
     {
-        if(!animjoints) return;
+        if(!animjoints)
+        {
+            return;
+        }
         ragdollskel::joint &j = skel->joints[i];
         vec pos(0, 0, 0);
         for(int k = 0; k < 3; ++k)
@@ -308,14 +315,30 @@ void ragdolldata::constraindist()
     for(int i = 0; i < skel->distlimits.length(); i++)
     {
         ragdollskel::distlimit &d = skel->distlimits[i];
-        vert &v1 = verts[d.vert[0]], &v2 = verts[d.vert[1]];
+        vert &v1 = verts[d.vert[0]],
+             &v2 = verts[d.vert[1]];
         vec dir = vec(v2.pos).sub(v1.pos);
         float dist = dir.magnitude()*invscale, cdist;
-        if(dist < d.mindist) cdist = d.mindist;
-        else if(dist > d.maxdist) cdist = d.maxdist;
-        else continue;
-        if(dist > 1e-4f) dir.mul(cdist*0.5f/dist);
-        else dir = vec(0, 0, cdist*0.5f/invscale);
+        if(dist < d.mindist)
+        {
+            cdist = d.mindist;
+        }
+        else if(dist > d.maxdist)
+        {
+            cdist = d.maxdist;
+        }
+        else
+        {
+            continue;
+        }
+        if(dist > 1e-4f)
+        {
+            dir.mul(cdist*0.5f/dist);
+        }
+        else
+        {
+            dir = vec(0, 0, cdist*0.5f/invscale);
+        }
         vec center = vec(v1.pos).add(v2.pos).mul(0.5f);
         v1.newpos.add(vec(center).sub(dir));
         v1.weight++;
@@ -340,7 +363,8 @@ inline void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t
     angle /= w1 + w2 + 1e-9f;
     float a1 = angle*w2, a2 = -angle*w1,
           s1 = sinf(a1), s2 = sinf(a2);
-    vec c1 = vec(axis).mul(1 - cosf(a1)), c2 = vec(axis).mul(1 - cosf(a2));
+    vec c1 = vec(axis).mul(1 - cosf(a1)),
+        c2 = vec(axis).mul(1 - cosf(a2));
     v1a.newpos.add(vec().cross(c1, q1a).madd(q1a, s1).add(v1a.pos));
     v1a.weight++;
     v1b.newpos.add(vec().cross(c1, q1b).madd(q1b, s1).add(v1b.pos));
@@ -366,9 +390,12 @@ void ragdolldata::constrainrot()
         rot.multranspose(tris[r.tri[1]]);
 
         vec axis;
-        float angle, tr = rot.trace();
-        if(tr >= r.maxtrace || !rot.calcangleaxis(tr, angle, axis)) continue;
-
+        float angle,
+              tr = rot.trace();
+        if(tr >= r.maxtrace || !rot.calcangleaxis(tr, angle, axis))
+        {
+            continue;
+        }
         angle = r.maxangle - angle + 1e-3f;
         applyrotlimit(skel->tris[r.tri[0]], skel->tris[r.tri[1]], angle, axis);
     }
@@ -391,7 +418,8 @@ void ragdolldata::calcrotfriction()
 void ragdolldata::applyrotfriction(float ts)
 {
     calctris();
-    float stopangle = 2*M_PI*ts*ragdollrotfricstop, rotfric = 1.0f - pow(ragdollrotfric, ts*1000.0f/ragdolltimestepmin);
+    float stopangle = 2*M_PI*ts*ragdollrotfricstop,
+          rotfric = 1.0f - pow(ragdollrotfric, ts*1000.0f/ragdolltimestepmin);
     for(int i = 0; i < skel->rotfrictions.length(); i++)
     {
         ragdollskel::rotfriction &r = skel->rotfrictions[i];
@@ -401,15 +429,20 @@ void ragdolldata::applyrotfriction(float ts)
 
         vec axis;
         float angle;
-        if(!rot.calcangleaxis(angle, axis)) continue;
-
+        if(!rot.calcangleaxis(angle, axis))
+        {
+            continue;
+        }
         angle *= -(fabs(angle) >= stopangle ? rotfric : 1.0f);
         applyrotlimit(skel->tris[r.tri[0]], skel->tris[r.tri[1]], angle, axis);
     }
     for(int i = 0; i < skel->verts.length(); i++)
     {
         vert &v = verts[i];
-        if(!v.weight) continue;
+        if(!v.weight)
+        {
+            continue;
+        }
         v.pos = v.newpos.div(v.weight);
         v.newpos = vec(0, 0, 0);
         v.weight = 0;
@@ -425,13 +458,20 @@ void ragdolldata::tryunstick(float speed)
         vert &v = verts[i];
         if(v.stuck)
         {
-            if(collidevert(v.pos, vec(0, 0, 0), skel->verts[i].radius)) { stuck++; continue; }
+            if(collidevert(v.pos, vec(0, 0, 0), skel->verts[i].radius))
+            {
+                stuck++;
+                continue;
+            }
             v.stuck = false;
         }
         unstuck.add(v.pos);
     }
     unsticks = 0;
-    if(!stuck || stuck >= skel->verts.length()) return;
+    if(!stuck || stuck >= skel->verts.length())
+    {
+        return;
+    }
     unstuck.div(skel->verts.length() - stuck);
     for(int i = 0; i < skel->verts.length(); i++)
     {
@@ -477,7 +517,10 @@ void ragdolldata::constrain()
             {
                 vec dir = vec(v.pos).sub(v.oldpos);
                 float facing = dir.dot(collidewall);
-                if(facing < 0) v.oldpos = vec(v.undo).sub(dir.msub(collidewall, 2*facing));
+                if(facing < 0)
+                {
+                    v.oldpos = vec(v.undo).sub(dir.msub(collidewall, 2*facing));
+                }
                 v.pos = v.undo;
                 v.collided = true;
             }
@@ -497,16 +540,24 @@ VAR(ragdollwaterexpireoffset, 0, 4000, 30000);
 void ragdolldata::move(dynent *pl, float ts)
 {
     extern const float GRAVITY;
-    if(collidemillis && lastmillis > collidemillis) return;
-
+    if(collidemillis && lastmillis > collidemillis)
+    {
+        return;
+    }
     int material = lookupmaterial(vec(center.x, center.y, center.z + radius/2));
     bool water = IS_LIQUID(material&MatFlag_Volume);
-    if(!pl->inwater && water) game::physicstrigger(pl, true, 0, -1, material&MatFlag_Volume);
+    if(!pl->inwater && water)
+    {
+        game::physicstrigger(pl, true, 0, -1, material&MatFlag_Volume);
+    }
     else if(pl->inwater && !water)
     {
         material = lookupmaterial(center);
         water = IS_LIQUID(material&MatFlag_Volume);
-        if(!water) game::physicstrigger(pl, true, 0, 1, pl->inwater);
+        if(!water)
+        {
+            game::physicstrigger(pl, true, 0, 1, pl->inwater);
+        }
     }
     pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 
@@ -519,7 +570,10 @@ void ragdolldata::move(dynent *pl, float ts)
         vert &v = verts[i];
         vec dpos = vec(v.pos).sub(v.oldpos);
         dpos.z -= GRAVITY*ts*ts;
-        if(water) dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
+        if(water)
+        {
+            dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
+        }
         dpos.mul(pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
         v.oldpos = v.pos;
         v.pos.add(dpos);
@@ -528,7 +582,12 @@ void ragdolldata::move(dynent *pl, float ts)
     for(int i = 0; i < skel->verts.length(); i++)
     {
         vert &v = verts[i];
-        if(v.pos.z < 0) { v.pos.z = 0; v.oldpos = v.pos; collisions++; }
+        if(v.pos.z < 0)
+        {
+            v.pos.z = 0;
+            v.oldpos = v.pos;
+            collisions++;
+        }
         vec dir = vec(v.pos).sub(v.oldpos);
         v.collided = collidevert(v.pos, dir, skel->verts[i].radius);
         if(v.collided)
@@ -538,17 +597,23 @@ void ragdolldata::move(dynent *pl, float ts)
             collisions++;
         }
     }
-
-    if(unsticks && ragdollunstick) tryunstick(ts*ragdollunstick);
-
+    if(unsticks && ragdollunstick)
+    {
+        tryunstick(ts*ragdollunstick);
+    }
     timestep = ts;
     if(collisions)
     {
         floating = 0;
-        if(!collidemillis) collidemillis = lastmillis + (water ? ragdollwaterexpireoffset : ragdollexpireoffset);
+        if(!collidemillis)
+        {
+            collidemillis = lastmillis + (water ? ragdollwaterexpireoffset : ragdollexpireoffset);
+        }
     }
-    else if(++floating > 1 && lastmillis < collidemillis) collidemillis = 0;
-
+    else if(++floating > 1 && lastmillis < collidemillis)
+    {
+        collidemillis = 0;
+    }
     constrain();
     calctris();
     calcboundsphere();
@@ -559,8 +624,10 @@ VAR(ragdolleyesmoothmillis, 1, 250, 10000);
 
 void moveragdoll(dynent *d)
 {
-    if(!curtime || !d->ragdoll) return;
-
+    if(!curtime || !d->ragdoll)
+    {
+        return;
+    }
     if(!d->ragdoll->collidemillis || lastmillis < d->ragdoll->collidemillis)
     {
         int lastmove = d->ragdoll->lastmove;
@@ -574,7 +641,7 @@ void moveragdoll(dynent *d)
 
     vec eye = d->ragdoll->skel->eye >= 0 ? d->ragdoll->verts[d->ragdoll->skel->eye].pos : d->ragdoll->center;
     eye.add(d->ragdoll->offset);
-    float k = pow(ragdolleyesmooth, float(curtime)/ragdolleyesmoothmillis);
+    float k = pow(ragdolleyesmooth, static_cast<float>(curtime)/ragdolleyesmoothmillis);
     d->o.lerp(eye, 1-k);
 }
 
