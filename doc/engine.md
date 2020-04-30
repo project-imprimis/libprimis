@@ -2555,6 +2555,45 @@ Note that this glow effect merely fixes the brightness of the texture to a
 specified level. It does not actually create a light entity or light nearby
 areas, which must be done with an actual light entity.
 
+## 5.2 Lighting
+---
+
+Imprimis' light and shadow system is built on a deferred rendering pipeline
+and is the main difference between it and older engines such as Cube 2. This
+deferred pipeline offers advantages largely in the quantity of lights that can
+be dynamically rendered onto the scene; however, it is not superior to Cube 2's
+forward rendering pipeline in all aspects. The Imprimis rendering pipeline is
+essentially the same as Tesseract's, and is outlined here.
+
+There are essentially three types of lights in the engine:
+* Sunlight
+* Dynamic lights
+* Static lights (map entities)
+
+In the renderer, the latter two are treated in largely similar ways, while
+sunlight is in a privileged position in the engine, being the only source for
+which the engine's global illumination is enabled (due to performance issues).
+
+### 5.2.1 Shadow Atlas
+---
+
+The engine's renderer uses a texture called a *shadow atlas* to cache the
+mapping of lights onto surfaces in the game. The shadow atlas is a monochromatic
+texture stored the GPU, 4096x4096 in size (32Mib of VRAM), and contains the
+depth mappings of every light currently being rendered. The shadow atlas
+does not have strong protections limiting its occupancy and therefore excessive
+use of light entities can cause the shadow atlas to overflow and create visual
+artifacts.
+
+The shadow atlas is a depth buffer which maps how far parts of the scene are
+from their sources. This is necessary for lights to determine how far away the
+things they are lighting are so as to facilitate appropriate light intensities.
+
+The depth of the shadow atlas can be changed from its default depth of 16 bits
+per pixel (16bpp) to 32 bits by changing the `smdepthprec` variable. In general,
+however, there is essentially no benefit to doubling the depth of the shadow
+atlas to 32 bits.
+
 # 6 Actors
 ---
 
