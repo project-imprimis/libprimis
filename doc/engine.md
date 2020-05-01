@@ -2594,6 +2594,39 @@ per pixel (16bpp) to 32 bits by changing the `smdepthprec` variable. In general,
 however, there is essentially no benefit to doubling the depth of the shadow
 atlas to 32 bits.
 
+### 5.2.2 Shadow Map
+---
+The shadow map is the actual texture which gets applied to textures ingame.
+Using the depth information encoded in the shadow atlas, the shadow map contains
+brightness information for lights which are being rendered. Like the shadow
+atlas, the shadow map is square and monochromatic, but unlike the shadow atlas,
+the shadow map size is variable and can be adjusted from resolutions of 2^10
+(1024x1024) to 2^14 (16384x16384), an increase of 256 times. This large range
+in shadow map size allows the engine's shadow map to scale in performance to
+accomodate both the high performance of modern dedicated GPUs as well as
+integrated graphics up to several years of age.
+
+While the shadow map is monochromatic, the engine is indeed capable of lighting
+in color. Color is not required in the shadow map, however, as light sources are
+monochromatic; the final rendering output is modulated by the light entity's
+particular color from the monochromatic shadow map. In doing so, Tesseract's
+renderer saves the overhead of three channels per bit (or conversely, increases
+the allowable precision by three times).
+
+### 5.2.3 Shadow Map Filtering
+---
+
+The shadow map texture does not generally line up with shadow features, causing
+ugly zig-zag aliasing which is particularly noticible at low shadow map
+resolutions. To resolve this, shadow map filtering is employed, utilizing an
+approximation of the Percentage Closer Filtering (PCF) method. The relative
+cheapness of this soft shadow filtering technique makes shadow map filtering a
+better choice than shadow map resolution increases for reducing aliasing.
+
+In the pursuit of higher performance than the naive PCF method provides, the
+shadow filtering in Tesseract uses a bilinear filter implementation accelerated
+natively by modern GPUs.
+
 # 6 Actors
 ---
 
