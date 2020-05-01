@@ -27,7 +27,12 @@ namespace gle
     static uchar *attribdata;
     static attribinfo attribdefs[Attribute_NumAttributes], lastattribs[Attribute_NumAttributes];
     int enabled = 0;
-    static int numattribs = 0, attribmask = 0, numlastattribs = 0, lastattribmask = 0, vertexsize = 0, lastvertexsize = 0;
+    static int numattribs = 0,
+               attribmask = 0,
+               numlastattribs = 0,
+               lastattribmask = 0,
+               vertexsize = 0,
+               lastvertexsize = 0;
     static GLenum primtype = GL_TRIANGLES;
     static uchar *lastbuf = NULL;
     static bool changedattribs = false;
@@ -48,8 +53,10 @@ namespace gle
     {
         quadsenabled = true;
 
-        if(glversion < 300) return;
-
+        if(glversion < 300)
+        {
+            return;
+        }
         if(quadindexes)
         {
             glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, quadindexes);
@@ -76,14 +83,19 @@ namespace gle
     {
         quadsenabled = false;
 
-        if(glversion < 300) return;
-
+        if(glversion < 300)
+        {
+            return;
+        }
         glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     void drawquads(int offset, int count)
     {
-        if(count <= 0) return;
+        if(count <= 0)
+        {
+            return;
+        }
         if(glversion < 300)
         {
             glDrawArrays(GL_QUADS, offset*4, count*4);
@@ -91,7 +103,10 @@ namespace gle
         }
         if(offset + count > MAXQUADS)
         {
-            if(offset >= MAXQUADS) return;
+            if(offset >= MAXQUADS)
+            {
+                return;
+            }
             count = MAXQUADS - offset;
         }
         glDrawRangeElements_(GL_TRIANGLES, offset*4, (offset + count)*4-1, count*6, GL_UNSIGNED_SHORT, (ushort *)0 + offset*6);
@@ -112,15 +127,68 @@ namespace gle
         a.format = format;
         switch(format)
         {
-            case 'B': case GL_UNSIGNED_BYTE:  a.formatsize = 1; a.format = GL_UNSIGNED_BYTE; break;
-            case 'b': case GL_BYTE:           a.formatsize = 1; a.format = GL_BYTE; break;
-            case 'S': case GL_UNSIGNED_SHORT: a.formatsize = 2; a.format = GL_UNSIGNED_SHORT; break;
-            case 's': case GL_SHORT:          a.formatsize = 2; a.format = GL_SHORT; break;
-            case 'I': case GL_UNSIGNED_INT:   a.formatsize = 4; a.format = GL_UNSIGNED_INT; break;
-            case 'i': case GL_INT:            a.formatsize = 4; a.format = GL_INT; break;
-            case 'f': case GL_FLOAT:          a.formatsize = 4; a.format = GL_FLOAT; break;
-            case 'd': case GL_DOUBLE:         a.formatsize = 8; a.format = GL_DOUBLE; break;
-            default:                          a.formatsize = 0; a.format = GL_FALSE; break;
+            case 'B':
+            case GL_UNSIGNED_BYTE:
+            {
+                a.formatsize = 1;
+                a.format = GL_UNSIGNED_BYTE;
+                break;
+            }
+            case 'b':
+            case GL_BYTE:
+            {
+                a.formatsize = 1;
+                a.format = GL_BYTE;
+                break;
+            }
+            case 'S':
+            case GL_UNSIGNED_SHORT:
+            {
+                a.formatsize = 2;
+                a.format = GL_UNSIGNED_SHORT;
+                break;
+            }
+            case 's':
+            case GL_SHORT:
+            {
+                a.formatsize = 2;
+                a.format = GL_SHORT;
+                break;
+            }
+            case 'I':
+            case GL_UNSIGNED_INT:
+            {
+                a.formatsize = 4;
+                a.format = GL_UNSIGNED_INT;
+                break;
+            }
+            case 'i':
+            case GL_INT:
+            {
+                a.formatsize = 4;
+                a.format = GL_INT;
+                break;
+            }
+            case 'f':
+            case GL_FLOAT:
+            {
+                a.formatsize = 4;
+                a.format = GL_FLOAT;
+                break;
+            }
+            case 'd':
+            case GL_DOUBLE:
+            {
+                a.formatsize = 8;
+                a.format = GL_DOUBLE;
+                break;
+            }
+            default:
+            {
+                a.formatsize = 0;
+                a.format = GL_FALSE;
+                break;
+            }
         }
         a.formatsize *= size;
         a.offset = vertexsize;
@@ -134,15 +202,50 @@ namespace gle
             GLenum format;
             switch(fmt[0])
             {
-                case 'v': format = Attribute_Vertex; break;
-                case 'c': format = Attribute_Color; break;
-                case 't': format = Attribute_TexCoord0; break;
-                case 'T': format = Attribute_TexCoord1; break;
-                case 'n': format = Attribute_Normal; break;
-                case 'x': format = Attribute_Tangent; break;
-                case 'w': format = Attribute_BoneWeight; break;
-                case 'i': format = Attribute_BoneIndex; break;
-                default: return;
+                case 'v':
+                {
+                    format = Attribute_Vertex;
+                    break;
+                }
+                case 'c':
+                {
+                    format = Attribute_Color;
+                    break;
+                }
+                case 't':
+                {
+                    format = Attribute_TexCoord0;
+                    break;
+                }
+                case 'T':
+                {
+                    format = Attribute_TexCoord1;
+                    break;
+                }
+                case 'n':
+                {
+                    format = Attribute_Normal;
+                    break;
+                }
+                case 'x':
+                {
+                    format = Attribute_Tangent;
+                    break;
+                }
+                case 'w':
+                {
+                    format = Attribute_BoneWeight;
+                    break;
+                }
+                case 'i':
+                {
+                    format = Attribute_BoneIndex;
+                    break;
+                }
+                default:
+                {
+                    return;
+                }
             }
             defattrib(format, fmt[1]-'0', fmt[2]);
         }
@@ -156,14 +259,18 @@ namespace gle
             case Attribute_TexCoord0:
             case Attribute_TexCoord1:
             case Attribute_BoneIndex:
+            {
                 glVertexAttribPointer_(a.type, a.size, a.format, GL_FALSE, vertexsize, buf);
                 break;
+            }
             case Attribute_Color:
             case Attribute_Normal:
             case Attribute_Tangent:
             case Attribute_BoneWeight:
+            {
                 glVertexAttribPointer_(a.type, a.size, a.format, GL_TRUE, vertexsize, buf);
                 break;
+            }
         }
         if(!(enabled&(1<<a.type)))
         {
@@ -183,13 +290,17 @@ namespace gle
         bool forceattribs = numattribs != numlastattribs || vertexsize != lastvertexsize || buf != lastbuf;
         if(forceattribs || changedattribs)
         {
+            //bitwise AND of attribs
             int diffmask = enabled & lastattribmask & ~attribmask;
             if(diffmask)
             {
                 for(int i = 0; i < numlastattribs; ++i)
                 {
                     const attribinfo &a = lastattribs[i];
-                    if(diffmask & (1<<a.type)) unsetattrib(a);
+                    if(diffmask & (1<<a.type))
+                    {
+                        unsetattrib(a);
+                    }
                 }
             }
             uchar *src = buf;
@@ -225,14 +336,23 @@ namespace gle
             if(vbooffset + len >= MAXVBOSIZE)
             {
                 len = min(len, MAXVBOSIZE);
-                if(!vbo) glGenBuffers_(1, &vbo);
+                if(!vbo)
+                {
+                    glGenBuffers_(1, &vbo);
+                }
                 glBindBuffer_(GL_ARRAY_BUFFER, vbo);
                 glBufferData_(GL_ARRAY_BUFFER, MAXVBOSIZE, NULL, GL_STREAM_DRAW);
                 vbooffset = 0;
             }
-            else if(!lastvertexsize) glBindBuffer_(GL_ARRAY_BUFFER, vbo);
+            else if(!lastvertexsize)
+            {
+                glBindBuffer_(GL_ARRAY_BUFFER, vbo);
+            }
             void *buf = glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, len, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
-            if(buf) attribbuf.reset((uchar *)buf, len);
+            if(buf)
+            {
+                attribbuf.reset((uchar *)buf, len);
+            }
         }
     }
 
@@ -266,12 +386,19 @@ namespace gle
             {
                 if(vbooffset + attribbuf.length() >= MAXVBOSIZE)
                 {
-                    if(!vbo) glGenBuffers_(1, &vbo);
+                    if(!vbo)
+                    {
+                        glGenBuffers_(1, &vbo);
+                    }
                     glBindBuffer_(GL_ARRAY_BUFFER, vbo);
                     glBufferData_(GL_ARRAY_BUFFER, MAXVBOSIZE, NULL, GL_STREAM_DRAW);
                     vbooffset = 0;
                 }
-                else if(!lastvertexsize) glBindBuffer_(GL_ARRAY_BUFFER, vbo);
+                else if(!lastvertexsize)
+                {
+                    glBindBuffer_(GL_ARRAY_BUFFER, vbo);
+                }
+                //void pointer warning!
                 void *dst = intel_mapbufferrange_bug ? NULL :
                     glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, attribbuf.length(), GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
                 if(dst)
@@ -279,16 +406,27 @@ namespace gle
                     memcpy(dst, attribbuf.getbuf(), attribbuf.length());
                     glUnmapBuffer_(GL_ARRAY_BUFFER);
                 }
-                else glBufferSubData_(GL_ARRAY_BUFFER, vbooffset, attribbuf.length(), attribbuf.getbuf());
+                else
+                {
+                    glBufferSubData_(GL_ARRAY_BUFFER, vbooffset, attribbuf.length(), attribbuf.getbuf());
+                }
             }
-            else glUnmapBuffer_(GL_ARRAY_BUFFER);
+            else
+            {
+                glUnmapBuffer_(GL_ARRAY_BUFFER);
+            }
             buf = (uchar *)0 + vbooffset;
             if(vertexsize == lastvertexsize && buf >= lastbuf)
             {
-                start = int(buf - lastbuf)/vertexsize;
+                start = static_cast<int>(buf - lastbuf)/vertexsize;
                 if(primtype == GL_QUADS && (start%4 || start + attribbuf.length()/vertexsize >= 4*MAXQUADS))
+                {
                     start = 0;
-                else buf = lastbuf;
+                }
+                else
+                {
+                    buf = lastbuf;
+                }
             }
             vbooffset += attribbuf.length();
         }
@@ -296,7 +434,10 @@ namespace gle
         int numvertexes = attribbuf.length()/vertexsize;
         if(primtype == GL_QUADS)
         {
-            if(!quadsenabled) enablequads();
+            if(!quadsenabled)
+            {
+                enablequads();
+            }
             drawquads(start/4, numvertexes/4);
         }
         else
@@ -315,7 +456,10 @@ namespace gle
                 multidrawstart.setsize(0);
                 multidrawcount.setsize(0);
             }
-            else glDrawArrays(primtype, start, numvertexes);
+            else
+            {
+                glDrawArrays(primtype, start, numvertexes);
+            }
         }
         attribbuf.reset(attribdata, MAXVBOSIZE);
         return numvertexes;
@@ -323,18 +467,34 @@ namespace gle
 
     void forcedisable()
     {
-        for(int i = 0; enabled; i++) if(enabled&(1<<i)) { glDisableVertexAttribArray_(i); enabled &= ~(1<<i); }
+        for(int i = 0; enabled; i++)
+        {
+            if(enabled&(1<<i))
+            {
+                glDisableVertexAttribArray_(i);
+                enabled &= ~(1<<i);
+            }
+        }
         numlastattribs = lastattribmask = lastvertexsize = 0;
         lastbuf = NULL;
-        if(quadsenabled) disablequads();
-        if(glversion >= 300) glBindBuffer_(GL_ARRAY_BUFFER, 0);
+        if(quadsenabled)
+        {
+            disablequads();
+        }
+        if(glversion >= 300)
+        {
+            glBindBuffer_(GL_ARRAY_BUFFER, 0);
+        }
     }
 
     void setup()
     {
         if(glversion >= 300)
         {
-            if(!defaultvao) glGenVertexArrays_(1, &defaultvao);
+            if(!defaultvao)
+            {
+                glGenVertexArrays_(1, &defaultvao);
+            }
             glBindVertexArray_(defaultvao);
         }
         attribdata = new uchar[MAXVBOSIZE];
@@ -344,13 +504,22 @@ namespace gle
     void cleanup()
     {
         disable();
-
-        if(quadindexes) { glDeleteBuffers_(1, &quadindexes); quadindexes = 0; }
-
-        if(vbo) { glDeleteBuffers_(1, &vbo); vbo = 0; }
+        if(quadindexes)
+        {
+            glDeleteBuffers_(1, &quadindexes);
+            quadindexes = 0;
+        }
+        if(vbo)
+        {
+            glDeleteBuffers_(1, &vbo);
+            vbo = 0;
+        }
         vbooffset = MAXVBOSIZE;
-
-        if(defaultvao) { glDeleteVertexArrays_(1, &defaultvao); defaultvao = 0; }
+        if(defaultvao)
+        {
+            glDeleteVertexArrays_(1, &defaultvao);
+            defaultvao = 0;
+        }
     }
 }
 
