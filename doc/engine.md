@@ -2618,14 +2618,27 @@ the allowable precision by three times).
 
 The shadow map texture does not generally line up with shadow features, causing
 ugly zig-zag aliasing which is particularly noticible at low shadow map
-resolutions. To resolve this, shadow map filtering is employed, utilizing an
-approximation of the Percentage Closer Filtering (PCF) method. The relative
-cheapness of this soft shadow filtering technique makes shadow map filtering a
-better choice than shadow map resolution increases for reducing aliasing.
+resolutions. To resolve this, the shadow map may be smoothed by different,
+increasingly finer and more resource intensive methods.
 
-In the pursuit of higher performance than the naive PCF method provides, the
-shadow filtering in Tesseract uses a bilinear filter implementation accelerated
-natively by modern GPUs.
+The simplest and cheapest method, used by `smfilter 1`, is rotated grid
+filtering. This filtering method is a simple antialiasing filter that reduces
+"jaggies" in the shadowmap by attempting to alias them to a more beneficial
+plane.
+
+The two finer methods are increasingly wide weighted filters which can be fed
+by either a simple bilinear tap method or by texture gathering. The latter is
+the highest fidelity method, but the bilinear method benefits from native driver
+support on modern GPUs. The size of the filter is either 3x3 for `smfilter 2` or
+5x5 for `smfilter 3`; naturally, the wider filter is more compute intensive.
+
+The use of bilinear taps or texture gather taps is controlled by the `smgather`
+boolean variable.
+
+Generally, however, shadow map filtering is a significantly faster way to remove
+ugly shadow map aliasing than shadow map resolution increases, though shadow
+filtering cannot construct sharper shadows like high shadow map resolutions are
+able to do.
 
 ### 5.2.4 Cascaded Shadow Maps (CSM)
 ---
