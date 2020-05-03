@@ -182,7 +182,7 @@ bool resolverwait(const char *name, ENetAddress *address)
             break;
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(float(timeout)/RESOLVERLIMIT, 1.0f), text);
+        renderprogress(min(static_cast<float>(timeout)/RESOLVERLIMIT, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE))
         {
             timeout = RESOLVERLIMIT + 1;
@@ -240,7 +240,7 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
             }
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(float(timeout)/CONNLIMIT, 1.0f), text);
+        renderprogress(min(static_cast<float>(timeout)/CONNLIMIT, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE))
         {
             break;
@@ -880,7 +880,7 @@ void retrieveservers(vector<char> &data)
             }
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
+        renderprogress(min(static_cast<float>(timeout)/RETRIEVELIMIT, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE))
         {
             timeout = RETRIEVELIMIT + 1;
@@ -912,7 +912,7 @@ void retrieveservers(vector<char> &data)
                 data.advance(recv);
             }
             timeout = SDL_GetTicks() - starttime;
-            renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
+            renderprogress(min(static_cast<float>(timeout)/RETRIEVELIMIT, 1.0f), text);
             if(interceptkey(SDLK_ESCAPE))
             {
                 timeout = RETRIEVELIMIT + 1;

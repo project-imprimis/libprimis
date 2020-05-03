@@ -17,12 +17,12 @@ static struct grasswedge
     plane bound1, bound2;
 
     grasswedge(int i) :
-      dir(2*M_PI*(i+0.5f)/float(NUMGRASSWEDGES), 0),
-      across(2*M_PI*((i+0.5f)/float(NUMGRASSWEDGES) + 0.25f), 0),
-      edge1(vec(2*M_PI*i/float(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
-      edge2(vec(2*M_PI*(i+1)/float(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
-      bound1(vec(2*M_PI*(i/float(NUMGRASSWEDGES) - 0.25f), 0), 0),
-      bound2(vec(2*M_PI*((i+1)/float(NUMGRASSWEDGES) + 0.25f), 0), 0)
+      dir(2*M_PI*(i+0.5f)/static_cast<float>(NUMGRASSWEDGES), 0),
+      across(2*M_PI*((i+0.5f)/static_cast<float>(NUMGRASSWEDGES) + 0.25f), 0),
+      edge1(vec(2*M_PI*i/static_cast<float>(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
+      edge2(vec(2*M_PI*(i+1)/static_cast<float>(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
+      bound1(vec(2*M_PI*(i/static_cast<float>(NUMGRASSWEDGES) - 0.25f), 0), 0),
+      bound2(vec(2*M_PI*((i+1)/static_cast<float>(NUMGRASSWEDGES) + 0.25f), 0), 0)
     {
         across.div(-across.dot(bound1));
     }
@@ -61,7 +61,7 @@ static void animategrass()
 {
     for(int i = 0; i < NUMGRASSOFFSETS; ++i)
     {
-        grassanimoffsets[i] = grassanimscale*sinf(2*M_PI*(grassoffsets[i] + lastmillis/float(grassanimmillis)));
+        grassanimoffsets[i] = grassanimscale*sinf(2*M_PI*(grassoffsets[i] + lastmillis/static_cast<float>(grassanimmillis)));
     }
     lastgrassanim = lastmillis;
 }
@@ -76,7 +76,7 @@ FVARR(grasstest, 0, 0.6f, 1);
 static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, Texture *tex)
 {
     float t = camera1->o.dot(w.dir);
-    int tstep = int(ceil(t/grassstep));
+    int tstep = static_cast<int>(ceil(t/grassstep));
     float tstart = tstep*grassstep,
           t0 = w.dir.dot(g.v[0]),
           t1 = w.dir.dot(g.v[1]),
@@ -88,11 +88,11 @@ static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstr
     {
         return;
     }
-    int minstep = max(int(ceil(tmin/grassstep)) - tstep, 1),
-        maxstep = int(floor(min(tmax, t + grassdist)/grassstep)) - tstep,
+    int minstep = max(static_cast<int>(ceil(tmin/grassstep)) - tstep, 1),
+        maxstep = static_cast<int>(floor(min(tmax, t + grassdist)/grassstep)) - tstep,
         numsteps = maxstep - minstep + 1;
 
-    float texscale = (grassscale*tex->ys)/float(grassheight*tex->xs), animscale = grassheight*texscale;
+    float texscale = (grassscale*tex->ys)/static_cast<float>(grassheight*tex->xs), animscale = grassheight*texscale;
     vec tc;
     tc.cross(g.surface, w.dir).mul(texscale);
 
@@ -296,7 +296,7 @@ void generategrass()
     {
         for(int i = 0; i < NUMGRASSOFFSETS; ++i)
         {
-            grassoffsets[i] = randomint(0x1000000)/float(0x1000000);
+            grassoffsets[i] = randomint(0x1000000)/static_cast<float>(0x1000000);
         }
     }
 
