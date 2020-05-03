@@ -859,7 +859,6 @@ namespace game
     extern void updateprojectiles(int curtime);
     extern void removeprojectiles(gameent *owner);
     extern void renderprojectiles();
-    extern void preloadbouncers();
     extern void removeweapons(gameent *owner);
     extern void updateweapons(int curtime);
     extern void gunselect(int gun, gameent *d);

@@ -749,7 +749,6 @@ namespace game
         {
             preloadweapons();
         }
-        preloadbouncers();
         preloadplayermodel();
         preloadsounds();
         entities::preloadentities();

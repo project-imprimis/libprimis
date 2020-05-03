@@ -954,11 +954,6 @@ namespace game
         }
     }
 
-    void preloadbouncers()
-    {
-
-    }
-
     void renderbouncers()
     {
         float yaw, pitch;
