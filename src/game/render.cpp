@@ -246,7 +246,7 @@ namespace game
 
     void preloadplayermodel()
     {
-        for(int i = 0; i < int(sizeof(playermodels)/sizeof(playermodels[0])); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(playermodels)/sizeof(playermodels[0])); ++i)
         {
             const playermodelinfo *mdl = getplayermodelinfo(i);
             if(!mdl) //don't preload a model that isn't there
@@ -275,7 +275,7 @@ namespace game
 
     void findanims(const char *pattern, vector<int> &anims)
     {
-        for(int i = 0; i < int(sizeof(animnames)/sizeof(animnames[0])); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(animnames)/sizeof(animnames[0])); ++i)
         {
             if(matchanim(animnames[i], pattern))
             {
@@ -337,13 +337,22 @@ namespace game
               pitch = testpitch && d==player1 ? testpitch : d->pitch;
         vec o = d->feetpos();
         int basetime = 0;
-        if(animoverride) anim = (animoverride<0 ? ANIM_ALL : animoverride)|ANIM_LOOP;
+        if(animoverride)
+        {
+            anim = (animoverride<0 ? ANIM_ALL : animoverride)|ANIM_LOOP;
+        }
         else if(d->state==ClientState_Dead)
         {
             anim = Anim_Dying|ANIM_NOPITCH;
             basetime = d->lastpain;
-            if(ragdoll && mdl.ragdoll) anim |= ANIM_RAGDOLL;
-            else if(lastmillis-basetime>1000) anim = Anim_Dead|ANIM_LOOP|ANIM_NOPITCH;
+            if(ragdoll && mdl.ragdoll)
+            {
+                anim |= ANIM_RAGDOLL;
+            }
+            else if(lastmillis-basetime>1000)
+            {
+                anim = Anim_Dead|ANIM_LOOP|ANIM_NOPITCH;
+            }
         }
         else if(d->state==ClientState_Editing || d->state==ClientState_Spectator)
         {
@@ -522,7 +531,7 @@ namespace game
             gameent *d = ragdolls[i];
             float fade = 1.0f;
             if(ragdollmillis && ragdollfade)
-                fade -= clamp(float(lastmillis - (d->lastupdate + max(ragdollmillis - ragdollfade, 0)))/min(ragdollmillis, ragdollfade), 0.0f, 1.0f);
+                fade -= clamp(static_cast<float>(lastmillis - (d->lastupdate + max(ragdollmillis - ragdollfade, 0)))/min(ragdollmillis, ragdollfade), 0.0f, 1.0f);
             renderplayer(d, fade);
         }
         if(exclude)
@@ -551,7 +560,9 @@ namespace game
     FVAR(swayside, 0, 0.10f, 1);
     FVAR(swayup, -1, 0.15f, 1);
 
-    float swayfade = 0, swayspeed = 0, swaydist = 0;
+    float swayfade = 0,
+          swayspeed = 0,
+          swaydist = 0;
     vec swaydir(0, 0, 0);
 
     void swayhudgun(int curtime)

@@ -73,7 +73,7 @@ namespace game
         else
         {
             int len = strlen(name);
-            for(int i = 0; i < int(sizeof(guns)/sizeof(guns[0])); ++i)
+            for(int i = 0; i < static_cast<int>(sizeof(guns)/sizeof(guns[0])); ++i)
             {
                 if(!strncasecmp(guns[i].name, name, len))
                 {
@@ -87,8 +87,14 @@ namespace game
     void setweapon(const char *name, bool force = false)
     {
         int gun = getweapon(name);
-        if(player1->state!=ClientState_Alive || !VALID_GUN(gun)) return;
-        if(force || player1->ammo[gun]) gunselect(gun, player1);
+        if(player1->state!=ClientState_Alive || !VALID_GUN(gun))
+        {
+            return;
+        }
+        if(force || player1->ammo[gun])
+        {
+            gunselect(gun, player1);
+        }
         else playsound(Sound_NoAmmo);
     }
     ICOMMAND(setweapon, "si", (char *name, int *force), setweapon(name, *force!=0));
@@ -132,16 +138,28 @@ namespace game
 
     void weaponswitch(gameent *d)
     {
-        if(d->state!=ClientState_Alive) return;
+        if(d->state!=ClientState_Alive)
+        {
+            return;
+        }
         int s = d->gunselect;
-        if(s!=Gun_Pulse && d->ammo[Gun_Pulse])     s = Gun_Pulse;
-        else if(s!=Gun_Rail && d->ammo[Gun_Rail])  s = Gun_Rail;
+        if(s!=Gun_Pulse && d->ammo[Gun_Pulse])
+        {
+            s = Gun_Pulse;
+        }
+        else if(s!=Gun_Rail && d->ammo[Gun_Rail])
+        {
+            s = Gun_Rail;
+        }
         gunselect(s, d);
     }
 
     ICOMMAND(weapon, "V", (tagval *args, int numargs),
     {
-        if(player1->state!=ClientState_Alive) return;
+        if(player1->state!=ClientState_Alive)
+        {
+            return;
+        }
         for(int i = 0; i < 3; ++i)
         {
             const char *name = i < numargs ? args[i].getstr() : "";
@@ -166,8 +184,10 @@ namespace game
     void offsetray(const vec &from, const vec &to, int spread, float range, vec &dest)
     {
         vec offset;
-        do offset = vec(randomfloat(1), randomfloat(1), randomfloat(1)).sub(0.5f);
-        while(offset.squaredlen() > 0.5f*0.5f);
+        do
+        {
+            offset = vec(randomfloat(1), randomfloat(1), randomfloat(1)).sub(0.5f);
+        } while(offset.squaredlen() > 0.5f*0.5f);
         offset.mul((to.dist(from)/1024)*spread);
         offset.z /= 2;
         dest = vec(offset).add(to);
@@ -186,7 +206,11 @@ namespace game
         }
     }
 
-    enum { BNC_GIBS, BNC_DEBRIS };
+    enum
+    {
+        BNC_GIBS,
+        BNC_DEBRIS
+    };
 
     struct bouncer : physent
     {
@@ -222,8 +246,16 @@ namespace game
 
         switch(type)
         {
-            case BNC_DEBRIS: bnc.variant = randomint(4); break;
-            case BNC_GIBS: bnc.variant = randomint(3); break;
+            case BNC_DEBRIS:
+            {
+                bnc.variant = randomint(4);
+                break;
+            }
+            case BNC_GIBS:
+            {
+                bnc.variant = randomint(3);
+                break;
+            }
         }
 
         vec dir(to);
@@ -242,9 +274,15 @@ namespace game
 
     void bounced(physent *d, const vec &surface)
     {
-        if(d->type != PhysEnt_Bounce) return;
+        if(d->type != PhysEnt_Bounce)
+        {
+            return;
+        }
         bouncer *b = (bouncer *)d;
-        if(b->bouncetype != BNC_GIBS || b->bounces >= 2) return;
+        if(b->bouncetype != BNC_GIBS || b->bounces >= 2)
+        {
+            return;
+        }
         b->bounces++;
         addstain(Stain_Blood, vec(b->o).sub(vec(surface).mul(b->radius)), surface, 2.96f/b->bounces, bvec(0x60, 0xFF, 0xFF), randomint(4));
     }
@@ -262,7 +300,11 @@ namespace game
                 int qtime = min(30, rtime);
                 rtime -= qtime;
                 //if bouncer has run out of lifetime, or bounce fxn returns true, turn on the stopping flag
-                if((bnc.lifetime -= qtime)<0 || bounce(&bnc, qtime/1000.0f, 0.6f, 0.5f, 1)) { stopped = true; break; }
+                if((bnc.lifetime -= qtime)<0 || bounce(&bnc, qtime/1000.0f, 0.6f, 0.5f, 1))
+                {
+                    stopped = true;
+                    break;
+                }
             }
             if(stopped) //kill bouncer object if above check passes
             {
@@ -288,7 +330,10 @@ namespace game
         }
     }
 
-    void clearbouncers() { bouncers.deletecontents(); }
+    void clearbouncers()
+    {
+        bouncers.deletecontents();
+    }
 
     struct projectile
     {
@@ -340,18 +385,23 @@ namespace game
     {
         vec p = d->o;
         p.z += 0.6f*(d->eyeheight + d->aboveeye) - d->eyeheight;
-        if(blood) particle_splash(Part_Blood, max(damage/10, randomint(3)+1), 1000, p, 0x60FFFF, 2.96f);
-
+        if(blood)
+        {
+            particle_splash(Part_Blood, max(damage/10, randomint(3)+1), 1000, p, 0x60FFFF, 2.96f);
+        }
     }
 
     void spawnbouncer(const vec &p, const vec &vel, gameent *d, int type)
     {
         vec to(randomint(100)-50, randomint(100)-50, randomint(100)-50); //x,y,z = [-50,50] to get enough steps to create a good random vector
-        if(to.iszero()) to.z += 1; //if all three are zero (bad luck!), set vector to (0,0,1)
+        if(to.iszero())
+        {
+            to.z += 1; //if all three are zero (bad luck!), set vector to (0,0,1)
+        }
         to.normalize(); //smash magnitude back to 1
         to.add(p); //add this random to input &p
-        //newbouncer( from, to, local, id, owner, type, lifetime,       speed)
-        newbouncer(   p,    to, true,  0,  d,     type, randomint(1000)+1000, randomint(100)+20);
+        //newbouncer( from, to, local, id, owner,  type,        lifetime,             speed)
+        newbouncer(   p,    to,  true,  0,  d,     type, randomint(1000)+1000, randomint(100)+20);
     }
 
     void gibeffect(int damage, const vec &vel, gameent *d)
@@ -364,24 +414,36 @@ namespace game
         if(at==player1 && d!=at)
         {
             extern int hitsound;
-            if(hitsound && lasthit != lastmillis) playsound(Sound_Hit);
+            if(hitsound && lasthit != lastmillis)
+            {
+                playsound(Sound_Hit);
+            }
             lasthit = lastmillis;
         }
 
         gameent *f = (gameent *)d;
 
         f->lastpain = lastmillis;
-        if(at->type==PhysEnt_Player && !modecheck(gamemode, Mode_Team) && at->team != f->team) at->totaldamage += damage;
+        if(at->type==PhysEnt_Player && !modecheck(gamemode, Mode_Team) && at->team != f->team)
+        {
+            at->totaldamage += damage;
+        }
 
-        if(modecheck(gamemode, Mode_LocalOnly) || f==at) f->hitpush(damage, vel, at, atk);
+        if(modecheck(gamemode, Mode_LocalOnly) || f==at)
+        {
+            f->hitpush(damage, vel, at, atk);
+        }
 
-        if(modecheck(gamemode, Mode_LocalOnly)) damaged(damage, f, at);
+        if(modecheck(gamemode, Mode_LocalOnly))
+        {
+            damaged(damage, f, at);
+        }
         else
         {
             hitmsg &h = hits.add();
             h.target = f->clientnum;
             h.lifesequence = f->lifesequence;
-            h.info1 = int(info1*DMF);
+            h.info1 = static_cast<int>(info1*DMF);
             h.info2 = info2;
             h.dir = f==at ? ivec(0, 0, 0) : ivec(vec(vel).mul(DNF));
             if(at==player1)
@@ -393,7 +455,10 @@ namespace game
                     damagecompass(damage, at ? at->o : f->o);
                     playsound(Sound_Pain2);
                 }
-                else playsound(Sound_Pain1, &f->o);
+                else
+                {
+                    playsound(Sound_Pain1, &f->o);
+                }
             }
         }
     }
@@ -417,14 +482,23 @@ namespace game
 
     void radialeffect(dynent *o, const vec &v, const vec &vel, int qdam, gameent *at, int atk)
     {
-        if(o->state!=ClientState_Alive) return;
+        if(o->state!=ClientState_Alive)
+        {
+            return;
+        }
         vec dir;
         float dist = projdist(o, dir, v, vel);
         if(dist<attacks[atk].exprad)
         {
             float damage = qdam*(1-dist/EXP_DISTSCALE/attacks[atk].exprad);
-            if(o==at) damage /= EXP_SELFDAMDIV;
-            if(damage > 0) hit(max(int(damage), 1), o, at, dir, atk, dist);
+            if(o==at)
+            {
+                damage /= EXP_SELFDAMDIV;
+            }
+            if(damage > 0)
+            {
+                hit(max(static_cast<int>(damage), 1), o, at, dir, atk, dist);
+            }
         }
     }
 
@@ -436,12 +510,18 @@ namespace game
         vec debrisorigin = vec(v).sub(vec(vel).mul(5));
         adddynlight(safe ? v : debrisorigin, 2*attacks[atk].exprad, vec(1.0f, 3.0f, 4.0f), 350, 40, 0, attacks[atk].exprad/2, vec(0.5f, 1.5f, 2.0f));
 
-        if(!local) return;
+        if(!local)
+        {
+            return;
+        }
         int numdyn = numdynents();
         for(int i = 0; i < numdyn; ++i)
         {
             dynent *o = iterdynents(i);
-            if(o->o.reject(v, o->radius + attacks[atk].exprad) || o==safe) continue;
+            if(o->o.reject(v, o->radius + attacks[atk].exprad) || o==safe)
+            {
+                continue;
+            }
             radialeffect(o, v, vel, damage, owner, atk);
         }
     }
@@ -462,16 +542,20 @@ namespace game
 
     void explodeeffects(int atk, gameent *d, bool local, int id)
     {
-        if(local) return;
+        if(local)
+        {
+            return;
+        }
         switch(atk)
         {
-            case Attack_PulseShoot:
+            case Attack_PulseShoot: //pulse rifle is currently the only weapon to do this
+            {
                 for(int i = 0; i < projs.length(); i++)
                 {
                     projectile &p = projs[i];
                     if(p.atk == atk && p.owner == d && p.id == id && !p.local)
                     {
-                        vec pos = vec(p.offset).mul(p.offsetmillis/float(OFFSETMILLIS)).add(p.o);
+                        vec pos = vec(p.offset).mul(p.offsetmillis/static_cast<float>(OFFSETMILLIS)).add(p.o);
                         explode(p.local, p.owner, pos, p.dir, NULL, 0, atk);
                         pulsestain(p, pos);
                         projs.remove(i);
@@ -479,15 +563,24 @@ namespace game
                     }
                 }
                 break;
+            }
             default:
+            {
                 break;
+            }
         }
     }
 
     bool projdamage(dynent *o, projectile &p, const vec &v)
     {
-        if(o->state!=ClientState_Alive) return false;
-        if(!intersect(o, p.o, v, attacks[p.atk].margin)) return false;
+        if(o->state!=ClientState_Alive)
+        {
+            return false;
+        }
+        if(!intersect(o, p.o, v, attacks[p.atk].margin))
+        {
+            return false;
+        }
         projsplash(p, v, o);
         vec dir;
         projdist(o, dir, v, p.dir);
@@ -497,7 +590,10 @@ namespace game
 
     void updateprojectiles(int time)
     {
-        if(projs.empty()) return;
+        if(projs.empty())
+        {
+            return;
+        }
         gameent *noside = hudplayer();
         for(int i = 0; i < projs.length(); i++) //loop through all projectiles in the game
         {
@@ -505,7 +601,7 @@ namespace game
             p.offsetmillis = max(p.offsetmillis-time, 0);
             vec dv; //displacement vector
             float dist = p.to.dist(p.o, dv);
-            dv.mul(time/max(dist*1000/p.speed, float(time)));
+            dv.mul(time/max(dist*1000/p.speed, static_cast<float>(time)));
             vec v = vec(p.o).add(dv); //set v as current particle location o plus dv
             bool exploded = false;
             hits.setsize(0);
@@ -516,7 +612,6 @@ namespace game
                 for(int j = 0; j < numdynents(); ++j)
                 {
                     dynent *o = iterdynents(j); //start by setting cur to current dynent in loop
-
                     //check if dynent in question is the owner of the projectile or is within the bounds of some other dynent (actor)
                     //if projectile is owned by a player or projectile is not within the bounds of a dynent, skip explode check
                     if(p.owner==o || o->o.reject(bo, o->radius + br))
@@ -536,14 +631,17 @@ namespace game
                 {
                     if(p.o!=p.to) // if original target was moving, reevaluate endpoint
                     {
-                        if(raycubepos(p.o, p.dir, p.to, 0, Ray_ClipMat|Ray_AlphaPoly)>=4) continue;
+                        if(raycubepos(p.o, p.dir, p.to, 0, Ray_ClipMat|Ray_AlphaPoly)>=4)
+                        {
+                            continue;
+                        }
                     }
                     projsplash(p, v, NULL);
                     exploded = true;
                 }
                 else
                 {
-                    vec pos = vec(p.offset).mul(p.offsetmillis/float(OFFSETMILLIS)).add(v);
+                    vec pos = vec(p.offset).mul(p.offsetmillis/static_cast<float>(OFFSETMILLIS)).add(v);
                     particle_splash(Part_PulseFront, 1, 1, pos, 0x50CFE5, 2.4f, 150, 20);
                     if(p.owner != noside) //noside is the hud player, so if the projectile is somebody else's
                     {
@@ -558,11 +656,16 @@ namespace game
             if(exploded)
             {
                 if(p.local)
+                {
                     addmsg(NetMsg_Explode, "rci3iv", p.owner, lastmillis-maptime, p.atk, p.id-maptime,
-                            hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf());
+                            hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf()); //sizeof int should always be 4 bytes
+                }
                 projs.remove(i--);
             }
-            else p.o = v; //if no collision stuff happened set the new position
+            else
+            {
+                p.o = v; //if no collision stuff happened set the new position
+            }
         }
     }
 
@@ -583,36 +686,62 @@ namespace game
         switch(atk)
         {
             case Attack_PulseShoot:
+            {
                 if(d->muzzle.x >= 0)
-                    particle_flare(d->muzzle, d->muzzle, 140, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d);
+                {
+                    particle_flare(d->muzzle, d->muzzle, 140, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d); //place a light that runs with the shot projectile
+                }
                 newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
                 break;
-
+            }
             case Attack_RailShot:
+            {
                 particle_splash(Part_Spark, 200, 250, to, 0x50CFE5, 0.45f);
                 particle_flare(hudgunorigin(gun, from, to, d), to, 500, Part_RailTrail, 0x50CFE5, 0.5f);
                 if(d->muzzle.x >= 0)
+                {
                     particle_flare(d->muzzle, d->muzzle, 140, Part_RailMuzzleFlash, 0x50CFE5, 2.75f, d);
-                adddynlight(hudgunorigin(gun, d->o, to, d), 35, vec(0.25f, 0.75f, 1.0f), 75, 75, DynLight_Flash, 0, vec(0, 0, 0), d);
-                if(!local) railhit(from, to);
+                }
+                adddynlight(hudgunorigin(gun, d->o, to, d), 35, vec(0.25f, 0.75f, 1.0f), 75, 75, DynLight_Flash, 0, vec(0, 0, 0), d); //place a light for the muzzle flash
+                if(!local)
+                {
+                    railhit(from, to);
+                }
                 break;
-
+            }
             default:
+            {
                 break;
+            }
         }
 
-        if(d==hudplayer()) playsound(attacks[atk].hudsound, NULL);
-        else playsound(attacks[atk].sound, &d->o);
+        if(d==hudplayer())
+        {
+            playsound(attacks[atk].hudsound, NULL);
+        }
+        else
+        {
+            playsound(attacks[atk].sound, &d->o);
+        }
     }
 
     void particletrack(physent *owner, vec &o, vec &d)
     {
-        if(owner->type!=PhysEnt_Player) return;
+        if(owner->type!=PhysEnt_Player)
+        {
+            return;
+        }
         gameent *pl = (gameent *)owner;
-        if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect) return;
+        if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect)
+        {
+            return;
+        }
         float dist = o.dist(d);
         o = pl->muzzle;
-        if(dist <= 0) d = o;
+        if(dist <= 0)
+        {
+            d = o;
+        }
         else
         {
             vecfromyawpitch(owner->yaw, owner->pitch, 1, 0, d);
@@ -623,9 +752,15 @@ namespace game
 
     void dynlighttrack(physent *owner, vec &o, vec &hud)
     {
-        if(owner->type!=PhysEnt_Player) return;
+        if(owner->type!=PhysEnt_Player)
+        {
+            return;
+        }
         gameent *pl = (gameent *)owner;
-        if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect) return;
+        if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect)
+        {
+            return;
+        }
         o = pl->muzzle;
         hud = owner == hudplayer() ? vec(pl->o).add(vec(0, 0, 2)) : pl->muzzle;
     }
@@ -647,9 +782,15 @@ namespace game
         for(int i = 0; i < numdynents(); ++i)
         {
             dynent *o = iterdynents(i);
-            if(o==at || o->state!=ClientState_Alive) continue;
+            if(o==at || o->state!=ClientState_Alive)
+            {
+                continue;
+            }
             float dist;
-            if(!intersect(o, from, to, margin, dist)) continue;
+            if(!intersect(o, from, to, margin, dist))
+            {
+                continue;
+            }
             if(dist<bestdist)
             {
                 best = o;
@@ -668,7 +809,8 @@ namespace game
     {
         dynent *o;
         float dist;
-        int maxrays = attacks[atk].rays, margin = attacks[atk].margin;
+        int maxrays = attacks[atk].rays,
+            margin = attacks[atk].margin;
         if(attacks[atk].rays > 1)
         {
             dynent *hits[MAXRAYS];
@@ -679,7 +821,10 @@ namespace game
                     shorten(from, rays[i], dist);
                     railhit(from, rays[i], false);
                 }
-                else railhit(from, rays[i]);
+                else
+                {
+                    railhit(from, rays[i]);
+                }
             }
             for(int i = 0; i < maxrays; ++i)
             {
@@ -688,10 +833,13 @@ namespace game
                     o = hits[i];
                     hits[i] = NULL;
                     int numhits = 1;
-                    for(int j = i+1; j < maxrays; j++) if(hits[j] == o)
+                    for(int j = i+1; j < maxrays; j++)
                     {
-                        hits[j] = NULL;
-                        numhits++;
+                        if(hits[j] == o)
+                        {
+                            hits[j] = NULL;
+                            numhits++;
+                        }
                     }
                     hitpush(numhits*attacks[atk].damage, o, d, from, to, atk, numhits);
                 }
@@ -703,16 +851,27 @@ namespace game
             railhit(from, to, false);
             hitpush(attacks[atk].damage, o, d, from, to, atk, 1);
         }
-        else if(attacks[atk].action!=Act_Melee) railhit(from, to);
+        else if(attacks[atk].action!=Act_Melee)
+        {
+            railhit(from, to);
+        }
     }
 
     void shoot(gameent *d, const vec &targ)
     {
         int prevaction = d->lastaction, attacktime = lastmillis-prevaction;
-        if(attacktime<d->gunwait) return;
+        if(attacktime<d->gunwait)
+        {
+            return;
+        }
         d->gunwait = 0;
-        if(!d->attacking) return;
-        int gun = d->gunselect, act = d->attacking, atk = guns[gun].attacks[act];
+        if(!d->attacking)
+        {
+            return;
+        }
+        int gun = d->gunselect,
+            act = d->attacking,
+            atk = guns[gun].attacks[act];
         d->lastaction = lastmillis;
         d->lastattack = atk;
         if(!d->ammo[gun])
@@ -728,7 +887,9 @@ namespace game
         }
         d->ammo[gun] -= attacks[atk].use;
 
-        vec from = d->o, to = targ, dir = vec(to).sub(from).safenormalize();
+        vec from = d->o,
+            to = targ,
+            dir = vec(to).sub(from).safenormalize();
         float dist = to.dist(from);
         if(!(d->physstate >= PhysEntState_Slope && d->crouching && d->crouched()))
         {
@@ -738,28 +899,43 @@ namespace game
         float shorten = attacks[atk].range && dist > attacks[atk].range ? attacks[atk].range : 0,
               barrier = raycube(d->o, dir, dist, Ray_ClipMat|Ray_AlphaPoly);
         if(barrier > 0 && barrier < dist && (!shorten || barrier < shorten))
+        {
             shorten = barrier;
-        if(shorten) to = vec(dir).mul(shorten).add(from);
+        }
+        if(shorten)
+        {
+            to = vec(dir).mul(shorten).add(from);
+        }
 
-        if(attacks[atk].rays > 1) createrays(atk, from, to);
-        else if(attacks[atk].spread) offsetray(from, to, attacks[atk].spread, attacks[atk].range, to);
-
+        if(attacks[atk].rays > 1)
+        {
+            createrays(atk, from, to);
+        }
+        else if(attacks[atk].spread)
+        {
+            offsetray(from, to, attacks[atk].spread, attacks[atk].range, to);
+        }
         hits.setsize(0);
 
-        if(!attacks[atk].projspeed) raydamage(from, to, d, atk);
-
+        if(!attacks[atk].projspeed)
+        {
+            raydamage(from, to, d, atk);
+        }
         shoteffects(atk, from, to, d, true, 0, prevaction);
 
         if(d==player1 || d->ai)
         {
             addmsg(NetMsg_Shoot, "rci2i6iv", d, lastmillis-maptime, atk,
-                   (int)(from.x*DMF), (int)(from.y*DMF), (int)(from.z*DMF),
-                   (int)(to.x*DMF), (int)(to.y*DMF), (int)(to.z*DMF),
-                   hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf());
+                   static_cast<int>(from.x*DMF), static_cast<int>(from.y*DMF), static_cast<int>(from.z*DMF),
+                   static_cast<int>(to.x*DMF), static_cast<int>(to.y*DMF), static_cast<int>(to.z*DMF),
+                   hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf()); //sizeof int should always equal 4 (bytes) = 32b
         }
 
         d->gunwait = attacks[atk].attackdelay;
-        if(attacks[atk].action != Act_Melee && d->ai) d->gunwait += int(d->gunwait*(((101-d->skill)+randomint(111-d->skill))/100.f));
+        if(attacks[atk].action != Act_Melee && d->ai)
+        {
+            d->gunwait += static_cast<int>(d->gunwait*(((101-d->skill)+randomint(111-d->skill))/100.f));
+        }
         d->totalshots += attacks[atk].damage*attacks[atk].rays;
     }
 
@@ -768,14 +944,15 @@ namespace game
         for(int i = 0; i < projs.length(); i++)
         {
             projectile &p = projs[i];
-            if(p.atk!=Attack_PulseShoot) continue;
+            if(p.atk!=Attack_PulseShoot)
+            {
+                continue;
+            }
             vec pos(p.o);
-            pos.add(vec(p.offset).mul(p.offsetmillis/float(OFFSETMILLIS)));
+            pos.add(vec(p.offset).mul(p.offsetmillis/static_cast<float>(OFFSETMILLIS)));
             adddynlight(pos, 20, vec(0.25f, 0.75f, 1.0f));
         }
     }
-
-
 
     void preloadbouncers()
     {
@@ -789,9 +966,12 @@ namespace game
         {
             bouncer &bnc = *bouncers[i];
             vec pos(bnc.o);
-            pos.add(vec(bnc.offset).mul(bnc.offsetmillis/float(OFFSETMILLIS)));
+            pos.add(vec(bnc.offset).mul(bnc.offsetmillis/static_cast<float>(OFFSETMILLIS)));
             vec vel(bnc.vel);
-            if(vel.magnitude() <= 25.0f) yaw = bnc.lastyaw;
+            if(vel.magnitude() <= 25.0f)
+            {
+                yaw = bnc.lastyaw;
+            }
             else
             {
                 vectoyawpitch(vel, yaw, pitch);
@@ -802,11 +982,16 @@ namespace game
             const char *mdl = NULL;
             int cull = Model_CullVFC|Model_CullDist|Model_CullOccluded;
             float fade = 1;
-            if(bnc.lifetime < 250) fade = bnc.lifetime/250.0f;
+            if(bnc.lifetime < 250)
+            {
+                fade = bnc.lifetime/250.0f;
+            }
             switch(bnc.bouncetype)
             {
-
-                default: continue;
+                default:
+                {
+                    continue;
+                }
             }
             rendermodel(mdl, Anim_Mapmodel|ANIM_LOOP, pos, yaw, pitch, 0, cull, NULL, NULL, 0, 0, fade);
         }
@@ -825,7 +1010,10 @@ namespace game
     void updateweapons(int curtime)
     {
         updateprojectiles(curtime);
-        if(player1->clientnum>=0 && player1->state==ClientState_Alive) shoot(player1, worldpos); // only shoot when connected to server
+        if(player1->clientnum>=0 && player1->state==ClientState_Alive)
+        {
+            shoot(player1, worldpos); // only shoot when connected to server
+        }
         updatebouncers(curtime); // need to do this after the player shoots so bouncers don't end up inside player's BB next frame
     }
 
