@@ -2627,6 +2627,45 @@ In the pursuit of higher performance than the naive PCF method provides, the
 shadow filtering in Tesseract uses a bilinear filter implementation accelerated
 natively by modern GPUs.
 
+### 5.2.4 Cascaded Shadow Maps (CSM)
+---
+
+The sunlight in Imprimis is provided by a cascaded shadow map for maximum
+performance while retaining high angular sharpness. The cascaded shadow map,
+which for the sunlight is simply planar (as the sunlight comes collimated from
+infinitely far away, there is no point in a 3d projection), consists of multiple
+shadow maps of the same orientation in consecutively larger sizes. The contents
+of a higher resolution shadow map (and its consequentially smaller angular size)
+are cut out of larger shadow maps.
+
+The result of cascaded shadowmapping is that the sunlight map is increasingly
+higher resolution for regions closer to the camera location. This allows for
+relatively cheaper, lower resolution shadowmapping of faraway sunlit locations
+while maintaining good angular resolution up close.
+
+In effect, cascaded shadow mapping is similar to mipmapping in its final form:
+lessening distant rendering load by utilization of low resolution textures.
+
+Relevant CSM commands:
+
+* `csmbias <value>`
+* `csmbias2 <value>`
+* `csmcull <boolean>` Toggles masking of smaller CSM within larger ones.
+* `csmdepthmargin <value>`
+* `csmdepthrange <value`
+* `csmfarplane <value>` Sets the size in cubits of the largest CSM.
+* `csminoq <boolean>`
+* `csmnearplane <value>` Sets the min size in cubits for the smallest CSM.
+* `csmmaxsize <pixels>` Sets the size CSM texs relative to the shadow atlas.
+* `csmpolyfactor <value>`
+* `csmpolyfactor2 <valie>`
+* `csmpolyoffset <value>`
+* `csmpolyoffset2 <value>`
+* `csmradiustweak <value>`
+* `csmshadowmap <boolean>` Toggles rendering of the CSM (& therefore sunlight)
+* `csmsplits <value>` Sets the number of CSM levels to use.
+* `csmsplitweight <value>` Bias towards splitting CSM close (high) or far (low).
+
 # 6 Actors
 ---
 
