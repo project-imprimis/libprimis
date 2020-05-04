@@ -115,24 +115,82 @@ struct iqm : skelloader<iqm>
             LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_joints], hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
 
             const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
-            float *vpos = NULL, *vnorm = NULL, *vtan = NULL, *vtc = NULL;
-            uchar *vindex = NULL, *vweight = NULL;
+            float *vpos = NULL,
+                  *vnorm = NULL,
+                  *vtan = NULL,
+                  *vtc = NULL;
+            uchar *vindex = NULL,
+                  *vweight = NULL;
             iqmvertexarray *vas = (iqmvertexarray *)&buf[hdr.ofs_vertexarrays];
-            for(int i = 0; i < int(hdr.num_vertexarrays); ++i)
+            for(int i = 0; i < static_cast<int>(hdr.num_vertexarrays); ++i)
             {
                 iqmvertexarray &va = vas[i];
                 switch(va.type)
                 {
-                    case IQM_Position: if(va.format != IQM_Float || va.size != 3) return false; vpos = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vpos, 3*hdr.num_vertexes); break;
-                    case IQM_Normal: if(va.format != IQM_Float || va.size != 3) return false; vnorm = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vnorm, 3*hdr.num_vertexes); break;
-                    case IQM_Tangent: if(va.format != IQM_Float || va.size != 4) return false; vtan = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtan, 4*hdr.num_vertexes); break;
-                    case IQM_TexCoord: if(va.format != IQM_Float || va.size != 2) return false; vtc = (float *)&buf[va.offset]; LIL_ENDIAN_SWAP(vtc, 2*hdr.num_vertexes); break;
-                    case IQM_BlendIndices: if(va.format != IQM_UByte || va.size != 4) return false; vindex = (uchar *)&buf[va.offset]; break;
-                    case IQM_BlendWeights: if(va.format != IQM_UByte || va.size != 4) return false; vweight = (uchar *)&buf[va.offset]; break;
+                    case IQM_Position:
+                    {
+                        if(va.format != IQM_Float || va.size != 3)
+                        {
+                            return false;
+                        }
+                        vpos = (float *)&buf[va.offset];
+                        LIL_ENDIAN_SWAP(vpos, 3*hdr.num_vertexes);
+                        break;
+                    }
+                    case IQM_Normal:
+                    {
+                        if(va.format != IQM_Float || va.size != 3)
+                        {
+                            return false;
+                        }
+                        vnorm = (float *)&buf[va.offset];
+                        LIL_ENDIAN_SWAP(vnorm, 3*hdr.num_vertexes);
+                        break;
+                    }
+                    case IQM_Tangent:
+                    {
+                        if(va.format != IQM_Float || va.size != 4)
+                        {
+                            return false;
+                        }
+                        vtan = (float *)&buf[va.offset];
+                        LIL_ENDIAN_SWAP(vtan, 4*hdr.num_vertexes);
+                        break;
+                    }
+                    case IQM_TexCoord:
+                    {
+                        if(va.format != IQM_Float || va.size != 2)
+                        {
+                            return false;
+                        }
+                        vtc = (float *)&buf[va.offset];
+                        LIL_ENDIAN_SWAP(vtc, 2*hdr.num_vertexes);
+                        break;
+                    }
+                    case IQM_BlendIndices:
+                    {
+                        if(va.format != IQM_UByte || va.size != 4)
+                        {
+                            return false;
+                        }
+                        vindex = (uchar *)&buf[va.offset];
+                        break;
+                    }
+                    case IQM_BlendWeights:
+                    {
+                        if(va.format != IQM_UByte || va.size != 4)
+                        {
+                            return false;
+                        }
+                        vweight = (uchar *)&buf[va.offset];
+                        break;
+                    }
                 }
             }
-            if(!vpos) return false;
-
+            if(!vpos)
+            {
+                return false;
+            }
             iqmtriangle *tris = (iqmtriangle *)&buf[hdr.ofs_triangles];
             iqmmesh *imeshes = (iqmmesh *)&buf[hdr.ofs_meshes];
             iqmjoint *joints = (iqmjoint *)&buf[hdr.ofs_joints];
@@ -143,11 +201,14 @@ struct iqm : skelloader<iqm>
                 {
                     skel->numbones = hdr.num_joints;
                     skel->bones = new boneinfo[skel->numbones];
-                    for(int i = 0; i < int(hdr.num_joints); ++i)
+                    for(int i = 0; i < static_cast<int>(hdr.num_joints); ++i)
                     {
                         iqmjoint &j = joints[i];
                         boneinfo &b = skel->bones[i];
-                        if(!b.name) b.name = newstring(&str[j.name]);
+                        if(!b.name)
+                        {
+                            b.name = newstring(&str[j.name]);
+                        }
                         b.parent = j.parent;
                         if(skel->shared <= 1)
                         {
@@ -156,14 +217,19 @@ struct iqm : skelloader<iqm>
                             j.orient.z = -j.orient.z;
                             j.orient.normalize();
                             b.base = dualquat(j.orient, j.pos);
-                            if(b.parent >= 0) b.base.mul(skel->bones[b.parent].base, dualquat(b.base));
+                            if(b.parent >= 0)
+                            {
+                                b.base.mul(skel->bones[b.parent].base, dualquat(b.base));
+                            }
                             (b.invbase = b.base).invert();
                         }
                     }
                 }
 
                 if(skel->shared <= 1)
+                {
                     skel->linkchildren();
+                }
             }
 
             for(int i = 0; i < int(hdr.num_meshes); ++i)
@@ -201,7 +267,10 @@ struct iqm : skelloader<iqm>
                         v.tc = vec2(mtc[0], mtc[1]);
                         mtc += 2;
                     }
-                    else v.tc = vec2(0, 0);
+                    else
+                    {
+                        v.tc = vec2(0, 0);
+                    }
                     if(mnorm)
                     {
                         v.norm = vec(mnorm[0], -mnorm[1], mnorm[2]);
@@ -212,7 +281,11 @@ struct iqm : skelloader<iqm>
                             mtan += 4;
                         }
                     }
-                    else { v.norm = vec(0, 0, 0); v.tangent = quat(0, 0, 0, 1); }
+                    else
+                    {
+                        v.norm = vec(0, 0, 0);
+                        v.tangent = quat(0, 0, 0, 1);
+                    }
                     if(noblend < 0)
                     {
                         blendcombo c;
@@ -226,12 +299,18 @@ struct iqm : skelloader<iqm>
                         c.finalize(sorted);
                         v.blend = m->addblendcombo(c);
                     }
-                    else v.blend = noblend;
+                    else
+                    {
+                        v.blend = noblend;
+                    }
                 }
                 m->numtris = im.num_triangles;
-                if(m->numtris) m->tris = new tri[m->numtris];
+                if(m->numtris)
+                {
+                    m->tris = new tri[m->numtris];
+                }
                 iqmtriangle *mtris = tris + im.first_triangle;
-                for(int j = 0; j < int(im.num_triangles); ++j)
+                for(int j = 0; j < static_cast<int>(im.num_triangles); ++j)
                 {
                     tri &t = m->tris[j];
                     t.vert[0] = mtris->vertex[0] - fv;
@@ -246,7 +325,10 @@ struct iqm : skelloader<iqm>
                     delete m;
                     continue;
                 }
-                if(vnorm && !vtan) m->calctangents();
+                if(vnorm && !vtan)
+                {
+                    m->calctangents();
+                }
             }
 
             sortblendcombos();
@@ -260,11 +342,11 @@ struct iqm : skelloader<iqm>
             LIL_ENDIAN_SWAP((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
             LIL_ENDIAN_SWAP((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
 
-            const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
+            const char *str = hdr.ofs_text ? reinterpret_cast<char *>(&buf[hdr.ofs_text]) : "";
             iqmpose *poses = (iqmpose *)&buf[hdr.ofs_poses];
             iqmanim *anims = (iqmanim *)&buf[hdr.ofs_anims];
             ushort *frames = (ushort *)&buf[hdr.ofs_frames];
-            for(int i = 0; i < int(hdr.num_anims); ++i)
+            for(int i = 0; i < static_cast<int>(hdr.num_anims); ++i)
             {
                 iqmanim &a = anims[i];
                 string name;
@@ -272,7 +354,10 @@ struct iqm : skelloader<iqm>
                 concatstring(name, ":");
                 concatstring(name, &str[a.name]);
                 skelanimspec *sa = skel->findskelanim(name);
-                if(sa) continue;
+                if(sa)
+                {
+                    continue;
+                }
                 sa = &skel->addskelanim(name);
                 sa->frame = skel->numframes;
                 sa->range = a.num_frames;
@@ -286,7 +371,7 @@ struct iqm : skelloader<iqm>
                 animbones += skel->numframes*skel->numbones;
                 skel->numframes += a.num_frames;
                 ushort *animdata = &frames[a.first_frame*hdr.num_framechannels];
-                for(int j = 0; j < int(a.num_frames); ++j)
+                for(int j = 0; j < static_cast<int>(a.num_frames); ++j)
                 {
                     dualquat *frame = &animbones[j*skel->numbones];
                     for(int k = 0; k < skel->numbones; ++k)
@@ -294,27 +379,73 @@ struct iqm : skelloader<iqm>
                         iqmpose &p = poses[k];
                         vec pos;
                         quat orient;
-                        pos.x = p.offsetpos.x; if(p.mask&0x01) pos.x += *animdata++ * p.scalepos.x;
-                        pos.y = -p.offsetpos.y; if(p.mask&0x02) pos.y -= *animdata++ * p.scalepos.y;
-                        pos.z = p.offsetpos.z; if(p.mask&0x04) pos.z += *animdata++ * p.scalepos.z;
-                        orient.x = -p.offsetorient.x; if(p.mask&0x08) orient.x -= *animdata++ * p.scaleorient.x;
-                        orient.y = p.offsetorient.y; if(p.mask&0x10) orient.y += *animdata++ * p.scaleorient.y;
-                        orient.z = -p.offsetorient.z; if(p.mask&0x20) orient.z -= *animdata++ * p.scaleorient.z;
-                        orient.w = p.offsetorient.w; if(p.mask&0x40) orient.w += *animdata++ * p.scaleorient.w;
+                        pos.x = p.offsetpos.x;
+                        if(p.mask&0x01)
+                        {
+                            pos.x += *animdata++ * p.scalepos.x;
+                        }
+                        pos.y = -p.offsetpos.y;
+                        if(p.mask&0x02)
+                        {
+                            pos.y -= *animdata++ * p.scalepos.y;
+                        }
+                        pos.z = p.offsetpos.z;
+                        if(p.mask&0x04)
+                        {
+                            pos.z += *animdata++ * p.scalepos.z;
+                        }
+                        orient.x = -p.offsetorient.x;
+                        if(p.mask&0x08)
+                        {
+                            orient.x -= *animdata++ * p.scaleorient.x;
+                        }
+                        orient.y = p.offsetorient.y;
+                        if(p.mask&0x10)
+                        {
+                            orient.y += *animdata++ * p.scaleorient.y;
+                        }
+                        orient.z = -p.offsetorient.z;
+                        if(p.mask&0x20)
+                        {
+                            orient.z -= *animdata++ * p.scaleorient.z;
+                        }
+                        orient.w = p.offsetorient.w;
+                        if(p.mask&0x40)
+                        {
+                            orient.w += *animdata++ * p.scaleorient.w;
+                        }
                         orient.normalize();
                         if(p.mask&0x380)
                         {
-                            if(p.mask&0x80) animdata++;
-                            if(p.mask&0x100) animdata++;
-                            if(p.mask&0x200) animdata++;
+                            if(p.mask&0x80)
+                            {
+                                animdata++;
+                            }
+                            if(p.mask&0x100)
+                            {
+                                animdata++;
+                            }
+                            if(p.mask&0x200)
+                            {
+                                animdata++;
+                            }
                         }
                         dualquat dq(orient, pos);
-                        if(adjustments.inrange(k)) adjustments[k].adjust(dq);
+                        if(adjustments.inrange(k))
+                        {
+                            adjustments[k].adjust(dq);
+                        }
                         boneinfo &b = skel->bones[k];
                         dq.mul(b.invbase);
                         dualquat &dst = frame[k];
-                        if(p.parent < 0) dst = dq;
-                        else dst.mul(skel->bones[p.parent].base, dq);
+                        if(p.parent < 0)
+                        {
+                            dst = dq;
+                        }
+                        else
+                        {
+                            dst.mul(skel->bones[p.parent].base, dq);
+                        }
                         dst.fixantipodal(skel->framebones[k]);
                     }
                 }
@@ -326,26 +457,47 @@ struct iqm : skelloader<iqm>
         bool loadiqm(const char *filename, bool doloadmesh, bool doloadanim)
         {
             stream *f = openfile(filename, "rb");
-            if(!f) return false;
-
+            if(!f)
+            {
+                return false;
+            }
             uchar *buf = NULL;
             iqmheader hdr;
-            if(f->read(&hdr, sizeof(hdr)) != sizeof(hdr) || memcmp(hdr.magic, "INTERQUAKEMODEL", sizeof(hdr.magic))) goto error;
+            if(f->read(&hdr, sizeof(hdr)) != sizeof(hdr) || memcmp(hdr.magic, "INTERQUAKEMODEL", sizeof(hdr.magic)))
+            {
+                goto error;
+            }
             LIL_ENDIAN_SWAP(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
-            if(hdr.version != 2) goto error;
-            if(hdr.filesize > (16<<20)) goto error; // sanity check... don't load files bigger than 16 MB
+            if(hdr.version != 2)
+            {
+                goto error;
+            }
+            if(hdr.filesize > (16<<20))
+            {
+                goto error; // sanity check... don't load files bigger than 16 MB
+            }
             buf = new (false) uchar[hdr.filesize];
-            if(!buf || f->read(buf + sizeof(hdr), hdr.filesize - sizeof(hdr)) != hdr.filesize - sizeof(hdr)) goto error;
-
-            if(doloadmesh && !loadiqmmeshes(filename, hdr, buf)) goto error;
-            if(doloadanim && !loadiqmanims(filename, hdr, buf)) goto error;
-
+            if(!buf || f->read(buf + sizeof(hdr), hdr.filesize - sizeof(hdr)) != hdr.filesize - sizeof(hdr))
+            {
+                goto error;
+            }
+            if(doloadmesh && !loadiqmmeshes(filename, hdr, buf))
+            {
+                goto error;
+            }
+            if(doloadanim && !loadiqmanims(filename, hdr, buf))
+            {
+                goto error;
+            }
             delete[] buf;
             delete f;
             return true;
 
         error:
-            if(buf) delete[] buf;
+            if(buf)
+            {
+                delete[] buf;
+            }
             delete f;
             return false;
         }
@@ -353,7 +505,6 @@ struct iqm : skelloader<iqm>
         bool load(const char *filename, float smooth)
         {
             name = newstring(filename);
-
             return loadiqm(filename, true, false);
         }
 
@@ -365,9 +516,14 @@ struct iqm : skelloader<iqm>
             {
                 string filename;
                 copystring(filename, animname);
-                if(sep) filename[sep - animname] = '\0';
+                if(sep)
+                {
+                    filename[sep - animname] = '\0';
+                }
                 if(loadiqm(filename, false, true))
+                {
                     sa = skel->findskelanim(animname, sep ? '\0' : ':');
+                }
             }
             return sa;
         }
@@ -379,11 +535,17 @@ struct iqm : skelloader<iqm>
     {
         skelpart &mdl = addpart();
         const char *fname = name + strlen(name);
-        do --fname; while(fname >= name && *fname!='/' && *fname!='\\');
+        do
+        {
+            --fname;
+        } while(fname >= name && *fname!='/' && *fname!='\\');
         fname++;
         DEF_FORMAT_STRING(meshname, "media/model/%s/%s.iqm", name, fname);
         mdl.meshes = sharemeshes(path(meshname));
-        if(!mdl.meshes) return false;
+        if(!mdl.meshes)
+        {
+            return false;
+        }
         mdl.initanimparts();
         mdl.initskins();
         return true;
