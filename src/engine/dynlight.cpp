@@ -85,7 +85,8 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     {
         return;
     }
-    int insert = 0, expire = fade + peak + lastmillis;
+    int insert = 0,
+        expire = fade + peak + lastmillis;
     for(int i = dynlights.length(); --i >=0;) //note reverse iteration
     {
         if(expire>=dynlights[i].expire)
@@ -150,7 +151,10 @@ void updatedynlights()
     for(int i = 0; i < dynlights.length(); i++)
     {
         dynlight &d = dynlights[i];
-        if(d.owner) game::dynlighttrack(d.owner, d.o, d.hud);
+        if(d.owner)
+        {
+            game::dynlighttrack(d.owner, d.o, d.hud);
+        }
         d.calcradius();
         d.calccolor();
     }
@@ -179,8 +183,10 @@ int finddynlights()
         }
         e.o = d.o;
         e.radius = e.xradius = e.yradius = e.eyeheight = e.aboveeye = d.curradius;
-        if(!collide(&e, vec(0, 0, 0), 0, false)) continue;
-
+        if(!collide(&e, vec(0, 0, 0), 0, false))
+        {
+            continue;
+        }
         int insert = 0;
         for(int i = closedynlights.length(); --i >=0;) //note reverse iteration
         {
