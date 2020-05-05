@@ -404,11 +404,6 @@ namespace game
         newbouncer(   p,    to,  true,  0,  d,     type, randomint(1000)+1000, randomint(100)+20);
     }
 
-    void gibeffect(int damage, const vec &vel, gameent *d)
-    {
-
-    }
-
     void hit(int damage, dynent *d, gameent *at, const vec &vel, int atk, float info1, int info2 = 1)
     {
         if(at==player1 && d!=at)
