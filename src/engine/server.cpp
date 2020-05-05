@@ -55,7 +55,7 @@ static void writelog(FILE *file, const char *buf)
     size_t len = strlen(buf), carry = 0;
     while(carry < len)
     {
-        size_t numu = encodeutf8(ubuf, sizeof(ubuf)-1, &((const uchar *)buf)[carry], len - carry, &carry);
+        size_t numu = encodeutf8(ubuf, sizeof(ubuf)-1, &(reinterpret_cast<const uchar*>(buf))[carry], len - carry, &carry);
         if(carry >= len)
         {
             ubuf[numu++] = '\n';
@@ -136,7 +136,8 @@ ENetHost *serverhost = NULL;
 int laststatus = 0;
 ENetSocket lansock = ENET_SOCKET_NULL;
 
-int localclients = 0, nonlocalclients = 0;
+int localclients = 0,
+    nonlocalclients = 0;
 
 bool hasnonlocalclients()
 {
@@ -353,7 +354,7 @@ ENetPacket *sendf(int cn, int chan, const char *format, ...)
                 int n = isdigit(*format) ? *format++-'0' : 1;
                 for(int i = 0; i < n; ++i)
                 {
-                    putfloat(p, (float)va_arg(args, double));
+                    putfloat(p, static_cast<float>(va_arg(args, double)));
                 }
                 break;
             }
@@ -388,7 +389,7 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
     {
         return NULL;
     }
-    int len = (int)min(file->size(), stream::offset(INT_MAX));
+    int len = static_cast<int>(min(file->size(), stream::offset(INT_MAX)));
     if(len <= 0 || len > 16<<20)
     {
         return NULL;
@@ -566,8 +567,12 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
 #endif
 
 ENetSocket mastersock = ENET_SOCKET_NULL;
-ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY }, serveraddress = { ENET_HOST_ANY, ENET_PORT_ANY };
-int lastupdatemaster = 0, lastconnectmaster = 0, masterconnecting = 0, masterconnected = 0;
+ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY },
+            serveraddress = { ENET_HOST_ANY, ENET_PORT_ANY };
+int lastupdatemaster = 0,
+    lastconnectmaster = 0,
+    masterconnecting = 0,
+    masterconnected = 0;
 vector<char> masterout, masterin;
 int masteroutpos = 0,
     masterinpos = 0;
@@ -705,7 +710,7 @@ void processmasterinput()
         end++;
         masterinpos = end - masterin.getbuf();
         input = end;
-        end = (char *)memchr(input, '\n', masterin.length() - masterinpos);
+        end = reinterpret_cast<char*>(memchr(input, '\n', masterin.length() - masterinpos));
     }
 
     if(masterinpos >= masterin.length())
@@ -722,8 +727,10 @@ void flushmasteroutput()
         logoutf("could not connect to master server");
         disconnectmaster();
     }
-    if(masterout.empty() || !masterconnected) return;
-
+    if(masterout.empty() || !masterconnected)
+    {
+        return;
+    }
     ENetBuffer buf;
     buf.data = &masterout[masteroutpos];
     buf.dataLength = masterout.length() - masteroutpos;
@@ -737,7 +744,10 @@ void flushmasteroutput()
             masteroutpos = 0;
         }
     }
-    else disconnectmaster();
+    else
+    {
+        disconnectmaster();
+    }
 }
 
 void flushmasterinput()
@@ -755,7 +765,10 @@ void flushmasterinput()
         masterin.advance(recv);
         processmasterinput();
     }
-    else disconnectmaster();
+    else
+    {
+        disconnectmaster();
+    }
 }
 
 static ENetAddress serverinfoaddress;
@@ -907,7 +920,7 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
 
     if(dedicated)
     {
-        int millis = (int)enet_time_get();
+        int millis = static_cast<int>(enet_time_get());
         elapsedtime = millis - totalmillis;
         static int timeerr = 0;
         int scaledtime = server::scaletime(elapsedtime) + timeerr;
@@ -1057,7 +1070,8 @@ struct logline
 static string apptip = "";
 static HINSTANCE appinstance = NULL;
 static ATOM wndclass = 0;
-static HWND appwindow = NULL, conwindow = NULL;
+static HWND appwindow = NULL,
+            conwindow = NULL;
 static HICON appicon = NULL;
 static HMENU appmenu = NULL;
 static HANDLE outhandle = NULL;
@@ -1086,7 +1100,9 @@ static bool setupsystemtray(UINT uCallbackMessage)
     nid.hIcon = appicon;
     strcpy(nid.szTip, apptip);
     if(Shell_NotifyIcon(NIM_ADD, &nid) != TRUE)
+    {
         return false;
+    }
     atexit(cleanupsystemtray);
     return true;
 }
@@ -1132,7 +1148,7 @@ static void writeline(logline &line)
     size_t len = strlen(line.buf), carry = 0;
     while(carry < len)
     {
-        size_t numu = encodeutf8(ubuf, sizeof(ubuf), &((uchar *)line.buf)[carry], len - carry, &carry);
+        size_t numu = encodeutf8(ubuf, sizeof(ubuf), &(reinterpret_cast<uchar*>line.buf)[carry], len - carry, &carry);
         DWORD written = 0;
         WriteConsole(outhandle, ubuf, numu, &written, NULL);
     }
@@ -1179,6 +1195,7 @@ static LRESULT CALLBACK handlemessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
     switch(uMsg)
     {
         case WM_APP:
+        {
             SetForegroundWindow(hWnd);
             switch(lParam)
             {
@@ -1195,7 +1212,9 @@ static LRESULT CALLBACK handlemessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
                 }
             }
             return 0;
+        }
         case WM_COMMAND:
+        {
             switch(LOWORD(wParam))
             {
                 case MENU_OPENCONSOLE:
@@ -1226,9 +1245,12 @@ static LRESULT CALLBACK handlemessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
                 }
             }
             return 0;
+        }
         case WM_CLOSE:
+        {
             PostQuitMessage(0);
             return 0;
+        }
     }
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
@@ -1286,7 +1308,8 @@ static void setupwindow(const char *title)
 
 static char *parsecommandline(const char *src, vector<char *> &args)
 {
-    char *buf = new char[strlen(src) + 1], *dst = buf;
+    char *buf = new char[strlen(src) + 1],
+         *dst = buf;
     for(;;)
     {
         while(isspace(*src))
@@ -1472,16 +1495,12 @@ void initserver(bool listen, bool dedicated)
         setupwindow("Tesseract server");
 #endif
     }
-
     execfile("config/server-init.cfg", false);
-
     if(listen)
     {
         setuplistenserver(dedicated);
     }
-
     server::serverinit();
-
     if(listen)
     {
         dedicatedserver = dedicated;
@@ -1513,7 +1532,6 @@ void startlistenserver(int *usemaster)
         return;
     }
     updatemasterserver();
-
     conoutf("listen server started for %d clients%s", maxclients, allowupdatemaster ? " and listed with master server" : "");
 }
 COMMAND(startlistenserver, "i");
