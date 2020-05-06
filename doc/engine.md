@@ -2679,6 +2679,46 @@ Relevant CSM commands:
 * `csmsplits <value>` Sets the number of CSM levels to use.
 * `csmsplitweight <value>` Bias towards splitting CSM close (high) or far (low).
 
+### 5.2.5 Global Illumination (GI)
+---
+
+Global illumination, also known as indirect lighting, is the illumination of
+surfaces by the light reflected off of other surfaces. Global illumination
+assumes diffuse reflection: that light that is shone upon surfaces bounces out
+at random directions at an equal rate. While this is not quite exactly true
+physically, it is a very good approximation to how lighting actually does
+diffusely reflect.
+
+The global illumination in Imprimis is calculated via the Radiance Hints
+algorithm, which allows for a cheap approximation of indirect lighting via a
+collection of *taps* placed automatically by the engine in the level. These taps
+have light seeded by the values of a reflective shadow map (RSM) that is
+calculated from the global sunlight (and not on-map light entities). The taps
+then exchange with each other light "packets" which are then used to determine
+the brightness of the surrounding area. The light "packets" recieved are
+directional, so the taps store the light values in a low-order multipole
+expansion of spherical harmonics (the cheapest way to do so).
+
+The use of global illumination is to ameliorate excessive point lighting (which
+is dynamic and therefore relatively expensive) by spreading the global sunlight
+around the level. As this global lighting is fairly inexpensive, levels should
+use sunlight + GI when possible.
+
+#### The Reflective Shadow Map (RSM)
+
+The RSM, unlike the shadow map, stores its values in a total of six channels
+and two logical maps: the diffuse color of surfaces the sunlight impinges upon
+is necessary to determine the color of the light which is diffusely reflected
+off of those surfaces, as well as the orientation of those surfaces to determine
+how strongly light has hit those surfaces. No depth map is needed in this case:
+the sunlight, which comes from the far-field, does not meaningfully attenuate
+within the scale of the map.
+
+The RSM is by default a quarter the resolution of the standard shadow map: the
+radiance hint taps generally don't have enough resolution to take advantage of a
+very sharp map, and the RSM requires six channels compared to the shadowmap's
+two.
+
 # 6 Actors
 ---
 
