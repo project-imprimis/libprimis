@@ -51,13 +51,19 @@ static const surfaceinfo brightsurfaces[6] =
 
 void brightencube(cube &c)
 {
-    if(!c.ext) newcubeext(c, 0, false);
+    if(!c.ext)
+    {
+        newcubeext(c, 0, false);
+    }
     memcpy(c.ext->surfaces, brightsurfaces, sizeof(brightsurfaces));
 }
 
 void setsurfaces(cube &c, const surfaceinfo *surfs, const vertinfo *verts, int numverts)
 {
-    if(!c.ext || c.ext->maxverts < numverts) newcubeext(c, numverts, false);
+    if(!c.ext || c.ext->maxverts < numverts)
+    {
+        newcubeext(c, numverts, false);
+    }
     memcpy(c.ext->surfaces, surfs, sizeof(c.ext->surfaces));
     memcpy(c.ext->verts(), verts, numverts*sizeof(vertinfo));
 }
@@ -65,7 +71,10 @@ void setsurfaces(cube &c, const surfaceinfo *surfs, const vertinfo *verts, int n
 void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *srcverts, int numsrcverts)
 {
     int dstoffset = 0;
-    if(!c.ext) newcubeext(c, numsrcverts, true);
+    if(!c.ext)
+    {
+        newcubeext(c, numsrcverts, true);
+    }
     else
     {
         int numbefore = 0, beforeoffset = 0;
@@ -73,20 +82,30 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
         {
             surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
-            if(!numverts) continue;
+            if(!numverts)
+            {
+                continue;
+            }
             numbefore += numverts;
             beforeoffset = surf.verts + numverts;
         }
-        int numafter = 0, afteroffset = c.ext->maxverts;
-        for(int i = 5; i > orient; i--)
+        int numafter = 0,
+            afteroffset = c.ext->maxverts;
+        for(int i = 5; i > orient; i--) //note reverse iteration
         {
             surfaceinfo &surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
-            if(!numverts) continue;
+            if(!numverts)
+            {
+                continue;
+            }
             numafter += numverts;
             afteroffset = surf.verts;
         }
-        if(afteroffset - beforeoffset >= numsrcverts) dstoffset = beforeoffset;
+        if(afteroffset - beforeoffset >= numsrcverts)
+        {
+            dstoffset = beforeoffset;
+        }
         else
         {
             cubeext *ext = c.ext;
@@ -98,14 +117,20 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
             int offset = 0;
             if(numbefore == beforeoffset)
             {
-                if(numbefore && c.ext != ext) memcpy(ext->verts(), c.ext->verts(), numbefore*sizeof(vertinfo));
+                if(numbefore && c.ext != ext)
+                {
+                    memcpy(ext->verts(), c.ext->verts(), numbefore*sizeof(vertinfo));
+                }
                 offset = numbefore;
             }
             for(int i = 0; i < orient; ++i)
             {
                 surfaceinfo &surf = ext->surfaces[i];
                 int numverts = surf.totalverts();
-                if(!numverts) continue;
+                if(!numverts)
+                {
+                    continue;
+                }
                 memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
                 surf.verts = offset;
                 offset += numverts;
@@ -115,35 +140,49 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
             if(numafter && offset > afteroffset)
             {
                 offset += numafter;
-                for(int i = 5; i > orient; i--)
+                for(int i = 5; i > orient; i--) //note reverse iteration
                 {
                     surfaceinfo &surf = ext->surfaces[i];
                     int numverts = surf.totalverts();
-                    if(!numverts) continue;
+                    if(!numverts)
+                    {
+                        continue;
+                    }
                     offset -= numverts;
                     memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
                     surf.verts = offset;
                 }
             }
-            if(c.ext != ext) setcubeext(c, ext);
+            if(c.ext != ext)
+            {
+                setcubeext(c, ext);
+            }
         }
     }
     surfaceinfo &dst = c.ext->surfaces[orient];
     dst = src;
     dst.verts = dstoffset;
-    if(srcverts) memcpy(c.ext->verts() + dstoffset, srcverts, numsrcverts*sizeof(vertinfo));
+    if(srcverts)
+    {
+        memcpy(c.ext->verts() + dstoffset, srcverts, numsrcverts*sizeof(vertinfo));
+    }
 }
 
 bool PackNode::insert(ushort &tx, ushort &ty, ushort tw, ushort th)
 {
     if((available < tw && available < th) || w < tw || h < th)
+    {
         return false;
+    }
     if(child1)
     {
         bool inserted = child1->insert(tx, ty, tw, th) ||
                         child2->insert(tx, ty, tw, th);
         available = max(child1->available, child2->available);
-        if(!available) discardchildren();
+        if(!available)
+        {
+            discardchildren();
+        }
         return inserted;
     }
     if(w == tw && h == th)
@@ -172,7 +211,10 @@ bool PackNode::insert(ushort &tx, ushort &ty, ushort tw, ushort th)
 
 void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
 {
-    if(tx + tw <= x || tx >= x + w || ty + th <= y || ty >= y + h) return;
+    if(tx + tw <= x || tx >= x + w || ty + th <= y || ty >= y + h)
+    {
+        return;
+    }
     if(child1)
     {
         child1->reserve(tx, ty, tw, th);
@@ -180,19 +222,35 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
         available = max(child1->available, child2->available);
         return;
     }
-    int dx1 = tx - x, dx2 = x + w - tx - tw, dx = max(dx1, dx2),
-        dy1 = ty - y, dy2 = y + h - ty - th, dy = max(dy1, dy2),
+    int dx1 = tx - x,
+        dx2 = x + w - tx - tw,
+        dx = max(dx1, dx2),
+        dy1 = ty - y,
+        dy2 = y + h - ty - th,
+        dy = max(dy1, dy2),
         split;
     if(dx > dy)
     {
-        if(dx1 > dx2) split = min(dx1, int(w));
-        else split = w - max(dx2, 0);
+        if(dx1 > dx2)
+        {
+            split = min(dx1, int(w));
+        }
+        else
+        {
+            split = w - max(dx2, 0);
+        }
         if(w - split <= 0)
         {
             w = split;
             available = min(w, h);
-            if(dy > 0) reserve(tx, ty, tw, th);
-            else if(tx <= x && tx + tw >= x + w) available = 0;
+            if(dy > 0)
+            {
+                reserve(tx, ty, tw, th);
+            }
+            else if(tx <= x && tx + tw >= x + w)
+            {
+                available = 0;
+            }
             return;
         }
         if(split <= 0)
@@ -200,8 +258,14 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
             x += split;
             w -= split;
             available = min(w, h);
-            if(dy > 0) reserve(tx, ty, tw, th);
-            else if(tx <= x && tx + tw >= x + w) available = 0;
+            if(dy > 0)
+            {
+                reserve(tx, ty, tw, th);
+            }
+            else if(tx <= x && tx + tw >= x + w)
+            {
+                available = 0;
+            }
             return;
         }
         child1 = new PackNode(x, y, split, h);
@@ -209,14 +273,26 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     }
     else
     {
-        if(dy1 > dy2) split = min(dy1, int(h));
-        else split = h - max(dy2, 0);
+        if(dy1 > dy2)
+        {
+            split = min(dy1, int(h));
+        }
+        else
+        {
+            split = h - max(dy2, 0);
+        }
         if(h - split <= 0)
         {
             h = split;
             available = min(w, h);
-            if(dx > 0) reserve(tx, ty, tw, th);
-            else if(ty <= y && ty + th >= y + h) available = 0;
+            if(dx > 0)
+            {
+                reserve(tx, ty, tw, th);
+            }
+            else if(ty <= y && ty + th >= y + h)
+            {
+                available = 0;
+            }
             return;
         }
         if(split <= 0)
@@ -224,8 +300,14 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
             y += split;
             h -= split;
             available = min(w, h);
-            if(dx > 0) reserve(tx, ty, tw, th);
-            else if(ty <= y && ty + th >= y + h) available = 0;
+            if(dx > 0)
+            {
+                reserve(tx, ty, tw, th);
+            }
+            else if(ty <= y && ty + th >= y + h)
+            {
+                available = 0;
+            }
             return;
         }
         child1 = new PackNode(x, y, w, split);
@@ -245,7 +327,10 @@ static void clearsurfaces(cube *c)
             for(int j = 0; j < 6; ++j)
             {
                 surfaceinfo &surf = c[i].ext->surfaces[j];
-                if(!surf.used()) continue;
+                if(!surf.used())
+                {
+                    continue;
+                }
                 surf.clear();
                 int numverts = surf.numverts&Face_MaxVerts;
                 if(numverts)
@@ -255,7 +340,6 @@ static void clearsurfaces(cube *c)
                         surf.numverts &= ~Face_MaxVerts;
                         continue;
                     }
-
                     vertinfo *verts = c[i].ext->verts() + surf.verts;
                     for(int k = 0; k < numverts; ++k)
                     {
@@ -265,7 +349,10 @@ static void clearsurfaces(cube *c)
                 }
             }
         }
-        if(c[i].children) clearsurfaces(c[i].children);
+        if(c[i].children)
+        {
+            clearsurfaces(c[i].children);
+        }
     }
 }
 
@@ -287,14 +374,22 @@ void clearlightcache(int id)
     {
         const extentity &light = *entities::getents()[id];
         int radius = light.attr1;
-        if(radius <= 0) return;
-        for(int x = int(max(light.o.x-radius, 0.0f))>>lightcachesize, ex = int(min(light.o.x+radius, worldsize-1.0f))>>lightcachesize; x <= ex; x++)
-        for(int y = int(max(light.o.y-radius, 0.0f))>>lightcachesize, ey = int(min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
+        if(radius <= 0)
         {
-            lightcacheentry &lce = lightcache[LIGHTCACHEHASH(x, y)];
-            if(lce.x != x || lce.y != y) continue;
-            lce.x = -1;
-            lce.lights.setsize(0);
+            return;
+        }
+        for(int x = int(max(light.o.x-radius, 0.0f))>>lightcachesize, ex = static_cast<int>(min(light.o.x+radius, worldsize-1.0f))>>lightcachesize; x <= ex; x++)
+        {
+            for(int y = int(max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
+            {
+                lightcacheentry &lce = lightcache[LIGHTCACHEHASH(x, y)];
+                if(lce.x != x || lce.y != y)
+                {
+                    continue;
+                }
+                lce.x = -1;
+                lce.lights.setsize(0);
+            }
         }
         return;
     }
@@ -311,10 +406,14 @@ const vector<int> &checklightcache(int x, int y)
     x >>= lightcachesize;
     y >>= lightcachesize;
     lightcacheentry &lce = lightcache[LIGHTCACHEHASH(x, y)];
-    if(lce.x == x && lce.y == y) return lce.lights;
-
+    if(lce.x == x && lce.y == y)
+    {
+        return lce.lights;
+    }
     lce.lights.setsize(0);
-    int csize = 1<<lightcachesize, cx = x<<lightcachesize, cy = y<<lightcachesize;
+    int csize = 1<<lightcachesize,
+        cx = x<<lightcachesize,
+        cy = y<<lightcachesize;
     const vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
@@ -327,7 +426,9 @@ const vector<int> &checklightcache(int x, int y)
                 if(radius <= 0 ||
                    light.o.x + radius < cx || light.o.x - radius > cx + csize ||
                    light.o.y + radius < cy || light.o.y - radius > cy + csize)
+                {
                     continue;
+                }
                 break;
             }
             default: continue;
@@ -356,7 +457,7 @@ void check_calclight_canceled()
 
 void show_calclight_progress()
 {
-    float bar1 = float(lightprogress) / float(allocnodes);
+    float bar1 = static_cast<float>(lightprogress) / static_cast<float>(allocnodes);
     DEF_FORMAT_STRING(text1, "%d%%", int(bar1 * 100));
 
     renderprogress(bar1, text1);
@@ -374,7 +475,10 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         usefacemask >>= 4;
         if(!usefaces)
         {
-            if(!c.ext) continue;
+            if(!c.ext)
+            {
+                continue;
+            }
             surfaceinfo &surf = surfaces[i];
             surf = c.ext->surfaces[i];
             int numverts = surf.totalverts();
@@ -391,13 +495,16 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
              *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, false) : NULL;
         Shader *shader = vslot.slot->shader;
         int shadertype = shader->type;
-        if(layer) shadertype |= layer->slot->shader->type;
-
+        if(layer)
+        {
+            shadertype |= layer->slot->shader->type;
+        }
         surfaceinfo &surf = surfaces[i];
         vertinfo *curlitverts = &litverts[numlitverts];
         int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0;
         ivec mo(co);
-        int msz = size, convex = 0;
+        int msz = size,
+            convex = 0;
         if(numverts)
         {
             vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
@@ -409,7 +516,6 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             {
                 msz = 1<<calcmergedsize(i, mo, size, verts, numverts);
                 mo.mask(~(msz-1));
-
                 if(!(surf.numverts&Face_MaxVerts))
                 {
                     surf.verts = numlitverts;
@@ -417,19 +523,31 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
                     numlitverts += numverts;
                 }
             }
-            else if(!flataxisface(c, i)) convex = faceconvexity(verts, numverts, size);
+            else if(!flataxisface(c, i))
+            {
+                convex = faceconvexity(verts, numverts, size);
+            }
         }
         else
         {
             ivec v[4];
             genfaceverts(c, i, v);
-            if(!flataxisface(c, i)) convex = faceconvexity(v);
+            if(!flataxisface(c, i))
+            {
+                convex = faceconvexity(v);
+            }
             int order = usefaces&4 || convex < 0 ? 1 : 0;
             ivec vo = ivec(co).mask(0xFFF).shl(3);
             curlitverts[numverts++].set(v[order].mul(size).add(vo));
-            if(usefaces&1) curlitverts[numverts++].set(v[order+1].mul(size).add(vo));
+            if(usefaces&1)
+            {
+                curlitverts[numverts++].set(v[order+1].mul(size).add(vo));
+            }
             curlitverts[numverts++].set(v[order+2].mul(size).add(vo));
-            if(usefaces&2) curlitverts[numverts++].set(v[(order+3)&3].mul(size).add(vo));
+            if(usefaces&2)
+            {
+                curlitverts[numverts++].set(v[(order+3)&3].mul(size).add(vo));
+            }
         }
 
         vec pos[Face_MaxVerts], n[Face_MaxVerts], po(ivec(co).mask(~0xFFF));
@@ -456,9 +574,11 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             findnormal(pos[0], smooth, avg, n[0]);
             findnormal(pos[1], smooth, planes[0], n[1]);
             findnormal(pos[2], smooth, avg, n[2]);
-            for(int k = 3; k < numverts; k++) findnormal(pos[k], smooth, planes[1], n[k]);
+            for(int k = 3; k < numverts; k++)
+            {
+                findnormal(pos[k], smooth, planes[1], n[k]);
+            }
         }
-
         for(int k = 0; k < numverts; ++k)
         {
             curlitverts[k].norm = encodenormal(n[k]);
@@ -469,20 +589,25 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             surf.numverts |= numverts;
             numlitverts += numverts;
         }
-
-        if(preview) { surf.numverts |= preview; continue; }
-
+        if(preview)
+        {
+            surf.numverts |= preview;
+            continue;
+        }
         int surflayer = BlendLayer_Top;
         if(vslot.layer)
         {
-            int x1 = curlitverts[numverts-1].x, y1 = curlitverts[numverts-1].y, x2 = x1, y2 = y1;
+            int x1 = curlitverts[numverts-1].x,
+                y1 = curlitverts[numverts-1].y,
+                x2 = x1,
+                y2 = y1;
             for(int j = 0; j < numverts-1; ++j)
             {
                 const vertinfo &v = curlitverts[j];
-                x1 = min(x1, int(v.x));
-                y1 = min(y1, int(v.y));
-                x2 = max(x2, int(v.x));
-                y2 = max(y2, int(v.y));
+                x1 = min(x1, static_cast<int>(v.x));
+                y1 = min(y1, static_cast<int>(v.y));
+                x2 = max(x2, static_cast<int>(v.x));
+                y2 = max(y2, static_cast<int>(v.y));
             }
             x2 = max(x2, x1+1);
             y2 = max(y2, y1+1);
@@ -558,7 +683,10 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 
 static inline bool previewblends(cube &c, const ivec &o, int size)
 {
-    if(IS_EMPTY(c) || c.material&Mat_Alpha) return false;
+    if(IS_EMPTY(c) || c.material&Mat_Alpha)
+    {
+        return false;
+    }
     int usefacemask = 0;
     for(int j = 0; j < 6; ++j)
     {
@@ -567,11 +695,17 @@ static inline bool previewblends(cube &c, const ivec &o, int size)
             usefacemask |= visibletris(c, j, o, size)<<(4*j);
         }
     }
-    if(!usefacemask) return false;
+    if(!usefacemask)
+    {
+        return false;
+    }
     int layer = calcblendlayer(o.x, o.y, o.x + size, o.y + size);
     if(!(layer&BlendLayer_Bottom))
     {
-        if(!c.ext) return false;
+        if(!c.ext)
+        {
+            return false;
+        }
         bool blends = false;
         for(int i = 0; i < 6; ++i)
         {
@@ -619,7 +753,9 @@ void previewblends(const ivec &bo, const ivec &bs)
 {
     updateblendtextures(bo.x, bo.y, bo.x+bs.x, bo.y+bs.y);
     if(previewblends(worldroot, ivec(0, 0, 0), worldsize/2, bo, bs))
+    {
         commitchanges(true);
+    }
 }
 
 extern int filltjoints;
@@ -645,20 +781,29 @@ void calclight()
     calcsurfaces(worldroot, ivec(0, 0, 0), worldsize >> 1);
     clearnormals();
     Uint32 end = SDL_GetTicks();
-    if(timer) SDL_RemoveTimer(timer);
+    if(timer)
+    {
+        SDL_RemoveTimer(timer);
+    }
     renderbackground("lighting done...");
     allchanged();
     if(calclight_canceled)
+    {
         conoutf("calclight aborted");
+    }
     else
-        conoutf("computed lighting (%.1f seconds)",
-            (end - start) / 1000.0f);
+    {
+        conoutf("computed lighting (%.1f seconds)", (end - start) / 1000.0f);
+    }
 }
 
 void mpcalclight(bool local)
 {
     extern selinfo sel;
-    if(local) game::edittrigger(sel, Edit_CalcLight);
+    if(local)
+    {
+        game::edittrigger(sel, Edit_CalcLight);
+    }
     calclight();
 }
 
@@ -698,36 +843,39 @@ void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity
     {
         extentity &e = *ents[lights[i]];
         if(e.type != EngineEnt_Light || e.attr1 <= 0)
+        {
             continue;
-
+        }
         vec ray(target);
         ray.sub(e.o);
         float mag = ray.magnitude();
-        if(mag >= float(e.attr1))
+        if(mag >= static_cast<float>(e.attr1))
+        {
             continue;
-
-        if(mag < 1e-4f) ray = vec(0, 0, -1);
+        }
+        if(mag < 1e-4f)
+        {
+            ray = vec(0, 0, -1);
+        }
         else
         {
             ray.div(mag);
             if(shadowray(e.o, ray, mag, Ray_Shadow | Ray_Poly, t) < mag)
+            {
                 continue;
+            }
         }
-
-        float intensity = 1 - mag / float(e.attr1);
+        float intensity = 1 - mag / static_cast<float>(e.attr1);
         if(e.attached && e.attached->type==EngineEnt_Spotlight)
         {
             vec spot = vec(e.attached->o).sub(e.o).normalize();
-            float spotatten = 1 - (1 - ray.dot(spot)) / (1 - cos360(clamp(int(e.attached->attr1), 1, 89)));
-            if(spotatten <= 0) continue;
+            float spotatten = 1 - (1 - ray.dot(spot)) / (1 - cos360(clamp(static_cast<int>(e.attached->attr1), 1, 89)));
+            if(spotatten <= 0)
+            {
+                continue;
+            }
             intensity *= spotatten;
         }
-
-        //if(target==player->o)
-        //{
-        //    conoutf(CON_DEBUG, "%d - %f %f", i, intensity, mag);
-        //}
-
         vec lightcol = vec(e.attr2, e.attr3, e.attr4).mul(1.0f/255).max(0);
         color.add(vec(lightcol).mul(intensity));
         dir.add(vec(ray).mul(-intensity*lightcol.x*lightcol.y*lightcol.z));
@@ -739,7 +887,13 @@ void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity
         dir.add(vec(sunlightdir).mul(lightcol.x*lightcol.y*lightcol.z));
     }
     color.max(ambient.tocolor().max(minambient)).min(1.5f);
-    if(dir.iszero()) dir = vec(0, 0, 1);
-    else dir.normalize();
+    if(dir.iszero())
+    {
+        dir = vec(0, 0, 1);
+    }
+    else
+    {
+        dir.normalize();
+    }
 }
 
