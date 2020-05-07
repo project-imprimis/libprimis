@@ -30,7 +30,6 @@ VAR(mintexoffset, 1, 0, 0);
 VAR(maxtexoffset, 1, 0, 0);
 VAR(mintexrectoffset, 1, 0, 0);
 VAR(maxtexrectoffset, 1, 0, 0);
-//VAR(dbgshader, 0, 0, 2);
 VAR(dbgshader, 0, 1, 2);
 
 void loadshaders()
@@ -70,7 +69,10 @@ Shader *lookupshaderbyname(const char *name)
 
 Shader *generateshader(const char *name, const char *fmt, ...)
 {
-    if(!loadedshaders) return NULL;
+    if(!loadedshaders)
+    {
+        return NULL;
+    }
     Shader *s = name ? lookupshaderbyname(name) : NULL;
     if(!s)
     {
@@ -228,7 +230,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         { 130, "#version 130\n" }, //OpenGL 3.0
         { 120, "#version 120\n" }  //OpenGL 2.1
     };
-    for(int i = 0; i < int(sizeof(glslversions)/sizeof(glslversions[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(glslversions)/sizeof(glslversions[0])); ++i)
     {
         if(glslversion >= glslversions[i].version)
         {
@@ -323,7 +325,10 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
                 "#define shadow2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n";
         }
     }
-    if(glslversion < 130 && hasEGPU4) parts[numparts++] = "#define uint unsigned int\n";
+    if(glslversion < 130 && hasEGPU4)
+    {
+        parts[numparts++] = "#define uint unsigned int\n";
+    }
     else if(glslversion < 140 && !hasEGPU4)
     {
         if(glslversion < 130)
@@ -403,7 +408,6 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     {
         showglslinfo(type, obj, name, parts, numparts);
     }
-
     if(modsource)
     {
         delete[] modsource;
@@ -1102,7 +1106,9 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
         while((vs = strstr(vs, "//:attrib")))
         {
             if(sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
+            {
                 s.attriblocs.add(AttribLoc(getshaderparamname(name), loc));
+            }
             vs += len;
         }
     }
@@ -1222,7 +1228,7 @@ static const char *findglslmain(const char *s)
     {
         return NULL;
     }
-    for(; main >= s; main--)
+    for(; main >= s; main--) //note reverse iteration
     {
         switch(*main)
         {
@@ -1314,13 +1320,15 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
 
 static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *vs, const char *ps)
 {
-    const char *vspragma = strstr(vs, "//:fog"), *pspragma = strstr(ps, "//:fog");
+    const char *vspragma = strstr(vs, "//:fog"),
+               *pspragma = strstr(ps, "//:fog");
     if(!vspragma && !pspragma)
     {
         return;
     }
     static const int pragmalen = strlen("//:fog");
-    const char *vsmain = findglslmain(vs), *vsend = strrchr(vs, '}');
+    const char *vsmain = findglslmain(vs),
+               *vsend  = strrchr(vs, '}');
     if(vsmain && vsend)
     {
         if(!strstr(vs, "lineardepth"))
@@ -1510,12 +1518,10 @@ void setupshaders()
         "    fragcolor = color;\n"
         "}\n");
     standardshaders = false;
-
     if(!nullshader || !hudshader || !hudtextshader || !hudnotextureshader)
     {
         fatal("failed to setup shaders");
     }
-
     dummyslot.shader = nullshader;
 }
 
@@ -1551,7 +1557,8 @@ void Shader::force()
     }
     char *cmd = defer;
     defer = NULL;
-    bool wasstandard = standardshaders, wasforcing = forceshaders;
+    bool wasstandard = standardshaders,
+         wasforcing = forceshaders;
     int oldflags = identflags;
     standardshaders = standard;
     forceshaders = false;
@@ -1617,8 +1624,10 @@ ICOMMAND(forceshader, "s", (const char *name), useshaderbyname(name));
 
 void shader(int *type, char *name, char *vs, char *ps)
 {
-    if(lookupshaderbyname(name)) return;
-
+    if(lookupshaderbyname(name))
+    {
+        return;
+    }
     DEF_FORMAT_STRING(info, "shader %s", name);
     renderprogress(loadprogress, info);
     vector<char> vsbuf, psbuf, vsbak, psbak;
@@ -1643,8 +1652,10 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
         shader(type, name, vs, ps);
         return;
     }
-    else if(*row >= MAXVARIANTROWS) return;
-
+    else if(*row >= MAXVARIANTROWS)
+    {
+        return;
+    }
     Shader *s = lookupshaderbyname(name);
     if(!s)
     {
