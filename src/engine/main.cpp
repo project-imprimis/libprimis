@@ -21,12 +21,6 @@ void cleanup()
     extern void clear_models();  clear_models();
     extern void clear_sound();   clear_sound();
     closelogfile();
-    #ifdef __APPLE__
-        if(screen)
-        {
-            SDL_SetWindowFullscreen(screen, 0);
-        }
-    #endif
     SDL_Quit();
 }
 
@@ -65,12 +59,6 @@ void fatal(const char *s, ...)    // failure exit
                     SDL_SetWindowGrab(screen, SDL_FALSE);
                 }
                 cleargamma();
-                #ifdef __APPLE__
-                    if(screen)
-                    {
-                        SDL_SetWindowFullscreen(screen, 0);
-                    }
-                #endif
             }
             SDL_Quit();
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Imprimis fatal error", msg, NULL);
@@ -455,9 +443,6 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         lastprogress = ticks;
     }
     clientkeepalive();      // make sure our connection doesn't time out while loading maps etc.
-    #ifdef __APPLE__
-    interceptkey(SDLK_UNKNOWN); // keep the event queue awake to avoid 'beachball' cursor
-    #endif
     int w = hudw,
         h = hudh;
     if(forceaspect)
@@ -733,12 +718,7 @@ void setupscreen()
 
     SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
     SDL_SetWindowMaximumSize(screen, SCR_MAXW, SCR_MAXH);
-
-#ifdef __APPLE__
-    static const int glversions[] = { 32, 20 };
-#else
     static const int glversions[] = { 40, 33, 32, 31, 30, 20 };
-#endif
     for(int i = 0; i < static_cast<int>(sizeof(glversions)/sizeof(glversions[0])); ++i)
     {
         glcompat = glversions[i] <= 30 ? 1 : 0;
@@ -1496,9 +1476,9 @@ int main(int argc, char **argv)
 
     logoutf("init: video");
     SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
-    #if !defined(WIN32) && !defined(__APPLE__)
+#if !defined(WIN32) //*nix
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-    #endif
+#endif
     setupscreen();
     SDL_ShowCursor(SDL_FALSE);
     SDL_StopTextInput(); // workaround for spurious text-input events getting sent on first text input toggle?

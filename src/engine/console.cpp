@@ -672,12 +672,6 @@ bool consolekey(int code, bool isdown)
     {
         return false;
     }
-    #ifdef __APPLE__
-        #define MOD_KEYS (KMOD_LGUI|KMOD_RGUI)
-    #else
-        #define MOD_KEYS (KMOD_LCTRL|KMOD_RCTRL)
-    #endif
-
     if(isdown)
     {
         switch(code)
@@ -787,7 +781,7 @@ bool consolekey(int code, bool isdown)
             }
             case SDLK_v:
             {
-                if(SDL_GetModState()&MOD_KEYS)
+                if(SDL_GetModState()&(KMOD_LCTRL|KMOD_RCTRL))//mod keys
                 {
                     pasteconsole();
                 }

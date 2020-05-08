@@ -75,7 +75,6 @@ PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_ = NULL;
 #endif
 
 // OpenGL 2.0
-#ifndef __APPLE__
 PFNGLMULTIDRAWARRAYSPROC   glMultiDrawArrays_   = NULL;
 PFNGLMULTIDRAWELEMENTSPROC glMultiDrawElements_ = NULL;
 
@@ -170,7 +169,6 @@ PFNGLVERTEXATTRIB4NUSVPROC        glVertexAttrib4Nusv_        = NULL;
 PFNGLVERTEXATTRIBPOINTERPROC      glVertexAttribPointer_      = NULL;
 
 PFNGLDRAWBUFFERSPROC glDrawBuffers_ = NULL;
-#endif
 
 // OpenGL 3.0
 PFNGLGETSTRINGIPROC           glGetStringi_           = NULL;
@@ -375,11 +373,6 @@ void gl_checkextensions()
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
 
-#ifdef __APPLE__
-    // extern int mac_osversion();
-    // int osversion = mac_osversion();  /* 0x0A0600 = 10.6, assumed minimum */
-#endif
-
     if(strstr(renderer, "Mesa") || strstr(version, "Mesa"))
     {
         mesa = true;
@@ -418,8 +411,6 @@ void gl_checkextensions()
 
     glDrawRangeElements_ =        (PFNGLDRAWRANGEELEMENTSPROC)        getprocaddress("glDrawRangeElements");
 #endif
-
-#ifndef __APPLE__
     glMultiDrawArrays_ =          (PFNGLMULTIDRAWARRAYSPROC)          getprocaddress("glMultiDrawArrays");
     glMultiDrawElements_ =        (PFNGLMULTIDRAWELEMENTSPROC)        getprocaddress("glMultiDrawElements");
 
@@ -514,7 +505,6 @@ void gl_checkextensions()
     glVertexAttribPointer_ =      (PFNGLVERTEXATTRIBPOINTERPROC)      getprocaddress("glVertexAttribPointer");
 
     glDrawBuffers_ =              (PFNGLDRAWBUFFERSPROC)              getprocaddress("glDrawBuffers");
-#endif
 
     if(glversion >= 300)
     {
@@ -840,11 +830,7 @@ void gl_checkextensions()
     if(hasext("GL_EXT_texture_compression_s3tc"))
     {
         hasS3TC = true;
-#ifdef __APPLE__
-        usetexcompress = 1;
-#else
         if(!mesa) usetexcompress = 2;
-#endif
         if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_s3tc extension.");
     }
     else if(hasext("GL_EXT_texture_compression_dxt1") && hasext("GL_ANGLE_texture_compression_dxt3") && hasext("GL_ANGLE_texture_compression_dxt5"))
