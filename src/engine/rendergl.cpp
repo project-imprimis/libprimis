@@ -556,15 +556,6 @@ void gl_checkextensions()
         hasVAO = true;
         if(glversion < 300 && dbgexts) conoutf(Console_Init, "Using GL_ARB_vertex_array_object extension.");
     }
-    else if(hasext("GL_APPLE_vertex_array_object"))
-    {
-        glBindVertexArray_ =    (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArrayAPPLE");
-        glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArraysAPPLE");
-        glGenVertexArrays_ =    (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArraysAPPLE");
-        glIsVertexArray_ =      (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArrayAPPLE");
-        hasVAO = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_APPLE_vertex_array_object extension.");
-    }
 
     if(glversion >= 300)
     {
