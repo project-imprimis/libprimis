@@ -5,9 +5,20 @@ struct skelbih
         short split[2];
         ushort child[2];
 
-        int axis() const { return child[0]>>14; }
-        int childindex(int which) const { return child[which]&0x3FFF; }
-        bool isleaf(int which) const { return (child[1]&(1<<(14+which)))!=0; }
+        int axis() const
+        {
+            return child[0]>>14;
+        }
+
+        int childindex(int which) const
+        {
+            return child[which]&0x3FFF;
+        }
+
+        bool isleaf(int which) const
+        {
+            return (child[1]&(1<<(14+which)))!=0;
+        }
     };
 
     struct tri : skelmodel::tri
@@ -46,42 +57,73 @@ struct skelbih
     }
 };
 
-#define SKELTRIINTERSECT(a, b, c) \
-    vec eb = vec(b).sub(a), ec = vec(c).sub(a); \
-    vec p; \
-    p.cross(ray, ec); \
-    float det = eb.dot(p); \
-    if(det == 0) return false; \
-    vec r = vec(o).sub(a); \
-    float u = r.dot(p) / det; \
-    if(u < 0 || u > 1) return false; \
-    vec q; \
-    q.cross(r, eb); \
-    float v = ray.dot(q) / det; \
-    if(v < 0 || u + v > 1) return false; \
-    float f = ec.dot(q) / det; \
-    if(f < 0 || f*skelmodel::intersectscale > skelmodel::intersectdist) return false; \
-    if(!(skelmodel::intersectmode&Ray_Shadow) && tm->noclip) return false; \
-    if((skelmodel::intersectmode&Ray_AlphaPoly)==Ray_AlphaPoly) \
-    { \
-        Texture *tex = s[t.mesh].tex; \
-        if(tex->type&Texture::ALPHA && (tex->alphamask || loadalphamask(tex))) \
-        { \
-            int si = clamp(int(tex->xs * (va.tc.x + u*(vb.tc.x - va.tc.x) + v*(vc.tc.x - va.tc.x))), 0, tex->xs-1), \
-                ti = clamp(int(tex->ys * (va.tc.y + u*(vb.tc.y - va.tc.y) + v*(vc.tc.y - va.tc.y))), 0, tex->ys-1); \
-            if(!(tex->alphamask[ti*((tex->xs+7)/8) + si/8] & (1<<(si%8)))) return false; \
-        } \
-    } \
-    skelmodel::intersectdist = f*skelmodel::intersectscale; \
-    skelmodel::intersectresult = t.id&0x80 ? -1 : t.id; \
+//gets used just twice, in skelbih::triintersect, skelhitzone::triintersect
+inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
+                                    animmodel::skin* s,
+                                    const skelbih::tri t,
+                                    const skelmodel::vert va,
+                                    const skelmodel::vert vb,
+                                    const skelmodel::vert vc,
+                                    skelmodel::skelmesh* tm,
+                                    vec ray)
+{
+    vec eb = vec(b).sub(a),
+        ec = vec(c).sub(a);
+    vec p;
+    p.cross(ray, ec);
+    float det = eb.dot(p);
+    if(det == 0)
+    {
+        return false;
+    }
+    vec r = vec(o).sub(a);
+    float u = r.dot(p) / det;
+    if(u < 0 || u > 1)
+    {
+        return false;
+    }
+    vec q;
+    q.cross(r, eb);
+    float v = ray.dot(q) / det;
+    if(v < 0 || u + v > 1)
+    {
+        return false;
+    }
+    float f = ec.dot(q) / det;
+    if(f < 0 || f*skelmodel::intersectscale > skelmodel::intersectdist)
+    {
+        return false;
+    }
+    if(!(skelmodel::intersectmode&Ray_Shadow) && tm->noclip)
+    {
+        return false;
+    }
+    if((skelmodel::intersectmode&Ray_AlphaPoly)==Ray_AlphaPoly)
+    {
+        Texture *tex = s[t.mesh].tex;
+        if(tex->type&Texture::ALPHA && (tex->alphamask || loadalphamask(tex)))
+        {
+            int si = clamp(static_cast<int>(tex->xs * (va.tc.x + u*(vb.tc.x - va.tc.x) + v*(vc.tc.x - va.tc.x))), 0, tex->xs-1),
+                ti = clamp(static_cast<int>(tex->ys * (va.tc.y + u*(vb.tc.y - va.tc.y) + v*(vc.tc.y - va.tc.y))), 0, tex->ys-1);
+            if(!(tex->alphamask[ti*((tex->xs+7)/8) + si/8] & (1<<(si%8))))
+            {
+                return false;
+            }
+        }
+    }
+    skelmodel::intersectdist = f*skelmodel::intersectscale;
+    skelmodel::intersectresult = t.id&0x80 ? -1 : t.id;
     return true;
+}
 
 bool skelbih::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray)
 {
     const tri &t = tris[tidx];
     skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.mesh];
-    const skelmodel::vert &va = tm->verts[t.vert[0]], &vb = tm->verts[t.vert[1]], &vc = tm->verts[t.vert[2]];
-    SKELTRIINTERSECT(va.pos, vb.pos, vc.pos)
+    const skelmodel::vert &va = tm->verts[t.vert[0]],
+                          &vb = tm->verts[t.vert[1]],
+                          &vc = tm->verts[t.vert[2]];
+    return skeltriintersect(va.pos, vb.pos, vc.pos, o, s, t, va, vb, vc, tm, ray);
 }
 
 struct skelbihstack
@@ -95,11 +137,13 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
     skelbihstack stack[128];
     int stacksize = 0;
     ivec order(ray.x>0 ? 0 : 1, ray.y>0 ? 0 : 1, ray.z>0 ? 0 : 1);
-    float tmin = smin, tmax = smax;
+    float tmin = smin,
+          tmax = smax;
     for(;;)
     {
         int axis = curnode->axis();
-        int nearidx = order[axis], faridx = nearidx^1;
+        int nearidx = order[axis],
+            faridx = nearidx^1;
         float nearsplit = (curnode->split[nearidx] - o[axis])*invray[axis],
               farsplit = (curnode->split[faridx] - o[axis])*invray[axis];
 
@@ -114,7 +158,9 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
                     continue;
                 }
                 else if(triintersect(m, s, curnode->childindex(faridx), o, ray))
-                    smax = min(smax, skelmodel::intersectdist/skelmodel::intersectscale); 
+                {
+                    smax = min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
+                }
             }
         }
         else if(curnode->isleaf(nearidx))
@@ -133,7 +179,9 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
                     continue;
                 }
                 else if(triintersect(m, s, curnode->childindex(faridx), o, ray))
+                {
                     smax = min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
+                }
             }
         }
         else
@@ -142,7 +190,7 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
             {
                 if(!curnode->isleaf(faridx))
                 {
-                    if(stacksize < int(sizeof(stack)/sizeof(stack[0])))
+                    if(stacksize < static_cast<int>(sizeof(stack)/sizeof(stack[0])))
                     {
                         skelbihstack &save = stack[stacksize++];
                         save.node = curnode + curnode->childindex(faridx);
@@ -166,7 +214,10 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
             tmax = min(tmax, nearsplit);
             continue;
         }
-        if(stacksize <= 0) return;
+        if(stacksize <= 0)
+        {
+            return;
+        }
         skelbihstack &restore = stack[--stacksize];
         curnode = restore.node;
         tmin = restore.tmin;
@@ -180,18 +231,49 @@ void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const v
     float tmin, tmax;
     float t1 = (bbmin.x - o.x)*invray.x,
           t2 = (bbmax.x - o.x)*invray.x;
-    if(invray.x > 0) { tmin = t1; tmax = t2; } else { tmin = t2; tmax = t1; }
+    if(invray.x > 0)
+    {
+        tmin = t1; tmax = t2;
+    }
+    else
+    {
+        tmin = t2;
+        tmax = t1;
+    }
     t1 = (bbmin.y - o.y)*invray.y;
     t2 = (bbmax.y - o.y)*invray.y;
-    if(invray.y > 0) { tmin = max(tmin, t1); tmax = min(tmax, t2); } else { tmin = max(tmin, t2); tmax = min(tmax, t1); }
+    if(invray.y > 0)
+    {
+        tmin = max(tmin, t1); tmax = min(tmax, t2);
+    }
+    else
+    {
+        tmin = max(tmin, t2);
+        tmax = min(tmax, t1);
+    }
     t1 = (bbmin.z - o.z)*invray.z;
     t2 = (bbmax.z - o.z)*invray.z;
-    if(invray.z > 0) { tmin = max(tmin, t1); tmax = min(tmax, t2); } else { tmin = max(tmin, t2); tmax = min(tmax, t1); }
+    if(invray.z > 0)
+    {
+        tmin = max(tmin, t1); tmax = min(tmax, t2);
+    }
+    else
+    {
+        tmin = max(tmin, t2);
+        tmax = min(tmax, t1); }
     tmax = min(tmax, skelmodel::intersectdist/skelmodel::intersectscale);
-    if(tmin >= tmax) return;
-
-    if(nodes) intersect(m, s, o, ray, invray, nodes, tmin, tmax);
-    else triintersect(m, s, 0, o, ray);
+    if(tmin >= tmax)
+    {
+        return;
+    }
+    if(nodes)
+    {
+        intersect(m, s, o, ray, invray, nodes, tmin, tmax);
+    }
+    else
+    {
+        triintersect(m, s, 0, o, ray);
+    }
 }
 
 void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax)
@@ -217,9 +299,13 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         {
             tri &tri = tris[indices[left]];
             skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
-            const vec &ta = tm->verts[tri.vert[0]].pos, &tb = tm->verts[tri.vert[1]].pos, &tc = tm->verts[tri.vert[2]].pos;
-            vec trimin = vec(ta).min(tb).min(tc), trimax = vec(ta).max(tb).max(tc);
-            float amin = trimin[axis], amax = trimax[axis];
+            const vec &ta = tm->verts[tri.vert[0]].pos,
+                      &tb = tm->verts[tri.vert[1]].pos,
+                      &tc = tm->verts[tri.vert[2]].pos;
+            vec trimin = vec(ta).min(tb).min(tc),
+                trimax = vec(ta).max(tb).max(tc);
+            float amin = trimin[axis],
+                  amax = trimax[axis];
             if(max(split - amin, 0.0f) > max(amax - split, 0.0f))
             {
                 ++left;
@@ -236,7 +322,10 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
                 rightmax.max(trimax);
             }
         }
-        if(left > 0 && right < numindices) break;
+        if(left > 0 && right < numindices)
+        {
+            break;
+        }
         axis = (axis+1)%3;
     }
 
@@ -251,8 +340,11 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         {
             tri &tri = tris[indices[i]];
             skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
-            const vec &ta = tm->verts[tri.vert[0]].pos, &tb = tm->verts[tri.vert[1]].pos, &tc = tm->verts[tri.vert[2]].pos;
-            vec trimin = vec(ta).min(tb).min(tc), trimax = vec(ta).max(tb).max(tc);
+            const vec &ta = tm->verts[tri.vert[0]].pos,
+                      &tb = tm->verts[tri.vert[1]].pos,
+                      &tc = tm->verts[tri.vert[2]].pos;
+            vec trimin = vec(ta).min(tb).min(tc),
+                trimax = vec(ta).max(tb).max(tc);
             if(i < left)
             {
                 splitleft = max(splitleft, trimax[axis]);
@@ -267,20 +359,24 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
             }
         }
     }
-
     int offset = numnodes++;
     node &curnode = nodes[offset];
-    curnode.split[0] = short(ceil(splitleft));
-    curnode.split[1] = short(floor(splitright));
-
-    if(left==1) curnode.child[0] = (axis<<14) | indices[0];
+    curnode.split[0] = static_cast<short>(ceil(splitleft));
+    curnode.split[1] = static_cast<short>(floor(splitright));
+    if(left==1)
+    {
+        curnode.child[0] = (axis<<14) | indices[0];
+    }
     else
     {
         curnode.child[0] = (axis<<14) | (numnodes - offset);
         build(m, indices, left, leftmin, leftmax);
     }
 
-    if(numindices-right==1) curnode.child[1] = (1<<15) | (left==1 ? 1<<14 : 0) | indices[right];
+    if(numindices-right==1)
+    {
+        curnode.child[1] = (1<<15) | (left==1 ? 1<<14 : 0) | indices[right];
+    }
     else
     {
         curnode.child[1] = (left==1 ? 1<<14 : 0) | (numnodes - offset);
@@ -295,7 +391,9 @@ skelbih::skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris)
     {
         tri &tri = tris[i];
         skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
-        const vec &ta = tm->verts[tri.vert[0]].pos, &tb = tm->verts[tri.vert[1]].pos, &tc = tm->verts[tri.vert[2]].pos;
+        const vec &ta = tm->verts[tri.vert[0]].pos,
+                  &tb = tm->verts[tri.vert[1]].pos,
+                  &tc = tm->verts[tri.vert[2]].pos;
         bbmin.min(ta).min(tb).min(tc);
         bbmax.max(ta).max(tb).max(tc);
     }
@@ -340,8 +438,14 @@ struct skelhitzone
 
     ~skelhitzone()
     {
-        if(!numchildren) { DELETEP(bih); }
-        else { DELETEA(tris); }
+        if(!numchildren)
+        {
+            DELETEP(bih);
+        }
+        else
+        {
+            DELETEA(tris);
+        }
     }
 
     static bool triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray);
@@ -350,10 +454,17 @@ struct skelhitzone
     {
         vec c(animcenter);
         c.sub(o);
-        float v = c.dot(ray), inside = radius*radius - c.squaredlen();
-        if(inside < 0 && v < 0) return false;
+        float v = c.dot(ray),
+              inside = radius*radius - c.squaredlen();
+        if(inside < 0 && v < 0)
+        {
+            return false;
+        }
         float d = inside + v*v;
-        if(d < 0) return false;
+        if(d < 0)
+        {
+            return false;
+        }
         v -= skelmodel::intersectdist/skelmodel::intersectscale;
         return v < 0 || d >= v*v;
     }
@@ -365,7 +476,8 @@ struct skelhitzone
             if(bih)
             {
                 const dualquat &b = blend < numblends ? bdata2[blend] : bdata1[m->skel->bones[blend - numblends].interpindex];
-                vec bo = b.transposedtransform(o), bray = b.transposedtransformnormal(ray);
+                vec bo = b.transposedtransform(o),
+                    bray = b.transposedtransformnormal(ray);
                 bih->intersect(m, s, bo, bray);
             }
         }
@@ -422,11 +534,13 @@ struct skelhitzone
 bool skelhitzone::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray)
 {
     skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.mesh];
-    const skelmodel::vert &va = tm->verts[t.vert[0]], &vb = tm->verts[t.vert[1]], &vc = tm->verts[t.vert[2]];
+    const skelmodel::vert &va = tm->verts[t.vert[0]],
+                          &vb = tm->verts[t.vert[1]],
+                          &vc = tm->verts[t.vert[2]];
     vec a = (va.blend < numblends ? bdata2[va.blend] : bdata1[m->blendcombos[va.blend].interpbones[0]]).transform(va.pos),
         b = (vb.blend < numblends ? bdata2[vb.blend] : bdata1[m->blendcombos[vb.blend].interpbones[0]]).transform(vb.pos),
         c = (vc.blend < numblends ? bdata2[vc.blend] : bdata1[m->blendcombos[vc.blend].interpbones[0]]).transform(vc.pos);
-    SKELTRIINTERSECT(a, b, c);
+    return skeltriintersect(a, b, c, o, s, t, va, vb, vc, tm, ray);
 }
 
 struct skelzonekey
@@ -446,23 +560,40 @@ struct skelzonekey
     bool includes(const skelzonekey &o)
     {
         int j = 0;
-        for(int i = 0; i < int(sizeof(bones)); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
         {
-            if(bones[i] > o.bones[j]) return false;
-            if(bones[i] == o.bones[j]) j++;
+            if(bones[i] > o.bones[j])
+            {
+                return false;
+            }
+            if(bones[i] == o.bones[j])
+            {
+                j++;
+            }
         }
-        return j < (int)sizeof(bones) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
+        return j < static_cast<int>(sizeof(bones)) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
     }
 
     void subtract(const skelzonekey &o)
     {
         int len = 0, j = 0;
-        for(int i = 0; i < int(sizeof(bones)); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
         {
         retry:
-            if(j >= (int)sizeof(o.bones) || bones[i] < o.bones[j]) { bones[len++] = bones[i]; continue; }
-            if(bones[i] == o.bones[j]) { j++; continue; }
-            do j++; while(j < (int)sizeof(o.bones) && bones[i] > o.bones[j]);
+            if(j >= static_cast<int>(sizeof(o.bones)) || bones[i] < o.bones[j])
+            {
+                bones[len++] = bones[i];
+                continue;
+            }
+            if(bones[i] == o.bones[j])
+            {
+                j++;
+                continue;
+            }
+            do
+            {
+                j++;
+            } while(j < static_cast<int>(sizeof(o.bones)) && bones[i] > o.bones[j]);
             goto retry;
         }
         memset(&bones[len], 0xFF, sizeof(bones) - len);
@@ -472,8 +603,14 @@ struct skelzonekey
     {
         for(int i = 0; i < int(sizeof(bones)); ++i)
         {
-            if(bones[i] == n) return true;
-            if(bones[i] == 0xFF) break;
+            if(bones[i] == n)
+            {
+                return true;
+            }
+            if(bones[i] == 0xFF)
+            {
+                break;
+            }
         }
         return false;
     }
@@ -492,7 +629,7 @@ struct skelzonekey
 
     void addbone(int n)
     {
-        for(int i = 0; i < int(sizeof(bones)); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
         {
             if(n <= bones[i])
             {
@@ -509,18 +646,26 @@ struct skelzonekey
     void addbones(skelmodel::skelmesh *m, const skelmodel::tri &t)
     {
         skelmodel::skelmeshgroup *g = (skelmodel::skelmeshgroup *)m->group;
-        int b0 = m->verts[t.vert[0]].blend, b1 = m->verts[t.vert[1]].blend, b2 = m->verts[t.vert[1]].blend;
+        int b0 = m->verts[t.vert[0]].blend,
+            b1 = m->verts[t.vert[1]].blend,
+            b2 = m->verts[t.vert[1]].blend;
         const skelmodel::blendcombo &c0 = g->blendcombos[b0];
         for(int i = 0; i < 4; ++i)
         {
-            if(c0.weights[i]) addbone(c0.bones[i]);
+            if(c0.weights[i])
+            {
+                addbone(c0.bones[i]);
+            }
         }
         if(b0 != b1 || b0 != b2)
         {
             const skelmodel::blendcombo &c1 = g->blendcombos[b1];
             for(int i = 0; i < 4; ++i)
             {
-                if(c1.weights[i]) addbone(c1.bones[i]);
+                if(c1.weights[i])
+                {
+                    addbone(c1.bones[i]);
+                }
             }
             const skelmodel::blendcombo &c2 = g->blendcombos[b2];
             for(int i = 0; i < 4; ++i)
@@ -528,7 +673,10 @@ struct skelzonekey
                 if(c2.weights[i]) addbone(c2.bones[i]);
             }
         }
-        else blend = b0;
+        else
+        {
+            blend = b0;
+        }
     }
 };
 
@@ -549,7 +697,10 @@ struct skelzonebounds
         bbmax.z = max(bbmax.z, p.z);
     }
 
-    bool empty() const { return bbmin.x > bbmax.x; }
+    bool empty() const
+    {
+        return bbmin.x > bbmax.x;
+    }
 
     vec calccenter() const
     {
@@ -573,7 +724,10 @@ struct skelzoneinfo
     skelzoneinfo(const skelzonekey &key) : index(-1), parents(0), conflicts(0), key(key) {}
 };
 
-static inline bool htcmp(const skelzonekey &x, const skelzoneinfo &y) { return !memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend); }
+static inline bool htcmp(const skelzonekey &x, const skelzoneinfo &y)
+{
+    return !memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
+}
 
 static inline uint hthash(const skelzonekey &k)
 {
@@ -638,7 +792,10 @@ struct skelhitdata
 
 void skelmodel::skelmeshgroup::cleanuphitdata()
 {
-    if(hitdata) hitdata->cleanup();
+    if(hitdata)
+    {
+        hitdata->cleanup();
+    }
 }
 
 void skelmodel::skelmeshgroup::deletehitdata()
@@ -705,8 +862,10 @@ uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m,
 
 void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
 {
-    if(numzones) return;
-
+    if(numzones)
+    {
+        return;
+    }
     hashset<skelzoneinfo> infomap(256);
     vector<skelzoneinfo *> info;
     skelzonebounds *bounds = new skelzonebounds[g->skel->numbones];
@@ -753,7 +912,10 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     }
     for(int i = 0; i < (g->skel->numbones); ++i)
     {
-        if(bounds[i].empty() || bounds[i].owner >= 0) continue;
+        if(bounds[i].empty() || bounds[i].owner >= 0)
+        {
+            continue;
+        }
         skelzonekey key(i);
         skelzoneinfo &zi = infomap.access(key, key);
         zi.index = info.length();
@@ -805,9 +967,12 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         for(int j = 0; j < zi.children.length(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
-            if(zj.key.blend < 0 || zj.key.blend >= numblends) deps.subtract(zj.key);
+            if(zj.key.blend < 0 || zj.key.blend >= numblends)
+            {
+                deps.subtract(zj.key);
+            }
         }
-        for(int j = 0; j < int(sizeof(deps.bones)); ++j)
+        for(int j = 0; j < static_cast<int>(sizeof(deps.bones)); ++j)
         {
             if(deps.bones[j]==0xFF)
             {
@@ -859,7 +1024,10 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         for(int j = 0; j < zi.children.length(); j++)
         {
             skelzoneinfo &zj = *zi.children[j];
-            if(!--zj.conflicts) info.add(&zj);
+            if(!--zj.conflicts)
+            {
+                info.add(&zj);
+            }
         }
     }
     numzones = info.length();
@@ -876,7 +1044,10 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         if(zi.key.blend >= numblends)
         {
             z.blend = zi.key.bones[0] + numblends;
-            if(zi.tris.length()) z.bih = new skelbih(g, zi.tris.length(), curtris);
+            if(zi.tris.length())
+            {
+                z.bih = new skelbih(g, zi.tris.length(), curtris);
+            }
             const skelzonebounds &b = bounds[zi.key.bones[0]];
             z.center = b.calccenter();
             z.radius = b.calcradius();
@@ -917,7 +1088,10 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
 
 void skelmodel::skelmeshgroup::buildhitdata(const uchar *hitzones)
 {
-    if(hitdata) return;
+    if(hitdata)
+    {
+        return;
+    }
     hitdata = new skelhitdata;
     hitdata->build(this, hitzones);
 }
