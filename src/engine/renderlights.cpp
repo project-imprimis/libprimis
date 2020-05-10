@@ -77,7 +77,7 @@ void setupbloom(int w, int h)
     }
 
     static const float grayf[12] = { 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f };
-    createtexture(bloomtex[4], bloompbo ? 4 : 1, 1,(const void *)grayf, 3, 1, GL_R16F);
+    createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, (const void *)grayf, 3, 1, GL_R16F);
 
     for(int i = 0; i < (5 + (bloomformat != GL_RGB ? 1 : 0)); ++i)
     {
@@ -216,7 +216,7 @@ void setupao(int w, int h)
     delete[] noise;
 
     bool upscale = aoreduce && aobilateral && aobilateralupscale;
-    GLenum format = aoprec && GL_R8,
+    GLenum format = aoprec ? GL_R8 : GL_RGBA8,
            packformat = aobilateral && aopackdepth ? (aodepthformat ? GL_RG16F : GL_RGBA8) : format;
     int packfilter = upscale && aopackdepth && !aodepthformat ? 0 : 1;
     for(int i = 0; i < (upscale ? 3 : 2); ++i)
@@ -312,7 +312,7 @@ VAR(debugao, 0, 0, 1);
 
 void initao()
 {
-    aodepthformat = aofloatdepth;
+    aodepthformat = aofloatdepth ? aofloatdepth : 0;
 }
 
 void viewao()
@@ -599,19 +599,16 @@ void initgbuffer()
         }
         else if(msaalineardepth >= 0) lineardepth = msaalineardepth;
     }
-
-    if(lineardepth > 1) gdepthformat = 1;
-    else gdepthformat = lineardepth;
-    //note && 2
+    gdepthformat = lineardepth;
     if(msaaminsamples)
     {
-        ghasstencil = (msaadepthstencil > 1 || (msaadepthstencil && gdepthformat)) && 2;
+        ghasstencil = (msaadepthstencil > 1 || (msaadepthstencil && gdepthformat)) ? 2 : (msaastencil ? 1 : 0);
 
         checkmsaasamples();
 
         if(msaapreserve >= 0) msaalight = 3;
     }
-    else ghasstencil = (gdepthstencil > 1 || (gdepthstencil && gdepthformat)) && 2;
+    else ghasstencil = (gdepthstencil > 1 || (gdepthstencil && gdepthformat)) ? 2 : (gstencil ? 1 : 0);
 
     initao();
 }
@@ -894,10 +891,9 @@ void setupgbuffer()
             createtexture(gglowtex, gw, gh, NULL, 3, 0, GL_RGBA8, GL_TEXTURE_RECTANGLE);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_RECTANGLE, gglowtex, 0);
             if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            {
                 fatal("failed allocating g-buffer!");
-            }
         }
+
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | (ghasstencil ? GL_STENCIL_BUFFER_BIT : 0));
     }
@@ -1614,7 +1610,6 @@ FVARF(rsmdepthmargin, 0, 0.1f, 1e3f, clearradiancehintscache());
 VARFP(rhprec, 0, 0, 1, cleanupradiancehints());
 VARFP(rsmprec, 0, 0, 3, cleanupradiancehints());
 VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints());
-
 FVAR(rhnudge, 0, 0.5f, 4);
 FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());
 FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());
