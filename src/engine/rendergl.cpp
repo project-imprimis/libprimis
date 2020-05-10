@@ -2,46 +2,15 @@
 
 #include "engine.h"
 
-bool hasVAO = false,
-     hasTR = false,
-     hasTSW = false,
-     hasPBO = false,
-     hasFBO = false,
-     hasAFBO = false,
-     hasDS = false,
-     hasTF = false,
-     hasCBF = false,
-     hasS3TC = false,
+bool hasS3TC = false,
      hasFXT1 = false,
      hasLATC = false,
-     hasRGTC = false,
      hasAF = false,
-     hasFBB = false,
-     hasFBMS = false,
-     hasTMS = false,
-     hasMSS = false,
      hasFBMSBS = false,
-     hasUBO = false,
-     hasMBR = false,
-     hasDB2 = false,
-     hasDBB = false,
-     hasTG = false,
      hasTQ = false,
-     hasPF = false,
-     hasTRG = false,
-     hasTI = false,
-     hasHFV = false,
-     hasHFP = false,
      hasDBT = false,
-     hasDC = false,
      hasDBGO = false,
      hasEGPU4 = false,
-     hasGPU4 = false,
-     hasGPU5 = false,
-     hasBFE = false,
-     hasEAL = false,
-     hasCR = false,
-     hasOQ2 = false,
      hasES3 = false,
      hasCB = false,
      hasCI = false;
@@ -311,11 +280,7 @@ void glerror(const char *file, int line, GLenum error)
     printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
 }
 
-VAR(amd_pf_bug, 0, 0, 1);
-VAR(amd_eal_bug, 0, 0, 1);
-VAR(mesa_texrectoffset_bug, 0, 0, 1);
 VAR(intel_texalpha_bug, 0, 0, 1);
-VAR(intel_mapbufferrange_bug, 0, 0, 1);
 VAR(mesa_swap_bug, 0, 0, 1);
 VAR(useubo, 1, 0, 0);
 VAR(usetexgather, 1, 0, 0);
@@ -323,44 +288,18 @@ VAR(usetexcompress, 1, 0, 0);
 VAR(maxdrawbufs, 1, 0, 0);
 VAR(maxdualdrawbufs, 1, 0, 0);
 
-static bool checkmesaversion(const char *s, int major, int minor, int patch)
-{
-    const char *v = strstr(s, "Mesa");
-    if(!v) return false;
-    int vmajor = 0, vminor = 0, vpatch = 0;
-    if(sscanf(v, "Mesa %d.%d.%d", &vmajor, &vminor, &vpatch) < 1) return false;
-    if(vmajor > major) return true; else if(vmajor < major) return false;
-    if(vminor > minor) return true; else if(vminor < minor) return false;
-    return vpatch >= patch;
-}
-
 VAR(dbgexts, 0, 0, 1);
 
 hashset<const char *> glexts;
 
 void parseglexts()
 {
-    if(glversion >= 300)
+    GLint numexts = 0;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
+    for(int i = 0; i < numexts; ++i)
     {
-        GLint numexts = 0;
-        glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
-        for(int i = 0; i < numexts; ++i)
-        {
-            const char *ext = (const char *)glGetStringi_(GL_EXTENSIONS, i);
-            glexts.add(newstring(ext));
-        }
-    }
-    else
-    {
-        const char *exts = (const char *)glGetString(GL_EXTENSIONS);
-        for(;;)
-        {
-            while(*exts == ' ') exts++;
-            if(!*exts) break;
-            const char *ext = exts;
-            while(*exts && *exts != ' ') exts++;
-            if(exts > ext) glexts.add(newstring(ext, size_t(exts-ext)));
-        }
+        const char *ext = (const char *)glGetStringi_(GL_EXTENSIONS, i);
+        glexts.add(newstring(ext));
     }
 }
 
@@ -540,18 +479,17 @@ void gl_checkextensions()
 
     glDrawBuffers_ =              (PFNGLDRAWBUFFERSPROC)              getprocaddress("glDrawBuffers");
 
-    if(glversion >= 300)
-    {
-        glGetStringi_ =            (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
-    }
+    glGetStringi_ =            (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
 
     const char *glslstr = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
     conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
 
     uint glslmajorversion, glslminorversion;
-    if(glslstr && sscanf(glslstr, " %u.%u", &glslmajorversion, &glslminorversion) == 2) glslversion = glslmajorversion*100 + glslminorversion;
-
-    if(glslversion < 120) fatal("GLSL 1.20 or greater is required!");
+    if(glslstr && sscanf(glslstr, " %u.%u", &glslmajorversion, &glslminorversion) == 2)
+    {
+        glslversion = glslmajorversion*100 + glslminorversion;
+    }
+    if(glslversion < 400) fatal("GLSL 4.00 or greater is required!");
 
     parseglexts();
 
@@ -566,134 +504,82 @@ void gl_checkextensions()
         fatal("Hardware does not support at least 16 texture units.");
     glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &vtexunits);
     hwvtexunits = vtexunits;
-    //if(hwvtexunits < 4)
-    //    fatal("Hardware does not support at least 4 vertex texture units.");
+
     glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &cubetexsize);
     hwcubetexsize = cubetexsize;
     glGetIntegerv(GL_MAX_DRAW_BUFFERS, &drawbufs);
     maxdrawbufs = drawbufs;
     if(maxdrawbufs < 4) fatal("Hardware does not support at least 4 draw buffers.");
+    //OpenGL 3.0
+    glBindVertexArray_ =    (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
+    glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
+    glGenVertexArrays_ =    (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
+    glIsVertexArray_ =      (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArray");
 
-    hasPBO = true; //pixel buffer object
-
-    if(glversion >= 300)
+    glBindFragDataLocation_ = (PFNGLBINDFRAGDATALOCATIONPROC)getprocaddress("glBindFragDataLocation");
+    glUniform1ui_ =           (PFNGLUNIFORM1UIPROC)          getprocaddress("glUniform1ui");
+    glUniform2ui_ =           (PFNGLUNIFORM2UIPROC)          getprocaddress("glUniform2ui");
+    glUniform3ui_ =           (PFNGLUNIFORM3UIPROC)          getprocaddress("glUniform3ui");
+    glUniform4ui_ =           (PFNGLUNIFORM4UIPROC)          getprocaddress("glUniform4ui");
+    glUniform1uiv_ =          (PFNGLUNIFORM1UIVPROC)         getprocaddress("glUniform1uiv");
+    glUniform2uiv_ =          (PFNGLUNIFORM2UIVPROC)         getprocaddress("glUniform2uiv");
+    glUniform3uiv_ =          (PFNGLUNIFORM3UIVPROC)         getprocaddress("glUniform3uiv");
+    glUniform4uiv_ =          (PFNGLUNIFORM4UIVPROC)         getprocaddress("glUniform4uiv");
+    glClearBufferiv_ =        (PFNGLCLEARBUFFERIVPROC)       getprocaddress("glClearBufferiv");
+    glClearBufferuiv_ =       (PFNGLCLEARBUFFERUIVPROC)      getprocaddress("glClearBufferuiv");
+    glClearBufferfv_ =        (PFNGLCLEARBUFFERFVPROC)       getprocaddress("glClearBufferfv");
+    glClearBufferfi_ =        (PFNGLCLEARBUFFERFIPROC)       getprocaddress("glClearBufferfi");
+    if(hasext("GL_EXT_gpu_shader4"))
     {
-        glBindVertexArray_ =    (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
-        glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
-        glGenVertexArrays_ =    (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
-        glIsVertexArray_ =      (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArray");
-        hasVAO = true;
+        hasEGPU4 = true;
+        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
     }
-    if(glversion >= 300)
-    {
-        hasTF = hasTRG = hasRGTC = hasPF = hasHFV = hasHFP = true;
+    glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
+    glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
+    glEnablei_ =    (PFNGLENABLEIPROC)   getprocaddress("glEnablei");
+    glDisablei_ =   (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
+    glBeginConditionalRender_ = (PFNGLBEGINCONDITIONALRENDERPROC)getprocaddress("glBeginConditionalRender");
+    glEndConditionalRender_ =   (PFNGLENDCONDITIONALRENDERPROC)  getprocaddress("glEndConditionalRender");
+    glTexParameterIiv_ =     (PFNGLTEXPARAMETERIIVPROC)    getprocaddress("glTexParameterIiv");
+    glTexParameterIuiv_ =    (PFNGLTEXPARAMETERIUIVPROC)   getprocaddress("glTexParameterIuiv");
+    glGetTexParameterIiv_ =  (PFNGLGETTEXPARAMETERIIVPROC) getprocaddress("glGetTexParameterIiv");
+    glGetTexParameterIuiv_ = (PFNGLGETTEXPARAMETERIUIVPROC)getprocaddress("glGetTexParameterIuiv");
 
-        glBindFragDataLocation_ = (PFNGLBINDFRAGDATALOCATIONPROC)getprocaddress("glBindFragDataLocation");
-        glUniform1ui_ =           (PFNGLUNIFORM1UIPROC)          getprocaddress("glUniform1ui");
-        glUniform2ui_ =           (PFNGLUNIFORM2UIPROC)          getprocaddress("glUniform2ui");
-        glUniform3ui_ =           (PFNGLUNIFORM3UIPROC)          getprocaddress("glUniform3ui");
-        glUniform4ui_ =           (PFNGLUNIFORM4UIPROC)          getprocaddress("glUniform4ui");
-        glUniform1uiv_ =          (PFNGLUNIFORM1UIVPROC)         getprocaddress("glUniform1uiv");
-        glUniform2uiv_ =          (PFNGLUNIFORM2UIVPROC)         getprocaddress("glUniform2uiv");
-        glUniform3uiv_ =          (PFNGLUNIFORM3UIVPROC)         getprocaddress("glUniform3uiv");
-        glUniform4uiv_ =          (PFNGLUNIFORM4UIVPROC)         getprocaddress("glUniform4uiv");
-        glClearBufferiv_ =        (PFNGLCLEARBUFFERIVPROC)       getprocaddress("glClearBufferiv");
-        glClearBufferuiv_ =       (PFNGLCLEARBUFFERUIVPROC)      getprocaddress("glClearBufferuiv");
-        glClearBufferfv_ =        (PFNGLCLEARBUFFERFVPROC)       getprocaddress("glClearBufferfv");
-        glClearBufferfi_ =        (PFNGLCLEARBUFFERFIPROC)       getprocaddress("glClearBufferfi");
-        hasGPU4 = true;
+    glBindRenderbuffer_               = (PFNGLBINDRENDERBUFFERPROC)              getprocaddress("glBindRenderbuffer");
+    glDeleteRenderbuffers_            = (PFNGLDELETERENDERBUFFERSPROC)           getprocaddress("glDeleteRenderbuffers");
+    glGenRenderbuffers_               = (PFNGLGENFRAMEBUFFERSPROC)               getprocaddress("glGenRenderbuffers");
+    glRenderbufferStorage_            = (PFNGLRENDERBUFFERSTORAGEPROC)           getprocaddress("glRenderbufferStorage");
+    glGetRenderbufferParameteriv_     = (PFNGLGETRENDERBUFFERPARAMETERIVPROC)    getprocaddress("glGetRenderbufferParameteriv");
+    glCheckFramebufferStatus_         = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)        getprocaddress("glCheckFramebufferStatus");
+    glBindFramebuffer_                = (PFNGLBINDFRAMEBUFFERPROC)               getprocaddress("glBindFramebuffer");
+    glDeleteFramebuffers_             = (PFNGLDELETEFRAMEBUFFERSPROC)            getprocaddress("glDeleteFramebuffers");
+    glGenFramebuffers_                = (PFNGLGENFRAMEBUFFERSPROC)               getprocaddress("glGenFramebuffers");
+    glFramebufferTexture1D_           = (PFNGLFRAMEBUFFERTEXTURE1DPROC)          getprocaddress("glFramebufferTexture1D");
+    glFramebufferTexture2D_           = (PFNGLFRAMEBUFFERTEXTURE2DPROC)          getprocaddress("glFramebufferTexture2D");
+    glFramebufferTexture3D_           = (PFNGLFRAMEBUFFERTEXTURE3DPROC)          getprocaddress("glFramebufferTexture3D");
+    glFramebufferRenderbuffer_        = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)       getprocaddress("glFramebufferRenderbuffer");
+    glGenerateMipmap_                 = (PFNGLGENERATEMIPMAPPROC)                getprocaddress("glGenerateMipmap");
+    glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
+    glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
-        if(hasext("GL_EXT_gpu_shader4"))
-        {
-            hasEGPU4 = true;
-            if(dbgexts) conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
-        }
-
-        glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
-        hasCBF = true;
-
-        glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
-        glEnablei_ =    (PFNGLENABLEIPROC)   getprocaddress("glEnablei");
-        glDisablei_ =   (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
-        hasDB2 = true;
-
-        glBeginConditionalRender_ = (PFNGLBEGINCONDITIONALRENDERPROC)getprocaddress("glBeginConditionalRender");
-        glEndConditionalRender_ =   (PFNGLENDCONDITIONALRENDERPROC)  getprocaddress("glEndConditionalRender");
-        hasCR = true;
-
-        glTexParameterIiv_ =     (PFNGLTEXPARAMETERIIVPROC)    getprocaddress("glTexParameterIiv");
-        glTexParameterIuiv_ =    (PFNGLTEXPARAMETERIUIVPROC)   getprocaddress("glTexParameterIuiv");
-        glGetTexParameterIiv_ =  (PFNGLGETTEXPARAMETERIIVPROC) getprocaddress("glGetTexParameterIiv");
-        glGetTexParameterIuiv_ = (PFNGLGETTEXPARAMETERIUIVPROC)getprocaddress("glGetTexParameterIuiv");
-        hasTI = true;
-    }
-
-    if(!hasHFV) fatal("Half-precision floating-point support is required!");
-
-    if(glversion >= 300)
-    {
-        glBindRenderbuffer_               = (PFNGLBINDRENDERBUFFERPROC)              getprocaddress("glBindRenderbuffer");
-        glDeleteRenderbuffers_            = (PFNGLDELETERENDERBUFFERSPROC)           getprocaddress("glDeleteRenderbuffers");
-        glGenRenderbuffers_               = (PFNGLGENFRAMEBUFFERSPROC)               getprocaddress("glGenRenderbuffers");
-        glRenderbufferStorage_            = (PFNGLRENDERBUFFERSTORAGEPROC)           getprocaddress("glRenderbufferStorage");
-        glGetRenderbufferParameteriv_     = (PFNGLGETRENDERBUFFERPARAMETERIVPROC)    getprocaddress("glGetRenderbufferParameteriv");
-        glCheckFramebufferStatus_         = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)        getprocaddress("glCheckFramebufferStatus");
-        glBindFramebuffer_                = (PFNGLBINDFRAMEBUFFERPROC)               getprocaddress("glBindFramebuffer");
-        glDeleteFramebuffers_             = (PFNGLDELETEFRAMEBUFFERSPROC)            getprocaddress("glDeleteFramebuffers");
-        glGenFramebuffers_                = (PFNGLGENFRAMEBUFFERSPROC)               getprocaddress("glGenFramebuffers");
-        glFramebufferTexture1D_           = (PFNGLFRAMEBUFFERTEXTURE1DPROC)          getprocaddress("glFramebufferTexture1D");
-        glFramebufferTexture2D_           = (PFNGLFRAMEBUFFERTEXTURE2DPROC)          getprocaddress("glFramebufferTexture2D");
-        glFramebufferTexture3D_           = (PFNGLFRAMEBUFFERTEXTURE3DPROC)          getprocaddress("glFramebufferTexture3D");
-        glFramebufferRenderbuffer_        = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)       getprocaddress("glFramebufferRenderbuffer");
-        glGenerateMipmap_                 = (PFNGLGENERATEMIPMAPPROC)                getprocaddress("glGenerateMipmap");
-        glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
-        glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
-
-        hasAFBO = hasFBO = hasFBB = hasFBMS = hasDS = true;
-    }
-    else fatal("Framebuffer object support is required!");
-
-    if(glversion >= 300)
-    {
-        glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
-        glFlushMappedBufferRange_ = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC)getprocaddress("glFlushMappedBufferRange");
-        hasMBR = true;
-    }
-
-    if(glversion >= 310)
-    {
-        glGetUniformIndices_       = (PFNGLGETUNIFORMINDICESPROC)      getprocaddress("glGetUniformIndices");
-        glGetActiveUniformsiv_     = (PFNGLGETACTIVEUNIFORMSIVPROC)    getprocaddress("glGetActiveUniformsiv");
-        glGetUniformBlockIndex_    = (PFNGLGETUNIFORMBLOCKINDEXPROC)   getprocaddress("glGetUniformBlockIndex");
-        glGetActiveUniformBlockiv_ = (PFNGLGETACTIVEUNIFORMBLOCKIVPROC)getprocaddress("glGetActiveUniformBlockiv");
-        glUniformBlockBinding_     = (PFNGLUNIFORMBLOCKBINDINGPROC)    getprocaddress("glUniformBlockBinding");
-        glBindBufferBase_          = (PFNGLBINDBUFFERBASEPROC)         getprocaddress("glBindBufferBase");
-        glBindBufferRange_         = (PFNGLBINDBUFFERRANGEPROC)        getprocaddress("glBindBufferRange");
-
-        useubo = 1;
-        hasUBO = true;
-    }
-
-    if(glversion >= 310)
-    {
-        hasTR = true;
-    }
-    else fatal("Texture rectangle support is required!");
-
-    if(glversion >= 310)
-    {
-        glCopyBufferSubData_ = (PFNGLCOPYBUFFERSUBDATAPROC)getprocaddress("glCopyBufferSubData");
-        hasCB = true;
-    }
-
-    if(glversion >= 320)
-    {
-        glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
-        glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
-        glGetMultisamplefv_      = (PFNGLGETMULTISAMPLEFVPROC)     getprocaddress("glGetMultisamplefv");
-        glSampleMaski_           = (PFNGLSAMPLEMASKIPROC)          getprocaddress("glSampleMaski");
-        hasTMS = true;
-    }
+    glMapBufferRange_         = (PFNGLMAPBUFFERRANGEPROC)        getprocaddress("glMapBufferRange");
+    glFlushMappedBufferRange_ = (PFNGLFLUSHMAPPEDBUFFERRANGEPROC)getprocaddress("glFlushMappedBufferRange");
+    //OpenGL 3.1
+    glGetUniformIndices_       = (PFNGLGETUNIFORMINDICESPROC)      getprocaddress("glGetUniformIndices");
+    glGetActiveUniformsiv_     = (PFNGLGETACTIVEUNIFORMSIVPROC)    getprocaddress("glGetActiveUniformsiv");
+    glGetUniformBlockIndex_    = (PFNGLGETUNIFORMBLOCKINDEXPROC)   getprocaddress("glGetUniformBlockIndex");
+    glGetActiveUniformBlockiv_ = (PFNGLGETACTIVEUNIFORMBLOCKIVPROC)getprocaddress("glGetActiveUniformBlockiv");
+    glUniformBlockBinding_     = (PFNGLUNIFORMBLOCKBINDINGPROC)    getprocaddress("glUniformBlockBinding");
+    glBindBufferBase_          = (PFNGLBINDBUFFERBASEPROC)         getprocaddress("glBindBufferBase");
+    glBindBufferRange_         = (PFNGLBINDBUFFERRANGEPROC)        getprocaddress("glBindBufferRange");
+    useubo = 1;
+    glCopyBufferSubData_ = (PFNGLCOPYBUFFERSUBDATAPROC)getprocaddress("glCopyBufferSubData");
+    hasCB = true;///
+    //OpenGL 3.2
+    glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
+    glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
+    glGetMultisamplefv_      = (PFNGLGETMULTISAMPLEFVPROC)     getprocaddress("glGetMultisamplefv");
+    glSampleMaski_           = (PFNGLSAMPLEMASKIPROC)          getprocaddress("glSampleMaski");
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
@@ -707,13 +593,9 @@ void gl_checkextensions()
         hasTQ = true;
         if(dbgexts) conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
     }
-    else if(glversion >= 330)
-    {
-        glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64v");
-        glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
-        hasTQ = true;
-    }
-
+    //OpenGL 3.3
+    glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64v");
+    glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
     if(hasext("GL_EXT_texture_compression_s3tc"))
     {
         hasS3TC = true;
@@ -736,7 +618,6 @@ void gl_checkextensions()
         hasLATC = true;
         if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_latc extension.");
     }
-
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
        GLint val = 0;
@@ -745,54 +626,24 @@ void gl_checkextensions()
        hasAF = true;
        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_filter_anisotropic extension.");
     }
-
     if(hasext("GL_EXT_depth_bounds_test"))
     {
         glDepthBounds_ = (PFNGLDEPTHBOUNDSEXTPROC) getprocaddress("glDepthBoundsEXT");
         hasDBT = true;
         if(dbgexts) conoutf(Console_Init, "Using GL_EXT_depth_bounds_test extension.");
     }
-
-    if(glversion >= 320)
-    {
-        hasDC = true;
-    }
-    else if(hasext("GL_NV_depth_clamp"))
-    {
-        hasDC = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_NV_depth_clamp extension.");
-    }
-    if(glversion >= 330)
-    {
-        hasTSW = hasEAL = hasOQ2 = true;
-    }
-    if(glversion >= 330)
-    {
-        glBindFragDataLocationIndexed_ = (PFNGLBINDFRAGDATALOCATIONINDEXEDPROC)getprocaddress("glBindFragDataLocationIndexed");
-        if(hasGPU4)
-        {
-            GLint dualbufs = 0;
-            glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs);
-            maxdualdrawbufs = dualbufs;
-        }
-        hasBFE = true;
-    }
-
-    if(glversion >= 400)
-    {
-        hasTG = hasGPU5 = true;
-
-        glMinSampleShading_ = (PFNGLMINSAMPLESHADINGPROC)getprocaddress("glMinSampleShading");
-        hasMSS = true;
-
-        glBlendEquationi_ =         (PFNGLBLENDEQUATIONIPROC)        getprocaddress("glBlendEquationi");
-        glBlendEquationSeparatei_ = (PFNGLBLENDEQUATIONSEPARATEIPROC)getprocaddress("glBlendEquationSeparatei");
-        glBlendFunci_ =             (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
-        glBlendFuncSeparatei_ =     (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
-        hasDBB = true;
-    }
-    if(hasTG) usetexgather = hasGPU5 && !intel && !nvidia ? 2 : 1;
-
+    glBindFragDataLocationIndexed_ = (PFNGLBINDFRAGDATALOCATIONINDEXEDPROC)getprocaddress("glBindFragDataLocationIndexed");
+    GLint dualbufs = 0;
+    glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs);
+    maxdualdrawbufs = dualbufs;
+    //OpenGL 4.0
+    glMinSampleShading_ = (PFNGLMINSAMPLESHADINGPROC)getprocaddress("glMinSampleShading");
+    glBlendEquationi_ =         (PFNGLBLENDEQUATIONIPROC)        getprocaddress("glBlendEquationi");
+    glBlendEquationSeparatei_ = (PFNGLBLENDEQUATIONSEPARATEIPROC)getprocaddress("glBlendEquationSeparatei");
+    glBlendFunci_ =             (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
+    glBlendFuncSeparatei_ =     (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
+    usetexgather = !intel && !nvidia ? 2 : 1;
+    //OpenGL 4.3
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
     {
         hasES3 = true;
@@ -849,8 +700,6 @@ void gl_checkextensions()
         if(mesa)
         {
             batchsunlight = 0; // causes massive slowdown in linux driver
-            if(!checkmesaversion(version, 10, 0, 3))
-                mesa_texrectoffset_bug = 1; // mesa i965 driver has buggy textureOffset with texture rectangles
             msaalineardepth = 1; // MSAA depth texture access is buggy and resolves are slow
         }
         else
@@ -866,7 +715,7 @@ void gl_checkextensions()
         }
     }
     if(mesa) mesa_swap_bug = 1;
-    if(hasGPU5 && hasTG) tqaaresolvegather = 1;
+    tqaaresolvegather = 1;
 }
 
 ICOMMAND(glext, "s", (char *ext), intret(hasext(ext) ? 1 : 0));

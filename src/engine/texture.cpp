@@ -779,9 +779,9 @@ GLenum compressedformat(GLenum format, int w, int h, int force = 0)
         case GL_RGB5_A1: return usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT1_EXT : GL_COMPRESSED_RGBA;
         case GL_RGBA: return usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA;
         case GL_RED:
-        case GL_R8: return hasRGTC ? (usetexcompress > 1 ? GL_COMPRESSED_RED_RGTC1 : GL_COMPRESSED_RED) : (usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB);
+        case GL_R8: return (usetexcompress > 1 ? GL_COMPRESSED_RED_RGTC1 : GL_COMPRESSED_RED);
         case GL_RG:
-        case GL_RG8: return hasRGTC ? (usetexcompress > 1 ? GL_COMPRESSED_RG_RGTC2 : GL_COMPRESSED_RG) : (usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA);
+        case GL_RG8: return (usetexcompress > 1 ? GL_COMPRESSED_RG_RGTC2 : GL_COMPRESSED_RG);
         case GL_LUMINANCE:
         case GL_LUMINANCE8: return hasLATC ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_LATC1_EXT : GL_COMPRESSED_LUMINANCE) : (usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB);
         case GL_LUMINANCE_ALPHA:
@@ -979,7 +979,7 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
                 (bilinear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR) :
                 (bilinear ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST)) :
             (filter && bilinear ? GL_LINEAR : GL_NEAREST));
-    if(swizzle && hasTRG && hasTSW)
+    if(swizzle)
     {
         const GLint *mask = swizzlemask(format);
         if(mask) glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, mask);
@@ -1161,8 +1161,8 @@ static GLenum texformat(int bpp, bool swizzle = false)
 {
     switch(bpp)
     {
-        case 1: return hasTRG && (hasTSW || !glcompat || !swizzle) ? GL_RED : GL_LUMINANCE;
-        case 2: return hasTRG && (hasTSW || !glcompat || !swizzle) ? GL_RG : GL_LUMINANCE_ALPHA;
+        case 1: return GL_RED;
+        case 2: return GL_RG;
         case 3: return GL_RGB;
         case 4: return GL_RGBA;
         default: return 0;
@@ -1243,12 +1243,6 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     {
         format = texformat(s.bpp, swizzle);
         t->bpp = s.bpp;
-        if(swizzle && hasTRG && !hasTSW && swizzlemask(format))
-        {
-            swizzleimage(s);
-            format = texformat(s.bpp, swizzle);
-            t->bpp = s.bpp;
-        }
     }
     if(alphaformat(format)) t->type |= Texture::ALPHA;
     t->w = t->xs = s.w;
@@ -3152,15 +3146,6 @@ Texture *cubemaploadwildcard(Texture *t, const char *name, bool mipit, bool msg,
     {
         format = texformat(surface[0].bpp, true);
         t->bpp = surface[0].bpp;
-        if(hasTRG && !hasTSW && swizzlemask(format))
-        {
-            for(int i = 0; i < 6; ++i)
-            {
-                swizzleimage(surface[i]);
-            }
-            format = texformat(surface[0].bpp, true);
-            t->bpp = surface[0].bpp;
-        }
     }
     if(alphaformat(format)) t->type |= Texture::ALPHA;
     t->mipmap = mipit;
@@ -3343,35 +3328,15 @@ GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
         }
         for(int level = 0, lsize = texsize;; level++)
         {
-            if(hasFBB)
-            {
-                glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]);
-                glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[2]);
-                glFramebufferTexture2D_(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, side.target, tex, level);
-                glBlitFramebuffer_(0, 0, lsize, lsize, 0, 0, lsize, lsize, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            }
-            else
-            {
-                glBindFramebuffer_(GL_FRAMEBUFFER, emfbo[0]);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, tex);
-                glCopyTexSubImage2D(side.target, level, 0, 0, 0, 0, lsize, lsize);
-            }
+            glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]);
+            glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[2]);
+            glFramebufferTexture2D_(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, side.target, tex, level);
+            glBlitFramebuffer_(0, 0, lsize, lsize, 0, 0, lsize, lsize, GL_COLOR_BUFFER_BIT, GL_NEAREST);
             if(lsize <= 1) break;
             int dsize = lsize/2;
-            if(hasFBB)
-            {
-                glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]);
-                glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[1]);
-                glBlitFramebuffer_(0, 0, lsize, lsize, 0, 0, dsize, dsize, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-            }
-            else
-            {
-                glBindFramebuffer_(GL_FRAMEBUFFER, emfbo[1]);
-                glBindTexture(GL_TEXTURE_RECTANGLE, emtex[0]);
-                glViewport(0, 0, dsize, dsize);
-                SETSHADER(scalelinear);
-                screenquad(lsize, lsize);
-            }
+            glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]);
+            glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[1]);
+            glBlitFramebuffer_(0, 0, lsize, lsize, 0, 0, dsize, dsize, GL_COLOR_BUFFER_BIT, GL_LINEAR);
             lsize = dsize;
             swap(emfbo[0], emfbo[1]);
             swap(emtex[0], emtex[1]);
@@ -3819,12 +3784,10 @@ bool loaddds(const char *filename, ImageData &image, int force)
                 if((supported = hasS3TC) || force) format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
                 break;
             case FOURCC_ATI1:
-                if((supported = hasRGTC) || force) format = GL_COMPRESSED_RED_RGTC1;
-                else if((supported = hasLATC)) format = GL_COMPRESSED_LUMINANCE_LATC1_EXT;
+                format = GL_COMPRESSED_RED_RGTC1;
                 break;
             case FOURCC_ATI2:
-                if((supported = hasRGTC) || force) format = GL_COMPRESSED_RG_RGTC2;
-                else if((supported = hasLATC)) format = GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT;
+                format = GL_COMPRESSED_RG_RGTC2;
                 break;
         }
     }
