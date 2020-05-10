@@ -153,66 +153,6 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     }
 }
 
-static const char *finddecls(const char *line)
-{
-    for(;;)
-    {
-        const char *start = line + strspn(line, " \t\r");
-        switch(*start)
-        {
-            case '\n':
-            {
-                line = start + 1;
-                continue;
-            }
-            case '#':
-            {
-                do
-                {
-                    start = strchr(start + 1, '\n');
-                    if(!start)
-                    {
-                        return NULL;
-                    }
-                } while(start[-1] == '\\');
-                line = start + 1;
-                continue;
-            }
-            case '/':
-            {
-                switch(start[1])
-                {
-                    case '/':
-                    {
-                        start = strchr(start + 2, '\n');
-                        if(!start)
-                        {
-                            return NULL;
-                        }
-                        line = start + 1;
-                        continue;
-                    }
-                    case '*':
-                    {
-                        start = strstr(start + 2, "*/");
-                        if(!start)
-                        {
-                            return NULL;
-                        }
-                        line = start + 2;
-                        continue;
-                    }
-                }
-                // fall-through
-            }
-            default:
-            {
-                return line;
-            }
-        }
-    }
-}
-
 extern int amd_eal_bug;
 
 static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
@@ -238,32 +178,9 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
             break;
         }
     }
-    if(glslversion < 140)
-    {
-        parts[numparts++] = "#extension GL_ARB_texture_rectangle : enable\n";
-        if(hasEGPU4)
-        {
-            parts[numparts++] = "#extension GL_EXT_gpu_shader4 : enable\n";
-        }
-    }
-    if(glslversion < 150 && hasTMS)
-    {
-        parts[numparts++] = "#extension GL_ARB_texture_multisample : enable\n";
-    }
     if(glslversion >= 150 && glslversion < 330 && hasEAL && !amd_eal_bug)
     {
         parts[numparts++] = "#extension GL_ARB_explicit_attrib_location : enable\n";
-    }
-    if(glslversion < 400)
-    {
-        if(hasTG)
-        {
-            parts[numparts++] = "#extension GL_ARB_texture_gather : enable\n";
-        }
-        if(hasGPU5)
-        {
-            parts[numparts++] = "#extension GL_ARB_gpu_shader5 : enable\n";
-        }
     }
     if(glslversion >= 130)
     {
@@ -278,29 +195,6 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
                 "#define fragblend(loc) layout(location = loc, index = 1) out\n" :
                 "#define fragdata(loc) out\n"
                 "#define fragblend(loc) out\n";
-            if(glslversion < 150)
-            {
-                const char *decls = finddecls(source);
-                if(decls)
-                {
-                    static const char * const prec = "precision highp float;\n";
-                    if(decls != source)
-                    {
-                        static const int preclen = strlen(prec);
-                        int beforelen = static_cast<int>(decls-source),
-                            afterlen = strlen(decls);
-                        modsource = newstring(beforelen + preclen + afterlen);
-                        memcpy(modsource, source, beforelen);
-                        memcpy(&modsource[beforelen], prec, preclen);
-                        memcpy(&modsource[beforelen + preclen], decls, afterlen);
-                        modsource[beforelen + preclen + afterlen] = '\0';
-                    }
-                    else
-                    {
-                        parts[numparts++] = prec;
-                    }
-                }
-            }
         }
         parts[numparts++] =
             "#define texture1D(sampler, coords) texture(sampler, coords)\n"
@@ -323,69 +217,6 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
                 "#define shadow2DRectOffset(sampler, coords, offset) texture(sampler, coords + vec2(offset))\n" :
                 "#define texture2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n"
                 "#define shadow2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n";
-        }
-    }
-    if(glslversion < 130 && hasEGPU4)
-    {
-        parts[numparts++] = "#define uint unsigned int\n";
-    }
-    else if(glslversion < 140 && !hasEGPU4)
-    {
-        if(glslversion < 130)
-        {
-            parts[numparts++] = "#define flat\n";
-        }
-        parts[numparts++] =
-            "#define texture2DRectOffset(sampler, coords, offset) texture2DRect(sampler, coords + vec2(offset))\n"
-            "#define shadow2DRectOffset(sampler, coords, offset) shadow2DRect(sampler, coords + vec2(offset))\n";
-    }
-    if(glslversion < 130 && type == GL_FRAGMENT_SHADER)
-    {
-        if(hasEGPU4)
-        {
-            parts[numparts++] =
-                "#define fragdata(loc) varying out\n"
-                "#define fragblend(loc) varying out\n";
-        }
-        else
-        {
-            for(int i = 0; i < s.fragdatalocs.length(); i++)
-            {
-                FragDataLoc &d = s.fragdatalocs[i];
-                if(d.index)
-                {
-                    continue;
-                }
-                if(i >= 4)
-                {
-                    break;
-                }
-                static string defs[4];
-                const char *swizzle = "";
-                switch(d.format)
-                {
-                    case GL_UNSIGNED_INT_VEC2:
-                    case GL_INT_VEC2:
-                    case GL_FLOAT_VEC2:
-                    {
-                        swizzle = ".rg"; break;
-                    }
-                    case GL_UNSIGNED_INT_VEC3:
-                    case GL_INT_VEC3:
-                    case GL_FLOAT_VEC3:
-                    {
-                        swizzle = ".rgb"; break;
-                    }
-                    case GL_UNSIGNED_INT:
-                    case GL_INT:
-                    case GL_FLOAT:
-                    {
-                        swizzle = ".r"; break;
-                    }
-                }
-                formatstring(defs[i], "#define %s gl_FragData[%d]%s\n", d.name, d.loc, swizzle);
-                parts[numparts++] = defs[i];
-            }
         }
     }
     parts[numparts++] = modsource ? modsource : source;
