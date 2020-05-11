@@ -1,5 +1,6 @@
 // main.cpp: initialisation & main loop
 
+#include <fstream>
 #include "engine.h"
 
 extern void cleargamma();
@@ -105,27 +106,38 @@ VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 
 void writeinitcfg()
 {
-    stream *f = openutf8file("config/init.cfg", "w");
-    if(!f)
+    std::ofstream cfgfile;
+    if(homedir[0]) // Verify that the home directory is set
     {
-        return;
+        cfgfile.open(homedir + std::string("config/init.cfg"), std::ios::trunc);
     }
-    f->printf("// automatically written on exit, DO NOT MODIFY\n// modify settings in game\n");
-    extern int fullscreen;
-    f->printf("fullscreen %d\n", fullscreen);
-    f->printf("screenw %d\n", scr_w);
-    f->printf("screenh %d\n", scr_h);
-    extern int sound, soundchans, soundfreq, soundbufferlen;
-    extern char *audiodriver;
-    f->printf("sound %d\n", sound);
-    f->printf("soundchans %d\n", soundchans);
-    f->printf("soundfreq %d\n", soundfreq);
-    f->printf("soundbufferlen %d\n", soundbufferlen);
-    if(audiodriver[0])
+
+    if(cfgfile.is_open())
     {
-        f->printf("audiodriver %s\n", escapestring(audiodriver));
+        // Import all variables to write out to the config file
+        extern char *audiodriver;
+        extern int fullscreen,
+            sound,
+            soundchans,
+            soundfreq,
+            soundbufferlen;
+
+        cfgfile << "// This file is written automatically on exit.\n"
+            << "// Any changes to this file WILL be overwritten.\n\n"
+            << "fullscreen " << fullscreen << "\n"
+            << "screenw " << scr_w << "\n"
+            << "screenh " << scr_h << "\n"
+            << "sound " << sound << "\n"
+            << "soundchans " << soundchans << "\n"
+            << "soundfreq " << soundfreq << "\n"
+            << "soundbufferlen " << soundbufferlen << "\n";
+        if(audiodriver[0]) // Omit line if no audio driver is present
+        {
+            cfgfile << "audiodriver " << escapestring(audiodriver) << "\n"; // Replace call to ``escapestring`` with C++ standard method?
+        }
+
+        cfgfile.close();
     }
-    delete f;
 }
 
 COMMAND(quit, "");

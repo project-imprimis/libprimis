@@ -35,10 +35,12 @@ typedef unsigned long long int ullong;
 
 void *operator new(size_t, bool);
 void *operator new[](size_t, bool);
+#ifndef _GLIBCXX_FSTREAM
 inline void *operator new(size_t, void *p) { return p; }
 inline void *operator new[](size_t, void *p) { return p; }
 inline void operator delete(void *, void *) {}
 inline void operator delete[](void *, void *) {}
+#endif
 
 #ifdef swap
 #undef swap
