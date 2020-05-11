@@ -1,6 +1,8 @@
 Imprimis is a fork of Tesseract, which is a fork of the Cube 2: Sauerbraten engine. The goal of the Imprimis
 engine is to provide a clean, documented and consistent base with which to build first person shooter games on.
 
+As macOS deprecated OpenGL support in 2018, Imprimis only targets Windows and Linux devices.
+
 No more long calclight pauses... just plop down the light, move it, change its
 color, or do whatever else with it. It all happens in real-time now.
 
@@ -21,7 +23,7 @@ Imprimis' Tesseract base provides a bunch of new rendering features such as:
 * screen-space reflections and refractions for water and glass (use as many water planes as you want now!)
 * screen-space refractive alpha cubes
 * deferred MSAA, subpixel morphological anti-aliasing (SMAA 1x, T2x, S2x, and 4x), FXAA, and temporal AA
-* runs on both OpenGL Core (3.0+) and legacy (2.0+) contexts
+* runs on OpenGL 4.0+ contexts
 
 For documentation on the engine, see `doc/engine.md`.
 
