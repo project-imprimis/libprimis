@@ -408,75 +408,44 @@ inline void ident::getcval(tagval &v) const
 #define VARFP(name, min, cur, max, body) _VARF(name, name, min, cur, max, body, Idf_Persist)
 #define VARFR(name, min, cur, max, body) _VARF(name, name, min, cur, max, body, Idf_Override)
 #define VARFNP(name, global, min, cur, max, body) _VARF(name, global, min, cur, max, body, Idf_Persist)
-#define VARFNR(name, global, min, cur, max, body) _VARF(name, global, min, cur, max, body, Idf_Override)
 #define _VARM(name, min, cur, max, scale, persist) int name = cur * scale; _VARF(name, _##name, min, cur, max, { name = _##name * scale; }, persist)
 #define VARMP(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, Idf_Persist)
-#define VARMR(name, min, cur, max, scale) _VARM(name, min, cur, max, scale, Idf_Override)
 
 //hexadecimal var macros
 #define _HVAR(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist | Idf_Hex)
-#define HVARN(name, global, min, cur, max) _HVAR(name, global, min, cur, max, 0)
-#define HVARNP(name, global, min, cur, max) _HVAR(name, global, min, cur, max, Idf_Persist)
-#define HVARNR(name, global, min, cur, max) _HVAR(name, global, min, cur, max, Idf_Override)
-#define HVAR(name, min, cur, max) _HVAR(name, name, min, cur, max, 0)
 #define HVARP(name, min, cur, max) _HVAR(name, name, min, cur, max, Idf_Persist)
-#define HVARR(name, min, cur, max) _HVAR(name, name, min, cur, max, Idf_Override)
 #define _HVARF(name, global, min, cur, max, body, persist)  void var_##name(ident *id); int global = variable(#name, min, cur, max, &global, var_##name, persist | Idf_Hex); void var_##name(ident *id) { body; }
-#define HVARFN(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, 0)
-#define HVARF(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, 0)
-#define HVARFP(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, Idf_Persist)
-#define HVARFR(name, min, cur, max, body) _HVARF(name, name, min, cur, max, body, Idf_Override)
-#define HVARFNP(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, Idf_Persist)
-#define HVARFNR(name, global, min, cur, max, body) _HVARF(name, global, min, cur, max, body, Idf_Override)
 
 //color var macros
 #define _CVAR(name, cur, init, body, persist) bvec name = bvec::hexcolor(cur); _HVARF(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)
 #define CVARP(name, cur) _CVAR(name, cur, , , Idf_Persist)
 #define CVARR(name, cur) _CVAR(name, cur, , , Idf_Override)
 #define CVARFP(name, cur, body) _CVAR(name, cur, , body, Idf_Persist)
-#define CVARFR(name, cur, body) _CVAR(name, cur, , body, Idf_Override)
 #define _CVAR0(name, cur, body, persist) _CVAR(name, cur, { if(!_##name) _##name = cur; }, body, persist)
-#define CVAR0P(name, cur) _CVAR0(name, cur, , Idf_Persist)
 #define CVAR0R(name, cur) _CVAR0(name, cur, , Idf_Override)
-#define CVAR0FP(name, cur, body) _CVAR0(name, cur, body, Idf_Persist)
-#define CVAR0FR(name, cur, body) _CVAR0(name, cur, body, Idf_Override)
 #define _CVAR1(name, cur, body, persist) _CVAR(name, cur, { if(_##name <= 255) _##name |= (_##name<<8) | (_##name<<16); }, body, persist)
-#define CVAR1P(name, cur) _CVAR1(name, cur, , Idf_Persist)
 #define CVAR1R(name, cur) _CVAR1(name, cur, , Idf_Override)
-#define CVAR1FP(name, cur, body) _CVAR1(name, cur, body, Idf_Persist)
 #define CVAR1FR(name, cur, body) _CVAR1(name, cur, body, Idf_Override)
 
 //float var macros
 #define _FVAR(name, global, min, cur, max, persist) float global = fvariable(#name, min, cur, max, &global, NULL, persist)
-#define FVARN(name, global, min, cur, max) _FVAR(name, global, min, cur, max, 0)
 #define FVARNP(name, global, min, cur, max) _FVAR(name, global, min, cur, max, Idf_Persist)
-#define FVARNR(name, global, min, cur, max) _FVAR(name, global, min, cur, max, Idf_Override)
 #define FVAR(name, min, cur, max) _FVAR(name, name, min, cur, max, 0)
 #define FVARP(name, min, cur, max) _FVAR(name, name, min, cur, max, Idf_Persist)
 #define FVARR(name, min, cur, max) _FVAR(name, name, min, cur, max, Idf_Override)
 #define _FVARF(name, global, min, cur, max, body, persist) void var_##name(ident *id); float global = fvariable(#name, min, cur, max, &global, var_##name, persist); void var_##name(ident *id) { body; }
-#define FVARFN(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, 0)
 #define FVARF(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, 0)
 #define FVARFP(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, Idf_Persist)
 #define FVARFR(name, min, cur, max, body) _FVARF(name, name, min, cur, max, body, Idf_Override)
-#define FVARFNP(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, Idf_Persist)
-#define FVARFNR(name, global, min, cur, max, body) _FVARF(name, global, min, cur, max, body, Idf_Override)
 
 //string var macros
 #define _SVAR(name, global, cur, persist) char *global = svariable(#name, cur, &global, NULL, persist)
-#define SVARN(name, global, cur) _SVAR(name, global, cur, 0)
-#define SVARNP(name, global, cur) _SVAR(name, global, cur, Idf_Persist)
-#define SVARNR(name, global, cur) _SVAR(name, global, cur, Idf_Override)
 #define SVAR(name, cur) _SVAR(name, name, cur, 0)
 #define SVARP(name, cur) _SVAR(name, name, cur, Idf_Persist)
 #define SVARR(name, cur) _SVAR(name, name, cur, Idf_Override)
 #define _SVARF(name, global, cur, body, persist) void var_##name(ident *id); char *global = svariable(#name, cur, &global, var_##name, persist); void var_##name(ident *id) { body; }
-#define SVARFN(name, global, cur, body) _SVARF(name, global, cur, body, 0)
 #define SVARF(name, cur, body) _SVARF(name, name, cur, body, 0)
-#define SVARFP(name, cur, body) _SVARF(name, name, cur, body, Idf_Persist)
 #define SVARFR(name, cur, body) _SVARF(name, name, cur, body, Idf_Override)
-#define SVARFNP(name, global, cur, body) _SVARF(name, global, cur, body, Idf_Persist)
-#define SVARFNR(name, global, cur, body) _SVARF(name, global, cur, body, Idf_Override)
 
 // anonymous inline commands, uses nasty template trick with line numbers to keep names unique
 #define ICOMMANDNAME(name) _icmd_##name
@@ -485,7 +454,6 @@ inline void ident::getcval(tagval &v) const
     { b; }
 #define ICOMMANDKN(name, type, cmdname, nargs, proto, b) ICOMMANDKNS(#name, type, cmdname, nargs, proto, b)
 #define ICOMMANDK(name, type, nargs, proto, b) ICOMMANDKN(name, type, ICOMMANDNAME(name), nargs, proto, b)
-#define ICOMMANDKS(name, type, nargs, proto, b) ICOMMANDKNS(name, type, ICOMMANDSNAME, nargs, proto, b)
 #define ICOMMANDNS(name, cmdname, nargs, proto, b) ICOMMANDKNS(name, Id_Command, cmdname, nargs, proto, b)
 #define ICOMMANDN(name, cmdname, nargs, proto, b) ICOMMANDNS(#name, cmdname, nargs, proto, b)
 #define ICOMMAND(name, nargs, proto, b) ICOMMANDN(name, ICOMMANDNAME(name), nargs, proto, b)
