@@ -384,8 +384,7 @@ void rendergrass()
 
     GLOBALPARAMF(grasstest, grasstest);
 
-    int texid = -1,
-        blend = -1;
+    int texid = -1;
     for(int i = 0; i < grassgroups.length(); i++)
     {
         grassgroup &g = grassgroups[i];
@@ -394,22 +393,6 @@ void rendergrass()
         {
             glBindTexture(GL_TEXTURE_2D, g.tex);
             texid = g.tex;
-        }
-
-        if(blend != g.tri->blend)
-        {
-            if(g.tri->blend)
-            {
-                glActiveTexture_(GL_TEXTURE1);
-                bindblendtexture(ivec(g.tri->center));
-                glActiveTexture_(GL_TEXTURE0);
-                grassshader->setvariant(0, 0);
-            }
-            else
-            {
-                grassshader->set();
-            }
-            blend = g.tri->blend;
         }
 
         gle::drawquads(g.offset, g.numquads);

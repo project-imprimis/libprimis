@@ -62,7 +62,6 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
         hdr.headersize = sizeof(hdr);
         hdr.worldsize = ohdr.worldsize;
         hdr.numents = ohdr.numents;
-        hdr.blendmap = ohdr.blendmap;
         hdr.numvars = ohdr.numvars;
         hdr.numvslots = ohdr.numvslots;
     }
@@ -805,7 +804,6 @@ bool save_world(const char *mname)
             hdr.numents++;
         }
     }
-    hdr.blendmap = shouldsaveblendmap();
     hdr.numvars = 0;
     hdr.numvslots = numvslots;
     ENUMERATE(idents, ident, id,
@@ -875,9 +873,6 @@ bool save_world(const char *mname)
 
     renderprogress(0, "saving octree...");
     savec(worldroot, ivec(0, 0, 0), worldsize>>1, f);
-
-    if(shouldsaveblendmap()) { renderprogress(0, "saving blendmap..."); saveblendmap(f); }
-
     delete f;
     conoutf("wrote map file %s", ogzname);
     return true;
@@ -1071,7 +1066,6 @@ bool load_world(const char *mname, const char *cname)        // still supports a
                 f->seek(bpp*LM_PACKW*LM_PACKH, SEEK_CUR);
             }
         }
-        if(hdr.blendmap) loadblendmap(f, hdr.blendmap);
     }
 
     mapcrc = f->getcrc();

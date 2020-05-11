@@ -525,8 +525,6 @@ struct vacollect : verthash
 
         va->texelems = NULL;
         va->texs = texs.length();
-        va->blendtris = 0;
-        va->blends = 0;
         va->alphabacktris = 0;
         va->alphaback = 0;
         va->alphafronttris = 0;
@@ -565,39 +563,28 @@ struct vacollect : verthash
                     curbuf += t.tris.length();
                 }
                 e.length = curbuf-startbuf;
-
-                if(k.layer==BlendLayer_Blend)
+                switch(k.alpha)
                 {
-                    va->texs--;
-                    va->tris -= e.length/3;
-                    va->blends++;
-                    va->blendtris += e.length/3;
-                }
-                else
-                {
-                    switch(k.alpha)
+                    case Alpha_Back:
                     {
-                        case Alpha_Back:
+                        va->texs--;
+                        va->tris -= e.length/3;
+                        va->alphaback++;
+                        va->alphabacktris += e.length/3;
+                    }
+                    case Alpha_Front:
                         {
-                            va->texs--;
-                            va->tris -= e.length/3;
-                            va->alphaback++;
-                            va->alphabacktris += e.length/3;
-                        }
-                        case Alpha_Front:
-                        {
-                            va->texs--;
-                            va->tris -= e.length/3;
-                            va->alphafront++;
-                            va->alphafronttris += e.length/3;
-                        }
-                        case Alpha_Refract:
-                        {
-                            va->texs--;
-                            va->tris -= e.length/3;
-                            va->refract++;
-                            va->refracttris += e.length/3;
-                        }
+                        va->texs--;
+                        va->tris -= e.length/3;
+                        va->alphafront++;
+                        va->alphafronttris += e.length/3;
+                    }
+                    case Alpha_Refract:
+                    {
+                        va->texs--;
+                        va->tris -= e.length/3;
+                        va->refract++;
+                        va->refracttris += e.length/3;
                     }
                 }
             }
@@ -605,7 +592,7 @@ struct vacollect : verthash
 
         va->texmask = 0;
         va->dyntexs = 0;
-        for(int i = 0; i < (va->texs+va->blends+va->alphaback+va->alphafront+va->refract); ++i)
+        for(int i = 0; i < (va->texs+va->alphaback+va->alphafront+va->refract); ++i)
         {
             VSlot &vslot = lookupvslot(va->texelems[i].texture, false);
             if(vslot.isdynamic())
@@ -847,7 +834,6 @@ void addgrasstri(int face, vertex *verts, int numv, ushort texture, int layer)
         g.radius = max(g.radius, g.v[k].dist(g.center));
     }
     g.texture = texture;
-    g.blend = layer == BlendLayer_Blend ? ((int(g.center.x)>>12)+1) | (((int(g.center.y)>>12)+1)<<8) : 0;
 }
 
 static inline void calctexgen(VSlot &vslot, int orient, vec4 &sgen, vec4 &tgen)
@@ -1294,7 +1280,7 @@ vtxarray *newva(const ivec &o, int size)
     va->nogimax = vc.nogimax;
 
     wverts += va->verts;
-    wtris  += va->tris + va->blends + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
+    wtris  += va->tris + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
     allocva++;
     valist.add(va);
 
@@ -1304,7 +1290,7 @@ vtxarray *newva(const ivec &o, int size)
 void destroyva(vtxarray *va, bool reparent)
 {
     wverts -= va->verts;
-    wtris -= va->tris + va->blends + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
+    wtris -= va->tris + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
     allocva--;
     valist.removeobj(va);
     if(!va->parent) varoot.removeobj(va);
@@ -1848,7 +1834,7 @@ void precachetextures()
     for(int i = 0; i < valist.length(); i++)
     {
         vtxarray *va = valist[i];
-        for(int j = 0; j < va->texs+va->blends; ++j)
+        for(int j = 0; j < va->texs; ++j)
         {
             int tex = va->texelems[j].texture;
             if(texs.find(tex) < 0)
@@ -1889,7 +1875,6 @@ void allchanged(bool load)
     if(load)
     {
         genshadowmeshes();
-        updateblendtextures();
         seedparticles();
         genenvmaps();
         drawminimap();

@@ -55,7 +55,6 @@ extern void clearlightcache(int id = -1);
 extern void brightencube(cube &c);
 extern void setsurfaces(cube &c, const surfaceinfo *surfs, const vertinfo *verts, int numverts);
 extern void setsurface(cube &c, int orient, const surfaceinfo &surf, const vertinfo *verts, int numverts);
-extern void previewblends(const ivec &bo, const ivec &bs);
 
 extern void calcnormals(bool lerptjoints = false);
 extern void clearnormals();

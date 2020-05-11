@@ -719,7 +719,7 @@ void renderoutline()
         }
         if(va->alphaback || va->alphafront || va->refract)
         {
-            drawvatris(va, 3*(va->alphabacktris + va->alphafronttris + va->refracttris), 3*(va->tris + va->blendtris));
+            drawvatris(va, 3*(va->alphabacktris + va->alphafronttris + va->refracttris), 3*(va->tris));
             xtravertsva += 3*(va->alphabacktris + va->alphafronttris + va->refracttris);
         }
 
@@ -731,53 +731,6 @@ void renderoutline()
     disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    gle::clearvbo();
-    gle::clearebo();
-    gle::disablevertex();
-}
-
-CVARP(blendbrushcolor, 0x0000C0);
-
-void renderblendbrush(GLuint tex, float x, float y, float w, float h)
-{
-    SETSHADER(blendbrush);
-
-    gle::enablevertex();
-
-    glDepthFunc(GL_LEQUAL);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-    glBindTexture(GL_TEXTURE_2D, tex);
-    gle::color(blendbrushcolor, 0x40);
-
-    LOCALPARAMF(texgenS, 1.0f/w, 0, 0, -x/w);
-    LOCALPARAMF(texgenT, 0, 1.0f/h, 0, -y/h);
-
-    vtxarray *prev = NULL;
-    for(vtxarray *va = visibleva; va; va = va->next) if(va->texs && va->occluded < Occlude_Geom)
-    {
-        if(va->o.x + va->size <= x || va->o.y + va->size <= y || va->o.x >= x + w || va->o.y >= y + h) continue;
-
-        if(!prev || va->vbuf != prev->vbuf)
-        {
-            gle::bindvbo(va->vbuf);
-            gle::bindebo(va->ebuf);
-            const vertex *ptr = 0;
-            gle::vertexpointer(sizeof(vertex), ptr->pos.v);
-        }
-
-        drawvatris(va, 3*va->tris, 0);
-        xtravertsva += va->verts;
-
-        prev = va;
-    }
-
-    glDisable(GL_BLEND);
-
-    glDepthFunc(GL_LESS);
 
     gle::clearvbo();
     gle::clearebo();
@@ -1218,8 +1171,6 @@ struct renderstate
     float alphascale;
     float refractscale;
     vec refractcolor;
-    bool blend;
-    int blendx, blendy;
     int globals, tmu;
     GLuint textures[7];
     Slot *slot, *texgenslot;
@@ -1227,7 +1178,7 @@ struct renderstate
     vec2 texgenscroll;
     int texgenorient, texgenmillis;
 
-    renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false), vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0), refractcolor(1, 1, 1), blend(false), blendx(-1), blendy(-1), globals(-1), tmu(-1), slot(NULL), texgenslot(NULL), vslot(NULL), texgenvslot(NULL), texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
+    renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false), vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0), refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(NULL), texgenslot(NULL), vslot(NULL), texgenvslot(NULL), texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
     {
         for(int k = 0; k < 7; ++k)
         {
@@ -1324,16 +1275,17 @@ struct geombatch
 static vector<geombatch> geombatches;
 static int firstbatch = -1, numbatches = 0;
 
-static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, int numtexs = 0, int offset = 0)
+static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, int offset = 0)
 {
+    int numtexs;
     if(!texs)
     {
         texs = va->texelems;
         numtexs = va->texs;
         if(cur.alphaing)
         {
-            texs += va->texs + va->blends;
-            offset += 3*(va->tris + va->blendtris);
+            texs += va->texs;
+            offset += 3*(va->tris);
             numtexs = va->alphaback;
             if(cur.alphaing > 1) numtexs += va->alphafront + va->refract;
         }
@@ -1396,8 +1348,7 @@ static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, i
             else geombatches[prevbatch].next = geombatches.length()-1;
             prevbatch = geombatches.length()-1;
         }
-    }
-    while(++curtex < numtexs);
+    } while(++curtex < numtexs);
 }
 
 static inline void enablevattribs(renderstate &cur, bool all = true)
@@ -1452,28 +1403,6 @@ static void changebatchtmus(renderstate &cur, int pass, geombatch &b)
             glActiveTexture_(GL_TEXTURE0 + TEX_ENVMAP);
             glBindTexture(GL_TEXTURE_CUBE_MAP, cur.textures[TEX_ENVMAP] = emtex);
         }
-    }
-
-    if(b.es.layer&BlendLayer_Bottom)
-    {
-        if(!cur.blend)
-        {
-            cur.blend = true;
-            cur.vslot = NULL;
-        }
-        if((cur.blendx != (b.va->o.x&~0xFFF) || cur.blendy != (b.va->o.y&~0xFFF)))
-        {
-            cur.tmu = 7;
-            glActiveTexture_(GL_TEXTURE7);
-            bindblendtexture(b.va->o);
-            cur.blendx = b.va->o.x&~0xFFF;
-            cur.blendy = b.va->o.y&~0xFFF;
-        }
-    }
-    else if(cur.blend)
-    {
-        cur.blend = false;
-        cur.vslot = NULL;
     }
 
     if(cur.tmu != 0)
@@ -1738,8 +1667,8 @@ void renderzpass(renderstate &cur, vtxarray *va)
     int firsttex = 0, numtris = va->tris, offset = 0;
     if(cur.alphaing)
     {
-        firsttex += va->texs + va->blends;
-        offset += 3*(va->tris + va->blendtris);
+        firsttex += va->texs;
+        offset += 3*(va->tris);
         numtris = va->alphabacktris + va->alphafronttris + va->refracttris;
         xtravertsva += 3*numtris;
     }
@@ -1783,7 +1712,7 @@ void renderva(renderstate &cur, vtxarray *va, int pass = RenderPass_GBuffer, boo
 
         case RenderPass_GBufferBlend:
             if(doquery) STARTVAQUERY(va, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
-            mergetexs(cur, va, &va->texelems[va->texs], va->blends, 3*va->tris);
+            mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
             if(doquery) ENDVAQUERY(va, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
             else if(!batchgeom && geombatches.length()) renderbatches(cur, RenderPass_GBuffer);
             break;
@@ -1807,7 +1736,7 @@ void renderva(renderstate &cur, vtxarray *va, int pass = RenderPass_GBuffer, boo
             break;
 
         case RenderPass_ReflectiveShadowMapBlend:
-            mergetexs(cur, va, &va->texelems[va->texs], va->blends, 3*va->tris);
+            mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
             if(!batchgeom && geombatches.length()) renderbatches(cur, RenderPass_ReflectiveShadowMap);
             break;
     }
@@ -1825,7 +1754,6 @@ void setupgeom(renderstate &cur)
 {
     glActiveTexture_(GL_TEXTURE0);
     GLOBALPARAMF(colorparams, 1, 1, 1, 1);
-    GLOBALPARAMF(blendlayer, 1.0f);
 }
 
 void cleanupgeom(renderstate &cur)
@@ -1841,7 +1769,6 @@ void rendergeom()
     bool doOQ = oqfrags && oqgeom && !drawtex, multipassing = false;
     renderstate cur;
 
-    int blends = 0;
     if(doOQ)
     {
         for(vtxarray *va = visibleva; va; va = va->next) if(va->texs)
@@ -1897,7 +1824,6 @@ void rendergeom()
 
         for(vtxarray *va = visibleva; va; va = va->next) if(va->texs && va->occluded < Occlude_Geom)
         {
-            blends += va->blends;
             renderva(cur, va, RenderPass_GBuffer);
         }
         if(geombatches.length()) { renderbatches(cur, RenderPass_GBuffer); glFlush(); }
@@ -1914,7 +1840,6 @@ void rendergeom()
                 if(va->occluded >= Occlude_Geom) continue;
             }
 
-            blends += va->blends;
             renderva(cur, va, RenderPass_GBuffer);
         }
         if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer);
@@ -1928,33 +1853,9 @@ void rendergeom()
             va->query = NULL;
             va->occluded = Occlude_Nothing;
             if(va->occluded >= Occlude_Geom) continue;
-            blends += va->blends;
             renderva(cur, va, RenderPass_GBuffer);
         }
         if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer);
-    }
-
-    if(blends)
-    {
-        if(cur.vbuf) disablevbuf(cur);
-
-        if(!multipassing) { multipassing = true; glDepthFunc(GL_LEQUAL); }
-        glDepthMask(GL_FALSE);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
-        maskgbuffer("cn");
-
-        GLOBALPARAMF(blendlayer, 0.0f);
-        cur.texgenorient = -1;
-        for(vtxarray *va = visibleva; va; va = va->next) if(va->blends && va->occluded < Occlude_Geom && va->curvfc != ViewFrustumCull_Fogged)
-        {
-            renderva(cur, va, RenderPass_GBufferBlend);
-        }
-        if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer);
-
-        maskgbuffer("cnd");
-        glDisable(GL_BLEND);
-        glDepthMask(GL_TRUE);
     }
 
     if(multipassing) glDepthFunc(GL_LESS);
@@ -2016,39 +1917,12 @@ void renderrsmgeom(bool dyntex)
 
     resetbatches();
 
-    int blends = 0;
     for(vtxarray *va = shadowva; va; va = va->rnext) if(va->texs)
     {
-        blends += va->blends;
         renderva(cur, va, RenderPass_ReflectiveShadowMap);
     }
 
     if(geombatches.length()) renderbatches(cur, RenderPass_ReflectiveShadowMap);
-
-    bool multipassing = false;
-
-    if(blends)
-    {
-        if(cur.vbuf) disablevbuf(cur);
-
-        if(!multipassing) { multipassing = true; glDepthFunc(GL_LEQUAL); }
-        glDepthMask(GL_FALSE);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
-
-        GLOBALPARAMF(blendlayer, 0.0f);
-        cur.texgenorient = -1;
-        for(vtxarray *va = shadowva; va; va = va->rnext) if(va->blends)
-        {
-            renderva(cur, va, RenderPass_ReflectiveShadowMapBlend);
-        }
-        if(geombatches.length()) renderbatches(cur, RenderPass_ReflectiveShadowMap);
-
-        glDisable(GL_BLEND);
-        glDepthMask(GL_TRUE);
-    }
-
-    if(multipassing) glDepthFunc(GL_LESS);
 
     cleanupgeom(cur);
 }
@@ -2118,7 +1992,7 @@ void renderrefractmask()
             gle::vertexpointer(sizeof(vertex), ptr->pos.v);
         }
 
-        drawvatris(va, 3*va->refracttris, 3*(va->tris + va->blendtris + va->alphabacktris + va->alphafronttris));
+        drawvatris(va, 3*va->refracttris, 3*(va->tris + va->alphabacktris + va->alphafronttris));
         xtravertsva += 3*va->refracttris;
 
         prev = va;

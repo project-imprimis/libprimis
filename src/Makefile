@@ -68,7 +68,6 @@ CLIENT_OBJS= \
 	shared/zip.o \
 	engine/aa.o \
 	engine/bih.o \
-	engine/blend.o \
 	engine/client.o	\
 	engine/command.o \
 	engine/console.o \
@@ -247,10 +246,6 @@ engine/bih.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/bih.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/bih.o: shared/iengine.h shared/igame.h engine/world.h engine/octa.h
 engine/bih.o: engine/light.h engine/texture.h engine/bih.h engine/model.h
-engine/blend.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
-engine/blend.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
-engine/blend.o: shared/iengine.h shared/igame.h engine/world.h engine/octa.h
-engine/blend.o: engine/light.h engine/texture.h engine/bih.h engine/model.h
 engine/client.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/client.o: shared/ents.h shared/command.h shared/glexts.h
 engine/client.o: shared/glemu.h shared/iengine.h shared/igame.h

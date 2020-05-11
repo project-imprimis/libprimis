@@ -615,7 +615,6 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             y1 = (y1>>3) + (co.y&~0xFFF);
             x2 = ((x2+7)>>3) + (co.x&~0xFFF);
             y2 = ((y2+7)>>3) + (co.y&~0xFFF);
-            surflayer = calcblendlayer(x1, y1, x2, y2);
         }
         surf.numverts |= surflayer;
     }
@@ -681,83 +680,6 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
     }
 }
 
-static inline bool previewblends(cube &c, const ivec &o, int size)
-{
-    if(IS_EMPTY(c) || c.material&Mat_Alpha)
-    {
-        return false;
-    }
-    int usefacemask = 0;
-    for(int j = 0; j < 6; ++j)
-    {
-        if(c.texture[j] != DEFAULT_SKY && lookupvslot(c.texture[j], false).layer)
-        {
-            usefacemask |= visibletris(c, j, o, size)<<(4*j);
-        }
-    }
-    if(!usefacemask)
-    {
-        return false;
-    }
-    int layer = calcblendlayer(o.x, o.y, o.x + size, o.y + size);
-    if(!(layer&BlendLayer_Bottom))
-    {
-        if(!c.ext)
-        {
-            return false;
-        }
-        bool blends = false;
-        for(int i = 0; i < 6; ++i)
-        {
-            if(c.ext->surfaces[i].numverts&BlendLayer_Bottom)
-            {
-                c.ext->surfaces[i].brighten();
-                blends = true;
-            }
-        }
-        return blends;
-    }
-    calcsurfaces(c, o, size, usefacemask, layer);
-    return true;
-}
-
-static bool previewblends(cube *c, const ivec &co, int size, const ivec &bo, const ivec &bs)
-{
-    bool changed = false;
-    LOOP_OCTA_BOX(co, size, bo, bs)
-    {
-        ivec o(i, co, size);
-        cubeext *ext = c[i].ext;
-        if(ext && ext->va && ext->va->hasmerges)
-        {
-            changed = true;
-            destroyva(ext->va);
-            ext->va = NULL;
-            invalidatemerges(c[i], co, size, true);
-        }
-        if(c[i].children ? previewblends(c[i].children, o, size/2, bo, bs) : previewblends(c[i], o, size))
-        {
-            changed = true;
-            ext = c[i].ext;
-            if(ext && ext->va)
-            {
-                destroyva(ext->va);
-                ext->va = NULL;
-            }
-        }
-    }
-    return changed;
-}
-
-void previewblends(const ivec &bo, const ivec &bs)
-{
-    updateblendtextures(bo.x, bo.y, bo.x+bs.x, bo.y+bs.y);
-    if(previewblends(worldroot, ivec(0, 0, 0), worldsize/2, bo, bs))
-    {
-        commitchanges(true);
-    }
-}
-
 extern int filltjoints;
 
 static Uint32 calclighttimer(Uint32 interval, void *param)
@@ -770,7 +692,6 @@ void calclight()
 {
     renderbackground("computing lighting... (esc to abort)");
     remip();
-    optimizeblendmap();
     clearsurfaces(worldroot);
     lightprogress = 0;
     calclight_canceled = false;

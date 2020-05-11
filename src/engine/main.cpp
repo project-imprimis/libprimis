@@ -756,7 +756,6 @@ void resetgl()
     cleanupmodels();
     cleanupprefabs();
     cleanuptextures();
-    cleanupblendmap();
     cleanuplights();
     cleanupshaders();
     cleanupgl();
@@ -1519,7 +1518,6 @@ int main(int argc, char **argv)
     execfile("config/sound.cfg");
     execfile("config/ui.cfg");
     execfile("config/heightmap.cfg");
-    execfile("config/blendbrush.cfg");
     if(game::savedservers())
     {
         execfile(game::savedservers(), false);
@@ -1595,7 +1593,6 @@ int main(int argc, char **argv)
         checkinput(); //go and see if SDL has any new input: mouse, keyboard, screen dimensions
         UI::update(); //checks cursor and updates uis
         menuprocess(); //shows main menu if not ingame and not online
-        tryedit(); //checks to see if in edit & blendmapping is enabled; if it is, enter blendmapping mode
 
         if(lastmillis)
         {

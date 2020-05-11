@@ -1439,7 +1439,6 @@ void resetmap()
 {
     clearoverrides();
     clearmapsounds();
-    resetblendmap();
     clearlights();
     clearslots();
     clearparticles();
@@ -1524,8 +1523,6 @@ bool enlargemap(bool force)
 
     if(worldsize > 0x1000) splitocta(worldroot, worldsize>>1);
 
-    enlargeblendmap();
-
     allchanged();
 
     return true;
@@ -1586,8 +1583,6 @@ void shrinkmap()
     {
         ents[i]->o.sub(vec(offset));
     }
-
-    shrinkblendmap(octant);
 
     allchanged();
 

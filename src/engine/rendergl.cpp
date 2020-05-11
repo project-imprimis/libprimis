@@ -2150,7 +2150,6 @@ void gl_drawview()
         if(!hidehud)
         {
             glDepthMask(GL_FALSE);
-            renderblendbrush();
             rendereditcursor();
             glDepthMask(GL_TRUE);
         }

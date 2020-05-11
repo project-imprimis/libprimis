@@ -103,7 +103,7 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     }
     if(length > 1)
     {
-        conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "VS" : (type == GL_FRAGMENT_SHADER ? "FS" : "PROG"), name);
+        conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "Vertex shader" : (type == GL_FRAGMENT_SHADER ? "Fragment shader" : "PROG"), name);
         FILE *l = getlogfile();
         if(l)
         {

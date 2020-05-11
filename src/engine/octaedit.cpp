@@ -182,7 +182,6 @@ void toggleedit(bool force)
         player->state = ClientState_Editing;
     }
     cancelsel();
-    stoppaintblendmap();
     keyrepeat(editmode, KeyRepeat_EditMode);
     editing = entediting = editmode;
     if(!force) game::edittoggled(editmode);
@@ -338,7 +337,7 @@ void rendereditcursor()
         od  = DIMENSION(orient),
         odc = DIM_COORD(orient);
 
-    bool hidecursor = UI::hascursor() || blendpaintmode, hovering = false;
+    bool hidecursor = UI::hascursor(), hovering = false;
     hmapsel = false;
 
     if(moving)
@@ -531,13 +530,6 @@ void rendereditcursor()
 
     glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
-}
-
-void tryedit()
-{
-    extern int hidehud;
-    if(!editmode || hidehud || mainmenu) return;
-    if(blendpaintmode) trypaintblendmap();
 }
 
 //////////// ready changes to vertex arrays ////////////

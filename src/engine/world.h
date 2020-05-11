@@ -16,8 +16,8 @@ struct octaheader
     int worldsize;
     int numents;
     int numpvs;                 // no longer used, kept for backwards compatibility
-    int lightmaps;
-    int blendmap;
+    int lightmaps;              // also outdated
+    int blendmap;               // no longer used
     int numvars;
     int numvslots;
 };
@@ -32,7 +32,7 @@ struct mapheader
     int worldsize;
     int numents;
     int numpvs;                 // no longer used, kept for backwards compatibility
-    int blendmap;
+    int blendmap;               // also no longer used
     int numvars;
     int numvslots;
 };
