@@ -791,7 +791,7 @@ void endtimer(timer *t)
         glEndQuery_(GL_TIME_ELAPSED_EXT);
         deferquery--;
     }
-    else t->result = max(float(getclockmillis() - t->starttime), 0.0f);
+    else t->result = max(static_cast<float>(getclockmillis() - t->starttime), 0.0f);
 }
 
 void synctimers()
@@ -808,7 +808,7 @@ void synctimers()
                 glGetQueryObjectiv_(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available);
             GLuint64EXT result = 0;
             glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result);
-            t.result = max(float(result) * 1e-6f, 0.0f);
+            t.result = max(static_cast<float>(result) * 1e-6f, 0.0f);
             t.waiting &= ~(1<<timercycle);
         }
         else t.result = -1;
@@ -960,7 +960,7 @@ void resethudmatrix()
 
 void pushhudmatrix()
 {
-    if(hudmatrixpos >= 0 && hudmatrixpos < int(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0]))) hudmatrixstack[hudmatrixpos] = hudmatrix;
+    if(hudmatrixpos >= 0 && hudmatrixpos < static_cast<int>(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0]))) hudmatrixstack[hudmatrixpos] = hudmatrix;
     ++hudmatrixpos;
 }
 
@@ -973,7 +973,7 @@ void flushhudmatrix(bool flushparams)
 void pophudmatrix(bool flush, bool flushparams)
 {
     --hudmatrixpos;
-    if(hudmatrixpos >= 0 && hudmatrixpos < int(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0])))
+    if(hudmatrixpos >= 0 && hudmatrixpos < static_cast<int>(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0])))
     {
         hudmatrix = hudmatrixstack[hudmatrixpos];
         if(flush) flushhudmatrix(flushparams);
@@ -1021,10 +1021,10 @@ void disablezoom()
 void computezoom()
 {
     if(!zoom) { zoomprogress = 0; curfov = fov; curavatarfov = avatarfov; return; }
-    if(zoom > 0) zoomprogress = zoominvel ? min(zoomprogress + float(elapsedtime) / zoominvel, 1.0f) : 1;
+    if(zoom > 0) zoomprogress = zoominvel ? min(zoomprogress + static_cast<float>(elapsedtime) / zoominvel, 1.0f) : 1;
     else
     {
-        zoomprogress = zoomoutvel ? max(zoomprogress - float(elapsedtime) / zoomoutvel, 0.0f) : 0;
+        zoomprogress = zoomoutvel ? max(zoomprogress - static_cast<float>(elapsedtime) / zoomoutvel, 0.0f) : 0;
         if(zoomprogress <= 0) zoom = 0;
     }
     curfov = zoomfov*zoomprogress + fov*(1 - zoomprogress);
@@ -1076,8 +1076,8 @@ void mousemove(int dx, int dy)
     {
         if(zoomautosens)
         {
-            cursens = float(sensitivity*zoomfov)/fov;
-            curaccel = float(mouseaccel*zoomfov)/fov;
+            cursens = static_cast<float>(sensitivity*zoomfov)/fov;
+            curaccel = static_cast<float>(mouseaccel*zoomfov)/fov;
         }
         else
         {
@@ -1790,7 +1790,7 @@ void drawminimap()
     farplane = worldsize*2;
     vieww = viewh = size;
 
-    float zscale = max(float(minimapheight), minimapcenter.z + minimapradius.z + 1) + 1;
+    float zscale = max(static_cast<float>(minimapheight), minimapcenter.z + minimapradius.z + 1) + 1;
 
     projmatrix.ortho(-minimapradius.x, minimapradius.x, -minimapradius.y, minimapradius.y, 0, 2*zscale);
     setcamprojmatrix();
@@ -2002,7 +2002,7 @@ namespace modelpreview
         oldviewh = viewh;
         oldprojmatrix = projmatrix;
 
-        aspect = w/float(h);
+        aspect = w/static_cast<float>(h);
         fovy = modelpreviewfov;
         curfov = 2*atan2(tan(fovy/2*RAD), 1/aspect)/RAD;
         farplane = 1024;
@@ -2192,8 +2192,8 @@ void damagecompass(int n, const vec &loc)
     }
     if(yaw >= 360) yaw = fmod(yaw, 360);
     else if(yaw < 0) yaw = 360 - fmod(-yaw, 360);
-    int dir = (int(yaw+22.5f)%360)/45;
-    damagedirs[dir] += max(n, damagecompassmin)/float(damagecompassmax);
+    int dir = (static_cast<int>(yaw+22.5f)%360)/45;
+    damagedirs[dir] += max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
     if(damagedirs[dir]>1) damagedirs[dir] = 1;
 
 }
@@ -2231,7 +2231,7 @@ void drawdamagecompass(int w, int h)
             gle::attrib(m.transform(vec2(0, 0)));
 
             // fade in log space so short blips don't disappear too quickly
-            scale -= float(curtime)/damagecompassfade;
+            scale -= static_cast<float>(curtime)/damagecompassfade;
             damagedirs[i] = scale > 0 ? (pow(logscale, scale) - 1) / (logscale - 1) : 0;
         }
     }
@@ -2270,7 +2270,7 @@ void drawdamagescreen(int w, int h)
     glBindTexture(GL_TEXTURE_2D, damagetex->id);
     float fade = damagescreenalpha/100.0f;
     if(damageblendmillis - lastmillis < damagescreenfade)
-        fade *= float(damageblendmillis - lastmillis)/damagescreenfade;
+        fade *= static_cast<float>(damageblendmillis - lastmillis)/damagescreenfade;
     gle::colorf(fade, fade, fade, fade);
 
     hudquad(0, 0, w, h);
@@ -2391,7 +2391,7 @@ void resethudshader()
 void gl_drawhud()
 {
     int w = hudw, h = hudh;
-    if(forceaspect) w = int(ceil(h*forceaspect));
+    if(forceaspect) w = static_cast<int>(ceil(h*forceaspect));
 
     gettextres(w, h);
 
@@ -2523,7 +2523,7 @@ void gl_drawframe()
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
     flipqueries();
-    aspect = forceaspect ? forceaspect : hudw/float(hudh);
+    aspect = forceaspect ? forceaspect : hudw/static_cast<float>(hudh);
     fovy = 2*atan2(tan(curfov/2*RAD), aspect)/RAD;
     vieww = hudw;
     viewh = hudh;

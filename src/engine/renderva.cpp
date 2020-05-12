@@ -136,9 +136,9 @@ static vtxarray *vasort[VASORTSIZE];
 static inline void addvisibleva(vtxarray *va)
 {
     float dist = vadist(va, camera1->o);
-    va->distance = int(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
+    va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
 
-    int hash = clamp(int(dist*VASORTSIZE/worldsize), 0, VASORTSIZE-1);
+    int hash = clamp(static_cast<int>(dist*VASORTSIZE/worldsize), 0, VASORTSIZE-1);
     vtxarray **prev = &vasort[hash], *cur = vasort[hash];
 
     while(cur && va->distance >= cur->distance)
@@ -249,7 +249,7 @@ void setvfcP(const vec &bbmin, const vec &bbmax)
     vfcP[3] = plane(vec4(pw).mul(bbmax.y).sub(py)).normalize(); // top plane
     vfcP[4] = plane(vec4(pw).add(pz)).normalize(); // near/far planes
 
-    vfcDfog = min(calcfogcull(), float(farplane));
+    vfcDfog = min(calcfogcull(), static_cast<float>(farplane));
     calcvfcD();
 }
 
@@ -426,7 +426,7 @@ bool checkquery(occludequery *query, bool nowait)
      
         GLuint fragments;   
         glGetQueryObjectuiv_(query->id, GL_QUERY_RESULT, &fragments);
-        query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? int(fragments) : oqfrags;
+        query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? static_cast<int>(fragments) : oqfrags;
     }
     return query->fragments < oqfrags;
 }
@@ -549,7 +549,7 @@ void findvisiblemms(const vector<extentity *> &ents, bool doquery)
                     }
                     if(!visible) continue;
 
-                    oe->distance = int(camera1->o.dist_to_bb(oe->o, oe->size));
+                    oe->distance = static_cast<int>(camera1->o.dist_to_bb(oe->o, oe->size));
 
                     octaentities **prev = &visiblemms, *cur = visiblemms;
                     while(cur && cur->distance >= 0 && oe->distance > cur->distance)
@@ -919,9 +919,9 @@ vtxarray *shadowva = NULL;
 
 static inline void addshadowva(vtxarray *va, float dist)
 {
-    va->rdistance = int(dist);
+    va->rdistance = static_cast<int>(dist);
 
-    int hash = clamp(int(dist*VASORTSIZE/shadowradius), 0, VASORTSIZE-1);
+    int hash = clamp(static_cast<int>(dist*VASORTSIZE/shadowradius), 0, VASORTSIZE-1);
     vtxarray **prev = &vasort[hash], *cur = vasort[hash];
 
     while(cur && va->rdistance > cur->rdistance)
@@ -1781,7 +1781,7 @@ void rendergeom()
                     va->occluded = Occlude_Parent;
                     continue;
                 }
-                va->occluded = va->query && va->query->owner == va && checkquery(va->query) ? min(va->occluded+1, int(Occlude_BB)) : Occlude_Nothing;
+                va->occluded = va->query && va->query->owner == va && checkquery(va->query) ? min(va->occluded+1, static_cast<int>(Occlude_BB)) : Occlude_Nothing;
                 va->query = newquery(va);
                 if(!va->query || !va->occluded)
                     va->occluded = Occlude_Nothing;
@@ -2759,7 +2759,7 @@ shadowmesh *findshadowmesh(int idx, extentity &e)
     switch(m->type)
     {
         case ShadowMap_Spot:
-            if(!e.attached || e.attached->type != EngineEnt_Spotlight || m->spotloc != e.attached->o || m->spotangle < clamp(int(e.attached->attr1), 1, 89))
+            if(!e.attached || e.attached->type != EngineEnt_Spotlight || m->spotloc != e.attached->o || m->spotangle < clamp(static_cast<int>(e.attached->attr1), 1, 89))
                 return NULL;
             break;
     }
