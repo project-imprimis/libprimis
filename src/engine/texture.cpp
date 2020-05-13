@@ -11,7 +11,7 @@ template<int BPP> static void halvetexture(uchar * RESTRICT src, uint sw, uint s
         {
             for(int i = 0; i < BPP; ++i)
             {
-                dst[i] = (static_cast<uint>(xsrc[i]) + static_cast<uint>(xsrc[i+BPP]) + static_cast<uint>(xsrc[stride+i]) + static_cast<uint>(xsrc[stride+i+BPP]))>>2;
+                dst[i] = (uint(xsrc[i]) + uint(xsrc[i+BPP]) + uint(xsrc[stride+i]) + uint(xsrc[stride+i+BPP]))>>2;
             }
         }
         src += 2*stride;
@@ -62,7 +62,7 @@ template<int BPP> static void scaletexture(uchar * RESTRICT src, uint sw, uint s
     dh *= hfrac;
     for(uint y = 0; y < dh; y += hfrac)
     {
-        const uint yn = y + hfrac - 1, yi = y>>12, h = (yn>>12) - yi, ylow = ((yn|(-static_cast<int>(h)>>24))&0xFFFU) + 1 - (y&0xFFFU), yhigh = (yn&0xFFFU) + 1;
+        const uint yn = y + hfrac - 1, yi = y>>12, h = (yn>>12) - yi, ylow = ((yn|(-int(h)>>24))&0xFFFU) + 1 - (y&0xFFFU), yhigh = (yn&0xFFFU) + 1;
         const uchar *ysrc = &src[yi*stride];
         for(uint x = 0; x < dw; x += wfrac, dst += BPP)
         {
@@ -555,11 +555,11 @@ void texmad(ImageData &s, const vec &mul, const vec &add)
 {
     if(s.bpp < 3 && (mul.x != mul.y || mul.y != mul.z || add.x != add.y || add.y != add.z))
         swizzleimage(s);
-    int maxk = min(static_cast<int>(s.bpp), 3);
+    int maxk = min(int(s.bpp), 3);
     WRITE_TEX(s,
         for(int k = 0; k < maxk; ++k)
         {
-            dst[k] = static_cast<uchar>(clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
+            dst[k] = uchar(clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
         }
     );
 }
@@ -578,7 +578,7 @@ void texcolorify(ImageData &s, const vec &color, vec weights)
         float lum = dst[0]*weights.x + dst[1]*weights.y + dst[2]*weights.z;
         for(int k = 0; k < 3; ++k)
         {
-            dst[k] = static_cast<uchar>(clamp(lum*color[k], 0.0f, 255.0f));
+            dst[k] = uchar(clamp(lum*color[k], 0.0f, 255.0f));
         }
     );
 }
@@ -592,7 +592,7 @@ void texcolormask(ImageData &s, const vec &color1, const vec &color2)
         color.lerp(color2, color1, src[3]/255.0f);
         for(int k = 0; k < 3; ++k)
         {
-            dst[k] = static_cast<uchar>(clamp(color[k]*src[k], 0.0f, 255.0f));
+            dst[k] = uchar(clamp(color[k]*src[k], 0.0f, 255.0f));
         }
     );
     s.replace(d);
@@ -645,15 +645,15 @@ void texpremul(ImageData &s)
     {
         case 2:
             WRITE_TEX(s,
-                dst[0] = static_cast<uchar>((static_cast<uint>(dst[0])*static_cast<uint>(dst[1]))/255);
+                dst[0] = uchar((uint(dst[0])*uint(dst[1]))/255);
             );
             break;
         case 4:
             WRITE_TEX(s,
                 uint alpha = dst[3];
-                dst[0] = static_cast<uchar>((static_cast<uint>(dst[0])*alpha)/255);
-                dst[1] = static_cast<uchar>((static_cast<uint>(dst[1])*alpha)/255);
-                dst[2] = static_cast<uchar>((static_cast<uint>(dst[2])*alpha)/255);
+                dst[0] = uchar((uint(dst[0])*alpha)/255);
+                dst[1] = uchar((uint(dst[1])*alpha)/255);
+                dst[2] = uchar((uint(dst[2])*alpha)/255);
             );
             break;
     }
@@ -683,7 +683,7 @@ void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
         float curx = minx;
         for(uchar *dst = dstrow, *end = &dstrow[s.w*s.bpp]; dst < end; dst += s.bpp)
         {
-            dst[0] = static_cast<uchar>(dst[0]*clamp(curx, 0.0f, 1.0f)*clamp(cury, 0.0f, 1.0f));
+            dst[0] = uchar(dst[0]*clamp(curx, 0.0f, 1.0f)*clamp(cury, 0.0f, 1.0f));
             curx += dx;
         }
         cury += dy;
@@ -708,14 +708,14 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
         if(d.bpp < 3) READ_WRITE_TEX(d, s,
             int srcblend = src[1];
             int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
         );
         else READ_WRITE_TEX(d, s,
             int srcblend = src[3];
             int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-            dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
-            dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
+            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[1] = uchar((dst[1]*dstblend + src[1]*srcblend)/255);
+            dst[2] = uchar((dst[2]*dstblend + src[2]*srcblend)/255);
         );
     }
     else
@@ -728,14 +728,14 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
         if(d.bpp < 3) READ_2_WRITE_TEX(d, s, src, m, mask,
             int srcblend = mask[0];
             int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
         );
         else READ_2_WRITE_TEX(d, s, src, m, mask,
             int srcblend = mask[0];
             int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-            dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
-            dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
+            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[1] = uchar((dst[1]*dstblend + src[1]*srcblend)/255);
+            dst[2] = uchar((dst[2]*dstblend + src[2]*srcblend)/255);
         );
     }
 }
@@ -1247,7 +1247,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     if(alphaformat(format)) t->type |= Texture::ALPHA;
     t->w = t->xs = s.w;
     t->h = t->ys = s.h;
-    t->ratio = t->w / static_cast<float>(t->h);
+    t->ratio = t->w / (float)t->h;
     int filter = !canreduce || reducefilter ? (mipit ? 2 : 1) : 0;
     glGenTextures(1, &t->id);
     if(s.compressed)
@@ -1401,9 +1401,9 @@ void texnormal(ImageData &s, int emphasis)
             normal.y += src[((y+s.h-1)%s.h)*s.pitch + x*s.bpp];
             normal.y -= src[((y+1)%s.h)*s.pitch + x*s.bpp];
             normal.normalize();
-            *dst++ = static_cast<uchar>(127.5f + normal.x*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.y*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.z*127.5f);
+            *dst++ = uchar(127.5f + normal.x*127.5f);
+            *dst++ = uchar(127.5f + normal.y*127.5f);
+            *dst++ = uchar(127.5f + normal.z*127.5f);
         }
     }
     s.replace(d);
@@ -1467,9 +1467,9 @@ static void blurtexture(int w, int h, uchar *dst, const uchar *src, int margin)
             {
                 vec v(dr-0x7F80, dg-0x7F80, db-0x7F80);
                 float mag = 127.5f/v.magnitude();
-                dst[0] = static_cast<uchar>(v.x*mag + 127.5f);
-                dst[1] = static_cast<uchar>(v.y*mag + 127.5f);
-                dst[2] = static_cast<uchar>(v.z*mag + 127.5f);
+                dst[0] = uchar(v.x*mag + 127.5f);
+                dst[1] = uchar(v.y*mag + 127.5f);
+                dst[2] = uchar(v.z*mag + 127.5f);
             }
             else
             {
@@ -1761,7 +1761,7 @@ Slot *defslot = NULL;
 
 const char *Slot::name() const { return tempformatstring("slot %d", index); }
 
-MatSlot::MatSlot() : Slot(static_cast<int>(this - materialslots)), VSlot(this) {}
+MatSlot::MatSlot() : Slot(int(this - materialslots)), VSlot(this) {}
 const char *MatSlot::name() const { return tempformatstring("material slot %s", findmaterialname(Slot::index)); }
 
 const char *DecalSlot::name() const { return tempformatstring("decal slot %d", Slot::index); }
@@ -1867,7 +1867,7 @@ void compactvslots(cube *c, int n)
 {
     if((compactvslotsprogress++&0xFFF)==0)
     {
-        renderprogress(min(static_cast<float>(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
+        renderprogress(min(float(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
     }
     for(int i = 0; i < n; ++i)
     {
@@ -1909,7 +1909,7 @@ int compactvslots(bool cull)
     }
     if(cull)
     {
-        int numdefaults = min(static_cast<int>(NUMDEFAULTSLOTS), slots.length());
+        int numdefaults = min(int(NUMDEFAULTSLOTS), slots.length());
         for(int i = 0; i < numdefaults; ++i)
         {
             slots[i]->variants->index = compactedvslots++;
@@ -2509,13 +2509,12 @@ const struct slottex
     {"g", TEX_GLOW},
     {"s", TEX_SPEC},
     {"z", TEX_DEPTH},
-    {"a", TEX_ALPHA},
-    {"e", TEX_ENVMAP}
+    {"a", TEX_ALPHA}
 };
 
 int findslottex(const char *name)
 {
-    for(int i = 0; i < static_cast<int>(sizeof(slottexs)/sizeof(slottex)); ++i)
+    for(int i = 0; i < int(sizeof(slottexs)/sizeof(slottex)); ++i)
     {
         if(!strcmp(slottexs[i].name, name)) return slottexs[i].id;
     }
@@ -2695,7 +2694,7 @@ static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
         READ_WRITE_RGB_TEX(c, g,
             for(int k = 0; k < 3; ++k)
             {
-                dst[k] = clamp(static_cast<int>(dst[k]) + static_cast<int>(src[0]*glowcolor[k]), 0, 255);
+                dst[k] = clamp(int(dst[k]) + int(src[0]*glowcolor[k]), 0, 255);
             }
         );
     }
@@ -2704,7 +2703,7 @@ static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
         READ_WRITE_RGB_TEX(c, g,
             for(int k = 0; k < 3; ++k)
             {
-                dst[k] = clamp(static_cast<int>(dst[k]) + static_cast<int>(src[k]*glowcolor[k]), 0, 255);
+                dst[k] = clamp(int(dst[k]) + int(src[k]*glowcolor[k]), 0, 255);
             }
         );
     }
@@ -2721,7 +2720,7 @@ static void mergespec(ImageData &c, ImageData &s)
     else
     {
         READ_WRITE_RGBA_TEX(c, s,
-            dst[3] = (static_cast<int>(src[0]) + static_cast<int>(src[1]) + static_cast<int>(src[2]))/3;
+            dst[3] = (int(src[0]) + int(src[1]) + int(src[2]))/3;
         );
     }
 }
@@ -2752,7 +2751,7 @@ static void mergealpha(ImageData &c, ImageData &s)
 static void collapsespec(ImageData &s)
 {
     ImageData d(s.w, s.h, 1);
-    if(s.bpp >= 3) READ_WRITE_TEX(d, s, { dst[0] = (static_cast<int>(src[0]) + static_cast<int>(src[1]) + static_cast<int>(src[2]))/3; });
+    if(s.bpp >= 3) READ_WRITE_TEX(d, s, { dst[0] = (int(src[0]) + int(src[1]) + int(src[2]))/3; });
     else READ_WRITE_TEX(d, s, { dst[0] = src[0]; });
     s.replace(d);
 }
@@ -2873,10 +2872,6 @@ void Slot::load()
         if(t.combined >= 0) continue;
         switch(t.type)
         {
-            case TEX_ENVMAP:
-                t.t = cubemapload(t.name);
-                break;
-
             default:
                 load(i, t);
                 break;
@@ -3083,390 +3078,6 @@ extern const cubemapside cubemapsides[6] =
     { GL_TEXTURE_CUBE_MAP_POSITIVE_Z, "up", true,  false, true  },
 };
 
-VARFP(envmapsize, 4, 7, 10, setupmaterials());
-
-Texture *cubemaploadwildcard(Texture *t, const char *name, bool mipit, bool msg, bool transient = false)
-{
-    string tname;
-    if(!name) copystring(tname, t->name);
-    else
-    {
-        copystring(tname, name);
-        t = textures.access(path(tname));
-        if(t)
-        {
-            if(!transient && t->type&Texture::TRANSIENT) t->type &= ~Texture::TRANSIENT;
-            return t;
-        }
-    }
-    char *wildcard = strchr(tname, '*');
-    ImageData surface[6];
-    string sname;
-    if(!wildcard) copystring(sname, tname);
-    int tsize = 0, compress = 0;
-    for(int i = 0; i < 6; ++i)
-    {
-        if(wildcard)
-        {
-            copystring(sname, stringslice(tname, wildcard));
-            concatstring(sname, cubemapsides[i].name);
-            concatstring(sname, wildcard+1);
-        }
-        ImageData &s = surface[i];
-        texturedata(s, sname, msg, &compress);
-        if(!s.data) return NULL;
-        if(s.w != s.h)
-        {
-            if(msg) conoutf(Console_Error, "cubemap texture %s does not have square size", sname);
-            return NULL;
-        }
-        if(s.compressed ? s.compressed!=surface[0].compressed || s.w!=surface[0].w || s.h!=surface[0].h || s.levels!=surface[0].levels : surface[0].compressed || s.bpp!=surface[0].bpp)
-        {
-            if(msg) conoutf(Console_Error, "cubemap texture %s doesn't match other sides' format", sname);
-            return NULL;
-        }
-        tsize = max(tsize, max(s.w, s.h));
-    }
-    if(name)
-    {
-        char *key = newstring(tname);
-        t = &textures[key];
-        t->name = key;
-    }
-    t->type = Texture::CUBEMAP;
-    if(transient) t->type |= Texture::TRANSIENT;
-    GLenum format;
-    if(surface[0].compressed)
-    {
-        format = uncompressedformat(surface[0].compressed);
-        t->bpp = formatsize(format);
-        t->type |= Texture::COMPRESSED;
-    }
-    else
-    {
-        format = texformat(surface[0].bpp, true);
-        t->bpp = surface[0].bpp;
-    }
-    if(alphaformat(format)) t->type |= Texture::ALPHA;
-    t->mipmap = mipit;
-    t->clamp = 3;
-    t->xs = t->ys = tsize;
-    t->w = t->h = min(1<<envmapsize, tsize);
-    resizetexture(t->w, t->h, mipit, false, GL_TEXTURE_CUBE_MAP, compress, t->w, t->h);
-    GLenum component = format;
-    if(!surface[0].compressed)
-    {
-        component = compressedformat(format, t->w, t->h, compress);
-        switch(component)
-        {
-            case GL_RGB: component = GL_RGB5; break;
-        }
-    }
-    glGenTextures(1, &t->id);
-    for(int i = 0; i < 6; ++i)
-    {
-        ImageData &s = surface[i];
-        const cubemapside &side = cubemapsides[i];
-        texreorient(s, side.flipx, side.flipy, side.swapxy);
-        if(s.compressed)
-        {
-            int w = s.w, h = s.h, levels = s.levels, level = 0;
-            uchar *data = s.data;
-            while(levels > 1 && (w > t->w || h > t->h))
-            {
-                data += s.calclevelsize(level++);
-                levels--;
-                if(w > 1) w /= 2;
-                if(h > 1) h /= 2;
-            }
-            createcompressedtexture(!i ? t->id : 0, w, h, data, s.align, s.bpp, levels, 3, mipit ? 2 : 1, s.compressed, side.target, true);
-        }
-        else
-        {
-            createtexture(!i ? t->id : 0, t->w, t->h, s.data, 3, mipit ? 2 : 1, component, side.target, s.w, s.h, s.pitch, false, format, true);
-        }
-    }
-    return t;
-}
-
-Texture *cubemapload(const char *name, bool mipit, bool msg, bool transient)
-{
-    string pname;
-    copystring(pname, makerelpath("media/sky", name));
-    path(pname);
-    Texture *t = NULL;
-    if(!strchr(pname, '*'))
-    {
-        DEF_FORMAT_STRING(jpgname, "%s_*.jpg", pname);
-        t = cubemaploadwildcard(NULL, jpgname, mipit, false, transient);
-        if(!t)
-        {
-            DEF_FORMAT_STRING(pngname, "%s_*.png", pname);
-            t = cubemaploadwildcard(NULL, pngname, mipit, false, transient);
-            if(!t && msg) conoutf(Console_Error, "could not load envmap %s", name);
-        }
-    }
-    else t = cubemaploadwildcard(NULL, pname, mipit, msg, transient);
-    return t;
-}
-
-VARR(envmapradius, 0, 128, 10000);
-VARR(envmapbb, 0, 0, 1);
-VARP(aaenvmap, 0, 1, 1);
-
-struct envmap
-{
-    int radius, size, blur;
-    vec o;
-    GLuint tex;
-
-    envmap() : radius(-1), size(0), blur(0), o(0, 0, 0), tex(0) {}
-
-    void clear()
-    {
-        if(tex) { glDeleteTextures(1, &tex); tex = 0; }
-    }
-};
-
-static vector<envmap> envmaps;
-
-void clearenvmaps()
-{
-    for(int i = 0; i < envmaps.length(); i++)
-    {
-        envmaps[i].clear();
-    }
-    envmaps.shrink(0);
-}
-
-static GLuint emfbo[3] = { 0, 0, 0 }, emtex[2] = { 0, 0 };
-static int emtexsize = -1;
-
-//generates a six-faced cubemap for a specified location
-//arguments:
-// vec &o: vec object with a world location
-// int envmapsize: size of the envmap (each map has dimensions of (2^n)x(2^n))
-// int blur: 0 for no blur, >1 for blurring
-// bool onlysky: toggles whether to calculate for world geometry (as player sees it) or just skybox
-//returns:
-// tex: cubemap texture
-GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
-{
-    int rendersize = 1<<(envmapsize+aaenvmap), sizelimit = min(hwcubetexsize, min(gw, gh));
-    if(maxtexsize) sizelimit = min(sizelimit, maxtexsize);
-    while(rendersize > sizelimit) rendersize /= 2;
-    int texsize = min(rendersize, 1<<envmapsize);
-    if(!aaenvmap)
-    {
-        rendersize = texsize;
-    }
-    if(!emtex[0])
-    {
-        glGenTextures(2, emtex);
-    }
-    if(!emfbo[0])
-    {
-        glGenFramebuffers_(3, emfbo);
-    }
-    if(emtexsize != texsize)
-    {
-        emtexsize = texsize;
-        for(int i = 0; i < 2; ++i)
-        {
-            createtexture(emtex[i], emtexsize, emtexsize, NULL, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
-            glBindFramebuffer_(GL_FRAMEBUFFER, emfbo[i]);
-            glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, emtex[i], 0);
-            if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            {
-                fatal("failed allocating envmap buffer!");
-            }
-        }
-    }
-    GLuint tex = 0;
-    glGenTextures(1, &tex);
-    // workaround for Catalyst bug:
-    // all texture levels must be specified before glCopyTexSubImage2D is called, otherwise it crashes
-    for(int i = 0; i < 6; ++i)
-    {
-        createtexture(!i ? tex : 0, texsize, texsize, NULL, 3, 2, GL_RGB5, cubemapsides[i].target);
-    }
-    float yaw = 0, pitch = 0;
-    for(int i = 0; i < 6; ++i)
-    {
-        const cubemapside &side = cubemapsides[i];
-        switch(side.target) //sets the six faces for which the cubemap is defined
-        {
-            case GL_TEXTURE_CUBE_MAP_NEGATIVE_X: // lf
-                yaw = 90; pitch = 0; break;
-            case GL_TEXTURE_CUBE_MAP_POSITIVE_X: // rt
-                yaw = 270; pitch = 0; break;
-            case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y: // bk
-                yaw = 180; pitch = 0; break;
-            case GL_TEXTURE_CUBE_MAP_POSITIVE_Y: // ft
-                yaw = 0; pitch = 0; break;
-            case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z: // dn
-                yaw = 270; pitch = -90; break;
-            case GL_TEXTURE_CUBE_MAP_POSITIVE_Z: // up
-                yaw = 270; pitch = 90; break;
-        }
-        drawcubemap(rendersize, o, yaw, pitch, side, onlysky); //send the real cubemap drawing to drawcubemap()
-        copyhdr(rendersize, rendersize, emfbo[0], texsize, texsize, side.flipx, !side.flipy, side.swapxy);
-        if(blur > 0)
-        {
-            float blurweights[MAXBLURRADIUS+1], bluroffsets[MAXBLURRADIUS+1];
-            setupblurkernel(blur, blurweights, bluroffsets);
-            for(int j = 0; j < 2; ++j)
-            {
-                glBindFramebuffer_(GL_FRAMEBUFFER, emfbo[1]);
-                glViewport(0, 0, texsize, texsize);
-                setblurshader(j, 1, blur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
-                glBindTexture(GL_TEXTURE_RECTANGLE, emtex[0]);
-                screenquad(texsize, texsize);
-                swap(emfbo[0], emfbo[1]);
-                swap(emtex[0], emtex[1]);
-            }
-        }
-        for(int level = 0, lsize = texsize;; level++)
-        {
-            glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]);
-            glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[2]);
-            glFramebufferTexture2D_(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, side.target, tex, level);
-            glBlitFramebuffer_(0, 0, lsize, lsize, 0, 0, lsize, lsize, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            if(lsize <= 1) break;
-            int dsize = lsize/2;
-            glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]);
-            glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[1]);
-            glBlitFramebuffer_(0, 0, lsize, lsize, 0, 0, dsize, dsize, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-            lsize = dsize;
-            swap(emfbo[0], emfbo[1]);
-            swap(emtex[0], emtex[1]);
-        }
-    }
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, hudw, hudh);
-    clientkeepalive();
-    return tex;
-}
-
-void initenvmaps()
-{
-    clearenvmaps();
-    envmaps.add().size = hasskybox() ? 0 : 1;
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
-    {
-        const extentity &ent = *ents[i];
-        if(ent.type != EngineEnt_Envmap)
-        {
-            continue;
-        }
-        envmap &em = envmaps.add();
-        em.radius = ent.attr1 ? clamp(static_cast<int>(ent.attr1), 0, 10000) : envmapradius;
-        em.size = ent.attr2 ? clamp(static_cast<int>(ent.attr2), 4, 9) : 0;
-        em.blur = ent.attr3 ? clamp(static_cast<int>(ent.attr3), 1, 2) : 0;
-        em.o = ent.o;
-    }
-}
-
-void genenvmaps()
-{
-    if(envmaps.empty()) return;
-    renderprogress(0, "generating environment maps...");
-    int lastprogress = SDL_GetTicks();
-    gl_setupframe(true);
-    for(int i = 0; i < envmaps.length(); i++)
-    {
-        envmap &em = envmaps[i];
-        em.tex = genenvmap(em.o, em.size ? min(em.size, envmapsize) : envmapsize, em.blur, em.radius < 0);
-        if(renderedframe)
-        {
-            continue;
-        }
-        int millis = SDL_GetTicks();
-        if(millis - lastprogress >= 250)
-        {
-            renderprogress(static_cast<float>(i+1)/envmaps.length(), "generating environment maps...", true);
-            lastprogress = millis;
-        }
-    }
-    if(emfbo[0])
-    {
-        glDeleteFramebuffers_(3, emfbo);
-        memset(emfbo, 0, sizeof(emfbo));
-    }
-    if(emtex[0])
-    {
-        glDeleteTextures(2, emtex);
-        memset(emtex, 0, sizeof(emtex));
-    }
-    emtexsize = -1;
-}
-
-ushort closestenvmap(const vec &o)
-{
-    ushort minemid = EnvmapID_Sky;
-    float mindist = 1e16f;
-    for(int i = 0; i < envmaps.length(); i++)
-    {
-        envmap &em = envmaps[i];
-        float dist;
-        if(envmapbb)
-        {
-            if(!o.insidebb(vec(em.o).sub(em.radius), vec(em.o).add(em.radius)))
-            {
-                continue;
-            }
-            dist = em.o.dist(o);
-        }
-        else
-        {
-            dist = em.o.dist(o);
-            if(dist > em.radius) continue;
-        }
-        if(dist < mindist)
-        {
-            minemid = EnvmapID_Reserved + i;
-            mindist = dist;
-        }
-    }
-    return minemid;
-}
-
-ushort closestenvmap(int orient, const ivec &co, int size)
-{
-    vec loc(co);
-    int dim = DIMENSION(orient);
-    if(DIM_COORD(orient)) loc[dim] += size;
-    loc[R[dim]] += size/2;
-    loc[C[dim]] += size/2;
-    return closestenvmap(loc);
-}
-
-static inline GLuint lookupskyenvmap()
-{
-    return envmaps.length() && envmaps[0].radius < 0 ? envmaps[0].tex : 0;
-}
-
-GLuint lookupenvmap(Slot &slot)
-{
-    for(int i = 0; i < slot.sts.length(); i++)
-    {
-        if(slot.sts[i].type==TEX_ENVMAP && slot.sts[i].t)
-        {
-            return slot.sts[i].t->id;
-        }
-    }
-    return lookupskyenvmap();
-}
-
-GLuint lookupenvmap(ushort emid)
-{
-    if(emid==EnvmapID_Sky || emid==EnvmapID_Custom || drawtex) return lookupskyenvmap();
-    if(emid==EnvmapID_None || !envmaps.inrange(emid-EnvmapID_Reserved)) return 0;
-    GLuint tex = envmaps[emid-EnvmapID_Reserved].tex;
-    return tex ? tex : lookupskyenvmap();
-}
-
 void cleanuptexture(Texture *t)
 {
     DELETEA(t->alphamask);
@@ -3476,7 +3087,6 @@ void cleanuptexture(Texture *t)
 
 void cleanuptextures()
 {
-    clearenvmaps();
     for(int i = 0; i < slots.length(); i++)
     {
         slots[i]->cleanup();
@@ -3515,10 +3125,6 @@ bool reloadtexture(Texture &tex)
             if(!texturedata(s, tex.name, true, &compress) || !newtexture(&tex, NULL, s, tex.clamp, tex.mipmap, false, false, compress)) return false;
             break;
         }
-
-        case Texture::CUBEMAP:
-            if(!cubemaploadwildcard(&tex, NULL, tex.mipmap, true)) return false;
-            break;
     }
     return true;
 }
@@ -3546,7 +3152,7 @@ void reloadtextures()
     int reloaded = 0;
     ENUMERATE(textures, Texture, tex,
     {
-        loadprogress = static_cast<float>(++reloaded)/textures.numelems;
+        loadprogress = float(++reloaded)/textures.numelems;
         reloadtexture(tex);
     });
     loadprogress = 0;

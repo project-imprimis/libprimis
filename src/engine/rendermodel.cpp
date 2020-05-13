@@ -125,13 +125,6 @@ void mdlglow(float *percent, float *delta, float *pulse)
 }
 COMMAND(mdlglow, "fff");
 
-void mdlenvmap(float *envmapmax, float *envmapmin, char *envmap)
-{
-    CHECK_MDL;
-    loadingmodel->setenvmap(*envmapmin, *envmapmax, envmap[0] ? cubemapload(envmap) : NULL);
-}
-COMMAND(mdlenvmap, "ffs");
-
 void mdlfullbright(float *fullbright)
 {
     CHECK_MDL;

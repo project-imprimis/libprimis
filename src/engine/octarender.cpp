@@ -181,15 +181,15 @@ enum
 
 struct sortkey
 {
-    ushort tex, envmap;
+    ushort tex;
     uchar orient, layer, alpha;
 
     sortkey() {}
-    sortkey(ushort tex, uchar orient, uchar layer = BlendLayer_Top, ushort envmap = EnvmapID_None, uchar alpha = Alpha_None)
-     : tex(tex), envmap(envmap), orient(orient), layer(layer), alpha(alpha)
+    sortkey(ushort tex, uchar orient, uchar layer = BlendLayer_Top, uchar alpha = Alpha_None)
+     : tex(tex), orient(orient), layer(layer), alpha(alpha)
     {}
 
-    bool operator==(const sortkey &o) const { return tex==o.tex && envmap==o.envmap && orient==o.orient && layer==o.layer && alpha==o.alpha; }
+    bool operator==(const sortkey &o) const { return tex==o.tex && orient==o.orient && layer==o.layer && alpha==o.alpha; }
 
     static inline bool sort(const sortkey &x, const sortkey &y)
     {
@@ -199,8 +199,6 @@ struct sortkey
         if(x.layer > y.layer) return false;
         if(x.tex == y.tex)
         {
-            if(x.envmap < y.envmap) return true;
-            if(x.envmap > y.envmap) return false;
             if(x.orient < y.orient) return true;
             if(x.orient > y.orient) return false;
             return false;
@@ -227,21 +225,19 @@ static inline uint hthash(const sortkey &k)
 
 struct decalkey
 {
-    ushort tex, envmap, reuse;
+    ushort tex, reuse;
 
     decalkey() {}
-    decalkey(ushort tex, ushort envmap = EnvmapID_None, ushort reuse = 0)
-     : tex(tex), envmap(envmap), reuse(reuse)
+    decalkey(ushort tex, ushort reuse = 0)
+     : tex(tex), reuse(reuse)
     {}
 
-    bool operator==(const decalkey &o) const { return tex==o.tex && envmap==o.envmap && reuse==o.reuse; }
+    bool operator==(const decalkey &o) const { return tex==o.tex && reuse==o.reuse; }
 
     static inline bool sort(const decalkey &x, const decalkey &y)
     {
         if(x.tex == y.tex)
         {
-            if(x.envmap < y.envmap) return true;
-            if(x.envmap > y.envmap) return false;
             if(x.reuse < y.reuse) return true;
             else return false;
         }
@@ -439,8 +435,7 @@ struct vacollect : verthash
                 {
                     continue;
                 }
-                ushort envmap = s.shader->type&SHADER_ENVMAP ? (s.texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(e.o)) : EnvmapID_None;
-                decalkey k(e.attr1, envmap);
+                decalkey k(e.attr1);
                 gendecal(e, s, k);
             }
         }
@@ -546,7 +541,6 @@ struct vacollect : verthash
                 e.texture = k.tex;
                 e.orient = k.orient;
                 e.layer = k.layer;
-                e.envmap = k.envmap;
                 ushort *startbuf = curbuf;
                 e.minvert = USHRT_MAX;
                 e.maxvert = 0;
@@ -604,10 +598,6 @@ struct vacollect : verthash
             {
                 va->texmask |= 1<<slot.sts[j].type;
             }
-            if(slot.shader->type&SHADER_ENVMAP)
-            {
-                va->texmask |= 1<<TEX_ENVMAP;
-            }
         }
 
         va->decalbuf = 0;
@@ -627,7 +617,6 @@ struct vacollect : verthash
                 elementset &e = va->decalelems[i];
                 e.texture = k.tex;
                 e.reuse = k.reuse;
-                e.envmap = k.envmap;
                 ushort *startbuf = curbuf;
                 e.minvert = USHRT_MAX;
                 e.maxvert = 0;
@@ -930,7 +919,7 @@ void guessnormals(const vec *pos, int numverts, vec *normals)
     normals[3] = n2;
 }
 
-void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, ushort envmap = EnvmapID_None, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
+void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
 {
     vec4 sgen, tgen;
     calctexgen(vslot, orient, sgen, tgen);
@@ -999,7 +988,7 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
         }
     }
 
-    sortkey key(texture, vslot.scroll.iszero() ? Orient_Any : orient, layer&BlendLayer_Bottom ? layer : BlendLayer_Top, envmap, alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
+    sortkey key(texture, vslot.scroll.iszero() ? Orient_Any : orient, layer&BlendLayer_Bottom ? layer : BlendLayer_Top, alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
     addtris(vslot, orient, key, verts, index, numverts, convex, tj);
 
     if(grassy)
@@ -1217,20 +1206,18 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
 
             VSlot &vslot = lookupvslot(c.texture[i], true),
                   *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, true) : NULL;
-            ushort envmap = vslot.slot->shader->type&SHADER_ENVMAP ? (vslot.slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size)) : EnvmapID_None,
-                   envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size)) : EnvmapID_None;
             while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
             int hastj = tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1) ? tj : -1;
             int grassy = vslot.slot->grass && i!=Orient_Bottom ? (vis!=3 || convex ? 1 : 2) : 0;
             if(!c.ext)
-                addcubeverts(vslot, i, size, pos, convex, c.texture[i], NULL, numverts, hastj, envmap, grassy, (c.material&Mat_Alpha)!=0);
+                addcubeverts(vslot, i, size, pos, convex, c.texture[i], NULL, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0);
             else
             {
                 const surfaceinfo &surf = c.ext->surfaces[i];
                 if(!surf.numverts || surf.numverts&BlendLayer_Top)
-                    addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, envmap, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&BlendLayer_Blend);
+                    addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&BlendLayer_Blend);
                 if(surf.numverts&BlendLayer_Bottom)
-                    addcubeverts(layer ? *layer : vslot, i, size, pos, convex, vslot.layer, verts, numverts, hastj, envmap2, 0, false, surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top);
+                    addcubeverts(layer ? *layer : vslot, i, size, pos, convex, vslot.layer, verts, numverts, hastj, 0, false, surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top);
             }
         }
     }
@@ -1397,7 +1384,7 @@ void updatevabbs(bool force)
 struct mergedface
 {
     uchar orient, numverts;
-    ushort mat, tex, envmap;
+    ushort mat, tex;
     vertinfo *verts;
     int tjoints;
 };
@@ -1429,7 +1416,6 @@ int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
             mf.orient = i;
             mf.mat = c.material;
             mf.tex = c.texture[i];
-            mf.envmap = EnvmapID_None;
             mf.numverts = surf.numverts;
             mf.verts = c.ext->verts() + surf.verts;
             mf.tjoints = -1;
@@ -1441,17 +1427,11 @@ int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
                 while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
                 if(tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1)) mf.tjoints = tj;
 
-                VSlot &vslot = lookupvslot(mf.tex, true),
-                      *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, true) : NULL;
-                if(vslot.slot->shader->type&SHADER_ENVMAP)
-                    mf.envmap = vslot.slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size);
-                ushort envmap2 = layer && layer->slot->shader->type&SHADER_ENVMAP ? (layer->slot->texmask&(1<<TEX_ENVMAP) ? EnvmapID_Custom : closestenvmap(i, co, size)) : EnvmapID_None;
-
+                VSlot &vslot = lookupvslot(mf.tex, true);
                 if(surf.numverts&BlendLayer_Top) vamerges[level].add(mf);
                 if(surf.numverts&BlendLayer_Bottom)
                 {
                     mf.tex = vslot.layer;
-                    mf.envmap = envmap2;
                     mf.numverts &= ~BlendLayer_Blend;
                     mf.numverts |= surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top;
                     vamerges[level].add(mf);
@@ -1502,7 +1482,7 @@ void addmergedverts(int level, const ivec &o)
         }
         VSlot &vslot = lookupvslot(mf.tex, true);
         int grassy = vslot.slot->grass && mf.orient!=Orient_Bottom && mf.numverts&BlendLayer_Top ? 2 : 0;
-        addcubeverts(vslot, mf.orient, 1<<level, pos, 0, mf.tex, mf.verts, numverts, mf.tjoints, mf.envmap, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&BlendLayer_Blend);
+        addcubeverts(vslot, mf.orient, 1<<level, pos, 0, mf.tex, mf.verts, numverts, mf.tjoints, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&BlendLayer_Blend);
         vahasmerges |= Merge_Use;
     }
     mfl.setsize(0);
@@ -1863,7 +1843,6 @@ void allchanged(bool load)
     clearvas(worldroot);
     resetqueries();
     resetclipplanes();
-    if(load) initenvmaps();
     entitiesinoctanodes();
     tjoints.setsize(0);
     if(filltjoints) findtjoints();
@@ -1876,7 +1855,6 @@ void allchanged(bool load)
     {
         genshadowmeshes();
         seedparticles();
-        genenvmaps();
         drawminimap();
     }
 }

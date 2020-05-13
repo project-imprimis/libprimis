@@ -805,14 +805,6 @@ void renderentradius(extentity &e, bool color)
             renderentsphere(e, e.attr2);
             break;
 
-        case EngineEnt_Envmap:
-        {
-            extern int envmapradius;
-            if(color) gle::colorf(0, 1, 1);
-            renderentsphere(e, e.attr1 ? max(0, min(10000, int(e.attr1))) : envmapradius);
-            break;
-        }
-
         case EngineEnt_Mapmodel:
         {
             if(color) gle::colorf(0, 1, 1);

@@ -1853,8 +1853,6 @@ void drawminimap()
 
 void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapside &side, bool onlysky)
 {
-    drawtex = Draw_TexEnvmap;
-
     physent *oldcamera = camera1;
     static physent cmcamera;
     cmcamera = *player;

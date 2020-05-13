@@ -9,7 +9,6 @@ enum
     EngineEnt_Light,
     EngineEnt_Mapmodel,
     EngineEnt_Playerstart,
-    EngineEnt_Envmap,
     EngineEnt_Particles,
     EngineEnt_Sound,
     EngineEnt_Spotlight,

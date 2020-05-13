@@ -2,7 +2,7 @@
 
 struct elementset
 {
-    ushort texture, envmap;
+    ushort texture;
     union
     {
         struct { uchar orient, layer; };
@@ -11,25 +11,13 @@ struct elementset
     ushort length, minvert, maxvert;
 };
 
-enum
-{
-    EnvmapID_None = 0,
-    EnvmapID_Custom,
-    EnvmapID_Sky,
-    EnvmapID_Reserved
-};
-
 struct materialsurface
 {
     ivec o;
     ushort csize, rsize;
     ushort material, skip;
     uchar orient, visible;
-    union
-    {
-        ushort envmap;
-        uchar ends;
-    };
+    uchar ends;
 };
 
 struct vertinfo

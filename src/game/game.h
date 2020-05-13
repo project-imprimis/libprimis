@@ -115,7 +115,6 @@ enum                            // static entity types
     GamecodeEnt_Light                = EngineEnt_Light,        // lightsource, attr1 = radius, attr2 = red, attr3 = green, attr4 = blue, attr5 = flags
     GamecodeEnt_Mapmodel             = EngineEnt_Mapmodel,     // attr1 = index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
     GamecodeEnt_Playerstart,                                   // attr1 = angle, attr2 = team
-    GamecodeEnt_Envmap               = EngineEnt_Envmap,       // attr1 = radius, attr2 = size, attr3 = blur
     GamecodeEnt_Particles            = EngineEnt_Particles,    // attr1 = index, attrs2-5 vary on particle index
     GamecodeEnt_MapSound             = EngineEnt_Sound,        // attr1 = index, attr2 = sound
     GamecodeEnt_Spotlight            = EngineEnt_Spotlight,    // attr1 = angle

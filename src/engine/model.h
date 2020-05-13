@@ -31,14 +31,12 @@ struct model
     virtual bool load() = 0;
     virtual int type() const = 0;
     virtual BIH *setBIH() { return NULL; }
-    virtual bool envmapped() const { return false; }
     virtual bool skeletal() const { return false; }
     virtual bool animated() const { return false; }
     virtual bool pitched() const { return true; }
     virtual bool alphatested() const { return false; }
 
     virtual void setshader(Shader *shader) {}
-    virtual void setenvmap(float envmapmin, float envmapmax, Texture *envmap) {}
     virtual void setspec(float spec) {}
     virtual void setgloss(int gloss) {}
     virtual void setglow(float glow, float glowdelta, float glowpulse) {}

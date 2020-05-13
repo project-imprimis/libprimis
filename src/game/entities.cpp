@@ -48,7 +48,7 @@ namespace entities
     {
         static const char * const entmdlnames[GamecodeEnt_MaxEntTypes] =
         {
-            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
             "game/teleport", NULL, NULL,
             NULL
         };
@@ -489,7 +489,7 @@ namespace entities
     {
         static const char * const entnames[GamecodeEnt_MaxEntTypes] =
         {
-            "none?", "light", "mapmodel", "playerstart", "envmap", "particles", "sound", "spotlight", "decal",
+            "none?", "light", "mapmodel", "playerstart", "particles", "sound", "spotlight", "decal",
             "teleport", "teledest", "jumppad",
             "flag"
         };

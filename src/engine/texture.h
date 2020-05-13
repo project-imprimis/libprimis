@@ -100,7 +100,6 @@ enum
 {
     SHADER_DEFAULT    = 0,
     SHADER_WORLD      = 1<<0,
-    SHADER_ENVMAP     = 1<<1,
     SHADER_REFRACT    = 1<<2,
     SHADER_OPTION     = 1<<3,
     SHADER_DYNAMIC    = 1<<4,
@@ -624,7 +623,6 @@ enum
     TEX_DIFFUSE = 0,
     TEX_NORMAL,
     TEX_GLOW,
-    TEX_ENVMAP,
 
     TEX_SPEC,
     TEX_DEPTH,

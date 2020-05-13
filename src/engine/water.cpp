@@ -455,7 +455,6 @@ GETMATIDXVAR(lava, spec, int)
 
 VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
 VARR(waterreflectstep, 1, 32, 10000);
-VARFP(waterenvmap, 0, 1, 1, { preloadwatershaders(); });
 VARFP(waterfallenv, 0, 1, 1, preloadwatershaders());
 
 void preloadwatershaders(bool force)
@@ -475,10 +474,6 @@ void preloadwatershaders(bool force)
         {
             useshaderbyname("waterreflectcaustics");
         }
-        else if(waterenvmap)
-        {
-            useshaderbyname("waterenvcaustics");
-        }
         else
         {
             useshaderbyname("watercaustics");
@@ -489,10 +484,6 @@ void preloadwatershaders(bool force)
         if(waterreflect)
         {
             useshaderbyname("waterreflect");
-        }
-        else if(waterenvmap)
-        {
-            useshaderbyname("waterenv");
         }
         else
         {
@@ -704,11 +695,6 @@ void renderwaterfalls()
         glBindTexture(GL_TEXTURE_2D, tex->id);
         glActiveTexture_(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.inrange(2) ? (wslot.sts.inrange(3) ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.inrange(1) ? wslot.sts[1].t->id : notexture->id));
-        if(waterfallenv)
-        {
-            glActiveTexture_(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, lookupenvmap(wslot));
-        }
         glActiveTexture_(GL_TEXTURE0);
         for(int i = 0; i < surfs.length(); i++)
         {
@@ -741,11 +727,6 @@ void renderwater()
         if(caustics && causticscale && causticmillis)
         {
             setupcaustics(2);
-        }
-        if(waterenvmap && !waterreflect && drawtex != Draw_TexMinimap)
-        {
-            glActiveTexture_(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, lookupenvmap(wslot));
         }
         glActiveTexture_(GL_TEXTURE0);
 
@@ -791,10 +772,6 @@ void renderwater()
             {
                 SETWATERSHADER(above, waterreflectcaustics);
             }
-            else if(waterenvmap)
-            {
-                SETWATERSHADER(above, waterenvcaustics);
-            }
             else
             {
                 SETWATERSHADER(above, watercaustics);
@@ -805,10 +782,6 @@ void renderwater()
             if(waterreflect)
             {
                 SETWATERSHADER(above, waterreflect);
-            }
-            else if(waterenvmap)
-            {
-                SETWATERSHADER(above, waterenv);
             }
             else
             {

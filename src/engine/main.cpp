@@ -109,7 +109,7 @@ void writeinitcfg()
     std::ofstream cfgfile;
     if(homedir[0]) // Verify that the home directory is set
     {
-        cfgfile.open(homedir + std::string("config/init.cfg"), std::ios::trunc);
+        cfgfile.open(static_cast<std::string>(homedir) + std::string("config/init.cfg"), std::ios::trunc);
     }
 
     if(cfgfile.is_open())

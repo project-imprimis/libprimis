@@ -544,7 +544,6 @@ void setupmaterials(int start, int len)
                 vec center(m.o);
                 center[R[dim]] += m.rsize/2;
                 center[C[dim]] += m.csize/2;
-                m.envmap = closestenvmap(center);
             }
             if(matvol)
             {
@@ -935,7 +934,7 @@ int findmaterials()
                 i += m.skip;
             }
         }
-        if(drawtex != Draw_TexEnvmap && va->glassmin.x <= va->glassmax.x && calcbbscissor(va->glassmin, va->glassmax, sx1, sy1, sx2, sy2))
+        if(va->glassmin.x <= va->glassmax.x && calcbbscissor(va->glassmin, va->glassmax, sx1, sy1, sx2, sy2))
         {
             matsolidsx1 = min(matsolidsx1, sx1);
             matsolidsy1 = min(matsolidsy1, sy1);
@@ -1047,7 +1046,6 @@ void renderglass()
         GLOBALPARAMF(glassrefract, col.x*refractscale, col.y*refractscale, col.z*refractscale, refract*viewh);
         GLOBALPARAMF(glassspec, spec/100.0f);
 
-        short envmap = EnvmapID_None;
         if(!glassenv)
         {
             SETSHADER(glass);
@@ -1055,20 +1053,6 @@ void renderglass()
         for(int i = 0; i < surfs.length(); i++)
         {
             materialsurface &m = surfs[i];
-            if(m.envmap != envmap && glassenv)
-            {
-                xtraverts += gle::end();
-                if(m.envmap != EnvmapID_None && glassenv)
-                {
-                    SETSHADER(glassenv);
-                }
-                else
-                {
-                    SETSHADER(glass);
-                }
-                glBindTexture(GL_TEXTURE_CUBE_MAP, lookupenvmap(m.envmap));
-                envmap = m.envmap;
-            }
             drawglass(m, 0.1f, &matnormals[m.orient]);
         }
         xtraverts += gle::end();

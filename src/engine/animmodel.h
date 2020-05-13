@@ -73,10 +73,10 @@ struct animmodel : model
 
     struct shaderparams
     {
-        float spec, gloss, glow, glowdelta, glowpulse, fullbright, envmapmin, envmapmax, scrollu, scrollv, alphatest;
+        float spec, gloss, glow, glowdelta, glowpulse, fullbright, scrollu, scrollv, alphatest;
         vec color;
 
-        shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), envmapmin(0), envmapmax(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
+        shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
     };
 
     struct shaderparamskey
@@ -111,15 +111,14 @@ struct animmodel : model
     struct skin : shaderparams
     {
         part *owner;
-        Texture *tex, *decal, *masks, *envmap, *normalmap;
+        Texture *tex, *decal, *masks, *normalmap;
         Shader *shader, *rsmshader;
         int cullface;
         shaderparamskey *key;
 
-        skin() : owner(0), tex(notexture), decal(NULL), masks(notexture), envmap(NULL), normalmap(NULL), shader(NULL), rsmshader(NULL), cullface(1), key(NULL) {}
+        skin() : owner(0), tex(notexture), decal(NULL), masks(notexture), normalmap(NULL), shader(NULL), rsmshader(NULL), cullface(1), key(NULL) {}
 
         bool masked() const { return masks != notexture; }
-        bool envmapped() const { return envmapmax>0; }
         bool bumpmapped() const { return normalmap != NULL; }
         bool alphatested() const { return alphatest > 0 && tex->type&Texture::ALPHA; }
         bool decaled() const { return decal != NULL; }
@@ -154,7 +153,6 @@ struct animmodel : model
                 curglow += glowdelta*2*fabs(curpulse - 0.5f);
             }
             LOCALPARAMF(maskscale, spec, gloss, curglow);
-            if(envmapped()) LOCALPARAMF(envmapscale, envmapmin-envmapmax, envmapmax);
         }
 
         Shader *loadshader()
@@ -190,7 +188,6 @@ struct animmodel : model
             if(alphatested()) opts[optslen++] = 'a';
             if(decaled()) opts[optslen++] = decal->type&Texture::ALPHA ? 'D' : 'd';
             if(bumpmapped()) opts[optslen++] = 'n';
-            if(envmapped()) { opts[optslen++] = 'm'; opts[optslen++] = 'e'; }
             else if(masked()) opts[optslen++] = 'm';
             if(!cullface) opts[optslen++] = 'c';
             opts[optslen++] = '\0';
@@ -274,17 +271,6 @@ struct animmodel : model
                 activetmu = 1;
                 glBindTexture(GL_TEXTURE_2D, masks->id);
                 lastmasks = masks;
-            }
-            if(envmapped())
-            {
-                GLuint emtex = envmap ? envmap->id : closestenvmaptex;
-                if(lastenvmaptex!=emtex)
-                {
-                    glActiveTexture_(GL_TEXTURE2);
-                    activetmu = 2;
-                    glBindTexture(GL_TEXTURE_CUBE_MAP, emtex);
-                    lastenvmaptex = emtex;
-                }
             }
             if(activetmu != 0) glActiveTexture_(GL_TEXTURE0);
             setshader(b, as);
@@ -1431,22 +1417,6 @@ struct animmodel : model
                 colorscale = color;
                 shaderparamskey::invalidate();
             }
-
-            if(envmapped())
-            {
-                closestenvmaptex = lookupenvmap(closestenvmap(o));
-            }
-            else if(a)
-            {
-                for(int i = 0; a[i].tag; i++)
-                {
-                    if(a[i].m && a[i].m->envmapped())
-                    {
-                        closestenvmaptex = lookupenvmap(closestenvmap(o));
-                        break;
-                    }
-                }
-            }
         }
 
         if(depthoffset && !enabledepthoffset)
@@ -1570,21 +1540,6 @@ struct animmodel : model
         return parts[0]->unlink(p);
     }
 
-    bool envmapped() const
-    {
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                if(parts[i]->skins[j].envmapped())
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     bool animated() const
     {
         if(spinyaw || spinpitch || spinroll)
@@ -1676,30 +1631,6 @@ struct animmodel : model
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
                 parts[i]->skins[j].shader = shader;
-            }
-        }
-    }
-
-    void setenvmap(float envmapmin, float envmapmax, Texture *envmap)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                skin &s = parts[i]->skins[j];
-                if(envmapmax)
-                {
-                    s.envmapmin = envmapmin;
-                    s.envmapmax = envmapmax;
-                }
-                if(envmap)
-                {
-                    s.envmap = envmap;
-                }
             }
         }
     }
@@ -1854,7 +1785,7 @@ struct animmodel : model
     static bool enabletc, enablecullface, enabletangents, enablebones, enabledepthoffset;
     static float sizescale;
     static vec4 colorscale;
-    static GLuint lastvbuf, lasttcbuf, lastxbuf, lastbbuf, lastebuf, lastenvmaptex, closestenvmaptex;
+    static GLuint lastvbuf, lasttcbuf, lastxbuf, lastbbuf, lastebuf;
     static Texture *lasttex, *lastdecal, *lastmasks, *lastnormalmap;
     static int matrixpos;
     static matrix4 matrixstack[64];
@@ -1863,7 +1794,7 @@ struct animmodel : model
     {
         enabletc = enabletangents = enablebones = enabledepthoffset = false;
         enablecullface = true;
-        lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf = lastenvmaptex = closestenvmaptex = 0;
+        lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf =0;
         lasttex = lastdecal = lastmasks = lastnormalmap = NULL;
         shaderparamskey::invalidate();
     }
@@ -1916,8 +1847,7 @@ bool animmodel::enabletc = false, animmodel::enabletangents = false, animmodel::
      animmodel::enablecullface = true, animmodel::enabledepthoffset = false;
 float animmodel::sizescale = 1;
 vec4 animmodel::colorscale(1, 1, 1, 1);
-GLuint animmodel::lastvbuf = 0, animmodel::lasttcbuf = 0, animmodel::lastxbuf = 0, animmodel::lastbbuf = 0, animmodel::lastebuf = 0,
-       animmodel::lastenvmaptex = 0, animmodel::closestenvmaptex = 0;
+GLuint animmodel::lastvbuf = 0, animmodel::lasttcbuf = 0, animmodel::lastxbuf = 0, animmodel::lastbbuf = 0, animmodel::lastebuf = 0;
 Texture *animmodel::lasttex = NULL, *animmodel::lastdecal = NULL, *animmodel::lastmasks = NULL, *animmodel::lastnormalmap = NULL;
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
@@ -1998,15 +1928,13 @@ template<class MDL, class MESH> struct modelcommands
 
     #define LOOP_SKINS(meshname, s, body) LOOP_MESHES(meshname, m, { skin &s = mdl.skins[i]; body; })
 
-    static void setskin(char *meshname, char *tex, char *masks, float *envmapmax, float *envmapmin)
+    static void setskin(char *meshname, char *tex, char *masks)
     {
         LOOP_SKINS(meshname, s,
             s.tex = textureload(makerelpath(MDL::dir, tex), 0, true, false);
             if(*masks)
             {
                 s.masks = textureload(makerelpath(MDL::dir, masks), 0, true, false);
-                s.envmapmax = *envmapmax;
-                s.envmapmin = *envmapmin;
             }
         );
     }
@@ -2042,12 +1970,6 @@ template<class MDL, class MESH> struct modelcommands
     static void setcolor(char *meshname, float *r, float *g, float *b)
     {
         LOOP_SKINS(meshname, s, s.color = vec(*r, *g, *b));
-    }
-
-    static void setenvmap(char *meshname, char *envmap)
-    {
-        Texture *tex = cubemapload(envmap);
-        LOOP_SKINS(meshname, s, s.envmap = tex);
     }
 
     static void setbumpmap(char *meshname, char *normalmapfile)
@@ -2120,7 +2042,6 @@ template<class MDL, class MESH> struct modelcommands
             modelcommand(setalphatest, "alphatest", "sf");
             modelcommand(setcullface, "cullface", "si");
             modelcommand(setcolor, "color", "sfff");
-            modelcommand(setenvmap, "envmap", "ss");
             modelcommand(setbumpmap, "bumpmap", "ss");
             modelcommand(setdecal, "decal", "ss");
             modelcommand(setfullbright, "fullbright", "sf");

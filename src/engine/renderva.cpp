@@ -1262,8 +1262,6 @@ struct geombatch
         if(vslot.slot->shader > b.vslot.slot->shader) return 1;
         if(es.texture < b.es.texture) return -1;
         if(es.texture > b.es.texture) return 1;
-        if(es.envmap < b.es.envmap) return -1;
-        if(es.envmap > b.es.envmap) return 1;
         if(vslot.slot->params.length() < b.vslot.slot->params.length()) return -1;
         if(vslot.slot->params.length() > b.vslot.slot->params.length()) return 1;
         if(es.orient < b.es.orient) return -1;
@@ -1394,17 +1392,6 @@ static void changevbuf(renderstate &cur, int pass, vtxarray *va)
 
 static void changebatchtmus(renderstate &cur, int pass, geombatch &b)
 {
-    if(b.vslot.slot->shader->type&SHADER_ENVMAP && b.es.envmap!=EnvmapID_Custom)
-    {
-        GLuint emtex = lookupenvmap(b.es.envmap);
-        if(cur.textures[TEX_ENVMAP]!=emtex)
-        {
-            cur.tmu = TEX_ENVMAP;
-            glActiveTexture_(GL_TEXTURE0 + TEX_ENVMAP);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cur.textures[TEX_ENVMAP] = emtex);
-        }
-    }
-
     if(cur.tmu != 0)
     {
         cur.tmu = 0;
@@ -1478,14 +1465,6 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
         Slot::Tex &t = slot.sts[j];
         switch(t.type)
         {
-            case TEX_ENVMAP:
-            {
-                if(t.t)
-                {
-                    bindslottex(cur, t.type, t.t, GL_TEXTURE_CUBE_MAP);
-                }
-                break;
-            }
             case TEX_NORMAL:
             case TEX_GLOW:
             {
@@ -2145,8 +2124,6 @@ struct decalbatch
         if(slot.shader > b.slot.shader) return 1;
         if(es.texture < b.es.texture) return -1;
         if(es.texture > b.es.texture) return 1;
-        if(es.envmap < b.es.envmap) return -1;
-        if(es.envmap > b.es.envmap) return 1;
         if(slot.Slot::params.length() < b.slot.Slot::params.length()) return -1;
         if(slot.Slot::params.length() > b.slot.Slot::params.length()) return 1;
         if(es.reuse < b.es.reuse) return -1;
@@ -2245,16 +2222,6 @@ static void changevbuf(decalrenderer &cur, int pass, vtxarray *va)
 
 static void changebatchtmus(decalrenderer &cur, int pass, decalbatch &b)
 {
-    if(b.slot.shader->type&SHADER_ENVMAP && b.es.envmap!=EnvmapID_Custom)
-    {
-        GLuint emtex = lookupenvmap(b.es.envmap);
-        if(cur.textures[TEX_ENVMAP]!=emtex)
-        {
-            cur.tmu = TEX_ENVMAP;
-            glActiveTexture_(GL_TEXTURE0 + TEX_ENVMAP);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cur.textures[TEX_ENVMAP] = emtex);
-        }
-    }
     if(cur.tmu != 0)
     {
         cur.tmu = 0;
@@ -2285,14 +2252,6 @@ static void changeslottmus(decalrenderer &cur, int pass, DecalSlot &slot)
         Slot::Tex &t = slot.sts[i];
         switch(t.type)
         {
-            case TEX_ENVMAP:
-            {
-                if(t.t)
-                {
-                    bindslottex(cur, t.type, t.t, GL_TEXTURE_CUBE_MAP);
-                }
-                break;
-            }
             case TEX_NORMAL:
             case TEX_GLOW:
             {
