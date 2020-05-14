@@ -435,7 +435,7 @@ bool soundsample::load(const char *dir, bool msg)
 
     static const char * const exts[] = { "", ".wav", ".ogg" };
     string filename;
-    for(int i = 0; i < int(sizeof(exts)/sizeof(exts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(exts)/sizeof(exts[0])); ++i)
     {
         formatstring(filename, "media/sound/%s%s%s", dir, name, exts[i]);
         if(msg && !i)
@@ -717,12 +717,12 @@ bool updatechannel(soundchannel &chan)
         }
         if(rad > 0) //rad = 0 means no attenuation ever
         {
-            vol -= int(clamp(dist/rad, 0.0f, 1.0f)*soundvol); // simple mono distance attenuation
+            vol -= static_cast<int>(clamp(dist/rad, 0.0f, 1.0f)*soundvol); // simple mono distance attenuation
         }
         if(stereo && (v.x != 0 || v.y != 0) && dist>0)
         {
             v.rotate_around_z(-camera1->yaw*RAD);
-            pan = int(255.9f*(0.5f - 0.5f*v.x/v.magnitude2())); // range is from 0 (left) to 255 (right)
+            pan = static_cast<int>(255.9f*(0.5f - 0.5f*v.x/v.magnitude2())); // range is from 0 (left) to 255 (right)
         }
     }
     vol = (vol*MIX_MAX_VOLUME*chan.slot->volume)/255/255;

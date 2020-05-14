@@ -215,7 +215,7 @@ float text_widthf(const char *str)
 }
 
 #define FONTTAB (4*FONTW)
-#define TEXTTAB(x) ((int((x)/FONTTAB)+1.0f)*FONTTAB)
+#define TEXTTAB(x) ((static_cast<int>((x)/FONTTAB)+1.0f)*FONTTAB)
 
 void tabify(const char *str, int *numtabs)
 {
@@ -368,12 +368,12 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
 }
 
 #define TEXTSKELETON \
-    float y = 0, x = 0, scale = curfont->scale/float(curfont->defaulth);\
+    float y = 0, x = 0, scale = curfont->scale/static_cast<float>(curfont->defaulth);\
     int i;\
     for(i = 0; str[i]; i++)\
     {\
         TEXTINDEX(i)\
-        int c = uchar(str[i]);\
+        int c = static_cast<uchar>(str[i]);\
         if(c=='\t')      { x = TEXTTAB(x); TEXTWHITE(i) }\
         else if(c==' ')  { x += scale*curfont->defaultw; TEXTWHITE(i) }\
         else if(c=='\n') { TEXTLINE(i) x = 0; y += FONTH; }\
@@ -388,7 +388,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                 float w = cw;\
                 for(; str[i+1]; i++)\
                 {\
-                    int c = uchar(str[i+1]);\
+                    int c = static_cast<uchar>(str[i+1]);\
                     if(c=='\f') { if(str[i+2]) i++; continue; }\
                     if(!curfont->chars.inrange(c-curfont->charoffset)) break;\
                     float cw = scale*curfont->chars[c-curfont->charoffset].advance;\
@@ -407,7 +407,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                 for(; j <= i; j++)\
                 {\
                     TEXTINDEX(j)\
-                    int c = uchar(str[j]);\
+                    int c = static_cast<uchar>(str[j]);\
                     if(c=='\f') { if(str[j+1]) { j++; TEXTCOLOR(j) }}\
                     else { float cw = scale*curfont->chars[c-curfont->charoffset].advance; TEXTCHAR(j) }\
                 }

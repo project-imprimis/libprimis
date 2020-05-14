@@ -114,8 +114,11 @@ void drawenvbox(Texture **sky = NULL, float z1clip = 0.0f, float z2clip = 1.0f, 
     {
         return;
     }
-    float v1 = 1-z1clip, v2 = 1-z2clip;
-    int w = farplane/2, z1 = int(ceil(2*w*(z1clip-0.5f))), z2 = int(ceil(2*w*(z2clip-0.5f)));
+    float v1 = 1-z1clip,
+          v2 = 1-z2clip;
+    int w = farplane/2,
+        z1 = static_cast<int>(ceil(2*w*(z1clip-0.5f))),
+        z2 = static_cast<int>(ceil(2*w*(z2clip-0.5f)));
 
     gle::defvertex();
     gle::deftexcoord0();
@@ -219,14 +222,14 @@ namespace fogdome
         bvec4 color;
 
         vert() {}
-        vert(const vec &pos, const bvec &fcolor, float alpha) : pos(pos), color(fcolor, uchar(alpha*255))
+        vert(const vec &pos, const bvec &fcolor, float alpha) : pos(pos), color(fcolor, static_cast<uchar>(alpha*255))
         {
         }
         vert(const vert &v0, const vert &v1) : pos(vec(v0.pos).add(v1.pos).normalize()), color(v0.color)
         {
             if(v0.pos.z != v1.pos.z)
             {
-                color.a += uchar((v1.color.a - v0.color.a) * (pos.z - v0.pos.z) / (v1.pos.z - v0.pos.z));
+                color.a += static_cast<uchar>((v1.color.a - v0.color.a) * (pos.z - v0.pos.z) / (v1.pos.z - v0.pos.z));
             }
         }
     } *verts = NULL;

@@ -548,7 +548,7 @@ template<>
 inline void genpos<PT_TRAIL>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
 {
     vec e = d;
-    if(grav) e.z -= float(ts)/grav;
+    if(grav) e.z -= static_cast<float>(ts)/grav;
     e.div(-75.0f).add(o);
     genpos<PT_TAPE>(o, e, size, ts, grav, vs);
 }
@@ -608,7 +608,7 @@ template<>
 inline void seedpos<PT_TRAIL>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
     vec e = d;
-    if(grav) e.z -= float(fade)/grav;
+    if(grav) e.z -= static_cast<float>(fade)/grav;
     e.div(-75.0f).add(o);
     pe.extendbb(e, size);
 }
@@ -898,13 +898,13 @@ void initparticles()
     if(!particlenotextureshader) particlenotextureshader = lookupshaderbyname("particlenotexture");
     if(!particlesoftshader) particlesoftshader = lookupshaderbyname("particlesoft");
     if(!particletextshader) particletextshader = lookupshaderbyname("particletext");
-    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->init(parts[i]->type&PT_FEW ? min(fewparticles, maxparticles) : maxparticles);
     }
-    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
-        loadprogress = float(i+1)/(sizeof(parts)/sizeof(parts[0]));
+        loadprogress = static_cast<float>(i+1)/(sizeof(parts)/sizeof(parts[0]));
         parts[i]->preload();
     }
     loadprogress = 0;
@@ -912,7 +912,7 @@ void initparticles()
 
 void clearparticles()
 {
-    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->reset();
     }
@@ -921,7 +921,7 @@ void clearparticles()
 
 void cleanupparticles()
 {
-    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->cleanup();
     }
@@ -929,7 +929,7 @@ void cleanupparticles()
 
 void removetrackedparticles(physent *owner)
 {
-    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->resettracked(owner);
     }
@@ -942,7 +942,7 @@ void debugparticles()
     if(!dbgparts) return;
     int n = sizeof(parts)/sizeof(parts[0]);
     pushhudmatrix();
-    hudmatrix.ortho(0, FONTH*n*2*vieww/float(viewh), FONTH*n*2, 0, -1, 1); // squeeze into top-left corner
+    hudmatrix.ortho(0, FONTH*n*2*vieww/static_cast<float>(viewh), FONTH*n*2, 0, -1, 1); // squeeze into top-left corner
     flushhudmatrix();
     for(int i = 0; i < n; ++i)
     {
@@ -958,7 +958,7 @@ void renderparticles(int layer)
     //want to debug BEFORE the lastpass render (that would delete particles)
     if(dbgparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
     {
-        for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
         {
             parts[i]->debuginfo();
         }
@@ -969,7 +969,7 @@ void renderparticles(int layer)
          flagmask = PT_LERP|PT_MOD|PT_BRIGHT|PT_NOTEX|PT_SOFT|PT_SHADER,
          excludemask = layer == ParticleLayer_All ? ~0 : (layer != ParticleLayer_NoLayer ? PT_NOLAYER : 0);
 
-    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         partrenderer *p = parts[i];
         if((p->type&PT_NOLAYER) == excludemask || !p->haswork())
@@ -1101,13 +1101,13 @@ void particle_trail(int type, int fade, const vec &s, const vec &e, int color, f
     if(!canaddparticles()) return;
     vec v;
     float d = e.dist(s, v);
-    int steps = clamp(int(d*2), 1, maxtrail);
+    int steps = clamp(static_cast<int>(d*2), 1, maxtrail);
     v.div(steps);
     vec p = s;
     for(int i = 0; i < steps; ++i)
     {
         p.add(v);
-        vec tmp = vec(float(randomint(11)-5), float(randomint(11)-5), float(randomint(11)-5));
+        vec tmp = vec(static_cast<float>(randomint(11)-5), static_cast<float>(randomint(11)-5), static_cast<float>(randomint(11)-5));
         newparticle(p, tmp, randomint(fade)+fade, type, color, size, gravity);
     }
 }
@@ -1146,7 +1146,7 @@ void particle_meter(const vec &s, float val, int type, int fade, int color, int 
     p->color2[0] = color2>>16;
     p->color2[1] = (color2>>8)&0xFF;
     p->color2[2] = color2&0xFF;
-    p->progress = clamp(int(val*100), 0, 100);
+    p->progress = clamp(static_cast<int>(val*100), 0, 100);
 }
 
 void particle_flare(const vec &p, const vec &dest, int fade, int type, int color, float size, physent *owner)
@@ -1159,7 +1159,7 @@ void particle_fireball(const vec &dest, float maxsize, int type, int fade, int c
 {
     if(!canaddparticles()) return;
     float growth = maxsize - size;
-    if(fade < 0) fade = int(growth*20);
+    if(fade < 0) fade = static_cast<int>(growth*20);
     newparticle(dest, vec(0, 0, 1), fade, type, color, size)->val = growth;
 }
 
@@ -1222,8 +1222,8 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         else if(dir < 15) //plane
         {
-            to[dir%3] = float(randomint(radius<<4)-(radius<<3))/8.0;
-            to[(dir+1)%3] = float(randomint(radius<<4)-(radius<<3))/8.0;
+            to[dir%3] = static_cast<float>(randomint(radius<<4)-(radius<<3))/8.0;
+            to[(dir+1)%3] = static_cast<float>(randomint(radius<<4)-(radius<<3))/8.0;
             to[(dir+2)%3] = radius;
             to.add(p);
             from = to;
@@ -1233,13 +1233,13 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         {
             if(dir < 18)
             {
-                to[dir%3] = float(randomint(radius<<4)-(radius<<3))/8.0;
+                to[dir%3] = static_cast<float>(randomint(radius<<4)-(radius<<3))/8.0;
                 to[(dir+1)%3] = 0.0;
             }
             else
             {
                 to[dir%3] = 0.0;
-                to[(dir+1)%3] = float(randomint(radius<<4)-(radius<<3))/8.0;
+                to[(dir+1)%3] = static_cast<float>(randomint(radius<<4)-(radius<<3))/8.0;
             }
             to[(dir+2)%3] = 0.0;
             to.add(p);
@@ -1248,14 +1248,14 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         else if(dir < 24) //sphere
         {
-            to = vec(2*M_PI*float(randomint(1000))/1000.0, M_PI*float(randomint(1000)-500)/1000.0).mul(radius);
+            to = vec(2*M_PI*static_cast<float>(randomint(1000))/1000.0, M_PI*static_cast<float>(randomint(1000)-500)/1000.0).mul(radius);
             to.add(p);
             from = p;
         }
         else if(dir < 27) // flat plane
         {
-            to[dir%3] = float(randomfloat(2*radius)-radius);
-            to[(dir+1)%3] = float(randomfloat(2*radius)-radius);
+            to[dir%3] = static_cast<float>(randomfloat(2*radius)-radius);
+            to[(dir+1)%3] = static_cast<float>(randomfloat(2*radius)-radius);
             to[(dir+2)%3] = 0.0;
             to.add(p);
             from = to;
@@ -1297,7 +1297,7 @@ static void regularflame(int type, const vec &p, float radius, float height, int
         vec s = p;
         s.x += randomfloat(radius*2.0f)-radius;
         s.y += randomfloat(radius*2.0f)-radius;
-        newparticle(s, v, randomint(max(int(fade*height), 1))+1, type, color, size, gravity);
+        newparticle(s, v, randomint(max(static_cast<int>(fade*height), 1))+1, type, color, size, gravity);
     }
 }
 
@@ -1313,8 +1313,8 @@ static void makeparticles(entity &e)
     {
         case 0: //fire and smoke -  <radius> <height> <rgb> - 0 values default to compat for old maps
         {
-            float radius = e.attr2 ? float(e.attr2)/100.0f : 1.5f,
-                  height = e.attr3 ? float(e.attr3)/100.0f : radius/3;
+            float radius = e.attr2 ? static_cast<float>(e.attr2)/100.0f : 1.5f,
+                  height = e.attr3 ? static_cast<float>(e.attr3)/100.0f : radius/3;
             regularflame(Part_Flame, e.o, radius, height, e.attr4 ? colorfromattr(e.attr4) : 0x903020, 3, 2.0f);
             regularflame(Part_Smoke, vec(e.o.x, e.o.y, e.o.z + 4.0f*min(radius, height)), radius, height, 0x303020, 1, 4.0f, 100.0f, 2000.0f, -20);
             break;
@@ -1350,7 +1350,7 @@ static void makeparticles(entity &e)
             int type = typemap[e.attr1-4];
             float size = sizemap[e.attr1-4];
             int gravity = gravmap[e.attr1-4];
-            if(e.attr2 >= 256) regularshape(type, max(1+e.attr3, 1), colorfromattr(e.attr4), e.attr2-256, 5, e.attr5 > 0 ? min(int(e.attr5), 10000) : 200, e.o, size, gravity);
+            if(e.attr2 >= 256) regularshape(type, max(1+e.attr3, 1), colorfromattr(e.attr4), e.attr2-256, 5, e.attr5 > 0 ? min(static_cast<int>(e.attr5), 10000) : 200, e.o, size, gravity);
             else newparticle(e.o, offsetvec(e.o, e.attr2, max(1+e.attr3, 0)), 1, type, colorfromattr(e.attr4), size, gravity);
             break;
         }
@@ -1362,14 +1362,14 @@ static void makeparticles(entity &e)
             p->color2[0] = color2>>16;
             p->color2[1] = (color2>>8)&0xFF;
             p->color2[2] = color2&0xFF;
-            p->progress = clamp(int(e.attr2), 0, 100);
+            p->progress = clamp(static_cast<int>(e.attr2), 0, 100);
             break;
         }
         case 11: // flame <radius> <height> <rgb> - radius=100, height=100 is the classic size
-            regularflame(Part_Flame, e.o, float(e.attr2)/100.0f, float(e.attr3)/100.0f, colorfromattr(e.attr4), 3, 2.0f);
+            regularflame(Part_Flame, e.o, static_cast<float>(e.attr2)/100.0f, static_cast<float>(e.attr3)/100.0f, colorfromattr(e.attr4), 3, 2.0f);
             break;
         case 12: // smoke plume <radius> <height> <rgb>
-            regularflame(Part_Smoke, e.o, float(e.attr2)/100.0f, float(e.attr3)/100.0f, colorfromattr(e.attr4), 1, 4.0f, 100.0f, 2000.0f, -20);
+            regularflame(Part_Smoke, e.o, static_cast<float>(e.attr2)/100.0f, static_cast<float>(e.attr3)/100.0f, colorfromattr(e.attr4), 1, 4.0f, 100.0f, 2000.0f, -20);
             break;
         case 32: //lens flares - plain/sparkle/sun/sparklesun <red> <green> <blue>
         case 33:
@@ -1442,7 +1442,7 @@ void updateparticles()
     }
     else canemit = false;
 
-    for(int i = 0; i < int(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->update();
     }
