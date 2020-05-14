@@ -2657,6 +2657,61 @@ radiance hint taps generally don't have enough resolution to take advantage of a
 very sharp map, and the RSM requires six channels compared to the shadowmap's
 two.
 
+## 5.3 Transparency
+--
+
+Transparency, also known as alpha, applies to objects which are partially clear,
+but have some level of visibility, including with respect to other non-trivial
+shaders (like specular or parallax mapping). Transparency is used by glass
+material as well as by geometry which has had alpha material applied to it.
+
+Transparency support in Imprimis is largely motivated by the particular
+rendering architecture included therein. As a deferred renderer, which
+composites full-scene maps of particular properties, Tesseract faces steep costs
+to having multiple rendering layers (rendering a surface blended with another
+surfaces). The compromise solution, while rather limited, does allow for limited
+(single-layer) transparency.
+
+### 5.3.1 Transparency Stenciling
+---
+
+Transparent regions in the engine, as marked by alpha material for cube
+geometry, is rendered in a seperate step from ordinary geometry. The background
+geometry is rendered with the transparency removed as usual, and then following
+this the rendering pass is done over for transparent regions and then layered
+over the top.
+
+Multiple transparency passes have rather poor performance, and as such arbitrary
+layers of transparency are rather non-performant due to the costs of making
+arbitrary numbers of transparency stencils followed by arbitrary numbers of
+rendering passes. Not only is the shading costs high for such an approach, but
+also the memory space and bandwith requirements for such an arrangement.
+
+### 5.3.2 Backface Transparency
+---
+
+A limited form of two-layered transparency, however, is supported by the engine.
+The geometry that is flagged as alpha by the presence of alpha material can
+optionally have its backface (the face visible from the other side of the
+transparent region) rendered along with the front face. This requires extra
+graphics resources, however, as an additional transparency pass is required
+(though being on the backface of an already flagged region simplifies other
+facets of transparency), and generally is only recommended where it can emulate
+two seperate panes of reflective material.
+
+This backface alpha property is enabled whenever the texture slot's `alpha`
+property is set to a value greater than zero.
+
+### 5.3.3 Refraction
+---
+
+A particular screenspace effect which can be applied to areas flagged as
+transparent is refraction. Refraction, in Imprimis, is a rather simple slur
+effect that distorts the region of the pixels beyond the window by the
+orientation of the normal map. As a screenspace effect, however, refraction is
+relatively cheap compared to complex techniques and provides a reasonable
+visual effect to casual passersby.
+
 # 6 Actors
 ---
 
