@@ -557,29 +557,26 @@ struct vacollect : verthash
                     curbuf += t.tris.length();
                 }
                 e.length = curbuf-startbuf;
-                switch(k.alpha)
+                if(k.alpha==Alpha_Back)
                 {
-                    case Alpha_Back:
-                    {
-                        va->texs--;
-                        va->tris -= e.length/3;
-                        va->alphaback++;
-                        va->alphabacktris += e.length/3;
-                    }
-                    case Alpha_Front:
-                        {
-                        va->texs--;
-                        va->tris -= e.length/3;
-                        va->alphafront++;
-                        va->alphafronttris += e.length/3;
-                    }
-                    case Alpha_Refract:
-                    {
-                        va->texs--;
-                        va->tris -= e.length/3;
-                        va->refract++;
-                        va->refracttris += e.length/3;
-                    }
+                    va->texs--;
+                    va->tris -= e.length/3;
+                    va->alphaback++;
+                    va->alphabacktris += e.length/3;
+                }
+                else if(k.alpha==Alpha_Front)
+                {
+                    va->texs--;
+                    va->tris -= e.length/3;
+                    va->alphafront++;
+                    va->alphafronttris += e.length/3;
+                }
+                else if(k.alpha==Alpha_Refract)
+                {
+                    va->texs--;
+                    va->tris -= e.length/3;
+                    va->refract++;
+                    va->refracttris += e.length/3;
                 }
             }
         }
