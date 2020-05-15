@@ -1886,21 +1886,21 @@ namespace ai
             vec pos = d->feetpos();
             if(d->ai->spot != vec(0, 0, 0))
             {
-                particle_flare(pos, d->ai->spot, 1, Part_Lightning, 0x00FFFF);
+                particle_flare(pos, d->ai->spot, 1, Part_Streak, 0x00FFFF);
             }
             if(iswaypoint(d->ai->targnode))
             {
-                particle_flare(pos, waypoints[d->ai->targnode].o, 1, Part_Lightning, 0xFF00FF);
+                particle_flare(pos, waypoints[d->ai->targnode].o, 1, Part_Streak, 0xFF00FF);
             }
             if(iswaypoint(d->lastnode))
             {
-                particle_flare(pos, waypoints[d->lastnode].o, 1, Part_Lightning, 0xFFFF00);
+                particle_flare(pos, waypoints[d->lastnode].o, 1, Part_Streak, 0xFFFF00);
             }
             for(int i = 0; i < NUMPREVNODES; ++i)
             {
                 if(iswaypoint(d->ai->prevnodes[i]))
                 {
-                    particle_flare(pos, waypoints[d->ai->prevnodes[i]].o, 1, Part_Lightning, 0x884400);
+                    particle_flare(pos, waypoints[d->ai->prevnodes[i]].o, 1, Part_Streak, 0x884400);
                     pos = waypoints[d->ai->prevnodes[i]].o;
                 }
             }

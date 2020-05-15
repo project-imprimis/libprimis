@@ -219,13 +219,7 @@
     <ClInclude Include="..\engine\iqm.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\lensflare.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\light.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\lightning.h">
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\md2.h">

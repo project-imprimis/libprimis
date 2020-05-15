@@ -674,7 +674,7 @@ struct ctfclientmode : clientmode
         if(to.x >= 0)
             flagexplosion(i, team, to);
         if(from.x >= 0 && to.x >= 0)
-            particle_flare(from, to, 600, Part_Lightning, team==1 ? 0x2222FF : 0xFF2222, 1.0f);
+            particle_flare(from, to, 600, Part_Streak, team==1 ? 0x2222FF : 0xFF2222, 1.0f);
     }
 
     void returnflag(gameent *d, int i, int version)

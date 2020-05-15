@@ -338,7 +338,6 @@ engine/renderparticles.o: shared/glexts.h shared/glemu.h shared/iengine.h
 engine/renderparticles.o: shared/igame.h engine/world.h engine/octa.h
 engine/renderparticles.o: engine/light.h engine/texture.h engine/bih.h
 engine/renderparticles.o: engine/model.h engine/explosion.h
-engine/renderparticles.o: engine/lensflare.h engine/lightning.h
 engine/rendersky.o: engine/engine.h shared/cube.h shared/tools.h
 engine/rendersky.o: shared/geom.h shared/ents.h shared/command.h
 engine/rendersky.o: shared/glexts.h shared/glemu.h shared/iengine.h

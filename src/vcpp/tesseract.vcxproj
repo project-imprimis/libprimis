@@ -412,8 +412,6 @@
     <ClInclude Include="..\engine\explosion.h" />
     <ClInclude Include="..\engine\hitzone.h" />
     <ClInclude Include="..\engine\iqm.h" />
-    <ClInclude Include="..\engine\lensflare.h" />
-    <ClInclude Include="..\engine\lightning.h" />
     <ClInclude Include="..\engine\md2.h" />
     <ClInclude Include="..\engine\md3.h" />
     <ClInclude Include="..\engine\md5.h" />

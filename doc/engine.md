@@ -2190,8 +2190,6 @@ Particles have many specific types which behave in different ways.
 * `meter` a meter with a fill between 0 and 100
 * `metervs`
 * `fireball` an animated fireball
-* `lightning` an animated tape particle, used for lightning effects
-* `flare` a lens flare
 
 ### 3.5.2 Particle Properties
 ---
@@ -2221,7 +2219,7 @@ present:
 
 * `*text` pointer for a text entity
 * `val` float for a fireball
-* `*owner` pointer for a lens flare
+* `*owner` pointer for a particle's owner
 * `color2[3]` array and `progress` values for a meter
 
 ### 3.5.3 Pointlike Particles
@@ -2285,34 +2283,6 @@ are static and hence fairly boring if they are multiple meters across.)
 
 Fireballs are perhaps the particle least obviously a 2d billboard, as a result
 its constant animation and scale change.
-
-### 3.5.9 Lightning Particles
----
-
-Lightning particles are somewhat similar to tape particles, being essentially
-a straight line, but have the added effect of being animated. As should be
-apparent from the name, lightning particles dance from between its endpoints
-like an electrical arc might.
-
-### 3.5.10 Flare Particles
----
-
-Flare particles simulate two different optical phenomena: sunstars and lens
-flare. Sunstars are an apeture effect present in essentially all optical systems
-(including eyes), while lens flare is a simulation of an effect only found in
-uncoated optics (cheap or old cameras).
-
-Sunstars are caused by small apeture sizes and result in a series of lines
-extending beyond a bright source (the Sun being the easiest of these to find in
-nature). The shape of the sunstar in Imprimis is most closely related to that of
-the eye's natural stringly response to a bright object; more regular pointed
-stars are typical of mechanical apetures (like a camera's).
-
-Lens flares are an effect caused by light bouncing around the inside of an
-optical instrument without proper coatings; the one created by Imprimis is that
-of a six-element device. Lens flares should not be present if the scene is
-viewed by an unaided human observer, as this effect doesn't occur without
-multiple elements.
 
 ## 3.6 Physics
 ---

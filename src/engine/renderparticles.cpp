@@ -100,8 +100,6 @@ enum
     PT_METER,
     PT_METERVS,
     PT_FIREBALL,
-    PT_LIGHTNING,
-    PT_FLARE,
 
     PT_MOD       = 1<<8,
     PT_RND4      = 1<<9,
@@ -122,7 +120,7 @@ enum
     PT_FLIP      = PT_HFLIP | PT_VFLIP | PT_ROT
 };
 
-const char *partnames[] = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball", "lightning", "flare" };
+const char *partnames[] = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball"};
 
 struct particle
 {
@@ -135,7 +133,7 @@ struct particle
     {
         const char *text;      //text particle
         float val;             //fireball particle
-        physent *owner;        //flare particle
+        physent *owner;        //particle owner (a player/bot)
         struct                 //meter particle
         {
             uchar color2[3];   //color of bar
@@ -850,8 +848,6 @@ typedef varenderer<PT_TAPE> taperenderer;
 typedef varenderer<PT_TRAIL> trailrenderer;
 
 #include "explosion.h"
-#include "lensflare.h"
-#include "lightning.h"
 
 struct softquadrenderer : quadrenderer
 {
@@ -872,7 +868,6 @@ static partrenderer *parts[] =
     new taperenderer("media/particle/rail_trail.png", PT_TAPE|PT_FEW|PT_BRIGHT),               // rail trail
     new taperenderer("media/particle/pulse_side.png", PT_TAPE|PT_FEW|PT_BRIGHT),               // pulse side
     new quadrenderer("media/particle/pulse_front.png", PT_PART|PT_FLIP|PT_FEW|PT_BRIGHT),      // pulse front
-    &lightnings,                                                                               // lightning
     &fireballs,                                                                                // explosion fireball
     &pulsebursts,                                                                              // pulse burst
     new quadrenderer("media/particle/spark.png", PT_PART|PT_FLIP|PT_BRIGHT),                   // sparks
@@ -885,7 +880,6 @@ static partrenderer *parts[] =
     &texts,                                                                                    // text
     &meters,                                                                                   // meter
     &metervs,                                                                                  // meter vs.
-    &flares                                                                                    // lens flares - must be done last
 };
 
 VARFP(maxparticles, 10, 4000, 10000, initparticles());
@@ -1193,8 +1187,9 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
     if(!canemitparticles()) return;
 
     int basetype = parts[type]->type&0xFF;
-    bool flare = (basetype == PT_TAPE) || (basetype == PT_LIGHTNING),
-         inv = (dir&0x20)!=0, taper = (dir&0x40)!=0 && !seedemitter;
+    bool flare = (basetype == PT_TAPE),
+         inv = (dir&0x20)!=0,
+         taper = (dir&0x40)!=0 && !seedemitter;
     dir &= 0x1F;
     for(int i = 0; i < num; ++i)
     {
@@ -1339,12 +1334,11 @@ static void makeparticles(entity &e)
             newparticle(e.o, vec(0, 0, 1), 1, Part_Explosion, colorfromattr(e.attr3), 4.0f)->val = 1+e.attr2;
             break;
         case 4:  //tape - <dir> <length> <rgb>
-        case 7:  //lightning
         case 9:  //steam
         case 10: //water
         case 13: //snow
         {
-            static const int typemap[]   = { Part_Streak, -1, -1, Part_Lightning, -1, Part_Steam, Part_Water, -1, -1, Part_Snow };
+            static const int typemap[]   = { Part_Streak, -1, -1, -1, -1, Part_Steam, Part_Water, -1, -1, Part_Snow };
             static const float sizemap[] = { 0.28f, 0.0f, 0.0f, 1.0f, 0.0f, 2.4f, 0.60f, 0.0f, 0.0f, 0.5f };
             static const int gravmap[] = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
             int type = typemap[e.attr1-4];
@@ -1370,12 +1364,6 @@ static void makeparticles(entity &e)
             break;
         case 12: // smoke plume <radius> <height> <rgb>
             regularflame(Part_Smoke, e.o, static_cast<float>(e.attr2)/100.0f, static_cast<float>(e.attr3)/100.0f, colorfromattr(e.attr4), 1, 4.0f, 100.0f, 2000.0f, -20);
-            break;
-        case 32: //lens flares - plain/sparkle/sun/sparklesun <red> <green> <blue>
-        case 33:
-        case 34:
-        case 35:
-            flares.addflare(e.o, e.attr2, e.attr3, e.attr4, (e.attr1&0x02)!=0, (e.attr1&0x01)!=0);
             break;
         default:
             if(!editmode)

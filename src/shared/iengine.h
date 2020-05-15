@@ -380,7 +380,6 @@ enum
     Part_RailTrail,
     Part_PulseSide,
     Part_PulseFront,
-    Part_Lightning,
     Part_Explosion,
     Part_PulseBurst,
     Part_Spark,
@@ -393,7 +392,6 @@ enum
     Part_Text,
     Part_Meter,
     Part_MeterVS,
-    Part_LensFlare
 };
 
 extern bool canaddparticles();
