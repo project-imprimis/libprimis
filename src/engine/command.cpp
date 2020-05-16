@@ -32,8 +32,8 @@ static inline void freearg(tagval &v)
             if(v.code[-1] == Code_Start)
             {
                 delete[] (uchar *)&v.code[-1];
-                break;
             }
+            break;
         }
     }
 }
@@ -615,7 +615,7 @@ ident *readident(const char *name)
     if(id && id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
     {
        return NULL;
-   }
+    }
     return id;
 }
 
@@ -1430,9 +1430,12 @@ static inline const char *parseword(const char *p)
             {
                 return p;
             }
-            case '/': if(p[1] == '/')
+            case '/':
             {
-                return p;
+                if(p[1] == '/')
+                {
+                    return p;
+                }
                 break;
             }
             //change depth of bracket stack upon seeing a (, [ char
@@ -1865,8 +1868,9 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                         code.add(Code_FloatVar|RET_CODE_FLOAT(ltype)|(id->index<<8));
                         switch(ltype)
                         {
-                            case Value_Pop: code.pop();
+                            case Value_Pop:
                             {
+                                code.pop();
                                 break;
                             }
                             case Value_Code:
@@ -2280,9 +2284,11 @@ static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, i
         switch(c)
         {
             case '\0':
+            {
                 debugcodeline(line, "missing \"]\"");
                 p--;
                 goto done;
+            }
             case '\"':
             {
                 p = parsestring(p);
@@ -3700,7 +3706,8 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                 {
                     break;
                 }
-                args[i].setstr(newstring("")); fakeargs++;
+                args[i].setstr(newstring(""));
+                fakeargs++;
             }
             else
             {
@@ -3716,13 +3723,14 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                 {
                     break;
                 }
-                args[i].setcstr(""); fakeargs++;
+                args[i].setcstr("");
+                fakeargs++;
             }
             else
             {
                 forcestr(args[i]);
-                break;
             }
+            break;
         }
         case 'T':
         case 't':
