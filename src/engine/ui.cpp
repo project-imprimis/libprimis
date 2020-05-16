@@ -2974,8 +2974,7 @@ namespace UI
             {
                 return;
             }
-            VSlot *layer = NULL, *detail = NULL;
-            Texture *t = NULL, *glowtex = NULL, *layertex = NULL, *detailtex = NULL;
+            Texture *t = NULL, *glowtex = NULL;
             if(slot.loaded)
             {
                 t = slot.sts[0].t;
@@ -2994,11 +2993,6 @@ namespace UI
                             break;
                         }
                     }
-                }
-                if(vslot.detail)
-                {
-                    detail = &lookupvslot(vslot.detail);
-                    if(!detail->slot->sts.empty()) detailtex = detail->slot->sts[0].t;
                 }
             }
             else
@@ -3060,11 +3054,6 @@ namespace UI
             }
             else gle::colorf(1, 1, 1);
             quad(x, y, w, h, tc);
-            if(detailtex)
-            {
-                glBindTexture(GL_TEXTURE_2D, detailtex->id);
-                quad(x + w/2, y + h/2, w/2, h/2, tc);
-            }
             if(glowtex)
             {
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -3072,12 +3061,6 @@ namespace UI
                 gle::color(vslot.glowcolor);
                 quad(x, y, w, h, tc);
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            }
-            if(layertex)
-            {
-                glBindTexture(GL_TEXTURE_2D, layertex->id);
-                gle::color(layer->colorscale);
-                quad(x, y, w/2, h/2, tc);
             }
         }
 

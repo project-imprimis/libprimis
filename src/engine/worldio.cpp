@@ -598,7 +598,6 @@ void savevslot(stream *f, VSlot &vs, int prev)
             f->putlil<float>(vs.refractcolor[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_DETAIL)) f->putlil<int>(vs.detail);
 }
 
 void savevslots(stream *f, int numvslots)
@@ -721,10 +720,6 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         {
             vs.refractcolor[k] = f->getlil<float>();
         }
-    }
-    if(vs.changed & (1<<VSLOT_DETAIL)) //detail <index>
-    {
-        vs.detail = f->getlil<int>();
     }
 }
 

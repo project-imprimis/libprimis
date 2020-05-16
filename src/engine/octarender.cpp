@@ -1810,9 +1810,6 @@ void precachetextures()
             if(texs.find(tex) < 0)
             {
                 texs.add(tex);
-
-                VSlot &vslot = lookupvslot(tex, false);
-                if(vslot.detail && texs.find(vslot.detail) < 0) texs.add(vslot.detail);
             }
         }
     }

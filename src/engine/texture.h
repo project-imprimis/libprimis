@@ -628,8 +628,6 @@ enum
     TEX_DEPTH,
     TEX_ALPHA,
     TEX_UNKNOWN,
-
-    TEX_DETAIL = TEX_SPEC
 };
 
 enum
@@ -644,7 +642,7 @@ enum
     VSLOT_COLOR,
     VSLOT_RESERVED, // used by RE
     VSLOT_REFRACT,
-    VSLOT_DETAIL,
+    VSLOT_DETAIL, //gone
     VSLOT_ANGLE,
     VSLOT_NUM
 };
@@ -661,7 +659,6 @@ struct VSlot
     vec angle;
     ivec2 offset;
     vec2 scroll;
-    int detail;
     float alphafront, alphaback;
     vec colorscale;
     vec glowcolor;
@@ -685,7 +682,6 @@ struct VSlot
         angle = vec(0, sinf(0), cosf(0));
         offset = ivec2(0, 0);
         scroll = vec2(0, 0);
-        detail = 0;
         alphafront = 0.5f;
         alphaback = 0;
         colorscale = vec(1, 1, 1);

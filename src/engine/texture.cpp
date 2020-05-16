@@ -1828,20 +1828,9 @@ void clearslots()
     clonedvslots = 0;
 }
 
-static void assignvslot(VSlot &vs);
-
-static inline void assignvslotlayer(VSlot &vs)
-{
-    if(vs.detail && vslots.inrange(vs.detail) && vslots[vs.detail]->index < 0)
-    {
-        assignvslot(*vslots[vs.detail]);
-    }
-}
-
 static void assignvslot(VSlot &vs)
 {
     vs.index = compactedvslots++;
-    assignvslotlayer(vs);
 }
 
 void compactvslot(int &index)
@@ -1910,20 +1899,12 @@ int compactvslots(bool cull)
         {
             slots[i]->variants->index = compactedvslots++;
         }
-        for(int i = 0; i < numdefaults; ++i)
-        {
-            assignvslotlayer(*slots[i]->variants);
-        }
     }
     else
     {
         for(int i = 0; i < slots.length(); i++)
         {
             slots[i]->variants->index = compactedvslots++;
-        }
-        for(int i = 0; i < slots.length(); i++)
-        {
-            assignvslotlayer(*slots[i]->variants);
         }
         for(int i = 0; i < vslots.length(); i++)
         {
@@ -1973,14 +1954,6 @@ int compactvslots(bool cull)
         compacteditvslots();
     }
     compactmruvslots();
-    for(int i = 0; i < vslots.length(); i++)
-    {
-        VSlot &vs = *vslots[i];
-        if(vs.index >= 0)
-        {
-            if(vs.detail && vslots.inrange(vs.detail)) vs.detail = vslots[vs.detail]->index;
-        }
-    }
     if(cull)
     {
         for(int i = slots.length(); --i >=0;) //note reverse iteration
@@ -2079,7 +2052,6 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
         dst.refractscale = src.refractscale;
         dst.refractcolor = src.refractcolor;
     }
-    if(diff & (1<<VSLOT_DETAIL)) dst.detail = src.detail;
 }
 
 static void propagatevslot(VSlot *root, int changed)
@@ -2150,7 +2122,6 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
         dst.refractscale *= src.refractscale;
         dst.refractcolor.mul(src.refractcolor);
     }
-    if(diff & (1<<VSLOT_DETAIL)) dst.detail = src.detail;
 }
 
 void mergevslot(VSlot &dst, const VSlot &src, const VSlot &delta)
@@ -2218,7 +2189,6 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
     if(diff & (1<<VSLOT_ALPHA) && (dst.alphafront != src.alphafront || dst.alphaback != src.alphaback)) return false;
     if(diff & (1<<VSLOT_COLOR) && dst.colorscale != src.colorscale) return false;
     if(diff & (1<<VSLOT_REFRACT) && (dst.refractscale != src.refractscale || dst.refractcolor != src.refractcolor)) return false;
-    if(diff & (1<<VSLOT_DETAIL) && dst.detail != src.detail) return false;
     return true;
 }
 
@@ -2286,11 +2256,6 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
         putfloat(buf, src.refractcolor.r);
         putfloat(buf, src.refractcolor.g);
         putfloat(buf, src.refractcolor.b);
-    }
-    if(src.changed & (1<<VSLOT_DETAIL))
-    {
-        buf.put(VSLOT_DETAIL);
-        putuint(buf, vslots.inrange(src.detail) && !vslots[src.detail]->changed ? src.detail : 0);
     }
     buf.put(0xFF);
 }
@@ -2383,12 +2348,6 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 dst.refractcolor.g = clamp(getfloat(buf), 0.0f, 1.0f);
                 dst.refractcolor.b = clamp(getfloat(buf), 0.0f, 1.0f);
                 break;
-            case VSLOT_DETAIL:
-            {
-                int tex = getuint(buf);
-                dst.detail = vslots.inrange(tex) ? tex : 0;
-                break;
-            }
             default:
                 return false;
         }
@@ -2594,15 +2553,6 @@ void texscale(float *scale)
     propagatevslot(s.variants, 1<<VSLOT_SCALE);
 }
 COMMAND(texscale, "f");
-
-void texdetail(int *detail)
-{
-    if(!defslot) return;
-    Slot &s = *defslot;
-    s.variants->detail = *detail < 0 ? max(slots.length()-1+*detail, 0) : *detail;
-    propagatevslot(s.variants, 1<<VSLOT_DETAIL);
-}
-COMMAND(texdetail, "i");
 
 void texalpha(float *front, float *back)
 {
@@ -2977,8 +2927,6 @@ Texture *Slot::loadthumbnail()
             addname(name, *this, sts[glow], true, prefix);
         }
     }
-    VSlot *detail = vslot.detail ? &lookupvslot(vslot.detail, false) : NULL;
-    if(detail) addname(name, *detail->slot, detail->slot->sts[0], true, "<detail>");
     name.add('\0');
     Texture *t = textures.access(path(name.getbuf()));
     if(t) thumbnail = t;
@@ -2987,7 +2935,6 @@ Texture *Slot::loadthumbnail()
         ImageData s, g, l, d;
         texturedata(s, *this, sts[0], false);
         if(glow >= 0) texturedata(g, *this, sts[glow], false);
-        if(detail) texturedata(d, *detail->slot, detail->slot->sts[0], false);
         if(!s.data) t = thumbnail = notexture;
         else
         {

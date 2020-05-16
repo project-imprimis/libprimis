@@ -1473,31 +1473,6 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
             }
         }
     }
-
-    if(pass == RenderPass_GBuffer && vslot.detail)
-    {
-        VSlot &detail = lookupvslot(vslot.detail);
-        for(int j = 0; j < detail.slot->sts.length(); j++)
-        {
-            Slot::Tex &t = detail.slot->sts[j];
-            switch(t.type)
-            {
-                case TEX_DIFFUSE:
-                {
-                    if(slot.shader->type&SHADER_TRIPLANAR)
-                    {
-                        float scale = TEX_SCALE/detail.scale;
-                        GLOBALPARAMF(detailscale, scale/t.t->xs, scale/t.t->ys);
-                    }
-                }// fall-through
-                case TEX_NORMAL:
-                {
-                    bindslottex(cur, TEX_DETAIL + t.type, t.t);
-                    break;
-                }
-            }
-        }
-    }
     GLOBALPARAM(rotate, vec(vslot.angle.y, vslot.angle.z, diffuse->ratio));
     if(cur.tmu != 0)
     {

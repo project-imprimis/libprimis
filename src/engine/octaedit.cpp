@@ -2463,7 +2463,6 @@ bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf)
     {
         return false;
     }
-    EDITING_VSLOT(ds.detail);
     mpeditvslot(delta, ds, allfaces, sel, false);
     return true;
 }
@@ -2547,27 +2546,6 @@ void vscale(float *scale)
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vscale, "f");
-
-void vdetail(int *n)
-{
-    if(noedit())
-    {
-        return;
-    }
-    VSlot ds;
-    ds.changed = 1<<VSLOT_DETAIL;
-    if(vslots.inrange(*n))
-    {
-        ds.detail = *n;
-        if(vslots[ds.detail]->changed && nompedit && multiplayer())
-        {
-            return;
-        }
-    }
-    EDITING_VSLOT(ds.detail);
-    mpeditvslot(usevdelta, ds, allfaces, sel, true);
-}
-COMMAND(vdetail, "i");
 
 void valpha(float *front, float *back)
 {
@@ -3303,11 +3281,10 @@ void rendertexturepanel(int w, int h)
             int ti = curtexindex+i-3;
             if(texmru.inrange(ti))
             {
-                VSlot &vslot = lookupvslot(texmru[ti]), *detail = NULL;
+                VSlot &vslot = lookupvslot(texmru[ti]);
                 Slot &slot = *vslot.slot;
                 Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t,
-                        *glowtex = NULL,
-                        *detailtex = NULL;
+                        *glowtex = NULL;
                 if(slot.texmask&(1<<TEX_GLOW))
                 {
                     for(int j = 0; j < slot.sts.length(); j++)
@@ -3318,11 +3295,6 @@ void rendertexturepanel(int w, int h)
                             break;
                         }
                     }
-                }
-                if(vslot.detail)
-                {
-                    detail = &lookupvslot(vslot.detail);
-                    detailtex = detail->slot->sts.empty() ? notexture : detail->slot->sts[0].t;
                 }
                 float sx = min(1.0f, tex->xs/(float)tex->ys), sy = min(1.0f, tex->ys/(float)tex->xs);
                 int x = w*1800/h-s-50, r = s;
@@ -3380,16 +3352,6 @@ void rendertexturepanel(int w, int h)
                     gle::attribf(x,   y+r); gle::attrib(tc[3]);
                     gle::attribf(x+r, y+r); gle::attrib(tc[2]);
                     xtraverts += gle::end();
-                    if(j==1 && detailtex)
-                    {
-                        glBindTexture(GL_TEXTURE_2D, detailtex->id);
-                        gle::begin(GL_TRIANGLE_STRIP);
-                        gle::attribf(x,     y);     gle::attrib(tc[0]);
-                        gle::attribf(x+r/2, y);     gle::attrib(tc[1]);
-                        gle::attribf(x,     y+r/2); gle::attrib(tc[3]);
-                        gle::attribf(x+r/2, y+r/2); gle::attrib(tc[2]);
-                        xtraverts += gle::end();
-                    }
                     if(!j)
                     {
                         r -= 10;
