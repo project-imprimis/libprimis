@@ -1644,7 +1644,6 @@ struct vslotref
     vslotref(int &index) { editingvslots.add(&index); }
     ~vslotref() { editingvslots.pop(); }
 };
-#define EDITING_VSLOT(...) vslotref vslotrefs[] = { __VA_ARGS__ }; (void)vslotrefs;
 
 void compacteditvslots()
 {
@@ -2455,6 +2454,8 @@ void mpeditvslot(int delta, VSlot &ds, int allfaces, selinfo &sel, bool local)
     }
 }
 
+#define EDITING_VSLOT(a) vslotref vslotrefs[] = { a }; (void)vslotrefs;
+
 bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf)
 {
     VSlot ds;
@@ -2462,7 +2463,7 @@ bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf)
     {
         return false;
     }
-    EDITING_VSLOT(ds.layer, ds.detail);
+    EDITING_VSLOT(ds.detail);
     mpeditvslot(delta, ds, allfaces, sel, false);
     return true;
 }
@@ -2546,27 +2547,6 @@ void vscale(float *scale)
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vscale, "f");
-
-void vlayer(int *n)
-{
-    if(noedit())
-    {
-        return;
-    }
-    VSlot ds;
-    ds.changed = 1<<VSLOT_LAYER;
-    if(vslots.inrange(*n))
-    {
-        ds.layer = *n;
-        if(vslots[ds.layer]->changed && nompedit && multiplayer())
-        {
-            return;
-        }
-    }
-    EDITING_VSLOT(ds.layer);
-    mpeditvslot(usevdelta, ds, allfaces, sel, true);
-}
-COMMAND(vlayer, "i");
 
 void vdetail(int *n)
 {
@@ -2994,6 +2974,8 @@ void replace(bool insel)
     mpreplacetex(reptex, lasttex, insel, sel, true);
 }
 
+#undef EDITING_VSLOT
+
 ICOMMAND(replace, "", (), replace(false));
 ICOMMAND(replacesel, "", (), replace(true));
 
@@ -3321,9 +3303,11 @@ void rendertexturepanel(int w, int h)
             int ti = curtexindex+i-3;
             if(texmru.inrange(ti))
             {
-                VSlot &vslot = lookupvslot(texmru[ti]), *layer = NULL, *detail = NULL;
+                VSlot &vslot = lookupvslot(texmru[ti]), *detail = NULL;
                 Slot &slot = *vslot.slot;
-                Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t, *glowtex = NULL, *layertex = NULL, *detailtex = NULL;
+                Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t,
+                        *glowtex = NULL,
+                        *detailtex = NULL;
                 if(slot.texmask&(1<<TEX_GLOW))
                 {
                     for(int j = 0; j < slot.sts.length(); j++)
@@ -3334,11 +3318,6 @@ void rendertexturepanel(int w, int h)
                             break;
                         }
                     }
-                }
-                if(vslot.layer)
-                {
-                    layer = &lookupvslot(vslot.layer);
-                    layertex = layer->slot->sts.empty() ? notexture : layer->slot->sts[0].t;
                 }
                 if(vslot.detail)
                 {
@@ -3409,17 +3388,6 @@ void rendertexturepanel(int w, int h)
                         gle::attribf(x+r/2, y);     gle::attrib(tc[1]);
                         gle::attribf(x,     y+r/2); gle::attrib(tc[3]);
                         gle::attribf(x+r/2, y+r/2); gle::attrib(tc[2]);
-                        xtraverts += gle::end();
-                    }
-                    if(j==1 && layertex)
-                    {
-                        gle::color(layer->colorscale, texpaneltimer/1000.0f);
-                        glBindTexture(GL_TEXTURE_2D, layertex->id);
-                        gle::begin(GL_TRIANGLE_STRIP);
-                        gle::attribf(x+r/2, y+r/2); gle::attrib(tc[0]);
-                        gle::attribf(x+r,   y+r/2); gle::attrib(tc[1]);
-                        gle::attribf(x+r/2, y+r);   gle::attrib(tc[3]);
-                        gle::attribf(x+r,   y+r);   gle::attrib(tc[2]);
                         xtraverts += gle::end();
                     }
                     if(!j)

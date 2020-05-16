@@ -2995,11 +2995,6 @@ namespace UI
                         }
                     }
                 }
-                if(vslot.layer)
-                {
-                    layer = &lookupvslot(vslot.layer);
-                    if(!layer->slot->sts.empty()) layertex = layer->slot->sts[0].t;
-                }
                 if(vslot.detail)
                 {
                     detail = &lookupvslot(vslot.detail);

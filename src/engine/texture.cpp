@@ -1832,10 +1832,6 @@ static void assignvslot(VSlot &vs);
 
 static inline void assignvslotlayer(VSlot &vs)
 {
-    if(vs.layer && vslots.inrange(vs.layer) && vslots[vs.layer]->index < 0)
-    {
-        assignvslot(*vslots[vs.layer]);
-    }
     if(vs.detail && vslots.inrange(vs.detail) && vslots[vs.detail]->index < 0)
     {
         assignvslot(*vslots[vs.detail]);
@@ -1982,7 +1978,6 @@ int compactvslots(bool cull)
         VSlot &vs = *vslots[i];
         if(vs.index >= 0)
         {
-            if(vs.layer && vslots.inrange(vs.layer)) vs.layer = vslots[vs.layer]->index;
             if(vs.detail && vslots.inrange(vs.detail)) vs.detail = vslots[vs.detail]->index;
         }
     }
@@ -2070,10 +2065,6 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
     {
         dst.scroll = src.scroll;
     }
-    if(diff & (1<<VSLOT_LAYER))
-    {
-        dst.layer = src.layer;
-    }
     if(diff & (1<<VSLOT_ALPHA))
     {
         dst.alphafront = src.alphafront;
@@ -2144,10 +2135,6 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
     if(diff & (1<<VSLOT_SCROLL))
     {
         dst.scroll.add(src.scroll);
-    }
-    if(diff & (1<<VSLOT_LAYER))
-    {
-        dst.layer = src.layer;
     }
     if(diff & (1<<VSLOT_ALPHA))
     {
@@ -2228,7 +2215,6 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
     if(diff & (1<<VSLOT_ANGLE) && dst.angle != src.angle) return false;
     if(diff & (1<<VSLOT_OFFSET) && dst.offset != src.offset) return false;
     if(diff & (1<<VSLOT_SCROLL) && dst.scroll != src.scroll) return false;
-    if(diff & (1<<VSLOT_LAYER) && dst.layer != src.layer) return false;
     if(diff & (1<<VSLOT_ALPHA) && (dst.alphafront != src.alphafront || dst.alphaback != src.alphaback)) return false;
     if(diff & (1<<VSLOT_COLOR) && dst.colorscale != src.colorscale) return false;
     if(diff & (1<<VSLOT_REFRACT) && (dst.refractscale != src.refractscale || dst.refractcolor != src.refractcolor)) return false;
@@ -2279,11 +2265,6 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
         buf.put(VSLOT_SCROLL);
         putfloat(buf, src.scroll.x);
         putfloat(buf, src.scroll.y);
-    }
-    if(src.changed & (1<<VSLOT_LAYER))
-    {
-        buf.put(VSLOT_LAYER);
-        putuint(buf, vslots.inrange(src.layer) && !vslots[src.layer]->changed ? src.layer : 0);
     }
     if(src.changed & (1<<VSLOT_ALPHA))
     {
@@ -2387,12 +2368,6 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 dst.scroll.x = getfloat(buf);
                 dst.scroll.y = getfloat(buf);
                 break;
-            case VSLOT_LAYER:
-            {
-                int tex = getuint(buf);
-                dst.layer = vslots.inrange(tex) ? tex : 0;
-                break;
-            }
             case VSLOT_ALPHA:
                 dst.alphafront = clamp(getfloat(buf), 0.0f, 1.0f);
                 dst.alphaback = clamp(getfloat(buf), 0.0f, 1.0f);
@@ -2619,15 +2594,6 @@ void texscale(float *scale)
     propagatevslot(s.variants, 1<<VSLOT_SCALE);
 }
 COMMAND(texscale, "f");
-
-void texlayer(int *layer)
-{
-    if(!defslot) return;
-    Slot &s = *defslot;
-    s.variants->layer = *layer < 0 ? max(slots.length()-1+*layer, 0) : *layer;
-    propagatevslot(s.variants, 1<<VSLOT_LAYER);
-}
-COMMAND(texlayer, "i");
 
 void texdetail(int *detail)
 {
@@ -3011,16 +2977,6 @@ Texture *Slot::loadthumbnail()
             addname(name, *this, sts[glow], true, prefix);
         }
     }
-    VSlot *layer = vslot.layer ? &lookupvslot(vslot.layer, false) : NULL;
-    if(layer)
-    {
-        if(layer->colorscale == vec(1, 1, 1)) addname(name, *layer->slot, layer->slot->sts[0], true, "<layer>");
-        else
-        {
-            DEF_FORMAT_STRING(prefix, "<layer:%.2f/%.2f/%.2f>", layer->colorscale.x, layer->colorscale.y, layer->colorscale.z);
-            addname(name, *layer->slot, layer->slot->sts[0], true, prefix);
-        }
-    }
     VSlot *detail = vslot.detail ? &lookupvslot(vslot.detail, false) : NULL;
     if(detail) addname(name, *detail->slot, detail->slot->sts[0], true, "<detail>");
     name.add('\0');
@@ -3031,7 +2987,6 @@ Texture *Slot::loadthumbnail()
         ImageData s, g, l, d;
         texturedata(s, *this, sts[0], false);
         if(glow >= 0) texturedata(g, *this, sts[glow], false);
-        if(layer) texturedata(l, *layer->slot, layer->slot->sts[0], false);
         if(detail) texturedata(d, *detail->slot, detail->slot->sts[0], false);
         if(!s.data) t = thumbnail = notexture;
         else
@@ -3046,7 +3001,6 @@ Texture *Slot::loadthumbnail()
             }
             if(l.data)
             {
-                if(layer->colorscale != vec(1, 1, 1)) texmad(l, layer->colorscale, vec(0, 0, 0));
                 if(l.w != s.w/2 || l.h != s.h/2) scaleimage(l, s.w/2, s.h/2);
                 blitthumbnail(s, l, s.w-l.w, s.h-l.h);
             }

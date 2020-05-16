@@ -491,14 +491,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             continue;
         }
 
-        VSlot &vslot = lookupvslot(c.texture[i], false),
-             *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, false) : NULL;
-        Shader *shader = vslot.slot->shader;
-        int shadertype = shader->type;
-        if(layer)
-        {
-            shadertype |= layer->slot->shader->type;
-        }
+        VSlot &vslot = lookupvslot(c.texture[i], false);
         surfaceinfo &surf = surfaces[i];
         vertinfo *curlitverts = &litverts[numlitverts];
         int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0;
@@ -594,29 +587,6 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             surf.numverts |= preview;
             continue;
         }
-        int surflayer = BlendLayer_Top;
-        if(vslot.layer)
-        {
-            int x1 = curlitverts[numverts-1].x,
-                y1 = curlitverts[numverts-1].y,
-                x2 = x1,
-                y2 = y1;
-            for(int j = 0; j < numverts-1; ++j)
-            {
-                const vertinfo &v = curlitverts[j];
-                x1 = min(x1, static_cast<int>(v.x));
-                y1 = min(y1, static_cast<int>(v.y));
-                x2 = max(x2, static_cast<int>(v.x));
-                y2 = max(y2, static_cast<int>(v.y));
-            }
-            x2 = max(x2, x1+1);
-            y2 = max(y2, y1+1);
-            x1 = (x1>>3) + (co.x&~0xFFF);
-            y1 = (y1>>3) + (co.y&~0xFFF);
-            x2 = ((x2+7)>>3) + (co.x&~0xFFF);
-            y2 = ((y2+7)>>3) + (co.y&~0xFFF);
-        }
-        surf.numverts |= surflayer;
     }
     if(preview)
     {

@@ -189,14 +189,12 @@ struct sortkey
      : tex(tex), orient(orient), layer(layer), alpha(alpha)
     {}
 
-    bool operator==(const sortkey &o) const { return tex==o.tex && orient==o.orient && layer==o.layer && alpha==o.alpha; }
+    bool operator==(const sortkey &o) const { return tex==o.tex && orient==o.orient && alpha==o.alpha; }
 
     static inline bool sort(const sortkey &x, const sortkey &y)
     {
         if(x.alpha < y.alpha) return true;
         if(x.alpha > y.alpha) return false;
-        if(x.layer < y.layer) return true;
-        if(x.layer > y.layer) return false;
         if(x.tex == y.tex)
         {
             if(x.orient < y.orient) return true;
@@ -354,7 +352,7 @@ struct vacollect : verthash
         for(int i = 0; i < texs.length(); i++)
         {
             const sortkey &k = texs[i];
-            if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None) continue;
+            if(k.alpha != Alpha_None) continue;
             const sortval &t = indices[k];
             if(t.tris.empty()) continue;
             decalkey tkey(key);
@@ -540,7 +538,6 @@ struct vacollect : verthash
                 elementset &e = va->texelems[i];
                 e.texture = k.tex;
                 e.orient = k.orient;
-                e.layer = k.layer;
                 ushort *startbuf = curbuf;
                 e.minvert = USHRT_MAX;
                 e.maxvert = 0;
@@ -1201,8 +1198,7 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
                 if(vis&2) pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
             }
 
-            VSlot &vslot = lookupvslot(c.texture[i], true),
-                  *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, true) : NULL;
+            VSlot &vslot = lookupvslot(c.texture[i], true);
             while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
             int hastj = tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1) ? tj : -1;
             int grassy = vslot.slot->grass && i!=Orient_Bottom ? (vis!=3 || convex ? 1 : 2) : 0;
@@ -1214,7 +1210,7 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
                 if(!surf.numverts || surf.numverts&BlendLayer_Top)
                     addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&BlendLayer_Blend);
                 if(surf.numverts&BlendLayer_Bottom)
-                    addcubeverts(layer ? *layer : vslot, i, size, pos, convex, vslot.layer, verts, numverts, hastj, 0, false, surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top);
+                    addcubeverts(vslot, i, size, pos, convex, 0, verts, numverts, hastj, 0, false, surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top);
             }
         }
     }
@@ -1423,12 +1419,9 @@ int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
 
                 while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
                 if(tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1)) mf.tjoints = tj;
-
-                VSlot &vslot = lookupvslot(mf.tex, true);
                 if(surf.numverts&BlendLayer_Top) vamerges[level].add(mf);
                 if(surf.numverts&BlendLayer_Bottom)
                 {
-                    mf.tex = vslot.layer;
                     mf.numverts &= ~BlendLayer_Blend;
                     mf.numverts |= surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top;
                     vamerges[level].add(mf);
@@ -1819,7 +1812,6 @@ void precachetextures()
                 texs.add(tex);
 
                 VSlot &vslot = lookupvslot(tex, false);
-                if(vslot.layer && texs.find(vslot.layer) < 0) texs.add(vslot.layer);
                 if(vslot.detail && texs.find(vslot.detail) < 0) texs.add(vslot.detail);
             }
         }

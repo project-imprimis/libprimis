@@ -578,10 +578,6 @@ void savevslot(stream *f, VSlot &vs, int prev)
             f->putlil<float>(vs.scroll[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_LAYER))
-    {
-        f->putlil<int>(vs.layer);
-    }
     if(vs.changed & (1<<VSLOT_ALPHA))
     {
         f->putlil<float>(vs.alphafront);
@@ -682,7 +678,7 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         vs.rotation = clamp(f->getlil<int>(), 0, 7);
     }
     /*
-     * angle uses three parameters to prebak sine/cos values for the angle it
+     * angle uses three parameters to prebake sine/cos values for the angle it
      * stores despite there being only one parameter (angle) passed
      */
     if(vs.changed & (1<<VSLOT_ANGLE)) //angle <angle>
@@ -705,10 +701,6 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         {
             vs.scroll[k] = f->getlil<float>();
         }
-    }
-    if(vs.changed & (1<<VSLOT_LAYER)) //layer <index>
-    {
-        vs.layer = f->getlil<int>();
     }
     if(vs.changed & (1<<VSLOT_ALPHA)) //alpha <f> <b>
     {
