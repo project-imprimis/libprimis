@@ -193,12 +193,6 @@ client:	libenet $(CLIENT_OBJS)
 server:	libenet $(SERVER_OBJS)
 	$(CXX) $(CXXFLAGS) -o tess_server $(SERVER_OBJS) $(SERVER_LIBS)  
 
-shared/tessfont.o: shared/tessfont.c
-	$(CXX) $(CXXFLAGS) -c -o $@ $< `freetype-config --cflags`
-
-tessfont: shared/tessfont.o
-	$(CXX) $(CXXFLAGS) -o tessfont shared/tessfont.o `freetype-config --libs` -lz
-
 install: all
 	cp -f tess_client	../bin_unix/$(PLATFORM_PREFIX)_client
 	cp -f tess_server	../bin_unix/$(PLATFORM_PREFIX)_server
