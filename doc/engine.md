@@ -39,6 +39,7 @@ linear analysis, including multipole expansions and Fourier series.
 * 1.1 Coding Standards
 * 1.2 Default Paths & Libraries
 * 1.3 Conventions and Units
+* 1.4 Program Structure
 
 #### 2. World
 * 2.1 Octree
@@ -419,6 +420,61 @@ Colors which are defined past 0xFFFFFF (hex color for white) are generally
 passed as a set of three paramaters `R G B` where `1.0 1.0 1.0` is 0xFFFFFF.
 These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
 upwards as much as downwards in practice.
+
+## 1.4 Program Structure
+--
+
+The Imprimis project is, at its highest level, organized into four main projects
+as well as a pair of utilities which are perhaps not considered direct members
+of the engine.
+
+```
+    Serverside    .                Clientside
+------------------+------------------------------------------------
+                  .  +-----------+
+                  .  |   Game    |
+                  .  |    Code   |
+                  .  +-----------+
+                  .        ^
++--------+  (A)   .        |(D)
+| Master |_____   .        v
+| Server |     \  .  +-----------+   +------+
++--------+      \-.->|           |   |      |(F)+--------------+
+    ^             .  |           |   |      |-->|Display Output|
+    | +--------+  .  |           |   |      |   +--------------+
+    \_|  Game  |<-.->|           |   |Simple|   +--------------+
+    | | Server |  .  |           |(E)|Direct|-->| Sound Output |
+    | +--------+  .  |  Game     |<->|Media |   +--------------+
+ (B)| +--------+ (C) |   Engine  |   |Layer |
+    \_|  Game  |<-.->|           |   |(SDL) |
+    | | Server |  .  |           |   |      |   +--------------+
+    | +--------+  .  |           |   |      |<--|  User Input  |
+    | +--------+  .  |           |   |      |   +--------------+
+    \_|  Game  |<-.->|           |   |      |
+      | Server |  .  +-----------+   +------+
+      +--------+  .        ^
+                  .        |(G)
+                  .        v
+                  .   +---------+
+                  .   |  Local  |
+                  .   |  Server |
+                  .   +---------+
+```
+
+* A: Master server provides a list of game servers to the game engine over enet.
+* B: Game servers register to a master server via enet.
+* C: Game servers can be connected to a client's game via enet.
+* D: The game engine's behavior is controlled by the game code.
+* E: The Simple DirectMedia layer library handles input/output.
+* F: Display, sound, and user inputs get handled by SDL.
+* G: Local gameplay can be run through a game server hosted clientside.
+
+The components of the system handled by the Imprimis project is the:
+
+* Game engine: core routines needed for the gamecode to run a game
+* Game code: an actual game written using the facilities written in the engine
+* Game server: a locally or remotely hosted server that manages game clients
+* Master server: a service that provides a list of game server names to clients
 
 # 2. World
 ---
