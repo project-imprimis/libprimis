@@ -12,7 +12,6 @@ bool hasS3TC = false,
      hasDBGO = false,
      hasEGPU4 = false,
      hasES3 = false,
-     hasCB = false,
      hasCI = false;
 bool mesa = false,
      intel = false,
@@ -574,7 +573,6 @@ void gl_checkextensions()
     glBindBufferRange_         = (PFNGLBINDBUFFERRANGEPROC)        getprocaddress("glBindBufferRange");
     useubo = 1;
     glCopyBufferSubData_ = (PFNGLCOPYBUFFERSUBDATAPROC)getprocaddress("glCopyBufferSubData");
-    hasCB = true;///
     //OpenGL 3.2
     glTexImage2DMultisample_ = (PFNGLTEXIMAGE2DMULTISAMPLEPROC)getprocaddress("glTexImage2DMultisample");
     glTexImage3DMultisample_ = (PFNGLTEXIMAGE3DMULTISAMPLEPROC)getprocaddress("glTexImage3DMultisample");
