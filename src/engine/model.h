@@ -4,7 +4,6 @@ enum
     MDL_MD3,
     MDL_MD5,
     MDL_OBJ,
-    MDL_SMD,
     MDL_IQM,
     MDL_NumMDLTypes
 };
