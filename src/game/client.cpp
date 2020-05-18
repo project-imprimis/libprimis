@@ -18,7 +18,7 @@ namespace game
     float calcradarscale()
     {
         //clamp minimapradius/3 to within min/max radar scale
-        return clamp(max(minimapradius.x, minimapradius.y)/3, float(minimapminscale), float(minimapmaxscale));
+        return clamp(max(minimapradius.x, minimapradius.y)/3, static_cast<float>(minimapminscale), static_cast<float>(minimapmaxscale));
     }
 
     void drawminimap(gameent *d, float x, float y, float s)
@@ -60,7 +60,8 @@ namespace game
     {
         vec dir = d->o;
         dir.sub(o->o).div(scale);
-        float dist = dir.magnitude2(), maxdist = 1 - 0.05f - 0.05f;
+        float dist = dir.magnitude2(),
+              maxdist = 1 - 0.05f - 0.05f;
         if(dist >= maxdist)
         {
             dir.mul(maxdist/dist);
@@ -163,12 +164,19 @@ namespace game
         }
     }
 
-    bool senditemstoserver = false, sendcrc = false; // after a map change, since server doesn't have map data
+    bool senditemstoserver = false,
+         sendcrc = false; // after a map change, since server doesn't have map data
     int lastping = 0;
-
-    bool connected = false, remote = false, demoplayback = false, gamepaused = false;
-    int sessionid = 0, mastermode = MasterMode_Open, gamespeed = 100;
-    string servdesc = "", servauth = "", connectpass = "";
+    bool connected = false,
+         remote = false,
+         demoplayback = false,
+         gamepaused = false;
+    int sessionid = 0,
+        mastermode = MasterMode_Open,
+        gamespeed = 100;
+    string servdesc = "",
+           servauth = "",
+           connectpass = "";
 
     VARP(deadpush, 1, 2, 20);
 
@@ -734,7 +742,8 @@ namespace game
         {
             return;
         }
-        int val = 1, cn = player1->clientnum;
+        int val = 1,
+            cn = player1->clientnum;
         if(who[0])
         {
             cn = parseplayer(who);
@@ -899,7 +908,8 @@ namespace game
     void sendclipboard()
     {
         uchar *outbuf = NULL;
-        int inlen = 0, outlen = 0;
+        int inlen = 0,
+            outlen = 0;
         if(!packeditinfo(localedit, inlen, outbuf, outlen))
         {
             outbuf = NULL;
@@ -928,7 +938,11 @@ namespace game
             {
                 switch(op)
                 {
-                    case Edit_Copy: needclipboard = 0; break;
+                    case Edit_Copy:
+                    {
+                        needclipboard = 0;
+                        break;
+                    }
                     case Edit_Paste:
                         if(needclipboard > 0)
                         {
@@ -979,7 +993,8 @@ namespace game
             }
             case Edit_Replace:
             {
-                int tex1 = shouldpacktex(arg1), tex2 = shouldpacktex(arg2);
+                int tex1 = shouldpacktex(arg1),
+                    tex2 = shouldpacktex(arg2);
                 if(addmsg(NetMsg_EditFace + op, "ri9i7",
                     sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
                     sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
@@ -987,8 +1002,14 @@ namespace game
                 {
                     messages.pad(2);
                     int offset = messages.length();
-                    if(tex1) packvslot(messages, arg1);
-                    if(tex2) packvslot(messages, arg2);
+                    if(tex1)
+                    {
+                        packvslot(messages, arg1);
+                    }
+                    if(tex2)
+                    {
+                        packvslot(messages, arg2);
+                    }
                     *(ushort *)&messages[offset-2] = LIL_ENDIAN_SWAP(ushort(messages.length() - offset));
                 }
                 break;
@@ -1020,7 +1041,10 @@ namespace game
                 int inlen = 0, outlen = 0;
                 if(packundo(op, inlen, outbuf, outlen))
                 {
-                    if(addmsg(NetMsg_EditFace + op, "ri2", inlen, outlen)) messages.put(outbuf, outlen);
+                    if(addmsg(NetMsg_EditFace + op, "ri2", inlen, outlen))
+                    {
+                        messages.put(outbuf, outlen);
+                    }
                     delete[] outbuf;
                 }
                 break;
@@ -1030,33 +1054,40 @@ namespace game
 
     void printvar(gameent *d, ident *id)
     {
-        if(id) switch(id->type)
+        if(id)
         {
-            case Id_Var:
+            switch(id->type)
             {
-                int val = *id->storage.i;
-                string str;
-                if(val < 0)
+                case Id_Var:
                 {
-                    formatstring(str, "%d", val);
+                    int val = *id->storage.i;
+                    string str;
+                    if(val < 0)
+                    {
+                        formatstring(str, "%d", val);
+                    }
+                    else if(id->flags&Idf_Hex && id->maxval==0xFFFFFF)
+                    {
+                        formatstring(str, "0x%.6X (%d, %d, %d)", val, (val>>16)&0xFF, (val>>8)&0xFF, val&0xFF);
+                    }
+                    else
+                    {
+                        formatstring(str, id->flags&Idf_Hex ? "0x%X" : "%d", val);
+                    }
+                    conoutf("%s set map var \"%s\" to %s", colorname(d), id->name, str);
+                    break;
                 }
-                else if(id->flags&Idf_Hex && id->maxval==0xFFFFFF)
+                case Id_FloatVar:
                 {
-                    formatstring(str, "0x%.6X (%d, %d, %d)", val, (val>>16)&0xFF, (val>>8)&0xFF, val&0xFF);
+                    conoutf("%s set map var \"%s\" to %s", colorname(d), id->name, floatstr(*id->storage.f));
+                    break;
                 }
-                else
+                case Id_StringVar:
                 {
-                    formatstring(str, id->flags&Idf_Hex ? "0x%X" : "%d", val);
+                    conoutf("%s set map var \"%s\" to \"%s\"", colorname(d), id->name, *id->storage.s);
+                    break;
                 }
-                conoutf("%s set map var \"%s\" to %s", colorname(d), id->name, str);
-                break;
             }
-            case Id_FloatVar:
-                conoutf("%s set map var \"%s\" to %s", colorname(d), id->name, floatstr(*id->storage.f));
-                break;
-            case Id_StringVar:
-                conoutf("%s set map var \"%s\" to \"%s\"", colorname(d), id->name, *id->storage.s);
-                break;
         }
     }
 
@@ -1066,17 +1097,24 @@ namespace game
         switch(id->type)
         {
             case Id_Var:
+            {
                 addmsg(NetMsg_EditVar, "risi", Id_Var, id->name, *id->storage.i);
                 break;
-
+            }
             case Id_FloatVar:
+            {
                 addmsg(NetMsg_EditVar, "risf", Id_FloatVar, id->name, *id->storage.f);
                 break;
-
+            }
             case Id_StringVar:
+            {
                 addmsg(NetMsg_EditVar, "riss", Id_StringVar, id->name, *id->storage.s);
                 break;
-            default: return;
+            }
+            default:
+            {
+                return;
+            }
         }
         printvar(player1, id);
     }
@@ -1167,53 +1205,63 @@ namespace game
         static uchar buf[MAXTRANS];
         ucharbuf p(buf, sizeof(buf));
         putint(p, type);
-        int numi = 1, numf = 0, nums = 0, mcn = -1;
+        int numi = 1,
+            numf = 0,
+            nums = 0,
+            mcn = -1;
         bool reliable = false;
         if(fmt)
         {
             va_list args;
             va_start(args, fmt);
-            while(*fmt) switch(*fmt++)
+            while(*fmt)
             {
-                case 'r': reliable = true; break;
-                case 'c':
+                switch(*fmt++)
                 {
-                    gameent *d = va_arg(args, gameent *);
-                    mcn = !d || d == player1 ? -1 : d->clientnum;
-                    break;
-                }
-                case 'v':
-                {
-                    int n = va_arg(args, int);
-                    int *v = va_arg(args, int *);
-                    for(int i = 0; i < n; ++i)
+                    case 'r':
                     {
-                        putint(p, v[i]);
+                        reliable = true;
+                        break;
                     }
-                    numi += n;
-                    break;
-                }
-                case 'i':
-                {
-                    int n = isdigit(*fmt) ? *fmt++-'0' : 1;
-                    for(int i = 0; i < n; ++i)
+                    case 'c':
                     {
-                        putint(p, va_arg(args, int));
+                        gameent *d = va_arg(args, gameent *);
+                        mcn = !d || d == player1 ? -1 : d->clientnum;
+                        break;
                     }
-                    numi += n;
-                    break;
-                }
-                case 'f':
-                {
-                    int n = isdigit(*fmt) ? *fmt++-'0' : 1;
-                    for(int i = 0; i < n; ++i)
+                    case 'v':
                     {
-                        putfloat(p, (float)va_arg(args, double));
+                        int n = va_arg(args, int);
+                        int *v = va_arg(args, int *);
+                        for(int i = 0; i < n; ++i)
+                        {
+                            putint(p, v[i]);
+                        }
+                        numi += n;
+                        break;
                     }
-                    numf += n;
-                    break;
+                    case 'i':
+                    {
+                        int n = isdigit(*fmt) ? *fmt++-'0' : 1;
+                        for(int i = 0; i < n; ++i)
+                        {
+                            putint(p, va_arg(args, int));
+                        }
+                        numi += n;
+                        break;
+                    }
+                    case 'f':
+                    {
+                        int n = isdigit(*fmt) ? *fmt++-'0' : 1;
+                        for(int i = 0; i < n; ++i)
+                        {
+                            putfloat(p, static_cast<float>(va_arg(args, double)));
+                        }
+                        numf += n;
+                        break;
+                    }
+                    case 's': sendstring(va_arg(args, const char *), p); nums++; break;
                 }
-                case 's': sendstring(va_arg(args, const char *), p); nums++; break;
             }
             va_end(args);
         }
@@ -1321,7 +1369,8 @@ namespace game
         uchar physstate = d->physstate | ((d->lifesequence&1)<<3) | ((d->move&3)<<4) | ((d->strafe&3)<<6);
         q.put(physstate);
         ivec o = ivec(vec(d->o.x, d->o.y, d->o.z-d->eyeheight).mul(DMF));
-        uint vel = min(int(d->vel.magnitude()*DVELF), 0xFFFF), fall = min(int(d->falling.magnitude()*DVELF), 0xFFFF);
+        uint vel = min(static_cast<int>(d->vel.magnitude()*DVELF), 0xFFFF),
+             fall = min(static_cast<int>(d->falling.magnitude()*DVELF), 0xFFFF);
         // 3 bits position, 1 bit velocity, 3 bits falling, 1 bit material, 1 bit crouching
         uint flags = 0;
         if(o.x < 0 || o.x > 0xFFFF)
@@ -1370,10 +1419,10 @@ namespace game
                 q.put((o[k]>>16)&0xFF);
             }
         }
-        uint dir = (d->yaw < 0 ? 360 + int(d->yaw)%360 : int(d->yaw)%360) + clamp(int(d->pitch+90), 0, 180)*360;
+        uint dir = (d->yaw < 0 ? 360 + static_cast<int>(d->yaw)%360 : static_cast<int>(d->yaw)%360) + clamp(static_cast<int>(d->pitch+90), 0, 180)*360;
         q.put(dir&0xFF);
         q.put((dir>>8)&0xFF);
-        q.put(clamp(int(d->roll+90), 0, 180));
+        q.put(clamp(static_cast<int>(d->roll+90), 0, 180));
         q.put(vel&0xFF);
         if(vel > 0xFF)
         {
@@ -1381,7 +1430,7 @@ namespace game
         }
         float velyaw, velpitch;
         vectoyawpitch(d->vel, velyaw, velpitch);
-        uint veldir = (velyaw < 0 ? 360 + int(velyaw)%360 : int(velyaw)%360) + clamp(int(velpitch+90), 0, 180)*360;
+        uint veldir = (velyaw < 0 ? 360 + static_cast<int>(velyaw)%360 : static_cast<int>(velyaw)%360) + clamp(static_cast<int>(velpitch+90), 0, 180)*360;
         q.put(veldir&0xFF);
         q.put((veldir>>8)&0xFF);
         if(fall > 0)
@@ -1395,7 +1444,7 @@ namespace game
             {
                 float fallyaw, fallpitch;
                 vectoyawpitch(d->falling, fallyaw, fallpitch);
-                uint falldir = (fallyaw < 0 ? 360 + int(fallyaw)%360 : int(fallyaw)%360) + clamp(int(fallpitch+90), 0, 180)*360;
+                uint falldir = (fallyaw < 0 ? 360 + static_cast<int>(fallyaw)%360 : static_cast<int>(fallyaw)%360) + clamp(static_cast<int>(fallpitch+90), 0, 180)*360;
                 q.put(falldir&0xFF);
                 q.put((falldir>>8)&0xFF);
             }
@@ -1528,7 +1577,9 @@ namespace game
         const float dy = player1->o.y-d->o.y;
         const float dz = player1->o.z-d->o.z;
         const float rz = player1->aboveeye+d->eyeheight;
-        const float fx = (float)fabs(dx), fy = (float)fabs(dy), fz = (float)fabs(dz);
+        const float fx = static_cast<float>(fabs(dx)),
+                    fy = static_cast<float>(fabs(dy)),
+                    fz = static_cast<float>(fabs(dz));
         if(fx<r && fy<r && fz<rz && player1->state!=ClientState_Spectator && d->state!=ClientState_Dead)
         {
             if(fx<fy)
@@ -1554,129 +1605,148 @@ namespace game
     void parsepositions(ucharbuf &p)
     {
         int type;
-        while(p.remaining()) switch(type = getint(p))
+        while(p.remaining())
         {
-            case NetMsg_DemoPacket: break;
-            case NetMsg_Pos:                        // position of another client
+            switch(type = getint(p))
             {
-                int cn = getuint(p), physstate = p.get(), flags = getuint(p);
-                vec o, vel, falling;
-                float yaw, pitch, roll;
-                for(int k = 0; k < 3; ++k)
+                case NetMsg_DemoPacket:
                 {
-                    int n = p.get(); n |= p.get()<<8; if(flags&(1<<k)) { n |= p.get()<<16; if(n&0x800000) n |= ~0U<<24; }
-                    o[k] = n/DMF;
+                    break;
                 }
-                int dir = p.get(); dir |= p.get()<<8;
-                yaw = dir%360;
-                pitch = clamp(dir/360, 0, 180)-90;
-                roll = clamp(int(p.get()), 0, 180)-90;
-                int mag = p.get();
-                if(flags&(1<<3))
+                case NetMsg_Pos:                        // position of another client
                 {
-                    mag |= p.get()<<8;
-                }
-                dir = p.get(); dir |= p.get()<<8;
-                vecfromyawpitch(dir%360, clamp(dir/360, 0, 180)-90, 1, 0, vel);
-                vel.mul(mag/DVELF);
-                if(flags&(1<<4))
-                {
-                    mag = p.get(); if(flags&(1<<5)) mag |= p.get()<<8;
-                    if(flags&(1<<6))
+                    int cn = getuint(p),
+                        physstate = p.get(),
+                        flags = getuint(p);
+                    vec o, vel, falling;
+                    float yaw, pitch, roll;
+                    for(int k = 0; k < 3; ++k)
                     {
-                        dir = p.get(); dir |= p.get()<<8;
-                        vecfromyawpitch(dir%360, clamp(dir/360, 0, 180)-90, 1, 0, falling);
+                        int n = p.get();
+                        n |= p.get()<<8;
+                        if(flags&(1<<k))
+                        {
+                            n |= p.get()<<16;
+                            if(n&0x800000)
+                            {
+                                n |= ~0U<<24;
+                            }
+                        }
+                        o[k] = n/DMF;
+                    }
+                    int dir = p.get(); dir |= p.get()<<8;
+                    yaw = dir%360;
+                    pitch = clamp(dir/360, 0, 180)-90;
+                    roll = clamp(static_cast<int>(p.get()), 0, 180)-90;
+                    int mag = p.get();
+                    if(flags&(1<<3))
+                    {
+                        mag |= p.get()<<8;
+                    }
+                    dir = p.get(); dir |= p.get()<<8;
+                    vecfromyawpitch(dir%360, clamp(dir/360, 0, 180)-90, 1, 0, vel);
+                    vel.mul(mag/DVELF);
+                    if(flags&(1<<4))
+                    {
+                        mag = p.get(); if(flags&(1<<5)) mag |= p.get()<<8;
+                        if(flags&(1<<6))
+                        {
+                            dir = p.get(); dir |= p.get()<<8;
+                            vecfromyawpitch(dir%360, clamp(dir/360, 0, 180)-90, 1, 0, falling);
+                        }
+                        else
+                        {
+                            falling = vec(0, 0, -1);
+                        }
+                        falling.mul(mag/DVELF);
                     }
                     else
                     {
-                        falling = vec(0, 0, -1);
+                        falling = vec(0, 0, 0);
                     }
-                    falling.mul(mag/DVELF);
-                }
-                else
-                {
-                    falling = vec(0, 0, 0);
-                }
-                int seqcolor = (physstate>>3)&1;
-                gameent *d = getclient(cn);
-                if(!d || d->lifesequence < 0 || seqcolor!=(d->lifesequence&1) || d->state==ClientState_Dead)
-                {
-                    continue;
-                }
-                float oldyaw = d->yaw, oldpitch = d->pitch, oldroll = d->roll;
-                d->yaw = yaw;
-                d->pitch = pitch;
-                d->roll = roll;
-                d->move = (physstate>>4)&2 ? -1 : (physstate>>4)&1;
-                d->strafe = (physstate>>6)&2 ? -1 : (physstate>>6)&1;
-                d->crouching = (flags&(1<<8))!=0 ? -1 : abs(d->crouching);
-                vec oldpos(d->o);
-                d->o = o;
-                d->o.z += d->eyeheight;
-                d->vel = vel;
-                d->falling = falling;
-                d->physstate = physstate&7;
-                updatephysstate(d);
-                updatepos(d);
-                if(smoothmove && d->smoothmillis>=0 && oldpos.dist(d->o) < smoothdist)
-                {
-                    d->newpos = d->o;
-                    d->newyaw = d->yaw;
-                    d->newpitch = d->pitch;
-                    d->newroll = d->roll;
-                    d->o = oldpos;
-                    d->yaw = oldyaw;
-                    d->pitch = oldpitch;
-                    d->roll = oldroll;
-                    (d->deltapos = oldpos).sub(d->newpos);
-                    d->deltayaw = oldyaw - d->newyaw;
-                    if(d->deltayaw > 180) d->deltayaw -= 360;
-                    else if(d->deltayaw < -180)
+                    int seqcolor = (physstate>>3)&1;
+                    gameent *d = getclient(cn);
+                    if(!d || d->lifesequence < 0 || seqcolor!=(d->lifesequence&1) || d->state==ClientState_Dead)
                     {
-                        d->deltayaw += 360;
+                        continue;
                     }
-                    d->deltapitch = oldpitch - d->newpitch;
-                    d->deltaroll = oldroll - d->newroll;
-                    d->smoothmillis = lastmillis;
+                    float oldyaw = d->yaw, oldpitch = d->pitch, oldroll = d->roll;
+                    d->yaw = yaw;
+                    d->pitch = pitch;
+                    d->roll = roll;
+                    d->move = (physstate>>4)&2 ? -1 : (physstate>>4)&1;
+                    d->strafe = (physstate>>6)&2 ? -1 : (physstate>>6)&1;
+                    d->crouching = (flags&(1<<8))!=0 ? -1 : abs(d->crouching);
+                    vec oldpos(d->o);
+                    d->o = o;
+                    d->o.z += d->eyeheight;
+                    d->vel = vel;
+                    d->falling = falling;
+                    d->physstate = physstate&7;
+                    updatephysstate(d);
+                    updatepos(d);
+                    if(smoothmove && d->smoothmillis>=0 && oldpos.dist(d->o) < smoothdist)
+                    {
+                        d->newpos = d->o;
+                        d->newyaw = d->yaw;
+                        d->newpitch = d->pitch;
+                        d->newroll = d->roll;
+                        d->o = oldpos;
+                        d->yaw = oldyaw;
+                        d->pitch = oldpitch;
+                        d->roll = oldroll;
+                        (d->deltapos = oldpos).sub(d->newpos);
+                        d->deltayaw = oldyaw - d->newyaw;
+                        if(d->deltayaw > 180) d->deltayaw -= 360;
+                        else if(d->deltayaw < -180)
+                        {
+                            d->deltayaw += 360;
+                        }
+                        d->deltapitch = oldpitch - d->newpitch;
+                        d->deltaroll = oldroll - d->newroll;
+                        d->smoothmillis = lastmillis;
+                    }
+                    else
+                    {
+                        d->smoothmillis = 0;
+                    }
+                    if(d->state==ClientState_Lagged || d->state==ClientState_Spawning)
+                    {
+                        d->state = ClientState_Alive;
+                    }
+                    break;
                 }
-                else
+                case NetMsg_Teleport:
                 {
-                    d->smoothmillis = 0;
+                    int cn = getint(p),
+                        tp = getint(p),
+                        td = getint(p);
+                    gameent *d = getclient(cn);
+                    if(!d || d->lifesequence < 0 || d->state==ClientState_Dead)
+                    {
+                        continue;
+                    }
+                    entities::teleporteffects(d, tp, td, false);
+                    break;
                 }
-                if(d->state==ClientState_Lagged || d->state==ClientState_Spawning)
+                case NetMsg_Jumppad:
                 {
-                    d->state = ClientState_Alive;
+                    int cn = getint(p),
+                        jp = getint(p);
+                    gameent *d = getclient(cn);
+                    if(!d || d->lifesequence < 0 || d->state==ClientState_Dead)
+                    {
+                        continue;
+                    }
+                    entities::jumppadeffects(d, jp, false);
+                    break;
                 }
-                break;
+                default:
+                {
+                    neterr("type");
+                    return;
+                }
             }
-
-            case NetMsg_Teleport:
-            {
-                int cn = getint(p), tp = getint(p), td = getint(p);
-                gameent *d = getclient(cn);
-                if(!d || d->lifesequence < 0 || d->state==ClientState_Dead)
-                {
-                    continue;
-                }
-                entities::teleporteffects(d, tp, td, false);
-                break;
-            }
-
-            case NetMsg_Jumppad:
-            {
-                int cn = getint(p), jp = getint(p);
-                gameent *d = getclient(cn);
-                if(!d || d->lifesequence < 0 || d->state==ClientState_Dead)
-                {
-                    continue;
-                }
-                entities::jumppadeffects(d, jp, false);
-                break;
-            }
-
-            default:
-                neterr("type");
-                return;
         }
     }
 
@@ -1729,12 +1799,15 @@ namespace game
     {
         static char text[MAXTRANS];
         int type;
-        bool mapchanged = false, demopacket = false;
-
+        bool mapchanged = false,
+             demopacket = false;
         while(p.remaining()) switch(type = getint(p))
         {
-            case NetMsg_DemoPacket: demopacket = true; break;
-
+            case NetMsg_DemoPacket:
+            {
+                demopacket = true;
+                break;
+            }
             case NetMsg_ServerInfo:                   // welcome messsage from the server
             {
                 int mycn = getint(p), prot = getint(p);
@@ -1755,14 +1828,12 @@ namespace game
                 sendintro();
                 break;
             }
-
             case NetMsg_Welcome:
             {
                 connected = true;
                 notifywelcome();
                 break;
             }
-
             case NetMsg_PauseGame:
             {
                 bool val = getint(p) > 0;
@@ -1783,10 +1854,10 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_GameSpeed:
             {
-                int val = clamp(getint(p), 10, 1000), cn = getint(p);
+                int val = clamp(getint(p), 10, 1000),
+                    cn = getint(p);
                 gameent *a = cn >= 0 ? getclient(cn) : NULL;
                 if(!demopacket)
                 {
@@ -1802,7 +1873,6 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_Client:
             {
                 int cn = getint(p), len = getuint(p);
@@ -1810,15 +1880,15 @@ namespace game
                 parsemessages(cn, getclient(cn), q);
                 break;
             }
-
             case NetMsg_Sound:
+            {
                 if(!d)
                 {
                     return;
                 }
                 playsound(getint(p), &d->o);
                 break;
-
+            }
             case NetMsg_Text:
             {
                 if(!d)
@@ -1838,7 +1908,6 @@ namespace game
                 conoutf(ConsoleMsg_Chat, "%s:%s %s", chatcolorname(d), teamtextcode[0], text);
                 break;
             }
-
             case NetMsg_SayTeam:
             {
                 int tcn = getint(p);
@@ -1857,8 +1926,8 @@ namespace game
                 conoutf(ConsoleMsg_TeamChat, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
                 break;
             }
-
             case NetMsg_MapChange:
+            {
                 getstring(text, p);
                 changemapserv(text, getint(p));
                 mapchanged = true;
@@ -1871,7 +1940,7 @@ namespace game
                     senditemstoserver = false;
                 }
                 break;
-
+            }
             case NetMsg_ForceDeath:
             {
                 int cn = getint(p);
@@ -1899,7 +1968,6 @@ namespace game
                 checkfollow();
                 break;
             }
-
             case NetMsg_ItemList:
             {
                 int n;
@@ -1913,7 +1981,6 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_InitClient:            // another client either connected or changed name/team
             {
                 int cn = getint(p);
@@ -1957,8 +2024,8 @@ namespace game
                 d->playercolor = getint(p);
                 break;
             }
-
             case NetMsg_SwitchName:
+            {
                 getstring(text, p);
                 if(d)
                 {
@@ -1977,7 +2044,7 @@ namespace game
                     }
                 }
                 break;
-
+            }
             case NetMsg_SwitchModel:
             {
                 int model = getint(p);
@@ -1991,7 +2058,6 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_SwitchColor:
             {
                 int color = getint(p);
@@ -2001,11 +2067,11 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_ClientDiscon:
+            {
                 clientdisconnected(getint(p));
                 break;
-
+            }
             case NetMsg_Spawn:
             {
                 if(d)
@@ -2029,7 +2095,6 @@ namespace game
                 checkfollow();
                 break;
             }
-
             case NetMsg_SpawnState:
             {
                 int scn = getint(p);
@@ -2075,7 +2140,6 @@ namespace game
                 addmsg(NetMsg_Spawn, "rcii", s, s->lifesequence, s->gunselect);
                 break;
             }
-
             case NetMsg_ShotFX:
             {
                 int scn = getint(p), atk = getint(p), id = getint(p);
@@ -2138,7 +2202,9 @@ namespace game
 
             case NetMsg_Hitpush:
             {
-                int tcn = getint(p), atk = getint(p), damage = getint(p);
+                int tcn = getint(p),
+                    atk = getint(p),
+                    damage = getint(p);
                 gameent *target = getclient(tcn);
                 vec dir;
                 for(int k = 0; k < 3; ++k)
@@ -2155,7 +2221,10 @@ namespace game
 
             case NetMsg_Died:
             {
-                int vcn = getint(p), acn = getint(p), frags = getint(p), tfrags = getint(p);
+                int vcn = getint(p),
+                    acn = getint(p),
+                    frags = getint(p),
+                    tfrags = getint(p);
                 gameent *victim = getclient(vcn),
                        *actor = getclient(acn);
                 if(!actor)
@@ -2249,7 +2318,8 @@ namespace game
 
             case NetMsg_ItemAcceptance:            // server acknowledges that I picked up this item
             {
-                int i = getint(p), cn = getint(p);
+                int i = getint(p),
+                    cn = getint(p);
                 gameent *d = getclient(cn);
                 entities::pickupeffects(i, d);
                 break;
@@ -2257,7 +2327,9 @@ namespace game
 
             case NetMsg_Clipboard:
             {
-                int cn = getint(p), unpacklen = getint(p), packlen = getint(p);
+                int cn = getint(p),
+                    unpacklen = getint(p),
+                    packlen = getint(p);
                 gameent *d = getclient(cn);
                 ucharbuf q = p.subbuf(max(packlen, 0));
                 if(d)
@@ -2269,7 +2341,9 @@ namespace game
             case NetMsg_Undo:
             case NetMsg_Redo:
             {
-                int cn = getint(p), unpacklen = getint(p), packlen = getint(p);
+                int cn = getint(p),
+                    unpacklen = getint(p),
+                    packlen = getint(p);
                 gameent *d = getclient(cn);
                 ucharbuf q = p.subbuf(max(packlen, 0));
                 if(d)
@@ -2295,14 +2369,31 @@ namespace game
                     return;
                 }
                 selinfo sel;
-                sel.o.x = getint(p); sel.o.y = getint(p); sel.o.z = getint(p);
-                sel.s.x = getint(p); sel.s.y = getint(p); sel.s.z = getint(p);
-                sel.grid = getint(p); sel.orient = getint(p);
-                sel.cx = getint(p); sel.cxs = getint(p); sel.cy = getint(p), sel.cys = getint(p);
+                sel.o.x = getint(p);
+                sel.o.y = getint(p);
+                sel.o.z = getint(p);
+                sel.s.x = getint(p);
+                sel.s.y = getint(p);
+                sel.s.z = getint(p);
+                sel.grid = getint(p);
+                sel.orient = getint(p);
+                sel.cx = getint(p);
+                sel.cxs = getint(p);
+                sel.cy = getint(p),
+                sel.cys = getint(p);
                 sel.corner = getint(p);
                 switch(type)
                 {
-                    case NetMsg_EditFace: { int dir = getint(p), mode = getint(p); if(sel.validate()) mpeditface(dir, mode, sel, false); break; }
+                    case NetMsg_EditFace:
+                    {
+                        int dir = getint(p),
+                            mode = getint(p);
+                        if(sel.validate())
+                        {
+                            mpeditface(dir, mode, sel, false);
+                        }
+                        break;
+                    }
                     case NetMsg_EditTex:
                     {
                         int tex = getint(p),
@@ -2440,10 +2531,15 @@ namespace game
                     return;
                 }
                 int i = getint(p);
-                float x = getint(p)/DMF, y = getint(p)/DMF, z = getint(p)/DMF;
+                float x = getint(p)/DMF,
+                      y = getint(p)/DMF,
+                      z = getint(p)/DMF;
                 int type = getint(p);
-                int attr1 = getint(p), attr2 = getint(p), attr3 = getint(p), attr4 = getint(p), attr5 = getint(p);
-
+                int attr1 = getint(p),
+                    attr2 = getint(p),
+                    attr3 = getint(p),
+                    attr4 = getint(p),
+                    attr5 = getint(p);
                 mpeditent(i, vec(x, y, z), type, attr1, attr2, attr3, attr4, attr5, false);
                 break;
             }
@@ -2482,28 +2578,31 @@ namespace game
                 printvar(d, id);
                 break;
             }
-
             case NetMsg_Pong:
+            {
                 addmsg(NetMsg_ClientPing, "i", player1->ping = (player1->ping*5+totalmillis-getint(p))/6);
                 break;
-
+            }
             case NetMsg_ClientPing:
+            {
                 if(!d)
                 {
                     return;
                 }
                 d->ping = getint(p);
                 break;
-
+            }
             case NetMsg_TimeUp:
+            {
                 timeupdate(getint(p));
                 break;
-
+            }
             case NetMsg_ServerMsg:
+            {
                 getstring(text, p);
                 conoutf("%s", text);
                 break;
-
+            }
             case NetMsg_SendDemoList:
             {
                 int demos = getint(p);
@@ -2525,7 +2624,6 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_DemoPlayback:
             {
                 int on = getint(p);
@@ -2544,7 +2642,6 @@ namespace game
                 execident(on ? "demostart" : "demoend");
                 break;
             }
-
             case NetMsg_CurrentMaster:
             {
                 int mm = getint(p), mn;
@@ -2568,14 +2665,12 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_MasterMode:
             {
                 mastermode = getint(p);
                 conoutf("mastermode is %s (%d)", server::mastermodename(mastermode), mastermode);
                 break;
             }
-
             case NetMsg_EditMode:
             {
                 int val = getint(p);
@@ -2599,7 +2694,6 @@ namespace game
                 checkfollow();
                 break;
             }
-
             case NetMsg_Spectator:
             {
                 int sn = getint(p), val = getint(p);
@@ -2613,7 +2707,10 @@ namespace game
                     }
                 }
                 else s = newclient(sn);
-                if(!s) return;
+                if(!s)
+                {
+                    return;
+                }
                 if(val)
                 {
                     if(s==player1)
@@ -2637,10 +2734,11 @@ namespace game
                 checkfollow();
                 break;
             }
-
             case NetMsg_SetTeam:
             {
-                int wn = getint(p), team = getint(p), reason = getint(p);
+                int wn = getint(p),
+                    team = getint(p),
+                    reason = getint(p);
                 gameent *w = getclient(wn);
                 if(!w)
                 {
@@ -2658,11 +2756,9 @@ namespace game
                 }
                 break;
             }
-
             #define PARSEMESSAGES 1
             #include "ctf.h"
             #undef PARSEMESSAGES
-
             case NetMsg_Newmap:
             {
                 int size = getint(p);
@@ -2694,12 +2790,11 @@ namespace game
                 }
                 break;
             }
-
             case NetMsg_AuthChallenge:
             {
                 getstring(text, p);
                 authkey *a = findauthkey(text);
-                uint id = (uint)getint(p);
+                uint id = static_cast<uint>(getint(p));
                 getstring(text, p);
                 if(a && a->lastauth && lastmillis - a->lastauth < 60*1000)
                 {
@@ -2717,7 +2812,13 @@ namespace game
             }
             case NetMsg_InitAI:
             {
-                int bn = getint(p), on = getint(p), at = getint(p), sk = clamp(getint(p), 1, 101), pm = getint(p), col = getint(p), team = getint(p);
+                int bn = getint(p),
+                    on = getint(p),
+                    at = getint(p),
+                    sk = clamp(getint(p), 1, 101),
+                    pm = getint(p),
+                    col = getint(p),
+                    team = getint(p);
                 string name;
                 getstring(text, p);
                 filtertext(name, text, false, false, MAXNAMELEN);
@@ -2745,51 +2846,54 @@ namespace game
     void receivefile(packetbuf &p)
     {
         int type;
-        while(p.remaining()) switch(type = getint(p))
+        while(p.remaining())
         {
-            case NetMsg_DemoPacket:
+            switch(type = getint(p))
             {
-                return;
-            }
-            case NetMsg_SendDemo:
-            {
-                DEF_FORMAT_STRING(fname, "%d.dmo", lastmillis);
-                stream *demo = openrawfile(fname, "wb");
-                if(!demo)
+                case NetMsg_DemoPacket:
                 {
                     return;
                 }
-                conoutf("received demo \"%s\"", fname);
-                ucharbuf b = p.subbuf(p.remaining());
-                demo->write(b.buf, b.maxlen);
-                delete demo;
-                break;
-            }
-            case NetMsg_SendMap:
-            {
-                if(!modecheck(gamemode, Mode_Edit))
+                case NetMsg_SendDemo:
                 {
-                    return;
+                    DEF_FORMAT_STRING(fname, "%d.dmo", lastmillis);
+                    stream *demo = openrawfile(fname, "wb");
+                    if(!demo)
+                    {
+                        return;
+                    }
+                    conoutf("received demo \"%s\"", fname);
+                    ucharbuf b = p.subbuf(p.remaining());
+                    demo->write(b.buf, b.maxlen);
+                    delete demo;
+                    break;
                 }
-                string oldname;
-                copystring(oldname, getclientmap());
-                DEF_FORMAT_STRING(mname, "getmap_%d", lastmillis);
-                DEF_FORMAT_STRING(fname, "media/map/%s.ogz", mname);
-                stream *map = openrawfile(path(fname), "wb");
-                if(!map)
+                case NetMsg_SendMap:
                 {
-                    return;
+                    if(!modecheck(gamemode, Mode_Edit))
+                    {
+                        return;
+                    }
+                    string oldname;
+                    copystring(oldname, getclientmap());
+                    DEF_FORMAT_STRING(mname, "getmap_%d", lastmillis);
+                    DEF_FORMAT_STRING(fname, "media/map/%s.ogz", mname);
+                    stream *map = openrawfile(path(fname), "wb");
+                    if(!map)
+                    {
+                        return;
+                    }
+                    conoutf("received map");
+                    ucharbuf b = p.subbuf(p.remaining());
+                    map->write(b.buf, b.maxlen);
+                    delete map;
+                    if(load_world(mname, oldname[0] ? oldname : NULL))
+                    {
+                        entities::spawnitems(true);
+                    }
+                    remove(findfile(fname, "rb"));
+                    break;
                 }
-                conoutf("received map");
-                ucharbuf b = p.subbuf(p.remaining());
-                map->write(b.buf, b.maxlen);
-                delete map;
-                if(load_world(mname, oldname[0] ? oldname : NULL))
-                {
-                    entities::spawnitems(true);
-                }
-                remove(findfile(fname, "rb"));
-                break;
             }
         }
     }
