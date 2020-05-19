@@ -1,10 +1,34 @@
 struct vertmodel : animmodel
 {
-    struct vert { vec pos, norm; vec4 tangent; };
-    struct vvert { vec pos; hvec2 tc; squat tangent; };
-    struct vvertg { hvec4 pos; hvec2 tc; squat tangent; };
-    struct tcvert { vec2 tc; };
-    struct tri { ushort vert[3]; };
+    struct vert
+    {
+        vec pos, norm;
+        vec4 tangent;
+    };
+
+    struct vvert
+    {
+        vec pos;
+        hvec2 tc;
+        squat tangent;
+    };
+
+    struct vvertg
+    {
+        hvec4 pos;
+        hvec2 tc;
+        squat tangent;
+    };
+
+    struct tcvert
+    {
+        vec2 tc;
+    };
+
+    struct tri
+    {
+        ushort vert[3];
+    };
 
     struct vbocacheentry
     {
@@ -38,8 +62,14 @@ struct vertmodel : animmodel
 
         void smoothnorms(float limit = 0, bool areaweight = true)
         {
-            if(((vertmeshgroup *)group)->numframes == 1) mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
-            else buildnorms(areaweight);
+            if(((vertmeshgroup *)group)->numframes == 1)
+            {
+                mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+            }
+            else
+            {
+                buildnorms(areaweight);
+            }
         }
 
         void buildnorms(bool areaweight = true)
@@ -198,7 +228,10 @@ struct vertmodel : animmodel
 
         void render(const animstate *as, skin &s, vbocacheentry &vc)
         {
-            if(!Shader::lastshader) return;
+            if(!Shader::lastshader)
+            {
+                return;
+            }
             glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &((vertmeshgroup *)group)->edata[eoffset]);
             glde++;
             xtravertsva += numverts;
@@ -235,7 +268,10 @@ struct vertmodel : animmodel
         virtual ~vertmeshgroup()
         {
             DELETEA(tags);
-            if(ebuf) glDeleteBuffers_(1, &ebuf);
+            if(ebuf)
+            {
+                glDeleteBuffers_(1, &ebuf);
+            }
             for(int i = 0; i < MAXVBOCACHE; ++i)
             {
                 if(vbocache[i].vbuf)
@@ -330,8 +366,14 @@ struct vertmodel : animmodel
 
         void genvbo(vbocacheentry &vc)
         {
-            if(!vc.vbuf) glGenBuffers_(1, &vc.vbuf);
-            if(ebuf) return;
+            if(!vc.vbuf)
+            {
+                glGenBuffers_(1, &vc.vbuf);
+            }
+            if(ebuf)
+            {
+                return;
+            }
 
             vector<ushort> idxs;
 
@@ -360,8 +402,14 @@ struct vertmodel : animmodel
                     } while(0)
                 int numverts = 0, htlen = 128;
                 LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
-                while(htlen < numverts) htlen *= 2;
-                if(numverts*4 > htlen*3) htlen *= 2;
+                while(htlen < numverts)
+                {
+                    htlen *= 2;
+                }
+                if(numverts*4 > htlen*3)
+                {
+                    htlen *= 2;
+                }
                 int *htdata = new int[htlen];
                 memset(htdata, -1, htlen*sizeof(int));
                 GENVBO(vvertg);
@@ -383,24 +431,40 @@ struct vertmodel : animmodel
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
             if(as->cur.anim&ANIM_NOSKIN)
             {
-                if(enabletangents) disabletangents();
-
-                if(p->alphatested()) bindtc(&vverts->tc, vertsize);
-                else if(enabletc) disabletc();
+                if(enabletangents)
+                {
+                    disabletangents();
+                }
+                if(p->alphatested())
+                {
+                    bindtc(&vverts->tc, vertsize);
+                }
+                else if(enabletc)
+                {
+                    disabletc();
+                }
             }
             else
             {
                 bindtangents(&vverts->tangent, vertsize);
-
                 bindtc(&vverts->tc, vertsize);
             }
-            if(enablebones) disablebones();
+            if(enablebones)
+            {
+                disablebones();
+            }
         }
 
         void bindvbo(const animstate *as, part *p, vbocacheentry &vc)
         {
-            if(numframes>1) bindvbo<vvert>(as, p, vc);
-            else bindvbo<vvertg>(as, p, vc);
+            if(numframes>1)
+            {
+                bindvbo<vvert>(as, p, vc);
+            }
+            else
+            {
+                bindvbo<vvertg>(as, p, vc);
+            }
         }
 
         void cleanup()
@@ -408,16 +472,30 @@ struct vertmodel : animmodel
             for(int i = 0; i < MAXVBOCACHE; ++i)
             {
                 vbocacheentry &c = vbocache[i];
-                if(c.vbuf) { glDeleteBuffers_(1, &c.vbuf); c.vbuf = 0; }
+                if(c.vbuf)
+                {
+                    glDeleteBuffers_(1, &c.vbuf);
+                    c.vbuf = 0;
+                }
                 c.as.cur.fr1 = -1;
             }
-            if(ebuf) { glDeleteBuffers_(1, &ebuf); ebuf = 0; }
+            if(ebuf)
+            {
+                glDeleteBuffers_(1, &ebuf);
+                ebuf = 0;
+            }
         }
 
         void preload(part *p)
         {
-            if(numframes > 1) return;
-            if(!vbocache->vbuf) genvbo(*vbocache);
+            if(numframes > 1)
+            {
+                return;
+            }
+            if(!vbocache->vbuf)
+            {
+                genvbo(*vbocache);
+            }
         }
 
         void render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
@@ -430,16 +508,25 @@ struct vertmodel : animmodel
                 }
                 return;
             }
-
             vbocacheentry *vc = NULL;
-            if(numframes<=1) vc = vbocache;
+            if(numframes<=1)
+            {
+                vc = vbocache;
+            }
             else
             {
                 for(int i = 0; i < MAXVBOCACHE; ++i)
                 {
                     vbocacheentry &c = vbocache[i];
-                    if(!c.vbuf) continue;
-                    if(c.as==*as) { vc = &c; break; }
+                    if(!c.vbuf)
+                    {
+                        continue;
+                    }
+                    if(c.as==*as)
+                    {
+                        vc = &c;
+                        break;
+                    }
                 }
                 if(!vc)
                 {
@@ -453,7 +540,10 @@ struct vertmodel : animmodel
                     }
                 }
             }
-            if(!vc->vbuf) genvbo(*vc);
+            if(!vc->vbuf)
+            {
+                genvbo(*vc);
+            }
             if(numframes>1)
             {
                 if(vc->as!=*as)
@@ -469,15 +559,12 @@ struct vertmodel : animmodel
                 }
                 vc->millis = lastmillis;
             }
-
             bindvbo(as, p, *vc);
-
             LOOP_RENDER_MESHES(vertmesh, m,
             {
                 p->skins[i].bind(m, as);
                 m.render(as, p->skins[i], *vc);
             });
-
             for(int i = 0; i < p->links.length(); i++)
             {
                 calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
@@ -501,7 +588,10 @@ struct vertmodel : animmodel
         if(!meshgroups.access(name))
         {
             meshgroup *group = loadmeshes(name, smooth);
-            if(!group) return NULL;
+            if(!group)
+            {
+                return NULL;
+            }
             meshgroups.add(group);
         }
         return meshgroups[name];
@@ -525,18 +615,35 @@ template<class MDL> struct vertcommands : modelcommands<MDL, struct MDL::vertmes
 
     static void loadpart(char *model, float *smooth)
     {
-        if(!MDL::loading) { conoutf("not loading an %s", MDL::formatname()); return; }
+        if(!MDL::loading)
+        {
+            conoutf("not loading an %s", MDL::formatname());
+            return;
+        }
         DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, model);
         part &mdl = MDL::loading->addpart();
-        if(mdl.index) mdl.disablepitch();
+        if(mdl.index)
+        {
+            mdl.disablepitch();
+        }
         mdl.meshes = MDL::loading->sharemeshes(path(filename), *smooth > 0 ? cosf(clamp(*smooth, 0.0f, 180.0f)*RAD) : 2);
-        if(!mdl.meshes) conoutf("could not load %s", filename);
-        else mdl.initskins();
+        if(!mdl.meshes)
+        {
+            conoutf("could not load %s", filename);
+        }
+        else
+        {
+            mdl.initskins();
+        }
     }
 
     static void settag(char *tagname, float *tx, float *ty, float *tz, float *rx, float *ry, float *rz)
     {
-        if(!MDL::loading || MDL::loading->parts.empty()) { conoutf("not loading an %s", MDL::formatname()); return; }
+        if(!MDL::loading || MDL::loading->parts.empty())
+        {
+            conoutf("not loading an %s", MDL::formatname());
+            return;
+        }
         part &mdl = *(part *)MDL::loading->parts.last();
         float cx = *rx ? cosf(*rx/2*RAD) : 1, sx = *rx ? sinf(*rx/2*RAD) : 0,
               cy = *ry ? cosf(*ry/2*RAD) : 1, sy = *ry ? sinf(*ry/2*RAD) : 0,
@@ -548,9 +655,12 @@ template<class MDL> struct vertcommands : modelcommands<MDL, struct MDL::vertmes
 
     static void setpitch(float *pitchscale, float *pitchoffset, float *pitchmin, float *pitchmax)
     {
-        if(!MDL::loading || MDL::loading->parts.empty()) { conoutf("not loading an %s", MDL::formatname()); return; }
+        if(!MDL::loading || MDL::loading->parts.empty())
+        {
+            conoutf("not loading an %s", MDL::formatname());
+            return;
+        }
         part &mdl = *MDL::loading->parts.last();
-
         mdl.pitchscale = *pitchscale;
         mdl.pitchoffset = *pitchoffset;
         if(*pitchmin || *pitchmax)
@@ -567,10 +677,17 @@ template<class MDL> struct vertcommands : modelcommands<MDL, struct MDL::vertmes
 
     static void setanim(char *anim, int *frame, int *range, float *speed, int *priority)
     {
-        if(!MDL::loading || MDL::loading->parts.empty()) { conoutf("not loading an %s", MDL::formatname()); return; }
+        if(!MDL::loading || MDL::loading->parts.empty())
+        {
+            conoutf("not loading an %s", MDL::formatname());
+            return;
+        }
         vector<int> anims;
         game::findanims(anim, anims);
-        if(anims.empty()) conoutf("could not find animation %s", anim);
+        if(anims.empty())
+        {
+            conoutf("could not find animation %s", anim);
+        }
         else
         {
             for(int i = 0; i < anims.length(); i++)
@@ -582,10 +699,16 @@ template<class MDL> struct vertcommands : modelcommands<MDL, struct MDL::vertmes
 
     vertcommands()
     {
-        if(MDL::multiparted()) this->modelcommand(loadpart, "load", "sf");
+        if(MDL::multiparted())
+        {
+            this->modelcommand(loadpart, "load", "sf");
+        }
         this->modelcommand(settag, "tag", "sffffff");
         this->modelcommand(setpitch, "pitch", "ffff");
-        if(MDL::cananimate()) this->modelcommand(setanim, "anim", "siiff");
+        if(MDL::cananimate())
+        {
+            this->modelcommand(setanim, "anim", "siiff");
+        }
     }
 };
 
