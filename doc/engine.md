@@ -422,46 +422,42 @@ These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
 upwards as much as downwards in practice.
 
 ## 1.4 Program Structure
---
+---
 
 The Imprimis project is, at its highest level, organized into four main projects
 as well as a pair of utilities which are perhaps not considered direct members
 of the engine.
 
 ```
-    Serverside    .                Clientside
-------------------+------------------------------------------------
-                  .  +-----------+
-                  .  |   Game    |
-                  .  |    Code   |
-                  .  +-----------+
-                  .        ^
-+--------+  (A)   .        |(D)
-| Master |_____   .        v
-| Server |     \  .  +-----------+   +------+
-+--------+      \-.->|           |   |      |(F)+--------------+
-    ^             .  |           |   |      |-->|Display Output|
-    | +--------+  .  |           |   |      |   +--------------+
-    \_|  Game  |<-.->|           |   |Simple|   +--------------+
-    | | Server |  .  |           |(E)|Direct|-->| Sound Output |
-    | +--------+  .  |  Game     |<->|Media |   +--------------+
- (B)| +--------+ (C) |   Engine  |   |Layer |
-    \_|  Game  |<-.->|           |   |(SDL) |
-    | | Server |  .  |           |   |      |   +--------------+
-    | +--------+  .  |           |   |      |<--|  User Input  |
-    | +--------+  .  |           |   |      |   +--------------+
-    \_|  Game  |<-.->|           |   |      |
-      | Server |  .  +-----------+   +------+
-      +--------+  .        ^
-                  .        |(G)
-                  .        v
-                  .   +---------+
-                  .   |  Local  |
-                  .   |  Server |
-                  .   +---------+
+    Serverside    .                     Clientside
+------------------+-------------------------------------------------------------
+                  .
++--------+  (A)   .
+| Master |_____   .
+| Server |     \  .  +--------+   +--------+   +------+
++--------+      \-.->|        |   |        |   |      |
+    ^             .  |        |   |        |   |      |(F)+--------------+
+    | +--------+  .  |        |   |        |   |      |-->| Window Output|
+    \_|  Game  |<-.->|        |   |        |   |      |   +--------------+
+    | | Server |  .  |        |   |        |   |Simple|   +--------------+
+    | +--------+  .  |  Game  |(D)|  Game  |(E)|Direct|-->| Sound Output |
+ (B)| +--------+ (C) |  Code  |<->| Engine |<->|Media |   +--------------+
+    \_|  Game  |<-.->|        |   |        |   |Layer |
+    | | Server |  .  |        |   |        |   |(SDL) |   +--------------+
+    | +--------+  .  |        |   |        |   |      |<--|  User Input  |
+    | +--------+  .  |        |   |        |   |      |   +--------------+
+    \_|  Game  |<-.->|        |   |        |   |      |
+      | Server |  .  +--------+   +--------+   +------+
+      +--------+  .      ^
+                  .      |(G)
+                  .      v
+                  .  +--------+
+                  .  | Local  |
+                  .  | Server |
+                  .  +--------+
 ```
 
-* A: Master server provides a list of game servers to the game engine over enet.
+* A: Master server provides a list of game servers to the game code via enet.
 * B: Game servers register to a master server via enet.
 * C: Game servers can be connected to a client's game via enet.
 * D: The game engine's behavior is controlled by the game code.
