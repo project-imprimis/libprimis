@@ -206,241 +206,6 @@ void drawenvoverlay(Texture *overlay = NULL, float tx = 0, float ty = 0)
     xtraverts += gle::end();
 }
 
-FVARR(fogdomeheight, -1, -0.5f, 1);
-FVARR(fogdomemin, 0, 0, 1);
-FVARR(fogdomemax, 0, 0, 1);
-VARR(fogdomecap, 0, 1, 1);
-FVARR(fogdomeclip, 0, 1, 1);
-CVARR(fogdomecolor, 0);
-VARR(fogdomeclouds, 0, 1, 1);
-
-namespace fogdome
-{
-    struct vert
-    {
-        vec pos;
-        bvec4 color;
-
-        vert() {}
-        vert(const vec &pos, const bvec &fcolor, float alpha) : pos(pos), color(fcolor, static_cast<uchar>(alpha*255))
-        {
-        }
-        vert(const vert &v0, const vert &v1) : pos(vec(v0.pos).add(v1.pos).normalize()), color(v0.color)
-        {
-            if(v0.pos.z != v1.pos.z)
-            {
-                color.a += static_cast<uchar>((v1.color.a - v0.color.a) * (pos.z - v0.pos.z) / (v1.pos.z - v0.pos.z));
-            }
-        }
-    } *verts = NULL;
-    GLushort *indices = NULL;
-    int numverts = 0,
-        numindices = 0,
-        capindices = 0;
-    GLuint vbuf = 0, ebuf = 0;
-    bvec lastcolor(0, 0, 0);
-    float lastminalpha = 0,
-          lastmaxalpha = 0,
-          lastcapsize = -1,
-          lastclipz = 1;
-
-    void subdivide(int depth, int face);
-
-    void genface(int depth, int i1, int i2, int i3)
-    {
-        int face = numindices; numindices += 3;
-        indices[face]   = i3;
-        indices[face+1] = i2;
-        indices[face+2] = i1;
-        subdivide(depth, face);
-    }
-
-    void subdivide(int depth, int face)
-    {
-        if(depth-- <= 0)
-        {
-            return;
-        }
-        int idx[6];
-        for(int i = 0; i < 3; ++i)
-        {
-            idx[i] = indices[face+2-i];
-        }
-        for(int i = 0; i < 3; ++i)
-        {
-            int curvert = numverts++;
-            verts[curvert] = vert(verts[idx[i]], verts[idx[(i+1)%3]]); //push on to unit sphere
-            idx[3+i] = curvert;
-            indices[face+2-i] = curvert;
-        }
-        subdivide(depth, face);
-        for(int i = 0; i < 3; ++i)
-        {
-            genface(depth, idx[i], idx[3+i], idx[3+(i+2)%3]);
-        }
-    }
-
-    static inline int sortcap(GLushort x, GLushort y)
-    {
-        const vec &xv = verts[x].pos, &yv = verts[y].pos;
-        return (xv.y < 0) ? (yv.y >= 0 || xv.x < yv.x) : (yv.y >= 0 && xv.x > yv.x);
-    }
-
-    static void init(const bvec &color, float minalpha = 0.0f, float maxalpha = 1.0f, float capsize = -1, float clipz = 1, int hres = 16, int depth = 2)
-    {
-        const int tris = hres << (2*depth);
-        numverts = numindices = capindices = 0;
-        verts = new vert[tris+1 + (capsize >= 0 ? 1 : 0)];
-        indices = new GLushort[(tris + (capsize >= 0 ? hres<<depth : 0))*3];
-        if(clipz >= 1)
-        {
-            verts[numverts++] = vert(vec(0.0f, 0.0f, 1.0f), color, minalpha); //build initial 'hres' sided pyramid
-            for(int i = 0; i < hres; ++i)
-            {
-                verts[numverts++] = vert(vec(sincos360[(360*i)/hres], 0.0f), color, maxalpha);
-            }
-            for(int i = 0; i < hres; ++i)
-            {
-                genface(depth, 0, i+1, 1+(i+1)%hres);
-            }
-        }
-        else if(clipz <= 0)
-        {
-            for(int i = 0; i < hres<<depth; ++i)
-            {
-                verts[numverts++] = vert(vec(sincos360[(360*i)/(hres<<depth)], 0.0f), color, maxalpha);
-            }
-        }
-        else
-        {
-            float clipxy = sqrtf(1 - clipz*clipz);
-            const vec2 &scm = sincos360[180/hres];
-            for(int i = 0; i < hres; ++i)
-            {
-                const vec2 &sc = sincos360[(360*i)/hres];
-                verts[numverts++] = vert(vec(sc.x*clipxy, sc.y*clipxy, clipz), color, minalpha);
-                verts[numverts++] = vert(vec(sc.x, sc.y, 0.0f), color, maxalpha);
-                verts[numverts++] = vert(vec(sc.x*scm.x - sc.y*scm.y, sc.y*scm.x + sc.x*scm.y, 0.0f), color, maxalpha);
-            }
-            for(int i = 0; i < hres; ++i)
-            {
-                genface(depth-1, 3*i, 3*i+1, 3*i+2);
-                genface(depth-1, 3*i, 3*i+2, 3*((i+1)%hres));
-                genface(depth-1, 3*i+2, 3*((i+1)%hres)+1, 3*((i+1)%hres));
-            }
-        }
-
-        if(capsize >= 0)
-        {
-            GLushort *cap = &indices[numindices];
-            int capverts = 0;
-            for(int i = 0; i < numverts; ++i)
-            {
-                if(!verts[i].pos.z)
-                {
-                    cap[capverts++] = i;
-                }
-            }
-            verts[numverts++] = vert(vec(0.0f, 0.0f, -capsize), color, maxalpha);
-            quicksort(cap, capverts, sortcap);
-            for(int i = 0; i < capverts; ++i)
-            {
-                int n = capverts-1-i;
-                cap[n*3] = cap[n];
-                cap[n*3+1] = cap[(n+1)%capverts];
-                cap[n*3+2] = numverts-1;
-                capindices += 3;
-            }
-        }
-        if(!vbuf)
-        {
-            glGenBuffers_(1, &vbuf);
-        }
-        gle::bindvbo(vbuf);
-        glBufferData_(GL_ARRAY_BUFFER, numverts*sizeof(vert), verts, GL_STATIC_DRAW);
-        DELETEA(verts);
-
-        if(!ebuf)
-        {
-            glGenBuffers_(1, &ebuf);
-        }
-        gle::bindebo(ebuf);
-        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, (numindices + capindices)*sizeof(GLushort), indices, GL_STATIC_DRAW);
-        DELETEA(indices);
-    }
-
-    void cleanup()
-    {
-        numverts = numindices = 0;
-        if(vbuf)
-        {
-            glDeleteBuffers_(1, &vbuf);
-            vbuf = 0;
-        }
-        if(ebuf)
-        {
-            glDeleteBuffers_(1, &ebuf);
-            ebuf = 0;
-        }
-    }
-
-    void draw()
-    {
-        float capsize = (fogdomecap && fogdomeheight < 1) ? ((1 + fogdomeheight) / (1 - fogdomeheight)) : -1;
-        bvec color = !fogdomecolor.iszero() ? fogdomecolor : fogcolor;
-        //if numverts is zero or color, minalpha, maxalpha, capsize, fogdome has changed, run init and set all delta variables to be equal to master ones
-        if(!numverts || lastcolor != color || lastminalpha != fogdomemin || lastmaxalpha != fogdomemax || lastcapsize != capsize || lastclipz != fogdomeclip)
-        {
-            init(color, min(fogdomemin, fogdomemax), fogdomemax, capsize, fogdomeclip);
-            lastcolor = color;
-            lastminalpha = fogdomemin;
-            lastmaxalpha = fogdomemax;
-            lastcapsize = capsize;
-            lastclipz = fogdomeclip;
-        }
-        gle::bindvbo(vbuf);
-        gle::bindebo(ebuf);
-
-        gle::vertexpointer(sizeof(vert), &verts->pos);
-        gle::colorpointer(sizeof(vert), &verts->color);
-        gle::enablevertex();
-        gle::enablecolor();
-
-        glDrawRangeElements_(GL_TRIANGLES, 0, numverts-1, numindices + fogdomecap*capindices, GL_UNSIGNED_SHORT, indices);
-        xtraverts += numverts;
-        glde++;
-
-        gle::disablevertex();
-        gle::disablecolor();
-
-        gle::clearvbo();
-        gle::clearebo();
-    }
-}
-
-static void drawfogdome()
-{
-    SETSHADER(skyfog);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    matrix4 skymatrix = cammatrix, skyprojmatrix;
-    skymatrix.settranslation(vec(cammatrix.c).mul(farplane*fogdomeheight*0.5f));
-    skymatrix.scale(farplane/2, farplane/2, farplane*(0.5f - fogdomeheight*0.5f));
-    skyprojmatrix.mul(projmatrix, skymatrix);
-    LOCALPARAM(skymatrix, skyprojmatrix);
-
-    fogdome::draw();
-
-    glDisable(GL_BLEND);
-}
-
-void cleanupsky()
-{
-    fogdome::cleanup();
-}
-
 VARR(atmo, 0, 0, 1);
 FVARR(atmoplanetsize, 1e-3f, 8, 1e3f);
 FVARR(atmoheight, 1e-3f, 1, 1e3f);
@@ -585,10 +350,6 @@ void drawskybox(bool clear)
             glDisable(GL_BLEND);
         }
     }
-    if(fogdomemax && !fogdomeclouds)
-    {
-        drawfogdome();
-    }
     if(cloudbox[0])
     {
         SETSHADER(skybox);
@@ -629,10 +390,6 @@ void drawskybox(bool clear)
 
         glEnable(GL_CULL_FACE);
     }
-    if(fogdomemax && fogdomeclouds)
-    {
-        drawfogdome();
-    }
     if(clampsky)
     {
         glDepthRange(0, 1);
@@ -650,6 +407,6 @@ void drawskybox(bool clear)
 
 bool hasskybox()
 {
-    return skybox[0] || atmo || fogdomemax || cloudbox[0] || cloudlayer[0];
+    return skybox[0] || atmo || cloudbox[0] || cloudlayer[0];
 }
 

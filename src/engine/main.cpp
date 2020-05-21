@@ -764,7 +764,6 @@ void resetgl()
     cleanupva();
     cleanupparticles();
     cleanupstains();
-    cleanupsky();
     cleanupmodels();
     cleanupprefabs();
     cleanuptextures();
