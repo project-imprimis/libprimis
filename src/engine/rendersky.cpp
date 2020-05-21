@@ -73,9 +73,6 @@ FVARR(skyboxoverbrightmin, 0, 1, 16);
 FVARR(skyboxoverbrightthreshold, 0, 0.7f, 1);
 FVARR(spinsky, -720, 0, 720);
 VARR(yawsky, 0, 0, 360);
-SVARFR(cloudbox, "", { if(cloudbox[0]) loadsky(cloudbox, clouds); });
-CVARR(cloudboxcolor, 0xFFFFFF);
-FVARR(cloudboxalpha, 0, 1, 1);
 FVARR(spinclouds, -720, 0, 720);
 VARR(yawclouds, 0, 0, 360);
 FVARR(cloudclip, 0, 0.5f, 1);
@@ -350,25 +347,6 @@ void drawskybox(bool clear)
             glDisable(GL_BLEND);
         }
     }
-    if(cloudbox[0])
-    {
-        SETSHADER(skybox);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        gle::color(cloudboxcolor.tocolor(), cloudboxalpha);
-
-        matrix4 skymatrix = cammatrix, skyprojmatrix;
-        skymatrix.settranslation(0, 0, 0);
-        skymatrix.rotate_around_z((spinclouds*lastmillis/1000.0f+yawclouds)*-RAD);
-        skyprojmatrix.mul(projmatrix, skymatrix);
-        LOCALPARAM(skymatrix, skyprojmatrix);
-
-        drawenvbox(clouds, cloudclip);
-
-        glDisable(GL_BLEND);
-    }
     if(cloudlayer[0] && cloudheight)
     {
         SETSHADER(skybox);
@@ -407,6 +385,6 @@ void drawskybox(bool clear)
 
 bool hasskybox()
 {
-    return skybox[0] || atmo || cloudbox[0] || cloudlayer[0];
+    return skybox[0] || atmo || cloudlayer[0];
 }
 
