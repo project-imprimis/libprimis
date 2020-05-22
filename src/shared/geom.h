@@ -60,12 +60,12 @@ struct vec2
     vec2 &rotate_around_z(const vec2 &sc) { return rotate_around_z(sc.x, sc.y); }
 };
 
-static inline bool htcmp(const vec2 &x, const vec2 &y)
+inline bool htcmp(const vec2 &x, const vec2 &y)
 {
     return x == y;
 }
 
-static inline uint hthash(const vec2 &k)
+inline uint hthash(const vec2 &k)
 {
     union { uint i; float f; } x, y;
     x.f = k.x; y.f = k.y;
@@ -289,12 +289,12 @@ struct vec
 
 inline vec2::vec2(const vec &v) : x(v.x), y(v.y) {}
 
-static inline bool htcmp(const vec &x, const vec &y)
+inline bool htcmp(const vec &x, const vec &y)
 {
     return x == y;
 }
 
-static inline uint hthash(const vec &k)
+inline uint hthash(const vec &k)
 {
     union { uint i; float f; } x, y, z;
     x.f = k.x; y.f = k.y; z.f = k.z;
@@ -1301,12 +1301,12 @@ struct ivec
 
 inline vec::vec(const ivec &v) : x(v.x), y(v.y), z(v.z) {}
 
-static inline bool htcmp(const ivec &x, const ivec &y)
+inline bool htcmp(const ivec &x, const ivec &y)
 {
     return x == y;
 }
 
-static inline uint hthash(const ivec &k)
+inline uint hthash(const ivec &k)
 {
     return k.x^k.y^k.z;
 }
@@ -1355,12 +1355,12 @@ struct ivec2
 
 inline ivec::ivec(const ivec2 &v, int z) : x(v.x), y(v.y), z(z) {}
 
-static inline bool htcmp(const ivec2 &x, const ivec2 &y)
+inline bool htcmp(const ivec2 &x, const ivec2 &y)
 {
     return x == y;
 }
 
-static inline uint hthash(const ivec2 &k)
+inline uint hthash(const ivec2 &k)
 {
     return k.x^k.y;
 }
@@ -1386,12 +1386,12 @@ struct ivec4
 
 inline ivec::ivec(const ivec4 &v) : x(v.x), y(v.y), z(v.z) {}
 
-static inline bool htcmp(const ivec4 &x, const ivec4 &y)
+inline bool htcmp(const ivec4 &x, const ivec4 &y)
 {
     return x == y;
 }
 
-static inline uint hthash(const ivec4 &k)
+inline uint hthash(const ivec4 &k)
 {
     return k.x^k.y^k.z^k.w;
 }
@@ -1975,15 +1975,15 @@ extern bool linecylinderintersect(const vec &from, const vec &to, const vec &sta
 extern int polyclip(const vec *in, int numin, const vec &dir, float below, float above, vec *out);
 
 extern const vec2 sincos360[];
-static inline int mod360(int angle)
+inline int mod360(int angle)
 {
     if(angle < 0) angle = 360 + (angle <= -360 ? angle%360 : angle);
     else if(angle >= 360) angle %= 360;
     return angle;
 }
-static inline const vec2 &sincosmod360(int angle) { return sincos360[mod360(angle)]; }
-static inline float cos360(int angle) { return sincos360[angle].x; }
-static inline float sin360(int angle) { return sincos360[angle].y; }
-static inline float tan360(int angle) { const vec2 &sc = sincos360[angle]; return sc.y/sc.x; }
-static inline float cotan360(int angle) { const vec2 &sc = sincos360[angle]; return sc.x/sc.y; }
+inline const vec2 &sincosmod360(int angle) { return sincos360[mod360(angle)]; }
+inline float cos360(int angle) { return sincos360[angle].x; }
+inline float sin360(int angle) { return sincos360[angle].y; }
+inline float tan360(int angle) { const vec2 &sc = sincos360[angle]; return sc.y/sc.x; }
+inline float cotan360(int angle) { const vec2 &sc = sincos360[angle]; return sc.x/sc.y; }
 

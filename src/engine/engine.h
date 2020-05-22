@@ -64,7 +64,7 @@ extern float textscale;
 extern font *findfont(const char *name);
 extern void reloadfonts();
 
-static inline void setfont(font *f) { if(f) curfont = f; }
+inline void setfont(font *f) { if(f) curfont = f; }
 
 // texture
 extern int hwtexsize, hwcubetexsize, hwmaxaniso, maxtexsize, hwtexunits, hwvtexunits;
@@ -225,7 +225,7 @@ extern int mergefaces(int orient, facebounds *m, int sz);
 extern void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat = Mat_Air, ushort matmask = MatFlag_Volume);
 extern void remip();
 
-static inline cubeext &ext(cube &c)
+inline cubeext &ext(cube &c)
 {
     return *(c.ext ? c.ext : newcubeext(c));
 }
@@ -238,7 +238,7 @@ static inline cubeext &ext(cube &c)
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
 
 template<class T>
-static inline void calctilebounds(float sx1, float sy1, float sx2, float sy2, T &bx1, T &by1, T &bx2, T &by2)
+inline void calctilebounds(float sx1, float sy1, float sx2, float sy2, T &bx1, T &by1, T &bx2, T &by2)
 {
     int tx1 = max(int(floor(((sx1 + 1)*0.5f*vieww)/lighttilealignw)), 0),
         ty1 = max(int(floor(((sy1 + 1)*0.5f*viewh)/lighttilealignh)), 0),
@@ -250,7 +250,7 @@ static inline void calctilebounds(float sx1, float sy1, float sx2, float sy2, T 
     by2 = T((ty2 * lighttileh + lighttileviewh - 1) / lighttileviewh);
 }
 
-static inline void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
+inline void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
 {
     int tx1, ty1, tx2, ty2;
     calctilebounds(sx1, sy1, sx2, sy2, tx1, ty1, tx2, ty2);
@@ -304,13 +304,13 @@ extern int calcspherecsmsplits(const vec &center, float radius);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherersmsplits(const vec &center, float radius);
 
-static inline bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
+inline bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
 {
     const vec2 &sc = sincos360[spot];
     float cdist = dir.dot(center), cradius = radius + sc.y*cdist;
     return sc.x*sc.x*(center.dot(center) - cdist*cdist) <= cradius*cradius;
 }
-static inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax)
+inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax)
 {
     vec radius = vec(ivec(bbmax).sub(bbmin)).mul(0.5f), center = vec(bbmin).add(radius);
     return sphereinsidespot(dir, spot, center.sub(origin), radius.magnitude());
@@ -686,7 +686,7 @@ extern int batcheddynamicmodels();
 extern int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax);
 extern void cleanupmodels();
 
-static inline model *loadmapmodel(int n)
+inline model *loadmapmodel(int n)
 {
     if(mapmodels.inrange(n))
     {
@@ -696,7 +696,7 @@ static inline model *loadmapmodel(int n)
     return NULL;
 }
 
-static inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &mapmodels[n] : NULL; }
+inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &mapmodels[n] : NULL; }
 
 // renderparticles
 extern int particlelayers;

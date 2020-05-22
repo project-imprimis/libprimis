@@ -197,7 +197,7 @@ static struct gamemodeinfo
 #define NUMGAMEMODES ((int)(sizeof(gamemodes)/sizeof(gamemodes[0])))
 
 //check fxn
-static inline bool modecheck(int mode, int flag)
+inline bool modecheck(int mode, int flag)
 {
     if((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES) //make sure input is within valid range
     {
@@ -620,7 +620,7 @@ static const char * const teamtextcode[1+MAXTEAMS] = { "\f0", "\f1", "\f3" };
 static const int teamtextcolor[1+MAXTEAMS] = { 0x1EC850, 0x6496FF, 0xFF4B19 };
 static const int teamscoreboardcolor[1+MAXTEAMS] = { 0, 0x3030C0, 0xC03030 };
 static const char * const teamblipcolor[1+MAXTEAMS] = { "_neutral", "_blue", "_red" };
-static inline int teamnumber(const char *name)
+inline int teamnumber(const char *name)
 {
     for(int i = 0; i < MAXTEAMS; ++i)
     {
@@ -715,8 +715,8 @@ struct teamscore
     }
 };
 
-static inline uint hthash(const teamscore &t) { return hthash(t.team); }
-static inline bool htcmp(int team, const teamscore &t) { return team == t.team; }
+inline uint hthash(const teamscore &t) { return hthash(t.team); }
+inline bool htcmp(int team, const teamscore &t) { return team == t.team; }
 
 struct teaminfo
 {

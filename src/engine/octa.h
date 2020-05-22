@@ -38,7 +38,7 @@ enum
     BlendLayer_Blend  = BlendLayer_Top|BlendLayer_Bottom,
 };
 
-static const int Face_MaxVerts = 15;
+const int Face_MaxVerts = 15;
 
 struct surfaceinfo
 {
@@ -50,8 +50,8 @@ struct surfaceinfo
     void brighten() { clear(); }
 };
 
-static const surfaceinfo topsurface = {0, BlendLayer_Top};
-static const surfaceinfo bottomsurface = {0, BlendLayer_Bottom};
+const surfaceinfo topsurface = {0, BlendLayer_Top};
+const surfaceinfo bottomsurface = {0, BlendLayer_Bottom};
 #define BRIGHT_SURFACE topsurface
 #define AMBIENT_SURFACE topsurface
 
@@ -250,7 +250,7 @@ const uint F_SOLID = 0x80808080;    // all edges in the range (0,8)
 #define OCTA_INDEX(d,x,y,z)  (((z)<<D[d])+((y)<<C[d])+((x)<<R[d]))
 #define OCTA_STEP(x, y, z, scale) (((((z)>>(scale))&1)<<2) | ((((y)>>(scale))&1)<<1) | (((x)>>(scale))&1))
 
-static inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const ivec &bbmax)
+inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const ivec &bbmax)
 {
     uchar p = 0xFF; // bitmask of possible collisions with octants. 0 bit = 0 octant, etc
     ivec mid = ivec(o).add(size);

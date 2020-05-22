@@ -207,7 +207,7 @@ extern void alias(const char *name, tagval &v);
 extern const char *getalias(const char *name);
 extern const char *escapestring(const char *s);
 extern const char *escapeid(const char *s);
-static inline const char *escapeid(ident &id) { return escapeid(id.name); }
+inline const char *escapeid(ident &id) { return escapeid(id.name); }
 extern bool validateblock(const char *s);
 extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
 extern char *indexlist(const char *s, int pos);
@@ -222,9 +222,9 @@ extern void loopiter(ident *id, identstack &stack, const tagval &v);
 extern void loopend(ident *id, identstack &stack);
 
 #define LOOP_START(id, stack) if((id)->type != Id_Alias) return; identstack stack;
-static inline void loopiter(ident *id, identstack &stack, int i) { tagval v; v.setint(i); loopiter(id, stack, v); }
-static inline void loopiter(ident *id, identstack &stack, float f) { tagval v; v.setfloat(f); loopiter(id, stack, v); }
-static inline void loopiter(ident *id, identstack &stack, const char *s) { tagval v; v.setstr(newstring(s)); loopiter(id, stack, v); }
+inline void loopiter(ident *id, identstack &stack, int i) { tagval v; v.setint(i); loopiter(id, stack, v); }
+inline void loopiter(ident *id, identstack &stack, float f) { tagval v; v.setfloat(f); loopiter(id, stack, v); }
+inline void loopiter(ident *id, identstack &stack, const char *s) { tagval v; v.setstr(newstring(s)); loopiter(id, stack, v); }
 
 // console
 
@@ -251,13 +251,13 @@ extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 // octa
 extern int lookupmaterial(const vec &o);
 
-static inline bool insideworld(const vec &o)
+inline bool insideworld(const vec &o)
 {
     extern int worldsize;
     return o.x>=0 && o.x<worldsize && o.y>=0 && o.y<worldsize && o.z>=0 && o.z<worldsize;
 }
 
-static inline bool insideworld(const ivec &o)
+inline bool insideworld(const ivec &o)
 {
     extern int worldsize;
     return uint(o.x)<uint(worldsize) && uint(o.y)<uint(worldsize) && uint(o.z)<uint(worldsize);
@@ -293,12 +293,12 @@ extern void text_boundsf(const char *str, float &width, float &height, int maxwi
 extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
 extern void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth);
 
-static inline int text_width(const char *str)
+inline int text_width(const char *str)
 {
     return int(ceil(text_widthf(str)));
 }
 
-static inline void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
+inline void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
 {
     float widthf, heightf;
     text_boundsf(str, widthf, heightf, maxwidth);
@@ -306,7 +306,7 @@ static inline void text_bounds(const char *str, int &width, int &height, int max
     height = int(ceil(heightf));
 }
 
-static inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
+inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
 {
     float cxf, cyf;
     text_posf(str, cursor, cxf, cyf, maxwidth);
@@ -419,7 +419,7 @@ enum
 
 extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
 
-static inline void addstain(int type, const vec &center, const vec &surface, float radius, int color, int info = 0)
+inline void addstain(int type, const vec &center, const vec &surface, float radius, int color, int info = 0)
 {
     addstain(type, center, surface, radius, bvec::hexcolor(color), info);
 }

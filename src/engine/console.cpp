@@ -942,6 +942,15 @@ static inline uint hthash(const fileskey &k)
     return hthash(k.dir);
 }
 
+static inline char *prependstring(char *d, const char *s, size_t len)
+{
+    size_t slen = min(strlen(s), len);
+    memmove(&d[slen], d, min(len - slen, strlen(d) + 1));
+    memcpy(d, s, slen);
+    d[len-1] = 0;
+    return d;
+}
+
 static hashtable<fileskey, filesval *> completefiles;
 static hashtable<char *, filesval *> completions;
 

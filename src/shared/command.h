@@ -291,13 +291,13 @@ extern void stringret(char *s);
 extern void result(tagval &v);
 extern void result(const char *s);
 
-static inline int parseint(const char *s)
+inline int parseint(const char *s)
 {
     return int(strtoul(s, NULL, 0));
 }
 
 #define PARSEFLOAT(name, type) \
-    static inline type parse##name(const char *s) \
+    inline type parse##name(const char *s) \
     { \
         /* not all platforms (windows) can parse hexadecimal integers via strtod */ \
         char *end; \
@@ -307,16 +307,16 @@ static inline int parseint(const char *s)
 PARSEFLOAT(float, float)
 PARSEFLOAT(number, double)
 
-static inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
-static inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==int(v) ? "%.1f" : "%.7g", v); }
-static inline void numberformat(char *buf, double v, int len = 20)
+inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
+inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==int(v) ? "%.1f" : "%.7g", v); }
+inline void numberformat(char *buf, double v, int len = 20)
 {
     int i = int(v);
     if(v == i) nformatstring(buf, len, "%d", i);
     else nformatstring(buf, len, "%.7g", v);
 }
 
-static inline const char *getstr(const identval &v, int type)
+inline const char *getstr(const identval &v, int type)
 {
     switch(type)
     {
@@ -330,7 +330,7 @@ inline const char *tagval::getstr() const { return ::getstr(*this, type); }
 inline const char *ident::getstr() const { return ::getstr(val, valtype); }
 
 #define GETNUMBER(name, ret) \
-    static inline ret get##name(const identval &v, int type) \
+    inline ret get##name(const identval &v, int type) \
     { \
         switch(type) \
         { \
@@ -346,7 +346,7 @@ GETNUMBER(int, int)
 GETNUMBER(float, float)
 GETNUMBER(number, double)
 
-static inline void getval(const identval &v, int type, tagval &r)
+inline void getval(const identval &v, int type, tagval &r)
 {
     switch(type)
     {

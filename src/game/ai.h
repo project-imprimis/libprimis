@@ -54,7 +54,7 @@ namespace ai
     };
     extern vector<waypoint> waypoints;
 
-    static inline bool iswaypoint(int n)
+    inline bool iswaypoint(int n)
     {
         return n > 0 && n < waypoints.length();
     }
