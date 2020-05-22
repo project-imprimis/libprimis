@@ -432,7 +432,6 @@ bool soundsample::load(const char *dir, bool msg)
     {
         return false;
     }
-
     static const char * const exts[] = { "", ".wav", ".ogg" };
     string filename;
     for(int i = 0; i < static_cast<int>(sizeof(exts)/sizeof(exts[0])); ++i)
@@ -449,7 +448,6 @@ bool soundsample::load(const char *dir, bool msg)
             return true;
         }
     }
-
     conoutf(Console_Error, "failed to load sample: media/sound/%s%s", dir, name);
     return false;
 }
@@ -460,9 +458,7 @@ static struct soundtype
     vector<soundslot> slots;
     vector<soundconfig> configs;
     const char *dir;
-
     soundtype(const char *dir) : dir(dir) {}
-
     int findsound(const char *name, int vol)
     {
         for(int i = 0; i < configs.length(); i++)
@@ -479,7 +475,6 @@ static struct soundtype
         }
         return -1;
     }
-
     int addslot(const char *name, int vol)
     {
         soundsample *s = samples.access(name);
@@ -509,7 +504,6 @@ static struct soundtype
         slot.volume = vol ? vol : 100;
         return oldlen;
     }
-
     int addsound(const char *name, int vol, int maxuses = 0)
     {
         soundconfig &s = configs.add();
@@ -518,7 +512,6 @@ static struct soundtype
         s.maxuses = maxuses;
         return configs.length()-1;
     }
-
     void addalt(const char *name, int vol)
     {
         if(configs.empty())
@@ -528,13 +521,11 @@ static struct soundtype
         addslot(name, vol);
         configs.last().numslots++;
     }
-
     void clear()
     {
         slots.setsize(0);
         configs.setsize(0);
     }
-
     void reset()
     {
         for(int i = 0; i < channels.length(); i++)
@@ -548,12 +539,10 @@ static struct soundtype
         }
         clear();
     }
-
     void cleanupsamples()
     {
         ENUMERATE(samples, soundsample, s, s.cleanup());
     }
-
     void cleanup()
     {
         cleanupsamples();
@@ -561,7 +550,6 @@ static struct soundtype
         configs.setsize(0);
         samples.clear();
     }
-
     void preloadsound(int n)
     {
         if(nosound || !configs.inrange(n))
@@ -574,23 +562,34 @@ static struct soundtype
             slots[config.slots+k].sample->load(dir, true);
         }
     }
-
     bool playing(const soundchannel &chan, const soundconfig &config) const
     {
         return chan.inuse && config.hasslot(chan.slot, slots);
     }
 } gamesounds("game/"), mapsounds("mapsound/");
 
-void registersound(char *name, int *vol) { intret(gamesounds.addsound(name, *vol, 0)); }
+void registersound(char *name, int *vol)
+{
+    intret(gamesounds.addsound(name, *vol, 0));
+}
 COMMAND(registersound, "si");
 
-void mapsound(char *name, int *vol, int *maxuses) { intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : max(1, *maxuses))); }
+void mapsound(char *name, int *vol, int *maxuses)
+{
+    intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : max(1, *maxuses)));
+}
 COMMAND(mapsound, "sii");
 
-void altsound(char *name, int *vol) { gamesounds.addalt(name, *vol); }
+void altsound(char *name, int *vol)
+{
+    gamesounds.addalt(name, *vol);
+}
 COMMAND(altsound, "si");
 
-void altmapsound(char *name, int *vol) { mapsounds.addalt(name, *vol); }
+void altmapsound(char *name, int *vol)
+{
+    mapsounds.addalt(name, *vol);
+}
 COMMAND(altmapsound, "si");
 
 ICOMMAND(numsounds, "", (), intret(gamesounds.configs.length()));
@@ -679,9 +678,15 @@ void checkmapsounds()
         }
         if(camera1->o.dist(e.o) < e.attr2) //if distance to entity < ent attr 2 (radius)
         {
-            if(!(e.flags&EntFlag_Sound)) playsound(e.attr1, NULL, &e, Music_Map, -1);
+            if(!(e.flags&EntFlag_Sound))
+            {
+                playsound(e.attr1, NULL, &e, Music_Map, -1);
+            }
         }
-        else if(e.flags&EntFlag_Sound) stopmapsound(&e);
+        else if(e.flags&EntFlag_Sound)
+        {
+            stopmapsound(&e);
+        }
     }
 }
 
@@ -696,7 +701,8 @@ bool updatechannel(soundchannel &chan)
     {
         return false;
     }
-    int vol = soundvol, pan = 255/2;
+    int vol = soundvol,
+        pan = 255/2;
     if(chan.hasloc())
     {
         vec v;
@@ -837,7 +843,6 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
         return -1;
     }
     soundconfig &config = sounds.configs[n];
-
     if(loc && (maxsoundradius || radius > 0))
     {
         // cull sounds that are unlikely to be heard
@@ -853,7 +858,6 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
             return -1;
         }
     }
-
     if(chanid < 0)
     {
         if(config.maxuses)
@@ -868,7 +872,8 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
             }
         }
         // avoid bursts of sounds with heavy packetloss and in sp
-        static int soundsatonce = 0, lastsoundmillis = 0;
+        static int soundsatonce = 0,
+                   lastsoundmillis = 0;
         if(totalmillis == lastsoundmillis)
         {
             soundsatonce++;
@@ -883,7 +888,6 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
             return -1;
         }
     }
-
     if(channels.inrange(chanid))
     {
         soundchannel &chan = channels[chanid];
@@ -909,12 +913,10 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     {
         return -1;
     }
-
     if(dbgsound)
     {
         conoutf("sound: %s%s", sounds.dir, slot.sample->name);
     }
-
     chanid = -1;
     for(int i = 0; i < channels.length(); i++)
     {
@@ -948,14 +950,19 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     soundchannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
     updatechannel(chan);
     int playing = -1;
+    //some ugly ternary assignments
     if(fade)
     {
         Mix_Volume(chanid, chan.volume);
-        playing = expire >= 0 ? Mix_FadeInChannelTimed(chanid, slot.sample->chunk, loops, fade, expire) : Mix_FadeInChannel(chanid, slot.sample->chunk, loops, fade);
+        playing = expire >= 0 ?
+                  Mix_FadeInChannelTimed(chanid, slot.sample->chunk, loops, fade, expire) :
+                  Mix_FadeInChannel(chanid, slot.sample->chunk, loops, fade);
     }
     else
     {
-        playing = expire >= 0 ? Mix_PlayChannelTimed(chanid, slot.sample->chunk, loops, expire) : Mix_PlayChannel(chanid, slot.sample->chunk, loops);
+        playing = expire >= 0 ?
+                  Mix_PlayChannelTimed(chanid, slot.sample->chunk, loops, expire) :
+                  Mix_PlayChannel(chanid, slot.sample->chunk, loops);
     }
     if(playing >= 0)
     {
@@ -1026,7 +1033,10 @@ void resetsound()
             Mix_HaltMusic();
             Mix_FreeMusic(music);
         }
-        if(musicstream) musicstream->seek(0, SEEK_SET);
+        if(musicstream)
+        {
+            musicstream->seek(0, SEEK_SET);
+        }
         Mix_CloseAudio();
     }
     initsound();
