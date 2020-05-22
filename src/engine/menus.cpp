@@ -19,13 +19,13 @@ static vector<change> needsapply;
 
 VARP(applydialog, 0, 1, 1);
 
-//when 0: change UI shows up whenever a pending change is added
-//when 1: change UI does not appear and applychanges must be used manually
-VAR(hidechanges, 0, 0, 1);
+//when 1: change UI shows up whenever a pending change is added
+//when 0: change UI does not appear and applychanges must be used manually
+VAR(showchanges, 0, 1, 1);
 
 //adds a change to the queue of settings changes,
 //if applydialog = 0 then this function does nothing
-//if hidechanges = 0 then this functin does not display changes UI at the end
+//if showchanges = 1 then this function does not display changes UI at the end
 void addchange(const char *desc, int type)
 {
     if(!applydialog)
@@ -40,7 +40,7 @@ void addchange(const char *desc, int type)
         }
     }
     needsapply.add(change(type, desc));
-    if(!hidechanges)
+    if(showchanges)
     {
         UI::showui("changes");
     }
@@ -126,7 +126,7 @@ VAR(mainmenu, 1, 1, 0);
 
 void clearmainmenu()
 {
-    hidechanges = 0;
+    showchanges = 1;
     if(mainmenu && isconnected())
     {
         mainmenu = 0;

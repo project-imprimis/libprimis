@@ -18,7 +18,7 @@ namespace game
     VARP(ragdollmillis, 0, 10000, 300000);
     VARP(ragdollfade, 0, 100, 5000);
     VARP(forceplayermodels, 0, 0, 1);
-    VARP(hidedead, 0, 0, 1);
+    VARP(showdead, 0, 0, 1);
 
     extern int playermodel;
 
@@ -514,7 +514,12 @@ namespace game
         for(int i = 0; i < players.length(); i++)
         {
             gameent *d = players[i];
-            if(d == player1 || d->state==ClientState_Spectator || d->state==ClientState_Spawning || d->lifesequence < 0 || d == exclude || (d->state==ClientState_Dead && hidedead))
+            if(   d == player1
+               || d->state==ClientState_Spectator
+               || d->state==ClientState_Spawning
+               || d->lifesequence < 0
+               || d == exclude
+               || (d->state==ClientState_Dead && !showdead))
             {
                 continue;
             }
@@ -538,7 +543,7 @@ namespace game
         {
             renderplayer(exclude, 1, Model_OnlyShadow);
         }
-        else if(!f && (player1->state==ClientState_Alive || (player1->state==ClientState_Editing && third) || (player1->state==ClientState_Dead && !hidedead)))
+        else if(!f && (player1->state==ClientState_Alive || (player1->state==ClientState_Editing && third) || (player1->state==ClientState_Dead && showdead)))
         {
             renderplayer(player1, 1, third ? 0 : Model_OnlyShadow);
         }

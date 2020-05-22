@@ -10,7 +10,7 @@ namespace game
     VARP(showspectators, 0, 1, 1);
     VARP(highlightscore, 0, 1, 1);
     VARP(showconnecting, 0, 0, 1);
-    VARP(hidefrags, 0, 1, 1);
+    VARP(showfrags, 0, 1, 1);
 
     static teaminfo teaminfos[MAXTEAMS];
 
@@ -243,7 +243,7 @@ namespace game
         }
     });
 //scoreboard booleans
-    ICOMMAND(scoreboardshowfrags, "", (), intret(cmode && cmode->hidefrags() && hidefrags ? 0 : 1));
+    ICOMMAND(scoreboardshowfrags, "", (), intret(cmode && cmode->hidefrags() && !showfrags ? 0 : 1));
     ICOMMAND(scoreboardshowclientnum, "", (), intret(showclientnum || player1->privilege>=Priv_Master ? 1 : 0));
     ICOMMAND(scoreboardmultiplayer, "", (), intret(multiplayer(false) || demoplayback ? 1 : 0));
 

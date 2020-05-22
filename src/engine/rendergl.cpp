@@ -2142,8 +2142,8 @@ void gl_drawview()
         renderparticles();
         GLERROR;
 
-        extern int hidehud;
-        if(!hidehud)
+        extern int showhud;
+        if(showhud)
         {
             glDepthMask(GL_FALSE);
             rendereditcursor();
@@ -2272,8 +2272,8 @@ void drawdamagescreen(int w, int h)
     hudquad(0, 0, w, h);
 }
 
-VAR(hidestats, 0, 0, 1);
-VAR(hidehud, 0, 0, 1);
+VAR(showstats, 0, 1, 1);
+VAR(showhud, 0, 1, 1);
 
 VARP(crosshairsize, 0, 15, 50);
 VARP(cursorsize, 0, 15, 30);
@@ -2328,7 +2328,7 @@ void writecrosshairs(stream *f)
 void drawcrosshair(int w, int h)
 {
     bool windowhit = UI::hascursor();
-    if(!windowhit && (hidehud || mainmenu)) return; //(hidehud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
+    if(!windowhit && (!showhud || mainmenu)) return; //(!showhud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
 
     vec color(1, 1, 1);
     float cx = 0.5f, cy = 0.5f, chsize;
@@ -2410,10 +2410,12 @@ void gl_drawhud()
         drawdamagecompass(w, h);
     }
 
-    float conw = w/conscale, conh = h/conscale, abovehud = conh - FONTH;
-    if(!hidehud && !mainmenu)
+    float conw = w/conscale,
+          conh = h/conscale,
+          abovehud = conh - FONTH;
+    if(showhud && !mainmenu)
     {
-        if(!hidestats)
+        if(showstats)
         {
             pushhudscale(conscale);
 
@@ -2485,7 +2487,7 @@ void gl_drawhud()
 
     pushhudscale(conscale);
     abovehud -= rendercommand(FONTH/2, abovehud - FONTH/2, conw-FONTH);
-    if(!hidehud && !UI::uivisible("fullconsole")) renderconsole(conw, conh, abovehud - FONTH/2);
+    if(showhud && !UI::uivisible("fullconsole")) renderconsole(conw, conh, abovehud - FONTH/2);
     pophudmatrix();
 
     drawcrosshair(w, h);
