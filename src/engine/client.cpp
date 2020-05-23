@@ -32,9 +32,9 @@ VARF(rate, 0, 0, 1024, setrate(rate));
 
 void throttle();
 
-VARF(throttle_interval, 0, 5, 30, throttle());
-VARF(throttle_accel,    0, 2, 32, throttle());
-VARF(throttle_decel,    0, 2, 32, throttle());
+VARF(throttleinterval, 0, 5, 30, throttle());
+VARF(throttleaccel,    0, 2, 32, throttle());
+VARF(throttledecel,    0, 2, 32, throttle());
 
 void throttle()
 {
