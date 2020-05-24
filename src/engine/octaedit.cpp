@@ -3387,12 +3387,12 @@ void rendertexturepanel(int w, int h)
         if(prevstat == curstat) curstat = (val); \
         type##ret(curstat); \
     });
-EDITSTAT(wtr, int, wtris/1024);
+EDITSTAT(wtr, int, wtris);
 EDITSTAT(vtr, int, (vtris*100)/max(wtris, 1));
-EDITSTAT(wvt, int, wverts/1024);
+EDITSTAT(wvt, int, wverts);
 EDITSTAT(vvt, int, (vverts*100)/max(wverts, 1));
-EDITSTAT(evt, int, xtraverts/1024);
-EDITSTAT(eva, int, xtravertsva/1024);
+EDITSTAT(evt, int, xtraverts);
+EDITSTAT(eva, int, xtravertsva);
 EDITSTAT(octa, int, allocnodes*8);
 EDITSTAT(va, int, allocva);
 EDITSTAT(glde, int, glde);
