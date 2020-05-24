@@ -43,7 +43,7 @@ void throttle()
         return;
     }
     ASSERT(ENET_PEER_PACKET_THROTTLE_SCALE==32);
-    enet_peer_throttle_configure(curpeer, throttle_interval*1000, throttle_accel, throttle_decel);
+    enet_peer_throttle_configure(curpeer, throttleinterval*1000, throttleaccel, throttledecel);
 }
 
 bool isconnected(bool attempt, bool local)
