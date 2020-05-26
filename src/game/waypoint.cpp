@@ -8,15 +8,15 @@ namespace ai
 
     vector<waypoint> waypoints; //this is the box that all waypoints go into
 
-    //bad kinds of materials for bots to path into: clipping, instadeath, lava
+    //bad kinds of materials for bots to path into: clipping, instadeath
     bool clipped(const vec &o)
     {
         int material = lookupmaterial(o), clipmat = material&MatFlag_Clip;
-        return clipmat == Mat_Clip || material&Mat_Death || (material&MatFlag_Volume) == Mat_Lava;
+        return clipmat == Mat_Clip || material&Mat_Death;
     }
 
     //weights waypoints by distance from ai
-    //additionally weights deathmat/lava points at 10x normal and liquids at 2x
+    //additionally weights deathmat points at 10x normal and liquids at 2x
     //returns -2 if not in bounds
     int getweight(const vec &o)
     {
@@ -30,8 +30,14 @@ namespace ai
             weight = int(dist/ai::JUMPMIN);
             pos.z -= clamp(dist-8.0f, 0.0f, pos.z);
             int trgmat = lookupmaterial(pos);
-            if(trgmat&Mat_Death || (trgmat&MatFlag_Volume) == Mat_Lava) weight *= 10;
-            else if(IS_LIQUID(trgmat&MatFlag_Volume)) weight *= 2;
+            if(trgmat&Mat_Death)
+            {
+                weight *= 10;
+            }
+            else if(IS_LIQUID(trgmat&MatFlag_Volume))
+            {
+                weight *= 2;
+            }
         }
         return weight;
     }
@@ -702,7 +708,10 @@ namespace ai
         if(d->state != ClientState_Alive) { d->lastnode = -1; return; }
         bool dropping = shoulddrop(d);
         int mat = lookupmaterial(v);
-        if((mat&MatFlag_Clip) == Mat_Clip || (mat&MatFlag_Volume) == Mat_Lava || mat&Mat_Death) dropping = false;
+        if((mat&MatFlag_Clip) == Mat_Clip || mat&Mat_Death)
+        {
+            dropping = false;
+        }
         float dist = dropping ? WAYPOINTRADIUS : (d->ai ? WAYPOINTRADIUS : SIGHTMIN);
         int curnode = closestwaypoint(v, dist, false, d), prevnode = d->lastnode;
         if(!iswaypoint(curnode) && dropping)

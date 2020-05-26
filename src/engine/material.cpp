@@ -139,7 +139,6 @@ const struct material
     {"air", Mat_Air},
     {"water", Mat_Water}, {"water1", Mat_Water}, {"water2", Mat_Water+1}, {"water3", Mat_Water+2}, {"water4", Mat_Water+3},
     {"glass", Mat_Glass}, {"glass1", Mat_Glass}, {"glass2", Mat_Glass+1}, {"glass3", Mat_Glass+2}, {"glass4", Mat_Glass+3},
-    {"lava", Mat_Lava}, {"lava1", Mat_Lava}, {"lava2", Mat_Lava+1}, {"lava3", Mat_Lava+2}, {"lava4", Mat_Lava+3},
     {"clip", Mat_Clip},
     {"noclip", Mat_NoClip},
     {"gameclip", Mat_GameClip},
@@ -201,7 +200,6 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
         {
              break;
         }
-        case Mat_Lava:
         case Mat_Water:
         {
             if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
@@ -278,19 +276,13 @@ static inline void addmatbb(ivec &matmin, ivec &matmax, const materialsurface &m
 
 void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &matsurfs)
 {
-    va->lavamax = va->watermax = va->glassmax = co;
-    va->lavamin = va->watermin = va->glassmin = ivec(co).add(size);
+    va->watermax = va->glassmax = co;
+    va->watermin = va->glassmin = ivec(co).add(size);
     for(int i = 0; i < matsurfs.length(); i++)
     {
         materialsurface &m = matsurfs[i];
         switch(m.material&MatFlag_Volume)
         {
-            case Mat_Lava:
-            {
-                if(m.visible == MATSURF_EDIT_ONLY) continue;
-                addmatbb(va->lavamin, va->lavamax, m);
-                break;
-            }
             case Mat_Water:
             {
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
@@ -570,18 +562,6 @@ void setupmaterials(int start, int len)
             }
         }
     }
-    if(hasmat&(0xF<<Mat_Lava))
-    {
-        useshaderbyname("lava");
-        useshaderbyname("waterfog"); //lava uses water's fog shader while inside volume
-        for(int i = 0; i < 4; ++i)
-        {
-            if(hasmat&(1<<(Mat_Lava+i)))
-            {
-                lookupmaterialslot(Mat_Lava+i);
-            }
-        }
-    }
     if(hasmat&(0xF<<Mat_Glass))
     {
         preloadglassshaders(true);
@@ -715,11 +695,6 @@ void rendermatgrid()
                     color = bvec( 0, 85,  0);
                     break; // green
                 }
-                case Mat_Lava:
-                {
-                    color = bvec(85, 40,  0);
-                    break; // orange
-                }
                 case Mat_GameClip:
                 {
                     color = bvec(85, 85,  0);
@@ -828,7 +803,7 @@ static void drawglass(const materialsurface &m, float offset, const vec *normal 
     #define GENFACEVERTZ(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
 }
 
-vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4], lavasurfs[4], lavafallsurfs[4];
+vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4];
 
 float matliquidsx1 = -1,
       matliquidsy1 = -1,
@@ -853,8 +828,6 @@ int findmaterials()
         glasssurfs[i].setsize(0);
         watersurfs[i].setsize(0);
         waterfallsurfs[i].setsize(0);
-        lavasurfs[i].setsize(0);
-        lavafallsurfs[i].setsize(0);
     }
     matliquidsx1 = matliquidsy1 = matsolidsx1 = matsolidsy1 = matrefractsx1 = matrefractsy1 = 1;
     matliquidsx2 = matliquidsy2 = matsolidsx2 = matsolidsy2 = matrefractsx2 = matrefractsy2 = -1;
@@ -876,33 +849,6 @@ int findmaterials()
             continue;
         }
         float sx1, sy1, sx2, sy2;
-        if(va->lavamin.x <= va->lavamax.x && calcbbscissor(va->lavamin, va->lavamax, sx1, sy1, sx2, sy2))
-        {
-            matliquidsx1 = min(matliquidsx1, sx1);
-            matliquidsy1 = min(matliquidsy1, sy1);
-            matliquidsx2 = max(matliquidsx2, sx2);
-            matliquidsy2 = max(matliquidsy2, sy2);
-            masktiles(matliquidtiles, sx1, sy1, sx2, sy2);
-            for(int i = 0; i < va->matsurfs; ++i)
-            {
-                materialsurface &m = va->matbuf[i];
-                if((m.material&MatFlag_Volume) != Mat_Lava || m.visible == MATSURF_EDIT_ONLY)
-                {
-                    i += m.skip;
-                    continue;
-                }
-                hasmats |= 1;
-                if(m.orient == Orient_Top)
-                {
-                    lavasurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
-                }
-                else
-                {
-                    lavafallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
-                }
-                i += m.skip;
-            }
-        }
         if(va->watermin.x <= va->watermax.x && calcbbscissor(va->watermin, va->watermax, sx1, sy1, sx2, sy2))
         {
             matliquidsx1 = min(matliquidsx1, sx1);
@@ -917,6 +863,7 @@ int findmaterials()
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
+                //skip if only rendering edit mat boxes or non-water mat
                 if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MATSURF_EDIT_ONLY)
                 {
                     i += m.skip;
@@ -1063,7 +1010,6 @@ void renderliquidmaterials()
 {
     glDisable(GL_CULL_FACE);
 
-    renderlava();
     renderwater();
     renderwaterfalls();
 
@@ -1127,11 +1073,6 @@ void rendereditmaterials()
                     color = bvec(255,   0, 255);
                     break; // green
                 }
-                case Mat_Lava:
-                {
-                    color = bvec(  0, 128, 255);
-                    break; // orange
-                }
                 case Mat_GameClip:
                 {
                     color = bvec(  0,   0, 255);
@@ -1173,7 +1114,6 @@ void rendereditmaterials()
 void renderminimapmaterials()
 {
     glDisable(GL_CULL_FACE);
-    renderlava();
     renderwater();
     glEnable(GL_CULL_FACE);
 }

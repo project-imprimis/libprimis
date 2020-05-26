@@ -1567,16 +1567,6 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
             end += logblend*min(fog, max(wfog*2, 16));
             break;
         }
-
-        case Mat_Lava:
-        {
-            const bvec &lcol = getlavacolor(fogmat);
-            int lfog = getlavafog(fogmat);
-            fogc.add(lcol.tocolor().mul(blend));
-            end += logblend*min(fog, max(lfog*2, 16));
-            break;
-        }
-
         default:
             fogc.add(fogcolor.tocolor().mul(blend));
             start += logblend*(fog+64)/8;
@@ -1634,7 +1624,6 @@ static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = 
 
 static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
 {
-    float maxc;
     switch(fogmat&MatFlag_Volume)
     {
         case Mat_Water:
@@ -1646,15 +1635,6 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
             overlay.add(color.div(min(32.0f + max(color.r, max(color.g, color.b))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
         }
-
-        case Mat_Lava:
-        {
-            const bvec &lcol = getlavacolor(fogmat);
-            maxc = max(lcol.r, max(lcol.g, lcol.b));
-            overlay.add(vec(lcol.r, lcol.g, lcol.b).div(min(32.0f + maxc*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
-            break;
-        }
-
         default:
             overlay.add(blend);
             break;

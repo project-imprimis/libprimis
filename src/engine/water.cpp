@@ -262,22 +262,10 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
 
     ASSERT((wx1 & (subdiv - 1)) == 0);
     ASSERT((wy1 & (subdiv - 1)) == 0);
-
-    switch(mat)
+    if(mat == Mat_Water)
     {
-        case Mat_Water:
-        {
-            whoffset = fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
-            RENDER_WATER_STRIPS(vertwt, z);
-            break;
-        }
-
-        case Mat_Lava:
-        {
-            whoffset = fmod(static_cast<float>(lastmillis/2000.0f/(2*M_PI)), 1.0f);
-            RENDER_WATER_STRIPS(vertl, z);
-            break;
-        }
+        whoffset = fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
+        RENDER_WATER_STRIPS(vertwt, z);
     }
 }
 
@@ -372,18 +360,9 @@ int renderwaterlod(int x, int y, int z, int size, int mat)
 
 void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
 {
-    switch(mat)
+    if(mat == Mat_Water)
     {
-        case Mat_Water:
-        {
-            RENDER_WATER_QUAD(vertwtn, z);
-            break;
-        }
-        case Mat_Lava:
-        {
-            RENDER_WATER_QUAD(vertln, z);
-            break;
-        }
+        RENDER_WATER_QUAD(vertwtn, z);
     }
 }
 
@@ -434,24 +413,6 @@ GETMATIDXVAR(water, spec, int)
 GETMATIDXVAR(water, refract, float)
 GETMATIDXVAR(water, fallspec, int)
 GETMATIDXVAR(water, fallrefract, float)
-
-#define LAVAVARS(name) \
-    CVAR0R(name##color, 0xFF4000); \
-    VARR(name##fog, 0, 50, 10000); \
-    FVARR(name##glowmin, 0, 0.25f, 2); \
-    FVARR(name##glowmax, 0, 1.0f, 2); \
-    VARR(name##spec, 0, 25, 200);
-
-LAVAVARS(lava)
-LAVAVARS(lava2)
-LAVAVARS(lava3)
-LAVAVARS(lava4)
-
-GETMATIDXVAR(lava, color, const bvec &)
-GETMATIDXVAR(lava, fog, int)
-GETMATIDXVAR(lava, glowmin, float)
-GETMATIDXVAR(lava, glowmax, float)
-GETMATIDXVAR(lava, spec, int)
 
 VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
 VARR(waterreflectstep, 1, 32, 10000);
@@ -573,77 +534,6 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
 #define GENFACEVERTX(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
 #undef GENFACEVERTY
 #define GENFACEVERTY(o,n, x,y,z, xv,yv,zv) GENFACEVERT(o,n, x,y,z, xv,yv,zv)
-}
-
-void renderlava()
-{
-    for(int k = 0; k < 4; ++k)
-    {
-        if(lavasurfs[k].empty() && (drawtex == Draw_TexMinimap || lavafallsurfs[k].empty()))
-        {
-            continue;
-        }
-
-        MatSlot &lslot = lookupmaterialslot(Mat_Lava+k);
-
-        SETSHADER(lava);
-        float t = lastmillis/2000.0f;
-        t -= floor(t);
-        t = 1.0f - 2*fabs(t-0.5f);
-        t = 0.5f + 0.5f*t;
-        float glowmin = getlavaglowmin(k),
-              glowmax = getlavaglowmax(k);
-        int spec = getlavaspec(k);
-        LOCALPARAMF(lavaglow, 0.5f*(glowmin + (glowmax-glowmin)*t));
-        LOCALPARAMF(lavaspec, spec/100.0f);
-
-        if(lavasurfs[k].length())
-        {
-            Texture *tex = lslot.sts.inrange(0) ? lslot.sts[0].t: notexture;
-            wxscale = TEX_SCALE/(tex->xs*lslot.scale);
-            wyscale = TEX_SCALE/(tex->ys*lslot.scale);
-            wscroll = lastmillis/1000.0f;
-
-            glBindTexture(GL_TEXTURE_2D, tex->id);
-            glActiveTexture_(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, lslot.sts.inrange(1) ? lslot.sts[1].t->id : notexture->id);
-            glActiveTexture_(GL_TEXTURE0);
-
-            gle::normal(vec(0, 0, 1));
-
-            vector<materialsurface> &surfs = lavasurfs[k];
-            for(int i = 0; i < surfs.length(); i++)
-            {
-                renderwater(surfs[i], Mat_Lava);
-            }
-            xtraverts += gle::end();
-        }
-
-        if(drawtex != Draw_TexMinimap && lavafallsurfs[k].length())
-        {
-            Texture *tex = lslot.sts.inrange(2) ? lslot.sts[2].t : (lslot.sts.inrange(0) ? lslot.sts[0].t : notexture);
-            float angle = fmod(static_cast<float>(lastmillis/2000.0f/(2*M_PI)), 1.0f),
-                  s = angle - static_cast<int>(angle) - 0.5f;
-            s *= 8 - fabs(s)*16;
-            wfwave = vertwater ? WATER_AMPLITUDE*s-WATER_OFFSET : -WATER_OFFSET;
-            wfscroll = 16.0f*lastmillis/3000.0f;
-            wfxscale = TEX_SCALE/(tex->xs*lslot.scale);
-            wfyscale = TEX_SCALE/(tex->ys*lslot.scale);
-
-            glBindTexture(GL_TEXTURE_2D, tex->id);
-            glActiveTexture_(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, lslot.sts.inrange(2) ? (lslot.sts.inrange(3) ? lslot.sts[3].t->id : notexture->id) : (lslot.sts.inrange(1) ? lslot.sts[1].t->id : notexture->id));
-            glActiveTexture_(GL_TEXTURE0);
-
-            vector<materialsurface> &surfs = lavafallsurfs[k];
-            for(int i = 0; i < surfs.length(); i++)
-            {
-                materialsurface &m = surfs[i];
-                renderwaterfall(m, 0.1f, &matnormals[m.orient]);
-            }
-            xtraverts += gle::end();
-        }
-    }
 }
 
 void renderwaterfalls()

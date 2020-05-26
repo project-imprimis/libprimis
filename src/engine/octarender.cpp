@@ -492,8 +492,15 @@ struct vacollect : verthash
                 if(m.visible == MATSURF_EDIT_ONLY) continue;
                 switch(m.material)
                 {
-                    case Mat_Glass: case Mat_Lava: case Mat_Water: break;
-                    default: continue;
+                    case Mat_Glass:
+                    case Mat_Water:
+                    {
+                        break;
+                    }
+                    default:
+                    {
+                        continue;
+                    }
                 }
                 va->matmask |= 1<<m.material;
             }
@@ -1316,8 +1323,6 @@ void updatevabb(vtxarray *va, bool force)
 
     va->bbmin = va->geommin;
     va->bbmax = va->geommax;
-    va->bbmin.min(va->lavamin);
-    va->bbmax.max(va->lavamax);
     va->bbmin.min(va->watermin);
     va->bbmax.max(va->watermax);
     va->bbmin.min(va->glassmin);

@@ -853,14 +853,11 @@ namespace game
     {
         if(waterlevel>0)
         {
-            if(material!=Mat_Lava)
-            {
-                playsound(Sound_SplashOut, d==player1 ? NULL : &d->o);
-            }
+            playsound(Sound_SplashOut, d==player1 ? NULL : &d->o);
         }
         else if(waterlevel<0)
         {
-            playsound(material==Mat_Lava ? Sound_Burn : Sound_SplashIn, d==player1 ? NULL : &d->o);
+            playsound(Sound_SplashIn, d==player1 ? NULL : &d->o);
         }
         if(floorlevel>0)
         {

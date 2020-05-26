@@ -4874,7 +4874,6 @@ namespace server
             sendservmsg(msg);
         }
 
-
         void changemap()
         {
             dorefresh = true;

@@ -24,7 +24,6 @@ enum // cube empty-space materials
 {
     Mat_Air      = 0,                      // the default, fill the empty space with air
     Mat_Water    = 1 << MatFlag_VolumeShift, // fill with water, showing waves at the surface
-    Mat_Lava     = 2 << MatFlag_VolumeShift, // fill with lava
     Mat_Glass    = 3 << MatFlag_VolumeShift, // behaves like clip but is blended blueish
 
     Mat_NoClip   = 1 << MatFlag_ClipShift,  // collisions always treat cube as empty
@@ -36,9 +35,8 @@ enum // cube empty-space materials
     Mat_Alpha    = 4 << MatFlag_FlagShift   // alpha blended
 };
 
-#define IS_LIQUID(mat) ((mat)==Mat_Water || (mat)==Mat_Lava)
+#define IS_LIQUID(mat) ((mat)==Mat_Water)
 #define IS_CLIPPED(mat) ((mat)==Mat_Glass) //materials that are obligate clipping (always also get clipped)
-#define IS_DEADLY(mat) ((mat)==Mat_Lava) //materials thare are obligate deadly (always also have deatmat)
 
 extern void lightent(extentity &e, float height = 8.0f);
 extern void lightreaching(const vec &target, vec &color, vec &dir, bool fast = false, extentity *e = 0, float minambient = 0.4f);

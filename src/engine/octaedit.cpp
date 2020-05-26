@@ -3197,10 +3197,6 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
         {
             matmask &= ~MatFlag_Clip;
         }
-        if(IS_DEADLY(filtermat&MatFlag_Volume))
-        {
-            matmask &= ~Mat_Death;
-        }
     }
     else
     {
@@ -3208,10 +3204,6 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
         if(IS_CLIPPED(matid&MatFlag_Volume))
         {
             matid |= Mat_Clip;
-        }
-        if(IS_DEADLY(matid&MatFlag_Volume))
-        {
-            matid |= Mat_Death;
         }
     }
     LOOP_SEL_XYZ(setmat(c, matid, matmask, filtermat, filtermask, filtergeom));

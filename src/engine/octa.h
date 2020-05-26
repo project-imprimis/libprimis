@@ -125,7 +125,6 @@ struct vtxarray
     ivec alphamin, alphamax; // BB of alpha geom
     ivec refractmin, refractmax; // BB of refract geom
     ivec skymin, skymax;     // BB of any sky geom
-    ivec lavamin, lavamax;   // BB of any lava
     ivec watermin, watermax; // BB of any water
     ivec glassmin, glassmax; // BB of any glass
     ivec nogimin, nogimax;   // BB of any nogi
