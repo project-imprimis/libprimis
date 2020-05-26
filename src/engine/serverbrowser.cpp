@@ -162,7 +162,8 @@ bool resolverwait(const char *name, ENetAddress *address)
     SDL_LockMutex(resolvermutex);
     resolverqueries.add(name);
     SDL_CondSignal(querycond);
-    int starttime = SDL_GetTicks(), timeout = 0;
+    int starttime = SDL_GetTicks(),
+        timeout = 0;
     bool resolved = false;
     for(;;)
     {
@@ -327,8 +328,7 @@ struct serverinfo : servinfo, pingattempts
 {
     enum
     {
-        WAITING = INT_MAX,
-
+        WAITING  = INT_MAX,
         MAXPINGS = 3
     };
 
@@ -389,7 +389,8 @@ struct serverinfo : servinfo, pingattempts
 
     void calcping()
     {
-        int numpings = 0, totalpings = 0;
+        int numpings   = 0,
+            totalpings = 0;
         for(int k = 0; k < MAXPINGS; ++k)
         {
             if(pings[k] != WAITING)
@@ -856,7 +857,8 @@ void retrieveservers(vector<char> &data)
     DEF_FORMAT_STRING(text, "retrieving servers from %s... (esc to abort)", mastername);
     renderprogress(0, text);
 
-    int starttime = SDL_GetTicks(), timeout = 0;
+    int starttime = SDL_GetTicks(),
+        timeout   = 0;
     const char *req = "list\n";
     int reqlen = strlen(req);
     ENetBuffer buf;

@@ -450,8 +450,14 @@ struct stainrenderer
 
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-        if(gbuf) maskgbuffer(sbuf == StainBuffer_Transparent ? "cndg" : "cnd");
-        else resetfogcolor();
+        if(gbuf)
+        {
+            maskgbuffer(sbuf == StainBuffer_Transparent ? "cndg" : "cnd");
+        }
+        else
+        {
+            resetfogcolor();
+        }
     }
 
     void cleanup()
@@ -756,7 +762,8 @@ struct stainrenderer
                 i += m.skip;
                 continue;
             }
-            int dim = DIMENSION(m.orient), dc = DIM_COORD(m.orient);
+            int dim = DIMENSION(m.orient),
+                dc = DIM_COORD(m.orient);
             if(dc ? stainnormal[dim] <= 0 : stainnormal[dim] >= 0)
             {
                 i += m.skip;
