@@ -678,20 +678,12 @@ materials do not have the same deformation ability as geometry, materials are
 restricted to occupying rectangular shapes and cannot approximate the forms that
 geometry can.
 
-The most visible apparent materials are the water and lava materials. Water and
-lava materials (of which there are eight, four of each type) create rectangular
-volumes of water or lava in their selected regions. Water in particular has
+The most visible apparent materials are the water and glass materials. Water and
+glass materials (of which there are eight, four of each type) create rectangular
+volumes of water or glass in their selected regions. Water in particular has
 features like screenspace reflection/refraction and caustics applied to it in
-the renderer; lava, while not as impressive, is an animated flat texture.
-
-Lava is one of the cases wherein materials are required to be combined; lava and
-death material are always combined such that contacting lava is instant death.
-
-Nearly as apparent is the array of glass materials, which create environment
-mapping windows relatively cheaply. Using the four types of windows, it is
-possible to make a variety of transparent geometry with different shapes;
-additionally glass is capable of screenspace refraction to simulate the
-ray optics of nonflat glass.
+the renderer; glass, on the other hand, allows for screenspace refractive as well
+as specular effects.
 
 A more versatile but slower type of transparency is alpha material, which flags
 cube geometry as transparent. The texture's properties determine the effects of
@@ -787,28 +779,6 @@ will automatically place clip wherever glass is placed.
 * `glass<N>spec`
 * `glass<N>refract`
 
-### 2.2.4 Lava
----
-
-The third and final four-variant material, lava offers an animated and solid
-liquid surface that kills all who enter it. This is actually not a property of
-lavamat itself but the required death material that it always comes with.
-
-Lava traces its origins back to the Quake style maps which prominently featured
-it as part of the aesthetic, but is troublesome to use in a modern engine like
-Tesseract as a result of its demand for diffuse lighting. Lava, furthermore,
-does not support many of the interesting reflective features that water and
-glass possess (though, to be fair, lava largely does not need advanced
-reflections); it is therefore advisable to use water in its place if practical.
-
-#### Commands
-
-* `lava<N>color`
-* `lava<N>fog`
-* `lava<N>glowmin`
-* `lava<N>glowmax`
-* `lava<N>spec`
-
 ### 2.2.5 Clip
 ---
 
@@ -848,8 +818,7 @@ that would break immersion.
 ---
 
 Death material forces the suicide of those players who enter its bounds,
-instantly killing them. Death material is automatically applied wherever lava
-is and is also usable by itself or with other materials like water.
+instantly killing them.
 
 Death material also destroys particles and projectiles which enter its midst,
 which is potentially useful for culling unnecessary particles that enters its
