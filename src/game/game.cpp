@@ -9,8 +9,11 @@
 namespace game
 {
     bool intermission = false;
-    int maptime = 0, maprealtime = 0, maplimit = -1;
-    int lasthit = 0, lastspawnattempt = 0;
+    int maptime = 0,
+        maprealtime = 0,
+        maplimit = -1;
+    int lasthit = 0,
+        lastspawnattempt = 0;
 
     gameent *player1 = NULL;         // our client
     vector<gameent *> players;       // other clients
@@ -253,7 +256,7 @@ namespace game
             moveplayer(d, 1, false);
             d->newpos = d->o;
         }
-        float k = 1.0f - float(lastmillis - d->smoothmillis)/smoothmove;
+        float k = 1.0f - static_cast<float>(lastmillis - d->smoothmillis)/smoothmove;
         if(k>0)
         {
             d->o.add(vec(d->deltapos).mul(k));
@@ -291,7 +294,6 @@ namespace game
                     d->gunwait = 0;
                 }
             }
-
             const int lagtime = totalmillis-d->lastupdate;
             if(!lagtime || intermission)
             {
@@ -338,7 +340,6 @@ namespace game
             }
             return;
         }
-
         physicsframe();
         ai::navigate();
         updateweapons(curtime); //updates projectiles & bouncers
@@ -435,7 +436,6 @@ namespace game
     COMMAND(respawn, "");
 
     // inputs
-
     VARP(attackspawn, 0, 1, 1);
 
     void doaction(int act)
@@ -792,29 +792,22 @@ namespace game
         clearprojectiles();
         clearbouncers();
         clearragdolls();
-
         clearteaminfo();
-
         // reset perma-state
         for(int i = 0; i < players.length(); i++)
         {
             players[i]->startgame();
         }
-
         setclientmode();
-
         intermission = false;
         maptime = maprealtime = 0;
         maplimit = -1;
-
         if(cmode)
         {
             cmode->preload();
             cmode->setup();
         }
-
         conoutf(ConsoleMsg_GameInfo, "\f2game mode is %s", server::modeprettyname(gamemode));
-
         const char *info = MODE_VALID(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
         if(showmodeinfo && info)
         {
@@ -832,7 +825,6 @@ namespace game
     {
         ai::savewaypoints();
         ai::clearwaypoints(true);
-
         if(modecheck(gamemode, Mode_LocalOnly))
         {
             spawnplayer(player1);
@@ -1022,7 +1014,9 @@ namespace game
     void drawicon(int icon, float x, float y, float sz)
     {
         settexture("media/interface/hud/items.png");
-        float tsz = 0.25f, tx = tsz*(icon%4), ty = tsz*(icon/4);
+        float tsz = 0.25f,
+              tx = tsz*(icon%4),
+              ty = tsz*(icon/4);
         gle::defvertex(2);
         gle::deftexcoord0();
         gle::begin(GL_TRIANGLE_STRIP);
@@ -1221,12 +1215,12 @@ namespace game
     void writegamedata(vector<char> &extras) {}
     void readgamedata(vector<char> &extras) {}
 
-    const char *gameconfig() { return "config/game.cfg"; }
-    const char *savedconfig() { return "config/saved.cfg"; }
+    const char *gameconfig()    { return "config/game.cfg"; }
+    const char *savedconfig()   { return "config/saved.cfg"; }
     const char *restoreconfig() { return "config/restore.cfg"; }
     const char *defaultconfig() { return "config/default.cfg"; }
-    const char *autoexec() { return "config/autoexec.cfg"; }
-    const char *savedservers() { return "config/servers.cfg"; }
+    const char *autoexec()      { return "config/autoexec.cfg"; }
+    const char *savedservers()  { return "config/servers.cfg"; }
 
     void loadconfigs()
     {
