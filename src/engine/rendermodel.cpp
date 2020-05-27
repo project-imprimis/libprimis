@@ -26,14 +26,10 @@ static model *__loadmodel__##modelclass(const char *filename) \
 } \
 UNUSED static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##modelclass);
 
-#include "md2.h"
-#include "md3.h"
 #include "md5.h"
 #include "obj.h"
 #include "iqm.h"
 
-MODELTYPE(MDL_MD2, md2);
-MODELTYPE(MDL_MD3, md3);
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
 MODELTYPE(MDL_IQM, iqm);
