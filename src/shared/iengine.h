@@ -220,8 +220,6 @@ extern void loopend(ident *id, identstack &stack);
 
 #define LOOP_START(id, stack) if((id)->type != Id_Alias) return; identstack stack;
 inline void loopiter(ident *id, identstack &stack, int i) { tagval v; v.setint(i); loopiter(id, stack, v); }
-inline void loopiter(ident *id, identstack &stack, float f) { tagval v; v.setfloat(f); loopiter(id, stack, v); }
-inline void loopiter(ident *id, identstack &stack, const char *s) { tagval v; v.setstr(newstring(s)); loopiter(id, stack, v); }
 
 // console
 
