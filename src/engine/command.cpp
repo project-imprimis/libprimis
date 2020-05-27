@@ -5672,19 +5672,6 @@ void explodelist(const char *s, vector<char *> &elems, int limit)
     }
 }
 
-char *indexlist(const char *s, int pos)
-{
-    for(int i = 0; i < pos; ++i)
-    {
-        if(!parselist(s))
-        {
-            return newstring("");
-        }
-    }
-    const char *start, *end, *qstart;
-    return parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring("");
-}
-
 int listlen(const char *s)
 {
     int n = 0;
