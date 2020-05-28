@@ -216,16 +216,7 @@
     <ClInclude Include="..\shared\igame.h">
       <Filter>shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\iqm.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\light.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\md2.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\md3.h">
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\md5.h">

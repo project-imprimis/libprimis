@@ -411,9 +411,6 @@
     <ClInclude Include="..\engine\bih.h" />
     <ClInclude Include="..\engine\explosion.h" />
     <ClInclude Include="..\engine\hitzone.h" />
-    <ClInclude Include="..\engine\iqm.h" />
-    <ClInclude Include="..\engine\md2.h" />
-    <ClInclude Include="..\engine\md3.h" />
     <ClInclude Include="..\engine\md5.h" />
     <ClInclude Include="..\engine\model.h" />
     <ClInclude Include="..\engine\obj.h" />

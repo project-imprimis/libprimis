@@ -116,13 +116,10 @@
 		<Unit filename="..\engine\explosion.h" />
 		<Unit filename="..\engine\grass.cpp" />
 		<Unit filename="..\engine\hitzone.h" />
-		<Unit filename="..\engine\iqm.h" />
 		<Unit filename="..\engine\light.cpp" />
 		<Unit filename="..\engine\light.h" />
 		<Unit filename="..\engine\main.cpp" />
 		<Unit filename="..\engine\material.cpp" />
-		<Unit filename="..\engine\md2.h" />
-		<Unit filename="..\engine\md3.h" />
 		<Unit filename="..\engine\md5.h" />
 		<Unit filename="..\engine\menus.cpp" />
 		<Unit filename="..\engine\model.h" />
