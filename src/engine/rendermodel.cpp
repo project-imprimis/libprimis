@@ -28,11 +28,9 @@ UNUSED static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel_
 
 #include "md5.h"
 #include "obj.h"
-#include "iqm.h"
 
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
-MODELTYPE(MDL_IQM, iqm);
 
 #define CHECK_MDL if(!loadingmodel) { conoutf(Console_Error, "not loading a model"); return; }
 
