@@ -11,7 +11,7 @@ template<int BPP> static void halvetexture(uchar * RESTRICT src, uint sw, uint s
         {
             for(int i = 0; i < BPP; ++i)
             {
-                dst[i] = (uint(xsrc[i]) + uint(xsrc[i+BPP]) + uint(xsrc[stride+i]) + uint(xsrc[stride+i+BPP]))>>2;
+                dst[i] = (static_cast<uint>(xsrc[i]) + static_cast<uint>(xsrc[i+BPP]) + static_cast<uint>(xsrc[stride+i]) + static_cast<uint>(xsrc[stride+i+BPP]))>>2;
             }
         }
         src += 2*stride;
@@ -62,7 +62,7 @@ template<int BPP> static void scaletexture(uchar * RESTRICT src, uint sw, uint s
     dh *= hfrac;
     for(uint y = 0; y < dh; y += hfrac)
     {
-        const uint yn = y + hfrac - 1, yi = y>>12, h = (yn>>12) - yi, ylow = ((yn|(-int(h)>>24))&0xFFFU) + 1 - (y&0xFFFU), yhigh = (yn&0xFFFU) + 1;
+        const uint yn = y + hfrac - 1, yi = y>>12, h = (yn>>12) - yi, ylow = ((yn|(-static_cast<int>(h)>>24))&0xFFFU) + 1 - (y&0xFFFU), yhigh = (yn&0xFFFU) + 1;
         const uchar *ysrc = &src[yi*stride];
         for(uint x = 0; x < dw; x += wfrac, dst += BPP)
         {
@@ -555,11 +555,11 @@ void texmad(ImageData &s, const vec &mul, const vec &add)
 {
     if(s.bpp < 3 && (mul.x != mul.y || mul.y != mul.z || add.x != add.y || add.y != add.z))
         swizzleimage(s);
-    int maxk = min(int(s.bpp), 3);
+    int maxk = min(static_cast<int>(s.bpp), 3);
     WRITE_TEX(s,
         for(int k = 0; k < maxk; ++k)
         {
-            dst[k] = uchar(clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
+            dst[k] = static_cast<uchar>(clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
         }
     );
 }
@@ -578,7 +578,7 @@ void texcolorify(ImageData &s, const vec &color, vec weights)
         float lum = dst[0]*weights.x + dst[1]*weights.y + dst[2]*weights.z;
         for(int k = 0; k < 3; ++k)
         {
-            dst[k] = uchar(clamp(lum*color[k], 0.0f, 255.0f));
+            dst[k] = static_cast<uchar>(clamp(lum*color[k], 0.0f, 255.0f));
         }
     );
 }
@@ -592,7 +592,7 @@ void texcolormask(ImageData &s, const vec &color1, const vec &color2)
         color.lerp(color2, color1, src[3]/255.0f);
         for(int k = 0; k < 3; ++k)
         {
-            dst[k] = uchar(clamp(color[k]*src[k], 0.0f, 255.0f));
+            dst[k] = static_cast<uchar>(clamp(color[k]*src[k], 0.0f, 255.0f));
         }
     );
     s.replace(d);
@@ -645,15 +645,15 @@ void texpremul(ImageData &s)
     {
         case 2:
             WRITE_TEX(s,
-                dst[0] = uchar((uint(dst[0])*uint(dst[1]))/255);
+                dst[0] = static_cast<uchar>((static_cast<uint>(dst[0])*static_cast<uint>(dst[1]))/255);
             );
             break;
         case 4:
             WRITE_TEX(s,
                 uint alpha = dst[3];
-                dst[0] = uchar((uint(dst[0])*alpha)/255);
-                dst[1] = uchar((uint(dst[1])*alpha)/255);
-                dst[2] = uchar((uint(dst[2])*alpha)/255);
+                dst[0] = static_cast<uchar>((static_cast<uint>(dst[0])*alpha)/255);
+                dst[1] = static_cast<uchar>((static_cast<uint>(dst[1])*alpha)/255);
+                dst[2] = static_cast<uchar>((static_cast<uint>(dst[2])*alpha)/255);
             );
             break;
     }
@@ -683,7 +683,7 @@ void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
         float curx = minx;
         for(uchar *dst = dstrow, *end = &dstrow[s.w*s.bpp]; dst < end; dst += s.bpp)
         {
-            dst[0] = uchar(dst[0]*clamp(curx, 0.0f, 1.0f)*clamp(cury, 0.0f, 1.0f));
+            dst[0] = static_cast<uchar>(dst[0]*clamp(curx, 0.0f, 1.0f)*clamp(cury, 0.0f, 1.0f));
             curx += dx;
         }
         cury += dy;
@@ -708,14 +708,14 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
         if(d.bpp < 3) READ_WRITE_TEX(d, s,
             int srcblend = src[1];
             int dstblend = 255 - srcblend;
-            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
         );
         else READ_WRITE_TEX(d, s,
             int srcblend = src[3];
             int dstblend = 255 - srcblend;
-            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
-            dst[1] = uchar((dst[1]*dstblend + src[1]*srcblend)/255);
-            dst[2] = uchar((dst[2]*dstblend + src[2]*srcblend)/255);
+            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
+            dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
         );
     }
     else
@@ -728,14 +728,14 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
         if(d.bpp < 3) READ_2_WRITE_TEX(d, s, src, m, mask,
             int srcblend = mask[0];
             int dstblend = 255 - srcblend;
-            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
         );
         else READ_2_WRITE_TEX(d, s, src, m, mask,
             int srcblend = mask[0];
             int dstblend = 255 - srcblend;
-            dst[0] = uchar((dst[0]*dstblend + src[0]*srcblend)/255);
-            dst[1] = uchar((dst[1]*dstblend + src[1]*srcblend)/255);
-            dst[2] = uchar((dst[2]*dstblend + src[2]*srcblend)/255);
+            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
+            dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
+            dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
         );
     }
 }
@@ -1401,9 +1401,9 @@ void texnormal(ImageData &s, int emphasis)
             normal.y += src[((y+s.h-1)%s.h)*s.pitch + x*s.bpp];
             normal.y -= src[((y+1)%s.h)*s.pitch + x*s.bpp];
             normal.normalize();
-            *dst++ = uchar(127.5f + normal.x*127.5f);
-            *dst++ = uchar(127.5f + normal.y*127.5f);
-            *dst++ = uchar(127.5f + normal.z*127.5f);
+            *dst++ = static_cast<uchar>(127.5f + normal.x*127.5f);
+            *dst++ = static_cast<uchar>(127.5f + normal.y*127.5f);
+            *dst++ = static_cast<uchar>(127.5f + normal.z*127.5f);
         }
     }
     s.replace(d);
@@ -1467,9 +1467,9 @@ static void blurtexture(int w, int h, uchar *dst, const uchar *src, int margin)
             {
                 vec v(dr-0x7F80, dg-0x7F80, db-0x7F80);
                 float mag = 127.5f/v.magnitude();
-                dst[0] = uchar(v.x*mag + 127.5f);
-                dst[1] = uchar(v.y*mag + 127.5f);
-                dst[2] = uchar(v.z*mag + 127.5f);
+                dst[0] = static_cast<uchar>(v.x*mag + 127.5f);
+                dst[1] = static_cast<uchar>(v.y*mag + 127.5f);
+                dst[2] = static_cast<uchar>(v.z*mag + 127.5f);
             }
             else
             {
@@ -1761,7 +1761,7 @@ Slot *defslot = NULL;
 
 const char *Slot::name() const { return tempformatstring("slot %d", index); }
 
-MatSlot::MatSlot() : Slot(int(this - materialslots)), VSlot(this) {}
+MatSlot::MatSlot() : Slot(static_cast<int>(this - materialslots)), VSlot(this) {}
 const char *MatSlot::name() const { return tempformatstring("material slot %s", findmaterialname(Slot::index)); }
 
 const char *DecalSlot::name() const { return tempformatstring("decal slot %d", Slot::index); }
@@ -1852,7 +1852,7 @@ void compactvslots(cube *c, int n)
 {
     if((compactvslotsprogress++&0xFFF)==0)
     {
-        renderprogress(min(float(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
+        renderprogress(min(static_cast<float>(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
     }
     for(int i = 0; i < n; ++i)
     {
@@ -1894,7 +1894,7 @@ int compactvslots(bool cull)
     }
     if(cull)
     {
-        int numdefaults = min(int(NUMDEFAULTSLOTS), slots.length());
+        int numdefaults = min(static_cast<int>(NUMDEFAULTSLOTS), slots.length());
         for(int i = 0; i < numdefaults; ++i)
         {
             slots[i]->variants->index = compactedvslots++;
@@ -2448,7 +2448,7 @@ const struct slottex
 
 int findslottex(const char *name)
 {
-    for(int i = 0; i < int(sizeof(slottexs)/sizeof(slottex)); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(slottexs)/sizeof(slottex)); ++i)
     {
         if(!strcmp(slottexs[i].name, name)) return slottexs[i].id;
     }
@@ -2610,7 +2610,7 @@ static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
         READ_WRITE_RGB_TEX(c, g,
             for(int k = 0; k < 3; ++k)
             {
-                dst[k] = clamp(int(dst[k]) + int(src[0]*glowcolor[k]), 0, 255);
+                dst[k] = clamp(static_cast<int>(dst[k]) + static_cast<int>(src[0]*glowcolor[k]), 0, 255);
             }
         );
     }
@@ -2619,7 +2619,7 @@ static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
         READ_WRITE_RGB_TEX(c, g,
             for(int k = 0; k < 3; ++k)
             {
-                dst[k] = clamp(int(dst[k]) + int(src[k]*glowcolor[k]), 0, 255);
+                dst[k] = clamp(static_cast<int>(dst[k]) + static_cast<int>(src[k]*glowcolor[k]), 0, 255);
             }
         );
     }
@@ -2636,7 +2636,7 @@ static void mergespec(ImageData &c, ImageData &s)
     else
     {
         READ_WRITE_RGBA_TEX(c, s,
-            dst[3] = (int(src[0]) + int(src[1]) + int(src[2]))/3;
+            dst[3] = (static_cast<int>(src[0]) + static_cast<int>(src[1]) + static_cast<int>(src[2]))/3;
         );
     }
 }
@@ -2667,7 +2667,7 @@ static void mergealpha(ImageData &c, ImageData &s)
 static void collapsespec(ImageData &s)
 {
     ImageData d(s.w, s.h, 1);
-    if(s.bpp >= 3) READ_WRITE_TEX(d, s, { dst[0] = (int(src[0]) + int(src[1]) + int(src[2]))/3; });
+    if(s.bpp >= 3) READ_WRITE_TEX(d, s, { dst[0] = (static_cast<int>(src[0]) + static_cast<int>(src[1]) + static_cast<int>(src[2]))/3; });
     else READ_WRITE_TEX(d, s, { dst[0] = src[0]; });
     s.replace(d);
 }
@@ -3053,7 +3053,7 @@ void reloadtextures()
     int reloaded = 0;
     ENUMERATE(textures, Texture, tex,
     {
-        loadprogress = float(++reloaded)/textures.numelems;
+        loadprogress = static_cast<float>(++reloaded)/textures.numelems;
         reloadtexture(tex);
     });
     loadprogress = 0;
