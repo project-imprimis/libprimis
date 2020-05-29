@@ -1409,116 +1409,6 @@ void texnormal(ImageData &s, int emphasis)
     s.replace(d);
 }
 
-template<int n, int bpp, bool normals>
-static void blurtexture(int w, int h, uchar *dst, const uchar *src, int margin)
-{
-    static const int weights3x3[9] =
-    {
-        0x10, 0x20, 0x10,
-        0x20, 0x40, 0x20,
-        0x10, 0x20, 0x10
-    };
-    static const int weights5x5[25] =
-    {
-        0x05, 0x05, 0x09, 0x05, 0x05,
-        0x05, 0x0A, 0x14, 0x0A, 0x05,
-        0x09, 0x14, 0x28, 0x14, 0x09,
-        0x05, 0x0A, 0x14, 0x0A, 0x05,
-        0x05, 0x05, 0x09, 0x05, 0x05
-    };
-    const int *mat = n > 1 ? weights5x5 : weights3x3;
-    int mstride = 2*n + 1,
-        mstartoffset = n*(mstride + 1),
-        stride = bpp*w,
-        startoffset = n*bpp,
-        nextoffset1 = stride + mstride*bpp,
-        nextoffset2 = stride - mstride*bpp;
-    src += margin*(stride + bpp);
-    for(int y = margin; y < h-margin; y++)
-    {
-        for(int x = margin; x < w-margin; x++)
-        {
-            int dr = 0, dg = 0, db = 0;
-            const uchar *p = src - startoffset;
-            const int *m = mat + mstartoffset;
-            for(int t = y; t >= y-n; t--, p -= nextoffset1, m -= mstride)
-            {
-                if(t < 0) p += stride;
-                int a = 0;
-                if(n > 1) { a += m[-2]; if(x >= 2) { dr += p[0] * a; dg += p[1] * a; db += p[2] * a; a = 0; } p += bpp; }
-                a += m[-1]; if(x >= 1) { dr += p[0] * a; dg += p[1] * a; db += p[2] * a; a = 0; } p += bpp;
-                int cr = p[0], cg = p[1], cb = p[2]; a += m[0]; dr += cr * a; dg += cg * a; db += cb * a; p += bpp;
-                if(x+1 < w) { cr = p[0]; cg = p[1]; cb = p[2]; } dr += cr * m[1]; dg += cg * m[1]; db += cb * m[1]; p += bpp;
-                if(n > 1) { if(x+2 < w) { cr = p[0]; cg = p[1]; cb = p[2]; } dr += cr * m[2]; dg += cg * m[2]; db += cb * m[2]; p += bpp; }
-            }
-            p = src - startoffset + stride;
-            m = mat + mstartoffset + mstride;
-            for(int t = y+1; t <= y+n; t++, p += nextoffset2, m += mstride)
-            {
-                if(t >= h) p -= stride;
-                int a = 0;
-                if(n > 1) { a += m[-2]; if(x >= 2) { dr += p[0] * a; dg += p[1] * a; db += p[2] * a; a = 0; } p += bpp; }
-                a += m[-1]; if(x >= 1) { dr += p[0] * a; dg += p[1] * a; db += p[2] * a; a = 0; } p += bpp;
-                int cr = p[0], cg = p[1], cb = p[2]; a += m[0]; dr += cr * a; dg += cg * a; db += cb * a; p += bpp;
-                if(x+1 < w) { cr = p[0]; cg = p[1]; cb = p[2]; } dr += cr * m[1]; dg += cg * m[1]; db += cb * m[1]; p += bpp;
-                if(n > 1) { if(x+2 < w) { cr = p[0]; cg = p[1]; cb = p[2]; } dr += cr * m[2]; dg += cg * m[2]; db += cb * m[2]; p += bpp; }
-            }
-            if(normals)
-            {
-                vec v(dr-0x7F80, dg-0x7F80, db-0x7F80);
-                float mag = 127.5f/v.magnitude();
-                dst[0] = static_cast<uchar>(v.x*mag + 127.5f);
-                dst[1] = static_cast<uchar>(v.y*mag + 127.5f);
-                dst[2] = static_cast<uchar>(v.z*mag + 127.5f);
-            }
-            else
-            {
-                dst[0] = dr>>8;
-                dst[1] = dg>>8;
-                dst[2] = db>>8;
-            }
-            if(bpp > 3) dst[3] = src[3];
-            dst += bpp;
-            src += bpp;
-        }
-        src += 2*margin*bpp;
-    }
-}
-
-void blurtexture(int n, int bpp, int w, int h, uchar *dst, const uchar *src, int margin)
-{
-    switch((clamp(n, 1, 2)<<4) | bpp)
-    {
-        case 0x13: blurtexture<1, 3, false>(w, h, dst, src, margin); break;
-        case 0x23: blurtexture<2, 3, false>(w, h, dst, src, margin); break;
-        case 0x14: blurtexture<1, 4, false>(w, h, dst, src, margin); break;
-        case 0x24: blurtexture<2, 4, false>(w, h, dst, src, margin); break;
-    }
-}
-
-void blurnormals(int n, int w, int h, bvec *dst, const bvec *src, int margin)
-{
-    switch(clamp(n, 1, 2))
-    {
-        case 1: blurtexture<1, 3, true>(w, h, dst->v, src->v, margin); break;
-        case 2: blurtexture<2, 3, true>(w, h, dst->v, src->v, margin); break;
-    }
-}
-
-void texblur(ImageData &s, int n, int r)
-{
-    if(s.bpp < 3)
-    {
-        return;
-    }
-    for(int i = 0; i < r; ++i)
-    {
-        ImageData d(s.w, s.h, s.bpp);
-        blurtexture(n, s.bpp, s.w, s.h, d.data, s.data);
-        s.replace(d);
-    }
-}
-
 bool canloadsurface(const char *name)
 {
     stream *f = openfile(name, "rb");
@@ -1649,11 +1539,6 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         else if(matchstring(cmd, len, "crop")) texcrop(d, atoi(arg[0]), atoi(arg[1]), *arg[2] ? atoi(arg[2]) : -1, *arg[3] ? atoi(arg[3]) : -1);
         else if(matchstring(cmd, len, "mix")) texmix(d, *arg[0] ? atoi(arg[0]) : -1, *arg[1] ? atoi(arg[1]) : -1, *arg[2] ? atoi(arg[2]) : -1, *arg[3] ? atoi(arg[3]) : -1);
         else if(matchstring(cmd, len, "grey")) texgrey(d);
-        else if(matchstring(cmd, len, "blur"))
-        {
-            int emphasis = atoi(arg[0]), repeat = atoi(arg[1]);
-            texblur(d, emphasis > 0 ? clamp(emphasis, 1, 2) : 1, repeat > 0 ? repeat : 1);
-        }
         else if(matchstring(cmd, len, "premul")) texpremul(d);
         else if(matchstring(cmd, len, "agrad")) texagrad(d, atof(arg[0]), atof(arg[1]), atof(arg[2]), atof(arg[3]));
         else if(matchstring(cmd, len, "blend"))
