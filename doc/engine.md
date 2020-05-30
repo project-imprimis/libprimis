@@ -2785,6 +2785,228 @@ transparent using the transparent surface's topside normal map, providing the
 impression that the imperfections in the material distorted the light coming
 through it.
 
+## 5.5 Antialiasing
+---
+
+Antialiasing is a means of overcoming particular artifacts common to nearly
+every type of raster graphics.
+
+Raster graphics, by far the most common type of display rendering (used on
+essentially all computers, TVs, and handheld electronics) rely on a grid
+("raster") on which color values can be placed. As this grid is (usually)
+square-sided, attempts to render lines which are not parallel to this grid
+become problematic, as there must be a skip pattern:
+
+```
+line of slope -1/10:
+
+%%%%%%%%%%
+          %%%%%%%%%%
+                    %%%%%%%%%%
+                              %%%%%%%%%%
+
+
+line of slope -1/4:
+
+%%%%
+    %%%%
+        %%%%
+            %%%%
+                %%%%
+                    %%%%
+                        %%%%
+                            %%%%
+                                %%%%
+                                    %%%%
+
+straight line:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
+
+As we can see, the slanted lines placed onto the raster grid of text
+column are not particularly nice, and there's jumps every so often to
+approximate perfect angled lines.
+
+The best thing we can do, then, is to create hints that blend together these
+discontinuities as nicely as we can manage with the grid, with less intense
+color in the surrounding highlights:
+
+```
+line of slope -1/10:
+
+%%%%%%%%%%**
+        **%%%%%%%%%%**
+                  **%%%%%%%%%%**
+                            **%%%%%%%%%%
+
+
+line of slope -1/4:
+
+%%%%*
+   *%%%%*
+       *%%%%
+           *%%%%*
+               *%%%%*
+                   *%%%%*
+                       *%%%%*
+                           *%%%%*
+                               *%%%%*
+                                   *%%%%
+
+straight line:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+```
+
+The examples above, of course, are very crude, but smudging the fringes of edges
+like this is essentially the whole idea of antialiasing. Antialiasing, however,
+requires smoothing an area of many pixels (about two million a frame for a 1080p
+display) and therefore some serious hacks are needed to pump pixels very
+quickly.
+
+### 5.5.1 Supersample Antialiasing (SSAA)
+---
+
+**SSAA is not implemented in Imprimis. It is described here as a useful basis
+for the more advanced antialiasing techniques.**
+
+Supersample antialiasing is perhaps the simplest antialiasing method to
+understand. SSAA simply renders everything at a higher resolution, and then is
+able to average down this high-resolution output to the lower-res display. This
+method is "perfect" in that no parts of the scene get missed by SSAA pass
+(of course, everything gets scaled up in view), but it is very expensive,
+especially for a deferred renderer which buffers the output scene in many images
+that get composited together; to use SSAA 4x on a 1080p screen is as expensive
+as rendering 4k native.
+
+For this reason, the "naive" SSAA method is very seldom used for realtime
+graphics applications because it is simply too slow for the antialiasing it is
+capable of doing. Generally, cranking other methods of AA up to the same
+performance cost as a given SSAA level generate much smoother results, as they
+can bring more antialiasing power to bear on the areas of the scene that are
+actually jaggy.
+
+In particular, SSAA implementations tend to be very intensive on the memory
+subsystem of graphics cards: working with huge buffers at ~4k resolution
+requires a lot of shuttling of graphics information between the cache and VRAM
+of a graphics card.
+
+### 5.5.2 Multisample Antialiasing (MSAA)
+---
+
+Multisample antialiasing is a significantly more useful AA technique than SSAA,
+but it suffers from many of the same issues that SSAA does. MSAA works by
+smoothing only the boundaries of *fragment shaders*, i.e. the edges of geometry
+in the level. In doing so, it can skip past smoothing texture faces which are
+usually not so abrupt as those created by geometry discontinuities
+(particularly those boundaries where one face ends and some other geometry is
+farther away, such as the outline of a foreground chair against a back wall).
+
+This is still quite expensive however, especially in a deferred renderer which
+presents many different images which have yet to be composited to a final output
+image. This then dictates that MSAA implementations have to do a MSAA pass over
+every buffer, of which there are several, in order to properly antialias the
+scene; this then makes MSAA several times slower in a game like Imprimis than
+a forward-rendered game like Quake III or Cube 2.
+
+Like SSAA, MSAA tends to have large memory bandwidth demands relative to
+screenspace antialiasing methods.
+
+For this reason, while MSAA is included in Imprimis, it rapidly becomes
+prohibitively expensive at high levels. For high performance antialiasing in a
+deferred engine like Imprimis, a different technique is needed: screenspace
+antialiasing.
+
+### 5.5.3 Fast Approximate Antialiasing (FXAA)
+---
+
+Fast approximate antialiasing is, as its helpfully honest name implies, a way
+to quickly approximate nicer forms of antialiasing such as MSAA. To do this,
+FXAA discards the edge detection by individual fragment shader on the back end
+that MSAA uses and instead opts to sample only the (nearly) final output image.
+
+FXAA uses a shader-powered filter instead to calculate what parts of the scene
+are the most "sharp" and then uses a blur filter to smooth them out. This works
+very well indeed to smooth out the sharp parts of the output image. However, as
+FXAA has no knowledge of the background geometry which created the scene, it has
+to guess at what parts are problematically sharp. This causes the FXAA method to
+tend to oversmooth large parts of the scene that were supposed to remain sharp,
+leading to FXAA be considered a "grease filter" shader that blots out sharpness
+from the scene at large.
+
+Unlike SSAA/MSAA however, FXAA is quite cheap with respect to memory bandwidth,
+instead utilizing the math units in a GPU more heavily to do its calculations.
+Usually, this ends up being cheaper than MSAA/SSAA, especially for a deferred
+engine like Imprimis, but it is worth noting that screenspace methods like FXAA
+do utilize a different part of the GPU heavily than MSAA/SSAA.
+
+### 5.5.4 Temporal Quincunx Antialiasing (TQAA)
+---
+
+A rather clever form of screenspace antialiasing, TQAA borrows the information
+from the previous frame to use as data to antialias the scene much as SSAA does,
+but because it borrows information that already had its rendering costs sunk, it
+is much faster than a comparable SSAA 2x implementation.
+
+The "quincunx" in TQAA, refering to a cross shape, is appropriate in that the
+previous frame is overlaid offset by half a pixel in each dimension:
+
+```
+Here the recycled frame "y" is laid offset to the current frame "x":
+
+   x   x   x   x   x
+
+     y   y   y   y   y
+
+   x   x   x   x   x
+
+     y   y   y   y   y
+
+   x   x   x   x   x
+
+     y   y   y   y   y
+```
+
+As one can see, the "y" pixels from the recycled frame have four nearby "x"
+neighbors from the current frame, creating a quincunx shape like those formed
+by the five pip side on a six-sided die.
+
+Not all is perfect with TQAA, however, much as any other hasty approximation is.
+TQAA in particular is incapable of dealing with fast-moving and shape changing
+objects like players or projectiles, as they move fast enough relative to the
+frame rate that the TQAA method has trouble using stale information for
+antialiasing with. However, in general, TQAA resolves nicely antialiasing issues
+with static, predictable geometry, as levels tend to be mostly made up of.
+
+TQAA, then, has to calculate what parts of an old frame it can map to a new one,
+eating up some shader resources in the process. In general, however, TQAA is
+quite cheap and decently effective for all but the most picky of eyes.
+
+### 5.5.5 Subpixel Morphological Antialiasing (SMAA)
+---
+
+SMAA is the "crown jewel" antialiasing method included in Imprimis' parent
+engine, Tesseract, and it is generally the most effective method overall for
+antialiasing; it uses TQAA and MSAA in addition to its own method at higher
+levels for additional scalibility.
+
+SMAA works by fitting parts of the screenspace area to particular common edge
+types ("morphologies"): (plain straight edges, curves, etc.) to treat
+specifically. This is not quite as simple as FXAA, as FXAA simply looks for big
+changes to smooth, and in return avoids the "grease filter" effect over all
+high contrast geometry that FXAA is known to exhibit. Doing so requires some
+shader power, like other screenspace antialiasing methods. In general, however,
+SMAA, particularly the base level without additional AA methods included, is
+superior to and roughly as expensive as FXAA.
+
+Higher levels of SMAA utilize additional pixels stolen from TQAA and MSAA 2x in
+order to aid the filterer in sorting out interesting areas of the scene.
+
+Generally, SMAA is the best general-purpose antialiasing method available in
+Imprimis and is generally recommended as the default; methods like high MSAA
+values are only particularly useful for promotional purposes (e.g. screenshots).
+
 # 6 Actors
 ---
 
