@@ -747,7 +747,6 @@ VAR(hwtexunits, 1, 0, 0);
 VAR(hwvtexunits, 1, 0, 0);
 VARFP(maxtexsize, 0, 0, 1<<12, initwarning("texture quality", Init_Load));
 VARFP(reducefilter, 0, 1, 1, initwarning("texture quality", Init_Load));
-VARFP(texreduce, 0, 0, 12, initwarning("texture quality", Init_Load));
 VARFP(texcompress, 0, 1536, 1<<12, initwarning("texture quality", Init_Load));
 VARFP(texcompressquality, -1, -1, 1, setuptexcompress());
 VARF(trilinear, 0, 1, 1, initwarning("texture filtering", Init_Load));
@@ -815,11 +814,6 @@ void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int
     {
         w = max(w/compress, 1);
         h = max(h/compress, 1);
-    }
-    if(canreduce && texreduce)
-    {
-        w = max(w>>texreduce, 1);
-        h = max(h>>texreduce, 1);
     }
     w = min(w, sizelimit);
     h = min(h, sizelimit);
@@ -1254,22 +1248,6 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     {
         uchar *data = s.data;
         int levels = s.levels, level = 0;
-        if(canreduce && texreduce)
-        {
-            for(int i = 0; i < (min(texreduce, s.levels-1)); ++i)
-            {
-                data += s.calclevelsize(level++);
-                levels--;
-                if(t->w > 1)
-                {
-                    t->w /= 2;
-                }
-                if(t->h > 1)
-                {
-                    t->h /= 2;
-                }
-            }
-        }
         int sizelimit = mipit && maxtexsize ? min(maxtexsize, hwtexsize) : hwtexsize;
         while(t->w > sizelimit || t->h > sizelimit)
         {
