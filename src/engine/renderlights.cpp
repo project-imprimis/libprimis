@@ -67,18 +67,8 @@ void setupbloom(int w, int h)
         if(!bloomfbo[5]) glGenFramebuffers_(1, &bloomfbo[5]);
         createtexture(bloomtex[5], bloomw, bloomh, NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
     }
-
-    if(hwvtexunits < 4)
-    {
-        glGenBuffers_(1, &bloompbo);
-        glBindBuffer_(GL_PIXEL_PACK_BUFFER, bloompbo);
-        glBufferData_(GL_PIXEL_PACK_BUFFER, 4*(sizeof(GLfloat)), NULL, GL_DYNAMIC_COPY);
-        glBindBuffer_(GL_PIXEL_PACK_BUFFER, 0);
-    }
-
     static const float grayf[12] = { 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f };
     createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, (const void *)grayf, 3, 1, GL_R16F);
-
     for(int i = 0; i < (5 + (bloomformat != GL_RGB ? 1 : 0)); ++i)
     {
         glBindFramebuffer_(GL_FRAMEBUFFER, bloomfbo[i]);

@@ -5,7 +5,6 @@
 bool hasS3TC = false,
      hasFXT1 = false,
      hasLATC = false,
-     hasAF = false,
      hasFBMSBS = false,
      hasTQ = false,
      hasDBT = false,
@@ -489,26 +488,38 @@ void gl_checkextensions()
         glslversion = glslmajorversion*100 + glslminorversion;
     }
     if(glslversion < 400) fatal("GLSL 4.00 or greater is required!");
-
     parseglexts();
-
-    GLint texsize = 0, texunits = 0, vtexunits = 0, cubetexsize = 0, drawbufs = 0;
+    GLint texsize = 0,
+          texunits = 0,
+          vtexunits = 0,
+          cubetexsize = 0,
+          drawbufs = 0;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &texsize);
     hwtexsize = texsize;
-    if(hwtexsize < 2048)
+    if(hwtexsize < 4096)
+    {
         fatal("Large texture support is required!");
+    }
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texunits);
     hwtexunits = texunits;
     if(hwtexunits < 16)
+    {
         fatal("Hardware does not support at least 16 texture units.");
+    }
     glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &vtexunits);
     hwvtexunits = vtexunits;
-
+    if(hwvtexunits < 16)
+    {
+        fatal("Hardware does not support at least 16 vertex texture units.");
+    }
     glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &cubetexsize);
     hwcubetexsize = cubetexsize;
     glGetIntegerv(GL_MAX_DRAW_BUFFERS, &drawbufs);
     maxdrawbufs = drawbufs;
-    if(maxdrawbufs < 4) fatal("Hardware does not support at least 4 draw buffers.");
+    if(maxdrawbufs < 4)
+    {
+        fatal("Hardware does not support at least 4 draw buffers.");
+    }
     //OpenGL 3.0
     glBindVertexArray_ =    (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
     glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
@@ -621,8 +632,11 @@ void gl_checkextensions()
        GLint val = 0;
        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val);
        hwmaxaniso = val;
-       hasAF = true;
        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_filter_anisotropic extension.");
+    }
+    else
+    {
+        fatal("Anisotropic filtering support is required!");
     }
     if(hasext("GL_EXT_depth_bounds_test"))
     {

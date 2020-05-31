@@ -246,10 +246,9 @@ void renderbackgroundview(
           logo_x = 0.5f*(win_w - logo_w),
           logo_y = 0.5f*(win_h*0.5f - logo_h);
 
-    settexture(
-        (maxtexsize ? min(maxtexsize, hwtexsize) : hwtexsize) >= 1024 && (hudw > 1280 || hudh > 800)
-            ? "<premul>media/interface/logo_1024.png" //1024x wide logo
-            : "<premul>media/interface/logo.png", //512x wide logo for small screens
+    settexture( (maxtexsize >= 1024 || maxtexsize == 0) && (hudw > 1280 || hudh > 800)
+              ? "<premul>media/interface/logo_1024.png" //1024x wide logo
+              : "<premul>media/interface/logo.png", //512x wide logo for small screens
         3);
     bgquad(logo_x, logo_y, logo_w, logo_h);
 

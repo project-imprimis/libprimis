@@ -95,7 +95,7 @@ extern void reloadtextures();
 extern void cleanuptextures();
 
 // rendergl
-extern bool hasS3TC, hasFXT1, hasLATC, hasAF, hasFBMSBS, hasTQ, hasDBT, hasDBGO, hasES3, hasCI;
+extern bool hasS3TC, hasFXT1, hasLATC, hasFBMSBS, hasTQ, hasDBT, hasDBGO, hasES3, hasCI;
 extern int glversion, glslversion, glcompat;
 extern int maxdrawbufs, maxdualdrawbufs;
 
