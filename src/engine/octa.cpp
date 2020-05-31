@@ -1160,7 +1160,6 @@ static inline int clipfacevec(const ivec2 &o, const ivec2 &dir, int cx, int cy, 
     r += clipfacevecx(o, dir, cx, cy+size, size, rvecs[r]);
     r += clipfacevecy(o, dir, cx, cy, size, rvecs[r]);
     r += clipfacevecy(o, dir, cx+size, cy, size, rvecs[r]);
-    ASSERT(r <= 2);
     return r;
 }
 
@@ -1207,7 +1206,6 @@ static inline int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int siz
             rvecs[r++] = corner[i];
         }
     }
-    ASSERT(r <= 8);
     return r;
 }
 

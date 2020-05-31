@@ -42,7 +42,6 @@ void throttle()
     {
         return;
     }
-    ASSERT(ENET_PEER_PACKET_THROTTLE_SCALE==32);
     enet_peer_throttle_configure(curpeer, throttleinterval*1000, throttleaccel, throttledecel);
 }
 

@@ -336,7 +336,6 @@ struct editor
     bool region(int &sx, int &sy, int &ex, int &ey)
     {
         int n = lines.length();
-        ASSERT(n != 0);
         if(cy < 0)
         {
             cy = 0;
@@ -400,7 +399,6 @@ struct editor
     editline &currentline()
     {
         int n = lines.length();
-        ASSERT(n != 0);
         if(cy < 0)
         {
             cy = 0;

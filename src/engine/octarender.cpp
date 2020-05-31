@@ -1578,8 +1578,6 @@ static octaentities *entstack[32];
 
 void setva(cube &c, const ivec &co, int size, int csi)
 {
-    ASSERT(size <= 0x1000);
-
     int vamergeoffset[MAXMERGELEVEL+1];
     for(int i = 0; i < MAXMERGELEVEL+1; ++i)
     {
