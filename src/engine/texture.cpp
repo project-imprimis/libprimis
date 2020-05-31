@@ -2044,14 +2044,14 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
             if(sp.name != dp.name || memcmp(sp.val, dp.val, sizeof(sp.val))) return false;
         }
     }
-    if(diff & (1<<VSLOT_SCALE) && dst.scale != src.scale) return false;
-    if(diff & (1<<VSLOT_ROTATION) && dst.rotation != src.rotation) return false;
-    if(diff & (1<<VSLOT_ANGLE) && dst.angle != src.angle) return false;
-    if(diff & (1<<VSLOT_OFFSET) && dst.offset != src.offset) return false;
-    if(diff & (1<<VSLOT_SCROLL) && dst.scroll != src.scroll) return false;
-    if(diff & (1<<VSLOT_ALPHA) && (dst.alphafront != src.alphafront || dst.alphaback != src.alphaback)) return false;
-    if(diff & (1<<VSLOT_COLOR) && dst.colorscale != src.colorscale) return false;
-    if(diff & (1<<VSLOT_REFRACT) && (dst.refractscale != src.refractscale || dst.refractcolor != src.refractcolor)) return false;
+    if(diff & (1<<VSLOT_SCALE)    &&  dst.scale        != src.scale)    return false;
+    if(diff & (1<<VSLOT_ROTATION) &&  dst.rotation     != src.rotation) return false;
+    if(diff & (1<<VSLOT_ANGLE)    &&  dst.angle        != src.angle)    return false;
+    if(diff & (1<<VSLOT_OFFSET)   &&  dst.offset       != src.offset)   return false;
+    if(diff & (1<<VSLOT_SCROLL)   &&  dst.scroll       != src.scroll)   return false;
+    if(diff & (1<<VSLOT_ALPHA)    && (dst.alphafront   != src.alphafront || dst.alphaback != src.alphaback)) return false;
+    if(diff & (1<<VSLOT_COLOR)    &&  dst.colorscale   != src.colorscale) return false;
+    if(diff & (1<<VSLOT_REFRACT)  && (dst.refractscale != src.refractscale || dst.refractcolor != src.refractcolor)) return false;
     return true;
 }
 

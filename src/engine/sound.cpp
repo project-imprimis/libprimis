@@ -85,13 +85,13 @@ struct soundchannel
     {
         inuse = false;
         clearloc();
-        slot = NULL;
-        ent = NULL;
+        slot   = NULL;
+        ent    = NULL;
         radius = 0;
         volume = -1;
-        pan = -1;
-        flags = 0;
-        dirty = false;
+        pan    = -1;
+        flags  = 0;
+        dirty  = false;
     }
 };
 vector<soundchannel> channels;

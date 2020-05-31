@@ -258,8 +258,8 @@ void renderbackgroundview(
     {
         int tw = text_width(caption);
         float tsz = 0.04f*min(win_w, win_h)/FONTH,
-              tx = 0.5f*(win_w - tw*tsz),
-              ty = win_h - 0.075f*1.5f*min(win_w, win_h) - FONTH*tsz;
+              tx  = 0.5f*(win_w - tw*tsz),
+              ty  = win_h - 0.075f*1.5f*min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
         draw_text(caption, 0, 0);
         pophudmatrix();
@@ -267,14 +267,14 @@ void renderbackgroundview(
     if (mapshot || mapname)
     {
         float infowidth = 14*FONTH,
-              sz = 0.35f*min(win_w, win_h),
+              sz  = 0.35f*min(win_w, win_h),
               msz = (0.85f*min(win_w, win_h) - sz)/(infowidth + FONTH),
-              x = 0.5f*win_w,
-              y = logo_y+logo_h - sz/15,
-              mx = 0,
-              my = 0,
-              mw = 0,
-              mh = 0;
+              x   = 0.5f*win_w,
+              y   = logo_y+logo_h - sz/15,
+              mx  = 0,
+              my  = 0,
+              mw  = 0,
+              mh  = 0;
         // Prepare text area for map info
         if (mapinfo)
         {
@@ -297,9 +297,9 @@ void renderbackgroundview(
         // Map name was provided
         if (mapname)
         {
-            float tw = text_widthf(mapname),
+            float tw  = text_widthf(mapname),
                   tsz = sz/(8*FONTH),
-                  tx = max(0.5f * (mw*msz - tw * tsz), 0.0f);
+                  tx  = max(0.5f * (mw*msz - tw * tsz), 0.0f);
             pushhudtranslate(x + mx + tx, y, tsz);
             draw_text(mapname, 0, 0);
             pophudmatrix();
@@ -398,18 +398,18 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    float bw = fw * (512 - 2*8)/512.0f,
-          bh = fh * 20/32.0f,
-          bx = fx + fw * 8/512.0f,
-          by = fy + fh * 6/32.0f,
+    float bw  = fw * (512 - 2*8)/512.0f,
+          bh  = fh * 20/32.0f,
+          bx  = fx + fw * 8/512.0f,
+          by  = fy + fh * 6/32.0f,
           su1 = 0/32.0f,
           su2 = 8/32.0f,
-          sw = fw * 8/512.0f,
+          sw  = fw * 8/512.0f,
           eu1 = 24/32.0f,
           eu2 = 32/32.0f,
-          ew = fw * 8/512.0f,
-          mw = bw - sw - ew,
-          ex = bx+sw + max(mw*bar, fw * 8/512.0f);
+          ew  = fw * 8/512.0f,
+          mw  = bw - sw - ew,
+          ex  = bx+sw + max(mw*bar, fw * 8/512.0f);
     if(bar > 0)
     {
         settexture("media/interface/loading_bar.png", 3);

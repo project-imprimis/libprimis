@@ -2,19 +2,19 @@
 
 #include "engine.h"
 
-bool hasS3TC = false,
-     hasFXT1 = false,
-     hasLATC = false,
+bool hasS3TC   = false,
+     hasFXT1   = false,
+     hasLATC   = false,
      hasFBMSBS = false,
-     hasTQ = false,
-     hasDBT = false,
-     hasDBGO = false,
-     hasEGPU4 = false,
-     hasES3 = false,
-     hasCI = false;
-bool mesa = false,
-     intel = false,
-     amd = false,
+     hasTQ     = false,
+     hasDBT    = false,
+     hasDBGO   = false,
+     hasEGPU4  = false,
+     hasES3    = false,
+     hasCI     = false;
+bool mesa   = false,
+     intel  = false,
+     amd    = false,
      nvidia = false;
 
 int hasstencil = 0;
@@ -597,7 +597,7 @@ void gl_checkextensions()
 
     if(hasext("GL_EXT_timer_query"))
     {
-        glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64vEXT");
+        glGetQueryObjecti64v_  =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64vEXT");
         glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64vEXT");
         hasTQ = true;
         if(dbgexts) conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
