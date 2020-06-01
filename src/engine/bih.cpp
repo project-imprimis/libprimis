@@ -744,7 +744,7 @@ static inline bool playercollidecheck(physent *d, float pdist, vec dir, vec n, v
 }
 
 template<>
-inline void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+inline void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -785,7 +785,7 @@ inline void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d
 }
 
 template<>
-inline void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+inline void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -1024,7 +1024,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
     return false;
 }
 
-inline void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &center, float radius, const matrix4x3 &orient, const ivec &bo, const ivec &br)
+inline void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {

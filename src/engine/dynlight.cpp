@@ -217,7 +217,7 @@ bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, 
     return true;
 }
 
-void dynlightreaching(const vec &target, vec &color, vec &dir, bool hud)
+void dynlightreaching(const vec &target, vec &color, vec, bool hud)
 {
     vec dyncolor(0, 0, 0);//, dyndir(0, 0, 0);
     for(int i = 0; i < dynlights.length(); i++)

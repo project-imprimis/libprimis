@@ -32,16 +32,16 @@ struct model
     virtual bool pitched() const { return true; }
     virtual bool alphatested() const { return false; }
 
-    virtual void setshader(Shader *shader) {}
-    virtual void setspec(float spec) {}
-    virtual void setgloss(int gloss) {}
-    virtual void setglow(float glow, float glowdelta, float glowpulse) {}
-    virtual void setalphatest(float alpha) {}
-    virtual void setfullbright(float fullbright) {}
-    virtual void setcullface(int cullface) {}
-    virtual void setcolor(const vec &color) {}
+    virtual void setshader(Shader *) {}
+    virtual void setspec(float) {}
+    virtual void setgloss(int) {}
+    virtual void setglow(float, float, float) {}
+    virtual void setalphatest(float) {}
+    virtual void setfullbright(float) {}
+    virtual void setcullface(int) {}
+    virtual void setcolor(const vec &) {}
 
-    virtual void genshadowmesh(vector<triangle> &tris, const matrix4x3 &orient) {}
+    virtual void genshadowmesh(vector<triangle> &, const matrix4x3 &) {}
     virtual void preloadBIH() { if(!bih) setBIH(); }
     virtual void preloadshaders() {}
     virtual void preloadmeshes() {}

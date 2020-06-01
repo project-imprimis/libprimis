@@ -90,7 +90,7 @@ void fatal(const char *fmt, ...)
     exit(EXIT_FAILURE);
 }
 
-void conoutfv(int type, const char *fmt, va_list args)
+void conoutfv(int, const char *fmt, va_list args)
 {
     logoutfv(fmt, args);
 }
@@ -560,7 +560,7 @@ bool resolverwait(const char *name, ENetAddress *address)
     return enet_address_set_host(address, name) >= 0;
 }
 
-int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &remoteaddress)
+int connectwithtimeout(ENetSocket sock, const char *, const ENetAddress &remoteaddress)
 {
     return enet_socket_connect(sock, &remoteaddress);
 }
@@ -851,7 +851,7 @@ void checkserversockets()        // reply all server info requests
     }
 }
 
-static int serverinfointercept(ENetHost *host, ENetEvent *event)
+static int serverinfointercept(ENetHost *host, ENetEvent *)
 {
     if(host->receivedDataLength < 2 || host->receivedData[0] != 0xFF || host->receivedData[1] != 0xFF || host->receivedDataLength-2 > MAXPINGDATA)
     {
@@ -1434,19 +1434,25 @@ void rundedicatedserver()
     dedicatedserver = false;
 }
 
+#ifdef STANDALONE
 bool servererror(bool dedicated, const char *desc)
 {
-#ifndef STANDALONE
     if(!dedicated)
     {
         conoutf(Console_Error, "%s", desc);
         cleanupserver();
     }
     else
-#endif
         fatal("%s", desc);
     return false;
 }
+#else
+bool servererror(bool, const char *desc)
+{
+    fatal("%s", desc);
+    return false;
+}
+#endif
 
 bool setuplistenserver(bool dedicated)
 {

@@ -559,12 +559,14 @@ struct gamestate
 
     gamestate() : maxhealth(1), aitype(AI_None), skill(0) {}
 
-    bool canpickup(int type)
+    //function neutered because no ents ingame atm
+    bool canpickup(int)
     {
-        return VALID_ITEM(type);
+        return false;
     }
 
-    void pickup(int type)
+    //function neutered because no ents ingame atm
+    void pickup(int)
     {
     }
 
@@ -757,24 +759,24 @@ namespace game
         virtual ~clientmode() {}
 
         virtual void preload() {}
-        virtual float clipconsole(float w, float h) { return 0; }
-        virtual void drawhud(gameent *d, int w, int h) {}
+        virtual float clipconsole(float, float) { return 0; }
+        virtual void drawhud(gameent, int, int) {}
         virtual void rendergame() {}
-        virtual void respawned(gameent *d) {}
+        virtual void respawned(gameent *) {}
         virtual void setup() {}
-        virtual void checkitems(gameent *d) {}
-        virtual int respawnwait(gameent *d) { return 0; }
+        virtual void checkitems(gameent *) {}
+        virtual int respawnwait(gameent *) { return 0; }
         virtual void pickspawn(gameent *d) { findplayerspawn(d, -1, modecheck(gamemode, Mode_Team) ? d->team : 0); }
-        virtual void senditems(packetbuf &p) {}
-        virtual void removeplayer(gameent *d) {}
+        virtual void senditems(packetbuf &) {}
+        virtual void removeplayer(gameent *) {}
         virtual void gameover() {}
         virtual bool hidefrags() { return false; }
-        virtual int getteamscore(int team) { return 0; }
-        virtual void getteamscores(vector<teamscore> &scores) {}
-        virtual void aifind(gameent *d, ai::aistate &b, vector<ai::interest> &interests) {}
-        virtual bool aicheck(gameent *d, ai::aistate &b) { return false; }
-        virtual bool aidefend(gameent *d, ai::aistate &b) { return false; }
-        virtual bool aipursue(gameent *d, ai::aistate &b) { return false; }
+        virtual int getteamscore(int) { return 0; }
+        virtual void getteamscores(vector<teamscore> &) {}
+        virtual void aifind(gameent *, ai::aistate &, vector<ai::interest> &) {}
+        virtual bool aicheck(gameent *, ai::aistate &) { return false; }
+        virtual bool aidefend(gameent *, ai::aistate &) { return false; }
+        virtual bool aipursue(gameent *, ai::aistate &) { return false; }
     };
 
     extern clientmode *cmode;

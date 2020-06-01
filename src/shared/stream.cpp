@@ -311,7 +311,7 @@ char *path(char *s)
     return s;
 }
 
-char *path(const char *s, bool copy)
+char *path(const char *s, bool)
 {
     static string tmp;
     copystring(tmp, s);
@@ -561,11 +561,6 @@ static size_t rwopswrite(SDL_RWops *rw, const void *buf, size_t size, size_t nme
     return f->write(buf, size*nmemb)/size;
 }
 
-static int rwopsclose(SDL_RWops *rw)
-{
-    return 0;
-}
-
 SDL_RWops *stream::rwops()
 {
     SDL_RWops *rw = SDL_AllocRW();
@@ -574,7 +569,7 @@ SDL_RWops *stream::rwops()
     rw->seek = rwopsseek;
     rw->read = rwopsread;
     rw->write = rwopswrite;
-    rw->close = rwopsclose;
+    rw->close = 0;
     return rw;
 }
 #endif
@@ -641,18 +636,21 @@ struct filestream : stream
         file = fopen(name, mode);
         return file!=NULL;
     }
-
-    bool opentemp(const char *name, const char *mode)
-    {
-        if(file) return false;
-#ifdef WIN32
-        file = fopen(name, mode);
-#else
-        file = tmpfile();
-#endif
-        return file!=NULL;
-    }
-
+    #ifdef WIN32
+        bool opentemp(const char *name, const char *mode)
+        {
+            if(file) return false;
+            file = fopen(name, mode);
+            return file!=NULL;
+        }
+    #else
+        bool opentemp(const char *, const char *)
+        {
+            if(file) return false;
+            file = tmpfile();
+            return file!=NULL;
+        }
+    #endif
     void close()
     {
         if(file) { fclose(file); file = NULL; }

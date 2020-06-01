@@ -1105,7 +1105,7 @@ template<class T> struct hashset : hashbase<hashset<T>, T, T, T>
 
     static inline const T &getkey(const T &elem) { return elem; }
     static inline T &getdata(T &elem) { return elem; }
-    template<class K> static inline void setkey(T &elem, const K &key) {}
+    template<class K> static inline void setkey(T &, const K &) {}
 
     template<class V>
     T &add(const V &elem)
@@ -1123,7 +1123,7 @@ template<class T> struct hashnameset : hashbase<hashnameset<T>, T, const char *,
     template<class U> static inline const char *getkey(const U &elem) { return elem.name; }
     template<class U> static inline const char *getkey(U *elem) { return elem->name; }
     static inline T &getdata(T &elem) { return elem; }
-    template<class K> static inline void setkey(T &elem, const K &key) {}
+    template<class K> static inline void setkey(T &, const K &) {}
 
     template<class V>
     T &add(const V &elem)
@@ -1239,7 +1239,7 @@ template<> inline llong endianswap<llong>(llong n) { return endianswap64(n); }
 template<> inline double endianswap<double>(double n) { union { double t; uint i; } conv; conv.t = n; conv.i = endianswap64(conv.i); return conv.t; }
 template<class T> inline void endianswap(T *buf, size_t len) { for(T *end = &buf[len]; buf < end; buf++) *buf = endianswap(*buf); }
 template<class T> inline T endiansame(T n) { return n; }
-template<class T> inline void endiansame(T *buf, size_t len) {}
+template<class T> inline void endiansame(T, size_t) {} //has specializing symbols
 #ifdef SDL_BYTEORDER
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define LIL_ENDIAN_SWAP endiansame
@@ -1282,17 +1282,17 @@ struct stream
 #else
     typedef off_t offset;
 #endif
-
+    //see file/gz/utf8/zipstream children for more interesting forms
     virtual ~stream() {}
     virtual void close() = 0;
     virtual bool end() = 0;
     virtual offset tell() { return -1; }
     virtual offset rawtell() { return tell(); }
-    virtual bool seek(offset pos, int whence = SEEK_SET) { return false; }
+    virtual bool seek(offset, int) { return false; }
     virtual offset size();
     virtual offset rawsize() { return size(); }
-    virtual size_t read(void *buf, size_t len) { return 0; }
-    virtual size_t write(const void *buf, size_t len) { return 0; }
+    virtual size_t read(void *, size_t) { return 0; }
+    virtual size_t write(const void *, size_t) { return 0; }
     virtual bool flush() { return true; }
     virtual int getchar() { uchar c; return read(&c, 1) == 1 ? c : -1; }
     virtual bool putchar(int n) { uchar c = n; return write(&c, 1) == 1; }

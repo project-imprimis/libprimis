@@ -652,7 +652,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 
 extern int filltjoints;
 
-static Uint32 calclighttimer(Uint32 interval, void *param)
+static Uint32 calclighttimer(Uint32 interval, void *)
 {
     check_calclight_progress = true;
     return interval;
@@ -718,7 +718,7 @@ void initlights()
     loaddeferredlightshaders();
 }
 
-void lightreaching(const vec &target, vec &color, vec &dir, bool fast, extentity *t, float minambient)
+void lightreaching(const vec &target, vec &color, vec &dir, bool, extentity *t, float minambient)
 {
     if(fullbright && editmode)
     {

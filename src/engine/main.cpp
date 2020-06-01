@@ -1091,7 +1091,7 @@ void checkinput()
     }
 }
 
-void swapbuffers(bool overlay)
+void swapbuffers(bool)
 {
     gle::disable();
     SDL_GL_SwapWindow(screen);
