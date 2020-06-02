@@ -189,12 +189,14 @@ struct sortkey
      : tex(tex), orient(orient), layer(layer), alpha(alpha)
     {}
 
-    bool operator==(const sortkey &o) const { return tex==o.tex && orient==o.orient && alpha==o.alpha; }
+    bool operator==(const sortkey &o) const { return tex==o.tex && orient==o.orient && layer==o.layer && alpha==o.alpha; }
 
     static inline bool sort(const sortkey &x, const sortkey &y)
     {
         if(x.alpha < y.alpha) return true;
         if(x.alpha > y.alpha) return false;
+        if(x.layer < y.layer) return true;
+        if(x.layer > y.layer) return false;
         if(x.tex == y.tex)
         {
             if(x.orient < y.orient) return true;
@@ -352,7 +354,7 @@ struct vacollect : verthash
         for(int i = 0; i < texs.length(); i++)
         {
             const sortkey &k = texs[i];
-            if(k.alpha != Alpha_None) continue;
+            if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None) continue;
             const sortval &t = indices[k];
             if(t.tris.empty()) continue;
             decalkey tkey(key);
@@ -545,6 +547,7 @@ struct vacollect : verthash
                 elementset &e = va->texelems[i];
                 e.texture = k.tex;
                 e.orient = k.orient;
+                e.layer = k.layer;
                 ushort *startbuf = curbuf;
                 e.minvert = USHRT_MAX;
                 e.maxvert = 0;
