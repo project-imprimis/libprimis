@@ -657,7 +657,6 @@ struct vacollect : verthash
 } vc;
 
 int recalcprogress = 0;
-#define PROGRESS(s)     if((recalcprogress++&0xFFF)==0) renderprogress(recalcprogress/(float)allocnodes, s);
 
 vector<tjoint> tjoints;
 
@@ -1157,7 +1156,6 @@ void gencubeedges(cube &c, const ivec &co, int size)
 
 void gencubeedges(cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
 {
-    PROGRESS("fixing t-joints...");
     neighbourstack[++neighbourdepth] = c;
     for(int i = 0; i < 8; ++i)
     {
@@ -1651,7 +1649,6 @@ VARF(vacubesize, 32, 128, 0x1000, allchanged());
 
 int updateva(cube *c, const ivec &co, int size, int csi)
 {
-    PROGRESS("recalculating geometry...");
     int ccount = 0, cmergemax = vamergemax, chasmerges = vahasmerges;
     neighbourstack[++neighbourdepth] = c;
     for(int i = 0; i < 8; ++i)                                   // counting number of semi-solid/solid children cubes
@@ -1831,7 +1828,6 @@ void allchanged(bool load)
 {
     if(mainmenu && !isconnected()) load = false;
     if(load) initlights();
-    renderprogress(0, "clearing vertex arrays...");
     clearvas(worldroot);
     resetqueries();
     resetclipplanes();

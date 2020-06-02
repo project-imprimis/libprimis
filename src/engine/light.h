@@ -62,22 +62,7 @@ extern void resetsmoothgroups();
 extern int smoothangle(int id, int angle);
 extern void findnormal(const vec &key, int smooth, const vec &surface, vec &v);
 
-#define CHECK_CALCLIGHT_PROGRESS_LOCKED(exit, show_calclight_progress, before, after) \
-    if(check_calclight_progress) \
-    { \
-        if(!calclight_canceled) \
-        { \
-            before; \
-            show_calclight_progress(); \
-            check_calclight_canceled(); \
-            after; \
-        } \
-        if(calclight_canceled) { exit; } \
-    }
-#define CHECK_CALCLIGHT_PROGRESS(exit, show_calclight_progress) CHECK_CALCLIGHT_PROGRESS_LOCKED(exit, show_calclight_progress, , )
-
 extern bool calclight_canceled;
-extern volatile bool check_calclight_progress;
 
 extern void check_calclight_canceled();
 

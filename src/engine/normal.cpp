@@ -194,16 +194,8 @@ VARR(lerpsubdivsize, 4, 4, 128);
 
 static uint normalprogress = 0;
 
-void show_addnormals_progress()
-{
-    float bar1 = static_cast<float>(normalprogress) / static_cast<float>(allocnodes);
-    renderprogress(bar1, "computing normals...");
-}
-
 void addnormals(cube &c, const ivec &o, int size)
 {
-    CHECK_CALCLIGHT_PROGRESS(return, show_addnormals_progress);
-
     if(c.children)
     {
         normalprogress++;
@@ -225,7 +217,6 @@ void addnormals(cube &c, const ivec &o, int size)
     {
         if((vis = visibletris(c, i, o, size)))
         {
-            CHECK_CALCLIGHT_PROGRESS(return, show_addnormals_progress);
             if(c.texture[i] == DEFAULT_SKY)
             {
                 continue;

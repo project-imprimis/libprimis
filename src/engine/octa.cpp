@@ -662,10 +662,6 @@ bool remip(cube &c, const ivec &co, int size)
         subdividecube(c);
         ch = c.children;
     }
-    else if((remipprogress++&0xFFF)==1)
-    {
-        renderprogress(static_cast<float>(remipprogress)/remiptotal, "remipping...");
-    }
     bool perfect = true;
     for(int i = 0; i < 8; ++i)
     {
@@ -2616,10 +2612,6 @@ static hashtable<cfkey, cfpolys> cpolys;
 
 void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = worldsize>>1)
 {
-    if((genmergeprogress++&0xFFF)==0)
-    {
-        renderprogress(static_cast<float>(genmergeprogress)/allocnodes, "merging faces...");
-    }
     neighbourstack[++neighbourdepth] = c;
     for(int i = 0; i < 8; ++i)
     {

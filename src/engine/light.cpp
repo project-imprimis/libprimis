@@ -644,8 +644,6 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
 
 static void calcsurfaces(cube *c, const ivec &co, int size)
 {
-    CHECK_CALCLIGHT_PROGRESS(return, show_calclight_progress);
-
     lightprogress++;
 
     for(int i = 0; i < 8; ++i)
@@ -682,39 +680,20 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
 
 extern int filltjoints;
 
-static Uint32 calclighttimer(Uint32 interval, void *)
-{
-    check_calclight_progress = true;
-    return interval;
-}
-
 void calclight()
 {
-    renderbackground("computing lighting... (esc to abort)");
     remip();
     clearsurfaces(worldroot);
     lightprogress = 0;
     calclight_canceled = false;
     check_calclight_progress = false;
-    SDL_TimerID timer = SDL_AddTimer(250, calclighttimer, NULL);
-    Uint32 start = SDL_GetTicks();
     calcnormals(filltjoints > 0);
     calcsurfaces(worldroot, ivec(0, 0, 0), worldsize >> 1);
     clearnormals();
-    Uint32 end = SDL_GetTicks();
-    if(timer)
-    {
-        SDL_RemoveTimer(timer);
-    }
-    renderbackground("lighting done...");
     allchanged();
     if(calclight_canceled)
     {
         conoutf("calclight aborted");
-    }
-    else
-    {
-        conoutf("computed lighting (%.1f seconds)", (end - start) / 1000.0f);
     }
 }
 
