@@ -2,15 +2,15 @@
 #define __ENGINE_H__
 
 #include "cube.h"
-#include "world.h"
+#include "world/world.h"
 
 #ifndef STANDALONE
 
-#include "octa.h"
-#include "light.h"
-#include "texture.h"
-#include "bih.h"
-#include "model.h"
+#include "world/octa.h"
+#include "world/light.h"
+#include "render/texture.h"
+#include "world/bih.h"
+#include "model/model.h"
 
 extern dynent *player;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode

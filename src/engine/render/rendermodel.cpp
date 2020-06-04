@@ -5,11 +5,11 @@ VAR(animationinterpolationtime, 0, 200, 1000);
 
 model *loadingmodel = NULL;
 
-#include "ragdoll.h"
-#include "animmodel.h"
-#include "vertmodel.h"
-#include "skelmodel.h"
-#include "hitzone.h"
+#include "model/ragdoll.h"
+#include "model/animmodel.h"
+#include "model/vertmodel.h"
+#include "model/skelmodel.h"
+#include "world/hitzone.h"
 
 static model *(__cdecl *modeltypes[MDL_NumMDLTypes])(const char *);
 
@@ -26,8 +26,8 @@ static model *__loadmodel__##modelclass(const char *filename) \
 } \
 UNUSED static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##modelclass);
 
-#include "md5.h"
-#include "obj.h"
+#include "model/md5.h"
+#include "model/obj.h"
 
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);

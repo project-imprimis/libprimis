@@ -957,7 +957,7 @@ typedef varenderer<PT_PART> quadrenderer;
 typedef varenderer<PT_TAPE> taperenderer;
 typedef varenderer<PT_TRAIL> trailrenderer;
 
-#include "explosion.h"
+#include "world/explosion.h"
 
 struct softquadrenderer : quadrenderer
 {
