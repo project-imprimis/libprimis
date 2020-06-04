@@ -4,18 +4,26 @@
 
 void validmapname(char *dst, const char *src, const char *prefix = NULL, const char *alt = "untitled", size_t maxlen = 100)
 {
-    if(prefix) while(*prefix) *dst++ = *prefix++;
+    if(prefix)
+    {
+        while(*prefix)
+        {
+            *dst++ = *prefix++;
+        }
+    }
     const char *start = dst;
     if(src)
     {
-        for(int i = 0; i < int(maxlen); ++i)
+        for(int i = 0; i < static_cast<int>(maxlen); ++i)
         {
             char c = *src++;
-            if(iscubealnum(c) || c == '_' || c == '-' || c == '/' || c == '\\') *dst++ = c;
+            if(iscubealnum(c) || c == '_' || c == '-' || c == '/' || c == '\\')
+            {
+                *dst++ = c;
+            }
             else break;
         }
     }
-
     if(dst > start)
     {
         *dst = '\0';
@@ -35,28 +43,59 @@ static void fixent(entity &e, int version)
 {
     if(version <= 0)
     {
-        if(e.type >= EngineEnt_Decal) e.type++;
+        if(e.type >= EngineEnt_Decal)
+        {
+            e.type++;
+        }
     }
 }
 
 static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr)
 {
-    if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int)) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
+    if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int))
+    {
+        conoutf(Console_Error, "map %s has malformatted header", ogzname);
+        return false;
+    }
     LIL_ENDIAN_SWAP(&hdr.version, 2);
 
     if(!memcmp(hdr.magic, "TMAP", 4))
     {
-        if(hdr.version>MAPVERSION) { conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzname); return false; }
-        if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int)) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.version>MAPVERSION)
+        {
+            conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzname);
+            return false;
+        }
+        if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int))
+        {
+            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            return false;
+        }
         LIL_ENDIAN_SWAP(&hdr.worldsize, 6);
-        if(hdr.worldsize <= 0|| hdr.numents < 0) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.worldsize <= 0|| hdr.numents < 0)
+        {
+            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            return false;
+        }
     }
     else if(!memcmp(hdr.magic, "OCTA", 4))
     {
-        if(hdr.version!=OCTAVERSION) { conoutf(Console_Error, "map %s uses an unsupported map format version", ogzname); return false; }
-        if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int)) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.version!=OCTAVERSION)
+        {
+            conoutf(Console_Error, "map %s uses an unsupported map format version", ogzname);
+            return false;
+        }
+        if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int))
+        {
+            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            return false;
+        }
         LIL_ENDIAN_SWAP(&ohdr.worldsize, 7);
-        if(ohdr.worldsize <= 0|| ohdr.numents < 0) { conoutf(Console_Error, "map %s has malformatted header", ogzname); return false; }
+        if(ohdr.worldsize <= 0|| ohdr.numents < 0)
+        {
+            conoutf(Console_Error, "map %s has malformatted header", ogzname);
+            return false;
+        }
         memcpy(hdr.magic, "TMAP", 4);
         hdr.version = 0;
         hdr.headersize = sizeof(hdr);
@@ -65,7 +104,11 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
         hdr.numvars = ohdr.numvars;
         hdr.numvslots = ohdr.numvslots;
     }
-    else { conoutf(Console_Error, "map %s uses an unsupported map type", ogzname); return false; }
+    else
+    {
+        conoutf(Console_Error, "map %s uses an unsupported map type", ogzname);
+        return false;
+    }
 
     return true;
 }
@@ -81,7 +124,6 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     {
         return false;
     }
-
     mapheader hdr;
     octaheader ohdr;
     if(!loadmapheader(f, ogzname, hdr, ohdr))
@@ -89,19 +131,30 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         delete f;
         return false;
     }
-
     for(int i = 0; i < hdr.numvars; ++i)
     {
         int type = f->getchar(), ilen = f->getlil<ushort>();
         f->seek(ilen, SEEK_CUR);
         switch(type)
         {
-            case Id_Var: f->getlil<int>(); break;
-            case Id_FloatVar: f->getlil<float>(); break;
-            case Id_StringVar: { int slen = f->getlil<ushort>(); f->seek(slen, SEEK_CUR); break; }
+            case Id_Var:
+            {
+                f->getlil<int>();
+                break;
+            }
+            case Id_FloatVar:
+            {
+                f->getlil<float>();
+                break;
+            }
+            case Id_StringVar:
+            {
+                int slen = f->getlil<ushort>();
+                f->seek(slen, SEEK_CUR);
+                break;
+            }
         }
     }
-
     string gametype;
     bool samegame = true;
     int len = f->getchar();
@@ -115,8 +168,8 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
     }
-    int eif = f->getlil<ushort>();
-    int extrasize = f->getlil<ushort>();
+    int eif = f->getlil<ushort>(),
+        extrasize = f->getlil<ushort>();
     f->seek(extrasize, SEEK_CUR);
 
     ushort nummru = f->getlil<ushort>();
@@ -146,9 +199,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         f->seek(0, SEEK_END);
         *crc = f->getcrc();
     }
-
     delete f;
-
     return true;
 }
 
@@ -163,7 +214,10 @@ void setmapfilenames(const char *fname, const char *cname = NULL)
     validmapname(name, fname);
     formatstring(ogzname, "media/map/%s.ogz", name);
     formatstring(picname, "media/map/%s.png", name);
-    if(savebak==1) formatstring(bakname, "media/map/%s.BAK", name);
+    if(savebak==1)
+    {
+        formatstring(bakname, "media/map/%s.BAK", name);
+    }
     else
     {
         string baktime;
@@ -172,10 +226,8 @@ void setmapfilenames(const char *fname, const char *cname = NULL)
         baktime[min(len, sizeof(baktime)-1)] = '\0';
         formatstring(bakname, "media/map/%s_%s.BAK", name, baktime);
     }
-
     validmapname(name, cname ? cname : fname);
     formatstring(cfgname, "media/map/%s.cfg", name);
-
     path(ogzname);
     path(bakname);
     path(cfgname);
@@ -202,7 +254,13 @@ void backup(const char *name, const char *backupname)
     rename(findfile(name, "wb"), backupfile);
 }
 
-enum { OCTSAV_CHILDREN = 0, OCTSAV_EMPTY, OCTSAV_SOLID, OCTSAV_NORMAL };
+enum
+{
+    OCTSAV_CHILDREN = 0,
+    OCTSAV_EMPTY,
+    OCTSAV_SOLID,
+    OCTSAV_NORMAL
+};
 
 #define LM_PACKW 512
 #define LM_PACKH 512
@@ -218,8 +276,10 @@ static int savemapprogress = 0;
 
 void savec(cube *c, const ivec &o, int size, stream *f)
 {
-    if((savemapprogress++&0xFFF)==0) renderprogress(float(savemapprogress)/allocnodes, "saving octree...");
-
+    if((savemapprogress++&0xFFF)==0)
+    {
+        renderprogress(static_cast<float>(savemapprogress)/allocnodes, "saving octree...");
+    }
     for(int i = 0; i < 8; ++i)
     {
         ivec co(i, o, size);
@@ -230,7 +290,9 @@ void savec(cube *c, const ivec &o, int size, stream *f)
         }
         else
         {
-            int oflags = 0, surfmask = 0, totalverts = 0;
+            int oflags     = 0,
+                surfmask   = 0,
+                totalverts = 0;
             if(c[i].material!=Mat_Air)
             {
                 oflags |= 0x40;
@@ -251,7 +313,10 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                     {
                         {
                             const surfaceinfo &surf = c[i].ext->surfaces[j];
-                            if(!surf.used()) continue;
+                            if(!surf.used())
+                            {
+                                continue;
+                            }
                             oflags |= 0x20;
                             surfmask |= 1<<j;
                             totalverts += surf.totalverts();
@@ -274,8 +339,14 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                 f->putlil<ushort>(c[i].texture[j]);
             }
 
-            if(oflags&0x40) f->putlil<ushort>(c[i].material);
-            if(oflags&0x80) f->putchar(c[i].merged);
+            if(oflags&0x40)
+            {
+                f->putlil<ushort>(c[i].material);
+            }
+            if(oflags&0x80)
+            {
+                f->putchar(c[i].merged);
+            }
             if(oflags&0x20)
             {
                 f->putchar(surfmask);
@@ -287,8 +358,11 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                         surfaceinfo surf = c[i].ext->surfaces[j];
                         vertinfo *verts = c[i].ext->verts() + surf.verts;
                         int layerverts = surf.numverts&Face_MaxVerts, numverts = surf.totalverts(),
-                            vertmask = 0, vertorder = 0,
-                            dim = DIMENSION(j), vc = C[dim], vr = R[dim];
+                            vertmask   = 0,
+                            vertorder  = 0,
+                            dim = DIMENSION(j),
+                            vc  = C[dim],
+                            vr  = R[dim];
                         if(numverts)
                         {
                             if(c[i].merged&(1<<j))
@@ -531,7 +605,10 @@ cube *loadchildren(stream *f, const ivec &co, int size, bool &failed)
     for(int i = 0; i < 8; ++i)
     {
         loadc(f, c[i], ivec(i, co, size), size, failed);
-        if(failed) break;
+        if(failed)
+        {
+            break;
+        }
     }
     return c;
 }
@@ -556,8 +633,14 @@ void savevslot(stream *f, VSlot &vs, int prev)
             }
         }
     }
-    if(vs.changed & (1<<VSLOT_SCALE)) f->putlil<float>(vs.scale);
-    if(vs.changed & (1<<VSLOT_ROTATION)) f->putlil<int>(vs.rotation);
+    if(vs.changed & (1<<VSLOT_SCALE))
+    {
+        f->putlil<float>(vs.scale);
+    }
+    if(vs.changed & (1<<VSLOT_ROTATION))
+    {
+        f->putlil<int>(vs.rotation);
+    }
     if(vs.changed & (1<<VSLOT_ANGLE))
     {
         f->putlil<float>(vs.angle.x);
@@ -602,17 +685,26 @@ void savevslot(stream *f, VSlot &vs, int prev)
 
 void savevslots(stream *f, int numvslots)
 {
-    if(vslots.empty()) return;
+    if(vslots.empty())
+    {
+        return;
+    }
     int *prev = new int[numvslots];
     memset(prev, -1, numvslots*sizeof(int));
     for(int i = 0; i < numvslots; ++i)
     {
         VSlot *vs = vslots[i];
-        if(vs->changed) continue;
+        if(vs->changed)
+        {
+            continue;
+        }
         for(;;)
         {
             VSlot *cur = vs;
-            do vs = vs->next; while(vs && vs->index >= numvslots);
+            do
+            {
+                vs = vs->next;
+            } while(vs && vs->index >= numvslots);
             if(!vs)
             {
                 break;
@@ -761,12 +853,21 @@ void loadvslots(stream *f, int numvslots)
 
 bool save_world(const char *mname)
 {
-    if(!*mname) mname = game::getclientmap();
+    if(!*mname)
+    {
+        mname = game::getclientmap();
+    }
     setmapfilenames(*mname ? mname : "untitled");
-    if(savebak) backup(ogzname, bakname);
+    if(savebak)
+    {
+        backup(ogzname, bakname);
+    }
     stream *f = opengzfile(ogzname, "wb");
-    if(!f) { conoutf(Console_Warn, "could not write map to %s", ogzname); return false; }
-
+    if(!f)
+    {
+        conoutf(Console_Warn, "could not write map to %s", ogzname);
+        return false;
+    }
     int numvslots = vslots.length();
     if(!multiplayer(false))
     {
@@ -795,39 +896,61 @@ bool save_world(const char *mname)
     hdr.numvslots = numvslots;
     ENUMERATE(idents, ident, id,
     {
-        if((id.type == Id_Var || id.type == Id_FloatVar || id.type == Id_StringVar) && id.flags&Idf_Override && !(id.flags&Idf_ReadOnly) && id.flags&Idf_Overridden) hdr.numvars++;
+        if((id.type == Id_Var || id.type == Id_FloatVar || id.type == Id_StringVar) &&
+           id.flags&Idf_Override    &&
+           !(id.flags&Idf_ReadOnly) &&
+           id.flags&Idf_Overridden)
+        {
+            hdr.numvars++;
+        }
     });
     LIL_ENDIAN_SWAP(&hdr.version, 8);
     f->write(&hdr, sizeof(hdr));
 
     ENUMERATE(idents, ident, id,
     {
-        if((id.type!=Id_Var && id.type!=Id_FloatVar && id.type!=Id_StringVar) || !(id.flags&Idf_Override) || id.flags&Idf_ReadOnly || !(id.flags&Idf_Overridden)) continue;
+        if((id.type!=Id_Var && id.type!=Id_FloatVar && id.type!=Id_StringVar) ||
+          !(id.flags&Idf_Override)   ||
+          id.flags&Idf_ReadOnly      ||
+          !(id.flags&Idf_Overridden))
+        {
+            continue;
+        }
         f->putchar(id.type);
         f->putlil<ushort>(strlen(id.name));
         f->write(id.name, strlen(id.name));
         switch(id.type)
         {
             case Id_Var:
-                if(dbgvars) conoutf(Console_Debug, "wrote var %s: %d", id.name, *id.storage.i);
+                if(dbgvars)
+                {
+                    conoutf(Console_Debug, "wrote var %s: %d", id.name, *id.storage.i);
+                }
                 f->putlil<int>(*id.storage.i);
                 break;
 
             case Id_FloatVar:
-                if(dbgvars) conoutf(Console_Debug, "wrote fvar %s: %f", id.name, *id.storage.f);
+                if(dbgvars)
+                {
+                    conoutf(Console_Debug, "wrote fvar %s: %f", id.name, *id.storage.f);
+                }
                 f->putlil<float>(*id.storage.f);
                 break;
 
             case Id_StringVar:
-                if(dbgvars) conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.storage.s);
+                if(dbgvars)
+                {
+                    conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.storage.s);
+                }
                 f->putlil<ushort>(strlen(*id.storage.s));
                 f->write(*id.storage.s, strlen(*id.storage.s));
                 break;
         }
     });
-
-    if(dbgvars) conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
-
+    if(dbgvars)
+    {
+        conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
+    }
     f->putchar((int)strlen(game::gameident()));
     f->write(game::gameident(), (int)strlen(game::gameident())+1);
     f->putlil<ushort>(entities::extraentinfosize());
@@ -851,13 +974,14 @@ bool save_world(const char *mname)
             LIL_ENDIAN_SWAP(&tmp.attr1, 5);
             f->write(&tmp, sizeof(entity));
             entities::writeent(*ents[i], ebuf);
-            if(entities::extraentinfosize()) f->write(ebuf, entities::extraentinfosize());
+            if(entities::extraentinfosize())
+            {
+                f->write(ebuf, entities::extraentinfosize());
+            }
         }
     }
     delete[] ebuf;
-
     savevslots(f, numvslots);
-
     renderprogress(0, "saving octree...");
     savec(worldroot, ivec(0, 0, 0), worldsize>>1, f);
     delete f;
@@ -875,35 +999,38 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);
     stream *f = opengzfile(ogzname, "rb");
-    if(!f) { conoutf(Console_Error, "could not read map %s", ogzname); return false; }
-
+    if(!f)
+    {
+        conoutf(Console_Error, "could not read map %s", ogzname);
+        return false;
+    }
     mapheader hdr;
     octaheader ohdr;
     memset(&ohdr, 0, sizeof(ohdr));
-    if(!loadmapheader(f, ogzname, hdr, ohdr)) { delete f; return false; }
-
+    if(!loadmapheader(f, ogzname, hdr, ohdr))
+    {
+        delete f;
+        return false;
+    }
     resetmap();
-
     Texture *mapshot = textureload(picname, 3, true, false);
     renderbackground("loading...", mapshot, mname, game::getmapinfo());
-
     setvar("mapversion", hdr.version, true, false);
-
     renderprogress(0, "clearing world...");
-
     freeocta(worldroot);
     worldroot = NULL;
-
     int worldscale = 0;
-    while(1<<worldscale < hdr.worldsize) worldscale++;
+    while(1<<worldscale < hdr.worldsize)
+    {
+        worldscale++;
+    }
     setvar("mapsize", 1<<worldscale, true, false);
     setvar("mapscale", worldscale, true, false);
-
     renderprogress(0, "loading vars...");
-
     for(int i = 0; i < hdr.numvars; ++i)
     {
-        int type = f->getchar(), ilen = f->getlil<ushort>();
+        int type = f->getchar(),
+            ilen = f->getlil<ushort>();
         string name;
         f->read(name, min(ilen, MAXSTRLEN-1));
         name[min(ilen, MAXSTRLEN-1)] = '\0';
@@ -916,53 +1043,83 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         string str;
         switch(type)
         {
-            case Id_Var: val.setint(f->getlil<int>()); break;
-            case Id_FloatVar: val.setfloat(f->getlil<float>()); break;
+            case Id_Var:
+            {
+                val.setint(f->getlil<int>());
+                break;
+            }
+            case Id_FloatVar:
+            {
+                val.setfloat(f->getlil<float>());
+                break;
+            }
             case Id_StringVar:
             {
                 int slen = f->getlil<ushort>();
                 f->read(str, min(slen, MAXSTRLEN-1));
                 str[min(slen, MAXSTRLEN-1)] = '\0';
-                if(slen >= MAXSTRLEN) f->seek(slen - (MAXSTRLEN-1), SEEK_CUR);
+                if(slen >= MAXSTRLEN)
+                {
+                    f->seek(slen - (MAXSTRLEN-1), SEEK_CUR);
+                }
                 val.setstr(str);
                 break;
             }
-            default: continue;
+            default:
+            {
+                continue;
+            }
         }
-        if(id && id->flags&Idf_Override) switch(id->type)
+        if(id && id->flags&Idf_Override)
         {
-            case Id_Var:
+            switch(id->type)
             {
-                int i = val.getint();
-                if(id->minval <= id->maxval && i >= id->minval && i <= id->maxval)
+                case Id_Var:
                 {
-                    setvar(name, i);
-                    if(dbgvars) conoutf(Console_Debug, "read var %s: %d", name, i);
+                    int i = val.getint();
+                    if(id->minval <= id->maxval && i >= id->minval && i <= id->maxval)
+                    {
+                        setvar(name, i);
+                        if(dbgvars)
+                        {
+                            conoutf(Console_Debug, "read var %s: %d", name, i);
+                        }
+                    }
+                    break;
                 }
-                break;
-            }
-            case Id_FloatVar:
-            {
-                float f = val.getfloat();
-                if(id->minvalf <= id->maxvalf && f >= id->minvalf && f <= id->maxvalf)
+                case Id_FloatVar:
                 {
-                    setfvar(name, f);
-                    if(dbgvars) conoutf(Console_Debug, "read fvar %s: %f", name, f);
+                    float f = val.getfloat();
+                    if(id->minvalf <= id->maxvalf && f >= id->minvalf && f <= id->maxvalf)
+                    {
+                        setfvar(name, f);
+                        if(dbgvars)
+                        {
+                            conoutf(Console_Debug, "read fvar %s: %f", name, f);
+                        }
+                    }
+                    break;
                 }
-                break;
+                case Id_StringVar:
+                {
+                    setsvar(name, val.getstr());
+                    if(dbgvars)
+                    {
+                        conoutf(Console_Debug, "read svar %s: %s", name, val.getstr());
+                    }
+                    break;
+                }
             }
-            case Id_StringVar:
-                setsvar(name, val.getstr());
-                if(dbgvars) conoutf(Console_Debug, "read svar %s: %s", name, val.getstr());
-                break;
         }
     }
     if(dbgvars) conoutf(Console_Debug, "read %d vars", hdr.numvars);
-
     string gametype;
     bool samegame = true;
     int len = f->getchar();
-    if(len >= 0) f->read(gametype, len+1);
+    if(len >= 0)
+    {
+        f->read(gametype, len+1);
+    }
     gametype[max(len, 0)] = '\0';
     if(strcmp(gametype, game::gameident())!=0)
     {
@@ -973,17 +1130,17 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     int extrasize = f->getlil<ushort>();
     vector<char> extras;
     f->read(extras.pad(extrasize), extrasize);
-    if(samegame) game::readgamedata(extras);
-
+    if(samegame)
+    {
+        game::readgamedata(extras);
+    }
     texmru.shrink(0);
     ushort nummru = f->getlil<ushort>();
     for(int i = 0; i < nummru; ++i)
     {
         texmru.add(f->getlil<ushort>());
     }
-
     renderprogress(0, "loading entities...");
-
     vector<extentity *> &ents = entities::getents();
     int einfosize = entities::extraentinfosize();
     char *ebuf = einfosize > 0 ? new char[einfosize] : NULL;
@@ -997,12 +1154,18 @@ bool load_world(const char *mname, const char *cname)        // still supports a
         fixent(e, hdr.version);
         if(samegame)
         {
-            if(einfosize > 0) f->read(ebuf, einfosize);
+            if(einfosize > 0)
+            {
+                f->read(ebuf, einfosize);
+            }
             entities::readent(e, ebuf, mapversion);
         }
         else
         {
-            if(eif > 0) f->seek(eif, SEEK_CUR);
+            if(eif > 0)
+            {
+                f->seek(eif, SEEK_CUR);
+            }
             if(e.type>=EngineEnt_GameSpecific)
             {
                 entities::deleteentity(ents.pop());
@@ -1017,25 +1180,26 @@ bool load_world(const char *mname, const char *cname)        // still supports a
             }
         }
     }
-    if(ebuf) delete[] ebuf;
-
+    if(ebuf)
+    {
+        delete[] ebuf;
+    }
     if(hdr.numents > MAXENTS)
     {
         conoutf(Console_Warn, "warning: map has %d entities", hdr.numents);
         f->seek((hdr.numents-MAXENTS)*(samegame ? sizeof(entity) + einfosize : eif), SEEK_CUR);
     }
-
     renderprogress(0, "loading slots...");
     loadvslots(f, hdr.numvslots);
-
     renderprogress(0, "loading octree...");
     bool failed = false;
     worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
-    if(failed) conoutf(Console_Error, "garbage in map");
-
+    if(failed)
+    {
+        conoutf(Console_Error, "garbage in map");
+    }
     renderprogress(0, "validating...");
     validatec(worldroot, hdr.worldsize>>1);
-
     if(!failed)
     {
         if(mapversion <= 0)
@@ -1049,7 +1213,10 @@ bool load_world(const char *mname, const char *cname)        // still supports a
                     f->getlil<ushort>();
                 }
                 int bpp = 3;
-                if(type&(1<<4) && (type&0x0F)!=2) bpp = 4;
+                if(type&(1<<4) && (type&0x0F)!=2)
+                {
+                    bpp = 4;
+                }
                 f->seek(bpp*LM_PACKW*LM_PACKH, SEEK_CUR);
             }
         }
@@ -1057,9 +1224,7 @@ bool load_world(const char *mname, const char *cname)        // still supports a
 
     mapcrc = f->getcrc();
     delete f;
-
     conoutf("read map %s (%.1f seconds)", ogzname, (SDL_GetTicks()-loadingstart)/1000.0f);
-
     clearmainmenu();
 
     identflags |= Idf_Overridden;
@@ -1068,22 +1233,20 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     identflags &= ~Idf_Overridden;
 
     preloadusedmapmodels(true);
-
     game::preload();
     flushpreloadedmodels();
-
     preloadmapsounds();
-
     entitiesinoctanodes();
     attachentities();
     allchanged(true);
 
     renderbackground("loading...", mapshot, mname, game::getmapinfo());
 
-    if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown")) conoutf(Console_Echo, "%s", maptitle);
-
+    if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown"))
+    {
+        conoutf(Console_Echo, "%s", maptitle);
+    }
     startmap(cname ? cname : mname);
-
     return true;
 }
 
@@ -1097,7 +1260,10 @@ void writeobj(char *name)
 {
     DEF_FORMAT_STRING(fname, "%s.obj", name);
     stream *f = openfile(path(fname), "w");
-    if(!f) return;
+    if(!f)
+    {
+        return;
+    }
     f->printf("# obj file of Imprimis level\n\n");
     DEF_FORMAT_STRING(mtlname, "%s.mtl", name);
     path(mtlname);
@@ -1106,11 +1272,15 @@ void writeobj(char *name)
     hashtable<vec, int> shareverts(1<<16), sharetc(1<<16);
     hashtable<int, vector<ivec2> > mtls(1<<8);
     vector<int> usedmtl;
-    vec bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f);
+    vec bbmin(1e16f, 1e16f, 1e16f),
+        bbmax(-1e16f, -1e16f, -1e16f);
     for(int i = 0; i < valist.length(); i++)
     {
         vtxarray &va = *valist[i];
-        if(!va.edata || !va.vdata) continue;
+        if(!va.edata || !va.vdata)
+        {
+            continue;
+        }
         ushort *edata = va.edata + va.eoffset;
         vertex *vdata = va.vdata;
         ushort *idx = edata;
@@ -1136,7 +1306,10 @@ void writeobj(char *name)
                     bbmax.max(pos);
                 }
                 key.y = sharetc.access(tc, texcoords.length());
-                if(key.y == texcoords.length()) texcoords.add(tc);
+                if(key.y == texcoords.length())
+                {
+                    texcoords.add(tc);
+                }
             }
             idx += es.length;
         }
@@ -1147,9 +1320,30 @@ void writeobj(char *name)
     {
         vec v = verts[i];
         v.add(center);
-        if(v.y != floor(v.y)) f->printf("v %.3f ", -v.y); else f->printf("v %d ", int(-v.y));
-        if(v.z != floor(v.z)) f->printf("%.3f ", v.z); else f->printf("%d ", int(v.z));
-        if(v.x != floor(v.x)) f->printf("%.3f\n", v.x); else f->printf("%d\n", int(v.x));
+        if(v.y != floor(v.y))
+        {
+            f->printf("v %.3f ", -v.y);
+        }
+        else
+        {
+            f->printf("v %d ", static_cast<int>(-v.y));
+        }
+        if(v.z != floor(v.z))
+        {
+            f->printf("%.3f ", v.z);
+        }
+        else
+        {
+            f->printf("%d ", static_cast<int>(v.z));
+        }
+        if(v.x != floor(v.x))
+        {
+            f->printf("%.3f\n", v.x);
+        }
+        else
+        {
+            f->printf("%d\n", static_cast<int>(v.x));
+        }
     }
     f->printf("\n");
     for(int i = 0; i < texcoords.length(); i++)
@@ -1179,7 +1373,10 @@ void writeobj(char *name)
     delete f;
 
     f = openfile(mtlname, "w");
-    if(!f) return;
+    if(!f)
+    {
+        return;
+    }
     f->printf("# mtl file of Imprimis level\n\n");
     for(int i = 0; i < usedmtl.length(); i++)
     {
@@ -1209,7 +1406,10 @@ void writecollideobj(char *name)
     for(int i = 0; i < entgroup.length(); i++)
     {
         extentity &e = *ents[entgroup[i]];
-        if(e.type != EngineEnt_Mapmodel || !pointinsel(sel, e.o)) continue;
+        if(e.type != EngineEnt_Mapmodel || !pointinsel(sel, e.o))
+        {
+            continue;
+        }
         mm = &e;
         break;
     }
@@ -1218,7 +1418,10 @@ void writecollideobj(char *name)
         for(int i = 0; i < ents.length(); i++)
         {
             extentity &e = *ents[i];
-            if(e.type != EngineEnt_Mapmodel || !pointinsel(sel, e.o)) continue;
+            if(e.type != EngineEnt_Mapmodel || !pointinsel(sel, e.o))
+            {
+                continue;
+            }
             mm = &e;
             break;
         }
@@ -1232,25 +1435,45 @@ void writecollideobj(char *name)
     if(!m)
     {
         mapmodelinfo *mmi = getmminfo(mm->attr1);
-        if(mmi) conoutf(Console_Error, "could not load map model: %s", mmi->name);
-        else conoutf(Console_Error, "could not find map model: %d", mm->attr1);
+        if(mmi)
+        {
+            conoutf(Console_Error, "could not load map model: %s", mmi->name);
+        }
+        else
+        {
+            conoutf(Console_Error, "could not find map model: %d", mm->attr1);
+        }
         return;
     }
 
     matrix4x3 xform;
     m->calctransform(xform);
     float scale = mm->attr5 > 0 ? mm->attr5/100.0f : 1;
-    int yaw = mm->attr2, pitch = mm->attr3, roll = mm->attr4;
+    int yaw = mm->attr2,
+        pitch = mm->attr3,
+        roll = mm->attr4;
     matrix3 orient;
     orient.identity();
-    if(scale != 1) orient.scale(scale);
-    if(yaw) orient.rotate_around_z(sincosmod360(yaw));
-    if(pitch) orient.rotate_around_x(sincosmod360(pitch));
-    if(roll) orient.rotate_around_y(sincosmod360(-roll));
+    if(scale != 1)
+    {
+        orient.scale(scale);
+    }
+    if(yaw)
+    {
+        orient.rotate_around_z(sincosmod360(yaw));
+    }
+    if(pitch)
+    {
+        orient.rotate_around_x(sincosmod360(pitch));
+    }
+    if(roll)
+    {
+        orient.rotate_around_y(sincosmod360(-roll));
+    }
     xform.mul(orient, mm->o, matrix4x3(xform));
     xform.invert();
-
-    ivec selmin = sel.o, selmax = ivec(sel.s).mul(sel.grid).add(sel.o);
+    ivec selmin = sel.o,
+         selmax = ivec(sel.s).mul(sel.grid).add(sel.o);
     vector<vec> verts;
     hashtable<vec, int> shareverts;
     vector<int> tris;
@@ -1259,8 +1482,13 @@ void writecollideobj(char *name)
         vtxarray &va = *valist[i];
         if(va.geommin.x > selmax.x || va.geommin.y > selmax.y || va.geommin.z > selmax.z ||
            va.geommax.x < selmin.x || va.geommax.y < selmin.y || va.geommax.z < selmin.z)
+        {
             continue;
-        if(!va.edata || !va.vdata) continue;
+        }
+        if(!va.edata || !va.vdata)
+        {
+            continue;
+        }
         ushort *edata = va.edata + va.eoffset;
         vertex *vdata = va.vdata;
         ushort *idx = edata;
@@ -1269,17 +1497,30 @@ void writecollideobj(char *name)
             elementset &es = va.texelems[j];
             for(int k = 0; k < es.length; k += 3)
             {
-                const vec &v0 = vdata[idx[k]].pos, &v1 = vdata[idx[k+1]].pos, &v2 = vdata[idx[k+2]].pos;
+                const vec &v0 = vdata[idx[k]].pos,
+                          &v1 = vdata[idx[k+1]].pos,
+                          &v2 = vdata[idx[k+2]].pos;
                 if(!v0.insidebb(selmin, selmax) || !v1.insidebb(selmin, selmax) || !v2.insidebb(selmin, selmax))
+                {
                     continue;
+                }
                 int i0 = shareverts.access(v0, verts.length());
-                if(i0 == verts.length()) verts.add(v0);
+                if(i0 == verts.length())
+                {
+                    verts.add(v0);
+                }
                 tris.add(i0);
                 int i1 = shareverts.access(v1, verts.length());
-                if(i1 == verts.length()) verts.add(v1);
+                if(i1 == verts.length())
+                {
+                    verts.add(v1);
+                }
                 tris.add(i1);
                 int i2 = shareverts.access(v2, verts.length());
-                if(i2 == verts.length()) verts.add(v2);
+                if(i2 == verts.length())
+                {
+                    verts.add(v2);
+                }
                 tris.add(i2);
             }
             idx += es.length;
@@ -1293,17 +1534,38 @@ void writecollideobj(char *name)
     for(int i = 0; i < verts.length(); i++)
     {
         vec v = xform.transform(verts[i]);
-        if(v.y != floor(v.y)) f->printf("v %.3f ", -v.y); else f->printf("v %d ", int(-v.y));
-        if(v.z != floor(v.z)) f->printf("%.3f ", v.z); else f->printf("%d ", int(v.z));
-        if(v.x != floor(v.x)) f->printf("%.3f\n", v.x); else f->printf("%d\n", int(v.x));
+        if(v.y != floor(v.y))
+        {
+            f->printf("v %.3f ", -v.y);
+        }
+        else
+        {
+            f->printf("v %d ", static_cast<int>(-v.y));
+        }
+        if(v.z != floor(v.z))
+        {
+            f->printf("%.3f ", v.z);
+        }
+        else
+        {
+            f->printf("%d ", static_cast<int>(v.z));
+        }
+        if(v.x != floor(v.x))
+        {
+            f->printf("%.3f\n", v.x);
+        }
+        else
+        {
+            f->printf("%d\n", static_cast<int>(v.x));
+        }
     }
     f->printf("\n");
     for(int i = 0; i < tris.length(); i += 3)
-       f->printf("f %d %d %d\n", tris[i+2]+1, tris[i+1]+1, tris[i]+1);
+    {
+        f->printf("f %d %d %d\n", tris[i+2]+1, tris[i+1]+1, tris[i]+1);
+    }
     f->printf("\n");
-
     delete f;
-
     conoutf("generated collide model %s", fname);
 }
 
