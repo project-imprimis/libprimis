@@ -83,9 +83,9 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
 
 enum
 {
-    MODOE_ADD      = 1<<0,
-    MODOE_UPDATEBB = 1<<1,
-    MODOE_CHANGED  = 1<<2
+    ModOctaEnt_Add      = 1<<0,
+    ModOctaEnt_UpdateBB = 1<<1,
+    ModOctaEnt_Changed  = 1<<2
 };
 
 void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = NULL)
@@ -98,7 +98,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
         {
             modifyoctaentity(flags, id, e, c[i].children, o, size>>1, bo, br, leafsize, va);
         }
-        else if(flags&MODOE_ADD)
+        else if(flags&ModOctaEnt_Add)
         {
             if(!c[i].ext || !c[i].ext->ents)
             {
@@ -230,7 +230,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     lastva->bbmin.x = -1;
                 }
             }
-            else if(flags&MODOE_UPDATEBB)
+            else if(flags&ModOctaEnt_UpdateBB)
             {
                 updatevabb(va);
             }
@@ -245,7 +245,7 @@ int spotlights       = 0,
 
 static bool modifyoctaent(int flags, int id, extentity &e)
 {
-    if(flags&MODOE_ADD ? e.flags&EntFlag_Octa : !(e.flags&EntFlag_Octa))
+    if(flags&ModOctaEnt_Add ? e.flags&EntFlag_Octa : !(e.flags&EntFlag_Octa))
     {
         return false;
     }
@@ -257,7 +257,7 @@ static bool modifyoctaent(int flags, int id, extentity &e)
     if(!insideworld(e.o))
     {
         int idx = outsideents.find(id);
-        if(flags&MODOE_ADD)
+        if(flags&ModOctaEnt_Add)
         {
             if(idx < 0)
             {
@@ -290,10 +290,10 @@ static bool modifyoctaent(int flags, int id, extentity &e)
         case EngineEnt_Light:
         {
             clearlightcache(id);
-            if(e.attr5&LightEnt_Volumetric) { if(flags&MODOE_ADD) volumetriclights++; else --volumetriclights; }
+            if(e.attr5&LightEnt_Volumetric) { if(flags&ModOctaEnt_Add) volumetriclights++; else --volumetriclights; }
             if(e.attr5&LightEnt_NoSpecular)
             {
-                if(!(flags&MODOE_ADD ? nospeclights++ : --nospeclights))
+                if(!(flags&ModOctaEnt_Add ? nospeclights++ : --nospeclights))
                 {
                     cleardeferredlightshaders();
                 }
@@ -302,7 +302,7 @@ static bool modifyoctaent(int flags, int id, extentity &e)
         }
         case EngineEnt_Spotlight:
         {
-            if(!(flags&MODOE_ADD ? spotlights++ : --spotlights))
+            if(!(flags&ModOctaEnt_Add ? spotlights++ : --spotlights))
             {
                 cleardeferredlightshaders();
                 cleanupvolumetric();
@@ -316,7 +316,7 @@ static bool modifyoctaent(int flags, int id, extentity &e)
         }
         case EngineEnt_Decal:
         {
-            if(flags&MODOE_CHANGED)
+            if(flags&ModOctaEnt_Changed)
             {
                 changed(o, r, false);
             }
@@ -332,10 +332,10 @@ static inline bool modifyoctaent(int flags, int id)
     return ents.inrange(id) && modifyoctaent(flags, id, *ents[id]);
 }
 
-static inline void addentity(int id)        { modifyoctaent(MODOE_ADD|MODOE_UPDATEBB, id); }
-static inline void addentityedit(int id)    { modifyoctaent(MODOE_ADD|MODOE_UPDATEBB|MODOE_CHANGED, id); }
-static inline void removeentity(int id)     { modifyoctaent(MODOE_UPDATEBB, id); }
-static inline void removeentityedit(int id) { modifyoctaent(MODOE_UPDATEBB|MODOE_CHANGED, id); }
+static inline void addentity(int id)        { modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB, id); }
+static inline void addentityedit(int id)    { modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id); }
+static inline void removeentity(int id)     { modifyoctaent(ModOctaEnt_UpdateBB, id); }
+static inline void removeentityedit(int id) { modifyoctaent(ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id); }
 
 void freeoctaentities(cube &c)
 {
@@ -361,7 +361,7 @@ void entitiesinoctanodes()
     vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
-        modifyoctaent(MODOE_ADD, i, *ents[i]);
+        modifyoctaent(ModOctaEnt_Add, i, *ents[i]);
     }
 }
 

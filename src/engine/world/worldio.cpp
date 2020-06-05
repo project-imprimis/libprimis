@@ -256,10 +256,10 @@ void backup(const char *name, const char *backupname)
 
 enum
 {
-    OCTSAV_CHILDREN = 0,
-    OCTSAV_EMPTY,
-    OCTSAV_SOLID,
-    OCTSAV_NORMAL
+    OctaSave_Children = 0,
+    OctaSave_Empty,
+    OctaSave_Solid,
+    OctaSave_Normal
 };
 
 #define LM_PACKW 512
@@ -285,7 +285,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
         ivec co(i, o, size);
         if(c[i].children)
         {
-            f->putchar(OCTSAV_CHILDREN);
+            f->putchar(OctaSave_Children);
             savec(c[i].children, co, size>>1, f);
         }
         else
@@ -299,7 +299,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
             }
             if(IS_EMPTY(c[i]))
             {
-                f->putchar(oflags | OCTSAV_EMPTY);
+                f->putchar(oflags | OctaSave_Empty);
             }
             else
             {
@@ -325,11 +325,11 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                 }
                 if(IS_ENTIRELY_SOLID(c[i]))
                 {
-                    f->putchar(oflags | OCTSAV_SOLID);
+                    f->putchar(oflags | OctaSave_Solid);
                 }
                 else
                 {
-                    f->putchar(oflags | OCTSAV_NORMAL);
+                    f->putchar(oflags | OctaSave_Normal);
                     f->write(c[i].edges, 12);
                 }
             }
@@ -461,13 +461,13 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     int octsav = f->getchar();
     switch(octsav&0x7)
     {
-        case OCTSAV_CHILDREN:
+        case OctaSave_Children:
             c.children = loadchildren(f, co, size>>1, failed);
             return;
 
-        case OCTSAV_EMPTY:  EMPTY_FACES(c);       break;
-        case OCTSAV_SOLID:  SOLID_FACES(c);        break;
-        case OCTSAV_NORMAL: f->read(c.edges, 12); break;
+        case OctaSave_Empty:  EMPTY_FACES(c);        break;
+        case OctaSave_Solid:  SOLID_FACES(c);        break;
+        case OctaSave_Normal: f->read(c.edges, 12);  break;
         default: failed = true; return;
     }
     for(int i = 0; i < 6; ++i)
