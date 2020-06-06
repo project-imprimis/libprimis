@@ -143,7 +143,6 @@ const struct material
     {"noclip", Mat_NoClip},
     {"gameclip", Mat_GameClip},
     {"death", Mat_Death},
-    {"nogi", Mat_NoGI},
     {"alpha", Mat_Alpha}
 };
 
@@ -173,7 +172,7 @@ const char *findmaterialname(int mat)
 
 const char *getmaterialdesc(int mat, const char *prefix)
 {
-    static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_NoGI, Mat_Alpha };
+    static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
     static string desc;
     desc[0] = '\0';
     for(int i = 0; i < int(sizeof(matmasks)/sizeof(matmasks[0])); ++i)
@@ -232,7 +231,7 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
 {
     for(int i = 0; i < 6; ++i)
     {
-        static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_NoGI, Mat_Alpha };
+        static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
         for(int j = 0; j < int(sizeof(matmasks)/sizeof(matmasks[0])); ++j)
         {
             ushort matmask = matmasks[j];
@@ -705,11 +704,6 @@ void rendermatgrid()
                     color = bvec(40, 40, 40);
                     break; // black
                 }
-                case Mat_NoGI:
-                {
-                    color = bvec(40, 30,  0);
-                    break; // brown
-                }
                 case Mat_Alpha:
                 {
                     color = bvec(85,  0, 85);
@@ -1082,11 +1076,6 @@ void rendereditmaterials()
                 {
                     color = bvec(192, 192, 192);
                     break; // black
-                }
-                case Mat_NoGI:
-                {
-                    color = bvec(128, 160, 255);
-                    break; // brown
                 }
                 case Mat_Alpha:
                 {

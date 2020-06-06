@@ -396,7 +396,7 @@ extern void previewprefab(const char *name, const vec &color);
 extern void cleanupprefabs();
 
 // octarender
-extern ivec worldmin, worldmax, nogimin, nogimax;
+extern ivec worldmin, worldmax;
 extern vector<tjoint> tjoints;
 extern vector<vtxarray *> varoot, valist;
 

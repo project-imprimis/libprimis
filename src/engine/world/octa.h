@@ -127,7 +127,6 @@ struct vtxarray
     ivec skymin, skymax;     // BB of any sky geom
     ivec watermin, watermax; // BB of any water
     ivec glassmin, glassmax; // BB of any glass
-    ivec nogimin, nogimax;   // BB of any nogi
     ivec bbmin, bbmax;       // BB of everything including children
     uchar curvfc, occluded;
     occludequery *query;

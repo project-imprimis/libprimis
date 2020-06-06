@@ -4004,71 +4004,6 @@ void packlights()
     batchlights();
 }
 
-static inline void nogiquad(int x, int y, int w, int h)
-{
-    gle::attribf(x, y+h);
-    gle::attribf(x+w, y+h);
-    gle::attribf(x+w, y);
-    gle::attribf(x, y);
-}
-
-static inline bool rendernogi(cube *c, const ivec &o, int size, const ivec &bbmin, const ivec &bbmax, int minsize)
-{
-    ivec mid = ivec(o).add(size);
-    uchar overlap = 0;
-    if(bbmin.y < mid.y)
-    {
-        if(bbmin.x < mid.x)
-        {
-            if((bbmin.z < mid.z && (c[0].children ? rendernogi(c[0].children, ivec(o.x, o.y, o.z), size>>1, bbmin, bbmax, minsize) : c[0].material&Mat_NoGI)) ||
-               (bbmax.z > mid.z && (c[4].children ? rendernogi(c[4].children, ivec(o.x, o.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[4].material&Mat_NoGI)))
-                overlap |= 1;
-        }
-        if(bbmax.x > mid.x)
-        {
-            if((bbmin.z < mid.z && (c[1].children ? rendernogi(c[1].children, ivec(mid.x, o.y, o.z), size>>1, bbmin, bbmax, minsize) : c[1].material&Mat_NoGI)) ||
-               (bbmax.z > mid.z && (c[5].children ? rendernogi(c[5].children, ivec(mid.x, o.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[5].material&Mat_NoGI)))
-                overlap |= 2;
-        }
-    }
-    if(bbmax.y > mid.y)
-    {
-        if(bbmin.x < mid.x)
-        {
-            if((bbmin.z < mid.z && (c[2].children ? rendernogi(c[2].children, ivec(o.x, mid.y, o.z), size>>1, bbmin, bbmax, minsize) : c[2].material&Mat_NoGI)) ||
-               (bbmax.z > mid.z && (c[6].children ? rendernogi(c[6].children, ivec(o.x, mid.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[6].material&Mat_NoGI)))
-                overlap |= 4;
-        }
-        if(bbmax.x > mid.x)
-        {
-            if((bbmin.z < mid.z && (c[3].children ? rendernogi(c[3].children, ivec(mid.x, mid.y, o.z), size>>1, bbmin, bbmax, minsize) : c[3].material&Mat_NoGI)) ||
-               (bbmax.z > mid.z && (c[7].children ? rendernogi(c[7].children, ivec(mid.x, mid.y, mid.z), size>>1, bbmin, bbmax, minsize) : c[7].material&Mat_NoGI)))
-                overlap |= 8;
-        }
-    }
-    if(!overlap) return false;
-    if(overlap == 0xF || size <= minsize) return true;
-    if(overlap&1)
-    {
-        if(overlap&2) nogiquad(o.x, o.y, 2*size, size);
-        else nogiquad(o.x, o.y, size, size);
-    }
-    else if(overlap&2) nogiquad(o.x+size, o.y, size, size);
-    if(overlap&4)
-    {
-        if(overlap&8) nogiquad(o.x, o.y+size, 2*size, size);
-        else nogiquad(o.x, o.y+size, size, size);
-    }
-    else if(overlap&8) nogiquad(o.x+size, o.y+size, size, size);
-    return false;
-}
-
-static inline void rendernogi(const ivec &bbmin, const ivec &bbmax, int minsize)
-{
-    if(rendernogi(worldroot, ivec(0, 0, 0), worldsize>>1, ivec(bbmin).max(nogimin), ivec(bbmax).min(nogimax), minsize))
-        nogiquad(0, 0, worldsize, worldsize);
-}
-
 static inline void rhquad(float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2, float tz)
 {
     gle::begin(GL_TRIANGLE_STRIP);
@@ -4398,7 +4333,6 @@ void radiancehints::renderslices()
 
         maskslice:
             if(i) continue;
-            rendernogi(ivec::floor(vec(x1, y1, z - 0.5f*step)), ivec::ceil(vec(x2, y2, z + 0.5f*step)), int(step));
             if(gle::attribbuf.empty()) continue;
             SETSHADER(radiancehintsdisable);
             if(rhborder)

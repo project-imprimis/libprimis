@@ -333,7 +333,6 @@ struct vacollect : verthash
     vec alphamin, alphamax;
     vec refractmin, refractmax;
     vec skymin, skymax;
-    ivec nogimin, nogimax;
 
     void clear()
     {
@@ -351,8 +350,6 @@ struct vacollect : verthash
         decaltexs.setsize(0);
         alphamin = refractmin = skymin = vec(1e16f, 1e16f, 1e16f);
         alphamax = refractmax = skymax = vec(-1e16f, -1e16f, -1e16f);
-        nogimin = ivec(INT_MAX, INT_MAX, INT_MAX);
-        nogimax = ivec(INT_MIN, INT_MIN, INT_MIN);
     }
 
     void optimize()
@@ -1573,8 +1570,6 @@ vtxarray *newva(const ivec &o, int size)
         va->skymin = ivec(vec(vc.skymin).mul(8)).shr(3);
         va->skymax = ivec(vec(vc.skymax).mul(8)).add(7).shr(3);
     }
-    va->nogimin = vc.nogimin;
-    va->nogimax = vc.nogimax;
 
     wverts += va->verts;
     wtris  += va->tris + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
@@ -1661,9 +1656,7 @@ void clearvas(cube *c)
 }
 
 ivec worldmin(0, 0, 0),
-     worldmax(0, 0, 0),
-     nogimin(0, 0, 0),
-     nogimax(0, 0, 0);
+     worldmax(0, 0, 0);
 
 void updatevabb(vtxarray *va, bool force)
 {
@@ -1700,16 +1693,14 @@ void updatevabb(vtxarray *va, bool force)
     va->bbmax.min(ivec(va->o).add(va->size));
     worldmin.min(va->bbmin);
     worldmax.max(va->bbmax);
-    nogimin.min(va->nogimin);
-    nogimax.max(va->nogimax);
 }
 
 void updatevabbs(bool force)
 {
     if(force)
     {
-        worldmin = nogimin = ivec(worldsize, worldsize, worldsize);
-        worldmax = nogimax = ivec(0, 0, 0);
+        worldmin = ivec(worldsize, worldsize, worldsize);
+        worldmax = ivec(0, 0, 0);
         for(int i = 0; i < varoot.length(); i++)
         {
             updatevabb(varoot[i], true);
@@ -1927,11 +1918,6 @@ void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // cr
     if(c.material != Mat_Air)
     {
         genmatsurfs(c, co, size, vc.matsurfs);
-        if(c.material&Mat_NoGI)
-        {
-            vc.nogimin.min(co);
-            vc.nogimax.max(ivec(co).add(size));
-        }
     }
 
     if(c.ext && c.ext->ents)
