@@ -1224,29 +1224,6 @@ void updatefpshistory(int millis)
     }
 }
 
-void getframemillis(float &avg, float &bestdiff, float &worstdiff)
-{
-    int total = fpshistory[MAXFPSHISTORY-1],
-        best = total,
-        worst = total;
-    for(int i = 0; i < MAXFPSHISTORY-1; ++i)
-    {
-        int millis = fpshistory[i];
-        total += millis;
-        if(millis < best)
-        {
-            best = millis;
-        }
-        if(millis > worst)
-        {
-            worst = millis;
-        }
-    }
-    avg = total/static_cast<float>(MAXFPSHISTORY);
-    best = best - avg;
-    worstdiff = avg - worst;
-}
-
 void getfps(int &fps, int &bestdiff, int &worstdiff)
 {
     int total = fpshistory[MAXFPSHISTORY-1],
