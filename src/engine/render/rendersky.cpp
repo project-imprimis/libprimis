@@ -1,6 +1,6 @@
 #include "engine.h"
 
-Texture *sky[6] = { 0, 0, 0, 0, 0, 0 }, *clouds[6] = { 0, 0, 0, 0, 0, 0 };
+Texture *sky[6] = { 0, 0, 0, 0, 0, 0 };
 
 void loadsky(const char *basename, Texture *texs[6])
 {
@@ -71,10 +71,8 @@ CVARR(skyboxcolor, 0xFFFFFF);
 FVARR(skyboxoverbright, 1, 2, 16);
 FVARR(skyboxoverbrightmin, 0, 1, 16);
 FVARR(skyboxoverbrightthreshold, 0, 0.7f, 1);
-FVARR(spinsky, -720, 0, 720);
-VARR(yawsky, 0, 0, 360);
-FVARR(spinclouds, -720, 0, 720);
-VARR(yawclouds, 0, 0, 360);
+FVARR(skyboxspin, -720, 0, 720);
+VARR (skyboxyaw, 0, 0, 360);
 FVARR(cloudclip, 0, 0.5f, 1);
 SVARFR(cloudlayer, "", { if(cloudlayer[0]) cloudoverlay = loadskyoverlay(cloudlayer); });
 FVARR(cloudoffsetx, 0, 0, 1);
@@ -82,12 +80,12 @@ FVARR(cloudoffsety, 0, 0, 1);
 FVARR(cloudscrollx, -16, 0, 16);
 FVARR(cloudscrolly, -16, 0, 16);
 FVARR(cloudscale, 0.001, 1, 64);
-FVARR(spincloudlayer, -720, 0, 720);
-VARR(yawcloudlayer, 0, 0, 360);
+FVARR(cloudspin, -720, 0, 720);
+VARR (cloudyaw, 0, 0, 360);
 FVARR(cloudheight, -1, 0.2f, 1);
 FVARR(cloudfade, 0, 0.2f, 1);
 FVARR(cloudalpha, 0, 1, 1);
-VARR(cloudsubdiv, 4, 16, 64);
+VARR (cloudsubdiv, 4, 16, 64);
 CVARR(cloudcolor, 0xFFFFFF);
 
 void drawenvboxface(float s0, float t0, int x0, int y0, int z0,
@@ -326,7 +324,7 @@ void drawskybox(bool clear)
 
         matrix4 skymatrix = cammatrix, skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
-        skymatrix.rotate_around_z((spinsky*lastmillis/1000.0f+yawsky)*-RAD);
+        skymatrix.rotate_around_z((skyboxspin*lastmillis/1000.0f+skyboxyaw)*-RAD);
         skyprojmatrix.mul(projmatrix, skymatrix);
         LOCALPARAM(skymatrix, skyprojmatrix);
 
@@ -358,7 +356,7 @@ void drawskybox(bool clear)
 
         matrix4 skymatrix = cammatrix, skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
-        skymatrix.rotate_around_z((spincloudlayer*lastmillis/1000.0f+yawcloudlayer)*-RAD);
+        skymatrix.rotate_around_z((cloudspin*lastmillis/1000.0f+cloudyaw)*-RAD);
         skyprojmatrix.mul(projmatrix, skymatrix);
         LOCALPARAM(skymatrix, skyprojmatrix);
 

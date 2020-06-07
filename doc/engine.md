@@ -1104,8 +1104,6 @@ color, and location.
 ### 2.4.2 Fog
 ---
 
-*Note: This is entirely distinct from the *fogdome*, a sky property.*
-
 Fog is an effect that fades objects to a particular color as the distance to
 that object grows larger. Fog is useful for creating a closed, damp ambiance,
 but be aware that it can be easily disabled on client machines, making its use
@@ -1178,33 +1176,10 @@ Implicit in the path is the location of skyboxes in `/media/sky`.
 * `skyboxoverbright <scale>` Controls how bright highlights in the skybox are.
 * `skyboxoverbrightmin <scale>` Sets the overbrightness overall of the skybox.
 * `skyboxoverbrightthreshhold <scale>` Sets min brightness for highlighting.
-* `yawsky <angle>` Sets the overall orientation of the skybox in the world.
-* `spinsky <angular vel>` Sets the rotation speed of the sky in deg/s.
+* `skyboxyaw <angle>` Sets the overall orientation of the skybox in the world.
+* `skyboxspin <angular vel>` Sets the rotation speed of the sky in deg/s.
 
-### 2.4.5 Cloudbox
----
-
-The cloudbox takes a standard skybox and renders it inside the standard skybox.
-The cloudbox accepts all six standard faces that a skybox does (bk,dn,ft,lf,rt,
-up) but only renders the top face and the top half of the sides (the bottom face
-specified is not rendered). This means that for a cloudbox to be seamlessly
-integrated with the skybox, it should have a smooth transition at the horizon;
-this generally makes typical skyboxes inappropriate when pushed into the
-cloudbox role with no tweaking.
-
-The most useful way to use a cloudbox is, unsurprisingly, to simulate clouds.
-This is best accomplished by giving the cloudbox an alpha setting such that the
-skybox can be seen behind the cloudbox.
-
-#### Commands:
-
-* `cloudbox <path>` Sets the path of the cloudbox, excluding the _XX and format.
-* `cloudboxcolor <color>` Tints the cloudbox to the given hex color.
-* `cloudboxalpha <value>` Sets the opacity of the cloudbox (0..1, 1 for opaque).
-* `yawclouds <angle>` Sets the overall orientation of the cloudbox in the world.
-* `spinclouds <angular vel>` Sets the rotation speed of the sky in deg/s.
-
-### 2.4.6 Cloud Layer
+### 2.4.5 Cloud Layer
 ---
 
 Additionally, the engine supports a single planar layer of clouds. The "height"
@@ -1235,10 +1210,10 @@ realistic cloud movement when done in moderation.
 * `cloudscrollx <value>` Sets the x scroll amount, in pixels/s.
 * `cloudscrolly <value>` Sets the y scroll amount, in pixels/s.
 * `cloudsubdiv <value>` Sets the number of edges the cloud perimeter has.
-* `spincloudlayer <value>` Sets the spin rate of the clouds in the CW direction.
-* `yawcloudlayer <value>` Sets the yaw angle of the cloud layer.
+* `cloudspin <value>` Sets the spin rate of the clouds in the CW direction.
+* `cloudyaw <value>` Sets the yaw offset angle of the cloud layer.
 
-### 2.4.7 Atmo
+### 2.4.6 Atmo
 ---
 
 Atmo is the way that the game can create a procedural skybox such that the sky
@@ -1272,28 +1247,6 @@ apparent intensity of the light source, and the characteristic color of the sky.
 * `atmosundisksize <value>` Sets the diameter of the atmo sun.
 * `atmosunlight <value>` Sets the color of the atmo sun & overall sky color.
 * `atmosunlightscale <value>` Sets the ratio of the sunlight brightness vs atmo.
-
-### 2.4.8 Fogdome
-
-The fogdome is a sky effect (rather than one that applies to the world like
-regular fog does) and as such operates much like the `atmo` skybox. The fogdome,
-however, is simpler, and only has one overall color with intensities and limits
-set by the controlling variables below. The fogdome can be cut off at the bottom
-if desired or allowed to smoothly close, and its centering location (the area
-where the fogdome effect is strongest) can be chosen as well.
-
-The fogdome works to create a homogeneous color effect that gradually blends
-itself over the skybox or atmo layer, allowing possible matching with standard
-world fog for a seamless appearance if done carefully.
-
-#### Commands:
-
-* `fogdomecap <boolean>` Toggles enclosement of the bottom of the fogdome.
-* `fogdomeclip <value>` Sets the size at which to cut off the fogdome.
-* `fogdomecolour <color>` Sets the hex color of the fogdome.
-* `fogdomeheight <value>` Sets the height to which the fogdome is centered.
-* `fogdomemax <value>` Sets the max opacity of the fogdome (0..1, 1 is opaque).
-* `fogdomemin <value>` Sets the min opacity of the fogdome (0..1, 1 is opaque).
 
 # 3. Entities
 ---
