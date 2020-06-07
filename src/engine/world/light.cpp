@@ -123,17 +123,20 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
                 }
                 offset = numbefore;
             }
-            for(int i = 0; i < orient; ++i)
+            else
             {
-                surfaceinfo &surf = ext->surfaces[i];
-                int numverts = surf.totalverts();
-                if(!numverts)
+                for(int i = 0; i < orient; ++i)
                 {
-                    continue;
+                    surfaceinfo &surf = ext->surfaces[i];
+                    int numverts = surf.totalverts();
+                    if(!numverts)
+                    {
+                        continue;
+                    }
+                    memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
+                    surf.verts = offset;
+                    offset += numverts;
                 }
-                memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
-                surf.verts = offset;
-                offset += numverts;
             }
             dstoffset = offset;
             offset += numsrcverts;
