@@ -336,10 +336,10 @@ int lookupmaterial(const vec &v)
     return c->material;
 }
 
-const cube *neighbourstack[32];
-int neighbourdepth = -1;
+const cube *neighborstack[32];
+int neighbordepth = -1;
 
-const cube &neighbourcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
+const cube &neighborcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
 {
     ivec n = co;
     int dim = DIMENSION(orient);
@@ -361,16 +361,16 @@ const cube &neighbourcube(const cube &c, int orient, const ivec &co, int size, i
     }
     int scale = worldscale;
     const cube *nc = worldroot;
-    if(neighbourdepth >= 0)
+    if(neighbordepth >= 0)
     {
-        scale -= neighbourdepth + 1;
+        scale -= neighbordepth + 1;
         diff >>= scale;
         do
         {
             scale++;
             diff >>= 1;
         } while(diff);
-        nc = neighbourstack[worldscale - scale];
+        nc = neighborstack[worldscale - scale];
     }
     scale--;
     nc = &nc[OCTA_STEP(n.x, n.y, n.z, scale)];
@@ -1314,7 +1314,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
     }
     ivec no;
     int nsize;
-    const cube &o = neighbourcube(c, orient, co, size, no, nsize);
+    const cube &o = neighborcube(c, orient, co, size, no, nsize);
     int opp = OPPOSITE(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
@@ -1398,7 +1398,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     }
     ivec no;
     int nsize;
-    const cube &o = neighbourcube(c, orient, co, size, no, nsize);
+    const cube &o = neighborcube(c, orient, co, size, no, nsize);
     if(&o==&c)
     {
         return 0;
@@ -1558,7 +1558,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     }
     ivec no;
     int nsize;
-    const cube &o = neighbourcube(c, orient, co, size, no, nsize);
+    const cube &o = neighborcube(c, orient, co, size, no, nsize);
     if((c.material&matmask) == nmat)
     {
         nmat = Mat_Air;
@@ -1983,7 +1983,7 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
 {
     ivec no;
     int nsize;
-    const cube &nc = neighbourcube(cu, orient, co, size, no, nsize);
+    const cube &nc = neighborcube(cu, orient, co, size, no, nsize);
     facebounds mincf;
     mincf.u1 = orig.u2;
     mincf.u2 = orig.u1;
@@ -2612,7 +2612,7 @@ static hashtable<cfkey, cfpolys> cpolys;
 
 void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = worldsize>>1)
 {
-    neighbourstack[++neighbourdepth] = c;
+    neighborstack[++neighbordepth] = c;
     for(int i = 0; i < 8; ++i)
     {
         ivec co(i, o, size);
@@ -2661,7 +2661,7 @@ void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = wo
             cpolys.clear();
         }
     }
-    --neighbourdepth;
+    --neighbordepth;
 }
 
 int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts)

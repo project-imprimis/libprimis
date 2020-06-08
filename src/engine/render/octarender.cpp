@@ -1425,7 +1425,7 @@ void gencubeedges(cube &c, const ivec &co, int size)
 
 void gencubeedges(cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
 {
-    neighbourstack[++neighbourdepth] = c;
+    neighborstack[++neighbordepth] = c;
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
@@ -1442,7 +1442,7 @@ void gencubeedges(cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size 
             gencubeedges(c[i], o, size);
         }
     }
-    --neighbourdepth;
+    --neighbordepth;
 }
 
 void gencubeverts(cube &c, const ivec &co, int size, int csi)
@@ -1876,7 +1876,7 @@ void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // cr
 
     if(c.children)
     {
-        neighbourstack[++neighbourdepth] = c.children;
+        neighborstack[++neighbordepth] = c.children;
         c.escaped = 0;
         for(int i = 0; i < 8; ++i)
         {
@@ -1887,7 +1887,7 @@ void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // cr
                 c.escaped |= 1<<i;
             maxlevel = max(maxlevel, level);
         }
-        --neighbourdepth;
+        --neighbordepth;
 
         if(csi <= MAXMERGELEVEL && vamerges[csi].length())
         {
@@ -2047,7 +2047,7 @@ int updateva(cube *c, const ivec &co, int size, int csi)
     int ccount = 0,
         cmergemax  = vamergemax,
         chasmerges = vahasmerges;
-    neighbourstack[++neighbourdepth] = c;
+    neighborstack[++neighbordepth] = c;
     for(int i = 0; i < 8; ++i)                                   // counting number of semi-solid/solid children cubes
     {
         int count = 0,
@@ -2116,7 +2116,7 @@ int updateva(cube *c, const ivec &co, int size, int csi)
         chasmerges |= vahasmerges;
         ccount += count;
     }
-    --neighbourdepth;
+    --neighbordepth;
     vamergemax = cmergemax;
     vahasmerges = chasmerges;
 

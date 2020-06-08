@@ -1432,13 +1432,13 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
 {
     if(c.children)
     {
-        neighbourstack[++neighbourdepth] = c.children;
+        neighborstack[++neighbordepth] = c.children;
         for(int i = 0; i < 8; ++i)
         {
             ivec o(i, co, size/2);
             genprefabmesh(r, c.children[i], o, size/2);
         }
-        --neighbourdepth;
+        --neighbordepth;
     }
     else if(!IS_EMPTY(c))
     {
@@ -1504,12 +1504,12 @@ void genprefabmesh(prefab &p)
     LOOP_XYZ(b, b.grid, if(!IS_EMPTY(*s) || s->children) pastecube(*s, c); s++);
 
     prefabmesh r;
-    neighbourstack[++neighbourdepth] = worldroot;
+    neighborstack[++neighbordepth] = worldroot;
     for(int i = 0; i < 8; ++i)
     {
         genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
     }
-    --neighbourdepth;
+    --neighbordepth;
     r.setup(p);
 
     freeocta(worldroot);
