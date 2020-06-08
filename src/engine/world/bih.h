@@ -30,11 +30,11 @@ struct BIH
 
     enum
     {
-        MESH_RENDER = 1<<1,
-        MESH_NOCLIP = 1<<2,
-        MESH_ALPHA = 1<<3,
-        MESH_COLLIDE = 1<<4,
-        MESH_CULLFACE = 1<<5
+        Mesh_Render = 1<<1,
+        Mesh_NoClip = 1<<2,
+        Mesh_Alpha = 1<<3,
+        Mesh_Collide = 1<<4,
+        Mesh_CullFace = 1<<5
     };
 
     struct mesh

@@ -303,11 +303,11 @@ struct animmodel : model
             BIH::mesh &m = bih.add();
             m.xform = t;
             m.tex = s.tex;
-            if(canrender) m.flags |= BIH::MESH_RENDER;
-            if(cancollide) m.flags |= BIH::MESH_COLLIDE;
-            if(s.alphatested()) m.flags |= BIH::MESH_ALPHA;
-            if(noclip) m.flags |= BIH::MESH_NOCLIP;
-            if(s.cullface > 0) m.flags |= BIH::MESH_CULLFACE;
+            if(canrender) m.flags |= BIH::Mesh_Render;
+            if(cancollide) m.flags |= BIH::Mesh_Collide;
+            if(s.alphatested()) m.flags |= BIH::Mesh_Alpha;
+            if(noclip) m.flags |= BIH::Mesh_NoClip;
+            if(s.cullface > 0) m.flags |= BIH::Mesh_CullFace;
             genBIH(m);
             while(bih.last().numtris > BIH::mesh::MAXTRIS)
             {
@@ -1153,12 +1153,12 @@ struct animmodel : model
 
     enum
     {
-        LINK_TAG = 0,
-        LINK_COOP,
-        LINK_REUSE
+        Link_Tag = 0,
+        Link_Coop,
+        Link_Reuse
     };
 
-    virtual int linktype(animmodel *m, part *p) const { return LINK_TAG; }
+    virtual int linktype(animmodel *m, part *p) const { return Link_Tag; }
 
     void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray)
     {
@@ -1175,11 +1175,11 @@ struct animmodel : model
                 part *p = m->parts[0];
                 switch(linktype(m, p))
                 {
-                    case LINK_TAG:
+                    case Link_Tag:
                         p->index = link(p, a[i].tag, vec(0, 0, 0), a[i].anim, a[i].basetime, a[i].pos) ? index : -1;
                         break;
 
-                    case LINK_COOP:
+                    case Link_Coop:
                         p->index = index;
                         break;
 
@@ -1198,11 +1198,11 @@ struct animmodel : model
             part *p = parts[i];
             switch(linktype(this, p))
             {
-                case LINK_COOP:
+                case Link_Coop:
                     p->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray);
                     break;
 
-                case LINK_REUSE:
+                case Link_Reuse:
                     p->intersect(anim | ANIM_REUSE, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
                     break;
             }
@@ -1215,17 +1215,17 @@ struct animmodel : model
             part *p = m->parts[0];
             switch(linktype(m, p))
             {
-                case LINK_TAG:
+                case Link_Tag:
                     if(p->index >= 0) unlink(p);
                     p->index = 0;
                     break;
 
-                case LINK_COOP:
+                case Link_Coop:
                     p->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray);
                     p->index = 0;
                     break;
 
-                case LINK_REUSE:
+                case Link_Reuse:
                     p->intersect(anim | ANIM_REUSE, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
                     break;
             }
@@ -1295,11 +1295,11 @@ struct animmodel : model
                 part *p = m->parts[0];
                 switch(linktype(m, p))
                 {
-                    case LINK_TAG:
+                    case Link_Tag:
                         p->index = link(p, a[i].tag, vec(0, 0, 0), a[i].anim, a[i].basetime, a[i].pos) ? index : -1;
                         break;
 
-                    case LINK_COOP:
+                    case Link_Coop:
                         p->index = index;
                         break;
 
@@ -1318,11 +1318,11 @@ struct animmodel : model
             part *p = parts[i];
             switch(linktype(this, p))
             {
-                case LINK_COOP:
+                case Link_Coop:
                     p->render(anim, basetime, basetime2, pitch, axis, forward, d);
                     break;
 
-                case LINK_REUSE:
+                case Link_Reuse:
                     p->render(anim | ANIM_REUSE, basetime, basetime2, pitch, axis, forward, d, as);
                     break;
             }
@@ -1339,17 +1339,17 @@ struct animmodel : model
             part *p = m->parts[0];
             switch(linktype(m, p))
             {
-                case LINK_TAG:
+                case Link_Tag:
                     if(p->index >= 0) unlink(p);
                     p->index = 0;
                     break;
 
-                case LINK_COOP:
+                case Link_Coop:
                     p->render(anim, basetime, basetime2, pitch, axis, forward, d);
                     p->index = 0;
                     break;
 
-                case LINK_REUSE:
+                case Link_Reuse:
                     p->render(anim | ANIM_REUSE, basetime, basetime2, pitch, axis, forward, d, as);
                     break;
             }
@@ -1479,8 +1479,8 @@ struct animmodel : model
             part *p = parts[i];
             switch(linktype(this, p))
             {
-                case LINK_COOP:
-                case LINK_REUSE:
+                case Link_Coop:
+                case Link_Reuse:
                     p->genBIH(bih, m);
                     break;
             }
@@ -1499,8 +1499,8 @@ struct animmodel : model
             part *p = parts[i];
             switch(linktype(this, p))
             {
-                case LINK_COOP:
-                case LINK_REUSE:
+                case Link_Coop:
+                case Link_Reuse:
                     p->genshadowmesh(tris, m);
                     break;
             }
@@ -1755,8 +1755,8 @@ struct animmodel : model
             part *p = parts[i];
             switch(linktype(this, p))
             {
-                case LINK_COOP:
-                case LINK_REUSE:
+                case Link_Coop:
+                case Link_Reuse:
                     p->calcbb(bbmin, bbmax, m);
                     break;
             }

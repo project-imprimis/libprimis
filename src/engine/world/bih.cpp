@@ -30,7 +30,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
     float v, w, f;
     if(det >= 0)
     {
-        if(!(mode&Ray_Shadow) && m.flags&MESH_CULLFACE)
+        if(!(mode&Ray_Shadow) && m.flags&Mesh_CullFace)
         {
             return false;
         }
@@ -69,7 +69,7 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
         }
     }
     float invdet = 1/det;
-    if(m.flags&MESH_ALPHA && (mode&Ray_Shadow)==Ray_Shadow && (m.tex->alphamask || loadalphamask(m.tex)))
+    if(m.flags&Mesh_Alpha && (mode&Ray_Shadow)==Ray_Shadow && (m.tex->alphamask || loadalphamask(m.tex)))
     {
         vec2 at = m.gettc(t.vert[0]),
              bt = m.gettc(t.vert[1]).sub(at).mul(v*invdet),
@@ -196,7 +196,7 @@ inline bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &di
     for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
-        if(!(m.flags&MESH_RENDER) || (!(mode&Ray_Shadow) && m.flags&MESH_NOCLIP))
+        if(!(m.flags&Mesh_Render) || (!(mode&Ray_Shadow) && m.flags&Mesh_NoClip))
         {
             continue;
         }
@@ -948,7 +948,7 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
     for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
-        if(!(m.flags&MESH_COLLIDE) || m.flags&MESH_NOCLIP)
+        if(!(m.flags&Mesh_Collide) || m.flags&Mesh_NoClip)
         {
             continue;
         }
@@ -1008,7 +1008,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
     for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
-        if(!(m.flags&MESH_COLLIDE) || m.flags&MESH_NOCLIP)
+        if(!(m.flags&Mesh_Collide) || m.flags&Mesh_NoClip)
         {
             continue;
         }
@@ -1159,7 +1159,7 @@ void BIH::genstaintris(stainrenderer *s, const vec &staincenter, float stainradi
     for(int i = 0; i < nummeshes; ++i)
     {
         mesh &m = meshes[i];
-        if(!(m.flags&MESH_RENDER) || m.flags&MESH_ALPHA)
+        if(!(m.flags&Mesh_Render) || m.flags&Mesh_Alpha)
         {
             continue;
         }

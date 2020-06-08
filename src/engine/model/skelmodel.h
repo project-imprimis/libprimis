@@ -1840,8 +1840,8 @@ struct skelmodel : animmodel
     {
         return type()==m->type() &&
             ((skelmeshgroup *)parts[0]->meshes)->skel == ((skelmeshgroup *)p->meshes)->skel ?
-                LINK_REUSE :
-                LINK_TAG;
+                Link_Reuse :
+                Link_Tag;
     }
 
     bool skeletal() const { return true; }
