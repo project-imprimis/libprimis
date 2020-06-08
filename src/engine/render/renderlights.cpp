@@ -1,19 +1,51 @@
 #include "engine.h"
 
-int gw = -1, gh = -1, bloomw = -1, bloomh = -1, lasthdraccum = 0;
-GLuint gfbo = 0, gdepthtex = 0, gcolortex = 0, gnormaltex = 0, gglowtex = 0, gdepthrb = 0, gstencilrb = 0;
+int gw = -1,
+    gh = -1,
+    bloomw = -1,
+    bloomh = -1,
+    lasthdraccum = 0;
+GLuint gfbo = 0,
+       gdepthtex  = 0,
+       gcolortex  = 0,
+       gnormaltex = 0,
+       gglowtex   = 0,
+       gdepthrb   = 0,
+       gstencilrb = 0;
 bool gdepthinit = false;
-int scalew = -1, scaleh = -1;
-GLuint scalefbo[2] = { 0, 0 }, scaletex[2] = { 0, 0 };
-GLuint hdrfbo = 0, hdrtex = 0, bloompbo = 0, bloomfbo[6] = { 0, 0, 0, 0, 0, 0 }, bloomtex[6] = { 0, 0, 0, 0, 0, 0 };
+int scalew = -1,
+    scaleh = -1;
+GLuint scalefbo[2] = { 0, 0 },
+       scaletex[2] = { 0, 0 };
+GLuint hdrfbo = 0,
+       hdrtex = 0,
+       bloompbo = 0,
+       bloomfbo[6] = { 0, 0, 0, 0, 0, 0 },
+       bloomtex[6] = { 0, 0, 0, 0, 0, 0 };
 int hdrclear = 0;
-GLuint refractfbo = 0, refracttex = 0;
-GLenum bloomformat = 0, hdrformat = 0, stencilformat = 0;
+GLuint refractfbo    = 0,
+       refracttex    = 0;
+GLenum bloomformat   = 0,
+       hdrformat     = 0,
+       stencilformat = 0;
 bool hdrfloat = false;
-GLuint msfbo = 0, msdepthtex = 0, mscolortex = 0, msnormaltex = 0, msglowtex = 0, msdepthrb = 0, msstencilrb = 0, mshdrfbo = 0, mshdrtex = 0, msrefractfbo = 0, msrefracttex = 0;
+GLuint msfbo = 0,
+       msdepthtex   = 0,
+       mscolortex   = 0,
+       msnormaltex  = 0,
+       msglowtex    = 0,
+       msdepthrb    = 0,
+       msstencilrb  = 0,
+       mshdrfbo     = 0,
+       mshdrtex     = 0,
+       msrefractfbo = 0,
+       msrefracttex = 0;
 vector<vec2> msaapositions;
-int aow = -1, aoh = -1;
-GLuint aofbo[4] = { 0, 0, 0, 0 }, aotex[4] = { 0, 0, 0, 0 }, aonoisetex = 0;
+int aow  = -1,
+    saoh = -1;
+GLuint aofbo[4] = { 0, 0, 0, 0 },
+       aotex[4] = { 0, 0, 0, 0 },
+       aonoisetex = 0;
 matrix4 eyematrix, worldmatrix, linearworldmatrix, screenmatrix;
 
 int gethdrformat(int prec, int fallback = GL_RGB)
