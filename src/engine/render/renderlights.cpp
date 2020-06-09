@@ -368,8 +368,8 @@ void renderao()
         SETSHADER(linearizedepth);
         screenquad(vieww, viewh);
 
-        xscale *= float(vieww)/aow;
-        yscale *= float(viewh)/aoh;
+        xscale *= static_cast<float>(vieww)/aow;
+        yscale *= static_cast<float>(viewh)/aoh;
 
         glBindTexture(GL_TEXTURE_RECTANGLE, aotex[3]);
     }
@@ -398,7 +398,7 @@ void renderao()
     LOCALPARAMF(contrastparams, (2.0f*aodark)/aotaps, aosharp);
     LOCALPARAMF(offsetscale, xscale/eyematrix.d.z, yscale/eyematrix.d.z, eyematrix.d.x/eyematrix.d.z, eyematrix.d.y/eyematrix.d.z);
     LOCALPARAMF(prefilterdepth, aoprefilterdepth);
-    screenquad(vieww, viewh, aow/float(1<<aonoise), aoh/float(1<<aonoise));
+    screenquad(vieww, viewh, aow/static_cast<float>(1<<aonoise), aoh/static_cast<float>(1<<aonoise));
 
     if(aobilateral)
     {
@@ -1252,7 +1252,7 @@ void processhdr(GLuint outfbo, int aa)
         glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
         SETSHADER(hdraccum);
         glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
-        LOCALPARAMF(accumscale, lasthdraccum ? pow(hdraccumscale, float(lastmillis - lasthdraccum)/hdraccummillis) : 0);
+        LOCALPARAMF(accumscale, lasthdraccum ? pow(hdraccumscale, static_cast<float>(lastmillis - lasthdraccum)/hdraccummillis) : 0);
         screenquad(2, 2);
         glDisable(GL_BLEND);
 
@@ -1706,7 +1706,7 @@ void viewrh()
     {
         SETSHADER(hud3d);
         glBindTexture(GL_TEXTURE_3D, rhtex[1]);
-        float z = (max(debugrh, 1)-1+0.5f)/float((rhgrid+2*rhborder)*rhsplits);
+        float z = (max(debugrh, 1)-1+0.5f)/static_cast<float>((rhgrid+2*rhborder)*rhsplits);
         gle::defvertex(2);
         gle::deftexcoord0(3);
         gle::begin(GL_TRIANGLE_STRIP);
@@ -1751,7 +1751,7 @@ struct lightinfo
         if(e.attached && e.attached->type == EngineEnt_Spotlight)
         {
             dir = vec(e.attached->o).sub(e.o).normalize();
-            spot = clamp(int(e.attached->attr1), 1, 89);
+            spot = clamp(static_cast<int>(e.attached->attr1), 1, 89);
             calcspot();
         }
         calcscissor();
@@ -2045,10 +2045,10 @@ struct lightrect
 
     bool overlaps(int tx1, int ty1, int tx2, int ty2, const uint *tilemask) const
     {
-        if(int(x2) <= tx1 || int(x1) >= tx2 || int(y2) <= ty1 || int(y1) >= ty2) return false;
+        if(static_cast<int>(x2) <= tx1 || static_cast<int>(x1) >= tx2 || static_cast<int>(y2) <= ty1 || static_cast<int>(y1) >= ty2) return false;
         if(!tilemask) return true;
         uint xmask = (1<<x2) - (1<<x1);
-        for(int y = max(int(y1), ty1), end = min(int(y2), ty2); y < end; y++) if(tilemask[y] & xmask) return true;
+        for(int y = max(static_cast<int>(y1), ty1), end = min(static_cast<int>(y2), ty2); y < end; y++) if(tilemask[y] & xmask) return true;
         return false;
     }
 };
@@ -2211,7 +2211,7 @@ void cascadedshadowmap::updatesplitdist()
     splits[0].nearplane = nd;
     for(int i = 1; i < csmsplits; ++i)
     {
-        float si = i / float(csmsplits);
+        float si = i / static_cast<float>(csmsplits);
         splits[i].nearplane = lambda*(nd*pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
         splits[i-1].farplane = splits[i].nearplane * 1.005f;
     }
@@ -2535,7 +2535,7 @@ void radiancehints::updatesplitdist()
     splits[0].nearplane = nd;
     for(int i = 1; i < rhsplits; ++i)
     {
-        float si = i / float(rhsplits);
+        float si = i / static_cast<float>(rhsplits);
         splits[i].nearplane = lambda*(nd*pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
         splits[i-1].farplane = splits[i].nearplane * 1.005f;
     }
@@ -2567,7 +2567,7 @@ void radiancehints::setup()
         // modify mvp with a scale and offset
         // now compute the update model view matrix for this split
         split.scale = vec(1/(step*(rhgrid+2*rhborder)), 1/(step*(rhgrid+2*rhborder)), 1/(step*(rhgrid+2*rhborder)*rhsplits));
-        split.offset = vec(-(offset.x-rhborder)/(rhgrid+2*rhborder), -(offset.y-rhborder)/(rhgrid+2*rhborder), (i - (offset.z-rhborder)/(rhgrid+2*rhborder))/float(rhsplits));
+        split.offset = vec(-(offset.x-rhborder)/(rhgrid+2*rhborder), -(offset.y-rhborder)/(rhgrid+2*rhborder), (i - (offset.z-rhborder)/(rhgrid+2*rhborder))/static_cast<float>(rhsplits));
     }
 }
 
@@ -2583,7 +2583,7 @@ void radiancehints::bindparams()
         splitinfo &split = splits[i];
         rhtcv[i] = vec4(vec(split.center).mul(-split.scale.x), split.scale.x);//split.bounds*(1 + rhborder*2*0.5f/rhgrid));
     }
-    GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/float(rhgrid + 2*rhborder));
+    GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));
 }
 
 bool useradiancehints()
@@ -3019,10 +3019,10 @@ static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy
 
 static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
 {
-    int vx1 = max(int(floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
-        vy1 = max(int(floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
-        vx2 = min(int(ceil((sx2*0.5f+0.5f)*vieww)), min(((tx2*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
-        vy2 = min(int(ceil((sy2*0.5f+0.5f)*viewh)), min(((ty2*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
+    int vx1 = max(static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
+        vy1 = max(static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
+        vx2 = min(static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)), min(((tx2*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
+        vy2 = min(static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh)), min(((ty2*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
     lightquads(z, (vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f, (vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f);
 }
 
@@ -3103,7 +3103,7 @@ static inline void setlightglobals(bool transparent = false)
         }
         else
         {
-            GLOBALPARAM(aoscale, aotex[2] ? vec2(1, 1) : vec2(float(aow)/vieww, float(aoh)/viewh));
+            GLOBALPARAM(aoscale, aotex[2] ? vec2(1, 1) : vec2(static_cast<float>(aow)/vieww, static_cast<float>(aoh)/viewh));
             GLOBALPARAMF(aoparams, aomin, 1.0f-aomin, aosunmin, 1.0f-aosunmin);
         }
     }
@@ -3195,10 +3195,10 @@ static void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx
 {
     if(hasDBT && depthtestlights > 1) glDepthBounds_(0, depthtestlightsclamp);
 
-    int tx1 = max(int(floor((bsx1*0.5f+0.5f)*vieww)), 0),
-        ty1 = max(int(floor((bsy1*0.5f+0.5f)*viewh)), 0),
-        tx2 = min(int(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
-        ty2 = min(int(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
+    int tx1 = max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
+        ty1 = max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
+        tx2 = min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
+        ty2 = min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
     s->setvariant(transparent ? 0 : -1, 16);
     lightquad(-1, (tx1*2.0f)/vieww-1.0f, (ty1*2.0f)/viewh-1.0f, (tx2*2.0f)/vieww-1.0f, (ty2*2.0f)/viewh-1.0f, tilemask);
     lightpassesused++;
@@ -3243,10 +3243,10 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
             setlightparams(0, l);
             setlightshader(s, 1, false, l.shadowmap >= 0, l.spot > 0, transparent, avatarpass > 0);
 
-            int tx1 = int(floor((sx1*0.5f+0.5f)*vieww)),
-                ty1 = int(floor((sy1*0.5f+0.5f)*viewh)),
-                tx2 = int(ceil((sx2*0.5f+0.5f)*vieww)),
-                ty2 = int(ceil((sy2*0.5f+0.5f)*viewh));
+            int tx1 = static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)),
+                ty1 = static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)),
+                tx2 = static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)),
+                ty2 = static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh));
             glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
             if(hasDBT && depthtestlights > 1) glDepthBounds_(l.sz1*0.5f + 0.5f, min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
@@ -3340,10 +3340,10 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
         for(int j = 0; j < batch.rects.length(); j++)
         {
             const lightrect &r = batch.rects[j];
-            int x1 = max(int(r.x1), btx1),
-                y1 = max(int(r.y1), bty1),
-                x2 = min(int(r.x2), btx2),
-                y2 = min(int(r.y2), bty2);
+            int x1 = max(static_cast<int>(r.x1), btx1),
+                y1 = max(static_cast<int>(r.y1), bty1),
+                x2 = min(static_cast<int>(r.x2), btx2),
+                y2 = min(static_cast<int>(r.y2), bty2);
             if(x1 < x2 && y1 < y2) lightquads(sz1, sx1, sy1, sx2, sy2, x1, y1, x2, y2, tilemask);
         }
         gle::end();
@@ -3416,10 +3416,10 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     int stencilref = -1;
     if(msaapass == 1 && ghasstencil)
     {
-        int tx1 = max(int(floor((bsx1*0.5f+0.5f)*vieww)), 0),
-            ty1 = max(int(floor((bsy1*0.5f+0.5f)*viewh)), 0),
-            tx2 = min(int(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
-            ty2 = min(int(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
+        int tx1 = max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
+            ty1 = max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
+            tx2 = min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
+            ty2 = min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         if(stencilmask) glStencilFunc(GL_EQUAL, stencilmask|0x08, 0x07);
         else
@@ -3532,7 +3532,7 @@ void rendervolumetric()
     glActiveTexture_(GL_TEXTURE0);
 
     GLOBALPARAMF(shadowatlasscale, 1.0f/shadowatlaspacker.w, 1.0f/shadowatlaspacker.h);
-    GLOBALPARAMF(volscale, float(vieww)/volw, float(viewh)/volh, float(volw)/vieww, float(volh)/viewh);
+    GLOBALPARAMF(volscale, static_cast<float>(vieww)/volw, static_cast<float>(viewh)/volh, static_cast<float>(volw)/vieww, static_cast<float>(volh)/viewh);
     GLOBALPARAMF(volminstep, volminstep);
     GLOBALPARAMF(volprefilter, volprefilter);
     GLOBALPARAMF(voldistclamp, farplane*voldistclamp);
@@ -3595,10 +3595,10 @@ void rendervolumetric()
             LOCALPARAMF(shadowoffset, sm.x + 0.5f*sm.size, sm.y + 0.5f*sm.size);
         }
 
-        int tx1 = int(floor((l.sx1*0.5f+0.5f)*volw)),
-            ty1 = int(floor((l.sy1*0.5f+0.5f)*volh)),
-            tx2 = int(ceil((l.sx2*0.5f+0.5f)*volw)),
-            ty2 = int(ceil((l.sy2*0.5f+0.5f)*volh));
+        int tx1 = static_cast<int>(floor((l.sx1*0.5f+0.5f)*volw)),
+            ty1 = static_cast<int>(floor((l.sy1*0.5f+0.5f)*volh)),
+            tx2 = static_cast<int>(ceil((l.sx2*0.5f+0.5f)*volw)),
+            ty2 = static_cast<int>(ceil((l.sy2*0.5f+0.5f)*volh));
         glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
         if(camera1->o.dist(l.o) <= l.radius*lightradiustweak + nearplane + 1 && depthfaillights)
@@ -3635,10 +3635,10 @@ void rendervolumetric()
         glDisable(GL_DEPTH_TEST);
     }
 
-    int cx1 = int(floor((bsx1*0.5f+0.5f)*volw))&~1,
-        cy1 = int(floor((bsy1*0.5f+0.5f)*volh))&~1,
-        cx2 = (int(ceil((bsx2*0.5f+0.5f)*volw))&~1) + 2,
-        cy2 = (int(ceil((bsy2*0.5f+0.5f)*volh))&~1) + 2;
+    int cx1 = static_cast<int>(floor((bsx1*0.5f+0.5f)*volw))&~1,
+        cy1 = static_cast<int>(floor((bsy1*0.5f+0.5f)*volh))&~1,
+        cx2 = (static_cast<int>(ceil((bsx2*0.5f+0.5f)*volw))&~1) + 2,
+        cy2 = (static_cast<int>(ceil((bsy2*0.5f+0.5f)*volh))&~1) + 2;
     if(volbilateral || volblur)
     {
         int radius = (volbilateral ? volbilateral : volblur)*2;
@@ -3875,8 +3875,8 @@ void collectlights()
                     h = 2;
                     lod = smcubeprec;
                 }
-                lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), float(smminsize), float(smmaxsize));
-                int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+                lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
+                int size = clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
                 w *= size;
                 h *= size;
                 if(mismatched)
@@ -4101,8 +4101,8 @@ void packlights()
                 h = 2;
                 lod = smcubeprec;
             }
-            lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), float(smminsize), float(smmaxsize));
-            int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+            lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
+            int size = clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
             w *= size;
             h *= size;
             ushort x = USHRT_MAX, y = USHRT_MAX;
@@ -4277,15 +4277,15 @@ void radiancehints::renderslices()
 
         if(rhborder && i + 1 < rhsplits)
         {
-            GLOBALPARAMF(bordercenter, 0.5f, 0.5f, float(i+1 + 0.5f)/rhsplits);
+            GLOBALPARAMF(bordercenter, 0.5f, 0.5f, static_cast<float>(i+1 + 0.5f)/rhsplits);
             GLOBALPARAMF(borderrange, 0.5f - 0.5f/(rhgrid+2), 0.5f - 0.5f/(rhgrid+2), (0.5f - 0.5f/(rhgrid+2))/rhsplits);
             GLOBALPARAMF(borderscale, rhgrid+2, rhgrid+2, (rhgrid+2)*rhsplits);
 
             splitinfo &next = splits[i+1];
             for(int k = 0; k < 3; ++k)
             {
-                bmin[k] = floor((max(float(worldmin[k] - nudge), next.center[k] - next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
-                bmax[k] = ceil((min(float(worldmax[k] + nudge), next.center[k] + next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
+                bmin[k] = floor((max(static_cast<float>(worldmin[k] - nudge), next.center[k] - next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
+                bmax[k] = ceil((min(static_cast<float>(worldmax[k] + nudge), next.center[k] + next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
             }
         }
 
@@ -4401,10 +4401,10 @@ void radiancehints::renderslices()
                     ty1 = max(y1, cmin.y);
                     ty2 = min(y2, cmax.y);
                     if(tx1 > tx2 || ty1 > ty2) goto skipped;
-                    vx1 += 2*rhgrid/float(sw)*(tx1 - x1)/(x2 - x1);
-                    vx2 += 2*rhgrid/float(sw)*(tx2 - x2)/(x2 - x1);
-                    vy1 += 2*rhgrid/float(sh)*(ty1 - y1)/(y2 - y1);
-                    vy2 += 2*rhgrid/float(sh)*(ty2 - y2)/(y2 - y1);
+                    vx1 += 2*rhgrid/static_cast<float>(sw)*(tx1 - x1)/(x2 - x1);
+                    vx2 += 2*rhgrid/static_cast<float>(sw)*(tx2 - x2)/(x2 - x1);
+                    vy1 += 2*rhgrid/static_cast<float>(sh)*(ty1 - y1)/(y2 - y1);
+                    vy2 += 2*rhgrid/static_cast<float>(sh)*(ty2 - y2)/(y2 - y1);
                     clipped = true;
                 }
             }
@@ -4424,10 +4424,10 @@ void radiancehints::renderslices()
                       py2 = min(ty2, split.cached.y + split.bounds);
                 if(px1 < px2 && py1 < py2)
                 {
-                    float pvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sw)*(px1 - x1)/(x2 - x1),
-                          pvx2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sw)*(px2 - x2)/(x2 - x1),
-                          pvy1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sh)*(py1 - y1)/(y2 - y1),
-                          pvy2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sh)*(py2 - y2)/(y2 - y1),
+                    float pvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(px1 - x1)/(x2 - x1),
+                          pvx2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(px2 - x2)/(x2 - x1),
+                          pvy1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(py1 - y1)/(y2 - y1),
+                          pvy2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(py2 - y2)/(y2 - y1),
                           ptx1 = (px1 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                           ptx2 = (px2 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                           pty1 = (py1 + split.center.y - split.cached.y)*split.scale.y + split.offset.y,
@@ -4447,10 +4447,10 @@ void radiancehints::renderslices()
                               dy1 = max(py1, dmin.y), dy2 = min(py2, dmax.y);
                         if(dx1 < dx2 && dy1 < dy2)
                         {
-                            float dvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sw)*(dx1 - x1)/(x2 - x1),
-                                  dvx2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sw)*(dx2 - x2)/(x2 - x1),
-                                  dvy1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sh)*(dy1 - y1)/(y2 - y1),
-                                  dvy2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/float(sh)*(dy2 - y2)/(y2 - y1),
+                            float dvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(dx1 - x1)/(x2 - x1),
+                                  dvx2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(dx2 - x2)/(x2 - x1),
+                                  dvy1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(dy1 - y1)/(y2 - y1),
+                                  dvy2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(dy2 - y2)/(y2 - y1),
                                   dtx1 = (dx1 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                                   dtx2 = (dx2 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                                   dty1 = (dy1 + split.center.y - split.cached.y)*split.scale.y + split.offset.y,
@@ -4678,7 +4678,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
         border = 0;
         lod = smspotprec;
         spotloc = e.attached->o;
-        spotangle = clamp(int(e.attached->attr1), 1, 89);
+        spotangle = clamp(static_cast<int>(e.attached->attr1), 1, 89);
     }
     else
     {
@@ -4691,8 +4691,8 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
     }
 
     lod *= smminsize;
-    int size = clamp(int(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
-    bias = border / float(size - border);
+    int size = clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+    bias = border / static_cast<float>(size - border);
 
     return type;
 }
@@ -4749,7 +4749,7 @@ void rendershadowmaps(int offset = 0)
 
         shadoworigin = l.o;
         shadowradius = l.radius;
-        shadowbias = border / float(sm.size - border);
+        shadowbias = border / static_cast<float>(sm.size - border);
         shadowdir = l.dir;
         shadowspot = l.spot;
 
@@ -4779,8 +4779,8 @@ void rendershadowmaps(int offset = 0)
         }
 
         float smnearclip = SQRT3 / l.radius, smfarclip = SQRT3;
-        matrix4 smprojmatrix(vec4(float(sm.size - border) / sm.size, 0, 0, 0),
-                              vec4(0, float(sm.size - border) / sm.size, 0, 0),
+        matrix4 smprojmatrix(vec4(static_cast<float>(sm.size - border) / sm.size, 0, 0, 0),
+                              vec4(0, static_cast<float>(sm.size - border) / sm.size, 0, 0),
                               vec4(0, 0, -(smfarclip + smnearclip) / (smfarclip - smnearclip), -1),
                               vec4(0, 0, -2*smnearclip*smfarclip / (smfarclip - smnearclip), 0));
 
@@ -4944,10 +4944,10 @@ void rendertransparent()
         bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
         if(scissor)
         {
-            int x1 = int(floor(max(sx1*0.5f+0.5f-refractmargin*viewh/vieww, 0.0f)*vieww)),
-                y1 = int(floor(max(sy1*0.5f+0.5f-refractmargin, 0.0f)*viewh)),
-                x2 = int(ceil(min(sx2*0.5f+0.5f+refractmargin*viewh/vieww, 1.0f)*vieww)),
-                y2 = int(ceil(min(sy2*0.5f+0.5f+refractmargin, 1.0f)*viewh));
+            int x1 = static_cast<int>(floor(max(sx1*0.5f+0.5f-refractmargin*viewh/vieww, 0.0f)*vieww)),
+                y1 = static_cast<int>(floor(max(sy1*0.5f+0.5f-refractmargin, 0.0f)*viewh)),
+                x2 = static_cast<int>(ceil(min(sx2*0.5f+0.5f+refractmargin*viewh/vieww, 1.0f)*vieww)),
+                y2 = static_cast<int>(ceil(min(sy2*0.5f+0.5f+refractmargin, 1.0f)*viewh));
             glEnable(GL_SCISSOR_TEST);
             glScissor(x1, y1, x2 - x1, y2 - y1);
         }
@@ -5044,8 +5044,8 @@ void rendertransparent()
             bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
             if(scissor)
             {
-                int x1 = int(floor((sx1*0.5f+0.5f)*vieww)), y1 = int(floor((sy1*0.5f+0.5f)*viewh)),
-                    x2 = int(ceil((sx2*0.5f+0.5f)*vieww)), y2 = int(ceil((sy2*0.5f+0.5f)*viewh));
+                int x1 = static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)), y1 = static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)),
+                    x2 = static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)), y2 = static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh));
                 glEnable(GL_SCISSOR_TEST);
                 glScissor(x1, y1, x2 - x1, y2 - y1);
             }
@@ -5132,10 +5132,10 @@ void rendertransparent()
         bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
         if(scissor)
         {
-            int x1 = int(floor((allsx1*0.5f+0.5f)*vieww)),
-                y1 = int(floor((allsy1*0.5f+0.5f)*viewh)),
-                x2 = int(ceil((allsx2*0.5f+0.5f)*vieww)),
-                y2 = int(ceil((allsy2*0.5f+0.5f)*viewh));
+            int x1 = static_cast<int>(floor((allsx1*0.5f+0.5f)*vieww)),
+                y1 = static_cast<int>(floor((allsy1*0.5f+0.5f)*viewh)),
+                x2 = static_cast<int>(ceil((allsx2*0.5f+0.5f)*vieww)),
+                y2 = static_cast<int>(ceil((allsy2*0.5f+0.5f)*viewh));
             glEnable(GL_SCISSOR_TEST);
             glScissor(x1, y1, x2 - x1, y2 - y1);
         }
@@ -5326,8 +5326,8 @@ void shademodelpreview(int x, int y, int w, int h, bool background, bool scissor
         sh = clamp(y + h, 0, hudh) - sy;
     float sxk = 2.0f/hudw,
           syk = 2.0f/hudh,
-          txk = vieww/float(w),
-          tyk = viewh/float(h);
+          txk = vieww/static_cast<float>(w),
+          tyk = viewh/static_cast<float>(h);
     hudquad(sx*sxk - 1, sy*syk - 1, sw*sxk, sh*syk, (sx-x)*txk, (sy-y)*tyk, sw*txk, sh*tyk);
 
     if(scissor) glDisable(GL_SCISSOR_TEST);
