@@ -79,6 +79,7 @@ CLIENT_OBJS= \
 	engine/render/grass.o \
 	engine/render/normal.o \
 	engine/render/octarender.o \
+	engine/render/radiancehints.o \
 	engine/render/rendergl.o \
 	engine/render/renderlights.o \
 	engine/render/rendermodel.o \
@@ -294,17 +295,24 @@ engine/render/octarender.o: shared/glexts.h shared/glemu.h shared/iengine.h
 engine/render/octarender.o: shared/igame.h engine/world/world.h engine/world/octa.h
 engine/render/octarender.o: engine/world/light.h engine/render/texture.h engine/world/bih.h
 engine/render/octarender.o: engine/model/model.h
+engine/render/radiancehints.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
+engine/render/radiancehints.o: shared/ents.h shared/command.h shared/glexts.h
+engine/render/radiancehints.o: shared/glemu.h shared/iengine.h shared/igame.h
+engine/render/radiancehints.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/render/radiancehints.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/radiancehints.o: engine/render/radiancehints.h
 engine/render/rendergl.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/rendergl.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/rendergl.o: shared/glemu.h shared/iengine.h shared/igame.h
 engine/render/rendergl.o: engine/world/world.h engine/world/octa.h engine/world/light.h
 engine/render/rendergl.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/rendergl.o: engine/render/radiancehints.h
 engine/render/renderlights.o: engine/engine.h shared/cube.h shared/tools.h
 engine/render/renderlights.o: shared/geom.h shared/ents.h shared/command.h
 engine/render/renderlights.o: shared/glexts.h shared/glemu.h shared/iengine.h
 engine/render/renderlights.o: shared/igame.h engine/world/world.h engine/world/octa.h
 engine/render/renderlights.o: engine/world/light.h engine/render/texture.h engine/world/bih.h
-engine/render/renderlights.o: engine/model/model.h
+engine/render/renderlights.o: engine/model/model.h engine/render/radiancehints.h
 engine/render/rendermodel.o: engine/engine.h shared/cube.h shared/tools.h
 engine/render/rendermodel.o: shared/geom.h shared/ents.h shared/command.h
 engine/render/rendermodel.o: shared/glexts.h shared/glemu.h shared/iengine.h
@@ -319,6 +327,7 @@ engine/render/rendermodel.o: shared/glexts.h shared/glemu.h shared/iengine.h
 engine/render/rendermodel.o: shared/igame.h engine/world/world.h engine/world/octa.h
 engine/render/rendermodel.o: engine/world/light.h engine/render/texture.h engine/world/bih.h
 engine/render/rendermodel.o: engine/model/model.h engine/world/explosion.h
+engine/render/rendermodel.o: engine/render/radiancehints.h
 engine/render/rendersky.o: engine/engine.h shared/cube.h shared/tools.h
 engine/render/rendersky.o: shared/geom.h shared/ents.h shared/command.h
 engine/render/rendersky.o: shared/glexts.h shared/glemu.h shared/iengine.h
@@ -367,6 +376,7 @@ engine/render/light.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.
 engine/render/light.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/light.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
 engine/render/light.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/light.o: engine/render/radiancehints.h
 engine/render/material.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/material.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/material.o: shared/glemu.h shared/iengine.h shared/igame.h

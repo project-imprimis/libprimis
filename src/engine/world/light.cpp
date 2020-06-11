@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "render/radiancehints.h"
 
 CVAR1R(ambient, 0x191919);
 FVARR(ambientscale, 0, 1, 16);

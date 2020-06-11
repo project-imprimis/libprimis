@@ -285,9 +285,6 @@ extern void rendershadowmapworld();
 extern void batchshadowmapmodels(bool skipmesh = false);
 extern void rendershadowatlas();
 extern void renderrsmgeom(bool dyntex = false);
-extern bool useradiancehints();
-extern void renderradiancehints();
-extern void clearradiancehintscache();
 extern void cleanuplights();
 extern void workinoq();
 
@@ -321,6 +318,12 @@ extern GLuint gdepthtex, gcolortex, gnormaltex, gglowtex, gdepthrb, gstencilrb;
 extern int msaasamples, msaalight;
 extern GLuint msdepthtex, mscolortex, msnormaltex, msglowtex, msdepthrb, msstencilrb;
 extern vector<vec2> msaapositions;
+
+extern bool inoq;
+extern int csmshadowmap, rhinoq;
+extern int rsmcull;
+extern GLuint gfbo, msfbo, rhfbo;
+
 enum
 {
     AA_Unused = 0,
@@ -331,6 +334,8 @@ enum
     AA_SplitMasked,
 };
 
+extern bool shouldworkinoq();
+extern int  gethdrformat(int prec, int fallback = GL_RGB);
 extern void cleanupgbuffer();
 extern void initgbuffer();
 extern bool usepacknorm();

@@ -1,6 +1,7 @@
 // rendergl.cpp: core opengl rendering stuff
 
 #include "engine.h"
+#include "radiancehints.h"
 
 bool hasS3TC   = false,
      hasFXT1   = false,

@@ -4,12 +4,13 @@ VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
 
 model *loadingmodel = NULL;
-
+#include "radiancehints.h"
 #include "model/ragdoll.h"
 #include "model/animmodel.h"
 #include "model/vertmodel.h"
 #include "model/skelmodel.h"
 #include "world/hitzone.h"
+
 
 static model *(__cdecl *modeltypes[MDL_NumMDLTypes])(const char *);
 
