@@ -11,3 +11,6 @@ blocks:
         - name: 'Job #1'
           commands:
             - checkout
+            - install-package libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+            - make -C src clean
+            - make -C src install -j3
