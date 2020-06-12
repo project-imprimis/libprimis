@@ -47,16 +47,16 @@ endif
 CLIENT_INCLUDES= $(INCLUDES) -Iinclude
 STD_LIBS= -static-libgcc -static-libstdc++
 CLIENT_LIBS= -mwindows $(STD_LIBS) -L$(WINBIN) -L$(WINLIB) -lSDL2 -lSDL2_image -lSDL2_mixer -lzlib1 -lopengl32 -lenet -lws2_32 -lwinmm
-else	
+else
 CLIENT_INCLUDES= $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
 CLIENT_LIBS= -Lenet -lenet -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lz -lGL
 endif
 ifeq ($(PLATFORM),Linux)
 CLIENT_LIBS+= -lrt
 else
-ifneq (,$(findstring GNU,$(PLATFORM))) 
-CLIENT_LIBS+= -lrt 
-endif 
+ifneq (,$(findstring GNU,$(PLATFORM)))
+CLIENT_LIBS+= -lrt
+endif
 endif
 
 CLIENT_OBJS= \
@@ -181,7 +181,7 @@ $(SERVER_MASTER_OBJS): standalone/%.o: %.cpp
 
 ifneq (,$(findstring MINGW,$(PLATFORM)))
 client: $(CLIENT_OBJS)
-	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff 
+	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff
 	$(CXX) $(CXXFLAGS) -o $(WINBIN)/tesseract.exe vcpp/mingw.res $(CLIENT_OBJS) $(CLIENT_LIBS)
 
 server: $(SERVER_OBJS)
@@ -195,7 +195,7 @@ client:	libenet $(CLIENT_OBJS)
 	$(CXX) $(CXXFLAGS) -o tess_client $(CLIENT_OBJS) $(CLIENT_LIBS)
 
 server:	libenet $(SERVER_OBJS)
-	$(CXX) $(CXXFLAGS) -o tess_server $(SERVER_OBJS) $(SERVER_LIBS)  
+	$(CXX) $(CXXFLAGS) -o tess_server $(SERVER_OBJS) $(SERVER_LIBS)
 
 install: all
 	cp -f tess_client	../bin_unix/$(PLATFORM_PREFIX)_client
@@ -240,54 +240,54 @@ shared/zip.o: shared/iengine.h shared/igame.h
 engine/main.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/main.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/main.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/main.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/main.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/interface/client.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/interface/client.o: shared/ents.h shared/command.h shared/glexts.h
 engine/interface/client.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/interface/client.o: engine/world/world.h engine/world/octa.h engine/world/light.h engine/render/texture.h
+engine/interface/client.o: engine/world/world.h engine/world/octa.h engine/render/texture.h
 engine/interface/client.o: engine/world/bih.h engine/model/model.h
 engine/interface/command.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/interface/command.o: shared/ents.h shared/command.h shared/glexts.h
 engine/interface/command.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/interface/command.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/interface/command.o: engine/world/world.h engine/world/octa.h
 engine/interface/command.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/interface/console.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/interface/console.o: shared/ents.h shared/command.h shared/glexts.h
 engine/interface/console.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/interface/console.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/interface/console.o: engine/world/world.h engine/world/octa.h
 engine/interface/console.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/interface/menus.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/interface/menus.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/interface/menus.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/interface/menus.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/interface/menus.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/interface/server.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/interface/server.o: shared/ents.h shared/command.h shared/glexts.h
 engine/interface/server.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/interface/server.o: engine/world/world.h engine/world/octa.h engine/world/light.h engine/render/texture.h
+engine/interface/server.o: engine/world/world.h engine/world/octa.h engine/render/texture.h
 engine/interface/server.o: engine/world/bih.h engine/model/model.h
 engine/interface/serverbrowser.o: engine/engine.h shared/cube.h shared/tools.h
 engine/interface/serverbrowser.o: shared/geom.h shared/ents.h shared/command.h
 engine/interface/serverbrowser.o: shared/glexts.h shared/glemu.h shared/iengine.h
 engine/interface/serverbrowser.o: shared/igame.h engine/world/world.h engine/world/octa.h
-engine/interface/serverbrowser.o: engine/world/light.h engine/render/texture.h engine/world/bih.h
+engine/interface/serverbrowser.o: engine/render/texture.h engine/world/bih.h
 engine/interface/serverbrowser.o: engine/model/model.h
 engine/interface/ui.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/interface/ui.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/interface/ui.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/interface/ui.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/interface/ui.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/interface/ui.o: engine/interface/textedit.h
 engine/render/aa.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/aa.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/aa.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/aa.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/aa.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/grass.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/grass.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/grass.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/grass.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/grass.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/normal.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/normal.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/normal.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/normal.o: engine/world/world.h engine/world/octa.h engine/world/light.h engine/render/texture.h
+engine/render/normal.o: engine/world/world.h engine/world/octa.h engine/render/texture.h
 engine/render/normal.o: engine/world/bih.h engine/model/model.h
 engine/render/octarender.o: engine/engine.h shared/cube.h shared/tools.h
 engine/render/octarender.o: shared/geom.h shared/ents.h shared/command.h
@@ -299,12 +299,12 @@ engine/render/radiancehints.o: engine/engine.h shared/cube.h shared/tools.h shar
 engine/render/radiancehints.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/radiancehints.o: shared/glemu.h shared/iengine.h shared/igame.h
 engine/render/radiancehints.o: engine/world/world.h engine/world/octa.h engine/world/light.h
-engine/render/radiancehints.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
-engine/render/radiancehints.o: engine/render/radiancehints.h
+engine/render/radiancehints.o: engine/render/texture.h engine/world/bih.h
+engine/render/radiancehints.o: engine/model/model.h engine/render/radiancehints.h
 engine/render/rendergl.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/rendergl.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/rendergl.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/rendergl.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/render/rendergl.o: engine/world/world.h engine/world/octa.h
 engine/render/rendergl.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/rendergl.o: engine/render/radiancehints.h
 engine/render/renderlights.o: engine/engine.h shared/cube.h shared/tools.h
@@ -317,15 +317,10 @@ engine/render/rendermodel.o: engine/engine.h shared/cube.h shared/tools.h
 engine/render/rendermodel.o: shared/geom.h shared/ents.h shared/command.h
 engine/render/rendermodel.o: shared/glexts.h shared/glemu.h shared/iengine.h
 engine/render/rendermodel.o: shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/rendermodel.o: engine/world/light.h engine/render/texture.h engine/world/bih.h
+engine/render/rendermodel.o: engine/render/texture.h engine/world/bih.h
 engine/render/rendermodel.o: engine/model/model.h engine/model/ragdoll.h engine/model/animmodel.h
 engine/render/rendermodel.o: engine/model/vertmodel.h engine/model/skelmodel.h engine/world/hitzone.h
 engine/render/rendermodel.o: engine/model/md5.h engine/model/obj.h
-engine/render/rendermodel.o: engine/engine.h shared/cube.h shared/tools.h
-engine/render/rendermodel.o: shared/geom.h shared/ents.h shared/command.h
-engine/render/rendermodel.o: shared/glexts.h shared/glemu.h shared/iengine.h
-engine/render/rendermodel.o: shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/rendermodel.o: engine/world/light.h engine/render/texture.h engine/world/bih.h
 engine/render/rendermodel.o: engine/model/model.h engine/world/explosion.h
 engine/render/rendermodel.o: engine/render/radiancehints.h
 engine/render/rendersky.o: engine/engine.h shared/cube.h shared/tools.h
@@ -338,26 +333,26 @@ engine/render/rendertext.o: engine/engine.h shared/cube.h shared/tools.h
 engine/render/rendertext.o: shared/geom.h shared/ents.h shared/command.h
 engine/render/rendertext.o: shared/glexts.h shared/glemu.h shared/iengine.h
 engine/render/rendertext.o: shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/rendertext.o: engine/world/light.h engine/render/texture.h engine/world/bih.h
+engine/render/rendertext.o: engine/render/texture.h engine/world/bih.h
 engine/render/rendertext.o: engine/model/model.h
 engine/render/renderva.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/renderva.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/renderva.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/renderva.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/render/renderva.o: engine/world/world.h engine/world/octa.h
 engine/render/renderva.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/shader.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/shader.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/shader.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/shader.o: engine/world/world.h engine/world/octa.h engine/world/light.h engine/render/texture.h
+engine/render/shader.o: engine/world/world.h engine/world/octa.h engine/render/texture.h
 engine/render/shader.o: engine/world/bih.h engine/model/model.h
 engine/render/sound.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/sound.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/sound.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/sound.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/sound.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/stain.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/stain.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/stain.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/stain.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/stain.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/texture.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/texture.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/texture.o: shared/glemu.h shared/iengine.h shared/igame.h
@@ -366,11 +361,11 @@ engine/render/texture.o: engine/render/texture.h engine/world/bih.h engine/model
 engine/render/bih.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/bih.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/bih.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/bih.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/bih.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/dynlight.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/dynlight.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/dynlight.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/dynlight.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/render/dynlight.o: engine/world/world.h engine/world/octa.h
 engine/render/dynlight.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/light.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/light.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
@@ -380,7 +375,7 @@ engine/render/light.o: engine/render/radiancehints.h
 engine/render/material.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/material.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/material.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/material.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/render/material.o: engine/world/world.h engine/world/octa.h
 engine/render/material.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/octa.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/octa.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
@@ -394,12 +389,12 @@ engine/render/octaedit.o: engine/render/texture.h engine/world/bih.h engine/mode
 engine/render/physics.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/physics.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/physics.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/physics.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/render/physics.o: engine/world/world.h engine/world/octa.h
 engine/render/physics.o: engine/render/texture.h engine/world/bih.h engine/model/model.h engine/mpr.h
 engine/render/water.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/water.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/water.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
-engine/render/water.o: engine/world/light.h engine/render/texture.h engine/world/bih.h engine/model/model.h
+engine/render/water.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 engine/render/world.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/world.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
 engine/render/world.o: shared/iengine.h shared/igame.h engine/world/world.h engine/world/octa.h
@@ -407,7 +402,7 @@ engine/render/world.o: engine/world/light.h engine/render/texture.h engine/world
 engine/render/worldio.o: engine/engine.h shared/cube.h shared/tools.h shared/geom.h
 engine/render/worldio.o: shared/ents.h shared/command.h shared/glexts.h
 engine/render/worldio.o: shared/glemu.h shared/iengine.h shared/igame.h
-engine/render/worldio.o: engine/world/world.h engine/world/octa.h engine/world/light.h
+engine/render/worldio.o: engine/world/world.h engine/world/octa.h
 engine/render/worldio.o: engine/render/texture.h engine/world/bih.h engine/model/model.h
 game/ai.o: game/game.h shared/cube.h shared/tools.h shared/geom.h
 game/ai.o: shared/ents.h shared/command.h shared/glexts.h shared/glemu.h
@@ -442,7 +437,7 @@ shared/cube.h.gch: shared/iengine.h shared/igame.h
 engine/engine.h.gch: shared/cube.h shared/tools.h shared/geom.h shared/ents.h
 engine/engine.h.gch: shared/command.h shared/glexts.h shared/glemu.h
 engine/engine.h.gch: shared/iengine.h shared/igame.h engine/world/world.h
-engine/engine.h.gch: engine/world/octa.h engine/world/light.h engine/render/texture.h
+engine/engine.h.gch: engine/world/octa.h engine/render/texture.h
 engine/engine.h.gch: engine/world/bih.h engine/model/model.h
 game/game.h.gch: shared/cube.h shared/tools.h shared/geom.h shared/ents.h
 game/game.h.gch: shared/command.h shared/glexts.h shared/glemu.h

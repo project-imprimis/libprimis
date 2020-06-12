@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "light.h"
 
 extern int outline;
 

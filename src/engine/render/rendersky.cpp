@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "world/light.h"
 
 Texture *sky[6] = { 0, 0, 0, 0, 0, 0 };
 

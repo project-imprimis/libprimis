@@ -1,3 +1,6 @@
+#ifndef LIGHT_H
+#define LIGHT_H
+
 struct PackNode
 {
     PackNode *child1, *child2;
@@ -68,3 +71,4 @@ extern void check_calclight_canceled();
 
 extern const vector<int> &checklightcache(int x, int y);
 
+#endif

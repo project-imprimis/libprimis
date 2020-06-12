@@ -7,7 +7,6 @@
 #ifndef STANDALONE
 
 #include "world/octa.h"
-#include "world/light.h"
 #include "render/texture.h"
 #include "world/bih.h"
 #include "model/model.h"

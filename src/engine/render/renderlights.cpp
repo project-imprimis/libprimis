@@ -1,6 +1,8 @@
 #include "engine.h"
 
 #include "radiancehints.h"
+#include "world/light.h"
+
 int gw = -1,
     gh = -1,
     bloomw = -1,
