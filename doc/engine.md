@@ -2,7 +2,7 @@
 
 #### This is a work in progress and subject to modification and additions.
 
-Written and © Alex "molexted" Foster, 2020; released under the WTFPL v2.
+Written and © Alex "no-lex" Foster, 2020; released under the WTFPL v2.
 
 Preface
 ---
@@ -46,6 +46,7 @@ linear analysis, including multipole expansions and Fourier series.
 * 2.2 Materials
 * 2.3 Textures
 * 2.4 Global Properties
+* 2.5 World File Format
 
 #### 3. Entities
 * 3.1 Static Entities
@@ -1247,6 +1248,63 @@ apparent intensity of the light source, and the characteristic color of the sky.
 * `atmosundisksize <value>` Sets the diameter of the atmo sun.
 * `atmosunlight <value>` Sets the color of the atmo sun & overall sky color.
 * `atmosunlightscale <value>` Sets the ratio of the sunlight brightness vs atmo.
+
+## 2.5 World Level Format
+---
+
+Because of the Imprimis engine's recursive octree geometry format, it is not
+practical to save levels in a standardized polygon soup format like GLTF.
+Instead, Imprimis saves levels in its own format, the general details of which
+are explained in this section.
+
+### 2.5.1 Map Format Summary
+---
+
+The file is a gz-compressed stream of data, with the following main components:
+
+* A map header with the sizes of the non-geometry part of the data
+* A list of map-specific variables, such as enviornment settings
+* A list of entities with their associated information
+* A list of virtual texture slots "vslots" which map surfaces to texture indices
+* An octal tree of cube nodes which make up the level's geometry.
+
+
+### 2.5.2 Map Header
+---
+
+The header tells the engine how many of particular quantities show up in the
+body of the map file. The header is of fixed length and encodes the following
+information:
+
+* an identifier of four chars
+* the version of the map
+* the size of the header itself
+* the size of the level in powers of two
+* the number of entities saved on the level
+* the number of PVS saved on the level (not used by the engine)
+* the number of blendmaps saved on the level (not used by the engine)
+* the number of variables saved on the level
+* the number of virtual texture slots (vslots) saved on the level
+
+The number of octree nodes, the actual geometry count on the level, is not saved
+to the map header. This is practical because the octree nodes are the last part
+of the level file (and so nothing needs to have its location indexed beyond it),
+and because the octree nodes themselves are recursively loaded due to the octal
+tree structure of how they are related to each other.
+
+### 2.5.3 Map Variables
+---
+
+The map saves a list of the variables which are to be modified away from the
+engine defaults. As the engine defaults may change over time, only variables
+explicitly defined as different in the level get saved here and as a result
+undefined variables may lead to inconsistent behavior with different versions
+of the engine.
+
+These variables all have a single float, string, or integer value associated
+with them and can encode one feature of the level, such as cloud information,
+skybox settings, or ambient settings.
+
 
 # 3. Entities
 ---
