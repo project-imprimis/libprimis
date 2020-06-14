@@ -12,7 +12,8 @@ reversequeue<cline, MAXCONLINES> conlines;
 
 int commandmillis = -1;
 string commandbuf;
-char *commandaction = NULL, *commandprompt = NULL;
+char *commandaction = NULL,
+     *commandprompt = NULL;
 enum
 {
     CmdFlags_Complete = 1<<0,
@@ -194,7 +195,10 @@ float drawconlines(int conskip, int confade, float conwidth, float conheight, fl
         }
         totalheight += height;
     }
-    if(dir > 0) y = conoff;
+    if(dir > 0)
+    {
+        y = conoff;
+    }
     for(int i = 0; i < numl; ++i)
     {
         int idx = offsetlines + (dir > 0 ? numl-i-1 : i);
@@ -316,7 +320,10 @@ void searchbinds(char *action, int type)
     {
         if(!strcmp(km.actions[type], action))
         {
-            if(names.length()) names.add(' ');
+            if(names.length())
+            {
+                names.add(' ');
+            }
             names.put(km.name, strlen(km.name));
         }
     });
@@ -425,9 +432,21 @@ void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *fl
         {
             switch(*flags++)
             {
-                case 'c': commandflags |= CmdFlags_Complete; break;
-                case 'x': commandflags |= CmdFlags_Execute; break;
-                case 's': commandflags |= CmdFlags_Complete|CmdFlags_Execute; break;
+                case 'c':
+                {
+                    commandflags |= CmdFlags_Complete;
+                    break;
+                }
+                case 'x':
+                {
+                    commandflags |= CmdFlags_Execute;
+                    break;
+                }
+                case 's':
+                {
+                    commandflags |= CmdFlags_Complete|CmdFlags_Execute;
+                    break;
+                }
             }
         }
     }
@@ -524,7 +543,10 @@ struct hline
             alias("commandbuf", buf);
             execute(action);
         }
-        else game::toserver(buf);
+        else
+        {
+            game::toserver(buf);
+        }
     }
 };
 vector<hline *> history;
@@ -678,19 +700,22 @@ bool consolekey(int code, bool isdown)
         {
             case SDLK_RETURN:
             case SDLK_KP_ENTER:
+            {
                 break;
-
+            }
             case SDLK_HOME:
+            {
                 if(strlen(commandbuf))
                 {
                     commandpos = 0;
                 }
                 break;
-
+            }
             case SDLK_END:
+            {
                 commandpos = -1;
                 break;
-
+            }
             case SDLK_DELETE:
             {
                 int len = static_cast<int>(strlen(commandbuf));
@@ -706,7 +731,6 @@ bool consolekey(int code, bool isdown)
                 }
                 break;
             }
-
             case SDLK_BACKSPACE:
             {
                 int len = static_cast<int>(strlen(commandbuf)),
@@ -808,7 +832,10 @@ bool consolekey(int code, bool isdown)
                     }
                     history.add(h = new hline)->save();
                 }
-                else h = history.last();
+                else
+                {
+                    h = history.last();
+                }
             }
             histpos = history.length();
             inputcommand(NULL);
@@ -1057,7 +1084,10 @@ void complete(char *s, int maxlen, const char *cmdprefix)
     if(completesize)
     {
         char *end = strchr(&s[cmdlen], ' ');
-        if(end) f = completions.find(stringslice(&s[cmdlen], end), NULL);
+        if(end)
+        {
+            f = completions.find(stringslice(&s[cmdlen], end), NULL);
+        }
     }
     const char *nextcomplete = NULL;
     if(f) // complete using filenames
