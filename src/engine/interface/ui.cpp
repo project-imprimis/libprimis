@@ -452,7 +452,9 @@ namespace UI
         virtual const char *getname() const { return gettype(); }
         virtual const char *gettypename() const { return gettype(); }
 
-        template<class T> bool istype() const { return T::typestr() == gettype(); }
+        template<class T>
+        bool istype() const { return T::typestr() == gettype(); }
+
         bool isnamed(const char *name) const { return name[0] == '#' ? name == gettypename() : !strcmp(name, getname()); }
 
         Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
@@ -482,7 +484,8 @@ namespace UI
             return NULL;
         }
 
-        template<class T> T *buildtype()
+        template<class T>
+        T *buildtype()
         {
             T *t;
             if(children.inrange(buildchild))
@@ -1297,7 +1300,7 @@ namespace UI
         {
             changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
             if(type==MODULATE) modblend(); else resetblend();
-                
+
             color.init();
             gle::begin(GL_TRIANGLE_STRIP);
             gle::attribf(sx+w, sy);

@@ -550,7 +550,8 @@ static inline bool checknumber(const stringslice &s)
     return checknumber(s.str);
 }
 
-template<class T> static inline ident *newident(const T &name, int flags)
+template<class T>
+static inline ident *newident(const T &name, int flags)
 {
     ident *id = idents.access(name);
     if(!id)

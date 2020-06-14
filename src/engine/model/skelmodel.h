@@ -1873,7 +1873,8 @@ struct skeladjustment
     }
 };
 
-template<class MDL> struct skelloader : modelloader<MDL, skelmodel>
+template<class MDL>
+struct skelloader : modelloader<MDL, skelmodel>
 {
     static vector<skeladjustment> adjustments;
     static vector<uchar> hitzones;
@@ -1894,10 +1895,14 @@ template<class MDL> struct skelloader : modelloader<MDL, skelmodel>
     }
 };
 
-template<class MDL> vector<skeladjustment> skelloader<MDL>::adjustments;
-template<class MDL> vector<uchar> skelloader<MDL>::hitzones;
+template<class MDL>
+vector<skeladjustment> skelloader<MDL>::adjustments;
 
-template<class MDL> struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
+template<class MDL>
+vector<uchar> skelloader<MDL>::hitzones;
+
+template<class MDL>
+struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
 {
     typedef modelcommands<MDL, struct MDL::skelmesh> commands;
     typedef struct MDL::skeleton skeleton;

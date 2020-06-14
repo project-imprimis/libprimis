@@ -52,8 +52,12 @@ struct vec2
     vec2 &lerp(const vec2 &b, float t) { x += (b.x-x)*t; y += (b.y-y)*t; return *this; }
     vec2 &lerp(const vec2 &a, const vec2 &b, float t) { x = a.x + (b.x-a.x)*t; y = a.y + (b.y-a.y)*t; return *this; }
     vec2 &avg(const vec2 &b) { add(b); mul(0.5f); return *this; }
-    template<class B> vec2 &madd(const vec2 &a, const B &b) { return add(vec2(a).mul(b)); }
-    template<class B> vec2 &msub(const vec2 &a, const B &b) { return sub(vec2(a).mul(b)); }
+
+    template<class B>
+    vec2 &madd(const vec2 &a, const B &b) { return add(vec2(a).mul(b)); }
+
+    template<class B>
+    vec2 &msub(const vec2 &a, const B &b) { return sub(vec2(a).mul(b)); }
 
     vec2 &rotate_around_z(float c, float s) { float rx = x, ry = y; x = c*rx-s*ry; y = c*ry+s*rx; return *this; }
     vec2 &rotate_around_z(float angle) { return rotate_around_z(cosf(angle), sinf(angle)); }
@@ -164,8 +168,10 @@ struct vec
     //cross products
     template<class T>
     bool reject(const T &o, float r) { return x>o.x+r || x<o.x-r || y>o.y+r || y<o.y-r; }
+
     template<class A, class B>
     vec &cross(const A &a, const B &b) { x = a.y*b.z-a.z*b.y; y = a.z*b.x-a.x*b.z; z = a.x*b.y-a.y*b.x; return *this; }
+
     vec &cross(const vec &o, const vec &a, const vec &b) { return cross(vec(a).sub(o), vec(b).sub(o)); }
 
     //scalar triple product A*(BxC)
@@ -194,8 +200,12 @@ struct vec
     vec &lerp(const vec &b, float t) { x += (b.x-x)*t; y += (b.y-y)*t; z += (b.z-z)*t; return *this; }
     vec &lerp(const vec &a, const vec &b, float t) { x = a.x + (b.x-a.x)*t; y = a.y + (b.y-a.y)*t; z = a.z + (b.z-a.z)*t; return *this; }
     vec &avg(const vec &b) { add(b); mul(0.5f); return *this; }
-    template<class B> vec &madd(const vec &a, const B &b) { return add(vec(a).mul(b)); }
-    template<class B> vec &msub(const vec &a, const B &b) { return sub(vec(a).mul(b)); }
+
+    template<class B>
+    vec &madd(const vec &a, const B &b) { return add(vec(a).mul(b)); }
+
+    template<class B>
+    vec &msub(const vec &a, const B &b) { return sub(vec(a).mul(b)); }
 
     vec &rescale(float k)
     {
@@ -237,28 +247,33 @@ struct vec
         t.project(*this).project(s);
     } //unused
 
-    template<class T> bool insidebb(const T &bbmin, const T &bbmax) const
+    template<class T>
+    bool insidebb(const T &bbmin, const T &bbmax) const
     {
         return x >= bbmin.x && x <= bbmax.x && y >= bbmin.y && y <= bbmax.y && z >= bbmin.z && z <= bbmax.z;
     }
 
-    template<class T, class U> bool insidebb(const T &bbmin, const T &bbmax, U margin) const
+    template<class T, class U>
+    bool insidebb(const T &bbmin, const T &bbmax, U margin) const
     {
         return x >= bbmin.x-margin && x <= bbmax.x+margin && y >= bbmin.y-margin && y <= bbmax.y+margin && z >= bbmin.z-margin && z <= bbmax.z+margin;
     }
 
-    template<class T, class U> bool insidebb(const T &o, U size) const
+    template<class T, class U>
+    bool insidebb(const T &o, U size) const
     {
         return x >= o.x && x <= o.x + size && y >= o.y && y <= o.y + size && z >= o.z && z <= o.z + size;
     }
 
-    template<class T, class U> bool insidebb(const T &o, U size, U margin) const
+    template<class T, class U>
+    bool insidebb(const T &o, U size, U margin) const
     {
         size += margin;
         return x >= o.x-margin && x <= o.x + size && y >= o.y-margin && y <= o.y + size && z >= o.z-margin && z <= o.z + size;
     }
 
-    template<class T> float dist_to_bb(const T &min, const T &max) const
+    template<class T>
+    float dist_to_bb(const T &min, const T &max) const
     {
         float sqrdist = 0;
         for(int i = 0; i < 3; ++i)
@@ -269,12 +284,14 @@ struct vec
         return sqrtf(sqrdist);
     }
 
-    template<class T, class S> float dist_to_bb(const T &o, S size) const
+    template<class T, class S>
+    float dist_to_bb(const T &o, S size) const
     {
         return dist_to_bb(o, T(o).add(size));
     }
 
-    template<class T> float project_bb(const T &min, const T &max) const
+    template<class T>
+    float project_bb(const T &min, const T &max) const
     {
         return x*(x < 0 ? max.x : min.x) + y*(y < 0 ? max.y : min.y) + z*(z < 0 ? max.z : min.z);
     }
@@ -352,8 +369,12 @@ struct vec4
         return *this;
     }
     vec4 &avg(const vec4 &b) { add(b); mul(0.5f); return *this; }
-    template<class B> vec4 &madd(const vec4 &a, const B &b) { return add(vec4(a).mul(b)); }
-    template<class B> vec4 &msub(const vec4 &a, const B &b) { return sub(vec4(a).mul(b)); }
+
+    template<class B>
+    vec4 &madd(const vec4 &a, const B &b) { return add(vec4(a).mul(b)); }
+
+    template<class B>
+    vec4 &msub(const vec4 &a, const B &b) { return sub(vec4(a).mul(b)); }
 
     vec4 &mul3(float f)      { x *= f; y *= f; z *= f; return *this; }
     vec4 &mul(float f)       { mul3(f); w *= f; return *this; }
@@ -381,6 +402,7 @@ struct vec4
 
     template<class A, class B>
     vec4 &cross(const A &a, const B &b) { x = a.y*b.z-a.z*b.y; y = a.z*b.x-a.x*b.z; z = a.x*b.y-a.y*b.x; return *this; }
+
     vec4 &cross(const vec &o, const vec &a, const vec &b) { return cross(vec(a).sub(o), vec(b).sub(o)); }
 
     void setxyz(const vec &v) { x = v.x; y = v.y; z = v.z; }
@@ -441,8 +463,11 @@ struct quat : vec4
     quat &add(const vec4 &o) { vec4::add(o); return *this; }
     quat &sub(const vec4 &o) { vec4::sub(o); return *this; }
     quat &mul(float k) { vec4::mul(k); return *this; }
-    template<class B> quat &madd(const vec4 &a, const B &b) { return add(vec4(a).mul(b)); }
-    template<class B> quat &msub(const vec4 &a, const B &b) { return sub(vec4(a).mul(b)); }
+    template<class B>
+    quat &madd(const vec4 &a, const B &b) { return add(vec4(a).mul(b)); }
+
+    template<class B>
+    quat &msub(const vec4 &a, const B &b) { return sub(vec4(a).mul(b)); }
 
     quat &mul(const quat &p, const quat &o)
     {
@@ -1562,7 +1587,9 @@ struct dvec4
     dvec4(double x, double y, double z, double w) : x(x), y(y), z(z), w(w) {}
     dvec4(const vec4 &v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
-    template<class B> dvec4 &madd(const dvec4 &a, const B &b) { return add(dvec4(a).mul(b)); }
+    template<class B>
+    dvec4 &madd(const dvec4 &a, const B &b) { return add(dvec4(a).mul(b)); }
+
     dvec4 &mul(double f)       { x *= f; y *= f; z *= f; w *= f; return *this; }
     dvec4 &mul(const dvec4 &o) { x *= o.x; y *= o.y; z *= o.z; w *= o.w; return *this; }
     dvec4 &add(double f)       { x += f; y += f; z += f; w += f; return *this; }
@@ -1599,7 +1626,8 @@ struct matrix4
     }
     void mul(const matrix3 &y) { mul(matrix4(*this), y); }
 
-    template<class T> void mult(const matrix4 &x, const matrix4 &y)
+    template<class T>
+    void mult(const matrix4 &x, const matrix4 &y)
     {
         a = T(x.a).mul(y.a.x).madd(x.b, y.a.y).madd(x.c, y.a.z).madd(x.d, y.a.w);
         b = T(x.a).mul(y.b.x).madd(x.b, y.b.y).madd(x.c, y.b.z).madd(x.d, y.b.w);
@@ -1785,14 +1813,16 @@ struct matrix4
         out = vec4(a).mul(in.x).madd(b, in.y).madd(c, in.z).madd(d, in.w);
     }
 
-    template<class T, class U> T transform(const U &in) const
+    template<class T, class U>
+    T transform(const U &in) const
     {
         T v;
         transform(in, v);
         return v;
     }
 
-    template<class T> vec perspectivetransform(const T &in) const
+    template<class T>
+    vec perspectivetransform(const T &in) const
     {
         vec4 v;
         transform(in, v);
@@ -1809,7 +1839,8 @@ struct matrix4
         out = vec4(a).mul(in.x).madd(b, in.y).madd(c, in.z);
     }
 
-    template<class T, class U> T transformnormal(const U &in) const
+    template<class T, class U>
+    T transformnormal(const U &in) const
     {
         T v;
         transformnormal(in, v);

@@ -1140,7 +1140,8 @@ struct hashset : hashbase<hashset<T>, T, T, T>
 
     static inline const T &getkey(const T &elem) { return elem; }
     static inline T &getdata(T &elem) { return elem; }
-    template<class K> static inline void setkey(T &, const K &) {}
+    template<class K>
+    static inline void setkey(T &, const K &) {}
 
     template<class V>
     T &add(const V &elem)
@@ -1156,10 +1157,16 @@ struct hashnameset : hashbase<hashnameset<T>, T, const char *, T>
 
     hashnameset(int size = basetype::DEFAULTSIZE) : basetype(size) {}
 
-    template<class U> static inline const char *getkey(const U &elem) { return elem.name; }
-    template<class U> static inline const char *getkey(U *elem) { return elem->name; }
+    template<class U>
+    static inline const char *getkey(const U &elem) { return elem.name; }
+
+    template<class U>
+    static inline const char *getkey(U *elem) { return elem->name; }
+
     static inline T &getdata(T &elem) { return elem; }
-    template<class K> static inline void setkey(T &, const K &) {}
+
+    template<class K>
+    static inline void setkey(T &, const K &) {}
 
     template<class V>
     T &add(const V &elem)
@@ -1192,6 +1199,7 @@ struct hashtable : hashbase<hashtable<K, T>, hashtableentry<K, T>, K, T>
 
     static inline K &getkey(elemtype &elem) { return elem.key; }
     static inline T &getdata(elemtype &elem) { return elem.data; }
+
     template<class U>
     static inline void setkey(elemtype &elem, const U &key) { elem.key = key; }
 };

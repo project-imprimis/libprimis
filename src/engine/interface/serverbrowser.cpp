@@ -559,7 +559,8 @@ VARP(maxservpings, 0, 10, 1000);
 
 pingattempts lanpings;
 
-template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N], pingattempts &a)
+template<size_t N>
+static inline void buildping(ENetBuffer &buf, uchar (&ping)[N], pingattempts &a)
 {
     ucharbuf p(ping, N);
     p.put(0xFF); p.put(0xFF);

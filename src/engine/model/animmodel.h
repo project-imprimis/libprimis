@@ -334,7 +334,8 @@ struct animmodel : model
             smoothdata() : norm(0, 0, 0), next(-1) {}
         };
 
-        template<class V, class T> void smoothnorms(V *verts, int numverts, T *tris, int numtris, float limit, bool areaweight)
+        template<class V, class T>
+        void smoothnorms(V *verts, int numverts, T *tris, int numtris, float limit, bool areaweight)
         {
             if(!numverts) return;
             smoothdata *smooth = new smoothdata[numverts];
@@ -386,7 +387,8 @@ struct animmodel : model
             delete[] smooth;
         }
 
-        template<class V, class T> void buildnorms(V *verts, int numverts, T *tris, int numtris, bool areaweight)
+        template<class V, class T>
+        void buildnorms(V *verts, int numverts, T *tris, int numtris, bool areaweight)
         {
             if(!numverts) return;
             for(int i = 0; i < numverts; ++i)
@@ -410,7 +412,8 @@ struct animmodel : model
             }
         }
 
-        template<class V, class T> void buildnorms(V *verts, int numverts, T *tris, int numtris, bool areaweight, int numframes)
+        template<class V, class T>
+        void buildnorms(V *verts, int numverts, T *tris, int numtris, bool areaweight, int numframes)
         {
             if(!numverts) return;
             for(int i = 0; i < numframes; ++i)
@@ -430,7 +433,8 @@ struct animmodel : model
             else if(q.w < 0) q.neg();
         }
 
-        template<class V> static inline void calctangent(V &v, const vec &n, const vec &t, float bt)
+        template<class V>
+        static inline void calctangent(V &v, const vec &n, const vec &t, float bt)
         {
             matrix3 m;
             m.c = n;
@@ -441,7 +445,8 @@ struct animmodel : model
             v.tangent = q;
         }
 
-        template<class V, class TC, class T> void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight)
+        template<class V, class TC, class T>
+        void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight)
         {
             vec *tangent = new vec[2*numverts], *bitangent = tangent+numverts;
             memclear(tangent, 2*numverts);
@@ -494,7 +499,8 @@ struct animmodel : model
             delete[] tangent;
         }
 
-        template<class V, class TC, class T> void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight, int numframes)
+        template<class V, class TC, class T>
+        void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight, int numframes)
         {
             for(int i = 0; i < numframes; ++i)
             {
@@ -1865,7 +1871,8 @@ static inline bool htcmp(const animmodel::shaderparams &x, const animmodel::shad
 hashtable<animmodel::shaderparams, animmodel::shaderparamskey> animmodel::shaderparamskey::keys;
 int animmodel::shaderparamskey::firstversion = 0, animmodel::shaderparamskey::lastversion = 1;
 
-template<class MDL, class BASE> struct modelloader : BASE
+template<class MDL, class BASE>
+struct modelloader : BASE
 {
     static MDL *loading;
     static string dir;
@@ -1898,10 +1905,14 @@ template<class MDL, class BASE> struct modelloader : BASE
     }
 };
 
-template<class MDL, class BASE> MDL *modelloader<MDL, BASE>::loading = NULL;
-template<class MDL, class BASE> string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
+template<class MDL, class BASE>
+MDL *modelloader<MDL, BASE>::loading = NULL;
 
-template<class MDL, class MESH> struct modelcommands
+template<class MDL, class BASE>
+string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
+
+template<class MDL, class MESH>
+struct modelcommands
 {
     typedef struct MDL::part part;
     typedef struct MDL::skin skin;
@@ -2024,7 +2035,8 @@ template<class MDL, class MESH> struct modelcommands
         if(!MDL::loading->parts[*parent]->link(MDL::loading->parts[*child], tagname, vec(*x, *y, *z))) conoutf("could not link model %s", MDL::loading->name);
     }
 
-    template<class F> void modelcommand(F *fun, const char *suffix, const char *args)
+    template<class F>
+    void modelcommand(F *fun, const char *suffix, const char *args)
     {
         DEF_FORMAT_STRING(name, "%s%s", MDL::formatname(), suffix);
         addcommand(newstring(name), (identfun)fun, args);

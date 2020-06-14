@@ -4,7 +4,8 @@
 #include "SDL_image.h"
 #include "world/light.h"
 
-template<int BPP> static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
+template<int BPP>
+static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
 {
     for(uchar *yend = &src[sh*stride]; src < yend;)
     {
@@ -19,7 +20,8 @@ template<int BPP> static void halvetexture(uchar * RESTRICT src, uint sw, uint s
     }
 }
 
-template<int BPP> static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
+template<int BPP>
+static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
     uint wfrac = sw/dw, hfrac = sh/dh, wshift = 0, hshift = 0;
     while(dw<<wshift < sw) wshift++;
@@ -49,7 +51,8 @@ template<int BPP> static void shifttexture(uchar * RESTRICT src, uint sw, uint s
     }
 }
 
-template<int BPP> static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
+template<int BPP>
+static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
     uint wfrac = (sw<<12)/dw, hfrac = (sh<<12)/dh, darea = dw*dh, sarea = sw*sh;
     int over, under;

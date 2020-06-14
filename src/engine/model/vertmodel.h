@@ -602,12 +602,14 @@ struct vertmodel : animmodel
     }
 };
 
-template<class MDL> struct vertloader : modelloader<MDL, vertmodel>
+template<class MDL>
+struct vertloader : modelloader<MDL, vertmodel>
 {
     vertloader(const char *name) : modelloader<MDL, vertmodel>(name) {}
 };
 
-template<class MDL> struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
+template<class MDL>
+struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
 {
     typedef struct MDL::vertmeshgroup meshgroup;
     typedef struct MDL::part part;
