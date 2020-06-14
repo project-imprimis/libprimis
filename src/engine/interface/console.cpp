@@ -246,20 +246,20 @@ struct keym
 {
     enum
     {
-        ACTION_DEFAULT = 0,
-        ACTION_SPECTATOR,
-        ACTION_EDITING,
-        NUMACTIONS
+        Action_Default = 0,
+        Action_Spectator,
+        Action_Editing,
+        Action_NumActions
     };
 
     int code;
     char *name;
-    char *actions[NUMACTIONS];
+    char *actions[Action_NumActions];
     bool pressed;
 
     keym() : code(-1), name(NULL), pressed(false)
     {
-        for(int i = 0; i < NUMACTIONS; ++i)
+        for(int i = 0; i < Action_NumActions; ++i)
         {
             actions[i] = newstring("");
         }
@@ -267,7 +267,7 @@ struct keym
     ~keym()
     {
         DELETEA(name);
-        for(int i = 0; i < NUMACTIONS; ++i)
+        for(int i = 0; i < Action_NumActions; ++i)
         {
             DELETEA(actions[i]);
         }
@@ -276,7 +276,7 @@ struct keym
     void clear(int type);
     void clear()
     {
-        for(int i = 0; i < NUMACTIONS; ++i)
+        for(int i = 0; i < Action_NumActions; ++i)
         {
             clear(i);
         }
@@ -373,15 +373,15 @@ void bindkey(char *key, char *action, int state, const char *cmd)
     binding = newstring(action, len);
 }
 
-ICOMMAND(bind,     "ss", (char *key, char *action), bindkey(key, action, keym::ACTION_DEFAULT, "bind"));
-ICOMMAND(specbind, "ss", (char *key, char *action), bindkey(key, action, keym::ACTION_SPECTATOR, "specbind"));
-ICOMMAND(editbind, "ss", (char *key, char *action), bindkey(key, action, keym::ACTION_EDITING, "editbind"));
-ICOMMAND(getbind,     "s", (char *key), getbind(key, keym::ACTION_DEFAULT));
-ICOMMAND(getspecbind, "s", (char *key), getbind(key, keym::ACTION_SPECTATOR));
-ICOMMAND(geteditbind, "s", (char *key), getbind(key, keym::ACTION_EDITING));
-ICOMMAND(searchbinds,     "s", (char *action), searchbinds(action, keym::ACTION_DEFAULT));
-ICOMMAND(searchspecbinds, "s", (char *action), searchbinds(action, keym::ACTION_SPECTATOR));
-ICOMMAND(searcheditbinds, "s", (char *action), searchbinds(action, keym::ACTION_EDITING));
+ICOMMAND(bind,     "ss", (char *key, char *action), bindkey(key, action, keym::Action_Default, "bind"));
+ICOMMAND(specbind, "ss", (char *key, char *action), bindkey(key, action, keym::Action_Spectator, "specbind"));
+ICOMMAND(editbind, "ss", (char *key, char *action), bindkey(key, action, keym::Action_Editing, "editbind"));
+ICOMMAND(getbind,     "s", (char *key), getbind(key, keym::Action_Default));
+ICOMMAND(getspecbind, "s", (char *key), getbind(key, keym::Action_Spectator));
+ICOMMAND(geteditbind, "s", (char *key), getbind(key, keym::Action_Editing));
+ICOMMAND(searchbinds,     "s", (char *action), searchbinds(action, keym::Action_Default));
+ICOMMAND(searchspecbinds, "s", (char *action), searchbinds(action, keym::Action_Spectator));
+ICOMMAND(searcheditbinds, "s", (char *action), searchbinds(action, keym::Action_Editing));
 
 void keym::clear(int type)
 {
@@ -396,9 +396,9 @@ void keym::clear(int type)
     }
 }
 
-ICOMMAND(clearbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::ACTION_DEFAULT)));
-ICOMMAND(clearspecbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::ACTION_SPECTATOR)));
-ICOMMAND(cleareditbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::ACTION_EDITING)));
+ICOMMAND(clearbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::Action_Default)));
+ICOMMAND(clearspecbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::Action_Spectator)));
+ICOMMAND(cleareditbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::Action_Editing)));
 ICOMMAND(clearallbinds, "", (), ENUMERATE(keyms, keym, km, km.clear()));
 
 void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *flags = NULL) // turns input to the command line on or off
@@ -616,19 +616,19 @@ void execbind(keym &k, bool isdown)
     }
     if(isdown)
     {
-        int state = keym::ACTION_DEFAULT;
+        int state = keym::Action_Default;
         if(!mainmenu)
         {
             if(editmode)
             {
-                state = keym::ACTION_EDITING;
+                state = keym::Action_Editing;
             }
             else if(player->state==ClientState_Spectator)
             {
-                state = keym::ACTION_SPECTATOR;
+                state = keym::Action_Spectator;
             }
         }
-        char *&action = k.actions[state][0] ? k.actions[state] : k.actions[keym::ACTION_DEFAULT];
+        char *&action = k.actions[state][0] ? k.actions[state] : k.actions[keym::Action_Default];
         keyaction = action;
         keypressed = &k;
         execute(keyaction);
