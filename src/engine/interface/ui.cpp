@@ -640,7 +640,7 @@ namespace UI
 
         void adjustlayout()
         {
-            float aspect = float(hudw)/hudh;
+            float aspect = static_cast<float>(hudw)/hudh;
             ph = max(max(h, w/aspect), 1.0f);
             pw = aspect*ph;
             Object::adjustlayout(0, 0, pw, ph);
@@ -672,10 +672,10 @@ namespace UI
         {
             vec2 s1 = vec2(x1, y2).mul(sscale).add(soffset),
                  s2 = vec2(x2, y1).mul(sscale).add(soffset);
-            sx1 = int(floor(s1.x*hudw + 0.5f));
-            sy1 = int(floor(s1.y*hudh + 0.5f));
-            sx2 = int(floor(s2.x*hudw + 0.5f));
-            sy2 = int(floor(s2.y*hudh + 0.5f));
+            sx1 = static_cast<int>(floor(s1.x*hudw + 0.5f));
+            sy1 = static_cast<int>(floor(s1.y*hudh + 0.5f));
+            sx2 = static_cast<int>(floor(s2.x*hudw + 0.5f));
+            sy2 = static_cast<int>(floor(s2.y*hudh + 0.5f));
             if(clip)
             {
                 sx1 = clamp(sx1, 0, hudw);
@@ -1425,8 +1425,8 @@ namespace UI
             loadalphamask(tex);
             if(!tex->alphamask) return true;
         }
-        int tx = clamp(int(x*tex->xs), 0, tex->xs-1),
-            ty = clamp(int(y*tex->ys), 0, tex->ys-1);
+        int tx = clamp(static_cast<int>(x*tex->xs), 0, tex->xs-1),
+            ty = clamp(static_cast<int>(y*tex->ys), 0, tex->ys-1);
         if(tex->alphamask[ty*((tex->xs+7)/8) + tx/8] & (1<<(tx%8))) return true;
         return false;
     }
@@ -1860,7 +1860,7 @@ namespace UI
 
             float oldscale = textscale;
             textscale = drawscale();
-            draw_text(getstr(), sx/textscale, sy/textscale, color.r, color.g, color.b, color.a, -1, wrap >= 0 ? int(wrap/textscale) : -1);
+            draw_text(getstr(), sx/textscale, sy/textscale, color.r, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
             textscale = oldscale;
         }
 
@@ -1869,7 +1869,7 @@ namespace UI
             Object::layout();
 
             float k = drawscale(), tw, th;
-            text_boundsf(getstr(), tw, th, wrap >= 0 ? int(wrap/k) : -1);
+            text_boundsf(getstr(), tw, th, wrap >= 0 ? static_cast<int>(wrap/k) : -1);
             w = max(w, tw*k);
             h = max(h, th*k);
         }
@@ -2353,7 +2353,7 @@ namespace UI
     {
         switch(id->type)
         {
-            case Id_Var: setvarchecked(id, int(clamp(val, double(INT_MIN), double(INT_MAX)))); break;
+            case Id_Var: setvarchecked(id, static_cast<int>(clamp(val, double(INT_MIN), double(INT_MAX)))); break;
             case Id_FloatVar: setfvarchecked(id, val); break;
             case Id_StringVar: setsvarchecked(id, numberstr(val)); break;
             case Id_Alias: alias(id->name, numberstr(val)); break;
@@ -2489,8 +2489,8 @@ namespace UI
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
             if(!button) return;
             float offset = w > button->w ? clamp((cx - button->w/2)/(w - button->w), 0.0f, 1.0f) : 0.0f;
-            int step = int((val - vmin) / vstep),
-                bstep = int(offset * (vmax - vmin) / vstep);
+            int step = static_cast<int>((val - vmin) / vstep),
+                bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
             if(step != bstep) changeval(bstep * vstep + vmin);
         }
 
@@ -2498,8 +2498,8 @@ namespace UI
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
             if(!button) return;
-            int step = int((val - vmin) / vstep),
-                bstep = int(button->x / (w - button->w) * (vmax - vmin) / vstep);
+            int step = static_cast<int>((val - vmin) / vstep),
+                bstep = static_cast<int>(button->x / (w - button->w) * (vmax - vmin) / vstep);
             if(step != bstep) button->x = (w - button->w) * step * vstep / (vmax - vmin);
             button->adjust &= ~ALIGN_HMASK;
 
@@ -2517,8 +2517,8 @@ namespace UI
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
             if(!button) return;
             float offset = h > button->h ? clamp((cy - button->h/2)/(h - button->h), 0.0f, 1.0f) : 0.0f;
-            int step = int((val - vmin) / vstep),
-                bstep = int(offset * (vmax - vmin) / vstep);
+            int step = static_cast<int>((val - vmin) / vstep),
+                bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
             if(step != bstep) changeval(bstep * vstep + vmin);
         }
 
@@ -2526,8 +2526,8 @@ namespace UI
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
             if(!button) return;
-            int step = int((val - vmin) / vstep),
-                bstep = int(button->y / (h - button->h) * (vmax - vmin) / vstep);
+            int step = static_cast<int>((val - vmin) / vstep),
+                bstep = static_cast<int>(button->y / (h - button->h) * (vmax - vmin) / vstep);
             if(step != bstep) button->y = (h - button->h) * step * vstep / (vmax - vmin);
             button->adjust &= ~ALIGN_VMASK;
 
@@ -2641,7 +2641,7 @@ namespace UI
             {
                 float k = drawscale();
                 bool dragged = max(fabs(cx - offsetx), fabs(cy - offsety)) > (FONTH/8.0f)*k;
-                edit->hit(int(floor(cx/k - FONTW/2)), int(floor(cy/k)), dragged);
+                edit->hit(static_cast<int>(floor(cx/k - FONTW/2)), static_cast<int>(floor(cy/k)), dragged);
             }
         }
 
@@ -3040,12 +3040,12 @@ namespace UI
                     }
                 }
             }
-            float xt = min(1.0f, t->xs/float(t->ys)),
-                  yt = min(1.0f, t->ys/float(t->xs));
+            float xt = min(1.0f, t->xs/static_cast<float>(t->ys)),
+                  yt = min(1.0f, t->ys/static_cast<float>(t->xs));
             for(int k = 0; k < 4; ++k)
             {
-                tc[k].x = tc[k].x/xt - float(xoff)/t->xs;
-                tc[k].y = tc[k].y/yt - float(yoff)/t->ys;
+                tc[k].x = tc[k].x/xt - static_cast<float>(xoff)/t->xs;
+                tc[k].y = tc[k].y/yt - static_cast<float>(yoff)/t->ys;
             }
             glBindTexture(GL_TEXTURE_2D, t->id);
             if(slot.loaded)
@@ -3561,7 +3561,7 @@ namespace UI
         uitextscale = 1.0f/uitextrows;
 
         int tw = hudw, th = hudh;
-        if(forceaspect) tw = int(ceil(th*forceaspect));
+        if(forceaspect) tw = static_cast<int>(ceil(th*forceaspect));
         gettextres(tw, th);
         uicontextscale = conscale/th;
     }
