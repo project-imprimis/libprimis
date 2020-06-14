@@ -149,13 +149,13 @@ uses no named enums besides those inhereted from ENet.
 
 #### `for` loops
 
-The accepted conventional variables for loops are the single letter `i`,`j`,`k,
+The accepted conventional variables for loops are the single letter `i`,`j`,`k`,
 `l` temp vars. Use later loop variables only if the earlier ones are already
 present (don't use a loop over `j` unless it's inside a loop over `i`).
 
 The convention for incrementing loops (counting upwards) is as follows:
 
-```
+```c++
 for(int i = 0; i < N; ++i)
 ```
 Change the value passed to `N` rather than using a less than or equals sign `<=`
@@ -164,13 +164,13 @@ immediately.
 
 For decrementing loops (counting downwards):
 
-```
+```c++
 for(int i = N; --i >= 0;)
 ```
 
 For loops over the length of a vector, use
 
-```
+```c++
 for(int j = 0; j < N.length(); j++) //forward iteration
 for(int v = m; --v >= 0;) //reverse iteration
 
@@ -181,7 +181,7 @@ The codebase uses the Allman style; that is, statements are enclosed in brackets
 on newlines. Case statements are indented one tab past their opening switch
 statement.
 
-```
+```c++
 namespace MyNamespace
 {
     int var1, var2, var3;
@@ -262,19 +262,29 @@ namespace MyNamespace
 }
 #undef MACRONAME
 //==============================================================================
+
+template<class Foo>
+inline Foo func(Foo var)
+{
+    bar(var);
+    return(var);
+}
 ```
+
+Note that template declarations should have the template declaration on its own
+line.
 
 Control flow statements (if/while/do-while etc.) should get their own line;
 don't do stuff like
 
-```
+```c++
 if(foo) for(int i; i < N; ++i) { doStuff; doMoreStuff }
 ```
 
 In addition, always delimit statements after control expressions with curly
 braces, even if there is only one expression:
 
-```
+```c++
 //do this
 if(foo)
 {
@@ -290,7 +300,7 @@ if(foo)
 
 Ternaries and boolean operators should be spaced out between each element:
 
-```
+```c++
 foo ? bar : baz
 foo >= bar
 foo || bar
@@ -298,14 +308,14 @@ foo || bar
 
 Arithmetic can be done without spaces, however:
 
-```
+```c++
 foo+1
 3*bar
 ```
 
 Operators should remain packed against their parentheses:
 
-```
+```c++
 if(foo)
 {
     stuff
