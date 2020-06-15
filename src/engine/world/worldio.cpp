@@ -262,8 +262,6 @@ enum
     OctaSave_Normal
 };
 
-#define LM_PACKW 512
-#define LM_PACKH 512
 #define LAYER_DUP (1<<7)
 
 struct polysurfacecompat
@@ -994,7 +992,7 @@ static uint mapcrc = 0;
 uint getmapcrc() { return mapcrc; }
 void clearmapcrc() { mapcrc = 0; }
 
-bool load_world(const char *mname, const char *cname)        // still supports all map formats that have existed since the earliest cube betas!
+bool load_world(const char *mname, const char *cname)
 {
     int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);
@@ -1200,27 +1198,6 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     }
     renderprogress(0, "validating...");
     validatec(worldroot, hdr.worldsize>>1);
-    if(!failed)
-    {
-        if(mapversion <= 0)
-        {
-            for(int i = 0; i < ohdr.lightmaps; ++i)
-            {
-                int type = f->getchar();
-                if(type&0x80)
-                {
-                    f->getlil<ushort>();
-                    f->getlil<ushort>();
-                }
-                int bpp = 3;
-                if(type&(1<<4) && (type&0x0F)!=2)
-                {
-                    bpp = 4;
-                }
-                f->seek(bpp*LM_PACKW*LM_PACKH, SEEK_CUR);
-            }
-        }
-    }
 
     mapcrc = f->getcrc();
     delete f;
