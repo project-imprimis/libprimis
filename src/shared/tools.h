@@ -1268,7 +1268,6 @@ struct reversequeue : queue<T, SIZE>
     const T &operator[](int offset) const { return queue<T, SIZE>::added(offset); }
 };
 
-inline bool islittleendian() { union { int i; uchar b[sizeof(int)]; } conv; conv.i = 1; return conv.b[0] != 0; }
 #ifdef SDL_BYTEORDER
 #define endianswap16 SDL_Swap16
 #define endianswap32 SDL_Swap32
@@ -1278,69 +1277,15 @@ inline ushort endianswap16(ushort n) { return (n<<8) | (n>>8); }
 inline uint endianswap32(uint n) { return (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000); }
 inline ullong endianswap64(ullong n) { return endianswap32(uint(n >> 32)) | ((ullong)endianswap32(uint(n)) << 32); }
 #endif
+
 template<class T>
-inline T endianswap(T n) { union { T t; uint i; } conv; conv.t = n; conv.i = endianswap32(conv.i); return conv.t; }
-
-template<>
-inline ushort endianswap<ushort>(ushort n) { return endianswap16(n); }
-
-template<>
-inline short endianswap<short>(short n) { return endianswap16(n); }
+inline T endianswap(T n) { union { T t; uint i; } conv; conv.t = n; conv.i = SDL_Swap32(conv.i); return conv.t; }
 
 template<>
 inline uint endianswap<uint>(uint n) { return endianswap32(n); }
 
 template<>
 inline int endianswap<int>(int n) { return endianswap32(n); }
-
-template<>
-inline ullong endianswap<ullong>(ullong n) { return endianswap64(n); }
-
-template<>
-inline llong endianswap<llong>(llong n) { return endianswap64(n); }
-
-template<>
-inline double endianswap<double>(double n) { union { double t; uint i; } conv; conv.t = n; conv.i = endianswap64(conv.i); return conv.t; }
-
-template<class T>
-inline void endianswap(T *buf, size_t len) { for(T *end = &buf[len]; buf < end; buf++) *buf = endianswap(*buf); }
-
-template<class T>
-inline T endiansame(T n) { return n; }
-
-template<class T>
-inline void endiansame(T, size_t) {} //has specializing symbols
-
-#ifdef SDL_BYTEORDER
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#define LIL_ENDIAN_SWAP endiansame
-#define BIG_SWAP endianswap
-#else
-#define LIL_ENDIAN_SWAP endianswap
-#define BIG_SWAP endiansame
-#endif
-#elif defined(__BYTE_ORDER__)
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#define LIL_ENDIAN_SWAP endiansame
-#define BIG_SWAP endianswap
-#else
-#define LIL_ENDIAN_SWAP endianswap
-#define BIG_SWAP endiansame
-#endif
-#else
-template<class T>
-inline T LIL_ENDIAN_SWAP(T n) { return islittleendian() ? n : endianswap(n); }
-
-template<class T>
-inline void LIL_ENDIAN_SWAP(T *buf, size_t len) { if(!islittleendian()) endianswap(buf, len); }
-
-template<class T>
-inline T BIG_SWAP(T n) { return islittleendian() ? endianswap(n) : n; }
-
-template<class T>
-inline void BIG_SWAP(T *buf, size_t len) { if(islittleendian()) endianswap(buf, len); }
-
-#endif
 
 /* workaround for some C platforms that have these two functions as macros - not used anywhere */
 #ifdef getchar
@@ -1388,22 +1333,14 @@ struct stream
     bool put(T n) { return write(&n, sizeof(n)) == sizeof(n); }
 
     template<class T>
-    bool putlil(T n) { return put<T>(LIL_ENDIAN_SWAP(n)); }
-
-    template<class T>
-    bool putbig(T n) { return put<T>(BIG_SWAP(n)); }
-
-    template<class T>
     size_t get(T *v, size_t n) { return read(v, n*sizeof(T))/sizeof(T); }
 
     template<class T>
     T get() { T n; return read(&n, sizeof(n)) == sizeof(n) ? n : 0; }
 
     template<class T>
-    T getlil() { return LIL_ENDIAN_SWAP(get<T>()); }
+    bool putbig(T n) { return put<T>(endianswap(n)); }
 
-    template<class T>
-    T getbig() { return BIG_SWAP(get<T>()); }
 
 #ifndef STANDALONE
     SDL_RWops *rwops();

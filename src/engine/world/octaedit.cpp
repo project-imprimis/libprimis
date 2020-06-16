@@ -890,7 +890,6 @@ static void packcube(cube &c, B &buf)
     else
     {
         cube data = c;
-        LIL_ENDIAN_SWAP(data.texture, 6);
         buf.put(c.material&0xFF);
         buf.put(c.material>>8);
         buf.put(data.edges, sizeof(data.edges));
@@ -906,10 +905,6 @@ static bool packblock(block3 &b, B &buf)
         return false;
     }
     block3 hdr = b;
-    LIL_ENDIAN_SWAP(hdr.o.v, 3);
-    LIL_ENDIAN_SWAP(hdr.s.v, 3);
-    LIL_ENDIAN_SWAP(&hdr.grid, 1);
-    LIL_ENDIAN_SWAP(&hdr.orient, 1);
     buf.put((const uchar *)&hdr, sizeof(hdr));
     cube *c = b.c();
     for(int i = 0; i < int(b.size()); ++i)
@@ -946,7 +941,6 @@ static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
                 vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
                 hdr.index = index;
                 hdr.slot = vs.slot->index;
-                LIL_ENDIAN_SWAP(&hdr.index, 2);
                 packvslot(buf, vs);
             }
         }
@@ -981,7 +975,6 @@ static void unpackcube(cube &c, B &buf)
         c.material = mat | (buf.get()<<8);
         buf.get(c.edges, sizeof(c.edges));
         buf.get((uchar *)c.texture, sizeof(c.texture));
-        LIL_ENDIAN_SWAP(c.texture, 6);
     }
 }
 
@@ -991,10 +984,6 @@ static bool unpackblock(block3 *&b, B &buf)
     if(b) { freeblock(b); b = NULL; }
     block3 hdr;
     if(buf.get((uchar *)&hdr, sizeof(hdr)) < int(sizeof(hdr))) return false;
-    LIL_ENDIAN_SWAP(hdr.o.v, 3);
-    LIL_ENDIAN_SWAP(hdr.s.v, 3);
-    LIL_ENDIAN_SWAP(&hdr.grid, 1);
-    LIL_ENDIAN_SWAP(&hdr.orient, 1);
     if(hdr.size() > (1<<20) || hdr.grid <= 0 || hdr.grid > (1<<12)) return false;
     b = (block3 *)new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)];
     if(!b) return false;
@@ -1049,7 +1038,6 @@ static void unpackvslots(block3 &b, ucharbuf &buf)
     while(buf.remaining() >= int(sizeof(vslothdr)))
     {
         vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
-        LIL_ENDIAN_SWAP(&hdr.index, 2);
         if(!hdr.index) break;
         VSlot &vs = *lookupslot(hdr.slot, false).variants;
         VSlot ds;
@@ -1140,17 +1128,15 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
     buf.reserve(512);
-    *(ushort *)buf.pad(2) = LIL_ENDIAN_SWAP(ushort(u->numents));
+    *(ushort *)buf.pad(2) = ushort(u->numents);
     if(u->numents)
     {
         undoent *ue = u->ents();
         for(int i = 0; i < u->numents; ++i)
         {
-            *(ushort *)buf.pad(2) = LIL_ENDIAN_SWAP(ushort(ue[i].i));
+            *(ushort *)buf.pad(2) = ushort(ue[i].i);
             entity &e = *(entity *)buf.pad(sizeof(entity));
             e = ue[i].e;
-            LIL_ENDIAN_SWAP(&e.o.x, 3);
-            LIL_ENDIAN_SWAP(&e.attr1, 5);
         }
     }
     else
@@ -1174,7 +1160,7 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
         delete[] outbuf;
         return false;
     }
-    int numents = LIL_ENDIAN_SWAP(*(const ushort *)buf.pad(2));
+    int numents = *(const ushort *)buf.pad(2);
     if(numents)
     {
         if(buf.remaining() < numents*int(2 + sizeof(entity)))
@@ -1184,10 +1170,8 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
         }
         for(int i = 0; i < numents; ++i)
         {
-            int idx = LIL_ENDIAN_SWAP(*(const ushort *)buf.pad(2));
+            int idx = *(const ushort *)buf.pad(2);
             entity &e = *(entity *)buf.pad(sizeof(entity));
-            LIL_ENDIAN_SWAP(&e.o.x, 3);
-            LIL_ENDIAN_SWAP(&e.attr1, 5);
             pasteundoent(idx, e);
         }
     }
@@ -1282,7 +1266,6 @@ void saveprefab(char *name)
     prefabheader hdr;
     memcpy(hdr.magic, "OEBR", 4);
     hdr.version = 0;
-    LIL_ENDIAN_SWAP(&hdr.version, 1);
     f->write(&hdr, sizeof(hdr));
     streambuf<uchar> s(f);
     if(!packblock(*b->copy, s)) { delete f; conoutf(Console_Error, "could not pack prefab %s", filename); return; }
@@ -1320,7 +1303,6 @@ prefab *loadprefab(const char *name, bool msg = true)
             return NULL;
         }
     }
-    LIL_ENDIAN_SWAP(&hdr.version, 1);
     if(hdr.version != 0)
     {
         delete f;

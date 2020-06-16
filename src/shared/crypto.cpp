@@ -88,20 +88,9 @@ namespace tiger
         const char *str = "Tiger - A Fast New Hash Function, by Ross Anderson and Eli Biham";
         chunk state[3] = { 0x0123456789ABCDEFULL, 0xFEDCBA9876543210ULL, 0xF096A5B4C3B2E187ULL };
         uchar temp[64];
-
-        if(!islittleendian()) //for big endian CPUs (POWER e.g.) calc temp differently
+        for(int j = 0; j < 64; ++j)
         {
-            for(int j = 0; j < 64; ++j)
-            {
-                temp[j^7] = str[j];
-            }
-        }
-        else //little endian CPUs (x86, ARM)
-        {
-            for(int j = 0; j < 64; ++j)
-            {
-                temp[j] = str[j];
-            }
+            temp[j] = str[j];
         }
         for(int i = 0; i < 1024; ++i)
         {
@@ -152,40 +141,15 @@ namespace tiger
         int i = length;
         for(; i >= 64; i -= 64, str += 64)
         {
-            if(!islittleendian()) //big endian (POWER)
-            {
-                for(int j = 0; j < 64; ++j)
-                {
-                    temp[j^7] = str[j];
-                }
-                compress((chunk *)temp, val.chunks);
-            }
-            else //little endian
-            {
-                compress((chunk *)str, val.chunks);
-            }
+            compress((chunk *)str, val.chunks);
         }
-
         int j;
-        if(!islittleendian()) //big endian
+        for(j = 0; j < i; j++)
         {
-            for(j = 0; j < i; j++)
-            {
-                temp[j^7] = str[j];
-            }
-            temp[j^7] = 0x01;
-            while(++j&7) temp[j^7] = 0;
+            temp[j] = str[j];
         }
-        else //little endian
-        {
-            for(j = 0; j < i; j++)
-            {
-                temp[j] = str[j];
-            }
-            temp[j] = 0x01;
-            while(++j&7) temp[j] = 0;
-        }
-
+        temp[j] = 0x01;
+        while(++j&7) temp[j] = 0;
         if(j > 56)
         {
             while(j < 64)
@@ -198,17 +162,6 @@ namespace tiger
         while(j < 56) temp[j++] = 0;
         *(chunk *)(temp+56) = (chunk)length<<3;
         compress((chunk *)temp, val.chunks);
-        if(!islittleendian())
-        {
-            for(int k = 0; k < 3; ++k)
-            {
-                uchar *c = &val.bytes[k*sizeof(chunk)];
-                for(int l = 0; l < int(sizeof(chunk)/2); ++l) //note this is a loop l (level 4)
-                {
-                    swap(c[l], c[sizeof(chunk)-1-l]);
-                }
-            }
-        }
     }
 }
 

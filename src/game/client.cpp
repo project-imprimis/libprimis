@@ -987,7 +987,7 @@ namespace game
                     {
                         packvslot(messages, arg1);
                     }
-                    *(ushort *)&messages[offset-2] = LIL_ENDIAN_SWAP(ushort(messages.length() - offset));
+                    *(ushort *)&messages[offset-2] = ushort(messages.length() - offset);
                 }
                 break;
             }
@@ -1010,7 +1010,7 @@ namespace game
                     {
                         packvslot(messages, arg2);
                     }
-                    *(ushort *)&messages[offset-2] = LIL_ENDIAN_SWAP(ushort(messages.length() - offset));
+                    *(ushort *)&messages[offset-2] = ushort(messages.length() - offset);
                 }
                 break;
             }
@@ -1030,7 +1030,7 @@ namespace game
                     messages.pad(2);
                     int offset = messages.length();
                     packvslot(messages, vs);
-                    *(ushort *)&messages[offset-2] = LIL_ENDIAN_SWAP(ushort(messages.length() - offset));
+                    *(ushort *)&messages[offset-2] = ushort(messages.length() - offset);
                 }
                 break;
             }
@@ -2402,7 +2402,7 @@ namespace game
                         {
                             return;
                         }
-                        int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
+                        int extra = *(const ushort *)p.pad(2);
                         if(p.remaining() < extra)
                         {
                             return;
@@ -2465,7 +2465,7 @@ namespace game
                         {
                             return;
                         }
-                        int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
+                        int extra = *(const ushort *)p.pad(2);
                         if(p.remaining() < extra)
                         {
                             return;
@@ -2493,7 +2493,7 @@ namespace game
                         {
                             return;
                         }
-                        int extra = LIL_ENDIAN_SWAP(*(const ushort *)p.pad(2));
+                        int extra = *(const ushort *)p.pad(2);
                         if(p.remaining() < extra)
                         {
                             return;

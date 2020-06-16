@@ -872,19 +872,19 @@ namespace ai
 
         waypoints.setsize(0);
         waypoints.add(vec(0, 0, 0));
-        ushort numwp = f->getlil<ushort>();
+        ushort numwp = f->get<ushort>();
         for(int i = 0; i < numwp; ++i)
         {
             if(f->end()) break;
             vec o;
-            o.x = f->getlil<float>();
-            o.y = f->getlil<float>();
-            o.z = f->getlil<float>();
+            o.x = f->get<float>();
+            o.y = f->get<float>();
+            o.z = f->get<float>();
             waypoint &w = waypoints.add(waypoint(o, getweight(o)));
             int numlinks = f->getchar(), k = 0;
             for(int i = 0; i < numlinks; ++i)
             {
-                if((w.links[k] = f->getlil<ushort>()))
+                if((w.links[k] = f->get<ushort>()))
                 {
                     if(++k >= MAXWAYPOINTLINKS)
                     {
@@ -912,13 +912,13 @@ namespace ai
         stream *f = opengzfile(wptname, "wb");
         if(!f) return;
         f->write("OWPT", 4);
-        f->putlil<ushort>(waypoints.length()-1);
+        f->put<ushort>(waypoints.length()-1);
         for(int i = 1; i < waypoints.length(); i++)
         {
             waypoint &w = waypoints[i];
-            f->putlil<float>(w.o.x);
-            f->putlil<float>(w.o.y);
-            f->putlil<float>(w.o.z);
+            f->put<float>(w.o.x);
+            f->put<float>(w.o.y);
+            f->put<float>(w.o.z);
             int numlinks = 0;
             for(int j = 0; j < MAXWAYPOINTLINKS; ++j)
             {
@@ -931,7 +931,7 @@ namespace ai
             f->putchar(numlinks);
             for(int j = 0; j < numlinks; ++j)
             {
-                f->putlil<ushort>(w.links[j]);
+                f->put<ushort>(w.links[j]);
             }
         }
 
