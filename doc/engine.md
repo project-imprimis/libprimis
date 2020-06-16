@@ -1315,6 +1315,43 @@ These variables all have a single float, string, or integer value associated
 with them and can encode one feature of the level, such as cloud information,
 skybox settings, or ambient settings.
 
+There is a technical limit of 65635 changed variables for a map due to the size
+of the data type (ushort) used to index variables, but this is far in excess of
+the number of variables that the engine has in total.
+
+### 2.5.4 Map Entities
+---
+
+The static map entities (such as lights, spawns, etc.) have their location
+saved to the level as well as the values of the five attributes which can modify
+them. Only static entities, like those placed by a mapper, are saved here.
+
+There is a limit of ten thousand entities maximum that are allowed to be saved
+to the level. This limit of 10,000 is somewhat arbitrary and not especially
+technical, but in no realistic circumstance should this be an actual limit for
+reasonably usable maps in the engine (other engines are likely better for these
+types of applications).
+
+The technical limit for the number of map entities is 65635, the same as for map
+variables, but hitting this limit would require redesign of the engine to more
+efficiently process gigantic numbers of entities.
+
+### 2.5.5 Map Vslots
+---
+
+Following the two (relatively straightforward) lists of variables is the virtual
+texture slot (vslot) list. This list defines a set of indices which are the
+values given to the individual cube faces. These indices are much smaller than
+the actual texture and shader information that they represent, compacting the
+amount of data required for each cube object to hold. There is on the order of
+ten thousand to a million cubes on a typical level, making it much more terse to
+map them by a list of slot indices.
+
+The indices defined in the level do not map to texture information in the map's
+zipped file: it is instead defined in the associated configuration file which is
+usually provided along with the map file. This configuration file runs a script
+which tells the engines which texture & shader information to allocate to a
+particular slot; this is not filed by the map binary itself.
 
 # 3. Entities
 ---
@@ -3283,6 +3320,7 @@ particular section. This chapter is reserved for general, extensible objects
 with utility in many potential parts of the engine.
 
 ## 10.1 Vector Objects
+---
 
 A large number of vector objects exist in the game to facilitate working with
 objects in 2D, 3D, 4D, quaternion, and dual quaternion vector spaces.
@@ -3325,3 +3363,37 @@ Critically, values in a `bvec` are of type `char`, meaning they are one byte
 long and can encode values between 0 and 255. There is no notion of sign with a
 `char`, and indeed having colors with negative values in its channels makes no
 sense either.
+
+## 10.2 Cube Objects
+---
+
+Individual cube nodes, the heart of Imprimis' geometry system, are represented
+in the code by C++ objects. There are two main objects which define a cube in
+the level, which are described here.
+
+### 10.2.1 `cube`
+
+The base object which defines a cube in the world. It has several attributes:
+
+* `*children` A pointer to an array which contains child cubes within this cube
+* `*cubeext` A pointer to the extended info for the cube
+* `union: edges faces` A union type containing the cube's edge/face deformation
+* `texture[6]` A six-entry array containing texture indices for each face
+* `material` The bitmask of the material filling this cube
+* `merged` The bitmask of faces of the cubes which have been merged
+* `union: escaped visible` union of unmerged children nodes/visible faces
+
+### 10.2.2 `cubeext`
+---
+
+The extended information belonging to a cube.
+
+* `*va` pointer to the vertex array which the cube belongs to
+* `*ents` pointer to entities within the bounds of the cube
+* `surfaces[6]` vertex information for each of the cube's six faces
+* `tjoints` list of cube t-joints
+* `maxverts` space allocated for vertices
+
+This object contains the metadata needed for the engine to stitch cubes' faces
+together with other cubes into vertex arrays in a less geometry heavy fashion
+than naive cube rendering.
