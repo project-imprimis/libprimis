@@ -54,10 +54,18 @@ static void shifttexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
 template<int BPP>
 static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst, uint dw, uint dh)
 {
-    uint wfrac = (sw<<12)/dw, hfrac = (sh<<12)/dh, darea = dw*dh, sarea = sw*sh;
+    uint wfrac = (sw<<12)/dw,
+         hfrac = (sh<<12)/dh,
+         darea = dw*dh, sarea = sw*sh;
     int over, under;
-    for(over = 0; (darea>>over) > sarea; over++);
-    for(under = 0; (darea<<under) < sarea; under++);
+    for(over = 0; (darea>>over) > sarea; over++)
+    {
+        //(empty body)
+    }
+    for(under = 0; (darea<<under) < sarea; under++)
+    {
+        //(empty body)
+    }
     uint cscale = clamp(under, over - 12, 12),
          ascale = clamp(12 + under - over, 0, 24),
          dscale = ascale + 12 - cscale,
@@ -66,12 +74,20 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
     dh *= hfrac;
     for(uint y = 0; y < dh; y += hfrac)
     {
-        const uint yn = y + hfrac - 1, yi = y>>12, h = (yn>>12) - yi, ylow = ((yn|(-static_cast<int>(h)>>24))&0xFFFU) + 1 - (y&0xFFFU), yhigh = (yn&0xFFFU) + 1;
+        const uint yn = y + hfrac - 1,
+                   yi = y>>12, h = (yn>>12) - yi,
+                   ylow = ((yn|(-static_cast<int>(h)>>24))&0xFFFU) + 1 - (y&0xFFFU),
+                   yhigh = (yn&0xFFFU) + 1;
         const uchar *ysrc = &src[yi*stride];
         for(uint x = 0; x < dw; x += wfrac, dst += BPP)
         {
-            const uint xn = x + wfrac - 1, xi = x>>12, w = (xn>>12) - xi, xlow = ((w+0xFFFU)&0x1000U) - (x&0xFFFU), xhigh = (xn&0xFFFU) + 1;
-            const uchar *xsrc = &ysrc[xi*BPP], *xend = &xsrc[w*BPP];
+            const uint xn = x + wfrac - 1,
+                       xi = x>>12,
+                       w = (xn>>12) - xi,
+                       xlow = ((w+0xFFFU)&0x1000U) - (x&0xFFFU),
+                       xhigh = (xn&0xFFFU) + 1;
+            const uchar *xsrc = &ysrc[xi*BPP],
+                        *xend = &xsrc[w*BPP];
             uint t[BPP] = {0};
             for(const uchar *xcur = &xsrc[BPP]; xcur < xend; xcur += BPP)
             {
@@ -156,7 +172,8 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint 
 
 static void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
-    int stridex = bpp, stridey = bpp;
+    int stridex = bpp,
+        stridey = bpp;
     if(swapxy) stridex *= sh; else stridey *= sw;
     if(flipx) { dst += (sw-1)*stridex; stridex = -stridex; }
     if(flipy) { dst += (sh-1)*stridey; stridey = -stridey; }
@@ -231,7 +248,14 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int s
 
 static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src, uchar *dst, bool flipx, bool flipy, bool swapxy, bool normals = false)
 {
-    int bx1 = 0, by1 = 0, bx2 = min(w, 4), by2 = min(h, 4), bw = (w+3)/4, bh = (h+3)/4, stridex = blocksize, stridey = blocksize;
+    int bx1 = 0,
+        by1 = 0,
+        bx2 = min(w, 4),
+        by2 = min(h, 4),
+        bw = (w+3)/4,
+        bh = (h+3)/4,
+        stridex = blocksize,
+        stridey = blocksize;
     if(swapxy) stridex *= bw; else stridey *= bh;
     if(flipx) { dst += (bw-1)*stridex; stridex = -stridex; bx1 += 4-bx2; bx2 = 4; }
     if(flipy) { dst += (bh-1)*stridey; stridey = -stridey; by1 += 4-by2; by2 = 4; }
@@ -273,7 +297,8 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
                 curdst += 8;
             }
 
-            ushort color1 = *(const ushort *)src, color2 = *(const ushort *)&src[2];
+            ushort color1 = *(const ushort *)src,
+                   color2 = *(const ushort *)&src[2];
             uint sbits = *(const uint *)&src[4];
             if(normals)
             {
@@ -296,7 +321,11 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
                 if(color1 <= color2 && ncolor1 > ncolor2) { color1 = ncolor2; color2 = ncolor1; }
                 else { color1 = ncolor1; color2 = ncolor2; }
             }
-            uint dbits = 0, xmask = flipx ? 3 : 0, ymask = flipy ? 3 : 0, xshift = 1, yshift = 3;
+            uint dbits = 0,
+                 xmask = flipx ? 3 : 0,
+                 ymask = flipy ? 3 : 0,
+                 xshift = 1,
+                 yshift = 3;
             if(swapxy) swap(xshift, yshift);
             for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
             {
@@ -315,7 +344,14 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
 
 static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src, uchar *dst, bool flipx, bool flipy, bool swapxy)
 {
-    int bx1 = 0, by1 = 0, bx2 = min(w, 4), by2 = min(h, 4), bw = (w+3)/4, bh = (h+3)/4, stridex = blocksize, stridey = blocksize;
+    int bx1 = 0,
+        by1 = 0,
+        bx2 = min(w, 4),
+        by2 = min(h, 4),
+        bw = (w+3)/4,
+        bh = (h+3)/4,
+        stridex = blocksize,
+        stridey = blocksize;
     if(swapxy) stridex *= bw; else stridey *= bh;
     if(flipx) { dst += (bw-1)*stridex; stridex = -stridex; bx1 += 4-bx2; bx2 = 4; }
     if(flipy) { dst += (bh-1)*stridey; stridey = -stridey; by1 += 4-by2; by2 = 4; }
@@ -326,9 +362,14 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
         {
             for(int j = 0; j < blocksize/8; ++j)
             {
-                uchar val1 = src[0], val2 = src[1];
-                ullong sval = *(const ushort *)&src[2] + ((ullong)*(const uint *)&src[4] << 16), dval = 0;
-                uint xmask = flipx ? 7 : 0, ymask = flipy ? 7 : 0, xshift = 0, yshift = 2;
+                uchar val1 = src[0],
+                      val2 = src[1];
+                ullong sval = *(const ushort *)&src[2] + ((ullong)*(const uint *)&src[4] << 16),
+                       dval = 0;
+                uint xmask = flipx ? 7 : 0,
+                     ymask = flipy ? 7 : 0,
+                     xshift = 0,
+                     yshift = 2;
                 if(swapxy) swap(xshift, yshift);
                 for(int y = by1; y < by2; y++)
                 {
@@ -838,7 +879,9 @@ void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int
 
 void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format, GLenum type, const void *pixels, int pw, int ph, int pitch, bool mipmap)
 {
-    int bpp = formatsize(format), row = 0, rowalign = 0;
+    int bpp = formatsize(format),
+        row = 0,
+        rowalign = 0;
     if(!pitch) pitch = pw*bpp;
     uchar *buf = NULL;
     if(pw!=tw || ph!=th)
@@ -1122,7 +1165,8 @@ static GLenum textype(GLenum &component, GLenum &format)
 
 void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int filter, GLenum component, GLenum subtarget, int pw, int ph, int pitch, bool resize, GLenum format, bool swizzle)
 {
-    GLenum target = textarget(subtarget), type = textype(component, format);
+    GLenum target = textarget(subtarget),
+           type = textype(component, format);
     if(tnum) setuptexparameters(tnum, pixels, clamp, filter, format, target, swizzle);
     if(!pw) pw = w;
     if(!ph) ph = h;
@@ -1534,7 +1578,8 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         }
         else if(matchstring(cmd, len, "thumbnail"))
         {
-            int w = atoi(arg[0]), h = atoi(arg[1]);
+            int w = atoi(arg[0]),
+                h = atoi(arg[1]);
             if(w <= 0 || w > (1<<12)) w = 64;
             if(h <= 0 || h > (1<<12)) h = w;
             if(d.w > w || d.h > h) scaleimage(d, w, h);
@@ -1576,7 +1621,8 @@ uchar *loadalphamask(Texture *t)
     ImageData s;
     if(!texturedata(s, t->name, false) || !s.data || s.compressed) return NULL;
     t->alphamask = new uchar[s.h * ((s.w+7)/8)];
-    uchar *srcrow = s.data, *dst = t->alphamask-1;
+    uchar *srcrow = s.data,
+          *dst = t->alphamask-1;
     for(int y = 0; y < s.h; ++y)
     {
         uchar *src = srcrow+s.bpp-1;
