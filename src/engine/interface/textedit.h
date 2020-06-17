@@ -1,7 +1,7 @@
 
 struct editline
 {
-    enum { CHUNKSIZE = 256 };
+    enum { Chunk_Size = 256 };
 
     char *text;
     int len, maxlen;
@@ -26,7 +26,7 @@ struct editline
         {
             return false;
         }
-        maxlen = (total + CHUNKSIZE) - total%CHUNKSIZE;
+        maxlen = (total + Chunk_Size) - total%Chunk_Size;
         char *newtext = new char[maxlen];
         if(fmt)
         {
@@ -105,12 +105,12 @@ struct editline
             }
             if(len + 1 >= maxlen && len + 1 < chop)
             {
-                grow(len + CHUNKSIZE, "%s", text);
+                grow(len + Chunk_Size, "%s", text);
             }
         }
         if(len + 1 >= chop)
         {
-            char buf[CHUNKSIZE];
+            char buf[Chunk_Size];
             while(f->getline(buf, sizeof(buf)))
             {
                 int blen = strlen(buf);
@@ -198,9 +198,9 @@ struct editline
 
 enum
 {
-    EDITORFOCUSED = 1,
-    EDITORUSED,
-    EDITORFOREVER
+    Editor_Focused = 1,
+    Editor_Used,
+    Editor_Forever
 };
 
 struct editor
@@ -988,7 +988,7 @@ static void readyeditors()
 {
     for(int i = 0; i < editors.length(); i++)
     {
-        editors[i]->active = (editors[i]->mode==EDITORFOREVER);
+        editors[i]->active = (editors[i]->mode==Editor_Forever);
     }
 }
 
@@ -1068,7 +1068,7 @@ ICOMMAND(textfocus, "si", (char *name, int *mode), // focus on a (or create a pe
     }
     if(*name)
     {
-        useeditor(name, *mode<=0 ? EDITORFOREVER : *mode, true);
+        useeditor(name, *mode<=0 ? Editor_Forever : *mode, true);
     }
     else if(editors.length() > 0)
     {
@@ -1128,8 +1128,8 @@ ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into
 
 #define PASTEBUFFER "#pastebuffer"
 
-TEXTCOMMAND(textcopy, "", (), editor *b = useeditor(PASTEBUFFER, EDITORFOREVER, false); textfocus->copyselectionto(b););
-TEXTCOMMAND(textpaste, "", (), editor *b = useeditor(PASTEBUFFER, EDITORFOREVER, false); textfocus->insertallfrom(b););
+TEXTCOMMAND(textcopy, "", (), editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->copyselectionto(b););
+TEXTCOMMAND(textpaste, "", (), editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->insertallfrom(b););
 TEXTCOMMAND(textmark, "i", (int *m),  // (1=mark, 2=unmark), return current mark setting if no args
     if(*m)
     {

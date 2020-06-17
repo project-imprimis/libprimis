@@ -2550,7 +2550,7 @@ namespace UI
 
         TextEditor() : edit(NULL), keyfilter(NULL) {}
 
-        void setup(const char *name, int length, int height, float scale_ = 1, const char *initval = NULL, int mode = EDITORUSED, const char *keyfilter_ = NULL)
+        void setup(const char *name, int length, int height, float scale_ = 1, const char *initval = NULL, int mode = Editor_Used, const char *keyfilter_ = NULL)
         {
             Object::setup();
             editor *edit_ = useeditor(name, mode, false, initval);
@@ -2560,7 +2560,7 @@ namespace UI
                 edit = edit_;
             }
             else if(isfocus() && !hasstate(STATE_HOVER)) commit();
-            if(initval && edit->mode == EDITORFOCUSED && !isfocus()) edit->init(initval);
+            if(initval && edit->mode == Editor_Focused && !isfocus()) edit->init(initval);
             edit->active = true;
             edit->linewrap = length < 0;
             edit->maxx = edit->linewrap ? -1 : length;
@@ -2762,7 +2762,7 @@ namespace UI
             }
             bool shouldfree = false;
             const char *initval = id != id_ || !isfocus() ? getsval(id_, shouldfree) : NULL;
-            TextEditor::setup(id_->name, length, 0, scale, initval, EDITORFOCUSED, keyfilter_);
+            TextEditor::setup(id_->name, length, 0, scale, initval, Editor_Focused, keyfilter_);
             if(shouldfree) delete[] initval;
             id = id_;
         }
@@ -3402,7 +3402,7 @@ namespace UI
         buildtext(*text, *scale, FONTH*uicontextscale, Color(255, 255, 255), *wrap, children));
 
     ICOMMAND(uitexteditor, "siifsie", (char *name, int *length, int *height, float *scale, char *initval, int *mode, uint *children),
-        BUILD(TextEditor, o, o->setup(name, *length, *height, (*scale <= 0 ? 1 : *scale) * uitextscale, initval, *mode <= 0 ? EDITORFOREVER : *mode), children));
+        BUILD(TextEditor, o, o->setup(name, *length, *height, (*scale <= 0 ? 1 : *scale) * uitextscale, initval, *mode <= 0 ? Editor_Forever : *mode), children));
 
     ICOMMAND(uifont, "se", (char *name, uint *children),
         BUILD(Font, o, o->setup(name), children));
