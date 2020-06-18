@@ -15,14 +15,15 @@ struct staininfo
     ushort startvert, endvert;
 };
 
+//stainflag enum is local to this file
 enum
 {
-    SF_RND4       = 1<<0,
-    SF_ROTATE     = 1<<1,
-    SF_INVMOD     = 1<<2,
-    SF_OVERBRIGHT = 1<<3,
-    SF_GLOW       = 1<<4,
-    SF_SATURATE   = 1<<5
+    StainFlag_Rnd4       = 1<<0,
+    StainFlag_Rotate     = 1<<1,
+    StainFlag_InvMod     = 1<<2,
+    StainFlag_Overbright = 1<<3,
+    StainFlag_Glow       = 1<<4,
+    StainFlag_Saturate   = 1<<5
 };
 
 VARFP(maxstaintris, 1, 2048, 16384, initstains());
@@ -219,7 +220,7 @@ struct stainrenderer
         DELETEA(stains);
     }
 
-    bool usegbuffer() const { return !(flags&(SF_INVMOD|SF_GLOW)); }
+    bool usegbuffer() const { return !(flags&(StainFlag_InvMod|StainFlag_Glow)); }
 
     void init(int tris)
     {
@@ -283,7 +284,7 @@ struct stainrenderer
     void fadestain(const staininfo &d, uchar alpha)
     {
         bvec color = d.color;
-        if(flags&(SF_OVERBRIGHT|SF_GLOW|SF_INVMOD))
+        if(flags&(StainFlag_Overbright|StainFlag_Glow|StainFlag_InvMod))
         {
             color.scale(alpha, 255);
         }
@@ -471,23 +472,23 @@ struct stainrenderer
     void render(int sbuf)
     {
         float colorscale = 1, alphascale = 1;
-        if(flags&SF_OVERBRIGHT)
+        if(flags&StainFlag_Overbright)
         {
             glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
             SETVARIANT(overbrightstain, sbuf == StainBuffer_Transparent ? 0 : -1, 0);
         }
-        else if(flags&SF_GLOW)
+        else if(flags&StainFlag_Glow)
         {
             glBlendFunc(GL_ONE, GL_ONE);
             colorscale = ldrscale;
-            if(flags&SF_SATURATE)
+            if(flags&StainFlag_Saturate)
             {
                 colorscale *= 2;
             }
             alphascale = 0;
             SETSHADER(foggedstain);
         }
-        else if(flags&SF_INVMOD)
+        else if(flags&StainFlag_InvMod)
         {
             glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
             alphascale = 0;
@@ -497,7 +498,7 @@ struct stainrenderer
         {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             colorscale = ldrscale;
-            if(flags&SF_SATURATE)
+            if(flags&StainFlag_Saturate)
             {
                 colorscale *= 2;
             }
@@ -548,13 +549,13 @@ struct stainrenderer
         staintangent = vec(dir.z, -dir.x, dir.y);
         staintangent.project(dir);
 
-        if(flags&SF_ROTATE)
+        if(flags&StainFlag_Rotate)
         {
             staintangent.rotate(sincos360[randomint(360)], dir);
         }
         staintangent.normalize();
         stainbitangent.cross(staintangent, dir);
-        if(flags&SF_RND4)
+        if(flags&StainFlag_Rnd4)
         {
             stainu = 0.5f*(info&1);
             stainv = 0.5f*((info>>1)&1);
@@ -719,7 +720,7 @@ struct stainrenderer
             {
                 continue;
             }
-            float tsz = flags&SF_RND4 ? 0.5f : 1.0f,
+            float tsz = flags&StainFlag_Rnd4 ? 0.5f : 1.0f,
                   scale = tsz*0.5f/stainradius,
                   tu = stainu + tsz*0.5f - ptc*scale,
                   tv = stainv + tsz*0.5f - pbc*scale;
@@ -860,7 +861,7 @@ struct stainrenderer
         {
             return;
         }
-        float tsz = flags&SF_RND4 ? 0.5f : 1.0f,
+        float tsz = flags&StainFlag_Rnd4 ? 0.5f : 1.0f,
               scale = tsz*0.5f/stainradius,
               tu = stainu + tsz*0.5f - ptc*scale,
               tv = stainv + tsz*0.5f - pbc*scale;
@@ -998,11 +999,11 @@ struct stainrenderer
 
 stainrenderer stains[] =
 {
-    stainrenderer("<grey>media/particle/blood.png", SF_RND4|SF_ROTATE|SF_INVMOD),
-    stainrenderer("<grey>media/particle/pulse_scorch.png", SF_ROTATE, 500),
-    stainrenderer("<grey>media/particle/rail_hole.png", SF_ROTATE|SF_OVERBRIGHT),
-    stainrenderer("<grey>media/particle/pulse_glow.png", SF_ROTATE|SF_GLOW|SF_SATURATE, 250, 1500, 250),
-    stainrenderer("<grey>media/particle/rail_glow.png",  SF_ROTATE|SF_GLOW|SF_SATURATE, 100, 1100, 100)
+    stainrenderer("<grey>media/particle/blood.png", StainFlag_Rnd4|StainFlag_Rotate|StainFlag_InvMod),
+    stainrenderer("<grey>media/particle/pulse_scorch.png", StainFlag_Rotate, 500),
+    stainrenderer("<grey>media/particle/rail_hole.png", StainFlag_Rotate|StainFlag_Overbright),
+    stainrenderer("<grey>media/particle/pulse_glow.png", StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 250, 1500, 250),
+    stainrenderer("<grey>media/particle/rail_glow.png",  StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 100, 1100, 100)
 };
 
 void initstains()
