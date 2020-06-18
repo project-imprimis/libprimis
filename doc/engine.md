@@ -1315,7 +1315,7 @@ These variables all have a single float, string, or integer value associated
 with them and can encode one feature of the level, such as cloud information,
 skybox settings, or ambient settings.
 
-There is a technical limit of 65635 changed variables for a map due to the size
+There is a technical limit of 65636 changed variables for a map due to the size
 of the data type (ushort) used to index variables, but this is far in excess of
 the number of variables that the engine has in total.
 
@@ -1327,14 +1327,21 @@ saved to the level as well as the values of the five attributes which can modify
 them. Only static entities, like those placed by a mapper, are saved here.
 
 There is a limit of ten thousand entities maximum that are allowed to be saved
-to the level. This limit of 10,000 is somewhat arbitrary and not especially
-technical, but in no realistic circumstance should this be an actual limit for
-reasonably usable maps in the engine (other engines are likely better for these
-types of applications).
+to the level via the `MAXENTS` macro. This limit of 10,000 is somewhat arbitrary
+and not especially technical, but in no realistic circumstance should this be an
+actual limit for reasonably usable maps in the engine (other engines are likely
+better for these types of applications).
 
-The technical limit for the number of map entities is 65635, the same as for map
-variables, but hitting this limit would require redesign of the engine to more
-efficiently process gigantic numbers of entities.
+The architectural limit for the number of map entities is 65636, the same as for
+map variables, but hitting this limit would require redesign of other parts of
+the engine to more efficiently process gigantic numbers of entities.
+
+Very large numbers of entities run into performance problems before these
+technical barriers are hit, as the engine is not designed for especially large
+entitiy counts. Typical numbers of map entities on maps range from several dozen
+to several hundred, and the maximum limit imposed, either by the `MAXENTS` macro
+or the architectural limit, is far in excess of reasonable level making in this
+engine.
 
 ### 2.5.5 Map Vslots
 ---
