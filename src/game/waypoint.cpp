@@ -42,11 +42,11 @@ namespace ai
         return weight;
     }
 
+    //wpcache enum is local to this file
     enum
     {
-        WPCACHE_STATIC = 0,
-        WPCACHE_DYNAMIC,
-        NUMWPCACHES
+        WPCache_Dynamic,
+        WPCache_NumWPCaches
     };
 
     struct wpcache
@@ -194,20 +194,20 @@ namespace ai
             }
         }
 
-    } wpcaches[NUMWPCACHES];
+    } wpcaches[WPCache_NumWPCaches];
 
-    static int invalidatedwpcaches = 0, clearedwpcaches = (1<<NUMWPCACHES)-1, numinvalidatewpcaches = 0, lastwpcache = 0;
+    static int invalidatedwpcaches = 0, clearedwpcaches = (1<<WPCache_NumWPCaches)-1, numinvalidatewpcaches = 0, lastwpcache = 0;
 
     static inline void invalidatewpcache(int wp)
     {
         if(++numinvalidatewpcaches >= 1000)
         {
             numinvalidatewpcaches = 0;
-            invalidatedwpcaches = (1<<NUMWPCACHES)-1;
+            invalidatedwpcaches = (1<<WPCache_NumWPCaches)-1;
         }
         else
         {
-            for(int i = 0; i < WPCACHE_DYNAMIC; ++i)
+            for(int i = 0; i < WPCache_Dynamic; ++i)
             {
                 if(wp >= wpcaches[i].firstwp && wp <= wpcaches[i].lastwp)
                 {
@@ -215,13 +215,13 @@ namespace ai
                     return;
                 }
             }
-            invalidatedwpcaches |= 1<<WPCACHE_DYNAMIC;
+            invalidatedwpcaches |= 1<<WPCache_Dynamic;
         }
     }
 
     void clearwpcache(bool full = true)
     {
-        for(int i = 0; i < NUMWPCACHES; ++i)
+        for(int i = 0; i < WPCache_NumWPCaches; ++i)
         {
             if(full || invalidatedwpcaches&(1<<i))
             {
@@ -229,7 +229,7 @@ namespace ai
                 clearedwpcaches |= 1<<i;
             }
         }
-        if(full || invalidatedwpcaches == (1<<NUMWPCACHES)-1)
+        if(full || invalidatedwpcaches == (1<<WPCache_NumWPCaches)-1)
         {
             numinvalidatewpcaches = 0;
             lastwpcache = 0;
@@ -242,11 +242,11 @@ namespace ai
 
     void buildwpcache()
     {
-        for(int i = 0; i < NUMWPCACHES; ++i)
+        for(int i = 0; i < WPCache_NumWPCaches; ++i)
         {
             if(wpcaches[i].firstwp < 0)
             {
-                wpcaches[i].build(i > 0 ? wpcaches[i-1].lastwp+1 : 1, i+1 >= NUMWPCACHES || wpcaches[i+1].firstwp < 0 ? -1 : wpcaches[i+1].firstwp);
+                wpcaches[i].build(i > 0 ? wpcaches[i-1].lastwp+1 : 1, i+1 >= WPCache_NumWPCaches || wpcaches[i+1].firstwp < 0 ? -1 : wpcaches[i+1].firstwp);
             }
         }
         clearedwpcaches = 0;
@@ -290,7 +290,7 @@ namespace ai
 //=====
         int closest = -1;
         wpcache::node *curnode; //define current node
-        for(int i = 0; i < NUMWPCACHES; ++i) //NUMWPCACHES = 2
+        for(int i = 0; i < WPCache_NumWPCaches; ++i) //WPCache_NumWPCaches = 2
         {
             if(wpcaches[i].firstwp >= 0) //if the first waypoint in the enumerated (by i) cache is not -1 (-1 set by clearing)
             {
@@ -370,7 +370,7 @@ namespace ai
             } \
         } while(0)
         wpcache::node *curnode;
-        for(int which = 0; which < NUMWPCACHES; ++which)
+        for(int which = 0; which < WPCache_NumWPCaches; ++which)
         {
             if(wpcaches[which].firstwp >= 0)
             {
@@ -428,7 +428,7 @@ namespace ai
             } \
         } while(0)
         wpcache::node *curnode;
-        for(int which = 0; which < NUMWPCACHES; ++which)
+        for(int which = 0; which < WPCache_NumWPCaches; ++which)
         {
             if(wpcaches[which].firstwp >= 0)
             {
