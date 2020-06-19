@@ -814,11 +814,11 @@ DEFFVAR(deffvarp, Idf_Persist);
 DEFSVAR(defsvar, 0);
 DEFSVAR(defsvarp, Idf_Persist);
 
-#define _GETVAR(id, vartype, name, retval) \
+#define GETVAR_(id, vartype, name, retval) \
     ident *id = idents.access(name); \
     if(!id || id->type!=vartype) return retval;
 
-#define GETVAR(id, name, retval) _GETVAR(id, Id_Var, name, retval)
+#define GETVAR(id, name, retval) GETVAR_(id, Id_Var, name, retval)
 
 #define OVERRIDEVAR(errorval, saveval, resetval, clearval) \
     if(identflags&Idf_Overridden || id->flags&Idf_Override) \
@@ -856,7 +856,7 @@ void setvar(const char *name, int i, bool dofunc, bool doclamp)
 }
 void setfvar(const char *name, float f, bool dofunc, bool doclamp)
 {
-    _GETVAR(id, Id_FloatVar, name, );
+    GETVAR_(id, Id_FloatVar, name, );
     OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
     if(doclamp)
     {
@@ -873,7 +873,7 @@ void setfvar(const char *name, float f, bool dofunc, bool doclamp)
 }
 void setsvar(const char *name, const char *str, bool dofunc)
 {
-    _GETVAR(id, Id_StringVar, name, );
+    GETVAR_(id, Id_StringVar, name, );
     OVERRIDEVAR(return, id->overrideval.s = *id->storage.s, delete[] id->overrideval.s, delete[] *id->storage.s);
     *id->storage.s = newstring(str);
     if(dofunc)
@@ -898,12 +898,12 @@ int getvarmax(const char *name)
 }
 float getfvarmin(const char *name)
 {
-    _GETVAR(id, Id_FloatVar, name, 0);
+    GETVAR_(id, Id_FloatVar, name, 0);
     return id->minvalf;
 }
 float getfvarmax(const char *name)
 {
-    _GETVAR(id, Id_FloatVar, name, 0);
+    GETVAR_(id, Id_FloatVar, name, 0);
     return id->maxvalf;
 }
 
