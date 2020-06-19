@@ -2,7 +2,10 @@
 
 #include "engine.h"
 
-Shader *particleshader = NULL, *particlenotextureshader = NULL, *particlesoftshader = NULL, *particletextshader = NULL;
+Shader *particleshader          = NULL,
+       *particlenotextureshader = NULL,
+       *particlesoftshader      = NULL,
+       *particletextshader      = NULL;
 
 VARP(particlelayers, 0, 1, 1);
 FVARP(particlebright, 0, 2, 100);
@@ -198,7 +201,10 @@ struct partrenderer
 
     virtual void preload()
     {
-        if(texname && !tex) tex = textureload(texname, texclamp);
+        if(texname && !tex)
+        {
+            tex = textureload(texname, texclamp);
+        }
     }
 
     //blend = 0 => remove it
@@ -331,7 +337,10 @@ struct listrenderer : partrenderer
 
     void resettracked(physent *owner)
     {
-        if(!(type&PT_TRACK)) return;
+        if(!(type&PT_TRACK))
+        {
+            return;
+        }
         for(listparticle **prev = &list, *cur = list; cur; cur = *prev)
         {
             if(!owner || cur->owner==owner)
@@ -462,9 +471,9 @@ struct meterrenderer : listrenderer
     void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
     {
         int basetype = type&0xFF;
-        float scale = FONTH*p->size/80.0f,
-              right = 8,
-              left = p->progress/100.0f*right;
+        float scale  = FONTH*p->size/80.0f,
+              right  = 8,
+              left   = p->progress/100.0f*right;
         matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
         m.scale(scale);
         m.translate(-right/2.0f, 0, 0);
@@ -487,7 +496,10 @@ struct meterrenderer : listrenderer
         {
             gle::colorub(p->color2[0], p->color2[1], p->color2[2]);
         }
-        else gle::colorf(0, 0, 0);
+        else
+        {
+            gle::colorf(0, 0, 0);
+        }
         gle::begin(GL_TRIANGLE_STRIP);
         for(int k = 0; k < 10; ++k)
         {
@@ -663,7 +675,6 @@ static inline void seedpos(particleemitter &pe, const vec &o, const vec &d, int 
         vec end = vec(o).madd(d, t/5000.0f);
         end.z -= t*t/(2.0f * 5000.0f * grav);
         pe.extendbb(end, size);
-
         float tpeak = d.z*grav;
         if(tpeak > 0 && tpeak < fade)
         {
@@ -793,7 +804,6 @@ struct varenderer : partrenderer
         end.add(vec(d).mul(t/5000.0f));
         end.z -= t*t/(2.0f * 5000.0f * gravity);
         pe.extendbb(end, size);
-
         float tpeak = d.z*gravity;
         if(tpeak > 0 && tpeak < fade)
         {
@@ -1179,7 +1189,6 @@ void renderparticles(int layer)
         }
         p->render();
     }
-
     if(rendered)
     {
         if(lastflags&(PT_LERP|PT_MOD))
@@ -1478,10 +1487,14 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
             to.add(p);
             from = to;
         }
-        else from = to = p;
-
-        if(inv) swap(from, to);
-
+        else
+        {
+            from = to = p;
+        }
+        if(inv)
+        {
+            swap(from, to);
+        }
         if(taper)
         {
             float dist = clamp(from.dist2(camera1->o)/maxparticledistance, 0.0f, 1.0f);
@@ -1552,12 +1565,17 @@ static void makeparticles(entity &e)
             break;
         }
         case 1: //steam vent - <dir>
+        {
             regularsplash(Part_Steam, 0x897661, 50, 1, 200, offsetvec(e.o, e.attr2, randomint(10)), 2.4f, -20);
             break;
+        }
         case 2: //water fountain - <dir>
         {
             int color;
-            if(e.attr3 > 0) color = colorfromattr(e.attr3);
+            if(e.attr3 > 0)
+            {
+                color = colorfromattr(e.attr3);
+            }
             else
             {
                 int mat = Mat_Water + clamp(-e.attr3, 0, 3);
@@ -1581,8 +1599,14 @@ static void makeparticles(entity &e)
             int type = typemap[e.attr1-4];
             float size = sizemap[e.attr1-4];
             int gravity = gravmap[e.attr1-4];
-            if(e.attr2 >= 256) regularshape(type, max(1+e.attr3, 1), colorfromattr(e.attr4), e.attr2-256, 5, e.attr5 > 0 ? min(static_cast<int>(e.attr5), 10000) : 200, e.o, size, gravity);
-            else newparticle(e.o, offsetvec(e.o, e.attr2, max(1+e.attr3, 0)), 1, type, colorfromattr(e.attr4), size, gravity);
+            if(e.attr2 >= 256)
+            {
+                regularshape(type, max(1+e.attr3, 1), colorfromattr(e.attr4), e.attr2-256, 5, e.attr5 > 0 ? min(static_cast<int>(e.attr5), 10000) : 200, e.o, size, gravity);
+            }
+            else
+            {
+                newparticle(e.o, offsetvec(e.o, e.attr2, max(1+e.attr3, 0)), 1, type, colorfromattr(e.attr4), size, gravity);
+            }
             break;
         }
         case 5: //meter, metervs - <percent> <rgb> <rgb2>
@@ -1597,18 +1621,24 @@ static void makeparticles(entity &e)
             break;
         }
         case 11: // flame <radius> <height> <rgb> - radius=100, height=100 is the classic size
+        {
             regularflame(Part_Flame, e.o, static_cast<float>(e.attr2)/100.0f, static_cast<float>(e.attr3)/100.0f, colorfromattr(e.attr4), 3, 2.0f);
             break;
+        }
         case 12: // smoke plume <radius> <height> <rgb>
+        {
             regularflame(Part_Smoke, e.o, static_cast<float>(e.attr2)/100.0f, static_cast<float>(e.attr3)/100.0f, colorfromattr(e.attr4), 1, 4.0f, 100.0f, 2000.0f, -20);
             break;
+        }
         default:
+        {
             if(!editmode)
             {
                 DEF_FORMAT_STRING(ds, "particles %d?", e.attr1);
                 particle_textcopy(e.o, ds, Part_Text, 1, 0x6496FF, 2.0f);
             }
             break;
+        }
     }
 }
 
@@ -1655,7 +1685,9 @@ void seedparticles()
         extentity &e = *pe.ent;
         seedemitter = &pe;
         for(int millis = 0; millis < seedmillis; millis += min(emitmillis, seedmillis/10))
+        {
             makeparticles(e);
+        }
         seedemitter = NULL;
         pe.lastemit = -seedmillis;
         pe.finalize();
@@ -1678,7 +1710,10 @@ void updateparticles()
         canemit = true;
         lastemitframe = lastmillis - (lastmillis%emitmillis);
     }
-    else canemit = false;
+    else
+    {
+        canemit = false;
+    }
     for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
     {
         parts[i]->update();
