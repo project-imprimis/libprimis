@@ -1,7 +1,7 @@
 // generic useful stuff for any C++ program
 
-#ifndef _TOOLS_H
-#define _TOOLS_H
+#ifndef TOOLS_H_
+#define TOOLS_H_
 
 #ifdef NULL
 #undef NULL

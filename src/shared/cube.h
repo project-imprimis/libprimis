@@ -1,5 +1,5 @@
-#ifndef __CUBE_H__
-#define __CUBE_H__
+#ifndef CUBE_H_
+#define CUBE_H_
 
 #define _FILE_OFFSET_BITS 64
 

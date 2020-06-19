@@ -1,5 +1,5 @@
-#ifndef __ENGINE_H__
-#define __ENGINE_H__
+#ifndef ENGINE_H_
+#define ENGINE_H_
 
 #include "cube.h"
 #include "world/world.h"
