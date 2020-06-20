@@ -3,7 +3,8 @@
 
 namespace UI
 {
-    float cursorx = 0.499f, cursory = 0.499f;
+    float cursorx = 0.499f,
+          cursory = 0.499f;
 
     static void quads(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
     {
@@ -12,8 +13,6 @@ namespace UI
         gle::attribf(x+w, y+h); gle::attribf(tx+tw, ty+th);
         gle::attribf(x,   y+h); gle::attribf(tx,    ty+th);
     }
-
-
 
     static void quad(float x, float y, float w, float h, const vec2 tc[4])
     {
@@ -69,7 +68,10 @@ namespace UI
 
     static inline bool isfullyclipped(float x, float y, float w, float h)
     {
-        if(clipstack.empty()) return false;
+        if(clipstack.empty())
+        {
+            return false;
+        }
         return clipstack.last().isfullyclipped(x, y, w, h);
     }
 
@@ -143,7 +145,12 @@ namespace UI
 
     static Object *drawing = NULL;
 
-    enum { BLEND_ALPHA, BLEND_MOD };
+    enum
+    {
+        BLEND_ALPHA,
+        BLEND_MOD
+    };
+
     static int blendtype = BLEND_ALPHA;
 
     static inline void changeblend(int type, GLenum src, GLenum dst)
@@ -155,8 +162,15 @@ namespace UI
         }
     }
 
-    void resetblend() { changeblend(BLEND_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); }
-    void modblend() { changeblend(BLEND_MOD, GL_ZERO, GL_SRC_COLOR); }
+    void resetblend()
+    {
+        changeblend(BLEND_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    void modblend()
+    {
+        changeblend(BLEND_MOD, GL_ZERO, GL_SRC_COLOR);
+    }
 
     struct Object
     {
@@ -184,7 +198,10 @@ namespace UI
             adjust = ALIGN_HCENTER | ALIGN_VCENTER;
         }
 
-        virtual uchar childalign() const { return ALIGN_HCENTER | ALIGN_VCENTER; }
+        virtual uchar childalign() const
+        {
+            return ALIGN_HCENTER | ALIGN_VCENTER;
+        }
 
         void reset(Object *parent_)
         {
@@ -285,10 +302,22 @@ namespace UI
         void setclamp(int left, int right, int top, int bottom)
         {
             adjust &= ~CLAMP_MASK;
-            if(left) adjust |= CLAMP_LEFT;
-            if(right) adjust |= CLAMP_RIGHT;
-            if(top) adjust |= CLAMP_TOP;
-            if(bottom) adjust |= CLAMP_BOTTOM;
+            if(left)
+            {
+                adjust |= CLAMP_LEFT;
+            }
+            if(right)
+            {
+                adjust |= CLAMP_RIGHT;
+            }
+            if(top)
+            {
+                adjust |= CLAMP_TOP;
+            }
+            if(bottom)
+            {
+                adjust |= CLAMP_BOTTOM;
+            }
         }
 
         virtual bool target(float cx, float cy)
@@ -329,13 +358,21 @@ namespace UI
         void enddraw(int change)
         {
             enddraw();
-
             changed &= ~change;
             if(changed)
             {
-                if(changed&CHANGE_SHADER) hudshader->set();
-                if(changed&CHANGE_COLOR) gle::colorf(1, 1, 1);
-                if(changed&CHANGE_BLEND) resetblend();
+                if(changed&CHANGE_SHADER)
+                {
+                    hudshader->set();
+                }
+                if(changed&CHANGE_COLOR)
+                {
+                    gle::colorf(1, 1, 1);
+                }
+                if(changed&CHANGE_BLEND)
+                {
+                    resetblend();
+                }
             }
         }
 
@@ -375,8 +412,14 @@ namespace UI
             LOOP_CHILDREN(o, o->resetchildstate());
         }
 
-        bool hasstate(int flags) const { return ((state & ~childstate) & flags) != 0; }
-        bool haschildstate(int flags) const { return ((state | childstate) & flags) != 0; }
+        bool hasstate(int flags) const
+        {
+            return ((state & ~childstate) & flags) != 0;
+        }
+        bool haschildstate(int flags) const
+        {
+            return ((state | childstate) & flags) != 0;
+        }
 
         #define DOSTATES \
             DOSTATE(STATE_HOVER, hover) \
@@ -447,10 +490,25 @@ namespace UI
         #undef PROPAGATE_STATE
         #undef DOSTATE
 
-        static const char *typestr() { return "#Object"; }
-        virtual const char *gettype() const { return typestr(); }
-        virtual const char *getname() const { return gettype(); }
-        virtual const char *gettypename() const { return gettype(); }
+        static const char *typestr()
+        {
+            return "#Object";
+        }
+
+        virtual const char *gettype() const
+        {
+            return typestr();
+        }
+
+        virtual const char *getname() const
+        {
+            return gettype();
+        }
+
+        virtual const char *gettypename() const
+        {
+            return gettype();
+        }
 
         template<class T>
         bool istype() const { return T::typestr() == gettype(); }
@@ -459,18 +517,29 @@ namespace UI
 
         Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
         {
+            //note that this is a macro
             LOOP_CHILDREN(o,
             {
-                if(o != exclude && o->isnamed(name)) return o;
-            });
-            if(recurse) LOOP_CHILDREN(o,
-            {
-                if(o != exclude)
+                if(o != exclude && o->isnamed(name))
                 {
-                    Object *found = o->find(name);
-                    if(found) return found;
+                    return o;
                 }
             });
+            if(recurse)
+            {
+                //note that this is a macro
+                LOOP_CHILDREN(o,
+                {
+                    if(o != exclude)
+                    {
+                        Object *found = o->find(name);
+                        if(found)
+                        {
+                            return found;
+                        }
+                    }
+                });
+            }
             return NULL;
         }
 
@@ -491,7 +560,10 @@ namespace UI
             if(children.inrange(buildchild))
             {
                 Object *o = children[buildchild];
-                if(o->istype<T>()) t = (T *)o;
+                if(o->istype<T>())
+                {
+                    t = (T *)o;
+                }
                 else
                 {
                     delete o;
@@ -511,7 +583,10 @@ namespace UI
 
         void buildchildren(uint *contents)
         {
-            if((*contents&Code_OpMask) == Code_Exit) children.deletecontents();
+            if((*contents&Code_OpMask) == Code_Exit)
+            {
+                children.deletecontents();
+            }
             else
             {
                 Object *oldparent = buildparent;
@@ -520,14 +595,19 @@ namespace UI
                 buildchild = 0;
                 executeret(contents);
                 while(children.length() > buildchild)
+                {
                     delete children.pop();
+                }
                 buildparent = oldparent;
                 buildchild = oldchild;
             }
             resetstate();
         }
 
-        virtual int childcolumns() const { return children.length(); }
+        virtual int childcolumns() const
+        {
+            return children.length();
+        }
     };
 
     static inline void stopdrawing()
@@ -569,22 +649,39 @@ namespace UI
             freecode(onhide);
         }
 
-        static const char *typestr() { return "#Window"; }
-        const char *gettype() const { return typestr(); }
-        const char *getname() const { return name; }
+        static const char *typestr()
+        {
+            return "#Window";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
+
+        const char *getname() const
+        {
+            return name;
+        }
 
         void build();
 
         void hide()
         {
-            if(onhide) execute(onhide);
+            if(onhide)
+            {
+                execute(onhide);
+            }
         }
 
         void show()
         {
             state |= STATE_HIDDEN;
             clearstate(STATE_HOLD_MASK);
-            if(onshow) execute(onshow);
+            if(onshow)
+            {
+                execute(onshow);
+            }
         }
 
         void setup()
@@ -597,7 +694,11 @@ namespace UI
 
         void layout()
         {
-            if(state&STATE_HIDDEN) { w = h = 0; return; }
+            if(state&STATE_HIDDEN)
+            {
+                w = h = 0;
+                return;
+            }
             window = this;
             Object::layout();
             window = NULL;
@@ -605,7 +706,10 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            if(state&STATE_HIDDEN) return;
+            if(state&STATE_HIDDEN)
+            {
+                return;
+            }
             window = this;
 
             projection();
@@ -635,7 +739,10 @@ namespace UI
 
         void adjustchildren()
         {
-            if(state&STATE_HIDDEN) return;
+            if(state&STATE_HIDDEN)
+            {
+                return;
+            }
             window = this;
             Object::adjustchildren();
             window = NULL;
@@ -750,15 +857,24 @@ namespace UI
             LOOP_WINDOWS(w,
             {
                 w->build();
-                if(!children.inrange(i)) break;
-                if(children[i] != w) i--;
+                if(!children.inrange(i))
+                {
+                    break;
+                }
+                if(children[i] != w)
+                {
+                    i--;
+                }
             });
             resetstate();
         }
 
         bool show(Window *w)
         {
-            if(children.find(w) >= 0) return false;
+            if(children.find(w) >= 0)
+            {
+                return false;
+            }
             w->resetchildstate();
             children.add(w);
             w->show();
@@ -776,7 +892,10 @@ namespace UI
         bool hide(Window *w)
         {
             int index = children.find(w);
-            if(index < 0) return false;
+            if(index < 0)
+            {
+                return false;
+            }
             hide(w, index);
             return true;
         }
@@ -798,7 +917,17 @@ namespace UI
             return hidden;
         }
 
-        bool allowinput() const { LOOP_WINDOWS(w, { if(w->allowinput && !(w->state&STATE_HIDDEN)) return true; }); return false; }
+        bool allowinput() const
+        {
+            LOOP_WINDOWS(w,
+            {
+                if(w->allowinput && !(w->state&STATE_HIDDEN))
+                {
+                    return true;
+                }
+            });
+            return false;
+        }
 
         void draw(float sx, float sy) {}
 
@@ -824,7 +953,10 @@ namespace UI
 
     void Window::escrelease(float cx, float cy)
     {
-        if(eschide) world->hide(this);
+        if(eschide)
+        {
+            world->hide(this);
+        }
     }
 
     void Window::build()
@@ -840,8 +972,15 @@ namespace UI
     {
         float space, subw;
 
-        static const char *typestr() { return "#HorizontalList"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#HorizontalList";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void setup(float space_ = 0)
         {
@@ -849,7 +988,10 @@ namespace UI
             space = space_;
         }
 
-        uchar childalign() const { return ALIGN_VCENTER; }
+        uchar childalign() const
+        {
+            return ALIGN_VCENTER;
+        }
 
         void layout()
         {
@@ -886,8 +1028,15 @@ namespace UI
     {
         float space, subh;
 
-        static const char *typestr() { return "#VerticalList"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#VerticalList";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void setup(float space_ = 0)
         {
@@ -895,7 +1044,10 @@ namespace UI
             space = space_;
         }
 
-        uchar childalign() const { return ALIGN_HCENTER; }
+        uchar childalign() const
+        {
+            return ALIGN_HCENTER;
+        }
 
         void layout()
         {
@@ -913,9 +1065,15 @@ namespace UI
 
         void adjustchildren()
         {
-            if(children.empty()) return;
+            if(children.empty())
+            {
+                return;
+            }
 
-            float offset = 0, sy = 0, rspace = (h - subh) / max(children.length() - 1, 1), rstep = (h - subh) / children.length();
+            float offset = 0,
+                  sy     = 0,
+                  rspace = (h - subh) / max(children.length() - 1, 1),
+                  rstep = (h - subh) / children.length();
             LOOP_CHILDREN(o,
             {
                 o->y = offset;
@@ -933,8 +1091,15 @@ namespace UI
         float spacew, spaceh, subw, subh;
         vector<float> widths, heights;
 
-        static const char *typestr() { return "#Grid"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Grid";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void setup(int columns_, float spacew_ = 0, float spaceh_ = 0)
         {
@@ -944,7 +1109,10 @@ namespace UI
             spaceh = spaceh_;
         }
 
-        uchar childalign() const { return 0; }
+        uchar childalign() const
+        {
+            return 0;
+        }
 
         void layout()
         {
@@ -955,12 +1123,27 @@ namespace UI
             LOOP_CHILDREN(o,
             {
                 o->layout();
-                if(column >= widths.length()) widths.add(o->w);
-                else if(o->w > widths[column]) widths[column] = o->w;
-                if(row >= heights.length()) heights.add(o->h);
-                else if(o->h > heights[row]) heights[row] = o->h;
+                if(column >= widths.length())
+                {
+                    widths.add(o->w);
+                }
+                else if(o->w > widths[column])
+                {
+                    widths[column] = o->w;
+                }
+                if(row >= heights.length())
+                {
+                    heights.add(o->h);
+                }
+                else if(o->h > heights[row])
+                {
+                    heights[row] = o->h;
+                }
                 column = (column + 1) % columns;
-                if(!column) row++;
+                if(!column)
+                {
+                    row++;
+                }
             });
 
             subw = subh = 0;
@@ -978,10 +1161,16 @@ namespace UI
 
         void adjustchildren()
         {
-            if(children.empty()) return;
-
-            int row = 0, column = 0;
-            float offsety = 0, sy = 0, offsetx = 0, sx = 0,
+            if(children.empty())
+            {
+                return;
+            }
+            int row = 0,
+                column = 0;
+            float offsety = 0,
+                  sy = 0,
+                  offsetx = 0,
+                  sx = 0,
                   cspace = (w - subw) / max(widths.length() - 1, 1),
                   cstep = (w - subw) / widths.length(),
                   rspace = (h - subh) / max(heights.length() - 1, 1),
@@ -1011,12 +1200,24 @@ namespace UI
 
         TableHeader() : columns(-1) {}
 
-        static const char *typestr() { return "#TableHeader"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#TableHeader";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
-        uchar childalign() const { return columns < 0 ? ALIGN_VCENTER : ALIGN_HCENTER | ALIGN_VCENTER; }
+        uchar childalign() const
+        {
+            return columns < 0 ? ALIGN_VCENTER : ALIGN_HCENTER | ALIGN_VCENTER;
+        }
 
-        int childcolumns() const { return columns; }
+        int childcolumns() const
+        {
+            return columns;
+        }
 
         void buildchildren(uint *columndata, uint *contents)
         {
@@ -1078,9 +1279,14 @@ namespace UI
     {
         float spacew, spaceh, subw, subh;
         vector<float> widths;
-
-        static const char *typestr() { return "#Table"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Table";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void setup(float spacew_ = 0, float spaceh_ = 0)
         {
@@ -1089,7 +1295,10 @@ namespace UI
             spaceh = spaceh_;
         }
 
-        uchar childalign() const { return 0; }
+        uchar childalign() const
+        {
+            return 0;
+        }
 
         void layout()
         {
@@ -1100,11 +1309,17 @@ namespace UI
             {
                 o->layout();
                 int cols = o->childcolumns();
-                while(widths.length() < cols) widths.add(0);
+                while(widths.length() < cols)
+                {
+                    widths.add(0);
+                }
                 for(int j = 0; j < cols; ++j)
                 {
                     Object *c = o->children[j];
-                    if(c->w > widths[j]) widths[j] = c->w;
+                    if(c->w > widths[j])
+                    {
+                        widths[j] = c->w;
+                    }
                 }
                 w = max(w, o->w);
                 subh += o->h;
@@ -1121,9 +1336,12 @@ namespace UI
 
         void adjustchildren()
         {
-            if(children.empty()) return;
-
-            float offsety = 0, sy = 0,
+            if(children.empty())
+            {
+                return;
+            }
+            float offsety = 0,
+                  sy = 0,
                   cspace = (w - subw) / max(widths.length() - 1, 1),
                   cstep = (w - subw) / widths.length(),
                   rspace = (h - subh) / max(children.length() - 1, 1),
@@ -1165,9 +1383,14 @@ namespace UI
             spaceh = spaceh_;
         }
 
-        static const char *typestr() { return "#Spacer"; }
-        const char *gettype() const { return typestr(); }
-
+        static const char *typestr()
+        {
+            return "#Spacer";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
         void layout()
         {
             w = spacew;
@@ -1235,13 +1458,19 @@ namespace UI
             minh = minh_;
         }
 
-        static const char *typestr() { return "#Filler"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Filler";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void layout()
         {
             Object::layout();
-
             w = max(w, minw);
             h = max(h, minh);
         }
@@ -1249,9 +1478,14 @@ namespace UI
 
     struct Target : Filler
     {
-        static const char *typestr() { return "#Target"; }
-        const char *gettype() const { return typestr(); }
-
+        static const char *typestr()
+        {
+            return "#Target";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
         bool target(float cx, float cy)
         {
             return true;
@@ -1275,7 +1509,11 @@ namespace UI
 
     struct FillColor : Target
     {
-        enum { SOLID = 0, MODULATE };
+        enum
+        {
+            SOLID = 0,
+            MODULATE
+        };
 
         int type;
         Color color;
@@ -1430,7 +1668,10 @@ namespace UI
         }
         int tx = clamp(static_cast<int>(x*tex->xs), 0, tex->xs-1),
             ty = clamp(static_cast<int>(y*tex->ys), 0, tex->ys-1);
-        if(tex->alphamask[ty*((tex->xs+7)/8) + tx/8] & (1<<(tx%8))) return true;
+        if(tex->alphamask[ty*((tex->xs+7)/8) + tx/8] & (1<<(tx%8)))
+        {
+            return true;
+        }
         return false;
     }
 
@@ -1527,24 +1768,54 @@ namespace UI
 
         bool target(float cx, float cy)
         {
-            if(!(tex->type&Texture::ALPHA)) return true;
-
+            if(!(tex->type&Texture::ALPHA))
+            {
+                return true;
+            }
             float mx, my;
-            if(w <= minw) mx = cx/w;
-            else if(cx < minw/2) mx = cx/minw;
-            else if(cx >= w - minw/2) mx = 1 - (w - cx) / minw;
-            else mx = 0.5f;
-            if(h <= minh) my = cy/h;
-            else if(cy < minh/2) my = cy/minh;
-            else if(cy >= h - minh/2) my = 1 - (h - cy) / minh;
-            else my = 0.5f;
+            if(w <= minw)
+            {
+                mx = cx/w;
+            }
+            else if(cx < minw/2)
+            {
+                mx = cx/minw;
+            }
+            else if(cx >= w - minw/2)
+            {
+                mx = 1 - (w - cx) / minw;
+            }
+            else
+            {
+                mx = 0.5f;
+            }
+            if(h <= minh)
+            {
+                my = cy/h;
+            }
+            else if(cy < minh/2)
+            {
+                my = cy/minh;
+            }
+            else if(cy >= h - minh/2)
+            {
+                my = 1 - (h - cy) / minh;
+            }
+            else
+            {
+                my = 0.5f;
+            }
 
             return checkalphamask(tex, mx, my);
         }
 
         void draw(float sx, float sy)
         {
-            if(tex == notexture) { Object::draw(sx, sy); return; }
+            if(tex == notexture)
+            {
+                Object::draw(sx, sy);
+                return;
+            }
 
             bindtex();
 
@@ -1556,28 +1827,82 @@ namespace UI
                 float vh = 0, th = 0;
                 switch(i)
                 {
-                    case 0: if(splith < h - splith) { vh = splith; th = 0.5f; } else { vh = h; th = 1; } break;
-                    case 1: vh = h - 2*splith; th = 0; break;
-                    case 2: vh = splith; th = 0.5f; break;
+                    case 0:
+                    {
+                        if(splith < h - splith)
+                        {
+                            vh = splith;
+                            th = 0.5f;
+                        }
+                        else
+                        {
+                            vh = h;
+                            th = 1;
+                        }
+                        break;
+                    }
+                    case 1:
+                    {
+                        vh = h - 2*splith;
+                        th = 0;
+                        break;
+                    }
+                    case 2:
+                    {
+                        vh = splith;
+                        th = 0.5f;
+                        break;
+                    }
                 }
-                float vx = sx, tx = 0;
+                float vx = sx,
+                      tx = 0;
                 for(int j = 0; j < 3; ++j)
                 {
-                    float vw = 0, tw = 0;
+                    float vw = 0,
+                          tw = 0;
                     switch(j)
                     {
-                        case 0: if(splitw < w - splitw) { vw = splitw; tw = 0.5f; } else { vw = w; tw = 1; } break;
-                        case 1: vw = w - 2*splitw; tw = 0; break;
-                        case 2: vw = splitw; tw = 0.5f; break;
+                        case 0:
+                        {
+                            if(splitw < w - splitw)
+                            {
+                                vw = splitw;
+                                tw = 0.5f;
+                            }
+                            else
+                            {
+                                vw = w;
+                                tw = 1;
+                            }
+                            break;
+                        }
+                        case 1:
+                        {
+                            vw = w - 2*splitw;
+                            tw = 0;
+                            break;
+                        }
+                        case 2:
+                        {
+                            vw = splitw;
+                            tw = 0.5f;
+                            break;
+                        }
                     }
                     quads(vx, vy, vw, vh, tx, ty, tw, th);
                     vx += vw;
                     tx += tw;
-                    if(tx >= 1) break;
+                    if(tx >= 1)
+                    {
+                        break;
+                    }
                 }
                 vy += vh;
                 ty += th;
-                if(ty >= 1) break;
+                if(ty >= 1)
+                {
+                    break;
+                }
             }
 
             Object::draw(sx, sy);
@@ -1603,41 +1928,96 @@ namespace UI
             if(!(tex->type&Texture::ALPHA)) return true;
 
             float mx, my;
-            if(cx < screenborder) mx = cx/screenborder*texborder;
-            else if(cx >= w - screenborder) mx = 1-texborder + (cx - (w - screenborder))/screenborder*texborder;
-            else mx = texborder + (cx - screenborder)/(w - 2*screenborder)*(1 - 2*texborder);
-            if(cy < screenborder) my = cy/screenborder*texborder;
-            else if(cy >= h - screenborder) my = 1-texborder + (cy - (h - screenborder))/screenborder*texborder;
-            else my = texborder + (cy - screenborder)/(h - 2*screenborder)*(1 - 2*texborder);
-
+            if(cx < screenborder)
+            {
+                mx = cx/screenborder*texborder;
+            }
+            else if(cx >= w - screenborder)
+            {
+                mx = 1-texborder + (cx - (w - screenborder))/screenborder*texborder;
+            }
+            else
+            {
+                mx = texborder + (cx - screenborder)/(w - 2*screenborder)*(1 - 2*texborder);
+            }
+            if(cy < screenborder)
+            {
+                my = cy/screenborder*texborder;
+            }
+            else if(cy >= h - screenborder)
+            {
+                my = 1-texborder + (cy - (h - screenborder))/screenborder*texborder;
+            }
+            else
+            {
+                my = texborder + (cy - screenborder)/(h - 2*screenborder)*(1 - 2*texborder);
+            }
             return checkalphamask(tex, mx, my);
         }
 
         void draw(float sx, float sy)
         {
-            if(tex == notexture) { Object::draw(sx, sy); return; }
+            if(tex == notexture)
+            {
+                Object::draw(sx, sy);
+                return;
+            }
 
             bindtex();
 
-            float vy = sy, ty = 0;
+            float vy = sy,
+                  ty = 0;
             for(int i = 0; i < 3; ++i)
             {
-                float vh = 0, th = 0;
+                float vh = 0,
+                      th = 0;
                 switch(i)
                 {
-                    case 0: vh = screenborder; th = texborder; break;
-                    case 1: vh = h - 2*screenborder; th = 1 - 2*texborder; break;
-                    case 2: vh = screenborder; th = texborder; break;
+                    case 0:
+                    {
+                        vh = screenborder;
+                        th = texborder;
+                        break;
+                    }
+                    case 1:
+                    {
+                        vh = h - 2*screenborder;
+                        th = 1 - 2*texborder;
+                        break;
+                    }
+                    case 2:
+                    {
+                        vh = screenborder;
+                        th = texborder;
+                        break;
+                    }
                 }
-                float vx = sx, tx = 0;
+                float vx = sx,
+                      tx = 0;
                 for(int j = 0; j < 3; ++j)
                 {
-                    float vw = 0, tw = 0;
+                    float vw = 0,
+                          tw = 0;
                     switch(j)
                     {
-                        case 0: vw = screenborder; tw = texborder; break;
-                        case 1: vw = w - 2*screenborder; tw = 1 - 2*texborder; break;
-                        case 2: vw = screenborder; tw = texborder; break;
+                        case 0:
+                        {
+                            vw = screenborder;
+                            tw = texborder;
+                            break;
+                        }
+                        case 1:
+                        {
+                            vw = w - 2*screenborder;
+                            tw = 1 - 2*texborder;
+                            break;
+                        }
+                        case 2:
+                        {
+                            vw = screenborder;
+                            tw = texborder;
+                            break;
+                        }
                     }
                     quads(vx, vy, vw, vh, tx, ty, tw, th);
                     vx += vw;
@@ -1662,19 +2042,33 @@ namespace UI
             tileh = tileh_;
         }
 
-        static const char *typestr() { return "#TiledImage"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#TiledImage";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         bool target(float cx, float cy)
         {
-            if(!(tex->type&Texture::ALPHA)) return true;
+            if(!(tex->type&Texture::ALPHA))
+            {
+                return true;
+            }
 
             return checkalphamask(tex, fmod(cx/tilew, 1), fmod(cy/tileh, 1));
         }
 
         void draw(float sx, float sy)
         {
-            if(tex == notexture) { Object::draw(sx, sy); return; }
+            if(tex == notexture)
+            {
+                Object::draw(sx, sy);
+                return;
+            }
 
             bindtex();
 
@@ -1690,15 +2084,22 @@ namespace UI
                     }
                 }
             }
-            else quads(sx, sy, w, h, 0, 0, w/tilew, h/tileh);
-
+            else
+            {
+                quads(sx, sy, w, h, 0, 0, w/tilew, h/tileh);
+            }
             Object::draw(sx, sy);
         }
     };
 
     struct Shape : Filler
     {
-        enum { SOLID = 0, OUTLINE, MODULATE };
+        enum
+        {
+            SOLID = 0,
+            OUTLINE,
+            MODULATE
+        };
 
         int type;
         Color color;
@@ -1743,12 +2144,21 @@ namespace UI
             Shape::setup(color_, type_, bbmax.x, bbmax.y);
         }
 
-        static const char *typestr() { return "#Triangle"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Triangle";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         bool target(float cx, float cy)
         {
-            if(type == OUTLINE) return false;
+            if(type == OUTLINE)
+            {
+                return false;
+            }
             bool side = vec2(cx, cy).sub(b).cross(vec2(a).sub(b)) < 0;
             return (vec2(cx, cy).sub(c).cross(vec2(b).sub(c)) < 0) == side &&
                    (vec2(cx, cy).sub(a).cross(vec2(c).sub(a)) < 0) == side;
@@ -1759,8 +2169,14 @@ namespace UI
             Object::draw(sx, sy);
 
             changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
-            if(type==MODULATE) modblend(); else resetblend();
-
+            if(type==MODULATE)
+            {
+                modblend();
+            }
+            else
+            {
+                resetblend();
+            }
             color.init();
             gle::begin(type == OUTLINE ? GL_LINE_LOOP : GL_TRIANGLES);
             gle::attrib(vec2(sx, sy).add(a));
@@ -1848,12 +2264,25 @@ namespace UI
             wrap = wrap_;
         }
 
-        static const char *typestr() { return "#Text"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Text";
+        }
 
-        float drawscale() const { return scale / FONTH; }
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
-        virtual const char *getstr() const { return ""; }
+        float drawscale() const
+        {
+            return scale / FONTH;
+        }
+
+        virtual const char *getstr() const
+        {
+            return "";
+        }
 
         void draw(float sx, float sy)
         {
@@ -1892,10 +2321,20 @@ namespace UI
             SETSTR(str, str_);
         }
 
-        static const char *typestr() { return "#TextString"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#TextString";
+        }
 
-        const char *getstr() const { return str; }
+        const char *gettype() const
+        {
+            return typestr();
+        }
+
+        const char *getstr() const
+        {
+            return str;
+        }
     };
 
     struct TextInt : Text
@@ -1909,13 +2348,27 @@ namespace UI
         {
             Text::setup(scale_, color_, wrap_);
 
-            if(val != val_) { val = val_; intformat(str, val, sizeof(str)); }
+            if(val != val_)
+            {
+                val = val_;
+                intformat(str, val, sizeof(str));
+            }
         }
 
-        static const char *typestr() { return "#TextInt"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#TextInt";
+        }
 
-        const char *getstr() const { return str; }
+        const char *gettype() const
+        {
+            return typestr();
+        }
+
+        const char *getstr() const
+        {
+            return str;
+        }
     };
 
     struct TextFloat : Text
@@ -1929,13 +2382,27 @@ namespace UI
         {
             Text::setup(scale_, color_, wrap_);
 
-            if(val != val_) { val = val_; floatformat(str, val, sizeof(str)); }
+            if(val != val_)
+            {
+                val = val_;
+                floatformat(str, val, sizeof(str));
+            }
         }
 
-        static const char *typestr() { return "#TextFloat"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#TextFloat";
+        }
 
-        const char *getstr() const { return str; }
+        const char *gettype() const
+        {
+            return typestr();
+        }
+
+        const char *getstr() const
+        {
+            return str;
+        }
     };
 
     struct Font : Object
@@ -1948,7 +2415,10 @@ namespace UI
         {
             Object::setup();
 
-            if(!font || !strcmp(font->name, name)) font = findfont(name);
+            if(!font || !strcmp(font->name, name))
+            {
+                font = findfont(name);
+            }
         }
 
         void layout()
@@ -2024,10 +2494,20 @@ namespace UI
             Filler::setup(minw_, minh_);
         }
 
-        static const char *typestr() { return "#Console"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Console";
+        }
 
-        float drawscale() const { return uicontextscale; }
+        const char *gettype() const
+        {
+            return typestr();
+        }
+
+        float drawscale() const
+        {
+            return uicontextscale;
+        }
 
         void draw(float sx, float sy)
         {
@@ -2054,8 +2534,15 @@ namespace UI
             virtw = virth = 0;
         }
 
-        static const char *typestr() { return "#Clipper"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Clipper";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void layout()
         {
@@ -2063,8 +2550,14 @@ namespace UI
 
             virtw = w;
             virth = h;
-            if(clipw) w = min(w, clipw);
-            if(cliph) h = min(h, cliph);
+            if(clipw)
+            {
+                w = min(w, clipw);
+            }
+            if(cliph)
+            {
+                h = min(h, cliph);
+            }
         }
 
         void adjustchildren()
@@ -2082,7 +2575,10 @@ namespace UI
                 stopdrawing();
                 popclip();
             }
-            else Object::draw(sx, sy);
+            else
+            {
+                Object::draw(sx, sy);
+            }
         }
     };
 
@@ -2097,8 +2593,15 @@ namespace UI
             Clipper::setup(clipw_, cliph_);
         }
 
-        static const char *typestr() { return "#Scroller"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Scroller";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void layout()
         {
@@ -2127,29 +2630,78 @@ namespace UI
                 stopdrawing();
                 popclip();
             }
-            else Object::draw(sx, sy);
+            else
+            {
+                Object::draw(sx, sy);
+            }
         }
 
-        float hlimit() const { return max(virtw - w, 0.0f); }
-        float vlimit() const { return max(virth - h, 0.0f); }
-        float hoffset() const { return offsetx / max(virtw, w); }
-        float voffset() const { return offsety / max(virth, h); }
-        float hscale() const { return w / max(virtw, w); }
-        float vscale() const { return h / max(virth, h); }
+        float hlimit() const
+        {
+            return max(virtw - w, 0.0f);
+        }
 
-        void addhscroll(float hscroll) { sethscroll(offsetx + hscroll); }
-        void addvscroll(float vscroll) { setvscroll(offsety + vscroll); }
-        void sethscroll(float hscroll) { offsetx = clamp(hscroll, 0.0f, hlimit()); }
-        void setvscroll(float vscroll) { offsety = clamp(vscroll, 0.0f, vlimit()); }
+        float vlimit() const
+        {
+            return max(virth - h, 0.0f);
+        }
+
+        float hoffset() const
+        {
+            return offsetx / max(virtw, w);
+        }
+
+        float voffset() const
+        {
+            return offsety / max(virth, h);
+        }
+
+        float hscale() const
+        {
+            return w / max(virtw, w);
+        }
+
+        float vscale() const
+        {
+            return h / max(virth, h);
+        }
+
+        void addhscroll(float hscroll)
+        {
+            sethscroll(offsetx + hscroll);
+        }
+
+        void addvscroll(float vscroll)
+        {
+            setvscroll(offsety + vscroll);
+        }
+
+        void sethscroll(float hscroll)
+        {
+            offsetx = clamp(hscroll, 0.0f, hlimit());
+        }
+
+        void setvscroll(float vscroll)
+        {
+            offsety = clamp(vscroll, 0.0f, vlimit());
+        }
 
         void scrollup(float cx, float cy);
+
         void scrolldown(float cx, float cy);
     };
 
     struct ScrollButton : Object
     {
-        static const char *typestr() { return "#ScrollButton"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#ScrollButton";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
     };
 
     struct ScrollBar : Object
@@ -2158,9 +2710,20 @@ namespace UI
 
         ScrollBar() : offsetx(0), offsety(0) {}
 
-        static const char *typestr() { return "#ScrollBar"; }
-        const char *gettype() const { return typestr(); }
-        const char *gettypename() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#ScrollBar";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
+
+        const char *gettypename() const
+        {
+            return typestr();
+        }
 
         bool target(float cx, float cy)
         {
@@ -2172,14 +2735,24 @@ namespace UI
         void hold(float cx, float cy)
         {
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(button && button->haschildstate(STATE_HOLD)) movebutton(button, offsetx, offsety, cx - button->x, cy - button->y);
+            if(button && button->haschildstate(STATE_HOLD))
+            {
+                movebutton(button, offsetx, offsety, cx - button->x, cy - button->y);
+            }
         }
 
         void press(float cx, float cy)
         {
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(button && button->haschildstate(STATE_PRESS)) { offsetx = cx - button->x; offsety = cy - button->y; }
-            else scrollto(cx, cy, true);
+            if(button && button->haschildstate(STATE_PRESS))
+            {
+                offsetx = cx - button->x;
+                offsety = cy - button->y;
+            }
+            else
+            {
+                scrollto(cx, cy, true);
+            }
         }
 
         virtual void addscroll(Scroller *scroller, float dir) = 0;
@@ -2187,15 +2760,29 @@ namespace UI
         void addscroll(float dir)
         {
             Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
-            if(scroller) addscroll(scroller, dir);
+            if(scroller)
+            {
+                addscroll(scroller, dir);
+            }
         }
 
-        void arrowscroll(float dir) { addscroll(dir*curtime/1000.0f); }
+        void arrowscroll(float dir)
+        {
+            addscroll(dir*curtime/1000.0f);
+        }
         void wheelscroll(float step);
-        virtual int wheelscrolldirection() const { return 1; }
-
-        void scrollup(float cx, float cy) { wheelscroll(-wheelscrolldirection()); }
-        void scrolldown(float cx, float cy) { wheelscroll(wheelscrolldirection()); }
+        virtual int wheelscrolldirection() const
+        {
+            return 1;
+        }
+        void scrollup(float cx, float cy)
+        {
+            wheelscroll(-wheelscrolldirection());
+        }
+        void scrolldown(float cx, float cy)
+        {
+            wheelscroll(wheelscrolldirection());
+        }
 
         virtual void movebutton(Object *o, float fromx, float fromy, float tox, float toy) = 0;
     };
@@ -2203,13 +2790,19 @@ namespace UI
     void Scroller::scrollup(float cx, float cy)
     {
         ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
-        if(scrollbar) scrollbar->wheelscroll(-scrollbar->wheelscrolldirection());
+        if(scrollbar)
+        {
+            scrollbar->wheelscroll(-scrollbar->wheelscrolldirection());
+        }
     }
 
     void Scroller::scrolldown(float cx, float cy)
     {
         ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
-        if(scrollbar) scrollbar->wheelscroll(scrollbar->wheelscrolldirection());
+        if(scrollbar)
+        {
+            scrollbar->wheelscroll(scrollbar->wheelscrolldirection());
+        }
     }
 
     struct ScrollArrow : Object
@@ -2222,13 +2815,23 @@ namespace UI
             arrowspeed = arrowspeed_;
         }
 
-        static const char *typestr() { return "#ScrollArrow"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#ScrollArrow";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void hold(float cx, float cy)
         {
             ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
-            if(scrollbar) scrollbar->arrowscroll(arrowspeed);
+            if(scrollbar)
+            {
+                scrollbar->arrowscroll(arrowspeed);
+            }
         }
     };
 
@@ -2237,13 +2840,23 @@ namespace UI
     void ScrollBar::wheelscroll(float step)
     {
         ScrollArrow *arrow = (ScrollArrow *)findsibling(ScrollArrow::typestr());
-        if(arrow) addscroll(arrow->arrowspeed*step*uiscrollsteptime/1000.0f);
+        if(arrow)
+        {
+            addscroll(arrow->arrowspeed*step*uiscrollsteptime/1000.0f);
+        }
     }
 
     struct HorizontalScrollBar : ScrollBar
     {
-        static const char *typestr() { return "#HorizontalScrollBar"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#HorizontalScrollBar";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void addscroll(Scroller *scroller, float dir)
         {
@@ -2253,9 +2866,15 @@ namespace UI
         void scrollto(float cx, float cy, bool closest = false)
         {
             Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
-            if(!scroller) return;
+            if(!scroller)
+            {
+                return;
+            }
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             float bscale = (w - button->w) / (1 - scroller->hscale()),
                   offset = bscale > 1e-3f ? (closest && cx >= button->x + button->w ? cx - button->w : cx)/bscale : 0;
             scroller->sethscroll(offset*scroller->virtw);
@@ -2264,9 +2883,15 @@ namespace UI
         void adjustchildren()
         {
             Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
-            if(!scroller) return;
+            if(!scroller)
+            {
+                return;
+            }
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             float bw = w*scroller->hscale();
             button->w = max(button->w, bw);
             float bscale = scroller->hscale() < 1 ? (w - button->w) / (1 - scroller->hscale()) : 1;
@@ -2284,8 +2909,15 @@ namespace UI
 
     struct VerticalScrollBar : ScrollBar
     {
-        static const char *typestr() { return "#VerticalScrollBar"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#VerticalScrollBar";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void addscroll(Scroller *scroller, float dir)
         {
@@ -2295,9 +2927,15 @@ namespace UI
         void scrollto(float cx, float cy, bool closest = false)
         {
             Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
-            if(!scroller) return;
+            if(!scroller)
+            {
+                return;
+            }
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             float bscale = (h - button->h) / (1 - scroller->vscale()),
                   offset = bscale > 1e-3f ? (closest && cy >= button->y + button->h ? cy - button->h : cy)/bscale : 0;
             scroller->setvscroll(offset*scroller->virth);
@@ -2306,9 +2944,15 @@ namespace UI
         void adjustchildren()
         {
             Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
-            if(!scroller) return;
+            if(!scroller)
+            {
+                return;
+            }
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             float bh = h*scroller->vscale();
             button->h = max(button->h, bh);
             float bscale = scroller->vscale() < 1 ? (h - button->h) / (1 - scroller->vscale()) : 1;
@@ -2328,18 +2972,40 @@ namespace UI
 
     struct SliderButton : Object
     {
-        static const char *typestr() { return "#SliderButton"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#SliderButton";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
     };
 
     static double getfval(ident *id, double val = 0)
     {
         switch(id->type)
         {
-            case Id_Var: val = *id->storage.i; break;
-            case Id_FloatVar: val = *id->storage.f; break;
-            case Id_StringVar: val = parsenumber(*id->storage.s); break;
-            case Id_Alias: val = id->getnumber(); break;
+            case Id_Var:
+            {
+                val = *id->storage.i;
+                break;
+            }
+            case Id_FloatVar:
+            {
+                val = *id->storage.f;
+                break;
+            }
+            case Id_StringVar:
+            {
+                val = parsenumber(*id->storage.s);
+                break;
+            }
+            case Id_Alias:
+            {
+                val = id->getnumber();
+                break;
+            }
             case Id_Command:
             {
                 tagval t;
@@ -2356,10 +3022,26 @@ namespace UI
     {
         switch(id->type)
         {
-            case Id_Var: setvarchecked(id, static_cast<int>(clamp(val, double(INT_MIN), double(INT_MAX)))); break;
-            case Id_FloatVar: setfvarchecked(id, val); break;
-            case Id_StringVar: setsvarchecked(id, numberstr(val)); break;
-            case Id_Alias: alias(id->name, numberstr(val)); break;
+            case Id_Var:
+            {
+                setvarchecked(id, static_cast<int>(clamp(val, double(INT_MIN), double(INT_MAX))));
+                break;
+            }
+            case Id_FloatVar:
+            {
+                setfvarchecked(id, val);
+                break;
+            }
+            case Id_StringVar:
+            {
+                setsvarchecked(id, numberstr(val));
+                break;
+            }
+            case Id_Alias:
+            {
+                alias(id->name, numberstr(val));
+                break;
+            }
             case Id_Command:
             {
                 tagval t;
@@ -2368,7 +3050,10 @@ namespace UI
                 break;
             }
         }
-        if(onchange && (*onchange&Code_OpMask) != Code_Exit) execute(onchange);
+        if(onchange && (*onchange&Code_OpMask) != Code_Exit)
+        {
+            execute(onchange);
+        }
     }
 
     struct Slider : Object
@@ -2384,10 +3069,23 @@ namespace UI
             Object::setup();
             if(!vmin_ && !vmax_) switch(id_->type)
             {
-                case Id_Var: vmin_ = id_->minval; vmax_ = id_->maxval; break;
-                case Id_FloatVar: vmin_ = id_->minvalf; vmax_ = id_->maxvalf; break;
+                case Id_Var:
+                {
+                    vmin_ = id_->minval;
+                    vmax_ = id_->maxval;
+                    break;
+                }
+                case Id_FloatVar:
+                {
+                    vmin_ = id_->minvalf;
+                    vmax_ = id_->maxvalf;
+                    break;
+                }
             }
-            if(id != id_) changed = false;
+            if(id != id_)
+            {
+                changed = false;
+            }
             id = id_;
             vmin = vmin_;
             vmax = vmax_;
@@ -2397,12 +3095,26 @@ namespace UI
                 setfval(id, val, onchange);
                 changed = false;
             }
-            else val = getfval(id, vmin);
+            else
+            {
+                val = getfval(id, vmin);
+            }
         }
 
-        static const char *typestr() { return "#Slider"; }
-        const char *gettype() const { return typestr(); }
-        const char *gettypename() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Slider";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
+
+        const char *gettypename() const
+        {
+            return typestr();
+        }
 
         bool target(float cx, float cy)
         {
@@ -2415,14 +3127,27 @@ namespace UI
             newval += vstep * (newval < 0 ? -0.5 : 0.5);
             newval -= fmod(newval, vstep);
             newval = clamp(newval, min(vmin, vmax), max(vmin, vmax));
-            if(val != newval) changeval(newval);
+            if(val != newval)
+            {
+                changeval(newval);
+            }
         }
 
         void wheelscroll(float step);
-        virtual int wheelscrolldirection() const { return 1; }
+        virtual int wheelscrolldirection() const
+        {
+            return 1;
+        }
 
-        void scrollup(float cx, float cy) { wheelscroll(-wheelscrolldirection()); }
-        void scrolldown(float cx, float cy) { wheelscroll(wheelscrolldirection()); }
+        void scrollup(float cx, float cy)
+        {
+            wheelscroll(-wheelscrolldirection());
+        }
+
+        void scrolldown(float cx, float cy)
+        {
+            wheelscroll(wheelscrolldirection());
+        }
 
         virtual void scrollto(float cx, float cy) {}
 
@@ -2453,57 +3178,94 @@ namespace UI
             stepdir = dir_;
         }
 
-        static const char *typestr() { return "#SliderArrow"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#SliderArrow";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void press(float cx, float cy)
         {
             laststep = totalmillis + 2*uislidersteptime;
 
             Slider *slider = (Slider *)findsibling(Slider::typestr());
-            if(slider) slider->arrowscroll(stepdir);
+            if(slider)
+            {
+                slider->arrowscroll(stepdir);
+            }
         }
 
         void hold(float cx, float cy)
         {
             if(totalmillis < laststep + uislidersteptime)
+            {
                 return;
+            }
             laststep = totalmillis;
 
             Slider *slider = (Slider *)findsibling(Slider::typestr());
-            if(slider) slider->arrowscroll(stepdir);
+            if(slider)
+            {
+                slider->arrowscroll(stepdir);
+            }
         }
     };
 
     void Slider::wheelscroll(float step)
     {
         SliderArrow *arrow = (SliderArrow *)findsibling(SliderArrow::typestr());
-        if(arrow) step *= arrow->stepdir;
+        if(arrow)
+        {
+            step *= arrow->stepdir;
+        }
         arrowscroll(step);
     }
 
     struct HorizontalSlider : Slider
     {
-        static const char *typestr() { return "#HorizontalSlider"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#HorizontalSlider";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void scrollto(float cx, float cy)
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             float offset = w > button->w ? clamp((cx - button->w/2)/(w - button->w), 0.0f, 1.0f) : 0.0f;
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
-            if(step != bstep) changeval(bstep * vstep + vmin);
+            if(step != bstep)
+            {
+                changeval(bstep * vstep + vmin);
+            }
         }
 
         void adjustchildren()
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(button->x / (w - button->w) * (vmax - vmin) / vstep);
-            if(step != bstep) button->x = (w - button->w) * step * vstep / (vmax - vmin);
+            if(step != bstep)
+            {
+                button->x = (w - button->w) * step * vstep / (vmax - vmin);
+            }
             button->adjust &= ~ALIGN_HMASK;
 
             Slider::adjustchildren();
@@ -2512,26 +3274,45 @@ namespace UI
 
     struct VerticalSlider : Slider
     {
-        static const char *typestr() { return "#VerticalSlider"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#VerticalSlider";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void scrollto(float cx, float cy)
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             float offset = h > button->h ? clamp((cy - button->h/2)/(h - button->h), 0.0f, 1.0f) : 0.0f;
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
-            if(step != bstep) changeval(bstep * vstep + vmin);
+            if(step != bstep)
+            {
+                changeval(bstep * vstep + vmin);
+            }
         }
 
         void adjustchildren()
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
-            if(!button) return;
+            if(!button)
+            {
+                return;
+            }
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(button->y / (h - button->h) * (vmax - vmin) / vstep);
-            if(step != bstep) button->y = (h - button->h) * step * vstep / (vmax - vmin);
+            if(step != bstep)
+            {
+                button->y = (h - button->h) * step * vstep / (vmax - vmin);
+            }
             button->adjust &= ~ALIGN_VMASK;
 
             Slider::adjustchildren();
@@ -2556,21 +3337,42 @@ namespace UI
             editor *edit_ = useeditor(name, mode, false, initval);
             if(edit_ != edit)
             {
-                if(edit) clearfocus();
+                if(edit)
+                {
+                    clearfocus();
+                }
                 edit = edit_;
             }
-            else if(isfocus() && !hasstate(STATE_HOVER)) commit();
-            if(initval && edit->mode == Editor_Focused && !isfocus()) edit->init(initval);
+            else if(isfocus() && !hasstate(STATE_HOVER))
+            {
+                commit();
+            }
+            if(initval && edit->mode == Editor_Focused && !isfocus())
+            {
+                edit->init(initval);
+            }
             edit->active = true;
             edit->linewrap = length < 0;
             edit->maxx = edit->linewrap ? -1 : length;
             edit->maxy = height <= 0 ? 1 : -1;
             edit->pixelwidth = abs(length)*FONTW;
-            if(edit->linewrap && edit->maxy == 1) edit->updateheight();
-            else edit->pixelheight = FONTH*max(height, 1);
+            if(edit->linewrap && edit->maxy == 1)
+            {
+                edit->updateheight();
+            }
+            else
+            {
+                edit->pixelheight = FONTH*max(height, 1);
+            }
             scale = scale_;
-            if(keyfilter_) SETSTR(keyfilter, keyfilter_);
-            else DELETEA(keyfilter);
+            if(keyfilter_)
+            {
+                SETSTR(keyfilter, keyfilter_);
+            }
+            else
+            {
+                DELETEA(keyfilter);
+            }
         }
         ~TextEditor()
         {
@@ -2580,25 +3382,52 @@ namespace UI
 
         static void setfocus(TextEditor *e)
         {
-            if(focus == e) return;
+            if(focus == e)
+            {
+                return;
+            }
             focus = e;
             bool allowtextinput = focus!=NULL && focus->allowtextinput();
             ::textinput(allowtextinput, TextInput_GUI);
             ::keyrepeat(allowtextinput, KeyRepeat_GUI);
         }
-        void setfocus() { setfocus(this); }
-        void clearfocus() { if(focus == this) setfocus(NULL); }
-        bool isfocus() const { return focus == this; }
+        void setfocus()
+        {
+            setfocus(this);
+        }
 
-        static const char *typestr() { return "#TextEditor"; }
-        const char *gettype() const { return typestr(); }
+        void clearfocus()
+        {
+            if(focus == this)
+            {
+                setfocus(NULL);
+            }
+        }
+
+        bool isfocus() const
+        {
+            return focus == this;
+        }
+
+        static const char *typestr()
+        {
+            return "#TextEditor";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         bool target(float cx, float cy)
         {
             return true;
         }
 
-        float drawscale() const { return scale / FONTH; }
+        float drawscale() const
+        {
+            return scale / FONTH;
+        }
 
         void draw(float sx, float sy)
         {
@@ -2670,39 +3499,78 @@ namespace UI
 
         bool key(int code, bool isdown)
         {
-            if(Object::key(code, isdown)) return true;
-            if(!isfocus()) return false;
+            if(Object::key(code, isdown))
+            {
+                return true;
+            }
+            if(!isfocus())
+            {
+                return false;
+            }
             switch(code)
             {
                 case SDLK_ESCAPE:
-                    if(isdown) cancel();
+                {
+                    if(isdown)
+                    {
+                        cancel();
+                    }
                     return true;
+                }
                 case SDLK_RETURN:
                 case SDLK_TAB:
-                    if(edit->maxy != 1) break;
+                {
+                    if(edit->maxy != 1)
+                    {
+                        break;
+                    }
                     // fall-through
+                }
                 case SDLK_KP_ENTER:
-                    if(isdown) commit();
+                {
+                    if(isdown)
+                    {
+                        commit();
+                    }
                     return true;
+                }
             }
-            if(isdown) edit->key(code);
+            if(isdown)
+            {
+                edit->key(code);
+            }
             return true;
         }
 
-        virtual bool allowtextinput() const { return true; }
+        virtual bool allowtextinput() const
+        {
+            return true;
+        }
 
         bool textinput(const char *str, int len)
         {
-            if(Object::textinput(str, len)) return true;
-            if(!isfocus() || !allowtextinput()) return false;
-            if(!keyfilter) edit->input(str, len);
+            if(Object::textinput(str, len))
+            {
+                return true;
+            }
+            if(!isfocus() || !allowtextinput())
+            {
+                return false;
+            }
+            if(!keyfilter)
+            {
+                edit->input(str, len);
+            }
             else while(len > 0)
             {
                 int accept = min(len, (int)strspn(str, keyfilter));
                 if(accept > 0) edit->input(str, accept);
                 str += accept + 1;
                 len -= accept + 1;
-                if(len <= 0) break;
+                if(len <= 0)
+                {
+                    break;
+                }
                 int reject = (int)strcspn(str, keyfilter);
                 str += reject;
                 str -= reject;
@@ -2717,11 +3585,32 @@ namespace UI
     {
         switch(id->type)
         {
-            case Id_Var: val = intstr(*id->storage.i); break;
-            case Id_FloatVar: val = floatstr(*id->storage.f); break;
-            case Id_StringVar: val = *id->storage.s; break;
-            case Id_Alias: val = id->getstr(); break;
-            case Id_Command: val = executestr(id, NULL, 0, true); shouldfree = true; break;
+            case Id_Var:
+            {
+                val = intstr(*id->storage.i);
+                break;
+            }
+            case Id_FloatVar:
+            {
+                val = floatstr(*id->storage.f);
+                break;
+            }
+            case Id_StringVar:
+            {
+                val = *id->storage.s;
+                break;
+            }
+            case Id_Alias:
+            {
+                val = id->getstr();
+                break;
+            }
+            case Id_Command:
+            {
+                val = executestr(id, NULL, 0, true);
+                shouldfree = true;
+                break;
+            }
         }
         return val;
     }
@@ -2730,10 +3619,26 @@ namespace UI
     {
         switch(id->type)
         {
-            case Id_Var: setvarchecked(id, parseint(val)); break;
-            case Id_FloatVar: setfvarchecked(id, parsefloat(val)); break;
-            case Id_StringVar: setsvarchecked(id, val); break;
-            case Id_Alias: alias(id->name, val); break;
+            case Id_Var:
+            {
+                setvarchecked(id, parseint(val));
+                break;
+            }
+            case Id_FloatVar:
+            {
+                setfvarchecked(id, parsefloat(val));
+                break;
+            }
+            case Id_StringVar:
+            {
+                setsvarchecked(id, val);
+                break;
+            }
+            case Id_Alias:
+            {
+                alias(id->name, val);
+                break;
+            }
             case Id_Command:
             {
                 tagval t;
@@ -2742,7 +3647,10 @@ namespace UI
                 break;
             }
         }
-        if(onchange && (*onchange&Code_OpMask) != Code_Exit) execute(onchange);
+        if(onchange && (*onchange&Code_OpMask) != Code_Exit)
+        {
+            execute(onchange);
+        }
     }
 
     struct Field : TextEditor
@@ -2754,21 +3662,36 @@ namespace UI
 
         void setup(ident *id_, int length, uint *onchange, float scale = 1, const char *keyfilter_ = NULL)
         {
-            if(isfocus() && !hasstate(STATE_HOVER)) commit();
+            if(isfocus() && !hasstate(STATE_HOVER))
+            {
+                commit();
+            }
             if(changed)
             {
-                if(id == id_) setsval(id, edit->lines[0].text, onchange);
+                if(id == id_)
+                {
+                    setsval(id, edit->lines[0].text, onchange);
+                }
                 changed = false;
             }
             bool shouldfree = false;
             const char *initval = id != id_ || !isfocus() ? getsval(id_, shouldfree) : NULL;
             TextEditor::setup(id_->name, length, 0, scale, initval, Editor_Focused, keyfilter_);
-            if(shouldfree) delete[] initval;
+            if(shouldfree)
+            {
+                delete[] initval;
+            }
             id = id_;
         }
 
-        static const char *typestr() { return "#Field"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#Field";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void commit()
         {
@@ -2785,8 +3708,14 @@ namespace UI
 
     struct KeyField : Field
     {
-        static const char *typestr() { return "#KeyField"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#KeyField";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void resetmark(float cx, float cy)
         {
@@ -2799,21 +3728,39 @@ namespace UI
             const char *keyname = getkeyname(code);
             if(keyname)
             {
-                if(!edit->empty()) edit->insert(" ");
+                if(!edit->empty())
+                {
+                    edit->insert(" ");
+                }
                 edit->insert(keyname);
             }
         }
 
         bool rawkey(int code, bool isdown)
         {
-            if(Object::rawkey(code, isdown)) return true;
-            if(!isfocus() || !isdown) return false;
-            if(code == SDLK_ESCAPE) commit();
-            else insertkey(code);
+            if(Object::rawkey(code, isdown))
+            {
+                return true;
+            }
+            if(!isfocus() || !isdown)
+            {
+                return false;
+            }
+            if(code == SDLK_ESCAPE)
+            {
+                commit();
+            }
+            else
+            {
+                insertkey(code);
+            }
             return true;
         }
 
-        bool allowtextinput() const { return false; }
+        bool allowtextinput() const
+        {
+            return false;
+        }
     };
 
     struct Preview : Target
@@ -2822,14 +3769,20 @@ namespace UI
         {
             glDisable(GL_BLEND);
 
-            if(clipstack.length()) glDisable(GL_SCISSOR_TEST);
+            if(clipstack.length())
+            {
+                glDisable(GL_SCISSOR_TEST);
+            }
         }
 
         void enddraw()
         {
             glEnable(GL_BLEND);
 
-            if(clipstack.length()) glEnable(GL_SCISSOR_TEST);
+            if(clipstack.length())
+            {
+                glEnable(GL_SCISSOR_TEST);
+            }
         }
     };
 
@@ -2852,21 +3805,36 @@ namespace UI
                 if(isdigit(animspec[0]))
                 {
                     anim = parseint(animspec);
-                    if(anim >= 0) anim %= ANIM_INDEX;
-                    else anim = ANIM_ALL;
+                    if(anim >= 0)
+                    {
+                        anim %= ANIM_INDEX;
+                    }
+                    else
+                    {
+                        anim = ANIM_ALL;
+                    }
                 }
                 else
                 {
                     vector<int> anims;
                     game::findanims(animspec, anims);
-                    if(anims.length()) anim = anims[0];
+                    if(anims.length())
+                    {
+                        anim = anims[0];
+                    }
                 }
             }
             anim |= ANIM_LOOP;
         }
 
-        static const char *typestr() { return "#ModelPreview"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#ModelPreview";
+        }
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void draw(float sx, float sy)
         {
@@ -2886,7 +3854,10 @@ namespace UI
                 vec o = calcmodelpreviewpos(radius, yaw).sub(center);
                 rendermodel(name, anim, o, yaw, 0, 0, 0, NULL, NULL, 0);
             }
-            if(clipstack.length()) clipstack.last().scissor();
+            if(clipstack.length())
+            {
+                clipstack.last().scissor();
+            }
             modelpreview::end();
         }
     };
@@ -2904,8 +3875,15 @@ namespace UI
             weapon = weapon_;
         }
 
-        static const char *typestr() { return "#PlayerPreview"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#PlayerPreview";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void draw(float sx, float sy)
         {
@@ -2917,7 +3895,10 @@ namespace UI
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
             modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.length() > 0);
             game::renderplayerpreview(model, color, team, weapon);
-            if(clipstack.length()) clipstack.last().scissor();
+            if(clipstack.length())
+            {
+                clipstack.last().scissor();
+            }
             modelpreview::end();
         }
     };
@@ -2937,20 +3918,25 @@ namespace UI
             color = vec::hexcolor(color_);
         }
 
-        static const char *typestr() { return "#PrefabPreview"; }
+        static const char *typestr()
+        {
+            return "#PrefabPreview";
+        }
+
         const char *gettype() const { return typestr(); }
 
         void draw(float sx, float sy)
         {
             Object::draw(sx, sy);
-
             changedraw(CHANGE_SHADER);
-
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
             modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.length() > 0);
             previewprefab(name, color);
-            if(clipstack.length()) clipstack.last().scissor();
+            if(clipstack.length())
+            {
+                clipstack.last().scissor();
+            }
             modelpreview::end();
         }
     };
@@ -3002,19 +3988,29 @@ namespace UI
             {
                 if(!slot.thumbnail)
                 {
-                    if(totalmillis - lastthumbnail < uislotviewtime) return;
+                    if(totalmillis - lastthumbnail < uislotviewtime)
+                    {
+                        return;
+                    }
                     slot.loadthumbnail();
                     lastthumbnail = totalmillis;
                 }
-                if(slot.thumbnail != notexture) t = slot.thumbnail;
-                else return;
+                if(slot.thumbnail != notexture)
+                {
+                    t = slot.thumbnail;
+                }
+                else
+                {
+                    return;
+                }
             }
 
             changedraw(CHANGE_SHADER | CHANGE_COLOR);
 
             SETSHADER(hudrgb);
             vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
-            int xoff = vslot.offset.x, yoff = vslot.offset.y;
+            int xoff = vslot.offset.x,
+                yoff = vslot.offset.y;
             if(vslot.rotation)
             {
                 const texrotation &r = texrotations[vslot.rotation];
@@ -3078,8 +4074,15 @@ namespace UI
 
     struct VSlotViewer : SlotViewer
     {
-        static const char *typestr() { return "#VSlotViewer"; }
-        const char *gettype() const { return typestr(); }
+        static const char *typestr()
+        {
+            return "#VSlotViewer";
+        }
+
+        const char *gettype() const
+        {
+            return typestr();
+        }
 
         void draw(float sx, float sy)
         {
@@ -3093,7 +4096,15 @@ namespace UI
     ICOMMAND(newui, "ssss", (char *name, char *contents, char *onshow, char *onhide),
     {
         Window *window = windows.find(name, NULL);
-        if(window) { if (window == UI::window) return; world->hide(window); windows.remove(name); delete window; }
+        if(window)
+        {
+            if (window == UI::window)
+            {
+                return;
+            }
+            world->hide(window); windows.remove(name);
+            delete window;
+        }
         windows[name] = new Window(name, contents, onshow, onhide);
     });
 
@@ -3428,9 +4439,18 @@ namespace UI
     {
         switch(t->type)
         {
-            case Value_Integer: return t->i;
-            case Value_Float: return t->f;
-            case Value_Null: return 0;
+            case Value_Integer:
+            {
+                return t->i;
+            }
+            case Value_Float:
+            {
+                return t->f;
+            }
+            case Value_Null:
+            {
+                return 0;
+            }
             default:
             {
                 const char *s = t->getstr();
@@ -3492,7 +4512,10 @@ namespace UI
             x = cursorx;
             y = cursory;
         }
-        else x = y = 0.5f;
+        else
+        {
+            x = y = 0.5f;
+        }
     }
 
     void resetcursor()
@@ -3514,18 +4537,44 @@ namespace UI
         int action = 0, hold = 0;
         switch(code)
         {
-        case -1: action = isdown ? STATE_PRESS : STATE_RELEASE; hold = STATE_HOLD; break;
-        case -2: action = isdown ? STATE_ALT_PRESS : STATE_ALT_RELEASE; hold = STATE_ALT_HOLD; break;
-        case -3: action = isdown ? STATE_ESC_PRESS : STATE_ESC_RELEASE; hold = STATE_ESC_HOLD; break;
-        case -4: action = STATE_SCROLL_UP; break;
-        case -5: action = STATE_SCROLL_DOWN; break;
+            case -1:
+            {
+                action = isdown ? STATE_PRESS : STATE_RELEASE; hold = STATE_HOLD;
+                break;
+            }
+            case -2:
+            {
+                action = isdown ? STATE_ALT_PRESS : STATE_ALT_RELEASE; hold = STATE_ALT_HOLD;
+                break;
+            }
+            case -3:
+            {
+                action = isdown ? STATE_ESC_PRESS : STATE_ESC_RELEASE; hold = STATE_ESC_HOLD;
+                break;
+            }
+            case -4:
+            {
+                action = STATE_SCROLL_UP;
+                break;
+            }
+            case -5:
+            {
+                action = STATE_SCROLL_DOWN;
+                break;
+            }
         }
         if(action)
         {
             if(isdown)
             {
-                if(hold) world->clearstate(hold);
-                if(world->setstate(action, cursorx, cursory, 0, true, action|hold)) return true;
+                if(hold)
+                {
+                    world->clearstate(hold);
+                }
+                if(world->setstate(action, cursorx, cursory, 0, true, action|hold))
+                {
+                    return true;
+                }
             }
             else if(hold)
             {
@@ -3563,8 +4612,12 @@ namespace UI
     {
         uitextscale = 1.0f/uitextrows;
 
-        int tw = hudw, th = hudh;
-        if(forceaspect) tw = static_cast<int>(ceil(th*forceaspect));
+        int tw = hudw,
+            th = hudh;
+        if(forceaspect)
+        {
+            tw = static_cast<int>(ceil(th*forceaspect));
+        }
         gettextres(tw, th);
         uicontextscale = conscale/th;
     }
@@ -3574,14 +4627,21 @@ namespace UI
         readyeditors();
 
         world->setstate(STATE_HOVER, cursorx, cursory, world->childstate&STATE_HOLD_MASK);
-        if(world->childstate&STATE_HOLD) world->setstate(STATE_HOLD, cursorx, cursory, STATE_HOLD, false);
-        if(world->childstate&STATE_ALT_HOLD) world->setstate(STATE_ALT_HOLD, cursorx, cursory, STATE_ALT_HOLD, false);
-        if(world->childstate&STATE_ESC_HOLD) world->setstate(STATE_ESC_HOLD, cursorx, cursory, STATE_ESC_HOLD, false);
+        if(world->childstate&STATE_HOLD)
+        {
+            world->setstate(STATE_HOLD, cursorx, cursory, STATE_HOLD, false);
+        }
+        if(world->childstate&STATE_ALT_HOLD)
+        {
+            world->setstate(STATE_ALT_HOLD, cursorx, cursory, STATE_ALT_HOLD, false);
+        }
+        if(world->childstate&STATE_ESC_HOLD)
+        {
+            world->setstate(STATE_ESC_HOLD, cursorx, cursory, STATE_ESC_HOLD, false);
+        }
 
         calctextscale();
-
         world->build();
-
         flusheditors();
     }
 
