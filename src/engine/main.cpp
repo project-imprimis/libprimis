@@ -95,12 +95,17 @@ bool initwarning(const char *desc, int level, int type)
     return false;
 }
 
-#define SCR_MINW 320 //minimum screen resolution
-#define SCR_MINH 200 //minumum screen resolution
-#define SCR_MAXW 16384
-#define SCR_MAXH 16384
-#define SCR_DEFAULTW 1366 //smallest typical screens are 1366x768
-#define SCR_DEFAULTH 768
+//screen enum is local to this file
+enum
+{
+    SCR_MINW     = 320, //minimum screen resolution
+    SCR_MINH     = 200, //minumum screen resolution
+    SCR_MAXW     = 16384,
+    SCR_MAXH     = 16384,
+    SCR_DEFAULTW = 1366, //smallest typical screens are 1366x768
+    SCR_DEFAULTH = 768,
+};
+
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 
