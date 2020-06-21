@@ -154,24 +154,27 @@ enum
     Anim_GameSpecific
 };
 
-#define ANIM_ALL         0x1FF
-#define ANIM_INDEX       0x1FF
-#define ANIM_LOOP        (1<<9)
-#define ANIM_CLAMP       (1<<10)
-#define ANIM_REVERSE     (1<<11)
-#define ANIM_START       (ANIM_LOOP|ANIM_CLAMP)
-#define ANIM_END         (ANIM_LOOP|ANIM_CLAMP|ANIM_REVERSE)
-#define ANIM_DIR         0xE00
-#define ANIM_SECONDARY   12
-#define ANIM_REUSE       0xFFFFFF
-#define ANIM_NOSKIN      (1<<24)
-#define ANIM_SETTIME     (1<<25)
-#define ANIM_FULLBRIGHT  (1<<26)
-#define ANIM_NORENDER    (1<<27)
-#define ANIM_RAGDOLL     (1<<28)
-#define ANIM_SETSPEED    (1<<29)
-#define ANIM_NOPITCH     (1<<30)
-#define ANIM_FLAGS       0xFF000000
+enum
+{
+        ANIM_ALL        = 0x1FF,
+        ANIM_INDEX      = 0x1FF,
+        ANIM_LOOP       = (1<<9),
+        ANIM_CLAMP      = (1<<10),
+        ANIM_REVERSE    = (1<<11),
+        ANIM_START      = (ANIM_LOOP|ANIM_CLAMP),
+        ANIM_END        = (ANIM_LOOP|ANIM_CLAMP|ANIM_REVERSE),
+        ANIM_DIR        = 0xE00,
+        ANIM_SECONDARY  = 12,
+        ANIM_REUSE      = 0xFFFFFF,
+        ANIM_NOSKIN     = (1<<24),
+        ANIM_SETTIME    = (1<<25),
+        ANIM_FULLBRIGHT = (1<<26),
+        ANIM_NORENDER   = (1<<27),
+        ANIM_RAGDOLL    = (1<<28),
+        ANIM_SETSPEED   = (1<<29),
+        ANIM_NOPITCH    = (1<<30),
+        ANIM_FLAGS      = 0xFF000000,
+};
 
 struct animinfo // description of a character's animation
 {
