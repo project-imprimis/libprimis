@@ -74,7 +74,7 @@ enum
     Anim_NumAnims //57
 };
 
-static const char * const animnames[] =
+const char * const animnames[] =
 {
     "mapmodel",
     "dead", "dying",
@@ -104,9 +104,9 @@ enum
 };
 
 // network quantization scale
-#define DMF 16.0f                // for world locations
-#define DNF 100.0f              // for normalized vectors
-#define DVELF 1.0f              // for playerspeed based velocity vectors
+const float DMF   = 16.0f,            // for world locations
+            DNF   = 100.0f,           // for normalized vectors
+            DVELF = 1.0f;              // for playerspeed based velocity vectors
 
 //these are called "GamecodeEnt" to avoid name collision (as opposed to gameents or engine static ents)
 enum                            // static entity types
@@ -178,7 +178,7 @@ enum
     Mode_Bot             = Mode_LocalOnly|Mode_Demo
 };
 
-static struct gamemodeinfo
+const struct gamemodeinfo
 {
     const char *name, *prettyname;
     int flags;
@@ -223,9 +223,9 @@ enum {
     MasterMode_Invalid = MasterMode_Start - 1
 };
 
-static const char * const mastermodenames[] =  { "auth",   "open",   "veto",       "locked",     "private",    "password" };
-static const char * const mastermodecolors[] = { "",       "\f0",    "\f2",        "\f2",        "\f3",        "\f3" };
-static const char * const mastermodeicons[] =  { "server", "server", "serverlock", "serverlock", "serverpriv", "serverpriv" };
+const char * const mastermodenames[] =  { "auth",   "open",   "veto",       "locked",     "private",    "password" };
+const char * const mastermodecolors[] = { "",       "\f0",    "\f2",        "\f2",        "\f3",        "\f3" };
+const char * const mastermodeicons[] =  { "server", "server", "serverlock", "serverlock", "serverpriv", "serverpriv" };
 
 // hardcoded sounds, defined in sounds.cfg
 enum
@@ -386,7 +386,7 @@ enum
     NetMsg_NumMsgs //104
 };
 
-static const int msgsizes[] =               // size inclusive message token, 0 for variable or not-checked sizes
+const int msgsizes[] =               // size inclusive message token, 0 for variable or not-checked sizes
 {
     NetMsg_Connect, 0,
     NetMsg_ServerInfo, 0,
@@ -498,11 +498,15 @@ static const int msgsizes[] =               // size inclusive message token, 0 f
     -1
 };
 
-#define TESSERACT_SERVER_PORT 42069
-#define TESSERACT_LANINFO_PORT 42067
-#define TESSERACT_MASTER_PORT 42068
-#define PROTOCOL_VERSION 2              // bump when protocol changes
-#define DEMO_VERSION 1                  // bump when demo format changes
+enum
+{
+    TESSERACT_LANINFO_PORT = 42067,
+    TESSERACT_MASTER_PORT  = 42068,
+    TESSERACT_SERVER_PORT  = 42069,
+    PROTOCOL_VERSION = 2,              // bump when protocol changes
+    DEMO_VERSION     = 1,              // bump when demo format changes
+};
+
 #define DEMO_MAGIC "TESSERACT_DEMO\0\0"
 
 struct demoheader
@@ -511,7 +515,7 @@ struct demoheader
     int version, protocol;
 };
 
-#define MAXNAMELEN 15
+const int MAXNAMELEN = 15;
 
 enum
 {
@@ -521,18 +525,15 @@ enum
     HudIcon_Size    = 120,
 };
 
-
-
 #define VALID_ITEM(n) false //no items in this game thus far
 
-#define MAXRAYS 1
-#define EXP_SELFDAMDIV 2
-#define EXP_SELFPUSH 2.5f
-#define EXP_DISTSCALE 0.5f
+const int MAXRAYS = 1,
+          EXP_SELFDAMDIV = 2;
+const float EXP_SELFPUSH  = 2.5f,
+            EXP_DISTSCALE = 0.5f;
 // this defines weapon properties
-//                                   1    2       3     4         5        6      7         8            9       10      11      12         13          14     15    16       17      18   19
-static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use; } attacks[Attack_NumAttacks] =
-
+//                            1    2       3     4         5        6      7         8            9       10      11      12         13          14     15    16       17      18   19
+const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use; } attacks[Attack_NumAttacks] =
 //    1          2          3           4                5               6         7        8     9  10 11    12  13    14 15    16  17 18 19
 {
     { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Rail1,  Sound_Rail2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
@@ -541,7 +542,7 @@ static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound
     { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
 };
 
-static const struct guninfo { const char *name, *file, *vwep; int attacks[Act_NumActs]; } guns[Gun_NumGuns] =
+const struct guninfo { const char *name, *file, *vwep; int attacks[Act_NumActs]; } guns[Gun_NumGuns] =
 {
     { "railgun", "railgun", "worldgun/railgun", { -1, Attack_RailShot, Attack_RailMelee }, },
     { "pulse rifle", "pulserifle", "worldgun/pulserifle", { -1, Attack_PulseShoot, Attack_PulseMelee } }
@@ -616,12 +617,12 @@ struct gamestate
     }
 };
 
-#define MAXTEAMS 2
-static const char * const teamnames[1+MAXTEAMS] = { "", "azul", "rojo" };
-static const char * const teamtextcode[1+MAXTEAMS] = { "\f0", "\f1", "\f3" };
-static const int teamtextcolor[1+MAXTEAMS] = { 0x1EC850, 0x6496FF, 0xFF4B19 };
-static const int teamscoreboardcolor[1+MAXTEAMS] = { 0, 0x3030C0, 0xC03030 };
-static const char * const teamblipcolor[1+MAXTEAMS] = { "_neutral", "_blue", "_red" };
+const int MAXTEAMS = 2;
+const char * const teamnames[1+MAXTEAMS]     = { "", "azul", "rojo" };
+const char * const teamtextcode[1+MAXTEAMS]  = { "\f0", "\f1", "\f3" };
+const char * const teamblipcolor[1+MAXTEAMS] = { "_neutral", "_blue", "_red" };
+const int teamtextcolor[1+MAXTEAMS] = { 0x1EC850, 0x6496FF, 0xFF4B19 };
+const int teamscoreboardcolor[1+MAXTEAMS] = { 0, 0x3030C0, 0xC03030 };
 inline int teamnumber(const char *name)
 {
     for(int i = 0; i < MAXTEAMS; ++i)
