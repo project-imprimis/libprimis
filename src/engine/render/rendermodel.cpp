@@ -216,15 +216,31 @@ COMMAND(mdlname, "");
 
 #define CHECK_RAGDOLL \
     CHECK_MDL; \
-    if(!loadingmodel->skeletal()) { conoutf(Console_Error, "not loading a skeletal model"); return; } \
+    if(!loadingmodel->skeletal()) \
+    { \
+        conoutf(Console_Error, "not loading a skeletal model"); \
+        return; \
+    } \
     skelmodel *m = (skelmodel *)loadingmodel; \
-    if(m->parts.empty()) return; \
+    if(m->parts.empty()) \
+    { \
+        return; \
+    } \
     skelmodel::skelmeshgroup *meshes = (skelmodel::skelmeshgroup *)m->parts.last()->meshes; \
-    if(!meshes) return; \
+    if(!meshes) \
+    { \
+        return; \
+    } \
     skelmodel::skeleton *skel = meshes->skel; \
-    if(!skel->ragdoll) skel->ragdoll = new ragdollskel; \
+    if(!skel->ragdoll) \
+    { \
+        skel->ragdoll = new ragdollskel; \
+    } \
     ragdollskel *ragdoll = skel->ragdoll; \
-    if(ragdoll->loaded) return;
+    if(ragdoll->loaded) \
+    { \
+        return; \
+    }
 
 
 void rdvert(float *x, float *y, float *z, float *radius)
@@ -365,7 +381,7 @@ void flushpreloadedmodels(bool msg)
 {
     for(int i = 0; i < preloadmodels.length(); i++)
     {
-        loadprogress = float(i+1)/preloadmodels.length();
+        loadprogress = static_cast<float>(i+1)/preloadmodels.length();
         model *m = loadmodel(preloadmodels[i], -1, msg);
         if(!m)
         {
@@ -713,7 +729,9 @@ static inline int shadowmaskmodel(const vec &center, float radius)
             return calcspheresidemask(scenter, radius, shadowbias);
         }
         case ShadowMap_Cascade:
+        {
             return calcspherecsmsplits(center, radius);
+        }
         case ShadowMap_Spot:
         {
             vec scenter = vec(center).sub(shadoworigin);
@@ -743,7 +761,10 @@ int batcheddynamicmodels()
     for(int i = 0; i < batchedmodels.length(); i++)
     {
         batchedmodel &b = batchedmodels[i];
-        if(b.flags&Model_Mapmodel) break;
+        if(b.flags&Model_Mapmodel)
+        {
+            break;
+        }
         visible |= b.visible;
     }
     for(int i = 0; i < batches.length(); i++)
@@ -1153,7 +1174,10 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
             }
             DELETEP(d->ragdoll);
         }
-        if(anim&ANIM_RAGDOLL) flags &= ~(Model_CullVFC | Model_CullOccluded | Model_CullQuery);
+        if(anim&ANIM_RAGDOLL)
+        {
+            flags &= ~(Model_CullVFC | Model_CullOccluded | Model_CullQuery);
+        }
     }
     center.mul(size);
     if(roll)
@@ -1244,7 +1268,17 @@ hasboundbox:
     b.visible = 0;
     b.d = d;
     b.attached = a ? modelattached.length() : -1;
-    if(a) for(int i = 0;; i++) { modelattached.add(a[i]); if(!a[i].tag) break; }
+    if(a)
+    {
+        for(int i = 0;; i++)
+        {
+            modelattached.add(a[i]);
+            if(!a[i].tag)
+            {
+                break;
+            }
+        }
+    }
     addbatchedmodel(m, b, batchedmodels.length()-1);
 }
 
