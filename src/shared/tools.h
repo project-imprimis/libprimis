@@ -4,7 +4,7 @@
 #define TOOLS_H_
 
 #ifdef NULL
-#undef NULL
+    #undef NULL
 #endif
 #define NULL 0
 
@@ -16,28 +16,28 @@ typedef signed long long int llong;
 typedef unsigned long long int ullong;
 
 #if defined(__GNUC__) || (defined(_MSC_VER) && _MSC_VER >= 1400)
-#define RESTRICT __restrict
+    #define RESTRICT __restrict
 #else
-#define RESTRICT
+    #define RESTRICT
 #endif
 
 #ifdef __GNUC__
-#define UNUSED __attribute__((unused))
+    #define UNUSED __attribute__((unused))
 #else
-#define UNUSED
+    #define UNUSED
 #endif
 
 void *operator new(size_t, bool);
 void *operator new[](size_t, bool);
 #ifndef _GLIBCXX_FSTREAM
-inline void *operator new(size_t, void *p) { return p; }
-inline void *operator new[](size_t, void *p) { return p; }
-inline void operator delete(void *, void *) {}
-inline void operator delete[](void *, void *) {}
+    inline void *operator new(size_t, void *p) { return p; }
+    inline void *operator new[](size_t, void *p) { return p; }
+    inline void operator delete(void *, void *) {}
+    inline void operator delete[](void *, void *) {}
 #endif
 
 #ifdef swap
-#undef swap
+    #undef swap
 #endif
 template<class T>
 inline void swap(T &a, T &b)
@@ -47,10 +47,10 @@ inline void swap(T &a, T &b)
     b = t;
 }
 #ifdef max
-#undef max
+    #undef max
 #endif
 #ifdef min
-#undef min
+    #undef min
 #endif
 template<class T>
 inline T max(T a, T b)
@@ -79,27 +79,27 @@ inline T clamp(T a, U b, U c)
 }
 
 #ifdef __GNUC__
-#define BITSCAN(mask) (__builtin_ffs(mask)-1)
+    #define BITSCAN(mask) (__builtin_ffs(mask)-1)
 #else
-#ifdef WIN32
-#pragma intrinsic(_BitScanForward)
-inline int BITSCAN(uint mask)
-{
-    ulong i;
-    return _BitScanForward(&i, mask) ? i : -1;
-}
-#else
-inline int BITSCAN(uint mask)
-{
-    if(!mask) return -1;
-    int i = 1;
-    if(!(mask&0xFFFF)) { i += 16; mask >>= 16; }
-    if(!(mask&0xFF)) { i += 8; mask >>= 8; }
-    if(!(mask&0xF)) { i += 4; mask >>= 4; }
-    if(!(mask&3)) { i += 2; mask >>= 2; }
-    return i - (mask&1);
-}
-#endif
+    #ifdef WIN32
+        #pragma intrinsic(_BitScanForward)
+        inline int BITSCAN(uint mask)
+        {
+            ulong i;
+            return _BitScanForward(&i, mask) ? i : -1;
+        }
+    #else
+        inline int BITSCAN(uint mask)
+        {
+            if(!mask) return -1;
+            int i = 1;
+            if(!(mask&0xFFFF)) { i += 16; mask >>= 16; }
+            if(!(mask&0xFF)) { i += 8; mask >>= 8; }
+            if(!(mask&0xF)) { i += 4; mask >>= 4; }
+            if(!(mask&3)) { i += 2; mask >>= 2; }
+            return i - (mask&1);
+        }
+    #endif
 #endif
 
 inline int randomint(int x)
@@ -126,35 +126,35 @@ inline float detrnd(uint s, int x)
 #define RAD (PI / 180.0f)
 
 #ifdef WIN32
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-#ifndef M_LN2
-#define M_LN2 0.693147180559945309417
-#endif
+    #ifndef M_PI
+        #define M_PI 3.14159265358979323846
+    #endif
+    #ifndef M_LN2
+        #define M_LN2 0.693147180559945309417
+    #endif
 
-#ifndef __GNUC__
-#pragma warning (3: 4189)       // local variable is initialized but not referenced
-#pragma warning (disable: 4244) // conversion from 'int' to 'float', possible loss of data
-#pragma warning (disable: 4267) // conversion from 'size_t' to 'int', possible loss of data
-#pragma warning (disable: 4355) // 'this' : used in base member initializer list
-#pragma warning (disable: 4996) // 'strncpy' was declared deprecated
-#endif
+    #ifndef __GNUC__
+        #pragma warning (3: 4189)       // local variable is initialized but not referenced
+        #pragma warning (disable: 4244) // conversion from 'int' to 'float', possible loss of data
+        #pragma warning (disable: 4267) // conversion from 'size_t' to 'int', possible loss of data
+        #pragma warning (disable: 4355) // 'this' : used in base member initializer list
+        #pragma warning (disable: 4996) // 'strncpy' was declared deprecated
+    #endif
 
-#define strcasecmp _stricmp
-#define strncasecmp _strnicmp
-#define PATHDIV '\\'
+    #define strcasecmp _stricmp
+    #define strncasecmp _strnicmp
+    #define PATHDIV '\\'
 
 #else
-#define __cdecl
-#define _vsnprintf vsnprintf
-#define PATHDIV '/'
+    #define __cdecl
+    #define _vsnprintf vsnprintf
+    #define PATHDIV '/'
 #endif
 
 #ifdef __GNUC__
-#define PRINTFARGS(fmt, args) __attribute__((format(printf, fmt, args)))
+    #define PRINTFARGS(fmt, args) __attribute__((format(printf, fmt, args)))
 #else
-#define PRINTFARGS(fmt, args)
+    #define PRINTFARGS(fmt, args)
 #endif
 
 // easy safe strings
@@ -1269,9 +1269,9 @@ struct reversequeue : queue<T, SIZE>
 };
 
 #ifdef SDL_BYTEORDER
-#define endianswap16 SDL_Swap16
-#define endianswap32 SDL_Swap32
-#define endianswap64 SDL_Swap64
+    #define endianswap16 SDL_Swap16
+    #define endianswap32 SDL_Swap32
+    #define endianswap64 SDL_Swap64
 #else
 inline ushort endianswap16(ushort n) { return (n<<8) | (n>>8); }
 inline uint endianswap32(uint n) { return (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000); }
@@ -1289,22 +1289,22 @@ inline int endianswap<int>(int n) { return endianswap32(n); }
 
 /* workaround for some C platforms that have these two functions as macros - not used anywhere */
 #ifdef getchar
-#undef getchar
+    #undef getchar
 #endif
 #ifdef putchar
-#undef putchar
+    #undef putchar
 #endif
 
 struct stream
 {
 #ifdef WIN32
-#if defined(__GNUC__) && !defined(__MINGW32__)
-    typedef off64_t offset;
-#else
-    typedef __int64 offset;
-#endif
-#else
-    typedef off_t offset;
+    #if defined(__GNUC__) && !defined(__MINGW32__)
+        typedef off64_t offset;
+    #else
+        typedef __int64 offset;
+    #endif
+    #else
+        typedef off_t offset;
 #endif
     //see file/gz/utf8/zipstream children for more interesting forms
     virtual ~stream() {}
