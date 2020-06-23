@@ -268,9 +268,21 @@ void glerror(const char *file, int line, GLenum error)
     const char *desc = "unknown";
     switch(error)
     {
-        case GL_NO_ERROR: desc = "no error"; break;
-        case GL_INVALID_ENUM: desc = "invalid enum"; break;
-        case GL_INVALID_VALUE: desc = "invalid value"; break;
+        case GL_NO_ERROR:
+        {
+            desc = "no error";
+            break;
+        }
+        case GL_INVALID_ENUM:
+        {
+            desc = "invalid enum";
+            break;
+        }
+        case GL_INVALID_VALUE:
+        {
+            desc = "invalid value";
+            break;
+        }
         case GL_INVALID_OPERATION: desc = "invalid operation"; break;
         case GL_STACK_OVERFLOW: desc = "stack overflow"; break;
         case GL_STACK_UNDERFLOW: desc = "stack underflow"; break;
@@ -309,7 +321,8 @@ bool hasext(const char *ext)
 
 bool checkdepthtexstencilrb()
 {
-    int w = 256, h = 256;
+    int w = 256,
+        h = 256;
     GLuint fbo = 0;
     glGenFramebuffers_(1, &fbo);
     glBindFramebuffer_(GL_FRAMEBUFFER, fbo);
@@ -348,41 +361,57 @@ void gl_checkextensions()
     if(strstr(renderer, "Mesa") || strstr(version, "Mesa"))
     {
         mesa = true;
-        if(strstr(renderer, "Intel")) intel = true;
+        if(strstr(renderer, "Intel"))
+        {
+            intel = true;
+        }
     }
     else if(strstr(vendor, "NVIDIA"))
+    {
         nvidia = true;
+    }
     else if(strstr(vendor, "ATI") || strstr(vendor, "Advanced Micro Devices"))
+    {
         amd = true;
+    }
     else if(strstr(vendor, "Intel"))
+    {
         intel = true;
+    }
 
     uint glmajorversion, glminorversion;
-    if(sscanf(version, " %u.%u", &glmajorversion, &glminorversion) != 2) glversion = 100;
-    else glversion = glmajorversion*100 + glminorversion*10;
+    if(sscanf(version, " %u.%u", &glmajorversion, &glminorversion) != 2)
+    {
+        glversion = 100; //__really__ legacy systems (which won't run anyways)
+    }
+    else
+    {
+        glversion = glmajorversion*100 + glminorversion*10;
+    }
+    if(glversion < 400)
+    {
+        fatal("OpenGL 4.0 or greater is required!");
+    }
+    #ifdef WIN32
+        glActiveTexture_ =            (PFNGLACTIVETEXTUREPROC)            getprocaddress("glActiveTexture");
 
-    if(glversion < 400) fatal("OpenGL 4.0 or greater is required!");
+        glBlendEquation_ =            (PFNGLBLENDEQUATIONPROC)            getprocaddress("glBlendEquation");
+        glBlendColor_ =               (PFNGLBLENDCOLORPROC)               getprocaddress("glBlendColor");
 
-#ifdef WIN32
-    glActiveTexture_ =            (PFNGLACTIVETEXTUREPROC)            getprocaddress("glActiveTexture");
+        glTexImage3D_ =               (PFNGLTEXIMAGE3DPROC)               getprocaddress("glTexImage3D");
+        glTexSubImage3D_ =            (PFNGLTEXSUBIMAGE3DPROC)            getprocaddress("glTexSubImage3D");
+        glCopyTexSubImage3D_ =        (PFNGLCOPYTEXSUBIMAGE3DPROC)        getprocaddress("glCopyTexSubImage3D");
 
-    glBlendEquation_ =            (PFNGLBLENDEQUATIONPROC)            getprocaddress("glBlendEquation");
-    glBlendColor_ =               (PFNGLBLENDCOLORPROC)               getprocaddress("glBlendColor");
+        glCompressedTexImage3D_ =     (PFNGLCOMPRESSEDTEXIMAGE3DPROC)     getprocaddress("glCompressedTexImage3D");
+        glCompressedTexImage2D_ =     (PFNGLCOMPRESSEDTEXIMAGE2DPROC)     getprocaddress("glCompressedTexImage2D");
+        glCompressedTexImage1D_ =     (PFNGLCOMPRESSEDTEXIMAGE1DPROC)     getprocaddress("glCompressedTexImage1D");
+        glCompressedTexSubImage3D_ =  (PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC)  getprocaddress("glCompressedTexSubImage3D");
+        glCompressedTexSubImage2D_ =  (PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC)  getprocaddress("glCompressedTexSubImage2D");
+        glCompressedTexSubImage1D_ =  (PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC)  getprocaddress("glCompressedTexSubImage1D");
+        glGetCompressedTexImage_ =    (PFNGLGETCOMPRESSEDTEXIMAGEPROC)    getprocaddress("glGetCompressedTexImage");
 
-    glTexImage3D_ =               (PFNGLTEXIMAGE3DPROC)               getprocaddress("glTexImage3D");
-    glTexSubImage3D_ =            (PFNGLTEXSUBIMAGE3DPROC)            getprocaddress("glTexSubImage3D");
-    glCopyTexSubImage3D_ =        (PFNGLCOPYTEXSUBIMAGE3DPROC)        getprocaddress("glCopyTexSubImage3D");
-
-    glCompressedTexImage3D_ =     (PFNGLCOMPRESSEDTEXIMAGE3DPROC)     getprocaddress("glCompressedTexImage3D");
-    glCompressedTexImage2D_ =     (PFNGLCOMPRESSEDTEXIMAGE2DPROC)     getprocaddress("glCompressedTexImage2D");
-    glCompressedTexImage1D_ =     (PFNGLCOMPRESSEDTEXIMAGE1DPROC)     getprocaddress("glCompressedTexImage1D");
-    glCompressedTexSubImage3D_ =  (PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC)  getprocaddress("glCompressedTexSubImage3D");
-    glCompressedTexSubImage2D_ =  (PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC)  getprocaddress("glCompressedTexSubImage2D");
-    glCompressedTexSubImage1D_ =  (PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC)  getprocaddress("glCompressedTexSubImage1D");
-    glGetCompressedTexImage_ =    (PFNGLGETCOMPRESSEDTEXIMAGEPROC)    getprocaddress("glGetCompressedTexImage");
-
-    glDrawRangeElements_ =        (PFNGLDRAWRANGEELEMENTSPROC)        getprocaddress("glDrawRangeElements");
-#endif
+        glDrawRangeElements_ =        (PFNGLDRAWRANGEELEMENTSPROC)        getprocaddress("glDrawRangeElements");
+    #endif
     glMultiDrawArrays_ =          (PFNGLMULTIDRAWARRAYSPROC)          getprocaddress("glMultiDrawArrays");
     glMultiDrawElements_ =        (PFNGLMULTIDRAWELEMENTSPROC)        getprocaddress("glMultiDrawElements");
 
@@ -543,7 +572,10 @@ void gl_checkextensions()
     if(hasext("GL_EXT_gpu_shader4"))
     {
         hasEGPU4 = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
+        }
     }
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
     glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
@@ -593,7 +625,10 @@ void gl_checkextensions()
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
+        }
     }
 
     if(hasext("GL_EXT_timer_query"))
@@ -601,7 +636,10 @@ void gl_checkextensions()
         glGetQueryObjecti64v_  =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64vEXT");
         glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64vEXT");
         hasTQ = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
+        }
     }
     //OpenGL 3.3
     glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64v");
@@ -609,31 +647,52 @@ void gl_checkextensions()
     if(hasext("GL_EXT_texture_compression_s3tc"))
     {
         hasS3TC = true;
-        if(!mesa) usetexcompress = 2;
-        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_s3tc extension.");
+        if(!mesa)
+        {
+            usetexcompress = 2;
+        }
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_texture_compression_s3tc extension.");
+        }
     }
     else if(hasext("GL_EXT_texture_compression_dxt1") && hasext("GL_ANGLE_texture_compression_dxt3") && hasext("GL_ANGLE_texture_compression_dxt5"))
     {
         hasS3TC = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_dxt1 extension.");
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_texture_compression_dxt1 extension.");
+        }
     }
     if(hasext("GL_3DFX_texture_compression_FXT1"))
     {
         hasFXT1 = true;
-        if(mesa) usetexcompress = max(usetexcompress, 1);
-        if(dbgexts) conoutf(Console_Init, "Using GL_3DFX_texture_compression_FXT1.");
+        if(mesa)
+        {
+            usetexcompress = max(usetexcompress, 1);
+        }
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_3DFX_texture_compression_FXT1.");
+        }
     }
     if(hasext("GL_EXT_texture_compression_latc"))
     {
         hasLATC = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_compression_latc extension.");
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_texture_compression_latc extension.");
+        }
     }
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
-       GLint val = 0;
-       glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val);
-       hwmaxaniso = val;
-       if(dbgexts) conoutf(Console_Init, "Using GL_EXT_texture_filter_anisotropic extension.");
+        GLint val = 0;
+        glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val);
+        hwmaxaniso = val;
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_texture_filter_anisotropic extension.");
+        }
     }
     else
     {
@@ -643,7 +702,10 @@ void gl_checkextensions()
     {
         glDepthBounds_ = (PFNGLDEPTHBOUNDSEXTPROC) getprocaddress("glDepthBoundsEXT");
         hasDBT = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_EXT_depth_bounds_test extension.");
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_EXT_depth_bounds_test extension.");
+        }
     }
     glBindFragDataLocationIndexed_ = (PFNGLBINDFRAGDATALOCATIONINDEXEDPROC)getprocaddress("glBindFragDataLocationIndexed");
     GLint dualbufs = 0;
@@ -656,11 +718,14 @@ void gl_checkextensions()
     glBlendFunci_ =             (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
     glBlendFuncSeparatei_ =     (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
     usetexgather = !intel && !nvidia ? 2 : 1;
-    //OpenGL 4.3
+    //OpenGL 4.
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
     {
         hasES3 = true;
-        if(glversion < 430 && dbgexts) conoutf(Console_Init, "Using GL_ARB_ES3_compatibility extension.");
+        if(glversion < 430 && dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_ARB_ES3_compatibility extension.");
+        }
     }
 
     if(glversion >= 430)
@@ -689,14 +754,20 @@ void gl_checkextensions()
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubData");
 
         hasCI = true;
-        if(glversion < 430 && dbgexts) conoutf(Console_Init, "Using GL_ARB_copy_image extension.");
+        if(glversion < 430 && dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_ARB_copy_image extension.");
+        }
     }
     else if(hasext("GL_NV_copy_image"))
     {
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubDataNV");
 
         hasCI = true;
-        if(dbgexts) conoutf(Console_Init, "Using GL_NV_copy_image extension.");
+        if(dbgexts)
+        {
+            conoutf(Console_Init, "Using GL_NV_copy_image extension.");
+        }
     }
 
     extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather, tqaaresolvegather;
@@ -727,7 +798,10 @@ void gl_checkextensions()
             intel_texalpha_bug = 1;
         }
     }
-    if(mesa) mesa_swap_bug = 1;
+    if(mesa)
+    {
+        mesa_swap_bug = 1;
+    }
     tqaaresolvegather = 1;
 }
 
@@ -792,19 +866,28 @@ timer *begintimer(const char *name, bool gpu)
         glBeginQuery_(GL_TIME_ELAPSED_EXT, t->query[timercycle]);
         t->waiting |= 1<<timercycle;
     }
-    else t->starttime = getclockmillis();
+    else
+    {
+        t->starttime = getclockmillis();
+    }
     return t;
 }
 
 void endtimer(timer *t)
 {
-    if(!t) return;
+    if(!t)
+    {
+        return;
+    }
     if(t->gpu)
     {
         glEndQuery_(GL_TIME_ELAPSED_EXT);
         deferquery--;
     }
-    else t->result = max(static_cast<float>(getclockmillis() - t->starttime), 0.0f);
+    else
+    {
+        t->result = max(static_cast<float>(getclockmillis() - t->starttime), 0.0f);
+    }
 }
 
 void synctimers()
@@ -818,13 +901,18 @@ void synctimers()
         {
             GLint available = 0;
             while(!available)
+            {
                 glGetQueryObjectiv_(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available);
+            }
             GLuint64EXT result = 0;
             glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result);
             t.result = max(static_cast<float>(result) * 1e-6f, 0.0f);
             t.waiting &= ~(1<<timercycle);
         }
-        else t.result = -1;
+        else
+        {
+            t.result = -1;
+        }
     }
 }
 
@@ -833,7 +921,10 @@ void cleanuptimers()
     for(int i = 0; i < timers.length(); i++)
     {
         timer &t = timers[i];
-        if(t.gpu) glDeleteQueries_(timer::MAXQUERY, t.query);
+        if(t.gpu)
+        {
+            glDeleteQueries_(timer::MAXQUERY, t.query);
+        }
     }
     timers.shrink(0);
     timerorder.shrink(0);
@@ -845,14 +936,19 @@ int framemillis = 0; // frame time (ie does not take into account the swap)
 
 void printtimers(int conw, int conh)
 {
-    if(!frametimer && !usetimers) return;
-
+    if(!frametimer && !usetimers)
+    {
+        return;
+    }
     static int lastprint = 0;
     int offset = 0;
     if(frametimer)
     {
         static int printmillis = 0;
-        if(totalmillis - lastprint >= 200) printmillis = framemillis;
+        if(totalmillis - lastprint >= 200)
+        {
+            printmillis = framemillis;
+        }
         draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printmillis);
         offset++;
     }
@@ -861,13 +957,22 @@ void printtimers(int conw, int conh)
         for(int i = 0; i < timerorder.length(); i++)
         {
             timer &t = timers[timerorder[i]];
-            if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200) t.print = t.result;
-            if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timercycle)))) continue;
+            if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200)
+            {
+                t.print = t.result;
+            }
+            if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timercycle))))
+            {
+                continue;
+            }
             draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
             offset++;
         }
     }
-    if(totalmillis - lastprint >= 200) lastprint = totalmillis;
+    if(totalmillis - lastprint >= 200)
+    {
+        lastprint = totalmillis;
+    }
 }
 
 void gl_resize()
@@ -959,7 +1064,10 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     GLOBALPARAM(camprojmatrix, camprojmatrix);
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
 
-    if(flush && Shader::lastshader) Shader::lastshader->flushparams();
+    if(flush && Shader::lastshader)
+    {
+        Shader::lastshader->flushparams();
+    }
 }
 
 matrix4 hudmatrix, hudmatrixstack[64];
@@ -973,7 +1081,10 @@ void resethudmatrix()
 
 void pushhudmatrix()
 {
-    if(hudmatrixpos >= 0 && hudmatrixpos < static_cast<int>(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0]))) hudmatrixstack[hudmatrixpos] = hudmatrix;
+    if(hudmatrixpos >= 0 && hudmatrixpos < static_cast<int>(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0])))
+    {
+        hudmatrixstack[hudmatrixpos] = hudmatrix;
+    }
     ++hudmatrixpos;
 }
 
@@ -989,13 +1100,19 @@ void pophudmatrix(bool flush, bool flushparams)
     if(hudmatrixpos >= 0 && hudmatrixpos < static_cast<int>(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0])))
     {
         hudmatrix = hudmatrixstack[hudmatrixpos];
-        if(flush) flushhudmatrix(flushparams);
+        if(flush)
+        {
+            flushhudmatrix(flushparams);
+        }
     }
 }
 
 void pushhudscale(float sx, float sy)
 {
-    if(!sy) sy = sx;
+    if(!sy)
+    {
+        sy = sx;
+    }
     pushhudmatrix();
     hudmatrix.scale(sx, sy, 1);
     flushhudmatrix();
@@ -1003,14 +1120,21 @@ void pushhudscale(float sx, float sy)
 
 void pushhudtranslate(float tx, float ty, float sx, float sy)
 {
-    if(!sy) sy = sx;
+    if(!sy)
+    {
+        sy = sx;
+    }
     pushhudmatrix();
     hudmatrix.translate(tx, ty, 0);
-    if(sy) hudmatrix.scale(sx, sy, 1);
+    if(sy)
+    {
+        hudmatrix.scale(sx, sy, 1);
+    }
     flushhudmatrix();
 }
 
-int vieww = -1, viewh = -1;
+int vieww = -1,
+    viewh = -1;
 float curfov, curavatarfov, fovy, aspect;
 int farplane;
 VARP(zoominvel, 0, 40, 500);
@@ -1033,12 +1157,24 @@ void disablezoom()
 
 void computezoom()
 {
-    if(!zoom) { zoomprogress = 0; curfov = fov; curavatarfov = avatarfov; return; }
-    if(zoom > 0) zoomprogress = zoominvel ? min(zoomprogress + static_cast<float>(elapsedtime) / zoominvel, 1.0f) : 1;
+    if(!zoom)
+    {
+        zoomprogress = 0;
+        curfov = fov;
+        curavatarfov = avatarfov;
+        return;
+    }
+    if(zoom > 0)
+    {
+        zoomprogress = zoominvel ? min(zoomprogress + static_cast<float>(elapsedtime) / zoominvel, 1.0f) : 1;
+    }
     else
     {
         zoomprogress = zoomoutvel ? max(zoomprogress - static_cast<float>(elapsedtime) / zoomoutvel, 0.0f) : 0;
-        if(zoomprogress <= 0) zoom = 0;
+        if(zoomprogress <= 0)
+        {
+            zoom = 0;
+        }
     }
     curfov = zoomfov*zoomprogress + fov*(1 - zoomprogress);
     curavatarfov = avatarzoomfov*zoomprogress + avatarfov*(1 - zoomprogress);
@@ -1068,10 +1204,22 @@ bool isthirdperson() { return player!=camera1 || detachedcamera; }
 void fixcamerarange()
 {
     const float MAXPITCH = 90.0f;
-    if(camera1->pitch>MAXPITCH) camera1->pitch = MAXPITCH;
-    if(camera1->pitch<-MAXPITCH) camera1->pitch = -MAXPITCH;
-    while(camera1->yaw<0.0f) camera1->yaw += 360.0f;
-    while(camera1->yaw>=360.0f) camera1->yaw -= 360.0f;
+    if(camera1->pitch>MAXPITCH)
+    {
+        camera1->pitch = MAXPITCH;
+    }
+    if(camera1->pitch<-MAXPITCH)
+    {
+        camera1->pitch = -MAXPITCH;
+    }
+    while(camera1->yaw<0.0f)
+    {
+        camera1->yaw += 360.0f;
+    }
+    while(camera1->yaw>=360.0f)
+    {
+        camera1->yaw -= 360.0f;
+    }
 }
 
 void modifyorient(float yaw, float pitch)
@@ -1088,7 +1236,10 @@ void modifyorient(float yaw, float pitch)
 
 void mousemove(int dx, int dy)
 {
-    if(!game::allowmouselook()) return;
+    if(!game::allowmouselook())
+    {
+        return;
+    }
     float cursens = sensitivity, curaccel = mouseaccel;
     if(zoom)
     {
@@ -1103,7 +1254,10 @@ void mousemove(int dx, int dy)
             curaccel = zoomaccel;
         }
     }
-    if(curaccel && curtime && (dx || dy)) cursens += curaccel * sqrtf(dx*dx + dy*dy)/curtime;
+    if(curaccel && curtime && (dx || dy))
+    {
+        cursens += curaccel * sqrtf(dx*dx + dy*dy)/curtime;
+    }
     cursens /= (sensitivityscale/4); //hard factor of 4 for 40 dots/deg like Quake/Source/etc.
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
@@ -1124,7 +1278,10 @@ void recomputecamera()
     {
         static physent tempcamera;
         camera1 = &tempcamera;
-        if(detachedcamera && shoulddetach) camera1->o = player->o;
+        if(detachedcamera && shoulddetach)
+        {
+            camera1->o = player->o;
+        }
         else
         {
             *camera1 = *player;
@@ -1150,7 +1307,10 @@ void recomputecamera()
             {
                 vec pos = camera1->o;
                 float dist = fabs(thirdpersonup);
-                if(thirdpersonup < 0) up.neg();
+                if(thirdpersonup < 0)
+                {
+                    up.neg();
+                }
                 movecamera(camera1, up, dist, 1);
                 movecamera(camera1, up, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
             }
@@ -1158,7 +1318,10 @@ void recomputecamera()
             {
                 vec pos = camera1->o;
                 float dist = fabs(thirdpersonside);
-                if(thirdpersonside < 0) side.neg();
+                if(thirdpersonside < 0)
+                {
+                    side.neg();
+                }
                 movecamera(camera1, side, dist, 1);
                 movecamera(camera1, side, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
             }
@@ -1166,8 +1329,14 @@ void recomputecamera()
         else
         {
             camera1->o.add(vec(dir).mul(thirdpersondistance));
-            if(thirdpersonup) camera1->o.add(vec(up).mul(thirdpersonup));
-            if(thirdpersonside) camera1->o.add(vec(side).mul(thirdpersonside));
+            if(thirdpersonup)
+            {
+                camera1->o.add(vec(up).mul(thirdpersonup));
+            }
+            if(thirdpersonside)
+            {
+                camera1->o.add(vec(side).mul(thirdpersonside));
+            }
         }
     }
 }
@@ -1218,8 +1387,10 @@ vec calcavatarpos(const vec &pos, float dist)
 
 void renderavatar()
 {
-    if(isthirdperson()) return;
-
+    if(isthirdperson())
+    {
+        return;
+    }
     matrix4 oldprojmatrix = nojittermatrix;
     projmatrix.perspective(curavatarfov, aspect, nearplane, farplane);
     projmatrix.scalez(avatardepth);
@@ -1270,13 +1441,27 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
 {
     vec e;
     cammatrix.transform(center, e);
-    if(e.z > 2*size) { sx1 = sy1 = sz1 = 1; sx2 = sy2 = sz2 = -1; return false; }
+    if(e.z > 2*size)
+    {
+        sx1 = sy1 = sz1 =  1;
+        sx2 = sy2 = sz2 = -1;
+        return false;
+    }
     if(drawtex == Draw_TexMinimap)
     {
         vec dir(size, size, size);
-        if(projmatrix.a.x < 0) dir.x = -dir.x;
-        if(projmatrix.b.y < 0) dir.y = -dir.y;
-        if(projmatrix.c.z < 0) dir.z = -dir.z;
+        if(projmatrix.a.x < 0)
+        {
+            dir.x = -dir.x;
+        }
+        if(projmatrix.b.y < 0)
+        {
+            dir.y = -dir.y;
+        }
+        if(projmatrix.c.z < 0)
+        {
+            dir.z = -dir.z;
+        }
         sx1 = max(projmatrix.a.x*(e.x - dir.x) + projmatrix.d.x, -1.0f);
         sx2 = min(projmatrix.a.x*(e.x + dir.x) + projmatrix.d.x, 1.0f);
         sy1 = max(projmatrix.b.y*(e.y - dir.y) + projmatrix.d.y, -1.0f);
@@ -1286,7 +1471,8 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
         return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
     }
     float zzrr = e.z*e.z - size*size,
-          dx = e.x*e.x + zzrr, dy = e.y*e.y + zzrr,
+          dx = e.x*e.x + zzrr,
+          dy = e.y*e.y + zzrr,
           focaldist = 1.0f/tan(fovy*0.5f*RAD);
     sx1 = sy1 = -1;
     sx2 = sy2 = 1;
@@ -1298,23 +1484,29 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
         { \
             float c = (focaldist)*nzc, \
                   pc = pz*nzc; \
-            if(pc < e.c) low = c; \
+            if(pc < e.c) \
+            { \
+                low = c; \
+            } \
             else if(pc > e.c) high = c; \
         } \
     } while(0)
     if(dx > 0)
     {
-        float cz = e.x/e.z, drt = sqrtf(dx)/size;
+        float cz  = e.x/e.z,
+              drt = sqrtf(dx)/size;
         CHECKPLANE(x, -, focaldist/aspect, sx1, sx2);
         CHECKPLANE(x, +, focaldist/aspect, sx1, sx2);
     }
     if(dy > 0)
     {
-        float cz = e.y/e.z, drt = sqrtf(dy)/size;
+        float cz  = e.y/e.z,
+              drt = sqrtf(dy)/size;
         CHECKPLANE(y, -, focaldist, sy1, sy2);
         CHECKPLANE(y, +, focaldist, sy1, sy2);
     }
-    float z1 = min(e.z + size, -1e-3f - nearplane), z2 = min(e.z - size, -1e-3f - nearplane);
+    float z1 = min(e.z + size, -1e-3f - nearplane),
+          z2 = min(e.z - size, -1e-3f - nearplane);
     sz1 = (z1*projmatrix.c.z + projmatrix.d.z) / (z1*projmatrix.c.w + projmatrix.d.w);
     sz2 = (z2*projmatrix.c.z + projmatrix.d.z) / (z2*projmatrix.c.w + projmatrix.d.w);
     return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
@@ -1351,7 +1543,10 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
     ADDXYSCISSOR(v[6]);
     camprojmatrix.transform(vec(bbmax.x, bbmax.y, bbmax.z), v[7]);
     ADDXYSCISSOR(v[7]);
-    if(sx1 > sx2 || sy1 > sy2) return false;
+    if(sx1 > sx2 || sy1 > sy2)
+    {
+        return false;
+    }
     for(int i = 0; i < 8; ++i)
     {
         const vec4 &p = v[i];
@@ -1362,7 +1557,10 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
         for(int j = 0; j < 3; ++j)
         {
             const vec4 &o = v[i^(1<<j)];
-            if(o.z <= -o.w) continue;
+            if(o.z <= -o.w)
+            {
+                continue;
+            }
 #define INTERPXYSCISSOR(p, o) do { \
             float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
                   w = p.w + t*(o.w - p.w), \
@@ -1386,11 +1584,15 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
 bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, const vec &spotx, const vec &spoty, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2)
 {
     float spotscale = radius * tan360(spot);
-    vec up = vec(spotx).mul(spotscale), right = vec(spoty).mul(spotscale), center = vec(dir).mul(radius).add(origin);
+    vec up     = vec(spotx).mul(spotscale),
+        right  = vec(spoty).mul(spotscale),
+        center = vec(dir).mul(radius).add(origin);
 #define ADDXYZSCISSOR(p) do { \
         if(p.z >= -p.w) \
         { \
-            float x = p.x / p.w, y = p.y / p.w, z = p.z / p.w; \
+            float x = p.x / p.w, \
+                  y = p.y / p.w, \
+                  z = p.z / p.w; \
             sx1 = min(sx1, x); \
             sy1 = min(sy1, y); \
             sz1 = min(sz1, z); \
@@ -1412,15 +1614,24 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     ADDXYZSCISSOR(v[3]);
     camprojmatrix.transform(origin, v[4]);
     ADDXYZSCISSOR(v[4]);
-    if(sx1 > sx2 || sy1 > sy2 || sz1 > sz2) return false;
+    if(sx1 > sx2 || sy1 > sy2 || sz1 > sz2)
+    {
+        return false;
+    }
     for(int i = 0; i < 4; ++i)
     {
         const vec4 &p = v[i];
-        if(p.z >= -p.w) continue;
+        if(p.z >= -p.w)
+        {
+            continue;
+        }
         for(int j = 0; j < 2; ++j)
         {
             const vec4 &o = v[i^(1<<j)];
-            if(o.z <= -o.w) continue;
+            if(o.z <= -o.w)
+            {
+                continue;
+            }
 #define INTERPXYZSCISSOR(p, o) do { \
             float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
                   w = p.w + t*(o.w - p.w), \
@@ -1434,7 +1645,10 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
         } while(0)
             INTERPXYZSCISSOR(p, o);
         }
-        if(v[4].z > -v[4].w) INTERPXYZSCISSOR(p, v[4]);
+        if(v[4].z > -v[4].w)
+        {
+            INTERPXYZSCISSOR(p, v[4]);
+        }
     }
     if(v[4].z < -v[4].w)
     {
@@ -1473,7 +1687,11 @@ static void setupscreenquad()
 
 static void cleanupscreenquad()
 {
-    if(screenquadvbo) { glDeleteBuffers_(1, &screenquadvbo); screenquadvbo = 0; }
+    if(screenquadvbo)
+    {
+        glDeleteBuffers_(1, &screenquadvbo);
+        screenquadvbo = 0;
+    }
 }
 
 void screenquad()
@@ -1566,8 +1784,7 @@ static float findsurface(int fogmat, const vec &v, int &abovemat)
             return o.z;
         }
         o.z = co.z + csize;
-    }
-    while(o.z < worldsize);
+    } while(o.z < worldsize);
     abovemat = Mat_Air;
     return worldsize;
 }
@@ -1578,8 +1795,10 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
     {
         case Mat_Water:
         {
-            const bvec &wcol = getwatercolor(fogmat), &wdeepcol = getwaterdeepcolor(fogmat);
-            int wfog = getwaterfog(fogmat), wdeep = getwaterdeep(fogmat);
+            const bvec &wcol = getwatercolor(fogmat),
+                       &wdeepcol = getwaterdeepcolor(fogmat);
+            int wfog = getwaterfog(fogmat),
+                wdeep = getwaterdeep(fogmat);
             float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color;
             color.lerp(wcol.tocolor(), wdeepcol.tocolor(), deepfade);
@@ -1588,10 +1807,12 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
             break;
         }
         default:
+        {
             fogc.add(fogcolor.tocolor().mul(blend));
             start += logblend*(fog+64)/8;
             end += logblend*fog;
             break;
+        }
     }
 }
 
@@ -1628,12 +1849,17 @@ float calcfogcull()
 
 static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = Mat_Air)
 {
-    float start = 0, end = 0;
-    float logscale = 256, logblend = log(1 + (logscale - 1)*blend) / log(logscale);
+    float start = 0,
+          end = 0;
+    float logscale = 256,
+          logblend = log(1 + (logscale - 1)*blend) / log(logscale);
 
     curfogcolor = vec(0, 0, 0);
     blendfog(fogmat, below, blend, logblend, start, end, curfogcolor);
-    if(blend < 1) blendfog(abovemat, 0, 1-blend, 1-logblend, start, end, curfogcolor);
+    if(blend < 1)
+    {
+        blendfog(abovemat, 0, 1-blend, 1-logblend, start, end, curfogcolor);
+    }
     curfogcolor.mul(ldrscale);
 
     GLOBALPARAM(fogcolor, curfogcolor);
@@ -1648,16 +1874,20 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
     {
         case Mat_Water:
         {
-            const bvec &wcol = getwatercolor(fogmat), &wdeepcol = getwaterdeepcolor(fogmat);
-            int wfog = getwaterfog(fogmat), wdeep = getwaterdeep(fogmat);
+            const bvec &wcol = getwatercolor(fogmat),
+                       &wdeepcol = getwaterdeepcolor(fogmat);
+            int wfog = getwaterfog(fogmat),
+                wdeep = getwaterdeep(fogmat);
             float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color = vec(wcol.r, wcol.g, wcol.b).lerp(vec(wdeepcol.r, wdeepcol.g, wdeepcol.b), deepfade);
             overlay.add(color.div(min(32.0f + max(color.r, max(color.g, color.b))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
         }
         default:
+        {
             overlay.add(blend);
             break;
+        }
     }
 }
 
@@ -1680,11 +1910,17 @@ void drawfogoverlay(int fogmat, float fogbelow, float fogblend, int abovemat)
 int drawtex = 0;
 
 GLuint minimaptex = 0;
-vec minimapcenter(0, 0, 0), minimapradius(0, 0, 0), minimapscale(0, 0, 0);
+vec minimapcenter(0, 0, 0),
+    minimapradius(0, 0, 0),
+    minimapscale(0, 0, 0);
 
 void clearminimap()
 {
-    if(minimaptex) { glDeleteTextures(1, &minimaptex); minimaptex = 0; }
+    if(minimaptex)
+    {
+        glDeleteTextures(1, &minimaptex);
+        minimaptex = 0;
+    }
 }
 
 VARR(minimapheight, 0, 0, 2<<16);
@@ -1739,16 +1975,24 @@ void drawminimap()
     gl_setupframe(true);
 
     int size = 1<<minimapsize, sizelimit = min(hwtexsize, min(gw, gh));
-    while(size > sizelimit) size /= 2;
-    if(!minimaptex) glGenTextures(1, &minimaptex);
-
+    while(size > sizelimit)
+    {
+        size /= 2;
+    }
+    if(!minimaptex)
+    {
+        glGenTextures(1, &minimaptex);
+    }
     ivec bbmin(worldsize, worldsize, worldsize), bbmax(0, 0, 0);
     for(int i = 0; i < valist.length(); i++)
     {
         vtxarray *va = valist[i];
         for(int k = 0; k < 3; ++k)
         {
-            if(va->geommin[k]>va->geommax[k]) continue;
+            if(va->geommin[k]>va->geommax[k])
+            {
+                continue;
+            }
             bbmin[k] = min(bbmin[k], va->geommin[k]);
             bbmax[k] = max(bbmax[k], va->geommax[k]);
         }
@@ -1783,8 +2027,11 @@ void drawminimap()
     cmcamera.roll = 0;
     camera1 = &cmcamera;
 
-    float oldldrscale = ldrscale, oldldrscaleb = ldrscaleb;
-    int oldfarplane = farplane, oldvieww = vieww, oldviewh = viewh;
+    float oldldrscale = ldrscale,
+          oldldrscaleb = ldrscaleb;
+    int oldfarplane = farplane,
+        oldvieww    = vieww,
+        oldviewh    = viewh;
     farplane = worldsize*2;
     vieww = viewh = size;
 
@@ -1803,9 +2050,7 @@ void drawminimap()
     ldrscaleb = ldrscale/255;
 
     visiblecubes(false);
-
     rendergbuffer();
-
     rendershadowatlas();
 
     shademinimap(minimapcolor.tocolor().mul(ldrscale));
@@ -1955,7 +2200,11 @@ int xtraverts, xtravertsva;
 void gl_drawview()
 {
     GLuint scalefbo = shouldscale();
-    if(scalefbo) { vieww = gw; viewh = gh; }
+    if(scalefbo)
+    {
+        vieww = gw;
+        viewh = gh;
+    }
 
     float fogmargin = 1 + WATER_AMPLITUDE + nearplane;
     int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index), abovemat = Mat_Air;
@@ -1986,12 +2235,21 @@ void gl_drawview()
 
     visiblecubes();
 
-    if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if(wireframe && editmode)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
 
     rendergbuffer();
 
-    if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    else if(limitsky() && editmode) renderexplicitsky(true);
+    if(wireframe && editmode)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    else if(limitsky() && editmode)
+    {
+        renderexplicitsky(true);
+    }
 
     renderao();
     GLERROR;
@@ -2028,7 +2286,10 @@ void gl_drawview()
     rendertransparent();
     GLERROR;
 
-    if(fogmat) setfog(fogmat, fogbelow, 1, abovemat);
+    if(fogmat)
+    {
+        setfog(fogmat, fogbelow, 1, abovemat);
+    }
 
     rendervolumetric();
     GLERROR;
@@ -2036,7 +2297,10 @@ void gl_drawview()
     if(editmode)
     {
         extern int outline;
-        if(!wireframe && outline) renderoutline();
+        if(!wireframe && outline)
+        {
+            renderoutline();
+        }
         GLERROR;
         rendereditmaterials();
         GLERROR;
@@ -2055,11 +2319,17 @@ void gl_drawview()
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
 
-    if(fogoverlay && fogmat != Mat_Air) drawfogoverlay(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
+    if(fogoverlay && fogmat != Mat_Air)
+    {
+        drawfogoverlay(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
+    }
 
     doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
     renderpostfx(scalefbo);
-    if(scalefbo) doscale();
+    if(scalefbo)
+    {
+        doscale();
+    }
 }
 
 void gl_drawmainmenu()
@@ -2078,7 +2348,10 @@ float damagedirs[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 void damagecompass(int n, const vec &loc)
 {
-    if(!usedamagecompass || minimized) return;
+    if(!usedamagecompass || minimized)
+    {
+        return;
+    }
     vec delta(loc);
     delta.sub(camera1->o);
     float yaw = 0, pitch;
@@ -2087,12 +2360,20 @@ void damagecompass(int n, const vec &loc)
         vectoyawpitch(delta, yaw, pitch);
         yaw -= camera1->yaw;
     }
-    if(yaw >= 360) yaw = fmod(yaw, 360);
-    else if(yaw < 0) yaw = 360 - fmod(-yaw, 360);
+    if(yaw >= 360)
+    {
+        yaw = fmod(yaw, 360);
+    }
+    else if(yaw < 0)
+    {
+        yaw = 360 - fmod(-yaw, 360);
+    }
     int dir = (static_cast<int>(yaw+22.5f)%360)/45;
     damagedirs[dir] += max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
-    if(damagedirs[dir]>1) damagedirs[dir] = 1;
-
+    if(damagedirs[dir]>1)
+    {
+        damagedirs[dir] = 1;
+    }
 }
 void drawdamagecompass(int w, int h)
 {
@@ -2149,8 +2430,14 @@ VARP(damagescreenmax, 1, 100, 1000);
 
 void damageblend(int n)
 {
-    if(!damagescreen || minimized) return;
-    if(lastmillis > damageblendmillis) damageblendmillis = lastmillis;
+    if(!damagescreen || minimized)
+    {
+        return;
+    }
+    if(lastmillis > damageblendmillis)
+    {
+        damageblendmillis = lastmillis;
+    }
     damageblendmillis += clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
 }
 
@@ -2161,13 +2448,18 @@ void drawdamagescreen(int w, int h)
     hudshader->set();
 
     static Texture *damagetex = NULL;
-    if(!damagetex) damagetex = textureload("media/interface/hud/damage.png", 3);
+    if(!damagetex)
+    {
+        damagetex = textureload("media/interface/hud/damage.png", 3);
+    }
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glBindTexture(GL_TEXTURE_2D, damagetex->id);
     float fade = damagescreenalpha/100.0f;
     if(damageblendmillis - lastmillis < damagescreenfade)
+    {
         fade *= static_cast<float>(damageblendmillis - lastmillis)/damagescreenfade;
+    }
     gle::colorf(fade, fade, fade, fade);
 
     hudquad(0, 0, w, h);
@@ -2186,12 +2478,18 @@ static Texture *crosshairs[MAXCROSSHAIRS] = { NULL, NULL, NULL, NULL };
 
 void loadcrosshair(const char *name, int i)
 {
-    if(i < 0 || i >= MAXCROSSHAIRS) return;
+    if(i < 0 || i >= MAXCROSSHAIRS)
+    {
+        return;
+    }
     crosshairs[i] = name ? textureload(name, 3, true) : notexture;
     if(crosshairs[i] == notexture)
     {
         name = game::defaultcrosshair(i);
-        if(!name) name = "media/interface/crosshair/default.png";
+        if(!name)
+        {
+            name = "media/interface/crosshair/default.png";
+        }
         crosshairs[i] = textureload(name, 3, true);
     }
 }
@@ -2209,7 +2507,10 @@ ICOMMAND(getcrosshair, "i", (int *i),
     if(*i >= 0 && *i < MAXCROSSHAIRS)
     {
         name = crosshairs[*i] ? crosshairs[*i]->name : game::defaultcrosshair(*i);
-        if(!name) name = "media/interface/crosshair/default.png";
+        if(!name)
+        {
+            name = "media/interface/crosshair/default.png";
+        }
     }
     result(name);
 });
@@ -2229,15 +2530,22 @@ void writecrosshairs(stream *f)
 void drawcrosshair(int w, int h)
 {
     bool windowhit = UI::hascursor();
-    if(!windowhit && (!showhud || mainmenu)) return; //(!showhud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
-
+    if(!windowhit && (!showhud || mainmenu))
+    {
+        return; //(!showhud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
+    }
     vec color(1, 1, 1);
-    float cx = 0.5f, cy = 0.5f, chsize;
+    float cx = 0.5f,
+          cy = 0.5f,
+          chsize;
     Texture *crosshair;
     if(windowhit)
     {
         static Texture *cursor = NULL;
-        if(!cursor) cursor = textureload("media/interface/cursor.png", 3, true);
+        if(!cursor)
+        {
+            cursor = textureload("media/interface/cursor.png", 3, true);
+        }
         crosshair = cursor;
         chsize = cursorsize*w/900.0f;
         UI::getcursorpos(cx, cy);
@@ -2245,9 +2553,18 @@ void drawcrosshair(int w, int h)
     else
     {
         int index = game::selectcrosshair(color);
-        if(index < 0) return;
-        if(!crosshairfx) index = 0;
-        if(!crosshairfx || !crosshaircolors) color = vec(1, 1, 1);
+        if(index < 0)
+        {
+            return;
+        }
+        if(!crosshairfx)
+        {
+            index = 0;
+        }
+        if(!crosshairfx || !crosshaircolors)
+        {
+            color = vec(1, 1, 1);
+        }
         crosshair = crosshairs[index];
         if(!crosshair)
         {
@@ -2256,8 +2573,14 @@ void drawcrosshair(int w, int h)
         }
         chsize = crosshairsize*w/900.0f;
     }
-    if(crosshair->type&Texture::ALPHA) glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    else glBlendFunc(GL_ONE, GL_ONE);
+    if(crosshair->type&Texture::ALPHA)
+    {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+    {
+        glBlendFunc(GL_ONE, GL_ONE);
+    }
     hudshader->set();
     gle::color(color);
     float x = cx*w - (windowhit ? 0 : chsize/2.0f);
@@ -2287,8 +2610,12 @@ void resethudshader()
 
 void gl_drawhud()
 {
-    int w = hudw, h = hudh;
-    if(forceaspect) w = static_cast<int>(ceil(h*forceaspect));
+    int w = hudw,
+        h = hudh;
+    if(forceaspect)
+    {
+        w = static_cast<int>(ceil(h*forceaspect));
+    }
 
     gettextres(w, h);
 
@@ -2323,7 +2650,9 @@ void gl_drawhud()
             int roffset = 0;
             if(showfps)
             {
-                static int lastfps = 0, prevfps[3] = { 0, 0, 0 }, curfps[3] = { 0, 0, 0 };
+                static int lastfps = 0,
+                           prevfps[3] = { 0, 0, 0 },
+                           curfps[3]  = { 0, 0, 0 };
                 if(totalmillis - lastfps >= statrate)
                 {
                     memcpy(prevfps, curfps, sizeof(prevfps));
@@ -2353,7 +2682,15 @@ void gl_drawhud()
 
             if(wallclock)
             {
-                if(!walltime) { walltime = time(NULL); walltime -= totalmillis/1000; if(!walltime) walltime++; }
+                if(!walltime)
+                {
+                    walltime = time(NULL);
+                    walltime -= totalmillis/1000;
+                    if(!walltime)
+                    {
+                        walltime++;
+                    }
+                }
                 time_t walloffset = walltime + totalmillis/1000;
                 struct tm *localvals = localtime(&walloffset);
                 static string buf;
@@ -2363,13 +2700,15 @@ void gl_drawhud()
                     // also strip leading 0 from 12 hour time
                     char *dst = buf;
                     const char *src = &buf[!wallclock24 && buf[0]=='0' ? 1 : 0];
-                    while(*src) *dst++ = tolower(*src++);
+                    while(*src)
+                    {
+                        *dst++ = tolower(*src++);
+                    }
                     *dst++ = '\0';
                     draw_text(buf, conw-5*FONTH, conh-FONTH*3/2-roffset);
                     roffset += FONTH;
                 }
             }
-
             pophudmatrix();
         }
 
@@ -2388,7 +2727,10 @@ void gl_drawhud()
 
     pushhudscale(conscale);
     abovehud -= rendercommand(FONTH/2, abovehud - FONTH/2, conw-FONTH);
-    if(showhud && !UI::uivisible("fullconsole")) renderconsole(conw, conh, abovehud - FONTH/2);
+    if(showhud && !UI::uivisible("fullconsole"))
+    {
+        renderconsole(conw, conh, abovehud - FONTH/2);
+    }
     pophudmatrix();
 
     drawcrosshair(w, h);
@@ -2404,7 +2746,10 @@ void gl_drawhud()
     }
 }
 
-int renderw = 0, renderh = 0, hudw = 0, hudh = 0;
+int renderw = 0,
+    renderh = 0,
+    hudw = 0,
+    hudh = 0;
 
 void gl_setupframe(bool force)
 {
@@ -2413,7 +2758,10 @@ void gl_setupframe(bool force)
     renderh = min(scr_h, screenh);
     hudw = screenw;
     hudh = screenh;
-    if(!force) return;
+    if(!force)
+    {
+        return;
+    }
     setuplights();
 }
 
@@ -2426,8 +2774,14 @@ void gl_drawframe()
     fovy = 2*atan2(tan(curfov/2*RAD), aspect)/RAD;
     vieww = hudw;
     viewh = hudh;
-    if(mainmenu) gl_drawmainmenu();
-    else gl_drawview();
+    if(mainmenu)
+    {
+        gl_drawmainmenu();
+    }
+    else
+    {
+        gl_drawview();
+    }
     UI::render();
     gl_drawhud();
 }
