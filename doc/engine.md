@@ -40,6 +40,7 @@ linear analysis, including multipole expansions and Fourier series.
 * 1.2 Default Paths & Libraries
 * 1.3 Conventions and Units
 * 1.4 Program Structure
+* 1.5 System Contexts
 
 #### 2. World
 * 2.1 Octree
@@ -482,6 +483,64 @@ The components of the system handled by the Imprimis project is the:
 * Game code: an actual game written using the facilities written in the engine
 * Game server: a locally or remotely hosted server that manages game clients
 * Master server: a service that provides a list of game server names to clients
+
+## 1.5 System Contexts
+---
+
+The Imprimis engine, like any other program, is designed for particular
+underlying hardware and software contexts. The Imprimis engine does not
+especially target a huge breadth of hardware and operating system contexts, less
+than even its predecessor engines, as a result of Imprimis' focus on providing
+good support to the platforms it does target.
+
+### 1.5.1 Operating System
+---
+
+Imprimis officially supports only the 64-bit Windows and Linux platforms. While
+a 64-bit OS is not strictly required to implement the engine, 32-bit OSes have
+fallen from widespread use and as a result are not part of what the engine
+explicitly targets.
+
+The macOS operating system is not supported by the engine, for a handful of
+reasons:
+
+* the macOS system charges developers to distribute programs widely on macOS
+* macOS has deprecated OpenGL support, required for the game to run
+* macOS is moving away from x86 and commodity CPUs & GPUs
+
+### 1.5.2 Hardware
+---
+
+Imprimis currently targets only the x86-64 instruction set, widely used by
+desktops and laptops. Imprimis does not currently target ARMv8 (used by mobile
+devices) or POWER architectures which are not widely used for gaming.
+
+Imprimis only supports little-endian bit ordering and as a result lacks the
+capabilities to run on big-endian systems such as the aformentioned POWER.
+
+For graphics processing, hardware capable of supporting the OpenGL 4.0 standard
+is required; this includes graphics at least as new as Intel Ivy Bridge, AMD's
+Northern Islands (HD 5000 series), or Nvidia's Fermi (GTX 400 series). Older
+hardware support is omitted as few cards of this era are capable of running
+Imprimis at reasonable frame rates.
+
+The engine does not require the SSSE3 (Supplemental Streaming SIMD Extension 3)
+extensions required of many games and as a result can run on Phenom era
+processors without issue.
+
+#### Performance Considerations
+
+The Imprimis engine is single-threaded, making many-core CPUs largely irrelevant
+to the engine's performance; therefore, any big-core (non Atom or Jaguar based)
+CPU since around 2010 should be easily adequate to run well-designed levels on
+Imprimis.
+
+At least two gigabytes of RAM is recommended to run the game, while four or more
+is easily sufficient to fully utilize the engine.
+
+Nearly all graphics cards that support the OpenGL 4.0 standard should be able to
+run Imprimis at reasonable speeds, though a card of the RX 460/GTX 950 class is
+needed to bump graphics up to high levels.
 
 # 2. World
 ---
