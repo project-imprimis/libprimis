@@ -349,8 +349,12 @@ void ragdolldata::constraindist()
 
 inline void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, float angle, const vec &axis)
 {
-    vert &v1a = verts[t1.vert[0]], &v1b = verts[t1.vert[1]], &v1c = verts[t1.vert[2]],
-         &v2a = verts[t2.vert[0]], &v2b = verts[t2.vert[1]], &v2c = verts[t2.vert[2]];
+    vert &v1a = verts[t1.vert[0]],
+         &v1b = verts[t1.vert[1]],
+         &v1c = verts[t1.vert[2]],
+         &v2a = verts[t2.vert[0]],
+         &v2b = verts[t2.vert[1]],
+         &v2c = verts[t2.vert[2]];
     vec m1 = vec(v1a.pos).add(v1b.pos).add(v1c.pos).div(3),
         m2 = vec(v2a.pos).add(v2b.pos).add(v2c.pos).div(3),
         q1a, q1b, q1c, q2a, q2b, q2c;

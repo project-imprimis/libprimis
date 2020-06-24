@@ -37,7 +37,10 @@ void setlogfile(const char *fname)
         }
     }
     FILE *f = getlogfile();
-    if(f) setvbuf(f, NULL, _IOLBF, BUFSIZ);
+    if(f)
+    {
+        setvbuf(f, NULL, _IOLBF, BUFSIZ);
+    }
 }
 
 void logoutf(const char *fmt, ...)
@@ -332,8 +335,8 @@ ENetPacket *sendf(int cn, int chan, const char *format, ...)
             }
             case 'v':
             {
-                int n = va_arg(args, int);
-                int *v = va_arg(args, int *);
+                int n = va_arg(args, int),
+                    *v = va_arg(args, int *);
                 for(int i = 0; i < n; ++i)
                 {
                     putint(p, v[i]);

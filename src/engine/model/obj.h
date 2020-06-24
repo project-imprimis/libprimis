@@ -92,7 +92,10 @@ struct obj : vertloader<obj>
                 } \
                 if(attrib[2].empty()) \
                 { \
-                    if(smooth <= 1) curmesh->smoothnorms(smooth); \
+                    if(smooth <= 1) \
+                    { \
+                        curmesh->smoothnorms(smooth); \
+                    } \
                     else curmesh->buildnorms(); \
                 } \
                 curmesh->calctangents(); \
@@ -102,7 +105,10 @@ struct obj : vertloader<obj>
             while(file->getline(buf, sizeof(buf)))
             {
                 char *c = buf;
-                while(isspace(*c)) c++;
+                while(isspace(*c))
+                {
+                    c++;
+                }
                 switch(*c)
                 {
                     case '#':
@@ -110,6 +116,7 @@ struct obj : vertloader<obj>
                         continue;
                     }
                     case 'v':
+                    {
                         if(isspace(c[1]))
                         {
                             parsevert(c, attrib[0]);
@@ -123,6 +130,7 @@ struct obj : vertloader<obj>
                             parsevert(c, attrib[2]);
                         }
                         break;
+                    }
                     case 'g':
                     {
                         while(isalpha(*c))

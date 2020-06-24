@@ -236,7 +236,10 @@ struct md5 : skelloader<md5>
                         char *curbuf = buf,
                              *curname = name;
                         bool allowspace = false;
-                        while(*curbuf && isspace(*curbuf)) curbuf++;
+                        while(*curbuf && isspace(*curbuf))
+                        {
+                            curbuf++;
+                        }
                         if(*curbuf == '"')
                         {
                             curbuf++;
@@ -532,7 +535,10 @@ struct md5 : skelloader<md5>
         }
     };
 
-    skelmeshgroup *newmeshes() { return new md5meshgroup; }
+    skelmeshgroup *newmeshes()
+    {
+        return new md5meshgroup;
+    }
 
     bool loaddefaultparts()
     {
