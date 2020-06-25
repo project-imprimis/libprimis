@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "input.h"
 
 struct resolverthread
 {

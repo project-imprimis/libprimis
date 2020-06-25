@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "textedit.h"
+#include "input.h"
 
 namespace UI
 {

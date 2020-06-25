@@ -617,9 +617,6 @@ extern bool initwarning(const char *desc, int level = Init_Reset, int type = Cha
 
 extern int scr_w, scr_h;
 
-extern void pushevent(const SDL_Event &e);
-extern bool interceptkey(int sym);
-
 extern float loadprogress;
 extern void renderbackground(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL, bool force = false);
 extern void renderprogress(float bar, const char *text, bool background = false);
@@ -627,23 +624,6 @@ extern void renderprogress(float bar, const char *text, bool background = false)
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 extern void swapbuffers(bool overlay = true);
 extern int getclockmillis();
-
-enum
-{
-    KeyRepeat_Console  = 1<<0,
-    KeyRepeat_GUI      = 1<<1,
-    KeyRepeat_EditMode = 1<<2,
-};
-
-extern void keyrepeat(bool on, int mask = ~0);
-
-enum
-{
-    TextInput_Console = 1<<0,
-    TextInput_GUI     = 1<<1,
-};
-
-extern void textinput(bool on, int mask = ~0);
 
 // physics
 extern void modifyorient(float yaw, float pitch);

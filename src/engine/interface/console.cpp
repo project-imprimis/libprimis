@@ -1,6 +1,7 @@
 // console.cpp: the console buffer, its display, and command line control
 
 #include "engine.h"
+#include "input.h"
 
 #define MAXCONLINES 1000
 struct cline
