@@ -1,6 +1,7 @@
 // renderparticles.cpp
 
 #include "engine.h"
+#include "interface/input.h"
 
 Shader *particleshader          = NULL,
        *particlenotextureshader = NULL,

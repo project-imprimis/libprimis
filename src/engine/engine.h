@@ -593,6 +593,17 @@ enum
     Init_Load,
     Init_Reset,
 };
+
+enum
+{
+    SCR_MINW     = 320, //minimum screen resolution
+    SCR_MINH     = 200, //minumum screen resolution
+    SCR_MAXW     = 16384,
+    SCR_MAXH     = 16384,
+    SCR_DEFAULTW = 1366, //smallest typical screens are 1366x768
+    SCR_DEFAULTH = 768,
+};
+
 extern int initing;
 
 enum
@@ -601,9 +612,10 @@ enum
     Change_Sound      = 1<<1,
     Change_Shaders    = 1<<2,
 };
+extern void quit();
 extern bool initwarning(const char *desc, int level = Init_Reset, int type = Change_Graphics);
 
-extern bool grabinput, minimized;
+extern int scr_w, scr_h;
 
 extern void pushevent(const SDL_Event &e);
 extern bool interceptkey(int sym);
