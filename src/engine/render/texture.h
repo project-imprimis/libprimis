@@ -1298,15 +1298,8 @@ struct DecalSlot : Slot, VSlot
         return *this;
     }
 
-    int cancombine(int type)
-    {
-        const;
-    }
-
-    bool shouldpremul(int type)
-    {
-        const;
-    }
+    int cancombine(int type) const;
+    bool shouldpremul(int type) const;
 
     void reset()
     {

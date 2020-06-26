@@ -970,7 +970,9 @@ void dosmaa(GLuint outfbo = 0, bool split = false)
         vec4 subsamples(0, 0, 0, 0);
         if(tqaa && split)
         {
-            subsamples = tqaaframe&1 ? (pass != smaasubsampleorder ? vec4(6, 4, 2, 4) : vec4(3, 5, 1, 4)) : (pass != smaasubsampleorder ? vec4(4, 6, 2, 3) : vec4(5, 3, 1, 3));
+            subsamples = tqaaframe&1 ?
+                         (pass != smaasubsampleorder ? vec4(6, 4, 2, 4) : vec4(3, 5, 1, 4)) :
+                         (pass != smaasubsampleorder ? vec4(4, 6, 2, 3) : vec4(5, 3, 1, 3));
         }
         else if(tqaa)
         {
@@ -1172,4 +1174,3 @@ void cleanupaa()
     cleanupfxaa();
     cleanuptqaa();
 }
-

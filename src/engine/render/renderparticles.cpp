@@ -545,7 +545,8 @@ struct textrenderer : listrenderer
 {
     textrenderer(int type = 0)
         : listrenderer(type|PT_TEXT|PT_LERP|PT_SHADER|PT_NOLAYER)
-    {}
+    {
+    }
 
     void startrender()
     {
@@ -617,7 +618,8 @@ static inline void genpos(const vec &o, const vec &d, float size, int grav, int 
 template<>
 inline void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
 {
-    vec dir1 = vec(d).sub(o), dir2 = vec(d).sub(camera1->o), c;
+    vec dir1 = vec(d).sub(o),
+        dir2 = vec(d).sub(camera1->o), c;
     c.cross(dir2, dir1).normalize().mul(size);
     vs[0].pos = vec(d.x-c.x, d.y-c.y, d.z-c.z);
     vs[1].pos = vec(o.x-c.x, o.y-c.y, o.z-c.z);
@@ -714,10 +716,22 @@ struct varenderer : partrenderer
         : partrenderer(texname, 3, type, stain),
           verts(NULL), parts(NULL), maxparts(0), numparts(0), lastupdate(-1), rndmask(0), vbo(0)
     {
-        if(type & PT_HFLIP) rndmask |= 0x01;
-        if(type & PT_VFLIP) rndmask |= 0x02;
-        if(type & PT_ROT)   rndmask |= 0x1F<<2;
-        if(type & PT_RND4)  rndmask |= 0x03<<5;
+        if(type & PT_HFLIP)
+        {
+            rndmask |= 0x01;
+        }
+        if(type & PT_VFLIP)
+        {
+            rndmask |= 0x02;
+        }
+        if(type & PT_ROT)
+        {
+            rndmask |= 0x1F<<2;
+        }
+        if(type & PT_RND4)
+        {
+            rndmask |= 0x03<<5;
+        }
     }
 
     void cleanup()

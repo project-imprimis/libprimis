@@ -64,7 +64,8 @@ static void addtnormal(const vec &pos, int smooth, float offset, int normal1, in
     n.offset = offset;
     n.normals[0] = normal1;
     n.normals[1] = normal2;
-    normalkey key1 = { pos1, smooth }, key2 = { pos2, smooth };
+    normalkey key1 = { pos1, smooth },
+              key2 = { pos2, smooth };
     n.groups[0] = normalgroups.access(key1);
     n.groups[1] = normalgroups.access(key2);
     g.tnormals = tnormals.length()-1;

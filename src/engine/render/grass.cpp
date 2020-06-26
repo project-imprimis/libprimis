@@ -123,7 +123,11 @@ static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstr
     float rightdist = leftdist;
     const vec *rightv = leftv;
 
-    vec across(w.across.x, w.across.y, g.surface.zdelta(w.across)), leftdir(0, 0, 0), rightdir(0, 0, 0), leftp = *leftv, rightp = *rightv;
+    vec across(w.across.x, w.across.y, g.surface.zdelta(w.across)),
+        leftdir(0, 0, 0),
+        rightdir(0, 0, 0),
+        leftp = *leftv,
+        rightp = *rightv;
     float taperdist = grassdist*grasstaper,
           taperscale = 1.0f / (grassdist - taperdist),
           dist = maxstep*grassstep + tstart,
@@ -183,7 +187,8 @@ static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstr
             rightb = w.bound2.dist(rightp);
             rightdb = w.bound2.dot(rightdir);
         }
-        vec p1 = leftp, p2 = rightp;
+        vec p1 = leftp,
+            p2 = rightp;
         if(leftb > 0)
         {
             if(w.bound1.dist(p2) >= 0)
