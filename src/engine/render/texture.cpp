@@ -256,53 +256,94 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
         bh = (h+3)/4,
         stridex = blocksize,
         stridey = blocksize;
-    if(swapxy) stridex *= bw; else stridey *= bh;
-    if(flipx) { dst += (bw-1)*stridex; stridex = -stridex; bx1 += 4-bx2; bx2 = 4; }
-    if(flipy) { dst += (bh-1)*stridey; stridey = -stridey; by1 += 4-by2; by2 = 4; }
+    if(swapxy)
+    {
+        stridex *= bw;
+    }
+    else
+    {
+        stridey *= bh;
+    }
+    if(flipx)
+    {
+        dst += (bw-1)*stridex;
+        stridex = -stridex;
+        bx1 += 4-bx2;
+        bx2 = 4;
+    }
+    if(flipy)
+    {
+        dst += (bh-1)*stridey;
+        stridey = -stridey;
+        by1 += 4-by2;
+        by2 = 4;
+    }
     for(int i = 0; i < bh; ++i)
     {
         for(uchar *curdst = dst, *end = &src[bw*blocksize]; src < end; src += blocksize, curdst += stridex)
         {
             if(format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT)
             {
-                ullong salpha = *(const ullong *)src, dalpha = 0;
-                uint xmask = flipx ? 15 : 0, ymask = flipy ? 15 : 0, xshift = 2, yshift = 4;
-                if(swapxy) swap(xshift, yshift);
-                for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
+                ullong salpha = *reinterpret_cast<const ullong *>(src),
+                       dalpha = 0;
+                uint xmask = flipx ? 15 : 0,
+                     ymask = flipy ? 15 : 0,
+                     xshift = 2,
+                     yshift = 4;
+                if(swapxy)
                 {
-                    dalpha |= ((salpha&15) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                    salpha >>= 4;
+                    swap(xshift, yshift);
                 }
-                *(ullong *)curdst = dalpha;
+                for(int y = by1; y < by2; y++)
+                {
+                    for(int x = bx1; x < bx2; x++)
+                    {
+                        dalpha |= ((salpha&15) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
+                        salpha >>= 4;
+                    }
+                }
+                *reinterpret_cast<ullong *>(curdst) = dalpha;
                 src += 8;
                 curdst += 8;
             }
             else if(format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
             {
-                uchar alpha1 = src[0], alpha2 = src[1];
-                ullong salpha = *(const ushort *)&src[2] + ((ullong)*(const uint *)&src[4] << 16), dalpha = 0;
-                uint xmask = flipx ? 7 : 0, ymask = flipy ? 7 : 0, xshift = 0, yshift = 2;
-                if(swapxy) swap(xshift, yshift);
-                for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
+                uchar alpha1 = src[0],
+                      alpha2 = src[1];
+                ullong salpha = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16),
+                       dalpha = 0;
+                uint xmask = flipx ? 7 : 0,
+                     ymask = flipy ? 7 : 0,
+                     xshift = 0,
+                    yshift = 2;
+                if(swapxy)
                 {
-                    dalpha |= ((salpha&7) << (3*((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                    salpha >>= 3;
+                    swap(xshift, yshift);
+                }
+                for(int y = by1; y < by2; y++)
+                {
+                    for(int x = bx1; x < bx2; x++)
+                    {
+                        dalpha |= ((salpha&7) << (3*((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
+                        salpha >>= 3;
+                    }
                 }
                 curdst[0] = alpha1;
                 curdst[1] = alpha2;
-                *(ushort *)&curdst[2] = ushort(dalpha);
-                *(ushort *)&curdst[4] = ushort(dalpha>>16);
-                *(ushort *)&curdst[6] = ushort(dalpha>>32);
+                *reinterpret_cast<ushort *>(&curdst[2]) = static_cast<ushort>(dalpha);
+                *reinterpret_cast<ushort *>(&curdst[4]) = static_cast<ushort>(dalpha >> 16);
+                *reinterpret_cast<ushort *>(&curdst[6]) = static_cast<ushort>(dalpha>>32);
                 src += 8;
                 curdst += 8;
             }
 
-            ushort color1 = *(const ushort *)src,
-                   color2 = *(const ushort *)&src[2];
-            uint sbits = *(const uint *)&src[4];
+            ushort color1 = *reinterpret_cast<const ushort *>(src),
+                   color2 = *reinterpret_cast<const ushort *>(&src[2]);
+            uint sbits = *reinterpret_cast<const uint *>(&src[4]);
             if(normals)
             {
-                ushort ncolor1 = color1, ncolor2 = color2;
+                ushort ncolor1 = color1,
+                       ncolor2 = color2;
                 if(flipx)
                 {
                     ncolor1 = (ncolor1 & ~0xF800) | (0xF800 - (ncolor1 & 0xF800));
@@ -318,25 +359,43 @@ static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src,
                     ncolor1 = (ncolor1 & 0x1F) | (((((ncolor1 >> 11) & 0x1F) * 0x3F) / 0x1F) << 5) | (((((ncolor1 >> 5) & 0x3F) * 0x1F) / 0x3F) << 11);
                     ncolor2 = (ncolor2 & 0x1F) | (((((ncolor2 >> 11) & 0x1F) * 0x3F) / 0x1F) << 5) | (((((ncolor2 >> 5) & 0x3F) * 0x1F) / 0x3F) << 11);
                 }
-                if(color1 <= color2 && ncolor1 > ncolor2) { color1 = ncolor2; color2 = ncolor1; }
-                else { color1 = ncolor1; color2 = ncolor2; }
+                if(color1 <= color2 && ncolor1 > ncolor2)
+                {
+                    color1 = ncolor2;
+                    color2 = ncolor1;
+                }
+                else
+                {
+                    color1 = ncolor1;
+                    color2 = ncolor2;
+                }
             }
             uint dbits = 0,
                  xmask = flipx ? 3 : 0,
                  ymask = flipy ? 3 : 0,
                  xshift = 1,
                  yshift = 3;
-            if(swapxy) swap(xshift, yshift);
-            for(int y = by1; y < by2; y++) for(int x = bx1; x < bx2; x++)
+            if(swapxy)
             {
-                dbits |= ((sbits&3) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                sbits >>= 2;
+                swap(xshift, yshift);
             }
-            *(ushort *)curdst = color1;
-            *(ushort *)&curdst[2] = color2;
-            *(uint *)&curdst[4] = dbits;
+            for(int y = by1; y < by2; y++)
+            {
+                for(int x = bx1; x < bx2; x++)
+                {
+                    dbits |= ((sbits&3) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
+                    sbits >>= 2;
+                }
+            }
+            *reinterpret_cast<ushort *>(curdst) = color1;
+            *reinterpret_cast<ushort *>(&curdst[2]) = color2;
+            *reinterpret_cast<uint *>(&curdst[4]) = dbits;
 
-            if(blocksize > 8) { src -= 8; curdst -= 8; }
+            if(blocksize > 8)
+            {
+                src -= 8;
+                curdst -= 8;
+            }
         }
         dst += stridey;
     }
