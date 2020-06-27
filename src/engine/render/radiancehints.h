@@ -1,3 +1,5 @@
+#ifndef RADIANCEHINTS_H_
+#define RADIANCEHINTS_H_
 
 //note that radiance hints is the term for the mechanism by which global illumination is done
 #define RH_MAXSPLITS 4 //maximum number of times that radiance hints can split to increase resolution (note exponential increase in nodes)
@@ -76,3 +78,5 @@ extern void cleanupradiancehints();
 
 extern void viewrh();
 extern void viewrsm();
+
+#endif

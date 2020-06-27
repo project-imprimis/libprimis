@@ -1,4 +1,7 @@
 
+#ifndef INPUT_H_
+#define INPUT_H_
+
 enum
 {
     KeyRepeat_Console  = 1<<0,
@@ -23,3 +26,4 @@ extern void ignoremousemotion();
 extern void inputgrab(bool on);
 extern bool interceptkey(int sym);
 extern void pushevent(const SDL_Event &e);
+#endif
