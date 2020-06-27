@@ -535,7 +535,9 @@ struct animmodel : model
             for(int i = 0; i < numtris; ++i)
             {
                 T &t = tris[i];
-                V &v1 = verts[t.vert[0]], &v2 = verts[t.vert[1]], &v3 = verts[t.vert[2]];
+                V &v1 = verts[t.vert[0]],
+                  &v2 = verts[t.vert[1]],
+                  &v3 = verts[t.vert[2]];
                 vec norm;
                 norm.cross(v1.pos, v2.pos, v3.pos);
                 if(!areaweight)
@@ -2436,27 +2438,27 @@ struct modelcommands
 
     modelcommands()
     {
-        modelcommand(setdir, "dir", "s");
+        modelcommand(setdir, "dir", "s");//<fmt>dir [name]
         if(MDL::multimeshed())
         {
-            modelcommand(setskin, "skin", "sssff");
-            modelcommand(setspec, "spec", "sf");
-            modelcommand(setgloss, "gloss", "si");
-            modelcommand(setglow, "glow", "sfff");
-            modelcommand(setalphatest, "alphatest", "sf");
-            modelcommand(setcullface, "cullface", "si");
-            modelcommand(setcolor, "color", "sfff");
-            modelcommand(setbumpmap, "bumpmap", "ss");
-            modelcommand(setdecal, "decal", "ss");
-            modelcommand(setfullbright, "fullbright", "sf");
-            modelcommand(setshader, "shader", "ss");
-            modelcommand(setscroll, "scroll", "sff");
-            modelcommand(setnoclip, "noclip", "si");
-            modelcommand(settricollide, "tricollide", "s");
+            modelcommand(setskin, "skin", "sss"); //<fmt>skin [meshname] [tex] [masks]
+            modelcommand(setspec, "spec", "sf"); //<fmt>spec [tex] [scale]
+            modelcommand(setgloss, "gloss", "si");//<fmt>gloss [tex] [type] type ranges 0..2
+            modelcommand(setglow, "glow", "sfff"); //<fmt>glow [tex] [pct] [del] [pulse]
+            modelcommand(setalphatest, "alphatest", "sf");//<fmt>alphatest [mesh] [cutoff]
+            modelcommand(setcullface, "cullface", "si");//<fmt>cullface [mesh] [cullface]
+            modelcommand(setcolor, "color", "sfff");//<fmt>color [mesh] [r] [g] [b]
+            modelcommand(setbumpmap, "bumpmap", "ss");//<fmt>bumpmap [mesh] [tex]
+            modelcommand(setdecal, "decal", "ss");//<fmt>decal [mesh] [tex]
+            modelcommand(setfullbright, "fullbright", "sf"); //<fmt>fullbright [mesh] [bright]
+            modelcommand(setshader, "shader", "ss");//<fmt>shader [mesh] [shader]
+            modelcommand(setscroll, "scroll", "sff");//<fmt>scroll [mesh] [x] [y]
+            modelcommand(setnoclip, "noclip", "si");//<fmt>noclip [mesh] [bool]
+            modelcommand(settricollide, "tricollide", "s"); //<fmt>settricollide [mesh]
         }
         if(MDL::multiparted())
         {
-            modelcommand(setlink, "link", "iisfff");
+            modelcommand(setlink, "link", "iisfff");//<mdl>link [parent] [child] [tag] [x] [y] [z]
         }
     }
 };
