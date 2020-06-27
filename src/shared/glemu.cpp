@@ -1,7 +1,5 @@
 #include "cube.h"
 
-extern int glversion;
-
 namespace gle
 {
     struct attribinfo
@@ -51,11 +49,6 @@ namespace gle
     void enablequads()
     {
         quadsenabled = true;
-
-        if(glversion < 300)
-        {
-            return;
-        }
         if(quadindexes)
         {
             glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, quadindexes);
@@ -81,11 +74,6 @@ namespace gle
     void disablequads()
     {
         quadsenabled = false;
-
-        if(glversion < 300)
-        {
-            return;
-        }
         glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
@@ -93,11 +81,6 @@ namespace gle
     {
         if(count <= 0)
         {
-            return;
-        }
-        if(glversion < 300)
-        {
-            glDrawArrays(GL_QUADS, offset*4, count*4);
             return;
         }
         if(offset + count > MAXQUADS)
@@ -466,22 +449,16 @@ namespace gle
         {
             disablequads();
         }
-        if(glversion >= 300)
-        {
-            glBindBuffer_(GL_ARRAY_BUFFER, 0);
-        }
+        glBindBuffer_(GL_ARRAY_BUFFER, 0);
     }
 
     void setup()
     {
-        if(glversion >= 300)
+        if(!defaultvao)
         {
-            if(!defaultvao)
-            {
-                glGenVertexArrays_(1, &defaultvao);
-            }
-            glBindVertexArray_(defaultvao);
+            glGenVertexArrays_(1, &defaultvao);
         }
+        glBindVertexArray_(defaultvao);
         attribdata = new uchar[MAXVBOSIZE];
         attribbuf.reset(attribdata, MAXVBOSIZE);
     }
