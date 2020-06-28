@@ -99,6 +99,7 @@ CLIENT_OBJS= \
 	engine/world/octa.o \
 	engine/world/octaedit.o \
 	engine/world/physics.o \
+	engine/world/raycube.o \
 	engine/world/world.o \
 	engine/world/worldio.o \
 	game/ai.o \
