@@ -9,6 +9,8 @@ VARNR(mapsize, worldsize, 1, 0, 0);
 SVARR(maptitle, "Untitled Map by Unknown");
 VARNR(emptymap, _emptymap, 1, 0, 0);
 
+//octaents are the ones that modify the level directly: other entities like
+//sounds, lights, spawns etc. don't get directly rendered
 VAR(octaentsize, 0, 64, 1024);
 VAR(entselradius, 0, 2, 10);
 
@@ -73,7 +75,7 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
                 r = ivec(vec(center).add(radius).add(1));
                 break;
             }
-        // invisible mapmodels use entselradius
+        // invisible mapmodels use entselradius: lights sounds spawns etc.
         default:
             o = ivec(vec(e.o).sub(entselradius));
             r = ivec(vec(e.o).add(entselradius+1));
@@ -134,8 +136,8 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
                         break;
                     }
-                    // invisible mapmodel
                 }
+                // invisible mapmodels: lights sounds spawns etc.
                 default:
                 {
                     oe.other.add(id);
@@ -205,8 +207,8 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         oe.bbmax.min(ivec(oe.o).add(oe.size));
                         break;
                     }
-                    // invisible mapmodel
                 }
+                // invisible mapmodels: light sounds spawns etc.
                 default:
                 {
                     oe.other.removeobj(id);
@@ -542,19 +544,22 @@ VAR(attachradius, 1, 100, 1000);
 
 void attachentity(extentity &e)
 {
+    //don't attempt to attach invalid to attach ents
     switch(e.type)
     {
         case EngineEnt_Spotlight:
+        {
             break;
-
+        }
         default:
+        {
             if(e.type<EngineEnt_GameSpecific || !entities::mayattach(e))
             {
                 return;
             }
             break;
+        }
     }
-
     detachentity(e);
 
     vector<extentity *> &ents = entities::getents();
@@ -567,18 +572,22 @@ void attachentity(extentity &e)
         switch(e.type)
         {
             case EngineEnt_Spotlight:
+            {
+                //only attempt to attach to lights
                 if(a->type!=EngineEnt_Light)
                 {
                     continue;
                 }
                 break;
-
+            }
             default:
+            {
                 if(e.type<EngineEnt_GameSpecific || !entities::attachent(e, *a))
                 {
                     continue;
                 }
                 break;
+            }
         }
         float dist = e.o.dist(a->o);
         if(dist < closedist)
@@ -630,6 +639,7 @@ void attachentities()
 #define GROUP_EDIT_UNDO(f){ makeundoent(); GROUP_EDIT_PURE(f); }
 #define GROUP_EDIT(f)    { ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); }
 
+//returns origin "o" of selected region
 vec getselpos()
 {
     vector<extentity *> &ents = entities::getents();
@@ -643,6 +653,8 @@ vec getselpos()
     }
     return vec(sel.o);
 }
+
+//=== ent modification functions ===//
 
 undoblock *copyundoents(undoblock *u)
 {
@@ -759,7 +771,6 @@ void entselectionbox(const entity &e, vec &eo, vec &es)
 }
 
 VAR(entselsnap, 0, 0, 1);
-VAR(entmovingshadow, 0, 1, 1);
 
 extern void boxs(int orient, vec o, const vec &s, float size);
 extern void boxs(int orient, vec o, const vec &s);
@@ -768,6 +779,7 @@ extern bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &h
 
 int entmoving = 0;
 
+//drags entities in selection by given displacement vector (snaps to grid if needed)
 void entdrag(const vec &ray)
 {
     if(noentedit() || !haveselent())
@@ -791,6 +803,7 @@ void entdrag(const vec &ray)
         int z = g[d]&(~(sel.grid-1));
         g.add(sel.grid/2).mask(~(sel.grid-1));
         g[d] = z;
+        //snap to grid if selsnap is enabled
         r = (entselsnap ? g[R[d]] : dest[R[d]]) - e.o[R[d]];
         c = (entselsnap ? g[C[d]] : dest[C[d]]) - e.o[C[d]];
     );
@@ -802,18 +815,21 @@ void entdrag(const vec &ray)
 
 VAR(showentradius, 0, 1, 1);
 
+//draws a circle around a point with a given radius in the world
+//used for rendering entities' bounding regions
 void renderentring(const extentity &e, float radius, int axis)
 {
+    int numsteps = 15; //increase this for higher-res bounding circles
     if(radius <= 0)
     {
         return;
     }
     gle::defvertex();
     gle::begin(GL_LINE_LOOP);
-    for(int i = 0; i < 15; ++i)
+    for(int i = 0; i < numsteps; ++i)
     {
         vec p(e.o);
-        const vec2 &sc = sincos360[i*(360/15)];
+        const vec2 &sc = sincos360[i*(360/numsteps)];
         p[axis>=2 ? 1 : 0] += radius*sc.x;
         p[axis>=1 ? 2 : 1] += radius*sc.y;
         gle::attrib(p);
@@ -821,13 +837,15 @@ void renderentring(const extentity &e, float radius, int axis)
     xtraverts += gle::end();
 }
 
+//draws a renderentring() around three coordinate axes for an ent at a particular
+//location and at a particualar radius (e.g. the light, sound, etc. radius attr)
 void renderentsphere(const extentity &e, float radius)
 {
     if(radius <= 0)
     {
         return;
     }
-    for(int k = 0; k < 3; ++k)
+    for(int k = 0; k < 3; ++k) //one each for x,y,z
     {
         renderentring(e, radius, k);
     }
@@ -874,8 +892,11 @@ void renderentarrow(const extentity &e, const vec &dir, float radius)
     xtraverts += gle::end();
 }
 
+//cone for spotlight ents, defined by a spread angle (half of the overall peak angle)
+//and by the radius of its bounding sphere
 void renderentcone(const extentity &e, const vec &dir, float radius, float angle)
 {
+    int numsteps = 8; //increase this for higher-res bounding cone (beware ray clutter)
     if(radius <= 0)
     {
         return;
@@ -888,17 +909,17 @@ void renderentcone(const extentity &e, const vec &dir, float radius, float angle
     gle::defvertex();
 
     gle::begin(GL_LINES);
-    for(int i = 0; i < 8; ++i)
+    for(int i = 0; i < numsteps; ++i)
     {
         gle::attrib(e.o);
-        gle::attrib(vec(spoke).rotate(2*M_PI*i/8.0f, dir).add(spot));
+        gle::attrib(vec(spoke).rotate(2*M_PI*i/static_cast<float>(numsteps), dir).add(spot));
     }
     xtraverts += gle::end();
 
     gle::begin(GL_LINE_LOOP);
-    for(int i = 0; i < 8; ++i)
+    for(int i = 0; i < numsteps; ++i)
     {
-        gle::attrib(vec(spoke).rotate(2*M_PI*i/8.0f, dir).add(spot));
+        gle::attrib(vec(spoke).rotate(2*M_PI*i/static_cast<float>(numsteps), dir).add(spot));
     }
     xtraverts += gle::end();
 }
@@ -908,9 +929,19 @@ void renderentbox(const extentity &e, const vec &center, const vec &radius, int 
     matrix4x3 orient;
     orient.identity();
     orient.settranslation(e.o);
-    if(yaw) orient.rotate_around_z(sincosmod360(yaw));
-    if(pitch) orient.rotate_around_x(sincosmod360(pitch));
-    if(roll) orient.rotate_around_y(sincosmod360(-roll));
+    //reorientation of ent box according to passed euler angles
+    if(yaw)
+    {
+        orient.rotate_around_z(sincosmod360(yaw));
+    }
+    if(pitch)
+    {
+        orient.rotate_around_x(sincosmod360(pitch));
+    }
+    if(roll)
+    {
+        orient.rotate_around_y(sincosmod360(-roll));
+    }
     orient.translate(center);
 
     gle::defvertex();
@@ -929,19 +960,18 @@ void renderentbox(const extentity &e, const vec &center, const vec &radius, int 
         front[i] = orient.transform(front[i]);
         back[i] = orient.transform(back[i]);
     }
-
+    //note that there is two loops & a series of lines -> 12 lines total
     gle::begin(GL_LINE_LOOP);
     for(int i = 0; i < 4; ++i)
     {
         gle::attrib(front[i]);
     }
     xtraverts += gle::end();
-
     gle::begin(GL_LINES);
     gle::attrib(front[0]);
-        gle::attrib(front[2]);
+    gle::attrib(front[2]);
     gle::attrib(front[1]);
-        gle::attrib(front[3]);
+    gle::attrib(front[3]);
     for(int i = 0; i < 4; ++i)
     {
         gle::attrib(front[i]);
@@ -968,6 +998,7 @@ void renderentradius(extentity &e, bool color)
             }
             if(color)
             {
+                //color bounding sphere to color of light ent
                 gle::colorf(e.attr2/255.0f, e.attr3/255.0f, e.attr4/255.0f);
             }
             renderentsphere(e, e.attr1);
@@ -978,7 +1009,7 @@ void renderentradius(extentity &e, bool color)
             {
                 if(color)
                 {
-                    gle::colorf(0, 1, 1);
+                    gle::colorf(0, 1, 1); //always teal regardless of host light color
                 }
                 float radius = e.attached->attr1;
                 if(radius <= 0)
@@ -986,7 +1017,7 @@ void renderentradius(extentity &e, bool color)
                     break;
                 }
                 vec dir = vec(e.o).sub(e.attached->o).normalize();
-                float angle = clamp(static_cast<int>(e.attr1), 1, 89);
+                float angle = clamp(static_cast<int>(e.attr1), 1, 89); //discard >=90 angles it cannot use
                 renderentattachment(e);
                 renderentcone(*e.attached, dir, radius, angle);
             }
@@ -995,7 +1026,7 @@ void renderentradius(extentity &e, bool color)
         case EngineEnt_Sound:
             if(color)
             {
-                gle::colorf(0, 1, 1);
+                gle::colorf(0, 1, 1); //always teal
             }
             renderentsphere(e, e.attr2);
             break;
@@ -1004,7 +1035,7 @@ void renderentradius(extentity &e, bool color)
         {
             if(color)
             {
-                gle::colorf(0, 1, 1);
+                gle::colorf(0, 1, 1); //always teal
             }
             entities::entradius(e, color);
             vec dir;
@@ -1017,12 +1048,12 @@ void renderentradius(extentity &e, bool color)
         {
             if(color)
             {
-                gle::colorf(0, 1, 1);
+                gle::colorf(0, 1, 1); //always teal
             }
             entities::entradius(e, color);
             vec dir;
             vecfromyawpitch(e.attr1, 0, 1, 0, dir);
-            renderentarrow(e, dir, 4);
+            renderentarrow(e, dir, 4); //points towards where player faces at spawn
             break;
         }
 
@@ -1099,14 +1130,6 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
         gle::colorub(0, 40, 0);
         ENT_FOCUS(enthover, entselectionbox(e, eo, es)); // also ensures enthover is back in focus
         boxs3D(eo, es, 1);
-        if(entmoving && entmovingshadow==1)
-        {
-            vec a, b;
-            gle::colorub(20, 20, 20);
-            (a = eo).x = eo.x - fmod(eo.x, worldsize); (b = es).x = a.x + worldsize; boxs3D(a, b, 1);
-            (a = eo).y = eo.y - fmod(eo.y, worldsize); (b = es).y = a.x + worldsize; boxs3D(a, b, 1);
-            (a = eo).z = eo.z - fmod(eo.z, worldsize); (b = es).z = a.x + worldsize; boxs3D(a, b, 1);
-        }
         gle::colorub(200,0,0);
         boxs(entorient, eo, es);
         boxs(entorient, eo, es, clamp(0.015f*camera1->o.dist(eo)*tan(fovy*0.5f*RAD), 0.1f, 1.0f));
@@ -1136,6 +1159,7 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
     }
 }
 
+//=== entity edit commands ===//
 bool enttoggle(int id)
 {
     undonext = true;
@@ -1167,7 +1191,7 @@ bool hoveringonent(int ent, int orient)
     return false;
 }
 
-VAR(entitysurf, 0, 0, 1);
+VAR(entitysurf, 0, 0, 1); //move with entities
 
 ICOMMAND(entadd, "", (),
 {
@@ -1300,7 +1324,11 @@ int findtype(char *what)
     conoutf(Console_Error, "unknown entity type \"%s\"", what);
     return EngineEnt_Empty;
 }
-
+//entdrop:
+// 0: places it at current eye pos
+// 1: places it at current feet pos
+// 2: places it in center of current sel
+// 3: places it at the floor of current sel
 VAR(entdrop, 0, 2, 3);
 
 bool dropentity(entity &e, int drop = -1)
@@ -1429,6 +1457,7 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
             {
                 if(!e.attr2 && !e.attr3 && !e.attr4)
                 {
+                    //place decals at camera orient
                     e.attr2 = (int)camera1->yaw;
                     e.attr3 = (int)camera1->pitch;
                     e.attr4 = (int)camera1->roll;
@@ -1442,6 +1471,7 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
             }
             case EngineEnt_Playerstart:
             {
+                //place playerstart at camera yaw
                 e.attr5 = e.attr4;
                 e.attr4 = e.attr3;
                 e.attr3 = e.attr2;
@@ -1582,6 +1612,7 @@ void entset(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
     }
 }
 
+//prints out attributes of an entity
 void printent(extentity &e, char *buf, int len)
 {
     switch(e.type)
@@ -1603,6 +1634,7 @@ void printent(extentity &e, char *buf, int len)
     nformatstring(buf, len, "%s %d %d %d %d %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
 }
 
+//goes through all ents and selects the nearest one
 void nearestent()
 {
     if(noentedit())
@@ -1654,6 +1686,7 @@ void enttype(char *type, int *numargs)
     })
 }
 
+//sets one or more entity attributes to the selected entities
 void entattr(int *attr, int *val, int *numargs)
 {
     if(*numargs >= 2)
@@ -1773,6 +1806,8 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
         entinmap(d);
     }
 }
+
+////////////////////////////// world size/octa /////////////////////////////////
 
 void splitocta(cube *c, int size)
 {
