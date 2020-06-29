@@ -543,7 +543,6 @@ VAR(ragdollwaterexpireoffset, 0, 4000, 30000);
 
 void ragdolldata::move(dynent *pl, float ts)
 {
-    extern const float GRAVITY;
     if(collidemillis && lastmillis > collidemillis)
     {
         return;
@@ -573,7 +572,7 @@ void ragdolldata::move(dynent *pl, float ts)
     {
         vert &v = verts[i];
         vec dpos = vec(v.pos).sub(v.oldpos);
-        dpos.z -= GRAVITY*ts*ts;
+        dpos.z -= gravity*ts*ts;
         if(water)
         {
             dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
