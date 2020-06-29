@@ -213,7 +213,7 @@ struct skelmodel : animmodel
 
     struct animcacheentry
     {
-        animstate as[MAXANIMPARTS];
+        animstate as[maxanimparts];
         float pitch;
         int millis;
         uchar *partmask;
@@ -221,7 +221,7 @@ struct skelmodel : animmodel
 
         animcacheentry() : ragdoll(NULL)
         {
-            for(int k = 0; k < MAXANIMPARTS; ++k)
+            for(int k = 0; k < maxanimparts; ++k)
             {
                 as[k].cur.fr1 = as[k].prev.fr1 = -1;
             }
@@ -229,7 +229,7 @@ struct skelmodel : animmodel
 
         bool operator==(const animcacheentry &c) const
         {
-            for(int i = 0; i < MAXANIMPARTS; ++i)
+            for(int i = 0; i < maxanimparts; ++i)
             {
                 if(as[i]!=c.as[i])
                 {
@@ -1145,7 +1145,7 @@ struct skelmodel : animmodel
             struct framedata
             {
                 const dualquat *fr1, *fr2, *pfr1, *pfr2;
-            } partframes[MAXANIMPARTS];
+            } partframes[maxanimparts];
             for(int i = 0; i < numanimparts; ++i)
             {
                 partframes[i].fr1 = &framebones[as[i].cur.fr1*numbones];
@@ -1330,7 +1330,7 @@ struct skelmodel : animmodel
             for(int i = 0; i < skelcache.length(); i++)
             {
                 skelcacheentry &sc = skelcache[i];
-                for(int j = 0; j < MAXANIMPARTS; ++j)
+                for(int j = 0; j < maxanimparts; ++j)
                 {
                     sc.as[j].cur.fr1 = -1;
                 }
@@ -2104,7 +2104,7 @@ struct skelmodel : animmodel
 
         bool addanimpart(ushort *bonemask)
         {
-            if(!buildingpartmask || numanimparts>=MAXANIMPARTS)
+            if(!buildingpartmask || numanimparts>=maxanimparts)
             {
                 return false;
             }

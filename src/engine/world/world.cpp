@@ -677,7 +677,7 @@ undoblock *copyundoents(undoblock *u)
 
 void pasteundoent(int idx, const entity &ue)
 {
-    if(idx < 0 || idx >= MAXENTS)
+    if(idx < 0 || idx >= maxents)
     {
         return;
     }
@@ -1427,7 +1427,7 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
                 break;
             }
         }
-        if(idx < 0 && ents.length() >= MAXENTS)
+        if(idx < 0 && ents.length() >= maxents)
         {
             conoutf("too many entities");
             return NULL;
@@ -2027,7 +2027,7 @@ COMMAND(mapname, "");
 
 void mpeditent(int i, const vec &o, int type, int attr1, int attr2, int attr3, int attr4, int attr5, bool local)
 {
-    if(i < 0 || i >= MAXENTS)
+    if(i < 0 || i >= maxents)
     {
         return;
     }

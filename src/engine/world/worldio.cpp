@@ -171,7 +171,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     ushort nummru = f->get<ushort>();
     f->seek(nummru*sizeof(ushort), SEEK_CUR);
 
-    for(int i = 0; i < min(hdr.numents, MAXENTS); ++i)
+    for(int i = 0; i < min(hdr.numents, maxents); ++i)
     {
         entity &e = ents.add();
         f->read(&e, sizeof(entity));
@@ -1133,7 +1133,7 @@ bool load_world(const char *mname, const char *cname)
     vector<extentity *> &ents = entities::getents();
     int einfosize = entities::extraentinfosize();
     char *ebuf = einfosize > 0 ? new char[einfosize] : NULL;
-    for(int i = 0; i < (min(hdr.numents, MAXENTS)); ++i)
+    for(int i = 0; i < (min(hdr.numents, maxents)); ++i)
     {
         extentity &e = *entities::newentity();
         ents.add(&e);
@@ -1171,10 +1171,10 @@ bool load_world(const char *mname, const char *cname)
     {
         delete[] ebuf;
     }
-    if(hdr.numents > MAXENTS)
+    if(hdr.numents > maxents)
     {
         conoutf(Console_Warn, "warning: map has %d entities", hdr.numents);
-        f->seek((hdr.numents-MAXENTS)*(samegame ? sizeof(entity) + einfosize : eif), SEEK_CUR);
+        f->seek((hdr.numents-maxents)*(samegame ? sizeof(entity) + einfosize : eif), SEEK_CUR);
     }
     renderprogress(0, "loading slots...");
     loadvslots(f, hdr.numvslots);

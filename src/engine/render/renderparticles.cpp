@@ -162,8 +162,8 @@ struct partvert
     vec2 tc;
 };
 
-#define COLLIDERADIUS 8.0f
-#define COLLIDEERROR 1.0f
+const float collideradius = 8.0f;
+const float collideerror  = 1.0f;
 
 struct partrenderer
 {
@@ -241,11 +241,11 @@ struct partrenderer
                 if(stain >= 0)
                 {
                     vec surface;
-                    float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, COLLIDERADIUS);
-                    float collidez = floorz<0 ? o.z-COLLIDERADIUS : p->val - floorz;
-                    if(o.z >= collidez+COLLIDEERROR)
+                    float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, collideradius);
+                    float collidez = floorz<0 ? o.z-collideradius : p->val - floorz;
+                    if(o.z >= collidez+collideerror)
                     {
-                        p->val = collidez+COLLIDEERROR;
+                        p->val = collidez+collideerror;
                     }
                     else
                     {
@@ -1247,7 +1247,7 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
     }
     //ugly ternary assignment
     float collidez = parts[type]->type&PT_COLLIDE ?
-                     p.z - raycube(p, vec(0, 0, -1), COLLIDERADIUS, Ray_ClipMat) + (parts[type]->stain >= 0 ? COLLIDEERROR : 0) :
+                     p.z - raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0) :
                      -1;
     int fmin = 1;
     int fmax = fade*3;
@@ -1534,8 +1534,8 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
             {
                 //long nasty ternary assignment
                 n->val = from.z - raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ?
-                         COLLIDERADIUS :
-                         max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->stain >= 0 ? COLLIDEERROR : 0);
+                         collideradius :
+                         max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0);
             }
         }
     }

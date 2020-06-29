@@ -820,20 +820,20 @@ struct animmodel : model
         meshgroup *meshes;
         vector<linkedpart> links;
         vector<skin> skins;
-        vector<animspec> *anims[MAXANIMPARTS];
+        vector<animspec> *anims[maxanimparts];
         int numanimparts;
         float pitchscale, pitchoffset, pitchmin, pitchmax;
 
         part(animmodel *model, int index = 0) : model(model), index(index), meshes(NULL), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
         {
-            for(int k = 0; k < MAXANIMPARTS; ++k)
+            for(int k = 0; k < maxanimparts; ++k)
             {
                 anims[k] = NULL;
             }
         }
         virtual ~part()
         {
-            for(int k = 0; k < MAXANIMPARTS; ++k)
+            for(int k = 0; k < maxanimparts; ++k)
             {
                 DELETEA(anims[k]);
             }
@@ -1115,7 +1115,7 @@ struct animmodel : model
 
         void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray)
         {
-            animstate as[MAXANIMPARTS];
+            animstate as[maxanimparts];
             intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
         }
 
@@ -1126,7 +1126,7 @@ struct animmodel : model
                 for(int i = 0; i < numanimparts; ++i)
                 {
                     animinfo info;
-                    int interp = d && index+numanimparts<=MAXANIMPARTS ? index+i : -1,
+                    int interp = d && index+numanimparts<=maxanimparts ? index+i : -1,
                         aitime = animationinterpolationtime;
                     if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime))
                     {
@@ -1218,7 +1218,7 @@ struct animmodel : model
 
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d)
         {
-            animstate as[MAXANIMPARTS];
+            animstate as[maxanimparts];
             render(anim, basetime, basetime2, pitch, axis, forward, d, as);
         }
 
@@ -1229,7 +1229,7 @@ struct animmodel : model
                 for(int i = 0; i < numanimparts; ++i)
                 {
                     animinfo info;
-                    int interp = d && index+numanimparts<=MAXANIMPARTS ? index+i : -1, aitime = animationinterpolationtime;
+                    int interp = d && index+numanimparts<=maxanimparts ? index+i : -1, aitime = animationinterpolationtime;
                     if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime))
                     {
                         return;
@@ -1336,7 +1336,7 @@ struct animmodel : model
 
         void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0)
         {
-            if(animpart<0 || animpart>=MAXANIMPARTS || num<0 || num>=game::numanims())
+            if(animpart<0 || animpart>=maxanimparts || num<0 || num>=game::numanims())
             {
                 return;
             }
@@ -1358,7 +1358,7 @@ struct animmodel : model
 
         bool animated() const
         {
-            for(int i = 0; i < MAXANIMPARTS; ++i)
+            for(int i = 0; i < maxanimparts; ++i)
             {
                 if(anims[i])
                 {
@@ -1423,7 +1423,7 @@ struct animmodel : model
             }
         }
 
-        animstate as[MAXANIMPARTS];
+        animstate as[maxanimparts];
         parts[0]->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
 
         for(int i = 1; i < parts.length(); i++)
@@ -1569,7 +1569,7 @@ struct animmodel : model
             }
         }
 
-        animstate as[MAXANIMPARTS];
+        animstate as[maxanimparts];
         parts[0]->render(anim, basetime, basetime2, pitch, axis, forward, d, as);
 
         for(int i = 1; i < parts.length(); i++)

@@ -1,6 +1,6 @@
 struct gameent;
 
-#define MAXBOTS 32
+const int maxbots = 32;
 
 enum
 {

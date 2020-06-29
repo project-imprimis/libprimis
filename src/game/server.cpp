@@ -3651,7 +3651,7 @@ namespace server
                         break;
                     }
                     int n;
-                    while((n = getint(p))>=0 && n<MAXENTS && !p.overread())
+                    while((n = getint(p))>=0 && n<maxents && !p.overread())
                     {
                         server_entity se = { GamecodeEnt_NotUsed, 0, false };
                         while(sents.length()<=n)
@@ -3689,7 +3689,7 @@ namespace server
                     if(!ci || ci->state.state==ClientState_Spectator) break;
                     QUEUE_MSG;
                     bool canspawn = canspawnitem(type);
-                    if(i<MAXENTS && (sents.inrange(i) || canspawnitem(type)))
+                    if(i<maxents && (sents.inrange(i) || canspawnitem(type)))
                     {
                         server_entity se = { GamecodeEnt_NotUsed, 0, false };
                         while(sents.length()<=i)
@@ -4447,7 +4447,7 @@ namespace server
     namespace aiman
     {
         bool dorefresh = false, botbalance = true;
-        VARN(serverbotlimit, botlimit, 0, 8, MAXBOTS);
+        VARN(serverbotlimit, botlimit, 0, 8, maxbots);
         VAR(serverbotbalance, 0, 1, 1);
 
         void calcteams(vector<teamscore> &teams)
@@ -4582,7 +4582,7 @@ namespace server
         {
             int numai = 0,
                 cn = -1,
-                maxai = limit >= 0 ? min(limit, MAXBOTS) : MAXBOTS;
+                maxai = limit >= 0 ? min(limit, maxbots) : maxbots;
             for(int i = 0; i < bots.length(); i++)
             {
                 clientinfo *ci = bots[i];
@@ -4849,7 +4849,7 @@ namespace server
             {
                 return;
             }
-            botlimit = clamp(limit, 0, MAXBOTS);
+            botlimit = clamp(limit, 0, maxbots);
             dorefresh = true;
             DEF_FORMAT_STRING(msg, "bot limit is now %d", botlimit);
             sendservmsg(msg);

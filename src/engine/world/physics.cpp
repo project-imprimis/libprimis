@@ -1544,7 +1544,7 @@ void crouchplayer(physent *pl, int moveres, bool local)
     {
         return;
     }
-    float minheight = pl->maxheight * CROUCHHEIGHT, speed = (pl->maxheight - minheight) * curtime / static_cast<float>(CROUCHTIME);
+    float minheight = pl->maxheight * crouchheight, speed = (pl->maxheight - minheight) * curtime / static_cast<float>(crouchtime);
     if(pl->crouching < 0)
     {
         if(pl->eyeheight > minheight)

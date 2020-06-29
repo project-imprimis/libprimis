@@ -51,7 +51,7 @@ struct extentity : entity                       // part of the entity that doesn
     void clearspawned() { flags &= ~EntFlag_Spawned; }
 };
 
-#define MAXENTS 10000
+const int maxents = 10000;
 
 //extern vector<extentity *> ents;                // map entities
 
@@ -92,8 +92,8 @@ enum
     Collide_TRI
 };
 
-#define CROUCHTIME 200
-#define CROUCHHEIGHT 0.75f
+const int   crouchtime   = 200;
+const float crouchheight = 0.75f;
 
 struct physent                                  // base entity type, can be affected by physics
 {
@@ -145,7 +145,7 @@ struct physent                                  // base entity type, can be affe
     vec feetpos(float offset = 0) const { return vec(o).addz(offset - eyeheight); }
     vec headpos(float offset = 0) const { return vec(o).addz(offset); }
 
-    bool crouched() const { return fabs(eyeheight - maxheight*CROUCHHEIGHT) < 1e-4f; }
+    bool crouched() const { return fabs(eyeheight - maxheight*crouchheight) < 1e-4f; }
 };
 
 enum
@@ -199,7 +199,7 @@ struct animinterpinfo // used for animation blending of animated characters
     void reset() { lastswitch = -1; }
 };
 
-#define MAXANIMPARTS 3
+const int maxanimparts = 3;
 
 struct occludequery;
 struct ragdolldata;
@@ -208,7 +208,7 @@ struct dynent : physent                         // animated characters, or chara
 {
     bool k_left, k_right, k_up, k_down;         // see input code
 
-    animinterpinfo animinterp[MAXANIMPARTS];
+    animinterpinfo animinterp[maxanimparts];
     ragdolldata *ragdoll;
     occludequery *query;
     int lastrendered;
@@ -236,7 +236,7 @@ struct dynent : physent                         // animated characters, or chara
     {
         physent::reset();
         stopmoving();
-        for(int i = 0; i < MAXANIMPARTS; ++i)
+        for(int i = 0; i < maxanimparts; ++i)
         {
             animinterp[i].reset();
         }

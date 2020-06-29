@@ -2,8 +2,8 @@
 #define RADIANCEHINTS_H_
 
 //note that radiance hints is the term for the mechanism by which global illumination is done
-#define RH_MAXSPLITS 4 //maximum number of times that radiance hints can split to increase resolution (note exponential increase in nodes)
-#define RH_MAXGRID 64 //subdivision count for radiance hints
+const int rhmaxsplits = 4; //maximum number of times that radiance hints can split to increase resolution (note exponential increase in nodes)
+const int rhmaxgrid = 64; //subdivision count for radiance hints
 
 extern int rhrect, rhgrid, rhsplits, rhborder, rhprec, rhtaps, rhcache, rhforce, rsmprec, rsmdepthprec, rsmsize;
 extern int gi, gidist;
@@ -38,7 +38,7 @@ struct radiancehints
         splitinfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false) {}
 
         void clearcache() { bounds = -1e16f; }
-    } splits[RH_MAXSPLITS];
+    } splits[rhmaxsplits];
 
     vec dynmin, dynmax, prevdynmin, prevdynmax;
 
@@ -51,7 +51,7 @@ struct radiancehints
 
     void clearcache()
     {
-        for(int i = 0; i < RH_MAXSPLITS; ++i)
+        for(int i = 0; i < rhmaxsplits; ++i)
         {
             splits[i].clearcache();
         }

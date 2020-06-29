@@ -6,7 +6,7 @@
 GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },
        rhrb[4] = { 0, 0, 0, 0 },
        rhfbo = 0;
-uint rhclearmasks[2][RH_MAXSPLITS][(RH_MAXGRID+2+31)/32];
+uint rhclearmasks[2][rhmaxsplits][(rhmaxgrid+2+31)/32];
 GLuint rsmdepthtex = 0,
        rsmcolortex = 0,
        rsmnormaltex = 0,
@@ -185,7 +185,7 @@ void cleanupradiancehints()
 }
 //radiance hints (global illumination) vars
 VARF(rhrect, 0, 0, 1, cleanupradiancehints());
-VARF(rhsplits, 1, 2, RH_MAXSPLITS, { cleardeferredlightshaders(); cleanupradiancehints(); });
+VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); });
 VARF(rhborder, 0, 1, 1, cleanupradiancehints());
 VARF(rsmsize, 64, 512, 2048, cleanupradiancehints()); //`r`adiance hints `s`hadow `m`ap `size`: resolution (squared) of global illumination
 VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());//`r`adiance `h`ints `near plane`: distance in gridpower 0 cubes before global illumination gets rendered
@@ -200,7 +200,7 @@ VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints());
 FVAR(rhnudge, 0, 0.5f, 4);
 FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());
 FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());
-VARF(rhgrid, 3, 27, RH_MAXGRID, cleanupradiancehints()); //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
+VARF(rhgrid, 3, 27, rhmaxgrid, cleanupradiancehints()); //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
 FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache()); //smoothness of `r`adiance hints `s`hadow `m`ap: higher is more blurred
 VAR(rhclipgrid, 0, 1, 1);
 VARF(rhcache, 0, 1, 1, cleanupradiancehints());
@@ -227,7 +227,7 @@ void viewrsm()
     debugquad(x, y, w, h, 0, 0, rsmsize, rsmsize);
 }
 
-VAR(debugrh, -1, 0, RH_MAXSPLITS*(RH_MAXGRID + 2));
+VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 void viewrh()
 {
     int w = min(hudw, hudh)/2,
@@ -433,7 +433,7 @@ void radiancehints::renderslices()
             {
                 swap(rhtex[i], rhtex[i+4]);
             }
-            uint clearmasks[RH_MAXSPLITS][(RH_MAXGRID+2+31)/32];
+            uint clearmasks[rhmaxsplits][(rhmaxgrid+2+31)/32];
             memcpy(clearmasks, rhclearmasks[0], sizeof(clearmasks));
             memcpy(rhclearmasks[0], rhclearmasks[1], sizeof(clearmasks));
             memcpy(rhclearmasks[1], clearmasks, sizeof(clearmasks));
@@ -560,7 +560,7 @@ void radiancehints::renderslices()
             }
         }
 
-        uint clearmasks[(RH_MAXGRID+2+31)/32];
+        uint clearmasks[(rhmaxgrid+2+31)/32];
         memset(clearmasks, 0xFF, sizeof(clearmasks));
 
         int sy = rhrect ? i*sh : 0;
