@@ -1178,8 +1178,6 @@ bool hoveringonent(int ent, int orient)
     return false;
 }
 
-VAR(entitysurf, 0, 0, 1); //move with entities
-
 ICOMMAND(entadd, "", (),
 {
     if(enthover >= 0 && !noentedit())
@@ -1251,11 +1249,6 @@ void entpush(int *dir)
     else
     {
         GROUP_EDIT(e.o[d] += static_cast<float>(s*sel.grid));
-    }
-    if(entitysurf==1)
-    {
-        player->o[d] += static_cast<float>(s*sel.grid);
-        player->resetinterp();
     }
 }
 
