@@ -18,7 +18,7 @@ namespace game
     VARP(ragdollmillis, 0, 10000, 300000);
     VARP(ragdollfade, 0, 100, 5000);
     VARP(forceplayermodels, 0, 0, 1);
-    VARP(showdead, 0, 0, 1);
+    VARP(showdead, 0, 1, 1);
 
     extern int playermodel;
 
