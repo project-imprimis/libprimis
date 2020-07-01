@@ -5,6 +5,7 @@
 
 #include "engine.h"
 #include "mpr.h"
+#include "raycube.h"
 
 static const int maxclipoffset = 4;
 static const int maxclipplanes = 1024;

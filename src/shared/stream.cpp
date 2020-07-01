@@ -1,5 +1,9 @@
 #include "cube.h"
 
+extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
+extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
+extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
+
 ///////////////////////// character conversion ///////////////
 
 #define CUBECTYPE(s, p, d, a, A, u, U) \

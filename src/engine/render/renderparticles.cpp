@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "interface/input.h"
+#include "world/raycube.h"
 
 Shader *particleshader          = NULL,
        *particlenotextureshader = NULL,

@@ -4,6 +4,19 @@
 //functions for finding where vectors hit world geometry on the octree
 
 #include "engine.h"
+#include "raycube.h"
+
+bool insideworld(const vec &o)
+{
+    extern int worldsize;
+    return o.x>=0 && o.x<worldsize && o.y>=0 && o.y<worldsize && o.z>=0 && o.z<worldsize;
+}
+
+bool insideworld(const ivec &o)
+{
+    extern int worldsize;
+    return uint(o.x)<uint(worldsize) && uint(o.y)<uint(worldsize) && uint(o.z)<uint(worldsize);
+}
 
 static inline clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
 {

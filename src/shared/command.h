@@ -450,8 +450,7 @@ inline void ident::getcval(tagval &v) const
 // anonymous inline commands, uses nasty template trick with line numbers to keep names unique
 #define ICOMMANDNAME(name) _icmd_##name
 #define ICOMMANDSNAME _icmds_
-#define ICOMMANDKNS(name, type, cmdname, nargs, proto, b) template<int N> struct cmdname; template<> struct cmdname<__LINE__> { static bool init; static void run proto; }; bool cmdname<__LINE__>::init = addcommand(name, (identfun)cmdname<__LINE__>::run, nargs, type); void cmdname<__LINE__>::run proto \
-    { b; }
+#define ICOMMANDKNS(name, type, cmdname, nargs, proto, b) template<int N> struct cmdname; template<> struct cmdname<__LINE__> { static bool init; static void run proto; }; bool cmdname<__LINE__>::init = addcommand(name, (identfun)cmdname<__LINE__>::run, nargs, type); void cmdname<__LINE__>::run proto { b; }
 #define ICOMMANDKN(name, type, cmdname, nargs, proto, b) ICOMMANDKNS(#name, type, cmdname, nargs, proto, b)
 #define ICOMMANDK(name, type, nargs, proto, b) ICOMMANDKN(name, type, ICOMMANDNAME(name), nargs, proto, b)
 #define ICOMMANDNS(name, cmdname, nargs, proto, b) ICOMMANDKNS(name, Id_Command, cmdname, nargs, proto, b)

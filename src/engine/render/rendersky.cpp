@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "world/light.h"
+#include "world/raycube.h"
 
 Texture *sky[6] = { 0, 0, 0, 0, 0, 0 };
 

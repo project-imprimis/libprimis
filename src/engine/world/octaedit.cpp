@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "light.h"
 #include "interface/input.h"
+#include "raycube.h"
 
 extern int outline;
 

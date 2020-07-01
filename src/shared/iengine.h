@@ -1,5 +1,10 @@
-// the interface the game uses to access the engine
-
+/* iengine.h
+ *
+ * the interface the game uses to access the engine
+ * this file contains those functions which comprise the API with which to write
+ * a game against; this header is not called by the game internally and is the
+ * header which should be included in the game code.
+ */
 extern int curtime;                     // current frame time
 extern int lastmillis;                  // last time
 extern int elapsedtime;                 // elapsed frame time
@@ -7,125 +12,23 @@ extern int totalmillis;                 // total elapsed time
 extern uint totalsecs;
 extern int gamespeed, paused;
 
-enum
-{
-    MatFlag_IndexShift  = 0,
-    MatFlag_VolumeShift = 2,
-    MatFlag_ClipShift   = 5,
-    MatFlag_FlagShift   = 8,
-
-    MatFlag_Index  = 3 << MatFlag_IndexShift,
-    MatFlag_Volume = 7 << MatFlag_VolumeShift,
-    MatFlag_Clip   = 7 << MatFlag_ClipShift,
-    MatFlag_Flags  = 0xFF << MatFlag_FlagShift
-};
-
-enum // cube empty-space materials
-{
-    Mat_Air      = 0,                      // the default, fill the empty space with air
-    Mat_Water    = 1 << MatFlag_VolumeShift, // fill with water, showing waves at the surface
-    Mat_Glass    = 3 << MatFlag_VolumeShift, // behaves like clip but is blended blueish
-
-    Mat_NoClip   = 1 << MatFlag_ClipShift,  // collisions always treat cube as empty
-    Mat_Clip     = 2 << MatFlag_ClipShift,  // collisions always treat cube as solid
-    Mat_GameClip = 3 << MatFlag_ClipShift,  // game specific clip material
-
-    Mat_Death    = 1 << MatFlag_FlagShift,  // force player suicide
-    Mat_Alpha    = 4 << MatFlag_FlagShift   // alpha blended
-};
-
-#define IS_LIQUID(mat) ((mat)==Mat_Water)
-#define IS_CLIPPED(mat) ((mat)==Mat_Glass) //materials that are obligate clipping (always also get clipped)
-
 extern void lightent(extentity &e, float height = 8.0f);
 extern void lightreaching(const vec &target, vec &color, vec &dir, bool fast = false, extentity *e = 0, float minambient = 0.4f);
-
-enum
-{
-    Ray_BB = 1,
-    Ray_Poly = 3,
-    Ray_AlphaPoly = 7,
-    Ray_Ents = 9,
-    Ray_ClipMat = 16,
-    Ray_SkipFirst = 32,
-    Ray_EditMat = 64,
-    Ray_Shadow = 128,
-    Ray_Pass = 256,
-    Ray_SkipSky = 512
-};
-
-extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = Ray_ClipMat, int size = 0, extentity *t = 0);
-extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
-extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
-extern bool  raycubelos(const vec &o, const vec &dest, vec &hitpos);
 
 extern int thirdperson;
 extern bool isthirdperson();
 
 extern bool settexture(const char *name, int clamp = 0);
 
+//raycube
+extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = Ray_ClipMat, int size = 0, extentity *t = 0);
+extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
+extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
+extern bool  raycubelos(const vec &o, const vec &dest, vec &hitpos);
+extern bool insideworld(const vec &o);
+extern bool insideworld(const ivec &o);
+
 // octaedit
-
-enum
-{
-    Edit_Face = 0,
-    Edit_Tex,
-    Edit_Mat,
-    Edit_Flip,
-    Edit_Copy,
-    Edit_Paste,
-    Edit_Rotate,
-    Edit_Replace,
-    Edit_DelCube,
-    Edit_CalcLight,
-    Edit_Remip,
-    Edit_VSlot,
-    Edit_Undo,
-    Edit_Redo
-};
-
-struct selinfo
-{
-    int corner;
-    int cx, cxs, cy, cys;
-    ivec o, s;
-    int grid, orient;
-    selinfo() : corner(0), cx(0), cxs(0), cy(0), cys(0), o(0, 0, 0), s(0, 0, 0), grid(8), orient(0) {}
-    int size() const    { return s.x*s.y*s.z; }
-    int us(int d) const { return s[d]*grid; }
-    bool operator==(const selinfo &sel) const { return o==sel.o && s==sel.s && grid==sel.grid && orient==sel.orient; }
-    bool validate()
-    {
-        extern int worldsize;
-        if(grid <= 0 || grid >= worldsize)
-        {
-            return false;
-        }
-        if(o.x >= worldsize || o.y >= worldsize || o.z >= worldsize)
-        {
-            return false;
-        }
-        if(o.x < 0)
-        {
-            s.x -= (grid - 1 - o.x)/grid;
-            o.x = 0;
-        }
-        if(o.y < 0)
-        {
-            s.y -= (grid - 1 - o.y)/grid;
-            o.y = 0;
-        }
-        if(o.z < 0)
-        {
-            s.z -= (grid - 1 - o.z)/grid;
-            o.z = 0;
-        }
-        s.x = clamp(s.x, 0, (worldsize - o.x)/grid);
-        s.y = clamp(s.y, 0, (worldsize - o.y)/grid);
-        s.z = clamp(s.z, 0, (worldsize - o.z)/grid);
-        return s.x > 0 && s.y > 0 && s.z > 0;
-    }
-};
 
 struct editinfo;
 extern editinfo *localedit;
@@ -163,9 +66,6 @@ extern char *svariable(const char *name, const char *cur, char **storage, identf
 extern void setvar(const char *name, int i, bool dofunc = true, bool doclamp = true);
 extern void setfvar(const char *name, float f, bool dofunc = true, bool doclamp = true);
 extern void setsvar(const char *name, const char *str, bool dofunc = true);
-extern void setvarchecked(ident *id, int val);
-extern void setfvarchecked(ident *id, float val);
-extern void setsvarchecked(ident *id, const char *val);
 extern void touchvar(const char *name);
 extern int getvar(const char *name);
 extern int getvarmin(const char *name);
@@ -203,8 +103,6 @@ extern void alias(const char *name, const char *action);
 extern void alias(const char *name, tagval &v);
 extern const char *getalias(const char *name);
 extern const char *escapestring(const char *s);
-extern const char *escapeid(const char *s);
-inline const char *escapeid(ident &id) { return escapeid(id.name); }
 extern bool validateblock(const char *s);
 extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
 extern int listlen(const char *s);
@@ -215,22 +113,10 @@ extern void printsvar(ident *id, const char *s);
 extern int clampvar(ident *id, int i, int minval, int maxval);
 extern float clampfvar(ident *id, float f, float minval, float maxval);
 extern void loopiter(ident *id, identstack &stack, const tagval &v);
+extern void loopiter(ident *id, identstack &stack, int i);
 extern void loopend(ident *id, identstack &stack);
 
-#define LOOP_START(id, stack) if((id)->type != Id_Alias) return; identstack stack;
-inline void loopiter(ident *id, identstack &stack, int i) { tagval v; v.setint(i); loopiter(id, stack, v); }
-
 // console
-
-enum
-{
-    Console_Info  = 1<<0,
-    Console_Warn  = 1<<1,
-    Console_Error = 1<<2,
-    Console_Debug = 1<<3,
-    Console_Init  = 1<<4,
-    Console_Echo  = 1<<5
-};
 
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
@@ -244,18 +130,6 @@ extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 
 // octa
 extern int lookupmaterial(const vec &o);
-
-inline bool insideworld(const vec &o)
-{
-    extern int worldsize;
-    return o.x>=0 && o.x<worldsize && o.y>=0 && o.y<worldsize && o.z>=0 && o.z<worldsize;
-}
-
-inline bool insideworld(const ivec &o)
-{
-    extern int worldsize;
-    return uint(o.x)<uint(worldsize) && uint(o.y)<uint(worldsize) && uint(o.z)<uint(worldsize);
-}
 
 // world
 extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
@@ -276,10 +150,6 @@ extern void renderentring(const extentity &e, float radius, int axis = 0);
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
 
 // rendertext
-extern bool setfont(const char *name);
-extern void pushfont();
-extern bool popfont();
-extern void gettextres(int &w, int &h);
 extern void draw_text(const char *str, float left, float top, int r = 255, int g = 255, int b = 255, int a = 255, int cursor = -1, int maxwidth = -1);
 extern void draw_textf(const char *fstr, float left, float top, ...) PRINTFARGS(1, 4);
 extern float text_widthf(const char *str);
@@ -287,51 +157,12 @@ extern void text_boundsf(const char *str, float &width, float &height, int maxwi
 extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
 extern void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth);
 
-inline int text_width(const char *str)
-{
-    return int(ceil(text_widthf(str)));
-}
-
-inline void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
-{
-    float widthf, heightf;
-    text_boundsf(str, widthf, heightf, maxwidth);
-    width = int(ceil(widthf));
-    height = int(ceil(heightf));
-}
-
-inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
-{
-    float cxf, cyf;
-    text_posf(str, cursor, cxf, cyf, maxwidth);
-    cx = int(cxf);
-    cy = int(cyf);
-}
-
 // texture
 
 struct VSlot;
 
 extern void packvslot(vector<uchar> &buf, int index);
 extern void packvslot(vector<uchar> &buf, const VSlot *vs);
-
-// renderlights
-
-enum
-{
-    LightEnt_NoShadow   = 1<<0,
-    LightEnt_Static     = 1<<1,
-    LightEnt_Volumetric = 1<<2,
-    LightEnt_NoSpecular = 1<<3
-};
-
-// dynlight
-enum
-{
-    DynLight_Shrink = 1<<8,
-    DynLight_Expand = 1<<9,
-    DynLight_Flash  = 1<<10
-};
 
 extern void adddynlight(const vec &o, float radius, const vec &color, int fade = 0, int peak = 0, int flags = 0, float initradius = 0, const vec &initcolor = vec(0, 0, 0), physent *owner = NULL, const vec &dir = vec(0, 0, 0), int spot = 0);
 extern void removetrackeddynlights(physent *owner = NULL);
@@ -362,30 +193,6 @@ extern void pushhudtranslate(float tx, float ty, float sx = 0, float sy = 0);
 extern void resethudshader();
 
 // renderparticles
-enum
-{
-    Part_Blood = 0,
-    Part_Water,
-    Part_Smoke,
-    Part_Steam,
-    Part_Flame,
-    Part_Streak,
-    Part_RailTrail,
-    Part_PulseSide,
-    Part_PulseFront,
-    Part_Explosion,
-    Part_PulseBurst,
-    Part_Spark,
-    Part_Edit,
-    Part_Snow,
-    Part_RailMuzzleFlash,
-    Part_PulseMuzzleFlash,
-    Part_HUDIcon,
-    Part_HUDIconGrey,
-    Part_Text,
-    Part_Meter,
-    Part_MeterVS,
-};
 
 extern bool canaddparticles();
 extern void regular_particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2, int delay = 0);
@@ -401,15 +208,6 @@ extern void particle_fireball(const vec &dest, float max, int type, int fade = -
 extern void removetrackedparticles(physent *owner = NULL);
 
 // stain
-enum
-{
-    Stain_Blood = 0,
-    Stain_PulseScorch,
-    Stain_RailHole,
-    Stain_PulseGlow,
-    Stain_RailGlow
-};
-
 extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
 
 inline void addstain(int type, const vec &center, const vec &surface, float radius, int color, int info = 0)
@@ -426,9 +224,6 @@ extern void clearmapcrc();
 extern bool loadents(const char *fname, vector<entity> &ents, uint *crc = NULL);
 
 // physics
-extern vec collidewall;
-extern int collideinside;
-extern physent *collideplayer;
 
 extern void moveplayer(physent *pl, int moveres, bool local);
 extern bool moveplayer(physent *pl, int moveres, bool local, int curtime);
@@ -452,12 +247,6 @@ extern bool entinmap(dynent *d, bool avoidplayers = false);
 extern void findplayerspawn(dynent *d, int forceent = -1, int tag = 0);
 
 // sound
-enum
-{
-    Music_Map     = 1<<0,
-    Music_NoAlt  = 1<<1,
-    Music_UseAlt = 1<<2
-};
 
 extern int playsound(int n, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
 extern int playsoundname(const char *s, const vec *loc = NULL, int vol = 0, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
@@ -468,34 +257,8 @@ extern void stopsounds();
 extern void initsound();
 
 // rendermodel
-enum
-{
-    Model_CullVFC          = 1<<0,
-    Model_CullDist         = 1<<1,
-    Model_CullOccluded     = 1<<2,
-    Model_CullQuery        = 1<<3,
-    Model_FullBright       = 1<<4,
-    Model_NoRender         = 1<<5,
-    Model_Mapmodel         = 1<<6,
-    Model_NoBatch          = 1<<7,
-    Model_OnlyShadow       = 1<<8,
-    Model_NoShadow         = 1<<9,
-    Model_ForceShadow      = 1<<10,
-    Model_ForceTransparent = 1<<11
-};
 
 struct model;
-struct modelattach
-{
-    const char *tag, *name;
-    int anim, basetime;
-    vec *pos;
-    model *m;
-
-    modelattach() : tag(NULL), name(NULL), anim(-1), basetime(0), pos(NULL), m(NULL) {}
-    modelattach(const char *tag, const char *name, int anim = -1, int basetime = 0) : tag(tag), name(name), anim(anim), basetime(basetime), pos(NULL), m(NULL) {}
-    modelattach(const char *tag, vec *pos) : tag(tag), name(NULL), anim(-1), basetime(0), pos(pos), m(NULL) {}
-};
 
 extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
 extern int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode = 0, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1);
@@ -504,9 +267,7 @@ extern void renderclient(dynent *d, const char *mdlname, modelattach *attachment
 extern void interpolateorientation(dynent *d, float &interpyaw, float &interppitch);
 extern void setbbfrommodel(dynent *d, const char *mdl);
 extern const char *mapmodelname(int i);
-extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 extern void preloadmodel(const char *name);
-extern void flushpreloadedmodels(bool msg = true);
 extern bool matchanim(const char *name, const char *pattern);
 
 // UI
@@ -526,26 +287,7 @@ extern void moveragdoll(dynent *d);
 extern void cleanragdoll(dynent *d);
 
 // server
-#define MAXCLIENTS 128                 // DO NOT set this any higher
-#define MAXTRANS 5000                  // max amount of data to swallow in 1 go
-
 extern int maxclients;
-
-enum
-{
-    Discon_None = 0,
-    Discon_EndOfPacket,
-    Discon_Local,
-    Discon_Kick,
-    Discon_MsgError,
-    Discon_IPBan,
-    Discon_Private,
-    Discon_MaxClients,
-    Discon_Timeout,
-    Discon_Overflow,
-    Discon_Password,
-    Discon_NumDiscons
-};
 
 extern void *getclientinfo(int i);
 extern ENetPeer *getclientpeer(int i);
@@ -569,18 +311,6 @@ extern bool isdedicatedserver();
 
 // serverbrowser
 
-struct servinfo
-{
-    string name, map, desc;
-    int protocol, numplayers, maxplayers, ping;
-    vector<int> attr;
-
-    servinfo() : protocol(INT_MIN), numplayers(0), maxplayers(0)
-    {
-        name[0] = map[0] = desc[0] = '\0';
-    }
-};
-
 extern servinfo *getservinfo(int i);
 
 #define GETSERVINFO(idx, si, body) do { \
@@ -590,11 +320,13 @@ extern servinfo *getservinfo(int i);
         body; \
     } \
 } while(0)
+
 #define GETSERVINFOATTR(idx, aidx, aval, body) \
     GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
 
 // client
 extern void sendclientpacket(ENetPacket *packet, int chan);
+
 extern void flushclient();
 extern void disconnect(bool async = false, bool cleanup = true);
 extern bool isconnected(bool attempt = false, bool local = true);

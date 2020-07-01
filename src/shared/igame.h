@@ -1,5 +1,7 @@
 // the interface the engine uses to run the gameplay module
 
+struct VSlot;
+
 namespace entities
 {
     extern void editent(int i, bool local);

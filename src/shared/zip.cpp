@@ -1,5 +1,10 @@
 #include "cube.h"
 
+extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
+extern bool addcommand(const char *name, identfun fun, const char *narg, int type = Id_Command);
+extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
+extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
+
 enum
 {
     ZIP_LOCAL_FILE_SIGNATURE = 0x04034B50,

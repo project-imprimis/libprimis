@@ -1,7 +1,8 @@
 // world.cpp: core map management stuff
 
 #include "engine.h"
-#include "world/light.h"
+#include "light.h"
+#include "raycube.h"
 
 VARR(mapversion, 1, MAPVERSION, 0);
 VARNR(mapscale, worldscale, 1, 0, 0);

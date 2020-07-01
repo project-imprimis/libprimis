@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "light.h"
+#include "raycube.h"
 
 static struct emptycube : cube
 {

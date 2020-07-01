@@ -2,6 +2,8 @@
 #define GAME_H_
 
 #include "cube.h"
+#include "iengine.h"
+#include "consts.h"
 
 //defines game statics, like animation names, weapon variables, entity properties
 //includes:

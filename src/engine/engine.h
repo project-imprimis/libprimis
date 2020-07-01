@@ -14,6 +14,13 @@
 extern dynent *player;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
+extern int curtime;                     // current frame time
+extern int lastmillis;                  // last time
+extern int elapsedtime;                 // elapsed frame time
+extern int totalmillis;                 // total elapsed time
+extern uint totalsecs;
+extern int gamespeed, paused;
+
 extern int worldscale, worldsize;
 extern int mapversion;
 extern char *maptitle;
@@ -65,6 +72,39 @@ extern void reloadfonts();
 
 inline void setfont(font *f) { if(f) curfont = f; }
 
+extern bool setfont(const char *name);
+extern void pushfont();
+extern bool popfont();
+extern void gettextres(int &w, int &h);
+
+extern void draw_text(const char *str, float left, float top, int r = 255, int g = 255, int b = 255, int a = 255, int cursor = -1, int maxwidth = -1);
+extern void draw_textf(const char *fstr, float left, float top, ...) PRINTFARGS(1, 4);
+extern float text_widthf(const char *str);
+extern void text_boundsf(const char *str, float &width, float &height, int maxwidth = -1);
+extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
+extern void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth);
+
+inline void text_bounds(const char *str, int &width, int &height, int maxwidth = -1)
+{
+    float widthf, heightf;
+    text_boundsf(str, widthf, heightf, maxwidth);
+    width = int(ceil(widthf));
+    height = int(ceil(heightf));
+}
+
+inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
+{
+    float cxf, cyf;
+    text_posf(str, cursor, cxf, cyf, maxwidth);
+    cx = int(cxf);
+    cy = int(cyf);
+}
+
+inline int text_width(const char *str)
+{
+    return int(ceil(text_widthf(str)));
+}
+
 // texture
 extern int hwtexsize, hwcubetexsize, hwmaxaniso, maxtexsize, hwtexunits, hwvtexunits;
 
@@ -92,11 +132,14 @@ extern void compactvslot(VSlot &vs);
 extern int compactvslots(bool cull = false);
 extern void reloadtextures();
 extern void cleanuptextures();
+extern bool settexture(const char *name, int clamp = 0);
 
 // rendergl
+extern vec worldpos, camdir, camright, camup;
 extern bool hasS3TC, hasFXT1, hasLATC, hasFBMSBS, hasTQ, hasDBT, hasDBGO, hasES3, hasCI;
 extern int glversion, glslversion, glcompat;
 extern int maxdrawbufs, maxdualdrawbufs;
+extern vec minimapcenter, minimapradius, minimapscale;
 
 enum
 {
@@ -157,6 +200,16 @@ extern float calcfogdensity(float dist);
 extern float calcfogcull();
 extern void writecrosshairs(stream *f);
 extern void renderavatar();
+extern vec calcmodelpreviewpos(const vec &radius, float &yaw);
+
+extern matrix4 hudmatrix;
+extern void resethudmatrix();
+extern void pushhudmatrix();
+extern void flushhudmatrix(bool flushparams = true);
+extern void pophudmatrix(bool flush = true, bool flushparams = true);
+extern void pushhudscale(float sx, float sy = 0);
+extern void pushhudtranslate(float tx, float ty, float sx = 0, float sy = 0);
+extern void resethudshader();
 
 namespace modelpreview
 {
@@ -219,6 +272,7 @@ extern void calcmerges();
 extern int mergefaces(int orient, facebounds *m, int sz);
 extern void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat = Mat_Air, ushort matmask = MatFlag_Volume);
 extern void remip();
+extern int lookupmaterial(const vec &o);
 
 inline cubeext &ext(cube &c)
 {
@@ -386,6 +440,8 @@ extern void pasteundoent(int idx, const entity &ue);
 extern void pasteundoents(undoblock *u);
 
 // octaedit
+extern bool editmode;
+
 extern void cancelsel();
 extern void rendertexturepanel(int w, int h);
 extern void addundo(undoblock *u);
@@ -394,10 +450,37 @@ extern void changed(const ivec &bbmin, const ivec &bbmax, bool commit = true);
 extern void changed(const block3 &sel, bool commit = true);
 extern void rendereditcursor();
 extern void tryedit();
+extern bool noedit(bool view = false, bool msg = true);
 
 extern void renderprefab(const char *name, const vec &o, float yaw, float pitch, float roll, float size = 1, const vec &color = vec(1, 1, 1));
 extern void previewprefab(const char *name, const vec &color);
 extern void cleanupprefabs();
+
+struct editinfo;
+extern editinfo *localedit;
+
+extern int shouldpacktex(int index);
+extern bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen);
+extern bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen);
+extern void freeeditinfo(editinfo *&e);
+extern void pruneundos(int maxremain = 0);
+extern bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen);
+extern bool unpackundo(const uchar *inbuf, int inlen, int outlen);
+extern void toggleedit(bool force = true);
+extern void mpeditface(int dir, int mode, selinfo &sel, bool local);
+extern void mpedittex(int tex, int allfaces, selinfo &sel, bool local);
+extern bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf);
+extern void mpeditmat(int matid, int filter, selinfo &sel, bool local);
+extern void mpflip(selinfo &sel, bool local);
+extern void mpcopy(editinfo *&e, selinfo &sel, bool local);
+extern void mppaste(editinfo *&e, selinfo &sel, bool local);
+extern void mprotate(int cw, selinfo &sel, bool local);
+extern void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local);
+extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
+extern void mpdelcube(selinfo &sel, bool local);
+extern void mpremip(bool local);
+extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
+extern void mpcalclight(bool local);
 
 // octarender
 extern ivec worldmin, worldmax;
@@ -544,6 +627,26 @@ extern void localclienttoserver(int chan, ENetPacket *);
 extern void localconnect();
 extern bool serveroption(char *opt);
 
+extern void *getclientinfo(int i);
+extern ENetPeer *getclientpeer(int i);
+extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
+extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
+extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
+extern void flushserver(bool force);
+extern int getservermtu();
+extern int getnumclients();
+extern uint getclientip(int n);
+extern void localconnect();
+extern const char *disconnectreason(int reason);
+extern void disconnect_client(int n, int reason);
+extern void kicknonlocalclients(int reason = Discon_None);
+extern bool hasnonlocalclients();
+extern bool haslocalclients();
+extern void sendserverinforeply(ucharbuf &p);
+extern bool requestmaster(const char *req);
+extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
+extern bool isdedicatedserver();
+
 // serverbrowser
 extern bool resolverwait(const char *name, ENetAddress *address);
 extern int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
@@ -557,7 +660,81 @@ extern void connectserv(const char *servername, int port, const char *serverpass
 extern void abortconnect();
 extern void clientkeepalive();
 
+extern void sendclientpacket(ENetPacket *packet, int chan);
+extern void flushclient();
+extern void disconnect(bool async = false, bool cleanup = true);
+extern bool isconnected(bool attempt = false, bool local = true);
+extern const ENetAddress *connectedpeer();
+extern bool multiplayer(bool msg = true);
+extern void neterr(const char *s, bool disc = true);
+extern void gets2c();
+extern void notifywelcome();
+
 // command
+
+extern void setvarchecked(ident *id, int val);
+extern void setfvarchecked(ident *id, float val);
+extern void setsvarchecked(ident *id, const char *val);
+
+extern const char *escapeid(const char *s);
+inline const char *escapeid(ident &id) { return escapeid(id.name); }
+
+extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
+extern float fvariable(const char *name, float min, float cur, float max, float *storage, identfun fun, int flags);
+extern char *svariable(const char *name, const char *cur, char **storage, identfun fun, int flags);
+extern void setvar(const char *name, int i, bool dofunc = true, bool doclamp = true);
+extern void setfvar(const char *name, float f, bool dofunc = true, bool doclamp = true);
+extern void setsvar(const char *name, const char *str, bool dofunc = true);
+extern void touchvar(const char *name);
+extern int getvar(const char *name);
+extern int getvarmin(const char *name);
+extern int getvarmax(const char *name);
+extern bool identexists(const char *name);
+extern ident *getident(const char *name);
+extern ident *newident(const char *name, int flags = 0);
+extern ident *readident(const char *name);
+extern ident *writeident(const char *name, int flags = 0);
+extern bool addcommand(const char *name, identfun fun, const char *narg, int type = Id_Command);
+extern void keepcode(uint *p);
+extern void freecode(uint *p);
+extern void executeret(const uint *code, tagval &result = *commandret);
+extern void executeret(const char *p, tagval &result = *commandret);
+extern void executeret(ident *id, tagval *args, int numargs, bool lookup = false, tagval &result = *commandret);
+extern char *executestr(const uint *code);
+extern char *executestr(const char *p);
+extern char *executestr(ident *id, tagval *args, int numargs, bool lookup = false);
+extern char *execidentstr(const char *name, bool lookup = false);
+extern int execute(const uint *code);
+extern int execute(const char *p);
+extern int execute(ident *id, tagval *args, int numargs, bool lookup = false);
+extern int execident(const char *name, int noid = 0, bool lookup = false);
+extern float executefloat(const uint *code);
+extern float executefloat(const char *p);
+extern float executefloat(ident *id, tagval *args, int numargs, bool lookup = false);
+extern float execidentfloat(const char *name, float noid = 0, bool lookup = false);
+extern bool executebool(const uint *code);
+extern bool executebool(const char *p);
+extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = false);
+extern bool execidentbool(const char *name, bool noid = false, bool lookup = false);
+extern bool execfile(const char *cfgfile, bool msg = true);
+extern void alias(const char *name, const char *action);
+extern void alias(const char *name, tagval &v);
+extern const char *getalias(const char *name);
+extern const char *escapestring(const char *s);
+extern bool validateblock(const char *s);
+extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
+extern int listlen(const char *s);
+extern void printvar(ident *id);
+extern void printvar(ident *id, int i);
+extern void printfvar(ident *id, float f);
+extern void printsvar(ident *id, const char *s);
+extern int clampvar(ident *id, int i, int minval, int maxval);
+extern float clampfvar(ident *id, float f, float minval, float maxval);
+extern void loopiter(ident *id, identstack &stack, const tagval &v);
+extern void loopiter(ident *id, identstack &stack, int i);
+extern void loopend(ident *id, identstack &stack);
+extern uint *compilecode(const char *p);
+
 extern hashnameset<ident> idents;
 extern int identflags;
 
@@ -577,6 +754,9 @@ extern float renderfullconsole(float w, float h);
 extern float renderconsole(float w, float h, float abovehud);
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
+extern void conoutfv(int type, const char *fmt, va_list args);
+extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
+extern void logoutfv(const char *fmt, va_list args);
 extern void resetcomplete();
 extern void complete(char *s, int maxlen, const char *cmdprefix);
 const char *getkeyname(int code);
@@ -584,8 +764,13 @@ extern const char *addreleaseaction(char *s);
 extern tagval *addreleaseaction(ident *id, int numargs);
 extern void writebinds(stream *f);
 extern void writecompletions(stream *f);
+extern FILE *getlogfile();
+extern void setlogfile(const char *fname);
+extern void closelogfile();
 
 // main
+extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
+
 enum
 {
     Init_Not = 0,
@@ -625,13 +810,46 @@ extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 extern void swapbuffers(bool overlay = true);
 extern int getclockmillis();
 
-// physics
-extern clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset);
+// worldio
+extern bool load_world(const char *mname, const char *cname = NULL);
+extern bool save_world(const char *mname);
+extern void fixmapname(char *name);
+extern uint getmapcrc();
+extern void clearmapcrc();
+extern bool loadents(const char *fname, vector<entity> &ents, uint *crc = NULL);
+extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
 
+// physics
+extern vec collidewall;
+extern int collideinside;
+extern physent *collideplayer;
+
+extern void moveplayer(physent *pl, int moveres, bool local);
+extern bool moveplayer(physent *pl, int moveres, bool local, int curtime);
+extern void crouchplayer(physent *pl, int moveres, bool local);
+extern bool bounce(physent *d, float secs, float elasticity, float waterfric, float grav);
+extern bool bounce(physent *d, float elasticity, float waterfric, float grav);
+extern void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space);
+extern bool overlapsdynent(const vec &o, float radius);
+extern bool movecamera(physent *pl, const vec &dir, float dist, float stepdist);
+extern void physicsframe();
+extern void dropenttofloor(entity *e);
+extern bool droptofloor(vec &o, float radius, float height);
+
+extern clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset);
+extern bool collide(physent *d, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool playercol = true, bool insideplayercol = false);
 extern void modifyorient(float yaw, float pitch);
 extern void mousemove(int dx, int dy);
 extern bool overlapsdynent(const vec &o, float radius);
 extern void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll = 0);
+
+extern void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m);
+extern void vectoyawpitch(const vec &v, float &yaw, float &pitch);
+extern void updatephysstate(physent *d);
+extern void cleardynentcache();
+extern void updatedynentcache(physent *d);
+extern bool entinmap(dynent *d, bool avoidplayers = false);
+extern void findplayerspawn(dynent *d, int forceent = -1, int tag = 0);
 
 extern const float gravity;
 
@@ -657,6 +875,7 @@ extern float transmdlsx1, transmdlsy1, transmdlsx2, transmdlsy2;
 extern uint transmdltiles[LIGHTTILE_MAXH];
 
 extern void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks);
+extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 extern void resetmodelbatches();
 extern void startmodelquery(occludequery *query);
 extern void endmodelquery();
@@ -665,12 +884,14 @@ extern void shadowmaskbatchedmodels(bool dynshadow = true);
 extern void rendermapmodelbatches();
 extern void rendermodelbatches();
 extern void rendertransparentmodelbatches(int stencil = 0);
+extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
 extern void rendermapmodel(int idx, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int flags = Model_CullVFC | Model_CullDist, int basetime = 0, float size = 1);
 extern void clearbatchedmapmodels();
 extern void preloadusedmapmodels(bool msg = false, bool bih = false);
 extern int batcheddynamicmodels();
 extern int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax);
 extern void cleanupmodels();
+extern void flushpreloadedmodels(bool msg = true);
 
 inline model *loadmapmodel(int n)
 {
@@ -705,7 +926,24 @@ extern void renderparticles(int layer = ParticleLayer_All);
 extern bool printparticles(extentity &e, char *buf, int len);
 extern void cleanupparticles();
 
+extern bool canaddparticles();
+extern void regular_particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2, int delay = 0);
+extern void regular_particle_flame(int type, const vec &p, float radius, float height, int color, int density = 3, float scale = 2.0f, float speed = 200.0f, float fade = 600.0f, int gravity = -15);
+extern void particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2);
+extern void particle_trail(int type, int fade, const vec &from, const vec &to, int color = 0xFFFFFF, float size = 1.0f, int gravity = 20);
+extern void particle_text(const vec &s, const char *t, int type, int fade = 2000, int color = 0xFFFFFF, float size = 2.0f, int gravity = 0);
+extern void particle_textcopy(const vec &s, const char *t, int type, int fade = 2000, int color = 0xFFFFFF, float size = 2.0f, int gravity = 0);
+extern void particle_icon(const vec &s, int ix, int iy, int type, int fade = 2000, int color = 0xFFFFFF, float size = 2.0f, int gravity = 0);
+extern void particle_meter(const vec &s, float val, int type, int fade = 1, int color = 0xFFFFFF, int color2 = 0xFFFFF, float size = 2.0f);
+extern void particle_flare(const vec &p, const vec &dest, int fade, int type, int color = 0xFFFFFF, float size = 0.28f, physent *owner = NULL);
+extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
+extern void removetrackedparticles(physent *owner = NULL);
+
+
 // stain
+
+extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
+
 enum
 {
     StainBuffer_Opaque = 0,
@@ -747,6 +985,12 @@ namespace UI
     void update();
     void render();
     void cleanup();
+
+    bool showui(const char *name);
+    bool hideui(const char *name);
+    bool toggleui(const char *name);
+    void holdui(const char *name, bool on);
+    bool uivisible(const char *name);
 }
 // menus
 
@@ -762,6 +1006,15 @@ extern void clearmapsounds();
 extern void checkmapsounds();
 extern void updatesounds();
 extern void preloadmapsounds();
+
+extern int playsound(int n, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
+extern int playsoundname(const char *s, const vec *loc = NULL, int vol = 0, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
+extern void preloadsound(int n);
+extern void preloadmapsound(int n);
+extern bool stopsound(int n, int chanid, int fade = 0);
+extern void stopsounds();
+extern void initsound();
+
 
 // grass
 extern void loadgrassshaders();

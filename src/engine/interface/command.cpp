@@ -5331,6 +5331,13 @@ void loopiter(ident *id, identstack &stack, const tagval &v)
     }
 }
 
+void loopiter(ident *id, identstack &stack, int i)
+{
+    tagval v;
+    v.setint(i);
+    loopiter(id, stack, v);
+}
+
 void loopend(ident *id, identstack &stack)
 {
     if(id->stack == &stack)

@@ -54,9 +54,7 @@
 #include "glexts.h"
 #include "glemu.h"
 #endif
-
-#include "iengine.h"
+#include "consts.h"
 #include "igame.h"
-
 #endif
 

@@ -3,6 +3,7 @@
 #include "engine.h"
 #include "interface/input.h"
 #include "radiancehints.h"
+#include "world/raycube.h"
 
 bool hasS3TC   = false,
      hasFXT1   = false,

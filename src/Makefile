@@ -112,99 +112,33 @@ CLIENT_OBJS= \
 	game/waypoint.o \
 	game/weapon.o
 
-CLIENT_PCH= shared/cube.h.gch engine/engine.h.gch game/game.h.gch
-
-STANDALONE_PATHS= \
-	standalone/ \
-	standalone/engine/ \
-	standalone/engine/world \
-	standalone/engine/interface \
-	standalone/engine/render \
-	standalone/game/ \
-	standalone/shared/
-
-SERVER_INCLUDES= -DSTANDALONE -Istandalone/shared -Istandalone/engine -Istandalone/game $(INCLUDES)
-ifneq (,$(findstring MINGW,$(PLATFORM)))
-SERVER_INCLUDES+= -Iinclude
-SERVER_LIBS= -mwindows $(STD_LIBS) -L$(WINBIN) -L$(WINLIB) -lzlib1 -lenet -lws2_32 -lwinmm
-else
-SERVER_LIBS= -Lenet -lenet -lz
-endif
-
-SERVER_OBJS= \
-	standalone/shared/crypto.o \
-	standalone/shared/stream.o \
-	standalone/shared/tools.o \
-	standalone/engine/interface/command.o \
-	standalone/engine/interface/server.o \
-	standalone/engine/world/worldio.o \
-	standalone/game/entities.o \
-	standalone/game/server.o
-
-SERVER_PCH= standalone/shared/cube.h.gch standalone/engine/engine.h.gch standalone/game/game.h.gch
-
-SERVER_MASTER_OBJS= $(SERVER_OBJS) $(filter-out $(SERVER_OBJS),$(MASTER_OBJS))
-
 default: all
 
-all: mkpaths client server
+all: client
 
 clean:
-	-$(RM) -r $(CLIENT_PCH) $(CLIENT_OBJS) $(SERVER_PCH) $(SERVER_MASTER_OBJS) $(STANDALONE_PATHS) tess_client tess_server tess_master
+	-$(RM) -r $(CLIENT_OBJS) tess_client tess_server tess_master
 
 fixspace:
 	sed -i 's/[ \t]*$$//; :rep; s/^\([ ]*\)\t/\1    /g; trep' shared/*.c shared/*.cpp shared/*.h engine/*.cpp engine/*.h game/*.cpp game/*.h
 
-mkpaths:
-	$(MKDIR_P) $(STANDALONE_PATHS)
-
-$(filter-out shared/%,$(CLIENT_PCH)): $(filter shared/%,$(CLIENT_PCH))
-$(CLIENT_PCH): %.h.gch: %.h
-	$(CXX) $(CXXFLAGS) -x c++-header -o $@.tmp $<
-	$(MV) $@.tmp $@
-
 $(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
-$(filter shared/%,$(CLIENT_OBJS)): $(filter shared/%,$(CLIENT_PCH))
-$(filter engine/%,$(CLIENT_OBJS)): $(filter engine/%,$(CLIENT_PCH))
-$(filter game/%,$(CLIENT_OBJS)): $(filter game/%,$(CLIENT_PCH))
 
-$(filter-out standalone/shared/%,$(SERVER_PCH)): $(filter standalone/shared/%,$(SERVER_PCH))
-$(SERVER_PCH): standalone/%.h.gch: %.h
-	$(CXX) $(CXXFLAGS) -x c++-header -o $@.tmp $<
-	$(MV) $@.tmp $@
-
-$(SERVER_MASTER_OBJS): CXXFLAGS += $(SERVER_INCLUDES)
-$(filter standalone/shared/%,$(SERVER_MASTER_OBJS)): $(filter standalone/shared/%,$(SERVER_PCH))
-$(filter standalone/engine/%,$(SERVER_MASTER_OBJS)): $(filter standalone/engine/%,$(SERVER_PCH))
-$(filter standalone/game/%,$(SERVER_MASTER_OBJS)): $(filter standalone/game/%,$(SERVER_PCH))
-
-$(SERVER_MASTER_OBJS): standalone/%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 ifneq (,$(findstring MINGW,$(PLATFORM)))
 client: $(CLIENT_OBJS)
 	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff
 	$(CXX) $(CXXFLAGS) -o $(WINBIN)/tesseract.exe vcpp/mingw.res $(CLIENT_OBJS) $(CLIENT_LIBS)
 
-server: $(SERVER_OBJS)
-	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff
-	$(CXX) $(CXXFLAGS) -o $(WINBIN)/tess_server.exe vcpp/mingw.res $(SERVER_OBJS) $(SERVER_LIBS)
-
-
 install: all
 else
 client:	libenet $(CLIENT_OBJS)
 	$(CXX) $(CXXFLAGS) -o tess_client $(CLIENT_OBJS) $(CLIENT_LIBS)
 
-server:	libenet $(SERVER_OBJS)
-	$(CXX) $(CXXFLAGS) -o tess_server $(SERVER_OBJS) $(SERVER_LIBS)
-
 install: all
 	cp -f tess_client	../bin_unix/$(PLATFORM_PREFIX)_client
-	cp -f tess_server	../bin_unix/$(PLATFORM_PREFIX)_server
 ifneq (,$(STRIP))
 	$(STRIP) ../bin_unix/$(PLATFORM_PREFIX)_client
-	$(STRIP) ../bin_unix/$(PLATFORM_PREFIX)_server
 endif
 endif
 
@@ -214,6 +148,3 @@ libenet: enet/libenet.a
 
 depend:
 	makedepend -Y -Ishared -Iengine -Igame $(CLIENT_OBJS:.o=.cpp)
-	makedepend -a -o.h.gch -Y -Ishared -Iengine -Igame $(CLIENT_PCH:.h.gch=.h)
-	makedepend -a -pstandalone/ -Y -DSTANDALONE -Ishared -Iengine -Igame $(SERVER_MASTER_OBJS:standalone/%.o=%.cpp)
-	makedepend -a -pstandalone/ -o.h.gch -Y -DSTANDALONE -Ishared -Iengine -Igame $(SERVER_PCH:standalone/%.h.gch=%.h)
