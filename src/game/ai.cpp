@@ -1211,7 +1211,7 @@ namespace ai
                 {
                     if(entities::ents[i]->type == GamecodeEnt_Jumppad)
                     {
-                        gameentity &e = *(gameentity *)entities::ents[i];
+                        extentity &e = *entities::ents[i];
                         if(e.o.squaredist(pos) <= squareradius)
                         {
                             jump = false;

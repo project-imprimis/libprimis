@@ -128,11 +128,6 @@ enum                            // static entity types
     GamecodeEnt_MaxEntTypes,                                   // used for looping through full enum
 };
 
-//the equivalent of the engine's extentity (and identical)
-struct gameentity : extentity
-{
-};
-
 enum
 {
     Gun_Rail = 0,

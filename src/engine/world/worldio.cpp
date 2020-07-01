@@ -180,7 +180,6 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         if(eif > 0) f->seek(eif, SEEK_CUR);
         if(samegame)
         {
-            entities::readent(e, NULL, hdr.version);
         }
         else if(e.type>=EngineEnt_GameSpecific)
         {
@@ -945,7 +944,6 @@ bool save_world(const char *mname)
     }
     f->putchar((int)strlen(game::gameident()));
     f->write(game::gameident(), (int)strlen(game::gameident())+1);
-    f->put<ushort>(entities::extraentinfosize());
     vector<char> extras;
     game::writegamedata(extras);
     f->put<ushort>(extras.length());
@@ -956,21 +954,14 @@ bool save_world(const char *mname)
     {
         f->put<ushort>(texmru[i]);
     }
-    char *ebuf = new char[entities::extraentinfosize()];
     for(int i = 0; i < ents.length(); i++)
     {
         if(ents[i]->type!=EngineEnt_Empty)
         {
             entity tmp = *ents[i];
             f->write(&tmp, sizeof(entity));
-            entities::writeent(*ents[i], ebuf);
-            if(entities::extraentinfosize())
-            {
-                f->write(ebuf, entities::extraentinfosize());
-            }
         }
     }
-    delete[] ebuf;
     savevslots(f, numvslots);
     renderprogress(0, "saving octree...");
     savec(worldroot, ivec(0, 0, 0), worldsize>>1, f);
@@ -1132,8 +1123,6 @@ bool load_world(const char *mname, const char *cname)
     }
     renderprogress(0, "loading entities...");
     vector<extentity *> &ents = entities::getents();
-    int einfosize = entities::extraentinfosize();
-    char *ebuf = einfosize > 0 ? new char[einfosize] : NULL;
     for(int i = 0; i < (min(hdr.numents, maxents)); ++i)
     {
         extentity &e = *entities::newentity();
@@ -1142,11 +1131,6 @@ bool load_world(const char *mname, const char *cname)
         fixent(e, hdr.version);
         if(samegame)
         {
-            if(einfosize > 0)
-            {
-                f->read(ebuf, einfosize);
-            }
-            entities::readent(e, ebuf, mapversion);
         }
         else
         {
@@ -1168,14 +1152,10 @@ bool load_world(const char *mname, const char *cname)
             }
         }
     }
-    if(ebuf)
-    {
-        delete[] ebuf;
-    }
     if(hdr.numents > maxents)
     {
         conoutf(Console_Warn, "warning: map has %d entities", hdr.numents);
-        f->seek((hdr.numents-maxents)*(samegame ? sizeof(entity) + einfosize : eif), SEEK_CUR);
+        f->seek((hdr.numents-maxents)*(samegame ? sizeof(entity) : eif), SEEK_CUR);
     }
     renderprogress(0, "loading slots...");
     loadvslots(f, hdr.numvslots);

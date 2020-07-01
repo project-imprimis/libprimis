@@ -1753,11 +1753,9 @@ float dropheight(entity &e)
             return 0.0f;
         }
         default:
-            if(e.type >= EngineEnt_GameSpecific)
-            {
-                return entities::dropheight(e);
-            }
+        {
             return 4.0f;
+        }
     }
 }
 

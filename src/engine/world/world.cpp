@@ -439,12 +439,6 @@ char *entname(entity &e)
 {
     static string fullentname;
     copystring(fullentname, entities::entname(e.type));
-    const char *einfo = entities::entnameinfo(e);
-    if(*einfo)
-    {
-        concatstring(fullentname, ": ");
-        concatstring(fullentname, einfo);
-    }
     return fullentname;
 }
 
@@ -554,11 +548,7 @@ void attachentity(extentity &e)
         }
         default:
         {
-            if(e.type<EngineEnt_GameSpecific || !entities::mayattach(e))
-            {
-                return;
-            }
-            break;
+            return;
         }
     }
     detachentity(e);
@@ -583,11 +573,7 @@ void attachentity(extentity &e)
             }
             default:
             {
-                if(e.type<EngineEnt_GameSpecific || !entities::attachent(e, *a))
-                {
-                    continue;
-                }
-                break;
+                continue;
             }
         }
         float dist = e.o.dist(a->o);
@@ -1625,10 +1611,6 @@ void printent(extentity &e, char *buf, int len)
         }
         default:
         {
-            if(e.type >= EngineEnt_GameSpecific && entities::printent(e, buf, len))
-            {
-                return;
-            }
             break;
         }
     }

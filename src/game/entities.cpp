@@ -4,32 +4,12 @@ namespace entities
 {
     using namespace game;
 
-    int extraentinfosize() { return 0; }       // size in bytes of what the 2 methods below read/write... so it can be skipped by other games
-
-    void writeent(entity &, char *)   // write any additional data to disk (except for ET_ ents)
-    {
-    }
-
-    void readent(entity &, char *, int)     // read from disk, and init
-    {
-    }
-
 #ifndef STANDALONE
     vector<extentity *> ents;
 
     vector<extentity *> &getents()
     {
         return ents;
-    }
-
-    bool mayattach(extentity &e)
-    {
-        return false;
-    }
-
-    bool attachent(extentity &e, extentity &a)
-    {
-        return false;
     }
 
     const char *itemname(int i)
@@ -402,12 +382,12 @@ namespace entities
 
     extentity *newentity()
     {
-        return new gameentity();
+        return new extentity();
     }
 
     void deleteentity(extentity *e)
     {
-        delete (gameentity *)e;
+        delete e;
     }
 
     void clearents()
@@ -416,10 +396,6 @@ namespace entities
         {
             deleteentity(ents.pop());
         }
-    }
-
-    void animatemapmodel(const extentity &e, int &anim, int &basetime)
-    {
     }
 
     void fixentity(extentity &e)
@@ -475,16 +451,6 @@ namespace entities
         }
     }
 
-    bool printent(extentity &e, char *buf, int len)
-    {
-        return false;
-    }
-
-    const char *entnameinfo(entity &e)
-    {
-        return "";
-    }
-
     const char *entname(int i)
     {
         static const char * const entnames[GamecodeEnt_MaxEntTypes] =
@@ -506,14 +472,6 @@ namespace entities
         }
     }
 
-    float dropheight(entity &e)
-    {
-        if(e.type==GamecodeEnt_Flag)
-        {
-            return 0.0f;
-        }
-        return 4.0f;
-    }
 #endif
 }
 
