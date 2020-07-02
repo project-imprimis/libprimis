@@ -49,6 +49,8 @@
 #include "geom.h"
 #include "ents.h"
 #include "command.h"
+#include "world/world.h"
+#include "world/octa.h"
 
 #ifndef STANDALONE
 #include "glexts.h"

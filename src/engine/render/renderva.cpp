@@ -512,8 +512,6 @@ void drawbb(const ivec &bo, const ivec &br)
     xtraverts += 8;
 }
 
-extern int octaentsize;
-
 static octaentities *visiblemms, **lastvisiblemms;
 
 void findvisiblemms(const vector<extentity *> &ents, bool doquery)

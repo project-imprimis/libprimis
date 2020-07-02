@@ -2,11 +2,9 @@
 #define ENGINE_H_
 
 #include "cube.h"
-#include "world/world.h"
 
 #ifndef STANDALONE
 
-#include "world/octa.h"
 #include "render/texture.h"
 #include "world/bih.h"
 #include "model/model.h"
@@ -285,6 +283,9 @@ inline cubeext &ext(cube &c)
 #define LIGHTTILE_MAXH 16
 
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
+extern int spotlights;
+extern int volumetriclights;
+extern int nospeclights;
 
 template<class T>
 inline void calctilebounds(float sx1, float sy1, float sx2, float sy2, T &bx1, T &by1, T &bx2, T &by2)
@@ -505,6 +506,7 @@ extern int oqfrags;
 extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphabacksx1, alphabacksx2, alphabacksy1, alphabacksy2, alpharefractsx1, alpharefractsx2, alpharefractsy1, alpharefractsy2;
 extern uint alphatiles[LIGHTTILE_MAXH];
 extern vtxarray *visibleva;
+extern int octaentsize;
 
 extern void visiblecubes(bool cull = true);
 extern void setvfcP(const vec &bbmin = vec(-1, -1, -1), const vec &bbmax = vec(1, 1, 1));
@@ -857,14 +859,13 @@ extern const float gravity;
 
 extern vector<int> outsideents;
 
-extern void entcancel();
-extern void entitiesinoctanodes();
-extern void attachentities();
-extern void freeoctaentities(cube &c);
-extern bool pointinsel(const selinfo &sel, const vec &o);
-
 extern void resetmap();
 extern void startmap(const char *name);
+extern void freeoctaentities(cube &c);
+extern void entitiesinoctanodes();
+extern bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
+extern void attachentities();
+extern void entcancel();
 
 // rendermodel
 struct mapmodelinfo { string name; model *m, *collide; };
@@ -892,16 +893,7 @@ extern int batcheddynamicmodels();
 extern int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax);
 extern void cleanupmodels();
 extern void flushpreloadedmodels(bool msg = true);
-
-inline model *loadmapmodel(int n)
-{
-    if(mapmodels.inrange(n))
-    {
-        model *m = mapmodels[n].m;
-        return m ? m : loadmodel(NULL, n);
-    }
-    return NULL;
-}
+extern model *loadmapmodel(int n);
 
 inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &mapmodels[n] : NULL; }
 

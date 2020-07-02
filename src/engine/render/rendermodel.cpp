@@ -11,6 +11,15 @@ model *loadingmodel = NULL;
 #include "model/skelmodel.h"
 #include "world/hitzone.h"
 
+model *loadmapmodel(int n)
+{
+    if(mapmodels.inrange(n))
+    {
+        model *m = mapmodels[n].m;
+        return m ? m : loadmodel(NULL, n);
+    }
+    return NULL;
+}
 
 static model *(__cdecl *modeltypes[MDL_NumMDLTypes])(const char *);
 

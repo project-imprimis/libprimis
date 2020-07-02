@@ -2525,8 +2525,6 @@ void disableavatarmask()
 
 VAR(forcespotlights, 1, 0, 0);
 
-extern int spotlights;
-
 static Shader *volumetricshader = NULL,
               *volumetricbilateralshader[2] = { NULL, NULL };
 
@@ -2648,8 +2646,6 @@ void cleardeferredlightshaders()
     deferredmsaapixelshader = NULL;
     deferredmsaasampleshader = NULL;
 }
-
-extern int nospeclights;
 
 Shader *loaddeferredlightshader(const char *type = NULL)
 {
@@ -3399,8 +3395,6 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
         if(hasDBT && depthtestlights > 1) glDisable(GL_DEPTH_BOUNDS_TEST_EXT);
     }
 }
-
-extern int volumetriclights;
 
 void rendervolumetric()
 {

@@ -114,6 +114,16 @@ int horient  = 0;
 
 extern int entmoving;
 
+bool pointinsel(const selinfo &sel, const vec &o)
+{
+    return(o.x <= sel.o.x+sel.s.x*sel.grid
+        && o.x >= sel.o.x
+        && o.y <= sel.o.y+sel.s.y*sel.grid
+        && o.y >= sel.o.y
+        && o.z <= sel.o.z+sel.s.z*sel.grid
+        && o.z >= sel.o.z);
+}
+
 VARF(dragging, 0, 0, 1,
     if(!dragging || cor[0]<0) return;
     lastcur = cur;

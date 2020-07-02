@@ -4,10 +4,7 @@ struct VSlot;
 
 namespace entities
 {
-    extern void editent(int i, bool local);
     extern const char *entname(int i);
-    extern void fixentity(extentity &e);
-    extern void entradius(extentity &e, bool color);
     extern extentity *newentity();
     extern void deleteentity(extentity *e);
     extern void clearents();

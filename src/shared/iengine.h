@@ -11,6 +11,9 @@ extern int elapsedtime;                 // elapsed frame time
 extern int totalmillis;                 // total elapsed time
 extern uint totalsecs;
 extern int gamespeed, paused;
+extern vector<int> entgroup;
+
+extern int worldscale, worldsize;
 
 extern void lightent(extentity &e, float height = 8.0f);
 extern void lightreaching(const vec &target, vec &color, vec &dir, bool fast = false, extentity *e = 0, float minambient = 0.4f);
@@ -19,8 +22,12 @@ extern int thirdperson;
 extern bool isthirdperson();
 
 extern bool settexture(const char *name, int clamp = 0);
+extern int xtraverts, xtravertsva;
+
+extern dynent *player;
 
 //raycube
+
 extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = Ray_ClipMat, int size = 0, extentity *t = 0);
 extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
 extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
@@ -32,8 +39,10 @@ extern bool insideworld(const ivec &o);
 
 struct editinfo;
 extern editinfo *localedit;
+extern selinfo sel;
 
 extern bool editmode;
+extern int entediting;
 
 extern int shouldpacktex(int index);
 extern bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen);
@@ -58,6 +67,11 @@ extern void mpdelcube(selinfo &sel, bool local);
 extern void mpremip(bool local);
 extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
 extern void mpcalclight(bool local);
+extern void commitchanges(bool force = false);
+extern void changed(const ivec &bbmin, const ivec &bbmax, bool commit = true);
+extern void changed(const block3 &sel, bool commit = true);
+extern bool pointinsel(const selinfo &sel, const vec &o);
+extern void addundo(undoblock *u);
 
 // command
 extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
@@ -129,14 +143,16 @@ extern void logoutfv(const char *fmt, va_list args);
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 
 // octa
+
 extern int lookupmaterial(const vec &o);
 
 // world
+
+struct DecalSlot;
 extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
 extern bool enlargemap(bool force);
 extern int findentity(int type, int index = 0, int attr1 = -1, int attr2 = -1);
 extern void findents(int low, int high, bool notspawned, const vec &pos, const vec &radius, vector<int> &found);
-extern void mpeditent(int i, const vec &o, int type, int attr1, int attr2, int attr3, int attr4, int attr5, bool local);
 extern vec getselpos();
 extern int getworldsize();
 extern int getmapversion();
@@ -145,6 +161,15 @@ extern void renderentarrow(const extentity &e, const vec &dir, float radius);
 extern void renderentattachment(const extentity &e);
 extern void renderentsphere(const extentity &e, float radius);
 extern void renderentring(const extentity &e, float radius, int axis = 0);
+extern void entcancel();
+
+extern void attachentity(extentity &e);
+extern void removeentityedit(int id);
+extern void addentityedit(int id);
+extern void detachentity(extentity &e);
+extern void entselectionbox(const entity &e, vec &eo, vec &es);
+extern void mmboundbox(const entity &e, model *m, vec &center, vec &radius);
+extern float getdecalslotdepth(DecalSlot &s);
 
 // main
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
@@ -166,6 +191,7 @@ extern void packvslot(vector<uchar> &buf, const VSlot *vs);
 
 extern void adddynlight(const vec &o, float radius, const vec &color, int fade = 0, int peak = 0, int flags = 0, float initradius = 0, const vec &initcolor = vec(0, 0, 0), physent *owner = NULL, const vec &dir = vec(0, 0, 0), int spot = 0);
 extern void removetrackeddynlights(physent *owner = NULL);
+extern DecalSlot &lookupdecalslot(int slot, bool load = true);
 
 // rendergl
 extern physent *camera1;
@@ -206,6 +232,14 @@ extern void particle_meter(const vec &s, float val, int type, int fade = 1, int 
 extern void particle_flare(const vec &p, const vec &dest, int fade, int type, int color = 0xFFFFFF, float size = 0.28f, physent *owner = NULL);
 extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
 extern void removetrackedparticles(physent *owner = NULL);
+extern void clearparticleemitters();
+extern bool printparticles(extentity &e, char *buf, int len);
+
+// renderva
+extern int octaentsize;
+
+//octarender
+extern void updatevabb(vtxarray *va, bool force = false);
 
 // stain
 extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
@@ -216,6 +250,7 @@ inline void addstain(int type, const vec &center, const vec &surface, float radi
 }
 
 // worldio
+
 extern bool load_world(const char *mname, const char *cname = NULL);
 extern bool save_world(const char *mname);
 extern void fixmapname(char *name);
@@ -237,6 +272,7 @@ extern bool movecamera(physent *pl, const vec &dir, float dist, float stepdist);
 extern void physicsframe();
 extern void dropenttofloor(entity *e);
 extern bool droptofloor(vec &o, float radius, float height);
+extern void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll = 0);
 
 extern void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m);
 extern void vectoyawpitch(const vec &v, float &yaw, float &pitch);
@@ -269,6 +305,22 @@ extern void setbbfrommodel(dynent *d, const char *mdl);
 extern const char *mapmodelname(int i);
 extern void preloadmodel(const char *name);
 extern bool matchanim(const char *name, const char *pattern);
+extern model *loadmapmodel(int n);
+extern model *loadmodel(const char *name, int i = -1, bool msg = false);
+
+// renderlights
+
+extern void cleardeferredlightshaders();
+extern void clearshadowcache();
+extern void cleanupvolumetric();
+
+extern int spotlights;
+extern int volumetriclights;
+extern int nospeclights;
+
+// light
+
+extern void clearlightcache(int id = -1);
 
 // UI
 
