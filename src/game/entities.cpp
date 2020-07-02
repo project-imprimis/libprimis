@@ -233,7 +233,7 @@ void entattr(int *attr, int *val, int *numargs)
 COMMAND(enttype, "sN");
 COMMAND(entattr, "iiN");
 
-int findentity(int type, int index, int attr1, int attr2)
+extern int findentity(int type, int index = 0, int attr1 = -1, int attr2 = -1)
 {
     const vector<extentity *> &ents = entities::getents();
     if(index > ents.length())
@@ -351,39 +351,6 @@ static inline void findents(cube *c, const ivec &o, int size, const ivec &bo, co
             ivec co(i, o, size);
             findents(c[i].children, co, size>>1, bo, br, low, high, notspawned, pos, invradius, found);
         }
-    }
-}
-
-void findents(int low, int high, bool notspawned, const vec &pos, const vec &radius, vector<int> &found)
-{
-    vec invradius(1/radius.x, 1/radius.y, 1/radius.z);
-    ivec bo(vec(pos).sub(radius).sub(1)),
-         br(vec(pos).add(radius).add(1));
-    int diff = (bo.x^br.x) | (bo.y^br.y) | (bo.z^br.z) | octaentsize,
-        scale = worldscale-1;
-    if(diff&~((1<<scale)-1) || uint(bo.x|bo.y|bo.z|br.x|br.y|br.z) >= uint(worldsize))
-    {
-        findents(worldroot, ivec(0, 0, 0), 1<<scale, bo, br, low, high, notspawned, pos, invradius, found);
-        return;
-    }
-    cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
-    if(c->ext && c->ext->ents)
-    {
-        findents(*c->ext->ents, low, high, notspawned, pos, invradius, found);
-    }
-    scale--;
-    while(c->children && !(diff&(1<<scale)))
-    {
-        c = &c->children[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
-        if(c->ext && c->ext->ents)
-        {
-            findents(*c->ext->ents, low, high, notspawned, pos, invradius, found);
-        }
-        scale--;
-    }
-    if(c->children && 1<<scale >= octaentsize)
-    {
-        findents(c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale, bo, br, low, high, notspawned, pos, invradius, found);
     }
 }
 

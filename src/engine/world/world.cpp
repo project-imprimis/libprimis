@@ -706,8 +706,3 @@ int getworldsize()
 {
     return worldsize;
 }
-
-int getmapversion()
-{
-    return mapversion;
-}

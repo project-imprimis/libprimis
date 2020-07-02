@@ -14,10 +14,6 @@ extern int gamespeed, paused;
 extern vector<int> entgroup;
 
 extern int worldscale, worldsize;
-
-extern void lightent(extentity &e, float height = 8.0f);
-extern void lightreaching(const vec &target, vec &color, vec &dir, bool fast = false, extentity *e = 0, float minambient = 0.4f);
-
 extern int thirdperson;
 extern bool isthirdperson();
 
@@ -33,7 +29,6 @@ extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0
 extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
 extern bool  raycubelos(const vec &o, const vec &dest, vec &hitpos);
 extern bool insideworld(const vec &o);
-extern bool insideworld(const ivec &o);
 
 // octaedit
 
@@ -68,8 +63,6 @@ extern void mpremip(bool local);
 extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
 extern void mpcalclight(bool local);
 extern void commitchanges(bool force = false);
-extern void changed(const ivec &bbmin, const ivec &bbmax, bool commit = true);
-extern void changed(const block3 &sel, bool commit = true);
 extern bool pointinsel(const selinfo &sel, const vec &o);
 extern void addundo(undoblock *u);
 
@@ -80,10 +73,6 @@ extern char *svariable(const char *name, const char *cur, char **storage, identf
 extern void setvar(const char *name, int i, bool dofunc = true, bool doclamp = true);
 extern void setfvar(const char *name, float f, bool dofunc = true, bool doclamp = true);
 extern void setsvar(const char *name, const char *str, bool dofunc = true);
-extern void touchvar(const char *name);
-extern int getvar(const char *name);
-extern int getvarmin(const char *name);
-extern int getvarmax(const char *name);
 extern bool identexists(const char *name);
 extern ident *getident(const char *name);
 extern ident *newident(const char *name, int flags = 0);
@@ -93,40 +82,20 @@ extern bool addcommand(const char *name, identfun fun, const char *narg, int typ
 extern uint *compilecode(const char *p);
 extern void keepcode(uint *p);
 extern void freecode(uint *p);
-extern void executeret(const uint *code, tagval &result = *commandret);
-extern void executeret(const char *p, tagval &result = *commandret);
-extern void executeret(ident *id, tagval *args, int numargs, bool lookup = false, tagval &result = *commandret);
-extern char *executestr(const uint *code);
-extern char *executestr(const char *p);
-extern char *executestr(ident *id, tagval *args, int numargs, bool lookup = false);
-extern char *execidentstr(const char *name, bool lookup = false);
 extern int execute(const uint *code);
 extern int execute(const char *p);
 extern int execute(ident *id, tagval *args, int numargs, bool lookup = false);
 extern int execident(const char *name, int noid = 0, bool lookup = false);
-extern float executefloat(const uint *code);
-extern float executefloat(const char *p);
-extern float executefloat(ident *id, tagval *args, int numargs, bool lookup = false);
-extern float execidentfloat(const char *name, float noid = 0, bool lookup = false);
 extern bool executebool(const uint *code);
 extern bool executebool(const char *p);
 extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = false);
 extern bool execidentbool(const char *name, bool noid = false, bool lookup = false);
 extern bool execfile(const char *cfgfile, bool msg = true);
 extern void alias(const char *name, const char *action);
-extern void alias(const char *name, tagval &v);
-extern const char *getalias(const char *name);
 extern const char *escapestring(const char *s);
-extern bool validateblock(const char *s);
 extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
-extern int listlen(const char *s);
-extern void printvar(ident *id);
 extern void printvar(ident *id, int i);
-extern void printfvar(ident *id, float f);
-extern void printsvar(ident *id, const char *s);
 extern int clampvar(ident *id, int i, int minval, int maxval);
-extern float clampfvar(ident *id, float f, float minval, float maxval);
-extern void loopiter(ident *id, identstack &stack, const tagval &v);
 extern void loopiter(ident *id, identstack &stack, int i);
 extern void loopend(ident *id, identstack &stack);
 
@@ -134,12 +103,6 @@ extern void loopend(ident *id, identstack &stack);
 
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
-extern void conoutfv(int type, const char *fmt, va_list args);
-
-extern FILE *getlogfile();
-extern void setlogfile(const char *fname);
-extern void closelogfile();
-extern void logoutfv(const char *fmt, va_list args);
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 
 // octa
@@ -149,18 +112,11 @@ extern int lookupmaterial(const vec &o);
 // world
 
 struct DecalSlot;
+
 extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
 extern bool enlargemap(bool force);
-extern int findentity(int type, int index = 0, int attr1 = -1, int attr2 = -1);
-extern void findents(int low, int high, bool notspawned, const vec &pos, const vec &radius, vector<int> &found);
 extern vec getselpos();
 extern int getworldsize();
-extern int getmapversion();
-extern void renderentcone(const extentity &e, const vec &dir, float radius, float angle);
-extern void renderentarrow(const extentity &e, const vec &dir, float radius);
-extern void renderentattachment(const extentity &e);
-extern void renderentsphere(const extentity &e, float radius);
-extern void renderentring(const extentity &e, float radius, int axis = 0);
 extern void entcancel();
 
 extern void attachentity(extentity &e);
@@ -177,10 +133,7 @@ extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
 // rendertext
 extern void draw_text(const char *str, float left, float top, int r = 255, int g = 255, int b = 255, int a = 255, int cursor = -1, int maxwidth = -1);
 extern void draw_textf(const char *fstr, float left, float top, ...) PRINTFARGS(1, 4);
-extern float text_widthf(const char *str);
 extern void text_boundsf(const char *str, float &width, float &height, int maxwidth = -1);
-extern int text_visible(const char *str, float hitx, float hity, int maxwidth);
-extern void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth);
 
 // texture
 
@@ -215,12 +168,10 @@ extern void pushhudmatrix();
 extern void flushhudmatrix(bool flushparams = true);
 extern void pophudmatrix(bool flush = true, bool flushparams = true);
 extern void pushhudscale(float sx, float sy = 0);
-extern void pushhudtranslate(float tx, float ty, float sx = 0, float sy = 0);
 extern void resethudshader();
 
 // renderparticles
 
-extern bool canaddparticles();
 extern void regular_particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2, int delay = 0);
 extern void regular_particle_flame(int type, const vec &p, float radius, float height, int color, int density = 3, float scale = 2.0f, float speed = 200.0f, float fade = 600.0f, int gravity = -15);
 extern void particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2);
@@ -232,14 +183,10 @@ extern void particle_meter(const vec &s, float val, int type, int fade = 1, int 
 extern void particle_flare(const vec &p, const vec &dest, int fade, int type, int color = 0xFFFFFF, float size = 0.28f, physent *owner = NULL);
 extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
 extern void removetrackedparticles(physent *owner = NULL);
-extern void clearparticleemitters();
 extern bool printparticles(extentity &e, char *buf, int len);
 
 // renderva
 extern int octaentsize;
-
-//octarender
-extern void updatevabb(vtxarray *va, bool force = false);
 
 // stain
 extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
@@ -310,9 +257,7 @@ extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 
 // renderlights
 
-extern void cleardeferredlightshaders();
 extern void clearshadowcache();
-extern void cleanupvolumetric();
 
 extern int spotlights;
 extern int volumetriclights;
