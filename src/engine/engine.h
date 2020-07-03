@@ -3,8 +3,6 @@
 
 #include "cube.h"
 
-#ifndef STANDALONE
-
 #include "render/texture.h"
 #include "world/bih.h"
 #include "model/model.h"
@@ -1013,7 +1011,5 @@ extern void loadgrassshaders();
 extern void generategrass();
 extern void rendergrass();
 extern void cleanupgrass();
-#endif
 
 #endif
-

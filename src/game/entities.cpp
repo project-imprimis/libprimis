@@ -1308,7 +1308,6 @@ namespace entities
 {
     using namespace game;
 
-#ifndef STANDALONE
     vector<extentity *> ents;
 
     vector<extentity *> &getents()
@@ -1775,6 +1774,5 @@ namespace entities
             addmsg(NetMsg_EditEnt, "rii3ii5", i, static_cast<int>(e.o.x*DMF), static_cast<int>(e.o.y*DMF), static_cast<int>(e.o.z*DMF), e.type, e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
         }
     }
-#endif
 }
 

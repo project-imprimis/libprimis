@@ -197,7 +197,6 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     return true;
 }
 
-#ifndef STANDALONE
 string ogzname, bakname, cfgname, picname;
 
 VARP(savebak, 0, 2, 2);
@@ -1202,6 +1201,3 @@ void savemap(char *mname) { save_world(mname); }
 
 COMMAND(savemap, "s");
 COMMAND(savecurrentmap, "");
-
-#endif
-

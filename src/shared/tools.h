@@ -605,7 +605,6 @@ inline bool htcmp(int x, int y)
     return x==y;
 }
 
-#ifndef STANDALONE
 inline uint hthash(GLuint key)
 {
     return key;
@@ -615,7 +614,6 @@ inline bool htcmp(GLuint x, GLuint y)
 {
     return x==y;
 }
-#endif
 
 template <class T>
 struct vector
@@ -1342,9 +1340,8 @@ struct stream
     bool putbig(T n) { return put<T>(endianswap(n)); }
 
 
-#ifndef STANDALONE
-    SDL_RWops *rwops();
-#endif
+SDL_RWops *rwops();
+
 };
 
 template<class T>

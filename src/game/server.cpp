@@ -15,11 +15,14 @@ namespace game
     void parseoptions(vector<const char *> &args)
     {
         for(int i = 0; i < args.length(); i++)
-#ifndef STANDALONE
             if(!game::clientoption(args[i]))
-#endif
-            if(!server::serveroption(args[i]))
-                conoutf(Console_Error, "unknown command-line option: %s", args[i]);
+            {
+                if(!server::serveroption(args[i]))
+                {
+                    conoutf(Console_Error, "unknown command-line option: %s", args[i]);
+                }
+            }
+        }
     }
 
     const char *gameident() { return "Tesseract"; }

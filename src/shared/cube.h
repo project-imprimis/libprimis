@@ -36,10 +36,8 @@
   #define ZLIB_DLL
 #endif
 
-#ifndef STANDALONE
-    #include <SDL.h>
-    #include <SDL_opengl.h>
-#endif
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 #include <enet/enet.h>
 
@@ -52,10 +50,9 @@
 #include "world/world.h"
 #include "world/octa.h"
 
-#ifndef STANDALONE
 #include "glexts.h"
 #include "glemu.h"
-#endif
+
 #include "consts.h"
 #include "igame.h"
 #endif

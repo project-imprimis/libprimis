@@ -967,11 +967,7 @@ void setvarchecked(ident *id, int val)
     {
         debugcode("variable %s is read-only", id->name);
     }
-#ifndef STANDALONE
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || game::allowedittoggle())
-#else
-    else
-#endif
     {
         OVERRIDEVAR(return, id->overrideval.i = *id->storage.i, , )
         if(val < id->minval || val > id->maxval)
@@ -980,12 +976,10 @@ void setvarchecked(ident *id, int val)
         }
         *id->storage.i = val;
         id->changed();                                             // call trigger function if available
-#ifndef STANDALONE
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
             game::vartrigger(id);
         }
-#endif
     }
 }
 
@@ -1027,22 +1021,16 @@ void setfvarchecked(ident *id, float val)
     {
         debugcode("variable %s is read-only", id->name);
     }
-#ifndef STANDALONE
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || game::allowedittoggle())
-#else
-    else
-#endif
     {
         OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
         if(val < id->minvalf || val > id->maxvalf) val = clampfvar(id, val, id->minvalf, id->maxvalf);
         *id->storage.f = val;
         id->changed();
-#ifndef STANDALONE
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
             game::vartrigger(id);
         }
-#endif
     }
 }
 
@@ -1052,21 +1040,15 @@ void setsvarchecked(ident *id, const char *val)
     {
         debugcode("variable %s is read-only", id->name);
     }
-#ifndef STANDALONE
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || game::allowedittoggle())
-#else
-    else
-#endif
     {
         OVERRIDEVAR(return, id->overrideval.s = *id->storage.s, delete[] id->overrideval.s, delete[] *id->storage.s);
         *id->storage.s = newstring(val);
         id->changed();
-#ifndef STANDALONE
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
             game::vartrigger(id);
         }
-#endif
     }
 }
 
@@ -2021,14 +2003,12 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                                     numargs++;
                                     break;
                                 }
-#ifndef STANDALONE
                                 case 'D':
                                 {
                                     comtype = Code_ComD;
                                     numargs++;
                                     break;
                                 }
-#endif
                                 case 'C':
                                 {
                                     comtype = Code_ComC;
@@ -2995,14 +2975,12 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     numargs++;
                                     break;
                                 }
-            #ifndef STANDALONE
                                 case 'D':
                                 {
                                     comtype = Code_ComD;
                                     numargs++;
                                     break;
                                 }
-            #endif
                                 case 'C':
                                 {
                                     comtype = Code_ComC;
@@ -3567,7 +3545,6 @@ static const uint *skipcode(const uint *code, tagval &result = noret)
     }
 }
 
-#ifndef STANDALONE
 static inline uint *copycode(const uint *src)
 {
     const uint *end = skipcode(src);
@@ -3625,7 +3602,6 @@ static inline void addreleaseaction(ident *id, tagval *args, int numargs)
         args[numargs].setint(0);
     }
 }
-#endif
 
 static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup = false)
 {
@@ -3812,7 +3788,6 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                 break;
             }
         }
-#ifndef STANDALONE
         case 'D':
         {
             if(++i < numargs)
@@ -3823,7 +3798,6 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
             fakeargs++;
             break;
         }
-#endif
         case 'C':
         {
             i = max(i+1, numargs);
@@ -4488,7 +4462,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 freeargs(args, numargs, offset);
                 continue;
             }
-#ifndef STANDALONE
             case Code_ComD|Ret_Null:
             case Code_ComD|Ret_String:
             case Code_ComD|Ret_Float:
@@ -4502,7 +4475,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 freeargs(args, numargs, offset);
                 continue;
             }
-#endif
             #undef OFFSETARG
 
             case Code_ComV|Ret_Null:
@@ -5130,7 +5102,6 @@ bool validateblock(const char *s)
     return brakdepth == 0;
 }
 
-#ifndef STANDALONE
 void writecfg(const char *name)
 {
     stream *f = openutf8file(path(name && name[0] ? name : game::savedconfig(), true), "w");
@@ -5207,7 +5178,6 @@ void writecfg(const char *name)
 }
 
 COMMAND(writecfg, "s");
-#endif
 
 void changedvars()
 {
@@ -6187,9 +6157,7 @@ void findfile_(char *name)
     copystring(fname, name);
     path(fname);
     intret(
-#ifndef STANDALONE
         findzipfile(fname) ||
-#endif
         fileexists(fname, "e") || findfile(fname, "e") ? 1 : 0
     );
 }
@@ -6685,7 +6653,6 @@ void strsplice(const char *s, const char *vals, int *skip, int *count)
 }
 COMMAND(strsplice, "ssii");
 
-#ifndef STANDALONE
 ICOMMAND(getmillis, "i", (int *total), intret(*total ? totalmillis : lastmillis));
 
 struct sleepcmd
@@ -6754,4 +6721,3 @@ void clearsleep_(int *clearoverrides)
 }
 
 COMMANDN(clearsleep, clearsleep_, "i");
-#endif

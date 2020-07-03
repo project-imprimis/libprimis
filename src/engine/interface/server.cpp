@@ -74,7 +74,6 @@ static void writelogv(FILE *file, const char *fmt, va_list args)
     writelog(file, buf);
 }
 
-#ifdef STANDALONE
 void fatal(const char *fmt, ...)
 {
     void cleanupserver();
@@ -113,7 +112,6 @@ void conoutf(int type, const char *fmt, ...)
     conoutfv(type, fmt, args);
     va_end(args);
 }
-#endif
 
 #define DEFAULTCLIENTS 8
 
@@ -302,13 +300,11 @@ void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
             enet_peer_send(clients[n]->peer, chan, packet);
             break;
         }
-#ifndef STANDALONE
         case ServerClient_Local:
         {
             localservertoclient(chan, packet);
             break;
         }
-#endif
     }
 }
 
@@ -384,9 +380,6 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
 {
     if(cn < 0)
     {
-#ifdef STANDALONE
-        return NULL;
-#endif
     }
     else if(!clients.inrange(cn))
     {
@@ -433,12 +426,10 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
     {
         sendpacket(cn, chan, packet, -1);
     }
-#ifndef STANDALONE
     else
     {
         sendclientpacket(packet, chan);
     }
-#endif
     return packet->referenceCount > 0 ? packet : NULL;
 }
 
@@ -556,18 +547,6 @@ void localclienttoserver(int chan, ENetPacket *packet)
         process(packet, c->num, chan);
     }
 }
-
-#ifdef STANDALONE
-bool resolverwait(const char *name, ENetAddress *address)
-{
-    return enet_address_set_host(address, name) >= 0;
-}
-
-int connectwithtimeout(ENetSocket sock, const char *, const ENetAddress &remoteaddress)
-{
-    return enet_socket_connect(sock, &remoteaddress);
-}
-#endif
 
 ENetSocket mastersock = ENET_SOCKET_NULL;
 ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY },
@@ -877,13 +856,6 @@ VARF(serverport, 0, server::serverport(), 0xFFFF,
     }
 });
 
-#ifdef STANDALONE
-int curtime = 0,
-    lastmillis = 0,
-    elapsedtime = 0,
-    totalmillis = 0;
-#endif
-
 void updatemasterserver()
 {
     if(!masterconnected && lastconnectmaster && totalmillis-lastconnectmaster <= 5*60*1000)
@@ -1029,7 +1001,6 @@ void flushserver(bool force)
     }
 }
 
-#ifndef STANDALONE
 void localdisconnect(bool cleanup)
 {
     bool disconnected = false;
@@ -1057,7 +1028,6 @@ void localconnect()
     game::gameconnect(false);
     server::localconnect(c.num);
 }
-#endif
 
 #ifdef WIN32
 #include "shellapi.h"
@@ -1351,14 +1321,10 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
     vector<char *> args;
     char *buf = parsecommandline(GetCommandLine(), args);
     appinstance = hInst;
-#ifdef STANDALONE
-    int standalonemain(int argc, char **argv);
-    int status = standalonemain(args.length()-1, args.getbuf());
-    #define main standalonemain
-#else
+
     SDL_SetMainReady();
     int status = SDL_main(args.length()-1, args.getbuf());
-#endif
+
     delete[] buf;
     exit(status);
     return 0;
@@ -1437,25 +1403,11 @@ void rundedicatedserver()
     dedicatedserver = false;
 }
 
-#ifdef STANDALONE
-bool servererror(bool dedicated, const char *desc)
-{
-    if(!dedicated)
-    {
-        conoutf(Console_Error, "%s", desc);
-        cleanupserver();
-    }
-    else
-        fatal("%s", desc);
-    return false;
-}
-#else
 bool servererror(bool, const char *desc)
 {
     fatal("%s", desc);
     return false;
 }
-#endif
 
 bool setuplistenserver(bool dedicated)
 {
@@ -1518,16 +1470,13 @@ void initserver(bool listen, bool dedicated)
         {
             rundedicatedserver(); // never returns
         }
-#ifndef STANDALONE
         else
         {
             conoutf("listen server started");
         }
-#endif
     }
 }
 
-#ifndef STANDALONE
 void startlistenserver(int *usemaster)
 {
     if(serverhost)
@@ -1558,54 +1507,10 @@ void stoplistenserver()
     conoutf("listen server stopped");
 }
 COMMAND(stoplistenserver, "");
-#endif
 
 bool serveroption(char *opt)
 {
-    switch(opt[1])
-    {
-#ifdef STANDALONE
-        case 'u':
-        {
-            logoutf("Using home directory: %s", opt); sethomedir(opt+2); return true;
-        }
-        case 'k':
-        {
-            logoutf("Adding package directory: %s", opt); addpackagedir(opt+2); return true;
-        }
-        case 'g':
-        {
-            logoutf("Setting log file: %s", opt); setlogfile(opt+2); return true;
-        }
-#endif
-        default:
-        {
-            return false;
-        }
-    }
+    return false;
 }
 
 vector<const char *> gameargs;
-
-#ifdef STANDALONE
-int main(int argc, char **argv)
-{
-    setlogfile(NULL);
-    if(enet_initialize()<0)
-    {
-        fatal("Unable to initialise network module");
-    }
-    atexit(enet_deinitialize);
-    enet_time_set(0);
-    for(int i = 1; i<argc; i++)
-    {
-        if(argv[i][0]!='-' || !serveroption(argv[i]))
-        {
-            gameargs.add(argv[i]);
-        }
-    }
-    game::parseoptions(gameargs);
-    initserver(true, true);
-    return EXIT_SUCCESS;
-}
-#endif

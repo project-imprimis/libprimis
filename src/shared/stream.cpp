@@ -539,13 +539,10 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
         formatstring(s, "%s%s", pf.dir, dirname);
         if(listdir(s, false, ext, files)) dirs++;
     }
-#ifndef STANDALONE
     dirs += listzipfiles(dirname, ext, files);
-#endif
     return dirs;
 }
 
-#ifndef STANDALONE
 static Sint64 rwopsseek(SDL_RWops *rw, Sint64 pos, int whence)
 {
     stream *f = (stream *)rw->hidden.unknown.data1;
@@ -576,7 +573,6 @@ SDL_RWops *stream::rwops()
     rw->close = 0;
     return rw;
 }
-#endif
 
 stream::offset stream::size()
 {
@@ -706,9 +702,7 @@ struct filestream : stream
     }
 };
 
-#ifndef STANDALONE
 VAR(dbggz, 0, 0, 1);
-#endif
 
 struct gzstream : stream
 {
@@ -840,7 +834,6 @@ struct gzstream : stream
     void finishreading()
     {
         if(!reading) return;
-#ifndef STANDALONE
         if(dbggz)
         {
             uint checkcrc = 0, checksize = 0;
@@ -861,7 +854,6 @@ struct gzstream : stream
                 conoutf(Console_Debug, "gzip size check failed: read %u, calculated %u", checksize, uint(zfile.total_out));
             }
         }
-#endif
     }
 
     void stopreading()
@@ -1196,10 +1188,8 @@ stream *openrawfile(const char *filename, const char *mode)
 
 stream *openfile(const char *filename, const char *mode)
 {
-#ifndef STANDALONE
     stream *s = openzipfile(filename, mode);
     if(s) return s;
-#endif
     return openrawfile(filename, mode);
 }
 
