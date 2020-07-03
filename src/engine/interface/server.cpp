@@ -74,45 +74,6 @@ static void writelogv(FILE *file, const char *fmt, va_list args)
     writelog(file, buf);
 }
 
-void fatal(const char *fmt, ...)
-{
-    void cleanupserver();
-    cleanupserver();
-    DEFV_FORMAT_STRING(msg,fmt,fmt);
-    if(logfile)
-    {
-        logoutf("%s", msg);
-    }
-#ifdef WIN32
-    MessageBox(NULL, msg, "Tesseract fatal error", MB_OK|MB_SYSTEMMODAL);
-#else
-    fprintf(stderr, "server error: %s\n", msg);
-#endif
-    closelogfile();
-    exit(EXIT_FAILURE);
-}
-
-void conoutfv(int, const char *fmt, va_list args)
-{
-    logoutfv(fmt, args);
-}
-
-void conoutf(const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    conoutfv(Console_Info, fmt, args);
-    va_end(args);
-}
-
-void conoutf(int type, const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    conoutfv(type, fmt, args);
-    va_end(args);
-}
-
 #define DEFAULTCLIENTS 8
 
 enum
