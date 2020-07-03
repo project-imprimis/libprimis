@@ -15,6 +15,7 @@ namespace game
     void parseoptions(vector<const char *> &args)
     {
         for(int i = 0; i < args.length(); i++)
+        {
             if(!game::clientoption(args[i]))
             {
                 if(!server::serveroption(args[i]))
@@ -24,7 +25,6 @@ namespace game
             }
         }
     }
-
     const char *gameident() { return "Tesseract"; }
 }
 
@@ -1102,7 +1102,7 @@ namespace server
             }
             else if(ts.rank < worst->rank || (ts.rank == worst->rank && ts.clients < worst->clients)) worst = &ts;
         }
-        return 1+int(worst-teamranks);
+        return 1+static_cast<int>(worst-teamranks);
     }
 
     void prunedemos(int extra = 0)
@@ -2330,7 +2330,7 @@ namespace server
                     friends = 1;
                     enemies = clients.length()-1;
                 }
-                actor->state.effectiveness += fragvalue*friends/float(max(enemies, 1));
+                actor->state.effectiveness += fragvalue*friends/static_cast<float>(max(enemies, 1));
             }
             teaminfo *t = modecheck(gamemode, Mode_Team) && VALID_TEAM(actor->team) ? &teaminfos[actor->team-1] : NULL;
             if(t) t->frags += fragvalue;
@@ -2410,7 +2410,7 @@ namespace server
 
             float damage = attacks[atk].damage*(1-h.dist/EXP_DISTSCALE/attacks[atk].exprad);
             if(target==ci) damage /= EXP_SELFDAMDIV;
-            if(damage > 0) dodamage(target, ci, max(int(damage), 1), atk, h.dir);
+            if(damage > 0) dodamage(target, ci, max(static_cast<int>(damage), 1), atk, h.dir);
         }
     }
 
@@ -2429,8 +2429,8 @@ namespace server
         gs.lastshot = millis;
         gs.gunwait = attacks[atk].attackdelay;
         sendf(-1, 1, "rii9x", NetMsg_ShotFX, ci->clientnum, atk, id,
-                int(from.x*DMF), int(from.y*DMF), int(from.z*DMF),
-                int(to.x*DMF), int(to.y*DMF), int(to.z*DMF),
+                static_cast<int>(from.x*DMF), static_cast<int>(from.y*DMF), static_cast<int>(from.z*DMF),
+                static_cast<int>(to.x*DMF), static_cast<int>(to.y*DMF), static_cast<int>(to.z*DMF),
                 ci->ownernum);
         gs.shotdamage += attacks[atk].damage*attacks[atk].rays;
         switch(atk)
