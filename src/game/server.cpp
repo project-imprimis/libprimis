@@ -25,7 +25,7 @@ namespace game
             }
         }
     }
-    const char *gameident() { return "Tesseract"; }
+    const char *gameident() { return "Imprimis"; }
 }
 
 extern ENetAddress masteraddress;
@@ -4232,10 +4232,10 @@ namespace server
 #undef QUEUE_BUF
 #undef QUEUE_MSG
 
-    int laninfoport() { return TESSERACT_LANINFO_PORT; }
-    int serverport() { return TESSERACT_SERVER_PORT; }
-    const char *defaultmaster() { return "master.tesseract.gg"; }
-    int masterport() { return TESSERACT_MASTER_PORT; }
+    int laninfoport() { return IMPRIMIS_LANINFO_PORT; }
+    int serverport() { return IMPRIMIS_SERVER_PORT; }
+    const char *defaultmaster() { return "project-imprimis.org"; }
+    int masterport() { return IMPRIMIS_MASTER_PORT; }
     int numchannels() { return 3; }
 
 //extinfo

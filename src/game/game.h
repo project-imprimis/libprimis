@@ -497,14 +497,14 @@ const int msgsizes[] =               // size inclusive message token, 0 for vari
 
 enum
 {
-    TESSERACT_LANINFO_PORT = 42067,
-    TESSERACT_MASTER_PORT  = 42068,
-    TESSERACT_SERVER_PORT  = 42069,
+    IMPRIMIS_LANINFO_PORT = 42067,
+    IMPRIMIS_MASTER_PORT  = 42068,
+    IMPRIMIS_SERVER_PORT  = 42069,
     PROTOCOL_VERSION = 2,              // bump when protocol changes
     DEMO_VERSION     = 1,              // bump when demo format changes
 };
 
-#define DEMO_MAGIC "TESSERACT_DEMO\0\0"
+#define DEMO_MAGIC "IMPRIMIS_DEMO\0\0"
 
 struct demoheader
 {
