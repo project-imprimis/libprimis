@@ -202,6 +202,7 @@ struct vertmodel : animmodel
                        * RESTRICT vert2 = &verts[as.cur.fr2 * numverts],
                        * RESTRICT pvert1 = as.interp<1 ? &verts[as.prev.fr1 * numverts] : NULL,
                        * RESTRICT pvert2 = as.interp<1 ? &verts[as.prev.fr2 * numverts] : NULL;
+                       //lerp: Linear intERPolation
             #define IP_VERT(attrib, type) v.attrib.lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t)
             #define IP_VERT_P(attrib, type) v.attrib.lerp(type().lerp(pvert1[i].attrib, pvert2[i].attrib, as.prev.t), type().lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t), as.interp)
             if(as.interp<1)
@@ -253,8 +254,8 @@ struct vertmodel : animmodel
         tag *tags;
         int numtags;
 
-        static const int MAXVBOCACHE = 16;
-        vbocacheentry vbocache[MAXVBOCACHE];
+        static const int maxvbocache = 16;
+        vbocacheentry vbocache[maxvbocache];
 
         ushort *edata;
         GLuint ebuf;
@@ -272,7 +273,7 @@ struct vertmodel : animmodel
             {
                 glDeleteBuffers_(1, &ebuf);
             }
-            for(int i = 0; i < MAXVBOCACHE; ++i)
+            for(int i = 0; i < maxvbocache; ++i)
             {
                 if(vbocache[i].vbuf)
                 {
@@ -469,7 +470,7 @@ struct vertmodel : animmodel
 
         void cleanup()
         {
-            for(int i = 0; i < MAXVBOCACHE; ++i)
+            for(int i = 0; i < maxvbocache; ++i)
             {
                 vbocacheentry &c = vbocache[i];
                 if(c.vbuf)
@@ -515,7 +516,7 @@ struct vertmodel : animmodel
             }
             else
             {
-                for(int i = 0; i < MAXVBOCACHE; ++i)
+                for(int i = 0; i < maxvbocache; ++i)
                 {
                     vbocacheentry &c = vbocache[i];
                     if(!c.vbuf)
@@ -530,7 +531,7 @@ struct vertmodel : animmodel
                 }
                 if(!vc)
                 {
-                    for(int i = 0; i < MAXVBOCACHE; ++i)
+                    for(int i = 0; i < maxvbocache; ++i)
                     {
                         vc = &vbocache[i];
                         if(!vc->vbuf || vc->millis < lastmillis)
@@ -579,7 +580,11 @@ struct vertmodel : animmodel
     meshgroup *loadmeshes(const char *name, float smooth = 2)
     {
         vertmeshgroup *group = newmeshes();
-        if(!group->load(name, smooth)) { delete group; return NULL; }
+        if(!group->load(name, smooth))
+        {
+            delete group;
+            return NULL;
+        }
         return group;
     }
 
@@ -703,13 +708,13 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
     {
         if(MDL::multiparted())
         {
-            this->modelcommand(loadpart, "load", "sf");
+            this->modelcommand(loadpart, "load", "sf"); //<fmt>load [model] [smooth]
         }
-        this->modelcommand(settag, "tag", "sffffff");
-        this->modelcommand(setpitch, "pitch", "ffff");
+        this->modelcommand(settag, "tag", "sffffff"); //<fmt>tag [tagname] [tx] [ty] [tz] [rx] [ry] [rz]
+        this->modelcommand(setpitch, "pitch", "ffff"); //<fmt>pitch [scale] [offset] [min] [max]
         if(MDL::cananimate())
         {
-            this->modelcommand(setanim, "anim", "siiff");
+            this->modelcommand(setanim, "anim", "siiff"); //<fmt>anim [anim] [frame] [range] [speed] [priority]
         }
     }
 };

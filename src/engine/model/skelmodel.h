@@ -2590,18 +2590,18 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     {
         if(MDL::multiparted())
         {
-            this->modelcommand(loadpart, "load", "ssf");
+            this->modelcommand(loadpart, "load", "ssf"); //<fmt>load [mesh] [skel] [smooth]
         }
-        this->modelcommand(settag, "tag", "ssffffff");
-        this->modelcommand(setpitch, "pitch", "sffff");
-        this->modelcommand(setpitchtarget, "pitchtarget", "ssiff");
-        this->modelcommand(setpitchcorrect, "pitchcorrect", "ssfff");
-        this->modelcommand(sethitzone, "hitzone", "is");
+        this->modelcommand(settag, "tag", "ssffffff"); //<fmt>tag [name] [tag] [tx] [ty] [tz] [rx] [ry] [rz]
+        this->modelcommand(setpitch, "pitch", "sffff"); //<fmt>pitch [name] [target] [scale] [min] [max]
+        this->modelcommand(setpitchtarget, "pitchtarget", "ssiff"); //<fmt>pitchtarget [name] [anim] [offset] [min] [max]
+        this->modelcommand(setpitchcorrect, "pitchcorrect", "ssfff"); //<fmt>pitchcorrect [name] [target] [scale] [min] [max]
+        this->modelcommand(sethitzone, "hitzone", "is"); //<fmt>hitzone [id] [mask]
         if(MDL::cananimate())
         {
-            this->modelcommand(setanim, "anim", "ssfiii");
-            this->modelcommand(setanimpart, "animpart", "s");
-            this->modelcommand(setadjust, "adjust", "sffffff");
+            this->modelcommand(setanim, "anim", "ssfiii"); //<fmt>anim [anim] [animfile] [speed] [priority] [startoffset] [endoffset]
+            this->modelcommand(setanimpart, "animpart", "s"); //<fmt>animpart [maskstr]
+            this->modelcommand(setadjust, "adjust", "sffffff"); //<fmt>adjust [name] [yaw] [pitch] [tx] [ty] [tz]
         }
     }
 };

@@ -69,9 +69,9 @@ linear analysis, including multipole expansions and Fourier series.
 * 5.4 Screenspace Postfx
 * 5.5 Antialiasing
 
-#### 6. Actors
+#### 6. Actors and Models
 * 6.1 Actor Objects
-* 6.2 Actor Rendering
+* 6.2 Model Rendering
 * 6.3 AI
 
 #### 7. Netcode
@@ -3131,7 +3131,7 @@ Generally, SMAA is the best general-purpose antialiasing method available in
 Imprimis and is generally recommended as the default; methods like high MSAA
 values are only particularly useful for promotional purposes (e.g. screenshots).
 
-# 6 Actors
+# 6 Actors and Models
 ---
 
 Actors are the entities that play the game: this includes human controlled
@@ -3144,6 +3144,9 @@ Actors are enlarged humans with a height of 2.5m (8') and a breadth of about 1m
 tall box without being too exaggerated. As a result, players can fit in 3m by 1m
 corridors without a problem, and crouch to fit in 2m by 1m corridors if
 necessary.
+
+As the most intensive use of models is here in the creation of actors, this
+section also covers the technical implementation of the game's models.
 
 ## 6.1 Actor Objects
 
@@ -3209,6 +3212,55 @@ and the following functions:
 * `~gameent`
 * void `hitpush`
 * void `startgame`
+
+## 6.2 Models
+---
+
+Models in Imprimis are not especially first-class citizens compared to the
+octree geometry that the world is built on, but they still play an important
+role, particularly in player models.
+
+### 6.2.1 Basic Model Commands
+---
+
+These are commands which are available to all formats, including static, non
+animated ones such as Wavefront (OBJ).
+
+* `<fmt>skin [meshname] [tex] [masks]`
+* `<fmt>spec [tex] [scale]`
+* `<fmt>gloss [tex] [type]` type ranges 0..2
+* `<fmt>glow [tex] [pct] [del] [pulse]`
+* `<fmt>alphatest [mesh] [cutoff]`
+* `<fmt>cullface [mesh] [cullface]`
+* `<fmt>color [mesh] [r] [g] [b]`
+* `<fmt>bumpmap [mesh] [tex]`
+* `<fmt>decal [mesh] [tex]`
+* `<fmt>fullbright [mesh] [bright]`
+* `<fmt>shader [mesh] [shader]`
+* `<fmt>scroll [mesh] [x] [y]`
+* `<fmt>noclip [mesh] [bool]`
+* `<fmt>settricollide [mesh]`
+* `<fmt>link [parent] [child] [tag] [x] [y] [z]`
+
+* `<fmt>load [model] [smooth]`
+* `<fmt>tag [tagname] [tx] [ty] [tz] [rx] [ry] [rz]`
+* `<fmt>pitch [scale] [offset] [min] [max]`
+* `<fmt>anim [anim] [frame] [range] [speed] [priority]`
+
+### 6.2.2 Animated Model Commands
+
+These are commands which are only available to animated model formats, of which
+the only current one is MD5.
+
+* `<fmt>load [mesh] [skel] [smooth]`
+* `<fmt>tag [name] [tag] [tx] [ty] [tz] [rx] [ry] [rz]`
+* `<fmt>pitch [name] [target] [scale] [min] [max]`
+* `<fmt>pitchtarget [name] [anim] [offset] [min] [max]`
+* `<fmt>pitchcorrect [name] [target] [scale] [min] [max]`
+* `<fmt>hitzone [id] [mask]`
+* `<fmt>anim [anim] [animfile] [speed] [priority] [startoffset] [endoffset]`
+* `<fmt>animpart [maskstr]`
+* `<fmt>adjust [name] [yaw] [pitch] [tx] [ty] [tz]`
 
 # 7 Netcode
 ---
