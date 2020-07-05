@@ -6300,6 +6300,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
 COMMAND(sortlist, "srree");
 ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortlist(list, x, y, NULL, body));
 
+//===========MATHCMD MATHICMDN MATHICMD MATHFCMDN MATHFCMD CMPCMD CMPICMDN CMPICMD CMPFCMDN CMPFCMD DIVCMD MINMAXCMD CASECOMMAND CMPSCMD
 #define MATHCMD(name, fmt, type, op, initval, unaryop) \
     ICOMMANDS(name, #fmt "1V", (tagval *args, int numargs), \
     { \
@@ -6568,6 +6569,22 @@ CMPSCMD(<s, <);
 CMPSCMD(>s, >);
 CMPSCMD(<=s, <=);
 CMPSCMD(>=s, >=);
+
+#undef MATHCMD
+#undef MATHICMDN
+#undef MATHICMD
+#undef MATHFCMDN
+#undef MATHFCMD
+#undef CMPCMD
+#undef CMPICMDN
+#undef CMPICMD
+#undef CMPFCMDN
+#undef CMPFCMD
+#undef DIVCMD
+#undef MINMAXCMD
+#undef CASECOMMAND
+#undef CMPSCMD
+//======================================================================================================================================
 
 ICOMMAND(echo, "C", (char *s), conoutf("\f1%s", s));
 ICOMMAND(error, "C", (char *s), conoutf(Console_Error, "%s", s));
