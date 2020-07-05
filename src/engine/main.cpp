@@ -777,59 +777,6 @@ __declspec(dllexport)
 }
 #endif
 
-#if defined(WIN32) && !defined(_DEBUG) && !defined(__GNUC__)
-void stackdumper(unsigned int type, EXCEPTION_POINTERS *ep)
-{
-    if(!ep)
-    {
-        fatal("unknown type");
-    }
-    EXCEPTION_RECORD *er = ep->ExceptionRecord;
-    CONTEXT *context = ep->ContextRecord;
-    char out[512];
-    formatstring(out, "Imprimis Win32 Exception: 0x%x [0x%x]\n\n", er->ExceptionCode, er->ExceptionCode==EXCEPTION_ACCESS_VIOLATION ? er->ExceptionInformation[1] : -1);
-    SymInitialize(GetCurrentProcess(), NULL, TRUE);
-#ifdef _AMD64_
-    STACKFRAME64 sf = {{context->Rip, 0, AddrModeFlat}, {}, {context->Rbp, 0, AddrModeFlat}, {context->Rsp, 0, AddrModeFlat}, 0};
-    while(::StackWalk64(IMAGE_FILE_MACHINE_AMD64, GetCurrentProcess(), GetCurrentThread(), &sf, context, NULL, ::SymFunctionTableAccess, ::SymGetModuleBase, NULL))
-    {
-        union
-        {
-            IMAGEHLP_SYMBOL64 sym;
-            char symext[sizeof(IMAGEHLP_SYMBOL64) + sizeof(string)];
-        };
-        sym.SizeOfStruct = sizeof(sym);
-        sym.MaxNameLength = sizeof(symext) - sizeof(sym);
-        IMAGEHLP_LINE64 line;
-        line.SizeOfStruct = sizeof(line);
-        DWORD64 symoff;
-        DWORD lineoff;
-        if(SymGetSymFromAddr64(GetCurrentProcess(), sf.AddrPC.Offset, &symoff, &sym) && SymGetLineFromAddr64(GetCurrentProcess(), sf.AddrPC.Offset, &lineoff, &line))
-#else
-    STACKFRAME sf = {{context->Eip, 0, AddrModeFlat}, {}, {context->Ebp, 0, AddrModeFlat}, {context->Esp, 0, AddrModeFlat}, 0};
-    while(::StackWalk(IMAGE_FILE_MACHINE_I386, GetCurrentProcess(), GetCurrentThread(), &sf, context, NULL, ::SymFunctionTableAccess, ::SymGetModuleBase, NULL))
-    {
-        union
-        {
-            IMAGEHLP_SYMBOL sym;
-            char symext[sizeof(IMAGEHLP_SYMBOL) + sizeof(string)];
-        };
-        sym.SizeOfStruct = sizeof(sym);
-        sym.MaxNameLength = sizeof(symext) - sizeof(sym);
-        IMAGEHLP_LINE line;
-        line.SizeOfStruct = sizeof(line);
-        DWORD symoff, lineoff;
-        if(SymGetSymFromAddr(GetCurrentProcess(), sf.AddrPC.Offset, &symoff, &sym) && SymGetLineFromAddr(GetCurrentProcess(), sf.AddrPC.Offset, &lineoff, &line))
-#endif
-        {
-            char *del = strrchr(line.FileName, '\\');
-            concformatstring(out, "%s - %s [%d]\n", sym.Name, del ? del + 1 : line.FileName, line.LineNumber);
-        }
-    }
-    fatal(out);
-}
-#endif
-
 #define MAXFPSHISTORY 60
 
 int fpspos = 0, fpshistory[MAXFPSHISTORY];
@@ -1239,8 +1186,4 @@ int main(int argc, char **argv)
         renderedframe = inbetweenframes = true; //done!
     }
     return EXIT_FAILURE;
-
-    #if defined(WIN32) && !defined(_DEBUG) && !defined(__GNUC__)
-    } __except(stackdumper(0, GetExceptionInformation()), EXCEPTION_CONTINUE_SEARCH) { return 0; }
-    #endif
 }
