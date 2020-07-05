@@ -127,6 +127,15 @@ extern void entselectionbox(const entity &e, vec &eo, vec &es);
 extern void mmboundbox(const entity &e, model *m, vec &center, vec &radius);
 extern float getdecalslotdepth(DecalSlot &s);
 
+
+namespace entities
+{
+    extern vector<extentity *> ents;
+
+    extern extentity *newentity();
+    extern void deleteentity(extentity *e);
+}
+
 // main
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
 
@@ -183,7 +192,6 @@ extern void particle_meter(const vec &s, float val, int type, int fade = 1, int 
 extern void particle_flare(const vec &p, const vec &dest, int fade, int type, int color = 0xFFFFFF, float size = 0.28f, physent *owner = NULL);
 extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
 extern void removetrackedparticles(physent *owner = NULL);
-extern bool printparticles(extentity &e, char *buf, int len);
 
 // renderva
 extern int octaentsize;

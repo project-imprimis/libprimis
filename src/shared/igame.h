@@ -2,16 +2,6 @@
 
 struct VSlot;
 
-namespace entities
-{
-    extern const char *entname(int i);
-    extern extentity *newentity();
-    extern void deleteentity(extentity *e);
-    extern void clearents();
-    extern vector<extentity *> &getents();
-    extern const char *entmodel(const entity &e);
-}
-
 namespace game
 {
     extern void parseoptions(vector<const char *> &args);

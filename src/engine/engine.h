@@ -865,6 +865,13 @@ extern bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
 extern void attachentities();
 extern void entcancel();
 
+namespace entities
+{
+    extern extentity *newentity();
+    extern void deleteentity(extentity *e);
+    extern vector<extentity *> &getents();
+}
+
 // rendermodel
 struct mapmodelinfo { string name; model *m, *collide; };
 
@@ -913,7 +920,6 @@ extern void seedparticles();
 extern void updateparticles();
 extern void debugparticles();
 extern void renderparticles(int layer = ParticleLayer_All);
-extern bool printparticles(extentity &e, char *buf, int len);
 extern void cleanupparticles();
 
 extern bool canaddparticles();

@@ -1147,7 +1147,7 @@ bool load_world(const char *mname, const char *cname)
         {
             if(e.type != EngineEnt_Light && e.type != EngineEnt_Spotlight)
             {
-                conoutf(Console_Warn, "warning: ent outside of world: enttype[%s] index %d (%f, %f, %f)", entities::entname(e.type), i, e.o.x, e.o.y, e.o.z);
+                conoutf(Console_Warn, "warning: ent outside of world: index %d (%f, %f, %f)", i, e.o.x, e.o.y, e.o.z);
             }
         }
     }

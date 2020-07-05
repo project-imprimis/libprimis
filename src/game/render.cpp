@@ -547,7 +547,6 @@ namespace game
         {
             renderplayer(player1, 1, third ? 0 : Model_OnlyShadow);
         }
-        entities::renderentities();
         renderbouncers();
         renderprojectiles();
         if(cmode)

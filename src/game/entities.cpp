@@ -31,6 +31,8 @@ namespace entities
     extern void editent(int i, bool local);
     extern void fixentity(extentity &e);
     extern void entradius(extentity &e, bool color);
+    extern const char *entname(int i);
+    extern vector<extentity *> &getents();
 }
 
 extern selinfo sel;
@@ -128,6 +130,38 @@ void entset(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
                   e.attr4=*a4;
                   e.attr5=*a5);
     }
+}
+
+bool printparticles(extentity &e, char *buf, int len)
+{
+    switch(e.attr1)
+    {
+        case 0:
+        case 4:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        {
+            nformatstring(buf, len, "%s %d %d %d 0x%.3hX %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+            return true;
+        }
+        case 3:
+        {
+            nformatstring(buf, len, "%s %d %d 0x%.3hX %d %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+            return true;
+        }
+        case 5:
+        case 6:
+        {
+            nformatstring(buf, len, "%s %d %d 0x%.3hX 0x%.3hX %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+            return true;
+        }
+    }
+    return false;
 }
 
 //prints out attributes of an entity
@@ -1308,13 +1342,6 @@ namespace entities
 {
     using namespace game;
 
-    vector<extentity *> ents;
-
-    vector<extentity *> &getents()
-    {
-        return ents;
-    }
-
     const char *itemname(int i)
     {
         return NULL;
@@ -1336,22 +1363,6 @@ namespace entities
             NULL
         };
         return entmdlnames[type];
-    }
-
-    const char *entmodel(const entity &e)
-    {
-        if(e.type == GamecodeEnt_Teleport)
-        {
-            if(e.attr2 > 0)
-            {
-                return mapmodelname(e.attr2);
-            }
-            if(e.attr2 < 0)
-            {
-                return NULL;
-            }
-        }
-        return e.type < GamecodeEnt_MaxEntTypes ? entmdlname(e.type) : NULL;
     }
 
     void preloadentities()
@@ -1385,41 +1396,6 @@ namespace entities
                     }
                     break;
                 }
-            }
-        }
-    }
-
-    void renderentities()
-    {
-        for(int i = 0; i < ents.length(); i++)
-        {
-            extentity &e = *ents[i];
-            int revs = 10;
-            switch(e.type)
-            {
-                case GamecodeEnt_Teleport:
-                {
-                    if(e.attr2 < 0)
-                    {
-                        continue;
-                    }
-                    break;
-                }
-                default:
-                {
-                    if(!e.spawned() || !VALID_ITEM(e.type))
-                    {
-                        continue;
-                    }
-                    break;
-                }
-            }
-            const char *mdlname = entmodel(e);
-            if(mdlname)
-            {
-                vec p = e.o;
-                p.z += 1+sinf(lastmillis/100.0+e.o.x+e.o.y)/20;
-                rendermodel(mdlname, Anim_Mapmodel|ANIM_LOOP, p, lastmillis/static_cast<float>(revs), 0, 0, Model_CullVFC | Model_CullDist | Model_CullOccluded);
             }
         }
     }
@@ -1680,24 +1656,6 @@ namespace entities
         if(ents.inrange(i))
         {
             ents[i]->setspawned(on);
-        }
-    }
-
-    extentity *newentity()
-    {
-        return new extentity();
-    }
-
-    void deleteentity(extentity *e)
-    {
-        delete e;
-    }
-
-    void clearents()
-    {
-        while(ents.length())
-        {
-            deleteentity(ents.pop());
         }
     }
 

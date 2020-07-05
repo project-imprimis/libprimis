@@ -736,7 +736,6 @@ namespace entities
     extern int itemicon(int i);
 
     extern void preloadentities();
-    extern void renderentities();
     extern void checkitems(gameent *d);
     extern void resetspawns();
     extern void spawnitems(bool force = false);

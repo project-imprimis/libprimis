@@ -10,6 +10,41 @@ VARNR(mapsize, worldsize, 1, 0, 0);
 SVARR(maptitle, "Untitled Map by Unknown");
 VARNR(emptymap, _emptymap, 1, 0, 0);
 
+namespace entities
+{
+    using namespace game;
+
+    vector<extentity *> ents;
+
+    vector<extentity *> &getents()
+    {
+        return ents;
+    }
+
+    const char *entmodel(const entity &e)
+    {
+        return NULL;
+    }
+
+    extentity *newentity()
+    {
+        return new extentity();
+    }
+
+    void deleteentity(extentity *e)
+    {
+        delete e;
+    }
+
+    void clearents()
+    {
+        while(ents.length())
+        {
+            deleteentity(ents.pop());
+        }
+    }
+
+}
 //octaents are the ones that modify the level directly: other entities like
 //sounds, lights, spawns etc. don't get directly rendered
 VAR(entselradius, 0, 2, 10);
