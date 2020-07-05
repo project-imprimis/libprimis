@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "light.h"
 #include "render/radiancehints.h"
+#include "render/renderwindow.h"
 #include "interface/input.h"
 #include "world/raycube.h"
 

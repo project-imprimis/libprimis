@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "world/raycube.h"
+#include "renderwindow.h"
 
 static inline void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
 {

@@ -3,6 +3,7 @@
 #include "engine.h"
 #include "light.h"
 #include "raycube.h"
+#include "render/renderwindow.h"
 
 static struct emptycube : cube
 {

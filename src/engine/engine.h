@@ -803,8 +803,6 @@ extern bool initwarning(const char *desc, int level = Init_Reset, int type = Cha
 extern int scr_w, scr_h;
 
 extern float loadprogress;
-extern void renderbackground(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL, bool force = false);
-extern void renderprogress(float bar, const char *text, bool background = false);
 
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 extern void swapbuffers(bool overlay = true);

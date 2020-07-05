@@ -90,6 +90,7 @@ CLIENT_OBJS= \
 	engine/render/rendersky.o \
 	engine/render/rendertext.o \
 	engine/render/renderva.o \
+	engine/render/renderwindow.o \
 	engine/render/shader.o \
 	engine/render/stain.o \
 	engine/render/texture.o \

@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "input.h"
 #include "SDL_mixer.h"
-
+#include "render/renderwindow.h"
 
 bool nosound = true;
 

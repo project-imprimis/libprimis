@@ -10,6 +10,8 @@ model *loadingmodel = NULL;
 #include "model/vertmodel.h"
 #include "model/skelmodel.h"
 #include "world/hitzone.h"
+#include "renderwindow.h"
+
 
 model *loadmapmodel(int n)
 {

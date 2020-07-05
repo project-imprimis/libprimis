@@ -1,6 +1,7 @@
 // shader.cpp: OpenGL GLSL shader management
 
 #include "engine.h"
+#include "renderwindow.h"
 
 Shader *Shader::lastshader = NULL;
 
