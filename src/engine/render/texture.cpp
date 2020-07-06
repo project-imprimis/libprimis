@@ -441,9 +441,9 @@ static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src,
                 }
                 curdst[0] = val1;
                 curdst[1] = val2;
-                *(ushort *)&curdst[2] = ushort(dval);
-                *(ushort *)&curdst[4] = ushort(dval>>16);
-                *(ushort *)&curdst[6] = ushort(dval>>32);
+                *reinterpret_cast<ushort *>(&curdst[2]) = static_cast<ushort>(dval);
+                *reinterpret_cast<ushort *>(&curdst[4]) = static_cast<ushort>(dval>>16);
+                *reinterpret_cast<ushort *>(&curdst[6]) = static_cast<ushort>(dval>>32);
                 src += 8;
                 curdst += 8;
             }
@@ -3150,10 +3150,10 @@ DECODEDDS(decodedxt1, s.compressed == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 4 : 3,
 );
 
 DECODEDDS(decodedxt3, 4,
-    ullong alpha  = *(const ullong *)src;
-    ushort color0 = *(const ushort *)&src[8];
-    ushort color1 = *(const ushort *)&src[10];
-    uint bits     = *(const uint   *)&src[12];
+    ullong alpha  = *reinterpret_cast<const ullong *>(src);
+    ushort color0 = *reinterpret_cast<const ushort *>(&src[8]);
+    ushort color1 = *reinterpret_cast<const ushort *>(&src[10]);
+    uint bits     = *reinterpret_cast<const uint   *>(&src[12]);
     bvec rgb[4];
     rgb[0] = bvec::from565(color0);
     rgb[1] = bvec::from565(color1);
@@ -3194,10 +3194,10 @@ static inline void decodealpha(uchar alpha0, uchar alpha1, uchar alpha[8])
 DECODEDDS(decodedxt5, 4,
     uchar alpha[8];
     decodealpha(src[0], src[1], alpha);
-    ullong alphabits = *(const ushort *)&src[2] + ((ullong)*(const uint *)&src[4] << 16);
-    ushort color0 = *(const ushort *)&src[8];
-    ushort color1 = *(const ushort *)&src[10];
-    uint bits     = *(const uint *)&src[12];
+    ullong alphabits = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16);
+    ushort color0 = *reinterpret_cast<const ushort *>(&src[8]);
+    ushort color1 = *reinterpret_cast<const ushort *>(&src[10]);
+    uint bits     = *reinterpret_cast<const uint *>(&src[12]);
     bvec rgb[4];
     rgb[0] = bvec::from565(color0);
     rgb[1] = bvec::from565(color1);
@@ -3214,7 +3214,7 @@ DECODEDDS(decodedxt5, 4,
 DECODEDDS(decodergtc1, 1,
     uchar red[8];
     decodealpha(src[0], src[1], red);
-    ullong redbits = *(const ushort *)&src[2] + ((ullong)*(const uint *)&src[4] << 16);
+    ullong redbits = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16);
 ,
     dst[0] = red[redbits&7];
 ,
@@ -3224,10 +3224,10 @@ DECODEDDS(decodergtc1, 1,
 DECODEDDS(decodergtc2, 2,
     uchar red[8];
     decodealpha(src[0], src[1], red);
-    ullong redbits = *(const ushort *)&src[2] + ((ullong)*(const uint *)&src[4] << 16);
+    ullong redbits = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16);
     uchar green[8];
     decodealpha(src[8], src[9], green);
-    ullong greenbits = *(const ushort *)&src[10] + ((ullong)*(const uint *)&src[12] << 16);
+    ullong greenbits = *reinterpret_cast<const ushort *>(&src[10]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[12])) << 16);
 ,
     dst[0] = red[redbits&7];
     dst[1] = green[greenbits&7];
@@ -3675,7 +3675,7 @@ void screenshot(char *filename)
     if(screenshotdir[0])
     {
         dirlen = strlen(buf);
-        if(buf[dirlen] != '/' && buf[dirlen] != '\\' && dirlen+1 < (int)sizeof(buf)) { buf[dirlen++] = '/'; buf[dirlen] = '\0'; }
+        if(buf[dirlen] != '/' && buf[dirlen] != '\\' && dirlen+1 < static_cast<int>(sizeof(buf))) { buf[dirlen++] = '/'; buf[dirlen] = '\0'; }
         const char *dir = findfile(buf, "w");
         if(!fileexists(dir, "w")) createdir(dir);
     }
