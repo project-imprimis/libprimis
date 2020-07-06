@@ -1079,7 +1079,7 @@ struct animmodel : model
 
             if(d && interp>=0)
             {
-                animinterpinfo &ai = d->animinterp[interp];
+                animinterpinfo &animationinterpolation = d->animinterp[interp];
                 if((info.anim&(ANIM_LOOP|ANIM_CLAMP))==ANIM_CLAMP)
                 {
                     aitime = min(aitime, static_cast<int>(info.range*info.speed*0.5e-3f));
@@ -1087,28 +1087,28 @@ struct animmodel : model
                 void *ak = meshes->animkey();
                 if(d->ragdoll && d->ragdoll->millis != lastmillis)
                 {
-                    ai.prev.range = ai.cur.range = 0;
-                    ai.lastswitch = -1;
+                    animationinterpolation.prev.range = animationinterpolation.cur.range = 0;
+                    animationinterpolation.lastswitch = -1;
                 }
-                else if(ai.lastmodel!=ak || ai.lastswitch<0 || lastmillis-d->lastrendered>aitime)
+                else if(animationinterpolation.lastmodel!=ak || animationinterpolation.lastswitch<0 || lastmillis-d->lastrendered>aitime)
                 {
-                    ai.prev = ai.cur = info;
-                    ai.lastswitch = lastmillis-aitime*2;
+                    animationinterpolation.prev = animationinterpolation.cur = info;
+                    animationinterpolation.lastswitch = lastmillis-aitime*2;
                 }
-                else if(ai.cur!=info)
+                else if(animationinterpolation.cur!=info)
                 {
-                    if(lastmillis-ai.lastswitch>aitime/2)
+                    if(lastmillis-animationinterpolation.lastswitch>aitime/2)
                     {
-                        ai.prev = ai.cur;
+                        animationinterpolation.prev = animationinterpolation.cur;
                     }
-                    ai.cur = info;
-                    ai.lastswitch = lastmillis;
+                    animationinterpolation.cur = info;
+                    animationinterpolation.lastswitch = lastmillis;
                 }
                 else if(info.anim&ANIM_SETTIME)
                 {
-                    ai.cur.basetime = info.basetime;
+                    animationinterpolation.cur.basetime = info.basetime;
                 }
-                ai.lastmodel = ak;
+                animationinterpolation.lastmodel = ak;
             }
             return true;
         }
