@@ -396,7 +396,7 @@ struct vacollect : verthash
         {
             orient.rotate_around_y(sincosmod360(-e.attr4));
         }
-        vec size(max(float(e.attr5), 1.0f));
+        vec size(max(static_cast<float>(e.attr5), 1.0f));
         size.y *= s.depth;
         if(!s.sts.empty())
         {
@@ -1506,9 +1506,12 @@ void gencubeverts(cube &c, const ivec &co, int size, int csi)
             }
 
             VSlot &vslot = lookupvslot(c.texture[i], true);
-            while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1)) tj = tjoints[tj].next;
-            int hastj = tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1) ? tj : -1;
-            int grassy = vslot.slot->grass && i!=Orient_Bottom ? (vis!=3 || convex ? 1 : 2) : 0;
+            while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1))
+            {
+                tj = tjoints[tj].next;
+            }
+            int hastj = tj >= 0 && tjoints[tj].edge < (i+1)*(Face_MaxVerts+1) ? tj : -1,
+                grassy = vslot.slot->grass && i!=Orient_Bottom ? (vis!=3 || convex ? 1 : 2) : 0;
             if(!c.ext)
             {
                 addcubeverts(vslot, i, size, pos, convex, c.texture[i], NULL, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0);
@@ -1885,7 +1888,9 @@ void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // cr
             int level = -1;
             rendercube(c.children[i], o, size/2, csi-1, level);
             if(level >= csi)
+            {
                 c.escaped |= 1<<i;
+            }
             maxlevel = max(maxlevel, level);
         }
         --neighbordepth;
@@ -1965,10 +1970,8 @@ void setva(cube &c, const ivec &co, int size, int csi)
     {
         vamergeoffset[i] = vamerges[i].length();
     }
-
     vc.origin = co;
     vc.size = size;
-
     for(int i = 0; i < entdepth+1; ++i)
     {
         octaentities *oe = entstack[i];
@@ -1977,10 +1980,8 @@ void setva(cube &c, const ivec &co, int size, int csi)
             vc.extdecals.add(oe);
         }
     }
-
     int maxlevel = -1;
     rendercube(c, co, size, csi, maxlevel);
-
     if(size == min(0x1000, worldsize/2) || !vc.emptyva())
     {
         vtxarray *va = newva(co, size);
@@ -1997,13 +1998,15 @@ void setva(cube &c, const ivec &co, int size, int csi)
             vamerges[i].setsize(vamergeoffset[i]);
         }
     }
-
     vc.clear();
 }
 
 static inline int setcubevisibility(cube &c, const ivec &co, int size)
 {
-    if(IS_EMPTY(c) && (c.material&MatFlag_Clip) != Mat_Clip) return 0;
+    if(IS_EMPTY(c) && (c.material&MatFlag_Clip) != Mat_Clip)
+    {
+        return 0;
+    }
     int numvis = 0,
         vismask = 0,
         collidemask = 0,
@@ -2039,9 +2042,10 @@ static inline int setcubevisibility(cube &c, const ivec &co, int size)
     return numvis;
 }
 
+//va settings, used in updateva below
 VARF(vafacemax, 64, 384, 256*256, allchanged());
 VARF(vafacemin, 0, 96, 256*256, allchanged());
-VARF(vacubesize, 32, 128, 0x1000, allchanged());
+VARF(vacubesize, 32, 128, 0x1000, allchanged()); //note that performance drops off at low values -> large numbers of VAs
 
 int updateva(cube *c, const ivec &co, int size, int csi)
 {
@@ -2085,7 +2089,7 @@ int updateva(cube *c, const ivec &co, int size, int csi)
             int tcount = count + (csi <= MAXMERGELEVEL ? vamerges[csi].length() : 0);
             if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == min(0x1000, worldsize/2))
             {
-                loadprogress = clamp(recalcprogress/float(allocnodes), 0.0f, 1.0f);
+                loadprogress = clamp(recalcprogress/static_cast<float>(allocnodes), 0.0f, 1.0f);
                 setva(c[i], o, size, csi);
                 if(c[i].ext && c[i].ext->va)
                 {
