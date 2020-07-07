@@ -1003,7 +1003,7 @@ struct animmodel : model
             info.range = 1;
         }
 
-        bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &aitime)
+        bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime)
         {
             uint varseed = uint((size_t)d);
             info.anim = anim;
@@ -1082,7 +1082,7 @@ struct animmodel : model
                 animinterpinfo &animationinterpolation = d->animinterp[interp];
                 if((info.anim&(ANIM_LOOP|ANIM_CLAMP))==ANIM_CLAMP)
                 {
-                    aitime = min(aitime, static_cast<int>(info.range*info.speed*0.5e-3f));
+                    animinterptime = min(animinterptime, static_cast<int>(info.range*info.speed*0.5e-3f));
                 }
                 void *ak = meshes->animkey();
                 if(d->ragdoll && d->ragdoll->millis != lastmillis)
@@ -1090,14 +1090,14 @@ struct animmodel : model
                     animationinterpolation.prev.range = animationinterpolation.cur.range = 0;
                     animationinterpolation.lastswitch = -1;
                 }
-                else if(animationinterpolation.lastmodel!=ak || animationinterpolation.lastswitch<0 || lastmillis-d->lastrendered>aitime)
+                else if(animationinterpolation.lastmodel!=ak || animationinterpolation.lastswitch<0 || lastmillis-d->lastrendered>animinterptime)
                 {
                     animationinterpolation.prev = animationinterpolation.cur = info;
-                    animationinterpolation.lastswitch = lastmillis-aitime*2;
+                    animationinterpolation.lastswitch = lastmillis-animinterptime*2;
                 }
                 else if(animationinterpolation.cur!=info)
                 {
-                    if(lastmillis-animationinterpolation.lastswitch>aitime/2)
+                    if(lastmillis-animationinterpolation.lastswitch>animinterptime/2)
                     {
                         animationinterpolation.prev = animationinterpolation.cur;
                     }
