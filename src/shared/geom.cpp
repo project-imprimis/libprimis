@@ -1,6 +1,12 @@
 #include "cube.h"
 
-static inline double det2x2(double a, double b, double c, double d) { return a*d - b*c; }
+//needed for det3
+static inline double det2x2(double a, double b, double c, double d)
+{
+    return a*d - b*c;
+}
+
+//needed to invert matrix below
 static inline double det3x3(double a1, double a2, double a3,
                             double b1, double b2, double b3,
                             double c1, double c2, double c3)
@@ -55,9 +61,15 @@ bool raysphereintersect(const vec &center, float radius, const vec &o, const vec
     c.sub(o);
     float v = c.dot(ray),
           inside = radius*radius - c.squaredlen();
-    if(inside<0 && v<0) return false;
+    if(inside<0 && v<0)
+    {
+        return false;
+    }
     float d = inside + v*v;
-    if(d<0) return false;
+    if(d<0)
+    {
+        return false;
+    }
     dist = v - sqrt(d);
     return true;
 }
@@ -179,13 +191,25 @@ int polyclip(const vec *in, int numin, const vec &dir, float below, float above,
         float c = dir.dot(v);
         if(c < below)
         {
-            if(pc > above) out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
-            if(pc > below) out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+            if(pc > above)
+            {
+                out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+            }
+            if(pc > below)
+            {
+                out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+            }
         }
         else if(c > above)
         {
-            if(pc < below) out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
-            if(pc < above) out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+            if(pc < below)
+            {
+                out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+            }
+            if(pc < above)
+            {
+                out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+            }
         }
         else
         {
@@ -193,7 +217,10 @@ int polyclip(const vec *in, int numin, const vec &dir, float below, float above,
             {
                 if(c > below) out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
             }
-            else if(pc > above && c < above) out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+            else if(pc > above && c < above)
+            {
+                out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+            }
             out[numout++] = v;
         }
         p = &v;
