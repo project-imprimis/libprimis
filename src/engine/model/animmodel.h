@@ -1127,8 +1127,8 @@ struct animmodel : model
                 {
                     animinfo info;
                     int interp = d && index+numanimparts<=maxanimparts ? index+i : -1,
-                        aitime = animationinterpolationtime;
-                    if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime))
+                        animinterptime = animationinterpolationtime;
+                    if(!calcanim(i, anim, basetime, basetime2, d, interp, info, animinterptime))
                     {
                         return;
                     }
@@ -1139,10 +1139,10 @@ struct animmodel : model
                     if(interp>=0 && d->animinterp[interp].prev.range>0)
                     {
                         int diff = lastmillis-d->animinterp[interp].lastswitch;
-                        if(diff<aitime)
+                        if(diff<animinterptime)
                         {
                             p.prev.setframes(d->animinterp[interp].prev);
-                            p.interp = diff/static_cast<float>(aitime);
+                            p.interp = diff/static_cast<float>(animinterptime);
                         }
                     }
                 }
@@ -1229,8 +1229,8 @@ struct animmodel : model
                 for(int i = 0; i < numanimparts; ++i)
                 {
                     animinfo info;
-                    int interp = d && index+numanimparts<=maxanimparts ? index+i : -1, aitime = animationinterpolationtime;
-                    if(!calcanim(i, anim, basetime, basetime2, d, interp, info, aitime))
+                    int interp = d && index+numanimparts<=maxanimparts ? index+i : -1, animinterptime = animationinterpolationtime;
+                    if(!calcanim(i, anim, basetime, basetime2, d, interp, info, animinterptime))
                     {
                         return;
                     }
@@ -1241,10 +1241,10 @@ struct animmodel : model
                     if(interp>=0 && d->animinterp[interp].prev.range>0)
                     {
                         int diff = lastmillis-d->animinterp[interp].lastswitch;
-                        if(diff<aitime)
+                        if(diff<animinterptime)
                         {
                             p.prev.setframes(d->animinterp[interp].prev);
-                            p.interp = diff/static_cast<float>(aitime);
+                            p.interp = diff/static_cast<float>(animinterptime);
                         }
                     }
                 }
