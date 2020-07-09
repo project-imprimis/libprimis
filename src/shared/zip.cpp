@@ -7,12 +7,12 @@ extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 
 enum
 {
-    ZIP_LOCAL_FILE_SIGNATURE = 0x04034B50,
-    ZIP_LOCAL_FILE_SIZE      = 30,
-    ZIP_FILE_SIGNATURE       = 0x02014B50,
-    ZIP_FILE_SIZE            = 46,
-    ZIP_DIRECTORY_SIGNATURE  = 0x06054B50,
-    ZIP_DIRECTORY_SIZE       = 22
+    Zip_LocalFileSignature = 0x04034B50,
+    Zip_LocalFileSize      = 30,
+    Zip_FileSignature       = 0x02014B50,
+    Zip_FileSize            = 46,
+    Zip_DirectorySignature  = 0x06054B50,
+    Zip_DirectorySize       = 22
 };
 
 struct ziplocalfileheader
@@ -90,15 +90,15 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
         return false;
     }
     uchar buf[1024], *src = NULL;
-    long end = max(offset - 0xFFFFL - ZIP_DIRECTORY_SIZE, 0L);
+    long end = max(offset - 0xFFFFL - Zip_DirectorySize, 0L);
     size_t len = 0;
-    const uint signature = static_cast<uint>(ZIP_DIRECTORY_SIGNATURE);
+    const uint signature = static_cast<uint>(Zip_DirectorySignature);
     while(offset > end)
     {
-        size_t carry = min(len, size_t(ZIP_DIRECTORY_SIZE-1)), next = min(sizeof(buf) - carry, size_t(offset - end));
+        size_t carry = min(len, size_t(Zip_DirectorySize-1)), next = min(sizeof(buf) - carry, size_t(offset - end));
         offset -= next;
         memmove(&buf[next], buf, carry);
-        if(next + carry < ZIP_DIRECTORY_SIZE || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, next, f) != next)
+        if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, next, f) != next)
         {
             return false;
         }
@@ -117,7 +117,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
             break;
         }
     }
-    if(!src || &buf[len] - src < ZIP_DIRECTORY_SIZE)
+    if(!src || &buf[len] - src < Zip_DirectorySize)
     {
         return false;
     }
@@ -129,7 +129,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     hdr.size = *(uint *)src; src += 4;
     hdr.offset = *(uint *)src; src += 4;
     hdr.commentlength = *(ushort *)src; src += 2;
-    if(hdr.signature != ZIP_DIRECTORY_SIGNATURE || hdr.disknumber != hdr.directorydisk || hdr.diskentries != hdr.entries)
+    if(hdr.signature != Zip_DirectorySignature || hdr.disknumber != hdr.directorydisk || hdr.diskentries != hdr.entries)
     {
         return false;
     }
@@ -148,7 +148,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
     }
     for(int i = 0; i < entries; ++i)
     {
-        if(src + ZIP_FILE_SIZE > &buf[size])
+        if(src + Zip_FileSize > &buf[size])
         {
             break;
         }
@@ -170,7 +170,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
         hdr.internalattribs = *(ushort *)src; src += 2;
         hdr.externalattribs = *(uint *)src; src += 4;
         hdr.offset = *(uint *)src; src += 4;
-        if(hdr.signature != ZIP_FILE_SIGNATURE)
+        if(hdr.signature != Zip_FileSignature)
         {
             break;
         }
@@ -206,8 +206,8 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
 
 static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
 {
-    uchar buf[ZIP_LOCAL_FILE_SIZE];
-    if(fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, ZIP_LOCAL_FILE_SIZE, f) != ZIP_LOCAL_FILE_SIZE)
+    uchar buf[Zip_LocalFileSize];
+    if(fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, Zip_LocalFileSize, f) != Zip_LocalFileSize)
     {
         return false;
     }
@@ -223,7 +223,7 @@ static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
     h.uncompressedsize = *(uint *)src; src += 4;
     h.namelength = *(ushort *)src; src += 2;
     h.extralength = *(ushort *)src; src += 2;
-    if(h.signature != ZIP_LOCAL_FILE_SIGNATURE)
+    if(h.signature != Zip_LocalFileSignature)
     {
         return false;
     }
@@ -451,7 +451,7 @@ struct zipstream : stream
             {
                 return false;
             }
-            f->offset = f->header + ZIP_LOCAL_FILE_SIZE + h.namelength + h.extralength;
+            f->offset = f->header + Zip_LocalFileSize + h.namelength + h.extralength;
         }
         if(f->compressedsize && inflateInit2(&zfile, -MAX_WBITS) != Z_OK)
         {
