@@ -101,3 +101,6 @@ namespace server
     extern bool ispaused();
     extern int scaletime(int t);
 }
+
+extern bool isconnected(bool attempt = false, bool local = true);
+extern bool multiplayer(bool msg = true);

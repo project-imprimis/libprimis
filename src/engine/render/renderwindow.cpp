@@ -4,6 +4,9 @@
 #include "interface/input.h"
 #include "renderwindow.h"
 
+VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
+VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
+
 VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
 int screenw = 0,
@@ -304,7 +307,6 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         }
         lastprogress = ticks;
     }
-    clientkeepalive();      // make sure our connection doesn't time out while loading maps etc.
     int w = hudw,
         h = hudh;
     if(forceaspect)

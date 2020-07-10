@@ -1,6 +1,4 @@
-#include "engine.h"
-#include "input.h"
-#include "render/renderwindow.h"
+#include "game.h"
 
 struct resolverthread
 {

@@ -19,6 +19,7 @@ extern bool isthirdperson();
 
 extern bool settexture(const char *name, int clamp = 0);
 extern int xtraverts, xtravertsva;
+extern SDL_Window *screen;
 
 extern dynent *player;
 
@@ -98,16 +99,32 @@ extern void printvar(ident *id, int i);
 extern int clampvar(ident *id, int i, int minval, int maxval);
 extern void loopiter(ident *id, identstack &stack, int i);
 extern void loopend(ident *id, identstack &stack);
+const char *escapeid(const char *s);
+extern void writecfg(const char *name = NULL);
+extern void checksleep(int millis);
+
+extern int identflags;
 
 // console
 
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
+extern void logoutfv(const char *fmt, va_list args);
+
+// input
+
+extern bool grabinput, minimized;
+
+extern bool interceptkey(int sym);
+extern void inputgrab(bool on);
+extern void checkinput();
+extern void ignoremousemotion();
 
 // octa
 
 extern int lookupmaterial(const vec &o);
+extern void freeocta(cube *c);
 
 // world
 
@@ -138,15 +155,21 @@ namespace entities
 
 // main
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
+extern int scr_w, scr_h;
 
 // rendertext
 extern void draw_text(const char *str, float left, float top, int r = 255, int g = 255, int b = 255, int a = 255, int cursor = -1, int maxwidth = -1);
 extern void draw_textf(const char *fstr, float left, float top, ...) PRINTFARGS(1, 4);
 extern void text_boundsf(const char *str, float &width, float &height, int maxwidth = -1);
 
+extern bool setfont(const char *name);
+
 // texture
 
 struct VSlot;
+struct Texture;
+
+extern Texture *notexture;
 
 extern void packvslot(vector<uchar> &buf, int index);
 extern void packvslot(vector<uchar> &buf, const VSlot *vs);
@@ -154,6 +177,7 @@ extern void packvslot(vector<uchar> &buf, const VSlot *vs);
 extern void adddynlight(const vec &o, float radius, const vec &color, int fade = 0, int peak = 0, int flags = 0, float initradius = 0, const vec &initcolor = vec(0, 0, 0), physent *owner = NULL, const vec &dir = vec(0, 0, 0), int spot = 0);
 extern void removetrackeddynlights(physent *owner = NULL);
 extern DecalSlot &lookupdecalslot(int slot, bool load = true);
+extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
 
 // rendergl
 extern physent *camera1;
@@ -178,6 +202,17 @@ extern void flushhudmatrix(bool flushparams = true);
 extern void pophudmatrix(bool flush = true, bool flushparams = true);
 extern void pushhudscale(float sx, float sy = 0);
 extern void resethudshader();
+extern void recomputecamera();
+extern void initgbuffer();
+
+extern void gl_checkextensions();
+extern void gl_init();
+extern void gl_resize();
+extern void gl_drawview();
+extern void gl_drawmainmenu();
+extern void gl_drawhud();
+extern void gl_setupframe(bool force = false);
+extern void gl_drawframe();
 
 // renderparticles
 
@@ -192,11 +227,17 @@ extern void particle_meter(const vec &s, float val, int type, int fade = 1, int 
 extern void particle_flare(const vec &p, const vec &dest, int fade, int type, int color = 0xFFFFFF, float size = 0.28f, physent *owner = NULL);
 extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
 extern void removetrackedparticles(physent *owner = NULL);
+extern void initparticles();
+extern void updateparticles();
 
 // renderva
 extern int octaentsize;
 
+// shader
+extern void loadshaders();
+
 // stain
+extern void initstains();
 extern void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color = bvec(0xFF, 0xFF, 0xFF), int info = 0);
 
 inline void addstain(int type, const vec &center, const vec &surface, float radius, int color, int info = 0)
@@ -246,6 +287,7 @@ extern void preloadmapsound(int n);
 extern bool stopsound(int n, int chanid, int fade = 0);
 extern void stopsounds();
 extern void initsound();
+extern void updatesounds();
 
 // rendermodel
 
@@ -271,6 +313,19 @@ extern int spotlights;
 extern int volumetriclights;
 extern int nospeclights;
 
+// renderwindow
+extern void swapbuffers(bool overlay = true);
+extern int fullscreen;
+extern void setupscreen();
+extern void restoregamma();
+extern void restorevsync();
+extern void resetfpshistory();
+extern void limitfps(int &millis, int curmillis);
+extern void updatefpshistory(int millis);
+
+extern void renderbackground(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL, bool force = false);
+extern void renderprogress(float bar, const char *text, bool background = false);
+
 // light
 
 extern void clearlightcache(int id = -1);
@@ -279,6 +334,19 @@ extern void clearlightcache(int id = -1);
 
 namespace UI
 {
+    bool hascursor();
+    void getcursorpos(float &x, float &y);
+    void resetcursor();
+    bool movecursor(int dx, int dy);
+    bool keypress(int code, bool isdown);
+    bool textinput(const char *str, int len);
+    float abovehud();
+
+    void setup();
+    void update();
+    void render();
+    void cleanup();
+
     bool showui(const char *name);
     bool hideui(const char *name);
     bool toggleui(const char *name);
@@ -286,60 +354,17 @@ namespace UI
     bool uivisible(const char *name);
 }
 
+// menus
+
+extern void menuprocess();
+extern int mainmenu;
+
+extern void addchange(const char *desc, int type);
+
 // ragdoll
 
 extern void moveragdoll(dynent *d);
 extern void cleanragdoll(dynent *d);
-
-// server
-extern int maxclients;
-
-extern void *getclientinfo(int i);
-extern ENetPeer *getclientpeer(int i);
-extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
-extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
-extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern void flushserver(bool force);
-extern int getservermtu();
-extern int getnumclients();
-extern uint getclientip(int n);
-extern void localconnect();
-extern const char *disconnectreason(int reason);
-extern void disconnect_client(int n, int reason);
-extern void kicknonlocalclients(int reason = Discon_None);
-extern bool hasnonlocalclients();
-extern bool haslocalclients();
-extern void sendserverinforeply(ucharbuf &p);
-extern bool requestmaster(const char *req);
-extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
-extern bool isdedicatedserver();
-
-// serverbrowser
-
-extern servinfo *getservinfo(int i);
-
-#define GETSERVINFO(idx, si, body) do { \
-    servinfo *si = getservinfo(idx); \
-    if(si) \
-    { \
-        body; \
-    } \
-} while(0)
-
-#define GETSERVINFOATTR(idx, aidx, aval, body) \
-    GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
-
-// client
-extern void sendclientpacket(ENetPacket *packet, int chan);
-
-extern void flushclient();
-extern void disconnect(bool async = false, bool cleanup = true);
-extern bool isconnected(bool attempt = false, bool local = true);
-extern const ENetAddress *connectedpeer();
-extern bool multiplayer(bool msg = true);
-extern void neterr(const char *s, bool disc = true);
-extern void gets2c();
-extern void notifywelcome();
 
 // crypto
 extern void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr);

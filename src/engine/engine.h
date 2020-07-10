@@ -614,62 +614,6 @@ extern void loadcaustics(bool force = false);
 extern void renderwaterfog(int mat, float blend);
 extern void preloadwatershaders(bool force = false);
 
-// server
-extern vector<const char *> gameargs;
-
-extern void initserver(bool listen, bool dedicated);
-extern void cleanupserver();
-extern void serverslice(bool dedicated, uint timeout);
-extern void updatetime();
-
-extern ENetSocket connectmaster(bool wait);
-extern void localclienttoserver(int chan, ENetPacket *);
-extern void localconnect();
-extern bool serveroption(char *opt);
-
-extern void *getclientinfo(int i);
-extern ENetPeer *getclientpeer(int i);
-extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
-extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
-extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern void flushserver(bool force);
-extern int getservermtu();
-extern int getnumclients();
-extern uint getclientip(int n);
-extern void localconnect();
-extern const char *disconnectreason(int reason);
-extern void disconnect_client(int n, int reason);
-extern void kicknonlocalclients(int reason = Discon_None);
-extern bool hasnonlocalclients();
-extern bool haslocalclients();
-extern void sendserverinforeply(ucharbuf &p);
-extern bool requestmaster(const char *req);
-extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
-extern bool isdedicatedserver();
-
-// serverbrowser
-extern bool resolverwait(const char *name, ENetAddress *address);
-extern int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
-extern void addserver(const char *name, int port = 0, const char *password = NULL, bool keep = false);
-extern void writeservercfg();
-
-// client
-extern void localdisconnect(bool cleanup = true);
-extern void localservertoclient(int chan, ENetPacket *packet);
-extern void connectserv(const char *servername, int port, const char *serverpassword);
-extern void abortconnect();
-extern void clientkeepalive();
-
-extern void sendclientpacket(ENetPacket *packet, int chan);
-extern void flushclient();
-extern void disconnect(bool async = false, bool cleanup = true);
-extern bool isconnected(bool attempt = false, bool local = true);
-extern const ENetAddress *connectedpeer();
-extern bool multiplayer(bool msg = true);
-extern void neterr(const char *s, bool disc = true);
-extern void gets2c();
-extern void notifywelcome();
-
 // command
 
 extern void setvarchecked(ident *id, int val);
@@ -765,29 +709,9 @@ extern tagval *addreleaseaction(ident *id, int numargs);
 extern void writebinds(stream *f);
 extern void writecompletions(stream *f);
 extern FILE *getlogfile();
-extern void setlogfile(const char *fname);
-extern void closelogfile();
 
 // main
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
-
-enum
-{
-    Init_Not = 0,
-    Init_Game,
-    Init_Load,
-    Init_Reset,
-};
-
-enum
-{
-    SCR_MINW     = 320, //minimum screen resolution
-    SCR_MINH     = 200, //minumum screen resolution
-    SCR_MAXW     = 16384,
-    SCR_MAXH     = 16384,
-    SCR_DEFAULTW = 1366, //smallest typical screens are 1366x768
-    SCR_DEFAULTH = 768,
-};
 
 extern int initing;
 

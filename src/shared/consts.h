@@ -14,6 +14,16 @@
 #define IS_CLIPPED(mat) ((mat)==Mat_Glass) //materials that are obligate clipping (always also get clipped)
 #define LOOP_START(id, stack) if((id)->type != Id_Alias) return; identstack stack;
 
+enum
+{
+    SCR_MINW     = 320, //minimum screen resolution
+    SCR_MINH     = 200, //minumum screen resolution
+    SCR_MAXW     = 16384,
+    SCR_MAXH     = 16384,
+    SCR_DEFAULTW = 1366, //smallest typical screens are 1366x768
+    SCR_DEFAULTH = 768,
+};
+
 struct servinfo
 {
     string name, map, desc;
@@ -204,6 +214,14 @@ enum
     Discon_Overflow,
     Discon_Password,
     Discon_NumDiscons
+};
+
+enum
+{
+    Init_Not = 0,
+    Init_Game,
+    Init_Load,
+    Init_Reset,
 };
 
 #endif

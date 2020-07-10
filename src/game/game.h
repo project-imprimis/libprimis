@@ -890,6 +890,76 @@ namespace game
     extern vec hudgunorigin(int gun, const vec &from, const vec &to, gameent *d);
 }
 
+// server
+extern vector<const char *> gameargs;
+extern int maxclients;
+
+extern void initserver(bool listen, bool dedicated);
+extern void cleanupserver();
+extern void serverslice(bool dedicated, uint timeout);
+extern void updatetime();
+
+extern ENetSocket connectmaster(bool wait);
+extern void localclienttoserver(int chan, ENetPacket *);
+extern void localconnect();
+extern bool serveroption(char *opt);
+
+extern void *getclientinfo(int i);
+extern ENetPeer *getclientpeer(int i);
+extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
+extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
+extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
+extern void flushserver(bool force);
+extern int getservermtu();
+extern int getnumclients();
+extern uint getclientip(int n);
+extern void localconnect();
+extern const char *disconnectreason(int reason);
+extern void disconnect_client(int n, int reason);
+extern void kicknonlocalclients(int reason = Discon_None);
+extern bool hasnonlocalclients();
+extern bool haslocalclients();
+extern void sendserverinforeply(ucharbuf &p);
+extern bool requestmaster(const char *req);
+extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
+extern bool isdedicatedserver();
+extern void closelogfile();
+extern void setlogfile(const char *fname);
+
+// client
+extern void localdisconnect(bool cleanup = true);
+extern void localservertoclient(int chan, ENetPacket *packet);
+extern void connectserv(const char *servername, int port, const char *serverpassword);
+extern void abortconnect();
+
+extern void sendclientpacket(ENetPacket *packet, int chan);
+extern void flushclient();
+extern void disconnect(bool async = false, bool cleanup = true);
+extern const ENetAddress *connectedpeer();
+extern void neterr(const char *s, bool disc = true);
+extern void gets2c();
+extern void notifywelcome();
+
+// serverbrowser
+
+extern servinfo *getservinfo(int i);
+
+#define GETSERVINFO(idx, si, body) do { \
+    servinfo *si = getservinfo(idx); \
+    if(si) \
+    { \
+        body; \
+    } \
+} while(0)
+
+#define GETSERVINFOATTR(idx, aidx, aval, body) \
+    GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
+
+extern bool resolverwait(const char *name, ENetAddress *address);
+extern int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
+extern void addserver(const char *name, int port = 0, const char *password = NULL, bool keep = false);
+extern void writeservercfg();
+
 namespace server
 {
     extern const char *modename(int n, const char *unknown = "unknown");

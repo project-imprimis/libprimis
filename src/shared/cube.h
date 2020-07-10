@@ -16,6 +16,7 @@
 #include <climits>
 #include <cfloat>
 #include <cassert>
+#include <cstring>
 #include <ctime>
 
 #ifdef WIN32
