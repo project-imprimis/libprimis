@@ -23,51 +23,43 @@ extern SDL_Window *screen;
 
 extern dynent *player;
 
-//raycube
 
-extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = Ray_ClipMat, int size = 0, extentity *t = 0);
-extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
-extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
-extern bool  raycubelos(const vec &o, const vec &dest, vec &hitpos);
-extern bool insideworld(const vec &o);
+// main
+extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
+extern int scr_w, scr_h;
 
-// octaedit
+// ragdoll
 
-struct editinfo;
-extern editinfo *localedit;
-extern selinfo sel;
+extern void moveragdoll(dynent *d);
+extern void cleanragdoll(dynent *d);
 
-extern bool editmode;
-extern int entediting;
+// crypto
+extern void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr);
+extern bool calcpubkey(const char *privstr, vector<char> &pubstr);
+extern bool hashstring(const char *str, char *result, int maxlen);
+extern void answerchallenge(const char *privstr, const char *challenge, vector<char> &answerstr);
+extern void *parsepubkey(const char *pubstr);
+extern void freepubkey(void *pubkey);
+extern void *genchallenge(void *pubkey, const void *seed, int seedlen, vector<char> &challengestr);
+extern void freechallenge(void *answer);
+extern bool checkchallenge(const char *answerstr, void *correct);
 
-extern int shouldpacktex(int index);
-extern bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen);
-extern bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen);
-extern void freeeditinfo(editinfo *&e);
-extern void pruneundos(int maxremain = 0);
-extern bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen);
-extern bool unpackundo(const uchar *inbuf, int inlen, int outlen);
-extern bool noedit(bool view = false, bool msg = true);
-extern void toggleedit(bool force = true);
-extern void mpeditface(int dir, int mode, selinfo &sel, bool local);
-extern void mpedittex(int tex, int allfaces, selinfo &sel, bool local);
-extern bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf);
-extern void mpeditmat(int matid, int filter, selinfo &sel, bool local);
-extern void mpflip(selinfo &sel, bool local);
-extern void mpcopy(editinfo *&e, selinfo &sel, bool local);
-extern void mppaste(editinfo *&e, selinfo &sel, bool local);
-extern void mprotate(int cw, selinfo &sel, bool local);
-extern void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local);
-extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
-extern void mpdelcube(selinfo &sel, bool local);
-extern void mpremip(bool local);
-extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
-extern void mpcalclight(bool local);
-extern void commitchanges(bool force = false);
-extern bool pointinsel(const selinfo &sel, const vec &o);
-extern void addundo(undoblock *u);
+
+/*==============================================================================*\
+ * Interface Functions & Values                                                 *
+ *                                                                              *
+ * Input, Scripting, Sound, UI                                                  *
+ *                                                                              *
+ * command.cpp                                                                  *
+ * console.cpp                                                                  *
+ * input.cpp                                                                    *
+ * menus.cpp                                                                    *
+ * sound.cpp                                                                    *
+ * ui.cpp                                                                       *
+\*==============================================================================*/
 
 // command
+
 extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
 extern float fvariable(const char *name, float min, float cur, float max, float *storage, identfun fun, int flags);
 extern char *svariable(const char *name, const char *cur, char **storage, identfun fun, int flags);
@@ -105,12 +97,14 @@ extern void checksleep(int millis);
 
 extern int identflags;
 
+
 // console
 
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 extern void logoutfv(const char *fmt, va_list args);
+
 
 // input
 
@@ -121,65 +115,76 @@ extern void inputgrab(bool on);
 extern void checkinput();
 extern void ignoremousemotion();
 
-// octa
 
-extern int lookupmaterial(const vec &o);
-extern void freeocta(cube *c);
+// menus
 
-// world
+extern void menuprocess();
+extern int mainmenu;
 
-struct DecalSlot;
+// sound
 
-extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
-extern bool enlargemap(bool force);
-extern vec getselpos();
-extern int getworldsize();
-extern void entcancel();
-
-extern void attachentity(extentity &e);
-extern void removeentityedit(int id);
-extern void addentityedit(int id);
-extern void detachentity(extentity &e);
-extern void entselectionbox(const entity &e, vec &eo, vec &es);
-extern void mmboundbox(const entity &e, model *m, vec &center, vec &radius);
-extern float getdecalslotdepth(DecalSlot &s);
+extern int playsound(int n, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
+extern int playsoundname(const char *s, const vec *loc = NULL, int vol = 0, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
+extern void preloadsound(int n);
+extern void preloadmapsound(int n);
+extern bool stopsound(int n, int chanid, int fade = 0);
+extern void stopsounds();
+extern void initsound();
+extern void updatesounds();
 
 
-namespace entities
+// UI
+
+namespace UI
 {
-    extern vector<extentity *> ents;
+    bool hascursor();
+    void getcursorpos(float &x, float &y);
+    void resetcursor();
+    bool movecursor(int dx, int dy);
+    bool keypress(int code, bool isdown);
+    bool textinput(const char *str, int len);
+    float abovehud();
 
-    extern extentity *newentity();
-    extern void deleteentity(extentity *e);
+    void setup();
+    void update();
+    void render();
+    void cleanup();
+
+    bool showui(const char *name);
+    bool hideui(const char *name);
+    bool toggleui(const char *name);
+    void holdui(const char *name, bool on);
+    bool uivisible(const char *name);
 }
 
-// main
-extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
-extern int scr_w, scr_h;
 
-// rendertext
-extern void draw_text(const char *str, float left, float top, int r = 255, int g = 255, int b = 255, int a = 255, int cursor = -1, int maxwidth = -1);
-extern void draw_textf(const char *fstr, float left, float top, ...) PRINTFARGS(1, 4);
-extern void text_boundsf(const char *str, float &width, float &height, int maxwidth = -1);
-
-extern bool setfont(const char *name);
-
-// texture
-
-struct VSlot;
-struct Texture;
-
-extern Texture *notexture;
-
-extern void packvslot(vector<uchar> &buf, int index);
-extern void packvslot(vector<uchar> &buf, const VSlot *vs);
-
-extern void adddynlight(const vec &o, float radius, const vec &color, int fade = 0, int peak = 0, int flags = 0, float initradius = 0, const vec &initcolor = vec(0, 0, 0), physent *owner = NULL, const vec &dir = vec(0, 0, 0), int spot = 0);
-extern void removetrackeddynlights(physent *owner = NULL);
-extern DecalSlot &lookupdecalslot(int slot, bool load = true);
-extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
+extern void addchange(const char *desc, int type);
+/*==============================================================================*\
+ * Render Functions & Values                                                    *
+ *                                                                              *
+ * World, Model, Material, Screenspace FX Rendering                             *
+ *                                                                              *
+ * aa.cpp                                                                       *
+ * grass.cpp                                                                    *
+ * normal.cpp                                                                   *
+ * octarender.cpp                                                               *
+ * radiancehints.cpp                                                            *
+ * rendergl.cpp                                                                 *
+ * renderlights.cpp                                                             *
+ * rendermodel.cpp                                                              *
+ * renderparticles.cpp                                                          *
+ * rendersky.cpp                                                                *
+ * rendertext.cpp                                                               *
+ * renderva.cpp                                                                 *
+ * renderwindow.cpp                                                             *
+ * shader.cpp                                                                   *
+ * stain.cpp                                                                    *
+ * texture.cpp                                                                  *
+ * water.cpp                                                                    *
+\*==============================================================================*/
 
 // rendergl
+
 extern physent *camera1;
 extern vec worldpos, camdir, camright, camup;
 extern float curfov, fovy, aspect;
@@ -214,6 +219,30 @@ extern void gl_drawhud();
 extern void gl_setupframe(bool force = false);
 extern void gl_drawframe();
 
+// renderlights
+
+extern void clearshadowcache();
+
+extern int spotlights;
+extern int volumetriclights;
+extern int nospeclights;
+
+// rendermodel
+
+struct model;
+
+extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
+extern int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode = 0, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1);
+extern void abovemodel(vec &o, const char *mdl);
+extern void renderclient(dynent *d, const char *mdlname, modelattach *attachments, int hold, int attack, int attackdelay, int lastaction, int lastpain, float scale = 1, bool ragdoll = false, float trans = 1);
+extern void interpolateorientation(dynent *d, float &interpyaw, float &interppitch);
+extern void setbbfrommodel(dynent *d, const char *mdl);
+extern const char *mapmodelname(int i);
+extern void preloadmodel(const char *name);
+extern bool matchanim(const char *name, const char *pattern);
+extern model *loadmapmodel(int n);
+extern model *loadmodel(const char *name, int i = -1, bool msg = false);
+
 // renderparticles
 
 extern void regular_particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2, int delay = 0);
@@ -230,10 +259,34 @@ extern void removetrackedparticles(physent *owner = NULL);
 extern void initparticles();
 extern void updateparticles();
 
+// rendertext
+
+extern void draw_text(const char *str, float left, float top, int r = 255, int g = 255, int b = 255, int a = 255, int cursor = -1, int maxwidth = -1);
+extern void draw_textf(const char *fstr, float left, float top, ...) PRINTFARGS(1, 4);
+extern void text_boundsf(const char *str, float &width, float &height, int maxwidth = -1);
+
+extern bool setfont(const char *name);
+
 // renderva
+
 extern int octaentsize;
 
+// renderwindow
+
+extern void swapbuffers(bool overlay = true);
+extern int fullscreen;
+extern void setupscreen();
+extern void restoregamma();
+extern void restorevsync();
+extern void resetfpshistory();
+extern void limitfps(int &millis, int curmillis);
+extern void updatefpshistory(int millis);
+
+extern void renderbackground(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL, bool force = false);
+extern void renderprogress(float bar, const char *text, bool background = false);
+
 // shader
+
 extern void loadshaders();
 
 // stain
@@ -245,14 +298,92 @@ inline void addstain(int type, const vec &center, const vec &surface, float radi
     addstain(type, center, surface, radius, bvec::hexcolor(color), info);
 }
 
-// worldio
+// texture
 
-extern bool load_world(const char *mname, const char *cname = NULL);
-extern bool save_world(const char *mname);
-extern void fixmapname(char *name);
-extern uint getmapcrc();
-extern void clearmapcrc();
-extern bool loadents(const char *fname, vector<entity> &ents, uint *crc = NULL);
+struct VSlot;
+struct Texture;
+
+extern Texture *notexture;
+
+extern void packvslot(vector<uchar> &buf, int index);
+extern void packvslot(vector<uchar> &buf, const VSlot *vs);
+
+/*==============================================================================*\
+ * World Functions & Values                                                     *
+ *                                                                              *
+ * World Loading, Physics, Collision, Entity Handling                           *
+ *                                                                              *
+ * bih.cpp                                                                      *
+ * dynlight.cpp                                                                 *
+ * light.cpp                                                                    *
+ * material.cpp                                                                 *
+ * octa.cpp                                                                     *
+ * octaedit.cpp                                                                 *
+ * physics.cpp                                                                  *
+ * raycube.cpp                                                                  *
+ * world.cpp                                                                    *
+ * worldio.cpp                                                                  *
+\*==============================================================================*/
+
+// dynlight
+
+extern void adddynlight(const vec &o, float radius, const vec &color, int fade = 0, int peak = 0, int flags = 0, float initradius = 0, const vec &initcolor = vec(0, 0, 0), physent *owner = NULL, const vec &dir = vec(0, 0, 0), int spot = 0);
+extern void removetrackeddynlights(physent *owner = NULL);
+extern DecalSlot &lookupdecalslot(int slot, bool load = true);
+extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
+
+// light
+
+extern void clearlightcache(int id = -1);
+
+// octa
+
+extern int lookupmaterial(const vec &o);
+extern void freeocta(cube *c);
+
+// octaedit
+
+struct editinfo;
+extern editinfo *localedit;
+extern selinfo sel;
+
+extern bool editmode;
+extern int entediting;
+
+extern int shouldpacktex(int index);
+extern bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen);
+extern bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen);
+extern void freeeditinfo(editinfo *&e);
+extern void pruneundos(int maxremain = 0);
+extern bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen);
+extern bool unpackundo(const uchar *inbuf, int inlen, int outlen);
+extern bool noedit(bool view = false, bool msg = true);
+extern void toggleedit(bool force = true);
+extern void mpeditface(int dir, int mode, selinfo &sel, bool local);
+extern void mpedittex(int tex, int allfaces, selinfo &sel, bool local);
+extern bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf);
+extern void mpeditmat(int matid, int filter, selinfo &sel, bool local);
+extern void mpflip(selinfo &sel, bool local);
+extern void mpcopy(editinfo *&e, selinfo &sel, bool local);
+extern void mppaste(editinfo *&e, selinfo &sel, bool local);
+extern void mprotate(int cw, selinfo &sel, bool local);
+extern void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local);
+extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
+extern void mpdelcube(selinfo &sel, bool local);
+extern void mpremip(bool local);
+extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
+extern void mpcalclight(bool local);
+extern void commitchanges(bool force = false);
+extern bool pointinsel(const selinfo &sel, const vec &o);
+extern void addundo(undoblock *u);
+
+// raycube
+
+extern float raycube   (const vec &o, const vec &ray,     float radius = 0, int mode = Ray_ClipMat, int size = 0, extentity *t = 0);
+extern float raycubepos(const vec &o, const vec &ray, vec &hit, float radius = 0, int mode = Ray_ClipMat, int size = 0);
+extern float rayfloor  (const vec &o, vec &floor, int mode = 0, float radius = 0);
+extern bool  raycubelos(const vec &o, const vec &dest, vec &hitpos);
+extern bool insideworld(const vec &o);
 
 // physics
 
@@ -278,102 +409,39 @@ extern void updatedynentcache(physent *d);
 extern bool entinmap(dynent *d, bool avoidplayers = false);
 extern void findplayerspawn(dynent *d, int forceent = -1, int tag = 0);
 
-// sound
+// world
 
-extern int playsound(int n, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
-extern int playsoundname(const char *s, const vec *loc = NULL, int vol = 0, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
-extern void preloadsound(int n);
-extern void preloadmapsound(int n);
-extern bool stopsound(int n, int chanid, int fade = 0);
-extern void stopsounds();
-extern void initsound();
-extern void updatesounds();
+struct DecalSlot;
 
-// rendermodel
+extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
+extern bool enlargemap(bool force);
+extern vec getselpos();
+extern int getworldsize();
+extern void entcancel();
 
-struct model;
+extern void attachentity(extentity &e);
+extern void removeentityedit(int id);
+extern void addentityedit(int id);
+extern void detachentity(extentity &e);
+extern void entselectionbox(const entity &e, vec &eo, vec &es);
+extern void mmboundbox(const entity &e, model *m, vec &center, vec &radius);
+extern float getdecalslotdepth(DecalSlot &s);
 
-extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
-extern int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode = 0, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1);
-extern void abovemodel(vec &o, const char *mdl);
-extern void renderclient(dynent *d, const char *mdlname, modelattach *attachments, int hold, int attack, int attackdelay, int lastaction, int lastpain, float scale = 1, bool ragdoll = false, float trans = 1);
-extern void interpolateorientation(dynent *d, float &interpyaw, float &interppitch);
-extern void setbbfrommodel(dynent *d, const char *mdl);
-extern const char *mapmodelname(int i);
-extern void preloadmodel(const char *name);
-extern bool matchanim(const char *name, const char *pattern);
-extern model *loadmapmodel(int n);
-extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 
-// renderlights
-
-extern void clearshadowcache();
-
-extern int spotlights;
-extern int volumetriclights;
-extern int nospeclights;
-
-// renderwindow
-extern void swapbuffers(bool overlay = true);
-extern int fullscreen;
-extern void setupscreen();
-extern void restoregamma();
-extern void restorevsync();
-extern void resetfpshistory();
-extern void limitfps(int &millis, int curmillis);
-extern void updatefpshistory(int millis);
-
-extern void renderbackground(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL, bool force = false);
-extern void renderprogress(float bar, const char *text, bool background = false);
-
-// light
-
-extern void clearlightcache(int id = -1);
-
-// UI
-
-namespace UI
+namespace entities
 {
-    bool hascursor();
-    void getcursorpos(float &x, float &y);
-    void resetcursor();
-    bool movecursor(int dx, int dy);
-    bool keypress(int code, bool isdown);
-    bool textinput(const char *str, int len);
-    float abovehud();
+    extern vector<extentity *> ents;
 
-    void setup();
-    void update();
-    void render();
-    void cleanup();
-
-    bool showui(const char *name);
-    bool hideui(const char *name);
-    bool toggleui(const char *name);
-    void holdui(const char *name, bool on);
-    bool uivisible(const char *name);
+    extern extentity *newentity();
+    extern void deleteentity(extentity *e);
 }
 
-// menus
+// worldio
 
-extern void menuprocess();
-extern int mainmenu;
-
-extern void addchange(const char *desc, int type);
-
-// ragdoll
-
-extern void moveragdoll(dynent *d);
-extern void cleanragdoll(dynent *d);
-
-// crypto
-extern void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr);
-extern bool calcpubkey(const char *privstr, vector<char> &pubstr);
-extern bool hashstring(const char *str, char *result, int maxlen);
-extern void answerchallenge(const char *privstr, const char *challenge, vector<char> &answerstr);
-extern void *parsepubkey(const char *pubstr);
-extern void freepubkey(void *pubkey);
-extern void *genchallenge(void *pubkey, const void *seed, int seedlen, vector<char> &challengestr);
-extern void freechallenge(void *answer);
-extern bool checkchallenge(const char *answerstr, void *correct);
+extern bool load_world(const char *mname, const char *cname = NULL);
+extern bool save_world(const char *mname);
+extern void fixmapname(char *name);
+extern uint getmapcrc();
+extern void clearmapcrc();
+extern bool loadents(const char *fname, vector<entity> &ents, uint *crc = NULL);
 
