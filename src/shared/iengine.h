@@ -5,6 +5,7 @@
  * a game against; this header is not called by the game internally and is the
  * header which should be included in the game code.
  */
+
 extern int curtime;                     // current frame time
 extern int lastmillis;                  // last time
 extern int elapsedtime;                 // elapsed frame time
@@ -23,6 +24,12 @@ extern SDL_Window *screen;
 
 extern dynent *player;
 
+//forward object declarations (used in some functions below)
+struct DecalSlot;
+struct VSlot;
+struct Texture;
+struct editinfo;
+struct model;
 
 // main
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
@@ -229,8 +236,6 @@ extern int nospeclights;
 
 // rendermodel
 
-struct model;
-
 extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
 extern int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode = 0, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1);
 extern void abovemodel(vec &o, const char *mdl);
@@ -300,9 +305,6 @@ inline void addstain(int type, const vec &center, const vec &surface, float radi
 
 // texture
 
-struct VSlot;
-struct Texture;
-
 extern Texture *notexture;
 
 extern void packvslot(vector<uchar> &buf, int index);
@@ -343,7 +345,6 @@ extern void freeocta(cube *c);
 
 // octaedit
 
-struct editinfo;
 extern editinfo *localedit;
 extern selinfo sel;
 
@@ -410,8 +411,6 @@ extern bool entinmap(dynent *d, bool avoidplayers = false);
 extern void findplayerspawn(dynent *d, int forceent = -1, int tag = 0);
 
 // world
-
-struct DecalSlot;
 
 extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
 extern bool enlargemap(bool force);
