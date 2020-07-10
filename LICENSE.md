@@ -14,6 +14,7 @@ Copyright (c) 2020 Project Imprimis:
 
 Additional contributors:
 
+* "NoNo" (@nonoesimposible)
 * Sławomir Błauciak (@q009)
 
 Contributors to the original Tesseract engine are omitted here but listed in
