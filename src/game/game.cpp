@@ -135,12 +135,6 @@ namespace game
         return clientmap;
     }
 
-    void resetgamestate()
-    {
-        clearprojectiles();
-        clearbouncers();
-    }
-
     gameent *spawnstate(gameent *d)              // reset player state not persistent accross spawns
     {
         d->respawn();
@@ -873,10 +867,6 @@ namespace game
                 msgsound(Sound_Land, d);
             }
         }
-    }
-
-    void dynentcollide(physent *d, physent *o, const vec &dir)
-    {
     }
 
     void msgsound(int n, physent *d)

@@ -17,10 +17,10 @@ void cleanup()
     cleargamma();
     freeocta(worldroot);
     UI::cleanup();
-    extern void clear_command(); clear_command();
-    extern void clear_console(); clear_console();
-    extern void clear_models();  clear_models();
-    extern void clear_sound();   clear_sound();
+    clear_command();
+    clear_console();
+    clear_models();
+    clear_sound();
     closelogfile();
     SDL_Quit();
 }

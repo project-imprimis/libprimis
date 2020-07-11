@@ -104,6 +104,7 @@ extern void checksleep(int millis);
 
 extern int identflags;
 
+extern void clear_command();
 
 // console
 
@@ -111,7 +112,7 @@ extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 extern void logoutfv(const char *fmt, va_list args);
-
+extern void clear_console();
 
 // input
 
@@ -138,6 +139,7 @@ extern bool stopsound(int n, int chanid, int fade = 0);
 extern void stopsounds();
 extern void initsound();
 extern void updatesounds();
+extern void clear_sound();
 
 
 // UI
@@ -247,6 +249,7 @@ extern void preloadmodel(const char *name);
 extern bool matchanim(const char *name, const char *pattern);
 extern model *loadmapmodel(int n);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);
+extern void clear_models();
 
 // renderparticles
 

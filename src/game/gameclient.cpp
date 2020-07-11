@@ -1153,8 +1153,6 @@ namespace game
 
     bool ispaused() { return gamepaused; }
 
-    bool allowmouselook() { return !gamepaused || !remote || modecheck(gamemode, Mode_Edit); }
-
     void changegamespeed(int val)
     {
         if(!connected)
