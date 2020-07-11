@@ -888,6 +888,24 @@ namespace game
     extern void syncplayer();
     extern void swayhudgun(int curtime);
     extern vec hudgunorigin(int gun, const vec &from, const vec &to, gameent *d);
+
+    // additional fxns needed by server/main code
+    extern void parseoptions(vector<const char *> &args);
+
+    extern void gamedisconnect(bool cleanup);
+    extern void parsepacketclient(int chan, packetbuf &p);
+    extern void connectattempt(const char *name, const char *password, const ENetAddress &address);
+    extern void connectfail();
+    extern void gameconnect(bool _remote);
+    extern void changemap(const char *name);
+    extern bool ispaused();
+
+    extern const char *gameconfig();
+    extern const char *savedservers();
+    extern void loadconfigs();
+
+    extern void updateworld();
+    extern void initclient();
 }
 
 // server
