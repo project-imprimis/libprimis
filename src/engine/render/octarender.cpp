@@ -117,7 +117,10 @@ void flushvbo(int type = -1)
     }
 
     vector<uchar> &data = vbodata[type];
-    if(data.empty()) return;
+    if(data.empty())
+    {
+        return;
+    }
     vector<vtxarray *> &vas = vbovas[type];
     genvbo(type, data.getbuf(), data.length(), vas.getbuf(), vas.length());
     data.setsize(0);
@@ -129,10 +132,26 @@ uchar *addvbo(vtxarray *va, int type, int numelems, int elemsize)
 {
     switch(type)
     {
-        case VBO_VBuf:     va->voffset     = vbosize[type]; break;
-        case VBO_EBuf:     va->eoffset     = vbosize[type]; break;
-        case VBO_SkyBuf:   va->skyoffset   = vbosize[type]; break;
-        case VBO_DecalBuf: va->decaloffset = vbosize[type]; break;
+        case VBO_VBuf:
+        {
+            va->voffset = vbosize[type];
+            break;
+        }
+        case VBO_EBuf:
+        {
+            va->eoffset = vbosize[type];
+            break;
+        }
+        case VBO_SkyBuf:
+        {
+            va->skyoffset = vbosize[type];
+            break;
+        }
+        case VBO_DecalBuf:
+        {
+            va->decaloffset = vbosize[type];
+            break;
+        }
     }
     vbosize[type] += numelems;
     vector<uchar> &data = vbodata[type];
@@ -217,22 +236,52 @@ struct sortkey
 
     static inline bool sort(const sortkey &x, const sortkey &y)
     {
-        if(x.alpha < y.alpha) return true;
-        if(x.alpha > y.alpha) return false;
-        if(x.layer < y.layer) return true;
-        if(x.layer > y.layer) return false;
+        if(x.alpha < y.alpha)
+        {
+            return true;
+        }
+        if(x.alpha > y.alpha)
+        {
+            return false;
+        }
+        if(x.layer < y.layer)
+        {
+            return true;
+        }
+        if(x.layer > y.layer)
+        {
+            return false;
+        }
         if(x.tex == y.tex)
         {
-            if(x.orient < y.orient) return true;
-            if(x.orient > y.orient) return false;
+            if(x.orient < y.orient)
+            {
+                return true;
+            }
+            if(x.orient > y.orient)
+            {
+                return false;
+            }
             return false;
         }
         VSlot &xs = lookupvslot(x.tex, false),
               &ys = lookupvslot(y.tex, false);
-        if(xs.slot->shader < ys.slot->shader) return true;
-        if(xs.slot->shader > ys.slot->shader) return false;
-        if(xs.slot->params.length() < ys.slot->params.length()) return true;
-        if(xs.slot->params.length() > ys.slot->params.length()) return false;
+        if(xs.slot->shader < ys.slot->shader)
+        {
+            return true;
+        }
+        if(xs.slot->shader > ys.slot->shader)
+        {
+            return false;
+        }
+        if(xs.slot->params.length() < ys.slot->params.length())
+        {
+            return true;
+        }
+        if(xs.slot->params.length() > ys.slot->params.length())
+        {
+            return false;
+        }
         if(x.tex < y.tex)
         {
             return true;
@@ -263,14 +312,23 @@ struct decalkey
      : tex(tex), reuse(reuse)
     {}
 
-    bool operator==(const decalkey &o) const { return tex==o.tex && reuse==o.reuse; }
+    bool operator==(const decalkey &o) const
+    {
+        return tex==o.tex && reuse==o.reuse;
+    }
 
     static inline bool sort(const decalkey &x, const decalkey &y)
     {
         if(x.tex == y.tex)
         {
-            if(x.reuse < y.reuse) return true;
-            else return false;
+            if(x.reuse < y.reuse)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         DecalSlot &xs = lookupdecalslot(x.tex, false),
                   &ys = lookupdecalslot(y.tex, false);
@@ -357,7 +415,10 @@ struct vacollect : verthash
     {
         ENUMERATE_KT(indices, sortkey, k, sortval, t,
         {
-            if(t.tris.length()) texs.add(k);
+            if(t.tris.length())
+            {
+                texs.add(k);
+            }
         });
         texs.sort(sortkey::sort);
 
@@ -630,7 +691,7 @@ struct vacollect : verthash
         va->sky = skyindices.length();
         if(va->sky)
         {
-            ushort *skydata = (ushort *)addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort));
+            ushort *skydata = reinterpret_cast<ushort *>(addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort)));
             memcpy(skydata, skyindices.getbuf(), va->sky*sizeof(ushort));
             if(va->voffset)
             {
@@ -756,13 +817,11 @@ struct vacollect : verthash
                 e.length = curbuf-startbuf;
             }
         }
-
         if(grasstris.length())
         {
             va->grasstris.move(grasstris);
             loadgrassshaders();
         }
-
         if(mapmodels.length())
         {
             va->mapmodels.put(mapmodels.getbuf(), mapmodels.length());
@@ -800,8 +859,14 @@ void reduceslope(ivec &n)
             }
         }
     }
-    if(!(n[R[mindim]]%minval) && !(n[C[mindim]]%minval)) n.div(minval);
-    while(!((n.x|n.y|n.z)&1)) n.shr(1);
+    if(!(n[R[mindim]]%minval) && !(n[C[mindim]]%minval))
+    {
+        n.div(minval);
+    }
+    while(!((n.x|n.y|n.z)&1))
+    {
+        n.shr(1);
+    }
 }
 
 // [rotation][orient]
@@ -850,7 +915,12 @@ void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *i
                     cedge = -1;
                 switch(k)
                 {
-                    case 1: i1 = i2 = mid; cedge = edge+i+1; break;
+                    case 1:
+                    {
+                        i1 = i2 = mid;
+                        cedge = edge+i+1;
+                        break;
+                    }
                     case 2:
                     {
                         if(i1 != mid || i0 == left)
@@ -923,7 +993,10 @@ void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *i
                            &v2 = verts[e2];
                     ivec d(vec(v2.pos).sub(v1.pos).mul(8));
                     int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
-                    if(d[axis] < 0) d.neg();
+                    if(d[axis] < 0)
+                    {
+                        d.neg();
+                    }
                     reduceslope(d);
                     int origin =  static_cast<int>(min(v1.pos[axis], v2.pos[axis])*8)&~0x7FFF,
                         offset1 = (static_cast<int>(v1.pos[axis]*8) - origin) / d[axis],
@@ -1049,22 +1122,85 @@ static inline void calctexgen(VSlot &vslot, int orient, vec4 &sgen, vec4 &tgen)
     {
         switch(orient)
         {
-            case 0: sgen.z = -sk; tgen.y =  tk; break;
-            case 1: sgen.z = -sk; tgen.y = -tk; break;
-            case 2: sgen.z = -sk; tgen.x = -tk; break;
-            case 3: sgen.z = -sk; tgen.x =  tk; break;
-            case 4: sgen.y = -sk; tgen.x =  tk; break;
-            case 5: sgen.y =  sk; tgen.x =  tk; break;
+            case 0:
+            {
+                sgen.z = -sk;
+                tgen.y =  tk;
+                break;
+            }
+            case 1:
+            {
+                sgen.z = -sk;
+                tgen.y = -tk;
+                break;
+            }
+            case 2:
+            {
+                sgen.z = -sk;
+                tgen.x = -tk;
+                break;
+            }
+            case 3:
+            {
+                sgen.z = -sk;
+                tgen.x =  tk;
+                break;
+            }
+            case 4:
+            {
+                sgen.y = -sk;
+                tgen.x =  tk;
+                break;
+            }
+            case 5:
+            {
+                sgen.y =  sk;
+                tgen.x =  tk;
+                break;
+            }
         }
     }
-    else switch(orient)
+    else
     {
-        case 0: sgen.y =  sk; tgen.z = -tk; break;
-        case 1: sgen.y = -sk; tgen.z = -tk; break;
-        case 2: sgen.x = -sk; tgen.z = -tk; break;
-        case 3: sgen.x =  sk; tgen.z = -tk; break;
-        case 4: sgen.x =  sk; tgen.y = -tk; break;
-        case 5: sgen.x =  sk; tgen.y =  tk; break;
+        switch(orient)
+        {
+            case 0:
+            {
+                sgen.y =  sk;
+                tgen.z = -tk;
+                break;
+            }
+            case 1:
+            {
+                sgen.y = -sk;
+                tgen.z = -tk;
+                break;
+            }
+            case 2:
+            {
+                sgen.x = -sk;
+                tgen.z = -tk;
+                break;
+            }
+            case 3:
+            {
+                sgen.x =  sk;
+                tgen.z = -tk;
+                break;
+            }
+            case 4:
+            {
+                sgen.x =  sk;
+                tgen.y = -tk;
+                break;
+            }
+            case 5:
+            {
+                sgen.x =  sk;
+                tgen.y =  tk;
+                break;
+            }
+        }
     }
 }
 
@@ -1080,7 +1216,7 @@ ushort encodenormal(const vec &n)
     }
     int yaw = static_cast<int>(-atan2(n.x, n.y)/RAD); //arctangent in degrees
     int pitch = static_cast<int>(asin(n.z)/RAD); //arcsin in degrees
-    return ushort(clamp(pitch + 90, 0, 180)*360 + (yaw < 0 ? yaw%360 + 360 : yaw%360) + 1);
+    return static_cast<ushort>(clamp(pitch + 90, 0, 180)*360 + (yaw < 0 ? yaw%360 + 360 : yaw%360) + 1);
 }
 
 //takes a packed ushort vector and turns it into a vec3 vector object
@@ -1217,10 +1353,8 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
             }
         }
     }
-
     sortkey key(texture, vslot.scroll.iszero() ? Orient_Any : orient, layer&BlendLayer_Bottom ? layer : BlendLayer_Top, alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
     addtris(vslot, orient, key, verts, index, numverts, convex, tj);
-
     if(grassy)
     {
         for(int i = 0; i < numverts-2; i += 2)
@@ -1331,7 +1465,8 @@ void gencubeedges(cube &c, const ivec &co, int size)
             }
             for(int j = 0; j < numverts; ++j)
             {
-                int e1 = j, e2 = j+1 < numverts ? j+1 : 0;
+                int e1 = j,
+                    e2 = j+1 < numverts ? j+1 : 0;
                 ivec d = pos[e2];
                 d.sub(pos[e1]);
                 if(d.iszero())
@@ -1345,7 +1480,6 @@ void gencubeedges(cube &c, const ivec &co, int size)
                     swap(e1, e2);
                 }
                 reduceslope(d);
-
                 int t1 = pos[e1][axis]/d[axis],
                     t2 = pos[e2][axis]/d[axis];
                 edgegroup g;
@@ -1359,7 +1493,6 @@ void gencubeedges(cube &c, const ivec &co, int size)
                 ce.index = i*(Face_MaxVerts+1)+j;
                 ce.flags = CubeEdge_Start | CubeEdge_End | (e1!=j ? CubeEdge_Flip : 0);
                 ce.next = -1;
-
                 bool insert = true;
                 int *exists = edgegroups.access(g);
                 if(exists)
@@ -1386,7 +1519,10 @@ void gencubeedges(cube &c, const ivec &co, int size)
                             prev = cur;
                             cur = p.next;
                         }
-                        else break;
+                        else
+                        {
+                            break;
+                        }
                     }
                     if(insert)
                     {
@@ -1946,7 +2082,8 @@ void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // cr
 
 void calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax)
 {
-    vec vmin(co), vmax = vmin;
+    vec vmin(co),
+        vmax = vmin;
     vmin.add(size);
 
     for(int i = 0; i < vc.verts.length(); i++)
