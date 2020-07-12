@@ -819,6 +819,8 @@ namespace game
     const char *mastermodecolor(int n, const char *unknown);
     const char *mastermodeicon(int n, const char *unknown);
 
+    extern void suicide(physent *d);
+    extern void bounced(physent *d, const vec &surface);
     // client
     extern bool connected, remote, demoplayback;
     extern string servdesc;

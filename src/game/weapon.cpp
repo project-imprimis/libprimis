@@ -13,8 +13,6 @@ namespace game
     };
     vector<hitmsg> hits;
 
-
-
 //getweapon
 //returns the index of the weapon in hand
 //Arguments: none

@@ -3131,7 +3131,6 @@ void renderdecals()
             renderdecalbatches(cur, 0);
         }
     }
-
     cleanupdecals(cur);
 }
 

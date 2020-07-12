@@ -16,7 +16,6 @@ namespace game
     extern const char *autoexec();
 
     extern void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material = 0);
-    extern void bounced(physent *d, const vec &surface);
     extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
     extern void edittoggled(bool on);
     extern void vartrigger(ident *id);
@@ -27,10 +26,7 @@ namespace game
 
     extern void newmap(int size);
     extern void startmap(const char *name);
-    extern bool canjump();
-    extern bool cancrouch();
     extern bool allowmove(physent *d);
-    extern void suicide(physent *d);
     extern void preload();
     extern dynent *iterdynents(int i);
     extern int numdynents();

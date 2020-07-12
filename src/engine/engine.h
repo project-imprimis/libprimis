@@ -746,11 +746,7 @@ extern vec collidewall;
 extern int collideinside;
 extern physent *collideplayer;
 
-extern void moveplayer(physent *pl, int moveres, bool local);
-extern bool moveplayer(physent *pl, int moveres, bool local, int curtime);
-extern void crouchplayer(physent *pl, int moveres, bool local);
 extern bool bounce(physent *d, float secs, float elasticity, float waterfric, float grav);
-extern bool bounce(physent *d, float elasticity, float waterfric, float grav);
 extern void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space);
 extern bool overlapsdynent(const vec &o, float radius);
 extern bool movecamera(physent *pl, const vec &dir, float dist, float stepdist);
