@@ -985,10 +985,6 @@ namespace game
         }
     }
 
-    void renderprojectiles()
-    {
-    }
-
     void removeweapons(gameent *d)
     {
         removebouncers(d);

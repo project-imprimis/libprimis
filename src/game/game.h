@@ -738,11 +738,10 @@ namespace entities
     extern void preloadentities();
     extern void checkitems(gameent *d);
     extern void resetspawns();
-    extern void spawnitems(bool force = false);
+    extern void spawnitems();
     extern void putitems(packetbuf &p);
     extern void setspawn(int i, bool on);
     extern void teleport(int n, gameent *d);
-    extern void pickupeffects(int n, gameent *d);
     extern void teleporteffects(gameent *d, int tp, int td, bool local = true);
     extern void jumppadeffects(gameent *d, int jp, bool local = true);
 }
@@ -792,7 +791,6 @@ namespace game
     extern int following;
     extern int smoothmove, smoothdist;
 
-    extern bool clientoption(const char *arg);
     extern gameent *getclient(int cn);
     extern gameent *newclient(int cn);
     extern const char *colorname(gameent *d, const char *name = NULL, const char *alt = NULL, const char *color = "");
@@ -833,8 +831,6 @@ namespace game
     extern bool addmsg(int type, const char *fmt = NULL, ...);
     extern void switchname(const char *name);
     extern void switchteam(const char *name);
-    extern void switchplayermodel(int playermodel);
-    extern void switchplayercolor(int playercolor);
     extern void sendmapinfo();
     extern void stopdemo();
     extern void changemap(const char *name, int mode);
@@ -858,7 +854,6 @@ namespace game
     extern void clearprojectiles();
     extern void updateprojectiles(int curtime);
     extern void removeprojectiles(gameent *owner);
-    extern void renderprojectiles();
     extern void removeweapons(gameent *owner);
     extern void updateweapons(int curtime);
     extern void gunselect(int gun, gameent *d);
@@ -922,7 +917,6 @@ extern void updatetime();
 extern ENetSocket connectmaster(bool wait);
 extern void localclienttoserver(int chan, ENetPacket *);
 extern void localconnect();
-extern bool serveroption(char *opt);
 
 extern void *getclientinfo(int i);
 extern ENetPeer *getclientpeer(int i);
@@ -993,7 +987,6 @@ namespace server
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
     extern int msgsizelookup(int msg);
     extern bool serveroption(const char *arg);
-    extern bool delayspawn(int type);
 
     extern void *newclientinfo();
     extern void deleteclientinfo(void *ci);

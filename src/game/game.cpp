@@ -1214,7 +1214,6 @@ namespace game
         execfile("config/auth.cfg", false);
     }
 
-    bool clientoption(const char *arg) { return false; }
 }
 /////////////////// phys
 

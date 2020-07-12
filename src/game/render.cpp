@@ -548,7 +548,6 @@ namespace game
             renderplayer(player1, 1, third ? 0 : Model_OnlyShadow);
         }
         renderbouncers();
-        renderprojectiles();
         if(cmode)
         {
             cmode->rendergame();

@@ -16,13 +16,7 @@ namespace game
     {
         for(int i = 0; i < args.length(); i++)
         {
-            if(!game::clientoption(args[i]))
-            {
-                if(!server::serveroption(args[i]))
-                {
-                    conoutf(Console_Error, "unknown command-line option: %s", args[i]);
-                }
-            }
+            conoutf(Console_Error, "unknown command-line option: %s", args[i]);
         }
     }
     const char *gameident() { return "Imprimis"; }
@@ -867,11 +861,6 @@ namespace server
         //cps.reset();
     }
 
-    bool serveroption(const char *arg)
-    {
-        return false;
-    }
-
     void serverinit()
     {
         smapname[0] = '\0';
@@ -966,15 +955,6 @@ namespace server
         {
         }
         return sec*1000;
-    }
-
-    bool delayspawn(int type)
-    {
-        switch(type)
-        {
-            default:
-                return false;
-        }
     }
 
     bool pickup(int i, int sender)         // server side item pickup, acknowledge first client that gets it
@@ -2094,8 +2074,7 @@ namespace server
                 server_entity se = { GamecodeEnt_NotUsed, 0, false };
                 while(sents.length()<=i) sents.add(se);
                 sents[i].type = ments[i].type;
-                if(!modecheck(gamemode, Mode_LocalOnly) && delayspawn(sents[i].type)) sents[i].spawntime = spawntime(sents[i].type);
-                else sents[i].spawned = true;
+                sents[i].spawned = true;
             }
         }
         notgotitems = false;
@@ -3664,14 +3643,7 @@ namespace server
                         sents[n].type = getint(p);
                         if(canspawnitem(sents[n].type))
                         {
-                            if(!modecheck(gamemode, Mode_LocalOnly) && delayspawn(sents[n].type))
-                            {
-                                sents[n].spawntime = spawntime(sents[n].type);
-                            }
-                            else
-                            {
-                                sents[n].spawned = true;
-                            }
+                            sents[n].spawned = true;
                         }
                     }
                     notgotitems = false;

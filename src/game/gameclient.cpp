@@ -2319,7 +2319,6 @@ namespace game
                 int i = getint(p),
                     cn = getint(p);
                 gameent *d = getclient(cn);
-                entities::pickupeffects(i, d);
                 break;
             }
 
@@ -2887,7 +2886,7 @@ namespace game
                     delete map;
                     if(load_world(mname, oldname[0] ? oldname : NULL))
                     {
-                        entities::spawnitems(true);
+                        entities::spawnitems();
                     }
                     remove(findfile(fname, "rb"));
                     break;

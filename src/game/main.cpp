@@ -279,11 +279,8 @@ int main(int argc, char **argv)
                 }
                 default:
                 {
-                    if(!serveroption(argv[i]))
-                    {
-                        gameargs.add(argv[i]);
-                        break;
-                    }
+                    gameargs.add(argv[i]);
+                    break;
                 }
             }
         }

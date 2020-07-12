@@ -1400,19 +1400,6 @@ namespace entities
         }
     }
 
-    void addammo(int type, int &v, bool local)
-    {
-
-    }
-
-    // these two functions are called when the server acknowledges that you really
-    // picked up the item (in multiplayer someone may grab it before you).
-
-    void pickupeffects(int n, gameent *d)
-    {
-
-    }
-
     // these functions are called when the client touches the item
 
     void teleporteffects(gameent *d, int tp, int td, bool local)
@@ -1640,13 +1627,13 @@ namespace entities
         }
     }
 
-    void spawnitems(bool force)
+    void spawnitems()
     {
         for(int i = 0; i < ents.length(); i++)
         {
             if(VALID_ITEM(ents[i]->type))
             {
-                ents[i]->setspawned(force || !server::delayspawn(ents[i]->type));
+                ents[i]->setspawned(true);
             }
         }
     }
