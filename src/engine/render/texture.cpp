@@ -3657,14 +3657,6 @@ void saveimage(const char *filename, int format, ImageData &image, bool flip = f
     }
 }
 
-bool loadimage(const char *filename, ImageData &image)
-{
-    SDL_Surface *s = loadsurface(path(filename, true));
-    if(!s) return false;
-    image.wrap(s);
-    return true;
-}
-
 SVARP(screenshotdir, "screenshot");
 
 void screenshot(char *filename)
