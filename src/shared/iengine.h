@@ -99,7 +99,7 @@ extern int clampvar(ident *id, int i, int minval, int maxval);
 extern void loopiter(ident *id, identstack &stack, int i);
 extern void loopend(ident *id, identstack &stack);
 const char *escapeid(const char *s);
-extern void writecfg(const char *name = NULL);
+extern void writecfg(const char *savedconfig, const char *autoexec = NULL, const char *defaultconfig = NULL, const char *name = NULL);
 extern void checksleep(int millis);
 
 extern int identflags;
@@ -452,10 +452,10 @@ namespace entities
 
 // worldio
 
-extern bool load_world(const char *mname, const char *gameinfo = NULL, const char *cname = NULL);
-extern bool save_world(const char *mname);
+extern bool load_world(const char *mname, const char *gameident, const char *gameinfo = NULL, const char *cname = NULL);
+extern bool save_world(const char *mname, const char *gameident);
 extern void fixmapname(char *name);
 extern uint getmapcrc();
 extern void clearmapcrc();
-extern bool loadents(const char *fname, vector<entity> &ents, uint *crc = NULL);
+extern bool loadents(const char *fname, const char *gameident, vector<entity> &ents, uint *crc = NULL);
 

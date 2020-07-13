@@ -6,14 +6,6 @@ namespace game
 {
     extern bool allowedittoggle();
     extern void toserver(char *text);
-    extern void forceedit(const char *name);
-
-    extern const char *gameident();
-    extern const char *savedconfig();
-    extern const char *restoreconfig();
-    extern const char *defaultconfig();
-    extern const char *autoexec();
-
     extern void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material = 0);
     extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
     extern void edittoggled(bool on);

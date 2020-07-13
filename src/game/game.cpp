@@ -142,6 +142,19 @@ namespace game
 
     COMMAND(mapname, "");
 
+    void savecurrentmap()
+    {
+        save_world(game::getclientmap(), game::gameident());
+    }
+
+    void savemap(char *mname)
+    {
+        save_world(mname, game::gameident());
+    }
+
+    COMMAND(savemap, "s");
+    COMMAND(savecurrentmap, "");
+
     gameent *spawnstate(gameent *d)              // reset player state not persistent accross spawns
     {
         d->respawn();

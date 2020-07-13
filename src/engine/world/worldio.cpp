@@ -111,7 +111,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
     return true;
 }
 
-bool loadents(const char *fname, vector<entity> &ents, uint *crc)
+bool loadents(const char *fname, const char *gameident, vector<entity> &ents, uint *crc)
 {
     string name;
     validmapname(name, fname);
@@ -161,7 +161,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         f->read(gametype, len+1);
     }
     gametype[max(len, 0)] = '\0';
-    if(strcmp(gametype, game::gameident()))
+    if(strcmp(gametype, gameident)) //compare game string from map with game
     {
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
@@ -843,7 +843,7 @@ void loadvslots(stream *f, int numvslots)
     delete[] prev;
 }
 
-bool save_world(const char *mname)
+bool save_world(const char *mname, const char *gameident)
 {
     if(!*mname)
     {
@@ -942,8 +942,8 @@ bool save_world(const char *mname)
     {
         conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
     }
-    f->putchar((int)strlen(game::gameident()));
-    f->write(game::gameident(), (int)strlen(game::gameident())+1);
+    f->putchar((int)strlen(gameident));
+    f->write(gameident, (int)strlen(gameident)+1);
 
     f->put<ushort>(texmru.length());
     for(int i = 0; i < texmru.length(); i++)
@@ -971,7 +971,7 @@ static uint mapcrc = 0;
 uint getmapcrc() { return mapcrc; }
 void clearmapcrc() { mapcrc = 0; }
 
-bool load_world(const char *mname, const char *gameinfo, const char *cname)
+bool load_world(const char *mname, const char *gameident, const char *gameinfo, const char *cname)
 {
     int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);
@@ -1098,7 +1098,7 @@ bool load_world(const char *mname, const char *gameinfo, const char *cname)
         f->read(gametype, len+1);
     }
     gametype[max(len, 0)] = '\0';
-    if(strcmp(gametype, game::gameident())!=0)
+    if(strcmp(gametype, gameident)!=0)
     {
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
@@ -1186,9 +1186,3 @@ bool load_world(const char *mname, const char *gameinfo, const char *cname)
     startmap(cname ? cname : mname);
     return true;
 }
-
-void savecurrentmap() { save_world(game::getclientmap()); }
-void savemap(char *mname) { save_world(mname); }
-
-COMMAND(savemap, "s");
-COMMAND(savecurrentmap, "");

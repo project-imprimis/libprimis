@@ -825,7 +825,7 @@ namespace game
             entities::resetspawns();
             return;
         }
-        if((modecheck(gamemode, Mode_Edit) && !name[0]) || !load_world(name, game::getmapinfo()))
+        if((modecheck(gamemode, Mode_Edit) && !name[0]) || !load_world(name, game::gameident(), game::getmapinfo()))
         {
             emptymap(0, true, name);
             senditemstoserver = false;
@@ -2905,7 +2905,7 @@ namespace game
                     ucharbuf b = p.subbuf(p.remaining());
                     map->write(b.buf, b.maxlen);
                     delete map;
-                    if(load_world(mname, game::getmapinfo(), oldname[0] ? oldname : NULL))
+                    if(load_world(mname, game::gameident(), game::getmapinfo(), oldname[0] ? oldname : NULL))
                     {
                         entities::spawnitems();
                     }
@@ -3021,7 +3021,7 @@ namespace game
         }
         conoutf("sending map...");
         DEF_FORMAT_STRING(mname, "sendmap_%d", lastmillis);
-        save_world(mname);
+        save_world(mname, game::gameident());
         DEF_FORMAT_STRING(fname, "media/map/%s.ogz", mname);
         stream *map = openrawfile(path(fname), "rb");
         if(map)

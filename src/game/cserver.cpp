@@ -2065,7 +2065,7 @@ namespace server
     {
         resetitems();
         notgotitems = true;
-        if(modecheck(gamemode, Mode_Edit) || !loadents(smapname, ments, &mcrc))
+        if(modecheck(gamemode, Mode_Edit) || !loadents(smapname, game::gameident(), ments, &mcrc))
             return;
         for(int i = 0; i < ments.length(); i++)
         {

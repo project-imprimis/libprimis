@@ -906,6 +906,11 @@ namespace game
     extern void initclient();
     extern int scaletime(int t);
     extern const char *getmapinfo();
+    extern const char *gameident();
+    extern const char *restoreconfig();
+    extern const char *savedconfig();
+    extern const char *defaultconfig();
+    extern const char *autoexec();
 }
 
 // server

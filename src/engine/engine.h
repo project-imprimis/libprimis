@@ -682,7 +682,6 @@ extern hashnameset<ident> idents;
 extern int identflags;
 
 extern void clearoverrides();
-extern void writecfg(const char *name = NULL);
 
 extern void checksleep(int millis);
 extern void clearsleep(bool clearoverrides = true);
@@ -732,11 +731,9 @@ extern void swapbuffers(bool overlay = true);
 extern int getclockmillis();
 
 // worldio
-extern bool save_world(const char *mname);
 extern void fixmapname(char *name);
 extern uint getmapcrc();
 extern void clearmapcrc();
-extern bool loadents(const char *fname, vector<entity> &ents, uint *crc = NULL);
 extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
 
 // physics

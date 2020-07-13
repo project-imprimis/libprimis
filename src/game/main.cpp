@@ -34,7 +34,7 @@ void quit()                     // normal exit
     abortconnect();
     disconnect();
     localdisconnect();
-    writecfg();
+    writecfg(game::savedconfig(), game::autoexec(), game::defaultconfig());
     cleanup();
     exit(EXIT_SUCCESS);
 }
@@ -373,7 +373,7 @@ int main(int argc, char **argv)
     if(!execfile(game::savedconfig(), false))
     {
         execfile(game::defaultconfig());
-        writecfg(game::restoreconfig());
+        writecfg(game::savedconfig(), game::autoexec(), game::defaultconfig(), game::restoreconfig());
     }
     execfile(game::autoexec(), false);
 
