@@ -3683,19 +3683,6 @@ void screenshot(char *filename)
         size_t len = strftime(sstime, sizeof(sstime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
         sstime[min(len, sizeof(sstime)-1)] = '\0';
         concatstring(buf, sstime);
-
-        const char *map = game::getclientmap(), *ssinfo = game::getscreenshotinfo();
-        if(map && map[0])
-        {
-            concatstring(buf, "_");
-            concatstring(buf, map);
-        }
-        if(ssinfo && ssinfo[0])
-        {
-            concatstring(buf, "_");
-            concatstring(buf, ssinfo);
-        }
-
         for(char *s = &buf[dirlen]; *s; s++) if(iscubespace(*s) || *s == '/' || *s == '\\') *s = '-';
     }
     if(format < 0)

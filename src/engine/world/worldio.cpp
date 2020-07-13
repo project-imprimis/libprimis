@@ -944,10 +944,6 @@ bool save_world(const char *mname)
     }
     f->putchar((int)strlen(game::gameident()));
     f->write(game::gameident(), (int)strlen(game::gameident())+1);
-    vector<char> extras;
-    game::writegamedata(extras);
-    f->put<ushort>(extras.length());
-    f->write(extras.getbuf(), extras.length());
 
     f->put<ushort>(texmru.length());
     for(int i = 0; i < texmru.length(); i++)
@@ -975,7 +971,7 @@ static uint mapcrc = 0;
 uint getmapcrc() { return mapcrc; }
 void clearmapcrc() { mapcrc = 0; }
 
-bool load_world(const char *mname, const char *cname)
+bool load_world(const char *mname, const char *gameinfo, const char *cname)
 {
     int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);
@@ -995,7 +991,7 @@ bool load_world(const char *mname, const char *cname)
     }
     resetmap();
     Texture *mapshot = textureload(picname, 3, true, false);
-    renderbackground("loading...", mapshot, mname, game::getmapinfo());
+    renderbackground("loading...", mapshot, mname, gameinfo);
     setvar("mapversion", hdr.version, true, false);
     renderprogress(0, "clearing world...");
     freeocta(worldroot);
@@ -1111,10 +1107,6 @@ bool load_world(const char *mname, const char *cname)
     int extrasize = f->get<ushort>();
     vector<char> extras;
     f->read(extras.pad(extrasize), extrasize);
-    if(samegame)
-    {
-        game::readgamedata(extras);
-    }
     texmru.shrink(0);
     ushort nummru = f->get<ushort>();
     for(int i = 0; i < nummru; ++i)
@@ -1129,10 +1121,8 @@ bool load_world(const char *mname, const char *cname)
         ents.add(&e);
         f->read(&e, sizeof(entity));
         fixent(e, hdr.version);
-        if(samegame)
-        {
-        }
-        else
+        //delete entities from other games
+        if(!samegame)
         {
             if(eif > 0)
             {
@@ -1187,7 +1177,7 @@ bool load_world(const char *mname, const char *cname)
     attachentities();
     allchanged(true);
 
-    renderbackground("loading...", mapshot, mname, game::getmapinfo());
+    renderbackground("loading...", mapshot, mname, gameinfo);
 
     if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown"))
     {

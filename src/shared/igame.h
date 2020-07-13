@@ -7,7 +7,6 @@ namespace game
     extern bool allowedittoggle();
     extern void toserver(char *text);
     extern void forceedit(const char *name);
-    extern int scaletime(int t);
 
     extern const char *gameident();
     extern const char *savedconfig();
@@ -20,11 +19,8 @@ namespace game
     extern void edittoggled(bool on);
     extern void vartrigger(ident *id);
     extern const char *getclientmap();
-    extern const char *getmapinfo();
-    extern const char *getscreenshotinfo();
     extern void writeclientinfo(stream *f);
 
-    extern void newmap(int size);
     extern void startmap(const char *name);
     extern bool allowmove(physent *d);
     extern void preload();
@@ -37,8 +33,6 @@ namespace game
     extern int numanims();
     extern void findanims(const char *pattern, vector<int> &anims);
     extern float clipconsole(float w, float h);
-    extern const char *defaultcrosshair(int index);
-    extern int selectcrosshair(vec &col);
     extern void adddynlights();
     extern void particletrack(physent *owner, vec &o, vec &d);
     extern void dynlighttrack(physent *owner, vec &o, vec &hud);
@@ -49,10 +43,7 @@ namespace game
     extern bool detachcamera();
     extern bool collidecamera();
     extern float abovegameplayhud(int w, int h);
-
     extern void gameplayhud(int w, int h);
-    extern void writegamedata(vector<char> &extras);
-    extern void readgamedata(vector<char> &extras);
 }
 
 extern bool isconnected(bool attempt = false, bool local = true);

@@ -825,7 +825,7 @@ namespace game
             entities::resetspawns();
             return;
         }
-        if((modecheck(gamemode, Mode_Edit) && !name[0]) || !load_world(name))
+        if((modecheck(gamemode, Mode_Edit) && !name[0]) || !load_world(name, game::getmapinfo()))
         {
             emptymap(0, true, name);
             senditemstoserver = false;
@@ -902,6 +902,30 @@ namespace game
     {
         addmsg(NetMsg_Newmap, "ri", size);
     }
+
+    void startnewmap(int *i)
+    {
+        bool force = !isconnected();
+        if(force)
+        {
+            forceedit("");
+        }
+        if(emptymap(*i, force, NULL))
+        {
+            newmap(max(*i, 0));
+        }
+    }
+
+    void mapenlarge()
+    {
+        if(enlargemap(false))
+        {
+            newmap(-1);
+        }
+    }
+
+    COMMAND(newmap, "i");
+    COMMAND(mapenlarge, "");
 
     int needclipboard = -1;
 
@@ -2316,9 +2340,6 @@ namespace game
 
             case NetMsg_ItemAcceptance:            // server acknowledges that I picked up this item
             {
-                int i = getint(p),
-                    cn = getint(p);
-                gameent *d = getclient(cn);
                 break;
             }
 
@@ -2884,7 +2905,7 @@ namespace game
                     ucharbuf b = p.subbuf(p.remaining());
                     map->write(b.buf, b.maxlen);
                     delete map;
-                    if(load_world(mname, oldname[0] ? oldname : NULL))
+                    if(load_world(mname, game::getmapinfo(), oldname[0] ? oldname : NULL))
                     {
                         entities::spawnitems();
                     }

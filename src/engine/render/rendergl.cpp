@@ -2470,7 +2470,26 @@ VAR(showhud, 0, 1, 1);
 VARP(crosshairsize, 0, 15, 50);
 VARP(cursorsize, 0, 15, 30);
 VARP(crosshairfx, 0, 1, 1);
-VARP(crosshaircolors, 0, 1, 1);
+
+
+const char *defaultcrosshair(int index)
+{
+    switch(index)
+    {
+        case 2:
+        {
+            return "media/interface/crosshair/default_hit.png";
+        }
+        case 1:
+        {
+            return "media/interface/crosshair/teammate.png";
+        }
+        default:
+        {
+            return "media/interface/crosshair/default.png";
+        }
+    }
+}
 
 #define MAXCROSSHAIRS 4
 static Texture *crosshairs[MAXCROSSHAIRS] = { NULL, NULL, NULL, NULL };
@@ -2484,7 +2503,7 @@ void loadcrosshair(const char *name, int i)
     crosshairs[i] = name ? textureload(name, 3, true) : notexture;
     if(crosshairs[i] == notexture)
     {
-        name = game::defaultcrosshair(i);
+        name = defaultcrosshair(i);
         if(!name)
         {
             name = "media/interface/crosshair/default.png";
@@ -2505,7 +2524,7 @@ ICOMMAND(getcrosshair, "i", (int *i),
     const char *name = "";
     if(*i >= 0 && *i < MAXCROSSHAIRS)
     {
-        name = crosshairs[*i] ? crosshairs[*i]->name : game::defaultcrosshair(*i);
+        name = crosshairs[*i] ? crosshairs[*i]->name : defaultcrosshair(*i);
         if(!name)
         {
             name = "media/interface/crosshair/default.png";
@@ -2526,14 +2545,13 @@ void writecrosshairs(stream *f)
     f->printf("\n");
 }
 
-void drawcrosshair(int w, int h)
+void drawcrosshair(int w, int h, int crosshairindex)
 {
     bool windowhit = UI::hascursor();
     if(!windowhit && (!showhud || mainmenu))
     {
         return; //(!showhud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
     }
-    vec color(1, 1, 1);
     float cx = 0.5f,
           cy = 0.5f,
           chsize;
@@ -2551,7 +2569,7 @@ void drawcrosshair(int w, int h)
     }
     else
     {
-        int index = game::selectcrosshair(color);
+        int index = crosshairindex;
         if(index < 0)
         {
             return;
@@ -2559,10 +2577,6 @@ void drawcrosshair(int w, int h)
         if(!crosshairfx)
         {
             index = 0;
-        }
-        if(!crosshairfx || !crosshaircolors)
-        {
-            color = vec(1, 1, 1);
         }
         crosshair = crosshairs[index];
         if(!crosshair)
@@ -2572,6 +2586,7 @@ void drawcrosshair(int w, int h)
         }
         chsize = crosshairsize*w/900.0f;
     }
+    vec color = vec(1, 1, 1);
     if(crosshair->type&Texture::ALPHA)
     {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -2607,7 +2622,7 @@ void resethudshader()
     gle::colorf(1, 1, 1);
 }
 
-void gl_drawhud()
+void gl_drawhud(int crosshairindex)
 {
     int w = hudw,
         h = hudh;
@@ -2732,7 +2747,7 @@ void gl_drawhud()
     }
     pophudmatrix();
 
-    drawcrosshair(w, h);
+    drawcrosshair(w, h, crosshairindex);
 
     glDisable(GL_BLEND);
 
@@ -2764,7 +2779,7 @@ void gl_setupframe(bool force)
     setuplights();
 }
 
-void gl_drawframe()
+void gl_drawframe(int crosshairindex)
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
@@ -2782,7 +2797,7 @@ void gl_drawframe()
         gl_drawview();
     }
     UI::render();
-    gl_drawhud();
+    gl_drawhud(crosshairindex);
 }
 
 void cleanupgl()

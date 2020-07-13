@@ -900,9 +900,12 @@ namespace game
     extern const char *gameconfig();
     extern const char *savedservers();
     extern void loadconfigs();
+    extern int selectcrosshair();
 
     extern void updateworld();
     extern void initclient();
+    extern int scaletime(int t);
+    extern const char *getmapinfo();
 }
 
 // server

@@ -135,6 +135,13 @@ namespace game
         return clientmap;
     }
 
+    void mapname()
+    {
+        result(game::getclientmap());
+    }
+
+    COMMAND(mapname, "");
+
     gameent *spawnstate(gameent *d)              // reset player state not persistent accross spawns
     {
         d->respawn();
@@ -838,11 +845,6 @@ namespace game
         return showmodeinfo && MODE_VALID(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
     }
 
-    const char *getscreenshotinfo()
-    {
-        return server::modename(gamemode, NULL);
-    }
-
     void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material)
     {
         if(waterlevel>0)
@@ -1093,26 +1095,7 @@ namespace game
     VARP(teamcrosshair, 0, 1, 1);
     VARP(hitcrosshair, 0, 425, 1000);
 
-    const char *defaultcrosshair(int index)
-    {
-        switch(index)
-        {
-            case 2:
-            {
-                return "media/interface/crosshair/default_hit.png";
-            }
-            case 1:
-            {
-                return "media/interface/crosshair/teammate.png";
-            }
-            default:
-            {
-                return "media/interface/crosshair/default.png";
-            }
-        }
-    }
-
-    int selectcrosshair(vec &col)
+    int selectcrosshair()
     {
         gameent *d = hudplayer();
         if(d->state==ClientState_Spectator || d->state==ClientState_Dead || UI::uivisible("scoreboard"))
@@ -1134,14 +1117,7 @@ namespace game
             if(o && o->type==PhysEnt_Player && VALID_TEAM(d->team) && ((gameent *)o)->team == d->team)
             {
                 crosshair = 1;
-                col = vec::hexcolor(teamtextcolor[d->team]);
             }
-        }
-
-
-        if(d->gunwait)
-        {
-            col.mul(0.5f);
         }
         return crosshair;
     }
@@ -1196,11 +1172,8 @@ namespace game
         {
             int mm = si->attr.inrange(2) ? si->attr[2] : MasterMode_Invalid;
             result(si->maxplayers > 0 && si->numplayers >= si->maxplayers ? "serverfull" : mastermodeicon(mm, "serverunk"));
-        }));
-
-    // any data written into this vector will get saved with the map data. Must take care to do own versioning, and endianess if applicable. Will not get called when loading maps from other games, so provide defaults.
-    void writegamedata(vector<char> &extras) {}
-    void readgamedata(vector<char> &extras) {}
+        })
+    );
 
     const char *gameconfig()    { return "config/game.cfg"; }
     const char *savedconfig()   { return "config/saved.cfg"; }

@@ -169,7 +169,6 @@ extern void gl_init();
 extern void gl_resize();
 extern void gl_drawview();
 extern void gl_drawmainmenu();
-extern void gl_drawhud();
 extern void gl_setupframe(bool force = false);
 extern void gl_drawframe();
 extern void cleanupgl();
@@ -733,7 +732,6 @@ extern void swapbuffers(bool overlay = true);
 extern int getclockmillis();
 
 // worldio
-extern bool load_world(const char *mname, const char *cname = NULL);
 extern bool save_world(const char *mname);
 extern void fixmapname(char *name);
 extern uint getmapcrc();

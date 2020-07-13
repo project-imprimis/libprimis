@@ -466,7 +466,8 @@ int main(int argc, char **argv)
         gl_setupframe(!mainmenu); //also, don't need to set up a frame if on the static main menu
 
         inbetweenframes = false; //tell other stuff that the frame is starting
-        gl_drawframe(); //rendering magic
+        int crosshairindex = game::selectcrosshair();
+        gl_drawframe(crosshairindex); //rendering magic
         swapbuffers();
         renderedframe = inbetweenframes = true; //done!
     }
