@@ -1717,12 +1717,6 @@ void screenquad(float sw, float sh)
     screenquad();
 }
 
-void screenquadflipped(float sw, float sh)
-{
-    setscreentexcoord(0, sw, -sh);
-    screenquad();
-}
-
 void screenquad(float sw, float sh, float sw2, float sh2)
 {
     setscreentexcoord(0, sw, sh);
@@ -1733,13 +1727,6 @@ void screenquad(float sw, float sh, float sw2, float sh2)
 void screenquadoffset(float x, float y, float w, float h)
 {
     setscreentexcoord(0, w, h, x, y);
-    screenquad();
-}
-
-void screenquadoffset(float x, float y, float w, float h, float x2, float y2, float w2, float h2)
-{
-    setscreentexcoord(0, w, h, x, y);
-    setscreentexcoord(1, w2, h2, x2, y2);
     screenquad();
 }
 

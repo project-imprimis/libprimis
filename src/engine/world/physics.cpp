@@ -256,23 +256,6 @@ void updatedynentcache(physent *d)
     }
 }
 
-bool overlapsdynent(const vec &o, float radius)
-{
-    LOOPDYNENTCACHE(x, y, o, radius)
-    {
-        const vector<physent *> &dynents = checkdynentcache(x, y);
-        for(int i = 0; i < dynents.length(); i++)
-        {
-            physent *d = dynents[i];
-            if(o.dist(d->o)-d->radius < radius)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 template<class E, class O>
 static inline bool plcollide(physent *d, const vec &dir, physent *o)
 {

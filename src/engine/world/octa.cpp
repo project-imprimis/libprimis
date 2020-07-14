@@ -24,6 +24,7 @@ static struct emptycube : cube
 
 cube *worldroot = newcubes(F_SOLID);
 int allocnodes = 0;
+void calcmerges();
 
 cubeext *growcubeext(cubeext *old, int maxverts)
 {
@@ -629,6 +630,18 @@ bool crushededge(uchar e, int dc)
     return dc ? e==0 : e==0x88;
 }
 
+bool touchingface(const cube &c, int orient)
+{
+    uint face = c.faces[DIMENSION(orient)];
+    return DIM_COORD(orient) ? (face&0xF0F0F0F0)==0x80808080 : (face&0x0F0F0F0F)==0;
+}
+
+bool notouchingface(const cube &c, int orient)
+{
+    uint face = c.faces[DIMENSION(orient)];
+    return DIM_COORD(orient) ? (face&0x80808080)==0 : ((0x88888888-face)&0x08080808) == 0;
+}
+
 int visibleorient(const cube &c, int orient)
 {
     for(int i = 0; i < 2; ++i)
@@ -936,18 +949,6 @@ bool collideface(const cube &c, int orient)
         }
     }
     return true;
-}
-
-bool touchingface(const cube &c, int orient)
-{
-    uint face = c.faces[DIMENSION(orient)];
-    return DIM_COORD(orient) ? (face&0xF0F0F0F0)==0x80808080 : (face&0x0F0F0F0F)==0;
-}
-
-bool notouchingface(const cube &c, int orient)
-{
-    uint face = c.faces[DIMENSION(orient)];
-    return DIM_COORD(orient) ? (face&0x80808080)==0 : ((0x88888888-face)&0x08080808) == 0;
 }
 
 int faceconvexity(const ivec v[4])
@@ -1651,26 +1652,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     return 3;
 }
 
-void calcvert(const cube &c, const ivec &co, int size, ivec &v, int i, bool solid)
-{
-    if(solid)
-    {
-        v = cubecoords[i];
-    }
-    else gencubevert(c, i, v);
-    // avoid overflow
-    if(size>=8)
-    {
-        v.mul(size/8);
-    }
-    else
-    {
-        v.div(8/size);
-    }
-    v.add(ivec(co).shl(3));
-}
-
-void calcvert(const cube &c, const ivec &co, int size, vec &v, int i, bool solid)
+static void calcvert(const cube &c, const ivec &co, int size, vec &v, int i, bool solid = false)
 {
     if(solid)
     {
@@ -1699,30 +1681,6 @@ void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p)
     p.o = mn.add(p.r);
     p.size = 0;
     p.visible = 0x80;
-}
-
-int genclipplane(const cube &c, int orient, vec *v, plane *clip)
-{
-    int planes = 0,
-        convex = faceconvexity(c, orient),
-        order = convex < 0 ? 1 : 0;
-    const vec &v0 = v[fv[orient][order]],
-              &v1 = v[fv[orient][order+1]],
-              &v2 = v[fv[orient][order+2]],
-              &v3 = v[fv[orient][(order+3)&3]];
-    if(v0==v2)
-    {
-        return 0;
-    }
-    if(v0!=v1 && v1!=v2)
-    {
-        clip[planes++].toplane(v0, v1, v2);
-    }
-    if(v0!=v3 && v2!=v3 && (!planes || convex))
-    {
-        clip[planes++].toplane(v0, v2, v3);
-    }
-    return planes;
 }
 
 void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool collide, bool noclip)
@@ -1871,18 +1829,6 @@ static int mergeface(int orient, facebounds *m, int sz, facebounds &n)
     }
     m[sz++] = n;
     return sz;
-}
-
-int mergefaces(int orient, facebounds *m, int sz)
-{
-    quicksort(m, sz, mergefacecmp);
-
-    int nsz = 0;
-    for(int i = 0; i < sz; ++i)
-    {
-        nsz = mergeface(orient, m, nsz, m[i]);
-    }
-    return nsz;
 }
 
 struct cfkey

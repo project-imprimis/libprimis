@@ -1122,11 +1122,6 @@ bool multisampledaa()
     return msaasamples == 2 && (smaa ? msaalight && smaaspatial : tqaa);
 }
 
-bool maskedaa()
-{
-    return tqaa && tqaamovemask;
-}
-
 void doaa(GLuint outfbo, void (*resolve)(GLuint, int))
 {
     if(smaa)

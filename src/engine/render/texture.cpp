@@ -1119,6 +1119,20 @@ void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int
     }
 }
 
+int texalign(const void *data, int w, int bpp)
+{
+    int stride = w*bpp;
+    if(stride&1)
+    {
+        return 1;
+    }
+    if(stride&2)
+    {
+        return 2;
+    }
+    return 4;
+}
+
 void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format, GLenum type, const void *pixels, int pw, int ph, int pitch, bool mipmap)
 {
     int bpp = formatsize(format),
@@ -1664,20 +1678,6 @@ static bool alphaformat(GLenum format)
             return false;
         }
     }
-}
-
-int texalign(const void *data, int w, int bpp)
-{
-    int stride = w*bpp;
-    if(stride&1)
-    {
-        return 1;
-    }
-    if(stride&2)
-    {
-        return 2;
-    }
-    return 4;
 }
 
 bool floatformat(GLenum format)
