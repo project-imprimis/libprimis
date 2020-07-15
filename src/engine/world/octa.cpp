@@ -1778,34 +1778,6 @@ static inline bool mergefacecmp(const facebounds &x, const facebounds &y)
     return false;
 }
 
-static int mergefacev(int orient, facebounds *m, int sz, facebounds &n)
-{
-    for(int i = sz-1; i >= 0; --i)
-    {
-        if(m[i].v2 < n.v1)
-        {
-            break;
-        }
-        if(m[i].v2 == n.v1 && m[i].u1 == n.u1 && m[i].u2 == n.u2)
-        {
-            n.v1 = m[i].v1;
-            memmove(&m[i], &m[i+1], (sz - (i+1)) * sizeof(facebounds));
-            return 1;
-        }
-    }
-    return 0;
-}
-
-static int mergefaceu(int orient, facebounds &m, facebounds &n)
-{
-    if(m.v1 == n.v1 && m.v2 == n.v2 && m.u2 == n.u1)
-    {
-        n.u1 = m.u1;
-        return 1;
-    }
-    return 0;
-}
-
 struct cfkey
 {
     uchar orient;
