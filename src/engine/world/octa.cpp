@@ -1806,31 +1806,6 @@ static int mergefaceu(int orient, facebounds &m, facebounds &n)
     return 0;
 }
 
-static int mergeface(int orient, facebounds *m, int sz, facebounds &n)
-{
-    for(bool merged = false; sz; merged = true)
-    {
-        int vmerged = mergefacev(orient, m, sz, n);
-        sz -= vmerged;
-        if(!vmerged && merged)
-        {
-            break;
-        }
-        if(!sz)
-        {
-            break;
-        }
-        int umerged = mergefaceu(orient, m[sz-1], n);
-        sz -= umerged;
-        if(!umerged)
-        {
-            break;
-        }
-    }
-    m[sz++] = n;
-    return sz;
-}
-
 struct cfkey
 {
     uchar orient;
