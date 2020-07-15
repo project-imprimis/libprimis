@@ -4154,7 +4154,11 @@ bool loaddds(const char *filename, ImageData &image, int force)
     }
     GLenum format = GL_FALSE;
     uchar magic[4];
-    if(f->read(magic, 4) != 4 || memcmp(magic, "DDS ", 4)) { delete f; return false; }
+    if(f->read(magic, 4) != 4 || memcmp(magic, "DDS ", 4))
+    {
+        delete f;
+        return false;
+    }
     DDSURFACEDESC2 d;
     if(f->read(&d, sizeof(d)) != sizeof(d))
     {
@@ -4204,18 +4208,37 @@ bool loaddds(const char *filename, ImageData &image, int force)
         delete f;
         return false;
     }
-    if(dbgdds) conoutf(Console_Debug, "%s: format 0x%X, %d x %d, %d mipmaps", filename, format, d.dwWidth, d.dwHeight, d.dwMipMapCount);
+    if(dbgdds)
+    {
+        conoutf(Console_Debug, "%s: format 0x%X, %d x %d, %d mipmaps", filename, format, d.dwWidth, d.dwHeight, d.dwMipMapCount);
+    }
     int bpp = 0;
     switch(format)
     {
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT: bpp = 8; break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+        {
+            bpp = 8;
+            break;
+        }
         case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT: bpp = 16; break;
+        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
+        {
+            bpp = 16;
+            break;
+        }
         case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
-        case GL_COMPRESSED_RED_RGTC1: bpp = 8; break;
+        case GL_COMPRESSED_RED_RGTC1:
+        {
+            bpp = 8;
+            break;
+        }
         case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
-        case GL_COMPRESSED_RG_RGTC2: bpp = 16; break;
+        case GL_COMPRESSED_RG_RGTC2:
+        {
+            bpp = 16;
+            break;
+        }
 
     }
     image.setdata(NULL, d.dwWidth, d.dwHeight, bpp, !supported || force > 0 ? 1 : d.dwMipMapCount, 4, format);
@@ -4276,7 +4299,10 @@ void gendds(char *infile, char *outfile)
     }
 
     glBindTexture(GL_TEXTURE_2D, t->id);
-    GLint compressed = 0, format = 0, width = 0, height = 0;
+    GLint compressed = 0,
+          format = 0,
+          width = 0,
+          height = 0;
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED, &compressed);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
@@ -4339,23 +4365,41 @@ void gendds(char *infile, char *outfile)
         static string buf;
         copystring(buf, infile);
         int len = strlen(buf);
-        if(len > 4 && buf[len-4]=='.') memcpy(&buf[len-4], ".dds", 4);
-        else concatstring(buf, ".dds");
+        if(len > 4 && buf[len-4]=='.')
+        {
+            memcpy(&buf[len-4], ".dds", 4);
+        }
+        else
+        {
+            concatstring(buf, ".dds");
+        }
         outfile = buf;
     }
 
     stream *f = openfile(path(outfile, true), "wb");
-    if(!f) { conoutf(Console_Error, "failed writing to %s", outfile); return; }
-
+    if(!f)
+    {
+        conoutf(Console_Error, "failed writing to %s", outfile);
+        return;
+    }
     int csize = 0;
     for(int lw = width, lh = height, level = 0;;)
     {
         GLint size = 0;
         glGetTexLevelParameteriv(GL_TEXTURE_2D, level++, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &size);
         csize += size;
-        if(max(lw, lh) <= 1) break;
-        if(lw > 1) lw /= 2;
-        if(lh > 1) lh /= 2;
+        if(max(lw, lh) <= 1)
+        {
+            break;
+        }
+        if(lw > 1)
+        {
+            lw /= 2;
+        }
+        if(lh > 1)
+        {
+            lh /= 2;
+        }
     }
 
     DDSURFACEDESC2 d;
@@ -4377,9 +4421,18 @@ void gendds(char *infile, char *outfile)
         glGetTexLevelParameteriv(GL_TEXTURE_2D, d.dwMipMapCount, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &size);
         glGetCompressedTexImage_(GL_TEXTURE_2D, d.dwMipMapCount++, dst);
         dst += size;
-        if(max(lw, lh) <= 1) break;
-        if(lw > 1) lw /= 2;
-        if(lh > 1) lh /= 2;
+        if(max(lw, lh) <= 1)
+        {
+            break;
+        }
+        if(lw > 1)
+        {
+            lw /= 2;
+        }
+        if(lh > 1)
+        {
+            lh /= 2;
+        }
     }
 
     f->write("DDS ", 4);
@@ -4403,7 +4456,10 @@ void writepngchunk(stream *f, const char *type, uchar *data = NULL, uint len = 0
 
     uint crc = crc32(0, Z_NULL, 0);
     crc = crc32(crc, (const Bytef *)type, 4);
-    if(data) crc = crc32(crc, data, len);
+    if(data)
+    {
+        crc = crc32(crc, data, len);
+    }
     f->putbig<uint>(crc);
 }
 
@@ -4414,43 +4470,62 @@ void savepng(const char *filename, ImageData &image, bool flip)
     uchar ctype = 0;
     switch(image.bpp)
     {
-        case 1: ctype = 0; break;
-        case 2: ctype = 4; break;
-        case 3: ctype = 2; break;
-        case 4: ctype = 6; break;
-        default: conoutf(Console_Error, "failed saving png to %s", filename); return;
+        case 1:
+        {
+            ctype = 0;
+            break;
+        }
+        case 2:
+        {
+            ctype = 4;
+            break;
+        }
+        case 3:
+        {
+            ctype = 2;
+            break;
+        }
+        case 4:
+        {
+            ctype = 6;
+            break;
+        }
+        default:
+        {
+            conoutf(Console_Error, "failed saving png to %s", filename);
+            return;
+        }
     }
     stream *f = openfile(filename, "wb");
-    if(!f) { conoutf(Console_Error, "could not write to %s", filename); return; }
-
+    if(!f)
+    {
+        conoutf(Console_Error, "could not write to %s", filename);
+        return;
+    }
     uchar signature[] = { 137, 80, 78, 71, 13, 10, 26, 10 };
     f->write(signature, sizeof(signature));
-
     struct pngihdr
     {
         uint width, height;
         uchar bitdepth, colortype, compress, filter, interlace;
     } ihdr = { static_cast<uint>(endianswap(image.w)), static_cast<uint>(endianswap(image.h)), 8, ctype, 0, 0, 0 };
     writepngchunk(f, "IHDR", (uchar *)&ihdr, 13);
-
     stream::offset idat = f->tell();
     uint len = 0;
     f->write("\0\0\0\0IDAT", 8);
     uint crc = crc32(0, Z_NULL, 0);
     crc = crc32(crc, (const Bytef *)"IDAT", 4);
-
     z_stream z;
     z.zalloc = NULL;
     z.zfree = NULL;
     z.opaque = NULL;
-
     if(deflateInit(&z, compresspng) != Z_OK)
-        goto error;
-
+    {
+        goto error; //goto is beneath FLUSHZ macro
+    }
     uchar buf[1<<12];
     z.next_out = (Bytef *)buf;
     z.avail_out = sizeof(buf);
-
     for(int i = 0; i < image.h; ++i)
     {
         uchar filter = 0;
@@ -4460,7 +4535,10 @@ void savepng(const char *filename, ImageData &image, bool flip)
             z.avail_in = j ? image.w*image.bpp : 1;
             while(z.avail_in > 0)
             {
-                if(deflate(&z, Z_NO_FLUSH) != Z_OK) goto cleanuperror;
+                if(deflate(&z, Z_NO_FLUSH) != Z_OK)
+                {
+                    goto cleanuperror; //goto is beneath FLUSHZ macro
+                }
 //========================================================================FLUSHZ
                 #define FLUSHZ do { \
                     int flush = sizeof(buf) - z.avail_out; \
@@ -4478,9 +4556,15 @@ void savepng(const char *filename, ImageData &image, bool flip)
     for(;;)
     {
         int err = deflate(&z, Z_FINISH);
-        if(err != Z_OK && err != Z_STREAM_END) goto cleanuperror;
+        if(err != Z_OK && err != Z_STREAM_END)
+        {
+            goto cleanuperror;
+        }
         FLUSHZ;
-        if(err == Z_STREAM_END) break;
+        if(err == Z_STREAM_END)
+        {
+            break;
+        }
     }
 #undef FLUSHZ
 //==============================================================================
@@ -4490,9 +4574,7 @@ void savepng(const char *filename, ImageData &image, bool flip)
     f->putbig<uint>(len);
     f->seek(0, SEEK_END);
     f->putbig<uint>(crc);
-
     writepngchunk(f, "IEND");
-
     delete f;
     return;
 
@@ -4501,7 +4583,6 @@ cleanuperror:
 
 error:
     delete f;
-
     conoutf(Console_Error, "failed saving png to %s", filename);
 }
 
@@ -4527,12 +4608,24 @@ void savetga(const char *filename, ImageData &image, bool flip)
 {
     switch(image.bpp)
     {
-        case 3: case 4: break;
-        default: conoutf(Console_Error, "failed saving tga to %s", filename); return;
+        case 3:
+        case 4:
+        {
+            break;
+        }
+        default:
+        {
+            conoutf(Console_Error, "failed saving tga to %s", filename);
+            return;
+        }
     }
 
     stream *f = openfile(filename, "wb");
-    if(!f) { conoutf(Console_Error, "could not write to %s", filename); return; }
+    if(!f)
+    {
+        conoutf(Console_Error, "could not write to %s", filename);
+        return;
+    }
 
     tgaheader hdr;
     memset(&hdr, 0, sizeof(hdr));
@@ -4557,32 +4650,50 @@ void savetga(const char *filename, ImageData &image, bool flip)
                 for(uchar *scan = src; run < min(remaining, 128); run++)
                 {
                     scan += image.bpp;
-                    if(src[0]!=scan[0] || src[1]!=scan[1] || src[2]!=scan[2] || (image.bpp==4 && src[3]!=scan[3])) break;
+                    if(src[0]!=scan[0] || src[1]!=scan[1] || src[2]!=scan[2] || (image.bpp==4 && src[3]!=scan[3]))
+                    {
+                        break;
+                    }
                 }
                 if(run > 1)
                 {
                     f->putchar(0x80 | (run-1));
                     f->putchar(src[2]); f->putchar(src[1]); f->putchar(src[0]);
-                    if(image.bpp==4) f->putchar(src[3]);
+                    if(image.bpp==4)
+                    {
+                        f->putchar(src[3]);
+                    }
                     src += run*image.bpp;
                     remaining -= run;
-                    if(remaining <= 0) break;
+                    if(remaining <= 0)
+                    {
+                        break;
+                    }
                 }
                 for(uchar *scan = src; raw < min(remaining, 128); raw++)
                 {
                     scan += image.bpp;
-                    if(src[0]==scan[0] && src[1]==scan[1] && src[2]==scan[2] && (image.bpp!=4 || src[3]==scan[3])) break;
+                    if(src[0]==scan[0] && src[1]==scan[1] && src[2]==scan[2] && (image.bpp!=4 || src[3]==scan[3]))
+                    {
+                        break;
+                    }
                 }
                 f->putchar(raw - 1);
             }
-            else raw = min(remaining, 128);
+            else
+            {
+                raw = min(remaining, 128);
+            }
             uchar *dst = buf;
             for(int j = 0; j < raw; ++j)
             {
                 dst[0] = src[2];
                 dst[1] = src[1];
                 dst[2] = src[0];
-                if(image.bpp==4) dst[3] = src[3];
+                if(image.bpp==4)
+                {
+                    dst[3] = src[3];
+                }
                 dst += image.bpp;
                 src += image.bpp;
             }
@@ -4612,7 +4723,10 @@ int guessimageformat(const char *filename, int format = IMG_BMP)
     for(int i = 0; i < NUMIMG; ++i)
     {
         int extlen = strlen(imageexts[i]);
-        if(len >= extlen && !strcasecmp(&filename[len-extlen], imageexts[i])) return i;
+        if(len >= extlen && !strcasecmp(&filename[len-extlen], imageexts[i]))
+        {
+            return i;
+        }
     }
     return format;
 }
@@ -4626,9 +4740,15 @@ void saveimage(const char *filename, int format, ImageData &image, bool flip = f
         default:
         {
             ImageData flipped(image.w, image.h, image.bpp, image.data);
-            if(flip) texflip(flipped);
+            if(flip)
+            {
+                texflip(flipped);
+            }
             SDL_Surface *s = wrapsurface(flipped.data, flipped.w, flipped.h, flipped.bpp);
-            if(!s) break;
+            if(!s)
+            {
+                break;
+            }
             stream *f = openfile(filename, "wb");
             if(f)
             {
@@ -4651,9 +4771,16 @@ void screenshot(char *filename)
     if(screenshotdir[0])
     {
         dirlen = strlen(buf);
-        if(buf[dirlen] != '/' && buf[dirlen] != '\\' && dirlen+1 < static_cast<int>(sizeof(buf))) { buf[dirlen++] = '/'; buf[dirlen] = '\0'; }
+        if(buf[dirlen] != '/' && buf[dirlen] != '\\' && dirlen+1 < static_cast<int>(sizeof(buf)))
+        {
+            buf[dirlen++] = '/';
+            buf[dirlen] = '\0';
+        }
         const char *dir = findfile(buf, "w");
-        if(!fileexists(dir, "w")) createdir(dir);
+        if(!fileexists(dir, "w"))
+        {
+            createdir(dir);
+        }
     }
     if(filename[0])
     {
@@ -4682,5 +4809,3 @@ void screenshot(char *filename)
 }
 
 COMMAND(screenshot, "s");
-
-
