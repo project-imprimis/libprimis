@@ -186,7 +186,7 @@ static inline void cleancode(ident &id)
     if(id.code)
     {
         id.code[0] -= 0x100;
-        if(int(id.code[0]) < 0x100)
+        if(static_cast<int>(id.code[0]) < 0x100)
         {
             delete[] id.code;
         }
@@ -304,7 +304,8 @@ static bool initidents()
 }
 UNUSED static bool forceinitidents = initidents();
 
-static const char *sourcefile = NULL, *sourcestr = NULL;
+static const char *sourcefile = NULL,
+                  *sourcestr = NULL;
 
 static const char *debugline(const char *p, const char *fmt)
 {
@@ -434,9 +435,15 @@ static inline void pusharg(ident &id, const tagval &v, identstack &stack)
 
 static inline void poparg(ident &id)
 {
-    if(!id.stack) return;
+    if(!id.stack)
+    {
+        return;
+    }
     identstack *stack = id.stack;
-    if(id.valtype == Value_String) delete[] id.val.s;
+    if(id.valtype == Value_String)
+    {
+        delete[] id.val.s;
+    }
     id.setval(*stack);
     cleancode(id);
     id.stack = stack->next;
@@ -520,14 +527,20 @@ static inline void pushalias(ident &id, identstack &stack)
 
 static inline void popalias(ident &id)
 {
-    if(id.type == Id_Alias && id.index >= Max_Args) poparg(id);
+    if(id.type == Id_Alias && id.index >= Max_Args)
+    {
+        poparg(id);
+    }
 }
 
 KEYWORD(local, Id_Local);
 
 static inline bool checknumber(const char *s)
 {
-    if(isdigit(s[0])) return true;
+    if(isdigit(s[0]))
+    {
+        return true;
+    }
     else switch(s[0])
     {
         case '+':
@@ -1231,7 +1244,7 @@ static char *conc(vector<char> &buf, tagval *v, int n, bool space, const char *p
                 goto haslen; //skip `len` assignment
             }
         }
-        len = int(strlen(s));
+        len = static_cast<int>(strlen(s));
     haslen:
         buf.put(s, len);
         if(i == n-1)
@@ -1604,7 +1617,7 @@ static inline void compileint(vector<uint> &code, const stringslice &word)
 
 static inline void compilefloat(vector<uint> &code, float f = 0.0f)
 {
-    if(int(f) == f && f >= -0x800000 && f <= 0x7FFFFF)
+    if(static_cast<int>(f) == f && f >= -0x800000 && f <= 0x7FFFFF)
         code.add(Code_ValI|Ret_Float|(static_cast<int>(f)<<8));
     else
     {
@@ -2748,7 +2761,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                 case Value_CAny:
                 {
                     char *end = (char *)idname.str;
-                    int val = int(strtoul(idname.str, &end, 0));
+                    int val = static_cast<int>(strtoul(idname.str, &end, 0));
                     if(end < idname.end())
                     {
                         compilestr(code, idname, rettype==Value_CAny);
@@ -3381,7 +3394,7 @@ void keepcode(uint *code)
         }
         case Code_Offset:
         {
-            code -= int(code[-1]>>8);
+            code -= static_cast<int>(code[-1]>>8);
             *code += 0x100;
             break;
         }
@@ -3399,7 +3412,7 @@ void freecode(uint *code)
         case Code_Start:
         {
             *code -= 0x100;
-            if(int(*code) < 0x100)
+            if(static_cast<int>(*code) < 0x100)
             {
                 delete[] code;
             }
@@ -3411,7 +3424,7 @@ void freecode(uint *code)
         case Code_Start:
         {
             code[-1] -= 0x100;
-            if(int(code[-1]) < 0x100)
+            if(static_cast<int>(code[-1]) < 0x100)
             {
                 delete[] &code[-1];
             }
@@ -3419,9 +3432,9 @@ void freecode(uint *code)
         }
         case Code_Offset:
         {
-            code -= int(code[-1]>>8);
+            code -= static_cast<int>(code[-1]>>8);
             *code -= 0x100;
-            if(int(*code) < 0x100)
+            if(static_cast<int>(*code) < 0x100)
             {
                 delete[] code;
             }
@@ -3478,6 +3491,7 @@ void printvar(ident *id)
     }
 }
 //You know what they awoke in the darkness of Khazad-dum... shadow and flame.
+// these are typedefs for argument lists of variable sizes
 typedef void (__cdecl *comfun)();
 typedef void (__cdecl *comfun1)(void *);
 typedef void (__cdecl *comfun2)(void *, void *);
@@ -3647,10 +3661,11 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
         {
             if(++i >= numargs)
             {
-                if(rep) break;
+                if(rep)
                 {
-                    args[i].setfloat(0.0f);
+                    break;
                 }
+                args[i].setfloat(0.0f);
                 fakeargs++;
             }
             else
@@ -3667,7 +3682,8 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                 {
                     break;
                 }
-                args[i].setfloat(args[i-1].getfloat()); fakeargs++;
+                args[i].setfloat(args[i-1].getfloat());
+                fakeargs++;
             }
             else
             {
@@ -3857,13 +3873,13 @@ cleanup:
     }
 }
 
-#define MAXRUNDEPTH 255
+const int maxrundepth = 255;
 static int rundepth = 0;
 
 static const uint *runcode(const uint *code, tagval &result)
 {
     result.setnull();
-    if(rundepth >= MAXRUNDEPTH)
+    if(rundepth >= maxrundepth)
     {
         debugcode("exceeded recursion limit");
         return skipcode(code, result);
@@ -4044,13 +4060,13 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Val|Ret_String:
             {
                 uint len = op>>8;
-                args[numargs++].setstr(newstring((const char *)code, len));
+                args[numargs++].setstr(newstring(reinterpret_cast<const char *>(code), len));
                 code += len/sizeof(uint) + 1;
                 continue;
             }
             case Code_ValI|Ret_String:
             {
-                char s[4] = { char((op>>8)&0xFF), char((op>>16)&0xFF), char((op>>24)&0xFF), '\0' };
+                char s[4] = { static_cast<char>((op>>8)&0xFF), static_cast<char>((op>>16)&0xFF), static_cast<char>((op>>24)&0xFF), '\0' };
                 args[numargs++].setstr(newstring(s));
                 continue;
             }
@@ -4062,22 +4078,22 @@ static const uint *runcode(const uint *code, tagval &result)
             }
             case Code_Val|Ret_Integer:
             {
-                args[numargs++].setint(int(*code++));
+                args[numargs++].setint(static_cast<int>(*code++));
                 continue;
             }
             case Code_ValI|Ret_Integer:
             {
-                args[numargs++].setint(int(op)>>8);
+                args[numargs++].setint(static_cast<int>(op)>>8);
                 continue;
             }
             case Code_Val|Ret_Float:
             {
-                args[numargs++].setfloat(*(const float *)code++);
+                args[numargs++].setfloat(*reinterpret_cast<const float *>(code++));
                 continue;
             }
             case Code_ValI|Ret_Float:
             {
-                args[numargs++].setfloat(float(int(op)>>8));
+                args[numargs++].setfloat(static_cast<float>(static_cast<int>(op)>>8));
                 continue;
             }
             case Code_Dup|Ret_Null:
@@ -4322,7 +4338,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 LOOKUPU(arg.setint(id->getint()),
                         arg.setint(parseint(*id->storage.s)),
                         arg.setint(*id->storage.i),
-                        arg.setint(int(*id->storage.f)),
+                        arg.setint(static_cast<int>(*id->storage.f)),
                         arg.setint(0));
             case Code_Lookup|Ret_Integer:
                 LOOKUP(args[numargs++].setint(id->getint()));
@@ -4331,7 +4347,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_LookupU|Ret_Float:
                 LOOKUPU(arg.setfloat(id->getfloat()),
                         arg.setfloat(parsefloat(*id->storage.s)),
-                        arg.setfloat(float(*id->storage.i)),
+                        arg.setfloat(static_cast<float>(*id->storage.i)),
                         arg.setfloat(*id->storage.f),
                         arg.setfloat(0.0f));
             case Code_Lookup|Ret_Float:
@@ -4407,7 +4423,7 @@ static const uint *runcode(const uint *code, tagval &result)
             }
             case Code_IntVar|Ret_Float:
             {
-                args[numargs++].setfloat(float(*identmap[op>>8]->storage.i));
+                args[numargs++].setfloat(static_cast<float>(*identmap[op>>8]->storage.i));
                 continue;
             }
             case Code_IntVar1:
@@ -4440,7 +4456,7 @@ static const uint *runcode(const uint *code, tagval &result)
             }
             case Code_FloatVar|Ret_Integer:
             {
-                args[numargs++].setint(int(*identmap[op>>8]->storage.f));
+                args[numargs++].setint(static_cast<int>(*identmap[op>>8]->storage.f));
                 continue;
             }
             case Code_FloatVar1:
@@ -4580,7 +4596,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     code[0] += 0x100; \
                     runcode(code+1, result); \
                     code[0] -= 0x100; \
-                    if(int(code[0]) < 0x100) delete[] code; \
+                    if(static_cast<int>(code[0]) < 0x100) delete[] code; \
                     aliasstack = aliaslink.next; \
                     identflags = oldflags; \
                     for(int i = 0; i < callargs; i++) \
@@ -4749,7 +4765,7 @@ void executeret(const char *p, tagval &result)
     code.reserve(64);
     compilemain(code, p, Value_Any);
     runcode(code.getbuf()+1, result);
-    if(int(code[0]) >= 0x100) code.disown();
+    if(static_cast<int>(code[0]) >= 0x100) code.disown();
 }
 
 void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &result)
@@ -4758,7 +4774,7 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
     ++rundepth;
     tagval *prevret = commandret;
     commandret = &result;
-    if(rundepth > MAXRUNDEPTH)
+    if(rundepth > maxrundepth)
     {
         debugcode("exceeded recursion limit");
     }
@@ -4850,7 +4866,10 @@ char *executestr(const uint *code)
 {
     tagval result;
     runcode(code, result);
-    if(result.type == Value_Null) return NULL;
+    if(result.type == Value_Null)
+    {
+        return NULL;
+    }
     forcestr(result);
     return result.s;
 }
@@ -4859,7 +4878,10 @@ char *executestr(const char *p)
 {
     tagval result;
     executeret(p, result);
-    if(result.type == Value_Null) return NULL;
+    if(result.type == Value_Null)
+    {
+        return NULL;
+    }
     forcestr(result);
     return result.s;
 }
@@ -4898,7 +4920,7 @@ int execute(const char *p)
     compilemain(code, p, Value_Integer);
     tagval result;
     runcode(code.getbuf()+1, result);
-    if(int(code[0]) >= 0x100)
+    if(static_cast<int>(code[0]) >= 0x100)
     {
         code.disown();
     }
@@ -4987,6 +5009,17 @@ bool execidentbool(const char *name, bool noid, bool lookup)
     ident *id = idents.access(name);
     return id ? executebool(id, NULL, 0, lookup) : noid;
 }
+/*
+ * cubescript commands
+ *
+ * these functions & assignment macros define standard functions used with the language
+ * the language does not otherwise define special operators (besides bracket semantics)
+ *
+ * including, but not limited to:
+ *    - file handling
+ *    - arithmetic and boolean operators
+ *    - control statements
+ */
 
 bool execfile(const char *cfgfile, bool msg)
 {
@@ -5015,14 +5048,17 @@ const char *escapestring(const char *s)
     vector<char> &buf = strbuf[stridx];
     buf.setsize(0);
     buf.add('"');
-    for(; *s; s++) switch(*s)
+    for(; *s; s++)
     {
-        case '\n': buf.put("^n", 2);  break;
-        case '\t': buf.put("^t", 2);  break;
-        case '\f': buf.put("^f", 2);  break;
-        case '"':  buf.put("^\"", 2); break;
-        case '^':  buf.put("^^", 2);  break;
-        default:   buf.add(*s);       break;
+        switch(*s)
+        {
+            case '\n': buf.put("^n", 2);  break;
+            case '\t': buf.put("^t", 2);  break;
+            case '\f': buf.put("^f", 2);  break;
+            case '"':  buf.put("^\"", 2); break;
+            case '^':  buf.put("^^", 2);  break;
+            default:   buf.add(*s);       break;
+        }
     }
     buf.put("\"\0", 2);
     return buf.getbuf();
@@ -5230,7 +5266,7 @@ const char *numberstr(double v)
 
 void numberret(double v)
 {
-    int i = int(v);
+    int i = static_cast<int>(v);
     if(v == i)
     {
         commandret->setint(i);
@@ -5523,7 +5559,10 @@ static inline void skiplist(const char *&p)
     for(;;)
     {
         p += strspn(p, " \t\r\n");
-        if(p[0]!='/' || p[1]!='/') break;
+        if(p[0]!='/' || p[1]!='/')
+        {
+            break;
+        }
         p += strcspn(p, "\n\0");
     }
 }
@@ -5636,8 +5675,15 @@ static inline char *listelem(const char *start = liststart, const char *end = li
 {
     size_t len = end-start;
     char *s = newstring(len);
-    if(*quotestart == '"') unescapestring(s, start, end);
-    else { memcpy(s, start, len); s[len] = '\0'; }
+    if(*quotestart == '"')
+    {
+        unescapestring(s, start, end);
+    }
+    else
+    {
+        memcpy(s, start, len);
+        s[len] = '\0';
+    }
     return s;
 }
 
@@ -5663,7 +5709,10 @@ ICOMMAND(listlen, "s", (char *s), intret(listlen(s)));
 
 void at(tagval *args, int numargs)
 {
-    if(!numargs) return;
+    if(!numargs)
+    {
+        return;
+    }
     const char *start = args[0].getstr(), *end = start + strlen(start), *qstart = "";
     for(int i = 1; i < numargs; i++)
     {
@@ -5824,14 +5873,14 @@ COMMAND(listassoc, "rse");
         for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++) \
         { \
             if(cmp) { intret(n); return; } \
-            for(int i = 0; i < int(*skip); ++i) { if(!parselist(s)) goto notfound; n++; } \
+            for(int i = 0; i < static_cast<int>(*skip); ++i) { if(!parselist(s)) goto notfound; n++; } \
         } \
     notfound: \
         intret(-1); \
     });
 LISTFIND(listfind=, "i", int, , parseint(start) == *val);
 LISTFIND(listfind=f, "f", float, , parsefloat(start) == *val);
-LISTFIND(listfind=s, "s", char, int len = (int)strlen(val), int(end-start) == len && !memcmp(start, val, len));
+LISTFIND(listfind=s, "s", char, int len = (int)strlen(val), static_cast<int>(end-start) == len && !memcmp(start, val, len));
 
 #define LISTASSOC(name, fmt, type, init, cmp) \
     ICOMMAND(name, "s" fmt, (char *list, type *val), \
@@ -5845,7 +5894,7 @@ LISTFIND(listfind=s, "s", char, int len = (int)strlen(val), int(end-start) == le
     });
 LISTASSOC(listassoc=, "i", int, , parseint(start) == *val);
 LISTASSOC(listassoc=f, "f", float, , parsefloat(start) == *val);
-LISTASSOC(listassoc=s, "s", char, int len = (int)strlen(val), int(end-start) == len && !memcmp(start, val, len));
+LISTASSOC(listassoc=s, "s", char, int len = (int)strlen(val), static_cast<int>(end-start) == len && !memcmp(start, val, len));
 
 void looplist(ident *id, const char *list, const uint *body)
 {
@@ -6166,7 +6215,7 @@ COMMANDN(findfile, findfile_, "s");
 struct sortitem
 {
     const char *str, *quotestart, *quoteend;
-    int quotelength() const { return int(quoteend-quotestart); }
+    int quotelength() const { return static_cast<int>(quoteend-quotestart); }
 };
 
 struct sortfun
@@ -6330,7 +6379,7 @@ ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortl
             for(int i = 2; i < numargs && val; i++) val = args[i-1].fmt op args[i].fmt; \
         } \
         else val = (numargs > 0 ? args[0].fmt : 0) op 0; \
-        intret(int(val)); \
+        intret(static_cast<int>(val)); \
     })
 #define CMPICMDN(name, op) CMPCMD(#name, i, int, op)
 #define CMPICMD(name) CMPICMDN(name, name)
@@ -6481,7 +6530,7 @@ ICOMMAND(round, "ff", (float *n, float *k),
     {
         r = r < 0 ? ceil(r - 0.5) : floor(r + 0.5);
     }
-    floatret(float(r));
+    floatret(static_cast<float>(r));
 });
 
 ICOMMAND(cond, "ee2V", (tagval *args, int numargs),
@@ -6559,7 +6608,7 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
             for(int i = 2; i < numargs && val; i++) val = strcmp(args[i-1].s, args[i].s) op 0; \
         } \
         else val = (numargs > 0 ? args[0].s[0] : 0) op 0; \
-        intret(int(val)); \
+        intret(static_cast<int>(val)); \
     })
 
 CMPSCMD(strcmp, ==);
@@ -6590,8 +6639,8 @@ ICOMMAND(echo, "C", (char *s), conoutf("\f1%s", s));
 ICOMMAND(error, "C", (char *s), conoutf(Console_Error, "%s", s));
 ICOMMAND(strstr, "ss", (char *a, char *b), { char *s = strstr(a, b); intret(s ? s-a : -1); });
 ICOMMAND(strlen, "s", (char *s), intret(strlen(s)));
-ICOMMAND(strcode, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : uchar(s[*i])) : uchar(s[0])));
-ICOMMAND(codestr, "i", (int *i), { char *s = newstring(1); s[0] = char(*i); s[1] = '\0'; stringret(s); });
+ICOMMAND(strcode, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : static_cast<uchar>(s[*i])) : static_cast<uchar>(s[0])));
+ICOMMAND(codestr, "i", (int *i), { char *s = newstring(1); s[0] = static_cast<char>(*i); s[1] = '\0'; stringret(s); });
 ICOMMAND(struni, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : cube2uni(s[*i])) : cube2uni(s[0])));
 ICOMMAND(unistr, "i", (int *i), { char *s = newstring(1); s[0] = uni2cube(*i); s[1] = '\0'; stringret(s); });
 
@@ -6600,7 +6649,7 @@ ICOMMAND(unistr, "i", (int *i), { char *s = newstring(1); s[0] = uni2cube(*i); s
     { \
         int len = strlen(s); \
         char *m = newstring(len); \
-        for(int i = 0; i < int(len); ++i) m[i] = map(s[i]); \
+        for(int i = 0; i < static_cast<int>(len); ++i) m[i] = map(s[i]); \
         m[len] = '\0'; \
         stringret(m); \
     })
