@@ -286,10 +286,26 @@ void glerror(const char *file, int line, GLenum error)
             desc = "invalid value";
             break;
         }
-        case GL_INVALID_OPERATION: desc = "invalid operation"; break;
-        case GL_STACK_OVERFLOW: desc = "stack overflow"; break;
-        case GL_STACK_UNDERFLOW: desc = "stack underflow"; break;
-        case GL_OUT_OF_MEMORY: desc = "out of memory"; break;
+        case GL_INVALID_OPERATION:
+        {
+            desc = "invalid operation";
+            break;
+        }
+        case GL_STACK_OVERFLOW:
+        {
+            desc = "stack overflow";
+            break;
+        }
+        case GL_STACK_UNDERFLOW:
+        {
+            desc = "stack underflow";
+            break;
+        }
+        case GL_OUT_OF_MEMORY:
+        {
+            desc = "out of memory";
+            break;
+        }
     }
     printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
 }
@@ -355,9 +371,9 @@ bool checkdepthtexstencilrb()
 
 void gl_checkextensions()
 {
-    const char *vendor = (const char *)glGetString(GL_VENDOR);
-    const char *renderer = (const char *)glGetString(GL_RENDERER);
-    const char *version = (const char *)glGetString(GL_VERSION);
+    const char *vendor   = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
+    const char *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+    const char *version  = reinterpret_cast<const char *>(glGetString(GL_VERSION));
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
 
@@ -507,12 +523,10 @@ void gl_checkextensions()
     glVertexAttrib4Nuiv_ =        (PFNGLVERTEXATTRIB4NUIVPROC)        getprocaddress("glVertexAttrib4Nuiv");
     glVertexAttrib4Nusv_ =        (PFNGLVERTEXATTRIB4NUSVPROC)        getprocaddress("glVertexAttrib4Nusv");
     glVertexAttribPointer_ =      (PFNGLVERTEXATTRIBPOINTERPROC)      getprocaddress("glVertexAttribPointer");
-
     glDrawBuffers_ =              (PFNGLDRAWBUFFERSPROC)              getprocaddress("glDrawBuffers");
-
     glGetStringi_ =            (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
 
-    const char *glslstr = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
+    const char *glslstr = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
     conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
 
     uint glslmajorversion, glslminorversion;
@@ -520,7 +534,10 @@ void gl_checkextensions()
     {
         glslversion = glslmajorversion*100 + glslminorversion;
     }
-    if(glslversion < 400) fatal("GLSL 4.00 or greater is required!");
+    if(glslversion < 400)
+    {
+        fatal("GLSL 4.00 or greater is required!");
+    }
     parseglexts();
     GLint texsize = 0,
           texunits = 0,
@@ -748,7 +765,10 @@ void gl_checkextensions()
             glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallbackARB");
             glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLogARB");
             hasDBGO = true;
-            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
+            if(dbgexts)
+            {
+                conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
+            }
         }
     }
 
@@ -1042,7 +1062,9 @@ void setcammatrix()
     if(!drawtex)
     {
         if(raycubepos(camera1->o, camdir, worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
+        {
             worldpos = vec(camdir).mul(2*worldsize).add(camera1->o); // if nothing is hit, just far away in the view direction
+        }
     }
 }
 
@@ -1052,21 +1074,16 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     {
         setcammatrix();
     }
-
     jitteraa();
-
     camprojmatrix.muld(projmatrix, cammatrix);
-
     if(init)
     {
         invcammatrix.invert(cammatrix);
         invprojmatrix.invert(projmatrix);
         invcamprojmatrix.invert(camprojmatrix);
     }
-
     GLOBALPARAM(camprojmatrix, camprojmatrix);
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
-
     if(flush && Shader::lastshader)
     {
         Shader::lastshader->flushparams();
@@ -1239,7 +1256,8 @@ void modifyorient(float yaw, float pitch)
 
 void mousemove(int dx, int dy)
 {
-    float cursens = sensitivity, curaccel = mouseaccel;
+    float cursens  = sensitivity,
+          curaccel = mouseaccel;
     if(zoom)
     {
         if(zoomautosens)
@@ -1847,9 +1865,7 @@ static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = 
         blendfog(abovemat, 0, 1-blend, 1-logblend, start, end, curfogcolor);
     }
     curfogcolor.mul(ldrscale);
-
     GLOBALPARAM(fogcolor, curfogcolor);
-
     float fogdensity = calcfogdensity(end-start);
     GLOBALPARAMF(fogdensity, fogdensity, 1/exp(M_LN2*start*fogdensity));
 }
@@ -1926,7 +1942,10 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
-        if(c[i].children) clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
+        if(c[i].children)
+        {
+            clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
+        }
         else if(!IS_ENTIRELY_SOLID(c[i]) && (c[i].material&MatFlag_Clip)!=Mat_Clip)
         {
             for(int k = 0; k < 3; ++k)
@@ -1947,7 +1966,10 @@ void drawminimap()
 
     if(!showminimap)
     {
-        if(!minimaptex) glGenTextures(1, &minimaptex);
+        if(!minimaptex)
+        {
+            glGenTextures(1, &minimaptex);
+        }
         createtexture(minimaptex, 1, 1, nominimapcolor.v, 3, 0, GL_RGB, GL_TEXTURE_2D);
         return;
     }
@@ -2202,9 +2224,15 @@ void gl_drawview()
         {
             fogbelow = z - camera1->o.z;
         }
-        else fogmat = abovemat;
+        else
+        {
+            fogmat = abovemat;
+        }
     }
-    else fogmat = Mat_Air;
+    else
+    {
+        fogmat = Mat_Air;
+    }
     setfog(abovemat);
     //setfog(fogmat, fogbelow, 1, abovemat);
 
@@ -2225,9 +2253,7 @@ void gl_drawview()
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
-
     rendergbuffer();
-
     if(wireframe && editmode)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -2243,7 +2269,7 @@ void gl_drawview()
     // render avatar after AO to avoid weird contact shadows
     renderavatar();
     GLERROR;
- 
+
     // render grass after AO to avoid disturbing shimmering patterns
     generategrass();
     rendergrass();
@@ -2309,7 +2335,6 @@ void gl_drawview()
     {
         drawfogoverlay(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
-
     doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
     renderpostfx(scalefbo);
     if(scalefbo)
@@ -2340,7 +2365,8 @@ void damagecompass(int n, const vec &loc)
     }
     vec delta(loc);
     delta.sub(camera1->o);
-    float yaw = 0, pitch;
+    float yaw = 0,
+          pitch;
     if(delta.magnitude() > 4)
     {
         vectoyawpitch(delta, yaw, pitch);
@@ -2429,16 +2455,16 @@ void damageblend(int n)
 
 void drawdamagescreen(int w, int h)
 {
-    if(lastmillis >= damageblendmillis) return;
-
+    if(lastmillis >= damageblendmillis)
+    {
+        return;
+    }
     hudshader->set();
-
     static Texture *damagetex = NULL;
     if(!damagetex)
     {
         damagetex = textureload("media/interface/hud/damage.png", 3);
     }
-
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glBindTexture(GL_TEXTURE_2D, damagetex->id);
     float fade = damagescreenalpha/100.0f;
@@ -2678,9 +2704,7 @@ void gl_drawhud(int crosshairindex)
                 }
                 roffset += FONTH;
             }
-
             printtimers(conw, conh);
-
             if(wallclock)
             {
                 if(!walltime)
@@ -2712,7 +2736,6 @@ void gl_drawhud(int crosshairindex)
             }
             pophudmatrix();
         }
-
         if(!editmode)
         {
             resethudshader();
@@ -2720,7 +2743,6 @@ void gl_drawhud(int crosshairindex)
             game::gameplayhud(w, h);
             abovehud = min(abovehud, conh*game::abovegameplayhud(w, h));
         }
-
         rendertexturepanel(w, h);
     }
 
@@ -2733,13 +2755,9 @@ void gl_drawhud(int crosshairindex)
         renderconsole(conw, conh, abovehud - FONTH/2);
     }
     pophudmatrix();
-
     drawcrosshair(w, h, crosshairindex);
-
     glDisable(GL_BLEND);
-
     popfont();
-
     if(frametimer)
     {
         glFinish();
