@@ -176,6 +176,45 @@ static inline void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec
 
 void freeoctaentities(cube &c);
 
+bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
+{
+    switch(e.type)
+    {
+        case EngineEnt_Empty:
+        {
+            return false;
+        }
+        case EngineEnt_Decal:
+            {
+                DecalSlot &s = lookupdecalslot(e.attr1, false);
+                vec center, radius;
+                decalboundbox(e, s, center, radius);
+                center.add(e.o);
+                radius.max(entselradius);
+                o = ivec(vec(center).sub(radius));
+                r = ivec(vec(center).add(radius).add(1));
+                break;
+            }
+        case EngineEnt_Mapmodel:
+            if(model *m = loadmapmodel(e.attr1))
+            {
+                vec center, radius;
+                mmboundbox(e, m, center, radius);
+                center.add(e.o);
+                radius.max(entselradius);
+                o = ivec(vec(center).sub(radius));
+                r = ivec(vec(center).add(radius).add(1));
+                break;
+            }
+        // invisible mapmodels use entselradius: lights sounds spawns etc.
+        default:
+            o = ivec(vec(e.o).sub(entselradius));
+            r = ivec(vec(e.o).add(entselradius+1));
+            break;
+    }
+    return true;
+}
+
 void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = NULL)
 {
     LOOP_OCTA_BOX(cor, size, bo, br)
@@ -487,45 +526,6 @@ void entselectionbox(const entity &e, vec &eo, vec &es)
     }
     eo.sub(es);
     es.mul(2);
-}
-
-bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
-{
-    switch(e.type)
-    {
-        case EngineEnt_Empty:
-        {
-            return false;
-        }
-        case EngineEnt_Decal:
-            {
-                DecalSlot &s = lookupdecalslot(e.attr1, false);
-                vec center, radius;
-                decalboundbox(e, s, center, radius);
-                center.add(e.o);
-                radius.max(entselradius);
-                o = ivec(vec(center).sub(radius));
-                r = ivec(vec(center).add(radius).add(1));
-                break;
-            }
-        case EngineEnt_Mapmodel:
-            if(model *m = loadmapmodel(e.attr1))
-            {
-                vec center, radius;
-                mmboundbox(e, m, center, radius);
-                center.add(e.o);
-                radius.max(entselradius);
-                o = ivec(vec(center).sub(radius));
-                r = ivec(vec(center).add(radius).add(1));
-                break;
-            }
-        // invisible mapmodels use entselradius: lights sounds spawns etc.
-        default:
-            o = ivec(vec(e.o).sub(entselradius));
-            r = ivec(vec(e.o).add(entselradius+1));
-            break;
-    }
-    return true;
 }
 
 ////////////////////////////// world size/octa /////////////////////////////////

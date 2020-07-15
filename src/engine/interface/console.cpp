@@ -34,6 +34,9 @@ VARFP(maxcon, 10, 200, MAXCONLINES,
 
 #define CONSTRLEN 512
 
+void resetcomplete();
+void complete(char *s, int maxlen, const char *cmdprefix);
+
 void conline(int type, const char *sf)        // add a line to the console buffer
 {
     char *buf = conlines.length() >= maxcon ? conlines.remove().line : newstring("", CONSTRLEN-1);

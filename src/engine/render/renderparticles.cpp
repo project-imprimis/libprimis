@@ -1025,6 +1025,8 @@ static constexpr int numpartparts()
     return static_cast<int>(sizeof(parts)/sizeof(parts[0]));
 }
 
+void initparticles(); //need to prototype either the vars or the the function
+
 VARFP(maxparticles, 10, 4000, 10000, initparticles());
 VARFP(fewparticles, 10, 100, 10000, initparticles());
 

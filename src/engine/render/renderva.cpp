@@ -317,12 +317,6 @@ void savevfcP()
     memcpy(oldvfcP, vfcP, sizeof(vfcP));
 }
 
-void restorevfcP()
-{
-    memcpy(vfcP, oldvfcP, sizeof(vfcP));
-    calcvfcD();
-}
-
 void visiblecubes(bool cull)
 {
     if(cull)

@@ -172,6 +172,12 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
 
 VAR(menumute, 0, 1, 1);
 
+void swapbuffers(bool)
+{
+    gle::disable();
+    SDL_GL_SwapWindow(screen);
+}
+
 void setbackgroundinfo(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL)
 {
     renderedframe = false;
@@ -569,12 +575,6 @@ void resetgl()
 }
 
 COMMAND(resetgl, "");
-
-void swapbuffers(bool)
-{
-    gle::disable();
-    SDL_GL_SwapWindow(screen);
-}
 
 VAR(menufps, 0, 60, 1000);
 VARP(maxfps, 0, 125, 1000);

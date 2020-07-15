@@ -6,6 +6,8 @@
 //updating the whole world
 //player statistics (kills, deaths, accuracy)
 
+void physicsframe();
+
 namespace game
 {
     bool intermission = false;
@@ -1863,33 +1865,6 @@ void moveplayer(physent *pl, int moveres, bool local)
         pl->deltapos.sub(pl->newpos);
         interppos(pl);
     }
-}
-
-bool bounce(physent *d, float elasticity, float waterfric, float grav)
-{
-    if(physsteps <= 0)
-    {
-        interppos(d);
-        return false;
-    }
-    d->o = d->newpos;
-    bool hitplayer = false;
-    for(int i = 0; i < physsteps-1; ++i)
-    {
-        if(bounce(d, physframetime/1000.0f, elasticity, waterfric, grav))
-        {
-            hitplayer = true;
-        }
-    }
-    d->deltapos = d->o;
-    if(bounce(d, physframetime/1000.0f, elasticity, waterfric, grav))
-    {
-        hitplayer = true;
-    }
-    d->newpos = d->o;
-    d->deltapos.sub(d->newpos);
-    interppos(d);
-    return hitplayer;
 }
 
 void updatephysstate(physent *d)

@@ -455,8 +455,6 @@ extern int octaentsize;
 
 extern void visiblecubes(bool cull = true);
 extern void setvfcP(const vec &bbmin = vec(-1, -1, -1), const vec &bbmax = vec(1, 1, 1));
-extern void savevfcP();
-extern void restorevfcP();
 extern void rendergeom();
 extern int findalphavas();
 extern void renderrefractmask();
@@ -520,7 +518,6 @@ extern void renderliquidmaterials();
 extern void rendersolidmaterials();
 extern void rendereditmaterials();
 extern void renderminimapmaterials();
-extern int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort matmask = MatFlag_Volume);
 
 // water
 extern int vertwater, waterreflect, caustics;
@@ -647,8 +644,6 @@ extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 extern void conoutfv(int type, const char *fmt, va_list args);
 extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
 extern void logoutfv(const char *fmt, va_list args);
-extern void resetcomplete();
-extern void complete(char *s, int maxlen, const char *cmdprefix);
 const char *getkeyname(int code);
 extern const char *addreleaseaction(char *s);
 extern tagval *addreleaseaction(ident *id, int numargs);
@@ -675,24 +670,19 @@ extern int scr_w, scr_h;
 extern float loadprogress;
 
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
-extern void swapbuffers(bool overlay = true);
 extern int getclockmillis();
 
 // worldio
-extern void fixmapname(char *name);
 extern uint getmapcrc();
 extern void clearmapcrc();
-extern bool emptymap(int factor, bool force, const char *mname = "", bool usecfg = true);
 
 // physics
 extern vec collidewall;
 extern int collideinside;
 extern physent *collideplayer;
 
-extern bool bounce(physent *d, float secs, float elasticity, float waterfric, float grav);
 extern void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space);
 extern bool movecamera(physent *pl, const vec &dir, float dist, float stepdist);
-extern void physicsframe();
 extern void dropenttofloor(entity *e);
 extern bool droptofloor(vec &o, float radius, float height);
 
@@ -721,7 +711,6 @@ extern void resetmap();
 extern void startmap(const char *name);
 extern void freeoctaentities(cube &c);
 extern void entitiesinoctanodes();
-extern bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
 extern void attachentities();
 extern void entcancel();
 
@@ -773,16 +762,13 @@ enum
     ParticleLayer_NoLayer,
 };
 
-extern void initparticles();
 extern void clearparticles();
 extern void clearparticleemitters();
 extern void seedparticles();
-extern void updateparticles();
 extern void debugparticles();
 extern void renderparticles(int layer = ParticleLayer_All);
 extern void cleanupparticles();
 
-extern bool canaddparticles();
 extern void regular_particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2, int delay = 0);
 extern void regular_particle_flame(int type, const vec &p, float radius, float height, int color, int density = 3, float scale = 2.0f, float speed = 200.0f, float fade = 600.0f, int gravity = -15);
 extern void particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2);
@@ -820,10 +806,8 @@ extern void genstainmmtri(stainrenderer *s, const vec v[3]);
 extern int skytexture, skyshadow, explicitsky;
 
 extern void drawskybox(bool clear = false);
-extern bool hasskybox();
 extern bool limitsky();
 extern bool renderexplicitsky(bool outline = false);
-extern void cleanupsky();
 
 // ui
 
@@ -870,7 +854,6 @@ extern void preloadmapsound(int n);
 extern bool stopsound(int n, int chanid, int fade = 0);
 extern void stopsounds();
 extern void initsound();
-
 
 // grass
 extern void loadgrassshaders();

@@ -190,7 +190,7 @@ const char *getmaterialdesc(int mat, const char *prefix)
     return desc;
 }
 
-int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort matmask)
+int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort matmask = MatFlag_Volume)
 {
     ushort mat = c.material&matmask;
     switch(mat)
