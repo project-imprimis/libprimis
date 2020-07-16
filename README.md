@@ -88,8 +88,14 @@ directory as this readme file.
 
 Imprimis is an open source project created by volunteers who work on the game as
 a hobby, and we'd love for it to be your hobby too! The Imprimis project tries
-to be as well documented and transparent in its decision making so as to make
+to be well documented and transparent in its decision making so as to make
 outside participation fruitful. If you'd like to express your opinions on the
 engine's decision, modify the engine, participate on the engine code, or just say
 hello to the developers, that's great! We have a Discord server where you may
 interact with us at https://discord.gg/WVFjtzA.
+
+To facilitate getting started working on Imprimis, there are several issues posted
+on the "issues" board. Whether you're a longtime open source contributor or you
+need to create a GitHub account to start participating, feel free to use issues
+labeled as "good first issue" to ask whatever questions you have about Git semantics
+or quirks about our specific codebase in order to get comfortable!
