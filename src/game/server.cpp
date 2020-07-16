@@ -1,5 +1,5 @@
 // server.cpp: little more than enhanced multicaster
-// runs dedicated or as client coroutine
+// runs as client coroutine
 
 #include "game.h"
 
@@ -72,6 +72,15 @@ static void writelogv(FILE *file, const char *fmt, va_list args)
     static char buf[LOGSTRLEN];
     vformatstring(buf, fmt, args, sizeof(buf));
     writelog(file, buf);
+}
+
+void logoutfv(const char *fmt, va_list args)
+{
+    FILE *f = getlogfile();
+    if(f)
+    {
+        writelogv(f, fmt, args);
+    }
 }
 
 #define DEFAULTCLIENTS 8
@@ -550,10 +559,6 @@ ENetSocket connectmaster(bool wait)
     }
     if(masteraddress.host == ENET_HOST_ANY)
     {
-        if(isdedicatedserver())
-        {
-            logoutf("looking up %s...", mastername);
-        }
         masteraddress.port = masterport;
         if(!resolverwait(mastername, &masteraddress))
         {
@@ -563,10 +568,6 @@ ENetSocket connectmaster(bool wait)
     ENetSocket sock = enet_socket_create(ENET_SOCKET_TYPE_STREAM);
     if(sock == ENET_SOCKET_NULL)
     {
-        if(isdedicatedserver())
-        {
-            logoutf("could not open master server socket");
-        }
         return ENET_SOCKET_NULL;
     }
     if(wait || serveraddress.host == ENET_HOST_ANY || !enet_socket_bind(sock, &serveraddress))
@@ -585,10 +586,6 @@ ENetSocket connectmaster(bool wait)
         }
     }
     enet_socket_destroy(sock);
-    if(isdedicatedserver()) //only dedicated servers hunt for master
-    {
-        logoutf("could not connect to master server");
-    }
     return ENET_SOCKET_NULL;
 }
 
@@ -794,19 +791,6 @@ void checkserversockets()        // reply all server info requests
     }
 }
 
-static int serverinfointercept(ENetHost *host, ENetEvent *)
-{
-    if(host->receivedDataLength < 2 || host->receivedData[0] != 0xFF || host->receivedData[1] != 0xFF || host->receivedDataLength-2 > MAXPINGDATA)
-    {
-        return 0;
-    }
-    serverinfoaddress = host->receivedAddress;
-    ucharbuf req(host->receivedData+2, host->receivedDataLength-2), p(host->receivedData+2, sizeof(host->packetData[0])-2);
-    p.len += host->receivedDataLength-2;
-    server::serverinforeply(req, p);
-    return 1;
-}
-
 VAR(serveruprate, 0, 0, INT_MAX);
 SVAR(serverip, "");
 VARF(serverport, 0, server::serverport(), 0xFFFF,
@@ -843,7 +827,7 @@ void updatetime()
     }
 }
 
-void serverslice(bool dedicated, uint timeout)   // main server update, called from main loop in sp, or from below in dedicated server
+void serverslice(uint timeout)   // main server update, called from main loop in sp
 {
     if(!serverhost)
     {
@@ -853,23 +837,6 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
     }
 
     // below is network only
-
-    if(dedicated)
-    {
-        int millis = static_cast<int>(enet_time_get());
-        elapsedtime = millis - totalmillis;
-        static int timeerr = 0;
-        int scaledtime = server::scaletime(elapsedtime) + timeerr;
-        curtime = scaledtime/100;
-        timeerr = scaledtime%100;
-        if(server::ispaused())
-        {
-            curtime = 0;
-        }
-        lastmillis += curtime;
-        totalmillis = millis;
-        updatetime();
-    }
     server::serverupdate(); //see game/server.cpp for meat of server update routine
 
     flushmasteroutput();
@@ -988,490 +955,6 @@ void localconnect()
     copystring(c.hostname, "local");
     game::gameconnect(false);
     server::localconnect(c.num);
-}
-
-#ifdef WIN32
-#include "shellapi.h"
-
-#define IDI_ICON1 1
-
-struct logline
-{
-    int len;
-    char buf[LOGSTRLEN];
-};
-
-static string apptip = "";
-static HINSTANCE appinstance = NULL;
-static ATOM wndclass = 0;
-static HWND appwindow = NULL,
-            conwindow = NULL;
-static HICON appicon = NULL;
-static HMENU appmenu = NULL;
-static HANDLE outhandle = NULL;
-static const int MAXLOGLINES = 200;
-static queue<logline, MAXLOGLINES> loglines;
-
-static void cleanupsystemtray()
-{
-    NOTIFYICONDATA nid;
-    memset(&nid, 0, sizeof(nid));
-    nid.cbSize = sizeof(nid);
-    nid.hWnd = appwindow;
-    nid.uID = IDI_ICON1;
-    Shell_NotifyIcon(NIM_DELETE, &nid);
-}
-
-static bool setupsystemtray(UINT uCallbackMessage)
-{
-    NOTIFYICONDATA nid;
-    memset(&nid, 0, sizeof(nid));
-    nid.cbSize = sizeof(nid);
-    nid.hWnd = appwindow;
-    nid.uID = IDI_ICON1;
-    nid.uCallbackMessage = uCallbackMessage;
-    nid.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
-    nid.hIcon = appicon;
-    strcpy(nid.szTip, apptip);
-    if(Shell_NotifyIcon(NIM_ADD, &nid) != TRUE)
-    {
-        return false;
-    }
-    atexit(cleanupsystemtray);
-    return true;
-}
-
-
-
-static void cleanupwindow()
-{
-    if(!appinstance)
-    {
-        return;
-    }
-    if(appmenu)
-    {
-        DestroyMenu(appmenu);
-        appmenu = NULL;
-    }
-    if(wndclass)
-    {
-        UnregisterClass(MAKEINTATOM(wndclass), appinstance);
-        wndclass = 0;
-    }
-}
-
-static BOOL WINAPI consolehandler(DWORD dwCtrlType)
-{
-    switch(dwCtrlType)
-    {
-        case CTRL_C_EVENT:
-        case CTRL_BREAK_EVENT:
-        case CTRL_CLOSE_EVENT:
-        {
-            exit(EXIT_SUCCESS);
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-static void writeline(logline &line)
-{
-    static uchar ubuf[512];
-    size_t len = strlen(line.buf), carry = 0;
-    while(carry < len)
-    {
-        size_t numu = encodeutf8(ubuf, sizeof(ubuf), &(reinterpret_cast<uchar*>line.buf)[carry], len - carry, &carry);
-        DWORD written = 0;
-        WriteConsole(outhandle, ubuf, numu, &written, NULL);
-    }
-}
-
-static void setupconsole()
-{
-    if(conwindow)
-    {
-        return;
-    }
-    if(!AllocConsole())
-    {
-        return;
-    }
-    SetConsoleCtrlHandler(consolehandler, TRUE);
-    conwindow = GetConsoleWindow();
-    SetConsoleTitle(apptip);
-    //SendMessage(conwindow, WM_SETICON, ICON_SMALL, (LPARAM)appicon);
-    SendMessage(conwindow, WM_SETICON, ICON_BIG, (LPARAM)appicon);
-    outhandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO coninfo;
-    GetConsoleScreenBufferInfo(outhandle, &coninfo);
-    coninfo.dwSize.Y = MAXLOGLINES;
-    SetConsoleScreenBufferSize(outhandle, coninfo.dwSize);
-    SetConsoleCP(CP_UTF8);
-    SetConsoleOutputCP(CP_UTF8);
-    for(int i = 0; i < loglines.length(); i++)
-    {
-        writeline(loglines[i]);
-    }
-}
-
-enum
-{
-    MENU_OPENCONSOLE = 0,
-    MENU_SHOWCONSOLE,
-    MENU_HIDECONSOLE,
-    MENU_EXIT
-};
-
-static LRESULT CALLBACK handlemessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch(uMsg)
-    {
-        case WM_APP:
-        {
-            SetForegroundWindow(hWnd);
-            switch(lParam)
-            {
-                //case WM_MOUSEMOVE:
-                //  break;
-                case WM_LBUTTONUP:
-                case WM_RBUTTONUP:
-                {
-                    POINT pos;
-                    GetCursorPos(&pos);
-                    TrackPopupMenu(appmenu, TPM_CENTERALIGN|TPM_BOTTOMALIGN|TPM_RIGHTBUTTON, pos.x, pos.y, 0, hWnd, NULL);
-                    PostMessage(hWnd, WM_NULL, 0, 0);
-                    break;
-                }
-            }
-            return 0;
-        }
-        case WM_COMMAND:
-        {
-            switch(LOWORD(wParam))
-            {
-                case MENU_OPENCONSOLE:
-                {
-                    setupconsole();
-                    if(conwindow)
-                    {
-                        ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_HIDECONSOLE, "Hide Console");
-                    }
-                    break;
-                }
-                case MENU_SHOWCONSOLE:
-                {
-                    ShowWindow(conwindow, SW_SHOWNORMAL);
-                    ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_HIDECONSOLE, "Hide Console");
-                    break;
-                }
-                case MENU_HIDECONSOLE:
-                {
-                    ShowWindow(conwindow, SW_HIDE);
-                    ModifyMenu(appmenu, 0, MF_BYPOSITION|MF_STRING, MENU_SHOWCONSOLE, "Show Console");
-                    break;
-                }
-                case MENU_EXIT:
-                {
-                    PostMessage(hWnd, WM_CLOSE, 0, 0);
-                    break;
-                }
-            }
-            return 0;
-        }
-        case WM_CLOSE:
-        {
-            PostQuitMessage(0);
-            return 0;
-        }
-    }
-    return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
-
-static void setupwindow(const char *title)
-{
-    copystring(apptip, title);
-    //appinstance = GetModuleHandle(NULL);
-    if(!appinstance)
-    {
-        fatal("failed getting application instance");
-    }
-    appicon = LoadIcon(appinstance, MAKEINTRESOURCE(IDI_ICON1));//(HICON)LoadImage(appinstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
-    if(!appicon)
-    {
-        fatal("failed loading icon");
-    }
-    appmenu = CreatePopupMenu();
-    if(!appmenu)
-    {
-        fatal("failed creating popup menu");
-    }
-    AppendMenu(appmenu, MF_STRING, MENU_OPENCONSOLE, "Open Console");
-    AppendMenu(appmenu, MF_SEPARATOR, 0, NULL);
-    AppendMenu(appmenu, MF_STRING, MENU_EXIT, "Exit");
-    //SetMenuDefaultItem(appmenu, 0, FALSE);
-
-    WNDCLASS wc;
-    memset(&wc, 0, sizeof(wc));
-    wc.hCursor = NULL; //LoadCursor(NULL, IDC_ARROW);
-    wc.hIcon = appicon;
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = title;
-    wc.style = 0;
-    wc.hInstance = appinstance;
-    wc.lpfnWndProc = handlemessages;
-    wc.cbWndExtra = 0;
-    wc.cbClsExtra = 0;
-    wndclass = RegisterClass(&wc);
-    if(!wndclass)
-    {
-        fatal("failed registering window class");
-    }
-    appwindow = CreateWindow(MAKEINTATOM(wndclass), title, 0, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, HWND_MESSAGE, NULL, appinstance, NULL);
-    if(!appwindow)
-    {
-        fatal("failed creating window");
-    }
-    atexit(cleanupwindow);
-    if(!setupsystemtray(WM_APP))
-    {
-        fatal("failed adding to system tray");
-    }
-}
-
-static char *parsecommandline(const char *src, vector<char *> &args)
-{
-    char *buf = new char[strlen(src) + 1],
-         *dst = buf;
-    for(;;)
-    {
-        while(isspace(*src))
-        {
-            src++;
-        }
-        if(!*src)
-        {
-            break;
-        }
-        args.add(dst);
-        for(bool quoted = false; *src && (quoted || !isspace(*src)); src++)
-        {
-            if(*src != '"')
-            {
-                *dst++ = *src;
-            }
-            else if(dst > buf && src[-1] == '\\')
-            {
-                dst[-1] = '"';
-            }
-            else
-            {
-                quoted = !quoted;
-            }
-        }
-        *dst++ = '\0';
-    }
-    args.add(NULL);
-    return buf;
-}
-
-
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
-{
-    vector<char *> args;
-    char *buf = parsecommandline(GetCommandLine(), args);
-    appinstance = hInst;
-
-    SDL_SetMainReady();
-    int status = SDL_main(args.length()-1, args.getbuf());
-
-    delete[] buf;
-    exit(status);
-    return 0;
-}
-
-void logoutfv(const char *fmt, va_list args)
-{
-    if(appwindow)
-    {
-        logline &line = loglines.add();
-        vformatstring(line.buf, fmt, args, sizeof(line.buf));
-        if(logfile)
-        {
-            writelog(logfile, line.buf);
-        }
-        line.len = min(strlen(line.buf), sizeof(line.buf)-2);
-        line.buf[line.len++] = '\n';
-        line.buf[line.len] = '\0';
-        if(outhandle)
-        {
-            writeline(line);
-        }
-    }
-    else if(logfile)
-    {
-        writelogv(logfile, fmt, args);
-    }
-}
-
-#else
-
-void logoutfv(const char *fmt, va_list args)
-{
-    FILE *f = getlogfile();
-    if(f)
-    {
-        writelogv(f, fmt, args);
-    }
-}
-
-#endif
-
-static bool dedicatedserver = false;
-
-bool isdedicatedserver()
-{
-    return dedicatedserver;
-}
-
-void rundedicatedserver()
-{
-    dedicatedserver = true;
-    logoutf("dedicated server started, waiting for clients...");
-#ifdef WIN32
-    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
-    for(;;)
-    {
-        MSG msg;
-        while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            if(msg.message == WM_QUIT)
-            {
-                exit(EXIT_SUCCESS);
-            }
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-        serverslice(true, 5);
-    }
-#else
-    for(;;)
-    {
-        serverslice(true, 5);
-    }
-#endif
-    dedicatedserver = false;
-}
-
-bool servererror(bool, const char *desc)
-{
-    fatal("%s", desc);
-    return false;
-}
-
-bool setuplistenserver(bool dedicated)
-{
-    ENetAddress address = { ENET_HOST_ANY, enet_uint16(serverport <= 0 ? server::serverport() : serverport) };
-    if(*serverip)
-    {
-        if(enet_address_set_host(&address, serverip)<0)
-        {
-            conoutf(Console_Warn, "WARNING: server ip not resolved");
-        }
-        else
-        {
-            serveraddress.host = address.host;
-        }
-    }
-    serverhost = enet_host_create(&address, min(maxclients + server::reserveclients(), MAXCLIENTS), server::numchannels(), 0, serveruprate);
-    if(!serverhost)
-    {
-        return servererror(dedicated, "could not create server host");
-    }
-    serverhost->duplicatePeers = maxdupclients ? maxdupclients : MAXCLIENTS;
-    serverhost->intercept = serverinfointercept;
-    address.port = server::laninfoport();
-    lansock = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
-    if(lansock != ENET_SOCKET_NULL && (enet_socket_set_option(lansock, ENET_SOCKOPT_REUSEADDR, 1) < 0 || enet_socket_bind(lansock, &address) < 0))
-    {
-        enet_socket_destroy(lansock);
-        lansock = ENET_SOCKET_NULL;
-    }
-    if(lansock == ENET_SOCKET_NULL)
-    {
-        conoutf(Console_Warn, "WARNING: could not create LAN server info socket");
-    }
-    else
-    {
-        enet_socket_set_option(lansock, ENET_SOCKOPT_NONBLOCK, 1);
-    }
-    return true;
-}
-
-void initserver(bool listen, bool dedicated)
-{
-    if(dedicated)
-    {
-#ifdef WIN32
-        setupwindow("Tesseract server");
-#endif
-    }
-    execfile("config/server-init.cfg", false);
-    if(listen)
-    {
-        setuplistenserver(dedicated);
-    }
-    server::serverinit();
-    if(listen)
-    {
-        dedicatedserver = dedicated;
-        updatemasterserver();
-        if(dedicated)
-        {
-            rundedicatedserver(); // never returns
-        }
-        else
-        {
-            conoutf("listen server started");
-        }
-    }
-}
-
-void startlistenserver(int *usemaster)
-{
-    if(serverhost)
-    {
-        conoutf(Console_Error, "listen server is already running");
-        return;
-    }
-    allowupdatemaster = *usemaster>0 ? 1 : 0;
-    if(!setuplistenserver(false))
-    {
-        return;
-    }
-    updatemasterserver();
-    conoutf("listen server started for %d clients%s", maxclients, allowupdatemaster ? " and listed with master server" : "");
-}
-COMMAND(startlistenserver, "i");
-
-void stoplistenserver()
-{
-    if(!serverhost)
-    {
-        conoutf(Console_Error, "listen server is not running");
-        return;
-    }
-    kicknonlocalclients();
-    enet_host_flush(serverhost);
-    cleanupserver();
-    conoutf("listen server stopped");
-}
-COMMAND(stoplistenserver, "");
-
-bool serveroption(char *opt)
-{
-    return false;
 }
 
 vector<const char *> gameargs;

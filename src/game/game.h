@@ -917,9 +917,8 @@ namespace game
 extern vector<const char *> gameargs;
 extern int maxclients;
 
-extern void initserver(bool listen, bool dedicated);
 extern void cleanupserver();
-extern void serverslice(bool dedicated, uint timeout);
+extern void serverslice(uint timeout);
 extern void updatetime();
 
 extern ENetSocket connectmaster(bool wait);
@@ -944,7 +943,6 @@ extern bool haslocalclients();
 extern void sendserverinforeply(ucharbuf &p);
 extern bool requestmaster(const char *req);
 extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
-extern bool isdedicatedserver();
 extern void closelogfile();
 extern void setlogfile(const char *fname);
 

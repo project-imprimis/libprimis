@@ -3545,10 +3545,6 @@ namespace server
                     getstring(text, p);
                     filtertext(text, text, true, true);
                     QUEUE_STR(text);
-                    if(isdedicatedserver() && cq)
-                    {
-                        logoutf("%s: %s", colorname(cq), text);
-                    }
                     break;
                 }
                 case NetMsg_SayTeam:
@@ -3567,10 +3563,6 @@ namespace server
                             continue;
                         }
                         sendf(t->clientnum, 1, "riis", NetMsg_SayTeam, cq->clientnum, text);
-                    }
-                    if(isdedicatedserver() && cq)
-                    {
-                        logoutf("%s <%s>: %s", colorname(cq), teamnames[cq->team], text);
                     }
                     break;
                 }

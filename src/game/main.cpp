@@ -173,7 +173,6 @@ int main(int argc, char **argv)
 
     setlogfile(NULL);
 
-    int dedicated = 0;
     char *load = NULL, *initscript = NULL;
 
     initing = Init_Reset;
@@ -224,14 +223,6 @@ int main(int argc, char **argv)
                 case 'g':
                 {
                     break;
-                }
-                case 'd': dedicated = atoi(&argv[i][2]);
-                {
-                    if(dedicated<=0)
-                    {
-                        dedicated = 2;
-                        break;
-                    }
                 }
                 case 'w':
                 {
@@ -289,15 +280,11 @@ int main(int argc, char **argv)
             gameargs.add(argv[i]);
         }
     }
+    logoutf("init: sdl");
 
-    if(dedicated <= 1)
+    if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
     {
-        logoutf("init: sdl");
-
-        if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
-        {
-            fatal("Unable to initialize SDL: %s", SDL_GetError());
-        }
+        fatal("Unable to initialize SDL: %s", SDL_GetError());
     }
 
     logoutf("init: net");
@@ -310,7 +297,8 @@ int main(int argc, char **argv)
 
     logoutf("init: game");
     game::parseoptions(gameargs);
-    initserver(dedicated>0, dedicated>1);  // never returns if dedicated
+    execfile("config/server-init.cfg", false);
+    server::serverinit();
     game::initclient();
 
     logoutf("init: video");
@@ -446,7 +434,7 @@ int main(int argc, char **argv)
         }
         checksleep(lastmillis); //checks cubescript for any pending sleep commands
 
-        serverslice(false, 0); //server main routine; this gets deferred to a dedicated server if online
+        serverslice(0); //server main routine
 
         if(frames)
         {
