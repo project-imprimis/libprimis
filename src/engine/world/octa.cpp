@@ -134,7 +134,7 @@ void freecubeext(cube &c)
 {
     if(c.ext)
     {
-        delete[] (uchar *)c.ext;
+        delete[] reinterpret_cast<uchar *>(c.ext);
         c.ext = NULL;
     }
 }
@@ -276,7 +276,9 @@ void validatec(cube *c, int size)
         {
             for(int j = 0; j < 3; ++j)
             {
-                uint f = c[i].faces[j], e0 = f&0x0F0F0F0FU, e1 = (f>>4)&0x0F0F0F0FU;
+                uint f  = c[i].faces[j],
+                     e0 = f&0x0F0F0F0FU,
+                     e1 = (f>>4)&0x0F0F0F0FU;
                 if(e0 == e1 || ((e1+0x07070707U)|(e1-e0))&0xF0F0F0F0U)
                 {
                     EMPTY_FACES(c[i]);
@@ -938,12 +940,12 @@ bool collideface(const cube &c, int orient)
     if(flataxisface(c, orient))
     {
         uchar r1 = c.edges[faceedgesidx[orient][0]], r2 = c.edges[faceedgesidx[orient][1]];
-        if(uchar((r1>>4)|(r2&0xF0)) == uchar((r1&0x0F)|(r2<<4)))
+        if(static_cast<uchar>((r1>>4)|(r2&0xF0)) == static_cast<uchar>((r1&0x0F)|(r2<<4)))
         {
             return false;
         }
         uchar c1 = c.edges[faceedgesidx[orient][2]], c2 = c.edges[faceedgesidx[orient][3]];
-        if(uchar((c1>>4)|(c2&0xF0)) == uchar((c1&0x0F)|(c2<<4)))
+        if(static_cast<uchar>((c1>>4)|(c2&0xF0)) == static_cast<uchar>((c1&0x0F)|(c2<<4)))
         {
             return false;
         }
@@ -1693,7 +1695,10 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
             if(c.visible&(1<<i))
             {
                 int vis;
-                if(flataxisface(c, i)) p.visible |= 1<<i;
+                if(flataxisface(c, i))
+                {
+                    p.visible |= 1<<i;
+                }
                 else if((vis = visibletris(c, i, co, size, Mat_Clip, Mat_NoClip, MatFlag_Clip)))
                 {
                     int convex = faceconvexity(c, i),
@@ -1818,8 +1823,8 @@ void mincubeface(const cube &cu, int orient, const ivec &o, int size, const face
            vco = (o[r]&0xFFF)<<3;
     ushort uc1 = uco,
            vc1 = vco,
-           uc2 = ushort(size<<3)+uco,
-           vc2 = ushort(size<<3)+vco;
+           uc2 = static_cast<ushort>(size<<3)+uco,
+           vc2 = static_cast<ushort>(size<<3)+vco;
     uc1 = max(uc1, orig.u1);
     uc2 = min(uc2, orig.u2);
     vc1 = max(vc1, orig.v1);
@@ -2244,9 +2249,21 @@ bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, in
 struct plink : pedge
 {
     int polys[2];
-    plink() { clear(); }
-    plink(const pedge &p) : pedge(p) { clear(); }
-    void clear() { polys[0] = polys[1] = -1; }
+
+    plink()
+    {
+        clear();
+    }
+
+    plink(const pedge &p) : pedge(p)
+    {
+        clear();
+    }
+
+    void clear()
+    {
+        polys[0] = polys[1] = -1;
+    }
 };
 
 bool mergepolys(int orient, hashset<plink> &links, vector<plink *> &queue, int owner, poly &p, poly &q, const pedge &e)
