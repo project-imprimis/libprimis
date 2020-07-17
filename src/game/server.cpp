@@ -239,11 +239,6 @@ ENetPeer *getclientpeer(int i)
     return clients.inrange(i) && clients[i]->type==ServerClient_Remote ? clients[i]->peer : NULL;
 }
 
-int getnumclients()
-{
-    return clients.length();
-}
-
 uint getclientip(int n)
 {
     return clients.inrange(n) && clients[n]->type==ServerClient_Remote ? clients[n]->peer->address.host : 0;
@@ -614,103 +609,6 @@ bool requestmasterf(const char *fmt, ...)
     return requestmaster(req);
 }
 
-void processmasterinput()
-{
-    if(masterinpos >= masterin.length())
-    {
-        return;
-    }
-    char *input = &masterin[masterinpos], *end = (char *)memchr(input, '\n', masterin.length() - masterinpos);
-    while(end)
-    {
-        *end = '\0';
-
-        const char *args = input;
-        while(args < end && !iscubespace(*args))
-        {
-            args++;
-        }
-        int cmdlen = args - input;
-        while(args < end && iscubespace(*args))
-        {
-            args++;
-        }
-        if(matchstring(input, cmdlen, "failreg"))
-        {
-            conoutf(Console_Error, "master server registration failed: %s", args);
-        }
-        else if(matchstring(input, cmdlen, "succreg"))
-        {
-            conoutf("master server registration succeeded");
-        }
-        else
-        {
-            server::processmasterinput(input, cmdlen, args);
-        }
-        end++;
-        masterinpos = end - masterin.getbuf();
-        input = end;
-        end = reinterpret_cast<char*>(memchr(input, '\n', masterin.length() - masterinpos));
-    }
-
-    if(masterinpos >= masterin.length())
-    {
-        masterin.setsize(0);
-        masterinpos = 0;
-    }
-}
-
-void flushmasteroutput()
-{
-    if(masterconnecting && totalmillis - masterconnecting >= 60000)
-    {
-        logoutf("could not connect to master server");
-        disconnectmaster();
-    }
-    if(masterout.empty() || !masterconnected)
-    {
-        return;
-    }
-    ENetBuffer buf;
-    buf.data = &masterout[masteroutpos];
-    buf.dataLength = masterout.length() - masteroutpos;
-    int sent = enet_socket_send(mastersock, NULL, &buf, 1);
-    if(sent >= 0)
-    {
-        masteroutpos += sent;
-        if(masteroutpos >= masterout.length())
-        {
-            masterout.setsize(0);
-            masteroutpos = 0;
-        }
-    }
-    else
-    {
-        disconnectmaster();
-    }
-}
-
-void flushmasterinput()
-{
-    if(masterin.length() >= masterin.capacity())
-    {
-        masterin.reserve(4096);
-    }
-    ENetBuffer buf;
-    buf.data = masterin.getbuf() + masterin.length();
-    buf.dataLength = masterin.capacity() - masterin.length();
-    int recv = enet_socket_receive(mastersock, NULL, &buf, 1);
-    if(recv > 0)
-    {
-        masterin.advance(recv);
-        processmasterinput();
-    }
-    else
-    {
-        disconnectmaster();
-    }
-}
-
 static ENetAddress serverinfoaddress;
 
 void sendserverinforeply(ucharbuf &p)
@@ -723,74 +621,6 @@ void sendserverinforeply(ucharbuf &p)
 
 #define MAXPINGDATA 32
 
-void checkserversockets()        // reply all server info requests
-{
-    static ENetSocketSet readset, writeset;
-    ENET_SOCKETSET_EMPTY(readset);
-    ENET_SOCKETSET_EMPTY(writeset);
-    ENetSocket maxsock = ENET_SOCKET_NULL;
-    if(mastersock != ENET_SOCKET_NULL)
-    {
-        maxsock = maxsock == ENET_SOCKET_NULL ? mastersock : max(maxsock, mastersock);
-        ENET_SOCKETSET_ADD(readset, mastersock);
-        if(!masterconnected)
-        {
-            ENET_SOCKETSET_ADD(writeset, mastersock);
-        }
-    }
-    if(lansock != ENET_SOCKET_NULL)
-    {
-        maxsock = maxsock == ENET_SOCKET_NULL ? lansock : max(maxsock, lansock);
-        ENET_SOCKETSET_ADD(readset, lansock);
-    }
-    if(maxsock == ENET_SOCKET_NULL || enet_socketset_select(maxsock, &readset, &writeset, 0) <= 0)
-    {
-        return;
-    }
-
-    if(lansock != ENET_SOCKET_NULL && ENET_SOCKETSET_CHECK(readset, lansock))
-    {
-        ENetBuffer buf;
-        uchar data[MAXTRANS];
-        buf.data = data;
-        buf.dataLength = sizeof(data);
-        int len = enet_socket_receive(lansock, &serverinfoaddress, &buf, 1);
-        if(len < 2 || data[0] != 0xFF || data[1] != 0xFF || len-2 > MAXPINGDATA)
-        {
-            return;
-        }
-        ucharbuf req(data+2, len-2), p(data+2, sizeof(data)-2);
-        p.len += len-2;
-        server::serverinforeply(req, p);
-    }
-
-    if(mastersock != ENET_SOCKET_NULL)
-    {
-        if(!masterconnected)
-        {
-            if(ENET_SOCKETSET_CHECK(readset, mastersock) || ENET_SOCKETSET_CHECK(writeset, mastersock))
-            {
-                int error = 0;
-                if(enet_socket_get_option(mastersock, ENET_SOCKOPT_ERROR, &error) < 0 || error)
-                {
-                    logoutf("could not connect to master server");
-                    disconnectmaster();
-                }
-                else
-                {
-                    masterconnecting = 0;
-                    masterconnected = totalmillis ? totalmillis : 1;
-                    server::masterconnected();
-                }
-            }
-        }
-        if(mastersock != ENET_SOCKET_NULL && ENET_SOCKETSET_CHECK(readset, mastersock))
-        {
-            flushmasterinput();
-        }
-    }
-}
-
 VAR(serveruprate, 0, 0, INT_MAX);
 SVAR(serverip, "");
 VARF(serverport, 0, server::serverport(), 0xFFFF,
@@ -800,19 +630,6 @@ VARF(serverport, 0, server::serverport(), 0xFFFF,
         serverport = server::serverport();
     }
 });
-
-void updatemasterserver()
-{
-    if(!masterconnected && lastconnectmaster && totalmillis-lastconnectmaster <= 5*60*1000)
-    {
-        return;
-    }
-    if(mastername[0] && allowupdatemaster)
-    {
-        requestmasterf("regserv %d\n", serverport);
-    }
-    lastupdatemaster = totalmillis ? totalmillis : 1;
-}
 
 uint totalsecs = 0;
 
@@ -829,96 +646,8 @@ void updatetime()
 
 void serverslice(uint timeout)   // main server update, called from main loop in sp
 {
-    if(!serverhost)
-    {
-        server::serverupdate();
-        server::sendpackets();
-        return;
-    }
-
-    // below is network only
-    server::serverupdate(); //see game/server.cpp for meat of server update routine
-
-    flushmasteroutput();
-    checkserversockets();
-
-    if(!lastupdatemaster || totalmillis-lastupdatemaster>60*60*1000)       // send alive signal to masterserver every hour of uptime
-        updatemasterserver();
-
-    if(totalmillis-laststatus>60*1000)   // display bandwidth stats, useful for server ops
-    {
-        laststatus = totalmillis;
-        if(nonlocalclients || serverhost->totalSentData || serverhost->totalReceivedData)
-        {
-            logoutf("status: %d remote clients, %.1f send, %.1f rec (K/sec)", nonlocalclients, serverhost->totalSentData/60.0f/1024, serverhost->totalReceivedData/60.0f/1024);
-        }
-        serverhost->totalSentData = serverhost->totalReceivedData = 0;
-    }
-
-    ENetEvent event;
-    bool serviced = false;
-    while(!serviced)
-    {
-        if(enet_host_check_events(serverhost, &event) <= 0)
-        {
-            if(enet_host_service(serverhost, &event, timeout) <= 0)
-            {
-                break;
-            }
-            serviced = true;
-        }
-        switch(event.type)
-        {
-            case ENET_EVENT_TYPE_CONNECT:
-            {
-                client &c = addclient(ServerClient_Remote);
-                c.peer = event.peer;
-                c.peer->data = &c;
-                string hn;
-                copystring(c.hostname, (enet_address_get_host_ip(&c.peer->address, hn, sizeof(hn))==0) ? hn : "unknown");
-                logoutf("client connected (%s)", c.hostname);
-                int reason = server::clientconnect(c.num, c.peer->address.host);
-                if(reason)
-                {
-                    disconnect_client(c.num, reason);
-                }
-                break;
-            }
-            case ENET_EVENT_TYPE_RECEIVE:
-            {
-                client *c = (client *)event.peer->data;
-                if(c)
-                {
-                    process(event.packet, c->num, event.channelID);
-                }
-                if(event.packet->referenceCount==0)
-                {
-                    enet_packet_destroy(event.packet);
-                }
-                break;
-            }
-            case ENET_EVENT_TYPE_DISCONNECT:
-            {
-                client *c = (client *)event.peer->data;
-                if(!c)
-                {
-                    break;
-                }
-                logoutf("disconnected client (%s)", c->hostname);
-                server::clientdisconnect(c->num);
-                delclient(c);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-        }
-    }
-    if(server::sendpackets())
-    {
-        enet_host_flush(serverhost);
-    }
+    server::serverupdate();
+    server::sendpackets();
 }
 
 void flushserver(bool force)

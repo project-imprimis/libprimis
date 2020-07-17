@@ -2505,9 +2505,6 @@ namespace server
 
     void serverupdate() //called from engine/server.src
     {
-
-        ////////// This section only is run if people are online //////////
-
         if(shouldstep && !gamepaused) //if people are online and game is unpaused
         {
             gamemillis += curtime; //advance clock if applicable
@@ -2536,44 +2533,6 @@ namespace server
                 if(smode) smode->update();
             }
         }
-
-        ////////// This section is run regardless of whether there are people are online //////////
-        //         (though the loop over `connects` will always be empty with nobody on)
-
-        while(bannedips.length() && bannedips[0].expire-totalmillis <= 0) bannedips.remove(0); //clear expired ip bans if there are any
-        for(int i = 0; i < connects.length(); i++)
-        {
-            if(totalmillis-connects[i]->connectmillis>15000)
-            {
-                disconnect_client(connects[i]->clientnum, Discon_Timeout); //remove clients who haven't responded in 15s
-            }
-        }
-
-        if(nextexceeded && gamemillis > nextexceeded && (modecheck(gamemode, Mode_Untimed) || gamemillis < gamelimit))
-        {
-            nextexceeded = 0;
-            for(int i = clients.length(); --i >=0;) //note reverse iteration
-            {
-                clientinfo &c = *clients[i];
-                if(c.state.aitype != AI_None)
-                {
-                    continue;
-                }
-                if(c.checkexceeded())
-                {
-                    disconnect_client(c.clientnum, Discon_MsgError);
-                }
-                else
-                {
-                    c.scheduleexceeded();
-                }
-            }
-        }
-
-        if(shouldcheckteamkills) checkteamkills(); //check team kills on matches that care
-
-        ////////// This section is only run if there are people online //////////
-
         if(shouldstep && !gamepaused) //while unpaused & players ingame, check if match should be over
         {
             if(!modecheck(gamemode, Mode_Untimed) && smapname[0] && gamemillis-curtime>0) checkintermission();

@@ -932,7 +932,6 @@ extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format =
 extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
 extern void flushserver(bool force);
 extern int getservermtu();
-extern int getnumclients();
 extern uint getclientip(int n);
 extern void localconnect();
 extern const char *disconnectreason(int reason);
@@ -1015,7 +1014,6 @@ namespace server
     extern int serverport();
     extern const char *defaultmaster();
     extern int masterport();
-    extern void processmasterinput(const char *cmd, int cmdlen, const char *args);
     extern void masterconnected();
     extern void masterdisconnected();
     extern bool ispaused();
