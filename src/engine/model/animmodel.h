@@ -687,7 +687,11 @@ struct animmodel : model
             DELETEP(next);
         }
 
-        virtual int findtag(const char *name) { return -1; }
+        virtual int findtag(const char *name)
+        {
+            return -1;
+        }
+
         virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
 
         #define LOOP_RENDER_MESHES(type, name, body) do { \
@@ -719,11 +723,30 @@ struct animmodel : model
             LOOP_RENDER_MESHES(mesh, m, m.genshadowmesh(tris, t));
         }
 
-        virtual void *animkey() { return this; }
-        virtual int totalframes() const { return 1; }
-        bool hasframe(int i) const { return i>=0 && i<totalframes(); }
-        bool hasframes(int i, int n) const { return i>=0 && i+n<=totalframes(); }
-        int clipframes(int i, int n) const { return min(n, totalframes() - i); }
+        virtual void *animkey()
+        {
+            return this;
+        }
+
+        virtual int totalframes() const
+        {
+            return 1;
+        }
+
+        bool hasframe(int i) const
+        {
+            return i>=0 && i<totalframes();
+        }
+
+        bool hasframes(int i, int n) const
+        {
+            return i>=0 && i+n<=totalframes();
+        }
+
+        int clipframes(int i, int n) const
+        {
+            return min(n, totalframes() - i);
+        }
 
         virtual void cleanup() {}
         virtual void preload(part *p) {}
@@ -740,7 +763,10 @@ struct animmodel : model
             if(lastvbuf!=vbuf)
             {
                 gle::bindvbo(vbuf);
-                if(!lastvbuf) gle::enablevertex();
+                if(!lastvbuf)
+                {
+                    gle::enablevertex();
+                }
                 gle::vertexpointer(stride, v, type, size);
                 lastvbuf = vbuf;
             }
@@ -1044,9 +1070,15 @@ struct animmodel : model
                 {
                     info.frame = spec->frame;
                     info.range = spec->range;
-                    if(spec->speed>0) info.speed = 1000.0f/spec->speed;
+                    if(spec->speed>0)
+                    {
+                        info.speed = 1000.0f/spec->speed;
+                    }
                 }
-                else getdefaultanim(info, anim, uint(varseed + info.basetime), d);
+                else
+                {
+                    getdefaultanim(info, anim, uint(varseed + info.basetime), d);
+                }
             }
 
             info.anim &= (1<<ANIM_SECONDARY)-1;
@@ -1385,7 +1417,10 @@ struct animmodel : model
         Link_Reuse
     };
 
-    virtual int linktype(animmodel *m, part *p) const { return Link_Tag; }
+    virtual int linktype(animmodel *m, part *p) const
+    {
+        return Link_Tag;
+    }
 
     void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray)
     {
@@ -1444,7 +1479,11 @@ struct animmodel : model
         if(a) for(int i = numtags-1; i >= 0; i--)
         {
             animmodel *m = (animmodel *)a[i].m;
-            if(!m) continue;
+            if(!m)
+            {
+                continue;
+            }
+
             part *p = m->parts[0];
             switch(linktype(m, p))
             {
