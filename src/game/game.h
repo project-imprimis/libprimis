@@ -816,7 +816,6 @@ namespace game
     extern void drawicon(int icon, float x, float y, float sz = 120);
     const char *mastermodecolor(int n, const char *unknown);
     const char *mastermodeicon(int n, const char *unknown);
-
     extern void suicide(physent *d);
     extern void bounced(physent *d, const vec &surface);
     // client
@@ -912,6 +911,11 @@ namespace game
     extern const char *defaultconfig();
     extern const char *autoexec();
 }
+
+// game
+    extern int thirdperson;
+    extern bool isthirdperson();
+
 
 // server
 extern vector<const char *> gameargs;

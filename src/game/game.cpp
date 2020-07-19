@@ -203,6 +203,12 @@ namespace game
         return NULL;
     }
 
+
+    bool allowthirdperson()
+    {
+        return !multiplayer(false) || player1->state==ClientState_Spectator || player1->state==ClientState_Editing || modecheck(gamemode, Mode_Edit);
+    }
+
     gameent *hudplayer()
     {
         if((thirdperson && allowthirdperson()) || specmode > 1)
@@ -223,11 +229,6 @@ namespace game
             player1->o = target->o;
             player1->resetinterp();
         }
-    }
-
-    bool allowthirdperson()
-    {
-        return !multiplayer(false) || player1->state==ClientState_Spectator || player1->state==ClientState_Editing || modecheck(gamemode, Mode_Edit);
     }
 
     bool detachcamera()
@@ -1009,11 +1010,6 @@ namespace game
         }
     }
     ICOMMAND(suicide, "", (), suicide(player1));
-
-    bool needminimap()
-    {
-        return modecheck(gamemode, Mode_CTF);
-    }
 
     void drawicon(int icon, float x, float y, float sz)
     {
@@ -1925,3 +1921,90 @@ DIR(right,    strafe, -1, k_right, k_left);
 
 ICOMMAND(jump,   "D", (int *down), { if(!*down || game::canjump()) player->jumping = *down!=0; });
 ICOMMAND(crouch, "D", (int *down), { if(!*down) player->crouching = abs(player->crouching); else if(game::cancrouch()) player->crouching = -1; });
+
+////////////////////////// camera /////////////////////////
+
+
+VAR(thirdperson, 0, 0, 2);
+FVAR(thirdpersondistance, 0, 30, 50);
+FVAR(thirdpersonup, -25, 0, 25);
+FVAR(thirdpersonside, -25, 0, 25);
+
+void recomputecamera()
+{
+    game::setupcamera();
+    computezoom();
+
+    bool allowthirdperson = game::allowthirdperson();
+    bool shoulddetach = (allowthirdperson && thirdperson > 1) || game::detachcamera();
+    if((!allowthirdperson || !thirdperson) && !shoulddetach)
+    {
+        camera1 = player;
+        detachedcamera = false;
+    }
+    else
+    {
+        static physent tempcamera;
+        camera1 = &tempcamera;
+        if(detachedcamera && shoulddetach)
+        {
+            camera1->o = player->o;
+        }
+        else
+        {
+            *camera1 = *player;
+            detachedcamera = shoulddetach;
+        }
+        camera1->reset();
+        camera1->type = PhysEnt_Camera;
+        camera1->move = -1;
+        camera1->eyeheight = camera1->aboveeye = camera1->radius = camera1->xradius = camera1->yradius = 2;
+
+        matrix3 orient;
+        orient.identity();
+        orient.rotate_around_z(camera1->yaw*RAD);
+        orient.rotate_around_x(camera1->pitch*RAD);
+        orient.rotate_around_y(camera1->roll*-RAD);
+        vec dir = vec(orient.b).neg(), side = vec(orient.a).neg(), up = orient.c;
+
+        if(game::collidecamera())
+        {
+            movecamera(camera1, dir, thirdpersondistance, 1);
+            movecamera(camera1, dir, clamp(thirdpersondistance - camera1->o.dist(player->o), 0.0f, 1.0f), 0.1f);
+            if(thirdpersonup)
+            {
+                vec pos = camera1->o;
+                float dist = fabs(thirdpersonup);
+                if(thirdpersonup < 0)
+                {
+                    up.neg();
+                }
+                movecamera(camera1, up, dist, 1);
+                movecamera(camera1, up, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
+            }
+            if(thirdpersonside)
+            {
+                vec pos = camera1->o;
+                float dist = fabs(thirdpersonside);
+                if(thirdpersonside < 0)
+                {
+                    side.neg();
+                }
+                movecamera(camera1, side, dist, 1);
+                movecamera(camera1, side, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
+            }
+        }
+        else
+        {
+            camera1->o.add(vec(dir).mul(thirdpersondistance));
+            if(thirdpersonup)
+            {
+                camera1->o.add(vec(up).mul(thirdpersonup));
+            }
+            if(thirdpersonside)
+            {
+                camera1->o.add(vec(side).mul(thirdpersonside));
+            }
+        }
+    }
+}

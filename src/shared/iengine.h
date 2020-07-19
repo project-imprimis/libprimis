@@ -15,8 +15,7 @@ extern int gamespeed, paused;
 extern vector<int> entgroup;
 
 extern int worldscale, worldsize;
-extern int thirdperson;
-extern bool isthirdperson();
+
 
 extern bool settexture(const char *name, int clamp = 0);
 extern int xtraverts, xtravertsva;
@@ -197,6 +196,7 @@ extern void addchange(const char *desc, int type);
 extern physent *camera1;
 extern vec worldpos, camdir, camright, camup;
 extern float curfov, fovy, aspect;
+extern bool detachedcamera;
 
 extern void disablezoom();
 
@@ -218,6 +218,7 @@ extern void pushhudscale(float sx, float sy = 0);
 extern void resethudshader();
 extern void recomputecamera();
 extern void initgbuffer();
+extern void computezoom();
 
 extern void gl_checkextensions();
 extern void gl_init();
