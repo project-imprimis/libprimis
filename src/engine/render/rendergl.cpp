@@ -6,10 +6,7 @@
 #include "renderwindow.h"
 #include "world/raycube.h"
 
-bool hasS3TC   = false,
-     hasFXT1   = false,
-     hasLATC   = false,
-     hasFBMSBS = false,
+bool hasFBMSBS = false,
      hasTQ     = false,
      hasDBT    = false,
      hasDBGO   = false,
@@ -314,7 +311,6 @@ VAR(intel_texalpha_bug, 0, 0, 1);
 VAR(mesa_swap_bug, 0, 0, 1);
 VAR(useubo, 1, 0, 0);
 VAR(usetexgather, 1, 0, 0);
-VAR(usetexcompress, 1, 0, 0);
 VAR(maxdrawbufs, 1, 0, 0);
 VAR(maxdualdrawbufs, 1, 0, 0);
 
@@ -664,46 +660,6 @@ void gl_checkextensions()
     //OpenGL 3.3
     glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64v");
     glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
-    if(hasext("GL_EXT_texture_compression_s3tc"))
-    {
-        hasS3TC = true;
-        if(!mesa)
-        {
-            usetexcompress = 2;
-        }
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_EXT_texture_compression_s3tc extension.");
-        }
-    }
-    else if(hasext("GL_EXT_texture_compression_dxt1") && hasext("GL_ANGLE_texture_compression_dxt3") && hasext("GL_ANGLE_texture_compression_dxt5"))
-    {
-        hasS3TC = true;
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_EXT_texture_compression_dxt1 extension.");
-        }
-    }
-    if(hasext("GL_3DFX_texture_compression_FXT1"))
-    {
-        hasFXT1 = true;
-        if(mesa)
-        {
-            usetexcompress = max(usetexcompress, 1);
-        }
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_3DFX_texture_compression_FXT1.");
-        }
-    }
-    if(hasext("GL_EXT_texture_compression_latc"))
-    {
-        hasLATC = true;
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_EXT_texture_compression_latc extension.");
-        }
-    }
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
         GLint val = 0;
@@ -1026,7 +982,6 @@ void gl_init()
 
     gle::setup();
     setupshaders();
-    setuptexcompress();
 
     GLERROR;
 

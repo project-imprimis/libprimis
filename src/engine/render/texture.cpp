@@ -283,233 +283,6 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int s
     }
 }
 
-static void reorients3tc(GLenum format, int blocksize, int w, int h, uchar *src, uchar *dst, bool flipx, bool flipy, bool swapxy, bool normals = false)
-{
-    int bx1 = 0,
-        by1 = 0,
-        bx2 = min(w, 4),
-        by2 = min(h, 4),
-        bw = (w+3)/4,
-        bh = (h+3)/4,
-        stridex = blocksize,
-        stridey = blocksize;
-    if(swapxy)
-    {
-        stridex *= bw;
-    }
-    else
-    {
-        stridey *= bh;
-    }
-    if(flipx)
-    {
-        dst += (bw-1)*stridex;
-        stridex = -stridex;
-        bx1 += 4-bx2;
-        bx2 = 4;
-    }
-    if(flipy)
-    {
-        dst += (bh-1)*stridey;
-        stridey = -stridey;
-        by1 += 4-by2;
-        by2 = 4;
-    }
-    for(int i = 0; i < bh; ++i)
-    {
-        for(uchar *curdst = dst, *end = &src[bw*blocksize]; src < end; src += blocksize, curdst += stridex)
-        {
-            if(format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT)
-            {
-                ullong salpha = *reinterpret_cast<const ullong *>(src),
-                       dalpha = 0;
-                uint xmask = flipx ? 15 : 0,
-                     ymask = flipy ? 15 : 0,
-                     xshift = 2,
-                     yshift = 4;
-                if(swapxy)
-                {
-                    swap(xshift, yshift);
-                }
-                for(int y = by1; y < by2; y++)
-                {
-                    for(int x = bx1; x < bx2; x++)
-                    {
-                        dalpha |= ((salpha&15) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                        salpha >>= 4;
-                    }
-                }
-                *reinterpret_cast<ullong *>(curdst) = dalpha;
-                src += 8;
-                curdst += 8;
-            }
-            else if(format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
-            {
-                uchar alpha1 = src[0],
-                      alpha2 = src[1];
-                ullong salpha = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16),
-                       dalpha = 0;
-                uint xmask = flipx ? 7 : 0,
-                     ymask = flipy ? 7 : 0,
-                     xshift = 0,
-                    yshift = 2;
-                if(swapxy)
-                {
-                    swap(xshift, yshift);
-                }
-                for(int y = by1; y < by2; y++)
-                {
-                    for(int x = bx1; x < bx2; x++)
-                    {
-                        dalpha |= ((salpha&7) << (3*((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                        salpha >>= 3;
-                    }
-                }
-                curdst[0] = alpha1;
-                curdst[1] = alpha2;
-                *reinterpret_cast<ushort *>(&curdst[2]) = static_cast<ushort>(dalpha);
-                *reinterpret_cast<ushort *>(&curdst[4]) = static_cast<ushort>(dalpha >> 16);
-                *reinterpret_cast<ushort *>(&curdst[6]) = static_cast<ushort>(dalpha>>32);
-                src += 8;
-                curdst += 8;
-            }
-
-            ushort color1 = *reinterpret_cast<const ushort *>(src),
-                   color2 = *reinterpret_cast<const ushort *>(&src[2]);
-            uint sbits = *reinterpret_cast<const uint *>(&src[4]);
-            if(normals)
-            {
-                ushort ncolor1 = color1,
-                       ncolor2 = color2;
-                if(flipx)
-                {
-                    ncolor1 = (ncolor1 & ~0xF800) | (0xF800 - (ncolor1 & 0xF800));
-                    ncolor2 = (ncolor2 & ~0xF800) | (0xF800 - (ncolor2 & 0xF800));
-                }
-                if(flipy)
-                {
-                    ncolor1 = (ncolor1 & ~0x7E0) | (0x7E0 - (ncolor1 & 0x7E0));
-                    ncolor2 = (ncolor2 & ~0x7E0) | (0x7E0 - (ncolor2 & 0x7E0));
-                }
-                if(swapxy)
-                {
-                    ncolor1 = (ncolor1 & 0x1F) | (((((ncolor1 >> 11) & 0x1F) * 0x3F) / 0x1F) << 5) | (((((ncolor1 >> 5) & 0x3F) * 0x1F) / 0x3F) << 11);
-                    ncolor2 = (ncolor2 & 0x1F) | (((((ncolor2 >> 11) & 0x1F) * 0x3F) / 0x1F) << 5) | (((((ncolor2 >> 5) & 0x3F) * 0x1F) / 0x3F) << 11);
-                }
-                if(color1 <= color2 && ncolor1 > ncolor2)
-                {
-                    color1 = ncolor2;
-                    color2 = ncolor1;
-                }
-                else
-                {
-                    color1 = ncolor1;
-                    color2 = ncolor2;
-                }
-            }
-            uint dbits = 0,
-                 xmask = flipx ? 3 : 0,
-                 ymask = flipy ? 3 : 0,
-                 xshift = 1,
-                 yshift = 3;
-            if(swapxy)
-            {
-                swap(xshift, yshift);
-            }
-            for(int y = by1; y < by2; y++)
-            {
-                for(int x = bx1; x < bx2; x++)
-                {
-                    dbits |= ((sbits&3) << (((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                    sbits >>= 2;
-                }
-            }
-            *reinterpret_cast<ushort *>(curdst) = color1;
-            *reinterpret_cast<ushort *>(&curdst[2]) = color2;
-            *reinterpret_cast<uint *>(&curdst[4]) = dbits;
-
-            if(blocksize > 8)
-            {
-                src -= 8;
-                curdst -= 8;
-            }
-        }
-        dst += stridey;
-    }
-}
-
-static void reorientrgtc(GLenum format, int blocksize, int w, int h, uchar *src, uchar *dst, bool flipx, bool flipy, bool swapxy)
-{
-    int bx1 = 0,
-        by1 = 0,
-        bx2 = min(w, 4),
-        by2 = min(h, 4),
-        bw = (w+3)/4,
-        bh = (h+3)/4,
-        stridex = blocksize,
-        stridey = blocksize;
-    if(swapxy)
-    {
-        stridex *= bw;
-    }
-    else
-    {
-        stridey *= bh;
-    }
-    if(flipx)
-    {
-        dst += (bw-1)*stridex;
-        stridex = -stridex;
-        bx1 += 4-bx2;
-        bx2 = 4;
-    }
-    if(flipy)
-    {
-        dst += (bh-1)*stridey;
-        stridey = -stridey;
-        by1 += 4-by2;
-        by2 = 4;
-    }
-    stridex -= blocksize;
-    for(int i = 0; i < bh; ++i)
-    {
-        for(uchar *curdst = dst, *end = &src[bw*blocksize]; src < end; curdst += stridex)
-        {
-            for(int j = 0; j < blocksize/8; ++j)
-            {
-                uchar val1 = src[0],
-                      val2 = src[1];
-                ullong sval = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16),
-                       dval = 0;
-                uint xmask = flipx ? 7 : 0,
-                     ymask = flipy ? 7 : 0,
-                     xshift = 0,
-                     yshift = 2;
-                if(swapxy)
-                {
-                    swap(xshift, yshift);
-                }
-                for(int y = by1; y < by2; y++)
-                {
-                    for(int x = bx1; x < bx2; x++)
-                    {
-                        dval |= ((sval&7) << (3*((xmask^x)<<xshift) + ((ymask^y)<<yshift)));
-                        sval >>= 3;
-                    }
-                }
-                curdst[0] = val1;
-                curdst[1] = val2;
-                *reinterpret_cast<ushort *>(&curdst[2]) = static_cast<ushort>(dval);
-                *reinterpret_cast<ushort *>(&curdst[4]) = static_cast<ushort>(dval>>16);
-                *reinterpret_cast<ushort *>(&curdst[6]) = static_cast<ushort>(dval>>32);
-                src += 8;
-                curdst += 8;
-            }
-        }
-        dst += stridey;
-    }
-}
-
 #define WRITE_TEX(t, body) do \
     { \
         uchar *dstrow = t.data; \
@@ -632,38 +405,6 @@ void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = T
     ImageData d(swapxy ? s.h : s.w, swapxy ? s.w : s.h, s.bpp, s.levels, s.align, s.compressed);
     switch(s.compressed)
     {
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-        {
-            {
-                uchar *dst = d.data, *src = s.data;
-                for(int i = 0; i < s.levels; ++i)
-                {
-                    reorients3tc(s.compressed, s.bpp, max(s.w>>i, 1), max(s.h>>i, 1), src, dst, flipx, flipy, swapxy, type==TEX_NORMAL);
-                    src += s.calclevelsize(i);
-                    dst += d.calclevelsize(i);
-                }
-                break;
-            }
-        }
-        case GL_COMPRESSED_RED_RGTC1:
-        case GL_COMPRESSED_RG_RGTC2:
-        case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
-        case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
-        {
-            {
-                uchar *dst = d.data, *src = s.data;
-                for(int i = 0; i < s.levels; ++i)
-                {
-                    reorientrgtc(s.compressed, s.bpp, max(s.w>>i, 1), max(s.h>>i, 1), src, dst, flipx, flipy, swapxy);
-                    src += s.calclevelsize(i);
-                    dst += d.calclevelsize(i);
-                }
-                break;
-            }
-        }
         default:
             if(type==TEX_NORMAL && s.bpp >= 3)
             {
@@ -977,77 +718,9 @@ VAR(hwvtexunits, 1, 0, 0);
 VARFP(maxtexsize, 0, 0, 1<<12, initwarning("texture quality", Init_Load));
 VARFP(reducefilter, 0, 1, 1, initwarning("texture quality", Init_Load));
 VARFP(texcompress, 0, 1536, 1<<12, initwarning("texture quality", Init_Load));
-VARFP(texcompressquality, -1, -1, 1, setuptexcompress());
 VARF(trilinear, 0, 1, 1, initwarning("texture filtering", Init_Load));
 VARF(bilinear, 0, 1, 1, initwarning("texture filtering", Init_Load));
 VARFP(aniso, 0, 0, 16, initwarning("texture filtering", Init_Load));
-
-extern int usetexcompress;
-
-void setuptexcompress()
-{
-    if(!usetexcompress)
-    {
-        return;
-    }
-    GLenum hint = GL_DONT_CARE;
-    switch(texcompressquality)
-    {
-        case 1:
-        {
-            hint = GL_NICEST;
-            break;
-        }
-        case 0:
-        {
-            hint = GL_FASTEST;
-            break;
-        }
-    }
-    glHint(GL_TEXTURE_COMPRESSION_HINT, hint);
-}
-
-GLenum compressedformat(GLenum format, int w, int h, int force = 0)
-{
-    if(usetexcompress && texcompress && force >= 0 && (force || max(w, h) >= texcompress)) switch(format)
-    {
-        case GL_RGB5:
-        case GL_RGB8:
-        case GL_RGB:
-        {
-            return usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB;
-        }
-        case GL_RGB5_A1:
-        {
-            return usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT1_EXT : GL_COMPRESSED_RGBA;
-        }
-        case GL_RGBA:
-        {
-            return usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA;
-        }
-        case GL_RED:
-        case GL_R8:
-        {
-            return (usetexcompress > 1 ? GL_COMPRESSED_RED_RGTC1 : GL_COMPRESSED_RED);
-        }
-        case GL_RG:
-        case GL_RG8:
-        {
-            return (usetexcompress > 1 ? GL_COMPRESSED_RG_RGTC2 : GL_COMPRESSED_RG);
-        }
-        case GL_LUMINANCE:
-        case GL_LUMINANCE8:
-        {
-            return hasLATC ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_LATC1_EXT : GL_COMPRESSED_LUMINANCE) : (usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB);
-        }
-        case GL_LUMINANCE_ALPHA:
-        case GL_LUMINANCE8_ALPHA8:
-        {
-            return hasLATC ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT : GL_COMPRESSED_LUMINANCE_ALPHA) : (usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA);
-        }
-    }
-    return format;
-}
 
 int formatsize(GLenum format)
 {
@@ -1083,7 +756,7 @@ void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int
 {
     int hwlimit = target==GL_TEXTURE_CUBE_MAP ? hwcubetexsize : hwtexsize,
         sizelimit = mipmap && maxtexsize ? min(maxtexsize, hwlimit) : hwlimit;
-    if(compress > 0 && !usetexcompress)
+    if(compress > 0)
     {
         w = max(w/compress, 1);
         h = max(h/compress, 1);
@@ -1275,50 +948,6 @@ GLenum textarget(GLenum subtarget)
     return subtarget;
 }
 
-GLenum uncompressedformat(GLenum format)
-{
-    switch(format)
-    {
-        case GL_COMPRESSED_ALPHA:
-        {
-            return GL_ALPHA;
-        }
-        case GL_COMPRESSED_LUMINANCE:
-        case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
-        {
-            return GL_LUMINANCE;
-        }
-        case GL_COMPRESSED_LUMINANCE_ALPHA:
-        case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
-        {
-            return GL_LUMINANCE_ALPHA;
-        }
-        case GL_COMPRESSED_RED:
-        case GL_COMPRESSED_RED_RGTC1:
-        {
-            return GL_RED;
-        }
-        case GL_COMPRESSED_RG:
-        case GL_COMPRESSED_RG_RGTC2:
-        {
-            return GL_RG;
-        }
-        case GL_COMPRESSED_RGB:
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-        {
-            return GL_RGB;
-        }
-        case GL_COMPRESSED_RGBA:
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-        {
-            return GL_RGBA;
-        }
-    }
-    return GL_FALSE;
-}
-
 const GLint *swizzlemask(GLenum format)
 {
     static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE };
@@ -1438,8 +1067,6 @@ static GLenum textype(GLenum &component, GLenum &format)
         }
         case GL_R8:
         case GL_R16:
-        case GL_COMPRESSED_RED:
-        case GL_COMPRESSED_RED_RGTC1:
         {
             if(!format)
             {
@@ -1449,8 +1076,6 @@ static GLenum textype(GLenum &component, GLenum &format)
         }
         case GL_RG8:
         case GL_RG16:
-        case GL_COMPRESSED_RG:
-        case GL_COMPRESSED_RG_RGTC2:
         {
             if(!format)
             {
@@ -1462,8 +1087,6 @@ static GLenum textype(GLenum &component, GLenum &format)
         case GL_RGB8:
         case GL_RGB16:
         case GL_RGB10:
-        case GL_COMPRESSED_RGB:
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
         {
             if(!format)
             {
@@ -1475,10 +1098,6 @@ static GLenum textype(GLenum &component, GLenum &format)
         case GL_RGBA8:
         case GL_RGBA16:
         case GL_RGB10_A2:
-        case GL_COMPRESSED_RGBA:
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
         {
             if(!format)
             {
@@ -1489,7 +1108,6 @@ static GLenum textype(GLenum &component, GLenum &format)
         case GL_LUMINANCE8:
         case GL_LUMINANCE16:
         case GL_COMPRESSED_LUMINANCE:
-        case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
         {
             if(!format)
             {
@@ -1500,7 +1118,6 @@ static GLenum textype(GLenum &component, GLenum &format)
         case GL_LUMINANCE8_ALPHA8:
         case GL_LUMINANCE16_ALPHA16:
         case GL_COMPRESSED_LUMINANCE_ALPHA:
-        case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
         {
             if(!format)
             {
@@ -1600,10 +1217,6 @@ void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int fi
     if(resize && pixels)
     {
         resizetexture(w, h, mipmap, false, target, 0, tw, th);
-        if(mipmap)
-        {
-            component = compressedformat(component, tw, th);
-        }
     }
     uploadtexture(subtarget, component, tw, th, format, type, pixels, pw, ph, pitch, mipmap);
 }
@@ -1730,17 +1343,8 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
 
     bool swizzle = !(clamp&0x10000);
     GLenum format;
-    if(s.compressed)
-    {
-        format = uncompressedformat(s.compressed);
-        t->bpp = formatsize(format);
-        t->type |= Texture::COMPRESSED;
-    }
-    else
-    {
-        format = texformat(s.bpp, swizzle);
-        t->bpp = s.bpp;
-    }
+    format = texformat(s.bpp, swizzle);
+    t->bpp = s.bpp;
     if(alphaformat(format))
     {
         t->type |= Texture::ALPHA;
@@ -1773,8 +1377,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     else
     {
         resizetexture(t->w, t->h, mipit, canreduce, GL_TEXTURE_2D, compress, t->w, t->h);
-        GLenum component = compressedformat(format, t->w, t->h, compress);
-        createtexture(t->id, t->w, t->h, s.data, clamp, filter, component, GL_TEXTURE_2D, t->xs, t->ys, s.pitch, false, format, swizzle);
+        createtexture(t->id, t->w, t->h, s.data, clamp, filter, format, GL_TEXTURE_2D, t->xs, t->ys, s.pitch, false, format, swizzle);
     }
     return t;
 }
