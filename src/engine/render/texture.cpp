@@ -1079,8 +1079,6 @@ int formatsize(GLenum format)
     }
 }
 
-VARFP(usenp2, 0, 1, 1, initwarning("texture quality", Init_Load));
-
 void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int compress, int &tw, int &th)
 {
     int hwlimit = target==GL_TEXTURE_CUBE_MAP ? hwcubetexsize : hwtexsize,
@@ -1092,7 +1090,7 @@ void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int
     }
     w = min(w, sizelimit);
     h = min(h, sizelimit);
-    if(!usenp2 && target!=GL_TEXTURE_RECTANGLE && (w&(w-1) || h&(h-1)))
+    if(target!=GL_TEXTURE_RECTANGLE && (w&(w-1) || h&(h-1)))
     {
         tw = th = 1;
         while(tw < w)
@@ -1976,10 +1974,6 @@ static vec parsevec(const char *arg)
     return v;
 }
 
-VAR(usedds, 0, 1, 1);
-VAR(dbgdds, 0, 0, 1);
-VAR(scaledds, 0, 2, 4);
-
 static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *compress = NULL, int *wrap = NULL, const char *tdir = NULL, int ttype = TEX_DIFFUSE)
 {
     const char *cmds = NULL, *file = tname;
@@ -2003,7 +1997,6 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         formatstring(pname, "%s/%s", tdir, file);
         file = path(pname);
     }
-    bool raw = !usedds || !compress, dds = false;
     for(const char *pcmds = cmds; pcmds;)
     {
         #define PARSETEXCOMMANDS(cmds) \
@@ -2021,15 +2014,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
             }
         #define COPYTEXARG(dst, src) copystring(dst, stringslice(src, strcspn(src, ":,><")))
         PARSETEXCOMMANDS(pcmds);
-        if(matchstring(cmd, len, "dds"))
-        {
-            dds = true;
-        }
-        else if(matchstring(cmd, len, "thumbnail"))
-        {
-            raw = true;
-        }
-        else if(matchstring(cmd, len, "stub"))
+        if(matchstring(cmd, len, "stub"))
         {
             return canloadsurface(file);
         }
@@ -2038,26 +2023,6 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
     {
         renderprogress(loadprogress, file);
     }
-    int flen = strlen(file);
-    if(flen >= 4 && (!strcasecmp(file + flen - 4, ".dds") || (dds && !raw)))
-    {
-        string dfile;
-        copystring(dfile, file);
-        memcpy(dfile + flen - 4, ".dds", 4);
-        if(!loaddds(dfile, d, raw ? 1 : (dds ? 0 : -1)) && (!dds || raw))
-        {
-            if(msg)
-            {
-                conoutf(Console_Error, "could not load texture %s", dfile);
-            }
-            return false;
-        }
-        if(d.data && !d.compressed && !dds && compress)
-        {
-            *compress = scaledds;
-        }
-    }
-
     if(!d.data)
     {
         SDL_Surface *s = loadsurface(file);
@@ -2171,13 +2136,9 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
                 scaleimage(d, w, h);
             }
         }
-        else if(matchstring(cmd, len, "compress") || matchstring(cmd, len, "dds"))
+        else if(matchstring(cmd, len, "compress"))
         {
             int scale = atoi(arg[0]);
-            if(scale <= 0)
-            {
-                scale = scaledds;
-            }
             if(compress)
             {
                 *compress = scale;
@@ -3940,513 +3901,6 @@ void reloadtextures()
     });
     loadprogress = 0;
 }
-
-enum
-{
-    DDSD_CAPS                  = 0x00000001,
-    DDSD_HEIGHT                = 0x00000002,
-    DDSD_WIDTH                 = 0x00000004,
-    DDSD_PITCH                 = 0x00000008,
-    DDSD_PIXELFORMAT           = 0x00001000,
-    DDSD_MIPMAPCOUNT           = 0x00020000,
-    DDSD_LINEARSIZE            = 0x00080000,
-    DDSD_BACKBUFFERCOUNT       = 0x00800000,
-    DDPF_ALPHAPIXELS           = 0x00000001,
-    DDPF_FOURCC                = 0x00000004,
-    DDPF_INDEXED               = 0x00000020,
-    DDPF_ALPHA                 = 0x00000002,
-    DDPF_RGB                   = 0x00000040,
-    DDPF_COMPRESSED            = 0x00000080,
-    DDPF_LUMINANCE             = 0x00020000,
-    DDSCAPS_COMPLEX            = 0x00000008,
-    DDSCAPS_TEXTURE            = 0x00001000,
-    DDSCAPS_MIPMAP             = 0x00400000,
-    DDSCAPS2_CUBEMAP           = 0x00000200,
-    DDSCAPS2_CUBEMAP_POSITIVEX = 0x00000400,
-    DDSCAPS2_CUBEMAP_NEGATIVEX = 0x00000800,
-    DDSCAPS2_CUBEMAP_POSITIVEY = 0x00001000,
-    DDSCAPS2_CUBEMAP_NEGATIVEY = 0x00002000,
-    DDSCAPS2_CUBEMAP_POSITIVEZ = 0x00004000,
-    DDSCAPS2_CUBEMAP_NEGATIVEZ = 0x00008000,
-    DDSCAPS2_VOLUME            = 0x00200000,
-    FOURCC_DXT1                = 0x31545844,
-    FOURCC_DXT2                = 0x32545844,
-    FOURCC_DXT3                = 0x33545844,
-    FOURCC_DXT4                = 0x34545844,
-    FOURCC_DXT5                = 0x35545844,
-    FOURCC_ATI1                = 0x31495441,
-    FOURCC_ATI2                = 0x32495441
-};
-
-struct DDCOLORKEY { uint dwColorSpaceLowValue, dwColorSpaceHighValue; };
-struct DDPIXELFORMAT
-{
-    uint dwSize, dwFlags, dwFourCC;
-    union { uint dwRGBBitCount, dwYUVBitCount, dwZBufferBitDepth, dwAlphaBitDepth, dwLuminanceBitCount, dwBumpBitCount, dwPrivateFormatBitCount; };
-    union { uint dwRBitMask, dwYBitMask, dwStencilBitDepth, dwLuminanceBitMask, dwBumpDuBitMask, dwOperations; };
-    union { uint dwGBitMask, dwUBitMask, dwZBitMask, dwBumpDvBitMask; struct { ushort wFlipMSTypes, wBltMSTypes; } MultiSampleCaps; };
-    union { uint dwBBitMask, dwVBitMask, dwStencilBitMask, dwBumpLuminanceBitMask; };
-    union { uint dwRGBAlphaBitMask, dwYUVAlphaBitMask, dwLuminanceAlphaBitMask, dwRGBZBitMask, dwYUVZBitMask; };
-
-};
-struct DDSCAPS2 { uint dwCaps, dwCaps2, dwCaps3, dwCaps4; };
-struct DDSURFACEDESC2
-{
-    uint dwSize, dwFlags, dwHeight, dwWidth;
-    union { int lPitch; uint dwLinearSize; };
-    uint dwBackBufferCount;
-    union { uint dwMipMapCount, dwRefreshRate, dwSrcVBHandle; };
-    uint dwAlphaBitDepth, dwReserved, lpSurface;
-    union { DDCOLORKEY ddckCKDestOverlay; uint dwEmptyFaceColor; };
-    DDCOLORKEY ddckCKDestBlt, ddckCKSrcOverlay, ddckCKSrcBlt;
-    union { DDPIXELFORMAT ddpfPixelFormat; uint dwFVF; };
-    DDSCAPS2 ddsCaps;
-    uint dwTextureStage;
-};
-
-#define DECODEDDS(name, dbpp, initblock, writeval, nextval) \
-static void name(ImageData &s) \
-{ \
-    ImageData d(s.w, s.h, dbpp); \
-    uchar *dst = d.data; \
-    const uchar *src = s.data; \
-    for(int by = 0; by < s.h; by += s.align) \
-    { \
-        for(int bx = 0; bx < s.w; bx += s.align, src += s.bpp) \
-        { \
-            int maxy = min(d.h - by, s.align), maxx = min(d.w - bx, s.align); \
-            initblock; \
-            for(int y = 0; y < maxy; ++y) \
-            { \
-                int x; \
-                for(x = 0; x < maxx; ++x) \
-                { \
-                    writeval; \
-                    nextval; \
-                    dst += d.bpp; \
-                }  \
-                for(; x < s.align; ++x) { nextval; } \
-                dst += d.pitch - maxx*d.bpp; \
-            } \
-            dst += maxx*d.bpp - maxy*d.pitch; \
-        } \
-        dst += (s.align-1)*d.pitch; \
-    } \
-    s.replace(d); \
-}
-
-DECODEDDS(decodedxt1, s.compressed == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ? 4 : 3,
-    ushort color0 = *(const ushort *)src;
-    ushort color1 = *(const ushort *)&src[2];
-    uint bits = *(const uint *)&src[4];
-    bvec4 rgba[4];
-    rgba[0] = bvec4(bvec::from565(color0), 0xFF);
-    rgba[1] = bvec4(bvec::from565(color1), 0xFF);
-    if(color0 > color1)
-    {
-        rgba[2].lerp(rgba[0], rgba[1], 2, 1, 3);
-        rgba[3].lerp(rgba[0], rgba[1], 1, 2, 3);
-    }
-    else
-    {
-        rgba[2].lerp(rgba[0], rgba[1], 1, 1, 2);
-        rgba[3] = bvec4(0, 0, 0, 0);
-    }
-,
-    memcpy(dst, rgba[bits&3].v, d.bpp);
-,
-    bits >>= 2;
-);
-
-DECODEDDS(decodedxt3, 4,
-    ullong alpha  = *reinterpret_cast<const ullong *>(src);
-    ushort color0 = *reinterpret_cast<const ushort *>(&src[8]);
-    ushort color1 = *reinterpret_cast<const ushort *>(&src[10]);
-    uint bits     = *reinterpret_cast<const uint   *>(&src[12]);
-    bvec rgb[4];
-    rgb[0] = bvec::from565(color0);
-    rgb[1] = bvec::from565(color1);
-    rgb[2].lerp(rgb[0], rgb[1], 2, 1, 3);
-    rgb[3].lerp(rgb[0], rgb[1], 1, 2, 3);
-,
-    memcpy(dst, rgb[bits&3].v, 3);
-    dst[3] = ((alpha&0xF)*1088 + 32) >> 6;
-,
-    bits >>= 2;
-    alpha >>= 4;
-);
-
-static inline void decodealpha(uchar alpha0, uchar alpha1, uchar alpha[8])
-{
-    alpha[0] = alpha0;
-    alpha[1] = alpha1;
-    if(alpha0 > alpha1)
-    {
-        alpha[2] = (6*alpha0 + alpha1)/7;
-        alpha[3] = (5*alpha0 + 2*alpha1)/7;
-        alpha[4] = (4*alpha0 + 3*alpha1)/7;
-        alpha[5] = (3*alpha0 + 4*alpha1)/7;
-        alpha[6] = (2*alpha0 + 5*alpha1)/7;
-        alpha[7] = (alpha0 + 6*alpha1)/7;
-    }
-    else
-    {
-        alpha[2] = (4*alpha0 + alpha1)/5;
-        alpha[3] = (3*alpha0 + 2*alpha1)/5;
-        alpha[4] = (2*alpha0 + 3*alpha1)/5;
-        alpha[5] = (alpha0 + 4*alpha1)/5;
-        alpha[6] = 0;
-        alpha[7] = 0xFF;
-    }
-}
-
-DECODEDDS(decodedxt5, 4,
-    uchar alpha[8];
-    decodealpha(src[0], src[1], alpha);
-    ullong alphabits = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16);
-    ushort color0 = *reinterpret_cast<const ushort *>(&src[8]);
-    ushort color1 = *reinterpret_cast<const ushort *>(&src[10]);
-    uint bits     = *reinterpret_cast<const uint *>(&src[12]);
-    bvec rgb[4];
-    rgb[0] = bvec::from565(color0);
-    rgb[1] = bvec::from565(color1);
-    rgb[2].lerp(rgb[0], rgb[1], 2, 1, 3);
-    rgb[3].lerp(rgb[0], rgb[1], 1, 2, 3);
-,
-    memcpy(dst, rgb[bits&3].v, 3);
-    dst[3] = alpha[alphabits&7];
-,
-    bits >>= 2;
-    alphabits >>= 3;
-);
-
-DECODEDDS(decodergtc1, 1,
-    uchar red[8];
-    decodealpha(src[0], src[1], red);
-    ullong redbits = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16);
-,
-    dst[0] = red[redbits&7];
-,
-    redbits >>= 3;
-);
-
-DECODEDDS(decodergtc2, 2,
-    uchar red[8];
-    decodealpha(src[0], src[1], red);
-    ullong redbits = *reinterpret_cast<const ushort *>(&src[2]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[4])) << 16);
-    uchar green[8];
-    decodealpha(src[8], src[9], green);
-    ullong greenbits = *reinterpret_cast<const ushort *>(&src[10]) + (static_cast<ullong>(*reinterpret_cast<const uint *>(&src[12])) << 16);
-,
-    dst[0] = red[redbits&7];
-    dst[1] = green[greenbits&7];
-,
-    redbits >>= 3;
-    greenbits >>= 3;
-);
-
-bool loaddds(const char *filename, ImageData &image, int force)
-{
-    stream *f = openfile(filename, "rb");
-    if(!f)
-    {
-        return false;
-    }
-    GLenum format = GL_FALSE;
-    uchar magic[4];
-    if(f->read(magic, 4) != 4 || memcmp(magic, "DDS ", 4))
-    {
-        delete f;
-        return false;
-    }
-    DDSURFACEDESC2 d;
-    if(f->read(&d, sizeof(d)) != sizeof(d))
-    {
-        delete f;
-        return false;
-    }
-    if(d.dwSize != sizeof(DDSURFACEDESC2) || d.ddpfPixelFormat.dwSize != sizeof(DDPIXELFORMAT))
-    {
-        delete f;
-        return false;
-    }
-    bool supported = false;
-    if(d.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
-    {
-        switch(d.ddpfPixelFormat.dwFourCC)
-        {
-            case FOURCC_DXT1:
-                if((supported = hasS3TC) || force)
-                {
-                    format = d.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS ? GL_COMPRESSED_RGBA_S3TC_DXT1_EXT : GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-                }
-                break;
-            case FOURCC_DXT2:
-            case FOURCC_DXT3:
-                if((supported = hasS3TC) || force)
-                {
-                    format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-                }
-                break;
-            case FOURCC_DXT4:
-            case FOURCC_DXT5:
-                if((supported = hasS3TC) || force)
-                {
-                    format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-                }
-                break;
-            case FOURCC_ATI1:
-                format = GL_COMPRESSED_RED_RGTC1;
-                break;
-            case FOURCC_ATI2:
-                format = GL_COMPRESSED_RG_RGTC2;
-                break;
-        }
-    }
-    if(!format || (!supported && !force))
-    {
-        delete f;
-        return false;
-    }
-    if(dbgdds)
-    {
-        conoutf(Console_Debug, "%s: format 0x%X, %d x %d, %d mipmaps", filename, format, d.dwWidth, d.dwHeight, d.dwMipMapCount);
-    }
-    int bpp = 0;
-    switch(format)
-    {
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-        {
-            bpp = 8;
-            break;
-        }
-        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-        {
-            bpp = 16;
-            break;
-        }
-        case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
-        case GL_COMPRESSED_RED_RGTC1:
-        {
-            bpp = 8;
-            break;
-        }
-        case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
-        case GL_COMPRESSED_RG_RGTC2:
-        {
-            bpp = 16;
-            break;
-        }
-
-    }
-    image.setdata(NULL, d.dwWidth, d.dwHeight, bpp, !supported || force > 0 ? 1 : d.dwMipMapCount, 4, format);
-    size_t size = image.calcsize();
-    if(f->read(image.data, size) != size)
-    {
-        delete f;
-        image.cleanup();
-        return false;
-    }
-    delete f;
-    if(!supported || force > 0) switch(format)
-    {
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-            decodedxt1(image);
-            break;
-        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-            decodedxt3(image);
-            break;
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-            decodedxt5(image);
-            break;
-        case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
-        case GL_COMPRESSED_RED_RGTC1:
-            decodergtc1(image);
-            break;
-        case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
-        case GL_COMPRESSED_RG_RGTC2:
-            decodergtc2(image);
-            break;
-    }
-    return true;
-}
-
-void gendds(char *infile, char *outfile)
-{
-    if(!hasS3TC || usetexcompress <= 1)
-    {
-        conoutf(Console_Error, "OpenGL driver does not support S3TC texture compression");
-        return;
-    }
-
-    glHint(GL_TEXTURE_COMPRESSION_HINT, GL_NICEST);
-
-    DEF_FORMAT_STRING(cfile, "<compress>%s", infile);
-    extern void reloadtex(char *name);
-    Texture *t = textures.access(path(cfile));
-    if(t)
-    {
-        reloadtex(cfile);
-    }
-    t = textureload(cfile);
-    if(t==notexture)
-    {
-        conoutf(Console_Error, "failed loading %s", infile);
-        return;
-    }
-
-    glBindTexture(GL_TEXTURE_2D, t->id);
-    GLint compressed = 0,
-          format = 0,
-          width = 0,
-          height = 0;
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED, &compressed);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
-
-    if(!compressed)
-    {
-        conoutf(Console_Error, "failed compressing %s", infile);
-        return;
-    }
-    int fourcc = 0;
-    switch(format)
-    {
-        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-        {
-            fourcc = FOURCC_DXT1; conoutf("compressed as DXT1");
-            break;
-        }
-        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-        {
-            fourcc = FOURCC_DXT1;
-            conoutf("compressed as DXT1a");
-            break;
-        }
-        case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
-        {
-            fourcc = FOURCC_DXT3;
-            conoutf("compressed as DXT3");
-            break;
-        }
-        case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-        {
-            fourcc = FOURCC_DXT5;
-            conoutf("compressed as DXT5");
-            break;
-        }
-        case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
-        case GL_COMPRESSED_RED_RGTC1:
-        {
-            fourcc = FOURCC_ATI1;
-            conoutf("compressed as ATI1");
-            break;
-        }
-        case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
-        case GL_COMPRESSED_RG_RGTC2:
-        {
-            fourcc = FOURCC_ATI2;
-            conoutf("compressed as ATI2");
-            break;
-        }
-        default:
-        {
-            conoutf(Console_Error, "failed compressing %s: unknown format: 0x%X", infile, format);
-            break;
-        }
-    }
-
-    if(!outfile[0])
-    {
-        static string buf;
-        copystring(buf, infile);
-        int len = strlen(buf);
-        if(len > 4 && buf[len-4]=='.')
-        {
-            memcpy(&buf[len-4], ".dds", 4);
-        }
-        else
-        {
-            concatstring(buf, ".dds");
-        }
-        outfile = buf;
-    }
-
-    stream *f = openfile(path(outfile, true), "wb");
-    if(!f)
-    {
-        conoutf(Console_Error, "failed writing to %s", outfile);
-        return;
-    }
-    int csize = 0;
-    for(int lw = width, lh = height, level = 0;;)
-    {
-        GLint size = 0;
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, level++, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &size);
-        csize += size;
-        if(max(lw, lh) <= 1)
-        {
-            break;
-        }
-        if(lw > 1)
-        {
-            lw /= 2;
-        }
-        if(lh > 1)
-        {
-            lh /= 2;
-        }
-    }
-
-    DDSURFACEDESC2 d;
-    memset(&d, 0, sizeof(d));
-    d.dwSize = sizeof(DDSURFACEDESC2);
-    d.dwWidth = width;
-    d.dwHeight = height;
-    d.dwLinearSize = csize;
-    d.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_LINEARSIZE | DDSD_MIPMAPCOUNT;
-    d.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
-    d.ddpfPixelFormat.dwSize = sizeof(DDPIXELFORMAT);
-    d.ddpfPixelFormat.dwFlags = DDPF_FOURCC | (alphaformat(uncompressedformat(format)) ? DDPF_ALPHAPIXELS : 0);
-    d.ddpfPixelFormat.dwFourCC = fourcc;
-
-    uchar *data = new uchar[csize], *dst = data;
-    for(int lw = width, lh = height;;)
-    {
-        GLint size;
-        glGetTexLevelParameteriv(GL_TEXTURE_2D, d.dwMipMapCount, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &size);
-        glGetCompressedTexImage_(GL_TEXTURE_2D, d.dwMipMapCount++, dst);
-        dst += size;
-        if(max(lw, lh) <= 1)
-        {
-            break;
-        }
-        if(lw > 1)
-        {
-            lw /= 2;
-        }
-        if(lh > 1)
-        {
-            lh /= 2;
-        }
-    }
-
-    f->write("DDS ", 4);
-    f->write(&d, sizeof(d));
-    f->write(data, csize);
-    delete f;
-
-    delete[] data;
-
-    conoutf("wrote DDS file %s", outfile);
-
-    setuptexcompress();
-}
-COMMAND(gendds, "ss");
 
 void writepngchunk(stream *f, const char *type, uchar *data = NULL, uint len = 0)
 {
