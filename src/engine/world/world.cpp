@@ -239,7 +239,10 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                     if(va)
                     {
                         va->bbmin.x = -1;
-                        if(oe.decals.empty()) va->decals.add(&oe);
+                        if(oe.decals.empty())
+                        {
+                            va->decals.add(&oe);
+                        }
                     }
                     oe.decals.add(id);
                     oe.bbmin.min(bo).max(oe.o);
@@ -253,7 +256,10 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         if(va)
                         {
                             va->bbmin.x = -1;
-                            if(oe.mapmodels.empty()) va->mapmodels.add(&oe);
+                            if(oe.mapmodels.empty())
+                            {
+                                va->mapmodels.add(&oe);
+                            }
                         }
                         oe.mapmodels.add(id);
                         oe.bbmin.min(bo).max(oe.o);
@@ -411,7 +417,17 @@ static bool modifyoctaent(int flags, int id, extentity &e)
         case EngineEnt_Light:
         {
             clearlightcache(id);
-            if(e.attr5&LightEnt_Volumetric) { if(flags&ModOctaEnt_Add) volumetriclights++; else --volumetriclights; }
+            if(e.attr5&LightEnt_Volumetric)
+            {
+                if(flags&ModOctaEnt_Add)
+                {
+                    volumetriclights++;
+                }
+                else
+                {
+                    --volumetriclights;
+                }
+            }
             if(e.attr5&LightEnt_NoSpecular)
             {
                 if(!(flags&ModOctaEnt_Add ? nospeclights++ : --nospeclights))
@@ -453,10 +469,25 @@ static inline bool modifyoctaent(int flags, int id)
     return ents.inrange(id) && modifyoctaent(flags, id, *ents[id]);
 }
 
-static inline void addentity(int id)        { modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB, id); }
-void addentityedit(int id)    { modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id); }
-static inline void removeentity(int id)     { modifyoctaent(ModOctaEnt_UpdateBB, id); }
-void removeentityedit(int id) { modifyoctaent(ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id); }
+static inline void addentity(int id)
+{
+    modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB, id);
+}
+
+void addentityedit(int id)
+{
+    modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id);
+}
+
+static inline void removeentity(int id)
+{
+    modifyoctaent(ModOctaEnt_UpdateBB, id);
+}
+
+void removeentityedit(int id)
+{
+    modifyoctaent(ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id);
+}
 
 void freeoctaentities(cube &c)
 {
@@ -466,9 +497,18 @@ void freeoctaentities(cube &c)
     }
     if(entities::getents().length())
     {
-        while(c.ext->ents && !c.ext->ents->mapmodels.empty()) removeentity(c.ext->ents->mapmodels.pop());
-        while(c.ext->ents && !c.ext->ents->decals.empty())    removeentity(c.ext->ents->decals.pop());
-        while(c.ext->ents && !c.ext->ents->other.empty())     removeentity(c.ext->ents->other.pop());
+        while(c.ext->ents && !c.ext->ents->mapmodels.empty())
+        {
+            removeentity(c.ext->ents->mapmodels.pop());
+        }
+        while(c.ext->ents && !c.ext->ents->decals.empty())
+        {
+            removeentity(c.ext->ents->decals.pop());
+        }
+        while(c.ext->ents && !c.ext->ents->other.empty())
+        {
+            removeentity(c.ext->ents->other.pop());
+        }
     }
     if(c.ext->ents)
     {
@@ -578,13 +618,10 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
         conoutf(Console_Error, "newmap only allowed in edit mode");
         return false;
     }
-
     resetmap();
-
     setvar("mapscale", scale<10 ? 10 : (scale>16 ? 16 : scale), true, false);
     setvar("mapsize", 1<<worldscale, true, false);
     setvar("emptymap", 1, true, false);
-
     texmru.shrink(0);
     freeocta(worldroot);
     worldroot = newcubes(F_EMPTY);
@@ -592,18 +629,17 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
     {
         SOLID_FACES(worldroot[i]);
     }
-
-    if(worldsize > 0x1000) splitocta(worldroot, worldsize>>1);
-
+    if(worldsize > 0x1000)
+    {
+        splitocta(worldroot, worldsize>>1);
+    }
     clearmainmenu();
-
     if(usecfg)
     {
         identflags |= Idf_Overridden;
         execfile("config/default_map_settings.cfg", false);
         identflags &= ~Idf_Overridden;
     }
-
     allchanged(true);
     startmap(mname);
     return true;
@@ -681,7 +717,6 @@ void shrinkmap()
     {
         return;
     }
-
     if(!worldroot[octant].children)
     {
         subdividecube(worldroot[octant], false, false);
@@ -692,16 +727,13 @@ void shrinkmap()
     worldroot = root;
     worldscale--;
     worldsize /= 2;
-
     ivec offset(octant, ivec(0, 0, 0), worldsize);
     vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
         ents[i]->o.sub(vec(offset));
     }
-
     allchanged();
-
     conoutf("shrunk map to size %d", worldscale);
 }
 
