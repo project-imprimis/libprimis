@@ -581,6 +581,35 @@ namespace game
         return true;
     }
 
+    /*explodecubes: deletes some cubes at a world vector location
+     * Arguments:
+     *  loc: world vector to destroy
+     *  gridpower: size of cube to blow up
+     * Returns:
+     *  void
+     */
+    void explodecubes(ivec loc, int gridpower, int bias = 1)
+    {
+        int gridpow = static_cast<int>(pow(2,gridpower));
+        //define selection boundaries that align with gridpower
+        ivec minloc( loc.x - loc.x % gridpow -2*gridpow,
+                     loc.y - loc.y % gridpow -2*gridpow,
+                     loc.z - loc.z % gridpow -(2-bias)*gridpow);
+        ivec maxlocz(3,3,4);
+        ivec maxlocy(3,5,2);
+        ivec maxlocx(5,3,2);
+        selinfo sel;
+        sel.o = minloc + ivec(gridpow,gridpow,0);
+        sel.s = maxlocz;
+        mpdelcube(sel, true);
+        sel.o = minloc + ivec(gridpow,0,gridpow);
+        sel.s = maxlocy;
+        mpdelcube(sel, true);
+        sel.o = minloc + ivec(0,gridpow,gridpow);
+        sel.s = maxlocx;
+        mpdelcube(sel, true);
+    }
+
     void updateprojectiles(int time)
     {
         if(projs.empty())
@@ -629,7 +658,7 @@ namespace game
                             continue;
                         }
                     }
-                    delcubeatloc(static_cast<ivec>(p.o),4);
+                    explodecubes(static_cast<ivec>(p.o),3);
                     projsplash(p, v, NULL);
                     exploded = true;
                 }

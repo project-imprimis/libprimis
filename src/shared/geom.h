@@ -1297,6 +1297,7 @@ struct ivec
     //int idx(int i) { return v[i]; }
     bool operator==(const ivec &v) const { return x==v.x && y==v.y && z==v.z; }
     bool operator!=(const ivec &v) const { return x!=v.x || y!=v.y || z!=v.z; }
+    ivec operator+(const ivec &v)  const { return ivec(x+v.x, y+v.y, z+v.z); }
     bool iszero() const { return x==0 && y==0 && z==0; }
     ivec &shl(int n) { x<<= n; y<<= n; z<<= n; return *this; }
     ivec &shr(int n) { x>>= n; y>>= n; z>>= n; return *this; }
