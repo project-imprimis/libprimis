@@ -197,7 +197,7 @@ struct selinfo
 {
     int corner;
     int cx, cxs, cy, cys;
-    ivec o, s;
+    ivec o, s; //two corners of the selection
     int grid, orient;
     selinfo() : corner(0), cx(0), cxs(0), cy(0), cys(0), o(0, 0, 0), s(0, 0, 0), grid(8), orient(0) {}
     int size() const    { return s.x*s.y*s.z; }

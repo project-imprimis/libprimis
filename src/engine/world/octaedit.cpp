@@ -2254,6 +2254,15 @@ void pushsel(int *dir)
     }
 }
 
+/*mpdelcube: deletes a cube by discarding cubes insel's children and emptying faces
+ * Arguments:
+ *  sel:   the selection which is to be deleted
+ *  local: whether to send a network message or not (nonlocal cube deletions don't
+ *             send messages, as this would cause an infinite loop)
+ * Returns:
+ *  void
+ */
+
 void mpdelcube(selinfo &sel, bool local)
 {
     if(local)
@@ -2261,6 +2270,28 @@ void mpdelcube(selinfo &sel, bool local)
         game::edittrigger(sel, Edit_DelCube);
     }
     LOOP_SEL_XYZ(discardchildren(c, true); EMPTY_FACES(c));
+}
+
+/*delcubeatloc: deletes some cubes at a world vector location
+ * Arguments:
+ *  loc: world vector to destroy
+ *  gridpower: size of cube to blow up
+ * Returns:
+ *  void
+ */
+void delcubeatloc(ivec loc, int gridpower)
+{
+    int gridpow = static_cast<int>(pow(2,gridpower));
+    //define selection boundaries that align with gridpower
+    ivec minloc( loc.x - loc.x % gridpow,
+                 loc.y - loc.y % gridpow,
+                 loc.z - loc.z % gridpow);
+    ivec maxloc(3,3,3);
+    selinfo sel;
+    sel.o = minloc;
+    sel.s = maxloc;
+    //do standard mpdelcube
+    mpdelcube(sel, true);
 }
 
 void delcube()

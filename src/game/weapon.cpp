@@ -629,6 +629,7 @@ namespace game
                             continue;
                         }
                     }
+                    delcubeatloc(static_cast<ivec>(p.o),4);
                     projsplash(p, v, NULL);
                     exploded = true;
                 }
