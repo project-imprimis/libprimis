@@ -243,7 +243,7 @@ extern int visibletris(const cube &c, int orient, const ivec &co, int size, usho
 extern int visibleorient(const cube &c, int orient);
 extern void genfaceverts(const cube &c, int orient, ivec v[4]);
 extern int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts);
-extern void invalidatemerges(cube &c, const ivec &co, int size, bool msg);
+extern void invalidatemerges(cube &c);
 extern void remip();
 extern int lookupmaterial(const vec &o);
 

@@ -2618,7 +2618,7 @@ int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, 
     return bits-3;
 }
 
-static void invalidatemerges(cube &c)
+void invalidatemerges(cube &c)
 {
     if(c.merged)
     {
@@ -2648,18 +2648,6 @@ static void invalidatemerges(cube &c)
             invalidatemerges(c.children[i]);
         }
     }
-}
-
-static int invalidatedmerges = 0;
-
-void invalidatemerges(cube &c, const ivec &co, int size, bool msg)
-{
-    if(msg && invalidatedmerges!=totalmillis)
-    {
-        renderprogress(0, "invalidating merged surfaces...");
-        invalidatedmerges = totalmillis;
-    }
-    invalidatemerges(c);
 }
 
 void calcmerges()

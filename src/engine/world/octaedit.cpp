@@ -560,7 +560,7 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
                 int hasmerges = c[i].ext->va->hasmerges;
                 destroyva(c[i].ext->va);
                 c[i].ext->va = NULL;
-                if(hasmerges) invalidatemerges(c[i], o, size, true);
+                if(hasmerges) invalidatemerges(c[i]);
             }
             freeoctaentities(c[i]);
             c[i].ext->tjoints = -1;
