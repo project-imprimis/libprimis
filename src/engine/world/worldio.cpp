@@ -944,7 +944,7 @@ bool save_world(const char *mname, const char *gameident)
     }
     f->putchar((int)strlen(gameident));
     f->write(gameident, (int)strlen(gameident)+1);
-
+    f->put<ushort>(0);
     f->put<ushort>(texmru.length());
     for(int i = 0; i < texmru.length(); i++)
     {
