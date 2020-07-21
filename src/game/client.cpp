@@ -211,6 +211,7 @@ void trydisconnect(bool local)
         localdisconnect();
     }
     else conoutf("not connected");
+    execident("resethud");
 }
 
 ICOMMAND(connect, "sis", (char *name, int *port, char *pw), connectserv(name, *port, pw));
