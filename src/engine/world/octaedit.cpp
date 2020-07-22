@@ -2114,6 +2114,21 @@ static ushort getmaterial(cube &c)
 
 VAR(invalidcubeguard, 0, 1, 1);
 
+void mpplacecube(selinfo &sel, int tex, bool local)
+{
+    if(local)
+    {
+        game::edittrigger(sel, Edit_AddCube);
+    }
+    logoutf("cube 2");
+    LOOP_SEL_XYZ(
+        logoutf("cube");
+        discardchildren(c, true);
+        SOLID_FACES(c);
+    );
+}
+
+
 void mpeditface(int dir, int mode, selinfo &sel, bool local)
 {
     if(mode==1 && (sel.cx || sel.cy || sel.cxs&1 || sel.cys&1)) mode = 0;

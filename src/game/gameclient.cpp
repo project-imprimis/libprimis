@@ -959,6 +959,7 @@ namespace game
             case Edit_Copy:
             case Edit_Paste:
             case Edit_DelCube:
+            case Edit_AddCube:
             {
                 switch(op)
                 {
@@ -2329,7 +2330,7 @@ namespace game
                 entities::setspawn(i, true);
                 ai::itemspawned(i);
                 playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
-                
+
                 int icon = entities::itemicon(i);
                 if(icon >= 0)
                 {

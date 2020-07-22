@@ -610,6 +610,19 @@ namespace game
         mpdelcube(sel, true);
     }
 
+    void placecube(ivec loc, int gridpower)
+    {
+        int gridpow = static_cast<int>(pow(2,gridpower));
+        ivec minloc( loc.x - loc.x % gridpow,
+                     loc.y - loc.y % gridpow,
+                     loc.z - loc.z % gridpow );
+        selinfo sel;
+        sel.o = minloc;
+        sel.s = ivec(1,1,1);
+        mpplacecube(sel, 1, true);
+        logoutf("cube placed");
+    }
+
     void updateprojectiles(int time)
     {
         if(projs.empty())
@@ -658,7 +671,19 @@ namespace game
                             continue;
                         }
                     }
-                    explodecubes(static_cast<ivec>(p.o),3);
+                    switch(attacks[p.atk].worldfx)
+                    {
+                        case 1:
+                        {
+                            explodecubes(static_cast<ivec>(p.o),3);
+                            break;
+                        }
+                        case 2:
+                        {
+                            placecube(static_cast<ivec>(p.o),3);
+                            break;
+                        }
+                    }
                     projsplash(p, v, NULL);
                     exploded = true;
                 }
@@ -713,6 +738,15 @@ namespace game
                 if(d->muzzle.x >= 0)
                 {
                     particle_flare(d->muzzle, d->muzzle, 140, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d); //place a light that runs with the shot projectile
+                }
+                newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
+                break;
+            }
+            case Attack_EngShoot:
+            {
+                if(d->muzzle.x >= 0)
+                {
+                    particle_flare(d->muzzle, d->muzzle, 250, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d); //place a light that runs with the shot projectile
                 }
                 newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
                 break;

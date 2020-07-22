@@ -1,7 +1,7 @@
 #ifndef CONSTS_H_
 #define CONSTS_H_
-/* consts.h 
- * 
+/* consts.h
+ *
  * This is a header filled with constants that are useful to pass appropriate information
  * from the game to the engine; it is only for those constants which are directly useful for
  * the engine-game interface and not for constants which solely lie in the engine or game
@@ -75,6 +75,7 @@ enum
     Edit_Rotate,
     Edit_Replace,
     Edit_DelCube,
+    Edit_AddCube,
     Edit_CalcLight,
     Edit_Remip,
     Edit_VSlot,
