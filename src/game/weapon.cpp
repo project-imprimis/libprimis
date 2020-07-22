@@ -620,7 +620,6 @@ namespace game
         sel.o = minloc;
         sel.s = ivec(1,1,1);
         mpplacecube(sel, 1, true);
-        logoutf("cube placed");
     }
 
     void updateprojectiles(int time)

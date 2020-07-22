@@ -2120,9 +2120,7 @@ void mpplacecube(selinfo &sel, int tex, bool local)
     {
         game::edittrigger(sel, Edit_AddCube);
     }
-    logoutf("cube 2");
     LOOP_SEL_XYZ(
-        logoutf("cube");
         discardchildren(c, true);
         SOLID_FACES(c);
     );
