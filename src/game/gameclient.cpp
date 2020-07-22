@@ -2381,6 +2381,7 @@ namespace game
             case NetMsg_Rotate:
             case NetMsg_Replace:
             case NetMsg_DelCube:
+            case NetMsg_AddCube:
             case NetMsg_EditVSlot:
             {
                 if(!d)
@@ -2504,6 +2505,11 @@ namespace game
                         }
                         break;
                     }
+                    case NetMsg_AddCube:
+                        if(sel.validate())
+                        {
+                            mpplacecube(sel, 1, false);
+                        }
                     case NetMsg_EditVSlot:
                     {
                         int delta = getint(p),
@@ -2856,7 +2862,7 @@ namespace game
             }
             default:
             {
-                neterr("type", cn < 0);
+                neterr("packet of unknown type", cn < 0);
                 return;
             }
         }
