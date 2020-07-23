@@ -846,9 +846,9 @@ will automatically place clip wherever glass is placed.
 
 #### Commands
 
-* `glass<N>color`
-* `glass<N>spec`
-* `glass<N>refract`
+* `glass<N>color` Tint color of the glass material
+* `glass<N>spec` Specularity (glossiness) scale of the glass material
+* `glass<N>refract` Refraction (light distortion behind) of the glass material
 
 ### 2.2.5 Clip
 ---
@@ -979,11 +979,11 @@ is to declare it as a cube geometry shader as opposed to a decal. Afterwards,
 the four relevant maps are provided for the different shaders that are to be
 applied with the `texture` command;
 
-* 0/c declares a diffuse map
-* n declares a normal map
-* s declares a specular map
-* z declares a height (parallax) map
-* g declares a glow map
+* `0/c` declares a diffuse map
+* `n` declares a normal map
+* `s` declares a specular map
+* `z` declares a height (parallax) map
+* `g` declares a glow map
 
 These definitions of textures are largely set beforehand and then called with
 `texload` upon running the map's config (automatically run at map load); most
@@ -2774,7 +2774,7 @@ very sharp map, and the RSM requires six channels compared to the shadowmap's
 two.
 
 ## 5.3 Transparency
---
+---
 
 Transparency, also known as alpha, applies to objects which are partially clear,
 but have some level of visibility, including with respect to other non-trivial
@@ -3510,7 +3510,7 @@ set of braces) by defining arguments within the body as the reserved alias names
 
 ```
 foo = bar
-``
+```
 
 #### Lookup Alias `$`
 
@@ -3518,7 +3518,7 @@ The `$` symbol causes the parser to look for a defined alias with the name
 appended, allowing for the value of variables to be used by other functions.
 The behavior of this is similar to unix's `bash` shell language, while the
 behavior is implicit in many other languages (Cubescript interprets symbols not
-delineated by a $ at the beginning as a string literal).
+delineated by a `$` at the beginning as a string literal).
 
 ```
 foo = 1
@@ -3527,7 +3527,7 @@ bar = $foo //bar = 1
 
 #### Literal Substitution `@`
 
-The @ symbol causes the value stored by an alias to be directly inserted where
+The `@` symbol causes the value stored by an alias to be directly inserted where
 it is called, from a scope determined by the nesting level. The `@` symbol thus
 allows for application in synthesis of compound alias names (by directly
 depositing the value of a variable in an already-in-progress string, which is
@@ -3663,13 +3663,25 @@ A standard `FVAR` carries the following arguments:
 * `min` The minimum value that the variable is allowed to be set from ingame
 * `max` The maximum value that the variable is allowed to be set from ingame
 
+#### Hex Variables `HVAR`
+
+For hexadecimal values, it is possible to define values as a `HVAR` which makes
+entry and display more straightforward. This type of variable is similar to an
+integer variable internally otherwise.
+
+A standard `HVAR` carries the following arguments:
+* `name` The name of the variable, both to the engine and ingame
+* `cur` The value which the variable is initiated with at the start of the game*
+* `min` The minimum value that the variable is allowed to be set from ingame
+* `max` The maximum value that the variable is allowed to be set from ingame
+
 #### Color Variables `CVAR`
 
 For colors, it is convenient to save and use information using the widely used
-six-digit hexadecimal HTML format (0xRRGGBB), so a `CVAR` macro is provided to
-interface with these types of data. A `CVAR` is implicitly limited to six hex
-digits, naturally, but otherwise is not restricted and therefore lacks min/max
-arguments like the numerical `VAR` macros have.
+six-digit hexadecimal HTML format (`0xRRGGBB`), so a `CVAR` macro is provided
+to interface with these types of data. A `CVAR` is implicitly limited to six
+hex digits, naturally, but otherwise is not restricted and therefore lacks min
+or max arguments like the numerical `VAR` macros have.
 
 A standard `CVAR` carries the following arguments:
 * `name` The name of the variable, both to the engine and ingame
@@ -3687,8 +3699,19 @@ A standard `SVAR` carries the following arguments:
 * `cur` The value which the variable is initiated with at the start of the game*
 
 *Note that the `cur` value is always true at the very beginning of the game, but
-is often changed by a start-up script which manually changes these to whatever
-desired defaults the user has set.
+can be changed ingame to differ from this value.
+
+#### Persistent Variables `*VARP`
+
+Persistent variables are variables which are saved to a configuration file at
+the time that the program is closed. This makes it useful for settings which are
+generally kept the same between runs of the game.
+
+The `*VARP` macros (`VARP` `FVARP` `HVARP` `CVARP` `SVARP`) all behave the same
+as normal variables except that the game makes sure to save them to a script to
+be executed when the game is started again. These variables initialize their
+`cur` values to their defined values as normal, but rely on a startup script to
+change them to their persistent states from the previous run.
 
 # 10 Internal Objects
 ---
