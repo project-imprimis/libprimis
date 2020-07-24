@@ -760,7 +760,10 @@ void pruneundos(int maxremain)                          // bound memory
     }
 }
 
-void clearundos() { pruneundos(0); }
+void clearundos()
+{
+    pruneundos(0);
+}
 
 COMMAND(clearundos, "");
 
@@ -821,7 +824,10 @@ static inline int countblock(cube *c, int n = 8)
     return r;
 }
 
-static int countblock(block3 *b) { return countblock(b->c(), b->size()); }
+static int countblock(block3 *b)
+{
+    return countblock(b->c(), b->size());
+}
 
 void swapundo(undolist &a, undolist &b, int op)
 {
@@ -2114,6 +2120,15 @@ static ushort getmaterial(cube &c)
 
 VAR(invalidcubeguard, 0, 1, 1);
 
+/*mpplacecube: places a cube at the location passed
+ * Arguments:
+ *  sel: selection info object containing objects to be filled
+ *  tex: texture to cover the cube with
+ *  local: toggles the engine sending out packets to others, or to not broadcast
+ *         due to having recieved the command from another client
+ * Returns:
+ *  void
+ */
 void mpplacecube(selinfo &sel, int tex, bool local)
 {
     if(local)

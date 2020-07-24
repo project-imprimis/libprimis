@@ -610,6 +610,13 @@ namespace game
         mpdelcube(sel, true);
     }
 
+    /*placecube: places a cube at a world vector location
+     * Arguments:
+     *  loc: world vector to fill
+     *  gridpower: size of cube to place
+     * Returns:
+     *  void
+     */
     void placecube(ivec loc, int gridpower)
     {
         int gridpow = static_cast<int>(pow(2,gridpower));
@@ -812,7 +819,7 @@ namespace game
         {
             return;
         }
-        gameent *pl = (gameent *)owner;
+        gameent *pl = reinterpret_cast<gameent *>(owner);
         if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect)
         {
             return;
@@ -983,7 +990,7 @@ namespace game
         {
             addmsg(NetMsg_Shoot, "rci2i6iv", d, lastmillis-maptime, atk,
                    static_cast<int>(from.x*DMF), static_cast<int>(from.y*DMF), static_cast<int>(from.z*DMF),
-                   static_cast<int>(to.x*DMF), static_cast<int>(to.y*DMF), static_cast<int>(to.z*DMF),
+                   static_cast<int>(to.x*DMF),   static_cast<int>(to.y*DMF),   static_cast<int>(to.z*DMF),
                    hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf()); //sizeof int should always equal 4 (bytes) = 32b
         }
 

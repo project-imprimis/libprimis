@@ -45,10 +45,32 @@ struct extentity : entity                       // part of the entity that doesn
 
     extentity() : flags(0), attached(NULL) {}
 
-    bool spawned() const { return (flags&EntFlag_Spawned) != 0; }
-    void setspawned(bool val) { if(val) flags |= EntFlag_Spawned; else flags &= ~EntFlag_Spawned; }
-    void setspawned() { flags |= EntFlag_Spawned; }
-    void clearspawned() { flags &= ~EntFlag_Spawned; }
+    bool spawned() const
+    {
+        return (flags&EntFlag_Spawned) != 0;
+    }
+
+    void setspawned(bool val)
+    {
+        if(val)
+        {
+            flags |= EntFlag_Spawned;
+        }
+        else
+        {
+            flags &= ~EntFlag_Spawned;
+        }
+    }
+
+    void setspawned()
+    {
+        flags |= EntFlag_Spawned;
+    }
+
+    void clearspawned()
+    {
+        flags &= ~EntFlag_Spawned;
+    }
 };
 
 const int maxents = 10000;
@@ -142,10 +164,19 @@ struct physent                                  // base entity type, can be affe
         floor = vec(0, 0, 1);
     }
 
-    vec feetpos(float offset = 0) const { return vec(o).addz(offset - eyeheight); }
-    vec headpos(float offset = 0) const { return vec(o).addz(offset); }
+    vec feetpos(float offset = 0) const
+    {
+        return vec(o).addz(offset - eyeheight);
+    }
+    vec headpos(float offset = 0) const
+    {
+        return vec(o).addz(offset);
+    }
 
-    bool crouched() const { return fabs(eyeheight - maxheight*crouchheight) < 1e-4f; }
+    bool crouched() const
+    {
+        return fabs(eyeheight - maxheight*crouchheight) < 1e-4f;
+    }
 };
 
 enum
@@ -184,8 +215,14 @@ struct animinfo // description of a character's animation
 
     animinfo() : anim(0), frame(0), range(0), basetime(0), speed(100.0f), varseed(0) { }
 
-    bool operator==(const animinfo &o) const { return frame==o.frame && range==o.range && (anim&(ANIM_SETTIME|ANIM_DIR))==(o.anim&(ANIM_SETTIME|ANIM_DIR)) && (anim&ANIM_SETTIME || basetime==o.basetime) && speed==o.speed; }
-    bool operator!=(const animinfo &o) const { return frame!=o.frame || range!=o.range || (anim&(ANIM_SETTIME|ANIM_DIR))!=(o.anim&(ANIM_SETTIME|ANIM_DIR)) || (!(anim&ANIM_SETTIME) && basetime!=o.basetime) || speed!=o.speed; }
+    bool operator==(const animinfo &o) const
+    {
+        return frame==o.frame && range==o.range && (anim&(ANIM_SETTIME|ANIM_DIR))==(o.anim&(ANIM_SETTIME|ANIM_DIR)) && (anim&ANIM_SETTIME || basetime==o.basetime) && speed==o.speed;
+    }
+    bool operator!=(const animinfo &o) const
+    {
+        return frame!=o.frame || range!=o.range || (anim&(ANIM_SETTIME|ANIM_DIR))!=(o.anim&(ANIM_SETTIME|ANIM_DIR)) || (!(anim&ANIM_SETTIME) && basetime!=o.basetime) || speed!=o.speed;
+    }
 };
 
 struct animinterpinfo // used for animation blending of animated characters
@@ -221,7 +258,10 @@ struct dynent : physent                         // animated characters, or chara
     ~dynent()
     {
         extern void cleanragdoll(dynent *d);
-        if(ragdoll) cleanragdoll(this);
+        if(ragdoll)
+        {
+            cleanragdoll(this);
+        }
     }
 
     void stopmoving()
@@ -240,5 +280,8 @@ struct dynent : physent                         // animated characters, or chara
         }
     }
 
-    vec abovehead() { return vec(o).addz(aboveeye+4); }
+    vec abovehead()
+    {
+        return vec(o).addz(aboveeye+4);
+    }
 };

@@ -819,7 +819,7 @@ stream::offset stream::size()
 
 bool stream::getline(char *str, size_t len)
 {
-    for(int i = 0; i < int(len-1); ++i)
+    for(int i = 0; i < static_cast<int>(len-1); ++i)
     {
         if(read(&str[i], 1) != 1)
         {

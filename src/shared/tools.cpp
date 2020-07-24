@@ -320,7 +320,7 @@ void filtertext(char *dst, const char *src, bool whitespace, bool forcespace, si
 }
 
 void ipmask::parse(const char *name)
-{   
+{
     union
     {
         uchar b[sizeof(enet_uint32)];
@@ -341,17 +341,17 @@ void ipmask::parse(const char *name)
             ipconv.b[i] = n;
             maskconv.b[i] = 0xFF;
         }
-        name = end; 
+        name = end;
         while(int c = *name)
         {
-            ++name; 
+            ++name;
             if(c == '.')
             {
                 break;
             }
             if(c == '/')
             {
-                int range = clamp(int(strtol(name, NULL, 10)), 0, 32);
+                int range = clamp(static_cast<int>(strtol(name, NULL, 10)), 0, 32);
                 mask = range ? ENET_HOST_TO_NET_32(0xFFffFFff << (32 - range)) : maskconv.i;
                 ip = ipconv.i & mask;
                 return;
@@ -400,6 +400,6 @@ int ipmask::print(char *buf) const
     {
         buf += sprintf(buf, "/%d", range);
     }
-    return int(buf-start);
+    return static_cast<int>(buf-start);
 }
 
