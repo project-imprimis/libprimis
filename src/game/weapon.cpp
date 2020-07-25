@@ -206,8 +206,8 @@ namespace game
 
     enum
     {
-        BNC_GIBS,
-        BNC_DEBRIS
+        Bouncer_Gibs,
+        Bouncer_Debris
     };
 
     struct bouncer : physent
@@ -233,7 +233,7 @@ namespace game
     {
         bouncer &bnc = *bouncers.add(new bouncer);
         bnc.o = from;
-        bnc.radius = bnc.xradius = bnc.yradius = type==BNC_DEBRIS ? 0.5f : 1.5f;
+        bnc.radius = bnc.xradius = bnc.yradius = type==Bouncer_Debris ? 0.5f : 1.5f;
         bnc.eyeheight = bnc.radius;
         bnc.aboveeye = bnc.radius;
         bnc.lifetime = lifetime;
@@ -244,12 +244,12 @@ namespace game
 
         switch(type)
         {
-            case BNC_DEBRIS:
+            case Bouncer_Debris:
             {
                 bnc.variant = randomint(4);
                 break;
             }
-            case BNC_GIBS:
+            case Bouncer_Gibs:
             {
                 bnc.variant = randomint(3);
                 break;
@@ -277,7 +277,7 @@ namespace game
             return;
         }
         bouncer *b = (bouncer *)d;
-        if(b->bouncetype != BNC_GIBS || b->bounces >= 2)
+        if(b->bouncetype != Bouncer_Gibs || b->bounces >= 2)
         {
             return;
         }

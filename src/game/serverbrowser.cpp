@@ -255,10 +255,10 @@ struct pingattempts
 {
     enum
     {
-        MAXATTEMPTS = 2
+        Ping_MaxAttempts = 2
     };
 
-    int offset, attempts[MAXATTEMPTS];
+    int offset, attempts[Ping_MaxAttempts];
 
     pingattempts() : offset(0) { clearattempts(); }
 
@@ -286,7 +286,7 @@ struct pingattempts
     int addattempt(int millis)
     {
         int val = encodeping(millis);
-        for(int k = 0; k < MAXATTEMPTS-1; ++k)
+        for(int k = 0; k < Ping_MaxAttempts-1; ++k)
         {
             attempts[k+1] = attempts[k];
         }
@@ -298,7 +298,7 @@ struct pingattempts
     {
         if(val)
         {
-            for(int k = 0; k < MAXATTEMPTS; ++k)
+            for(int k = 0; k < Ping_MaxAttempts; ++k)
             {
                 if(attempts[k] == val)
                 {
@@ -319,9 +319,9 @@ static int currentprotocol = server::protocolversion();
 
 enum
 {
-    UNRESOLVED = 0,
-    RESOLVING,
-    RESOLVED
+    Resolve_Unresolved = 0,
+    Resolve_Resolving,
+    Resolve_Resolved
 };
 
 struct serverinfo : servinfo, pingattempts
@@ -339,7 +339,7 @@ struct serverinfo : servinfo, pingattempts
     const char *password;
 
     serverinfo()
-     : resolved(UNRESOLVED), keep(false), password(NULL)
+     : resolved(Resolve_Unresolved), keep(false), password(NULL)
     {
         clearpings();
         setoffset();
@@ -500,7 +500,7 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
     si->address.port = port;
     if(ip!=ENET_HOST_ANY)
     {
-        si->resolved = RESOLVED;
+        si->resolved = Resolve_Resolved;
     }
     if(name)
     {
@@ -626,15 +626,15 @@ void checkresolver()
     for(int i = 0; i < servers.length(); i++)
     {
         serverinfo &si = *servers[i];
-        if(si.resolved == RESOLVED)
+        if(si.resolved == Resolve_Resolved)
         {
             continue;
         }
         if(si.address.host == ENET_HOST_ANY)
         {
-            if(si.resolved == UNRESOLVED)
+            if(si.resolved == Resolve_Unresolved)
             {
-                si.resolved = RESOLVING;
+                si.resolved = Resolve_Resolving;
                 resolverquery(si.name);
             }
             resolving++;
@@ -657,7 +657,7 @@ void checkresolver()
             serverinfo &si = *servers[i];
             if(name == si.name)
             {
-                si.resolved = RESOLVED;
+                si.resolved = Resolve_Resolved;
                 si.address.host = addr.host;
                 break;
             }
