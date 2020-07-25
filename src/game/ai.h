@@ -11,19 +11,19 @@ enum
 
 namespace ai
 {
-    const int MAXWAYPOINTS = USHRT_MAX - 2;
-    const int MAXWAYPOINTLINKS = 6;
-    const int WAYPOINTRADIUS = 16;
+    const int maxwaypoints = USHRT_MAX - 2;
+    const int maxwaypointlinks = 6;
+    const int waypointradius = 16;
 
-    const float MINWPDIST       = 4.f;     // is on top of
-    const float CLOSEDIST       = 32.f;    // is close
-    const float FARDIST         = 128.f;   // too far to remap close
-    const float JUMPMIN         = 4.f;     // decides to jump
-    const float JUMPMAX         = 32.f;    // max jump
-    const float SIGHTMIN        = 64.f;    // minimum line of sight
-    const float SIGHTMAX        = 1024.f;  // maximum line of sight
-    const float VIEWMIN         = 90.f;    // minimum field of view
-    const float VIEWMAX         = 180.f;   // maximum field of view
+    const float minwpdist       = 4.f;     // is on top of
+    const float closedist       = 32.f;    // is close
+    const float fardist         = 128.f;   // too far to remap close
+    const float jumpmin         = 4.f;     // decides to jump
+    const float jumpmax         = 32.f;    // max jump
+    const float sightmin        = 64.f;    // minimum line of sight
+    const float sightmax        = 1024.f;  // maximum line of sight
+    const float viewmin         = 90.f;    // minimum field of view
+    const float viewmax         = 180.f;   // maximum field of view
 
     struct waypoint
     {
@@ -31,7 +31,7 @@ namespace ai
         float curscore, estscore;
         int weight;
         ushort route, prev;
-        ushort links[MAXWAYPOINTLINKS];
+        ushort links[maxwaypointlinks];
 
         waypoint() {}
         waypoint(const vec &o, int weight = 0) : o(o), weight(weight), route(0) { memset(links, 0, sizeof(links)); }
@@ -40,7 +40,7 @@ namespace ai
 
         int find(int wp)
         {
-            for(int i = 0; i < MAXWAYPOINTLINKS; ++i)
+            for(int i = 0; i < maxwaypointlinks; ++i)
             {
                 if(links[i] == wp)
                 {
@@ -62,7 +62,7 @@ namespace ai
     extern int showwaypoints, dropwaypoints;
     extern int closestwaypoint(const vec &pos, float mindist, bool links, gameent *d = NULL);
     extern void findwaypointswithin(const vec &pos, float mindist, float maxdist, vector<int> &results);
-    extern void inferwaypoints(gameent *d, const vec &o, const vec &v, float mindist = ai::CLOSEDIST);
+    extern void inferwaypoints(gameent *d, const vec &o, const vec &v, float mindist = ai::closedist);
 
     struct avoidset
     {
@@ -326,11 +326,11 @@ namespace ai
     extern bool checkothers(vector<int> &targets, gameent *d = NULL, int state = -1, int targtype = -1, int target = -1, bool teams = false, int *members = NULL);
     extern bool makeroute(gameent *d, aistate &b, int node, bool changed = true, int retries = 0);
     extern bool makeroute(gameent *d, aistate &b, const vec &pos, bool changed = true, int retries = 0);
-    extern bool randomnode(gameent *d, aistate &b, const vec &pos, float guard = SIGHTMIN, float wander = SIGHTMAX);
-    extern bool randomnode(gameent *d, aistate &b, float guard = SIGHTMIN, float wander = SIGHTMAX);
+    extern bool randomnode(gameent *d, aistate &b, const vec &pos, float guard = sightmin, float wander = sightmax);
+    extern bool randomnode(gameent *d, aistate &b, float guard = sightmin, float wander = sightmax);
     extern bool violence(gameent *d, aistate &b, gameent *e, int pursue = 0);
-    extern bool patrol(gameent *d, aistate &b, const vec &pos, float guard = SIGHTMIN, float wander = SIGHTMAX, int walk = 1, bool retry = false);
-    extern bool defend(gameent *d, aistate &b, const vec &pos, float guard = SIGHTMIN, float wander = SIGHTMAX, int walk = 1);
+    extern bool patrol(gameent *d, aistate &b, const vec &pos, float guard = sightmin, float wander = sightmax, int walk = 1, bool retry = false);
+    extern bool defend(gameent *d, aistate &b, const vec &pos, float guard = sightmin, float wander = sightmax, int walk = 1);
     extern void assist(gameent *d, aistate &b, vector<interest> &interests, bool all = false, bool force = false);
     extern bool parseinterests(gameent *d, aistate &b, vector<interest> &interests, bool override = false, bool ignore = false);
 

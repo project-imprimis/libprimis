@@ -817,7 +817,7 @@ struct ctfclientmode : clientmode
             }
         }
         if(b.type == ai::AIState_Interest && b.targtype == ai::AITravel_Node) return true; // we already did this..
-        if(randomnode(d, b, ai::SIGHTMIN, 1e16f))
+        if(randomnode(d, b, ai::sightmin, 1e16f))
         {
             d->ai->switchstate(b, ai::AIState_Interest, ai::AITravel_Node, d->ai->route[0]);
             return true;
@@ -878,7 +878,7 @@ struct ctfclientmode : clientmode
                     { // defend the flag
                         ai::interest &n = interests.add();
                         n.state = ai::AIState_Defend;
-                        n.node = ai::closestwaypoint(f.pos(), ai::SIGHTMIN, true);
+                        n.node = ai::closestwaypoint(f.pos(), ai::sightmin, true);
                         n.target = j;
                         n.targtype = ai::AITravel_Affinity;
                         n.score = pos.squaredist(f.pos())/100.f;
@@ -890,7 +890,7 @@ struct ctfclientmode : clientmode
                     { // attack the flag
                         ai::interest &n = interests.add();
                         n.state = ai::AIState_Pursue;
-                        n.node = ai::closestwaypoint(f.pos(), ai::SIGHTMIN, true);
+                        n.node = ai::closestwaypoint(f.pos(), ai::sightmin, true);
                         n.target = j;
                         n.targtype = ai::AITravel_Affinity;
                         n.score = pos.squaredist(f.pos());
