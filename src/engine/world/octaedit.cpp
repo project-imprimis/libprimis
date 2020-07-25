@@ -61,7 +61,7 @@ void boxs(int orient, vec o, const vec &s)
 void boxs3D(const vec &o, vec s, int g)
 {
     s.mul(g);
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 6; ++i) //for each face
     {
         boxs(i, o, s);
     }
@@ -619,6 +619,7 @@ static inline void copycube(const cube &src, cube &dst)
     dst.visible = 0;
     dst.merged = 0;
     dst.ext = NULL; // src cube is responsible for va destruction
+    //recursively apply to children
     if(src.children)
     {
         dst.children = newcubes(F_EMPTY);
@@ -896,6 +897,7 @@ editinfo *localedit = NULL;
 template<class B>
 static void packcube(cube &c, B &buf)
 {
+    //recursvely apply to children
     if(c.children)
     {
         buf.put(0xFF);
@@ -939,6 +941,7 @@ struct vslothdr
 
 static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
 {
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -948,7 +951,7 @@ static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
     }
     else
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             ushort index = c.texture[i];
             if(vslots.inrange(index) && vslots[index]->changed && used.find(index) < 0)
@@ -982,6 +985,7 @@ static void unpackcube(cube &c, B &buf)
     if(mat == 0xFF)
     {
         c.children = newcubes(F_EMPTY);
+        //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
             unpackcube(c.children[i], buf);
@@ -1026,6 +1030,7 @@ static vector<vslotmap> unpackingvslots;
 
 static void unpackvslots(cube &c, ucharbuf &buf)
 {
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -1035,7 +1040,7 @@ static void unpackvslots(cube &c, ucharbuf &buf)
     }
     else
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //one for each face
         {
             ushort tex = c.texture[i];
             for(int j = 0; j < unpackingvslots.length(); j++)
@@ -1430,6 +1435,7 @@ struct prefabmesh
 
 static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
 {
+    //recursively apply to children
     if(c.children)
     {
         neighborstack[++neighbordepth] = c.children;
@@ -1443,7 +1449,7 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
     else if(!IS_EMPTY(c))
     {
         int vis;
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             if((vis = visibletris(c, i, co, size)))
             {
@@ -1505,6 +1511,7 @@ void genprefabmesh(prefab &p)
 
     prefabmesh r;
     neighborstack[++neighbordepth] = worldroot;
+    //recursively apply to children
     for(int i = 0; i < 8; ++i)
     {
         genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
@@ -2173,7 +2180,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
             {
                 SOLID_FACES(c);
                 cube &o = blockcube(x, y, 1, sel, -sel.grid);
-                for(int i = 0; i < 6; ++i)
+                for(int i = 0; i < 6; ++i) //for each face
                 {
                     c.texture[i] = o.children ? DEFAULT_GEOM : o.texture[i];
                 }
@@ -2369,6 +2376,7 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 
 static void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep, VSlot *&findedit)
 {
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -2380,7 +2388,7 @@ static void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &
     static VSlot ms;
     if(orient<0)
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             VSlot *edit = remapvslot(c.texture[i], delta, ds);
             if(edit)
@@ -2423,7 +2431,7 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
 {
     if(orient<0)
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             c.texture[i] = tex;
         }
@@ -2444,6 +2452,7 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
         }
         c.texture[i] = tex;
     }
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -2918,13 +2927,14 @@ ICOMMAND(texloaded, "i", (int *tex), intret(slots.inrange(*tex) && slots[*tex]->
 
 void replacetexcube(cube &c, int oldtex, int newtex)
 {
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 6; ++i) //for each face
     {
         if(c.texture[i] == oldtex)
         {
             c.texture[i] = newtex;
         }
     }
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -2944,6 +2954,7 @@ void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local)
     {
         LOOP_SEL_XYZ(replacetexcube(c, oldtex, newtex));
     }
+    //recursively apply to children
     else
     {
         for(int i = 0; i < 8; ++i)
@@ -2969,6 +2980,12 @@ bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &bu
     return true;
 }
 
+/*replace: replaces one texture slot with the most recently queued one
+ * Arguments:
+ *  insel: toggles whether to apply to the whole map or just the part in selection
+ * Returns:
+ *  void
+ */
 void replace(bool insel)
 {
     if(noedit())
@@ -2989,10 +3006,25 @@ ICOMMAND(replace, "", (), replace(false));
 ICOMMAND(replacesel, "", (), replace(true));
 
 ////////// flip and rotate ///////////////
-static inline uint dflip(uint face) { return face==F_EMPTY ? face : 0x88888888 - (((face&0xF0F0F0F0)>>4) | ((face&0x0F0F0F0F)<<4)); }
-static inline uint cflip(uint face) { return ((face&0xFF00FF00)>>8) | ((face&0x00FF00FF)<<8); }
-static inline uint rflip(uint face) { return ((face&0xFFFF0000)>>16)| ((face&0x0000FFFF)<<16); }
-static inline uint mflip(uint face) { return (face&0xFF0000FF) | ((face&0x00FF0000)>>8) | ((face&0x0000FF00)<<8); }
+static inline uint dflip(uint face)
+{
+    return face==F_EMPTY ? face : 0x88888888 - (((face&0xF0F0F0F0)>>4) | ((face&0x0F0F0F0F)<<4));
+}
+
+static inline uint cflip(uint face)
+{
+    return ((face&0xFF00FF00)>>8) | ((face&0x00FF00FF)<<8);
+}
+
+static inline uint rflip(uint face)
+{
+    return ((face&0xFFFF0000)>>16)| ((face&0x0000FFFF)<<16);
+}
+
+static inline uint mflip(uint face)
+{
+    return (face&0xFF0000FF) | ((face&0x00FF0000)>>8) | ((face&0x0000FF00)<<8);
+}
 
 void flipcube(cube &c, int d)
 {
@@ -3002,6 +3034,7 @@ void flipcube(cube &c, int d)
     c.faces[R[d]] = rflip(c.faces[R[d]]);
     if(c.children)
     {
+        //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
             if(i&OCTA_DIM(d))
@@ -3016,22 +3049,37 @@ void flipcube(cube &c, int d)
     }
 }
 
+//reassign a quartet of cubes by rotating them 90 deg
 static inline void rotatequad(cube &a, cube &b, cube &c, cube &d)
 {
-    cube t = a; a = b; b = c; c = d; d = t;
+    cube t = a;
+         a = b;
+         b = c;
+         c = d;
+         d = t;
 }
 
-void rotatecube(cube &c, int d)   // rotates cube clockwise. see pics in cvs for help.
+/*rotatecube: rotates a cube by a given number of 90 degree increments
+ * Arguments:
+ *  c: the cube to rotate
+ *  d: the number of 90 degree clockwise increments to rotate by
+ * Returns:
+ *  void
+ *
+ * Note that the orientation of rotation is clockwise about the axis normal to
+ * the current selection's selected face (using the left-hand rule)
+ */
+void rotatecube(cube &c, int d)
 {
     c.faces[D[d]] = cflip(mflip(c.faces[D[d]]));
     c.faces[C[d]] = dflip(mflip(c.faces[C[d]]));
     c.faces[R[d]] = rflip(mflip(c.faces[R[d]]));
     swap(c.faces[R[d]], c.faces[C[d]]);
-
+    //reassign textures
     swap(c.texture[2*R[d]], c.texture[2*C[d]+1]);
     swap(c.texture[2*C[d]], c.texture[2*R[d]+1]);
     swap(c.texture[2*C[d]], c.texture[2*C[d]+1]);
-
+    //move child members
     if(c.children)
     {
         int row = OCTA_DIM(R[d]);
@@ -3043,6 +3091,7 @@ void rotatecube(cube &c, int d)   // rotates cube clockwise. see pics in cvs for
             c.children[i+col],
             c.children[i+col+row]
         );
+        //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
             rotatecube(c.children[i], d);
@@ -3050,6 +3099,14 @@ void rotatecube(cube &c, int d)   // rotates cube clockwise. see pics in cvs for
     }
 }
 
+/*mpflip: flips a selection across a plane defined by the selection's face
+ * Arguments:
+ *  sel: the selection to be fliped
+ *  local: whether to send a network message, true if created locally, false if
+ *         from another client
+ * Returns:
+ *  void
+ */
 void mpflip(selinfo &sel, bool local)
 {
     if(local)
@@ -3146,9 +3203,18 @@ static const struct { const char *name; int filter; } editmatfilters[] =
     { "solid", EditMatFlag_Solid },
     { "notsolid", EditMatFlag_NotSolid }
 };
-
+/*setmat: sets a cube's materials, given a material & filter to use
+ * Arguments:
+ *  c: the cube object to use
+ *  mat: material index to apply
+ *  matmask: material mask
+ *  filtermat: if nonzero, determines what existing mats to apply to
+ *  filtermask: filter material mask
+ *  filtergeom: type of geometry inside the cube (empty, solid, partially solid)
+ */
 void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)
 {
+    //recursively sets material for all child nodes
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -3205,6 +3271,16 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
     }
 }
 
+/*mpeditmat: selectively fills a selection with selected materials
+ * Arguments:
+ *  matid: material id to fill
+ *  filter: if nonzero, determines what existing mats to apply to
+ *  sel: selection of cubes to fill
+ *  local: whether to send a network message, true if created locally, false if
+ *         from another client
+ * Returns:
+ *  void
+ */
 void mpeditmat(int matid, int filter, selinfo &sel, bool local)
 {
     if(local)
@@ -3212,7 +3288,9 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
         game::edittrigger(sel, Edit_Mat, matid, filter);
     }
 
-    ushort filtermat = 0, filtermask = 0, matmask;
+    ushort filtermat = 0,
+           filtermask = 0,
+           matmask;
     int filtergeom = 0;
     if(filter >= 0)
     {
@@ -3240,6 +3318,13 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
     LOOP_SEL_XYZ(setmat(c, matid, matmask, filtermat, filtermask, filtergeom));
 }
 
+/*editmat: takes the globally defined selection and fills it with a material
+ * Arguments:
+ *  name: the name of the material (water, alpha, etc.)
+ *  filtername: the name of the existing material to apply to
+ * Returns:
+ *  void
+ */
 void editmat(char *name, char *filtername)
 {
     if(noedit())
@@ -3319,8 +3404,10 @@ void rendertexturepanel(int w, int h)
                         }
                     }
                 }
-                float sx = min(1.0f, tex->xs/(float)tex->ys), sy = min(1.0f, tex->ys/(float)tex->xs);
-                int x = w*1800/h-s-50, r = s;
+                float sx = min(1.0f, tex->xs/static_cast<float>(tex->ys)),
+                      sy = min(1.0f, tex->ys/static_cast<float>(tex->xs));
+                int x = w*1800/h-s-50,
+                    r = s;
                 vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
                 float xoff = vslot.offset.x, yoff = vslot.offset.y;
                 if(vslot.rotation)
@@ -3394,7 +3481,7 @@ void rendertexturepanel(int w, int h)
         resethudshader();
     }
 }
-
+//defines editing readonly variables, useful for the HUD
 #define EDITSTAT(name, type, val) \
     ICOMMAND(editstat##name, "", (), \
     { \
