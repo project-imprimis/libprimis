@@ -13,10 +13,13 @@ namespace game
     };
     vector<hitmsg> hits;
 
-//getweapon
-//returns the index of the weapon in hand
-//Arguments: none
-//Returns: index of weapon (zero-indexed)
+/*getweapon
+ *returns the index of the weapon in hand
+ * Arguments:
+ *  none
+ * Returns:
+ *  index of weapon (zero-indexed)
+ */
     ICOMMAND(getweapon, "", (), intret(player1->gunselect));
 
     void gunselect(int gun, gameent *d)
@@ -54,12 +57,14 @@ namespace game
             playsound(Sound_NoAmmo);
         }
     }
-//nextweapon
-//changes player to an adjacent weapon, forwards if no dir is passed
-//Arguments:
-// int *dir: direction (backwards if negative, forwards if positive)
-// int *force: forces change if 1
-//Returns: none
+/*nextweapon
+ *changes player to an adjacent weapon, forwards if no dir is passed
+ * Arguments:
+ *  int *dir: direction (backwards if negative, forwards if positive)
+ *  int *force: forces change if 1
+ * Returns:
+ *  void
+ */
     ICOMMAND(nextweapon, "ii", (int *dir, int *force), nextweapon(*dir, *force!=0));
 
     int getweapon(const char *name)
@@ -563,18 +568,25 @@ namespace game
             }
         }
     }
-
+    /*projdamage: checks if projectile damages a particular dynent
+     * Arguments:
+     *  o: dynent (player ent) to check damage for
+     *  p: projectile object to attempt to damage with
+     *  v: the displacement vector that the projectile is currently stepping over
+     * Returns:
+     *  (bool) true if projectile damages dynent, false otherwise
+     */
     bool projdamage(dynent *o, projectile &p, const vec &v)
     {
-        if(o->state!=ClientState_Alive)
+        if(o->state!=ClientState_Alive) //do not beat dead horses (or clients)
         {
             return false;
         }
-        if(!intersect(o, p.o, v, attacks[p.atk].margin))
+        if(!intersect(o, p.o, v, attacks[p.atk].margin)) //do not damange unless collided
         {
             return false;
         }
-        projsplash(p, v, o);
+        projsplash(p, v, o); //check splash
         vec dir;
         projdist(o, dir, v, p.dir);
         hit(attacks[p.atk].damage, o, p.owner, dir, p.atk, 0);
@@ -723,6 +735,14 @@ namespace game
         }
     }
 
+    /*railhit: creates a hitscan beam between points
+     * Arguments:
+     *  from: the origin location
+     *  to: the destination location
+     *  stain: whether to stain the hit point
+     * Returns:
+     *  void
+     */
     void railhit(const vec &from, const vec &to, bool stain = true)
     {
         vec dir = vec(from).sub(to).safenormalize();
