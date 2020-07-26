@@ -483,8 +483,8 @@ bool checkquery(occludequery *query, bool nowait)
                 return false;
             }
         }
-     
-        GLuint fragments;   
+
+        GLuint fragments;
         glGetQueryObjectuiv_(query->id, GL_QUERY_RESULT, &fragments);
         query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? static_cast<int>(fragments) : oqfrags;
     }
@@ -909,9 +909,18 @@ int calcspheresidemask(const vec &p, float radius, float bias)
 {
     // p is in the cubemap's local coordinate system
     // bias = border/(size - border)
-    float dxyp = p.x + p.y, dxyn = p.x - p.y, axyp = fabs(dxyp), axyn = fabs(dxyn),
-          dyzp = p.y + p.z, dyzn = p.y - p.z, ayzp = fabs(dyzp), ayzn = fabs(dyzn),
-          dzxp = p.z + p.x, dzxn = p.z - p.x, azxp = fabs(dzxp), azxn = fabs(dzxn);
+    float dxyp = p.x + p.y,
+          dxyn = p.x - p.y,
+          axyp = fabs(dxyp),
+          axyn = fabs(dxyn),
+          dyzp = p.y + p.z,
+          dyzn = p.y - p.z,
+          ayzp = fabs(dyzp),
+          ayzn = fabs(dyzn),
+          dzxp = p.z + p.x,
+          dzxn = p.z - p.x,
+          azxp = fabs(dzxp),
+          azxn = fabs(dzxn);
     int mask = 0x3F;
     radius *= SQRT2;
     if(axyp > bias*axyn + radius)
@@ -1073,7 +1082,10 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
     // check if frustum corners/origin cross plane sides
     // infinite version, assumes frustum corners merely give direction and extend to infinite distance
     vec p = vec(camera1->o).sub(lightpos).div(lightradius);
-    float dp = p.x + p.y, dn = p.x - p.y, ap = fabs(dp), an = fabs(dn);
+    float dp = p.x + p.y,
+          dn = p.x - p.y,
+          ap = fabs(dp),
+          an = fabs(dn);
     masks[0] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
     masks[1] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
     dp = p.y + p.z, dn = p.y - p.z,
@@ -1149,8 +1161,10 @@ VAR(smdistcull, 0, 1, 1);
 VAR(smnodraw, 0, 0, 1);
 
 vec shadoworigin(0, 0, 0), shadowdir(0, 0, 0);
-float shadowradius = 0, shadowbias = 0;
-int shadowside = 0, shadowspot = 0;
+float shadowradius = 0,
+      shadowbias = 0;
+int shadowside = 0,
+    shadowspot = 0;
 
 vtxarray *shadowva = NULL;
 
@@ -3004,7 +3018,7 @@ static void renderdecalbatches(decalrenderer &cur, int pass)
         {
             updateshader(cur);
         }
- 
+
         renderdecalbatch(cur, pass, b);
     }
 
