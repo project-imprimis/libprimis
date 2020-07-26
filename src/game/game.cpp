@@ -1043,11 +1043,6 @@ namespace game
         }
     }
 
-    void drawhudicons(gameent *d)
-    {
-
-    }
-
     void gameplayhud(int w, int h)
     {
         pushhudscale(h/1800.0f);
@@ -1081,10 +1076,6 @@ namespace game
         gameent *d = hudplayer();
         if(d->state!=ClientState_Editing)
         {
-            if(d->state!=ClientState_Spectator)
-            {
-                drawhudicons(d);
-            }
             if(cmode)
             {
                 cmode->drawhud(d, w, h);
