@@ -1725,7 +1725,10 @@ namespace ai
             }
             if(!intermission)
             {
-                if(d->ragdoll) cleanragdoll(d);
+                if(d->ragdoll)
+                {
+                    cleanragdoll(d);
+                }
                 moveplayer(d, 10, true);
                 if(allowmove && !b.idle)
                 {
@@ -1919,7 +1922,8 @@ namespace ai
     {
         if(aidebug > 1)
         {
-            int total = 0, alive = 0;
+            int total = 0,
+                alive = 0;
             for(int i = 0; i < players.length(); i++)
             {
                 if(players[i]->ai)

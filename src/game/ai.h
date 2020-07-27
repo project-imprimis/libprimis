@@ -36,7 +36,10 @@ namespace ai
         waypoint() {}
         waypoint(const vec &o, int weight = 0) : o(o), weight(weight), route(0) { memset(links, 0, sizeof(links)); }
 
-        int score() const { return int(curscore) + int(estscore); }
+        int score() const
+        {
+            return static_cast<int>(curscore) + static_cast<int>(estscore);
+        }
 
         int find(int wp)
         {
@@ -105,7 +108,10 @@ namespace ai
             for(int i = 0; i < avoid.obstacles.length(); i++)
             {
                 obstacle &o = avoid.obstacles[i];
-                if(obstacles.empty() || o.owner != obstacles.last().owner) add(o.owner, o.above);
+                if(obstacles.empty() || o.owner != obstacles.last().owner)
+                {
+                    add(o.owner, o.above);
+                }
                 obstacles.last().numwaypoints += o.numwaypoints;
             }
         }
