@@ -171,7 +171,10 @@ void printent(extentity &e, char *buf, int len)
     {
         case EngineEnt_Particles:
         {
-            if(printparticles(e, buf, len)) return;
+            if(printparticles(e, buf, len))
+            {
+                return;
+            }
             break;
         }
         default:
@@ -226,7 +229,10 @@ void enttype(char *type, int *numargs)
     if(*numargs >= 1)
     {
         int typeidx = findtype(type);
-        if(typeidx != EngineEnt_Empty) GROUP_EDIT(e.type = typeidx);
+        if(typeidx != EngineEnt_Empty)
+        {
+            GROUP_EDIT(e.type = typeidx);
+        }
     }
     else ENT_FOCUS(efocus,
     {
@@ -336,7 +342,10 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
         {
             d->o = ents[attempt]->o;
             d->yaw = ents[attempt]->attr1;
-            if(entinmap(d, true)) break;
+            if(entinmap(d, true))
+            {
+                break;
+            }
             attempt = findentity(EngineEnt_Playerstart, attempt+1, -1, tag);
             if(attempt<0 || attempt==pick)
             {
@@ -529,7 +538,10 @@ void entdrag(const vec &ray)
         c = (entselsnap ? g[C[d]] : dest[C[d]]) - e.o[C[d]];
     );
 
-    if(entmoving==1) makeundoent();
+    if(entmoving==1)
+    {
+        makeundoent();
+    }
     GROUP_EDIT_PURE(e.o[R[d]] += r; e.o[C[d]] += c);
     entmoving = 2;
 }
@@ -592,7 +604,9 @@ void renderentarrow(const extentity &e, const vec &dir, float radius)
         return;
     }
     float arrowsize = min(radius/8, 0.5f);
-    vec target = vec(dir).mul(radius).add(e.o), arrowbase = vec(dir).mul(radius - arrowsize).add(e.o), spoke;
+    vec target = vec(dir).mul(radius).add(e.o),
+        arrowbase = vec(dir).mul(radius - arrowsize).add(e.o),
+        spoke;
     spoke.orthogonal(dir);
     spoke.normalize();
     spoke.mul(arrowsize);
@@ -829,7 +843,10 @@ static void renderentbox(const vec &eo, vec es)
 
 void renderentselection(const vec &o, const vec &ray, bool entmoving)
 {
-    if(noentedit() || (entgroup.empty() && enthover < 0)) return;
+    if(noentedit() || (entgroup.empty() && enthover < 0))
+    {
+        return;
+    }
     vec eo, es;
 
     if(entgroup.length())
@@ -1058,7 +1075,9 @@ bool dropentity(entity &e, int drop = -1)
         case 1:
         {
             if(e.type != EngineEnt_Light && e.type != EngineEnt_Spotlight)
+            {
                 dropenttofloor(&e);
+            }
             break;
         }
         case 2:
@@ -1162,9 +1181,9 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
                 if(!e.attr2 && !e.attr3 && !e.attr4)
                 {
                     //place decals at camera orient
-                    e.attr2 = (int)camera1->yaw;
-                    e.attr3 = (int)camera1->pitch;
-                    e.attr4 = (int)camera1->roll;
+                    e.attr2 = static_cast<int>(camera1->yaw);
+                    e.attr3 = static_cast<int>(camera1->pitch);
+                    e.attr4 = static_cast<int>(camera1->roll);
                 }
                 break;
             }

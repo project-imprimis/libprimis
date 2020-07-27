@@ -522,7 +522,6 @@ namespace game
         }
     });
 
-
     bool ismaster(int cn)
     {
         gameent *d = getclient(cn);
@@ -1012,7 +1011,7 @@ namespace game
                     {
                         packvslot(messages, arg1);
                     }
-                    *(ushort *)&messages[offset-2] = ushort(messages.length() - offset);
+                    *reinterpret_cast<ushort *>(&messages[offset-2]) = static_cast<ushort>(messages.length() - offset);
                 }
                 break;
             }
@@ -1035,7 +1034,7 @@ namespace game
                     {
                         packvslot(messages, arg2);
                     }
-                    *(ushort *)&messages[offset-2] = ushort(messages.length() - offset);
+                    *reinterpret_cast<ushort *>(&messages[offset-2]) = static_cast<ushort>(messages.length() - offset);
                 }
                 break;
             }
@@ -1055,7 +1054,7 @@ namespace game
                     messages.pad(2);
                     int offset = messages.length();
                     packvslot(messages, vs);
-                    *(ushort *)&messages[offset-2] = ushort(messages.length() - offset);
+                    *reinterpret_cast<ushort *>(&messages[offset-2]) = static_cast<ushort>(messages.length() - offset);
                 }
                 break;
             }
@@ -1524,7 +1523,10 @@ namespace game
         {
             p.reliable();
             entities::putitems(p);
-            if(cmode) cmode->senditems(p);
+            if(cmode)
+            {
+                cmode->senditems(p);
+            }
             senditemstoserver = false;
         }
         if(messages.length())
@@ -1657,7 +1659,8 @@ namespace game
                         }
                         o[k] = n/DMF;
                     }
-                    int dir = p.get(); dir |= p.get()<<8;
+                    int dir = p.get();
+                    dir |= p.get()<<8;
                     yaw = dir%360;
                     pitch = clamp(dir/360, 0, 180)-90;
                     roll = clamp(static_cast<int>(p.get()), 0, 180)-90;
@@ -1671,7 +1674,11 @@ namespace game
                     vel.mul(mag/DVELF);
                     if(flags&(1<<4))
                     {
-                        mag = p.get(); if(flags&(1<<5)) mag |= p.get()<<8;
+                        mag = p.get();
+                        if(flags&(1<<5))
+                        {
+                            mag |= p.get()<<8;
+                        }
                         if(flags&(1<<6))
                         {
                             dir = p.get(); dir |= p.get()<<8;
@@ -1720,7 +1727,10 @@ namespace game
                         d->roll = oldroll;
                         (d->deltapos = oldpos).sub(d->newpos);
                         d->deltayaw = oldyaw - d->newyaw;
-                        if(d->deltayaw > 180) d->deltayaw -= 360;
+                        if(d->deltayaw > 180)
+                        {
+                            d->deltayaw -= 360;
+                        }
                         else if(d->deltayaw < -180)
                         {
                             d->deltayaw += 360;
@@ -1833,7 +1843,8 @@ namespace game
             }
             case NetMsg_ServerInfo:                   // welcome messsage from the server
             {
-                int mycn = getint(p), prot = getint(p);
+                int mycn = getint(p),
+                    prot = getint(p);
                 if(prot!=PROTOCOL_VERSION)
                 {
                     conoutf(Console_Error, "you are using a different game protocol (you: %d, server: %d)", PROTOCOL_VERSION, prot);
@@ -2422,7 +2433,7 @@ namespace game
                         {
                             return;
                         }
-                        int extra = *(const ushort *)p.pad(2);
+                        int extra = *reinterpret_cast<const ushort *>(p.pad(2));
                         if(p.remaining() < extra)
                         {
                             return;
@@ -2485,7 +2496,7 @@ namespace game
                         {
                             return;
                         }
-                        int extra = *(const ushort *)p.pad(2);
+                        int extra = *reinterpret_cast<const ushort *>(p.pad(2));
                         if(p.remaining() < extra)
                         {
                             return;
@@ -2518,7 +2529,7 @@ namespace game
                         {
                             return;
                         }
-                        int extra = *(const ushort *)p.pad(2);
+                        int extra = *reinterpret_cast<const ushort *>(p.pad(2));
                         if(p.remaining() < extra)
                         {
                             return;
@@ -2721,7 +2732,8 @@ namespace game
             }
             case NetMsg_Spectator:
             {
-                int sn = getint(p), val = getint(p);
+                int sn  = getint(p),
+                    val = getint(p);
                 gameent *s;
                 if(sn==player1->clientnum)
                 {
@@ -3097,4 +3109,3 @@ namespace game
     }
     COMMAND(gotosel, "");
 }
-
