@@ -576,7 +576,8 @@ struct skelzonekey
 
     void subtract(const skelzonekey &o)
     {
-        int len = 0, j = 0;
+        int len = 0,
+            j   = 0;
         for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
         {
         retry:
@@ -731,7 +732,11 @@ static inline bool htcmp(const skelzonekey &x, const skelzoneinfo &y)
 
 static inline uint hthash(const skelzonekey &k)
 {
-    union { uint i[3]; uchar b[12]; } conv;
+    union
+    {
+        uint i[3];
+        uchar b[12];
+    } conv;
     memcpy(conv.b, k.bones, sizeof(conv.b));
     return conv.i[0]^conv.i[1]^conv.i[2];
 }
@@ -1004,7 +1009,8 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             }
         }
     }
-    int numlinks = 0, numtris = 0;
+    int numlinks = 0,
+        numtris = 0;
     for(int i = info.length(); --i >=0;) //note reverse iteration
     {
         skelzoneinfo &zi = *info[i];
