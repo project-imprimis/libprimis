@@ -5,7 +5,10 @@ struct elementset
     ushort texture;
     union
     {
-        struct { uchar orient, layer; };
+        struct
+        {
+            uchar orient, layer;
+        };
         ushort reuse;
     };
     ushort length, minvert, maxvert;
@@ -24,11 +27,33 @@ struct vertinfo
 {
     ushort x, y, z, norm;
 
-    void setxyz(ushort a, ushort b, ushort c) { x = a; y = b; z = c; }
-    void setxyz(const ivec &v) { setxyz(v.x, v.y, v.z); }
-    void set(ushort a, ushort b, ushort c, ushort n = 0) { setxyz(a, b, c); norm = n; }
-    void set(const ivec &v, ushort n = 0) { set(v.x, v.y, v.z, n); }
-    ivec getxyz() const { return ivec(x, y, z); }
+    void setxyz(ushort a, ushort b, ushort c)
+    {
+        x = a;
+        y = b;
+        z = c;
+    }
+
+    void setxyz(const ivec &v)
+    {
+        setxyz(v.x, v.y, v.z);
+    }
+
+    void set(ushort a, ushort b, ushort c, ushort n = 0)
+    {
+        setxyz(a, b, c);
+        norm = n;
+    }
+
+    void set(const ivec &v, ushort n = 0)
+    {
+        set(v.x, v.y, v.z, n);
+    }
+
+    ivec getxyz() const
+    {
+        return ivec(x, y, z);
+    }
 };
 
 enum
@@ -44,10 +69,25 @@ struct surfaceinfo
 {
     uchar verts, numverts;
 
-    int totalverts() const { return numverts&Face_MaxVerts; }
-    bool used() const { return (numverts&~BlendLayer_Top) != 0; }
-    void clear() { numverts = (numverts&Face_MaxVerts) | BlendLayer_Top; }
-    void brighten() { clear(); }
+    int totalverts() const
+    {
+        return numverts&Face_MaxVerts;
+    }
+
+    bool used() const
+    {
+        return (numverts&~BlendLayer_Top) != 0;
+    }
+
+    void clear()
+    {
+        numverts = (numverts&Face_MaxVerts) | BlendLayer_Top;
+    }
+
+    void brighten()
+    {
+        clear();
+    }
 };
 
 const surfaceinfo topsurface = {0, BlendLayer_Top};
@@ -118,7 +158,18 @@ struct vtxarray
     ushort minvert, maxvert; // DRE info
     elementset *texelems, *decalelems;   // List of element indices sets (range) per texture
     materialsurface *matbuf; // buffer of material surfaces
-    int verts, tris, texs, alphabacktris, alphaback, alphafronttris, alphafront, refracttris, refract, texmask, sky, matsurfs, matmask, distance, rdistance, dyntexs, decaltris, decaltexs;
+    int verts,
+        tris,
+        texs,
+        alphabacktris, alphaback,
+        alphafronttris, alphafront,
+        refracttris, refract,
+        texmask,
+        sky,
+        matsurfs, matmask,
+        distance, rdistance,
+        dyntexs, //dynamic if vscroll presentss
+        decaltris, decaltexs;
     ivec o;
     int size;                // location and size of cube.
     ivec geommin, geommax;   // BB of geom
@@ -170,7 +221,10 @@ struct cubeext
     int tjoints;             // linked list of t-joints
     uchar maxverts;          // allocated space for verts
 
-    vertinfo *verts() { return (vertinfo *)(this+1); }
+    vertinfo *verts()
+    {
+        return reinterpret_cast<vertinfo *>(this+1);
+    }
 };
 
 struct cube
@@ -197,12 +251,24 @@ struct selinfo
 {
     int corner;
     int cx, cxs, cy, cys;
-    ivec o, s; //two corners of the selection
+    ivec o, s; //two corners of the selection (s is an _offset_ vector
     int grid, orient;
     selinfo() : corner(0), cx(0), cxs(0), cy(0), cys(0), o(0, 0, 0), s(0, 0, 0), grid(8), orient(0) {}
-    int size() const    { return s.x*s.y*s.z; }
-    int us(int d) const { return s[d]*grid; }
-    bool operator==(const selinfo &sel) const { return o==sel.o && s==sel.s && grid==sel.grid && orient==sel.orient; }
+    int size() const
+    {
+        return s.x*s.y*s.z;
+    }
+
+    int us(int d) const
+    {
+        return s[d]*grid;
+    }
+
+    bool operator==(const selinfo &sel) const
+    {
+        return o==sel.o && s==sel.s && grid==sel.grid && orient==sel.orient;
+    }
+
     bool validate()
     {
         extern int worldsize;
@@ -242,8 +308,16 @@ struct block3
     int grid, orient;
     block3() {}
     block3(const selinfo &sel) : o(sel.o), s(sel.s), grid(sel.grid), orient(sel.orient) {}
-    cube *c()           { return (cube *)(this+1); }
-    int size()    const { return s.x*s.y*s.z; }
+
+    cube *c()
+    {
+        return reinterpret_cast<cube *>(this+1);
+    }
+
+    int size() const
+    {
+        return s.x*s.y*s.z;
+    }
 };
 
 struct editinfo
@@ -252,23 +326,39 @@ struct editinfo
     editinfo() : copy(NULL) {}
 };
 
-struct undoent   { int i; entity e; };
+struct undoent
+{
+    int i;
+    entity e;
+};
+
 struct undoblock // undo header, all data sits in payload
 {
     undoblock *prev, *next;
     int size, timestamp, numents; // if numents is 0, is a cube undo record, otherwise an entity undo record
 
-    block3 *block() { return (block3 *)(this + 1); }
+    block3 *block()
+    {
+        return reinterpret_cast<block3 *>(this + 1);
+    }
+
     uchar *gridmap()
     {
         block3 *ub = block();
-        return (uchar *)(ub->c() + ub->size());
+        return reinterpret_cast<uchar *>(ub->c() + ub->size());
     }
-    undoent *ents() { return (undoent *)(this + 1); }
+
+    undoent *ents()
+    {
+        return reinterpret_cast<undoent *>(this + 1);
+    }
 };
 
 extern cube *worldroot;             // the world data. only a ptr to 8 cubes (ie: like cube.children above)
-extern int wtris, wverts, vtris, vverts, glde, gbatches, rplanes;
+extern int wtris, wverts,
+           vtris, vverts,
+           glde, gbatches,
+           rplanes;
 extern int allocnodes, allocva, selchildcount, selchildmat;
 
 const uint F_EMPTY = 0;             // all edges in the range (0,0)
@@ -295,12 +385,30 @@ inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const iv
 {
     uchar p = 0xFF; // bitmask of possible collisions with octants. 0 bit = 0 octant, etc
     ivec mid = ivec(o).add(size);
-    if(mid.z <= bbmin.z)      p &= 0xF0; // not in a -ve Z octant
-    else if(mid.z >= bbmax.z) p &= 0x0F; // not in a +ve Z octant
-    if(mid.y <= bbmin.y)      p &= 0xCC; // not in a -ve Y octant
-    else if(mid.y >= bbmax.y) p &= 0x33; // etc..
-    if(mid.x <= bbmin.x)      p &= 0xAA;
-    else if(mid.x >= bbmax.x) p &= 0x55;
+    if(mid.z <= bbmin.z)
+    {
+        p &= 0xF0; // not in a -ve Z octant
+    }
+    else if(mid.z >= bbmax.z)
+    {
+        p &= 0x0F; // not in a +ve Z octant
+    }
+    if(mid.y <= bbmin.y)
+    {
+        p &= 0xCC; // not in a -ve Y octant
+    }
+    else if(mid.y >= bbmax.y)
+    {
+        p &= 0x33; // etc..
+    }
+    if(mid.x <= bbmin.x)
+    {
+        p &= 0xAA;
+    }
+    else if(mid.x >= bbmax.x)
+    {
+        p &= 0x55;
+    }
     return p;
 }
 
