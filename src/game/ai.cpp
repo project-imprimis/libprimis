@@ -16,19 +16,19 @@ namespace ai
     VAR(aidebug, 0, 0, 6);
     VAR(aiforcegun, -1, -1, Gun_NumGuns-1);
 
-    ICOMMAND(addbot, "s", (char *s), addmsg(NetMsg_AddBot, "ri", *s ? clamp(parseint(s), 1, 101) : -1));
+    ICOMMAND(addbot, "s", (char *s), addmsg(NetMsg_AddBot, "ri", *s ? std::clamp(parseint(s), 1, 101) : -1));
     ICOMMAND(delbot, "", (), addmsg(NetMsg_DelBot, "r"));
     ICOMMAND(botlimit, "i", (int *n), addmsg(NetMsg_BotLimit, "ri", *n));
     ICOMMAND(botbalance, "i", (int *n), addmsg(NetMsg_BotBalance, "ri", *n));
 
     float viewdist(int x)
     {
-        return x <= 100 ? clamp((sightmin+(sightmax-sightmin))/100.f*static_cast<float>(x), static_cast<float>(sightmin), static_cast<float>(fog)) : static_cast<float>(fog);
+        return x <= 100 ? std::clamp((sightmin+(sightmax-sightmin))/100.f*static_cast<float>(x), static_cast<float>(sightmin), static_cast<float>(fog)) : static_cast<float>(fog);
     }
 
     float viewfieldx(int x)
     {
-        return x <= 100 ? clamp((viewmin+(viewmax-viewmin))/100.f*static_cast<float>(x), static_cast<float>(viewmin), static_cast<float>(viewmax)) : static_cast<float>(viewmax);
+        return x <= 100 ? std::clamp((viewmin+(viewmax-viewmin))/100.f*static_cast<float>(x), static_cast<float>(viewmin), static_cast<float>(viewmax)) : static_cast<float>(viewmax);
     }
 
     float viewfieldy(int x)
@@ -113,7 +113,7 @@ namespace ai
     { // add margins of error
         if(attackrange(d, atk, dist) || (d->skill <= 100 && !randomint(d->skill)))
         {
-            float skew = clamp(static_cast<float>(lastmillis-d->ai->enemymillis)/static_cast<float>((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
+            float skew = std::clamp(static_cast<float>(lastmillis-d->ai->enemymillis)/static_cast<float>((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
                 offy = yaw-d->yaw, offp = pitch-d->pitch;
             if(offy > 180)
             {
@@ -1526,7 +1526,7 @@ namespace ai
             {
                 yaw -= 360.0f;
             }
-            int r = clamp(static_cast<int>(floor((yaw+22.5f)/45.0f))&7, 0, 7);
+            int r = std::clamp(static_cast<int>(floor((yaw+22.5f)/45.0f))&7, 0, 7);
             const aimdir &ad = aimdirs[r];
             d->move = ad.move;
             d->strafe = ad.strafe;

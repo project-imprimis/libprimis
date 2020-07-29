@@ -1750,7 +1750,7 @@ struct lightinfo
         if(e.attached && e.attached->type == EngineEnt_Spotlight)
         {
             dir = vec(e.attached->o).sub(e.o).normalize();
-            spot = clamp(static_cast<int>(e.attached->attr1), 1, 89);
+            spot = std::clamp(static_cast<int>(e.attached->attr1), 1, 89);
             calcspot();
         }
         calcscissor();
@@ -3773,8 +3773,8 @@ void collectlights()
                     h = 2;
                     lod = smcubeprec;
                 }
-                lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-                int size = clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+                lod *= std::clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
+                int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
                 w *= size;
                 h *= size;
                 if(mismatched)
@@ -4000,8 +4000,8 @@ void packlights()
                 h = 2;
                 lod = smcubeprec;
             }
-            lod *= clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-            int size = clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+            lod *= std::clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
+            int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
             w *= size;
             h *= size;
             ushort x = USHRT_MAX, y = USHRT_MAX;
@@ -4112,7 +4112,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
         border = 0;
         lod = smspotprec;
         spotloc = e.attached->o;
-        spotangle = clamp(static_cast<int>(e.attached->attr1), 1, 89);
+        spotangle = std::clamp(static_cast<int>(e.attached->attr1), 1, 89);
     }
     else
     {
@@ -4125,7 +4125,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
     }
 
     lod *= smminsize;
-    int size = clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+    int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
     bias = border / static_cast<float>(size - border);
 
     return type;
@@ -4754,10 +4754,10 @@ void shademodelpreview(int x, int y, int w, int h, bool background, bool scissor
 
     if(scissor) glEnable(GL_SCISSOR_TEST);
 
-    int sx = clamp(x, 0, hudw),
-        sy = clamp(y, 0, hudh),
-        sw = clamp(x + w, 0, hudw) - sx,
-        sh = clamp(y + h, 0, hudh) - sy;
+    int sx = std::clamp(x, 0, hudw),
+        sy = std::clamp(y, 0, hudh),
+        sw = std::clamp(x + w, 0, hudw) - sx,
+        sh = std::clamp(y + h, 0, hudh) - sy;
     float sxk = 2.0f/hudw,
           syk = 2.0f/hudh,
           txk = vieww/static_cast<float>(w),

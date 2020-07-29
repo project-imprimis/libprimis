@@ -296,8 +296,8 @@ namespace UI
         void setalign(int xalign, int yalign)
         {
             adjust &= ~ALIGN_MASK;
-            adjust |= (clamp(xalign, -2, 1)+2)<<ALIGN_HSHIFT;
-            adjust |= (clamp(yalign, -2, 1)+2)<<ALIGN_VSHIFT;
+            adjust |= (std::clamp(xalign, -2, 1)+2)<<ALIGN_HSHIFT;
+            adjust |= (std::clamp(yalign, -2, 1)+2)<<ALIGN_VSHIFT;
         }
 
         void setclamp(int left, int right, int top, int bottom)
@@ -465,8 +465,8 @@ namespace UI
                 float o##y = cy - o->y; \
                 if(!inside) \
                 { \
-                    o##x = clamp(o##x, 0.0f, o->w); \
-                    o##y = clamp(o##y, 0.0f, o->h); \
+                    o##x = std::clamp(o##x, 0.0f, o->w); \
+                    o##y = std::clamp(o##y, 0.0f, o->h); \
                     body; \
                 } \
                 else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \
@@ -789,10 +789,10 @@ namespace UI
             sy2 = static_cast<int>(floor(s2.y*hudh + 0.5f));
             if(clip)
             {
-                sx1 = clamp(sx1, 0, hudw);
-                sy1 = clamp(sy1, 0, hudh);
-                sx2 = clamp(sx2, 0, hudw);
-                sy2 = clamp(sy2, 0, hudh);
+                sx1 = std::clamp(sx1, 0, hudw);
+                sy1 = std::clamp(sy1, 0, hudh);
+                sx2 = std::clamp(sx2, 0, hudw);
+                sy2 = std::clamp(sy2, 0, hudh);
             }
         }
 
@@ -1667,8 +1667,8 @@ namespace UI
             loadalphamask(tex);
             if(!tex->alphamask) return true;
         }
-        int tx = clamp(static_cast<int>(x*tex->xs), 0, tex->xs-1),
-            ty = clamp(static_cast<int>(y*tex->ys), 0, tex->ys-1);
+        int tx = std::clamp(static_cast<int>(x*tex->xs), 0, tex->xs-1),
+            ty = std::clamp(static_cast<int>(y*tex->ys), 0, tex->ys-1);
         if(tex->alphamask[ty*((tex->xs+7)/8) + tx/8] & (1<<(tx%8)))
         {
             return true;
@@ -2679,12 +2679,12 @@ namespace UI
 
         void sethscroll(float hscroll)
         {
-            offsetx = clamp(hscroll, 0.0f, hlimit());
+            offsetx = std::clamp(hscroll, 0.0f, hlimit());
         }
 
         void setvscroll(float vscroll)
         {
-            offsety = clamp(vscroll, 0.0f, vlimit());
+            offsety = std::clamp(vscroll, 0.0f, vlimit());
         }
 
         void scrollup(float cx, float cy);
@@ -3025,7 +3025,7 @@ namespace UI
         {
             case Id_Var:
             {
-                setvarchecked(id, static_cast<int>(clamp(val, double(INT_MIN), double(INT_MAX))));
+                setvarchecked(id, static_cast<int>(std::clamp(val, double(INT_MIN), double(INT_MAX))));
                 break;
             }
             case Id_FloatVar:
@@ -3127,7 +3127,7 @@ namespace UI
             double newval = val + dir*vstep;
             newval += vstep * (newval < 0 ? -0.5 : 0.5);
             newval -= fmod(newval, vstep);
-            newval = clamp(newval, min(vmin, vmax), max(vmin, vmax));
+            newval = std::clamp(newval, min(vmin, vmax), max(vmin, vmax));
             if(val != newval)
             {
                 changeval(newval);
@@ -3245,7 +3245,7 @@ namespace UI
             {
                 return;
             }
-            float offset = w > button->w ? clamp((cx - button->w/2)/(w - button->w), 0.0f, 1.0f) : 0.0f;
+            float offset = w > button->w ? std::clamp((cx - button->w/2)/(w - button->w), 0.0f, 1.0f) : 0.0f;
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
             if(step != bstep)
@@ -3292,7 +3292,7 @@ namespace UI
             {
                 return;
             }
-            float offset = h > button->h ? clamp((cy - button->h/2)/(h - button->h), 0.0f, 1.0f) : 0.0f;
+            float offset = h > button->h ? std::clamp((cy - button->h/2)/(h - button->h), 0.0f, 1.0f) : 0.0f;
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
             if(step != bstep)
@@ -4527,8 +4527,8 @@ namespace UI
     bool movecursor(int dx, int dy)
     {
         if(!hascursor()) return false;
-        cursorx = clamp(cursorx + dx*uisensitivity/hudw, 0.0f, 1.0f);
-        cursory = clamp(cursory + dy*uisensitivity/hudh, 0.0f, 1.0f);
+        cursorx = std::clamp(cursorx + dx*uisensitivity/hudw, 0.0f, 1.0f);
+        cursory = std::clamp(cursory + dy*uisensitivity/hudh, 0.0f, 1.0f);
         return true;
     }
 

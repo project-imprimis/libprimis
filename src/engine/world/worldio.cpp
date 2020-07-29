@@ -758,7 +758,7 @@ void loadvslot(stream *f, VSlot &vs, int changed)
     }
     if(vs.changed & (1<<VSLOT_ROTATION)) //rotate <index>
     {
-        vs.rotation = clamp(f->get<int>(), 0, 7);
+        vs.rotation = std::clamp(f->get<int>(), 0, 7);
     }
     /*
      * angle uses three parameters to prebake sine/cos values for the angle it

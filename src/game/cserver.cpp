@@ -1087,7 +1087,7 @@ namespace server
 
     void prunedemos(int extra = 0)
     {
-        int n = clamp(demos.length() + extra - maxdemos, 0, demos.length());
+        int n = std::clamp(demos.length() + extra - maxdemos, 0, demos.length());
         if(n <= 0)
         {
             return;
@@ -1357,7 +1357,7 @@ namespace server
 
     void changegamespeed(int val, clientinfo *ci = NULL)
     {
-        val = clamp(val, 10, 1000);
+        val = std::clamp(val, 10, 1000);
         if(gamespeed==val) return;
         gamespeed = val;
         sendf(-1, 1, "riii", NetMsg_GameSpeed, gamespeed, ci ? ci->clientnum : -1);
@@ -3178,7 +3178,7 @@ namespace server
                         mag |= p.get()<<8;
                     }
                     int dir = p.get(); dir |= p.get()<<8;
-                    vec vel = vec((dir%360)*RAD, (clamp(dir/360, 0, 180)-90)*RAD).mul(mag/DVELF);
+                    vec vel = vec((dir%360)*RAD, (std::clamp(dir/360, 0, 180)-90)*RAD).mul(mag/DVELF);
                     if(flags&(1<<4))
                     {
                         p.get();
@@ -4562,7 +4562,7 @@ namespace server
             {
                 owner->bots.add(ci);
             }
-            ci->state.skill = skill <= 0 ? randomint(50) + 51 : clamp(skill, 1, 101);
+            ci->state.skill = skill <= 0 ? randomint(50) + 51 : std::clamp(skill, 1, 101);
             clients.add(ci);
             ci->state.lasttimeplayed = lastmillis;
             copystring(ci->name, "bot", MAXNAMELEN+1);
@@ -4775,7 +4775,7 @@ namespace server
             {
                 return;
             }
-            botlimit = clamp(limit, 0, maxbots);
+            botlimit = std::clamp(limit, 0, maxbots);
             dorefresh = true;
             DEF_FORMAT_STRING(msg, "bot limit is now %d", botlimit);
             sendservmsg(msg);

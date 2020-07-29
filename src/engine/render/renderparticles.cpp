@@ -1313,7 +1313,7 @@ void particle_trail(int type, int fade, const vec &s, const vec &e, int color, f
     }
     vec v;
     float d = e.dist(s, v);
-    int steps = clamp(static_cast<int>(d*2), 1, maxtrail);
+    int steps = std::clamp(static_cast<int>(d*2), 1, maxtrail);
     v.div(steps);
     vec p = s;
     for(int i = 0; i < steps; ++i)
@@ -1379,7 +1379,7 @@ void particle_meter(const vec &s, float val, int type, int fade, int color, int 
     p->color2[0] = color2>>16;
     p->color2[1] = (color2>>8)&0xFF;
     p->color2[2] = color2&0xFF;
-    p->progress = clamp(static_cast<int>(val*100), 0, 100);
+    p->progress = std::clamp(static_cast<int>(val*100), 0, 100);
 }
 
 void particle_flare(const vec &p, const vec &dest, int fade, int type, int color, float size, physent *owner)
@@ -1517,7 +1517,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         if(taper)
         {
-            float dist = clamp(from.dist2(camera1->o)/maxparticledistance, 0.0f, 1.0f);
+            float dist = std::clamp(from.dist2(camera1->o)/maxparticledistance, 0.0f, 1.0f);
             if(dist > 0.2f)
             {
                 dist = 1 - (dist - 0.2f)/0.8f;
@@ -1598,7 +1598,7 @@ static void makeparticles(entity &e)
             }
             else
             {
-                int mat = Mat_Water + clamp(-e.attr3, 0, 3);
+                int mat = Mat_Water + std::clamp(-e.attr3, 0, 3);
                 color = getwaterfallcolor(mat).tohexcolor();
                 if(!color) color = getwatercolor(mat).tohexcolor();
             }
@@ -1637,7 +1637,7 @@ static void makeparticles(entity &e)
             p->color2[0] = color2>>16;
             p->color2[1] = (color2>>8)&0xFF;
             p->color2[2] = color2&0xFF;
-            p->progress = clamp(static_cast<int>(e.attr2), 0, 100);
+            p->progress = std::clamp(static_cast<int>(e.attr2), 0, 100);
             break;
         }
         case 11: // flame <radius> <height> <rgb> - radius=100, height=100 is the classic size

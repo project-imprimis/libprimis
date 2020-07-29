@@ -1675,7 +1675,7 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
                        &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat),
                 wdeep = getwaterdeep(fogmat);
-            float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
+            float deepfade = std::clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color;
             color.lerp(wcol.tocolor(), wdeepcol.tocolor(), deepfade);
             fogc.add(vec(color).mul(blend));
@@ -1752,7 +1752,7 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
                        &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat),
                 wdeep = getwaterdeep(fogmat);
-            float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
+            float deepfade = std::clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color = vec(wcol.r, wcol.g, wcol.b).lerp(vec(wdeepcol.r, wdeepcol.g, wdeepcol.b), deepfade);
             overlay.add(color.div(min(32.0f + max(color.r, max(color.g, color.b))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
@@ -2162,7 +2162,7 @@ void gl_drawview()
 
         renderwaterfog(fogmat, fogbelow);
 
-        setfog(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
+        setfog(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
 
     rendertransparent();
@@ -2203,7 +2203,7 @@ void gl_drawview()
 
     if(fogoverlay && fogmat != Mat_Air)
     {
-        drawfogoverlay(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
+        drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
     doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
     renderpostfx(scalefbo);
@@ -2320,7 +2320,7 @@ void damageblend(int n)
     {
         damageblendmillis = lastmillis;
     }
-    damageblendmillis += clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
+    damageblendmillis += std::clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
 }
 
 void drawdamagescreen(int w, int h)

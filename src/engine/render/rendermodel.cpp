@@ -100,7 +100,7 @@ COMMAND(mdlspec, "f");
 void mdlgloss(int *gloss)
 {
     CHECK_MDL;
-    loadingmodel->setgloss(clamp(*gloss, 0, 2));
+    loadingmodel->setgloss(std::clamp(*gloss, 0, 2));
 }
 COMMAND(mdlgloss, "i");
 
@@ -352,7 +352,7 @@ void mapmodelreset(int *n)
     {
         return;
     }
-    mapmodels.shrink(clamp(*n, 0, mapmodels.length()));
+    mapmodels.shrink(std::clamp(*n, 0, mapmodels.length()));
 }
 
 const char *mapmodelname(int i)
@@ -1037,7 +1037,7 @@ static occludequery *modelquery = NULL;
 static int modelquerybatches = -1,
            modelquerymodels = -1,
            modelqueryattached = -1;
- 
+
 void startmodelquery(occludequery *query)
 {
     modelquery = query;

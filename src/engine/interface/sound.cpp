@@ -723,7 +723,7 @@ bool updatechannel(soundchannel &chan)
         }
         if(rad > 0) //rad = 0 means no attenuation ever
         {
-            vol -= static_cast<int>(clamp(dist/rad, 0.0f, 1.0f)*soundvol); // simple mono distance attenuation
+            vol -= static_cast<int>(std::clamp(dist/rad, 0.0f, 1.0f)*soundvol); // simple mono distance attenuation
         }
         if(stereo && (v.x != 0 || v.y != 0) && dist>0)
         {

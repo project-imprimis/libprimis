@@ -18,7 +18,7 @@ namespace game
     float calcradarscale()
     {
         //clamp minimapradius/3 to within min/max radar scale
-        return clamp(max(minimapradius.x, minimapradius.y)/3, static_cast<float>(minimapminscale), static_cast<float>(minimapmaxscale));
+        return std::clamp(max(minimapradius.x, minimapradius.y)/3, static_cast<float>(minimapminscale), static_cast<float>(minimapmaxscale));
     }
 
     void drawminimap(gameent *d, float x, float y, float s)
@@ -1441,10 +1441,10 @@ namespace game
                 q.put((o[k]>>16)&0xFF);
             }
         }
-        uint dir = (d->yaw < 0 ? 360 + static_cast<int>(d->yaw)%360 : static_cast<int>(d->yaw)%360) + clamp(static_cast<int>(d->pitch+90), 0, 180)*360;
+        uint dir = (d->yaw < 0 ? 360 + static_cast<int>(d->yaw)%360 : static_cast<int>(d->yaw)%360) + std::clamp(static_cast<int>(d->pitch+90), 0, 180)*360;
         q.put(dir&0xFF);
         q.put((dir>>8)&0xFF);
-        q.put(clamp(static_cast<int>(d->roll+90), 0, 180));
+        q.put(std::clamp(static_cast<int>(d->roll+90), 0, 180));
         q.put(vel&0xFF);
         if(vel > 0xFF)
         {
@@ -1452,7 +1452,7 @@ namespace game
         }
         float velyaw, velpitch;
         vectoyawpitch(d->vel, velyaw, velpitch);
-        uint veldir = (velyaw < 0 ? 360 + static_cast<int>(velyaw)%360 : static_cast<int>(velyaw)%360) + clamp(static_cast<int>(velpitch+90), 0, 180)*360;
+        uint veldir = (velyaw < 0 ? 360 + static_cast<int>(velyaw)%360 : static_cast<int>(velyaw)%360) + std::clamp(static_cast<int>(velpitch+90), 0, 180)*360;
         q.put(veldir&0xFF);
         q.put((veldir>>8)&0xFF);
         if(fall > 0)
@@ -1466,7 +1466,7 @@ namespace game
             {
                 float fallyaw, fallpitch;
                 vectoyawpitch(d->falling, fallyaw, fallpitch);
-                uint falldir = (fallyaw < 0 ? 360 + static_cast<int>(fallyaw)%360 : static_cast<int>(fallyaw)%360) + clamp(static_cast<int>(fallpitch+90), 0, 180)*360;
+                uint falldir = (fallyaw < 0 ? 360 + static_cast<int>(fallyaw)%360 : static_cast<int>(fallyaw)%360) + std::clamp(static_cast<int>(fallpitch+90), 0, 180)*360;
                 q.put(falldir&0xFF);
                 q.put((falldir>>8)&0xFF);
             }
@@ -1662,15 +1662,15 @@ namespace game
                     int dir = p.get();
                     dir |= p.get()<<8;
                     yaw = dir%360;
-                    pitch = clamp(dir/360, 0, 180)-90;
-                    roll = clamp(static_cast<int>(p.get()), 0, 180)-90;
+                    pitch = std::clamp(dir/360, 0, 180)-90;
+                    roll = std::clamp(static_cast<int>(p.get()), 0, 180)-90;
                     int mag = p.get();
                     if(flags&(1<<3))
                     {
                         mag |= p.get()<<8;
                     }
                     dir = p.get(); dir |= p.get()<<8;
-                    vecfromyawpitch(dir%360, clamp(dir/360, 0, 180)-90, 1, 0, vel);
+                    vecfromyawpitch(dir%360, std::clamp(dir/360, 0, 180)-90, 1, 0, vel);
                     vel.mul(mag/DVELF);
                     if(flags&(1<<4))
                     {
@@ -1682,7 +1682,7 @@ namespace game
                         if(flags&(1<<6))
                         {
                             dir = p.get(); dir |= p.get()<<8;
-                            vecfromyawpitch(dir%360, clamp(dir/360, 0, 180)-90, 1, 0, falling);
+                            vecfromyawpitch(dir%360, std::clamp(dir/360, 0, 180)-90, 1, 0, falling);
                         }
                         else
                         {
@@ -1818,7 +1818,7 @@ namespace game
         else
         {
             int gun = getint(p);
-            d->gunselect = clamp(gun, 0, Gun_NumGuns-1);
+            d->gunselect = std::clamp(gun, 0, Gun_NumGuns-1);
             for(int i = 0; i < Gun_NumGuns; ++i)
             {
                 d->ammo[i] = getint(p);
@@ -1890,7 +1890,7 @@ namespace game
             }
             case NetMsg_GameSpeed:
             {
-                int val = clamp(getint(p), 10, 1000),
+                int val = std::clamp(getint(p), 10, 1000),
                     cn = getint(p);
                 gameent *a = cn >= 0 ? getclient(cn) : NULL;
                 if(!demopacket)
@@ -2852,7 +2852,7 @@ namespace game
                 int bn = getint(p),
                     on = getint(p),
                     at = getint(p),
-                    sk = clamp(getint(p), 1, 101),
+                    sk = std::clamp(getint(p), 1, 101),
                     pm = getint(p),
                     col = getint(p),
                     team = getint(p);

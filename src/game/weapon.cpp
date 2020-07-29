@@ -474,7 +474,7 @@ namespace game
 
         float low = min(o->o.z - o->eyeheight + o->radius, middle.z),
               high = max(o->o.z + o->aboveeye - o->radius, middle.z);
-        vec closest(o->o.x, o->o.y, clamp(v.z, low, high));
+        vec closest(o->o.x, o->o.y, std::clamp(v.z, low, high));
         return max(closest.dist(v) - o->radius, 0.0f);
     }
 

@@ -419,7 +419,7 @@ void rendereditcursor()
                     wdist = 0;
                     for(int i = 0; i < 3; ++i)
                     {
-                        w[i] = clamp(player->o[i], 0.0f, float(worldsize));
+                        w[i] = std::clamp(player->o[i], 0.0f, float(worldsize));
                     }
                 }
             }
@@ -1728,7 +1728,7 @@ namespace hmap
         *x += MAXBRUSH2 - brushx + 1; // +1 for automatic padding
         *y += MAXBRUSH2 - brushy + 1;
         if(*x<0 || *y<0 || *x>=MAXBRUSH || *y>=MAXBRUSH) return;
-        brush[*x][*y] = clamp(*v, 0, 8);
+        brush[*x][*y] = std::clamp(*v, 0, 8);
         paintbrush = paintbrush || (brush[*x][*y] > 0);
         brushmaxx = min(MAXBRUSH-1, max(brushmaxx, *x+1));
         brushmaxy = min(MAXBRUSH-1, max(brushmaxy, *y+1));
@@ -2060,8 +2060,8 @@ namespace hmap
         memset(flags, 0, sizeof flags);
 
         selecting = true;
-        select(clamp(MAXBRUSH2-cx, bmx, bnx),
-               clamp(MAXBRUSH2-cy, bmy, bny),
+        select(std::clamp(MAXBRUSH2-cx, bmx, bnx),
+               std::clamp(MAXBRUSH2-cy, bmy, bny),
                dc ? gz : hws - gz);
         selecting = false;
         if(paintme)
@@ -2530,7 +2530,7 @@ void vrotate(int *n)
     }
     VSlot ds;
     ds.changed = 1<<VSLOT_ROTATION;
-    ds.rotation = usevdelta ? *n : clamp(*n, 0, 7);
+    ds.rotation = usevdelta ? *n : std::clamp(*n, 0, 7);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vrotate, "i");
@@ -2582,7 +2582,7 @@ void vscale(float *scale)
     }
     VSlot ds;
     ds.changed = 1<<VSLOT_SCALE;
-    ds.scale = *scale <= 0 ? 1 : (usevdelta ? *scale : clamp(*scale, 1/8.0f, 8.0f));
+    ds.scale = *scale <= 0 ? 1 : (usevdelta ? *scale : std::clamp(*scale, 1/8.0f, 8.0f));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vscale, "f");
@@ -2595,8 +2595,8 @@ void valpha(float *front, float *back)
     }
     VSlot ds;
     ds.changed = 1<<VSLOT_ALPHA;
-    ds.alphafront = clamp(*front, 0.0f, 1.0f);
-    ds.alphaback = clamp(*back, 0.0f, 1.0f);
+    ds.alphafront = std::clamp(*front, 0.0f, 1.0f);
+    ds.alphaback = std::clamp(*back, 0.0f, 1.0f);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(valpha, "ff");
@@ -2609,7 +2609,7 @@ void vcolor(float *r, float *g, float *b)
     }
     VSlot ds;
     ds.changed = 1<<VSLOT_COLOR;
-    ds.colorscale = vec(clamp(*r, 0.0f, 2.0f), clamp(*g, 0.0f, 2.0f), clamp(*b, 0.0f, 2.0f));
+    ds.colorscale = vec(std::clamp(*r, 0.0f, 2.0f), std::clamp(*g, 0.0f, 2.0f), std::clamp(*b, 0.0f, 2.0f));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vcolor, "fff");
@@ -2622,10 +2622,10 @@ void vrefract(float *k, float *r, float *g, float *b)
     }
     VSlot ds;
     ds.changed = 1<<VSLOT_REFRACT;
-    ds.refractscale = clamp(*k, 0.0f, 1.0f);
+    ds.refractscale = std::clamp(*k, 0.0f, 1.0f);
     if(ds.refractscale > 0 && (*r > 0 || *g > 0 || *b > 0))
     {
-        ds.refractcolor = vec(clamp(*r, 0.0f, 1.0f), clamp(*g, 0.0f, 1.0f), clamp(*b, 0.0f, 1.0f));
+        ds.refractcolor = vec(std::clamp(*r, 0.0f, 1.0f), std::clamp(*g, 0.0f, 1.0f), std::clamp(*b, 0.0f, 1.0f));
     }
     else
     {
@@ -2823,7 +2823,7 @@ void edittex_(int *dir)
     {
         tofronttex();
     }
-    curtexindex = clamp(curtexindex<0 ? 0 : curtexindex+*dir, 0, texmru.length()-1);
+    curtexindex = std::clamp(curtexindex<0 ? 0 : curtexindex+*dir, 0, texmru.length()-1);
     edittex(texmru[curtexindex], false);
 }
 

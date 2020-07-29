@@ -204,7 +204,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         "#define texture2DRect(sampler, coords) texture(sampler, coords)\n"
         "#define texture2DRectProj(sampler, coords) textureProj(sampler, coords)\n"
         "#define shadow2DRect(sampler, coords) texture(sampler, coords)\n";
-    parts[numparts++] = 
+    parts[numparts++] =
         "#define texture2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n"
         "#define shadow2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n";
     parts[numparts++] = modsource ? modsource : source;
@@ -496,7 +496,7 @@ static void allocglslactiveuniforms(Shader &s)
         {
             continue;
         }
-        name[clamp(static_cast<int>(namelen), 0, static_cast<int>(sizeof(name))-2)] = '\0';
+        name[std::clamp(static_cast<int>(namelen), 0, static_cast<int>(sizeof(name))-2)] = '\0';
         char *brak = strchr(name, '[');
         if(brak)
         {
@@ -1044,8 +1044,8 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         const char *psdef = "\n#define FOG_COLOR ";
         const char *psfog =
             pspragma && !strncmp(pspragma+pragmalen, "rgba", 4) ?
-                "\nfragcolor = mix((FOG_COLOR), fragcolor, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n" :
-                "\nfragcolor.rgb = mix((FOG_COLOR).rgb, fragcolor.rgb, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n";
+                "\nfragcolor = mix((FOG_COLOR), fragcolor, std::clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n" :
+                "\nfragcolor.rgb = mix((FOG_COLOR).rgb, fragcolor.rgb, std::clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n";
         int clen = 0;
         if(pspragma)
         {
@@ -1775,7 +1775,7 @@ ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs
     }
     inputmask &= (1<<NUMPOSTFXBINDS)-1;
     freemask &= (1<<NUMPOSTFXBINDS)-1;
-    addpostfx(name, clamp(*bind, 0, NUMPOSTFXBINDS-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+    addpostfx(name, std::clamp(*bind, 0, NUMPOSTFXBINDS-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
 });
 
 ICOMMAND(setpostfx, "sffff", (char *name, float *x, float *y, float *z, float *w),

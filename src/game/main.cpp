@@ -226,7 +226,7 @@ int main(int argc, char **argv)
                 }
                 case 'w':
                 {
-                    scr_w = clamp(atoi(&argv[i][2]), SCR_MINW, SCR_MAXW);
+                    scr_w = std::clamp(atoi(&argv[i][2]), static_cast<int>(SCR_MINW), static_cast<int>(SCR_MAXW));
                     if(!findarg(argc, argv, "-h"))
                     {
                         scr_h = -1;
@@ -235,7 +235,7 @@ int main(int argc, char **argv)
                 }
                 case 'h':
                 {
-                    scr_h = clamp(atoi(&argv[i][2]), SCR_MINH, SCR_MAXH);
+                    scr_h = std::clamp(atoi(&argv[i][2]), static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
                     {
                         if(!findarg(argc, argv, "-w"))
                         {

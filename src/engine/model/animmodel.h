@@ -1187,7 +1187,7 @@ struct animmodel : model
             float pitchamount = pitchscale*pitch + pitchoffset;
             if(pitchmin || pitchmax)
             {
-                pitchamount = clamp(pitchamount, pitchmin, pitchmax);
+                pitchamount = std::clamp(pitchamount, pitchmin, pitchmax);
             }
             if(as->cur.anim&ANIM_NOPITCH || (as->interp < 1 && as->prev.anim&ANIM_NOPITCH))
             {
@@ -1289,7 +1289,7 @@ struct animmodel : model
             float pitchamount = pitchscale*pitch + pitchoffset;
             if(pitchmin || pitchmax)
             {
-                pitchamount = clamp(pitchamount, pitchmin, pitchmax);
+                pitchamount = std::clamp(pitchamount, pitchmin, pitchmax);
             }
             if(as->cur.anim&ANIM_NOPITCH || (as->interp < 1 && as->prev.anim&ANIM_NOPITCH))
             {
@@ -2365,7 +2365,7 @@ struct modelcommands
 
     static void setgloss(char *meshname, int *gloss)
     {
-        LOOP_SKINS(meshname, s, s.gloss = clamp(*gloss, 0, 2));
+        LOOP_SKINS(meshname, s, s.gloss = std::clamp(*gloss, 0, 2));
     }
 
     static void setglow(char *meshname, float *percent, float *delta, float *pulse)

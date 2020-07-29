@@ -295,9 +295,9 @@ struct selinfo
             s.z -= (grid - 1 - o.z)/grid;
             o.z = 0;
         }
-        s.x = clamp(s.x, 0, (worldsize - o.x)/grid);
-        s.y = clamp(s.y, 0, (worldsize - o.y)/grid);
-        s.z = clamp(s.z, 0, (worldsize - o.z)/grid);
+        s.x = std::clamp(s.x, 0, (worldsize - o.x)/grid);
+        s.y = std::clamp(s.y, 0, (worldsize - o.y)/grid);
+        s.z = std::clamp(s.z, 0, (worldsize - o.z)/grid);
         return s.x > 0 && s.y > 0 && s.z > 0;
     }
 };

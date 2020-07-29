@@ -36,7 +36,7 @@ namespace ai
         if(dist >= 0)
         {
             weight = int(dist/ai::jumpmin);
-            pos.z -= clamp(dist-8.0f, 0.0f, pos.z);
+            pos.z -= std::clamp(dist-8.0f, 0.0f, pos.z);
             int trgmat = lookupmaterial(pos);
             if(trgmat&Mat_Death)
             {

@@ -856,7 +856,7 @@ void setvar(const char *name, int i, bool dofunc, bool doclamp)
     OVERRIDEVAR(return, id->overrideval.i = *id->storage.i, , )
     if(doclamp)
     {
-        *id->storage.i = clamp(i, id->minval, id->maxval);
+        *id->storage.i = std::clamp(i, id->minval, id->maxval);
     }
     else
     {
@@ -873,7 +873,7 @@ void setfvar(const char *name, float f, bool dofunc, bool doclamp)
     OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
     if(doclamp)
     {
-        *id->storage.f = clamp(f, id->minvalf, id->maxvalf);
+        *id->storage.f = std::clamp(f, id->minvalf, id->maxvalf);
     }
     else
     {
@@ -5734,8 +5734,8 @@ COMMAND(at, "si1V");
 void substr(char *s, int *start, int *count, int *numargs)
 {
     int len = strlen(s),
-        offset = clamp(*start, 0, len);
-    commandret->setstr(newstring(&s[offset], *numargs >= 3 ? clamp(*count, 0, len - offset) : len - offset));
+        offset = std::clamp(*start, 0, len);
+    commandret->setstr(newstring(&s[offset], *numargs >= 3 ? std::clamp(*count, 0, len - offset) : len - offset));
 }
 COMMAND(substr, "siiN");
 
@@ -6403,7 +6403,7 @@ MATHICMD(^~, 0, );
 MATHICMD(&~, 0, );
 MATHICMD(|~, 0, );
 MATHCMD("<<", i, int, val = val2 < 32 ? val << max(val2, 0) : 0, 0, );
-MATHCMD(">>", i, int, val >>= clamp(val2, 0, 31), 0, );
+MATHCMD(">>", i, int, val >>= std::clamp(val2, 0, 31), 0, );
 
 MATHFCMD(+, 0, );
 MATHFCMD(*, 1, );
@@ -6575,7 +6575,7 @@ CASECOMMAND(cases, "s", const char *, args[0].getstr(), args[i].type == Value_Nu
 ICOMMAND(rnd, "ii", (int *a, int *b), intret(*a - *b > 0 ? randomint(*a - *b) + *b : *b));
 ICOMMAND(rndstr, "i", (int *len),
 {
-    int n = clamp(*len, 0, 10000);
+    int n = std::clamp(*len, 0, 10000);
     char *s = newstring(n);
     for(int i = 0; i < n;)
     {
@@ -6699,8 +6699,8 @@ void strsplice(const char *s, const char *vals, int *skip, int *count)
 {
     int slen   = strlen(s),
         vlen   = strlen(vals),
-        offset = clamp(*skip, 0, slen),
-        len    = clamp(*count, 0, slen - offset);
+        offset = std::clamp(*skip, 0, slen),
+        len    = std::clamp(*count, 0, slen - offset);
     char *p = newstring(slen - len + vlen);
     if(offset)
     {

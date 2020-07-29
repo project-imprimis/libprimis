@@ -66,11 +66,6 @@ inline T min(T a, T b, T c)
 {
     return min(min(a, b), c);
 }
-template<class T, class U>
-inline T clamp(T a, U b, U c)
-{
-    return max(T(b), min(a, T(c)));
-}
 
 #ifdef __GNUC__
     #define BITSCAN(mask) (__builtin_ffs(mask)-1)
@@ -285,7 +280,7 @@ struct databuf
 
     databuf subbuf(int sz)
     {
-        sz = clamp(sz, 0, maxlen-len);
+        sz = std::clamp(sz, 0, maxlen-len);
         len += sz;
         return databuf(&buf[len-sz], sz);
     }

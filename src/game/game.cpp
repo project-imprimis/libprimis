@@ -1157,7 +1157,7 @@ namespace game
     ICOMMAND(servinfotime, "ii", (int *i, int *raw),
         GETSERVINFOATTR(*i, 1, secs,
         {
-            secs = clamp(secs, 0, 59*60+59);
+            secs = std::clamp(secs, 0, 59*60+59);
             if(*raw)
             {
                 intret(secs);
@@ -1760,7 +1760,7 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
     // automatically apply smooth roll when strafing
     if(pl->strafe && maxroll)
     {
-        pl->roll = clamp(pl->roll - pow(clamp(1.0f + pl->strafe*pl->roll/maxroll, 0.0f, 1.0f), 0.33f)*pl->strafe*curtime*straferoll, -maxroll, maxroll);
+        pl->roll = std::clamp(pl->roll - pow(std::clamp(1.0f + pl->strafe*pl->roll/maxroll, 0.0f, 1.0f), 0.33f)*pl->strafe*curtime*straferoll, static_cast<float>(-maxroll), static_cast<float>(maxroll));
     }
     else
     {
@@ -1800,7 +1800,7 @@ void physicsframe()          // optimally schedule physics frames inside the gra
     }
     else
     {
-        physframetime = clamp(game::scaletime(PHYSFRAMETIME)/100, 1, PHYSFRAMETIME);
+        physframetime = std::clamp(game::scaletime(PHYSFRAMETIME)/100, 1, PHYSFRAMETIME);
         physsteps = (diff + physframetime - 1)/physframetime;
         lastphysframe += physsteps * physframetime;
     }
@@ -1961,7 +1961,7 @@ void recomputecamera()
         if(game::collidecamera())
         {
             movecamera(camera1, dir, thirdpersondistance, 1);
-            movecamera(camera1, dir, clamp(thirdpersondistance - camera1->o.dist(player->o), 0.0f, 1.0f), 0.1f);
+            movecamera(camera1, dir, std::clamp(thirdpersondistance - camera1->o.dist(player->o), 0.0f, 1.0f), 0.1f);
             if(thirdpersonup)
             {
                 vec pos = camera1->o;
@@ -1971,7 +1971,7 @@ void recomputecamera()
                     up.neg();
                 }
                 movecamera(camera1, up, dist, 1);
-                movecamera(camera1, up, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
+                movecamera(camera1, up, std::clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
             }
             if(thirdpersonside)
             {
@@ -1982,7 +1982,7 @@ void recomputecamera()
                     side.neg();
                 }
                 movecamera(camera1, side, dist, 1);
-                movecamera(camera1, side, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
+                movecamera(camera1, side, std::clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
             }
         }
         else

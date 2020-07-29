@@ -125,13 +125,13 @@ void setconskip(int &skip, int filter, int n)
 {
     int offsetnum = abs(n),
         dir = n < 0 ? -1 : 1;
-    skip = clamp(skip, 0, conlines.length()-1);
+    skip = std::clamp(skip, 0, conlines.length()-1);
     while(offsetnum)
     {
         skip += dir;
         if(!conlines.inrange(skip))
         {
-            skip = clamp(skip, 0, conlines.length()-1);
+            skip = std::clamp(skip, 0, conlines.length()-1);
             return;
         }
         if(conlines[skip].type&filter)

@@ -1,5 +1,5 @@
 //screen rendering functions, such as background, progress bar, screen settings
-// (e.g. gamma); 
+// (e.g. gamma);
 #include "engine.h"
 #include "interface/input.h"
 #include "renderwindow.h"
@@ -359,8 +359,9 @@ VARF(fullscreen, 0, 1, 1, setfullscreen(fullscreen!=0));
 
 void screenres(int w, int h)
 {
-    scr_w = clamp(w, SCR_MINW, SCR_MAXW);
-    scr_h = clamp(h, SCR_MINH, SCR_MAXH);
+    //need to cast enum to int for std's clamp implementation
+    scr_w = std::clamp(w, static_cast<int>(SCR_MINW), static_cast<int>(SCR_MAXW));
+    scr_h = std::clamp(h, static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
     if(screen)
     {
         scr_w = min(scr_w, desktopw);

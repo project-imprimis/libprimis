@@ -752,7 +752,7 @@ void renderentradius(extentity &e, bool color)
                     break;
                 }
                 vec dir = vec(e.o).sub(e.attached->o).normalize();
-                float angle = clamp(static_cast<int>(e.attr1), 1, 89); //discard >=90 angles it cannot use
+                float angle = std::clamp(static_cast<int>(e.attr1), 1, 89); //discard >=90 angles it cannot use
                 renderentattachment(e);
                 renderentcone(*e.attached, dir, radius, angle);
             }
@@ -871,7 +871,7 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
         boxs3D(eo, es, 1);
         gle::colorub(200,0,0);
         boxs(entorient, eo, es);
-        boxs(entorient, eo, es, clamp(0.015f*camera1->o.dist(eo)*tan(fovy*0.5f*RAD), 0.1f, 1.0f));
+        boxs(entorient, eo, es, std::clamp(0.015f*camera1->o.dist(eo)*tan(fovy*0.5f*RAD), 0.1f, 1.0f));
     }
 
     if(showentradius)

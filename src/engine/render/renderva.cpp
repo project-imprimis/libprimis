@@ -195,7 +195,7 @@ static inline void addvisibleva(vtxarray *va)
     float dist = vadist(va, camera1->o);
     va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
 
-    int hash = clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
+    int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
     vtxarray **prev = &vasort[hash], *cur = vasort[hash];
 
     while(cur && va->distance >= cur->distance)
@@ -1172,7 +1172,7 @@ static inline void addshadowva(vtxarray *va, float dist)
 {
     va->rdistance = static_cast<int>(dist);
 
-    int hash = clamp(static_cast<int>(dist*vasortsize/shadowradius), 0, vasortsize-1);
+    int hash = std::clamp(static_cast<int>(dist*vasortsize/shadowradius), 0, vasortsize-1);
     vtxarray **prev = &vasort[hash], *cur = vasort[hash];
 
     while(cur && va->rdistance > cur->rdistance)
@@ -3510,7 +3510,7 @@ shadowmesh *findshadowmesh(int idx, extentity &e)
     {
         case ShadowMap_Spot:
         {
-            if(!e.attached || e.attached->type != EngineEnt_Spotlight || m->spotloc != e.attached->o || m->spotangle < clamp(static_cast<int>(e.attached->attr1), 1, 89))
+            if(!e.attached || e.attached->type != EngineEnt_Spotlight || m->spotloc != e.attached->o || m->spotangle < std::clamp(static_cast<int>(e.attached->attr1), 1, 89))
             {
                 return NULL;
             }

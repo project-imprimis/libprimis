@@ -536,7 +536,7 @@ namespace game
             gameent *d = ragdolls[i];
             float fade = 1.0f;
             if(ragdollmillis && ragdollfade)
-                fade -= clamp(static_cast<float>(lastmillis - (d->lastupdate + max(ragdollmillis - ragdollfade, 0)))/min(ragdollmillis, ragdollfade), 0.0f, 1.0f);
+                fade -= std::clamp(static_cast<float>(lastmillis - (d->lastupdate + max(ragdollmillis - ragdollfade, 0)))/min(ragdollmillis, ragdollfade), 0.0f, 1.0f);
             renderplayer(d, fade);
         }
         if(exclude)

@@ -1216,7 +1216,7 @@ ushort encodenormal(const vec &n)
     }
     int yaw = static_cast<int>(-atan2(n.x, n.y)/RAD); //arctangent in degrees
     int pitch = static_cast<int>(asin(n.z)/RAD); //arcsin in degrees
-    return static_cast<ushort>(clamp(pitch + 90, 0, 180)*360 + (yaw < 0 ? yaw%360 + 360 : yaw%360) + 1);
+    return static_cast<ushort>(std::clamp(pitch + 90, 0, 180)*360 + (yaw < 0 ? yaw%360 + 360 : yaw%360) + 1);
 }
 
 //takes a packed ushort vector and turns it into a vec3 vector object
@@ -2226,7 +2226,7 @@ int updateva(cube *c, const ivec &co, int size, int csi)
             int tcount = count + (csi <= MAXMERGELEVEL ? vamerges[csi].length() : 0);
             if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == min(0x1000, worldsize/2))
             {
-                loadprogress = clamp(recalcprogress/static_cast<float>(allocnodes), 0.0f, 1.0f);
+                loadprogress = std::clamp(recalcprogress/static_cast<float>(allocnodes), 0.0f, 1.0f);
                 setva(c[i], o, size, csi);
                 if(c[i].ext && c[i].ext->va)
                 {

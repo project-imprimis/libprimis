@@ -715,7 +715,7 @@ void checkpings()
             si = newserver(NULL, addr.port, addr.host);
             millis = lanpings.decodeping(millis);
         }
-        int rtt = clamp(totalmillis - millis, 0, min(servpingdecay, totalmillis));
+        int rtt = std::clamp(totalmillis - millis, 0, min(servpingdecay, totalmillis));
         if(millis >= lastreset && rtt < servpingdecay)
         {
             si->addping(rtt, millis);

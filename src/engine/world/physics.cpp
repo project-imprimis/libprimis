@@ -87,8 +87,8 @@ bool ellipseboxcollide(physent *d, const vec &dir, const vec &o, const vec &cent
     yo.rotate_around_z(-yaw*RAD);
     yo.sub(center);
 
-    float dx = clamp(yo.x, -xr, xr) - yo.x,
-          dy = clamp(yo.y, -yr, yr) - yo.y,
+    float dx = std::clamp(yo.x, -xr, xr) - yo.x,
+          dy = std::clamp(yo.y, -yr, yr) - yo.y,
           dist = sqrtf(dx*dx + dy*dy) - d->radius;
     if(dist < 0)
     {
@@ -327,12 +327,12 @@ bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide w
                 continue;
             }
             if(plcollide(d, dir, o))
-            {   
+            {
                 collideplayer = o;
                 return true;
             }
             if(collideinside > lastinside)
-            {   
+            {
                 lastinside = collideinside;
                 insideplayer = o;
             }
@@ -1399,12 +1399,12 @@ void modifygravity(physent *pl, bool water, int curtime)
     if(water || pl->physstate >= PhysEntState_Slope)
     {
         float fric = water ? 2.0f : 6.0f,
-              c = water ? 1.0f : clamp((pl->floor.z - slopez)/(floorz-slopez), 0.0f, 1.0f);
+              c = water ? 1.0f : std::clamp((pl->floor.z - slopez)/(floorz-slopez), 0.0f, 1.0f);
         pl->falling.mul(pow(1 - c/fric, curtime/20.0f));
 // old fps friction
 //        float friction = water ? 2.0f : 6.0f,
 //              fpsfric = friction/curtime*20.0f,
-//              c = water ? 1.0f : clamp((pl->floor.z - slopez)/(floorz-slopez), 0.0f, 1.0f);
+//              c = water ? 1.0f : std::clamp((pl->floor.z - slopez)/(floorz-slopez), 0.0f, 1.0f);
 //        pl->falling.mul(1 - c/fpsfric);
     }
 }

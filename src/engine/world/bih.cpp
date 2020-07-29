@@ -75,8 +75,8 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
              bt = m.gettc(t.vert[1]).sub(at).mul(v*invdet),
              ct = m.gettc(t.vert[2]).sub(at).mul(w*invdet);
         at.add(bt).add(ct);
-        int si = clamp(static_cast<int>(m.tex->xs * at.x), 0, m.tex->xs-1),
-            ti = clamp(static_cast<int>(m.tex->ys * at.y), 0, m.tex->ys-1);
+        int si = std::clamp(static_cast<int>(m.tex->xs * at.x), 0, m.tex->xs-1),
+            ti = std::clamp(static_cast<int>(m.tex->ys * at.y), 0, m.tex->ys-1);
         if(!(m.tex->alphamask[ti*((m.tex->xs+7)/8) + si/8] & (1<<(si%8))))
         {
             return false;
@@ -532,7 +532,7 @@ static inline float segmentdistance(const vec &d1, const vec &d2, const vec &r)
             return r.squaredlen();
         }
         s = 0;
-        t = clamp(-f / e, 0.0f, 1.0f);
+        t = std::clamp(-f / e, 0.0f, 1.0f);
     }
     else
     {
@@ -540,22 +540,22 @@ static inline float segmentdistance(const vec &d1, const vec &d2, const vec &r)
         if(e <= 1e-4f)
         {
             t = 0;
-            s = clamp(c / a, 0.0f, 1.0f);
+            s = std::clamp(c / a, 0.0f, 1.0f);
         }
         else
         {
             float b = d1.dot(d2), denom = a*e - b*b;
-            s = denom ? clamp((c*e - b*f) / denom, 0.0f, 1.0f) : 0.0f;
+            s = denom ? std::clamp((c*e - b*f) / denom, 0.0f, 1.0f) : 0.0f;
             t = b*s - f;
             if(t < 0)
             {
                 t = 0;
-                s = clamp(c / a, 0.0f, 1.0f);
+                s = std::clamp(c / a, 0.0f, 1.0f);
             }
             else if(t > e)
             {
                 t = 1;
-                s = clamp((b + c) / a, 0.0f, 1.0f);
+                s = std::clamp((b + c) / a, 0.0f, 1.0f);
             }
             else t /= e;
         }

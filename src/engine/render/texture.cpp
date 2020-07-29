@@ -76,8 +76,8 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
     {
         //(empty body)
     }
-    uint cscale = clamp(under, over - 12, 12),
-         ascale = clamp(12 + under - over, 0, 24),
+    uint cscale = std::clamp(under, over - 12, 12),
+         ascale = std::clamp(12 + under - over, 0, 24),
          dscale = ascale + 12 - cscale,
          area = ((ullong)darea<<ascale)/sarea;
     dw *= wfrac;
@@ -464,8 +464,8 @@ void texoffset(ImageData &s, int xoffset, int yoffset)
 
 void texcrop(ImageData &s, int x, int y, int w, int h)
 {
-    x = clamp(x, 0, s.w);
-    y = clamp(y, 0, s.h);
+    x = std::clamp(x, 0, s.w);
+    y = std::clamp(y, 0, s.h);
     w = min(w < 0 ? s.w : w, s.w - x);
     h = min(h < 0 ? s.h : h, s.h - y);
     if(!w || !h)
@@ -493,7 +493,7 @@ void texmad(ImageData &s, const vec &mul, const vec &add)
     WRITE_TEX(s,
         for(int k = 0; k < maxk; ++k)
         {
-            dst[k] = static_cast<uchar>(clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
+            dst[k] = static_cast<uchar>(std::clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
         }
     );
 }
@@ -512,7 +512,7 @@ void texcolorify(ImageData &s, const vec &color, vec weights)
         float lum = dst[0]*weights.x + dst[1]*weights.y + dst[2]*weights.z;
         for(int k = 0; k < 3; ++k)
         {
-            dst[k] = static_cast<uchar>(clamp(lum*color[k], 0.0f, 255.0f));
+            dst[k] = static_cast<uchar>(std::clamp(lum*color[k], 0.0f, 255.0f));
         }
     );
 }
@@ -529,7 +529,7 @@ void texcolormask(ImageData &s, const vec &color1, const vec &color2)
         color.lerp(color2, color1, src[3]/255.0f);
         for(int k = 0; k < 3; ++k)
         {
-            dst[k] = static_cast<uchar>(clamp(color[k]*src[k], 0.0f, 255.0f));
+            dst[k] = static_cast<uchar>(std::clamp(color[k]*src[k], 0.0f, 255.0f));
         }
     );
     s.replace(d);
@@ -635,7 +635,7 @@ void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
         float curx = minx;
         for(uchar *dst = dstrow, *end = &dstrow[s.w*s.bpp]; dst < end; dst += s.bpp)
         {
-            dst[0] = static_cast<uchar>(dst[0]*clamp(curx, 0.0f, 1.0f)*clamp(cury, 0.0f, 1.0f));
+            dst[0] = static_cast<uchar>(dst[0]*std::clamp(curx, 0.0f, 1.0f)*std::clamp(cury, 0.0f, 1.0f));
             curx += dx;
         }
         cury += dy;
@@ -1876,7 +1876,7 @@ void texturereset(int *n)
     }
     defslot = NULL;
     resetslotshader();
-    int limit = clamp(*n, 0, slots.length());
+    int limit = std::clamp(*n, 0, slots.length());
     for(int i = limit; i < slots.length(); i++)
     {
         Slot *s = slots[i];
@@ -2267,11 +2267,11 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
     }
     if(diff & (1<<VSLOT_SCALE))
     {
-        dst.scale = clamp(dst.scale*src.scale, 1/8.0f, 8.0f);
+        dst.scale = std::clamp(dst.scale*src.scale, 1/8.0f, 8.0f);
     }
     if(diff & (1<<VSLOT_ROTATION))
     {
-        dst.rotation = clamp(dst.rotation + src.rotation, 0, 7);
+        dst.rotation = std::clamp(dst.rotation + src.rotation, 0, 7);
         if(!dst.offset.iszero())
         {
             clampvslotoffset(dst, slot);
@@ -2507,7 +2507,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 }
                 else if(!delta)
                 {
-                    dst.scale = clamp(dst.scale, 1/8.0f, 8.0f);
+                    dst.scale = std::clamp(dst.scale, 1/8.0f, 8.0f);
                 }
                 break;
             }
@@ -2515,7 +2515,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 dst.rotation = getint(buf);
                 if(!delta)
                 {
-                    dst.rotation = clamp(dst.rotation, 0, 7);
+                    dst.rotation = std::clamp(dst.rotation, 0, 7);
                 }
                 break;
             case VSLOT_ANGLE:
@@ -2543,23 +2543,23 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             }
             case VSLOT_ALPHA:
             {
-                dst.alphafront = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.alphaback = clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.alphafront = std::clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.alphaback = std::clamp(getfloat(buf), 0.0f, 1.0f);
                 break;
             }
             case VSLOT_COLOR:
             {
-                dst.colorscale.r = clamp(getfloat(buf), 0.0f, 2.0f);
-                dst.colorscale.g = clamp(getfloat(buf), 0.0f, 2.0f);
-                dst.colorscale.b = clamp(getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.r = std::clamp(getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.g = std::clamp(getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.b = std::clamp(getfloat(buf), 0.0f, 2.0f);
                 break;
             }
             case VSLOT_REFRACT:
             {
-                dst.refractscale = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.r = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.g = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.b = clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractscale = std::clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.r = std::clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.g = std::clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.b = std::clamp(getfloat(buf), 0.0f, 1.0f);
                 break;
             }
             default:
@@ -2737,7 +2737,7 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
     {
         setslotshader(s);
         VSlot &vs = s.emptyvslot();
-        vs.rotation = clamp(*rot, 0, 7);
+        vs.rotation = std::clamp(*rot, 0, 7);
         vs.offset = ivec2(*xoffset, *yoffset).max(0);
         vs.scale = *scale <= 0 ? 1 : *scale;
         propagatevslot(&vs, (1<<VSLOT_NUM)-1);
@@ -2789,7 +2789,7 @@ void texrotate_(int *rot)
         return;
     }
     Slot &s = *defslot;
-    s.variants->rotation = clamp(*rot, 0, 7);
+    s.variants->rotation = std::clamp(*rot, 0, 7);
     propagatevslot(s.variants, 1<<VSLOT_ROTATION);
 }
 COMMANDN(texrotate, texrotate_, "i");
@@ -2827,8 +2827,8 @@ void texalpha(float *front, float *back)
         return;
     }
     Slot &s = *defslot;
-    s.variants->alphafront = clamp(*front, 0.0f, 1.0f);
-    s.variants->alphaback = clamp(*back, 0.0f, 1.0f);
+    s.variants->alphafront = std::clamp(*front, 0.0f, 1.0f);
+    s.variants->alphaback = std::clamp(*back, 0.0f, 1.0f);
     propagatevslot(s.variants, 1<<VSLOT_ALPHA);
 }
 COMMAND(texalpha, "ff");
@@ -2840,7 +2840,7 @@ void texcolor(float *r, float *g, float *b)
         return;
     }
     Slot &s = *defslot;
-    s.variants->colorscale = vec(clamp(*r, 0.0f, 2.0f), clamp(*g, 0.0f, 2.0f), clamp(*b, 0.0f, 2.0f));
+    s.variants->colorscale = vec(std::clamp(*r, 0.0f, 2.0f), std::clamp(*g, 0.0f, 2.0f), std::clamp(*b, 0.0f, 2.0f));
     propagatevslot(s.variants, 1<<VSLOT_COLOR);
 }
 COMMAND(texcolor, "fff");
@@ -2852,10 +2852,10 @@ void texrefract(float *k, float *r, float *g, float *b)
         return;
     }
     Slot &s = *defslot;
-    s.variants->refractscale = clamp(*k, 0.0f, 1.0f);
+    s.variants->refractscale = std::clamp(*k, 0.0f, 1.0f);
     if(s.variants->refractscale > 0 && (*r > 0 || *g > 0 || *b > 0))
     {
-        s.variants->refractcolor = vec(clamp(*r, 0.0f, 1.0f), clamp(*g, 0.0f, 1.0f), clamp(*b, 0.0f, 1.0f));
+        s.variants->refractcolor = vec(std::clamp(*r, 0.0f, 1.0f), std::clamp(*g, 0.0f, 1.0f), std::clamp(*b, 0.0f, 1.0f));
     }
     else
     {
@@ -2883,8 +2883,8 @@ void decaldepth(float *depth, float *fade)
         return;
     }
     DecalSlot &s = *(DecalSlot *)defslot;
-    s.depth = clamp(*depth, 1e-3f, 1e3f);
-    s.fade = clamp(*fade, 0.0f, s.depth);
+    s.depth = std::clamp(*depth, 1e-3f, 1e3f);
+    s.fade = std::clamp(*fade, 0.0f, s.depth);
 }
 COMMAND(decaldepth, "ff");
 
@@ -2895,7 +2895,7 @@ static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
         READ_WRITE_RGB_TEX(c, g,
             for(int k = 0; k < 3; ++k)
             {
-                dst[k] = clamp(static_cast<int>(dst[k]) + static_cast<int>(src[0]*glowcolor[k]), 0, 255);
+                dst[k] = std::clamp(static_cast<int>(dst[k]) + static_cast<int>(src[0]*glowcolor[k]), 0, 255);
             }
         );
     }
@@ -2904,7 +2904,7 @@ static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
         READ_WRITE_RGB_TEX(c, g,
             for(int k = 0; k < 3; ++k)
             {
-                dst[k] = clamp(static_cast<int>(dst[k]) + static_cast<int>(src[k]*glowcolor[k]), 0, 255);
+                dst[k] = std::clamp(static_cast<int>(dst[k]) + static_cast<int>(src[k]*glowcolor[k]), 0, 255);
             }
         );
     }
