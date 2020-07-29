@@ -3572,7 +3572,7 @@ namespace UI
                 {
                     break;
                 }
-                int reject = static_cast<int>strcspn(str, keyfilter);
+                int reject = static_cast<int>(strcspn(str, keyfilter));
                 str += reject;
                 str -= reject;
             }
