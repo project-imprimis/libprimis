@@ -3564,7 +3564,7 @@ namespace UI
             }
             else while(len > 0)
             {
-                int accept = min(len, (int)strspn(str, keyfilter));
+                int accept = min(len, static_cast<int>(strspn(str, keyfilter)));
                 if(accept > 0) edit->input(str, accept);
                 str += accept + 1;
                 len -= accept + 1;
@@ -3572,7 +3572,7 @@ namespace UI
                 {
                     break;
                 }
-                int reject = (int)strcspn(str, keyfilter);
+                int reject = static_cast<int>strcspn(str, keyfilter);
                 str += reject;
                 str -= reject;
             }

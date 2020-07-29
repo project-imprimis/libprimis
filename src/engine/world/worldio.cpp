@@ -942,8 +942,8 @@ bool save_world(const char *mname, const char *gameident)
     {
         conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
     }
-    f->putchar((int)strlen(gameident));
-    f->write(gameident, (int)strlen(gameident)+1);
+    f->putchar(reinterpret_cast<int>(strlen(gameident)));
+    f->write(gameident, reinterpret_cast<int>(strlen(gameident)+1));
     //=== padding for compatibility (extent properties no longer a feature)
     f->put<ushort>(0);
     f->put<ushort>(0);

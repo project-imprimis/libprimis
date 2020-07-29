@@ -5880,7 +5880,7 @@ COMMAND(listassoc, "rse");
     });
 LISTFIND(listfind=, "i", int, , parseint(start) == *val);
 LISTFIND(listfind=f, "f", float, , parsefloat(start) == *val);
-LISTFIND(listfind=s, "s", char, int len = (int)strlen(val), static_cast<int>(end-start) == len && !memcmp(start, val, len));
+LISTFIND(listfind=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
 
 #define LISTASSOC(name, fmt, type, init, cmp) \
     ICOMMAND(name, "s" fmt, (char *list, type *val), \
@@ -5894,7 +5894,7 @@ LISTFIND(listfind=s, "s", char, int len = (int)strlen(val), static_cast<int>(end
     });
 LISTASSOC(listassoc=, "i", int, , parseint(start) == *val);
 LISTASSOC(listassoc=f, "f", float, , parsefloat(start) == *val);
-LISTASSOC(listassoc=s, "s", char, int len = (int)strlen(val), static_cast<int>(end-start) == len && !memcmp(start, val, len));
+LISTASSOC(listassoc=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
 
 void looplist(ident *id, const char *list, const uint *body)
 {
