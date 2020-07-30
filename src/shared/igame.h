@@ -14,7 +14,6 @@ namespace game
     extern void writeclientinfo(stream *f);
 
     extern void startmap(const char *name);
-    extern bool allowmove(physent *d);
     extern void preload();
     extern dynent *iterdynents(int i);
     extern int numdynents();

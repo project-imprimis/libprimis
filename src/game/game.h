@@ -918,11 +918,12 @@ namespace game
     extern const char *savedconfig();
     extern const char *defaultconfig();
     extern const char *autoexec();
+    extern bool allowmove(physent *d);
 }
 
 // game
-    extern int thirdperson;
-    extern bool isthirdperson();
+extern int thirdperson;
+extern bool isthirdperson();
 
 
 // server

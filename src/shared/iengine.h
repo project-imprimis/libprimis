@@ -393,7 +393,7 @@ extern const float slopez, wallz, floorz, stairheight;
 extern vec collidewall;
 extern int collideinside;
 extern physent *collideplayer;
-extern const float gravity;
+extern const float gravity, jumpvel;
 
 extern void moveplayer(physent *pl, int moveres, bool local);
 extern bool moveplayer(physent *pl, int moveres, bool local, int curtime);

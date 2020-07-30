@@ -1789,6 +1789,111 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
     return true;
 }
 
+
+void modifyvelocity(physent *pl, bool local, bool water, bool floating, int curtime)
+{
+    bool allowmove = game::allowmove(pl);
+    if(floating)
+    {
+        if(pl->jumping && allowmove)
+        {
+            pl->jumping = false;
+            pl->vel.z = max(pl->vel.z, jumpvel);
+        }
+    }
+    else if(pl->physstate >= PhysEntState_Slope || water)
+    {
+        if(water && !pl->inwater)
+        {
+            pl->vel.div(8);
+        }
+        if(pl->jumping && allowmove)
+        {
+            pl->jumping = false;
+            pl->vel.z = max(pl->vel.z, jumpvel); // physics impulse upwards
+            if(water)
+            {
+                pl->vel.x /= 8.0f;
+                pl->vel.y /= 8.0f;
+            } // dampen velocity change even harder, gives correct water feel
+            game::physicstrigger(pl, local, 1, 0);
+        }
+    }
+    if(!floating && pl->physstate == PhysEntState_Fall)
+    {
+        pl->timeinair += curtime;
+    }
+    vec m(0.0f, 0.0f, 0.0f);
+    if((pl->move || pl->strafe) && allowmove)
+    {
+        vecfromyawpitch(pl->yaw, floating || water || pl->type==PhysEnt_Camera ? pl->pitch : 0, pl->move, pl->strafe, m);
+        if(!floating && pl->physstate >= PhysEntState_Slope)
+        {
+            /* move up or down slopes in air
+             * but only move up slopes in water
+             */
+            float dz = -(m.x*pl->floor.x + m.y*pl->floor.y)/pl->floor.z;
+            m.z = water ? max(m.z, dz) : dz;
+        }
+        m.normalize();
+    }
+
+    vec d(m);
+    d.mul(pl->maxspeed);
+    if(pl->type==PhysEnt_Player)
+    {
+        if(floating)
+        {
+            if(pl==player)
+            {
+                d.mul(floatspeed/100.0f);
+            }
+        }
+        else if(pl->crouching)
+        {
+            d.mul(0.4f);
+        }
+    }
+    float fric = water && !floating ? 20.0f : (pl->physstate >= PhysEntState_Slope || floating ? 6.0f : 30.0f);
+    pl->vel.lerp(d, pl->vel, pow(1 - 1/fric, curtime/20.0f));
+// old fps friction
+//    float friction = water && !floating ? 20.0f : (pl->physstate >= PhysEntState_Slope || floating ? 6.0f : 30.0f);
+//    float fpsfric = min(curtime/(20.0f*friction), 1.0f);
+//    pl->vel.lerp(pl->vel, d, fpsfric);
+}
+
+void modifygravity(physent *pl, bool water, int curtime)
+{
+    float secs = curtime/1000.0f;
+    vec g(0, 0, 0);
+    if(pl->physstate == PhysEntState_Fall)
+    {
+        g.z -= gravity*secs;
+    }
+    else if(pl->floor.z > 0 && pl->floor.z < floorz)
+    {
+        g.z = -1;
+        g.project(pl->floor);
+        g.normalize();
+        g.mul(gravity*secs);
+    }
+    if(!water || !game::allowmove(pl) || (!pl->move && !pl->strafe))
+    {
+        pl->falling.add(g);
+    }
+    if(water || pl->physstate >= PhysEntState_Slope)
+    {
+        float fric = water ? 2.0f : 6.0f,
+              c = water ? 1.0f : std::clamp((pl->floor.z - slopez)/(floorz-slopez), 0.0f, 1.0f);
+        pl->falling.mul(pow(1 - c/fric, curtime/20.0f));
+// old fps friction
+//        float friction = water ? 2.0f : 6.0f,
+//              fpsfric = friction/curtime*20.0f,
+//              c = water ? 1.0f : std::clamp((pl->floor.z - slopez)/(floorz-slopez), 0.0f, 1.0f);
+//        pl->falling.mul(1 - c/fpsfric);
+    }
+}
+
 int physsteps = 0, physframetime = PHYSFRAMETIME, lastphysframe = 0;
 
 void physicsframe()          // optimally schedule physics frames inside the graphics frames
