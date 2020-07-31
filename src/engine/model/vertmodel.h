@@ -340,7 +340,10 @@ struct vertmodel : animmodel
             return true;
         }
 
-        int totalframes() const { return numframes; }
+        int totalframes() const
+        {
+            return numframes;
+        }
 
         void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
         {

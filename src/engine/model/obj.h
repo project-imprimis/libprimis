@@ -223,9 +223,9 @@ struct obj : vertloader<obj>
                             else
                             {
                                 tri &t = tris.add();
-                                t.vert[0] = ushort(*index);
-                                t.vert[1] = ushort(v1);
-                                t.vert[2] = ushort(v0);
+                                t.vert[0] = static_cast<ushort>(*index);
+                                t.vert[1] = static_cast<ushort>(v1);
+                                t.vert[2] = static_cast<ushort>(v0);
                                 v1 = *index;
                             }
                         }
@@ -233,7 +233,6 @@ struct obj : vertloader<obj>
                     }
                 }
             }
-
             if(curmesh)
             {
                 FLUSHMESH;

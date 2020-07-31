@@ -584,8 +584,8 @@ struct textrenderer : listrenderer
               yoff = 0;
         if((type&0xFF)==PT_TEXTUP)
         {
-            xoff += detrnd(static_cast<size_t>(p), 100)-50;
-            yoff -= detrnd((static_cast<size_t>(p), 101);
+            xoff += detrnd(size_t(p), 100)-50;
+            yoff -= detrnd(size_t(p), 101);
         }
 
         matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
