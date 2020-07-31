@@ -391,7 +391,10 @@ struct listrenderer : partrenderer
     {
         int num = 0;
         listparticle *lp;
-        for(lp = list; lp; lp = lp->next) num++;
+        for(lp = list; lp; lp = lp->next)
+        {
+            num++;
+        }
         return num;
     }
 
@@ -458,7 +461,8 @@ struct meterrenderer : listrenderer
 {
     meterrenderer(int type)
         : listrenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
-    {}
+    {
+    }
 
     void startrender()
     {
@@ -580,8 +584,8 @@ struct textrenderer : listrenderer
               yoff = 0;
         if((type&0xFF)==PT_TEXTUP)
         {
-            xoff += detrnd((size_t)p, 100)-50;
-            yoff -= detrnd((size_t)p, 101);
+            xoff += detrnd(static_cast<size_t>(p), 100)-50;
+            yoff -= detrnd((static_cast<size_t>(p), 101);
         }
 
         matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
@@ -609,8 +613,8 @@ inline void modifyblend<PT_TAPE>(const vec &o, int &blend)
 template<int T>
 static inline void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
 {
-    vec udir = vec(camup).sub(camright).mul(size);
-    vec vdir = vec(camup).add(camright).mul(size);
+    vec udir = vec(camup).sub(camright).mul(size),
+        vdir = vec(camup).add(camright).mul(size);
     vs[0].pos = vec(o.x + udir.x, o.y + udir.y, o.z + udir.z);
     vs[1].pos = vec(o.x + vdir.x, o.y + vdir.y, o.z + vdir.z);
     vs[2].pos = vec(o.x - udir.x, o.y - udir.y, o.z - udir.z);
@@ -1259,8 +1263,8 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
     float collidez = parts[type]->type&PT_COLLIDE ?
                      p.z - raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0) :
                      -1;
-    int fmin = 1;
-    int fmax = fade*3;
+    int fmin = 1,
+        fmax = fade*3;
     for(int i = 0; i < num; ++i)
     {
         int x, y, z;
@@ -1600,14 +1604,19 @@ static void makeparticles(entity &e)
             {
                 int mat = Mat_Water + std::clamp(-e.attr3, 0, 3);
                 color = getwaterfallcolor(mat).tohexcolor();
-                if(!color) color = getwatercolor(mat).tohexcolor();
+                if(!color)
+                {
+                    color = getwatercolor(mat).tohexcolor();
+                }
             }
             regularsplash(Part_Water, color, 150, 4, 200, offsetvec(e.o, e.attr2, randomint(10)), 0.6f, 2);
             break;
         }
         case 3: //fire ball - <size> <rgb>
+        {
             newparticle(e.o, vec(0, 0, 1), 1, Part_Explosion, colorfromattr(e.attr3), 4.0f)->val = 1+e.attr2;
             break;
+        }
         case 4:  //tape - <dir> <length> <rgb>
         case 9:  //steam
         case 10: //water
@@ -1615,7 +1624,7 @@ static void makeparticles(entity &e)
         {
             static const int typemap[]   = { Part_Streak, -1, -1, -1, -1, Part_Steam, Part_Water, -1, -1, Part_Snow };
             static const float sizemap[] = { 0.28f, 0.0f, 0.0f, 1.0f, 0.0f, 2.4f, 0.60f, 0.0f, 0.0f, 0.5f };
-            static const int gravmap[] = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
+            static const int gravmap[]   = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
             int type = typemap[e.attr1-4];
             float size = sizemap[e.attr1-4];
             int gravity = gravmap[e.attr1-4];
