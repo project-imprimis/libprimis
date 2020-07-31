@@ -983,7 +983,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         }
     }
     row += rowoffset;
-    if(row < 0 || row >= MAXVARIANTROWS)
+    if(row < 0 || row >= maxvariantrows)
     {
         return;
     }
@@ -1324,7 +1324,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
         shader(type, name, vs, ps);
         return;
     }
-    else if(*row >= MAXVARIANTROWS)
+    else if(*row >= maxvariantrows)
     {
         return;
     }

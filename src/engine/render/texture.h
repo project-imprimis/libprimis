@@ -175,7 +175,7 @@ enum
     SHADER_DEFERRED   = 1<<9
 };
 
-#define MAXVARIANTROWS 32
+const int maxvariantrows = 32;
 
 struct Slot;
 struct VSlot;
@@ -293,7 +293,7 @@ struct Shader
 
     int numvariants(int row) const
     {
-        if(row < 0 || row >= MAXVARIANTROWS || !variantrows)
+        if(row < 0 || row >= maxvariantrows || !variantrows)
         {
             return 0;
         }
@@ -302,7 +302,7 @@ struct Shader
 
     Shader *getvariant(int col, int row) const
     {
-        if(row < 0 || row >= MAXVARIANTROWS || col < 0 || !variantrows)
+        if(row < 0 || row >= maxvariantrows || col < 0 || !variantrows)
         {
             return NULL;
         }
@@ -313,17 +313,17 @@ struct Shader
 
     void addvariant(int row, Shader *s)
     {
-        if(row < 0 || row >= MAXVARIANTROWS || variants.length() >= USHRT_MAX)
+        if(row < 0 || row >= maxvariantrows || variants.length() >= USHRT_MAX)
         {
             return;
         }
         if(!variantrows)
         {
-            variantrows = new ushort[MAXVARIANTROWS+1];
-            memset(variantrows, 0, (MAXVARIANTROWS+1)*sizeof(ushort));
+            variantrows = new ushort[maxvariantrows+1];
+            memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
         }
         variants.insert(variantrows[row+1], s);
-        for(int i = row+1; i <= MAXVARIANTROWS; ++i)
+        for(int i = row+1; i <= maxvariantrows; ++i)
         {
             ++variantrows[i];
         }
