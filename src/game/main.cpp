@@ -95,7 +95,6 @@ void writeinitcfg()
     {
         cfgfile.open(static_cast<std::string>(homedir) + std::string("config/init.cfg"), std::ios::trunc);
     }
-
     if(cfgfile.is_open())
     {
         // Import all variables to write out to the config file
@@ -119,7 +118,6 @@ void writeinitcfg()
         {
             cfgfile << "audiodriver " << escapestring(audiodriver) << "\n"; // Replace call to ``escapestring`` with C++ standard method?
         }
-
         cfgfile.close();
     }
 }
@@ -281,12 +279,10 @@ int main(int argc, char **argv)
         }
     }
     logoutf("init: sdl");
-
     if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
     {
         fatal("Unable to initialize SDL: %s", SDL_GetError());
     }
-
     logoutf("init: net");
     if(enet_initialize()<0)
     {
@@ -294,22 +290,19 @@ int main(int argc, char **argv)
     }
     atexit(enet_deinitialize);
     enet_time_set(0);
-
     logoutf("init: game");
     game::parseoptions(gameargs);
     execfile("config/server-init.cfg", false);
     server::serverinit();
     game::initclient();
-
     logoutf("init: video");
     SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
-#if !defined(WIN32) //*nix
-    SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-#endif
+    #if !defined(WIN32) //*nix
+        SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+    #endif
     setupscreen();
     SDL_ShowCursor(SDL_FALSE);
     SDL_StopTextInput(); // workaround for spurious text-input events getting sent on first text input toggle?
-
     logoutf("init: gl");
     gl_checkextensions();
     gl_init();
@@ -318,7 +311,6 @@ int main(int argc, char **argv)
     {
         fatal("could not find core textures");
     }
-
     logoutf("init: console");
     if(!execfile("config/stdlib.cfg", false))
     {
@@ -364,14 +356,10 @@ int main(int argc, char **argv)
         writecfg(game::savedconfig(), game::autoexec(), game::defaultconfig(), game::restoreconfig());
     }
     execfile(game::autoexec(), false);
-
     identflags &= ~Idf_Persist;
-
     initing = Init_Game;
     game::loadconfigs();
-
     initing = Init_Not;
-
     logoutf("init: render");
     restoregamma();
     restorevsync();
@@ -379,11 +367,8 @@ int main(int argc, char **argv)
     loadshaders();
     initparticles();
     initstains();
-
     identflags |= Idf_Persist;
-
     logoutf("init: mainloop");
-
     if(execfile("once.cfg", false))
     {
         remove(findfile("once.cfg", "rb"));
@@ -394,11 +379,11 @@ int main(int argc, char **argv)
         //localconnect();
         game::changemap(load);
     }
-
-    if(initscript) execute(initscript);
-
+    if(initscript)
+    {
+        execute(initscript);
+    }
     resetfpshistory();
-
     inputgrab(grabinput = true);
     ignoremousemotion();
     //actual loop after main inits itself
