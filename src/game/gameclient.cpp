@@ -23,7 +23,8 @@ namespace game
 
     void drawminimap(gameent *d, float x, float y, float s)
     {
-        vec pos = vec(d->o).sub(minimapcenter).mul(minimapscale).add(0.5f), dir;
+        vec pos = vec(d->o).sub(minimapcenter).mul(minimapscale).add(0.5f),
+            dir;
         vecfromyawpitch(camera1->yaw, 0, 1, 0, dir);
         float scale = calcradarscale();
         gle::defvertex(2);
@@ -746,7 +747,10 @@ namespace game
         if(who[0])
         {
             cn = parseplayer(who);
-            if(cn < 0) return;
+            if(cn < 0)
+            {
+                return;
+            }
         }
         string hash = "";
         if(!arg[1] && isdigit(arg[0]))
@@ -976,34 +980,50 @@ namespace game
                         break;
                 }
                 addmsg(NetMsg_EditFace + op, "ri9i4",
-                   sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
-                   sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner);
+                   sel.o.x, sel.o.y, sel.o.z, //1-3
+                   sel.s.x, sel.s.y, sel.s.z, //4-6
+                   sel.grid, sel.orient, //7,8
+                   sel.cx, sel.cxs, //9,10
+                   sel.cy, sel.cys, //11,12
+                   sel.corner); //13
                 break;
             }
             case Edit_Rotate:
             {
                 addmsg(NetMsg_EditFace + op, "ri9i5",
-                   sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
-                   sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
-                   arg1);
+                   sel.o.x, sel.o.y, sel.o.z, //1-3
+                   sel.s.x, sel.s.y, sel.s.z, //4-6
+                   sel.grid, sel.orient, //7,8
+                   sel.cx, sel.cxs, //9,10
+                   sel.cy, sel.cys, //11,12
+                   sel.corner, arg1); //13,14
                 break;
             }
             case Edit_Mat:
             case Edit_Face:
             {
                 addmsg(NetMsg_EditFace + op, "ri9i6",
-                   sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
-                   sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
-                   arg1, arg2);
+                   sel.o.x, sel.o.y, sel.o.z, //103
+                   sel.s.x, sel.s.y, sel.s.z, //4-6
+                   sel.grid, sel.orient, //7,8
+                   sel.cx, sel.cxs, //10,11
+                   sel.cy, sel.cys, //11,12
+                   sel.corner, //13
+                   arg1, arg2); //14,15
                 break;
             }
             case Edit_Tex:
             {
                 int tex1 = shouldpacktex(arg1);
                 if(addmsg(NetMsg_EditFace + op, "ri9i6",
-                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
-                    sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
-                    tex1 ? tex1 : arg1, arg2))
+                    sel.o.x, sel.o.y, sel.o.z, //1-3
+                    sel.s.x, sel.s.y, sel.s.z, //4-6
+                    sel.grid, sel.orient, //7,8
+                    sel.cx, sel.cxs, //9,10
+                    sel.cy, sel.cys, //11,12
+                    sel.corner, //13
+                    tex1 ? tex1 : arg1, //14
+                    arg2)) //15
                 {
                     messages.pad(2);
                     int offset = messages.length();
@@ -1020,9 +1040,15 @@ namespace game
                 int tex1 = shouldpacktex(arg1),
                     tex2 = shouldpacktex(arg2);
                 if(addmsg(NetMsg_EditFace + op, "ri9i7",
-                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
-                    sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
-                    tex1 ? tex1 : arg1, tex2 ? tex2 : arg2, arg3))
+                    sel.o.x, sel.o.y, sel.o.z, //args 1-3
+                    sel.s.x, sel.s.y, sel.s.z, //4-6
+                    sel.grid, sel.orient, //7,8
+                    sel.cx, sel.cxs, //9,10
+                    sel.cy, sel.cys, //11,12
+                    sel.corner, //13
+                    tex1 ? tex1 : arg1, //14
+                    tex2 ? tex2 : arg2, //15
+                    arg3))
                 {
                     messages.pad(2);
                     int offset = messages.length();
@@ -1047,9 +1073,13 @@ namespace game
             case Edit_VSlot:
             {
                 if(addmsg(NetMsg_EditFace + op, "ri9i6",
-                    sel.o.x, sel.o.y, sel.o.z, sel.s.x, sel.s.y, sel.s.z, sel.grid, sel.orient,
-                    sel.cx, sel.cxs, sel.cy, sel.cys, sel.corner,
-                    arg1, arg2))
+                    sel.o.x, sel.o.y, sel.o.z, //1-3
+                    sel.s.x, sel.s.y, sel.s.z, //4-6
+                    sel.grid, sel.orient, //7,8
+                    sel.cx, sel.cxs, //9,10
+                    sel.cy, sel.cys, //11,12
+                    sel.corner, //13
+                    arg1, arg2)) //14,15
                 {
                     messages.pad(2);
                     int offset = messages.length();
@@ -1700,7 +1730,9 @@ namespace game
                     {
                         continue;
                     }
-                    float oldyaw = d->yaw, oldpitch = d->pitch, oldroll = d->roll;
+                    float oldyaw = d->yaw,
+                          oldpitch = d->pitch,
+                          oldroll = d->roll;
                     d->yaw = yaw;
                     d->pitch = pitch;
                     d->roll = roll;
@@ -2176,7 +2208,9 @@ namespace game
             }
             case NetMsg_ShotFX:
             {
-                int scn = getint(p), atk = getint(p), id = getint(p);
+                int scn = getint(p),
+                    atk = getint(p),
+                    id = getint(p);
                 vec from, to;
                 for(int k = 0; k < 3; ++k)
                 {
@@ -2595,19 +2629,28 @@ namespace game
                     case Id_Var:
                     {
                         int val = getint(p);
-                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly)) setvar(name, val);
+                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
+                        {
+                            setvar(name, val);
+                        }
                         break;
                     }
                     case Id_FloatVar:
                     {
                         float val = getfloat(p);
-                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly)) setfvar(name, val);
+                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
+                        {
+                            setfvar(name, val);
+                        }
                         break;
                     }
                     case Id_StringVar:
                     {
                         getstring(text, p);
-                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly)) setsvar(name, text);
+                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
+                        {
+                            setsvar(name, text);
+                        }
                         break;
                     }
                 }
