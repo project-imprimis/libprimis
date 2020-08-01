@@ -1,11 +1,35 @@
 #include "game.h"
 
-// convenience macros implicitly define:
+// "convenience" macros implicitly define:
 // e         entity, currently edited ent
 // n         int,    index to currently edited ent
-#define ADD_IMPLICIT(f)    { if(entgroup.empty() && enthover>=0) { entadd(enthover); undonext = (enthover != oldhover); f; entgroup.drop(); } else f; }
-#define ENT_FOCUS_V(i, f, v){ int n = efocus = (i); if(n>=0) { extentity &e = *v[n]; f; } }
-#define ENT_FOCUS(i, f)    ENT_FOCUS_V(i, f, entities::getents())
+#define ADD_IMPLICIT(f) \
+{ \
+    if(entgroup.empty() && enthover>=0) \
+    { \
+        entadd(enthover); \
+        undonext = (enthover != oldhover); \
+        f; \
+        entgroup.drop(); \
+    } \
+    else \
+    { \
+        f; \
+    } \
+}
+#define ENT_FOCUS_V(i, f, v) \
+{ \
+    int n = efocus = (i); \
+    if(n>=0) \
+    { \
+        extentity &e = *v[n]; \
+        f; \
+    } \
+}
+#define ENT_FOCUS(i, f) \
+{ \
+    ENT_FOCUS_V(i, f, entities::getents()) \
+}
 #define ENT_EDIT_V(i, f, v) \
 { \
     ENT_FOCUS_V(i, \
@@ -19,12 +43,57 @@
         clearshadowcache(); \
     }, v); \
 }
-#define ENT_EDIT(i, f)   ENT_EDIT_V(i, f, entities::getents())
-#define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); for(int i = 0; i < ents.length(); i++) ENT_FOCUS_V(i, if(exp) entadd(n), ents); }
-#define GROUP_EDIT_LOOP(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; for(int i = 0; i < entgroup.length(); i++) ENT_EDIT_V(entgroup[i], f, ents); efocus = _; entlooplevel--; }
-#define GROUP_EDIT_PURE(f){ if(entlooplevel>0) { ENT_EDIT(efocus, f); } else { GROUP_EDIT_LOOP(f); commitchanges(); } }
-#define GROUP_EDIT_UNDO(f){ makeundoent(); GROUP_EDIT_PURE(f); }
-#define GROUP_EDIT(f)    { ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); }
+#define ENT_EDIT(i, f) \
+{ \
+    ENT_EDIT_V(i, f, entities::getents()) \
+}
+#define ADD_GROUP(exp) \
+{ \
+    vector<extentity *> &ents = entities::getents(); \
+    for(int i = 0; i < ents.length(); i++) \
+    { \
+        ENT_FOCUS_V(i, \
+        { \
+            if(exp) \
+            { \
+                entadd(n); \
+            } \
+        }, ents); \
+    } \
+}
+#define GROUP_EDIT_LOOP(f) \
+{ \
+    vector<extentity *> &ents = entities::getents(); \
+    entlooplevel++; \
+    int _ = efocus; \
+    for(int i = 0; i < entgroup.length(); i++) \
+    { \
+        ENT_EDIT_V(entgroup[i], f, ents); \
+    } \
+    efocus = _; \
+    entlooplevel--; \
+}
+#define GROUP_EDIT_PURE(f) \
+{ \
+    if(entlooplevel>0) \
+    { \
+        ENT_EDIT(efocus, f); \
+    } \
+    else \
+    { \
+        GROUP_EDIT_LOOP(f); \
+        commitchanges(); \
+    } \
+}
+#define GROUP_EDIT_UNDO(f) \
+{ \
+    makeundoent(); \
+    GROUP_EDIT_PURE(f); \
+}
+#define GROUP_EDIT(f) \
+{ \
+    ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); \
+}
 
 namespace entities
 {
