@@ -1049,7 +1049,9 @@ namespace game
 
         if(player1->state==ClientState_Spectator)
         {
-            float pw, ph, tw, th, fw, fh;
+            float pw, ph,
+                  tw, th,
+                  fw, fh;
             text_boundsf("  ", pw, ph);
             text_boundsf("SPECTATOR", tw, th);
             th = max(th, ph);
@@ -1116,7 +1118,7 @@ namespace game
         else if(teamcrosshair && Mode_Team)
         {
             dynent *o = intersectclosest(d->o, worldpos, d);
-            if(o && o->type==PhysEnt_Player && VALID_TEAM(d->team) && ((gameent *)o)->team == d->team)
+            if(o && o->type==PhysEnt_Player && VALID_TEAM(d->team) && (reinterpret_cast<gameent *>(o))->team == d->team)
             {
                 crosshair = 1;
             }
@@ -2006,7 +2008,20 @@ void updatephysstate(physent *d)
     d->o = old;
 }
 
-#define DIR(name,v,d,s,os) ICOMMAND(name, "D", (int *down), { player->s = *down!=0; player->v = player->s ? d : (player->os ? -(d) : 0); });
+// "convenience" macro to define movement directions
+/*creates a normal inline command but takes the following arguments:
+ * name: name of the movement command
+ * v: velocity type (move: along camera axis; strafe: side-to-side perp from cam)
+ * d: direction: positive (forward, left) or negative (backwards, right) along axes
+ * s: movement key
+ * os: opposite movement key (can't do both of these @ same time)
+ */
+
+#define DIR(name,v,d,s,os) ICOMMAND(name, "D", (int *down), \
+{ \
+    player->s = *down!=0; \
+    player->v = player->s ? d : (player->os ? -(d) : 0); \
+}); \
 
 DIR(backward, move,   -1, k_down,  k_up);
 DIR(forward,  move,    1, k_up,    k_down);
@@ -2015,6 +2030,7 @@ DIR(right,    strafe, -1, k_right, k_left);
 
 #undef DIR
 
+//special movement actions
 ICOMMAND(jump,   "D", (int *down), { if(!*down || game::canjump()) player->jumping = *down!=0; });
 ICOMMAND(crouch, "D", (int *down), { if(!*down) player->crouching = abs(player->crouching); else if(game::cancrouch()) player->crouching = -1; });
 
