@@ -1627,16 +1627,16 @@ namespace game
 
     void updatepos(gameent *d)
     {
-        // update the position of other clients in the game in our world
-        // don't care if he's in the scenery or other players,
-        // just don't overlap with our client
-
-        const float r = player1->radius+d->radius;
-        const float dx = player1->o.x-d->o.x;
-        const float dy = player1->o.y-d->o.y;
-        const float dz = player1->o.z-d->o.z;
-        const float rz = player1->aboveeye+d->eyeheight;
-        const float fx = static_cast<float>(fabs(dx)),
+        /* update the position of other clients in the game in our world
+         * don't care if he's in the scenery or other players,
+         * just don't overlap with our client
+         */
+        const float r = player1->radius+d->radius,
+                    dx = player1->o.x-d->o.x,
+                    dy = player1->o.y-d->o.y,
+                    dz = player1->o.z-d->o.z,
+                    rz = player1->aboveeye+d->eyeheight,
+                    fx = static_cast<float>(fabs(dx)),
                     fy = static_cast<float>(fabs(dy)),
                     fz = static_cast<float>(fabs(dz));
         if(fx<r && fy<r && fz<rz && player1->state!=ClientState_Spectator && d->state!=ClientState_Dead)
@@ -1870,1059 +1870,1055 @@ namespace game
         int type;
         bool mapchanged = false,
              demopacket = false;
-        while(p.remaining()) switch(type = getint(p))
+        while(p.remaining())
         {
-            case NetMsg_DemoPacket:
+            switch(type = getint(p))
             {
-                demopacket = true;
-                break;
-            }
-            case NetMsg_ServerInfo:                   // welcome messsage from the server
-            {
-                int mycn = getint(p),
-                    prot = getint(p);
-                if(prot!=PROTOCOL_VERSION)
+                case NetMsg_DemoPacket:
                 {
-                    conoutf(Console_Error, "you are using a different game protocol (you: %d, server: %d)", PROTOCOL_VERSION, prot);
-                    disconnect();
-                    return;
-                }
-                sessionid = getint(p);
-                player1->clientnum = mycn;      // we are now connected
-                if(getint(p) > 0)
-                {
-                    conoutf("this server is password protected");
-                }
-                getstring(servdesc, p, sizeof(servdesc));
-                getstring(servauth, p, sizeof(servauth));
-                sendintro();
-                break;
-            }
-            case NetMsg_Welcome:
-            {
-                connected = true;
-                notifywelcome();
-                break;
-            }
-            case NetMsg_PauseGame:
-            {
-                bool val = getint(p) > 0;
-                int cn = getint(p);
-                gameent *a = cn >= 0 ? getclient(cn) : NULL;
-                if(!demopacket)
-                {
-                    gamepaused = val;
-                    player1->attacking = Act_Idle;
-                }
-                if(a)
-                {
-                    conoutf("%s %s the game", colorname(a), val ? "paused" : "resumed");
-                }
-                else
-                {
-                    conoutf("game is %s", val ? "paused" : "resumed");
-                }
-                break;
-            }
-            case NetMsg_GameSpeed:
-            {
-                int val = std::clamp(getint(p), 10, 1000),
-                    cn = getint(p);
-                gameent *a = cn >= 0 ? getclient(cn) : NULL;
-                if(!demopacket)
-                {
-                    gamespeed = val;
-                }
-                if(a)
-                {
-                    conoutf("%s set gamespeed to %d", colorname(a), val);
-                }
-                else
-                {
-                    conoutf("gamespeed is %d", val);
-                }
-                break;
-            }
-            case NetMsg_Client:
-            {
-                int cn = getint(p), len = getuint(p);
-                ucharbuf q = p.subbuf(len);
-                parsemessages(cn, getclient(cn), q);
-                break;
-            }
-            case NetMsg_Sound:
-            {
-                if(!d)
-                {
-                    return;
-                }
-                playsound(getint(p), &d->o);
-                break;
-            }
-            case NetMsg_Text:
-            {
-                if(!d)
-                {
-                    return;
-                }
-                getstring(text, p);
-                filtertext(text, text, true, true);
-                if(isignored(d->clientnum))
-                {
+                    demopacket = true;
                     break;
                 }
-                if(d->state!=ClientState_Dead && d->state!=ClientState_Spectator)
+                case NetMsg_ServerInfo:                   // welcome messsage from the server
                 {
-                    particle_textcopy(d->abovehead(), text, Part_Text, 2000, 0x32FF64, 4.0f, -8);
-                }
-                conoutf(ConsoleMsg_Chat, "%s:%s %s", chatcolorname(d), teamtextcode[0], text);
-                break;
-            }
-            case NetMsg_SayTeam:
-            {
-                int tcn = getint(p);
-                gameent *t = getclient(tcn);
-                getstring(text, p);
-                filtertext(text, text, true, true);
-                if(!t || isignored(t->clientnum))
-                {
+                    int mycn = getint(p),
+                        prot = getint(p);
+                    if(prot!=PROTOCOL_VERSION)
+                    {
+                        conoutf(Console_Error, "you are using a different game protocol (you: %d, server: %d)", PROTOCOL_VERSION, prot);
+                        disconnect();
+                        return;
+                    }
+                    sessionid = getint(p);
+                    player1->clientnum = mycn;      // we are now connected
+                    if(getint(p) > 0)
+                    {
+                        conoutf("this server is password protected");
+                    }
+                    getstring(servdesc, p, sizeof(servdesc));
+                    getstring(servauth, p, sizeof(servauth));
+                    sendintro();
                     break;
                 }
-                int team = VALID_TEAM(t->team) ? t->team : 0;
-                if(t->state!=ClientState_Dead && t->state!=ClientState_Spectator)
+                case NetMsg_Welcome:
                 {
-                    particle_textcopy(t->abovehead(), text, Part_Text, 2000, teamtextcolor[team], 4.0f, -8);
-                }
-                conoutf(ConsoleMsg_TeamChat, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
-                break;
-            }
-            case NetMsg_MapChange:
-            {
-                getstring(text, p);
-                changemapserv(text, getint(p));
-                mapchanged = true;
-                if(getint(p))
-                {
-                    entities::spawnitems();
-                }
-                else
-                {
-                    senditemstoserver = false;
-                }
-                break;
-            }
-            case NetMsg_ForceDeath:
-            {
-                int cn = getint(p);
-                gameent *d = cn==player1->clientnum ? player1 : newclient(cn);
-                if(!d)
-                {
+                    connected = true;
+                    notifywelcome();
                     break;
                 }
-                if(d==player1)
+                case NetMsg_PauseGame:
                 {
-                    if(editmode)
+                    bool val = getint(p) > 0;
+                    int cn = getint(p);
+                    gameent *a = cn >= 0 ? getclient(cn) : NULL;
+                    if(!demopacket)
                     {
-                        toggleedit();
+                        gamepaused = val;
+                        player1->attacking = Act_Idle;
                     }
-                    if(deathscore)
+                    if(a)
                     {
-                        showscores(true);
+                        conoutf("%s %s the game", colorname(a), val ? "paused" : "resumed");
                     }
+                    else
+                    {
+                        conoutf("game is %s", val ? "paused" : "resumed");
+                    }
+                    break;
                 }
-                else
+                case NetMsg_GameSpeed:
                 {
-                    d->resetinterp();
-                }
-                d->state = ClientState_Dead;
-                checkfollow();
-                break;
-            }
-            case NetMsg_ItemList:
-            {
-                int n;
-                while((n = getint(p))>=0 && !p.overread())
-                {
-                    if(mapchanged)
+                    int val = std::clamp(getint(p), 10, 1000),
+                        cn = getint(p);
+                    gameent *a = cn >= 0 ? getclient(cn) : NULL;
+                    if(!demopacket)
                     {
-                        entities::setspawn(n, true);
+                        gamespeed = val;
                     }
-                    getint(p); // type
+                    if(a)
+                    {
+                        conoutf("%s set gamespeed to %d", colorname(a), val);
+                    }
+                    else
+                    {
+                        conoutf("gamespeed is %d", val);
+                    }
+                    break;
                 }
-                break;
-            }
-            case NetMsg_InitClient:            // another client either connected or changed name/team
-            {
-                int cn = getint(p);
-                gameent *d = newclient(cn);
-                if(!d)
+                case NetMsg_Client:
+                {
+                    int cn = getint(p), len = getuint(p);
+                    ucharbuf q = p.subbuf(len);
+                    parsemessages(cn, getclient(cn), q);
+                    break;
+                }
+                case NetMsg_Sound:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    playsound(getint(p), &d->o);
+                    break;
+                }
+                case NetMsg_Text:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    getstring(text, p);
+                    filtertext(text, text, true, true);
+                    if(isignored(d->clientnum))
+                    {
+                        break;
+                    }
+                    if(d->state!=ClientState_Dead && d->state!=ClientState_Spectator)
+                    {
+                        particle_textcopy(d->abovehead(), text, Part_Text, 2000, 0x32FF64, 4.0f, -8);
+                    }
+                    conoutf(ConsoleMsg_Chat, "%s:%s %s", chatcolorname(d), teamtextcode[0], text);
+                    break;
+                }
+                case NetMsg_SayTeam:
+                {
+                    int tcn = getint(p);
+                    gameent *t = getclient(tcn);
+                    getstring(text, p);
+                    filtertext(text, text, true, true);
+                    if(!t || isignored(t->clientnum))
+                    {
+                        break;
+                    }
+                    int team = VALID_TEAM(t->team) ? t->team : 0;
+                    if(t->state!=ClientState_Dead && t->state!=ClientState_Spectator)
+                    {
+                        particle_textcopy(t->abovehead(), text, Part_Text, 2000, teamtextcolor[team], 4.0f, -8);
+                    }
+                    conoutf(ConsoleMsg_TeamChat, "%s:%s %s", chatcolorname(t), teamtextcode[team], text);
+                    break;
+                }
+                case NetMsg_MapChange:
                 {
                     getstring(text, p);
-                    getstring(text, p);
-                    getint(p);
-                    getint(p);
+                    changemapserv(text, getint(p));
+                    mapchanged = true;
+                    if(getint(p))
+                    {
+                        entities::spawnitems();
+                    }
+                    else
+                    {
+                        senditemstoserver = false;
+                    }
                     break;
                 }
-                getstring(text, p);
-                filtertext(text, text, false, false, MAXNAMELEN);
-                if(!text[0])
+                case NetMsg_ForceDeath:
                 {
-                    copystring(text, "unnamed");
-                }
-                if(d->name[0])          // already connected
-                {
-                    if(strcmp(d->name, text) && !isignored(d->clientnum))
+                    int cn = getint(p);
+                    gameent *d = cn==player1->clientnum ? player1 : newclient(cn);
+                    if(!d)
                     {
-                        conoutf("%s is now known as %s", colorname(d), colorname(d, text));
+                        break;
                     }
-                }
-                else                    // new client
-                {
-                    conoutf("\f0join:\f7 %s", colorname(d, text));
-                    if(needclipboard >= 0)
+                    if(d==player1)
                     {
-                        needclipboard++;
+                        if(editmode)
+                        {
+                            toggleedit();
+                        }
+                        if(deathscore)
+                        {
+                            showscores(true);
+                        }
                     }
+                    else
+                    {
+                        d->resetinterp();
+                    }
+                    d->state = ClientState_Dead;
+                    checkfollow();
+                    break;
                 }
-                copystring(d->name, text, MAXNAMELEN+1);
-                d->team = getint(p);
-                if(!VALID_TEAM(d->team))
+                case NetMsg_ItemList:
                 {
-                    d->team = 0;
+                    int n;
+                    while((n = getint(p))>=0 && !p.overread())
+                    {
+                        if(mapchanged)
+                        {
+                            entities::setspawn(n, true);
+                        }
+                        getint(p); // type
+                    }
+                    break;
                 }
-                d->playermodel = getint(p);
-                d->playercolor = getint(p);
-                break;
-            }
-            case NetMsg_SwitchName:
-            {
-                getstring(text, p);
-                if(d)
+                case NetMsg_InitClient:            // another client either connected or changed name/team
                 {
+                    int cn = getint(p);
+                    gameent *d = newclient(cn);
+                    if(!d)
+                    {
+                        getstring(text, p);
+                        getstring(text, p);
+                        getint(p);
+                        getint(p);
+                        break;
+                    }
+                    getstring(text, p);
                     filtertext(text, text, false, false, MAXNAMELEN);
                     if(!text[0])
                     {
                         copystring(text, "unnamed");
                     }
-                    if(strcmp(text, d->name))
+                    if(d->name[0])          // already connected
                     {
-                        if(!isignored(d->clientnum))
+                        if(strcmp(d->name, text) && !isignored(d->clientnum))
                         {
                             conoutf("%s is now known as %s", colorname(d), colorname(d, text));
                         }
-                        copystring(d->name, text, MAXNAMELEN+1);
                     }
-                }
-                break;
-            }
-            case NetMsg_SwitchModel:
-            {
-                int model = getint(p);
-                if(d)
-                {
-                    d->playermodel = model;
-                    if(d->ragdoll)
+                    else                    // new client
                     {
-                        cleanragdoll(d);
+                        conoutf("\f0join:\f7 %s", colorname(d, text));
+                        if(needclipboard >= 0)
+                        {
+                            needclipboard++;
+                        }
                     }
-                }
-                break;
-            }
-            case NetMsg_SwitchColor:
-            {
-                int color = getint(p);
-                if(d)
-                {
-                    d->playercolor = color;
-                }
-                break;
-            }
-            case NetMsg_ClientDiscon:
-            {
-                clientdisconnected(getint(p));
-                break;
-            }
-            case NetMsg_Spawn:
-            {
-                if(d)
-                {
-                    if(d->state==ClientState_Dead && d->lastpain)
+                    copystring(d->name, text, MAXNAMELEN+1);
+                    d->team = getint(p);
+                    if(!VALID_TEAM(d->team))
                     {
-                        saveragdoll(d);
+                        d->team = 0;
                     }
-                    d->respawn();
-                }
-                parsestate(d, p);
-                if(!d)
-                {
+                    d->playermodel = getint(p);
+                    d->playercolor = getint(p);
                     break;
                 }
-                d->state = ClientState_Spawning;
-                if(d == followingplayer())
+                case NetMsg_SwitchName:
                 {
-                    lasthit = 0;
-                }
-                checkfollow();
-                break;
-            }
-            case NetMsg_SpawnState:
-            {
-                int scn = getint(p);
-                gameent *s = getclient(scn);
-                if(!s)
-                {
-                    parsestate(NULL, p);
+                    getstring(text, p);
+                    if(d)
+                    {
+                        filtertext(text, text, false, false, MAXNAMELEN);
+                        if(!text[0])
+                        {
+                            copystring(text, "unnamed");
+                        }
+                        if(strcmp(text, d->name))
+                        {
+                            if(!isignored(d->clientnum))
+                            {
+                                conoutf("%s is now known as %s", colorname(d), colorname(d, text));
+                            }
+                            copystring(d->name, text, MAXNAMELEN+1);
+                        }
+                    }
                     break;
                 }
-                if(s->state==ClientState_Dead && s->lastpain)
+                case NetMsg_SwitchModel:
                 {
-                    saveragdoll(s);
-                }
-                if(s==player1)
-                {
-                    if(editmode)
+                    int model = getint(p);
+                    if(d)
                     {
-                        toggleedit();
+                        d->playermodel = model;
+                        if(d->ragdoll)
+                        {
+                            cleanragdoll(d);
+                        }
                     }
-                }
-                s->respawn();
-                parsestate(s, p);
-                s->state = ClientState_Alive;
-                if(cmode)
-                {
-                    cmode->pickspawn(s);
-                }
-                else
-                {
-                    findplayerspawn(s, -1, modecheck(gamemode, Mode_Team) ? s->team : 0);
-                }
-                if(s == player1)
-                {
-                    showscores(false);
-                    lasthit = 0;
-                }
-                if(cmode)
-                {
-                    cmode->respawned(s);
-                }
-                ai::spawned(s);
-                checkfollow();
-                addmsg(NetMsg_Spawn, "rcii", s, s->lifesequence, s->gunselect);
-                break;
-            }
-            case NetMsg_ShotFX:
-            {
-                int scn = getint(p),
-                    atk = getint(p),
-                    id = getint(p);
-                vec from, to;
-                for(int k = 0; k < 3; ++k)
-                {
-                    from[k] = getint(p)/DMF;
-                }
-                for(int k = 0; k < 3; ++k)
-                {
-                    to[k] = getint(p)/DMF;
-                }
-                gameent *s = getclient(scn);
-                if(!s || !VALID_ATTACK(atk))
-                {
                     break;
                 }
-                int gun = attacks[atk].gun;
-                s->gunselect = gun;
-                s->ammo[gun] -= attacks[atk].use;
-                s->gunwait = attacks[atk].attackdelay;
-                int prevaction = s->lastaction;
-                s->lastaction = lastmillis;
-                s->lastattack = atk;
-                shoteffects(atk, from, to, s, false, id, prevaction);
-                break;
-            }
-
-            case NetMsg_ExplodeFX:
-            {
-                int ecn = getint(p), atk = getint(p), id = getint(p);
-                gameent *e = getclient(ecn);
-                if(!e || !VALID_ATTACK(atk))
+                case NetMsg_SwitchColor:
                 {
+                    int color = getint(p);
+                    if(d)
+                    {
+                        d->playercolor = color;
+                    }
                     break;
                 }
-                explodeeffects(atk, e, false, id);
-                break;
-            }
-            case NetMsg_Damage:
-            {
-                int tcn = getint(p),
-                    acn = getint(p),
-                    damage = getint(p),
-                    health = getint(p);
-                gameent *target = getclient(tcn),
-                       *actor = getclient(acn);
-                if(!target || !actor)
+                case NetMsg_ClientDiscon:
                 {
+                    clientdisconnected(getint(p));
                     break;
                 }
-                target->health = health;
-                if(target->state == ClientState_Alive && actor != player1)
+                case NetMsg_Spawn:
                 {
-                    target->lastpain = lastmillis;
-                }
-                damaged(damage, target, actor, false);
-                break;
-            }
-
-            case NetMsg_Hitpush:
-            {
-                int tcn = getint(p),
-                    atk = getint(p),
-                    damage = getint(p);
-                gameent *target = getclient(tcn);
-                vec dir;
-                for(int k = 0; k < 3; ++k)
-                {
-                    dir[k] = getint(p)/DNF;
-                }
-                if(!target || !VALID_ATTACK(atk))
-                {
+                    if(d)
+                    {
+                        if(d->state==ClientState_Dead && d->lastpain)
+                        {
+                            saveragdoll(d);
+                        }
+                        d->respawn();
+                    }
+                    parsestate(d, p);
+                    if(!d)
+                    {
+                        break;
+                    }
+                    d->state = ClientState_Spawning;
+                    if(d == followingplayer())
+                    {
+                        lasthit = 0;
+                    }
+                    checkfollow();
                     break;
                 }
-                target->hitpush(damage * (target->health<=0 ? deadpush : 1), dir, NULL, atk);
-                break;
-            }
-
-            case NetMsg_Died:
-            {
-                int vcn = getint(p),
-                    acn = getint(p),
-                    frags = getint(p),
-                    tfrags = getint(p);
-                gameent *victim = getclient(vcn),
-                       *actor = getclient(acn);
-                if(!actor)
+                case NetMsg_SpawnState:
                 {
-                    break;
-                }
-                actor->frags = frags;
-                if(modecheck(gamemode, Mode_Team))
-                {
-                    setteaminfo(actor->team, tfrags);
-                }
-
-                if(!victim)
-                {
-                    break;
-                }
-                killed(victim, actor);
-                break;
-            }
-
-            case NetMsg_TeamInfo:
-                for(int i = 0; i < MAXTEAMS; ++i)
-                {
-                    int frags = getint(p);
-                    if(modecheck(gamemode, Mode_Team))
+                    int scn = getint(p);
+                    gameent *s = getclient(scn);
+                    if(!s)
                     {
-                        setteaminfo(1+i, frags);
-                    }
-                }
-                break;
-
-            case NetMsg_GunSelect:
-            {
-                if(!d)
-                {
-                    return;
-                }
-                int gun = getint(p);
-                if(!VALID_GUN(gun))
-                {
-                    return;
-                }
-                d->gunselect = gun;
-                playsound(Sound_WeapLoad, &d->o);
-                break;
-            }
-
-            case NetMsg_Taunt:
-            {
-                if(!d)
-                {
-                    return;
-                }
-                d->lasttaunt = lastmillis;
-                break;
-            }
-
-            case NetMsg_Resume:
-            {
-                for(;;)
-                {
-                    int cn = getint(p);
-                    if(p.overread() || cn<0)
-                    {
+                        parsestate(NULL, p);
                         break;
                     }
-                    gameent *d = (cn == player1->clientnum ? player1 : newclient(cn));
-                    parsestate(d, p, true);
-                }
-                break;
-            }
-
-            case NetMsg_ItemSpawn:
-            {
-                int i = getint(p);
-                if(!entities::ents.inrange(i))
-                {
-                    break;
-                }
-                entities::setspawn(i, true);
-                ai::itemspawned(i);
-                playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
-
-                int icon = entities::itemicon(i);
-                if(icon >= 0)
-                {
-                    particle_icon(vec(0.0f, 0.0f, 4.0f).add(entities::ents[i]->o), icon%4, icon/4, Part_HUDIcon, 2000, 0xFFFFFF, 2.0f, -8);
-                }
-                break;
-            }
-
-            case NetMsg_ItemAcceptance:            // server acknowledges that I picked up this item
-            {
-                break;
-            }
-
-            case NetMsg_Clipboard:
-            {
-                int cn = getint(p),
-                    unpacklen = getint(p),
-                    packlen = getint(p);
-                gameent *d = getclient(cn);
-                ucharbuf q = p.subbuf(max(packlen, 0));
-                if(d)
-                {
-                    unpackeditinfo(d->edit, q.buf, q.maxlen, unpacklen);
-                }
-                break;
-            }
-            case NetMsg_Undo:
-            case NetMsg_Redo:
-            {
-                int cn = getint(p),
-                    unpacklen = getint(p),
-                    packlen = getint(p);
-                gameent *d = getclient(cn);
-                ucharbuf q = p.subbuf(max(packlen, 0));
-                if(d)
-                {
-                    unpackundo(q.buf, q.maxlen, unpacklen);
-                }
-                break;
-            }
-
-            case NetMsg_EditFace:              // coop editing messages
-            case NetMsg_EditTex:
-            case NetMsg_EditMat:
-            case NetMsg_EditFlip:
-            case NetMsg_Copy:
-            case NetMsg_Paste:
-            case NetMsg_Rotate:
-            case NetMsg_Replace:
-            case NetMsg_DelCube:
-            case NetMsg_AddCube:
-            case NetMsg_EditVSlot:
-            {
-                if(!d)
-                {
-                    return;
-                }
-                selinfo sel;
-                sel.o.x = getint(p);
-                sel.o.y = getint(p);
-                sel.o.z = getint(p);
-                sel.s.x = getint(p);
-                sel.s.y = getint(p);
-                sel.s.z = getint(p);
-                sel.grid = getint(p);
-                sel.orient = getint(p);
-                sel.cx = getint(p);
-                sel.cxs = getint(p);
-                sel.cy = getint(p),
-                sel.cys = getint(p);
-                sel.corner = getint(p);
-                switch(type)
-                {
-                    case NetMsg_EditFace:
+                    if(s->state==ClientState_Dead && s->lastpain)
                     {
-                        int dir = getint(p),
-                            mode = getint(p);
-                        if(sel.validate())
-                        {
-                            mpeditface(dir, mode, sel, false);
-                        }
-                        break;
+                        saveragdoll(s);
                     }
-                    case NetMsg_EditTex:
-                    {
-                        int tex = getint(p),
-                            allfaces = getint(p);
-                        if(p.remaining() < 2)
-                        {
-                            return;
-                        }
-                        int extra = *reinterpret_cast<const ushort *>(p.pad(2));
-                        if(p.remaining() < extra)
-                        {
-                            return;
-                        }
-                        ucharbuf ebuf = p.subbuf(extra);
-                        if(sel.validate())
-                        {
-                            mpedittex(tex, allfaces, sel, ebuf);
-                        }
-                        break;
-                    }
-                    case NetMsg_EditMat:
-                    {
-                        int mat = getint(p), filter = getint(p);
-                        if(sel.validate())
-                        {
-                            mpeditmat(mat, filter, sel, false);
-                        }
-                        break;
-                    }
-                    case NetMsg_EditFlip:
-                    {
-                        if(sel.validate())
-                        {
-                            mpflip(sel, false);
-                        }
-                        break;
-                    }
-                    case NetMsg_Copy:
-                    {
-                        if(d && sel.validate())
-                        {
-                            mpcopy(d->edit, sel, false);
-                        }
-                        break;
-                    }
-                    case NetMsg_Paste:
-                    {
-                        if(d && sel.validate())
-                        {
-                            mppaste(d->edit, sel, false);
-                        }
-                        break;
-                    }
-                    case NetMsg_Rotate:
-                    {
-                        int dir = getint(p);
-                        if(sel.validate())
-                        {
-                            mprotate(dir, sel, false);
-                        }
-                        break;
-                    }
-                    case NetMsg_Replace:
-                    {
-                        int oldtex = getint(p),
-                            newtex = getint(p),
-                            insel = getint(p);
-                        if(p.remaining() < 2)
-                        {
-                            return;
-                        }
-                        int extra = *reinterpret_cast<const ushort *>(p.pad(2));
-                        if(p.remaining() < extra)
-                        {
-                            return;
-                        }
-                        ucharbuf ebuf = p.subbuf(extra);
-                        if(sel.validate())
-                        {
-                            mpreplacetex(oldtex, newtex, insel>0, sel, ebuf);
-                        }
-                        break;
-                    }
-                    case NetMsg_DelCube:
-                    {
-                        if(sel.validate())
-                        {
-                            mpdelcube(sel, false);
-                        }
-                        break;
-                    }
-                    case NetMsg_AddCube:
-                        if(sel.validate())
-                        {
-                            mpplacecube(sel, 1, false);
-                        }
-                    case NetMsg_EditVSlot:
-                    {
-                        int delta = getint(p),
-                            allfaces = getint(p);
-                        if(p.remaining() < 2)
-                        {
-                            return;
-                        }
-                        int extra = *reinterpret_cast<const ushort *>(p.pad(2));
-                        if(p.remaining() < extra)
-                        {
-                            return;
-                        }
-                        ucharbuf ebuf = p.subbuf(extra);
-                        if(sel.validate())
-                        {
-                            mpeditvslot(delta, allfaces, sel, ebuf);
-                        }
-                        break;
-                    }
-                }
-                break;
-            }
-            case NetMsg_Remip:
-                if(!d)
-                {
-                    return;
-                }
-                conoutf("%s remipped", colorname(d));
-                mpremip(false);
-                break;
-            case NetMsg_CalcLight:
-                if(!d)
-                {
-                    return;
-                }
-                conoutf("%s calced lights", colorname(d));
-                mpcalclight(false);
-                break;
-            case NetMsg_EditEnt:            // coop edit of ent
-            {
-                if(!d)
-                {
-                    return;
-                }
-                int i = getint(p);
-                float x = getint(p)/DMF,
-                      y = getint(p)/DMF,
-                      z = getint(p)/DMF;
-                int type = getint(p);
-                int attr1 = getint(p),
-                    attr2 = getint(p),
-                    attr3 = getint(p),
-                    attr4 = getint(p),
-                    attr5 = getint(p);
-                mpeditent(i, vec(x, y, z), type, attr1, attr2, attr3, attr4, attr5, false);
-                break;
-            }
-            case NetMsg_EditVar:
-            {
-                if(!d)
-                {
-                    return;
-                }
-                int type = getint(p);
-                getstring(text, p);
-                string name;
-                filtertext(name, text, false);
-                ident *id = getident(name);
-                switch(type)
-                {
-                    case Id_Var:
-                    {
-                        int val = getint(p);
-                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
-                        {
-                            setvar(name, val);
-                        }
-                        break;
-                    }
-                    case Id_FloatVar:
-                    {
-                        float val = getfloat(p);
-                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
-                        {
-                            setfvar(name, val);
-                        }
-                        break;
-                    }
-                    case Id_StringVar:
-                    {
-                        getstring(text, p);
-                        if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
-                        {
-                            setsvar(name, text);
-                        }
-                        break;
-                    }
-                }
-                printvar(d, id);
-                break;
-            }
-            case NetMsg_Pong:
-            {
-                addmsg(NetMsg_ClientPing, "i", player1->ping = (player1->ping*5+totalmillis-getint(p))/6);
-                break;
-            }
-            case NetMsg_ClientPing:
-            {
-                if(!d)
-                {
-                    return;
-                }
-                d->ping = getint(p);
-                break;
-            }
-            case NetMsg_TimeUp:
-            {
-                timeupdate(getint(p));
-                break;
-            }
-            case NetMsg_ServerMsg:
-            {
-                getstring(text, p);
-                conoutf("%s", text);
-                break;
-            }
-            case NetMsg_SendDemoList:
-            {
-                int demos = getint(p);
-                if(demos <= 0)
-                {
-                    conoutf("no demos available");
-                }
-                else
-                {
-                    for(int i = 0; i < demos; ++i)
-                    {
-                        getstring(text, p);
-                        if(p.overread())
-                        {
-                            break;
-                        }
-                        conoutf("%d. %s", i+1, text);
-                    }
-                }
-                break;
-            }
-            case NetMsg_DemoPlayback:
-            {
-                int on = getint(p);
-                if(on)
-                {
-                    player1->state = ClientState_Spectator;
-                }
-                else
-                {
-                    clearclients();
-                }
-                demoplayback = on!=0;
-                player1->clientnum = getint(p);
-                gamepaused = false;
-                checkfollow();
-                execident(on ? "demostart" : "demoend");
-                break;
-            }
-            case NetMsg_CurrentMaster:
-            {
-                int mm = getint(p), mn;
-                for(int i = 0; i < players.length(); i++)
-                {
-                    players[i]->privilege = Priv_None;
-                }
-                while((mn = getint(p))>=0 && !p.overread())
-                {
-                    gameent *m = mn==player1->clientnum ? player1 : newclient(mn);
-                    int priv = getint(p);
-                    if(m)
-                    {
-                        m->privilege = priv;
-                    }
-                }
-                if(mm != mastermode)
-                {
-                    mastermode = mm;
-                    conoutf("mastermode is %s (%d)", server::mastermodename(mastermode), mastermode);
-                }
-                break;
-            }
-            case NetMsg_MasterMode:
-            {
-                mastermode = getint(p);
-                conoutf("mastermode is %s (%d)", server::mastermodename(mastermode), mastermode);
-                break;
-            }
-            case NetMsg_EditMode:
-            {
-                int val = getint(p);
-                if(!d)
-                {
-                    break;
-                }
-                if(val)
-                {
-                    d->editstate = d->state;
-                    d->state = ClientState_Editing;
-                }
-                else
-                {
-                    d->state = d->editstate;
-                    if(d->state==ClientState_Dead)
-                    {
-                        deathstate(d, true);
-                    }
-                }
-                checkfollow();
-                break;
-            }
-            case NetMsg_Spectator:
-            {
-                int sn  = getint(p),
-                    val = getint(p);
-                gameent *s;
-                if(sn==player1->clientnum)
-                {
-                    s = player1;
-                    if(val && remote && !player1->privilege)
-                    {
-                        senditemstoserver = false;
-                    }
-                }
-                else s = newclient(sn);
-                if(!s)
-                {
-                    return;
-                }
-                if(val)
-                {
                     if(s==player1)
                     {
                         if(editmode)
                         {
                             toggleedit();
                         }
-                        if(s->state==ClientState_Dead)
-                        {
-                            showscores(false);
-                        }
-                        disablezoom();
                     }
-                    s->state = ClientState_Spectator;
-                }
-                else if(s->state==ClientState_Spectator)
-                {
-                    deathstate(s, true);
-                }
-                checkfollow();
-                break;
-            }
-            case NetMsg_SetTeam:
-            {
-                int wn = getint(p),
-                    team = getint(p),
-                    reason = getint(p);
-                gameent *w = getclient(wn);
-                if(!w)
-                {
-                    return;
-                }
-                w->team = VALID_TEAM(team) ? team : 0;
-                static const char * const fmt[2] =
-                {
-                    "%s switched to team %s",
-                    "%s forced to team %s"
-                };
-                if(reason >= 0 && size_t(reason) < sizeof(fmt)/sizeof(fmt[0]))
-                {
-                    conoutf(fmt[reason], colorname(w), teamnames[w->team]);
-                }
-                break;
-            }
-            #define PARSEMESSAGES 1
-            #include "ctf.h"
-            #undef PARSEMESSAGES
-            case NetMsg_Newmap:
-            {
-                int size = getint(p);
-                if(size>=0)
-                {
-                    emptymap(size, true, NULL);
-                }
-                else
-                {
-                    enlargemap(true);
-                }
-                if(d && d!=player1)
-                {
-                    int newsize = 0;
-                    while(1<<newsize < getworldsize())
+                    s->respawn();
+                    parsestate(s, p);
+                    s->state = ClientState_Alive;
+                    if(cmode)
                     {
-                        newsize++;
+                        cmode->pickspawn(s);
                     }
-                    conoutf(size>=0 ? "%s started a new map of size %d" : "%s enlarged the map to size %d", colorname(d), newsize);
+                    else
+                    {
+                        findplayerspawn(s, -1, modecheck(gamemode, Mode_Team) ? s->team : 0);
+                    }
+                    if(s == player1)
+                    {
+                        showscores(false);
+                        lasthit = 0;
+                    }
+                    if(cmode)
+                    {
+                        cmode->respawned(s);
+                    }
+                    ai::spawned(s);
+                    checkfollow();
+                    addmsg(NetMsg_Spawn, "rcii", s, s->lifesequence, s->gunselect);
+                    break;
                 }
-                break;
-            }
-            case NetMsg_ReqAuth:
-            {
-                getstring(text, p);
-                if(autoauth && text[0] && tryauth(text))
+                case NetMsg_ShotFX:
                 {
-                    conoutf("server requested authkey \"%s\"", text);
+                    int scn = getint(p),
+                        atk = getint(p),
+                        id = getint(p);
+                    vec from, to;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        from[k] = getint(p)/DMF;
+                    }
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        to[k] = getint(p)/DMF;
+                    }
+                    gameent *s = getclient(scn);
+                    if(!s || !VALID_ATTACK(atk))
+                    {
+                        break;
+                    }
+                    int gun = attacks[atk].gun;
+                    s->gunselect = gun;
+                    s->ammo[gun] -= attacks[atk].use;
+                    s->gunwait = attacks[atk].attackdelay;
+                    int prevaction = s->lastaction;
+                    s->lastaction = lastmillis;
+                    s->lastattack = atk;
+                    shoteffects(atk, from, to, s, false, id, prevaction);
+                    break;
                 }
-                break;
-            }
-            case NetMsg_AuthChallenge:
-            {
-                getstring(text, p);
-                authkey *a = findauthkey(text);
-                uint id = static_cast<uint>(getint(p));
-                getstring(text, p);
-                if(a && a->lastauth && lastmillis - a->lastauth < 60*1000)
+                case NetMsg_ExplodeFX:
                 {
-                    vector<char> buf;
-                    answerchallenge(a->key, text, buf);
-                    //conoutf(CON_DEBUG, "answering %u, challenge %s with %s", id, text, buf.getbuf());
-                    packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-                    putint(p, NetMsg_AuthAnswer);
-                    sendstring(a->desc, p);
-                    putint(p, id);
-                    sendstring(buf.getbuf(), p);
-                    sendclientpacket(p.finalize(), 1);
+                    int ecn = getint(p), atk = getint(p), id = getint(p);
+                    gameent *e = getclient(ecn);
+                    if(!e || !VALID_ATTACK(atk))
+                    {
+                        break;
+                    }
+                    explodeeffects(atk, e, false, id);
+                    break;
                 }
-                break;
-            }
-            case NetMsg_InitAI:
-            {
-                int bn = getint(p),
-                    on = getint(p),
-                    at = getint(p),
-                    sk = std::clamp(getint(p), 1, 101),
-                    pm = getint(p),
-                    col = getint(p),
-                    team = getint(p);
-                string name;
-                getstring(text, p);
-                filtertext(name, text, false, false, MAXNAMELEN);
-                gameent *b = newclient(bn);
-                if(!b)
+                case NetMsg_Damage:
+                {
+                    int tcn = getint(p),
+                        acn = getint(p),
+                        damage = getint(p),
+                        health = getint(p);
+                    gameent *target = getclient(tcn),
+                           *actor = getclient(acn);
+                    if(!target || !actor)
+                    {
+                        break;
+                    }
+                    target->health = health;
+                    if(target->state == ClientState_Alive && actor != player1)
+                    {
+                        target->lastpain = lastmillis;
+                    }
+                    damaged(damage, target, actor, false);
+                    break;
+                }
+                case NetMsg_Hitpush:
+                {
+                    int tcn = getint(p),
+                        atk = getint(p),
+                        damage = getint(p);
+                    gameent *target = getclient(tcn);
+                    vec dir;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        dir[k] = getint(p)/DNF;
+                    }
+                    if(!target || !VALID_ATTACK(atk))
+                    {
+                        break;
+                    }
+                    target->hitpush(damage * (target->health<=0 ? deadpush : 1), dir, NULL, atk);
+                    break;
+                }
+                case NetMsg_Died:
+                {
+                    int vcn = getint(p),
+                        acn = getint(p),
+                        frags = getint(p),
+                        tfrags = getint(p);
+                    gameent *victim = getclient(vcn),
+                           *actor = getclient(acn);
+                    if(!actor)
+                    {
+                        break;
+                    }
+                    actor->frags = frags;
+                    if(modecheck(gamemode, Mode_Team))
+                    {
+                        setteaminfo(actor->team, tfrags);
+                    }
+
+                    if(!victim)
+                    {
+                        break;
+                    }
+                    killed(victim, actor);
+                    break;
+                }
+                case NetMsg_TeamInfo:
+                    for(int i = 0; i < MAXTEAMS; ++i)
+                    {
+                        int frags = getint(p);
+                        if(modecheck(gamemode, Mode_Team))
+                        {
+                            setteaminfo(1+i, frags);
+                        }
+                    }
+                    break;
+                case NetMsg_GunSelect:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    int gun = getint(p);
+                    if(!VALID_GUN(gun))
+                    {
+                        return;
+                    }
+                    d->gunselect = gun;
+                    playsound(Sound_WeapLoad, &d->o);
+                    break;
+                }
+                case NetMsg_Taunt:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    d->lasttaunt = lastmillis;
+                    break;
+                }
+                case NetMsg_Resume:
+                {
+                    for(;;)
+                    {
+                        int cn = getint(p);
+                        if(p.overread() || cn<0)
+                        {
+                            break;
+                        }
+                        gameent *d = (cn == player1->clientnum ? player1 : newclient(cn));
+                        parsestate(d, p, true);
+                    }
+                    break;
+                }
+                case NetMsg_ItemSpawn:
+                {
+                    int i = getint(p);
+                    if(!entities::ents.inrange(i))
+                    {
+                        break;
+                    }
+                    entities::setspawn(i, true);
+                    ai::itemspawned(i);
+                    playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
+
+                    int icon = entities::itemicon(i);
+                    if(icon >= 0)
+                    {
+                        particle_icon(vec(0.0f, 0.0f, 4.0f).add(entities::ents[i]->o), icon%4, icon/4, Part_HUDIcon, 2000, 0xFFFFFF, 2.0f, -8);
+                    }
+                    break;
+                }
+                case NetMsg_ItemAcceptance:            // server acknowledges that I picked up this item
                 {
                     break;
                 }
-                ai::init(b, at, on, sk, bn, pm, col, name, team);
-                break;
-            }
-            case NetMsg_ServerCommand:
-            {
-                getstring(text, p);
-                break;
-            }
-            default:
-            {
-                neterr("packet of unknown type", cn < 0);
-                return;
+                case NetMsg_Clipboard:
+                {
+                    int cn = getint(p),
+                        unpacklen = getint(p),
+                        packlen = getint(p);
+                    gameent *d = getclient(cn);
+                    ucharbuf q = p.subbuf(max(packlen, 0));
+                    if(d)
+                    {
+                        unpackeditinfo(d->edit, q.buf, q.maxlen, unpacklen);
+                    }
+                    break;
+                }
+                case NetMsg_Undo:
+                case NetMsg_Redo:
+                {
+                    int cn = getint(p),
+                        unpacklen = getint(p),
+                        packlen = getint(p);
+                    gameent *d = getclient(cn);
+                    ucharbuf q = p.subbuf(max(packlen, 0));
+                    if(d)
+                    {
+                        unpackundo(q.buf, q.maxlen, unpacklen);
+                    }
+                    break;
+                }
+                case NetMsg_EditFace:              // coop editing messages
+                case NetMsg_EditTex:
+                case NetMsg_EditMat:
+                case NetMsg_EditFlip:
+                case NetMsg_Copy:
+                case NetMsg_Paste:
+                case NetMsg_Rotate:
+                case NetMsg_Replace:
+                case NetMsg_DelCube:
+                case NetMsg_AddCube:
+                case NetMsg_EditVSlot:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    selinfo sel;
+                    sel.o.x = getint(p);
+                    sel.o.y = getint(p);
+                    sel.o.z = getint(p);
+                    sel.s.x = getint(p);
+                    sel.s.y = getint(p);
+                    sel.s.z = getint(p);
+                    sel.grid = getint(p);
+                    sel.orient = getint(p);
+                    sel.cx = getint(p);
+                    sel.cxs = getint(p);
+                    sel.cy = getint(p),
+                    sel.cys = getint(p);
+                    sel.corner = getint(p);
+                    switch(type)
+                    {
+                        case NetMsg_EditFace:
+                        {
+                            int dir = getint(p),
+                                mode = getint(p);
+                            if(sel.validate())
+                            {
+                                mpeditface(dir, mode, sel, false);
+                            }
+                            break;
+                        }
+                        case NetMsg_EditTex:
+                        {
+                            int tex = getint(p),
+                                allfaces = getint(p);
+                            if(p.remaining() < 2)
+                            {
+                                return;
+                            }
+                            int extra = *reinterpret_cast<const ushort *>(p.pad(2));
+                            if(p.remaining() < extra)
+                            {
+                                return;
+                            }
+                            ucharbuf ebuf = p.subbuf(extra);
+                            if(sel.validate())
+                            {
+                                mpedittex(tex, allfaces, sel, ebuf);
+                            }
+                            break;
+                        }
+                        case NetMsg_EditMat:
+                        {
+                            int mat = getint(p), filter = getint(p);
+                            if(sel.validate())
+                            {
+                                mpeditmat(mat, filter, sel, false);
+                            }
+                            break;
+                        }
+                        case NetMsg_EditFlip:
+                        {
+                            if(sel.validate())
+                            {
+                                mpflip(sel, false);
+                            }
+                            break;
+                        }
+                        case NetMsg_Copy:
+                        {
+                            if(d && sel.validate())
+                            {
+                                mpcopy(d->edit, sel, false);
+                            }
+                            break;
+                        }
+                        case NetMsg_Paste:
+                        {
+                            if(d && sel.validate())
+                            {
+                                mppaste(d->edit, sel, false);
+                            }
+                            break;
+                        }
+                        case NetMsg_Rotate:
+                        {
+                            int dir = getint(p);
+                            if(sel.validate())
+                            {
+                                mprotate(dir, sel, false);
+                            }
+                            break;
+                        }
+                        case NetMsg_Replace:
+                        {
+                            int oldtex = getint(p),
+                                newtex = getint(p),
+                                insel = getint(p);
+                            if(p.remaining() < 2)
+                            {
+                                return;
+                            }
+                            int extra = *reinterpret_cast<const ushort *>(p.pad(2));
+                            if(p.remaining() < extra)
+                            {
+                                return;
+                            }
+                            ucharbuf ebuf = p.subbuf(extra);
+                            if(sel.validate())
+                            {
+                                mpreplacetex(oldtex, newtex, insel>0, sel, ebuf);
+                            }
+                            break;
+                        }
+                        case NetMsg_DelCube:
+                        {
+                            if(sel.validate())
+                            {
+                                mpdelcube(sel, false);
+                            }
+                            break;
+                        }
+                        case NetMsg_AddCube:
+                            if(sel.validate())
+                            {
+                                mpplacecube(sel, 1, false);
+                            }
+                        case NetMsg_EditVSlot:
+                        {
+                            int delta = getint(p),
+                                allfaces = getint(p);
+                            if(p.remaining() < 2)
+                            {
+                                return;
+                            }
+                            int extra = *reinterpret_cast<const ushort *>(p.pad(2));
+                            if(p.remaining() < extra)
+                            {
+                                return;
+                            }
+                            ucharbuf ebuf = p.subbuf(extra);
+                            if(sel.validate())
+                            {
+                                mpeditvslot(delta, allfaces, sel, ebuf);
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case NetMsg_Remip:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    conoutf("%s remipped", colorname(d));
+                    mpremip(false);
+                    break;
+                }
+                case NetMsg_CalcLight:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    conoutf("%s calced lights", colorname(d));
+                    mpcalclight(false);
+                    break;
+                }
+                case NetMsg_EditEnt:            // coop edit of ent
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    int i = getint(p);
+                    float x = getint(p)/DMF,
+                          y = getint(p)/DMF,
+                          z = getint(p)/DMF;
+                    int type = getint(p);
+                    int attr1 = getint(p),
+                        attr2 = getint(p),
+                        attr3 = getint(p),
+                        attr4 = getint(p),
+                        attr5 = getint(p);
+                    mpeditent(i, vec(x, y, z), type, attr1, attr2, attr3, attr4, attr5, false);
+                    break;
+                }
+                case NetMsg_EditVar:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    int type = getint(p);
+                    getstring(text, p);
+                    string name;
+                    filtertext(name, text, false);
+                    ident *id = getident(name);
+                    switch(type)
+                    {
+                        case Id_Var:
+                        {
+                            int val = getint(p);
+                            if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
+                            {
+                                setvar(name, val);
+                            }
+                            break;
+                        }
+                        case Id_FloatVar:
+                        {
+                            float val = getfloat(p);
+                            if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
+                            {
+                                setfvar(name, val);
+                            }
+                            break;
+                        }
+                        case Id_StringVar:
+                        {
+                            getstring(text, p);
+                            if(id && id->flags&Idf_Override && !(id->flags&Idf_ReadOnly))
+                            {
+                                setsvar(name, text);
+                            }
+                            break;
+                        }
+                    }
+                    printvar(d, id);
+                    break;
+                }
+                case NetMsg_Pong:
+                {
+                    addmsg(NetMsg_ClientPing, "i", player1->ping = (player1->ping*5+totalmillis-getint(p))/6);
+                    break;
+                }
+                case NetMsg_ClientPing:
+                {
+                    if(!d)
+                    {
+                        return;
+                    }
+                    d->ping = getint(p);
+                    break;
+                }
+                case NetMsg_TimeUp:
+                {
+                    timeupdate(getint(p));
+                    break;
+                }
+                case NetMsg_ServerMsg:
+                {
+                    getstring(text, p);
+                    conoutf("%s", text);
+                    break;
+                }
+                case NetMsg_SendDemoList:
+                {
+                    int demos = getint(p);
+                    if(demos <= 0)
+                    {
+                        conoutf("no demos available");
+                    }
+                    else
+                    {
+                        for(int i = 0; i < demos; ++i)
+                        {
+                            getstring(text, p);
+                            if(p.overread())
+                            {
+                                break;
+                            }
+                            conoutf("%d. %s", i+1, text);
+                        }
+                    }
+                    break;
+                }
+                case NetMsg_DemoPlayback:
+                {
+                    int on = getint(p);
+                    if(on)
+                    {
+                        player1->state = ClientState_Spectator;
+                    }
+                    else
+                    {
+                        clearclients();
+                    }
+                    demoplayback = on!=0;
+                    player1->clientnum = getint(p);
+                    gamepaused = false;
+                    checkfollow();
+                    execident(on ? "demostart" : "demoend");
+                    break;
+                }
+                case NetMsg_CurrentMaster:
+                {
+                    int mm = getint(p), mn;
+                    for(int i = 0; i < players.length(); i++)
+                    {
+                        players[i]->privilege = Priv_None;
+                    }
+                    while((mn = getint(p))>=0 && !p.overread())
+                    {
+                        gameent *m = mn==player1->clientnum ? player1 : newclient(mn);
+                        int priv = getint(p);
+                        if(m)
+                        {
+                            m->privilege = priv;
+                        }
+                    }
+                    if(mm != mastermode)
+                    {
+                        mastermode = mm;
+                        conoutf("mastermode is %s (%d)", server::mastermodename(mastermode), mastermode);
+                    }
+                    break;
+                }
+                case NetMsg_MasterMode:
+                {
+                    mastermode = getint(p);
+                    conoutf("mastermode is %s (%d)", server::mastermodename(mastermode), mastermode);
+                    break;
+                }
+                case NetMsg_EditMode:
+                {
+                    int val = getint(p);
+                    if(!d)
+                    {
+                        break;
+                    }
+                    if(val)
+                    {
+                        d->editstate = d->state;
+                        d->state = ClientState_Editing;
+                    }
+                    else
+                    {
+                        d->state = d->editstate;
+                        if(d->state==ClientState_Dead)
+                        {
+                            deathstate(d, true);
+                        }
+                    }
+                    checkfollow();
+                    break;
+                }
+                case NetMsg_Spectator:
+                {
+                    int sn  = getint(p),
+                        val = getint(p);
+                    gameent *s;
+                    if(sn==player1->clientnum)
+                    {
+                        s = player1;
+                        if(val && remote && !player1->privilege)
+                        {
+                            senditemstoserver = false;
+                        }
+                    }
+                    else s = newclient(sn);
+                    if(!s)
+                    {
+                        return;
+                    }
+                    if(val)
+                    {
+                        if(s==player1)
+                        {
+                            if(editmode)
+                            {
+                                toggleedit();
+                            }
+                            if(s->state==ClientState_Dead)
+                            {
+                                showscores(false);
+                            }
+                            disablezoom();
+                        }
+                        s->state = ClientState_Spectator;
+                    }
+                    else if(s->state==ClientState_Spectator)
+                    {
+                        deathstate(s, true);
+                    }
+                    checkfollow();
+                    break;
+                }
+                case NetMsg_SetTeam:
+                {
+                    int wn = getint(p),
+                        team = getint(p),
+                        reason = getint(p);
+                    gameent *w = getclient(wn);
+                    if(!w)
+                    {
+                        return;
+                    }
+                    w->team = VALID_TEAM(team) ? team : 0;
+                    static const char * const fmt[2] =
+                    {
+                        "%s switched to team %s",
+                        "%s forced to team %s"
+                    };
+                    if(reason >= 0 && size_t(reason) < sizeof(fmt)/sizeof(fmt[0]))
+                    {
+                        conoutf(fmt[reason], colorname(w), teamnames[w->team]);
+                    }
+                    break;
+                }
+                #define PARSEMESSAGES 1
+                #include "ctf.h"
+                #undef PARSEMESSAGES
+                case NetMsg_Newmap:
+                {
+                    int size = getint(p);
+                    if(size>=0)
+                    {
+                        emptymap(size, true, NULL);
+                    }
+                    else
+                    {
+                        enlargemap(true);
+                    }
+                    if(d && d!=player1)
+                    {
+                        int newsize = 0;
+                        while(1<<newsize < getworldsize())
+                        {
+                            newsize++;
+                        }
+                        conoutf(size>=0 ? "%s started a new map of size %d" : "%s enlarged the map to size %d", colorname(d), newsize);
+                    }
+                    break;
+                }
+                case NetMsg_ReqAuth:
+                {
+                    getstring(text, p);
+                    if(autoauth && text[0] && tryauth(text))
+                    {
+                        conoutf("server requested authkey \"%s\"", text);
+                    }
+                    break;
+                }
+                case NetMsg_AuthChallenge:
+                {
+                    getstring(text, p);
+                    authkey *a = findauthkey(text);
+                    uint id = static_cast<uint>(getint(p));
+                    getstring(text, p);
+                    if(a && a->lastauth && lastmillis - a->lastauth < 60*1000)
+                    {
+                        vector<char> buf;
+                        answerchallenge(a->key, text, buf);
+                        //conoutf(CON_DEBUG, "answering %u, challenge %s with %s", id, text, buf.getbuf());
+                        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+                        putint(p, NetMsg_AuthAnswer);
+                        sendstring(a->desc, p);
+                        putint(p, id);
+                        sendstring(buf.getbuf(), p);
+                        sendclientpacket(p.finalize(), 1);
+                    }
+                    break;
+                }
+                case NetMsg_InitAI:
+                {
+                    int bn = getint(p),
+                        on = getint(p),
+                        at = getint(p),
+                        sk = std::clamp(getint(p), 1, 101),
+                        pm = getint(p),
+                        col = getint(p),
+                        team = getint(p);
+                    string name;
+                    getstring(text, p);
+                    filtertext(name, text, false, false, MAXNAMELEN);
+                    gameent *b = newclient(bn);
+                    if(!b)
+                    {
+                        break;
+                    }
+                    ai::init(b, at, on, sk, bn, pm, col, name, team);
+                    break;
+                }
+                case NetMsg_ServerCommand:
+                {
+                    getstring(text, p);
+                    break;
+                }
+                default:
+                {
+                    neterr("packet of unknown type", cn < 0);
+                    return;
+                }
             }
         }
     }
