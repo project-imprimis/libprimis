@@ -956,6 +956,10 @@ namespace game
 
     void edittrigger(const selinfo &sel, int op, int arg1, int arg2, int arg3, const VSlot *vs)
     {
+        /* note below: argument # are noted for the sel.*, arg* parameters,
+         * for the actual location in the addmsg() fxn add two for the NetMsg &
+         * argument code (e.g. "ri9i4")
+         */
         if(modecheck(gamemode, Mode_Edit)) switch(op)
         {
             case Edit_Flip:
@@ -1003,7 +1007,7 @@ namespace game
             case Edit_Face:
             {
                 addmsg(NetMsg_EditFace + op, "ri9i6",
-                   sel.o.x, sel.o.y, sel.o.z, //103
+                   sel.o.x, sel.o.y, sel.o.z, //1-3
                    sel.s.x, sel.s.y, sel.s.z, //4-6
                    sel.grid, sel.orient, //7,8
                    sel.cx, sel.cxs, //10,11
