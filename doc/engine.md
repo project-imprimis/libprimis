@@ -3221,7 +3221,33 @@ Models in Imprimis are not especially first-class citizens compared to the
 octree geometry that the world is built on, but they still play an important
 role, particularly in player models.
 
-### 6.2.1 Basic Model Commands
+### 6.2.1 Model Format Overview
+---
+
+Models for Imprimis currently are supported in two formats: OBJ (aka Wavefront)
+and MD5 (aka Doom 3). These two formats do not particularly overlap in their
+utility and a very terse overview of the formats is given here. Neither of these
+formats are unique to Cube and OBJ in particular is extremely widely used.
+
+#### OBJ (Wavefront)
+
+OBJ models are most useful for static, non-animated objects such as scenery,
+level assets, and other applications that do not rely on a complicated, feature
+intensive model format. OBJ files can store vertex data and UV mapping to allow
+accompanying texture files to be used to skin them. OBJ is a plaintext, easy to
+read (compared to other formats) format and therefore is very commonly used for
+basic models in all types of 3D graphics applications.
+
+#### MD5 (Doom 3)
+
+The MD5 format is the in-house format for the id 4 engine most notably used in
+Doom 3. It is a game-centric model format that allows for a skeleton to animate
+it (using pre-provided animation files) and therefore allows for animation of
+characters or other entities in the game. MD5 therefore is the model format of
+choice for the player model, as it requires animations to allow the player to
+move realistically ingame.
+
+### 6.2.2 Basic Model Commands
 ---
 
 These are commands which are available to all formats, including static, non
@@ -3248,7 +3274,7 @@ animated ones such as Wavefront (OBJ).
 * `<fmt>pitch [scale] [offset] [min] [max]`
 * `<fmt>anim [anim] [frame] [range] [speed] [priority]`
 
-### 6.2.2 Animated Model Commands
+### 6.2.3 Animated Model Commands
 
 These are commands which are only available to animated model formats, of which
 the only current one is MD5.
