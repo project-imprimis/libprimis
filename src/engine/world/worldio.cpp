@@ -23,7 +23,10 @@ void validmapname(char *dst, const char *src, const char *prefix = NULL, const c
             {
                 *dst++ = c;
             }
-            else break;
+            else
+            {
+                break;
+            }
         }
     }
     if(dst > start)
@@ -131,7 +134,8 @@ bool loadents(const char *fname, const char *gameident, vector<entity> &ents, ui
     }
     for(int i = 0; i < hdr.numvars; ++i)
     {
-        int type = f->getchar(), ilen = f->get<ushort>();
+        int type = f->getchar(),
+            ilen = f->get<ushort>();
         f->seek(ilen, SEEK_CUR);
         switch(type)
         {
@@ -178,7 +182,10 @@ bool loadents(const char *fname, const char *gameident, vector<entity> &ents, ui
         entity &e = ents.add();
         f->read(&e, sizeof(entity));
         fixent(e, hdr.version);
-        if(eif > 0) f->seek(eif, SEEK_CUR);
+        if(eif > 0)
+        {
+            f->seek(eif, SEEK_CUR);
+        }
         if(samegame)
         {
         }
@@ -510,23 +517,40 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 {
                     int vis = layerverts < 4 ? (vertmask&0x02 ? 2 : 1) : 3, order = vertmask&0x01 ? 1 : 0, k = 0;
                     verts[k++].setxyz(v[order].mul(size).add(vo));
-                    if(vis&1) verts[k++].setxyz(v[order+1].mul(size).add(vo));
+                    if(vis&1)
+                    {
+                        verts[k++].setxyz(v[order+1].mul(size).add(vo));
+                    }
                     verts[k++].setxyz(v[order+2].mul(size).add(vo));
-                    if(vis&2) verts[k++].setxyz(v[(order+3)&3].mul(size).add(vo));
+                    if(vis&2)
+                    {
+                        verts[k++].setxyz(v[(order+3)&3].mul(size).add(vo));
+                    }
                 }
                 if(layerverts == 4)
                 {
                     if(hasxyz && vertmask&0x01)
                     {
-                        ushort c1 = f->get<ushort>(), r1 = f->get<ushort>(), c2 = f->get<ushort>(), r2 = f->get<ushort>();
+                        ushort c1 = f->get<ushort>(),
+                               r1 = f->get<ushort>(),
+                               c2 = f->get<ushort>(),
+                               r2 = f->get<ushort>();
                         ivec xyz;
-                        xyz[vc] = c1; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c1;
+                        xyz[vr] = r1;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[0].setxyz(xyz);
-                        xyz[vc] = c1; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c1;
+                        xyz[vr] = r2;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[1].setxyz(xyz);
-                        xyz[vc] = c2; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c2;
+                        xyz[vr] = r2;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[2].setxyz(xyz);
-                        xyz[vc] = c2; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c2;
+                        xyz[vr] = r1;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[3].setxyz(xyz);
                         hasxyz = false;
                     }
@@ -889,9 +913,9 @@ bool save_world(const char *mname, const char *gameident)
     ENUMERATE(idents, ident, id,
     {
         if((id.type == Id_Var || id.type == Id_FloatVar || id.type == Id_StringVar) &&
-           id.flags&Idf_Override    &&
+             id.flags&Idf_Override  &&
            !(id.flags&Idf_ReadOnly) &&
-           id.flags&Idf_Overridden)
+             id.flags&Idf_Overridden)
         {
             hdr.numvars++;
         }
@@ -1093,7 +1117,10 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
             }
         }
     }
-    if(dbgvars) conoutf(Console_Debug, "read %d vars", hdr.numvars);
+    if(dbgvars)
+    {
+        conoutf(Console_Debug, "read %d vars", hdr.numvars);
+    }
     string gametype;
     bool samegame = true;
     int len = f->getchar();
@@ -1107,8 +1134,8 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
     }
-    int eif = f->get<ushort>();
-    int extrasize = f->get<ushort>();
+    int eif = f->get<ushort>(),
+        extrasize = f->get<ushort>();
     vector<char> extras;
     f->read(extras.pad(extrasize), extrasize);
     texmru.shrink(0);
