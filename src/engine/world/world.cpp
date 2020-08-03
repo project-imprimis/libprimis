@@ -91,11 +91,14 @@ void attachentity(extentity &e)
 
     vector<extentity *> &ents = entities::getents();
     int closest = -1;
-    float closedist = 1e10f;
+    float closedist = 1e10f; //some arbitrary high value
     for(int i = 0; i < ents.length(); i++)
     {
         extentity *a = ents[i];
-        if(a->attached) continue;
+        if(a->attached)
+        {
+            continue;
+        }
         switch(e.type)
         {
             case EngineEnt_Spotlight:
