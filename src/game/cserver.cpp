@@ -1680,8 +1680,14 @@ namespace server
             va_start(msgs, msg);
             for(uchar val = 1; msg < NetMsg_NumMsgs; msg = va_arg(msgs, int))
             {
-                if(msg < 0) val = uchar(-msg);
-                else msgmask[msg] = val;
+                if(msg < 0)
+                {
+                    val = static_cast<uchar>(-msg);
+                }
+                else
+                {
+                    msgmask[msg] = val;
+                }
             }
             va_end(msgs);
         }
@@ -1694,18 +1700,24 @@ namespace server
     {
         if(ci)
         {
-            if(!ci->connected) switch(connectfilter[type])
+            if(!ci->connected)
             {
-                // allow only before authconnect
-                case 1: return !ci->connectauth ? type : -1;
-                // allow only during authconnect
-                case 2: return ci->connectauth ? type : -1;
-                // always allow
-                case 3: return type;
-                // never allow
-                default: return -1;
+                switch(connectfilter[type])
+                {
+                    // allow only before authconnect
+                    case 1: return !ci->connectauth ? type : -1;
+                    // allow only during authconnect
+                    case 2: return ci->connectauth ? type : -1;
+                    // always allow
+                    case 3: return type;
+                    // never allow
+                    default: return -1;
+                }
             }
-            if(ci->local) return type;
+            if(ci->local)
+            {
+                return type;
+            }
         }
         switch(msgfilter[type])
         {
@@ -1741,7 +1753,10 @@ namespace server
         for(int i = 0; i < worldstates.length(); i++)
         {
             worldstate &ws = worldstates[i];
-            if(!ws.contains(packet->data)) continue;
+            if(!ws.contains(packet->data))
+            {
+                continue;
+            }
             ws.uses--;
             if(ws.uses <= 0)
             {
@@ -1754,7 +1769,10 @@ namespace server
 
     void flushclientposition(clientinfo &ci)
     {
-        if(ci.position.empty() || (!hasnonlocalclients() && !demorecord)) return;
+        if(ci.position.empty() || (!hasnonlocalclients() && !demorecord))
+        {
+            return;
+        }
         packetbuf p(ci.position.length(), 0);
         p.put(ci.position.getbuf(), ci.position.length());
         ci.position.setsize(0);
@@ -1763,7 +1781,10 @@ namespace server
 
     static void sendpositions(worldstate &ws, ucharbuf &wsbuf)
     {
-        if(wsbuf.empty()) return;
+        if(wsbuf.empty())
+        {
+            return;
+        }
         int wslen = wsbuf.length();
         recordpacket(0, wsbuf.buf, wslen);
         wsbuf.put(wsbuf.buf, wslen);
@@ -1791,8 +1812,15 @@ namespace server
         wsbuf.put(bi.position.getbuf(), bi.position.length());
         bi.position.setsize(0);
         int len = wsbuf.length() - offset;
-        if(ci.wsdata < wsbuf.buf) { ci.wsdata = &wsbuf.buf[offset]; ci.wslen = len; }
-        else ci.wslen += len;
+        if(ci.wsdata < wsbuf.buf)
+        {
+            ci.wsdata = &wsbuf.buf[offset];
+            ci.wslen = len;
+        }
+        else
+        {
+            ci.wslen += len;
+        }
     }
 
     static void sendmessages(worldstate &ws, ucharbuf &wsbuf)
@@ -1807,23 +1835,46 @@ namespace server
         for(int i = 0; i < clients.length(); i++)
         {
             clientinfo &ci = *clients[i];
-            if(ci.state.aitype != AI_None) continue;
+            if(ci.state.aitype != AI_None)
+            {
+                continue;
+            }
             uchar *data = wsbuf.buf;
             int size = wslen;
-            if(ci.wsdata >= wsbuf.buf) { data = ci.wsdata + ci.wslen; size -= ci.wslen; }
-            if(size <= 0) continue;
+            if(ci.wsdata >= wsbuf.buf)
+            {
+                data = ci.wsdata + ci.wslen;
+                size -= ci.wslen;
+            }
+            if(size <= 0)
+            {
+                continue;
+            }
             ENetPacket *packet = enet_packet_create(data, size, (reliablemessages ? ENET_PACKET_FLAG_RELIABLE : 0) | ENET_PACKET_FLAG_NO_ALLOCATE);
             sendpacket(ci.clientnum, 1, packet);
-            if(packet->referenceCount) { ws.uses++; packet->freeCallback = cleanworldstate; }
-            else enet_packet_destroy(packet);
+            if(packet->referenceCount)
+            {
+                ws.uses++;
+                packet->freeCallback = cleanworldstate;
+            }
+            else
+            {
+                enet_packet_destroy(packet);
+            }
         }
         wsbuf.offset(wsbuf.length());
     }
 
     static inline void addmessages(worldstate &ws, ucharbuf &wsbuf, int mtu, clientinfo &bi, clientinfo &ci)
     {
-        if(bi.messages.empty()) return;
-        if(wsbuf.length() + 10 + bi.messages.length() > mtu) sendmessages(ws, wsbuf);
+        if(bi.messages.empty())
+        {
+            return;
+        }
+        if(wsbuf.length() + 10 + bi.messages.length() > mtu)
+        {
+            sendmessages(ws, wsbuf);
+        }
         int offset = wsbuf.length();
         putint(wsbuf, NetMsg_Client);
         putint(wsbuf, bi.clientnum);
@@ -1831,7 +1882,11 @@ namespace server
         wsbuf.put(bi.messages.getbuf(), bi.messages.length());
         bi.messages.setsize(0);
         int len = wsbuf.length() - offset;
-        if(ci.wsdata < wsbuf.buf) { ci.wsdata = &wsbuf.buf[offset]; ci.wslen = len; }
+        if(ci.wsdata < wsbuf.buf)
+        {
+            ci.wsdata = &wsbuf.buf[offset];
+            ci.wslen = len;
+        }
         else ci.wslen += len;
     }
 
@@ -1891,7 +1946,10 @@ namespace server
         }
         sendmessages(ws, wsbuf);
         reliablemessages = false;
-        if(ws.uses) return true;
+        if(ws.uses)
+        {
+            return true;
+        }
         ws.cleanup();
         worldstates.drop();
         return false;
@@ -1899,9 +1957,15 @@ namespace server
 
     bool sendpackets(bool force)
     {
-        if(clients.empty() || (!hasnonlocalclients() && !demorecord)) return false;
+        if(clients.empty() || (!hasnonlocalclients() && !demorecord))
+        {
+            return false;
+        }
         enet_uint32 curtime = enet_time_get()-lastsend;
-        if(curtime<7 && !force) return false;
+        if(curtime<7 && !force)
+        {
+            return false;
+        }
         bool flush = buildworldstate();
         lastsend += curtime - (curtime%7); //delay of 7ms between packet reciepts (143fps)
         return flush;
@@ -2174,7 +2238,7 @@ namespace server
         changegamespeed(100);
         if(smode)
         {
-            mode->cleanup();
+            smode->cleanup();
         }
         aiman::clearai();
 
@@ -2194,8 +2258,10 @@ namespace server
             ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
         }
 
-        if(modecheck(gamemode, Mode_LocalOnly)) kicknonlocalclients(Discon_Local);
-
+        if(modecheck(gamemode, Mode_LocalOnly))
+        {
+            kicknonlocalclients(Discon_Local);
+        }
         sendf(-1, 1, "risii", NetMsg_MapChange, smapname, gamemode, 1);
 
         clearteaminfo();
@@ -2238,8 +2304,10 @@ namespace server
             demonextmatch = false;
             setupdemorecord();
         }
-
-        if(smode) smode->setup();
+        if(smode)
+        {
+            smode->setup();
+        }
     }
 
     void rotatemap(bool next)
@@ -2252,8 +2320,14 @@ namespace server
         if(next)
         {
             curmaprotation = findmaprotation(gamemode, smapname);
-            if(curmaprotation >= 0) nextmaprotation();
-            else curmaprotation = smapname[0] ? max(findmaprotation(gamemode, ""), 0) : 0;
+            if(curmaprotation >= 0)
+            {
+                nextmaprotation();
+            }
+            else
+            {
+                curmaprotation = smapname[0] ? max(findmaprotation(gamemode, ""), 0) : 0;
+            }
         }
         maprotation &rot = maprotations[curmaprotation];
         changemap(rot.map, rot.findmode(gamemode));
@@ -2274,10 +2348,19 @@ namespace server
         for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *oi = clients[i];
-            if(oi->state.state==ClientState_Spectator && !oi->privilege && !oi->local) continue;
-            if(oi->state.aitype!=AI_None) continue;
+            if(oi->state.state==ClientState_Spectator && !oi->privilege && !oi->local)
+            {
+                continue;
+            }
+            if(oi->state.aitype!=AI_None)
+            {
+                continue;
+            }
             maxvotes++;
-            if(!MODE_VALID(oi->modevote)) continue;
+            if(!MODE_VALID(oi->modevote))
+            {
+                continue;
+            }
             votecount *vc = NULL;
             for(int j = 0; j < votes.length(); j++)
             {
@@ -2303,13 +2386,19 @@ namespace server
         }
         if(force || (best && best->count > maxvotes/2))
         {
-            if(demorecord) enddemorecord();
+            if(demorecord)
+            {
+                enddemorecord();
+            }
             if(best && (best->count > (force ? 1 : maxvotes/2)))
             {
                 sendservmsg(force ? "vote passed by default" : "vote passed by majority");
                 changemap(best->map, best->mode);
             }
-            else rotatemap(true);
+            else
+            {
+                rotatemap(true);
+            }
         }
     }
 
@@ -2374,7 +2463,10 @@ namespace server
         if(gamemillis >= gamelimit && !interm)
         {
             sendf(-1, 1, "ri2", NetMsg_TimeUp, 0);
-            if(smode) smode->intermission();
+            if(smode)
+            {
+                smode->intermission();
+            }
             changegamespeed(100);
             interm = gamemillis + 10000;
         }
@@ -2388,7 +2480,10 @@ namespace server
         ts.dodamage(damage);
         if(target!=actor && !modecheck(gamemode, Mode_Team) && target->team != actor->team) actor->state.damage += damage;
         sendf(-1, 1, "ri5", NetMsg_Damage, target->clientnum, actor->clientnum, damage, ts.health);
-        if(target==actor) target->setpushed();
+        if(target==actor)
+        {
+            target->setpushed();
+        }
         else if(!hitpush.iszero())
         {
             ivec v(vec(hitpush).rescale(DNF));
@@ -4108,8 +4203,11 @@ namespace server
                 }
                 case NetMsg_Paste:
                 {
-                    if(ci->state.state!=ClientState_Spectator) sendclipboard(ci);
-                    goto genericmsg; //yeets you to the bottom as with copy
+                    if(ci->state.state!=ClientState_Spectator)
+                    {
+                        sendclipboard(ci);
+                    }
+                    goto genericmsg; //sends you to the bottom as with copy
                 }
                 case NetMsg_Clipboard:
                 {
@@ -4163,7 +4261,7 @@ namespace server
                         disconnect_client(sender, Discon_MsgError);
                         return;
                     }
-                    int extra =*(const ushort *)p.pad(2);
+                    int extra =*reinterpret_cast<const ushort *>(p.pad(2));
                     if(p.remaining() < extra)
                     {
                         disconnect_client(sender, Discon_MsgError);
