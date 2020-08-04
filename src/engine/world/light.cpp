@@ -82,7 +82,8 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
     }
     else
     {
-        int numbefore = 0, beforeoffset = 0;
+        int numbefore = 0,
+            beforeoffset = 0;
         for(int i = 0; i < orient; ++i)
         {
             surfaceinfo &surf = c.ext->surfaces[i];
@@ -386,9 +387,9 @@ void clearlightcache(int id)
         {
             return;
         }
-        for(int x = int(max(light.o.x-radius, 0.0f))>>lightcachesize, ex = static_cast<int>(min(light.o.x+radius, worldsize-1.0f))>>lightcachesize; x <= ex; x++)
+        for(int x = static_cast<int>(max(light.o.x-radius, 0.0f))>>lightcachesize, ex = static_cast<int>(min(light.o.x+radius, worldsize-1.0f))>>lightcachesize; x <= ex; x++)
         {
-            for(int y = int(max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
+            for(int y = static_cast<int>(max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
             {
                 lightcacheentry &lce = lightcache[LIGHTCACHEHASH(x, y)];
                 if(lce.x != x || lce.y != y)
@@ -460,7 +461,10 @@ void check_calclight_canceled()
     {
         calclight_canceled = true;
     }
-    if(!calclight_canceled) check_calclight_progress = false;
+    if(!calclight_canceled)
+    {
+        check_calclight_progress = false;
+    }
 }
 
 void show_calclight_progress()
@@ -477,7 +481,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
     vertinfo litverts[6*2*Face_MaxVerts];
     int numlitverts = 0;
     memset(surfaces, 0, sizeof(surfaces));
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 6; ++i) //for each face of the cube
     {
         int usefaces = usefacemask&0xF;
         usefacemask >>= 4;
@@ -558,7 +562,9 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             }
         }
 
-        vec pos[Face_MaxVerts], n[Face_MaxVerts], po(ivec(co).mask(~0xFFF));
+        vec pos[Face_MaxVerts],
+            n[Face_MaxVerts],
+            po(ivec(co).mask(~0xFFF));
         for(int j = 0; j < numverts; ++j)
         {
             pos[j] = vec(curlitverts[j].getxyz()).mul(1.0f/8).add(po);
