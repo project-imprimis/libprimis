@@ -22,9 +22,11 @@ SDL_cond *querycond, *resultcond;
 #define RESOLVERTHREADS 2
 #define RESOLVERLIMIT 3000
 
+//this is a void pointer because it is called by SDL_CreateThread which deals
+//with a void * function
 int resolverloop(void * data)
 {
-    resolverthread *rt = (resolverthread *)data;
+    resolverthread *rt = reinterpret_cast<resolverthread *>(data);
     SDL_LockMutex(resolvermutex);
     SDL_Thread *thread = rt->thread;
     SDL_UnlockMutex(resolvermutex);

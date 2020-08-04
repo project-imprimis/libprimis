@@ -17,7 +17,7 @@ bool insideworld(const ivec &o)
     extern int worldsize;
     return static_cast<uint>(o.x) < static_cast<uint>(worldsize) &&
            static_cast<uint>(o.y) < static_cast<uint>(worldsize) &&
-           static_cast<uint>(o.z) < sstatic_cast<uint>(worldsize);
+           static_cast<uint>(o.z) < static_cast<uint>(worldsize);
 }
 
 static inline clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
