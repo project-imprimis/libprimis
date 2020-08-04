@@ -359,7 +359,7 @@ const cube &neighborcube(const cube &c, int orient, const ivec &co, int size, iv
         n[dim] -= size;
     }
     diff ^= n[dim];
-    if(diff >= uint(worldsize))
+    if(diff >= static_cast<uint>(worldsize))
     {
         ro = n;
         rsize = size;
@@ -931,7 +931,10 @@ const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
 bool flataxisface(const cube &c, int orient)
 {
     uint face = c.faces[DIMENSION(orient)];
-    if(DIM_COORD(orient)) face >>= 4;
+    if(DIM_COORD(orient))
+    {
+        face >>= 4;
+    }
     return (face&0x0F0F0F0F) == 0x01010101*(face&0x0F);
 }
 
@@ -939,12 +942,14 @@ bool collideface(const cube &c, int orient)
 {
     if(flataxisface(c, orient))
     {
-        uchar r1 = c.edges[faceedgesidx[orient][0]], r2 = c.edges[faceedgesidx[orient][1]];
+        uchar r1 = c.edges[faceedgesidx[orient][0]],
+              r2 = c.edges[faceedgesidx[orient][1]];
         if(static_cast<uchar>((r1>>4)|(r2&0xF0)) == static_cast<uchar>((r1&0x0F)|(r2<<4)))
         {
             return false;
         }
-        uchar c1 = c.edges[faceedgesidx[orient][2]], c2 = c.edges[faceedgesidx[orient][3]];
+        uchar c1 = c.edges[faceedgesidx[orient][2]],
+              c2 = c.edges[faceedgesidx[orient][3]];
         if(static_cast<uchar>((c1>>4)|(c2&0xF0)) == static_cast<uchar>((c1&0x0F)|(c2<<4)))
         {
             return false;
@@ -2184,7 +2189,10 @@ bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, in
         }
         if(!dir)
         {
-            if(p.numverts < 4) return false;
+            if(p.numverts < 4)
+            {
+                return false;
+            }
             p.numverts--;
         }
         px = cx;
@@ -2655,4 +2663,3 @@ void calcmerges()
     genmergeprogress = 0;
     genmerges();
 }
-
