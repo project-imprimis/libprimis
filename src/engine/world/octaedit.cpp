@@ -655,7 +655,7 @@ block3 *blockcopy(const block3 &s, int rgrid)
 void freeblock(block3 *b, bool alloced = true)
 {
     cube *q = b->c();
-    for(int i = 0; i < int(b->size()); ++i)
+    for(int i = 0; i < static_cast<int>(b->size()); ++i)
     {
         discardchildren(*q++);
     }
@@ -676,7 +676,7 @@ void freeundo(undoblock *u)
 void pasteundoblock(block3 *b, uchar *g)
 {
     cube *s = b->c();
-    LOOP_XYZ(*b, 1<<min(int(*g++), worldscale-1), pastecube(*s++, c));
+    LOOP_XYZ(*b, 1<<min(static_cast<int>(*g++), worldscale-1), pastecube(*s++, c));
 }
 
 void pasteundo(undoblock *u)
@@ -926,7 +926,7 @@ static bool packblock(block3 &b, B &buf)
     block3 hdr = b;
     buf.put((const uchar *)&hdr, sizeof(hdr));
     cube *c = b.c();
-    for(int i = 0; i < int(b.size()); ++i)
+    for(int i = 0; i < static_cast<int>(b.size()); ++i)
     {
         packcube(c[i], buf);
     }
@@ -1004,7 +1004,7 @@ static bool unpackblock(block3 *&b, B &buf)
 {
     if(b) { freeblock(b); b = NULL; }
     block3 hdr;
-    if(buf.get((uchar *)&hdr, sizeof(hdr)) < int(sizeof(hdr))) return false;
+    if(buf.get((uchar *)&hdr, sizeof(hdr)) < static_cast<int>(sizeof(hdr))) return false;
     if(hdr.size() > (1<<20) || hdr.grid <= 0 || hdr.grid > (1<<12)) return false;
     b = (block3 *)new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)];
     if(!b) return false;
@@ -1057,7 +1057,7 @@ static void unpackvslots(cube &c, ucharbuf &buf)
 
 static void unpackvslots(block3 &b, ucharbuf &buf)
 {
-    while(buf.remaining() >= int(sizeof(vslothdr)))
+    while(buf.remaining() >= static_cast<int>(sizeof(vslothdr)))
     {
         vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
         if(!hdr.index) break;
@@ -1185,7 +1185,7 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
     int numents = *(const ushort *)buf.pad(2);
     if(numents)
     {
-        if(buf.remaining() < numents*int(2 + sizeof(entity)))
+        if(buf.remaining() < numents*static_cast<int>(2 + sizeof(entity)))
         {
             delete[] outbuf;
             return false;
@@ -3334,7 +3334,7 @@ void editmat(char *name, char *filtername)
     int filter = -1;
     if(filtername[0])
     {
-        for(int i = 0; i < int(sizeof(editmatfilters)/sizeof(editmatfilters[0])); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(editmatfilters)/sizeof(editmatfilters[0])); ++i)
         {
             if(!strcmp(editmatfilters[i].name, filtername))
             {

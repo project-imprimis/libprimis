@@ -242,7 +242,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     {
         if(dx1 > dx2)
         {
-            split = min(dx1, int(w));
+            split = min(dx1, static_cast<int>(w));
         }
         else
         {

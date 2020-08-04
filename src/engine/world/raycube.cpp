@@ -15,7 +15,9 @@ bool insideworld(const vec &o)
 bool insideworld(const ivec &o)
 {
     extern int worldsize;
-    return uint(o.x)<uint(worldsize) && uint(o.y)<uint(worldsize) && uint(o.z)<uint(worldsize);
+    return static_cast<uint>(o.x) < static_cast<uint>(worldsize) &&
+           static_cast<uint>(o.y) < static_cast<uint>(worldsize) &&
+           static_cast<uint>(o.z) < sstatic_cast<uint>(worldsize);
 }
 
 static inline clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
@@ -416,9 +418,9 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
     CHECKINSIDEWORLD;
 
     int side = Orient_Bottom,
-        x = int(v.x),
-        y = int(v.y),
-        z = int(v.z);
+        x = static_cast<int>(v.x),
+        y = static_cast<int>(v.y),
+        z = static_cast<int>(v.z);
     for(;;)
     {
         DOWNOCTREE(shadowent, );
