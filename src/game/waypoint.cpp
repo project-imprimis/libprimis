@@ -457,13 +457,22 @@ namespace ai
                     {
                         if(dist2 < maxdist)
                         {
-                            if(!curnode->isleaf(1)) wpcachestack.add(curnode + curnode->childindex(1));
-                            else CHECKWITHIN(curnode->childindex(1));
+                            if(!curnode->isleaf(1))
+                            {
+                                wpcachestack.add(curnode + curnode->childindex(1));
+                            }
+                            else
+                            {
+                                CHECKWITHIN(curnode->childindex(1));
+                            }
                         }
                         curnode += curnode->childindex(0);
                         continue;
                     }
-                    if(wpcachestack.empty()) break;
+                    if(wpcachestack.empty())
+                    {
+                        break;
+                    }
                     curnode = wpcachestack.pop();
                 }
             }
@@ -518,7 +527,11 @@ namespace ai
                         CHECKNEAR(curnode->childindex(0));
                         if(dist2 < limit)
                         {
-                            if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
+                            if(!curnode->isleaf(1))
+                            {
+                                curnode += curnode->childindex(1);
+                                continue;
+                            }
                             CHECKNEAR(curnode->childindex(1));
                         }
                     }
@@ -695,7 +708,7 @@ namespace ai
                         continue;
                     }
                     n.curscore = curscore;
-                    n.prev = ushort(&m - &waypoints[0]);
+                    n.prev = static_cast<ushort>(&m - &waypoints[0]);
                     if(n.route != routeid)
                     {
                         n.estscore = n.o.dist(waypoints[goal].o)*weight;
@@ -910,7 +923,10 @@ namespace ai
 
     void seedwaypoints()
     {
-        if(waypoints.empty()) addwaypoint(vec(0, 0, 0));
+        if(waypoints.empty())
+        {
+            addwaypoint(vec(0, 0, 0));
+        }
         for(int i = 0; i < entities::ents.length(); i++)
         {
             extentity &e = *entities::ents[i];
@@ -1141,7 +1157,8 @@ namespace ai
         {
             return;
         }
-        vec o = vec(sel.o).sub(0.1f), s = vec(sel.s).mul(sel.grid).add(o).add(0.1f);
+        vec o = vec(sel.o).sub(0.1f),
+            s = vec(sel.s).mul(sel.grid).add(o).add(0.1f);
         int cleared = 0;
         for(int i = 1; i < waypoints.length(); i++)
         {
