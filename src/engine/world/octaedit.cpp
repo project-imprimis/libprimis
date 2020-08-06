@@ -9,7 +9,8 @@ bool boxoutline = false;
 
 void boxs(int orient, vec o, const vec &s, float size)
 {
-    int d = DIMENSION(orient), dc = DIM_COORD(orient);
+    int d  = DIMENSION(orient),
+        dc = DIM_COORD(orient);
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
     o[D[d]] += dc * s[D[d]] + f;
 
@@ -17,7 +18,10 @@ void boxs(int orient, vec o, const vec &s, float size)
     r[R[d]] = s[R[d]];
     c[C[d]] = s[C[d]];
 
-    vec v1 = o, v2 = vec(o).add(r), v3 = vec(o).add(r).add(c), v4 = vec(o).add(c);
+    vec v1 = o,
+        v2 = vec(o).add(r),
+        v3 = vec(o).add(r).add(c),
+        v4 = vec(o).add(c);
 
     r[R[d]] = 0.5f*size;
     c[C[d]] = 0.5f*size;
@@ -43,7 +47,8 @@ void boxs(int orient, vec o, const vec &s, float size)
 
 void boxs(int orient, vec o, const vec &s)
 {
-    int d = DIMENSION(orient), dc = DIM_COORD(orient);
+    int d  = DIMENSION(orient),
+        dc = DIM_COORD(orient);
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
     o[D[d]] += dc * s[D[d]] + f;
 
@@ -69,7 +74,8 @@ void boxs3D(const vec &o, vec s, int g)
 
 void boxsgrid(int orient, vec o, vec s, int g)
 {
-    int d = DIMENSION(orient), dc = DIM_COORD(orient);
+    int d  = DIMENSION(orient),
+        dc = DIM_COORD(orient);
     float ox = o[R[d]],
           oy = o[C[d]],
           xs = s[R[d]],
@@ -125,7 +131,10 @@ bool pointinsel(const selinfo &sel, const vec &o)
 }
 
 VARF(dragging, 0, 0, 1,
-    if(!dragging || cor[0]<0) return;
+    if(!dragging || cor[0]<0)
+    {
+        return;
+    }
     lastcur = cur;
     lastcor = cor;
     sel.grid = gridsize;
@@ -137,8 +146,14 @@ ICOMMAND(moving, "b", (int *n),
 {
     if(*n >= 0)
     {
-        if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1)))) moving = 0;
-        else if(!moving) moving = 1;
+        if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1))))
+        {
+            moving = 0;
+        }
+        else if(!moving)
+        {
+            moving = 1;
+        }
     }
     intret(moving);
 });
@@ -178,9 +193,18 @@ void toggleedit(bool force)
 {
     if(!force)
     {
-        if(!isconnected()) return;
-        if(player->state!=ClientState_Alive && player->state!=ClientState_Dead && player->state!=ClientState_Editing) return; // do not allow dead players to edit to avoid state confusion
-        if(!game::allowedittoggle()) return;         // not in most multiplayer modes
+        if(!isconnected())
+        {
+            return;
+        }
+        if(player->state!=ClientState_Alive && player->state!=ClientState_Dead && player->state!=ClientState_Editing)
+        {
+            return; // do not allow dead players to edit to avoid state confusion
+        }
+        if(!game::allowedittoggle())
+        {
+            return;         // not in most multiplayer modes
+        }
     }
     if(!(editmode = !editmode))
     {
@@ -196,7 +220,10 @@ void toggleedit(bool force)
     cancelsel();
     keyrepeat(editmode, KeyRepeat_EditMode);
     editing = entediting = editmode;
-    if(!force) game::edittoggled(editmode);
+    if(!force)
+    {
+        game::edittoggled(editmode);
+    }
     execident("resethud");
 }
 
@@ -646,9 +673,15 @@ void blockcopy(const block3 &s, int rgrid, block3 *b)
 block3 *blockcopy(const block3 &s, int rgrid)
 {
     int bsize = sizeof(block3)+sizeof(cube)*s.size();
-    if(bsize <= 0 || bsize > (100<<20)) return NULL;
-    block3 *b = (block3 *)new (false) uchar[bsize];
-    if(b) blockcopy(s, rgrid, b);
+    if(bsize <= 0 || bsize > (100<<20))
+    {
+        return NULL;
+    }
+    block3 *b = reinterpret_cast<block3 *>(new (false) uchar[bsize]);
+    if(b)
+    {
+        blockcopy(s, rgrid, b);
+    }
     return b;
 }
 
@@ -659,7 +692,10 @@ void freeblock(block3 *b, bool alloced = true)
     {
         discardchildren(*q++);
     }
-    if(alloced) delete[] b;
+    if(alloced)
+    {
+        delete[] b;
+    }
 }
 
 void selgridmap(const selinfo &sel, uchar *g)                           // generates a map of the cube sizes at each grid point
@@ -669,8 +705,11 @@ void selgridmap(const selinfo &sel, uchar *g)                           // gener
 
 void freeundo(undoblock *u)
 {
-    if(!u->numents) freeblock(u->block(), false);
-    delete[] (uchar *)u;
+    if(!u->numents)
+    {
+        freeblock(u->block(), false);
+    }
+    delete[] reinterpret_cast<uchar *>(u);
 }
 
 void pasteundoblock(block3 *b, uchar *g)
@@ -681,18 +720,28 @@ void pasteundoblock(block3 *b, uchar *g)
 
 void pasteundo(undoblock *u)
 {
-    if(u->numents) pasteundoents(u);
-    else pasteundoblock(u->block(), u->gridmap());
+    if(u->numents)
+    {
+        pasteundoents(u);
+    }
+    else
+    {
+        pasteundoblock(u->block(), u->gridmap());
+    }
 }
 
 static inline int undosize(undoblock *u)
 {
-    if(u->numents) return u->numents*sizeof(undoent);
+    if(u->numents)
+    {
+        return u->numents*sizeof(undoent);
+    }
     else
     {
         block3 *b = u->block();
         cube *q = b->c();
-        int size = b->size(), total = size;
+        int size = b->size(),
+            total = size;
         for(int j = 0; j < size; ++j)
         {
             total += familysize(*q++)*sizeof(cube);
@@ -713,7 +762,10 @@ struct undolist
     {
         u->next = NULL;
         u->prev = last;
-        if(!first) first = last = u;
+        if(!first)
+        {
+            first = last = u;
+        }
         else
         {
             last->next = u;
@@ -725,8 +777,14 @@ struct undolist
     {
         undoblock *u = first;
         first = first->next;
-        if(first) first->prev = NULL;
-        else last = NULL;
+        if(first)
+        {
+            first->prev = NULL;
+        }
+        else
+        {
+            last = NULL;
+        }
         return u;
     }
 
@@ -734,8 +792,14 @@ struct undolist
     {
         undoblock *u = last;
         last = last->prev;
-        if(last) last->next = NULL;
-        else first = NULL;
+        if(last)
+        {
+            last->next = NULL;
+        }
+        else
+        {
+            first = NULL;
+        }
         return u;
     }
 };
@@ -773,9 +837,15 @@ undoblock *newundocube(const selinfo &s)
     int ssize = s.size(),
         selgridsize = ssize,
         blocksize = sizeof(block3)+ssize*sizeof(cube);
-    if(blocksize <= 0 || blocksize > (undomegs<<20)) return NULL;
-    undoblock *u = (undoblock *)new (false) uchar[sizeof(undoblock) + blocksize + selgridsize];
-    if(!u) return NULL;
+    if(blocksize <= 0 || blocksize > (undomegs<<20))
+    {
+        return NULL;
+    }
+    undoblock *u = reinterpret_cast<undoblock *>(new (false) uchar[sizeof(undoblock) + blocksize + selgridsize]);
+    if(!u)
+    {
+        return NULL;
+    }
     u->numents = 0;
     block3 *b = u->block();
     blockcopy(s, -s.grid, b);
@@ -798,12 +868,18 @@ VARP(nompedit, 0, 1, 1);
 void makeundo(selinfo &s)
 {
     undoblock *u = newundocube(s);
-    if(u) addundo(u);
+    if(u)
+    {
+        addundo(u);
+    }
 }
 
 void makeundo()                        // stores state of selected cubes before editing
 {
-    if(lastsel==sel || sel.s.iszero()) return;
+    if(lastsel==sel || sel.s.iszero())
+    {
+        return;
+    }
     lastsel=sel;
     makeundo(sel);
 }
@@ -832,12 +908,20 @@ static int countblock(block3 *b)
 
 void swapundo(undolist &a, undolist &b, int op)
 {
-    if(noedit()) return;
-    if(a.empty()) { conoutf(Console_Warn, "nothing more to %s", op == Edit_Redo ? "redo" : "undo"); return; }
+    if(noedit())
+    {
+        return;
+    }
+    if(a.empty())
+    {
+        conoutf(Console_Warn, "nothing more to %s", op == Edit_Redo ? "redo" : "undo");
+        return;
+    }
     int ts = a.last->timestamp;
     if(multiplayer(false))
     {
-        int n = 0, ops = 0;
+        int n   = 0,
+            ops = 0;
         for(undoblock *u = a.last; u && ts==u->timestamp; u = u->prev)
         {
             ++ops;
@@ -845,7 +929,11 @@ void swapundo(undolist &a, undolist &b, int op)
             if(ops > 10 || n > 2500)
             {
                 conoutf(Console_Warn, "undo too big for multiplayer");
-                if(nompedit) { multiplayer(); return; }
+                if(nompedit)
+                {
+                    multiplayer();
+                    return;
+                }
                 op = -1;
                 break;
             }
@@ -854,9 +942,15 @@ void swapundo(undolist &a, undolist &b, int op)
     selinfo l = sel;
     while(!a.empty() && ts==a.last->timestamp)
     {
-        if(op >= 0) game::edittrigger(sel, op);
+        if(op >= 0)
+        {
+            game::edittrigger(sel, op);
+        }
         undoblock *u = a.poplast(), *r;
-        if(u->numents) r = copyundoents(u);
+        if(u->numents)
+        {
+            r = copyundoents(u);
+        }
         else
         {
             block3 *ub = u->block();
@@ -873,7 +967,10 @@ void swapundo(undolist &a, undolist &b, int op)
             b.add(r);
         }
         pasteundo(u);
-        if(!u->numents) changed(*u->block(), false);
+        if(!u->numents)
+        {
+            changed(*u->block(), false);
+        }
         freeundo(u);
     }
     commitchanges();
@@ -924,7 +1021,7 @@ static bool packblock(block3 &b, B &buf)
         return false;
     }
     block3 hdr = b;
-    buf.put((const uchar *)&hdr, sizeof(hdr));
+    buf.put(reinterpret_cast<const uchar *>(&hdr), sizeof(hdr));
     cube *c = b.c();
     for(int i = 0; i < static_cast<int>(b.size()); ++i)
     {
@@ -958,7 +1055,7 @@ static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
             {
                 used.add(index);
                 VSlot &vs = *vslots[index];
-                vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
+                vslothdr &hdr = *reinterpret_cast<vslothdr *>(buf.pad(sizeof(vslothdr)));
                 hdr.index = index;
                 hdr.slot = vs.slot->index;
                 packvslot(buf, vs);
@@ -995,19 +1092,32 @@ static void unpackcube(cube &c, B &buf)
     {
         c.material = mat | (buf.get()<<8);
         buf.get(c.edges, sizeof(c.edges));
-        buf.get((uchar *)c.texture, sizeof(c.texture));
+        buf.get(reinterpret_cast<uchar *>(c.texture), sizeof(c.texture));
     }
 }
 
 template<class B>
 static bool unpackblock(block3 *&b, B &buf)
 {
-    if(b) { freeblock(b); b = NULL; }
+    if(b)
+    {
+        freeblock(b);
+        b = NULL;
+    }
     block3 hdr;
-    if(buf.get((uchar *)&hdr, sizeof(hdr)) < static_cast<int>(sizeof(hdr))) return false;
-    if(hdr.size() > (1<<20) || hdr.grid <= 0 || hdr.grid > (1<<12)) return false;
-    b = (block3 *)new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)];
-    if(!b) return false;
+    if(buf.get(reinterpret_cast<uchar *>(&hdr), sizeof(hdr)) < static_cast<int>(sizeof(hdr)))
+    {
+        return false;
+    }
+    if(hdr.size() > (1<<20) || hdr.grid <= 0 || hdr.grid > (1<<12))
+    {
+        return false;
+    }
+    b = reinterpret_cast<block3 *>(new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)]);
+    if(!b)
+    {
+        return false;
+    }
     *b = hdr;
     cube *c = b->c();
     memset(c, 0, b->size()*sizeof(cube));
@@ -1060,11 +1170,20 @@ static void unpackvslots(block3 &b, ucharbuf &buf)
     while(buf.remaining() >= static_cast<int>(sizeof(vslothdr)))
     {
         vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
-        if(!hdr.index) break;
+        if(!hdr.index)
+        {
+            break;
+        }
         VSlot &vs = *lookupslot(hdr.slot, false).variants;
         VSlot ds;
-        if(!unpackvslot(buf, ds, false)) break;
-        if(vs.index < 0 || vs.index == DEFAULT_SKY) continue;
+        if(!unpackvslot(buf, ds, false))
+        {
+            break;
+        }
+        if(vs.index < 0 || vs.index == DEFAULT_SKY)
+        {
+            continue;
+        }
         VSlot *edit = editvslot(vs, ds);
         unpackingvslots.add(vslotmap(hdr.index, edit ? edit : &vs));
     }
@@ -1122,11 +1241,21 @@ bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 
 bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
 {
-    if(e && e->copy) { freeblock(e->copy); e->copy = NULL; }
+    if(e && e->copy)
+    {
+        freeblock(e->copy);
+        e->copy = NULL;
+    }
     uchar *outbuf = NULL;
-    if(!uncompresseditinfo(inbuf, inlen, outbuf, outlen)) return false;
+    if(!uncompresseditinfo(inbuf, inlen, outbuf, outlen))
+    {
+        return false;
+    }
     ucharbuf buf(outbuf, outlen);
-    if(!e) e = editinfos.add(new editinfo);
+    if(!e)
+    {
+        e = editinfos.add(new editinfo);
+    }
     if(!unpackblock(e->copy, buf))
     {
         delete[] outbuf;
@@ -1139,9 +1268,15 @@ bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
 
 void freeeditinfo(editinfo *&e)
 {
-    if(!e) return;
+    if(!e)
+    {
+        return;
+    }
     editinfos.removeobj(e);
-    if(e->copy) freeblock(e->copy);
+    if(e->copy)
+    {
+        freeblock(e->copy);
+    }
     delete e;
     e = NULL;
 }
@@ -1192,8 +1327,8 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
         }
         for(int i = 0; i < numents; ++i)
         {
-            int idx = *(const ushort *)buf.pad(2);
-            entity &e = *(entity *)buf.pad(sizeof(entity));
+            int idx = *reinterpret_cast<const ushort *>(buf.pad(2));
+            entity &e = *reinterpret_cast<entity *>(buf.pad(sizeof(entity)));
             pasteundoent(idx, e);
         }
     }
@@ -1221,9 +1356,18 @@ bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen)
 {
     switch(op)
     {
-        case Edit_Undo: return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
-        case Edit_Redo: return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
-        default: return false;
+        case Edit_Undo:
+        {
+            return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
+        }
+        case Edit_Redo:
+        {
+            return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
+        }
+        default:
+        {
+            return false;
+        }
     }
 }
 
@@ -1240,12 +1384,27 @@ struct prefab : editinfo
     int numtris, numverts;
 
     prefab() : name(NULL), ebo(0), vbo(0), numtris(0), numverts(0) {}
-    ~prefab() { DELETEA(name); if(copy) freeblock(copy); }
+    ~prefab()
+    {
+        DELETEA(name);
+        if(copy)
+        {
+            freeblock(copy);
+        }
+    }
 
     void cleanup()
     {
-        if(ebo) { glDeleteBuffers_(1, &ebo); ebo = 0; }
-        if(vbo) { glDeleteBuffers_(1, &vbo); vbo = 0; }
+        if(ebo)
+        {
+            glDeleteBuffers_(1, &ebo);
+            ebo = 0;
+        }
+        if(vbo)
+        {
+            glDeleteBuffers_(1, &vbo);
+            vbo = 0;
+        }
         numtris = numverts = 0;
     }
 };
@@ -1271,26 +1430,41 @@ COMMAND(delprefab, "s");
 
 void saveprefab(char *name)
 {
-    if(!name[0] || noedit(true) || (nompedit && multiplayer())) return;
+    if(!name[0] || noedit(true) || (nompedit && multiplayer()))
+    {
+        return;
+    }
     prefab *b = prefabs.access(name);
     if(!b)
     {
         b = &prefabs[name];
         b->name = newstring(name);
     }
-    if(b->copy) freeblock(b->copy);
+    if(b->copy)
+    {
+        freeblock(b->copy);
+    }
     PROTECT_SEL(b->copy = blockcopy(block3(sel), sel.grid));
     changed(sel);
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "wb");
-    if(!f) { conoutf(Console_Error, "could not write prefab to %s", filename); return; }
+    if(!f)
+    {
+        conoutf(Console_Error, "could not write prefab to %s", filename);
+        return;
+    }
     prefabheader hdr;
     memcpy(hdr.magic, "OEBR", 4);
     hdr.version = 0;
     f->write(&hdr, sizeof(hdr));
     streambuf<uchar> s(f);
-    if(!packblock(*b->copy, s)) { delete f; conoutf(Console_Error, "could not pack prefab %s", filename); return; }
+    if(!packblock(*b->copy, s))
+    {
+        delete f;
+        conoutf(Console_Error, "could not pack prefab %s", filename);
+        return;
+    }
     delete f;
     conoutf("wrote prefab file %s", filename);
 }
