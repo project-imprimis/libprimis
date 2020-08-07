@@ -26,13 +26,13 @@ extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 
 extern const uchar cubectype[256] =
 {
-    CUBECTYPE(CT_SPACE,
-              CT_PRINT,
-              CT_PRINT|CT_DIGIT,
-              CT_PRINT|CT_ALPHA|CT_LOWER,
-              CT_PRINT|CT_ALPHA|CT_UPPER,
-              CT_PRINT|CT_UNICODE|CT_ALPHA|CT_LOWER,
-              CT_PRINT|CT_UNICODE|CT_ALPHA|CT_UPPER)
+    CUBECTYPE(CubeType_Space,
+              CubeType_Print,
+              CubeType_Print | CubeType_Digit,
+              CubeType_Print | CubeType_Alpha | CubeType_Lower,
+              CubeType_Print | CubeType_Alpha | CubeType_Upper,
+              CubeType_Print | CubeType_Unicode | CubeType_Alpha | CubeType_Lower,
+              CubeType_Print | CubeType_Unicode | CubeType_Alpha | CubeType_Upper)
 };
 extern const int cube2unichars[256] =
 {

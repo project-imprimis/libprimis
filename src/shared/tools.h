@@ -1419,22 +1419,22 @@ struct streambuf
 
 enum
 {
-    CT_PRINT   = 1<<0,
-    CT_SPACE   = 1<<1,
-    CT_DIGIT   = 1<<2,
-    CT_ALPHA   = 1<<3,
-    CT_LOWER   = 1<<4,
-    CT_UPPER   = 1<<5,
-    CT_UNICODE = 1<<6
+    CubeType_Print   = 1 << 0,
+    CubeType_Space   = 1 << 1,
+    CubeType_Digit   = 1 << 2,
+    CubeType_Alpha   = 1 << 3,
+    CubeType_Lower   = 1 << 4,
+    CubeType_Upper   = 1 << 5,
+    CubeType_Unicode = 1 << 6
 };
 extern const uchar cubectype[256];
-inline int iscubeprint(uchar c) { return cubectype[c]&CT_PRINT; }
-inline int iscubespace(uchar c) { return cubectype[c]&CT_SPACE; }
-inline int iscubealpha(uchar c) { return cubectype[c]&CT_ALPHA; }
-inline int iscubealnum(uchar c) { return cubectype[c]&(CT_ALPHA|CT_DIGIT); }
-inline int iscubelower(uchar c) { return cubectype[c]&CT_LOWER; }
-inline int iscubeupper(uchar c) { return cubectype[c]&CT_UPPER; }
-inline int iscubepunct(uchar c) { return cubectype[c] == CT_PRINT; }
+inline int iscubeprint(uchar c) { return cubectype[c] & CubeType_Print; }
+inline int iscubespace(uchar c) { return cubectype[c] & CubeType_Space; }
+inline int iscubealpha(uchar c) { return cubectype[c] & CubeType_Alpha; }
+inline int iscubealnum(uchar c) { return cubectype[c]&(CubeType_Alpha | CubeType_Digit); }
+inline int iscubelower(uchar c) { return cubectype[c] & CubeType_Lower; }
+inline int iscubeupper(uchar c) { return cubectype[c] & CubeType_Upper; }
+inline int iscubepunct(uchar c) { return cubectype[c] == CubeType_Print; }
 inline int cube2uni(uchar c)
 {
     extern const int cube2unichars[256];
