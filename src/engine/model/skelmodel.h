@@ -1203,9 +1203,9 @@ struct skelmodel : animmodel
                     {
                         continue;
                     }
-                    if(as->cur.anim&ANIM_NOPITCH || (as->interp < 1 && as->prev.anim&ANIM_NOPITCH))
+                    if(as->cur.anim & Anim_NoPitch || (as->interp < 1 && as->prev.anim & Anim_NoPitch))
                     {
-                        angle *= (as->cur.anim&ANIM_NOPITCH ? 0 : as->interp) + (as->interp < 1 && as->prev.anim&ANIM_NOPITCH ? 0 : 1-as->interp);
+                        angle *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
                     }
                     sc.bdata[b.interpindex].mulorient(quat(axis, angle*RAD), b.base);
                 }
@@ -1697,7 +1697,7 @@ struct skelmodel : animmodel
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
-            if(as->cur.anim&ANIM_NOSKIN)
+            if(as->cur.anim & Anim_NoSkin)
             {
                 if(enabletangents)
                 {
@@ -1946,7 +1946,7 @@ struct skelmodel : animmodel
 
             if(!skel->numframes)
             {
-                if(!(as->cur.anim&ANIM_NORENDER))
+                if(!(as->cur.anim & Anim_NoRender))
                 {
                     if(!vbocache->vbuf)
                     {
@@ -1964,7 +1964,7 @@ struct skelmodel : animmodel
             }
 
             skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? NULL : d->ragdoll);
-            if(!(as->cur.anim&ANIM_NORENDER))
+            if(!(as->cur.anim & Anim_NoRender))
             {
                 int owner = &sc-&skel->skelcache[0];
                 vbocacheentry &vc = skel->usegpuskel ? *vbocache : checkvbocache(sc, owner);
@@ -2012,7 +2012,7 @@ struct skelmodel : animmodel
 
             skel->calctags(p, &sc);
 
-            if(as->cur.anim&ANIM_RAGDOLL && skel->ragdoll && !d->ragdoll)
+            if(as->cur.anim & Anim_Ragdoll && skel->ragdoll && !d->ragdoll)
             {
                 d->ragdoll = new ragdolldata(skel->ragdoll, p->model->scale);
                 skel->initragdoll(*d->ragdoll, sc, p);

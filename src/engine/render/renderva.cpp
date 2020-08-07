@@ -647,7 +647,7 @@ VAR(oqmm, 0, 4, 8); //`o`cclusion `q`uery `m`ap `m`odel
 
 static inline void rendermapmodel(extentity &e)
 {
-    int anim = Anim_Mapmodel|ANIM_LOOP, basetime = 0;
+    int anim = Anim_Mapmodel | Anim_Loop, basetime = 0;
     rendermapmodel(e.attr1, anim, e.o, e.attr2, e.attr3, e.attr4, Model_CullVFC | Model_CullDist, basetime, e.attr5 > 0 ? e.attr5/100.0f : 1.0f);
 }
 

@@ -3800,7 +3800,7 @@ namespace UI
             Preview::setup(minw_, minh_);
             SETSTR(name, name_);
 
-            anim = ANIM_ALL;
+            anim = Anim_All;
             if(animspec[0])
             {
                 if(isdigit(animspec[0]))
@@ -3808,11 +3808,11 @@ namespace UI
                     anim = parseint(animspec);
                     if(anim >= 0)
                     {
-                        anim %= ANIM_INDEX;
+                        anim %= Anim_Index;
                     }
                     else
                     {
-                        anim = ANIM_ALL;
+                        anim = Anim_All;
                     }
                 }
                 else
@@ -3825,7 +3825,7 @@ namespace UI
                     }
                 }
             }
-            anim |= ANIM_LOOP;
+            anim |= Anim_Loop;
         }
 
         static const char *typestr()

@@ -433,7 +433,7 @@ struct vertmodel : animmodel
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
-            if(as->cur.anim&ANIM_NOSKIN)
+            if(as->cur.anim & Anim_NoSkin)
             {
                 if(enabletangents)
                 {
@@ -504,7 +504,7 @@ struct vertmodel : animmodel
 
         void render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
         {
-            if(as->cur.anim&ANIM_NORENDER)
+            if(as->cur.anim & Anim_NoRender)
             {
                 for(int i = 0; i < p->links.length(); i++)
                 {

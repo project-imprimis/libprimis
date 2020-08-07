@@ -1071,7 +1071,7 @@ namespace game
                     continue;
                 }
             }
-            rendermodel(mdl, Anim_Mapmodel|ANIM_LOOP, pos, yaw, pitch, 0, cull, NULL, NULL, 0, 0, fade);
+            rendermodel(mdl, Anim_Mapmodel | Anim_Loop, pos, yaw, pitch, 0, cull, NULL, NULL, 0, 0, fade);
         }
     }
 

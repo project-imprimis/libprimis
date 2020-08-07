@@ -609,7 +609,7 @@ struct ctfclientmode : clientmode
             const char *flagname = f.team==1 ? "game/flag/azul" : "game/flag/rojo";
             float angle;
             vec pos = interpflagpos(f, angle);
-            rendermodel(flagname, Anim_Mapmodel|ANIM_LOOP,
+            rendermodel(flagname, Anim_Mapmodel|Anim_Loop,
                         pos, angle, 0, 0,
                         Model_CullVFC | Model_CullOccluded);
         }
