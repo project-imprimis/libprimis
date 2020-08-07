@@ -28,7 +28,8 @@ namespace ai
             return -2;
         }
         float dist = raycube(pos, vec(0, 0, -1), 0, Ray_ClipMat);
-        int posmat = lookupmaterial(pos), weight = 1;
+        int posmat = lookupmaterial(pos),
+            weight = 1;
         if(IS_LIQUID(posmat&MatFlag_Volume))
         {
             weight *= 5;
@@ -409,13 +410,17 @@ namespace ai
 
         float mindist2 = mindist*mindist,
               maxdist2 = maxdist*maxdist;
-        #define CHECKWITHIN(index) do { \
+        #define CHECKWITHIN(index) \
+        do { \
             int n = (index); \
             if(n < waypoints.length()) \
             { \
                 const waypoint &w = waypoints[n]; \
                 float dist = w.o.squaredist(pos); \
-                if(dist > mindist2 && dist < maxdist2) results.add(n); \
+                if(dist > mindist2 && dist < maxdist2) \
+                { \
+                    results.add(n); \
+                } \
             } \
         } while(0)
         wpcache::node *curnode;
@@ -477,7 +482,10 @@ namespace ai
                 }
             }
         }
-        for(int i = lastwpcache; i < waypoints.length(); i++) { CHECKWITHIN(i); }
+        for(int i = lastwpcache; i < waypoints.length(); i++)
+        {
+            CHECKWITHIN(i);
+        }
     }
 
     void avoidset::avoidnear(void *owner, float above, const vec &pos, float limit)
@@ -492,12 +500,16 @@ namespace ai
         }
 
         float limit2 = limit*limit;
-        #define CHECKNEAR(index) do { \
+        #define CHECKNEAR(index) \
+        do { \
             int n = (index); \
             if(n < ai::waypoints.length()) \
             { \
                 const waypoint &w = ai::waypoints[n]; \
-                if(w.o.squaredist(pos) < limit2) add(owner, above, n); \
+                if(w.o.squaredist(pos) < limit2) \
+                { \
+                    add(owner, above, n); \
+                } \
             } \
         } while(0)
         wpcache::node *curnode;
@@ -1215,4 +1227,3 @@ namespace ai
     }
     ICOMMAND(movewaypoints, "iii", (int *dx, int *dy, int *dz), movewaypoints(vec(*dx, *dy, *dz)));
 }
-
