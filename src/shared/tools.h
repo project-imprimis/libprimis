@@ -273,7 +273,10 @@ struct databuf
     const T &get()
     {
         static const T overreadval = 0;
-        if(len<maxlen) return buf[len++];
+        if(len<maxlen)
+        {
+            return buf[len++];
+        }
         flags |= OVERREAD;
         return overreadval;
     }
@@ -294,8 +297,14 @@ struct databuf
 
     void put(const T &val)
     {
-        if(len<maxlen) buf[len++] = val;
-        else flags |= OVERWROTE;
+        if(len<maxlen)
+        {
+            buf[len++] = val;
+        }
+        else
+        {
+            flags |= OVERWROTE;
+        }
     }
 
     void put(const T *vals, int numvals)
@@ -684,11 +693,36 @@ struct vector
 
     T *disown() { T *r = buf; buf = NULL; alen = ulen = 0; return r; }
 
-    void shrink(int i) {if(isclass<T>::no) ulen = i; else while(ulen>i) drop(); }
+    void shrink(int i)
+    {
+        if(isclass<T>::no)
+        {
+            ulen = i;
+        }
+        else
+        {
+            while(ulen>i)
+            {
+                drop();
+            }
+        }
+    }
     void setsize(int i) { ulen = i; }
 
-    void deletecontents(int n = 0) { while(ulen > n) delete pop(); }
-    void deletearrays(int n = 0) { while(ulen > n) delete[] pop(); }
+    void deletecontents(int n = 0)
+    {
+        while(ulen > n)
+        {
+            delete pop();
+        }
+    }
+    void deletearrays(int n = 0)
+    {
+        while(ulen > n)
+        {
+            delete[] pop();
+        }
+    }
 
     T *getbuf() { return buf; }
     const T *getbuf() const { return buf; }
@@ -706,13 +740,28 @@ struct vector
     void growbuf(int sz)
     {
         int olen = alen;
-        if(alen <= 0) alen = max(MINSIZE, sz);
-        else while(alen < sz) alen += alen/2;
-        if(alen <= olen) return;
+        if(alen <= 0)
+        {
+            alen = max(MINSIZE, sz);
+        }
+        else
+        {
+            while(alen < sz)
+            {
+                alen += alen/2;
+            }
+        }
+        if(alen <= olen)
+        {
+            return;
+        }
         uchar *newbuf = new uchar[alen*sizeof(T)];
         if(olen > 0)
         {
-            if(ulen > 0) memcpy(newbuf, (void *)buf, ulen*sizeof(T));
+            if(ulen > 0)
+            {
+                memcpy(newbuf, (void *)buf, ulen*sizeof(T));
+            }
             delete[] (uchar *)buf;
         }
         buf = (T *)newbuf;
@@ -720,7 +769,10 @@ struct vector
 
     databuf<T> reserve(int sz)
     {
-        if(alen-ulen < sz) growbuf(ulen+sz);
+        if(alen-ulen < sz)
+        {
+            growbuf(ulen+sz);
+        }
         return databuf<T>(&buf[ulen], sz);
     }
 
@@ -827,14 +879,20 @@ struct vector
     T &insert(int i, const T &e)
     {
         add(T());
-        for(int p = ulen-1; p>i; p--) buf[p] = buf[p-1];
+        for(int p = ulen-1; p>i; p--)
+        {
+            buf[p] = buf[p-1];
+        }
         buf[i] = e;
         return buf[i];
     }
 
     T *insert(int i, const T *e, int n)
     {
-        if(alen-ulen < n) growbuf(ulen+n);
+        if(alen-ulen < n)
+        {
+            growbuf(ulen+n);
+        }
         for(int j = 0; j < n; ++j)
         {
             add(T());
@@ -872,7 +930,10 @@ struct vector
         while(i > 0)
         {
             int pi = heapparent(i);
-            if(score >= heapscore(buf[pi])) break;
+            if(score >= heapscore(buf[pi]))
+            {
+                break;
+            }
             swap(buf[i], buf[pi]);
             i = pi;
         }
@@ -895,10 +956,19 @@ struct vector
             float cscore = heapscore(buf[ci]);
             if(score > cscore)
             {
-               if(ci+1 < ulen && heapscore(buf[ci+1]) < cscore) { swap(buf[ci+1], buf[i]); i = ci+1; }
-               else { swap(buf[ci], buf[i]); i = ci; }
+               if(ci+1 < ulen && heapscore(buf[ci+1]) < cscore)
+               {
+                   swap(buf[ci+1], buf[i]); i = ci+1;
+               }
+               else
+               {
+                   swap(buf[ci], buf[i]); i = ci;
+               }
             }
-            else if(ci+1 < ulen && heapscore(buf[ci+1]) < score) { swap(buf[ci+1], buf[i]); i = ci+1; }
+            else if(ci+1 < ulen && heapscore(buf[ci+1]) < score)
+            {
+                swap(buf[ci+1], buf[i]); i = ci+1;
+            }
             else break;
         }
         return i;
