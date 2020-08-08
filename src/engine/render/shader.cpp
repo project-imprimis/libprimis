@@ -326,7 +326,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
                 glUniform1i_(loc, i);
             }
         }
-        if(s.type & SHADER_WORLD)
+        if(s.type & Shader_World)
         {
             bindworldtexlocs(s);
         }
@@ -758,7 +758,7 @@ void Shader::cleanup(bool full)
     globalparams.setsize(0);
     if(standard || full)
     {
-        type = SHADER_INVALID;
+        type = Shader_Invalid;
         DELETEA(vsstr);
         DELETEA(psstr);
         DELETEA(defer);
@@ -842,7 +842,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     s.vsstr = newstring(vs);
     s.psstr = newstring(ps);
     DELETEA(s.defer);
-    s.type = type & ~(SHADER_INVALID | SHADER_DEFERRED);
+    s.type = type & ~(Shader_Invalid | Shader_Deferred);
     s.variantshader = variant;
     s.standard = standardshaders;
     if(forceshaders)
@@ -1216,7 +1216,7 @@ void defershader(int *type, const char *name, const char *contents)
     s.name = rname;
     DELETEA(s.defer);
     s.defer = newstring(contents);
-    s.type = SHADER_DEFERRED | (*type & ~SHADER_INVALID);
+    s.type = Shader_Deferred | (*type & ~Shader_Invalid);
     s.standard = standardshaders;
 }
 COMMAND(defershader, "iss");
@@ -1245,7 +1245,7 @@ void Shader::force()
     if(deferred())
     {
         DELETEA(defer);
-        type = SHADER_INVALID;
+        type = Shader_Invalid;
     }
 }
 

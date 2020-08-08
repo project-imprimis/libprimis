@@ -1182,7 +1182,6 @@ bool dropentity(entity &e, int drop = -1)
     return true;
 }
 
-
 void dropent()
 {
     if(noentedit())

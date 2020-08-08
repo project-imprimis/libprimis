@@ -164,15 +164,15 @@ struct SlotShaderParamState : LocalShaderParamState
 
 enum
 {
-    SHADER_DEFAULT    = 0,
-    SHADER_WORLD      = 1<<0,
-    SHADER_REFRACT    = 1<<2,
-    SHADER_OPTION     = 1<<3,
-    SHADER_DYNAMIC    = 1<<4,
-    SHADER_TRIPLANAR  = 1<<5,
+    Shader_Default    = 0,
+    Shader_World      = 1 << 0,
+    Shader_Refract    = 1 << 2,
+    Shader_Option     = 1 << 3,
+    Shader_Dynamic    = 1 << 4,
+    Shader_Triplanar  = 1 << 5,
 
-    SHADER_INVALID    = 1<<8,
-    SHADER_DEFERRED   = 1<<9
+    Shader_Invalid    = 1 << 8,
+    Shader_Deferred   = 1 << 9
 };
 
 const int maxvariantrows = 32;
@@ -225,7 +225,7 @@ struct Shader
     vector<FragDataLoc> fragdatalocs;
     const void *owner;
 
-    Shader() : name(NULL), vsstr(NULL), psstr(NULL), defer(NULL), type(SHADER_DEFAULT), program(0), vsobj(0), psobj(0), variantshader(NULL), variantrows(NULL), standard(false), forced(false), used(false), reusevs(NULL), reuseps(NULL), owner(NULL)
+    Shader() : name(NULL), vsstr(NULL), psstr(NULL), defer(NULL), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(NULL), variantrows(NULL), standard(false), forced(false), used(false), reusevs(NULL), reuseps(NULL), owner(NULL)
     {
     }
 
@@ -260,25 +260,25 @@ struct Shader
 
     bool invalid() const
     {
-        return (type&SHADER_INVALID)!=0;
+        return (type & Shader_Invalid) != 0;
     }
     bool deferred() const
     {
-        return (type&SHADER_DEFERRED)!=0;
+        return (type & Shader_Deferred) != 0;
     }
     bool loaded() const
     {
-        return !(type&(SHADER_DEFERRED|SHADER_INVALID));
+        return !(type&(Shader_Deferred | Shader_Invalid));
     }
 
     bool hasoption() const
     {
-        return (type&SHADER_OPTION)!=0;
+        return (type & Shader_Option) != 0;
     }
 
     bool isdynamic() const
     {
-        return (type&SHADER_DYNAMIC)!=0;
+        return (type & Shader_Dynamic) != 0;
     }
 
     static inline bool isnull(const Shader *s)
