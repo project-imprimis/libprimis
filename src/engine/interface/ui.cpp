@@ -138,9 +138,9 @@ namespace UI
 
     enum
     {
-        CHANGE_SHADER = 1<<0,
-        CHANGE_COLOR  = 1<<1,
-        CHANGE_BLEND  = 1<<2
+        Change_Shader = 1 << 0,
+        Change_Color  = 1 << 1,
+        Change_Blend  = 1 << 2
     };
     static int changed = 0;
 
@@ -362,15 +362,15 @@ namespace UI
             changed &= ~change;
             if(changed)
             {
-                if(changed&CHANGE_SHADER)
+                if(changed & Change_Shader)
                 {
                     hudshader->set();
                 }
-                if(changed&CHANGE_COLOR)
+                if(changed & Change_Color)
                 {
                     gle::colorf(1, 1, 1);
                 }
-                if(changed&CHANGE_BLEND)
+                if(changed & Change_Blend)
                 {
                     resetblend();
                 }
@@ -1537,7 +1537,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE) modblend(); else resetblend();
 
             color.init();
@@ -1578,7 +1578,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE) modblend(); else resetblend();
 
             gle::begin(GL_TRIANGLE_STRIP);
@@ -1613,7 +1613,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             color.init();
             gle::begin(GL_LINES);
@@ -1646,7 +1646,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             color.init();
             gle::begin(GL_LINE_LOOP);
@@ -2169,7 +2169,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE)
             {
                 modblend();
@@ -2212,7 +2212,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE) modblend(); else resetblend();
 
             float r = radius <= 0 ? min(w, h)/2 : radius;
@@ -2289,7 +2289,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             float oldscale = textscale;
             textscale = drawscale();
@@ -2514,7 +2514,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             float k = drawscale();
             pushhudtranslate(sx, sy, k);
@@ -3432,7 +3432,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             edit->rendered = true;
 
@@ -3841,7 +3841,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER);
+            changedraw(Change_Shader);
 
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
@@ -3890,7 +3890,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER);
+            changedraw(Change_Shader);
 
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
@@ -3929,7 +3929,7 @@ namespace UI
         void draw(float sx, float sy)
         {
             Object::draw(sx, sy);
-            changedraw(CHANGE_SHADER);
+            changedraw(Change_Shader);
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
             modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.length() > 0);
@@ -4006,7 +4006,7 @@ namespace UI
                 }
             }
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             SETSHADER(hudrgb);
             vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
