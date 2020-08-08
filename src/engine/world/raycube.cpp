@@ -432,14 +432,14 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
         {
             if(IS_ENTIRELY_SOLID(c))
             {
-                return c.texture[side]==DEFAULT_SKY && mode&Ray_SkipSky ? radius : dist;
+                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist;
             }
             const clipplanes &p = getclipplanes(c, lo, 1<<lshift);
             INTERSECTPLANES(side = p.side[i], goto nextcube);
             INTERSECTBOX(side = (i<<1) + 1 - lsizemask[i], goto nextcube);
             if(exitdist >= 0)
             {
-                return c.texture[side]==DEFAULT_SKY && mode&Ray_SkipSky ? radius : dist+max(enterdist+0.1f, 0.0f);
+                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist+max(enterdist+0.1f, 0.0f);
             }
         }
 
