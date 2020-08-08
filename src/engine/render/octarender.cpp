@@ -665,7 +665,7 @@ struct vacollect : verthash
             for(int i = 0; i < matsurfs.length(); i++)
             {
                 materialsurface &m = matsurfs[i];
-                if(m.visible == MATSURF_EDIT_ONLY)
+                if(m.visible == MatSurf_EditOnly)
                 {
                     continue;
                 }

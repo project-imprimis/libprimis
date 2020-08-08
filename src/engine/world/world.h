@@ -39,9 +39,9 @@ struct mapheader
 
 enum
 {
-    MATSURF_NOT_VISIBLE = 0,
-    MATSURF_VISIBLE,
-    MATSURF_EDIT_ONLY
+    MatSurf_NotVisible = 0,
+    MatSurf_Visible,
+    MatSurf_EditOnly
 };
 
 #define TEX_SCALE 16.0f

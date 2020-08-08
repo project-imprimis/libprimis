@@ -203,7 +203,7 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
         {
             if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
             {
-                return (orient != Orient_Bottom ? MATSURF_VISIBLE : MATSURF_EDIT_ONLY);
+                return (orient != Orient_Bottom ? MatSurf_Visible : MatSurf_EditOnly);
             }
             break;
         }
@@ -211,7 +211,7 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
         {
             if(visibleface(c, orient, co, size, Mat_Glass, Mat_Air, matmask))
             {
-                return MATSURF_VISIBLE;
+                return MatSurf_Visible;
             }
             break;
         }
@@ -219,12 +219,12 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
         {
             if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
             {
-                return MATSURF_EDIT_ONLY;
+                return MatSurf_EditOnly;
             }
             break;
         }
     }
-    return MATSURF_NOT_VISIBLE;
+    return MatSurf_NotVisible;
 }
 
 void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface> &matsurfs)
@@ -236,7 +236,7 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
         {
             ushort matmask = matmasks[j];
             int vis = visiblematerial(c, i, co, size, matmask&~MatFlag_Index);
-            if(vis != MATSURF_NOT_VISIBLE)
+            if(vis != MatSurf_NotVisible)
             {
                 materialsurface m;
                 m.material = c.material&matmask;
@@ -284,7 +284,7 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
         {
             case Mat_Water:
             {
-                if(m.visible == MATSURF_EDIT_ONLY)
+                if(m.visible == MatSurf_EditOnly)
                 {
                     continue;
                 }
@@ -864,7 +864,7 @@ int findmaterials()
             {
                 materialsurface &m = va->matbuf[i];
                 //skip if only rendering edit mat boxes or non-water mat
-                if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MATSURF_EDIT_ONLY)
+                if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MatSurf_EditOnly)
                 {
                     i += m.skip;
                     continue;
