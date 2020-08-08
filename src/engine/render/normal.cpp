@@ -218,7 +218,7 @@ void addnormals(cube &c, const ivec &o, int size)
     {
         if((vis = visibletris(c, i, o, size)))
         {
-            if(c.texture[i] == DEFAULT_SKY)
+            if(c.texture[i] == Default_Sky)
             {
                 continue;
             }

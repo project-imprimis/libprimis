@@ -895,13 +895,13 @@ extern const vec orientation_bitangent[8][6] =
 
 void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *index, int numverts, int convex, int tj)
 {
-    int &total = key.tex==DEFAULT_SKY ? vc.skytris : vc.worldtris;
+    int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris;
     int edge = orient*(Face_MaxVerts+1);
     for(int i = 0; i < numverts-2; ++i)
     {
         if(index[0]!=index[i+1] && index[i+1]!=index[i+2] && index[i+2]!=index[0])
         {
-            vector<ushort> &idxs = key.tex==DEFAULT_SKY ? vc.skyindices : vc.indices[key].tris;
+            vector<ushort> &idxs = key.tex == Default_Sky ? vc.skyindices : vc.indices[key].tris;
             int left  = index[0],
                 mid   = index[i+1],
                 right = index[i+2],
@@ -1298,7 +1298,7 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
             v.norm = bvec(n);
             v.tangent = bvec4(bvec(t), orientation_bitangent[vslot.rotation][orient].scalartriple(n, t) < 0 ? 0 : 255);
         }
-        else if(texture != DEFAULT_SKY)
+        else if(texture != Default_Sky)
         {
             if(!k)
             {
@@ -1338,7 +1338,7 @@ void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, usho
             }
         }
     }
-    if(texture == DEFAULT_SKY)
+    if(texture == Default_Sky)
     {
         for(int i = 0; i < numverts; ++i)
         {
@@ -2164,7 +2164,7 @@ static inline int setcubevisibility(cube &c, const ivec &co, int size)
             else
             {
                 numvis++;
-                if(c.texture[i] != DEFAULT_SKY && !(c.ext && c.ext->surfaces[i].numverts&Face_MaxVerts))
+                if(c.texture[i] != Default_Sky && !(c.ext && c.ext->surfaces[i].numverts & Face_MaxVerts))
                 {
                     checkmask |= 1<<i;
                 }

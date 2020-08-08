@@ -2022,7 +2022,7 @@ int compactvslots(bool cull)
     }
     if(cull)
     {
-        int numdefaults = min(static_cast<int>(NUMDEFAULTSLOTS), slots.length());
+        int numdefaults = min(static_cast<int>(Default_NumDefaults), slots.length());
         for(int i = 0; i < numdefaults; ++i)
         {
             slots[i]->variants->index = compactedvslots++;
@@ -2654,7 +2654,7 @@ ICOMMAND(fixinsidefaces, "i", (int *tex),
     {
         return;
     }
-    fixinsidefaces(worldroot, ivec(0, 0, 0), worldsize>>1, *tex && vslots.inrange(*tex) ? *tex : DEFAULT_GEOM);
+    fixinsidefaces(worldroot, ivec(0, 0, 0), worldsize>>1, *tex && vslots.inrange(*tex) ? *tex : Default_Geom);
     allchanged();
 });
 
@@ -3187,7 +3187,7 @@ MatSlot &lookupmaterialslot(int index, bool load)
 
 Slot &lookupslot(int index, bool load)
 {
-    Slot &s = slots.inrange(index) ? *slots[index] : (slots.inrange(DEFAULT_GEOM) ? *slots[DEFAULT_GEOM] : dummyslot);
+    Slot &s = slots.inrange(index) ? *slots[index] : (slots.inrange(Default_Geom) ? *slots[Default_Geom] : dummyslot);
     if(!s.loaded && load)
     {
         s.load();
@@ -3197,7 +3197,7 @@ Slot &lookupslot(int index, bool load)
 
 VSlot &lookupvslot(int index, bool load)
 {
-    VSlot &s = vslots.inrange(index) && vslots[index]->slot ? *vslots[index] : (slots.inrange(DEFAULT_GEOM) && slots[DEFAULT_GEOM]->variants ? *slots[DEFAULT_GEOM]->variants : dummyvslot);
+    VSlot &s = vslots.inrange(index) && vslots[index]->slot ? *vslots[index] : (slots.inrange(Default_Geom) && slots[Default_Geom]->variants ? *slots[Default_Geom]->variants : dummyvslot);
     if(load && !s.linked)
     {
         if(!s.slot->loaded)

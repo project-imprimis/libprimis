@@ -1180,7 +1180,7 @@ static void unpackvslots(block3 &b, ucharbuf &buf)
         {
             break;
         }
-        if(vs.index < 0 || vs.index == DEFAULT_SKY)
+        if(vs.index < 0 || vs.index == Default_Sky)
         {
             continue;
         }
@@ -2356,7 +2356,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                 cube &o = blockcube(x, y, 1, sel, -sel.grid);
                 for(int i = 0; i < 6; ++i) //for each face
                 {
-                    c.texture[i] = o.children ? DEFAULT_GEOM : o.texture[i];
+                    c.texture[i] = o.children ? Default_Geom : o.texture[i];
                 }
             }
             else
@@ -2525,7 +2525,7 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
         }
     }
     VSlot &vs = lookupvslot(index, false);
-    if(vs.index < 0 || vs.index == DEFAULT_SKY)
+    if(vs.index < 0 || vs.index == Default_Sky)
     {
         return NULL;
     }
@@ -2865,7 +2865,7 @@ static int unpacktex(int &tex, ucharbuf &buf, bool insert = true)
         return false;
     }
     VSlot &vs = *lookupslot(tex & 0xFFFF, false).variants;
-    if(vs.index < 0 || vs.index == DEFAULT_SKY)
+    if(vs.index < 0 || vs.index == Default_Sky)
     {
         return false;
     }

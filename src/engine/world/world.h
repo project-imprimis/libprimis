@@ -1,9 +1,9 @@
 
 enum                            // hardcoded texture numbers
 {
-    DEFAULT_SKY = 0,
-    DEFAULT_GEOM,
-    NUMDEFAULTSLOTS
+    Default_Sky = 0,
+    Default_Geom,
+    Default_NumDefaults
 };
 
 #define OCTAVERSION 33

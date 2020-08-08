@@ -679,7 +679,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
             int usefacemask = 0;
             for(int j = 0; j < 6; ++j)
             {
-                if(c[i].texture[j] != DEFAULT_SKY && (!(c[i].merged&(1<<j)) || (c[i].ext && c[i].ext->surfaces[j].numverts&Face_MaxVerts)))
+                if(c[i].texture[j] != Default_Sky && (!(c[i].merged & (1 << j)) || (c[i].ext && c[i].ext->surfaces[j].numverts & Face_MaxVerts)))
                 {
                     usefacemask |= visibletris(c[i], j, o, size)<<(4*j);
                 }

@@ -17,7 +17,7 @@ static struct emptycube : cube
         SET_FACES(*this, F_EMPTY);
         for(int i = 0; i < 6; ++i)
         {
-            texture[i] = DEFAULT_SKY;
+            texture[i] = Default_Sky;
         }
     }
 } emptycube;
@@ -94,7 +94,7 @@ cube *newcubes(uint face, int mat)
         SET_FACES(*c, face);
         for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
         {
-            c->texture[l] = DEFAULT_GEOM;
+            c->texture[l] = Default_Geom;
         }
         c->material = mat;
         c++;
@@ -416,7 +416,7 @@ int getmippedtexture(const cube &p, int orient)
                 }
             }
             int tex = c[n].texture[orient];
-            if(tex > DEFAULT_SKY)
+            if(tex > Default_Sky)
             {
                 for(int i = 0; i < numtexs; ++i)
                 {
@@ -431,12 +431,12 @@ int getmippedtexture(const cube &p, int orient)
     }
     for(int i = numtexs; --i >= 0;) //note reverse iteration
     {
-        if(!i || texs[i] > DEFAULT_SKY)
+        if(!i || texs[i] > Default_Sky)
         {
             return texs[i];
         }
     }
-    return DEFAULT_GEOM;
+    return Default_Geom;
 }
 
 void forcemip(cube &c, bool fixtex)
