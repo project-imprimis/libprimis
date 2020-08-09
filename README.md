@@ -1,6 +1,8 @@
 ## Imprimis
 *the destroyable realtime 3d game engine*
 
+Check out the project timeline at `doc/timeline.md`!
+
 Imprimis is a fork of Tesseract, which is a fork of the Cube 2: Sauerbraten engine. The goal of the Imprimis
 engine is to provide a clean, documented and consistent base with which to build games, particularly
 first person shooter games, upon. **It is currently under development and does not necessarily
