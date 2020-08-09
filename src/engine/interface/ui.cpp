@@ -78,21 +78,21 @@ namespace UI
 
     enum
     {
-        ALIGN_MASK = 0xF,
+        Align_Mask = 0xF,
 
-        ALIGN_HMASK   = 0x3,
-        ALIGN_HSHIFT  = 0,
-        ALIGN_HNONE   = 0,
-        ALIGN_LEFT    = 1,
-        ALIGN_HCENTER = 2,
-        ALIGN_RIGHT   = 3,
+        Align_HMask   = 0x3,
+        Align_HShift  = 0,
+        Align_HNone   = 0,
+        Align_Left    = 1,
+        Align_HCenter = 2,
+        Align_Right   = 3,
 
-        ALIGN_VMASK   = 0xC,
-        ALIGN_VSHIFT  = 2,
-        ALIGN_VNONE   = 0 << 2,
-        ALIGN_TOP     = 1 << 2,
-        ALIGN_VCENTER = 2 << 2,
-        ALIGN_BOTTOM  = 3 << 2,
+        Align_VMask   = 0xC,
+        Align_VShift  = 2,
+        Align_VNone   = 0 << 2,
+        Align_Top     = 1 << 2,
+        Align_VCenter = 2 << 2,
+        Align_Bottom  = 3 << 2,
     };
 
     enum
@@ -103,7 +103,7 @@ namespace UI
         Clamp_Top     = 0x40,
         Clamp_Bottom  = 0x80,
 
-        NO_ADJUST     = ALIGN_HNONE | ALIGN_VNONE,
+        NO_ADJUST     = Align_HNone | Align_VNone,
     };
 
     enum
@@ -199,12 +199,12 @@ namespace UI
         {
             resetlayout();
             parent = NULL;
-            adjust = ALIGN_HCENTER | ALIGN_VCENTER;
+            adjust = Align_HCenter | Align_VCenter;
         }
 
         virtual uchar childalign() const
         {
-            return ALIGN_HCENTER | ALIGN_VCENTER;
+            return Align_HCenter | Align_VCenter;
         }
 
         void reset(Object *parent_)
@@ -271,18 +271,18 @@ namespace UI
 
         void adjustlayout(float px, float py, float pw, float ph)
         {
-            switch(adjust&ALIGN_HMASK)
+            switch(adjust & Align_HMask)
             {
-                case ALIGN_LEFT:    x = px; break;
-                case ALIGN_HCENTER: x = px + (pw - w) / 2; break;
-                case ALIGN_RIGHT:   x = px + pw - w; break;
+                case Align_Left: x = px; break;
+                case Align_HCenter: x = px + (pw - w) / 2; break;
+                case Align_Right: x = px + pw - w; break;
             }
 
-            switch(adjust&ALIGN_VMASK)
+            switch(adjust & Align_VMask)
             {
-                case ALIGN_TOP:     y = py; break;
-                case ALIGN_VCENTER: y = py + (ph - h) / 2; break;
-                case ALIGN_BOTTOM:  y = py + ph - h; break;
+                case Align_Top: y = py; break;
+                case Align_VCenter: y = py + (ph - h) / 2; break;
+                case Align_Bottom: y = py + ph - h; break;
             }
 
             if(adjust & Clamp_Mask)
@@ -298,9 +298,9 @@ namespace UI
 
         void setalign(int xalign, int yalign)
         {
-            adjust &= ~ALIGN_MASK;
-            adjust |= (std::clamp(xalign, -2, 1)+2)<<ALIGN_HSHIFT;
-            adjust |= (std::clamp(yalign, -2, 1)+2)<<ALIGN_VSHIFT;
+            adjust &= ~Align_Mask;
+            adjust |= (std::clamp(xalign, -2, 1)+2) << Align_HShift;
+            adjust |= (std::clamp(yalign, -2, 1)+2) << Align_VShift;
         }
 
         void setclamp(int left, int right, int top, int bottom)
@@ -994,7 +994,7 @@ namespace UI
 
         uchar childalign() const
         {
-            return ALIGN_VCENTER;
+            return Align_VCenter;
         }
 
         void layout()
@@ -1050,7 +1050,7 @@ namespace UI
 
         uchar childalign() const
         {
-            return ALIGN_HCENTER;
+            return Align_HCenter;
         }
 
         void layout()
@@ -1215,7 +1215,7 @@ namespace UI
 
         uchar childalign() const
         {
-            return columns < 0 ? ALIGN_VCENTER : ALIGN_HCENTER | ALIGN_VCENTER;
+            return columns < 0 ? Align_VCenter : Align_HCenter | Align_VCenter;
         }
 
         int childcolumns() const
@@ -2900,7 +2900,7 @@ namespace UI
             button->w = max(button->w, bw);
             float bscale = scroller->hscale() < 1 ? (w - button->w) / (1 - scroller->hscale()) : 1;
             button->x = scroller->hoffset()*bscale;
-            button->adjust &= ~ALIGN_HMASK;
+            button->adjust &= ~Align_HMask;
 
             ScrollBar::adjustchildren();
         }
@@ -2961,7 +2961,7 @@ namespace UI
             button->h = max(button->h, bh);
             float bscale = scroller->vscale() < 1 ? (h - button->h) / (1 - scroller->vscale()) : 1;
             button->y = scroller->voffset()*bscale;
-            button->adjust &= ~ALIGN_VMASK;
+            button->adjust &= ~Align_VMask;
 
             ScrollBar::adjustchildren();
         }
@@ -3270,7 +3270,7 @@ namespace UI
             {
                 button->x = (w - button->w) * step * vstep / (vmax - vmin);
             }
-            button->adjust &= ~ALIGN_HMASK;
+            button->adjust &= ~Align_HMask;
 
             Slider::adjustchildren();
         }
@@ -3317,7 +3317,7 @@ namespace UI
             {
                 button->y = (h - button->h) * step * vstep / (vmax - vmin);
             }
-            button->adjust &= ~ALIGN_VMASK;
+            button->adjust &= ~Align_VMask;
 
             Slider::adjustchildren();
         }
