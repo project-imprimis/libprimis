@@ -78,7 +78,7 @@ namespace UI
 
     enum
     {
-        ALIGN_MASK    = 0xF,
+        ALIGN_MASK = 0xF,
 
         ALIGN_HMASK   = 0x3,
         ALIGN_HSHIFT  = 0,
@@ -89,16 +89,19 @@ namespace UI
 
         ALIGN_VMASK   = 0xC,
         ALIGN_VSHIFT  = 2,
-        ALIGN_VNONE   = 0<<2,
-        ALIGN_TOP     = 1<<2,
-        ALIGN_VCENTER = 2<<2,
-        ALIGN_BOTTOM  = 3<<2,
+        ALIGN_VNONE   = 0 << 2,
+        ALIGN_TOP     = 1 << 2,
+        ALIGN_VCENTER = 2 << 2,
+        ALIGN_BOTTOM  = 3 << 2,
+    };
 
-        CLAMP_MASK    = 0xF0,
-        CLAMP_LEFT    = 0x10,
-        CLAMP_RIGHT   = 0x20,
-        CLAMP_TOP     = 0x40,
-        CLAMP_BOTTOM  = 0x80,
+    enum
+    {
+        Clamp_Mask    = 0xF0,
+        Clamp_Left    = 0x10,
+        Clamp_Right   = 0x20,
+        Clamp_Top     = 0x40,
+        Clamp_Bottom  = 0x80,
 
         NO_ADJUST     = ALIGN_HNONE | ALIGN_VNONE,
     };
@@ -282,12 +285,12 @@ namespace UI
                 case ALIGN_BOTTOM:  y = py + ph - h; break;
             }
 
-            if(adjust&CLAMP_MASK)
+            if(adjust & Clamp_Mask)
             {
-                if(adjust&CLAMP_LEFT)   { w += x - px; x = px; }
-                if(adjust&CLAMP_RIGHT)    w = px + pw - x;
-                if(adjust&CLAMP_TOP)    { h += y - py; y = py; }
-                if(adjust&CLAMP_BOTTOM)   h = py + ph - y;
+                if(adjust & Clamp_Left)   { w += x - px; x = px; }
+                if(adjust & Clamp_Right) w = px + pw - x;
+                if(adjust & Clamp_Top)    { h += y - py; y = py; }
+                if(adjust & Clamp_Bottom) h = py + ph - y;
             }
 
             adjustchildren();
@@ -302,22 +305,22 @@ namespace UI
 
         void setclamp(int left, int right, int top, int bottom)
         {
-            adjust &= ~CLAMP_MASK;
+            adjust &= ~Clamp_Mask;
             if(left)
             {
-                adjust |= CLAMP_LEFT;
+                adjust |= Clamp_Left;
             }
             if(right)
             {
-                adjust |= CLAMP_RIGHT;
+                adjust |= Clamp_Right;
             }
             if(top)
             {
-                adjust |= CLAMP_TOP;
+                adjust |= Clamp_Top;
             }
             if(bottom)
             {
-                adjust |= CLAMP_BOTTOM;
+                adjust |= Clamp_Bottom;
             }
         }
 
