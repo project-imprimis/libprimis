@@ -148,11 +148,11 @@ namespace UI
 
     enum
     {
-        BLEND_ALPHA,
-        BLEND_MOD
+        Blend_Alpha,
+        Blend_Mod
     };
 
-    static int blendtype = BLEND_ALPHA;
+    static int blendtype = Blend_Alpha;
 
     static inline void changeblend(int type, GLenum src, GLenum dst)
     {
@@ -165,12 +165,12 @@ namespace UI
 
     void resetblend()
     {
-        changeblend(BLEND_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        changeblend(Blend_Alpha, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     void modblend()
     {
-        changeblend(BLEND_MOD, GL_ZERO, GL_SRC_COLOR);
+        changeblend(Blend_Mod, GL_ZERO, GL_SRC_COLOR);
     }
 
     struct Object
@@ -717,7 +717,7 @@ namespace UI
             hudshader->set();
 
             glEnable(GL_BLEND);
-            blendtype = BLEND_ALPHA;
+            blendtype = Blend_Alpha;
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             gle::colorf(1, 1, 1);
 
