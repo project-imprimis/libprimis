@@ -75,56 +75,70 @@ namespace UI
         }
         return clipstack.last().isfullyclipped(x, y, w, h);
     }
-
-    enum
+    namespace
     {
-        Align_Mask = 0xF,
+        enum
+        {
+            Align_Mask = 0xF,
 
-        Align_HMask   = 0x3,
-        Align_HShift  = 0,
-        Align_HNone   = 0,
-        Align_Left    = 1,
-        Align_HCenter = 2,
-        Align_Right   = 3,
+            Align_HMask   = 0x3,
+            Align_HShift  = 0,
+            Align_HNone   = 0,
+            Align_Left    = 1,
+            Align_HCenter = 2,
+            Align_Right   = 3,
 
-        Align_VMask   = 0xC,
-        Align_VShift  = 2,
-        Align_VNone   = 0 << 2,
-        Align_Top     = 1 << 2,
-        Align_VCenter = 2 << 2,
-        Align_Bottom  = 3 << 2,
-    };
+            Align_VMask   = 0xC,
+            Align_VShift  = 2,
+            Align_VNone   = 0 << 2,
+            Align_Top     = 1 << 2,
+            Align_VCenter = 2 << 2,
+            Align_Bottom  = 3 << 2,
+        };
 
-    enum
-    {
-        Clamp_Mask    = 0xF0,
-        Clamp_Left    = 0x10,
-        Clamp_Right   = 0x20,
-        Clamp_Top     = 0x40,
-        Clamp_Bottom  = 0x80,
+        enum
+        {
+            Clamp_Mask    = 0xF0,
+            Clamp_Left    = 0x10,
+            Clamp_Right   = 0x20,
+            Clamp_Top     = 0x40,
+            Clamp_Bottom  = 0x80,
 
-        NO_ADJUST     = Align_HNone | Align_VNone,
-    };
+            NO_ADJUST     = Align_HNone | Align_VNone,
+        };
 
-    enum
-    {
-        State_Hover       = 1 << 0,
-        State_Press       = 1 << 1,
-        State_Hold        = 1 << 2,
-        State_Release     = 1 << 3,
-        State_AltPress    = 1 << 4,
-        State_AltHold     = 1 << 5,
-        State_AltRelease  = 1 << 6,
-        State_EscPress    = 1 << 7,
-        State_EscHold     = 1 << 8,
-        State_EscRelease  = 1 << 9,
-        State_ScrollUp    = 1 << 10,
-        State_ScrollDown  = 1 << 11,
-        State_Hidden      = 1 << 12,
+        enum
+        {
+            State_Hover       = 1 << 0,
+            State_Press       = 1 << 1,
+            State_Hold        = 1 << 2,
+            State_Release     = 1 << 3,
+            State_AltPress    = 1 << 4,
+            State_AltHold     = 1 << 5,
+            State_AltRelease  = 1 << 6,
+            State_EscPress    = 1 << 7,
+            State_EscHold     = 1 << 8,
+            State_EscRelease  = 1 << 9,
+            State_ScrollUp    = 1 << 10,
+            State_ScrollDown  = 1 << 11,
+            State_Hidden      = 1 << 12,
 
-        State_HoldMask = State_Hold | State_AltHold | State_EscHold
-    };
+            State_HoldMask = State_Hold | State_AltHold | State_EscHold
+        };
 
+        enum
+        {
+            Blend_Alpha,
+            Blend_Mod
+        };
+
+        enum
+        {
+            Change_Shader = 1 << 0,
+            Change_Color  = 1 << 1,
+            Change_Blend  = 1 << 2
+        };
+    }
     struct Object;
 
     static Object *buildparent = NULL;
@@ -139,21 +153,9 @@ namespace UI
         } \
     } while(0)
 
-    enum
-    {
-        Change_Shader = 1 << 0,
-        Change_Color  = 1 << 1,
-        Change_Blend  = 1 << 2
-    };
     static int changed = 0;
 
     static Object *drawing = NULL;
-
-    enum
-    {
-        Blend_Alpha,
-        Blend_Mod
-    };
 
     static int blendtype = Blend_Alpha;
 
