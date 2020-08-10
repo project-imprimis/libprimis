@@ -426,18 +426,18 @@ namespace UI
         }
 
         #define DOSTATES \
-            DOSTATE(STATE_HOVER, hover) \
-            DOSTATE(STATE_PRESS, press) \
-            DOSTATE(STATE_HOLD, hold) \
-            DOSTATE(STATE_RELEASE, release) \
-            DOSTATE(STATE_ALT_HOLD, althold) \
-            DOSTATE(STATE_ALT_PRESS, altpress) \
-            DOSTATE(STATE_ALT_RELEASE, altrelease) \
-            DOSTATE(STATE_ESC_HOLD, eschold) \
-            DOSTATE(STATE_ESC_PRESS, escpress) \
-            DOSTATE(STATE_ESC_RELEASE, escrelease) \
-            DOSTATE(STATE_SCROLL_UP, scrollup) \
-            DOSTATE(STATE_SCROLL_DOWN, scrolldown)
+            DOSTATE(State_Hover, hover) \
+            DOSTATE(State_Press, press) \
+            DOSTATE(State_Hold, hold) \
+            DOSTATE(State_Release, release) \
+            DOSTATE(State_AltHold, althold) \
+            DOSTATE(State_AltPress, altpress) \
+            DOSTATE(State_AltRelease, altrelease) \
+            DOSTATE(State_EscHold, eschold) \
+            DOSTATE(State_EscPress, escpress) \
+            DOSTATE(State_EscRelease, escrelease) \
+            DOSTATE(State_ScrollUp, scrollup) \
+            DOSTATE(State_ScrollDown, scrolldown)
 
         bool setstate(int state, float cx, float cy, int mask = 0, bool inside = true, int setflags = 0)
         {
@@ -763,7 +763,7 @@ namespace UI
         #define DOSTATE(flags, func) \
             void func##children(float cx, float cy, int mask, bool inside, int setflags) \
             { \
-                if(!allowinput || state&STATE_HIDDEN || pw <= 0 || ph <= 0) return; \
+                if(!allowinput || state&State_Hidden || pw <= 0 || ph <= 0) return; \
                 cx = cx*pw + px-x; \
                 cy = cy*ph + py-y; \
                 if(!inside || (cx >= 0 && cy >= 0 && cx < w && cy < h)) \
