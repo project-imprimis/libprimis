@@ -108,21 +108,21 @@ namespace UI
 
     enum
     {
-        STATE_HOVER       = 1<<0,
-        STATE_PRESS       = 1<<1,
-        STATE_HOLD        = 1<<2,
-        STATE_RELEASE     = 1<<3,
-        STATE_ALT_PRESS   = 1<<4,
-        STATE_ALT_HOLD    = 1<<5,
-        STATE_ALT_RELEASE = 1<<6,
-        STATE_ESC_PRESS   = 1<<7,
-        STATE_ESC_HOLD    = 1<<8,
-        STATE_ESC_RELEASE = 1<<9,
-        STATE_SCROLL_UP   = 1<<10,
-        STATE_SCROLL_DOWN = 1<<11,
-        STATE_HIDDEN      = 1<<12,
+        State_Hover       = 1 << 0,
+        State_Press       = 1 << 1,
+        State_Hold        = 1 << 2,
+        State_Release     = 1 << 3,
+        State_AltPress    = 1 << 4,
+        State_AltHold     = 1 << 5,
+        State_AltRelease  = 1 << 6,
+        State_EscPress    = 1 << 7,
+        State_EscHold     = 1 << 8,
+        State_EscRelease  = 1 << 9,
+        State_ScrollUp    = 1 << 10,
+        State_ScrollDown  = 1 << 11,
+        State_Hidden      = 1 << 12,
 
-        STATE_HOLD_MASK = STATE_HOLD | STATE_ALT_HOLD | STATE_ESC_HOLD
+        State_HoldMask = State_Hold | State_AltHold | State_EscHold
     };
 
     struct Object;
@@ -407,8 +407,8 @@ namespace UI
 
         void resetstate()
         {
-            state &= STATE_HOLD_MASK;
-            childstate &= STATE_HOLD_MASK;
+            state &= State_HoldMask;
+            childstate &= State_HoldMask;
         }
         void resetchildstate()
         {
@@ -680,8 +680,8 @@ namespace UI
 
         void show()
         {
-            state |= STATE_HIDDEN;
-            clearstate(STATE_HOLD_MASK);
+            state |= State_Hidden;
+            clearstate(State_HoldMask);
             if(onshow)
             {
                 execute(onshow);
@@ -698,7 +698,7 @@ namespace UI
 
         void layout()
         {
-            if(state&STATE_HIDDEN)
+            if(state & State_Hidden)
             {
                 w = h = 0;
                 return;
@@ -710,7 +710,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            if(state&STATE_HIDDEN)
+            if(state & State_Hidden)
             {
                 return;
             }
@@ -743,7 +743,7 @@ namespace UI
 
         void adjustchildren()
         {
-            if(state&STATE_HIDDEN)
+            if(state & State_Hidden)
             {
                 return;
             }
@@ -906,7 +906,7 @@ namespace UI
 
         bool hidetop()
         {
-            LOOP_WINDOWS_REV(w, { if(w->allowinput && !(w->state&STATE_HIDDEN)) { hide(w, i); return true; } });
+            LOOP_WINDOWS_REV(w, { if(w->allowinput && !(w->state & State_Hidden)) { hide(w, i); return true; } });
             return false;
         }
 
@@ -925,7 +925,7 @@ namespace UI
         {
             LOOP_WINDOWS(w,
             {
-                if(w->allowinput && !(w->state&STATE_HIDDEN))
+                if(w->allowinput && !(w->state & State_Hidden))
                 {
                     return true;
                 }
@@ -945,7 +945,7 @@ namespace UI
         float abovehud()
         {
             float y = 1;
-            LOOP_WINDOWS(w, { if(w->abovehud && !(w->state&STATE_HIDDEN)) y = min(y, w->calcabovehud()); });
+            LOOP_WINDOWS(w, { if(w->abovehud && !(w->state & State_Hidden)) y = min(y, w->calcabovehud()); });
             return y;
         }
     };
@@ -2739,7 +2739,7 @@ namespace UI
         void hold(float cx, float cy)
         {
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(button && button->haschildstate(STATE_HOLD))
+            if(button && button->haschildstate(State_Hold))
             {
                 movebutton(button, offsetx, offsety, cx - button->x, cy - button->y);
             }
@@ -2748,7 +2748,7 @@ namespace UI
         void press(float cx, float cy)
         {
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(button && button->haschildstate(STATE_PRESS))
+            if(button && button->haschildstate(State_Press))
             {
                 offsetx = cx - button->x;
                 offsety = cy - button->y;
@@ -3347,7 +3347,7 @@ namespace UI
                 }
                 edit = edit_;
             }
-            else if(isfocus() && !hasstate(STATE_HOVER))
+            else if(isfocus() && !hasstate(State_Hover))
             {
                 commit();
             }
@@ -3666,7 +3666,7 @@ namespace UI
 
         void setup(ident *id_, int length, uint *onchange, float scale = 1, const char *keyfilter_ = NULL)
         {
-            if(isfocus() && !hasstate(STATE_HOVER))
+            if(isfocus() && !hasstate(State_Hover))
             {
                 commit();
             }
@@ -4543,27 +4543,27 @@ namespace UI
         {
             case -1:
             {
-                action = isdown ? STATE_PRESS : STATE_RELEASE; hold = STATE_HOLD;
+                action = isdown ? State_Press : State_Release; hold = State_Hold;
                 break;
             }
             case -2:
             {
-                action = isdown ? STATE_ALT_PRESS : STATE_ALT_RELEASE; hold = STATE_ALT_HOLD;
+                action = isdown ? State_AltPress : State_AltRelease; hold = State_AltHold;
                 break;
             }
             case -3:
             {
-                action = isdown ? STATE_ESC_PRESS : STATE_ESC_RELEASE; hold = STATE_ESC_HOLD;
+                action = isdown ? State_EscPress : State_EscRelease; hold = State_EscHold;
                 break;
             }
             case -4:
             {
-                action = STATE_SCROLL_UP;
+                action = State_ScrollUp;
                 break;
             }
             case -5:
             {
-                action = STATE_SCROLL_DOWN;
+                action = State_ScrollDown;
                 break;
             }
         }
@@ -4630,18 +4630,18 @@ namespace UI
     {
         readyeditors();
 
-        world->setstate(STATE_HOVER, cursorx, cursory, world->childstate&STATE_HOLD_MASK);
-        if(world->childstate&STATE_HOLD)
+        world->setstate(State_Hover, cursorx, cursory, world->childstate & State_HoldMask);
+        if(world->childstate & State_Hold)
         {
-            world->setstate(STATE_HOLD, cursorx, cursory, STATE_HOLD, false);
+            world->setstate(State_Hold, cursorx, cursory, State_Hold, false);
         }
-        if(world->childstate&STATE_ALT_HOLD)
+        if(world->childstate & State_AltHold)
         {
-            world->setstate(STATE_ALT_HOLD, cursorx, cursory, STATE_ALT_HOLD, false);
+            world->setstate(State_AltHold, cursorx, cursory, State_AltHold, false);
         }
-        if(world->childstate&STATE_ESC_HOLD)
+        if(world->childstate & State_EscHold)
         {
-            world->setstate(STATE_ESC_HOLD, cursorx, cursory, STATE_ESC_HOLD, false);
+            world->setstate(State_EscHold, cursorx, cursory, State_EscHold, false);
         }
 
         calctextscale();
