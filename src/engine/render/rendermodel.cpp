@@ -36,7 +36,7 @@ static model *__loadmodel__##modelclass(const char *filename) \
 { \
     return new modelclass(filename); \
 } \
-UNUSED static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##modelclass);
+static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##modelclass);
 
 #include "model/md5.h"
 #include "model/obj.h"

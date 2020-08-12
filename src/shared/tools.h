@@ -21,12 +21,6 @@ typedef unsigned long long int ullong;
     #define RESTRICT
 #endif
 
-#ifdef __GNUC__
-    #define UNUSED __attribute__((unused))
-#else
-    #define UNUSED
-#endif
-
 void *operator new(size_t, bool);
 void *operator new[](size_t, bool);
 
