@@ -1820,7 +1820,7 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
     Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
     if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
     {
-        bindslottex(cur, TEX_DIFFUSE, diffuse);
+        bindslottex(cur, Tex_Diffuse, diffuse);
 
         if(pass == RenderPass_GBuffer)
         {
@@ -1870,8 +1870,8 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
         Slot::Tex &t = slot.sts[j];
         switch(t.type)
         {
-            case TEX_NORMAL:
-            case TEX_GLOW:
+            case Tex_Normal:
+            case Tex_Glow:
             {
                 bindslottex(cur, t.type, t.t);
                 break;
@@ -2912,23 +2912,23 @@ static inline void bindslottex(decalrenderer &cur, int type, Texture *tex, GLenu
 static void changeslottmus(decalrenderer &cur, int pass, DecalSlot &slot)
 {
     Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
-    bindslottex(cur, TEX_DIFFUSE, diffuse);
+    bindslottex(cur, Tex_Diffuse, diffuse);
     for(int i = 0; i < slot.sts.length(); i++)
     {
         Slot::Tex &t = slot.sts[i];
         switch(t.type)
         {
-            case TEX_NORMAL:
-            case TEX_GLOW:
+            case Tex_Normal:
+            case Tex_Glow:
             {
                 bindslottex(cur, t.type, t.t);
                 break;
             }
-            case TEX_SPEC:
+            case Tex_Spec:
             {
                 if(t.combined < 0)
                 {
-                    bindslottex(cur, TEX_GLOW, t.t);
+                    bindslottex(cur, Tex_Glow, t.t);
                 }
                 break;
             }

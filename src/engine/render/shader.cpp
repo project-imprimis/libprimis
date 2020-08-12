@@ -280,9 +280,9 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
 
 static void bindworldtexlocs(Shader &s)
 {
-    UNIFORMTEX("diffusemap", TEX_DIFFUSE);
-    UNIFORMTEX("normalmap", TEX_NORMAL);
-    UNIFORMTEX("glowmap", TEX_GLOW);
+    UNIFORMTEX("diffusemap", Tex_Diffuse);
+    UNIFORMTEX("normalmap", Tex_Normal);
+    UNIFORMTEX("glowmap", Tex_Glow);
     UNIFORMTEX("blendmap", 7);
     UNIFORMTEX("refractmask", 7);
     UNIFORMTEX("refractlight", 8);
@@ -1446,7 +1446,7 @@ void linkvslotshader(VSlot &s, bool load)
     {
         return;
     }
-    if(s.slot->texmask&(1<<TEX_GLOW))
+    if(s.slot->texmask&(1 << Tex_Glow))
     {
         static const char *paramname = getshaderparamname("glowcolor");
         const float *param = findslotparam(s, paramname);

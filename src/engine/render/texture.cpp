@@ -400,13 +400,13 @@ void scaleimage(ImageData &s, int w, int h)
     s.replace(d);
 }
 
-void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = TEX_DIFFUSE)
+void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = Tex_Diffuse)
 {
     ImageData d(swapxy ? s.h : s.w, swapxy ? s.w : s.h, s.bpp, s.levels, s.align, s.compressed);
     switch(s.compressed)
     {
         default:
-            if(type==TEX_NORMAL && s.bpp >= 3)
+            if(type == Tex_Normal && s.bpp >= 3)
             {
                 reorientnormals(s.data, s.w, s.h, s.bpp, s.pitch, d.data, flipx, flipy, swapxy);
             }
@@ -431,7 +431,7 @@ extern const texrotation texrotations[8] =
     {  true,  true,  true }, // 7: flipped transpose
 };
 
-void texrotate(ImageData &s, int numrots, int type = TEX_DIFFUSE)
+void texrotate(ImageData &s, int numrots, int type = Tex_Diffuse)
 {
     if(numrots>=1 && numrots<=7)
     {
@@ -1577,7 +1577,7 @@ static vec parsevec(const char *arg)
     return v;
 }
 
-static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *compress = NULL, int *wrap = NULL, const char *tdir = NULL, int ttype = TEX_DIFFUSE)
+static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *compress = NULL, int *wrap = NULL, const char *tdir = NULL, int ttype = Tex_Diffuse)
 {
     const char *cmds = NULL, *file = tname;
     if(tname[0]=='<')
@@ -2664,16 +2664,16 @@ const struct slottex
     int id;
 } slottexs[] =
 {
-    {"0", TEX_DIFFUSE},
-    {"1", TEX_UNKNOWN},
+    {"0", Tex_Diffuse},
+    {"1", Tex_Unknown},
 
-    {"c", TEX_DIFFUSE},
-    {"u", TEX_UNKNOWN},
-    {"n", TEX_NORMAL},
-    {"g", TEX_GLOW},
-    {"s", TEX_SPEC},
-    {"z", TEX_DEPTH},
-    {"a", TEX_ALPHA}
+    {"c", Tex_Diffuse},
+    {"u", Tex_Unknown},
+    {"n", Tex_Normal},
+    {"g", Tex_Glow},
+    {"s", Tex_Spec},
+    {"z", Tex_Depth},
+    {"a", Tex_Alpha}
 };
 
 int findslottex(const char *name)
@@ -2691,7 +2691,7 @@ int findslottex(const char *name)
 void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float *scale)
 {
     int tnum = findslottex(type), matslot;
-    if(tnum==TEX_DIFFUSE)
+    if(tnum == Tex_Diffuse)
     {
         if(slots.length() >= 0x10000)
         {
@@ -2705,12 +2705,12 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
         {
             return;
         }
-        tnum = TEX_DIFFUSE;
+        tnum = Tex_Diffuse;
         defslot = decalslots.add(new DecalSlot(decalslots.length()));
     }
     else if((matslot = findmaterial(type)) >= 0)
     {
-        tnum = TEX_DIFFUSE;
+        tnum = Tex_Diffuse;
         defslot = &materialslots[matslot];
         defslot->reset();
     }
@@ -2720,7 +2720,7 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
     }
     else if(tnum < 0)
     {
-        tnum = TEX_UNKNOWN;
+        tnum = Tex_Unknown;
     }
     Slot &s = *defslot;
     s.loaded = false;
@@ -2733,7 +2733,7 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
     st.type = tnum;
     copystring(st.name, name);
     path(st.name);
-    if(tnum==TEX_DIFFUSE)
+    if(tnum == Tex_Diffuse)
     {
         setslotshader(s);
         VSlot &vs = s.emptyvslot();
@@ -2979,13 +2979,13 @@ int Slot::cancombine(int type) const
 {
     switch(type)
     {
-        case TEX_DIFFUSE:
+        case Tex_Diffuse:
         {
-            return texmask&((1<<TEX_SPEC)|(1<<TEX_NORMAL)) ? TEX_SPEC : TEX_ALPHA;
+            return texmask&((1 << Tex_Spec) | (1 << Tex_Normal)) ? Tex_Spec : Tex_Alpha;
         }
-        case TEX_NORMAL:
+        case Tex_Normal:
         {
-            return texmask&(1<<TEX_DEPTH) ? TEX_DEPTH : TEX_ALPHA;
+            return texmask&(1 << Tex_Depth) ? Tex_Depth : Tex_Alpha;
         }
         default:
         {
@@ -2998,13 +2998,13 @@ int DecalSlot::cancombine(int type) const
 {
     switch(type)
     {
-        case TEX_GLOW:
+        case Tex_Glow:
         {
-            return TEX_SPEC;
+            return Tex_Spec;
         }
-        case TEX_NORMAL:
+        case Tex_Normal:
         {
-            return texmask&(1<<TEX_DEPTH) ? TEX_DEPTH : (texmask&(1<<TEX_GLOW) ? -1 : TEX_SPEC);
+            return texmask&(1 << Tex_Depth) ? Tex_Depth : (texmask & (1 << Tex_Glow) ? -1 : Tex_Spec);
         }
         default:
         {
@@ -3017,7 +3017,7 @@ bool DecalSlot::shouldpremul(int type) const
 {
     switch(type)
     {
-        case TEX_DIFFUSE:
+        case Tex_Diffuse:
         {
             return true;
         }
@@ -3080,7 +3080,7 @@ void Slot::load(int index, Slot::Tex &t)
     {
         switch(t.type)
         {
-            case TEX_SPEC:
+            case Tex_Spec:
             {
                 if(ts.bpp > 1)
                 {
@@ -3088,9 +3088,9 @@ void Slot::load(int index, Slot::Tex &t)
                 }
                 break;
             }
-            case TEX_GLOW:
-            case TEX_DIFFUSE:
-            case TEX_NORMAL:
+            case Tex_Glow:
+            case Tex_Diffuse:
+            case Tex_Normal:
                 if(combine)
                 {
                     ImageData cs;
@@ -3102,17 +3102,17 @@ void Slot::load(int index, Slot::Tex &t)
                         }
                         switch(combine->type)
                         {
-                            case TEX_SPEC:
+                            case Tex_Spec:
                             {
                                 mergespec(ts, cs);
                                 break;
                             }
-                            case TEX_DEPTH:
+                            case Tex_Depth:
                             {
                                 mergedepth(ts, cs);
                                 break;
                             }
-                            case TEX_ALPHA:
+                            case Tex_Alpha:
                             {
                                 mergealpha(ts, cs);
                                 break;
@@ -3303,11 +3303,11 @@ Texture *Slot::loadthumbnail()
         addname(name, *this, sts[0], false, prefix);
     }
     int glow = -1;
-    if(texmask&(1<<TEX_GLOW))
+    if(texmask&(1 << Tex_Glow))
     {
         for(int j = 0; j < sts.length(); j++)
         {
-            if(sts[j].type==TEX_GLOW)
+            if(sts[j].type == Tex_Glow)
             {
                 glow = j;
                 break;

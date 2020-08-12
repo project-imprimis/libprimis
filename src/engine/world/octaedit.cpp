@@ -3567,11 +3567,11 @@ void rendertexturepanel(int w, int h)
                 Slot &slot = *vslot.slot;
                 Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t,
                         *glowtex = NULL;
-                if(slot.texmask&(1<<TEX_GLOW))
+                if(slot.texmask&(1 << Tex_Glow))
                 {
                     for(int j = 0; j < slot.sts.length(); j++)
                     {
-                        if(slot.sts[j].type==TEX_GLOW)
+                        if(slot.sts[j].type == Tex_Glow)
                         {
                             glowtex = slot.sts[j].t;
                             break;

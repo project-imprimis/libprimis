@@ -1053,14 +1053,14 @@ struct Texture
 
 enum
 {
-    TEX_DIFFUSE = 0,
-    TEX_NORMAL,
-    TEX_GLOW,
+    Tex_Diffuse = 0,
+    Tex_Normal,
+    Tex_Glow,
 
-    TEX_SPEC,
-    TEX_DEPTH,
-    TEX_ALPHA,
-    TEX_UNKNOWN,
+    Tex_Spec,
+    Tex_Depth,
+    Tex_Alpha,
+    Tex_Unknown,
 };
 
 enum
