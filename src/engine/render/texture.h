@@ -1065,19 +1065,19 @@ enum
 
 enum
 {
-    VSLOT_SHPARAM = 0,
-    VSLOT_SCALE,
-    VSLOT_ROTATION,
-    VSLOT_OFFSET,
-    VSLOT_SCROLL,
-    VSLOT_LAYER,
-    VSLOT_ALPHA,
-    VSLOT_COLOR,
-    VSLOT_RESERVED, // used by RE
-    VSLOT_REFRACT,
-    VSLOT_DETAIL,
-    VSLOT_ANGLE,
-    VSLOT_NUM
+    VSlot_ShParam = 0,
+    VSlot_Scale,
+    VSlot_Rotation,
+    VSlot_Offset,
+    VSlot_Scroll,
+    VSlot_Layer,
+    VSlot_Alpha,
+    VSlot_Color,
+    VSlot_Reserved, // used by RE
+    VSlot_Refract,
+    VSlot_Detail,
+    VSlot_Angle,
+    VSlot_Num
 };
 
 struct VSlot

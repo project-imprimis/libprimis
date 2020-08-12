@@ -2703,7 +2703,7 @@ void vrotate(int *n)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_ROTATION;
+    ds.changed = 1 << VSlot_Rotation;
     ds.rotation = usevdelta ? *n : std::clamp(*n, 0, 7);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2716,7 +2716,7 @@ void vangle(float *a)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_ANGLE;
+    ds.changed = 1 << VSlot_Angle;
     ds.angle = vec(*a, sinf(RAD**a), cosf(RAD**a));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2729,7 +2729,7 @@ void voffset(int *x, int *y)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_OFFSET;
+    ds.changed = 1 << VSlot_Offset;
     ds.offset = usevdelta ? ivec2(*x, *y) : ivec2(*x, *y).max(0);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2742,7 +2742,7 @@ void vscroll(float *s, float *t)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_SCROLL;
+    ds.changed = 1 << VSlot_Scroll;
     ds.scroll = vec2(*s/1000.0f, *t/1000.0f);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2755,7 +2755,7 @@ void vscale(float *scale)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_SCALE;
+    ds.changed = 1 << VSlot_Scale;
     ds.scale = *scale <= 0 ? 1 : (usevdelta ? *scale : std::clamp(*scale, 1/8.0f, 8.0f));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2768,7 +2768,7 @@ void valpha(float *front, float *back)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_ALPHA;
+    ds.changed = 1 << VSlot_Alpha;
     ds.alphafront = std::clamp(*front, 0.0f, 1.0f);
     ds.alphaback = std::clamp(*back, 0.0f, 1.0f);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
@@ -2782,7 +2782,7 @@ void vcolor(float *r, float *g, float *b)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_COLOR;
+    ds.changed = 1 << VSlot_Color;
     ds.colorscale = vec(std::clamp(*r, 0.0f, 2.0f), std::clamp(*g, 0.0f, 2.0f), std::clamp(*b, 0.0f, 2.0f));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2795,7 +2795,7 @@ void vrefract(float *k, float *r, float *g, float *b)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_REFRACT;
+    ds.changed = 1 << VSlot_Refract;
     ds.refractscale = std::clamp(*k, 0.0f, 1.0f);
     if(ds.refractscale > 0 && (*r > 0 || *g > 0 || *b > 0))
     {
@@ -2828,7 +2828,7 @@ void vshaderparam(const char *name, float *x, float *y, float *z, float *w)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_SHPARAM;
+    ds.changed = 1 << VSlot_ShParam;
     if(name[0])
     {
         SlotShaderParam p = { getshaderparamname(name), -1, 0, {*x, *y, *z, *w} };

@@ -635,7 +635,7 @@ void savevslot(stream *f, VSlot &vs, int prev)
 {
     f->put<int>(vs.changed);
     f->put<int>(prev);
-    if(vs.changed & (1<<VSLOT_SHPARAM))
+    if(vs.changed & (1 << VSlot_ShParam))
     {
         f->put<ushort>(vs.params.length());
         for(int i = 0; i < vs.params.length(); i++)
@@ -649,47 +649,47 @@ void savevslot(stream *f, VSlot &vs, int prev)
             }
         }
     }
-    if(vs.changed & (1<<VSLOT_SCALE))
+    if(vs.changed & (1 << VSlot_Scale))
     {
         f->put<float>(vs.scale);
     }
-    if(vs.changed & (1<<VSLOT_ROTATION))
+    if(vs.changed & (1 << VSlot_Rotation))
     {
         f->put<int>(vs.rotation);
     }
-    if(vs.changed & (1<<VSLOT_ANGLE))
+    if(vs.changed & (1 << VSlot_Angle))
     {
         f->put<float>(vs.angle.x);
         f->put<float>(vs.angle.y);
         f->put<float>(vs.angle.z);
     }
-    if(vs.changed & (1<<VSLOT_OFFSET))
+    if(vs.changed & (1 << VSlot_Offset))
     {
         for(int k = 0; k < 2; ++k)
         {
             f->put<int>(vs.offset[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_SCROLL))
+    if(vs.changed & (1 << VSlot_Scroll))
     {
         for(int k = 0; k < 2; ++k)
         {
             f->put<float>(vs.scroll[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_ALPHA))
+    if(vs.changed & (1 << VSlot_Alpha))
     {
         f->put<float>(vs.alphafront);
         f->put<float>(vs.alphaback);
     }
-    if(vs.changed & (1<<VSLOT_COLOR))
+    if(vs.changed & (1 << VSlot_Color))
     {
         for(int k = 0; k < 3; ++k)
         {
             f->put<float>(vs.colorscale[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_REFRACT))
+    if(vs.changed & (1 << VSlot_Refract))
     {
         f->put<float>(vs.refractscale);
         for(int k = 0; k < 3; ++k)
@@ -753,7 +753,7 @@ void savevslots(stream *f, int numvslots)
 void loadvslot(stream *f, VSlot &vs, int changed)
 {
     vs.changed = changed;
-    if(vs.changed & (1<<VSLOT_SHPARAM))
+    if(vs.changed & (1 << VSlot_ShParam))
     {
         int numparams = f->get<ushort>();
         string name;
@@ -776,11 +776,11 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         }
     }
     //vslot properties (set by e.g. v-commands)
-    if(vs.changed & (1<<VSLOT_SCALE)) //scale <factor>
+    if(vs.changed & (1 << VSlot_Scale)) //scale <factor>
     {
         vs.scale = f->get<float>();
     }
-    if(vs.changed & (1<<VSLOT_ROTATION)) //rotate <index>
+    if(vs.changed & (1 << VSlot_Rotation)) //rotate <index>
     {
         vs.rotation = std::clamp(f->get<int>(), 0, 7);
     }
@@ -788,40 +788,40 @@ void loadvslot(stream *f, VSlot &vs, int changed)
      * angle uses three parameters to prebake sine/cos values for the angle it
      * stores despite there being only one parameter (angle) passed
      */
-    if(vs.changed & (1<<VSLOT_ANGLE)) //angle <angle>
+    if(vs.changed & (1 << VSlot_Angle)) //angle <angle>
     {
         for(int k = 0; k < 3; ++k)
         {
             vs.angle[k] = f->get<float>();
         }
     }
-    if(vs.changed & (1<<VSLOT_OFFSET)) //offset <x> <y>
+    if(vs.changed & (1 << VSlot_Offset)) //offset <x> <y>
     {
         for(int k = 0; k < 2; ++k)
         {
             vs.offset[k] = f->get<int>();
         }
     }
-    if(vs.changed & (1<<VSLOT_SCROLL)) //scroll <x> <y>
+    if(vs.changed & (1 << VSlot_Scroll)) //scroll <x> <y>
     {
         for(int k = 0; k < 2; ++k)
         {
             vs.scroll[k] = f->get<float>();
         }
     }
-    if(vs.changed & (1<<VSLOT_ALPHA)) //alpha <f> <b>
+    if(vs.changed & (1 << VSlot_Alpha)) //alpha <f> <b>
     {
         vs.alphafront = f->get<float>();
         vs.alphaback = f->get<float>();
     }
-    if(vs.changed & (1<<VSLOT_COLOR)) //color <r> <g> <b>
+    if(vs.changed & (1 << VSlot_Color)) //color <r> <g> <b>
     {
         for(int k = 0; k < 3; ++k)
         {
             vs.colorscale[k] = f->get<float>();
         }
     }
-    if(vs.changed & (1<<VSLOT_REFRACT)) //refract <r> <g> <b>
+    if(vs.changed & (1 << VSlot_Refract)) //refract <r> <g> <b>
     {
         vs.refractscale = f->get<float>();
         for(int k = 0; k < 3; ++k)

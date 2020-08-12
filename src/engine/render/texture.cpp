@@ -2182,18 +2182,18 @@ static void clampvslotoffset(VSlot &dst, Slot *slot = NULL)
 
 static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = false)
 {
-    if(diff & (1<<VSLOT_SHPARAM))
+    if(diff & (1 << VSlot_ShParam))
     {
         for(int i = 0; i < src.params.length(); i++)
         {
             dst.params.add(src.params[i]);
         }
     }
-    if(diff & (1<<VSLOT_SCALE))
+    if(diff & (1 << VSlot_Scale))
     {
         dst.scale = src.scale;
     }
-    if(diff & (1<<VSLOT_ROTATION))
+    if(diff & (1 << VSlot_Rotation))
     {
         dst.rotation = src.rotation;
         if(edit && !dst.offset.iszero())
@@ -2201,11 +2201,11 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
             clampvslotoffset(dst);
         }
     }
-    if(diff & (1<<VSLOT_ANGLE))
+    if(diff & (1 << VSlot_Angle))
     {
         dst.angle = src.angle;
     }
-    if(diff & (1<<VSLOT_OFFSET))
+    if(diff & (1 << VSlot_Offset))
     {
         dst.offset = src.offset;
         if(edit)
@@ -2213,20 +2213,20 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
             clampvslotoffset(dst);
         }
     }
-    if(diff & (1<<VSLOT_SCROLL))
+    if(diff & (1 << VSlot_Scroll))
     {
         dst.scroll = src.scroll;
     }
-    if(diff & (1<<VSLOT_ALPHA))
+    if(diff & (1 << VSlot_Alpha))
     {
         dst.alphafront = src.alphafront;
         dst.alphaback = src.alphaback;
     }
-    if(diff & (1<<VSLOT_COLOR))
+    if(diff & (1 << VSlot_Color))
     {
         dst.colorscale = src.colorscale;
     }
-    if(diff & (1<<VSLOT_REFRACT))
+    if(diff & (1 << VSlot_Refract))
     {
         dst.refractscale = src.refractscale;
         dst.refractcolor = src.refractcolor;
@@ -2247,7 +2247,7 @@ static void propagatevslot(VSlot *root, int changed)
 
 static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL)
 {
-    if(diff & (1<<VSLOT_SHPARAM))
+    if(diff & (1 << VSlot_ShParam))
     {
         for(int i = 0; i < src.params.length(); i++)
         {
@@ -2265,11 +2265,11 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
         nextparam:;
         }
     }
-    if(diff & (1<<VSLOT_SCALE))
+    if(diff & (1 << VSlot_Scale))
     {
         dst.scale = std::clamp(dst.scale*src.scale, 1/8.0f, 8.0f);
     }
-    if(diff & (1<<VSLOT_ROTATION))
+    if(diff & (1 << VSlot_Rotation))
     {
         dst.rotation = std::clamp(dst.rotation + src.rotation, 0, 7);
         if(!dst.offset.iszero())
@@ -2277,29 +2277,29 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
             clampvslotoffset(dst, slot);
         }
     }
-    if(diff & (1<<VSLOT_ANGLE))
+    if(diff & (1 << VSlot_Angle))
     {
         dst.angle.add(src.angle);
     }
-    if(diff & (1<<VSLOT_OFFSET))
+    if(diff & (1 << VSlot_Offset))
     {
         dst.offset.add(src.offset);
         clampvslotoffset(dst, slot);
     }
-    if(diff & (1<<VSLOT_SCROLL))
+    if(diff & (1 << VSlot_Scroll))
     {
         dst.scroll.add(src.scroll);
     }
-    if(diff & (1<<VSLOT_ALPHA))
+    if(diff & (1 << VSlot_Alpha))
     {
         dst.alphafront = src.alphafront;
         dst.alphaback = src.alphaback;
     }
-    if(diff & (1<<VSLOT_COLOR))
+    if(diff & (1 << VSlot_Color))
     {
         dst.colorscale.mul(src.colorscale);
     }
-    if(diff & (1<<VSLOT_REFRACT))
+    if(diff & (1 << VSlot_Refract))
     {
         dst.refractscale *= src.refractscale;
         dst.refractcolor.mul(src.refractcolor);
@@ -2309,7 +2309,7 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
 void mergevslot(VSlot &dst, const VSlot &src, const VSlot &delta)
 {
     dst.changed = src.changed | delta.changed;
-    propagatevslot(dst, src, (1<<VSLOT_NUM)-1);
+    propagatevslot(dst, src, (1 << VSlot_Num) - 1);
     mergevslot(dst, delta, delta.changed, src.slot);
 }
 
@@ -2354,7 +2354,7 @@ VSlot &Slot::emptyvslot()
 
 static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
 {
-    if(diff & (1<<VSLOT_SHPARAM))
+    if(diff & (1 << VSlot_ShParam))
     {
         if(src.params.length() != dst.params.length())
         {
@@ -2369,25 +2369,25 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
             }
         }
     }
-    if(diff & (1<<VSLOT_SCALE)    &&  dst.scale        != src.scale)    return false;
-    if(diff & (1<<VSLOT_ROTATION) &&  dst.rotation     != src.rotation) return false;
-    if(diff & (1<<VSLOT_ANGLE)    &&  dst.angle        != src.angle)    return false;
-    if(diff & (1<<VSLOT_OFFSET)   &&  dst.offset       != src.offset)   return false;
-    if(diff & (1<<VSLOT_SCROLL)   &&  dst.scroll       != src.scroll)   return false;
-    if(diff & (1<<VSLOT_ALPHA)    && (dst.alphafront   != src.alphafront || dst.alphaback != src.alphaback)) return false;
-    if(diff & (1<<VSLOT_COLOR)    &&  dst.colorscale   != src.colorscale) return false;
-    if(diff & (1<<VSLOT_REFRACT)  && (dst.refractscale != src.refractscale || dst.refractcolor != src.refractcolor)) return false;
+    if(diff & (1 << VSlot_Scale) && dst.scale != src.scale)    return false;
+    if(diff & (1 << VSlot_Rotation) && dst.rotation != src.rotation) return false;
+    if(diff & (1 << VSlot_Angle) && dst.angle != src.angle)    return false;
+    if(diff & (1 << VSlot_Offset) && dst.offset != src.offset)   return false;
+    if(diff & (1 << VSlot_Scroll) && dst.scroll != src.scroll)   return false;
+    if(diff & (1 << VSlot_Alpha) && (dst.alphafront != src.alphafront || dst.alphaback != src.alphaback)) return false;
+    if(diff & (1 << VSlot_Color) && dst.colorscale != src.colorscale) return false;
+    if(diff & (1 << VSlot_Refract) && (dst.refractscale != src.refractscale || dst.refractcolor != src.refractcolor)) return false;
     return true;
 }
 
 void packvslot(vector<uchar> &buf, const VSlot &src)
 {
-    if(src.changed & (1<<VSLOT_SHPARAM))
+    if(src.changed & (1 << VSlot_ShParam))
     {
         for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &p = src.params[i];
-            buf.put(VSLOT_SHPARAM);
+            buf.put(VSlot_ShParam);
             sendstring(p.name, buf);
             for(int j = 0; j < 4; ++j)
             {
@@ -2395,51 +2395,51 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
             }
         }
     }
-    if(src.changed & (1<<VSLOT_SCALE))
+    if(src.changed & (1 << VSlot_Scale))
     {
-        buf.put(VSLOT_SCALE);
+        buf.put(VSlot_Scale);
         putfloat(buf, src.scale);
     }
-    if(src.changed & (1<<VSLOT_ROTATION))
+    if(src.changed & (1 << VSlot_Rotation))
     {
-        buf.put(VSLOT_ROTATION);
+        buf.put(VSlot_Rotation);
         putint(buf, src.rotation);
     }
-    if(src.changed & (1<<VSLOT_ANGLE))
+    if(src.changed & (1 << VSlot_Angle))
     {
-        buf.put(VSLOT_ANGLE);
+        buf.put(VSlot_Angle);
         putfloat(buf, src.angle.x);
         putfloat(buf, src.angle.y);
         putfloat(buf, src.angle.z);
     }
-    if(src.changed & (1<<VSLOT_OFFSET))
+    if(src.changed & (1 << VSlot_Offset))
     {
-        buf.put(VSLOT_OFFSET);
+        buf.put(VSlot_Offset);
         putint(buf, src.offset.x);
         putint(buf, src.offset.y);
     }
-    if(src.changed & (1<<VSLOT_SCROLL))
+    if(src.changed & (1 << VSlot_Scroll))
     {
-        buf.put(VSLOT_SCROLL);
+        buf.put(VSlot_Scroll);
         putfloat(buf, src.scroll.x);
         putfloat(buf, src.scroll.y);
     }
-    if(src.changed & (1<<VSLOT_ALPHA))
+    if(src.changed & (1 << VSlot_Alpha))
     {
-        buf.put(VSLOT_ALPHA);
+        buf.put(VSlot_Alpha);
         putfloat(buf, src.alphafront);
         putfloat(buf, src.alphaback);
     }
-    if(src.changed & (1<<VSLOT_COLOR))
+    if(src.changed & (1 << VSlot_Color))
     {
-        buf.put(VSLOT_COLOR);
+        buf.put(VSlot_Color);
         putfloat(buf, src.colorscale.r);
         putfloat(buf, src.colorscale.g);
         putfloat(buf, src.colorscale.b);
     }
-    if(src.changed & (1<<VSLOT_REFRACT))
+    if(src.changed & (1 << VSlot_Refract))
     {
-        buf.put(VSLOT_REFRACT);
+        buf.put(VSlot_Refract);
         putfloat(buf, src.refractscale);
         putfloat(buf, src.refractcolor.r);
         putfloat(buf, src.refractcolor.g);
@@ -2483,7 +2483,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
         }
         switch(changed)
         {
-            case VSLOT_SHPARAM:
+            case VSlot_ShParam:
             {
                 string name;
                 getstring(name, buf);
@@ -2498,7 +2498,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 }
                 break;
             }
-            case VSLOT_SCALE:
+            case VSlot_Scale:
             {
                 dst.scale = getfloat(buf);
                 if(dst.scale <= 0)
@@ -2511,21 +2511,21 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 }
                 break;
             }
-            case VSLOT_ROTATION:
+            case VSlot_Rotation:
                 dst.rotation = getint(buf);
                 if(!delta)
                 {
                     dst.rotation = std::clamp(dst.rotation, 0, 7);
                 }
                 break;
-            case VSLOT_ANGLE:
+            case VSlot_Angle:
             {
                 dst.angle.x = getfloat(buf);
                 dst.angle.y = getfloat(buf);
                 dst.angle.z = getfloat(buf);
                 break;
             }
-            case VSLOT_OFFSET:
+            case VSlot_Offset:
             {
                 dst.offset.x = getint(buf);
                 dst.offset.y = getint(buf);
@@ -2535,26 +2535,26 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 }
                 break;
             }
-            case VSLOT_SCROLL:
+            case VSlot_Scroll:
             {
                 dst.scroll.x = getfloat(buf);
                 dst.scroll.y = getfloat(buf);
                 break;
             }
-            case VSLOT_ALPHA:
+            case VSlot_Alpha:
             {
                 dst.alphafront = std::clamp(getfloat(buf), 0.0f, 1.0f);
                 dst.alphaback = std::clamp(getfloat(buf), 0.0f, 1.0f);
                 break;
             }
-            case VSLOT_COLOR:
+            case VSlot_Color:
             {
                 dst.colorscale.r = std::clamp(getfloat(buf), 0.0f, 2.0f);
                 dst.colorscale.g = std::clamp(getfloat(buf), 0.0f, 2.0f);
                 dst.colorscale.b = std::clamp(getfloat(buf), 0.0f, 2.0f);
                 break;
             }
-            case VSLOT_REFRACT:
+            case VSlot_Refract:
             {
                 dst.refractscale = std::clamp(getfloat(buf), 0.0f, 1.0f);
                 dst.refractcolor.r = std::clamp(getfloat(buf), 0.0f, 1.0f);
@@ -2594,7 +2594,7 @@ static VSlot *clonevslot(const VSlot &src, const VSlot &delta)
 {
     VSlot *dst = vslots.add(new VSlot(src.slot, vslots.length()));
     dst->changed = src.changed | delta.changed;
-    propagatevslot(*dst, src, ((1<<VSLOT_NUM)-1) & ~delta.changed);
+    propagatevslot(*dst, src, ((1 << VSlot_Num) - 1) & ~delta.changed);
     propagatevslot(*dst, delta, delta.changed, true);
     return dst;
 }
@@ -2740,7 +2740,7 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
         vs.rotation = std::clamp(*rot, 0, 7);
         vs.offset = ivec2(*xoffset, *yoffset).max(0);
         vs.scale = *scale <= 0 ? 1 : *scale;
-        propagatevslot(&vs, (1<<VSLOT_NUM)-1);
+        propagatevslot(&vs, (1 << VSlot_Num) - 1);
     }
 }
 
@@ -2766,7 +2766,7 @@ void texscroll(float *scrollS, float *scrollT)
     }
     Slot &s = *defslot;
     s.variants->scroll = vec2(*scrollS/1000.0f, *scrollT/1000.0f);
-    propagatevslot(s.variants, 1<<VSLOT_SCROLL);
+    propagatevslot(s.variants, 1 << VSlot_Scroll);
 }
 COMMAND(texscroll, "ff");
 
@@ -2778,7 +2778,7 @@ void texoffset_(int *xoffset, int *yoffset)
     }
     Slot &s = *defslot;
     s.variants->offset = ivec2(*xoffset, *yoffset).max(0);
-    propagatevslot(s.variants, 1<<VSLOT_OFFSET);
+    propagatevslot(s.variants, 1 << VSlot_Offset);
 }
 COMMANDN(texoffset, texoffset_, "ii");
 
@@ -2790,7 +2790,7 @@ void texrotate_(int *rot)
     }
     Slot &s = *defslot;
     s.variants->rotation = std::clamp(*rot, 0, 7);
-    propagatevslot(s.variants, 1<<VSLOT_ROTATION);
+    propagatevslot(s.variants, 1 << VSlot_Rotation);
 }
 COMMANDN(texrotate, texrotate_, "i");
 
@@ -2803,7 +2803,7 @@ void texangle_(float *a)
     }
     Slot &s = *defslot;
     s.variants->angle = vec(*a, sinf(RAD**a), cosf(RAD**a));
-    propagatevslot(s.variants, 1<<VSLOT_ANGLE);
+    propagatevslot(s.variants, 1 << VSlot_Angle);
 }
 COMMANDN(texangle, texangle_, "f");
 
@@ -2816,7 +2816,7 @@ void texscale(float *scale)
     }
     Slot &s = *defslot;
     s.variants->scale = *scale <= 0 ? 1 : *scale;
-    propagatevslot(s.variants, 1<<VSLOT_SCALE);
+    propagatevslot(s.variants, 1 << VSlot_Scale);
 }
 COMMAND(texscale, "f");
 
@@ -2829,7 +2829,7 @@ void texalpha(float *front, float *back)
     Slot &s = *defslot;
     s.variants->alphafront = std::clamp(*front, 0.0f, 1.0f);
     s.variants->alphaback = std::clamp(*back, 0.0f, 1.0f);
-    propagatevslot(s.variants, 1<<VSLOT_ALPHA);
+    propagatevslot(s.variants, 1 << VSlot_Alpha);
 }
 COMMAND(texalpha, "ff");
 
@@ -2841,7 +2841,7 @@ void texcolor(float *r, float *g, float *b)
     }
     Slot &s = *defslot;
     s.variants->colorscale = vec(std::clamp(*r, 0.0f, 2.0f), std::clamp(*g, 0.0f, 2.0f), std::clamp(*b, 0.0f, 2.0f));
-    propagatevslot(s.variants, 1<<VSLOT_COLOR);
+    propagatevslot(s.variants, 1 << VSlot_Color);
 }
 COMMAND(texcolor, "fff");
 
@@ -2861,7 +2861,7 @@ void texrefract(float *k, float *r, float *g, float *b)
     {
         s.variants->refractcolor = vec(1, 1, 1);
     }
-    propagatevslot(s.variants, 1<<VSLOT_REFRACT);
+    propagatevslot(s.variants, 1 << VSlot_Refract);
 }
 COMMAND(texrefract, "ffff");
 
