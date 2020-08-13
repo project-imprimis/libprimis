@@ -152,7 +152,7 @@ struct editline
         {
             return;
         }
-        len = clamp(newlen, 0, len);
+        len = std::clamp(newlen, 0, len);
         text[len] = '\0';
     }
 
@@ -162,7 +162,7 @@ struct editline
         {
             count = strlen(str);
         }
-        start = clamp(start, 0, len);
+        start = std::clamp(start, 0, len);
         grow(len + count, "%s", text ? text : "");
         memmove(&text[start + count], &text[start], len - start + 1);
         memcpy(&text[start], str, count);

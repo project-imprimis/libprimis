@@ -140,12 +140,12 @@ namespace mpr
     {
         EntFuzzy(physent *ent) : Ent(ent) {}
 
-        float left() const { return ent->o.x - ent->radius; }
-        float right() const { return ent->o.x + ent->radius; }
-        float back() const { return ent->o.y - ent->radius; }
-        float front() const { return ent->o.y + ent->radius; }
+        float left()   const { return ent->o.x - ent->radius; }
+        float right()  const { return ent->o.x + ent->radius; }
+        float back()   const { return ent->o.y - ent->radius; }
+        float front()  const { return ent->o.y + ent->radius; }
         float bottom() const { return ent->o.z - ent->eyeheight; }
-        float top() const { return ent->o.z + ent->aboveeye; }
+        float top()    const { return ent->o.z + ent->aboveeye; }
     };
 
     struct EntCylinder : EntFuzzy
@@ -154,7 +154,8 @@ namespace mpr
 
         vec contactface(const vec &n, const vec &dir) const
         {
-            float dxy = n.dot2(n)/(ent->radius*ent->radius), dz = n.z*n.z*4/(ent->aboveeye + ent->eyeheight);
+            float dxy = n.dot2(n)/(ent->radius*ent->radius),
+                  dz = n.z*n.z*4/(ent->aboveeye + ent->eyeheight);
             vec fn(0, 0, 0);
             if(dz > dxy && dir.z)
             {
@@ -259,7 +260,8 @@ namespace mpr
 
         vec contactface(const vec &wn, const vec &wdir) const
         {
-            vec n = orient.transform(wn).div(radius), dir = orient.transform(wdir),
+            vec n = orient.transform(wn).div(radius),
+                dir = orient.transform(wdir),
                 an(fabs(n.x), fabs(n.y), dir.z ? fabs(n.z) : 0),
                 fn(0, 0, 0);
             if(an.x > an.y)
@@ -325,8 +327,10 @@ namespace mpr
 
         vec contactface(const vec &wn, const vec &wdir) const
         {
-            vec n = orient.transform(wn).div(radius), dir = orient.transform(wdir);
-            float dxy = n.dot2(n), dz = n.z*n.z;
+            vec n = orient.transform(wn).div(radius),
+                dir = orient.transform(wdir);
+            float dxy = n.dot2(n),
+                  dz = n.z*n.z;
             vec fn(0, 0, 0);
             if(dz > dxy && dir.z)
             {

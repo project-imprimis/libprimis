@@ -3,6 +3,7 @@
 #define NUMCAUSTICS 32
 
 static Texture *caustictex[NUMCAUSTICS] = { NULL };
+bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
 
 void loadcaustics(bool force)
 {

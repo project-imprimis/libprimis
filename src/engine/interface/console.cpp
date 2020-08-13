@@ -34,6 +34,9 @@ VARFP(maxcon, 10, 200, MAXCONLINES,
 
 #define CONSTRLEN 512
 
+void resetcomplete();
+void complete(char *s, int maxlen, const char *cmdprefix);
+
 void conline(int type, const char *sf)        // add a line to the console buffer
 {
     char *buf = conlines.length() >= maxcon ? conlines.remove().line : newstring("", CONSTRLEN-1);
@@ -122,13 +125,13 @@ void setconskip(int &skip, int filter, int n)
 {
     int offsetnum = abs(n),
         dir = n < 0 ? -1 : 1;
-    skip = clamp(skip, 0, conlines.length()-1);
+    skip = std::clamp(skip, 0, conlines.length()-1);
     while(offsetnum)
     {
         skip += dir;
         if(!conlines.inrange(skip))
         {
-            skip = clamp(skip, 0, conlines.length()-1);
+            skip = std::clamp(skip, 0, conlines.length()-1);
             return;
         }
         if(conlines[skip].type&filter)

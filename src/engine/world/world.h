@@ -1,9 +1,9 @@
 
 enum                            // hardcoded texture numbers
 {
-    DEFAULT_SKY = 0,
-    DEFAULT_GEOM,
-    NUMDEFAULTSLOTS
+    Default_Sky = 0,
+    Default_Geom,
+    Default_NumDefaults
 };
 
 #define OCTAVERSION 33
@@ -39,9 +39,9 @@ struct mapheader
 
 enum
 {
-    MATSURF_NOT_VISIBLE = 0,
-    MATSURF_VISIBLE,
-    MATSURF_EDIT_ONLY
+    MatSurf_NotVisible = 0,
+    MatSurf_Visible,
+    MatSurf_EditOnly
 };
 
 #define TEX_SCALE 16.0f

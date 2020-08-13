@@ -6,10 +6,7 @@
 #include "renderwindow.h"
 #include "world/raycube.h"
 
-bool hasS3TC   = false,
-     hasFXT1   = false,
-     hasLATC   = false,
-     hasFBMSBS = false,
+bool hasFBMSBS = false,
      hasTQ     = false,
      hasDBT    = false,
      hasDBGO   = false,
@@ -286,10 +283,26 @@ void glerror(const char *file, int line, GLenum error)
             desc = "invalid value";
             break;
         }
-        case GL_INVALID_OPERATION: desc = "invalid operation"; break;
-        case GL_STACK_OVERFLOW: desc = "stack overflow"; break;
-        case GL_STACK_UNDERFLOW: desc = "stack underflow"; break;
-        case GL_OUT_OF_MEMORY: desc = "out of memory"; break;
+        case GL_INVALID_OPERATION:
+        {
+            desc = "invalid operation";
+            break;
+        }
+        case GL_STACK_OVERFLOW:
+        {
+            desc = "stack overflow";
+            break;
+        }
+        case GL_STACK_UNDERFLOW:
+        {
+            desc = "stack underflow";
+            break;
+        }
+        case GL_OUT_OF_MEMORY:
+        {
+            desc = "out of memory";
+            break;
+        }
     }
     printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
 }
@@ -298,7 +311,6 @@ VAR(intel_texalpha_bug, 0, 0, 1);
 VAR(mesa_swap_bug, 0, 0, 1);
 VAR(useubo, 1, 0, 0);
 VAR(usetexgather, 1, 0, 0);
-VAR(usetexcompress, 1, 0, 0);
 VAR(maxdrawbufs, 1, 0, 0);
 VAR(maxdualdrawbufs, 1, 0, 0);
 
@@ -355,9 +367,9 @@ bool checkdepthtexstencilrb()
 
 void gl_checkextensions()
 {
-    const char *vendor = (const char *)glGetString(GL_VENDOR);
-    const char *renderer = (const char *)glGetString(GL_RENDERER);
-    const char *version = (const char *)glGetString(GL_VERSION);
+    const char *vendor   = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
+    const char *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+    const char *version  = reinterpret_cast<const char *>(glGetString(GL_VERSION));
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
 
@@ -507,12 +519,10 @@ void gl_checkextensions()
     glVertexAttrib4Nuiv_ =        (PFNGLVERTEXATTRIB4NUIVPROC)        getprocaddress("glVertexAttrib4Nuiv");
     glVertexAttrib4Nusv_ =        (PFNGLVERTEXATTRIB4NUSVPROC)        getprocaddress("glVertexAttrib4Nusv");
     glVertexAttribPointer_ =      (PFNGLVERTEXATTRIBPOINTERPROC)      getprocaddress("glVertexAttribPointer");
-
     glDrawBuffers_ =              (PFNGLDRAWBUFFERSPROC)              getprocaddress("glDrawBuffers");
-
     glGetStringi_ =            (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
 
-    const char *glslstr = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
+    const char *glslstr = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
     conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
 
     uint glslmajorversion, glslminorversion;
@@ -520,7 +530,10 @@ void gl_checkextensions()
     {
         glslversion = glslmajorversion*100 + glslminorversion;
     }
-    if(glslversion < 400) fatal("GLSL 4.00 or greater is required!");
+    if(glslversion < 400)
+    {
+        fatal("GLSL 4.00 or greater is required!");
+    }
     parseglexts();
     GLint texsize = 0,
           texunits = 0,
@@ -647,46 +660,6 @@ void gl_checkextensions()
     //OpenGL 3.3
     glGetQueryObjecti64v_ =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64v");
     glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64v");
-    if(hasext("GL_EXT_texture_compression_s3tc"))
-    {
-        hasS3TC = true;
-        if(!mesa)
-        {
-            usetexcompress = 2;
-        }
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_EXT_texture_compression_s3tc extension.");
-        }
-    }
-    else if(hasext("GL_EXT_texture_compression_dxt1") && hasext("GL_ANGLE_texture_compression_dxt3") && hasext("GL_ANGLE_texture_compression_dxt5"))
-    {
-        hasS3TC = true;
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_EXT_texture_compression_dxt1 extension.");
-        }
-    }
-    if(hasext("GL_3DFX_texture_compression_FXT1"))
-    {
-        hasFXT1 = true;
-        if(mesa)
-        {
-            usetexcompress = max(usetexcompress, 1);
-        }
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_3DFX_texture_compression_FXT1.");
-        }
-    }
-    if(hasext("GL_EXT_texture_compression_latc"))
-    {
-        hasLATC = true;
-        if(dbgexts)
-        {
-            conoutf(Console_Init, "Using GL_EXT_texture_compression_latc extension.");
-        }
-    }
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
         GLint val = 0;
@@ -748,7 +721,10 @@ void gl_checkextensions()
             glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallbackARB");
             glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLogARB");
             hasDBGO = true;
-            if(dbgexts) conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
+            if(dbgexts)
+            {
+                conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
+            }
         }
     }
 
@@ -1006,7 +982,6 @@ void gl_init()
 
     gle::setup();
     setupshaders();
-    setuptexcompress();
 
     GLERROR;
 
@@ -1042,7 +1017,9 @@ void setcammatrix()
     if(!drawtex)
     {
         if(raycubepos(camera1->o, camdir, worldpos, 0, Ray_ClipMat|Ray_SkipFirst) == -1)
+        {
             worldpos = vec(camdir).mul(2*worldsize).add(camera1->o); // if nothing is hit, just far away in the view direction
+        }
     }
 }
 
@@ -1052,21 +1029,16 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     {
         setcammatrix();
     }
-
     jitteraa();
-
     camprojmatrix.muld(projmatrix, cammatrix);
-
     if(init)
     {
         invcammatrix.invert(cammatrix);
         invprojmatrix.invert(projmatrix);
         invcamprojmatrix.invert(camprojmatrix);
     }
-
     GLOBALPARAM(camprojmatrix, camprojmatrix);
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
-
     if(flush && Shader::lastshader)
     {
         Shader::lastshader->flushparams();
@@ -1196,10 +1168,6 @@ FVARP(sensitivityscale, 1e-4f, 100, 1e4f);
 VARP(invmouse, 0, 0, 1);
 FVARP(mouseaccel, 0, 0, 1000);
 
-VAR(thirdperson, 0, 0, 2);
-FVAR(thirdpersondistance, 0, 30, 50);
-FVAR(thirdpersonup, -25, 0, 25);
-FVAR(thirdpersonside, -25, 0, 25);
 physent *camera1 = NULL;
 bool detachedcamera = false;
 bool isthirdperson() { return player!=camera1 || detachedcamera; }
@@ -1239,11 +1207,8 @@ void modifyorient(float yaw, float pitch)
 
 void mousemove(int dx, int dy)
 {
-    if(!game::allowmouselook())
-    {
-        return;
-    }
-    float cursens = sensitivity, curaccel = mouseaccel;
+    float cursens  = sensitivity,
+          curaccel = mouseaccel;
     if(zoom)
     {
         if(zoomautosens)
@@ -1263,85 +1228,6 @@ void mousemove(int dx, int dy)
     }
     cursens /= (sensitivityscale/4); //hard factor of 4 for 40 dots/deg like Quake/Source/etc.
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
-}
-
-void recomputecamera()
-{
-    game::setupcamera();
-    computezoom();
-
-    bool allowthirdperson = game::allowthirdperson();
-    bool shoulddetach = (allowthirdperson && thirdperson > 1) || game::detachcamera();
-    if((!allowthirdperson || !thirdperson) && !shoulddetach)
-    {
-        camera1 = player;
-        detachedcamera = false;
-    }
-    else
-    {
-        static physent tempcamera;
-        camera1 = &tempcamera;
-        if(detachedcamera && shoulddetach)
-        {
-            camera1->o = player->o;
-        }
-        else
-        {
-            *camera1 = *player;
-            detachedcamera = shoulddetach;
-        }
-        camera1->reset();
-        camera1->type = PhysEnt_Camera;
-        camera1->move = -1;
-        camera1->eyeheight = camera1->aboveeye = camera1->radius = camera1->xradius = camera1->yradius = 2;
-
-        matrix3 orient;
-        orient.identity();
-        orient.rotate_around_z(camera1->yaw*RAD);
-        orient.rotate_around_x(camera1->pitch*RAD);
-        orient.rotate_around_y(camera1->roll*-RAD);
-        vec dir = vec(orient.b).neg(), side = vec(orient.a).neg(), up = orient.c;
-
-        if(game::collidecamera())
-        {
-            movecamera(camera1, dir, thirdpersondistance, 1);
-            movecamera(camera1, dir, clamp(thirdpersondistance - camera1->o.dist(player->o), 0.0f, 1.0f), 0.1f);
-            if(thirdpersonup)
-            {
-                vec pos = camera1->o;
-                float dist = fabs(thirdpersonup);
-                if(thirdpersonup < 0)
-                {
-                    up.neg();
-                }
-                movecamera(camera1, up, dist, 1);
-                movecamera(camera1, up, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
-            }
-            if(thirdpersonside)
-            {
-                vec pos = camera1->o;
-                float dist = fabs(thirdpersonside);
-                if(thirdpersonside < 0)
-                {
-                    side.neg();
-                }
-                movecamera(camera1, side, dist, 1);
-                movecamera(camera1, side, clamp(dist - camera1->o.dist(pos), 0.0f, 1.0f), 0.1f);
-            }
-        }
-        else
-        {
-            camera1->o.add(vec(dir).mul(thirdpersondistance));
-            if(thirdpersonup)
-            {
-                camera1->o.add(vec(up).mul(thirdpersonup));
-            }
-            if(thirdpersonside)
-            {
-                camera1->o.add(vec(side).mul(thirdpersonside));
-            }
-        }
-    }
 }
 
 float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, const vec &view, vec &center)
@@ -1721,12 +1607,6 @@ void screenquad(float sw, float sh)
     screenquad();
 }
 
-void screenquadflipped(float sw, float sh)
-{
-    setscreentexcoord(0, sw, -sh);
-    screenquad();
-}
-
 void screenquad(float sw, float sh, float sw2, float sh2)
 {
     setscreentexcoord(0, sw, sh);
@@ -1737,13 +1617,6 @@ void screenquad(float sw, float sh, float sw2, float sh2)
 void screenquadoffset(float x, float y, float w, float h)
 {
     setscreentexcoord(0, w, h, x, y);
-    screenquad();
-}
-
-void screenquadoffset(float x, float y, float w, float h, float x2, float y2, float w2, float h2)
-{
-    setscreentexcoord(0, w, h, x, y);
-    setscreentexcoord(1, w2, h2, x2, y2);
     screenquad();
 }
 
@@ -1802,7 +1675,7 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
                        &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat),
                 wdeep = getwaterdeep(fogmat);
-            float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
+            float deepfade = std::clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color;
             color.lerp(wcol.tocolor(), wdeepcol.tocolor(), deepfade);
             fogc.add(vec(color).mul(blend));
@@ -1864,9 +1737,7 @@ static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = 
         blendfog(abovemat, 0, 1-blend, 1-logblend, start, end, curfogcolor);
     }
     curfogcolor.mul(ldrscale);
-
     GLOBALPARAM(fogcolor, curfogcolor);
-
     float fogdensity = calcfogdensity(end-start);
     GLOBALPARAMF(fogdensity, fogdensity, 1/exp(M_LN2*start*fogdensity));
 }
@@ -1881,7 +1752,7 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
                        &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat),
                 wdeep = getwaterdeep(fogmat);
-            float deepfade = clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
+            float deepfade = std::clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
             vec color = vec(wcol.r, wcol.g, wcol.b).lerp(vec(wdeepcol.r, wdeepcol.g, wdeepcol.b), deepfade);
             overlay.add(color.div(min(32.0f + max(color.r, max(color.g, color.b))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
@@ -1943,7 +1814,10 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, co, size);
-        if(c[i].children) clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
+        if(c[i].children)
+        {
+            clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
+        }
         else if(!IS_ENTIRELY_SOLID(c[i]) && (c[i].material&MatFlag_Clip)!=Mat_Clip)
         {
             for(int k = 0; k < 3; ++k)
@@ -1960,11 +1834,12 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
 
 void drawminimap()
 {
-    if(!game::needminimap()) { clearminimap(); return; }
-
     if(!showminimap)
     {
-        if(!minimaptex) glGenTextures(1, &minimaptex);
+        if(!minimaptex)
+        {
+            glGenTextures(1, &minimaptex);
+        }
         createtexture(minimaptex, 1, 1, nominimapcolor.v, 3, 0, GL_RGB, GL_TEXTURE_2D);
         return;
     }
@@ -2219,9 +2094,15 @@ void gl_drawview()
         {
             fogbelow = z - camera1->o.z;
         }
-        else fogmat = abovemat;
+        else
+        {
+            fogmat = abovemat;
+        }
     }
-    else fogmat = Mat_Air;
+    else
+    {
+        fogmat = Mat_Air;
+    }
     setfog(abovemat);
     //setfog(fogmat, fogbelow, 1, abovemat);
 
@@ -2242,9 +2123,7 @@ void gl_drawview()
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
-
     rendergbuffer();
-
     if(wireframe && editmode)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -2260,7 +2139,7 @@ void gl_drawview()
     // render avatar after AO to avoid weird contact shadows
     renderavatar();
     GLERROR;
- 
+
     // render grass after AO to avoid disturbing shimmering patterns
     generategrass();
     rendergrass();
@@ -2283,7 +2162,7 @@ void gl_drawview()
 
         renderwaterfog(fogmat, fogbelow);
 
-        setfog(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
+        setfog(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
 
     rendertransparent();
@@ -2324,9 +2203,8 @@ void gl_drawview()
 
     if(fogoverlay && fogmat != Mat_Air)
     {
-        drawfogoverlay(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
+        drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
-
     doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
     renderpostfx(scalefbo);
     if(scalefbo)
@@ -2357,7 +2235,8 @@ void damagecompass(int n, const vec &loc)
     }
     vec delta(loc);
     delta.sub(camera1->o);
-    float yaw = 0, pitch;
+    float yaw = 0,
+          pitch;
     if(delta.magnitude() > 4)
     {
         vectoyawpitch(delta, yaw, pitch);
@@ -2441,21 +2320,21 @@ void damageblend(int n)
     {
         damageblendmillis = lastmillis;
     }
-    damageblendmillis += clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
+    damageblendmillis += std::clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
 }
 
 void drawdamagescreen(int w, int h)
 {
-    if(lastmillis >= damageblendmillis) return;
-
+    if(lastmillis >= damageblendmillis)
+    {
+        return;
+    }
     hudshader->set();
-
     static Texture *damagetex = NULL;
     if(!damagetex)
     {
         damagetex = textureload("media/interface/hud/damage.png", 3);
     }
-
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glBindTexture(GL_TEXTURE_2D, damagetex->id);
     float fade = damagescreenalpha/100.0f;
@@ -2474,7 +2353,26 @@ VAR(showhud, 0, 1, 1);
 VARP(crosshairsize, 0, 15, 50);
 VARP(cursorsize, 0, 15, 30);
 VARP(crosshairfx, 0, 1, 1);
-VARP(crosshaircolors, 0, 1, 1);
+
+
+const char *defaultcrosshair(int index)
+{
+    switch(index)
+    {
+        case 2:
+        {
+            return "media/interface/crosshair/default_hit.png";
+        }
+        case 1:
+        {
+            return "media/interface/crosshair/teammate.png";
+        }
+        default:
+        {
+            return "media/interface/crosshair/default.png";
+        }
+    }
+}
 
 #define MAXCROSSHAIRS 4
 static Texture *crosshairs[MAXCROSSHAIRS] = { NULL, NULL, NULL, NULL };
@@ -2488,7 +2386,7 @@ void loadcrosshair(const char *name, int i)
     crosshairs[i] = name ? textureload(name, 3, true) : notexture;
     if(crosshairs[i] == notexture)
     {
-        name = game::defaultcrosshair(i);
+        name = defaultcrosshair(i);
         if(!name)
         {
             name = "media/interface/crosshair/default.png";
@@ -2509,7 +2407,7 @@ ICOMMAND(getcrosshair, "i", (int *i),
     const char *name = "";
     if(*i >= 0 && *i < MAXCROSSHAIRS)
     {
-        name = crosshairs[*i] ? crosshairs[*i]->name : game::defaultcrosshair(*i);
+        name = crosshairs[*i] ? crosshairs[*i]->name : defaultcrosshair(*i);
         if(!name)
         {
             name = "media/interface/crosshair/default.png";
@@ -2530,14 +2428,13 @@ void writecrosshairs(stream *f)
     f->printf("\n");
 }
 
-void drawcrosshair(int w, int h)
+void drawcrosshair(int w, int h, int crosshairindex)
 {
     bool windowhit = UI::hascursor();
     if(!windowhit && (!showhud || mainmenu))
     {
         return; //(!showhud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
     }
-    vec color(1, 1, 1);
     float cx = 0.5f,
           cy = 0.5f,
           chsize;
@@ -2555,7 +2452,7 @@ void drawcrosshair(int w, int h)
     }
     else
     {
-        int index = game::selectcrosshair(color);
+        int index = crosshairindex;
         if(index < 0)
         {
             return;
@@ -2563,10 +2460,6 @@ void drawcrosshair(int w, int h)
         if(!crosshairfx)
         {
             index = 0;
-        }
-        if(!crosshairfx || !crosshaircolors)
-        {
-            color = vec(1, 1, 1);
         }
         crosshair = crosshairs[index];
         if(!crosshair)
@@ -2576,6 +2469,7 @@ void drawcrosshair(int w, int h)
         }
         chsize = crosshairsize*w/900.0f;
     }
+    vec color = vec(1, 1, 1);
     if(crosshair->type&Texture::ALPHA)
     {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -2611,7 +2505,7 @@ void resethudshader()
     gle::colorf(1, 1, 1);
 }
 
-void gl_drawhud()
+void gl_drawhud(int crosshairindex)
 {
     int w = hudw,
         h = hudh;
@@ -2680,9 +2574,7 @@ void gl_drawhud()
                 }
                 roffset += FONTH;
             }
-
             printtimers(conw, conh);
-
             if(wallclock)
             {
                 if(!walltime)
@@ -2714,7 +2606,6 @@ void gl_drawhud()
             }
             pophudmatrix();
         }
-
         if(!editmode)
         {
             resethudshader();
@@ -2722,7 +2613,6 @@ void gl_drawhud()
             game::gameplayhud(w, h);
             abovehud = min(abovehud, conh*game::abovegameplayhud(w, h));
         }
-
         rendertexturepanel(w, h);
     }
 
@@ -2735,13 +2625,9 @@ void gl_drawhud()
         renderconsole(conw, conh, abovehud - FONTH/2);
     }
     pophudmatrix();
-
-    drawcrosshair(w, h);
-
+    drawcrosshair(w, h, crosshairindex);
     glDisable(GL_BLEND);
-
     popfont();
-
     if(frametimer)
     {
         glFinish();
@@ -2768,7 +2654,7 @@ void gl_setupframe(bool force)
     setuplights();
 }
 
-void gl_drawframe()
+void gl_drawframe(int crosshairindex)
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
@@ -2786,7 +2672,7 @@ void gl_drawframe()
         gl_drawview();
     }
     UI::render();
-    gl_drawhud();
+    gl_drawhud(crosshairindex);
 }
 
 void cleanupgl()

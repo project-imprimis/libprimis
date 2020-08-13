@@ -23,7 +23,10 @@ void validmapname(char *dst, const char *src, const char *prefix = NULL, const c
             {
                 *dst++ = c;
             }
-            else break;
+            else
+            {
+                break;
+            }
         }
     }
     if(dst > start)
@@ -111,7 +114,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
     return true;
 }
 
-bool loadents(const char *fname, vector<entity> &ents, uint *crc)
+bool loadents(const char *fname, const char *gameident, vector<entity> &ents, uint *crc)
 {
     string name;
     validmapname(name, fname);
@@ -131,7 +134,8 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
     }
     for(int i = 0; i < hdr.numvars; ++i)
     {
-        int type = f->getchar(), ilen = f->get<ushort>();
+        int type = f->getchar(),
+            ilen = f->get<ushort>();
         f->seek(ilen, SEEK_CUR);
         switch(type)
         {
@@ -161,7 +165,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         f->read(gametype, len+1);
     }
     gametype[max(len, 0)] = '\0';
-    if(strcmp(gametype, game::gameident()))
+    if(strcmp(gametype, gameident)) //compare game string from map with game
     {
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
@@ -178,7 +182,10 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
         entity &e = ents.add();
         f->read(&e, sizeof(entity));
         fixent(e, hdr.version);
-        if(eif > 0) f->seek(eif, SEEK_CUR);
+        if(eif > 0)
+        {
+            f->seek(eif, SEEK_CUR);
+        }
         if(samegame)
         {
         }
@@ -510,23 +517,40 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 {
                     int vis = layerverts < 4 ? (vertmask&0x02 ? 2 : 1) : 3, order = vertmask&0x01 ? 1 : 0, k = 0;
                     verts[k++].setxyz(v[order].mul(size).add(vo));
-                    if(vis&1) verts[k++].setxyz(v[order+1].mul(size).add(vo));
+                    if(vis&1)
+                    {
+                        verts[k++].setxyz(v[order+1].mul(size).add(vo));
+                    }
                     verts[k++].setxyz(v[order+2].mul(size).add(vo));
-                    if(vis&2) verts[k++].setxyz(v[(order+3)&3].mul(size).add(vo));
+                    if(vis&2)
+                    {
+                        verts[k++].setxyz(v[(order+3)&3].mul(size).add(vo));
+                    }
                 }
                 if(layerverts == 4)
                 {
                     if(hasxyz && vertmask&0x01)
                     {
-                        ushort c1 = f->get<ushort>(), r1 = f->get<ushort>(), c2 = f->get<ushort>(), r2 = f->get<ushort>();
+                        ushort c1 = f->get<ushort>(),
+                               r1 = f->get<ushort>(),
+                               c2 = f->get<ushort>(),
+                               r2 = f->get<ushort>();
                         ivec xyz;
-                        xyz[vc] = c1; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c1;
+                        xyz[vr] = r1;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[0].setxyz(xyz);
-                        xyz[vc] = c1; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c1;
+                        xyz[vr] = r2;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[1].setxyz(xyz);
-                        xyz[vc] = c2; xyz[vr] = r2; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c2;
+                        xyz[vr] = r2;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[2].setxyz(xyz);
-                        xyz[vc] = c2; xyz[vr] = r1; xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
+                        xyz[vc] = c2;
+                        xyz[vr] = r1;
+                        xyz[dim] = n[dim] ? -(bias + n[vc]*xyz[vc] + n[vr]*xyz[vr])/n[dim] : vo[dim];
                         verts[3].setxyz(xyz);
                         hasxyz = false;
                     }
@@ -611,7 +635,7 @@ void savevslot(stream *f, VSlot &vs, int prev)
 {
     f->put<int>(vs.changed);
     f->put<int>(prev);
-    if(vs.changed & (1<<VSLOT_SHPARAM))
+    if(vs.changed & (1 << VSlot_ShParam))
     {
         f->put<ushort>(vs.params.length());
         for(int i = 0; i < vs.params.length(); i++)
@@ -625,47 +649,47 @@ void savevslot(stream *f, VSlot &vs, int prev)
             }
         }
     }
-    if(vs.changed & (1<<VSLOT_SCALE))
+    if(vs.changed & (1 << VSlot_Scale))
     {
         f->put<float>(vs.scale);
     }
-    if(vs.changed & (1<<VSLOT_ROTATION))
+    if(vs.changed & (1 << VSlot_Rotation))
     {
         f->put<int>(vs.rotation);
     }
-    if(vs.changed & (1<<VSLOT_ANGLE))
+    if(vs.changed & (1 << VSlot_Angle))
     {
         f->put<float>(vs.angle.x);
         f->put<float>(vs.angle.y);
         f->put<float>(vs.angle.z);
     }
-    if(vs.changed & (1<<VSLOT_OFFSET))
+    if(vs.changed & (1 << VSlot_Offset))
     {
         for(int k = 0; k < 2; ++k)
         {
             f->put<int>(vs.offset[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_SCROLL))
+    if(vs.changed & (1 << VSlot_Scroll))
     {
         for(int k = 0; k < 2; ++k)
         {
             f->put<float>(vs.scroll[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_ALPHA))
+    if(vs.changed & (1 << VSlot_Alpha))
     {
         f->put<float>(vs.alphafront);
         f->put<float>(vs.alphaback);
     }
-    if(vs.changed & (1<<VSLOT_COLOR))
+    if(vs.changed & (1 << VSlot_Color))
     {
         for(int k = 0; k < 3; ++k)
         {
             f->put<float>(vs.colorscale[k]);
         }
     }
-    if(vs.changed & (1<<VSLOT_REFRACT))
+    if(vs.changed & (1 << VSlot_Refract))
     {
         f->put<float>(vs.refractscale);
         for(int k = 0; k < 3; ++k)
@@ -729,7 +753,7 @@ void savevslots(stream *f, int numvslots)
 void loadvslot(stream *f, VSlot &vs, int changed)
 {
     vs.changed = changed;
-    if(vs.changed & (1<<VSLOT_SHPARAM))
+    if(vs.changed & (1 << VSlot_ShParam))
     {
         int numparams = f->get<ushort>();
         string name;
@@ -752,52 +776,52 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         }
     }
     //vslot properties (set by e.g. v-commands)
-    if(vs.changed & (1<<VSLOT_SCALE)) //scale <factor>
+    if(vs.changed & (1 << VSlot_Scale)) //scale <factor>
     {
         vs.scale = f->get<float>();
     }
-    if(vs.changed & (1<<VSLOT_ROTATION)) //rotate <index>
+    if(vs.changed & (1 << VSlot_Rotation)) //rotate <index>
     {
-        vs.rotation = clamp(f->get<int>(), 0, 7);
+        vs.rotation = std::clamp(f->get<int>(), 0, 7);
     }
     /*
      * angle uses three parameters to prebake sine/cos values for the angle it
      * stores despite there being only one parameter (angle) passed
      */
-    if(vs.changed & (1<<VSLOT_ANGLE)) //angle <angle>
+    if(vs.changed & (1 << VSlot_Angle)) //angle <angle>
     {
         for(int k = 0; k < 3; ++k)
         {
             vs.angle[k] = f->get<float>();
         }
     }
-    if(vs.changed & (1<<VSLOT_OFFSET)) //offset <x> <y>
+    if(vs.changed & (1 << VSlot_Offset)) //offset <x> <y>
     {
         for(int k = 0; k < 2; ++k)
         {
             vs.offset[k] = f->get<int>();
         }
     }
-    if(vs.changed & (1<<VSLOT_SCROLL)) //scroll <x> <y>
+    if(vs.changed & (1 << VSlot_Scroll)) //scroll <x> <y>
     {
         for(int k = 0; k < 2; ++k)
         {
             vs.scroll[k] = f->get<float>();
         }
     }
-    if(vs.changed & (1<<VSLOT_ALPHA)) //alpha <f> <b>
+    if(vs.changed & (1 << VSlot_Alpha)) //alpha <f> <b>
     {
         vs.alphafront = f->get<float>();
         vs.alphaback = f->get<float>();
     }
-    if(vs.changed & (1<<VSLOT_COLOR)) //color <r> <g> <b>
+    if(vs.changed & (1 << VSlot_Color)) //color <r> <g> <b>
     {
         for(int k = 0; k < 3; ++k)
         {
             vs.colorscale[k] = f->get<float>();
         }
     }
-    if(vs.changed & (1<<VSLOT_REFRACT)) //refract <r> <g> <b>
+    if(vs.changed & (1 << VSlot_Refract)) //refract <r> <g> <b>
     {
         vs.refractscale = f->get<float>();
         for(int k = 0; k < 3; ++k)
@@ -843,7 +867,7 @@ void loadvslots(stream *f, int numvslots)
     delete[] prev;
 }
 
-bool save_world(const char *mname)
+bool save_world(const char *mname, const char *gameident)
 {
     if(!*mname)
     {
@@ -889,9 +913,9 @@ bool save_world(const char *mname)
     ENUMERATE(idents, ident, id,
     {
         if((id.type == Id_Var || id.type == Id_FloatVar || id.type == Id_StringVar) &&
-           id.flags&Idf_Override    &&
+             id.flags&Idf_Override  &&
            !(id.flags&Idf_ReadOnly) &&
-           id.flags&Idf_Overridden)
+             id.flags&Idf_Overridden)
         {
             hdr.numvars++;
         }
@@ -942,13 +966,13 @@ bool save_world(const char *mname)
     {
         conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
     }
-    f->putchar((int)strlen(game::gameident()));
-    f->write(game::gameident(), (int)strlen(game::gameident())+1);
-    vector<char> extras;
-    game::writegamedata(extras);
-    f->put<ushort>(extras.length());
-    f->write(extras.getbuf(), extras.length());
-
+    f->putchar(static_cast<int>(strlen(gameident)));
+    f->write(gameident, static_cast<int>(strlen(gameident)+1));
+    //=== padding for compatibility (extent properties no longer a feature)
+    f->put<ushort>(0);
+    f->put<ushort>(0);
+    f->write(0, 0);
+    //=== end of padding
     f->put<ushort>(texmru.length());
     for(int i = 0; i < texmru.length(); i++)
     {
@@ -975,7 +999,7 @@ static uint mapcrc = 0;
 uint getmapcrc() { return mapcrc; }
 void clearmapcrc() { mapcrc = 0; }
 
-bool load_world(const char *mname, const char *cname)
+bool load_world(const char *mname, const char *gameident, const char *gameinfo, const char *cname)
 {
     int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);
@@ -995,7 +1019,7 @@ bool load_world(const char *mname, const char *cname)
     }
     resetmap();
     Texture *mapshot = textureload(picname, 3, true, false);
-    renderbackground("loading...", mapshot, mname, game::getmapinfo());
+    renderbackground("loading...", mapshot, mname, gameinfo);
     setvar("mapversion", hdr.version, true, false);
     renderprogress(0, "clearing world...");
     freeocta(worldroot);
@@ -1093,7 +1117,10 @@ bool load_world(const char *mname, const char *cname)
             }
         }
     }
-    if(dbgvars) conoutf(Console_Debug, "read %d vars", hdr.numvars);
+    if(dbgvars)
+    {
+        conoutf(Console_Debug, "read %d vars", hdr.numvars);
+    }
     string gametype;
     bool samegame = true;
     int len = f->getchar();
@@ -1102,19 +1129,15 @@ bool load_world(const char *mname, const char *cname)
         f->read(gametype, len+1);
     }
     gametype[max(len, 0)] = '\0';
-    if(strcmp(gametype, game::gameident())!=0)
+    if(strcmp(gametype, gameident)!=0)
     {
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
     }
-    int eif = f->get<ushort>();
-    int extrasize = f->get<ushort>();
+    int eif = f->get<ushort>(),
+        extrasize = f->get<ushort>();
     vector<char> extras;
     f->read(extras.pad(extrasize), extrasize);
-    if(samegame)
-    {
-        game::readgamedata(extras);
-    }
     texmru.shrink(0);
     ushort nummru = f->get<ushort>();
     for(int i = 0; i < nummru; ++i)
@@ -1129,10 +1152,8 @@ bool load_world(const char *mname, const char *cname)
         ents.add(&e);
         f->read(&e, sizeof(entity));
         fixent(e, hdr.version);
-        if(samegame)
-        {
-        }
-        else
+        //delete entities from other games
+        if(!samegame)
         {
             if(eif > 0)
             {
@@ -1187,7 +1208,7 @@ bool load_world(const char *mname, const char *cname)
     attachentities();
     allchanged(true);
 
-    renderbackground("loading...", mapshot, mname, game::getmapinfo());
+    renderbackground("loading...", mapshot, mname, gameinfo);
 
     if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown"))
     {
@@ -1196,9 +1217,3 @@ bool load_world(const char *mname, const char *cname)
     startmap(cname ? cname : mname);
     return true;
 }
-
-void savecurrentmap() { save_world(game::getclientmap()); }
-void savemap(char *mname) { save_world(mname); }
-
-COMMAND(savemap, "s");
-COMMAND(savecurrentmap, "");

@@ -387,8 +387,8 @@ inline void ident::getcval(tagval &v) const
 // nasty macros for registering script functions, abuses globals to avoid excessive infrastructure
 
 //command macros
-#define KEYWORD(name, type) UNUSED static bool __dummy_##type = addcommand(#name, (identfun)NULL, NULL, type)
-#define COMMANDKN(name, type, fun, nargs) UNUSED static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)
+#define KEYWORD(name, type) static bool __dummy_##type = addcommand(#name, (identfun)NULL, NULL, type)
+#define COMMANDKN(name, type, fun, nargs) static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)
 #define COMMANDK(name, type, nargs) COMMANDKN(name, type, name, nargs)
 #define COMMANDN(name, fun, nargs) COMMANDKN(name, Id_Command, fun, nargs)
 #define COMMAND(name, nargs) COMMANDN(name, name, nargs)

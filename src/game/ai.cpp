@@ -16,19 +16,19 @@ namespace ai
     VAR(aidebug, 0, 0, 6);
     VAR(aiforcegun, -1, -1, Gun_NumGuns-1);
 
-    ICOMMAND(addbot, "s", (char *s), addmsg(NetMsg_AddBot, "ri", *s ? clamp(parseint(s), 1, 101) : -1));
+    ICOMMAND(addbot, "s", (char *s), addmsg(NetMsg_AddBot, "ri", *s ? std::clamp(parseint(s), 1, 101) : -1));
     ICOMMAND(delbot, "", (), addmsg(NetMsg_DelBot, "r"));
     ICOMMAND(botlimit, "i", (int *n), addmsg(NetMsg_BotLimit, "ri", *n));
     ICOMMAND(botbalance, "i", (int *n), addmsg(NetMsg_BotBalance, "ri", *n));
 
     float viewdist(int x)
     {
-        return x <= 100 ? clamp((SIGHTMIN+(SIGHTMAX-SIGHTMIN))/100.f*static_cast<float>(x), static_cast<float>(SIGHTMIN), static_cast<float>(fog)) : static_cast<float>(fog);
+        return x <= 100 ? std::clamp((sightmin+(sightmax-sightmin))/100.f*static_cast<float>(x), static_cast<float>(sightmin), static_cast<float>(fog)) : static_cast<float>(fog);
     }
 
     float viewfieldx(int x)
     {
-        return x <= 100 ? clamp((VIEWMIN+(VIEWMAX-VIEWMIN))/100.f*static_cast<float>(x), static_cast<float>(VIEWMIN), static_cast<float>(VIEWMAX)) : static_cast<float>(VIEWMAX);
+        return x <= 100 ? std::clamp((viewmin+(viewmax-viewmin))/100.f*static_cast<float>(x), static_cast<float>(viewmin), static_cast<float>(viewmax)) : static_cast<float>(viewmax);
     }
 
     float viewfieldy(int x)
@@ -113,7 +113,7 @@ namespace ai
     { // add margins of error
         if(attackrange(d, atk, dist) || (d->skill <= 100 && !randomint(d->skill)))
         {
-            float skew = clamp(static_cast<float>(lastmillis-d->ai->enemymillis)/static_cast<float>((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
+            float skew = std::clamp(static_cast<float>(lastmillis-d->ai->enemymillis)/static_cast<float>((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
                 offy = yaw-d->yaw, offp = pitch-d->pitch;
             if(offy > 180)
             {
@@ -362,7 +362,7 @@ namespace ai
 
     bool makeroute(gameent *d, aistate &b, const vec &pos, bool changed, int retries)
     {
-        int node = closestwaypoint(pos, SIGHTMIN, true);
+        int node = closestwaypoint(pos, sightmin, true);
         return makeroute(d, b, node, changed, retries);
     }
 
@@ -394,7 +394,7 @@ namespace ai
         return false;
     }
 
-    bool enemy(gameent *d, aistate &b, const vec &pos, float guard = SIGHTMIN, int pursue = 0)
+    bool enemy(gameent *d, aistate &b, const vec &pos, float guard = sightmin, int pursue = 0)
     {
         gameent *t = NULL;
         vec dp = d->headpos();
@@ -572,7 +572,7 @@ namespace ai
         {
             interest &n = interests.add();
             n.state = AIState_Interest;
-            n.node = closestwaypoint(e.o, SIGHTMIN, true);
+            n.node = closestwaypoint(e.o, sightmin, true);
             n.target = id;
             n.targtype = AITravel_Entity;
             n.score = d->feetpos().squaredist(e.o)/(force ? -1 : score);
@@ -817,7 +817,7 @@ namespace ai
         {
             return 1;
         }
-        if(randomnode(d, b, SIGHTMIN, 1e16f))
+        if(randomnode(d, b, sightmin, 1e16f))
         {
             d->ai->switchstate(b, AIState_Interest, AITravel_Node, d->ai->route[0]);
             return 1;
@@ -899,7 +899,7 @@ namespace ai
                 {
                     return 1;
                 }
-                if(iswaypoint(b.target) && vec(waypoints[b.target].o).sub(d->feetpos()).magnitude() > CLOSEDIST)
+                if(iswaypoint(b.target) && vec(waypoints[b.target].o).sub(d->feetpos()).magnitude() > closedist)
                 {
                     return makeroute(d, b, waypoints[b.target].o) ? 1 : 0;
                 }
@@ -912,7 +912,7 @@ namespace ai
                     {
                         return 0;
                     }
-                    //if(d->feetpos().squaredist(e.o) <= CLOSEDIST*CLOSEDIST)
+                    //if(d->feetpos().squaredist(e.o) <= closedist*closedist)
                     //{
                     //    b.idle = 1;
                     //    return true;
@@ -959,7 +959,7 @@ namespace ai
                     if(e && e->state == ClientState_Alive)
                     {
                         int atk = guns[d->gunselect].attacks[Act_Shoot];
-                        float guard = SIGHTMIN,
+                        float guard = sightmin,
                               wander = attacks[atk].range;
                         return patrol(d, b, e->feetpos(), guard, wander) ? 1 : 0;
                     }
@@ -979,15 +979,15 @@ namespace ai
         vec pos = d->feetpos();
         int node1 = -1,
             node2 = -1;
-        float mindist1 = CLOSEDIST*CLOSEDIST, //close_dist not closed_ist
-              mindist2 = CLOSEDIST*CLOSEDIST;
+        float mindist1 = closedist*closedist, //close_dist not closed_ist
+              mindist2 = closedist*closedist;
         for(int i = 0; i < d->ai->route.length(); i++)
         {
             if(iswaypoint(d->ai->route[i]))
             {
                 vec epos = waypoints[d->ai->route[i]].o;
                 float dist = epos.squaredist(pos);
-                if(dist > FARDIST*FARDIST)
+                if(dist > fardist*fardist)
                 {
                     continue;
                 }
@@ -1026,7 +1026,7 @@ namespace ai
                 {
                     d->ai->spot = epos;
                     d->ai->targnode = entid;
-                    return !check || d->feetpos().squaredist(epos) > MINWPDIST*MINWPDIST ? 1 : 2;
+                    return !check || d->feetpos().squaredist(epos) > minwpdist*minwpdist ? 1 : 2;
                 }
             }
         }
@@ -1039,7 +1039,7 @@ namespace ai
         {
             waypoint &w = waypoints[n];
             static vector<int> linkmap; linkmap.setsize(0);
-            for(int i = 0; i < MAXWAYPOINTLINKS; ++i)
+            for(int i = 0; i < maxwaypointlinks; ++i)
             {
                 if(!w.links[i])
                 {
@@ -1194,7 +1194,7 @@ namespace ai
             dir(off.x, off.y, 0);
         bool sequenced = d->ai->blockseq || d->ai->targseq,
              offground = d->timeinair && !d->inwater,
-             jump = !offground && lastmillis >= d->ai->jumpseed && (sequenced || off.z >= JUMPMIN || lastmillis >= d->ai->jumprand);
+             jump = !offground && lastmillis >= d->ai->jumpseed && (sequenced || off.z >= jumpmin || lastmillis >= d->ai->jumprand);
         if(jump)
         {
             vec old = d->o;
@@ -1405,7 +1405,7 @@ namespace ai
                     enemyok = false;
                 }
             }
-            else if(!enemyok && target(d, b, 0, false, SIGHTMIN))
+            else if(!enemyok && target(d, b, 0, false, sightmin))
             {
                 enemyok = (e = getclient(d->ai->enemy)) != NULL;
             }
@@ -1526,7 +1526,7 @@ namespace ai
             {
                 yaw -= 360.0f;
             }
-            int r = clamp(static_cast<int>(floor((yaw+22.5f)/45.0f))&7, 0, 7);
+            int r = std::clamp(static_cast<int>(floor((yaw+22.5f)/45.0f))&7, 0, 7);
             const aimdir &ad = aimdirs[r];
             d->move = ad.move;
             d->strafe = ad.strafe;
@@ -1725,7 +1725,10 @@ namespace ai
             }
             if(!intermission)
             {
-                if(d->ragdoll) cleanragdoll(d);
+                if(d->ragdoll)
+                {
+                    cleanragdoll(d);
+                }
                 moveplayer(d, 10, true);
                 if(allowmove && !b.idle)
                 {
@@ -1919,7 +1922,8 @@ namespace ai
     {
         if(aidebug > 1)
         {
-            int total = 0, alive = 0;
+            int total = 0,
+                alive = 0;
             for(int i = 0; i < players.length(); i++)
             {
                 if(players[i]->ai)
@@ -2020,7 +2024,7 @@ namespace ai
             for(int i = 0; i < len; ++i)
             {
                 waypoint &w = waypoints[showwaypointsradius ? close[i] : i];
-                for(int j = 0; j < MAXWAYPOINTLINKS; ++j)
+                for(int j = 0; j < maxwaypointlinks; ++j)
                 {
                     int link = w.links[j];
                     if(!link)

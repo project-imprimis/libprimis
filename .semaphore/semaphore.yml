@@ -12,7 +12,8 @@ blocks:
           commands:
             - checkout
             - sem-version cpp 8
-            - install-package libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+            - sudo apt-get update
+            - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
             - git submodule update --init --remote src/enet
             - make -C src clean
             - make -C src install -j3

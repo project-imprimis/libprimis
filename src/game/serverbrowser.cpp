@@ -1,6 +1,4 @@
-#include "engine.h"
-#include "input.h"
-#include "render/renderwindow.h"
+#include "game.h"
 
 struct resolverthread
 {
@@ -24,9 +22,11 @@ SDL_cond *querycond, *resultcond;
 #define RESOLVERTHREADS 2
 #define RESOLVERLIMIT 3000
 
+//this is a void pointer because it is called by SDL_CreateThread which deals
+//with a void * function
 int resolverloop(void * data)
 {
-    resolverthread *rt = (resolverthread *)data;
+    resolverthread *rt = reinterpret_cast<resolverthread *>(data);
     SDL_LockMutex(resolvermutex);
     SDL_Thread *thread = rt->thread;
     SDL_UnlockMutex(resolvermutex);
@@ -257,10 +257,10 @@ struct pingattempts
 {
     enum
     {
-        MAXATTEMPTS = 2
+        Ping_MaxAttempts = 2
     };
 
-    int offset, attempts[MAXATTEMPTS];
+    int offset, attempts[Ping_MaxAttempts];
 
     pingattempts() : offset(0) { clearattempts(); }
 
@@ -288,7 +288,7 @@ struct pingattempts
     int addattempt(int millis)
     {
         int val = encodeping(millis);
-        for(int k = 0; k < MAXATTEMPTS-1; ++k)
+        for(int k = 0; k < Ping_MaxAttempts-1; ++k)
         {
             attempts[k+1] = attempts[k];
         }
@@ -300,7 +300,7 @@ struct pingattempts
     {
         if(val)
         {
-            for(int k = 0; k < MAXATTEMPTS; ++k)
+            for(int k = 0; k < Ping_MaxAttempts; ++k)
             {
                 if(attempts[k] == val)
                 {
@@ -321,9 +321,9 @@ static int currentprotocol = server::protocolversion();
 
 enum
 {
-    UNRESOLVED = 0,
-    RESOLVING,
-    RESOLVED
+    Resolve_Unresolved = 0,
+    Resolve_Resolving,
+    Resolve_Resolved
 };
 
 struct serverinfo : servinfo, pingattempts
@@ -341,7 +341,7 @@ struct serverinfo : servinfo, pingattempts
     const char *password;
 
     serverinfo()
-     : resolved(UNRESOLVED), keep(false), password(NULL)
+     : resolved(Resolve_Unresolved), keep(false), password(NULL)
     {
         clearpings();
         setoffset();
@@ -502,7 +502,7 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
     si->address.port = port;
     if(ip!=ENET_HOST_ANY)
     {
-        si->resolved = RESOLVED;
+        si->resolved = Resolve_Resolved;
     }
     if(name)
     {
@@ -628,15 +628,15 @@ void checkresolver()
     for(int i = 0; i < servers.length(); i++)
     {
         serverinfo &si = *servers[i];
-        if(si.resolved == RESOLVED)
+        if(si.resolved == Resolve_Resolved)
         {
             continue;
         }
         if(si.address.host == ENET_HOST_ANY)
         {
-            if(si.resolved == UNRESOLVED)
+            if(si.resolved == Resolve_Unresolved)
             {
-                si.resolved = RESOLVING;
+                si.resolved = Resolve_Resolving;
                 resolverquery(si.name);
             }
             resolving++;
@@ -659,7 +659,7 @@ void checkresolver()
             serverinfo &si = *servers[i];
             if(name == si.name)
             {
-                si.resolved = RESOLVED;
+                si.resolved = Resolve_Resolved;
                 si.address.host = addr.host;
                 break;
             }
@@ -717,7 +717,7 @@ void checkpings()
             si = newserver(NULL, addr.port, addr.host);
             millis = lanpings.decodeping(millis);
         }
-        int rtt = clamp(totalmillis - millis, 0, min(servpingdecay, totalmillis));
+        int rtt = std::clamp(totalmillis - millis, 0, min(servpingdecay, totalmillis));
         if(millis >= lastreset && rtt < servpingdecay)
         {
             si->addping(rtt, millis);

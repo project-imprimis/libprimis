@@ -204,7 +204,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         "#define texture2DRect(sampler, coords) texture(sampler, coords)\n"
         "#define texture2DRectProj(sampler, coords) textureProj(sampler, coords)\n"
         "#define shadow2DRect(sampler, coords) texture(sampler, coords)\n";
-    parts[numparts++] = 
+    parts[numparts++] =
         "#define texture2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n"
         "#define shadow2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n";
     parts[numparts++] = modsource ? modsource : source;
@@ -280,9 +280,9 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
 
 static void bindworldtexlocs(Shader &s)
 {
-    UNIFORMTEX("diffusemap", TEX_DIFFUSE);
-    UNIFORMTEX("normalmap", TEX_NORMAL);
-    UNIFORMTEX("glowmap", TEX_GLOW);
+    UNIFORMTEX("diffusemap", Tex_Diffuse);
+    UNIFORMTEX("normalmap", Tex_Normal);
+    UNIFORMTEX("glowmap", Tex_Glow);
     UNIFORMTEX("blendmap", 7);
     UNIFORMTEX("refractmask", 7);
     UNIFORMTEX("refractlight", 8);
@@ -326,7 +326,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
                 glUniform1i_(loc, i);
             }
         }
-        if(s.type & SHADER_WORLD)
+        if(s.type & Shader_World)
         {
             bindworldtexlocs(s);
         }
@@ -496,7 +496,7 @@ static void allocglslactiveuniforms(Shader &s)
         {
             continue;
         }
-        name[clamp(static_cast<int>(namelen), 0, static_cast<int>(sizeof(name))-2)] = '\0';
+        name[std::clamp(static_cast<int>(namelen), 0, static_cast<int>(sizeof(name))-2)] = '\0';
         char *brak = strchr(name, '[');
         if(brak)
         {
@@ -758,7 +758,7 @@ void Shader::cleanup(bool full)
     globalparams.setsize(0);
     if(standard || full)
     {
-        type = SHADER_INVALID;
+        type = Shader_Invalid;
         DELETEA(vsstr);
         DELETEA(psstr);
         DELETEA(defer);
@@ -842,7 +842,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     s.vsstr = newstring(vs);
     s.psstr = newstring(ps);
     DELETEA(s.defer);
-    s.type = type & ~(SHADER_INVALID | SHADER_DEFERRED);
+    s.type = type & ~(Shader_Invalid | Shader_Deferred);
     s.variantshader = variant;
     s.standard = standardshaders;
     if(forceshaders)
@@ -983,7 +983,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         }
     }
     row += rowoffset;
-    if(row < 0 || row >= MAXVARIANTROWS)
+    if(row < 0 || row >= maxvariantrows)
     {
         return;
     }
@@ -1216,7 +1216,7 @@ void defershader(int *type, const char *name, const char *contents)
     s.name = rname;
     DELETEA(s.defer);
     s.defer = newstring(contents);
-    s.type = SHADER_DEFERRED | (*type & ~SHADER_INVALID);
+    s.type = Shader_Deferred | (*type & ~Shader_Invalid);
     s.standard = standardshaders;
 }
 COMMAND(defershader, "iss");
@@ -1245,7 +1245,7 @@ void Shader::force()
     if(deferred())
     {
         DELETEA(defer);
-        type = SHADER_INVALID;
+        type = Shader_Invalid;
     }
 }
 
@@ -1324,7 +1324,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
         shader(type, name, vs, ps);
         return;
     }
-    else if(*row >= MAXVARIANTROWS)
+    else if(*row >= maxvariantrows)
     {
         return;
     }
@@ -1446,7 +1446,7 @@ void linkvslotshader(VSlot &s, bool load)
     {
         return;
     }
-    if(s.slot->texmask&(1<<TEX_GLOW))
+    if(s.slot->texmask&(1 << Tex_Glow))
     {
         static const char *paramname = getshaderparamname("glowcolor");
         const float *param = findslotparam(s, paramname);
@@ -1775,7 +1775,7 @@ ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs
     }
     inputmask &= (1<<NUMPOSTFXBINDS)-1;
     freemask &= (1<<NUMPOSTFXBINDS)-1;
-    addpostfx(name, clamp(*bind, 0, NUMPOSTFXBINDS-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+    addpostfx(name, std::clamp(*bind, 0, NUMPOSTFXBINDS-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
 });
 
 ICOMMAND(setpostfx, "sffff", (char *name, float *x, float *y, float *z, float *w),

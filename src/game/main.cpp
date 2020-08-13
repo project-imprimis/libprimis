@@ -1,9 +1,7 @@
 // main.cpp: initialisation & main loop
 
 #include <fstream>
-#include "engine.h"
-#include "interface/input.h"
-#include "render/renderwindow.h"
+#include "game.h"
 
 extern void cleargamma();
 
@@ -19,10 +17,10 @@ void cleanup()
     cleargamma();
     freeocta(worldroot);
     UI::cleanup();
-    extern void clear_command(); clear_command();
-    extern void clear_console(); clear_console();
-    extern void clear_models();  clear_models();
-    extern void clear_sound();   clear_sound();
+    clear_command();
+    clear_console();
+    clear_models();
+    clear_sound();
     closelogfile();
     SDL_Quit();
 }
@@ -36,7 +34,7 @@ void quit()                     // normal exit
     abortconnect();
     disconnect();
     localdisconnect();
-    writecfg();
+    writecfg(game::savedconfig(), game::autoexec(), game::defaultconfig());
     cleanup();
     exit(EXIT_SUCCESS);
 }
@@ -90,9 +88,6 @@ bool initwarning(const char *desc, int level, int type)
     return false;
 }
 
-VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
-VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
-
 void writeinitcfg()
 {
     std::ofstream cfgfile;
@@ -100,7 +95,6 @@ void writeinitcfg()
     {
         cfgfile.open(static_cast<std::string>(homedir) + std::string("config/init.cfg"), std::ios::trunc);
     }
-
     if(cfgfile.is_open())
     {
         // Import all variables to write out to the config file
@@ -124,7 +118,6 @@ void writeinitcfg()
         {
             cfgfile << "audiodriver " << escapestring(audiodriver) << "\n"; // Replace call to ``escapestring`` with C++ standard method?
         }
-
         cfgfile.close();
     }
 }
@@ -178,7 +171,6 @@ int main(int argc, char **argv)
 
     setlogfile(NULL);
 
-    int dedicated = 0;
     char *load = NULL, *initscript = NULL;
 
     initing = Init_Reset;
@@ -230,17 +222,9 @@ int main(int argc, char **argv)
                 {
                     break;
                 }
-                case 'd': dedicated = atoi(&argv[i][2]);
-                {
-                    if(dedicated<=0)
-                    {
-                        dedicated = 2;
-                        break;
-                    }
-                }
                 case 'w':
                 {
-                    scr_w = clamp(atoi(&argv[i][2]), SCR_MINW, SCR_MAXW);
+                    scr_w = std::clamp(atoi(&argv[i][2]), static_cast<int>(SCR_MINW), static_cast<int>(SCR_MAXW));
                     if(!findarg(argc, argv, "-h"))
                     {
                         scr_h = -1;
@@ -249,7 +233,7 @@ int main(int argc, char **argv)
                 }
                 case 'h':
                 {
-                    scr_h = clamp(atoi(&argv[i][2]), SCR_MINH, SCR_MAXH);
+                    scr_h = std::clamp(atoi(&argv[i][2]), static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
                     {
                         if(!findarg(argc, argv, "-w"))
                         {
@@ -284,11 +268,8 @@ int main(int argc, char **argv)
                 }
                 default:
                 {
-                    if(!serveroption(argv[i]))
-                    {
-                        gameargs.add(argv[i]);
-                        break;
-                    }
+                    gameargs.add(argv[i]);
+                    break;
                 }
             }
         }
@@ -297,17 +278,11 @@ int main(int argc, char **argv)
             gameargs.add(argv[i]);
         }
     }
-
-    if(dedicated <= 1)
+    logoutf("init: sdl");
+    if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
     {
-        logoutf("init: sdl");
-
-        if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
-        {
-            fatal("Unable to initialize SDL: %s", SDL_GetError());
-        }
+        fatal("Unable to initialize SDL: %s", SDL_GetError());
     }
-
     logoutf("init: net");
     if(enet_initialize()<0)
     {
@@ -315,21 +290,19 @@ int main(int argc, char **argv)
     }
     atexit(enet_deinitialize);
     enet_time_set(0);
-
     logoutf("init: game");
     game::parseoptions(gameargs);
-    initserver(dedicated>0, dedicated>1);  // never returns if dedicated
+    execfile("config/server-init.cfg", false);
+    server::serverinit();
     game::initclient();
-
     logoutf("init: video");
     SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
-#if !defined(WIN32) //*nix
-    SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-#endif
+    #if !defined(WIN32) //*nix
+        SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+    #endif
     setupscreen();
     SDL_ShowCursor(SDL_FALSE);
     SDL_StopTextInput(); // workaround for spurious text-input events getting sent on first text input toggle?
-
     logoutf("init: gl");
     gl_checkextensions();
     gl_init();
@@ -338,7 +311,6 @@ int main(int argc, char **argv)
     {
         fatal("could not find core textures");
     }
-
     logoutf("init: console");
     if(!execfile("config/stdlib.cfg", false))
     {
@@ -381,17 +353,13 @@ int main(int argc, char **argv)
     if(!execfile(game::savedconfig(), false))
     {
         execfile(game::defaultconfig());
-        writecfg(game::restoreconfig());
+        writecfg(game::savedconfig(), game::autoexec(), game::defaultconfig(), game::restoreconfig());
     }
     execfile(game::autoexec(), false);
-
     identflags &= ~Idf_Persist;
-
     initing = Init_Game;
     game::loadconfigs();
-
     initing = Init_Not;
-
     logoutf("init: render");
     restoregamma();
     restorevsync();
@@ -399,11 +367,8 @@ int main(int argc, char **argv)
     loadshaders();
     initparticles();
     initstains();
-
     identflags |= Idf_Persist;
-
     logoutf("init: mainloop");
-
     if(execfile("once.cfg", false))
     {
         remove(findfile("once.cfg", "rb"));
@@ -414,11 +379,11 @@ int main(int argc, char **argv)
         //localconnect();
         game::changemap(load);
     }
-
-    if(initscript) execute(initscript);
-
+    if(initscript)
+    {
+        execute(initscript);
+    }
     resetfpshistory();
-
     inputgrab(grabinput = true);
     ignoremousemotion();
     //actual loop after main inits itself
@@ -454,7 +419,7 @@ int main(int argc, char **argv)
         }
         checksleep(lastmillis); //checks cubescript for any pending sleep commands
 
-        serverslice(false, 0); //server main routine; this gets deferred to a dedicated server if online
+        serverslice(0); //server main routine
 
         if(frames)
         {
@@ -474,7 +439,8 @@ int main(int argc, char **argv)
         gl_setupframe(!mainmenu); //also, don't need to set up a frame if on the static main menu
 
         inbetweenframes = false; //tell other stuff that the frame is starting
-        gl_drawframe(); //rendering magic
+        int crosshairindex = game::selectcrosshair();
+        gl_drawframe(crosshairindex); //rendering magic
         swapbuffers();
         renderedframe = inbetweenframes = true; //done!
     }

@@ -1,11 +1,35 @@
 #include "game.h"
 
-// convenience macros implicitly define:
+// "convenience" macros implicitly define:
 // e         entity, currently edited ent
 // n         int,    index to currently edited ent
-#define ADD_IMPLICIT(f)    { if(entgroup.empty() && enthover>=0) { entadd(enthover); undonext = (enthover != oldhover); f; entgroup.drop(); } else f; }
-#define ENT_FOCUS_V(i, f, v){ int n = efocus = (i); if(n>=0) { extentity &e = *v[n]; f; } }
-#define ENT_FOCUS(i, f)    ENT_FOCUS_V(i, f, entities::getents())
+#define ADD_IMPLICIT(f) \
+{ \
+    if(entgroup.empty() && enthover>=0) \
+    { \
+        entadd(enthover); \
+        undonext = (enthover != oldhover); \
+        f; \
+        entgroup.drop(); \
+    } \
+    else \
+    { \
+        f; \
+    } \
+}
+#define ENT_FOCUS_V(i, f, v) \
+{ \
+    int n = efocus = (i); \
+    if(n>=0) \
+    { \
+        extentity &e = *v[n]; \
+        f; \
+    } \
+}
+#define ENT_FOCUS(i, f) \
+{ \
+    ENT_FOCUS_V(i, f, entities::getents()) \
+}
 #define ENT_EDIT_V(i, f, v) \
 { \
     ENT_FOCUS_V(i, \
@@ -19,12 +43,57 @@
         clearshadowcache(); \
     }, v); \
 }
-#define ENT_EDIT(i, f)   ENT_EDIT_V(i, f, entities::getents())
-#define ADD_GROUP(exp)   { vector<extentity *> &ents = entities::getents(); for(int i = 0; i < ents.length(); i++) ENT_FOCUS_V(i, if(exp) entadd(n), ents); }
-#define GROUP_EDIT_LOOP(f){ vector<extentity *> &ents = entities::getents(); entlooplevel++; int _ = efocus; for(int i = 0; i < entgroup.length(); i++) ENT_EDIT_V(entgroup[i], f, ents); efocus = _; entlooplevel--; }
-#define GROUP_EDIT_PURE(f){ if(entlooplevel>0) { ENT_EDIT(efocus, f); } else { GROUP_EDIT_LOOP(f); commitchanges(); } }
-#define GROUP_EDIT_UNDO(f){ makeundoent(); GROUP_EDIT_PURE(f); }
-#define GROUP_EDIT(f)    { ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); }
+#define ENT_EDIT(i, f) \
+{ \
+    ENT_EDIT_V(i, f, entities::getents()) \
+}
+#define ADD_GROUP(exp) \
+{ \
+    vector<extentity *> &ents = entities::getents(); \
+    for(int i = 0; i < ents.length(); i++) \
+    { \
+        ENT_FOCUS_V(i, \
+        { \
+            if(exp) \
+            { \
+                entadd(n); \
+            } \
+        }, ents); \
+    } \
+}
+#define GROUP_EDIT_LOOP(f) \
+{ \
+    vector<extentity *> &ents = entities::getents(); \
+    entlooplevel++; \
+    int _ = efocus; \
+    for(int i = 0; i < entgroup.length(); i++) \
+    { \
+        ENT_EDIT_V(entgroup[i], f, ents); \
+    } \
+    efocus = _; \
+    entlooplevel--; \
+}
+#define GROUP_EDIT_PURE(f) \
+{ \
+    if(entlooplevel>0) \
+    { \
+        ENT_EDIT(efocus, f); \
+    } \
+    else \
+    { \
+        GROUP_EDIT_LOOP(f); \
+        commitchanges(); \
+    } \
+}
+#define GROUP_EDIT_UNDO(f) \
+{ \
+    makeundoent(); \
+    GROUP_EDIT_PURE(f); \
+}
+#define GROUP_EDIT(f) \
+{ \
+    ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); \
+}
 
 namespace entities
 {
@@ -171,7 +240,10 @@ void printent(extentity &e, char *buf, int len)
     {
         case EngineEnt_Particles:
         {
-            if(printparticles(e, buf, len)) return;
+            if(printparticles(e, buf, len))
+            {
+                return;
+            }
             break;
         }
         default:
@@ -226,7 +298,10 @@ void enttype(char *type, int *numargs)
     if(*numargs >= 1)
     {
         int typeidx = findtype(type);
-        if(typeidx != EngineEnt_Empty) GROUP_EDIT(e.type = typeidx);
+        if(typeidx != EngineEnt_Empty)
+        {
+            GROUP_EDIT(e.type = typeidx);
+        }
     }
     else ENT_FOCUS(efocus,
     {
@@ -336,7 +411,10 @@ void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
         {
             d->o = ents[attempt]->o;
             d->yaw = ents[attempt]->attr1;
-            if(entinmap(d, true)) break;
+            if(entinmap(d, true))
+            {
+                break;
+            }
             attempt = findentity(EngineEnt_Playerstart, attempt+1, -1, tag);
             if(attempt<0 || attempt==pick)
             {
@@ -529,7 +607,10 @@ void entdrag(const vec &ray)
         c = (entselsnap ? g[C[d]] : dest[C[d]]) - e.o[C[d]];
     );
 
-    if(entmoving==1) makeundoent();
+    if(entmoving==1)
+    {
+        makeundoent();
+    }
     GROUP_EDIT_PURE(e.o[R[d]] += r; e.o[C[d]] += c);
     entmoving = 2;
 }
@@ -592,7 +673,9 @@ void renderentarrow(const extentity &e, const vec &dir, float radius)
         return;
     }
     float arrowsize = min(radius/8, 0.5f);
-    vec target = vec(dir).mul(radius).add(e.o), arrowbase = vec(dir).mul(radius - arrowsize).add(e.o), spoke;
+    vec target = vec(dir).mul(radius).add(e.o),
+        arrowbase = vec(dir).mul(radius - arrowsize).add(e.o),
+        spoke;
     spoke.orthogonal(dir);
     spoke.normalize();
     spoke.mul(arrowsize);
@@ -738,7 +821,7 @@ void renderentradius(extentity &e, bool color)
                     break;
                 }
                 vec dir = vec(e.o).sub(e.attached->o).normalize();
-                float angle = clamp(static_cast<int>(e.attr1), 1, 89); //discard >=90 angles it cannot use
+                float angle = std::clamp(static_cast<int>(e.attr1), 1, 89); //discard >=90 angles it cannot use
                 renderentattachment(e);
                 renderentcone(*e.attached, dir, radius, angle);
             }
@@ -829,7 +912,10 @@ static void renderentbox(const vec &eo, vec es)
 
 void renderentselection(const vec &o, const vec &ray, bool entmoving)
 {
-    if(noentedit() || (entgroup.empty() && enthover < 0)) return;
+    if(noentedit() || (entgroup.empty() && enthover < 0))
+    {
+        return;
+    }
     vec eo, es;
 
     if(entgroup.length())
@@ -854,7 +940,7 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
         boxs3D(eo, es, 1);
         gle::colorub(200,0,0);
         boxs(entorient, eo, es);
-        boxs(entorient, eo, es, clamp(0.015f*camera1->o.dist(eo)*tan(fovy*0.5f*RAD), 0.1f, 1.0f));
+        boxs(entorient, eo, es, std::clamp(0.015f*camera1->o.dist(eo)*tan(fovy*0.5f*RAD), 0.1f, 1.0f));
     }
 
     if(showentradius)
@@ -1058,7 +1144,9 @@ bool dropentity(entity &e, int drop = -1)
         case 1:
         {
             if(e.type != EngineEnt_Light && e.type != EngineEnt_Spotlight)
+            {
                 dropenttofloor(&e);
+            }
             break;
         }
         case 2:
@@ -1093,7 +1181,6 @@ bool dropentity(entity &e, int drop = -1)
     }
     return true;
 }
-
 
 void dropent()
 {
@@ -1162,9 +1249,9 @@ extentity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3,
                 if(!e.attr2 && !e.attr3 && !e.attr4)
                 {
                     //place decals at camera orient
-                    e.attr2 = (int)camera1->yaw;
-                    e.attr3 = (int)camera1->pitch;
-                    e.attr4 = (int)camera1->roll;
+                    e.attr2 = static_cast<int>(camera1->yaw);
+                    e.attr3 = static_cast<int>(camera1->pitch);
+                    e.attr4 = static_cast<int>(camera1->roll);
                 }
                 break;
             }
@@ -1400,19 +1487,6 @@ namespace entities
         }
     }
 
-    void addammo(int type, int &v, bool local)
-    {
-
-    }
-
-    // these two functions are called when the server acknowledges that you really
-    // picked up the item (in multiplayer someone may grab it before you).
-
-    void pickupeffects(int n, gameent *d)
-    {
-
-    }
-
     // these functions are called when the client touches the item
 
     void teleporteffects(gameent *d, int tp, int td, bool local)
@@ -1640,13 +1714,13 @@ namespace entities
         }
     }
 
-    void spawnitems(bool force)
+    void spawnitems()
     {
         for(int i = 0; i < ents.length(); i++)
         {
             if(VALID_ITEM(ents[i]->type))
             {
-                ents[i]->setspawned(force || !server::delayspawn(ents[i]->type));
+                ents[i]->setspawned(true);
             }
         }
     }

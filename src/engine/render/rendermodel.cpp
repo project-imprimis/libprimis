@@ -36,7 +36,7 @@ static model *__loadmodel__##modelclass(const char *filename) \
 { \
     return new modelclass(filename); \
 } \
-UNUSED static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##modelclass);
+static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##modelclass);
 
 #include "model/md5.h"
 #include "model/obj.h"
@@ -100,7 +100,7 @@ COMMAND(mdlspec, "f");
 void mdlgloss(int *gloss)
 {
     CHECK_MDL;
-    loadingmodel->setgloss(clamp(*gloss, 0, 2));
+    loadingmodel->setgloss(std::clamp(*gloss, 0, 2));
 }
 COMMAND(mdlgloss, "i");
 
@@ -352,7 +352,7 @@ void mapmodelreset(int *n)
     {
         return;
     }
-    mapmodels.shrink(clamp(*n, 0, mapmodels.length()));
+    mapmodels.shrink(std::clamp(*n, 0, mapmodels.length()));
 }
 
 const char *mapmodelname(int i)
@@ -657,13 +657,13 @@ static inline void renderbatchedmodel(model *m, const batchedmodel &b)
     int anim = b.anim;
     if(shadowmapping > ShadowMap_Reflect)
     {
-        anim |= ANIM_NOSKIN;
+        anim |= Anim_NoSkin;
     }
     else
     {
         if(b.flags&Model_FullBright)
         {
-            anim |= ANIM_FULLBRIGHT;
+            anim |= Anim_FullBright;
         }
     }
 
@@ -1037,7 +1037,7 @@ static occludequery *modelquery = NULL;
 static int modelquerybatches = -1,
            modelquerymodels = -1,
            modelqueryattached = -1;
- 
+
 void startmodelquery(occludequery *query)
 {
     modelquery = query;
@@ -1177,7 +1177,7 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
     {
         if(d->ragdoll)
         {
-            if(anim&ANIM_RAGDOLL && d->ragdoll->millis >= basetime)
+            if(anim & Anim_Ragdoll && d->ragdoll->millis >= basetime)
             {
                 radius = max(radius, d->ragdoll->radius);
                 center = d->ragdoll->center;
@@ -1185,7 +1185,7 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
             }
             DELETEP(d->ragdoll);
         }
-        if(anim&ANIM_RAGDOLL)
+        if(anim & Anim_Ragdoll)
         {
             flags &= ~(Model_CullVFC | Model_CullOccluded | Model_CullQuery);
         }
@@ -1206,7 +1206,7 @@ hasboundbox:
 
     if(flags&Model_NoRender)
     {
-        anim |= ANIM_NORENDER;
+        anim |= Anim_NoRender;
     }
 
     if(a)
@@ -1251,7 +1251,7 @@ hasboundbox:
         setaamask(true);
         if(flags&Model_FullBright)
         {
-            anim |= ANIM_FULLBRIGHT;
+            anim |= Anim_FullBright;
         }
         m->render(anim, basetime, basetime2, o, yaw, pitch, roll, d, a, size, color);
         m->endrender();
@@ -1300,7 +1300,7 @@ int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float p
     {
         return -1;
     }
-    if(d && d->ragdoll && (!(anim&ANIM_RAGDOLL) || d->ragdoll->millis < basetime))
+    if(d && d->ragdoll && (!(anim & Anim_Ragdoll) || d->ragdoll->millis < basetime))
     {
         DELETEP(d->ragdoll);
     }

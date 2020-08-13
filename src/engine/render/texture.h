@@ -164,18 +164,18 @@ struct SlotShaderParamState : LocalShaderParamState
 
 enum
 {
-    SHADER_DEFAULT    = 0,
-    SHADER_WORLD      = 1<<0,
-    SHADER_REFRACT    = 1<<2,
-    SHADER_OPTION     = 1<<3,
-    SHADER_DYNAMIC    = 1<<4,
-    SHADER_TRIPLANAR  = 1<<5,
+    Shader_Default    = 0,
+    Shader_World      = 1 << 0,
+    Shader_Refract    = 1 << 2,
+    Shader_Option     = 1 << 3,
+    Shader_Dynamic    = 1 << 4,
+    Shader_Triplanar  = 1 << 5,
 
-    SHADER_INVALID    = 1<<8,
-    SHADER_DEFERRED   = 1<<9
+    Shader_Invalid    = 1 << 8,
+    Shader_Deferred   = 1 << 9
 };
 
-#define MAXVARIANTROWS 32
+const int maxvariantrows = 32;
 
 struct Slot;
 struct VSlot;
@@ -225,7 +225,7 @@ struct Shader
     vector<FragDataLoc> fragdatalocs;
     const void *owner;
 
-    Shader() : name(NULL), vsstr(NULL), psstr(NULL), defer(NULL), type(SHADER_DEFAULT), program(0), vsobj(0), psobj(0), variantshader(NULL), variantrows(NULL), standard(false), forced(false), used(false), reusevs(NULL), reuseps(NULL), owner(NULL)
+    Shader() : name(NULL), vsstr(NULL), psstr(NULL), defer(NULL), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(NULL), variantrows(NULL), standard(false), forced(false), used(false), reusevs(NULL), reuseps(NULL), owner(NULL)
     {
     }
 
@@ -260,25 +260,25 @@ struct Shader
 
     bool invalid() const
     {
-        return (type&SHADER_INVALID)!=0;
+        return (type & Shader_Invalid) != 0;
     }
     bool deferred() const
     {
-        return (type&SHADER_DEFERRED)!=0;
+        return (type & Shader_Deferred) != 0;
     }
     bool loaded() const
     {
-        return !(type&(SHADER_DEFERRED|SHADER_INVALID));
+        return !(type&(Shader_Deferred | Shader_Invalid));
     }
 
     bool hasoption() const
     {
-        return (type&SHADER_OPTION)!=0;
+        return (type & Shader_Option) != 0;
     }
 
     bool isdynamic() const
     {
-        return (type&SHADER_DYNAMIC)!=0;
+        return (type & Shader_Dynamic) != 0;
     }
 
     static inline bool isnull(const Shader *s)
@@ -293,7 +293,7 @@ struct Shader
 
     int numvariants(int row) const
     {
-        if(row < 0 || row >= MAXVARIANTROWS || !variantrows)
+        if(row < 0 || row >= maxvariantrows || !variantrows)
         {
             return 0;
         }
@@ -302,7 +302,7 @@ struct Shader
 
     Shader *getvariant(int col, int row) const
     {
-        if(row < 0 || row >= MAXVARIANTROWS || col < 0 || !variantrows)
+        if(row < 0 || row >= maxvariantrows || col < 0 || !variantrows)
         {
             return NULL;
         }
@@ -313,17 +313,17 @@ struct Shader
 
     void addvariant(int row, Shader *s)
     {
-        if(row < 0 || row >= MAXVARIANTROWS || variants.length() >= USHRT_MAX)
+        if(row < 0 || row >= maxvariantrows || variants.length() >= USHRT_MAX)
         {
             return;
         }
         if(!variantrows)
         {
-            variantrows = new ushort[MAXVARIANTROWS+1];
-            memset(variantrows, 0, (MAXVARIANTROWS+1)*sizeof(ushort));
+            variantrows = new ushort[maxvariantrows+1];
+            memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
         }
         variants.insert(variantrows[row+1], s);
-        for(int i = row+1; i <= MAXVARIANTROWS; ++i)
+        for(int i = row+1; i <= maxvariantrows; ++i)
         {
             ++variantrows[i];
         }
@@ -1053,31 +1053,31 @@ struct Texture
 
 enum
 {
-    TEX_DIFFUSE = 0,
-    TEX_NORMAL,
-    TEX_GLOW,
+    Tex_Diffuse = 0,
+    Tex_Normal,
+    Tex_Glow,
 
-    TEX_SPEC,
-    TEX_DEPTH,
-    TEX_ALPHA,
-    TEX_UNKNOWN,
+    Tex_Spec,
+    Tex_Depth,
+    Tex_Alpha,
+    Tex_Unknown,
 };
 
 enum
 {
-    VSLOT_SHPARAM = 0,
-    VSLOT_SCALE,
-    VSLOT_ROTATION,
-    VSLOT_OFFSET,
-    VSLOT_SCROLL,
-    VSLOT_LAYER,
-    VSLOT_ALPHA,
-    VSLOT_COLOR,
-    VSLOT_RESERVED, // used by RE
-    VSLOT_REFRACT,
-    VSLOT_DETAIL,
-    VSLOT_ANGLE,
-    VSLOT_NUM
+    VSlot_ShParam = 0,
+    VSlot_Scale,
+    VSlot_Rotation,
+    VSlot_Offset,
+    VSlot_Scroll,
+    VSlot_Layer,
+    VSlot_Alpha,
+    VSlot_Color,
+    VSlot_Reserved, // used by RE
+    VSlot_Refract,
+    VSlot_Detail,
+    VSlot_Angle,
+    VSlot_Num
 };
 
 struct VSlot

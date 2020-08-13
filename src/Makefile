@@ -1,4 +1,4 @@
-CXXFLAGS= -O3 -fomit-frame-pointer -ffast-math -std=c++14 -march=x86-64
+CXXFLAGS= -O3 -fomit-frame-pointer -ffast-math -std=c++17 -march=x86-64
 override CXXFLAGS+= -Wall -fsigned-char -fno-exceptions -fno-rtti
 
 PLATFORM= $(shell uname -s)
@@ -68,14 +68,10 @@ CLIENT_OBJS= \
 	shared/stream.o \
 	shared/tools.o \
 	shared/zip.o \
-	engine/main.o \
-	engine/interface/client.o \
 	engine/interface/command.o \
 	engine/interface/console.o \
 	engine/interface/input.o \
 	engine/interface/menus.o \
-	engine/interface/server.o \
-	engine/interface/serverbrowser.o \
 	engine/interface/sound.o \
 	engine/interface/ui.o \
 	engine/render/aa.o \
@@ -107,11 +103,15 @@ CLIENT_OBJS= \
 	engine/world/worldio.o \
 	game/ai.o \
 	game/client.o \
+	game/cserver.o \
 	game/entities.o \
 	game/game.o \
+	game/gameclient.o \
+	game/main.o \
 	game/render.o \
 	game/scoreboard.o \
 	game/server.o \
+	game/serverbrowser.o \
 	game/waypoint.o \
 	game/weapon.o
 

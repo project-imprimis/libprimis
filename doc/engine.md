@@ -84,7 +84,8 @@ linear analysis, including multipole expansions and Fourier series.
 * 8.1 Menus
 * 8.2 Hudgun
 * 8.3 File I/O & Assets
-* 8.4 Console
+* 8.4 Scripting
+* 8.5 Console
 
 #### 9. Game Implementation
 * 9.1 Weapons
@@ -845,9 +846,9 @@ will automatically place clip wherever glass is placed.
 
 #### Commands
 
-* `glass<N>color`
-* `glass<N>spec`
-* `glass<N>refract`
+* `glass<N>color` Tint color of the glass material
+* `glass<N>spec` Specularity (glossiness) scale of the glass material
+* `glass<N>refract` Refraction (light distortion behind) of the glass material
 
 ### 2.2.5 Clip
 ---
@@ -978,11 +979,11 @@ is to declare it as a cube geometry shader as opposed to a decal. Afterwards,
 the four relevant maps are provided for the different shaders that are to be
 applied with the `texture` command;
 
-* 0/c declares a diffuse map
-* n declares a normal map
-* s declares a specular map
-* z declares a height (parallax) map
-* g declares a glow map
+* `0/c` declares a diffuse map
+* `n` declares a normal map
+* `s` declares a specular map
+* `z` declares a height (parallax) map
+* `g` declares a glow map
 
 These definitions of textures are largely set beforehand and then called with
 `texload` upon running the map's config (automatically run at map load); most
@@ -2773,7 +2774,7 @@ very sharp map, and the RSM requires six channels compared to the shadowmap's
 two.
 
 ## 5.3 Transparency
---
+---
 
 Transparency, also known as alpha, applies to objects which are partially clear,
 but have some level of visibility, including with respect to other non-trivial
@@ -3220,7 +3221,33 @@ Models in Imprimis are not especially first-class citizens compared to the
 octree geometry that the world is built on, but they still play an important
 role, particularly in player models.
 
-### 6.2.1 Basic Model Commands
+### 6.2.1 Model Format Overview
+---
+
+Models for Imprimis currently are supported in two formats: OBJ (aka Wavefront)
+and MD5 (aka Doom 3). These two formats do not particularly overlap in their
+utility and a very terse overview of the formats is given here. Neither of these
+formats are unique to Cube and OBJ in particular is extremely widely used.
+
+#### OBJ (Wavefront)
+
+OBJ models are most useful for static, non-animated objects such as scenery,
+level assets, and other applications that do not rely on a complicated, feature
+intensive model format. OBJ files can store vertex data and UV mapping to allow
+accompanying texture files to be used to skin them. OBJ is a plaintext, easy to
+read (compared to other formats) format and therefore is very commonly used for
+basic models in all types of 3D graphics applications.
+
+#### MD5 (Doom 3)
+
+The MD5 format is the in-house format for the id 4 engine most notably used in
+Doom 3. It is a game-centric model format that allows for a skeleton to animate
+it (using pre-provided animation files) and therefore allows for animation of
+characters or other entities in the game. MD5 therefore is the model format of
+choice for the player model, as it requires animations to allow the player to
+move realistically ingame.
+
+### 6.2.2 Basic Model Commands
 ---
 
 These are commands which are available to all formats, including static, non
@@ -3247,7 +3274,7 @@ animated ones such as Wavefront (OBJ).
 * `<fmt>pitch [scale] [offset] [min] [max]`
 * `<fmt>anim [anim] [frame] [range] [speed] [priority]`
 
-### 6.2.2 Animated Model Commands
+### 6.2.3 Animated Model Commands
 
 These are commands which are only available to animated model formats, of which
 the only current one is MD5.
@@ -3425,6 +3452,292 @@ that have not recently responded.
 
 There is additional functionality in the master server to support centralized
 authentication, but due to archtectural concerns this usage is depreciated.
+
+
+# 8. User and System Interfaces
+---
+
+The game is largely accessed by the user using various interfaces defined in the
+engine that power the game's user experience. This includes the menu system and
+heads-up display (HUD), as well as the somewhat lower-level (but still exposed
+to the player) console and scripting system.
+
+## 8.4 Scripting
+---
+
+Scripting in Imprimis is done using the language common to the entire Cube
+series of engines, Cubescript. Cubescript, at least the part that can be
+considered consistent across games, is a very simple language; however, it has
+very large numbers of commands which extend it and make it useful.
+
+### 8.4.1 Cubescript Semantics
+---
+
+Cubescript itself has a simple set of semantics which defines how operations are
+carried out. There is essentially one type of object in Cubescript, the alias,
+and a small set of native operations to make control structures possible.
+Notably, and as a result of being a scripting language rather than a general
+purpose one, Cubescript's actual control operations are not explicitly codified
+into the language's semantics and instead are implemented as commands on the
+same tier as typical game modifying commands.
+
+#### Lazy Execution `[]`
+
+The `[]` chars define a block of code to be evaluated when necessary (at the
+end of the parser's job, after other parts of the code have been resolved). This
+means that `[]` chars are very useful for control commands, as they allow the
+parser to defer execution of the material within them until necessary. These
+blocks can be eliminated by the effects of commands (they can be entirely
+ignored if the execution path does not run through them).
+
+As expected for a delimiting pair of chars, the `[]` braces delimit the order
+of operations: interior nested pairs of `[]` braces are executed before outside
+ones. However, generally, disambiguation of the order of operations should be
+done by the `()` parentheses defined below.
+
+A notable side effect of the way brackets and parens work within the parser is
+that they must be defined inline with the command or assignment which they
+belong to. This means that while the following Cubescript is valid:
+
+```
+foo = [
+    "bar"
+    "baz"
+]
+```
+this code cannot be parsed by the Cubescript parser.
+```
+foo =
+[
+    "bar"
+    "baz"
+]
+```
+
+Do note that these semantics are at odds with the C++ standards for the
+codebase, which adopt a style similar to the latter example.
+
+#### Eager Execution `()`
+
+The `()` parentheses act like the `[]` braces except that code within these are
+executed early, such that their actions are carried out before parsing commands
+outside them. This means that `()` parens are to be used for statements which
+determine the behavior of control commands, as their result is relevant for
+other parts of the code. These blocks of code are always executed, meaning that
+`()` chars are useless for control commands.
+
+#### Assignment `=`
+
+The `=` equals sign, like in many languages, allows defining an *alias*, the
+unit equivalent to a variable. Aliases can not only be used like variables but
+also like functions, accepting arguments to a body (typically delineated by a
+set of braces) by defining arguments within the body as the reserved alias names
+`$arg1 $arg2 ....$arg25` (there is a 25 argument limit in the parser).
+
+```
+foo = bar
+```
+
+#### Lookup Alias `$`
+
+The `$` symbol causes the parser to look for a defined alias with the name
+appended, allowing for the value of variables to be used by other functions.
+The behavior of this is similar to unix's `bash` shell language, while the
+behavior is implicit in many other languages (Cubescript interprets symbols not
+delineated by a `$` at the beginning as a string literal).
+
+```
+foo = 1
+bar = $foo //bar = 1
+```
+
+#### Literal Substitution `@`
+
+The `@` symbol causes the value stored by an alias to be directly inserted where
+it is called, from a scope determined by the nesting level. The `@` symbol thus
+allows for application in synthesis of compound alias names (by directly
+depositing the value of a variable in an already-in-progress string, which is
+then evaluated in full after the `@` symbol has taken effect).
+
+Note the difference between the `$` lookup and the `@` literal substitution:
+```
+foo = 1
+bar = [
+    baz = $foo
+]
+foo = 2
+bar //baz = 2
+```
+
+```
+foo = 1
+bar = [
+    baz = @foo
+]
+foo = 2
+bar //baz = 1
+```
+
+#### Comments `//`
+
+Cubescript only supports inline comments (no comment blocks) using a pair of
+slashes. This can be done at the beginning of a line, or following the end of a
+written code line.
+
+```
+//I defined an alias `foo` here
+
+foo = [
+    "bar"
+    "baz" //I defined `baz` here
+]
+```
+
+### 8.4.2 Commands
+---
+
+Commands in Imprimis are the primary way to make Cubescript perform useful work
+(Cubescript is entirely useless without additional commands defined) as well as
+cause internal changes inside the engine. Commands are bound via a rather
+convoluted macro process, but the important part of how they work does not
+require fully understanding the technicalities of the way they are bound.
+
+#### Inline Commands
+
+These commands are bound in a single self-contained macro, called ICOMMAND (for,
+unsurprisingly, InlineCOMMAND). This macro has the following arguments:
+* `name`: the name of the command as called from the console or via Cubescript
+* `nargs`: a string codifying the arguments the command accepts (see below)
+* `proto`: the C++ types that the arguments will pass to the body
+* `b`ody: the C++ logic body of the command
+
+#### Standard Commands
+
+These commands comprise of two parts: the declaration of the command, and a
+separate named function which is called upon the execution of the command.
+It is slightly less flexible than the `ICOMMAND` inline command macro in that it
+requires that the function to be called is the same as the command's name.
+
+This macro has the following arguments:
+* `name`: the name of the function to be called as well as the command's name
+* `nargs`: a string codifying the arguments the command accepts (see below)
+
+#### Decoding `nargs`
+
+The `nargs` part of the command macro is used to tell the command parser what
+kind of arguments it should be interpreting. A single character corresponds to a
+single argument and codifies its type; the number of characters indicates the
+number of chars total.
+
+* `S`
+* `s`: a string (char *) argument
+* `i`: an int (int *) argument
+* `b`: a boolean (bool *) argument
+* `f`: a float (float *) argument
+* `F`:
+* `E`
+* `T`
+* `t`
+* `e`
+* `r`
+* `$`
+* `N`
+* `D`
+* `C`
+* `V`
+* `1`
+* `2`
+* `3`
+* `4`
+
+For example, a command with `nargs` equal to `ssssif` would take four string
+arguments followed by an integer and float argument; a command with `nargs`
+equal to `fffs` would take three floats followed by a string.
+
+### 8.4.3 Variables
+---
+
+Variables, in the context of the Imprimis scripting system, refers to specific
+ingame variables which have been provided to the scripting system by way of yet
+another convoluted macro system. `VAR` macros allow different types of variables
+to be exposed to the scripting system in useful ways, meaning that options such
+as settings can be directly controlled via Cubescript or the console.
+
+#### Integer Variables `VAR`
+
+Variables exposed to Cubescript which have the type of `int` are the most common
+ones used in Imprimis. These variables also take on the duty of boolean
+settings, ones which are very common in the realm of settings, as Cubescript
+carries no notion of a boolean.
+
+A standard `VAR` carries the following arguments:
+* `name` The name of the variable, both to the engine and ingame
+* `cur` The value which the variable is initiated with at the start of the game*
+* `min` The minimum value that the variable is allowed to be set from ingame
+* `max` The maximum value that the variable is allowed to be set from ingame
+
+#### Float Variables `FVAR`
+
+For floating-point numbers with decimals, it is possible to define accessible
+variables with the `FVAR` macro. This macro behaves nearly the same as the int
+version of the macro, with the only notable difference being the replacement of
+integer values by floating point ones.
+
+A standard `FVAR` carries the following arguments:
+* `name` The name of the variable, both to the engine and ingame
+* `cur` The value which the variable is initiated with at the start of the game*
+* `min` The minimum value that the variable is allowed to be set from ingame
+* `max` The maximum value that the variable is allowed to be set from ingame
+
+#### Hex Variables `HVAR`
+
+For hexadecimal values, it is possible to define values as a `HVAR` which makes
+entry and display more straightforward. This type of variable is similar to an
+integer variable internally otherwise.
+
+A standard `HVAR` carries the following arguments:
+* `name` The name of the variable, both to the engine and ingame
+* `cur` The value which the variable is initiated with at the start of the game*
+* `min` The minimum value that the variable is allowed to be set from ingame
+* `max` The maximum value that the variable is allowed to be set from ingame
+
+#### Color Variables `CVAR`
+
+For colors, it is convenient to save and use information using the widely used
+six-digit hexadecimal HTML format (`0xRRGGBB`), so a `CVAR` macro is provided
+to interface with these types of data. A `CVAR` is implicitly limited to six
+hex digits, naturally, but otherwise is not restricted and therefore lacks min
+or max arguments like the numerical `VAR` macros have.
+
+A standard `CVAR` carries the following arguments:
+* `name` The name of the variable, both to the engine and ingame
+* `cur` The value which the variable is initiated with at the start of the game*
+
+#### String Variables `SVAR`
+
+For the storage of strings, such as those used for e.g. a player's name, it is
+possible to define accessible string variables with the `SVAR` macro. This macro
+only has two arguments, unsurprisingly, as there is no logical way to set limits
+for its bounds like the numerical ones.
+
+A standard `SVAR` carries the following arguments:
+* `name` The name of the variable, both to the engine and ingame
+* `cur` The value which the variable is initiated with at the start of the game*
+
+*Note that the `cur` value is always true at the very beginning of the game, but
+can be changed ingame to differ from this value.
+
+#### Persistent Variables `*VARP`
+
+Persistent variables are variables which are saved to a configuration file at
+the time that the program is closed. This makes it useful for settings which are
+generally kept the same between runs of the game.
+
+The `*VARP` macros (`VARP` `FVARP` `HVARP` `CVARP` `SVARP`) all behave the same
+as normal variables except that the game makes sure to save them to a script to
+be executed when the game is started again. These variables initialize their
+`cur` values to their defined values as normal, but rely on a startup script to
+change them to their persistent states from the previous run.
 
 # 10 Internal Objects
 ---

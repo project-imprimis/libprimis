@@ -15,7 +15,9 @@ bool insideworld(const vec &o)
 bool insideworld(const ivec &o)
 {
     extern int worldsize;
-    return uint(o.x)<uint(worldsize) && uint(o.y)<uint(worldsize) && uint(o.z)<uint(worldsize);
+    return static_cast<uint>(o.x) < static_cast<uint>(worldsize) &&
+           static_cast<uint>(o.y) < static_cast<uint>(worldsize) &&
+           static_cast<uint>(o.z) < static_cast<uint>(worldsize);
 }
 
 static inline clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
@@ -416,9 +418,9 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
     CHECKINSIDEWORLD;
 
     int side = Orient_Bottom,
-        x = int(v.x),
-        y = int(v.y),
-        z = int(v.z);
+        x = static_cast<int>(v.x),
+        y = static_cast<int>(v.y),
+        z = static_cast<int>(v.z);
     for(;;)
     {
         DOWNOCTREE(shadowent, );
@@ -430,14 +432,14 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
         {
             if(IS_ENTIRELY_SOLID(c))
             {
-                return c.texture[side]==DEFAULT_SKY && mode&Ray_SkipSky ? radius : dist;
+                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist;
             }
             const clipplanes &p = getclipplanes(c, lo, 1<<lshift);
             INTERSECTPLANES(side = p.side[i], goto nextcube);
             INTERSECTBOX(side = (i<<1) + 1 - lsizemask[i], goto nextcube);
             if(exitdist >= 0)
             {
-                return c.texture[side]==DEFAULT_SKY && mode&Ray_SkipSky ? radius : dist+max(enterdist+0.1f, 0.0f);
+                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist+max(enterdist+0.1f, 0.0f);
             }
         }
 

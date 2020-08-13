@@ -448,7 +448,7 @@ static inline void smootharea(float d, vec2 &a1, vec2 &a2)
 {
     vec2 b1(sqrtf(a1.x*2)*0.5f, sqrtf(a1.y*2)*0.5f),
          b2(sqrtf(a2.x*2)*0.5f, sqrtf(a2.y*2)*0.5f);
-    float p = clamp(d / 32.0f, 0.0f, 1.0f);
+    float p = std::clamp(d / 32.0f, 0.0f, 1.0f);
     a1.lerp(b1, a1, p);
     a2.lerp(b2, a2, p);
 }
@@ -553,11 +553,11 @@ float areaunderdiag(const vec2 &p1, const vec2 &p2, const vec2 &p)
         {
             return 1;
         }
-        return clamp(d.y > 0 ? 1 - dp/d.y : dp/d.y, 0.0f, 1.0f);
+        return std::clamp(d.y > 0 ? 1 - dp/d.y : dp/d.y, 0.0f, 1.0f);
     }
     if(!d.y)
     {
-        return clamp(d.x > 0 ? 1 - dp/d.x : dp/d.x, 0.0f, 1.0f);
+        return std::clamp(d.x > 0 ? 1 - dp/d.x : dp/d.x, 0.0f, 1.0f);
     }
     float l = dp/d.y,
           r = (dp-d.x)/d.y,
@@ -830,7 +830,7 @@ void setupsmaa(int w, int h)
 void cleanupsmaa()
 {
     if(smaaareatex)
-    { 
+    {
         glDeleteTextures(1, &smaaareatex);
         smaaareatex = 0;
     }
@@ -1120,11 +1120,6 @@ void disableaamask()
 bool multisampledaa()
 {
     return msaasamples == 2 && (smaa ? msaalight && smaaspatial : tqaa);
-}
-
-bool maskedaa()
-{
-    return tqaa && tqaamovemask;
 }
 
 void doaa(GLuint outfbo, void (*resolve)(GLuint, int))

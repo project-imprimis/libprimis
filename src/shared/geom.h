@@ -47,7 +47,7 @@ struct vec2
     vec2 &min(float f)       { x = ::min(x, f); y = ::min(y, f); return *this; }
     vec2 &max(float f)       { x = ::max(x, f); y = ::max(y, f); return *this; }
     vec2 &abs() { x = fabs(x); y = fabs(y); return *this; }
-    vec2 &clamp(float l, float h) { x = ::clamp(x, l, h); y = ::clamp(y, l, h); return *this; }
+    vec2 &clamp(float l, float h) { x = ::std::clamp(x, l, h); y = ::std::clamp(y, l, h); return *this; }
     vec2 &reflect(const vec2 &n) { float k = 2*dot(n); x -= k*n.x; y -= k*n.y; return *this; }
     vec2 &lerp(const vec2 &b, float t) { x += (b.x-x)*t; y += (b.y-y)*t; return *this; }
     vec2 &lerp(const vec2 &a, const vec2 &b, float t) { x = a.x + (b.x-a.x)*t; y = a.y + (b.y-a.y)*t; return *this; }
@@ -141,7 +141,7 @@ struct vec
     vec &subz(float f)       { z -= f; return *this; } //unused
     vec &min(float f)        { x = ::min(x, f); y = ::min(y, f); z = ::min(z, f); return *this; }
     vec &max(float f)        { x = ::max(x, f); y = ::max(y, f); z = ::max(z, f); return *this; }
-    vec &clamp(float l, float h) { x = ::clamp(x, l, h); y = ::clamp(y, l, h); z = ::clamp(z, l, h); return *this; }
+    vec &clamp(float l, float h) { x = ::std::clamp(x, l, h); y = ::std::clamp(y, l, h); z = ::std::clamp(z, l, h); return *this; }
 
     //elementwise vector operators
     vec &mul(const vec &o)   { x *= o.x; y *= o.y; z *= o.z; return *this; }
@@ -301,7 +301,7 @@ struct vec
         return vec(((color>>16)&0xFF)*(1.0f/255.0f), ((color>>8)&0xFF)*(1.0f/255.0f), (color&0xFF)*(1.0f/255.0f));
     }
 
-    int tohexcolor() const { return (int(::clamp(r, 0.0f, 1.0f)*255)<<16)|(int(::clamp(g, 0.0f, 1.0f)*255)<<8)|int(::clamp(b, 0.0f, 1.0f)*255); }
+    int tohexcolor() const { return (int(::std::clamp(r, 0.0f, 1.0f)*255)<<16)|(int(::std::clamp(g, 0.0f, 1.0f)*255)<<8)|int(::std::clamp(b, 0.0f, 1.0f)*255); }
 };
 
 inline vec2::vec2(const vec &v) : x(v.x), y(v.y) {}
@@ -398,7 +398,7 @@ struct vec4
     vec4 &subw(float f)      { w -= f; return *this; }
     vec4 &neg3()             { x = -x; y = -y; z = -z; return *this; }
     vec4 &neg()              { neg3(); w = -w; return *this; }
-    vec4 &clamp(float l, float h) { x = ::clamp(x, l, h); y = ::clamp(y, l, h); z = ::clamp(z, l, h); w = ::clamp(w, l, h); return *this; }
+    vec4 &clamp(float l, float h) { x = ::std::clamp(x, l, h); y = ::std::clamp(y, l, h); z = ::std::clamp(z, l, h); w = ::std::clamp(w, l, h); return *this; }
 
     template<class A, class B>
     vec4 &cross(const A &a, const B &b) { x = a.y*b.z-a.z*b.y; y = a.z*b.x-a.x*b.z; z = a.x*b.y-a.y*b.x; return *this; }
@@ -1297,6 +1297,7 @@ struct ivec
     //int idx(int i) { return v[i]; }
     bool operator==(const ivec &v) const { return x==v.x && y==v.y && z==v.z; }
     bool operator!=(const ivec &v) const { return x!=v.x || y!=v.y || z!=v.z; }
+    ivec operator+(const ivec &v)  const { return ivec(x+v.x, y+v.y, z+v.z); }
     bool iszero() const { return x==0 && y==0 && z==0; }
     ivec &shl(int n) { x<<= n; y<<= n; z<<= n; return *this; }
     ivec &shr(int n) { x>>= n; y>>= n; z>>= n; return *this; }
@@ -1315,7 +1316,7 @@ struct ivec
     ivec &min(int n) { x = ::min(x, n); y = ::min(y, n); z = ::min(z, n); return *this; }
     ivec &max(int n) { x = ::max(x, n); y = ::max(y, n); z = ::max(z, n); return *this; }
     ivec &abs() { x = ::abs(x); y = ::abs(y); z = ::abs(z); return *this; }
-    ivec &clamp(int l, int h) { x = ::clamp(x, l, h); y = ::clamp(y, l, h); z = ::clamp(z, l, h); return *this; }
+    ivec &clamp(int l, int h) { x = ::std::clamp(x, l, h); y = ::std::clamp(y, l, h); z = ::std::clamp(z, l, h); return *this; }
     ivec &cross(const ivec &a, const ivec &b) { x = a.y*b.z-a.z*b.y; y = a.z*b.x-a.x*b.z; z = a.x*b.y-a.y*b.x; return *this; }
     int dot(const ivec &o) const { return x*o.x + y*o.y + z*o.z; }
     float dist(const plane &p) const { return x*p.x + y*p.y + z*p.z + p.offset; }
