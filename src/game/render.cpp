@@ -292,7 +292,7 @@ namespace game
 
     void renderplayer(gameent *d, const playermodelinfo &mdl, int color, int team, float fade, int flags = 0, bool mainpass = true)
     {
-        int lastaction = d->lastaction, anim = Anim_Idle|ANIM_LOOP, attack = 0, delay = 0;
+        int lastaction = d->lastaction, anim = Anim_Idle | Anim_Loop, attack = 0, delay = 0;
         if(d->lastattack >= 0)
         {
             attack = attacks[d->lastattack].anim;
@@ -300,10 +300,10 @@ namespace game
         }
         if(intermission && d->state!=ClientState_Dead)
         {
-            anim = attack = Anim_Lose|ANIM_LOOP;
+            anim = attack = Anim_Lose | Anim_Loop;
             if(VALID_TEAM(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0)
             {
-                anim = attack = Anim_Win|ANIM_LOOP;
+                anim = attack = Anim_Win | Anim_Loop;
             }
         }
         else if(d->state==ClientState_Alive && d->lasttaunt && lastmillis-d->lasttaunt<1000 && lastmillis-d->lastaction>delay)
@@ -316,7 +316,7 @@ namespace game
         int ai = 0;
         if(guns[d->gunselect].vwep)
         {
-            int vanim = Anim_VWepIdle|ANIM_LOOP, vtime = 0;
+            int vanim = Anim_VWepIdle | Anim_Loop, vtime = 0;
             if(lastaction && d->lastattack >= 0 && attacks[d->lastattack].gun==d->gunselect && lastmillis < lastaction + delay)
             {
                 vanim = attacks[d->lastattack].vwepanim;
@@ -339,28 +339,28 @@ namespace game
         int basetime = 0;
         if(animoverride)
         {
-            anim = (animoverride<0 ? ANIM_ALL : animoverride)|ANIM_LOOP;
+            anim = (animoverride<0 ? Anim_All : animoverride) | Anim_Loop;
         }
         else if(d->state==ClientState_Dead)
         {
-            anim = Anim_Dying|ANIM_NOPITCH;
+            anim = Anim_Dying | Anim_NoPitch;
             basetime = d->lastpain;
             if(ragdoll && mdl.ragdoll)
             {
-                anim |= ANIM_RAGDOLL;
+                anim |= Anim_Ragdoll;
             }
             else if(lastmillis-basetime>1000)
             {
-                anim = Anim_Dead|ANIM_LOOP|ANIM_NOPITCH;
+                anim = Anim_Dead | Anim_Loop | Anim_NoPitch;
             }
         }
         else if(d->state==ClientState_Editing || d->state==ClientState_Spectator)
         {
-            anim = Anim_Edit|ANIM_LOOP;
+            anim = Anim_Edit | Anim_Loop;
         }
         else if(d->state==ClientState_Lagged)
         {
-            anim = Anim_Lag|ANIM_LOOP;
+            anim = Anim_Lag | Anim_Loop;
         }
         else if(!intermission)
         {
@@ -377,7 +377,7 @@ namespace game
 
             if(d->inwater && d->physstate<=PhysEntState_Fall)
             {
-                anim |= (((game::allowmove(d) && (d->move || d->strafe)) || d->vel.z+d->falling.z>0 ? Anim_Swim : Anim_Sink)|ANIM_LOOP)<<ANIM_SECONDARY;
+                anim |= (((game::allowmove(d) && (d->move || d->strafe)) || d->vel.z+d->falling.z>0 ? Anim_Swim : Anim_Sink) | Anim_Loop) << Anim_Secondary;
             }
             else
             {
@@ -390,44 +390,44 @@ namespace game
                 int dir = dirs[(d->move+1)*3 + (d->strafe+1)];
                 if(d->timeinair>100)
                 {
-                    anim |= ((dir ? dir+Anim_JumpN-Anim_RunN : Anim_Jump) | ANIM_END) << ANIM_SECONDARY;
+                    anim |= ((dir ? dir+Anim_JumpN-Anim_RunN : Anim_Jump) | Anim_End) << Anim_Secondary;
                 }
                 else if(dir && game::allowmove(d))
                 {
-                    anim |= (dir | ANIM_LOOP) << ANIM_SECONDARY;
+                    anim |= (dir | Anim_Loop) << Anim_Secondary;
                 }
             }
             if(d->crouching)
             {
-                switch((anim>>ANIM_SECONDARY)&ANIM_INDEX)
+                switch((anim >> Anim_Secondary) & Anim_Index)
                 {
                     case Anim_Idle:
                     {
-                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
-                        anim |= Anim_Crouch<<ANIM_SECONDARY;
+                        anim &= ~(Anim_Index << Anim_Secondary);
+                        anim |= Anim_Crouch << Anim_Secondary;
                         break;
                     }
                     case Anim_Jump:
                     {
-                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
-                        anim |= Anim_CrouchJump<<ANIM_SECONDARY;
+                        anim &= ~(Anim_Index << Anim_Secondary);
+                        anim |= Anim_CrouchJump << Anim_Secondary;
                         break;
                     }
                     case Anim_Swim:
                     {
-                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
-                        anim |= Anim_CrouchSwim<<ANIM_SECONDARY;
+                        anim &= ~(Anim_Index << Anim_Secondary);
+                        anim |= Anim_CrouchSwim << Anim_Secondary;
                         break;
                     }
                     case Anim_Sink:
                     {
-                        anim &= ~(ANIM_INDEX<<ANIM_SECONDARY);
-                        anim |= Anim_CrouchSink<<ANIM_SECONDARY;
+                        anim &= ~(Anim_Index << Anim_Secondary);
+                        anim |= Anim_CrouchSink << Anim_Secondary;
                         break;
                     }
                     case 0:
                     {
-                        anim |= (Anim_Crouch|ANIM_LOOP)<<ANIM_SECONDARY;
+                        anim |= (Anim_Crouch | Anim_Loop) << Anim_Secondary;
                         break;
                     }
                     case Anim_RunN:
@@ -439,7 +439,7 @@ namespace game
                     case Anim_RunW:
                     case Anim_RunNW:
                     {
-                        anim += (Anim_CrouchN - Anim_RunN) << ANIM_SECONDARY;
+                        anim += (Anim_CrouchN - Anim_RunN) << Anim_Secondary;
                         break;
                     }
                     case Anim_JumpN:
@@ -451,19 +451,19 @@ namespace game
                     case Anim_JumpW:
                     case Anim_JumpNW:
                     {
-                        anim += (Anim_CrouchJumpN - Anim_JumpN) << ANIM_SECONDARY;
+                        anim += (Anim_CrouchJumpN - Anim_JumpN) << Anim_Secondary;
                         break;
                     }
                 }
             }
-            if((anim&ANIM_INDEX)==Anim_Idle && (anim>>ANIM_SECONDARY)&ANIM_INDEX)
+            if((anim & Anim_Index) == Anim_Idle && (anim >> Anim_Secondary) & Anim_Index)
             {
-                anim >>= ANIM_SECONDARY;
+                anim >>= Anim_Secondary;
             }
         }
-        if(!((anim>>ANIM_SECONDARY)&ANIM_INDEX))
+        if(!((anim >> Anim_Secondary) & Anim_Index))
         {
-            anim |= (Anim_Idle|ANIM_LOOP)<<ANIM_SECONDARY;
+            anim |= (Anim_Idle | Anim_Loop) << Anim_Secondary;
         }
         if(d!=player1)
         {
@@ -536,7 +536,7 @@ namespace game
             gameent *d = ragdolls[i];
             float fade = 1.0f;
             if(ragdollmillis && ragdollfade)
-                fade -= clamp(static_cast<float>(lastmillis - (d->lastupdate + max(ragdollmillis - ragdollfade, 0)))/min(ragdollmillis, ragdollfade), 0.0f, 1.0f);
+                fade -= std::clamp(static_cast<float>(lastmillis - (d->lastupdate + max(ragdollmillis - ragdollfade, 0)))/min(ragdollmillis, ragdollfade), 0.0f, 1.0f);
             renderplayer(d, fade);
         }
         if(exclude)
@@ -548,7 +548,6 @@ namespace game
             renderplayer(player1, 1, third ? 0 : Model_OnlyShadow);
         }
         renderbouncers();
-        renderprojectiles();
         if(cmode)
         {
             cmode->rendergame();
@@ -641,7 +640,7 @@ namespace game
             return;
         }
 
-        int anim = Anim_GunIdle|ANIM_LOOP, basetime = 0;
+        int anim = Anim_GunIdle | Anim_Loop, basetime = 0;
         if(d->lastaction && d->lastattack >= 0 && attacks[d->lastattack].gun==d->gunselect && lastmillis-d->lastaction<attacks[d->lastattack].attackdelay)
         {
             anim = attacks[d->lastattack].hudanim;

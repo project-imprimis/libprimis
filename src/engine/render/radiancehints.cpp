@@ -75,7 +75,10 @@ void setupradiancehints()
     {
         for(int i = 0; i < 4; ++i)
         {
-            if(!rhrb[i]) glGenRenderbuffers_(1, &rhrb[i]);
+            if(!rhrb[i])
+            {
+                glGenRenderbuffers_(1, &rhrb[i]);
+            }
             glBindRenderbuffer_(GL_RENDERBUFFER, rhrb[i]);
             glRenderbufferStorage_(GL_RENDERBUFFER, rhformat, (rhgrid + 2*rhborder)*(rhgrid + 2*rhborder), (rhgrid + 2*rhborder)*rhsplits);
             glBindRenderbuffer_(GL_RENDERBUFFER, 0);
@@ -178,7 +181,8 @@ void cleanupradiancehints()
     }
     if(rsmfbo)
     {
-        glDeleteFramebuffers_(1, &rsmfbo); rsmfbo = 0;
+        glDeleteFramebuffers_(1, &rsmfbo);
+        rsmfbo = 0;
     }
 
     clearrhshaders();
@@ -239,7 +243,8 @@ void viewrh()
     {
         SETSHADER(hudrect);
         glBindTexture(GL_TEXTURE_RECTANGLE, rhtex[5]);
-        float tw = (rhgrid+2*rhborder)*(rhgrid+2*rhborder), th = (rhgrid+2*rhborder)*rhsplits;
+        float tw = (rhgrid+2*rhborder)*(rhgrid+2*rhborder),
+              th = (rhgrid+2*rhborder)*rhsplits;
         gle::defvertex(2);
         gle::deftexcoord0(2);
         gle::begin(GL_TRIANGLE_STRIP);
@@ -510,16 +515,16 @@ void radiancehints::renderslices()
         {
             for(int k = 0; k < 3; ++k)
             {
-                dmin[k] = min(dmin[k], (float)floor((prevdynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
-                dmax[k] = max(dmax[k], (float)ceil((prevdynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+                dmin[k] = min(dmin[k], static_cast<float>(floor((prevdynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
+                dmax[k] = max(dmax[k], static_cast<float>(ceil((prevdynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
             }
         }
         if(dynmin.z < dynmax.z)
         {
             for(int k = 0; k < 3; ++k)
             {
-                dmin[k] = min(dmin[k], (float)floor((dynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
-                dmax[k] = max(dmax[k], (float)ceil((dynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
+                dmin[k] = min(dmin[k], static_cast<float>(floor((dynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
+                dmax[k] = max(dmax[k], static_cast<float>(ceil((dynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
             }
         }
         if((rhrect || !rhcache || hasCI) && split.cached == split.center && (!rhborder || prevcached) && !rhforce &&
@@ -709,9 +714,9 @@ void radiancehints::renderslices()
                 if(px1 < px2 && py1 < py2)
                 {
                     float pvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(px1 - x1)/(x2 - x1),
-                          pvx2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(px2 - x2)/(x2 - x1),
+                          pvx2 =  1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(px2 - x2)/(x2 - x1),
                           pvy1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(py1 - y1)/(y2 - y1),
-                          pvy2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(py2 - y2)/(y2 - y1),
+                          pvy2 =  1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(py2 - y2)/(y2 - y1),
                           ptx1 = (px1 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                           ptx2 = (px2 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                           pty1 = (py1 + split.center.y - split.cached.y)*split.scale.y + split.offset.y,

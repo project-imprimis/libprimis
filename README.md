@@ -1,6 +1,8 @@
 ## Imprimis
 *the destroyable realtime 3d game engine*
 
+Check out the project timeline at `doc/timeline.md`!
+
 Imprimis is a fork of Tesseract, which is a fork of the Cube 2: Sauerbraten engine. The goal of the Imprimis
 engine is to provide a clean, documented and consistent base with which to build games, particularly
 first person shooter games, upon. **It is currently under development and does not necessarily
@@ -73,23 +75,33 @@ To get the game, `git` is required. Using `git`, get the repository and its sumo
 
 The `imprimis` folder will now be visible in the current directory.
 
-To compile the game, use `make -C src install -jN` from the directory in which this file is located.
+To compile the game, use `make -C src -jN` from the directory in which this file is located.
 Set N to the number of threads to compile with. For example, for a quad-core processor, set -j4.
 
 (to reach this directory use `cd imprimis`)
 
 This game requires `libsdl2`, `libsdl2-image`, `libsdl2-mixer`, and drivers for OpenGL (usually already installed).
-To compile the game, the development versions of the libraries are required (on distros that seperate standard and dev packages).
+To compile the game, the development versions of the libraries are required
+(on distros that seperate standard and dev packages).
 
 The game can then be run with `./imprimis_unix` or `./imprimis.bat` scripts, located in the same
 directory as this readme file.
+
+Unlike other Cube based games, this client does not include a dedicated server.
+For this functionality, see the imprimis-gameserver repository.
 
 #### Join Us
 
 Imprimis is an open source project created by volunteers who work on the game as
 a hobby, and we'd love for it to be your hobby too! The Imprimis project tries
-to be as well documented and transparent in its decision making so as to make
+to be well documented and transparent in its decision making so as to make
 outside participation fruitful. If you'd like to express your opinions on the
 engine's decision, modify the engine, participate on the engine code, or just say
 hello to the developers, that's great! We have a Discord server where you may
 interact with us at https://discord.gg/WVFjtzA.
+
+To facilitate getting started working on Imprimis, there are several issues posted
+on the "issues" board. Whether you're a longtime open source contributor or you
+need to create a GitHub account to start participating, feel free to use issues
+labeled as "good first issue" to ask whatever questions you have about Git semantics
+or quirks about our specific codebase in order to get comfortable!

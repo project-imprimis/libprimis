@@ -9,7 +9,7 @@ extern int rhrect, rhgrid, rhsplits, rhborder, rhprec, rhtaps, rhcache, rhforce,
 extern int gi, gidist;
 extern float giscale, giaoscale;
 extern int debugrsm, debugrh;
-extern GLuint rhtex[8]; 
+extern GLuint rhtex[8];
 
 struct reflectiveshadowmap
 {
@@ -35,9 +35,14 @@ struct radiancehints
         vec center; float bounds;
         vec cached; bool copied;
 
-        splitinfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false) {}
+        splitinfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false)
+        {
+        }
 
-        void clearcache() { bounds = -1e16f; }
+        void clearcache()
+        {
+            bounds = -1e16f;
+        }
     } splits[rhmaxsplits];
 
     vec dynmin, dynmax, prevdynmin, prevdynmax;
@@ -56,7 +61,8 @@ struct radiancehints
             splits[i].clearcache();
         }
     }
-    bool allcached() const {
+    bool allcached() const
+    {
         for(int i = 0; i < rhsplits; ++i)
         {
             if(splits[i].cached != splits[i].center)

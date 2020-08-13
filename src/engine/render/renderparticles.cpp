@@ -19,7 +19,7 @@ VARP(softparticleblend, 1, 8, 64);
 
 // Check canemitparticles() to limit the rate that paricles can be emitted for models/sparklies
 // Automatically stops particles being emitted when paused or in reflective drawing
-VARP(emitmillis, 1, 17, 1000);
+VARP(emitmillis, 1, 17, 1000); //note: 17 ms = ~60fps
 static int lastemitframe = 0,
            emitoffset = 0;
 static bool canemit = false,
@@ -391,7 +391,10 @@ struct listrenderer : partrenderer
     {
         int num = 0;
         listparticle *lp;
-        for(lp = list; lp; lp = lp->next) num++;
+        for(lp = list; lp; lp = lp->next)
+        {
+            num++;
+        }
         return num;
     }
 
@@ -458,17 +461,18 @@ struct meterrenderer : listrenderer
 {
     meterrenderer(int type)
         : listrenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
-    {}
+    {
+    }
 
     void startrender()
     {
-         glDisable(GL_BLEND);
-         gle::defvertex();
+        glDisable(GL_BLEND);
+        gle::defvertex();
     }
 
     void endrender()
     {
-         glEnable(GL_BLEND);
+        glEnable(GL_BLEND);
     }
 
     void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
@@ -580,8 +584,8 @@ struct textrenderer : listrenderer
               yoff = 0;
         if((type&0xFF)==PT_TEXTUP)
         {
-            xoff += detrnd((size_t)p, 100)-50;
-            yoff -= detrnd((size_t)p, 101);
+            xoff += detrnd(size_t(p), 100)-50;
+            yoff -= detrnd(size_t(p), 101);
         }
 
         matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
@@ -609,8 +613,8 @@ inline void modifyblend<PT_TAPE>(const vec &o, int &blend)
 template<int T>
 static inline void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
 {
-    vec udir = vec(camup).sub(camright).mul(size);
-    vec vdir = vec(camup).add(camright).mul(size);
+    vec udir = vec(camup).sub(camright).mul(size),
+        vdir = vec(camup).add(camright).mul(size);
     vs[0].pos = vec(o.x + udir.x, o.y + udir.y, o.z + udir.z);
     vs[1].pos = vec(o.x + vdir.x, o.y + vdir.y, o.z + vdir.z);
     vs[2].pos = vec(o.x - udir.x, o.y - udir.y, o.z - udir.z);
@@ -1019,6 +1023,14 @@ static partrenderer *parts[] =
     &metervs,                                                                                  // meter vs.
 };
 
+//helper function to return int with # of entries in *parts[]
+static constexpr int numpartparts()
+{
+    return static_cast<int>(sizeof(parts)/sizeof(parts[0]));
+}
+
+void initparticles(); //need to prototype either the vars or the the function
+
 VARFP(maxparticles, 10, 4000, 10000, initparticles());
 VARFP(fewparticles, 10, 100, 10000, initparticles());
 
@@ -1044,13 +1056,13 @@ void initparticles()
     {
         particletextshader = lookupshaderbyname("particletext");
     }
-    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < numpartparts(); ++i)
     {
         parts[i]->init(parts[i]->type&PT_FEW ? min(fewparticles, maxparticles) : maxparticles);
     }
-    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < numpartparts(); ++i)
     {
-        loadprogress = static_cast<float>(i+1)/(sizeof(parts)/sizeof(parts[0]));
+        loadprogress = static_cast<float>(i+1)/numpartparts();
         parts[i]->preload();
     }
     loadprogress = 0;
@@ -1058,7 +1070,7 @@ void initparticles()
 
 void clearparticles()
 {
-    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < numpartparts(); ++i)
     {
         parts[i]->reset();
     }
@@ -1067,7 +1079,7 @@ void clearparticles()
 
 void cleanupparticles()
 {
-    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < numpartparts(); ++i)
     {
         parts[i]->cleanup();
     }
@@ -1075,7 +1087,7 @@ void cleanupparticles()
 
 void removetrackedparticles(physent *owner)
 {
-    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < numpartparts(); ++i)
     {
         parts[i]->resettracked(owner);
     }
@@ -1107,7 +1119,7 @@ void renderparticles(int layer)
     //want to debug BEFORE the lastpass render (that would delete particles)
     if(dbgparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
     {
-        for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+        for(int i = 0; i < numpartparts(); ++i)
         {
             parts[i]->debuginfo();
         }
@@ -1118,7 +1130,7 @@ void renderparticles(int layer)
          flagmask = PT_LERP|PT_MOD|PT_BRIGHT|PT_NOTEX|PT_SOFT|PT_SHADER,
          excludemask = layer == ParticleLayer_All ? ~0 : (layer != ParticleLayer_NoLayer ? PT_NOLAYER : 0);
 
-    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < numpartparts(); ++i)
     {
         partrenderer *p = parts[i];
         if((p->type&PT_NOLAYER) == excludemask || !p->haswork())
@@ -1239,7 +1251,7 @@ static inline particle *newparticle(const vec &o, const vec &d, int fade, int ty
     return parts[type]->addpart(o, d, fade, color, size, gravity);
 }
 
-VARP(maxparticledistance, 256, 1024, 4096);
+VARP(maxparticledistance, 256, 1024, 4096); //cubits before particles stop rendering (1024 = 128m) (note that text particles have their own var)
 
 static void splash(int type, int color, int radius, int num, int fade, const vec &p, float size, int gravity)
 {
@@ -1251,8 +1263,8 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
     float collidez = parts[type]->type&PT_COLLIDE ?
                      p.z - raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0) :
                      -1;
-    int fmin = 1;
-    int fmax = fade*3;
+    int fmin = 1,
+        fmax = fade*3;
     for(int i = 0; i < num; ++i)
     {
         int x, y, z;
@@ -1277,14 +1289,9 @@ static void regularsplash(int type, int color, int radius, int num, int fade, co
     splash(type, color, radius, num, fade, p, size, gravity);
 }
 
-bool canaddparticles()
-{
-    return !minimized;
-}
-
 void regular_particle_splash(int type, int num, int fade, const vec &p, int color, float size, int radius, int gravity, int delay)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1293,7 +1300,7 @@ void regular_particle_splash(int type, int num, int fade, const vec &p, int colo
 
 void particle_splash(int type, int num, int fade, const vec &p, int color, float size, int radius, int gravity)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1304,13 +1311,13 @@ VARP(maxtrail, 1, 500, 10000);
 
 void particle_trail(int type, int fade, const vec &s, const vec &e, int color, float size, int gravity)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
     vec v;
     float d = e.dist(s, v);
-    int steps = clamp(static_cast<int>(d*2), 1, maxtrail);
+    int steps = std::clamp(static_cast<int>(d*2), 1, maxtrail);
     v.div(steps);
     vec p = s;
     for(int i = 0; i < steps; ++i)
@@ -1325,11 +1332,11 @@ void particle_trail(int type, int fade, const vec &s, const vec &e, int color, f
 }
 
 VARP(particletext, 0, 1, 1);
-VARP(maxparticletextdistance, 0, 128, 10000);
+VARP(maxparticletextdistance, 0, 128, 10000); //cubits at which text can be rendered (128 = 16m)
 
 void particle_text(const vec &s, const char *t, int type, int fade, int color, float size, int gravity)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1343,7 +1350,7 @@ void particle_text(const vec &s, const char *t, int type, int fade, int color, f
 
 void particle_textcopy(const vec &s, const char *t, int type, int fade, int color, float size, int gravity)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1358,7 +1365,7 @@ void particle_textcopy(const vec &s, const char *t, int type, int fade, int colo
 
 void particle_icon(const vec &s, int ix, int iy, int type, int fade, int color, float size, int gravity)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1368,7 +1375,7 @@ void particle_icon(const vec &s, int ix, int iy, int type, int fade, int color, 
 
 void particle_meter(const vec &s, float val, int type, int fade, int color, int color2, float size)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1376,12 +1383,12 @@ void particle_meter(const vec &s, float val, int type, int fade, int color, int 
     p->color2[0] = color2>>16;
     p->color2[1] = (color2>>8)&0xFF;
     p->color2[2] = color2&0xFF;
-    p->progress = clamp(static_cast<int>(val*100), 0, 100);
+    p->progress = std::clamp(static_cast<int>(val*100), 0, 100);
 }
 
 void particle_flare(const vec &p, const vec &dest, int fade, int type, int color, float size, physent *owner)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1390,7 +1397,7 @@ void particle_flare(const vec &p, const vec &dest, int fade, int type, int color
 
 void particle_fireball(const vec &dest, float maxsize, int type, int fade, int color, float size)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1514,7 +1521,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         if(taper)
         {
-            float dist = clamp(from.dist2(camera1->o)/maxparticledistance, 0.0f, 1.0f);
+            float dist = std::clamp(from.dist2(camera1->o)/maxparticledistance, 0.0f, 1.0f);
             if(dist > 0.2f)
             {
                 dist = 1 - (dist - 0.2f)/0.8f;
@@ -1562,7 +1569,7 @@ static void regularflame(int type, const vec &p, float radius, float height, int
 
 void regular_particle_flame(int type, const vec &p, float radius, float height, int color, int density, float scale, float speed, float fade, int gravity)
 {
-    if(!canaddparticles())
+    if(minimized)
     {
         return;
     }
@@ -1595,16 +1602,21 @@ static void makeparticles(entity &e)
             }
             else
             {
-                int mat = Mat_Water + clamp(-e.attr3, 0, 3);
+                int mat = Mat_Water + std::clamp(-e.attr3, 0, 3);
                 color = getwaterfallcolor(mat).tohexcolor();
-                if(!color) color = getwatercolor(mat).tohexcolor();
+                if(!color)
+                {
+                    color = getwatercolor(mat).tohexcolor();
+                }
             }
             regularsplash(Part_Water, color, 150, 4, 200, offsetvec(e.o, e.attr2, randomint(10)), 0.6f, 2);
             break;
         }
         case 3: //fire ball - <size> <rgb>
+        {
             newparticle(e.o, vec(0, 0, 1), 1, Part_Explosion, colorfromattr(e.attr3), 4.0f)->val = 1+e.attr2;
             break;
+        }
         case 4:  //tape - <dir> <length> <rgb>
         case 9:  //steam
         case 10: //water
@@ -1612,7 +1624,7 @@ static void makeparticles(entity &e)
         {
             static const int typemap[]   = { Part_Streak, -1, -1, -1, -1, Part_Steam, Part_Water, -1, -1, Part_Snow };
             static const float sizemap[] = { 0.28f, 0.0f, 0.0f, 1.0f, 0.0f, 2.4f, 0.60f, 0.0f, 0.0f, 0.5f };
-            static const int gravmap[] = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
+            static const int gravmap[]   = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
             int type = typemap[e.attr1-4];
             float size = sizemap[e.attr1-4];
             int gravity = gravmap[e.attr1-4];
@@ -1634,7 +1646,7 @@ static void makeparticles(entity &e)
             p->color2[0] = color2>>16;
             p->color2[1] = (color2>>8)&0xFF;
             p->color2[2] = color2&0xFF;
-            p->progress = clamp(static_cast<int>(e.attr2), 0, 100);
+            p->progress = std::clamp(static_cast<int>(e.attr2), 0, 100);
             break;
         }
         case 11: // flame <radius> <height> <rgb> - radius=100, height=100 is the classic size
@@ -1681,16 +1693,16 @@ void seedparticles()
 
 void updateparticles()
 {
-    if(regenemitters)
+    if(regenemitters) //regenemitters called whenever a new particle generator is placed
     {
         addparticleemitters();
     }
-    if(minimized)
+    if(minimized) //don't emit particles unless window visible
     {
         canemit = false;
         return;
     }
-    if(lastmillis - lastemitframe >= emitmillis)
+    if(lastmillis - lastemitframe >= emitmillis) //don't update particles too often
     {
         canemit = true;
         lastemitframe = lastmillis - (lastmillis%emitmillis);
@@ -1699,19 +1711,20 @@ void updateparticles()
     {
         canemit = false;
     }
-    for(int i = 0; i < static_cast<int>(sizeof(parts)/sizeof(parts[0])); ++i)
+    for(int i = 0; i < numpartparts(); ++i)
     {
         parts[i]->update();
     }
     if(!editmode || showparticles)
     {
-        int emitted = 0, replayed = 0;
+        int emitted = 0,
+            replayed = 0;
         addedparticles = 0;
-        for(int i = 0; i < emitters.length(); i++)
+        for(int i = 0; i < emitters.length(); i++) //foreach particle emitter
         {
-            particleemitter &pe = emitters[i];
-            extentity &e = *pe.ent;
-            if(e.o.dist(camera1->o) > maxparticledistance)
+            particleemitter &pe = emitters[i]; //bring one of the emitters into scope
+            extentity &e = *pe.ent; //get info for the entity associated w/ent
+            if(e.o.dist(camera1->o) > maxparticledistance) //distance check (don't update faraway particle ents)
             {
                 pe.lastemit = lastmillis;
                 continue;
@@ -1726,7 +1739,7 @@ void updateparticles()
             }
             makeparticles(e);
             emitted++;
-            if(replayparticles && pe.maxfade > 5 && pe.lastcull > pe.lastemit)
+            if(replayparticles && pe.maxfade > 5 && pe.lastcull > pe.lastemit) //recreate particles from previous ticks
             {
                 for(emitoffset = max(pe.lastemit + emitmillis - lastmillis, -pe.maxfade); emitoffset < 0; emitoffset += emitmillis)
                 {

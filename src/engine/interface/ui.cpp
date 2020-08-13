@@ -75,53 +75,70 @@ namespace UI
         }
         return clipstack.last().isfullyclipped(x, y, w, h);
     }
-
-    enum
+    namespace
     {
-        ALIGN_MASK    = 0xF,
+        enum
+        {
+            Align_Mask = 0xF,
 
-        ALIGN_HMASK   = 0x3,
-        ALIGN_HSHIFT  = 0,
-        ALIGN_HNONE   = 0,
-        ALIGN_LEFT    = 1,
-        ALIGN_HCENTER = 2,
-        ALIGN_RIGHT   = 3,
+            Align_HMask   = 0x3,
+            Align_HShift  = 0,
+            Align_HNone   = 0,
+            Align_Left    = 1,
+            Align_HCenter = 2,
+            Align_Right   = 3,
 
-        ALIGN_VMASK   = 0xC,
-        ALIGN_VSHIFT  = 2,
-        ALIGN_VNONE   = 0<<2,
-        ALIGN_TOP     = 1<<2,
-        ALIGN_VCENTER = 2<<2,
-        ALIGN_BOTTOM  = 3<<2,
+            Align_VMask   = 0xC,
+            Align_VShift  = 2,
+            Align_VNone   = 0 << 2,
+            Align_Top     = 1 << 2,
+            Align_VCenter = 2 << 2,
+            Align_Bottom  = 3 << 2,
+        };
 
-        CLAMP_MASK    = 0xF0,
-        CLAMP_LEFT    = 0x10,
-        CLAMP_RIGHT   = 0x20,
-        CLAMP_TOP     = 0x40,
-        CLAMP_BOTTOM  = 0x80,
+        enum
+        {
+            Clamp_Mask    = 0xF0,
+            Clamp_Left    = 0x10,
+            Clamp_Right   = 0x20,
+            Clamp_Top     = 0x40,
+            Clamp_Bottom  = 0x80,
 
-        NO_ADJUST     = ALIGN_HNONE | ALIGN_VNONE,
-    };
+            NO_ADJUST     = Align_HNone | Align_VNone,
+        };
 
-    enum
-    {
-        STATE_HOVER       = 1<<0,
-        STATE_PRESS       = 1<<1,
-        STATE_HOLD        = 1<<2,
-        STATE_RELEASE     = 1<<3,
-        STATE_ALT_PRESS   = 1<<4,
-        STATE_ALT_HOLD    = 1<<5,
-        STATE_ALT_RELEASE = 1<<6,
-        STATE_ESC_PRESS   = 1<<7,
-        STATE_ESC_HOLD    = 1<<8,
-        STATE_ESC_RELEASE = 1<<9,
-        STATE_SCROLL_UP   = 1<<10,
-        STATE_SCROLL_DOWN = 1<<11,
-        STATE_HIDDEN      = 1<<12,
+        enum
+        {
+            State_Hover       = 1 << 0,
+            State_Press       = 1 << 1,
+            State_Hold        = 1 << 2,
+            State_Release     = 1 << 3,
+            State_AltPress    = 1 << 4,
+            State_AltHold     = 1 << 5,
+            State_AltRelease  = 1 << 6,
+            State_EscPress    = 1 << 7,
+            State_EscHold     = 1 << 8,
+            State_EscRelease  = 1 << 9,
+            State_ScrollUp    = 1 << 10,
+            State_ScrollDown  = 1 << 11,
+            State_Hidden      = 1 << 12,
 
-        STATE_HOLD_MASK = STATE_HOLD | STATE_ALT_HOLD | STATE_ESC_HOLD
-    };
+            State_HoldMask = State_Hold | State_AltHold | State_EscHold
+        };
 
+        enum
+        {
+            Blend_Alpha,
+            Blend_Mod
+        };
+
+        enum
+        {
+            Change_Shader = 1 << 0,
+            Change_Color  = 1 << 1,
+            Change_Blend  = 1 << 2
+        };
+    }
     struct Object;
 
     static Object *buildparent = NULL;
@@ -136,23 +153,11 @@ namespace UI
         } \
     } while(0)
 
-    enum
-    {
-        CHANGE_SHADER = 1<<0,
-        CHANGE_COLOR  = 1<<1,
-        CHANGE_BLEND  = 1<<2
-    };
     static int changed = 0;
 
     static Object *drawing = NULL;
 
-    enum
-    {
-        BLEND_ALPHA,
-        BLEND_MOD
-    };
-
-    static int blendtype = BLEND_ALPHA;
+    static int blendtype = Blend_Alpha;
 
     static inline void changeblend(int type, GLenum src, GLenum dst)
     {
@@ -165,12 +170,12 @@ namespace UI
 
     void resetblend()
     {
-        changeblend(BLEND_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        changeblend(Blend_Alpha, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     void modblend()
     {
-        changeblend(BLEND_MOD, GL_ZERO, GL_SRC_COLOR);
+        changeblend(Blend_Mod, GL_ZERO, GL_SRC_COLOR);
     }
 
     struct Object
@@ -196,12 +201,12 @@ namespace UI
         {
             resetlayout();
             parent = NULL;
-            adjust = ALIGN_HCENTER | ALIGN_VCENTER;
+            adjust = Align_HCenter | Align_VCenter;
         }
 
         virtual uchar childalign() const
         {
-            return ALIGN_HCENTER | ALIGN_VCENTER;
+            return Align_HCenter | Align_VCenter;
         }
 
         void reset(Object *parent_)
@@ -268,26 +273,26 @@ namespace UI
 
         void adjustlayout(float px, float py, float pw, float ph)
         {
-            switch(adjust&ALIGN_HMASK)
+            switch(adjust & Align_HMask)
             {
-                case ALIGN_LEFT:    x = px; break;
-                case ALIGN_HCENTER: x = px + (pw - w) / 2; break;
-                case ALIGN_RIGHT:   x = px + pw - w; break;
+                case Align_Left: x = px; break;
+                case Align_HCenter: x = px + (pw - w) / 2; break;
+                case Align_Right: x = px + pw - w; break;
             }
 
-            switch(adjust&ALIGN_VMASK)
+            switch(adjust & Align_VMask)
             {
-                case ALIGN_TOP:     y = py; break;
-                case ALIGN_VCENTER: y = py + (ph - h) / 2; break;
-                case ALIGN_BOTTOM:  y = py + ph - h; break;
+                case Align_Top: y = py; break;
+                case Align_VCenter: y = py + (ph - h) / 2; break;
+                case Align_Bottom: y = py + ph - h; break;
             }
 
-            if(adjust&CLAMP_MASK)
+            if(adjust & Clamp_Mask)
             {
-                if(adjust&CLAMP_LEFT)   { w += x - px; x = px; }
-                if(adjust&CLAMP_RIGHT)    w = px + pw - x;
-                if(adjust&CLAMP_TOP)    { h += y - py; y = py; }
-                if(adjust&CLAMP_BOTTOM)   h = py + ph - y;
+                if(adjust & Clamp_Left)   { w += x - px; x = px; }
+                if(adjust & Clamp_Right) w = px + pw - x;
+                if(adjust & Clamp_Top)    { h += y - py; y = py; }
+                if(adjust & Clamp_Bottom) h = py + ph - y;
             }
 
             adjustchildren();
@@ -295,29 +300,29 @@ namespace UI
 
         void setalign(int xalign, int yalign)
         {
-            adjust &= ~ALIGN_MASK;
-            adjust |= (clamp(xalign, -2, 1)+2)<<ALIGN_HSHIFT;
-            adjust |= (clamp(yalign, -2, 1)+2)<<ALIGN_VSHIFT;
+            adjust &= ~Align_Mask;
+            adjust |= (std::clamp(xalign, -2, 1)+2) << Align_HShift;
+            adjust |= (std::clamp(yalign, -2, 1)+2) << Align_VShift;
         }
 
         void setclamp(int left, int right, int top, int bottom)
         {
-            adjust &= ~CLAMP_MASK;
+            adjust &= ~Clamp_Mask;
             if(left)
             {
-                adjust |= CLAMP_LEFT;
+                adjust |= Clamp_Left;
             }
             if(right)
             {
-                adjust |= CLAMP_RIGHT;
+                adjust |= Clamp_Right;
             }
             if(top)
             {
-                adjust |= CLAMP_TOP;
+                adjust |= Clamp_Top;
             }
             if(bottom)
             {
-                adjust |= CLAMP_BOTTOM;
+                adjust |= Clamp_Bottom;
             }
         }
 
@@ -362,15 +367,15 @@ namespace UI
             changed &= ~change;
             if(changed)
             {
-                if(changed&CHANGE_SHADER)
+                if(changed & Change_Shader)
                 {
                     hudshader->set();
                 }
-                if(changed&CHANGE_COLOR)
+                if(changed & Change_Color)
                 {
                     gle::colorf(1, 1, 1);
                 }
-                if(changed&CHANGE_BLEND)
+                if(changed & Change_Blend)
                 {
                     resetblend();
                 }
@@ -404,8 +409,8 @@ namespace UI
 
         void resetstate()
         {
-            state &= STATE_HOLD_MASK;
-            childstate &= STATE_HOLD_MASK;
+            state &= State_HoldMask;
+            childstate &= State_HoldMask;
         }
         void resetchildstate()
         {
@@ -423,18 +428,18 @@ namespace UI
         }
 
         #define DOSTATES \
-            DOSTATE(STATE_HOVER, hover) \
-            DOSTATE(STATE_PRESS, press) \
-            DOSTATE(STATE_HOLD, hold) \
-            DOSTATE(STATE_RELEASE, release) \
-            DOSTATE(STATE_ALT_HOLD, althold) \
-            DOSTATE(STATE_ALT_PRESS, altpress) \
-            DOSTATE(STATE_ALT_RELEASE, altrelease) \
-            DOSTATE(STATE_ESC_HOLD, eschold) \
-            DOSTATE(STATE_ESC_PRESS, escpress) \
-            DOSTATE(STATE_ESC_RELEASE, escrelease) \
-            DOSTATE(STATE_SCROLL_UP, scrollup) \
-            DOSTATE(STATE_SCROLL_DOWN, scrolldown)
+            DOSTATE(State_Hover, hover) \
+            DOSTATE(State_Press, press) \
+            DOSTATE(State_Hold, hold) \
+            DOSTATE(State_Release, release) \
+            DOSTATE(State_AltHold, althold) \
+            DOSTATE(State_AltPress, altpress) \
+            DOSTATE(State_AltRelease, altrelease) \
+            DOSTATE(State_EscHold, eschold) \
+            DOSTATE(State_EscPress, escpress) \
+            DOSTATE(State_EscRelease, escrelease) \
+            DOSTATE(State_ScrollUp, scrollup) \
+            DOSTATE(State_ScrollDown, scrolldown)
 
         bool setstate(int state, float cx, float cy, int mask = 0, bool inside = true, int setflags = 0)
         {
@@ -465,8 +470,8 @@ namespace UI
                 float o##y = cy - o->y; \
                 if(!inside) \
                 { \
-                    o##x = clamp(o##x, 0.0f, o->w); \
-                    o##y = clamp(o##y, 0.0f, o->h); \
+                    o##x = std::clamp(o##x, 0.0f, o->w); \
+                    o##y = std::clamp(o##y, 0.0f, o->h); \
                     body; \
                 } \
                 else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \
@@ -677,8 +682,8 @@ namespace UI
 
         void show()
         {
-            state |= STATE_HIDDEN;
-            clearstate(STATE_HOLD_MASK);
+            state |= State_Hidden;
+            clearstate(State_HoldMask);
             if(onshow)
             {
                 execute(onshow);
@@ -695,7 +700,7 @@ namespace UI
 
         void layout()
         {
-            if(state&STATE_HIDDEN)
+            if(state & State_Hidden)
             {
                 w = h = 0;
                 return;
@@ -707,7 +712,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            if(state&STATE_HIDDEN)
+            if(state & State_Hidden)
             {
                 return;
             }
@@ -717,7 +722,7 @@ namespace UI
             hudshader->set();
 
             glEnable(GL_BLEND);
-            blendtype = BLEND_ALPHA;
+            blendtype = Blend_Alpha;
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             gle::colorf(1, 1, 1);
 
@@ -740,7 +745,7 @@ namespace UI
 
         void adjustchildren()
         {
-            if(state&STATE_HIDDEN)
+            if(state & State_Hidden)
             {
                 return;
             }
@@ -760,7 +765,7 @@ namespace UI
         #define DOSTATE(flags, func) \
             void func##children(float cx, float cy, int mask, bool inside, int setflags) \
             { \
-                if(!allowinput || state&STATE_HIDDEN || pw <= 0 || ph <= 0) return; \
+                if(!allowinput || state&State_Hidden || pw <= 0 || ph <= 0) return; \
                 cx = cx*pw + px-x; \
                 cy = cy*ph + py-y; \
                 if(!inside || (cx >= 0 && cy >= 0 && cx < w && cy < h)) \
@@ -789,10 +794,10 @@ namespace UI
             sy2 = static_cast<int>(floor(s2.y*hudh + 0.5f));
             if(clip)
             {
-                sx1 = clamp(sx1, 0, hudw);
-                sy1 = clamp(sy1, 0, hudh);
-                sx2 = clamp(sx2, 0, hudw);
-                sy2 = clamp(sy2, 0, hudh);
+                sx1 = std::clamp(sx1, 0, hudw);
+                sy1 = std::clamp(sy1, 0, hudh);
+                sx2 = std::clamp(sx2, 0, hudw);
+                sy2 = std::clamp(sy2, 0, hudh);
             }
         }
 
@@ -903,7 +908,7 @@ namespace UI
 
         bool hidetop()
         {
-            LOOP_WINDOWS_REV(w, { if(w->allowinput && !(w->state&STATE_HIDDEN)) { hide(w, i); return true; } });
+            LOOP_WINDOWS_REV(w, { if(w->allowinput && !(w->state & State_Hidden)) { hide(w, i); return true; } });
             return false;
         }
 
@@ -922,7 +927,7 @@ namespace UI
         {
             LOOP_WINDOWS(w,
             {
-                if(w->allowinput && !(w->state&STATE_HIDDEN))
+                if(w->allowinput && !(w->state & State_Hidden))
                 {
                     return true;
                 }
@@ -942,7 +947,7 @@ namespace UI
         float abovehud()
         {
             float y = 1;
-            LOOP_WINDOWS(w, { if(w->abovehud && !(w->state&STATE_HIDDEN)) y = min(y, w->calcabovehud()); });
+            LOOP_WINDOWS(w, { if(w->abovehud && !(w->state & State_Hidden)) y = min(y, w->calcabovehud()); });
             return y;
         }
     };
@@ -991,7 +996,7 @@ namespace UI
 
         uchar childalign() const
         {
-            return ALIGN_VCENTER;
+            return Align_VCenter;
         }
 
         void layout()
@@ -1047,7 +1052,7 @@ namespace UI
 
         uchar childalign() const
         {
-            return ALIGN_HCENTER;
+            return Align_HCenter;
         }
 
         void layout()
@@ -1212,7 +1217,7 @@ namespace UI
 
         uchar childalign() const
         {
-            return columns < 0 ? ALIGN_VCENTER : ALIGN_HCENTER | ALIGN_VCENTER;
+            return columns < 0 ? Align_VCenter : Align_HCenter | Align_VCenter;
         }
 
         int childcolumns() const
@@ -1537,7 +1542,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE) modblend(); else resetblend();
 
             color.init();
@@ -1578,7 +1583,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE) modblend(); else resetblend();
 
             gle::begin(GL_TRIANGLE_STRIP);
@@ -1613,7 +1618,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             color.init();
             gle::begin(GL_LINES);
@@ -1646,7 +1651,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             color.init();
             gle::begin(GL_LINE_LOOP);
@@ -1667,8 +1672,8 @@ namespace UI
             loadalphamask(tex);
             if(!tex->alphamask) return true;
         }
-        int tx = clamp(static_cast<int>(x*tex->xs), 0, tex->xs-1),
-            ty = clamp(static_cast<int>(y*tex->ys), 0, tex->ys-1);
+        int tx = std::clamp(static_cast<int>(x*tex->xs), 0, tex->xs-1),
+            ty = std::clamp(static_cast<int>(y*tex->ys), 0, tex->ys-1);
         if(tex->alphamask[ty*((tex->xs+7)/8) + tx/8] & (1<<(tx%8)))
         {
             return true;
@@ -2169,7 +2174,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE)
             {
                 modblend();
@@ -2212,7 +2217,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR | CHANGE_BLEND);
+            changedraw(Change_Shader | Change_Color | Change_Blend);
             if(type==MODULATE) modblend(); else resetblend();
 
             float r = radius <= 0 ? min(w, h)/2 : radius;
@@ -2289,7 +2294,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             float oldscale = textscale;
             textscale = drawscale();
@@ -2514,7 +2519,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             float k = drawscale();
             pushhudtranslate(sx, sy, k);
@@ -2679,12 +2684,12 @@ namespace UI
 
         void sethscroll(float hscroll)
         {
-            offsetx = clamp(hscroll, 0.0f, hlimit());
+            offsetx = std::clamp(hscroll, 0.0f, hlimit());
         }
 
         void setvscroll(float vscroll)
         {
-            offsety = clamp(vscroll, 0.0f, vlimit());
+            offsety = std::clamp(vscroll, 0.0f, vlimit());
         }
 
         void scrollup(float cx, float cy);
@@ -2736,7 +2741,7 @@ namespace UI
         void hold(float cx, float cy)
         {
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(button && button->haschildstate(STATE_HOLD))
+            if(button && button->haschildstate(State_Hold))
             {
                 movebutton(button, offsetx, offsety, cx - button->x, cy - button->y);
             }
@@ -2745,7 +2750,7 @@ namespace UI
         void press(float cx, float cy)
         {
             ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
-            if(button && button->haschildstate(STATE_PRESS))
+            if(button && button->haschildstate(State_Press))
             {
                 offsetx = cx - button->x;
                 offsety = cy - button->y;
@@ -2897,7 +2902,7 @@ namespace UI
             button->w = max(button->w, bw);
             float bscale = scroller->hscale() < 1 ? (w - button->w) / (1 - scroller->hscale()) : 1;
             button->x = scroller->hoffset()*bscale;
-            button->adjust &= ~ALIGN_HMASK;
+            button->adjust &= ~Align_HMask;
 
             ScrollBar::adjustchildren();
         }
@@ -2958,7 +2963,7 @@ namespace UI
             button->h = max(button->h, bh);
             float bscale = scroller->vscale() < 1 ? (h - button->h) / (1 - scroller->vscale()) : 1;
             button->y = scroller->voffset()*bscale;
-            button->adjust &= ~ALIGN_VMASK;
+            button->adjust &= ~Align_VMask;
 
             ScrollBar::adjustchildren();
         }
@@ -3025,7 +3030,7 @@ namespace UI
         {
             case Id_Var:
             {
-                setvarchecked(id, static_cast<int>(clamp(val, double(INT_MIN), double(INT_MAX))));
+                setvarchecked(id, static_cast<int>(std::clamp(val, double(INT_MIN), double(INT_MAX))));
                 break;
             }
             case Id_FloatVar:
@@ -3127,7 +3132,7 @@ namespace UI
             double newval = val + dir*vstep;
             newval += vstep * (newval < 0 ? -0.5 : 0.5);
             newval -= fmod(newval, vstep);
-            newval = clamp(newval, min(vmin, vmax), max(vmin, vmax));
+            newval = std::clamp(newval, min(vmin, vmax), max(vmin, vmax));
             if(val != newval)
             {
                 changeval(newval);
@@ -3245,7 +3250,7 @@ namespace UI
             {
                 return;
             }
-            float offset = w > button->w ? clamp((cx - button->w/2)/(w - button->w), 0.0f, 1.0f) : 0.0f;
+            float offset = w > button->w ? std::clamp((cx - button->w/2)/(w - button->w), 0.0f, 1.0f) : 0.0f;
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
             if(step != bstep)
@@ -3267,7 +3272,7 @@ namespace UI
             {
                 button->x = (w - button->w) * step * vstep / (vmax - vmin);
             }
-            button->adjust &= ~ALIGN_HMASK;
+            button->adjust &= ~Align_HMask;
 
             Slider::adjustchildren();
         }
@@ -3292,7 +3297,7 @@ namespace UI
             {
                 return;
             }
-            float offset = h > button->h ? clamp((cy - button->h/2)/(h - button->h), 0.0f, 1.0f) : 0.0f;
+            float offset = h > button->h ? std::clamp((cy - button->h/2)/(h - button->h), 0.0f, 1.0f) : 0.0f;
             int step = static_cast<int>((val - vmin) / vstep),
                 bstep = static_cast<int>(offset * (vmax - vmin) / vstep);
             if(step != bstep)
@@ -3314,7 +3319,7 @@ namespace UI
             {
                 button->y = (h - button->h) * step * vstep / (vmax - vmin);
             }
-            button->adjust &= ~ALIGN_VMASK;
+            button->adjust &= ~Align_VMask;
 
             Slider::adjustchildren();
         }
@@ -3344,7 +3349,7 @@ namespace UI
                 }
                 edit = edit_;
             }
-            else if(isfocus() && !hasstate(STATE_HOVER))
+            else if(isfocus() && !hasstate(State_Hover))
             {
                 commit();
             }
@@ -3432,7 +3437,7 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             edit->rendered = true;
 
@@ -3564,7 +3569,7 @@ namespace UI
             }
             else while(len > 0)
             {
-                int accept = min(len, (int)strspn(str, keyfilter));
+                int accept = min(len, static_cast<int>(strspn(str, keyfilter)));
                 if(accept > 0) edit->input(str, accept);
                 str += accept + 1;
                 len -= accept + 1;
@@ -3572,7 +3577,7 @@ namespace UI
                 {
                     break;
                 }
-                int reject = (int)strcspn(str, keyfilter);
+                int reject = static_cast<int>(strcspn(str, keyfilter));
                 str += reject;
                 str -= reject;
             }
@@ -3663,7 +3668,7 @@ namespace UI
 
         void setup(ident *id_, int length, uint *onchange, float scale = 1, const char *keyfilter_ = NULL)
         {
-            if(isfocus() && !hasstate(STATE_HOVER))
+            if(isfocus() && !hasstate(State_Hover))
             {
                 commit();
             }
@@ -3800,7 +3805,7 @@ namespace UI
             Preview::setup(minw_, minh_);
             SETSTR(name, name_);
 
-            anim = ANIM_ALL;
+            anim = Anim_All;
             if(animspec[0])
             {
                 if(isdigit(animspec[0]))
@@ -3808,11 +3813,11 @@ namespace UI
                     anim = parseint(animspec);
                     if(anim >= 0)
                     {
-                        anim %= ANIM_INDEX;
+                        anim %= Anim_Index;
                     }
                     else
                     {
-                        anim = ANIM_ALL;
+                        anim = Anim_All;
                     }
                 }
                 else
@@ -3825,7 +3830,7 @@ namespace UI
                     }
                 }
             }
-            anim |= ANIM_LOOP;
+            anim |= Anim_Loop;
         }
 
         static const char *typestr()
@@ -3841,7 +3846,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER);
+            changedraw(Change_Shader);
 
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
@@ -3890,7 +3895,7 @@ namespace UI
         {
             Object::draw(sx, sy);
 
-            changedraw(CHANGE_SHADER);
+            changedraw(Change_Shader);
 
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
@@ -3929,7 +3934,7 @@ namespace UI
         void draw(float sx, float sy)
         {
             Object::draw(sx, sy);
-            changedraw(CHANGE_SHADER);
+            changedraw(Change_Shader);
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
             modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.length() > 0);
@@ -3973,11 +3978,11 @@ namespace UI
                     return;
                 }
                 Slot &slot = *vslot.slot;
-                if(slot.texmask&(1<<TEX_GLOW))
+                if(slot.texmask&(1 << Tex_Glow))
                 {
                     for(int j = 0; j < slot.sts.length(); j++)
                     {
-                        if(slot.sts[j].type==TEX_GLOW)
+                        if(slot.sts[j].type == Tex_Glow)
                         {
                             glowtex = slot.sts[j].t;
                             break;
@@ -4006,7 +4011,7 @@ namespace UI
                 }
             }
 
-            changedraw(CHANGE_SHADER | CHANGE_COLOR);
+            changedraw(Change_Shader | Change_Color);
 
             SETSHADER(hudrgb);
             vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
@@ -4527,8 +4532,8 @@ namespace UI
     bool movecursor(int dx, int dy)
     {
         if(!hascursor()) return false;
-        cursorx = clamp(cursorx + dx*uisensitivity/hudw, 0.0f, 1.0f);
-        cursory = clamp(cursory + dy*uisensitivity/hudh, 0.0f, 1.0f);
+        cursorx = std::clamp(cursorx + dx*uisensitivity/hudw, 0.0f, 1.0f);
+        cursory = std::clamp(cursory + dy*uisensitivity/hudh, 0.0f, 1.0f);
         return true;
     }
 
@@ -4540,27 +4545,27 @@ namespace UI
         {
             case -1:
             {
-                action = isdown ? STATE_PRESS : STATE_RELEASE; hold = STATE_HOLD;
+                action = isdown ? State_Press : State_Release; hold = State_Hold;
                 break;
             }
             case -2:
             {
-                action = isdown ? STATE_ALT_PRESS : STATE_ALT_RELEASE; hold = STATE_ALT_HOLD;
+                action = isdown ? State_AltPress : State_AltRelease; hold = State_AltHold;
                 break;
             }
             case -3:
             {
-                action = isdown ? STATE_ESC_PRESS : STATE_ESC_RELEASE; hold = STATE_ESC_HOLD;
+                action = isdown ? State_EscPress : State_EscRelease; hold = State_EscHold;
                 break;
             }
             case -4:
             {
-                action = STATE_SCROLL_UP;
+                action = State_ScrollUp;
                 break;
             }
             case -5:
             {
-                action = STATE_SCROLL_DOWN;
+                action = State_ScrollDown;
                 break;
             }
         }
@@ -4627,18 +4632,18 @@ namespace UI
     {
         readyeditors();
 
-        world->setstate(STATE_HOVER, cursorx, cursory, world->childstate&STATE_HOLD_MASK);
-        if(world->childstate&STATE_HOLD)
+        world->setstate(State_Hover, cursorx, cursory, world->childstate & State_HoldMask);
+        if(world->childstate & State_Hold)
         {
-            world->setstate(STATE_HOLD, cursorx, cursory, STATE_HOLD, false);
+            world->setstate(State_Hold, cursorx, cursory, State_Hold, false);
         }
-        if(world->childstate&STATE_ALT_HOLD)
+        if(world->childstate & State_AltHold)
         {
-            world->setstate(STATE_ALT_HOLD, cursorx, cursory, STATE_ALT_HOLD, false);
+            world->setstate(State_AltHold, cursorx, cursory, State_AltHold, false);
         }
-        if(world->childstate&STATE_ESC_HOLD)
+        if(world->childstate & State_EscHold)
         {
-            world->setstate(STATE_ESC_HOLD, cursorx, cursory, STATE_ESC_HOLD, false);
+            world->setstate(State_EscHold, cursorx, cursory, State_EscHold, false);
         }
 
         calctextscale();

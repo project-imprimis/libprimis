@@ -103,8 +103,8 @@ inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
         Texture *tex = s[t.mesh].tex;
         if(tex->type&Texture::ALPHA && (tex->alphamask || loadalphamask(tex)))
         {
-            int si = clamp(static_cast<int>(tex->xs * (va.tc.x + u*(vb.tc.x - va.tc.x) + v*(vc.tc.x - va.tc.x))), 0, tex->xs-1),
-                ti = clamp(static_cast<int>(tex->ys * (va.tc.y + u*(vb.tc.y - va.tc.y) + v*(vc.tc.y - va.tc.y))), 0, tex->ys-1);
+            int si = std::clamp(static_cast<int>(tex->xs * (va.tc.x + u*(vb.tc.x - va.tc.x) + v*(vc.tc.x - va.tc.x))), 0, tex->xs-1),
+                ti = std::clamp(static_cast<int>(tex->ys * (va.tc.y + u*(vb.tc.y - va.tc.y) + v*(vc.tc.y - va.tc.y))), 0, tex->ys-1);
             if(!(tex->alphamask[ti*((tex->xs+7)/8) + si/8] & (1<<(si%8))))
             {
                 return false;
@@ -576,7 +576,8 @@ struct skelzonekey
 
     void subtract(const skelzonekey &o)
     {
-        int len = 0, j = 0;
+        int len = 0,
+            j   = 0;
         for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
         {
         retry:
@@ -731,7 +732,11 @@ static inline bool htcmp(const skelzonekey &x, const skelzoneinfo &y)
 
 static inline uint hthash(const skelzonekey &k)
 {
-    union { uint i[3]; uchar b[12]; } conv;
+    union
+    {
+        uint i[3];
+        uchar b[12];
+    } conv;
     memcpy(conv.b, k.bones, sizeof(conv.b));
     return conv.i[0]^conv.i[1]^conv.i[2];
 }
@@ -1004,7 +1009,8 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             }
         }
     }
-    int numlinks = 0, numtris = 0;
+    int numlinks = 0,
+        numtris = 0;
     for(int i = info.length(); --i >=0;) //note reverse iteration
     {
         skelzoneinfo &zi = *info[i];

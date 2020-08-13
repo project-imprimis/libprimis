@@ -340,7 +340,10 @@ struct vertmodel : animmodel
             return true;
         }
 
-        int totalframes() const { return numframes; }
+        int totalframes() const
+        {
+            return numframes;
+        }
 
         void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
         {
@@ -430,7 +433,7 @@ struct vertmodel : animmodel
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
-            if(as->cur.anim&ANIM_NOSKIN)
+            if(as->cur.anim & Anim_NoSkin)
             {
                 if(enabletangents)
                 {
@@ -501,7 +504,7 @@ struct vertmodel : animmodel
 
         void render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
         {
-            if(as->cur.anim&ANIM_NORENDER)
+            if(as->cur.anim & Anim_NoRender)
             {
                 for(int i = 0; i < p->links.length(); i++)
                 {
@@ -633,7 +636,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
         {
             mdl.disablepitch();
         }
-        mdl.meshes = MDL::loading->sharemeshes(path(filename), *smooth > 0 ? cosf(clamp(*smooth, 0.0f, 180.0f)*RAD) : 2);
+        mdl.meshes = MDL::loading->sharemeshes(path(filename), *smooth > 0 ? cosf(std::clamp(*smooth, 0.0f, 180.0f)*RAD) : 2);
         if(!mdl.meshes)
         {
             conoutf("could not load %s", filename);

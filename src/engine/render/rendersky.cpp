@@ -382,9 +382,3 @@ void drawskybox(bool clear)
         glDepthFunc(GL_LESS);
     }
 }
-
-bool hasskybox()
-{
-    return skybox[0] || atmo || cloudlayer[0];
-}
-

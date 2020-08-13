@@ -1057,8 +1057,8 @@ struct skelmodel : animmodel
             vec forward1 = pose1.transformnormal(forward).project(axis).normalize(),
                 forward2 = pose2.transformnormal(forward).project(axis).normalize(),
                 daxis = vec().cross(forward1, forward2);
-            float dx = clamp(forward1.dot(forward2), -1.0f, 1.0f),
-                  dy = clamp(daxis.magnitude(), -1.0f, 1.0f);
+            float dx = std::clamp(forward1.dot(forward2), -1.0f, 1.0f),
+                  dy = std::clamp(daxis.magnitude(), -1.0f, 1.0f);
             if(daxis.dot(axis) < 0)
             {
                 dy = -dy;
@@ -1086,7 +1086,7 @@ struct skelmodel : animmodel
                     tpitch -= pitchcorrects[parent].pitchangle;
                 if(t.pitchmin || t.pitchmax)
                 {
-                    tpitch = clamp(tpitch, t.pitchmin, t.pitchmax);
+                    tpitch = std::clamp(tpitch, t.pitchmin, t.pitchmax);
                 }
                 for(int i = 0; i < pitchcorrects.length(); i++)
                 {
@@ -1102,20 +1102,20 @@ struct skelmodel : animmodel
                     {
                         if(used < 0)
                         {
-                            used = clamp(c.pitchmin, used, 0.0f);
+                            used = std::clamp(c.pitchmin, used, 0.0f);
                         }
                         else
                         {
-                            used = clamp(c.pitchmax, 0.0f, used);
+                            used = std::clamp(c.pitchmax, 0.0f, used);
                         }
                     }
                     if(used < 0)
                     {
-                        used = clamp(avail, used, 0.0f);
+                        used = std::clamp(avail, used, 0.0f);
                     }
                     else
                     {
-                        used = clamp(avail, 0.0f, used);
+                        used = std::clamp(avail, 0.0f, used);
                     }
                     c.pitchangle = used;
                     c.pitchtotal = used + total;
@@ -1192,7 +1192,7 @@ struct skelmodel : animmodel
                         angle = b.pitchscale*pitch + b.pitchoffset;
                         if(b.pitchmin || b.pitchmax)
                         {
-                            angle = clamp(angle, b.pitchmin, b.pitchmax);
+                            angle = std::clamp(angle, b.pitchmin, b.pitchmax);
                         }
                     }
                     else if(b.correctindex >= 0)
@@ -1203,9 +1203,9 @@ struct skelmodel : animmodel
                     {
                         continue;
                     }
-                    if(as->cur.anim&ANIM_NOPITCH || (as->interp < 1 && as->prev.anim&ANIM_NOPITCH))
+                    if(as->cur.anim & Anim_NoPitch || (as->interp < 1 && as->prev.anim & Anim_NoPitch))
                     {
-                        angle *= (as->cur.anim&ANIM_NOPITCH ? 0 : as->interp) + (as->interp < 1 && as->prev.anim&ANIM_NOPITCH ? 0 : 1-as->interp);
+                        angle *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
                     }
                     sc.bdata[b.interpindex].mulorient(quat(axis, angle*RAD), b.base);
                 }
@@ -1697,7 +1697,7 @@ struct skelmodel : animmodel
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
-            if(as->cur.anim&ANIM_NOSKIN)
+            if(as->cur.anim & Anim_NoSkin)
             {
                 if(enabletangents)
                 {
@@ -1946,7 +1946,7 @@ struct skelmodel : animmodel
 
             if(!skel->numframes)
             {
-                if(!(as->cur.anim&ANIM_NORENDER))
+                if(!(as->cur.anim & Anim_NoRender))
                 {
                     if(!vbocache->vbuf)
                     {
@@ -1964,7 +1964,7 @@ struct skelmodel : animmodel
             }
 
             skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? NULL : d->ragdoll);
-            if(!(as->cur.anim&ANIM_NORENDER))
+            if(!(as->cur.anim & Anim_NoRender))
             {
                 int owner = &sc-&skel->skelcache[0];
                 vbocacheentry &vc = skel->usegpuskel ? *vbocache : checkvbocache(sc, owner);
@@ -2012,7 +2012,7 @@ struct skelmodel : animmodel
 
             skel->calctags(p, &sc);
 
-            if(as->cur.anim&ANIM_RAGDOLL && skel->ragdoll && !d->ragdoll)
+            if(as->cur.anim & Anim_Ragdoll && skel->ragdoll && !d->ragdoll)
             {
                 d->ragdoll = new ragdolldata(skel->ragdoll, p->model->scale);
                 skel->initragdoll(*d->ragdoll, sc, p);
@@ -2241,7 +2241,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, meshfile);
         part &mdl = MDL::loading->addpart();
-        mdl.meshes = MDL::loading->sharemeshes(path(filename), skelname[0] ? skelname : NULL, *smooth > 0 ? cosf(clamp(*smooth, 0.0f, 180.0f)*RAD) : 2);
+        mdl.meshes = MDL::loading->sharemeshes(path(filename), skelname[0] ? skelname : NULL, *smooth > 0 ? cosf(std::clamp(*smooth, 0.0f, 180.0f)*RAD) : 2);
         if(!mdl.meshes)
         {
             conoutf("could not load %s", filename);
@@ -2361,7 +2361,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         pitchtarget &t = skel->pitchtargets.add();
         t.bone = bone;
-        t.frame = sa->frame + clamp(*frameoffset, 0, sa->range-1);
+        t.frame = sa->frame + std::clamp(*frameoffset, 0, sa->range-1);
         t.pitchmin = *pitchmin;
         t.pitchmax = *pitchmax;
     }

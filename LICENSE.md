@@ -9,11 +9,15 @@ though all assets used in the game are CC-BY-SA or less restrictive.
 
 Copyright (c) 2020 Project Imprimis:
 
+Core Developers:
+
 * Alex Foster (@no-lex)
 * Maxim Therrien (@acerspyro)
 
 Additional contributors:
 
+* "beam brain" (@OlRabiesAbe)
+* "NoNo" (@nonoesimposible)
 * Sławomir Błauciak (@q009)
 
 Contributors to the original Tesseract engine are omitted here but listed in

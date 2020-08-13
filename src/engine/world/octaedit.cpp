@@ -9,7 +9,8 @@ bool boxoutline = false;
 
 void boxs(int orient, vec o, const vec &s, float size)
 {
-    int d = DIMENSION(orient), dc = DIM_COORD(orient);
+    int d  = DIMENSION(orient),
+        dc = DIM_COORD(orient);
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
     o[D[d]] += dc * s[D[d]] + f;
 
@@ -17,7 +18,10 @@ void boxs(int orient, vec o, const vec &s, float size)
     r[R[d]] = s[R[d]];
     c[C[d]] = s[C[d]];
 
-    vec v1 = o, v2 = vec(o).add(r), v3 = vec(o).add(r).add(c), v4 = vec(o).add(c);
+    vec v1 = o,
+        v2 = vec(o).add(r),
+        v3 = vec(o).add(r).add(c),
+        v4 = vec(o).add(c);
 
     r[R[d]] = 0.5f*size;
     c[C[d]] = 0.5f*size;
@@ -43,7 +47,8 @@ void boxs(int orient, vec o, const vec &s, float size)
 
 void boxs(int orient, vec o, const vec &s)
 {
-    int d = DIMENSION(orient), dc = DIM_COORD(orient);
+    int d  = DIMENSION(orient),
+        dc = DIM_COORD(orient);
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
     o[D[d]] += dc * s[D[d]] + f;
 
@@ -61,7 +66,7 @@ void boxs(int orient, vec o, const vec &s)
 void boxs3D(const vec &o, vec s, int g)
 {
     s.mul(g);
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 6; ++i) //for each face
     {
         boxs(i, o, s);
     }
@@ -69,7 +74,8 @@ void boxs3D(const vec &o, vec s, int g)
 
 void boxsgrid(int orient, vec o, vec s, int g)
 {
-    int d = DIMENSION(orient), dc = DIM_COORD(orient);
+    int d  = DIMENSION(orient),
+        dc = DIM_COORD(orient);
     float ox = o[R[d]],
           oy = o[C[d]],
           xs = s[R[d]],
@@ -125,7 +131,10 @@ bool pointinsel(const selinfo &sel, const vec &o)
 }
 
 VARF(dragging, 0, 0, 1,
-    if(!dragging || cor[0]<0) return;
+    if(!dragging || cor[0]<0)
+    {
+        return;
+    }
     lastcur = cur;
     lastcor = cor;
     sel.grid = gridsize;
@@ -137,17 +146,29 @@ ICOMMAND(moving, "b", (int *n),
 {
     if(*n >= 0)
     {
-        if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1)))) moving = 0;
-        else if(!moving) moving = 1;
+        if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1))))
+        {
+            moving = 0;
+        }
+        else if(!moving)
+        {
+            moving = 1;
+        }
     }
     intret(moving);
 });
 
 VARF(gridpower, 0, 3, 12,
 {
-    if(dragging) return;
+    if(dragging)
+    {
+        return;
+    }
     gridsize = 1<<gridpower;
-    if(gridsize>=worldsize) gridsize = worldsize/2;
+    if(gridsize>=worldsize)
+    {
+        gridsize = worldsize/2;
+    }
     cancelsel();
 });
 
@@ -178,9 +199,18 @@ void toggleedit(bool force)
 {
     if(!force)
     {
-        if(!isconnected()) return;
-        if(player->state!=ClientState_Alive && player->state!=ClientState_Dead && player->state!=ClientState_Editing) return; // do not allow dead players to edit to avoid state confusion
-        if(!game::allowedittoggle()) return;         // not in most multiplayer modes
+        if(!isconnected())
+        {
+            return;
+        }
+        if(player->state!=ClientState_Alive && player->state!=ClientState_Dead && player->state!=ClientState_Editing)
+        {
+            return; // do not allow dead players to edit to avoid state confusion
+        }
+        if(!game::allowedittoggle())
+        {
+            return;         // not in most multiplayer modes
+        }
     }
     if(!(editmode = !editmode))
     {
@@ -190,27 +220,42 @@ void toggleedit(bool force)
     }
     else
     {
-        game::resetgamestate();
         player->editstate = player->state;
         player->state = ClientState_Editing;
     }
     cancelsel();
     keyrepeat(editmode, KeyRepeat_EditMode);
     editing = entediting = editmode;
-    if(!force) game::edittoggled(editmode);
+    if(!force)
+    {
+        game::edittoggled(editmode);
+    }
     execident("resethud");
 }
 
 bool noedit(bool view, bool msg)
 {
-    if(!editmode) { if(msg) conoutf(Console_Error, "operation only allowed in edit mode"); return true; }
-    if(view || haveselent()) return false;
+    if(!editmode)
+    {
+        if(msg)
+        {
+            conoutf(Console_Error, "operation only allowed in edit mode");
+        }
+        return true;
+    }
+    if(view || haveselent())
+    {
+        return false;
+    }
     vec o(sel.o), s(sel.s);
     s.mul(sel.grid / 2.0f);
     o.add(s);
     float r = max(s.x, s.y, s.z);
     bool viewable = (isvisiblesphere(r, o) != ViewFrustumCull_NotVisible);
-    if(!viewable && msg) conoutf(Console_Error, "selection not in view");
+    if(!viewable && msg)
+    {
+        conoutf(Console_Error, "selection not in view");
+    }
     return !viewable;
 }
 
@@ -225,7 +270,10 @@ void reorient()
 
 void selextend()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     for(int i = 0; i < 3; ++i)
     {
         if(cur[i]<sel.o[i])
@@ -256,10 +304,18 @@ ICOMMAND(selswap, "", (), { if(noedit(true)) return; swap(sel, savedsel); });
 
 cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a world cube, based on coordinates mapped by the block
 {
-    int dim = DIMENSION(b.orient), dc = DIM_COORD(b.orient);
+    int dim = DIMENSION(b.orient),
+        dc = DIM_COORD(b.orient);
     ivec s(dim, x*b.grid, y*b.grid, dc*(b.s[dim]-1)*b.grid);
     s.add(b.o);
-    if(dc) s[dim] -= z*b.grid; else s[dim] += z*b.grid;
+    if(dc)
+    {
+        s[dim] -= z*b.grid;
+    }
+    else
+    {
+        s[dim] += z*b.grid;
+    }
     return lookupcube(s, rgrid);
 }
 //note that these macros actually loop in the opposite order: e.g. loopxy runs a for loop of x inside y
@@ -273,8 +329,24 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 int selchildcount = 0, selchildmat = -1;
 
 ICOMMAND(havesel, "", (), intret(havesel ? selchildcount : 0));
-ICOMMAND(selchildcount, "", (), { if(selchildcount < 0) result(tempformatstring("1/%d", -selchildcount)); else intret(selchildcount); });
-ICOMMAND(selchildmat, "s", (char *prefix), { if(selchildmat > 0) result(getmaterialdesc(selchildmat, prefix)); });
+ICOMMAND(selchildcount, "", (),
+{
+    if(selchildcount < 0)
+    {
+        result(tempformatstring("1/%d", -selchildcount));
+    }
+    else
+    {
+        intret(selchildcount);
+    }
+});
+ICOMMAND(selchildmat, "s", (char *prefix),
+{
+    if(selchildmat > 0)
+    {
+        result(getmaterialdesc(selchildmat, prefix));
+    }
+});
 
 void countselchild(cube *c, const ivec &cor, int size)
 {
@@ -282,14 +354,23 @@ void countselchild(cube *c, const ivec &cor, int size)
     LOOP_OCTA_BOX_SIZE(cor, size, sel.o, ss)
     {
         ivec o(i, cor, size);
-        if(c[i].children) countselchild(c[i].children, o, size/2);
+        if(c[i].children)
+        {
+            countselchild(c[i].children, o, size/2);
+        }
         else
         {
             selchildcount++;
             if(c[i].material != Mat_Air && selchildmat != Mat_Air)
             {
-                if(selchildmat < 0) selchildmat = c[i].material;
-                else if(selchildmat != c[i].material) selchildmat = Mat_Air;
+                if(selchildmat < 0)
+                {
+                    selchildmat = c[i].material;
+                }
+                else if(selchildmat != c[i].material)
+                {
+                    selchildmat = Mat_Air;
+                }
             }
         }
     }
@@ -327,15 +408,22 @@ bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &handle, 
     plane pl(d, off);
     float dist = 0.0f;
     if(!pl.rayintersect(player->o, ray, dist))
+    {
         return false;
-
+    }
     dest = vec(ray).mul(dist).add(player->o);
-    if(first) handle = vec(dest).sub(o);
+    if(first)
+    {
+        handle = vec(dest).sub(o);
+    }
     dest.sub(handle);
     return true;
 }
 
-namespace hmap { inline bool isheightmap(int orient, int d, bool empty, cube *c); }
+namespace hmap
+{
+    inline bool isheightmap(int orient, int d, bool empty, cube *c);
+}
 extern void entdrag(const vec &ray);
 extern bool hoveringonent(int ent, int orient);
 extern void renderentselection(const vec &o, const vec &ray, bool entmoving);
@@ -350,7 +438,8 @@ void rendereditcursor()
         od  = DIMENSION(orient),
         odc = DIM_COORD(orient);
 
-    bool hidecursor = UI::hascursor(), hovering = false;
+    bool hidecursor = UI::hascursor(),
+         hovering   = false;
     hmapsel = false;
 
     if(moving)
@@ -420,15 +509,21 @@ void rendereditcursor()
                     wdist = 0;
                     for(int i = 0; i < 3; ++i)
                     {
-                        w[i] = clamp(player->o[i], 0.0f, float(worldsize));
+                        w[i] = std::clamp(player->o[i], 0.0f, float(worldsize));
                     }
                 }
             }
             cube *c = &lookupcube(ivec(w));
-            if(gridlookup && !dragging && !moving && !havesel && hmapedit!=1) gridsize = lusize;
+            if(gridlookup && !dragging && !moving && !havesel && hmapedit!=1)
+            {
+                gridsize = lusize;
+            }
             int mag = lusize / gridsize;
             normalizelookupcube(ivec(w));
-            if(sdist == 0 || sdist > wdist) rayboxintersect(vec(lu), vec(gridsize), player->o, camdir, t=0, orient); // just getting orient
+            if(sdist == 0 || sdist > wdist)
+            {
+                rayboxintersect(vec(lu), vec(gridsize), player->o, camdir, t=0, orient); // just getting orient
+            }
             cur = lu;
             cor = ivec(vec(w).mul(2).div(gridsize));
             od = DIMENSION(orient);
@@ -438,9 +533,10 @@ void rendereditcursor()
             {
                 hmapsel = hmap::isheightmap(horient, DIMENSION(horient), false, c);
                 if(hmapsel)
+                {
                     od = DIMENSION(orient = horient);
+                }
             }
-
             if(dragging)
             {
                 updateselection();
@@ -448,7 +544,6 @@ void rendereditcursor()
                 sel.cy   = min(cor[C[d]], lastcor[C[d]]);
                 sel.cxs  = max(cor[R[d]], lastcor[R[d]]);
                 sel.cys  = max(cor[C[d]], lastcor[C[d]]);
-
                 if(!selectcorners)
                 {
                     sel.cx &= ~1;
@@ -463,7 +558,6 @@ void rendereditcursor()
                     sel.cxs -= sel.cx-1;
                     sel.cys -= sel.cy-1;
                 }
-
                 sel.cx  &= 1;
                 sel.cy  &= 1;
                 havesel = true;
@@ -478,7 +572,6 @@ void rendereditcursor()
                 sel.orient = orient;
                 d = od;
             }
-
             sel.corner = (cor[R[d]]-(lu[R[d]]*2)/gridsize)+(cor[C[d]]-(lu[C[d]]*2)/gridsize)*2;
             selchildcount = 0;
             selchildmat = -1;
@@ -486,7 +579,10 @@ void rendereditcursor()
             if(mag>=1 && selchildcount==1)
             {
                 selchildmat = c->material;
-                if(mag>1) selchildcount = -mag;
+                if(mag>1)
+                {
+                    selchildcount = -mag;
+                }
             }
         }
     }
@@ -508,9 +604,13 @@ void rendereditcursor()
     if(!moving && !hovering && !hidecursor)
     {
         if(hmapedit==1)
+        {
             gle::colorub(0, hmapsel ? 255 : 40, 0);
+        }
         else
+        {
             gle::colorub(120,120,120);
+        }
         boxs(orient, vec(lu), vec(lusize));
     }
 
@@ -531,9 +631,13 @@ void rendereditcursor()
         cs[D[d]] *= gridsize;
         boxs(sel.orient, co, cs);
         if(hmapedit==1)         // 3D selection box
+        {
             gle::colorub(0,120,0);
+        }
         else
+        {
             gle::colorub(0,0,120);
+        }
         boxs3D(vec(sel.o), vec(sel.s), sel.grid);
     }
 
@@ -561,7 +665,7 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
                 int hasmerges = c[i].ext->va->hasmerges;
                 destroyva(c[i].ext->va);
                 c[i].ext->va = NULL;
-                if(hasmerges) invalidatemerges(c[i], o, size, true);
+                if(hasmerges) invalidatemerges(c[i]);
             }
             freeoctaentities(c[i]);
             c[i].ext->tjoints = -1;
@@ -582,9 +686,11 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
 
 void commitchanges(bool force)
 {
-    if(!force && !haschanged) return;
+    if(!force && !haschanged)
+    {
+        return;
+    }
     haschanged = false;
-
     int oldlen = valist.length();
     resetclipplanes();
     entitiesinoctanodes();
@@ -601,16 +707,24 @@ void changed(const ivec &bbmin, const ivec &bbmax, bool commit)
     readychanges(bbmin, bbmax, worldroot, ivec(0, 0, 0), worldsize/2);
     haschanged = true;
 
-    if(commit) commitchanges();
+    if(commit)
+    {
+        commitchanges();
+    }
 }
 
-void changed(const block3 &sel, bool commit)
+void changed(const block3 &sel, bool commit = true)
 {
-    if(sel.s.iszero()) return;
+    if(sel.s.iszero())
+    {
+        return;
+    }
     readychanges(ivec(sel.o).sub(1), ivec(sel.s).mul(sel.grid).add(sel.o).add(1), worldroot, ivec(0, 0, 0), worldsize/2);
     haschanged = true;
-
-    if(commit) commitchanges();
+    if(commit)
+    {
+        commitchanges();
+    }
 }
 
 //////////// copy and undo /////////////
@@ -620,9 +734,10 @@ static inline void copycube(const cube &src, cube &dst)
     dst.visible = 0;
     dst.merged = 0;
     dst.ext = NULL; // src cube is responsible for va destruction
+    //recursively apply to children
     if(src.children)
     {
-        dst.children = newcubes(F_EMPTY);
+        dst.children = newcubes(faceempty);
         for(int i = 0; i < 8; ++i)
         {
             copycube(src.children[i], dst.children[i]);
@@ -646,20 +761,29 @@ void blockcopy(const block3 &s, int rgrid, block3 *b)
 block3 *blockcopy(const block3 &s, int rgrid)
 {
     int bsize = sizeof(block3)+sizeof(cube)*s.size();
-    if(bsize <= 0 || bsize > (100<<20)) return NULL;
-    block3 *b = (block3 *)new (false) uchar[bsize];
-    if(b) blockcopy(s, rgrid, b);
+    if(bsize <= 0 || bsize > (100<<20))
+    {
+        return NULL;
+    }
+    block3 *b = reinterpret_cast<block3 *>(new (false) uchar[bsize]);
+    if(b)
+    {
+        blockcopy(s, rgrid, b);
+    }
     return b;
 }
 
 void freeblock(block3 *b, bool alloced = true)
 {
     cube *q = b->c();
-    for(int i = 0; i < int(b->size()); ++i)
+    for(int i = 0; i < static_cast<int>(b->size()); ++i)
     {
         discardchildren(*q++);
     }
-    if(alloced) delete[] b;
+    if(alloced)
+    {
+        delete[] b;
+    }
 }
 
 void selgridmap(const selinfo &sel, uchar *g)                           // generates a map of the cube sizes at each grid point
@@ -669,30 +793,43 @@ void selgridmap(const selinfo &sel, uchar *g)                           // gener
 
 void freeundo(undoblock *u)
 {
-    if(!u->numents) freeblock(u->block(), false);
-    delete[] (uchar *)u;
+    if(!u->numents)
+    {
+        freeblock(u->block(), false);
+    }
+    delete[] reinterpret_cast<uchar *>(u);
 }
 
 void pasteundoblock(block3 *b, uchar *g)
 {
     cube *s = b->c();
-    LOOP_XYZ(*b, 1<<min(int(*g++), worldscale-1), pastecube(*s++, c));
+    LOOP_XYZ(*b, 1<<min(static_cast<int>(*g++), worldscale-1), pastecube(*s++, c));
 }
 
 void pasteundo(undoblock *u)
 {
-    if(u->numents) pasteundoents(u);
-    else pasteundoblock(u->block(), u->gridmap());
+    if(u->numents)
+    {
+        pasteundoents(u);
+    }
+    else
+    {
+        pasteundoblock(u->block(), u->gridmap());
+    }
 }
 
 static inline int undosize(undoblock *u)
 {
-    if(u->numents) return u->numents*sizeof(undoent);
+    if(u->numents)
+    {
+        return u->numents*sizeof(undoent);
+    }
     else
     {
         block3 *b = u->block();
         cube *q = b->c();
-        int size = b->size(), total = size;
+        int size = b->size(),
+            total = size;
         for(int j = 0; j < size; ++j)
         {
             total += familysize(*q++)*sizeof(cube);
@@ -713,7 +850,10 @@ struct undolist
     {
         u->next = NULL;
         u->prev = last;
-        if(!first) first = last = u;
+        if(!first)
+        {
+            first = last = u;
+        }
         else
         {
             last->next = u;
@@ -725,8 +865,14 @@ struct undolist
     {
         undoblock *u = first;
         first = first->next;
-        if(first) first->prev = NULL;
-        else last = NULL;
+        if(first)
+        {
+            first->prev = NULL;
+        }
+        else
+        {
+            last = NULL;
+        }
         return u;
     }
 
@@ -734,8 +880,14 @@ struct undolist
     {
         undoblock *u = last;
         last = last->prev;
-        if(last) last->next = NULL;
-        else first = NULL;
+        if(last)
+        {
+            last->next = NULL;
+        }
+        else
+        {
+            first = NULL;
+        }
         return u;
     }
 };
@@ -761,7 +913,10 @@ void pruneundos(int maxremain)                          // bound memory
     }
 }
 
-void clearundos() { pruneundos(0); }
+void clearundos()
+{
+    pruneundos(0);
+}
 
 COMMAND(clearundos, "");
 
@@ -770,9 +925,15 @@ undoblock *newundocube(const selinfo &s)
     int ssize = s.size(),
         selgridsize = ssize,
         blocksize = sizeof(block3)+ssize*sizeof(cube);
-    if(blocksize <= 0 || blocksize > (undomegs<<20)) return NULL;
-    undoblock *u = (undoblock *)new (false) uchar[sizeof(undoblock) + blocksize + selgridsize];
-    if(!u) return NULL;
+    if(blocksize <= 0 || blocksize > (undomegs<<20))
+    {
+        return NULL;
+    }
+    undoblock *u = reinterpret_cast<undoblock *>(new (false) uchar[sizeof(undoblock) + blocksize + selgridsize]);
+    if(!u)
+    {
+        return NULL;
+    }
     u->numents = 0;
     block3 *b = u->block();
     blockcopy(s, -s.grid, b);
@@ -795,12 +956,18 @@ VARP(nompedit, 0, 1, 1);
 void makeundo(selinfo &s)
 {
     undoblock *u = newundocube(s);
-    if(u) addundo(u);
+    if(u)
+    {
+        addundo(u);
+    }
 }
 
 void makeundo()                        // stores state of selected cubes before editing
 {
-    if(lastsel==sel || sel.s.iszero()) return;
+    if(lastsel==sel || sel.s.iszero())
+    {
+        return;
+    }
     lastsel=sel;
     makeundo(sel);
 }
@@ -822,16 +989,27 @@ static inline int countblock(cube *c, int n = 8)
     return r;
 }
 
-static int countblock(block3 *b) { return countblock(b->c(), b->size()); }
+static int countblock(block3 *b)
+{
+    return countblock(b->c(), b->size());
+}
 
 void swapundo(undolist &a, undolist &b, int op)
 {
-    if(noedit()) return;
-    if(a.empty()) { conoutf(Console_Warn, "nothing more to %s", op == Edit_Redo ? "redo" : "undo"); return; }
+    if(noedit())
+    {
+        return;
+    }
+    if(a.empty())
+    {
+        conoutf(Console_Warn, "nothing more to %s", op == Edit_Redo ? "redo" : "undo");
+        return;
+    }
     int ts = a.last->timestamp;
     if(multiplayer(false))
     {
-        int n = 0, ops = 0;
+        int n   = 0,
+            ops = 0;
         for(undoblock *u = a.last; u && ts==u->timestamp; u = u->prev)
         {
             ++ops;
@@ -839,7 +1017,11 @@ void swapundo(undolist &a, undolist &b, int op)
             if(ops > 10 || n > 2500)
             {
                 conoutf(Console_Warn, "undo too big for multiplayer");
-                if(nompedit) { multiplayer(); return; }
+                if(nompedit)
+                {
+                    multiplayer();
+                    return;
+                }
                 op = -1;
                 break;
             }
@@ -848,9 +1030,15 @@ void swapundo(undolist &a, undolist &b, int op)
     selinfo l = sel;
     while(!a.empty() && ts==a.last->timestamp)
     {
-        if(op >= 0) game::edittrigger(sel, op);
+        if(op >= 0)
+        {
+            game::edittrigger(sel, op);
+        }
         undoblock *u = a.poplast(), *r;
-        if(u->numents) r = copyundoents(u);
+        if(u->numents)
+        {
+            r = copyundoents(u);
+        }
         else
         {
             block3 *ub = u->block();
@@ -867,7 +1055,10 @@ void swapundo(undolist &a, undolist &b, int op)
             b.add(r);
         }
         pasteundo(u);
-        if(!u->numents) changed(*u->block(), false);
+        if(!u->numents)
+        {
+            changed(*u->block(), false);
+        }
         freeundo(u);
     }
     commitchanges();
@@ -891,6 +1082,7 @@ editinfo *localedit = NULL;
 template<class B>
 static void packcube(cube &c, B &buf)
 {
+    //recursvely apply to children
     if(c.children)
     {
         buf.put(0xFF);
@@ -917,9 +1109,9 @@ static bool packblock(block3 &b, B &buf)
         return false;
     }
     block3 hdr = b;
-    buf.put((const uchar *)&hdr, sizeof(hdr));
+    buf.put(reinterpret_cast<const uchar *>(&hdr), sizeof(hdr));
     cube *c = b.c();
-    for(int i = 0; i < int(b.size()); ++i)
+    for(int i = 0; i < static_cast<int>(b.size()); ++i)
     {
         packcube(c[i], buf);
     }
@@ -934,6 +1126,7 @@ struct vslothdr
 
 static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
 {
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -943,14 +1136,14 @@ static void packvslots(cube &c, vector<uchar> &buf, vector<ushort> &used)
     }
     else
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             ushort index = c.texture[i];
             if(vslots.inrange(index) && vslots[index]->changed && used.find(index) < 0)
             {
                 used.add(index);
                 VSlot &vs = *vslots[index];
-                vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
+                vslothdr &hdr = *reinterpret_cast<vslothdr *>(buf.pad(sizeof(vslothdr)));
                 hdr.index = index;
                 hdr.slot = vs.slot->index;
                 packvslot(buf, vs);
@@ -976,7 +1169,8 @@ static void unpackcube(cube &c, B &buf)
     int mat = buf.get();
     if(mat == 0xFF)
     {
-        c.children = newcubes(F_EMPTY);
+        c.children = newcubes(faceempty);
+        //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
             unpackcube(c.children[i], buf);
@@ -986,19 +1180,32 @@ static void unpackcube(cube &c, B &buf)
     {
         c.material = mat | (buf.get()<<8);
         buf.get(c.edges, sizeof(c.edges));
-        buf.get((uchar *)c.texture, sizeof(c.texture));
+        buf.get(reinterpret_cast<uchar *>(c.texture), sizeof(c.texture));
     }
 }
 
 template<class B>
 static bool unpackblock(block3 *&b, B &buf)
 {
-    if(b) { freeblock(b); b = NULL; }
+    if(b)
+    {
+        freeblock(b);
+        b = NULL;
+    }
     block3 hdr;
-    if(buf.get((uchar *)&hdr, sizeof(hdr)) < int(sizeof(hdr))) return false;
-    if(hdr.size() > (1<<20) || hdr.grid <= 0 || hdr.grid > (1<<12)) return false;
-    b = (block3 *)new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)];
-    if(!b) return false;
+    if(buf.get(reinterpret_cast<uchar *>(&hdr), sizeof(hdr)) < static_cast<int>(sizeof(hdr)))
+    {
+        return false;
+    }
+    if(hdr.size() > (1<<20) || hdr.grid <= 0 || hdr.grid > (1<<12))
+    {
+        return false;
+    }
+    b = reinterpret_cast<block3 *>(new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)]);
+    if(!b)
+    {
+        return false;
+    }
     *b = hdr;
     cube *c = b->c();
     memset(c, 0, b->size()*sizeof(cube));
@@ -1021,6 +1228,7 @@ static vector<vslotmap> unpackingvslots;
 
 static void unpackvslots(cube &c, ucharbuf &buf)
 {
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -1030,7 +1238,7 @@ static void unpackvslots(cube &c, ucharbuf &buf)
     }
     else
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //one for each face
         {
             ushort tex = c.texture[i];
             for(int j = 0; j < unpackingvslots.length(); j++)
@@ -1047,14 +1255,23 @@ static void unpackvslots(cube &c, ucharbuf &buf)
 
 static void unpackvslots(block3 &b, ucharbuf &buf)
 {
-    while(buf.remaining() >= int(sizeof(vslothdr)))
+    while(buf.remaining() >= static_cast<int>(sizeof(vslothdr)))
     {
         vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
-        if(!hdr.index) break;
+        if(!hdr.index)
+        {
+            break;
+        }
         VSlot &vs = *lookupslot(hdr.slot, false).variants;
         VSlot ds;
-        if(!unpackvslot(buf, ds, false)) break;
-        if(vs.index < 0 || vs.index == DEFAULT_SKY) continue;
+        if(!unpackvslot(buf, ds, false))
+        {
+            break;
+        }
+        if(vs.index < 0 || vs.index == Default_Sky)
+        {
+            continue;
+        }
         VSlot *edit = editvslot(vs, ds);
         unpackingvslots.add(vslotmap(hdr.index, edit ? edit : &vs));
     }
@@ -1112,11 +1329,21 @@ bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 
 bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
 {
-    if(e && e->copy) { freeblock(e->copy); e->copy = NULL; }
+    if(e && e->copy)
+    {
+        freeblock(e->copy);
+        e->copy = NULL;
+    }
     uchar *outbuf = NULL;
-    if(!uncompresseditinfo(inbuf, inlen, outbuf, outlen)) return false;
+    if(!uncompresseditinfo(inbuf, inlen, outbuf, outlen))
+    {
+        return false;
+    }
     ucharbuf buf(outbuf, outlen);
-    if(!e) e = editinfos.add(new editinfo);
+    if(!e)
+    {
+        e = editinfos.add(new editinfo);
+    }
     if(!unpackblock(e->copy, buf))
     {
         delete[] outbuf;
@@ -1129,9 +1356,15 @@ bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
 
 void freeeditinfo(editinfo *&e)
 {
-    if(!e) return;
+    if(!e)
+    {
+        return;
+    }
     editinfos.removeobj(e);
-    if(e->copy) freeblock(e->copy);
+    if(e->copy)
+    {
+        freeblock(e->copy);
+    }
     delete e;
     e = NULL;
 }
@@ -1175,15 +1408,15 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
     int numents = *(const ushort *)buf.pad(2);
     if(numents)
     {
-        if(buf.remaining() < numents*int(2 + sizeof(entity)))
+        if(buf.remaining() < numents*static_cast<int>(2 + sizeof(entity)))
         {
             delete[] outbuf;
             return false;
         }
         for(int i = 0; i < numents; ++i)
         {
-            int idx = *(const ushort *)buf.pad(2);
-            entity &e = *(entity *)buf.pad(sizeof(entity));
+            int idx = *reinterpret_cast<const ushort *>(buf.pad(2));
+            entity &e = *reinterpret_cast<entity *>(buf.pad(sizeof(entity)));
             pasteundoent(idx, e);
         }
     }
@@ -1211,9 +1444,18 @@ bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen)
 {
     switch(op)
     {
-        case Edit_Undo: return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
-        case Edit_Redo: return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
-        default: return false;
+        case Edit_Undo:
+        {
+            return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
+        }
+        case Edit_Redo:
+        {
+            return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
+        }
+        default:
+        {
+            return false;
+        }
     }
 }
 
@@ -1230,12 +1472,27 @@ struct prefab : editinfo
     int numtris, numverts;
 
     prefab() : name(NULL), ebo(0), vbo(0), numtris(0), numverts(0) {}
-    ~prefab() { DELETEA(name); if(copy) freeblock(copy); }
+    ~prefab()
+    {
+        DELETEA(name);
+        if(copy)
+        {
+            freeblock(copy);
+        }
+    }
 
     void cleanup()
     {
-        if(ebo) { glDeleteBuffers_(1, &ebo); ebo = 0; }
-        if(vbo) { glDeleteBuffers_(1, &vbo); vbo = 0; }
+        if(ebo)
+        {
+            glDeleteBuffers_(1, &ebo);
+            ebo = 0;
+        }
+        if(vbo)
+        {
+            glDeleteBuffers_(1, &vbo);
+            vbo = 0;
+        }
         numtris = numverts = 0;
     }
 };
@@ -1261,26 +1518,41 @@ COMMAND(delprefab, "s");
 
 void saveprefab(char *name)
 {
-    if(!name[0] || noedit(true) || (nompedit && multiplayer())) return;
+    if(!name[0] || noedit(true) || (nompedit && multiplayer()))
+    {
+        return;
+    }
     prefab *b = prefabs.access(name);
     if(!b)
     {
         b = &prefabs[name];
         b->name = newstring(name);
     }
-    if(b->copy) freeblock(b->copy);
+    if(b->copy)
+    {
+        freeblock(b->copy);
+    }
     PROTECT_SEL(b->copy = blockcopy(block3(sel), sel.grid));
     changed(sel);
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "wb");
-    if(!f) { conoutf(Console_Error, "could not write prefab to %s", filename); return; }
+    if(!f)
+    {
+        conoutf(Console_Error, "could not write prefab to %s", filename);
+        return;
+    }
     prefabheader hdr;
     memcpy(hdr.magic, "OEBR", 4);
     hdr.version = 0;
     f->write(&hdr, sizeof(hdr));
     streambuf<uchar> s(f);
-    if(!packblock(*b->copy, s)) { delete f; conoutf(Console_Error, "could not pack prefab %s", filename); return; }
+    if(!packblock(*b->copy, s))
+    {
+        delete f;
+        conoutf(Console_Error, "could not pack prefab %s", filename);
+        return;
+    }
     delete f;
     conoutf("wrote prefab file %s", filename);
 }
@@ -1425,6 +1697,7 @@ struct prefabmesh
 
 static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
 {
+    //recursively apply to children
     if(c.children)
     {
         neighborstack[++neighbordepth] = c.children;
@@ -1438,7 +1711,7 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
     else if(!IS_EMPTY(c))
     {
         int vis;
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             if((vis = visibletris(c, i, co, size)))
             {
@@ -1500,6 +1773,7 @@ void genprefabmesh(prefab &p)
 
     prefabmesh r;
     neighborstack[++neighbordepth] = worldroot;
+    //recursively apply to children
     for(int i = 0; i < 8; ++i)
     {
         genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
@@ -1523,7 +1797,10 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     if(!p.numtris)
     {
         genprefabmesh(p);
-        if(!p.numtris) return;
+        if(!p.numtris)
+        {
+            return;
+        }
     }
 
     block3 &b = *p.copy;
@@ -1531,9 +1808,18 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     matrix4 m;
     m.identity();
     m.settranslation(o);
-    if(yaw) m.rotate_around_z(yaw*RAD);
-    if(pitch) m.rotate_around_x(pitch*RAD);
-    if(roll) m.rotate_around_y(-roll*RAD);
+    if(yaw)
+    {
+        m.rotate_around_z(yaw*RAD);
+    }
+    if(pitch)
+    {
+        m.rotate_around_x(pitch*RAD);
+    }
+    if(roll)
+    {
+        m.rotate_around_y(-roll*RAD);
+    }
     matrix3 w(m);
     if(size > 0 && size != 1) m.scale(size);
     m.translate(vec(b.s).mul(-b.grid*0.5f));
@@ -1575,7 +1861,10 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
 void renderprefab(const char *name, const vec &o, float yaw, float pitch, float roll, float size, const vec &color)
 {
     prefab *p = loadprefab(name, false);
-    if(p) renderprefab(*p, o, yaw, pitch, roll, size, color);
+    if(p)
+    {
+        renderprefab(*p, o, yaw, pitch, roll, size, color);
+    }
 }
 
 void previewprefab(const char *name, const vec &color)
@@ -1716,7 +2005,7 @@ namespace hmap
         *x += MAXBRUSH2 - brushx + 1; // +1 for automatic padding
         *y += MAXBRUSH2 - brushy + 1;
         if(*x<0 || *y<0 || *x>=MAXBRUSH || *y>=MAXBRUSH) return;
-        brush[*x][*y] = clamp(*v, 0, 8);
+        brush[*x][*y] = std::clamp(*v, 0, 8);
         paintbrush = paintbrush || (brush[*x][*y] > 0);
         brushmaxx = min(MAXBRUSH-1, max(brushmaxx, *x+1));
         brushmaxy = min(MAXBRUSH-1, max(brushmaxy, *y+1));
@@ -1822,7 +2111,7 @@ namespace hmap
 
         uint face = getface(c[1], d);
         if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0]))) { flags[x][y] |= NOTHMAP; return; }
-        if(c[1]->faces[R[d]] == F_SOLID)   // was single
+        if(c[1]->faces[R[d]] == facesolid)   // was single
             face += 0x08080808;
         else                               // was pair
             face += c[2] ? getface(c[2], d) : 0x08080808;
@@ -2048,8 +2337,8 @@ namespace hmap
         memset(flags, 0, sizeof flags);
 
         selecting = true;
-        select(clamp(MAXBRUSH2-cx, bmx, bnx),
-               clamp(MAXBRUSH2-cy, bmy, bny),
+        select(std::clamp(MAXBRUSH2-cx, bmx, bnx),
+               std::clamp(MAXBRUSH2-cy, bmy, bny),
                dc ? gz : hws - gz);
         selecting = false;
         if(paintme)
@@ -2115,6 +2404,28 @@ static ushort getmaterial(cube &c)
 
 VAR(invalidcubeguard, 0, 1, 1);
 
+/*mpplacecube: places a cube at the location passed
+ * Arguments:
+ *  sel: selection info object containing objects to be filled
+ *  tex: texture to cover the cube with
+ *  local: toggles the engine sending out packets to others, or to not broadcast
+ *         due to having recieved the command from another client
+ * Returns:
+ *  void
+ */
+void mpplacecube(selinfo &sel, int tex, bool local)
+{
+    if(local)
+    {
+        game::edittrigger(sel, Edit_AddCube);
+    }
+    LOOP_SEL_XYZ(
+        discardchildren(c, true);
+        SOLID_FACES(c);
+    );
+}
+
+
 void mpeditface(int dir, int mode, selinfo &sel, bool local)
 {
     if(mode==1 && (sel.cx || sel.cy || sel.cxs&1 || sel.cys&1)) mode = 0;
@@ -2146,9 +2457,9 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
             {
                 SOLID_FACES(c);
                 cube &o = blockcube(x, y, 1, sel, -sel.grid);
-                for(int i = 0; i < 6; ++i)
+                for(int i = 0; i < 6; ++i) //for each face
                 {
-                    c.texture[i] = o.children ? DEFAULT_GEOM : o.texture[i];
+                    c.texture[i] = o.children ? Default_Geom : o.texture[i];
                 }
             }
             else
@@ -2255,6 +2566,15 @@ void pushsel(int *dir)
     }
 }
 
+/*mpdelcube: deletes a cube by discarding cubes insel's children and emptying faces
+ * Arguments:
+ *  sel:   the selection which is to be deleted
+ *  local: whether to send a network message or not (nonlocal cube deletions don't
+ *             send messages, as this would cause an infinite loop)
+ * Returns:
+ *  void
+ */
+
 void mpdelcube(selinfo &sel, bool local)
 {
     if(local)
@@ -2308,7 +2628,7 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
         }
     }
     VSlot &vs = lookupvslot(index, false);
-    if(vs.index < 0 || vs.index == DEFAULT_SKY)
+    if(vs.index < 0 || vs.index == Default_Sky)
     {
         return NULL;
     }
@@ -2333,6 +2653,7 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 
 static void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep, VSlot *&findedit)
 {
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -2344,7 +2665,7 @@ static void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &
     static VSlot ms;
     if(orient<0)
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             VSlot *edit = remapvslot(c.texture[i], delta, ds);
             if(edit)
@@ -2387,7 +2708,7 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
 {
     if(orient<0)
     {
-        for(int i = 0; i < 6; ++i)
+        for(int i = 0; i < 6; ++i) //for each face
         {
             c.texture[i] = tex;
         }
@@ -2408,6 +2729,7 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
         }
         c.texture[i] = tex;
     }
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -2484,8 +2806,8 @@ void vrotate(int *n)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_ROTATION;
-    ds.rotation = usevdelta ? *n : clamp(*n, 0, 7);
+    ds.changed = 1 << VSlot_Rotation;
+    ds.rotation = usevdelta ? *n : std::clamp(*n, 0, 7);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vrotate, "i");
@@ -2497,7 +2819,7 @@ void vangle(float *a)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_ANGLE;
+    ds.changed = 1 << VSlot_Angle;
     ds.angle = vec(*a, sinf(RAD**a), cosf(RAD**a));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2510,7 +2832,7 @@ void voffset(int *x, int *y)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_OFFSET;
+    ds.changed = 1 << VSlot_Offset;
     ds.offset = usevdelta ? ivec2(*x, *y) : ivec2(*x, *y).max(0);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2523,7 +2845,7 @@ void vscroll(float *s, float *t)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_SCROLL;
+    ds.changed = 1 << VSlot_Scroll;
     ds.scroll = vec2(*s/1000.0f, *t/1000.0f);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
@@ -2536,8 +2858,8 @@ void vscale(float *scale)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_SCALE;
-    ds.scale = *scale <= 0 ? 1 : (usevdelta ? *scale : clamp(*scale, 1/8.0f, 8.0f));
+    ds.changed = 1 << VSlot_Scale;
+    ds.scale = *scale <= 0 ? 1 : (usevdelta ? *scale : std::clamp(*scale, 1/8.0f, 8.0f));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vscale, "f");
@@ -2549,9 +2871,9 @@ void valpha(float *front, float *back)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_ALPHA;
-    ds.alphafront = clamp(*front, 0.0f, 1.0f);
-    ds.alphaback = clamp(*back, 0.0f, 1.0f);
+    ds.changed = 1 << VSlot_Alpha;
+    ds.alphafront = std::clamp(*front, 0.0f, 1.0f);
+    ds.alphaback = std::clamp(*back, 0.0f, 1.0f);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(valpha, "ff");
@@ -2563,8 +2885,8 @@ void vcolor(float *r, float *g, float *b)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_COLOR;
-    ds.colorscale = vec(clamp(*r, 0.0f, 2.0f), clamp(*g, 0.0f, 2.0f), clamp(*b, 0.0f, 2.0f));
+    ds.changed = 1 << VSlot_Color;
+    ds.colorscale = vec(std::clamp(*r, 0.0f, 2.0f), std::clamp(*g, 0.0f, 2.0f), std::clamp(*b, 0.0f, 2.0f));
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
 }
 COMMAND(vcolor, "fff");
@@ -2576,11 +2898,11 @@ void vrefract(float *k, float *r, float *g, float *b)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_REFRACT;
-    ds.refractscale = clamp(*k, 0.0f, 1.0f);
+    ds.changed = 1 << VSlot_Refract;
+    ds.refractscale = std::clamp(*k, 0.0f, 1.0f);
     if(ds.refractscale > 0 && (*r > 0 || *g > 0 || *b > 0))
     {
-        ds.refractcolor = vec(clamp(*r, 0.0f, 1.0f), clamp(*g, 0.0f, 1.0f), clamp(*b, 0.0f, 1.0f));
+        ds.refractcolor = vec(std::clamp(*r, 0.0f, 1.0f), std::clamp(*g, 0.0f, 1.0f), std::clamp(*b, 0.0f, 1.0f));
     }
     else
     {
@@ -2609,7 +2931,7 @@ void vshaderparam(const char *name, float *x, float *y, float *z, float *w)
         return;
     }
     VSlot ds;
-    ds.changed = 1<<VSLOT_SHPARAM;
+    ds.changed = 1 << VSlot_ShParam;
     if(name[0])
     {
         SlotShaderParam p = { getshaderparamname(name), -1, 0, {*x, *y, *z, *w} };
@@ -2646,7 +2968,7 @@ static int unpacktex(int &tex, ucharbuf &buf, bool insert = true)
         return false;
     }
     VSlot &vs = *lookupslot(tex & 0xFFFF, false).variants;
-    if(vs.index < 0 || vs.index == DEFAULT_SKY)
+    if(vs.index < 0 || vs.index == Default_Sky)
     {
         return false;
     }
@@ -2778,7 +3100,7 @@ void edittex_(int *dir)
     {
         tofronttex();
     }
-    curtexindex = clamp(curtexindex<0 ? 0 : curtexindex+*dir, 0, texmru.length()-1);
+    curtexindex = std::clamp(curtexindex<0 ? 0 : curtexindex+*dir, 0, texmru.length()-1);
     edittex(texmru[curtexindex], false);
 }
 
@@ -2882,13 +3204,14 @@ ICOMMAND(texloaded, "i", (int *tex), intret(slots.inrange(*tex) && slots[*tex]->
 
 void replacetexcube(cube &c, int oldtex, int newtex)
 {
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 6; ++i) //for each face
     {
         if(c.texture[i] == oldtex)
         {
             c.texture[i] = newtex;
         }
     }
+    //recursively apply to children
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -2908,6 +3231,7 @@ void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local)
     {
         LOOP_SEL_XYZ(replacetexcube(c, oldtex, newtex));
     }
+    //recursively apply to children
     else
     {
         for(int i = 0; i < 8; ++i)
@@ -2933,6 +3257,12 @@ bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &bu
     return true;
 }
 
+/*replace: replaces one texture slot with the most recently queued one
+ * Arguments:
+ *  insel: toggles whether to apply to the whole map or just the part in selection
+ * Returns:
+ *  void
+ */
 void replace(bool insel)
 {
     if(noedit())
@@ -2953,10 +3283,25 @@ ICOMMAND(replace, "", (), replace(false));
 ICOMMAND(replacesel, "", (), replace(true));
 
 ////////// flip and rotate ///////////////
-static inline uint dflip(uint face) { return face==F_EMPTY ? face : 0x88888888 - (((face&0xF0F0F0F0)>>4) | ((face&0x0F0F0F0F)<<4)); }
-static inline uint cflip(uint face) { return ((face&0xFF00FF00)>>8) | ((face&0x00FF00FF)<<8); }
-static inline uint rflip(uint face) { return ((face&0xFFFF0000)>>16)| ((face&0x0000FFFF)<<16); }
-static inline uint mflip(uint face) { return (face&0xFF0000FF) | ((face&0x00FF0000)>>8) | ((face&0x0000FF00)<<8); }
+static inline uint dflip(uint face)
+{
+    return face == faceempty ? face : 0x88888888 - (((face & 0xF0F0F0F0) >> 4) | ((face & 0x0F0F0F0F) << 4));
+}
+
+static inline uint cflip(uint face)
+{
+    return ((face&0xFF00FF00)>>8) | ((face&0x00FF00FF)<<8);
+}
+
+static inline uint rflip(uint face)
+{
+    return ((face&0xFFFF0000)>>16)| ((face&0x0000FFFF)<<16);
+}
+
+static inline uint mflip(uint face)
+{
+    return (face&0xFF0000FF) | ((face&0x00FF0000)>>8) | ((face&0x0000FF00)<<8);
+}
 
 void flipcube(cube &c, int d)
 {
@@ -2966,6 +3311,7 @@ void flipcube(cube &c, int d)
     c.faces[R[d]] = rflip(c.faces[R[d]]);
     if(c.children)
     {
+        //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
             if(i&OCTA_DIM(d))
@@ -2980,22 +3326,37 @@ void flipcube(cube &c, int d)
     }
 }
 
+//reassign a quartet of cubes by rotating them 90 deg
 static inline void rotatequad(cube &a, cube &b, cube &c, cube &d)
 {
-    cube t = a; a = b; b = c; c = d; d = t;
+    cube t = a;
+         a = b;
+         b = c;
+         c = d;
+         d = t;
 }
 
-void rotatecube(cube &c, int d)   // rotates cube clockwise. see pics in cvs for help.
+/*rotatecube: rotates a cube by a given number of 90 degree increments
+ * Arguments:
+ *  c: the cube to rotate
+ *  d: the number of 90 degree clockwise increments to rotate by
+ * Returns:
+ *  void
+ *
+ * Note that the orientation of rotation is clockwise about the axis normal to
+ * the current selection's selected face (using the left-hand rule)
+ */
+void rotatecube(cube &c, int d)
 {
     c.faces[D[d]] = cflip(mflip(c.faces[D[d]]));
     c.faces[C[d]] = dflip(mflip(c.faces[C[d]]));
     c.faces[R[d]] = rflip(mflip(c.faces[R[d]]));
     swap(c.faces[R[d]], c.faces[C[d]]);
-
+    //reassign textures
     swap(c.texture[2*R[d]], c.texture[2*C[d]+1]);
     swap(c.texture[2*C[d]], c.texture[2*R[d]+1]);
     swap(c.texture[2*C[d]], c.texture[2*C[d]+1]);
-
+    //move child members
     if(c.children)
     {
         int row = OCTA_DIM(R[d]);
@@ -3007,6 +3368,7 @@ void rotatecube(cube &c, int d)   // rotates cube clockwise. see pics in cvs for
             c.children[i+col],
             c.children[i+col+row]
         );
+        //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
             rotatecube(c.children[i], d);
@@ -3014,6 +3376,14 @@ void rotatecube(cube &c, int d)   // rotates cube clockwise. see pics in cvs for
     }
 }
 
+/*mpflip: flips a selection across a plane defined by the selection's face
+ * Arguments:
+ *  sel: the selection to be fliped
+ *  local: whether to send a network message, true if created locally, false if
+ *         from another client
+ * Returns:
+ *  void
+ */
 void mpflip(selinfo &sel, bool local)
 {
     if(local)
@@ -3110,9 +3480,18 @@ static const struct { const char *name; int filter; } editmatfilters[] =
     { "solid", EditMatFlag_Solid },
     { "notsolid", EditMatFlag_NotSolid }
 };
-
+/*setmat: sets a cube's materials, given a material & filter to use
+ * Arguments:
+ *  c: the cube object to use
+ *  mat: material index to apply
+ *  matmask: material mask
+ *  filtermat: if nonzero, determines what existing mats to apply to
+ *  filtermask: filter material mask
+ *  filtergeom: type of geometry inside the cube (empty, solid, partially solid)
+ */
 void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)
 {
+    //recursively sets material for all child nodes
     if(c.children)
     {
         for(int i = 0; i < 8; ++i)
@@ -3169,6 +3548,16 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
     }
 }
 
+/*mpeditmat: selectively fills a selection with selected materials
+ * Arguments:
+ *  matid: material id to fill
+ *  filter: if nonzero, determines what existing mats to apply to
+ *  sel: selection of cubes to fill
+ *  local: whether to send a network message, true if created locally, false if
+ *         from another client
+ * Returns:
+ *  void
+ */
 void mpeditmat(int matid, int filter, selinfo &sel, bool local)
 {
     if(local)
@@ -3176,7 +3565,9 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
         game::edittrigger(sel, Edit_Mat, matid, filter);
     }
 
-    ushort filtermat = 0, filtermask = 0, matmask;
+    ushort filtermat = 0,
+           filtermask = 0,
+           matmask;
     int filtergeom = 0;
     if(filter >= 0)
     {
@@ -3204,6 +3595,13 @@ void mpeditmat(int matid, int filter, selinfo &sel, bool local)
     LOOP_SEL_XYZ(setmat(c, matid, matmask, filtermat, filtermask, filtergeom));
 }
 
+/*editmat: takes the globally defined selection and fills it with a material
+ * Arguments:
+ *  name: the name of the material (water, alpha, etc.)
+ *  filtername: the name of the existing material to apply to
+ * Returns:
+ *  void
+ */
 void editmat(char *name, char *filtername)
 {
     if(noedit())
@@ -3213,7 +3611,7 @@ void editmat(char *name, char *filtername)
     int filter = -1;
     if(filtername[0])
     {
-        for(int i = 0; i < int(sizeof(editmatfilters)/sizeof(editmatfilters[0])); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(editmatfilters)/sizeof(editmatfilters[0])); ++i)
         {
             if(!strcmp(editmatfilters[i].name, filtername))
             {
@@ -3272,19 +3670,21 @@ void rendertexturepanel(int w, int h)
                 Slot &slot = *vslot.slot;
                 Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t,
                         *glowtex = NULL;
-                if(slot.texmask&(1<<TEX_GLOW))
+                if(slot.texmask&(1 << Tex_Glow))
                 {
                     for(int j = 0; j < slot.sts.length(); j++)
                     {
-                        if(slot.sts[j].type==TEX_GLOW)
+                        if(slot.sts[j].type == Tex_Glow)
                         {
                             glowtex = slot.sts[j].t;
                             break;
                         }
                     }
                 }
-                float sx = min(1.0f, tex->xs/(float)tex->ys), sy = min(1.0f, tex->ys/(float)tex->xs);
-                int x = w*1800/h-s-50, r = s;
+                float sx = min(1.0f, tex->xs/static_cast<float>(tex->ys)),
+                      sy = min(1.0f, tex->ys/static_cast<float>(tex->xs));
+                int x = w*1800/h-s-50,
+                    r = s;
                 vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
                 float xoff = vslot.offset.x, yoff = vslot.offset.y;
                 if(vslot.rotation)
@@ -3358,7 +3758,7 @@ void rendertexturepanel(int w, int h)
         resethudshader();
     }
 }
-
+//defines editing readonly variables, useful for the HUD
 #define EDITSTAT(name, type, val) \
     ICOMMAND(editstat##name, "", (), \
     { \

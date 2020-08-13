@@ -613,7 +613,7 @@ struct stainrenderer
             #undef GENFACEVERT
             }
         }
-        else if(cu.texture[orient] == DEFAULT_SKY)
+        else if(cu.texture[orient] == Default_Sky)
         {
             return;
         }

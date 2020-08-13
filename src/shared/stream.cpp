@@ -26,13 +26,13 @@ extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 
 extern const uchar cubectype[256] =
 {
-    CUBECTYPE(CT_SPACE,
-              CT_PRINT,
-              CT_PRINT|CT_DIGIT,
-              CT_PRINT|CT_ALPHA|CT_LOWER,
-              CT_PRINT|CT_ALPHA|CT_UPPER,
-              CT_PRINT|CT_UNICODE|CT_ALPHA|CT_LOWER,
-              CT_PRINT|CT_UNICODE|CT_ALPHA|CT_UPPER)
+    CUBECTYPE(CubeType_Space,
+              CubeType_Print,
+              CubeType_Print | CubeType_Digit,
+              CubeType_Print | CubeType_Alpha | CubeType_Lower,
+              CubeType_Print | CubeType_Alpha | CubeType_Upper,
+              CubeType_Print | CubeType_Unicode | CubeType_Alpha | CubeType_Lower,
+              CubeType_Print | CubeType_Unicode | CubeType_Alpha | CubeType_Upper)
 };
 extern const int cube2unichars[256] =
 {
@@ -157,71 +157,201 @@ decode:
                     {
                         if(c >= 0xFC)
                         {
-                            if(c >= 0xFE) continue;
-                            uni = c&1; if(srcend - src < 5) break;
-                            c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+                            if(c >= 0xFE)
+                            {
+                                continue;
+                            }
+                            uni = c&1;
+                            if(srcend - src < 5)
+                            {
+                                break;
+                            }
+                            c = *src;
+                            if((c&0xC0) != 0x80)
+                            {
+                                continue;
+                            }
+                            src++;
+                            uni = (uni<<6) | (c&0x3F);
                         }
-                        else { uni = c&3; if(srcend - src < 4) break; }
-                        c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+                        else
+                        {
+                            uni = c&3;
+                            if(srcend - src < 4)
+                            {
+                                break;
+                            }
+                        }
+                        c = *src;
+                        if((c&0xC0) != 0x80)
+                        {
+                            continue;
+                        }
+                        src++;
+                        uni = (uni<<6) | (c&0x3F);
                     }
-                    else { uni = c&7; if(srcend - src < 3) break; }
-                    c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+                    else
+                    {
+                        uni = c&7;
+                        if(srcend - src < 3)
+                        {
+                            break;
+                        }
+                    }
+                    c = *src;
+                    if((c&0xC0) != 0x80)
+                    {
+                        continue;
+                    }
+                    src++;
+                    uni = (uni<<6) | (c&0x3F);
                 }
-                else { uni = c&0xF; if(srcend - src < 2) break; }
-                c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+                else
+                {
+                    uni = c&0xF;
+                    if(srcend - src < 2)
+                    {
+                        break;
+                    }
+                }
+                c = *src;
+                if((c&0xC0) != 0x80)
+                {
+                    continue;
+                }
+                src++;
+                uni = (uni<<6) | (c&0x3F);
             }
-            else { uni = c&0x1F; if(srcend - src < 1) break; }
-            c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+            else
+            {
+                uni = c&0x1F;
+                if(srcend - src < 1)
+                {
+                    break;
+                }
+            }
+            c = *src;
+            {
+                if((c&0xC0) != 0x80)
+                {
+                    continue;
+                }
+                src++;
+                uni = (uni<<6) | (c&0x3F);
+            }
             c = uni2cube(uni);
-            if(!c) continue;
+            if(!c)
+            {
+                continue;
+            }
             *dst++ = c;
         }
     }
-    if(carry) *carry += src - srcbuf;
+    if(carry)
+    {
+        *carry += src - srcbuf;
+    }
     return dst - dstbuf;
 }
 
 size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry)
 {
-    uchar *dst = dstbuf, *dstend = &dstbuf[dstlen];
-    const uchar *src = srcbuf, *srcend = &srcbuf[srclen];
-    if(src < srcend && dst < dstend) do
+    uchar *dst = dstbuf,
+          *dstend = &dstbuf[dstlen];
+    const uchar *src = srcbuf,
+                *srcend = &srcbuf[srclen];
+    if(src < srcend && dst < dstend)
     {
-        int uni = cube2uni(*src);
-        if(uni <= 0x7F)
+        do
         {
-            if(dst >= dstend) goto done;
-            const uchar *end = min(srcend, &src[dstend-dst]);
-            do
+            int uni = cube2uni(*src);
+            if(uni <= 0x7F)
             {
-                if(uni == '\f')
+                if(dst >= dstend)
                 {
-                    if(++src >= srcend) goto done;
-                    goto uni1;
+                    goto done;
                 }
-                *dst++ = uni;
-                if(++src >= end) goto done;
-                uni = cube2uni(*src);
+                const uchar *end = min(srcend, &src[dstend-dst]);
+                do
+                {
+                    if(uni == '\f')
+                    {
+                        if(++src >= srcend)
+                        {
+                            goto done;
+                        }
+                        goto uni1;
+                    }
+                    *dst++ = uni;
+                    if(++src >= end)
+                    {
+                        goto done;
+                    }
+                    uni = cube2uni(*src);
+                } while(uni <= 0x7F);
             }
-            while(uni <= 0x7F);
-        }
-        if(uni <= 0x7FF) { if(dst + 2 > dstend) goto done; *dst++ = 0xC0 | (uni>>6); goto uni2; }
-        else if(uni <= 0xFFFF) { if(dst + 3 > dstend) goto done; *dst++ = 0xE0 | (uni>>12); goto uni3; }
-        else if(uni <= 0x1FFFFF) { if(dst + 4 > dstend) goto done; *dst++ = 0xF0 | (uni>>18); goto uni4; }
-        else if(uni <= 0x3FFFFFF) { if(dst + 5 > dstend) goto done; *dst++ = 0xF8 | (uni>>24); goto uni5; }
-        else if(uni <= 0x7FFFFFFF) { if(dst + 6 > dstend) goto done; *dst++ = 0xFC | (uni>>30); goto uni6; }
-        else goto uni1;
-    uni6: *dst++ = 0x80 | ((uni>>24)&0x3F);
-    uni5: *dst++ = 0x80 | ((uni>>18)&0x3F);
-    uni4: *dst++ = 0x80 | ((uni>>12)&0x3F);
-    uni3: *dst++ = 0x80 | ((uni>>6)&0x3F);
-    uni2: *dst++ = 0x80 | (uni&0x3F);
-    uni1:;
+            if(uni <= 0x7FF)
+            {
+                if(dst + 2 > dstend)
+                {
+                    goto done;
+                }
+                *dst++ = 0xC0 | (uni>>6);
+                goto uni2;
+            }
+            else if(uni <= 0xFFFF)
+            {
+                if(dst + 3 > dstend)
+                {
+                    goto done;
+                }
+                *dst++ = 0xE0 | (uni>>12);
+                goto uni3;
+            }
+            else if(uni <= 0x1FFFFF)
+            {
+                if(dst + 4 > dstend)
+                {
+                    goto done;
+                }
+                *dst++ = 0xF0 | (uni>>18);
+                goto uni4;
+            }
+            else if(uni <= 0x3FFFFFF)
+            {
+                if(dst + 5 > dstend)
+                {
+                    goto done;
+                }
+                *dst++ = 0xF8 | (uni>>24);
+                goto uni5;
+            }
+            else if(uni <= 0x7FFFFFFF)
+            {
+                if(dst + 6 > dstend)
+                {
+                    goto done;
+                }
+                *dst++ = 0xFC | (uni>>30);
+                goto uni6;
+            }
+            else
+            {
+                goto uni1;
+            }
+        uni6: *dst++ = 0x80 | ((uni>>24)&0x3F);
+        uni5: *dst++ = 0x80 | ((uni>>18)&0x3F);
+        uni4: *dst++ = 0x80 | ((uni>>12)&0x3F);
+        uni3: *dst++ = 0x80 | ((uni>>6)&0x3F);
+        uni2: *dst++ = 0x80 | (uni&0x3F);
+        uni1:;
+        } while(++src < srcend);
     }
-    while(++src < srcend);
-
 done:
-    if(carry) *carry += src - srcbuf;
+    if(carry)
+    {
+        *carry += src - srcbuf;
+    }
     return dst - dstbuf;
 }
 
@@ -259,13 +389,19 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
             file = end+1;
         }
     }
-    if(cmd) concatstring(tmp, cmd);
+    if(cmd)
+    {
+        concatstring(tmp, cmd);
+    }
     if(dir)
     {
         DEF_FORMAT_STRING(pname, "%s/%s", dir, file);
         concatstring(tmp, pname);
     }
-    else concatstring(tmp, file);
+    else
+    {
+        concatstring(tmp, file);
+    }
     return tmp;
 }
 
@@ -275,19 +411,31 @@ char *path(char *s)
     for(char *curpart = s;;)
     {
         char *endpart = strchr(curpart, '&');
-        if(endpart) *endpart = '\0';
+        if(endpart)
+        {
+            *endpart = '\0';
+        }
         if(curpart[0]=='<')
         {
             char *file = strrchr(curpart, '>');
-            if(!file) return s;
+            if(!file)
+            {
+                return s;
+            }
             curpart = file+1;
         }
-        for(char *t = curpart; (t = strpbrk(t, "/\\")); *t++ = PATHDIV);
+        for(char *t = curpart; (t = strpbrk(t, "/\\")); *t++ = PATHDIV)
+        {
+            //(empty body)
+        }
         for(char *prevdir = NULL, *curdir = curpart;;)
         {
             prevdir = curdir[0]==PATHDIV ? curdir+1 : curdir;
             curdir = strchr(prevdir, PATHDIV);
-            if(!curdir) break;
+            if(!curdir)
+            {
+                break;
+            }
             if(prevdir+1==curdir && prevdir[0]=='.')
             {
                 memmove(prevdir, curdir+1, strlen(curdir+1)+1);
@@ -295,12 +443,18 @@ char *path(char *s)
             }
             else if(curdir[1]=='.' && curdir[2]=='.' && curdir[3]==PATHDIV)
             {
-                if(prevdir+2==curdir && prevdir[0]=='.' && prevdir[1]=='.') continue;
+                if(prevdir+2==curdir && prevdir[0]=='.' && prevdir[1]=='.')
+                {
+                    continue;
+                }
                 memmove(prevdir, curdir+4, strlen(curdir+4)+1);
                 if(prevdir-2 >= curpart && prevdir[-1]==PATHDIV)
                 {
                     prevdir -= 2;
-                    while(prevdir-1 >= curpart && prevdir[-1] != PATHDIV) --prevdir;
+                    while(prevdir-1 >= curpart && prevdir[-1] != PATHDIV)
+                    {
+                        --prevdir;
+                    }
                 }
                 curdir = prevdir;
             }
@@ -310,7 +464,10 @@ char *path(char *s)
             *endpart = '&';
             curpart = endpart+1;
         }
-        else break;
+        else
+        {
+            break;
+        }
     }
     return s;
 }
@@ -326,7 +483,10 @@ char *path(const char *s, bool)
 const char *parentdir(const char *directory)
 {
     const char *p = directory + strlen(directory);
-    while(p > directory && *p != '/' && *p != '\\') p--;
+    while(p > directory && *p != '/' && *p != '\\')
+    {
+        p--;
+    }
     static string parent;
     size_t len = p-directory+1;
     copystring(parent, directory, len);
@@ -336,11 +496,20 @@ const char *parentdir(const char *directory)
 bool fileexists(const char *path, const char *mode)
 {
     bool exists = true;
-    if(mode[0]=='w' || mode[0]=='a') path = parentdir(path);
+    if(mode[0]=='w' || mode[0]=='a')
+    {
+        path = parentdir(path);
+    }
 #ifdef WIN32
-    if(GetFileAttributes(path[0] ? path : ".\\") == INVALID_FILE_ATTRIBUTES) exists = false;
+    if(GetFileAttributes(path[0] ? path : ".\\") == INVALID_FILE_ATTRIBUTES)
+    {
+        exists = false;
+    }
 #else
-    if(access(path[0] ? path : ".", mode[0]=='w' || mode[0]=='a' ? W_OK : (mode[0]=='d' ? X_OK : R_OK)) == -1) exists = false;
+    if(access(path[0] ? path : ".", mode[0]=='w' || mode[0]=='a' ? W_OK : (mode[0]=='d' ? X_OK : R_OK)) == -1)
+    {
+        exists = false;
+    }
 #endif
     return exists;
 }
@@ -375,16 +544,25 @@ size_t fixpackagedir(char *dir)
 bool subhomedir(char *dst, int len, const char *src)
 {
     const char *sub = strstr(src, "$HOME");
-    if(!sub) sub = strchr(src, '~');
+    if(!sub)
+    {
+        sub = strchr(src, '~');
+    }
     if(sub && sub-src < len)
     {
 #ifdef WIN32
         char home[MAX_PATH+1];
         home[0] = '\0';
-        if(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, home) != S_OK || !home[0]) return false;
+        if(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, home) != S_OK || !home[0])
+        {
+            return false;
+        }
 #else
         const char *home = getenv("HOME");
-        if(!home || !home[0]) return false;
+        if(!home || !home[0])
+        {
+            return false;
+        }
 #endif
         dst[sub-src] = '\0';
         concatstring(dst, home, len);
@@ -397,7 +575,10 @@ const char *sethomedir(const char *dir)
 {
     string pdir;
     copystring(pdir, dir);
-    if(!subhomedir(pdir, sizeof(pdir), dir) || !fixpackagedir(pdir)) return NULL;
+    if(!subhomedir(pdir, sizeof(pdir), dir) || !fixpackagedir(pdir))
+    {
+        return NULL;
+    }
     copystring(homedir, pdir);
     return homedir;
 }
@@ -406,14 +587,23 @@ const char *addpackagedir(const char *dir)
 {
     string pdir;
     copystring(pdir, dir);
-    if(!subhomedir(pdir, sizeof(pdir), dir) || !fixpackagedir(pdir)) return NULL;
+    if(!subhomedir(pdir, sizeof(pdir), dir) || !fixpackagedir(pdir))
+    {
+        return NULL;
+    }
     char *filter = pdir;
     for(;;)
     {
         static int len = strlen("media");
         filter = strstr(filter, "media");
-        if(!filter) break;
-        if(filter > pdir && filter[-1] == PATHDIV && filter[len] == PATHDIV) break;
+        if(!filter)
+        {
+            break;
+        }
+        if(filter > pdir && filter[-1] == PATHDIV && filter[len] == PATHDIV)
+        {
+            break;
+        }
         filter += len;
     }
     packagedir &pf = packagedirs.add();
@@ -430,7 +620,10 @@ const char *findfile(const char *filename, const char *mode)
     if(homedir[0])
     {
         formatstring(s, "%s%s", homedir, filename);
-        if(fileexists(s, mode)) return s;
+        if(fileexists(s, mode))
+        {
+            return s;
+        }
         if(mode[0]=='w' || mode[0]=='a')
         {
             string dirs;
@@ -439,7 +632,10 @@ const char *findfile(const char *filename, const char *mode)
             while(dir)
             {
                 *dir = '\0';
-                if(!fileexists(dirs, "d") && !createdir(dirs)) return s;
+                if(!fileexists(dirs, "d") && !createdir(dirs))
+                {
+                    return s;
+                }
                 *dir = PATHDIV;
                 dir = strchr(dir+1, PATHDIV);
             }
@@ -453,9 +649,15 @@ const char *findfile(const char *filename, const char *mode)
     for(int i = 0; i < packagedirs.length(); i++)
     {
         packagedir &pf = packagedirs[i];
-        if(pf.filter && strncmp(filename, pf.filter, pf.filterlen)) continue;
+        if(pf.filter && strncmp(filename, pf.filter, pf.filterlen))
+        {
+            continue;
+        }
         formatstring(s, "%s%s", pf.dir, filename);
-        if(fileexists(s, mode)) return s;
+        if(fileexists(s, mode))
+        {
+            return s;
+        }
     }
     if(mode[0]=='e')
     {
@@ -482,7 +684,9 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
                 {
                     namelen -= extsize;
                     if(FindFileData.cFileName[namelen] == '.' && strncmp(FindFileData.cFileName+namelen+1, ext, extsize-1)==0)
+                    {
                         files.add(newstring(FindFileData.cFileName, namelen));
+                    }
                 }
             }
         } while(FindNextFile(Find, &FindFileData));
@@ -497,7 +701,10 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
         struct dirent *de;
         while((de = readdir(d)) != NULL)
         {
-            if(!ext) files.add(newstring(de->d_name));
+            if(!ext)
+            {
+                files.add(newstring(de->d_name));
+            }
             else
             {
                 size_t namelen = strlen(de->d_name);
@@ -505,7 +712,9 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
                 {
                     namelen -= extsize;
                     if(de->d_name[namelen] == '.' && strncmp(de->d_name+namelen+1, ext, extsize-1)==0)
+                    {
                         files.add(newstring(de->d_name, namelen));
+                    }
                 }
             }
         }
@@ -513,7 +722,10 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
         return true;
     }
 #endif
-    else return false;
+    else
+    {
+        return false;
+    }
 }
 
 int listfiles(const char *dir, const char *ext, vector<char *> &files)
@@ -522,22 +734,36 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
     copystring(dirname, dir);
     path(dirname);
     size_t dirlen = strlen(dirname);
-    while(dirlen > 1 && dirname[dirlen-1] == PATHDIV) dirname[--dirlen] = '\0';
+    while(dirlen > 1 && dirname[dirlen-1] == PATHDIV)
+    {
+        dirname[--dirlen] = '\0';
+    }
     int dirs = 0;
-    if(listdir(dirname, true, ext, files)) dirs++;
+    if(listdir(dirname, true, ext, files))
+    {
+        dirs++;
+    }
     string s;
     if(homedir[0])
     {
         formatstring(s, "%s%s", homedir, dirname);
-        if(listdir(s, false, ext, files)) dirs++;
+        if(listdir(s, false, ext, files))
+        {
+            dirs++;
+        }
     }
     for(int i = 0; i < packagedirs.length(); i++)
     {
         packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
+        {
             continue;
+        }
         formatstring(s, "%s%s", pf.dir, dirname);
-        if(listdir(s, false, ext, files)) dirs++;
+        if(listdir(s, false, ext, files))
+        {
+            dirs++;
+        }
     }
     dirs += listzipfiles(dirname, ext, files);
     return dirs;
@@ -546,7 +772,10 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
 static Sint64 rwopsseek(SDL_RWops *rw, Sint64 pos, int whence)
 {
     stream *f = (stream *)rw->hidden.unknown.data1;
-    if((!pos && whence==SEEK_CUR) || f->seek(pos, whence)) return (int)f->tell();
+    if((!pos && whence==SEEK_CUR) || f->seek(pos, whence))
+    {
+        return static_cast<int>(f->tell());
+    }
     return -1;
 }
 
@@ -565,7 +794,10 @@ static size_t rwopswrite(SDL_RWops *rw, const void *buf, size_t size, size_t nme
 SDL_RWops *stream::rwops()
 {
     SDL_RWops *rw = SDL_AllocRW();
-    if(!rw) return NULL;
+    if(!rw)
+    {
+        return NULL;
+    }
     rw->hidden.unknown.data1 = this;
     rw->seek = rwopsseek;
     rw->read = rwopsread;
@@ -577,19 +809,33 @@ SDL_RWops *stream::rwops()
 stream::offset stream::size()
 {
     offset pos = tell(), endpos;
-    if(pos < 0 || !seek(0, SEEK_END)) return -1;
+    if(pos < 0 || !seek(0, SEEK_END))
+    {
+        return -1;
+    }
     endpos = tell();
     return pos == endpos || seek(pos, SEEK_SET) ? endpos : -1;
 }
 
 bool stream::getline(char *str, size_t len)
 {
-    for(int i = 0; i < int(len-1); ++i)
+    for(int i = 0; i < static_cast<int>(len-1); ++i)
     {
-        if(read(&str[i], 1) != 1) { str[i] = '\0'; return i > 0; }
-        else if(str[i] == '\n') { str[i+1] = '\0'; return true; }
+        if(read(&str[i], 1) != 1)
+        {
+            str[i] = '\0';
+            return i > 0;
+        }
+        else if(str[i] == '\n')
+        {
+            str[i+1] = '\0';
+            return true;
+        }
     }
-    if(len > 0) str[len-1] = '\0';
+    if(len > 0)
+    {
+        str[len-1] = '\0';
+    }
     return true;
 }
 
@@ -601,16 +847,26 @@ size_t stream::printf(const char *fmt, ...)
 #if defined(WIN32) && !defined(__GNUC__)
     va_start(args, fmt);
     int len = _vscprintf(fmt, args);
-    if(len <= 0) { va_end(args); return 0; }
-    if(len >= (int)sizeof(buf)) str = new char[len+1];
+    if(len <= 0)
+    {
+        va_end(args);
+        return 0;
+    }
+    if(len >= static_cast<int>(sizeof(buf)))
+    {
+        str = new char[len+1];
+    }
     _vsnprintf(str, len+1, fmt, args);
     va_end(args);
 #else
     va_start(args, fmt);
     int len = vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
-    if(len <= 0) return 0;
-    if(len >= (int)sizeof(buf))
+    if(len <= 0)
+    {
+        return 0;
+    }
+    if(len >= static_cast<int>(sizeof(buf)))
     {
         str = new char[len+1];
         va_start(args, fmt);
@@ -619,7 +875,10 @@ size_t stream::printf(const char *fmt, ...)
     }
 #endif
     size_t n = write(str, len);
-    if(str != buf) delete[] str;
+    if(str != buf)
+    {
+        delete[] str;
+    }
     return n;
 }
 
@@ -632,28 +891,41 @@ struct filestream : stream
 
     bool open(const char *name, const char *mode)
     {
-        if(file) return false;
+        if(file)
+        {
+            return false;
+        }
         file = fopen(name, mode);
         return file!=NULL;
     }
     #ifdef WIN32
         bool opentemp(const char *name, const char *mode)
         {
-            if(file) return false;
+            if(file)
+            {
+                return false;
+            }
             file = fopen(name, mode);
             return file!=NULL;
         }
     #else
         bool opentemp(const char *, const char *)
         {
-            if(file) return false;
+            if(file)
+            {
+                return false;
+            }
             file = tmpfile();
             return file!=NULL;
         }
     #endif
     void close()
     {
-        if(file) { fclose(file); file = NULL; }
+        if(file)
+        {
+            fclose(file);
+            file = NULL;
+        }
     }
 
     bool end() { return feof(file)!=0; }
@@ -753,16 +1025,28 @@ struct gzstream : stream
 
     void readbuf(size_t size = BUFSIZE)
     {
-        if(!zfile.avail_in) zfile.next_in = (Bytef *)buf;
+        if(!zfile.avail_in)
+        {
+            zfile.next_in = (Bytef *)buf;
+        }
         size = min(size, size_t(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
         size_t n = file->read(zfile.next_in + zfile.avail_in, size);
-        if(n > 0) zfile.avail_in += n;
+        if(n > 0)
+        {
+            zfile.avail_in += n;
+        }
     }
 
     uchar readbyte(size_t size = BUFSIZE)
     {
-        if(!zfile.avail_in) readbuf(size);
-        if(!zfile.avail_in) return 0;
+        if(!zfile.avail_in)
+        {
+            readbuf(size);
+        }
+        if(!zfile.avail_in)
+        {
+            return 0;
+        }
         zfile.avail_in--;
         return *(uchar *)zfile.next_in++;
     }
@@ -776,16 +1060,25 @@ struct gzstream : stream
             zfile.next_in += skipped;
             n -= skipped;
         }
-        if(n <= 0) return;
+        if(n <= 0)
+        {
+            return;
+        }
         file->seek(n, SEEK_CUR);
     }
 
     bool checkheader()
     {
         readbuf(10);
-        if(readbyte() != MAGIC1 || readbyte() != MAGIC2 || readbyte() != Z_DEFLATED) return false;
+        if(readbyte() != MAGIC1 || readbyte() != MAGIC2 || readbyte() != Z_DEFLATED)
+        {
+            return false;
+        }
         uchar flags = readbyte();
-        if(flags & F_RESERVED) return false;
+        if(flags & F_RESERVED)
+        {
+            return false;
+        }
         skipbytes(6);
         if(flags & F_EXTRA)
         {
@@ -793,50 +1086,96 @@ struct gzstream : stream
             len |= size_t(readbyte(512))<<8;
             skipbytes(len);
         }
-        if(flags & F_NAME) while(readbyte(512));
-        if(flags & F_COMMENT) while(readbyte(512));
-        if(flags & F_CRC) skipbytes(2);
+        if(flags & F_NAME)
+        {
+            while(readbyte(512))
+            {
+                //(empty body)
+            }
+        }
+        if(flags & F_COMMENT)
+        {
+            while(readbyte(512))
+            {
+                //(empty body)
+            }
+        }
+        if(flags & F_CRC)
+        {
+            skipbytes(2);
+        }
         headersize = size_t(file->tell() - zfile.avail_in);
         return zfile.avail_in > 0 || !file->end();
     }
 
     bool open(stream *f, const char *mode, bool needclose, int level)
     {
-        if(file) return false;
+        if(file)
+        {
+            return false;
+        }
         for(; *mode; mode++)
         {
-            if(*mode=='r') { reading = true; break; }
-            else if(*mode=='w') { writing = true; break; }
+            if(*mode=='r')
+            {
+                reading = true;
+                break;
+            }
+            else if(*mode=='w')
+            {
+                writing = true;
+                break;
+            }
         }
         if(reading)
         {
-            if(inflateInit2(&zfile, -MAX_WBITS) != Z_OK) reading = false;
+            if(inflateInit2(&zfile, -MAX_WBITS) != Z_OK)
+            {
+                reading = false;
+            }
         }
-        else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK) writing = false;
-        if(!reading && !writing) return false;
-
+        else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK)
+        {
+            writing = false;
+        }
+        if(!reading && !writing)
+        {
+            return false;
+        }
         file = f;
         crc = crc32(0, NULL, 0);
         buf = new uchar[BUFSIZE];
-
         if(reading)
         {
-            if(!checkheader()) { stopreading(); return false; }
+            if(!checkheader())
+            {
+                stopreading();
+                return false;
+            }
         }
-        else if(writing) writeheader();
-
+        else if(writing)
+        {
+            writeheader();
+        }
         autoclose = needclose;
         return true;
     }
 
-    uint getcrc() { return crc; }
+    uint getcrc()
+    {
+        return crc;
+    }
 
     void finishreading()
     {
-        if(!reading) return;
+        if(!reading)
+        {
+            return;
+        }
         if(dbggz)
         {
-            uint checkcrc = 0, checksize = 0;
+            uint checkcrc = 0,
+                 checksize = 0;
             for(int i = 0; i < 4; ++i)
             {
                 checkcrc |= uint(readbyte()) << (i*8);
@@ -858,20 +1197,32 @@ struct gzstream : stream
 
     void stopreading()
     {
-        if(!reading) return;
+        if(!reading)
+        {
+            return;
+        }
         inflateEnd(&zfile);
         reading = false;
     }
 
     void finishwriting()
     {
-        if(!writing) return;
+        if(!writing)
+        {
+            return;
+        }
         for(;;)
         {
             int err = zfile.avail_out > 0 ? deflate(&zfile, Z_FINISH) : Z_OK;
-            if(err != Z_OK && err != Z_STREAM_END) break;
+            if(err != Z_OK && err != Z_STREAM_END)
+            {
+                break;
+            }
             flushbuf();
-            if(err == Z_STREAM_END) break;
+            if(err == Z_STREAM_END)
+            {
+                break;
+            }
         }
         uchar trailer[8] =
         {
@@ -883,50 +1234,96 @@ struct gzstream : stream
 
     void stopwriting()
     {
-        if(!writing) return;
+        if(!writing)
+        {
+            return;
+        }
         deflateEnd(&zfile);
         writing = false;
     }
 
     void close()
     {
-        if(reading) finishreading();
+        if(reading)
+        {
+            finishreading();
+        }
         stopreading();
-        if(writing) finishwriting();
+        if(writing)
+        {
+            finishwriting();
+        }
         stopwriting();
         DELETEA(buf);
-        if(autoclose) DELETEP(file);
+        if(autoclose)
+        {
+            DELETEP(file);
+        }
     }
 
-    bool end() { return !reading && !writing; }
-    offset tell() { return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1)); }
-    offset rawtell() { return file ? file->tell() : offset(-1); }
+    bool end()
+    {
+        return !reading && !writing;
+    }
+
+    offset tell()
+    {
+        return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1));
+    }
+
+    offset rawtell()
+    {
+        return file ? file->tell() : offset(-1);
+    }
 
     offset size()
     {
-        if(!file) return -1;
+        if(!file)
+        {
+            return -1;
+        }
         offset pos = tell();
-        if(!file->seek(-4, SEEK_END)) return -1;
+        if(!file->seek(-4, SEEK_END))
+        {
+            return -1;
+        }
         uint isize = file->get<uint>();
         return file->seek(pos, SEEK_SET) ? isize : offset(-1);
     }
 
-    offset rawsize() { return file ? file->size() : offset(-1); }
+    offset rawsize()
+    {
+        return file ? file->size() : offset(-1);
+    }
 
     bool seek(offset pos, int whence)
     {
-        if(writing || !reading) return false;
+        if(writing || !reading)
+        {
+            return false;
+        }
 
         if(whence == SEEK_END)
         {
             uchar skip[512];
-            while(read(skip, sizeof(skip)) == sizeof(skip));
+            while(read(skip, sizeof(skip)) == sizeof(skip))
+            {
+                //(empty body)s
+            }
             return !pos;
         }
-        else if(whence == SEEK_CUR) pos += zfile.total_out;
-
-        if(pos >= (offset)zfile.total_out) pos -= zfile.total_out;
-        else if(pos < 0 || !file->seek(headersize, SEEK_SET)) return false;
+        else if(whence == SEEK_CUR)
+        {
+            pos += zfile.total_out;
+        }
+        if(pos >= (offset)zfile.total_out)
+        {
+            pos -= zfile.total_out;
+        }
+        else if(pos < 0 || !file->seek(headersize, SEEK_SET))
+        {
+            return false;
+        }
         else
         {
             if(zfile.next_in && zfile.total_in <= uint(zfile.next_in - buf))
@@ -946,8 +1343,12 @@ struct gzstream : stream
         uchar skip[512];
         while(pos > 0)
         {
-            size_t skipped = (size_t)min(pos, (offset)sizeof(skip));
-            if(read(skip, skipped) != skipped) { stopreading(); return false; }
+            size_t skipped = static_cast<size_t>(min(pos, static_cast<offset>(sizeof(skip))));
+            if(read(skip, skipped) != skipped)
+            {
+                stopreading();
+                return false;
+            }
             pos -= skipped;
         }
 
@@ -956,7 +1357,10 @@ struct gzstream : stream
 
     size_t read(void *buf, size_t len)
     {
-        if(!reading || !buf || !len) return 0;
+        if(!reading || !buf || !len)
+        {
+            return 0;
+        }
         zfile.next_out = (Bytef *)buf;
         zfile.avail_out = len;
         while(zfile.avail_out > 0)
@@ -964,11 +1368,25 @@ struct gzstream : stream
             if(!zfile.avail_in)
             {
                 readbuf(BUFSIZE);
-                if(!zfile.avail_in) { stopreading(); break; }
+                if(!zfile.avail_in)
+                {
+                    stopreading();
+                    break;
+                }
             }
             int err = inflate(&zfile, Z_NO_FLUSH);
-            if(err == Z_STREAM_END) { crc = crc32(crc, (Bytef *)buf, len - zfile.avail_out); finishreading(); stopreading(); return len - zfile.avail_out; }
-            else if(err != Z_OK) { stopreading(); break; }
+            if(err == Z_STREAM_END)
+            {
+                crc = crc32(crc, (Bytef *)buf, len - zfile.avail_out);
+                finishreading();
+                stopreading();
+                return len - zfile.avail_out;
+            }
+            else if(err != Z_OK)
+            {
+                stopreading();
+                break;
+            }
         }
         crc = crc32(crc, (Bytef *)buf, len - zfile.avail_out);
         return len - zfile.avail_out;
@@ -976,29 +1394,48 @@ struct gzstream : stream
 
     bool flushbuf(bool full = false)
     {
-        if(full) deflate(&zfile, Z_SYNC_FLUSH);
+        if(full)
+        {
+            deflate(&zfile, Z_SYNC_FLUSH);
+        }
         if(zfile.next_out && zfile.avail_out < BUFSIZE)
         {
             if(file->write(buf, BUFSIZE - zfile.avail_out) != BUFSIZE - zfile.avail_out || (full && !file->flush()))
+            {
                 return false;
+            }
         }
         zfile.next_out = buf;
         zfile.avail_out = BUFSIZE;
         return true;
     }
 
-    bool flush() { return flushbuf(true); }
+    bool flush()
+    {
+        return flushbuf(true);
+    }
 
     size_t write(const void *buf, size_t len)
     {
-        if(!writing || !buf || !len) return 0;
+        if(!writing || !buf || !len)
+        {
+            return 0;
+        }
         zfile.next_in = (Bytef *)buf;
         zfile.avail_in = len;
         while(zfile.avail_in > 0)
         {
-            if(!zfile.avail_out && !flushbuf()) { stopwriting(); break; }
+            if(!zfile.avail_out && !flushbuf())
+            {
+                stopwriting();
+                break;
+            }
             int err = deflate(&zfile, Z_NO_FLUSH);
-            if(err != Z_OK) { stopwriting(); break; }
+            if(err != Z_OK)
+            {
+                stopwriting();
+                break;
+            }
         }
         crc = crc32(crc, (Bytef *)buf, len - zfile.avail_in);
         return len - zfile.avail_in;
@@ -1028,56 +1465,97 @@ struct utf8stream : stream
 
     bool readbuf(size_t size = BUFSIZE)
     {
-        if(bufread >= bufcarry) { if(bufcarry > 0 && bufcarry < buflen) memmove(buf, &buf[bufcarry], buflen - bufcarry); buflen -= bufcarry; bufread = bufcarry = 0; }
+        if(bufread >= bufcarry)
+        {
+            if(bufcarry > 0 && bufcarry < buflen)
+            {
+                memmove(buf, &buf[bufcarry], buflen - bufcarry);
+                buflen -= bufcarry;
+                bufread = bufcarry = 0;
+            }
+        }
         size_t n = file->read(&buf[buflen], min(size, BUFSIZE - buflen));
-        if(n <= 0) return false;
+        if(n <= 0)
+        {
+            return false;
+        }
         buflen += n;
         size_t carry = bufcarry;
         bufcarry += decodeutf8(&buf[bufcarry], BUFSIZE-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
-        if(carry > bufcarry && carry < buflen) { memmove(&buf[bufcarry], &buf[carry], buflen - carry); buflen -= carry - bufcarry; }
+        if(carry > bufcarry && carry < buflen)
+        {
+            memmove(&buf[bufcarry], &buf[carry], buflen - carry);
+            buflen -= carry - bufcarry;
+        }
         return true;
     }
 
     bool checkheader()
     {
         size_t n = file->read(buf, 3);
-        if(n == 3 && buf[0] == 0xEF && buf[1] == 0xBB && buf[2] == 0xBF) return true;
+        if(n == 3 && buf[0] == 0xEF && buf[1] == 0xBB && buf[2] == 0xBF)
+        {
+            return true;
+        }
         buflen = n;
         return false;
     }
 
     bool open(stream *f, const char *mode, bool needclose)
     {
-        if(file) return false;
+        if(file)
+        {
+            return false;
+        }
         for(; *mode; mode++)
         {
-            if(*mode=='r') { reading = true; break; }
-            else if(*mode=='w') { writing = true; break; }
+            if(*mode=='r')
+            {
+                reading = true;
+                break;
+            }
+            else if(*mode=='w')
+            {
+                writing = true;
+                break;
+            }
         }
-        if(!reading && !writing) return false;
-
+        if(!reading && !writing)
+        {
+            return false;
+        }
         file = f;
-
-        if(reading) checkheader();
-
+        if(reading)
+        {
+            checkheader();
+        }
         autoclose = needclose;
         return true;
     }
 
     void finishreading()
     {
-        if(!reading) return;
+        if(!reading)
+        {
+            return;
+        }
     }
 
     void stopreading()
     {
-        if(!reading) return;
+        if(!reading)
+        {
+            return;
+        }
         reading = false;
     }
 
     void stopwriting()
     {
-        if(!writing) return;
+        if(!writing)
+        {
+            return;
+        }
         writing = false;
     }
 
@@ -1085,15 +1563,28 @@ struct utf8stream : stream
     {
         stopreading();
         stopwriting();
-        if(autoclose) DELETEP(file);
+        if(autoclose)
+        {
+            DELETEP(file);
+        }
     }
 
-    bool end() { return !reading && !writing; }
-    offset tell() { return reading || writing ? pos : offset(-1); }
+    bool end()
+    {
+        return !reading && !writing;
+    }
+
+    offset tell()
+    {
+        return reading || writing ? pos : offset(-1);
+    }
 
     bool seek(offset off, int whence)
     {
-        if(writing || !reading) return false;
+        if(writing || !reading)
+        {
+            return false;
+        }
 
         if(whence == SEEK_END)
         {
@@ -1103,8 +1594,14 @@ struct utf8stream : stream
         }
         else if(whence == SEEK_CUR) off += pos;
 
-        if(off >= pos) off -= pos;
-        else if(off < 0 || !file->seek(0, SEEK_SET)) return false;
+        if(off >= pos)
+        {
+            off -= pos;
+        }
+        else if(off < 0 || !file->seek(0, SEEK_SET))
+        {
+            return false;
+        }
         else
         {
             bufread = bufcarry = buflen = 0;
@@ -1116,7 +1613,11 @@ struct utf8stream : stream
         while(off > 0)
         {
             size_t skipped = (size_t)min(off, (offset)sizeof(skip));
-            if(read(skip, skipped) != skipped) { stopreading(); return false; }
+            if(read(skip, skipped) != skipped)
+            {
+                stopreading();
+                return false;
+            }
             off -= skipped;
         }
 
@@ -1125,11 +1626,22 @@ struct utf8stream : stream
 
     size_t read(void *dst, size_t len)
     {
-        if(!reading || !dst || !len) return 0;
+        if(!reading || !dst || !len)
+        {
+            return 0;
+        }
         size_t next = 0;
         while(next < len)
         {
-            if(bufread >= bufcarry) { if(readbuf(BUFSIZE)) continue; stopreading(); break; }
+            if(bufread >= bufcarry)
+            {
+                if(readbuf(BUFSIZE))
+                {
+                    continue;
+                }
+                stopreading();
+                break;
+            }
             size_t n = min(len - next, bufcarry - bufread);
             memcpy(&((uchar *)dst)[next], &buf[bufread], n);
             next += n;
@@ -1141,15 +1653,34 @@ struct utf8stream : stream
 
     bool getline(char *dst, size_t len)
     {
-        if(!reading || !dst || !len) return false;
+        if(!reading || !dst || !len)
+        {
+            return false;
+        }
         --len;
         size_t next = 0;
         while(next < len)
         {
-            if(bufread >= bufcarry) { if(readbuf(BUFSIZE)) continue; stopreading(); if(!next) return false; break; }
+            if(bufread >= bufcarry)
+            {
+                if(readbuf(BUFSIZE))
+                {
+                    continue;
+                }
+                stopreading();
+                if(!next)
+                {
+                    return false;
+                }
+                break;
+            }
             size_t n = min(len - next, bufcarry - bufread);
             uchar *endline = (uchar *)memchr(&buf[bufread], '\n', n);
-            if(endline) { n = endline+1 - &buf[bufread]; len = next + n; }
+            if(endline)
+            {
+                n = endline+1 - &buf[bufread];
+                len = next + n;
+            }
             memcpy(&((uchar *)dst)[next], &buf[bufread], n);
             next += n;
             bufread += n;
@@ -1161,13 +1692,21 @@ struct utf8stream : stream
 
     size_t write(const void *src, size_t len)
     {
-        if(!writing || !src || !len) return 0;
+        if(!writing || !src || !len)
+        {
+            return 0;
+        }
         uchar dst[512];
         size_t next = 0;
         while(next < len)
         {
-            size_t carry = 0, n = encodeutf8(dst, sizeof(dst), &((uchar *)src)[next], len - next, &carry);
-            if(n > 0 && file->write(dst, n) != n) { stopwriting(); break; }
+            size_t carry = 0,
+                   n = encodeutf8(dst, sizeof(dst), &((uchar *)src)[next], len - next, &carry);
+            if(n > 0 && file->write(dst, n) != n)
+            {
+                stopwriting();
+                break;
+            }
             next += carry;
         }
         pos += next;
@@ -1180,16 +1719,26 @@ struct utf8stream : stream
 stream *openrawfile(const char *filename, const char *mode)
 {
     const char *found = findfile(filename, mode);
-    if(!found) return NULL;
+    if(!found)
+    {
+        return NULL;
+    }
     filestream *file = new filestream;
-    if(!file->open(found, mode)) { delete file; return NULL; }
+    if(!file->open(found, mode))
+    {
+        delete file;
+        return NULL;
+    }
     return file;
 }
 
 stream *openfile(const char *filename, const char *mode)
 {
     stream *s = openzipfile(filename, mode);
-    if(s) return s;
+    if(s)
+    {
+        return s;
+    }
     return openrawfile(filename, mode);
 }
 
@@ -1197,50 +1746,108 @@ stream *opentempfile(const char *name, const char *mode)
 {
     const char *found = findfile(name, mode);
     filestream *file = new filestream;
-    if(!file->opentemp(found ? found : name, mode)) { delete file; return NULL; }
+    if(!file->opentemp(found ? found : name, mode))
+    {
+        delete file;
+        return NULL;
+    }
     return file;
 }
 
 stream *opengzfile(const char *filename, const char *mode, stream *file, int level)
 {
     stream *source = file ? file : openfile(filename, mode);
-    if(!source) return NULL;
+    if(!source)
+    {
+        return NULL;
+    }
     gzstream *gz = new gzstream;
-    if(!gz->open(source, mode, !file, level)) { if(!file) delete source; delete gz; return NULL; }
+    if(!gz->open(source, mode, !file, level))
+    {
+        if(!file)
+        {
+            delete source;
+        }
+        delete gz;
+        return NULL;
+    }
     return gz;
 }
 
 stream *openutf8file(const char *filename, const char *mode, stream *file)
 {
     stream *source = file ? file : openfile(filename, mode);
-    if(!source) return NULL;
+    if(!source)
+    {
+        return NULL;
+    }
     utf8stream *utf8 = new utf8stream;
-    if(!utf8->open(source, mode, !file)) { if(!file) delete source; delete utf8; return NULL; }
+    if(!utf8->open(source, mode, !file))
+    {
+        if(!file)
+        {
+            delete source;
+        }
+        delete utf8;
+        return NULL;
+    }
     return utf8;
 }
 
 char *loadfile(const char *fn, size_t *size, bool utf8)
 {
     stream *f = openfile(fn, "rb");
-    if(!f) return NULL;
+    if(!f)
+    {
+        return NULL;
+    }
     stream::offset fsize = f->size();
-    if(fsize <= 0) { delete f; return NULL; }
+    if(fsize <= 0)
+    {
+        delete f;
+        return NULL;
+    }
     size_t len = fsize;
     char *buf = new (false) char[len+1];
-    if(!buf) { delete f; return NULL; }
+    if(!buf)
+    {
+        delete f;
+        return NULL;
+    }
     size_t offset = 0;
     if(utf8 && len >= 3)
     {
-        if(f->read(buf, 3) != 3) { delete f; delete[] buf; return NULL; }
-        if(((uchar *)buf)[0] == 0xEF && ((uchar *)buf)[1] == 0xBB && ((uchar *)buf)[2] == 0xBF) len -= 3;
-        else offset += 3;
+        if(f->read(buf, 3) != 3)
+        {
+            delete f;
+            delete[] buf;
+            return NULL;
+        }
+        if(((uchar *)buf)[0] == 0xEF && ((uchar *)buf)[1] == 0xBB && ((uchar *)buf)[2] == 0xBF)
+        {
+            len -= 3;
+        }
+        else
+        {
+            offset += 3;
+        }
     }
     size_t rlen = f->read(&buf[offset], len-offset);
     delete f;
-    if(rlen != len-offset) { delete[] buf; return NULL; }
-    if(utf8) len = decodeutf8((uchar *)buf, len, (uchar *)buf, len);
+    if(rlen != len-offset)
+    {
+        delete[] buf;
+        return NULL;
+    }
+    if(utf8)
+    {
+        len = decodeutf8((uchar *)buf, len, (uchar *)buf, len);
+    }
     buf[len] = '\0';
-    if(size!=NULL) *size = len;
+    if(size!=NULL)
+    {
+        *size = len;
+    }
     return buf;
 }
 

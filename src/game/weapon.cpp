@@ -13,12 +13,13 @@ namespace game
     };
     vector<hitmsg> hits;
 
-
-
-//getweapon
-//returns the index of the weapon in hand
-//Arguments: none
-//Returns: index of weapon (zero-indexed)
+/*getweapon
+ *returns the index of the weapon in hand
+ * Arguments:
+ *  none
+ * Returns:
+ *  index of weapon (zero-indexed)
+ */
     ICOMMAND(getweapon, "", (), intret(player1->gunselect));
 
     void gunselect(int gun, gameent *d)
@@ -56,12 +57,14 @@ namespace game
             playsound(Sound_NoAmmo);
         }
     }
-//nextweapon
-//changes player to an adjacent weapon, forwards if no dir is passed
-//Arguments:
-// int *dir: direction (backwards if negative, forwards if positive)
-// int *force: forces change if 1
-//Returns: none
+/*nextweapon
+ *changes player to an adjacent weapon, forwards if no dir is passed
+ * Arguments:
+ *  int *dir: direction (backwards if negative, forwards if positive)
+ *  int *force: forces change if 1
+ * Returns:
+ *  void
+ */
     ICOMMAND(nextweapon, "ii", (int *dir, int *force), nextweapon(*dir, *force!=0));
 
     int getweapon(const char *name)
@@ -208,8 +211,8 @@ namespace game
 
     enum
     {
-        BNC_GIBS,
-        BNC_DEBRIS
+        Bouncer_Gibs,
+        Bouncer_Debris
     };
 
     struct bouncer : physent
@@ -235,7 +238,7 @@ namespace game
     {
         bouncer &bnc = *bouncers.add(new bouncer);
         bnc.o = from;
-        bnc.radius = bnc.xradius = bnc.yradius = type==BNC_DEBRIS ? 0.5f : 1.5f;
+        bnc.radius = bnc.xradius = bnc.yradius = type==Bouncer_Debris ? 0.5f : 1.5f;
         bnc.eyeheight = bnc.radius;
         bnc.aboveeye = bnc.radius;
         bnc.lifetime = lifetime;
@@ -246,12 +249,12 @@ namespace game
 
         switch(type)
         {
-            case BNC_DEBRIS:
+            case Bouncer_Debris:
             {
                 bnc.variant = randomint(4);
                 break;
             }
-            case BNC_GIBS:
+            case Bouncer_Gibs:
             {
                 bnc.variant = randomint(3);
                 break;
@@ -279,7 +282,7 @@ namespace game
             return;
         }
         bouncer *b = (bouncer *)d;
-        if(b->bouncetype != BNC_GIBS || b->bounces >= 2)
+        if(b->bouncetype != Bouncer_Gibs || b->bounces >= 2)
         {
             return;
         }
@@ -471,7 +474,7 @@ namespace game
 
         float low = min(o->o.z - o->eyeheight + o->radius, middle.z),
               high = max(o->o.z + o->aboveeye - o->radius, middle.z);
-        vec closest(o->o.x, o->o.y, clamp(v.z, low, high));
+        vec closest(o->o.x, o->o.y, std::clamp(v.z, low, high));
         return max(closest.dist(v) - o->radius, 0.0f);
     }
 
@@ -565,22 +568,77 @@ namespace game
             }
         }
     }
-
+    /*projdamage: checks if projectile damages a particular dynent
+     * Arguments:
+     *  o: dynent (player ent) to check damage for
+     *  p: projectile object to attempt to damage with
+     *  v: the displacement vector that the projectile is currently stepping over
+     * Returns:
+     *  (bool) true if projectile damages dynent, false otherwise
+     */
     bool projdamage(dynent *o, projectile &p, const vec &v)
     {
-        if(o->state!=ClientState_Alive)
+        if(o->state!=ClientState_Alive) //do not beat dead horses (or clients)
         {
             return false;
         }
-        if(!intersect(o, p.o, v, attacks[p.atk].margin))
+        if(!intersect(o, p.o, v, attacks[p.atk].margin)) //do not damange unless collided
         {
             return false;
         }
-        projsplash(p, v, o);
+        projsplash(p, v, o); //check splash
         vec dir;
         projdist(o, dir, v, p.dir);
         hit(attacks[p.atk].damage, o, p.owner, dir, p.atk, 0);
         return true;
+    }
+
+    /*explodecubes: deletes some cubes at a world vector location
+     * Arguments:
+     *  loc: world vector to destroy
+     *  gridpower: size of cube to blow up
+     * Returns:
+     *  void
+     */
+    void explodecubes(ivec loc, int gridpower, int bias = 1)
+    {
+        int gridpow = static_cast<int>(pow(2,gridpower));
+        //define selection boundaries that align with gridpower
+        ivec minloc( loc.x - loc.x % gridpow -2*gridpow,
+                     loc.y - loc.y % gridpow -2*gridpow,
+                     loc.z - loc.z % gridpow -(2-bias)*gridpow);
+        ivec maxlocz(3,3,4);
+        ivec maxlocy(3,5,2);
+        ivec maxlocx(5,3,2);
+        selinfo sel;
+        sel.o = minloc + ivec(gridpow,gridpow,0);
+        sel.s = maxlocz;
+        mpdelcube(sel, true);
+        sel.o = minloc + ivec(gridpow,0,gridpow);
+        sel.s = maxlocy;
+        mpdelcube(sel, true);
+        sel.o = minloc + ivec(0,gridpow,gridpow);
+        sel.s = maxlocx;
+        mpdelcube(sel, true);
+    }
+
+    /*placecube: places a cube at a world vector location
+     * Arguments:
+     *  loc: world vector to fill
+     *  gridpower: size of cube to place
+     * Returns:
+     *  void
+     */
+    void placecube(ivec loc, int gridpower)
+    {
+        int gridpow = static_cast<int>(pow(2,gridpower));
+        ivec minloc( loc.x - loc.x % gridpow,
+                     loc.y - loc.y % gridpow,
+                     loc.z - loc.z % gridpow );
+        selinfo sel;
+        sel.o = minloc;
+        sel.s = ivec(1,1,1);
+        mpplacecube(sel, 1, true);
     }
 
     void updateprojectiles(int time)
@@ -631,6 +689,19 @@ namespace game
                             continue;
                         }
                     }
+                    switch(attacks[p.atk].worldfx)
+                    {
+                        case 1:
+                        {
+                            explodecubes(static_cast<ivec>(p.o),3);
+                            break;
+                        }
+                        case 2:
+                        {
+                            placecube(static_cast<ivec>(p.o),3);
+                            break;
+                        }
+                    }
                     projsplash(p, v, NULL);
                     exploded = true;
                 }
@@ -664,6 +735,14 @@ namespace game
         }
     }
 
+    /*railhit: creates a hitscan beam between points
+     * Arguments:
+     *  from: the origin location
+     *  to: the destination location
+     *  stain: whether to stain the hit point
+     * Returns:
+     *  void
+     */
     void railhit(const vec &from, const vec &to, bool stain = true)
     {
         vec dir = vec(from).sub(to).safenormalize();
@@ -685,6 +764,15 @@ namespace game
                 if(d->muzzle.x >= 0)
                 {
                     particle_flare(d->muzzle, d->muzzle, 140, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d); //place a light that runs with the shot projectile
+                }
+                newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
+                break;
+            }
+            case Attack_EngShoot:
+            {
+                if(d->muzzle.x >= 0)
+                {
+                    particle_flare(d->muzzle, d->muzzle, 250, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d); //place a light that runs with the shot projectile
                 }
                 newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
                 break;
@@ -751,7 +839,7 @@ namespace game
         {
             return;
         }
-        gameent *pl = (gameent *)owner;
+        gameent *pl = reinterpret_cast<gameent *>(owner);
         if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect)
         {
             return;
@@ -922,7 +1010,7 @@ namespace game
         {
             addmsg(NetMsg_Shoot, "rci2i6iv", d, lastmillis-maptime, atk,
                    static_cast<int>(from.x*DMF), static_cast<int>(from.y*DMF), static_cast<int>(from.z*DMF),
-                   static_cast<int>(to.x*DMF), static_cast<int>(to.y*DMF), static_cast<int>(to.z*DMF),
+                   static_cast<int>(to.x*DMF),   static_cast<int>(to.y*DMF),   static_cast<int>(to.z*DMF),
                    hits.length(), hits.length()*sizeof(hitmsg)/sizeof(int), hits.getbuf()); //sizeof int should always equal 4 (bytes) = 32b
         }
 
@@ -983,12 +1071,8 @@ namespace game
                     continue;
                 }
             }
-            rendermodel(mdl, Anim_Mapmodel|ANIM_LOOP, pos, yaw, pitch, 0, cull, NULL, NULL, 0, 0, fade);
+            rendermodel(mdl, Anim_Mapmodel | Anim_Loop, pos, yaw, pitch, 0, cull, NULL, NULL, 0, 0, fade);
         }
-    }
-
-    void renderprojectiles()
-    {
     }
 
     void removeweapons(gameent *d)

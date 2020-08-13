@@ -18,7 +18,9 @@ namespace sphere
     {
         numverts = (stacks+1)*(slices+1);
         verts = new vert[numverts];
-        float ds = 1.0f/slices, dt = 1.0f/stacks, t = 1.0f;
+        float ds = 1.0f/slices,
+              dt = 1.0f/stacks,
+              t  = 1.0f;
         for(int i = 0; i < stacks+1; ++i)
         {
             float rho = M_PI*(1-t),
@@ -121,7 +123,7 @@ namespace sphere
     }
 }
 
-static const float WOBBLE = 1.25f;
+static const float wobble = 1.25f;
 
 struct fireballrenderer : listrenderer
 {
@@ -155,7 +157,7 @@ struct fireballrenderer : listrenderer
     void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
     {
         pe.maxfade = max(pe.maxfade, fade);
-        pe.extendbb(o, (size+1+pe.ent->attr2)*WOBBLE);
+        pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
     }
 
     void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
@@ -164,13 +166,13 @@ struct fireballrenderer : listrenderer
               size = p->fade ? static_cast<float>(ts)/p->fade : 1,
               psize = p->size + pmax * size;
 
-        if(isfoggedsphere(psize*WOBBLE, p->o))
+        if(isfoggedsphere(psize*wobble, p->o))
         {
             return;
         }
         vec dir = static_cast<vec>(o).sub(camera1->o), s, t;
         float dist = dir.magnitude();
-        bool inside = dist <= psize*WOBBLE;
+        bool inside = dist <= psize*wobble;
         if(inside)
         {
             s = camright;
@@ -197,7 +199,7 @@ struct fireballrenderer : listrenderer
 
         LOCALPARAM(center, o);
         LOCALPARAMF(blendparams, inside ? 0.5f : 4, inside ? 0.25f : 0);
-        if(2*(p->size + pmax)*WOBBLE >= softexplosionblend)
+        if(2*(p->size + pmax)*wobble >= softexplosionblend)
         {
             LOCALPARAMF(softparams, -1.0f/softexplosionblend, 0, inside ? blend/(2*255.0f) : 0);
         }

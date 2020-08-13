@@ -22,21 +22,22 @@ namespace ai
     int getweight(const vec &o)
     {
         vec pos = o;
-        pos.z += ai::JUMPMIN;
+        pos.z += ai::jumpmin;
         if(!insideworld(vec(pos.x, pos.y, min(pos.z, getworldsize() - 1e-3f))))
         {
             return -2;
         }
         float dist = raycube(pos, vec(0, 0, -1), 0, Ray_ClipMat);
-        int posmat = lookupmaterial(pos), weight = 1;
+        int posmat = lookupmaterial(pos),
+            weight = 1;
         if(IS_LIQUID(posmat&MatFlag_Volume))
         {
             weight *= 5;
         }
         if(dist >= 0)
         {
-            weight = int(dist/ai::JUMPMIN);
-            pos.z -= clamp(dist-8.0f, 0.0f, pos.z);
+            weight = static_cast<int>(dist/ai::jumpmin);
+            pos.z -= std::clamp(dist-8.0f, 0.0f, pos.z);
             int trgmat = lookupmaterial(pos);
             if(trgmat&Mat_Death)
             {
@@ -114,7 +115,7 @@ namespace ai
                 {
                     firstwp = i;
                 }
-                float radius = WAYPOINTRADIUS;
+                float radius = waypointradius;
                 bbmin.min(vec(w.o).sub(radius));
                 bbmax.max(vec(w.o).add(radius));
             }
@@ -152,7 +153,7 @@ namespace ai
             for(left = 0, right = numindices; left < right;)
             {
                 waypoint &w = waypoints[indices[left]];
-                float radius = WAYPOINTRADIUS;
+                float radius = waypointradius;
                 if(max(split - (w.o[axis]-radius), 0.0f) > max((w.o[axis]+radius) - split, 0.0f))
                 {
                     ++left;
@@ -180,7 +181,7 @@ namespace ai
                 for(int i = 0; i < numindices; ++i)
                 {
                     waypoint &w = waypoints[indices[i]];
-                    float radius = WAYPOINTRADIUS;
+                    float radius = waypointradius;
                     if(i < left)
                     {
                         splitleft = max(splitleft, w.o[axis]+radius);
@@ -291,7 +292,7 @@ namespace ai
         {
             if(waypoints[i].weight < 0)
             {
-                wpavoid.avoidnear(NULL, waypoints[i].o.z + WAYPOINTRADIUS, waypoints[i].o, WAYPOINTRADIUS);
+                wpavoid.avoidnear(NULL, waypoints[i].o.z + waypointradius, waypoints[i].o, waypointradius);
             }
         }
     }
@@ -409,13 +410,17 @@ namespace ai
 
         float mindist2 = mindist*mindist,
               maxdist2 = maxdist*maxdist;
-        #define CHECKWITHIN(index) do { \
+        #define CHECKWITHIN(index) \
+        do { \
             int n = (index); \
             if(n < waypoints.length()) \
             { \
                 const waypoint &w = waypoints[n]; \
                 float dist = w.o.squaredist(pos); \
-                if(dist > mindist2 && dist < maxdist2) results.add(n); \
+                if(dist > mindist2 && dist < maxdist2) \
+                { \
+                    results.add(n); \
+                } \
             } \
         } while(0)
         wpcache::node *curnode;
@@ -457,18 +462,30 @@ namespace ai
                     {
                         if(dist2 < maxdist)
                         {
-                            if(!curnode->isleaf(1)) wpcachestack.add(curnode + curnode->childindex(1));
-                            else CHECKWITHIN(curnode->childindex(1));
+                            if(!curnode->isleaf(1))
+                            {
+                                wpcachestack.add(curnode + curnode->childindex(1));
+                            }
+                            else
+                            {
+                                CHECKWITHIN(curnode->childindex(1));
+                            }
                         }
                         curnode += curnode->childindex(0);
                         continue;
                     }
-                    if(wpcachestack.empty()) break;
+                    if(wpcachestack.empty())
+                    {
+                        break;
+                    }
                     curnode = wpcachestack.pop();
                 }
             }
         }
-        for(int i = lastwpcache; i < waypoints.length(); i++) { CHECKWITHIN(i); }
+        for(int i = lastwpcache; i < waypoints.length(); i++)
+        {
+            CHECKWITHIN(i);
+        }
     }
 
     void avoidset::avoidnear(void *owner, float above, const vec &pos, float limit)
@@ -483,12 +500,16 @@ namespace ai
         }
 
         float limit2 = limit*limit;
-        #define CHECKNEAR(index) do { \
+        #define CHECKNEAR(index) \
+        do { \
             int n = (index); \
             if(n < ai::waypoints.length()) \
             { \
                 const waypoint &w = ai::waypoints[n]; \
-                if(w.o.squaredist(pos) < limit2) add(owner, above, n); \
+                if(w.o.squaredist(pos) < limit2) \
+                { \
+                    add(owner, above, n); \
+                } \
             } \
         } while(0)
         wpcache::node *curnode;
@@ -518,7 +539,11 @@ namespace ai
                         CHECKNEAR(curnode->childindex(0));
                         if(dist2 < limit)
                         {
-                            if(!curnode->isleaf(1)) { curnode += curnode->childindex(1); continue; }
+                            if(!curnode->isleaf(1))
+                            {
+                                curnode += curnode->childindex(1);
+                                continue;
+                            }
                             CHECKNEAR(curnode->childindex(1));
                         }
                     }
@@ -572,11 +597,11 @@ namespace ai
                                 return retry ? n : -1;
                             }
                             vec above(pos.x, pos.y, ob.above);
-                            if(above.z-d->o.z >= ai::JUMPMAX)
+                            if(above.z-d->o.z >= ai::jumpmax)
                             {
                                 return retry ? n : -1; // too much scotty
                             }
-                            int node = closestwaypoint(above, ai::SIGHTMIN, true, d);
+                            int node = closestwaypoint(above, ai::sightmin, true, d);
                             if(ai::iswaypoint(node) && node != n)
                             { // try to reroute above their head?
                                 if(!find(node, d))
@@ -678,7 +703,7 @@ namespace ai
             waypoint &m = *queue.removeheap();
             float prevscore = m.curscore;
             m.curscore = -1;
-            for(int i = 0; i < MAXWAYPOINTLINKS; ++i)
+            for(int i = 0; i < maxwaypointlinks; ++i)
             {
                 int link = m.links[i];
                 if(!link)
@@ -695,11 +720,11 @@ namespace ai
                         continue;
                     }
                     n.curscore = curscore;
-                    n.prev = ushort(&m - &waypoints[0]);
+                    n.prev = static_cast<ushort>(&m - &waypoints[0]);
                     if(n.route != routeid)
                     {
                         n.estscore = n.o.dist(waypoints[goal].o)*weight;
-                        if(n.estscore <= WAYPOINTRADIUS*4 && (lowest < 0 || n.estscore <= waypoints[lowest].estscore))
+                        if(n.estscore <= waypointradius*4 && (lowest < 0 || n.estscore <= waypoints[lowest].estscore))
                         {
                             lowest = link;
                         }
@@ -743,7 +768,7 @@ namespace ai
 
     int addwaypoint(const vec &o, int weight = -1)
     {
-        if(waypoints.length() > MAXWAYPOINTS)
+        if(waypoints.length() > maxwaypoints)
         {
             return -1;
         }
@@ -755,7 +780,7 @@ namespace ai
 
     void linkwaypoint(waypoint &a, int n)
     {
-        for(int i = 0; i < MAXWAYPOINTLINKS; ++i)
+        for(int i = 0; i < maxwaypointlinks; ++i)
         {
             if(a.links[i] == n)
             {
@@ -767,7 +792,7 @@ namespace ai
                 return;
             }
         }
-        a.links[randomint(MAXWAYPOINTLINKS)] = n;
+        a.links[randomint(maxwaypointlinks)] = n;
     }
 
     string loadedwaypoints = "";
@@ -830,7 +855,7 @@ namespace ai
         }
         else
         {
-            d->lastnode = closestwaypoint(v, WAYPOINTRADIUS*2, false, d);
+            d->lastnode = closestwaypoint(v, waypointradius*2, false, d);
         }
     }
 
@@ -848,7 +873,7 @@ namespace ai
         {
             dropping = false;
         }
-        float dist = dropping ? WAYPOINTRADIUS : (d->ai ? WAYPOINTRADIUS : SIGHTMIN);
+        float dist = dropping ? waypointradius : (d->ai ? waypointradius : sightmin);
         int curnode = closestwaypoint(v, dist, false, d), prevnode = d->lastnode;
         if(!iswaypoint(curnode) && dropping)
         {
@@ -874,9 +899,9 @@ namespace ai
                 d->ai->addprevnode(prevnode);
             }
         }
-        else if(!iswaypoint(d->lastnode) || waypoints[d->lastnode].o.squaredist(v) > SIGHTMIN*SIGHTMIN)
+        else if(!iswaypoint(d->lastnode) || waypoints[d->lastnode].o.squaredist(v) > sightmin*sightmin)
         {
-            d->lastnode = closestwaypoint(v, SIGHTMAX, false, d);
+            d->lastnode = closestwaypoint(v, sightmax, false, d);
         }
     }
 
@@ -910,7 +935,10 @@ namespace ai
 
     void seedwaypoints()
     {
-        if(waypoints.empty()) addwaypoint(vec(0, 0, 0));
+        if(waypoints.empty())
+        {
+            addwaypoint(vec(0, 0, 0));
+        }
         for(int i = 0; i < entities::ents.length(); i++)
         {
             extentity &e = *entities::ents[i];
@@ -957,7 +985,7 @@ namespace ai
                 w = waypoints[j];
             }
             int k = 0;
-            for(int i = 0; i < MAXWAYPOINTLINKS; ++i)
+            for(int i = 0; i < maxwaypointlinks; ++i)
             {
                 int link = w.links[i];
                 if(!link)
@@ -969,7 +997,7 @@ namespace ai
                     k++;
                 }
             }
-            if(k < MAXWAYPOINTLINKS)
+            if(k < maxwaypointlinks)
             {
                 w.links[k] = 0;
             }
@@ -1070,7 +1098,7 @@ namespace ai
             {
                 if((w.links[k] = f->get<ushort>()))
                 {
-                    if(++k >= MAXWAYPOINTLINKS)
+                    if(++k >= maxwaypointlinks)
                     {
                         break;
                     }
@@ -1114,7 +1142,7 @@ namespace ai
             f->put<float>(w.o.y);
             f->put<float>(w.o.z);
             int numlinks = 0;
-            for(int j = 0; j < MAXWAYPOINTLINKS; ++j)
+            for(int j = 0; j < maxwaypointlinks; ++j)
             {
                 if(!w.links[j])
                 {
@@ -1141,7 +1169,8 @@ namespace ai
         {
             return;
         }
-        vec o = vec(sel.o).sub(0.1f), s = vec(sel.s).mul(sel.grid).add(o).add(0.1f);
+        vec o = vec(sel.o).sub(0.1f),
+            s = vec(sel.s).mul(sel.grid).add(o).add(0.1f);
         int cleared = 0;
         for(int i = 1; i < waypoints.length(); i++)
         {
@@ -1198,4 +1227,3 @@ namespace ai
     }
     ICOMMAND(movewaypoints, "iii", (int *dx, int *dy, int *dz), movewaypoints(vec(*dx, *dy, *dz)));
 }
-

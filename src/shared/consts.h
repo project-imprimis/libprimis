@@ -1,7 +1,7 @@
 #ifndef CONSTS_H_
 #define CONSTS_H_
-/* consts.h 
- * 
+/* consts.h
+ *
  * This is a header filled with constants that are useful to pass appropriate information
  * from the game to the engine; it is only for those constants which are directly useful for
  * the engine-game interface and not for constants which solely lie in the engine or game
@@ -13,6 +13,16 @@
 #define IS_LIQUID(mat) ((mat)==Mat_Water)
 #define IS_CLIPPED(mat) ((mat)==Mat_Glass) //materials that are obligate clipping (always also get clipped)
 #define LOOP_START(id, stack) if((id)->type != Id_Alias) return; identstack stack;
+
+enum
+{
+    SCR_MINW     = 320, //minimum screen resolution
+    SCR_MINH     = 200, //minumum screen resolution
+    SCR_MAXW     = 16384,
+    SCR_MAXH     = 16384,
+    SCR_DEFAULTW = 1366, //smallest typical screens are 1366x768
+    SCR_DEFAULTH = 768,
+};
 
 struct servinfo
 {
@@ -65,6 +75,7 @@ enum
     Edit_Rotate,
     Edit_Replace,
     Edit_DelCube,
+    Edit_AddCube,
     Edit_CalcLight,
     Edit_Remip,
     Edit_VSlot,
@@ -204,6 +215,14 @@ enum
     Discon_Overflow,
     Discon_Password,
     Discon_NumDiscons
+};
+
+enum
+{
+    Init_Not = 0,
+    Init_Game,
+    Init_Load,
+    Init_Reset,
 };
 
 #endif

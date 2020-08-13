@@ -132,6 +132,7 @@ enum
 {
     Gun_Rail = 0,
     Gun_Pulse,
+    Gun_Eng,
     Gun_NumGuns
 };
 enum
@@ -148,6 +149,8 @@ enum
     Attack_RailMelee,
     Attack_PulseShoot,
     Attack_PulseMelee,
+    Attack_EngShoot,
+    Attack_EngMelee,
     Attack_NumAttacks
 };
 
@@ -321,6 +324,7 @@ enum
     NetMsg_Rotate,
     NetMsg_Replace,
     NetMsg_DelCube,
+    NetMsg_AddCube,
     NetMsg_CalcLight,
     NetMsg_Remip, //50
     NetMsg_EditVSlot,
@@ -435,6 +439,7 @@ const int msgsizes[] =               // size inclusive message token, 0 for vari
     NetMsg_Rotate, 15,
     NetMsg_Replace, 17,
     NetMsg_DelCube, 14,
+    NetMsg_AddCube, 14,
     NetMsg_CalcLight, 1,
     NetMsg_Remip, 1,
     NetMsg_EditVSlot, 16,
@@ -529,20 +534,23 @@ const int MAXRAYS = 1,
 const float EXP_SELFPUSH  = 2.5f,
             EXP_DISTSCALE = 0.5f;
 // this defines weapon properties
-//                            1    2       3     4         5        6      7         8            9       10      11      12         13          14     15    16       17      18   19
-const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use; } attacks[Attack_NumAttacks] =
-//    1          2          3           4                5               6         7        8     9  10 11    12  13    14 15    16  17 18 19
+//                            1    2       3     4         5        6      7         8            9       10      11      12         13          14     15    16       17           18   19
+const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, worldfx, use; } attacks[Attack_NumAttacks] =
+//    1          2          3           4               5             6              7            8     9  10 11    12  13    14 15  16    17 18 19
 {
     { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Rail1,  Sound_Rail2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
     { Gun_Rail,  Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Pulse1, Sound_Pulse2, 130,  3, 0, 1, 3000, 10, 1024, 1, 2500,  3, 0, 0 },
-    { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
+    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Pulse1, Sound_Pulse2, 500, 20, 0, 1,  700, 50, 1024, 1, 2500, 50, 1, 0 },
+    { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
+    { Gun_Eng,   Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Melee,  Sound_Melee,  500,  0, 0, 1,  700, 20,   32, 1,   10, 50, 2, 0 },
+    { Gun_Eng,   Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
 };
 
 const struct guninfo { const char *name, *file, *vwep; int attacks[Act_NumActs]; } guns[Gun_NumGuns] =
 {
-    { "railgun", "railgun", "worldgun/railgun", { -1, Attack_RailShot, Attack_RailMelee }, },
-    { "pulse rifle", "pulserifle", "worldgun/pulserifle", { -1, Attack_PulseShoot, Attack_PulseMelee } }
+    { "railgun", "railgun", "worldgun/railgun", { -1, Attack_RailShot, Attack_RailMelee } },
+    { "pulse rifle", "pulserifle", "worldgun/pulserifle", { -1, Attack_PulseShoot, Attack_PulseMelee } },
+    { "engineer rifle", "enggun", "worldgun/pulserifle", { -1, Attack_EngShoot, Attack_EngMelee } }
 };
 
 #include "ai.h"
@@ -738,11 +746,10 @@ namespace entities
     extern void preloadentities();
     extern void checkitems(gameent *d);
     extern void resetspawns();
-    extern void spawnitems(bool force = false);
+    extern void spawnitems();
     extern void putitems(packetbuf &p);
     extern void setspawn(int i, bool on);
     extern void teleport(int n, gameent *d);
-    extern void pickupeffects(int n, gameent *d);
     extern void teleporteffects(gameent *d, int tp, int td, bool local = true);
     extern void jumppadeffects(gameent *d, int jp, bool local = true);
 }
@@ -792,7 +799,6 @@ namespace game
     extern int following;
     extern int smoothmove, smoothdist;
 
-    extern bool clientoption(const char *arg);
     extern gameent *getclient(int cn);
     extern gameent *newclient(int cn);
     extern const char *colorname(gameent *d, const char *name = NULL, const char *alt = NULL, const char *color = "");
@@ -818,7 +824,8 @@ namespace game
     extern void drawicon(int icon, float x, float y, float sz = 120);
     const char *mastermodecolor(int n, const char *unknown);
     const char *mastermodeicon(int n, const char *unknown);
-
+    extern void suicide(physent *d);
+    extern void bounced(physent *d, const vec &surface);
     // client
     extern bool connected, remote, demoplayback;
     extern string servdesc;
@@ -831,8 +838,6 @@ namespace game
     extern bool addmsg(int type, const char *fmt = NULL, ...);
     extern void switchname(const char *name);
     extern void switchteam(const char *name);
-    extern void switchplayermodel(int playermodel);
-    extern void switchplayercolor(int playercolor);
     extern void sendmapinfo();
     extern void stopdemo();
     extern void changemap(const char *name, int mode);
@@ -856,7 +861,6 @@ namespace game
     extern void clearprojectiles();
     extern void updateprojectiles(int curtime);
     extern void removeprojectiles(gameent *owner);
-    extern void renderprojectiles();
     extern void removeweapons(gameent *owner);
     extern void updateweapons(int curtime);
     extern void gunselect(int gun, gameent *d);
@@ -888,7 +892,105 @@ namespace game
     extern void syncplayer();
     extern void swayhudgun(int curtime);
     extern vec hudgunorigin(int gun, const vec &from, const vec &to, gameent *d);
+
+    // additional fxns needed by server/main code
+    extern void parseoptions(vector<const char *> &args);
+
+    extern void gamedisconnect(bool cleanup);
+    extern void parsepacketclient(int chan, packetbuf &p);
+    extern void connectattempt(const char *name, const char *password, const ENetAddress &address);
+    extern void connectfail();
+    extern void gameconnect(bool _remote);
+    extern void changemap(const char *name);
+    extern bool ispaused();
+
+    extern const char *gameconfig();
+    extern const char *savedservers();
+    extern void loadconfigs();
+    extern int selectcrosshair();
+
+    extern void updateworld();
+    extern void initclient();
+    extern int scaletime(int t);
+    extern const char *getmapinfo();
+    extern const char *gameident();
+    extern const char *restoreconfig();
+    extern const char *savedconfig();
+    extern const char *defaultconfig();
+    extern const char *autoexec();
+    extern bool allowmove(physent *d);
 }
+
+// game
+extern int thirdperson;
+extern bool isthirdperson();
+
+
+// server
+extern vector<const char *> gameargs;
+extern int maxclients;
+
+extern void cleanupserver();
+extern void serverslice(uint timeout);
+extern void updatetime();
+
+extern ENetSocket connectmaster(bool wait);
+extern void localclienttoserver(int chan, ENetPacket *);
+extern void localconnect();
+
+extern void *getclientinfo(int i);
+extern ENetPeer *getclientpeer(int i);
+extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
+extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
+extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
+extern void flushserver(bool force);
+extern int getservermtu();
+extern uint getclientip(int n);
+extern void localconnect();
+extern const char *disconnectreason(int reason);
+extern void disconnect_client(int n, int reason);
+extern void kicknonlocalclients(int reason = Discon_None);
+extern bool hasnonlocalclients();
+extern bool haslocalclients();
+extern void sendserverinforeply(ucharbuf &p);
+extern bool requestmaster(const char *req);
+extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
+extern void closelogfile();
+extern void setlogfile(const char *fname);
+
+// client
+extern void localdisconnect(bool cleanup = true);
+extern void localservertoclient(int chan, ENetPacket *packet);
+extern void connectserv(const char *servername, int port, const char *serverpassword);
+extern void abortconnect();
+
+extern void sendclientpacket(ENetPacket *packet, int chan);
+extern void flushclient();
+extern void disconnect(bool async = false, bool cleanup = true);
+extern const ENetAddress *connectedpeer();
+extern void neterr(const char *s, bool disc = true);
+extern void gets2c();
+extern void notifywelcome();
+
+// serverbrowser
+
+extern servinfo *getservinfo(int i);
+
+#define GETSERVINFO(idx, si, body) do { \
+    servinfo *si = getservinfo(idx); \
+    if(si) \
+    { \
+        body; \
+    } \
+} while(0)
+
+#define GETSERVINFOATTR(idx, aidx, aval, body) \
+    GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
+
+extern bool resolverwait(const char *name, ENetAddress *address);
+extern int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
+extern void addserver(const char *name, int port = 0, const char *password = NULL, bool keep = false);
+extern void writeservercfg();
 
 namespace server
 {
@@ -903,7 +1005,32 @@ namespace server
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
     extern int msgsizelookup(int msg);
     extern bool serveroption(const char *arg);
-    extern bool delayspawn(int type);
+
+    extern void *newclientinfo();
+    extern void deleteclientinfo(void *ci);
+    extern void serverinit();
+    extern int reserveclients();
+    extern int numchannels();
+    extern void clientdisconnect(int n);
+    extern int clientconnect(int n, uint ip);
+    extern void localdisconnect(int n);
+    extern void localconnect(int n);
+    extern bool allowbroadcast(int n);
+    extern void recordpacket(int chan, void *data, int len);
+    extern void parsepacket(int sender, int chan, packetbuf &p);
+    extern void sendservmsg(const char *s);
+    extern bool sendpackets(bool force = false);
+    extern void serverinforeply(ucharbuf &req, ucharbuf &p);
+    extern void serverupdate();
+    extern int protocolversion();
+    extern int laninfoport();
+    extern int serverport();
+    extern const char *defaultmaster();
+    extern int masterport();
+    extern void masterconnected();
+    extern void masterdisconnected();
+    extern bool ispaused();
+    extern int scaletime(int t);
 }
 
 #endif

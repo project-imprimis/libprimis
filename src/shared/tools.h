@@ -21,20 +21,8 @@ typedef unsigned long long int ullong;
     #define RESTRICT
 #endif
 
-#ifdef __GNUC__
-    #define UNUSED __attribute__((unused))
-#else
-    #define UNUSED
-#endif
-
 void *operator new(size_t, bool);
 void *operator new[](size_t, bool);
-#ifndef _GLIBCXX_FSTREAM
-    inline void *operator new(size_t, void *p) { return p; }
-    inline void *operator new[](size_t, void *p) { return p; }
-    inline void operator delete(void *, void *) {}
-    inline void operator delete[](void *, void *) {}
-#endif
 
 #ifdef swap
     #undef swap
@@ -71,11 +59,6 @@ template<class T>
 inline T min(T a, T b, T c)
 {
     return min(min(a, b), c);
-}
-template<class T, class U>
-inline T clamp(T a, U b, U c)
-{
-    return max(T(b), min(a, T(c)));
 }
 
 #ifdef __GNUC__
@@ -284,14 +267,17 @@ struct databuf
     const T &get()
     {
         static const T overreadval = 0;
-        if(len<maxlen) return buf[len++];
+        if(len<maxlen)
+        {
+            return buf[len++];
+        }
         flags |= OVERREAD;
         return overreadval;
     }
 
     databuf subbuf(int sz)
     {
-        sz = clamp(sz, 0, maxlen-len);
+        sz = std::clamp(sz, 0, maxlen-len);
         len += sz;
         return databuf(&buf[len-sz], sz);
     }
@@ -305,8 +291,14 @@ struct databuf
 
     void put(const T &val)
     {
-        if(len<maxlen) buf[len++] = val;
-        else flags |= OVERWROTE;
+        if(len<maxlen)
+        {
+            buf[len++] = val;
+        }
+        else
+        {
+            flags |= OVERWROTE;
+        }
     }
 
     void put(const T *vals, int numvals)
@@ -695,11 +687,36 @@ struct vector
 
     T *disown() { T *r = buf; buf = NULL; alen = ulen = 0; return r; }
 
-    void shrink(int i) {if(isclass<T>::no) ulen = i; else while(ulen>i) drop(); }
+    void shrink(int i)
+    {
+        if(isclass<T>::no)
+        {
+            ulen = i;
+        }
+        else
+        {
+            while(ulen>i)
+            {
+                drop();
+            }
+        }
+    }
     void setsize(int i) { ulen = i; }
 
-    void deletecontents(int n = 0) { while(ulen > n) delete pop(); }
-    void deletearrays(int n = 0) { while(ulen > n) delete[] pop(); }
+    void deletecontents(int n = 0)
+    {
+        while(ulen > n)
+        {
+            delete pop();
+        }
+    }
+    void deletearrays(int n = 0)
+    {
+        while(ulen > n)
+        {
+            delete[] pop();
+        }
+    }
 
     T *getbuf() { return buf; }
     const T *getbuf() const { return buf; }
@@ -717,13 +734,28 @@ struct vector
     void growbuf(int sz)
     {
         int olen = alen;
-        if(alen <= 0) alen = max(MINSIZE, sz);
-        else while(alen < sz) alen += alen/2;
-        if(alen <= olen) return;
+        if(alen <= 0)
+        {
+            alen = max(MINSIZE, sz);
+        }
+        else
+        {
+            while(alen < sz)
+            {
+                alen += alen/2;
+            }
+        }
+        if(alen <= olen)
+        {
+            return;
+        }
         uchar *newbuf = new uchar[alen*sizeof(T)];
         if(olen > 0)
         {
-            if(ulen > 0) memcpy(newbuf, (void *)buf, ulen*sizeof(T));
+            if(ulen > 0)
+            {
+                memcpy(newbuf, (void *)buf, ulen*sizeof(T));
+            }
             delete[] (uchar *)buf;
         }
         buf = (T *)newbuf;
@@ -731,7 +763,10 @@ struct vector
 
     databuf<T> reserve(int sz)
     {
-        if(alen-ulen < sz) growbuf(ulen+sz);
+        if(alen-ulen < sz)
+        {
+            growbuf(ulen+sz);
+        }
         return databuf<T>(&buf[ulen], sz);
     }
 
@@ -838,14 +873,20 @@ struct vector
     T &insert(int i, const T &e)
     {
         add(T());
-        for(int p = ulen-1; p>i; p--) buf[p] = buf[p-1];
+        for(int p = ulen-1; p>i; p--)
+        {
+            buf[p] = buf[p-1];
+        }
         buf[i] = e;
         return buf[i];
     }
 
     T *insert(int i, const T *e, int n)
     {
-        if(alen-ulen < n) growbuf(ulen+n);
+        if(alen-ulen < n)
+        {
+            growbuf(ulen+n);
+        }
         for(int j = 0; j < n; ++j)
         {
             add(T());
@@ -883,7 +924,10 @@ struct vector
         while(i > 0)
         {
             int pi = heapparent(i);
-            if(score >= heapscore(buf[pi])) break;
+            if(score >= heapscore(buf[pi]))
+            {
+                break;
+            }
             swap(buf[i], buf[pi]);
             i = pi;
         }
@@ -906,10 +950,19 @@ struct vector
             float cscore = heapscore(buf[ci]);
             if(score > cscore)
             {
-               if(ci+1 < ulen && heapscore(buf[ci+1]) < cscore) { swap(buf[ci+1], buf[i]); i = ci+1; }
-               else { swap(buf[ci], buf[i]); i = ci; }
+               if(ci+1 < ulen && heapscore(buf[ci+1]) < cscore)
+               {
+                   swap(buf[ci+1], buf[i]); i = ci+1;
+               }
+               else
+               {
+                   swap(buf[ci], buf[i]); i = ci;
+               }
             }
-            else if(ci+1 < ulen && heapscore(buf[ci+1]) < score) { swap(buf[ci+1], buf[i]); i = ci+1; }
+            else if(ci+1 < ulen && heapscore(buf[ci+1]) < score)
+            {
+                swap(buf[ci+1], buf[i]); i = ci+1;
+            }
             else break;
         }
         return i;
@@ -1360,22 +1413,22 @@ struct streambuf
 
 enum
 {
-    CT_PRINT   = 1<<0,
-    CT_SPACE   = 1<<1,
-    CT_DIGIT   = 1<<2,
-    CT_ALPHA   = 1<<3,
-    CT_LOWER   = 1<<4,
-    CT_UPPER   = 1<<5,
-    CT_UNICODE = 1<<6
+    CubeType_Print   = 1 << 0,
+    CubeType_Space   = 1 << 1,
+    CubeType_Digit   = 1 << 2,
+    CubeType_Alpha   = 1 << 3,
+    CubeType_Lower   = 1 << 4,
+    CubeType_Upper   = 1 << 5,
+    CubeType_Unicode = 1 << 6
 };
 extern const uchar cubectype[256];
-inline int iscubeprint(uchar c) { return cubectype[c]&CT_PRINT; }
-inline int iscubespace(uchar c) { return cubectype[c]&CT_SPACE; }
-inline int iscubealpha(uchar c) { return cubectype[c]&CT_ALPHA; }
-inline int iscubealnum(uchar c) { return cubectype[c]&(CT_ALPHA|CT_DIGIT); }
-inline int iscubelower(uchar c) { return cubectype[c]&CT_LOWER; }
-inline int iscubeupper(uchar c) { return cubectype[c]&CT_UPPER; }
-inline int iscubepunct(uchar c) { return cubectype[c] == CT_PRINT; }
+inline int iscubeprint(uchar c) { return cubectype[c] & CubeType_Print; }
+inline int iscubespace(uchar c) { return cubectype[c] & CubeType_Space; }
+inline int iscubealpha(uchar c) { return cubectype[c] & CubeType_Alpha; }
+inline int iscubealnum(uchar c) { return cubectype[c]&(CubeType_Alpha | CubeType_Digit); }
+inline int iscubelower(uchar c) { return cubectype[c] & CubeType_Lower; }
+inline int iscubeupper(uchar c) { return cubectype[c] & CubeType_Upper; }
+inline int iscubepunct(uchar c) { return cubectype[c] == CubeType_Print; }
 inline int cube2uni(uchar c)
 {
     extern const int cube2unichars[256];

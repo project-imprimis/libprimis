@@ -148,7 +148,7 @@ const struct material
 
 int findmaterial(const char *name)
 {
-    for(int i = 0; i < int(sizeof(materials)/sizeof(material)); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(material)); ++i)
     {
         if(!strcmp(materials[i].name, name))
         {
@@ -160,7 +160,7 @@ int findmaterial(const char *name)
 
 const char *findmaterialname(int mat)
 {
-    for(int i = 0; i < int(sizeof(materials)/sizeof(materials[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(materials[0])); ++i)
     {
         if(materials[i].id == mat)
         {
@@ -175,7 +175,7 @@ const char *getmaterialdesc(int mat, const char *prefix)
     static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
     static string desc;
     desc[0] = '\0';
-    for(int i = 0; i < int(sizeof(matmasks)/sizeof(matmasks[0])); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(matmasks)/sizeof(matmasks[0])); ++i)
     {
         if(mat&matmasks[i])
         {
@@ -190,7 +190,7 @@ const char *getmaterialdesc(int mat, const char *prefix)
     return desc;
 }
 
-int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort matmask)
+int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort matmask = MatFlag_Volume)
 {
     ushort mat = c.material&matmask;
     switch(mat)
@@ -203,7 +203,7 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
         {
             if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
             {
-                return (orient != Orient_Bottom ? MATSURF_VISIBLE : MATSURF_EDIT_ONLY);
+                return (orient != Orient_Bottom ? MatSurf_Visible : MatSurf_EditOnly);
             }
             break;
         }
@@ -211,7 +211,7 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
         {
             if(visibleface(c, orient, co, size, Mat_Glass, Mat_Air, matmask))
             {
-                return MATSURF_VISIBLE;
+                return MatSurf_Visible;
             }
             break;
         }
@@ -219,12 +219,12 @@ int visiblematerial(const cube &c, int orient, const ivec &co, int size, ushort 
         {
             if(visibleface(c, orient, co, size, mat, Mat_Air, matmask))
             {
-                return MATSURF_EDIT_ONLY;
+                return MatSurf_EditOnly;
             }
             break;
         }
     }
-    return MATSURF_NOT_VISIBLE;
+    return MatSurf_NotVisible;
 }
 
 void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface> &matsurfs)
@@ -232,11 +232,11 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
     for(int i = 0; i < 6; ++i)
     {
         static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
-        for(int j = 0; j < int(sizeof(matmasks)/sizeof(matmasks[0])); ++j)
+        for(int j = 0; j < static_cast<int>(sizeof(matmasks)/sizeof(matmasks[0])); ++j)
         {
             ushort matmask = matmasks[j];
             int vis = visiblematerial(c, i, co, size, matmask&~MatFlag_Index);
-            if(vis != MATSURF_NOT_VISIBLE)
+            if(vis != MatSurf_NotVisible)
             {
                 materialsurface m;
                 m.material = c.material&matmask;
@@ -284,7 +284,10 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
         {
             case Mat_Water:
             {
-                if(m.visible == MATSURF_EDIT_ONLY) continue;
+                if(m.visible == MatSurf_EditOnly)
+                {
+                    continue;
+                }
                 addmatbb(va->watermin, va->watermax, m);
                 break;
             }
@@ -303,7 +306,9 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &
 
 static inline bool mergematcmp(const materialsurface &x, const materialsurface &y)
 {
-    int dim = DIMENSION(x.orient), c = C[dim], r = R[dim];
+    int dim = DIMENSION(x.orient),
+        c   = C[dim],
+        r   = R[dim];
     if(x.o[r] + x.rsize < y.o[r] + y.rsize)
     {
         return true;
@@ -434,7 +439,10 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
         }
         if(!IS_LIQUID(start->material&MatFlag_Volume) || start->orient != Orient_Top || !vertwater)
         {
-            if(start!=matbuf) memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+            if(start!=matbuf)
+            {
+                memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+            }
             matbuf += mergemats(matbuf, cur-start);
         }
         else if(cur-start>=4)
@@ -469,9 +477,7 @@ void preloadglassshaders(bool force = false)
     {
         return;
     }
-
     useshaderbyname("glass");
-
     extern int glassenv;
     if(glassenv)
     {
@@ -633,7 +639,6 @@ static inline bool editmatcmp(const materialsurface &x, const materialsurface &y
     {
         return true;
     }
-    //if(x.material > y.material) return false;
     return false;
 }
 
@@ -724,7 +729,8 @@ void rendermatgrid()
     disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
 }
 
-static float glassxscale = 0, glassyscale = 0;
+static float glassxscale = 0,
+             glassyscale = 0;
 
 static void drawglass(const materialsurface &m, float offset, const vec *normal = NULL)
 {
@@ -858,7 +864,7 @@ int findmaterials()
             {
                 materialsurface &m = va->matbuf[i];
                 //skip if only rendering edit mat boxes or non-water mat
-                if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MATSURF_EDIT_ONLY)
+                if((m.material&MatFlag_Volume) != Mat_Water || m.visible == MatSurf_EditOnly)
                 {
                     i += m.skip;
                     continue;
@@ -866,11 +872,11 @@ int findmaterials()
                 hasmats |= 4|1;
                 if(m.orient == Orient_Top)
                 {
-                    watersurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                    watersurfs[m.material&MatFlag_Index].put(&m, 1+static_cast<int>(m.skip));
                 }
                 else
                 {
-                    waterfallsurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                    waterfallsurfs[m.material&MatFlag_Index].put(&m, 1+static_cast<int>(m.skip));
                 }
                 i += m.skip;
             }
@@ -895,7 +901,7 @@ int findmaterials()
                     continue;
                 }
                 hasmats |= 4|2;
-                glasssurfs[m.material&MatFlag_Index].put(&m, 1+int(m.skip));
+                glasssurfs[m.material&MatFlag_Index].put(&m, 1+static_cast<int>(m.skip));
                 i += m.skip;
             }
         }

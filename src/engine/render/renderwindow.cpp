@@ -1,8 +1,11 @@
 //screen rendering functions, such as background, progress bar, screen settings
-// (e.g. gamma); 
+// (e.g. gamma);
 #include "engine.h"
 #include "interface/input.h"
 #include "renderwindow.h"
+
+VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
+VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 
 VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
@@ -169,6 +172,12 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
 
 VAR(menumute, 0, 1, 1);
 
+void swapbuffers(bool)
+{
+    gle::disable();
+    SDL_GL_SwapWindow(screen);
+}
+
 void setbackgroundinfo(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL)
 {
     renderedframe = false;
@@ -304,7 +313,6 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         }
         lastprogress = ticks;
     }
-    clientkeepalive();      // make sure our connection doesn't time out while loading maps etc.
     int w = hudw,
         h = hudh;
     if(forceaspect)
@@ -351,8 +359,9 @@ VARF(fullscreen, 0, 1, 1, setfullscreen(fullscreen!=0));
 
 void screenres(int w, int h)
 {
-    scr_w = clamp(w, SCR_MINW, SCR_MAXW);
-    scr_h = clamp(h, SCR_MINH, SCR_MAXH);
+    //need to cast enum to int for std's clamp implementation
+    scr_w = std::clamp(w, static_cast<int>(SCR_MINW), static_cast<int>(SCR_MAXW));
+    scr_h = std::clamp(h, static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
     if(screen)
     {
         scr_w = min(scr_w, desktopw);
@@ -567,12 +576,6 @@ void resetgl()
 }
 
 COMMAND(resetgl, "");
-
-void swapbuffers(bool)
-{
-    gle::disable();
-    SDL_GL_SwapWindow(screen);
-}
 
 VAR(menufps, 0, 60, 1000);
 VARP(maxfps, 0, 125, 1000);

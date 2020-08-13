@@ -45,10 +45,32 @@ struct extentity : entity                       // part of the entity that doesn
 
     extentity() : flags(0), attached(NULL) {}
 
-    bool spawned() const { return (flags&EntFlag_Spawned) != 0; }
-    void setspawned(bool val) { if(val) flags |= EntFlag_Spawned; else flags &= ~EntFlag_Spawned; }
-    void setspawned() { flags |= EntFlag_Spawned; }
-    void clearspawned() { flags &= ~EntFlag_Spawned; }
+    bool spawned() const
+    {
+        return (flags&EntFlag_Spawned) != 0;
+    }
+
+    void setspawned(bool val)
+    {
+        if(val)
+        {
+            flags |= EntFlag_Spawned;
+        }
+        else
+        {
+            flags &= ~EntFlag_Spawned;
+        }
+    }
+
+    void setspawned()
+    {
+        flags |= EntFlag_Spawned;
+    }
+
+    void clearspawned()
+    {
+        flags &= ~EntFlag_Spawned;
+    }
 };
 
 const int maxents = 10000;
@@ -100,7 +122,7 @@ struct physent                                  // base entity type, can be affe
     vec o, vel, falling;                        // origin, velocity
     vec deltapos, newpos;                       // movement interpolation
     float yaw, pitch, roll;
-    float maxspeed;                             // cubes per second, 100 for player
+    float maxspeed;                             // cubes per second, 50 for player
     int timeinair;
     float radius, eyeheight, maxheight, aboveeye; // bounding box size
     float xradius, yradius, zmargin;
@@ -117,8 +139,8 @@ struct physent                                  // base entity type, can be affe
 
     bool blocked;                               // used by physics to signal ai
 
-    physent() : o(0, 0, 0), deltapos(0, 0, 0), newpos(0, 0, 0), yaw(0), pitch(0), roll(0), maxspeed(100),
-               radius(4.1f), eyeheight(18), maxheight(18), aboveeye(2), xradius(4.1f), yradius(4.1f), zmargin(0),
+    physent() : o(0, 0, 0), deltapos(0, 0, 0), newpos(0, 0, 0), yaw(0), pitch(0), roll(0), maxspeed(50),
+               radius(4.1f), eyeheight(14), maxheight(15), aboveeye(2), xradius(4.1f), yradius(4.1f), zmargin(0),
                state(ClientState_Alive), editstate(ClientState_Alive), type(PhysEnt_Player),
                collidetype(Collide_Ellipse),
                blocked(false)
@@ -142,10 +164,19 @@ struct physent                                  // base entity type, can be affe
         floor = vec(0, 0, 1);
     }
 
-    vec feetpos(float offset = 0) const { return vec(o).addz(offset - eyeheight); }
-    vec headpos(float offset = 0) const { return vec(o).addz(offset); }
+    vec feetpos(float offset = 0) const
+    {
+        return vec(o).addz(offset - eyeheight);
+    }
+    vec headpos(float offset = 0) const
+    {
+        return vec(o).addz(offset);
+    }
 
-    bool crouched() const { return fabs(eyeheight - maxheight*crouchheight) < 1e-4f; }
+    bool crouched() const
+    {
+        return fabs(eyeheight - maxheight*crouchheight) < 1e-4f;
+    }
 };
 
 enum
@@ -156,24 +187,24 @@ enum
 
 enum
 {
-        ANIM_ALL        = 0x1FF,
-        ANIM_INDEX      = 0x1FF,
-        ANIM_LOOP       = (1<<9),
-        ANIM_CLAMP      = (1<<10),
-        ANIM_REVERSE    = (1<<11),
-        ANIM_START      = (ANIM_LOOP|ANIM_CLAMP),
-        ANIM_END        = (ANIM_LOOP|ANIM_CLAMP|ANIM_REVERSE),
-        ANIM_DIR        = 0xE00,
-        ANIM_SECONDARY  = 12,
-        ANIM_REUSE      = 0xFFFFFF,
-        ANIM_NOSKIN     = (1<<24),
-        ANIM_SETTIME    = (1<<25),
-        ANIM_FULLBRIGHT = (1<<26),
-        ANIM_NORENDER   = (1<<27),
-        ANIM_RAGDOLL    = (1<<28),
-        ANIM_SETSPEED   = (1<<29),
-        ANIM_NOPITCH    = (1<<30),
-        ANIM_FLAGS      = 0xFF000000,
+        Anim_All        = 0x1FF,
+        Anim_Index      = 0x1FF,
+        Anim_Loop       = (1 << 9),
+        Anim_Clamp      = (1 << 10),
+        Anim_Reverse    = (1 << 11),
+        Anim_Start      = (Anim_Loop | Anim_Clamp),
+        Anim_End        = (Anim_Loop | Anim_Clamp | Anim_Reverse),
+        Anim_Dir        = 0xE00,
+        Anim_Secondary  = 12,
+        Anim_Reuse      = 0xFFFFFF,
+        Anim_NoSkin     = (1 << 24),
+        Anim_SetTime    = (1 << 25),
+        Anim_FullBright = (1 << 26),
+        Anim_NoRender   = (1 << 27),
+        Anim_Ragdoll    = (1 << 28),
+        Anim_SetSpeed   = (1 << 29),
+        Anim_NoPitch    = (1 << 30),
+        Anim_Flags      = 0xFF000000,
 };
 
 struct animinfo // description of a character's animation
@@ -184,8 +215,14 @@ struct animinfo // description of a character's animation
 
     animinfo() : anim(0), frame(0), range(0), basetime(0), speed(100.0f), varseed(0) { }
 
-    bool operator==(const animinfo &o) const { return frame==o.frame && range==o.range && (anim&(ANIM_SETTIME|ANIM_DIR))==(o.anim&(ANIM_SETTIME|ANIM_DIR)) && (anim&ANIM_SETTIME || basetime==o.basetime) && speed==o.speed; }
-    bool operator!=(const animinfo &o) const { return frame!=o.frame || range!=o.range || (anim&(ANIM_SETTIME|ANIM_DIR))!=(o.anim&(ANIM_SETTIME|ANIM_DIR)) || (!(anim&ANIM_SETTIME) && basetime!=o.basetime) || speed!=o.speed; }
+    bool operator==(const animinfo &o) const
+    {
+        return frame==o.frame && range==o.range && (anim&(Anim_SetTime | Anim_Dir)) == (o.anim & (Anim_SetTime | Anim_Dir)) && (anim & Anim_SetTime || basetime == o.basetime) && speed == o.speed;
+    }
+    bool operator!=(const animinfo &o) const
+    {
+        return frame!=o.frame || range!=o.range || (anim&(Anim_SetTime | Anim_Dir)) != (o.anim & (Anim_SetTime | Anim_Dir)) || (!(anim & Anim_SetTime) && basetime != o.basetime) || speed != o.speed;
+    }
 };
 
 struct animinterpinfo // used for animation blending of animated characters
@@ -221,7 +258,10 @@ struct dynent : physent                         // animated characters, or chara
     ~dynent()
     {
         extern void cleanragdoll(dynent *d);
-        if(ragdoll) cleanragdoll(this);
+        if(ragdoll)
+        {
+            cleanragdoll(this);
+        }
     }
 
     void stopmoving()
@@ -240,5 +280,8 @@ struct dynent : physent                         // animated characters, or chara
         }
     }
 
-    vec abovehead() { return vec(o).addz(aboveeye+4); }
+    vec abovehead()
+    {
+        return vec(o).addz(aboveeye+4);
+    }
 };

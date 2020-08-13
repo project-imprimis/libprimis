@@ -219,7 +219,8 @@ float text_widthf(const char *str)
 
 void tabify(const char *str, int *numtabs)
 {
-    int tw = max(*numtabs, 0)*FONTTAB-1, tabs = 0;
+    int tw   = max(*numtabs, 0)*FONTTAB-1,
+        tabs = 0;
     for(float w = text_widthf(str); w <= tw; w = TEXTTAB(w))
     {
         ++tabs;
@@ -374,7 +375,11 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
     {\
         TEXTINDEX(i)\
         int c = static_cast<uchar>(str[i]);\
-        if(c=='\t')      { x = TEXTTAB(x); TEXTWHITE(i) }\
+        if(c=='\t')\
+        {\
+            x = TEXTTAB(x);\
+            TEXTWHITE(i)\
+        }\
         else if(c==' ')  { x += scale*curfont->defaultw; TEXTWHITE(i) }\
         else if(c=='\n') { TEXTLINE(i) x = 0; y += FONTH; }\
         else if(c=='\f') { if(str[i+1]) { i++; TEXTCOLOR(i) }}\
