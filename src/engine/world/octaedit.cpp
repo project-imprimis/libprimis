@@ -649,7 +649,7 @@ static inline void copycube(const cube &src, cube &dst)
     //recursively apply to children
     if(src.children)
     {
-        dst.children = newcubes(F_EMPTY);
+        dst.children = newcubes(faceempty);
         for(int i = 0; i < 8; ++i)
         {
             copycube(src.children[i], dst.children[i]);
@@ -1081,7 +1081,7 @@ static void unpackcube(cube &c, B &buf)
     int mat = buf.get();
     if(mat == 0xFF)
     {
-        c.children = newcubes(F_EMPTY);
+        c.children = newcubes(faceempty);
         //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
@@ -2008,7 +2008,7 @@ namespace hmap
 
         uint face = getface(c[1], d);
         if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0]))) { flags[x][y] |= NOTHMAP; return; }
-        if(c[1]->faces[R[d]] == F_SOLID)   // was single
+        if(c[1]->faces[R[d]] == facesolid)   // was single
             face += 0x08080808;
         else                               // was pair
             face += c[2] ? getface(c[2], d) : 0x08080808;
@@ -3182,7 +3182,7 @@ ICOMMAND(replacesel, "", (), replace(true));
 ////////// flip and rotate ///////////////
 static inline uint dflip(uint face)
 {
-    return face==F_EMPTY ? face : 0x88888888 - (((face&0xF0F0F0F0)>>4) | ((face&0x0F0F0F0F)<<4));
+    return face == faceempty ? face : 0x88888888 - (((face & 0xF0F0F0F0) >> 4) | ((face & 0x0F0F0F0F) << 4));
 }
 
 static inline uint cflip(uint face)

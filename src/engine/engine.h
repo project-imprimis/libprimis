@@ -207,7 +207,7 @@ extern timer *begintimer(const char *name, bool gpu = true);
 extern void endtimer(timer *t);
 
 // octa
-extern cube *newcubes(uint face = F_EMPTY, int mat = Mat_Air);
+extern cube *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);
 extern cubeext *newcubeext(cube &c, int maxverts = 0, bool init = true);

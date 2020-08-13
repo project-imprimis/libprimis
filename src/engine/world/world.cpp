@@ -583,7 +583,7 @@ void splitocta(cube *c, int size)
     {
         if(!c[i].children)
         {
-            c[i].children = newcubes(IS_EMPTY(c[i]) ? F_EMPTY : F_SOLID);
+            c[i].children = newcubes(IS_EMPTY(c[i]) ? faceempty : facesolid);
         }
         splitocta(c[i].children, size>>1);
     }
@@ -627,7 +627,7 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
     setvar("emptymap", 1, true, false);
     texmru.shrink(0);
     freeocta(worldroot);
-    worldroot = newcubes(F_EMPTY);
+    worldroot = newcubes(faceempty);
     for(int i = 0; i < 4; ++i)
     {
         SOLID_FACES(worldroot[i]);
@@ -661,7 +661,7 @@ bool enlargemap(bool force)
     }
     worldscale++;
     worldsize *= 2;
-    cube *c = newcubes(F_EMPTY);
+    cube *c = newcubes(faceempty);
     c[0].children = worldroot;
     for(int i = 0; i < 3; ++i)
     {

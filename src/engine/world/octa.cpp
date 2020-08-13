@@ -14,7 +14,7 @@ static struct emptycube : cube
         visible = 0;
         merged = 0;
         material = Mat_Air;
-        SET_FACES(*this, F_EMPTY);
+        SET_FACES(*this, faceempty);
         for(int i = 0; i < 6; ++i)
         {
             texture[i] = Default_Sky;
@@ -22,7 +22,7 @@ static struct emptycube : cube
     }
 } emptycube;
 
-cube *worldroot = newcubes(F_SOLID);
+cube *worldroot = newcubes(facesolid);
 int allocnodes = 0;
 void calcmerges();
 
@@ -157,7 +157,7 @@ void discardchildren(cube &c, bool fixtex, int depth)
     }
     if(c.children)
     {
-        uint filled = F_EMPTY;
+        uint filled = faceempty;
         for(int i = 0; i < 8; ++i)
         {
             discardchildren(c.children[i], fixtex, depth+1);
@@ -169,9 +169,9 @@ void discardchildren(cube &c, bool fixtex, int depth)
             {
                 c.texture[i] = getmippedtexture(c, i);
             }
-            if(depth > 0 && filled != F_EMPTY)
+            if(depth > 0 && filled != faceempty)
             {
-                c.faces[0] = F_SOLID;
+                c.faces[0] = facesolid;
             }
         }
         DELETEA(c.children);
@@ -531,7 +531,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     }
     if(IS_EMPTY(c) || IS_ENTIRELY_SOLID(c))
     {
-        c.children = newcubes(IS_EMPTY(c) ? F_EMPTY : F_SOLID, c.material);
+        c.children = newcubes(IS_EMPTY(c) ? faceempty : facesolid, c.material);
         for(int i = 0; i < 8; ++i)
         {
             for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
@@ -545,7 +545,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         }
         return true;
     }
-    cube *ch = c.children = newcubes(F_SOLID, c.material);
+    cube *ch = c.children = newcubes(facesolid, c.material);
     bool perfect = true;
     ivec v[8];
     for(int i = 0; i < 8; ++i)
@@ -1270,7 +1270,7 @@ static inline bool occludesface(const cube &c, int orient, const ivec &o, int si
         {
             return true;
         }
-        if(touchingface(c, orient) && faceedges(c, orient) == F_SOLID)
+        if(touchingface(c, orient) && faceedges(c, orient) == facesolid)
         {
             return true;
         }
@@ -1307,7 +1307,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
 {
     if(mat != Mat_Air)
     {
-        if(mat != Mat_Clip && faceedges(c, orient)==F_SOLID && touchingface(c, orient))
+        if(mat != Mat_Clip && faceedges(c, orient) == facesolid && touchingface(c, orient))
         {
             return false;
         }
@@ -1348,7 +1348,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
         {
             return true;
         }
-        if(touchingface(o, opp) && faceedges(o, opp) == F_SOLID)
+        if(touchingface(o, opp) && faceedges(o, opp) == facesolid)
         {
             return false;
         }
@@ -1445,7 +1445,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
             {
                 forcevis |= vismask;
             }
-            else if(!touchingface(o, opp) || faceedges(o, opp) != F_SOLID)
+            else if(!touchingface(o, opp) || faceedges(o, opp) != facesolid)
             {
                 ivec vo = ivec(co).mask(0xFFF);
                 no.mask(0xFFF);
@@ -1597,7 +1597,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
         {
             return vis;
         }
-        if(IS_ENTIRELY_SOLID(o) || (touchingface(o, opp) && faceedges(o, opp) == F_SOLID))
+        if(IS_ENTIRELY_SOLID(o) || (touchingface(o, opp) && faceedges(o, opp) == facesolid))
         {
             return vis&notouch;
         }
@@ -2158,7 +2158,7 @@ bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, in
         p.verts[p.numverts++] = pvert(v0[c], v0[r]);
     }
 
-    if(faceedges(cu, orient)!=F_SOLID)
+    if(faceedges(cu, orient) != facesolid)
     {
         int px = static_cast<int>(p.verts[p.numverts-2].x) - static_cast<int>(p.verts[p.numverts-3].x),
             py = static_cast<int>(p.verts[p.numverts-2].y) - static_cast<int>(p.verts[p.numverts-3].y),
