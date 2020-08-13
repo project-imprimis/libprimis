@@ -14,7 +14,7 @@ static int clipcacheversion = -maxclipoffset;
 
 clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset)
 {
-    clipplanes &p = clipcache[int(&c - worldroot)&(maxclipplanes-1)];
+    clipplanes &p = clipcache[static_cast<int>(&c - worldroot) & (maxclipplanes-1)];
     if(p.owner != &c || p.version != clipcacheversion+offset)
     {
         p.owner = &c;
@@ -490,8 +490,9 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
 
     if(fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
        d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z || d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
+    {
         return false;
-
+    }
     E entvol(d);
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
@@ -945,7 +946,10 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
         bestplane = i;
     }
 
-    if(bestplane >= 0) collidewall = p.p[bestplane];
+    if(bestplane >= 0)
+    {
+        collidewall = p.p[bestplane];
+    }
     else if(collidewall.iszero())
     {
         collideinside++;
@@ -991,9 +995,12 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
 {
     LOOP_OCTA_BOX(cor, size, bo, bs)
     {
-        if(c[i].ext && c[i].ext->ents) if(mmcollide(d, dir, cutoff, *c[i].ext->ents))
+        if(c[i].ext && c[i].ext->ents)
         {
-            return true;
+            if(mmcollide(d, dir, cutoff, *c[i].ext->ents))
+            {
+                return true;
+            }
         }
         ivec o(i, cor, size);
         if(c[i].children)
@@ -1248,6 +1255,7 @@ void dropenttofloor(entity *e)
     droptofloor(e->o, 1.0f, dropheight(*e));
 }
 
+//prints out player & cam information to command line (not ingame console)
 void phystest()
 {
     static const char * const states[] = {"float", "fall", "slide", "slope", "floor", "step up", "step down", "bounce"};
