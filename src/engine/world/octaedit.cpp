@@ -160,9 +160,15 @@ ICOMMAND(moving, "b", (int *n),
 
 VARF(gridpower, 0, 3, 12,
 {
-    if(dragging) return;
+    if(dragging)
+    {
+        return;
+    }
     gridsize = 1<<gridpower;
-    if(gridsize>=worldsize) gridsize = worldsize/2;
+    if(gridsize>=worldsize)
+    {
+        gridsize = worldsize/2;
+    }
     cancelsel();
 });
 
@@ -229,14 +235,27 @@ void toggleedit(bool force)
 
 bool noedit(bool view, bool msg)
 {
-    if(!editmode) { if(msg) conoutf(Console_Error, "operation only allowed in edit mode"); return true; }
-    if(view || haveselent()) return false;
+    if(!editmode)
+    {
+        if(msg)
+        {
+            conoutf(Console_Error, "operation only allowed in edit mode");
+        }
+        return true;
+    }
+    if(view || haveselent())
+    {
+        return false;
+    }
     vec o(sel.o), s(sel.s);
     s.mul(sel.grid / 2.0f);
     o.add(s);
     float r = max(s.x, s.y, s.z);
     bool viewable = (isvisiblesphere(r, o) != ViewFrustumCull_NotVisible);
-    if(!viewable && msg) conoutf(Console_Error, "selection not in view");
+    if(!viewable && msg)
+    {
+        conoutf(Console_Error, "selection not in view");
+    }
     return !viewable;
 }
 
@@ -251,7 +270,10 @@ void reorient()
 
 void selextend()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     for(int i = 0; i < 3; ++i)
     {
         if(cur[i]<sel.o[i])
@@ -282,10 +304,18 @@ ICOMMAND(selswap, "", (), { if(noedit(true)) return; swap(sel, savedsel); });
 
 cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a world cube, based on coordinates mapped by the block
 {
-    int dim = DIMENSION(b.orient), dc = DIM_COORD(b.orient);
+    int dim = DIMENSION(b.orient),
+        dc = DIM_COORD(b.orient);
     ivec s(dim, x*b.grid, y*b.grid, dc*(b.s[dim]-1)*b.grid);
     s.add(b.o);
-    if(dc) s[dim] -= z*b.grid; else s[dim] += z*b.grid;
+    if(dc)
+    {
+        s[dim] -= z*b.grid;
+    }
+    else
+    {
+        s[dim] += z*b.grid;
+    }
     return lookupcube(s, rgrid);
 }
 //note that these macros actually loop in the opposite order: e.g. loopxy runs a for loop of x inside y
@@ -299,8 +329,24 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 int selchildcount = 0, selchildmat = -1;
 
 ICOMMAND(havesel, "", (), intret(havesel ? selchildcount : 0));
-ICOMMAND(selchildcount, "", (), { if(selchildcount < 0) result(tempformatstring("1/%d", -selchildcount)); else intret(selchildcount); });
-ICOMMAND(selchildmat, "s", (char *prefix), { if(selchildmat > 0) result(getmaterialdesc(selchildmat, prefix)); });
+ICOMMAND(selchildcount, "", (),
+{
+    if(selchildcount < 0)
+    {
+        result(tempformatstring("1/%d", -selchildcount));
+    }
+    else
+    {
+        intret(selchildcount);
+    }
+});
+ICOMMAND(selchildmat, "s", (char *prefix),
+{
+    if(selchildmat > 0)
+    {
+        result(getmaterialdesc(selchildmat, prefix));
+    }
+});
 
 void countselchild(cube *c, const ivec &cor, int size)
 {
@@ -308,14 +354,23 @@ void countselchild(cube *c, const ivec &cor, int size)
     LOOP_OCTA_BOX_SIZE(cor, size, sel.o, ss)
     {
         ivec o(i, cor, size);
-        if(c[i].children) countselchild(c[i].children, o, size/2);
+        if(c[i].children)
+        {
+            countselchild(c[i].children, o, size/2);
+        }
         else
         {
             selchildcount++;
             if(c[i].material != Mat_Air && selchildmat != Mat_Air)
             {
-                if(selchildmat < 0) selchildmat = c[i].material;
-                else if(selchildmat != c[i].material) selchildmat = Mat_Air;
+                if(selchildmat < 0)
+                {
+                    selchildmat = c[i].material;
+                }
+                else if(selchildmat != c[i].material)
+                {
+                    selchildmat = Mat_Air;
+                }
             }
         }
     }
@@ -353,15 +408,22 @@ bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &handle, 
     plane pl(d, off);
     float dist = 0.0f;
     if(!pl.rayintersect(player->o, ray, dist))
+    {
         return false;
-
+    }
     dest = vec(ray).mul(dist).add(player->o);
-    if(first) handle = vec(dest).sub(o);
+    if(first)
+    {
+        handle = vec(dest).sub(o);
+    }
     dest.sub(handle);
     return true;
 }
 
-namespace hmap { inline bool isheightmap(int orient, int d, bool empty, cube *c); }
+namespace hmap
+{
+    inline bool isheightmap(int orient, int d, bool empty, cube *c);
+}
 extern void entdrag(const vec &ray);
 extern bool hoveringonent(int ent, int orient);
 extern void renderentselection(const vec &o, const vec &ray, bool entmoving);
@@ -376,7 +438,8 @@ void rendereditcursor()
         od  = DIMENSION(orient),
         odc = DIM_COORD(orient);
 
-    bool hidecursor = UI::hascursor(), hovering = false;
+    bool hidecursor = UI::hascursor(),
+         hovering   = false;
     hmapsel = false;
 
     if(moving)
@@ -451,10 +514,16 @@ void rendereditcursor()
                 }
             }
             cube *c = &lookupcube(ivec(w));
-            if(gridlookup && !dragging && !moving && !havesel && hmapedit!=1) gridsize = lusize;
+            if(gridlookup && !dragging && !moving && !havesel && hmapedit!=1)
+            {
+                gridsize = lusize;
+            }
             int mag = lusize / gridsize;
             normalizelookupcube(ivec(w));
-            if(sdist == 0 || sdist > wdist) rayboxintersect(vec(lu), vec(gridsize), player->o, camdir, t=0, orient); // just getting orient
+            if(sdist == 0 || sdist > wdist)
+            {
+                rayboxintersect(vec(lu), vec(gridsize), player->o, camdir, t=0, orient); // just getting orient
+            }
             cur = lu;
             cor = ivec(vec(w).mul(2).div(gridsize));
             od = DIMENSION(orient);
@@ -464,9 +533,10 @@ void rendereditcursor()
             {
                 hmapsel = hmap::isheightmap(horient, DIMENSION(horient), false, c);
                 if(hmapsel)
+                {
                     od = DIMENSION(orient = horient);
+                }
             }
-
             if(dragging)
             {
                 updateselection();
@@ -474,7 +544,6 @@ void rendereditcursor()
                 sel.cy   = min(cor[C[d]], lastcor[C[d]]);
                 sel.cxs  = max(cor[R[d]], lastcor[R[d]]);
                 sel.cys  = max(cor[C[d]], lastcor[C[d]]);
-
                 if(!selectcorners)
                 {
                     sel.cx &= ~1;
@@ -489,7 +558,6 @@ void rendereditcursor()
                     sel.cxs -= sel.cx-1;
                     sel.cys -= sel.cy-1;
                 }
-
                 sel.cx  &= 1;
                 sel.cy  &= 1;
                 havesel = true;
@@ -504,7 +572,6 @@ void rendereditcursor()
                 sel.orient = orient;
                 d = od;
             }
-
             sel.corner = (cor[R[d]]-(lu[R[d]]*2)/gridsize)+(cor[C[d]]-(lu[C[d]]*2)/gridsize)*2;
             selchildcount = 0;
             selchildmat = -1;
@@ -512,7 +579,10 @@ void rendereditcursor()
             if(mag>=1 && selchildcount==1)
             {
                 selchildmat = c->material;
-                if(mag>1) selchildcount = -mag;
+                if(mag>1)
+                {
+                    selchildcount = -mag;
+                }
             }
         }
     }
@@ -534,9 +604,13 @@ void rendereditcursor()
     if(!moving && !hovering && !hidecursor)
     {
         if(hmapedit==1)
+        {
             gle::colorub(0, hmapsel ? 255 : 40, 0);
+        }
         else
+        {
             gle::colorub(120,120,120);
+        }
         boxs(orient, vec(lu), vec(lusize));
     }
 
@@ -557,9 +631,13 @@ void rendereditcursor()
         cs[D[d]] *= gridsize;
         boxs(sel.orient, co, cs);
         if(hmapedit==1)         // 3D selection box
+        {
             gle::colorub(0,120,0);
+        }
         else
+        {
             gle::colorub(0,0,120);
+        }
         boxs3D(vec(sel.o), vec(sel.s), sel.grid);
     }
 
@@ -608,9 +686,11 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
 
 void commitchanges(bool force)
 {
-    if(!force && !haschanged) return;
+    if(!force && !haschanged)
+    {
+        return;
+    }
     haschanged = false;
-
     int oldlen = valist.length();
     resetclipplanes();
     entitiesinoctanodes();
@@ -627,16 +707,24 @@ void changed(const ivec &bbmin, const ivec &bbmax, bool commit)
     readychanges(bbmin, bbmax, worldroot, ivec(0, 0, 0), worldsize/2);
     haschanged = true;
 
-    if(commit) commitchanges();
+    if(commit)
+    {
+        commitchanges();
+    }
 }
 
 void changed(const block3 &sel, bool commit = true)
 {
-    if(sel.s.iszero()) return;
+    if(sel.s.iszero())
+    {
+        return;
+    }
     readychanges(ivec(sel.o).sub(1), ivec(sel.s).mul(sel.grid).add(sel.o).add(1), worldroot, ivec(0, 0, 0), worldsize/2);
     haschanged = true;
-
-    if(commit) commitchanges();
+    if(commit)
+    {
+        commitchanges();
+    }
 }
 
 //////////// copy and undo /////////////
@@ -1709,7 +1797,10 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     if(!p.numtris)
     {
         genprefabmesh(p);
-        if(!p.numtris) return;
+        if(!p.numtris)
+        {
+            return;
+        }
     }
 
     block3 &b = *p.copy;
@@ -1717,9 +1808,18 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     matrix4 m;
     m.identity();
     m.settranslation(o);
-    if(yaw) m.rotate_around_z(yaw*RAD);
-    if(pitch) m.rotate_around_x(pitch*RAD);
-    if(roll) m.rotate_around_y(-roll*RAD);
+    if(yaw)
+    {
+        m.rotate_around_z(yaw*RAD);
+    }
+    if(pitch)
+    {
+        m.rotate_around_x(pitch*RAD);
+    }
+    if(roll)
+    {
+        m.rotate_around_y(-roll*RAD);
+    }
     matrix3 w(m);
     if(size > 0 && size != 1) m.scale(size);
     m.translate(vec(b.s).mul(-b.grid*0.5f));
@@ -1761,7 +1861,10 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
 void renderprefab(const char *name, const vec &o, float yaw, float pitch, float roll, float size, const vec &color)
 {
     prefab *p = loadprefab(name, false);
-    if(p) renderprefab(*p, o, yaw, pitch, roll, size, color);
+    if(p)
+    {
+        renderprefab(*p, o, yaw, pitch, roll, size, color);
+    }
 }
 
 void previewprefab(const char *name, const vec &color)
