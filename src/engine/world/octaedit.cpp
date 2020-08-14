@@ -1975,15 +1975,19 @@ void compacteditvslots()
         compactvslots(e->copy->c(), e->copy->size());
     }
     for(undoblock *u = undos.first; u; u = u->next)
+    {
         if(!u->numents)
         {
             compactvslots(u->block()->c(), u->block()->size());
         }
+    }
     for(undoblock *u = redos.first; u; u = u->next)
+    {
         if(!u->numents)
         {
             compactvslots(u->block()->c(), u->block()->size());
         }
+    }
 }
 
 ///////////// height maps ////////////////
@@ -1996,12 +2000,16 @@ namespace hmap
 
     ICOMMAND(hmapcancel, "", (), cancel());
     ICOMMAND(hmapselect, "", (),
-        int t = lookupcube(cur).texture[orient],
-            i = textures.find(t);
+        int t = lookupcube(cur).texture[orient];
+        int i = textures.find(t);
         if(i<0)
+        {
             textures.add(t);
+        }
         else
+        {
             textures.remove(i);
+        }
     );
 
     inline bool isheightmap(int o, int d, bool empty, cube *c)
