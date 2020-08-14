@@ -65,12 +65,12 @@
 { \
     vector<extentity *> &ents = entities::getents(); \
     entlooplevel++; \
-    int _ = efocus; \
+    int efocusplaceholder = efocus; \
     for(int i = 0; i < entgroup.length(); i++) \
     { \
         ENT_EDIT_V(entgroup[i], f, ents); \
     } \
-    efocus = _; \
+    efocus = efocusplaceholder; \
     entlooplevel--; \
 }
 #define GROUP_EDIT_PURE(f) \
