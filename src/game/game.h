@@ -752,6 +752,12 @@ namespace entities
     extern void teleport(int n, gameent *d);
     extern void teleporteffects(gameent *d, int tp, int td, bool local = true);
     extern void jumppadeffects(gameent *d, int jp, bool local = true);
+    
+    extern void editent(int i, bool local);
+    extern void fixentity(extentity &e);
+    extern void entradius(extentity &e, bool color);
+    extern const char *entname(int i);
+    extern vector<extentity *> &getents();
 }
 extern void mpeditent(int i, const vec &o, int type, int attr1, int attr2, int attr3, int attr4, int attr5, bool local);
 
@@ -1032,6 +1038,41 @@ namespace server
     extern bool ispaused();
     extern int scaletime(int t);
 }
+
+// entities
+extern selinfo sel;
+extern bool havesel;
+
+extern int findentity(int type, int index = 0, int attr1 = -1, int attr2 = -1)
+{
+    const vector<extentity *> &ents = entities::getents();
+    if(index > ents.length())
+    {
+        index = ents.length();
+    }
+    else for(int i = index; i<ents.length(); i++)
+    {
+        extentity &e = *ents[i];
+        if(e.type==type && (attr1<0 || e.attr1==attr1) && (attr2<0 || e.attr2==attr2))
+        {
+            return i;
+        }
+    }
+    for(int j = 0; j < index; ++j)
+    {
+        extentity &e = *ents[j];
+        if(e.type==type && (attr1<0 || e.attr1==attr1) && (attr2<0 || e.attr2==attr2))
+        {
+            return j;
+        }
+    }
+    return -1;
+}
+
+extern void boxs(int orient, vec o, const vec &s, float size);
+extern void boxs(int orient, vec o, const vec &s);
+extern void boxs3D(const vec &o, vec s, int g);
+extern bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &handle, vec &dest, bool first);
 
 #endif
 
