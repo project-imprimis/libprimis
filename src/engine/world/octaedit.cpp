@@ -1881,9 +1881,18 @@ void previewprefab(const char *name, const vec &color)
 
 void mpcopy(editinfo *&e, selinfo &sel, bool local)
 {
-    if(local) game::edittrigger(sel, Edit_Copy);
-    if(e==NULL) e = editinfos.add(new editinfo);
-    if(e->copy) freeblock(e->copy);
+    if(local)
+    {
+        game::edittrigger(sel, Edit_Copy);
+    }
+    if(e==NULL)
+    {
+        e = editinfos.add(new editinfo);
+    }
+    if(e->copy)
+    {
+        freeblock(e->copy);
+    }
     e->copy = NULL;
     PROTECT_SEL(e->copy = blockcopy(block3(sel), sel.grid));
     changed(sel);
@@ -1891,20 +1900,35 @@ void mpcopy(editinfo *&e, selinfo &sel, bool local)
 
 void mppaste(editinfo *&e, selinfo &sel, bool local)
 {
-    if(e==NULL) return;
-    if(local) game::edittrigger(sel, Edit_Paste);
-    if(e->copy) pasteblock(*e->copy, sel, local);
+    if(e==NULL)
+    {
+        return;
+    }
+    if(local)
+    {
+        game::edittrigger(sel, Edit_Paste);
+    }
+    if(e->copy)
+    {
+        pasteblock(*e->copy, sel, local);
+    }
 }
 
 void copy()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     mpcopy(localedit, sel, true);
 }
 
 void pastehilite()
 {
-    if(!localedit) return;
+    if(!localedit)
+    {
+        return;
+    }
     sel.s = localedit->copy->s;
     reorient();
     havesel = true;
@@ -1912,7 +1936,10 @@ void pastehilite()
 
 void paste()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     mppaste(localedit, sel, true);
 }
 
@@ -1949,10 +1976,14 @@ void compacteditvslots()
     }
     for(undoblock *u = undos.first; u; u = u->next)
         if(!u->numents)
+        {
             compactvslots(u->block()->c(), u->block()->size());
+        }
     for(undoblock *u = redos.first; u; u = u->next)
         if(!u->numents)
+        {
             compactvslots(u->block()->c(), u->block()->size());
+        }
 }
 
 ///////////// height maps ////////////////
@@ -1965,8 +1996,8 @@ namespace hmap
 
     ICOMMAND(hmapcancel, "", (), cancel());
     ICOMMAND(hmapselect, "", (),
-        int t = lookupcube(cur).texture[orient];
-        int i = textures.find(t);
+        int t = lookupcube(cur).texture[orient],
+            i = textures.find(t);
         if(i<0)
             textures.add(t);
         else
@@ -1988,8 +2019,10 @@ namespace hmap
     VARN(hbrushx, brushx, 0, MAXBRUSH2, MAXBRUSH);
     VARN(hbrushy, brushy, 0, MAXBRUSH2, MAXBRUSH);
     bool paintbrush = 0;
-    int brushmaxx = 0, brushminx = MAXBRUSH;
-    int brushmaxy = 0, brushminy = MAXBRUSH;
+    int brushmaxx = 0,
+        brushminx = MAXBRUSH,
+        brushmaxy = 0,
+        brushminy = MAXBRUSH;
 
     void clearhbrush()
     {
@@ -2032,11 +2065,20 @@ namespace hmap
     cube *getcube(ivec t, int f)
     {
         t[d] += dcr*f*gridsize;
-        if(t[d] > nz || t[d] < mz) return NULL;
+        if(t[d] > nz || t[d] < mz)
+        {
+            return NULL;
+        }
         cube *c = &lookupcube(t, gridsize);
-        if(c->children) forcemip(*c, false);
+        if(c->children)
+        {
+            forcemip(*c, false);
+        }
         discardchildren(*c, true);
-        if(!isheightmap(sel.orient, d, true, c)) return NULL;
+        if(!isheightmap(sel.orient, d, true, c))
+        {
+            return NULL;
+        }
         if     (t.x < changes.o.x) changes.o.x = t.x;
         else if(t.x > changes.s.x) changes.s.x = t.x;
         if     (t.y < changes.o.y) changes.o.y = t.y;
@@ -2062,13 +2104,18 @@ namespace hmap
     void addpoint(int x, int y, int z, int v)
     {
         if(!(flags[x][y] & MAPPED))
-          map[x][y] = v + (z*8);
+        {
+            map[x][y] = v + (z*8);
+        }
         flags[x][y] |= MAPPED;
     }
 
     void select(int x, int y, int z)
     {
-        if((NOTHMAP & flags[x][y]) || (PAINTED & flags[x][y])) return;
+        if((NOTHMAP & flags[x][y]) || (PAINTED & flags[x][y]))
+        {
+            return;
+        }
         ivec t(d, x+gx, y+gy, dc ? z : hws-z);
         t.shl(gridpower);
 
@@ -2294,10 +2341,10 @@ namespace hmap
         dr = dir>0 ? 1 : -1;
         br = dir>0 ? 0x08080808 : 0;
      //   biasup = mode == dir<0;
-        biasup = dir<0;
+        biasup = dir < 0;
         bool paintme = paintbrush;
-        int cx = (sel.corner&1 ? 0 : -1);
-        int cy = (sel.corner&2 ? 0 : -1);
+        int cx = (sel.corner&1 ? 0 : -1),
+            cy = (sel.corner&2 ? 0 : -1);
         hws= (worldsize>>gridpower);
         gx = (cur[R[d]] >> gridpower) + cx - MAXBRUSH2;
         gy = (cur[C[d]] >> gridpower) + cy - MAXBRUSH2;
@@ -2316,7 +2363,9 @@ namespace hmap
             bny = ny = min(ny, (sel.s[C[d]]+(sel.o[C[d]]>>gridpower))-gy-1);
         }
         if(havesel && mode<0) // -ve means smooth selection
+        {
             paintme = false;
+        }
         else
         {   // brush range
             bmx = max(mx, brushminx);
@@ -2366,7 +2415,10 @@ void pushedge(uchar &edge, int dir, int dc)
     int ne = bounded(EDGE_GET(edge, dc)+dir);
     EDGE_SET(edge, dc, ne);
     int oe = EDGE_GET(edge, 1-dc);
-    if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne)) EDGE_SET(edge, 1-dc, ne);
+    if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne))
+    {
+        EDGE_SET(edge, 1-dc, ne);
+    }
 }
 
 void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
@@ -2380,7 +2432,9 @@ void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
         {
             getcubevector(c, d, i, j, dc, p);
             if(v==p)
+            {
                 pushedge(CUBE_EDGE(c, d, i, j), dir, dc);
+            }
         }
     }
 }
