@@ -65,12 +65,12 @@
 { \
     vector<extentity *> &ents = entities::getents(); \
     entlooplevel++; \
-    int _ = efocus; \
+    int efocusplaceholder = efocus; \
     for(int i = 0; i < entgroup.length(); i++) \
     { \
         ENT_EDIT_V(entgroup[i], f, ents); \
     } \
-    efocus = _; \
+    efocus = efocusplaceholder; \
     entlooplevel--; \
 }
 #define GROUP_EDIT_PURE(f) \
@@ -95,17 +95,6 @@
     ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); \
 }
 
-namespace entities
-{
-    extern void editent(int i, bool local);
-    extern void fixentity(extentity &e);
-    extern void entradius(extentity &e, bool color);
-    extern const char *entname(int i);
-    extern vector<extentity *> &getents();
-}
-
-extern selinfo sel;
-extern bool havesel;
 int entlooplevel = 0;
 int efocus    = -1,
     enthover  = -1,
@@ -342,32 +331,6 @@ void entattr(int *attr, int *val, int *numargs)
 COMMAND(enttype, "sN");
 COMMAND(entattr, "iiN");
 
-extern int findentity(int type, int index = 0, int attr1 = -1, int attr2 = -1)
-{
-    const vector<extentity *> &ents = entities::getents();
-    if(index > ents.length())
-    {
-        index = ents.length();
-    }
-    else for(int i = index; i<ents.length(); i++)
-    {
-        extentity &e = *ents[i];
-        if(e.type==type && (attr1<0 || e.attr1==attr1) && (attr2<0 || e.attr2==attr2))
-        {
-            return i;
-        }
-    }
-    for(int j = 0; j < index; ++j)
-    {
-        extentity &e = *ents[j];
-        if(e.type==type && (attr1<0 || e.attr1==attr1) && (attr2<0 || e.attr2==attr2))
-        {
-            return j;
-        }
-    }
-    return -1;
-}
-
 int spawncycle = -1;
 
 void findplayerspawn(dynent *d, int forceent, int tag) // place at random spawn
@@ -570,11 +533,6 @@ void entrotate(int *cw)
 }
 
 VAR(entselsnap, 0, 0, 1);
-
-extern void boxs(int orient, vec o, const vec &s, float size);
-extern void boxs(int orient, vec o, const vec &s);
-extern void boxs3D(const vec &o, vec s, int g);
-extern bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &handle, vec &dest, bool first);
 
 int entmoving = 0;
 
