@@ -1238,7 +1238,8 @@ float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, c
         return minimapradius.magnitude();
     }
 
-    float width = tan(fov/2.0f*RAD), height = width / aspect,
+    float width = tan(fov/2.0f*RAD),
+          height = width / aspect,
           cdist = ((nearplane + farplane)/2)*(1 + width*width + height*height);
     if(cdist <= farplane)
     {
@@ -1852,7 +1853,8 @@ void drawminimap()
     GLERROR;
     gl_setupframe(true);
 
-    int size = 1<<minimapsize, sizelimit = min(hwtexsize, min(gw, gh));
+    int size = 1<<minimapsize,
+        sizelimit = min(hwtexsize, min(gw, gh));
     while(size > sizelimit)
     {
         size /= 2;
@@ -2083,9 +2085,9 @@ void gl_drawview()
         vieww = gw;
         viewh = gh;
     }
-
     float fogmargin = 1 + WATER_AMPLITUDE + nearplane;
-    int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index), abovemat = Mat_Air;
+    int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index),
+        abovemat = Mat_Air;
     float fogbelow = 0;
     if(IS_LIQUID(fogmat&MatFlag_Volume))
     {
@@ -2480,8 +2482,8 @@ void drawcrosshair(int w, int h, int crosshairindex)
     }
     hudshader->set();
     gle::color(color);
-    float x = cx*w - (windowhit ? 0 : chsize/2.0f);
-    float y = cy*h - (windowhit ? 0 : chsize/2.0f);
+    float x = cx*w - (windowhit ? 0 : chsize/2.0f),
+          y = cy*h - (windowhit ? 0 : chsize/2.0f);
     glBindTexture(GL_TEXTURE_2D, crosshair->id);
 
     hudquad(x, y, chsize, chsize);
