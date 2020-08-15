@@ -665,7 +665,10 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
                 int hasmerges = c[i].ext->va->hasmerges;
                 destroyva(c[i].ext->va);
                 c[i].ext->va = NULL;
-                if(hasmerges) invalidatemerges(c[i]);
+                if(hasmerges)
+                {
+                    invalidatemerges(c[i]);
+                }
             }
             freeoctaentities(c[i]);
             c[i].ext->tjoints = -1;
@@ -678,9 +681,15 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
                 discardchildren(c[i], true);
                 brightencube(c[i]);
             }
-            else readychanges(bbmin, bbmax, c[i].children, o, size/2);
+            else
+            {
+                readychanges(bbmin, bbmax, c[i].children, o, size/2);
+            }
         }
-        else brightencube(c[i]);
+        else
+        {
+            brightencube(c[i]);
+        }
     }
 }
 
@@ -1305,7 +1314,10 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
 
 static bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen)
 {
-    if(compressBound(outlen) > (1<<20)) return false;
+    if(compressBound(outlen) > (1<<20))
+    {
+        return false;
+    }
     uLongf len = outlen;
     outbuf = new (false) uchar[len];
     if(!outbuf || uncompress((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen) != Z_OK)
@@ -1321,7 +1333,10 @@ static bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, in
 bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
-    if(!e || !e->copy || !packblock(*e->copy, buf)) return false;
+    if(!e || !e->copy || !packblock(*e->copy, buf))
+    {
+        return false;
+    }
     packvslots(*e->copy, buf);
     inlen = buf.length();
     return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
@@ -1379,7 +1394,7 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
         undoent *ue = u->ents();
         for(int i = 0; i < u->numents; ++i)
         {
-            *(ushort *)buf.pad(2) = ushort(ue[i].i);
+            *reinterpret_cast<ushort *>(buf.pad(2)) = static_cast<ushort>(ue[i].i);
             entity &e = *(entity *)buf.pad(sizeof(entity));
             e = ue[i].e;
         }
@@ -1387,7 +1402,10 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
     else
     {
         block3 &b = *u->block();
-        if(!packblock(b, buf)) return false;
+        if(!packblock(b, buf))
+        {
+            return false;
+        }
         buf.put(u->gridmap(), b.size());
         packvslots(b, buf);
     }
@@ -1571,12 +1589,21 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
 prefab *loadprefab(const char *name, bool msg = true)
 {
     prefab *b = prefabs.access(name);
-    if(b) return b;
-
+    if(b)
+    {
+        return b;
+    }
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "rb");
-    if(!f) { if(msg) conoutf(Console_Error, "could not read prefab %s", filename); return NULL; }
+    if(!f)
+    {
+        if(msg)
+        {
+            conoutf(Console_Error, "could not read prefab %s", filename);
+        }
+        return NULL;
+    }
     prefabheader hdr;
     if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4))
     {
@@ -1648,9 +1675,15 @@ struct prefabmesh
         for(int i = table[h]; i>=0; i = chain[i])
         {
             const vertex &c = verts[i];
-            if(c.pos==v.pos && c.norm==v.norm) return i;
+            if(c.pos==v.pos && c.norm==v.norm)
+            {
+                return i;
+            }
         }
-        if(verts.length() >= USHRT_MAX) return -1;
+        if(verts.length() >= USHRT_MAX)
+        {
+            return -1;
+        }
         verts.add(v);
         chain.add(table[h]);
         return table[h] = verts.length()-1;
@@ -1666,8 +1699,10 @@ struct prefabmesh
 
     void setup(prefab &p)
     {
-        if(tris.empty()) return;
-
+        if(tris.empty())
+        {
+            return;
+        }
         p.cleanup();
 
         for(int i = 0; i < verts.length(); i++)
@@ -1718,7 +1753,10 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
                 ivec v[4];
                 genfaceverts(c, i, v);
                 int convex = 0;
-                if(!flataxisface(c, i)) convex = faceconvexity(v);
+                if(!flataxisface(c, i))
+                {
+                    convex = faceconvexity(v);
+                }
                 int order = vis&4 || convex < 0 ? 1 : 0, numverts = 0;
                 vec vo(co), pos[4], norm[4];
                 pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
@@ -1821,7 +1859,10 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
         m.rotate_around_y(-roll*RAD);
     }
     matrix3 w(m);
-    if(size > 0 && size != 1) m.scale(size);
+    if(size > 0 && size != 1)
+    {
+        m.scale(size);
+    }
     m.translate(vec(b.s).mul(-b.grid*0.5f));
 
     gle::bindvbo(p.vbo);
@@ -2045,7 +2086,10 @@ namespace hmap
     {
         *x += MAXBRUSH2 - brushx + 1; // +1 for automatic padding
         *y += MAXBRUSH2 - brushy + 1;
-        if(*x<0 || *y<0 || *x>=MAXBRUSH || *y>=MAXBRUSH) return;
+        if(*x<0 || *y<0 || *x>=MAXBRUSH || *y>=MAXBRUSH)
+        {
+            return;
+        }
         brush[*x][*y] = std::clamp(*v, 0, 8);
         paintbrush = paintbrush || (brush[*x][*y] > 0);
         brushmaxx = min(MAXBRUSH-1, max(brushmaxx, *x+1));
@@ -2142,8 +2186,17 @@ namespace hmap
         {   // try up
             c[2] = c[1];
             c[1] = getcube(t, 1);
-            if(!c[1] || IS_EMPTY(*c[1])) { c[0] = c[1]; c[1] = c[2]; c[2] = NULL; }
-            else { z++; t[d]+=fg; }
+            if(!c[1] || IS_EMPTY(*c[1]))
+            {
+                c[0] = c[1];
+                c[1] = c[2];
+                c[2] = NULL;
+            }
+            else
+            {
+                z++;
+                t[d]+=fg;
+            }
         }
         else // drop down
         {
@@ -2153,25 +2206,41 @@ namespace hmap
             c[1] = getcube(t, 0);
         }
 
-        if(!c[1] || IS_EMPTY(*c[1])) { flags[x][y] |= NOTHMAP; return; }
-
+        if(!c[1] || IS_EMPTY(*c[1]))
+        {
+            flags[x][y] |= NOTHMAP;
+            return;
+        }
         flags[x][y] |= PAINTED;
         mapz [x][y]  = z;
-
-        if(!c[0]) c[0] = getcube(t, 1);
-        if(!c[2]) c[2] = getcube(t, -1);
+        if(!c[0])
+        {
+            c[0] = getcube(t, 1);
+        }
+        if(!c[2])
+        {
+            c[2] = getcube(t, -1);
+        }
         c[3] = getcube(t, -2);
         c[2] = !c[2] || IS_EMPTY(*c[2]) ? NULL : c[2];
         c[3] = !c[3] || IS_EMPTY(*c[3]) ? NULL : c[3];
 
         uint face = getface(c[1], d);
-        if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0]))) { flags[x][y] |= NOTHMAP; return; }
+        if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0])))
+        {
+            flags[x][y] |= NOTHMAP;
+            return;
+        }
         if(c[1]->faces[R[d]] == facesolid)   // was single
+        {
             face += 0x08080808;
+        }
         else                               // was pair
+        {
             face += c[2] ? getface(c[2], d) : 0x08080808;
+        }
         face += 0x08080808;                // c[3]
-        uchar *f = (uchar*)&face;
+        uchar *f = reinterpret_cast<uchar*>(&face);
         addpoint(x,   y,   z, f[0]);
         addpoint(x+1, y,   z, f[1]);
         addpoint(x,   y+1, z, f[2]);
@@ -2329,7 +2398,9 @@ namespace hmap
                 }
             }
             if(div)
+            {
                 map[x+1][y+1] = sum / div;
+            }
         }
     }
 
@@ -2399,9 +2470,13 @@ namespace hmap
                dc ? gz : hws - gz);
         selecting = false;
         if(paintme)
+        {
             paint();
+        }
         else
+        {
             smooth();
+        }
         rippleandset();                       // pull up points to cubify, and set
         changes.s.sub(changes.o).shr(gridpower).add(1);
         changed(changes);
@@ -2410,7 +2485,10 @@ namespace hmap
 
 void edithmap(int dir, int mode)
 {
-    if((nompedit && multiplayer()) || !hmapsel) return;
+    if((nompedit && multiplayer()) || !hmapsel)
+    {
+        return;
+    }
     hmap::run(dir, mode);
 }
 
@@ -2490,7 +2568,10 @@ void mpplacecube(selinfo &sel, int tex, bool local)
 
 void mpeditface(int dir, int mode, selinfo &sel, bool local)
 {
-    if(mode==1 && (sel.cx || sel.cy || sel.cxs&1 || sel.cys&1)) mode = 0;
+    if(mode==1 && (sel.cx || sel.cy || sel.cxs&1 || sel.cys&1))
+    {
+        mode = 0;
+    }
     int d = DIMENSION(sel.orient);
     int dc = DIM_COORD(sel.orient);
     int seldir = dc ? -dir : dir;
@@ -2501,15 +2582,27 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
     if(mode==1)
     {
         int h = sel.o[d]+dc*sel.grid;
-        if(((dir>0) == dc && h<=0) || ((dir<0) == dc && h>=worldsize)) return;
-        if(dir<0) sel.o[d] += sel.grid * seldir;
+        if(((dir>0) == dc && h<=0) || ((dir<0) == dc && h>=worldsize))
+        {
+            return;
+        }
+        if(dir<0)
+        {
+            sel.o[d] += sel.grid * seldir;
+        }
     }
 
-    if(dc) sel.o[d] += sel.us(d)-sel.grid;
+    if(dc)
+    {
+        sel.o[d] += sel.us(d)-sel.grid;
+    }
     sel.s[d] = 1;
 
     LOOP_SEL_XYZ(
-        if(c.children) SOLID_FACES(c);
+        if(c.children)
+        {
+            SOLID_FACES(c);
+        }
         ushort mat = getmaterial(c);
         discardchildren(c, true);
         c.material = mat;
@@ -2530,10 +2623,11 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
         else
         {
             uint bak = c.faces[d];
-            uchar *p = (uchar *)&c.faces[d];
-
+            uchar *p = reinterpret_cast<uchar *>(&c.faces[d]);
             if(mode==2)
+            {
                 linkedpush(c, d, sel.corner&1, sel.corner>>1, dc, seldir); // corner command
+            }
             else
             {
                 for(int mx = 0; mx < 2; ++mx) // pull/push edges command
@@ -2560,18 +2654,16 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                         {
                             continue;
                         }
-
                         linkedpush(c, d, mx, my, dc, seldir);
                     }
                 }
             }
-
             optiface(p, c);
             if(invalidcubeguard==1 && !isvalidcube(c))
             {
                 uint newbak = c.faces[d];
-                uchar *m = (uchar *)&bak;
-                uchar *n = (uchar *)&newbak;
+                uchar *m = reinterpret_cast<uchar *>(&bak);
+                uchar *n = reinterpret_cast<uchar *>(&newbak);
                 for(int k = 0; k < 4; ++k)
                 {
                     if(n[k] != m[k]) // tries to find partial edit that is valid
@@ -2661,7 +2753,9 @@ COMMAND(delcube, "");
 
 /////////// texture editing //////////////////
 
-int curtexindex = -1, lasttex = 0, lasttexmillis = -1;
+int curtexindex = -1,
+    lasttex = 0,
+    lasttexmillis = -1;
 int texpaneltimer = 0;
 vector<ushort> texmru;
 
@@ -3058,7 +3152,10 @@ int shouldpacktex(int index)
 
 bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf)
 {
-    if(!unpacktex(tex, buf)) return false;
+    if(!unpacktex(tex, buf))
+    {
+        return false;
+    }
     mpedittex(tex, allfaces, sel, false);
     return true;
 }
@@ -3472,7 +3569,10 @@ void mpflip(selinfo &sel, bool local)
 
 void flip()
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     mpflip(sel, true);
 }
 
@@ -3487,8 +3587,8 @@ void mprotate(int cw, selinfo &sel, bool local)
     {
         cw = -cw;
     }
-    int m = sel.s[C[d]] < sel.s[R[d]] ? C[d] : R[d];
-    int ss = sel.s[m] = max(sel.s[R[d]], sel.s[C[d]]);
+    int m = sel.s[C[d]] < sel.s[R[d]] ? C[d] : R[d],
+        ss = sel.s[m] = max(sel.s[R[d]], sel.s[C[d]]);
     if(local)
     {
         makeundo();
@@ -3521,7 +3621,10 @@ void mprotate(int cw, selinfo &sel, bool local)
 
 void rotate(int *cw)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     mprotate(*cw, sel, true);
 }
 
@@ -3716,16 +3819,15 @@ void rendertexturepanel(int w, int h)
         hudmatrix.scale(h/1800.0f, h/1800.0f, 1);
         flushhudmatrix(false);
         SETSHADER(hudrgb);
-
-        int y = 50, gap = 10;
-
+        int y = 50,
+        gap = 10;
         gle::defvertex(2);
         gle::deftexcoord0();
 
         for(int i = 0; i < 7; ++i)
         {
-            int s = (i == 3 ? 285 : 220);
-            int ti = curtexindex+i-3;
+            int s = (i == 3 ? 285 : 220),
+                ti = curtexindex+i-3;
             if(texmru.inrange(ti))
             {
                 VSlot &vslot = lookupvslot(texmru[ti]);
@@ -3748,7 +3850,8 @@ void rendertexturepanel(int w, int h)
                 int x = w*1800/h-s-50,
                     r = s;
                 vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
-                float xoff = vslot.offset.x, yoff = vslot.offset.y;
+                float xoff = vslot.offset.x,
+                      yoff = vslot.offset.y;
                 if(vslot.rotation)
                 {
                     const texrotation &r = texrotations[vslot.rotation];
