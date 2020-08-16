@@ -283,6 +283,26 @@ static inline ident *addident(const ident &id)
     return identmap.add(&def);
 }
 
+bool initidents()
+{
+    initedidents = true;
+    for(int i = 0; i < Max_Args; i++)
+    {
+        DEF_FORMAT_STRING(argname, "arg%d", i+1);
+        newident(argname, Idf_Arg);
+    }
+    dummyident = newident("//dummy", Idf_Unknown);
+    if(identinits)
+    {
+        for(int i = 0; i < (*identinits).length(); i++)
+        {
+            addident((*identinits)[i]);
+        }
+        DELETEP(identinits);
+    }
+    return true;
+}
+
 static const char *sourcefile = NULL,
                   *sourcestr = NULL;
 

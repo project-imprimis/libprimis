@@ -168,7 +168,7 @@ int main(int argc, char **argv)
     #endif
     #endif
     #endif
-
+    initidents();
     setlogfile(NULL);
 
     char *load = NULL, *initscript = NULL;
