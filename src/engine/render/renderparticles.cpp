@@ -104,7 +104,7 @@ void addparticleemitters()
     }
     regenemitters = false;
 }
-
+//particle types
 enum
 {
     PT_PART = 0,
@@ -115,7 +115,10 @@ enum
     PT_METER,
     PT_METERVS,
     PT_FIREBALL,
-
+};
+//particle properties
+enum
+{
     PT_MOD       = 1<<8,
     PT_RND4      = 1<<9,
     PT_LERP      = 1<<10, // use very sparingly - order of blending issues
