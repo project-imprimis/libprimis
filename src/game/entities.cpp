@@ -17,6 +17,7 @@
         f; \
     } \
 }
+
 #define ENT_FOCUS_V(i, f, v) \
 { \
     int n = efocus = (i); \
@@ -26,10 +27,12 @@
         f; \
     } \
 }
+
 #define ENT_FOCUS(i, f) \
 { \
     ENT_FOCUS_V(i, f, entities::getents()) \
 }
+
 #define ENT_EDIT_V(i, f, v) \
 { \
     ENT_FOCUS_V(i, \
@@ -37,16 +40,28 @@
         int oldtype = e.type; \
         removeentityedit(n);  \
         f; \
-        if(oldtype!=e.type) detachentity(e); \
-        if(e.type!=EngineEnt_Empty) { addentityedit(n); if(oldtype!=e.type) attachentity(e); } \
+        if(oldtype!=e.type) \
+        { \
+            detachentity(e); \
+        } \
+        if(e.type!=EngineEnt_Empty) \
+        { \
+            addentityedit(n); \
+            if(oldtype!=e.type) \
+            { \
+                attachentity(e); \
+            } \
+        } \
         entities::editent(n, true); \
         clearshadowcache(); \
     }, v); \
 }
+
 #define ENT_EDIT(i, f) \
 { \
     ENT_EDIT_V(i, f, entities::getents()) \
 }
+
 #define ADD_GROUP(exp) \
 { \
     vector<extentity *> &ents = entities::getents(); \
@@ -61,6 +76,7 @@
         }, ents); \
     } \
 }
+
 #define GROUP_EDIT_LOOP(f) \
 { \
     vector<extentity *> &ents = entities::getents(); \
@@ -73,6 +89,7 @@
     efocus = efocusplaceholder; \
     entlooplevel--; \
 }
+
 #define GROUP_EDIT_PURE(f) \
 { \
     if(entlooplevel>0) \
@@ -85,11 +102,13 @@
         commitchanges(); \
     } \
 }
+
 #define GROUP_EDIT_UNDO(f) \
 { \
     makeundoent(); \
     GROUP_EDIT_PURE(f); \
 }
+
 #define GROUP_EDIT(f) \
 { \
     ADD_IMPLICIT(GROUP_EDIT_UNDO(f)); \
@@ -473,7 +492,14 @@ char *entname(entity &e)
     return fullentname;
 }
 
-VARF(entediting, 0, 0, 1, { if(!entediting) { entcancel(); efocus = enthover = -1; } });
+VARF(entediting, 0, 0, 1,
+{
+    if(!entediting)
+    {
+        entcancel();
+        efocus = enthover = -1;
+    }
+});
 
 vector<int> entgroup;
 
@@ -1320,7 +1346,10 @@ vector<entity> entcopybuf;
 
 void entcopy()
 {
-    if(noentedit()) return;
+    if(noentedit())
+    {
+        return;
+    }
     entcopygrid = sel.grid;
     entcopybuf.shrink(0);
     ADD_IMPLICIT({
@@ -1333,7 +1362,10 @@ void entcopy()
 
 void entpaste()
 {
-    if(noentedit() || entcopybuf.empty()) return;
+    if(noentedit() || entcopybuf.empty())
+    {
+        return;
+    }
     entcancel();
     float m = static_cast<float>(sel.grid)/static_cast<float>(entcopygrid);
     for(int i = 0; i < entcopybuf.length(); i++)
