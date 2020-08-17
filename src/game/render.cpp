@@ -235,7 +235,6 @@ namespace game
             player1->playermodel = playermodel;
             addmsg(NetMsg_SwitchModel, "ri", player1->playermodel);
         }
-
         int col = playercolor | (playercolorazul<<5) | (playercolorrojo<<10);
         if(player1->playercolor != col)
         {

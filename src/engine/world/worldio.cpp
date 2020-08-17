@@ -464,17 +464,39 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
             c.children = loadchildren(f, co, size>>1, failed);
             return;
 
-        case OctaSave_Empty:  EMPTY_FACES(c);        break;
-        case OctaSave_Solid:  SOLID_FACES(c);        break;
-        case OctaSave_Normal: f->read(c.edges, 12);  break;
-        default: failed = true; return;
+        case OctaSave_Empty:
+        {
+            EMPTY_FACES(c);
+            break;
+        }
+        case OctaSave_Solid:
+        {
+            SOLID_FACES(c);
+            break;
+        }
+        case OctaSave_Normal:
+        {
+            f->read(c.edges, 12);
+            break;
+        }
+        default:
+        {
+            failed = true;
+            return;
+        }
     }
     for(int i = 0; i < 6; ++i)
     {
         c.texture[i] = f->get<ushort>();
     }
-    if(octsav&0x40) c.material = f->get<ushort>();
-    if(octsav&0x80) c.merged = f->getchar();
+    if(octsav&0x40)
+    {
+        c.material = f->get<ushort>();
+    }
+    if(octsav&0x80)
+    {
+        c.merged = f->getchar();
+    }
     if(octsav&0x20)
     {
         int surfmask, totalverts;
@@ -496,9 +518,16 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                     surf.verts = psurf.verts;
                     surf.numverts = psurf.numverts;
                 }
-                else f->read(&surf, sizeof(surf));
+                else
+                {
+                    f->read(&surf, sizeof(surf));
+                }
                 int vertmask = surf.verts, numverts = surf.totalverts();
-                if(!numverts) { surf.verts = 0; continue; }
+                if(!numverts)
+                {
+                    surf.verts = 0;
+                    continue;
+                }
                 surf.verts = offset;
                 vertinfo *verts = c.ext->verts() + offset;
                 offset += numverts;
@@ -510,7 +539,10 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                 {
                     ivec e1, e2, e3;
                     n.cross((e1 = v[1]).sub(v[0]), (e2 = v[2]).sub(v[0]));
-                    if(n.iszero()) n.cross(e2, (e3 = v[3]).sub(v[0]));
+                    if(n.iszero())
+                    {
+                        n.cross(e2, (e3 = v[3]).sub(v[0]));
+                    }
                     bias = -n.dot(ivec(v[0]).mul(size).add(vo));
                 }
                 else
