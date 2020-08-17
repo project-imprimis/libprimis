@@ -124,7 +124,8 @@ void writeinitcfg()
 
 COMMAND(quit, "");
 
-bool inbetweenframes = false, renderedframe = true;
+bool inbetweenframes = false,
+     renderedframe = true;
 
 static bool findarg(int argc, char **argv, const char *str)
 {
@@ -138,7 +139,8 @@ static bool findarg(int argc, char **argv, const char *str)
     return false;
 }
 
-static int clockrealbase = 0, clockvirtbase = 0;
+static int clockrealbase = 0,
+           clockvirtbase = 0;
 static void clockreset()
 {
     clockrealbase = SDL_GetTicks();
@@ -161,12 +163,12 @@ int getclockmillis()
 int main(int argc, char **argv)
 {
     #ifdef WIN32
-    //atexit((void (__cdecl *)(void))_CrtDumpMemoryLeaks);
-    #ifndef _DEBUG
-    #ifndef __GNUC__
-    __try {
-    #endif
-    #endif
+        //atexit((void (__cdecl *)(void))_CrtDumpMemoryLeaks);
+        #ifndef _DEBUG
+            #ifndef __GNUC__
+                __try {
+            #endif
+        #endif
     #endif
     initidents();
     setlogfile(NULL);
@@ -332,7 +334,6 @@ int main(int argc, char **argv)
     logoutf("init: world");
     camera1 = player = game::iterdynents(0);
     emptymap(0, true, NULL, false);
-
     logoutf("init: sound");
     initsound();
 
@@ -418,15 +419,12 @@ int main(int argc, char **argv)
             game::updateworld(); //main ingame update routine: calculates projectile positions, physics, etc.
         }
         checksleep(lastmillis); //checks cubescript for any pending sleep commands
-
         serverslice(0); //server main routine
-
         if(frames)
         {
             updatefpshistory(elapsedtime); //if collecting framerate history, update with new frame
         }
         frames++;
-
         // miscellaneous general game effects
         recomputecamera();
         updateparticles();
