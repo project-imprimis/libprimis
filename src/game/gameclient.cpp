@@ -445,14 +445,15 @@ namespace game
     }
     ICOMMAND(getclientname, "i", (int *cn), result(getclientname(*cn)));
 
-    ICOMMAND(getclientcolorname, "i", (int *cn),
+    void getclientcolorname(int *cn)
     {
         gameent *d = getclient(*cn);
         if(d)
         {
             result(colorname(d));
         }
-    });
+    }
+    COMMAND(getclientcolorname, "i");
 
     int getclientteam(int cn)
     {
