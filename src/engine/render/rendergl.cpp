@@ -2376,12 +2376,12 @@ const char *defaultcrosshair(int index)
     }
 }
 
-#define MAXCROSSHAIRS 4
-static Texture *crosshairs[MAXCROSSHAIRS] = { NULL, NULL, NULL, NULL };
+static const int maxcrosshairs  = 4;
+static Texture *crosshairs[maxcrosshairs] = { NULL, NULL, NULL, NULL };
 
 void loadcrosshair(const char *name, int i)
 {
-    if(i < 0 || i >= MAXCROSSHAIRS)
+    if(i < 0 || i >= maxcrosshairs)
     {
         return;
     }
@@ -2407,7 +2407,7 @@ COMMANDN(loadcrosshair, loadcrosshair_, "si");
 ICOMMAND(getcrosshair, "i", (int *i),
 {
     const char *name = "";
-    if(*i >= 0 && *i < MAXCROSSHAIRS)
+    if(*i >= 0 && *i < maxcrosshairs)
     {
         name = crosshairs[*i] ? crosshairs[*i]->name : defaultcrosshair(*i);
         if(!name)
@@ -2420,7 +2420,7 @@ ICOMMAND(getcrosshair, "i", (int *i),
 
 void writecrosshairs(stream *f)
 {
-    for(int i = 0; i < MAXCROSSHAIRS; ++i)
+    for(int i = 0; i < maxcrosshairs; ++i)
     {
         if(crosshairs[i] && crosshairs[i]!=notexture)
         {
