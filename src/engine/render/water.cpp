@@ -1,8 +1,8 @@
 #include "engine.h"
 
-#define NUMCAUSTICS 32
+static const int numcaustics = 32;
 
-static Texture *caustictex[NUMCAUSTICS] = { NULL };
+static Texture *caustictex[numcaustics] = { NULL };
 bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
 
 void loadcaustics(bool force)
@@ -21,7 +21,7 @@ void loadcaustics(bool force)
     {
         return;
     }
-    for(int i = 0; i < NUMCAUSTICS; ++i)
+    for(int i = 0; i < numcaustics; ++i)
     {
         DEF_FORMAT_STRING(name, "<grey><noswizzle>media/texture/mat_water/caustic/caust%.2d.png", i);
         caustictex[i] = textureload(name);
@@ -30,12 +30,14 @@ void loadcaustics(bool force)
 
 void cleanupcaustics()
 {
-    for(int i = 0; i < NUMCAUSTICS; ++i)
+    for(int i = 0; i < numcaustics; ++i)
     {
         caustictex[i] = NULL;
     }
 }
 
+//caustics: lightening on surfaces underwater due to lensing effects from an
+// uneven water surface
 VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
 VARFR(causticmillis, 0, 75, 1000, preloadwatershaders());
 FVARR(causticcontrast, 0, 0.6f, 2);
@@ -50,12 +52,12 @@ void setupcaustics(int tmu, float surface = -1e16f)
     }
     vec s = vec(0.011f, 0, 0.0066f).mul(100.0f/causticscale),
         t = vec(0, 0.011f, 0.0066f).mul(100.0f/causticscale);
-    int tex = (lastmillis/causticmillis)%NUMCAUSTICS;
+    int tex = (lastmillis/causticmillis)%numcaustics;
     float frac = static_cast<float>(lastmillis%causticmillis)/causticmillis;
     for(int i = 0; i < 2; ++i)
     {
         glActiveTexture_(GL_TEXTURE0+tmu+i);
-        glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%NUMCAUSTICS]->id);
+        glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%numcaustics]->id);
     }
     glActiveTexture_(GL_TEXTURE0);
     float blendscale = causticcontrast, blendoffset = 1;
@@ -101,7 +103,7 @@ void renderwaterfog(int mat, float surface)
 {
     glDepthFunc(GL_NOTEQUAL);
     glDepthMask(GL_FALSE);
-    glDepthRange(1, 1); 
+    glDepthRange(1, 1);
 
     glEnable(GL_BLEND);
 
@@ -161,13 +163,16 @@ void renderwaterfog(int mat, float surface)
     gle::end();
 
     glDisable(GL_BLEND);
-        
+
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);
     glDepthRange(0, 1);
 }
 
 /* vertex water */
+
+//these variables control the vertex water geometry intensity
+//(nothing to do with any other rendering)
 VARP(watersubdiv, 0, 3, 3);
 VARP(waterlod, 0, 1, 3);
 
@@ -183,7 +188,7 @@ static float whscale, whoffset;
     static inline void vertw(float v1, float v2, float v3) \
     { \
         float angle = (v1-wx1)*(v2-wy1)*(v1-wx2)*(v2-wy2)*whscale+whoffset; \
-        float s = angle - int(angle) - 0.5f; \
+        float s = angle - static_cast<int>(angle) - 0.5f; \
         s *= 8 - fabs(s)*16; \
         float h = WATER_AMPLITUDE*s-WATER_OFFSET; \
         gle::attribf(v1, v2, v3+h); \
@@ -491,7 +496,10 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
     int csize = m.csize,
         rsize = m.rsize;
 #define GENFACEORIENT(orient, v0, v1, v2, v3) \
-        case orient: v0 v1 v2 v3 break;
+        case orient: \
+        { \
+            v0 v1 v2 v3 break; \
+        }
 #undef GENFACEVERTX
 #define GENFACEVERTX(orient, vert, mx,my,mz, sx,sy,sz) \
             { \
@@ -645,7 +653,10 @@ void renderwater()
         #define SETWATERSHADER(which, name) \
         do { \
             static Shader *name##shader = NULL; \
-            if(!name##shader) name##shader = lookupshaderbyname(#name); \
+            if(!name##shader) \
+            { \
+                name##shader = lookupshaderbyname(#name); \
+            } \
             which##shader = name##shader; \
         } while(0)
 

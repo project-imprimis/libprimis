@@ -41,7 +41,7 @@ vector<normal> normals;
 vector<tnormal> tnormals;
 vector<int> smoothgroups;
 
-VARR(lerpangle, 0, 44, 180);
+VARR(lerpangle, 0, 44, 180); //max angle to merge octree faces' normals smoothly
 
 static bool usetnormals = true;
 
@@ -187,7 +187,10 @@ void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
             findnormal(*g, lerpthreshold, surface, v);
         }
     }
-    else v = surface;
+    else
+    {
+        v = surface;
+    }
 }
 
 VARR(lerpsubdiv, 0, 2, 4);
