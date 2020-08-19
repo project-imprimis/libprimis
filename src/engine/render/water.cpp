@@ -63,7 +63,7 @@ void setupcaustics(int tmu, float surface = -1e16f)
     float blendscale = causticcontrast, blendoffset = 1;
     if(surface > -1e15f)
     {
-        float bz = surface + camera1->o.z + (vertwater ? WATER_AMPLITUDE : 0);
+        float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0);
         matrix4 m(vec4(s.x, t.x,  0, 0),
                   vec4(s.y, t.y,  0, 0),
                   vec4(s.z, t.z, -1, 0),
@@ -125,7 +125,7 @@ void renderwaterfog(int mat, float surface)
         invcamprojmatrix.perspectivetransform(vec(1, -1, -1)),
         invcamprojmatrix.perspectivetransform(vec(1, 1, -1))
     };
-    float bz = surface + camera1->o.z + (vertwater ? WATER_AMPLITUDE : 0),
+    float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0),
           syl = (p[1].z > p[0].z) ? (2*(bz - p[0].z)/(p[1].z - p[0].z) - 1) : 1,
           syr = (p[3].z > p[2].z) ? (2*(bz - p[2].z)/(p[3].z - p[2].z) - 1) : 1;
 
@@ -190,7 +190,7 @@ static float whscale, whoffset;
         float angle = (v1-wx1)*(v2-wy1)*(v1-wx2)*(v2-wy2)*whscale+whoffset; \
         float s = angle - static_cast<int>(angle) - 0.5f; \
         s *= 8 - fabs(s)*16; \
-        float h = WATER_AMPLITUDE*s-WATER_OFFSET; \
+        float h = wateramplitude*s-wateroffset; \
         gle::attribf(v1, v2, v3+h); \
         body; \
     }
@@ -202,7 +202,7 @@ static float whscale, whoffset;
     } \
     static inline void vertw(float v1, float v2, float v3) \
     { \
-        float h = -WATER_OFFSET; \
+        float h = -wateroffset; \
         gle::attribf(v1, v2, v3+h); \
         body; \
     }
@@ -487,7 +487,7 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
           zmax = zmin;
     if(m.ends&1)
     {
-        zmin += -WATER_OFFSET-WATER_AMPLITUDE;
+        zmin += -wateroffset-wateramplitude;
     }
     if(m.ends&2)
     {
@@ -557,7 +557,7 @@ void renderwaterfalls()
         float angle = fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f),
               s = angle - static_cast<int>(angle) - 0.5f;
         s *= 8 - fabs(s)*16;
-        wfwave = vertwater ? WATER_AMPLITUDE*s-WATER_OFFSET : -WATER_OFFSET;
+        wfwave = vertwater ? wateramplitude*s-wateroffset : -wateroffset;
         wfscroll = 16.0f*lastmillis/1000.0f;
         wfxscale = TEX_SCALE/(tex->xs*wslot.scale);
         wfyscale = TEX_SCALE/(tex->ys*wslot.scale);
@@ -697,7 +697,7 @@ void renderwater()
         for(int i = 0; i < surfs.length(); i++)
         {
             materialsurface &m = surfs[i];
-            if(camera1->o.z < m.o.z - WATER_OFFSET)
+            if(camera1->o.z < m.o.z - wateroffset)
             {
                 continue;
             }
@@ -710,7 +710,7 @@ void renderwater()
             for(int i = 0; i < surfs.length(); i++)
             {
                 materialsurface &m = surfs[i];
-                if(camera1->o.z >= m.o.z - WATER_OFFSET)
+                if(camera1->o.z >= m.o.z - wateroffset)
                 {
                     continue;
                 }

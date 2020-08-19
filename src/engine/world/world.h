@@ -34,8 +34,8 @@ struct mapheader
     int numvslots;
 };
 
-#define WATER_AMPLITUDE 0.4f
-#define WATER_OFFSET 1.1f
+const float wateramplitude = 0.4f; //max wave height
+const float wateroffset = 1.1f;    //wave offset from top of mat volume
 
 enum
 {

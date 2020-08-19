@@ -2085,13 +2085,13 @@ void gl_drawview()
         vieww = gw;
         viewh = gh;
     }
-    float fogmargin = 1 + WATER_AMPLITUDE + nearplane;
+    float fogmargin = 1 + wateramplitude + nearplane;
     int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index),
         abovemat = Mat_Air;
     float fogbelow = 0;
     if(IS_LIQUID(fogmat&MatFlag_Volume))
     {
-        float z = findsurface(fogmat, vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin), abovemat) - WATER_OFFSET;
+        float z = findsurface(fogmat, vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin), abovemat) - wateroffset;
         if(camera1->o.z < z + fogmargin)
         {
             fogbelow = z - camera1->o.z;
