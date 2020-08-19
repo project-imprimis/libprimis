@@ -167,8 +167,8 @@ struct partvert
     vec2 tc;
 };
 
-const float collideradius = 8.0f;
-const float collideerror  = 1.0f;
+static const float collideradius = 8.0f;
+static const float collideerror  = 1.0f;
 
 struct partrenderer
 {
