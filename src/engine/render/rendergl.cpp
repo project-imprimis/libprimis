@@ -2352,9 +2352,10 @@ void drawdamagescreen(int w, int h)
 VAR(showstats, 0, 1, 1);
 VAR(showhud, 0, 1, 1);
 
+//crosshair & cursor vars
 VARP(crosshairsize, 0, 15, 50);
 VARP(cursorsize, 0, 15, 30);
-VARP(crosshairfx, 0, 1, 1);
+VARP(crosshairfx, 0, 1, 1); // hit fx
 
 
 const char *defaultcrosshair(int index)
@@ -2489,17 +2490,21 @@ void drawcrosshair(int w, int h, int crosshairindex)
     hudquad(x, y, chsize, chsize);
 }
 
-VARP(wallclock, 0, 0, 1);
-VARP(wallclock24, 0, 0, 1);
-VARP(wallclocksecs, 0, 0, 1);
+//hud time displays
+VARP(wallclock, 0, 0, 1);     //toggles hud readout
+VARP(wallclock24, 0, 0, 1);   //toggles 12h (US) or 24h time
+VARP(wallclocksecs, 0, 0, 1); //seconds precision on hud readout
 
 static time_t walltime = 0;
 
-VARP(showfps, 0, 1, 1);
-VARP(showfpsrange, 0, 0, 1);
-VAR(statrate, 1, 200, 1000);
+//hud fps displays
+VARP(showfps, 0, 1, 1);      //toggles showing game framerate
+VARP(showfpsrange, 0, 0, 1); //toggles showing min/max framerates as well
 
-FVARP(conscale, 1e-3f, 0.33f, 1e3f);
+//note: fps displayed is the average over the statrate duration
+VAR(statrate, 1, 200, 1000);  //update time for fps (not other hud readouts)
+
+FVARP(conscale, 1e-3f, 0.33f, 1e3f); //size of readouts, console, and history
 
 void resethudshader()
 {
