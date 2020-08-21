@@ -3947,8 +3947,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Exit|Ret_Float:
             {
                 forcearg(result, op&Code_RetMask);
-                [[fallthrough]];
             }
+            [[fallthrough]];
             case Code_Exit|Ret_Null:
             {
                 goto exit;
@@ -3958,8 +3958,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ResultArg|Ret_Float:
             {
                 forcearg(result, op&Code_RetMask);
-                [[fallthrough]];
             }
+            [[fallthrough]];
             case Code_ResultArg|Ret_Null:
             {
                 args[numargs++] = result;
@@ -4673,8 +4673,8 @@ static const uint *runcode(const uint *code, tagval &result)
                         {
                             FORCERESULT;
                         }
-                        [[fallthrough]];
                     }
+                    [[fallthrough]];
                     case Id_Command:
                     {
                         freearg(idarg);
