@@ -3618,7 +3618,7 @@ namespace UI
                     {
                         break;
                     }
-                    // fall-through
+                    [[fallthrough]];
                 }
                 case SDLK_KP_ENTER:
                 {
@@ -4526,7 +4526,7 @@ namespace UI
                     BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
                     break;
                 }
-                // fall-through
+                [[fallthrough]];
             }
             default:
             {

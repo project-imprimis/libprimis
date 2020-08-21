@@ -942,7 +942,7 @@ void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *i
                             i0 = i1;
                             i1 = left;
                         }
-                        i2 = left; // fall-through
+                        [[fallthrough]];
                     }
                     default:
                     {

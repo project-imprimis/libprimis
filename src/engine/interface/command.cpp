@@ -1657,7 +1657,7 @@ static inline bool getbool(const char *s)
                     return true;
                 }
             }
-            // fall-through
+            [[fallthrough]];
         case '0':
         {
             char *end;
@@ -3947,7 +3947,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Exit|Ret_Float:
             {
                 forcearg(result, op&Code_RetMask);
-                // fall-through
+                [[fallthrough]];
             }
             case Code_Exit|Ret_Null:
             {
@@ -3958,7 +3958,7 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ResultArg|Ret_Float:
             {
                 forcearg(result, op&Code_RetMask);
-                // fall-through
+                [[fallthrough]];
             }
             case Code_ResultArg|Ret_Null:
             {
@@ -4673,7 +4673,7 @@ static const uint *runcode(const uint *code, tagval &result)
                         {
                             FORCERESULT;
                         }
-                        // fall-through
+                        [[fallthrough]];
                     }
                     case Id_Command:
                     {
@@ -4786,7 +4786,7 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
                 {
                     break;
                 }
-                // fall-through
+                [[fallthrough]];
             case Id_Command:
                 if(numargs < id->numargs)
                 {
