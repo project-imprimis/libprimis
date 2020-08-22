@@ -98,6 +98,11 @@ linear analysis, including multipole expansions and Fourier series.
 # 1. Standards
 ---
 
+To be a functioning project, Imprimis has some standards which make it
+straightforward to communicate effectively. While some particular standards may
+be clumsy for particular uses, it is important that the project be consistent,
+not only for clarity of code but also for documentation and ease of extension.
+
 ## 1.1 Coding Standards
 ---
 
@@ -109,7 +114,8 @@ must satisfy the standards laid out therein.
 
 Text should institute a line break after 80 characters.
 
-Chapters use `#`; sections use `##`; subsections use `###`.
+Chapters use `#`; sections use `##`; subsections use `###`. Minor topics within
+subsections can use `####`.
 
 ### 1.1.2 C/C++ Standards
 ---
@@ -123,6 +129,10 @@ Macros are always fully capitalized and seperated with underscores:
 
 `#define MACRO_NAME`
 `#define MACRO_FUNCTION(a, b)`
+
+Do not use macros unless there is no other salient way to approach the problem.
+If a macro is the best way to solve a particular problem, it should be explained
+with surrounding comments.
 
 Variables are always lowercase:
 
@@ -342,12 +352,16 @@ Windows: `~/My Games/Imprimis` is the "home" directory by default.
 ---
 
 This game requires `libsdl2, libsdl2-mixer, libsdl2-image` to run, including the
-`-dev` versions for those package managers which elect to seperate them if
-compiling the game. As the main way of getting the game is via Git, the best way
-to retrieve the assets for the game is by the command line utility `git`.
+`-dev` versions for those package managers which elect to seperate them (such as
+Ubuntu) if compiling the game. As the main way of getting the game is via Git,
+the best way to retrieve the assets for the game is by the command line utility
+`git`.
 
 ### 1.3 Conventions and Units
 ---
+
+Imprimis uses some standard units which allow for users to contextualize and
+orient themselves in the worlds it creates.
 
 #### 1.3.1 Distances
 ---
