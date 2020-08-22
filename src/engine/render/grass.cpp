@@ -49,7 +49,7 @@ struct grassgroup
 
 static vector<grassgroup> grassgroups;
 
-static const float numgrassoffsets = 32;
+static const int numgrassoffsets = 32;
 
 static float grassoffsets[numgrassoffsets] = { -1 }, grassanimoffsets[numgrassoffsets];
 static int lastgrassanim = -1;
