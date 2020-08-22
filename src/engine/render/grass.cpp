@@ -9,7 +9,7 @@ FVARP(grasstaper, 0, 0.2, 1);
 FVARP(grassstep, 0.5, 2, 8);
 VARP(grassheight, 1, 4, 64);
 
-#define NUMGRASSWEDGES 8
+static const int numgrasswedges = 8;
 
 static struct grasswedge
 {
@@ -17,16 +17,16 @@ static struct grasswedge
     plane bound1, bound2;
 
     grasswedge(int i) :
-      dir(2*M_PI*(i+0.5f)/static_cast<float>(NUMGRASSWEDGES), 0),
-      across(2*M_PI*((i+0.5f)/static_cast<float>(NUMGRASSWEDGES) + 0.25f), 0),
-      edge1(vec(2*M_PI*i/static_cast<float>(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
-      edge2(vec(2*M_PI*(i+1)/static_cast<float>(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
-      bound1(vec(2*M_PI*(i/static_cast<float>(NUMGRASSWEDGES) - 0.25f), 0), 0),
-      bound2(vec(2*M_PI*((i+1)/static_cast<float>(NUMGRASSWEDGES) + 0.25f), 0), 0)
+      dir(2*M_PI*(i+0.5f)/static_cast<float>(numgrasswedges), 0),
+      across(2*M_PI*((i+0.5f)/static_cast<float>(numgrasswedges) + 0.25f), 0),
+      edge1(vec(2*M_PI*i/static_cast<float>(numgrasswedges), 0).div(cos(M_PI/numgrasswedges))),
+      edge2(vec(2*M_PI*(i+1)/static_cast<float>(numgrasswedges), 0).div(cos(M_PI/numgrasswedges))),
+      bound1(vec(2*M_PI*(i/static_cast<float>(numgrasswedges) - 0.25f), 0), 0),
+      bound2(vec(2*M_PI*((i+1)/static_cast<float>(numgrasswedges) + 0.25f), 0), 0)
     {
         across.div(-across.dot(bound1));
     }
-} grasswedges[NUMGRASSWEDGES] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+} grasswedges[numgrasswedges] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
 struct grassvert
 {
@@ -49,9 +49,9 @@ struct grassgroup
 
 static vector<grassgroup> grassgroups;
 
-#define NUMGRASSOFFSETS 32
+static const float numgrassoffsets = 32;
 
-static float grassoffsets[NUMGRASSOFFSETS] = { -1 }, grassanimoffsets[NUMGRASSOFFSETS];
+static float grassoffsets[numgrassoffsets] = { -1 }, grassanimoffsets[numgrassoffsets];
 static int lastgrassanim = -1;
 
 VARR(grassanimmillis, 0, 3000, 60000);
@@ -59,7 +59,7 @@ FVARR(grassanimscale, 0, 0.03f, 1);
 
 static void animategrass()
 {
-    for(int i = 0; i < NUMGRASSOFFSETS; ++i)
+    for(int i = 0; i < numgrassoffsets; ++i)
     {
         grassanimoffsets[i] = grassanimscale*sinf(2*M_PI*(grassoffsets[i] + lastmillis/static_cast<float>(grassanimmillis)));
     }
@@ -99,9 +99,9 @@ static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstr
     int offset = tstep + maxstep;
     if(offset < 0)
     {
-        offset = NUMGRASSOFFSETS - (-offset)%NUMGRASSOFFSETS;
+        offset = numgrassoffsets - (-offset)%numgrassoffsets;
     }
-    offset += numsteps + NUMGRASSOFFSETS - numsteps%NUMGRASSOFFSETS;
+    offset += numsteps + numgrassoffsets - numsteps%numgrassoffsets;
 
     float leftdist = t0;
     const vec *leftv = &g.v[0];
@@ -226,8 +226,8 @@ static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstr
 
         group->numquads++;
 
-        float tcoffset = grassoffsets[offset%NUMGRASSOFFSETS],
-              animoffset = animscale*grassanimoffsets[offset%NUMGRASSOFFSETS],
+        float tcoffset = grassoffsets[offset%numgrassoffsets],
+              animoffset = animscale*grassanimoffsets[offset%numgrassoffsets],
               tc1 = tc.dot(p1) + tcoffset,
               tc2 = tc.dot(p2) + tcoffset,
               fade = dist - t > taperdist ? (grassdist - (dist - t))*taperscale : 1,
@@ -276,7 +276,7 @@ static void gengrassquads(vtxarray *va)
             s.grasstex = textureload(s.grass, 2);
         }
         grassgroup *group = NULL;
-        for(int i = 0; i < NUMGRASSWEDGES; ++i)
+        for(int i = 0; i < numgrasswedges; ++i)
         {
             grasswedge &w = grasswedges[i];
             if(w.bound1.dist(g.center) > g.radius || w.bound2.dist(g.center) > g.radius)
@@ -299,13 +299,13 @@ void generategrass()
 
     if(grassoffsets[0] < 0)
     {
-        for(int i = 0; i < NUMGRASSOFFSETS; ++i)
+        for(int i = 0; i < numgrassoffsets; ++i)
         {
             grassoffsets[i] = randomint(0x1000000)/static_cast<float>(0x1000000);
         }
     }
 
-    for(int i = 0; i < NUMGRASSWEDGES; ++i)
+    for(int i = 0; i < numgrasswedges; ++i)
     {
         grasswedge &w = grasswedges[i];
         w.bound1.offset = -camera1->o.dot(w.bound1);
