@@ -2277,23 +2277,36 @@ namespace hmap
             }
         }
 
-        #define PULL_HEIGHTMAP(I, LT, GT, M, N, A) do { \
+        #define PULL_HEIGHTMAP(I, LT, GT, M, N, A) \
+        do \
+        { \
             best = I; \
-            for(int i = 0; i < 4; ++i) if(*o[i] LT best) best = *o[q = i] - M; \
+            for(int i = 0; i < 4; ++i) \
+            { \
+                if(*o[i] LT best) \
+                { \
+                    best = *o[q = i] - M; \
+                } \
+            } \
             par = (best&(~7)) + N; \
             /* dual layer for extra smoothness */ \
-            if(*o[q^3] GT par && !(*o[q^1] LT par || *o[q^2] LT par)) { \
-                if(*o[q^3] GT par A 8 || *o[q^1] != par || *o[q^2] != par) { \
+            if(*o[q^3] GT par && !(*o[q^1] LT par || *o[q^2] LT par)) \
+            { \
+                if(*o[q^3] GT par A 8 || *o[q^1] != par || *o[q^2] != par) \
+                { \
                     *o[q^3] = (*o[q^3] GT par A 8 ? par A 8 : *o[q^3]); \
                     *o[q^1] = *o[q^2] = par; \
                     changed = true; \
                 } \
             /* single layer */ \
-            } else { \
-                for(int j = 0; j < 4; ++j) if(*o[j] GT par) { \
-                    *o[j] = par; \
-                    changed = true; \
-                } \
+            } \
+            else { \
+                for(int j = 0; j < 4; ++j) \
+                    if(*o[j] GT par) \
+                    { \
+                        *o[j] = par; \
+                        changed = true; \
+                    } \
             } \
         } while(0)
 
