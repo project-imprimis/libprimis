@@ -1388,7 +1388,7 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
     buf.reserve(512);
-    *(ushort *)buf.pad(2) = ushort(u->numents);
+    *reinterpret_cast<ushort *>(buf.pad(2)) = static_cast<ushort>(u->numents);
     if(u->numents)
     {
         undoent *ue = u->ents();
@@ -2267,7 +2267,8 @@ namespace hmap
         }
 
         bool changed = false;
-        int *o[4], best, par, q = 0;
+        int *o[4], best, par,
+            q = 0;
         for(int i = 0; i < 2; ++i)
         {
             for(int j = 0; j < 2; ++j)
@@ -2346,20 +2347,26 @@ namespace hmap
                 }
             }
         }
-
-        if(!changed) return;
+        if(!changed)
+        {
+            return;
+        }
         if(x>mx) ripple(x-1, y, mapz[x][y], true);
         if(x<nx) ripple(x+1, y, mapz[x][y], true);
         if(y>my) ripple(x, y-1, mapz[x][y], true);
         if(y<ny) ripple(x, y+1, mapz[x][y], true);
 
-#define DIAGONAL_RIPPLE(a,b,exp) if(exp) { \
+#define DIAGONAL_RIPPLE(a,b,exp) \
+    if(exp) { \
             if(flags[x a][ y] & PAINTED) \
+            { \
                 ripple(x a, y b, mapz[x a][y], true); \
+            } \
             else if(flags[x][y b] & PAINTED) \
+            { \
                 ripple(x a, y b, mapz[x][y b], true); \
+            } \
         }
-
         DIAGONAL_RIPPLE(-1, -1, (x>mx && y>my)); // do diagonals because adjacents
         DIAGONAL_RIPPLE(-1, +1, (x>mx && y<ny)); //    won't unless changed
         DIAGONAL_RIPPLE(+1, +1, (x<nx && y<ny));
@@ -2494,7 +2501,10 @@ void edithmap(int dir, int mode)
 
 ///////////// main cube edit ////////////////
 
-int bounded(int n) { return n<0 ? 0 : (n>8 ? 8 : n); }
+int bounded(int n)
+{
+    return n<0 ? 0 : (n>8 ? 8 : n);
+}
 
 void pushedge(uchar &edge, int dir, int dc)
 {
@@ -2759,7 +2769,7 @@ int curtexindex = -1,
 int texpaneltimer = 0;
 vector<ushort> texmru;
 
-void tofronttex()                                       // maintain most recently used of the texture lists when applying texture
+void tofronttex() // maintain most recently used of the texture lists when applying texture
 {
     int c = curtexindex;
     if(texmru.inrange(c))
@@ -3638,13 +3648,19 @@ enum
     EditMatFlag_Solid = 0x30000,
     EditMatFlag_NotSolid = 0x40000
 };
-static const struct { const char *name; int filter; } editmatfilters[] =
+
+static const struct
+{
+    const char *name;
+    int filter;
+} editmatfilters[] =
 {
     { "empty", EditMatFlag_Empty },
     { "notempty", EditMatFlag_NotEmpty },
     { "solid", EditMatFlag_Solid },
     { "notsolid", EditMatFlag_NotSolid }
 };
+
 /*setmat: sets a cube's materials, given a material & filter to use
  * Arguments:
  *  c: the cube object to use
