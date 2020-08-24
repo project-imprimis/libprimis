@@ -1359,7 +1359,8 @@ namespace ai
     int process(gameent *d, aistate &b)
     {
         int result = 0,
-            stupify = d->skill <= 10+randomint(15) ? randomint(d->skill*1000) : 0, skmod = 101-d->skill;
+            stupify = d->skill <= 10+randomint(15) ? randomint(d->skill*1000) : 0,
+            skmod = 101-d->skill;
         float frame = d->skill <= 100 ? static_cast<float>(lastmillis-d->ai->lastrun)/static_cast<float>(max(skmod,1)*10) : 1;
         vec dp = d->headpos();
         bool idle = b.idle == 1 || (stupify && stupify <= skmod);
@@ -1872,10 +1873,12 @@ namespace ai
         {
             if(d->ai->route.inrange(last))
             {
-                int index = d->ai->route[i], prev = d->ai->route[last];
+                int index = d->ai->route[i],
+                    prev = d->ai->route[last];
                 if(iswaypoint(index) && iswaypoint(prev))
                 {
-                    waypoint &e = waypoints[index], &f = waypoints[prev];
+                    waypoint &e = waypoints[index],
+                             &f = waypoints[prev];
                     vec fr = f.o,
                         dr = e.o;
                     fr.z += amt; dr.z += amt;
