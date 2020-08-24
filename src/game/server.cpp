@@ -3,7 +3,7 @@
 
 #include "game.h"
 
-#define LOGSTRLEN 512
+static const int logstrlen = 512;
 
 static FILE *logfile = NULL;
 
@@ -55,7 +55,8 @@ void logoutf(const char *fmt, ...)
 static void writelog(FILE *file, const char *buf)
 {
     static uchar ubuf[512];
-    size_t len = strlen(buf), carry = 0;
+    size_t len = strlen(buf),
+           carry = 0;
     while(carry < len)
     {
         size_t numu = encodeutf8(ubuf, sizeof(ubuf)-1, &(reinterpret_cast<const uchar*>(buf))[carry], len - carry, &carry);
@@ -69,7 +70,7 @@ static void writelog(FILE *file, const char *buf)
 
 static void writelogv(FILE *file, const char *fmt, va_list args)
 {
-    static char buf[LOGSTRLEN];
+    static char buf[logstrlen];
     vformatstring(buf, fmt, args, sizeof(buf));
     writelog(file, buf);
 }
@@ -83,7 +84,7 @@ void logoutfv(const char *fmt, va_list args)
     }
 }
 
-#define DEFAULTCLIENTS 8
+static const int defaultclients = 8;
 
 enum
 {
@@ -205,11 +206,11 @@ void cleanupserver()
     lansock = ENET_SOCKET_NULL;
 }
 
-VARF(maxclients, 0, DEFAULTCLIENTS, MAXCLIENTS,
+VARF(maxclients, 0, defaultclients, MAXCLIENTS,
 {
     if(!maxclients)
     {
-        maxclients = DEFAULTCLIENTS;
+        maxclients = defaultclients;
     }
 });
 
@@ -373,7 +374,8 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
             }
             case 's':
             {
-                sendstring(va_arg(args, const char *), p); break;
+                sendstring(va_arg(args, const char *), p);
+                break;
             }
             case 'l':
             {
