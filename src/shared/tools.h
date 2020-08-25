@@ -96,7 +96,7 @@ inline float randomfloat(int x)
 //1103515245+12345 are magic constants for LCG psuedorandom generator
 inline float detrnd(uint s, int x)
 {
-    return int(((s*1103515245+12345)>>16)%x);
+    return static_cast<int>(((s*1103515245+12345)>>16)%x);
 }
 
 #define DELETEP(p) if(p) { delete   p; p = 0; }
@@ -182,7 +182,7 @@ inline void formatstring(char (&d)[N], const char *fmt, ...)
 {
     va_list v;
     va_start(v, fmt);
-    vformatstring(d, fmt, v, int(N));
+    vformatstring(d, fmt, v, static_cast<int>(N));
     va_end(v);
 }
 
@@ -195,7 +195,7 @@ inline void concformatstring(char (&d)[N], const char *fmt, ...)
     va_list v;
     va_start(v, fmt);
     int len = strlen(d);
-    vformatstring(d + len, fmt, v, int(N) - len);
+    vformatstring(d + len, fmt, v, static_cast<int>(N) - len);
     va_end(v);
 }
 
@@ -547,7 +547,7 @@ struct stringslice
     int len;
     stringslice() {}
     stringslice(const char *str, int len) : str(str), len(len) {}
-    stringslice(const char *str, const char *end) : str(str), len(int(end-str)) {}
+    stringslice(const char *str, const char *end) : str(str), len(static_cast<int>(end-str)) {}
 
     const char *end() const { return &str[len]; }
 };
@@ -555,7 +555,7 @@ struct stringslice
 inline char *newstring(const stringslice &s) { return newstring(s.str, s.len); }
 inline const char *stringptr(const char *s) { return s; }
 inline const char *stringptr(const stringslice &s) { return s.str; }
-inline int stringlen(const char *s) { return int(strlen(s)); }
+inline int stringlen(const char *s) { return static_cast<int>(strlen(s)); }
 inline int stringlen(const stringslice &s) { return s.len; }
 
 inline char *copystring(char *d, const stringslice &s, size_t len)
@@ -573,7 +573,7 @@ inline uint memhash(const void *ptr, int len)
 {
     const uchar *data = (const uchar *)ptr;
     uint h = 5381;
-    for(int i = 0; i < int(len); ++i)
+    for(int i = 0; i < static_cast<int>(len); ++i)
     {
         h = ((h<<5)+h)^data[i];
     }
@@ -838,7 +838,7 @@ struct vector
 
     void removeobj(const T &o)
     {
-        for(int i = 0; i < int(ulen); ++i)
+        for(int i = 0; i < static_cast<int>(ulen); ++i)
         {
             if(buf[i] == o)
             {
@@ -859,7 +859,7 @@ struct vector
     void replacewithlast(const T &o)
     {
         if(!ulen) return;
-        for(int i = 0; i < int(ulen-1); ++i)
+        for(int i = 0; i < static_cast<int>(ulen-1); ++i)
         {
             if(buf[i]==o)
             {
@@ -904,7 +904,7 @@ struct vector
 
     void reverse()
     {
-        for(int i = 0; i < int(ulen/2); ++i)
+        for(int i = 0; i < static_cast<int>(ulen/2); ++i)
         {
             swap(buf[i], buf[ulen-1-i]);
         }
@@ -978,7 +978,7 @@ struct vector
     template<class K>
     int htfind(const K &key)
     {
-        for(int i = 0; i < int(ulen); ++i)
+        for(int i = 0; i < static_cast<int>(ulen); ++i)
         {
             if(htcmp(key, buf[i]))
             {
@@ -1055,7 +1055,7 @@ struct hashbase
             chainchunk *chunk = new chainchunk;
             chunk->next = chunks;
             chunks = chunk;
-            for(int i = 0; i < int(CHUNKSIZE-1); ++i)
+            for(int i = 0; i < static_cast<int>(CHUNKSIZE-1); ++i)
             {
                 chunk->chains[i].next = &chunk->chains[i+1];
             }
@@ -1139,7 +1139,7 @@ struct hashbase
     void recycle()
     {
         if(!numelems) return;
-        for(int i = 0; i < int(size); ++i)
+        for(int i = 0; i < static_cast<int>(size); ++i)
         {
             chain *c = chains[i];
             if(!c) continue;
@@ -1255,8 +1255,8 @@ struct hashtable : hashbase<hashtable<K, T>, hashtableentry<K, T>, K, T>
     static inline void setkey(elemtype &elem, const U &key) { elem.key = key; }
 };
 
-#define ENUMERATE_KT(ht,k,e,t,f,b) for(int i = 0; i < int((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { k &e = (ht).enumkey(ec); t &f = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
-#define ENUMERATE(ht,t,e,b)       for(int i = 0; i < int((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { t &e = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
+#define ENUMERATE_KT(ht,k,e,t,f,b) for(int i = 0; i < static_cast<int>((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { k &e = (ht).enumkey(ec); t &f = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
+#define ENUMERATE(ht,t,e,b)       for(int i = 0; i < static_cast<int>((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { t &e = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
 
 template <class T, int SIZE>
 struct queue

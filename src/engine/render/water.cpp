@@ -208,7 +208,7 @@ static float whscale, whoffset;
     }
 #define VERTWT(vertwt, defbody, body) \
     VERTW(vertwt, defbody, { \
-        float v = angle - int(angle+0.25f) - 0.25f; \
+        float v = angle - static_cast<int>(angle+0.25f) - 0.25f; \
         v *= 8 - fabs(v)*16; \
         float duv = 0.5f*v; \
         body; \

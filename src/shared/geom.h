@@ -301,7 +301,12 @@ struct vec
         return vec(((color>>16)&0xFF)*(1.0f/255.0f), ((color>>8)&0xFF)*(1.0f/255.0f), (color&0xFF)*(1.0f/255.0f));
     }
 
-    int tohexcolor() const { return (int(::std::clamp(r, 0.0f, 1.0f)*255)<<16)|(int(::std::clamp(g, 0.0f, 1.0f)*255)<<8)|int(::std::clamp(b, 0.0f, 1.0f)*255); }
+    int tohexcolor() const
+    {
+        return (static_cast<int>(::std::clamp(r, 0.0f, 1.0f)*255)<<16) |
+               (static_cast<int>(::std::clamp(g, 0.0f, 1.0f)*255)<<8)  |
+                static_cast<int>(::std::clamp(b, 0.0f, 1.0f)*255);
+    }
 };
 
 inline vec2::vec2(const vec &v) : x(v.x), y(v.y) {}
@@ -1277,7 +1282,7 @@ struct ivec
     };
 
     ivec() {}
-    explicit ivec(const vec &v) : x(int(v.x)), y(int(v.y)), z(int(v.z)) {}
+    explicit ivec(const vec &v) : x(static_cast<int>(v.x)), y(static_cast<int>(v.y)), z(static_cast<int>(v.z)) {}
     ivec(int a, int b, int c) : x(a), y(b), z(c) {}
     ivec(int d, int row, int col, int depth)
     {
@@ -1321,8 +1326,8 @@ struct ivec
     int dot(const ivec &o) const { return x*o.x + y*o.y + z*o.z; }
     float dist(const plane &p) const { return x*p.x + y*p.y + z*p.z + p.offset; }
 
-    static inline ivec floor(const vec &o) { return ivec(int(::floor(o.x)), int(::floor(o.y)), int(::floor(o.z))); }
-    static inline ivec ceil(const vec &o) { return ivec(int(::ceil(o.x)), int(::ceil(o.y)), int(::ceil(o.z))); }
+    static inline ivec floor(const vec &o) { return ivec(static_cast<int>(::floor(o.x)), static_cast<int>(::floor(o.y)), static_cast<int>(::floor(o.z))); }
+    static inline ivec ceil(const vec &o) { return ivec(static_cast<int>(::ceil(o.x)), static_cast<int>(::ceil(o.y)), static_cast<int>(::ceil(o.z))); }
 };
 
 inline vec::vec(const ivec &v) : x(v.x), y(v.y), z(v.z) {}
@@ -1348,7 +1353,7 @@ struct ivec2
 
     ivec2() {}
     ivec2(int x, int y) : x(x), y(y) {}
-    explicit ivec2(const vec2 &v) : x(int(v.x)), y(int(v.y)) {}
+    explicit ivec2(const vec2 &v) : x(static_cast<int>(v.x)), y(static_cast<int>(v.y)) {}
     explicit ivec2(const ivec &v) : x(v.x), y(v.y) {}
 
     int &operator[](int i)       { return v[i]; }
@@ -1404,7 +1409,7 @@ struct ivec4
     ivec4() {}
     explicit ivec4(const ivec &p, int w = 0) : x(p.x), y(p.y), z(p.z), w(w) {}
     ivec4(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
-    explicit ivec4(const vec4 &v) : x(int(v.x)), y(int(v.y)), z(int(v.z)), w(int(v.w)) {}
+    explicit ivec4(const vec4 &v) : x(static_cast<int>(v.x)), y(static_cast<int>(v.y)), z(static_cast<int>(v.z)), w(static_cast<int>(v.w)) {}
 
     bool operator==(const ivec4 &o) const { return x == o.x && y == o.y && z == o.z && w == o.w; }
     bool operator!=(const ivec4 &o) const { return x != o.x || y != o.y || z != o.z || w != o.w; }
@@ -1489,7 +1494,7 @@ struct bvec
     {
         return bvec((color>>16)&0xFF, (color>>8)&0xFF, color&0xFF);
     }
-    int tohexcolor() const { return (int(r)<<16)|(int(g)<<8)|int(b); }
+    int tohexcolor() const { return (static_cast<int>(r)<<16)|(static_cast<int>(g)<<8)|static_cast<int>(b); }
 };
 
 //color vector4 (r,g,b,a)

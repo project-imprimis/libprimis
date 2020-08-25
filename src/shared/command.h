@@ -143,7 +143,7 @@ struct tagval : identval
 
     void setint(int val) { type = Value_Integer; i = val; }
     void setfloat(float val) { type = Value_Float; f = val; }
-    void setnumber(double val) { i = int(val); if(val == i) type = Value_Integer; else { type = Value_Float; f = val; } }
+    void setnumber(double val) { i = static_cast<int>(val); if(val == i) type = Value_Integer; else { type = Value_Float; f = val; } }
     void setstr(char *val) { type = Value_String; s = val; }
     void setnull() { type = Value_Null; i = 0; }
     void setcode(const uint *val) { type = Value_Code; code = val; }
@@ -293,7 +293,7 @@ extern void result(const char *s);
 
 inline int parseint(const char *s)
 {
-    return int(strtoul(s, NULL, 0));
+    return static_cast<int>(strtoul(s, NULL, 0));
 }
 
 #define PARSEFLOAT(name, type) \
@@ -308,10 +308,10 @@ PARSEFLOAT(float, float)
 PARSEFLOAT(number, double)
 
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
-inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==int(v) ? "%.1f" : "%.7g", v); }
+inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
 inline void numberformat(char *buf, double v, int len = 20)
 {
-    int i = int(v);
+    int i = static_cast<int>(v);
     if(v == i) nformatstring(buf, len, "%d", i);
     else nformatstring(buf, len, "%.7g", v);
 }

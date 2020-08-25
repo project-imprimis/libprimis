@@ -284,7 +284,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     {
         if(dy1 > dy2)
         {
-            split = min(dy1, int(h));
+            split = min(dy1, static_cast<int>(h));
         }
         else
         {
@@ -470,7 +470,7 @@ void check_calclight_canceled()
 void show_calclight_progress()
 {
     float bar1 = static_cast<float>(lightprogress) / static_cast<float>(allocnodes);
-    DEF_FORMAT_STRING(text1, "%d%%", int(bar1 * 100));
+    DEF_FORMAT_STRING(text1, "%d%%", static_cast<int>(bar1 * 100));
 
     renderprogress(bar1, text1);
 }

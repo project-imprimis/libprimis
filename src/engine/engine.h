@@ -84,21 +84,21 @@ inline void text_bounds(const char *str, int &width, int &height, int maxwidth =
 {
     float widthf, heightf;
     text_boundsf(str, widthf, heightf, maxwidth);
-    width = int(ceil(widthf));
-    height = int(ceil(heightf));
+    width = static_cast<int>(ceil(widthf));
+    height = static_cast<int>(ceil(heightf));
 }
 
 inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
 {
     float cxf, cyf;
     text_posf(str, cursor, cxf, cyf, maxwidth);
-    cx = int(cxf);
-    cy = int(cyf);
+    cx = static_cast<int>(cxf);
+    cy = static_cast<int>(cyf);
 }
 
 inline int text_width(const char *str)
 {
-    return int(ceil(text_widthf(str)));
+    return static_cast<int>(ceil(text_widthf(str)));
 }
 
 // texture
@@ -265,10 +265,10 @@ extern int nospeclights;
 template<class T>
 inline void calctilebounds(float sx1, float sy1, float sx2, float sy2, T &bx1, T &by1, T &bx2, T &by2)
 {
-    int tx1 = max(int(floor(((sx1 + 1)*0.5f*vieww)/lighttilealignw)), 0),
-        ty1 = max(int(floor(((sy1 + 1)*0.5f*viewh)/lighttilealignh)), 0),
-        tx2 = min(int(ceil(((sx2 + 1)*0.5f*vieww)/lighttilealignw)), lighttilevieww),
-        ty2 = min(int(ceil(((sy2 + 1)*0.5f*viewh)/lighttilealignh)), lighttileviewh);
+    int tx1 = max(static_cast<int>(floor(((sx1 + 1)*0.5f*vieww)/lighttilealignw)), 0),
+        ty1 = max(static_cast<int>(floor(((sy1 + 1)*0.5f*viewh)/lighttilealignh)), 0),
+        tx2 = min(static_cast<int>(ceil(((sx2 + 1)*0.5f*vieww)/lighttilealignw)), lighttilevieww),
+        ty2 = min(static_cast<int>(ceil(((sy2 + 1)*0.5f*viewh)/lighttilealignh)), lighttileviewh);
     bx1 = T((tx1 * lighttilew) / lighttilevieww);
     by1 = T((ty1 * lighttileh) / lighttileviewh);
     bx2 = T((tx2 * lighttilew + lighttilevieww - 1) / lighttilevieww);

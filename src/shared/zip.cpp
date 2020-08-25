@@ -542,7 +542,7 @@ struct zipstream : stream
             }
             pos = std::clamp(pos, offset(info->offset), offset(info->offset + info->size));
             arch->owner = NULL;
-            if(fseek(arch->data, int(pos), SEEK_SET) < 0)
+            if(fseek(arch->data, static_cast<int>(pos), SEEK_SET) < 0)
             {
                 return false;
             }
