@@ -1759,15 +1759,6 @@ bool moveplayer(physent *pl, int moveres, bool local, int curtime)
     {
         updatedynentcache(pl);
     }
-    // automatically apply smooth roll when strafing
-    if(pl->strafe && maxroll)
-    {
-        pl->roll = std::clamp(pl->roll - pow(std::clamp(1.0f + pl->strafe*pl->roll/maxroll, 0.0f, 1.0f), 0.33f)*pl->strafe*curtime*straferoll, static_cast<float>(-maxroll), static_cast<float>(maxroll));
-    }
-    else
-    {
-        pl->roll *= curtime == PHYSFRAMETIME ? faderoll : pow(faderoll, curtime/static_cast<float>(PHYSFRAMETIME));
-    }
     // play sounds on water transitions
     if(pl->inwater && !water)
     {

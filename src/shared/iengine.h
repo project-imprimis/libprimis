@@ -388,8 +388,7 @@ extern bool insideworld(const vec &o);
 
 // physics
 
-extern int maxroll, floatspeed;
-extern float straferoll, faderoll;
+extern int floatspeed;
 extern const float slopez, wallz, floorz, stairheight;
 extern vec collidewall;
 extern int collideinside;

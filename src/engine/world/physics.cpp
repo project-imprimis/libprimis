@@ -1315,9 +1315,6 @@ void vectoyawpitch(const vec &v, float &yaw, float &pitch)
     }
 }
 
-VARP(maxroll, 0, 0, 20);
-FVAR(straferoll, 0, 0.033f, 90);
-FVAR(faderoll, 0, 0.95f, 1);
 VAR(floatspeed, 1, 100, 10000);
 
 bool entinmap(dynent *d, bool avoidplayers)        // brute force but effective way to find a free spawn spot in the map
