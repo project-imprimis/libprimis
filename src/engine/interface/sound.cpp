@@ -221,9 +221,13 @@ void stopmusic()
 #endif
 bool shouldinitaudio = true;
 SVARF(audiodriver, AUDIODRIVER, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
+//master sound toggle
 VARF(sound, 0, 1, 1, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
+//# of sound channels
 VARF(soundchans, 1, 32, 128, initwarning("sound configuration", Init_Reset, Change_Sound));
+//max sound frequency (44.1KHz = CD)
 VARF(soundfreq, 0, 44100, 48000, initwarning("sound configuration", Init_Reset, Change_Sound));
+//length of sound buffer in milliseconds
 VARF(soundbufferlen, 128, 1024, 4096, initwarning("sound configuration", Init_Reset, Change_Sound));
 
 bool initaudio()
@@ -374,7 +378,7 @@ void startmusic(char *name, char *cmd)
         return;
     }
     stopmusic();
-    if(soundvol && musicvol && *name)
+    if(soundvol && musicvol && *name) //if volume > 0 and music name passed
     {
         DEF_FORMAT_STRING(file, "media/%s", name);
         path(file);
@@ -391,7 +395,7 @@ void startmusic(char *name, char *cmd)
             Mix_VolumeMusic((musicvol*MIX_MAX_VOLUME)/255);
             intret(1);
         }
-        else
+        else //note that there is no error message for  soundvol/musicvol/name null
         {
             conoutf(Console_Error, "could not play music: %s", file);
             intret(0);
@@ -526,7 +530,7 @@ static struct soundtype
         slots.setsize(0);
         configs.setsize(0);
     }
-    void reset()
+    void reset() //cleanup each channel
     {
         for(int i = 0; i < channels.length(); i++)
         {
@@ -566,7 +570,7 @@ static struct soundtype
     {
         return chan.inuse && config.hasslot(chan.slot, slots);
     }
-} gamesounds("game/"), mapsounds("mapsound/");
+} gamesounds("game/"), mapsounds("mapsound/"); //init for default directories
 
 void registersound(char *name, int *vol)
 {
@@ -787,7 +791,10 @@ void updatesounds()
         {
             stopmapsounds();
         }
-        else checkmapsounds();
+        else
+        {
+            checkmapsounds();
+        }
         syncchannels();
     }
     if(music)
@@ -1041,7 +1048,7 @@ void resetsound()
     }
     initsound();
     resetchannels();
-    if(nosound)
+    if(nosound) //clear stuff if muted
     {
         DELETEA(musicfile);
         DELETEA(musicdonecmd);
