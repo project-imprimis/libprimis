@@ -154,6 +154,7 @@ void ignoremousemotion()
 {
     SDL_Event e;
     SDL_PumpEvents();
+    //go through each event and do nothing
     while(SDL_PeepEvents(&e, 1, SDL_GETEVENT, SDL_MOUSEMOTION, SDL_MOUSEMOTION))
     {
         //(empty body)
@@ -164,7 +165,7 @@ static void resetmousemotion()
 {
     if(grabinput && !relativemouse && !(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN))
     {
-        SDL_WarpMouseInWindow(screen, screenw / 2, screenh / 2);
+        SDL_WarpMouseInWindow(screen, screenw / 2, screenh / 2); //move to middle of screen
     }
 }
 
@@ -198,10 +199,10 @@ static void checkmousemotion(int &dx, int &dy)
     }
 }
 
+//handle different input types
 void checkinput()
 {
     SDL_Event event;
-    //int lasttype = 0, lastbut = 0;
     bool mousemoved = false;
     while(events.length() || pollevent(event))
     {
@@ -221,7 +222,7 @@ void checkinput()
                 if(textinputmask && static_cast<int>(event.text.timestamp-textinputtime) >= textinputfilter)
                 {
                     uchar buf[SDL_TEXTINPUTEVENT_TEXT_SIZE+1];
-                    size_t len = decodeutf8(buf, sizeof(buf)-1, (const uchar *)event.text.text, strlen(event.text.text));
+                    size_t len = decodeutf8(buf, sizeof(buf)-1, static_cast<const uchar *>(event.text.text), strlen(event.text.text));
                     if(len > 0)
                     {
                         buf[len] = '\0';
@@ -240,6 +241,7 @@ void checkinput()
                 break;
             }
             case SDL_WINDOWEVENT:
+            {
                 switch(event.window.event)
                 {
                     case SDL_WINDOWEVENT_CLOSE:
@@ -292,8 +294,9 @@ void checkinput()
                     }
                 }
                 break;
-
+            }
             case SDL_MOUSEMOTION:
+            {
                 if(grabinput)
                 {
                     int dx = event.motion.xrel,
@@ -310,11 +313,10 @@ void checkinput()
                     inputgrab(grabinput = true);
                 }
                 break;
-
+            }
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
             {
-                //if(lasttype==event.type && lastbut==event.button.button) break; // why?? get event twice without it
                 switch(event.button.button)
                 {
                     case SDL_BUTTON_LEFT:
@@ -343,17 +345,17 @@ void checkinput()
                         break;
                     }
                 }
-                //lasttype = event.type;
-                //lastbut = event.button.button;
                 break;
             }
             case SDL_MOUSEWHEEL:
             {
+                //up
                 if(event.wheel.y > 0)
                 {
                     processkey(-4, true);
                     processkey(-4, false);
                 }
+                //down
                 else if(event.wheel.y < 0)
                 {
                     processkey(-5, true);
