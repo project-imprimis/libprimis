@@ -1178,11 +1178,11 @@ struct gzstream : stream
                  checksize = 0;
             for(int i = 0; i < 4; ++i)
             {
-                checkcrc |= uint(readbyte()) << (i*8);
+                checkcrc |= static_cast<uint>(readbyte()) << (i*8);
             }
             for(int i = 0; i < 4; ++i)
             {
-                checksize |= uint(readbyte()) << (i*8);
+                checksize |= static_cast<uint>(readbyte()) << (i*8);
             }
             if(checkcrc != crc)
             {
@@ -1190,7 +1190,7 @@ struct gzstream : stream
             }
             if(checksize != zfile.total_out)
             {
-                conoutf(Console_Debug, "gzip size check failed: read %u, calculated %u", checksize, uint(zfile.total_out));
+                conoutf(Console_Debug, "gzip size check failed: read %u, calculated %u", checksize, static_cast<uint>(zfile.total_out));
             }
         }
     }
@@ -1326,7 +1326,7 @@ struct gzstream : stream
         }
         else
         {
-            if(zfile.next_in && zfile.total_in <= uint(zfile.next_in - buf))
+            if(zfile.next_in && zfile.total_in <= static_cast<uint>(zfile.next_in - buf))
             {
                 zfile.avail_in += zfile.total_in;
                 zfile.next_in -= zfile.total_in;

@@ -3117,7 +3117,7 @@ namespace server
             userinfo *u = users.access(userkey(ci->authname, ci->authdesc));
             if(u)
             {
-                uint seed[3] = { ::hthash(serverauth) + uint(detrnd(size_t(ci) + size_t(user) + size_t(desc), 0x10000)), uint(totalmillis), uint(rand()) };
+                uint seed[3] = { ::hthash(serverauth) + static_cast<uint>(detrnd(size_t(ci) + size_t(user) + size_t(desc), 0x10000)), static_cast<uint>(totalmillis), static_cast<uint>(rand()) };
                 vector<char> buf;
                 ci->authchallenge = genchallenge(u->pubkey, seed, sizeof(seed), buf);
                 sendf(ci->clientnum, 1, "risis", NetMsg_AuthChallenge, desc, ci->authreq, buf.getbuf());

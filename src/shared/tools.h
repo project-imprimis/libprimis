@@ -1326,7 +1326,7 @@ struct reversequeue : queue<T, SIZE>
 #else
 inline ushort endianswap16(ushort n) { return (n<<8) | (n>>8); }
 inline uint endianswap32(uint n) { return (n<<24) | (n>>24) | ((n>>8)&0xFF00) | ((n<<8)&0xFF0000); }
-inline ullong endianswap64(ullong n) { return endianswap32(uint(n >> 32)) | ((ullong)endianswap32(uint(n)) << 32); }
+inline ullong endianswap64(ullong n) { return endianswap32(static_cast<uint>(n >> 32)) | ((ullong)endianswap32(static_cast<uint>(n)) << 32); }
 #endif
 
 template<class T>
@@ -1438,7 +1438,7 @@ inline uchar uni2cube(int c)
 {
     extern const int uni2cubeoffsets[8];
     extern const uchar uni2cubechars[];
-    return uint(c) <= 0x7FF ? uni2cubechars[uni2cubeoffsets[c>>8] + (c&0xFF)] : 0;
+    return static_cast<uint>(c) <= 0x7FF ? uni2cubechars[uni2cubeoffsets[c>>8] + (c&0xFF)] : 0;
 }
 inline uchar cubelower(uchar c)
 {

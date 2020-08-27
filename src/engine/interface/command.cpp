@@ -1589,7 +1589,7 @@ static inline const char *compileblock(vector<uint> &code, const char *p, int re
     if(code.length() > start + 2)
     {
         code.add(Code_Exit|rettype);
-        code[start] |= uint(code.length() - (start + 1))<<8;
+        code[start] |= static_cast<uint>(code.length() - (start + 1))<<8;
     }
     else
     {
@@ -3189,7 +3189,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     break;
                                 }
                                 numargs++;
-                                if((code[end]&~Code_RetMask) != (Code_Block|(uint(code.length()-(end+1))<<8)))
+                                if((code[end]&~Code_RetMask) != (Code_Block|(static_cast<uint>(code.length()-(end+1))<<8)))
                                 {
                                     break;
                                 }
