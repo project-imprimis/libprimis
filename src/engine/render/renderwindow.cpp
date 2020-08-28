@@ -623,13 +623,14 @@ __declspec(dllexport)
 }
 #endif
 
-#define MAXFPSHISTORY 60
+static const int maxfpshistory = 60;
 
-int fpspos = 0, fpshistory[MAXFPSHISTORY];
+
+int fpspos = 0, fpshistory[maxfpshistory];
 
 void resetfpshistory()
 {
-    for(int i = 0; i < MAXFPSHISTORY; ++i)
+    for(int i = 0; i < maxfpshistory; ++i)
     {
         fpshistory[i] = 1;
     }
@@ -639,7 +640,7 @@ void resetfpshistory()
 void updatefpshistory(int millis)
 {
     fpshistory[fpspos++] = max(1, min(1000, millis));
-    if(fpspos>=MAXFPSHISTORY)
+    if(fpspos>=maxfpshistory)
     {
         fpspos = 0;
     }
@@ -647,10 +648,10 @@ void updatefpshistory(int millis)
 
 void getfps(int &fps, int &bestdiff, int &worstdiff)
 {
-    int total = fpshistory[MAXFPSHISTORY-1],
+    int total = fpshistory[maxfpshistory-1],
         best = total,
         worst = total;
-    for(int i = 0; i < MAXFPSHISTORY-1; ++i)
+    for(int i = 0; i < maxfpshistory-1; ++i)
     {
         int millis = fpshistory[i];
         total += millis;
@@ -663,7 +664,7 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
             worst = millis;
         }
     }
-    fps = (1000*MAXFPSHISTORY)/total;
+    fps = (1000*maxfpshistory)/total;
     bestdiff = 1000/best-fps;
     worstdiff = fps-1000/worst;
 }
@@ -672,7 +673,7 @@ void getfps_(int *raw)
 {
     if(*raw)
     {
-        floatret(1000.0f/fpshistory[(fpspos+MAXFPSHISTORY-1)%MAXFPSHISTORY]);
+        floatret(1000.0f/fpshistory[(fpspos+maxfpshistory-1)%maxfpshistory]);
     }
     else
     {
