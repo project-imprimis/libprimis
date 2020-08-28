@@ -504,19 +504,13 @@ void setupscreen()
 
     SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
     SDL_SetWindowMaximumSize(screen, SCR_MAXW, SCR_MAXH);
-    static const int glversions[] = { 40, 33, 32, 31, 30, 20 };
-    for(int i = 0; i < static_cast<int>(sizeof(glversions)/sizeof(glversions[0])); ++i)
-    {
-        glcompat = glversions[i] <= 30 ? 1 : 0;
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glversions[i] / 10);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, glversions[i] % 10);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, glversions[i] >= 32 ? SDL_GL_CONTEXT_PROFILE_CORE : 0);
-        glcontext = SDL_GL_CreateContext(screen);
-        if(glcontext)
-        {
-            break;
-        }
-    }
+    //set opengl version to 4.0
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    //set core profile
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    glcontext = SDL_GL_CreateContext(screen);
+    //check if OpenGL context is sane
     if(!glcontext)
     {
         fatal("failed to create OpenGL context: %s", SDL_GetError());
