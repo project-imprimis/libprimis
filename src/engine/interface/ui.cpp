@@ -275,24 +275,62 @@ namespace UI
         {
             switch(adjust & Align_HMask)
             {
-                case Align_Left: x = px; break;
-                case Align_HCenter: x = px + (pw - w) / 2; break;
-                case Align_Right: x = px + pw - w; break;
+                case Align_Left:
+                {
+                    x = px;
+                    break;
+                }
+                case Align_HCenter:
+                {
+                    x = px + (pw - w) / 2;
+                    break;
+                }
+                case Align_Right:
+                {
+                    x = px + pw - w;
+                    break;
+                }
             }
 
             switch(adjust & Align_VMask)
             {
-                case Align_Top: y = py; break;
-                case Align_VCenter: y = py + (ph - h) / 2; break;
-                case Align_Bottom: y = py + ph - h; break;
+                case Align_Top:
+                {
+                    y = py;
+                    break;
+                }
+                case Align_VCenter:
+                {
+                    y = py + (ph - h) / 2;
+                    break;
+                }
+                case Align_Bottom:
+                {
+                    y = py + ph - h;
+                    break;
+                }
             }
 
             if(adjust & Clamp_Mask)
             {
-                if(adjust & Clamp_Left)   { w += x - px; x = px; }
-                if(adjust & Clamp_Right) w = px + pw - x;
-                if(adjust & Clamp_Top)    { h += y - py; y = py; }
-                if(adjust & Clamp_Bottom) h = py + ph - y;
+                if(adjust & Clamp_Left)
+                {
+                    w += x - px;
+                    x = px;
+                }
+                if(adjust & Clamp_Right)
+                {
+                    w = px + pw - x;
+                }
+                if(adjust & Clamp_Top)
+                {
+                    h += y - py;
+                    y = py;
+                }
+                if(adjust & Clamp_Bottom)
+                {
+                    h = py + ph - y;
+                }
             }
 
             adjustchildren();
@@ -335,7 +373,10 @@ namespace UI
         {
             LOOP_CHILDREN_REV(o,
             {
-                if(o->rawkey(code, isdown)) return true;
+                if(o->rawkey(code, isdown))
+                {
+                    return true;
+                }
             });
             return false;
         }
@@ -344,7 +385,10 @@ namespace UI
         {
             LOOP_CHILDREN_REV(o,
             {
-                if(o->key(code, isdown)) return true;
+                if(o->key(code, isdown))
+                {
+                    return true;
+                }
             });
             return false;
         }
@@ -353,7 +397,10 @@ namespace UI
         {
             LOOP_CHILDREN_REV(o,
             {
-                if(o->textinput(str, len)) return true;
+                if(o->textinput(str, len))
+                {
+                    return true;
+                }
             });
             return false;
         }
@@ -403,7 +450,9 @@ namespace UI
             LOOP_CHILDREN(o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
+                {
                     o->draw(sx + o->x, sy + o->y);
+                }
             });
         }
 
@@ -523,9 +572,15 @@ namespace UI
         }
 
         template<class T>
-        bool istype() const { return T::typestr() == gettype(); }
+        bool istype() const
+        {
+            return T::typestr() == gettype();
+        }
 
-        bool isnamed(const char *name) const { return name[0] == '#' ? name == gettypename() : !strcmp(name, getname()); }
+        bool isnamed(const char *name) const
+        {
+            return name[0] == '#' ? name == gettypename() : !strcmp(name, getname());
+        }
 
         Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
         {
@@ -1552,8 +1607,14 @@ namespace UI
         uchar r, g, b, a;
 
         Color() {}
+
+        //converts an int color to components
         Color(uint c) : r((c>>16)&0xFF), g((c>>8)&0xFF), b(c&0xFF), a(c>>24 ? c>>24 : 0xFF) {}
+
+        //converts an int color w/o alpha and alpha channel to components
         Color(uint c, uchar a) : r((c>>16)&0xFF), g((c>>8)&0xFF), b(c&0xFF), a(a) {}
+
+        //assigns components normally
         Color(uchar r, uchar g, uchar b, uchar a = 255) : r(r), g(g), b(b), a(a) {}
 
         void init() { gle::colorub(r, g, b, a); }
@@ -1824,7 +1885,9 @@ namespace UI
         {
             if(tex == notexture)
             {
-                Object::draw(sx, sy); return; }
+                Object::draw(sx, sy);
+                return;
+            }
 
             bindtex();
             quads(sx, sy, w, h, cropx, cropy, cropw, croph);
@@ -1893,10 +1956,12 @@ namespace UI
 
             float splitw = (minw ? min(minw, w) : w) / 2,
                   splith = (minh ? min(minh, h) : h) / 2,
-                  vy = sy, ty = 0;
+                  vy = sy,
+                  ty = 0;
             for(int i = 0; i < 3; ++i)
             {
-                float vh = 0, th = 0;
+                float vh = 0,
+                      th = 0;
                 switch(i)
                 {
                     case 0:
@@ -2143,9 +2208,7 @@ namespace UI
                 Object::draw(sx, sy);
                 return;
             }
-
             bindtex();
-
             if(tex->clamp)
             {
                 for(float dy = 0; dy < h; dy += tileh)
@@ -3061,7 +3124,10 @@ namespace UI
             scrollto(o->x + tox, o->y + toy - fromy);
         }
 
-        int wheelscrolldirection() const { return -1; }
+        int wheelscrolldirection() const
+        {
+            return -1;
+        }
     };
 
     struct SliderButton : Object
