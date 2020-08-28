@@ -11,7 +11,7 @@ FVARR(ambientscale, 0, 1, 16);
 CVAR1R(skylight, 0);
 FVARR(skylightscale, 0, 1, 16);
 
-extern void setupsunlight();
+void setupsunlight();
 CVAR1FR(sunlight, 0,
 {
     setupsunlight();
@@ -21,7 +21,7 @@ CVAR1FR(sunlight, 0,
 FVARFR(sunlightscale, 0, 1, 16, setupsunlight());
 
 vec sunlightdir(0, 0, 1);
-extern void setsunlightdir();
+void setsunlightdir();
 FVARFR(sunlightyaw, 0, 0, 360, setsunlightdir());
 FVARFR(sunlightpitch, -90, 90, 90, setsunlightdir());
 
@@ -692,8 +692,6 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
     }
 }
 
-extern int filltjoints;
-
 void calclight()
 {
     remip();
@@ -713,7 +711,6 @@ void calclight()
 
 void mpcalclight(bool local)
 {
-    extern selinfo sel;
     if(local)
     {
         game::edittrigger(sel, Edit_CalcLight);

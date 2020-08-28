@@ -413,6 +413,7 @@ extern void pasteundoents(undoblock *u);
 
 // octaedit
 extern bool editmode;
+extern selinfo sel;
 
 extern void cancelsel();
 extern void rendertexturepanel(int w, int h);
@@ -433,6 +434,7 @@ extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, uchar
 extern ivec worldmin, worldmax;
 extern vector<tjoint> tjoints;
 extern vector<vtxarray *> varoot, valist;
+extern int filltjoints;
 
 extern ushort encodenormal(const vec &n);
 extern void guessnormals(const vec *pos, int numverts, vec *normals);
