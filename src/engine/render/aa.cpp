@@ -365,9 +365,9 @@ void clearsmaashaders()
     smaaneighborhoodshader = NULL;
 }
 
-#define SMAA_SEARCHTEX_WIDTH 66
-#define SMAA_SEARCHTEX_HEIGHT 33
-static uchar smaasearchdata[SMAA_SEARCHTEX_WIDTH*SMAA_SEARCHTEX_HEIGHT];
+static const int smaasearchtexwidth  = 66,
+                 smaasearchtexheight = 33;
+static uchar smaasearchdata[smaasearchtexwidth*smaasearchtexheight];
 static bool smaasearchdatainited = false;
 
 void gensmaasearchdata()
@@ -578,9 +578,9 @@ float areaunderdiag(const vec2 &p1, const vec2 &p2, const vec2 &p)
     {
         return std::clamp(d.x > 0 ? 1 - dp/d.x : dp/d.x, 0.0f, 1.0f);
     }
-    float l = dp/d.y,
+    float l =  dp/d.y,
           r = (dp-d.x)/d.y,
-          b = dp/d.x,
+          b =  dp/d.x,
           t = (dp-d.y)/d.x;
     if(0 <= dp)
     {
@@ -710,9 +710,11 @@ vec2 areadiag(int pattern, float left, float right, const vec2 &offset)
 static const float offsetsortho[] = { 0.0f, -0.25f, 0.25f, -0.125f, 0.125f, -0.375f, 0.375f };
 static const float offsetsdiag[][2] = {{ 0.0f, 0.0f, }, { 0.25f, -0.25f }, { -0.25f, 0.25f }, { 0.125f, -0.125f }, { -0.125f, 0.125f } };
 
-#define SMAA_AREATEX_WIDTH 160
-#define SMAA_AREATEX_HEIGHT 560
-static uchar smaaareadata[SMAA_AREATEX_WIDTH*SMAA_AREATEX_HEIGHT*2];
+
+static const int smaaareatexwidth = 160,
+                 smaaareatexheight = 560;
+
+static uchar smaaareadata[smaaareatexwidth*smaaareatexheight*2];
 static bool smaaareadatainited = false;
 
 void gensmaaareadata()
@@ -728,17 +730,17 @@ void gensmaaareadata()
         {
             int px = edgesortho[pattern][0]*16,
                 py = (5*offset + edgesortho[pattern][1])*16;
-            uchar *dst = &smaaareadata[(py*SMAA_AREATEX_WIDTH + px)*2];
+            uchar *dst = &smaaareadata[(py*smaaareatexwidth + px)*2];
             for(int y = 0; y < 16; ++y)
             {
                 for(int x = 0; x < 16; ++x)
                 {
                     vec2 a = areaortho(pattern, x*x, y*y, offsetsortho[offset]);
-                    dst[0] = uchar(255*a.x);
-                    dst[1] = uchar(255*a.y);
+                    dst[0] = static_cast<uchar>(255*a.x);
+                    dst[1] = static_cast<uchar>(255*a.y);
                     dst += 2;
                 }
-                dst += (SMAA_AREATEX_WIDTH-16)*2;
+                dst += (smaaareatexwidth-16)*2;
             }
         }
     }
@@ -748,26 +750,31 @@ void gensmaaareadata()
         {
             int px = 5*16 + edgesdiag[pattern][0]*20,
                 py = (4*offset + edgesdiag[pattern][1])*20;
-            uchar *dst = &smaaareadata[(py*SMAA_AREATEX_WIDTH + px)*2];
+            uchar *dst = &smaaareadata[(py*smaaareatexwidth + px)*2];
             for(int y = 0; y < 20; ++y)
             {
                 for(int x = 0; x < 20; ++x)
                 {
                     vec2 a = areadiag(pattern, x, y, vec2(offsetsdiag[offset][0], offsetsdiag[offset][1]));
-                    dst[0] = uchar(255*a.x);
-                    dst[1] = uchar(255*a.y);
+                    dst[0] = static_cast<uchar>(255*a.x);
+                    dst[1] = static_cast<uchar>(255*a.y);
                     dst += 2;
                 }
-                dst += (SMAA_AREATEX_WIDTH-20)*2;
+                dst += (smaaareatexwidth-20)*2;
             }
         }
     }
     smaaareadatainited = true;
 }
 
-VAR(smaat2x, 1, 0, 0);
-VAR(smaas2x, 1, 0, 0);
-VAR(smaa4x, 1, 0, 0);
+/* smaa vars are set by `setupsmaa()` automatically: if TQAA and/or MSAA are
+ * enabled, the following variables will be set to 1
+ *
+ * generally, do not change these vars from ingame
+ */
+VAR(smaat2x, 1, 0, 0); //SMAA Temporal 2x (temporal antialiasing)
+VAR(smaas2x, 1, 0, 0); //SMAA Split 2x (multisample antialiasing)
+VAR(smaa4x, 1, 0, 0);  //SMAA 4x (both temporal and multisample)
 
 void setupsmaa(int w, int h)
 {
@@ -781,8 +788,8 @@ void setupsmaa(int w, int h)
     }
     gensmaasearchdata();
     gensmaaareadata();
-    createtexture(  smaaareatex,   SMAA_AREATEX_WIDTH,   SMAA_AREATEX_HEIGHT,   smaaareadata, 3, 1, GL_RG8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
-    createtexture(smaasearchtex, SMAA_SEARCHTEX_WIDTH, SMAA_SEARCHTEX_HEIGHT, smaasearchdata, 3, 0,  GL_R8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
+    createtexture(  smaaareatex,   smaaareatexwidth,   smaaareatexheight,   smaaareadata, 3, 1, GL_RG8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
+    createtexture(smaasearchtex, smaasearchtexwidth, smaasearchtexheight, smaasearchdata, 3, 0,  GL_R8, GL_TEXTURE_RECTANGLE, 0, 0, 0, false);
     bool split = multisampledaa();
     smaasubsampleorder = split ? (msaapositions[0].x < 0.5f ? 1 : 0) : -1;
     smaat2x = tqaa ? 1 : 0;
@@ -880,14 +887,14 @@ void cleanupsmaa()
     clearsmaashaders();
 }
 
-VARFP(smaa, 0, 0, 1, cleanupgbuffer());
+VARFP(smaa, 0, 0, 1, cleanupgbuffer()); //toggles smaa
 VARFP(smaaspatial, 0, 1, 1, cleanupgbuffer());
 VARFP(smaaquality, 0, 2, 3, cleanupsmaa());
-VARFP(smaacoloredge, 0, 0, 1, cleanupsmaa());
+VARFP(smaacoloredge, 0, 0, 1, cleanupsmaa()); //toggle between color & luma edge shaders
 VARFP(smaagreenluma, 0, 0, 1, cleanupsmaa());
 VARF(smaadepthmask, 0, 1, 1, cleanupsmaa());
 VARF(smaastencil, 0, 1, 1, cleanupsmaa());
-VAR(debugsmaa, 0, 0, 5);
+VAR(debugsmaa, 0, 0, 5); //see viewsmaa() below, displays one of the five smaa texs
 
 void viewsmaa()
 {
@@ -917,15 +924,15 @@ void viewsmaa()
         case 4:
         {
             glBindTexture(GL_TEXTURE_RECTANGLE, smaaareatex);
-            tw = SMAA_AREATEX_WIDTH;
-            th = SMAA_AREATEX_HEIGHT;
+            tw = smaaareatexwidth;
+            th = smaaareatexheight;
             break;
         }
         case 5:
         {
             glBindTexture(GL_TEXTURE_RECTANGLE, smaasearchtex);
-            tw = SMAA_SEARCHTEX_WIDTH;
-            th = SMAA_SEARCHTEX_HEIGHT;
+            tw = smaasearchtexwidth;
+            th = smaasearchtexheight;
             break;
         }
     }
