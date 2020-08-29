@@ -1,6 +1,17 @@
+/* aa.cpp
+ *
+ * screenspace antialiasing methods (does NOT include multisample [MSAA]):
+ * TQAA (temporal quincunx antialiasing)
+ * FXAA (fast approximate antialiasing)
+ * SMAA (subpixel morphological antialiasing)
+ */
 #include "engine.h"
 
 extern int intel_texalpha_bug;
+
+
+/* TQAA: Temporal Quincunx Anti Aliasing */
+///////////////////////////////////////////
 
 VARFP(tqaa, 0, 0, 1, cleanupaa());
 FVAR(tqaareproject, 0, 75, 1e3f);
@@ -175,6 +186,10 @@ void dotqaa(GLuint outfbo = 0)
 
     endtimer(tqaatimer);
 }
+//end of TQAA code
+
+/* FXAA: Fast approXimate Anti Aliasing */
+//////////////////////////////////////////
 
 GLuint fxaafbo = 0,
        fxaatex = 0;
@@ -258,6 +273,10 @@ void dofxaa(GLuint outfbo = 0)
     }
     endtimer(fxaatimer);
 }
+//end of FXAA code
+
+/* SMAA: Subpixel Morphological Anti Aliasing */
+////////////////////////////////////////////////
 
 GLuint smaaareatex = 0,
        smaasearchtex = 0,
@@ -1022,6 +1041,10 @@ void dosmaa(GLuint outfbo = 0, bool split = false)
     }
     endtimer(smaatimer);
 }
+//end of SMAA code
+
+/* general antialiasing control functions */
+////////////////////////////////////////////
 
 void setupaa(int w, int h)
 {
@@ -1062,7 +1085,8 @@ void jitteraa()
     }
 }
 
-int aamaskstencil = -1, aamask = -1;
+int aamaskstencil = -1,
+    aamask = -1;
 
 void setaamask(bool on)
 {
