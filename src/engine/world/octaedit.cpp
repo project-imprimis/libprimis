@@ -2060,52 +2060,53 @@ namespace hmap
             textures.empty() ||
             textures.find(c->texture[o]) >= 0;
     }
+    //max brush consts
+    static const int maxbrush  = 64;
+    static const int maxbrushc = 63;
+    static const int maxbrush2 = 32;
 
-    #define MAXBRUSH    64
-    #define MAXBRUSHC   63
-    #define MAXBRUSH2   32
-    int brush[MAXBRUSH][MAXBRUSH];
-    VARN(hbrushx, brushx, 0, MAXBRUSH2, MAXBRUSH);
-    VARN(hbrushy, brushy, 0, MAXBRUSH2, MAXBRUSH);
+    int brush[maxbrush][maxbrush];
+    VARN(hbrushx, brushx, 0, maxbrush2, maxbrush);
+    VARN(hbrushy, brushy, 0, maxbrush2, maxbrush);
     bool paintbrush = 0;
     int brushmaxx = 0,
-        brushminx = MAXBRUSH,
+        brushminx = maxbrush,
         brushmaxy = 0,
-        brushminy = MAXBRUSH;
+        brushminy = maxbrush;
 
     void clearhbrush()
     {
         memset(brush, 0, sizeof brush);
         brushmaxx = brushmaxy = 0;
-        brushminx = brushminy = MAXBRUSH;
+        brushminx = brushminy = maxbrush;
         paintbrush = false;
     }
     COMMAND(clearhbrush, "");
 
     void hbrushvert(int *x, int *y, int *v)
     {
-        *x += MAXBRUSH2 - brushx + 1; // +1 for automatic padding
-        *y += MAXBRUSH2 - brushy + 1;
-        if(*x<0 || *y<0 || *x>=MAXBRUSH || *y>=MAXBRUSH)
+        *x += maxbrush2 - brushx + 1; // +1 for automatic padding
+        *y += maxbrush2 - brushy + 1;
+        if(*x<0 || *y<0 || *x>=maxbrush || *y>=maxbrush)
         {
             return;
         }
         brush[*x][*y] = std::clamp(*v, 0, 8);
         paintbrush = paintbrush || (brush[*x][*y] > 0);
-        brushmaxx = min(MAXBRUSH-1, max(brushmaxx, *x+1));
-        brushmaxy = min(MAXBRUSH-1, max(brushmaxy, *y+1));
+        brushmaxx = min(maxbrush-1, max(brushmaxx, *x+1));
+        brushmaxy = min(maxbrush-1, max(brushmaxy, *y+1));
         brushminx = max(0,          min(brushminx, *x-1));
         brushminy = max(0,          min(brushminy, *y-1));
     }
     COMMAND(hbrushvert, "iii");
 
-    #define PAINTED     1
-    #define NOTHMAP     2
-    #define MAPPED      16
-    uchar  flags[MAXBRUSH][MAXBRUSH];
-    cube   *cmap[MAXBRUSHC][MAXBRUSHC][4];
-    int    mapz[MAXBRUSHC][MAXBRUSHC];
-    int    map [MAXBRUSH][MAXBRUSH];
+    static const int painted = 1;
+    static const int nothmap = 2;
+    static const int mapped  = 16;
+    uchar  flags[maxbrush][maxbrush];
+    cube   *cmap[maxbrushc][maxbrushc][4];
+    int    mapz[maxbrushc][maxbrushc];
+    int    map [maxbrush][maxbrush];
 
     selinfo changes;
     bool selecting;
@@ -2155,16 +2156,16 @@ namespace hmap
 
     void addpoint(int x, int y, int z, int v)
     {
-        if(!(flags[x][y] & MAPPED))
+        if(!(flags[x][y] & mapped))
         {
             map[x][y] = v + (z*8);
         }
-        flags[x][y] |= MAPPED;
+        flags[x][y] |= mapped;
     }
 
     void select(int x, int y, int z)
     {
-        if((NOTHMAP & flags[x][y]) || (PAINTED & flags[x][y]))
+        if((nothmap & flags[x][y]) || (painted & flags[x][y]))
         {
             return;
         }
@@ -2208,10 +2209,10 @@ namespace hmap
 
         if(!c[1] || IS_EMPTY(*c[1]))
         {
-            flags[x][y] |= NOTHMAP;
+            flags[x][y] |= nothmap;
             return;
         }
-        flags[x][y] |= PAINTED;
+        flags[x][y] |= painted;
         mapz [x][y]  = z;
         if(!c[0])
         {
@@ -2228,7 +2229,7 @@ namespace hmap
         uint face = getface(c[1], d);
         if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0])))
         {
-            flags[x][y] |= NOTHMAP;
+            flags[x][y] |= nothmap;
             return;
         }
         if(c[1]->faces[R[d]] == facesolid)   // was single
@@ -2261,7 +2262,7 @@ namespace hmap
         {
             select(x, y, z);
         }
-        if((NOTHMAP & flags[x][y]) || !(PAINTED & flags[x][y]))
+        if((nothmap & flags[x][y]) || !(painted & flags[x][y]))
         {
             return;
         }
@@ -2371,11 +2372,11 @@ namespace hmap
 
 #define DIAGONAL_RIPPLE(a,b,exp) \
     if(exp) { \
-            if(flags[x a][ y] & PAINTED) \
+            if(flags[x a][ y] & painted) \
             { \
                 ripple(x a, y b, mapz[x a][y], true); \
             } \
-            else if(flags[x][y b] & PAINTED) \
+            else if(flags[x][y b] & painted) \
             { \
                 ripple(x a, y b, mapz[x][y b], true); \
             } \
@@ -2407,7 +2408,7 @@ namespace hmap
             {
                 for(int j = 0; j < 3; ++j)
                 {
-                    if(flags[x+i][y+j] & MAPPED)
+                    if(flags[x+i][y+j] & mapped)
                     {
                         sum += map[x+i][y+j];
                     }
@@ -2445,15 +2446,15 @@ namespace hmap
         int cx = (sel.corner&1 ? 0 : -1),
             cy = (sel.corner&2 ? 0 : -1);
         hws= (worldsize>>gridpower);
-        gx = (cur[R[d]] >> gridpower) + cx - MAXBRUSH2;
-        gy = (cur[C[d]] >> gridpower) + cy - MAXBRUSH2;
+        gx = (cur[R[d]] >> gridpower) + cx - maxbrush2;
+        gy = (cur[C[d]] >> gridpower) + cy - maxbrush2;
         gz = (cur[D[d]] >> gridpower);
         fs = dc ? 4 : 0;
         fg = dc ? gridsize : -gridsize;
         mx = max(0, -gx); // ripple range
         my = max(0, -gy);
-        nx = min(MAXBRUSH-1, hws-gx) - 1;
-        ny = min(MAXBRUSH-1, hws-gy) - 1;
+        nx = min(maxbrush-1, hws-gx) - 1;
+        ny = min(maxbrush-1, hws-gy) - 1;
         if(havesel)
         {   // selection range
             bmx = mx = max(mx, (sel.o[R[d]]>>gridpower)-gx);
@@ -2485,8 +2486,8 @@ namespace hmap
         memset(flags, 0, sizeof flags);
 
         selecting = true;
-        select(std::clamp(MAXBRUSH2-cx, bmx, bnx),
-               std::clamp(MAXBRUSH2-cy, bmy, bny),
+        select(std::clamp(maxbrush2-cx, bmx, bnx),
+               std::clamp(maxbrush2-cy, bmy, bny),
                dc ? gz : hws - gz);
         selecting = false;
         if(paintme)
