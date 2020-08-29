@@ -1555,7 +1555,7 @@ ICOMMAND(setshaderparam, "sfFFf", (char *name, float *x, float *y, float *z, flo
 ICOMMAND(defuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(reuseuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE));
 
-#define NUMPOSTFXBINDS 10
+static const int numpostfxbinds = 10;
 
 struct postfxtex
 {
@@ -1564,7 +1564,7 @@ struct postfxtex
     postfxtex() : id(0), scale(0), used(-1) {}
 };
 vector<postfxtex> postfxtexs;
-int postfxbinds[NUMPOSTFXBINDS];
+int postfxbinds[numpostfxbinds];
 GLuint postfxfb = 0;
 int postfxw = 0,
     postfxh = 0;
@@ -1625,7 +1625,7 @@ GLuint setuppostfx(int w, int h, GLuint outfbo)
         postfxw = w;
         postfxh = h;
     }
-    for(int i = 0; i < NUMPOSTFXBINDS; ++i)
+    for(int i = 0; i < numpostfxbinds; ++i)
     {
         postfxbinds[i] = -1;
     }
@@ -1677,7 +1677,7 @@ void renderpostfx(GLuint outfbo)
         int tw = w,
             th = h,
             tmu = 0;
-        for(int j = 0; j < NUMPOSTFXBINDS; ++j)
+        for(int j = 0; j < numpostfxbinds; ++j)
         {
             if(p.inputs&(1<<j) && postfxbinds[j] >= 0)
             {
@@ -1699,7 +1699,7 @@ void renderpostfx(GLuint outfbo)
             glActiveTexture_(GL_TEXTURE0);
         }
         screenquad(tw, th);
-        for(int j = 0; j < NUMPOSTFXBINDS; ++j)
+        for(int j = 0; j < numpostfxbinds; ++j)
         {
             if(p.freeinputs&(1<<j) && postfxbinds[j] >= 0)
             {
@@ -1773,9 +1773,9 @@ ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs
             freeinputs = true;
         }
     }
-    inputmask &= (1<<NUMPOSTFXBINDS)-1;
-    freemask &= (1<<NUMPOSTFXBINDS)-1;
-    addpostfx(name, std::clamp(*bind, 0, NUMPOSTFXBINDS-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+    inputmask &= (1<<numpostfxbinds)-1;
+    freemask &= (1<<numpostfxbinds)-1;
+    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
 });
 
 ICOMMAND(setpostfx, "sffff", (char *name, float *x, float *y, float *z, float *w),
