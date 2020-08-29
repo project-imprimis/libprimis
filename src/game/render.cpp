@@ -14,11 +14,11 @@ namespace game
     vector<gameent *> bestplayers;
     vector<int> bestteams;
 
-    VARP(ragdoll, 0, 1, 1);
-    VARP(ragdollmillis, 0, 10000, 300000);
-    VARP(ragdollfade, 0, 100, 5000);
-    VARP(forceplayermodels, 0, 0, 1);
-    VARP(showdead, 0, 1, 1);
+    VARP(ragdoll, 0, 1, 1);                 //enables ragdolls
+    VARP(ragdollmillis, 0, 10000, 300000);  //ragdoll lifetime
+    VARP(ragdollfade, 0, 100, 5000);        //ragdoll fade time
+    VARP(forceplayermodels, 0, 0, 1);       //force default player model
+    VARP(showdead, 0, 1, 1);                //show dead bodies
 
     extern int playermodel;
 
@@ -97,7 +97,12 @@ namespace game
 
     static const playermodelinfo playermodels[] =
     {
-        { { "player/bones", "player/bones", "player/bones" }, { "hudgun", "hudgun", "hudgun" }, { "player", "player_azul", "player_rojo" }, true }
+        {
+            { "player/bones", "player/bones", "player/bones" },
+            { "hudgun", "hudgun", "hudgun" },
+            { "player", "player_azul", "player_rojo" },
+            true
+        }
     };
 
     extern void changedplayermodel();
@@ -285,9 +290,9 @@ namespace game
 
     //============================================ 3p/other player rendering =======================//
 
-    VAR(animoverride, -1, 0, Anim_NumAnims-1);
-    VAR(testanims, 0, 0, 1);
-    VAR(testpitch, -90, 0, 90);
+    VAR(animoverride, -1, 0, Anim_NumAnims-1); //overrides player models onscreen with selected anim index
+    VAR(testanims, 0, 0, 1);    //fixes yaw to zero
+    VAR(testpitch, -90, 0, 90); // fixes anim pitch to given value
 
     void renderplayer(gameent *d, const playermodelinfo &mdl, int color, int team, float fade, int flags = 0, bool mainpass = true)
     {
@@ -535,7 +540,9 @@ namespace game
             gameent *d = ragdolls[i];
             float fade = 1.0f;
             if(ragdollmillis && ragdollfade)
+            {
                 fade -= std::clamp(static_cast<float>(lastmillis - (d->lastupdate + max(ragdollmillis - ragdollfade, 0)))/min(ragdollmillis, ragdollfade), 0.0f, 1.0f);
+            }
             renderplayer(d, fade);
         }
         if(exclude)
@@ -555,12 +562,12 @@ namespace game
 
     //============================================ hud player rendering ============================//
 
-    VARP(hudgun, 0, 1, 1);
-    VARP(hudgunsway, 0, 1, 1);
+    VARP(hudgun, 0, 1, 1);     // toggles display of player's own gun
+    VARP(hudgunsway, 0, 1, 1); // toggles sway back and forth with stride
 
-    FVAR(swaystep, 1, 35.0f, 100);
-    FVAR(swayside, 0, 0.10f, 1);
-    FVAR(swayup, -1, 0.15f, 1);
+    FVAR(swaystep, 1, 35.0f, 100); // time to sway back and forth (larger = slower)
+    FVAR(swayside, 0, 0.10f, 1);   // side to side sway distance scale
+    FVAR(swayup, -1, 0.15f, 1);    // up and down sway distance scale
 
     float swayfade = 0,
           swayspeed = 0,
@@ -757,4 +764,3 @@ namespace game
     }
 
 }
-
