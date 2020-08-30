@@ -2076,6 +2076,7 @@ vec calcmodelpreviewpos(const vec &radius, float &yaw)
 
 int xtraverts, xtravertsva;
 
+//main scene rendering function
 void gl_drawview()
 {
     GLuint scalefbo = shouldscale();
@@ -2088,7 +2089,7 @@ void gl_drawview()
     int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index),
         abovemat = Mat_Air;
     float fogbelow = 0;
-    if(IS_LIQUID(fogmat&MatFlag_Volume))
+    if(IS_LIQUID(fogmat&MatFlag_Volume)) //if in the water
     {
         float z = findsurface(fogmat, vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin), abovemat) - wateroffset;
         if(camera1->o.z < z + fogmargin)
@@ -2102,13 +2103,13 @@ void gl_drawview()
     }
     else
     {
-        fogmat = Mat_Air;
+        fogmat = Mat_Air; //use air fog
     }
     setfog(abovemat);
     //setfog(fogmat, fogbelow, 1, abovemat);
 
     farplane = worldsize*2;
-
+    //set the camera location
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
 
@@ -2117,15 +2118,16 @@ void gl_drawview()
 
     ldrscale = 0.5f;
     ldrscaleb = ldrscale/255;
-
+    //do occlusion culling
     visiblecubes();
-
+    //set to wireframe if applicable
     if(wireframe && editmode)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
+    //construct g-buffer (build basic scene)
     rendergbuffer();
-    if(wireframe && editmode)
+    if(wireframe && editmode) //done with wireframe mode now
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -2134,6 +2136,7 @@ void gl_drawview()
         renderexplicitsky(true);
     }
 
+    //ambient obscurance (ambient occlusion) on geometry & models only
     renderao();
     GLERROR;
 
@@ -2147,16 +2150,17 @@ void gl_drawview()
     GLERROR;
 
     glFlush();
-
+    //global illumination
     renderradiancehints();
     GLERROR;
-
+    //lighting
     rendershadowatlas();
     GLERROR;
-
+    //shading
     shadegbuffer();
     GLERROR;
 
+    //fog
     if(fogmat)
     {
         setfog(fogmat, fogbelow, 1, abovemat);
@@ -2166,6 +2170,7 @@ void gl_drawview()
         setfog(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
 
+    //alpha
     rendertransparent();
     GLERROR;
 
@@ -2174,6 +2179,7 @@ void gl_drawview()
         setfog(fogmat, fogbelow, 1, abovemat);
     }
 
+    //volumetric lights
     rendervolumetric();
     GLERROR;
 
@@ -2182,7 +2188,7 @@ void gl_drawview()
         extern int outline;
         if(!wireframe && outline)
         {
-            renderoutline();
+            renderoutline(); //edit mode geometry outline
         }
         GLERROR;
         rendereditmaterials();
@@ -2199,6 +2205,7 @@ void gl_drawview()
         }
     }
 
+    //we're done with depth/geometry stuff so we don't need this functionality
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
 
@@ -2206,7 +2213,9 @@ void gl_drawview()
     {
         drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
+    //antialiasing
     doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
+    //postfx
     renderpostfx(scalefbo);
     if(scalefbo)
     {
