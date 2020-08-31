@@ -759,38 +759,6 @@ namespace ai
         {
             return;
         }
-        extentity &e = *entities::ents[ent];
-        if(VALID_ITEM(e.type))
-        {
-            for(int i = 0; i < players.length(); i++)
-            {
-                if(players[i] && players[i]->ai && players[i]->aitype == AI_Bot && players[i]->canpickup(e.type))
-                {
-                    gameent *d = players[i];
-                    bool wantsitem = false;
-                    if(wantsitem)
-                    {
-                        aistate &b = d->ai->getstate();
-                        if(b.targtype == AITravel_Affinity)
-                        {
-                            continue;
-                        }
-                        if(b.type == AIState_Interest && b.targtype == AITravel_Entity)
-                        {
-                            if(entities::ents.inrange(b.target))
-                            {
-                                if(d->o.squaredist(entities::ents[ent]->o) < d->o.squaredist(entities::ents[b.target]->o))
-                                {
-                                    d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
-                                }
-                            }
-                            continue;
-                        }
-                        d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
-                    }
-                }
-            }
-        }
     }
 
     bool check(gameent *d, aistate &b)
@@ -908,15 +876,7 @@ namespace ai
                 if(entities::ents.inrange(b.target))
                 {
                     extentity &e = *(extentity *)entities::ents[b.target];
-                    if(!e.spawned() || !VALID_ITEM(e.type))
-                    {
-                        return 0;
-                    }
-                    //if(d->feetpos().squaredist(e.o) <= closedist*closedist)
-                    //{
-                    //    b.idle = 1;
-                    //    return true;
-                    //}
+                    return 0;
                     return makeroute(d, b, e.o) ? 1 : 0;
                 }
                 break;

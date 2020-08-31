@@ -529,8 +529,6 @@ enum
     HudIcon_Size    = 120,
 };
 
-#define VALID_ITEM(n) false //no items in this game thus far
-
 const int MAXRAYS = 1,
           EXP_SELFDAMDIV = 2;
 const float EXP_SELFPUSH  = 2.5f,

@@ -954,10 +954,6 @@ namespace ai
                 }
                 default:
                 {
-                    if(VALID_ITEM(e.type))
-                    {
-                        addwaypoint(e.o);
-                    }
                     break;
                 }
             }

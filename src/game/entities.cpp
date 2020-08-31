@@ -1727,14 +1727,6 @@ namespace entities
     void putitems(packetbuf &p)            // puts items in network stream and also spawns them locally
     {
         putint(p, NetMsg_ItemList);
-        for(int i = 0; i < ents.length(); i++)
-        {
-            if(VALID_ITEM(ents[i]->type))
-            {
-                putint(p, i);
-                putint(p, ents[i]->type);
-            }
-        }
         putint(p, -1);
     }
 
@@ -1748,13 +1740,6 @@ namespace entities
 
     void spawnitems()
     {
-        for(int i = 0; i < ents.length(); i++)
-        {
-            if(VALID_ITEM(ents[i]->type))
-            {
-                ents[i]->setspawned(true);
-            }
-        }
     }
 
     void setspawn(int i, bool on)

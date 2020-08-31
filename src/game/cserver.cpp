@@ -965,7 +965,7 @@ namespace server
     ctfservermode ctfmode;
     servermode *smode = NULL;
 
-    bool canspawnitem(int type) { return VALID_ITEM(type); }
+    bool canspawnitem(int type) { return 0; }
 
     int spawntime(int type)
     {
