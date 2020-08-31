@@ -808,7 +808,7 @@ namespace game
         if(multiplayer(false) && modecheck(mode, Mode_LocalOnly))
         {
             conoutf(Console_Error, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
-            for(int i = 0; i < NUMGAMEMODES; ++i)
+            for(int i = 0; i < numgamemodes; ++i)
             {
                 if(!modecheck(STARTGAMEMODE + i, Mode_LocalOnly))
                 {

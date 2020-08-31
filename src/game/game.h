@@ -194,12 +194,13 @@ const struct gamemodeinfo
 //these are the checks for particular mechanics in particular modes
 //e.g. MODE_RAIL sees if the mode only have railguns
 #define STARTGAMEMODE (-1)
-#define NUMGAMEMODES ((int)(sizeof(gamemodes)/sizeof(gamemodes[0])))
+
+const int numgamemodes = static_cast<int>(sizeof(gamemodes)/sizeof(gamemodes[0]));
 
 //check fxn
 inline bool modecheck(int mode, int flag)
 {
-    if((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES) //make sure input is within valid range
+    if((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + numgamemodes) //make sure input is within valid range
     {
         if(gamemodes[(mode) - STARTGAMEMODE].flags&(flag))
         {
@@ -210,9 +211,10 @@ inline bool modecheck(int mode, int flag)
     return false;
 }
 
-#define MODE_VALID(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
+#define MODE_VALID(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + numgamemodes)
 
-enum {
+enum
+{
     MasterMode_Auth = -1,
     MasterMode_Open = 0,
     MasterMode_Veto,

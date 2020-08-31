@@ -452,14 +452,14 @@ namespace server
         int modes;
         string map;
 
-        int calcmodemask() const { return modes&(1<<NUMGAMEMODES) ? modes & ~exclude : modes; }
+        int calcmodemask() const { return modes&(1<<numgamemodes) ? modes & ~exclude : modes; }
         bool hasmode(int mode, int offset = STARTGAMEMODE) const { return (calcmodemask() & (1 << (mode-offset))) != 0; }
 
         int findmode(int mode) const
         {
             if(!hasmode(mode))
             {
-                for(int i = 0; i < NUMGAMEMODES; ++i)
+                for(int i = 0; i < numgamemodes; ++i)
                 {
                     if(hasmode(i, 0))
                     {
@@ -567,8 +567,8 @@ namespace server
             switch(mode[0])
             {
                 case '*':
-                    modemask |= 1<<NUMGAMEMODES;
-                    for(int k = 0; k < NUMGAMEMODES; ++k)
+                    modemask |= 1<<numgamemodes;
+                    for(int k = 0; k < numgamemodes; ++k)
                     {
                         if(modecheck(k+STARTGAMEMODE, Mode_Untimed))
                         {
@@ -581,7 +581,7 @@ namespace server
                     if(mode[0] != '?') break;
                 case '?':
                     mode++;
-                    for(int k = 0; k < NUMGAMEMODES; ++k)
+                    for(int k = 0; k < numgamemodes; ++k)
                     {
                         if(searchmodename(gamemodes[k].name, mode))
                         {
@@ -598,7 +598,7 @@ namespace server
             }
             else
             {
-                for(int k = 0; k < NUMGAMEMODES; ++k)
+                for(int k = 0; k < numgamemodes; ++k)
                 {
                     if(searchmodename(gamemodes[k].name, mode))
                     {
@@ -621,7 +621,7 @@ namespace server
     {
         if(!map[0])
         {
-            for(int k = 0; k < NUMGAMEMODES; ++k)
+            for(int k = 0; k < numgamemodes; ++k)
             {
                 if(modemask&(1<<k) && !modecheck(k+STARTGAMEMODE, Mode_Edit))
                 {
@@ -633,7 +633,7 @@ namespace server
         {
             return false;
         }
-        if(!(modemask&(1<<NUMGAMEMODES)))
+        if(!(modemask&(1<<numgamemodes)))
         {
             maprotation::exclude |= modemask;
         }
