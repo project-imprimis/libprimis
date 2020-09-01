@@ -36,10 +36,10 @@ struct tnormal
     normalgroup *groups[2];
 };
 
-hashset<normalgroup> normalgroups(1<<16);
-vector<normal> normals;
-vector<tnormal> tnormals;
-vector<int> smoothgroups;
+static hashset<normalgroup> normalgroups(1<<16);
+static vector<normal> normals;
+static vector<tnormal> tnormals;
+static vector<int> smoothgroups;
 
 VARR(lerpangle, 0, 44, 180); //max angle to merge octree faces' normals smoothly
 
