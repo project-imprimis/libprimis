@@ -621,8 +621,6 @@ void sendserverinforeply(ucharbuf &p)
     enet_socket_send(serverhost->socket, &serverinfoaddress, &buf, 1);
 }
 
-#define MAXPINGDATA 32
-
 VAR(serveruprate, 0, 0, INT_MAX);
 SVAR(serverip, "");
 VARF(serverport, 0, server::serverport(), 0xFFFF,
