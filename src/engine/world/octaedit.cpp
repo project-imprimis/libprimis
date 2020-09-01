@@ -54,7 +54,7 @@ void boxs(int orient, vec o, const vec &s)
 
     gle::defvertex();
     gle::begin(GL_LINE_LOOP);
-
+    //draw four surfaces
     gle::attrib(o); o[R[d]] += s[R[d]];
     gle::attrib(o); o[C[d]] += s[C[d]];
     gle::attrib(o); o[R[d]] -= s[R[d]];
@@ -65,7 +65,7 @@ void boxs(int orient, vec o, const vec &s)
 
 void boxs3D(const vec &o, vec s, int g)
 {
-    s.mul(g);
+    s.mul(g); //multiply displacement by g(ridpower)
     for(int i = 0; i < 6; ++i) //for each face
     {
         boxs(i, o, s);
@@ -466,8 +466,11 @@ void rendereditcursor()
     else
     {
         ivec w;
-        float sdist = 0, wdist = 0, t;
-        int entorient = 0, ent = -1;
+        float sdist = 0,
+              wdist = 0,
+              t;
+        int entorient = 0,
+            ent = -1;
 
         wdist = rayent(player->o, camdir, 1e16f,
                        (editmode && showmat ? Ray_EditMat : 0)   // select cubes first
@@ -902,7 +905,7 @@ struct undolist
 };
 
 undolist undos, redos;
-VARP(undomegs, 0, 5, 100);                              // bounded by n megs
+VARP(undomegs, 0, 5, 100);                              // bounded by n megs, zero means no undo history
 int totalundos = 0;
 
 void pruneundos(int maxremain)                          // bound memory
@@ -927,7 +930,7 @@ void clearundos()
     pruneundos(0);
 }
 
-COMMAND(clearundos, "");
+COMMAND(clearundos, ""); //run pruneundos but with a cache size of zero
 
 undoblock *newundocube(const selinfo &s)
 {
@@ -1423,7 +1426,7 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
         delete[] outbuf;
         return false;
     }
-    int numents = *(const ushort *)buf.pad(2);
+    int numents = *reinterpret_cast<const ushort *>(buf.pad(2));
     if(numents)
     {
         if(buf.remaining() < numents*static_cast<int>(2 + sizeof(entity)))
@@ -1795,7 +1798,8 @@ void genprefabmesh(prefab &p)
     b.o = ivec(0, 0, 0);
 
     cube *oldworldroot = worldroot;
-    int oldworldscale = worldscale, oldworldsize = worldsize;
+    int oldworldscale = worldscale,
+        oldworldsize = worldsize;
 
     worldroot = newcubes();
     worldscale = 1;
@@ -2312,9 +2316,13 @@ namespace hmap
         } while(0)
 
         if(biasup)
+        {
             PULL_HEIGHTMAP(0, >, <, 1, 0, -);
+        }
         else
+        {
             PULL_HEIGHTMAP(worldsize*8, <, >, 0, 8, +);
+        }
 
         #undef PULL_HEIGHTMAP
 
