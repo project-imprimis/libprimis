@@ -875,7 +875,7 @@ namespace ai
             case AITravel_Entity:
                 if(entities::ents.inrange(b.target))
                 {
-                    extentity &e = *(extentity *)entities::ents[b.target];
+                    extentity &e = *static_cast<extentity *>(entities::ents[b.target]);
                     return 0;
                     return makeroute(d, b, e.o) ? 1 : 0;
                 }
@@ -1467,7 +1467,10 @@ namespace ai
         }
         else
         { // our guys move one way.. but turn another?! :)
-            const struct aimdir { int move, strafe, offset; } aimdirs[8] =
+            const struct aimdir
+            {
+                int move, strafe, offset;
+            } aimdirs[8] =
             {
                 {  1,   0,   0 },
                 {  1,  -1,  45 },
@@ -1479,6 +1482,7 @@ namespace ai
                 {  1,   1, 315 }
             };
             float yaw = d->ai->targyaw-d->yaw;
+            //reset yaws to within 0-360 bounds
             while(yaw < 0.0f)
             {
                 yaw += 360.0f;
@@ -1487,8 +1491,11 @@ namespace ai
             {
                 yaw -= 360.0f;
             }
+            //set r to one of the 8 aim dirs depending on direction
             int r = std::clamp(static_cast<int>(floor((yaw+22.5f)/45.0f))&7, 0, 7);
+            //get an aim dir from the assigned r above
             const aimdir &ad = aimdirs[r];
+            //set move/strafe dirs to this aimdir
             d->move = ad.move;
             d->strafe = ad.strafe;
         }
@@ -1572,11 +1579,13 @@ namespace ai
                     }
                     case 4:
                     {
-                        d->ai->reset(true); break;
+                        d->ai->reset(true);
+                        break;
                     }
                     case 5:
                     {
-                        d->ai->reset(false); break;
+                        d->ai->reset(false);
+                        break;
                     }
                     case 6:
                     default:
@@ -1873,8 +1882,8 @@ namespace ai
         }
     }
 
-    VAR(showwaypoints, 0, 0, 1);
-    VAR(showwaypointsradius, 0, 200, 10000);
+    VAR(showwaypoints, 0, 0, 1); //display waypoint locations in edit mode
+    VAR(showwaypointsradius, 0, 200, 10000); //maximum distance to display (200 = 25m)
 
     const char *stnames[AIState_Max] = {
         "wait", "defend", "pursue", "interest"
