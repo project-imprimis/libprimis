@@ -80,25 +80,25 @@ void genvbo(int type, void *buf, int len, vtxarray **vas, int numva)
             case VBO_VBuf:
             {
                 va->vbuf = vbo;
-                va->vdata = (vertex *)vbi.data;
+                va->vdata = reinterpret_cast<vertex *>(vbi.data);
                 break;
             }
             case VBO_EBuf:
             {
                 va->ebuf = vbo;
-                va->edata = (ushort *)vbi.data;
+                va->edata = reinterpret_cast<ushort *>(vbi.data);
                 break;
             }
             case VBO_SkyBuf:
             {
                 va->skybuf = vbo;
-                va->skydata = (ushort *)vbi.data;
+                va->skydata = reinterpret_cast<ushort *>(vbi.data);
                 break;
             }
             case VBO_DecalBuf:
             {
                 va->decalbuf = vbo;
-                va->decaldata = (ushort *)vbi.data;
+                va->decaldata = reinterpret_cast<ushort *>(vbi.data);
                 break;
             }
         }
@@ -427,7 +427,7 @@ struct vacollect : verthash
 
 #define GENVERTS(type, ptr, body) do \
     { \
-        type *f = (type *)ptr; \
+        type *f = reinterpret_cast<type *>(ptr); \
         for(int i = 0; i < verts.length(); i++) \
         { \
             const vertex &v = verts[i]; \
@@ -554,7 +554,7 @@ struct vacollect : verthash
                           b2 = (d11*dp2 - d12*dp1) / denom,
                           b0 = 1 - b1 - b2;
                     v.norm.lerp(n0, n1, n2, b0, b1, b2);
-                    v.norm.w = uchar(127.5f - 127.5f*(f0*b0 + f1*b1 + f2*b2));
+                    v.norm.w = static_cast<uchar>(127.5f - 127.5f*(f0*b0 + f1*b1 + f2*b2));
                     vec tc = orient.transposedtransform(vec(center).sub(v.pos)).div(size).add(0.5f);
                     v.tc = vec(tc.x, tc.z, s.fade ? tc.y * s.depth / s.fade : 1.0f);
                     v.tangent.lerp(x0, x1, x2, b0, b1, b2);
