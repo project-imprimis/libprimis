@@ -3125,35 +3125,37 @@ namespace server
     int masterport() { return IMPRIMIS_MASTER_PORT; }
     int numchannels() { return 3; }
 
-//extinfo
-#define EXT_ACK                         -1
-#define EXT_VERSION                     105
-#define EXT_NO_ERROR                    0
-#define EXT_ERROR                       1
-#define EXT_PLAYERSTATS_RESP_IDS        -10
-#define EXT_PLAYERSTATS_RESP_STATS      -11
-#define EXT_UPTIME                      0
-#define EXT_PLAYERSTATS                 1
-#define EXT_TEAMSCORE                   2
+enum Ext
+{
+    Ack                  = -1,
+    Version              =  105,
+    NoError              =  0,
+    Error                =  1,
+    PlayerStatsRespIds   = -10,
+    PlayerStatsRespStats = -11,
+    Uptime               =  0,
+    PlayerStats          =  1,
+    TeamScore            =  2
+};
 
 /*
     Client:
     -----
-    A: 0 EXT_UPTIME
-    B: 0 EXT_PLAYERSTATS cn #a client number or -1 for all players#
-    C: 0 EXT_TEAMSCORE
+    A: 0 Ext::Uptime
+    B: 0 Ext::PlayerStats cn #a client number or -1 for all players#
+    C: 0 Ext::TeamScore
 
     Server:
     --------
-    A: 0 EXT_UPTIME EXT_ACK EXT_VERSION uptime #in seconds#
-    B: 0 EXT_PLAYERSTATS cn #send by client# EXT_ACK EXT_VERSION 0 or 1 #error, if cn was > -1 and client does not exist# ...
-         EXT_PLAYERSTATS_RESP_IDS pid(s) #1 packet#
-         EXT_PLAYERSTATS_RESP_STATS pid playerdata #1 packet for each player#
-    C: 0 EXT_TEAMSCORE EXT_ACK EXT_VERSION 0 or 1 #error, no teammode# remaining_time gamemode loop(teamdata [numbases bases] or -1)
+    A: 0 Ext::Uptime Ext::Ack Ext::Version uptime #in seconds#
+    B: 0 Ext::PlayerStats cn #send by client# Ext::Ack Ext::Version 0 or 1 #error, if cn was > -1 and client does not exist# ...
+         Ext::PlayerStatsRespIds pid(s) #1 packet#
+         Ext::PlayerStatsRespStats pid playerdata #1 packet for each player#
+    C: 0 Ext::TeamScore Ext::Ack Ext::Version 0 or 1 #error, no teammode# remaining_time gamemode loop(teamdata [numbases bases] or -1)
 
     Errors:
     --------------
-    B:C:default: 0 command EXT_ACK EXT_VERSION EXT_ERROR
+    B:C:default: 0 command Ext::Ack Ext::Version Ext::Error
 */
 
     VAR(extinfoip, 0, 0, 1);
@@ -3161,7 +3163,7 @@ namespace server
     void extinfoplayer(ucharbuf &p, clientinfo *ci)
     {
         ucharbuf q = p;
-        putint(q, EXT_PLAYERSTATS_RESP_STATS); // send player stats following
+        putint(q, Ext::PlayerStatsRespStats); // send player stats following
         putint(q, ci->clientnum); //add player id
         putint(q, ci->ping);
         sendstring(ci->name, q);
@@ -3232,16 +3234,16 @@ namespace server
     {
         int extcmd = getint(req); // extended commands
         //Build a new packet
-        putint(p, EXT_ACK); //send ack
-        putint(p, EXT_VERSION); //send version of extended info
+        putint(p, Ext::Ack); //send ack
+        putint(p, Ext::Version); //send version of extended info
         switch(extcmd)
         {
-            case EXT_UPTIME:
+            case Ext::Uptime:
             {
                 putint(p, totalsecs); //in seconds
                 break;
             }
-            case EXT_PLAYERSTATS:
+            case Ext::PlayerStats:
             {
                 int cn = getint(req); //a special player, -1 for all
                 clientinfo *ci = NULL;
@@ -3257,14 +3259,14 @@ namespace server
                     }
                     if(!ci)
                     {
-                        putint(p, EXT_ERROR); //client requested by id was not found
+                        putint(p, Ext::Error); //client requested by id was not found
                         sendserverinforeply(p);
                         return;
                     }
                 }
-                putint(p, EXT_NO_ERROR); //so far no error can happen anymore
+                putint(p, Ext::NoError); //so far no error can happen anymore
                 ucharbuf q = p; //remember buffer position
-                putint(q, EXT_PLAYERSTATS_RESP_IDS); //send player ids following
+                putint(q, Ext::PlayerStatsRespIds); //send player ids following
                 if(ci)
                 {
                     putint(q, ci->clientnum);
@@ -3290,14 +3292,14 @@ namespace server
                 }
                 return;
             }
-            case EXT_TEAMSCORE:
+            case Ext::TeamScore:
             {
                 extinfoteams(p);
                 break;
             }
             default:
             {
-                putint(p, EXT_ERROR);
+                putint(p, Ext::Error);
                 break;
             }
         }
