@@ -579,6 +579,8 @@ inline void ident::getcval(tagval &v) const
 
 // nasty macros for registering script functions, abuses globals to avoid excessive infrastructure
 
+//* note: many of the VARF comments are very repetitive, because the code itself is nearly duplicated too *//
+
 //command macros
 #define KEYWORD(name, type) static bool __dummy_##type = addcommand(#name, (identfun)NULL, NULL, type)
 #define COMMANDKN(name, type, fun, nargs) static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)
@@ -587,7 +589,7 @@ inline void ident::getcval(tagval &v) const
 #define COMMAND(name, nargs) COMMANDN(name, name, nargs)
 
 //integer var macros
-//VAR_, _VARF, VARM_ are templates for "normal" macros
+//VAR_, _VARF, VARM_ are templates for "normal" macros that do not execute an inline function
 #define VAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist)
 #define VARN(name, global, min, cur, max) VAR_(name, global, min, cur, max, 0)
 #define VARNP(name, global, min, cur, max) VAR_(name, global, min, cur, max, Idf_Persist)
@@ -595,7 +597,16 @@ inline void ident::getcval(tagval &v) const
 #define VAR(name, min, cur, max) VAR_(name, name, min, cur, max, 0)
 #define VARP(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Persist)
 #define VARR(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Override)
-#define VARF_(name, global, min, cur, max, body, persist)  void var_##name(ident *); int global = variable(#name, min, cur, max, &global, var_##name, persist); void var_##name(ident *) { body; }
+
+//variable with inline function to be executed on change (VARiable with Function = VARF)
+#define VARF_(name, global, min, cur, max, body, persist) \
+    void var_##name(ident *); /* prototype the function to be executed */ \
+    int global = variable(#name, min, cur, max, &global, var_##name, persist); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
+
 #define VARFN(name, global, min, cur, max, body) VARF_(name, global, min, cur, max, body, 0)
 #define VARF(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, 0)
 #define VARFP(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, Idf_Persist)
@@ -607,7 +618,16 @@ inline void ident::getcval(tagval &v) const
 //hexadecimal var macros
 #define HVAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist | Idf_Hex)
 #define HVARP(name, min, cur, max) HVAR_(name, name, min, cur, max, Idf_Persist)
-#define HVARF_(name, global, min, cur, max, body, persist)  void var_##name(ident *id); int global = variable(#name, min, cur, max, &global, var_##name, persist | Idf_Hex); void var_##name(ident *) { body; }
+
+//hex variable with function to be executed on change (Hexadecimal VARiable with Function = HVARF)
+//the CVAR series of macros borrows the HVARF macro as it deals with hex colors
+#define HVARF_(name, global, min, cur, max, body, persist) \
+    void var_##name(ident *id); /* prototype the function to be executed */ \
+    int global = variable(#name, min, cur, max, &global, var_##name, persist | Idf_Hex); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
 
 //color var macros
 #define CVAR_(name, cur, init, body, persist) bvec name = bvec::hexcolor(cur); HVARF_(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)
@@ -626,7 +646,16 @@ inline void ident::getcval(tagval &v) const
 #define FVAR(name, min, cur, max) FVAR_(name, name, min, cur, max, 0)
 #define FVARP(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Persist)
 #define FVARR(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Override)
-#define FVARF_(name, global, min, cur, max, body, persist) void var_##name(ident *id); float global = fvariable(#name, min, cur, max, &global, var_##name, persist); void var_##name(ident *) { body; }
+
+//float variable with function to be executed on change (Float VARiable with Function = FVARF)
+#define FVARF_(name, global, min, cur, max, body, persist) \
+    void var_##name(ident *id); /* prototype the function to be executed */ \
+    float global = fvariable(#name, min, cur, max, &global, var_##name, persist); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
+
 #define FVARF(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, 0)
 #define FVARFP(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Persist)
 #define FVARFR(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Override)
@@ -636,14 +665,37 @@ inline void ident::getcval(tagval &v) const
 #define SVAR(name, cur) SVAR_(name, name, cur, 0)
 #define SVARP(name, cur) SVAR_(name, name, cur, Idf_Persist)
 #define SVARR(name, cur) SVAR_(name, name, cur, Idf_Override)
-#define SVARF_(name, global, cur, body, persist) void var_##name(ident *id); char *global = svariable(#name, cur, &global, var_##name, persist); void var_##name(ident *) { body; }
+
+//string variable with function to be executed on change (Float VARiable with Function = FVARF)
+#define SVARF_(name, global, cur, body, persist) \
+    void var_##name(ident *id); /* prototype the function to be executed */ \
+    char *global = svariable(#name, cur, &global, var_##name, persist); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
+
 #define SVARF(name, cur, body) SVARF_(name, name, cur, body, 0)
 #define SVARFR(name, cur, body) SVARF_(name, name, cur, body, Idf_Override)
 
 // anonymous inline commands, uses nasty template trick with line numbers to keep names unique
 #define ICOMMANDNAME(name) _icmd_##name
 #define ICOMMANDSNAME _icmds_
-#define ICOMMANDKNS(name, type, cmdname, nargs, proto, b) template<int N> struct cmdname; template<> struct cmdname<__LINE__> { static bool init; static void run proto; }; bool cmdname<__LINE__>::init = addcommand(name, (identfun)cmdname<__LINE__>::run, nargs, type); void cmdname<__LINE__>::run proto { b; }
+
+#define ICOMMANDKNS(name, type, cmdname, nargs, proto, b) \
+    template<int N> struct cmdname; /* prototype the cmdname object */ \
+    template<> struct cmdname<__LINE__> /* create a generic template for the above cmdname obj */ \
+    { \
+        static bool init; \
+        static void run proto; \
+    }; \
+    /* register command "prototype" so script parser knows how many args (and of what type) to parse */ \
+    bool cmdname<__LINE__>::init = addcommand(name, (identfun)cmdname<__LINE__>::run, nargs, type); \
+    void cmdname<__LINE__>::run proto /* contents `b` (body) to be executed when called by script engine */ \
+    { \
+        b; /* b */ \
+    }
+
 #define ICOMMANDKN(name, type, cmdname, nargs, proto, b) ICOMMANDKNS(#name, type, cmdname, nargs, proto, b)
 #define ICOMMANDK(name, type, nargs, proto, b) ICOMMANDKN(name, type, ICOMMANDNAME(name), nargs, proto, b)
 #define ICOMMANDNS(name, cmdname, nargs, proto, b) ICOMMANDKNS(name, Id_Command, cmdname, nargs, proto, b)
