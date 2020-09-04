@@ -1843,7 +1843,7 @@ void resetshaders()
     initgbuffer();
     reloadshaders();
     allchanged(true);
-    GLERROR;
+    glerror();
 }
 COMMAND(resetshaders, "");
 

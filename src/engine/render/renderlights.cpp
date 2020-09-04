@@ -1288,7 +1288,7 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
     {
         resolvemsaacolor(sw, sh);
     }
-    GLERROR;
+    glerror();
 
     glBindFramebuffer_(GL_FRAMEBUFFER, fbo);
     glViewport(0, 0, dw, dh);
@@ -1306,7 +1306,7 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
 
     glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
     screenquad();
-    GLERROR;
+    glerror();
 
     hdrclear = 3;
 }
@@ -5187,7 +5187,7 @@ void preparegbuffer(bool depthclear)
     GLOBALPARAM(camera, camera1->o);
     GLOBALPARAMF(millis, lastmillis/1000.0f);
 
-    GLERROR;
+    glerror();
 
     if(depthclear)
     {
@@ -5206,14 +5206,14 @@ void rendergbuffer(bool depthclear)
     if(limitsky())
     {
         renderexplicitsky();
-        GLERROR;
+        glerror();
     }
     rendergeom();
-    GLERROR;
+    glerror();
     renderdecals();
-    GLERROR;
+    glerror();
     rendermapmodels();
-    GLERROR;
+    glerror();
 
     if(drawtex == Draw_TexMinimap)
     {
@@ -5222,17 +5222,17 @@ void rendergbuffer(bool depthclear)
             findmaterials();
         }
         renderminimapmaterials();
-        GLERROR;
+        glerror();
     }
     else if(!drawtex)
     {
         rendermodelbatches();
-        GLERROR;
+        glerror();
         renderstains(StainBuffer_Opaque, true);
         renderstains(StainBuffer_Mapmodel, true);
-        GLERROR;
+        glerror();
         //renderavatar();
-        //GLERROR;
+        //glerror();
     }
 
     endtimer(gtimer);
@@ -5241,7 +5241,7 @@ void rendergbuffer(bool depthclear)
 
 void shademinimap(const vec &color)
 {
-    GLERROR;
+    glerror();
 
     glBindFramebuffer_(GL_FRAMEBUFFER, msaalight ? mshdrfbo : hdrfbo);
     glViewport(0, 0, vieww, viewh);
@@ -5253,12 +5253,12 @@ void shademinimap(const vec &color)
     }
 
     renderlights(-1, -1, 1, 1, NULL, 0, msaalight ? -1 : 0);
-    GLERROR;
+    glerror();
 }
 
 void shademodelpreview(int x, int y, int w, int h, bool background, bool scissor)
 {
-    GLERROR;
+    glerror();
 
     glBindFramebuffer_(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, hudw, hudh);
@@ -5320,7 +5320,7 @@ void shademodelpreview(int x, int y, int w, int h, bool background, bool scissor
         glDisable(GL_SCISSOR_TEST);
     }
 
-    GLERROR;
+    glerror();
 }
 
 void shadesky()
@@ -5334,7 +5334,7 @@ void shadesky()
 void shadegbuffer()
 {
     if(msaasamples && !msaalight && !drawtex) resolvemsaadepth();
-    GLERROR;
+    glerror();
 
     timer *shcputimer = begintimer("deferred shading", false);
     timer *shtimer = begintimer("deferred shading");
@@ -5356,7 +5356,7 @@ void shadegbuffer()
         }
     }
     else renderlights();
-    GLERROR;
+    glerror();
 
     if(!drawtex)
     {
@@ -5370,7 +5370,7 @@ void shadegbuffer()
 
 void setuplights()
 {
-    GLERROR;
+    glerror();
     setupgbuffer();
     if(bloomw < 0 || bloomh < 0)
     {
@@ -5401,7 +5401,7 @@ void setuplights()
         deferredminimapshader = loaddeferredlightshader(msaalight ? "mM" : "m");
     }
     setupaa(gw, gh);
-    GLERROR;
+    glerror();
 }
 
 bool debuglights()

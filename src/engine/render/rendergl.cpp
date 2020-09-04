@@ -961,7 +961,7 @@ void gl_resize()
 
 void gl_init()
 {
-    GLERROR;
+    glerror();
 
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
@@ -982,7 +982,7 @@ void gl_init()
     gle::setup();
     setupshaders();
 
-    GLERROR;
+    glerror();
 
     gl_resize();
 }
@@ -1844,12 +1844,12 @@ void drawminimap()
         return;
     }
 
-    GLERROR;
+    glerror();
     renderprogress(0, "generating mini-map...", !renderedframe);
 
     drawtex = Draw_TexMinimap;
 
-    GLERROR;
+    glerror();
     gl_setupframe(true);
 
     int size = 1<<minimapsize,
@@ -2138,27 +2138,27 @@ void gl_drawview()
 
     //ambient obscurance (ambient occlusion) on geometry & models only
     renderao();
-    GLERROR;
+    glerror();
 
     // render avatar after AO to avoid weird contact shadows
     renderavatar();
-    GLERROR;
+    glerror();
 
     // render grass after AO to avoid disturbing shimmering patterns
     generategrass();
     rendergrass();
-    GLERROR;
+    glerror();
 
     glFlush();
     //global illumination
     renderradiancehints();
-    GLERROR;
+    glerror();
     //lighting
     rendershadowatlas();
-    GLERROR;
+    glerror();
     //shading
     shadegbuffer();
-    GLERROR;
+    glerror();
 
     //fog
     if(fogmat)
@@ -2172,7 +2172,7 @@ void gl_drawview()
 
     //alpha
     rendertransparent();
-    GLERROR;
+    glerror();
 
     if(fogmat)
     {
@@ -2181,7 +2181,7 @@ void gl_drawview()
 
     //volumetric lights
     rendervolumetric();
-    GLERROR;
+    glerror();
 
     if(editmode)
     {
@@ -2190,11 +2190,11 @@ void gl_drawview()
         {
             renderoutline(); //edit mode geometry outline
         }
-        GLERROR;
+        glerror();
         rendereditmaterials();
-        GLERROR;
+        glerror();
         renderparticles();
-        GLERROR;
+        glerror();
 
         extern int showhud;
         if(showhud)
