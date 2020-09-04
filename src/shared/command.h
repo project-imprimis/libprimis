@@ -141,15 +141,67 @@ struct tagval : identval
 {
     int type;
 
-    void setint(int val) { type = Value_Integer; i = val; }
-    void setfloat(float val) { type = Value_Float; f = val; }
-    void setnumber(double val) { i = static_cast<int>(val); if(val == i) type = Value_Integer; else { type = Value_Float; f = val; } }
-    void setstr(char *val) { type = Value_String; s = val; }
-    void setnull() { type = Value_Null; i = 0; }
-    void setcode(const uint *val) { type = Value_Code; code = val; }
-    void setmacro(const uint *val) { type = Value_Macro; code = val; }
-    void setcstr(const char *val) { type = Value_CString; cstr = val; }
-    void setident(ident *val) { type = Value_Ident; id = val; }
+    void setint(int val)
+    {
+        type = Value_Integer;
+        i = val;
+    }
+
+    void setfloat(float val)
+    {
+        type = Value_Float;
+        f = val;
+    }
+
+    void setnumber(double val)
+    {
+        i = static_cast<int>(val);
+        if(val == i)
+        {
+            type = Value_Integer;
+        }
+        else
+        {
+            type = Value_Float;
+            f = val;
+        }
+    }
+
+    void setstr(char *val)
+    {
+        type = Value_String;
+        s = val;
+    }
+
+    void setnull()
+    {
+        type = Value_Null;
+        i = 0;
+    }
+
+    void setcode(const uint *val)
+    {
+        type = Value_Code;
+        code = val;
+    }
+
+    void setmacro(const uint *val)
+    {
+        type = Value_Macro;
+        code = val;
+    }
+
+    void setcstr(const char *val)
+    {
+        type = Value_CString;
+        cstr = val;
+    }
+
+    void setident(ident *val)
+    {
+        type = Value_Ident;
+        id = val;
+    }
 
     const char *getstr() const;
     int getint() const;
@@ -193,10 +245,18 @@ struct ident
     {
         struct // Id_Var, Id_FloatVar, Id_StringVar
         {
-            union
+            union //number var range union type
             {
-                struct { int minval, maxval; };     // Id_Var
-                struct { float minvalf, maxvalf; }; // Id_FloatVar
+                struct
+                {
+                    int minval,
+                        maxval;
+                };     // Id_Var
+                struct
+                {
+                    float minvalf,
+                          maxvalf;
+                }; // Id_FloatVar
             };
             identvalptr storage;
             identval overrideval;
@@ -220,36 +280,49 @@ struct ident
     ident(int t, const char *n, int m, int x, int *s, void *f = NULL, int flags = 0)
         : type(t), flags(flags | (m > x ? Idf_ReadOnly : 0)), name(n), minval(m), maxval(x), fun((identfun)f)
     { storage.i = s; }
+
     // Id_FloatVar
     ident(int t, const char *n, float m, float x, float *s, void *f = NULL, int flags = 0)
         : type(t), flags(flags | (m > x ? Idf_ReadOnly : 0)), name(n), minvalf(m), maxvalf(x), fun((identfun)f)
     { storage.f = s; }
+
     // Id_StringVar
     ident(int t, const char *n, char **s, void *f = NULL, int flags = 0)
         : type(t), flags(flags), name(n), fun((identfun)f)
     { storage.s = s; }
+
     // Id_Alias
     ident(int t, const char *n, char *a, int flags)
         : type(t), valtype(Value_String), flags(flags), name(n), code(NULL), stack(NULL)
     { val.s = a; }
+
     ident(int t, const char *n, int a, int flags)
         : type(t), valtype(Value_Integer), flags(flags), name(n), code(NULL), stack(NULL)
     { val.i = a; }
+
     ident(int t, const char *n, float a, int flags)
         : type(t), valtype(Value_Float), flags(flags), name(n), code(NULL), stack(NULL)
     { val.f = a; }
+
     ident(int t, const char *n, int flags)
         : type(t), valtype(Value_Null), flags(flags), name(n), code(NULL), stack(NULL)
     {}
     ident(int t, const char *n, const tagval &v, int flags)
         : type(t), valtype(v.type), flags(flags), name(n), code(NULL), stack(NULL)
     { val = v; }
+
     // Id_Command
     ident(int t, const char *n, const char *args, uint argmask, int numargs, void *f = NULL, int flags = 0)
         : type(t), numargs(numargs), flags(flags), name(n), args(args), argmask(argmask), fun((identfun)f)
     {}
 
-    void changed() { if(fun) fun(this); }
+    void changed()
+    {
+        if(fun)
+        {
+            fun(this);
+        }
+    }
 
     void setval(const tagval &v)
     {
@@ -265,7 +338,10 @@ struct ident
 
     void forcenull()
     {
-        if(valtype==Value_String) delete[] val.s;
+        if(valtype==Value_String)
+        {
+            delete[] val.s;
+        }
         valtype = Value_Null;
     }
 
@@ -312,36 +388,86 @@ inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, l
 inline void numberformat(char *buf, double v, int len = 20)
 {
     int i = static_cast<int>(v);
-    if(v == i) nformatstring(buf, len, "%d", i);
-    else nformatstring(buf, len, "%.7g", v);
+    if(v == i)
+    {
+        nformatstring(buf, len, "%d", i);
+    }
+    else
+    {
+        nformatstring(buf, len, "%.7g", v);
+    }
 }
 
 inline const char *getstr(const identval &v, int type)
 {
     switch(type)
     {
-        case Value_String: case Value_Macro: case Value_CString: return v.s;
-        case Value_Integer: return intstr(v.i);
-        case Value_Float: return floatstr(v.f);
-        default: return "";
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return v.s;
+        }
+        case Value_Integer:
+        {
+            return intstr(v.i);
+        }
+        case Value_Float:
+        {
+            return floatstr(v.f);
+        }
+        default:
+        {
+            return "";
+        }
     }
 }
-inline const char *tagval::getstr() const { return ::getstr(*this, type); }
-inline const char *ident::getstr() const { return ::getstr(val, valtype); }
+inline const char *tagval::getstr() const
+{
+    return ::getstr(*this, type);
+}
 
+inline const char *ident::getstr() const
+{
+    return ::getstr(val, valtype);
+}
+
+//defines three getter functions, kind of like a bastard template (though we want the fxns to have different names)
+// very fun!
 #define GETNUMBER(name, ret) \
     inline ret get##name(const identval &v, int type) \
     { \
         switch(type) \
         { \
-            case Value_Float: return ret(v.f); \
-            case Value_Integer: return ret(v.i); \
-            case Value_String: case Value_Macro: case Value_CString: return parse##name(v.s); \
-            default: return ret(0); \
+            case Value_Float: \
+            { \
+                return ret(v.f); \
+            } \
+            case Value_Integer: \
+            { \
+                return ret(v.i); \
+            } \
+            case Value_String: \
+            case Value_Macro: \
+            case Value_CString: \
+            { \
+                return parse##name(v.s); \
+            } \
+            default: \
+            { \
+                return ret(0); \
+            } \
         } \
     } \
-    inline ret tagval::get##name() const { return ::get##name(*this, type); } \
-    inline ret ident::get##name() const { return ::get##name(val, valtype); }
+    inline ret tagval::get##name() const \
+    { \
+        return ::get##name(*this, type); \
+    } \
+    inline ret ident::get##name() const \
+    { \
+        return ::get##name(val, valtype); \
+    }
+
 GETNUMBER(int, int)
 GETNUMBER(float, float)
 GETNUMBER(number, double)
@@ -350,25 +476,71 @@ inline void getval(const identval &v, int type, tagval &r)
 {
     switch(type)
     {
-        case Value_String: case Value_Macro: case Value_CString: r.setstr(newstring(v.s)); break;
-        case Value_Integer: r.setint(v.i); break;
-        case Value_Float: r.setfloat(v.f); break;
-        default: r.setnull(); break;
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            r.setstr(newstring(v.s));
+            break;
+        }
+        case Value_Integer:
+        {
+            r.setint(v.i);
+            break;
+        }
+        case Value_Float:
+        {
+            r.setfloat(v.f);
+            break;
+        }
+        default:
+        {
+            r.setnull();
+            break;
+        }
     }
 }
 
-inline void tagval::getval(tagval &r) const { ::getval(*this, type, r); }
-inline void ident::getval(tagval &r) const { ::getval(val, valtype, r); }
+inline void tagval::getval(tagval &r) const
+{
+    ::getval(*this, type, r);
+}
+
+inline void ident::getval(tagval &r) const
+{
+    ::getval(val, valtype, r);
+}
 
 inline void ident::getcstr(tagval &v) const
 {
     switch(valtype)
     {
-        case Value_Macro: v.setmacro(val.code); break;
-        case Value_String: case Value_CString: v.setcstr(val.s); break;
-        case Value_Integer: v.setstr(newstring(intstr(val.i))); break;
-        case Value_Float: v.setstr(newstring(floatstr(val.f))); break;
-        default: v.setcstr(""); break;
+        case Value_Macro:
+        {
+            v.setmacro(val.code);
+            break;
+        }
+        case Value_String:
+        case Value_CString:
+        {
+            v.setcstr(val.s);
+            break;
+        }
+        case Value_Integer:
+        {
+            v.setstr(newstring(intstr(val.i)));
+            break;
+        }
+        case Value_Float:
+        {
+            v.setstr(newstring(floatstr(val.f)));
+            break;
+        }
+        default:
+        {
+            v.setcstr("");
+            break;
+        }
     }
 }
 
@@ -376,11 +548,32 @@ inline void ident::getcval(tagval &v) const
 {
     switch(valtype)
     {
-        case Value_Macro: v.setmacro(val.code); break;
-        case Value_String: case Value_CString: v.setcstr(val.s); break;
-        case Value_Integer: v.setint(val.i); break;
-        case Value_Float: v.setfloat(val.f); break;
-        default: v.setnull(); break;
+        case Value_Macro:
+        {
+            v.setmacro(val.code);
+            break;
+        }
+        case Value_String:
+        case Value_CString:
+        {
+            v.setcstr(val.s);
+            break;
+        }
+        case Value_Integer:
+        {
+            v.setint(val.i);
+            break;
+        }
+        case Value_Float:
+        {
+            v.setfloat(val.f);
+            break;
+        }
+        default:
+        {
+            v.setnull();
+            break;
+        }
     }
 }
 
