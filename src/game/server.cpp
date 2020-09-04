@@ -222,7 +222,6 @@ VARF(maxdupclients, 0, 0, MAXCLIENTS,
     }
 });
 
-void process(ENetPacket *packet, int sender, int chan);
 //void disconnect_client(int n, int reason);
 
 int getservermtu()
@@ -484,34 +483,6 @@ void kicknonlocalclients(int reason)
         {
             disconnect_client(i, reason);
         }
-    }
-}
-
-void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
-{
-    packetbuf p(packet);
-    server::parsepacket(sender, chan, p);
-    if(p.overread())
-    {
-        disconnect_client(sender, Discon_EndOfPacket);
-        return;
-    }
-}
-
-void localclienttoserver(int chan, ENetPacket *packet)
-{
-    client *c = NULL;
-    for(int i = 0; i < clients.length(); i++)
-    {
-        if(clients[i]->type==ServerClient_Local)
-        {
-            c = clients[i];
-            break;
-        }
-    }
-    if(c)
-    {
-        process(packet, c->num, chan);
     }
 }
 

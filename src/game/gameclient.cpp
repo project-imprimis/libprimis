@@ -897,27 +897,9 @@ namespace game
     }
     ICOMMAND(map, "s", (char *name), changemap(name));
 
-    void forceedit(const char *name)
-    {
-        changemap(name, 0);
-    }
-
     void newmap(int size)
     {
         addmsg(NetMsg_Newmap, "ri", size);
-    }
-
-    void startnewmap(int *i)
-    {
-        bool force = !isconnected();
-        if(force)
-        {
-            forceedit("");
-        }
-        if(emptymap(*i, force, NULL))
-        {
-            newmap(max(*i, 0));
-        }
     }
 
     void mapenlarge()
