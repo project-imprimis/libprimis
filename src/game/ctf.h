@@ -8,10 +8,10 @@ struct ctfservermode : servermode
 struct ctfclientmode : clientmode
 #endif
 {
-    static const int MAXFLAGS = 20;
-    static const int FLAGRADIUS = 16;
-    static const int FLAGLIMIT = 10;
-    static const int RESPAWNSECS = 5;
+    static const int maxflags = 20;
+    static const int flagradius = 16;
+    static const int flaglimit = 10;
+    static const int respawnsecs = 5;
 
     struct flag
     {
@@ -90,7 +90,7 @@ struct ctfclientmode : clientmode
     bool addflag(int i, const vec &o, int team)
 #endif
     {
-        if(i<0 || i>=MAXFLAGS)
+        if(i<0 || i>=maxflags)
         {
             return false;
         }
@@ -312,7 +312,7 @@ struct ctfclientmode : clientmode
 
     bool canspawn(clientinfo *ci, bool connecting)
     {
-        return connecting || !ci->state.lastdeath || gamemillis+curtime-ci->state.lastdeath >= RESPAWNSECS*1000;
+        return connecting || !ci->state.lastdeath || gamemillis+curtime-ci->state.lastdeath >= respawnsecs*1000;
     }
 
     bool canchangeteam(clientinfo *ci, int oldteam, int newteam)
@@ -331,7 +331,7 @@ struct ctfclientmode : clientmode
         ci->state.flags++;
         int team = ci->team, score = addscore(team, 1);
         sendf(-1, 1, "ri9", NetMsg_ScoreFlag, ci->clientnum, relay, relay >= 0 ? ++flags[relay].version : -1, goal, ++flags[goal].version, team, score, ci->state.flags);
-        if(score >= FLAGLIMIT) startintermission();
+        if(score >= flaglimit) startintermission();
     }
 
     void takeflag(clientinfo *ci, int i, int version)
@@ -445,8 +445,8 @@ struct ctfclientmode : clientmode
     }
 };
 #else
-    #define FLAGCENTER 3.5f
-    #define FLAGFLOAT 7
+    static const float flagcenter = 3.5f;
+    static const int flagfloat = 7;
 
     void preload()
     {
@@ -579,13 +579,13 @@ struct ctfclientmode : clientmode
         else
         {
             angle = f.droptime ? f.dropangle : f.spawnangle;
-            pos.addz(FLAGFLOAT);
+            pos.addz(flagfloat);
         }
         if(pos.x < 0)
         {
             return pos;
         }
-        pos.addz(FLAGCENTER);
+        pos.addz(flagcenter);
         if(f.interptime && f.interploc.x >= 0)
         {
             float t = min((lastmillis - f.interptime)/500.0f, 1.0f);
@@ -783,7 +783,7 @@ struct ctfclientmode : clientmode
         }
         flag &f = flags[i];
         f.version = version;
-        flageffect(i, f.team, interpflagpos(f), vec(f.spawnloc).addz(FLAGFLOAT+FLAGCENTER));
+        flageffect(i, f.team, interpflagpos(f), vec(f.spawnloc).addz(flagfloat+flagcenter));
         f.interptime = 0;
         returnflag(i);
         conoutf(ConsoleMsg_GameInfo, "%s returned %s", teamcolorname(d), teamcolorflag(f));
@@ -798,7 +798,7 @@ struct ctfclientmode : clientmode
         }
         flag &f = flags[i];
         f.version = version;
-        flageffect(i, f.team, interpflagpos(f), vec(f.spawnloc).addz(FLAGFLOAT+FLAGCENTER));
+        flageffect(i, f.team, interpflagpos(f), vec(f.spawnloc).addz(flagfloat+flagcenter));
         f.interptime = 0;
         returnflag(i);
         conoutf(ConsoleMsg_GameInfo, "%s reset", teamcolorflag(f));
@@ -815,16 +815,16 @@ struct ctfclientmode : clientmode
             if(relay >= 0)
             {
                 flags[relay].version = relayversion;
-                flageffect(goal, team, vec(f.spawnloc).addz(FLAGFLOAT+FLAGCENTER), vec(flags[relay].spawnloc).addz(FLAGFLOAT+FLAGCENTER));
+                flageffect(goal, team, vec(f.spawnloc).addz(flagfloat+flagcenter), vec(flags[relay].spawnloc).addz(flagfloat+flagcenter));
             }
             else
             {
-                flageffect(goal, team, interpflagpos(f), vec(f.spawnloc).addz(FLAGFLOAT+FLAGCENTER));
+                flageffect(goal, team, interpflagpos(f), vec(f.spawnloc).addz(flagfloat+flagcenter));
             }
             f.interptime = 0;
             returnflag(relay >= 0 ? relay : goal);
             d->flagpickup &= ~(1<<f.id);
-            if(d->feetpos().dist(f.spawnloc) < FLAGRADIUS)
+            if(d->feetpos().dist(f.spawnloc) < flagradius)
             {
                 d->flagpickup |= 1<<f.id;
             }
@@ -837,7 +837,7 @@ struct ctfclientmode : clientmode
         conoutf(ConsoleMsg_GameInfo, "%s scored for %s", teamcolorname(d), teamcolor("team ", "", team, "a team"));
         playsound(team==player1->team ? Sound_FlagScore : Sound_FlagFail);
 
-        if(score >= FLAGLIMIT)
+        if(score >= flaglimit)
         {
             conoutf(ConsoleMsg_GameInfo, "%s captured %d flags", teamcolor("team ", "", team, "a team"), score);
         }
@@ -881,7 +881,7 @@ struct ctfclientmode : clientmode
                 continue;
             }
             const vec &loc = f.droptime ? f.droploc : f.spawnloc;
-            if(o.dist(loc) < FLAGRADIUS)
+            if(o.dist(loc) < flagradius)
             {
                 if(d->flagpickup&(1<<f.id))
                 {
@@ -907,7 +907,7 @@ struct ctfclientmode : clientmode
                 continue;
             }
             const vec &loc = f.droptime ? f.droploc : f.spawnloc;
-            if(o.dist(loc) < FLAGRADIUS)
+            if(o.dist(loc) < flagradius)
             {
                 if(!tookflag && d->flagpickup&(1<<f.id))
                 {
@@ -937,7 +937,7 @@ struct ctfclientmode : clientmode
             {
                 continue;
             }
-            if(o.dist(f.droptime ? f.droploc : f.spawnloc) < FLAGRADIUS)
+            if(o.dist(f.droptime ? f.droploc : f.spawnloc) < flagradius)
             {
                 d->flagpickup |= 1<<f.id;
             }
@@ -946,7 +946,7 @@ struct ctfclientmode : clientmode
 
     int respawnwait(gameent *d)
     {
-        return max(0, RESPAWNSECS-(lastmillis-d->lastpain)/1000);
+        return max(0, respawnsecs-(lastmillis-d->lastpain)/1000);
     }
 
     bool aihomerun(gameent *d, ai::aistate &b)
@@ -1025,7 +1025,7 @@ struct ctfclientmode : clientmode
                     if((e = reinterpret_cast<gameent *>(iterdynents(i))) && !e->ai && e->state == ClientState_Alive && (modecheck(gamemode, Mode_Team) && d->team == e->team))
                     { // try to guess what non ai are doing
                         vec ep = e->feetpos();
-                        if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.pos()) <= (FLAGRADIUS*FLAGRADIUS*4) || f.owner == e))
+                        if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.pos()) <= (flagradius*flagradius*4) || f.owner == e))
                         {
                             targets.add(e->clientnum);
                         }
@@ -1113,7 +1113,7 @@ struct ctfclientmode : clientmode
                     if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == ClientState_Alive && (modecheck(gamemode, Mode_Team) && d->team == e->team))
                     { // try to guess what non ai are doing
                         vec ep = e->feetpos();
-                        if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.pos()) <= (FLAGRADIUS*FLAGRADIUS*4) || f.owner == e))
+                        if(targets.find(e->clientnum) < 0 && (ep.squaredist(f.pos()) <= (flagradius*flagradius*4) || f.owner == e))
                         {
                             targets.add(e->clientnum);
                         }
@@ -1131,7 +1131,7 @@ struct ctfclientmode : clientmode
                 }
             }
             vec pos = d->feetpos();
-            float mindist = static_cast<float>(FLAGRADIUS*FLAGRADIUS*8);
+            float mindist = static_cast<float>(flagradius*flagradius*8);
             for(int i = 0; i < flags.length(); i++)
             { // get out of the way of the returnee!
                 flag &g = flags[i];
@@ -1147,7 +1147,7 @@ struct ctfclientmode : clientmode
                     }
                 }
             }
-            return ai::defend(d, b, f.pos(), static_cast<float>(FLAGRADIUS*2), static_cast<float>(FLAGRADIUS*(2+(walk*2))), walk);
+            return ai::defend(d, b, f.pos(), static_cast<float>(flagradius*2), static_cast<float>(flagradius*(2+(walk*2))), walk);
         }
         return false;
     }
