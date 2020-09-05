@@ -840,7 +840,6 @@ namespace game
     extern void switchteam(const char *name);
     extern void sendmapinfo();
     extern void stopdemo();
-    extern void changemap(const char *name, int mode);
     extern void c2sinfo(bool force = false);
     extern void sendposition(gameent *d, bool reliable = false);
 
@@ -942,7 +941,6 @@ extern ENetPeer *getclientpeer(int i);
 extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
 extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
 extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern void flushserver(bool force);
 extern int getservermtu();
 extern uint getclientip(int n);
 extern void localconnect();
@@ -996,9 +994,7 @@ namespace server
     extern const char *modename(int n, const char *unknown = "unknown");
     extern const char *modeprettyname(int n, const char *unknown = "unknown");
     extern const char *mastermodename(int n, const char *unknown = "unknown");
-    extern void startintermission();
     extern void stopdemo();
-    extern void forcemap(const char *map, int mode);
     extern void forcepaused(bool paused);
     extern void forcegamespeed(int speed);
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
@@ -1016,11 +1012,8 @@ namespace server
     extern void localconnect(int n);
     extern bool allowbroadcast(int n);
     extern void recordpacket(int chan, void *data, int len);
-    extern void parsepacket(int sender, int chan, packetbuf &p);
     extern void sendservmsg(const char *s);
-    extern bool sendpackets(bool force = false);
     extern void serverinforeply(ucharbuf &req, ucharbuf &p);
-    extern void serverupdate();
     extern int protocolversion();
     extern int laninfoport();
     extern int serverport();

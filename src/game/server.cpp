@@ -475,17 +475,6 @@ void disconnect_client(int n, int reason)
     server::sendservmsg(s);
 }
 
-void kicknonlocalclients(int reason)
-{
-    for(int i = 0; i < clients.length(); i++)
-    {
-        if(clients[i]->type==ServerClient_Remote)
-        {
-            disconnect_client(i, reason);
-        }
-    }
-}
-
 ENetSocket mastersock = ENET_SOCKET_NULL;
 ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY },
             serveraddress = { ENET_HOST_ANY, ENET_PORT_ANY };
@@ -612,20 +601,6 @@ void updatetime()
         int cursecs = (totalmillis - lastsec) / 1000;
         totalsecs += cursecs;
         lastsec += cursecs * 1000;
-    }
-}
-
-void serverslice(uint timeout)   // main server update, called from main loop in sp
-{
-    server::serverupdate();
-    server::sendpackets();
-}
-
-void flushserver(bool force)
-{
-    if(server::sendpackets(force) && serverhost)
-    {
-        enet_host_flush(serverhost);
     }
 }
 

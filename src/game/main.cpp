@@ -173,7 +173,7 @@ int main(int argc, char **argv)
     initidents();
     setlogfile(NULL);
 
-    char *load = NULL, *initscript = NULL;
+    char *initscript = NULL;
 
     initing = Init_Reset;
     // set home dir first
@@ -247,20 +247,6 @@ int main(int argc, char **argv)
                 case 'f':
                 {
                     fullscreen = atoi(&argv[i][2]);
-                    break;
-                }
-                case 'l':
-                {
-                    char pkgdir[] = "media/";
-                    load = strstr(path(&argv[i][2]), path(pkgdir));
-                    if(load)
-                    {
-                        load += sizeof(pkgdir)-1;
-                    }
-                    else
-                    {
-                        load = &argv[i][2];
-                    }
                     break;
                 }
                 case 'x':
@@ -374,12 +360,6 @@ int main(int argc, char **argv)
     {
         remove(findfile("once.cfg", "rb"));
     }
-    if(load)
-    {
-        logoutf("init: localconnect");
-        //localconnect();
-        game::changemap(load);
-    }
     if(initscript)
     {
         execute(initscript);
@@ -419,7 +399,6 @@ int main(int argc, char **argv)
             game::updateworld(); //main ingame update routine: calculates projectile positions, physics, etc.
         }
         checksleep(lastmillis); //checks cubescript for any pending sleep commands
-        serverslice(0); //server main routine
         if(frames)
         {
             updatefpshistory(elapsedtime); //if collecting framerate history, update with new frame

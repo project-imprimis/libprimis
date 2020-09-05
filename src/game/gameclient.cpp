@@ -878,15 +878,7 @@ namespace game
 
     void changemap(const char *name, int mode) // request map change, server may ignore
     {
-        if(!remote)
-        {
-            server::forcemap(name, mode);
-            if(!isconnected())
-            {
-                localconnect();
-            }
-        }
-        else if(player1->state!=ClientState_Spectator || player1->privilege)
+        if(player1->state!=ClientState_Spectator || player1->privilege)
         {
             addmsg(NetMsg_MapVote, "rsi", name, mode);
         }
@@ -2818,9 +2810,85 @@ namespace game
                     }
                     break;
                 }
-                #define PARSEMESSAGES 1
-                #include "ctf.h"
-                #undef PARSEMESSAGES
+                /* CTF network messages */
+                case NetMsg_InitFlags:
+                {
+                    ctfmode.parseflags(p, modecheck(gamemode, Mode_CTF));
+                    break;
+                }
+
+                case NetMsg_DropFlag:
+                {
+                    int ocn  = getint(p),
+                        flag = getint(p),
+                        version = getint(p);
+                    vec droploc;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        droploc[k] = getint(p)/DMF;
+                    }
+                    gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
+                    if(o && modecheck(gamemode, Mode_CTF))
+                    {
+                        ctfmode.dropflag(o, flag, version, droploc);
+                    }
+                    break;
+                }
+
+                case NetMsg_ScoreFlag:
+                {
+                    int ocn = getint(p),
+                        relayflag    = getint(p),
+                        relayversion = getint(p),
+                        goalflag     = getint(p),
+                        goalversion  = getint(p),
+                        team   = getint(p),
+                        score  = getint(p),
+                        oflags = getint(p);
+                    gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
+                    if(o && modecheck(gamemode, Mode_CTF))
+                    {
+                        ctfmode.scoreflag(o, relayflag, relayversion, goalflag, goalversion, team, score, oflags);
+                    }
+                    break;
+                }
+
+                case NetMsg_ReturnFlag:
+                {
+                    int ocn = getint(p),
+                        flag = getint(p),
+                        version = getint(p);
+                    gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
+                    if(o && modecheck(gamemode, Mode_CTF))
+                    {
+                        ctfmode.returnflag(o, flag, version);
+                    }
+                    break;
+                }
+
+                case NetMsg_TakeFlag:
+                {
+                    int ocn = getint(p),
+                        flag = getint(p),
+                        version = getint(p);
+                    gameent *o = ocn==player1->clientnum ? player1 : newclient(ocn);
+                    if(o && modecheck(gamemode, Mode_CTF))
+                    {
+                        ctfmode.takeflag(o, flag, version);
+                    }
+                    break;
+                }
+
+                case NetMsg_ResetFlag:
+                {
+                    int flag = getint(p), version = getint(p);
+                    if(modecheck(gamemode, Mode_CTF))
+                    {
+                        ctfmode.resetflag(flag, version);
+                    }
+                    break;
+                }
+                /* end of ctf messages */
                 case NetMsg_Newmap:
                 {
                     int size = getint(p);
