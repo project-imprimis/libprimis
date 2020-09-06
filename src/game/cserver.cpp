@@ -54,15 +54,6 @@ namespace server
         bool flush(clientinfo *ci, int fmillis);
     };
 
-    struct hitinfo
-    {
-        int target;
-        int lifesequence;
-        int rays;
-        float dist;
-        vec dir;
-    };
-
     template <int N>
     struct projectilestate
     {
@@ -333,9 +324,7 @@ namespace server
         extern void removeai(clientinfo *ci);
         extern void clearai();
         extern void checkai();
-        extern void reqdel(clientinfo *ci);
         extern void addclient(clientinfo *ci);
-        extern void changeteam(clientinfo *ci);
     }
 
     #define MM_MODE 0xF
@@ -397,8 +386,6 @@ namespace server
     int maprotation::exclude = 0;
     vector<maprotation> maprotations;
     int curmaprotation = 0;
-
-    VAR(lockmaprotation, 0, 0, 2);
 
     void maprotationreset()
     {
@@ -806,20 +793,6 @@ namespace server
         }
     }
 
-    clientinfo *choosebestclient(float &bestrank)
-    {
-        clientinfo *best = NULL;
-        bestrank = -1;
-        for(int i = 0; i < clients.length(); i++)
-        {
-            clientinfo *ci = clients[i];
-            if(ci->state.timeplayed<0) continue;
-            float rank = ci->state.state!=ClientState_Spectator ? ci->state.effectiveness/max(ci->state.timeplayed, 1) : -1;
-            if(!best || rank > bestrank) { best = ci; bestrank = rank; }
-        }
-        return best;
-    }
-
     void prunedemos(int extra = 0)
     {
         int n = std::clamp(demos.length() + extra - maxdemos, 0, demos.length());
@@ -1012,51 +985,6 @@ namespace server
     int scaletime(int t) { return t*gamespeed; }
 
     SVAR(serverauth, "");
-
-    struct userkey
-    {
-        char *name;
-        char *desc;
-
-        userkey() : name(NULL), desc(NULL) {}
-        userkey(char *name, char *desc) : name(name), desc(desc) {}
-    };
-
-    static inline uint hthash(const userkey &k) { return ::hthash(k.name); }
-    static inline bool htcmp(const userkey &x, const userkey &y) { return !strcmp(x.name, y.name) && !strcmp(x.desc, y.desc); }
-
-    struct userinfo : userkey
-    {
-        void *pubkey;
-        int privilege;
-
-        userinfo() : pubkey(NULL), privilege(Priv_None) {}
-        ~userinfo() { delete[] name; delete[] desc; if(pubkey) freepubkey(pubkey); }
-    };
-    hashset<userinfo> users;
-
-    void adduser(char *name, char *desc, char *pubkey, char *priv)
-    {
-        userkey key(name, desc);
-        userinfo &u = users[key];
-        if(u.pubkey) { freepubkey(u.pubkey); u.pubkey = NULL; }
-        if(!u.name) u.name = newstring(name);
-        if(!u.desc) u.desc = newstring(desc);
-        u.pubkey = parsepubkey(pubkey);
-        switch(priv[0])
-        {
-            case 'a': case 'A': u.privilege = Priv_Admin; break;
-            case 'm': case 'M': default: u.privilege = Priv_Auth; break;
-            case 'n': case 'N': u.privilege = Priv_None; break;
-        }
-    }
-    COMMAND(adduser, "ssss");
-
-    void clearusers()
-    {
-        users.clear();
-    }
-    COMMAND(clearusers, "");
 
     void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen)
     {
@@ -1269,25 +1197,6 @@ namespace server
     vector<worldstate> worldstates;
     bool reliablemessages = false;
 
-    void cleanworldstate(ENetPacket *packet)
-    {
-        for(int i = 0; i < worldstates.length(); i++)
-        {
-            worldstate &ws = worldstates[i];
-            if(!ws.contains(packet->data))
-            {
-                continue;
-            }
-            ws.uses--;
-            if(ws.uses <= 0)
-            {
-                ws.cleanup();
-                worldstates.removeunordered(i);
-            }
-            break;
-        }
-    }
-
     template<class T>
     void sendstate(servstate &gs, T &p)
     {
@@ -1349,12 +1258,6 @@ namespace server
 
             putinitclient(ci, p);
         }
-    }
-
-    bool hasmap(clientinfo *ci)
-    {
-        return (modecheck(gamemode, Mode_Edit) && (clients.length() > 0 || ci->local)) ||
-               (smapname[0] && (modecheck(gamemode, Mode_Untimed) || gamemillis < gamelimit || (ci->state.state==ClientState_Spectator && !ci->privilege && !ci->local) || numclients(ci->clientnum, true, true, true)));
     }
 
     int welcomepacket(packetbuf &p, clientinfo *ci)
@@ -1485,27 +1388,6 @@ namespace server
         return 1;
     }
 
-    void cleartimedevents(clientinfo *ci)
-    {
-        int keep = 0;
-        for(int i = 0; i < ci->events.length(); i++)
-        {
-            if(ci->events[i]->keepable())
-            {
-                if(keep < i)
-                {
-                    for(int j = keep; j < i; j++) delete ci->events[j];
-                    ci->events.remove(keep, i - keep);
-                    i = keep;
-                }
-                keep = i+1;
-                continue;
-            }
-        }
-        while(ci->events.length() > keep) delete ci->events.pop();
-        ci->timesync = false;
-    }
-
     VAR(modifiedmapspectator, 0, 1, 2);
 
     void sendservinfo(clientinfo *ci)
@@ -1572,11 +1454,6 @@ namespace server
         {
             connects.removeobj(ci);
         }
-    }
-
-    int reserveclients()
-    {
-        return 3;
     }
 
     extern void verifybans();
@@ -1734,7 +1611,7 @@ namespace server
             return teams.length() ? teams.last().team : 0;
         }
 
-        //this fxn could be entirely in the return statement but is seperated for clarity
+        //this fxn could be entirely in the return statement but is separated for clarity
         static inline bool validaiclient(clientinfo *ci)
         {
             if(ci->clientnum >= 0 && ci->state.aitype == AI_None)
@@ -1763,78 +1640,6 @@ namespace server
                 }
             }
             return least;
-        }
-
-        bool addai(int skill, int limit)
-        {
-            int numai = 0,
-                cn = -1,
-                maxai = limit >= 0 ? min(limit, maxbots) : maxbots;
-            for(int i = 0; i < bots.length(); i++)
-            {
-                clientinfo *ci = bots[i];
-                if(!ci || ci->ownernum < 0)
-                {
-                    if(cn < 0)
-                    {
-                        cn = i;
-                        continue;
-                    }
-                }
-                numai++;
-            }
-            if(numai >= maxai)
-            {
-                return false;
-            }
-            if(bots.inrange(cn))
-            {
-                clientinfo *ci = bots[cn];
-                if(ci)
-                { // reuse a slot that was going to removed
-
-                    clientinfo *owner = findaiclient();
-                    ci->ownernum = owner ? owner->clientnum : -1;
-                    if(owner)
-                    {
-                        owner->bots.add(ci);
-                    }
-                    ci->aireinit = 2;
-                    dorefresh = true;
-                    return true;
-                }
-            }
-            else
-            {
-                cn = bots.length();
-                bots.add(NULL);
-            }
-            int team = modecheck(gamemode, Mode_Team) ? chooseteam() : 0;
-            if(!bots[cn])
-            {
-                bots[cn] = new clientinfo;
-            }
-            clientinfo *ci = bots[cn];
-            ci->clientnum = MAXCLIENTS + cn;
-            ci->state.aitype = AI_Bot;
-            clientinfo *owner = findaiclient();
-            ci->ownernum = owner ? owner->clientnum : -1;
-            if(owner)
-            {
-                owner->bots.add(ci);
-            }
-            ci->state.skill = skill <= 0 ? randomint(50) + 51 : std::clamp(skill, 1, 101);
-            clients.add(ci);
-            ci->state.lasttimeplayed = lastmillis;
-            copystring(ci->name, "bot", MAXNAMELEN+1);
-            ci->state.state = ClientState_Dead;
-            ci->team = team;
-            ci->playermodel = randomint(128);
-            ci->playercolor = randomint(0x8000);
-            ci->aireinit = 2;
-            ci->connected = true;
-            dorefresh = true;
-            return true;
         }
 
         void deleteai(clientinfo *ci)
@@ -1917,27 +1722,7 @@ namespace server
             }
         }
 
-        void reqdel(clientinfo *ci)
-        {
-            if(!ci->local && !ci->privilege)
-            {
-                return;
-            }
-            if(!deleteai())
-            {
-                sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "failed to remove any bots");
-            }
-        }
-
         void addclient(clientinfo *ci)
-        {
-            if(ci->state.aitype == AI_None)
-            {
-                dorefresh = true;
-            }
-        }
-
-        void changeteam(clientinfo *ci)
         {
             if(ci->state.aitype == AI_None)
             {
