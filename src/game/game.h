@@ -1013,7 +1013,6 @@ namespace server
     extern bool allowbroadcast(int n);
     extern void recordpacket(int chan, void *data, int len);
     extern void sendservmsg(const char *s);
-    extern void serverinforeply(ucharbuf &req, ucharbuf &p);
     extern int protocolversion();
     extern int laninfoport();
     extern int serverport();

@@ -333,9 +333,7 @@ namespace server
         extern void removeai(clientinfo *ci);
         extern void clearai();
         extern void checkai();
-        extern void reqadd(clientinfo *ci, int skill);
         extern void reqdel(clientinfo *ci);
-        extern void setbotlimit(clientinfo *ci, int limit);
         extern void addclient(clientinfo *ci);
         extern void changeteam(clientinfo *ci);
     }
@@ -360,45 +358,7 @@ namespace server
     vector<uint> allowedips;
     vector<ban> bannedips;
 
-    void addban(uint ip, int expire)
-    {
-        allowedips.removeobj(ip);
-        ban b;
-        b.time = totalmillis;
-        b.expire = totalmillis + expire;
-        b.ip = ip;
-        for(int i = 0; i < bannedips.length(); i++)
-        {
-            if(bannedips[i].expire - b.expire > 0)
-            {
-                bannedips.insert(i, b);
-                return;
-            }
-        }
-        bannedips.add(b);
-    }
-
     vector<clientinfo *> connects, clients, bots;
-
-    void kickclients(uint ip, clientinfo *actor = NULL, int priv = Priv_None)
-    {
-        for(int i = clients.length(); --i >=0;) //note reverse iteration
-        {
-            clientinfo &c = *clients[i];
-            if(c.state.aitype != AI_None || c.privilege >= Priv_Admin || c.local)
-            {
-                continue;
-            }
-            if(actor && ((c.privilege > priv && !actor->local) || c.clientnum == actor->clientnum))
-            {
-                continue;
-            }
-            if(getclientip(c.clientnum) == ip)
-            {
-                disconnect_client(c.clientnum, Discon_Kick);
-            }
-        }
-    }
 
     struct maprotation
     {
@@ -445,41 +405,6 @@ namespace server
         maprotations.setsize(0);
         curmaprotation = 0;
         maprotation::exclude = 0;
-    }
-
-    void nextmaprotation()
-    {
-        curmaprotation++;
-        if(maprotations.inrange(curmaprotation) && maprotations[curmaprotation].modes) return;
-        do curmaprotation--;
-        while(maprotations.inrange(curmaprotation) && maprotations[curmaprotation].modes);
-        curmaprotation++;
-    }
-
-    int findmaprotation(int mode, const char *map)
-    {
-        for(int i = max(curmaprotation, 0); i < maprotations.length(); i++)
-        {
-            maprotation &rot = maprotations[i];
-            if(!rot.modes) break;
-            if(rot.match(mode, map)) return i;
-        }
-        int start;
-        for(start = max(curmaprotation, 0) - 1; start >= 0; start--) if(!maprotations[start].modes) break;
-        start++;
-        for(int i = start; i < curmaprotation; i++)
-        {
-            maprotation &rot = maprotations[i];
-            if(!rot.modes) break;
-            if(rot.match(mode, map)) return i;
-        }
-        int best = -1;
-        for(int i = 0; i < maprotations.length(); i++)
-        {
-            maprotation &rot = maprotations[i];
-            if(rot.match(mode, map) && (best < 0 || maprotations[best].includes(rot))) best = i;
-        }
-        return best;
     }
 
     bool searchmodename(const char *haystack, const char *needle)
@@ -643,8 +568,7 @@ namespace server
     stream *demotmp = NULL,
            *demorecord = NULL,
            *demoplayback = NULL;
-    int nextplayback = 0,
-        demomillis = 0;
+    int nextplayback = 0;
 
     VAR(maxdemos, 0, 5, 25);
     VAR(maxdemosize, 0, 16, 31);
@@ -701,63 +625,7 @@ namespace server
     COMMAND(teamkillkickreset, "");
     COMMANDN(teamkillkick, addteamkillkick, "sii");
 
-    struct teamkillinfo
-    {
-        uint ip;
-        int teamkills;
-    };
-    vector<teamkillinfo> teamkills;
     bool shouldcheckteamkills = false;
-
-    void addteamkill(clientinfo *actor, clientinfo *victim, int n)
-    {
-        if(modecheck(gamemode, Mode_Untimed) || actor->state.aitype != AI_None || actor->local || actor->privilege || (victim && victim->state.aitype != AI_None)) return;
-        shouldcheckteamkills = true;
-        uint ip = getclientip(actor->clientnum);
-        for(int i = 0; i < teamkills.length(); i++)
-        {
-            if(teamkills[i].ip == ip)
-            {
-                teamkills[i].teamkills += n;
-                return;
-            }
-        }
-        teamkillinfo &tk = teamkills.add();
-        tk.ip = ip;
-        tk.teamkills = n;
-    }
-
-    void checkteamkills() //players who do too many teamkills may get kicked from the server
-    {
-        teamkillkick *kick = NULL;
-        if(!modecheck(gamemode, Mode_Untimed))
-        {
-            for(int i = 0; i < teamkillkicks.length(); i++)
-            {
-                if(teamkillkicks[i].match(gamemode) && (!kick || kick->includes(teamkillkicks[i])))
-                {
-                    kick = &teamkillkicks[i];
-                }
-            }
-        }
-        if(kick)
-        {
-            for(int i = teamkills.length(); --i >=0;) //note reverse iteration
-            {
-                teamkillinfo &tk = teamkills[i];
-                if(tk.teamkills >= kick->limit)
-                {
-                    if(kick->ban > 0)
-                    {
-                        addban(tk.ip, kick->ban);
-                    }
-                    kickclients(tk.ip);
-                    teamkills.removeunordered(i);
-                }
-            }
-        }
-        shouldcheckteamkills = false;
-    }
 
     void *newclientinfo() { return new clientinfo; }
     void deleteclientinfo(void *ci) { delete (clientinfo *)ci; }
@@ -1617,149 +1485,6 @@ namespace server
         return 1;
     }
 
-    void sendresume(clientinfo *ci)
-    {
-        servstate &gs = ci->state;
-        sendf(-1, 1, "ri3i7vi", NetMsg_Resume, ci->clientnum, gs.state,
-            gs.frags, gs.flags, gs.deaths,
-            gs.lifesequence,
-            gs.health, gs.maxhealth,
-            gs.gunselect, Gun_NumGuns, gs.ammo, -1);
-    }
-
-    void sendinitclient(clientinfo *ci)
-    {
-        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        putinitclient(ci, p);
-        sendpacket(-1, 1, p.finalize(), ci->clientnum);
-    }
-
-    struct votecount
-    {
-        char *map;
-        int mode, count;
-        votecount() {}
-        votecount(char *s, int n) : map(s), mode(n), count(0) {}
-    };
-
-    void checkintermission()
-    {
-        if(gamemillis >= gamelimit && !interm)
-        {
-            sendf(-1, 1, "ri2", NetMsg_TimeUp, 0);
-            if(smode)
-            {
-                smode->intermission();
-            }
-            changegamespeed(100);
-            interm = gamemillis + 10000;
-        }
-    }
-
-    void dodamage(clientinfo *target, clientinfo *actor, int damage, int atk, const vec &hitpush = vec(0, 0, 0))
-    {
-        servstate &ts = target->state;
-        ts.dodamage(damage);
-        if(target!=actor && !modecheck(gamemode, Mode_Team) && target->team != actor->team) actor->state.damage += damage;
-        sendf(-1, 1, "ri5", NetMsg_Damage, target->clientnum, actor->clientnum, damage, ts.health);
-        if(target==actor)
-        {
-            target->setpushed();
-        }
-        else if(!hitpush.iszero())
-        {
-            ivec v(vec(hitpush).rescale(DNF));
-            sendf(ts.health<=0 ? -1 : target->ownernum, 1, "ri7", NetMsg_Hitpush, target->clientnum, atk, damage, v.x, v.y, v.z);
-            target->setpushed();
-        }
-        if(ts.health<=0)
-        {
-            target->state.deaths++;
-            int fragvalue = smode ? smode->fragvalue(target, actor) : (target==actor || (modecheck(gamemode, Mode_Team) && (target->team == actor->team)) ? -1 : 1);
-            actor->state.frags += fragvalue;
-            if(fragvalue>0)
-            {
-                int friends = 0, enemies = 0; // note: friends also includes the fragger
-                if(modecheck(gamemode, Mode_Team))
-                {
-                    for(int i = 0; i < clients.length(); i++)
-                    {
-                        if(clients[i]->team != actor->team)
-                        {
-                            enemies++;
-                        }
-                        else
-                        {
-                            friends++;
-                        }
-                    }
-                }
-                else
-                {
-                    friends = 1;
-                    enemies = clients.length()-1;
-                }
-                actor->state.effectiveness += fragvalue*friends/static_cast<float>(max(enemies, 1));
-            }
-            teaminfo *t = modecheck(gamemode, Mode_Team) && VALID_TEAM(actor->team) ? &teaminfos[actor->team-1] : NULL;
-            if(t) t->frags += fragvalue;
-            sendf(-1, 1, "ri5", NetMsg_Died, target->clientnum, actor->clientnum, actor->state.frags, t ? t->frags : 0);
-            target->position.setsize(0);
-            if(smode) smode->died(target, actor);
-            ts.state = ClientState_Dead;
-            ts.lastdeath = gamemillis;
-            if(actor!=target && modecheck(gamemode, Mode_Team) && actor->team == target->team)
-            {
-                actor->state.teamkills++;
-                addteamkill(actor, target, 1);
-            }
-            ts.deadflush = ts.lastdeath + DEATHMILLIS;
-            // don't issue respawn yet until DEATHMILLIS has elapsed
-            // ts.respawn();
-        }
-    }
-
-    void suicide(clientinfo *ci)
-    {
-        servstate &gs = ci->state;
-        if(gs.state!=ClientState_Alive) return;
-        int fragvalue = smode ? smode->fragvalue(ci, ci) : -1;
-        ci->state.frags += fragvalue;
-        ci->state.deaths++;
-        teaminfo *t = modecheck(gamemode, Mode_Team) && VALID_TEAM(ci->team) ? &teaminfos[ci->team-1] : NULL;
-        if(t) t->frags += fragvalue;
-        sendf(-1, 1, "ri5", NetMsg_Died, ci->clientnum, ci->clientnum, gs.frags, t ? t->frags : 0);
-        ci->position.setsize(0);
-        if(smode) smode->died(ci, NULL);
-        gs.state = ClientState_Dead;
-        gs.lastdeath = gamemillis;
-        gs.respawn();
-    }
-
-    void clearevent(clientinfo *ci)
-    {
-        delete ci->events.remove(0);
-    }
-
-    void flushevents(clientinfo *ci, int millis)
-    {
-        while(ci->events.length())
-        {
-            gameevent *ev = ci->events[0];
-            if(ev->flush(ci, millis)) clearevent(ci);
-            else break;
-        }
-    }
-
-    void processevents()
-    {
-        for(int i = 0; i < clients.length(); i++)
-        {
-            clientinfo *ci = clients[i];
-            flushevents(ci, gamemillis);
-        }
-    }
-
     void cleartimedevents(clientinfo *ci)
     {
         int keep = 0;
@@ -1780,26 +1505,6 @@ namespace server
         while(ci->events.length() > keep) delete ci->events.pop();
         ci->timesync = false;
     }
-
-    void forcespectator(clientinfo *ci)
-    {
-        if(ci->state.state==ClientState_Alive) suicide(ci);
-        if(smode) smode->leavegame(ci);
-        ci->state.state = ClientState_Spectator;
-        ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
-        if(!ci->local && (!ci->privilege || ci->warned)) aiman::removeai(ci);
-        sendf(-1, 1, "ri3", NetMsg_Spectator, ci->clientnum, 1);
-    }
-
-    struct crcinfo
-    {
-        int crc, matches;
-
-        crcinfo() {}
-        crcinfo(int crc, int matches) : crc(crc), matches(matches) {}
-
-        static bool compare(const crcinfo &x, const crcinfo &y) { return x.matches > y.matches; }
-    };
 
     VAR(modifiedmapspectator, 0, 1, 2);
 
@@ -1935,18 +1640,6 @@ namespace server
         return ci && ci->connected;
     }
 
-    clientinfo *findauth(uint id)
-    {
-        for(int i = 0; i < clients.length(); i++)
-        {
-            if(clients[i]->authreq == id)
-            {
-                return clients[i];
-            }
-        }
-        return NULL;
-    }
-
     void authfailed(clientinfo *ci)
     {
         if(!ci)
@@ -1958,13 +1651,6 @@ namespace server
         {
             disconnect_client(ci->clientnum, ci->connectauth);
         }
-    }
-
-    void authchallenged(uint id, const char *val, const char *desc = "")
-    {
-        clientinfo *ci = findauth(id);
-        if(!ci) return;
-        sendf(ci->clientnum, 1, "risis", NetMsg_AuthChallenge, desc, id, val);
     }
 
     uint nextauthreq = 0;
@@ -1988,210 +1674,6 @@ namespace server
     int masterport() { return IMPRIMIS_MASTER_PORT; }
     int numchannels() { return 3; }
 
-    enum Ext
-    {
-        Ack                  = -1,
-        Version              =  105,
-        NoError              =  0,
-        Error                =  1,
-        PlayerStatsRespIds   = -10,
-        PlayerStatsRespStats = -11,
-        Uptime               =  0,
-        PlayerStats          =  1,
-        TeamScore            =  2
-    };
-
-    /*
-        Client:
-        -----
-        A: 0 Ext::Uptime
-        B: 0 Ext::PlayerStats cn #a client number or -1 for all players#
-        C: 0 Ext::TeamScore
-
-        Server:
-        --------
-        A: 0 Ext::Uptime Ext::Ack Ext::Version uptime #in seconds#
-        B: 0 Ext::PlayerStats cn #send by client# Ext::Ack Ext::Version 0 or 1 #error, if cn was > -1 and client does not exist# ...
-             Ext::PlayerStatsRespIds pid(s) #1 packet#
-             Ext::PlayerStatsRespStats pid playerdata #1 packet for each player#
-        C: 0 Ext::TeamScore Ext::Ack Ext::Version 0 or 1 #error, no teammode# remaining_time gamemode loop(teamdata [numbases bases] or -1)
-
-        Errors:
-        --------------
-        B:C:default: 0 command Ext::Ack Ext::Version Ext::Error
-    */
-
-    VAR(extinfoip, 0, 0, 1);
-
-    void extinfoplayer(ucharbuf &p, clientinfo *ci)
-    {
-        ucharbuf q = p;
-        putint(q, Ext::PlayerStatsRespStats); // send player stats following
-        putint(q, ci->clientnum); //add player id
-        putint(q, ci->ping);
-        sendstring(ci->name, q);
-        sendstring(TEAM_NAME(modecheck(gamemode, Mode_Team) ? ci->team : 0), q);
-        putint(q, ci->state.frags);
-        putint(q, ci->state.flags);
-        putint(q, ci->state.deaths);
-        putint(q, ci->state.teamkills);
-        putint(q, ci->state.damage*100/max(ci->state.shotdamage,1));
-        putint(q, ci->state.health);
-        putint(q, 0);
-        putint(q, ci->state.gunselect);
-        putint(q, ci->privilege);
-        putint(q, ci->state.state);
-        uint ip = extinfoip ? getclientip(ci->clientnum) : 0;
-        q.put((uchar*)&ip, 3);
-        sendserverinforeply(q);
-    }
-
-    static inline void extinfoteamscore(ucharbuf &p, int team, int score)
-    {
-        sendstring(TEAM_NAME(team), p);
-        putint(p, score);
-        if(!smode || !smode->extinfoteam(team, p))
-        {
-            putint(p,-1); //no bases follow
-        }
-    }
-
-    void extinfoteams(ucharbuf &p)
-    {
-        putint(p, modecheck(gamemode, Mode_Team) ? 0 : 1);
-        putint(p, gamemode);
-        putint(p, max((gamelimit - gamemillis)/1000, 0));
-        if(!modecheck(gamemode, Mode_Team))
-        {
-            return;
-        }
-
-        vector<teamscore> scores;
-        if(smode && smode->hidefrags())
-        {
-            smode->getteamscores(scores);
-        }
-        for(int i = 0; i < clients.length(); i++)
-        {
-            clientinfo *ci = clients[i];
-            if(ci->state.state!=ClientState_Spectator && VALID_TEAM(ci->team) && scores.htfind(ci->team) < 0)
-            {
-                if(smode && smode->hidefrags())
-                {
-                    scores.add(teamscore(ci->team, 0));
-                }
-                else
-                {
-                    teaminfo &t = teaminfos[ci->team-1];
-                    scores.add(teamscore(ci->team, t.frags));
-                }
-            }
-        }
-        for(int i = 0; i < scores.length(); i++)
-        {
-            extinfoteamscore(p, scores[i].team, scores[i].score);
-        }
-    }
-
-    void extserverinforeply(ucharbuf &req, ucharbuf &p)
-    {
-        int extcmd = getint(req); // extended commands
-        //Build a new packet
-        putint(p, Ext::Ack); //send ack
-        putint(p, Ext::Version); //send version of extended info
-        switch(extcmd)
-        {
-            case Ext::Uptime:
-            {
-                putint(p, totalsecs); //in seconds
-                break;
-            }
-            case Ext::PlayerStats:
-            {
-                int cn = getint(req); //a special player, -1 for all
-                clientinfo *ci = NULL;
-                if(cn >= 0)
-                {
-                    for(int i = 0; i < clients.length(); i++)
-                    {
-                        if(clients[i]->clientnum == cn)
-                        {
-                            ci = clients[i];
-                            break;
-                        }
-                    }
-                    if(!ci)
-                    {
-                        putint(p, Ext::Error); //client requested by id was not found
-                        sendserverinforeply(p);
-                        return;
-                    }
-                }
-                putint(p, Ext::NoError); //so far no error can happen anymore
-                ucharbuf q = p; //remember buffer position
-                putint(q, Ext::PlayerStatsRespIds); //send player ids following
-                if(ci)
-                {
-                    putint(q, ci->clientnum);
-                }
-                else
-                {
-                    for(int i = 0; i < clients.length(); i++)
-                    {
-                        putint(q, clients[i]->clientnum);
-                    }
-                }
-                sendserverinforeply(q);
-                if(ci)
-                {
-                    extinfoplayer(p, ci);
-                }
-                else
-                {
-                    for(int i = 0; i < clients.length(); i++)
-                    {
-                        extinfoplayer(p, clients[i]);
-                    }
-                }
-                return;
-            }
-            case Ext::TeamScore:
-            {
-                extinfoteams(p);
-                break;
-            }
-            default:
-            {
-                putint(p, Ext::Error);
-                break;
-            }
-        }
-        sendserverinforeply(p);
-    }
-//end of extinfo
-    void serverinforeply(ucharbuf &req, ucharbuf &p)
-    {
-        if(req.remaining() && !getint(req))
-        {
-            extserverinforeply(req, p);
-            return;
-        }
-        putint(p, PROTOCOL_VERSION);
-        putint(p, numclients(-1, false, true));
-        putint(p, maxclients);
-        putint(p, gamepaused || gamespeed != 100 ? 5 : 3); // number of attrs following
-        putint(p, gamemode);
-        putint(p, !modecheck(gamemode, Mode_Untimed) ? max((gamelimit - gamemillis)/1000, 0) : 0);
-        putint(p, serverpass[0] ? MasterMode_Password : (modecheck(gamemode, Mode_LocalOnly) ? MasterMode_Private : (mastermode || mastermask&MM_AUTOAPPROVE ? mastermode : MasterMode_Auth)));
-        if(gamepaused || gamespeed != 100)
-        {
-            putint(p, gamepaused ? 1 : 0);
-            putint(p, gamespeed);
-        }
-        sendstring(smapname, p);
-        sendstring(serverdesc, p);
-        sendserverinforeply(p);
-    }
     int protocolversion()
     {
         return PROTOCOL_VERSION;
@@ -2241,56 +1723,6 @@ namespace server
                     {
                         teams.add(teamscore(1+i, 0));
                     }
-                }
-            }
-        }
-
-        void balanceteams()
-        {
-            vector<teamscore> teams;
-            calcteams(teams);
-            vector<clientinfo *> reassign;
-            for(int i = 0; i < bots.length(); i++)
-            {
-                if(bots[i])
-                {
-                    reassign.add(bots[i]);
-                }
-            }
-            while(reassign.length() && teams.length() && teams[0].score > teams.last().score + 1)
-            {
-                teamscore &t = teams.last();
-                clientinfo *bot = NULL;
-                for(int i = 0; i < reassign.length(); i++)
-                {
-                    if(reassign[i] && reassign[i]->team != teams[0].team)
-                    {
-                        bot = reassign.removeunordered(i);
-                        teams[0].score--;
-                        t.score++;
-                        for(int j = teams.length() - 2; j >= 0; j--) //note reverse iteration
-                        {
-                            if(teams[j].score >= teams[j+1].score)
-                            {
-                                break;
-                            }
-                            swap(teams[j], teams[j+1]);
-                        }
-                        break;
-                    }
-                }
-                if(bot)
-                {
-                    if(smode && bot->state.state==ClientState_Alive)
-                    {
-                        smode->changeteam(bot, bot->team, t.team);
-                    }
-                    bot->team = t.team;
-                    sendf(-1, 1, "riiii", NetMsg_SetTeam, bot->clientnum, bot->team, 0);
-                }
-                else
-                {
-                    teams.remove(0, 1);
                 }
             }
         }
@@ -2474,36 +1906,6 @@ namespace server
             }
         }
 
-        bool reassignai()
-        {
-            clientinfo *hi = NULL, *lo = NULL;
-            for(int i = 0; i < clients.length(); i++)
-            {
-                clientinfo *ci = clients[i];
-                if(!validaiclient(ci))
-                {
-                    continue;
-                }
-                if(!lo || ci->bots.length() < lo->bots.length())
-                {
-                    lo = ci;
-                }
-                if(!hi || ci->bots.length() > hi->bots.length())
-                {
-                    hi = ci;
-                }
-            }
-            if(hi && lo && hi->bots.length() - lo->bots.length() > 1)
-            {
-                for(int i = hi->bots.length(); --i >=0;) //note reverse iteration
-                {
-                    shiftai(hi->bots[i], lo);
-                    return true;
-                }
-            }
-            return false;
-        }
-
         void clearai()
         { // clear and remove all ai immediately
             for(int i = bots.length(); --i >=0;) //note reverse iteration
@@ -2512,18 +1914,6 @@ namespace server
                 {
                     deleteai(bots[i]);
                 }
-            }
-        }
-
-        void reqadd(clientinfo *ci, int skill)
-        {
-            if(!ci->local && !ci->privilege)
-            {
-                return;
-            }
-            if(!addai(skill, !ci->local && ci->privilege < Priv_Admin ? botlimit : -1))
-            {
-                sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "failed to create or assign bot");
             }
         }
 
@@ -2537,18 +1927,6 @@ namespace server
             {
                 sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "failed to remove any bots");
             }
-        }
-
-        void setbotlimit(clientinfo *ci, int limit)
-        {
-            if(ci && !ci->local && ci->privilege < Priv_Admin)
-            {
-                return;
-            }
-            botlimit = std::clamp(limit, 0, maxbots);
-            dorefresh = true;
-            DEF_FORMAT_STRING(msg, "bot limit is now %d", botlimit);
-            sendservmsg(msg);
         }
 
         void addclient(clientinfo *ci)
@@ -2568,4 +1946,3 @@ namespace server
         }
     }
 }
-
