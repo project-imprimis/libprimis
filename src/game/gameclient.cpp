@@ -885,6 +885,10 @@ namespace game
     }
     void changemap(const char *name)
     {
+        if(!connected) // need to be on a server to do anything
+        {
+            connectserv("localhost", -1, 0);
+        }
         changemap(name, MODE_VALID(nextmode) ? nextmode : (remote ? 1 : 0));
     }
     ICOMMAND(map, "s", (char *name), changemap(name));
