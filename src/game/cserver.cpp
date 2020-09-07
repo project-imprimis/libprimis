@@ -172,7 +172,7 @@ namespace server
         }
     };
 
-    extern int gamemillis, nextexceeded;
+    extern int gamemillis;
 
     struct clientinfo
     {
@@ -335,14 +335,12 @@ namespace server
 
     bool notgotitems = true;        // true when map has changed and waiting for clients to send item
     int gamemode = 0;
-    int gamemillis = 0, gamelimit = 0, nextexceeded = 0, gamespeed = 100;
-    bool gamepaused = false, shouldstep = true;
+    int gamemillis = 0, gamelimit = 0, gamespeed = 100;
+    bool gamepaused = false;
 
     string smapname = "";
     int interm = 0;
-    enet_uint32 lastsend = 0;
     int mastermode = MasterMode_Open, mastermask = MM_PRIVSERV;
-    stream *mapdata = NULL;
 
     vector<uint> allowedips;
     vector<ban> bannedips;
@@ -551,31 +549,18 @@ namespace server
 
     vector<demofile> demos;
 
-    bool demonextmatch = false;
     stream *demotmp = NULL,
            *demorecord = NULL,
            *demoplayback = NULL;
-    int nextplayback = 0;
 
     VAR(maxdemos, 0, 5, 25);
     VAR(maxdemosize, 0, 16, 31);
-    VAR(restrictdemos, 0, 1, 1);
 
     VAR(restrictpausegame, 0, 1, 1);
-    VAR(restrictgamespeed, 0, 1, 1);
 
     SVAR(serverdesc, "");
     SVAR(serverpass, "");
     SVAR(adminpass, "");
-    VARF(publicserver, 0, 0, 2, {
-        switch(publicserver)
-        {
-            case 0: default: mastermask = MM_PRIVSERV; break;
-            case 1: mastermask = MM_PUBSERV; break;
-            case 2: mastermask = MM_COOPSERV; break;
-        }
-    });
-    SVAR(servermotd, "");
 
     struct teamkillkick
     {
@@ -982,8 +967,6 @@ namespace server
         changegamespeed(speed);
     }
 
-    int scaletime(int t) { return t*gamespeed; }
-
     SVAR(serverauth, "");
 
     void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen)
@@ -1183,20 +1166,6 @@ namespace server
     } msgfilter(-1, NetMsg_Connect, NetMsg_ServerInfo, NetMsg_InitClient, NetMsg_Welcome, NetMsg_MapChange, NetMsg_ServerMsg, NetMsg_Damage, NetMsg_Hitpush, NetMsg_ShotFX, NetMsg_ExplodeFX, NetMsg_Died, NetMsg_SpawnState, NetMsg_ForceDeath, NetMsg_TeamInfo, NetMsg_ItemAcceptance, NetMsg_ItemSpawn, NetMsg_TimeUp, NetMsg_ClientDiscon, NetMsg_CurrentMaster, NetMsg_Pong, NetMsg_Resume, NetMsg_SendDemoList, NetMsg_SendDemo, NetMsg_DemoPlayback, NetMsg_SendMap, NetMsg_DropFlag, NetMsg_ScoreFlag, NetMsg_ReturnFlag, NetMsg_ResetFlag, NetMsg_Client, NetMsg_AuthChallenge, NetMsg_InitAI, NetMsg_DemoPacket, -2, NetMsg_CalcLight, NetMsg_Remip, NetMsg_Newmap, NetMsg_GetMap, NetMsg_SendMap, NetMsg_Clipboard, -3, NetMsg_EditEnt, NetMsg_EditFace, NetMsg_EditTex, NetMsg_EditMat, NetMsg_EditFlip, NetMsg_Copy, NetMsg_Paste, NetMsg_Rotate, NetMsg_Replace, NetMsg_DelCube, NetMsg_EditVar, NetMsg_EditVSlot, NetMsg_Undo, NetMsg_Redo, -4, NetMsg_Pos, NetMsg_NumMsgs),
       connectfilter(-1, NetMsg_Connect, -2, NetMsg_AuthAnswer, -3, NetMsg_Ping, NetMsg_NumMsgs);
 
-    struct worldstate
-    {
-        int uses, len;
-        uchar *data;
-
-        worldstate() : uses(0), len(0), data(NULL) {}
-
-        void setup(int n) { len = n; data = new uchar[n]; }
-        void cleanup() { DELETEA(data); len = 0; }
-        bool contains(const uchar *p) const { return p >= data && p < &data[len]; }
-    };
-    vector<worldstate> worldstates;
-    bool reliablemessages = false;
-
     template<class T>
     void sendstate(servstate &gs, T &p)
     {
@@ -1388,8 +1357,6 @@ namespace server
         return 1;
     }
 
-    VAR(modifiedmapspectator, 0, 1, 2);
-
     void sendservinfo(clientinfo *ci)
     {
         sendf(ci->clientnum, 1, "ri5ss", NetMsg_ServerInfo, ci->clientnum, PROTOCOL_VERSION, ci->sessionid, serverpass[0] ? 1 : 0, serverdesc, serverauth);
@@ -1530,8 +1497,6 @@ namespace server
         }
     }
 
-    uint nextauthreq = 0;
-
     void masterconnected()
     {
     }
@@ -1560,9 +1525,7 @@ namespace server
     // which is offloaded to the clients with the best connection
     namespace aiman
     {
-        bool dorefresh = false, botbalance = true;
-        VARN(serverbotlimit, botlimit, 0, 8, maxbots);
-        VAR(serverbotbalance, 0, 1, 1);
+        bool dorefresh = false;
 
         void calcteams(vector<teamscore> &teams)
         {
