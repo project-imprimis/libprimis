@@ -19,8 +19,8 @@ vector<resolverresult> resolverresults;
 SDL_mutex *resolvermutex;
 SDL_cond *querycond, *resultcond;
 
-#define RESOLVERTHREADS 2
-#define RESOLVERLIMIT 3000
+static const int numresolverthreads  = 2;
+static const int resolverlimit  = 3000;
 
 //this is a void pointer because it is called by SDL_CreateThread which deals
 //with a void * function
@@ -70,7 +70,7 @@ void resolverinit()
     resultcond = SDL_CreateCond();
 
     SDL_LockMutex(resolvermutex);
-    for(int i = 0; i < RESOLVERTHREADS; ++i)
+    for(int i = 0; i < numresolverthreads; ++i)
     {
         resolverthread &rt = resolverthreads.add();
         rt.query = NULL;
@@ -140,7 +140,7 @@ bool resolvercheck(const char **name, ENetAddress *address)
         for(int i = 0; i < resolverthreads.length(); i++)
         {
             resolverthread &rt = resolverthreads[i];
-            if(rt.query && totalmillis - rt.starttime > RESOLVERLIMIT)
+            if(rt.query && totalmillis - rt.starttime > resolverlimit)
             {
                 resolverstop(rt);
                 *name = rt.query;
@@ -185,17 +185,17 @@ bool resolverwait(const char *name, ENetAddress *address)
             break;
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(static_cast<float>(timeout)/RESOLVERLIMIT, 1.0f), text);
+        renderprogress(min(static_cast<float>(timeout)/resolverlimit, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE))
         {
-            timeout = RESOLVERLIMIT + 1;
+            timeout = resolverlimit + 1;
         }
-        if(timeout > RESOLVERLIMIT)
+        if(timeout > resolverlimit)
         {
             break;
         }
     }
-    if(!resolved && timeout > RESOLVERLIMIT)
+    if(!resolved && timeout > resolverlimit)
     {
         for(int i = 0; i < resolverthreads.length(); i++)
         {
@@ -211,7 +211,7 @@ bool resolverwait(const char *name, ENetAddress *address)
     return resolved;
 }
 
-#define CONNLIMIT 20000
+static const int connlimit  = 20000;
 
 int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address)
 {
@@ -219,7 +219,7 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
     renderprogress(0, text);
 
     ENetSocketSet readset, writeset;
-    if(!enet_socket_connect(sock, &address)) for(int starttime = SDL_GetTicks(), timeout = 0; timeout <= CONNLIMIT;)
+    if(!enet_socket_connect(sock, &address)) for(int starttime = SDL_GetTicks(), timeout = 0; timeout <= connlimit;)
     {
         ENET_SOCKETSET_EMPTY(readset);
         ENET_SOCKETSET_EMPTY(writeset);
@@ -243,7 +243,7 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
             }
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(static_cast<float>(timeout)/CONNLIMIT, 1.0f), text);
+        renderprogress(min(static_cast<float>(timeout)/connlimit, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE))
         {
             break;
