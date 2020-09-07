@@ -565,33 +565,6 @@ namespace ai
         }
     }
 
-    static void tryitem(gameent *d, extentity &e, int id, aistate &b, vector<interest> &interests, bool force = false)
-    {
-        float score = 0;
-        if(score != 0)
-        {
-            interest &n = interests.add();
-            n.state = AIState_Interest;
-            n.node = closestwaypoint(e.o, sightmin, true);
-            n.target = id;
-            n.targtype = AITravel_Entity;
-            n.score = d->feetpos().squaredist(e.o)/(force ? -1 : score);
-        }
-    }
-
-    void items(gameent *d, aistate &b, vector<interest> &interests, bool force = false)
-    {
-        for(int i = 0; i < entities::ents.length(); i++)
-        {
-            extentity &e = *(extentity *)entities::ents[i];
-            if(!e.spawned() || !d->canpickup(e.type))
-            {
-                continue;
-            }
-            tryitem(d, e, i, b, interests, force);
-        }
-    }
-
     static vector<int> targets;
 
     bool parseinterests(gameent *d, aistate &b, vector<interest> &interests, bool override, bool ignore)
