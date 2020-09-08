@@ -109,11 +109,13 @@ namespace server
 
         void reset()
         {
-            if(state!=ClientState_Spectator) state = editstate = ClientState_Dead;
+            if(state!=ClientState_Spectator)
+            {
+                state = editstate = ClientState_Dead;
+            }
             //sets client health
             maxhealth = 10;
             projs.reset();
-
             timeplayed = 0;
             effectiveness = 0;
             frags = flags = deaths = teamkills = shotdamage = damage = 0;
@@ -265,8 +267,18 @@ namespace server
 
         void cleanclipboard(bool fullclean = true)
         {
-            if(clipboard) { if(--clipboard->referenceCount <= 0) enet_packet_destroy(clipboard); clipboard = NULL; }
-            if(fullclean) lastclipboard = 0;
+            if(clipboard)
+            {
+                if(--clipboard->referenceCount <= 0)
+                {
+                    enet_packet_destroy(clipboard);
+                }
+                clipboard = NULL;
+            }
+            if(fullclean)
+            {
+                lastclipboard = 0;
+            }
         }
 
         void cleanauthkick()
@@ -278,8 +290,15 @@ namespace server
         void cleanauth(bool full = true)
         {
             authreq = 0;
-            if(authchallenge) { freechallenge(authchallenge); authchallenge = NULL; }
-            if(full) cleanauthkick();
+            if(authchallenge)
+            {
+                freechallenge(authchallenge);
+                authchallenge = NULL;
+            }
+            if(full)
+            {
+                cleanauthkick();
+            }
         }
 
         void reset()
@@ -309,7 +328,10 @@ namespace server
                 gameoffset = servmillis - clientmillis;
                 return servmillis;
             }
-            else return gameoffset + clientmillis;
+            else
+            {
+                return gameoffset + clientmillis;
+            }
         }
     };
 
@@ -334,8 +356,10 @@ namespace server
     #define MM_COOPSERV (MM_AUTOAPPROVE | MM_PUBSERV | (1<<MasterMode_Locked))
 
     bool notgotitems = true;        // true when map has changed and waiting for clients to send item
-    int gamemode = 0;
-    int gamemillis = 0, gamelimit = 0, gamespeed = 100;
+    int gamemode = 0,
+        gamemillis = 0,
+        gamelimit = 0,
+        gamespeed = 100;
     bool gamepaused = false;
 
     string smapname = "";
@@ -394,16 +418,23 @@ namespace server
 
     bool searchmodename(const char *haystack, const char *needle)
     {
-        if(!needle[0]) return true;
+        if(!needle[0])
+        {
+            return true;
+        }
         do
         {
             if(needle[0] != '.')
             {
                 haystack = strchr(haystack, needle[0]);
-                if(!haystack) break;
+                if(!haystack)
+                {
+                    break;
+                }
                 haystack++;
             }
-            const char *h = haystack, *n = needle+1;
+            const char *h = haystack,
+                       *n = needle+1;
             for(; *h && *n; h++)
             {
                 if(*h == *n)
@@ -415,8 +446,14 @@ namespace server
                     break;
                 }
             }
-            if(!*n) return true;
-            if(*n == '.') return !*h;
+            if(!*n)
+            {
+                return true;
+            }
+            if(*n == '.')
+            {
+                return !*h;
+            }
         } while(needle[0] != '.');
         return false;
     }
@@ -442,15 +479,24 @@ namespace server
                     continue;
                 case '!':
                     mode++;
-                    if(mode[0] != '?') break;
+                    if(mode[0] != '?')
+                    {
+                        break;
+                    }
                 case '?':
                     mode++;
                     for(int k = 0; k < numgamemodes; ++k)
                     {
                         if(searchmodename(gamemodes[k].name, mode))
                         {
-                            if(op == '!') modemask &= ~(1<<k);
-                            else modemask |= 1<<k;
+                            if(op == '!')
+                            {
+                                modemask &= ~(1<<k);
+                            }
+                            else
+                            {
+                                modemask |= 1<<k;
+                            }
                         }
                     }
                     continue;
@@ -471,11 +517,22 @@ namespace server
                     }
                 }
             }
-            if(!MODE_VALID(modenum)) continue;
+            if(!MODE_VALID(modenum))
+            {
+                continue;
+            }
             switch(op)
             {
-                case '!': modemask &= ~(1 << (modenum - STARTGAMEMODE)); break;
-                default: modemask |= 1 << (modenum - STARTGAMEMODE); break;
+                case '!':
+                {
+                    modemask &= ~(1 << (modenum - STARTGAMEMODE));
+                    break;
+                }
+                default:
+                {
+                    modemask |= 1 << (modenum - STARTGAMEMODE);
+                    break;
+                }
             }
         }
         return modemask;
@@ -1037,8 +1094,14 @@ namespace server
         }
         else
         {
-            if(!ci->privilege) return false;
-            if(trial) return true;
+            if(!ci->privilege)
+            {
+                return false;
+            }
+            if(trial)
+            {
+                return true;
+            }
             name = privname(ci->privilege);
             revokemaster(ci);
         }
@@ -1162,7 +1225,10 @@ namespace server
             va_end(msgs);
         }
 
-        uchar operator[](int msg) const { return msg >= 0 && msg < NetMsg_NumMsgs ? msgmask[msg] : 0; }
+        uchar operator[](int msg) const
+        {
+            return msg >= 0 && msg < NetMsg_NumMsgs ? msgmask[msg] : 0;
+        }
     } msgfilter(-1, NetMsg_Connect, NetMsg_ServerInfo, NetMsg_InitClient, NetMsg_Welcome, NetMsg_MapChange, NetMsg_ServerMsg, NetMsg_Damage, NetMsg_Hitpush, NetMsg_ShotFX, NetMsg_ExplodeFX, NetMsg_Died, NetMsg_SpawnState, NetMsg_ForceDeath, NetMsg_TeamInfo, NetMsg_ItemAcceptance, NetMsg_ItemSpawn, NetMsg_TimeUp, NetMsg_ClientDiscon, NetMsg_CurrentMaster, NetMsg_Pong, NetMsg_Resume, NetMsg_SendDemoList, NetMsg_SendDemo, NetMsg_DemoPlayback, NetMsg_SendMap, NetMsg_DropFlag, NetMsg_ScoreFlag, NetMsg_ReturnFlag, NetMsg_ResetFlag, NetMsg_Client, NetMsg_AuthChallenge, NetMsg_InitAI, NetMsg_DemoPacket, -2, NetMsg_CalcLight, NetMsg_Remip, NetMsg_Newmap, NetMsg_GetMap, NetMsg_SendMap, NetMsg_Clipboard, -3, NetMsg_EditEnt, NetMsg_EditFace, NetMsg_EditTex, NetMsg_EditMat, NetMsg_EditFlip, NetMsg_Copy, NetMsg_Paste, NetMsg_Rotate, NetMsg_Replace, NetMsg_DelCube, NetMsg_EditVar, NetMsg_EditVSlot, NetMsg_Undo, NetMsg_Redo, -4, NetMsg_Pos, NetMsg_NumMsgs),
       connectfilter(-1, NetMsg_Connect, -2, NetMsg_AuthAnswer, -3, NetMsg_Ping, NetMsg_NumMsgs);
 
@@ -1223,8 +1289,10 @@ namespace server
         for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
-            if(!ci->connected || ci->clientnum == exclude) continue;
-
+            if(!ci->connected || ci->clientnum == exclude)
+            {
+                continue;
+            }
             putinitclient(ci, p);
         }
     }
@@ -1382,7 +1450,10 @@ namespace server
 
     void localdisconnect(int n)
     {
-        if(modecheck(gamemode, Mode_Demo)) enddemoplayback();
+        if(modecheck(gamemode, Mode_Demo))
+        {
+            enddemoplayback();
+        }
         clientdisconnect(n);
     }
 
@@ -1391,7 +1462,10 @@ namespace server
         clientinfo *ci = getinfo(n);
         for(int i = 0; i < clients.length(); i++)
         {
-            if(clients[i]->authkickvictim == ci->clientnum) clients[i]->cleanauth();
+            if(clients[i]->authkickvictim == ci->clientnum)
+            {
+                clients[i]->cleanauth();
+            }
         }
         if(ci->connected)
         {
@@ -1470,8 +1544,14 @@ namespace server
         for(int i = clients.length(); --i >=0;) //note reverse iteration
         {
             clientinfo *ci = clients[i];
-            if(ci->state.aitype != AI_None || ci->local || ci->privilege >= Priv_Admin) continue;
-            if(checkbans(getclientip(ci->clientnum))) disconnect_client(ci->clientnum, Discon_IPBan);
+            if(ci->state.aitype != AI_None || ci->local || ci->privilege >= Priv_Admin)
+            {
+                continue;
+            }
+            if(checkbans(getclientip(ci->clientnum)))
+            {
+                disconnect_client(ci->clientnum, Discon_IPBan);
+            }
         }
     }
 
