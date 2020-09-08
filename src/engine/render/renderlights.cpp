@@ -1714,9 +1714,9 @@ void viewrefract()
     debugquad(0, 0, w, h, 0, 0, gw, gh);
 }
 
-#define SHADOWATLAS_SIZE 4096
+static const int shadowatlassize = 4096;
 
-PackNode shadowatlaspacker(0, 0, SHADOWATLAS_SIZE, SHADOWATLAS_SIZE);
+PackNode shadowatlaspacker(0, 0, shadowatlassize, shadowatlassize);
 
 extern int smminradius;
 
@@ -1884,7 +1884,7 @@ struct shadowcache : hashtable<shadowcachekey, shadowcacheval>
 
 extern int smcache, smfilter, smgather;
 
-#define SHADOWCACHE_EVICT 2
+static const int shadowcacheevict = 2;
 
 GLuint shadowatlastex = 0,
        shadowatlasfbo = 0;
@@ -2190,11 +2190,11 @@ static shadowmapinfo *addshadowmap(ushort x, ushort y, int size, int &idx, int l
     return sm;
 }
 
-#define CSM_MAXSPLITS 8
+static const int csmmaxsplits = 8;
 
 //`c`ascaded `s`hadow `m`ap vars
 VARF(csmmaxsize, 256, 768, 2048, clearshadowcache());
-VARF(csmsplits, 1, 3, CSM_MAXSPLITS, { cleardeferredlightshaders(); clearshadowcache(); });
+VARF(csmsplits, 1, 3, csmmaxsplits, { cleardeferredlightshaders(); clearshadowcache(); });
 FVAR(csmsplitweight, 0.20f, 0.75f, 0.95f);
 VARF(csmshadowmap, 0, 1, 1, { cleardeferredlightshaders(); clearshadowcache(); });
 
@@ -2212,7 +2212,7 @@ struct cascadedshadowmap
         plane cull[4];       // world space culling planes of the split's projected sides
     };
     matrix4 model;                // model view is shared by all splits
-    splitinfo splits[CSM_MAXSPLITS]; // per-split parameters
+    splitinfo splits[csmmaxsplits]; // per-split parameters
     vec lightview;                  // view vector for light
     void setup();                   // insert shadowmaps for each split frustum if there is sunlight
     void updatesplitdist();         // compute split frustum distances
@@ -2224,7 +2224,7 @@ struct cascadedshadowmap
 
 void cascadedshadowmap::setup()
 {
-    int size = (csmmaxsize * shadowatlaspacker.w) / SHADOWATLAS_SIZE;
+    int size = (csmmaxsize * shadowatlaspacker.w) / shadowatlassize;
     for(int i = 0; i < csmsplits; ++i)
     {
         ushort smx = USHRT_MAX, smy = USHRT_MAX;
@@ -2886,10 +2886,10 @@ void resetlights()
     shadowcache.reset();
     if(smcache)
     {
-        int evictx = ((evictshadowcache%SHADOWCACHE_EVICT)*shadowatlaspacker.w)/SHADOWCACHE_EVICT,
-            evicty = ((evictshadowcache/SHADOWCACHE_EVICT)*shadowatlaspacker.h)/SHADOWCACHE_EVICT,
-            evictx2 = (((evictshadowcache%SHADOWCACHE_EVICT)+1)*shadowatlaspacker.w)/SHADOWCACHE_EVICT,
-            evicty2 = (((evictshadowcache/SHADOWCACHE_EVICT)+1)*shadowatlaspacker.h)/SHADOWCACHE_EVICT;
+        int evictx = ((evictshadowcache%shadowcacheevict)*shadowatlaspacker.w)/shadowcacheevict,
+            evicty = ((evictshadowcache/shadowcacheevict)*shadowatlaspacker.h)/shadowcacheevict,
+            evictx2 = (((evictshadowcache%shadowcacheevict)+1)*shadowatlaspacker.w)/shadowcacheevict,
+            evicty2 = (((evictshadowcache/shadowcacheevict)+1)*shadowatlaspacker.h)/shadowcacheevict;
         for(int i = 0; i < shadowmaps.length(); i++)
         {
             shadowmapinfo &sm = shadowmaps[i];
@@ -2911,7 +2911,7 @@ void resetlights()
         }
         if(shadowcachefull)
         {
-            evictshadowcache = (evictshadowcache + 1)%(SHADOWCACHE_EVICT*SHADOWCACHE_EVICT);
+            evictshadowcache = (evictshadowcache + 1)%(shadowcacheevict*shadowcacheevict);
             shadowcachefull = false;
         }
     }
@@ -3237,7 +3237,7 @@ static inline void setlightparams(int i, const lightinfo &l)
     {
         shadowmapinfo &sm = shadowmaps[l.shadowmap];
         float smnearclip = SQRT3 / l.radius, smfarclip = SQRT3,
-              bias = (smfilter > 2 || shadowatlaspacker.w > SHADOWATLAS_SIZE ? smbias2 : smbias) * (smcullside ? 1 : -1) * smnearclip * (1024.0f / sm.size);
+              bias = (smfilter > 2 || shadowatlaspacker.w > shadowatlassize ? smbias2 : smbias) * (smcullside ? 1 : -1) * smnearclip * (1024.0f / sm.size);
         int border = smfilter > 2 ? smborder2 : smborder;
         if(l.spot > 0)
         {
@@ -4119,7 +4119,7 @@ void collectlights()
                     lod = smcubeprec;
                 }
                 lod *= std::clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-                int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+                int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
                 w *= size;
                 h *= size;
                 if(mismatched)
@@ -4367,7 +4367,7 @@ void packlights()
                 lod = smcubeprec;
             }
             lod *= std::clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-            int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+            int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
             w *= size;
             h *= size;
             ushort x = USHRT_MAX,
@@ -4502,7 +4502,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
     }
 
     lod *= smminsize;
-    int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / SHADOWATLAS_SIZE)), 1, shadowatlaspacker.w / w);
+    int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
     bias = border / static_cast<float>(size - border);
 
     return type;
