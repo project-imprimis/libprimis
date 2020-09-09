@@ -1255,8 +1255,28 @@ struct hashtable : hashbase<hashtable<K, T>, hashtableentry<K, T>, K, T>
     static inline void setkey(elemtype &elem, const U &key) { elem.key = key; }
 };
 
-#define ENUMERATE_KT(ht,k,e,t,f,b) for(int i = 0; i < static_cast<int>((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { k &e = (ht).enumkey(ec); t &f = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
-#define ENUMERATE(ht,t,e,b)       for(int i = 0; i < static_cast<int>((ht).size); ++i) for(void *ec = (ht).chains[i]; ec;) { t &e = (ht).enumdata(ec); ec = (ht).enumnext(ec); b; }
+//ht stands for a hash table
+#define ENUMERATE_KT(ht,k,e,t,f,b) \
+    for(int i = 0; i < static_cast<int>((ht).size); ++i) \
+    { \
+        for(void *ec = (ht).chains[i]; ec;) \
+        { \
+            k &e = (ht).enumkey(ec); \
+            t &f = (ht).enumdata(ec); \
+            ec = (ht).enumnext(ec); \
+            b; ]
+        } \
+    }
+#define ENUMERATE(ht,t,e,b)
+    for(int i = 0; i < static_cast<int>((ht).size); ++i) \
+    { \
+        for(void *ec = (ht).chains[i]; ec;) \
+        { \
+            t &e = (ht).enumdata(ec); \
+            ec = (ht).enumnext(ec); \
+            b; \
+        } \
+    }
 
 template <class T, int SIZE>
 struct queue
