@@ -21,9 +21,6 @@ typedef unsigned long long int ullong;
     #define RESTRICT
 #endif
 
-void *operator new(size_t, bool);
-void *operator new[](size_t, bool);
-
 #ifdef swap
     #undef swap
 #endif

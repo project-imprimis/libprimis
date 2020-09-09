@@ -777,7 +777,7 @@ block3 *blockcopy(const block3 &s, int rgrid)
     {
         return NULL;
     }
-    block3 *b = reinterpret_cast<block3 *>(new (false) uchar[bsize]);
+    block3 *b = reinterpret_cast<block3 *>(new uchar[bsize]);
     if(b)
     {
         blockcopy(s, rgrid, b);
@@ -941,7 +941,7 @@ undoblock *newundocube(const selinfo &s)
     {
         return NULL;
     }
-    undoblock *u = reinterpret_cast<undoblock *>(new (false) uchar[sizeof(undoblock) + blocksize + selgridsize]);
+    undoblock *u = reinterpret_cast<undoblock *>(new uchar[sizeof(undoblock) + blocksize + selgridsize]);
     if(!u)
     {
         return NULL;
@@ -1213,7 +1213,7 @@ static bool unpackblock(block3 *&b, B &buf)
     {
         return false;
     }
-    b = reinterpret_cast<block3 *>(new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)]);
+    b = reinterpret_cast<block3 *>(new uchar[sizeof(block3)+hdr.size()*sizeof(cube)]);
     if(!b)
     {
         return false;
@@ -1304,7 +1304,7 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
     {
         return false;
     }
-    outbuf = new (false) uchar[len];
+    outbuf = new uchar[len];
     if(!outbuf || compress2((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen, Z_BEST_COMPRESSION) != Z_OK || len > (1<<16))
     {
         delete[] outbuf;
@@ -1322,7 +1322,7 @@ static bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, in
         return false;
     }
     uLongf len = outlen;
-    outbuf = new (false) uchar[len];
+    outbuf = new uchar[len];
     if(!outbuf || uncompress((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen) != Z_OK)
     {
         delete[] outbuf;

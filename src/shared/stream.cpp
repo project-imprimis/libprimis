@@ -1808,7 +1808,7 @@ char *loadfile(const char *fn, size_t *size, bool utf8)
         return NULL;
     }
     size_t len = fsize;
-    char *buf = new (false) char[len+1];
+    char *buf = new char[len+1];
     if(!buf)
     {
         delete f;
