@@ -581,6 +581,14 @@ inline void ident::getcval(tagval &v) const
 
 //* note: many of the VARF comments are very repetitive, because the code itself is nearly duplicated too *//
 
+/* how command registration works:
+ *  In C++, all global variables must be initiated before main() is called
+ *  Each of these macro kludges (which are placed at the global scope level) initializes some kind of global variable
+ *  Because the macro kludges are the definition of global variables, at program initializiation, they must be run first
+ *  The values of the variables themselves don't matter because they only exist to cheat and run before main()
+ *  The macro kludges themselves register commands or values within some vector<>-s which keeps track of all cmds/vars
+ */
+
 //command macros
 #define KEYWORD(name, type) static bool __dummy_##type = addcommand(#name, (identfun)NULL, NULL, type)
 #define COMMANDKN(name, type, fun, nargs) static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)
