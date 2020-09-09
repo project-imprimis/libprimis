@@ -606,7 +606,8 @@ struct animmodel : model
         {
             vec *tangent = new vec[2*numverts],
                 *bitangent = tangent+numverts;
-            memclear(tangent, 2*numverts);
+            memset((void *)tangent, 0, 2*numverts*sizeof(vec));
+
             for(int i = 0; i < numtris; ++i)
             {
                 const T &t = tris[i];

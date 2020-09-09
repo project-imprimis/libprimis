@@ -207,28 +207,32 @@ inline bool matchstring(const char *s, size_t len, const char (&d)[N])
     return len == N-1 && !memcmp(s, d, N-1);
 }
 
-inline char *newstring(size_t l)                { return new char[l+1]; }
-inline char *newstring(const char *s, size_t l) { return copystring(newstring(l), s, l+1); }
-inline char *newstring(const char *s)           { size_t l = strlen(s); char *d = newstring(l); memcpy(d, s, l+1); return d; }
+inline char *newstring(size_t l)
+{
+    return new char[l+1];
+}
+inline char *newstring(const char *s, size_t l)
+{
+    return copystring(newstring(l), s, l+1);
+}
+inline char *newstring(const char *s)
+{
+    size_t l = strlen(s);
+    char *d = newstring(l);
+    memcpy(d, s, l+1);
+    return d;
+}
 
 inline char *newconcatstring(const char *s, const char *t)
 {
-    size_t slen = strlen(s), tlen = strlen(t);
+    size_t slen = strlen(s),
+           tlen = strlen(t);
     char *r = newstring(slen + tlen);
     memcpy(r, s, slen);
     memcpy(&r[slen], t, tlen);
     r[slen+tlen] = '\0';
     return r;
 }
-
-template<class T>
-inline void memclear(T *p, size_t n) { memset((void *)p, 0, n * sizeof(T)); }
-
-template<class T>
-inline void memclear(T &p) { memset((void *)&p, 0, sizeof(T)); }
-
-template<class T, size_t N>
-inline void memclear(T (&p)[N]) { memset((void *)p, 0, N * sizeof(T)); }
 
 template <class T>
 struct databuf
