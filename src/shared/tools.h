@@ -989,13 +989,21 @@ struct vector
     }
 
     #define UNIQUE(overwrite, cleanup) \
-        for(int i = 1; i < ulen; i++) if(htcmp(buf[i-1], buf[i])) \
-        { \
-            int n = i; \
-            while(++i < ulen) if(!htcmp(buf[n-1], buf[i])) { overwrite; n++; } \
-            cleanup; \
-            break; \
-        }
+        for(int i = 1; i < ulen; i++) \
+            if(htcmp(buf[i-1], buf[i])) \
+            { \
+                int n = i; \
+                while(++i < ulen) \
+                { \
+                    if(!htcmp(buf[n-1], buf[i])) \
+                    { \
+                        overwrite; \
+                        n++; \
+                    } \
+                } \
+                cleanup; \
+                break; \
+            }
     void unique() // contents must be initially sorted
     {
         UNIQUE(buf[n] = buf[i], setsize(n));
@@ -1082,7 +1090,10 @@ struct hashbase
         uint h = hthash(key)&(this->size-1); \
         for(chain *c = this->chains[h]; c; c = c->next) \
         { \
-            if(htcmp(key, H::getkey(c->elem))) return success H::getdata(c->elem); \
+            if(htcmp(key, H::getkey(c->elem))) \
+            { \
+                return success H::getdata(c->elem); \
+            } \
         } \
         return (fail);
 
@@ -1264,10 +1275,10 @@ struct hashtable : hashbase<hashtable<K, T>, hashtableentry<K, T>, K, T>
             k &e = (ht).enumkey(ec); \
             t &f = (ht).enumdata(ec); \
             ec = (ht).enumnext(ec); \
-            b; ]
+            b; \
         } \
     }
-#define ENUMERATE(ht,t,e,b)
+#define ENUMERATE(ht,t,e,b) \
     for(int i = 0; i < static_cast<int>((ht).size); ++i) \
     { \
         for(void *ec = (ht).chains[i]; ec;) \
