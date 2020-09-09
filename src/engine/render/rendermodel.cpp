@@ -597,7 +597,8 @@ COMMAND(clearmodel, "s");
 
 bool modeloccluded(const vec &center, float radius)
 {
-    ivec bbmin(vec(center).sub(radius)), bbmax(vec(center).add(radius+1));
+    ivec bbmin(vec(center).sub(radius)),
+         bbmax(vec(center).add(radius+1));
     return bboccluded(bbmin, bbmax);
 }
 
@@ -677,6 +678,7 @@ static inline void renderbatchedmodel(model *m, const batchedmodel &b)
     m->render(anim, b.basetime, b.basetime2, b.pos, b.yaw, b.pitch, b.roll, b.d, a, b.sizescale, b.colorscale);
 }
 
+//ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
 
 static inline void enablecullmodelquery()
@@ -711,7 +713,7 @@ static inline void disablecullmodelquery()
 
 static inline int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = NULL)
 {
-    if(flags&Model_CullDist && center.dist(camera1->o)/radius>maxmodelradiusdistance)
+    if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
         return Model_CullDist;
     }
@@ -1252,7 +1254,10 @@ hasboundbox:
         if(flags&Model_CullQuery)
         {
             d->query = newquery(d);
-            if(d->query) startquery(d->query);
+            if(d->query)
+            {
+                startquery(d->query);
+            }
         }
         m->startrender();
         setaamask(true);
@@ -1399,9 +1404,8 @@ ICOMMAND(findanims, "s", (char *name),
     result(buf.getbuf());
 });
 
-void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks) // model skin sharing
-{
 #define IF_NO_LOAD(tex, path) if((tex = textureload(path, 0, true, false))==notexture)
+
 #define TRY_LOAD(tex, prefix, cmd, name) \
     IF_NO_LOAD(tex, makerelpath(mdir, name ".jpg", prefix, cmd)) \
     { \
@@ -1414,6 +1418,8 @@ void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&mas
         } \
     }
 
+void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks) // model skin sharing
+{
     DEF_FORMAT_STRING(mdir, "media/model/%s", dir);
     DEF_FORMAT_STRING(maltdir, "media/model/%s", altdir);
     masks = notexture;
