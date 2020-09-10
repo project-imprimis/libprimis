@@ -540,9 +540,9 @@ const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudso
 {
     { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Rail1,  Sound_Rail2,  250,  5,  0, 0,    0, 10, 2048, 1,  200,  0, 0, 0, 0},
     { Gun_Rail,  Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10,  0, 2,    0,  0,   14, 1,    0,  0, 0, 0, 0},
-    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Pulse1, Sound_Pulse2,3000, 15,  0, 1,  700, 50, 1024, 1, 2500, 50, 1, 0, 0},
+    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Pulse1, Sound_Pulse2,3000, 15,  0, 1,    1, 50, 2048, 1, 2500, 50, 1, 0, 0},
     { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10,  0, 2,    0,  0,   14, 1,    0,  0, 0, 0, 0},
-    { Gun_Eng,   Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Melee,  Sound_Melee,  200,  0,  0, 1,  500, 20,  160, 1,   10, 20, 2, 0, 1},
+    { Gun_Eng,   Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Melee,  Sound_Melee,  200,  0,  0, 1,    1, 20, 2600, 1,   10, 20, 2, 0, 1},
     { Gun_Eng,   Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10,  0, 2,    0,  0,   14, 1,    0,  0, 0, 0, 0},
 };
 

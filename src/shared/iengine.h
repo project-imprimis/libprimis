@@ -16,7 +16,7 @@ extern vector<int> entgroup;
 
 extern int worldscale, worldsize;
 
-
+extern int getclockmillis();
 extern bool settexture(const char *name, int clamp = 0);
 extern int xtraverts, xtravertsva;
 extern SDL_Window *screen;

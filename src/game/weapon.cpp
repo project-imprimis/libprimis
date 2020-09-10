@@ -342,6 +342,7 @@ namespace game
     {
         vec dir, o, from, to, offset;
         int lifetime;
+        uint spawntime;
         float speed;
         gameent *owner;
         int atk;
@@ -362,6 +363,7 @@ namespace game
         p.to = to;
         p.from = from;
         p.lifetime = lifetime;
+        p.spawntime = getclockmillis();
         p.offset = hudgunorigin(attacks[atk].gun, from, to, owner);
         p.offset.sub(from);
         p.speed = speed;
@@ -633,14 +635,14 @@ namespace game
      * Returns:
      *  void
      */
-    void placecube(ivec loc, int gridpower)
+    void placecube(ivec loc, int gridpower, int zoffset)
     {
         int gridpow = static_cast<int>(pow(2,gridpower));
         ivec minloc( loc.x - loc.x % gridpow,
                      loc.y - loc.y % gridpow,
                      loc.z - loc.z % gridpow );
         selinfo sel;
-        sel.o = minloc;
+        sel.o = minloc.add(ivec(0,0,zoffset));
         sel.s = ivec(1,1,1);
         mpplacecube(sel, 1, true);
     }
@@ -656,10 +658,9 @@ namespace game
         {
             projectile &p = projs[i];
             p.offsetmillis = max(p.offsetmillis-time, 0);
-            vec dv; //displacement vector
-            float dist = (p.speed * (p.lifetime - p.offsetmillis) ) / 1000 ;
-            dv.mul(time/max(dist*1000/p.speed, static_cast<float>(time))); //move away from gun
-            dv.add(vec(0,0,-p.sink));
+            int liferemaining = p.spawntime + p.lifetime - getclockmillis();
+            vec dv = (p.dir).mul(p.speed);
+            dv.add(vec(0,0,-p.sink * (p.lifetime - liferemaining) / 1000.f));
             vec v = vec(p.o).add(dv); //set v as current particle location o plus dv
             bool exploded = false;
             hits.setsize(0);
@@ -686,15 +687,8 @@ namespace game
             }
             if(!exploded) //if we haven't already hit somebody, start checking for collisions with cube geometry
             {
-                if(dist<0) // dist is the distance to the `to` location
+                if(liferemaining < 0 || raycube(p.o, p.dir, 0, Ray_ClipMat|Ray_AlphaPoly)<=4)
                 {
-                    if(p.o!=p.to) // if original target was moving, reevaluate endpoint
-                    {
-                        if(raycubepos(p.o, p.dir, p.to, 0, Ray_ClipMat|Ray_AlphaPoly)>=4)
-                        {
-                            continue;
-                        }
-                    }
                     switch(attacks[p.atk].worldfx)
                     {
                         case 1:
@@ -704,7 +698,7 @@ namespace game
                         }
                         case 2:
                         {
-                            placecube(static_cast<ivec>(p.o),3);
+                            placecube(static_cast<ivec>(p.o), 3, 5);
                             break;
                         }
                     }
@@ -985,7 +979,9 @@ namespace game
             vec kickback = vec(dir).mul(attacks[atk].kickamount*-2.5f);
             d->vel.add(kickback);
         }
-        float shorten =  (attacks[atk].projspeed * attacks[atk].life) && dist >  (attacks[atk].projspeed * attacks[atk].life) ?  (attacks[atk].projspeed * attacks[atk].life) : 0,
+        float shorten = (attacks[atk].life) && (dist > (attacks[atk].projspeed * attacks[atk].life)) ?
+                         (attacks[atk].projspeed * attacks[atk].life) :
+                         0,
               barrier = raycube(d->o, dir, dist, Ray_ClipMat|Ray_AlphaPoly);
         if(barrier > 0 && barrier < dist && (!shorten || barrier < shorten))
         {
