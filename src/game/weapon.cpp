@@ -205,7 +205,7 @@ namespace game
     {
         for(int i = 0; i < attacks[atk].rays; ++i)
         {
-            offsetray(from, to, attacks[atk].spread, attacks[atk].range, rays[i]);
+            offsetray(from, to, attacks[atk].spread, (attacks[atk].projspeed * attacks[atk].life), rays[i]);
         }
     }
 
@@ -341,24 +341,27 @@ namespace game
     struct projectile
     {
         vec dir, o, from, to, offset;
+        int lifetime;
         float speed;
         gameent *owner;
         int atk;
         bool local;
         int offsetmillis;
         int id;
+        int sink;
     };
     vector<projectile> projs;
 
     void clearprojectiles() { projs.shrink(0); }
 
-    void newprojectile(const vec &from, const vec &to, float speed, bool local, int id, gameent *owner, int atk)
+    void newprojectile(const vec &from, const vec &to, int lifetime, float speed, bool local, int id, gameent *owner, int atk, int sink)
     {
         projectile &p = projs.add();
         p.dir = vec(to).sub(from).safenormalize();
         p.o = from;
-        p.from = from;
         p.to = to;
+        p.from = from;
+        p.lifetime = lifetime;
         p.offset = hudgunorigin(attacks[atk].gun, from, to, owner);
         p.offset.sub(from);
         p.speed = speed;
@@ -367,6 +370,7 @@ namespace game
         p.atk = atk;
         p.offsetmillis = OFFSETMILLIS;
         p.id = local ? lastmillis : id;
+        p.sink = sink;
     }
 
     void removeprojectiles(gameent *owner)
@@ -399,7 +403,7 @@ namespace game
         vec to(randomint(100)-50, randomint(100)-50, randomint(100)-50); //x,y,z = [-50,50] to get enough steps to create a good random vector
         if(to.iszero())
         {
-            to.z += 1; //if all three are zero (bad luck!), set vector to (0,0,1)
+            to.z += 1; //if all three are zero (bad luck!), set vector to (0,0,1) so we have a valid dir
         }
         to.normalize(); //smash magnitude back to 1
         to.add(p); //add this random to input &p
@@ -653,14 +657,16 @@ namespace game
             projectile &p = projs[i];
             p.offsetmillis = max(p.offsetmillis-time, 0);
             vec dv; //displacement vector
-            float dist = p.to.dist(p.o, dv);
-            dv.mul(time/max(dist*1000/p.speed, static_cast<float>(time)));
+            float dist = (p.speed * (p.lifetime - p.offsetmillis) ) / 1000 ;
+            dv.mul(time/max(dist*1000/p.speed, static_cast<float>(time))); //move away from gun
+            dv.add(vec(0,0,-p.sink));
             vec v = vec(p.o).add(dv); //set v as current particle location o plus dv
             bool exploded = false;
             hits.setsize(0);
             if(p.local) //if projectile belongs to a local client
             {
-                vec halfdv = vec(dv).mul(0.5f), bo = vec(p.o).add(halfdv); //half the displacement vector halfdv; set bo like v except with halfdv
+                vec halfdv = vec(dv).mul(0.5f), //half the displacement vector halfdv;
+                    bo = vec(p.o).add(halfdv); // set bo like v except with halfdv
                 float br = max(fabs(halfdv.x), fabs(halfdv.y)) + 1 + attacks[p.atk].margin;
                 for(int j = 0; j < numdynents(); ++j)
                 {
@@ -680,7 +686,7 @@ namespace game
             }
             if(!exploded) //if we haven't already hit somebody, start checking for collisions with cube geometry
             {
-                if(dist<4) // dist is the distance to the `to` location
+                if(dist<0) // dist is the distance to the `to` location
                 {
                     if(p.o!=p.to) // if original target was moving, reevaluate endpoint
                     {
@@ -765,7 +771,7 @@ namespace game
                 {
                     particle_flare(d->muzzle, d->muzzle, 140, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d); //place a light that runs with the shot projectile
                 }
-                newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
+                newprojectile(from, to, attacks[atk].life, attacks[atk].projspeed, local, id, d, atk, attacks[atk].sink);
                 break;
             }
             case Attack_EngShoot:
@@ -774,7 +780,7 @@ namespace game
                 {
                     particle_flare(d->muzzle, d->muzzle, 250, Part_PulseMuzzleFlash, 0x50CFE5, 3.50f, d); //place a light that runs with the shot projectile
                 }
-                newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
+                newprojectile(from, to, attacks[atk].life, attacks[atk].projspeed, local, id, d, atk, attacks[atk].sink);
                 break;
             }
             case Attack_RailShot:
@@ -979,7 +985,7 @@ namespace game
             vec kickback = vec(dir).mul(attacks[atk].kickamount*-2.5f);
             d->vel.add(kickback);
         }
-        float shorten = attacks[atk].range && dist > attacks[atk].range ? attacks[atk].range : 0,
+        float shorten =  (attacks[atk].projspeed * attacks[atk].life) && dist >  (attacks[atk].projspeed * attacks[atk].life) ?  (attacks[atk].projspeed * attacks[atk].life) : 0,
               barrier = raycube(d->o, dir, dist, Ray_ClipMat|Ray_AlphaPoly);
         if(barrier > 0 && barrier < dist && (!shorten || barrier < shorten))
         {
@@ -996,7 +1002,7 @@ namespace game
         }
         else if(attacks[atk].spread)
         {
-            offsetray(from, to, attacks[atk].spread, attacks[atk].range, to);
+            offsetray(from, to, attacks[atk].spread, (attacks[atk].projspeed * attacks[atk].life), to);
         }
         hits.setsize(0);
 

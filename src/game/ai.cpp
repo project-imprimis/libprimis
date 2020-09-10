@@ -48,7 +48,7 @@ namespace ai
 
     float attackmaxdist(int atk)
     {
-        return attacks[atk].range + 4;
+        return (attacks[atk].projspeed * attacks[atk].life) + 4;
     }
 
     bool attackrange(gameent *d, int atk, float dist)
@@ -893,7 +893,7 @@ namespace ai
                     {
                         int atk = guns[d->gunselect].attacks[Act_Shoot];
                         float guard = sightmin,
-                              wander = attacks[atk].range;
+                              wander = (attacks[atk].projspeed * attacks[atk].life);
                         return patrol(d, b, e->feetpos(), guard, wander) ? 1 : 0;
                     }
                     break;
