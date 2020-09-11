@@ -102,7 +102,6 @@ inline float detrnd(uint s, int x)
 #define PI (3.14159265358979f)
 #define SQRT2 (1.4142135623731f)
 #define SQRT3 (1.73205080756888f)
-#define SQRT5 (2.23606797749979f)
 #define RAD (PI / 180.0f)
 
 #ifdef WIN32
@@ -361,23 +360,29 @@ struct packetbuf : ucharbuf
     packetbuf(int growth, int pflags = 0) : growth(growth)
     {
         packet = enet_packet_create(NULL, growth, pflags);
-        buf = (uchar *)packet->data;
+        buf = static_cast<uchar *>(packet->data);
         maxlen = packet->dataLength;
     }
     ~packetbuf() { cleanup(); }
 
-    void reliable() { packet->flags |= ENET_PACKET_FLAG_RELIABLE; }
+    void reliable()
+    {
+        packet->flags |= ENET_PACKET_FLAG_RELIABLE;
+    }
 
     void resize(int n)
     {
         enet_packet_resize(packet, n);
-        buf = (uchar *)packet->data;
+        buf = static_cast<uchar *>(packet->data);
         maxlen = packet->dataLength;
     }
 
     void checkspace(int n)
     {
-        if(len + n > maxlen && packet && growth > 0) resize(max(len + n, maxlen + growth));
+        if(len + n > maxlen && packet && growth > 0)
+        {
+            resize(max(len + n, maxlen + growth));
+        }
     }
 
     ucharbuf subbuf(int sz)
@@ -406,7 +411,13 @@ struct packetbuf : ucharbuf
 
     void cleanup()
     {
-        if(growth > 0 && packet && !packet->referenceCount) { enet_packet_destroy(packet); packet = NULL; buf = NULL; len = maxlen = 0; }
+        if(growth > 0 && packet && !packet->referenceCount)
+        {
+            enet_packet_destroy(packet);
+            packet = NULL;
+            buf = NULL;
+            len = maxlen = 0;
+        }
     }
 };
 
@@ -446,7 +457,9 @@ inline void insertionsort(T *start, T *end, F fun)
             *i = i[-1];
             T *j = i-1;
             for(; j > start && fun(tmp, j[-1]); --j)
+            {
                 *j = j[-1];
+            }
             *j = tmp;
         }
     }
@@ -486,8 +499,7 @@ inline void quicksort(T *start, T *end, F fun)
             while(fun(*i, pivot)) if(++i >= j) goto partitioned;
             while(fun(pivot, *--j)) if(i >= j) goto partitioned;
             swap(*i, *j);
-        }
-        while(++i < j);
+        } while(++i < j);
     partitioned:
         end[-2] = *i;
         *i = pivot;
@@ -527,13 +539,20 @@ struct isclass
 
     template<class C>
     static int test(...);
-    enum { yes = sizeof(test<T>(0)) == 1 ? 1 : 0, no = yes^1 };
+    enum
+    {
+        yes = sizeof(test<T>(0)) == 1 ? 1 : 0,
+        no = yes^1
+    };
 };
 
 inline uint hthash(const char *key)
 {
     uint h = 5381;
-    for(int i = 0, k; (k = key[i]); i++) h = ((h<<5)+h)^k;    // bernstein k=33 xor
+    for(int i = 0, k; (k = key[i]); i++)
+    {
+        h = ((h<<5)+h)^k;    // bernstein k=33 xor
+    }
     return h;
 }
 
@@ -630,28 +649,43 @@ struct vector
     vector<T> &operator=(const vector<T> &v)
     {
         shrink(0);
-        if(v.length() > alen) growbuf(v.length());
-        for(int i = 0; i < v.length(); i++) add(v[i]);
+        if(v.length() > alen)
+        {
+            growbuf(v.length());
+        }
+        for(int i = 0; i < v.length(); i++)
+        {
+            add(v[i]);
+        }
         return *this;
     }
 
     T &add(const T &x)
     {
-        if(ulen==alen) growbuf(ulen+1);
+        if(ulen==alen)
+        {
+            growbuf(ulen+1);
+        }
         new (&buf[ulen]) T(x);
         return buf[ulen++];
     }
 
     T &add()
     {
-        if(ulen==alen) growbuf(ulen+1);
+        if(ulen==alen)
+        {
+            growbuf(ulen+1);
+        }
         new (&buf[ulen]) T;
         return buf[ulen++];
     }
 
     T &dup()
     {
-        if(ulen==alen) growbuf(ulen+1);
+        if(ulen==alen)
+        {
+            growbuf(ulen+1);
+        }
         new (&buf[ulen]) T(buf[ulen-1]);
         return buf[ulen++];
     }
@@ -667,7 +701,10 @@ struct vector
         else
         {
             growbuf(ulen+v.ulen);
-            if(v.ulen) memcpy(&buf[ulen], (void  *)v.buf, v.ulen*sizeof(T));
+            if(v.ulen)
+            {
+                memcpy(&buf[ulen], (void  *)v.buf, v.ulen*sizeof(T));
+            }
             ulen += v.ulen;
             v.ulen = 0;
         }
@@ -799,14 +836,20 @@ struct vector
 
     void remove(int i, int n)
     {
-        for(int p = i+n; p<ulen; p++) buf[p-n] = buf[p];
+        for(int p = i+n; p<ulen; p++)
+        {
+            buf[p-n] = buf[p];
+        }
         ulen -= n;
     }
 
     T remove(int i)
     {
         T e = buf[i];
-        for(int p = i+1; p<ulen; p++) buf[p-1] = buf[p];
+        for(int p = i+1; p<ulen; p++)
+        {
+            buf[p-1] = buf[p];
+        }
         ulen--;
         return e;
     }
@@ -815,7 +858,10 @@ struct vector
     {
         T e = buf[i];
         ulen--;
-        if(ulen>0) buf[i] = buf[ulen];
+        if(ulen>0)
+        {
+            buf[i] = buf[ulen];
+        }
         return e;
     }
 
@@ -859,7 +905,10 @@ struct vector
 
     void replacewithlast(const T &o)
     {
-        if(!ulen) return;
+        if(!ulen)
+        {
+            return;
+        }
         for(int i = 0; i < static_cast<int>(ulen-1); ++i)
         {
             if(buf[i]==o)
@@ -947,7 +996,10 @@ struct vector
         for(;;)
         {
             int ci = heapchild(i);
-            if(ci >= ulen) break;
+            if(ci >= ulen)
+            {
+                break;
+            }
             float cscore = heapscore(buf[ci]);
             if(score > cscore)
             {
@@ -972,7 +1024,10 @@ struct vector
     T removeheap()
     {
         T e = removeunordered(0);
-        if(ulen) downheap(0);
+        if(ulen)
+        {
+            downheap(0);
+        }
         return e;
     }
 
@@ -1150,15 +1205,24 @@ struct hashbase
 
     void recycle()
     {
-        if(!numelems) return;
+        if(!numelems)
+        {
+            return;
+        }
         for(int i = 0; i < static_cast<int>(size); ++i)
         {
             chain *c = chains[i];
-            if(!c) continue;
+            if(!c)
+            {
+                continue;
+            }
             for(;;)
             {
                 htrecycle(c->elem);
-                if(!c->next) break;
+                if(!c->next)
+                {
+                    break;
+                }
                 c = c->next;
             }
             c->next = unused;
@@ -1179,7 +1243,10 @@ struct hashbase
 
     void clear()
     {
-        if(!numelems) return;
+        if(!numelems)
+        {
+            return;
+        }
         memset(chains, 0, size*sizeof(chain *));
         numelems = 0;
         unused = NULL;
@@ -1324,7 +1391,10 @@ struct queue
     T &pop()
     {
         tail--;
-        if(tail < 0) tail += SIZE;
+        if(tail < 0)
+        {
+            tail += SIZE;
+        }
         len--;
         return data[tail];
     }
@@ -1335,7 +1405,10 @@ struct queue
     {
         T &t = data[head];
         head++;
-        if(head >= SIZE) head -= SIZE;
+        if(head >= SIZE)
+        {
+            head -= SIZE;
+        }
         len--;
         return t;
     }
