@@ -275,7 +275,10 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
 #define UNIFORMTEX(name, tmu) \
     do { \
         int loc = glGetUniformLocation_(s.program, name); \
-        if(loc != -1) { glUniform1i_(loc, tmu); } \
+        if(loc != -1) \
+        { \
+            glUniform1i_(loc, tmu); \
+        } \
     } while(0)
 
 static void bindworldtexlocs(Shader &s)
@@ -852,7 +855,8 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     s.reusevs = s.reuseps = NULL;
     if(variant)
     {
-        int row = 0, col = 0;
+        int row = 0,
+            col = 0;
         if(!vs[0] || sscanf(vs, "%d , %d", &row, &col) >= 1)
         {
             DELETEA(s.vsstr);
@@ -935,7 +939,8 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     vsv.put(vs, strlen(vs)+1);
     psv.put(ps, strlen(ps)+1);
 
-    static const int len = strlen("//:variant"), olen = strlen("override");
+    static const int len = strlen("//:variant"),
+                     olen = strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
         vspragma = strstr(vspragma, "//:variant");
@@ -1287,11 +1292,29 @@ ICOMMAND(forceshader, "s", (const char *name), useshaderbyname(name));
 #define GENSHADER(cond, body) \
     if(cond) \
     { \
-        if(vsbuf.length()) { vsbak.setsize(0); vsbak.put(vs, strlen(vs)+1); vs = vsbak.getbuf(); vsbuf.setsize(0); } \
-        if(psbuf.length()) { psbak.setsize(0); psbak.put(ps, strlen(ps)+1); ps = psbak.getbuf(); psbuf.setsize(0); } \
+        if(vsbuf.length()) \
+        { \
+            vsbak.setsize(0); \
+            vsbak.put(vs, strlen(vs)+1); \
+            vs = vsbak.getbuf(); \
+            vsbuf.setsize(0); \
+        } \
+        if(psbuf.length()) \
+        { \
+            psbak.setsize(0); \
+            psbak.put(ps, strlen(ps)+1); \
+            ps = psbak.getbuf(); \
+            psbuf.setsize(0); \
+        } \
         body; \
-        if(vsbuf.length()) vs = vsbuf.getbuf(); \
-        if(psbuf.length()) ps = psbuf.getbuf(); \
+        if(vsbuf.length()) \
+        { \
+            vs = vsbuf.getbuf(); \
+        } \
+        if(psbuf.length()) \
+        { \
+            ps = psbuf.getbuf(); \
+        } \
     }
 
 void shader(int *type, char *name, char *vs, char *ps)
@@ -1669,8 +1692,8 @@ void renderpostfx(GLuint outfbo)
             tex = allocatepostfxtex(p.outputscale);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
         }
-        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw;
-        int h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
+        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
+            h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
         glViewport(0, 0, w, h);
         p.shader->set();
         LOCALPARAM(params, p.params);
