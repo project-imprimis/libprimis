@@ -96,9 +96,9 @@ struct vertmodel : animmodel
         {
             m.tris = (const BIH::tri *)tris;
             m.numtris = numtris;
-            m.pos = (const uchar *)&verts->pos;
+            m.pos = reinterpret_cast<const uchar *>(&verts->pos);
             m.posstride = sizeof(vert);
-            m.tc = (const uchar *)&tcverts->tc;
+            m.tc = reinterpret_cast<const uchar *>(&tcverts->tc);
             m.tcstride = sizeof(tcvert);
         }
 
@@ -142,20 +142,20 @@ struct vertmodel : animmodel
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
                         if(vidx < 0)
                         {
-                            vidx = idxs.add(ushort(vverts.length()));
+                            vidx = idxs.add(static_cast<ushort>(vverts.length()));
                             vverts.add(vv);
                             break;
                         }
                         else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            minvert = min(minvert, idxs.add(ushort(vidx)));
+                            minvert = min(minvert, idxs.add(static_cast<ushort>(vidx)));
                             break;
                         }
                     }
                 }
             }
-            minvert = min(minvert, ushort(voffset));
-            maxvert = max(minvert, ushort(vverts.length()-1));
+            minvert = min(minvert, static_cast<ushort>(voffset));
+            maxvert = max(minvert, static_cast<ushort>(vverts.length()-1));
             elen = idxs.length()-eoffset;
             return vverts.length()-voffset;
         }
@@ -404,7 +404,8 @@ struct vertmodel : animmodel
                         LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen)); \
                         glBufferData_(GL_ARRAY_BUFFER, vverts.length()*sizeof(type), vverts.getbuf(), GL_STATIC_DRAW); \
                     } while(0)
-                int numverts = 0, htlen = 128;
+                int numverts = 0,
+                    htlen = 128;
                 LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
                 while(htlen < numverts)
                 {
@@ -556,7 +557,7 @@ struct vertmodel : animmodel
                     vc->millis = lastmillis;
                     LOOP_RENDER_MESHES(vertmesh, m,
                     {
-                        m.interpverts(*as, (vvert *)vdata, p->skins[i]);
+                        m.interpverts(*as, reinterpret_cast<vvert *>(vdata), p->skins[i]);
                     });
                     gle::bindvbo(vc->vbuf);
                     glBufferData_(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
@@ -655,12 +656,20 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
             return;
         }
         part &mdl = *(part *)MDL::loading->parts.last();
-        float cx = *rx ? cosf(*rx/2*RAD) : 1, sx = *rx ? sinf(*rx/2*RAD) : 0,
-              cy = *ry ? cosf(*ry/2*RAD) : 1, sy = *ry ? sinf(*ry/2*RAD) : 0,
-              cz = *rz ? cosf(*rz/2*RAD) : 1, sz = *rz ? sinf(*rz/2*RAD) : 0;
-        matrix4x3 m(matrix3(quat(sx*cy*cz - cx*sy*sz, cx*sy*cz + sx*cy*sz, cx*cy*sz - sx*sy*cz, cx*cy*cz + sx*sy*sz)),
+        float cx = *rx ? cosf(*rx/2*RAD) : 1,
+              sx = *rx ? sinf(*rx/2*RAD) : 0,
+              cy = *ry ? cosf(*ry/2*RAD) : 1,
+              sy = *ry ? sinf(*ry/2*RAD) : 0,
+              cz = *rz ? cosf(*rz/2*RAD) : 1,
+              sz = *rz ? sinf(*rz/2*RAD) : 0;
+        //matrix m created from (matrix3 created from quat) + (vec) appended afterwards
+        matrix4x3 m(static_cast<matrix3>(quat(sx*cy*cz - cx*sy*sz,
+                                              cx*sy*cz + sx*cy*sz,
+                                              cx*cy*sz - sx*sy*cz,
+                                              cx*cy*cz + sx*sy*sz)),
                     vec(*tx, *ty, *tz));
-        ((meshgroup *)mdl.meshes)->addtag(tagname, m);
+
+        (static_cast<meshgroup *>(mdl.meshes))->addtag(tagname, m);
     }
 
     static void setpitch(float *pitchscale, float *pitchoffset, float *pitchmin, float *pitchmax)
@@ -681,7 +690,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
         else
         {
             mdl.pitchmin = -360*fabs(mdl.pitchscale) + mdl.pitchoffset;
-            mdl.pitchmax = 360*fabs(mdl.pitchscale) + mdl.pitchoffset;
+            mdl.pitchmax =  360*fabs(mdl.pitchscale) + mdl.pitchoffset;
         }
     }
 
@@ -721,4 +730,3 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
         }
     }
 };
-

@@ -11,7 +11,7 @@ FVARR(ambientscale, 0, 1, 16);
 CVAR1R(skylight, 0);
 FVARR(skylightscale, 0, 1, 16);
 
-extern void setupsunlight();
+void setupsunlight();
 CVAR1FR(sunlight, 0,
 {
     setupsunlight();
@@ -21,7 +21,7 @@ CVAR1FR(sunlight, 0,
 FVARFR(sunlightscale, 0, 1, 16, setupsunlight());
 
 vec sunlightdir(0, 0, 1);
-extern void setsunlightdir();
+void setsunlightdir();
 FVARFR(sunlightyaw, 0, 0, 360, setsunlightdir());
 FVARFR(sunlightpitch, -90, 90, 90, setsunlightdir());
 
@@ -284,7 +284,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     {
         if(dy1 > dy2)
         {
-            split = min(dy1, int(h));
+            split = min(dy1, static_cast<int>(h));
         }
         else
         {
@@ -470,7 +470,7 @@ void check_calclight_canceled()
 void show_calclight_progress()
 {
     float bar1 = static_cast<float>(lightprogress) / static_cast<float>(allocnodes);
-    DEF_FORMAT_STRING(text1, "%d%%", int(bar1 * 100));
+    DEF_FORMAT_STRING(text1, "%d%%", static_cast<int>(bar1 * 100));
 
     renderprogress(bar1, text1);
 }
@@ -692,8 +692,6 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
     }
 }
 
-extern int filltjoints;
-
 void calclight()
 {
     remip();
@@ -713,7 +711,6 @@ void calclight()
 
 void mpcalclight(bool local)
 {
-    extern selinfo sel;
     if(local)
     {
         game::edittrigger(sel, Edit_CalcLight);

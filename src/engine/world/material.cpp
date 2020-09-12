@@ -93,7 +93,7 @@ struct QuadNode
                 {
                     genmatsurf(mat, orient, visible, i&1 ? x+csize : x, i&2 ? y+csize : y, z, csize, matbuf);
                 }
-                
+
             }
         }
         for(int i = 0; i < 4; ++i)
@@ -925,7 +925,7 @@ void rendermaterialmask()
         vector<materialsurface> &surfs = watersurfs[k];
         for(int i = 0; i < surfs.length(); i++)
         {
-            drawmaterial(surfs[i], WATER_OFFSET);
+            drawmaterial(surfs[i], wateroffset);
         }
     }
     for(int k = 0; k < 4; ++k)
@@ -950,6 +950,7 @@ extern const vec matnormals[6] =
     vec(0, 0,  1)
 };
 
+//these are the variables defined for each specific glass material (there are 4)
 #define GLASSVARS(name) \
     CVAR0R(name##color, 0xB0D8FF); \
     FVARR(name##refract, 0, 0.1f, 1e3f); \

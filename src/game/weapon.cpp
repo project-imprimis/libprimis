@@ -504,7 +504,7 @@ namespace game
     {
         particle_splash(Part_Spark, 200, 300, v, 0x50CFE5, 0.45f);
         playsound(Sound_PulseExplode, &v);
-        particle_fireball(v, 1.15f*attacks[atk].exprad, Part_PulseBurst, int(attacks[atk].exprad*20), 0x50CFE5, 4.0f);
+        particle_fireball(v, 1.15f*attacks[atk].exprad, Part_PulseBurst, static_cast<int>(attacks[atk].exprad*20), 0x50CFE5, 4.0f);
         vec debrisorigin = vec(v).sub(vec(vel).mul(5));
         adddynlight(safe ? v : debrisorigin, 2*attacks[atk].exprad, vec(1.0f, 3.0f, 4.0f), 350, 40, 0, attacks[atk].exprad/2, vec(0.5f, 1.5f, 2.0f));
 

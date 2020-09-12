@@ -106,7 +106,8 @@ inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec
     for(;;)
     {
         int axis = curnode->axis();
-        int nearidx = order[axis], faridx = nearidx^1;
+        int nearidx = order[axis],
+            faridx = nearidx^1;
         float nearsplit = (curnode->split[nearidx] - o[axis])*invray[axis],
               farsplit = (curnode->split[faridx] - o[axis])*invray[axis];
         if(nearsplit <= tmin)
@@ -303,8 +304,8 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
         for(int i = 0; i < numindices; ++i)
         {
             const tribb &tri = m.tribbs[indices[i]];
-            ivec trimin = ivec(tri.center).sub(ivec(tri.radius)),
-                 trimax = ivec(tri.center).add(ivec(tri.radius));
+            ivec trimin = static_cast<ivec>(tri.center).sub(static_cast<ivec>(tri.radius)),
+                 trimax = static_cast<ivec>(tri.center).add(static_cast<ivec>(tri.radius));
             if(i < left)
             {
                 splitleft = max(splitleft, trimax[axis]);
@@ -394,8 +395,8 @@ BIH::BIH(vector<mesh> &buildmeshes)
             mmax.max(vmax);
             ivec imin = ivec::floor(vmin),
                  imax = ivec::ceil(vmax);
-            dsttri->center = svec(ivec(imin).add(imax).div(2));
-            dsttri->radius = svec(ivec(imax).sub(imin).add(1).div(2));
+            dsttri->center = static_cast<svec>(static_cast<ivec>(imin).add(imax).div(2));
+            dsttri->radius = static_cast<svec>(static_cast<ivec>(imax).sub(imin).add(1).div(2));
             ++srctri;
             ++dsttri;
         }
@@ -466,7 +467,7 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
         return false;
     }
     float scale = e.attr5 ? 100.0f/e.attr5 : 1.0f;
-    vec mo = vec(o).sub(e.o).mul(scale), mray(ray);
+    vec mo = static_cast<vec>(o).sub(e.o).mul(scale), mray(ray);
     float v = mo.dot(mray),
           inside = m->bih->entradius - mo.squaredlen();
     if((inside < 0 && v > 0) || inside + v*v < 0)
@@ -544,7 +545,8 @@ static inline float segmentdistance(const vec &d1, const vec &d2, const vec &r)
         }
         else
         {
-            float b = d1.dot(d2), denom = a*e - b*b;
+            float b = d1.dot(d2),
+                  denom = a*e - b*b;
             s = denom ? std::clamp((c*e - b*f) / denom, 0.0f, 1.0f) : 0.0f;
             t = b*s - f;
             if(t < 0)
@@ -667,7 +669,8 @@ static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c,
         return dist; // both P and Q on same side of triangle
     }
     vec e = vec().cross(pq, ap);
-    float det = fabs(dq - dp), v = ca.dot(e);
+    float det = fabs(dq - dp),
+          v = ca.dot(e);
     if(v < 0 || v > det)
     {
         return dist;
@@ -691,8 +694,17 @@ static inline bool triboxoverlap(const vec &radius, const vec &a, const vec &b, 
         float p = v0.s*v1.t - v0.t*v1.s, \
               q = v2.s*e.t - v2.t*e.s, \
               r = radius.s*fabs(e.t) + radius.t*fabs(e.s); \
-        if(p < q) { if(q < -r || p > r) return false; } \
-        else if(p < -r || q > r) return false; \
+        if(p < q) \
+        { \
+            if(q < -r || p > r) \
+            { \
+                return false; \
+            } \
+        } \
+        else if(p < -r || q > r) \
+        { \
+            return false; \
+        } \
     }
 
     TESTAXIS(a, b, c, ab, z, y);
@@ -711,17 +723,34 @@ static inline bool triboxoverlap(const vec &radius, const vec &a, const vec &b, 
     #define TESTFACE(w) { \
         if(a.w < b.w) \
         { \
-            if(b.w < c.w) { if(c.w < -radius.w || a.w > radius.w) return false; } \
-            else if(b.w < -radius.w || min(a.w, c.w) > radius.w) return false; \
+            if(b.w < c.w) \
+            { \
+                if(c.w < -radius.w || a.w > radius.w) \
+                { \
+                    return false; \
+                } \
+            } \
+            else if(b.w < -radius.w || min(a.w, c.w) > radius.w) \
+            { \
+                return false; \
+            } \
         } \
-        else if(a.w < c.w) { if(c.w < -radius.w || b.w > radius.w) return false; } \
-        else if(a.w < -radius.w || min(b.w, c.w) > radius.w) return false; \
+        else if(a.w < c.w) \
+        { \
+            if(c.w < -radius.w || b.w > radius.w) \
+            { \
+                return false; \
+            } \
+        } \
+        else if(a.w < -radius.w || min(b.w, c.w) > radius.w) \
+        { \
+            return false; \
+        } \
     }
 
     TESTFACE(x);
     TESTFACE(y);
     TESTFACE(z);
-
     return true;
 }
 #undef TESTAXIS
@@ -940,7 +969,8 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
     {
         return false;
     }
-    ivec imin = ivec::floor(vec(bo).sub(br)), imax = ivec::ceil(vec(bo).add(br)),
+    ivec imin = ivec::floor(vec(bo).sub(br)),
+         imax = ivec::ceil(vec(bo).add(br)),
          icenter = ivec(imin).add(imax).div(2),
          iradius = ivec(imax).sub(imin).add(1).div(2);
 
@@ -1044,7 +1074,8 @@ void BIH::genstaintris(stainrenderer *s, const mesh &m, const vec &center, float
 {
     node *stack[128];
     int stacksize = 0;
-    ivec bmin = ivec(bo).sub(br), bmax = ivec(bo).add(br);
+    ivec bmin = static_cast<ivec>(bo).sub(br),
+         bmax = static_cast<ivec>(bo).add(br);
     for(;;)
     {
         int axis = curnode->axis();

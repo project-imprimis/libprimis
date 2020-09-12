@@ -114,7 +114,7 @@ namespace ai
         if(attackrange(d, atk, dist) || (d->skill <= 100 && !randomint(d->skill)))
         {
             float skew = std::clamp(static_cast<float>(lastmillis-d->ai->enemymillis)/static_cast<float>((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
-                offy = yaw-d->yaw, offp = pitch-d->pitch;
+                  offy = yaw-d->yaw, offp = pitch-d->pitch;
             if(offy > 180)
             {
                 offy -= 360;
@@ -565,33 +565,6 @@ namespace ai
         }
     }
 
-    static void tryitem(gameent *d, extentity &e, int id, aistate &b, vector<interest> &interests, bool force = false)
-    {
-        float score = 0;
-        if(score != 0)
-        {
-            interest &n = interests.add();
-            n.state = AIState_Interest;
-            n.node = closestwaypoint(e.o, sightmin, true);
-            n.target = id;
-            n.targtype = AITravel_Entity;
-            n.score = d->feetpos().squaredist(e.o)/(force ? -1 : score);
-        }
-    }
-
-    void items(gameent *d, aistate &b, vector<interest> &interests, bool force = false)
-    {
-        for(int i = 0; i < entities::ents.length(); i++)
-        {
-            extentity &e = *(extentity *)entities::ents[i];
-            if(!e.spawned() || !d->canpickup(e.type))
-            {
-                continue;
-            }
-            tryitem(d, e, i, b, interests, force);
-        }
-    }
-
     static vector<int> targets;
 
     bool parseinterests(gameent *d, aistate &b, vector<interest> &interests, bool override, bool ignore)
@@ -616,7 +589,10 @@ namespace ai
                     proceed = !checkothers(targets, d, n.state, n.targtype, n.target, true, &members) && members > 1;
                     break;
                 }
-                default: break;
+                default:
+                {
+                    break;
+                }
             }
             if(proceed && makeroute(d, b, n.node))
             {
@@ -759,38 +735,6 @@ namespace ai
         {
             return;
         }
-        extentity &e = *entities::ents[ent];
-        if(VALID_ITEM(e.type))
-        {
-            for(int i = 0; i < players.length(); i++)
-            {
-                if(players[i] && players[i]->ai && players[i]->aitype == AI_Bot && players[i]->canpickup(e.type))
-                {
-                    gameent *d = players[i];
-                    bool wantsitem = false;
-                    if(wantsitem)
-                    {
-                        aistate &b = d->ai->getstate();
-                        if(b.targtype == AITravel_Affinity)
-                        {
-                            continue;
-                        }
-                        if(b.type == AIState_Interest && b.targtype == AITravel_Entity)
-                        {
-                            if(entities::ents.inrange(b.target))
-                            {
-                                if(d->o.squaredist(entities::ents[ent]->o) < d->o.squaredist(entities::ents[b.target]->o))
-                                {
-                                    d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
-                                }
-                            }
-                            continue;
-                        }
-                        d->ai->switchstate(b, AIState_Interest, AITravel_Entity, ent);
-                    }
-                }
-            }
-        }
     }
 
     bool check(gameent *d, aistate &b)
@@ -876,7 +820,10 @@ namespace ai
                     }
                     break;
                 }
-                default: break;
+                default:
+                {
+                    break;
+                }
             }
         }
         return 0;
@@ -907,16 +854,8 @@ namespace ai
             case AITravel_Entity:
                 if(entities::ents.inrange(b.target))
                 {
-                    extentity &e = *(extentity *)entities::ents[b.target];
-                    if(!e.spawned() || !VALID_ITEM(e.type))
-                    {
-                        return 0;
-                    }
-                    //if(d->feetpos().squaredist(e.o) <= closedist*closedist)
-                    //{
-                    //    b.idle = 1;
-                    //    return true;
-                    //}
+                    extentity &e = *static_cast<extentity *>(entities::ents[b.target]);
+                    return 0;
                     return makeroute(d, b, e.o) ? 1 : 0;
                 }
                 break;
@@ -1105,7 +1044,8 @@ namespace ai
         // check ahead to see if we need to go around something
         for(int j = 0; j < c; ++j)
         {
-            int p = n-j-1, v = d->ai->route[p];
+            int p = n-j-1,
+                v = d->ai->route[p];
             if(d->ai->hasprevnode(v) || obstacles.find(v, d)) // something is in the way, try to remap around it
             {
                 int m = p-1;
@@ -1304,7 +1244,8 @@ namespace ai
         {
             yaw -= 360.0f;
         }
-        float offyaw = fabs(targyaw-yaw)*frame, offpitch = fabs(targpitch-pitch)*frame*scale;
+        float offyaw = fabs(targyaw-yaw)*frame,
+              offpitch = fabs(targpitch-pitch)*frame*scale;
         if(targyaw > yaw)
         {
             yaw += offyaw;
@@ -1359,7 +1300,8 @@ namespace ai
     int process(gameent *d, aistate &b)
     {
         int result = 0,
-            stupify = d->skill <= 10+randomint(15) ? randomint(d->skill*1000) : 0, skmod = 101-d->skill;
+            stupify = d->skill <= 10+randomint(15) ? randomint(d->skill*1000) : 0,
+            skmod = 101-d->skill;
         float frame = d->skill <= 100 ? static_cast<float>(lastmillis-d->ai->lastrun)/static_cast<float>(max(skmod,1)*10) : 1;
         vec dp = d->headpos();
         bool idle = b.idle == 1 || (stupify && stupify <= skmod);
@@ -1388,7 +1330,7 @@ namespace ai
         bool enemyok = e && targetable(d, e);
         if(!enemyok || d->skill >= 50)
         {
-            gameent *f = (gameent *)intersectclosest(dp, d->ai->target, d, 1);
+            gameent *f = static_cast<gameent *>(intersectclosest(dp, d->ai->target, d, 1));
             if(f)
             {
                 if(targetable(d, f))
@@ -1486,7 +1428,8 @@ namespace ai
         {
             float offyaw, offpitch;
             vectoyawpitch(d->vel, offyaw, offpitch);
-            offyaw -= d->yaw; offpitch -= d->pitch;
+            offyaw -= d->yaw;
+            offpitch -= d->pitch;
             if(fabs(offyaw)+fabs(offpitch) >= 135)
             {
                 d->ai->becareful = false;
@@ -1506,7 +1449,10 @@ namespace ai
         }
         else
         { // our guys move one way.. but turn another?! :)
-            const struct aimdir { int move, strafe, offset; } aimdirs[8] =
+            const struct aimdir
+            {
+                int move, strafe, offset;
+            } aimdirs[8] =
             {
                 {  1,   0,   0 },
                 {  1,  -1,  45 },
@@ -1518,6 +1464,7 @@ namespace ai
                 {  1,   1, 315 }
             };
             float yaw = d->ai->targyaw-d->yaw;
+            //reset yaws to within 0-360 bounds
             while(yaw < 0.0f)
             {
                 yaw += 360.0f;
@@ -1526,8 +1473,11 @@ namespace ai
             {
                 yaw -= 360.0f;
             }
+            //set r to one of the 8 aim dirs depending on direction
             int r = std::clamp(static_cast<int>(floor((yaw+22.5f)/45.0f))&7, 0, 7);
+            //get an aim dir from the assigned r above
             const aimdir &ad = aimdirs[r];
+            //set move/strafe dirs to this aimdir
             d->move = ad.move;
             d->strafe = ad.strafe;
         }
@@ -1611,11 +1561,13 @@ namespace ai
                     }
                     case 4:
                     {
-                        d->ai->reset(true); break;
+                        d->ai->reset(true);
+                        break;
                     }
                     case 5:
                     {
-                        d->ai->reset(false); break;
+                        d->ai->reset(false);
+                        break;
                     }
                     case 6:
                     default:
@@ -1872,13 +1824,16 @@ namespace ai
         {
             if(d->ai->route.inrange(last))
             {
-                int index = d->ai->route[i], prev = d->ai->route[last];
+                int index = d->ai->route[i],
+                    prev = d->ai->route[last];
                 if(iswaypoint(index) && iswaypoint(prev))
                 {
-                    waypoint &e = waypoints[index], &f = waypoints[prev];
+                    waypoint &e = waypoints[index],
+                             &f = waypoints[prev];
                     vec fr = f.o,
                         dr = e.o;
-                    fr.z += amt; dr.z += amt;
+                    fr.z += amt;
+                    dr.z += amt;
                     particle_flare(fr, dr, 1, Part_Streak, 0xFFFFFF);
                 }
             }
@@ -1910,8 +1865,8 @@ namespace ai
         }
     }
 
-    VAR(showwaypoints, 0, 0, 1);
-    VAR(showwaypointsradius, 0, 200, 10000);
+    VAR(showwaypoints, 0, 0, 1); //display waypoint locations in edit mode
+    VAR(showwaypointsradius, 0, 200, 10000); //maximum distance to display (200 = 25m)
 
     const char *stnames[AIState_Max] = {
         "wait", "defend", "pursue", "interest"
@@ -1969,7 +1924,7 @@ namespace ai
                         {
                             if(aidebug >= 3)
                             {
-                                top = false;
+                                 top = false;
                             }
                             else
                             {
@@ -2037,4 +1992,3 @@ namespace ai
         }
     }
 }
-

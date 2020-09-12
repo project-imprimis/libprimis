@@ -54,7 +54,7 @@ void boxs(int orient, vec o, const vec &s)
 
     gle::defvertex();
     gle::begin(GL_LINE_LOOP);
-
+    //draw four surfaces
     gle::attrib(o); o[R[d]] += s[R[d]];
     gle::attrib(o); o[C[d]] += s[C[d]];
     gle::attrib(o); o[R[d]] -= s[R[d]];
@@ -65,7 +65,7 @@ void boxs(int orient, vec o, const vec &s)
 
 void boxs3D(const vec &o, vec s, int g)
 {
-    s.mul(g);
+    s.mul(g); //multiply displacement by g(ridpower)
     for(int i = 0; i < 6; ++i) //for each face
     {
         boxs(i, o, s);
@@ -466,8 +466,11 @@ void rendereditcursor()
     else
     {
         ivec w;
-        float sdist = 0, wdist = 0, t;
-        int entorient = 0, ent = -1;
+        float sdist = 0,
+              wdist = 0,
+              t;
+        int entorient = 0,
+            ent = -1;
 
         wdist = rayent(player->o, camdir, 1e16f,
                        (editmode && showmat ? Ray_EditMat : 0)   // select cubes first
@@ -665,7 +668,10 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
                 int hasmerges = c[i].ext->va->hasmerges;
                 destroyva(c[i].ext->va);
                 c[i].ext->va = NULL;
-                if(hasmerges) invalidatemerges(c[i]);
+                if(hasmerges)
+                {
+                    invalidatemerges(c[i]);
+                }
             }
             freeoctaentities(c[i]);
             c[i].ext->tjoints = -1;
@@ -678,9 +684,15 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
                 discardchildren(c[i], true);
                 brightencube(c[i]);
             }
-            else readychanges(bbmin, bbmax, c[i].children, o, size/2);
+            else
+            {
+                readychanges(bbmin, bbmax, c[i].children, o, size/2);
+            }
         }
-        else brightencube(c[i]);
+        else
+        {
+            brightencube(c[i]);
+        }
     }
 }
 
@@ -765,7 +777,7 @@ block3 *blockcopy(const block3 &s, int rgrid)
     {
         return NULL;
     }
-    block3 *b = reinterpret_cast<block3 *>(new (false) uchar[bsize]);
+    block3 *b = reinterpret_cast<block3 *>(new uchar[bsize]);
     if(b)
     {
         blockcopy(s, rgrid, b);
@@ -893,7 +905,7 @@ struct undolist
 };
 
 undolist undos, redos;
-VARP(undomegs, 0, 5, 100);                              // bounded by n megs
+VARP(undomegs, 0, 5, 100);                              // bounded by n megs, zero means no undo history
 int totalundos = 0;
 
 void pruneundos(int maxremain)                          // bound memory
@@ -918,7 +930,7 @@ void clearundos()
     pruneundos(0);
 }
 
-COMMAND(clearundos, "");
+COMMAND(clearundos, ""); //run pruneundos but with a cache size of zero
 
 undoblock *newundocube(const selinfo &s)
 {
@@ -929,7 +941,7 @@ undoblock *newundocube(const selinfo &s)
     {
         return NULL;
     }
-    undoblock *u = reinterpret_cast<undoblock *>(new (false) uchar[sizeof(undoblock) + blocksize + selgridsize]);
+    undoblock *u = reinterpret_cast<undoblock *>(new uchar[sizeof(undoblock) + blocksize + selgridsize]);
     if(!u)
     {
         return NULL;
@@ -1201,7 +1213,7 @@ static bool unpackblock(block3 *&b, B &buf)
     {
         return false;
     }
-    b = reinterpret_cast<block3 *>(new (false) uchar[sizeof(block3)+hdr.size()*sizeof(cube)]);
+    b = reinterpret_cast<block3 *>(new uchar[sizeof(block3)+hdr.size()*sizeof(cube)]);
     if(!b)
     {
         return false;
@@ -1292,7 +1304,7 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
     {
         return false;
     }
-    outbuf = new (false) uchar[len];
+    outbuf = new uchar[len];
     if(!outbuf || compress2((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen, Z_BEST_COMPRESSION) != Z_OK || len > (1<<16))
     {
         delete[] outbuf;
@@ -1305,9 +1317,12 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
 
 static bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen)
 {
-    if(compressBound(outlen) > (1<<20)) return false;
+    if(compressBound(outlen) > (1<<20))
+    {
+        return false;
+    }
     uLongf len = outlen;
-    outbuf = new (false) uchar[len];
+    outbuf = new uchar[len];
     if(!outbuf || uncompress((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen) != Z_OK)
     {
         delete[] outbuf;
@@ -1321,7 +1336,10 @@ static bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, in
 bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
-    if(!e || !e->copy || !packblock(*e->copy, buf)) return false;
+    if(!e || !e->copy || !packblock(*e->copy, buf))
+    {
+        return false;
+    }
     packvslots(*e->copy, buf);
     inlen = buf.length();
     return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
@@ -1373,13 +1391,13 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
 {
     vector<uchar> buf;
     buf.reserve(512);
-    *(ushort *)buf.pad(2) = ushort(u->numents);
+    *reinterpret_cast<ushort *>(buf.pad(2)) = static_cast<ushort>(u->numents);
     if(u->numents)
     {
         undoent *ue = u->ents();
         for(int i = 0; i < u->numents; ++i)
         {
-            *(ushort *)buf.pad(2) = ushort(ue[i].i);
+            *reinterpret_cast<ushort *>(buf.pad(2)) = static_cast<ushort>(ue[i].i);
             entity &e = *(entity *)buf.pad(sizeof(entity));
             e = ue[i].e;
         }
@@ -1387,7 +1405,10 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
     else
     {
         block3 &b = *u->block();
-        if(!packblock(b, buf)) return false;
+        if(!packblock(b, buf))
+        {
+            return false;
+        }
         buf.put(u->gridmap(), b.size());
         packvslots(b, buf);
     }
@@ -1405,7 +1426,7 @@ bool unpackundo(const uchar *inbuf, int inlen, int outlen)
         delete[] outbuf;
         return false;
     }
-    int numents = *(const ushort *)buf.pad(2);
+    int numents = *reinterpret_cast<const ushort *>(buf.pad(2));
     if(numents)
     {
         if(buf.remaining() < numents*static_cast<int>(2 + sizeof(entity)))
@@ -1571,12 +1592,21 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
 prefab *loadprefab(const char *name, bool msg = true)
 {
     prefab *b = prefabs.access(name);
-    if(b) return b;
-
+    if(b)
+    {
+        return b;
+    }
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "rb");
-    if(!f) { if(msg) conoutf(Console_Error, "could not read prefab %s", filename); return NULL; }
+    if(!f)
+    {
+        if(msg)
+        {
+            conoutf(Console_Error, "could not read prefab %s", filename);
+        }
+        return NULL;
+    }
     prefabheader hdr;
     if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4))
     {
@@ -1648,9 +1678,15 @@ struct prefabmesh
         for(int i = table[h]; i>=0; i = chain[i])
         {
             const vertex &c = verts[i];
-            if(c.pos==v.pos && c.norm==v.norm) return i;
+            if(c.pos==v.pos && c.norm==v.norm)
+            {
+                return i;
+            }
         }
-        if(verts.length() >= USHRT_MAX) return -1;
+        if(verts.length() >= USHRT_MAX)
+        {
+            return -1;
+        }
         verts.add(v);
         chain.add(table[h]);
         return table[h] = verts.length()-1;
@@ -1666,8 +1702,10 @@ struct prefabmesh
 
     void setup(prefab &p)
     {
-        if(tris.empty()) return;
-
+        if(tris.empty())
+        {
+            return;
+        }
         p.cleanup();
 
         for(int i = 0; i < verts.length(); i++)
@@ -1718,7 +1756,10 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
                 ivec v[4];
                 genfaceverts(c, i, v);
                 int convex = 0;
-                if(!flataxisface(c, i)) convex = faceconvexity(v);
+                if(!flataxisface(c, i))
+                {
+                    convex = faceconvexity(v);
+                }
                 int order = vis&4 || convex < 0 ? 1 : 0, numverts = 0;
                 vec vo(co), pos[4], norm[4];
                 pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
@@ -1757,7 +1798,8 @@ void genprefabmesh(prefab &p)
     b.o = ivec(0, 0, 0);
 
     cube *oldworldroot = worldroot;
-    int oldworldscale = worldscale, oldworldsize = worldsize;
+    int oldworldscale = worldscale,
+        oldworldsize = worldsize;
 
     worldroot = newcubes();
     worldscale = 1;
@@ -1821,7 +1863,10 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
         m.rotate_around_y(-roll*RAD);
     }
     matrix3 w(m);
-    if(size > 0 && size != 1) m.scale(size);
+    if(size > 0 && size != 1)
+    {
+        m.scale(size);
+    }
     m.translate(vec(b.s).mul(-b.grid*0.5f));
 
     gle::bindvbo(p.vbo);
@@ -1881,9 +1926,18 @@ void previewprefab(const char *name, const vec &color)
 
 void mpcopy(editinfo *&e, selinfo &sel, bool local)
 {
-    if(local) game::edittrigger(sel, Edit_Copy);
-    if(e==NULL) e = editinfos.add(new editinfo);
-    if(e->copy) freeblock(e->copy);
+    if(local)
+    {
+        game::edittrigger(sel, Edit_Copy);
+    }
+    if(e==NULL)
+    {
+        e = editinfos.add(new editinfo);
+    }
+    if(e->copy)
+    {
+        freeblock(e->copy);
+    }
     e->copy = NULL;
     PROTECT_SEL(e->copy = blockcopy(block3(sel), sel.grid));
     changed(sel);
@@ -1891,20 +1945,35 @@ void mpcopy(editinfo *&e, selinfo &sel, bool local)
 
 void mppaste(editinfo *&e, selinfo &sel, bool local)
 {
-    if(e==NULL) return;
-    if(local) game::edittrigger(sel, Edit_Paste);
-    if(e->copy) pasteblock(*e->copy, sel, local);
+    if(e==NULL)
+    {
+        return;
+    }
+    if(local)
+    {
+        game::edittrigger(sel, Edit_Paste);
+    }
+    if(e->copy)
+    {
+        pasteblock(*e->copy, sel, local);
+    }
 }
 
 void copy()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     mpcopy(localedit, sel, true);
 }
 
 void pastehilite()
 {
-    if(!localedit) return;
+    if(!localedit)
+    {
+        return;
+    }
     sel.s = localedit->copy->s;
     reorient();
     havesel = true;
@@ -1912,7 +1981,10 @@ void pastehilite()
 
 void paste()
 {
-    if(noedit(true)) return;
+    if(noedit(true))
+    {
+        return;
+    }
     mppaste(localedit, sel, true);
 }
 
@@ -1948,11 +2020,19 @@ void compacteditvslots()
         compactvslots(e->copy->c(), e->copy->size());
     }
     for(undoblock *u = undos.first; u; u = u->next)
+    {
         if(!u->numents)
+        {
             compactvslots(u->block()->c(), u->block()->size());
+        }
+    }
     for(undoblock *u = redos.first; u; u = u->next)
+    {
         if(!u->numents)
+        {
             compactvslots(u->block()->c(), u->block()->size());
+        }
+    }
 }
 
 ///////////// height maps ////////////////
@@ -1968,9 +2048,13 @@ namespace hmap
         int t = lookupcube(cur).texture[orient];
         int i = textures.find(t);
         if(i<0)
+        {
             textures.add(t);
+        }
         else
+        {
             textures.remove(i);
+        }
     );
 
     inline bool isheightmap(int o, int d, bool empty, cube *c)
@@ -1980,47 +2064,53 @@ namespace hmap
             textures.empty() ||
             textures.find(c->texture[o]) >= 0;
     }
+    //max brush consts
+    static const int maxbrush  = 64;
+    static const int maxbrushc = 63;
+    static const int maxbrush2 = 32;
 
-    #define MAXBRUSH    64
-    #define MAXBRUSHC   63
-    #define MAXBRUSH2   32
-    int brush[MAXBRUSH][MAXBRUSH];
-    VARN(hbrushx, brushx, 0, MAXBRUSH2, MAXBRUSH);
-    VARN(hbrushy, brushy, 0, MAXBRUSH2, MAXBRUSH);
+    int brush[maxbrush][maxbrush];
+    VARN(hbrushx, brushx, 0, maxbrush2, maxbrush);
+    VARN(hbrushy, brushy, 0, maxbrush2, maxbrush);
     bool paintbrush = 0;
-    int brushmaxx = 0, brushminx = MAXBRUSH;
-    int brushmaxy = 0, brushminy = MAXBRUSH;
+    int brushmaxx = 0,
+        brushminx = maxbrush,
+        brushmaxy = 0,
+        brushminy = maxbrush;
 
     void clearhbrush()
     {
         memset(brush, 0, sizeof brush);
         brushmaxx = brushmaxy = 0;
-        brushminx = brushminy = MAXBRUSH;
+        brushminx = brushminy = maxbrush;
         paintbrush = false;
     }
     COMMAND(clearhbrush, "");
 
     void hbrushvert(int *x, int *y, int *v)
     {
-        *x += MAXBRUSH2 - brushx + 1; // +1 for automatic padding
-        *y += MAXBRUSH2 - brushy + 1;
-        if(*x<0 || *y<0 || *x>=MAXBRUSH || *y>=MAXBRUSH) return;
+        *x += maxbrush2 - brushx + 1; // +1 for automatic padding
+        *y += maxbrush2 - brushy + 1;
+        if(*x<0 || *y<0 || *x>=maxbrush || *y>=maxbrush)
+        {
+            return;
+        }
         brush[*x][*y] = std::clamp(*v, 0, 8);
         paintbrush = paintbrush || (brush[*x][*y] > 0);
-        brushmaxx = min(MAXBRUSH-1, max(brushmaxx, *x+1));
-        brushmaxy = min(MAXBRUSH-1, max(brushmaxy, *y+1));
+        brushmaxx = min(maxbrush-1, max(brushmaxx, *x+1));
+        brushmaxy = min(maxbrush-1, max(brushmaxy, *y+1));
         brushminx = max(0,          min(brushminx, *x-1));
         brushminy = max(0,          min(brushminy, *y-1));
     }
     COMMAND(hbrushvert, "iii");
 
-    #define PAINTED     1
-    #define NOTHMAP     2
-    #define MAPPED      16
-    uchar  flags[MAXBRUSH][MAXBRUSH];
-    cube   *cmap[MAXBRUSHC][MAXBRUSHC][4];
-    int    mapz[MAXBRUSHC][MAXBRUSHC];
-    int    map [MAXBRUSH][MAXBRUSH];
+    static const int painted = 1;
+    static const int nothmap = 2;
+    static const int mapped  = 16;
+    uchar  flags[maxbrush][maxbrush];
+    cube   *cmap[maxbrushc][maxbrushc][4];
+    int    mapz[maxbrushc][maxbrushc];
+    int    map [maxbrush][maxbrush];
 
     selinfo changes;
     bool selecting;
@@ -2032,11 +2122,20 @@ namespace hmap
     cube *getcube(ivec t, int f)
     {
         t[d] += dcr*f*gridsize;
-        if(t[d] > nz || t[d] < mz) return NULL;
+        if(t[d] > nz || t[d] < mz)
+        {
+            return NULL;
+        }
         cube *c = &lookupcube(t, gridsize);
-        if(c->children) forcemip(*c, false);
+        if(c->children)
+        {
+            forcemip(*c, false);
+        }
         discardchildren(*c, true);
-        if(!isheightmap(sel.orient, d, true, c)) return NULL;
+        if(!isheightmap(sel.orient, d, true, c))
+        {
+            return NULL;
+        }
         if     (t.x < changes.o.x) changes.o.x = t.x;
         else if(t.x > changes.s.x) changes.s.x = t.x;
         if     (t.y < changes.o.y) changes.o.y = t.y;
@@ -2061,14 +2160,19 @@ namespace hmap
 
     void addpoint(int x, int y, int z, int v)
     {
-        if(!(flags[x][y] & MAPPED))
-          map[x][y] = v + (z*8);
-        flags[x][y] |= MAPPED;
+        if(!(flags[x][y] & mapped))
+        {
+            map[x][y] = v + (z*8);
+        }
+        flags[x][y] |= mapped;
     }
 
     void select(int x, int y, int z)
     {
-        if((NOTHMAP & flags[x][y]) || (PAINTED & flags[x][y])) return;
+        if((nothmap & flags[x][y]) || (painted & flags[x][y]))
+        {
+            return;
+        }
         ivec t(d, x+gx, y+gy, dc ? z : hws-z);
         t.shl(gridpower);
 
@@ -2087,8 +2191,17 @@ namespace hmap
         {   // try up
             c[2] = c[1];
             c[1] = getcube(t, 1);
-            if(!c[1] || IS_EMPTY(*c[1])) { c[0] = c[1]; c[1] = c[2]; c[2] = NULL; }
-            else { z++; t[d]+=fg; }
+            if(!c[1] || IS_EMPTY(*c[1]))
+            {
+                c[0] = c[1];
+                c[1] = c[2];
+                c[2] = NULL;
+            }
+            else
+            {
+                z++;
+                t[d]+=fg;
+            }
         }
         else // drop down
         {
@@ -2098,25 +2211,41 @@ namespace hmap
             c[1] = getcube(t, 0);
         }
 
-        if(!c[1] || IS_EMPTY(*c[1])) { flags[x][y] |= NOTHMAP; return; }
-
-        flags[x][y] |= PAINTED;
+        if(!c[1] || IS_EMPTY(*c[1]))
+        {
+            flags[x][y] |= nothmap;
+            return;
+        }
+        flags[x][y] |= painted;
         mapz [x][y]  = z;
-
-        if(!c[0]) c[0] = getcube(t, 1);
-        if(!c[2]) c[2] = getcube(t, -1);
+        if(!c[0])
+        {
+            c[0] = getcube(t, 1);
+        }
+        if(!c[2])
+        {
+            c[2] = getcube(t, -1);
+        }
         c[3] = getcube(t, -2);
         c[2] = !c[2] || IS_EMPTY(*c[2]) ? NULL : c[2];
         c[3] = !c[3] || IS_EMPTY(*c[3]) ? NULL : c[3];
 
         uint face = getface(c[1], d);
-        if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0]))) { flags[x][y] |= NOTHMAP; return; }
+        if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0])))
+        {
+            flags[x][y] |= nothmap;
+            return;
+        }
         if(c[1]->faces[R[d]] == facesolid)   // was single
+        {
             face += 0x08080808;
+        }
         else                               // was pair
+        {
             face += c[2] ? getface(c[2], d) : 0x08080808;
+        }
         face += 0x08080808;                // c[3]
-        uchar *f = (uchar*)&face;
+        uchar *f = reinterpret_cast<uchar*>(&face);
         addpoint(x,   y,   z, f[0]);
         addpoint(x+1, y,   z, f[1]);
         addpoint(x,   y+1, z, f[2]);
@@ -2137,13 +2266,14 @@ namespace hmap
         {
             select(x, y, z);
         }
-        if((NOTHMAP & flags[x][y]) || !(PAINTED & flags[x][y]))
+        if((nothmap & flags[x][y]) || !(painted & flags[x][y]))
         {
             return;
         }
 
         bool changed = false;
-        int *o[4], best, par, q = 0;
+        int *o[4], best, par,
+            q = 0;
         for(int i = 0; i < 2; ++i)
         {
             for(int j = 0; j < 2; ++j)
@@ -2152,30 +2282,47 @@ namespace hmap
             }
         }
 
-        #define PULL_HEIGHTMAP(I, LT, GT, M, N, A) do { \
+        #define PULL_HEIGHTMAP(I, LT, GT, M, N, A) \
+        do \
+        { \
             best = I; \
-            for(int i = 0; i < 4; ++i) if(*o[i] LT best) best = *o[q = i] - M; \
+            for(int i = 0; i < 4; ++i) \
+            { \
+                if(*o[i] LT best) \
+                { \
+                    best = *o[q = i] - M; \
+                } \
+            } \
             par = (best&(~7)) + N; \
             /* dual layer for extra smoothness */ \
-            if(*o[q^3] GT par && !(*o[q^1] LT par || *o[q^2] LT par)) { \
-                if(*o[q^3] GT par A 8 || *o[q^1] != par || *o[q^2] != par) { \
+            if(*o[q^3] GT par && !(*o[q^1] LT par || *o[q^2] LT par)) \
+            { \
+                if(*o[q^3] GT par A 8 || *o[q^1] != par || *o[q^2] != par) \
+                { \
                     *o[q^3] = (*o[q^3] GT par A 8 ? par A 8 : *o[q^3]); \
                     *o[q^1] = *o[q^2] = par; \
                     changed = true; \
                 } \
             /* single layer */ \
-            } else { \
-                for(int j = 0; j < 4; ++j) if(*o[j] GT par) { \
-                    *o[j] = par; \
-                    changed = true; \
-                } \
+            } \
+            else { \
+                for(int j = 0; j < 4; ++j) \
+                    if(*o[j] GT par) \
+                    { \
+                        *o[j] = par; \
+                        changed = true; \
+                    } \
             } \
         } while(0)
 
         if(biasup)
+        {
             PULL_HEIGHTMAP(0, >, <, 1, 0, -);
+        }
         else
+        {
             PULL_HEIGHTMAP(worldsize*8, <, >, 0, 8, +);
+        }
 
         #undef PULL_HEIGHTMAP
 
@@ -2222,20 +2369,26 @@ namespace hmap
                 }
             }
         }
-
-        if(!changed) return;
+        if(!changed)
+        {
+            return;
+        }
         if(x>mx) ripple(x-1, y, mapz[x][y], true);
         if(x<nx) ripple(x+1, y, mapz[x][y], true);
         if(y>my) ripple(x, y-1, mapz[x][y], true);
         if(y<ny) ripple(x, y+1, mapz[x][y], true);
 
-#define DIAGONAL_RIPPLE(a,b,exp) if(exp) { \
-            if(flags[x a][ y] & PAINTED) \
+#define DIAGONAL_RIPPLE(a,b,exp) \
+    if(exp) { \
+            if(flags[x a][ y] & painted) \
+            { \
                 ripple(x a, y b, mapz[x a][y], true); \
-            else if(flags[x][y b] & PAINTED) \
+            } \
+            else if(flags[x][y b] & painted) \
+            { \
                 ripple(x a, y b, mapz[x][y b], true); \
+            } \
         }
-
         DIAGONAL_RIPPLE(-1, -1, (x>mx && y>my)); // do diagonals because adjacents
         DIAGONAL_RIPPLE(-1, +1, (x>mx && y<ny)); //    won't unless changed
         DIAGONAL_RIPPLE(+1, +1, (x<nx && y<ny));
@@ -2263,7 +2416,7 @@ namespace hmap
             {
                 for(int j = 0; j < 3; ++j)
                 {
-                    if(flags[x+i][y+j] & MAPPED)
+                    if(flags[x+i][y+j] & mapped)
                     {
                         sum += map[x+i][y+j];
                     }
@@ -2274,7 +2427,9 @@ namespace hmap
                 }
             }
             if(div)
+            {
                 map[x+1][y+1] = sum / div;
+            }
         }
     }
 
@@ -2294,20 +2449,20 @@ namespace hmap
         dr = dir>0 ? 1 : -1;
         br = dir>0 ? 0x08080808 : 0;
      //   biasup = mode == dir<0;
-        biasup = dir<0;
+        biasup = dir < 0;
         bool paintme = paintbrush;
-        int cx = (sel.corner&1 ? 0 : -1);
-        int cy = (sel.corner&2 ? 0 : -1);
+        int cx = (sel.corner&1 ? 0 : -1),
+            cy = (sel.corner&2 ? 0 : -1);
         hws= (worldsize>>gridpower);
-        gx = (cur[R[d]] >> gridpower) + cx - MAXBRUSH2;
-        gy = (cur[C[d]] >> gridpower) + cy - MAXBRUSH2;
+        gx = (cur[R[d]] >> gridpower) + cx - maxbrush2;
+        gy = (cur[C[d]] >> gridpower) + cy - maxbrush2;
         gz = (cur[D[d]] >> gridpower);
         fs = dc ? 4 : 0;
         fg = dc ? gridsize : -gridsize;
         mx = max(0, -gx); // ripple range
         my = max(0, -gy);
-        nx = min(MAXBRUSH-1, hws-gx) - 1;
-        ny = min(MAXBRUSH-1, hws-gy) - 1;
+        nx = min(maxbrush-1, hws-gx) - 1;
+        ny = min(maxbrush-1, hws-gy) - 1;
         if(havesel)
         {   // selection range
             bmx = mx = max(mx, (sel.o[R[d]]>>gridpower)-gx);
@@ -2316,7 +2471,9 @@ namespace hmap
             bny = ny = min(ny, (sel.s[C[d]]+(sel.o[C[d]]>>gridpower))-gy-1);
         }
         if(havesel && mode<0) // -ve means smooth selection
+        {
             paintme = false;
+        }
         else
         {   // brush range
             bmx = max(mx, brushminx);
@@ -2337,14 +2494,18 @@ namespace hmap
         memset(flags, 0, sizeof flags);
 
         selecting = true;
-        select(std::clamp(MAXBRUSH2-cx, bmx, bnx),
-               std::clamp(MAXBRUSH2-cy, bmy, bny),
+        select(std::clamp(maxbrush2-cx, bmx, bnx),
+               std::clamp(maxbrush2-cy, bmy, bny),
                dc ? gz : hws - gz);
         selecting = false;
         if(paintme)
+        {
             paint();
+        }
         else
+        {
             smooth();
+        }
         rippleandset();                       // pull up points to cubify, and set
         changes.s.sub(changes.o).shr(gridpower).add(1);
         changed(changes);
@@ -2353,20 +2514,29 @@ namespace hmap
 
 void edithmap(int dir, int mode)
 {
-    if((nompedit && multiplayer()) || !hmapsel) return;
+    if((nompedit && multiplayer()) || !hmapsel)
+    {
+        return;
+    }
     hmap::run(dir, mode);
 }
 
 ///////////// main cube edit ////////////////
 
-int bounded(int n) { return n<0 ? 0 : (n>8 ? 8 : n); }
+int bounded(int n)
+{
+    return n<0 ? 0 : (n>8 ? 8 : n);
+}
 
 void pushedge(uchar &edge, int dir, int dc)
 {
     int ne = bounded(EDGE_GET(edge, dc)+dir);
     EDGE_SET(edge, dc, ne);
     int oe = EDGE_GET(edge, 1-dc);
-    if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne)) EDGE_SET(edge, 1-dc, ne);
+    if((dir<0 && dc && oe>ne) || (dir>0 && dc==0 && oe<ne))
+    {
+        EDGE_SET(edge, 1-dc, ne);
+    }
 }
 
 void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
@@ -2380,7 +2550,9 @@ void linkedpush(cube &c, int d, int x, int y, int dc, int dir)
         {
             getcubevector(c, d, i, j, dc, p);
             if(v==p)
+            {
                 pushedge(CUBE_EDGE(c, d, i, j), dir, dc);
+            }
         }
     }
 }
@@ -2428,7 +2600,10 @@ void mpplacecube(selinfo &sel, int tex, bool local)
 
 void mpeditface(int dir, int mode, selinfo &sel, bool local)
 {
-    if(mode==1 && (sel.cx || sel.cy || sel.cxs&1 || sel.cys&1)) mode = 0;
+    if(mode==1 && (sel.cx || sel.cy || sel.cxs&1 || sel.cys&1))
+    {
+        mode = 0;
+    }
     int d = DIMENSION(sel.orient);
     int dc = DIM_COORD(sel.orient);
     int seldir = dc ? -dir : dir;
@@ -2439,15 +2614,27 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
     if(mode==1)
     {
         int h = sel.o[d]+dc*sel.grid;
-        if(((dir>0) == dc && h<=0) || ((dir<0) == dc && h>=worldsize)) return;
-        if(dir<0) sel.o[d] += sel.grid * seldir;
+        if(((dir>0) == dc && h<=0) || ((dir<0) == dc && h>=worldsize))
+        {
+            return;
+        }
+        if(dir<0)
+        {
+            sel.o[d] += sel.grid * seldir;
+        }
     }
 
-    if(dc) sel.o[d] += sel.us(d)-sel.grid;
+    if(dc)
+    {
+        sel.o[d] += sel.us(d)-sel.grid;
+    }
     sel.s[d] = 1;
 
     LOOP_SEL_XYZ(
-        if(c.children) SOLID_FACES(c);
+        if(c.children)
+        {
+            SOLID_FACES(c);
+        }
         ushort mat = getmaterial(c);
         discardchildren(c, true);
         c.material = mat;
@@ -2468,10 +2655,11 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
         else
         {
             uint bak = c.faces[d];
-            uchar *p = (uchar *)&c.faces[d];
-
+            uchar *p = reinterpret_cast<uchar *>(&c.faces[d]);
             if(mode==2)
+            {
                 linkedpush(c, d, sel.corner&1, sel.corner>>1, dc, seldir); // corner command
+            }
             else
             {
                 for(int mx = 0; mx < 2; ++mx) // pull/push edges command
@@ -2498,18 +2686,16 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
                         {
                             continue;
                         }
-
                         linkedpush(c, d, mx, my, dc, seldir);
                     }
                 }
             }
-
             optiface(p, c);
             if(invalidcubeguard==1 && !isvalidcube(c))
             {
                 uint newbak = c.faces[d];
-                uchar *m = (uchar *)&bak;
-                uchar *n = (uchar *)&newbak;
+                uchar *m = reinterpret_cast<uchar *>(&bak);
+                uchar *n = reinterpret_cast<uchar *>(&newbak);
                 for(int k = 0; k < 4; ++k)
                 {
                     if(n[k] != m[k]) // tries to find partial edit that is valid
@@ -2599,11 +2785,13 @@ COMMAND(delcube, "");
 
 /////////// texture editing //////////////////
 
-int curtexindex = -1, lasttex = 0, lasttexmillis = -1;
+int curtexindex = -1,
+    lasttex = 0,
+    lasttexmillis = -1;
 int texpaneltimer = 0;
 vector<ushort> texmru;
 
-void tofronttex()                                       // maintain most recently used of the texture lists when applying texture
+void tofronttex() // maintain most recently used of the texture lists when applying texture
 {
     int c = curtexindex;
     if(texmru.inrange(c))
@@ -2996,7 +3184,10 @@ int shouldpacktex(int index)
 
 bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf)
 {
-    if(!unpacktex(tex, buf)) return false;
+    if(!unpacktex(tex, buf))
+    {
+        return false;
+    }
     mpedittex(tex, allfaces, sel, false);
     return true;
 }
@@ -3410,7 +3601,10 @@ void mpflip(selinfo &sel, bool local)
 
 void flip()
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     mpflip(sel, true);
 }
 
@@ -3425,8 +3619,8 @@ void mprotate(int cw, selinfo &sel, bool local)
     {
         cw = -cw;
     }
-    int m = sel.s[C[d]] < sel.s[R[d]] ? C[d] : R[d];
-    int ss = sel.s[m] = max(sel.s[R[d]], sel.s[C[d]]);
+    int m = sel.s[C[d]] < sel.s[R[d]] ? C[d] : R[d],
+        ss = sel.s[m] = max(sel.s[R[d]], sel.s[C[d]]);
     if(local)
     {
         makeundo();
@@ -3459,7 +3653,10 @@ void mprotate(int cw, selinfo &sel, bool local)
 
 void rotate(int *cw)
 {
-    if(noedit()) return;
+    if(noedit())
+    {
+        return;
+    }
     mprotate(*cw, sel, true);
 }
 
@@ -3473,13 +3670,19 @@ enum
     EditMatFlag_Solid = 0x30000,
     EditMatFlag_NotSolid = 0x40000
 };
-static const struct { const char *name; int filter; } editmatfilters[] =
+
+static const struct
+{
+    const char *name;
+    int filter;
+} editmatfilters[] =
 {
     { "empty", EditMatFlag_Empty },
     { "notempty", EditMatFlag_NotEmpty },
     { "solid", EditMatFlag_Solid },
     { "notsolid", EditMatFlag_NotSolid }
 };
+
 /*setmat: sets a cube's materials, given a material & filter to use
  * Arguments:
  *  c: the cube object to use
@@ -3654,16 +3857,15 @@ void rendertexturepanel(int w, int h)
         hudmatrix.scale(h/1800.0f, h/1800.0f, 1);
         flushhudmatrix(false);
         SETSHADER(hudrgb);
-
-        int y = 50, gap = 10;
-
+        int y = 50,
+        gap = 10;
         gle::defvertex(2);
         gle::deftexcoord0();
 
         for(int i = 0; i < 7; ++i)
         {
-            int s = (i == 3 ? 285 : 220);
-            int ti = curtexindex+i-3;
+            int s = (i == 3 ? 285 : 220),
+                ti = curtexindex+i-3;
             if(texmru.inrange(ti))
             {
                 VSlot &vslot = lookupvslot(texmru[ti]);
@@ -3686,7 +3888,8 @@ void rendertexturepanel(int w, int h)
                 int x = w*1800/h-s-50,
                     r = s;
                 vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
-                float xoff = vslot.offset.x, yoff = vslot.offset.y;
+                float xoff = vslot.offset.x,
+                      yoff = vslot.offset.y;
                 if(vslot.rotation)
                 {
                     const texrotation &r = texrotations[vslot.rotation];

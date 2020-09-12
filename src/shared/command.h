@@ -141,15 +141,67 @@ struct tagval : identval
 {
     int type;
 
-    void setint(int val) { type = Value_Integer; i = val; }
-    void setfloat(float val) { type = Value_Float; f = val; }
-    void setnumber(double val) { i = int(val); if(val == i) type = Value_Integer; else { type = Value_Float; f = val; } }
-    void setstr(char *val) { type = Value_String; s = val; }
-    void setnull() { type = Value_Null; i = 0; }
-    void setcode(const uint *val) { type = Value_Code; code = val; }
-    void setmacro(const uint *val) { type = Value_Macro; code = val; }
-    void setcstr(const char *val) { type = Value_CString; cstr = val; }
-    void setident(ident *val) { type = Value_Ident; id = val; }
+    void setint(int val)
+    {
+        type = Value_Integer;
+        i = val;
+    }
+
+    void setfloat(float val)
+    {
+        type = Value_Float;
+        f = val;
+    }
+
+    void setnumber(double val)
+    {
+        i = static_cast<int>(val);
+        if(val == i)
+        {
+            type = Value_Integer;
+        }
+        else
+        {
+            type = Value_Float;
+            f = val;
+        }
+    }
+
+    void setstr(char *val)
+    {
+        type = Value_String;
+        s = val;
+    }
+
+    void setnull()
+    {
+        type = Value_Null;
+        i = 0;
+    }
+
+    void setcode(const uint *val)
+    {
+        type = Value_Code;
+        code = val;
+    }
+
+    void setmacro(const uint *val)
+    {
+        type = Value_Macro;
+        code = val;
+    }
+
+    void setcstr(const char *val)
+    {
+        type = Value_CString;
+        cstr = val;
+    }
+
+    void setident(ident *val)
+    {
+        type = Value_Ident;
+        id = val;
+    }
 
     const char *getstr() const;
     int getint() const;
@@ -193,10 +245,18 @@ struct ident
     {
         struct // Id_Var, Id_FloatVar, Id_StringVar
         {
-            union
+            union //number var range union type
             {
-                struct { int minval, maxval; };     // Id_Var
-                struct { float minvalf, maxvalf; }; // Id_FloatVar
+                struct
+                {
+                    int minval,
+                        maxval;
+                };     // Id_Var
+                struct
+                {
+                    float minvalf,
+                          maxvalf;
+                }; // Id_FloatVar
             };
             identvalptr storage;
             identval overrideval;
@@ -220,36 +280,49 @@ struct ident
     ident(int t, const char *n, int m, int x, int *s, void *f = NULL, int flags = 0)
         : type(t), flags(flags | (m > x ? Idf_ReadOnly : 0)), name(n), minval(m), maxval(x), fun((identfun)f)
     { storage.i = s; }
+
     // Id_FloatVar
     ident(int t, const char *n, float m, float x, float *s, void *f = NULL, int flags = 0)
         : type(t), flags(flags | (m > x ? Idf_ReadOnly : 0)), name(n), minvalf(m), maxvalf(x), fun((identfun)f)
     { storage.f = s; }
+
     // Id_StringVar
     ident(int t, const char *n, char **s, void *f = NULL, int flags = 0)
         : type(t), flags(flags), name(n), fun((identfun)f)
     { storage.s = s; }
+
     // Id_Alias
     ident(int t, const char *n, char *a, int flags)
         : type(t), valtype(Value_String), flags(flags), name(n), code(NULL), stack(NULL)
     { val.s = a; }
+
     ident(int t, const char *n, int a, int flags)
         : type(t), valtype(Value_Integer), flags(flags), name(n), code(NULL), stack(NULL)
     { val.i = a; }
+
     ident(int t, const char *n, float a, int flags)
         : type(t), valtype(Value_Float), flags(flags), name(n), code(NULL), stack(NULL)
     { val.f = a; }
+
     ident(int t, const char *n, int flags)
         : type(t), valtype(Value_Null), flags(flags), name(n), code(NULL), stack(NULL)
     {}
     ident(int t, const char *n, const tagval &v, int flags)
         : type(t), valtype(v.type), flags(flags), name(n), code(NULL), stack(NULL)
     { val = v; }
+
     // Id_Command
     ident(int t, const char *n, const char *args, uint argmask, int numargs, void *f = NULL, int flags = 0)
         : type(t), numargs(numargs), flags(flags), name(n), args(args), argmask(argmask), fun((identfun)f)
     {}
 
-    void changed() { if(fun) fun(this); }
+    void changed()
+    {
+        if(fun)
+        {
+            fun(this);
+        }
+    }
 
     void setval(const tagval &v)
     {
@@ -265,7 +338,10 @@ struct ident
 
     void forcenull()
     {
-        if(valtype==Value_String) delete[] val.s;
+        if(valtype==Value_String)
+        {
+            delete[] val.s;
+        }
         valtype = Value_Null;
     }
 
@@ -293,7 +369,7 @@ extern void result(const char *s);
 
 inline int parseint(const char *s)
 {
-    return int(strtoul(s, NULL, 0));
+    return static_cast<int>(strtoul(s, NULL, 0));
 }
 
 #define PARSEFLOAT(name, type) \
@@ -308,40 +384,90 @@ PARSEFLOAT(float, float)
 PARSEFLOAT(number, double)
 
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
-inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==int(v) ? "%.1f" : "%.7g", v); }
+inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
 inline void numberformat(char *buf, double v, int len = 20)
 {
-    int i = int(v);
-    if(v == i) nformatstring(buf, len, "%d", i);
-    else nformatstring(buf, len, "%.7g", v);
+    int i = static_cast<int>(v);
+    if(v == i)
+    {
+        nformatstring(buf, len, "%d", i);
+    }
+    else
+    {
+        nformatstring(buf, len, "%.7g", v);
+    }
 }
 
 inline const char *getstr(const identval &v, int type)
 {
     switch(type)
     {
-        case Value_String: case Value_Macro: case Value_CString: return v.s;
-        case Value_Integer: return intstr(v.i);
-        case Value_Float: return floatstr(v.f);
-        default: return "";
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return v.s;
+        }
+        case Value_Integer:
+        {
+            return intstr(v.i);
+        }
+        case Value_Float:
+        {
+            return floatstr(v.f);
+        }
+        default:
+        {
+            return "";
+        }
     }
 }
-inline const char *tagval::getstr() const { return ::getstr(*this, type); }
-inline const char *ident::getstr() const { return ::getstr(val, valtype); }
+inline const char *tagval::getstr() const
+{
+    return ::getstr(*this, type);
+}
 
+inline const char *ident::getstr() const
+{
+    return ::getstr(val, valtype);
+}
+
+//defines three getter functions, kind of like a bastard template (though we want the fxns to have different names)
+// very fun!
 #define GETNUMBER(name, ret) \
     inline ret get##name(const identval &v, int type) \
     { \
         switch(type) \
         { \
-            case Value_Float: return ret(v.f); \
-            case Value_Integer: return ret(v.i); \
-            case Value_String: case Value_Macro: case Value_CString: return parse##name(v.s); \
-            default: return ret(0); \
+            case Value_Float: \
+            { \
+                return ret(v.f); \
+            } \
+            case Value_Integer: \
+            { \
+                return ret(v.i); \
+            } \
+            case Value_String: \
+            case Value_Macro: \
+            case Value_CString: \
+            { \
+                return parse##name(v.s); \
+            } \
+            default: \
+            { \
+                return ret(0); \
+            } \
         } \
     } \
-    inline ret tagval::get##name() const { return ::get##name(*this, type); } \
-    inline ret ident::get##name() const { return ::get##name(val, valtype); }
+    inline ret tagval::get##name() const \
+    { \
+        return ::get##name(*this, type); \
+    } \
+    inline ret ident::get##name() const \
+    { \
+        return ::get##name(val, valtype); \
+    }
+
 GETNUMBER(int, int)
 GETNUMBER(float, float)
 GETNUMBER(number, double)
@@ -350,25 +476,71 @@ inline void getval(const identval &v, int type, tagval &r)
 {
     switch(type)
     {
-        case Value_String: case Value_Macro: case Value_CString: r.setstr(newstring(v.s)); break;
-        case Value_Integer: r.setint(v.i); break;
-        case Value_Float: r.setfloat(v.f); break;
-        default: r.setnull(); break;
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            r.setstr(newstring(v.s));
+            break;
+        }
+        case Value_Integer:
+        {
+            r.setint(v.i);
+            break;
+        }
+        case Value_Float:
+        {
+            r.setfloat(v.f);
+            break;
+        }
+        default:
+        {
+            r.setnull();
+            break;
+        }
     }
 }
 
-inline void tagval::getval(tagval &r) const { ::getval(*this, type, r); }
-inline void ident::getval(tagval &r) const { ::getval(val, valtype, r); }
+inline void tagval::getval(tagval &r) const
+{
+    ::getval(*this, type, r);
+}
+
+inline void ident::getval(tagval &r) const
+{
+    ::getval(val, valtype, r);
+}
 
 inline void ident::getcstr(tagval &v) const
 {
     switch(valtype)
     {
-        case Value_Macro: v.setmacro(val.code); break;
-        case Value_String: case Value_CString: v.setcstr(val.s); break;
-        case Value_Integer: v.setstr(newstring(intstr(val.i))); break;
-        case Value_Float: v.setstr(newstring(floatstr(val.f))); break;
-        default: v.setcstr(""); break;
+        case Value_Macro:
+        {
+            v.setmacro(val.code);
+            break;
+        }
+        case Value_String:
+        case Value_CString:
+        {
+            v.setcstr(val.s);
+            break;
+        }
+        case Value_Integer:
+        {
+            v.setstr(newstring(intstr(val.i)));
+            break;
+        }
+        case Value_Float:
+        {
+            v.setstr(newstring(floatstr(val.f)));
+            break;
+        }
+        default:
+        {
+            v.setcstr("");
+            break;
+        }
     }
 }
 
@@ -376,15 +548,46 @@ inline void ident::getcval(tagval &v) const
 {
     switch(valtype)
     {
-        case Value_Macro: v.setmacro(val.code); break;
-        case Value_String: case Value_CString: v.setcstr(val.s); break;
-        case Value_Integer: v.setint(val.i); break;
-        case Value_Float: v.setfloat(val.f); break;
-        default: v.setnull(); break;
+        case Value_Macro:
+        {
+            v.setmacro(val.code);
+            break;
+        }
+        case Value_String:
+        case Value_CString:
+        {
+            v.setcstr(val.s);
+            break;
+        }
+        case Value_Integer:
+        {
+            v.setint(val.i);
+            break;
+        }
+        case Value_Float:
+        {
+            v.setfloat(val.f);
+            break;
+        }
+        default:
+        {
+            v.setnull();
+            break;
+        }
     }
 }
 
 // nasty macros for registering script functions, abuses globals to avoid excessive infrastructure
+
+//* note: many of the VARF comments are very repetitive, because the code itself is nearly duplicated too *//
+
+/* how command registration works:
+ *  In C++, all global variables must be initiated before main() is called
+ *  Each of these macro kludges (which are placed at the global scope level) initializes some kind of global variable
+ *  Because the macro kludges are the definition of global variables, at program initializiation, they must be run first
+ *  The values of the variables themselves don't matter because they only exist to cheat and run before main()
+ *  The macro kludges themselves register commands or values within some vector<>-s which keeps track of all cmds/vars
+ */
 
 //command macros
 #define KEYWORD(name, type) static bool __dummy_##type = addcommand(#name, (identfun)NULL, NULL, type)
@@ -394,7 +597,7 @@ inline void ident::getcval(tagval &v) const
 #define COMMAND(name, nargs) COMMANDN(name, name, nargs)
 
 //integer var macros
-//VAR_, _VARF, VARM_ are templates for "normal" macros
+//VAR_, _VARF, VARM_ are templates for "normal" macros that do not execute an inline function
 #define VAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist)
 #define VARN(name, global, min, cur, max) VAR_(name, global, min, cur, max, 0)
 #define VARNP(name, global, min, cur, max) VAR_(name, global, min, cur, max, Idf_Persist)
@@ -402,7 +605,16 @@ inline void ident::getcval(tagval &v) const
 #define VAR(name, min, cur, max) VAR_(name, name, min, cur, max, 0)
 #define VARP(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Persist)
 #define VARR(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Override)
-#define VARF_(name, global, min, cur, max, body, persist)  void var_##name(ident *); int global = variable(#name, min, cur, max, &global, var_##name, persist); void var_##name(ident *) { body; }
+
+//variable with inline function to be executed on change (VARiable with Function = VARF)
+#define VARF_(name, global, min, cur, max, body, persist) \
+    void var_##name(ident *); /* prototype the function to be executed */ \
+    int global = variable(#name, min, cur, max, &global, var_##name, persist); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
+
 #define VARFN(name, global, min, cur, max, body) VARF_(name, global, min, cur, max, body, 0)
 #define VARF(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, 0)
 #define VARFP(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, Idf_Persist)
@@ -414,7 +626,16 @@ inline void ident::getcval(tagval &v) const
 //hexadecimal var macros
 #define HVAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist | Idf_Hex)
 #define HVARP(name, min, cur, max) HVAR_(name, name, min, cur, max, Idf_Persist)
-#define HVARF_(name, global, min, cur, max, body, persist)  void var_##name(ident *id); int global = variable(#name, min, cur, max, &global, var_##name, persist | Idf_Hex); void var_##name(ident *) { body; }
+
+//hex variable with function to be executed on change (Hexadecimal VARiable with Function = HVARF)
+//the CVAR series of macros borrows the HVARF macro as it deals with hex colors
+#define HVARF_(name, global, min, cur, max, body, persist) \
+    void var_##name(ident *id); /* prototype the function to be executed */ \
+    int global = variable(#name, min, cur, max, &global, var_##name, persist | Idf_Hex); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
 
 //color var macros
 #define CVAR_(name, cur, init, body, persist) bvec name = bvec::hexcolor(cur); HVARF_(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)
@@ -433,7 +654,16 @@ inline void ident::getcval(tagval &v) const
 #define FVAR(name, min, cur, max) FVAR_(name, name, min, cur, max, 0)
 #define FVARP(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Persist)
 #define FVARR(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Override)
-#define FVARF_(name, global, min, cur, max, body, persist) void var_##name(ident *id); float global = fvariable(#name, min, cur, max, &global, var_##name, persist); void var_##name(ident *) { body; }
+
+//float variable with function to be executed on change (Float VARiable with Function = FVARF)
+#define FVARF_(name, global, min, cur, max, body, persist) \
+    void var_##name(ident *id); /* prototype the function to be executed */ \
+    float global = fvariable(#name, min, cur, max, &global, var_##name, persist); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
+
 #define FVARF(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, 0)
 #define FVARFP(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Persist)
 #define FVARFR(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Override)
@@ -443,14 +673,37 @@ inline void ident::getcval(tagval &v) const
 #define SVAR(name, cur) SVAR_(name, name, cur, 0)
 #define SVARP(name, cur) SVAR_(name, name, cur, Idf_Persist)
 #define SVARR(name, cur) SVAR_(name, name, cur, Idf_Override)
-#define SVARF_(name, global, cur, body, persist) void var_##name(ident *id); char *global = svariable(#name, cur, &global, var_##name, persist); void var_##name(ident *) { body; }
+
+//string variable with function to be executed on change (Float VARiable with Function = FVARF)
+#define SVARF_(name, global, cur, body, persist) \
+    void var_##name(ident *id); /* prototype the function to be executed */ \
+    char *global = svariable(#name, cur, &global, var_##name, persist); /* assign variable, needs fxn prototype declared above */ \
+    void var_##name(ident *) /* function to be executed */ \
+    { \
+        body; \
+    }
+
 #define SVARF(name, cur, body) SVARF_(name, name, cur, body, 0)
 #define SVARFR(name, cur, body) SVARF_(name, name, cur, body, Idf_Override)
 
 // anonymous inline commands, uses nasty template trick with line numbers to keep names unique
 #define ICOMMANDNAME(name) _icmd_##name
 #define ICOMMANDSNAME _icmds_
-#define ICOMMANDKNS(name, type, cmdname, nargs, proto, b) template<int N> struct cmdname; template<> struct cmdname<__LINE__> { static bool init; static void run proto; }; bool cmdname<__LINE__>::init = addcommand(name, (identfun)cmdname<__LINE__>::run, nargs, type); void cmdname<__LINE__>::run proto { b; }
+
+#define ICOMMANDKNS(name, type, cmdname, nargs, proto, b) \
+    template<int N> struct cmdname; /* prototype the cmdname object */ \
+    template<> struct cmdname<__LINE__> /* create a generic template for the above cmdname obj */ \
+    { \
+        static bool init; \
+        static void run proto; \
+    }; \
+    /* register command "prototype" so script parser knows how many args (and of what type) to parse */ \
+    bool cmdname<__LINE__>::init = addcommand(name, (identfun)cmdname<__LINE__>::run, nargs, type); \
+    void cmdname<__LINE__>::run proto /* contents `b` (body) to be executed when called by script engine */ \
+    { \
+        b; /* b */ \
+    }
+
 #define ICOMMANDKN(name, type, cmdname, nargs, proto, b) ICOMMANDKNS(#name, type, cmdname, nargs, proto, b)
 #define ICOMMANDK(name, type, nargs, proto, b) ICOMMANDKN(name, type, ICOMMANDNAME(name), nargs, proto, b)
 #define ICOMMANDNS(name, cmdname, nargs, proto, b) ICOMMANDKNS(name, Id_Command, cmdname, nargs, proto, b)

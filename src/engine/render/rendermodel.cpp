@@ -44,39 +44,46 @@ static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##mode
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
 
-#define CHECK_MDL if(!loadingmodel) { conoutf(Console_Error, "not loading a model"); return; }
+static inline void checkmdl()
+{
+    if(!loadingmodel)
+    {
+        conoutf(Console_Error, "not loading a model");
+        return;
+    }
+}
 
 void mdlcullface(int *cullface)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->setcullface(*cullface);
 }
 COMMAND(mdlcullface, "i");
 
 void mdlcolor(float *r, float *g, float *b)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->setcolor(vec(*r, *g, *b));
 }
 COMMAND(mdlcolor, "fff");
 
 void mdlcollide(int *collide)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OrientedBoundingBox) : Collide_None;
 }
 COMMAND(mdlcollide, "i");
 
 void mdlellipsecollide(int *collide)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
 }
 COMMAND(mdlellipsecollide, "i");
 
 void mdltricollide(char *collide)
 {
-    CHECK_MDL;
+    checkmdl();
     DELETEA(loadingmodel->collidemodel);
     char *end = NULL;
     int val = strtol(collide, &end, 0);
@@ -91,7 +98,7 @@ COMMAND(mdltricollide, "s");
 
 void mdlspec(float *percent)
 {
-    CHECK_MDL;
+    checkmdl();
     float spec = *percent > 0 ? *percent/100.0f : 0.0f;
     loadingmodel->setspec(spec);
 }
@@ -99,28 +106,28 @@ COMMAND(mdlspec, "f");
 
 void mdlgloss(int *gloss)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->setgloss(std::clamp(*gloss, 0, 2));
 }
 COMMAND(mdlgloss, "i");
 
 void mdlalphatest(float *cutoff)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->setalphatest(max(0.0f, min(1.0f, *cutoff)));
 }
 COMMAND(mdlalphatest, "f");
 
 void mdldepthoffset(int *offset)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->depthoffset = *offset!=0;
 }
 COMMAND(mdldepthoffset, "i");
 
 void mdlglow(float *percent, float *delta, float *pulse)
 {
-    CHECK_MDL;
+    checkmdl();
     float glow = *percent > 0 ? *percent/100.0f : 0.0f,
           glowdelta = *delta/100.0f,
           glowpulse = *pulse > 0 ? *pulse/1000.0f : 0;
@@ -131,21 +138,21 @@ COMMAND(mdlglow, "fff");
 
 void mdlfullbright(float *fullbright)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->setfullbright(*fullbright);
 }
 COMMAND(mdlfullbright, "f");
 
 void mdlshader(char *shader)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->setshader(lookupshaderbyname(shader));
 }
 COMMAND(mdlshader, "s");
 
 void mdlspin(float *yaw, float *pitch, float *roll)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->spinyaw = *yaw;
     loadingmodel->spinpitch = *pitch;
     loadingmodel->spinroll = *roll;
@@ -154,7 +161,7 @@ COMMAND(mdlspin, "fff");
 
 void mdlscale(float *percent)
 {
-    CHECK_MDL;
+    checkmdl();
     float scale = *percent > 0 ? *percent/100.0f : 1.0f;
     loadingmodel->scale = scale;
 }
@@ -162,49 +169,49 @@ COMMAND(mdlscale, "f");
 
 void mdltrans(float *x, float *y, float *z)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->translate = vec(*x, *y, *z);
 }
 COMMAND(mdltrans, "fff");
 
 void mdlyaw(float *angle)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->offsetyaw = *angle;
 }
 COMMAND(mdlyaw, "f");
 
 void mdlpitch(float *angle)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->offsetpitch = *angle;
 }
 COMMAND(mdlpitch, "f");
 
 void mdlroll(float *angle)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->offsetroll = *angle;
 }
 COMMAND(mdlroll, "f");
 
 void mdlshadow(int *shadow)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->shadow = *shadow!=0;
 }
 COMMAND(mdlshadow, "i");
 
 void mdlalphashadow(int *alphashadow)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->alphashadow = *alphashadow!=0;
 }
 COMMAND(mdlalphashadow, "i");
 
 void mdlbb(float *rad, float *h, float *eyeheight)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->collidexyradius = *rad;
     loadingmodel->collideheight = *h;
     loadingmodel->eyeheight = *eyeheight;
@@ -213,20 +220,20 @@ COMMAND(mdlbb, "fff");
 
 void mdlextendbb(float *x, float *y, float *z)
 {
-    CHECK_MDL;
+    checkmdl();
     loadingmodel->bbextend = vec(*x, *y, *z);
 }
 COMMAND(mdlextendbb, "fff");
 
 void mdlname()
 {
-    CHECK_MDL;
+    checkmdl();
     result(loadingmodel->name);
 }
 COMMAND(mdlname, "");
 
 #define CHECK_RAGDOLL \
-    CHECK_MDL; \
+    checkmdl(); \
     if(!loadingmodel->skeletal()) \
     { \
         conoutf(Console_Error, "not loading a skeletal model"); \
@@ -590,7 +597,8 @@ COMMAND(clearmodel, "s");
 
 bool modeloccluded(const vec &center, float radius)
 {
-    ivec bbmin(vec(center).sub(radius)), bbmax(vec(center).add(radius+1));
+    ivec bbmin(vec(center).sub(radius)),
+         bbmax(vec(center).add(radius+1));
     return bboccluded(bbmin, bbmax);
 }
 
@@ -670,6 +678,7 @@ static inline void renderbatchedmodel(model *m, const batchedmodel &b)
     m->render(anim, b.basetime, b.basetime2, b.pos, b.yaw, b.pitch, b.roll, b.d, a, b.sizescale, b.colorscale);
 }
 
+//ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
 
 static inline void enablecullmodelquery()
@@ -704,7 +713,7 @@ static inline void disablecullmodelquery()
 
 static inline int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = NULL)
 {
-    if(flags&Model_CullDist && center.dist(camera1->o)/radius>maxmodelradiusdistance)
+    if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
         return Model_CullDist;
     }
@@ -1245,7 +1254,10 @@ hasboundbox:
         if(flags&Model_CullQuery)
         {
             d->query = newquery(d);
-            if(d->query) startquery(d->query);
+            if(d->query)
+            {
+                startquery(d->query);
+            }
         }
         m->startrender();
         setaamask(true);
@@ -1392,9 +1404,8 @@ ICOMMAND(findanims, "s", (char *name),
     result(buf.getbuf());
 });
 
-void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks) // model skin sharing
-{
 #define IF_NO_LOAD(tex, path) if((tex = textureload(path, 0, true, false))==notexture)
+
 #define TRY_LOAD(tex, prefix, cmd, name) \
     IF_NO_LOAD(tex, makerelpath(mdir, name ".jpg", prefix, cmd)) \
     { \
@@ -1407,6 +1418,8 @@ void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&mas
         } \
     }
 
+void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks) // model skin sharing
+{
     DEF_FORMAT_STRING(mdir, "media/model/%s", dir);
     DEF_FORMAT_STRING(maltdir, "media/model/%s", altdir);
     masks = notexture;

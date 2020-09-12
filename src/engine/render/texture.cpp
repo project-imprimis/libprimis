@@ -644,8 +644,14 @@ void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
 
 void texblend(ImageData &d, ImageData &s, ImageData &m)
 {
-    if(s.w != d.w || s.h != d.h) scaleimage(s, d.w, d.h);
-    if(m.w != d.w || m.h != d.h) scaleimage(m, d.w, d.h);
+    if(s.w != d.w || s.h != d.h)
+    {
+        scaleimage(s, d.w, d.h);
+    }
+    if(m.w != d.w || m.h != d.h)
+    {
+        scaleimage(m, d.w, d.h);
+    }
     if(&s == &m)
     {
         if(s.bpp == 2)
@@ -662,7 +668,10 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
                 swizzleimage(d);
             }
         }
-        else return;
+        else
+        {
+            return;
+        }
         if(d.bpp < 3) READ_WRITE_TEX(d, s,
             int srcblend = src[1];
             int dstblend = 255 - srcblend;
@@ -1461,7 +1470,8 @@ SDL_Surface *fixsurfaceformat(SDL_Surface *s)
         SDL_FreeSurface(s);
         return NULL;
     }
-    static const uint rgbmasks[] = { RGBMASKS }, rgbamasks[] = { RGBAMASKS };
+    static const uint rgbmasks[]  = { RGBMASKS },
+                      rgbamasks[] = { RGBAMASKS };
     switch(s->format->BytesPerPixel)
     {
         case 1:
@@ -3069,7 +3079,8 @@ void Slot::load(int index, Slot::Tex &t)
     {
         return;
     }
-    int compress = 0, wrap = 0;
+    int compress = 0,
+        wrap = 0;
     ImageData ts;
     if(!texturedata(ts, *this, t, true, &compress, &wrap))
     {

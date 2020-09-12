@@ -283,6 +283,26 @@ static inline ident *addident(const ident &id)
     return identmap.add(&def);
 }
 
+bool initidents()
+{
+    initedidents = true;
+    for(int i = 0; i < Max_Args; i++)
+    {
+        DEF_FORMAT_STRING(argname, "arg%d", i+1);
+        newident(argname, Idf_Arg);
+    }
+    dummyident = newident("//dummy", Idf_Unknown);
+    if(identinits)
+    {
+        for(int i = 0; i < (*identinits).length(); i++)
+        {
+            addident((*identinits)[i]);
+        }
+        DELETEP(identinits);
+    }
+    return true;
+}
+
 static const char *sourcefile = NULL,
                   *sourcestr = NULL;
 
@@ -1569,7 +1589,7 @@ static inline const char *compileblock(vector<uint> &code, const char *p, int re
     if(code.length() > start + 2)
     {
         code.add(Code_Exit|rettype);
-        code[start] |= uint(code.length() - (start + 1))<<8;
+        code[start] |= static_cast<uint>(code.length() - (start + 1))<<8;
     }
     else
     {
@@ -1637,7 +1657,7 @@ static inline bool getbool(const char *s)
                     return true;
                 }
             }
-            // fall-through
+            [[fallthrough]];
         case '0':
         {
             char *end;
@@ -3169,7 +3189,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     break;
                                 }
                                 numargs++;
-                                if((code[end]&~Code_RetMask) != (Code_Block|(uint(code.length()-(end+1))<<8)))
+                                if((code[end]&~Code_RetMask) != (Code_Block|(static_cast<uint>(code.length()-(end+1))<<8)))
                                 {
                                     break;
                                 }
@@ -3927,8 +3947,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Exit|Ret_Float:
             {
                 forcearg(result, op&Code_RetMask);
-                // fall-through
             }
+            [[fallthrough]];
             case Code_Exit|Ret_Null:
             {
                 goto exit;
@@ -3938,8 +3958,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ResultArg|Ret_Float:
             {
                 forcearg(result, op&Code_RetMask);
-                // fall-through
             }
+            [[fallthrough]];
             case Code_ResultArg|Ret_Null:
             {
                 args[numargs++] = result;
@@ -4653,8 +4673,8 @@ static const uint *runcode(const uint *code, tagval &result)
                         {
                             FORCERESULT;
                         }
-                        // fall-through
                     }
+                    [[fallthrough]];
                     case Id_Command:
                     {
                         freearg(idarg);
@@ -4766,7 +4786,7 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
                 {
                     break;
                 }
-                // fall-through
+                [[fallthrough]];
             case Id_Command:
                 if(numargs < id->numargs)
                 {

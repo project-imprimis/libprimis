@@ -100,6 +100,7 @@ extern void loopend(ident *id, identstack &stack);
 const char *escapeid(const char *s);
 extern void writecfg(const char *savedconfig, const char *autoexec = NULL, const char *defaultconfig = NULL, const char *name = NULL);
 extern void checksleep(int millis);
+extern bool initidents();
 
 extern int identflags;
 
@@ -387,8 +388,7 @@ extern bool insideworld(const vec &o);
 
 // physics
 
-extern int maxroll, floatspeed;
-extern float straferoll, faderoll;
+extern int floatspeed;
 extern const float slopez, wallz, floorz, stairheight;
 extern vec collidewall;
 extern int collideinside;

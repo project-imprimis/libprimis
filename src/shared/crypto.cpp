@@ -1151,7 +1151,7 @@ bool hashstring(const char *str, char *result, int maxlen)
         return false;
     }
     tiger::hash((uchar *)str, strlen(str), hv);
-    for(int i = 0; i < int(sizeof(hv.bytes)); ++i)
+    for(int i = 0; i < static_cast<int>(sizeof(hv.bytes)); ++i)
     {
         uchar c = hv.bytes[i];
         *result++ = "0123456789abcdef"[c>>4];

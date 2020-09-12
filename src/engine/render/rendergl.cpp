@@ -22,7 +22,6 @@ int hasstencil = 0;
 
 VAR(glversion, 1, 0, 0);
 VAR(glslversion, 1, 0, 0);
-VAR(glcompat, 1, 0, 0);
 
 // GL_EXT_timer_query
 PFNGLGETQUERYOBJECTI64VEXTPROC glGetQueryObjecti64v_  = NULL;
@@ -962,7 +961,7 @@ void gl_resize()
 
 void gl_init()
 {
-    GLERROR;
+    glerror();
 
     glClearColor(0, 0, 0, 0);
     glClearDepth(1);
@@ -983,7 +982,7 @@ void gl_init()
     gle::setup();
     setupshaders();
 
-    GLERROR;
+    glerror();
 
     gl_resize();
 }
@@ -1238,7 +1237,8 @@ float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, c
         return minimapradius.magnitude();
     }
 
-    float width = tan(fov/2.0f*RAD), height = width / aspect,
+    float width = tan(fov/2.0f*RAD),
+          height = width / aspect,
           cdist = ((nearplane + farplane)/2)*(1 + width*width + height*height);
     if(cdist <= farplane)
     {
@@ -1844,15 +1844,16 @@ void drawminimap()
         return;
     }
 
-    GLERROR;
+    glerror();
     renderprogress(0, "generating mini-map...", !renderedframe);
 
     drawtex = Draw_TexMinimap;
 
-    GLERROR;
+    glerror();
     gl_setupframe(true);
 
-    int size = 1<<minimapsize, sizelimit = min(hwtexsize, min(gw, gh));
+    int size = 1<<minimapsize,
+        sizelimit = min(hwtexsize, min(gw, gh));
     while(size > sizelimit)
     {
         size /= 2;
@@ -2075,6 +2076,7 @@ vec calcmodelpreviewpos(const vec &radius, float &yaw)
 
 int xtraverts, xtravertsva;
 
+//main scene rendering function
 void gl_drawview()
 {
     GLuint scalefbo = shouldscale();
@@ -2083,13 +2085,13 @@ void gl_drawview()
         vieww = gw;
         viewh = gh;
     }
-
-    float fogmargin = 1 + WATER_AMPLITUDE + nearplane;
-    int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index), abovemat = Mat_Air;
+    float fogmargin = 1 + wateramplitude + nearplane;
+    int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index),
+        abovemat = Mat_Air;
     float fogbelow = 0;
-    if(IS_LIQUID(fogmat&MatFlag_Volume))
+    if(IS_LIQUID(fogmat&MatFlag_Volume)) //if in the water
     {
-        float z = findsurface(fogmat, vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin), abovemat) - WATER_OFFSET;
+        float z = findsurface(fogmat, vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin), abovemat) - wateroffset;
         if(camera1->o.z < z + fogmargin)
         {
             fogbelow = z - camera1->o.z;
@@ -2101,13 +2103,13 @@ void gl_drawview()
     }
     else
     {
-        fogmat = Mat_Air;
+        fogmat = Mat_Air; //use air fog
     }
     setfog(abovemat);
     //setfog(fogmat, fogbelow, 1, abovemat);
 
     farplane = worldsize*2;
-
+    //set the camera location
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
 
@@ -2116,15 +2118,16 @@ void gl_drawview()
 
     ldrscale = 0.5f;
     ldrscaleb = ldrscale/255;
-
+    //do occlusion culling
     visiblecubes();
-
+    //set to wireframe if applicable
     if(wireframe && editmode)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
+    //construct g-buffer (build basic scene)
     rendergbuffer();
-    if(wireframe && editmode)
+    if(wireframe && editmode) //done with wireframe mode now
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -2133,29 +2136,31 @@ void gl_drawview()
         renderexplicitsky(true);
     }
 
+    //ambient obscurance (ambient occlusion) on geometry & models only
     renderao();
-    GLERROR;
+    glerror();
 
     // render avatar after AO to avoid weird contact shadows
     renderavatar();
-    GLERROR;
+    glerror();
 
     // render grass after AO to avoid disturbing shimmering patterns
     generategrass();
     rendergrass();
-    GLERROR;
+    glerror();
 
     glFlush();
-
+    //global illumination
     renderradiancehints();
-    GLERROR;
-
+    glerror();
+    //lighting
     rendershadowatlas();
-    GLERROR;
-
+    glerror();
+    //shading
     shadegbuffer();
-    GLERROR;
+    glerror();
 
+    //fog
     if(fogmat)
     {
         setfog(fogmat, fogbelow, 1, abovemat);
@@ -2165,29 +2170,31 @@ void gl_drawview()
         setfog(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
 
+    //alpha
     rendertransparent();
-    GLERROR;
+    glerror();
 
     if(fogmat)
     {
         setfog(fogmat, fogbelow, 1, abovemat);
     }
 
+    //volumetric lights
     rendervolumetric();
-    GLERROR;
+    glerror();
 
     if(editmode)
     {
         extern int outline;
         if(!wireframe && outline)
         {
-            renderoutline();
+            renderoutline(); //edit mode geometry outline
         }
-        GLERROR;
+        glerror();
         rendereditmaterials();
-        GLERROR;
+        glerror();
         renderparticles();
-        GLERROR;
+        glerror();
 
         extern int showhud;
         if(showhud)
@@ -2198,6 +2205,7 @@ void gl_drawview()
         }
     }
 
+    //we're done with depth/geometry stuff so we don't need this functionality
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
 
@@ -2205,7 +2213,9 @@ void gl_drawview()
     {
         drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
+    //antialiasing
     doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
+    //postfx
     renderpostfx(scalefbo);
     if(scalefbo)
     {
@@ -2350,9 +2360,10 @@ void drawdamagescreen(int w, int h)
 VAR(showstats, 0, 1, 1);
 VAR(showhud, 0, 1, 1);
 
+//crosshair & cursor vars
 VARP(crosshairsize, 0, 15, 50);
 VARP(cursorsize, 0, 15, 30);
-VARP(crosshairfx, 0, 1, 1);
+VARP(crosshairfx, 0, 1, 1); // hit fx
 
 
 const char *defaultcrosshair(int index)
@@ -2374,12 +2385,12 @@ const char *defaultcrosshair(int index)
     }
 }
 
-#define MAXCROSSHAIRS 4
-static Texture *crosshairs[MAXCROSSHAIRS] = { NULL, NULL, NULL, NULL };
+static const int maxcrosshairs  = 4;
+static Texture *crosshairs[maxcrosshairs] = { NULL, NULL, NULL, NULL };
 
 void loadcrosshair(const char *name, int i)
 {
-    if(i < 0 || i >= MAXCROSSHAIRS)
+    if(i < 0 || i >= maxcrosshairs)
     {
         return;
     }
@@ -2405,7 +2416,7 @@ COMMANDN(loadcrosshair, loadcrosshair_, "si");
 ICOMMAND(getcrosshair, "i", (int *i),
 {
     const char *name = "";
-    if(*i >= 0 && *i < MAXCROSSHAIRS)
+    if(*i >= 0 && *i < maxcrosshairs)
     {
         name = crosshairs[*i] ? crosshairs[*i]->name : defaultcrosshair(*i);
         if(!name)
@@ -2418,7 +2429,7 @@ ICOMMAND(getcrosshair, "i", (int *i),
 
 void writecrosshairs(stream *f)
 {
-    for(int i = 0; i < MAXCROSSHAIRS; ++i)
+    for(int i = 0; i < maxcrosshairs; ++i)
     {
         if(crosshairs[i] && crosshairs[i]!=notexture)
         {
@@ -2480,24 +2491,28 @@ void drawcrosshair(int w, int h, int crosshairindex)
     }
     hudshader->set();
     gle::color(color);
-    float x = cx*w - (windowhit ? 0 : chsize/2.0f);
-    float y = cy*h - (windowhit ? 0 : chsize/2.0f);
+    float x = cx*w - (windowhit ? 0 : chsize/2.0f),
+          y = cy*h - (windowhit ? 0 : chsize/2.0f);
     glBindTexture(GL_TEXTURE_2D, crosshair->id);
 
     hudquad(x, y, chsize, chsize);
 }
 
-VARP(wallclock, 0, 0, 1);
-VARP(wallclock24, 0, 0, 1);
-VARP(wallclocksecs, 0, 0, 1);
+//hud time displays
+VARP(wallclock, 0, 0, 1);     //toggles hud readout
+VARP(wallclock24, 0, 0, 1);   //toggles 12h (US) or 24h time
+VARP(wallclocksecs, 0, 0, 1); //seconds precision on hud readout
 
 static time_t walltime = 0;
 
-VARP(showfps, 0, 1, 1);
-VARP(showfpsrange, 0, 0, 1);
-VAR(statrate, 1, 200, 1000);
+//hud fps displays
+VARP(showfps, 0, 1, 1);      //toggles showing game framerate
+VARP(showfpsrange, 0, 0, 1); //toggles showing min/max framerates as well
 
-FVARP(conscale, 1e-3f, 0.33f, 1e3f);
+//note: fps displayed is the average over the statrate duration
+VAR(statrate, 1, 200, 1000);  //update time for fps (not other hud readouts)
+
+FVARP(conscale, 1e-3f, 0.33f, 1e3f); //size of readouts, console, and history
 
 void resethudshader()
 {
