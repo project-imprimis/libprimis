@@ -1926,7 +1926,8 @@ namespace game
                 }
                 case NetMsg_Client:
                 {
-                    int cn = getint(p), len = getuint(p);
+                    int cn = getint(p),
+                        len = getuint(p);
                     ucharbuf q = p.subbuf(len);
                     parsemessages(cn, getclient(cn), q);
                     break;
@@ -2701,7 +2702,8 @@ namespace game
                 }
                 case NetMsg_CurrentMaster:
                 {
-                    int mm = getint(p), mn;
+                    int mm = getint(p), //mastermode
+                        mn; //master[client]num
                     for(int i = 0; i < players.length(); i++)
                     {
                         players[i]->privilege = Priv_None;
@@ -2764,7 +2766,10 @@ namespace game
                             senditemstoserver = false;
                         }
                     }
-                    else s = newclient(sn);
+                    else
+                    {
+                        s = newclient(sn);
+                    }
                     if(!s)
                     {
                         return;
