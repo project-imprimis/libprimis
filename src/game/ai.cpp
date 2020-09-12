@@ -1244,7 +1244,8 @@ namespace ai
         {
             yaw -= 360.0f;
         }
-        float offyaw = fabs(targyaw-yaw)*frame, offpitch = fabs(targpitch-pitch)*frame*scale;
+        float offyaw = fabs(targyaw-yaw)*frame,
+              offpitch = fabs(targpitch-pitch)*frame*scale;
         if(targyaw > yaw)
         {
             yaw += offyaw;
@@ -1329,7 +1330,7 @@ namespace ai
         bool enemyok = e && targetable(d, e);
         if(!enemyok || d->skill >= 50)
         {
-            gameent *f = (gameent *)intersectclosest(dp, d->ai->target, d, 1);
+            gameent *f = static_cast<gameent *>(intersectclosest(dp, d->ai->target, d, 1));
             if(f)
             {
                 if(targetable(d, f))
@@ -1427,7 +1428,8 @@ namespace ai
         {
             float offyaw, offpitch;
             vectoyawpitch(d->vel, offyaw, offpitch);
-            offyaw -= d->yaw; offpitch -= d->pitch;
+            offyaw -= d->yaw;
+            offpitch -= d->pitch;
             if(fabs(offyaw)+fabs(offpitch) >= 135)
             {
                 d->ai->becareful = false;
@@ -1922,7 +1924,7 @@ namespace ai
                         {
                             if(aidebug >= 3)
                             {
-/                                top = false;
+                                 top = false;
                             }
                             else
                             {
