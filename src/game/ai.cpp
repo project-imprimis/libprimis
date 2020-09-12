@@ -114,7 +114,7 @@ namespace ai
         if(attackrange(d, atk, dist) || (d->skill <= 100 && !randomint(d->skill)))
         {
             float skew = std::clamp(static_cast<float>(lastmillis-d->ai->enemymillis)/static_cast<float>((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
-                offy = yaw-d->yaw, offp = pitch-d->pitch;
+                  offy = yaw-d->yaw, offp = pitch-d->pitch;
             if(offy > 180)
             {
                 offy -= 360;
@@ -589,7 +589,10 @@ namespace ai
                     proceed = !checkothers(targets, d, n.state, n.targtype, n.target, true, &members) && members > 1;
                     break;
                 }
-                default: break;
+                default:
+                {
+                    break;
+                }
             }
             if(proceed && makeroute(d, b, n.node))
             {
@@ -817,7 +820,10 @@ namespace ai
                     }
                     break;
                 }
-                default: break;
+                default:
+                {
+                    break;
+                }
             }
         }
         return 0;
@@ -1038,7 +1044,8 @@ namespace ai
         // check ahead to see if we need to go around something
         for(int j = 0; j < c; ++j)
         {
-            int p = n-j-1, v = d->ai->route[p];
+            int p = n-j-1,
+                v = d->ai->route[p];
             if(d->ai->hasprevnode(v) || obstacles.find(v, d)) // something is in the way, try to remap around it
             {
                 int m = p-1;
@@ -1823,7 +1830,8 @@ namespace ai
                              &f = waypoints[prev];
                     vec fr = f.o,
                         dr = e.o;
-                    fr.z += amt; dr.z += amt;
+                    fr.z += amt;
+                    dr.z += amt;
                     particle_flare(fr, dr, 1, Part_Streak, 0xFFFFFF);
                 }
             }
@@ -1914,7 +1922,7 @@ namespace ai
                         {
                             if(aidebug >= 3)
                             {
-                                top = false;
+/                                top = false;
                             }
                             else
                             {
@@ -1982,4 +1990,3 @@ namespace ai
         }
     }
 }
-
