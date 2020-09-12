@@ -194,12 +194,13 @@ const struct gamemodeinfo
 //these are the checks for particular mechanics in particular modes
 //e.g. MODE_RAIL sees if the mode only have railguns
 #define STARTGAMEMODE (-1)
-#define NUMGAMEMODES ((int)(sizeof(gamemodes)/sizeof(gamemodes[0])))
+
+const int numgamemodes = static_cast<int>(sizeof(gamemodes)/sizeof(gamemodes[0]));
 
 //check fxn
 inline bool modecheck(int mode, int flag)
 {
-    if((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES) //make sure input is within valid range
+    if((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + numgamemodes) //make sure input is within valid range
     {
         if(gamemodes[(mode) - STARTGAMEMODE].flags&(flag))
         {
@@ -210,9 +211,10 @@ inline bool modecheck(int mode, int flag)
     return false;
 }
 
-#define MODE_VALID(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
+#define MODE_VALID(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + numgamemodes)
 
-enum {
+enum
+{
     MasterMode_Auth = -1,
     MasterMode_Open = 0,
     MasterMode_Veto,
@@ -527,23 +529,21 @@ enum
     HudIcon_Size    = 120,
 };
 
-#define VALID_ITEM(n) false //no items in this game thus far
-
 const int MAXRAYS = 1,
           EXP_SELFDAMDIV = 2;
 const float EXP_SELFPUSH  = 2.5f,
             EXP_DISTSCALE = 0.5f;
 // this defines weapon properties
-//                            1    2       3     4         5        6      7         8            9       10      11      12         13          14     15    16       17           18   19
-const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, worldfx, use; } attacks[Attack_NumAttacks] =
-//    1          2          3           4               5             6              7            8     9  10 11    12  13    14 15  16    17 18 19
+//                            1    2       3     4         5        6      7         8            9       10      11      12         13          14     15    16       17           18   19    20
+const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, worldfx, use, grav; } attacks[Attack_NumAttacks] =
+//    1          2          3           4               5             6              7            8     9   10 11    12  13    14 15  16    17 18 19 20
 {
-    { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Rail1,  Sound_Rail2, 1300, 10, 0, 0,    0, 30, 2048, 1, 1500,  0, 0, 0 },
-    { Gun_Rail,  Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Pulse1, Sound_Pulse2, 500, 20, 0, 1,  700, 50, 1024, 1, 2500, 50, 1, 0 },
-    { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { Gun_Eng,   Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Melee,  Sound_Melee,  500,  0, 0, 1,  700, 20,   32, 1,   10, 50, 2, 0 },
-    { Gun_Eng,   Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
+    { Gun_Rail,  Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Rail1,  Sound_Rail2,  250,  5,  0, 0,    0, 10, 2048, 1,  200,  0, 0, 0, 0},
+    { Gun_Rail,  Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10,  0, 2,    0,  0,   14, 1,    0,  0, 0, 0, 0},
+    { Gun_Pulse, Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Pulse1, Sound_Pulse2,3000, 15,  0, 1,  700, 50, 1024, 1, 2500, 50, 1, 0, 0},
+    { Gun_Pulse, Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10,  0, 2,    0,  0,   14, 1,    0,  0, 0, 0, 0},
+    { Gun_Eng,   Act_Shoot, Anim_Shoot, Anim_VWepShoot, Anim_GunShoot, Sound_Melee,  Sound_Melee,  200,  0,  0, 1,  500, 20,  160, 1,   10, 20, 2, 0,10},
+    { Gun_Eng,   Act_Melee, Anim_Melee, Anim_VWepMelee, Anim_GunMelee, Sound_Melee,  Sound_Melee,  500, 10,  0, 2,    0,  0,   14, 1,    0,  0, 0, 0, 0},
 };
 
 const struct guninfo { const char *name, *file, *vwep; int attacks[Act_NumActs]; } guns[Gun_NumGuns] =
@@ -840,7 +840,6 @@ namespace game
     extern void switchteam(const char *name);
     extern void sendmapinfo();
     extern void stopdemo();
-    extern void changemap(const char *name, int mode);
     extern void c2sinfo(bool force = false);
     extern void sendposition(gameent *d, bool reliable = false);
 
@@ -935,7 +934,6 @@ extern void serverslice(uint timeout);
 extern void updatetime();
 
 extern ENetSocket connectmaster(bool wait);
-extern void localclienttoserver(int chan, ENetPacket *);
 extern void localconnect();
 
 extern void *getclientinfo(int i);
@@ -943,7 +941,6 @@ extern ENetPeer *getclientpeer(int i);
 extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
 extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
 extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern void flushserver(bool force);
 extern int getservermtu();
 extern uint getclientip(int n);
 extern void localconnect();
@@ -997,9 +994,7 @@ namespace server
     extern const char *modename(int n, const char *unknown = "unknown");
     extern const char *modeprettyname(int n, const char *unknown = "unknown");
     extern const char *mastermodename(int n, const char *unknown = "unknown");
-    extern void startintermission();
     extern void stopdemo();
-    extern void forcemap(const char *map, int mode);
     extern void forcepaused(bool paused);
     extern void forcegamespeed(int speed);
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
@@ -1017,11 +1012,7 @@ namespace server
     extern void localconnect(int n);
     extern bool allowbroadcast(int n);
     extern void recordpacket(int chan, void *data, int len);
-    extern void parsepacket(int sender, int chan, packetbuf &p);
     extern void sendservmsg(const char *s);
-    extern bool sendpackets(bool force = false);
-    extern void serverinforeply(ucharbuf &req, ucharbuf &p);
-    extern void serverupdate();
     extern int protocolversion();
     extern int laninfoport();
     extern int serverport();
@@ -1030,7 +1021,6 @@ namespace server
     extern void masterconnected();
     extern void masterdisconnected();
     extern bool ispaused();
-    extern int scaletime(int t);
 }
 
 #endif

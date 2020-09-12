@@ -606,7 +606,8 @@ struct animmodel : model
         {
             vec *tangent = new vec[2*numverts],
                 *bitangent = tangent+numverts;
-            memclear(tangent, 2*numverts);
+            memset((void *)tangent, 0, 2*numverts*sizeof(vec));
+
             for(int i = 0; i < numtris; ++i)
             {
                 const T &t = tris[i];
@@ -1031,7 +1032,7 @@ struct animmodel : model
 
         bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime)
         {
-            uint varseed = uint((size_t)d);
+            uint varseed = static_cast<uint>((size_t)d);
             info.anim = anim;
             info.basetime = basetime;
             info.varseed = varseed;
@@ -1049,14 +1050,14 @@ struct animmodel : model
                     vector<animspec> &primary = anims[animpart][anim & Anim_Index];
                     if(primary.length())
                     {
-                        spec = &primary[uint(varseed + basetime)%primary.length()];
+                        spec = &primary[static_cast<uint>(varseed + basetime)%primary.length()];
                     }
                     if((anim >> Anim_Secondary) & (Anim_Index | Anim_Dir))
                     {
                         vector<animspec> &secondary = anims[animpart][(anim >> Anim_Secondary) & Anim_Index];
                         if(secondary.length())
                         {
-                            animspec &spec2 = secondary[uint(varseed + basetime2)%secondary.length()];
+                            animspec &spec2 = secondary[static_cast<uint>(varseed + basetime2)%secondary.length()];
                             if(!spec || spec2.priority > spec->priority)
                             {
                                 spec = &spec2;
@@ -1077,7 +1078,7 @@ struct animmodel : model
                 }
                 else
                 {
-                    getdefaultanim(info, anim, uint(varseed + info.basetime), d);
+                    getdefaultanim(info, anim, static_cast<uint>(varseed + info.basetime), d);
                 }
             }
 

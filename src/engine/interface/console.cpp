@@ -32,24 +32,24 @@ VARFP(maxcon, 10, 200, MAXCONLINES,
     }
 });
 
-#define CONSTRLEN 512
+const static int constrlen = 512;
 
 void resetcomplete();
 void complete(char *s, int maxlen, const char *cmdprefix);
 
 void conline(int type, const char *sf)        // add a line to the console buffer
 {
-    char *buf = conlines.length() >= maxcon ? conlines.remove().line : newstring("", CONSTRLEN-1);
+    char *buf = conlines.length() >= maxcon ? conlines.remove().line : newstring("", constrlen-1);
     cline &cl = conlines.add();
     cl.line = buf;
     cl.type = type;
     cl.outtime = totalmillis;                // for how long to keep line on screen
-    copystring(cl.line, sf, CONSTRLEN);
+    copystring(cl.line, sf, constrlen);
 }
 
 void conoutfv(int type, const char *fmt, va_list args)
 {
-    static char buf[CONSTRLEN];
+    static char buf[constrlen];
     vformatstring(buf, fmt, args, sizeof(buf));
     conline(type, buf);
     logoutf("%s", buf);
@@ -98,7 +98,7 @@ float rendercommand(float x, float y, float w)
     {
         return 0;
     }
-    char buf[CONSTRLEN];
+    char buf[constrlen];
     const char *prompt = commandprompt ? commandprompt : ">";
     formatstring(buf, "%s %s", prompt, commandbuf);
     float width, height;

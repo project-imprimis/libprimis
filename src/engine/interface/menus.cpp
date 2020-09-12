@@ -133,4 +133,3 @@ void clearmainmenu()
         UI::hideui(NULL);
     }
 }
-

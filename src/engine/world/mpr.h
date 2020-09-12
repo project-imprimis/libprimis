@@ -128,12 +128,12 @@ namespace mpr
             return localsupportpoint(p).dot(p);
         }
 
-        float left() const { return supportcoordneg(orient.a) + ent->o.x; }
-        float right() const { return supportcoord(orient.a) + ent->o.x; }
-        float back() const { return supportcoordneg(orient.b) + ent->o.y; }
-        float front() const { return supportcoord(orient.b) + ent->o.y; }
+        float left()   const { return supportcoordneg(orient.a) + ent->o.x; }
+        float right()  const { return supportcoord(orient.a) + ent->o.x; }
+        float back()   const { return supportcoordneg(orient.b) + ent->o.y; }
+        float front()  const { return supportcoord(orient.b) + ent->o.y; }
         float bottom() const { return ent->o.z - ent->eyeheight; }
-        float top() const { return ent->o.z + ent->aboveeye; }
+        float top()    const { return ent->o.z + ent->aboveeye; }
     };
 
     struct EntFuzzy : Ent
@@ -297,7 +297,6 @@ namespace mpr
             {
                 p.x -= radius.x;
             }
-
             if(ln.y > 0)
             {
                 p.y += radius.y;
@@ -306,7 +305,6 @@ namespace mpr
             {
                 p.y -= radius.y;
             }
-
             if(ln.z > 0)
             {
                 p.z += radius.z;
@@ -347,7 +345,8 @@ namespace mpr
 
         vec supportpoint(const vec &n) const
         {
-            vec ln = orient.transform(n), p(0, 0, 0);
+            vec ln = orient.transform(n),
+                p(0, 0, 0);
             if(ln.z > 0)
             {
                 p.z += radius.z;
@@ -634,12 +633,10 @@ namespace mpr
                     // HIT!!!
                     hit = true;
                 }
-
                 // Find the support point in the direction of the wedge face
                 vec v41 = p1.supportpoint(vec(n).neg());
                 vec v42 = p2.supportpoint(n);
                 vec v4 = vec(v42).sub(v41);
-
                 // If the boundary is thin enough or the origin is outside the support plane for the newly discovered vertex, then we can terminate
                 if(v4.dot(n) <= 0 || vec(v4).sub(v3).dot(n) <= boundarytolerance || j > 100)
                 {
@@ -649,7 +646,6 @@ namespace mpr
                     }
                     return hit;
                 }
-
                 // Test origin against the three planes that separate the new portal candidates: (v1,v4,v0) (v2,v4,v0) (v3,v4,v0)
                 // Note:  We're taking advantage of the triple product identities here as an optimization
                 //        (v1 % v4) * v0 == v1 * (v4 % v0)    > 0 if origin inside (v1, v4, v0)

@@ -115,7 +115,7 @@ CLIENT_OBJS= \
 	game/waypoint.o \
 	game/weapon.o
 
-default: client
+default: install client
 
 clean:
 	-$(RM) -r $(CLIENT_OBJS) tess_client

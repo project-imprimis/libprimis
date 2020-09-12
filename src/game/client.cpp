@@ -227,10 +227,6 @@ void sendclientpacket(ENetPacket *packet, int chan)
     {
         enet_peer_send(curpeer, chan, packet);
     }
-    else
-    {
-        localclienttoserver(chan, packet);
-    }
 }
 
 void flushclient()

@@ -1,292 +1,316 @@
 //grass.cpp: billboarded grass generation atop cube geometry
 
 #include "engine.h"
-
-VARP(grass, 0, 1, 1);
-VAR(dbggrass, 0, 0, 1);
-VARP(grassdist, 0, 256, 10000);
-FVARP(grasstaper, 0, 0.2, 1);
-FVARP(grassstep, 0.5, 2, 8);
-VARP(grassheight, 1, 4, 64);
-
-#define NUMGRASSWEDGES 8
-
-static struct grasswedge
+namespace //internal functionality not seen by other files
 {
-    vec dir, across, edge1, edge2;
-    plane bound1, bound2;
+    VARP(grass, 0, 1, 1);
+    VAR(dbggrass, 0, 0, 1);
+    VARP(grassdist, 0, 256, 10000);
+    FVARP(grasstaper, 0, 0.2, 1);
+    FVARP(grassstep, 0.5, 2, 8);
+    VARP(grassheight, 1, 4, 64);
 
-    grasswedge(int i) :
-      dir(2*M_PI*(i+0.5f)/static_cast<float>(NUMGRASSWEDGES), 0),
-      across(2*M_PI*((i+0.5f)/static_cast<float>(NUMGRASSWEDGES) + 0.25f), 0),
-      edge1(vec(2*M_PI*i/static_cast<float>(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
-      edge2(vec(2*M_PI*(i+1)/static_cast<float>(NUMGRASSWEDGES), 0).div(cos(M_PI/NUMGRASSWEDGES))),
-      bound1(vec(2*M_PI*(i/static_cast<float>(NUMGRASSWEDGES) - 0.25f), 0), 0),
-      bound2(vec(2*M_PI*((i+1)/static_cast<float>(NUMGRASSWEDGES) + 0.25f), 0), 0)
+    const int numgrasswedges = 8;
+
+    struct grasswedge
     {
-        across.div(-across.dot(bound1));
-    }
-} grasswedges[NUMGRASSWEDGES] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+        vec dir, across, edge1, edge2;
+        plane bound1, bound2;
 
-struct grassvert
-{
-    vec pos;
-    bvec4 color;
-    vec2 tc;
-};
-
-static vector<grassvert> grassverts;
-static GLuint grassvbo = 0;
-static int grassvbosize = 0;
-
-VAR(maxgrass, 10, 10000, 10000);
-
-struct grassgroup
-{
-    const grasstri *tri;
-    int tex, offset, numquads;
-};
-
-static vector<grassgroup> grassgroups;
-
-#define NUMGRASSOFFSETS 32
-
-static float grassoffsets[NUMGRASSOFFSETS] = { -1 }, grassanimoffsets[NUMGRASSOFFSETS];
-static int lastgrassanim = -1;
-
-VARR(grassanimmillis, 0, 3000, 60000);
-FVARR(grassanimscale, 0, 0.03f, 1);
-
-static void animategrass()
-{
-    for(int i = 0; i < NUMGRASSOFFSETS; ++i)
-    {
-        grassanimoffsets[i] = grassanimscale*sinf(2*M_PI*(grassoffsets[i] + lastmillis/static_cast<float>(grassanimmillis)));
-    }
-    lastgrassanim = lastmillis;
-}
-
-VARR(grassscale, 1, 2, 64);
-CVAR0R(grasscolor, 0xFFFFFF);
-FVARR(grasstest, 0, 0.6f, 1);
-
-//generate the grass geometry placed above cubes
-//grass always faces the camera (billboarded)
-//and therefore grass geom is calculated realtime to face the cam
-static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, Texture *tex)
-{
-    float t = camera1->o.dot(w.dir);
-    int tstep = static_cast<int>(ceil(t/grassstep));
-    float tstart = tstep*grassstep,
-          t0 = w.dir.dot(g.v[0]),
-          t1 = w.dir.dot(g.v[1]),
-          t2 = w.dir.dot(g.v[2]),
-          t3 = w.dir.dot(g.v[3]),
-          tmin = min(min(t0, t1), min(t2, t3)),
-          tmax = max(max(t0, t1), max(t2, t3));
-    if(tmax < tstart || tmin > t + grassdist)
-    {
-        return;
-    }
-    int minstep = max(static_cast<int>(ceil(tmin/grassstep)) - tstep, 1),
-        maxstep = static_cast<int>(floor(min(tmax, t + grassdist)/grassstep)) - tstep,
-        numsteps = maxstep - minstep + 1;
-
-    float texscale = (grassscale*tex->ys)/static_cast<float>(grassheight*tex->xs), animscale = grassheight*texscale;
-    vec tc;
-    tc.cross(g.surface, w.dir).mul(texscale);
-
-    int offset = tstep + maxstep;
-    if(offset < 0)
-    {
-        offset = NUMGRASSOFFSETS - (-offset)%NUMGRASSOFFSETS;
-    }
-    offset += numsteps + NUMGRASSOFFSETS - numsteps%NUMGRASSOFFSETS;
-
-    float leftdist = t0;
-    const vec *leftv = &g.v[0];
-    if(t1 > leftdist)
-    {
-        leftv = &g.v[1];
-        leftdist = t1;
-    }
-    if(t2 > leftdist)
-    {
-        leftv = &g.v[2];
-        leftdist = t2;
-    }
-    if(t3 > leftdist)
-    {
-        leftv = &g.v[3];
-        leftdist = t3;
-    }
-    float rightdist = leftdist;
-    const vec *rightv = leftv;
-
-    vec across(w.across.x, w.across.y, g.surface.zdelta(w.across)),
-        leftdir(0, 0, 0),
-        rightdir(0, 0, 0),
-        leftp = *leftv,
-        rightp = *rightv;
-    float taperdist = grassdist*grasstaper,
-          taperscale = 1.0f / (grassdist - taperdist),
-          dist = maxstep*grassstep + tstart,
-          leftb = 0,
-          rightb = 0,
-          leftdb = 0,
-          rightdb = 0;
-    for(int i = maxstep; i >= minstep; i--, offset--, leftp.add(leftdir), rightp.add(rightdir), leftb += leftdb, rightb += rightdb, dist -= grassstep)
-    {
-        if(dist <= leftdist)
+        grasswedge(int i) :
+          dir(2*M_PI*(i+0.5f)/static_cast<float>(numgrasswedges), 0),
+          across(2*M_PI*((i+0.5f)/static_cast<float>(numgrasswedges) + 0.25f), 0),
+          edge1(vec(2*M_PI*i/static_cast<float>(numgrasswedges), 0).div(cos(M_PI/numgrasswedges))),
+          edge2(vec(2*M_PI*(i+1)/static_cast<float>(numgrasswedges), 0).div(cos(M_PI/numgrasswedges))),
+          bound1(vec(2*M_PI*(i/static_cast<float>(numgrasswedges) - 0.25f), 0), 0),
+          bound2(vec(2*M_PI*((i+1)/static_cast<float>(numgrasswedges) + 0.25f), 0), 0)
         {
-            const vec *prev = leftv;
-            float prevdist = leftdist;
-            if(--leftv < g.v)
-            {
-                leftv += g.numv;
-            }
-            leftdist = leftv->dot(w.dir);
+            across.div(-across.dot(bound1));
+        }
+    } grasswedges[numgrasswedges] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+
+    struct grassvert
+    {
+        vec pos;
+        bvec4 color;
+        vec2 tc;
+    };
+
+    vector<grassvert> grassverts;
+    GLuint grassvbo = 0;
+    int grassvbosize = 0;
+
+    VAR(maxgrass, 10, 10000, 10000);
+
+    struct grassgroup
+    {
+        const grasstri *tri;
+        int tex, offset, numquads;
+    };
+
+    vector<grassgroup> grassgroups;
+
+    const int numgrassoffsets = 32;
+
+    float grassoffsets[numgrassoffsets] = { -1 }, grassanimoffsets[numgrassoffsets];
+    int lastgrassanim = -1;
+
+    VARR(grassanimmillis, 0, 3000, 60000);
+    FVARR(grassanimscale, 0, 0.03f, 1);
+
+    void animategrass()
+    {
+        for(int i = 0; i < numgrassoffsets; ++i)
+        {
+            grassanimoffsets[i] = grassanimscale*sinf(2*M_PI*(grassoffsets[i] + lastmillis/static_cast<float>(grassanimmillis)));
+        }
+        lastgrassanim = lastmillis;
+    }
+
+    VARR(grassscale, 1, 2, 64);
+    CVAR0R(grasscolor, 0xFFFFFF);
+    FVARR(grasstest, 0, 0.6f, 1);
+
+    //generate the grass geometry placed above cubes
+    //grass always faces the camera (billboarded)
+    //and therefore grass geom is calculated realtime to face the cam
+    void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, Texture *tex)
+    {
+        float t = camera1->o.dot(w.dir);
+        int tstep = static_cast<int>(ceil(t/grassstep));
+        float tstart = tstep*grassstep,
+              t0 = w.dir.dot(g.v[0]),
+              t1 = w.dir.dot(g.v[1]),
+              t2 = w.dir.dot(g.v[2]),
+              t3 = w.dir.dot(g.v[3]),
+              tmin = min(min(t0, t1), min(t2, t3)),
+              tmax = max(max(t0, t1), max(t2, t3));
+        if(tmax < tstart || tmin > t + grassdist)
+        {
+            return;
+        }
+        int minstep = max(static_cast<int>(ceil(tmin/grassstep)) - tstep, 1),
+            maxstep = static_cast<int>(floor(min(tmax, t + grassdist)/grassstep)) - tstep,
+            numsteps = maxstep - minstep + 1;
+
+        float texscale = (grassscale*tex->ys)/static_cast<float>(grassheight*tex->xs), animscale = grassheight*texscale;
+        vec tc;
+        tc.cross(g.surface, w.dir).mul(texscale);
+
+        int offset = tstep + maxstep;
+        if(offset < 0)
+        {
+            offset = numgrassoffsets - (-offset)%numgrassoffsets;
+        }
+        offset += numsteps + numgrassoffsets - numsteps%numgrassoffsets;
+
+        float leftdist = t0;
+        const vec *leftv = &g.v[0];
+        if(t1 > leftdist)
+        {
+            leftv = &g.v[1];
+            leftdist = t1;
+        }
+        if(t2 > leftdist)
+        {
+            leftv = &g.v[2];
+            leftdist = t2;
+        }
+        if(t3 > leftdist)
+        {
+            leftv = &g.v[3];
+            leftdist = t3;
+        }
+        float rightdist = leftdist;
+        const vec *rightv = leftv;
+
+        vec across(w.across.x, w.across.y, g.surface.zdelta(w.across)),
+            leftdir(0, 0, 0),
+            rightdir(0, 0, 0),
+            leftp = *leftv,
+            rightp = *rightv;
+        float taperdist = grassdist*grasstaper,
+              taperscale = 1.0f / (grassdist - taperdist),
+              dist = maxstep*grassstep + tstart,
+              leftb = 0,
+              rightb = 0,
+              leftdb = 0,
+              rightdb = 0;
+        for(int i = maxstep; i >= minstep; i--, offset--, leftp.add(leftdir), rightp.add(rightdir), leftb += leftdb, rightb += rightdb, dist -= grassstep)
+        {
             if(dist <= leftdist)
             {
-                prev = leftv;
-                prevdist = leftdist;
+                const vec *prev = leftv;
+                float prevdist = leftdist;
                 if(--leftv < g.v)
                 {
                     leftv += g.numv;
                 }
                 leftdist = leftv->dot(w.dir);
+                if(dist <= leftdist)
+                {
+                    prev = leftv;
+                    prevdist = leftdist;
+                    if(--leftv < g.v)
+                    {
+                        leftv += g.numv;
+                    }
+                    leftdist = leftv->dot(w.dir);
+                }
+                leftdir = vec(*leftv).sub(*prev);
+                leftdir.mul(grassstep/-w.dir.dot(leftdir));
+                leftp = vec(leftdir).mul((prevdist - dist)/grassstep).add(*prev);
+                leftb = w.bound1.dist(leftp);
+                leftdb = w.bound1.dot(leftdir);
             }
-            leftdir = vec(*leftv).sub(*prev);
-            leftdir.mul(grassstep/-w.dir.dot(leftdir));
-            leftp = vec(leftdir).mul((prevdist - dist)/grassstep).add(*prev);
-            leftb = w.bound1.dist(leftp);
-            leftdb = w.bound1.dot(leftdir);
-        }
-        if(dist <= rightdist)
-        {
-            const vec *prev = rightv;
-            float prevdist = rightdist;
-            if(++rightv >= &g.v[g.numv])
-            {
-                rightv = g.v;
-            }
-            rightdist = rightv->dot(w.dir);
             if(dist <= rightdist)
             {
-                prev = rightv;
-                prevdist = rightdist;
+                const vec *prev = rightv;
+                float prevdist = rightdist;
                 if(++rightv >= &g.v[g.numv])
                 {
                     rightv = g.v;
                 }
                 rightdist = rightv->dot(w.dir);
+                if(dist <= rightdist)
+                {
+                    prev = rightv;
+                    prevdist = rightdist;
+                    if(++rightv >= &g.v[g.numv])
+                    {
+                        rightv = g.v;
+                    }
+                    rightdist = rightv->dot(w.dir);
+                }
+                rightdir = vec(*rightv).sub(*prev);
+                rightdir.mul(grassstep/-w.dir.dot(rightdir));
+                rightp = vec(rightdir).mul((prevdist - dist)/grassstep).add(*prev);
+                rightb = w.bound2.dist(rightp);
+                rightdb = w.bound2.dot(rightdir);
             }
-            rightdir = vec(*rightv).sub(*prev);
-            rightdir.mul(grassstep/-w.dir.dot(rightdir));
-            rightp = vec(rightdir).mul((prevdist - dist)/grassstep).add(*prev);
-            rightb = w.bound2.dist(rightp);
-            rightdb = w.bound2.dot(rightdir);
-        }
-        vec p1 = leftp,
-            p2 = rightp;
-        if(leftb > 0)
-        {
-            if(w.bound1.dist(p2) >= 0)
+            vec p1 = leftp,
+                p2 = rightp;
+            if(leftb > 0)
             {
-                continue;
+                if(w.bound1.dist(p2) >= 0)
+                {
+                    continue;
+                }
+                p1.add(vec(across).mul(leftb));
             }
-            p1.add(vec(across).mul(leftb));
-        }
-        if(rightb > 0)
-        {
-            if(w.bound2.dist(p1) >= 0)
+            if(rightb > 0)
             {
-                continue;
+                if(w.bound2.dist(p1) >= 0)
+                {
+                    continue;
+                }
+                p2.sub(vec(across).mul(rightb));
             }
-            p2.sub(vec(across).mul(rightb));
-        }
 
-        if(grassverts.length() >= 4*maxgrass)
-        {
-            break;
-        }
-
-        if(!group)
-        {
-            group = &grassgroups.add();
-            group->tri = &g;
-            group->tex = tex->id;
-            group->offset = grassverts.length()/4;
-            group->numquads = 0;
-            if(lastgrassanim!=lastmillis)
+            if(grassverts.length() >= 4*maxgrass)
             {
-                animategrass();
+                break;
             }
+
+            if(!group)
+            {
+                group = &grassgroups.add();
+                group->tri = &g;
+                group->tex = tex->id;
+                group->offset = grassverts.length()/4;
+                group->numquads = 0;
+                if(lastgrassanim!=lastmillis)
+                {
+                    animategrass();
+                }
+            }
+
+            group->numquads++;
+
+            float tcoffset = grassoffsets[offset%numgrassoffsets],
+                  animoffset = animscale*grassanimoffsets[offset%numgrassoffsets],
+                  tc1 = tc.dot(p1) + tcoffset,
+                  tc2 = tc.dot(p2) + tcoffset,
+                  fade = dist - t > taperdist ? (grassdist - (dist - t))*taperscale : 1,
+                  height = grassheight * fade;
+            bvec4 color(grasscolor, 255);
+    //=====================================================================GRASSVERT
+            #define GRASSVERT(n, tcv, modify) { \
+                grassvert &gv = grassverts.add(); \
+                gv.pos = p##n; \
+                gv.color = color; \
+                gv.tc = vec2(tc##n, tcv); \
+                modify; \
+            }
+
+            GRASSVERT(2, 0, { gv.pos.z += height; gv.tc.x += animoffset; });
+            GRASSVERT(1, 0, { gv.pos.z += height; gv.tc.x += animoffset; });
+            GRASSVERT(1, 1, );
+            GRASSVERT(2, 1, );
+
+            #undef GRASSVERT
+    //==============================================================================
         }
-
-        group->numquads++;
-
-        float tcoffset = grassoffsets[offset%NUMGRASSOFFSETS],
-              animoffset = animscale*grassanimoffsets[offset%NUMGRASSOFFSETS],
-              tc1 = tc.dot(p1) + tcoffset,
-              tc2 = tc.dot(p2) + tcoffset,
-              fade = dist - t > taperdist ? (grassdist - (dist - t))*taperscale : 1,
-              height = grassheight * fade;
-        bvec4 color(grasscolor, 255);
-//=====================================================================GRASSVERT
-        #define GRASSVERT(n, tcv, modify) { \
-            grassvert &gv = grassverts.add(); \
-            gv.pos = p##n; \
-            gv.color = color; \
-            gv.tc = vec2(tc##n, tcv); \
-            modify; \
-        }
-
-        GRASSVERT(2, 0, { gv.pos.z += height; gv.tc.x += animoffset; });
-        GRASSVERT(1, 0, { gv.pos.z += height; gv.tc.x += animoffset; });
-        GRASSVERT(1, 1, );
-        GRASSVERT(2, 1, );
-
-        #undef GRASSVERT
-//==============================================================================
     }
-}
 
-static void gengrassquads(vtxarray *va)
-{
-    for(int i = 0; i < va->grasstris.length(); i++)
+    void gengrassquads(vtxarray *va)
     {
-        grasstri &g = va->grasstris[i];
-        if(isfoggedsphere(g.radius, g.center))
+        for(int i = 0; i < va->grasstris.length(); i++)
         {
-            continue;
-        }
-        float dist = g.center.dist(camera1->o);
-        if(dist - g.radius > grassdist)
-        {
-            continue;
-        }
-        Slot &s = *lookupvslot(g.texture, false).slot;
-        if(!s.grasstex)
-        {
-            if(!s.grass)
+            grasstri &g = va->grasstris[i];
+            if(isfoggedsphere(g.radius, g.center))
             {
                 continue;
             }
-            s.grasstex = textureload(s.grass, 2);
-        }
-        grassgroup *group = NULL;
-        for(int i = 0; i < NUMGRASSWEDGES; ++i)
-        {
-            grasswedge &w = grasswedges[i];
-            if(w.bound1.dist(g.center) > g.radius || w.bound2.dist(g.center) > g.radius)
+            float dist = g.center.dist(camera1->o);
+            if(dist - g.radius > grassdist)
             {
                 continue;
             }
-            gengrassquads(group, w, g, s.grasstex);
+            Slot &s = *lookupvslot(g.texture, false).slot;
+            if(!s.grasstex)
+            {
+                if(!s.grass)
+                {
+                    continue;
+                }
+                s.grasstex = textureload(s.grass, 2);
+            }
+            grassgroup *group = NULL;
+            for(int i = 0; i < numgrasswedges; ++i)
+            {
+                grasswedge &w = grasswedges[i];
+                if(w.bound1.dist(g.center) > g.radius || w.bound2.dist(g.center) > g.radius)
+                {
+                    continue;
+                }
+                gengrassquads(group, w, g, s.grasstex);
+            }
         }
     }
+
+    Shader *grassshader = NULL;
+
+    void cleargrassshaders()
+    {
+        grassshader = NULL;
+    }
+
+    Shader *loadgrassshader()
+    {
+        string opts;
+        int optslen = 0;
+
+        opts[optslen] = '\0';
+
+        DEF_FORMAT_STRING(name, "grass%s", opts);
+        return generateshader(name, "grassshader \"%s\"", opts);
+
+    }
 }
+
+/* externally relevant functions */
+///////////////////////////////////
 
 void generategrass()
 {
@@ -299,13 +323,13 @@ void generategrass()
 
     if(grassoffsets[0] < 0)
     {
-        for(int i = 0; i < NUMGRASSOFFSETS; ++i)
+        for(int i = 0; i < numgrassoffsets; ++i)
         {
             grassoffsets[i] = randomint(0x1000000)/static_cast<float>(0x1000000);
         }
     }
 
-    for(int i = 0; i < NUMGRASSWEDGES; ++i)
+    for(int i = 0; i < numgrasswedges; ++i)
     {
         grasswedge &w = grasswedges[i];
         w.bound1.offset = -camera1->o.dot(w.bound1);
@@ -344,28 +368,9 @@ void generategrass()
     gle::clearvbo();
 }
 
-static Shader *grassshader = NULL;
-
-Shader *loadgrassshader()
-{
-    string opts;
-    int optslen = 0;
-
-    opts[optslen] = '\0';
-
-    DEF_FORMAT_STRING(name, "grass%s", opts);
-    return generateshader(name, "grassshader \"%s\"", opts);
-
-}
-
 void loadgrassshaders()
 {
     grassshader = loadgrassshader();
-}
-
-void cleargrassshaders()
-{
-    grassshader = NULL;
 }
 
 void rendergrass()
@@ -425,4 +430,3 @@ void cleanupgrass()
 
     cleargrassshaders();
 }
-

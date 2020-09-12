@@ -140,7 +140,8 @@ VAR(dbgzip, 0, 0, 1);
 
 static bool readzipdirectory(const char *archname, FILE *f, int entries, int offset, uint size, vector<zipfile> &files)
 {
-    uchar *buf = new (false) uchar[size], *src = buf;
+    uchar *buf = new uchar[size],
+          *src = buf;
     if(!buf || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, size, f) != size)
     {
         delete[] buf;
@@ -422,7 +423,7 @@ struct zipstream : stream
         {
             zfile.next_in = (Bytef *)buf;
         }
-        size = min(size, uint(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
+        size = min(size, static_cast<uint>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
         if(arch->owner != this)
         {
             arch->owner = NULL;
@@ -477,7 +478,7 @@ struct zipstream : stream
         }
         if(dbgzip)
         {
-            conoutf(Console_Debug, info->compressedsize ? "%s: zfile.total_out %u, info->size %u" : "%s: reading %u, info->size %u", info->name, info->compressedsize ? uint(zfile.total_out) : reading - info->offset, info->size);
+            conoutf(Console_Debug, info->compressedsize ? "%s: zfile.total_out %u, info->size %u" : "%s: reading %u, info->size %u", info->name, info->compressedsize ? static_cast<uint>(zfile.total_out) : reading - info->offset, info->size);
         }
         if(info->compressedsize)
         {
@@ -542,7 +543,7 @@ struct zipstream : stream
             }
             pos = std::clamp(pos, offset(info->offset), offset(info->offset + info->size));
             arch->owner = NULL;
-            if(fseek(arch->data, int(pos), SEEK_SET) < 0)
+            if(fseek(arch->data, static_cast<int>(pos), SEEK_SET) < 0)
             {
                 return false;
             }
@@ -593,7 +594,7 @@ struct zipstream : stream
         }
         else
         {
-            if(zfile.next_in && zfile.total_in <= uint(zfile.next_in - buf))
+            if(zfile.next_in && zfile.total_in <= static_cast<uint>(zfile.next_in - buf))
             {
                 zfile.avail_in += zfile.total_in;
                 zfile.next_in -= zfile.total_in;

@@ -301,7 +301,10 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                 --sp; c = stack[sp];
             } // restore color
         }
-        else stack[sp] = c;
+        else
+        {
+            stack[sp] = c;
+        }
         switch(c)
         {
             case '0':
@@ -369,7 +372,9 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
 }
 
 #define TEXTSKELETON \
-    float y = 0, x = 0, scale = curfont->scale/static_cast<float>(curfont->defaulth);\
+    float y = 0, \
+          x = 0, \
+          scale = curfont->scale/static_cast<float>(curfont->defaulth);\
     int i;\
     for(i = 0; str[i]; i++)\
     {\
@@ -380,13 +385,31 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
             x = TEXTTAB(x);\
             TEXTWHITE(i)\
         }\
-        else if(c==' ')  { x += scale*curfont->defaultw; TEXTWHITE(i) }\
-        else if(c=='\n') { TEXTLINE(i) x = 0; y += FONTH; }\
-        else if(c=='\f') { if(str[i+1]) { i++; TEXTCOLOR(i) }}\
+        else if(c==' ') \
+        { \
+            x += scale*curfont->defaultw; \
+            TEXTWHITE(i) \
+        }\
+        else if(c=='\n') \
+        { \
+            TEXTLINE(i) x = 0; \
+            y += FONTH; \
+        }\
+        else if(c=='\f') \
+        { \
+            if(str[i+1]) \
+            { \
+                i++; \
+                TEXTCOLOR(i) \
+            } \
+        }\
         else if(curfont->chars.inrange(c-curfont->charoffset))\
         {\
             float cw = scale*curfont->chars[c-curfont->charoffset].advance;\
-            if(cw <= 0) continue;\
+            if(cw <= 0) \
+            { \
+                continue; \
+            } \
             if(maxwidth >= 0)\
             {\
                 int j = i;\
@@ -394,30 +417,69 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                 for(; str[i+1]; i++)\
                 {\
                     int c = static_cast<uchar>(str[i+1]);\
-                    if(c=='\f') { if(str[i+2]) i++; continue; }\
-                    if(!curfont->chars.inrange(c-curfont->charoffset)) break;\
-                    float cw = scale*curfont->chars[c-curfont->charoffset].advance;\
-                    if(cw <= 0 || w + cw > maxwidth) break;\
-                    w += cw;\
-                }\
-                if(x + w > maxwidth && x > 0) { (void)j; TEXTLINE(j-1) x = 0; y += FONTH; }\
-                TEXTWORD\
+                    if(c=='\f') \
+                    { \
+                        if(str[i+2]) \
+                        { \
+                            i++; \
+                        } \
+                        continue; \
+                    } \
+                    if(!curfont->chars.inrange(c-curfont->charoffset)) \
+                    { \
+                        break; \
+                    } \
+                    float cw = scale*curfont->chars[c-curfont->charoffset].advance; \
+                    if(cw <= 0 || w + cw > maxwidth) \
+                    { \
+                        break; \
+                    } \
+                    w += cw; \
+                } \
+                if(x + w > maxwidth && x > 0) \
+                { \
+                    (void)j; \
+                    TEXTLINE(j-1); \
+                    x = 0; \
+                    y += FONTH; } \
+                TEXTWORD \
+            } \
+            else \
+            { \
+                TEXTCHAR(i) \
             }\
-            else { TEXTCHAR(i) }\
         }\
     }
 
 //all the chars are guaranteed to be either drawable or color commands
 #define TEXTWORDSKELETON \
-                for(; j <= i; j++)\
-                {\
-                    TEXTINDEX(j)\
-                    int c = static_cast<uchar>(str[j]);\
-                    if(c=='\f') { if(str[j+1]) { j++; TEXTCOLOR(j) }}\
-                    else { float cw = scale*curfont->chars[c-curfont->charoffset].advance; TEXTCHAR(j) }\
-                }
+    for(; j <= i; j++)\
+    {\
+        TEXTINDEX(j)\
+        int c = static_cast<uchar>(str[j]);\
+        if(c=='\f') \
+        { \
+            if(str[j+1]) \
+            { \
+                j++; \
+                TEXTCOLOR(j) \
+            } \
+        }\
+        else \
+        { \
+            float cw = scale*curfont->chars[c-curfont->charoffset].advance; \
+            TEXTCHAR(j); \
+        }\
+    }
 
-#define TEXTEND(cursor) if(cursor >= i) { do { TEXTINDEX(cursor); } while(0); }
+#define TEXTEND(cursor) \
+    if(cursor >= i) \
+    { \
+        do \
+        { \
+            TEXTINDEX(cursor); \
+        } while(0); \
+    } \
 
 int text_visible(const char *str, float hitx, float hity, int maxwidth)
 {
@@ -495,7 +557,8 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
         color.scale(textbright, 100);
     }
     int colorpos = 0;
-    float cx = -FONTW, cy = 0;
+    float cx = -FONTW,
+          cy = 0;
     bool usecolor = true;
     if(a < 0)
     {

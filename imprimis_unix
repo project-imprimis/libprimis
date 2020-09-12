@@ -58,7 +58,7 @@ else
   echo "Your platform does not have a pre-compiled Imprimis client."
   echo "Please follow the following steps to build a native client:"
   echo "1) Ensure you have the SDL2, SDL2-image, SDL2-mixer, and OpenGL libraries installed."
-  echo "2) Type \"make -C src install\"."
+  echo "2) Type \"make -C src\"."
   echo "3) If the build succeeds, run this script again."
   exit 1
 fi

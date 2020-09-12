@@ -602,7 +602,7 @@ struct skelzonekey
 
     bool hasbone(int n)
     {
-        for(int i = 0; i < int(sizeof(bones)); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
         {
             if(bones[i] == n)
             {
@@ -618,7 +618,7 @@ struct skelzonekey
 
     int numbones()
     {
-        for(int i = 0; i < int(sizeof(bones)); ++i)
+        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
         {
             if(bones[i] == 0xFF)
             {

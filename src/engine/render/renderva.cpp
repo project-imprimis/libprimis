@@ -346,15 +346,15 @@ void visiblecubes(bool cull)
 
 ///////// occlusion queries /////////////
 
-#define MAXQUERY 2048
-#define MAXQUERYFRAMES 2
+static const int maxquery = 2048;
+static const int maxqueryframes = 2;
 
 int deferquery = 0;
 
 struct queryframe
 {
     int cur, max, defer;
-    occludequery queries[MAXQUERY];
+    occludequery queries[maxquery];
 
     queryframe() : cur(0), max(0), defer(0) {}
 
@@ -364,7 +364,7 @@ struct queryframe
         {
             queries[i].owner = NULL;
         }
-        for(; defer > 0 && max < MAXQUERY; defer--)
+        for(; defer > 0 && max < maxquery; defer--)
         {
             queries[max].owner = NULL;
             queries[max].fragments = -1;
@@ -377,13 +377,13 @@ struct queryframe
     {
         if(cur >= max)
         {
-            if(max >= MAXQUERY)
+            if(max >= maxquery)
             {
                 return NULL;
             }
             if(deferquery)
             {
-                if(max + defer < MAXQUERY)
+                if(max + defer < maxquery)
                 {
                     defer++;
                 }
@@ -416,7 +416,7 @@ struct queryframe
     }
 };
 
-static queryframe queryframes[MAXQUERYFRAMES];
+static queryframe queryframes[maxqueryframes];
 static uint flipquery = 0;
 
 int getnumqueries()
@@ -426,7 +426,7 @@ int getnumqueries()
 
 void flipqueries()
 {
-    flipquery = (flipquery + 1) % MAXQUERYFRAMES;
+    flipquery = (flipquery + 1) % maxqueryframes;
     queryframes[flipquery].flip();
 }
 
@@ -437,7 +437,7 @@ occludequery *newquery(void *owner)
 
 void resetqueries()
 {
-    for(int i = 0; i < MAXQUERYFRAMES; ++i)
+    for(int i = 0; i < maxqueryframes; ++i)
     {
         queryframes[i].reset();
     }
@@ -445,7 +445,7 @@ void resetqueries()
 
 void clearqueries()
 {
-    for(int i = 0; i < MAXQUERYFRAMES; ++i)
+    for(int i = 0; i < maxqueryframes; ++i)
     {
         queryframes[i].cleanup();
     }

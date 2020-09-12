@@ -16,4 +16,4 @@ blocks:
             - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
             - git submodule update --init --remote src/enet
             - make -C src clean
-            - make -C src install -j3
+            - make -C src -j3

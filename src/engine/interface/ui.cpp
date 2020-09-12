@@ -275,24 +275,62 @@ namespace UI
         {
             switch(adjust & Align_HMask)
             {
-                case Align_Left: x = px; break;
-                case Align_HCenter: x = px + (pw - w) / 2; break;
-                case Align_Right: x = px + pw - w; break;
+                case Align_Left:
+                {
+                    x = px;
+                    break;
+                }
+                case Align_HCenter:
+                {
+                    x = px + (pw - w) / 2;
+                    break;
+                }
+                case Align_Right:
+                {
+                    x = px + pw - w;
+                    break;
+                }
             }
 
             switch(adjust & Align_VMask)
             {
-                case Align_Top: y = py; break;
-                case Align_VCenter: y = py + (ph - h) / 2; break;
-                case Align_Bottom: y = py + ph - h; break;
+                case Align_Top:
+                {
+                    y = py;
+                    break;
+                }
+                case Align_VCenter:
+                {
+                    y = py + (ph - h) / 2;
+                    break;
+                }
+                case Align_Bottom:
+                {
+                    y = py + ph - h;
+                    break;
+                }
             }
 
             if(adjust & Clamp_Mask)
             {
-                if(adjust & Clamp_Left)   { w += x - px; x = px; }
-                if(adjust & Clamp_Right) w = px + pw - x;
-                if(adjust & Clamp_Top)    { h += y - py; y = py; }
-                if(adjust & Clamp_Bottom) h = py + ph - y;
+                if(adjust & Clamp_Left)
+                {
+                    w += x - px;
+                    x = px;
+                }
+                if(adjust & Clamp_Right)
+                {
+                    w = px + pw - x;
+                }
+                if(adjust & Clamp_Top)
+                {
+                    h += y - py;
+                    y = py;
+                }
+                if(adjust & Clamp_Bottom)
+                {
+                    h = py + ph - y;
+                }
             }
 
             adjustchildren();
@@ -335,7 +373,10 @@ namespace UI
         {
             LOOP_CHILDREN_REV(o,
             {
-                if(o->rawkey(code, isdown)) return true;
+                if(o->rawkey(code, isdown))
+                {
+                    return true;
+                }
             });
             return false;
         }
@@ -344,7 +385,10 @@ namespace UI
         {
             LOOP_CHILDREN_REV(o,
             {
-                if(o->key(code, isdown)) return true;
+                if(o->key(code, isdown))
+                {
+                    return true;
+                }
             });
             return false;
         }
@@ -353,7 +397,10 @@ namespace UI
         {
             LOOP_CHILDREN_REV(o,
             {
-                if(o->textinput(str, len)) return true;
+                if(o->textinput(str, len))
+                {
+                    return true;
+                }
             });
             return false;
         }
@@ -403,7 +450,9 @@ namespace UI
             LOOP_CHILDREN(o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
+                {
                     o->draw(sx + o->x, sy + o->y);
+                }
             });
         }
 
@@ -465,7 +514,10 @@ namespace UI
         #define PROPAGATE_STATE(o, cx, cy, mask, inside, body) \
             LOOP_CHILDREN_REV(o, \
             { \
-                if(((o->state | o->childstate) & mask) != mask) continue; \
+                if(((o->state | o->childstate) & mask) != mask) \
+                { \
+                    continue; \
+                } \
                 float o##x = cx - o->x; \
                 float o##y = cy - o->y; \
                 if(!inside) \
@@ -488,7 +540,10 @@ namespace UI
                     o->func##children(ox, oy, mask, inside, setflags); \
                     childstate |= (o->state | o->childstate) & (setflags); \
                 }); \
-                if(target(cx, cy)) state |= (setflags); \
+                if(target(cx, cy)) \
+                { \
+                    state |= (setflags); \
+                } \
                 func(cx, cy); \
             } \
             virtual void func(float cx, float cy) {}
@@ -517,9 +572,15 @@ namespace UI
         }
 
         template<class T>
-        bool istype() const { return T::typestr() == gettype(); }
+        bool istype() const
+        {
+            return T::typestr() == gettype();
+        }
 
-        bool isnamed(const char *name) const { return name[0] == '#' ? name == gettypename() : !strcmp(name, getname()); }
+        bool isnamed(const char *name) const
+        {
+            return name[0] == '#' ? name == gettypename() : !strcmp(name, getname());
+        }
 
         Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
         {
@@ -554,7 +615,10 @@ namespace UI
             for(const Object *prev = this, *cur = parent; cur; prev = cur, cur = cur->parent)
             {
                 Object *o = cur->find(name, true, prev);
-                if(o) return o;
+                if(o)
+                {
+                    return o;
+                }
             }
             return NULL;
         }
@@ -847,10 +911,17 @@ namespace UI
             { \
                 LOOP_WINDOWS_REV(w, \
                 { \
-                    if(((w->state | w->childstate) & mask) != mask) continue; \
+                    if(((w->state | w->childstate) & mask) != mask) \
+                    { \
+                        continue; \
+                    } \
                     w->func##children(cx, cy, mask, inside, setflags); \
                     int wflags = (w->state | w->childstate) & (setflags); \
-                    if(wflags) { childstate |= wflags; break; } \
+                    if(wflags) \
+                    { \
+                        childstate |= wflags; \
+                        break; \
+                    } \
                 }); \
             }
         DOSTATES
@@ -908,7 +979,14 @@ namespace UI
 
         bool hidetop()
         {
-            LOOP_WINDOWS_REV(w, { if(w->allowinput && !(w->state & State_Hidden)) { hide(w, i); return true; } });
+            LOOP_WINDOWS_REV(w,
+            {
+                if(w->allowinput && !(w->state & State_Hidden))
+                {
+                    hide(w, i);
+                    return true;
+                }
+            });
             return false;
         }
 
@@ -947,7 +1025,13 @@ namespace UI
         float abovehud()
         {
             float y = 1;
-            LOOP_WINDOWS(w, { if(w->abovehud && !(w->state & State_Hidden)) y = min(y, w->calcabovehud()); });
+            LOOP_WINDOWS(w,
+            {
+                if(w->abovehud && !(w->state & State_Hidden))
+                {
+                    y = min(y, w->calcabovehud());
+                }
+            });
             return y;
         }
     };
@@ -1017,7 +1101,10 @@ namespace UI
         {
             if(children.empty()) return;
 
-            float offset = 0, sx = 0, cspace = (w - subw) / max(children.length() - 1, 1), cstep = (w - subw) / children.length();
+            float offset = 0,
+                  sx = 0,
+                  cspace = (w - subw) / max(children.length() - 1, 1),
+                  cstep = (w - subw) / children.length();
             for(int i = 0; i < children.length(); i++)
             {
                 Object *o = children[i];
@@ -1125,7 +1212,8 @@ namespace UI
             widths.setsize(0);
             heights.setsize(0);
 
-            int column = 0, row = 0;
+            int column = 0,
+                row = 0;
             LOOP_CHILDREN(o,
             {
                 o->layout();
@@ -1232,10 +1320,22 @@ namespace UI
             buildparent = this;
             buildchild = 0;
             executeret(columndata);
-            if(columns != buildchild) while(children.length() > buildchild) delete children.pop();
+            if(columns != buildchild)
+            {
+                while(children.length() > buildchild)
+                {
+                    delete children.pop();
+                }
+            }
             columns = buildchild;
-            if((*contents&Code_OpMask) != Code_Exit) executeret(contents);
-            while(children.length() > buildchild) delete children.pop();
+            if((*contents&Code_OpMask) != Code_Exit)
+            {
+                executeret(contents);
+            }
+            while(children.length() > buildchild)
+            {
+                delete children.pop();
+            }
             buildparent = oldparent;
             buildchild = oldchild;
             resetstate();
@@ -1251,12 +1351,16 @@ namespace UI
             LOOP_CHILD_RANGE(columns, children.length(), o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
+                {
                     o->draw(sx + o->x, sy + o->y);
+                }
             });
             LOOP_CHILD_RANGE(0, columns, o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
+                {
                     o->draw(sx + o->x, sy + o->y);
+                }
             });
         }
     };
@@ -1503,8 +1607,14 @@ namespace UI
         uchar r, g, b, a;
 
         Color() {}
+
+        //converts an int color to components
         Color(uint c) : r((c>>16)&0xFF), g((c>>8)&0xFF), b(c&0xFF), a(c>>24 ? c>>24 : 0xFF) {}
+
+        //converts an int color w/o alpha and alpha channel to components
         Color(uint c, uchar a) : r((c>>16)&0xFF), g((c>>8)&0xFF), b(c&0xFF), a(a) {}
+
+        //assigns components normally
         Color(uchar r, uchar g, uchar b, uchar a = 255) : r(r), g(g), b(b), a(a) {}
 
         void init() { gle::colorub(r, g, b, a); }
@@ -1543,8 +1653,14 @@ namespace UI
         void draw(float sx, float sy)
         {
             changedraw(Change_Shader | Change_Color | Change_Blend);
-            if(type==MODULATE) modblend(); else resetblend();
-
+            if(type==MODULATE)
+            {
+                modblend();
+            }
+            else
+            {
+                resetblend();
+            }
             color.init();
             gle::begin(GL_TRIANGLE_STRIP);
             gle::attribf(sx+w, sy);
@@ -1584,8 +1700,14 @@ namespace UI
         void draw(float sx, float sy)
         {
             changedraw(Change_Shader | Change_Color | Change_Blend);
-            if(type==MODULATE) modblend(); else resetblend();
-
+            if(type==MODULATE)
+            {
+                modblend();
+            }
+            else
+            {
+                resetblend();
+            }
             gle::begin(GL_TRIANGLE_STRIP);
             gle::attribf(sx+w, sy);   (dir == HORIZONTAL ? color2 : color).attrib();
             gle::attribf(sx,   sy);   color.attrib();
@@ -1670,7 +1792,10 @@ namespace UI
         if(!tex->alphamask)
         {
             loadalphamask(tex);
-            if(!tex->alphamask) return true;
+            if(!tex->alphamask)
+            {
+                return true;
+            }
         }
         int tx = std::clamp(static_cast<int>(x*tex->xs), 0, tex->xs-1),
             ty = std::clamp(static_cast<int>(y*tex->ys), 0, tex->ys-1);
@@ -1758,7 +1883,11 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            if(tex == notexture) { Object::draw(sx, sy); return; }
+            if(tex == notexture)
+            {
+                Object::draw(sx, sy);
+                return;
+            }
 
             bindtex();
             quads(sx, sy, w, h, cropx, cropy, cropw, croph);
@@ -1827,10 +1956,12 @@ namespace UI
 
             float splitw = (minw ? min(minw, w) : w) / 2,
                   splith = (minh ? min(minh, h) : h) / 2,
-                  vy = sy, ty = 0;
+                  vy = sy,
+                  ty = 0;
             for(int i = 0; i < 3; ++i)
             {
-                float vh = 0, th = 0;
+                float vh = 0,
+                      th = 0;
                 switch(i)
                 {
                     case 0:
@@ -1931,8 +2062,10 @@ namespace UI
 
         bool target(float cx, float cy)
         {
-            if(!(tex->type&Texture::ALPHA)) return true;
-
+            if(!(tex->type&Texture::ALPHA))
+            {
+                return true;
+            }
             float mx, my;
             if(cx < screenborder)
             {
@@ -2075,9 +2208,7 @@ namespace UI
                 Object::draw(sx, sy);
                 return;
             }
-
             bindtex();
-
             if(tex->clamp)
             {
                 for(float dy = 0; dy < h; dy += tileh)
@@ -2208,7 +2339,10 @@ namespace UI
 
         bool target(float cx, float cy)
         {
-            if(type == OUTLINE) return false;
+            if(type == OUTLINE)
+            {
+                return false;
+            }
             float r = radius <= 0 ? min(w, h)/2 : radius;
             return vec2(cx, cy).sub(r).squaredlen() <= r*r;
         }
@@ -2218,7 +2352,14 @@ namespace UI
             Object::draw(sx, sy);
 
             changedraw(Change_Shader | Change_Color | Change_Blend);
-            if(type==MODULATE) modblend(); else resetblend();
+            if(type==MODULATE)
+            {
+                modblend();
+            }
+            else
+            {
+                resetblend();
+            }
 
             float r = radius <= 0 ? min(w, h)/2 : radius;
             color.init();
@@ -2252,7 +2393,14 @@ namespace UI
     FVAR(uitextscale, 1, 0, 0);
 
     #define SETSTR(dst, src) do { \
-        if(dst) { if(dst != src && strcmp(dst, src)) { delete[] dst; dst = newstring(src); } } \
+        if(dst) \
+        { \
+            if(dst != src && strcmp(dst, src)) \
+            { \
+                delete[] dst; \
+                dst = newstring(src); \
+            } \
+        } \
         else dst = newstring(src); \
     } while(0)
 
@@ -2621,7 +2769,10 @@ namespace UI
             { \
                 cx += offsetx; \
                 cy += offsety; \
-                if(cx < virtw && cy < virth) Clipper::func##children(cx, cy, mask, inside, setflags); \
+                if(cx < virtw && cy < virth) \
+                { \
+                    Clipper::func##children(cx, cy, mask, inside, setflags); \
+                } \
             }
         DOSTATES
         #undef DOSTATE
@@ -2973,7 +3124,10 @@ namespace UI
             scrollto(o->x + tox, o->y + toy - fromy);
         }
 
-        int wheelscrolldirection() const { return -1; }
+        int wheelscrolldirection() const
+        {
+            return -1;
+        }
     };
 
     struct SliderButton : Object
@@ -3198,7 +3352,7 @@ namespace UI
         {
             laststep = totalmillis + 2*uislidersteptime;
 
-            Slider *slider = (Slider *)findsibling(Slider::typestr());
+            Slider *slider = static_cast<Slider *>(findsibling(Slider::typestr()));
             if(slider)
             {
                 slider->arrowscroll(stepdir);
@@ -3213,7 +3367,7 @@ namespace UI
             }
             laststep = totalmillis;
 
-            Slider *slider = (Slider *)findsibling(Slider::typestr());
+            Slider *slider = static_cast<Slider *>(findsibling(Slider::typestr()));
             if(slider)
             {
                 slider->arrowscroll(stepdir);
@@ -3223,7 +3377,7 @@ namespace UI
 
     void Slider::wheelscroll(float step)
     {
-        SliderArrow *arrow = (SliderArrow *)findsibling(SliderArrow::typestr());
+        SliderArrow *arrow = static_cast<SliderArrow *>(findsibling(SliderArrow::typestr()));
         if(arrow)
         {
             step *= arrow->stepdir;
@@ -3530,8 +3684,8 @@ namespace UI
                     {
                         break;
                     }
-                    // fall-through
                 }
+                [[fallthrough]];
                 case SDLK_KP_ENTER:
                 {
                     if(isdown)
@@ -4125,27 +4279,42 @@ namespace UI
 
     bool hideui(const char *name)
     {
-        if(!name) return world->hideall() > 0;
+        if(!name)
+        {
+            return world->hideall() > 0;
+        }
         Window *window = windows.find(name, NULL);
         return window && world->hide(window);
     }
 
     bool toggleui(const char *name)
     {
-        if(showui(name)) return true;
+        if(showui(name))
+        {
+            return true;
+        }
         hideui(name);
         return false;
     }
 
     void holdui(const char *name, bool on)
     {
-        if(on) showui(name);
-        else hideui(name);
+        if(on)
+        {
+            showui(name);
+        }
+        else
+        {
+            hideui(name);
+        }
     }
 
     bool uivisible(const char *name)
     {
-        if(!name) return world->children.length() > 0;
+        if(!name)
+        {
+            return world->children.length() > 0;
+        }
         Window *window = windows.find(name, NULL);
         return window && world->children.find(window) >= 0;
     }
@@ -4159,7 +4328,29 @@ namespace UI
     ICOMMAND(uivisible, "s", (char *name), intret(uivisible(name) ? 1 : 0));
     ICOMMAND(uiname, "", (), { if(window) result(window->name); });
 
-    #define IFSTATEVAL(state,t,f) { if(state) { if(t->type == Value_Null) intret(1); else result(*t); } else if(f->type == Value_Null) intret(0); else result(*f); }
+    #define IFSTATEVAL(state,t,f) \
+    { \
+        if(state) \
+        { \
+            if(t->type == Value_Null) \
+            { \
+                intret(1); \
+            } \
+            else \
+            { \
+                result(*t); \
+            } \
+        } \
+        else if(f->type == Value_Null) \
+        { \
+            intret(0); \
+        } \
+        else \
+        { \
+            result(*f); \
+        } \
+    }
+
     #define DOSTATE(flags, func) \
         ICOMMANDNS("ui!" #func, uinot##func##_, "ee", (uint *t, uint *f), \
             executeret(buildparent && buildparent->hasstate(flags) ? t : f)); \
@@ -4191,11 +4382,17 @@ namespace UI
 
     ICOMMAND(uialign, "ii", (int *xalign, int *yalign),
     {
-        if(buildparent) buildparent->setalign(*xalign, *yalign);
+        if(buildparent)
+        {
+            buildparent->setalign(*xalign, *yalign);
+        }
     });
     ICOMMANDNS("uialign-", uialign_, "ii", (int *xalign, int *yalign),
     {
-        if(buildparent && buildchild > 0) buildparent->children[buildchild-1]->setalign(*xalign, *yalign);
+        if(buildparent && buildchild > 0)
+        {
+            buildparent->children[buildchild-1]->setalign(*xalign, *yalign);
+        }
     });
     ICOMMANDNS("uialign*", uialign__, "ii", (int *xalign, int *yalign),
     {
@@ -4210,11 +4407,17 @@ namespace UI
 
     ICOMMAND(uiclamp, "iiii", (int *left, int *right, int *top, int *bottom),
     {
-        if(buildparent) buildparent->setclamp(*left, *right, *top, *bottom);
+        if(buildparent)
+        {
+            buildparent->setclamp(*left, *right, *top, *bottom);
+        }
     });
     ICOMMANDNS("uiclamp-", uiclamp_, "iiii", (int *left, int *right, int *top, int *bottom),
     {
-        if(buildparent && buildchild > 0) buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom);
+        if(buildparent && buildchild > 0)
+        {
+            buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom);
+        }
     });
     ICOMMANDNS("uiclamp*", uiclamp__, "iiii", (int *left, int *right, int *top, int *bottom),
     {
@@ -4363,28 +4566,39 @@ namespace UI
 
     static inline void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
     {
-        if(scale <= 0) scale = 1;
+        if(scale <= 0)
+        {
+            scale = 1;
+        }
         scale *= scalemod;
         switch(t.type)
         {
             case Value_Integer:
+            {
                 BUILD(TextInt, o, o->setup(t.i, scale, color, wrap), children);
                 break;
+            }
             case Value_Float:
+            {
                 BUILD(TextFloat, o, o->setup(t.f, scale, color, wrap), children);
                 break;
+            }
             case Value_CString:
             case Value_Macro:
             case Value_String:
+            {
                 if(t.s[0])
                 {
                     BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
                     break;
                 }
-                // fall-through
+            }
+            [[fallthrough]];
             default:
+            {
                 BUILD(Object, o, o->setup(), children);
                 break;
+            }
         }
     }
 
@@ -4531,7 +4745,10 @@ namespace UI
 
     bool movecursor(int dx, int dy)
     {
-        if(!hascursor()) return false;
+        if(!hascursor())
+        {
+            return false;
+        }
         cursorx = std::clamp(cursorx + dx*uisensitivity/hudw, 0.0f, 1.0f);
         cursory = std::clamp(cursory + dy*uisensitivity/hudh, 0.0f, 1.0f);
         return true;
@@ -4539,7 +4756,10 @@ namespace UI
 
     bool keypress(int code, bool isdown)
     {
-        if(world->rawkey(code, isdown)) return true;
+        if(world->rawkey(code, isdown))
+        {
+            return true;
+        }
         int action = 0, hold = 0;
         switch(code)
         {

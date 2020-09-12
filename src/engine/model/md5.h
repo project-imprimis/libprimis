@@ -91,6 +91,7 @@ struct md5 : skelloader<md5>
             }
         }
 
+        //md5 model loader
         void load(stream *f, char *buf, size_t bufsize)
         {
             md5weight w;
@@ -127,6 +128,7 @@ struct md5 : skelloader<md5>
                         delete[] texname;
                     }
                 }
+                //create the vert arrays
                 else if(sscanf(buf, " numverts %d", &numverts)==1)
                 {
                     numverts = max(numverts, 0);
@@ -136,6 +138,7 @@ struct md5 : skelloader<md5>
                         verts = new vert[numverts];
                     }
                 }
+                //create tri array
                 else if(sscanf(buf, " numtris %d", &numtris)==1)
                 {
                     numtris = max(numtris, 0);
@@ -144,6 +147,7 @@ struct md5 : skelloader<md5>
                         tris = new tri[numtris];
                     }
                 }
+                //create md5weight array
                 else if(sscanf(buf, " numweights %d", &numweights)==1)
                 {
                     numweights = max(numweights, 0);
@@ -152,6 +156,7 @@ struct md5 : skelloader<md5>
                         weightinfo = new md5weight[numweights];
                     }
                 }
+                //assign md5verts to vertinfo array
                 else if(sscanf(buf, " vert %d ( %f %f ) %hu %hu", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
                 {
                     if(index>=0 && index<numverts)
@@ -159,6 +164,7 @@ struct md5 : skelloader<md5>
                         vertinfo[index] = v;
                     }
                 }
+                // assign tris to tri array
                 else if(sscanf(buf, " tri %d %hu %hu %hu", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
                 {
                     if(index>=0 && index<numtris)
@@ -166,6 +172,7 @@ struct md5 : skelloader<md5>
                         tris[index] = t;
                     }
                 }
+                //assign md5weights to weights array
                 else if(sscanf(buf, " weight %d %d %f ( %f %f %f ) ", &index, &w.joint, &w.bias, &w.pos.x, &w.pos.y, &w.pos.z)==6)
                 {
                     w.pos.y = -w.pos.y;
@@ -184,14 +191,15 @@ struct md5 : skelloader<md5>
         {
         }
 
+        // main mesh loading functionality
         bool loadmesh(const char *filename, float smooth)
         {
             stream *f = openfile(filename, "r");
-            if(!f)
+            if(!f) //immediately bail if no file present
             {
                 return false;
             }
-            char buf[512];
+            char buf[512]; //presumably this will fail with lines over 512 char long
             vector<md5joint> basejoints;
             while(f->getline(buf, sizeof(buf)))
             {
@@ -200,7 +208,7 @@ struct md5 : skelloader<md5>
                 {
                     if(tmp!=10)
                     {
-                        delete f;
+                        delete f; //bail out if md5version is not what we want
                         return false;
                     }
                 }
@@ -208,10 +216,10 @@ struct md5 : skelloader<md5>
                 {
                     if(tmp<1)
                     {
-                        delete f;
+                        delete f; //bail out if no joints found
                         return false;
                     }
-                    if(skel->numbones>0)
+                    if(skel->numbones>0) //if we have bones, keep going
                     {
                         continue;
                     }
@@ -222,7 +230,7 @@ struct md5 : skelloader<md5>
                 {
                     if(tmp<1)
                     {
-                        delete f;
+                        delete f; //if there's no meshes, nothing to be done
                         return false;
                     }
                 }
@@ -259,6 +267,7 @@ struct md5 : skelloader<md5>
                             *curname++ = c;
                         }
                         *curname = '\0';
+                        //pickup parent, pos/orient 3-vectors
                         if(sscanf(curbuf, " %d ( %f %f %f ) ( %f %f %f )",
                             &parent, &j.pos.x, &j.pos.y, &j.pos.z,
                             &j.orient.x, &j.orient.y, &j.orient.z)==7)
@@ -284,13 +293,14 @@ struct md5 : skelloader<md5>
                         return false;
                     }
                 }
+                //load up meshes
                 else if(strstr(buf, "mesh {"))
                 {
                     md5mesh *m = new md5mesh;
                     m->group = this;
                     meshes.add(m);
                     m->load(f, buf, sizeof(buf));
-                    if(!m->numtris || !m->numverts)
+                    if(!m->numtris || !m->numverts) //if no content in the mesh
                     {
                         conoutf("empty mesh in %s", filename);
                         meshes.removeobj(m);
@@ -332,6 +342,7 @@ struct md5 : skelloader<md5>
             return true;
         }
 
+        //main anim loading functionality
         skelanimspec *loadanim(const char *filename)
         {
             skelanimspec *sa = skel->findskelanim(filename);
@@ -350,55 +361,58 @@ struct md5 : skelloader<md5>
                 animframes = 0;
             float *animdata = NULL;
             dualquat *animbones = NULL;
-            char buf[512];
+            char buf[512]; //presumably lines over 512 char long will break this loader
+            //for each line in the opened file
             while(f->getline(buf, sizeof(buf)))
             {
                 int tmp;
-                if(sscanf(buf, " MD5Version %d", &tmp)==1)
+                if(sscanf(buf, " MD5Version %d", &tmp) == 1)
                 {
-                    if(tmp!=10)
+                    if(tmp != 10)
+                    {
+                        delete f; //bail out if md5version is not what we want
+                        return NULL;
+                    }
+                }
+                else if(sscanf(buf, " numJoints %d", &tmp) == 1)
+                {
+                    if(tmp != skel->numbones)
+                    {
+                        delete f; //bail out if numbones is not consistent
+                        return NULL;
+                    }
+                }
+                else if(sscanf(buf, " numFrames %d", &animframes) == 1)
+                {
+                    if(animframes < 1) //if there are no animated frames, don't do animated frame stuff
                     {
                         delete f;
                         return NULL;
                     }
                 }
-                else if(sscanf(buf, " numJoints %d", &tmp)==1)
-                {
-                    if(tmp!=skel->numbones)
-                    {
-                        delete f;
-                        return NULL;
-                    }
-                }
-                else if(sscanf(buf, " numFrames %d", &animframes)==1)
-                {
-                    if(animframes<1)
-                    {
-                        delete f;
-                        return NULL;
-                    }
-                }
-                else if(sscanf(buf, " frameRate %d", &tmp)==1)
+                //apparently, do nothing with respect to framerate
+                else if(sscanf(buf, " frameRate %d", &tmp) == 1)
                 {
                     //(empty body)
                 }
+                //create animdata if there is some relevant info in file
                 else if(sscanf(buf, " numAnimatedComponents %d", &animdatalen)==1)
                 {
-                    if(animdatalen>0)
+                    if(animdatalen > 0)
                     {
                         animdata = new float[animdatalen];
                     }
                 }
                 else if(strstr(buf, "bounds {"))
                 {
-                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
+                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                     {
                         //(empty body)
                     }
                 }
                 else if(strstr(buf, "hierarchy {"))
                 {
-                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
+                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                     {
                         md5hierarchy h;
                         if(sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
@@ -409,9 +423,10 @@ struct md5 : skelloader<md5>
                 }
                 else if(strstr(buf, "baseframe {"))
                 {
-                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
+                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                     {
                         md5joint j;
+                        //pick up pos/orient 3-vectors within
                         if(sscanf(buf, " ( %f %f %f ) ( %f %f %f )", &j.pos.x, &j.pos.y, &j.pos.z, &j.orient.x, &j.orient.y, &j.orient.z)==6)
                         {
                             j.pos.y = -j.pos.y;
@@ -563,5 +578,5 @@ struct md5 : skelloader<md5>
     }
 };
 
-skelcommands<md5> md5commands;
+skelcommands<md5> md5commands; //see skelmodel.h for these commands
 

@@ -275,7 +275,10 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
 #define UNIFORMTEX(name, tmu) \
     do { \
         int loc = glGetUniformLocation_(s.program, name); \
-        if(loc != -1) { glUniform1i_(loc, tmu); } \
+        if(loc != -1) \
+        { \
+            glUniform1i_(loc, tmu); \
+        } \
     } while(0)
 
 static void bindworldtexlocs(Shader &s)
@@ -852,7 +855,8 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     s.reusevs = s.reuseps = NULL;
     if(variant)
     {
-        int row = 0, col = 0;
+        int row = 0,
+            col = 0;
         if(!vs[0] || sscanf(vs, "%d , %d", &row, &col) >= 1)
         {
             DELETEA(s.vsstr);
@@ -935,7 +939,8 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     vsv.put(vs, strlen(vs)+1);
     psv.put(ps, strlen(ps)+1);
 
-    static const int len = strlen("//:variant"), olen = strlen("override");
+    static const int len = strlen("//:variant"),
+                     olen = strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
         vspragma = strstr(vspragma, "//:variant");
@@ -1287,11 +1292,29 @@ ICOMMAND(forceshader, "s", (const char *name), useshaderbyname(name));
 #define GENSHADER(cond, body) \
     if(cond) \
     { \
-        if(vsbuf.length()) { vsbak.setsize(0); vsbak.put(vs, strlen(vs)+1); vs = vsbak.getbuf(); vsbuf.setsize(0); } \
-        if(psbuf.length()) { psbak.setsize(0); psbak.put(ps, strlen(ps)+1); ps = psbak.getbuf(); psbuf.setsize(0); } \
+        if(vsbuf.length()) \
+        { \
+            vsbak.setsize(0); \
+            vsbak.put(vs, strlen(vs)+1); \
+            vs = vsbak.getbuf(); \
+            vsbuf.setsize(0); \
+        } \
+        if(psbuf.length()) \
+        { \
+            psbak.setsize(0); \
+            psbak.put(ps, strlen(ps)+1); \
+            ps = psbak.getbuf(); \
+            psbuf.setsize(0); \
+        } \
         body; \
-        if(vsbuf.length()) vs = vsbuf.getbuf(); \
-        if(psbuf.length()) ps = psbuf.getbuf(); \
+        if(vsbuf.length()) \
+        { \
+            vs = vsbuf.getbuf(); \
+        } \
+        if(psbuf.length()) \
+        { \
+            ps = psbuf.getbuf(); \
+        } \
     }
 
 void shader(int *type, char *name, char *vs, char *ps)
@@ -1555,7 +1578,7 @@ ICOMMAND(setshaderparam, "sfFFf", (char *name, float *x, float *y, float *z, flo
 ICOMMAND(defuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(reuseuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE));
 
-#define NUMPOSTFXBINDS 10
+static const int numpostfxbinds = 10;
 
 struct postfxtex
 {
@@ -1564,7 +1587,7 @@ struct postfxtex
     postfxtex() : id(0), scale(0), used(-1) {}
 };
 vector<postfxtex> postfxtexs;
-int postfxbinds[NUMPOSTFXBINDS];
+int postfxbinds[numpostfxbinds];
 GLuint postfxfb = 0;
 int postfxw = 0,
     postfxh = 0;
@@ -1625,7 +1648,7 @@ GLuint setuppostfx(int w, int h, GLuint outfbo)
         postfxw = w;
         postfxh = h;
     }
-    for(int i = 0; i < NUMPOSTFXBINDS; ++i)
+    for(int i = 0; i < numpostfxbinds; ++i)
     {
         postfxbinds[i] = -1;
     }
@@ -1669,15 +1692,15 @@ void renderpostfx(GLuint outfbo)
             tex = allocatepostfxtex(p.outputscale);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
         }
-        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw;
-        int h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
+        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
+            h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
         glViewport(0, 0, w, h);
         p.shader->set();
         LOCALPARAM(params, p.params);
         int tw = w,
             th = h,
             tmu = 0;
-        for(int j = 0; j < NUMPOSTFXBINDS; ++j)
+        for(int j = 0; j < numpostfxbinds; ++j)
         {
             if(p.inputs&(1<<j) && postfxbinds[j] >= 0)
             {
@@ -1699,7 +1722,7 @@ void renderpostfx(GLuint outfbo)
             glActiveTexture_(GL_TEXTURE0);
         }
         screenquad(tw, th);
-        for(int j = 0; j < NUMPOSTFXBINDS; ++j)
+        for(int j = 0; j < numpostfxbinds; ++j)
         {
             if(p.freeinputs&(1<<j) && postfxbinds[j] >= 0)
             {
@@ -1773,9 +1796,9 @@ ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs
             freeinputs = true;
         }
     }
-    inputmask &= (1<<NUMPOSTFXBINDS)-1;
-    freemask &= (1<<NUMPOSTFXBINDS)-1;
-    addpostfx(name, std::clamp(*bind, 0, NUMPOSTFXBINDS-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+    inputmask &= (1<<numpostfxbinds)-1;
+    freemask &= (1<<numpostfxbinds)-1;
+    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
 });
 
 ICOMMAND(setpostfx, "sffff", (char *name, float *x, float *y, float *z, float *w),
@@ -1843,7 +1866,7 @@ void resetshaders()
     initgbuffer();
     reloadshaders();
     allchanged(true);
-    GLERROR;
+    glerror();
 }
 COMMAND(resetshaders, "");
 

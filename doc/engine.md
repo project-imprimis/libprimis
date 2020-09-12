@@ -98,6 +98,11 @@ linear analysis, including multipole expansions and Fourier series.
 # 1. Standards
 ---
 
+To be a functioning project, Imprimis has some standards which make it
+straightforward to communicate effectively. While some particular standards may
+be clumsy for particular uses, it is important that the project be consistent,
+not only for clarity of code but also for documentation and ease of extension.
+
 ## 1.1 Coding Standards
 ---
 
@@ -109,7 +114,8 @@ must satisfy the standards laid out therein.
 
 Text should institute a line break after 80 characters.
 
-Chapters use `#`; sections use `##`; subsections use `###`.
+Chapters use `#`; sections use `##`; subsections use `###`. Minor topics within
+subsections can use `####`.
 
 ### 1.1.2 C/C++ Standards
 ---
@@ -123,6 +129,10 @@ Macros are always fully capitalized and seperated with underscores:
 
 `#define MACRO_NAME`
 `#define MACRO_FUNCTION(a, b)`
+
+Do not use macros unless there is no other salient way to approach the problem.
+If a macro is the best way to solve a particular problem, it should be explained
+with surrounding comments.
 
 Variables are always lowercase:
 
@@ -342,12 +352,16 @@ Windows: `~/My Games/Imprimis` is the "home" directory by default.
 ---
 
 This game requires `libsdl2, libsdl2-mixer, libsdl2-image` to run, including the
-`-dev` versions for those package managers which elect to seperate them if
-compiling the game. As the main way of getting the game is via Git, the best way
-to retrieve the assets for the game is by the command line utility `git`.
+`-dev` versions for those package managers which elect to seperate them (such as
+Ubuntu) if compiling the game. As the main way of getting the game is via Git,
+the best way to retrieve the assets for the game is by the command line utility
+`git`.
 
 ### 1.3 Conventions and Units
 ---
+
+Imprimis uses some standard units which allow for users to contextualize and
+orient themselves in the worlds it creates.
 
 #### 1.3.1 Distances
 ---
@@ -485,7 +499,92 @@ The components of the system handled by the Imprimis project is the:
 * Game server: a locally or remotely hosted server that manages game clients
 * Master server: a service that provides a list of game server names to clients
 
-## 1.5 System Contexts
+## 1.5 File Structure
+---
+
+Imprimis' files are organized essentially into three folders, which carry out
+largely different roles in the application. The folder containing the engine
+proper, naturally, is called `/engine`. There is also a folder for shared
+library-like functionality in `/shared` while the game code is located in a
+folder called `/game`.
+
+### 1.5.1 `/engine` files
+---
+
+The engine's core functionality is implemented in the `engine` folder. This
+folder is itself separated into four main catagories, the scope of which is
+briefly described below:
+
+#### `/interface`
+
+The interface folder contains the source code used for user-interfacing purposes
+such as the UI system, scripting, sound, and input.
+
+* `command.cpp` scripting language (Cubescript) implementation
+* `console.cpp` ingame console support
+* `input.h/cpp` key/cursor input handling
+* `menus.cpp` hardcoded UI menu functionality
+* `sound.cpp` sound handling and support
+* `textedit.h` text box UI functionality
+* `ui.cpp` Cubescript user interface functionality
+
+#### `/model`
+
+The `model` folder contains headers that implement functionality required to
+parse different model formats. There are no source code files in this folder,
+and this folder is only included by `rendermodel.cpp`, located in `render`.
+
+* `animmodel.h` generic animated model support
+* `md5.h` md5 model format support
+* `model.h` generic model support
+* `obj.h` obj (wavefront) model format support
+* `ragdoll.h` skeletal model ragdoll support
+* `skelmodel.h` generic skeletal model support
+* `vertmodel.h` generic vertex model support
+
+#### `/render`
+
+The `render` folder contains the core rendering code used to implement the
+visual effects in the engine.
+
+* `aa.cpp` antialiasing functionality
+* `grass.cpp` grass rendering on octree geometry
+* `normal.cpp` normal maps & normal map interpolation
+* `octarender.cpp` octree geometry rendering
+* `radiancehints.h/cpp` radiance hints (global illumination)
+* `rendergl.cpp` lower-level renderer core
+* `renderlights.cpp` point light & sunlight rendering
+* `rendermodel.cpp` player, world model rendering
+* `renderparticles.cpp` billboard particle rendering
+* `rendersky.cpp` skybox & other parallax free sky effects
+* `rendertext.cpp` ui text rendering
+* `renderva.cpp` octree geometry vertex array rendering
+* `renderwindow.h/cpp` window handling
+* `shader.cpp` glsl shader handling
+* `stain.cpp` dynamic stain creation and rendering
+* `texture.h/cpp` world geometry texture application
+* `water.cpp` water material & its fx (screenspace reflection etc.)
+
+#### `/world`
+
+The `world` folder contains code creating and handling the ingame world,
+including entity, player, particle, and physics support.
+
+* `bih.h/cpp` bounded interval hierarchy (model collision)
+* `dynlight.cpp` light entities which move around on the level
+* `explosion.h` explosion effects
+* `hitzone.h` model hitboxes
+* `light.h/cpp` light entity support
+* `material.cpp` in-world special materials (water, lava, etc.)
+* `mpr.h` minkowski portal refinement (model collision)
+* `octa.h/cpp` octree geometry for the world
+* `octaedit.cpp` octree modification by clients
+* `physics.cpp` player model modification
+* `raycube.h/cpp` octree geometry querying
+* `world.h/cpp` world handling and modification
+* `worldio.cpp` world loading and saving
+
+## 1.6 System Contexts
 ---
 
 The Imprimis engine, like any other program, is designed for particular
@@ -494,7 +593,7 @@ especially target a huge breadth of hardware and operating system contexts, less
 than even its predecessor engines, as a result of Imprimis' focus on providing
 good support to the platforms it does target.
 
-### 1.5.1 Operating System
+### 1.6.1 Operating System
 ---
 
 Imprimis officially supports only the 64-bit Windows and Linux platforms. While
@@ -509,7 +608,7 @@ reasons:
 * macOS has deprecated OpenGL support, required for the game to run
 * macOS is moving away from x86 and commodity CPUs & GPUs
 
-### 1.5.2 Hardware
+### 1.6.2 Hardware
 ---
 
 Imprimis currently targets only the x86-64 instruction set, widely used by

@@ -3,7 +3,7 @@
 
 #include "game.h"
 
-#define LOGSTRLEN 512
+static const int logstrlen = 512;
 
 static FILE *logfile = NULL;
 
@@ -55,7 +55,8 @@ void logoutf(const char *fmt, ...)
 static void writelog(FILE *file, const char *buf)
 {
     static uchar ubuf[512];
-    size_t len = strlen(buf), carry = 0;
+    size_t len = strlen(buf),
+           carry = 0;
     while(carry < len)
     {
         size_t numu = encodeutf8(ubuf, sizeof(ubuf)-1, &(reinterpret_cast<const uchar*>(buf))[carry], len - carry, &carry);
@@ -69,7 +70,7 @@ static void writelog(FILE *file, const char *buf)
 
 static void writelogv(FILE *file, const char *fmt, va_list args)
 {
-    static char buf[LOGSTRLEN];
+    static char buf[logstrlen];
     vformatstring(buf, fmt, args, sizeof(buf));
     writelog(file, buf);
 }
@@ -83,7 +84,7 @@ void logoutfv(const char *fmt, va_list args)
     }
 }
 
-#define DEFAULTCLIENTS 8
+static const int defaultclients = 8;
 
 enum
 {
@@ -205,11 +206,11 @@ void cleanupserver()
     lansock = ENET_SOCKET_NULL;
 }
 
-VARF(maxclients, 0, DEFAULTCLIENTS, MAXCLIENTS,
+VARF(maxclients, 0, defaultclients, MAXCLIENTS,
 {
     if(!maxclients)
     {
-        maxclients = DEFAULTCLIENTS;
+        maxclients = defaultclients;
     }
 });
 
@@ -221,7 +222,6 @@ VARF(maxdupclients, 0, 0, MAXCLIENTS,
     }
 });
 
-void process(ENetPacket *packet, int sender, int chan);
 //void disconnect_client(int n, int reason);
 
 int getservermtu()
@@ -373,7 +373,8 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
             }
             case 's':
             {
-                sendstring(va_arg(args, const char *), p); break;
+                sendstring(va_arg(args, const char *), p);
+                break;
             }
             case 'l':
             {
@@ -472,45 +473,6 @@ void disconnect_client(int n, int reason)
     }
     logoutf("%s", s);
     server::sendservmsg(s);
-}
-
-void kicknonlocalclients(int reason)
-{
-    for(int i = 0; i < clients.length(); i++)
-    {
-        if(clients[i]->type==ServerClient_Remote)
-        {
-            disconnect_client(i, reason);
-        }
-    }
-}
-
-void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
-{
-    packetbuf p(packet);
-    server::parsepacket(sender, chan, p);
-    if(p.overread())
-    {
-        disconnect_client(sender, Discon_EndOfPacket);
-        return;
-    }
-}
-
-void localclienttoserver(int chan, ENetPacket *packet)
-{
-    client *c = NULL;
-    for(int i = 0; i < clients.length(); i++)
-    {
-        if(clients[i]->type==ServerClient_Local)
-        {
-            c = clients[i];
-            break;
-        }
-    }
-    if(c)
-    {
-        process(packet, c->num, chan);
-    }
 }
 
 ENetSocket mastersock = ENET_SOCKET_NULL;
@@ -619,8 +581,6 @@ void sendserverinforeply(ucharbuf &p)
     enet_socket_send(serverhost->socket, &serverinfoaddress, &buf, 1);
 }
 
-#define MAXPINGDATA 32
-
 VAR(serveruprate, 0, 0, INT_MAX);
 SVAR(serverip, "");
 VARF(serverport, 0, server::serverport(), 0xFFFF,
@@ -641,20 +601,6 @@ void updatetime()
         int cursecs = (totalmillis - lastsec) / 1000;
         totalsecs += cursecs;
         lastsec += cursecs * 1000;
-    }
-}
-
-void serverslice(uint timeout)   // main server update, called from main loop in sp
-{
-    server::serverupdate();
-    server::sendpackets();
-}
-
-void flushserver(bool force)
-{
-    if(server::sendpackets(force) && serverhost)
-    {
-        enet_host_flush(serverhost);
     }
 }
 
