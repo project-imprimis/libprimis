@@ -1693,7 +1693,8 @@ bool bounce(physent *d, float secs, float elasticity, float waterfric, float gra
     }
     return collideplayer!=NULL;
 }
-#define PHYSFRAMETIME 8
+
+static const int physframetimestd = 8;
 
 // main physics routine, moves a player/monster for a curtime step
 // moveres indicated the physics precision (which is lower for monsters and multiplayer prediction)
@@ -1887,7 +1888,7 @@ void modifygravity(physent *pl, bool water, int curtime)
     }
 }
 
-int physsteps = 0, physframetime = PHYSFRAMETIME, lastphysframe = 0;
+int physsteps = 0, physframetime = physframetimestd, lastphysframe = 0;
 
 void physicsframe()          // optimally schedule physics frames inside the graphics frames
 {
@@ -1898,7 +1899,7 @@ void physicsframe()          // optimally schedule physics frames inside the gra
     }
     else
     {
-        physframetime = std::clamp(game::scaletime(PHYSFRAMETIME)/100, 1, PHYSFRAMETIME);
+        physframetime = std::clamp(game::scaletime(physframetimestd)/100, 1, physframetimestd);
         physsteps = (diff + physframetime - 1)/physframetime;
         lastphysframe += physsteps * physframetime;
     }
