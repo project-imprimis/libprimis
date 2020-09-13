@@ -194,11 +194,11 @@ static inline void cleancode(ident &id)
     }
 }
 
-struct nullval : tagval
+struct NullVal : tagval
 {
-    nullval() { setnull(); }
-} nullval;
-tagval noret = nullval, *commandret = &noret;
+    NullVal() { setnull(); }
+} NullVal;
+tagval noret = NullVal, *commandret = &noret;
 
 void clear_command()
 {
@@ -344,10 +344,10 @@ static const char *debugline(const char *p, const char *fmt)
     return fmt;
 }
 
-static struct identlink
+static struct IdentLink
 {
     ident *id;
-    identlink *next;
+    IdentLink *next;
     int usedargs;
     identstack *argstack;
 } noalias = { NULL, NULL, (1<<Max_Args)-1, NULL }, *aliasstack = &noalias;
@@ -362,11 +362,11 @@ static void debugalias()
     }
     int total = 0,
         depth = 0;
-    for(identlink *l = aliasstack; l != &noalias; l = l->next)
+    for(IdentLink *l = aliasstack; l != &noalias; l = l->next)
     {
         total++;
     }
-    for(identlink *l = aliasstack; l != &noalias; l = l->next)
+    for(IdentLink *l = aliasstack; l != &noalias; l = l->next)
     {
         ident *id = l->id;
         ++depth;
@@ -462,8 +462,8 @@ static inline void undoarg(ident &id, identstack &stack)
 #define UNDOFLAG (1<<Max_Args)
 #define UNDOARGS \
     identstack argstack[Max_Args]; \
-    identlink *prevstack = aliasstack; \
-    identlink aliaslink; \
+    IdentLink *prevstack = aliasstack; \
+    IdentLink aliaslink; \
     for(int undos = 0; prevstack != &noalias; prevstack = prevstack->next) \
     { \
         if(prevstack->usedargs & UNDOFLAG) ++undos; \
@@ -519,7 +519,7 @@ static inline void pushalias(ident &id, identstack &stack)
 {
     if(id.type == Id_Alias && id.index >= Max_Args)
     {
-        pusharg(id, nullval, stack);
+        pusharg(id, NullVal, stack);
         id.flags &= ~Idf_Unknown;
     }
 }
@@ -616,7 +616,7 @@ ident *writeident(const char *name, int flags)
     ident *id = newident(name, flags);
     if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
     {
-        pusharg(*id, nullval, aliasstack->argstack[id->index]);
+        pusharg(*id, NullVal, aliasstack->argstack[id->index]);
         aliasstack->usedargs |= 1<<id->index;
     }
     return id;
@@ -771,14 +771,14 @@ char *svariable(const char *name, const char *cur, char **storage, identfun fun,
     return newstring(cur);
 }
 
-struct defvar : identval
+struct DefVar : identval
 {
     char *name;
     uint *onchange;
 
-    defvar() : name(NULL), onchange(NULL) {}
+    DefVar() : name(NULL), onchange(NULL) {}
 
-    ~defvar()
+    ~DefVar()
     {
         DELETEA(name);
         if(onchange)
@@ -789,7 +789,7 @@ struct defvar : identval
 
     static void changed(ident *id)
     {
-        defvar *v = (defvar *)id->storage.p;
+        DefVar *v = (DefVar *)id->storage.p;
         if(v->onchange)
         {
             execute(v->onchange);
@@ -797,27 +797,27 @@ struct defvar : identval
     }
 };
 
-hashnameset<defvar> defvars;
+hashnameset<DefVar> defvars;
 
 #define DEFVAR(cmdname, fmt, args, body) \
     ICOMMAND(cmdname, fmt, args, \
     { \
         if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } \
         name = newstring(name); \
-        defvar &def = defvars[name]; \
+        DefVar &def = defvars[name]; \
         def.name = name; \
         def.onchange = onchange[0] ? compilecode(onchange) : NULL; \
         body; \
     });
 #define DEFIVAR(cmdname, flags) \
     DEFVAR(cmdname, "siiis", (char *name, int *min, int *cur, int *max, char *onchange), \
-        def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? defvar::changed : NULL, flags))
+        def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : NULL, flags))
 #define DEFFVAR(cmdname, flags) \
     DEFVAR(cmdname, "sfffs", (char *name, float *min, float *cur, float *max, char *onchange), \
-        def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? defvar::changed : NULL, flags))
+        def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : NULL, flags))
 #define DEFSVAR(cmdname, flags) \
     DEFVAR(cmdname, "sss", (char *name, char *cur, char *onchange), \
-        def.s = svariable(name, cur, &def.s, def.onchange ? defvar::changed : NULL, flags))
+        def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : NULL, flags))
 
 DEFIVAR(defvar, 0);
 DEFIVAR(defvarp, Idf_Persist);
@@ -4256,7 +4256,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 ident *id = identmap[op>>8];
                 if(!(aliasstack->usedargs&(1<<id->index)))
                 {
-                    pusharg(*id, nullval, aliasstack->argstack[id->index]);
+                    pusharg(*id, NullVal, aliasstack->argstack[id->index]);
                     aliasstack->usedargs |= 1<<id->index;
                 }
                 args[numargs++].setident(id);
@@ -4270,7 +4270,7 @@ static const uint *runcode(const uint *code, tagval &result)
                                          || arg.type == Value_CString ? newident(arg.s, Idf_Unknown) : dummyident;
                 if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
                 {
-                    pusharg(*id, nullval, aliasstack->argstack[id->index]);
+                    pusharg(*id, NullVal, aliasstack->argstack[id->index]);
                     aliasstack->usedargs |= 1<<id->index;
                 }
                 freearg(arg);
@@ -4588,7 +4588,7 @@ static const uint *runcode(const uint *code, tagval &result)
                     _numargs = callargs; \
                     int oldflags = identflags; \
                     identflags |= id->flags&Idf_Overridden; \
-                    identlink aliaslink = { id, aliasstack, (1<<callargs)-1, argstack }; \
+                    IdentLink aliaslink = { id, aliasstack, (1<<callargs)-1, argstack }; \
                     aliasstack = &aliaslink; \
                     if(!id->code) id->code = compilecode(id->getstr()); \
                     uint *code = id->code; \
@@ -6211,18 +6211,18 @@ void findfile_(char *name)
 }
 COMMANDN(findfile, findfile_, "s");
 
-struct sortitem
+struct SortItem
 {
     const char *str, *quotestart, *quoteend;
     int quotelength() const { return static_cast<int>(quoteend-quotestart); }
 };
 
-struct sortfun
+struct SortFun
 {
     ident *x, *y;
     uint *body;
 
-    bool operator()(const sortitem &xval, const sortitem &yval)
+    bool operator()(const SortItem &xval, const SortItem &yval)
     {
         if(x->valtype != Value_CString)
         {
@@ -6246,7 +6246,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     {
         return;
     }
-    vector<sortitem> items;
+    vector<SortItem> items;
     int clen = strlen(list),
         total = 0;
     char *cstr = newstring(list, clen);
@@ -6255,7 +6255,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     while(parselist(curlist, start, end, quotestart, quoteend))
     {
         cstr[end - list] = '\0';
-        sortitem item = { &cstr[start - list], quotestart, quoteend };
+        SortItem item = { &cstr[start - list], quotestart, quoteend };
         items.add(item);
         total += item.quotelength();
     }
@@ -6265,13 +6265,13 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         return;
     }
     identstack xstack, ystack;
-    pusharg(*x, nullval, xstack); x->flags &= ~Idf_Unknown;
-    pusharg(*y, nullval, ystack); y->flags &= ~Idf_Unknown;
+    pusharg(*x, NullVal, xstack); x->flags &= ~Idf_Unknown;
+    pusharg(*y, NullVal, ystack); y->flags &= ~Idf_Unknown;
     int totalunique = total,
         numunique = items.length();
     if(body)
     {
-        sortfun f = { x, y, body };
+        SortFun f = { x, y, body };
         items.sort(f);
         if((*unique&Code_OpMask) != Code_Exit)
         {
@@ -6280,7 +6280,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
             numunique = 1;
             for(int i = 1; i < items.length(); i++)
             {
-                sortitem &item = items[i];
+                SortItem &item = items[i];
                 if(f(items[i-1], item))
                 {
                     item.quotestart = NULL;
@@ -6295,15 +6295,15 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     }
     else
     {
-        sortfun f = { x, y, unique };
+        SortFun f = { x, y, unique };
         totalunique = items[0].quotelength();
         numunique = 1;
         for(int i = 1; i < items.length(); i++)
         {
-            sortitem &item = items[i];
+            SortItem &item = items[i];
             for(int j = 0; j < i; ++j)
             {
-                sortitem &prev = items[j];
+                SortItem &prev = items[j];
                 if(prev.quotestart && f(item, prev))
                 {
                     item.quotestart = NULL;
@@ -6329,7 +6329,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     int offset = 0;
     for(int i = 0; i < items.length(); i++)
     {
-        sortitem &item = items[i];
+        SortItem &item = items[i];
         if(!item.quotestart)
         {
             continue;
