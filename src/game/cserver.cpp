@@ -851,7 +851,10 @@ namespace server
 
     void adddemo()
     {
-        if(!demotmp) return;
+        if(!demotmp)
+        {
+            return;
+        }
         int len = static_cast<int>(min(demotmp->size(), stream::offset((maxdemosize<<20) + 0x10000)));
         demofile &d = demos.add();
         time_t t = time(NULL);
@@ -872,24 +875,38 @@ namespace server
 
     void enddemorecord()
     {
-        if(!demorecord) return;
-
+        if(!demorecord)
+        {
+            return;
+        }
         DELETEP(demorecord);
 
-        if(!demotmp) return;
-        if(!maxdemos || !maxdemosize) { DELETEP(demotmp); return; }
-
+        if(!demotmp)
+        {
+            return;
+        }
+        if(!maxdemos || !maxdemosize)
+        {
+            DELETEP(demotmp);
+            return;
+        }
         prunedemos(1);
         adddemo();
     }
 
     void writedemo(int chan, void *data, int len)
     {
-        if(!demorecord) return;
+        if(!demorecord)
+        {
+            return;
+        }
         int stamp[3] = { gamemillis, chan, len };
         demorecord->write(stamp, sizeof(stamp));
         demorecord->write(data, len);
-        if(demorecord->rawtell() >= (maxdemosize<<20)) enddemorecord();
+        if(demorecord->rawtell() >= (maxdemosize<<20))
+        {
+            enddemorecord();
+        }
     }
 
     void recordpacket(int chan, void *data, int len)
@@ -936,23 +953,40 @@ namespace server
         for(int i = 0; i < clients.length(); i++)
         {
             clientinfo *ci = clients[i];
-            if(ci->getdemo == packet) ci->getdemo = NULL;
+            if(ci->getdemo == packet)
+            {
+                ci->getdemo = NULL;
+            }
         }
     }
 
     void senddemo(clientinfo *ci, int num)
     {
-        if(ci->getdemo) return;
-        if(!num) num = demos.length();
-        if(!demos.inrange(num-1)) return;
+        if(ci->getdemo)
+        {
+            return;
+        }
+        if(!num)
+        {
+            num = demos.length();
+        }
+        if(!demos.inrange(num-1))
+        {
+            return;
+        }
         demofile &d = demos[num-1];
         if((ci->getdemo = sendf(ci->clientnum, 2, "rim", NetMsg_SendDemo, d.len, d.data)))
+        {
             ci->getdemo->freeCallback = freegetdemo;
+        }
     }
 
     void enddemoplayback()
     {
-        if(!demoplayback) return;
+        if(!demoplayback)
+        {
+            return;
+        }
         DELETEP(demoplayback);
 
         for(int i = 0; i < clients.length(); i++)
@@ -970,13 +1004,22 @@ namespace server
 
     void stopdemo()
     {
-        if(modecheck(gamemode, Mode_Demo)) enddemoplayback();
-        else enddemorecord();
+        if(modecheck(gamemode, Mode_Demo))
+        {
+            enddemoplayback();
+        }
+        else
+        {
+            enddemorecord();
+        }
     }
 
     void pausegame(bool val, clientinfo *ci = NULL)
     {
-        if(gamepaused==val) return;
+        if(gamepaused==val)
+        {
+            return;
+        }
         gamepaused = val;
         sendf(-1, 1, "riii", NetMsg_PauseGame, gamepaused ? 1 : 0, ci ? ci->clientnum : -1);
     }
@@ -1030,7 +1073,10 @@ namespace server
     {
         char buf[2*sizeof(string)];
         formatstring(buf, "%d %d %s", cn, sessionid, pwd);
-        if(!hashstring(buf, result, maxlen)) *result = '\0';
+        if(!hashstring(buf, result, maxlen))
+        {
+            *result = '\0';
+        }
     }
 
     bool checkpassword(clientinfo *ci, const char *wanted, const char *given)
@@ -1421,7 +1467,10 @@ namespace server
             putint(p, -1);
             welcomeinitclient(p, ci ? ci->clientnum : -1);
         }
-        if(smode) smode->initclient(ci, p, true);
+        if(smode)
+        {
+            smode->initclient(ci, p, true);
+        }
         return 1;
     }
 
@@ -1586,7 +1635,10 @@ namespace server
         for(int i = clients.length(); --i >=0;) //note reverse iteration
         {
             clientinfo *ci = clients[i];
-            if(ci->authreq) authfailed(ci);
+            if(ci->authreq)
+            {
+                authfailed(ci);
+            }
         }
     }
 
