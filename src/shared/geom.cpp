@@ -28,7 +28,10 @@ bool matrix4::invert(const matrix4 &m, double mindet)
            det4 = -det3x3(a2, a3, a4, b2, b3, b4, c2, c3, c4),
            det = a1*det1 + b1*det2 + c1*det3 + d1*det4;
 
-    if(fabs(det) < mindet) return false;
+    if(fabs(det) < mindet)
+    {
+        return false;
+    }
 
     double invdet = 1/det;
 
@@ -215,7 +218,10 @@ int polyclip(const vec *in, int numin, const vec &dir, float below, float above,
         {
             if(pc < below)
             {
-                if(c > below) out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+                if(c > below)
+                {
+                    out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+                }
             }
             else if(pc > above && c < above)
             {
