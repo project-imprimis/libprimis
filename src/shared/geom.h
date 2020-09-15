@@ -1551,6 +1551,7 @@ struct bvec4
 
 inline bvec::bvec(const bvec4 &v) : x(v.x), y(v.y), z(v.z) {}
 
+//unsigned short integer three dimensional vector object
 struct usvec
 {
     union
@@ -1566,6 +1567,7 @@ struct usvec
 inline vec::vec(const usvec &v) : x(v.x), y(v.y), z(v.z) {}
 inline ivec::ivec(const usvec &v) : x(v.x), y(v.y), z(v.z) {}
 
+//short integer three-vector object
 struct svec
 {
     union
@@ -1585,6 +1587,7 @@ struct svec
 inline vec::vec(const svec &v) : x(v.x), y(v.y), z(v.z) {}
 inline ivec::ivec(const svec &v) : x(v.x), y(v.y), z(v.z) {}
 
+//double precision floating point four-vector object
 struct dvec4
 {
     double x, y, z, w;
@@ -1604,6 +1607,7 @@ struct dvec4
     operator vec4() const { return vec4(x, y, z, w); }
 };
 
+//four dimensional floating point vector object
 struct matrix4
 {
     vec4 a, b, c, d;
@@ -1917,6 +1921,7 @@ struct matrix2
     explicit matrix2(const matrix3 &m) : a(m.a), b(m.b) {}
 };
 
+//half precision floating point object, similar to `float` but with less data bits
 struct half
 {
     ushort val;
@@ -1946,6 +1951,7 @@ struct half
     bool operator!=(const half &h) const { return val != h.val; }
 };
 
+//half precision floating point two dimensional vector, similar to vec2
 struct hvec2
 {
     half x, y;
@@ -1958,6 +1964,7 @@ struct hvec2
     bool operator!=(const hvec2 &h) const { return x != h.x || y != h.y; }
 };
 
+//half precision floating point three dimensional vector, similar to vec
 struct hvec
 {
     half x, y, z;
@@ -1970,6 +1977,7 @@ struct hvec
     bool operator!=(const hvec &h) const { return x != h.x || y != h.y || z != h.z; }
 };
 
+//half precision floating point four dimensional vector, similar to vec4
 struct hvec4
 {
     half x, y, z, w;
@@ -1983,6 +1991,7 @@ struct hvec4
     bool operator!=(const hvec4 &h) const { return x != h.x || y != h.y || z != h.z || w != h.w; }
 };
 
+//short integer quaternion
 struct squat
 {
     short x, y, z, w;
