@@ -1939,7 +1939,7 @@ struct half
             mantissa = 0;
             exponent = 0x1F;
         }
-        val = signbit | (ushort(exponent)<<10) | mantissa;
+        val = signbit | (static_cast<ushort>(exponent)<<10) | mantissa;
     }
 
     bool operator==(const half &h) const { return val == h.val; }
@@ -1992,10 +1992,10 @@ struct squat
 
     void convert(const vec4 &q)
     {
-        x = short(q.x*32767.5f-0.5f);
-        y = short(q.y*32767.5f-0.5f);
-        z = short(q.z*32767.5f-0.5f);
-        w = short(q.w*32767.5f-0.5f);
+        x = static_cast<short>(q.x*32767.5f-0.5f);
+        y = static_cast<short>(q.y*32767.5f-0.5f);
+        z = static_cast<short>(q.z*32767.5f-0.5f);
+        w = static_cast<short>(q.w*32767.5f-0.5f);
     }
 
     void lerp(const vec4 &a, const vec4 &b, float t)

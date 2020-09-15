@@ -323,8 +323,8 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
 
     int offset = m.numnodes++;
     node &curnode = m.nodes[offset];
-    curnode.split[0] = short(splitleft);
-    curnode.split[1] = short(splitright);
+    curnode.split[0] = static_cast<short>(splitleft);
+    curnode.split[1] = static_cast<short>(splitright);
 
     if(left==1)
     {

@@ -405,21 +405,21 @@ struct skelmodel : animmodel
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
                         if(vidx < 0)
                         {
-                            vidx = idxs.add(ushort(vverts.length()));
+                            vidx = idxs.add(static_cast<ushort>(vverts.length()));
                             vverts.add(vv);
                             break;
                         }
                         else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            minvert = min(minvert, idxs.add(ushort(vidx)));
+                            minvert = min(minvert, idxs.add(static_cast<ushort>(vidx)));
                             break;
                         }
                     }
                 }
             }
             elen = idxs.length()-eoffset;
-            minvert = min(minvert, ushort(voffset));
-            maxvert = max(minvert, ushort(vverts.length()-1));
+            minvert = min(minvert, static_cast<ushort>(voffset));
+            maxvert = max(minvert, static_cast<ushort>(vverts.length()-1));
             return vverts.length()-voffset;
         }
 
