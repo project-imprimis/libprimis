@@ -2065,9 +2065,9 @@ namespace hmap
             textures.find(c->texture[o]) >= 0;
     }
     //max brush consts
-    static const int maxbrush  = 64;
-    static const int maxbrushc = 63;
-    static const int maxbrush2 = 32;
+    static const int maxbrush  = 64,
+                     maxbrushc = 63,
+                     maxbrush2 = 32;
 
     int brush[maxbrush][maxbrush];
     VARN(hbrushx, brushx, 0, maxbrush2, maxbrush);
@@ -2104,13 +2104,13 @@ namespace hmap
     }
     COMMAND(hbrushvert, "iii");
 
-    static const int painted = 1;
-    static const int nothmap = 2;
-    static const int mapped  = 16;
+    static const int painted = 1,
+                     nothmap = 2,
+                     mapped  = 16;
     uchar  flags[maxbrush][maxbrush];
     cube   *cmap[maxbrushc][maxbrushc][4];
-    int    mapz[maxbrushc][maxbrushc];
-    int    map [maxbrush][maxbrush];
+    int  mapz[maxbrushc][maxbrushc],
+         map [maxbrush][maxbrush];
 
     selinfo changes;
     bool selecting;
@@ -2253,10 +2253,22 @@ namespace hmap
 
         if(selecting) // continue to adjacent cubes
         {
-            if(x>bmx) select(x-1, y, z);
-            if(x<bnx) select(x+1, y, z);
-            if(y>bmy) select(x, y-1, z);
-            if(y<bny) select(x, y+1, z);
+            if(x>bmx)
+            {
+                select(x-1, y, z);
+            }
+            if(x<bnx)
+            {
+                select(x+1, y, z);
+            }
+            if(y>bmy)
+            {
+                select(x, y-1, z);
+            }
+            if(y<bny)
+            {
+                select(x, y+1, z);
+            }
         }
     }
 
@@ -3371,13 +3383,31 @@ void getslottex(int *idx)
 }
 
 COMMANDN(edittex, edittex_, "i");
-ICOMMAND(settex, "i", (int *tex), { if(!vslots.inrange(*tex) || noedit()) return; filltexlist(); edittex(*tex); });
+ICOMMAND(settex, "i", (int *tex),
+{
+    if(!vslots.inrange(*tex) || noedit())
+    {
+        return;
+    }
+    filltexlist();
+    edittex(*tex);
+});
 COMMAND(gettex, "");
 COMMAND(getcurtex, "");
 COMMAND(getseltex, "");
-ICOMMAND(getreptex, "", (), { if(!noedit()) intret(vslots.inrange(reptex) ? reptex : -1); });
+ICOMMAND(getreptex, "", (),
+{
+    if(!noedit())
+    {
+        intret(vslots.inrange(reptex) ? reptex : -1);
+    }
+});
 COMMAND(gettexname, "ii");
-ICOMMAND(texmru, "b", (int *idx), { filltexlist(); intret(texmru.inrange(*idx) ? texmru[*idx] : texmru.length()); });
+ICOMMAND(texmru, "b", (int *idx),
+{
+    filltexlist();
+    intret(texmru.inrange(*idx) ? texmru[*idx] : texmru.length());
+});
 ICOMMAND(looptexmru, "re", (ident *id, uint *body),
 {
     LOOP_START(id, stack);
@@ -3665,9 +3695,9 @@ COMMAND(rotate, "i");
 
 enum
 {
-    EditMatFlag_Empty = 0x10000,
+    EditMatFlag_Empty    = 0x10000,
     EditMatFlag_NotEmpty = 0x20000,
-    EditMatFlag_Solid = 0x30000,
+    EditMatFlag_Solid    = 0x30000,
     EditMatFlag_NotSolid = 0x40000
 };
 
