@@ -178,7 +178,7 @@ struct skelmodel : animmodel
                 int total = 0;
                 for(int k = 0; k < 4; ++k)
                 {
-                    total += (v.weights[k] = uchar(0.5f + weights[k]*255));
+                    total += (v.weights[k] = static_cast<uchar>(0.5f + weights[k]*255));
                 }
                 while(total > 255)
                 {

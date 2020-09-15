@@ -217,7 +217,7 @@ void getstring(char *text, ucharbuf &p, size_t len)
 
 void filtertext(char *dst, const char *src, bool whitespace, bool forcespace, size_t len)
 {
-    for(int c = uchar(*src); c; c = uchar(*++src))
+    for(int c = static_cast<uchar>(*src); c; c = static_cast<uchar>(*++src))
     {
         if(c == '\f')
         {
