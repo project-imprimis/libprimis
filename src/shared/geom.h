@@ -78,7 +78,6 @@ inline uint hthash(const vec2 &k)
 }
 
 struct ivec;
-struct usvec;
 struct svec;
 
 //vector3: three dimensional vector object
@@ -102,7 +101,6 @@ struct vec
     explicit vec(const vec2 &v, float z = 0) : x(v.x), y(v.y), z(z) {}
     explicit vec(const vec4 &v);
     explicit vec(const ivec &v);
-    explicit vec(const usvec &v);
     explicit vec(const svec &v);
 
     vec(float yaw, float pitch) : x(-sinf(yaw)*cosf(pitch)), y(cosf(yaw)*cosf(pitch)), z(sinf(pitch)) {}
@@ -1293,7 +1291,6 @@ struct ivec
     ivec(int i, const ivec &co, int size) : x(co.x+((i&1)>>0)*size), y(co.y+((i&2)>>1)*size), z(co.z +((i&4)>>2)*size) {}
     explicit ivec(const ivec4 &v);
     explicit ivec(const ivec2 &v, int z = 0);
-    explicit ivec(const usvec &v);
     explicit ivec(const svec &v);
 
     int &operator[](int i)       { return v[i]; }
@@ -1550,22 +1547,6 @@ struct bvec4
 };
 
 inline bvec::bvec(const bvec4 &v) : x(v.x), y(v.y), z(v.z) {}
-
-//unsigned short integer three dimensional vector object
-struct usvec
-{
-    union
-    {
-        struct { ushort x, y, z; };
-        ushort v[3];
-    };
-
-    ushort &operator[](int i) { return v[i]; }
-    ushort operator[](int i) const { return v[i]; }
-};
-
-inline vec::vec(const usvec &v) : x(v.x), y(v.y), z(v.z) {}
-inline ivec::ivec(const usvec &v) : x(v.x), y(v.y), z(v.z) {}
 
 //short integer three-vector object
 struct svec
