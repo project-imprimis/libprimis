@@ -21,14 +21,14 @@ struct skelmodel : animmodel
     struct vvert
     {
         vec pos;
-        hvec2 tc;
+        GenericVec2<half> tc;
         squat tangent;
     };
 
     struct vvertg
     {
-        hvec4 pos;
-        hvec2 tc;
+        GenericVec4<half> pos;
+        GenericVec2<half> tc;
         squat tangent;
     };
 
@@ -348,14 +348,14 @@ struct skelmodel : animmodel
 
         static inline void assignvert(vvertg &vv, int j, vert &v, blendcombo &c)
         {
-            vv.pos = hvec4(v.pos, 1);
+            vv.pos = GenericVec4<half>(v.pos, 1);
             vv.tc = v.tc;
             vv.tangent = v.tangent;
         }
 
         static inline void assignvert(vvertgw &vv, int j, vert &v, blendcombo &c)
         {
-            vv.pos = hvec4(v.pos, 1);
+            vv.pos = GenericVec4<half>(v.pos, 1);
             vv.tc = v.tc;
             vv.tangent = v.tangent;
             c.serialize(vv);

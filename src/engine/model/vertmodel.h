@@ -9,14 +9,14 @@ struct vertmodel : animmodel
     struct vvert
     {
         vec pos;
-        hvec2 tc;
+        GenericVec2<half> tc;
         squat tangent;
     };
 
     struct vvertg
     {
-        hvec4 pos;
-        hvec2 tc;
+        GenericVec4<half> pos;
+        GenericVec2<half> tc;
         squat tangent;
     };
 
@@ -115,7 +115,7 @@ struct vertmodel : animmodel
 
         static inline void assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
         {
-            vv.pos = hvec4(v.pos, 1);
+            vv.pos = GenericVec4<half>(v.pos, 1);
             vv.tc = tc.tc;
             vv.tangent = v.tangent;
         }

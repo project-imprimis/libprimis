@@ -1951,44 +1951,46 @@ struct half
     bool operator!=(const half &h) const { return val != h.val; }
 };
 
-//half precision floating point two dimensional vector, similar to vec2
-struct hvec2
+//generic two dimensional vector
+template<class T>
+struct GenericVec2
 {
-    half x, y;
+    T x,y;
 
-    hvec2() {}
-    hvec2(float x, float y) : x(x), y(y) {}
-    hvec2(const vec2 &v) : x(v.x), y(v.y) {}
+    GenericVec2() {}
+    GenericVec2(T x, T y) : x(x), y(y) {}
+    GenericVec2(const vec2 &v) : x(v.x), y(v.y) {}
 
-    bool operator==(const hvec2 &h) const { return x == h.x && y == h.y; }
-    bool operator!=(const hvec2 &h) const { return x != h.x || y != h.y; }
+    bool operator==(const GenericVec2 &h) const { return x == h.x && y == h.y; }
+    bool operator!=(const GenericVec2 &h) const { return x != h.x || y != h.y; }
 };
 
-//half precision floating point three dimensional vector, similar to vec
-struct hvec
+//generic three dmensional vector
+template<class T>
+struct GenericVec3
 {
-    half x, y, z;
+    T x,y,z;
 
-    hvec() {}
-    hvec(float x, float y, float z) : x(x), y(y), z(z) {}
-    hvec(const vec &v) : x(v.x), y(v.y), z(v.z) {}
+    GenericVec3() {}
+    GenericVec3(T x, T y, T z) : x(x), y(y), z(z) {}
+    GenericVec3(const vec &v) : x(v.x), y(v.y), z(v.z) {}
 
-    bool operator==(const hvec &h) const { return x == h.x && y == h.y && z == h.z; }
-    bool operator!=(const hvec &h) const { return x != h.x || y != h.y || z != h.z; }
+    bool operator==(const GenericVec3 &h) const { return x == h.x && y == h.y && z == h.z; }
+    bool operator!=(const GenericVec3 &h) const { return x != h.x || y != h.y || z != h.z; }
 };
 
-//half precision floating point four dimensional vector, similar to vec4
-struct hvec4
+template<class T>
+struct GenericVec4
 {
-    half x, y, z, w;
+    T x, y, z, w;
 
-    hvec4() {}
-    hvec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-    hvec4(const vec &v, float w) : x(v.x), y(v.y), z(v.z), w(w) {}
-    hvec4(const vec4 &v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
+    GenericVec4() {}
+    GenericVec4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
+    GenericVec4(const vec &v, float w) : x(v.x), y(v.y), z(v.z), w(w) {}
+    GenericVec4(const vec4 &v) : x(v.x), y(v.y), z(v.z), w(v.w) {}
 
-    bool operator==(const hvec4 &h) const { return x == h.x && y == h.y && z == h.z && w == h.w; }
-    bool operator!=(const hvec4 &h) const { return x != h.x || y != h.y || z != h.z || w != h.w; }
+    bool operator==(const GenericVec4 &h) const { return x == h.x && y == h.y && z == h.z && w == h.w; }
+    bool operator!=(const GenericVec4 &h) const { return x != h.x || y != h.y || z != h.z || w != h.w; }
 };
 
 //short integer quaternion

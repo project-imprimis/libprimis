@@ -777,7 +777,7 @@ struct animmodel : model
             bindpos(ebuf, vbuf, v, stride, GL_FLOAT, 3);
         }
 
-        void bindpos(GLuint ebuf, GLuint vbuf, hvec4 *v, int stride)
+        void bindpos(GLuint ebuf, GLuint vbuf, GenericVec4<half> *v, int stride)
         {
             bindpos(ebuf, vbuf, v, stride, GL_HALF_FLOAT, 4);
         }
