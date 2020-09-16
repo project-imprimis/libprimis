@@ -929,58 +929,6 @@ namespace server
         sendpacket(cn, 1, p.finalize());
     }
 
-    void cleardemos(int n)
-    {
-        if(!n)
-        {
-            for(int i = 0; i < demos.length(); i++)
-            {
-                delete[] demos[i].data;
-            }
-            demos.shrink(0);
-            sendservmsg("cleared all demos");
-        }
-        else if(demos.inrange(n-1))
-        {
-            delete[] demos[n-1].data;
-            demos.remove(n-1);
-            sendservmsgf("cleared demo %d", n);
-        }
-    }
-
-    static void freegetdemo(ENetPacket *packet)
-    {
-        for(int i = 0; i < clients.length(); i++)
-        {
-            clientinfo *ci = clients[i];
-            if(ci->getdemo == packet)
-            {
-                ci->getdemo = NULL;
-            }
-        }
-    }
-
-    void senddemo(clientinfo *ci, int num)
-    {
-        if(ci->getdemo)
-        {
-            return;
-        }
-        if(!num)
-        {
-            num = demos.length();
-        }
-        if(!demos.inrange(num-1))
-        {
-            return;
-        }
-        demofile &d = demos[num-1];
-        if((ci->getdemo = sendf(ci->clientnum, 2, "rim", NetMsg_SendDemo, d.len, d.data)))
-        {
-            ci->getdemo->freeCallback = freegetdemo;
-        }
-    }
-
     void enddemoplayback()
     {
         if(!demoplayback)
