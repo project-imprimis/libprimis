@@ -666,7 +666,7 @@ namespace ai
         {
             if(retries <= 1 && d->ai)
             {
-                for(int i = 0; i < ai::NUMPREVNODES; ++i)
+                for(int i = 0; i < ai::numprevnodes; ++i)
                 {
                     if(d->ai->prevnodes[i] != node && iswaypoint(d->ai->prevnodes[i]))
                     {

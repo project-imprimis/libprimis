@@ -997,7 +997,7 @@ namespace ai
         return -1;
     }
 
-    bool anynode(gameent *d, aistate &b, int len = NUMPREVNODES)
+    bool anynode(gameent *d, aistate &b, int len = numprevnodes)
     {
         if(iswaypoint(d->lastnode))
         {
@@ -1040,7 +1040,7 @@ namespace ai
             return false; // route length is too short
         }
         d->ai->lastcheck = lastmillis;
-        int w = iswaypoint(d->lastnode) ? d->lastnode : d->ai->route[n], c = min(n-1, NUMPREVNODES);
+        int w = iswaypoint(d->lastnode) ? d->lastnode : d->ai->route[n], c = min(n-1, numprevnodes);
         // check ahead to see if we need to go around something
         for(int j = 0; j < c; ++j)
         {
@@ -1854,7 +1854,7 @@ namespace ai
             {
                 particle_flare(pos, waypoints[d->lastnode].o, 1, Part_Streak, 0xFFFF00);
             }
-            for(int i = 0; i < NUMPREVNODES; ++i)
+            for(int i = 0; i < numprevnodes; ++i)
             {
                 if(iswaypoint(d->ai->prevnodes[i]))
                 {

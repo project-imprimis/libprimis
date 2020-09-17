@@ -199,14 +199,14 @@ namespace ai
         }
     };
 
-    const int NUMPREVNODES = 6;
+    const int numprevnodes = 6;
 
     struct aiinfo
     {
         vector<aistate> state;
         vector<int> route;
         vec target, spot;
-        int enemy, enemyseen, enemymillis, weappref, prevnodes[NUMPREVNODES], targnode, targlast, targtime, targseq,
+        int enemy, enemyseen, enemymillis, weappref, prevnodes[numprevnodes], targnode, targlast, targtime, targseq,
             lastrun, lasthunt, lastaction, lastcheck, jumpseed, jumprand, blocktime, huntseq, blockseq, lastaimrnd;
         float targyaw, targpitch, views[3], aimrnd[3];
         bool dontmove, becareful, tryreset, trywipe;
@@ -261,7 +261,7 @@ namespace ai
 
         bool hasprevnode(int n) const
         {
-            for(int i = 0; i < NUMPREVNODES; ++i)
+            for(int i = 0; i < numprevnodes; ++i)
             {
                 if(prevnodes[i] == n)
                 {
