@@ -825,11 +825,11 @@ namespace server
         return sec*1000;
     }
 
-    static teaminfo teaminfos[MAXTEAMS];
+    static teaminfo teaminfos[maxteams];
 
     void clearteaminfo()
     {
-        for(int i = 0; i < MAXTEAMS; ++i)
+        for(int i = 0; i < maxteams; ++i)
         {
             teaminfos[i].reset();
         }
@@ -1356,7 +1356,7 @@ namespace server
         if(modecheck(gamemode, Mode_Team))
         {
             putint(p, NetMsg_TeamInfo);
-            for(int i = 0; i < MAXTEAMS; ++i)
+            for(int i = 0; i < maxteams; ++i)
             {
                 teaminfo &t = teaminfos[i];
                 putint(p, t.frags);
@@ -1635,9 +1635,9 @@ namespace server
                 }
             }
             teams.sort(teamscore::compare);
-            if(teams.length() < MAXTEAMS)
+            if(teams.length() < maxteams)
             {
-                for(int i = 0; i < MAXTEAMS; ++i)
+                for(int i = 0; i < maxteams; ++i)
                 {
                     if(teams.htfind(1+i) < 0)
                     {

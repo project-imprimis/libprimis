@@ -51,12 +51,12 @@ struct ctfclientmode : clientmode
     };
 
     vector<flag> flags;
-    int scores[MAXTEAMS];
+    int scores[maxteams];
 
     void resetflags()
     {
         flags.shrink(0);
-        for(int k = 0; k < MAXTEAMS; ++k)
+        for(int k = 0; k < maxteams; ++k)
         {
             scores[k] = 0;
         }
@@ -141,7 +141,7 @@ struct ctfclientmode : clientmode
 
     void getteamscores(vector<teamscore> &tscores)
     {
-        for(int k = 0; k < MAXTEAMS; ++k)
+        for(int k = 0; k < maxteams; ++k)
         {
             if(scores[k])
             {

@@ -622,15 +622,15 @@ struct gamestate
     }
 };
 
-const int MAXTEAMS = 2;
-const char * const teamnames[1+MAXTEAMS]     = { "", "azul", "rojo" };
-const char * const teamtextcode[1+MAXTEAMS]  = { "\f0", "\f1", "\f3" };
-const char * const teamblipcolor[1+MAXTEAMS] = { "_neutral", "_blue", "_red" };
-const int teamtextcolor[1+MAXTEAMS] = { 0x1EC850, 0x6496FF, 0xFF4B19 };
-const int teamscoreboardcolor[1+MAXTEAMS] = { 0, 0x3030C0, 0xC03030 };
+const int maxteams = 2;
+const char * const teamnames[1+maxteams]     = { "", "azul", "rojo" };
+const char * const teamtextcode[1+maxteams]  = { "\f0", "\f1", "\f3" };
+const char * const teamblipcolor[1+maxteams] = { "_neutral", "_blue", "_red" };
+const int teamtextcolor[1+maxteams] = { 0x1EC850, 0x6496FF, 0xFF4B19 };
+const int teamscoreboardcolor[1+maxteams] = { 0, 0x3030C0, 0xC03030 };
 inline int teamnumber(const char *name)
 {
-    for(int i = 0; i < MAXTEAMS; ++i)
+    for(int i = 0; i < maxteams; ++i)
     {
         if(!strcmp(teamnames[1+i], name))
         {
@@ -640,7 +640,7 @@ inline int teamnumber(const char *name)
     return 0;
 }
 
-#define VALID_TEAM(n) ((n) >= 1 && (n) <= MAXTEAMS)
+#define VALID_TEAM(n) ((n) >= 1 && (n) <= maxteams)
 #define TEAM_NAME(n) (teamnames[VALID_TEAM(n) ? (n) : 0])
 
 struct gameent : dynent, gamestate
@@ -877,8 +877,8 @@ namespace game
     // render
     struct playermodelinfo
     {
-        const char *model[1+MAXTEAMS], *hudguns[1+MAXTEAMS],
-                   *icon[1+MAXTEAMS];
+        const char *model[1+maxteams], *hudguns[1+maxteams],
+                   *icon[1+maxteams];
         bool ragdoll;
     };
 

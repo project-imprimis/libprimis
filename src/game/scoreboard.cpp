@@ -12,11 +12,11 @@ namespace game
     VARP(showconnecting, 0, 0, 1);
     VARP(showfrags, 0, 1, 1);
 
-    static teaminfo teaminfos[MAXTEAMS];
+    static teaminfo teaminfos[maxteams];
 
     void clearteaminfo()
     {
-        for(int i = 0; i < MAXTEAMS; ++i)
+        for(int i = 0; i < maxteams; ++i)
         {
             teaminfos[i].reset();
         }
@@ -114,12 +114,12 @@ namespace game
         else
         {
             int bestfrags = INT_MIN;
-            for(int i = 0; i < MAXTEAMS; ++i)
+            for(int i = 0; i < maxteams; ++i)
             {
                 teaminfo &t = teaminfos[i];
                 bestfrags = max(bestfrags, t.frags);
             }
-            for(int i = 0; i < MAXTEAMS; ++i)
+            for(int i = 0; i < maxteams; ++i)
             {
                 teaminfo &t = teaminfos[i];
                 if(t.frags >= bestfrags)
@@ -130,11 +130,11 @@ namespace game
         }
     }
 
-    static vector<gameent *> teamplayers[1+MAXTEAMS], spectators;
+    static vector<gameent *> teamplayers[1+maxteams], spectators;
 
     static void groupplayers()
     {
-        for(int i = 0; i < 1+MAXTEAMS; ++i)
+        for(int i = 0; i < 1+maxteams; ++i)
         {
             teamplayers[i].setsize(0);
         }
@@ -154,7 +154,7 @@ namespace game
             int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(o->team) ? o->team : 0;
             teamplayers[team].add(o);
         }
-        for(int i = 0; i < 1+MAXTEAMS; ++i)
+        for(int i = 0; i < 1+maxteams; ++i)
         {
             teamplayers[i].sort(playersort);
         }
@@ -163,7 +163,7 @@ namespace game
 
     void removegroupedplayer(gameent *d)
     {
-        for(int i = 0; i < 1+MAXTEAMS; ++i)
+        for(int i = 0; i < 1+maxteams; ++i)
         {
             teamplayers[i].removeobj(d);
         }
@@ -176,10 +176,10 @@ namespace game
     }
 //scoreboard commands
     COMMAND(refreshscoreboard, "");
-    ICOMMAND(numscoreboard, "i", (int *team), intret(*team < 0 ? spectators.length() : (*team <= MAXTEAMS ? teamplayers[*team].length() : 0)));
+    ICOMMAND(numscoreboard, "i", (int *team), intret(*team < 0 ? spectators.length() : (*team <= maxteams ? teamplayers[*team].length() : 0)));
     ICOMMAND(loopscoreboard, "rie", (ident *id, int *team, uint *body),
     {
-        if(*team > MAXTEAMS)
+        if(*team > maxteams)
         {
             return;
         }

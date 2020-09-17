@@ -263,7 +263,7 @@ namespace game
             }
             if(modecheck(gamemode, Mode_Team))
             {
-                for(int j = 0; j < MAXTEAMS; ++j)
+                for(int j = 0; j < maxteams; ++j)
                 {
                     preloadmodel(mdl->model[1+j]);
                 }
@@ -728,7 +728,7 @@ namespace game
             string fname;
             if(modecheck(gamemode, Mode_Team))
             {
-                for(int j = 0; j < MAXTEAMS; ++j)
+                for(int j = 0; j < maxteams; ++j)
                 {
                     formatstring(fname, "%s/%s", mdl.hudguns[1+j], file);
                     preloadmodel(fname);

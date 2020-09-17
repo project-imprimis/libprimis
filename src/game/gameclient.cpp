@@ -2296,7 +2296,7 @@ namespace game
                     break;
                 }
                 case NetMsg_TeamInfo:
-                    for(int i = 0; i < MAXTEAMS; ++i)
+                    for(int i = 0; i < maxteams; ++i)
                     {
                         int frags = getint(p);
                         if(modecheck(gamemode, Mode_Team))
