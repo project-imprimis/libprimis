@@ -3,7 +3,7 @@
 
 namespace game
 {
-    static const int OFFSETMILLIS = 500;
+    static const int offsetmillis = 500;
     vec rays[MAXRAYS];
 
     struct hitmsg
@@ -270,7 +270,7 @@ namespace game
 
         bnc.offset = from;
         bnc.offset.sub(bnc.o);
-        bnc.offsetmillis = OFFSETMILLIS;
+        bnc.offsetmillis = offsetmillis;
 
         bnc.resetinterp();
     }
@@ -365,7 +365,7 @@ namespace game
         p.local = local;
         p.owner = owner;
         p.atk = atk;
-        p.offsetmillis = OFFSETMILLIS;
+        p.offsetmillis = offsetmillis;
         p.id = local ? lastmillis : id;
     }
 
@@ -553,7 +553,7 @@ namespace game
                     projectile &p = projs[i];
                     if(p.atk == atk && p.owner == d && p.id == id && !p.local)
                     {
-                        vec pos = vec(p.offset).mul(p.offsetmillis/static_cast<float>(OFFSETMILLIS)).add(p.o);
+                        vec pos = vec(p.offset).mul(p.offsetmillis/static_cast<float>(offsetmillis)).add(p.o);
                         explode(p.local, p.owner, pos, p.dir, NULL, 0, atk);
                         pulsestain(p, pos);
                         projs.remove(i);
@@ -707,7 +707,7 @@ namespace game
                 }
                 else
                 {
-                    vec pos = vec(p.offset).mul(p.offsetmillis/static_cast<float>(OFFSETMILLIS)).add(v);
+                    vec pos = vec(p.offset).mul(p.offsetmillis/static_cast<float>(offsetmillis)).add(v);
                     particle_splash(Part_PulseFront, 1, 1, pos, 0x50CFE5, 2.4f, 150, 20);
                     if(p.owner != noside) //noside is the hud player, so if the projectile is somebody else's
                     {
@@ -1032,7 +1032,7 @@ namespace game
                 continue;
             }
             vec pos(p.o);
-            pos.add(vec(p.offset).mul(p.offsetmillis/static_cast<float>(OFFSETMILLIS)));
+            pos.add(vec(p.offset).mul(p.offsetmillis/static_cast<float>(offsetmillis)));
             adddynlight(pos, 20, vec(0.25f, 0.75f, 1.0f));
         }
     }
@@ -1044,7 +1044,7 @@ namespace game
         {
             bouncer &bnc = *bouncers[i];
             vec pos(bnc.o);
-            pos.add(vec(bnc.offset).mul(bnc.offsetmillis/static_cast<float>(OFFSETMILLIS)));
+            pos.add(vec(bnc.offset).mul(bnc.offsetmillis/static_cast<float>(offsetmillis)));
             vec vel(bnc.vel);
             if(vel.magnitude() <= 25.0f)
             {
