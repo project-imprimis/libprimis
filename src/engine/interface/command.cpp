@@ -197,8 +197,8 @@ static inline void cleancode(ident &id)
 struct NullVal : tagval
 {
     NullVal() { setnull(); }
-} NullVal;
-tagval noret = NullVal, *commandret = &noret;
+} nullval;
+tagval noret = nullval, *commandret = &noret;
 
 void clear_command()
 {
@@ -519,7 +519,7 @@ static inline void pushalias(ident &id, identstack &stack)
 {
     if(id.type == Id_Alias && id.index >= Max_Args)
     {
-        pusharg(id, NullVal, stack);
+        pusharg(id, nullval, stack);
         id.flags &= ~Idf_Unknown;
     }
 }
@@ -616,7 +616,7 @@ ident *writeident(const char *name, int flags)
     ident *id = newident(name, flags);
     if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
     {
-        pusharg(*id, NullVal, aliasstack->argstack[id->index]);
+        pusharg(*id, nullval, aliasstack->argstack[id->index]);
         aliasstack->usedargs |= 1<<id->index;
     }
     return id;
@@ -4256,7 +4256,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 ident *id = identmap[op>>8];
                 if(!(aliasstack->usedargs&(1<<id->index)))
                 {
-                    pusharg(*id, NullVal, aliasstack->argstack[id->index]);
+                    pusharg(*id, nullval, aliasstack->argstack[id->index]);
                     aliasstack->usedargs |= 1<<id->index;
                 }
                 args[numargs++].setident(id);
@@ -4270,7 +4270,7 @@ static const uint *runcode(const uint *code, tagval &result)
                                          || arg.type == Value_CString ? newident(arg.s, Idf_Unknown) : dummyident;
                 if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
                 {
-                    pusharg(*id, NullVal, aliasstack->argstack[id->index]);
+                    pusharg(*id, nullval, aliasstack->argstack[id->index]);
                     aliasstack->usedargs |= 1<<id->index;
                 }
                 freearg(arg);
@@ -6265,8 +6265,8 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         return;
     }
     identstack xstack, ystack;
-    pusharg(*x, NullVal, xstack); x->flags &= ~Idf_Unknown;
-    pusharg(*y, NullVal, ystack); y->flags &= ~Idf_Unknown;
+    pusharg(*x, nullval, xstack); x->flags &= ~Idf_Unknown;
+    pusharg(*y, nullval, ystack); y->flags &= ~Idf_Unknown;
     int totalunique = total,
         numunique = items.length();
     if(body)
