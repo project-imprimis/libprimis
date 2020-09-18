@@ -276,8 +276,16 @@ struct vec
         float sqrdist = 0;
         for(int i = 0; i < 3; ++i)
         {
-            if     (v[i] < min[i]) { float delta = v[i]-min[i]; sqrdist += delta*delta; }
-            else if(v[i] > max[i]) { float delta = max[i]-v[i]; sqrdist += delta*delta; }
+            if (v[i] < min[i])
+            {
+                float delta = v[i]-min[i];
+                sqrdist += delta*delta;
+            }
+            else if(v[i] > max[i])
+            {
+                float delta = max[i]-v[i];
+                sqrdist += delta*delta;
+            }
         }
         return sqrtf(sqrdist);
     }
@@ -502,7 +510,10 @@ struct quat : vec4
         vec4 qq = vec4(*this).square();
         float rr = qq.x + qq.y + qq.z + qq.w,
               t = x*y + z*w;
-        if(fabs(t) > 0.49999f*rr) return t < 0 ? vec(-2*atan2f(x, w), -M_PI/2, 0) : vec(2*atan2f(x, w), M_PI/2, 0);
+        if(fabs(t) > 0.49999f*rr)
+        {
+            return t < 0 ? vec(-2*atan2f(x, w), -M_PI/2, 0) : vec(2*atan2f(x, w), M_PI/2, 0);
+        }
         return vec(atan2f(2*(y*w - x*z), qq.x - qq.y - qq.z + qq.w),
                    asinf(2*t/rr),
                    atan2f(2*(x*w - y*z), -qq.x + qq.y - qq.z + qq.w));
@@ -655,7 +666,10 @@ struct dualquat
 
     void accumulate(const dualquat &d, float k)
     {
-        if(real.dot(d.real) < 0) k = -k;
+        if(real.dot(d.real) < 0)
+        {
+            k = -k;
+        }
         real.madd(d.real, k);
         dual.madd(d.dual, k);
     }
@@ -709,8 +723,8 @@ struct matrix3
     explicit matrix3(float angle, const vec &axis) { rotate(angle, axis); }
     explicit matrix3(const quat &q)
     {
-        float x = q.x, y = q.y, z = q.z, w = q.w,
-              tx = 2*x, ty = 2*y, tz = 2*z,
+        float x   = q.x,   y  = q.y,    z = q.z, w = q.w,
+              tx  = 2*x,   ty = 2*y,   tz = 2*z,
               txx = tx*x, tyy = ty*y, tzz = tz*z,
               txy = tx*y, txz = tx*z, tyz = ty*z,
               twx = w*tx, twy = w*ty, twz = w*tz;
@@ -1431,8 +1445,14 @@ struct bvec
 {
     union
     {
-        struct { uchar x, y, z; };
-        struct { uchar r, g, b; };
+        struct
+        {
+            uchar x, y, z;
+        };
+        struct
+        {
+            uchar r, g, b;
+        };
         uchar v[3];
     };
 
@@ -1479,19 +1499,38 @@ struct bvec
 
     void scale(int k, int d) { x = static_cast<uchar>((x*k)/d); y = static_cast<uchar>((y*k)/d); z = static_cast<uchar>((z*k)/d); }
 
-    bvec &shl(int n) { x<<= n; y<<= n; z<<= n; return *this; }
-    bvec &shr(int n) { x>>= n; y>>= n; z>>= n; return *this; }
+    bvec &shl(int n)
+    {
+        x <<= n;
+        y <<= n;
+        z <<= n;
+        return *this;
+    }
+    bvec &shr(int n)
+    {
+        x >>= n;
+        y >>= n;
+        z >>= n;
+        return *this;
+    }
 
     static bvec fromcolor(const vec &v) { return bvec(static_cast<uchar>(v.x*255.0f), static_cast<uchar>(v.y*255.0f), static_cast<uchar>(v.z*255.0f)); }
     vec tocolor() const { return vec(x*(1.0f/255.0f), y*(1.0f/255.0f), z*(1.0f/255.0f)); }
 
-    static bvec from565(ushort c) { return bvec((((c>>11)&0x1F)*527 + 15) >> 6, (((c>>5)&0x3F)*259 + 35) >> 6, ((c&0x1F)*527 + 15) >> 6); }
+    static bvec from565(ushort c)
+    {
+        return bvec((((c>>11)&0x1F)*527 + 15) >> 6, (((c>>5)&0x3F)*259 + 35) >> 6, ((c&0x1F)*527 + 15) >> 6);
+    }
 
     static bvec hexcolor(int color)
     {
         return bvec((color>>16)&0xFF, (color>>8)&0xFF, color&0xFF);
     }
-    int tohexcolor() const { return (static_cast<int>(r)<<16)|(static_cast<int>(g)<<8)|static_cast<int>(b); }
+
+    int tohexcolor() const
+    {
+        return (static_cast<int>(r)<<16)|(static_cast<int>(g)<<8)|static_cast<int>(b);
+    }
 };
 
 //color vector4 (r,g,b,a)
@@ -1499,8 +1538,14 @@ struct bvec4
 {
     union
     {
-        struct { uchar x, y, z, w; };
-        struct { uchar r, g, b, a; };
+        struct
+        {
+            uchar x, y, z, w;
+        };
+        struct
+        {
+            uchar r, g, b, a;
+        };
         uchar v[4];
         uint mask;
     };
@@ -1580,12 +1625,43 @@ struct dvec4
     template<class B>
     dvec4 &madd(const dvec4 &a, const B &b) { return add(dvec4(a).mul(b)); }
 
-    dvec4 &mul(double f)       { x *= f; y *= f; z *= f; w *= f; return *this; }
-    dvec4 &mul(const dvec4 &o) { x *= o.x; y *= o.y; z *= o.z; w *= o.w; return *this; }
-    dvec4 &add(double f)       { x += f; y += f; z += f; w += f; return *this; }
-    dvec4 &add(const dvec4 &o) { x += o.x; y += o.y; z += o.z; w += o.w; return *this; }
+    dvec4 &mul(double f)//scalar multiplication
+    {
+        x *= f;
+        y *= f;
+        z *= f;
+        w *= f;
+        return *this;
+    }
+    dvec4 &mul(const dvec4 &o) //elementwise multiplication
+    {
+        x *= o.x;
+        y *= o.y;
+        z *= o.z;
+        w *= o.w;
+        return *this;
+    }
+    dvec4 &add(double f) //uniform offset from origin
+    {
+        x += f;
+        y += f;
+        z += f;
+        w += f;
+        return *this;
+    }
+    dvec4 &add(const dvec4 &o)
+    {
+        x += o.x;
+        y += o.y;
+        z += o.z;
+        w += o.w;
+        return *this;
+    }
 
-    operator vec4() const { return vec4(x, y, z, w); }
+    operator vec4() const
+    {
+        return vec4(x, y, z, w);
+    }
 };
 
 //four dimensional floating point vector object
@@ -1908,11 +1984,16 @@ struct half
     ushort val;
 
     half() {}
-    half(float f)
+    half(float f) //truncates a 32 bit float to a 16 bit half
     {
-        union { int i; float f; } conv;
+        union
+        {
+            int i;
+            float f;
+        } conv;
         conv.f = f;
-        ushort signbit = (conv.i>>(31-15)) & (1<<15), mantissa = (conv.i>>(23-10)) & 0x3FF;
+        ushort signbit = (conv.i>>(31-15)) & (1<<15),
+               mantissa = (conv.i>>(23-10)) & 0x3FF;
         int exponent = ((conv.i>>23)&0xFF) - 127 + 15;
         if(exponent <= 0)
         {
@@ -2006,8 +2087,14 @@ extern int polyclip(const vec *in, int numin, const vec &dir, float below, float
 extern const vec2 sincos360[];
 inline int mod360(int angle)
 {
-    if(angle < 0) angle = 360 + (angle <= -360 ? angle%360 : angle);
-    else if(angle >= 360) angle %= 360;
+    if(angle < 0)
+    {
+        angle = 360 + (angle <= -360 ? angle%360 : angle);
+    }
+    else if(angle >= 360)
+    {
+        angle %= 360;
+    }
     return angle;
 }
 inline const vec2 &sincosmod360(int angle) { return sincos360[mod360(angle)]; }
