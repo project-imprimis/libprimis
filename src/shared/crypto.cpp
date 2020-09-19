@@ -548,8 +548,7 @@ struct bigint
     bool operator>=(const bigint<Y_DIGITS> &y) const { return !(*this<y); }
 };
 
-#define GF_BITS         192
-#define GF_DIGITS       ((GF_BITS+BI_DIGIT_BITS-1)/BI_DIGIT_BITS)
+#define GF_DIGITS       ((192+BI_DIGIT_BITS-1)/BI_DIGIT_BITS)
 
 typedef bigint<GF_DIGITS+1> gfint;
 
@@ -641,7 +640,6 @@ struct gfield : gfint
     template<int RESULT_DIGITS>
     void reduce(const bigint<RESULT_DIGITS> &result)
     {
-#if GF_BITS==192
         // B = T + S1 + S2 + S3 mod p
         copyshrinkdigits(result, GF_DIGITS); // T
         if(result.morebits(192))
@@ -672,78 +670,6 @@ struct gfield : gfint
         {
             gfint::sub(*this, P);
         }
-#elif GF_BITS==256
-        // B = T + 2*S1 + 2*S2 + S3 + S4 - D1 - D2 - D3 - D4 mod p
-        copyshrinkdigits(result, GF_DIGITS); // T
-
-        if(result.morebits(256))
-        {
-            gfield s;
-            if(result.morebits(352))
-            {
-                s.zerobits(0, 96);
-                s.copybits(96, result, 352, 160);
-                s.shrinkdigits(GF_DIGITS);
-                add(s); add(s); // S1
-
-                if(result.morebits(384))
-                {
-                    //s.zerobits(0, 96);
-                    s.copybits(96, result, 384, 128);
-                    s.shrinkbits(224);
-                    add(s); add(s); // S2
-                }
-            }
-
-            s.copybits(0, result, 256, 96);
-            s.zerobits(96, 96);
-            s.copybits(192, result, 448, 64);
-            s.shrinkdigits(GF_DIGITS);
-            add(s); // S3
-
-            s.copybits(0, result, 288, 96);
-            s.copybits(96, result, 416, 96);
-            s.dupbits(192, 96, 32);
-            s.copybits(224, result, 256, 32);
-            s.shrinkdigits(GF_DIGITS);
-            add(s); // S4
-
-            s.copybits(0, result, 352, 96);
-            s.zerobits(96, 96);
-            s.copybits(192, result, 256, 32);
-            s.copybits(224, result, 320, 32);
-            s.shrinkdigits(GF_DIGITS);
-            sub(s); // D1
-
-            s.copybits(0, result, 384, 128);
-            //s.zerobits(128, 64);
-            s.copybits(192, result, 288, 32);
-            s.copybits(224, result, 352, 32);
-            s.shrinkdigits(GF_DIGITS);
-            sub(s); // D2
-
-            s.copybits(0, result, 416, 96);
-            s.copybits(96, result, 256, 96);
-            s.zerobits(192, 32);
-            s.copybits(224, result, 384, 32);
-            s.shrinkdigits(GF_DIGITS);
-            sub(s); // D3
-
-            s.copybits(0, result, 448, 64);
-            s.zerobits(64, 32);
-            s.copybits(96, result, 288, 96);
-            //s.zerobits(192, 32);
-            s.copybits(224, result, 416, 32);
-            s.shrinkdigits(GF_DIGITS);
-            sub(s); // D4
-        }
-        else if(*this >= P)
-        {
-            gfint::sub(*this, P);
-        }
-#else
-#error Unsupported GF
-#endif
     }
 
     template<int X_DIGITS, int Y_DIGITS>
@@ -888,9 +814,6 @@ struct gfield : gfint
             len = 0;
             return true;
         }
-#if GF_BITS==224
-#error Unsupported GF
-#else
         static const gfint Padd1div4(gfint(P).add(bigint<1>(1)).rshift(2));
         switch(legendre(x))
         {
@@ -909,7 +832,6 @@ struct gfield : gfint
                 return true;
             }
         }
-#endif
     }
     bool sqrt()
     {
@@ -1069,44 +991,12 @@ struct ecjacobian
 
 const ecjacobian ecjacobian::origin(gfield((gfield::digit)1), gfield((gfield::digit)1), gfield((gfield::digit)0));
 
-#if GF_BITS==192
 const gfield gfield::P("fffffffffffffffffffffffffffffffeffffffffffffffff");
 const gfield ecjacobian::B("64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1");
 const ecjacobian ecjacobian::base(
     gfield("188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012"),
     gfield("07192b95ffc8da78631011ed6b24cdd573f977a11e794811")
 );
-#elif GF_BITS==224
-const gfield gfield::P("ffffffffffffffffffffffffffffffff000000000000000000000001");
-const gfield ecjacobian::B("b4050a850c04b3abf54132565044b0b7d7bfd8ba270b39432355ffb4");
-const ecjacobian ecjacobian::base(
-    gfield("b70e0cbd6bb4bf7f321390b94a03c1d356c21122343280d6115c1d21"),
-    gfield("bd376388b5f723fb4c22dfe6cd4375a05a07476444d5819985007e34")
-);
-#elif GF_BITS==256
-const gfield gfield::P("ffffffff00000001000000000000000000000000ffffffffffffffffffffffff");
-const gfield ecjacobian::B("5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b");
-const ecjacobian ecjacobian::base(
-    gfield("6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296"),
-    gfield("4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5")
-);
-#elif GF_BITS==384
-const gfield gfield::P("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffff0000000000000000ffffffff");
-const gfield ecjacobian::B("b3312fa7e23ee7e4988e056be3f82d19181d9c6efe8141120314088f5013875ac656398d8a2ed19d2a85c8edd3ec2aef");
-const ecjacobian ecjacobian::base(
-    gfield("aa87ca22be8b05378eb1c71ef320ad746e1d3b628ba79b9859f741e082542a385502f25dbf55296c3a545e3872760ab7"),
-    gfield("3617de4a96262c6f5d9e98bf9292dc29f8f41dbd289a147ce9da3113b5f0b8c00a60b1ce1d7e819d7a431d7c90ea0e5f")
-);
-#elif GF_BITS==521
-const gfield gfield::P("1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-const gfield ecjacobian::B("051953eb968e1c9a1f929a21a0b68540eea2da725b99b315f3b8b489918ef109e156193951ec7e937b1652c0bd3bb1bf073573df883d2c34f1ef451fd46b503f00");
-const ecjacobian ecjacobian::base(
-    gfield("c6858e06b70404e9cd9e3ecb662395b4429c648139053fb521f828af606b4d3dbaa14b5e77efe75928fe1dc127a2ffa8de3348b3c1856a429bf97e7e31c2e5bd66"),
-    gfield("11839296a789a3bc0045c8a5fb42c7d1bd998f54449579b446817afbd17273e662c97ee72995ef42640c550b9013fad0761353c7086a272c24088be94769fd16650")
-);
-#else
-#error Unsupported GF
-#endif
 
 void calcpubkey(gfint privkey, vector<char> &pubstr)
 {
