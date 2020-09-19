@@ -26,7 +26,7 @@ namespace server
         bool spawned;
     };
 
-    static const int DEATHMILLIS = 300;
+    static const int deathmillis = 300;
 
     struct clientinfo;
 
@@ -92,7 +92,7 @@ namespace server
 
         bool isalive(int gamemillis)
         {
-            return state==ClientState_Alive || (state==ClientState_Dead && gamemillis - lastdeath <= DEATHMILLIS);
+            return state==ClientState_Alive || (state==ClientState_Dead && gamemillis - lastdeath <= deathmillis);
         }
 
         bool waitexpired(int gamemillis)
