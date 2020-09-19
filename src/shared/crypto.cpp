@@ -156,12 +156,12 @@ namespace tiger
             {
                 temp[j++] = 0;
             }
-            compress((chunk *)temp, val.chunks);
+            compress(reinterpret_cast<chunk *>(temp), val.chunks);
             j = 0;
         }
         while(j < 56) temp[j++] = 0;
-        *(chunk *)(temp+56) = (chunk)length<<3;
-        compress((chunk *)temp, val.chunks);
+        *reinterpret_cast<chunk *>(temp+56) = static_cast<chunk>(length << 3);
+        compress(reinterpret_cast<chunk *>(temp), val.chunks);
     }
 }
 
@@ -326,8 +326,8 @@ struct bigint
         int maxlen = max(x.len, y.len), i;
         for(i = 0; i < y.len || carry; i++)
         {
-             carry += (i < x.len ? (dbldigit)x.digits[i] : 0) + (i < y.len ? (dbldigit)y.digits[i] : 0);
-             digits[i] = (digit)carry;
+             carry += (i < x.len ? static_cast<dbldigit>(x.digits[i]) : 0) + (i < y.len ? static_cast<dbldigit>(y.digits[i]) : 0);
+             digits[i] = static_cast<digit>(carry);
              carry >>= BI_DIGIT_BITS;
         }
         if(i < x.len && this != &x)
@@ -347,8 +347,8 @@ struct bigint
         int i;
         for(i = 0; i < y.len || borrow; i++)
         {
-             borrow = (1<<BI_DIGIT_BITS) + (dbldigit)x.digits[i] - (i<y.len ? (dbldigit)y.digits[i] : 0) - borrow;
-             digits[i] = (digit)borrow;
+             borrow = (1<<BI_DIGIT_BITS) + static_cast<dbldigit>(x.digits[i]) - (i<y.len ? static_cast<dbldigit>(y.digits[i]) : 0) - borrow;
+             digits[i] = static_cast<digit>(borrow);
              borrow = (borrow>>BI_DIGIT_BITS)^1;
         }
         if(i < x.len && this != &x)
@@ -393,7 +393,7 @@ struct bigint
             dbldigit carry = 0;
             for(int j = 0; j < y.len; ++j)
             {
-                carry += (dbldigit)x.digits[i] * (dbldigit)y.digits[j] + (dbldigit)digits[i+j];
+                carry += static_cast<dbldigit>(x.digits[i]) * static_cast<dbldigit>(y.digits[j]) + static_cast<dbldigit>(digits[i+j]);
                 digits[i+j] = (digit)carry;
                 carry >>= BI_DIGIT_BITS;
             }
@@ -1188,13 +1188,13 @@ void freepubkey(void *pubkey)
 void *genchallenge(void *pubkey, const void *seed, int seedlen, vector<char> &challengestr)
 {
     tiger::hashval hash;
-    tiger::hash((const uchar *)seed, seedlen, hash);
+    tiger::hash(static_cast<const uchar *>(seed), seedlen, hash);
     gfint challenge;
     memcpy(challenge.digits, hash.bytes, sizeof(hash.bytes));
     challenge.len = 8*sizeof(hash.bytes)/BI_DIGIT_BITS;
     challenge.shrink();
 
-    ecjacobian answer(*(ecjacobian *)pubkey);
+    ecjacobian answer(*static_cast<ecjacobian *>(pubkey));
     answer.mul(challenge);
     answer.normalize();
 
