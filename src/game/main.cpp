@@ -256,14 +256,9 @@ int main(int argc, char **argv)
                 }
                 default:
                 {
-                    gameargs.add(argv[i]);
                     break;
                 }
             }
-        }
-        else
-        {
-            gameargs.add(argv[i]);
         }
     }
     logoutf("init: sdl");
@@ -279,7 +274,6 @@ int main(int argc, char **argv)
     atexit(enet_deinitialize);
     enet_time_set(0);
     logoutf("init: game");
-    game::parseoptions(gameargs);
     execfile("config/server-init.cfg", false);
     server::serverinit();
     game::initclient();

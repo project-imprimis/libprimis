@@ -10,19 +10,12 @@
 //core demo handling
 //ai manager
 
+extern ENetAddress masteraddress;
+
 namespace game
 {
-    void parseoptions(vector<const char *> &args)
-    {
-        for(int i = 0; i < args.length(); i++)
-        {
-            conoutf(Console_Error, "unknown command-line option: %s", args[i]);
-        }
-    }
     const char *gameident() { return "Imprimis"; }
 }
-
-extern ENetAddress masteraddress;
 
 namespace server
 {
@@ -346,7 +339,6 @@ namespace server
         extern void removeai(clientinfo *ci);
         extern void clearai();
         extern void checkai();
-        extern void addclient(clientinfo *ci);
     }
 
     #define MM_MODE 0xF
@@ -416,187 +408,6 @@ namespace server
         maprotation::exclude = 0;
     }
 
-    bool searchmodename(const char *haystack, const char *needle)
-    {
-        if(!needle[0])
-        {
-            return true;
-        }
-        do
-        {
-            if(needle[0] != '.')
-            {
-                haystack = strchr(haystack, needle[0]);
-                if(!haystack)
-                {
-                    break;
-                }
-                haystack++;
-            }
-            const char *h = haystack,
-                       *n = needle+1;
-            for(; *h && *n; h++)
-            {
-                if(*h == *n)
-                {
-                    n++;
-                }
-                else if(*h != ' ')
-                {
-                    break;
-                }
-            }
-            if(!*n)
-            {
-                return true;
-            }
-            if(*n == '.')
-            {
-                return !*h;
-            }
-        } while(needle[0] != '.');
-        return false;
-    }
-
-    int genmodemask(vector<char *> &modes)
-    {
-        int modemask = 0;
-        for(int i = 0; i < modes.length(); i++)
-        {
-            const char *mode = modes[i];
-            int op = mode[0];
-            switch(mode[0])
-            {
-                case '*':
-                    modemask |= 1<<numgamemodes;
-                    for(int k = 0; k < numgamemodes; ++k)
-                    {
-                        if(modecheck(k+STARTGAMEMODE, Mode_Untimed))
-                        {
-                            modemask |= 1<<k;
-                        }
-                    }
-                    continue;
-                case '!':
-                    mode++;
-                    if(mode[0] != '?')
-                    {
-                        break;
-                    }
-                case '?':
-                    mode++;
-                    for(int k = 0; k < numgamemodes; ++k)
-                    {
-                        if(searchmodename(gamemodes[k].name, mode))
-                        {
-                            if(op == '!')
-                            {
-                                modemask &= ~(1<<k);
-                            }
-                            else
-                            {
-                                modemask |= 1<<k;
-                            }
-                        }
-                    }
-                    continue;
-            }
-            int modenum = INT_MAX;
-            if(isdigit(mode[0]))
-            {
-                modenum = atoi(mode);
-            }
-            else
-            {
-                for(int k = 0; k < numgamemodes; ++k)
-                {
-                    if(searchmodename(gamemodes[k].name, mode))
-                    {
-                        modenum = k+STARTGAMEMODE;
-                        break;
-                    }
-                }
-            }
-            if(!MODE_VALID(modenum))
-            {
-                continue;
-            }
-            switch(op)
-            {
-                case '!':
-                {
-                    modemask &= ~(1 << (modenum - STARTGAMEMODE));
-                    break;
-                }
-                default:
-                {
-                    modemask |= 1 << (modenum - STARTGAMEMODE);
-                    break;
-                }
-            }
-        }
-        return modemask;
-    }
-
-    bool addmaprotation(int modemask, const char *map)
-    {
-        if(!map[0])
-        {
-            for(int k = 0; k < numgamemodes; ++k)
-            {
-                if(modemask&(1<<k) && !modecheck(k+STARTGAMEMODE, Mode_Edit))
-                {
-                    modemask &= ~(1<<k);
-                }
-            }
-        }
-        if(!modemask)
-        {
-            return false;
-        }
-        if(!(modemask&(1<<numgamemodes)))
-        {
-            maprotation::exclude |= modemask;
-        }
-        maprotation &rot = maprotations.add();
-        rot.modes = modemask;
-        copystring(rot.map, map);
-        return true;
-    }
-
-    void addmaprotations(tagval *args, int numargs)
-    {
-        vector<char *> modes, maps;
-        for(int i = 0; i + 1 < numargs; i += 2)
-        {
-            explodelist(args[i].getstr(), modes);
-            explodelist(args[i+1].getstr(), maps);
-            int modemask = genmodemask(modes);
-            if(maps.length())
-            {
-                for(int j = 0; j < maps.length(); j++)
-                {
-                    addmaprotation(modemask, maps[j]);
-                }
-            }
-            else
-            {
-                addmaprotation(modemask, "");
-            }
-            modes.deletearrays();
-            maps.deletearrays();
-        }
-        if(maprotations.length() && maprotations.last().modes)
-        {
-            maprotation &rot = maprotations.add();
-            rot.modes = 0;
-            rot.map[0] = '\0';
-        }
-    }
-
-    COMMAND(maprotationreset, "");
-    COMMANDN(maprotation, addmaprotations, "ss2V");
-
     struct demofile
     {
         string info;
@@ -634,25 +445,6 @@ namespace server
         }
     };
     vector<teamkillkick> teamkillkicks;
-
-    void teamkillkickreset()
-    {
-        teamkillkicks.setsize(0);
-    }
-
-    void addteamkillkick(char *modestr, int *limit, int *ban)
-    {
-        vector<char *> modes;
-        explodelist(modestr, modes);
-        teamkillkick &kick = teamkillkicks.add();
-        kick.modes = genmodemask(modes);
-        kick.limit = *limit;
-        kick.ban = *ban > 0 ? *ban*60000 : (*ban < 0 ? 0 : 30*60000);
-        modes.deletearrays();
-    }
-
-    COMMAND(teamkillkickreset, "");
-    COMMANDN(teamkillkick, addteamkillkick, "sii");
 
     bool shouldcheckteamkills = false;
 
@@ -1762,14 +1554,6 @@ namespace server
                 {
                     deleteai(bots[i]);
                 }
-            }
-        }
-
-        void addclient(clientinfo *ci)
-        {
-            if(ci->state.aitype == AI_None)
-            {
-                dorefresh = true;
             }
         }
     }

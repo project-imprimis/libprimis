@@ -893,7 +893,6 @@ namespace game
     extern vec hudgunorigin(int gun, const vec &from, const vec &to, gameent *d);
 
     // additional fxns needed by server/main code
-    extern void parseoptions(vector<const char *> &args);
 
     extern void gamedisconnect(bool cleanup);
     extern void parsepacketclient(int chan, packetbuf &p);
@@ -926,7 +925,6 @@ extern bool isthirdperson();
 
 
 // server
-extern vector<const char *> gameargs;
 extern int maxclients;
 
 extern void cleanupserver();
