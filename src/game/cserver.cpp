@@ -511,20 +511,6 @@ namespace server
          sendf(-1, 1, "ris", NetMsg_ServerMsg, s);
     }
 
-    void resetitems()
-    {
-        mcrc = 0;
-        ments.setsize(0);
-        sents.setsize(0);
-        //cps.reset();
-    }
-
-    void serverinit()
-    {
-        smapname[0] = '\0';
-        resetitems();
-    }
-
     int numclients(int exclude = -1, bool nospec = true, bool noai = true, bool priv = false)
     {
         int n = 0;
