@@ -829,11 +829,16 @@ namespace UI
         #define DOSTATE(flags, func) \
             void func##children(float cx, float cy, int mask, bool inside, int setflags) \
             { \
-                if(!allowinput || state&State_Hidden || pw <= 0 || ph <= 0) return; \
+                if(!allowinput || state&State_Hidden || pw <= 0 || ph <= 0) \
+                { \
+                    return; \
+                } \
                 cx = cx*pw + px-x; \
                 cy = cy*ph + py-y; \
                 if(!inside || (cx >= 0 && cy >= 0 && cx < w && cy < h)) \
+                { \
                     Object::func##children(cx, cy, mask, inside, setflags); \
+                } \
             }
         DOSTATES
         #undef DOSTATE
@@ -3227,19 +3232,22 @@ namespace UI
         void setup(ident *id_, double vmin_ = 0, double vmax_ = 0, double vstep_ = 1, uint *onchange = NULL)
         {
             Object::setup();
-            if(!vmin_ && !vmax_) switch(id_->type)
+            if(!vmin_ && !vmax_)
             {
-                case Id_Var:
+                switch(id_->type)
                 {
-                    vmin_ = id_->minval;
-                    vmax_ = id_->maxval;
-                    break;
-                }
-                case Id_FloatVar:
-                {
-                    vmin_ = id_->minvalf;
-                    vmax_ = id_->maxvalf;
-                    break;
+                    case Id_Var:
+                    {
+                        vmin_ = id_->minval;
+                        vmax_ = id_->maxval;
+                        break;
+                    }
+                    case Id_FloatVar:
+                    {
+                        vmin_ = id_->minvalf;
+                        vmax_ = id_->maxvalf;
+                        break;
+                    }
                 }
             }
             if(id != id_)
@@ -3724,7 +3732,10 @@ namespace UI
             else while(len > 0)
             {
                 int accept = min(len, static_cast<int>(strspn(str, keyfilter)));
-                if(accept > 0) edit->input(str, accept);
+                if(accept > 0)
+                {
+                    edit->input(str, accept);
+                }
                 str += accept + 1;
                 len -= accept + 1;
                 if(len <= 0)
@@ -4268,7 +4279,17 @@ namespace UI
         windows[name] = new Window(name, contents, onshow, onhide);
     });
 
-    ICOMMAND(uiallowinput, "b", (int *val), { if(window) { if(*val >= 0) window->allowinput = *val!=0; intret(window->allowinput ? 1 : 0); } });
+    ICOMMAND(uiallowinput, "b", (int *val),
+    {
+        if(window)
+        {
+            if(*val >= 0)
+            {
+                window->allowinput = *val!=0;
+            }
+            intret(window->allowinput ? 1 : 0);
+        }
+    });
     ICOMMAND(uieschide, "b", (int *val), { if(window) { if(*val >= 0) window->eschide = *val!=0; intret(window->eschide ? 1 : 0); } });
 
     bool showui(const char *name)
