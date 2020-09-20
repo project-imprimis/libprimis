@@ -156,9 +156,9 @@ void renderwaterfog(int mat, float surface)
     SETSHADER(waterfog);
     gle::defvertex(3);
     gle::begin(GL_TRIANGLE_STRIP);
-    gle::attribf(1, -1, 1);
-    gle::attribf(-1, -1, 1);
-    gle::attribf(1, syr, 1);
+    gle::attribf( 1, -1,  1);
+    gle::attribf(-1, -1,  1);
+    gle::attribf( 1, syr, 1);
     gle::attribf(-1, syl, 1);
     gle::end();
 
@@ -173,8 +173,8 @@ void renderwaterfog(int mat, float surface)
 
 //these variables control the vertex water geometry intensity
 //(nothing to do with any other rendering)
-VARP(watersubdiv, 0, 3, 3);
-VARP(waterlod, 0, 1, 3);
+VARP(watersubdiv, 0, 3, 3); //gridpower of water geometry
+VARP(waterlod, 0, 1, 3);    //larger means that geometry is finer for longer distances
 
 static int wx1, wy1, wx2, wy2, wsize;
 static float whscale, whoffset;
@@ -187,7 +187,7 @@ static float whscale, whoffset;
     } \
     static inline void vertw(float v1, float v2, float v3) \
     { \
-        float angle = (v1-wx1)*(v2-wy1)*(v1-wx2)*(v2-wy2)*whscale+whoffset; \
+        float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset; \
         float s = angle - static_cast<int>(angle) - 0.5f; \
         s *= 8 - fabs(s)*16; \
         float h = wateramplitude*s-wateroffset; \
@@ -353,7 +353,11 @@ int renderwaterlod(int x, int y, int z, int size, int mat)
 
 #define RENDER_WATER_QUAD(vertwn, z) \
     { \
-        if(gle::attribbuf.empty()) { def##vertwn(); gle::begin(GL_QUADS); } \
+        if(gle::attribbuf.empty()) \
+        { \
+            def##vertwn(); \
+            gle::begin(GL_QUADS); \
+        } \
         vertwn(x, y, z); \
         vertwn(x+rsize, y, z); \
         vertwn(x+rsize, y+csize, z); \
