@@ -197,13 +197,15 @@ int main(int argc, char **argv)
         }
     }
     execfile("config/init.cfg", false);
+    /* command-line argument parsing */
+    ///////////////////////////////////
     for(int i = 1; i<argc; i++)
     {
         if(argv[i][0]=='-')
         {
             switch(argv[i][1])
             {
-                case 'u':
+                case 'u': // `U`se home directory
                 {
                     if(homedir[0])
                     {
@@ -211,7 +213,7 @@ int main(int argc, char **argv)
                         break;
                     }
                 }
-                case 'k':
+                case 'k': // pac`K`age directory
                 {
                     const char *dir = addpackagedir(&argv[i][2]);
                     if(dir)
@@ -220,11 +222,7 @@ int main(int argc, char **argv)
                     }
                     break;
                 }
-                case 'g':
-                {
-                    break;
-                }
-                case 'w':
+                case 'w': // screen `W`idth
                 {
                     scr_w = std::clamp(atoi(&argv[i][2]), static_cast<int>(SCR_MINW), static_cast<int>(SCR_MAXW));
                     if(!findarg(argc, argv, "-h"))
@@ -233,7 +231,7 @@ int main(int argc, char **argv)
                     }
                     break;
                 }
-                case 'h':
+                case 'h': // screen`H`eight (pixels)
                 {
                     scr_h = std::clamp(atoi(&argv[i][2]), static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
                     {
@@ -244,12 +242,12 @@ int main(int argc, char **argv)
                         }
                     }
                 }
-                case 'f':
+                case 'f': //`F`ullscreen
                 {
                     fullscreen = atoi(&argv[i][2]);
                     break;
                 }
-                case 'x':
+                case 'x': //e`X`ecute script
                 {
                     initscript = &argv[i][2];
                     break;
@@ -261,11 +259,13 @@ int main(int argc, char **argv)
             }
         }
     }
+    //init SDL display/input library
     logoutf("init: sdl");
     if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
     {
         fatal("Unable to initialize SDL: %s", SDL_GetError());
     }
+    //init enet networking library
     logoutf("init: net");
     if(enet_initialize()<0)
     {
