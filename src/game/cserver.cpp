@@ -59,7 +59,10 @@ namespace server
 
         void add(int val)
         {
-            if(numprojs>=N) numprojs = 0;
+            if(numprojs>=N)
+            {
+                numprojs = 0;
+            }
             projs[numprojs++] = val;
         }
 
@@ -202,8 +205,14 @@ namespace server
 
         void addevent(gameevent *e)
         {
-            if(state.state==ClientState_Spectator || events.length()>100) delete e;
-            else events.add(e);
+            if(state.state==ClientState_Spectator || events.length()>100)
+            {
+                delete e;
+            }
+            else
+            {
+                events.add(e);
+            }
         }
 
         enum
@@ -225,7 +234,10 @@ namespace server
         void setpushed()
         {
             pushed = max(pushed, gamemillis);
-            if(exceeded && checkpushed(exceeded, calcpushrange())) exceeded = 0;
+            if(exceeded && checkpushed(exceeded, calcpushrange()))
+            {
+                exceeded = 0;
+            }
         }
 
         bool checkexceeded()
@@ -476,13 +488,19 @@ namespace server
 
     const char *modename(int n, const char *unknown)
     {
-        if(MODE_VALID(n)) return gamemodes[n - STARTGAMEMODE].name;
+        if(MODE_VALID(n))
+        {
+            return gamemodes[n - STARTGAMEMODE].name;
+        }
         return unknown;
     }
 
     const char *modeprettyname(int n, const char *unknown)
     {
-        if(MODE_VALID(n)) return gamemodes[n - STARTGAMEMODE].prettyname;
+        if(MODE_VALID(n))
+        {
+            return gamemodes[n - STARTGAMEMODE].prettyname;
+        }
         return unknown;
     }
 
@@ -1475,7 +1493,7 @@ namespace server
                 smode->leavegame(ci, true);
             }
             sendf(-1, 1, "ri2", NetMsg_ClientDiscon, ci->clientnum);
-            clientinfo *owner = (clientinfo *)getclientinfo(ci->ownernum);
+            clientinfo *owner = static_cast<clientinfo *>(getclientinfo(ci->ownernum));
             if(owner)
             {
                 owner->bots.removeobj(ci);
@@ -1504,7 +1522,7 @@ namespace server
             {
                 smode->leavegame(ci, true);
             }
-            clientinfo *prevowner = (clientinfo *)getclientinfo(ci->ownernum);
+            clientinfo *prevowner = static_cast<clientinfo *>(getclientinfo(ci->ownernum));
             if(prevowner)
             {
                 prevowner->bots.removeobj(ci);
