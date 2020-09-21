@@ -114,7 +114,8 @@ namespace ai
         if(attackrange(d, atk, dist) || (d->skill <= 100 && !randomint(d->skill)))
         {
             float skew = std::clamp(static_cast<float>(lastmillis-d->ai->enemymillis)/static_cast<float>((d->skill*attacks[atk].attackdelay/200.f)), 0.f, attacks[atk].projspeed ? 0.25f : 1e16f),
-                  offy = yaw-d->yaw, offp = pitch-d->pitch;
+                  offy = yaw-d->yaw,
+                  offp = pitch-d->pitch;
             if(offy > 180)
             {
                 offy -= 360;
@@ -581,17 +582,20 @@ namespace ai
             }
             interest n = interests.removeunordered(q);
             bool proceed = true;
-            if(!ignore) switch(n.state)
+            if(!ignore)
             {
-                case AIState_Defend: // don't get into herds
+                switch(n.state)
                 {
-                    int members = 0;
-                    proceed = !checkothers(targets, d, n.state, n.targtype, n.target, true, &members) && members > 1;
-                    break;
-                }
-                default:
-                {
-                    break;
+                    case AIState_Defend: // don't get into herds
+                    {
+                        int members = 0;
+                        proceed = !checkothers(targets, d, n.state, n.targtype, n.target, true, &members) && members > 1;
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
                 }
             }
             if(proceed && makeroute(d, b, n.node))
