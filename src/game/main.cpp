@@ -274,7 +274,6 @@ int main(int argc, char **argv)
     atexit(enet_deinitialize);
     enet_time_set(0);
     logoutf("init: game");
-    execfile("config/server-init.cfg", false);
     game::initclient();
     logoutf("init: video");
     SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
