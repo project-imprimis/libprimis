@@ -965,10 +965,10 @@ namespace game
                 addmsg(NetMsg_EditFace + op, "ri9i4",
                    sel.o.x, sel.o.y, sel.o.z, //1-3
                    sel.s.x, sel.s.y, sel.s.z, //4-6
-                   sel.grid, sel.orient, //7,8
-                   sel.cx, sel.cxs, //9,10
-                   sel.cy, sel.cys, //11,12
-                   sel.corner); //13
+                   sel.grid, sel.orient,      //7,8
+                   sel.cx, sel.cxs,           //9,10
+                   sel.cy, sel.cys,           //11,12
+                   sel.corner);               //13
                 break;
             }
             case Edit_Rotate:
@@ -976,10 +976,10 @@ namespace game
                 addmsg(NetMsg_EditFace + op, "ri9i5",
                    sel.o.x, sel.o.y, sel.o.z, //1-3
                    sel.s.x, sel.s.y, sel.s.z, //4-6
-                   sel.grid, sel.orient, //7,8
-                   sel.cx, sel.cxs, //9,10
-                   sel.cy, sel.cys, //11,12
-                   sel.corner, arg1); //13,14
+                   sel.grid, sel.orient,      //7,8
+                   sel.cx, sel.cxs,           //9,10
+                   sel.cy, sel.cys,           //11,12
+                   sel.corner, arg1);         //13,14
                 break;
             }
             case Edit_Mat:
@@ -988,11 +988,11 @@ namespace game
                 addmsg(NetMsg_EditFace + op, "ri9i6",
                    sel.o.x, sel.o.y, sel.o.z, //1-3
                    sel.s.x, sel.s.y, sel.s.z, //4-6
-                   sel.grid, sel.orient, //7,8
-                   sel.cx, sel.cxs, //10,11
-                   sel.cy, sel.cys, //11,12
-                   sel.corner, //13
-                   arg1, arg2); //14,15
+                   sel.grid, sel.orient,      //7,8
+                   sel.cx, sel.cxs,           //9,10
+                   sel.cy, sel.cys,           //11,12
+                   sel.corner,                //13
+                   arg1, arg2);               //14,15
                 break;
             }
             case Edit_Tex:
@@ -1001,12 +1001,12 @@ namespace game
                 if(addmsg(NetMsg_EditFace + op, "ri9i6",
                     sel.o.x, sel.o.y, sel.o.z, //1-3
                     sel.s.x, sel.s.y, sel.s.z, //4-6
-                    sel.grid, sel.orient, //7,8
-                    sel.cx, sel.cxs, //9,10
-                    sel.cy, sel.cys, //11,12
-                    sel.corner, //13
-                    tex1 ? tex1 : arg1, //14
-                    arg2)) //15
+                    sel.grid, sel.orient,      //7,8
+                    sel.cx, sel.cxs,           //9,10
+                    sel.cy, sel.cys,           //11,12
+                    sel.corner,                //13
+                    tex1 ? tex1 : arg1,        //14
+                    arg2))                     //15
                 {
                     messages.pad(2);
                     int offset = messages.length();
@@ -1025,12 +1025,12 @@ namespace game
                 if(addmsg(NetMsg_EditFace + op, "ri9i7",
                     sel.o.x, sel.o.y, sel.o.z, //args 1-3
                     sel.s.x, sel.s.y, sel.s.z, //4-6
-                    sel.grid, sel.orient, //7,8
-                    sel.cx, sel.cxs, //9,10
-                    sel.cy, sel.cys, //11,12
-                    sel.corner, //13
-                    tex1 ? tex1 : arg1, //14
-                    tex2 ? tex2 : arg2, //15
+                    sel.grid, sel.orient,      //7,8
+                    sel.cx, sel.cxs,           //9,10
+                    sel.cy, sel.cys,           //11,12
+                    sel.corner,                //13
+                    tex1 ? tex1 : arg1,        //14
+                    tex2 ? tex2 : arg2,        //15
                     arg3))
                 {
                     messages.pad(2);
@@ -1058,11 +1058,11 @@ namespace game
                 if(addmsg(NetMsg_EditFace + op, "ri9i6",
                     sel.o.x, sel.o.y, sel.o.z, //1-3
                     sel.s.x, sel.s.y, sel.s.z, //4-6
-                    sel.grid, sel.orient, //7,8
-                    sel.cx, sel.cxs, //9,10
-                    sel.cy, sel.cys, //11,12
-                    sel.corner, //13
-                    arg1, arg2)) //14,15
+                    sel.grid, sel.orient,      //7,8
+                    sel.cx, sel.cxs,           //9,10
+                    sel.cy, sel.cys,           //11,12
+                    sel.corner,                //13
+                    arg1, arg2))               //14,15
                 {
                     messages.pad(2);
                     int offset = messages.length();
@@ -1130,7 +1130,10 @@ namespace game
 
     void vartrigger(ident *id)
     {
-        if(!modecheck(gamemode, Mode_Edit)) return;
+        if(!modecheck(gamemode, Mode_Edit))
+        {
+            return;
+        }
         switch(id->type)
         {
             case Id_Var:
@@ -1229,7 +1232,8 @@ namespace game
 
     // collect c2s messages conveniently
     vector<uchar> messages;
-    int messagecn = -1, messagereliable = false;
+    int messagecn = -1,
+        messagereliable = false;
 
     bool addmsg(int type, const char *fmt, ...)
     {
@@ -1266,8 +1270,8 @@ namespace game
                     }
                     case 'v':
                     {
-                        int n = va_arg(args, int);
-                        int *v = va_arg(args, int *);
+                        int  n = va_arg(args, int),
+                            *v = va_arg(args, int *);
                         for(int i = 0; i < n; ++i)
                         {
                             putint(p, v[i]);
@@ -1404,7 +1408,7 @@ namespace game
         uchar physstate = d->physstate | ((d->lifesequence&1)<<3) | ((d->move&3)<<4) | ((d->strafe&3)<<6);
         q.put(physstate);
         ivec o = ivec(vec(d->o.x, d->o.y, d->o.z-d->eyeheight).mul(DMF));
-        uint vel = min(static_cast<int>(d->vel.magnitude()*DVELF), 0xFFFF),
+        uint vel  = min(static_cast<int>(d->vel.magnitude()*DVELF), 0xFFFF),
              fall = min(static_cast<int>(d->falling.magnitude()*DVELF), 0xFFFF);
         // 3 bits position, 1 bit velocity, 3 bits falling, 1 bit material, 1 bit crouching
         uint flags = 0;
@@ -2239,7 +2243,7 @@ namespace game
                         damage = getint(p),
                         health = getint(p);
                     gameent *target = getclient(tcn),
-                           *actor = getclient(acn);
+                            *actor  = getclient(acn);
                     if(!target || !actor)
                     {
                         break;
@@ -2277,7 +2281,7 @@ namespace game
                         frags = getint(p),
                         tfrags = getint(p);
                     gameent *victim = getclient(vcn),
-                           *actor = getclient(acn);
+                            *actor  = getclient(acn);
                     if(!actor)
                     {
                         break;
