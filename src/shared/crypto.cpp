@@ -7,7 +7,7 @@
  * http://www.cs.technion.ac.il/~biham/Reports/Tiger/
  */
 
-#define TIGER_PASSES 3
+static const int tigerpasses = 3;
 
 namespace tiger
 {
@@ -31,39 +31,62 @@ namespace tiger
         b = state[1];
         c = state[2];
 
-        x0=str[0]; x1=str[1]; x2=str[2]; x3=str[3];
-        x4=str[4]; x5=str[5]; x6=str[6]; x7=str[7];
+        x0=str[0];
+        x1=str[1];
+        x2=str[2];
+        x3=str[3];
+        x4=str[4];
+        x5=str[5];
+        x6=str[6];
+        x7=str[7];
 
         aa = a;
         bb = b;
         cc = c;
 
-        for(int pass_no = 0; pass_no < TIGER_PASSES; ++pass_no)
+        for(int pass_no = 0; pass_no < tigerpasses; ++pass_no)
         {
             if(pass_no)
             {
-                x0 -= x7 ^ 0xA5A5A5A5A5A5A5A5ULL; x1 ^= x0; x2 += x1; x3 -= x2 ^ ((~x1)<<19);
-                x4 ^= x3; x5 += x4; x6 -= x5 ^ ((~x4)>>23); x7 ^= x6;
-                x0 += x7; x1 -= x0 ^ ((~x7)<<19); x2 ^= x1; x3 += x2;
-                x4 -= x3 ^ ((~x2)>>23); x5 ^= x4; x6 += x5; x7 -= x6 ^ 0x0123456789ABCDEFULL;
+                x0 -= x7 ^ 0xA5A5A5A5A5A5A5A5ULL;
+                x1 ^= x0;
+                x2 += x1;
+                x3 -= x2 ^ ((~x1)<<19);
+                x4 ^= x3;
+                x5 += x4;
+                x6 -= x5 ^ ((~x4)>>23);
+                x7 ^= x6;
+                x0 += x7;
+                x1 -= x0 ^ ((~x7)<<19);
+                x2 ^= x1;
+                x3 += x2;
+                x4 -= x3 ^ ((~x2)>>23);
+                x5 ^= x4;
+                x6 += x5;
+                x7 -= x6 ^ 0x0123456789ABCDEFULL;
             }
 
 #define SB_1 (sboxes)
 #define SB_2 (sboxes+256)
 #define SB_3 (sboxes+256*2)
 #define SB_4 (sboxes+256*3)
-
 #define ROUND(a, b, c, x) \
       c ^= x; \
       a -= SB_1[((c)>>(0*8))&0xFF] ^ SB_2[((c)>>(2*8))&0xFF] ^ \
-       SB_3[((c)>>(4*8))&0xFF] ^ SB_4[((c)>>(6*8))&0xFF] ; \
+           SB_3[((c)>>(4*8))&0xFF] ^ SB_4[((c)>>(6*8))&0xFF] ; \
       b += SB_4[((c)>>(1*8))&0xFF] ^ SB_3[((c)>>(3*8))&0xFF] ^ \
-       SB_2[((c)>>(5*8))&0xFF] ^ SB_1[((c)>>(7*8))&0xFF] ; \
+           SB_2[((c)>>(5*8))&0xFF] ^ SB_1[((c)>>(7*8))&0xFF] ; \
       b *= mul;
 
             uint mul = !pass_no ? 5 : (pass_no==1 ? 7 : 9);
-            ROUND(a, b, c, x0) ROUND(b, c, a, x1) ROUND(c, a, b, x2) ROUND(a, b, c, x3)
-            ROUND(b, c, a, x4) ROUND(c, a, b, x5) ROUND(a, b, c, x6) ROUND(b, c, a, x7)
+            ROUND(a, b, c, x0)
+            ROUND(b, c, a, x1)
+            ROUND(c, a, b, x2)
+            ROUND(a, b, c, x3)
+            ROUND(b, c, a, x4)
+            ROUND(c, a, b, x5)
+            ROUND(a, b, c, x6)
+            ROUND(b, c, a, x7)
 
             chunk tmp = a; a = c; c = b; b = tmp;
         }
@@ -77,7 +100,6 @@ namespace tiger
         state[2] = c;
     }
 #undef ROUND
-
 #undef SB_1
 #undef SB_2
 #undef SB_3
@@ -553,7 +575,7 @@ struct bigint
 typedef bigint<GF_DIGITS+1> gfint;
 
 /* NIST prime Galois fields.
- * Currently only supports NIST P-192, where P=2^192-2^64-1, and P-256, where P=2^256-2^224+2^192+2^96-1.
+ * Currently only supports NIST P-192, where P=2^192-2^64-1
  */
 struct gfield : gfint
 {
