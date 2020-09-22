@@ -27,7 +27,7 @@ void cleanup()
 
 extern void writeinitcfg();
 
-void quit()                     // normal exit
+void quit()                       // normal exit
 {
     writeinitcfg();
     writeservercfg();
@@ -317,29 +317,33 @@ int main(int argc, char **argv)
 
     logoutf("init: cfg");
     initing = Init_Load;
+    //run startup scripts
     execfile("config/keymap.cfg");
     execfile("config/stdedit.cfg");
     execfile(game::gameconfig());
     execfile("config/sound.cfg");
     execfile("config/ui.cfg");
     execfile("config/heightmap.cfg");
+    //server list
     if(game::savedservers())
     {
         execfile(game::savedservers(), false);
     }
     identflags |= Idf_Persist;
-
+    //personal configs
     if(!execfile(game::savedconfig(), false))
     {
         execfile(game::defaultconfig());
         writecfg(game::savedconfig(), game::autoexec(), game::defaultconfig(), game::restoreconfig());
     }
+    //autoexec
     execfile(game::autoexec(), false);
     identflags &= ~Idf_Persist;
     initing = Init_Game;
     game::loadconfigs();
     initing = Init_Not;
     logoutf("init: render");
+    //setup renderer
     restoregamma();
     restorevsync();
     initgbuffer();
