@@ -1065,7 +1065,10 @@ void pushhudmatrix()
 void flushhudmatrix(bool flushparams)
 {
     GLOBALPARAM(hudmatrix, hudmatrix);
-    if(flushparams && Shader::lastshader) Shader::lastshader->flushparams();
+    if(flushparams && Shader::lastshader)
+    {
+        Shader::lastshader->flushparams();
+    }
 }
 
 void pophudmatrix(bool flush, bool flushparams)
@@ -1169,7 +1172,10 @@ FVARP(mouseaccel, 0, 0, 1000);
 
 physent *camera1 = NULL;
 bool detachedcamera = false;
-bool isthirdperson() { return player!=camera1 || detachedcamera; }
+bool isthirdperson()
+{
+    return player!=camera1 || detachedcamera;
+}
 
 void fixcamerarange()
 {

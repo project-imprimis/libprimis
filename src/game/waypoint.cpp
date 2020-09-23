@@ -323,7 +323,11 @@ namespace ai
                 if(!links || w.links[0]) \
                 { \
                     float dist = w.o.squaredist(pos); \
-                    if(dist < mindist*mindist) { closest = index; mindist = sqrtf(dist); } \
+                    if(dist < mindist*mindist) \
+                    { \
+                        closest = index; \
+                        mindist = sqrtf(dist); \
+                    } \
                 } \
             } \
         } while(0)

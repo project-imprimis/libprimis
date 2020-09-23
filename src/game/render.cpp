@@ -268,7 +268,10 @@ namespace game
                     preloadmodel(mdl->model[1+j]);
                 }
             }
-            else preloadmodel(mdl->model[0]);
+            else
+            {
+                preloadmodel(mdl->model[0]);
+            }
         }
     }
 

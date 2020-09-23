@@ -151,7 +151,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
                 continue; \
             } \
             func; \
-            if(f<dist && f>0 && vec(ray).mul(f).add(o).insidebb(oc->o, oc->size)) \
+            if(f < dist && f > 0 && vec(ray).mul(f).add(o).insidebb(oc->o, oc->size)) \
             { \
                 hitentdist = dist = f; \
                 hitent = oc->type[i]; \
@@ -248,7 +248,8 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
 #define INITRAYCUBE \
     float dist = 0, \
           dent = radius > 0 ? radius : 1e16f; \
-    vec v(o), invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f); \
+    vec v(o), \
+        invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f); \
     cube *levels[20]; \
     levels[worldscale] = worldroot; \
     int lshift = worldscale, \
