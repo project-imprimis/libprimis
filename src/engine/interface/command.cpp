@@ -1262,7 +1262,7 @@ static char *conc(vector<char> &buf, tagval *v, int n, bool space, const char *p
 static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixlen)
 {
     static int vlen[Max_Args];
-    static char numbuf[3*MAXSTRLEN];
+    static char numbuf[3*maxstrlen];
     int len = prefixlen, numlen = 0, i = 0;
     for(; i < n; i++) switch(v[i].type)
     {
@@ -1279,7 +1279,7 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
         }
         case Value_Integer:
         {
-            if(numlen + MAXSTRLEN > static_cast<int>(sizeof(numbuf)))
+            if(numlen + maxstrlen > static_cast<int>(sizeof(numbuf)))
             {
                 goto overflow;
             }
@@ -1289,7 +1289,7 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
         }
         case Value_Float:
         {
-            if(numlen + MAXSTRLEN > static_cast<int>(sizeof(numbuf)))
+            if(numlen + maxstrlen > static_cast<int>(sizeof(numbuf)))
             {
                 goto overflow;
             }
@@ -4515,7 +4515,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 forcenull(result);
                 {
                     vector<char> buf;
-                    buf.reserve(MAXSTRLEN);
+                    buf.reserve(maxstrlen);
                     ((comfun1)id->fun)(conc(buf, &args[offset], callargs, true));
                 }
                 forcearg(result, op&Code_RetMask);

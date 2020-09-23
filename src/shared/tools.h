@@ -137,9 +137,9 @@ inline float detrnd(uint s, int x)
 #endif
 
 // easy safe strings
+const int maxstrlen = 260;
 
-#define MAXSTRLEN 260
-typedef char string[MAXSTRLEN];
+typedef char string[maxstrlen];
 
 inline void vformatstring(char *d, const char *fmt, va_list v, int len) { _vsnprintf(d, len, fmt, v); d[len-1] = 0; }
 

@@ -995,7 +995,7 @@ namespace server
     extern void stopdemo();
     extern void forcepaused(bool paused);
     extern void forcegamespeed(int speed);
-    extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
+    extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = maxstrlen);
     extern int msgsizelookup(int msg);
     extern bool serveroption(const char *arg);
 

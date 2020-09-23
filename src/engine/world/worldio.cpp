@@ -793,11 +793,11 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         {
             SlotShaderParam &p = vs.params.add();
             int nlen = f->get<ushort>();
-            f->read(name, min(nlen, MAXSTRLEN-1));
-            name[min(nlen, MAXSTRLEN-1)] = '\0';
-            if(nlen >= MAXSTRLEN)
+            f->read(name, min(nlen, maxstrlen-1));
+            name[min(nlen, maxstrlen-1)] = '\0';
+            if(nlen >= maxstrlen)
             {
-                f->seek(nlen - (MAXSTRLEN-1), SEEK_CUR);
+                f->seek(nlen - (maxstrlen-1), SEEK_CUR);
             }
             p.name = getshaderparamname(name);
             p.loc = -1;
@@ -1069,11 +1069,11 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
         int type = f->getchar(),
             ilen = f->get<ushort>();
         string name;
-        f->read(name, min(ilen, MAXSTRLEN-1));
-        name[min(ilen, MAXSTRLEN-1)] = '\0';
-        if(ilen >= MAXSTRLEN)
+        f->read(name, min(ilen, maxstrlen-1));
+        name[min(ilen, maxstrlen-1)] = '\0';
+        if(ilen >= maxstrlen)
         {
-            f->seek(ilen - (MAXSTRLEN-1), SEEK_CUR);
+            f->seek(ilen - (maxstrlen-1), SEEK_CUR);
         }
         ident *id = getident(name);
         tagval val;
@@ -1093,11 +1093,11 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
             case Id_StringVar:
             {
                 int slen = f->get<ushort>();
-                f->read(str, min(slen, MAXSTRLEN-1));
-                str[min(slen, MAXSTRLEN-1)] = '\0';
-                if(slen >= MAXSTRLEN)
+                f->read(str, min(slen, maxstrlen-1));
+                str[min(slen, maxstrlen-1)] = '\0';
+                if(slen >= maxstrlen)
                 {
-                    f->seek(slen - (MAXSTRLEN-1), SEEK_CUR);
+                    f->seek(slen - (maxstrlen-1), SEEK_CUR);
                 }
                 val.setstr(str);
                 break;

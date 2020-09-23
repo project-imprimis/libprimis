@@ -1044,7 +1044,7 @@ namespace ai
             return false;
         }
 
-        nformatstring(wptname, MAXSTRLEN, "media/map/%s.wpt", mname);
+        nformatstring(wptname, maxstrlen, "media/map/%s.wpt", mname);
         path(wptname);
         return true;
     }
