@@ -1664,8 +1664,8 @@ struct prefabmesh
 {
     struct vertex { vec pos; bvec4 norm; };
 
-    static const int SIZE = 1<<9;
-    int table[SIZE];
+    static const int prefabmeshsize = 1<<9;
+    int table[prefabmeshsize];
     vector<vertex> verts;
     vector<int> chain;
     vector<ushort> tris;
@@ -1674,7 +1674,7 @@ struct prefabmesh
 
     int addvert(const vertex &v)
     {
-        uint h = hthash(v.pos)&(SIZE-1);
+        uint h = hthash(v.pos)&(prefabmeshsize-1);
         for(int i = table[h]; i>=0; i = chain[i])
         {
             const vertex &c = verts[i];
