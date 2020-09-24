@@ -374,7 +374,10 @@ static struct lightcacheentry
     vector<int> lights;
 } lightcache[lightcacheentries];
 
-#define LIGHTCACHEHASH(x, y) (((((x)^(y))<<5) + (((x)^(y))>>5)) & (lightcacheentries - 1))
+static inline int lightcachehash(int x, int y)
+{
+    return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (lightcacheentries - 1));
+}
 
 VARF(lightcachesize, 4, 6, 12, clearlightcache());
 
@@ -392,7 +395,7 @@ void clearlightcache(int id)
         {
             for(int y = static_cast<int>(max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
             {
-                lightcacheentry &lce = lightcache[LIGHTCACHEHASH(x, y)];
+                lightcacheentry &lce = lightcache[lightcachehash(x, y)];
                 if(lce.x != x || lce.y != y)
                 {
                     continue;
@@ -415,7 +418,7 @@ const vector<int> &checklightcache(int x, int y)
 {
     x >>= lightcachesize;
     y >>= lightcachesize;
-    lightcacheentry &lce = lightcache[LIGHTCACHEHASH(x, y)];
+    lightcacheentry &lce = lightcache[lightcachehash(x, y)];
     if(lce.x == x && lce.y == y)
     {
         return lce.lights;
