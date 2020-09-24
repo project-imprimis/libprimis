@@ -365,15 +365,16 @@ static void clearsurfaces(cube *c)
     }
 }
 
-#define LIGHTCACHESIZE 1024
+
+static const int lightcacheentries = 1024;
 
 static struct lightcacheentry
 {
     int x, y;
     vector<int> lights;
-} lightcache[LIGHTCACHESIZE];
+} lightcache[lightcacheentries];
 
-#define LIGHTCACHEHASH(x, y) (((((x)^(y))<<5) + (((x)^(y))>>5)) & (LIGHTCACHESIZE - 1))
+#define LIGHTCACHEHASH(x, y) (((((x)^(y))<<5) + (((x)^(y))>>5)) & (lightcacheentries - 1))
 
 VARF(lightcachesize, 4, 6, 12, clearlightcache());
 
@@ -403,7 +404,7 @@ void clearlightcache(int id)
         return;
     }
 
-    for(lightcacheentry *lce = lightcache; lce < &lightcache[LIGHTCACHESIZE]; lce++)
+    for(lightcacheentry *lce = lightcache; lce < &lightcache[lightcacheentries]; lce++)
     {
         lce->x = -1;
         lce->lights.setsize(0);
