@@ -817,8 +817,8 @@ float matrefractsx1 = -1,
       matrefractsy1 = -1,
       matrefractsx2 = 1,
       matrefractsy2 = 1;
-uint matliquidtiles[LIGHTTILE_MAXH],
-     matsolidtiles[LIGHTTILE_MAXH];
+uint matliquidtiles[lighttilemaxheight],
+     matsolidtiles[lighttilemaxheight];
 
 int findmaterials()
 {

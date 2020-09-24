@@ -902,7 +902,7 @@ float transmdlsx1 = -1,
       transmdlsy1 = -1,
       transmdlsx2 = 1,
       transmdlsy2 = 1;
-uint transmdltiles[LIGHTTILE_MAXH];
+uint transmdltiles[lighttilemaxheight];
 
 void rendermodelbatches()
 {

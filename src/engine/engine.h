@@ -264,8 +264,8 @@ inline cubeext &ext(cube &c)
 
 // renderlights
 
-#define LIGHTTILE_MAXW 16
-#define LIGHTTILE_MAXH 16
+const int lighttilemaxwidth  = 16;
+const int lighttilemaxheight = 16;
 
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
 extern int spotlights;
@@ -461,7 +461,7 @@ extern void updatevabbs(bool force = false);
 
 extern int oqfrags;
 extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphabacksx1, alphabacksx2, alphabacksy1, alphabacksy2, alpharefractsx1, alpharefractsx2, alpharefractsy1, alpharefractsy2;
-extern uint alphatiles[LIGHTTILE_MAXH];
+extern uint alphatiles[lighttilemaxheight];
 extern vtxarray *visibleva;
 extern int octaentsize;
 
@@ -511,7 +511,7 @@ extern bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int 
 extern float matliquidsx1, matliquidsy1, matliquidsx2, matliquidsy2;
 extern float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;
 extern float matrefractsx1, matrefractsy1, matrefractsx2, matrefractsy2;
-extern uint matliquidtiles[LIGHTTILE_MAXH], matsolidtiles[LIGHTTILE_MAXH];
+extern uint matliquidtiles[lighttilemaxheight], matsolidtiles[lighttilemaxheight];
 extern vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4];
 extern const vec matnormals[6];
 
@@ -739,7 +739,7 @@ struct mapmodelinfo { string name; model *m, *collide; };
 extern vector<mapmodelinfo> mapmodels;
 
 extern float transmdlsx1, transmdlsy1, transmdlsx2, transmdlsy2;
-extern uint transmdltiles[LIGHTTILE_MAXH];
+extern uint transmdltiles[lighttilemaxheight];
 
 extern void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);

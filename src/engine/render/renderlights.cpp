@@ -3043,8 +3043,8 @@ static inline bool sortlights(int x, int y)
 
 VAR(lighttilealignw, 1, 16, 256);
 VAR(lighttilealignh, 1, 16, 256);
-VARN(lighttilew, lighttilemaxw, 1, 10, LIGHTTILE_MAXW);
-VARN(lighttileh, lighttilemaxh, 1, 10, LIGHTTILE_MAXH);
+VARN(lighttilew, lighttilemaxw, 1, 10, lighttilemaxwidth);
+VARN(lighttileh, lighttilemaxh, 1, 10, lighttilemaxheight);
 
 int lighttilew     = 0,
     lighttileh     = 0,
@@ -5082,7 +5082,7 @@ void rendertransparent()
     GLOBALPARAM(raymatrix, raymatrix);
     GLOBALPARAM(linearworldmatrix, linearworldmatrix);
 
-    uint tiles[LIGHTTILE_MAXH];
+    uint tiles[lighttilemaxheight];
     float allsx1 = 1,
           allsy1 = 1,
           allsx2 = -1,
@@ -5136,7 +5136,7 @@ void rendertransparent()
                     sy1 = min(sy1, matsolidsy1);
                     sx2 = max(sx2, matsolidsx2);
                     sy2 = max(sy2, matsolidsy2);
-                    for(int j = 0; j < LIGHTTILE_MAXH; ++j)
+                    for(int j = 0; j < lighttilemaxheight; ++j)
                     {
                         tiles[j] |= matsolidtiles[j];
                     }

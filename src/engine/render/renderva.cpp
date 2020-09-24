@@ -2505,7 +2505,7 @@ float alphafrontsx1   = -1,
       alpharefractsx2 =  1,
       alpharefractsy1 = -1,
       alpharefractsy2 =  1;
-uint alphatiles[LIGHTTILE_MAXH];
+uint alphatiles[lighttilemaxheight];
 
 int findalphavas()
 {
