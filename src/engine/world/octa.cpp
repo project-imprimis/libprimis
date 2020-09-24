@@ -1063,11 +1063,24 @@ static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int s
         #define GENFACEORIENT(orient, v0, v1, v2, v3) \
             case orient: \
             { \
-                if(DIM_COORD(orient)) { v0 v1 v2 v3 } else { v3 v2 v1 v0 } \
+                if(DIM_COORD(orient)) \
+                { \
+                    v0 v1 v2 v3 \
+                } \
+                else \
+                { \
+                    v3 v2 v1 v0 \
+                } \
                 break; \
             }
         #define GENFACEVERT(orient, vert, xv,yv,zv, x,y,z) \
-            { ivec2 &f = fvecs[i]; x ((xv)<<3); y ((yv)<<3); z ((zv)<<3); i++; }
+            { \
+                ivec2 &f = fvecs[i]; \
+                x ((xv)<<3); \
+                y ((yv)<<3); \
+                z ((zv)<<3); \
+                i++; \
+            }
             GENFACEVERTS(pos.x, pos.x+size, pos.y, pos.y+size, pos.z, pos.z+size, f.x = , f.x = , f.y = , f.y = , (void), (void))
         #undef GENFACEVERT
         }
@@ -1086,14 +1099,22 @@ static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int s
         { \
             const ivec &e = v[vert]; \
             ivec ef; \
-            ef.dx = e.sx; ef.dy = e.sy; ef.dz = e.sz; \
+            ef.dx = e.sx; \
+            ef.dy = e.sy; \
+            ef.dz = e.sz; \
             if(ef.z == DIM_COORD(orient)*8) \
             { \
                 ivec2 &f = fvecs[i]; \
                 ivec pf; \
-                pf.dx = pos.sx; pf.dy = pos.sy; pf.dz = pos.sz; \
+                pf.dx = pos.sx; \
+                pf.dy = pos.sy; \
+                pf.dz = pos.sz; \
                 f = ivec2(ef.x*size + (pf.x<<3), ef.y*size + (pf.y<<3)); \
-                if(f != prev) { prev = f; i++; } \
+                if(f != prev) \
+                { \
+                    prev = f; \
+                    i++; \
+                } \
             } \
         }
         GENFACEVERTS(x, x, y, y, z, z, x, x, y, y, z, z)
