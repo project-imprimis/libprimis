@@ -55,8 +55,8 @@ struct font
 
 #define FONTH (curfont->scale)
 #define FONTW (FONTH/2)
-#define MINRESW 640
-#define MINRESH 480
+const int minreswidth = 640;
+const int minresheight = 480;
 
 extern font *curfont;
 extern Shader *textshader;

@@ -192,17 +192,17 @@ bool popfont()
 
 void gettextres(int &w, int &h)
 {
-    if(w < MINRESW || h < MINRESH)
+    if(w < minreswidth || h < minresheight)
     {
-        if(MINRESW > w*MINRESH/h)
+        if(minreswidth > w*minresheight/h)
         {
-            h = h*MINRESW/w;
-            w = MINRESW;
+            h = h*minreswidth/w;
+            w = minreswidth;
         }
         else
         {
-            w = w*MINRESH/h;
-            h = MINRESH;
+            w = w*minresheight/h;
+            h = minresheight;
         }
     }
 }
