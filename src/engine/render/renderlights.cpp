@@ -529,7 +529,7 @@ void renderao()
     }
     else if(aoblur)
     {
-        float blurweights[MAXBLURRADIUS+1], bluroffsets[MAXBLURRADIUS+1];
+        float blurweights[maxblurradius+1], bluroffsets[maxblurradius+1];
         setupblurkernel(aoblur, blurweights, bluroffsets);
         for(int i = 0; i < 2+2*aoiter; ++i)
         {
@@ -1618,8 +1618,8 @@ void processhdr(GLuint outfbo, int aa)
 
     if(bloomblur)
     {
-        float blurweights[MAXBLURRADIUS+1],
-              bluroffsets[MAXBLURRADIUS+1];
+        float blurweights[maxblurradius+1],
+              bluroffsets[maxblurradius+1];
         setupblurkernel(bloomblur, blurweights, bluroffsets);
         for(int i = 0; i < (2 + 2*bloomiter); ++i)
         {
@@ -4106,8 +4106,8 @@ void rendervolumetric()
         }
         else
         {
-            float blurweights[MAXBLURRADIUS+1],
-                  bluroffsets[MAXBLURRADIUS+1];
+            float blurweights[maxblurradius+1],
+                  bluroffsets[maxblurradius+1];
             setupblurkernel(volblur, blurweights, bluroffsets);
             for(int i = 0; i < 2; ++i)
             {

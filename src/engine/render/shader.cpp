@@ -1874,7 +1874,7 @@ FVAR(blursigma, 0.005f, 0.5f, 2.0f);
 
 void setupblurkernel(int radius, float *weights, float *offsets)
 {
-    if(radius<1 || radius>MAXBLURRADIUS)
+    if(radius<1 || radius>maxblurradius)
     {
         return;
     }
@@ -1898,7 +1898,7 @@ void setupblurkernel(int radius, float *weights, float *offsets)
     {
         weights[i] /= total;
     }
-    for(int i = radius+1; i <= MAXBLURRADIUS; i++)
+    for(int i = radius+1; i <= maxblurradius; i++)
     {
         weights[i] = offsets[i] = 0;
     }
@@ -1906,7 +1906,7 @@ void setupblurkernel(int radius, float *weights, float *offsets)
 
 void setblurshader(int pass, int size, int radius, float *weights, float *offsets, GLenum target)
 {
-    if(radius<1 || radius>MAXBLURRADIUS)
+    if(radius<1 || radius>maxblurradius)
     {
         return;
     }
