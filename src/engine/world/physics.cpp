@@ -71,8 +71,8 @@ extern const float stairheight = 4.1f; //max height in cubits of an allowable st
 extern const float floorz = 0.867f; //to be considered a level floor, slope is below this
 extern const float slopez = 0.5f; //maximum climbable slope
 extern const float wallz = 0.2f; //steeper than this is considered a wall
-extern const float jumpvel = 85.0f; //impulse scale for player jump
-extern const float gravity = 200.0f; //downwards force scale
+extern const float jumpvel = 50.0f; //impulse scale for player jump
+extern const float gravity = 100.0f; //downwards force scale
 
 bool ellipseboxcollide(physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo)
 {
