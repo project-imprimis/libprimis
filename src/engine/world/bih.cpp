@@ -270,7 +270,8 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
             const tribb &tri = m.tribbs[indices[left]];
             ivec trimin = ivec(tri.center).sub(ivec(tri.radius)),
                  trimax = ivec(tri.center).add(ivec(tri.radius));
-            int amin = trimin[axis], amax = trimax[axis];
+            int amin = trimin[axis],
+                amax = trimax[axis];
             if(max(split - amin, 0) > max(amax - split, 0))
             {
                 ++left;
@@ -562,13 +563,14 @@ static inline float segmentdistance(const vec &d1, const vec &d2, const vec &r)
             else t /= e;
         }
     }
-    vec c1 = vec(d1).mul(s),
-        c2 = vec(d2).mul(t);
+    vec c1 = static_cast<vec>(d1).mul(s),
+        c2 = static_cast<vec>(d2).mul(t);
     return vec(c2).sub(c1).add(r).squaredlen();
 }
 
 static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c, const vec &p, const vec &q)
 {
+    //displacement vectors
     vec pq = vec(q).sub(p),
         ab = vec(b).sub(a),
         bc = vec(c).sub(b),
@@ -963,7 +965,8 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
     {
         orient.rotate_around_y(sincosmod360(-roll));
     }
-    vec bo = orient.transposedtransform(center), br = orient.abstransposedtransform(radius);
+    vec bo = orient.transposedtransform(center),
+        br = orient.abstransposedtransform(radius);
     if(bo.x + br.x < bbmin.x || bo.y + br.y < bbmin.y || bo.z + br.z < bbmin.z ||
        bo.x - br.x > bbmax.x || bo.y - br.y > bbmax.y || bo.z - br.z > bbmax.z)
     {
@@ -971,8 +974,8 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
     }
     ivec imin = ivec::floor(vec(bo).sub(br)),
          imax = ivec::ceil(vec(bo).add(br)),
-         icenter = ivec(imin).add(imax).div(2),
-         iradius = ivec(imax).sub(imin).add(1).div(2);
+         icenter = imin.add(imax).div(2),
+         iradius = imax.sub(imin).add(1).div(2);
 
     float dist = -1e10f;
     for(int i = 0; i < nummeshes; ++i)
