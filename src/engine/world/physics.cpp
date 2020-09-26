@@ -207,11 +207,14 @@ void cleardynentcache()
 
 VARF(dynentsize, 4, 7, 12, cleardynentcache());
 
-#define DYNENTHASH(x, y) (((((x)^(y))<<5) + (((x)^(y))>>5)) & (dynentcachesize - 1))
+static inline int dynenthash(int x, int y)
+{
+    return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (dynentcachesize - 1));
+}
 
 const vector<physent *> &checkdynentcache(int x, int y)
 {
-    dynentcacheentry &dec = dynentcache[DYNENTHASH(x, y)];
+    dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
     if(dec.x == x && dec.y == y && dec.frame == dynentframe)
     {
         return dec.dynents;
@@ -247,7 +250,7 @@ void updatedynentcache(physent *d)
 {
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
-        dynentcacheentry &dec = dynentcache[DYNENTHASH(x, y)];
+        dynentcacheentry &dec = dynentcache[dynenthash(x, y)];
         if(dec.x != x || dec.y != y || dec.frame != dynentframe || dec.dynents.find(d) >= 0)
         {
             continue;
