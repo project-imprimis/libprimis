@@ -201,7 +201,6 @@ namespace server
         char *authkickreason;
 
         clientinfo() : getdemo(NULL), getmap(NULL), clipboard(NULL), authchallenge(NULL), authkickreason(NULL) { reset(); }
-        ~clientinfo() { events.deletecontents(); cleanclipboard(); cleanauth(); }
 
         void addevent(gameevent *e)
         {
@@ -231,20 +230,6 @@ namespace server
             return millis >= pushed - range && millis <= pushed + range;
         }
 
-        void setpushed()
-        {
-            pushed = max(pushed, gamemillis);
-            if(exceeded && checkpushed(exceeded, calcpushrange()))
-            {
-                exceeded = 0;
-            }
-        }
-
-        bool checkexceeded()
-        {
-            return state.state==ClientState_Alive && exceeded && gamemillis > exceeded + calcpushrange();
-        }
-
         void mapchange()
         {
             mapvote[0] = 0;
@@ -260,14 +245,6 @@ namespace server
             mapcrc = 0;
             warned = false;
             gameclip = false;
-        }
-
-        void reassign()
-        {
-            state.reassign();
-            events.deletecontents();
-            timesync = false;
-            lastevent = 0;
         }
 
         void cleanclipboard(bool fullclean = true)
@@ -610,28 +587,7 @@ namespace server
 
     servermode *smode = NULL;
 
-    bool canspawnitem(int type) { return 0; }
-
-    int spawntime(int type)
-    {
-        int np = numclients(-1, true, false);
-        np = np<3 ? 4 : (np>4 ? 2 : 3);         // spawn times are dependent on number of players
-        int sec = 0;
-        switch(type)
-        {
-        }
-        return sec*1000;
-    }
-
     static teaminfo teaminfos[maxteams];
-
-    void clearteaminfo()
-    {
-        for(int i = 0; i < maxteams; ++i)
-        {
-            teaminfos[i].reset();
-        }
-    }
 
     void prunedemos(int extra = 0)
     {
@@ -1322,37 +1278,6 @@ namespace server
         }
     } ipbans, gbans;
 
-    bool checkbans(uint ip)
-    {
-        for(int i = 0; i < bannedips.length(); i++)
-        {
-            if(bannedips[i].ip==ip)
-            {
-                return true;
-            }
-        }
-        return ipbans.check(ip) || gbans.check(ip);
-    }
-
-    void verifybans()
-    {
-        for(int i = clients.length(); --i >=0;) //note reverse iteration
-        {
-            clientinfo *ci = clients[i];
-            if(ci->state.aitype != AI_None || ci->local || ci->privilege >= Priv_Admin)
-            {
-                continue;
-            }
-            if(checkbans(getclientip(ci->clientnum)))
-            {
-                disconnect_client(ci->clientnum, Discon_IPBan);
-            }
-        }
-    }
-
-    ICOMMAND(clearipbans, "", (), ipbans.clear());
-    ICOMMAND(ipban, "s", (const char *ipname), ipbans.add(ipname));
-
     bool allowbroadcast(int n)
     {
         clientinfo *ci = getinfo(n);
@@ -1404,53 +1329,6 @@ namespace server
     namespace aiman
     {
         bool dorefresh = false;
-
-        void calcteams(vector<teamscore> &teams)
-        {
-            for(int i = 0; i < clients.length(); i++)
-            {
-                clientinfo *ci = clients[i];
-                if(ci->state.state==ClientState_Spectator || !VALID_TEAM(ci->team))
-                {
-                    continue;
-                }
-                teamscore *t = NULL;
-                for(int j = 0; j < teams.length(); j++)
-                {
-                    if(teams[j].team == ci->team)
-                    {
-                        t = &teams[j];
-                        break;
-                    }
-                }
-                if(t)
-                {
-                    t->score++;
-                }
-                else
-                {
-                    teams.add(teamscore(ci->team, 1));
-                }
-            }
-            teams.sort(teamscore::compare);
-            if(teams.length() < maxteams)
-            {
-                for(int i = 0; i < maxteams; ++i)
-                {
-                    if(teams.htfind(1+i) < 0)
-                    {
-                        teams.add(teamscore(1+i, 0));
-                    }
-                }
-            }
-        }
-
-        int chooseteam()
-        {
-            vector<teamscore> teams;
-            calcteams(teams);
-            return teams.length() ? teams.last().team : 0;
-        }
 
         //this fxn could be entirely in the return statement but is separated for clarity
         static inline bool validaiclient(clientinfo *ci)
