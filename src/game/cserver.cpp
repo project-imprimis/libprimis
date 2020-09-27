@@ -353,11 +353,12 @@ namespace server
         extern void checkai();
     }
 
-    #define MM_MODE 0xF
-    #define MM_AUTOAPPROVE 0x1000
-    #define MM_PRIVSERV (MM_MODE | MM_AUTOAPPROVE)
-    #define MM_PUBSERV ((1<<MasterMode_Open) | (1<<MasterMode_Veto))
-    #define MM_COOPSERV (MM_AUTOAPPROVE | MM_PUBSERV | (1<<MasterMode_Locked))
+    enum
+    {
+        MasterMode_Mode = 0xF,
+        MasterMode_AutoApprove = 0x1000,
+        MasterMode_PrivateServer = (MasterMode_Mode | MasterMode_AutoApprove),
+    };
 
     bool notgotitems = true;        // true when map has changed and waiting for clients to send item
     int gamemode = 0,
@@ -368,7 +369,8 @@ namespace server
 
     string smapname = "";
     int interm = 0;
-    int mastermode = MasterMode_Open, mastermask = MM_PRIVSERV;
+    int mastermode = MasterMode_Open,
+        mastermask = MasterMode_PrivateServer;
 
     vector<uint> allowedips;
     vector<ban> bannedips;
@@ -869,7 +871,7 @@ namespace server
                         return false;
                     }
                 }
-                if(!authname && !(mastermask&MM_AUTOAPPROVE) && !ci->privilege && !ci->local)
+                if(!authname && !(mastermask&MasterMode_AutoApprove) && !ci->privilege && !ci->local)
                 {
                     sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "This server requires you to use the \"/auth\" command to claim master.");
                     return false;
