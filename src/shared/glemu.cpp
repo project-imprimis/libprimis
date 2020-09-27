@@ -36,13 +36,13 @@ namespace gle
     static vector<GLint> multidrawstart;
     static vector<GLsizei> multidrawcount;
 
-    #define MAXQUADS (0x10000/4)
+    static const int maxquads = (0x10000/4); //65635/4 = 16384
     static GLuint quadindexes = 0;
     static bool quadsenabled = false;
 
-    #define MAXVBOSIZE (4*1024*1024)
+    static const int maxvbosize = (1024*1024*4);
     static GLuint vbo = 0;
-    static int vbooffset = MAXVBOSIZE;
+    static int vbooffset = maxvbosize;
 
     static GLuint defaultvao = 0;
 
@@ -56,8 +56,8 @@ namespace gle
         }
 
         glGenBuffers_(1, &quadindexes);
-        ushort *data = new ushort[MAXQUADS*6], *dst = data;
-        for(int idx = 0; idx < MAXQUADS*4; idx += 4, dst += 6)
+        ushort *data = new ushort[maxquads*6], *dst = data;
+        for(int idx = 0; idx < maxquads*4; idx += 4, dst += 6)
         {
             dst[0] = idx;
             dst[1] = idx + 1;
@@ -67,7 +67,7 @@ namespace gle
             dst[5] = idx + 3;
         }
         glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, quadindexes);
-        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, MAXQUADS*6*sizeof(ushort), data, GL_STATIC_DRAW);
+        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, maxquads*6*sizeof(ushort), data, GL_STATIC_DRAW);
         delete[] data;
     }
 
@@ -83,13 +83,13 @@ namespace gle
         {
             return;
         }
-        if(offset + count > MAXQUADS)
+        if(offset + count > maxquads)
         {
-            if(offset >= MAXQUADS)
+            if(offset >= maxquads)
             {
                 return;
             }
-            count = MAXQUADS - offset;
+            count = maxquads - offset;
         }
         glDrawRangeElements_(GL_TRIANGLES, offset*4, (offset + count)*4-1, count*6, GL_UNSIGNED_SHORT, (ushort *)0 + offset*6);
     }
@@ -313,15 +313,15 @@ namespace gle
     {
         primtype = mode;
         int len = numverts * vertexsize;
-        if(vbooffset + len >= MAXVBOSIZE)
+        if(vbooffset + len >= maxvbosize)
         {
-            len = min(len, MAXVBOSIZE);
+            len = min(len, maxvbosize);
             if(!vbo)
             {
                 glGenBuffers_(1, &vbo);
             }
             glBindBuffer_(GL_ARRAY_BUFFER, vbo);
-            glBufferData_(GL_ARRAY_BUFFER, MAXVBOSIZE, NULL, GL_STREAM_DRAW);
+            glBufferData_(GL_ARRAY_BUFFER, maxvbosize, NULL, GL_STREAM_DRAW);
             vbooffset = 0;
         }
         else if(!lastvertexsize)
@@ -354,21 +354,21 @@ namespace gle
             if(buf != attribdata)
             {
                 glUnmapBuffer_(GL_ARRAY_BUFFER);
-                attribbuf.reset(attribdata, MAXVBOSIZE);
+                attribbuf.reset(attribdata, maxvbosize);
             }
             return 0;
         }
         int start = 0;
         if(buf == attribdata)
         {
-            if(vbooffset + attribbuf.length() >= MAXVBOSIZE)
+            if(vbooffset + attribbuf.length() >= maxvbosize)
             {
                 if(!vbo)
                 {
                     glGenBuffers_(1, &vbo);
                 }
                 glBindBuffer_(GL_ARRAY_BUFFER, vbo);
-                glBufferData_(GL_ARRAY_BUFFER, MAXVBOSIZE, NULL, GL_STREAM_DRAW);
+                glBufferData_(GL_ARRAY_BUFFER, maxvbosize, NULL, GL_STREAM_DRAW);
                 vbooffset = 0;
             }
             else if(!lastvertexsize)
@@ -388,7 +388,7 @@ namespace gle
         if(vertexsize == lastvertexsize && buf >= lastbuf)
         {
             start = static_cast<int>(buf - lastbuf)/vertexsize;
-            if(primtype == GL_QUADS && (start%4 || start + attribbuf.length()/vertexsize >= 4*MAXQUADS))
+            if(primtype == GL_QUADS && (start%4 || start + attribbuf.length()/vertexsize >= 4*maxquads))
             {
                 start = 0;
             }
@@ -429,7 +429,7 @@ namespace gle
                 glDrawArrays(primtype, start, numvertexes);
             }
         }
-        attribbuf.reset(attribdata, MAXVBOSIZE);
+        attribbuf.reset(attribdata, maxvbosize);
         return numvertexes;
     }
 
@@ -459,8 +459,8 @@ namespace gle
             glGenVertexArrays_(1, &defaultvao);
         }
         glBindVertexArray_(defaultvao);
-        attribdata = new uchar[MAXVBOSIZE];
-        attribbuf.reset(attribdata, MAXVBOSIZE);
+        attribdata = new uchar[maxvbosize];
+        attribbuf.reset(attribdata, maxvbosize);
     }
 
     void cleanup()
@@ -476,7 +476,7 @@ namespace gle
             glDeleteBuffers_(1, &vbo);
             vbo = 0;
         }
-        vbooffset = MAXVBOSIZE;
+        vbooffset = maxvbosize;
         if(defaultvao)
         {
             glDeleteVertexArrays_(1, &defaultvao);
