@@ -64,17 +64,6 @@ struct obj : vertloader<obj>
             vector<vert> verts;
             vector<tcvert> tcverts;
             vector<tri> tris;
-            #define STARTMESH do { \
-                vertmesh &m = *new vertmesh; \
-                m.group = this; \
-                m.name = meshname[0] ? newstring(meshname) : NULL; \
-                meshes.add(&m); \
-                curmesh = &m; \
-                verthash.clear(); \
-                verts.setsize(0); \
-                tcverts.setsize(0); \
-                tris.setsize(0); \
-            } while(0)
             #define FLUSHMESH do { \
                 curmesh->numverts = verts.length(); \
                 if(verts.length()) \
@@ -159,7 +148,16 @@ struct obj : vertloader<obj>
                     {
                         if(!curmesh)
                         {
-                            STARTMESH;
+                            //startmesh
+                            vertmesh &m = *new vertmesh;
+                            m.group = this;
+                            m.name = meshname[0] ? newstring(meshname) : NULL;
+                            meshes.add(&m);
+                            curmesh = &m;
+                            verthash.clear();
+                            verts.setsize(0);
+                            tcverts.setsize(0);
+                            tris.setsize(0);
                         }
                         int v0 = -1,
                             v1 = -1;
