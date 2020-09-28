@@ -291,7 +291,7 @@ struct KeyM
     }
 };
 
-hashtable<int, keym> keyms(128);
+hashtable<int, KeyM> keyms(128);
 
 void keymap(int *code, char *key)
 {
@@ -300,7 +300,7 @@ void keymap(int *code, char *key)
         conoutf(Console_Error, "cannot override keymap %d", *code);
         return;
     }
-    keym &km = keyms[*code];
+    KeyM &km = keyms[*code];
     km.code = *code;
     DELETEA(km.name);
     km.name = newstring(key);
@@ -308,19 +308,19 @@ void keymap(int *code, char *key)
 
 COMMAND(keymap, "is");
 
-keym *keypressed = NULL;
+KeyM *keypressed = NULL;
 char *keyaction = NULL;
 
 const char *getkeyname(int code)
 {
-    keym *km = keyms.access(code);
+    KeyM *km = keyms.access(code);
     return km ? km->name : NULL;
 }
 
 void searchbinds(char *action, int type)
 {
     vector<char> names;
-    ENUMERATE(keyms, keym, km,
+    ENUMERATE(keyms, KeyM, km,
     {
         if(!strcmp(km.actions[type], action))
         {
@@ -335,9 +335,9 @@ void searchbinds(char *action, int type)
     result(names.getbuf());
 }
 
-keym *findbind(char *key)
+KeyM *findbind(char *key)
 {
-    ENUMERATE(keyms, keym, km,
+    ENUMERATE(keyms, KeyM, km,
     {
         if(!strcasecmp(km.name, key))
         {
@@ -349,7 +349,7 @@ keym *findbind(char *key)
 
 void getbind(char *key, int type)
 {
-    keym *km = findbind(key);
+    KeyM *km = findbind(key);
     result(km ? km->actions[type] : "");
 }
 
@@ -360,7 +360,7 @@ void bindkey(char *key, char *action, int state, const char *cmd)
         conoutf(Console_Error, "cannot override %s \"%s\"", cmd, key);
         return;
     }
-    keym *km = findbind(key);
+    KeyM *km = findbind(key);
     if(!km)
     {
         conoutf(Console_Error, "unknown key \"%s\"", key);
@@ -384,17 +384,17 @@ void bindkey(char *key, char *action, int state, const char *cmd)
     binding = newstring(action, len);
 }
 
-ICOMMAND(bind,     "ss", (char *key, char *action), bindkey(key, action, keym::Action_Default, "bind"));
-ICOMMAND(specbind, "ss", (char *key, char *action), bindkey(key, action, keym::Action_Spectator, "specbind"));
-ICOMMAND(editbind, "ss", (char *key, char *action), bindkey(key, action, keym::Action_Editing, "editbind"));
-ICOMMAND(getbind,     "s", (char *key), getbind(key, keym::Action_Default));
-ICOMMAND(getspecbind, "s", (char *key), getbind(key, keym::Action_Spectator));
-ICOMMAND(geteditbind, "s", (char *key), getbind(key, keym::Action_Editing));
-ICOMMAND(searchbinds,     "s", (char *action), searchbinds(action, keym::Action_Default));
-ICOMMAND(searchspecbinds, "s", (char *action), searchbinds(action, keym::Action_Spectator));
-ICOMMAND(searcheditbinds, "s", (char *action), searchbinds(action, keym::Action_Editing));
+ICOMMAND(bind,     "ss", (char *key, char *action), bindkey(key, action, KeyM::Action_Default, "bind"));
+ICOMMAND(specbind, "ss", (char *key, char *action), bindkey(key, action, KeyM::Action_Spectator, "specbind"));
+ICOMMAND(editbind, "ss", (char *key, char *action), bindkey(key, action, KeyM::Action_Editing, "editbind"));
+ICOMMAND(getbind,     "s", (char *key), getbind(key, KeyM::Action_Default));
+ICOMMAND(getspecbind, "s", (char *key), getbind(key, KeyM::Action_Spectator));
+ICOMMAND(geteditbind, "s", (char *key), getbind(key, KeyM::Action_Editing));
+ICOMMAND(searchbinds,     "s", (char *action), searchbinds(action, KeyM::Action_Default));
+ICOMMAND(searchspecbinds, "s", (char *action), searchbinds(action, KeyM::Action_Spectator));
+ICOMMAND(searcheditbinds, "s", (char *action), searchbinds(action, KeyM::Action_Editing));
 
-void keym::clear(int type)
+void KeyM::clear(int type)
 {
     char *&binding = actions[type];
     if(binding[0])
@@ -407,10 +407,10 @@ void keym::clear(int type)
     }
 }
 
-ICOMMAND(clearbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::Action_Default)));
-ICOMMAND(clearspecbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::Action_Spectator)));
-ICOMMAND(cleareditbinds, "", (), ENUMERATE(keyms, keym, km, km.clear(keym::Action_Editing)));
-ICOMMAND(clearallbinds, "", (), ENUMERATE(keyms, keym, km, km.clear()));
+ICOMMAND(clearbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default)));
+ICOMMAND(clearspecbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator)));
+ICOMMAND(cleareditbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing)));
+ICOMMAND(clearallbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear()));
 
 void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *flags = NULL) // turns input to the command line on or off
 {
@@ -553,7 +553,7 @@ struct HLine
         }
     }
 };
-vector<hline *> history;
+vector<HLine *> history;
 int histpos = 0;
 
 VARP(maxhistory, 0, 1000, 10000);
@@ -573,7 +573,7 @@ COMMANDN(history, history_, "i");
 
 struct releaseaction
 {
-    keym *key;
+    KeyM *key;
     union
     {
         char *action;
@@ -618,7 +618,7 @@ void onrelease(const char *s)
 
 COMMAND(onrelease, "s");
 
-void execbind(keym &k, bool isdown)
+void execbind(KeyM &k, bool isdown)
 {
     for(int i = 0; i < releaseactions.length(); i++)
     {
@@ -642,19 +642,19 @@ void execbind(keym &k, bool isdown)
     }
     if(isdown)
     {
-        int state = keym::Action_Default;
+        int state = KeyM::Action_Default;
         if(!mainmenu)
         {
             if(editmode)
             {
-                state = keym::Action_Editing;
+                state = KeyM::Action_Editing;
             }
             else if(player->state==ClientState_Spectator)
             {
-                state = keym::Action_Spectator;
+                state = KeyM::Action_Spectator;
             }
         }
-        char *&action = k.actions[state][0] ? k.actions[state] : k.actions[keym::Action_Default];
+        char *&action = k.actions[state][0] ? k.actions[state] : k.actions[KeyM::Action_Default];
         keyaction = action;
         keypressed = &k;
         execute(keyaction);
@@ -821,7 +821,7 @@ bool consolekey(int code, bool isdown)
     {
         if(code==SDLK_RETURN || code==SDLK_KP_ENTER)
         {
-            hline *h = NULL;
+            HLine *h = NULL;
             if(commandbuf[0])
             {
                 if(history.empty() || history.last()->shouldsave())
@@ -834,7 +834,7 @@ bool consolekey(int code, bool isdown)
                         }
                         history.remove(0, history.length()-maxhistory+1);
                     }
-                    history.add(h = new hline)->save();
+                    history.add(h = new HLine)->save();
                 }
                 else
                 {
@@ -868,7 +868,7 @@ void processtextinput(const char *str, int len)
 
 void processkey(int code, bool isdown)
 {
-    keym *haskey = keyms.access(code);
+    KeyM *haskey = keyms.access(code);
     if(haskey && haskey->pressed)
     {
         execbind(*haskey, isdown); // allow pressed keys to release
@@ -893,14 +893,14 @@ void clear_console()
 void writebinds(stream *f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
-    vector<keym *> binds;
-    ENUMERATE(keyms, keym, km, binds.add(&km));
+    vector<KeyM *> binds;
+    ENUMERATE(keyms, KeyM, km, binds.add(&km));
     binds.sortname();
     for(int j = 0; j < 3; ++j)
     {
         for(int i = 0; i < binds.length(); i++)
         {
-            keym &km = *binds[i];
+            KeyM &km = *binds[i];
             if(*km.actions[j])
             {
                 if(validateblock(km.actions[j]))
@@ -963,12 +963,12 @@ struct FilesVal
     }
 };
 
-static inline bool htcmp(const fileskey &x, const fileskey &y)
+static inline bool htcmp(const FilesKey &x, const FilesKey &y)
 {
     return x.type == y.type && !strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !strcmp(x.ext, y.ext)));
 }
 
-static inline uint hthash(const fileskey &k)
+static inline uint hthash(const FilesKey &k)
 {
     return hthash(k.dir);
 }
@@ -982,8 +982,8 @@ static inline char *prependstring(char *d, const char *s, size_t len)
     return d;
 }
 
-static hashtable<fileskey, filesval *> completefiles;
-static hashtable<char *, filesval *> completions;
+static hashtable<FilesKey, FilesVal *> completefiles;
+static hashtable<char *, FilesVal *> completions;
 
 int completesize = 0;
 char *lastcomplete = NULL;
@@ -1002,7 +1002,7 @@ void addcomplete(char *command, int type, char *dir, char *ext)
     }
     if(!dir[0])
     {
-        filesval **hasfiles = completions.access(command);
+        FilesVal **hasfiles = completions.access(command);
         if(hasfiles)
         {
             *hasfiles = NULL;
@@ -1028,19 +1028,19 @@ void addcomplete(char *command, int type, char *dir, char *ext)
             }
         }
     }
-    fileskey key(type, dir, ext);
-    filesval **val = completefiles.access(key);
+    FilesKey key(type, dir, ext);
+    FilesVal **val = completefiles.access(key);
     if(!val)
     {
-        filesval *f = new filesval(type, dir, ext);
+        FilesVal *f = new FilesVal(type, dir, ext);
         if(type==Files_List)
         {
             explodelist(dir, f->files);
         }
-        val = &completefiles[fileskey(type, f->dir, f->ext)];
+        val = &completefiles[FilesKey(type, f->dir, f->ext)];
         *val = f;
     }
-    filesval **hasfiles = completions.access(command);
+    FilesVal **hasfiles = completions.access(command);
     if(hasfiles)
     {
         *hasfiles = *val;
@@ -1084,7 +1084,7 @@ void complete(char *s, int maxlen, const char *cmdprefix)
         completesize = static_cast<int>(strlen(&s[cmdlen]));
         DELETEA(lastcomplete);
     }
-    filesval *f = NULL;
+    FilesVal *f = NULL;
     if(completesize)
     {
         char *end = strchr(&s[cmdlen], ' ');
@@ -1137,12 +1137,12 @@ void complete(char *s, int maxlen, const char *cmdprefix)
 void writecompletions(stream *f)
 {
     vector<char *> cmds;
-    ENUMERATE_KT(completions, char *, k, filesval *, v, { if(v) cmds.add(k); });
+    ENUMERATE_KT(completions, char *, k, FilesVal *, v, { if(v) cmds.add(k); });
     cmds.sort();
     for(int i = 0; i < cmds.length(); i++)
     {
         char *k = cmds[i];
-        filesval *v = completions[k];
+        FilesVal *v = completions[k];
         if(v->type==Files_List)
         {
             if(validateblock(v->dir))
