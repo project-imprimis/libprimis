@@ -4285,7 +4285,7 @@ void collectlights()
                     ivec bo(bbmin),
                          br = ivec(bbmax).sub(bo).add(1);
                     drawbb(bo, br);
-                    endquery(l.query);
+                    endquery();
                 }
             }
         }

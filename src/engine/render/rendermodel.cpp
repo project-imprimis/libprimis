@@ -703,7 +703,7 @@ static inline void rendercullmodelquery(model *m, dynent *d, const vec &center, 
     startquery(d->query);
     int br = static_cast<int>(radius*2)+1;
     drawbb(ivec(static_cast<float>(center.x-radius), static_cast<float>(center.y-radius), static_cast<float>(center.z-radius)), ivec(br, br, br));
-    endquery(d->query);
+    endquery();
 }
 
 static inline void disablecullmodelquery()
@@ -955,7 +955,7 @@ void rendermodelbatches()
                 {
                     startquery(bm.d->query);
                     renderbatchedmodel(b.m, bm);
-                    endquery(bm.d->query);
+                    endquery();
                     continue;
                 }
             }
@@ -1028,7 +1028,7 @@ void rendertransparentmodelbatches(int stencil)
                 {
                     startquery(bm.d->query);
                     renderbatchedmodel(b.m, bm);
-                    endquery(bm.d->query);
+                    endquery();
                     continue;
                 }
             }
@@ -1084,7 +1084,7 @@ void endmodelquery()
         b.batched = j;
         b.m->endrender();
     }
-    endquery(modelquery);
+    endquery();
     modelquery = NULL;
     batches.setsize(modelquerybatches);
     batchedmodels.setsize(modelquerymodels);
@@ -1269,7 +1269,7 @@ hasboundbox:
         m->endrender();
         if(flags&Model_CullQuery && d->query)
         {
-            endquery(d->query);
+            endquery();
         }
         disableaamask();
         return;

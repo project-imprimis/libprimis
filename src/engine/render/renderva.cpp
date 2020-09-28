@@ -465,7 +465,7 @@ void startquery(occludequery *query)
     glBeginQuery_(querytarget(), query->id);
 }
 
-void endquery(occludequery *query)
+void endquery()
 {
     glEndQuery_(querytarget());
 }
@@ -705,7 +705,7 @@ void rendermapmodels()
             }
             startquery(oe->query);
             drawbb(oe->bbmin, ivec(oe->bbmax).sub(oe->bbmin));
-            endquery(oe->query);
+            endquery();
         }
     }
     if(queried)
@@ -1548,7 +1548,7 @@ static void renderquery(renderstate &cur, occludequery *query, vtxarray *va, boo
     {
         drawbb(va->geommin, ivec(va->geommax).sub(va->geommin));
     }
-    endquery(query);
+    endquery();
 }
 
 enum
@@ -1793,7 +1793,7 @@ static void changevbuf(renderstate &cur, int pass, vtxarray *va)
     }
 }
 
-static void changebatchtmus(renderstate &cur, int pass, geombatch &b)
+static void changebatchtmus(renderstate &cur)
 {
     if(cur.tmu != 0)
     {
@@ -1974,7 +1974,7 @@ static inline void updateshader(T &cur)
     }
 }
 
-static void renderbatch(renderstate &cur, int pass, geombatch &b)
+static void renderbatch(geombatch &b)
 {
     gbatches++;
     for(geombatch *curbatch = &b;; curbatch = &geombatches[curbatch->batch])
@@ -2036,7 +2036,7 @@ static void renderbatches(renderstate &cur, int pass)
         }
         if(pass == RenderPass_GBuffer || pass == RenderPass_ReflectiveShadowMap)
         {
-            changebatchtmus(cur, pass, b);
+            changebatchtmus(cur);
         }
         if(cur.vslot != &b.vslot)
         {
@@ -2056,7 +2056,7 @@ static void renderbatches(renderstate &cur, int pass)
             updateshader(cur);
         }
 
-        renderbatch(cur, pass, b);
+        renderbatch(b);
     }
 
     resetbatches();
@@ -2119,7 +2119,7 @@ void renderzpass(renderstate &cur, vtxarray *va)
         if(va->query) \
         { \
             flush; \
-            endquery(va->query); \
+            endquery(); \
         } \
     } while(0)
 
@@ -2216,7 +2216,7 @@ void cleanupva()
     cleanupgrass();
 }
 
-void setupgeom(renderstate &cur)
+void setupgeom()
 {
     glActiveTexture_(GL_TEXTURE0);
     GLOBALPARAMF(colorparams, 1, 1, 1, 1);
@@ -2332,7 +2332,7 @@ void rendergeom()
             glDepthFunc(GL_LEQUAL);
         }
         cur.texgenorient = -1;
-        setupgeom(cur);
+        setupgeom();
         resetbatches();
         for(vtxarray *va = visibleva; va; va = va->next)
         {
@@ -2374,7 +2374,7 @@ void rendergeom()
     }
     else
     {
-        setupgeom(cur);
+        setupgeom();
         resetbatches();
         for(vtxarray *va = visibleva; va; va = va->next)
         {
@@ -2448,7 +2448,7 @@ void renderrsmgeom(bool dyntex)
     {
         cur.texgenmillis = 0;
     }
-    setupgeom(cur);
+    setupgeom();
     if(skyshadow)
     {
         enablevattribs(cur, false);
@@ -2602,7 +2602,7 @@ void renderalphageom(int side)
     cur.alphaing = side;
     cur.alphascale = -1;
 
-    setupgeom(cur);
+    setupgeom();
 
     if(side == 2)
     {
@@ -2782,7 +2782,7 @@ struct decalbatch
 
 static vector<decalbatch> decalbatches;
 
-static void mergedecals(decalrenderer &cur, vtxarray *va)
+static void mergedecals(vtxarray *va)
 {
     elementset *texs = va->decalelems;
     int numtexs = va->decaltexs,
@@ -2875,7 +2875,7 @@ static void resetdecalbatches()
     numbatches = 0;
 }
 
-static void changevbuf(decalrenderer &cur, int pass, vtxarray *va)
+static void changevbuf(decalrenderer &cur, vtxarray *va)
 {
     gle::bindvbo(va->vbuf);
     gle::bindebo(va->decalbuf);
@@ -2887,7 +2887,7 @@ static void changevbuf(decalrenderer &cur, int pass, vtxarray *va)
     gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
 }
 
-static void changebatchtmus(decalrenderer &cur, int pass, decalbatch &b)
+static void changebatchtmus(decalrenderer &cur)
 {
     if(cur.tmu != 0)
     {
@@ -2909,7 +2909,7 @@ static inline void bindslottex(decalrenderer &cur, int type, Texture *tex, GLenu
     }
 }
 
-static void changeslottmus(decalrenderer &cur, int pass, DecalSlot &slot)
+static void changeslottmus(decalrenderer &cur, DecalSlot &slot)
 {
     Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
     bindslottex(cur, Tex_Diffuse, diffuse);
@@ -2973,7 +2973,7 @@ static inline void changeshader(decalrenderer &cur, int pass, decalbatch &b)
     cur.globals = GlobalShaderParamState::nextversion;
 }
 
-static void renderdecalbatch(decalrenderer &cur, int pass, decalbatch &b)
+static void renderdecalbatch(decalbatch &b)
 {
     gbatches++;
     for(decalbatch *curbatch = &b;; curbatch = &decalbatches[curbatch->batch])
@@ -3006,12 +3006,12 @@ static void renderdecalbatches(decalrenderer &cur, int pass)
         }
         if(cur.vbuf != b.va->vbuf)
         {
-            changevbuf(cur, pass, b.va);
+            changevbuf(cur, b.va);
         }
-        changebatchtmus(cur, pass, b);
+        changebatchtmus(cur);
         if(cur.slot != &b.slot)
         {
-            changeslottmus(cur, pass, b.slot);
+            changeslottmus(cur, b.slot);
             changeshader(cur, pass, b);
         }
         else
@@ -3019,13 +3019,13 @@ static void renderdecalbatches(decalrenderer &cur, int pass)
             updateshader(cur);
         }
 
-        renderdecalbatch(cur, pass, b);
+        renderdecalbatch(b);
     }
 
     resetdecalbatches();
 }
 
-void setupdecals(decalrenderer &cur)
+void setupdecals()
 {
     gle::enablevertex();
     gle::enablenormal();
@@ -3039,7 +3039,7 @@ void setupdecals(decalrenderer &cur)
     GLOBALPARAMF(colorparams, 1, 1, 1, 1);
 }
 
-void cleanupdecals(decalrenderer &cur)
+void cleanupdecals()
 {
     disablepolygonoffset(GL_POLYGON_OFFSET_FILL);
     glDisable(GL_BLEND);
@@ -3075,7 +3075,7 @@ void renderdecals()
     }
     decalrenderer cur;
 
-    setupdecals(cur);
+    setupdecals();
     resetdecalbatches();
 
     if(maxdualdrawbufs)
@@ -3086,7 +3086,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(cur, va);
+                mergedecals(va);
                 if(!batchdecals && decalbatches.length())
                 {
                     renderdecalbatches(cur, 0);
@@ -3112,7 +3112,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(cur, va);
+                mergedecals(va);
                 if(!batchdecals && decalbatches.length())
                 {
                     renderdecalbatches(cur, 1);
@@ -3130,7 +3130,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(cur, va);
+                mergedecals(va);
                 if(!batchdecals && decalbatches.length()) renderdecalbatches(cur, 0);
             }
         }
@@ -3139,7 +3139,7 @@ void renderdecals()
             renderdecalbatches(cur, 0);
         }
     }
-    cleanupdecals(cur);
+    cleanupdecals();
 }
 
 struct shadowmesh
