@@ -889,7 +889,7 @@ namespace
         { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
     };
 
-    void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *index, int numverts, int convex, int tj)
+    void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *index, int numverts, int tj)
     {
         int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris;
         int edge = orient*(Face_MaxVerts+1);
@@ -1059,7 +1059,7 @@ namespace
         }
     }
 
-    void addgrasstri(int face, vertex *verts, int numv, ushort texture, int layer)
+    void addgrasstri(int face, vertex *verts, int numv, ushort texture)
     {
         grasstri &g = vc.grasstris.add();
         int i1, i2, i3, i4;
@@ -1214,7 +1214,7 @@ namespace
         return vec(-yaw.y*pitch.x, yaw.x*pitch.x, pitch.y);
     }
 
-    void addcubeverts(VSlot &vslot, int orient, int size, vec *pos, int convex, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
+    void addcubeverts(VSlot &vslot, int orient, vec *pos, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
     {
         vec4 sgen, tgen;
         calctexgen(vslot, orient, sgen, tgen);
@@ -1290,7 +1290,7 @@ namespace
             }
         }
         sortkey key(texture, vslot.scroll.iszero() ? Orient_Any : orient, layer&BlendLayer_Bottom ? layer : BlendLayer_Top, alpha ? (vslot.refractscale > 0 ? Alpha_Refract : (vslot.alphaback ? Alpha_Back : Alpha_Front)) : Alpha_None);
-        addtris(vslot, orient, key, verts, index, numverts, convex, tj);
+        addtris(vslot, orient, key, verts, index, numverts, tj);
         if(grassy)
         {
             for(int i = 0; i < numverts-2; i += 2)
@@ -1306,17 +1306,17 @@ namespace
                 }
                 if(grassy > 1 && faces==3)
                 {
-                    addgrasstri(i, verts, 4, texture, layer);
+                    addgrasstri(i, verts, 4, texture);
                 }
                 else
                 {
                     if(faces&1)
                     {
-                        addgrasstri(i, verts, 3, texture, layer);
+                        addgrasstri(i, verts, 3, texture);
                     }
                     if(faces&2)
                     {
-                        addgrasstri(i+1, verts, 3, texture, layer);
+                        addgrasstri(i+1, verts, 3, texture);
                     }
                 }
             }
@@ -1517,7 +1517,7 @@ namespace
         --neighbordepth;
     }
 
-    void gencubeverts(cube &c, const ivec &co, int size, int csi)
+    void gencubeverts(cube &c, const ivec &co, int size)
     {
         if(!(c.visible&0xC0))
         {
@@ -1585,18 +1585,18 @@ namespace
                     grassy = vslot.slot->grass && i!=Orient_Bottom ? (vis!=3 || convex ? 1 : 2) : 0;
                 if(!c.ext)
                 {
-                    addcubeverts(vslot, i, size, pos, convex, c.texture[i], NULL, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0);
+                    addcubeverts(vslot, i, pos, c.texture[i], NULL, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0);
                 }
                 else
                 {
                     const surfaceinfo &surf = c.ext->surfaces[i];
                     if(!surf.numverts || surf.numverts&BlendLayer_Top)
                     {
-                        addcubeverts(vslot, i, size, pos, convex, c.texture[i], verts, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&BlendLayer_Blend);
+                        addcubeverts(vslot, i, pos, c.texture[i], verts, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0, surf.numverts&BlendLayer_Blend);
                     }
                     if(surf.numverts&BlendLayer_Bottom)
                     {
-                        addcubeverts(vslot, i, size, pos, convex, 0, verts, numverts, hastj, 0, false, surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top);
+                        addcubeverts(vslot, i, pos, 0, verts, numverts, hastj, 0, false, surf.numverts&BlendLayer_Top ? BlendLayer_Bottom : BlendLayer_Top);
                     }
                 }
             }
@@ -1767,7 +1767,7 @@ namespace
             }
             VSlot &vslot = lookupvslot(mf.tex, true);
             int grassy = vslot.slot->grass && mf.orient!=Orient_Bottom && mf.numverts&BlendLayer_Top ? 2 : 0;
-            addcubeverts(vslot, mf.orient, 1<<level, pos, 0, mf.tex, mf.verts, numverts, mf.tjoints, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&BlendLayer_Blend);
+            addcubeverts(vslot, mf.orient, pos, mf.tex, mf.verts, numverts, mf.tjoints, grassy, (mf.mat&Mat_Alpha)!=0, mf.numverts&BlendLayer_Blend);
             vahasmerges |= Merge_Use;
         }
         mfl.setsize(0);
@@ -1835,7 +1835,7 @@ namespace
 
         if(!IS_EMPTY(c))
         {
-            gencubeverts(c, co, size, csi);
+            gencubeverts(c, co, size);
             if(c.merged)
             {
                 maxlevel = max(maxlevel, genmergedfaces(c, co, size));
