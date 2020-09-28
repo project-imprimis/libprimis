@@ -2,6 +2,25 @@
 #include "textedit.h"
 #include "input.h"
 
+/* a quick note on unnamed function arguments, used here for many derived functions:
+ *
+ * c++ does legally allow functions to be defined with parameters with no name:
+ * this is to allow the derived functions to match the same function "signature"
+ * as the parent class without needlessly defining parameter names that don't
+ * actually get used -- this can be confusing (one expects to see parameters in
+ * a function actually get used)
+ *
+ * obviously, anything actually passed to them will be lost as there is no name
+ * with which to access them inside the function body
+ *
+ * example:
+ *
+ * bool target(float, float) //note unnamed function parameters
+ * {
+ *      return true; //note that neither parameter was used in the body
+ * }
+ */
+
 namespace UI
 {
     float cursorx = 0.499f,
@@ -364,7 +383,7 @@ namespace UI
             }
         }
 
-        virtual bool target(float cx, float cy)
+        virtual bool target(float, float) //note unnamed function parameters
         {
             return false;
         }
@@ -546,7 +565,7 @@ namespace UI
                 } \
                 func(cx, cy); \
             } \
-            virtual void func(float cx, float cy) {}
+            virtual void func(float, float) {} //note unnamed function parameters
         DOSTATES
         #undef PROPAGATE_STATE
         #undef DOSTATE
@@ -1018,7 +1037,7 @@ namespace UI
             return false;
         }
 
-        void draw(float sx, float sy) {}
+        void draw(float, float) {} //note unnamed function parameters
 
         void draw()
         {
@@ -1046,7 +1065,7 @@ namespace UI
 
     static World *world = NULL;
 
-    void Window::escrelease(float cx, float cy)
+    void Window::escrelease(float, float) //note unnamed function parameters
     {
         if(eschide)
         {
@@ -1375,7 +1394,7 @@ namespace UI
         static const char *typestr() { return "#TableRow"; }
         const char *gettype() const { return typestr(); }
 
-        bool target(float cx, float cy)
+        bool target(float, float) //note unnamed function parameters
         {
             return true;
         }
@@ -1601,7 +1620,7 @@ namespace UI
         {
             return typestr();
         }
-        bool target(float cx, float cy)
+        bool target(float, float) //note unnamed function parameters
         {
             return true;
         }
@@ -2887,12 +2906,12 @@ namespace UI
             return typestr();
         }
 
-        bool target(float cx, float cy)
+        bool target(float, float) //note unnamed function parameters
         {
             return true;
         }
 
-        virtual void scrollto(float cx, float cy, bool closest = false) {}
+        virtual void scrollto(float, float, bool) {} //note unnamed function parameters
 
         void hold(float cx, float cy)
         {
@@ -2937,11 +2956,11 @@ namespace UI
         {
             return 1;
         }
-        void scrollup(float cx, float cy)
+        void scrollup(float, float) //note unnamed function parameters
         {
             wheelscroll(-wheelscrolldirection());
         }
-        void scrolldown(float cx, float cy)
+        void scrolldown(float, float) //note unnamed function parameters
         {
             wheelscroll(wheelscrolldirection());
         }
@@ -2949,7 +2968,7 @@ namespace UI
         virtual void movebutton(Object *o, float fromx, float fromy, float tox, float toy) = 0;
     };
 
-    void Scroller::scrollup(float cx, float cy)
+    void Scroller::scrollup(float, float) //note unnamed function parameters
     {
         ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
         if(scrollbar)
@@ -2958,7 +2977,7 @@ namespace UI
         }
     }
 
-    void Scroller::scrolldown(float cx, float cy)
+    void Scroller::scrolldown(float, float) //note unnamed function parameters
     {
         ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
         if(scrollbar)
@@ -2987,7 +3006,7 @@ namespace UI
             return typestr();
         }
 
-        void hold(float cx, float cy)
+        void hold(float, float) //note unnamed function parameters
         {
             ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
             if(scrollbar)
@@ -3025,7 +3044,7 @@ namespace UI
             scroller->addhscroll(dir);
         }
 
-        void scrollto(float cx, float cy, bool closest = false)
+        void scrollto(float cx, float, bool closest = false) //note unnamed function parameter
         {
             Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
             if(!scroller)
@@ -3063,7 +3082,7 @@ namespace UI
             ScrollBar::adjustchildren();
         }
 
-        void movebutton(Object *o, float fromx, float fromy, float tox, float toy)
+        void movebutton(Object *o, float fromx, float, float tox, float toy) //note unnamed function parameter
         {
             scrollto(o->x + tox - fromx, o->y + toy);
         }
@@ -3086,7 +3105,7 @@ namespace UI
             scroller->addvscroll(dir);
         }
 
-        void scrollto(float cx, float cy, bool closest = false)
+        void scrollto(float, float cy, bool closest = false) //note unnamed function parameter
         {
             Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
             if(!scroller)
@@ -3124,7 +3143,7 @@ namespace UI
             ScrollBar::adjustchildren();
         }
 
-        void movebutton(Object *o, float fromx, float fromy, float tox, float toy)
+        void movebutton(Object *o, float, float fromy, float tox, float toy) //note unnamed function parameter
         {
             scrollto(o->x + tox, o->y + toy - fromy);
         }
@@ -3284,7 +3303,7 @@ namespace UI
             return typestr();
         }
 
-        bool target(float cx, float cy)
+        bool target(float, float) //note unnamed function parameters
         {
             return true;
         }
@@ -3307,17 +3326,17 @@ namespace UI
             return 1;
         }
 
-        void scrollup(float cx, float cy)
+        void scrollup(float, float) //note unnamed function parameters
         {
             wheelscroll(-wheelscrolldirection());
         }
 
-        void scrolldown(float cx, float cy)
+        void scrolldown(float, float) //note unnamed function parameters
         {
             wheelscroll(wheelscrolldirection());
         }
 
-        virtual void scrollto(float cx, float cy) {}
+        virtual void scrollto(float, float) {} //note unnamed function parameters
 
         void hold(float cx, float cy)
         {
@@ -3356,7 +3375,7 @@ namespace UI
             return typestr();
         }
 
-        void press(float cx, float cy)
+        void press(float, float) //note unnamed function parameters
         {
             laststep = totalmillis + 2*uislidersteptime;
 
@@ -3367,7 +3386,7 @@ namespace UI
             }
         }
 
-        void hold(float cx, float cy)
+        void hold(float, float) //note unnamed function parameters
         {
             if(totalmillis < laststep + uislidersteptime)
             {
@@ -3405,7 +3424,7 @@ namespace UI
             return typestr();
         }
 
-        void scrollto(float cx, float cy)
+        void scrollto(float cx, float) //note unnamed function parameter
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
             if(!button)
@@ -3452,7 +3471,7 @@ namespace UI
             return typestr();
         }
 
-        void scrollto(float cx, float cy)
+        void scrollto(float, float cy) //note unnamed function parameter
         {
             SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
             if(!button)
@@ -3587,7 +3606,7 @@ namespace UI
             return typestr();
         }
 
-        bool target(float cx, float cy)
+        bool target(float, float) //note unnamed function parameters
         {
             return true;
         }
@@ -3645,12 +3664,12 @@ namespace UI
             }
         }
 
-        void scrollup(float cx, float cy)
+        void scrollup(float, float) //note unnamed function parameters
         {
             edit->scrollup();
         }
 
-        void scrolldown(float cx, float cy)
+        void scrolldown(float, float) //note unnamed function parameters
         {
             edit->scrolldown();
         }
