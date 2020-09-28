@@ -99,10 +99,8 @@ inline float detrnd(uint s, int x)
 #define DELETEP(p) if(p) { delete   p; p = 0; }
 #define DELETEA(p) if(p) { delete[] p; p = 0; }
 
-#define PI (3.14159265358979f)
 #define SQRT2 (1.4142135623731f)
 #define SQRT3 (1.73205080756888f)
-#define RAD (PI / 180.0f)
 
 #ifdef WIN32
     #ifndef M_PI
@@ -129,6 +127,8 @@ inline float detrnd(uint s, int x)
     #define _vsnprintf vsnprintf
     #define PATHDIV '/'
 #endif
+
+#define RAD static_cast<float>(M_PI / 180.0f) //M_PI is a double
 
 #ifdef __GNUC__
     #define PRINTFARGS(fmt, args) __attribute__((format(printf, fmt, args)))
