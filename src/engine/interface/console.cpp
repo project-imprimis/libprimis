@@ -250,7 +250,7 @@ float renderconsole(float w, float h, float abovehud)
 
 // keymap is defined externally in keymap.cfg
 
-struct keym
+struct KeyM
 {
     enum
     {
@@ -265,14 +265,14 @@ struct keym
     char *actions[Action_NumActions];
     bool pressed;
 
-    keym() : code(-1), name(NULL), pressed(false)
+    KeyM() : code(-1), name(NULL), pressed(false)
     {
         for(int i = 0; i < Action_NumActions; ++i)
         {
             actions[i] = newstring("");
         }
     }
-    ~keym()
+    ~KeyM()
     {
         DELETEA(name);
         for(int i = 0; i < Action_NumActions; ++i)
@@ -481,13 +481,13 @@ void pasteconsole()
     SDL_free(cb);
 }
 
-struct hline
+struct HLine
 {
     char *buf, *action, *prompt;
     int flags;
 
-    hline() : buf(NULL), action(NULL), prompt(NULL), flags(0) {}
-    ~hline()
+    HLine() : buf(NULL), action(NULL), prompt(NULL), flags(0) {}
+    ~HLine()
     {
         DELETEA(buf);
         DELETEA(action);
@@ -924,24 +924,24 @@ enum
     Files_List,
 };
 
-struct fileskey
+struct FilesKey
 {
     int type;
     const char *dir, *ext;
 
-    fileskey() {}
-    fileskey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
+    FilesKey() {}
+    FilesKey(int type, const char *dir, const char *ext) : type(type), dir(dir), ext(ext) {}
 };
 
-struct filesval
+struct FilesVal
 {
     int type;
     char *dir, *ext;
     vector<char *> files;
     int millis;
 
-    filesval(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : NULL), millis(-1) {}
-    ~filesval() { DELETEA(dir); DELETEA(ext); files.deletearrays(); }
+    FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : NULL), millis(-1) {}
+    ~FilesVal() { DELETEA(dir); DELETEA(ext); files.deletearrays(); }
 
     void update()
     {
