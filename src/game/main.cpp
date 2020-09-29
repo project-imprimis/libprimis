@@ -33,7 +33,6 @@ void quit()                       // normal exit
     writeservercfg();
     abortconnect();
     disconnect();
-    localdisconnect();
     writecfg(game::savedconfig(), game::autoexec(), game::defaultconfig());
     cleanup();
     exit(EXIT_SUCCESS);

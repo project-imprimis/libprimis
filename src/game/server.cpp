@@ -604,32 +604,4 @@ void updatetime()
     }
 }
 
-void localdisconnect(bool cleanup)
-{
-    bool disconnected = false;
-    for(int i = 0; i < clients.length(); i++)
-    {
-        if(clients[i]->type==ServerClient_Local)
-        {
-            server::localdisconnect(i);
-            delclient(clients[i]);
-            disconnected = true;
-        }
-    }
-    if(!disconnected)
-    {
-        return;
-    }
-    game::gamedisconnect(cleanup);
-    mainmenu = 1;
-}
-
-void localconnect()
-{
-    client &c = addclient(ServerClient_Local);
-    copystring(c.hostname, "local");
-    game::gameconnect(false);
-    server::localconnect(c.num);
-}
-
 vector<const char *> gameargs;

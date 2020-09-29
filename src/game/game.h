@@ -931,7 +931,6 @@ extern void serverslice(uint timeout);
 extern void updatetime();
 
 extern ENetSocket connectmaster(bool wait);
-extern void localconnect();
 
 extern void *getclientinfo(int i);
 extern ENetPeer *getclientpeer(int i);
@@ -940,7 +939,6 @@ extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format =
 extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
 extern int getservermtu();
 extern uint getclientip(int n);
-extern void localconnect();
 extern const char *disconnectreason(int reason);
 extern void disconnect_client(int n, int reason);
 extern void kicknonlocalclients(int reason = Discon_None);
@@ -953,7 +951,6 @@ extern void closelogfile();
 extern void setlogfile(const char *fname);
 
 // client
-extern void localdisconnect(bool cleanup = true);
 extern void localservertoclient(int chan, ENetPacket *packet);
 extern void connectserv(const char *servername, int port, const char *serverpassword);
 extern void abortconnect();
@@ -1004,8 +1001,6 @@ namespace server
     extern int numchannels();
     extern void clientdisconnect(int n);
     extern int clientconnect(int n, uint ip);
-    extern void localdisconnect(int n);
-    extern void localconnect(int n);
     extern bool allowbroadcast(int n);
     extern void recordpacket(int chan, void *data, int len);
     extern void sendservmsg(const char *s);

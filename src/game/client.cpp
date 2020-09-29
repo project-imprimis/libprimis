@@ -206,10 +206,6 @@ void trydisconnect(bool local)
         conoutf("attempting to disconnect...");
         disconnect(!discmillis);
     }
-    else if(local && haslocalclients())
-    {
-        localdisconnect();
-    }
     else conoutf("not connected");
     execident("resethud");
 }
@@ -218,8 +214,6 @@ ICOMMAND(connect, "sis", (char *name, int *port, char *pw), connectserv(name, *p
 ICOMMAND(lanconnect, "is", (int *port, char *pw), connectserv(NULL, *port, pw));
 COMMAND(reconnect, "s");
 ICOMMAND(disconnect, "b", (int *local), trydisconnect(*local != 0));
-ICOMMAND(localconnect, "", (), { if(!isconnected()) localconnect(); });
-ICOMMAND(localdisconnect, "", (), { if(haslocalclients()) localdisconnect(); });
 
 void sendclientpacket(ENetPacket *packet, int chan)
 {
@@ -278,7 +272,6 @@ void gets2c()           // get updates from the server
             case ENET_EVENT_TYPE_CONNECT:
             {
                 disconnect(false, false);
-                localdisconnect(false);
                 curpeer = connpeer;
                 connpeer = NULL;
                 conoutf("connected to server");

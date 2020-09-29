@@ -1187,27 +1187,6 @@ namespace server
         aiman::clearai();
     }
 
-    void localconnect(int n)
-    {
-        clientinfo *ci = getinfo(n);
-        ci->clientnum = ci->ownernum = n;
-        ci->connectmillis = totalmillis;
-        ci->sessionid = (randomint(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
-        ci->local = true;
-
-        connects.add(ci);
-        sendservinfo(ci);
-    }
-
-    void localdisconnect(int n)
-    {
-        if(modecheck(gamemode, Mode_Demo))
-        {
-            enddemoplayback();
-        }
-        clientdisconnect(n);
-    }
-
     void clientdisconnect(int n)
     {
         clientinfo *ci = getinfo(n);
