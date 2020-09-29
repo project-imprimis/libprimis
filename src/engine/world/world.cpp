@@ -188,17 +188,18 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
             return false;
         }
         case EngineEnt_Decal:
-            {
-                DecalSlot &s = lookupdecalslot(e.attr1, false);
-                vec center, radius;
-                decalboundbox(e, s, center, radius);
-                center.add(e.o);
-                radius.max(entselradius);
-                o = ivec(vec(center).sub(radius));
-                r = ivec(vec(center).add(radius).add(1));
-                break;
-            }
+        {
+            DecalSlot &s = lookupdecalslot(e.attr1, false);
+            vec center, radius;
+            decalboundbox(e, s, center, radius);
+            center.add(e.o);
+            radius.max(entselradius);
+            o = ivec(vec(center).sub(radius));
+            r = ivec(vec(center).add(radius).add(1));
+            break;
+        }
         case EngineEnt_Mapmodel:
+        {
             if(model *m = loadmapmodel(e.attr1))
             {
                 vec center, radius;
@@ -209,11 +210,14 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
                 r = ivec(vec(center).add(radius).add(1));
                 break;
             }
+        }
         // invisible mapmodels use entselradius: lights sounds spawns etc.
         default:
+        {
             o = ivec(vec(e.o).sub(entselradius));
             r = ivec(vec(e.o).add(entselradius+1));
             break;
+        }
     }
     return true;
 }
