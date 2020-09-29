@@ -211,6 +211,7 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
                 break;
             }
         }
+        [[fallthrough]];
         // invisible mapmodels use entselradius: lights sounds spawns etc.
         default:
         {
@@ -274,6 +275,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         break;
                     }
                 }
+                [[fallthrough]];
                 // invisible mapmodels: lights sounds spawns etc.
                 default:
                 {
@@ -341,8 +343,8 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         }
                         oe.bbmin.max(oe.o);
                         oe.bbmax.min(ivec(oe.o).add(oe.size));
-                        break;
                     }
+                    break;
                 }
                 // invisible mapmodels: light sounds spawns etc.
                 default:

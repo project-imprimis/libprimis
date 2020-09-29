@@ -210,8 +210,8 @@ int main(int argc, char **argv)
                     if(homedir[0])
                     {
                         logoutf("Using home directory: %s", homedir);
-                        break;
                     }
+                    break;
                 }
                 case 'k': // pac`K`age directory
                 {
@@ -234,13 +234,11 @@ int main(int argc, char **argv)
                 case 'h': // screen`H`eight (pixels)
                 {
                     scr_h = std::clamp(atoi(&argv[i][2]), static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
+                    if(!findarg(argc, argv, "-w"))
                     {
-                        if(!findarg(argc, argv, "-w"))
-                        {
-                            scr_w = -1;
-                            break;
-                        }
+                        scr_w = -1;
                     }
+                    break;
                 }
                 case 'f': //`F`ullscreen
                 {

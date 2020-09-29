@@ -169,8 +169,8 @@ void delclient(client *c)
             if(c->peer)
             {
                 c->peer->data = NULL;
-                break;
             }
+            break;
         }
         case ServerClient_Local:
         {

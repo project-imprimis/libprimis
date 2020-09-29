@@ -1103,6 +1103,7 @@ namespace ai
                         {
                             d->ai->clear(false);
                         }
+                        [[fallthrough]];
                         case 1:
                         {
                             return true; // not close enough to pop it yet

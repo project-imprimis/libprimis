@@ -2672,6 +2672,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         break;
                     }
                 }
+                [[fallthrough]];
                 case ';':
                 case ' ':
                 case '\t':
@@ -3673,6 +3674,7 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                 break;
             }
         }
+        [[fallthrough]];
         case 'F':
         {
             if(++i >= numargs)
@@ -3800,8 +3802,8 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
             {
                 freearg(args[i]);
                 args[i].setint(lookup ? -1 : i-fakeargs);
-                break;
             }
+            break;
         }
         case 'D':
         {
@@ -5198,6 +5200,7 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
                         break;
                     }
                 }
+                [[fallthrough]];
                 case Value_Float:
                 case Value_Integer:
                 {

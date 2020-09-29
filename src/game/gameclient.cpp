@@ -2575,10 +2575,13 @@ namespace game
                             break;
                         }
                         case NetMsg_AddCube:
+                        {
                             if(sel.validate())
                             {
                                 mpplacecube(sel, 1, false);
                             }
+                            break;
+                        }
                         case NetMsg_EditVSlot:
                         {
                             int delta = getint(p),

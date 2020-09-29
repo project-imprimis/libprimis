@@ -1507,6 +1507,7 @@ namespace entities
                         preloadmodel(mapmodelname(e.attr2));
                     }
                 }
+                [[fallthrough]];
                 case GamecodeEnt_Jumppad:
                 {
                     if(e.attr4 > 0)
@@ -1759,6 +1760,7 @@ namespace entities
                 e.attr5 = e.attr4;
                 e.attr4 = e.attr3;
             }
+            [[fallthrough]];
             case GamecodeEnt_Teledest:
             {
                 e.attr3 = e.attr2;
