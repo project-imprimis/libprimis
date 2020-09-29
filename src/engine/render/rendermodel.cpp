@@ -32,11 +32,11 @@ static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
 }
 
 #define MODELTYPE(modeltype, modelclass) \
-static model *__loadmodel__##modelclass(const char *filename) \
+static model *loadmodel_##modelclass(const char *filename) \
 { \
     return new modelclass(filename); \
 } \
-static int __dummy__##modelclass = addmodeltype((modeltype), __loadmodel__##modelclass);
+static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass);
 
 #include "model/md5.h"
 #include "model/obj.h"

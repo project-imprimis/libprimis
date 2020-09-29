@@ -4411,13 +4411,13 @@ namespace UI
     DOSTATES
     #undef DOSTATE
 
-    ICOMMANDNS("uifocus", uifocus_, "ee", (uint *t, uint *f),
+    ICOMMANDNS("uifocus", uifocusexec_, "ee", (uint *t, uint *f),
         executeret(buildparent && TextEditor::focus == buildparent ? t : f));
-    ICOMMANDNS("uifocus?", uifocus__, "tt", (tagval *t, tagval *f),
+    ICOMMANDNS("uifocus?", uifocustagval_, "tt", (tagval *t, tagval *f),
         IFSTATEVAL(buildparent && TextEditor::focus == buildparent, t, f));
-    ICOMMANDNS("uifocus+", uinextfocus_, "ee", (uint *t, uint *f),
+    ICOMMANDNS("uifocus+", uinextfocusexec_, "ee", (uint *t, uint *f),
         executeret(buildparent && buildparent->children.inrange(buildchild) && TextEditor::focus == buildparent->children[buildchild] ? t : f));
-    ICOMMANDNS("uifocus+?", uinextfocus__, "tt", (tagval *t, tagval *f),
+    ICOMMANDNS("uifocus+?", uinextfocustagval_, "tt", (tagval *t, tagval *f),
         IFSTATEVAL(buildparent && buildparent->children.inrange(buildchild) && TextEditor::focus == buildparent->children[buildchild], t, f));
 
     ICOMMAND(uialign, "ii", (int *xalign, int *yalign),
