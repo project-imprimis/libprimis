@@ -173,7 +173,6 @@ VARF(gridpower, 0, 3, 12,
 });
 
 VAR(passthroughsel, 0, 0, 1);
-VAR(editing, 1, 0, 0);
 VAR(selectcorners, 0, 0, 1);
 VARF(hmapedit, 0, 0, 1, horient = sel.orient);
 
@@ -193,44 +192,6 @@ void cancelsel()
 {
     cubecancel();
     entcancel();
-}
-
-void toggleedit(bool force)
-{
-    if(!force)
-    {
-        if(!isconnected())
-        {
-            return;
-        }
-        if(player->state!=ClientState_Alive && player->state!=ClientState_Dead && player->state!=ClientState_Editing)
-        {
-            return; // do not allow dead players to edit to avoid state confusion
-        }
-        if(!game::allowedittoggle())
-        {
-            return;         // not in most multiplayer modes
-        }
-    }
-    if(!(editmode = !editmode))
-    {
-        player->state = player->editstate;
-        player->o.z -= player->eyeheight;       // entinmap wants feet pos
-        entinmap(player);                       // find spawn closest to current floating pos
-    }
-    else
-    {
-        player->editstate = player->state;
-        player->state = ClientState_Editing;
-    }
-    cancelsel();
-    keyrepeat(editmode, KeyRepeat_EditMode);
-    editing = entediting = editmode;
-    if(!force)
-    {
-        game::edittoggled(editmode);
-    }
-    execident("resethud");
 }
 
 bool noedit(bool view, bool msg)
@@ -288,7 +249,6 @@ void selextend()
     }
 }
 
-ICOMMAND(edittoggle, "", (), toggleedit(false));
 COMMAND(entcancel, "");
 COMMAND(cubecancel, "");
 COMMAND(cancelsel, "");

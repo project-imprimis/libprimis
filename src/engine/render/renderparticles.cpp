@@ -218,10 +218,6 @@ struct partrenderer
     {
         o = p->o;
         d = p->d;
-        if(type&PT_TRACK && p->owner)
-        {
-            game::particletrack(p->owner, o, d);
-        }
         if(p->fade <= 5)
         {
             ts = 1;

@@ -121,6 +121,15 @@ enum
     Console_Echo  = 1<<5
 };
 
+// input
+
+enum
+{
+    KeyRepeat_Console  = 1<<0,
+    KeyRepeat_GUI      = 1<<1,
+    KeyRepeat_EditMode = 1<<2,
+};
+
 // renderlights
 
 enum

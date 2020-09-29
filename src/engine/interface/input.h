@@ -2,13 +2,6 @@
 #ifndef INPUT_H_
 #define INPUT_H_
 
-enum
-{
-    KeyRepeat_Console  = 1<<0,
-    KeyRepeat_GUI      = 1<<1,
-    KeyRepeat_EditMode = 1<<2,
-};
-
 extern void keyrepeat(bool on, int mask = ~0);
 
 enum

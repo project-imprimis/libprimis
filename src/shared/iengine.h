@@ -122,6 +122,7 @@ extern bool interceptkey(int sym);
 extern void inputgrab(bool on);
 extern void checkinput();
 extern void ignoremousemotion();
+extern void keyrepeat(bool on, int mask = ~0);
 
 
 // menus
@@ -360,7 +361,6 @@ extern void freeeditinfo(editinfo *&e);
 extern bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen);
 extern bool unpackundo(const uchar *inbuf, int inlen, int outlen);
 extern bool noedit(bool view = false, bool msg = true);
-extern void toggleedit(bool force = true);
 extern void mpeditface(int dir, int mode, selinfo &sel, bool local);
 extern bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf);
 extern void mpeditmat(int matid, int filter, selinfo &sel, bool local);
@@ -376,6 +376,7 @@ extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
 extern void mpcalclight(bool local);
 extern void commitchanges(bool force = false);
 extern bool pointinsel(const selinfo &sel, const vec &o);
+extern void cancelsel();
 extern void addundo(undoblock *u);
 
 // raycube

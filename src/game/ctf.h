@@ -181,11 +181,6 @@ struct ctfclientmode : clientmode
         drawblip(d, x, y, s, flagblip ? (f.owner ? f.owner->o : (f.droptime ? f.droploc : f.spawnloc)) : f.spawnloc, flagblip);
     }
 
-    float clipconsole(float w, float h)
-    {
-        return (h*(1 + 1 + 10))/(4*10);
-    }
-
     void drawhud(gameent *d, int w, int h)
     {
         if(d->state == ClientState_Alive)

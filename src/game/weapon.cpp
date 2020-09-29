@@ -808,31 +808,6 @@ namespace game
         }
     }
 
-    void particletrack(physent *owner, vec &o, vec &d)
-    {
-        if(owner->type!=PhysEnt_Player)
-        {
-            return;
-        }
-        gameent *pl = (gameent *)owner;
-        if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect)
-        {
-            return;
-        }
-        float dist = o.dist(d);
-        o = pl->muzzle;
-        if(dist <= 0)
-        {
-            d = o;
-        }
-        else
-        {
-            vecfromyawpitch(owner->yaw, owner->pitch, 1, 0, d);
-            float newdist = raycube(owner->o, d, dist, Ray_ClipMat|Ray_AlphaPoly);
-            d.mul(min(newdist, dist)).add(owner->o);
-        }
-    }
-
     void dynlighttrack(physent *owner, vec &o, vec &hud)
     {
         if(owner->type!=PhysEnt_Player)

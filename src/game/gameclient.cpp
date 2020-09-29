@@ -8,6 +8,51 @@
 //parsing state changes from server
 //demo commands (core logic in game/server.cpp)
 
+VAR(editing, 1, 0, 0);
+namespace game
+{
+    void edittoggled(bool);
+}
+
+void toggleedit(bool force = true)
+{
+    if(!force)
+    {
+        if(!isconnected())
+        {
+            return;
+        }
+        if(player->state!=ClientState_Alive && player->state!=ClientState_Dead && player->state!=ClientState_Editing)
+        {
+            return; // do not allow dead players to edit to avoid state confusion
+        }
+        if(!game::allowedittoggle())
+        {
+            return;         // not in most multiplayer modes
+        }
+    }
+    if(!(editmode = !editmode))
+    {
+        player->state = player->editstate;
+        player->o.z -= player->eyeheight;       // entinmap wants feet pos
+        entinmap(player);                       // find spawn closest to current floating pos
+    }
+    else
+    {
+        player->editstate = player->state;
+        player->state = ClientState_Editing;
+    }
+    cancelsel();
+    keyrepeat(editmode, KeyRepeat_EditMode);
+    editing = entediting = editmode;
+    if(!force)
+    {
+        game::edittoggled(editmode);
+    }
+    execident("resethud");
+}
+ICOMMAND(edittoggle, "", (), toggleedit(false));
+
 namespace game
 {
     VARP(minimapminscale, 0, 384, 10000);

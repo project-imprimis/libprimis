@@ -8,7 +8,6 @@ namespace game
     extern void toserver(char *text);
     extern void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material = 0);
     extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
-    extern void edittoggled(bool on);
     extern void vartrigger(ident *id);
     extern const char *getclientmap();
     extern void writeclientinfo(stream *f);
@@ -23,12 +22,9 @@ namespace game
     extern void renderplayerpreview(int model, int color, int team, int weap);
     extern int numanims();
     extern void findanims(const char *pattern, vector<int> &anims);
-    extern float clipconsole(float w, float h);
     extern void adddynlights();
-    extern void particletrack(physent *owner, vec &o, vec &d);
     extern void dynlighttrack(physent *owner, vec &o, vec &hud);
 
-    extern float abovegameplayhud(int w, int h);
     extern void gameplayhud(int w, int h);
 }
 

@@ -764,7 +764,6 @@ namespace game
         virtual ~clientmode() {}
 
         virtual void preload() {}
-        virtual float clipconsole(float, float) { return 0; }
         virtual void drawhud(gameent *, int, int) {}
         virtual void rendergame() {}
         virtual void respawned(gameent *) {}

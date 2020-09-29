@@ -239,7 +239,7 @@ float renderconsole(float w, float h, float abovehud)
 {
     float conpad = FONTH/2,
           conheight = min(float(FONTH*consize), h - 2*conpad),
-          conwidth = w - 2*conpad - game::clipconsole(w, h);
+          conwidth = w - 2*conpad;
     float y = drawconlines(conskip, confade, conwidth, conheight, conpad, confilter);
     if(miniconsize && miniconwidth)
     {

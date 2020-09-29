@@ -1027,22 +1027,6 @@ namespace game
         gle::end();
     }
 
-    float abovegameplayhud(int w, int h)
-    {
-        switch(hudplayer()->state)
-        {
-            case ClientState_Editing:
-            case ClientState_Spectator:
-            {
-                return 1;
-            }
-            default:
-            {
-                return 1650.0f/1800.0f;
-            }
-        }
-    }
-
     void gameplayhud(int w, int h)
     {
         pushhudscale(h/1800.0f);
@@ -1085,15 +1069,6 @@ namespace game
         }
 
         pophudmatrix();
-    }
-
-    float clipconsole(float w, float h)
-    {
-        if(cmode)
-        {
-            return cmode->clipconsole(w, h);
-        }
-        return 0;
     }
 
     VARP(teamcrosshair, 0, 1, 1);
