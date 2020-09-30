@@ -7,13 +7,13 @@
 
 bool nosound = true;
 
-struct soundsample
+struct SoundSample
 {
     char *name;
     Mix_Chunk *chunk;
 
-    soundsample() : name(NULL), chunk(NULL) {}
-    ~soundsample() { DELETEA(name); }
+    SoundSample() : name(NULL), chunk(NULL) {}
+    ~SoundSample() { DELETEA(name); }
 
     void cleanup()
     {
@@ -29,11 +29,11 @@ struct soundsample
 
 struct soundslot
 {
-    soundsample *sample;
+    SoundSample *sample;
     int volume;
 };
 
-struct soundconfig
+struct SoundConfig
 {
     int slots, numslots;
     int maxuses;
@@ -59,7 +59,7 @@ struct soundconfig
 
 //sound channel object that is allocated to every sound emitter in use
 //(entities, players, weapons, etc.)
-struct soundchannel
+struct SoundChannel
 {
     int id;
     bool inuse;
@@ -69,7 +69,7 @@ struct soundchannel
     int radius, volume, pan, flags;
     bool dirty;
 
-    soundchannel(int id) : id(id) { reset(); }
+    SoundChannel(int id) : id(id) { reset(); }
 
     bool hasloc() const
     {
@@ -94,11 +94,11 @@ struct soundchannel
         dirty  = false;
     }
 };
-vector<soundchannel> channels;
+vector<SoundChannel> channels;
 int maxchannels = 0;
 
-//creates a new soundchannel object with passed properties
-soundchannel &newchannel(int n, soundslot *slot, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int radius = 0)
+//creates a new SoundChannel object with passed properties
+SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int radius = 0)
 {
     if(ent)
     {
@@ -109,7 +109,7 @@ soundchannel &newchannel(int n, soundslot *slot, const vec *loc = NULL, extentit
     {
         channels.add(channels.length());
     }
-    soundchannel &chan = channels[n];
+    SoundChannel &chan = channels[n];
     chan.reset();
     chan.inuse = true;
     if(loc)
@@ -130,7 +130,7 @@ void freechannel(int n)
     {
         return;
     }
-    soundchannel &chan = channels[n];
+    SoundChannel &chan = channels[n];
     chan.inuse = false;
     if(chan.ent)
     {
@@ -138,7 +138,7 @@ void freechannel(int n)
     }
 }
 
-void syncchannel(soundchannel &chan)
+void syncchannel(SoundChannel &chan)
 {
     if(!chan.dirty)
     {
@@ -156,7 +156,7 @@ void stopchannels()
 {
     for(int i = 0; i < channels.length(); i++)
     {
-        soundchannel &chan = channels[i];
+        SoundChannel &chan = channels[i];
         if(!chan.inuse) //don't clear channels that are already flagged as unused
         {
             continue;
@@ -426,7 +426,7 @@ static Mix_Chunk *loadwav(const char *name)
     return c;
 }
 
-bool soundsample::load(const char *dir, bool msg)
+bool SoundSample::load(const char *dir, bool msg)
 {
     if(chunk)
     {
@@ -456,18 +456,18 @@ bool soundsample::load(const char *dir, bool msg)
     return false;
 }
 
-static struct soundtype
+static struct SoundType
 {
-    hashnameset<soundsample> samples;
+    hashnameset<SoundSample> samples;
     vector<soundslot> slots;
-    vector<soundconfig> configs;
+    vector<SoundConfig> configs;
     const char *dir;
-    soundtype(const char *dir) : dir(dir) {}
+    SoundType(const char *dir) : dir(dir) {}
     int findsound(const char *name, int vol)
     {
         for(int i = 0; i < configs.length(); i++)
         {
-            soundconfig &s = configs[i];
+            SoundConfig &s = configs[i];
             for(int j = 0; j < s.numslots; ++j)
             {
                 soundslot &c = slots[s.slots+j];
@@ -481,7 +481,7 @@ static struct soundtype
     }
     int addslot(const char *name, int vol)
     {
-        soundsample *s = samples.access(name);
+        SoundSample *s = samples.access(name);
         if(!s)
         {
             char *n = newstring(name);
@@ -497,7 +497,7 @@ static struct soundtype
         {
             for(int i = 0; i < channels.length(); i++)
             {
-                soundchannel &chan = channels[i];
+                SoundChannel &chan = channels[i];
                 if(chan.inuse && chan.slot >= oldslots && chan.slot < &oldslots[oldlen])
                 {
                     chan.slot = &slots[chan.slot - oldslots];
@@ -510,7 +510,7 @@ static struct soundtype
     }
     int addsound(const char *name, int vol, int maxuses = 0)
     {
-        soundconfig &s = configs.add();
+        SoundConfig &s = configs.add();
         s.slots = addslot(name, vol);
         s.numslots = 1;
         s.maxuses = maxuses;
@@ -534,7 +534,7 @@ static struct soundtype
     {
         for(int i = 0; i < channels.length(); i++)
         {
-            soundchannel &chan = channels[i];
+            SoundChannel &chan = channels[i];
             if(chan.inuse && slots.inbuf(chan.slot))
             {
                 Mix_HaltChannel(i);
@@ -545,7 +545,7 @@ static struct soundtype
     }
     void cleanupsamples()
     {
-        ENUMERATE(samples, soundsample, s, s.cleanup());
+        ENUMERATE(samples, SoundSample, s, s.cleanup());
     }
     void cleanup()
     {
@@ -560,13 +560,13 @@ static struct soundtype
         {
             return;
         }
-        soundconfig &config = configs[n];
+        SoundConfig &config = configs[n];
         for(int k = 0; k < config.numslots; ++k)
         {
             slots[config.slots+k].sample->load(dir, true);
         }
     }
-    bool playing(const soundchannel &chan, const soundconfig &config) const
+    bool playing(const SoundChannel &chan, const SoundConfig &config) const
     {
         return chan.inuse && config.hasslot(chan.slot, slots);
     }
@@ -660,7 +660,7 @@ void stopmapsound(extentity *e)
 {
     for(int i = 0; i < channels.length(); i++)
     {
-        soundchannel &chan = channels[i];
+        SoundChannel &chan = channels[i];
         if(chan.inuse && chan.ent == e)
         {
             Mix_HaltChannel(i);
@@ -699,7 +699,7 @@ VAR(stereo, 0, 1, 1);
 //distance in cubits: how far away sound entities can start (340 = 42.5m)
 VAR(maxsoundradius, 1, 340, 0);
 
-bool updatechannel(soundchannel &chan)
+bool updatechannel(SoundChannel &chan)
 {
     if(!chan.slot)
     {
@@ -752,7 +752,7 @@ void reclaimchannels()
 {
     for(int i = 0; i < channels.length(); i++)
     {
-        soundchannel &chan = channels[i];
+        SoundChannel &chan = channels[i];
         if(chan.inuse && !Mix_Playing(i))
         {
             freechannel(i);
@@ -764,7 +764,7 @@ void syncchannels()
 {
     for(int i = 0; i < channels.length(); i++)
     {
-        soundchannel &chan = channels[i];
+        SoundChannel &chan = channels[i];
         if(chan.inuse && chan.hasloc() && updatechannel(chan))
         {
             syncchannel(chan);
@@ -843,13 +843,13 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     {
         return -1;
     }
-    soundtype &sounds = ent || flags&Music_Map ? mapsounds : gamesounds;
+    SoundType &sounds = ent || flags&Music_Map ? mapsounds : gamesounds;
     if(!sounds.configs.inrange(n)) //sound isn't within index
     {
         conoutf(Console_Warn, "unregistered sound: %d", n);
         return -1;
     }
-    soundconfig &config = sounds.configs[n];
+    SoundConfig &config = sounds.configs[n];
     if(loc && (maxsoundradius || radius > 0))
     {
         // cull sounds that are unlikely to be heard
@@ -897,7 +897,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     }
     if(channels.inrange(chanid))
     {
-        soundchannel &chan = channels[chanid];
+        SoundChannel &chan = channels[chanid];
         if(sounds.playing(chan, config))
         {
             if(loc)
@@ -954,7 +954,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     {
         return -1;
     }
-    soundchannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
+    SoundChannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
     updatechannel(chan);
     int playing = -1;
     //some ugly ternary assignments
