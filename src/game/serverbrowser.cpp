@@ -846,7 +846,7 @@ void clearservers(bool full = false)
     }
 }
 
-#define RETRIEVELIMIT 20000
+static const int retrievelimit = 20000; //20 seconds
 
 void retrieveservers(vector<char> &data)
 {
@@ -885,12 +885,12 @@ void retrieveservers(vector<char> &data)
             }
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(static_cast<float>(timeout)/RETRIEVELIMIT, 1.0f), text);
+        renderprogress(min(static_cast<float>(timeout)/retrievelimit, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE))
         {
-            timeout = RETRIEVELIMIT + 1;
+            timeout = retrievelimit + 1;
         }
-        if(timeout > RETRIEVELIMIT)
+        if(timeout > retrievelimit)
         {
             break;
         }
@@ -917,12 +917,12 @@ void retrieveservers(vector<char> &data)
                 data.advance(recv);
             }
             timeout = SDL_GetTicks() - starttime;
-            renderprogress(min(static_cast<float>(timeout)/RETRIEVELIMIT, 1.0f), text);
+            renderprogress(min(static_cast<float>(timeout)/retrievelimit, 1.0f), text);
             if(interceptkey(SDLK_ESCAPE))
             {
-                timeout = RETRIEVELIMIT + 1;
+                timeout = retrievelimit + 1;
             }
-            if(timeout > RETRIEVELIMIT)
+            if(timeout > retrievelimit)
             {
                 break;
             }
