@@ -7,15 +7,15 @@ void notifywelcome()
     UI::hideui("servers");
 }
 
-struct change
+struct Change
 {
     int type;
     const char *desc;
 
-    change() {}
-    change(int type, const char *desc) : type(type), desc(desc) {}
+    Change() {}
+    Change(int type, const char *desc) : type(type), desc(desc) {}
 };
-static vector<change> needsapply;
+static vector<Change> needsapply;
 
 VARP(applydialog, 0, 1, 1);
 
@@ -39,7 +39,7 @@ void addchange(const char *desc, int type)
             return;
         }
     }
-    needsapply.add(change(type, desc));
+    needsapply.add(Change(type, desc));
     if(showchanges)
     {
         UI::showui("changes");
@@ -51,7 +51,7 @@ void clearchanges(int type)
 {
     for(int i = needsapply.length(); --i >=0;) //note reverse iteration
     {
-        change &c = needsapply[i];
+        Change &c = needsapply[i];
         if(c.type&type)
         {
             c.type &= ~type;
