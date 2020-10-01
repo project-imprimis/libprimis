@@ -218,7 +218,6 @@ struct animmodel : model
                     if(!name##shader) name##shader = useshaderbyname(#name); \
                     body; \
                 } while(0)
-            #define LOADMODELSHADER(name) DOMODELSHADER(name, return name##shader)
             #define SETMODELSHADER(m, name) DOMODELSHADER(name, (m).setshader(name##shader))
 
             if(shadowmapping == ShadowMap_Reflect)

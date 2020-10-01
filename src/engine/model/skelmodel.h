@@ -2,9 +2,12 @@ VARP(gpuskel, 0, 1, 1);
 
 VAR(maxskelanimdata, 1, 192, 0);
 
-#define BONEMASK_NOT  0x8000
-#define BONEMASK_END  0xFFFF
-#define BONEMASK_BONE 0x7FFF
+enum
+{
+    BONEMASK_NOT  = 0x8000,
+    BONEMASK_END  = 0xFFFF,
+    BONEMASK_BONE = 0x7FFF
+};
 
 struct skelhitdata;
 
