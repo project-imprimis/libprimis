@@ -69,6 +69,7 @@ CLIENT_OBJS= \
 	shared/tools.o \
 	shared/zip.o \
 	engine/interface/command.o \
+	engine/interface/cubestd.o \
 	engine/interface/console.o \
 	engine/interface/input.o \
 	engine/interface/menus.o \

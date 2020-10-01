@@ -2,6 +2,13 @@
 
 enum
 {
+    Max_Args = 25,
+    Max_Results = 7,
+    Max_CommandArgs = 12
+};
+
+enum
+{
     Value_Null = 0,
     Value_Integer,
     Value_Float,
@@ -122,6 +129,12 @@ enum
     Idf_Arg        = 1<<6,
 };
 
+extern const char *sourcefile,
+                  *sourcestr;
+
+extern vector<char> strbuf[4];
+extern int stridx;
+
 struct ident;
 
 struct identval
@@ -212,6 +225,15 @@ struct tagval : identval
 
     void cleanup();
 };
+
+extern vector<ident *> identmap;
+
+struct NullVal : tagval
+{
+    NullVal() { setnull(); }
+};
+
+extern NullVal nullval;
 
 struct identstack
 {
@@ -354,6 +376,17 @@ struct ident
     void getcval(tagval &v) const;
 };
 
+struct IdentLink
+{
+    ident *id;
+    IdentLink *next;
+    int usedargs;
+    identstack *argstack;
+};
+
+extern IdentLink noalias;
+extern IdentLink *aliasstack;
+
 extern void addident(ident *id);
 
 extern tagval *commandret;
@@ -367,10 +400,57 @@ extern void stringret(char *s);
 extern void result(tagval &v);
 extern void result(const char *s);
 
+extern void poparg(ident &id);
+extern void pusharg(ident &id, const tagval &v, identstack &stack);
+extern bool getbool(const tagval &v);
+extern void cleancode(ident &id);
+extern char *conc(tagval *v, int n, bool space);
+extern char *conc(tagval *v, int n, bool space, const char *prefix);
+extern void freearg(tagval &v);
+extern int unescapestring(char *dst, const char *src, const char *end);
+extern const char *parsestring(const char *p);
+extern void setarg(ident &id, tagval &v);
+extern void setalias(ident &id, tagval &v);
+extern void undoarg(ident &id, identstack &stack);
+extern void redoarg(ident &id, const identstack &stack);
+extern const char *parseword(const char *p);
+
 inline int parseint(const char *s)
 {
     return static_cast<int>(strtoul(s, NULL, 0));
 }
+#define UNDOFLAG (1<<Max_Args)
+#define UNDOARGS \
+    identstack argstack[Max_Args]; \
+    IdentLink *prevstack = aliasstack; \
+    IdentLink aliaslink; \
+    for(int undos = 0; prevstack != &noalias; prevstack = prevstack->next) \
+    { \
+        if(prevstack->usedargs & UNDOFLAG) ++undos; \
+        else if(undos > 0) --undos; \
+        else \
+        { \
+            prevstack = prevstack->next; \
+            for(int argmask = aliasstack->usedargs & ~UNDOFLAG, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
+                undoarg(*identmap[i], argstack[i]); \
+            aliaslink.id = aliasstack->id; \
+            aliaslink.next = aliasstack; \
+            aliaslink.usedargs = UNDOFLAG | prevstack->usedargs; \
+            aliaslink.argstack = prevstack->argstack; \
+            aliasstack = &aliaslink; \
+            break; \
+        } \
+    } \
+
+
+#define REDOARGS \
+    if(aliasstack == &aliaslink) \
+    { \
+        prevstack->usedargs |= aliaslink.usedargs & ~UNDOFLAG; \
+        aliasstack = aliaslink.next; \
+        for(int argmask = aliasstack->usedargs & ~UNDOFLAG, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
+            redoarg(*identmap[i], argstack[i]); \
+    }
 
 #define PARSEFLOAT(name, type) \
     inline type parse##name(const char *s) \
