@@ -199,504 +199,510 @@ namespace UI
 
     struct Object
     {
-        Object *parent;
-        float x, y, w, h;
-        uchar adjust;
-        ushort state, childstate;
-        vector<Object *> children;
+        public:
+            float x, y, w, h;
+            vector<Object *> children;
+            ushort state, childstate;
+            Object *parent;
+            uchar adjust;
 
-        Object() : adjust(0), state(0), childstate(0) {}
-        virtual ~Object()
-        {
-            clearchildren();
-        }
+            #define LOOP_CHILDREN(o, body) do { \
+                for(int i = 0; i < children.length(); i++) \
+                { \
+                    Object *o = children[i]; \
+                    body; \
+                } \
+            } while(0)
+            //note reverse iteration
+            #define LOOP_CHILDREN_REV(o, body) do { \
+                for(int i = children.length(); --i >=0;) \
+                { \
+                    Object *o = children[i]; \
+                    body; \
+                } \
+            } while(0)
 
-        void resetlayout()
-        {
-            x = y = w = h = 0;
-        }
+            #define LOOP_CHILD_RANGE(start, end, o, body) do { \
+                for(int i = start; i < end; i++) \
+                { \
+                    Object *o = children[i]; \
+                    body; \
+                } \
+            } while(0)
 
-        void reset()
-        {
-            resetlayout();
-            parent = NULL;
-            adjust = Align_HCenter | Align_VCenter;
-        }
-
-        virtual uchar childalign() const
-        {
-            return Align_HCenter | Align_VCenter;
-        }
-
-        void reset(Object *parent_)
-        {
-            resetlayout();
-            parent = parent_;
-            adjust = parent->childalign();
-        }
-
-        void setup()
-        {
-        }
-
-        void clearchildren()
-        {
-            children.deletecontents();
-        }
-
-        #define LOOP_CHILDREN(o, body) do { \
-            for(int i = 0; i < children.length(); i++) \
-            { \
-                Object *o = children[i]; \
-                body; \
-            } \
-        } while(0)
-        //note reverse iteration
-        #define LOOP_CHILDREN_REV(o, body) do { \
-            for(int i = children.length(); --i >=0;) \
-            { \
-                Object *o = children[i]; \
-                body; \
-            } \
-        } while(0)
-
-        #define LOOP_CHILD_RANGE(start, end, o, body) do { \
-            for(int i = start; i < end; i++) \
-            { \
-                Object *o = children[i]; \
-                body; \
-            } \
-        } while(0)
-
-        virtual void layout()
-        {
-            w = h = 0;
-            LOOP_CHILDREN(o,
+            Object() : adjust(0), state(0), childstate(0) {}
+            virtual ~Object()
             {
-                o->x = o->y = 0;
-                o->layout();
-                w = max(w, o->x + o->w);
-                h = max(h, o->y + o->h);
-            });
-        }
-
-        void adjustchildrento(float px, float py, float pw, float ph)
-        {
-            LOOP_CHILDREN(o, o->adjustlayout(px, py, pw, ph));
-        }
-
-        virtual void adjustchildren()
-        {
-            adjustchildrento(0, 0, w, h);
-        }
-
-        void adjustlayout(float px, float py, float pw, float ph)
-        {
-            switch(adjust & Align_HMask)
+                clearchildren();
+            }
+            template<class T>
+            T *buildtype()
             {
-                case Align_Left:
+                T *t;
+                if(children.inrange(buildchild))
                 {
-                    x = px;
-                    break;
+                    Object *o = children[buildchild];
+                    if(o->istype<T>())
+                    {
+                        t = (T *)o;
+                    }
+                    else
+                    {
+                        delete o;
+                        t = new T;
+                        children[buildchild] = t;
+                    }
                 }
-                case Align_HCenter:
+                else
                 {
-                    x = px + (pw - w) / 2;
-                    break;
+                    t = new T;
+                    children.add(t);
                 }
-                case Align_Right:
+                t->reset(this);
+                buildchild++;
+                return t;
+            }
+
+            virtual void layout()
+            {
+                w = h = 0;
+                LOOP_CHILDREN(o,
                 {
-                    x = px + pw - w;
-                    break;
+                    o->x = o->y = 0;
+                    o->layout();
+                    w = max(w, o->x + o->w);
+                    h = max(h, o->y + o->h);
+                });
+            }
+
+            void buildchildren(uint *contents)
+            {
+                if((*contents&Code_OpMask) == Code_Exit)
+                {
+                    children.deletecontents();
+                }
+                else
+                {
+                    Object *oldparent = buildparent;
+                    int oldchild = buildchild;
+                    buildparent = this;
+                    buildchild = 0;
+                    executeret(contents);
+                    while(children.length() > buildchild)
+                    {
+                        delete children.pop();
+                    }
+                    buildparent = oldparent;
+                    buildchild = oldchild;
+                }
+                resetstate();
+            }
+
+            void clearstate(int flags)
+            {
+                state &= ~flags;
+                if(childstate & flags)
+                {
+                    LOOP_CHILDREN(o, { if((o->state | o->childstate) & flags) o->clearstate(flags); });
+                    childstate &= ~flags;
                 }
             }
 
-            switch(adjust & Align_VMask)
+            void enddraw(int change)
             {
-                case Align_Top:
+                enddraw();
+                changed &= ~change;
+                if(changed)
                 {
-                    y = py;
-                    break;
-                }
-                case Align_VCenter:
-                {
-                    y = py + (ph - h) / 2;
-                    break;
-                }
-                case Align_Bottom:
-                {
-                    y = py + ph - h;
-                    break;
-                }
-            }
-
-            if(adjust & Clamp_Mask)
-            {
-                if(adjust & Clamp_Left)
-                {
-                    w += x - px;
-                    x = px;
-                }
-                if(adjust & Clamp_Right)
-                {
-                    w = px + pw - x;
-                }
-                if(adjust & Clamp_Top)
-                {
-                    h += y - py;
-                    y = py;
-                }
-                if(adjust & Clamp_Bottom)
-                {
-                    h = py + ph - y;
+                    if(changed & Change_Shader)
+                    {
+                        hudshader->set();
+                    }
+                    if(changed & Change_Color)
+                    {
+                        gle::colorf(1, 1, 1);
+                    }
+                    if(changed & Change_Blend)
+                    {
+                        resetblend();
+                    }
                 }
             }
 
-            adjustchildren();
-        }
-
-        void setalign(int xalign, int yalign)
-        {
-            adjust &= ~Align_Mask;
-            adjust |= (std::clamp(xalign, -2, 1)+2) << Align_HShift;
-            adjust |= (std::clamp(yalign, -2, 1)+2) << Align_VShift;
-        }
-
-        void setclamp(int left, int right, int top, int bottom)
-        {
-            adjust &= ~Clamp_Mask;
-            if(left)
+            void resetchildstate()
             {
-                adjust |= Clamp_Left;
+                resetstate();
+                LOOP_CHILDREN(o, o->resetchildstate());
             }
-            if(right)
+
+            bool hasstate(int flags) const
             {
-                adjust |= Clamp_Right;
+                return ((state & ~childstate) & flags) != 0;
             }
-            if(top)
+
+            bool haschildstate(int flags) const
             {
-                adjust |= Clamp_Top;
+                return ((state | childstate) & flags) != 0;
             }
-            if(bottom)
+
+            virtual void draw(float sx, float sy)
             {
-                adjust |= Clamp_Bottom;
+                LOOP_CHILDREN(o,
+                {
+                    if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
+                    {
+                        o->draw(sx + o->x, sy + o->y);
+                    }
+                });
             }
-        }
 
-        virtual bool target(float, float) //note unnamed function parameters
-        {
-            return false;
-        }
+            #define DOSTATES \
+                DOSTATE(State_Hover, hover) \
+                DOSTATE(State_Press, press) \
+                DOSTATE(State_Hold, hold) \
+                DOSTATE(State_Release, release) \
+                DOSTATE(State_AltHold, althold) \
+                DOSTATE(State_AltPress, altpress) \
+                DOSTATE(State_AltRelease, altrelease) \
+                DOSTATE(State_EscHold, eschold) \
+                DOSTATE(State_EscPress, escpress) \
+                DOSTATE(State_EscRelease, escrelease) \
+                DOSTATE(State_ScrollUp, scrollup) \
+                DOSTATE(State_ScrollDown, scrolldown)
 
-        virtual bool rawkey(int code, bool isdown)
-        {
-            LOOP_CHILDREN_REV(o,
+            bool setstate(int state, float cx, float cy, int mask = 0, bool inside = true, int setflags = 0)
             {
-                if(o->rawkey(code, isdown))
+                switch(state)
                 {
-                    return true;
+                #define DOSTATE(flags, func) case flags: func##children(cx, cy, mask, inside, setflags | flags); return haschildstate(flags);
+                DOSTATES
+                #undef DOSTATE
                 }
-            });
-            return false;
-        }
+                return false;
+            }
 
-        virtual bool key(int code, bool isdown)
-        {
-            LOOP_CHILDREN_REV(o,
+            void setup()
             {
-                if(o->key(code, isdown))
-                {
-                    return true;
-                }
-            });
-            return false;
-        }
+            }
 
-        virtual bool textinput(const char *str, int len)
-        {
-            LOOP_CHILDREN_REV(o,
+            template<class T>
+            bool istype() const
             {
-                if(o->textinput(str, len))
-                {
-                    return true;
-                }
-            });
-            return false;
-        }
+                return T::typestr() == gettype();
+            }
 
-        virtual void startdraw() {}
-        virtual void enddraw() {}
-
-        void enddraw(int change)
-        {
-            enddraw();
-            changed &= ~change;
-            if(changed)
+            virtual bool rawkey(int code, bool isdown)
             {
-                if(changed & Change_Shader)
+                LOOP_CHILDREN_REV(o,
                 {
-                    hudshader->set();
+                    if(o->rawkey(code, isdown))
+                    {
+                        return true;
+                    }
+                });
+                return false;
+            }
+
+            virtual bool key(int code, bool isdown)
+            {
+                LOOP_CHILDREN_REV(o,
+                {
+                    if(o->key(code, isdown))
+                    {
+                        return true;
+                    }
+                });
+                return false;
+            }
+
+            virtual bool textinput(const char *str, int len)
+            {
+                LOOP_CHILDREN_REV(o,
+                {
+                    if(o->textinput(str, len))
+                    {
+                        return true;
+                    }
+                });
+                return false;
+            }
+
+            virtual int childcolumns() const
+            {
+                return children.length();
+            }
+
+            void adjustlayout(float px, float py, float pw, float ph)
+            {
+                switch(adjust & Align_HMask)
+                {
+                    case Align_Left:
+                    {
+                        x = px;
+                        break;
+                    }
+                    case Align_HCenter:
+                    {
+                        x = px + (pw - w) / 2;
+                        break;
+                    }
+                    case Align_Right:
+                    {
+                        x = px + pw - w;
+                        break;
+                    }
                 }
-                if(changed & Change_Color)
+
+                switch(adjust & Align_VMask)
                 {
-                    gle::colorf(1, 1, 1);
+                    case Align_Top:
+                    {
+                        y = py;
+                        break;
+                    }
+                    case Align_VCenter:
+                    {
+                        y = py + (ph - h) / 2;
+                        break;
+                    }
+                    case Align_Bottom:
+                    {
+                        y = py + ph - h;
+                        break;
+                    }
                 }
-                if(changed & Change_Blend)
+
+                if(adjust & Clamp_Mask)
                 {
-                    resetblend();
+                    if(adjust & Clamp_Left)
+                    {
+                        w += x - px;
+                        x = px;
+                    }
+                    if(adjust & Clamp_Right)
+                    {
+                        w = px + pw - x;
+                    }
+                    if(adjust & Clamp_Top)
+                    {
+                        h += y - py;
+                        y = py;
+                    }
+                    if(adjust & Clamp_Bottom)
+                    {
+                        h = py + ph - y;
+                    }
+                }
+
+                adjustchildren();
+            }
+
+            void setalign(int xalign, int yalign)
+            {
+                adjust &= ~Align_Mask;
+                adjust |= (std::clamp(xalign, -2, 1)+2) << Align_HShift;
+                adjust |= (std::clamp(yalign, -2, 1)+2) << Align_VShift;
+            }
+
+            void setclamp(int left, int right, int top, int bottom)
+            {
+                adjust &= ~Clamp_Mask;
+                if(left)
+                {
+                    adjust |= Clamp_Left;
+                }
+                if(right)
+                {
+                    adjust |= Clamp_Right;
+                }
+                if(top)
+                {
+                    adjust |= Clamp_Top;
+                }
+                if(bottom)
+                {
+                    adjust |= Clamp_Bottom;
                 }
             }
-        }
+        protected:
 
-        void changedraw(int change = 0)
-        {
-            if(!drawing)
+            void reset()
             {
-                startdraw();
-                changed = change;
+                resetlayout();
+                parent = NULL;
+                adjust = Align_HCenter | Align_VCenter;
             }
-            else if(drawing->gettype() != gettype())
-            {
-                drawing->enddraw(change);
-                startdraw();
-                changed = change;
-            }
-            drawing = this;
-        }
 
-        virtual void draw(float sx, float sy)
-        {
-            LOOP_CHILDREN(o,
+            virtual uchar childalign() const
             {
-                if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
+                return Align_HCenter | Align_VCenter;
+            }
+
+            void reset(Object *parent_)
+            {
+                resetlayout();
+                parent = parent_;
+                adjust = parent->childalign();
+            }
+
+            void clearchildren()
+            {
+                children.deletecontents();
+            }
+
+            void adjustchildrento(float px, float py, float pw, float ph)
+            {
+                LOOP_CHILDREN(o, o->adjustlayout(px, py, pw, ph));
+            }
+
+            virtual void adjustchildren()
+            {
+                adjustchildrento(0, 0, w, h);
+            }
+
+            virtual bool target(float, float) //note unnamed function parameters
+            {
+                return false;
+            }
+
+            virtual void startdraw() {}
+            virtual void enddraw() {}
+
+            void changedraw(int change = 0)
+            {
+                if(!drawing)
                 {
-                    o->draw(sx + o->x, sy + o->y);
+                    startdraw();
+                    changed = change;
                 }
-            });
-        }
+                else if(drawing->gettype() != gettype())
+                {
+                    drawing->enddraw(change);
+                    startdraw();
+                    changed = change;
+                }
+                drawing = this;
+            }
 
-        void resetstate()
-        {
-            state &= State_HoldMask;
-            childstate &= State_HoldMask;
-        }
-        void resetchildstate()
-        {
-            resetstate();
-            LOOP_CHILDREN(o, o->resetchildstate());
-        }
-
-        bool hasstate(int flags) const
-        {
-            return ((state & ~childstate) & flags) != 0;
-        }
-        bool haschildstate(int flags) const
-        {
-            return ((state | childstate) & flags) != 0;
-        }
-
-        #define DOSTATES \
-            DOSTATE(State_Hover, hover) \
-            DOSTATE(State_Press, press) \
-            DOSTATE(State_Hold, hold) \
-            DOSTATE(State_Release, release) \
-            DOSTATE(State_AltHold, althold) \
-            DOSTATE(State_AltPress, altpress) \
-            DOSTATE(State_AltRelease, altrelease) \
-            DOSTATE(State_EscHold, eschold) \
-            DOSTATE(State_EscPress, escpress) \
-            DOSTATE(State_EscRelease, escrelease) \
-            DOSTATE(State_ScrollUp, scrollup) \
-            DOSTATE(State_ScrollDown, scrolldown)
-
-        bool setstate(int state, float cx, float cy, int mask = 0, bool inside = true, int setflags = 0)
-        {
-            switch(state)
+            void resetstate()
             {
-            #define DOSTATE(flags, func) case flags: func##children(cx, cy, mask, inside, setflags | flags); return haschildstate(flags);
+                state &= State_HoldMask;
+                childstate &= State_HoldMask;
+            }
+
+            #define PROPAGATE_STATE(o, cx, cy, mask, inside, body) \
+                LOOP_CHILDREN_REV(o, \
+                { \
+                    if(((o->state | o->childstate) & mask) != mask) \
+                    { \
+                        continue; \
+                    } \
+                    float o##x = cx - o->x; \
+                    float o##y = cy - o->y; \
+                    if(!inside) \
+                    { \
+                        o##x = std::clamp(o##x, 0.0f, o->w); \
+                        o##y = std::clamp(o##y, 0.0f, o->h); \
+                        body; \
+                    } \
+                    else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \
+                    { \
+                        body; \
+                    } \
+                })
+
+            #define DOSTATE(flags, func) \
+                virtual void func##children(float cx, float cy, int mask, bool inside, int setflags) \
+                { \
+                    PROPAGATE_STATE(o, cx, cy, mask, inside, \
+                    { \
+                        o->func##children(ox, oy, mask, inside, setflags); \
+                        childstate |= (o->state | o->childstate) & (setflags); \
+                    }); \
+                    if(target(cx, cy)) \
+                    { \
+                        state |= (setflags); \
+                    } \
+                    func(cx, cy); \
+                } \
+                virtual void func(float, float) {} //note unnamed function parameters
             DOSTATES
+            #undef PROPAGATE_STATE
             #undef DOSTATE
-            }
-            return false;
-        }
 
-        void clearstate(int flags)
-        {
-            state &= ~flags;
-            if(childstate & flags)
+            virtual const char *gettype() const
             {
-                LOOP_CHILDREN(o, { if((o->state | o->childstate) & flags) o->clearstate(flags); });
-                childstate &= ~flags;
+                return typestr();
             }
-        }
 
-        #define PROPAGATE_STATE(o, cx, cy, mask, inside, body) \
-            LOOP_CHILDREN_REV(o, \
-            { \
-                if(((o->state | o->childstate) & mask) != mask) \
-                { \
-                    continue; \
-                } \
-                float o##x = cx - o->x; \
-                float o##y = cy - o->y; \
-                if(!inside) \
-                { \
-                    o##x = std::clamp(o##x, 0.0f, o->w); \
-                    o##y = std::clamp(o##y, 0.0f, o->h); \
-                    body; \
-                } \
-                else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \
-                { \
-                    body; \
-                } \
-            })
-
-        #define DOSTATE(flags, func) \
-            virtual void func##children(float cx, float cy, int mask, bool inside, int setflags) \
-            { \
-                PROPAGATE_STATE(o, cx, cy, mask, inside, \
-                { \
-                    o->func##children(ox, oy, mask, inside, setflags); \
-                    childstate |= (o->state | o->childstate) & (setflags); \
-                }); \
-                if(target(cx, cy)) \
-                { \
-                    state |= (setflags); \
-                } \
-                func(cx, cy); \
-            } \
-            virtual void func(float, float) {} //note unnamed function parameters
-        DOSTATES
-        #undef PROPAGATE_STATE
-        #undef DOSTATE
-
-        static const char *typestr()
-        {
-            return "#Object";
-        }
-
-        virtual const char *gettype() const
-        {
-            return typestr();
-        }
-
-        virtual const char *getname() const
-        {
-            return gettype();
-        }
-
-        virtual const char *gettypename() const
-        {
-            return gettype();
-        }
-
-        template<class T>
-        bool istype() const
-        {
-            return T::typestr() == gettype();
-        }
-
-        bool isnamed(const char *name) const
-        {
-            return name[0] == '#' ? name == gettypename() : !strcmp(name, getname());
-        }
-
-        Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
-        {
-            //note that this is a macro
-            LOOP_CHILDREN(o,
+            virtual const char *gettypename() const
             {
-                if(o != exclude && o->isnamed(name))
-                {
-                    return o;
-                }
-            });
-            if(recurse)
+                return gettype();
+            }
+
+            Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
             {
                 //note that this is a macro
                 LOOP_CHILDREN(o,
                 {
-                    if(o != exclude)
+                    if(o != exclude && o->isnamed(name))
                     {
-                        Object *found = o->find(name);
-                        if(found)
-                        {
-                            return found;
-                        }
+                        return o;
                     }
                 });
-            }
-            return NULL;
-        }
-
-        Object *findsibling(const char *name) const
-        {
-            for(const Object *prev = this, *cur = parent; cur; prev = cur, cur = cur->parent)
-            {
-                Object *o = cur->find(name, true, prev);
-                if(o)
+                if(recurse)
                 {
-                    return o;
+                    //note that this is a macro
+                    LOOP_CHILDREN(o,
+                    {
+                        if(o != exclude)
+                        {
+                            Object *found = o->find(name);
+                            if(found)
+                            {
+                                return found;
+                            }
+                        }
+                    });
                 }
+                return NULL;
             }
-            return NULL;
-        }
 
-        template<class T>
-        T *buildtype()
-        {
-            T *t;
-            if(children.inrange(buildchild))
+            Object *findsibling(const char *name) const
             {
-                Object *o = children[buildchild];
-                if(o->istype<T>())
+                for(const Object *prev = this, *cur = parent; cur; prev = cur, cur = cur->parent)
                 {
-                    t = (T *)o;
+                    Object *o = cur->find(name, true, prev);
+                    if(o)
+                    {
+                        return o;
+                    }
                 }
-                else
-                {
-                    delete o;
-                    t = new T;
-                    children[buildchild] = t;
-                }
+                return NULL;
             }
-            else
-            {
-                t = new T;
-                children.add(t);
-            }
-            t->reset(this);
-            buildchild++;
-            return t;
-        }
 
-        void buildchildren(uint *contents)
-        {
-            if((*contents&Code_OpMask) == Code_Exit)
-            {
-                children.deletecontents();
-            }
-            else
-            {
-                Object *oldparent = buildparent;
-                int oldchild = buildchild;
-                buildparent = this;
-                buildchild = 0;
-                executeret(contents);
-                while(children.length() > buildchild)
-                {
-                    delete children.pop();
-                }
-                buildparent = oldparent;
-                buildchild = oldchild;
-            }
-            resetstate();
-        }
+        private:
 
-        virtual int childcolumns() const
-        {
-            return children.length();
-        }
+            virtual const char *getname() const
+            {
+                return gettype();
+            }
+
+            void resetlayout()
+            {
+                x = y = w = h = 0;
+            }
+
+            static const char *typestr()
+            {
+                return "#Object";
+            }
+
+            bool isnamed(const char *name) const
+            {
+                return name[0] == '#' ? name == gettypename() : !strcmp(name, getname());
+            }
+
     };
 
     static inline void stopdrawing()
@@ -2955,14 +2961,6 @@ namespace UI
         virtual int wheelscrolldirection() const
         {
             return 1;
-        }
-        void scrollup(float, float) //note unnamed function parameters
-        {
-            wheelscroll(-wheelscrolldirection());
-        }
-        void scrolldown(float, float) //note unnamed function parameters
-        {
-            wheelscroll(wheelscrolldirection());
         }
 
         virtual void movebutton(Object *o, float fromx, float fromy, float tox, float toy) = 0;
