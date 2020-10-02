@@ -3511,7 +3511,7 @@ namespace UI
         static TextEditor *focus;
 
         float scale, offsetx, offsety;
-        editor *edit;
+        Editor *edit;
         char *keyfilter;
 
         TextEditor() : edit(NULL), keyfilter(NULL) {}
@@ -3519,7 +3519,7 @@ namespace UI
         void setup(const char *name, int length, int height, float scale_ = 1, const char *initval = NULL, int mode = Editor_Used, const char *keyfilter_ = NULL)
         {
             Object::setup();
-            editor *edit_ = useeditor(name, mode, false, initval);
+            Editor *edit_ = useeditor(name, mode, false, initval);
             if(edit_ != edit)
             {
                 if(edit)
