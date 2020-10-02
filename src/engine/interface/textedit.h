@@ -203,7 +203,7 @@ enum
     Editor_Forever
 };
 
-struct editor
+struct Editor
 {
     int mode; //editor mode - 1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)
     bool active, rendered;
@@ -222,7 +222,7 @@ struct editor
 
     vector<EditLine> lines; // MUST always contain at least one line!
 
-    editor(const char *name, int mode, const char *initval) :
+    Editor(const char *name, int mode, const char *initval) :
         mode(mode), active(true), rendered(false), name(newstring(name)), filename(NULL),
         cx(0), cy(0), mx(-1), maxx(-1), maxy(-1), scrolly(0), linewrap(false), pixelwidth(-1), pixelheight(-1)
     {
@@ -230,7 +230,7 @@ struct editor
         lines.add().set(initval ? initval : "");
     }
 
-    ~editor()
+    ~Editor()
     {
         //printf("~editor %08x '%s'\n", this, name);
         DELETEA(name);
@@ -418,7 +418,7 @@ struct editor
         return lines[cy];
     }
 
-    void copyselectionto(editor *b)
+    void copyselectionto(Editor *b)
     {
         if(b==this)
         {
@@ -610,7 +610,7 @@ struct editor
         }
     }
 
-    void insertallfrom(editor *b)
+    void insertallfrom(Editor *b)
     {
         if(b==this)
         {
@@ -981,8 +981,8 @@ struct editor
     }
 };
 
-static vector<editor *> editors;
-static editor *textfocus = NULL;
+static vector<Editor *> editors;
+static Editor *textfocus = NULL;
 
 static void readyeditors()
 {
@@ -998,7 +998,7 @@ static void flusheditors()
     {
         if(!editors[i]->active)
         {
-            editor *e = editors.remove(i);
+            Editor *e = editors.remove(i);
             if(e == textfocus)
             {
                 textfocus = NULL;
@@ -1008,13 +1008,13 @@ static void flusheditors()
     }
 }
 
-static editor *useeditor(const char *name, int mode, bool focus, const char *initval = NULL)
+static Editor *useeditor(const char *name, int mode, bool focus, const char *initval = NULL)
 {
     for(int i = 0; i < editors.length(); i++)
     {
         if(!strcmp(editors[i]->name, name))
         {
-            editor *e = editors[i];
+            Editor *e = editors[i];
             if(focus)
             {
                 textfocus = e;
@@ -1027,7 +1027,7 @@ static editor *useeditor(const char *name, int mode, bool focus, const char *ini
     {
         return NULL;
     }
-    editor *e = new editor(name, mode, initval);
+    Editor *e = new Editor(name, mode, initval);
     editors.add(e);
     if(focus)
     {
@@ -1110,7 +1110,7 @@ ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into
     {
         return;
     }
-    editor *e = NULL;
+    Editor *e = NULL;
     for(int i = 0; i < editors.length(); i++)
     {
         if(!strcmp(editors[i]->name, name))
@@ -1128,8 +1128,8 @@ ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into
 
 #define PASTEBUFFER "#pastebuffer"
 
-TEXTCOMMAND(textcopy, "", (), editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->copyselectionto(b););
-TEXTCOMMAND(textpaste, "", (), editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->insertallfrom(b););
+TEXTCOMMAND(textcopy, "", (), Editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->copyselectionto(b););
+TEXTCOMMAND(textpaste, "", (), Editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->insertallfrom(b););
 TEXTCOMMAND(textmark, "i", (int *m),  // (1=mark, 2=unmark), return current mark setting if no args
     if(*m)
     {
