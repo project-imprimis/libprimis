@@ -202,9 +202,9 @@ namespace UI
         public:
             float x, y, w, h;
             vector<Object *> children;
+            uchar adjust;
             ushort state, childstate;
             Object *parent;
-            uchar adjust;
 
             #define LOOP_CHILDREN(o, body) do { \
                 for(int i = 0; i < children.length(); i++) \
