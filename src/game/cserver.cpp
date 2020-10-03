@@ -1182,36 +1182,6 @@ namespace server
         }
     }
 
-    extern void verifybans();
-
-    struct banlist
-    {
-        vector<ipmask> bans;
-
-        void clear() { bans.shrink(0); }
-
-        bool check(uint ip)
-        {
-            for(int i = 0; i < bans.length(); i++)
-            {
-                if(bans[i].check(ip))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        void add(const char *ipname)
-        {
-            ipmask ban;
-            ban.parse(ipname);
-            bans.add(ban);
-
-            verifybans();
-        }
-    } ipbans, gbans;
-
     bool allowbroadcast(int n)
     {
         clientinfo *ci = getinfo(n);
