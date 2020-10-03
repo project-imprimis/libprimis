@@ -940,13 +940,9 @@ extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
 extern int getservermtu();
 extern uint getclientip(int n);
 extern const char *disconnectreason(int reason);
-extern void disconnect_client(int n, int reason);
-extern void kicknonlocalclients(int reason = Discon_None);
 extern bool hasnonlocalclients();
 extern bool haslocalclients();
 extern void sendserverinforeply(ucharbuf &p);
-extern bool requestmaster(const char *req);
-extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
 extern void closelogfile();
 extern void setlogfile(const char *fname);
 
@@ -996,11 +992,7 @@ namespace server
     extern bool serveroption(const char *arg);
 
     extern void *newclientinfo();
-    extern void deleteclientinfo(void *ci);
-    extern int reserveclients();
     extern int numchannels();
-    extern void clientdisconnect(int n);
-    extern int clientconnect(int n, uint ip);
     extern bool allowbroadcast(int n);
     extern void recordpacket(int chan, void *data, int len);
     extern void sendservmsg(const char *s);
@@ -1009,8 +1001,6 @@ namespace server
     extern int serverport();
     extern const char *defaultmaster();
     extern int masterport();
-    extern void masterconnected();
-    extern void masterdisconnected();
     extern bool ispaused();
 }
 

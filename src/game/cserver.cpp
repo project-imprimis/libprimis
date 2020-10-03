@@ -323,13 +323,6 @@ namespace server
         uint ip;
     };
 
-    namespace aiman
-    {
-        extern void removeai(clientinfo *ci);
-        extern void clearai();
-        extern void checkai();
-    }
-
     enum
     {
         MasterMode_Mode = 0xF,
@@ -395,7 +388,6 @@ namespace server
     bool shouldcheckteamkills = false;
 
     void *newclientinfo() { return new clientinfo; }
-    void deleteclientinfo(void *ci) { delete (clientinfo *)ci; }
 
     clientinfo *getinfo(int n)
     {
@@ -743,119 +735,6 @@ namespace server
         return !strcmp(hash, given);
     }
 
-    void revokemaster(clientinfo *ci)
-    {
-        ci->privilege = Priv_None;
-        if(ci->state.state==ClientState_Spectator && !ci->local)
-        {
-            aiman::removeai(ci);
-        }
-    }
-
-    bool setmaster(clientinfo *ci, bool val, const char *pass = "", const char *authname = NULL, const char *authdesc = NULL, int authpriv = Priv_Master, bool force = false, bool trial = false)
-    {
-        if(authname && !val)
-        {
-            return false;
-        }
-        const char *name = "";
-        if(val)
-        {
-            bool haspass = adminpass[0] && checkpassword(ci, adminpass, pass);
-            int wantpriv = ci->local || haspass ? Priv_Admin : authpriv;
-            if(wantpriv <= ci->privilege)
-            {
-                return true;
-            }
-            else if(wantpriv <= Priv_Master && !force)
-            {
-                if(ci->state.state==ClientState_Spectator)
-                {
-                    sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "Spectators may not claim master.");
-                    return false;
-                }
-                for(int i = 0; i < clients.length(); i++)
-                {
-                    if(ci!=clients[i] && clients[i]->privilege)
-                    {
-                        sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "Master is already claimed.");
-                        return false;
-                    }
-                }
-                if(!authname && !(mastermask&MasterMode_AutoApprove) && !ci->privilege && !ci->local)
-                {
-                    sendf(ci->clientnum, 1, "ris", NetMsg_ServerMsg, "This server requires you to use the \"/auth\" command to claim master.");
-                    return false;
-                }
-            }
-            if(trial)
-            {
-                return true;
-            }
-            ci->privilege = wantpriv;
-            name = privname(ci->privilege);
-        }
-        else
-        {
-            if(!ci->privilege)
-            {
-                return false;
-            }
-            if(trial)
-            {
-                return true;
-            }
-            name = privname(ci->privilege);
-            revokemaster(ci);
-        }
-        bool hasmaster = false;
-        for(int i = 0; i < clients.length(); i++)
-        {
-            if(clients[i]->local || clients[i]->privilege >= Priv_Master)
-            {
-                hasmaster = true;
-            }
-        }
-        if(!hasmaster)
-        {
-            mastermode = MasterMode_Open;
-            allowedips.shrink(0);
-        }
-        string msg;
-        if(val && authname)
-        {
-            if(authdesc && authdesc[0])
-            {
-                formatstring(msg, "%s claimed %s as '\fs\f5%s\fr' [\fs\f0%s\fr]", colorname(ci), name, authname, authdesc);
-            }
-            else
-            {
-                formatstring(msg, "%s claimed %s as '\fs\f5%s\fr'", colorname(ci), name, authname);
-            }
-        }
-        else
-        {
-            formatstring(msg, "%s %s %s", colorname(ci), val ? "claimed" : "relinquished", name);
-        }
-        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        putint(p, NetMsg_ServerMsg);
-        sendstring(msg, p);
-        putint(p, NetMsg_CurrentMaster);
-        putint(p, mastermode);
-        for(int i = 0; i < clients.length(); i++)
-        {
-            if(clients[i]->privilege >= Priv_Master)
-            {
-                putint(p, clients[i]->clientnum);
-                putint(p, clients[i]->privilege);
-            }
-        }
-        putint(p, -1);
-        sendpacket(-1, 1, p.finalize());
-        checkpausegame();
-        return true;
-    }
-
     savedscore *findscore(clientinfo *ci, bool insert)
     {
         uint ip = getclientip(ci->clientnum);
@@ -1136,85 +1015,10 @@ namespace server
         sendf(ci->clientnum, 1, "ri5ss", NetMsg_ServerInfo, ci->clientnum, PROTOCOL_VERSION, ci->sessionid, serverpass[0] ? 1 : 0, serverdesc, serverauth);
     }
 
-    void noclients()
-    {
-        bannedips.shrink(0);
-        aiman::clearai();
-    }
-
-    void clientdisconnect(int n)
-    {
-        clientinfo *ci = getinfo(n);
-        for(int i = 0; i < clients.length(); i++)
-        {
-            if(clients[i]->authkickvictim == ci->clientnum)
-            {
-                clients[i]->cleanauth();
-            }
-        }
-        if(ci->connected)
-        {
-            if(ci->privilege)
-            {
-                setmaster(ci, false);
-            }
-            if(smode)
-            {
-                smode->leavegame(ci, true);
-            }
-            ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
-            savescore(ci);
-            sendf(-1, 1, "ri2", NetMsg_ClientDiscon, n);
-            clients.removeobj(ci);
-            aiman::removeai(ci);
-            if(!numclients(-1, false, true))
-            {
-                noclients(); // bans clear when server empties
-            }
-            if(ci->local)
-            {
-                checkpausegame();
-            }
-        }
-        else
-        {
-            connects.removeobj(ci);
-        }
-    }
-
     bool allowbroadcast(int n)
     {
         clientinfo *ci = getinfo(n);
         return ci && ci->connected;
-    }
-
-    void authfailed(clientinfo *ci)
-    {
-        if(!ci)
-        {
-            return;
-        }
-        ci->cleanauth();
-        if(ci->connectauth)
-        {
-            disconnect_client(ci->clientnum, ci->connectauth);
-        }
-    }
-
-    void masterconnected()
-    {
-    }
-
-    void masterdisconnected()
-    {
-        for(int i = clients.length(); --i >=0;) //note reverse iteration
-        {
-            clientinfo *ci = clients[i];
-            if(ci->authreq)
-            {
-                authfailed(ci);
-            }
-        }
     }
 
     int laninfoport() { return IMPRIMIS_LANINFO_PORT; }
@@ -1226,123 +1030,5 @@ namespace server
     int protocolversion()
     {
         return PROTOCOL_VERSION;
-    }
-    // server-side ai manager
-    // note that server does not handle actual bot logic,
-    // which is offloaded to the clients with the best connection
-    namespace aiman
-    {
-        bool dorefresh = false;
-
-        //this fxn could be entirely in the return statement but is separated for clarity
-        static inline bool validaiclient(clientinfo *ci)
-        {
-            if(ci->clientnum >= 0 && ci->state.aitype == AI_None)
-            {
-                if(ci->state.state!=ClientState_Spectator || ci->local || (ci->privilege && !ci->warned))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        clientinfo *findaiclient(clientinfo *exclude = NULL)
-        {
-            clientinfo *least = NULL;
-            for(int i = 0; i < clients.length(); i++)
-            {
-                clientinfo *ci = clients[i];
-                if(!validaiclient(ci) || ci==exclude)
-                {
-                    continue;
-                }
-                if(!least || ci->bots.length() < least->bots.length())
-                {
-                    least = ci;
-                }
-            }
-            return least;
-        }
-
-        void deleteai(clientinfo *ci)
-        {
-            int cn = ci->clientnum - MAXCLIENTS;
-            if(!bots.inrange(cn))
-            {
-                return;
-            }
-            if(ci->ownernum >= 0 && !ci->aireinit && smode)
-            {
-                smode->leavegame(ci, true);
-            }
-            sendf(-1, 1, "ri2", NetMsg_ClientDiscon, ci->clientnum);
-            clientinfo *owner = static_cast<clientinfo *>(getclientinfo(ci->ownernum));
-            if(owner)
-            {
-                owner->bots.removeobj(ci);
-            }
-            clients.removeobj(ci);
-            DELETEP(bots[cn]);
-            dorefresh = true;
-        }
-
-        bool deleteai()
-        {
-            for(int i = bots.length(); --i >=0;) //note reverse iteration
-            {
-                if(bots[i] && bots[i]->ownernum >= 0)
-                {
-                    deleteai(bots[i]);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        void shiftai(clientinfo *ci, clientinfo *owner = NULL)
-        {
-            if(ci->ownernum >= 0 && !ci->aireinit && smode)
-            {
-                smode->leavegame(ci, true);
-            }
-            clientinfo *prevowner = static_cast<clientinfo *>(getclientinfo(ci->ownernum));
-            if(prevowner)
-            {
-                prevowner->bots.removeobj(ci);
-            }
-            if(!owner)
-            {
-                ci->aireinit = 0;
-                ci->ownernum = -1;
-            }
-            else if(ci->ownernum != owner->clientnum)
-            {
-                ci->aireinit = 2;
-                ci->ownernum = owner->clientnum;
-                owner->bots.add(ci);
-            }
-            dorefresh = true;
-        }
-
-        void removeai(clientinfo *ci)
-        { // either schedules a removal, or someone else to assign to
-
-            for(int i = ci->bots.length(); --i >=0;) //note reverse iteration
-            {
-                shiftai(ci->bots[i], findaiclient(ci));
-            }
-        }
-
-        void clearai()
-        { // clear and remove all ai immediately
-            for(int i = bots.length(); --i >=0;) //note reverse iteration
-            {
-                if(bots[i])
-                {
-                    deleteai(bots[i]);
-                }
-            }
-        }
     }
 }

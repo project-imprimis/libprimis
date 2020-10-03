@@ -155,42 +155,6 @@ client &addclient(int type)
     return *c;
 }
 
-void delclient(client *c)
-{
-    if(!c)
-    {
-        return;
-    }
-    switch(c->type)
-    {
-        case ServerClient_Remote:
-        {
-            nonlocalclients--;
-            if(c->peer)
-            {
-                c->peer->data = NULL;
-            }
-            break;
-        }
-        case ServerClient_Local:
-        {
-            localclients--;
-            break;
-        }
-        case ServerClient_Empty:
-        {
-            return;
-        }
-    }
-    c->type = ServerClient_Empty;
-    c->peer = NULL;
-    if(c->info)
-    {
-        server::deleteclientinfo(c->info);
-        c->info = NULL;
-    }
-}
-
 void cleanupserver()
 {
     if(serverhost)
@@ -451,30 +415,6 @@ const char *disconnectreason(int reason)
     }
 }
 
-void disconnect_client(int n, int reason)
-{
-    //don't drop local clients
-    if(!clients.inrange(n) || clients[n]->type!=ServerClient_Remote)
-    {
-        return;
-    }
-    enet_peer_disconnect(clients[n]->peer, reason);
-    server::clientdisconnect(n);
-    delclient(clients[n]);
-    const char *msg = disconnectreason(reason);
-    string s;
-    if(msg)
-    {
-        formatstring(s, "client (%s) disconnected because: %s", clients[n]->hostname, msg);
-    }
-    else
-    {
-        formatstring(s, "client (%s) disconnected", clients[n]->hostname);
-    }
-    logoutf("%s", s);
-    server::sendservmsg(s);
-}
-
 ENetSocket mastersock = ENET_SOCKET_NULL;
 ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY },
             serveraddress = { ENET_HOST_ANY, ENET_PORT_ANY };
@@ -487,30 +427,22 @@ int masteroutpos = 0,
     masterinpos = 0;
 VARN(updatemaster, allowupdatemaster, 0, 1, 1);
 
-void disconnectmaster()
+static ENetAddress serverinfoaddress;
+
+void sendserverinforeply(ucharbuf &p)
 {
-    if(mastersock != ENET_SOCKET_NULL)
-    {
-        server::masterdisconnected();
-        enet_socket_destroy(mastersock);
-        mastersock = ENET_SOCKET_NULL;
-    }
-    masterout.setsize(0);
-    masterin.setsize(0);
-    masteroutpos = masterinpos = 0;
-
-    masteraddress.host = ENET_HOST_ANY;
-    masteraddress.port = ENET_PORT_ANY;
-
-    lastupdatemaster = masterconnecting = masterconnected = 0;
+    ENetBuffer buf;
+    buf.data = p.buf;
+    buf.dataLength = p.length();
+    enet_socket_send(serverhost->socket, &serverinfoaddress, &buf, 1);
 }
 
-SVARF(mastername, server::defaultmaster(), disconnectmaster());
-VARF(masterport, 1, server::masterport(), 0xFFFF, disconnectmaster());
+SVAR(mastername, server::defaultmaster());
+VAR(masterport, 1, server::masterport(), 0xFFFF);
 
 ENetSocket connectmaster(bool wait)
 {
-    if(!mastername[0]) //if no master to look up
+    if(!mastername[0])
     {
         return ENET_SOCKET_NULL;
     }
@@ -544,41 +476,6 @@ ENetSocket connectmaster(bool wait)
     }
     enet_socket_destroy(sock);
     return ENET_SOCKET_NULL;
-}
-
-bool requestmaster(const char *req)
-{
-    if(mastersock == ENET_SOCKET_NULL)
-    {
-        mastersock = connectmaster(false);
-        if(mastersock == ENET_SOCKET_NULL)
-        {
-            return false;
-        }
-        lastconnectmaster = masterconnecting = totalmillis ? totalmillis : 1;
-    }
-    if(masterout.length() >= 4096)
-    {
-        return false;
-    }
-    masterout.put(req, strlen(req));
-    return true;
-}
-
-bool requestmasterf(const char *fmt, ...)
-{
-    DEFV_FORMAT_STRING(req, fmt, fmt);
-    return requestmaster(req);
-}
-
-static ENetAddress serverinfoaddress;
-
-void sendserverinforeply(ucharbuf &p)
-{
-    ENetBuffer buf;
-    buf.data = p.buf;
-    buf.dataLength = p.length();
-    enet_socket_send(serverhost->socket, &serverinfoaddress, &buf, 1);
 }
 
 VAR(serveruprate, 0, 0, INT_MAX);
