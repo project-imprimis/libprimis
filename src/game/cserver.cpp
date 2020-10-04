@@ -452,53 +452,6 @@ namespace server
          sendf(-1, 1, "ris", NetMsg_ServerMsg, s);
     }
 
-    int numclients(int exclude = -1, bool nospec = true, bool noai = true, bool priv = false)
-    {
-        int n = 0;
-        for(int i = 0; i < clients.length(); i++)
-        {
-            clientinfo *ci = clients[i];
-            if(ci->clientnum!=exclude && (!nospec || ci->state.state!=ClientState_Spectator || (priv && (ci->privilege || ci->local))) && (!noai || ci->state.aitype == AI_None))
-            {
-                n++;
-            }
-        }
-        return n;
-    }
-
-    bool duplicatename(clientinfo *ci, const char *name)
-    {
-        if(!name)
-        {
-            name = ci->name;
-        }
-        for(int i = 0; i < clients.length(); i++)
-        {
-            if(clients[i]!=ci && !strcmp(name, clients[i]->name))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    const char *colorname(clientinfo *ci, const char *name = NULL)
-    {
-        if(!name)
-        {
-            name = ci->name;
-        }
-        if(name[0] && !duplicatename(ci, name) && ci->state.aitype == AI_None)
-        {
-            return name;
-        }
-        static string cname[3];
-        static int cidx = 0;
-        cidx = (cidx+1)%3;
-        formatstring(cname[cidx], ci->state.aitype == AI_None ? "%s \fs\f5(%d)\fr" : "%s \fs\f5[%d]\fr", name, ci->clientnum);
-        return cname[cidx];
-    }
-
     struct servermode
     {
         virtual ~servermode() {}
@@ -612,18 +565,6 @@ namespace server
         writedemo(chan, data, len);
     }
 
-    void listdemos(int cn)
-    {
-        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        putint(p, NetMsg_SendDemoList);
-        putint(p, demos.length());
-        for(int i = 0; i < demos.length(); i++)
-        {
-            sendstring(demos[i].info, p);
-        }
-        sendpacket(cn, 1, p.finalize());
-    }
-
     void pausegame(bool val, clientinfo *ci = NULL)
     {
         if(gamepaused==val)
@@ -632,26 +573,6 @@ namespace server
         }
         gamepaused = val;
         sendf(-1, 1, "riii", NetMsg_PauseGame, gamepaused ? 1 : 0, ci ? ci->clientnum : -1);
-    }
-
-    void checkpausegame()
-    {
-        if(!gamepaused)
-        {
-            return;
-        }
-        int admins = 0;
-        for(int i = 0; i < clients.length(); i++)
-        {
-            if(clients[i]->privilege >= (restrictpausegame ? Priv_Admin : Priv_Master) || clients[i]->local)
-            {
-                admins++;
-            }
-        }
-        if(!admins)
-        {
-            pausegame(false);
-        }
     }
 
     void forcepaused(bool paused)
@@ -688,92 +609,6 @@ namespace server
             *result = '\0';
         }
     }
-
-    bool checkpassword(clientinfo *ci, const char *wanted, const char *given)
-    {
-        string hash;
-        hashpassword(ci->clientnum, ci->sessionid, wanted, hash, sizeof(hash));
-        return !strcmp(hash, given);
-    }
-
-    savedscore *findscore(clientinfo *ci, bool insert)
-    {
-        uint ip = getclientip(ci->clientnum);
-        if(!ip && !ci->local)
-        {
-            return 0;
-        }
-        if(!insert)
-        {
-            for(int i = 0; i < clients.length(); i++)
-            {
-                clientinfo *oi = clients[i];
-                if(oi->clientnum != ci->clientnum && getclientip(oi->clientnum) == ip && !strcmp(oi->name, ci->name))
-                {
-                    oi->state.timeplayed += lastmillis - oi->state.lasttimeplayed;
-                    oi->state.lasttimeplayed = lastmillis;
-                    static savedscore curscore;
-                    curscore.save(oi->state);
-                    return &curscore;
-                }
-            }
-        }
-        for(int i = 0; i < scores.length(); i++)
-        {
-            savedscore &sc = scores[i];
-            if(sc.ip == ip && !strcmp(sc.name, ci->name))
-            {
-                return &sc;
-            }
-        }
-        if(!insert)
-        {
-            return 0;
-        }
-        savedscore &sc = scores.add();
-        sc.ip = ip;
-        copystring(sc.name, ci->name);
-        return &sc;
-    }
-
-    void savescore(clientinfo *ci)
-    {
-        savedscore *sc = findscore(ci, true);
-        if(sc)
-        {
-            sc->save(ci->state);
-        }
-    }
-
-    static struct msgfilter
-    {
-        uchar msgmask[NetMsg_NumMsgs];
-
-        msgfilter(int msg, ...)
-        {
-            memset(msgmask, 0, sizeof(msgmask));
-            va_list msgs;
-            va_start(msgs, msg);
-            for(uchar val = 1; msg < NetMsg_NumMsgs; msg = va_arg(msgs, int))
-            {
-                if(msg < 0)
-                {
-                    val = static_cast<uchar>(-msg);
-                }
-                else
-                {
-                    msgmask[msg] = val;
-                }
-            }
-            va_end(msgs);
-        }
-
-        uchar operator[](int msg) const
-        {
-            return msg >= 0 && msg < NetMsg_NumMsgs ? msgmask[msg] : 0;
-        }
-    } msgfilter(-1, NetMsg_Connect, NetMsg_ServerInfo, NetMsg_InitClient, NetMsg_Welcome, NetMsg_MapChange, NetMsg_ServerMsg, NetMsg_Damage, NetMsg_Hitpush, NetMsg_ShotFX, NetMsg_ExplodeFX, NetMsg_Died, NetMsg_SpawnState, NetMsg_ForceDeath, NetMsg_TeamInfo, NetMsg_ItemAcceptance, NetMsg_ItemSpawn, NetMsg_TimeUp, NetMsg_ClientDiscon, NetMsg_CurrentMaster, NetMsg_Pong, NetMsg_Resume, NetMsg_SendDemoList, NetMsg_SendDemo, NetMsg_DemoPlayback, NetMsg_SendMap, NetMsg_DropFlag, NetMsg_ScoreFlag, NetMsg_ReturnFlag, NetMsg_ResetFlag, NetMsg_Client, NetMsg_AuthChallenge, NetMsg_InitAI, NetMsg_DemoPacket, -2, NetMsg_CalcLight, NetMsg_Remip, NetMsg_Newmap, NetMsg_GetMap, NetMsg_SendMap, NetMsg_Clipboard, -3, NetMsg_EditEnt, NetMsg_EditFace, NetMsg_EditTex, NetMsg_EditMat, NetMsg_EditFlip, NetMsg_Copy, NetMsg_Paste, NetMsg_Rotate, NetMsg_Replace, NetMsg_DelCube, NetMsg_EditVar, NetMsg_EditVSlot, NetMsg_Undo, NetMsg_Redo, -4, NetMsg_Pos, NetMsg_NumMsgs),
-      connectfilter(-1, NetMsg_Connect, -2, NetMsg_AuthAnswer, -3, NetMsg_Ping, NetMsg_NumMsgs);
 
     template<class T>
     void sendstate(servstate &gs, T &p)
