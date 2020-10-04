@@ -446,8 +446,6 @@ namespace server
         }
     }
 
-    void sendservmsg(const char *s) { sendf(-1, 1, "ris", NetMsg_ServerMsg, s); }
-
     void sendservmsgf(const char *fmt, ...) PRINTFARGS(1, 2);
     void sendservmsgf(const char *fmt, ...)
     {
@@ -615,9 +613,6 @@ namespace server
         writedemo(chan, data, len);
     }
 
-    int welcomepacket(packetbuf &p, clientinfo *ci);
-    void sendwelcome(clientinfo *ci);
-
     void listdemos(int cn)
     {
         packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
@@ -628,39 +623,6 @@ namespace server
             sendstring(demos[i].info, p);
         }
         sendpacket(cn, 1, p.finalize());
-    }
-
-    void enddemoplayback()
-    {
-        if(!demoplayback)
-        {
-            return;
-        }
-        DELETEP(demoplayback);
-
-        for(int i = 0; i < clients.length(); i++)
-        {
-            sendf(clients[i]->clientnum, 1, "ri3", NetMsg_DemoPlayback, 0, clients[i]->clientnum);
-        }
-
-        sendservmsg("demo playback finished");
-
-        for(int i = 0; i < clients.length(); i++)
-        {
-            sendwelcome(clients[i]);
-        }
-    }
-
-    void stopdemo()
-    {
-        if(modecheck(gamemode, Mode_Demo))
-        {
-            enddemoplayback();
-        }
-        else
-        {
-            enddemorecord();
-        }
     }
 
     void pausegame(bool val, clientinfo *ci = NULL)
@@ -832,182 +794,6 @@ namespace server
         servstate &gs = ci->state;
         gs.spawnstate(gamemode);
         gs.lifesequence = (gs.lifesequence + 1)&0x7F;
-    }
-
-    void sendwelcome(clientinfo *ci)
-    {
-        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        int chan = welcomepacket(p, ci);
-        sendpacket(ci->clientnum, chan, p.finalize());
-    }
-
-    void putinitclient(clientinfo *ci, packetbuf &p)
-    {
-        if(ci->state.aitype != AI_None)
-        {
-            putint(p, NetMsg_InitAI);
-            putint(p, ci->clientnum);
-            putint(p, ci->ownernum);
-            putint(p, ci->state.aitype);
-            putint(p, ci->state.skill);
-            putint(p, ci->playermodel);
-            putint(p, ci->playercolor);
-            putint(p, ci->team);
-            sendstring(ci->name, p);
-        }
-        else
-        {
-            putint(p, NetMsg_InitClient);
-            putint(p, ci->clientnum);
-            sendstring(ci->name, p);
-            putint(p, ci->team);
-            putint(p, ci->playermodel);
-            putint(p, ci->playercolor);
-        }
-    }
-
-    void welcomeinitclient(packetbuf &p, int exclude = -1)
-    {
-        for(int i = 0; i < clients.length(); i++)
-        {
-            clientinfo *ci = clients[i];
-            if(!ci->connected || ci->clientnum == exclude)
-            {
-                continue;
-            }
-            putinitclient(ci, p);
-        }
-    }
-
-    int welcomepacket(packetbuf &p, clientinfo *ci)
-    {
-        putint(p, NetMsg_Welcome);
-        putint(p, NetMsg_MapChange);
-        sendstring(smapname, p);
-        putint(p, gamemode);
-        putint(p, notgotitems ? 1 : 0);
-        if(!ci || (!modecheck(gamemode, Mode_Untimed) && smapname[0]))
-        {
-            putint(p, NetMsg_TimeUp);
-            putint(p, gamemillis < gamelimit && !interm ? max((gamelimit - gamemillis)/1000, 1) : 0);
-        }
-        if(!notgotitems)
-        {
-            putint(p, NetMsg_ItemList);
-            for(int i = 0; i < sents.length(); i++)
-            {
-                if(sents[i].spawned)
-                {
-                    putint(p, i);
-                    putint(p, sents[i].type);
-                }
-            }
-            putint(p, -1);
-        }
-        bool hasmaster = false;
-        if(mastermode != MasterMode_Open)
-        {
-            putint(p, NetMsg_CurrentMaster);
-            putint(p, mastermode);
-            hasmaster = true;
-        }
-        for(int i = 0; i < clients.length(); i++)
-        {
-            if(clients[i]->privilege >= Priv_Master)
-            {
-                if(!hasmaster)
-                {
-                    putint(p, NetMsg_CurrentMaster);
-                    putint(p, mastermode);
-                    hasmaster = true;
-                }
-                putint(p, clients[i]->clientnum);
-                putint(p, clients[i]->privilege);
-            }
-        }
-        if(hasmaster)
-        {
-            putint(p, -1);
-        }
-        if(gamepaused)
-        {
-            putint(p, NetMsg_PauseGame);
-            putint(p, 1);
-            putint(p, -1);
-        }
-        if(gamespeed != 100)
-        {
-            putint(p, NetMsg_GameSpeed);
-            putint(p, gamespeed);
-            putint(p, -1);
-        }
-        if(modecheck(gamemode, Mode_Team))
-        {
-            putint(p, NetMsg_TeamInfo);
-            for(int i = 0; i < maxteams; ++i)
-            {
-                teaminfo &t = teaminfos[i];
-                putint(p, t.frags);
-            }
-        }
-        if(ci)
-        {
-            putint(p, NetMsg_SetTeam);
-            putint(p, ci->clientnum);
-            putint(p, ci->team);
-            putint(p, -1);
-        }
-        if(ci && (modecheck(gamemode, Mode_Demo) || !modecheck(gamemode, Mode_LocalOnly)) && ci->state.state!=ClientState_Spectator)
-        {
-            if(smode && !smode->canspawn(ci, true))
-            {
-                ci->state.state = ClientState_Dead;
-                putint(p, NetMsg_ForceDeath);
-                putint(p, ci->clientnum);
-                sendf(-1, 1, "ri2x", NetMsg_ForceDeath, ci->clientnum, ci->clientnum);
-            }
-            else
-            {
-                servstate &gs = ci->state;
-                spawnstate(ci);
-                putint(p, NetMsg_SpawnState);
-                putint(p, ci->clientnum);
-                sendstate(gs, p);
-                gs.lastspawn = gamemillis;
-            }
-        }
-        if(ci && ci->state.state==ClientState_Spectator)
-        {
-            putint(p, NetMsg_Spectator);
-            putint(p, ci->clientnum);
-            putint(p, 1);
-            sendf(-1, 1, "ri3x", NetMsg_Spectator, ci->clientnum, 1, ci->clientnum);
-        }
-        if(!ci || clients.length()>1)
-        {
-            putint(p, NetMsg_Resume);
-            for(int i = 0; i < clients.length(); i++)
-            {
-                clientinfo *oi = clients[i];
-                if(ci && oi->clientnum==ci->clientnum)
-                {
-                    continue;
-                }
-                putint(p, oi->clientnum);
-                putint(p, oi->state.state);
-                putint(p, oi->state.frags);
-                putint(p, oi->state.flags);
-                putint(p, oi->state.deaths);
-                sendstate(oi->state, p);
-            }
-            putint(p, -1);
-            welcomeinitclient(p, ci ? ci->clientnum : -1);
-        }
-        if(smode)
-        {
-            smode->initclient(ci, p, true);
-        }
-        return 1;
     }
 
     void sendservinfo(clientinfo *ci)

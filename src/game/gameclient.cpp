@@ -3138,10 +3138,6 @@ namespace game
             }
             addmsg(NetMsg_StopDemo, "r");
         }
-        else
-        {
-            server::stopdemo();
-        }
     }
     COMMAND(stopdemo, "");
 
