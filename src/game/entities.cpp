@@ -1461,18 +1461,6 @@ namespace entities
 {
     using namespace game;
 
-    const char *itemname(int i)
-    {
-        return NULL;
-
-    }
-
-    int itemicon(int i)
-    {
-        return -1;
-
-    }
-
     const char *entmdlname(int type)
     {
         static const char * const entmdlnames[GamecodeEnt_MaxEntTypes] =
@@ -1737,10 +1725,6 @@ namespace entities
         {
             ents[i]->clearspawned();
         }
-    }
-
-    void spawnitems()
-    {
     }
 
     void setspawn(int i, bool on)

@@ -2032,11 +2032,7 @@ namespace game
                     getstring(text, p);
                     changemapserv(text, getint(p));
                     mapchanged = true;
-                    if(getint(p))
-                    {
-                        entities::spawnitems();
-                    }
-                    else
+                    if(!getint(p))
                     {
                         senditemstoserver = false;
                     }
@@ -2402,12 +2398,6 @@ namespace game
                     entities::setspawn(i, true);
                     ai::itemspawned(i);
                     playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
-
-                    int icon = entities::itemicon(i);
-                    if(icon >= 0)
-                    {
-                        particle_icon(vec(0.0f, 0.0f, 4.0f).add(entities::ents[i]->o), icon%4, icon/4, Part_HUDIcon, 2000, 0xFFFFFF, 2.0f, -8);
-                    }
                     break;
                 }
                 case NetMsg_ItemAcceptance:            // server acknowledges that I picked up this item
@@ -3079,10 +3069,6 @@ namespace game
                     ucharbuf b = p.subbuf(p.remaining());
                     map->write(b.buf, b.maxlen);
                     delete map;
-                    if(load_world(mname, game::gameident(), game::getmapinfo(), oldname[0] ? oldname : NULL))
-                    {
-                        entities::spawnitems();
-                    }
                     remove(findfile(fname, "rb"));
                     break;
                 }

@@ -339,8 +339,7 @@ namespace server
 
     string smapname = "";
     int interm = 0;
-    int mastermode = MasterMode_Open,
-        mastermask = MasterMode_PrivateServer;
+    int mastermode = MasterMode_Open;
 
     vector<uint> allowedips;
     vector<ban> bannedips;

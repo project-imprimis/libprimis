@@ -740,13 +740,10 @@ namespace entities
     extern vector<extentity *> ents;
 
     extern const char *entmdlname(int type);
-    extern const char *itemname(int i);
-    extern int itemicon(int i);
 
     extern void preloadentities();
     extern void checkitems(gameent *d);
     extern void resetspawns();
-    extern void spawnitems();
     extern void putitems(packetbuf &p);
     extern void setspawn(int i, bool on);
     extern void teleport(int n, gameent *d);
