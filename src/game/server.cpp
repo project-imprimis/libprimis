@@ -120,41 +120,6 @@ bool haslocalclients()
     return localclients!=0;
 }
 
-client &addclient(int type)
-{
-    client *c = NULL;
-    for(int i = 0; i < clients.length(); i++)
-    {
-        if(clients[i]->type==ServerClient_Empty)
-        {
-            c = clients[i];
-            break;
-        }
-    }
-    if(!c)
-    {
-        c = new client;
-        c->num = clients.length();
-        clients.add(c);
-    }
-    c->info = server::newclientinfo();
-    c->type = type;
-    switch(type)
-    {
-        case ServerClient_Remote:
-        {
-            nonlocalclients++;
-            break;
-        }
-        case ServerClient_Local:
-        {
-            localclients++;
-            break;
-        }
-    }
-    return *c;
-}
-
 void cleanupserver()
 {
     if(serverhost)
@@ -215,7 +180,7 @@ void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
         server::recordpacket(chan, packet->data, packet->dataLength);
         for(int i = 0; i < clients.length(); i++)
         {
-            if(i!=exclude && server::allowbroadcast(i))
+            if(i!=exclude)
             {
                 sendpacket(i, chan, packet);
             }

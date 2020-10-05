@@ -1210,10 +1210,6 @@ namespace game
         {
             return;
         }
-        if(!remote)
-        {
-            server::forcepaused(val);
-        }
         else
         {
             addmsg(NetMsg_PauseGame, "ri", val ? 1 : 0);
@@ -1243,10 +1239,6 @@ namespace game
         if(!connected)
         {
             return;
-        }
-        if(!remote)
-        {
-            server::forcegamespeed(val);
         }
         else
         {

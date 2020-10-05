@@ -982,15 +982,11 @@ namespace server
     extern const char *modeprettyname(int n, const char *unknown = "unknown");
     extern const char *mastermodename(int n, const char *unknown = "unknown");
     extern void stopdemo();
-    extern void forcepaused(bool paused);
-    extern void forcegamespeed(int speed);
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = maxstrlen);
     extern int msgsizelookup(int msg);
     extern bool serveroption(const char *arg);
 
-    extern void *newclientinfo();
     extern int numchannels();
-    extern bool allowbroadcast(int n);
     extern void recordpacket(int chan, void *data, int len);
     extern int protocolversion();
     extern int laninfoport();
