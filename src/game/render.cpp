@@ -678,7 +678,7 @@ namespace game
               zrad = height/2;
         vec2 xyrad = vec2(previewent->xradius, previewent->yradius).max(height/4);
         previewent->o = calcmodelpreviewpos(vec(xyrad, zrad), previewent->yaw).addz(previewent->eyeheight - zrad);
-        previewent->gunselect = VALID_GUN(weap) ? weap : Gun_Rail;
+        previewent->gunselect = validgun(weap) ? weap : Gun_Rail;
         const playermodelinfo *mdlinfo = getplayermodelinfo(model);
         if(!mdlinfo)
         {

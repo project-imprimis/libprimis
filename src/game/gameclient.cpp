@@ -2244,7 +2244,7 @@ namespace game
                         to[k] = getint(p)/DMF;
                     }
                     gameent *s = getclient(scn);
-                    if(!s || !VALID_ATTACK(atk))
+                    if(!s || !validattack(atk))
                     {
                         break;
                     }
@@ -2262,7 +2262,7 @@ namespace game
                 {
                     int ecn = getint(p), atk = getint(p), id = getint(p);
                     gameent *e = getclient(ecn);
-                    if(!e || !VALID_ATTACK(atk))
+                    if(!e || !validattack(atk))
                     {
                         break;
                     }
@@ -2300,7 +2300,7 @@ namespace game
                     {
                         dir[k] = getint(p)/DNF;
                     }
-                    if(!target || !VALID_ATTACK(atk))
+                    if(!target || !validattack(atk))
                     {
                         break;
                     }
@@ -2349,7 +2349,7 @@ namespace game
                         return;
                     }
                     int gun = getint(p);
-                    if(!VALID_GUN(gun))
+                    if(!validgun(gun))
                     {
                         return;
                     }

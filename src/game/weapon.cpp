@@ -90,7 +90,7 @@ namespace game
     void setweapon(const char *name, bool force = false)
     {
         int gun = getweapon(name);
-        if(player1->state!=ClientState_Alive || !VALID_GUN(gun))
+        if(player1->state!=ClientState_Alive || !validgun(gun))
         {
             return;
         }
@@ -169,7 +169,7 @@ namespace game
             if(name[0])
             {
                 int gun = getweapon(name);
-                if(VALID_GUN(gun) && gun != player1->gunselect && player1->ammo[gun])
+                if(validgun(gun) && gun != player1->gunselect && player1->ammo[gun])
                 {
                     gunselect(gun, player1);
                     return;

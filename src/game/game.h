@@ -154,8 +154,14 @@ enum
     Attack_NumAttacks
 };
 
-#define VALID_GUN(n) ((n) >= 0 && (n) < Gun_NumGuns)
-#define VALID_ATTACK(n) ((n) >= 0 && (n) < Attack_NumAttacks)
+inline bool validgun(int n)
+{
+    return (n) >= 0 && (n) < Gun_NumGuns;
+}
+inline bool validattack(int n)
+{
+    return (n) >= 0 && (n) < Attack_NumAttacks;
+}
 
 //enum of gameplay mechanic flags; bitwise sum determines what a mode's attributes are
 enum
@@ -618,7 +624,7 @@ struct gamestate
 
     int hasammo(int gun, int exclude = -1)
     {
-        return VALID_GUN(gun) && gun != exclude && ammo[gun] > 0;
+        return validgun(gun) && gun != exclude && ammo[gun] > 0;
     }
 };
 
