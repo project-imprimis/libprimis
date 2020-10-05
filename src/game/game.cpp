@@ -713,7 +713,7 @@ namespace game
 
     gameent *newclient(int cn)   // ensure valid entity
     {
-        if(cn < 0 || cn > max(0xFF, MAXCLIENTS + maxbots))
+        if(cn < 0 || cn > max(0xFF, clientlimit + maxbots))
         {
             neterr("clientnum", false);
             return NULL;

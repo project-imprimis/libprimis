@@ -588,7 +588,7 @@ void pingservers()
     }
 
     ENetBuffer buf;
-    uchar ping[MAXTRANS];
+    uchar ping[maxtrans];
 
     static int lastping = 0;
     if(lastping >= servers.length())
@@ -678,8 +678,8 @@ void checkpings()
     enet_uint32 events = ENET_SOCKET_WAIT_RECEIVE;
     ENetBuffer buf;
     ENetAddress addr;
-    uchar ping[MAXTRANS];
-    char text[MAXTRANS];
+    uchar ping[maxtrans];
+    char text[maxtrans];
     buf.data = ping;
     buf.dataLength = sizeof(ping);
     while(enet_socket_wait(pingsock, &events, 0) >= 0 && events)

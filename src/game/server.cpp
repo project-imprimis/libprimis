@@ -135,7 +135,7 @@ void cleanupserver()
     lansock = ENET_SOCKET_NULL;
 }
 
-VARF(maxclients, 0, defaultclients, MAXCLIENTS,
+VARF(maxclients, 0, defaultclients, clientlimit,
 {
     if(!maxclients)
     {
@@ -143,11 +143,11 @@ VARF(maxclients, 0, defaultclients, MAXCLIENTS,
     }
 });
 
-VARF(maxdupclients, 0, 0, MAXCLIENTS,
+VARF(maxdupclients, 0, 0, clientlimit,
 {
     if(serverhost)
     {
-        serverhost->duplicatePeers = maxdupclients ? maxdupclients : MAXCLIENTS;
+        serverhost->duplicatePeers = maxdupclients ? maxdupclients : clientlimit;
     }
 });
 
@@ -211,7 +211,7 @@ ENetPacket *sendf(int cn, int chan, const char *format, ...)
         reliable = true;
         ++format;
     }
-    packetbuf p(MAXTRANS, reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+    packetbuf p(maxtrans, reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
     va_list args;
     va_start(args, format);
     while(*format)
@@ -284,7 +284,7 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
     {
         return NULL;
     }
-    packetbuf p(MAXTRANS+len, ENET_PACKET_FLAG_RELIABLE);
+    packetbuf p(maxtrans+len, ENET_PACKET_FLAG_RELIABLE);
     va_list args;
     va_start(args, format);
     while(*format)

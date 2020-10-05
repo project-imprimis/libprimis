@@ -123,8 +123,8 @@ namespace server
 
     clientinfo *getinfo(int n)
     {
-        if(n < MAXCLIENTS) return (clientinfo *)getclientinfo(n);
-        n -= MAXCLIENTS;
+        if(n < clientlimit) return (clientinfo *)getclientinfo(n);
+        n -= clientlimit;
         return bots.inrange(n) ? bots[n] : NULL;
     }
 

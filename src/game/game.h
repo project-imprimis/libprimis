@@ -628,6 +628,9 @@ struct gamestate
     }
 };
 
+constexpr int clientlimit = 128;
+constexpr int maxtrans = 5000;
+
 const int maxteams = 2;
 const char * const teamnames[1+maxteams]     = { "", "azul", "rojo" };
 const char * const teamtextcode[1+maxteams]  = { "\f0", "\f1", "\f3" };

@@ -1278,7 +1278,7 @@ namespace game
         {
             return false;
         }
-        static uchar buf[MAXTRANS];
+        static uchar buf[maxtrans];
         ucharbuf p(buf, sizeof(buf));
         putint(p, type);
         int numi = 1,
@@ -1563,7 +1563,7 @@ namespace game
 
     void sendmessages()
     {
-        packetbuf p(MAXTRANS);
+        packetbuf p(maxtrans);
         if(sendcrc)
         {
             p.reliable();
@@ -1618,7 +1618,7 @@ namespace game
 
     void sendintro()
     {
-        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+        packetbuf p(maxtrans, ENET_PACKET_FLAG_RELIABLE);
         putint(p, NetMsg_Connect);
         sendstring(player1->name, p);
         putint(p, player1->playermodel);
@@ -1886,7 +1886,7 @@ namespace game
 
     void parsemessages(int cn, gameent *d, ucharbuf &p)
     {
-        static char text[MAXTRANS];
+        static char text[maxtrans];
         int type;
         bool mapchanged = false,
              demopacket = false;
@@ -2974,7 +2974,7 @@ namespace game
                         vector<char> buf;
                         answerchallenge(a->key, text, buf);
                         //conoutf(CON_DEBUG, "answering %u, challenge %s with %s", id, text, buf.getbuf());
-                        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+                        packetbuf p(maxtrans, ENET_PACKET_FLAG_RELIABLE);
                         putint(p, NetMsg_AuthAnswer);
                         sendstring(a->desc, p);
                         putint(p, id);
