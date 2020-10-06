@@ -19,60 +19,6 @@ namespace game
 
 namespace server
 {
-    static const int deathmillis = 300;
-
-    struct clientinfo;
-
-    struct gameevent
-    {
-        virtual ~gameevent() {}
-
-        virtual bool flush(clientinfo *ci, int fmillis);
-        virtual void process(clientinfo *ci) {}
-
-        virtual bool keepable() const { return false; }
-    };
-
-    struct timedevent : gameevent
-    {
-        int millis;
-
-        bool flush(clientinfo *ci, int fmillis);
-    };
-
-    template <int N>
-    struct projectilestate
-    {
-        int projs[N];
-        int numprojs;
-
-        projectilestate() : numprojs(0) {}
-
-        void reset() { numprojs = 0; }
-
-        void add(int val)
-        {
-            if(numprojs>=N)
-            {
-                numprojs = 0;
-            }
-            projs[numprojs++] = val;
-        }
-
-        bool remove(int val)
-        {
-            for(int i = 0; i < numprojs; ++i)
-            {
-                if(projs[i]==val)
-                {
-                    projs[i] = projs[--numprojs];
-                    return true;
-                }
-            }
-            return false;
-        }
-    };
-
     extern int gamemillis;
 
     enum
@@ -85,7 +31,6 @@ namespace server
     bool notgotitems = true;        // true when map has changed and waiting for clients to send item
     int gamemode = 0,
         gamemillis = 0,
-        gamelimit = 0,
         gamespeed = 100;
     bool gamepaused = false;
 
@@ -94,8 +39,6 @@ namespace server
     int mastermode = MasterMode_Open;
 
     vector<uint> allowedips;
-
-    vector<clientinfo *> connects, clients, bots;
 
     struct demofile
     {
@@ -120,13 +63,6 @@ namespace server
     SVAR(adminpass, "");
 
     bool shouldcheckteamkills = false;
-
-    clientinfo *getinfo(int n)
-    {
-        if(n < clientlimit) return (clientinfo *)getclientinfo(n);
-        n -= clientlimit;
-        return bots.inrange(n) ? bots[n] : NULL;
-    }
 
     vector<entity> ments;
 
@@ -181,33 +117,6 @@ namespace server
          DEFV_FORMAT_STRING(s, fmt, fmt);
          sendf(-1, 1, "ris", NetMsg_ServerMsg, s);
     }
-
-    struct servermode
-    {
-        virtual ~servermode() {}
-
-        virtual void entergame(clientinfo *ci) {}
-        virtual void leavegame(clientinfo *ci, bool disconnecting = false) {}
-
-        virtual void moved(clientinfo *ci, const vec &oldpos, bool oldclip, const vec &newpos, bool newclip) {}
-        virtual bool canspawn(clientinfo *ci, bool connecting = false) { return true; }
-        virtual void spawned(clientinfo *ci) {}
-        virtual void died(clientinfo *victim, clientinfo *actor) {}
-        virtual bool canchangeteam(clientinfo *ci, int oldteam, int newteam) { return true; }
-        virtual void changeteam(clientinfo *ci, int oldteam, int newteam) {}
-        virtual void initclient(clientinfo *ci, packetbuf &p, bool connecting) {}
-        virtual void update() {}
-        virtual void cleanup() {}
-        virtual void setup() {}
-        virtual void newmap() {}
-        virtual void intermission() {}
-        virtual bool hidefrags() { return false; }
-        virtual int getteamscore(int team) { return 0; }
-        virtual void getteamscores(vector<teamscore> &scores) {}
-        virtual bool extinfoteam(int team, ucharbuf &p) { return false; }
-    };
-
-    servermode *smode = NULL;
 
     static teaminfo teaminfos[maxteams];
 
