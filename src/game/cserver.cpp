@@ -1,14 +1,6 @@
 #include "game.h"
 
 //server game handling
-//includes:
-//game moderation (e.g. bans)
-//main serverupdate function (called from engine/server.cpp)
-//voting
-//parsing of packets for game events
-//map crc checks
-//core demo handling
-//ai manager
 
 extern ENetAddress masteraddress;
 
@@ -39,22 +31,6 @@ namespace server
     int mastermode = MasterMode_Open;
 
     vector<uint> allowedips;
-
-    struct demofile
-    {
-        string info;
-        uchar *data;
-        int len;
-    };
-
-    vector<demofile> demos;
-
-    stream *demotmp = NULL,
-           *demorecord = NULL,
-           *demoplayback = NULL;
-
-    VAR(maxdemos, 0, 5, 25);
-    VAR(maxdemosize, 0, 16, 31);
 
     VAR(restrictpausegame, 0, 1, 1);
 
@@ -119,85 +95,6 @@ namespace server
     }
 
     static teaminfo teaminfos[maxteams];
-
-    void prunedemos(int extra = 0)
-    {
-        int n = std::clamp(demos.length() + extra - maxdemos, 0, demos.length());
-        if(n <= 0)
-        {
-            return;
-        }
-        for(int i = 0; i < n; ++i)
-        {
-            delete[] demos[i].data;
-        }
-        demos.remove(0, n);
-    }
-
-    void adddemo()
-    {
-        if(!demotmp)
-        {
-            return;
-        }
-        int len = static_cast<int>(min(demotmp->size(), stream::offset((maxdemosize<<20) + 0x10000)));
-        demofile &d = demos.add();
-        time_t t = time(NULL);
-        char *timestr = ctime(&t),
-             *trim = timestr + strlen(timestr);
-        while(trim>timestr && iscubespace(*--trim))
-        {
-            *trim = '\0';
-        }
-        formatstring(d.info, "%s: %s, %s, %.2f%s", timestr, modeprettyname(gamemode), smapname, len > 1024*1024 ? len/(1024*1024.f) : len/1024.0f, len > 1024*1024 ? "MB" : "kB");
-        sendservmsgf("demo \"%s\" recorded", d.info);
-        d.data = new uchar[len];
-        d.len = len;
-        demotmp->seek(0, SEEK_SET);
-        demotmp->read(d.data, len);
-        DELETEP(demotmp);
-    }
-
-    void enddemorecord()
-    {
-        if(!demorecord)
-        {
-            return;
-        }
-        DELETEP(demorecord);
-
-        if(!demotmp)
-        {
-            return;
-        }
-        if(!maxdemos || !maxdemosize)
-        {
-            DELETEP(demotmp);
-            return;
-        }
-        prunedemos(1);
-        adddemo();
-    }
-
-    void writedemo(int chan, void *data, int len)
-    {
-        if(!demorecord)
-        {
-            return;
-        }
-        int stamp[3] = { gamemillis, chan, len };
-        demorecord->write(stamp, sizeof(stamp));
-        demorecord->write(data, len);
-        if(demorecord->rawtell() >= (maxdemosize<<20))
-        {
-            enddemorecord();
-        }
-    }
-
-    void recordpacket(int chan, void *data, int len)
-    {
-        writedemo(chan, data, len);
-    }
 
     bool ispaused() { return gamepaused; }
 

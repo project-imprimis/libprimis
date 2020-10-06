@@ -514,15 +514,6 @@ enum
     IMPRIMIS_MASTER_PORT  = 42068,
     IMPRIMIS_SERVER_PORT  = 42069,
     PROTOCOL_VERSION = 2,              // bump when protocol changes
-    DEMO_VERSION     = 1,              // bump when demo format changes
-};
-
-#define DEMO_MAGIC "IMPRIMIS_DEMO\0\0"
-
-struct demoheader
-{
-    char magic[16];
-    int version, protocol;
 };
 
 const int MAXNAMELEN = 15;
@@ -990,7 +981,6 @@ namespace server
     extern const char *modename(int n, const char *unknown = "unknown");
     extern const char *modeprettyname(int n, const char *unknown = "unknown");
     extern const char *mastermodename(int n, const char *unknown = "unknown");
-    extern void stopdemo();
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = maxstrlen);
     extern int msgsizelookup(int msg);
     extern bool serveroption(const char *arg);
