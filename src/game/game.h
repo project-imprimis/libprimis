@@ -992,7 +992,6 @@ namespace server
     extern int serverport();
     extern const char *defaultmaster();
     extern int masterport();
-    extern bool ispaused();
 }
 
 #endif
