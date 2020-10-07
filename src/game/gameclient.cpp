@@ -811,7 +811,7 @@ namespace game
             }
             server::hashpassword(player1->clientnum, sessionid, arg, hash);
         }
-        addmsg(NetMsg_SetMasterMaster, "riis", cn, val, hash);
+        addmsg(NetMsg_SetMaster, "riis", cn, val, hash);
     }
     COMMAND(setmaster, "ss");
     ICOMMAND(mastermode, "i", (int *val), addmsg(NetMsg_MasterMode, "ri", *val));

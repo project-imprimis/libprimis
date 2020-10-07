@@ -352,7 +352,7 @@ enum
     NetMsg_ClearBans,
     NetMsg_CurrentMaster,
     NetMsg_Spectator,
-    NetMsg_SetMasterMaster,
+    NetMsg_SetMaster,
     NetMsg_SetTeam,
     //demo
     NetMsg_ListDemos,
@@ -465,7 +465,7 @@ const int msgsizes[] =               // size inclusive message token, 0 for vari
     NetMsg_ClearBans, 1,
     NetMsg_CurrentMaster, 0,
     NetMsg_Spectator, 3,
-    NetMsg_SetMasterMaster, 0,
+    NetMsg_SetMaster, 0,
     NetMsg_SetTeam, 0,
 
     NetMsg_ListDemos, 1,
