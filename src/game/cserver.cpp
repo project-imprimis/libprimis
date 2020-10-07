@@ -17,7 +17,10 @@ namespace server
         if(sizetable[0] < 0)
         {
             memset(sizetable, -1, sizeof(sizetable));
-            for(const int *p = msgsizes; *p >= 0; p += 2) sizetable[p[0]] = p[1];
+            for(const int *p = msgsizes; *p >= 0; p += 2)
+            {
+                sizetable[p[0]] = p[1];
+            }
         }
         return msg >= 0 && msg < NetMsg_NumMsgs ? sizetable[msg] : -1;
     }
@@ -55,11 +58,30 @@ namespace server
         }
     }
 
-    int laninfoport() { return IMPRIMIS_LANINFO_PORT; }
-    int serverport() { return IMPRIMIS_SERVER_PORT; }
-    const char *defaultmaster() { return "project-imprimis.org"; }
-    int masterport() { return IMPRIMIS_MASTER_PORT; }
-    int numchannels() { return 3; }
+    int laninfoport()
+    {
+        return IMPRIMIS_LANINFO_PORT;
+    }
+
+    int serverport()
+    {
+        return IMPRIMIS_SERVER_PORT;
+    }
+
+    const char *defaultmaster()
+    {
+        return "project-imprimis.org";
+    }
+
+    int masterport()
+    {
+        return IMPRIMIS_MASTER_PORT;
+    }
+
+    int numchannels()
+    {
+        return 3;
+    }
 
     int protocolversion()
     {
