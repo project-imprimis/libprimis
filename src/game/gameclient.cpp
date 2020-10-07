@@ -855,9 +855,9 @@ namespace game
             conoutf(Console_Error, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
             for(int i = 0; i < numgamemodes; ++i)
             {
-                if(!modecheck(STARTGAMEMODE + i, Mode_LocalOnly))
+                if(!modecheck(startgamemode + i, Mode_LocalOnly))
                 {
-                    mode = STARTGAMEMODE + i;
+                    mode = startgamemode + i;
                     break;
                 }
             }
@@ -895,7 +895,7 @@ namespace game
     }
     ICOMMAND(mode, "i", (int *val), setmode(*val));
     ICOMMAND(getmode, "", (), intret(gamemode));
-    ICOMMAND(getnextmode, "", (), intret(MODE_VALID(nextmode) ? nextmode : (remote ? 1 : 0)));
+    ICOMMAND(getnextmode, "", (), intret(validmode(nextmode) ? nextmode : (remote ? 1 : 0)));
     ICOMMAND(getmodename, "i", (int *mode), result(server::modename(*mode, "")));
     ICOMMAND(getmodeprettyname, "i", (int *mode), result(server::modeprettyname(*mode, "")));
     ICOMMAND(timeremaining, "i", (int *formatted),
@@ -934,7 +934,7 @@ namespace game
         {
             connectserv("localhost", -1, 0);
         }
-        changemap(name, MODE_VALID(nextmode) ? nextmode : (remote ? 1 : 0));
+        changemap(name, validmode(nextmode) ? nextmode : (remote ? 1 : 0));
     }
     ICOMMAND(map, "s", (char *name), changemap(name));
 

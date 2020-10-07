@@ -27,18 +27,18 @@ namespace server
 
     const char *modename(int n, const char *unknown)
     {
-        if(MODE_VALID(n))
+        if(validmode(n))
         {
-            return gamemodes[n - STARTGAMEMODE].name;
+            return gamemodes[n - startgamemode].name;
         }
         return unknown;
     }
 
     const char *modeprettyname(int n, const char *unknown)
     {
-        if(MODE_VALID(n))
+        if(validmode(n))
         {
-            return gamemodes[n - STARTGAMEMODE].prettyname;
+            return gamemodes[n - startgamemode].prettyname;
         }
         return unknown;
     }

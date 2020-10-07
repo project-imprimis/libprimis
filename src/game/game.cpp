@@ -825,7 +825,7 @@ namespace game
             cmode->setup();
         }
         conoutf(ConsoleMsg_GameInfo, "\f2game mode is %s", server::modeprettyname(gamemode));
-        const char *info = MODE_VALID(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
+        const char *info = validmode(gamemode) ? gamemodes[gamemode - startgamemode].info : NULL;
         if(showmodeinfo && info)
         {
             conoutf(ConsoleMsg_GameInfo, "\f0%s", info);
@@ -858,7 +858,7 @@ namespace game
 
     const char *getmapinfo()
     {
-        return showmodeinfo && MODE_VALID(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
+        return showmodeinfo && validmode(gamemode) ? gamemodes[gamemode - startgamemode].info : NULL;
     }
 
     void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material)
