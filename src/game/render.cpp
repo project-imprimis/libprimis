@@ -308,7 +308,7 @@ namespace game
         if(intermission && d->state!=ClientState_Dead)
         {
             anim = attack = Anim_Lose | Anim_Loop;
-            if(VALID_TEAM(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0)
+            if(validteam(team) ? bestteams.htfind(team)>=0 : bestplayers.find(d)>=0)
             {
                 anim = attack = Anim_Win | Anim_Loop;
             }
@@ -339,7 +339,7 @@ namespace game
                 a[ai++] = modelattach("tag_muzzle", &d->muzzle);
             }
         }
-        const char *mdlname = mdl.model[VALID_TEAM(team) ? team : 0];
+        const char *mdlname = mdl.model[validteam(team) ? team : 0];
         float yaw = testanims && d==player1 ? 0 : d->yaw,
               pitch = testpitch && d==player1 ? testpitch : d->pitch;
         vec o = d->feetpos();
@@ -494,7 +494,7 @@ namespace game
 
     static inline void renderplayer(gameent *d, float fade = 1, int flags = 0)
     {
-        int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0;
+        int team = modecheck(gamemode, Mode_Team) && validteam(d->team) ? d->team : 0;
         renderplayer(d, getplayermodelinfo(d), getplayercolor(d, team), team, fade, flags);
     }
 
@@ -534,7 +534,7 @@ namespace game
             copystring(d->info, colorname(d));
             if(d->state!=ClientState_Dead)
             {
-                int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0;
+                int team = modecheck(gamemode, Mode_Team) && validteam(d->team) ? d->team : 0;
                 particle_text(d->abovehead(), d->info, Part_Text, 1, teamtextcolor[team], 2.0f);
             }
         }
@@ -627,7 +627,7 @@ namespace game
             sway = d->o;
         }
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0,
+        int team = modecheck(gamemode, Mode_Team) && validteam(d->team) ? d->team : 0,
             color = getplayercolor(d, team);
         DEF_FORMAT_STRING(gunname, "%s/%s", mdl.hudguns[team], file);
         modelattach a[2];

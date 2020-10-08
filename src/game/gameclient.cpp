@@ -126,7 +126,7 @@ namespace game
 
     void setbliptex(int team, const char *type = "")
     {
-        DEF_FORMAT_STRING(blipname, "media/interface/radar/blip%s%s.png", teamblipcolor[VALID_TEAM(team) ? team : 0], type);
+        DEF_FORMAT_STRING(blipname, "media/interface/radar/blip%s%s.png", teamblipcolor[validteam(team) ? team : 0], type);
         settexture(blipname, 3);
     }
 
@@ -259,7 +259,7 @@ namespace game
     void switchteam(const char *team)
     {
         int num = isdigit(team[0]) ? parseint(team) : teamnumber(team);
-        if(!VALID_TEAM(num))
+        if(!validteam(num))
         {
             return;
         }
@@ -274,7 +274,7 @@ namespace game
     }
     void printteam()
     {
-        if((player1->clientnum >= 0 && !modecheck(gamemode, Mode_Team)) || !VALID_TEAM(player1->team))
+        if((player1->clientnum >= 0 && !modecheck(gamemode, Mode_Team)) || !validteam(player1->team))
         {
             conoutf("you are not in a team");
         }
@@ -293,12 +293,12 @@ namespace game
         {
             printteam();
         }
-        else if((player1->clientnum < 0 || modecheck(gamemode, Mode_Team)) && VALID_TEAM(player1->team))
+        else if((player1->clientnum < 0 || modecheck(gamemode, Mode_Team)) && validteam(player1->team))
         {
             result(tempformatstring("\fs%s%s\fr", teamtextcode[player1->team], teamnames[player1->team]));
         }
     });
-    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || modecheck(gamemode, Mode_Team)) && VALID_TEAM(player1->team) ? player1->team : 0));
+    ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || modecheck(gamemode, Mode_Team)) && validteam(player1->team) ? player1->team : 0));
     ICOMMAND(getteamname, "i", (int *num), result(TEAM_NAME(*num)));
 
     struct authkey
@@ -503,7 +503,7 @@ namespace game
     int getclientteam(int cn)
     {
         gameent *d = getclient(cn);
-        return modecheck(gamemode, Mode_Team) && d && VALID_TEAM(d->team) ? d->team : 0;
+        return modecheck(gamemode, Mode_Team) && d && validteam(d->team) ? d->team : 0;
     }
     ICOMMAND(getclientteam, "i", (int *cn), intret(getclientteam(*cn)));
 
@@ -522,14 +522,14 @@ namespace game
             return "spectator";
         }
         const playermodelinfo &mdl = getplayermodelinfo(d);
-        return modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? mdl.icon[d->team] : mdl.icon[0];
+        return modecheck(gamemode, Mode_Team) && validteam(d->team) ? mdl.icon[d->team] : mdl.icon[0];
     }
     ICOMMAND(getclienticon, "i", (int *cn), result(getclienticon(*cn)));
 
     int getclientcolor(int cn)
     {
         gameent *d = getclient(cn);
-        return d && d->state!=ClientState_Spectator ? getplayercolor(d, modecheck(gamemode, Mode_Team) && VALID_TEAM(d->team) ? d->team : 0) : 0xFFFFFF;
+        return d && d->state!=ClientState_Spectator ? getplayercolor(d, modecheck(gamemode, Mode_Team) && validteam(d->team) ? d->team : 0) : 0xFFFFFF;
     }
     ICOMMAND(getclientcolor, "i", (int *cn), intret(getclientcolor(*cn)));
 
@@ -762,7 +762,7 @@ namespace game
             return;
         }
         int num = isdigit(team[0]) ? parseint(team) : teamnumber(team);
-        if(!VALID_TEAM(num))
+        if(!validteam(num))
         {
             return;
         }
@@ -1426,7 +1426,7 @@ namespace game
 
     void sayteam(char *text)
     {
-        if(!modecheck(gamemode, Mode_Team) || !VALID_TEAM(player1->team))
+        if(!modecheck(gamemode, Mode_Team) || !validteam(player1->team))
         {
             return;
         }
@@ -2011,7 +2011,7 @@ namespace game
                     {
                         break;
                     }
-                    int team = VALID_TEAM(t->team) ? t->team : 0;
+                    int team = validteam(t->team) ? t->team : 0;
                     if(t->state!=ClientState_Dead && t->state!=ClientState_Spectator)
                     {
                         particle_textcopy(t->abovehead(), text, Part_Text, 2000, teamtextcolor[team], 4.0f, -8);
@@ -2105,7 +2105,7 @@ namespace game
                     }
                     copystring(d->name, text, MAXNAMELEN+1);
                     d->team = getint(p);
-                    if(!VALID_TEAM(d->team))
+                    if(!validteam(d->team))
                     {
                         d->team = 0;
                     }
@@ -2841,7 +2841,7 @@ namespace game
                     {
                         return;
                     }
-                    w->team = VALID_TEAM(team) ? team : 0;
+                    w->team = validteam(team) ? team : 0;
                     static const char * const fmt[2] =
                     {
                         "%s switched to team %s",

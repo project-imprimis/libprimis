@@ -648,8 +648,11 @@ inline int teamnumber(const char *name)
     return 0;
 }
 
-#define VALID_TEAM(n) ((n) >= 1 && (n) <= maxteams)
-#define TEAM_NAME(n) (teamnames[VALID_TEAM(n) ? (n) : 0])
+inline int validteam(int n)
+{
+    return (n) >= 1 && (n) <= maxteams;
+}
+#define TEAM_NAME(n) (teamnames[validteam(n) ? (n) : 0])
 
 struct gameent : dynent, gamestate
 {

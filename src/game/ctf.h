@@ -117,18 +117,18 @@ struct ctfclientmode : clientmode
 
     int totalscore(int team)
     {
-        return VALID_TEAM(team) ? scores[team-1] : 0;
+        return validteam(team) ? scores[team-1] : 0;
     }
 
     int setscore(int team, int score)
     {
-        if(VALID_TEAM(team)) return scores[team-1] = score;
+        if(validteam(team)) return scores[team-1] = score;
         return 0;
     }
 
     int addscore(int team, int score)
     {
-        if(VALID_TEAM(team)) return scores[team-1] += score;
+        if(validteam(team)) return scores[team-1] += score;
         return 0;
     }
 
@@ -229,7 +229,7 @@ struct ctfclientmode : clientmode
         for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
-            if(!VALID_TEAM(f.team))
+            if(!validteam(f.team))
             {
                 continue;
             }
@@ -321,7 +321,7 @@ struct ctfclientmode : clientmode
         for(int i = 0; i < entities::ents.length(); i++)
         {
             extentity *e = entities::ents[i];
-            if(e->type!=GamecodeEnt_Flag || !VALID_TEAM(e->attr2))
+            if(e->type!=GamecodeEnt_Flag || !validteam(e->attr2))
             {
                 continue;
             }
@@ -576,7 +576,7 @@ struct ctfclientmode : clientmode
         for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
-            if(!VALID_TEAM(f.team) || f.team==player1->team || f.owner || (f.droptime && f.droploc.x<0))
+            if(!validteam(f.team) || f.team==player1->team || f.owner || (f.droptime && f.droploc.x<0))
             {
                 continue;
             }
@@ -602,7 +602,7 @@ struct ctfclientmode : clientmode
         for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
-            if(!VALID_TEAM(f.team) || f.team!=player1->team || f.owner || (f.droptime && f.droploc.x<0))
+            if(!validteam(f.team) || f.team!=player1->team || f.owner || (f.droptime && f.droploc.x<0))
             {
                 continue;
             }
@@ -633,7 +633,7 @@ struct ctfclientmode : clientmode
         for(int i = 0; i < flags.length(); i++)
         {
             flag &f = flags[i];
-            if(!VALID_TEAM(f.team) || f.owner || (f.droptime && f.droploc.x<0))
+            if(!validteam(f.team) || f.owner || (f.droptime && f.droploc.x<0))
             {
                 continue;
             }

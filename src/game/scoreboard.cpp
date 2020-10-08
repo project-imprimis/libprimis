@@ -24,7 +24,7 @@ namespace game
 
     void setteaminfo(int team, int frags)
     {
-        if(!VALID_TEAM(team))
+        if(!validteam(team))
         {
             return;
         }
@@ -151,7 +151,7 @@ namespace game
                 spectators.add(o);
                 continue;
             }
-            int team = modecheck(gamemode, Mode_Team) && VALID_TEAM(o->team) ? o->team : 0;
+            int team = modecheck(gamemode, Mode_Team) && validteam(o->team) ? o->team : 0;
             teamplayers[team].add(o);
         }
         for(int i = 0; i < 1+maxteams; ++i)
@@ -303,7 +303,7 @@ namespace game
 
     ICOMMAND(getteamscore, "i", (int *team),
     {
-        if(modecheck(gamemode, Mode_Team) && VALID_TEAM(*team))
+        if(modecheck(gamemode, Mode_Team) && validteam(*team))
         {
             if(cmode && cmode->hidefrags())
             {
