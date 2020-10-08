@@ -122,17 +122,26 @@ struct ctfclientmode : clientmode
 
     int setscore(int team, int score)
     {
-        if(validteam(team)) return scores[team-1] = score;
+        if(validteam(team))
+        {
+            return scores[team-1] = score;
+        }
         return 0;
     }
 
     int addscore(int team, int score)
     {
-        if(validteam(team)) return scores[team-1] += score;
+        if(validteam(team))
+        {
+            return scores[team-1] += score;
+        }
         return 0;
     }
 
-    bool hidefrags() { return true; }
+    bool hidefrags()
+    {
+        return true;
+    }
 
     int getteamscore(int team)
     {
@@ -157,7 +166,10 @@ struct ctfclientmode : clientmode
     {
         preloadmodel("game/flag/rojo");
         preloadmodel("game/flag/azul");
-        for(int i = Sound_FlagPickup; i <= Sound_FlagFail; i++) preloadsound(i);
+        for(int i = Sound_FlagPickup; i <= Sound_FlagFail; i++)
+        {
+            preloadsound(i);
+        }
     }
 
     void drawblip(gameent *d, float x, float y, float s, const vec &pos, bool flagblip)
@@ -169,7 +181,10 @@ struct ctfclientmode : clientmode
               xoffset = flagblip ? -2*(3/32.0f)*size : -size,
               yoffset = flagblip ? -2*(1 - 3/32.0f)*size : -size,
               dist = dir.magnitude2(), maxdist = 1 - 0.05f - 0.05f;
-        if(dist >= maxdist) dir.mul(maxdist/dist);
+        if(dist >= maxdist)
+        {
+            dir.mul(maxdist/dist);
+        }
         dir.rotate_around_z(camera1->yaw*-RAD);
         drawradar(x + s*0.5f*(1.0f + dir.x + xoffset), y + s*0.5f*(1.0f + dir.y + yoffset), size*s);
     }
@@ -235,9 +250,15 @@ struct ctfclientmode : clientmode
             }
             if(f.owner)
             {
-                if(lastmillis%1000 >= 500) continue;
+                if(lastmillis%1000 >= 500)
+                {
+                    continue;
+                }
             }
-            else if(f.droptime && (f.droploc.x < 0 || lastmillis%300 >= 150)) continue;
+            else if(f.droptime && (f.droploc.x < 0 || lastmillis%300 >= 150))
+            {
+                continue;
+            }
             drawblip(d, x, y, s, i, true);
         }
         drawteammates(d, x, y, s);
@@ -295,7 +316,11 @@ struct ctfclientmode : clientmode
         return pos;
     }
 
-    vec interpflagpos(flag &f) { float angle; return interpflagpos(f, angle); }
+    vec interpflagpos(flag &f)
+    {
+        float angle;
+        return interpflagpos(f, angle);
+    }
 
     void rendergame()
     {
@@ -362,7 +387,9 @@ struct ctfclientmode : clientmode
         int numflags = getint(p);
         for(int i = 0; i < numflags; ++i)
         {
-            int version = getint(p), owner = getint(p), dropped = 0;
+            int version = getint(p),
+                owner   = getint(p),
+                dropped = 0;
             vec droploc(0, 0, 0);
             if(owner<0)
             {
@@ -389,7 +416,10 @@ struct ctfclientmode : clientmode
                 f.droploc = dropped ? droploc : f.spawnloc;
                 f.interptime = 0;
 
-                if(dropped && !droptofloor(f.droploc.addz(4), 4, 0)) f.droploc = vec(-1, -1, -1);
+                if(dropped && !droptofloor(f.droploc.addz(4), 4, 0))
+                {
+                    f.droploc = vec(-1, -1, -1);
+                }
             }
         }
     }
