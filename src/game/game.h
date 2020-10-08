@@ -728,22 +728,41 @@ struct teamscore
 
     static bool compare(const teamscore &x, const teamscore &y)
     {
-        if(x.score > y.score) return true;
-        if(x.score < y.score) return false;
+        if(x.score > y.score)
+        {
+            return true;
+        }
+        if(x.score < y.score)
+        {
+            return false;
+        }
         return x.team < y.team;
     }
 };
 
-inline uint hthash(const teamscore &t) { return hthash(t.team); }
-inline bool htcmp(int team, const teamscore &t) { return team == t.team; }
+inline uint hthash(const teamscore &t)
+{
+    return hthash(t.team);
+}
+
+inline bool htcmp(int team, const teamscore &t)
+{
+    return team == t.team;
+}
 
 struct teaminfo
 {
     int frags;
 
-    teaminfo() { reset(); }
+    teaminfo()
+    {
+        reset();
+    }
 
-    void reset() { frags = 0; }
+    void reset()
+    {
+        frags = 0;
+    }
 };
 
 namespace entities
@@ -980,7 +999,14 @@ extern servinfo *getservinfo(int i);
 } while(0)
 
 #define GETSERVINFOATTR(idx, aidx, aval, body) \
-    GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
+    GETSERVINFO(idx, si, \
+    { \
+        if(si->attr.inrange(aidx)) \
+        { \
+            int aval = si->attr[aidx]; \
+            body; \
+        } \
+    })
 
 extern bool resolverwait(const char *name, ENetAddress *address);
 extern int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
