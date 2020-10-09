@@ -263,7 +263,8 @@ void clearaoshaders()
 
 void setupao(int w, int h)
 {
-    int sw = w>>aoreduce, sh = h>>aoreduce;
+    int sw = w>>aoreduce,
+        sh = h>>aoreduce;
 
     if(sw == aow && sh == aoh)
     {
@@ -410,7 +411,8 @@ void viewao()
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, aotex[2] ? aotex[2] : aotex[0]);
-    int tw = aotex[2] ? gw : aow, th = aotex[2] ? gh : aoh;
+    int tw = aotex[2] ? gw : aow,
+        th = aotex[2] ? gh : aoh;
     debugquad(0, 0, w, h, 0, 0, tw, th);
 }
 
@@ -464,8 +466,14 @@ void renderao()
     }
     else
     {
-        if(msaasamples) glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msnormaltex);
-        else glBindTexture(GL_TEXTURE_RECTANGLE, gnormaltex);
+        if(msaasamples)
+        {
+            glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msnormaltex);
+        }
+        else
+        {
+            glBindTexture(GL_TEXTURE_RECTANGLE, gnormaltex);
+        }
         LOCALPARAM(normalmatrix, matrix3(cammatrix));
     }
     glActiveTexture_(GL_TEXTURE2);
@@ -529,7 +537,8 @@ void renderao()
     }
     else if(aoblur)
     {
-        float blurweights[maxblurradius+1], bluroffsets[maxblurradius+1];
+        float blurweights[maxblurradius+1],
+              bluroffsets[maxblurradius+1];
         setupblurkernel(aoblur, blurweights, bluroffsets);
         for(int i = 0; i < 2+2*aoiter; ++i)
         {
@@ -785,17 +794,17 @@ extern int hdrprec, gscale;
 
 void cleanupmsbuffer()
 {
-    if(msfbo)        { glDeleteFramebuffers_(1, &msfbo); msfbo = 0; }
-    if(msdepthtex)   { glDeleteTextures(1, &msdepthtex); msdepthtex = 0; }
-    if(mscolortex)   { glDeleteTextures(1, &mscolortex); mscolortex = 0; }
-    if(msnormaltex)  { glDeleteTextures(1, &msnormaltex); msnormaltex = 0; }
-    if(msglowtex)    { glDeleteTextures(1, &msglowtex); msglowtex = 0; }
-    if(msstencilrb)  { glDeleteRenderbuffers_(1, &msstencilrb); msstencilrb = 0; }
-    if(msdepthrb)    { glDeleteRenderbuffers_(1, &msdepthrb); msdepthrb = 0; }
-    if(mshdrfbo)     { glDeleteFramebuffers_(1, &mshdrfbo); mshdrfbo = 0; }
-    if(mshdrtex)     { glDeleteTextures(1, &mshdrtex); mshdrtex = 0; }
+    if(msfbo)        { glDeleteFramebuffers_(1, &msfbo);        msfbo        = 0; }
+    if(msdepthtex)   { glDeleteTextures(1, &msdepthtex);        msdepthtex   = 0; }
+    if(mscolortex)   { glDeleteTextures(1, &mscolortex);        mscolortex   = 0; }
+    if(msnormaltex)  { glDeleteTextures(1, &msnormaltex);       msnormaltex  = 0; }
+    if(msglowtex)    { glDeleteTextures(1, &msglowtex);         msglowtex    = 0; }
+    if(msstencilrb)  { glDeleteRenderbuffers_(1, &msstencilrb); msstencilrb  = 0; }
+    if(msdepthrb)    { glDeleteRenderbuffers_(1, &msdepthrb);   msdepthrb    = 0; }
+    if(mshdrfbo)     { glDeleteFramebuffers_(1, &mshdrfbo);     mshdrfbo     = 0; }
+    if(mshdrtex)     { glDeleteTextures(1, &mshdrtex);          mshdrtex     = 0; }
     if(msrefractfbo) { glDeleteFramebuffers_(1, &msrefractfbo); msrefractfbo = 0; }
-    if(msrefracttex) { glDeleteTextures(1, &msrefracttex); msrefracttex = 0; }
+    if(msrefracttex) { glDeleteTextures(1, &msrefracttex);      msrefracttex = 0; }
 }
 
 void bindmsdepth()
@@ -884,7 +893,10 @@ void setupmsbuffer(int w, int h)
     glTexImage2DMultisample_(GL_TEXTURE_2D_MULTISAMPLE, msaasamples, GL_RGBA8, w, h, GL_TRUE);
     if(msaalight)
     {
-        if(!msglowtex) glGenTextures(1, &msglowtex);
+        if(!msglowtex)
+        {
+            glGenTextures(1, &msglowtex);
+        }
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msglowtex);
         glTexImage2DMultisample_(GL_TEXTURE_2D_MULTISAMPLE, msaasamples, hdrformat, w, h, GL_TRUE);
     }
@@ -1198,17 +1210,17 @@ void setupgbuffer()
 
 void cleanupgbuffer()
 {
-    if(gfbo)       { glDeleteFramebuffers_(1, &gfbo); gfbo = 0; }
-    if(gdepthtex)  { glDeleteTextures(1, &gdepthtex); gdepthtex = 0; }
-    if(gcolortex)  { glDeleteTextures(1, &gcolortex); gcolortex = 0; }
-    if(gnormaltex) { glDeleteTextures(1, &gnormaltex); gnormaltex = 0; }
-    if(gglowtex)   { glDeleteTextures(1, &gglowtex); gglowtex = 0; }
+    if(gfbo)       { glDeleteFramebuffers_(1, &gfbo);        gfbo       = 0; }
+    if(gdepthtex)  { glDeleteTextures(1, &gdepthtex);        gdepthtex  = 0; }
+    if(gcolortex)  { glDeleteTextures(1, &gcolortex);        gcolortex  = 0; }
+    if(gnormaltex) { glDeleteTextures(1, &gnormaltex);       gnormaltex = 0; }
+    if(gglowtex)   { glDeleteTextures(1, &gglowtex);         gglowtex   = 0; }
     if(gstencilrb) { glDeleteRenderbuffers_(1, &gstencilrb); gstencilrb = 0; }
-    if(gdepthrb)   { glDeleteRenderbuffers_(1, &gdepthrb); gdepthrb = 0; }
-    if(hdrfbo)     { glDeleteFramebuffers_(1, &hdrfbo); hdrfbo = 0; }
-    if(hdrtex)     { glDeleteTextures(1, &hdrtex); hdrtex = 0; }
-    if(refractfbo) { glDeleteFramebuffers_(1, &refractfbo); refractfbo = 0; }
-    if(refracttex) { glDeleteTextures(1, &refracttex); refracttex = 0; }
+    if(gdepthrb)   { glDeleteRenderbuffers_(1, &gdepthrb);   gdepthrb   = 0; }
+    if(hdrfbo)     { glDeleteFramebuffers_(1, &hdrfbo);      hdrfbo     = 0; }
+    if(hdrtex)     { glDeleteTextures(1, &hdrtex);           hdrtex     = 0; }
+    if(refractfbo) { glDeleteFramebuffers_(1, &refractfbo);  refractfbo = 0; }
+    if(refracttex) { glDeleteTextures(1, &refracttex);       refracttex = 0; }
     gw = gh = -1;
     cleanupscale();
     cleanupmsbuffer();
@@ -1230,7 +1242,10 @@ void resolvemsaadepth(int w = vieww, int h = viewh)
     {
         glBindFramebuffer_(GL_READ_FRAMEBUFFER, msfbo);
         glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, gfbo);
-        if(ghasstencil) glClear(GL_STENCIL_BUFFER_BIT);
+        if(ghasstencil)
+        {
+            glClear(GL_STENCIL_BUFFER_BIT);
+        }
         glBlitFramebuffer_(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
     }
     if(!msaadepthblit || gdepthformat)
@@ -1333,7 +1348,8 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
     glViewport(0, 0, dw, dh);
 
     SETSHADER(reorient);
-    vec reorientx(flipx ? -0.5f : 0.5f, 0, 0.5f), reorienty(0, flipy ? -0.5f : 0.5f, 0.5f);
+    vec reorientx(flipx ? -0.5f : 0.5f, 0, 0.5f),
+        reorienty(0, flipy ? -0.5f : 0.5f, 0.5f);
     if(swapxy)
     {
         swap(reorientx, reorienty);
@@ -1926,7 +1942,10 @@ struct lightinfo
         dz2 = max(dz2, sz2);
     }
 
-    bool validscissor() const { return sx1 < sx2 && sy1 < sy2 && sz1 < sz2; }
+    bool validscissor() const
+    {
+        return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
+    }
 
     void calcscissor()
     {
@@ -2595,7 +2614,10 @@ int calcspherecsmsplits(const vec &center, float radius)
                 mask &= ~(1<<i);
                 goto nextsplit; //skip rest and restart loop
             }
-            if(dist < radius) goto notinside;
+            if(dist < radius)
+            {
+                goto notinside;
+            }
         }
         mask &= (2<<i)-1;
         break;
@@ -4725,10 +4747,23 @@ matrix4 shadowmatrix;
 
 void rendershadowmaps(int offset = 0)
 {
-    if(!(sminoq && !debugshadowatlas && !inoq && shouldworkinoq())) offset = 0;
+    if(!(sminoq && !debugshadowatlas && !inoq && shouldworkinoq()))
+    {
+        offset = 0;
+    }
 
-    for(; offset < shadowmaps.length(); offset++) if(shadowmaps[offset].light >= 0) break;
-    if(offset >= shadowmaps.length()) return;
+    for(; offset < shadowmaps.length(); offset++)
+    {
+        if(shadowmaps[offset].light >= 0)
+        {
+            break;
+        }
+    }
+
+    if(offset >= shadowmaps.length())
+    {
+        return;
+    }
 
     if(inoq)
     {
