@@ -1652,10 +1652,10 @@ namespace
         int tjoints;
     };
 
-    #define MAXMERGELEVEL 12
+    const int maxmergelevel = 12;
     int vahasmerges = 0,
         vamergemax = 0;
-    vector<mergedface> vamerges[MAXMERGELEVEL+1];
+    vector<mergedface> vamerges[maxmergelevel+1];
 
     int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
     {
@@ -1815,7 +1815,7 @@ namespace
             }
             --neighbordepth;
 
-            if(csi <= MAXMERGELEVEL && vamerges[csi].length())
+            if(csi <= maxmergelevel && vamerges[csi].length())
             {
                 addmergedverts(csi, co);
             }
@@ -1858,7 +1858,7 @@ namespace
             }
         }
 
-        if(csi <= MAXMERGELEVEL && vamerges[csi].length())
+        if(csi <= maxmergelevel && vamerges[csi].length())
         {
             addmergedverts(csi, co);
         }
@@ -1886,8 +1886,8 @@ namespace
 
     void setva(cube &c, const ivec &co, int size, int csi)
     {
-        int vamergeoffset[MAXMERGELEVEL+1];
-        for(int i = 0; i < MAXMERGELEVEL+1; ++i)
+        int vamergeoffset[maxmergelevel+1];
+        for(int i = 0; i < maxmergelevel+1; ++i)
         {
             vamergeoffset[i] = vamerges[i].length();
         }
@@ -1914,7 +1914,7 @@ namespace
         }
         else
         {
-            for(int i = 0; i < MAXMERGELEVEL+1; ++i)
+            for(int i = 0; i < maxmergelevel+1; ++i)
             {
                 vamerges[i].setsize(vamergeoffset[i]);
             }
@@ -2007,7 +2007,7 @@ namespace
                 {
                     count += setcubevisibility(c[i], o, size);
                 }
-                int tcount = count + (csi <= MAXMERGELEVEL ? vamerges[csi].length() : 0);
+                int tcount = count + (csi <= maxmergelevel ? vamerges[csi].length() : 0);
                 if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == min(0x1000, worldsize/2))
                 {
                     loadprogress = std::clamp(recalcprogress/static_cast<float>(allocnodes), 0.0f, 1.0f);
@@ -2034,7 +2034,7 @@ namespace
                     }
                 }
             }
-            if(csi+1 <= MAXMERGELEVEL && vamerges[csi].length())
+            if(csi+1 <= maxmergelevel && vamerges[csi].length())
             {
                 vamerges[csi+1].move(vamerges[csi]);
             }
