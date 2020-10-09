@@ -650,7 +650,8 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
 }
 //===================================SETSLOTPARAM SETSLOTPARAMS SETDEFAULTPARAMS
 #define SETSLOTPARAM(l, mask, i, val) do { \
-    if(!(mask&(1<<i))) { \
+    if(!(mask&(1<<i))) \
+    { \
         mask |= 1<<i; \
         setslotparam(l, val); \
     } \
@@ -660,7 +661,10 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
     for(int i = 0; i < slotparams.length(); i++) \
     { \
         SlotShaderParam &p = slotparams[i]; \
-        if(!defaultparams.inrange(p.loc)) continue; \
+        if(!defaultparams.inrange(p.loc)) \
+        { \
+            continue; \
+        } \
         SlotShaderParamState &l = defaultparams[p.loc]; \
         SETSLOTPARAM(l, unimask, p.loc, p.val); \
     }
@@ -1030,7 +1034,8 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
             vsbuf.put(vsend, strlen(vsend)+1);
         }
     }
-    const char *psmain = findglslmain(ps), *psend = strrchr(ps, '}');
+    const char *psmain = findglslmain(ps),
+               *psend  = strrchr(ps, '}');
     if(psmain && psend)
     {
         psbuf.put(ps, psmain - ps);
