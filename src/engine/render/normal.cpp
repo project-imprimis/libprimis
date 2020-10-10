@@ -7,7 +7,10 @@ namespace //internal functionality not seen by other files
         int smooth;
     };
 
-    inline uint hthash(const normalkey &k) { return hthash(k.pos); }
+    inline uint hthash(const normalkey &k)
+    {
+        return hthash(k.pos);
+    }
 
     struct normalgroup
     {
@@ -151,7 +154,12 @@ namespace //internal functionality not seen by other files
         for(int cur = g.tnormals; cur >= 0;)
         {
             tnormal &o = tnormals[cur];
-            const vec flats[6] = { vec(-1, 0, 0), vec(1, 0, 0), vec(0, -1, 0), vec(0, 1, 0), vec(0, 0, -1), vec(0, 0, 1) };
+            const vec flats[6] = { vec(-1,  0,  0),
+                                   vec( 1,  0,  0),
+                                   vec( 0, -1,  0),
+                                   vec( 0,  1,  0),
+                                   vec( 0,  0, -1),
+                                   vec( 0,  0,  1) };
             vec n1 = o.normals[0] < 0 ? flats[o.normals[0]+6] : normals[o.normals[0]].surface,
                 n2 = o.normals[1] < 0 ? flats[o.normals[1]+6] : normals[o.normals[1]].surface,
                 nt;
@@ -215,11 +223,11 @@ namespace //internal functionality not seen by other files
                 if(numverts)
                 {
                     vertinfo *verts = c.ext->verts() + c.ext->surfaces[i].verts;
-                    vec vo(ivec(o).mask(~0xFFF));
+                    vec vo(static_cast<ivec>(o).mask(~0xFFF));
                     for(int j = 0; j < numverts; ++j)
                     {
                         vertinfo &v = verts[j];
-                        pos[j] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
+                        pos[j] = static_cast<vec>(v.x, v.y, v.z).mul(1.0f/8).add(vo);
                     }
                     if(!(c.merged&(1<<i)) && !flataxisface(c, i))
                     {
@@ -240,15 +248,15 @@ namespace //internal functionality not seen by other files
                     }
                     int order = vis&4 || convex < 0 ? 1 : 0;
                     vec vo(o);
-                    pos[numverts++] = vec(v[order]).mul(size/8.0f).add(vo);
+                    pos[numverts++] = static_cast<vec>(v[order]).mul(size/8.0f).add(vo);
                     if(vis&1)
                     {
-                        pos[numverts++] = vec(v[order+1]).mul(size/8.0f).add(vo);
+                        pos[numverts++] = static_cast<vec>(v[order+1]).mul(size/8.0f).add(vo);
                     }
-                    pos[numverts++] = vec(v[order+2]).mul(size/8.0f).add(vo);
+                    pos[numverts++] = static_cast<vec>(v[order+2]).mul(size/8.0f).add(vo);
                     if(vis&2)
                     {
-                        pos[numverts++] = vec(v[(order+3)&3]).mul(size/8.0f).add(vo);
+                        pos[numverts++] = static_cast<vec>(v[(order+3)&3]).mul(size/8.0f).add(vo);
                     }
                 }
 
@@ -299,7 +307,8 @@ namespace //internal functionality not seen by other files
                     int edge = tjoints[tj].edge,
                         e1 = edge%(Face_MaxVerts+1),
                         e2 = (e1+1)%numverts;
-                    const vec &v1 = pos[e1], &v2 = pos[e2];
+                    const vec &v1 = pos[e1],
+                              &v2 = pos[e2];
                     ivec d(vec(v2).sub(v1).mul(8));
                     int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
                     if(d[axis] < 0)
@@ -307,7 +316,7 @@ namespace //internal functionality not seen by other files
                         d.neg();
                     }
                     reduceslope(d);
-                    int origin = static_cast<int>(min(v1[axis], v2[axis])*8)&~0x7FFF,
+                    int origin  =  static_cast<int>(min(v1[axis], v2[axis])*8)&~0x7FFF,
                         offset1 = (static_cast<int>(v1[axis]*8) - origin) / d[axis],
                         offset2 = (static_cast<int>(v2[axis]*8) - origin) / d[axis];
                     vec o = vec(v1).sub(vec(d).mul(offset1/8.0f)),
