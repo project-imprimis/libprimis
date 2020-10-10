@@ -33,8 +33,14 @@ namespace ai
         ushort route, prev;
         ushort links[maxwaypointlinks];
 
-        waypoint() {}
-        waypoint(const vec &o, int weight = 0) : o(o), weight(weight), route(0) { memset(links, 0, sizeof(links)); }
+        waypoint()
+        {
+        }
+
+        waypoint(const vec &o, int weight = 0) : o(o), weight(weight), route(0)
+        {
+            memset(links, 0, sizeof(links));
+        }
 
         int score() const
         {
@@ -53,7 +59,10 @@ namespace ai
             return -1;
         }
 
-        bool haslinks() { return links[0]!=0; }
+        bool haslinks()
+        {
+            return links[0]!=0;
+        }
     };
     extern vector<waypoint> waypoints;
 
@@ -140,7 +149,13 @@ namespace ai
 
         bool find(int n, gameent *d) const
         {
-            LOOP_AVOID(*this, d, { if(wp == n) return true; });
+            LOOP_AVOID(*this, d,
+            {
+                if(wp == n)
+                {
+                    return true;
+                }
+            });
             return false;
         }
 
@@ -234,7 +249,10 @@ namespace ai
 
         void clear(bool prev = false)
         {
-            if(prev) memset(prevnodes, -1, sizeof(prevnodes));
+            if(prev)
+            {
+                memset(prevnodes, -1, sizeof(prevnodes));
+            }
             route.setsize(0);
         }
 
@@ -257,7 +275,11 @@ namespace ai
             tryreset = tryit;
         }
 
-        void reset(bool tryit = false) { wipe(); clean(tryit); }
+        void reset(bool tryit = false)
+        {
+            wipe();
+            clean(tryit);
+        }
 
         bool hasprevnode(int n) const
         {
@@ -287,9 +309,18 @@ namespace ai
 
         void removestate(int index = -1)
         {
-            if(index < 0) state.pop();
-            else if(state.inrange(index)) state.remove(index);
-            if(!state.length()) addstate(AIState_Wait);
+            if(index < 0)
+            {
+                state.pop();
+            }
+            else if(state.inrange(index))
+            {
+                state.remove(index);
+            }
+            if(!state.length())
+            {
+                addstate(AIState_Wait);
+            }
         }
 
         aistate &getstate(int idx = -1)
