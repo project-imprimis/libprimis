@@ -299,7 +299,7 @@ namespace game
         }
     });
     ICOMMAND(getteam, "", (), intret((player1->clientnum < 0 || modecheck(gamemode, Mode_Team)) && validteam(player1->team) ? player1->team : 0));
-    ICOMMAND(getteamname, "i", (int *num), result(TEAM_NAME(*num)));
+    ICOMMAND(getteamname, "i", (int *num), result(teamname(*num)));
 
     struct authkey
     {
