@@ -2388,7 +2388,6 @@ namespace game
                         break;
                     }
                     entities::setspawn(i, true);
-                    ai::itemspawned(i);
                     playsound(Sound_ItemSpawn, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
                     break;
                 }

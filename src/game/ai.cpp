@@ -733,14 +733,6 @@ namespace ai
         }
     }
 
-    void itemspawned(int ent)
-    {
-        if(!entities::ents.inrange(ent))
-        {
-            return;
-        }
-    }
-
     bool check(gameent *d, aistate &b)
     {
         if(cmode && cmode->aicheck(d, b))
