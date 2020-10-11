@@ -19,7 +19,10 @@ bool execfile(const char *cfgfile, bool msg)
     char *buf = loadfile(path(s), NULL);
     if(!buf)
     {
-        if(msg) conoutf(Console_Error, "could not read \"%s\"", cfgfile);
+        if(msg)
+        {
+            conoutf(Console_Error, "could not read \"%s\"", cfgfile);
+        }
         return false;
     }
     const char *oldsourcefile = sourcefile, *oldsourcestr = sourcestr;
@@ -705,7 +708,9 @@ void at(tagval *args, int numargs)
     {
         return;
     }
-    const char *start = args[0].getstr(), *end = start + strlen(start), *qstart = "";
+    const char *start  = args[0].getstr(),
+               *end    = start + strlen(start),
+               *qstart = "";
     for(int i = 1; i < numargs; i++)
     {
         const char *list = start;
@@ -717,7 +722,10 @@ void at(tagval *args, int numargs)
                 break;
             }
         }
-        if(pos > 0 || !parselist(list, start, end, qstart)) start = end = qstart = "";
+        if(pos > 0 || !parselist(list, start, end, qstart))
+        {
+            start = end = qstart = "";
+        }
     }
     commandret->setstr(listelem(start, end, qstart));
 }
@@ -864,8 +872,19 @@ COMMAND(listassoc, "rse");
         init; \
         for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++) \
         { \
-            if(cmp) { intret(n); return; } \
-            for(int i = 0; i < static_cast<int>(*skip); ++i) { if(!parselist(s)) goto notfound; n++; } \
+            if(cmp) \
+            { \
+                intret(n); \
+                return; \
+            } \
+            for(int i = 0; i < static_cast<int>(*skip); ++i) \
+            { \
+                if(!parselist(s)) \
+                { \
+                    goto notfound; \
+                    n++; \
+                } \
+            } \
         } \
     notfound: \
         intret(-1); \
@@ -873,6 +892,7 @@ COMMAND(listassoc, "rse");
 LISTFIND(listfind=, "i", int, , parseint(start) == *val);
 LISTFIND(listfind=f, "f", float, , parsefloat(start) == *val);
 LISTFIND(listfind=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
+#undef LISTFIND
 
 #define LISTASSOC(name, fmt, type, init, cmp) \
     ICOMMAND(name, "s" fmt, (char *list, type *val), \
@@ -887,6 +907,7 @@ LISTFIND(listfind=s, "s", char, int len = static_cast<int>(strlen(val)), static_
 LISTASSOC(listassoc=, "i", int, , parseint(start) == *val);
 LISTASSOC(listassoc=f, "f", float, , parsefloat(start) == *val);
 LISTASSOC(listassoc=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
+#undef LISTASSOC
 
 void looplist(ident *id, const char *list, const uint *body)
 {
@@ -1207,7 +1228,11 @@ COMMANDN(findfile, findfile_, "s");
 struct SortItem
 {
     const char *str, *quotestart, *quoteend;
-    int quotelength() const { return static_cast<int>(quoteend-quotestart); }
+
+    int quotelength() const
+    {
+        return static_cast<int>(quoteend-quotestart);
+    }
 };
 
 struct SortFun
@@ -1222,13 +1247,13 @@ struct SortFun
             x->valtype = Value_CString;
         }
         cleancode(*x);
-        x->val.code = (const uint *)xval.str;
+        x->val.code = reinterpret_cast<const uint *>(xval.str);
         if(y->valtype != Value_CString)
         {
             y->valtype = Value_CString;
         }
         cleancode(*y);
-        y->val.code = (const uint *)yval.str;
+        y->val.code = reinterpret_cast<const uint *>(yval.str);
         return executebool(body);
     }
 };
@@ -1351,9 +1376,17 @@ ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortl
             val = args[0].fmt; \
             type val2 = args[1].fmt; \
             op; \
-            for(int i = 2; i < numargs; i++) { val2 = args[i].fmt; op; } \
+            for(int i = 2; i < numargs; i++) \
+            { \
+                val2 = args[i].fmt; \
+                op; \
+            } \
         } \
-        else { val = numargs > 0 ? args[0].fmt : initval; unaryop; } \
+        else \
+        { \
+            val = numargs > 0 ? args[0].fmt : initval; \
+            unaryop; \
+        } \
         type##ret(val); \
     })
 #define MATHICMDN(name, op, initval, unaryop) MATHCMD(#name, i, int, val = val op val2, initval, unaryop)
@@ -1367,10 +1400,16 @@ ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortl
         bool val; \
         if(numargs >= 2) \
         { \
-            val = args[0].fmt op args[1].fmt; \
-            for(int i = 2; i < numargs && val; i++) val = args[i-1].fmt op args[i].fmt; \
+            val = args[0].fmt op args[1].fmt; /* note here the bizzare syntax caused by macro substitution */ \
+            for(int i = 2; i < numargs && val; i++) \
+            { \
+                val = args[i-1].fmt op args[i].fmt; /* note here the bizzare syntax caused by macro substitution */ \
+            } \
         } \
-        else val = (numargs > 0 ? args[0].fmt : 0) op 0; \
+        else \
+        { \
+            val = (numargs > 0 ? args[0].fmt : 0) op 0; \
+        } \
         intret(static_cast<int>(val)); \
     })
 #define CMPICMDN(name, op) CMPCMD(#name, i, int, op)
@@ -1493,7 +1532,10 @@ ICOMMAND(exp, "f", (float *a), floatret(exp(*a)));
     ICOMMAND(name, #fmt "1V", (tagval *args, int numargs), \
     { \
         type val = numargs > 0 ? args[0].fmt : 0; \
-        for(int i = 1; i < numargs; i++) val = op(val, args[i].fmt); \
+        for(int i = 1; i < numargs; i++) \
+        { \
+            val = op(val, args[i].fmt); \
+        } \
         type##ret(val); \
     })
 
@@ -1512,7 +1554,7 @@ ICOMMAND(ceil, "f", (float *n), floatret(ceil(*n)));
 ICOMMAND(round, "ff", (float *n, float *k),
 {
     double step = *k;
-    double r = *n;
+    double r    = *n;
     if(step > 0)
     {
         r += step * (r < 0 ? -0.5 : 0.5);
@@ -1596,10 +1638,16 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
         bool val; \
         if(numargs >= 2) \
         { \
-            val = strcmp(args[0].s, args[1].s) op 0; \
-            for(int i = 2; i < numargs && val; i++) val = strcmp(args[i-1].s, args[i].s) op 0; \
+            val = strcmp(args[0].s, args[1].s) op 0; /* note here the bizzare syntax caused by macro substitution */ \
+            for(int i = 2; i < numargs && val; i++) \
+            { \
+                val = strcmp(args[i-1].s, args[i].s) op 0;  /* note here the bizzare syntax caused by macro substitution */ \
+            } \
         } \
-        else val = (numargs > 0 ? args[0].s[0] : 0) op 0; \
+        else \
+        { \
+            val = (numargs > 0 ? args[0].s[0] : 0) op 0; /* note here the bizzare syntax caused by macro substitution */ \
+        } \
         intret(static_cast<int>(val)); \
     })
 
@@ -1641,7 +1689,10 @@ ICOMMAND(unistr, "i", (int *i), { char *s = newstring(1); s[0] = uni2cube(*i); s
     { \
         int len = strlen(s); \
         char *m = newstring(len); \
-        for(int i = 0; i < static_cast<int>(len); ++i) m[i] = map(s[i]); \
+        for(int i = 0; i < static_cast<int>(len); ++i) \
+        { \
+            m[i] = map(s[i]); \
+        } \
         m[len] = '\0'; \
         stringret(m); \
     })
