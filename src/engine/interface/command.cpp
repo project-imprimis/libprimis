@@ -759,7 +759,11 @@ hashnameset<DefVar> defvars;
 #define DEFVAR(cmdname, fmt, args, body) \
     ICOMMAND(cmdname, fmt, args, \
     { \
-        if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } \
+        if(idents.access(name)) \
+        { \
+            debugcode("cannot redefine %s as a variable", name); \
+            return; \
+        } \
         name = newstring(name); \
         DefVar &def = defvars[name]; \
         def.name = name; \
@@ -785,7 +789,10 @@ DEFSVAR(defsvarp, Idf_Persist);
 
 #define GETVAR_(id, vartype, name, retval) \
     ident *id = idents.access(name); \
-    if(!id || id->type!=vartype) return retval;
+    if(!id || id->type!=vartype) \
+    { \
+        return retval; \
+    }
 
 #define GETVAR(id, name, retval) GETVAR_(id, Id_Var, name, retval)
 
@@ -797,12 +804,23 @@ DEFSVAR(defsvarp, Idf_Persist);
             debugcode("cannot override persistent variable %s", id->name); \
             errorval; \
         } \
-        if(!(id->flags&Idf_Overridden)) { saveval; id->flags |= Idf_Overridden; } \
-        else { clearval; } \
+        if(!(id->flags&Idf_Overridden)) \
+        { \
+            saveval; \
+            id->flags |= Idf_Overridden; \
+        } \
+        else \
+        { \
+            clearval; \
+        } \
     } \
     else \
     { \
-        if(id->flags&Idf_Overridden) { resetval; id->flags &= ~Idf_Overridden; } \
+        if(id->flags&Idf_Overridden) \
+        { \
+            resetval; \
+            id->flags &= ~Idf_Overridden; \
+        } \
         clearval; \
     }
 
@@ -993,7 +1011,10 @@ void setfvarchecked(ident *id, float val)
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || game::allowedittoggle())
     {
         OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
-        if(val < id->minvalf || val > id->maxvalf) val = clampfvar(id, val, id->minvalf, id->maxvalf);
+        if(val < id->minvalf || val > id->maxvalf)
+        {
+            val = clampfvar(id, val, id->minvalf, id->maxvalf);
+        }
         *id->storage.f = val;
         id->changed();
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
@@ -1042,7 +1063,10 @@ bool addcommand(const char *name, identfun fun, const char *args, int type)
                 case 'N':
                 case 'D':
                 {
-                    if(numargs < Max_Args) numargs++;
+                    if(numargs < Max_Args)
+                    {
+                        numargs++;
+                    }
                     break;
                 }
                 case 'S':
@@ -1220,7 +1244,9 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
 {
     static int vlen[Max_Args];
     static char numbuf[3*maxstrlen];
-    int len = prefixlen, numlen = 0, i = 0;
+    int len    = prefixlen,
+        numlen = 0,
+        i      = 0;
     for(; i < n; i++) switch(v[i].type)
     {
         case Value_Macro:
@@ -1340,12 +1366,17 @@ static inline void cutstring(const char *&p, stringslice &s)
 
     stridx = (stridx + 1)%4;
     vector<char> &buf = strbuf[stridx];
-    if(buf.alen < maxlen) buf.growbuf(maxlen);
-
+    if(buf.alen < maxlen)
+    {
+        buf.growbuf(maxlen);
+    }
     s.str = buf.buf;
     s.len = unescapestring(buf.buf, p, end);
     p = end;
-    if(*p=='\"') p++;
+    if(*p=='\"')
+    {
+        p++;
+    }
 }
 
 static inline char *cutstring(const char *&p)
@@ -1571,7 +1602,9 @@ static inline void compileint(vector<uint> &code, const stringslice &word)
 static inline void compilefloat(vector<uint> &code, float f = 0.0f)
 {
     if(static_cast<int>(f) == f && f >= -0x800000 && f <= 0x7FFFFF)
+    {
         code.add(Code_ValI|Ret_Float|(static_cast<int>(f)<<8));
+    }
     else
     {
         union
@@ -1718,7 +1751,8 @@ static inline void compileval(vector<uint> &code, int wordtype, const stringslic
         }
         case Value_Integer:
         {
-            compileint(code, word); break;
+            compileint(code, word);
+            break;
         }
         case Value_Cond:
         {
@@ -2155,21 +2189,27 @@ static bool compileblocksub(vector<uint> &code, const char *&p, int prevargs)
     switch(*p)
     {
         case '(':
+        {
             if(!compilearg(code, p, Value_CAny, prevargs))
             {
                 return false;
             }
             break;
+        }
         case '[':
+        {
             if(!compilearg(code, p, Value_CString, prevargs))
             {
                 return false;
             }
             code.add(Code_LookupMU);
             break;
+        }
         case '\"':
+        {
             cutstring(p, lookup);
             goto lookupid;
+        }
         default:
         {
 
@@ -2222,7 +2262,8 @@ static bool compileblocksub(vector<uint> &code, const char *&p, int prevargs)
 
 static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, int prevargs)
 {
-    const char *line = p, *start = p;
+    const char *line  = p,
+               *start = p;
     int concs = 0;
     for(int brak = 1; brak;)
     {
@@ -2264,7 +2305,10 @@ static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, i
             case '@':
             {
                 const char *esc = p;
-                while(*p == '@') p++;
+                while(*p == '@')
+                {
+                    p++;
+                }
                 int level = p - (esc - 1);
                 if(brak > level)
                 {
@@ -2309,7 +2353,9 @@ done:
         if(!concs) switch(wordtype)
         {
             case Value_Pop:
+            {
                 return;
+            }
             case Value_Code:
             case Value_Cond:
             {
@@ -2351,7 +2397,10 @@ done:
             code.add(Code_ConCM|RET_CODE_ANY(wordtype)|(concs<<8));
             code.add(Code_Exit|RET_CODE_ANY(wordtype));
         }
-        else code.add(Code_ConCW|RET_CODE_ANY(wordtype)|(concs<<8));
+        else
+        {
+            code.add(Code_ConCW|RET_CODE_ANY(wordtype)|(concs<<8));
+        }
     }
     switch(wordtype)
     {
@@ -2572,7 +2621,10 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
                 case Value_Cond:
                 {
                     char *s = cutword(p);
-                    if(!s) return false;
+                    if(!s)
+                    {
+                        return false;
+                    }
                     compileblock(code, s);
                     delete[] s;
                     return true;
@@ -2580,7 +2632,10 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
                 case Value_Code:
                 {
                     char *s = cutword(p);
-                    if(!s) return false;
+                    if(!s)
+                    {
+                        return false;
+                    }
                     compileblock(code, s);
                     delete[] s;
                     return true;
@@ -2592,7 +2647,10 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
                 {
                     stringslice s;
                     cutword(p, s);
-                    if(!s.len) return false;
+                    if(!s.len)
+                    {
+                        return false;
+                    }
                     compileval(code, wordtype, s);
                     return true;
                 }
@@ -3576,223 +3634,226 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
     int i = -1,
         fakeargs = 0;
     bool rep = false;
-    for(const char *fmt = id->args; *fmt; fmt++) switch(*fmt)
+    for(const char *fmt = id->args; *fmt; fmt++)
     {
-        case 'i':
+        switch(*fmt)
         {
-            if(++i >= numargs)
+            case 'i':
             {
-                if(rep)
+                if(++i >= numargs)
                 {
-                    break;
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setint(0); fakeargs++;
                 }
-                args[i].setint(0); fakeargs++;
-            }
-            else
-            {
-                forceint(args[i]);
-            }
-            break;
-        }
-        case 'b':
-        {
-            if(++i >= numargs)
-            {
-                if(rep)
+                else
                 {
-                    break;
+                    forceint(args[i]);
                 }
-                args[i].setint(INT_MIN);
-                fakeargs++;
-            }
-            else
-            {
-                forceint(args[i]);
-            }
-            break;
-        }
-        case 'f':
-        {
-            if(++i >= numargs)
-            {
-                if(rep)
-                {
-                    break;
-                }
-                args[i].setfloat(0.0f);
-                fakeargs++;
-            }
-            else
-            {
-                forcefloat(args[i]);
                 break;
             }
-        }
-        [[fallthrough]];
-        case 'F':
-        {
-            if(++i >= numargs)
+            case 'b':
             {
-                if(rep)
+                if(++i >= numargs)
                 {
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setint(INT_MIN);
+                    fakeargs++;
+                }
+                else
+                {
+                    forceint(args[i]);
+                }
+                break;
+            }
+            case 'f':
+            {
+                if(++i >= numargs)
+                {
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setfloat(0.0f);
+                    fakeargs++;
+                }
+                else
+                {
+                    forcefloat(args[i]);
                     break;
                 }
-                args[i].setfloat(args[i-1].getfloat());
-                fakeargs++;
             }
-            else
+            [[fallthrough]];
+            case 'F':
             {
-                forcefloat(args[i]);
-            }
-            break;
-        }
-        case 'S':
-        {
-            if(++i >= numargs)
-            {
-                if(rep)
+                if(++i >= numargs)
                 {
-                    break;
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setfloat(args[i-1].getfloat());
+                    fakeargs++;
                 }
-                args[i].setstr(newstring(""));
-                fakeargs++;
-            }
-            else
-            {
-                forcestr(args[i]);
-            }
-            break;
-        }
-        case 's':
-        {
-            if(++i >= numargs)
-            {
-                if(rep)
+                else
                 {
-                    break;
+                    forcefloat(args[i]);
                 }
-                args[i].setcstr("");
-                fakeargs++;
+                break;
             }
-            else
+            case 'S':
             {
-                forcestr(args[i]);
-            }
-            break;
-        }
-        case 'T':
-        case 't':
-        {
-            if(++i >= numargs)
-            {
-                if(rep)
+                if(++i >= numargs)
                 {
-                    break;
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setstr(newstring(""));
+                    fakeargs++;
                 }
-                args[i].setnull(); fakeargs++;
-            }
-            break;
-        }
-        case 'E':
-        {
-            if(++i >= numargs)
-            {
-                if(rep)
+                else
                 {
-                    break;
+                    forcestr(args[i]);
                 }
-                args[i].setnull();
-                fakeargs++;
+                break;
             }
-            else
+            case 's':
             {
-                forcecond(args[i]);
-            }
-            break;
-        }
-        case 'e':
-        {
-            if(++i >= numargs)
-            {
-                if(rep)
+                if(++i >= numargs)
                 {
-                    break;
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setcstr("");
+                    fakeargs++;
                 }
-                args[i].setcode(emptyblock[Value_Null]+1);
+                else
+                {
+                    forcestr(args[i]);
+                }
+                break;
+            }
+            case 'T':
+            case 't':
+            {
+                if(++i >= numargs)
+                {
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setnull(); fakeargs++;
+                }
+                break;
+            }
+            case 'E':
+            {
+                if(++i >= numargs)
+                {
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setnull();
+                    fakeargs++;
+                }
+                else
+                {
+                    forcecond(args[i]);
+                }
+                break;
+            }
+            case 'e':
+            {
+                if(++i >= numargs)
+                {
+                    if(rep)
+                    {
+                        break;
+                    }
+                    args[i].setcode(emptyblock[Value_Null]+1);
+                    fakeargs++;
+                }
+                else
+                {
+                    forcecode(args[i]);
+                }
+                break;
+            }
+            case 'r':
+            {
+                if(++i >= numargs)
+                {
+                    if(rep) break;
+                    args[i].setident(dummyident);
+                    fakeargs++;
+                }
+                else
+                {
+                    forceident(args[i]);
+                }
+                break;
+            }
+            case '$':
+            {
+                if(++i < numargs)
+                {
+                    freearg(args[i]);
+                }
+                args[i].setident(id);
+                break;
+            }
+            case 'N':
+            {
+                if(++i < numargs)
+                {
+                    freearg(args[i]);
+                    args[i].setint(lookup ? -1 : i-fakeargs);
+                }
+                break;
+            }
+            case 'D':
+            {
+                if(++i < numargs)
+                {
+                    freearg(args[i]);
+                }
+                addreleaseaction(id, args, i);
                 fakeargs++;
+                break;
             }
-            else
+            case 'C':
             {
-                forcecode(args[i]);
+                i = max(i+1, numargs);
+                vector<char> buf;
+                ((comfun1)id->fun)(conc(buf, args, i, true));
+                goto cleanup;
             }
-            break;
-        }
-        case 'r':
-        {
-            if(++i >= numargs)
+            case 'V':
             {
-                if(rep) break;
-                args[i].setident(dummyident);
-                fakeargs++;
+                i = max(i+1, numargs);
+                ((comfunv)id->fun)(args, i);
+                goto cleanup;
             }
-            else
+            case '1':
+            case '2':
+            case '3':
+            case '4':
             {
-                forceident(args[i]);
+                if(i+1 < numargs)
+                {
+                    fmt -= *fmt-'0'+1;
+                    rep = true;
+                }
+                break;
             }
-            break;
-        }
-        case '$':
-        {
-            if(++i < numargs)
-            {
-                freearg(args[i]);
-            }
-            args[i].setident(id);
-            break;
-        }
-        case 'N':
-        {
-            if(++i < numargs)
-            {
-                freearg(args[i]);
-                args[i].setint(lookup ? -1 : i-fakeargs);
-            }
-            break;
-        }
-        case 'D':
-        {
-            if(++i < numargs)
-            {
-                freearg(args[i]);
-            }
-            addreleaseaction(id, args, i);
-            fakeargs++;
-            break;
-        }
-        case 'C':
-        {
-            i = max(i+1, numargs);
-            vector<char> buf;
-            ((comfun1)id->fun)(conc(buf, args, i, true));
-            goto cleanup;
-        }
-        case 'V':
-        {
-            i = max(i+1, numargs);
-            ((comfunv)id->fun)(args, i);
-            goto cleanup;
-        }
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        {
-            if(i+1 < numargs)
-            {
-                fmt -= *fmt-'0'+1;
-                rep = true;
-            }
-            break;
         }
     }
     ++i;
@@ -3841,7 +3902,8 @@ static const uint *runcode(const uint *code, tagval &result)
     }
     ++rundepth;
     int numargs = 0;
-    tagval args[Max_Args+Max_Results], *prevret = commandret;
+    tagval args[Max_Args+Max_Results],
+          *prevret = commandret;
     commandret = &result;
     for(;;)
     {
@@ -3858,7 +3920,6 @@ static const uint *runcode(const uint *code, tagval &result)
                     freearg(result); \
                     val; \
                     continue;
-
             RETOP(Code_Null|Ret_Null, result.setnull())
             RETOP(Code_Null|Ret_String, result.setstr(newstring("")))
             RETOP(Code_Null|Ret_Integer, result.setint(0))
@@ -3937,7 +3998,10 @@ static const uint *runcode(const uint *code, tagval &result)
                     pushalias(*args[offset+i].id, locals[i]);
                 }
                 code = runcode(code, result);
-                for(int i = offset; i < numargs; i++) popalias(*args[i].id);
+                for(int i = offset; i < numargs; i++)
+                {
+                    popalias(*args[i].id);
+                }
                 goto exit;
             }
             case Code_DoArgs|Ret_Null:
