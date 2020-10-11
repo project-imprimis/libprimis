@@ -325,7 +325,9 @@ inline bool htcmp(const vec &x, const vec &y)
 inline uint hthash(const vec &k)
 {
     union { uint i; float f; } x, y, z;
-    x.f = k.x; y.f = k.y; z.f = k.z;
+    x.f = k.x;
+    y.f = k.y;
+    z.f = k.z;
     uint v = x.i^y.i^z.i;
     return v + (v>>12);
 }
@@ -1183,7 +1185,9 @@ struct plane : vec
 
     void toplane(const vec &n, const vec &p)
     {
-        x = n.x; y = n.y; z = n.z;
+        x = n.x;
+        y = n.y;
+        z = n.z;
         offset = -dot(p);
     }
 
@@ -1826,7 +1830,9 @@ struct matrix4
 
     void frustum(float left, float right, float bottom, float top, float znear, float zfar)
     {
-        float width = right - left, height = top - bottom, zrange = znear - zfar;
+        float width = right - left,
+              height = top - bottom,
+              zrange = znear - zfar;
         a = vec4(2*znear/width, 0, 0, 0);
         b = vec4(0, 2*znear/height, 0, 0);
         c = vec4((right + left)/width, (top + bottom)/height, (zfar + znear)/zrange, -1);
@@ -1841,7 +1847,9 @@ struct matrix4
 
     void ortho(float left, float right, float bottom, float top, float znear, float zfar)
     {
-        float width = right - left, height = top - bottom, zrange = znear - zfar;
+        float width = right - left,
+              height = top - bottom,
+              zrange = znear - zfar;
         a = vec4(2/width, 0, 0, 0);
         b = vec4(0, 2/height, 0, 0);
         c = vec4(0, 0, 2/zrange, 0);
