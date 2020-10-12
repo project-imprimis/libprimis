@@ -419,23 +419,24 @@ inline int parseint(const char *s)
 {
     return static_cast<int>(strtoul(s, NULL, 0));
 }
-#define UNDOFLAG (1<<Max_Args)
+const int undoflag = 1<<Max_Args;
+
 #define UNDOARGS \
     identstack argstack[Max_Args]; \
     IdentLink *prevstack = aliasstack; \
     IdentLink aliaslink; \
     for(int undos = 0; prevstack != &noalias; prevstack = prevstack->next) \
     { \
-        if(prevstack->usedargs & UNDOFLAG) ++undos; \
+        if(prevstack->usedargs & undoflag) ++undos; \
         else if(undos > 0) --undos; \
         else \
         { \
             prevstack = prevstack->next; \
-            for(int argmask = aliasstack->usedargs & ~UNDOFLAG, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
+            for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
                 undoarg(*identmap[i], argstack[i]); \
             aliaslink.id = aliasstack->id; \
             aliaslink.next = aliasstack; \
-            aliaslink.usedargs = UNDOFLAG | prevstack->usedargs; \
+            aliaslink.usedargs = undoflag | prevstack->usedargs; \
             aliaslink.argstack = prevstack->argstack; \
             aliasstack = &aliaslink; \
             break; \
@@ -446,9 +447,9 @@ inline int parseint(const char *s)
 #define REDOARGS \
     if(aliasstack == &aliaslink) \
     { \
-        prevstack->usedargs |= aliaslink.usedargs & ~UNDOFLAG; \
+        prevstack->usedargs |= aliaslink.usedargs & ~undoflag; \
         aliasstack = aliaslink.next; \
-        for(int argmask = aliasstack->usedargs & ~UNDOFLAG, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
+        for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
             redoarg(*identmap[i], argstack[i]); \
     }
 
