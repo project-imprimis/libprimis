@@ -6,7 +6,10 @@ struct vec2
 {
     union
     {
-        struct { float x, y; };
+        struct
+        {
+            float x, y;
+        };
         float v[2];
     };
 
@@ -71,8 +74,13 @@ inline bool htcmp(const vec2 &x, const vec2 &y)
 
 inline uint hthash(const vec2 &k)
 {
-    union { uint i; float f; } x, y;
-    x.f = k.x; y.f = k.y;
+    union
+    {
+        uint i;
+        float f;
+    } x, y;
+    x.f = k.x;
+    y.f = k.y;
     uint v = x.i^y.i;
     return v + (v>>12);
 }
@@ -87,8 +95,14 @@ struct vec
 {
     union
     {
-        struct { float x, y, z; };
-        struct { float r, g, b; };
+        struct
+        {
+            float x, y, z;
+        };
+        struct
+        {
+            float r, g, b;
+        };
         float v[3];
     };
 
@@ -832,7 +846,10 @@ struct matrix3
             if(a.x >= b.y && a.x >= c.z)
             {
                 float r = 1 + a.x - b.y - c.z;
-                if(r <= threshold) return false;
+                if(r <= threshold)
+                {
+                    return false;
+                }
                 r = sqrtf(r);
                 axis.x = 0.5f*r;
                 axis.y = b.x/r;
@@ -841,7 +858,10 @@ struct matrix3
             else if(b.y >= c.z)
             {
                 float r = 1 + b.y - a.x - c.z;
-                if(r <= threshold) return false;
+                if(r <= threshold)
+                {
+                    return false;
+                }
                 r = sqrtf(r);
                 axis.y = 0.5f*r;
                 axis.x = b.x/r;
@@ -850,7 +870,10 @@ struct matrix3
             else
             {
                 float r = 1 + b.y - a.x - c.z;
-                if(r <= threshold) return false;
+                if(r <= threshold)
+                {
+                    return false;
+                }
                 r = sqrtf(r);
                 axis.z = 0.5f*r;
                 axis.x = c.x/r;
@@ -867,7 +890,10 @@ struct matrix3
         {
             axis = vec(b.z - c.y, c.x - a.z, a.y - b.x);
             float r = axis.squaredlen();
-            if(r <= threshold) return false;
+            if(r <= threshold)
+            {
+                return false;
+            }
             axis.mul(1/sqrtf(r));
             angle = acosf(0.5f*(tr - 1));
         }
@@ -975,9 +1001,22 @@ struct matrix4x3
         d.mul(k);
     }
 
-    void setscale(float x, float y, float z) { a.x = x; b.y = y; c.z = z; }
-    void setscale(const vec &v) { setscale(v.x, v.y, v.z); }
-    void setscale(float n) { setscale(n, n, n); }
+    void setscale(float x, float y, float z)
+    {
+        a.x = x;
+        b.y = y;
+        c.z = z;
+    }
+
+    void setscale(const vec &v)
+    {
+        setscale(v.x, v.y, v.z);
+    }
+
+    void setscale(float n)
+    {
+        setscale(n, n, n);
+    }
 
     void scale(float x, float y, float z)
     {
@@ -985,15 +1024,40 @@ struct matrix4x3
         b.mul(y);
         c.mul(z);
     }
-    void scale(const vec &v) { scale(v.x, v.y, v.z); }
-    void scale(float n) { scale(n, n, n); }
 
-    void settranslation(const vec &p) { d = p; }
-    void settranslation(float x, float y, float z) { d = vec(x, y, z); }
+    void scale(const vec &v)
+    {
+        scale(v.x, v.y, v.z);
+    }
 
-    void translate(const vec &p) { d.madd(a, p.x).madd(b, p.y).madd(c, p.z); }
-    void translate(float x, float y, float z) { translate(vec(x, y, z)); }
-    void translate(const vec &p, float scale) { translate(vec(p).mul(scale)); }
+    void scale(float n)
+    {
+        scale(n, n, n);
+    }
+
+    void settranslation(const vec &p)
+    {
+        d = p;
+    }
+
+    void settranslation(float x, float y, float z)
+    {
+        d = vec(x, y, z);
+    }
+
+    void translate(const vec &p)
+    {
+        d.madd(a, p.x).madd(b, p.y).madd(c, p.z);
+    }
+
+    void translate(float x, float y, float z)
+    {
+        translate(vec(x, y, z));
+    }
+
+    void translate(const vec &p, float scale)
+    {
+        translate(vec(p).mul(scale)); }
 
     void accumulate(const matrix4x3 &m, float k)
     {
@@ -1119,8 +1183,15 @@ struct matrix4x3
         b = rb;
         c = rc;
     }
-    void rotate_around_x(float angle) { rotate_around_x(cosf(angle), sinf(angle)); }
-    void rotate_around_x(const vec2 &sc) { rotate_around_x(sc.x, sc.y); }
+    void rotate_around_x(float angle)
+    {
+        rotate_around_x(cosf(angle), sinf(angle));
+    }
+
+    void rotate_around_x(const vec2 &sc)
+    {
+        rotate_around_x(sc.x, sc.y);
+    }
 
     void rotate_around_y(float ck, float sk)
     {
@@ -1129,8 +1200,15 @@ struct matrix4x3
         c = rc;
         a = ra;
     }
-    void rotate_around_y(float angle) { rotate_around_y(cosf(angle), sinf(angle)); }
-    void rotate_around_y(const vec2 &sc) { rotate_around_y(sc.x, sc.y); }
+    void rotate_around_y(float angle)
+    {
+        rotate_around_y(cosf(angle), sinf(angle));
+    }
+
+    void rotate_around_y(const vec2 &sc)
+    {
+        rotate_around_y(sc.x, sc.y);
+    }
 
     void rotate_around_z(float ck, float sk)
     {
@@ -1195,7 +1273,10 @@ struct plane : vec
     {
         cross(vec(b).sub(a), vec(c).sub(a));
         float mag = magnitude();
-        if(!mag) return false;
+        if(!mag)
+        {
+            return false;
+        }
         div(mag);
         offset = -dot(a);
         return true;
@@ -1204,7 +1285,10 @@ struct plane : vec
     bool rayintersect(const vec &o, const vec &ray, float &dist)
     {
         float cosalpha = dot(ray);
-        if(cosalpha==0) return false;
+        if(cosalpha==0)
+        {
+            return false;
+        }
         float deltac = offset+dot(o);
         dist -= deltac/cosalpha;
         return true;
@@ -1244,9 +1328,20 @@ struct plane : vec
         return *this;
     }
 
-    float zintersect(const vec &p) const { return -(x*p.x+y*p.y+offset)/z; }
-    float zdelta(const vec &p) const { return -(x*p.x+y*p.y)/z; }
-    float zdist(const vec &p) const { return p.z-zintersect(p); }
+    float zintersect(const vec &p) const
+    {
+        return -(x*p.x+y*p.y+offset)/z;
+    }
+
+    float zdelta(const vec &p) const
+    {
+        return -(x*p.x+y*p.y)/z;
+    }
+
+    float zdist(const vec &p) const
+    {
+        return p.z-zintersect(p);
+    }
 };
 
 struct triangle
@@ -1256,10 +1351,26 @@ struct triangle
     triangle(const vec &a, const vec &b, const vec &c) : a(a), b(b), c(c) {}
     triangle() {}
 
-    triangle &add(const vec &o) { a.add(o); b.add(o); c.add(o); return *this; }
-    triangle &sub(const vec &o) { a.sub(o); b.sub(o); c.sub(o); return *this; }
+    triangle &add(const vec &o)
+    {
+        a.add(o);
+        b.add(o);
+        c.add(o);
+        return *this;
+    }
 
-    bool operator==(const triangle &t) const { return a == t.a && b == t.b && c == t.c; }
+    triangle &sub(const vec &o)
+    {
+        a.sub(o);
+        b.sub(o);
+        c.sub(o);
+        return *this;
+    }
+
+    bool operator==(const triangle &t) const
+    {
+        return a == t.a && b == t.b && c == t.c;
+    }
 };
 
 /**
@@ -1292,8 +1403,14 @@ struct ivec
 {
     union
     {
-        struct { int x, y, z; };
-        struct { int r, g, b; };
+        struct
+        {
+            int x, y, z;
+        };
+        struct
+        {
+            int r, g, b;
+        };
         int v[3];
     };
 
@@ -1499,9 +1616,19 @@ struct bvec
         z = static_cast<uchar>((a.z*ka + b.z*kb)/d);
     }
 
-    void flip() { x ^= 0x80; y ^= 0x80; z ^= 0x80; }
+    void flip()
+    {
+        x ^= 0x80;
+        y ^= 0x80;
+        z ^= 0x80;
+    }
 
-    void scale(int k, int d) { x = static_cast<uchar>((x*k)/d); y = static_cast<uchar>((y*k)/d); z = static_cast<uchar>((z*k)/d); }
+    void scale(int k, int d)
+    {
+        x = static_cast<uchar>((x*k)/d);
+        y = static_cast<uchar>((y*k)/d);
+        z = static_cast<uchar>((z*k)/d);
+    }
 
     bvec &shl(int n)
     {
@@ -1518,8 +1645,15 @@ struct bvec
         return *this;
     }
 
-    static bvec fromcolor(const vec &v) { return bvec(static_cast<uchar>(v.x*255.0f), static_cast<uchar>(v.y*255.0f), static_cast<uchar>(v.z*255.0f)); }
-    vec tocolor() const { return vec(x*(1.0f/255.0f), y*(1.0f/255.0f), z*(1.0f/255.0f)); }
+    static bvec fromcolor(const vec &v)
+    {
+        return bvec(static_cast<uchar>(v.x*255.0f), static_cast<uchar>(v.y*255.0f), static_cast<uchar>(v.z*255.0f));
+    }
+
+    vec tocolor() const
+    {
+        return vec(x*(1.0f/255.0f), y*(1.0f/255.0f), z*(1.0f/255.0f));
+    }
 
     static bvec from565(ushort c)
     {
