@@ -101,7 +101,9 @@ bool rayboxintersect(const vec &b, const vec &s, const vec &o, const vec &ray, f
 
 bool linecylinderintersect(const vec &from, const vec &to, const vec &start, const vec &end, float radius, float &dist)
 {
-    vec d(end), m(from), n(to);
+    vec d(end),
+        m(from),
+        n(to);
     d.sub(start);
     m.sub(start);
     n.sub(from);
@@ -196,22 +198,22 @@ int polyclip(const vec *in, int numin, const vec &dir, float below, float above,
         {
             if(pc > above)
             {
-                out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+                out[numout++] = static_cast<vec>(*p).sub(v).mul((above - c)/(pc - c)).add(v);
             }
             if(pc > below)
             {
-                out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+                out[numout++] = static_cast<vec>(*p).sub(v).mul((below - c)/(pc - c)).add(v);
             }
         }
         else if(c > above)
         {
             if(pc < below)
             {
-                out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+                out[numout++] = static_cast<vec>(*p).sub(v).mul((below - c)/(pc - c)).add(v);
             }
             if(pc < above)
             {
-                out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+                out[numout++] = static_cast<vec>(*p).sub(v).mul((above - c)/(pc - c)).add(v);
             }
         }
         else
@@ -220,12 +222,12 @@ int polyclip(const vec *in, int numin, const vec &dir, float below, float above,
             {
                 if(c > below)
                 {
-                    out[numout++] = vec(*p).sub(v).mul((below - c)/(pc - c)).add(v);
+                    out[numout++] = static_cast<vec>(*p).sub(v).mul((below - c)/(pc - c)).add(v);
                 }
             }
             else if(pc > above && c < above)
             {
-                out[numout++] = vec(*p).sub(v).mul((above - c)/(pc - c)).add(v);
+                out[numout++] = static_cast<vec>(*p).sub(v).mul((above - c)/(pc - c)).add(v);
             }
             out[numout++] = v;
         }
