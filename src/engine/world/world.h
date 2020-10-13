@@ -19,7 +19,7 @@ struct octaheader
     int numvslots;
 };
 
-#define MAPVERSION 1            // bump if map format changes, see worldio.cpp
+constexpr int currentmapversion = 1;   // bump if map format changes, see worldio.cpp
 
 struct mapheader
 {

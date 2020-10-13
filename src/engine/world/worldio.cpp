@@ -64,7 +64,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
     }
     if(!memcmp(hdr.magic, "TMAP", 4))
     {
-        if(hdr.version>MAPVERSION)
+        if(hdr.version>currentmapversion)
         {
             conoutf(Console_Error, "map %s requires a newer version of Tesseract", ogzname);
             return false;
@@ -928,7 +928,7 @@ bool save_world(const char *mname, const char *gameident)
 
     mapheader hdr;
     memcpy(hdr.magic, "TMAP", 4);
-    hdr.version = MAPVERSION;
+    hdr.version = currentmapversion;
     hdr.headersize = sizeof(hdr);
     hdr.worldsize = worldsize;
     hdr.numents = 0;
