@@ -227,7 +227,7 @@ namespace //internal functionality not seen by other files
                     for(int j = 0; j < numverts; ++j)
                     {
                         vertinfo &v = verts[j];
-                        pos[j] = static_cast<vec>(v.x, v.y, v.z).mul(1.0f/8).add(vo);
+                        pos[j] = vec(v.x, v.y, v.z).mul(1.0f/8).add(vo);
                     }
                     if(!(c.merged&(1<<i)) && !flataxisface(c, i))
                     {
