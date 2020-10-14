@@ -14,7 +14,7 @@ static struct emptycube : cube
         visible = 0;
         merged = 0;
         material = Mat_Air;
-        SET_FACES(*this, faceempty);
+        setcubefaces(*this, faceempty);
         for(int i = 0; i < 6; ++i)
         {
             texture[i] = Default_Sky;
@@ -91,7 +91,7 @@ cube *newcubes(uint face, int mat)
         c->ext = NULL;
         c->visible = 0;
         c->merged = 0;
-        SET_FACES(*c, face);
+        setcubefaces(*c, face);
         for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
         {
             c->texture[l] = Default_Geom;
@@ -216,7 +216,7 @@ void optiface(uchar *p, cube &c)
     uint f = *(uint *)p;
     if(((f>>4)&0x0F0F0F0FU) == (f&0x0F0F0F0FU))
     {
-        EMPTY_FACES(c);
+        setcubefacesempty(c);
     }
 }
 
@@ -259,7 +259,7 @@ void validatec(cube *c, int size)
         {
             if(size<=1)
             {
-                SOLID_FACES(c[i]);
+                setcubefacessolid(c[i]);
                 discardchildren(c[i], true);
             }
             else
@@ -281,7 +281,7 @@ void validatec(cube *c, int size)
                      e1 = (f>>4)&0x0F0F0F0FU;
                 if(e0 == e1 || ((e1+0x07070707U)|(e1-e0))&0xF0F0F0F0U)
                 {
-                    EMPTY_FACES(c[i]);
+                    setcubefacesempty(c[i]);
                     break;
                 }
             }
@@ -442,7 +442,7 @@ int getmippedtexture(const cube &p, int orient)
 void forcemip(cube &c, bool fixtex)
 {
     cube *ch = c.children;
-    EMPTY_FACES(c);
+    setcubefacesempty(c);
     for(int i = 0; i < 8; ++i)
     {
         for(int j = 0; j < 8; ++j)
@@ -609,7 +609,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         {
             if(!isvalidcube(ch[i])) // not so good...
             {
-                EMPTY_FACES(ch[i]);
+                setcubefacesempty(ch[i]);
                 perfect=false;
             }
         }
@@ -689,7 +689,7 @@ bool remip(cube &c, const ivec &co, int size)
             perfect = false;
         }
     }
-    SOLID_FACES(c); // so texmip is more consistent
+    setcubefacessolid(c); // so texmip is more consistent
     for(int j = 0; j < 6; ++j)
     {
         c.texture[j] = getmippedtexture(c, j); // parents get child texs regardless
