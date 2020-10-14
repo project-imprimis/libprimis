@@ -1038,7 +1038,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
                     break;
                 }
             }
-            if(!solid && IS_EMPTY(c[i]))
+            if(!solid && iscubeempty(c[i]))
             {
                 continue;
             }
@@ -1094,7 +1094,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
             break;
         }
     }
-    if(!solid && IS_EMPTY(*c))
+    if(!solid && iscubeempty(*c))
     {
         return false;
     }

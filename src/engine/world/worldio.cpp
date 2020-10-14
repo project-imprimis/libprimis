@@ -296,7 +296,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
             {
                 oflags |= 0x40;
             }
-            if(IS_EMPTY(c[i]))
+            if(iscubeempty(c[i]))
             {
                 f->putchar(oflags | OctaSave_Empty);
             }

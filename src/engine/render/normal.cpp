@@ -200,7 +200,7 @@ namespace //internal functionality not seen by other files
             }
             return;
         }
-        else if(IS_EMPTY(c))
+        else if(iscubeempty(c))
         {
             return;
         }

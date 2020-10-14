@@ -671,7 +671,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
         {
             calcsurfaces(c[i].children, o, size >> 1);
         }
-        else if(!IS_EMPTY(c[i]))
+        else if(!iscubeempty(c[i]))
         {
             if(c[i].ext)
             {

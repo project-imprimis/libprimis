@@ -364,7 +364,11 @@ extern int allocnodes, allocva, selchildcount, selchildmat;
 const uint faceempty = 0;             // all edges in the range (0,0)
 const uint facesolid = 0x80808080;    // all edges in the range (0,8)
 
-#define IS_EMPTY(c) ((c).faces[0]==faceempty)
+inline bool iscubeempty(cube c)
+{
+    return c.faces[0]==faceempty;
+}
+
 #define IS_ENTIRELY_SOLID(c) ((c).faces[0]==facesolid && (c).faces[1]==facesolid && (c).faces[2]==facesolid)
 #define SET_FACES(c, face) { (c).faces[0] = (c).faces[1] = (c).faces[2] = face; }
 #define SOLID_FACES(c) SET_FACES(c, facesolid)

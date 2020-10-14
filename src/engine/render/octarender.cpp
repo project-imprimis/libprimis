@@ -1509,7 +1509,7 @@ namespace
             {
                 gencubeedges(c[i].children, o, size>>1);
             }
-            else if(!IS_EMPTY(c[i]))
+            else if(!iscubeempty(c[i]))
             {
                 gencubeedges(c[i], o, size);
             }
@@ -1659,7 +1659,7 @@ namespace
 
     int genmergedfaces(cube &c, const ivec &co, int size, int minlevel = -1)
     {
-        if(!c.ext || IS_EMPTY(c))
+        if(!c.ext || iscubeempty(c))
         {
             return -1;
         }
@@ -1833,7 +1833,7 @@ namespace
             return;
         }
 
-        if(!IS_EMPTY(c))
+        if(!iscubeempty(c))
         {
             gencubeverts(c, co, size);
             if(c.merged)
@@ -1924,7 +1924,7 @@ namespace
 
     inline int setcubevisibility(cube &c, const ivec &co, int size)
     {
-        if(IS_EMPTY(c) && (c.material&MatFlag_Clip) != Mat_Clip)
+        if(iscubeempty(c) && (c.material&MatFlag_Clip) != Mat_Clip)
         {
             return 0;
         }

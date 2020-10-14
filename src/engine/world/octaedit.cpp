@@ -1545,7 +1545,7 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
     int o = sel.orient;
     sel.orient = b.orient;
     cube *s = b.c();
-    LOOP_SEL_XYZ(if(!IS_EMPTY(*s) || s->children || s->material != Mat_Air) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
+    LOOP_SEL_XYZ(if(!iscubeempty(*s) || s->children || s->material != Mat_Air) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
     sel.orient = o;
 }
 
@@ -1706,7 +1706,7 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
         }
         --neighbordepth;
     }
-    else if(!IS_EMPTY(c))
+    else if(!iscubeempty(c))
     {
         int vis;
         for(int i = 0; i < 6; ++i) //for each face
@@ -1771,7 +1771,7 @@ void genprefabmesh(prefab &p)
     }
 
     cube *s = p.copy->c();
-    LOOP_XYZ(b, b.grid, if(!IS_EMPTY(*s) || s->children) pastecube(*s, c); s++);
+    LOOP_XYZ(b, b.grid, if(!iscubeempty(*s) || s->children) pastecube(*s, c); s++);
 
     prefabmesh r;
     neighborstack[++neighbordepth] = worldroot;
@@ -2020,7 +2020,7 @@ namespace hmap
     inline bool isheightmap(int o, int d, bool empty, cube *c)
     {
         return havesel ||
-            (empty && IS_EMPTY(*c)) ||
+            (empty && iscubeempty(*c)) ||
             textures.empty() ||
             textures.find(c->texture[o]) >= 0;
     }
@@ -2147,11 +2147,11 @@ namespace hmap
             c[k] = NULL;
         }
         c[1] = getcube(t, 0);
-        if(!c[1] || !IS_EMPTY(*c[1]))
+        if(!c[1] || !iscubeempty(*c[1]))
         {   // try up
             c[2] = c[1];
             c[1] = getcube(t, 1);
-            if(!c[1] || IS_EMPTY(*c[1]))
+            if(!c[1] || iscubeempty(*c[1]))
             {
                 c[0] = c[1];
                 c[1] = c[2];
@@ -2171,7 +2171,7 @@ namespace hmap
             c[1] = getcube(t, 0);
         }
 
-        if(!c[1] || IS_EMPTY(*c[1]))
+        if(!c[1] || iscubeempty(*c[1]))
         {
             flags[x][y] |= nothmap;
             return;
@@ -2187,11 +2187,11 @@ namespace hmap
             c[2] = getcube(t, -1);
         }
         c[3] = getcube(t, -2);
-        c[2] = !c[2] || IS_EMPTY(*c[2]) ? NULL : c[2];
-        c[3] = !c[3] || IS_EMPTY(*c[3]) ? NULL : c[3];
+        c[2] = !c[2] || iscubeempty(*c[2]) ? NULL : c[2];
+        c[3] = !c[3] || iscubeempty(*c[3]) ? NULL : c[3];
 
         uint face = getface(c[1], d);
-        if(face == 0x08080808 && (!c[0] || !IS_EMPTY(*c[0])))
+        if(face == 0x08080808 && (!c[0] || !iscubeempty(*c[0])))
         {
             flags[x][y] |= nothmap;
             return;
@@ -3309,7 +3309,7 @@ void getseltex()
         return;
     }
     cube &c = lookupcube(sel.o, -sel.grid);
-    if(c.children || IS_EMPTY(c))
+    if(c.children || iscubeempty(c))
     {
         return;
     }
@@ -3698,7 +3698,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
         {
             case EditMatFlag_Empty:
             {
-                if(IS_EMPTY(c))
+                if(iscubeempty(c))
                 {
                     break;
                 }
@@ -3706,7 +3706,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
             }
             case EditMatFlag_NotEmpty:
             {
-                if(!IS_EMPTY(c))
+                if(!iscubeempty(c))
                 {
                     break;
                 }
