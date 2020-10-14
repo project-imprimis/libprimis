@@ -3714,7 +3714,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
             }
             case EditMatFlag_Solid:
             {
-                if(IS_ENTIRELY_SOLID(c))
+                if(iscubesolid(c))
                 {
                     break;
                 }
@@ -3722,7 +3722,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
             }
             case EditMatFlag_NotSolid:
             {
-                if(!IS_ENTIRELY_SOLID(c))
+                if(!iscubesolid(c))
                 {
                     break;
                 }

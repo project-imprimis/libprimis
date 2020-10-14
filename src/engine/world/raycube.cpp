@@ -372,7 +372,7 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
            (((mode&Ray_ClipMat) && IS_CLIPPED(c.material&MatFlag_Volume)) ||
             ((mode&Ray_EditMat) && c.material != Mat_Air) ||
             (!(mode&Ray_Pass) && lsize==size && !iscubeempty(c)) ||
-            IS_ENTIRELY_SOLID(c) ||
+            iscubesolid(c) ||
             dent < dist) &&
             (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
         {
@@ -431,7 +431,7 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
 
         if(!iscubeempty(c) && !(c.material&Mat_Alpha))
         {
-            if(IS_ENTIRELY_SOLID(c))
+            if(iscubesolid(c))
             {
                 return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist;
             }

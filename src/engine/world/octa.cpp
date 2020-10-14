@@ -529,7 +529,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     {
         memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
     }
-    if(iscubeempty(c) || IS_ENTIRELY_SOLID(c))
+    if(iscubeempty(c) || iscubesolid(c))
     {
         c.children = newcubes(iscubeempty(c) ? faceempty : facesolid, c.material);
         for(int i = 0; i < 8; ++i)
@@ -721,12 +721,12 @@ bool remip(cube &c, const ivec &co, int size)
             }
             break;
         }
-        else if(!IS_ENTIRELY_SOLID(ch[i]))
+        else if(!iscubesolid(ch[i]))
         {
             while(++i < 8)
             {
                 int omat = ch[i].material;
-                if(IS_ENTIRELY_SOLID(ch[i]) ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
+                if(iscubesolid(ch[i]) ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
                 {
                     return false;
                 }
@@ -1287,7 +1287,7 @@ static inline bool occludesface(const cube &c, int orient, const ivec &o, int si
                 return true;
             }
         }
-        if(IS_ENTIRELY_SOLID(c))
+        if(iscubesolid(c))
         {
             return true;
         }
@@ -1361,7 +1361,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
                 return false;
             }
         }
-        if(IS_ENTIRELY_SOLID(o))
+        if(iscubesolid(o))
         {
             return false;
         }
@@ -1460,7 +1460,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                 }
             }
         }
-        if(vismask && !IS_ENTIRELY_SOLID(o))
+        if(vismask && !iscubesolid(o))
         {
             if(iscubeempty(o) || notouchingface(o, opp))
             {
@@ -1618,7 +1618,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
         {
             return vis;
         }
-        if(IS_ENTIRELY_SOLID(o) || (touchingface(o, opp) && faceedges(o, opp) == facesolid))
+        if(iscubesolid(o) || (touchingface(o, opp) && faceedges(o, opp) == facesolid))
         {
             return vis&notouch;
         }

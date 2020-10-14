@@ -974,7 +974,7 @@ static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const c
     {
         case Collide_OrientedBoundingBox:
         {
-            if(IS_ENTIRELY_SOLID(c) || solid)
+            if(iscubesolid(c) || solid)
             {
                 return cubecollidesolid<mpr::EntOBB>(d, dir, cutoff, c, co, size);
             }
@@ -985,7 +985,7 @@ static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const c
         }
         case Collide_Ellipse:
         {
-            if(IS_ENTIRELY_SOLID(c) || solid)
+            if(iscubesolid(c) || solid)
             {
                 return fuzzycollidesolid<mpr::EntCapsule>(d, dir, cutoff, c, co, size);
             }

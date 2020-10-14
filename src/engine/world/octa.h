@@ -364,12 +364,22 @@ extern int allocnodes, allocva, selchildcount, selchildmat;
 const uint faceempty = 0;             // all edges in the range (0,0)
 const uint facesolid = 0x80808080;    // all edges in the range (0,8)
 
+//returns if the cube is empty (face 0 does not exist)
+//note that a non-empty (but distorted) cube missing faces for an axis is impossible
+//unless there are no faces at all (impossible to construct a 3d cube otherwise)
 inline bool iscubeempty(cube c)
 {
     return c.faces[0]==faceempty;
 }
 
-#define IS_ENTIRELY_SOLID(c) ((c).faces[0]==facesolid && (c).faces[1]==facesolid && (c).faces[2]==facesolid)
+//returns if the cube passed is entirely solid (no distortions)
+inline bool iscubesolid(cube c)
+{
+    return (c).faces[0]==facesolid &&
+           (c).faces[1]==facesolid &&
+           (c).faces[2]==facesolid; //check all three
+}
+
 #define SET_FACES(c, face) { (c).faces[0] = (c).faces[1] = (c).faces[2] = face; }
 #define SOLID_FACES(c) SET_FACES(c, facesolid)
 #define EMPTY_FACES(c) SET_FACES(c, faceempty)
