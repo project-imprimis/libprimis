@@ -279,15 +279,15 @@ void savec(cube *c, const ivec &o, int size, stream *f)
     {
         renderprogress(static_cast<float>(savemapprogress)/allocnodes, "saving octree...");
     }
-    for(int i = 0; i < 8; ++i)
+    for(int i = 0; i < 8; ++i) //loop through children (there's always eight in an octree)
     {
         ivec co(i, o, size);
-        if(c[i].children)
+        if(c[i].children) //recursively note existence of children & call this fxn again
         {
             f->putchar(OctaSave_Children);
             savec(c[i].children, co, size>>1, f);
         }
-        else
+        else //once we're done with all cube children within cube *c given
         {
             int oflags     = 0,
                 surfmask   = 0,
@@ -296,7 +296,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
             {
                 oflags |= 0x40;
             }
-            if(iscubeempty(c[i]))
+            if(iscubeempty(c[i])) //don't need tons of info saved if we know it's just empty
             {
                 f->putchar(oflags | OctaSave_Empty);
             }
@@ -333,16 +333,15 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                 }
             }
 
-            for(int j = 0; j < 6; ++j)
+            for(int j = 0; j < 6; ++j) //for each face (there's always six) save the texture slot
             {
                 f->put<ushort>(c[i].texture[j]);
             }
-
-            if(oflags&0x40)
+            if(oflags&0x40) //0x40 is the code for a material (water, lava, alpha, etc.)
             {
                 f->put<ushort>(c[i].material);
             }
-            if(oflags&0x80)
+            if(oflags&0x80) //0x80 is the code for a merged cube (remipping merged this cube with neighbors)
             {
                 f->putchar(c[i].merged);
             }
@@ -372,7 +371,10 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                                     ivec v[4] = { verts[0].getxyz(), verts[1].getxyz(), verts[2].getxyz(), verts[3].getxyz() };
                                     for(int k = 0; k < 4; ++k)
                                     {
-                                        const ivec &v0 = v[k], &v1 = v[(k+1)&3], &v2 = v[(k+2)&3], &v3 = v[(k+3)&3];
+                                        const ivec &v0 = v[k],
+                                                   &v1 = v[(k+1)&3],
+                                                   &v2 = v[(k+2)&3],
+                                                   &v3 = v[(k+3)&3];
                                         if(v1[vc] == v0[vc] && v1[vr] == v2[vr] && v3[vc] == v2[vc] && v3[vr] == v0[vr])
                                         {
                                             vertmask |= 0x01;
@@ -414,12 +416,14 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                         }
                         surf.verts = vertmask;
                         f->write(&surf, sizeof(surf));
-                        bool hasxyz = (vertmask&0x04)!=0, hasnorm = (vertmask&0x80)!=0;
+                        bool hasxyz = (vertmask&0x04)!=0,
+                             hasnorm = (vertmask&0x80)!=0;
                         if(layerverts == 4)
                         {
                             if(hasxyz && vertmask&0x01)
                             {
-                                ivec v0 = verts[vertorder].getxyz(), v2 = verts[(vertorder+2)&3].getxyz();
+                                ivec v0 = verts[vertorder].getxyz(),
+                                     v2 = verts[(vertorder+2)&3].getxyz();
                                 f->put<ushort>(v0[vc]); f->put<ushort>(v0[vr]);
                                 f->put<ushort>(v2[vc]); f->put<ushort>(v2[vr]);
                                 hasxyz = false;
