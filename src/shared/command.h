@@ -242,10 +242,11 @@ struct identstack
     identstack *next;
 };
 
+//this pointer will point to different types depending upon the type of variable
 union identvalptr
 {
-    void *p;  // ID_*VAR
-    int *i;   // Id_Var
+    void  *p; // ID_*VAR
+    int   *i; // Id_Var
     float *f; // Id_FloatVar
     char **s; // Id_StringVar
 };
@@ -427,13 +428,24 @@ const int undoflag = 1<<Max_Args;
     IdentLink aliaslink; \
     for(int undos = 0; prevstack != &noalias; prevstack = prevstack->next) \
     { \
-        if(prevstack->usedargs & undoflag) ++undos; \
-        else if(undos > 0) --undos; \
+        if(prevstack->usedargs & undoflag) \
+        { \
+            ++undos; \
+        } \
+        else if(undos > 0) \
+        { \
+            --undos; \
+        } \
         else \
         { \
             prevstack = prevstack->next; \
-            for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
-                undoarg(*identmap[i], argstack[i]); \
+            for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) \
+            { \
+                if(argmask&1) \
+                { \
+                    undoarg(*identmap[i], argstack[i]); \
+                } \
+            } \
             aliaslink.id = aliasstack->id; \
             aliaslink.next = aliasstack; \
             aliaslink.usedargs = undoflag | prevstack->usedargs; \
@@ -449,8 +461,13 @@ const int undoflag = 1<<Max_Args;
     { \
         prevstack->usedargs |= aliaslink.usedargs & ~undoflag; \
         aliasstack = aliaslink.next; \
-        for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) if(argmask&1) \
-            redoarg(*identmap[i], argstack[i]); \
+        for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) \
+        { \
+            if(argmask&1) \
+            { \
+                redoarg(*identmap[i], argstack[i]); \
+            } \
+        } \
     }
 
 #define PARSEFLOAT(name, type) \
