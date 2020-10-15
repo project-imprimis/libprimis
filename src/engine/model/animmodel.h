@@ -422,12 +422,12 @@ struct animmodel : model
                 m.flags |= BIH::Mesh_CullFace;
             }
             genBIH(m);
-            while(bih.last().numtris > BIH::mesh::MAXTRIS)
+            while(bih.last().numtris > BIH::mesh::Max_Triangles)
             {
                 BIH::mesh &overflow = bih.dup();
-                overflow.tris += BIH::mesh::MAXTRIS;
-                overflow.numtris -= BIH::mesh::MAXTRIS;
-                bih[bih.length()-2].numtris = BIH::mesh::MAXTRIS;
+                overflow.tris += BIH::mesh::Max_Triangles;
+                overflow.numtris -= BIH::mesh::Max_Triangles;
+                bih[bih.length()-2].numtris = BIH::mesh::Max_Triangles;
             }
         }
 
