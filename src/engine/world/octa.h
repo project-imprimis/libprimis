@@ -402,9 +402,13 @@ inline void setcubefacesempty(cube c)
 
 #define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)<<2)+((y)<<1)+(x))])
 
-#define OCTA_DIM(d)          (1<<(d))                    // creates mask for bit of given dimension
-#define OCTA_COORD(d, i)     (((i)&OCTA_DIM(d))>>(d))
-#define OPPOSITE_OCTA(d, i)  ((i)^OCTA_DIM(D[d]))
+inline int octadim(int d)
+{
+    return 1<<d;
+}
+
+#define OCTA_COORD(d, i)     (((i)&octadim(d))>>(d))
+#define OPPOSITE_OCTA(d, i)  ((i)^octadim(D[d]))
 #define OCTA_INDEX(d,x,y,z)  (((z)<<D[d])+((y)<<C[d])+((x)<<R[d]))
 #define OCTA_STEP(x, y, z, scale) (((((z)>>(scale))&1)<<2) | ((((y)>>(scale))&1)<<1) | (((x)>>(scale))&1))
 

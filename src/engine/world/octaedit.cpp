@@ -3497,9 +3497,9 @@ void flipcube(cube &c, int d)
         //recursively apply to children
         for(int i = 0; i < 8; ++i)
         {
-            if(i&OCTA_DIM(d))
+            if(i&octadim(d))
             {
-                swap(c.children[i], c.children[i-OCTA_DIM(d)]);
+                swap(c.children[i], c.children[i-octadim(d)]);
             }
         }
         for(int i = 0; i < 8; ++i)
@@ -3542,9 +3542,9 @@ void rotatecube(cube &c, int d)
     //move child members
     if(c.children)
     {
-        int row = OCTA_DIM(R[d]);
-        int col = OCTA_DIM(C[d]);
-        for(int i=0; i<=OCTA_DIM(d); i+=OCTA_DIM(d)) rotatequad
+        int row = octadim(R[d]);
+        int col = octadim(C[d]);
+        for(int i=0; i<=octadim(d); i+=octadim(d)) rotatequad
         (
             c.children[i+row],
             c.children[i],
