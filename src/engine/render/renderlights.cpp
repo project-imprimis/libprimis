@@ -1611,7 +1611,7 @@ void processhdr(GLuint outfbo, int aa)
     {
         gle::bindvbo(bloompbo);
         gle::enablecolor();
-        gle::colorpointer(sizeof(GLfloat), (const void *)0, GL_FLOAT, 1);
+        gle::colorpointer(sizeof(GLfloat), nullptr, GL_FLOAT, 1);
         gle::clearvbo();
     }
 
@@ -3029,7 +3029,8 @@ void loaddeferredlightshaders()
 
 static inline bool sortlights(int x, int y)
 {
-    const lightinfo &xl = lights[x], &yl = lights[y];
+    const lightinfo &xl = lights[x],
+                    &yl = lights[y];
     if(!xl.spot)
     {
         if(yl.spot)
@@ -3918,14 +3919,19 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     else
     {
         glDepthMask(GL_TRUE);
-        if(hasDBT && depthtestlights > 1) glDisable(GL_DEPTH_BOUNDS_TEST_EXT);
+        if(hasDBT && depthtestlights > 1)
+        {
+            glDisable(GL_DEPTH_BOUNDS_TEST_EXT);
+        }
     }
 }
 
 void rendervolumetric()
 {
-    if(!volumetric || !volumetriclights || !volscale) return;
-
+    if(!volumetric || !volumetriclights || !volscale)
+    {
+        return;
+    }
     float bsx1 =  1,
           bsy1 =  1,
           bsx2 = -1,
@@ -4337,7 +4343,8 @@ void collectlights()
                 {
                     continue;
                 }
-                float prec = smprec, lod;
+                float prec = smprec,
+                      lod;
                 int w, h;
                 if(l.spot)
                 {
@@ -4771,7 +4778,8 @@ void rendershadowmaps(int offset = 0)
         glDepthMask(GL_TRUE);
     }
 
-    float polyfactor = smpolyfactor, polyoffset = smpolyoffset;
+    float polyfactor = smpolyfactor,
+          polyoffset = smpolyoffset;
     if(smfilter > 2)
     {
         polyfactor = smpolyfactor2;
@@ -4849,7 +4857,8 @@ void rendershadowmaps(int offset = 0)
             }
         }
 
-        float smnearclip = SQRT3 / l.radius, smfarclip = SQRT3;
+        float smnearclip = SQRT3 / l.radius,
+              smfarclip = SQRT3;
         matrix4 smprojmatrix(vec4(static_cast<float>(sm.size - border) / sm.size, 0, 0, 0),
                               vec4(0, static_cast<float>(sm.size - border) / sm.size, 0, 0),
                               vec4(0, 0, -(smfarclip + smnearclip) / (smfarclip - smnearclip), -1),
@@ -5601,7 +5610,10 @@ void shadesky()
 
 void shadegbuffer()
 {
-    if(msaasamples && !msaalight && !drawtex) resolvemsaadepth();
+    if(msaasamples && !msaalight && !drawtex)
+    {
+        resolvemsaadepth();
+    }
     glerror();
 
     timer *shcputimer = begintimer("deferred shading", false);
@@ -5623,7 +5635,10 @@ void shadegbuffer()
             renderlights(-1, -1, 1, 1, NULL, 0, drawtex ? -1 : 3);
         }
     }
-    else renderlights();
+    else
+    {
+        renderlights();
+    }
     glerror();
 
     if(!drawtex)
