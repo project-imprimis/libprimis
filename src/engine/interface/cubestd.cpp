@@ -1235,7 +1235,7 @@ struct SortItem
     }
 };
 
-struct SortFun
+struct SortFunction
 {
     ident *x, *y;
     uint *body;
@@ -1289,7 +1289,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         numunique = items.length();
     if(body)
     {
-        SortFun f = { x, y, body };
+        SortFunction f = { x, y, body };
         items.sort(f);
         if((*unique&Code_OpMask) != Code_Exit)
         {
@@ -1313,7 +1313,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     }
     else
     {
-        SortFun f = { x, y, unique };
+        SortFunction f = { x, y, unique };
         totalunique = items[0].quotelength();
         numunique = 1;
         for(int i = 1; i < items.length(); i++)
