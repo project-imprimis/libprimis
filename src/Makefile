@@ -86,6 +86,7 @@ CLIENT_OBJS= \
 	engine/render/renderparticles.o \
 	engine/render/rendersky.o \
 	engine/render/rendertext.o \
+	engine/render/rendertimers.o \
 	engine/render/renderva.o \
 	engine/render/renderwindow.o \
 	engine/render/shader.o \
