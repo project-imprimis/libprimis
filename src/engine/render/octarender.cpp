@@ -1107,7 +1107,7 @@ namespace
     {
         Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
         const texrotation &r = texrotations[vslot.rotation];
-        float k = texscale/vslot.scale,
+        float k = defaulttexscale/vslot.scale,
               xs = r.flipx ? -tex->xs : tex->xs,
               ys = r.flipy ? -tex->ys : tex->ys,
               sk = k/xs, tk = k/ys,

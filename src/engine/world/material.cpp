@@ -980,8 +980,8 @@ void renderglass()
         MatSlot &gslot = lookupmaterialslot(Mat_Glass+k);
 
         Texture *tex = gslot.sts.inrange(0) ? gslot.sts[0].t : notexture;
-        glassxscale = texscale/(tex->xs*gslot.scale);
-        glassyscale = texscale/(tex->ys*gslot.scale);
+        glassxscale = defaulttexscale/(tex->xs*gslot.scale);
+        glassyscale = defaulttexscale/(tex->ys*gslot.scale);
 
         glActiveTexture_(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, tex->id);

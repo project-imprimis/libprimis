@@ -44,7 +44,7 @@ enum
     MatSurf_EditOnly
 };
 
-constexpr float texscale = 16.0f;
+constexpr float defaulttexscale = 16.0f;
 
 struct vertex
 {

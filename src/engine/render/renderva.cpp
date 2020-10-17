@@ -1830,7 +1830,7 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
             }
             if(slot.shader->type & Shader_Triplanar)
             {
-                float scale = texscale/vslot.scale;
+                float scale = defaulttexscale/vslot.scale;
                 GLOBALPARAMF(texgenscale, scale/diffuse->xs, scale/diffuse->ys);
             }
         }
