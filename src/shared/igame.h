@@ -22,8 +22,6 @@ namespace game
     extern void renderplayerpreview(int model, int color, int team, int weap);
     extern int numanims();
     extern void findanims(const char *pattern, vector<int> &anims);
-    extern void adddynlights();
-    extern void dynlighttrack(physent *owner, vec &o, vec &hud);
 
     extern void gameplayhud(int w, int h);
 }

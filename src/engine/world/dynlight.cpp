@@ -146,15 +146,10 @@ void removetrackeddynlights(physent *owner)
 void updatedynlights()
 {
     cleardynlights();
-    game::adddynlights();
 
     for(int i = 0; i < dynlights.length(); i++)
     {
         dynlight &d = dynlights[i];
-        if(d.owner)
-        {
-            game::dynlighttrack(d.owner, d.o, d.hud);
-        }
         d.calcradius();
         d.calccolor();
     }

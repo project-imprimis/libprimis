@@ -808,21 +808,6 @@ namespace game
         }
     }
 
-    void dynlighttrack(physent *owner, vec &o, vec &hud)
-    {
-        if(owner->type!=PhysEnt_Player)
-        {
-            return;
-        }
-        gameent *pl = reinterpret_cast<gameent *>(owner);
-        if(pl->muzzle.x < 0 || pl->lastattack < 0 || attacks[pl->lastattack].gun != pl->gunselect)
-        {
-            return;
-        }
-        o = pl->muzzle;
-        hud = owner == hudplayer() ? vec(pl->o).add(vec(0, 0, 2)) : pl->muzzle;
-    }
-
     float intersectdist = 1e16f;
 
     bool intersect(dynent *d, const vec &from, const vec &to, float margin, float &dist)   // if lineseg hits entity bounding box
