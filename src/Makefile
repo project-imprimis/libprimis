@@ -77,6 +77,7 @@ CLIENT_OBJS= \
 	engine/interface/ui.o \
 	engine/render/aa.o \
 	engine/render/grass.o \
+	engine/render/hud.o \
 	engine/render/normal.o \
 	engine/render/octarender.o \
 	engine/render/radiancehints.o \
