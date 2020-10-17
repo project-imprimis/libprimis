@@ -6,7 +6,7 @@ enum                            // hardcoded texture numbers
     Default_NumDefaults
 };
 
-#define OCTAVERSION 33
+constexpr int octaversion = 33;
 
 struct octaheader
 {
@@ -34,8 +34,8 @@ struct mapheader
     int numvslots;
 };
 
-const float wateramplitude = 0.4f; //max wave height
-const float wateroffset = 1.1f;    //wave offset from top of mat volume
+constexpr float wateramplitude = 0.4f; //max wave height
+constexpr float wateroffset = 1.1f;    //wave offset from top of mat volume
 
 enum
 {
@@ -44,7 +44,7 @@ enum
     MatSurf_EditOnly
 };
 
-#define TEX_SCALE 16.0f
+constexpr float texscale = 16.0f;
 
 struct vertex
 {

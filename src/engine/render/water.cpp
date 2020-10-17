@@ -563,8 +563,8 @@ void renderwaterfalls()
         s *= 8 - fabs(s)*16;
         wfwave = vertwater ? wateramplitude*s-wateroffset : -wateroffset;
         wfscroll = 16.0f*lastmillis/1000.0f;
-        wfxscale = TEX_SCALE/(tex->xs*wslot.scale);
-        wfyscale = TEX_SCALE/(tex->ys*wslot.scale);
+        wfxscale = texscale/(tex->xs*wslot.scale);
+        wfyscale = texscale/(tex->ys*wslot.scale);
         //waterfall color vectors
         bvec color = getwaterfallcolor(k),
              refractcolor = getwaterfallrefractcolor(k);
@@ -617,8 +617,8 @@ void renderwater()
         MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
         Texture *tex = wslot.sts.inrange(0) ? wslot.sts[0].t: notexture;
-        wxscale = TEX_SCALE/(tex->xs*wslot.scale);
-        wyscale = TEX_SCALE/(tex->ys*wslot.scale);
+        wxscale = texscale/(tex->xs*wslot.scale);
+        wyscale = texscale/(tex->ys*wslot.scale);
         wscroll = 0.0f;
 
         glBindTexture(GL_TEXTURE_2D, tex->id);

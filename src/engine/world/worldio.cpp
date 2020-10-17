@@ -82,7 +82,7 @@ static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octahe
     }
     else if(!memcmp(hdr.magic, "OCTA", 4))
     {
-        if(hdr.version!=OCTAVERSION)
+        if(hdr.version!=octaversion)
         {
             conoutf(Console_Error, "map %s uses an unsupported map format version", ogzname);
             return false;
