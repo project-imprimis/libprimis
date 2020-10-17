@@ -46,12 +46,12 @@ void setupsunlight()
 
 static const surfaceinfo brightsurfaces[6] =
 {
-    BRIGHT_SURFACE,
-    BRIGHT_SURFACE,
-    BRIGHT_SURFACE,
-    BRIGHT_SURFACE,
-    BRIGHT_SURFACE,
-    BRIGHT_SURFACE
+    topsurface,
+    topsurface,
+    topsurface,
+    topsurface,
+    topsurface,
+    topsurface
 };
 
 void brightencube(cube &c)

@@ -2415,11 +2415,11 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
     {
         if(cu.ext)
         {
-            cu.ext->surfaces[orient] = AMBIENT_SURFACE;
+            cu.ext->surfaces[orient] = topsurface;
         }
         return;
     }
-    surfaceinfo surf = BRIGHT_SURFACE;
+    surfaceinfo surf = topsurface;
     vertinfo verts[Face_MaxVerts];
     surf.numverts |= p.numverts;
     int dim = DIMENSION(orient),
@@ -2475,7 +2475,7 @@ static inline void clearmerge(cube &c, int orient)
         c.merged &= ~(1<<orient);
         if(c.ext)
         {
-            c.ext->surfaces[orient] = BRIGHT_SURFACE;
+            c.ext->surfaces[orient] = topsurface;
         }
     }
 }

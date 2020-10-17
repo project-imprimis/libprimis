@@ -91,9 +91,6 @@ struct surfaceinfo
 };
 
 const surfaceinfo topsurface = {0, BlendLayer_Top};
-const surfaceinfo bottomsurface = {0, BlendLayer_Bottom};
-#define BRIGHT_SURFACE topsurface
-#define AMBIENT_SURFACE topsurface
 
 struct grasstri
 {
