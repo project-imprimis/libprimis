@@ -448,11 +448,6 @@ namespace game
         }
     }
 
-    void writeclientinfo(stream *f)
-    {
-        f->printf("name %s\n", escapestring(player1->name));
-    }
-
     bool allowedittoggle()
     {
         if(editmode)
@@ -877,7 +872,12 @@ namespace game
         if((modecheck(gamemode, Mode_Edit) && !name[0]) || !load_world(name, game::gameident(), game::getmapinfo()))
         {
             emptymap(0, true, name);
+            startmap(name);
             senditemstoserver = false;
+        }
+        else //start the map loaded by load_world() in above if statement
+        {
+            startmap(name);
         }
         startgame();
     }
@@ -2937,6 +2937,7 @@ namespace game
                     if(size>=0)
                     {
                         emptymap(size, true, NULL);
+                        startmap(NULL);
                     }
                     else
                     {

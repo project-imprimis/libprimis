@@ -720,7 +720,6 @@ extern const float gravity;
 extern vector<int> outsideents;
 
 extern void resetmap();
-extern void startmap(const char *name);
 extern void freeoctaentities(cube &c);
 extern void entitiesinoctanodes();
 extern void attachentities();

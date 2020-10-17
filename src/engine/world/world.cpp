@@ -615,11 +615,6 @@ void resetmap()
     nospeclights = 0;
 }
 
-void startmap(const char *name)
-{
-    game::startmap(name);
-}
-
 bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main empty world creation routine
 {
     if(!force && !editmode)
@@ -650,7 +645,6 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
         identflags &= ~Idf_Overridden;
     }
     allchanged(true);
-    startmap(mname);
     return true;
 }
 

@@ -140,7 +140,6 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
         return;
     }
     f->printf("// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", defaultconfig, autoexec);
-    game::writeclientinfo(f);
     f->printf("\n");
     writecrosshairs(f);
     vector<ident *> ids;

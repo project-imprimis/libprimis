@@ -1250,6 +1250,5 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     {
         conoutf(Console_Echo, "%s", maptitle);
     }
-    startmap(cname ? cname : mname);
     return true;
 }

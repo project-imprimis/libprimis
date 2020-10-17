@@ -930,6 +930,7 @@ namespace game
     extern void connectfail();
     extern void gameconnect(bool _remote);
     extern void changemap(const char *name);
+    extern void startmap(const char *name);
     extern bool ispaused();
 
     extern const char *gameconfig();
