@@ -472,12 +472,12 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 
         case OctaSave_Empty:
         {
-            setcubefacesempty(c);
+            setcubefaces(c, faceempty);
             break;
         }
         case OctaSave_Solid:
         {
-            setcubefacessolid(c);
+            setcubefaces(c, facesolid);
             break;
         }
         case OctaSave_Normal:

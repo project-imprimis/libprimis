@@ -631,7 +631,7 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
     worldroot = newcubes(faceempty);
     for(int i = 0; i < 4; ++i)
     {
-        setcubefacessolid(worldroot[i]);
+        setcubefaces(worldroot[i], facesolid);
     }
     if(worldsize > 0x1000)
     {
@@ -665,7 +665,7 @@ bool enlargemap(bool force)
     c[0].children = worldroot;
     for(int i = 0; i < 3; ++i)
     {
-        setcubefacessolid(c[i+1]);
+        setcubefaces(c[i+1], facesolid);
     }
     worldroot = c;
 

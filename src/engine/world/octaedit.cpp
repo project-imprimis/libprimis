@@ -640,7 +640,7 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
         {
             if(size<=1)
             {
-                setcubefacessolid(c[i]);
+                setcubefaces(c[i], facesolid);
                 discardchildren(c[i], true);
                 brightencube(c[i]);
             }
@@ -2319,7 +2319,7 @@ namespace hmap
                 if(notempty)
                 {
                     c[k]->texture[sel.orient] = c[1]->texture[sel.orient];
-                    setcubefacessolid(*c[k]);
+                    setcubefaces(*c[k], facesolid);
                     for(int i = 0; i < 2; ++i)
                     {
                         for(int j = 0; j < 2; ++j)
@@ -2337,7 +2337,7 @@ namespace hmap
                 }
                 else
                 {
-                    setcubefacesempty(*c[k]);
+                    setcubefaces(*c[k], faceempty);
                 }
             }
         }
@@ -2565,7 +2565,7 @@ void mpplacecube(selinfo &sel, int tex, bool local)
     }
     LOOP_SEL_XYZ(
         discardchildren(c, true);
-        setcubefacessolid(c);
+        setcubefaces(c, facesolid);
     );
 }
 
@@ -2605,7 +2605,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
     LOOP_SEL_XYZ(
         if(c.children)
         {
-            setcubefacessolid(c);
+            setcubefaces(c, facesolid);
         }
         ushort mat = getmaterial(c);
         discardchildren(c, true);
@@ -2614,7 +2614,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
         {
             if(dir<0)
             {
-                setcubefacessolid(c);
+                setcubefaces(c, facesolid);
                 cube &o = blockcube(x, y, 1, sel, -sel.grid);
                 for(int i = 0; i < 6; ++i) //for each face
                 {
@@ -2623,7 +2623,7 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
             }
             else
             {
-                setcubefacesempty(c);
+                setcubefaces(c, faceempty);
             }
         }
         else
@@ -2741,7 +2741,7 @@ void mpdelcube(selinfo &sel, bool local)
     {
         game::edittrigger(sel, Edit_DelCube);
     }
-    LOOP_SEL_XYZ(discardchildren(c, true); setcubefacesempty(c));
+    LOOP_SEL_XYZ(discardchildren(c, true); setcubefaces(c, faceempty));
 }
 
 void delcube()

@@ -216,7 +216,7 @@ void optiface(uchar *p, cube &c)
     uint f = *(uint *)p;
     if(((f>>4)&0x0F0F0F0FU) == (f&0x0F0F0F0FU))
     {
-        setcubefacesempty(c);
+        setcubefaces(c, faceempty);
     }
 }
 
@@ -259,7 +259,7 @@ void validatec(cube *c, int size)
         {
             if(size<=1)
             {
-                setcubefacessolid(c[i]);
+                setcubefaces(c[i], facesolid);
                 discardchildren(c[i], true);
             }
             else
@@ -281,7 +281,7 @@ void validatec(cube *c, int size)
                      e1 = (f>>4)&0x0F0F0F0FU;
                 if(e0 == e1 || ((e1+0x07070707U)|(e1-e0))&0xF0F0F0F0U)
                 {
-                    setcubefacesempty(c[i]);
+                    setcubefaces(c[i], faceempty);
                     break;
                 }
             }
@@ -442,7 +442,7 @@ int getmippedtexture(const cube &p, int orient)
 void forcemip(cube &c, bool fixtex)
 {
     cube *ch = c.children;
-    setcubefacesempty(c);
+    setcubefaces(c, faceempty);
     for(int i = 0; i < 8; ++i)
     {
         for(int j = 0; j < 8; ++j)
@@ -609,7 +609,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
         {
             if(!isvalidcube(ch[i])) // not so good...
             {
-                setcubefacesempty(ch[i]);
+                setcubefaces(ch[i], faceempty);
                 perfect=false;
             }
         }
@@ -689,7 +689,7 @@ bool remip(cube &c, const ivec &co, int size)
             perfect = false;
         }
     }
-    setcubefacessolid(c); // so texmip is more consistent
+    setcubefaces(c, facesolid); // so texmip is more consistent
     for(int j = 0; j < 6; ++j)
     {
         c.texture[j] = getmippedtexture(c, j); // parents get child texs regardless

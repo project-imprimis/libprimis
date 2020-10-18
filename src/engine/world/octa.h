@@ -378,20 +378,9 @@ inline bool iscubesolid(cube c)
 }
 
 //sets the faces to a given value `face` given
-inline void setcubefaces(cube c, uint face)
+inline void setcubefaces(cube &c, uint face)
 {
     c.faces[0] = c.faces[1] = c.faces[2] = face;
-}
-
-//helper functions to set faces to a solid cube (no distortion) or none at all (empty space)
-inline void setcubefacessolid(cube c)
-{
-    setcubefaces(c, facesolid);
-}
-
-inline void setcubefacesempty(cube c)
-{
-    setcubefaces(c, faceempty);
 }
 
 #define EDGE_GET(edge, coord) ((coord) ? (edge)>>4 : (edge)&0xF)
