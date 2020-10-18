@@ -20,5 +20,4 @@ namespace game
     extern void findanims(const char *pattern, vector<int> &anims);
 }
 
-extern bool isconnected(bool attempt = false, bool local = true);
 extern bool multiplayer(bool msg = true);

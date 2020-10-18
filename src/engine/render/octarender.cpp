@@ -2424,7 +2424,7 @@ void octarender()                               // creates va s for all leaf cub
 
 void allchanged(bool load)
 {
-    if(mainmenu && !isconnected())
+    if(mainmenu && !multiplayer(false))
     {
         load = false;
     }

@@ -108,18 +108,6 @@ ENetHost *serverhost = NULL;
 int laststatus = 0;
 ENetSocket lansock = ENET_SOCKET_NULL;
 
-int localclients = 0,
-    nonlocalclients = 0;
-
-bool hasnonlocalclients()
-{
-    return nonlocalclients!=0;
-}
-bool haslocalclients()
-{
-    return localclients!=0;
-}
-
 void cleanupserver()
 {
     if(serverhost)

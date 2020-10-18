@@ -11,7 +11,7 @@ int connmillis = 0,
 
 bool multiplayer(bool msg)
 {
-    bool val = curpeer || hasnonlocalclients();
+    bool val = curpeer;
     if(val && msg)
     {
         conoutf(Console_Error, "operation not available in multiplayer");
@@ -44,13 +44,6 @@ void throttle()
     }
     enet_peer_throttle_configure(curpeer, throttleinterval*1000, throttleaccel, throttledecel);
 }
-
-bool isconnected(bool attempt, bool local)
-{
-    return curpeer || (attempt && connpeer) || (local && haslocalclients());
-}
-
-ICOMMAND(isconnected, "bb", (int *attempt, int *local), intret(isconnected(*attempt > 0, *local != 0) ? 1 : 0));
 
 const ENetAddress *connectedpeer()
 {

@@ -18,7 +18,7 @@ void toggleedit(bool force = true)
 {
     if(!force)
     {
-        if(!isconnected())
+        if(!multiplayer(false))
         {
             return;
         }
@@ -454,7 +454,7 @@ namespace game
         {
             return true;
         }
-        if(isconnected() && multiplayer(false) && !modecheck(gamemode, Mode_Edit))
+        if(multiplayer(false) && !modecheck(gamemode, Mode_Edit))
         {
             conoutf(Console_Error, "editing in multiplayer requires edit mode");
             return false;

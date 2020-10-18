@@ -973,8 +973,6 @@ extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
 extern int getservermtu();
 extern uint getclientip(int n);
 extern const char *disconnectreason(int reason);
-extern bool hasnonlocalclients();
-extern bool haslocalclients();
 extern void sendserverinforeply(ucharbuf &p);
 extern void closelogfile();
 extern void setlogfile(const char *fname);

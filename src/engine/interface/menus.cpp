@@ -115,7 +115,7 @@ void menuprocess()
         lastmainmenu = mainmenu;
         execident("mainmenutoggled");
     }
-    if(mainmenu && !isconnected(true) && !UI::hascursor())
+    if(mainmenu && !multiplayer(false) && !UI::hascursor())
     {
         UI::showui("main");
     }
@@ -127,7 +127,7 @@ VAR(mainmenu, 1, 1, 0);
 void clearmainmenu()
 {
     showchanges = 1;
-    if(mainmenu && isconnected())
+    if(mainmenu && multiplayer(false))
     {
         mainmenu = 0;
         UI::hideui(NULL);
