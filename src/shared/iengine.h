@@ -136,6 +136,7 @@ extern int playsound(int n, const vec *loc = NULL, extentity *ent = NULL, int fl
 extern int playsoundname(const char *s, const vec *loc = NULL, int vol = 0, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
 extern void preloadsound(int n);
 extern void preloadmapsound(int n);
+extern void preloadmapsounds();
 extern bool stopsound(int n, int chanid, int fade = 0);
 extern void stopsounds();
 extern void initsound();
@@ -193,6 +194,10 @@ extern void addchange(const char *desc, int type);
  * water.cpp                                                                    *
 \*==============================================================================*/
 
+// octarender
+
+extern void allchanged(bool load = false);
+
 // rendergl
 
 extern physent *camera1;
@@ -249,6 +254,8 @@ extern void preloadmodel(const char *name);
 extern bool matchanim(const char *name, const char *pattern);
 extern model *loadmapmodel(int n);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);
+extern void flushpreloadedmodels(bool msg = true);
+extern void preloadusedmapmodels(bool msg = false, bool bih = false);
 extern void clear_models();
 
 // renderparticles
@@ -429,12 +436,14 @@ extern int getworldsize();
 extern void entcancel();
 
 extern void attachentity(extentity &e);
+extern void attachentities();
 extern void removeentityedit(int id);
 extern void addentityedit(int id);
 extern void detachentity(extentity &e);
 extern void entselectionbox(const entity &e, vec &eo, vec &es);
 extern void mmboundbox(const entity &e, model *m, vec &center, vec &radius);
 extern float getdecalslotdepth(DecalSlot &s);
+extern void entitiesinoctanodes();
 
 
 namespace entities
@@ -446,6 +455,8 @@ namespace entities
 }
 
 // worldio
+
+extern string clientmap;
 
 extern bool load_world(const char *mname, const char *gameident, const char *gameinfo = NULL, const char *cname = NULL);
 extern bool save_world(const char *mname, const char *gameident);

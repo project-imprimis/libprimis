@@ -841,7 +841,6 @@ namespace game
     ICOMMAND(checkmaps, "", (), addmsg(NetMsg_CheckMaps, "r"));
 
     int gamemode = INT_MAX, nextmode = INT_MAX;
-    string clientmap = "";
 
     void changemapserv(const char *name, int mode)        // forced map change from the server
     {
@@ -877,6 +876,7 @@ namespace game
         }
         else //start the map loaded by load_world() in above if statement
         {
+            preloadworld();
             startmap(name);
         }
         startgame();

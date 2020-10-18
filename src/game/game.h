@@ -819,7 +819,6 @@ namespace game
 
     // game
     extern int nextmode;
-    extern string clientmap;
     extern bool intermission;
     extern int maptime, maprealtime, maplimit;
     extern gameent *player1;
@@ -930,6 +929,7 @@ namespace game
     extern void connectfail();
     extern void gameconnect(bool _remote);
     extern void changemap(const char *name);
+    extern void preloadworld();
     extern void startmap(const char *name);
     extern bool ispaused();
 
@@ -942,6 +942,7 @@ namespace game
     extern void initclient();
     extern int scaletime(int t);
     extern const char *getmapinfo();
+    extern const char *getclientmap();
     extern const char *gameident();
     extern const char *restoreconfig();
     extern const char *savedconfig();

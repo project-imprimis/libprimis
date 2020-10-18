@@ -722,7 +722,6 @@ extern vector<int> outsideents;
 extern void resetmap();
 extern void freeoctaentities(cube &c);
 extern void entitiesinoctanodes();
-extern void attachentities();
 extern void entcancel();
 
 namespace entities
@@ -753,11 +752,9 @@ extern void rendertransparentmodelbatches(int stencil = 0);
 extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
 extern void rendermapmodel(int idx, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int flags = Model_CullVFC | Model_CullDist, int basetime = 0, float size = 1);
 extern void clearbatchedmapmodels();
-extern void preloadusedmapmodels(bool msg = false, bool bih = false);
 extern int batcheddynamicmodels();
 extern int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax);
 extern void cleanupmodels();
-extern void flushpreloadedmodels(bool msg = true);
 extern model *loadmapmodel(int n);
 
 inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &mapmodels[n] : NULL; }
@@ -856,7 +853,6 @@ extern void clearmainmenu();
 extern void clearmapsounds();
 extern void checkmapsounds();
 extern void updatesounds();
-extern void preloadmapsounds();
 
 extern int playsound(int n, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);
 extern int playsoundname(const char *s, const vec *loc = NULL, int vol = 0, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1);

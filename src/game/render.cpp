@@ -755,8 +755,10 @@ namespace game
         }
     }
 
-    void preload()
+    void preloadworld()
     {
+        preloadusedmapmodels(true); //extern from engine
+        //internal game fxns (not from engine lib)
         if(hudgun)
         {
             preloadweapons();
@@ -764,6 +766,11 @@ namespace game
         preloadplayermodel();
         preloadsounds();
         entities::preloadentities();
+        //externs from engine below
+        flushpreloadedmodels();
+        preloadmapsounds();
+        entitiesinoctanodes();
+        attachentities();
+        allchanged(true);
     }
-
 }

@@ -9,9 +9,7 @@ namespace game
     extern void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material = 0);
     extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
     extern void vartrigger(ident *id);
-    extern const char *getclientmap();
 
-    extern void preload();
     extern dynent *iterdynents(int i);
     extern int numdynents();
 

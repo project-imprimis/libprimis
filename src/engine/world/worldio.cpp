@@ -4,6 +4,8 @@
 #include "raycube.h"
 #include "render/renderwindow.h"
 
+string clientmap = "";
+
 void validmapname(char *dst, const char *src, const char *prefix = NULL, const char *alt = "untitled", size_t maxlen = 100)
 {
     if(prefix)
@@ -237,7 +239,7 @@ void setmapfilenames(const char *fname, const char *cname = NULL)
 
 void mapcfgname()
 {
-    const char *mname = game::getclientmap();
+    const char *mname = clientmap;
     string name;
     validmapname(name, mname);
     DEF_FORMAT_STRING(cfgname, "media/map/%s.cfg", name);
@@ -907,7 +909,7 @@ bool save_world(const char *mname, const char *gameident)
 {
     if(!*mname)
     {
-        mname = game::getclientmap();
+        mname = clientmap;
     }
     setmapfilenames(*mname ? mname : "untitled");
     if(savebak)
@@ -1235,15 +1237,6 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     execfile("config/default_map_settings.cfg", false);
     execfile(cfgname, false);
     identflags &= ~Idf_Overridden;
-
-    preloadusedmapmodels(true);
-    game::preload();
-    flushpreloadedmodels();
-    preloadmapsounds();
-    entitiesinoctanodes();
-    attachentities();
-    allchanged(true);
-
     renderbackground("loading...", mapshot, mname, gameinfo);
 
     if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown"))
