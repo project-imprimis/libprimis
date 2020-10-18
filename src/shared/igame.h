@@ -20,8 +20,6 @@ namespace game
     extern void renderplayerpreview(int model, int color, int team, int weap);
     extern int numanims();
     extern void findanims(const char *pattern, vector<int> &anims);
-
-    extern void gameplayhud(int w, int h);
 }
 
 extern bool isconnected(bool attempt = false, bool local = true);

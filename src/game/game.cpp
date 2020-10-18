@@ -1027,50 +1027,6 @@ namespace game
         gle::end();
     }
 
-    void gameplayhud(int w, int h)
-    {
-        pushhudscale(h/1800.0f);
-
-        if(player1->state==ClientState_Spectator)
-        {
-            float pw, ph,
-                  tw, th,
-                  fw, fh;
-            text_boundsf("  ", pw, ph);
-            text_boundsf("SPECTATOR", tw, th);
-            th = max(th, ph);
-            gameent *f = followingplayer();
-            text_boundsf(f ? colorname(f) : " ", fw, fh);
-            fh = max(fh, ph);
-            draw_text("SPECTATOR", w*1800/h - tw - pw, 1650 - th - fh);
-            if(f)
-            {
-                int color = f->state!=ClientState_Dead ? 0xFFFFFF : 0x606060;
-                if(f->privilege)
-                {
-                    color = f->privilege>=Priv_Admin ? 0xFF8000 : 0x40FF80;
-                    if(f->state==ClientState_Dead)
-                    {
-                        color = (color>>1)&0x7F7F7F;
-                    }
-                }
-                draw_text(colorname(f), w*1800/h - fw - pw, 1650 - fh, (color>>16)&0xFF, (color>>8)&0xFF, color&0xFF);
-            }
-            resethudshader();
-        }
-
-        gameent *d = hudplayer();
-        if(d->state!=ClientState_Editing)
-        {
-            if(cmode)
-            {
-                cmode->drawhud(d, w, h);
-            }
-        }
-
-        pophudmatrix();
-    }
-
     VARP(teamcrosshair, 0, 1, 1);
     VARP(hitcrosshair, 0, 425, 1000);
 

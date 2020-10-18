@@ -409,7 +409,6 @@ void gl_drawhud(int crosshairindex)
         {
             resethudshader();
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            game::gameplayhud(w, h);
             abovehud = min(abovehud, conh);
         }
         rendertexturepanel(w, h);
