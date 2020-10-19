@@ -549,7 +549,7 @@ struct HLine
         }
         else
         {
-            game::toserver(buf);
+            conoutf(Console_Info, "%s", buf);
         }
     }
 };
