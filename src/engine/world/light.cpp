@@ -713,17 +713,6 @@ void calclight()
     }
 }
 
-void mpcalclight(bool local)
-{
-    if(local)
-    {
-        game::edittrigger(sel, Edit_CalcLight);
-    }
-    calclight();
-}
-
-ICOMMAND(calclight, "", (), mpcalclight(true));
-
 VAR(fullbright, 0, 0, 1);
 VAR(fullbrightlevel, 0, 160, 255);
 

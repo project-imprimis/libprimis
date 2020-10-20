@@ -29,6 +29,9 @@ struct VSlot;
 struct Texture;
 struct editinfo;
 struct model;
+struct undolist;
+struct undoblock;
+struct vslotmap;
 
 // main
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
@@ -317,6 +320,7 @@ inline void addstain(int type, const vec &center, const vec &surface, float radi
 
 extern Texture *notexture;
 
+extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
 extern void packvslot(vector<uchar> &buf, int index);
 extern void packvslot(vector<uchar> &buf, const VSlot *vs);
 
@@ -341,25 +345,50 @@ extern void packvslot(vector<uchar> &buf, const VSlot *vs);
 
 extern void adddynlight(const vec &o, float radius, const vec &color, int fade = 0, int peak = 0, int flags = 0, float initradius = 0, const vec &initcolor = vec(0, 0, 0), physent *owner = NULL, const vec &dir = vec(0, 0, 0), int spot = 0);
 extern void removetrackeddynlights(physent *owner = NULL);
-extern DecalSlot &lookupdecalslot(int slot, bool load = true);
-extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
 
 // light
 
 extern void clearlightcache(int id = -1);
+extern void calclight();
+
+// material
+
+extern int findmaterial(const char *name);
 
 // octa
+extern ivec lu;
+extern int lusize;
 
 extern int lookupmaterial(const vec &o);
 extern void freeocta(cube *c);
+extern void getcubevector(cube &c, int d, int x, int y, int z, ivec &p);
+extern void remip();
+extern void optiface(uchar *p, cube &c);
+extern bool isvalidcube(const cube &c);
+extern cube &lookupcube(const ivec &to, int tsize = 0, ivec &ro = lu, int &rsize = lusize);
 
 // octaedit
 
 extern editinfo *localedit;
 extern selinfo sel;
-
+extern vector<ushort> texmru;
+extern selinfo repsel;
+extern int reptex;
+extern int lasttex;
+extern int lasttexmillis;
+extern int curtexindex;
+extern int moving, orient;
 extern bool editmode;
 extern int entediting;
+extern selinfo sel, lastsel, savedsel;
+extern vector<vslotmap> unpackingvslots;
+extern vector<vslotmap> remappedvslots;
+extern undolist undos, redos;
+extern int nompedit;
+extern int hmapedit;
+extern bool havesel;
+extern vector<editinfo *> editinfos;
+extern int texpaneltimer;
 
 extern int shouldpacktex(int index);
 extern bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen);
@@ -368,23 +397,32 @@ extern void freeeditinfo(editinfo *&e);
 extern bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen);
 extern bool unpackundo(const uchar *inbuf, int inlen, int outlen);
 extern bool noedit(bool view = false, bool msg = true);
-extern void mpeditface(int dir, int mode, selinfo &sel, bool local);
-extern bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf);
-extern void mpeditmat(int matid, int filter, selinfo &sel, bool local);
-extern void mpflip(selinfo &sel, bool local);
-extern void mpcopy(editinfo *&e, selinfo &sel, bool local);
-extern void mppaste(editinfo *&e, selinfo &sel, bool local);
-extern void mprotate(int cw, selinfo &sel, bool local);
-extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
-extern void mpdelcube(selinfo &sel, bool local);
-extern void mpplacecube(selinfo &sel, int tex, bool local);
-extern void mpremip(bool local);
-extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
-extern void mpcalclight(bool local);
 extern void commitchanges(bool force = false);
 extern bool pointinsel(const selinfo &sel, const vec &o);
 extern void cancelsel();
 extern void addundo(undoblock *u);
+extern cube &blockcube(int x, int y, int z, const block3 &b, int rgrid);
+extern void changed(const ivec &bbmin, const ivec &bbmax, bool commit);
+extern void changed(const block3 &sel, bool commit = true);
+extern void discardchildren(cube &c, bool fixtex = false, int depth = 0);
+extern void makeundo(selinfo &s);
+extern void makeundo();
+extern void reorient();
+extern int countblock(block3 *b);
+extern bool hmapsel;
+extern void forcenextundo();
+extern void freeundo(undoblock *u);
+extern void pasteblock(block3 &b, selinfo &sel, bool local);
+extern void pasteundo(undoblock *u);
+extern undoblock *newundocube(const selinfo &s);
+extern void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep, VSlot *&findedit);
+extern void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom);
+extern void edittexcube(cube &c, int tex, int orient, bool &findrep);
+
+namespace hmap
+{
+    extern void run(int dir, int mode);
+}
 
 // raycube
 
@@ -426,6 +464,9 @@ extern void modifygravity(physent *pl, bool water, int curtime);
 extern void modifyvelocity(physent *pl, bool local, bool water, bool floating, int curtime);
 extern void recalcdir(physent *d, const vec &oldvel, vec &dir);
 extern void slideagainst(physent *d, vec &dir, const vec &obstacle, bool foundfloor, bool slidecollide);
+extern void freeblock(block3 *b, bool alloced = true);
+extern block3 *blockcopy(const block3 &s, int rgrid);
+extern ushort getmaterial(cube &c);
 
 // world
 

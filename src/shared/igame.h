@@ -1,11 +1,8 @@
 // the interface the engine uses to run the gameplay module
 
-struct VSlot;
-
 namespace game
 {
     extern bool allowedittoggle();
-    extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
     extern void vartrigger(ident *id);
 
     extern dynent *iterdynents(int i);

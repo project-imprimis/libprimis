@@ -398,6 +398,15 @@ inline int octadim(int d)
 #define OCTA_INDEX(d,x,y,z)  (((z)<<D[d])+((y)<<C[d])+((x)<<R[d]))
 #define OCTA_STEP(x, y, z, scale) (((((z)>>(scale))&1)<<2) | ((((y)>>(scale))&1)<<1) | (((x)>>(scale))&1))
 
+//note that these macros actually loop in the opposite order: e.g. loopxy runs a for loop of x inside y
+#define LOOP_XY(b)        for(int y = 0; y < (b).s[C[DIMENSION((b).orient)]]; ++y) for(int x = 0; x < (b).s[R[DIMENSION((b).orient)]]; ++x)
+#define LOOP_XYZ(b, r, f) { for(int z = 0; z < (b).s[D[DIMENSION((b).orient)]]; ++z) LOOP_XY((b)) { cube &c = blockcube(x,y,z,b,r); f; } }
+#define LOOP_SEL_XYZ(f)    { if(local) makeundo(); LOOP_XYZ(sel, sel.grid, f); changed(sel); }
+#define SELECT_CUBE(x, y, z) blockcube(x, y, z, sel, sel.grid)
+
+// guard against subdivision
+#define PROTECT_SEL(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundo(_u); freeundo(_u); } }
+
 inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const ivec &bbmax)
 {
     uchar p = 0xFF; // bitmask of possible collisions with octants. 0 bit = 0 octant, etc
@@ -484,3 +493,56 @@ enum
     GENFACEVERTSXY(x0,x1, y0,y1, z0,z1, c0,c1, r0,r1, d0,d1) \
     GENFACEVERTSZ(x0,x1, y0,y1, z0,z1, c0,c1, r0,r1, d0,d1)
 
+struct undolist
+{
+    undoblock *first, *last;
+
+    undolist() : first(NULL), last(NULL) {}
+
+    bool empty() { return !first; }
+
+    void add(undoblock *u)
+    {
+        u->next = NULL;
+        u->prev = last;
+        if(!first)
+        {
+            first = last = u;
+        }
+        else
+        {
+            last->next = u;
+            last = u;
+        }
+    }
+
+    undoblock *popfirst()
+    {
+        undoblock *u = first;
+        first = first->next;
+        if(first)
+        {
+            first->prev = NULL;
+        }
+        else
+        {
+            last = NULL;
+        }
+        return u;
+    }
+
+    undoblock *poplast()
+    {
+        undoblock *u = last;
+        last = last->prev;
+        if(last)
+        {
+            last->next = NULL;
+        }
+        else
+        {
+            first = NULL;
+        }
+        return u;
+    }
+};

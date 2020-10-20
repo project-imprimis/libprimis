@@ -1328,6 +1328,22 @@ struct cubemapside
     bool flipx, flipy, swapxy;
 };
 
+struct vslotmap
+{
+    int index;
+    VSlot *vslot;
+
+    vslotmap() {}
+    vslotmap(int index, VSlot *vslot) : index(index), vslot(vslot) {}
+};
+
+extern vector<int *> editingvslots;
+struct vslotref
+{
+    vslotref(int &index) { editingvslots.add(&index); }
+    ~vslotref() { editingvslots.pop(); }
+};
+
 extern const texrotation texrotations[8];
 extern const cubemapside cubemapsides[6];
 extern Texture *notexture;

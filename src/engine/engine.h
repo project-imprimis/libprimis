@@ -226,9 +226,7 @@ extern void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p);
 extern int familysize(const cube &c);
 extern void freeocta(cube *c);
 extern void discardchildren(cube &c, bool fixtex = false, int depth = 0);
-extern void optiface(uchar *p, cube &c);
 extern void validatec(cube *c, int size = 0);
-extern bool isvalidcube(const cube &c);
 extern ivec lu;
 extern int lusize;
 extern cube &lookupcube(const ivec &to, int tsize = 0, ivec &ro = lu, int &rsize = lusize);
@@ -417,7 +415,6 @@ extern void cleanupaa();
 // ents
 extern char *entname(entity &e);
 extern bool haveselent();
-extern undoblock *copyundoents(undoblock *u);
 extern void pasteundoent(int idx, const entity &ue);
 extern void pasteundoents(undoblock *u);
 

@@ -4,6 +4,9 @@
 #include "cube.h"
 #include "iengine.h"
 #include "consts.h"
+#include "render/texture.h"
+
+struct VSlot;
 
 //defines game statics, like animation names, weapon variables, entity properties
 //includes:
@@ -828,6 +831,7 @@ namespace game
     extern int following;
     extern int smoothmove, smoothdist;
 
+    extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
     extern gameent *getclient(int cn);
     extern gameent *newclient(int cn);
     extern const char *colorname(gameent *d, const char *name = NULL, const char *alt = NULL, const char *color = "");
@@ -989,6 +993,26 @@ extern const ENetAddress *connectedpeer();
 extern void neterr(const char *s, bool disc = true);
 extern void gets2c();
 extern void notifywelcome();
+
+// edit
+
+extern void mpeditface(int dir, int mode, selinfo &sel, bool local);
+extern bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf);
+extern void mpeditmat(int matid, int filter, selinfo &sel, bool local);
+extern void mpflip(selinfo &sel, bool local);
+extern void mpcopy(editinfo *&e, selinfo &sel, bool local);
+extern void mppaste(editinfo *&e, selinfo &sel, bool local);
+extern void mprotate(int cw, selinfo &sel, bool local);
+extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
+extern void mpdelcube(selinfo &sel, bool local);
+extern void mpplacecube(selinfo &sel, int tex, bool local);
+extern void mpremip(bool local);
+extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
+extern void mpcalclight(bool local);
+
+// ents
+
+extern undoblock *copyundoents(undoblock *u);
 
 // serverbrowser
 

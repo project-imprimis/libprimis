@@ -145,6 +145,16 @@ enum
     DynLight_Flash  = 1<<10
 };
 
+// octaedit
+
+enum
+{
+    EditMatFlag_Empty    = 0x10000,
+    EditMatFlag_NotEmpty = 0x20000,
+    EditMatFlag_Solid    = 0x30000,
+    EditMatFlag_NotSolid = 0x40000
+};
+
 //particles
 enum
 {

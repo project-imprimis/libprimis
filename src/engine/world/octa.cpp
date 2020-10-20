@@ -825,19 +825,6 @@ void remip()
     calcmerges();
 }
 
-void mpremip(bool local)
-{
-    extern selinfo sel;
-    if(local)
-    {
-        game::edittrigger(sel, Edit_Remip);
-    }
-    remip();
-    allchanged();
-}
-
-ICOMMAND(remip, "", (), mpremip(true));
-
 const ivec cubecoords[8] = // verts of bounding cube
 {
 //================================================================== GENCUBEVERT
