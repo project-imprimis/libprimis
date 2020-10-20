@@ -32,6 +32,7 @@ struct model;
 struct undolist;
 struct undoblock;
 struct vslotmap;
+struct prefab;
 
 // main
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
@@ -389,6 +390,7 @@ extern int hmapedit;
 extern bool havesel;
 extern vector<editinfo *> editinfos;
 extern int texpaneltimer;
+extern hashnameset<prefab> prefabs;
 
 extern int shouldpacktex(int index);
 extern bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen);
@@ -419,6 +421,10 @@ extern void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &
 extern void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom);
 extern void edittexcube(cube &c, int tex, int orient, bool &findrep);
 extern bool haveselent();
+extern void pastecube(const cube &src, cube &dst);
+extern void pasteundoblock(block3 *b, uchar *g);
+extern bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen);
+extern void unpackundocube(ucharbuf buf, uchar *outbuf);
 
 namespace hmap
 {

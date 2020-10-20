@@ -16,3 +16,4 @@ namespace game
 }
 
 extern bool multiplayer(bool msg = true);
+extern char *entname(entity &e);

@@ -1013,6 +1013,8 @@ extern void mpcalclight(bool local);
 // ents
 
 extern undoblock *copyundoents(undoblock *u);
+extern void pasteundoents(undoblock *u);
+extern void pasteundoent(int idx, const entity &ue);
 
 // serverbrowser
 

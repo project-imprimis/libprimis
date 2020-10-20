@@ -412,11 +412,6 @@ extern void doaa(GLuint outfbo, void (*resolve)(GLuint, int));
 extern bool debugaa();
 extern void cleanupaa();
 
-// ents
-extern char *entname(entity &e);
-extern void pasteundoent(int idx, const entity &ue);
-extern void pasteundoents(undoblock *u);
-
 // octaedit
 extern bool editmode;
 extern selinfo sel;

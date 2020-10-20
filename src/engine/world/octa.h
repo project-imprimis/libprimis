@@ -323,6 +323,13 @@ struct editinfo
     editinfo() : copy(NULL) {}
 };
 
+
+struct prefabheader
+{
+    char magic[4];
+    int version;
+};
+
 struct undoent
 {
     int i;
@@ -405,7 +412,7 @@ inline int octadim(int d)
 #define SELECT_CUBE(x, y, z) blockcube(x, y, z, sel, sel.grid)
 
 // guard against subdivision
-#define PROTECT_SEL(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundo(_u); freeundo(_u); } }
+#define PROTECT_SEL(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundoblock(_u->block(), _u->gridmap()); freeundo(_u); } }
 
 inline uchar octaboxoverlap(const ivec &o, int size, const ivec &bbmin, const ivec &bbmax)
 {

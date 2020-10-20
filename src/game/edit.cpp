@@ -36,6 +36,18 @@ void mpremip(bool local)
 
 ICOMMAND(remip, "", (), mpremip(true));
 
+void pasteundo(undoblock *u)
+{
+    if(u->numents)
+    {
+        pasteundoents(u);
+    }
+    else
+    {
+        pasteundoblock(u->block(), u->gridmap());
+    }
+}
+
 void swapundo(undolist &a, undolist &b, int op)
 {
     if(noedit())
@@ -115,7 +127,6 @@ void swapundo(undolist &a, undolist &b, int op)
 void editundo() { swapundo(undos, redos, Edit_Undo); }
 void editredo() { swapundo(redos, undos, Edit_Redo); }
 
-
 void mpcopy(editinfo *&e, selinfo &sel, bool local)
 {
     if(local)
@@ -185,6 +196,40 @@ COMMAND(pastehilite, "");
 COMMAND(paste, "");
 COMMANDN(undo, editundo, "");
 COMMANDN(redo, editredo, "");
+
+bool unpackundo(const uchar *inbuf, int inlen, int outlen)
+{
+    uchar *outbuf = NULL;
+    if(!uncompresseditinfo(inbuf, inlen, outbuf, outlen)) return false;
+    ucharbuf buf(outbuf, outlen);
+    if(buf.remaining() < 2)
+    {
+        delete[] outbuf;
+        return false;
+    }
+    int numents = *reinterpret_cast<const ushort *>(buf.pad(2));
+    if(numents)
+    {
+        if(buf.remaining() < numents*static_cast<int>(2 + sizeof(entity)))
+        {
+            delete[] outbuf;
+            return false;
+        }
+        for(int i = 0; i < numents; ++i)
+        {
+            int idx = *reinterpret_cast<const ushort *>(buf.pad(2));
+            entity &e = *reinterpret_cast<entity *>(buf.pad(sizeof(entity)));
+            pasteundoent(idx, e);
+        }
+    }
+    else
+    {
+        unpackundocube(buf, outbuf);
+    }
+    delete[] outbuf;
+    commitchanges();
+    return true;
+}
 
 #define EDITING_VSLOT(a) vslotref vslotrefs[] = { a }; (void)vslotrefs;
 

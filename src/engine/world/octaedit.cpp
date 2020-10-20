@@ -717,7 +717,7 @@ static inline void copycube(const cube &src, cube &dst)
     }
 }
 
-static inline void pastecube(const cube &src, cube &dst)
+void pastecube(const cube &src, cube &dst)
 {
     discardchildren(dst);
     copycube(src, dst);
@@ -770,24 +770,6 @@ void freeundo(undoblock *u)
         freeblock(u->block(), false);
     }
     delete[] reinterpret_cast<uchar *>(u);
-}
-
-void pasteundoblock(block3 *b, uchar *g)
-{
-    cube *s = b->c();
-    LOOP_XYZ(*b, 1<<min(static_cast<int>(*g++), worldscale-1), pastecube(*s++, c));
-}
-
-void pasteundo(undoblock *u)
-{
-    if(u->numents)
-    {
-        pasteundoents(u);
-    }
-    else
-    {
-        pasteundoblock(u->block(), u->gridmap());
-    }
 }
 
 static inline int undosize(undoblock *u)
@@ -1112,7 +1094,7 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
     return true;
 }
 
-static bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen)
+bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen)
 {
     if(compressBound(outlen) > (1<<20))
     {
@@ -1213,51 +1195,6 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
     return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
 }
 
-bool unpackundo(const uchar *inbuf, int inlen, int outlen)
-{
-    uchar *outbuf = NULL;
-    if(!uncompresseditinfo(inbuf, inlen, outbuf, outlen)) return false;
-    ucharbuf buf(outbuf, outlen);
-    if(buf.remaining() < 2)
-    {
-        delete[] outbuf;
-        return false;
-    }
-    int numents = *reinterpret_cast<const ushort *>(buf.pad(2));
-    if(numents)
-    {
-        if(buf.remaining() < numents*static_cast<int>(2 + sizeof(entity)))
-        {
-            delete[] outbuf;
-            return false;
-        }
-        for(int i = 0; i < numents; ++i)
-        {
-            int idx = *reinterpret_cast<const ushort *>(buf.pad(2));
-            entity &e = *reinterpret_cast<entity *>(buf.pad(sizeof(entity)));
-            pasteundoent(idx, e);
-        }
-    }
-    else
-    {
-        block3 *b = NULL;
-        if(!unpackblock(b, buf) || b->grid >= worldsize || buf.remaining() < b->size())
-        {
-            freeblock(b);
-            delete[] outbuf;
-            return false;
-        }
-        uchar *g = buf.pad(b->size());
-        unpackvslots(*b, buf);
-        pasteundoblock(b, g);
-        changed(*b, false);
-        freeblock(b);
-    }
-    delete[] outbuf;
-    commitchanges();
-    return true;
-}
-
 bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen)
 {
     switch(op)
@@ -1276,12 +1213,6 @@ bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen)
         }
     }
 }
-
-struct prefabheader
-{
-    char magic[4];
-    int version;
-};
 
 struct prefab : editinfo
 {
@@ -1315,7 +1246,7 @@ struct prefab : editinfo
     }
 };
 
-static hashnameset<prefab> prefabs;
+hashnameset<prefab> prefabs;
 
 void cleanupprefabs()
 {
@@ -1333,6 +1264,30 @@ void delprefab(char *name)
     }
 }
 COMMAND(delprefab, "s");
+
+void pasteundoblock(block3 *b, uchar *g)
+{
+    cube *s = b->c();
+    LOOP_XYZ(*b, 1<<min(static_cast<int>(*g++), worldscale-1), pastecube(*s++, c));
+}
+
+//used in client prefab unpacking, handles the octree unpacking (not the entities,
+// which are game-dependent)
+void unpackundocube(ucharbuf buf, uchar *outbuf)
+{
+    block3 *b = NULL;
+    if(!unpackblock(b, buf) || b->grid >= worldsize || buf.remaining() < b->size())
+    {
+        freeblock(b);
+        delete[] outbuf;
+        return;
+    }
+    uchar *g = buf.pad(b->size());
+    unpackvslots(*b, buf);
+    pasteundoblock(b, g);
+    changed(*b, false);
+    freeblock(b);
+}
 
 void saveprefab(char *name)
 {
