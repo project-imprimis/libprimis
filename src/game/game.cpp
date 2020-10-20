@@ -861,7 +861,7 @@ namespace game
         return showmodeinfo && validmode(gamemode) ? gamemodes[gamemode - startgamemode].info : NULL;
     }
 
-    void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material)
+    void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material = 0)
     {
         if(waterlevel>0)
         {

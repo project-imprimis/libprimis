@@ -549,19 +549,6 @@ void ragdolldata::move(dynent *pl, float ts)
     }
     int material = lookupmaterial(vec(center.x, center.y, center.z + radius/2));
     bool water = IS_LIQUID(material&MatFlag_Volume);
-    if(!pl->inwater && water)
-    {
-        game::physicstrigger(pl, true, 0, -1, material&MatFlag_Volume);
-    }
-    else if(pl->inwater && !water)
-    {
-        material = lookupmaterial(center);
-        water = IS_LIQUID(material&MatFlag_Volume);
-        if(!water)
-        {
-            game::physicstrigger(pl, true, 0, 1, pl->inwater);
-        }
-    }
     pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 
     calcrotfriction();
