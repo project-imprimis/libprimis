@@ -194,6 +194,11 @@ void cancelsel()
     entcancel();
 }
 
+bool haveselent()
+{
+    return entgroup.length() > 0;
+}
+
 bool noedit(bool view, bool msg)
 {
     if(!editmode)

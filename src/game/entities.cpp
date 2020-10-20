@@ -503,11 +503,6 @@ VARF(entediting, 0, 0, 1,
 
 vector<int> entgroup;
 
-bool haveselent()
-{
-    return entgroup.length() > 0;
-}
-
 //returns origin "o" of selected region
 vec getselpos()
 {

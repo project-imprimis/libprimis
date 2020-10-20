@@ -414,7 +414,6 @@ extern void cleanupaa();
 
 // ents
 extern char *entname(entity &e);
-extern bool haveselent();
 extern void pasteundoent(int idx, const entity &ue);
 extern void pasteundoents(undoblock *u);
 

@@ -418,6 +418,7 @@ extern undoblock *newundocube(const selinfo &s);
 extern void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep, VSlot *&findedit);
 extern void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom);
 extern void edittexcube(cube &c, int tex, int orient, bool &findrep);
+extern bool haveselent();
 
 namespace hmap
 {
