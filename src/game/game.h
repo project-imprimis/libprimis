@@ -961,21 +961,14 @@ extern bool isthirdperson();
 
 
 // server
-extern int maxclients;
 
 extern void cleanupserver();
-extern void serverslice(uint timeout);
 extern void updatetime();
 
 extern ENetSocket connectmaster(bool wait);
 
-extern void *getclientinfo(int i);
-extern ENetPeer *getclientpeer(int i);
-extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
 extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
 extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern int getservermtu();
-extern uint getclientip(int n);
 extern const char *disconnectreason(int reason);
 extern void sendserverinforeply(ucharbuf &p);
 extern void closelogfile();

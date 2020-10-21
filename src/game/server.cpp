@@ -84,8 +84,6 @@ void logoutfv(const char *fmt, va_list args)
     }
 }
 
-static const int defaultclients = 8;
-
 enum
 {
     ServerClient_Empty,
@@ -105,7 +103,6 @@ struct client                   // server side version of "dynent" type
 vector<client *> clients;
 
 ENetHost *serverhost = NULL;
-int laststatus = 0;
 ENetSocket lansock = ENET_SOCKET_NULL;
 
 void cleanupserver()
@@ -123,44 +120,6 @@ void cleanupserver()
     lansock = ENET_SOCKET_NULL;
 }
 
-VARF(maxclients, 0, defaultclients, clientlimit,
-{
-    if(!maxclients)
-    {
-        maxclients = defaultclients;
-    }
-});
-
-VARF(maxdupclients, 0, 0, clientlimit,
-{
-    if(serverhost)
-    {
-        serverhost->duplicatePeers = maxdupclients ? maxdupclients : clientlimit;
-    }
-});
-
-//void disconnect_client(int n, int reason);
-
-int getservermtu()
-{
-    return serverhost ? serverhost->mtu : -1;
-}
-
-void *getclientinfo(int i)
-{
-    return !clients.inrange(i) || clients[i]->type==ServerClient_Empty ? NULL : clients[i]->info;
-}
-
-ENetPeer *getclientpeer(int i)
-{
-    return clients.inrange(i) && clients[i]->type==ServerClient_Remote ? clients[i]->peer : NULL;
-}
-
-uint getclientip(int n)
-{
-    return clients.inrange(n) && clients[n]->type==ServerClient_Remote ? clients[n]->peer->address.host : 0;
-}
-
 void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
 {
     switch(clients[n]->type)
@@ -176,74 +135,6 @@ void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
             break;
         }
     }
-}
-
-ENetPacket *sendf(int cn, int chan, const char *format, ...)
-{
-    int exclude = -1;
-    bool reliable = false;
-    if(*format=='r')
-    {
-        reliable = true;
-        ++format;
-    }
-    packetbuf p(maxtrans, reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
-    va_list args;
-    va_start(args, format);
-    while(*format)
-    {
-        switch(*format++)
-        {
-            case 'x':
-            {
-                exclude = va_arg(args, int);
-                break;
-            }
-            case 'v':
-            {
-                int n = va_arg(args, int),
-                    *v = va_arg(args, int *);
-                for(int i = 0; i < n; ++i)
-                {
-                    putint(p, v[i]);
-                }
-                break;
-            }
-            case 'i':
-            {
-                int n = isdigit(*format) ? *format++-'0' : 1;
-                for(int i = 0; i < n; ++i)
-                {
-                    putint(p, va_arg(args, int));
-                }
-                break;
-            }
-            case 'f':
-            {
-                int n = isdigit(*format) ? *format++-'0' : 1;
-                for(int i = 0; i < n; ++i)
-                {
-                    putfloat(p, static_cast<float>(va_arg(args, double)));
-                }
-                break;
-            }
-            case 's':
-            {
-                sendstring(va_arg(args, const char *), p);
-                break;
-            }
-            case 'm':
-            {
-                int n = va_arg(args, int);
-                p.put(va_arg(args, uchar *), n);
-                break;
-            }
-        }
-    }
-    va_end(args);
-    ENetPacket *packet = p.finalize();
-    sendpacket(cn, chan, packet, exclude);
-    return packet->referenceCount > 0 ? packet : NULL;
 }
 
 ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
@@ -356,27 +247,9 @@ const char *disconnectreason(int reason)
     }
 }
 
-ENetSocket mastersock = ENET_SOCKET_NULL;
 ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY },
             serveraddress = { ENET_HOST_ANY, ENET_PORT_ANY };
-int lastupdatemaster = 0,
-    lastconnectmaster = 0,
-    masterconnecting = 0,
-    masterconnected = 0;
-vector<char> masterout, masterin;
-int masteroutpos = 0,
-    masterinpos = 0;
 VARN(updatemaster, allowupdatemaster, 0, 1, 1);
-
-static ENetAddress serverinfoaddress;
-
-void sendserverinforeply(ucharbuf &p)
-{
-    ENetBuffer buf;
-    buf.data = p.buf;
-    buf.dataLength = p.length();
-    enet_socket_send(serverhost->socket, &serverinfoaddress, &buf, 1);
-}
 
 SVAR(mastername, server::defaultmaster());
 VAR(masterport, 1, server::masterport(), 0xFFFF);
@@ -441,5 +314,3 @@ void updatetime()
         lastsec += cursecs * 1000;
     }
 }
-
-vector<const char *> gameargs;
