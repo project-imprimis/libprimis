@@ -275,11 +275,6 @@ namespace game
         }
     }
 
-    int numanims()
-    {
-        return Anim_NumAnims;
-    }
-
     void findanims(const char *pattern, vector<int> &anims)
     {
         for(int i = 0; i < static_cast<int>(sizeof(animnames)/sizeof(animnames[0])); ++i)

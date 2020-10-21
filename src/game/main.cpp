@@ -159,6 +159,12 @@ int getclockmillis()
     return max(millis, totalmillis);
 }
 
+//sets engine constants that need information from the game
+void startupconstants()
+{
+    numanims = Anim_NumAnims;
+}
+
 int main(int argc, char **argv)
 {
     #ifdef WIN32
@@ -173,7 +179,7 @@ int main(int argc, char **argv)
     setlogfile(NULL);
 
     char *initscript = NULL;
-
+    startupconstants();
     initing = Init_Reset;
     // set home dir first
     for(int i = 1; i<argc; i++)

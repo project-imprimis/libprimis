@@ -1368,7 +1368,7 @@ struct animmodel : model
 
         void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0)
         {
-            if(animpart<0 || animpart>=maxanimparts || num<0 || num>=game::numanims())
+            if(animpart<0 || animpart>=maxanimparts || num<0 || num >= numanims)
             {
                 return;
             }
@@ -1379,7 +1379,7 @@ struct animmodel : model
             }
             if(!anims[animpart])
             {
-                anims[animpart] = new vector<animspec>[game::numanims()];
+                anims[animpart] = new vector<animspec>[numanims];
             }
             animspec &spec = anims[animpart][num].add();
             spec.frame = frame;

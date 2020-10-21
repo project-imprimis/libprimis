@@ -3,6 +3,8 @@
 VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
 
+int numanims; //set by game at runtime
+
 model *loadingmodel = NULL;
 #include "radiancehints.h"
 #include "model/ragdoll.h"
