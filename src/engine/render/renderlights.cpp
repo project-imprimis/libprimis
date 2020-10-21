@@ -4997,8 +4997,6 @@ void workinoq()
         return;
     }
 
-    game::rendergame();
-
     if(shouldworkinoq())
     {
         inoq = true;
@@ -5491,7 +5489,7 @@ void rendergbuffer(bool depthclear)
     glerror();
     rendermapmodels();
     glerror();
-
+    game::rendergame();
     if(drawtex == Draw_TexMinimap)
     {
         if(depthclear)
