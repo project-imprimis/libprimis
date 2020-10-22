@@ -7,7 +7,6 @@ extern void cleargamma();
 
 void cleanup()
 {
-    cleanupserver();
     SDL_ShowCursor(SDL_TRUE);
     SDL_SetRelativeMouseMode(SDL_FALSE);
     if(screen)

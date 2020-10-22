@@ -102,24 +102,6 @@ struct client                   // server side version of "dynent" type
 
 vector<client *> clients;
 
-ENetHost *serverhost = NULL;
-ENetSocket lansock = ENET_SOCKET_NULL;
-
-void cleanupserver()
-{
-    if(serverhost)
-    {
-        enet_host_destroy(serverhost);
-    }
-    serverhost = NULL;
-
-    if(lansock != ENET_SOCKET_NULL)
-    {
-        enet_socket_destroy(lansock);
-    }
-    lansock = ENET_SOCKET_NULL;
-}
-
 void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
 {
     switch(clients[n]->type)
@@ -291,16 +273,6 @@ ENetSocket connectmaster(bool wait)
     enet_socket_destroy(sock);
     return ENET_SOCKET_NULL;
 }
-
-VAR(serveruprate, 0, 0, INT_MAX);
-SVAR(serverip, "");
-VARF(serverport, 0, server::serverport(), 0xFFFF,
-{
-    if(!serverport)
-    {
-        serverport = server::serverport();
-    }
-});
 
 uint totalsecs = 0;
 
