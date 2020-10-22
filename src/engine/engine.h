@@ -654,7 +654,7 @@ extern void writebinds(stream *f);
 extern void writecompletions(stream *f);
 extern FILE *getlogfile();
 
-// main
+// control
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
 
 extern int initing;
@@ -665,7 +665,6 @@ enum
     Change_Sound      = 1<<1,
     Change_Shaders    = 1<<2,
 };
-extern void quit();
 extern bool initwarning(const char *desc, int level = Init_Reset, int type = Change_Graphics);
 
 extern int scr_w, scr_h;

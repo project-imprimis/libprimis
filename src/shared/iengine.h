@@ -34,8 +34,10 @@ struct undoblock;
 struct vslotmap;
 struct prefab;
 
-// main
+// control
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
+extern int getclockmillis();
+extern int initing;
 extern int scr_w, scr_h;
 
 // ragdoll
@@ -301,6 +303,7 @@ extern void restorevsync();
 extern void resetfpshistory();
 extern void limitfps(int &millis, int curmillis);
 extern void updatefpshistory(int millis);
+extern void cleargamma();
 
 extern void renderbackground(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL, bool force = false);
 extern void renderprogress(float bar, const char *text, bool background = false);
