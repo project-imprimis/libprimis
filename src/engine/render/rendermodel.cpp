@@ -1406,16 +1406,17 @@ ICOMMAND(findanims, "s", (char *name),
     result(buf.getbuf());
 });
 
-#define IF_NO_LOAD(tex, path) if((tex = textureload(path, 0, true, false))==notexture)
-
 #define TRY_LOAD(tex, prefix, cmd, name) \
-    IF_NO_LOAD(tex, makerelpath(mdir, name ".jpg", prefix, cmd)) \
+    if((tex = textureload(makerelpath(mdir, name ".jpg", prefix, cmd), 0, true, false))==notexture) \
     { \
-        IF_NO_LOAD(tex, makerelpath(mdir, name ".png", prefix, cmd)) \
+        if((tex = textureload(makerelpath(mdir, name ".png", prefix, cmd), 0, true, false))==notexture) \
         { \
-            IF_NO_LOAD(tex, makerelpath(maltdir, name ".jpg", prefix, cmd)) \
+            if((tex = textureload(makerelpath(mdir, name ".jpg", prefix, cmd), 0, true, false))==notexture) \
             { \
-                IF_NO_LOAD(tex, makerelpath(maltdir, name ".png", prefix, cmd)) return; \
+                if((tex = textureload(makerelpath(mdir, name ".png", prefix, cmd), 0, true, false))==notexture) \
+                { \
+                    return; \
+                } \
             } \
         } \
     }
@@ -1429,7 +1430,6 @@ void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&mas
     TRY_LOAD(masks, NULL, NULL, "masks");
 }
 
-#undef IF_NO_LOAD
 #undef TRY_LOAD
 
 void setbbfrommodel(dynent *d, const char *mdl)
