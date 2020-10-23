@@ -1,5 +1,15 @@
 #include "engine.h"
 
+/* input.h: SDL input handling
+ *
+ * SDL handles low-level window manager and key inputs for Imprimis
+ * this file determines how the game parses the SDL information it is given
+ *
+ * includes handling for when the window manager tells the game to change state
+ * and handling for how the game should react to key inputs (though obviously this
+ * is rebindable by the client)
+ *
+ */
 VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
 bool shouldgrab = false,

@@ -1,4 +1,9 @@
-//automatic triggers for certain UIs in game
+/*
+ * menus.cpp
+ *
+ * automatic triggers for certain UIs in game
+ * does not implement menus, just some low level bindings for main menu functionality
+ */
 
 #include "engine.h"
 
