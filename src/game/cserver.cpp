@@ -2,8 +2,6 @@
 
 //server game handling
 
-extern ENetAddress masteraddress;
-
 namespace game
 {
     const char *gameident() { return "Imprimis"; }
@@ -67,5 +65,4 @@ namespace server
     {
         return 3;
     }
-
 }

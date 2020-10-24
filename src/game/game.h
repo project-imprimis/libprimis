@@ -961,6 +961,8 @@ extern bool isthirdperson();
 
 
 // server
+extern ENetAddress masteraddress;
+
 extern void updatetime();
 
 extern ENetSocket connectmaster(bool wait);
