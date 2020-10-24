@@ -58,24 +58,9 @@ namespace server
         }
     }
 
-    int laninfoport()
-    {
-        return IMPRIMIS_LANINFO_PORT;
-    }
-
-    int serverport()
-    {
-        return IMPRIMIS_SERVER_PORT;
-    }
-
     const char *defaultmaster()
     {
         return "project-imprimis.org";
-    }
-
-    int masterport()
-    {
-        return IMPRIMIS_MASTER_PORT;
     }
 
     int numchannels()
@@ -83,8 +68,4 @@ namespace server
         return 3;
     }
 
-    int protocolversion()
-    {
-        return PROTOCOL_VERSION;
-    }
 }

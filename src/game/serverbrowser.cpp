@@ -317,7 +317,7 @@ struct pingattempts
 
 };
 
-static int currentprotocol = server::protocolversion();
+static int currentprotocol = ProtocolVersion;
 
 enum
 {
@@ -522,7 +522,7 @@ void addserver(const char *name, int port, const char *password, bool keep)
 {
     if(port <= 0)
     {
-        port = server::serverport();
+        port = Port_Server;
     }
     for(int i = 0; i < servers.length(); i++)
     {
@@ -615,7 +615,7 @@ void pingservers()
     {
         ENetAddress address;
         address.host = ENET_HOST_BROADCAST;
-        address.port = server::laninfoport();
+        address.port = Port_LanInfo;
         buildping(buf, ping, lanpings);
         enet_socket_send(pingsock, &address, &buf, 1);
     }

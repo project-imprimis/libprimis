@@ -95,10 +95,10 @@ void connectserv(const char *servername, int serverport, const char *serverpassw
     }
     if(serverport <= 0)
     {
-        serverport = server::serverport();
+        serverport = serverport;
     }
     ENetAddress address;
-    address.port = serverport;
+    address.port = Port_Server;
 
     if(servername)
     {

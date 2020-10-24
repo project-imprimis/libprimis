@@ -234,7 +234,7 @@ ENetAddress masteraddress = { ENET_HOST_ANY, ENET_PORT_ANY },
 VARN(updatemaster, allowupdatemaster, 0, 1, 1);
 
 SVAR(mastername, server::defaultmaster());
-VAR(masterport, 1, server::masterport(), 0xFFFF);
+VAR(masterport, 1, Port_Master, 0xFFFF);
 
 ENetSocket connectmaster(bool wait)
 {

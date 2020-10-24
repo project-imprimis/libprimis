@@ -1903,9 +1903,9 @@ namespace game
                 {
                     int mycn = getint(p),
                         prot = getint(p);
-                    if(prot!=PROTOCOL_VERSION)
+                    if(prot!=ProtocolVersion)
                     {
-                        conoutf(Console_Error, "you are using a different game protocol (you: %d, server: %d)", PROTOCOL_VERSION, prot);
+                        conoutf(Console_Error, "you are using a different game protocol (you: %d, server: %d)", ProtocolVersion, prot);
                         disconnect();
                         return;
                     }

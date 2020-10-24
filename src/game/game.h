@@ -521,10 +521,10 @@ const int msgsizes[] =
 
 enum
 {
-    IMPRIMIS_LANINFO_PORT = 42067,
-    IMPRIMIS_MASTER_PORT  = 42068,
-    IMPRIMIS_SERVER_PORT  = 42069,
-    PROTOCOL_VERSION = 2,              // bump when protocol changes
+    Port_LanInfo = 42067,
+    Port_Master  = 42068,
+    Port_Server  = 42069,
+    ProtocolVersion = 2,              // bump when protocol changes
 };
 
 const int maxnamelength = 15;
@@ -1044,11 +1044,7 @@ namespace server
 
     extern int numchannels();
     extern void recordpacket(int chan, void *data, int len);
-    extern int protocolversion();
-    extern int laninfoport();
-    extern int serverport();
     extern const char *defaultmaster();
-    extern int masterport();
 }
 
 #endif
