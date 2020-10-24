@@ -527,7 +527,7 @@ enum
     PROTOCOL_VERSION = 2,              // bump when protocol changes
 };
 
-const int MAXNAMELEN = 15;
+const int maxnamelength = 15;
 
 enum
 {

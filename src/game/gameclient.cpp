@@ -228,7 +228,7 @@ namespace game
 
     void switchname(const char *name)
     {
-        filtertext(player1->name, name, false, false, MAXNAMELEN);
+        filtertext(player1->name, name, false, false, maxnamelength);
         if(!player1->name[0])
         {
             copystring(player1->name, "unnamed");
@@ -2083,7 +2083,7 @@ namespace game
                         break;
                     }
                     getstring(text, p);
-                    filtertext(text, text, false, false, MAXNAMELEN);
+                    filtertext(text, text, false, false, maxnamelength);
                     if(!text[0])
                     {
                         copystring(text, "unnamed");
@@ -2103,7 +2103,7 @@ namespace game
                             needclipboard++;
                         }
                     }
-                    copystring(d->name, text, MAXNAMELEN+1);
+                    copystring(d->name, text, maxnamelength+1);
                     d->team = getint(p);
                     if(!validteam(d->team))
                     {
@@ -2118,7 +2118,7 @@ namespace game
                     getstring(text, p);
                     if(d)
                     {
-                        filtertext(text, text, false, false, MAXNAMELEN);
+                        filtertext(text, text, false, false, maxnamelength);
                         if(!text[0])
                         {
                             copystring(text, "unnamed");
@@ -2129,7 +2129,7 @@ namespace game
                             {
                                 conoutf("%s is now known as %s", colorname(d), colorname(d, text));
                             }
-                            copystring(d->name, text, MAXNAMELEN+1);
+                            copystring(d->name, text, maxnamelength+1);
                         }
                     }
                     break;
@@ -2994,7 +2994,7 @@ namespace game
                         team = getint(p);
                     string name;
                     getstring(text, p);
-                    filtertext(name, text, false, false, MAXNAMELEN);
+                    filtertext(name, text, false, false, maxnamelength);
                     gameent *b = newclient(bn);
                     if(!b)
                     {

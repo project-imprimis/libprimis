@@ -230,7 +230,7 @@ namespace ai
             }
         }
 
-        copystring(d->name, name, MAXNAMELEN+1);
+        copystring(d->name, name, maxnamelength+1);
         d->team = validteam(team) ? team : 0;
         d->ownernum = ocn;
         d->plag = 0;
