@@ -15,7 +15,6 @@ model *loadingmodel = NULL;
 #include "world/hitzone.h"
 #include "renderwindow.h"
 
-
 model *loadmapmodel(int n)
 {
     if(mapmodels.inrange(n))
@@ -1342,70 +1341,25 @@ void abovemodel(vec &o, const char *mdl)
     o.z += m->above();
 }
 
-bool matchanim(std::string name, const char *pattern)
+std::vector<int> findanims(const char *pattern)
 {
-    for(;; pattern++)
+    std::vector<int> anims;
+    for(int i = 0; i < static_cast<int>(animnames.size()); ++i)
     {
-        const char *s = name.c_str();;
-        char c;
-        for(;; pattern++)
+        if(!animnames.at(i).compare(pattern))
         {
-            c = *pattern;
-            if(!c || c=='|')
-            {
-                break;
-            }
-            else if(c=='*')
-            {
-                if(!*s || iscubespace(*s))
-                {
-                    break;
-                }
-                do
-                {
-                    s++;
-                } while(*s && !iscubespace(*s));
-            }
-            else if(c!=*s)
-            {
-                break;
-            }
-            else
-            {
-                s++;
-            }
-        }
-        if(!*s && (!c || c=='|'))
-        {
-            return true;
-        }
-        pattern = strchr(pattern, '|');
-        if(!pattern)
-        {
-            break;
+            anims.push_back(i);
         }
     }
-    return false;
-}
-
-void findanims(const char *pattern, vector<int> &anims)
-{
-    for(int i = 0; i < static_cast<int>(sizeof(animnames)/sizeof(animnames[0])); ++i)
-    {
-        if(matchanim(animnames[i], pattern))
-        {
-            anims.add(i);
-        }
-    }
+    return anims;
 }
 
 ICOMMAND(findanims, "s", (char *name),
 {
-    vector<int> anims;
-    findanims(name, anims);
+    std::vector<int> anims = findanims(name);
     vector<char> buf;
     string num;
-    for(int i = 0; i < anims.length(); i++)
+    for(int i = 0; i < static_cast<int>(anims.size()); i++)
     {
         formatstring(num, "%d", anims[i]);
         if(i > 0)

@@ -746,7 +746,7 @@ extern int batcheddynamicmodels();
 extern int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax);
 extern void cleanupmodels();
 extern model *loadmapmodel(int n);
-extern void findanims(const char *pattern, vector<int> &anims);
+extern std::vector<int> findanims(const char *pattern);
 
 inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &mapmodels[n] : NULL; }
 

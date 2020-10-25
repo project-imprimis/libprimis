@@ -701,15 +701,14 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        vector<int> anims;
-        findanims(anim, anims);
+        std::vector<int> anims = findanims(anim);
         if(anims.empty())
         {
             conoutf("could not find animation %s", anim);
         }
         else
         {
-            for(int i = 0; i < anims.length(); i++)
+            for(int i = 0; i < static_cast<int>(anims.size()); i++)
             {
                 MDL::loading->parts.last()->setanim(0, anims[i], *frame, *range, *speed, *priority);
             }

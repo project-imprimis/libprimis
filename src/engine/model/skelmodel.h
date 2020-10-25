@@ -2434,8 +2434,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        vector<int> anims;
-        findanims(anim, anims);
+        std::vector<int> anims = findanims(anim);
         if(anims.empty())
         {
             conoutf("could not find animation %s", anim);
@@ -2455,7 +2454,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             }
             else
             {
-                for(int i = 0; i < anims.length(); i++)
+                for(int i = 0; i < static_cast<int>(anims.size()); i++)
                 {
                     int start = sa->frame, end = sa->range;
                     if(*startoffset > 0)

@@ -4004,9 +4004,8 @@ namespace UI
                 }
                 else
                 {
-                    vector<int> anims;
-                    findanims(animspec, anims);
-                    if(anims.length())
+                    std::vector<int> anims = findanims(animspec);
+                    if(anims.size())
                     {
                         anim = anims[0];
                     }
