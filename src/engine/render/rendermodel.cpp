@@ -4,6 +4,7 @@ VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
 
 int numanims; //set by game at runtime
+std::vector<std::string> animnames; //set by game at runtime
 
 model *loadingmodel = NULL;
 #include "radiancehints.h"
@@ -1341,11 +1342,11 @@ void abovemodel(vec &o, const char *mdl)
     o.z += m->above();
 }
 
-bool matchanim(const char *name, const char *pattern)
+bool matchanim(std::string name, const char *pattern)
 {
     for(;; pattern++)
     {
-        const char *s = name;
+        const char *s = name.c_str();;
         char c;
         for(;; pattern++)
         {
@@ -1387,10 +1388,21 @@ bool matchanim(const char *name, const char *pattern)
     return false;
 }
 
+void findanims(const char *pattern, vector<int> &anims)
+{
+    for(int i = 0; i < static_cast<int>(sizeof(animnames)/sizeof(animnames[0])); ++i)
+    {
+        if(matchanim(animnames[i], pattern))
+        {
+            anims.add(i);
+        }
+    }
+}
+
 ICOMMAND(findanims, "s", (char *name),
 {
     vector<int> anims;
-    game::findanims(name, anims);
+    findanims(name, anims);
     vector<char> buf;
     string num;
     for(int i = 0; i < anims.length(); i++)

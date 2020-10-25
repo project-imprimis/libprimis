@@ -249,6 +249,7 @@ extern int nospeclights;
 
 // rendermodel
 extern int numanims;
+extern std::vector<std::string> animnames;
 
 extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw = 0, float pitch = 0, float roll = 0, int cull = Model_CullVFC | Model_CullDist | Model_CullOccluded, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1, const vec4 &color = vec4(1, 1, 1, 1));
 extern int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode = 0, dynent *d = NULL, modelattach *a = NULL, int basetime = 0, int basetime2 = 0, float size = 1);
@@ -258,7 +259,6 @@ extern void interpolateorientation(dynent *d, float &interpyaw, float &interppit
 extern void setbbfrommodel(dynent *d, const char *mdl);
 extern const char *mapmodelname(int i);
 extern void preloadmodel(const char *name);
-extern bool matchanim(const char *name, const char *pattern);
 extern model *loadmapmodel(int n);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 extern void flushpreloadedmodels(bool msg = true);

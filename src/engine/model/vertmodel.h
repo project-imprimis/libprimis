@@ -702,7 +702,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
             return;
         }
         vector<int> anims;
-        game::findanims(anim, anims);
+        findanims(anim, anims);
         if(anims.empty())
         {
             conoutf("could not find animation %s", anim);

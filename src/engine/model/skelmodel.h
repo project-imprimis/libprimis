@@ -2435,7 +2435,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             return;
         }
         vector<int> anims;
-        game::findanims(anim, anims);
+        findanims(anim, anims);
         if(anims.empty())
         {
             conoutf("could not find animation %s", anim);

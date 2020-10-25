@@ -4005,7 +4005,7 @@ namespace UI
                 else
                 {
                     vector<int> anims;
-                    game::findanims(animspec, anims);
+                    findanims(animspec, anims);
                     if(anims.length())
                     {
                         anim = anims[0];

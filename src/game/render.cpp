@@ -275,17 +275,6 @@ namespace game
         }
     }
 
-    void findanims(const char *pattern, vector<int> &anims)
-    {
-        for(int i = 0; i < static_cast<int>(sizeof(animnames)/sizeof(animnames[0])); ++i)
-        {
-            if(matchanim(animnames[i], pattern))
-            {
-                anims.add(i);
-            }
-        }
-    }
-
     //============================================ 3p/other player rendering =======================//
 
     VAR(animoverride, -1, 0, Anim_NumAnims-1); //overrides player models onscreen with selected anim index
