@@ -381,12 +381,29 @@ struct bigint
         shrink();
         return *this;
     }
-    template<int Y_DIGITS>
-    bigint &sub(const bigint<Y_DIGITS> &y) { return sub(*this, y); }
 
-    void shrink() { while(len && !digits[len-1]) len--; }
-    void shrinkdigits(int n) { len = n; shrink(); }
-    void shrinkbits(int n) { shrinkdigits(n/bidigitbits); }
+    template<int Y_DIGITS>
+    bigint &sub(const bigint<Y_DIGITS> &y)
+    {
+        return sub(*this, y);
+    }
+
+    void shrink()
+    {
+        while(len && !digits[len-1])
+        {
+            len--;
+        }
+    }
+    void shrinkdigits(int n)
+    {
+        len = n; shrink();
+    }
+
+    void shrinkbits(int n)
+    {
+        shrinkdigits(n/bidigitbits);
+    }
 
     template<int Y_DIGITS>
     void copyshrinkdigits(const bigint<Y_DIGITS> &y, int n)
@@ -629,11 +646,17 @@ struct gfield : gfint
             tmp.add(x, P);
             gfint::sub(tmp, y);
         }
-        else gfint::sub(x, y);
+        else
+        {
+            gfint::sub(x, y);
+        }
         return *this;
     }
     template<int Y_DIGITS>
-    gfield &sub(const bigint<Y_DIGITS> &y) { return sub(*this, y); }
+    gfield &sub(const bigint<Y_DIGITS> &y)
+    {
+        return sub(*this, y);
+    }
 
     template<int X_DIGITS>
     gfield &neg(const bigint<X_DIGITS> &x)
@@ -641,12 +664,21 @@ struct gfield : gfint
         gfint::sub(P, x);
         return *this;
     }
-    gfield &neg() { return neg(*this); }
+    gfield &neg()
+    {
+        return neg(*this);
+    }
 
     template<int X_DIGITS>
-    gfield &square(const bigint<X_DIGITS> &x) { return mul(x, x); }
+    gfield &square(const bigint<X_DIGITS> &x)
+    {
+        return mul(x, x);
+    }
 
-    gfield &square() { return square(*this); }
+    gfield &square()
+    {
+        return square(*this);
+    }
 
     template<int X_DIGITS, int Y_DIGITS>
     gfield &mul(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
@@ -656,8 +688,12 @@ struct gfield : gfint
         reduce(result);
         return *this;
     }
+
     template<int Y_DIGITS>
-    gfield &mul(const bigint<Y_DIGITS> &y) { return mul(*this, y); }
+    gfield &mul(const bigint<Y_DIGITS> &y)
+    {
+        return mul(*this, y);
+    }
 
     template<int RESULT_DIGITS>
     void reduce(const bigint<RESULT_DIGITS> &result)
@@ -721,12 +757,19 @@ struct gfield : gfint
         }
         return *this;
     }
+
     template<int Y_DIGITS>
-    gfield &pow(const bigint<Y_DIGITS> &y) { return pow(*this, y); }
+    gfield &pow(const bigint<Y_DIGITS> &y)
+    {
+        return pow(*this, y);
+    }
 
     bool invert(const gfield &x)
     {
-        if(!x.len) return false;
+        if(!x.len)
+        {
+            return false;
+        }
         gfint u(x), v(P), A((gfint::digit)1), C((gfint::digit)0);
         while(!u.iszero())
         {
@@ -753,7 +796,8 @@ struct gfield : gfint
             {
                 A.rshift(ashift);
             }
-            int vshift = 0, cshift = 0;
+            int vshift = 0,
+                cshift = 0;
             while(!v.hasbit(vshift))
             {
                 vshift++;
@@ -806,7 +850,11 @@ struct gfield : gfint
         }
         return true;
     }
-    void invert() { invert(*this); }
+
+    void invert()
+    {
+        invert(*this);
+    }
 
     template<int X_DIGITS>
     static int legendre(const bigint<X_DIGITS> &x)
@@ -824,6 +872,7 @@ struct gfield : gfint
         }
         return -1;
     }
+
     int legendre() const
     {
         return legendre(*this);
@@ -963,7 +1012,11 @@ struct ecjacobian
         }
     }
     template<int Q_DIGITS>
-    void mul(const bigint<Q_DIGITS> &q) { ecjacobian tmp(*this); mul(tmp, q); }
+    void mul(const bigint<Q_DIGITS> &q)
+    {
+        ecjacobian tmp(*this);
+        mul(tmp, q);
+    }
 
     void normalize()
     {
