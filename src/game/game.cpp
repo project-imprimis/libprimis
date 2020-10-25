@@ -904,8 +904,6 @@ namespace game
         }
     }
 
-    int numdynents() { return players.length(); }
-
     dynent *iterdynents(int i)
     {
         if(i<players.length())

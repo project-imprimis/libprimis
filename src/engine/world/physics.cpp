@@ -7,6 +7,8 @@
 #include "mpr.h"
 #include "raycube.h"
 
+int numdynents; //updated by engine, visible through iengine.h
+
 static const int maxclipoffset = 4;
 static const int maxclipplanes = 1024;
 static clipplanes clipcache[maxclipplanes];
@@ -223,7 +225,7 @@ const vector<physent *> &checkdynentcache(int x, int y)
     dec.y = y;
     dec.frame = dynentframe;
     dec.dynents.shrink(0);
-    int numdyns = game::numdynents(),
+    int numdyns = numdynents,
         dsize = 1<<dynentsize,
         dx = x<<dynentsize,
         dy = y<<dynentsize;

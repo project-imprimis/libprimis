@@ -6,7 +6,6 @@ namespace game
     extern void vartrigger(ident *id);
 
     extern dynent *iterdynents(int i);
-    extern int numdynents();
 
     extern void rendergame();
     extern void renderavatar();

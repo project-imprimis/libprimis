@@ -451,6 +451,7 @@ extern vec collidewall;
 extern int collideinside;
 extern physent *collideplayer;
 extern const float gravity, jumpvel;
+extern int numdynents;
 
 extern void moveplayer(physent *pl, int moveres, bool local);
 extern bool moveplayer(physent *pl, int moveres, bool local, int curtime);

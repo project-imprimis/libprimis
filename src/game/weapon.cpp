@@ -512,7 +512,7 @@ namespace game
         {
             return;
         }
-        int numdyn = numdynents();
+        int numdyn = numdynents;
         for(int i = 0; i < numdyn; ++i)
         {
             dynent *o = iterdynents(i);
@@ -662,7 +662,7 @@ namespace game
             {
                 vec halfdv = vec(dv).mul(0.5f), bo = vec(p.o).add(halfdv); //half the displacement vector halfdv; set bo like v except with halfdv
                 float br = max(fabs(halfdv.x), fabs(halfdv.y)) + 1 + attacks[p.atk].margin;
-                for(int j = 0; j < numdynents(); ++j)
+                for(int j = 0; j < numdynents; ++j)
                 {
                     dynent *o = iterdynents(j); //start by setting cur to current dynent in loop
                     //check if dynent in question is the owner of the projectile or is within the bounds of some other dynent (actor)
@@ -822,7 +822,7 @@ namespace game
     {
         dynent *best = NULL;
         bestdist = 1e16f;
-        for(int i = 0; i < numdynents(); ++i)
+        for(int i = 0; i < numdynents; ++i)
         {
             dynent *o = iterdynents(i);
             if(o==at || o->state!=ClientState_Alive)

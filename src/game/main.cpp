@@ -85,6 +85,11 @@ void startupconstants()
     numanims = Anim_NumAnims;
 }
 
+void updateenginevalues()
+{
+    numdynents = game::players.length();
+}
+
 int main(int argc, char **argv)
 {
     #ifdef WIN32
@@ -290,6 +295,7 @@ int main(int argc, char **argv)
     //actual loop after main inits itself
     for(;;)
     {
+        updateenginevalues();
         static int frames = 0;
         int millis = getclockmillis(); //gets time at loop
         limitfps(millis, totalmillis); //caps framerate if necessary

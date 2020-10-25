@@ -750,7 +750,7 @@ struct ctfclientmode : clientmode
                 bool home = f.team == d->team;
                 ai::checkothers(targets, d, home ? ai::AIState_Defend : ai::AIState_Pursue, ai::AITravel_Affinity, j, true);
                 gameent *e = NULL;
-                for(int i = 0; i < numdynents(); ++i)
+                for(int i = 0; i < numdynents; ++i)
                 {
                     if((e = reinterpret_cast<gameent *>(iterdynents(i))) && !e->ai && e->state == ClientState_Alive && (modecheck(gamemode, Mode_Team) && d->team == e->team))
                     { // try to guess what non ai are doing
@@ -838,7 +838,7 @@ struct ctfclientmode : clientmode
                 targets.setsize(0);
                 ai::checkothers(targets, d, ai::AIState_Defend, ai::AITravel_Affinity, b.target, true);
                 gameent *e = NULL;
-                for(int i = 0; i < numdynents(); ++i)
+                for(int i = 0; i < numdynents; ++i)
                 {
                     if((e = (gameent *)iterdynents(i)) && !e->ai && e->state == ClientState_Alive && (modecheck(gamemode, Mode_Team) && d->team == e->team))
                     { // try to guess what non ai are doing
