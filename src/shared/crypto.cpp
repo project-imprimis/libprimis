@@ -189,8 +189,8 @@ namespace tiger
 
 /* Elliptic curve cryptography based on NIST DSS prime curves. */
 
-#define BI_DIGIT_BITS 16
-#define BI_DIGIT_MASK ((1<<BI_DIGIT_BITS)-1)
+
+constexpr int bidigitbits = 16;
 
 template<int BI_DIGITS>
 struct bigint
@@ -277,9 +277,9 @@ struct bigint
         for(int i = 0; i < len; ++i)
         {
             digit d = digits[len-i-1];
-            for(int j = 0; j < BI_DIGIT_BITS/4; ++j)
+            for(int j = 0; j < bidigitbits/4; ++j)
             {
-                uint shift = BI_DIGIT_BITS - (j+1)*4;
+                uint shift = bidigitbits - (j+1)*4;
                 int val = (d >> shift) & 0xF;
                 if(val < 10)
                 {
@@ -317,8 +317,8 @@ struct bigint
         {
             return 0;
         }
-        int bits = len*BI_DIGIT_BITS;
-        digit last = digits[len-1], mask = 1<<(BI_DIGIT_BITS-1);
+        int bits = len*bidigitbits;
+        digit last = digits[len-1], mask = 1<<(bidigitbits-1);
         while(mask)
         {
             if(last&mask)
@@ -333,12 +333,12 @@ struct bigint
 
     bool hasbit(int n) const
     {
-        return n/BI_DIGIT_BITS < len && ((digits[n/BI_DIGIT_BITS]>>(n%BI_DIGIT_BITS))&1);
+        return n/bidigitbits < len && ((digits[n/bidigitbits]>>(n%bidigitbits))&1);
     }
 
     bool morebits(int n) const
     {
-        return len > n/BI_DIGIT_BITS;
+        return len > n/bidigitbits;
     }
 
     template<int X_DIGITS, int Y_DIGITS>
@@ -350,7 +350,7 @@ struct bigint
         {
              carry += (i < x.len ? static_cast<dbldigit>(x.digits[i]) : 0) + (i < y.len ? static_cast<dbldigit>(y.digits[i]) : 0);
              digits[i] = static_cast<digit>(carry);
-             carry >>= BI_DIGIT_BITS;
+             carry >>= bidigitbits;
         }
         if(i < x.len && this != &x)
         {
@@ -369,9 +369,9 @@ struct bigint
         int i;
         for(i = 0; i < y.len || borrow; i++)
         {
-             borrow = (1<<BI_DIGIT_BITS) + static_cast<dbldigit>(x.digits[i]) - (i<y.len ? static_cast<dbldigit>(y.digits[i]) : 0) - borrow;
+             borrow = (1<<bidigitbits) + static_cast<dbldigit>(x.digits[i]) - (i<y.len ? static_cast<dbldigit>(y.digits[i]) : 0) - borrow;
              digits[i] = static_cast<digit>(borrow);
-             borrow = (borrow>>BI_DIGIT_BITS)^1;
+             borrow = (borrow>>bidigitbits)^1;
         }
         if(i < x.len && this != &x)
         {
@@ -386,7 +386,7 @@ struct bigint
 
     void shrink() { while(len && !digits[len-1]) len--; }
     void shrinkdigits(int n) { len = n; shrink(); }
-    void shrinkbits(int n) { shrinkdigits(n/BI_DIGIT_BITS); }
+    void shrinkbits(int n) { shrinkdigits(n/bidigitbits); }
 
     template<int Y_DIGITS>
     void copyshrinkdigits(const bigint<Y_DIGITS> &y, int n)
@@ -398,7 +398,7 @@ struct bigint
     template<int Y_DIGITS>
     void copyshrinkbits(const bigint<Y_DIGITS> &y, int n)
     {
-        copyshrinkdigits(y, n/BI_DIGIT_BITS);
+        copyshrinkdigits(y, n/bidigitbits);
     }
 
     template<int X_DIGITS, int Y_DIGITS>
@@ -417,7 +417,7 @@ struct bigint
             {
                 carry += static_cast<dbldigit>(x.digits[i]) * static_cast<dbldigit>(y.digits[j]) + static_cast<dbldigit>(digits[i+j]);
                 digits[i+j] = (digit)carry;
-                carry >>= BI_DIGIT_BITS;
+                carry >>= bidigitbits;
             }
             digits[i+y.len] = carry;
         }
@@ -433,22 +433,22 @@ struct bigint
         {
             return *this;
         }
-        if(n >= len*BI_DIGIT_BITS)
+        if(n >= len*bidigitbits)
         {
             len = 0;
             return *this;
         }
-        int dig = (n-1)/BI_DIGIT_BITS;
-        n = ((n-1) % BI_DIGIT_BITS)+1;
+        int dig = (n-1)/bidigitbits;
+        n = ((n-1) % bidigitbits)+1;
         digit carry = digit(digits[dig]>>n);
         for(int i = dig+1; i < len; i++)
         {
             digit tmp = digits[i];
-            digits[i-dig-1] = digit((tmp<<(BI_DIGIT_BITS-n)) | carry);
+            digits[i-dig-1] = digit((tmp<<(bidigitbits-n)) | carry);
             carry = digit(tmp>>n);
         }
         digits[len-dig-1] = carry;
-        len -= dig + (n/BI_DIGIT_BITS);
+        len -= dig + (n/bidigitbits);
         shrink();
         return *this;
     }
@@ -459,14 +459,14 @@ struct bigint
         {
             return *this;
         }
-        int dig = n/BI_DIGIT_BITS;
-        n %= BI_DIGIT_BITS;
+        int dig = n/bidigitbits;
+        n %= bidigitbits;
         digit carry = 0;
         for(int i = len; --i >= 0;) //note reverse iteration
         {
             digit tmp = digits[i];
             digits[i+dig] = digit((tmp<<n) | carry);
-            carry = digit(tmp>>(BI_DIGIT_BITS-n));
+            carry = digit(tmp>>(bidigitbits-n));
         }
         len += dig;
         if(carry)
@@ -486,7 +486,7 @@ struct bigint
     }
     void zerobits(int i, int n)
     {
-        zerodigits(i/BI_DIGIT_BITS, n/BI_DIGIT_BITS);
+        zerodigits(i/bidigitbits, n/bidigitbits);
     }
 
     template<int Y_DIGITS>
@@ -503,7 +503,7 @@ struct bigint
     template<int Y_DIGITS>
     void copybits(int to, const bigint<Y_DIGITS> &y, int from, int n)
     {
-        copydigits(to/BI_DIGIT_BITS, y, from/BI_DIGIT_BITS, n/BI_DIGIT_BITS);
+        copydigits(to/bidigitbits, y, from/bidigitbits, n/bidigitbits);
     }
 
     void dupdigits(int to, int from, int n)
@@ -512,7 +512,7 @@ struct bigint
     }
     void dupbits(int to, int from, int n)
     {
-        dupdigits(to/BI_DIGIT_BITS, from/BI_DIGIT_BITS, n/BI_DIGIT_BITS);
+        dupdigits(to/bidigitbits, from/bidigitbits, n/bidigitbits);
     }
 
     template<int Y_DIGITS>
@@ -570,9 +570,9 @@ struct bigint
     bool operator>=(const bigint<Y_DIGITS> &y) const { return !(*this<y); }
 };
 
-#define GF_DIGITS       ((192+BI_DIGIT_BITS-1)/BI_DIGIT_BITS)
+constexpr int gfdigits = (192+bidigitbits-1)/bidigitbits;
 
-typedef bigint<GF_DIGITS+1> gfint;
+typedef bigint<gfdigits+1> gfint;
 
 /* NIST prime Galois fields.
  * Currently only supports NIST P-192, where P=2^192-2^64-1
@@ -663,7 +663,7 @@ struct gfield : gfint
     void reduce(const bigint<RESULT_DIGITS> &result)
     {
         // B = T + S1 + S2 + S3 mod p
-        copyshrinkdigits(result, GF_DIGITS); // T
+        copyshrinkdigits(result, gfdigits); // T
         if(result.morebits(192))
         {
             gfield s;
@@ -676,14 +676,14 @@ struct gfield : gfint
                 s.zerobits(0, 64);
                 s.copybits(64, result, 256, 64);
                 s.dupbits(128, 64, 64);
-                s.shrinkdigits(GF_DIGITS);
+                s.shrinkdigits(gfdigits);
                 add(s); // S2
                 if(result.morebits(320))
                 {
                     s.copybits(0, result, 320, 64);
                     s.dupbits(64, 0, 64);
                     s.dupbits(128, 0, 64);
-                    s.shrinkdigits(GF_DIGITS);
+                    s.shrinkdigits(gfdigits);
                     add(s); // S3
                 }
             }
@@ -1045,9 +1045,9 @@ void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr)
 {
     tiger::hashval hash;
     tiger::hash((const uchar *)seed, (int)strlen(seed), hash);
-    bigint<8*sizeof(hash.bytes)/BI_DIGIT_BITS> privkey;
+    bigint<8*sizeof(hash.bytes)/bidigitbits> privkey;
     memcpy(privkey.digits, hash.bytes, sizeof(hash.bytes));
-    privkey.len = 8*sizeof(hash.bytes)/BI_DIGIT_BITS;
+    privkey.len = 8*sizeof(hash.bytes)/bidigitbits;
     privkey.shrink();
     privkey.printdigits(privstr);
     privstr.add('\0');
@@ -1103,7 +1103,7 @@ void *genchallenge(void *pubkey, const void *seed, int seedlen, vector<char> &ch
     tiger::hash(static_cast<const uchar *>(seed), seedlen, hash);
     gfint challenge;
     memcpy(challenge.digits, hash.bytes, sizeof(hash.bytes));
-    challenge.len = 8*sizeof(hash.bytes)/BI_DIGIT_BITS;
+    challenge.len = 8*sizeof(hash.bytes)/bidigitbits;
     challenge.shrink();
 
     ecjacobian answer(*static_cast<ecjacobian *>(pubkey));
