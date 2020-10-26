@@ -245,10 +245,10 @@ namespace game
 //scoreboard booleans
     ICOMMAND(scoreboardshowfrags, "", (), intret(cmode && cmode->hidefrags() && !showfrags ? 0 : 1));
     ICOMMAND(scoreboardshowclientnum, "", (), intret(showclientnum || player1->privilege>=Priv_Master ? 1 : 0));
-    ICOMMAND(scoreboardmultiplayer, "", (), intret(multiplayer(false) || demoplayback ? 1 : 0));
+    ICOMMAND(scoreboardmultiplayer, "", (), intret(multiplayer || demoplayback ? 1 : 0));
 
     ICOMMAND(scoreboardhighlight, "i", (int *cn),
-        intret(*cn == player1->clientnum && highlightscore && (multiplayer(false) || demoplayback || players.length() > 1) ? 0x808080 : 0));
+        intret(*cn == player1->clientnum && highlightscore && (multiplayer || demoplayback || players.length() > 1) ? 0x808080 : 0));
 
     ICOMMAND(scoreboardservinfo, "", (),
     {

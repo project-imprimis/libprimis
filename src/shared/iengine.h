@@ -369,6 +369,7 @@ extern cube &lookupcube(const ivec &to, int tsize = 0, ivec &ro = lu, int &rsize
 // octaedit
 
 extern bool allowediting;
+extern bool multiplayer;
 extern editinfo *localedit;
 extern selinfo sel;
 extern vector<ushort> texmru;
@@ -424,6 +425,7 @@ extern void pastecube(const cube &src, cube &dst);
 extern void pasteundoblock(block3 *b, uchar *g);
 extern bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen);
 extern void unpackundocube(ucharbuf buf, uchar *outbuf);
+extern void multiplayerwarn();
 
 namespace hmap
 {

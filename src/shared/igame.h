@@ -11,5 +11,4 @@ namespace game
     extern void renderplayerpreview(int model, int color, int team, int weap);
 }
 
-extern bool multiplayer(bool msg = true);
 extern char *entname(entity &e);

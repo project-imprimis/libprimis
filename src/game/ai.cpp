@@ -275,7 +275,7 @@ namespace ai
             if(totalmillis-updatemillis > 1000)
             {
                 avoid();
-                forcegun = multiplayer(false) ? -1 : aiforcegun;
+                forcegun = multiplayer ? -1 : aiforcegun;
                 updatemillis = totalmillis;
             }
             if(!iteration && totalmillis-itermillis > 1000)

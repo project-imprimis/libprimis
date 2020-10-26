@@ -9,16 +9,6 @@ int connmillis = 0,
     connattempts = 0,
     discmillis = 0;
 
-bool multiplayer(bool msg)
-{
-    bool val = curpeer;
-    if(val && msg)
-    {
-        conoutf(Console_Error, "operation not available in multiplayer");
-    }
-    return val;
-}
-
 void setrate(int rate)
 {
    if(!curpeer)

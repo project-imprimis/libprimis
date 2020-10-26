@@ -106,6 +106,7 @@ void updateenginevalues()
 {
     numdynents = game::players.length();
     allowediting = game::allowedittoggle();
+    multiplayer = curpeer;
 }
 
 int main(int argc, char **argv)
@@ -322,7 +323,7 @@ int main(int argc, char **argv)
         int scaledtime = game::scaletime(elapsedtime) + timeerr;
         curtime = scaledtime/100;
         timeerr = scaledtime%100;
-        if(!multiplayer(false) && curtime>200)
+        if(!multiplayer && curtime>200)
         {
             curtime = 200;
         }

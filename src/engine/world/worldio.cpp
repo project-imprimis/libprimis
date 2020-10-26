@@ -923,7 +923,7 @@ bool save_world(const char *mname, const char *gameident)
         return false;
     }
     int numvslots = vslots.length();
-    if(!multiplayer(false))
+    if(!multiplayer)
     {
         numvslots = compactvslots();
         allchanged();

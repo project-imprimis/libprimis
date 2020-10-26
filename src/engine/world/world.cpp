@@ -696,8 +696,9 @@ static bool isallempty(cube &c)
 void shrinkmap()
 {
     extern int nompedit;
-    if(noedit(true) || (nompedit && multiplayer()))
+    if(noedit(true) || (nompedit && multiplayer))
     {
+        multiplayerwarn();
         return;
     }
     if(worldsize <= 1<<10)

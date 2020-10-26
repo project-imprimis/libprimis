@@ -206,7 +206,7 @@ namespace game
 
     bool allowthirdperson()
     {
-        return !multiplayer(false) || player1->state==ClientState_Spectator || player1->state==ClientState_Editing || modecheck(gamemode, Mode_Edit);
+        return !multiplayer || player1->state==ClientState_Spectator || player1->state==ClientState_Editing || modecheck(gamemode, Mode_Edit);
     }
 
     gameent *hudplayer()

@@ -60,7 +60,7 @@ void swapundo(undolist &a, undolist &b, int op)
         return;
     }
     int ts = a.last->timestamp;
-    if(multiplayer(false))
+    if(multiplayer)
     {
         int n   = 0,
             ops = 0;
@@ -73,7 +73,7 @@ void swapundo(undolist &a, undolist &b, int op)
                 conoutf(Console_Warn, "undo too big for multiplayer");
                 if(nompedit)
                 {
-                    multiplayer();
+                    multiplayerwarn();
                     return;
                 }
                 op = -1;
@@ -415,8 +415,9 @@ void mpeditface(int dir, int mode, selinfo &sel, bool local)
 
 void edithmap(int dir, int mode)
 {
-    if((nompedit && multiplayer()) || !hmapsel)
+    if((nompedit && multiplayer) || !hmapsel)
     {
+        multiplayerwarn();
         return;
     }
     hmap::run(dir, mode);

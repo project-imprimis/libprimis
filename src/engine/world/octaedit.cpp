@@ -114,10 +114,16 @@ ivec cur, lastcur;
 
 extern int entediting;
 bool editmode = false;
+bool multiplayer = false;
 bool allowediting = false;
 bool havesel = false;
 bool hmapsel = false;
 int horient  = 0;
+
+void multiplayerwarn()
+{
+    conoutf(Console_Error, "operation not available in multiplayer");
+}
 
 extern int entmoving;
 
@@ -1292,8 +1298,9 @@ void unpackundocube(ucharbuf buf, uchar *outbuf)
 
 void saveprefab(char *name)
 {
-    if(!name[0] || noedit(true) || (nompedit && multiplayer()))
+    if(!name[0] || noedit(true) || (nompedit && multiplayer))
     {
+        multiplayerwarn();
         return;
     }
     prefab *b = prefabs.access(name);
@@ -1420,8 +1427,9 @@ prefab *loadprefab(const char *name, bool msg = true)
 
 void pasteprefab(char *name)
 {
-    if(!name[0] || noedit() || (nompedit && multiplayer()))
+    if(!name[0] || noedit() || (nompedit && multiplayer))
     {
+        multiplayerwarn();
         return;
     }
     prefab *b = loadprefab(name, true);

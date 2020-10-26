@@ -257,7 +257,7 @@ namespace game
             {
                 break;
             }
-            if(i != playermodel && (!multiplayer(false) || forceplayermodels))
+            if(i != playermodel && (!multiplayer || forceplayermodels))
             {
                 continue;
             }

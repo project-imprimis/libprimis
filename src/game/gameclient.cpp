@@ -19,7 +19,7 @@ namespace game
         {
             return true;
         }
-        if(multiplayer(false) && !modecheck(gamemode, Mode_Edit))
+        if(multiplayer && !modecheck(gamemode, Mode_Edit))
         {
             conoutf(Console_Error, "editing requires edit mode");
             return false;
@@ -32,7 +32,7 @@ void toggleedit(bool force = true)
 {
     if(!force)
     {
-        if(!multiplayer(false))
+        if(!multiplayer)
         {
             return;
         }
@@ -844,7 +844,7 @@ namespace game
 
     void changemapserv(const char *name, int mode)        // forced map change from the server
     {
-        if(multiplayer(false) && modecheck(mode, Mode_LocalOnly))
+        if(multiplayer && modecheck(mode, Mode_LocalOnly))
         {
             conoutf(Console_Error, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
             for(int i = 0; i < numgamemodes; ++i)
@@ -884,7 +884,7 @@ namespace game
 
     void setmode(int mode)
     {
-        if(multiplayer(false) && modecheck(mode, Mode_LocalOnly))
+        if(multiplayer && modecheck(mode, Mode_LocalOnly))
         {
             conoutf(Console_Error, "mode %s (%d) not supported in multiplayer",  server::modeprettyname(mode), mode);
             intret(0);

@@ -120,7 +120,7 @@ void menuprocess()
         lastmainmenu = mainmenu;
         execident("mainmenutoggled");
     }
-    if(mainmenu && !multiplayer(false) && !UI::hascursor())
+    if(mainmenu && !multiplayer && !UI::hascursor())
     {
         UI::showui("main");
     }
@@ -132,7 +132,7 @@ VAR(mainmenu, 1, 1, 0);
 void clearmainmenu()
 {
     showchanges = 1;
-    if(mainmenu && multiplayer(false))
+    if(mainmenu && multiplayer)
     {
         mainmenu = 0;
         UI::hideui(NULL);

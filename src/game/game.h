@@ -958,6 +958,7 @@ extern void closelogfile();
 extern void setlogfile(const char *fname);
 
 // client
+extern ENetPeer *curpeer;
 extern void localservertoclient(int chan, ENetPacket *packet);
 extern void connectserv(const char *servername, int port, const char *serverpassword);
 extern void abortconnect();
