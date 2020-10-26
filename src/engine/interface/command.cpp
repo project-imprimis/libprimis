@@ -954,7 +954,7 @@ void setvarchecked(ident *id, int val)
     {
         debugcode("variable %s is read-only", id->name);
     }
-    else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || game::allowedittoggle())
+    else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
         OVERRIDEVAR(return, id->overrideval.i = *id->storage.i, , )
         if(val < id->minval || val > id->maxval)
@@ -1008,7 +1008,7 @@ void setfvarchecked(ident *id, float val)
     {
         debugcode("variable %s is read-only", id->name);
     }
-    else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || game::allowedittoggle())
+    else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
         OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
         if(val < id->minvalf || val > id->maxvalf)
@@ -1030,7 +1030,7 @@ void setsvarchecked(ident *id, const char *val)
     {
         debugcode("variable %s is read-only", id->name);
     }
-    else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || game::allowedittoggle())
+    else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
         OVERRIDEVAR(return, id->overrideval.s = *id->storage.s, delete[] id->overrideval.s, delete[] *id->storage.s);
         *id->storage.s = newstring(val);

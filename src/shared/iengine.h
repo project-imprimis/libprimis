@@ -368,6 +368,7 @@ extern cube &lookupcube(const ivec &to, int tsize = 0, ivec &ro = lu, int &rsize
 
 // octaedit
 
+extern bool allowediting;
 extern editinfo *localedit;
 extern selinfo sel;
 extern vector<ushort> texmru;

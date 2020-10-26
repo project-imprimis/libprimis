@@ -814,6 +814,7 @@ namespace game
     extern int following;
     extern int smoothmove, smoothdist;
 
+    extern bool allowedittoggle();
     extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
     extern gameent *getclient(int cn);
     extern gameent *newclient(int cn);

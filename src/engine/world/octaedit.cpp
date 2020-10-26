@@ -114,6 +114,7 @@ ivec cur, lastcur;
 
 extern int entediting;
 bool editmode = false;
+bool allowediting = false;
 bool havesel = false;
 bool hmapsel = false;
 int horient  = 0;

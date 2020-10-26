@@ -413,6 +413,7 @@ extern bool debugaa();
 extern void cleanupaa();
 
 // octaedit
+extern bool allowediting;
 extern bool editmode;
 extern selinfo sel;
 

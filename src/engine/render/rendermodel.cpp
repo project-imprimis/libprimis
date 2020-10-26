@@ -357,7 +357,7 @@ void mapmodel(char *name)
 
 void mapmodelreset(int *n)
 {
-    if(!(identflags&Idf_Overridden) && !game::allowedittoggle())
+    if(!(identflags&Idf_Overridden) && !allowediting)
     {
         return;
     }

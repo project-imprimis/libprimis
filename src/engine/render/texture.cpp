@@ -1896,7 +1896,7 @@ const char *DecalSlot::name() const
 
 void texturereset(int *n)
 {
-    if(!(identflags&Idf_Overridden) && !game::allowedittoggle())
+    if(!(identflags&Idf_Overridden) && !allowediting)
     {
         return;
     }
@@ -1928,7 +1928,7 @@ COMMAND(texturereset, "i");
 
 void materialreset()
 {
-    if(!(identflags&Idf_Overridden) && !game::allowedittoggle())
+    if(!(identflags&Idf_Overridden) && !allowediting)
     {
         return;
     }
@@ -1943,7 +1943,7 @@ COMMAND(materialreset, "");
 
 void decalreset(int *n)
 {
-    if(!(identflags&Idf_Overridden) && !game::allowedittoggle())
+    if(!(identflags&Idf_Overridden) && !allowediting)
     {
         return;
     }

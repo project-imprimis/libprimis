@@ -12,6 +12,20 @@ VAR(editing, 1, 0, 0);
 namespace game
 {
     void edittoggled(bool);
+
+    bool allowedittoggle()
+    {
+        if(editmode)
+        {
+            return true;
+        }
+        if(multiplayer(false) && !modecheck(gamemode, Mode_Edit))
+        {
+            conoutf(Console_Error, "editing requires edit mode");
+            return false;
+        }
+        return true;
+    }
 }
 
 void toggleedit(bool force = true)
@@ -446,20 +460,6 @@ namespace game
         {
             senditemstoserver = true;
         }
-    }
-
-    bool allowedittoggle()
-    {
-        if(editmode)
-        {
-            return true;
-        }
-        if(multiplayer(false) && !modecheck(gamemode, Mode_Edit))
-        {
-            conoutf(Console_Error, "editing in multiplayer requires edit mode");
-            return false;
-        }
-        return execidentbool("allowedittoggle", true);
     }
 
     void edittoggled(bool on)

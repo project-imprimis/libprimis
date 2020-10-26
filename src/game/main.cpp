@@ -105,6 +105,7 @@ void startupconstants()
 void updateenginevalues()
 {
     numdynents = game::players.length();
+    allowediting = game::allowedittoggle();
 }
 
 int main(int argc, char **argv)

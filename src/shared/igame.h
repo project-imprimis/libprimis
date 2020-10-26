@@ -2,7 +2,6 @@
 
 namespace game
 {
-    extern bool allowedittoggle();
     extern void vartrigger(ident *id);
 
     extern dynent *iterdynents(int i);
