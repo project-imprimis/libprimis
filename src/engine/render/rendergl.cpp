@@ -1114,7 +1114,7 @@ vec calcavatarpos(const vec &pos, float dist)
     return dir.add(camera1->o);
 }
 
-void renderavatar()
+void renderavatar(void (*hudfxn)())
 {
     if(isthirdperson())
     {
@@ -1126,7 +1126,7 @@ void renderavatar()
     setcamprojmatrix(false);
 
     enableavatarmask();
-    game::renderavatar();
+    hudfxn();
     disableavatarmask();
 
     projmatrix = oldprojmatrix;
@@ -1917,7 +1917,7 @@ vec calcmodelpreviewpos(const vec &radius, float &yaw)
 int xtraverts, xtravertsva;
 
 //main scene rendering function
-void gl_drawview(void (*gamefxn)())
+void gl_drawview(void (*gamefxn)(), void(*hudfxn)())
 {
     GLuint scalefbo = shouldscale();
     if(scalefbo)
@@ -1981,7 +1981,7 @@ void gl_drawview(void (*gamefxn)())
     glerror();
 
     // render avatar after AO to avoid weird contact shadows
-    renderavatar();
+    renderavatar(hudfxn);
     glerror();
 
     // render grass after AO to avoid disturbing shimmering patterns
@@ -2082,7 +2082,7 @@ void gl_setupframe(bool force)
     setuplights();
 }
 
-void gl_drawframe(int crosshairindex, void (*gamefxn)())
+void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)())
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
@@ -2097,7 +2097,7 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)())
     }
     else
     {
-        gl_drawview(gamefxn);
+        gl_drawview(gamefxn, hudfxn);
     }
     UI::render();
     gl_drawhud(crosshairindex);

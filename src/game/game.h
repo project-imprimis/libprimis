@@ -909,6 +909,7 @@ namespace game
     extern void swayhudgun(int curtime);
     extern vec hudgunorigin(int gun, const vec &from, const vec &to, gameent *d);
     extern void rendergame();
+    extern void renderavatar();
 
     // additional fxns needed by server/main code
 
