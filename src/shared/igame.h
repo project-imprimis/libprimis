@@ -6,5 +6,3 @@ namespace game
     extern dynent *iterdynents(int i);
     extern void renderplayerpreview(int model, int color, int team, int weap);
 }
-
-extern char *entname(entity &e);

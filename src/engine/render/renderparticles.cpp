@@ -30,6 +30,7 @@ static bool canemitparticles()
 {
     return canemit || emitoffset;
 }
+std::vector<std::string> entnames;
 
 VARP(showparticles, 0, 1, 1);
 VAR(cullparticles, 0, 1, 1);
@@ -82,6 +83,18 @@ struct particleemitter
 
 static vector<particleemitter> emitters;
 static particleemitter *seedemitter = NULL;
+
+const char * getentname(int i)
+{
+    return i>=0 && size_t(i) < entnames.size() ? entnames[i].c_str() : "";
+}
+
+char * entname(entity &e)
+{
+    static string fullentname;
+    copystring(fullentname, getentname(e.type));
+    return fullentname;
+}
 
 void clearparticleemitters()
 {

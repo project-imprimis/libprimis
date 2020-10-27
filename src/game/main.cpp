@@ -100,6 +100,14 @@ void startupconstants()
         "vwep idle", "vwep shoot", "vwep melee"
     };
     animnames = std::vector<std::string>(std::begin(animlist), std::end(animlist));
+
+    std::string entnamelist[GamecodeEnt_MaxEntTypes] =
+    {
+        "none?", "light", "mapmodel", "playerstart", "particles", "sound", "spotlight", "decal",
+        "teleport", "teledest", "jumppad",
+        "flag"
+    };
+    entnames = std::vector<std::string>(std::begin(entnamelist), std::end(entnamelist));
 }
 
 void updateenginevalues()

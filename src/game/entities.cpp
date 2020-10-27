@@ -119,7 +119,6 @@ namespace entities
     extern void editent(int i, bool local);
     extern void fixentity(extentity &e);
     extern void entradius(extentity &e, bool color);
-    extern const char *entname(int i);
     extern vector<extentity *> &getents();
 }
 
@@ -191,9 +190,9 @@ void makeundoent()
 
 int findtype(char *what)
 {
-    for(int i = 0; *entities::entname(i); i++)
+    for(int i = 0; *getentname(i); i++)
     {
-        if(strcmp(what, entities::entname(i))==0)
+        if(strcmp(what, getentname(i))==0)
         {
             return i;
         }
@@ -234,18 +233,18 @@ bool printparticles(extentity &e, char *buf, int len)
         case 12:
         case 13:
         {
-            nformatstring(buf, len, "%s %d %d %d 0x%.3hX %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+            nformatstring(buf, len, "%s %d %d %d 0x%.3hX %d", getentname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
             return true;
         }
         case 3:
         {
-            nformatstring(buf, len, "%s %d %d 0x%.3hX %d %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+            nformatstring(buf, len, "%s %d %d 0x%.3hX %d %d", getentname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
             return true;
         }
         case 5:
         case 6:
         {
-            nformatstring(buf, len, "%s %d %d 0x%.3hX 0x%.3hX %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+            nformatstring(buf, len, "%s %d %d 0x%.3hX 0x%.3hX %d", getentname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
             return true;
         }
     }
@@ -270,7 +269,7 @@ void printent(extentity &e, char *buf, int len)
             break;
         }
     }
-    nformatstring(buf, len, "%s %d %d %d %d %d", entities::entname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+    nformatstring(buf, len, "%s %d %d %d %d %d", getentname(e.type), e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
 }
 
 //goes through all ents and selects the nearest one
@@ -324,7 +323,7 @@ void enttype(char *type, int *numargs)
     }
     else ENT_FOCUS(efocus,
     {
-        result(entities::entname(e.type));
+        result(getentname(e.type));
     })
 }
 
@@ -483,13 +482,6 @@ static inline void findents(cube *c, const ivec &o, int size, const ivec &bo, co
             findents(c[i].children, co, size>>1, bo, br, low, high, notspawned, pos, invradius, found);
         }
     }
-}
-
-char *entname(entity &e)
-{
-    static string fullentname;
-    copystring(fullentname, entities::entname(e.type));
-    return fullentname;
 }
 
 VARF(entediting, 0, 0, 1,
@@ -1782,17 +1774,6 @@ namespace entities
                 break;
             }
         }
-    }
-
-    const char *entname(int i)
-    {
-        static const char * const entnames[GamecodeEnt_MaxEntTypes] =
-        {
-            "none?", "light", "mapmodel", "playerstart", "particles", "sound", "spotlight", "decal",
-            "teleport", "teledest", "jumppad",
-            "flag"
-        };
-        return i>=0 && size_t(i)<sizeof(entnames)/sizeof(entnames[0]) ? entnames[i] : "";
     }
 
     void editent(int i, bool local)
