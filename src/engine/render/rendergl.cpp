@@ -1917,7 +1917,7 @@ vec calcmodelpreviewpos(const vec &radius, float &yaw)
 int xtraverts, xtravertsva;
 
 //main scene rendering function
-void gl_drawview()
+void gl_drawview(void (*gamefxn)())
 {
     GLuint scalefbo = shouldscale();
     if(scalefbo)
@@ -1966,7 +1966,7 @@ void gl_drawview()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
     //construct g-buffer (build basic scene)
-    rendergbuffer();
+    rendergbuffer(true, gamefxn);
     if(wireframe && editmode) //done with wireframe mode now
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -2082,7 +2082,7 @@ void gl_setupframe(bool force)
     setuplights();
 }
 
-void gl_drawframe(int crosshairindex)
+void gl_drawframe(int crosshairindex, void (*gamefxn)())
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
@@ -2097,7 +2097,7 @@ void gl_drawframe(int crosshairindex)
     }
     else
     {
-        gl_drawview();
+        gl_drawview(gamefxn);
     }
     UI::render();
     gl_drawhud(crosshairindex);

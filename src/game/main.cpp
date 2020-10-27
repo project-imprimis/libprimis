@@ -362,7 +362,8 @@ int main(int argc, char **argv)
 
         inbetweenframes = false; //tell other stuff that the frame is starting
         int crosshairindex = game::selectcrosshair();
-        gl_drawframe(crosshairindex); //rendering magic
+        void (*gamefxn)() = &game::rendergame;
+        gl_drawframe(crosshairindex, gamefxn); //rendering magic
         swapbuffers();
         renderedframe = inbetweenframes = true; //done!
     }

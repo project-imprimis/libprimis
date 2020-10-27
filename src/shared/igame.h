@@ -3,10 +3,7 @@
 namespace game
 {
     extern void vartrigger(ident *id);
-
     extern dynent *iterdynents(int i);
-
-    extern void rendergame();
     extern void renderavatar();
     extern void renderplayerpreview(int model, int color, int team, int weap);
 }

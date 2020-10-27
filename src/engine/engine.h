@@ -369,6 +369,13 @@ enum
     AA_SplitMasked,
 };
 
+//allows passing nothing to internal uses of gbuffer fxn
+//(the parameter is for taking a game function to be rendered onscreen)
+inline void dummyfxn()
+{
+    return;
+}
+
 extern bool shouldworkinoq();
 extern int  gethdrformat(int prec, int fallback = GL_RGB);
 extern void cleanupgbuffer();
@@ -377,7 +384,7 @@ extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
 extern void bindgdepth();
 extern void preparegbuffer(bool depthclear = true);
-extern void rendergbuffer(bool depthclear = true);
+extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
 extern void shademinimap(const vec &color = vec(-1, -1, -1));
 extern void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);

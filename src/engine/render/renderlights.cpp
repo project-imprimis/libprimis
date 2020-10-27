@@ -5471,7 +5471,7 @@ void preparegbuffer(bool depthclear)
     resetmodelbatches();
 }
 
-void rendergbuffer(bool depthclear)
+void rendergbuffer(bool depthclear, void (*gamefxn)())
 {
     timer *gcputimer = drawtex ? NULL : begintimer("g-buffer", false);
     timer *gtimer = drawtex ? NULL : begintimer("g-buffer");
@@ -5489,7 +5489,7 @@ void rendergbuffer(bool depthclear)
     glerror();
     rendermapmodels();
     glerror();
-    game::rendergame();
+    gamefxn();
     if(drawtex == Draw_TexMinimap)
     {
         if(depthclear)
