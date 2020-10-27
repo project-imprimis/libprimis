@@ -69,21 +69,21 @@ namespace UI
         void scissor();
     };
 
-    static vector<ClipArea> clipstack;
+    static std::vector<ClipArea> clipstack;
 
     static void pushclip(float x, float y, float w, float h)
     {
         if(clipstack.empty()) glEnable(GL_SCISSOR_TEST);
-        ClipArea &c = clipstack.add(ClipArea(x, y, w, h));
-        if(clipstack.length() >= 2) c.intersect(clipstack[clipstack.length()-2]);
+        ClipArea &c = clipstack.emplace_back(ClipArea(x, y, w, h));
+        if(clipstack.size() >= 2) c.intersect(clipstack[clipstack.size()-2]);
         c.scissor();
     }
 
     static void popclip()
     {
-        clipstack.pop();
+        clipstack.pop_back();
         if(clipstack.empty()) glDisable(GL_SCISSOR_TEST);
-        else clipstack.last().scissor();
+        else clipstack.back().scissor();
     }
 
     static inline bool isfullyclipped(float x, float y, float w, float h)
@@ -92,7 +92,7 @@ namespace UI
         {
             return false;
         }
-        return clipstack.last().isfullyclipped(x, y, w, h);
+        return clipstack.back().isfullyclipped(x, y, w, h);
     }
     namespace
     {
@@ -201,23 +201,23 @@ namespace UI
     {
         public:
             float x, y, w, h;
-            vector<Object *> children;
+            std::vector<Object *> children;
             uchar adjust;
             ushort state, childstate;
             Object *parent;
 
             #define LOOP_CHILDREN(o, body) do { \
-                for(int i = 0; i < children.length(); i++) \
+                for(int i = 0; i < static_cast<int>(children.size()); i++) \
                 { \
-                    Object *o = children[i]; \
+                    Object *o = children.at(i); \
                     body; \
                 } \
             } while(0)
             //note reverse iteration
             #define LOOP_CHILDREN_REV(o, body) do { \
-                for(int i = children.length(); --i >=0;) \
+                for(int i = static_cast<int>(children.size()); --i >=0;) \
                 { \
-                    Object *o = children[i]; \
+                    Object *o = children.at(i); \
                     body; \
                 } \
             } while(0)
@@ -225,7 +225,7 @@ namespace UI
             #define LOOP_CHILD_RANGE(start, end, o, body) do { \
                 for(int i = start; i < end; i++) \
                 { \
-                    Object *o = children[i]; \
+                    Object *o = children.at(i); \
                     body; \
                 } \
             } while(0)
@@ -239,7 +239,7 @@ namespace UI
             T *buildtype()
             {
                 T *t;
-                if(children.inrange(buildchild))
+                if(static_cast<int>(children.size()) > buildchild )
                 {
                     Object *o = children[buildchild];
                     if(o->istype<T>())
@@ -256,7 +256,7 @@ namespace UI
                 else
                 {
                     t = new T;
-                    children.add(t);
+                    children.push_back(t);
                 }
                 t->reset(this);
                 buildchild++;
@@ -279,7 +279,7 @@ namespace UI
             {
                 if((*contents&Code_OpMask) == Code_Exit)
                 {
-                    children.deletecontents();
+                    children.erase(children.begin(), children.end());
                 }
                 else
                 {
@@ -288,9 +288,9 @@ namespace UI
                     buildparent = this;
                     buildchild = 0;
                     executeret(contents);
-                    while(children.length() > buildchild)
+                    while(static_cast<int>(children.size()) > buildchild)
                     {
-                        delete children.pop();
+                        children.pop_back();
                     }
                     buildparent = oldparent;
                     buildchild = oldchild;
@@ -429,7 +429,7 @@ namespace UI
 
             virtual int childcolumns() const
             {
-                return children.length();
+                return static_cast<int>(children.size());
             }
 
             void adjustlayout(float px, float py, float pw, float ph)
@@ -547,7 +547,7 @@ namespace UI
 
             void clearchildren()
             {
-                children.deletecontents();
+                children.erase(children.begin(), children.end());
             }
 
             void adjustchildrento(float px, float py, float pw, float ph)
@@ -916,7 +916,7 @@ namespace UI
         const char *gettype() const { return typestr(); }
 
         #define LOOP_WINDOWS(o, body) do { \
-            for(int i = 0; i < children.length(); i++) \
+            for(int i = 0; i < static_cast<int>(children.size()); i++) \
             { \
                 Window *o = (Window *)children[i]; \
                 body; \
@@ -924,7 +924,7 @@ namespace UI
         } while(0)
         //note reverse iteration
         #define LOOP_WINDOWS_REV(o, body) do { \
-            for(int i = children.length(); --i >=0;) \
+            for(int i = static_cast<int>(children.size()); --i >=0;) \
             { \
                 Window *o = (Window *)children[i]; \
                 body; \
@@ -964,7 +964,7 @@ namespace UI
             LOOP_WINDOWS(w,
             {
                 w->build();
-                if(!children.inrange(i))
+                if(static_cast<int>(children.size()) < i )
                 {
                     break;
                 }
@@ -978,19 +978,20 @@ namespace UI
 
         bool show(Window *w)
         {
-            if(children.find(w) >= 0)
+            //if w is not found anywhere
+            if(std::find(children.begin(), children.end(), w) != children.end())
             {
                 return false;
             }
             w->resetchildstate();
-            children.add(w);
+            children.push_back(w);
             w->show();
             return true;
         }
 
         void hide(Window *w, int index)
         {
-            children.remove(index);
+            children.erase(children.begin() + index);
             childstate = 0;
             LOOP_CHILDREN(o, childstate |= o->state | o->childstate);
             w->hide();
@@ -998,13 +999,15 @@ namespace UI
 
         bool hide(Window *w)
         {
-            int index = children.find(w);
-            if(index < 0)
+            if(std::find(children.begin(), children.end(), w) != children.end())
+            {
+                hide(w, std::distance(children.begin(), std::find(children.begin(), children.end(), w)));
+                return true;
+            }
+            else
             {
                 return false;
             }
-            hide(w, index);
-            return true;
         }
 
         bool hidetop()
@@ -1124,7 +1127,7 @@ namespace UI
                 subw += o->w;
                 h = max(h, o->y + o->h);
             });
-            w = subw + space*max(children.length() - 1, 0);
+            w = subw + space*max(static_cast<int>(children.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1133,9 +1136,9 @@ namespace UI
 
             float offset = 0,
                   sx = 0,
-                  cspace = (w - subw) / max(children.length() - 1, 1),
-                  cstep = (w - subw) / children.length();
-            for(int i = 0; i < children.length(); i++)
+                  cspace = (w - subw) / max(static_cast<int>(children.size()) - 1, 1),
+                  cstep = (w - subw) / children.size();
+            for(int i = 0; i < static_cast<int>(children.size()); i++)
             {
                 Object *o = children[i];
                 o->x = offset;
@@ -1183,7 +1186,7 @@ namespace UI
                 subh += o->h;
                 w = max(w, o->x + o->w);
             });
-            h = subh + space*max(children.length() - 1, 0);
+            h = subh + space*max(static_cast<int>(children.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1195,8 +1198,8 @@ namespace UI
 
             float offset = 0,
                   sy     = 0,
-                  rspace = (h - subh) / max(children.length() - 1, 1),
-                  rstep = (h - subh) / children.length();
+                  rspace = (h - subh) / max(static_cast<int>(children.size()) - 1, 1),
+                  rstep = (h - subh) / children.size();
             LOOP_CHILDREN(o,
             {
                 o->y = offset;
@@ -1212,7 +1215,7 @@ namespace UI
     {
         int columns;
         float spacew, spaceh, subw, subh;
-        vector<float> widths, heights;
+        std::vector<float> widths, heights;
 
         static const char *typestr()
         {
@@ -1239,25 +1242,25 @@ namespace UI
 
         void layout()
         {
-            widths.setsize(0);
-            heights.setsize(0);
+            widths.resize(0);
+            heights.resize(0);
 
             int column = 0,
                 row = 0;
             LOOP_CHILDREN(o,
             {
                 o->layout();
-                if(column >= widths.length())
+                if(column >= static_cast<int>(widths.size()))
                 {
-                    widths.add(o->w);
+                    widths.push_back(o->w);
                 }
                 else if(o->w > widths[column])
                 {
                     widths[column] = o->w;
                 }
-                if(row >= heights.length())
+                if(row >= static_cast<int>(heights.size()))
                 {
-                    heights.add(o->h);
+                    heights.push_back(o->h);
                 }
                 else if(o->h > heights[row])
                 {
@@ -1271,16 +1274,16 @@ namespace UI
             });
 
             subw = subh = 0;
-            for(int i = 0; i < widths.length(); i++)
+            for(int i = 0; i < static_cast<int>(widths.size()); i++)
             {
                 subw += widths[i];
             }
-            for(int i = 0; i < heights.length(); i++)
+            for(int i = 0; i < static_cast<int>(heights.size()); i++)
             {
                 subh += heights[i];
             }
-            w = subw + spacew*max(widths.length() - 1, 0);
-            h = subh + spaceh*max(heights.length() - 1, 0);
+            w = subw + spacew*max(static_cast<int>(widths.size()) - 1, 0);
+            h = subh + spaceh*max(static_cast<int>(heights.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1295,10 +1298,10 @@ namespace UI
                   sy = 0,
                   offsetx = 0,
                   sx = 0,
-                  cspace = (w - subw) / max(widths.length() - 1, 1),
-                  cstep = (w - subw) / widths.length(),
-                  rspace = (h - subh) / max(heights.length() - 1, 1),
-                  rstep = (h - subh) / heights.length();
+                  cspace = (w - subw) / max(static_cast<int>(widths.size()) - 1, 1),
+                  cstep = (w - subw) / widths.size(),
+                  rspace = (h - subh) / max(static_cast<int>(heights.size()) - 1, 1),
+                  rstep = (h - subh) / heights.size();
             LOOP_CHILDREN(o,
             {
                 o->x = offsetx;
@@ -1352,9 +1355,9 @@ namespace UI
             executeret(columndata);
             if(columns != buildchild)
             {
-                while(children.length() > buildchild)
+                while(static_cast<int>(children.size()) > buildchild)
                 {
-                    delete children.pop();
+                    children.pop_back();
                 }
             }
             columns = buildchild;
@@ -1362,9 +1365,9 @@ namespace UI
             {
                 executeret(contents);
             }
-            while(children.length() > buildchild)
+            while(static_cast<int>(children.size()) > buildchild)
             {
-                delete children.pop();
+                children.pop_back();
             }
             buildparent = oldparent;
             buildchild = oldchild;
@@ -1373,12 +1376,12 @@ namespace UI
 
         void adjustchildren()
         {
-            LOOP_CHILD_RANGE(columns, children.length(), o, o->adjustlayout(0, 0, w, h));
+            LOOP_CHILD_RANGE(columns, static_cast<int>(children.size()), o, o->adjustlayout(0, 0, w, h));
         }
 
         void draw(float sx, float sy)
         {
-            LOOP_CHILD_RANGE(columns, children.length(), o,
+            LOOP_CHILD_RANGE(columns, static_cast<int>(children.size()), o,
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                 {
@@ -1418,7 +1421,7 @@ namespace UI
     struct Table : Object
     {
         float spacew, spaceh, subw, subh;
-        vector<float> widths;
+        std::vector<float> widths;
         static const char *typestr()
         {
             return "#Table";
@@ -1442,16 +1445,16 @@ namespace UI
 
         void layout()
         {
-            widths.setsize(0);
+            widths.resize(0);
 
             w = subh = 0;
             LOOP_CHILDREN(o,
             {
                 o->layout();
                 int cols = o->childcolumns();
-                while(widths.length() < cols)
+                while(static_cast<int>(widths.size()) < cols)
                 {
-                    widths.add(0);
+                    widths.push_back(0);
                 }
                 for(int j = 0; j < cols; ++j)
                 {
@@ -1466,12 +1469,12 @@ namespace UI
             });
 
             subw = 0;
-            for(int i = 0; i < widths.length(); i++)
+            for(int i = 0; i < static_cast<int>(widths.size()); i++)
             {
                 subw += widths[i];
             }
-            w = max(w, subw + spacew*max(widths.length() - 1, 0));
-            h = subh + spaceh*max(children.length() - 1, 0);
+            w = max(w, subw + spacew*max(static_cast<int>(widths.size()) - 1, 0));
+            h = subh + spaceh*max(static_cast<int>(children.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1482,10 +1485,10 @@ namespace UI
             }
             float offsety = 0,
                   sy = 0,
-                  cspace = (w - subw) / max(widths.length() - 1, 1),
-                  cstep = (w - subw) / widths.length(),
-                  rspace = (h - subh) / max(children.length() - 1, 1),
-                  rstep = (h - subh) / children.length();
+                  cspace = (w - subw) / max(static_cast<int>(widths.size()) - 1, 1),
+                  cstep = (w - subw) / widths.size(),
+                  rspace = (h - subh) / max(static_cast<int>(children.size()) - 1, 1),
+                  rstep = (h - subh) / children.size();
             LOOP_CHILDREN(o,
             {
                 o->x = 0;
@@ -3957,7 +3960,7 @@ namespace UI
         {
             glDisable(GL_BLEND);
 
-            if(clipstack.length())
+            if(clipstack.size())
             {
                 glDisable(GL_SCISSOR_TEST);
             }
@@ -3967,7 +3970,7 @@ namespace UI
         {
             glEnable(GL_BLEND);
 
-            if(clipstack.length())
+            if(clipstack.size())
             {
                 glEnable(GL_SCISSOR_TEST);
             }
@@ -4031,7 +4034,7 @@ namespace UI
 
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.length() > 0);
+            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
             model *m = loadmodel(name);
             if(m)
             {
@@ -4041,9 +4044,9 @@ namespace UI
                 vec o = calcmodelpreviewpos(radius, yaw).sub(center);
                 rendermodel(name, anim, o, yaw, 0, 0, 0, NULL, NULL, 0);
             }
-            if(clipstack.length())
+            if(clipstack.size())
             {
-                clipstack.last().scissor();
+                clipstack.back().scissor();
             }
             modelpreview::end();
         }
@@ -4080,11 +4083,11 @@ namespace UI
 
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.length() > 0);
+            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
             game::renderplayerpreview(model, color, team, weapon);
-            if(clipstack.length())
+            if(clipstack.size())
             {
-                clipstack.last().scissor();
+                clipstack.back().scissor();
             }
             modelpreview::end();
         }
@@ -4118,11 +4121,11 @@ namespace UI
             changedraw(Change_Shader);
             int sx1, sy1, sx2, sy2;
             window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.length() > 0);
+            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
             previewprefab(name, color);
-            if(clipstack.length())
+            if(clipstack.size())
             {
-                clipstack.last().scissor();
+                clipstack.back().scissor();
             }
             modelpreview::end();
         }
@@ -4350,10 +4353,10 @@ namespace UI
     {
         if(!name)
         {
-            return world->children.length() > 0;
+            return world->children.size() > 0;
         }
         Window *window = windows.find(name, NULL);
-        return window && world->children.find(window) >= 0;
+        return window && std::find(world->children.begin(), world->children.end(), window) != world->children.end();
     }
 
     ICOMMAND(showui, "s", (char *name), intret(showui(name) ? 1 : 0));
@@ -4398,13 +4401,13 @@ namespace UI
         ICOMMANDNS("ui" #func "?", ui##func##__, "tt", (tagval *t, tagval *f), \
             IFSTATEVAL(buildparent && buildparent->haschildstate(flags), t, f)); \
         ICOMMANDNS("ui!" #func "+", uinextnot##func##_, "ee", (uint *t, uint *f), \
-            executeret(buildparent && buildparent->children.inrange(buildchild) && buildparent->children[buildchild]->hasstate(flags) ? t : f)); \
+            executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->hasstate(flags) ? t : f)); \
         ICOMMANDNS("ui" #func "+", uinext##func##_, "ee", (uint *t, uint *f), \
-            executeret(buildparent && buildparent->children.inrange(buildchild) && buildparent->children[buildchild]->haschildstate(flags) ? t : f)); \
+            executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags) ? t : f)); \
         ICOMMANDNS("ui!" #func "+?", uinextnot##func##__, "tt", (tagval *t, tagval *f), \
-            IFSTATEVAL(buildparent && buildparent->children.inrange(buildchild) && buildparent->children[buildchild]->hasstate(flags), t, f)); \
+            IFSTATEVAL(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->hasstate(flags), t, f)); \
         ICOMMANDNS("ui" #func "+?", uinext##func##__, "tt", (tagval *t, tagval *f), \
-            IFSTATEVAL(buildparent && buildparent->children.inrange(buildchild) && buildparent->children[buildchild]->haschildstate(flags), t, f));
+            IFSTATEVAL(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags), t, f));
     DOSTATES
     #undef DOSTATE
 
@@ -4413,9 +4416,9 @@ namespace UI
     ICOMMANDNS("uifocus?", uifocustagval_, "tt", (tagval *t, tagval *f),
         IFSTATEVAL(buildparent && TextEditor::focus == buildparent, t, f));
     ICOMMANDNS("uifocus+", uinextfocusexec_, "ee", (uint *t, uint *f),
-        executeret(buildparent && buildparent->children.inrange(buildchild) && TextEditor::focus == buildparent->children[buildchild] ? t : f));
+        executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild] ? t : f));
     ICOMMANDNS("uifocus+?", uinextfocustagval_, "tt", (tagval *t, tagval *f),
-        IFSTATEVAL(buildparent && buildparent->children.inrange(buildchild) && TextEditor::focus == buildparent->children[buildchild], t, f));
+        IFSTATEVAL(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild], t, f));
 
     ICOMMAND(uialign, "ii", (int *xalign, int *yalign),
     {
@@ -4865,7 +4868,7 @@ namespace UI
 
     void cleanup()
     {
-        world->children.setsize(0);
+        world->children.resize(0);
         ENUMERATE(windows, Window *, w, delete w);
         windows.clear();
         DELETEP(world);
