@@ -323,6 +323,11 @@ int main(int argc, char **argv)
     for(;;)
     {
         updateenginevalues();
+        if(!triggerqueue.empty())
+        {
+            game::vartrigger(triggerqueue.front()); //skim top of pending var changes to apply gameside
+            triggerqueue.pop();
+        }
         static int frames = 0;
         int millis = getclockmillis(); //gets time at loop
         limitfps(millis, totalmillis); //caps framerate if necessary

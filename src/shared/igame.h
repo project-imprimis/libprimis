@@ -2,6 +2,5 @@
 
 namespace game
 {
-    extern void vartrigger(ident *id);
     extern dynent *iterdynents(int i);
 }

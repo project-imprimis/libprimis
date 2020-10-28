@@ -66,6 +66,7 @@ extern void answerchallenge(const char *privstr, const char *challenge, vector<c
 
 // command
 
+extern std::queue<ident *> triggerqueue;
 extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
 extern float fvariable(const char *name, float min, float cur, float max, float *storage, identfun fun, int flags);
 extern char *svariable(const char *name, const char *cur, char **storage, identfun fun, int flags);

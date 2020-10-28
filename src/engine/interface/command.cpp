@@ -6,7 +6,8 @@
 hashnameset<ident> idents; // contains ALL vars/commands/aliases
 vector<ident *> identmap;
 ident *dummyident = NULL;
-
+std::queue<ident *> triggerqueue; //for the game to handle var change events
+static constexpr uint cmdqueuedepth = 128; //how many elements before oldest queued data gets discarded
 int identflags = 0;
 
 const char *sourcefile = NULL,
@@ -948,6 +949,15 @@ int clampvar(ident *id, int val, int minval, int maxval)
     return val;
 }
 
+void vartrigger(ident *id) //places an ident pointer into queue for the game to handle
+{
+    triggerqueue.push(id);
+    if(triggerqueue.size() > cmdqueuedepth)
+    {
+        triggerqueue.pop();
+    }
+}
+
 void setvarchecked(ident *id, int val)
 {
     if(id->flags&Idf_ReadOnly)
@@ -965,7 +975,7 @@ void setvarchecked(ident *id, int val)
         id->changed();                                             // call trigger function if available
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
-            game::vartrigger(id);
+            vartrigger(id);
         }
     }
 }
@@ -1019,7 +1029,7 @@ void setfvarchecked(ident *id, float val)
         id->changed();
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
-            game::vartrigger(id);
+            vartrigger(id);
         }
     }
 }
@@ -1037,7 +1047,7 @@ void setsvarchecked(ident *id, const char *val)
         id->changed();
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
         {
-            game::vartrigger(id);
+            vartrigger(id);
         }
     }
 }
