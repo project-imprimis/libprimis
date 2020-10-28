@@ -12,8 +12,6 @@ VARNR(emptymap, _emptymap, 1, 0, 0);
 
 namespace entities
 {
-    using namespace game;
-
     vector<extentity *> ents;
 
     vector<extentity *> &getents()
