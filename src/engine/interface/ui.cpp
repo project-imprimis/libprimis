@@ -4052,47 +4052,6 @@ namespace UI
         }
     };
 
-    struct PlayerPreview : Preview
-    {
-        int model, color, team, weapon;
-
-        void setup(int model_, int color_, int team_, int weapon_, float minw_, float minh_)
-        {
-            Preview::setup(minw_, minh_);
-            model = model_;
-            color = color_;
-            team = team_;
-            weapon = weapon_;
-        }
-
-        static const char *typestr()
-        {
-            return "#PlayerPreview";
-        }
-
-        const char *gettype() const
-        {
-            return typestr();
-        }
-
-        void draw(float sx, float sy)
-        {
-            Object::draw(sx, sy);
-
-            changedraw(Change_Shader);
-
-            int sx1, sy1, sx2, sy2;
-            window->calcscissor(sx, sy, sx+w, sy+h, sx1, sy1, sx2, sy2, false);
-            modelpreview::start(sx1, sy1, sx2-sx1, sy2-sy1, false, clipstack.size() > 0);
-            game::renderplayerpreview(model, color, team, weapon);
-            if(clipstack.size())
-            {
-                clipstack.back().scissor();
-            }
-            modelpreview::end();
-        }
-    };
-
     struct PrefabPreview : Preview
     {
         char *name;
@@ -4745,9 +4704,6 @@ namespace UI
 
     ICOMMAND(uimodelpreview, "ssffe", (char *model, char *animspec, float *minw, float *minh, uint *children),
         BUILD(ModelPreview, o, o->setup(model, animspec, *minw, *minh), children));
-
-    ICOMMAND(uiplayerpreview, "iiiiffe", (int *model, int *color, int *team, int *weapon, float *minw, float *minh, uint *children),
-        BUILD(PlayerPreview, o, o->setup(*model, *color, *team, *weapon, *minw, *minh), children));
 
     ICOMMAND(uiprefabpreview, "siffe", (char *prefab, int *color, float *minw, float *minh, uint *children),
         BUILD(PrefabPreview, o, o->setup(prefab, *color, *minw, *minh), children));

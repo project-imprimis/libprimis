@@ -647,30 +647,6 @@ namespace game
         drawhudgun();
     }
 
-    void renderplayerpreview(int model, int color, int team, int weap)
-    {
-        static gameent *previewent = NULL;
-        if(!previewent)
-        {
-            previewent = new gameent;
-            for(int i = 0; i < Gun_NumGuns; ++i)
-            {
-                previewent->ammo[i] = 1;
-            }
-        }
-        float height = previewent->eyeheight + previewent->aboveeye,
-              zrad = height/2;
-        vec2 xyrad = vec2(previewent->xradius, previewent->yradius).max(height/4);
-        previewent->o = calcmodelpreviewpos(vec(xyrad, zrad), previewent->yaw).addz(previewent->eyeheight - zrad);
-        previewent->gunselect = validgun(weap) ? weap : Gun_Rail;
-        const playermodelinfo *mdlinfo = getplayermodelinfo(model);
-        if(!mdlinfo)
-        {
-            return;
-        }
-        renderplayer(previewent, *mdlinfo, getplayercolor(team, color), team, 1, 0, false);
-    }
-
     vec hudgunorigin(int gun, const vec &from, const vec &to, gameent *d)
     {
         if(d->muzzle.x >= 0)
