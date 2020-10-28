@@ -80,6 +80,21 @@ void quit()                       // normal exit
 COMMAND(quit, "");
 
 //sets engine constants that need information from the game
+
+void updateenginevalues()
+{
+    numdynents = game::players.length();
+    allowediting = game::allowedittoggle();
+    multiplayer = curpeer;
+    //pass players list
+    vector<dynent *> dyns;
+    for(int i = 0; i < game::players.length(); ++i)
+    {
+        dyns.add(game::players[i]);
+    }
+    dynents = dyns;
+}
+
 void startupconstants()
 {
     numanims = Anim_NumAnims;
@@ -108,13 +123,6 @@ void startupconstants()
         "flag"
     };
     entnames = std::vector<std::string>(std::begin(entnamelist), std::end(entnamelist));
-}
-
-void updateenginevalues()
-{
-    numdynents = game::players.length();
-    allowediting = game::allowedittoggle();
-    multiplayer = curpeer;
 }
 
 int main(int argc, char **argv)
@@ -265,7 +273,8 @@ int main(int argc, char **argv)
     renderbackground("initializing...");
 
     logoutf("init: world");
-    camera1 = player = game::iterdynents(0);
+    updateenginevalues();
+    camera1 = player = iterdynents(0);
     emptymap(0, true, NULL, false);
     game::startmap(NULL);
     logoutf("init: sound");

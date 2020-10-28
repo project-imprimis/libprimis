@@ -453,7 +453,9 @@ extern int collideinside;
 extern physent *collideplayer;
 extern const float gravity, jumpvel;
 extern int numdynents;
+extern vector<dynent *> dynents;
 
+extern dynent *iterdynents(int i);
 extern void moveplayer(physent *pl, int moveres, bool local);
 extern bool moveplayer(physent *pl, int moveres, bool local, int curtime);
 extern void crouchplayer(physent *pl, int moveres, bool local);

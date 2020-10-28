@@ -1736,8 +1736,7 @@ void drawminimap()
     minimapscale = vec((0.5f - 1.0f/size)/minimapradius.x, (0.5f - 1.0f/size)/minimapradius.y, 1.0f);
 
     physent *oldcamera = camera1;
-    static physent cmcamera;
-    cmcamera = *player;
+    physent cmcamera = *player;
     cmcamera.reset();
     cmcamera.type = PhysEnt_Camera;
     cmcamera.o = vec(minimapcenter.x, minimapcenter.y, minimapheight > 0 ? minimapheight : minimapcenter.z + minimapradius.z + 1);

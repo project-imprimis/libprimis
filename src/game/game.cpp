@@ -904,15 +904,6 @@ namespace game
         }
     }
 
-    dynent *iterdynents(int i)
-    {
-        if(i<players.length())
-        {
-            return players[i];
-        }
-        return NULL;
-    }
-
     bool duplicatename(gameent *d, const char *name = NULL, const char *alt = NULL)
     {
         if(!name)

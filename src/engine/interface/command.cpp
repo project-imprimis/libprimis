@@ -609,7 +609,7 @@ void resetvar(char *name)
 
 COMMAND(resetvar, "s");
 
-inline void setarg(ident &id, tagval &v)
+void setarg(ident &id, tagval &v)
 {
     if(aliasstack->usedargs&(1<<id.index))
     {

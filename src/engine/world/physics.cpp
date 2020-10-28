@@ -8,6 +8,7 @@
 #include "raycube.h"
 
 int numdynents; //updated by engine, visible through iengine.h
+vector<dynent *> dynents;
 
 static const int maxclipoffset = 4;
 static const int maxclipplanes = 1024;
@@ -207,6 +208,15 @@ void cleardynentcache()
     }
 }
 
+dynent *iterdynents(int i)
+{
+    if(i<dynents.length())
+    {
+        return dynents[i];
+    }
+    return NULL;
+}
+
 VARF(dynentsize, 4, 7, 12, cleardynentcache());
 
 static inline int dynenthash(int x, int y)
@@ -231,7 +241,7 @@ const vector<physent *> &checkdynentcache(int x, int y)
         dy = y<<dynentsize;
     for(int i = 0; i < numdyns; ++i)
     {
-        dynent *d = game::iterdynents(i);
+        dynent *d = iterdynents(i);
         if(d->state != ClientState_Alive ||
            d->o.x+d->radius <= dx || d->o.x-d->radius >= dx+dsize ||
            d->o.y+d->radius <= dy || d->o.y-d->radius >= dy+dsize)
