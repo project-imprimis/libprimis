@@ -20,7 +20,6 @@
 #include <utility>
 #include <vector>
 #include <queue>
-#include <iostream>
 
 #ifdef WIN32
     #define WIN32_LEAN_AND_MEAN
@@ -58,6 +57,5 @@
 #include "glemu.h"
 
 #include "consts.h"
-#include "igame.h"
 #endif
 
