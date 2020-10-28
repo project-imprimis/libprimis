@@ -1,6 +1,0 @@
-[submodule "media"]
-	path = media
-	url = https://github.com/project-imprimis/media
-[submodule "src/enet"]
-	path = src/enet
-	url = https://github.com/project-imprimis/enet

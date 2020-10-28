@@ -351,76 +351,6 @@ struct databuf
 typedef databuf<char> charbuf;
 typedef databuf<uchar> ucharbuf;
 
-struct packetbuf : ucharbuf
-{
-    ENetPacket *packet;
-    int growth;
-
-    packetbuf(ENetPacket *packet) : ucharbuf(packet->data, packet->dataLength), packet(packet), growth(0) {}
-    packetbuf(int growth, int pflags = 0) : growth(growth)
-    {
-        packet = enet_packet_create(NULL, growth, pflags);
-        buf = static_cast<uchar *>(packet->data);
-        maxlen = packet->dataLength;
-    }
-    ~packetbuf() { cleanup(); }
-
-    void reliable()
-    {
-        packet->flags |= ENET_PACKET_FLAG_RELIABLE;
-    }
-
-    void resize(int n)
-    {
-        enet_packet_resize(packet, n);
-        buf = static_cast<uchar *>(packet->data);
-        maxlen = packet->dataLength;
-    }
-
-    void checkspace(int n)
-    {
-        if(len + n > maxlen && packet && growth > 0)
-        {
-            resize(max(len + n, maxlen + growth));
-        }
-    }
-
-    ucharbuf subbuf(int sz)
-    {
-        checkspace(sz);
-        return ucharbuf::subbuf(sz);
-    }
-
-    void put(const uchar &val)
-    {
-        checkspace(1);
-        ucharbuf::put(val);
-    }
-
-    void put(const uchar *vals, int numvals)
-    {
-        checkspace(numvals);
-        ucharbuf::put(vals, numvals);
-    }
-
-    ENetPacket *finalize()
-    {
-        resize(len);
-        return packet;
-    }
-
-    void cleanup()
-    {
-        if(growth > 0 && packet && !packet->referenceCount)
-        {
-            enet_packet_destroy(packet);
-            packet = NULL;
-            buf = NULL;
-            len = maxlen = 0;
-        }
-    }
-};
-
 template<class T>
 inline float heapscore(const T &n) { return n; }
 
@@ -1621,20 +1551,84 @@ extern bool listdir(const char *dir, bool rel, const char *ext, vector<char *> &
 extern int listfiles(const char *dir, const char *ext, vector<char *> &files);
 extern int listzipfiles(const char *dir, const char *ext, vector<char *> &files);
 
+
+template<class T>
+static inline void putint_(T &p, int n)
+{
+    if(n<128 && n>-127)
+    {
+        p.put(n);
+    }
+    else if(n<0x8000 && n>=-0x8000)
+    {
+        p.put(0x80);
+        p.put(n);
+        p.put(n>>8);
+    }
+    else
+    {
+        p.put(0x81);
+        p.put(n);
+        p.put(n>>8);
+        p.put(n>>16);
+        p.put(n>>24);
+    }
+}
+
+template<class T>
+static inline void putuint_(T &p, int n)
+{
+    if(n < 0 || n >= (1<<21))
+    {
+        p.put(0x80 | (n & 0x7F));
+        p.put(0x80 | ((n >> 7) & 0x7F));
+        p.put(0x80 | ((n >> 14) & 0x7F));
+        p.put(n >> 21);
+    }
+    else if(n < (1<<7))
+    {
+        p.put(n);
+    }
+    else if(n < (1<<14))
+    {
+        p.put(0x80 | (n & 0x7F));
+        p.put(n >> 7);
+    }
+    else
+    {
+        p.put(0x80 | (n & 0x7F));
+        p.put(0x80 | ((n >> 7) & 0x7F));
+        p.put(n >> 14);
+    }
+}
+
+
+template<class T>
+static inline void sendstring_(const char *t, T &p)
+{
+    while(*t)
+    {
+        putint(p, *t++);
+    }
+    putint(p, 0);
+}
+
+template<class T>
+static inline void putfloat_(T &p, float f)
+{
+    p.put((uchar *)&f, sizeof(float));
+}
+
 extern void putint(ucharbuf &p, int n);
-extern void putint(packetbuf &p, int n);
 extern void putint(vector<uchar> &p, int n);
 extern int getint(ucharbuf &p);
 extern void putuint(ucharbuf &p, int n);
-extern void putuint(packetbuf &p, int n);
 extern void putuint(vector<uchar> &p, int n);
 extern int getuint(ucharbuf &p);
 extern void putfloat(ucharbuf &p, float f);
-extern void putfloat(packetbuf &p, float f);
 extern void putfloat(vector<uchar> &p, float f);
 extern float getfloat(ucharbuf &p);
 extern void sendstring(const char *t, ucharbuf &p);
-extern void sendstring(const char *t, packetbuf &p);
 extern void sendstring(const char *t, vector<uchar> &p);
 extern void getstring(char *t, ucharbuf &p, size_t len);
 
@@ -1645,15 +1639,6 @@ extern void filtertext(char *dst, const char *src, bool whitespace, bool forcesp
 
 template<size_t N>
 inline void filtertext(char (&dst)[N], const char *src, bool whitespace = true, bool forcespace = false) { filtertext(dst, src, whitespace, forcespace, N-1); }
-
-struct ipmask
-{
-    enet_uint32 ip, mask;
-
-    void parse(const char *name);
-    int print(char *buf) const;
-    bool check(enet_uint32 host) const { return (host & mask) == ip; }
-};
 
 #endif
 

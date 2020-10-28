@@ -42,8 +42,6 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 
-#include <enet/enet.h>
-
 #include <zlib.h>
 
 #include "tools.h"
