@@ -1,4 +1,4 @@
-#include "cube.h"
+#include "../libprimis-headers/cube.h"
 
 extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
 extern bool addcommand(const char *name, identfun fun, const char *narg, int type = Id_Command);

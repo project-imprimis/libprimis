@@ -1,0 +1,3 @@
+[submodule "src/libprimis-headers"]
+	path = src/libprimis-headers
+	url = git@github.com:project-imprimis/libprimis-headers.git

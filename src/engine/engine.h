@@ -1,7 +1,7 @@
 #ifndef ENGINE_H_
 #define ENGINE_H_
 
-#include "cube.h"
+#include "../libprimis-headers/cube.h"
 
 #include "render/texture.h"
 #include "world/bih.h"

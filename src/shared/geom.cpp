@@ -1,4 +1,4 @@
-#include "cube.h"
+#include "../libprimis-headers/cube.h"
 
 //needed for det3
 static inline double det2x2(double a, double b, double c, double d)

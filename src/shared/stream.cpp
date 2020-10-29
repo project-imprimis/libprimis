@@ -1,4 +1,4 @@
-#include "cube.h"
+#include "../libprimis-headers/cube.h"
 
 extern int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags);
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
