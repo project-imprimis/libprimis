@@ -14,5 +14,6 @@ blocks:
             - sem-version cpp 8
             - sudo apt-get update
             - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+            - git submodule update --init --remote src/libprimis-headers
             - make -C src clean
             - make -C src -j3
