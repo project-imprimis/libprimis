@@ -1,5 +1,5 @@
 CXXFLAGS= -O3 -fomit-frame-pointer -ffast-math -std=c++17 -march=x86-64
-override CXXFLAGS+= -Wall -fsigned-char -fno-exceptions -fno-rtti -ggdb3
+override CXXFLAGS+= -Wall -fsigned-char -fno-exceptions -fno-rtti -fpic
 
 PLATFORM= $(shell uname -s)
 PLATFORM_ARCH= $(shell uname -m)
@@ -121,7 +121,7 @@ client: $(CLIENT_OBJS)
 else
 #native (gcc et. al.)
 client: $(CLIENT_OBJS)
-	ar rcs libprimis.a $(CLIENT_OBJS)
+	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS)
 endif
 
 depend:
