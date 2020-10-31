@@ -19,10 +19,14 @@ char *tempformatstring(const char *fmt, ...)
     return tmpstr[tmpidx];
 }
 
-///////////////////////// network ///////////////////////
+////////////////////////// bit packing ////////////////////////////////////
 
-// all network traffic is in 32bit ints, which are then compressed using the following simple scheme (assumes that most values are small).
+// these functions are useful for packing ints/chars into smaller chunks, which
+// is useful for reducing file save sizes
 
+// note that the parent put*_ template functions is not defined here but in tools.h
+
+//*             signed integers            *//
 void putint(ucharbuf &p, int n)
 {
     putint_(p, n);
@@ -55,6 +59,7 @@ int getint(ucharbuf &p)
     }
 }
 
+//*             unisigned integers            *//
 // much smaller encoding for unsigned integers up to 28 bits, but can handle signed
 
 void putuint(ucharbuf &p, int n)
@@ -89,7 +94,7 @@ int getuint(ucharbuf &p)
     return n;
 }
 
-
+//*             floats            *//
 void putfloat(ucharbuf &p, float f)
 {
     putfloat_(p, f);
@@ -107,6 +112,7 @@ float getfloat(ucharbuf &p)
     return f;
 }
 
+//*             strings            *//
 void sendstring(const char *t, ucharbuf &p)
 {
     sendstring_(t, p);
