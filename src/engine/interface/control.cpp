@@ -1,5 +1,8 @@
 #include "engine.h"
 
+bool inbetweenframes = false,
+     renderedframe = true;
+
 extern void cleargamma();
 
 void fatal(const char *s, ...)    // failure exit
