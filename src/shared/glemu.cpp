@@ -33,8 +33,8 @@ namespace gle
     static GLenum primtype = GL_TRIANGLES;
     static uchar *lastbuf = NULL;
     static bool changedattribs = false;
-    static vector<GLint> multidrawstart;
-    static vector<GLsizei> multidrawcount;
+    static std::vector<GLint> multidrawstart;
+    static std::vector<GLsizei> multidrawcount;
 
     static const int maxquads = (0x10000/4); //65635/4 = 16384
     static GLuint quadindexes = 0;
@@ -337,12 +337,12 @@ namespace gle
 
     void multidraw()
     {
-        int start = multidrawstart.length() ? multidrawstart.last() + multidrawcount.last() : 0,
+        int start = multidrawstart.size() ? multidrawstart.back() + multidrawcount.back() : 0,
             count = attribbuf.length()/vertexsize - start;
         if(count > 0)
         {
-            multidrawstart.add(start);
-            multidrawcount.add(count);
+            multidrawstart.push_back(start);
+            multidrawcount.push_back(count);
         }
     }
 
@@ -410,19 +410,19 @@ namespace gle
         }
         else
         {
-            if(multidrawstart.length())
+            if(multidrawstart.size())
             {
                 multidraw();
                 if(start)
                 {
-                    for(int i = 0; i < multidrawstart.length(); i++)
+                    for(int i = 0; i < static_cast<int>(multidrawstart.size()); i++)
                     {
                         multidrawstart[i] += start;
                     }
                 }
-                glMultiDrawArrays_(primtype, multidrawstart.getbuf(), multidrawcount.getbuf(), multidrawstart.length());
-                multidrawstart.setsize(0);
-                multidrawcount.setsize(0);
+                glMultiDrawArrays_(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
+                multidrawstart.resize(0);
+                multidrawcount.resize(0);
             }
             else
             {
