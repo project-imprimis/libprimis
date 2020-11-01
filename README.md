@@ -16,9 +16,9 @@ octree without dealing with confusing and poorly defined boundaries between game
 and rendering code.
 
 With many modern features, including realtime deferred shading, volumetric lighting, and
-tone mapping support, Libprimis is not just another engine project built on
-quarter-century old rendering tech. Libprimis' core is fast, capable, and modern,
-and fully open sourced.
+tone mapping support, Libprimis' core is fast, capable, and modern, and fully open sourced.
+All this combines to make an engine that allows for an unprecedented ability to manipulate
+a vibrant and dynamic world using simple, accessible semantics.
 
 #### Key Features
 

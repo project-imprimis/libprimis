@@ -1,11 +1,10 @@
 
-The Imprimis engine is blanket licenced under the zlib license where no other
-license is explicitly mentioned (e.g. fonts under the Open Font License). The
-source code of the engine itself is entirely covered by this license. All parts
-of the game are open-source licenced.
+Libprimis is licenced under the zlib license, a permissive license similar to the
+MIT license. It is derived from Tesseract and Cube 2, the original license text of
+which is provided inside this repository.
 
-In particular, visual assets are licensed under Creative Commons licenses,
-though all assets used in the game are CC-BY-SA or less restrictive.
+Libprimis' engine license covers all contents of this repository as well as the
+engine headers (included as a submodule inside /src).
 
 Copyright (c) 2020 Project Imprimis:
 
@@ -22,7 +21,7 @@ Additional contributors:
 
 Contributors to the original Tesseract engine are omitted here but listed in
 /src/readme_tesseract.txt. In no way does this license imply that this work is
-entirely original (as it is a fork of the Tesseract engine)
+entirely original (as it began as a fork of the Tesseract game)
 
 zlib license
 --------------------------------------------------------------------------------
