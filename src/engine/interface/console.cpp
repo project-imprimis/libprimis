@@ -553,7 +553,7 @@ struct HLine
         }
     }
 };
-vector<HLine *> history;
+std::vector<HLine *> history;
 int histpos = 0;
 
 VARP(maxhistory, 0, 1000, 10000);
@@ -561,10 +561,10 @@ VARP(maxhistory, 0, 1000, 10000);
 void history_(int *n)
 {
     static bool inhistory = false;
-    if(!inhistory && history.inrange(*n))
+    if(!inhistory && static_cast<int>(history.size()) > *n)
     {
         inhistory = true;
-        history[history.length()-*n-1]->run();
+        history[history.size()-*n-1]->run();
         inhistory = false;
     }
 }
@@ -777,9 +777,9 @@ bool consolekey(int code, bool isdown)
             }
             case SDLK_UP:
             {
-                if(histpos > history.length())
+                if(histpos > static_cast<int>(history.size()))
                 {
-                    histpos = history.length();
+                    histpos = history.size();
                 }
                 if(histpos > 0)
                 {
@@ -789,7 +789,7 @@ bool consolekey(int code, bool isdown)
             }
             case SDLK_DOWN:
             {
-                if(histpos + 1 < history.length())
+                if(histpos + 1 < static_cast<int>(history.size()))
                 {
                     history[++histpos]->restore();
                 }
@@ -824,24 +824,24 @@ bool consolekey(int code, bool isdown)
             HLine *h = NULL;
             if(commandbuf[0])
             {
-                if(history.empty() || history.last()->shouldsave())
+                if(history.empty() || history.back()->shouldsave())
                 {
-                    if(maxhistory && history.length() >= maxhistory)
+                    if(maxhistory && static_cast<int>(history.size()) >= maxhistory)
                     {
-                        for(int i = 0; i < (history.length()-maxhistory+1); ++i)
+                        for(uint i = 0; i < (history.size()-maxhistory+1); ++i)
                         {
                             delete history[i];
                         }
-                        history.remove(0, history.length()-maxhistory+1);
+                        history.erase(history.begin(), history.begin() + history.size()-maxhistory+1);
                     }
-                    history.add(h = new HLine)->save();
+                    history.emplace_back(h = new HLine)->save();
                 }
                 else
                 {
-                    h = history.last();
+                    h = history.back();
                 }
             }
-            histpos = history.length();
+            histpos = history.size();
             inputcommand(NULL);
             if(h)
             {
@@ -850,7 +850,7 @@ bool consolekey(int code, bool isdown)
         }
         else if(code==SDLK_ESCAPE)
         {
-            histpos = history.length();
+            histpos = history.size();
             inputcommand(NULL);
         }
     }
