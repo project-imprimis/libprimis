@@ -371,7 +371,6 @@ static const int lightcacheentries = 1024;
 static struct lightcacheentry
 {
     int x, y;
-    vector<int> lights;
 } lightcache[lightcacheentries];
 
 static inline int lightcachehash(int x, int y)
@@ -401,7 +400,6 @@ void clearlightcache(int id)
                     continue;
                 }
                 lce.x = -1;
-                lce.lights.setsize(0);
             }
         }
         return;
@@ -410,7 +408,6 @@ void clearlightcache(int id)
     for(lightcacheentry *lce = lightcache; lce < &lightcache[lightcacheentries]; lce++)
     {
         lce->x = -1;
-        lce->lights.setsize(0);
     }
 }
 
