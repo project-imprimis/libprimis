@@ -414,46 +414,6 @@ void clearlightcache(int id)
     }
 }
 
-const vector<int> &checklightcache(int x, int y)
-{
-    x >>= lightcachesize;
-    y >>= lightcachesize;
-    lightcacheentry &lce = lightcache[lightcachehash(x, y)];
-    if(lce.x == x && lce.y == y)
-    {
-        return lce.lights;
-    }
-    lce.lights.setsize(0);
-    int csize = 1<<lightcachesize,
-        cx = x<<lightcachesize,
-        cy = y<<lightcachesize;
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
-    {
-        const extentity &light = *ents[i];
-        switch(light.type)
-        {
-            case EngineEnt_Light:
-            {
-                int radius = light.attr1;
-                if(radius <= 0 ||
-                   light.o.x + radius < cx || light.o.x - radius > cx + csize ||
-                   light.o.y + radius < cy || light.o.y - radius > cy + csize)
-                {
-                    continue;
-                }
-                break;
-            }
-            default: continue;
-        }
-        lce.lights.add(i);
-    }
-
-    lce.x = x;
-    lce.y = y;
-    return lce.lights;
-}
-
 static uint lightprogress = 0;
 
 bool calclight_canceled = false;

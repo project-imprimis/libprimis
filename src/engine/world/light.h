@@ -72,6 +72,4 @@ extern bool calclight_canceled;
 
 extern void check_calclight_canceled();
 
-extern const vector<int> &checklightcache(int x, int y);
-
 #endif
