@@ -89,11 +89,11 @@ void inputgrab(bool on)
     shouldgrab = false;
 }
 
-vector<SDL_Event> events;
+std::vector<SDL_Event> events;
 
 void pushevent(const SDL_Event &e)
 {
-    events.add(e);
+    events.push_back(e);
 }
 
 static bool filterevent(const SDL_Event &event)
@@ -128,7 +128,7 @@ static inline bool pollevent(SDL_Event &event)
 bool interceptkey(int sym)
 {
     static int lastintercept = SDLK_UNKNOWN;
-    int len = lastintercept == sym ? events.length() : 0;
+    int len = lastintercept == sym ? static_cast<int>(events.size()) : 0;
     SDL_Event event;
     while(pollevent(event))
     {
@@ -148,11 +148,11 @@ bool interceptkey(int sym)
     lastintercept = sym;
     if(sym != SDLK_UNKNOWN)
     {
-        for(int i = len; i < events.length(); i++)
+        for(uint i = len; i < events.size(); i++)
         {
             if(events[i].type == SDL_KEYDOWN && events[i].key.keysym.sym == sym)
             {
-                events.remove(i);
+                events.erase(events.begin() + i);
                 return true;
             }
         }
@@ -181,27 +181,27 @@ static void resetmousemotion()
 
 static void checkmousemotion(int &dx, int &dy)
 {
-    for(int i = 0; i < events.length(); i++)
+    for(uint i = 0; i < events.size(); i++)
     {
         SDL_Event &event = events[i];
         if(event.type != SDL_MOUSEMOTION)
         {
             if(i > 0)
             {
-                events.remove(0, i);
+                events.erase(events.begin(), events.begin() + i);
             }
             return;
         }
         dx += event.motion.xrel;
         dy += event.motion.yrel;
     }
-    events.setsize(0);
+    events.clear();
     SDL_Event event;
     while(pollevent(event))
     {
         if(event.type != SDL_MOUSEMOTION)
         {
-            events.add(event);
+            events.push_back(event);
             return;
         }
         dx += event.motion.xrel;
@@ -214,11 +214,12 @@ void checkinput()
 {
     SDL_Event event;
     bool mousemoved = false;
-    while(events.length() || pollevent(event))
+    while(events.size() || pollevent(event))
     {
-        if(events.length())
+        if(events.size())
         {
-            event = events.remove(0);
+            event = events[0];
+            events.erase(events.begin());
         }
         switch(event.type)
         {
