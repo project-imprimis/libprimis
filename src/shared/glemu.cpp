@@ -56,7 +56,8 @@ namespace gle
         }
 
         glGenBuffers_(1, &quadindexes);
-        ushort *data = new ushort[maxquads*6], *dst = data;
+        ushort *data = new ushort[maxquads*6],
+               *dst = data;
         for(int idx = 0; idx < maxquads*4; idx += 4, dst += 6)
         {
             dst[0] = idx;
@@ -415,7 +416,7 @@ namespace gle
                 multidraw();
                 if(start)
                 {
-                    for(int i = 0; i < static_cast<int>(multidrawstart.size()); i++)
+                    for(uint i = 0; i < multidrawstart.size(); i++)
                     {
                         multidrawstart[i] += start;
                     }
