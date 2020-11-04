@@ -173,11 +173,11 @@ bool setfont(const char *name)
     return true;
 }
 
-static vector<font *> fontstack;
+static std::stack<font *> fontstack;
 
 void pushfont()
 {
-    fontstack.add(curfont);
+    fontstack.push(curfont);
 }
 
 bool popfont()
@@ -186,7 +186,8 @@ bool popfont()
     {
         return false;
     }
-    curfont = fontstack.pop();
+    curfont = fontstack.top();
+    fontstack.pop();
     return true;
 }
 
