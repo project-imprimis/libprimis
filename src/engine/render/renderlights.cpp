@@ -3241,7 +3241,6 @@ namespace lightsphere
 VAR(depthtestlights, 0, 2, 2);
 FVAR(depthtestlightsclamp, 0, 0.999995f, 1);
 VAR(depthfaillights, 0, 1, 1);
-FVAR(lightradiustweak, 1, 1.11f, 2);
 
 static inline void lightquad(float z = -1, float sx1 = -1, float sy1 = -1, float sx2 = 1, float sy2 = 1)
 {
@@ -3546,7 +3545,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
             }
             matrix4 lightmatrix = camprojmatrix;
             lightmatrix.translate(l.o);
-            lightmatrix.scale(l.radius*lightradiustweak);
+            lightmatrix.scale(l.radius);
             GLOBALPARAM(lightmatrix, lightmatrix);
 
             setlightparams(0, l);
@@ -3563,7 +3562,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
                 glDepthBounds_(l.sz1*0.5f + 0.5f, min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
             }
 
-            if(camera1->o.dist(l.o) <= l.radius*lightradiustweak + nearplane + 1 && depthfaillights)
+            if(camera1->o.dist(l.o) <= l.radius + nearplane + 1 && depthfaillights)
             {
                 if(outside)
                 {
@@ -4013,7 +4012,7 @@ void rendervolumetric()
 
         matrix4 lightmatrix = camprojmatrix;
         lightmatrix.translate(l.o);
-        lightmatrix.scale(l.radius*lightradiustweak);
+        lightmatrix.scale(l.radius);
         GLOBALPARAM(lightmatrix, lightmatrix);
 
         if(l.spot > 0)
@@ -4065,7 +4064,7 @@ void rendervolumetric()
             ty2 = static_cast<int>(ceil((l.sy2*0.5f+0.5f)*volh));
         glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
-        if(camera1->o.dist(l.o) <= l.radius*lightradiustweak + nearplane + 1 && depthfaillights)
+        if(camera1->o.dist(l.o) <= l.radius + nearplane + 1 && depthfaillights)
         {
             if(outside)
             {
