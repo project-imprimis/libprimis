@@ -240,23 +240,6 @@ VERTWN(vertln, {
     gle::attribf(wxscale*(v1+wscroll), wyscale*(v2+wscroll));
 })
 
-#define RENDER_WATER_STRIPS(vertw, z) { \
-    def##vertw(); \
-    gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv); \
-    for(int x = wx1; x<wx2; x += subdiv) \
-    { \
-        vertw(x,        wy1, z); \
-        vertw(x+subdiv, wy1, z); \
-        for(int y = wy1; y<wy2; y += subdiv) \
-        { \
-            vertw(x,        y+subdiv, z); \
-            vertw(x+subdiv, y+subdiv, z); \
-        } \
-        gle::multidraw(); \
-    } \
-    xtraverts += gle::end(); \
-}
-
 void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
 {
     wx1 = xo;
@@ -268,11 +251,22 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
     if(mat == Mat_Water)
     {
         whoffset = fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
-        RENDER_WATER_STRIPS(vertwt, z);
+        defvertwt();
+        gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
+        for(int x = wx1; x<wx2; x += subdiv)
+        {
+            vertwt(x,        wy1, z);
+            vertwt(x+subdiv, wy1, z);
+            for(int y = wy1; y<wy2; y += subdiv)
+            {
+                vertwt(x,        y+subdiv, z);
+                vertwt(x+subdiv, y+subdiv, z);
+            }
+            gle::multidraw();
+        }
+        xtraverts += gle::end();
     }
 }
-
-#undef RENDER_WATER_STRIPS
 
 int calcwatersubdiv(int x, int y, int z, int size)
 {
@@ -351,29 +345,22 @@ int renderwaterlod(int x, int y, int z, int size, int mat)
     }
 }
 
-#define RENDER_WATER_QUAD(vertwn, z) \
-    { \
-        if(gle::attribbuf.empty()) \
-        { \
-            def##vertwn(); \
-            gle::begin(GL_QUADS); \
-        } \
-        vertwn(x, y, z); \
-        vertwn(x+rsize, y, z); \
-        vertwn(x+rsize, y+csize, z); \
-        vertwn(x, y+csize, z); \
-        xtraverts += 4; \
-    }
-
 void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
 {
     if(mat == Mat_Water)
     {
-        RENDER_WATER_QUAD(vertwtn, z);
+        if(gle::attribbuf.empty())
+        {
+            defvertwtn();
+            gle::begin(GL_QUADS);
+        }
+        vertwtn(x, y, z);
+        vertwtn(x+rsize, y, z);
+        vertwtn(x+rsize, y+csize, z);
+        vertwtn(x, y+csize, z);
+        xtraverts += 4;
     }
 }
-
-#undef RENDER_WATER_QUAD
 
 VARFP(vertwater, 0, 1, 1, allchanged());
 
@@ -530,7 +517,7 @@ static void renderwaterfall(const materialsurface &m, float offset, const vec *n
         }
     }
 #undef GENFACENORMAL
-#define GENFACENORMAL
+#define GENFACENORMAL //empty macro
     else
     {
         switch(m.orient)
@@ -633,9 +620,9 @@ void renderwater()
         float colorscale = 0.5f/255,
               refractscale = colorscale/ldrscale,
               reflectscale = 0.5f/ldrscale;
-        const bvec &color = getwatercolor(k);
-        const bvec &deepcolor = getwaterdeepcolor(k);
-        const bvec &refractcolor = getwaterrefractcolor(k);
+        const bvec &color = getwatercolor(k),
+                   &deepcolor = getwaterdeepcolor(k),
+                   &refractcolor = getwaterrefractcolor(k);
         int fog = getwaterfog(k),
             deep = getwaterdeep(k),
             spec = getwaterspec(k);
