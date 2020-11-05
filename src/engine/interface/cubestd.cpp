@@ -270,11 +270,20 @@ void numberret(double v)
         commandret->setfloat(v);
     }
 }
-
+/* some very clumsy macro kludging to overwrite command.h defaults
+ *
+ * why this needs to happen:
+ *
+ * some (many) of the commands below contain invalid C++ characters for symbols
+ * such as !, =, +, -, etc. (as these are operators in C++)
+ *
+ * so to work around it, the name of the command symbols is just "libcmd"
+ * (for *lib*rary *i*nline *c*om*m*an*d*)
+ */
 #undef ICOMMANDNAME
-#define ICOMMANDNAME(name) _stdcmd
+#define ICOMMANDNAME(name) _lib_icmd
 #undef ICOMMANDSNAME
-#define ICOMMANDSNAME _stdcmd
+#define ICOMMANDSNAME _lib_icmd
 
 ICOMMANDK(do, Id_Do, "e", (uint *body), executeret(body, *commandret));
 
