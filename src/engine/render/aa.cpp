@@ -90,8 +90,8 @@ namespace //internal functions incl. AA implementations
 
     void viewtqaa()
     {
-        int w = min(hudw, hudh)*1.0f,
-            h = (w*hudh)/hudw,
+        int w = debugfullscreen ? hudw : std::min(hudw, hudh)/2,
+            h = debugfullscreen ? hudh : (w*hudh)/hudw,
             tw = gw,
             th = gh;
         SETSHADER(hudrect);
@@ -865,8 +865,8 @@ namespace //internal functions incl. AA implementations
 
     void viewsmaa()
     {
-        int w = min(hudw, hudh)*1.0f,
-            h = (w*hudh)/hudw,
+        int w = debugfullscreen ? hudw : std::min(hudw, hudh)/2,
+            h = debugfullscreen ? hudh : (w*hudh)/hudw,
             tw = gw,
             th = gh;
         SETSHADER(hudrect);

@@ -269,6 +269,7 @@ extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lig
 extern int spotlights;
 extern int volumetriclights;
 extern int nospeclights;
+extern int debugfullscreen;
 
 template<class T>
 inline void calctilebounds(float sx1, float sy1, float sx2, float sy2, T &bx1, T &by1, T &bx2, T &by2)
