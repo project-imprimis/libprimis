@@ -2318,7 +2318,7 @@ static inline bool htcmp(const lightbatchkey &x, const lightbatchkey &y)
 }
 
 vector<lightinfo> lights;
-vector<int> lightorder;
+std::vector<int> lightorder;
 hashset<lightbatch> lightbatcher(128);
 vector<lightbatch *> lightbatches;
 vector<shadowmapinfo> shadowmaps;
@@ -3118,7 +3118,7 @@ void resetlights()
     }
 
     lights.setsize(0);
-    lightorder.setsize(0);
+    lightorder.clear();
 
     shadowmaps.setsize(0);
     shadowatlaspacker.reset();
@@ -3532,7 +3532,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
             setavatarstencil(stencilref, true);
         }
 
-        for(int i = 0; i < lightorder.length(); i++)
+        for(uint i = 0; i < lightorder.size(); i++)
         {
             const lightinfo &l = lights[lightorder[i]];
             float sx1 = max(bsx1, l.sx1),
@@ -3688,7 +3688,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
         setavatarstencil(stencilref, true);
 
         bool baselight = !sunpass;
-        for(int offset = 0; baselight || offset < lightorder.length(); baselight = false)
+        for(int offset = 0; baselight || offset < static_cast<int>(lightorder.size()); baselight = false)
         {
             int n = 0;
             bool shadowmap = false,
@@ -3699,7 +3699,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
                   sy2 = -1,
                   sz1 =  1,
                   sz2 = -1;
-            for(; offset < lightorder.length(); offset++)
+            for(; offset < static_cast<int>(lightorder.size()); offset++)
             {
                 const lightinfo &l = lights[lightorder[offset]];
                 if(l.dist - l.radius > avatarshadowdist)
@@ -3935,7 +3935,7 @@ void rendervolumetric()
           bsy1 =  1,
           bsx2 = -1,
           bsy2 = -1;
-    for(int i = 0; i < lightorder.length(); i++)
+    for(uint i = 0; i < lightorder.size(); i++)
     {
         const lightinfo &l = lights[lightorder[i]];
         if(!l.volumetric() || l.checkquery())
@@ -4002,7 +4002,7 @@ void rendervolumetric()
     glEnable(GL_SCISSOR_TEST);
 
     bool outside = true;
-    for(int i = 0; i < lightorder.length(); i++)
+    for(uint i = 0; i < lightorder.size(); i++)
     {
         const lightinfo &l = lights[lightorder[i]];
         if(!l.volumetric() || l.checkquery())
@@ -4256,7 +4256,7 @@ void collectlights()
             lightinfo &l = lights.add(lightinfo(i, *e));
             if(l.validscissor())
             {
-                lightorder.add(lights.length()-1);
+                lightorder.emplace_back(lights.length()-1);
             }
         }
     }
@@ -4279,16 +4279,16 @@ void collectlights()
         lightinfo &l = lights.add(lightinfo(o, vec(color).mul(255).max(0), radius, flags, dir, spot));
         if(l.validscissor())
         {
-            lightorder.add(lights.length()-1);
+            lightorder.emplace_back(lights.length()-1);
         }
     }
 
-    lightorder.sort(sortlights);
+    std::sort(lightorder.begin(), lightorder.end(), sortlights);
 
     bool queried = false;
     if(!drawtex && smquery && oqfrags && oqlights)
     {
-        for(int i = 0; i < lightorder.length(); i++)
+        for(uint i = 0; i < lightorder.size(); i++)
         {
             int idx = lightorder[i];
             lightinfo &l = lights[idx];
@@ -4329,7 +4329,7 @@ void collectlights()
     {
         for(int mismatched = 0; mismatched < 2; ++mismatched)
         {
-            for(int i = 0; i < lightorder.length(); i++)
+            for(uint i = 0; i < lightorder.size(); i++)
             {
                 int idx = lightorder[i];
                 lightinfo &l = lights[idx];
@@ -4426,7 +4426,7 @@ struct batchstack : lightrect
     batchstack(uchar x1, uchar y1, uchar x2, uchar y2, ushort offset, ushort numrects, uchar flags = 0) : lightrect(x1, y1, x2, y2), offset(offset), numrects(numrects), flags(flags) {}
 };
 
-static vector<batchrect> batchrects;
+static std::vector<batchrect> batchrects;
 
 static void batchlights(const batchstack &initstack)
 {
@@ -4561,7 +4561,7 @@ static void batchlights()
     if(lighttilebatch && drawtex != Draw_TexMinimap)
     {
         lightbatcher.recycle();
-        batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.length()));
+        batchlights(batchstack(0, 0, lighttilew, lighttileh, 0, batchrects.size()));
         lightbatches.sort(sortlightbatches);
     }
 
@@ -4572,9 +4572,9 @@ void packlights()
 {
     lightsvisible = lightsoccluded = 0;
     lightpassesused = 0;
-    batchrects.setsize(0);
+    batchrects.clear();
 
-    for(int i = 0; i < lightorder.length(); i++)
+    for(uint i = 0; i < lightorder.size(); i++)
     {
         int idx = lightorder[i];
         lightinfo &l = lights[idx];
@@ -4623,11 +4623,10 @@ void packlights()
                 shadowcachefull = true;
             }
         }
-
-        batchrects.add(batchrect(l, i));
+        batchrects.push_back(batchrect(l, i));
     }
 
-    lightsvisible = lightorder.length() - lightsoccluded;
+    lightsvisible = lightorder.size() - lightsoccluded;
 
     batchlights();
 }
