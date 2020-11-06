@@ -81,7 +81,7 @@ struct particleemitter
     }
 };
 
-static vector<particleemitter> emitters;
+static std::vector<particleemitter> emitters;
 static particleemitter *seedemitter = NULL;
 
 const char * getentname(int i)
@@ -98,13 +98,13 @@ char * entname(entity &e)
 
 void clearparticleemitters()
 {
-    emitters.setsize(0);
+    emitters.clear();
     regenemitters = true;
 }
 
 void addparticleemitters()
 {
-    emitters.setsize(0);
+    emitters.clear();
     const vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
@@ -113,7 +113,7 @@ void addparticleemitters()
         {
             continue;
         }
-        emitters.add(particleemitter(&e));
+        emitters.emplace_back(particleemitter(&e));
     }
     regenemitters = false;
 }
@@ -1920,7 +1920,7 @@ void seedparticles()
     renderprogress(0, "seeding particles");
     addparticleemitters();
     canemit = true;
-    for(int i = 0; i < emitters.length(); i++)
+    for(uint i = 0; i < emitters.size(); i++)
     {
         particleemitter &pe = emitters[i];
         extentity &e = *pe.ent;
@@ -1964,7 +1964,7 @@ void updateparticles()
         int emitted = 0,
             replayed = 0;
         addedparticles = 0;
-        for(int i = 0; i < emitters.length(); i++) //foreach particle emitter
+        for(uint i = 0; i < emitters.size(); i++) //foreach particle emitter
         {
             particleemitter &pe = emitters[i]; //bring one of the emitters into scope
             extentity &e = *pe.ent; //get info for the entity associated w/ent
