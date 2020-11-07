@@ -3,6 +3,14 @@
 
 //functions for finding where vectors hit world geometry on the octree
 
+/* Unlike vector geometry, finding collision with world surfaces has to interact with the
+ * octree geometry. Octree geometry behaves differently for identifying collision due to
+ * its recursive behavior, and as a result the algorithms for identifying collision with
+ * the world looks different than other world geometry systems.
+ *
+ * Octree cube collision is necessary for physics (as players need to interact with the world geometry)
+ * and for other world interaction by players (e.g. identifying where structure in the world is)
+ */
 #include "engine.h"
 #include "raycube.h"
 
