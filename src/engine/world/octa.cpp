@@ -1,5 +1,17 @@
 // core world management routines
 
+/* octa.cpp: the octree world
+ *
+ * the octree world structure, consisting of nested cube objects (with tex, geom info)
+ * is defined here
+ *
+ * unlike vector worlds (like most engines), the octree relies on different mathmatical
+ * semantics due to not being vector-based
+ *
+ * also handles geometry simplification, where octree nodes are combined to reduce rendering
+ * overhead
+ */
+
 #include "engine.h"
 #include "light.h"
 #include "raycube.h"

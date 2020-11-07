@@ -239,7 +239,7 @@ int polyclip(const vec *in, int numin, const vec &dir, float below, float above,
 
 //LUT used for fast angle calculations ingame
 //range 0 to 720 degrees to allow using offsets without needing slow modulus operators
-extern const vec2 sincos360[721] =
+extern constexpr vec2 sincos360[721] =
 {
     vec2(1.00000000, 0.00000000), vec2(0.99984770, 0.01745241), vec2(0.99939083, 0.03489950), vec2(0.99862953, 0.05233596), vec2(0.99756405, 0.06975647), vec2(0.99619470, 0.08715574), // 0
     vec2(0.99452190, 0.10452846), vec2(0.99254615, 0.12186934), vec2(0.99026807, 0.13917310), vec2(0.98768834, 0.15643447), vec2(0.98480775, 0.17364818), vec2(0.98162718, 0.19080900), // 6
