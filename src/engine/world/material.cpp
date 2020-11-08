@@ -1,5 +1,21 @@
 #include "engine.h"
 
+/* material.cpp: octree handled volume-based region flagging
+ *
+ * the material system in libprimis relies on the octree system; as a result all
+ * material volumes are compositions of rectangular prisms
+ *
+ * regions of the octree world can be flagged as containing specific "materials"
+ * some of these are rendered and visible (glass, water) while some are not visible
+ * to users directly
+ *
+ * nonvisible materials influence how actors interact with the world: for example,
+ * clipping and noclipping materials affect collision (by either creating invisible
+ * walls or causing the engine to ignore collision with surfaces).
+ *
+ * the material data is saved in world files along with the octree geometry (see
+ * worldio.cpp)
+ */
 struct QuadNode
 {
     int x, y, size;
@@ -146,6 +162,10 @@ const struct material
     {"alpha", Mat_Alpha}
 };
 
+/* findmaterial
+ *
+ * given a material name, returns the bitmask ID of the material as an integer
+ */
 int findmaterial(const char *name)
 {
     for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(material)); ++i)
@@ -158,6 +178,10 @@ int findmaterial(const char *name)
     return -1;
 }
 
+/* findmaterialname
+ *
+ * given a material id, returns the name of the material as a string (char *)
+ */
 const char *findmaterialname(int mat)
 {
     for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(materials[0])); ++i)
@@ -170,6 +194,10 @@ const char *findmaterialname(int mat)
     return NULL;
 }
 
+/* getmaterialdesc
+ *
+ * given a material id, returns the description of the material (char *)
+ */
 const char *getmaterialdesc(int mat, const char *prefix)
 {
     static const ushort matmasks[] = { MatFlag_Volume|MatFlag_Index, MatFlag_Clip, Mat_Death, Mat_Alpha };
