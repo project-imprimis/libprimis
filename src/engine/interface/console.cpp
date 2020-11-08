@@ -476,7 +476,7 @@ void pasteconsole()
     }
     size_t cblen = strlen(cb),
            commandlen = strlen(commandbuf),
-           decoded = decodeutf8((uchar *)&commandbuf[commandlen], sizeof(commandbuf)-1-commandlen, (const uchar *)cb, cblen);
+           decoded = decodeutf8(reinterpret_cast<uchar *>(&commandbuf[commandlen]), sizeof(commandbuf)-1-commandlen, reinterpret_cast<const uchar *>(cb), cblen);
     commandbuf[commandlen + decoded] = '\0';
     SDL_free(cb);
 }

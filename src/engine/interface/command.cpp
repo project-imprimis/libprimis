@@ -1527,7 +1527,7 @@ static inline void compileunescapestring(vector<uint> &code, const char *&p, boo
     p++;
     const char *end = parsestring(p);
     code.add(macro ? Code_Macro : Code_Val|Ret_String);
-    char *buf = (char *)code.reserve(static_cast<int>(end-p)/sizeof(uint) + 1).buf;
+    char *buf = reinterpret_cast<char *>(code.reserve(static_cast<int>(end-p)/sizeof(uint) + 1).buf);
     int len = unescapestring(buf, p, end);
     memset(&buf[len], 0, sizeof(uint) - len%sizeof(uint));
     code.last() |= len<<8;
@@ -1658,7 +1658,7 @@ static inline bool getbool(const char *s)
         case '0':
         {
             char *end;
-            int val = static_cast<int>(strtoul((char *)s, &end, 0));
+            int val = static_cast<int>(strtoul(const_cast<char *>(s), &end, 0));
             if(val)
             {
                 return true;
@@ -2130,7 +2130,7 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
 {
     int start = code.length();
     code.add(macro ? Code_Macro : Code_Val|Ret_String);
-    char *buf = (char *)code.reserve((end-str)/sizeof(uint)+1).buf;
+    char *buf = reinterpret_cast<char *>(code.reserve((end-str)/sizeof(uint)+1).buf);
     int len = 0;
     while(str < end)
     {
@@ -2782,7 +2782,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                 case Value_Any:
                 case Value_CAny:
                 {
-                    char *end = (char *)idname.str;
+                    char *end = const_cast<char *>(idname.str);
                     int val = static_cast<int>(strtoul(idname.str, &end, 0));
                     if(end < idname.end())
                     {
