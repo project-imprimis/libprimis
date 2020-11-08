@@ -2294,7 +2294,7 @@ struct plink : pedge
     }
 };
 
-bool mergepolys(int orient, hashset<plink> &links, vector<plink *> &queue, int owner, poly &p, poly &q, const pedge &e)
+bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, int owner, poly &p, poly &q, const pedge &e)
 {
     int pe = -1,
         qe = -1;
@@ -2399,7 +2399,7 @@ bool mergepolys(int orient, hashset<plink> &links, vector<plink *> &queue, int o
         l.polys[order] = owner;
         if(shouldqueue)
         {
-            queue.add(&l);
+            queue.push_back(&l);
         }
         prev = j;
     }
@@ -2503,7 +2503,7 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, vector<po
         return;
     }
     hashset<plink> links(polys.length() <= 32 ? 128 : 1024);
-    vector<plink *> queue;
+    std::vector<plink *> queue;
     for(int i = 0; i < polys.length(); i++)
     {
         poly &p = polys[i];
@@ -2520,15 +2520,15 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, vector<po
             l.polys[order] = i;
             if(l.polys[0] >= 0 && l.polys[1] >= 0)
             {
-                queue.add(&l);
+                queue.push_back(&l);
             }
             prev = j;
         }
     }
-    vector<plink *> nextqueue;
-    while(queue.length())
+    std::vector<plink *> nextqueue;
+    while(queue.size())
     {
-        for(int i = 0; i < queue.length(); i++)
+        for(uint i = 0; i < queue.size(); i++)
         {
             plink &l = *queue[i];
             if(l.polys[0] >= 0 && l.polys[1] >= 0)
@@ -2536,8 +2536,9 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, vector<po
                 mergepolys(orient, links, nextqueue, l.polys[0], polys[l.polys[0]], polys[l.polys[1]], l);
             }
         }
-        queue.setsize(0);
-        queue.move(nextqueue);
+        queue.clear();
+        queue.insert(queue.end(), nextqueue.begin(), nextqueue.end());
+        nextqueue.clear();
     }
     addmerges(orient, co, n, offset, polys);
 }
