@@ -9,20 +9,20 @@ struct cline
     char *line;
     int type, outtime;
 };
-reversequeue<cline, maxconsolelines> conlines;
+static reversequeue<cline, maxconsolelines> conlines;
 
 int commandmillis = -1;
-string commandbuf;
-char *commandaction = NULL,
-     *commandprompt = NULL;
+static string commandbuf;
+static char *commandaction = NULL,
+            *commandprompt = NULL;
 enum
 {
     CmdFlags_Complete = 1<<0,
     CmdFlags_Execute  = 1<<1,
 };
 
-int commandflags = 0,
-    commandpos = -1;
+static int commandflags = 0,
+           commandpos = -1;
 
 VARFP(maxcon, 10, 200, maxconsolelines,
 {
