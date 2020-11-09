@@ -556,7 +556,6 @@ void texmix(ImageData &s, int c1, int c2, int c3, int c4)
             {
                 dst[0] = src[c1];
             }
-            [[fallthrough]];
         }
     );
     s.replace(d);
