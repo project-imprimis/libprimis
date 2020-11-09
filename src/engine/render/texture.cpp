@@ -359,24 +359,6 @@ void forcergbimage(ImageData &s)
         } \
     }
 
-void forcergbaimage(ImageData &s)
-{
-    if(s.bpp >= 4)
-    {
-        return;
-    }
-    ImageData d(s.w, s.h, 4);
-    if(s.bpp==3)
-    {
-        READ_WRITE_TEX(d, s, { dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; });
-    }
-    else
-    {
-        READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
-    }
-    s.replace(d);
-}
-
 void swizzleimage(ImageData &s)
 {
     if(s.bpp==2)
