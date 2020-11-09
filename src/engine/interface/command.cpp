@@ -3868,7 +3868,7 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
     }
     ++i;
     #define OFFSETARG(n) n
-    #define ARG(n) (id->argmask&(1<<(n)) ? (void *)args[OFFSETARG(n)].s : (void *)&args[OFFSETARG(n)].i)
+    #define ARG(n) (id->argmask&(1<<(n)) ? reinterpret_cast<void *>(args[OFFSETARG(n)].s) : reinterpret_cast<void *>(&args[OFFSETARG(n)].i))
     #define CALLCOM(n) \
         switch(n) \
         { \
@@ -3899,7 +3899,7 @@ cleanup:
     }
 }
 
-const int maxrundepth = 255;
+static const int maxrundepth = 255; //limit for rundepth (nesting depth) var below
 static int rundepth = 0;
 
 static const uint *runcode(const uint *code, tagval &result)
@@ -4350,7 +4350,10 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_Lookup|Ret_String:
                 #define LOOKUP(aval) { \
                     ident *id = identmap[op>>8]; \
-                    if(id->flags&Idf_Unknown) debugcode("unknown alias lookup: %s", id->name); \
+                    if(id->flags&Idf_Unknown) \
+                    { \
+                        debugcode("unknown alias lookup: %s", id->name); \
+                    } \
                     aval; \
                     continue; \
                 }
@@ -4358,7 +4361,11 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_LookupArg|Ret_String:
                 #define LOOKUPARG(aval, nval) { \
                     ident *id = identmap[op>>8]; \
-                    if(!(aliasstack->usedargs&(1<<id->index))) { nval; continue; } \
+                    if(!(aliasstack->usedargs&(1<<id->index))) \
+                    { \
+                        nval; \
+                        continue; \
+                    } \
                     aval; \
                     continue; \
                 }
@@ -4417,7 +4424,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_StrVar|Ret_String:
             case Code_StrVar|Ret_Null:
             {
-                args[numargs++].setstr(newstring(*identmap[op>>8]->storage.s)); continue;
+                args[numargs++].setstr(newstring(*identmap[op>>8]->storage.s));
+                continue;
             }
             case Code_StrVar|Ret_Integer:
             {
@@ -4528,7 +4536,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ComV|Ret_Integer:
             {
                 ident *id = identmap[op>>13];
-                int callargs = (op>>8)&0x1F, offset = numargs-callargs;
+                int callargs = (op>>8)&0x1F,
+                    offset = numargs-callargs;
                 forcenull(result);
                 ((comfunv)id->fun)(&args[offset], callargs);
                 forcearg(result, op&Code_RetMask);
@@ -4541,7 +4550,8 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_ComC|Ret_Integer:
             {
                 ident *id = identmap[op>>13];
-                int callargs = (op>>8)&0x1F, offset = numargs-callargs;
+                int callargs = (op>>8)&0x1F,
+                    offset = numargs-callargs;
                 forcenull(result);
                 {
                     vector<char> buf;
@@ -4613,32 +4623,50 @@ static const uint *runcode(const uint *code, tagval &result)
                 #define CALLALIAS { \
                     identstack argstack[Max_Args]; \
                     for(int i = 0; i < callargs; i++) \
+                    { \
                         pusharg(*identmap[i], args[offset + i], argstack[i]); \
+                    } \
                     int oldargs = _numargs; \
                     _numargs = callargs; \
                     int oldflags = identflags; \
                     identflags |= id->flags&Idf_Overridden; \
                     IdentLink aliaslink = { id, aliasstack, (1<<callargs)-1, argstack }; \
                     aliasstack = &aliaslink; \
-                    if(!id->code) id->code = compilecode(id->getstr()); \
+                    if(!id->code) \
+                    { \
+                        id->code = compilecode(id->getstr()); \
+                    } \
                     uint *code = id->code; \
                     code[0] += 0x100; \
                     runcode(code+1, result); \
                     code[0] -= 0x100; \
-                    if(static_cast<int>(code[0]) < 0x100) delete[] code; \
+                    if(static_cast<int>(code[0]) < 0x100) \
+                    { \
+                        delete[] code; \
+                    } \
                     aliasstack = aliaslink.next; \
                     identflags = oldflags; \
                     for(int i = 0; i < callargs; i++) \
+                    { \
                         poparg(*identmap[i]); \
+                    } \
                     for(int argmask = aliaslink.usedargs&(~0U<<callargs), i = callargs; argmask; i++) \
-                        if(argmask&(1<<i)) { poparg(*identmap[i]); argmask &= ~(1<<i); } \
+                    { \
+                        if(argmask&(1<<i)) \
+                        { \
+                            poparg(*identmap[i]); \
+                            argmask &= ~(1<<i); \
+                        } \
+                    } \
                     forcearg(result, op&Code_RetMask); \
                     _numargs = oldargs; \
                     numargs = SKIPARGS(offset); \
                 }
+
                 forcenull(result);
                 ident *id = identmap[op>>13];
-                int callargs = (op>>8)&0x1F, offset = numargs-callargs;
+                int callargs = (op>>8)&0x1F,
+                    offset = numargs-callargs;
                 if(id->flags&Idf_Unknown)
                 {
                     debugcode("unknown command: %s", id->name);
@@ -4654,8 +4682,12 @@ static const uint *runcode(const uint *code, tagval &result)
             {
                 forcenull(result);
                 ident *id = identmap[op>>13];
-                int callargs = (op>>8)&0x1F, offset = numargs-callargs;
-                if(!(aliasstack->usedargs&(1<<id->index))) FORCERESULT;
+                int callargs = (op>>8)&0x1F,
+                    offset = numargs-callargs;
+                if(!(aliasstack->usedargs&(1<<id->index)))
+                {
+                    FORCERESULT;
+                }
                 CALLALIAS;
                 continue;
             }
