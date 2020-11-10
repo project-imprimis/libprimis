@@ -1,3 +1,15 @@
+/* rendersky.cpp: skybox and sky environment rendering
+ *
+ * Libprimis supports standard static cubemap skyboxes as well as cloud layers,
+ * which are both static (though capable of translation/rotation)
+ *
+ * as well as a parameterized sky generation system, referred to the code as the
+ * atmo" functionality
+ *
+ * as expected for distant scenery, like the sky and clouds are, there is no support
+ * for parallax (cloud layers do not move relative to background sky as the player
+ * moves)
+ */
 #include "engine.h"
 #include "world/light.h"
 #include "world/raycube.h"
@@ -203,6 +215,7 @@ void drawenvoverlay(Texture *overlay = NULL, float tx = 0, float ty = 0)
     xtraverts += gle::end();
 }
 
+/* === "atmo" parameterized, procedurally generated sky === */
 VARR(atmo, 0, 0, 1);
 FVARR(atmoplanetsize, 1e-3f, 8, 1e3f);
 FVARR(atmoheight, 1e-3f, 1, 1e3f);
@@ -267,6 +280,7 @@ static void drawatmosphere()
     xtraverts += gle::end();
 }
 
+/* === general sky rendering === */
 VAR(showsky, 0, 1, 1);
 VAR(clampsky, 0, 1, 1);
 VARNR(skytexture, useskytexture, 0, 0, 1);
