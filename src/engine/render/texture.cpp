@@ -455,7 +455,8 @@ void texcrop(ImageData &s, int x, int y, int w, int h)
         return;
     }
     ImageData d(w, h, s.bpp);
-    uchar *src = s.data + y*s.pitch + x*s.bpp, *dst = d.data;
+    uchar *src = s.data + y*s.pitch + x*s.bpp,
+          *dst = d.data;
     for(int y = 0; y < h; ++y)
     {
         memcpy(dst, src, w*s.bpp);
@@ -669,6 +670,7 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
         {
             return;
         }
+        //need to declare int for each var because it's inside a macro body
         if(d.bpp < 3) READ_WRITE_TEX(d, s,
             int srcblend = src[1];
             int dstblend = 255 - srcblend;
@@ -715,18 +717,18 @@ void texblend(ImageData &d, ImageData &s, ImageData &m)
         }
     }
 }
-
-VAR(hwtexsize, 1, 0, 0);
-VAR(hwcubetexsize, 1, 0, 0);
-VAR(hwmaxaniso, 1, 0, 0);
-VAR(hwtexunits, 1, 0, 0);
-VAR(hwvtexunits, 1, 0, 0);
-VARFP(maxtexsize, 0, 0, 1<<12, initwarning("texture quality", Init_Load));
-VARFP(reducefilter, 0, 1, 1, initwarning("texture quality", Init_Load));
-VARFP(texcompress, 0, 1536, 1<<12, initwarning("texture quality", Init_Load));
-VARF(trilinear, 0, 1, 1, initwarning("texture filtering", Init_Load));
-VARF(bilinear, 0, 1, 1, initwarning("texture filtering", Init_Load));
-VARFP(aniso, 0, 0, 16, initwarning("texture filtering", Init_Load));
+/*  var             min  default max  */
+VAR(hwtexsize,      1,   0,      0);
+VAR(hwcubetexsize,  1,   0,      0);
+VAR(hwmaxaniso,     1,   0,      0);
+VAR(hwtexunits,     1,   0,      0);
+VAR(hwvtexunits,    1,   0,      0);
+VARFP(maxtexsize,   0,   0,      1<<12, initwarning("texture quality",   Init_Load));
+VARFP(reducefilter, 0,   1,      1,     initwarning("texture quality",   Init_Load));
+VARFP(texcompress,  0,   1536,   1<<12, initwarning("texture quality",   Init_Load));
+VARF(trilinear,     0,   1,      1,     initwarning("texture filtering", Init_Load));
+VARF(bilinear,      0,   1,      1,     initwarning("texture filtering", Init_Load));
+VARFP(aniso,        0,   0,      16,    initwarning("texture filtering", Init_Load));
 
 int formatsize(GLenum format)
 {
@@ -815,7 +817,10 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
     int bpp = formatsize(format),
         row = 0,
         rowalign = 0;
-    if(!pitch) pitch = pw*bpp;
+    if(!pitch)
+    {
+        pitch = pw*bpp;
+    }
     uchar *buf = NULL;
     if(pw!=tw || ph!=th)
     {
@@ -836,13 +841,13 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
             buf = new uchar[tw*th*bpp];
             for(int i = 0; i < th; ++i)
             {
-                memcpy(&buf[i*tw*bpp], &((uchar *)pixels)[i*pitch], tw*bpp);
+                memcpy(&buf[i*tw*bpp], &(const_cast<uchar *>(reinterpret_cast<const uchar *>(pixels)))[i*pitch], tw*bpp);
             }
         }
     }
     for(int level = 0, align = 0;; level++)
     {
-        uchar *src = buf ? buf : (uchar *)pixels;
+        uchar *src = buf ? buf : const_cast<uchar *>(reinterpret_cast<const uchar *>(pixels));
         if(buf)
         {
             pitch = tw*bpp;
@@ -956,7 +961,7 @@ GLenum textarget(GLenum subtarget)
 
 const GLint *swizzlemask(GLenum format)
 {
-    static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE };
+    static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE },
     static const GLint luminancealpha[4] = { GL_RED, GL_RED, GL_RED, GL_GREEN };
     switch(format)
     {
@@ -1389,11 +1394,11 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
 }
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-#define RGBAMASKS 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff
-#define RGBMASKS  0xff0000, 0x00ff00, 0x0000ff, 0
+    #define RGBAMASKS 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff
+    #define RGBMASKS  0xff0000, 0x00ff00, 0x0000ff, 0
 #else
-#define RGBAMASKS 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
-#define RGBMASKS  0x0000ff, 0x00ff00, 0xff0000, 0
+    #define RGBAMASKS 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
+    #define RGBMASKS  0x0000ff, 0x00ff00, 0xff0000, 0
 #endif
 
 SDL_Surface *wrapsurface(void *data, int width, int height, int bpp)
@@ -1509,7 +1514,8 @@ void texflip(ImageData &s)
 void texnormal(ImageData &s, int emphasis)
 {
     ImageData d(s.w, s.h, 3);
-    uchar *src = s.data, *dst = d.data;
+    uchar *src = s.data,
+          *dst = d.data;
     for(int y = 0; y < s.h; ++y)
     {
         for(int x = 0; x < s.w; ++x)
@@ -2377,13 +2383,13 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
             }
         }
     }
-    if(diff & (1 << VSlot_Scale) && dst.scale != src.scale)    return false;
-    if(diff & (1 << VSlot_Rotation) && dst.rotation != src.rotation) return false;
-    if(diff & (1 << VSlot_Angle) && dst.angle != src.angle)    return false;
-    if(diff & (1 << VSlot_Offset) && dst.offset != src.offset)   return false;
-    if(diff & (1 << VSlot_Scroll) && dst.scroll != src.scroll)   return false;
-    if(diff & (1 << VSlot_Alpha) && (dst.alphafront != src.alphafront || dst.alphaback != src.alphaback)) return false;
-    if(diff & (1 << VSlot_Color) && dst.colorscale != src.colorscale) return false;
+    if(diff & (1 << VSlot_Scale)   && dst.scale != src.scale)       return false;
+    if(diff & (1 << VSlot_Rotation)&& dst.rotation != src.rotation) return false;
+    if(diff & (1 << VSlot_Angle)   && dst.angle != src.angle)       return false;
+    if(diff & (1 << VSlot_Offset)  && dst.offset != src.offset)     return false;
+    if(diff & (1 << VSlot_Scroll)  && dst.scroll != src.scroll)     return false;
+    if(diff & (1 << VSlot_Alpha)   && (dst.alphafront != src.alphafront || dst.alphaback != src.alphaback)) return false;
+    if(diff & (1 << VSlot_Color)   && dst.colorscale != src.colorscale) return false;
     if(diff & (1 << VSlot_Refract) && (dst.refractscale != src.refractscale || dst.refractcolor != src.refractcolor)) return false;
     return true;
 }
@@ -3273,7 +3279,8 @@ static void blitthumbnail(ImageData &d, ImageData &s, int x, int y)
 {
     forcergbimage(d);
     forcergbimage(s);
-    uchar *dstrow = &d.data[d.pitch*y + d.bpp*x], *srcrow = s.data;
+    uchar *dstrow = &d.data[d.pitch*y + d.bpp*x],
+          *srcrow = s.data;
     for(int y = 0; y < s.h; ++y)
     {
         for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.w*s.bpp]; src < end; dst += d.bpp, src += s.bpp)
