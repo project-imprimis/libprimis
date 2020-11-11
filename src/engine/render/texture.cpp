@@ -327,7 +327,10 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int s
 
 #define READ_WRITE_RGB_TEX(t, s, body) \
     { \
-        if(t.bpp >= 3) READ_WRITE_TEX(t, s, body); \
+        if(t.bpp >= 3) \
+        { \
+            READ_WRITE_TEX(t, s, body); \
+        } \
         else \
         { \
             ImageData rgb(t.w, t.h, 3); \
@@ -349,12 +352,21 @@ void forcergbimage(ImageData &s)
 
 #define READ_WRITE_RGBA_TEX(t, s, body) \
     { \
-        if(t.bpp >= 4) { READ_WRITE_TEX(t, s, body); } \
+        if(t.bpp >= 4) \
+        { \
+            READ_WRITE_TEX(t, s, body); \
+        } \
         else \
         { \
             ImageData rgba(t.w, t.h, 4); \
-            if(t.bpp==3) READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = orig[0]; dst[1] = orig[1]; dst[2] = orig[2]; body; }); \
-            else READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
+            if(t.bpp==3) \
+            { \
+                READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = orig[0]; dst[1] = orig[1]; dst[2] = orig[2]; body; }); \
+            } \
+            else \
+            { \
+                READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
+            } \
             t.replace(rgba); \
         } \
     }
@@ -961,7 +973,7 @@ GLenum textarget(GLenum subtarget)
 
 const GLint *swizzlemask(GLenum format)
 {
-    static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE },
+    static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE };
     static const GLint luminancealpha[4] = { GL_RED, GL_RED, GL_RED, GL_GREEN };
     switch(format)
     {
@@ -1619,14 +1631,23 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
             const char *cmd = NULL, *end = NULL, *arg[4] = { NULL, NULL, NULL, NULL }; \
             cmd = &cmds[1]; \
             end = strchr(cmd, '>'); \
-            if(!end) break; \
+            if(!end) \
+            { \
+                break; \
+            } \
             cmds = strchr(cmd, '<'); \
             size_t len = strcspn(cmd, ":,><"); \
             for(int i = 0; i < 4; ++i) \
             { \
                 arg[i] = strchr(i ? arg[i-1] : cmd, i ? ',' : ':'); \
-                if(!arg[i] || arg[i] >= end) arg[i] = ""; \
-                else arg[i]++; \
+                if(!arg[i] || arg[i] >= end) \
+                { \
+                    arg[i] = ""; \
+                } \
+                else \
+                { \
+                    arg[i]++; \
+                } \
             }
         #define COPYTEXARG(dst, src) copystring(dst, stringslice(src, strcspn(src, ":,><")))
         PARSETEXCOMMANDS(pcmds);
@@ -1669,7 +1690,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         PARSETEXCOMMANDS(cmds);
         if(d.compressed)
         {
-            goto compressed;
+            goto compressed; //see `compressed` nested between else & if (yes it's ugly)
         }
         if(matchstring(cmd, len, "mad"))
         {
@@ -1767,6 +1788,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
                 *compress = -1;
             }
         }
+        // note that the else/if in else-if is separated by a goto breakpoint
         else
     compressed:
         if(matchstring(cmd, len, "mirror"))
@@ -2167,7 +2189,8 @@ static void clampvslotoffset(VSlot &dst, Slot *slot = NULL)
             slot->load();
         }
         Texture *t = slot->sts[0].t;
-        int xs = t->xs, ys = t->ys;
+        int xs = t->xs,
+            ys = t->ys;
         if(t->type & Texture::MIRROR)
         {
             xs *= 2;
@@ -2983,9 +3006,12 @@ static void collapsespec(ImageData &s)
 
 int Slot::findtextype(int type, int last) const
 {
-    for(int i = last+1; i<sts.length(); i++) if((type&(1<<sts[i].type)) && sts[i].combined<0)
+    for(int i = last+1; i<sts.length(); i++)
     {
-        return i;
+        if((type&(1<<sts[i].type)) && sts[i].combined<0)
+        {
+            return i;
+        }
     }
     return -1;
 }
