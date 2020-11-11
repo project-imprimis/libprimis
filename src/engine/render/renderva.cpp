@@ -3163,16 +3163,16 @@ struct shadowverts
 {
     static const int SIZE = 1<<13;
     int table[SIZE];
-    vector<vec> verts;
-    vector<int> chain;
+    std::vector<vec> verts;
+    std::vector<int> chain;
 
     shadowverts() { clear(); }
 
     void clear()
     {
         memset(table, -1, sizeof(table));
-        chain.setsize(0);
-        verts.setsize(0);
+        chain.clear();
+        verts.clear();
     }
 
     int add(const vec &v)
@@ -3185,13 +3185,13 @@ struct shadowverts
                 return i;
             }
         }
-        if(verts.length() >= USHRT_MAX)
+        if(verts.size() >= USHRT_MAX)
         {
             return -1;
         }
-        verts.add(v);
-        chain.add(table[h]);
-        return table[h] = verts.length()-1;
+        verts.push_back(v);
+        chain.emplace_back(table[h]);
+        return table[h] = verts.size()-1;
     }
 } shadowverts;
 vector<ushort> shadowtris[6];
@@ -3270,7 +3270,7 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
     delete[] indexes;
 
     gle::bindvbo(vbuf);
-    glBufferData_(GL_ARRAY_BUFFER, shadowverts.verts.length()*sizeof(vec), shadowverts.verts.getbuf(), GL_STATIC_DRAW);
+    glBufferData_(GL_ARRAY_BUFFER, shadowverts.verts.size()*sizeof(vec), shadowverts.verts.data(), GL_STATIC_DRAW);
     gle::clearvbo();
     shadowverts.clear();
 
@@ -3311,7 +3311,7 @@ static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo dra
     {
         return;
     }
-    if(shadowverts.verts.length() + 3 >= USHRT_MAX)
+    if(shadowverts.verts.size() + 3 >= USHRT_MAX)
     {
         flushshadowmeshdraws(m, sides, draws);
     }

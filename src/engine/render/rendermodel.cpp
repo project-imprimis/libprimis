@@ -1059,7 +1059,7 @@ void startmodelquery(occludequery *query)
 
 void endmodelquery()
 {
-    if(batchedmodels.size() == modelquerymodels)
+    if(static_cast<int>(batchedmodels.size()) == modelquerymodels)
     {
         modelquery->fragments = 0;
         modelquery = NULL;
