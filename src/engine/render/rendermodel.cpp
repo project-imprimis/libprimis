@@ -423,20 +423,20 @@ void flushpreloadedmodels(bool msg)
 void preloadusedmapmodels(bool msg, bool bih)
 {
     vector<extentity *> &ents = entities::getents();
-    vector<int> used;
+    std::vector<int> used;
     for(int i = 0; i < ents.length(); i++)
     {
         extentity &e = *ents[i];
-        if(e.type==EngineEnt_Mapmodel && e.attr1 >= 0 && used.find(e.attr1) < 0)
+        if(e.type==EngineEnt_Mapmodel && e.attr1 >= 0 && std::find(used.begin(), used.end(), e.attr1) != used.end() )
         {
-            used.add(e.attr1);
+            used.push_back(e.attr1);
         }
     }
 
     vector<const char *> col;
-    for(int i = 0; i < used.length(); i++)
+    for(uint i = 0; i < used.size(); i++)
     {
-        loadprogress = static_cast<float>(i+1)/used.length();
+        loadprogress = static_cast<float>(i+1)/used.size();
         int mmindex = used[i];
         if(!mapmodels.inrange(mmindex))
         {
