@@ -623,13 +623,13 @@ struct modelbatch
     model *m;
     int flags, batched;
 };
-static vector<batchedmodel> batchedmodels;
+static std::vector<batchedmodel> batchedmodels;
 static vector<modelbatch> batches;
 static vector<modelattach> modelattached;
 
 void resetmodelbatches()
 {
-    batchedmodels.setsize(0);
+    batchedmodels.clear();
     batches.setsize(0);
     modelattached.setsize(0);
 }
@@ -766,7 +766,7 @@ static inline int shadowmaskmodel(const vec &center, float radius)
 
 void shadowmaskbatchedmodels(bool dynshadow)
 {
-    for(int i = 0; i < batchedmodels.length(); i++)
+    for(uint i = 0; i < batchedmodels.size(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&(Model_Mapmodel | Model_NoShadow))
@@ -780,7 +780,7 @@ void shadowmaskbatchedmodels(bool dynshadow)
 int batcheddynamicmodels()
 {
     int visible = 0;
-    for(int i = 0; i < batchedmodels.length(); i++)
+    for(uint i = 0; i < batchedmodels.size(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&Model_Mapmodel)
@@ -809,7 +809,7 @@ int batcheddynamicmodels()
 int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 {
     int vis = 0;
-    for(int i = 0; i < batchedmodels.length(); i++)
+    for(uint i = 0; i < batchedmodels.size(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&Model_Mapmodel)
@@ -1053,13 +1053,13 @@ void startmodelquery(occludequery *query)
 {
     modelquery = query;
     modelquerybatches = batches.length();
-    modelquerymodels = batchedmodels.length();
+    modelquerymodels = batchedmodels.size();
     modelqueryattached = modelattached.length();
 }
 
 void endmodelquery()
 {
-    if(batchedmodels.length() == modelquerymodels)
+    if(batchedmodels.size() == modelquerymodels)
     {
         modelquery->fragments = 0;
         modelquery = NULL;
@@ -1089,7 +1089,7 @@ void endmodelquery()
     endquery();
     modelquery = NULL;
     batches.setsize(modelquerybatches);
-    batchedmodels.setsize(modelquerymodels);
+    batchedmodels.resize(modelquerymodels);
     modelattached.setsize(modelqueryattached);
     disableaamask();
 }
@@ -1101,7 +1101,7 @@ void clearbatchedmapmodels()
         modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
         {
-            batchedmodels.setsize(b.batched);
+            batchedmodels.resize(b.batched);
             batches.setsize(i);
             break;
         }
@@ -1153,8 +1153,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     {
         return;
     }
-
-    batchedmodel &b = batchedmodels.add();
+    batchedmodel b = batchedmodel();
     b.pos = o;
     b.center = center;
     b.radius = radius;
@@ -1170,7 +1169,8 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     b.visible = visible;
     b.d = NULL;
     b.attached = -1;
-    addbatchedmodel(m, b, batchedmodels.length()-1);
+    addbatchedmodel(m, b, batchedmodels.size()-1);
+    batchedmodels.push_back(b);
 }
 
 void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, dynent *d, modelattach *a, int basetime, int basetime2, float size, const vec4 &color)
@@ -1277,7 +1277,7 @@ hasboundbox:
         return;
     }
 
-    batchedmodel &b = batchedmodels.add();
+    batchedmodel b = batchedmodel();
     b.pos = o;
     b.center = center;
     b.radius = radius;
@@ -1304,7 +1304,8 @@ hasboundbox:
             }
         }
     }
-    addbatchedmodel(m, b, batchedmodels.length()-1);
+    addbatchedmodel(m, b, batchedmodels.size()-1);
+    batchedmodels.push_back(b);
 }
 
 int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode, dynent *d, modelattach *a, int basetime, int basetime2, float size)
