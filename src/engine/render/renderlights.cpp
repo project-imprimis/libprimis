@@ -43,7 +43,7 @@ GLuint msfbo = 0,
        mshdrtex     = 0,
        msrefractfbo = 0,
        msrefracttex = 0;
-vector<vec2> msaapositions;
+std::vector<vec2> msaapositions;
 int aow  = -1,
     aoh  = -1;
 GLuint aofbo[4] = { 0, 0, 0, 0 },
@@ -692,7 +692,7 @@ void checkmsaasamples()
 void initgbuffer()
 {
     msaamaxsamples = msaamaxdepthtexsamples = msaamaxcolortexsamples = msaaminsamples = msaasamples = msaalight = 0;
-    msaapositions.setsize(0);
+    msaapositions.clear();
 
     GLint val;
     glGetIntegerv(GL_MAX_SAMPLES, &val);
@@ -934,12 +934,12 @@ void setupmsbuffer(int w, int h)
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | (ghasstencil ? GL_STENCIL_BUFFER_BIT : 0));
 
-    msaapositions.setsize(0);
+    msaapositions.clear();
     for(int i = 0; i < msaasamples; ++i)
     {
         GLfloat vals[2];
         glGetMultisamplefv_(GL_SAMPLE_POSITION, i, vals);
-        msaapositions.add(vec2(vals[0], vals[1]));
+        msaapositions.emplace_back(vec2(vals[0], vals[1]));
     }
 
     if(msaalight)

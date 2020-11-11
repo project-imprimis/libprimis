@@ -353,7 +353,7 @@ extern int gw, gh, gdepthformat, ghasstencil;
 extern GLuint gdepthtex, gcolortex, gnormaltex, gglowtex, gdepthrb, gstencilrb;
 extern int msaasamples, msaalight;
 extern GLuint msdepthtex, mscolortex, msnormaltex, msglowtex, msdepthrb, msstencilrb;
-extern vector<vec2> msaapositions;
+extern std::vector<vec2> msaapositions;
 
 extern bool inoq;
 extern int csmshadowmap, rhinoq;
