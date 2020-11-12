@@ -36,7 +36,7 @@ namespace //internal functionality not seen by other files
         vec2 tc;
     };
 
-    vector<grassvert> grassverts;
+    std::vector<grassvert> grassverts;
     GLuint grassvbo = 0;
     int grassvbosize = 0;
 
@@ -48,7 +48,7 @@ namespace //internal functionality not seen by other files
         int tex, offset, numquads;
     };
 
-    vector<grassgroup> grassgroups;
+    std::vector<grassgroup> grassgroups;
 
     const int numgrassoffsets = 32;
 
@@ -207,18 +207,19 @@ namespace //internal functionality not seen by other files
                 p2.sub(vec(across).mul(rightb));
             }
 
-            if(grassverts.length() >= 4*maxgrass)
+            if(static_cast<int>(grassverts.size()) >= 4*maxgrass)
             {
                 break;
             }
 
             if(!group)
             {
-                group = &grassgroups.add();
-                group->tri = &g;
-                group->tex = tex->id;
-                group->offset = grassverts.length()/4;
-                group->numquads = 0;
+                grassgroup group;
+                group.tri = &g;
+                group.tex = tex->id;
+                group.offset = grassverts.size()/4;
+                group.numquads = 0;
+                grassgroups.push_back(group);
                 if(lastgrassanim!=lastmillis)
                 {
                     animategrass();
@@ -236,10 +237,11 @@ namespace //internal functionality not seen by other files
             bvec4 color(grasscolor, 255);
     //=====================================================================GRASSVERT
             #define GRASSVERT(n, tcv, modify) { \
-                grassvert &gv = grassverts.add(); \
+                grassvert gv; \
                 gv.pos = p##n; \
                 gv.color = color; \
                 gv.tc = vec2(tc##n, tcv); \
+                grassverts.push_back(gv); \
                 modify; \
             }
 
@@ -318,8 +320,8 @@ void generategrass()
     {
         return;
     }
-    grassgroups.setsize(0);
-    grassverts.setsize(0);
+    grassgroups.clear();
+    grassverts.clear();
 
     if(grassoffsets[0] < 0)
     {
@@ -358,12 +360,12 @@ void generategrass()
         glGenBuffers_(1, &grassvbo);
     }
     gle::bindvbo(grassvbo);
-    int size = grassverts.length()*sizeof(grassvert);
+    int size = grassverts.size()*sizeof(grassvert);
     grassvbosize = max(grassvbosize, size);
-    glBufferData_(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.getbuf() : NULL, GL_STREAM_DRAW);
+    glBufferData_(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.data() : NULL, GL_STREAM_DRAW);
     if(size != grassvbosize)
     {
-        glBufferSubData_(GL_ARRAY_BUFFER, 0, size, grassverts.getbuf());
+        glBufferSubData_(GL_ARRAY_BUFFER, 0, size, grassverts.data());
     }
     gle::clearvbo();
 }
@@ -395,7 +397,7 @@ void rendergrass()
     GLOBALPARAMF(grasstest, grasstest);
 
     int texid = -1;
-    for(int i = 0; i < grassgroups.length(); i++)
+    for(uint i = 0; i < grassgroups.size(); i++)
     {
         grassgroup &g = grassgroups[i];
 
