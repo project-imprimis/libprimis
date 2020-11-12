@@ -19,7 +19,7 @@ vector<vtxarray *> valist, varoot;
 ivec worldmin(0, 0, 0),
      worldmax(0, 0, 0);
 
-vector<tjoint> tjoints;
+std::vector<tjoint> tjoints;
 
 VARFP(filltjoints, 0, 1, 1, allchanged());
 
@@ -2052,10 +2052,9 @@ namespace
     void addtjoint(const edgegroup &g, const cubeedge &e, int offset)
     {
         int vcoord = (g.slope[g.axis]*offset + g.origin[g.axis]) & 0x7FFF;
-        tjoint &tj = tjoints.add();
+        tjoint tj = tjoint();
         tj.offset = vcoord / g.slope[g.axis];
         tj.edge = e.index;
-
         int prev = -1,
             cur  = ext(*e.c).tjoints;
         while(cur >= 0)
@@ -2069,13 +2068,14 @@ namespace
             cur = o.next;
         }
         tj.next = cur;
+        tjoints.push_back(tj);
         if(prev < 0)
         {
-            e.c->ext->tjoints = tjoints.length()-1;
+            e.c->ext->tjoints = tjoints.size()-1;
         }
         else
         {
-            tjoints[prev].next = tjoints.length()-1;
+            tjoints[prev].next = tjoints.size()-1;
         }
     }
 
@@ -2395,7 +2395,7 @@ void findtjoints()
 {
     recalcprogress = 0;
     gencubeedges();
-    tjoints.setsize(0);
+    tjoints.clear();
     ENUMERATE_KT(edgegroups, edgegroup, g, int, e, findtjoints(e, g));
     cubeedges.setsize(0);
     edgegroups.clear();
@@ -2436,7 +2436,7 @@ void allchanged(bool load)
     resetqueries();
     resetclipplanes();
     entitiesinoctanodes();
-    tjoints.setsize(0);
+    tjoints.clear();
     if(filltjoints)
     {
         findtjoints();

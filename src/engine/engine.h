@@ -444,7 +444,7 @@ extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, uchar
 
 // octarender
 extern ivec worldmin, worldmax;
-extern vector<tjoint> tjoints;
+extern std::vector<tjoint> tjoints;
 extern vector<vtxarray *> varoot, valist;
 extern int filltjoints;
 
