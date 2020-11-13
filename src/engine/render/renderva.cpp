@@ -3197,7 +3197,7 @@ struct shadowverts
 vector<ushort> shadowtris[6];
 vector<GLuint> shadowvbos;
 hashtable<int, shadowmesh> shadowmeshes;
-vector<shadowdraw> shadowdraws;
+std::vector<shadowdraw> shadowdraws;
 
 struct shadowdrawinfo
 {
@@ -3239,15 +3239,15 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
         {
             if(draws[i].last < 0)
             {
-                m.draws[i] = shadowdraws.length();
+                m.draws[i] = shadowdraws.size();
             }
             else
             {
-                shadowdraws[draws[i].last].next = shadowdraws.length();
+                shadowdraws[draws[i].last].next = shadowdraws.size();
             }
-            draws[i].last = shadowdraws.length();
+            draws[i].last = shadowdraws.size();
 
-            shadowdraw &d = shadowdraws.add();
+            shadowdraw d;
             d.ebuf = ebuf;
             d.vbuf = vbuf;
             d.offset = offset;
@@ -3255,6 +3255,7 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
             d.minvert = draws[i].minvert;
             d.maxvert = draws[i].maxvert;
             d.next = -1;
+            shadowdraws.push_back(d);
 
             memcpy(indexes + offset, shadowtris[i].getbuf(), shadowtris[i].length()*sizeof(ushort));
             offset += shadowtris[i].length();
@@ -3472,7 +3473,7 @@ void clearshadowmeshes()
         }
     }
     shadowmeshes.clear();
-    shadowdraws.setsize(0);
+    shadowdraws.clear();
 }
 
 VARF(smmesh, 0, 1, 1, { if(!smmesh) clearshadowmeshes(); });
