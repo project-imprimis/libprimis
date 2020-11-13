@@ -2479,9 +2479,9 @@ static inline void clearmerge(cube &c, int orient)
     }
 }
 
-void addmerges(int orient, const ivec &co, const ivec &n, int offset, vector<poly> &polys)
+void addmerges(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
-    for(int i = 0; i < polys.length(); i++)
+    for(uint i = 0; i < polys.size(); i++)
     {
         poly &p = polys[i];
         if(p.merged)
@@ -2495,16 +2495,16 @@ void addmerges(int orient, const ivec &co, const ivec &n, int offset, vector<pol
     }
 }
 
-void mergepolys(int orient, const ivec &co, const ivec &n, int offset, vector<poly> &polys)
+void mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
-    if(polys.length() <= 1)
+    if(polys.size() <= 1)
     {
         addmerges(orient, co, n, offset, polys);
         return;
     }
-    hashset<plink> links(polys.length() <= 32 ? 128 : 1024);
+    hashset<plink> links(polys.size() <= 32 ? 128 : 1024);
     std::vector<plink *> queue;
-    for(int i = 0; i < polys.length(); i++)
+    for(uint i = 0; i < polys.size(); i++)
     {
         poly &p = polys[i];
         int prev = p.numverts-1;
@@ -2547,7 +2547,7 @@ static int genmergeprogress = 0;
 
 struct cfpolys
 {
-    vector<poly> polys;
+    std::vector<poly> polys;
 };
 
 static hashtable<cfkey, cfpolys> cpolys;
@@ -2578,7 +2578,7 @@ void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = wo
                             k.orient = j;
                             k.tex = c[i].texture[j];
                             k.material = c[i].material&Mat_Alpha;
-                            cpolys[k].polys.add(p);
+                            cpolys[k].polys.push_back(p);
                             continue;
                         }
                     }
