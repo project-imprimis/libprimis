@@ -3194,10 +3194,10 @@ struct shadowverts
         return table[h] = verts.size()-1;
     }
 } shadowverts;
-vector<ushort> shadowtris[6];
-vector<GLuint> shadowvbos;
-hashtable<int, shadowmesh> shadowmeshes;
-std::vector<shadowdraw> shadowdraws;
+static vector<ushort> shadowtris[6];
+static vector<GLuint> shadowvbos;
+static hashtable<int, shadowmesh> shadowmeshes;
+static std::vector<shadowdraw> shadowdraws;
 
 struct shadowdrawinfo
 {
