@@ -882,7 +882,7 @@ int countblock(block3 *b)
     return countblock(b->c(), b->size());
 }
 
-vector<editinfo *> editinfos;
+std::vector<editinfo *> editinfos;
 editinfo *localedit = NULL;
 
 template<class B>
@@ -1022,7 +1022,7 @@ static bool unpackblock(block3 *&b, B &buf)
     return true;
 }
 
-vector<vslotmap> unpackingvslots;
+std::vector<vslotmap> unpackingvslots;
 
 static void unpackvslots(cube &c, ucharbuf &buf)
 {
@@ -1039,7 +1039,7 @@ static void unpackvslots(cube &c, ucharbuf &buf)
         for(int i = 0; i < 6; ++i) //one for each face
         {
             ushort tex = c.texture[i];
-            for(int j = 0; j < unpackingvslots.length(); j++)
+            for(uint j = 0; j < unpackingvslots.size(); j++)
             {
                 if(unpackingvslots[j].index == tex)
                 {
@@ -1071,7 +1071,7 @@ static void unpackvslots(block3 &b, ucharbuf &buf)
             continue;
         }
         VSlot *edit = editvslot(vs, ds);
-        unpackingvslots.add(vslotmap(hdr.index, edit ? edit : &vs));
+        unpackingvslots.emplace_back(vslotmap(hdr.index, edit ? edit : &vs));
     }
 
     cube *c = b.c();
@@ -1080,7 +1080,7 @@ static void unpackvslots(block3 &b, ucharbuf &buf)
         unpackvslots(c[i], buf);
     }
 
-    unpackingvslots.setsize(0);
+    unpackingvslots.clear();
 }
 
 static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outlen)
@@ -1146,7 +1146,8 @@ bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
     ucharbuf buf(outbuf, outlen);
     if(!e)
     {
-        e = editinfos.add(new editinfo);
+        editinfo *e;
+        editinfos.push_back(e);
     }
     if(!unpackblock(e->copy, buf))
     {
@@ -1164,7 +1165,7 @@ void freeeditinfo(editinfo *&e)
     {
         return;
     }
-    editinfos.removeobj(e);
+    editinfos.erase(std::find(editinfos.begin(), editinfos.end(), e));
     if(e->copy)
     {
         freeblock(e->copy);
@@ -1704,22 +1705,22 @@ void previewprefab(const char *name, const vec &color)
     }
 }
 
-vector<int *> editingvslots;
+std::vector<int *> editingvslots;
 
 void compacteditvslots()
 {
-    for(int i = 0; i < editingvslots.length(); i++)
+    for(uint i = 0; i < editingvslots.size(); i++)
     {
         if(*editingvslots[i])
         {
             compactvslot(*editingvslots[i]);
         }
     }
-    for(int i = 0; i < unpackingvslots.length(); i++)
+    for(uint i = 0; i < unpackingvslots.size(); i++)
     {
         compactvslot(*unpackingvslots[i].vslot);
     }
-    for(int i = 0; i < editinfos.length(); i++)
+    for(uint i = 0; i < editinfos.size(); i++)
     {
         editinfo *e = editinfos[i];
         compactvslots(e->copy->c(), e->copy->size());
