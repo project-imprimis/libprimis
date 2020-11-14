@@ -2271,11 +2271,11 @@ struct lightbatchkey
 
 struct lightbatch : lightbatchkey
 {
-    vector<lightrect> rects;
+    std::vector<lightrect> rects;
 
     void reset()
     {
-        rects.setsize(0);
+        rects.clear();
     }
 
     bool overlaps(int tx1, int ty1, int tx2, int ty2, const uint *tilemask) const
@@ -2284,7 +2284,7 @@ struct lightbatch : lightbatchkey
         {
             return true;
         }
-        for(int i = 0; i < rects.length(); i++)
+        for(uint i = 0; i < rects.size(); i++)
         {
             if(rects[i].overlaps(tx1, ty1, tx2, ty2, tilemask))
             {
@@ -2317,7 +2317,7 @@ static inline bool htcmp(const lightbatchkey &x, const lightbatchkey &y)
            (!x.numlights || !memcmp(x.lights, y.lights, x.numlights*sizeof(x.lights[0])));
 }
 
-vector<lightinfo> lights;
+std::vector<lightinfo> lights;
 std::vector<int> lightorder;
 hashset<lightbatch> lightbatcher(128);
 vector<lightbatch *> lightbatches;
@@ -3668,7 +3668,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
             glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
         }
         gle::begin(GL_QUADS);
-        for(int j = 0; j < batch.rects.length(); j++)
+        for(uint j = 0; j < batch.rects.size(); j++)
         {
             const lightrect &r = batch.rects[j];
             int x1 = max(static_cast<int>(r.x1), btx1),
@@ -4509,7 +4509,7 @@ static void batchlights(const batchstack &initstack)
                     (lightbatchkey &)batch = key;
                     lightbatches.add(&batch);
                 }
-                batch.rects.add(s);
+                batch.rects.push_back(s);
                 ++lightbatchrectsused;
             }
         }
