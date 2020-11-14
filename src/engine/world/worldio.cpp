@@ -675,8 +675,8 @@ void savevslot(stream *f, VSlot &vs, int prev)
     f->put<int>(prev);
     if(vs.changed & (1 << VSlot_ShParam))
     {
-        f->put<ushort>(vs.params.length());
-        for(int i = 0; i < vs.params.length(); i++)
+        f->put<ushort>(vs.params.size());
+        for(uint i = 0; i < vs.params.size(); i++)
         {
             SlotShaderParam &p = vs.params[i];
             f->put<ushort>(strlen(p.name));
@@ -797,7 +797,7 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         string name;
         for(int i = 0; i < numparams; ++i)
         {
-            SlotShaderParam &p = vs.params.add();
+            SlotShaderParam p;
             int nlen = f->get<ushort>();
             f->read(name, min(nlen, maxstrlen-1));
             name[min(nlen, maxstrlen-1)] = '\0';
@@ -811,6 +811,7 @@ void loadvslot(stream *f, VSlot &vs, int changed)
             {
                 p.val[k] = f->get<float>();
             }
+            vs.params.push_back(p);
         }
     }
     //vslot properties (set by e.g. v-commands)

@@ -1631,11 +1631,11 @@ struct geombatch
         {
             return 1;
         }
-        if(vslot.slot->params.length() < b.vslot.slot->params.length())
+        if(vslot.slot->params.size() < b.vslot.slot->params.size())
         {
             return -1;
         }
-        if(vslot.slot->params.length() > b.vslot.slot->params.length())
+        if(vslot.slot->params.size() > b.vslot.slot->params.size())
         {
             return 1;
         }
@@ -2760,11 +2760,11 @@ struct decalbatch
         {
             return 1;
         }
-        if(slot.Slot::params.length() < b.slot.Slot::params.length())
+        if(slot.Slot::params.size() < b.slot.Slot::params.size())
         {
             return -1;
         }
-        if(slot.Slot::params.length() > b.slot.Slot::params.length())
+        if(slot.Slot::params.size() > b.slot.Slot::params.size())
         {
             return 1;
         }
