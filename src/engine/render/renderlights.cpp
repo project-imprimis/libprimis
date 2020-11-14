@@ -3117,7 +3117,7 @@ void resetlights()
         }
     }
 
-    lights.setsize(0);
+    lights.clear();
     lightorder.clear();
 
     shadowmaps.setsize(0);
@@ -4205,7 +4205,7 @@ void viewlightscissor()
         if(ents.inrange(idx) && ents[idx]->type == EngineEnt_Light)
         {
             extentity &e = *ents[idx];
-            for(int j = 0; j < lights.length(); j++)
+            for(uint j = 0; j < lights.size(); j++)
             {
                 if(lights[j].o == e.o)
                 {
@@ -4233,7 +4233,7 @@ void viewlightscissor()
 
 void collectlights()
 {
-    if(lights.length())
+    if(lights.size())
     {
         return;
     }
@@ -4253,11 +4253,12 @@ void collectlights()
             {
                 continue;
             }
-            lightinfo &l = lights.add(lightinfo(i, *e));
+            lightinfo l = lightinfo(i, *e);
             if(l.validscissor())
             {
-                lightorder.emplace_back(lights.length()-1);
+                lightorder.emplace_back(lights.size()-1);
             }
+            lights.push_back(l);
         }
     }
 
@@ -4276,10 +4277,10 @@ void collectlights()
         {
             continue;
         }
-        lightinfo &l = lights.add(lightinfo(o, vec(color).mul(255).max(0), radius, flags, dir, spot));
+        lightinfo &l = lights.emplace_back(lightinfo(o, vec(color).mul(255).max(0), radius, flags, dir, spot));
         if(l.validscissor())
         {
-            lightorder.emplace_back(lights.length()-1);
+            lightorder.emplace_back(lights.size()-1);
         }
     }
 
