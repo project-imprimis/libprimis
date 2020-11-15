@@ -386,7 +386,7 @@ GlobalShaderParamState *getglobalparam(const char *name)
     return param;
 }
 
-static GlobalShaderParamUse *addglobalparam(Shader &s, GlobalShaderParamState *param, int loc, int size, GLenum format)
+static void *addglobalparam(Shader &s, GlobalShaderParamState *param, int loc, int size, GLenum format)
 {
     GlobalShaderParamUse g;
     g.param = param;
@@ -395,7 +395,6 @@ static GlobalShaderParamUse *addglobalparam(Shader &s, GlobalShaderParamState *p
     g.size = size;
     g.format = format;
     s.globalparams.push_back(g);
-    return &g;
 }
 
 static void setglsluniformformat(Shader &s, const char *name, GLenum format, int size)
