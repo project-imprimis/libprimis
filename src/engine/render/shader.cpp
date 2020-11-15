@@ -1587,7 +1587,7 @@ struct postfxtex
     int scale, used;
     postfxtex() : id(0), scale(0), used(-1) {}
 };
-vector<postfxtex> postfxtexs;
+std::vector<postfxtex> postfxtexs;
 int postfxbinds[numpostfxbinds];
 GLuint postfxfb = 0;
 int postfxw = 0,
@@ -1602,11 +1602,11 @@ struct postfxpass
 
     postfxpass() : shader(NULL), inputs(1), freeinputs(1), outputbind(0), outputscale(0) {}
 };
-vector<postfxpass> postfxpasses;
+std::vector<postfxpass> postfxpasses;
 
 static int allocatepostfxtex(int scale)
 {
-    for(int i = 0; i < postfxtexs.length(); i++)
+    for(uint i = 0; i < postfxtexs.size(); i++)
     {
         postfxtex &t = postfxtexs[i];
         if(t.scale==scale && t.used < 0)
@@ -1614,11 +1614,12 @@ static int allocatepostfxtex(int scale)
             return i;
         }
     }
-    postfxtex &t = postfxtexs.add();
+    postfxtex t;
     t.scale = scale;
     glGenTextures(1, &t.id);
     createtexture(t.id, max(postfxw>>scale, 1), max(postfxh>>scale, 1), NULL, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
-    return postfxtexs.length()-1;
+    postfxtexs.push_back(t);
+    return postfxtexs.size()-1;
 }
 
 void cleanuppostfx(bool fullclean)
@@ -1628,11 +1629,11 @@ void cleanuppostfx(bool fullclean)
         glDeleteFramebuffers_(1, &postfxfb);
         postfxfb = 0;
     }
-    for(int i = 0; i < postfxtexs.length(); i++)
+    for(uint i = 0; i < postfxtexs.size(); i++)
     {
         glDeleteTextures(1, &postfxtexs[i].id);
     }
-    postfxtexs.shrink(0);
+    postfxtexs.clear();
     postfxw = 0;
     postfxh = 0;
 }
@@ -1653,7 +1654,7 @@ GLuint setuppostfx(int w, int h, GLuint outfbo)
     {
         postfxbinds[i] = -1;
     }
-    for(int i = 0; i < postfxtexs.length(); i++)
+    for(uint i = 0; i < postfxtexs.size(); i++)
     {
         postfxtexs[i].used = -1;
     }
@@ -1679,12 +1680,12 @@ void renderpostfx(GLuint outfbo)
         return;
     }
     timer *postfxtimer = begintimer("postfx");
-    for(int i = 0; i < postfxpasses.length(); i++)
+    for(uint i = 0; i < postfxpasses.size(); i++)
     {
         postfxpass &p = postfxpasses[i];
 
         int tex = -1;
-        if(!postfxpasses.inrange(i+1))
+        if(!(postfxpasses.size() < i+1))
         {
             glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
         }
@@ -1756,19 +1757,20 @@ static bool addpostfx(const char *name, int outputbind, int outputscale, uint in
         conoutf(Console_Error, "no such postfx shader: %s", name);
         return false;
     }
-    postfxpass &p = postfxpasses.add();
+    postfxpass p;
     p.shader = s;
     p.outputbind = outputbind;
     p.outputscale = outputscale;
     p.inputs = inputs;
     p.freeinputs = freeinputs;
     p.params = params;
+    postfxpasses.push_back(p);
     return true;
 }
 
 void clearpostfx()
 {
-    postfxpasses.shrink(0);
+    postfxpasses.clear();
     cleanuppostfx(false);
 }
 COMMAND(clearpostfx, "");
