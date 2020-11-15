@@ -386,7 +386,7 @@ GlobalShaderParamState *getglobalparam(const char *name)
     return param;
 }
 
-static void *addglobalparam(Shader &s, GlobalShaderParamState *param, int loc, int size, GLenum format)
+static void addglobalparam(Shader &s, GlobalShaderParamState *param, int loc, int size, GLenum format)
 {
     GlobalShaderParamUse g;
     g.param = param;
@@ -657,7 +657,7 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
     for(uint i = 0; i < slotparams.size(); i++) \
     { \
         SlotShaderParam &p = slotparams[i]; \
-        if(!(defaultparams.size() > p.loc)) \
+        if(!(static_cast<int>(defaultparams.size()) > p.loc)) \
         { \
             continue; \
         } \
