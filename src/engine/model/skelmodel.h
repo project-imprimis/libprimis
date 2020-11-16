@@ -1486,11 +1486,12 @@ struct skelmodel : animmodel
         vector<blendcombo> blendcombos;
         int numblends[4];
 
-        static const int MAXBLENDCACHE = 16;
-        blendcacheentry blendcache[MAXBLENDCACHE];
+        static constexpr int maxblendcache = 16;
+        static constexpr int maxvbocache = 16;
 
-        static const int MAXVBOCACHE = 16;
-        vbocacheentry vbocache[MAXVBOCACHE];
+        blendcacheentry blendcache[maxblendcache];
+
+        vbocacheentry vbocache[maxvbocache];
 
         ushort *edata;
         GLuint ebuf;
@@ -1521,11 +1522,11 @@ struct skelmodel : animmodel
             {
                 glDeleteBuffers_(1, &ebuf);
             }
-            for(int i = 0; i < MAXBLENDCACHE; ++i)
+            for(int i = 0; i < maxblendcache; ++i)
             {
                 DELETEA(blendcache[i].bdata);
             }
-            for(int i = 0; i < MAXVBOCACHE; ++i)
+            for(int i = 0; i < maxvbocache; ++i)
             {
                 if(vbocache[i].vbuf)
                 {
@@ -1845,13 +1846,13 @@ struct skelmodel : animmodel
 
         void cleanup()
         {
-            for(int i = 0; i < MAXBLENDCACHE; ++i)
+            for(int i = 0; i < maxblendcache; ++i)
             {
                 blendcacheentry &c = blendcache[i];
                 DELETEA(c.bdata);
                 c.owner = -1;
             }
-            for(int i = 0; i < MAXVBOCACHE; ++i)
+            for(int i = 0; i < maxvbocache; ++i)
             {
                 vbocacheentry &c = vbocache[i];
                 if(c.vbuf)
@@ -1902,12 +1903,12 @@ struct skelmodel : animmodel
 
         vbocacheentry &checkvbocache(skelcacheentry &sc, int owner)
         {
-            SEARCHCACHE(MAXVBOCACHE, vbocacheentry, vbocache, !c.vbuf || );
+            SEARCHCACHE(maxvbocache, vbocacheentry, vbocache, !c.vbuf || );
         }
 
         blendcacheentry &checkblendcache(skelcacheentry &sc, int owner)
         {
-            SEARCHCACHE(MAXBLENDCACHE, blendcacheentry, blendcache, )
+            SEARCHCACHE(maxblendcache, blendcacheentry, blendcache, )
         }
 
         void cleanuphitdata();
