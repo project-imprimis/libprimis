@@ -693,20 +693,20 @@ struct skelmodel : animmodel
         void calcantipodes()
         {
             antipodes.shrink(0);
-            vector<int> schedule;
+            std::vector<int> schedule;
             for(int i = 0; i < numbones; ++i)
             {
                 if(bones[i].group >= numbones)
                 {
-                    bones[i].scheduled = schedule.length();
-                    schedule.add(i);
+                    bones[i].scheduled = schedule.size();
+                    schedule.push_back(i);
                 }
                 else
                 {
                     bones[i].scheduled = -1;
                 }
             }
-            for(int i = 0; i < schedule.length(); i++)
+            for(uint i = 0; i < schedule.size(); i++)
             {
                 int bone = schedule[i];
                 const boneinfo &info = bones[bone];
@@ -715,11 +715,11 @@ struct skelmodel : animmodel
                     if(abs(bones[j].group) == bone && bones[j].scheduled < 0)
                     {
                         antipodes.add(antipode(info.interpindex, bones[j].interpindex));
-                        bones[j].scheduled = schedule.length();
-                        schedule.add(j);
+                        bones[j].scheduled = schedule.size();
+                        schedule.push_back(j);
                     }
                 }
-                if(i + 1 == schedule.length())
+                if(i + 1 == schedule.size())
                 {
                     int conflict = INT_MAX;
                     for(int j = 0; j < numbones; ++j)
@@ -731,8 +731,8 @@ struct skelmodel : animmodel
                     }
                     if(conflict < numbones)
                     {
-                        bones[conflict].scheduled = schedule.length();
-                        schedule.add(conflict);
+                        bones[conflict].scheduled = schedule.size();
+                        schedule.push_back(conflict);
                     }
                 }
             }
