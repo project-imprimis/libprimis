@@ -1638,6 +1638,7 @@ struct skelmodel : animmodel
                 }
 
                 gle::bindvbo(vc.vbuf);
+//====================================================================== GENVBO*
                 #define GENVBO(type, args) \
                     do \
                     { \
@@ -1646,6 +1647,12 @@ struct skelmodel : animmodel
                         LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo args); \
                         glBufferData_(GL_ARRAY_BUFFER, vverts.length()*sizeof(type), vverts.getbuf(), GL_STATIC_DRAW); \
                     } while(0)
+                /* need these macros so it's possible to pass a variadic chain of
+                 * args in a single package
+                 *
+                 * (the set of values in the latter argument are all passed together
+                 * as "args" which can't be done by a single standard macro
+                 */
                 #define GENVBOANIM(type) GENVBO(type, (idxs, vlen, vverts))
                 #define GENVBOSTAT(type) GENVBO(type, (idxs, vlen, vverts, htdata, htlen))
                 if(skel->numframes)
@@ -1673,6 +1680,7 @@ struct skelmodel : animmodel
                 #undef GENVBO
                 #undef GENVBOANIM
                 #undef GENVBOSTAT
+//==============================================================================
                 gle::clearvbo();
             }
 
