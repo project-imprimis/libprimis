@@ -1,3 +1,6 @@
+#ifndef TEXTURE_H_
+#define TEXTURE_H_
+
 struct GlobalShaderParamState
 {
     const char *name;
@@ -1392,3 +1395,4 @@ extern DecalSlot dummydecalslot;
 extern vector<Slot *> slots;
 extern vector<VSlot *> vslots;
 
+#endif
