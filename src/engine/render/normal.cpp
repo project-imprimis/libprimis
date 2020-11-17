@@ -44,8 +44,8 @@ namespace //internal functionality not seen by other files
     };
 
     hashset<normalgroup> normalgroups(1<<16);
-    vector<normal> normals;
-    vector<tnormal> tnormals;
+    std::vector<normal> normals;
+    std::vector<tnormal> tnormals;
     vector<int> smoothgroups;
 
     VARR(lerpangle, 0, 44, 180); //max angle to merge octree faces' normals smoothly
@@ -56,17 +56,18 @@ namespace //internal functionality not seen by other files
     {
         normalkey key = { pos, smooth };
         normalgroup &g = normalgroups.access(key, key);
-        normal &n = normals.add();
+        normal n;
         n.next = g.normals;
         n.surface = surface;
-        return g.normals = normals.length()-1;
+        normals.push_back(n);
+        return g.normals = normals.size()-1;
     }
 
     void addtnormal(const vec &pos, int smooth, float offset, int normal1, int normal2, const vec &pos1, const vec &pos2)
     {
         normalkey key = { pos, smooth };
         normalgroup &g = normalgroups.access(key, key);
-        tnormal &n = tnormals.add();
+        tnormal n;
         n.next = g.tnormals;
         n.offset = offset;
         n.normals[0] = normal1;
@@ -75,7 +76,8 @@ namespace //internal functionality not seen by other files
                   key2 = { pos2, smooth };
         n.groups[0] = normalgroups.access(key1);
         n.groups[1] = normalgroups.access(key2);
-        g.tnormals = tnormals.length()-1;
+        tnormals.push_back(n);
+        g.tnormals = tnormals.size()-1;
     }
 
     int addnormal(const vec &pos, int smooth, int axis)
@@ -382,8 +384,8 @@ void calcnormals(bool lerptjoints)
 void clearnormals()
 {
     normalgroups.clear();
-    normals.setsize(0);
-    tnormals.setsize(0);
+    normals.clear();
+    tnormals.clear();
 }
 
 void resetsmoothgroups()
