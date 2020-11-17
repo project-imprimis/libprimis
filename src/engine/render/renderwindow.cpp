@@ -1,8 +1,11 @@
 //screen rendering functions, such as background, progress bar, screen settings
 // (e.g. gamma);
 #include "engine.h"
-#include "interface/input.h"
+
+#include "octarender.h"
 #include "renderwindow.h"
+
+#include "interface/input.h"
 
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));

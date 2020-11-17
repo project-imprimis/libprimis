@@ -1,12 +1,16 @@
 // rendergl.cpp: core opengl rendering stuff
 
 #include "engine.h"
-#include "interface/input.h"
+
+#include "hud.h"
+#include "octarender.h"
+#include "rendertimers.h"
 #include "radiancehints.h"
 #include "renderwindow.h"
+
 #include "world/raycube.h"
-#include "rendertimers.h"
-#include "hud.h"
+
+#include "interface/input.h"
 
 bool hasFBMSBS = false,
      hasTQ     = false,

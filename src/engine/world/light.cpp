@@ -1,8 +1,13 @@
 #include "engine.h"
+
 #include "light.h"
+
+#include "interface/input.h"
+
 #include "render/radiancehints.h"
 #include "render/renderwindow.h"
-#include "interface/input.h"
+#include "render/octarender.h"
+
 #include "world/raycube.h"
 
 CVAR1R(ambient, 0x191919);

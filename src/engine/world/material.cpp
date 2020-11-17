@@ -1,5 +1,3 @@
-#include "engine.h"
-
 /* material.cpp: octree handled volume-based region flagging
  *
  * the material system in libprimis relies on the octree system; as a result all
@@ -16,6 +14,11 @@
  * the material data is saved in world files along with the octree geometry (see
  * worldio.cpp)
  */
+
+#include "engine.h"
+
+#include "render/octarender.h"
+
 struct QuadNode
 {
     int x, y, size;

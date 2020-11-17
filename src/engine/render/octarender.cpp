@@ -1,7 +1,11 @@
 // octarender.cpp: fill vertex arrays with different cube surfaces.
 
 #include "engine.h"
+
+#include "octarender.h"
+
 #include "world/light.h"
+
 
 /* global variables */
 //////////////////////

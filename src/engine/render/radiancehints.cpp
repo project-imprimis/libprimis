@@ -1,6 +1,8 @@
 #include "engine.h"
 
+#include "octarender.h"
 #include "radiancehints.h"
+
 #include "world/light.h"
 
 GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },

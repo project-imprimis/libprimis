@@ -1,8 +1,11 @@
 // world.cpp: core map management stuff
 
 #include "engine.h"
+
 #include "light.h"
 #include "raycube.h"
+
+#include "render/octarender.h"
 
 VARR(mapversion, 1, currentmapversion, 0);
 VARNR(mapscale, worldscale, 1, 0, 0);

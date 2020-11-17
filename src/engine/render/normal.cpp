@@ -1,4 +1,7 @@
 #include "engine.h"
+
+#include "octarender.h"
+
 namespace //internal functionality not seen by other files
 {
     struct normalkey

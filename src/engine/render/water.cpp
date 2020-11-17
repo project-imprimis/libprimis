@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "octarender.h"
+
 static const int numcaustics = 32;
 
 static Texture *caustictex[numcaustics] = { NULL };

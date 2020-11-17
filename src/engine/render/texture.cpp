@@ -2,8 +2,11 @@
 
 #include "engine.h"
 #include "SDL_image.h"
-#include "world/light.h"
+
+#include "octarender.h"
 #include "renderwindow.h"
+
+#include "world/light.h"
 
 template<int BPP>
 static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)

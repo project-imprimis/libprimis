@@ -1,7 +1,10 @@
 // worldio.cpp: loading & saving of maps and savegames
 
 #include "engine.h"
+
 #include "raycube.h"
+
+#include "render/octarender.h"
 #include "render/renderwindow.h"
 
 string clientmap = "";
