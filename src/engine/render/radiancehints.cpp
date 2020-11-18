@@ -1,3 +1,19 @@
+/*
+ * radiancehints.cpp: radiance hints global illumination
+ *
+ * Libprimis supports global illumination via the Radiance Hints algorithm. This
+ * global illumination is rendered using a reflective shadow map mapped from the
+ * sun's location.
+ *
+ * For performance reasons, the radiance hints algorithm is only run on the global
+ * sunlight. Running radiance hints on point lights would require complex, expensive
+ * shadowmapping similar to standard lighting, and not perform particularly well.
+ *
+ * By only allowing the sunlight to be lit, Libprimis' global illumination only
+ * has to worry about a single RSM (reflective shadow map) rather than 6 sided cube
+ * maps (as point lights would require).
+ */
+
 #include "engine.h"
 
 #include "octarender.h"
