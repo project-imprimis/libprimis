@@ -1,9 +1,22 @@
-// renderparticles.cpp
+/* renderparticles.cpp: billboard particle rendering
+ *
+ * renderparticles.cpp handles rendering of entity-and-weapon defined billboard particle
+ * rendering. Particle entities spawn particles randomly (is not synced between different
+ * clients in multiplayer), while weapon projectiles are placed at world-synced locations.
+ *
+ * Particles, being merely diffuse textures placed on the scene, do not have any special
+ * effects (such as refraction or lights). Particles, being of the "billboard" type, always
+ * face the camera, which works fairly well for small, simple effects. Particles are not
+ * recommended for large, high detail special effects.
+ */
 
 #include "engine.h"
-#include "interface/input.h"
-#include "world/raycube.h"
+
 #include "renderwindow.h"
+
+#include "interface/input.h"
+
+#include "world/raycube.h"
 
 Shader *particleshader          = NULL,
        *particlenotextureshader = NULL,
