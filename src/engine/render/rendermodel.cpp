@@ -1,5 +1,10 @@
 #include "engine.h"
 
+#include "radiancehints.h"
+#include "renderwindow.h"
+
+#include "world/hitzone.h"
+
 VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
 
@@ -7,13 +12,14 @@ int numanims; //set by game at runtime
 std::vector<std::string> animnames; //set by game at runtime
 
 model *loadingmodel = NULL;
-#include "radiancehints.h"
+
+//need the above vars inited before these headers will load properly
+
 #include "model/ragdoll.h"
 #include "model/animmodel.h"
 #include "model/vertmodel.h"
 #include "model/skelmodel.h"
-#include "world/hitzone.h"
-#include "renderwindow.h"
+
 
 model *loadmapmodel(int n)
 {
@@ -40,6 +46,7 @@ static model *loadmodel_##modelclass(const char *filename) \
 } \
 static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass);
 
+//need the above macros & fxns inited before these headers will load properly
 #include "model/md5.h"
 #include "model/obj.h"
 
