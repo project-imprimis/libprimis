@@ -1,3 +1,12 @@
+/* dynlight.cpp: handling of changing lights
+ *
+ * while the lighting system is dynamic, the changing state of the light entities
+ * for the renderer to handle must be updated with new values that reflect the tyoe
+ * of light to be drawn
+ *
+ * this includes pulsating lights (which change in radius dynamically)
+ * and multicolored lights (which change hue dynamically)
+ */
 #include "engine.h"
 
 VARNP(dynlights, usedynlights, 0, 1, 1);
