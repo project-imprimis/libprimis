@@ -1,3 +1,16 @@
+/* stain.cpp: dynamic world geometry decals
+ *
+ * Stains are mostly useful for player-created effects, mainly those left behind
+ * by weapons. They fade at a fixed period (not controllable by individual stains)
+ * and can be culled if there are too many (`maxstaintris`).
+ *
+ * Stains apply to world (octree) geometry only and cannot be applied to models
+ * (players, mapmodels, or otherwise).
+ *
+ * The performance of stains is generally high enough that many thousands of stain
+ * particles must be present at once for there to be a noticable performance drop.
+ */
+
 #include "engine.h"
 
 struct stainvert
