@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "rendertext.h"
+
 static hashnameset<font> fonts;
 static font *fontdef = NULL;
 static int fontdeftex = 0;

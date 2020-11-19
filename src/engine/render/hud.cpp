@@ -1,12 +1,17 @@
-#include "engine.h"
-#include "rendertimers.h"
-#include "renderwindow.h"
-#include "interface/input.h"
 /* hud.cpp: hud & main menu rendering code
  *
  * includes hud compass, hud readouts, crosshair handling
  * main hud rendering
  */
+
+#include "engine.h"
+
+#include "rendertext.h"
+#include "rendertimers.h"
+#include "renderwindow.h"
+
+#include "interface/input.h"
+
 void gl_drawmainmenu()
 {
     renderbackground(NULL, NULL, NULL, NULL, true);

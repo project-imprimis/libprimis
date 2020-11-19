@@ -1,6 +1,9 @@
 #include "engine.h"
-#include "textedit.h"
+
 #include "input.h"
+//input.h needs rendertext's objects
+#include "render/rendertext.h"
+#include "textedit.h"
 
 /* a quick note on unnamed function arguments, used here for many derived functions:
  *

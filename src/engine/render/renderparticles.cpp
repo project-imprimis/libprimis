@@ -13,6 +13,7 @@
 #include "engine.h"
 
 #include "renderwindow.h"
+#include "rendertext.h"
 
 #include "interface/input.h"
 

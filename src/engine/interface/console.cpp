@@ -1,6 +1,8 @@
 // console.cpp: the console buffer, its display, and command line control
 
 #include "engine.h"
+//input.h needs rendertext's objects
+#include "render/rendertext.h"
 #include "input.h"
 
 static const int maxconsolelines = 1000;
