@@ -5,6 +5,7 @@
 #include "octarender.h"
 #include "rendertext.h"
 #include "renderwindow.h"
+#include "stain.h"
 
 #include "interface/input.h"
 

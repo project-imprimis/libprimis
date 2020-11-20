@@ -6,6 +6,7 @@
 #include "raycube.h"
 
 #include "render/octarender.h"
+#include "render/stain.h"
 
 VARR(mapversion, 1, currentmapversion, 0);
 VARNR(mapscale, worldscale, 1, 0, 0);

@@ -13,6 +13,8 @@
 
 #include "engine.h"
 
+#include "stain.h"
+
 struct stainvert
 {
     vec pos;

@@ -2,6 +2,7 @@
 
 #include "octarender.h"
 #include "radiancehints.h"
+#include "stain.h"
 
 #include "world/light.h"
 
