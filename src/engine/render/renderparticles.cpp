@@ -15,6 +15,7 @@
 #include "renderwindow.h"
 #include "rendertext.h"
 #include "stain.h"
+#include "water.h"
 
 #include "interface/input.h"
 

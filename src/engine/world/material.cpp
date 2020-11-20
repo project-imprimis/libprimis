@@ -18,6 +18,7 @@
 #include "engine.h"
 
 #include "render/octarender.h"
+#include "render/water.h"
 
 struct QuadNode
 {

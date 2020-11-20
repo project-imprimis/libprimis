@@ -7,6 +7,7 @@
 #include "rendertimers.h"
 #include "radiancehints.h"
 #include "renderwindow.h"
+#include "water.h"
 
 #include "world/raycube.h"
 
