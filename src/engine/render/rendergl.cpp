@@ -4,9 +4,9 @@
 
 #include "hud.h"
 #include "octarender.h"
-#include "rendertimers.h"
 #include "radiancehints.h"
 #include "rendersky.h"
+#include "rendertimers.h"
 #include "renderwindow.h"
 #include "water.h"
 
