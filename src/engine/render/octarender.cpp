@@ -3,6 +3,7 @@
 #include "engine.h"
 
 #include "octarender.h"
+#include "rendersky.h"
 
 #include "world/light.h"
 

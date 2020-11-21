@@ -668,13 +668,6 @@ extern void particle_flare(const vec &p, const vec &dest, int fade, int type, in
 extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
 extern void removetrackedparticles(physent *owner = NULL);
 
-// rendersky
-extern int skytexture, skyshadow, explicitsky;
-
-extern void drawskybox(bool clear = false);
-extern bool limitsky();
-extern bool renderexplicitsky(bool outline = false);
-
 // ui
 
 namespace UI

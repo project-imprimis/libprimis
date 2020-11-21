@@ -4,6 +4,7 @@
 
 #include "octarender.h"
 #include "renderwindow.h"
+#include "rendersky.h"
 
 #include "world/raycube.h"
 

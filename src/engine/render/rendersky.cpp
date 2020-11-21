@@ -11,6 +11,9 @@
  * moves)
  */
 #include "engine.h"
+
+#include "rendersky.h"
+
 #include "world/light.h"
 #include "world/raycube.h"
 
