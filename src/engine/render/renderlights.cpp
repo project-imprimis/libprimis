@@ -2325,27 +2325,27 @@ std::vector<lightinfo> lights;
 std::vector<int> lightorder;
 hashset<lightbatch> lightbatcher(128);
 vector<lightbatch *> lightbatches;
-vector<shadowmapinfo> shadowmaps;
+std::vector<shadowmapinfo> shadowmaps;
 
 void clearshadowcache()
 {
-    shadowmaps.setsize(0);
+    shadowmaps.clear();
 
     clearradiancehintscache();
     clearshadowmeshes();
 }
 
-static shadowmapinfo *addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, shadowcacheval *cached = NULL)
+static void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, shadowcacheval *cached = NULL)
 {
-    idx = shadowmaps.length();
-    shadowmapinfo *sm = &shadowmaps.add();
-    sm->x = x;
-    sm->y = y;
-    sm->size = size;
-    sm->light = light;
-    sm->sidemask = 0;
-    sm->cached = cached;
-    return sm;
+    idx = shadowmaps.size();
+    shadowmapinfo sm;
+    sm.x = x;
+    sm.y = y;
+    sm.size = size;
+    sm.light = light;
+    sm.sidemask = 0;
+    sm.cached = cached;
+    shadowmaps.push_back(sm);
 }
 
 static const int csmmaxsplits = 8;
@@ -3095,7 +3095,7 @@ void resetlights()
             evicty = ((evictshadowcache/shadowcacheevict)*shadowatlaspacker.h)/shadowcacheevict,
             evictx2 = (((evictshadowcache%shadowcacheevict)+1)*shadowatlaspacker.w)/shadowcacheevict,
             evicty2 = (((evictshadowcache/shadowcacheevict)+1)*shadowatlaspacker.h)/shadowcacheevict;
-        for(int i = 0; i < shadowmaps.length(); i++)
+        for(uint i = 0; i < shadowmaps.size(); i++)
         {
             shadowmapinfo &sm = shadowmaps[i];
             if(sm.light < 0)
@@ -3124,7 +3124,7 @@ void resetlights()
     lights.clear();
     lightorder.clear();
 
-    shadowmaps.setsize(0);
+    shadowmaps.clear();
     shadowatlaspacker.reset();
 
     calctilesize();
@@ -4762,7 +4762,7 @@ void rendershadowmaps(int offset = 0)
         offset = 0;
     }
 
-    for(; offset < shadowmaps.length(); offset++)
+    for(; offset < static_cast<int>(shadowmaps.size()); offset++)
     {
         if(shadowmaps[offset].light >= 0)
         {
@@ -4770,7 +4770,7 @@ void rendershadowmaps(int offset = 0)
         }
     }
 
-    if(offset >= shadowmaps.length())
+    if(offset >= static_cast<int>(shadowmaps.size()))
     {
         return;
     }
@@ -4797,7 +4797,7 @@ void rendershadowmaps(int offset = 0)
     glEnable(GL_SCISSOR_TEST);
 
     const vector<extentity *> &ents = entities::getents();
-    for(int i = offset; i < shadowmaps.length(); i++)
+    for(uint i = offset; i < shadowmaps.size(); i++)
     {
         shadowmapinfo &sm = shadowmaps[i];
         if(sm.light < 0)
@@ -4978,7 +4978,7 @@ void rendershadowatlas()
     // sun light
     rendercsmshadowmaps();
 
-    int smoffset = shadowmaps.length();
+    int smoffset = shadowmaps.size();
 
     packlights();
 
