@@ -2,6 +2,7 @@
 
 #include "engine.h"
 
+#include "grass.h"
 #include "octarender.h"
 #include "renderwindow.h"
 #include "rendersky.h"

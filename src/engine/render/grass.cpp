@@ -1,6 +1,9 @@
 //grass.cpp: billboarded grass generation atop cube geometry
 
 #include "engine.h"
+
+#include "grass.h"
+
 namespace //internal functionality not seen by other files
 {
     VARP(grass, 0, 1, 1);

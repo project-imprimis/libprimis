@@ -713,10 +713,4 @@ extern bool stopsound(int n, int chanid, int fade = 0);
 extern void stopsounds();
 extern void initsound();
 
-// grass
-extern void loadgrassshaders();
-extern void generategrass();
-extern void rendergrass();
-extern void cleanupgrass();
-
 #endif
