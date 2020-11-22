@@ -1692,7 +1692,9 @@ static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = NULL, i
         return;
     }
 
-    int prevbatch = -1, curbatch = firstbatch, curtex = 0;
+    int prevbatch = -1,
+        curbatch = firstbatch,
+        curtex = 0;
     do
     {
         geombatch &b = geombatches.add(geombatch(texs[curtex], offset, va));
