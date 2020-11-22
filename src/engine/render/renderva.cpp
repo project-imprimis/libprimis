@@ -3202,7 +3202,7 @@ struct shadowverts
     }
 } shadowverts;
 static vector<ushort> shadowtris[6];
-static vector<GLuint> shadowvbos;
+static std::vector<GLuint> shadowvbos;
 static hashtable<int, shadowmesh> shadowmeshes;
 static std::vector<shadowdraw> shadowdraws;
 
@@ -3282,8 +3282,8 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
     gle::clearvbo();
     shadowverts.clear();
 
-    shadowvbos.add(ebuf);
-    shadowvbos.add(vbuf);
+    shadowvbos.push_back(ebuf);
+    shadowvbos.push_back(vbuf);
 }
 
 static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo draws[6], const vec &v0, const vec &v1, const vec &v2)
@@ -3462,10 +3462,10 @@ static void genshadowmesh(int idx, extentity &e)
 
 void clearshadowmeshes()
 {
-    if(shadowvbos.length())
+    if(shadowvbos.size())
     {
-        glDeleteBuffers_(shadowvbos.length(), shadowvbos.getbuf());
-        shadowvbos.setsize(0);
+        glDeleteBuffers_(shadowvbos.size(), shadowvbos.data());
+        shadowvbos.clear();
     }
     if(shadowmeshes.numelems)
     {
