@@ -339,20 +339,6 @@ extern bool useavatarmask();
 extern void enableavatarmask();
 extern void disableavatarmask();
 
-// aa
-extern matrix4 nojittermatrix;
-
-extern void setupaa(int w, int h);
-extern void jitteraa();
-extern bool multisampledaa();
-extern void setaavelocityparams(GLenum tmu = GL_TEXTURE0);
-extern void setaamask(bool val);
-extern void enableaamask(int stencil = 0);
-extern void disableaamask();
-extern void doaa(GLuint outfbo, void (*resolve)(GLuint, int));
-extern bool debugaa();
-extern void cleanupaa();
-
 // octaedit
 extern bool allowediting;
 extern bool multiplayer;
@@ -711,6 +697,7 @@ extern void preloadsound(int n);
 extern void preloadmapsound(int n);
 extern bool stopsound(int n, int chanid, int fade = 0);
 extern void stopsounds();
+extern void initsound();
 extern void initsound();
 
 #endif

@@ -7,6 +7,8 @@
  */
 #include "engine.h"
 
+#include "aa.h"
+
 extern int intel_texalpha_bug;
 //externally used vars
 VAR(tqaaresolvegather, 1, 0, 0);

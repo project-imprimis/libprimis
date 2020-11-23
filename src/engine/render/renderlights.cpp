@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include "aa.h"
 #include "octarender.h"
 #include "radiancehints.h"
 #include "rendersky.h"

@@ -2,6 +2,7 @@
 
 #include "engine.h"
 
+#include "aa.h"
 #include "grass.h"
 #include "hud.h"
 #include "octarender.h"
