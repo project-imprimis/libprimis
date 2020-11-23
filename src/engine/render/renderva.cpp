@@ -3365,7 +3365,7 @@ static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draw
             e.flags |= EntFlag_Render;
         }
     }
-    vector<triangle> tris;
+    std::vector<triangle> tris;
     for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
     {
         for(int j = 0; j < oe->mapmodels.length(); j++)
@@ -3400,10 +3400,10 @@ static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draw
                 orient.scale(e.attr5/100.0f);
             }
             orient.settranslation(e.o);
-            tris.setsize(0);
+            tris.clear();
             mm->genshadowmesh(tris, orient);
 
-            for(int i = 0; i < tris.length(); i++)
+            for(int i = 0; i < tris.size(); i++)
             {
                 triangle &t = tris[i];
                 addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);

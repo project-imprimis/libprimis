@@ -102,14 +102,15 @@ struct vertmodel : animmodel
             m.tcstride = sizeof(tcvert);
         }
 
-        void genshadowmesh(vector<triangle> &out, const matrix4x3 &m)
+        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
         {
             for(int j = 0; j < numtris; ++j)
             {
-                triangle &t = out.add();
+                triangle t;
                 t.a = m.transform(verts[tris[j].vert[0]].pos);
                 t.b = m.transform(verts[tris[j].vert[1]].pos);
                 t.c = m.transform(verts[tris[j].vert[2]].pos);
+                out.push_back(t);
             }
         }
 

@@ -431,7 +431,7 @@ struct animmodel : model
             }
         }
 
-        virtual void genshadowmesh(vector<triangle> &tris, const matrix4x3 &m)
+        virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
         {
         }
 
@@ -718,7 +718,7 @@ struct animmodel : model
             }
         }
 
-        void genshadowmesh(vector<triangle> &tris, const matrix4x3 &t)
+        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t)
         {
             LOOP_RENDER_MESHES(mesh, m, m.genshadowmesh(tris, t));
         }
@@ -910,7 +910,7 @@ struct animmodel : model
             }
         }
 
-        void genshadowmesh(vector<triangle> &tris, const matrix4x3 &m)
+        void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
         {
             matrix4x3 t = m;
             t.scale(model->scale);
@@ -1821,7 +1821,7 @@ struct animmodel : model
         }
     }
 
-    void genshadowmesh(vector<triangle> &tris, const matrix4x3 &orient)
+    void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient)
     {
         if(parts.empty())
         {
