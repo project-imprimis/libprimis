@@ -3201,7 +3201,7 @@ struct shadowverts
         return table[h] = verts.size()-1;
     }
 } shadowverts;
-static vector<ushort> shadowtris[6];
+static std::vector<ushort> shadowtris[6];
 static std::vector<GLuint> shadowvbos;
 static hashtable<int, shadowmesh> shadowmeshes;
 static std::vector<shadowdraw> shadowdraws;
@@ -3228,7 +3228,7 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
     int numindexes = 0;
     for(int i = 0; i < sides; ++i)
     {
-        numindexes += shadowtris[i].length();
+        numindexes += shadowtris[i].size();
     }
     if(!numindexes)
     {
@@ -3242,7 +3242,7 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
     int offset = 0;
     for(int i = 0; i < sides; ++i)
     {
-        if(shadowtris[i].length())
+        if(shadowtris[i].size())
         {
             if(draws[i].last < 0)
             {
@@ -3258,16 +3258,16 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
             d.ebuf = ebuf;
             d.vbuf = vbuf;
             d.offset = offset;
-            d.tris = shadowtris[i].length()/3;
+            d.tris = shadowtris[i].size()/3;
             d.minvert = draws[i].minvert;
             d.maxvert = draws[i].maxvert;
             d.next = -1;
             shadowdraws.push_back(d);
 
-            memcpy(indexes + offset, shadowtris[i].getbuf(), shadowtris[i].length()*sizeof(ushort));
-            offset += shadowtris[i].length();
+            memcpy(indexes + offset, shadowtris[i].data(), shadowtris[i].size()*sizeof(ushort));
+            offset += shadowtris[i].size();
 
-            shadowtris[i].setsize(0);
+            shadowtris[i].clear();
             draws[i].reset();
         }
     }
@@ -3335,9 +3335,9 @@ static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo dra
             shadowdrawinfo &d = draws[k];
             d.minvert = min(d.minvert, minvert);
             d.maxvert = max(d.maxvert, maxvert);
-            shadowtris[k].add(i0);
-            shadowtris[k].add(i1);
-            shadowtris[k].add(i2);
+            shadowtris[k].push_back(i0);
+            shadowtris[k].push_back(i1);
+            shadowtris[k].push_back(i2);
         }
     }
 }
