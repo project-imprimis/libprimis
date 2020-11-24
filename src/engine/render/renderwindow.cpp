@@ -8,7 +8,6 @@
 #include "stain.h"
 
 #include "interface/input.h"
-#include "interface/sound.h"
 
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
@@ -176,8 +175,6 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
     glDisable(GL_BLEND);
 }
 
-VAR(menumute, 0, 1, 1);
-
 void swapbuffers(bool)
 {
     gle::disable();
@@ -205,10 +202,6 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     if(!inbetweenframes && !force)
     {
         return;
-    }
-    if(menumute)
-    {
-        stopsounds(); // stop sounds while loading
     }
     int w = hudw, h = hudh;
     if(forceaspect)
