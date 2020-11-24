@@ -5,6 +5,8 @@
 #include "light.h"
 #include "raycube.h"
 
+#include "interface/sound.h"
+
 #include "render/octarender.h"
 #include "render/stain.h"
 

@@ -1,8 +1,11 @@
 // sound.cpp: basic positional sound using sdl_mixer
 
 #include "engine.h"
-#include "input.h"
 #include "SDL_mixer.h"
+
+#include "input.h"
+#include "sound.h"
+
 #include "render/renderwindow.h"
 
 bool nosound = true;
