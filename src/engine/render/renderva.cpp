@@ -3403,7 +3403,7 @@ static void genshadowmeshmapmodels(shadowmesh &m, int sides, shadowdrawinfo draw
             tris.clear();
             mm->genshadowmesh(tris, orient);
 
-            for(int i = 0; i < tris.size(); i++)
+            for(uint i = 0; i < tris.size(); i++)
             {
                 triangle &t = tris[i];
                 addshadowmeshtri(m, sides, draws, t.a, t.b, t.c);
