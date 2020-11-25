@@ -2511,7 +2511,7 @@ void renderrsmgeom(bool dyntex)
     cleanupgeom(cur);
 }
 
-static vector<vtxarray *> alphavas;
+static std::vector<vtxarray *> alphavas;
 static int alphabackvas = 0,
            alpharefractvas = 0;
 float alphafrontsx1   = -1,
@@ -2530,7 +2530,7 @@ uint alphatiles[lighttilemaxheight];
 
 int findalphavas()
 {
-    alphavas.setsize(0);
+    alphavas.clear();
     alphafrontsx1 = alphafrontsy1 = alphabacksx1 = alphabacksy1 = alpharefractsx1 = alpharefractsy1 = 1;
     alphafrontsx2 = alphafrontsy2 = alphabacksx2 = alphabacksy2 = alpharefractsx2 = alpharefractsy2 = -1;
     alphabackvas = alpharefractvas = 0;
@@ -2555,7 +2555,7 @@ int findalphavas()
             {
                 continue;
             }
-            alphavas.add(va);
+            alphavas.push_back(va);
             masktiles(alphatiles, sx1, sy1, sx2, sy2);
             alphafrontsx1 = min(alphafrontsx1, sx1);
             alphafrontsy1 = min(alphafrontsy1, sy1);
@@ -2583,7 +2583,7 @@ int findalphavas()
             }
         }
     }
-    return (alpharefractvas ? 4 : 0) | (alphavas.length() ? 2 : 0) | (alphabackvas ? 1 : 0);
+    return (alpharefractvas ? 4 : 0) | (alphavas.size() ? 2 : 0) | (alphabackvas ? 1 : 0);
 }
 
 void renderrefractmask()
@@ -2591,7 +2591,7 @@ void renderrefractmask()
     gle::enablevertex();
 
     vtxarray *prev = NULL;
-    for(int i = 0; i < alphavas.length(); i++)
+    for(uint i = 0; i < alphavas.size(); i++)
     {
         vtxarray *va = alphavas[i];
         if(!va->refracttris)
@@ -2627,7 +2627,7 @@ void renderalphageom(int side)
 
     if(side == 2)
     {
-        for(int i = 0; i < alphavas.length(); i++)
+        for(uint i = 0; i < alphavas.size(); i++)
         {
             renderva(cur, alphavas[i], RenderPass_GBuffer);
         }
@@ -2639,7 +2639,7 @@ void renderalphageom(int side)
     else
     {
         glCullFace(GL_FRONT);
-        for(int i = 0; i < alphavas.length(); i++)
+        for(uint i = 0; i < alphavas.size(); i++)
         {
             if(alphavas[i]->alphabacktris)
             {
