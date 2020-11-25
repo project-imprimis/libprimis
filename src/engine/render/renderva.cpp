@@ -585,7 +585,8 @@ void drawbb(const ivec &bo, const ivec &br)
     xtraverts += 8;
 }
 
-static octaentities *visiblemms, **lastvisiblemms;
+static octaentities *visiblemms,
+                   **lastvisiblemms;
 
 void findvisiblemms(const vector<extentity *> &ents, bool doquery)
 {
@@ -1130,7 +1131,10 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
                 break;
             }
         }
-        dp = n.x + n.y, dn = n.x - n.y, ap = fabs(dp), an = fabs(dn);
+        dp = n.x + n.y,
+        dn = n.x - n.y,
+        ap = fabs(dp),
+        an = fabs(dn);
         if(ap > 0)
         {
             masks[0] |= dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2);
@@ -1139,7 +1143,10 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
         {
             masks[1] |= dn >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2);
         }
-        dp = n.y + n.z, dn = n.y - n.z, ap = fabs(dp), an = fabs(dn);
+        dp = n.y + n.z,
+        dn = n.y - n.z,
+        ap = fabs(dp),
+        an = fabs(dn);
         if(ap > 0)
         {
             masks[2] |= dp >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4);
@@ -1148,7 +1155,10 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
         {
             masks[3] |= dn >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4);
         }
-        dp = n.z + n.x, dn = n.z - n.x, ap = fabs(dp), an = fabs(dn);
+        dp = n.z + n.x,
+        dn = n.z - n.x,
+        ap = fabs(dp),
+        an = fabs(dn);
         if(ap > 0)
         {
             masks[4] |= dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0);
@@ -1165,7 +1175,8 @@ VAR(smbbcull, 0, 1, 1);
 VAR(smdistcull, 0, 1, 1);
 VAR(smnodraw, 0, 0, 1);
 
-vec shadoworigin(0, 0, 0), shadowdir(0, 0, 0);
+vec shadoworigin(0, 0, 0),
+    shadowdir(0, 0, 0);
 float shadowradius = 0,
       shadowbias = 0;
 int shadowside = 0,
