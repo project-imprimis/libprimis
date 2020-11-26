@@ -1779,23 +1779,26 @@ void processhdr(GLuint outfbo, int aa)
                 {
                     SETSHADER(hdrnop);
                 }
-                else switch(aa)
+                else
                 {
-                    case AA_Luma:
+                    switch(aa)
                     {
-                        SETSHADER(hdrnopluma);
-                        break;
-                    }
-                    case AA_Masked:
-                    {
-                        SETSHADER(hdrnopmasked);
-                        setaavelocityparams(GL_TEXTURE3);
-                        break;
-                    }
-                    default:
-                    {
-                        SETSHADER(hdrnop);
-                        break;
+                        case AA_Luma:
+                        {
+                            SETSHADER(hdrnopluma);
+                            break;
+                        }
+                        case AA_Masked:
+                        {
+                            SETSHADER(hdrnopmasked);
+                            setaavelocityparams(GL_TEXTURE3);
+                            break;
+                        }
+                        default:
+                        {
+                            SETSHADER(hdrnop);
+                            break;
+                        }
                     }
                 }
                 glBindTexture(GL_TEXTURE_RECTANGLE, refracttex);
@@ -2506,7 +2509,7 @@ void cascadedshadowmap::bindparams()
 
     static GlobalShaderParam csmtc("csmtc"), csmoffset("csmoffset");
     vec4 *csmtcv = csmtc.reserve<vec4>(csmsplits);
-    vec *csmoffsetv = csmoffset.reserve<vec>(csmsplits);
+    vec  *csmoffsetv = csmoffset.reserve<vec>(csmsplits);
     for(int i = 0; i < csmsplits; ++i)
     {
         cascadedshadowmap::splitinfo &split = splits[i];
@@ -3184,7 +3187,6 @@ namespace lightsphere
                 }
             }
         }
-
         if(!vbuf)
         {
             glGenBuffers_(1, &vbuf);
@@ -3192,7 +3194,6 @@ namespace lightsphere
         gle::bindvbo(vbuf);
         glBufferData_(GL_ARRAY_BUFFER, numverts*sizeof(vec), verts, GL_STATIC_DRAW);
         DELETEA(verts);
-
         if(!ebuf)
         {
             glGenBuffers_(1, &ebuf);
@@ -3801,7 +3802,10 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
             tx2 = min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
             ty2 = min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        if(stencilmask) glStencilFunc(GL_EQUAL, stencilmask|0x08, 0x07);
+        if(stencilmask)
+        {
+            glStencilFunc(GL_EQUAL, stencilmask|0x08, 0x07);
+        }
         else
         {
             glStencilFunc(GL_ALWAYS, 0x08, ~0);
