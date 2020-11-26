@@ -2801,7 +2801,7 @@ struct decalbatch
     }
 };
 
-static vector<decalbatch> decalbatches;
+static std::vector<decalbatch> decalbatches;
 
 static void mergedecals(vtxarray *va)
 {
@@ -2811,14 +2811,15 @@ static void mergedecals(vtxarray *va)
 
     if(firstbatch < 0)
     {
-        firstbatch = decalbatches.length();
+        firstbatch = decalbatches.size();
         numbatches = numtexs;
         for(int i = 0; i < numtexs-1; ++i)
         {
-            decalbatches.add(decalbatch(texs[i], offset, va)).next = i+1;
+            decalbatches.emplace_back(decalbatch(texs[i], offset, va));
+            decalbatches.back().next = i+1;
             offset += texs[i].length;
         }
-        decalbatches.add(decalbatch(texs[numtexs-1], offset, va));
+        decalbatches.emplace_back(decalbatch(texs[numtexs-1], offset, va));
         return;
     }
 
@@ -2827,7 +2828,7 @@ static void mergedecals(vtxarray *va)
         curtex = 0;
     do
     {
-        decalbatch &b = decalbatches.add(decalbatch(texs[curtex], offset, va));
+        decalbatch b = decalbatch(texs[curtex], offset, va);
         offset += texs[curtex].length;
         int dir = -1;
         while(curbatch >= 0)
@@ -2858,18 +2859,18 @@ static void mergedecals(vtxarray *va)
                 b.next = decalbatches[curbatch].next;
                 if(prevbatch < 0)
                 {
-                    firstbatch = decalbatches.length()-1;
+                    firstbatch = decalbatches.size()-1;
                 }
                 else
                 {
-                    decalbatches[prevbatch].next = decalbatches.length()-1;
+                    decalbatches[prevbatch].next = decalbatches.size()-1;
                 }
-                curbatch = decalbatches.length()-1;
+                curbatch = decalbatches.size()-1;
             }
             else
             {
                 b.batch = next;
-                decalbatches[last].batch = decalbatches.length()-1;
+                decalbatches[last].batch = decalbatches.size()-1;
             }
         }
         else
@@ -2878,20 +2879,21 @@ static void mergedecals(vtxarray *va)
             b.next = curbatch;
             if(prevbatch < 0)
             {
-                firstbatch = decalbatches.length()-1;
+                firstbatch = decalbatches.size()-1;
             }
             else
             {
-                decalbatches[prevbatch].next = decalbatches.length()-1;
+                decalbatches[prevbatch].next = decalbatches.size()-1;
             }
-            prevbatch = decalbatches.length()-1;
+            prevbatch = decalbatches.size()-1;
         }
+        decalbatches.push_back(b);
     } while(++curtex < numtexs);
 }
 
 static void resetdecalbatches()
 {
-    decalbatches.setsize(0);
+    decalbatches.clear();
     firstbatch = -1;
     numbatches = 0;
 }
@@ -3108,13 +3110,13 @@ void renderdecals()
             if(va->decaltris && va->occluded < Occlude_BB)
             {
                 mergedecals(va);
-                if(!batchdecals && decalbatches.length())
+                if(!batchdecals && decalbatches.size())
                 {
                     renderdecalbatches(cur, 0);
                 }
             }
         }
-        if(decalbatches.length())
+        if(decalbatches.size())
         {
             renderdecalbatches(cur, 0);
         }
@@ -3134,13 +3136,13 @@ void renderdecals()
             if(va->decaltris && va->occluded < Occlude_BB)
             {
                 mergedecals(va);
-                if(!batchdecals && decalbatches.length())
+                if(!batchdecals && decalbatches.size())
                 {
                     renderdecalbatches(cur, 1);
                 }
             }
         }
-        if(decalbatches.length()) renderdecalbatches(cur, 1);
+        if(decalbatches.size()) renderdecalbatches(cur, 1);
     }
     else
     {
@@ -3152,10 +3154,10 @@ void renderdecals()
             if(va->decaltris && va->occluded < Occlude_BB)
             {
                 mergedecals(va);
-                if(!batchdecals && decalbatches.length()) renderdecalbatches(cur, 0);
+                if(!batchdecals && decalbatches.size()) renderdecalbatches(cur, 0);
             }
         }
-        if(decalbatches.length())
+        if(decalbatches.size())
         {
             renderdecalbatches(cur, 0);
         }
