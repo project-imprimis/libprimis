@@ -74,26 +74,15 @@ linear analysis, including multipole expansions and Fourier series.
 * 6.2 Model Rendering
 * 6.3 AI
 
-#### 7. Netcode
-* 7.1 Topology
-* 7.2 Server
-* 7.3 Client
-* 7.4 Master Server
+#### 7. User and System Interfaces
+* 7.1 Menus
+* 7.2 Hudgun
+* 7.3 File I/O & Assets
+* 7.4 Scripting
+* 7.5 Console
 
-#### 8. User and System Interfaces
-* 8.1 Menus
-* 8.2 Hudgun
-* 8.3 File I/O & Assets
-* 8.4 Scripting
-* 8.5 Console
-
-#### 9. Game Implementation
-* 9.1 Weapons
-* 9.2 Game Variables
-* 9.3 Modes
-
-#### 10. Internal Objects
-* 10.1 Vector Objects
+#### 8. Internal Objects
+* 8.1 Vector Objects
 
 # 1. Standards
 ---
@@ -3388,172 +3377,7 @@ the only current one is MD5.
 * `<fmt>animpart [maskstr]`
 * `<fmt>adjust [name] [yaw] [pitch] [tx] [ty] [tz]`
 
-# 7 Netcode
----
-
-Like Tesseract and Cube 2, Imprimis runs a very client-heavy network topology
-that minimizes the workload for the server itself. The server does little more
-than redirect packets, while the individual clients have the burden of
-interpreting what is passed to them by other clients.
-
-As a result, Imprimis trades a good deal of security for a very simple and
-responsive networking experience. It is not particularly difficult to create
-clients which exploit this behavior, but server-mediated behavior is problematic
-for a first person shooter where reaction time is paramount.
-
-# 7.1 Topology
-
-The general topology of networking and its relation to the state of game state
-(variables and information) is outlined below.
-
-```
-+------------------------+------------------------+------------------------+
-| Local Client           | Dedicated Server       | Remote Clients         |
-+------------------------+------------------------+------------------------+
-|                  Synchronous &            Synchronous &                  |
-| +-------+         ratelimited              ratelimited         +-------+ |
-| |       +-----------+  .  +------------------+  .  +-----------+ Non   | |
-| | Local |  Client   |  .  |                  |  .  |  Client   | Local | |
-| | State | Broadcast |---->|- - - - - - - - ->|---->|   Server  | Remote| |
-| |       +-----------+  .  |                  |  .  +-----------+ State | |
-| +-------+              .  |   Multicaster    |  .              +-------+ |
-| |  Non  +-----------+  .  |                  |  .  +-----------+       | |
-| | Local |  Client   |<----|<- - - - - - - - -|<----|  Client   | Local | |
-| | State |   Server  |  .  |                  |  .  | Broadcast | Remote| |
-| |       +-----------+  .  +------------------+  .  +-----------+ State | |
-| +-------+              .                        .              +-------+ |
-+------------------------+------------------------+------------------------+
-```
-
-As indicated in the diagram, the dedicated server does not control the game
-state; it merely shuffles packets between clients which update their nonlocal
-state. All dynamic and detministic objects in the game are assigned to a client
-as part of their local state, which other clients ("remote clients") read and
-copy to their nonlocal state information.
-
-Clients are not charged with interpreting the behavior of game objects outside
-of their local state: they accept the results that they recieve to their
-nonlocal state information.
-
-## 7.2 Server
----
-
-The server in Imprimis is always present, even in singleplayer, and relays
-information between clients. In singleplayer or in multiplayer games with bots,
-these bots have full client status and their information is relayed to the
-player via the server.
-
-The server is very sparse in its function, and only a handful of system
-resources are required to run one: Raspberry Pis are generally adequate for this
-task.
-
-A server instance does not check the contents of the packets which it sees and
-essentially only radios what the clients tell it to other clients. A server's
-control over the game is limited to its control over the gamemode and game end
-time (ensuring that no one client can try to end the match at its whim) and
-managing client bans and other holds.
-
-### 7.2.1 Protocol
----
-
-The server talks to clients via UDP using the ENet library. As the game uses
-the UDP protocol, the job of making packets is left to the ENet library, which
-allows for skipping the time consuming checks that TCP requires.
-
-ENet is IP v4 only currently, and therefore the game cannot resolve IP v6
-addresses.
-
-### 7.2.2 Server State
----
-
-The state of a server, or the contents which it "knows" at any given time, is
-quite limited. Servers know the following:
-
-* Time left in the match
-* Addresses of connected clients
-* Type of client (local, remote, bot)
-* Master server listing status
-* Time since master server listing confirmation
-* Location and status of server entities (pickup items)
-
-The server does not know where players are and does not keep track of projectile
-locations.
-
-### 7.2.3 Ratelimiting
----
-
-To prevent server bandwith packet spam attacks, the server limits packets to one
-every 7ms (143/s). This is somewhat lower than the maximum packet transmission
-speed of clients, but is sufficiently higher than refresh rates and reaction
-times of players that this is not a significant problem. By doing so, dedicated
-servers cannot be innundated with a client sending many packets in very short
-succession.
-
-## 7.3 Client
----
-
-Clients are vastly more fleshed out in the Imprimis multiplayer system. Clients
-manage not only actors (players) but also their projectiles. In this way, all
-deterministic dynamic gameplay events are controlled by clients. Clients have
-their own "clients" and "servers" which refer to the side of the netcode that
-sends events (client) and those that recieve the events (server).
-
-### 7.3.1 Packets
----
-
-Clients send messages to other clients (via the server) in packets with one of
-over one hundred `types` which encode what kind of action the packet applies to.
-Some message types are of a fixed length (e.g. cube modification), but others
-are of variable length (e.g. chat messages).
-
-### 7.3.2 Client Scope
----
-
-The scope of an individual client is quite large, as the clients alone must bear
-the full weight of all dynamic deterministic events in the game. This includes:
-
-* Player movement
-* Projectile movement
-* Hit/Kill Determination
-* Geometry and Entity Modification
-* Global Variable Changes
-
-This does not include non-deterministic or non-dynamic behavior, such as:
-
-* Static entity rendering (e.g. particle entities)
-* Aesthetic rendering (ragdolls, stains, projectiles)
-
-#### Hit/Kill Determination
-
-Clients tell others when they've hit somebody else, rather than the reverse
-(clients telling others when they've been hit). As a result, hit confirmation
-should always look "right" for clients: the body that confirms the hit is the
-one who fired the projectile.
-
-This is notable because network lag can cause a player's broadcasted position to
-differ from the position that the client itself believes it is at. As a result
-of this, clients dealing with a laggy client don't have to trust that client's
-percieved position to record a hit.
-
-## 7.4 Master Server
----
-
-The master server is a seperate piece of software which can serve as a directory
-for clients to find game servers with. The master server does not host game
-servers itself; it is a service hosted by an organization (such as the official
-Imprimis project) that can be used for clients to see where servers are located.
-
-The server browser in the game gets a list of currently listed servers from a
-master server (defaulting to the official one) and then presents them in the
-server browser. Game servers periodically send a sync message to the master
-server, allowing for the master server to automatically delist stale servers
-that have not recently responded.
-
-There is additional functionality in the master server to support centralized
-authentication, but due to archtectural concerns this usage is depreciated.
-
-
-# 8. User and System Interfaces
+# 7. User and System Interfaces
 ---
 
 The game is largely accessed by the user using various interfaces defined in the
@@ -3561,7 +3385,7 @@ engine that power the game's user experience. This includes the menu system and
 heads-up display (HUD), as well as the somewhat lower-level (but still exposed
 to the player) console and scripting system.
 
-## 8.4 Scripting
+## 7.4 Scripting
 ---
 
 Scripting in Imprimis is done using the language common to the entire Cube
@@ -3569,7 +3393,7 @@ series of engines, Cubescript. Cubescript, at least the part that can be
 considered consistent across games, is a very simple language; however, it has
 very large numbers of commands which extend it and make it useful.
 
-### 8.4.1 Cubescript Semantics
+### 7.4.1 Cubescript Semantics
 ---
 
 Cubescript itself has a simple set of semantics which defines how operations are
@@ -3692,7 +3516,7 @@ foo = [
 ]
 ```
 
-### 8.4.2 Commands
+### 7.4.2 Commands
 ---
 
 Commands in Imprimis are the primary way to make Cubescript perform useful work
@@ -3753,7 +3577,7 @@ For example, a command with `nargs` equal to `ssssif` would take four string
 arguments followed by an integer and float argument; a command with `nargs`
 equal to `fffs` would take three floats followed by a string.
 
-### 8.4.3 Variables
+### 7.4.3 Variables
 ---
 
 Variables, in the context of the Imprimis scripting system, refers to specific
@@ -3838,7 +3662,7 @@ be executed when the game is started again. These variables initialize their
 `cur` values to their defined values as normal, but rely on a startup script to
 change them to their persistent states from the previous run.
 
-# 10 Internal Objects
+# 8 Internal Objects
 ---
 
 A number of C++ objects are defined in the engine to facilitate manipulation in
@@ -3849,13 +3673,13 @@ The game also has many specific-purpose objects which are described in their
 particular section. This chapter is reserved for general, extensible objects
 with utility in many potential parts of the engine.
 
-## 10.1 Vector Objects
+## 8.1 Vector Objects
 ---
 
 A large number of vector objects exist in the game to facilitate working with
 objects in 2D, 3D, 4D, quaternion, and dual quaternion vector spaces.
 
-#### 10.1.1 `vec`
+#### 8.1.1 `vec`
 ---
 
 `vec` is an incredibly ubiquitous object in the engine, where it is referenced
@@ -3872,7 +3696,7 @@ objects are much less common and also have less operators defined for it,
 befitting a 3d engine where locations of objects in the world are nearly always
 defined as a 3d vector.
 
-#### 10.1.2 `bvec`
+#### 8.1.2 `bvec`
 ---
 
 `bvec` is a 3d color vector object. As opposed to the standard `vec` object,
@@ -3894,14 +3718,14 @@ long and can encode values between 0 and 255. There is no notion of sign with a
 `char`, and indeed having colors with negative values in its channels makes no
 sense either.
 
-## 10.2 Cube Objects
+## 8.2 Cube Objects
 ---
 
 Individual cube nodes, the heart of Imprimis' geometry system, are represented
 in the code by C++ objects. There are two main objects which define a cube in
 the level, which are described here.
 
-### 10.2.1 `cube`
+### 8.2.1 `cube`
 
 The base object which defines a cube in the world. It has several attributes:
 
@@ -3913,7 +3737,7 @@ The base object which defines a cube in the world. It has several attributes:
 * `merged` The bitmask of faces of the cubes which have been merged
 * `union: escaped visible` union of unmerged children nodes/visible faces
 
-### 10.2.2 `cubeext`
+### 8.2.2 `cubeext`
 ---
 
 The extended information belonging to a cube.
