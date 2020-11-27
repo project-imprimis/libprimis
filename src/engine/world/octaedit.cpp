@@ -6,6 +6,7 @@
 #include "interface/input.h"
 
 #include "render/octarender.h"
+#include "render/rendergl.h"
 
 extern int outline;
 

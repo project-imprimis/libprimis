@@ -1,7 +1,8 @@
 #include "engine.h"
 
 #include "input.h"
-//input.h needs rendertext's objects
+//textedit.h needs rendertext's objects
+#include "render/rendergl.h"
 #include "render/rendertext.h"
 #include "textedit.h"
 

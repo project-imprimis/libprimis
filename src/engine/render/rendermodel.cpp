@@ -2,6 +2,7 @@
 
 #include "aa.h"
 #include "radiancehints.h"
+#include "rendergl.h"
 #include "renderwindow.h"
 
 VAR(oqdynent, 0, 1, 1);

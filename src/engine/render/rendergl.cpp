@@ -7,6 +7,7 @@
 #include "hud.h"
 #include "octarender.h"
 #include "radiancehints.h"
+#include "rendergl.h"
 #include "rendersky.h"
 #include "rendertimers.h"
 #include "renderwindow.h"

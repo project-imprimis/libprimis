@@ -6,6 +6,7 @@
 
 #include "engine.h"
 
+#include "rendergl.h"
 #include "rendertext.h"
 #include "rendertimers.h"
 #include "renderwindow.h"

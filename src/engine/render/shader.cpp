@@ -3,6 +3,8 @@
 #include "engine.h"
 
 #include "octarender.h"
+#include "rendergl.h"
+#include "rendertimers.h"
 #include "renderwindow.h"
 
 Shader *Shader::lastshader = NULL;

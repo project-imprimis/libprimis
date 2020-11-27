@@ -12,6 +12,7 @@
  */
 #include "engine.h"
 
+#include "rendergl.h"
 #include "rendersky.h"
 
 #include "world/light.h"

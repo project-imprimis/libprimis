@@ -3,5 +3,6 @@
 
 extern void gl_drawmainmenu();
 extern void gl_drawhud(int crosshairindex);
+extern void writecrosshairs(stream *f);
 
 #endif

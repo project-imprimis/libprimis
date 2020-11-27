@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include "octarender.h"
+#include "rendergl.h"
 #include "water.h"
 
 static const int numcaustics = 32;

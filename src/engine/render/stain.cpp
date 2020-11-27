@@ -13,6 +13,7 @@
 
 #include "engine.h"
 
+#include "rendergl.h"
 #include "stain.h"
 
 struct stainvert

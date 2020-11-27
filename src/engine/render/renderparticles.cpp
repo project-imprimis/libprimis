@@ -12,6 +12,7 @@
 
 #include "engine.h"
 
+#include "rendergl.h"
 #include "renderwindow.h"
 #include "rendertext.h"
 #include "stain.h"

@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "render/hud.h"
+
 /*
  * cubescript commands
  *

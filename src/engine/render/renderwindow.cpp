@@ -3,6 +3,7 @@
 #include "engine.h"
 
 #include "octarender.h"
+#include "rendergl.h"
 #include "rendertext.h"
 #include "renderwindow.h"
 #include "stain.h"

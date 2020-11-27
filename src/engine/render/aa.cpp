@@ -8,6 +8,8 @@
 #include "engine.h"
 
 #include "aa.h"
+#include "rendergl.h"
+#include "rendertimers.h"
 
 extern int intel_texalpha_bug;
 //externally used vars

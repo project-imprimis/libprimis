@@ -18,6 +18,8 @@
 
 #include "octarender.h"
 #include "radiancehints.h"
+#include "rendergl.h"
+#include "rendertimers.h"
 
 #include "world/light.h"
 

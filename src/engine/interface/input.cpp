@@ -1,5 +1,3 @@
-#include "engine.h"
-
 /* input.h: SDL input handling
  *
  * SDL handles low-level window manager and key inputs for Imprimis
@@ -10,6 +8,11 @@
  * is rebindable by the client)
  *
  */
+
+#include "engine.h"
+
+#include "render/rendergl.h"
+
 VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
 bool shouldgrab = false,
