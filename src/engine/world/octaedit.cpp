@@ -8,8 +8,6 @@
 #include "render/octarender.h"
 #include "render/rendergl.h"
 
-extern int outline;
-
 bool boxoutline = false;
 
 void boxs(int orient, vec o, const vec &s, float size)

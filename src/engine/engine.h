@@ -254,7 +254,9 @@ extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, uchar
 
 // renderva
 
+extern int outline;
 extern int oqfrags;
+
 extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphabacksx1, alphabacksx2, alphabacksy1, alphabacksy2, alpharefractsx1, alpharefractsx2, alpharefractsy1, alpharefractsy2;
 extern uint alphatiles[lighttilemaxheight];
 extern vtxarray *visibleva;
