@@ -9,6 +9,8 @@
 #include "physics.h"
 #include "raycube.h"
 
+#include "render/rendermodel.h"
+
 int numdynents; //updated by engine, visible through iengine.h
 vector<dynent *> dynents;
 

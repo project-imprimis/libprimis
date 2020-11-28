@@ -3,6 +3,7 @@
 #include "aa.h"
 #include "radiancehints.h"
 #include "rendergl.h"
+#include "rendermodel.h"
 #include "renderwindow.h"
 
 #include "world/physics.h"

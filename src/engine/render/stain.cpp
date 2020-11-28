@@ -14,6 +14,7 @@
 #include "engine.h"
 
 #include "rendergl.h"
+#include "rendermodel.h"
 #include "stain.h"
 
 struct stainvert

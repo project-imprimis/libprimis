@@ -4,6 +4,7 @@
 
 #include "octarender.h"
 #include "rendergl.h"
+#include "rendermodel.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
 

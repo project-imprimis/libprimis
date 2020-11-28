@@ -8,6 +8,7 @@
 #include "octarender.h"
 #include "radiancehints.h"
 #include "rendergl.h"
+#include "rendermodel.h"
 #include "rendersky.h"
 #include "rendertimers.h"
 #include "renderwindow.h"

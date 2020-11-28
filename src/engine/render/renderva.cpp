@@ -5,6 +5,7 @@
 #include "grass.h"
 #include "octarender.h"
 #include "rendergl.h"
+#include "rendermodel.h"
 #include "renderwindow.h"
 #include "rendersky.h"
 

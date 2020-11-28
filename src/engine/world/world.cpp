@@ -9,6 +9,7 @@
 #include "interface/sound.h"
 
 #include "render/octarender.h"
+#include "render/rendermodel.h"
 #include "render/stain.h"
 
 VARR(mapversion, 1, currentmapversion, 0);

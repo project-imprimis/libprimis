@@ -3,6 +3,7 @@
 
 #include "physics.h"
 
+#include "render/rendermodel.h"
 #include "render/stain.h"
 
 extern vec hitsurface;
