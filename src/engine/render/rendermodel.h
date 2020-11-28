@@ -1,3 +1,6 @@
+#ifndef RENDERMODEL_H_
+#define RENDERMODEL_H_
+
 struct mapmodelinfo { string name; model *m, *collide; };
 
 extern vector<mapmodelinfo> mapmodels;
@@ -25,3 +28,5 @@ extern model *loadmapmodel(int n);
 extern std::vector<int> findanims(const char *pattern);
 
 inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &mapmodels[n] : NULL; }
+
+#endif

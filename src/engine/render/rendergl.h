@@ -1,3 +1,5 @@
+#ifndef RENDERGL_H_
+#define RENDERGL_H_
 
 extern vec worldpos, camdir, camright, camup;
 extern bool hasS3TC, hasFXT1, hasLATC, hasFBMSBS, hasTQ, hasDBT, hasDBGO, hasES3, hasCI;
@@ -101,3 +103,5 @@ inline void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
     calctilebounds(sx1, sy1, sx2, sy2, tx1, ty1, tx2, ty2);
     for(int ty = ty1; ty < ty2; ty++) tiles[ty] |= ((1<<(tx2-tx1))-1)<<tx1;
 }
+
+#endif

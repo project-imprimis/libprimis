@@ -1,3 +1,5 @@
+#ifndef PHYSICS_H_
+#define PHYSICS_H_
 
 extern vec collidewall;
 extern int collideinside;
@@ -23,3 +25,5 @@ extern bool entinmap(dynent *d, bool avoidplayers = false);
 extern void findplayerspawn(dynent *d, int forceent = -1, int tag = 0);
 
 extern const float gravity;
+
+#endif
