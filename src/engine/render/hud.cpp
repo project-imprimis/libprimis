@@ -13,6 +13,8 @@
 
 #include "interface/input.h"
 
+#include "world/physics.h"
+
 void gl_drawmainmenu()
 {
     renderbackground(NULL, NULL, NULL, NULL, true);

@@ -41,7 +41,7 @@ inline void glerror()
         }
     }
 }
-
+extern void mousemove(int dx, int dy);
 extern void gl_checkextensions();
 extern void gl_init();
 extern void gl_resize();

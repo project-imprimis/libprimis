@@ -4,7 +4,9 @@
 // very robust (uses discrete steps at fixed fps).
 
 #include "engine.h"
+
 #include "mpr.h"
+#include "physics.h"
 #include "raycube.h"
 
 int numdynents; //updated by engine, visible through iengine.h

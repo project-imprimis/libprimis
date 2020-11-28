@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include "light.h"
+#include "physics.h"
 #include "raycube.h"
 
 #include "interface/input.h"

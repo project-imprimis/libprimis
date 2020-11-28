@@ -1,6 +1,8 @@
 //bounding interval hierarchy (BIH)
 #include "engine.h"
 
+#include "physics.h"
+
 #include "render/stain.h"
 
 extern vec hitsurface;

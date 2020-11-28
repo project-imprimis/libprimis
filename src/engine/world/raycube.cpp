@@ -12,6 +12,8 @@
  * and for other world interaction by players (e.g. identifying where structure in the world is)
  */
 #include "engine.h"
+
+#include "physics.h"
 #include "raycube.h"
 
 bool insideworld(const vec &o)

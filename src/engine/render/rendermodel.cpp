@@ -5,6 +5,8 @@
 #include "rendergl.h"
 #include "renderwindow.h"
 
+#include "world/physics.h"
+
 VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
 
