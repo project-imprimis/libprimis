@@ -410,10 +410,6 @@ extern float loadprogress;
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 extern int getclockmillis();
 
-// worldio
-extern uint getmapcrc();
-extern void clearmapcrc();
-
 // world
 
 extern vector<int> outsideents;

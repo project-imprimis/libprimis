@@ -5,6 +5,7 @@
 #include "light.h"
 #include "physics.h"
 #include "raycube.h"
+#include "worldio.h"
 
 #include "interface/sound.h"
 

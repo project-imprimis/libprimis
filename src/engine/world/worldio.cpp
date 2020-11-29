@@ -3,6 +3,7 @@
 #include "engine.h"
 
 #include "raycube.h"
+#include "worldio.h"
 
 #include "render/octarender.h"
 #include "render/renderwindow.h"
