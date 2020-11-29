@@ -1,4 +1,5 @@
-// ui
+#ifndef UI_H_
+#define UI_H_
 
 namespace UI
 {
@@ -21,3 +22,5 @@ namespace UI
     void holdui(const char *name, bool on);
     bool uivisible(const char *name);
 }
+
+#endif

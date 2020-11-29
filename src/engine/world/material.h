@@ -1,3 +1,6 @@
+#ifndef MATERIAL_H_
+#define MATERIAL_H_
+
 extern float matliquidsx1, matliquidsy1, matliquidsx2, matliquidsy2;
 extern float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;
 extern float matrefractsx1, matrefractsy1, matrefractsx2, matrefractsy2;
@@ -20,3 +23,5 @@ extern void renderliquidmaterials();
 extern void rendersolidmaterials();
 extern void rendereditmaterials();
 extern void renderminimapmaterials();
+
+#endif
