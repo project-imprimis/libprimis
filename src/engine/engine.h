@@ -303,31 +303,6 @@ extern void updatedynlights();
 extern int finddynlights();
 extern bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags);
 
-// material
-
-extern float matliquidsx1, matliquidsy1, matliquidsx2, matliquidsy2;
-extern float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;
-extern float matrefractsx1, matrefractsy1, matrefractsx2, matrefractsy2;
-extern uint matliquidtiles[lighttilemaxheight], matsolidtiles[lighttilemaxheight];
-extern vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4];
-extern const vec matnormals[6];
-
-extern int showmat;
-
-extern int findmaterial(const char *name);
-extern const char *findmaterialname(int mat);
-extern const char *getmaterialdesc(int mat, const char *prefix = "");
-extern void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface> &matsurfs);
-extern void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &matsurfs);
-extern int optimizematsurfs(materialsurface *matbuf, int matsurfs);
-extern void setupmaterials(int start = 0, int len = 0);
-extern int findmaterials();
-extern void rendermaterialmask();
-extern void renderliquidmaterials();
-extern void rendersolidmaterials();
-extern void rendereditmaterials();
-extern void renderminimapmaterials();
-
 // command
 
 extern void setvarchecked(ident *id, int val);

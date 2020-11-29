@@ -8,6 +8,7 @@
 #include "rendersky.h"
 
 #include "world/light.h"
+#include "world/material.h"
 #include "world/physics.h"
 
 

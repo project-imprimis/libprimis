@@ -10,6 +10,8 @@
 #include "render/octarender.h"
 #include "render/rendergl.h"
 
+#include "world/material.h"
+
 bool boxoutline = false;
 
 void boxs(int orient, vec o, const vec &s, float size)

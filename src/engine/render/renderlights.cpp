@@ -10,6 +10,7 @@
 #include "stain.h"
 
 #include "world/light.h"
+#include "world/material.h"
 
 int gw = -1,
     gh = -1,

@@ -14,6 +14,7 @@
 #include "renderwindow.h"
 #include "water.h"
 
+#include "world/material.h"
 #include "world/raycube.h"
 
 #include "interface/input.h"

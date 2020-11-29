@@ -7,6 +7,7 @@
 #include "renderwindow.h"
 
 #include "world/light.h"
+#include "world/material.h"
 
 template<int BPP>
 static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
