@@ -5,6 +5,7 @@
 #include "raycube.h"
 
 #include "interface/input.h"
+#include "interface/ui.h"
 
 #include "render/octarender.h"
 #include "render/rendergl.h"

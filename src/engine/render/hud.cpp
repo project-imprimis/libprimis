@@ -12,6 +12,7 @@
 #include "renderwindow.h"
 
 #include "interface/input.h"
+#include "interface/ui.h"
 
 #include "world/physics.h"
 

@@ -491,29 +491,6 @@ extern void particle_flare(const vec &p, const vec &dest, int fade, int type, in
 extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
 extern void removetrackedparticles(physent *owner = NULL);
 
-// ui
-
-namespace UI
-{
-    bool hascursor();
-    void getcursorpos(float &x, float &y);
-    void resetcursor();
-    bool movecursor(int dx, int dy);
-    bool keypress(int code, bool isdown);
-    bool textinput(const char *str, int len);
-    float abovehud();
-
-    void setup();
-    void update();
-    void render();
-    void cleanup();
-
-    bool showui(const char *name);
-    bool hideui(const char *name);
-    bool toggleui(const char *name);
-    void holdui(const char *name, bool on);
-    bool uivisible(const char *name);
-}
 // menus
 
 extern int mainmenu;

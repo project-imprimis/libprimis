@@ -7,6 +7,8 @@
 
 #include "engine.h"
 
+#include "ui.h"
+
 void notifywelcome()
 {
     UI::hideui("servers");
