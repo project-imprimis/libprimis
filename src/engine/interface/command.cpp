@@ -3,6 +3,8 @@
 
 #include "engine.h"
 
+#include "world/octaedit.h"
+
 hashnameset<ident> idents; // contains ALL vars/commands/aliases
 vector<ident *> identmap;
 ident *dummyident = NULL;

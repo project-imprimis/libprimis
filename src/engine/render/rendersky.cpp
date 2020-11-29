@@ -16,6 +16,7 @@
 #include "rendersky.h"
 
 #include "world/light.h"
+#include "world/octaedit.h"
 #include "world/raycube.h"
 
 Texture *sky[6] = { 0, 0, 0, 0, 0, 0 };

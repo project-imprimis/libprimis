@@ -2,6 +2,7 @@
 
 #include "engine.h"
 
+#include "octaedit.h"
 #include "raycube.h"
 #include "worldio.h"
 

@@ -20,6 +20,7 @@
 
 #include "interface/input.h"
 
+#include "world/octaedit.h"
 #include "world/raycube.h"
 
 Shader *particleshader          = NULL,

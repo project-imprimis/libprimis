@@ -15,6 +15,7 @@
 #include "interface/ui.h"
 
 #include "world/physics.h"
+#include "world/octaedit.h"
 
 void gl_drawmainmenu()
 {

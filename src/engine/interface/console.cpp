@@ -7,6 +7,8 @@
 #include "render/rendertext.h"
 #include "input.h"
 
+#include "world/octaedit.h"
+
 static const int maxconsolelines = 1000;
 struct cline
 {

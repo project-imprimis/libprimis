@@ -12,6 +12,7 @@
 #include "world/dynlight.h"
 #include "world/light.h"
 #include "world/material.h"
+#include "world/octaedit.h"
 
 int gw = -1,
     gh = -1,

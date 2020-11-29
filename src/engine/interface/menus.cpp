@@ -9,6 +9,8 @@
 
 #include "ui.h"
 
+#include "world/octaedit.h"
+
 void notifywelcome()
 {
     UI::hideui("servers");

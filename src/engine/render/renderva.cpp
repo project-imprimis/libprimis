@@ -9,6 +9,7 @@
 #include "renderwindow.h"
 #include "rendersky.h"
 
+#include "world/octaedit.h"
 #include "world/raycube.h"
 
 static inline void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)

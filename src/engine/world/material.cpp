@@ -18,10 +18,12 @@
 #include "engine.h"
 
 #include "material.h"
+#include "octaedit.h"
 
 #include "render/octarender.h"
 #include "render/rendergl.h"
 #include "render/water.h"
+
 
 struct QuadNode
 {

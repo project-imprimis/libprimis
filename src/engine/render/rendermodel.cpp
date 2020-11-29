@@ -6,6 +6,7 @@
 #include "rendermodel.h"
 #include "renderwindow.h"
 
+#include "world/octaedit.h"
 #include "world/physics.h"
 
 VAR(oqdynent, 0, 1, 1);

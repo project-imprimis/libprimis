@@ -3,6 +3,7 @@
 #include "engine.h"
 
 #include "light.h"
+#include "octaedit.h"
 #include "physics.h"
 #include "raycube.h"
 #include "worldio.h"

@@ -11,6 +11,8 @@
 
 #include "interface/input.h"
 
+#include "world/octaedit.h"
+
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 

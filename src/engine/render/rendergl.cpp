@@ -15,6 +15,7 @@
 #include "water.h"
 
 #include "world/material.h"
+#include "world/octaedit.h"
 #include "world/raycube.h"
 
 #include "interface/input.h"
