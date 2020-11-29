@@ -297,12 +297,6 @@ extern void genshadowmeshes();
 extern shadowmesh *findshadowmesh(int idx, extentity &e);
 extern void rendershadowmesh(shadowmesh *m);
 
-// dynlight
-
-extern void updatedynlights();
-extern int finddynlights();
-extern bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags);
-
 // command
 
 extern void setvarchecked(ident *id, int val);

@@ -9,6 +9,7 @@
  */
 #include "engine.h"
 
+#include "dynlight.h"
 #include "physics.h"
 
 VARNP(dynlights, usedynlights, 0, 1, 1);
