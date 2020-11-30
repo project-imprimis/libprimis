@@ -184,16 +184,6 @@ extern int csmshadowmap, rhinoq;
 extern int rsmcull;
 extern GLuint gfbo, msfbo, rhfbo;
 
-enum
-{
-    AA_Unused = 0,
-    AA_Luma,
-    AA_Masked,
-    AA_Split,
-    AA_SplitLuma,
-    AA_SplitMasked,
-};
-
 //allows passing nothing to internal uses of gbuffer fxn
 //(the parameter is for taking a game function to be rendered onscreen)
 inline void dummyfxn()
@@ -215,8 +205,8 @@ extern void shademinimap(const vec &color = vec(-1, -1, -1));
 extern void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
 extern void rendertransparent();
 extern void renderao();
-extern void loadhdrshaders(int aa = AA_Unused);
-extern void processhdr(GLuint outfbo = 0, int aa = AA_Unused);
+extern void loadhdrshaders(int aa);
+extern void processhdr(GLuint outfbo, int aa);
 extern void copyhdr(int sw, int sh, GLuint fbo, int dw = 0, int dh = 0, bool flipx = false, bool flipy = false, bool swapxy = false);
 extern void setuplights();
 extern void setupgbuffer();

@@ -12,4 +12,15 @@ extern void disableaamask();
 extern void doaa(GLuint outfbo, void (*resolve)(GLuint, int));
 extern bool debugaa();
 extern void cleanupaa();
+
+enum
+{
+    AA_Unused = 0,
+    AA_Luma,
+    AA_Masked,
+    AA_Split,
+    AA_SplitLuma,
+    AA_SplitMasked,
+};
+
 #endif
