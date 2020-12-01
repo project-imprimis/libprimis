@@ -7,6 +7,8 @@
 #include "rendergl.h"
 #include "rendersky.h"
 
+#include "interface/menus.h"
+
 #include "world/light.h"
 #include "world/material.h"
 #include "world/octaedit.h"

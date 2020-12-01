@@ -1,7 +1,9 @@
 // console.cpp: the console buffer, its display, and command line control
 
 #include "engine.h"
+
 #include "ui.h"
+#include "menus.h"
 
 //input.h needs rendertext's objects
 #include "render/rendertext.h"

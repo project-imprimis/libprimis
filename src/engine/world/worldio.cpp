@@ -6,6 +6,8 @@
 #include "raycube.h"
 #include "worldio.h"
 
+#include "interface/menus.h"
+
 #include "render/octarender.h"
 #include "render/renderwindow.h"
 

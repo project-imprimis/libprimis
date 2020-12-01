@@ -7,6 +7,7 @@
 
 #include "engine.h"
 
+#include "menus.h"
 #include "ui.h"
 
 #include "world/octaedit.h"

@@ -424,13 +424,4 @@ extern void particle_flare(const vec &p, const vec &dest, int fade, int type, in
 extern void particle_fireball(const vec &dest, float max, int type, int fade = -1, int color = 0xFFFFFF, float size = 4.0f);
 extern void removetrackedparticles(physent *owner = NULL);
 
-// menus
-
-extern int mainmenu;
-
-extern void addchange(const char *desc, int type);
-extern void clearchanges(int type);
-extern void menuprocess();
-extern void clearmainmenu();
-
 #endif

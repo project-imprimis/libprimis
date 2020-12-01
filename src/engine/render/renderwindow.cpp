@@ -10,6 +10,7 @@
 #include "stain.h"
 
 #include "interface/input.h"
+#include "interface/menus.h"
 
 #include "world/octaedit.h"
 

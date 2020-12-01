@@ -4,6 +4,7 @@
 #include "SDL_mixer.h"
 
 #include "input.h"
+#include "menus.h"
 #include "sound.h"
 
 #include "render/renderwindow.h"

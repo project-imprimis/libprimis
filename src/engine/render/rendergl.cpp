@@ -19,6 +19,7 @@
 #include "world/raycube.h"
 
 #include "interface/input.h"
+#include "interface/menus.h"
 #include "interface/ui.h"
 
 bool hasFBMSBS = false,

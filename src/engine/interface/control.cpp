@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "menus.h"
+
 bool inbetweenframes = false,
      renderedframe = true;
 

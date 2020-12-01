@@ -8,6 +8,8 @@
 #include "rendertimers.h"
 #include "renderwindow.h"
 
+#include "interface/menus.h"
+
 Shader *Shader::lastshader = NULL;
 
 Shader *nullshader = NULL,
