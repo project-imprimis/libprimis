@@ -1,4 +1,4 @@
-# The Imprimis Engine
+# The Libprimis Engine
 
 #### This is a work in progress and subject to modification and additions.
 
@@ -349,7 +349,7 @@ the best way to retrieve the assets for the game is by the command line utility
 ### 1.3 Conventions and Units
 ---
 
-Imprimis uses some standard units which allow for users to contextualize and
+Libprimis uses some standard units which allow for users to contextualize and
 orient themselves in the worlds it creates.
 
 #### 1.3.1 Distances
@@ -410,7 +410,7 @@ images to the screen.
 A vector is a set of multiple scalars (standard numbers) which together
 represent a multidimensional location in some space. This space does not have to
 be positional, as concepts like colors are usually also represented as a vector
-(components are `R`ed, `G`reen, and `B`lue). Most vectors in Imprimis are three
+(components are `R`ed, `G`reen, and `B`lue). Most vectors in Libprimis are three
 dimensional, but second dimensional, fourth dimensional, complex (quaternions)
 and dual (dualquats) are also represented.
 
@@ -481,7 +481,7 @@ of the engine.
 * F: Display, sound, and user inputs get handled by SDL.
 * G: Local gameplay can be run through a game server hosted clientside.
 
-The components of the system handled by the Imprimis project is the:
+The components of the system handled by the Libprimis project is the:
 
 * Game engine: core routines needed for the gamecode to run a game
 * Game code: an actual game written using the facilities written in the engine
@@ -491,7 +491,7 @@ The components of the system handled by the Imprimis project is the:
 ## 1.5 File Structure
 ---
 
-Imprimis' files are organized essentially into three folders, which carry out
+Libprimis' files are organized essentially into three folders, which carry out
 largely different roles in the application. The folder containing the engine
 proper, naturally, is called `/engine`. There is also a folder for shared
 library-like functionality in `/shared` while the game code is located in a
@@ -576,16 +576,16 @@ including entity, player, particle, and physics support.
 ## 1.6 System Contexts
 ---
 
-The Imprimis engine, like any other program, is designed for particular
-underlying hardware and software contexts. The Imprimis engine does not
+The Libprimis engine, like any other program, is designed for particular
+underlying hardware and software contexts. The Libprimis engine does not
 especially target a huge breadth of hardware and operating system contexts, less
-than even its predecessor engines, as a result of Imprimis' focus on providing
+than even its predecessor engines, as a result of Libprimis' focus on providing
 good support to the platforms it does target.
 
 ### 1.6.1 Operating System
 ---
 
-Imprimis officially supports only the 64-bit Windows and Linux platforms. While
+Libprimis officially supports only the 64-bit Windows and Linux platforms. While
 a 64-bit OS is not strictly required to implement the engine, 32-bit OSes have
 fallen from widespread use and as a result are not part of what the engine
 explicitly targets.
@@ -600,18 +600,18 @@ reasons:
 ### 1.6.2 Hardware
 ---
 
-Imprimis currently targets only the x86-64 instruction set, widely used by
-desktops and laptops. Imprimis does not currently target ARMv8 (used by mobile
+Libprimis currently targets only the x86-64 instruction set, widely used by
+desktops and laptops. Libprimis does not currently target ARMv8 (used by mobile
 devices) or POWER architectures which are not widely used for gaming.
 
-Imprimis only supports little-endian bit ordering and as a result lacks the
+Libprimis only supports little-endian bit ordering and as a result lacks the
 capabilities to run on big-endian systems such as the aformentioned POWER.
 
 For graphics processing, hardware capable of supporting the OpenGL 4.0 standard
 is required; this includes graphics at least as new as Intel Ivy Bridge, AMD's
 Northern Islands (HD 5000 series), or Nvidia's Fermi (GTX 400 series). Older
 hardware support is omitted as few cards of this era are capable of running
-Imprimis at reasonable frame rates.
+Libprimis at reasonable frame rates.
 
 The engine does not require the SSSE3 (Supplemental Streaming SIMD Extension 3)
 extensions required of many games and as a result can run on Phenom era
@@ -619,16 +619,16 @@ processors without issue.
 
 #### Performance Considerations
 
-The Imprimis engine is single-threaded, making many-core CPUs largely irrelevant
-to the engine's performance; therefore, any big-core (non Atom or Jaguar based)
-CPU since around 2010 should be easily adequate to run well-designed levels on
-Imprimis.
+The Libprimis engine is single-threaded, making multicore CPUs irrelevant to the
+engine's performance; therefore, any big-core (non Atom or Jaguar based) CPU
+since around 2010 should be easily adequate to run well-designed levels on
+Libprimis.
 
 At least two gigabytes of RAM is recommended to run the game, while four or more
 is easily sufficient to fully utilize the engine.
 
 Nearly all graphics cards that support the OpenGL 4.0 standard should be able to
-run Imprimis at reasonable speeds, though a card of the RX 460/GTX 950 class is
+run Libprimis at reasonable speeds, though a card of the RX 460/GTX 950 class is
 needed to bump graphics up to high levels.
 
 # 2. World
@@ -647,9 +647,9 @@ static entities.
 ## 2.1 Octree Geometry
 ---
 
-The Imprimis engine's geometry system is very different than most engines and
+The Libprimis engine's geometry system is very different than most engines and
 has different strengths and weaknesses with respect to typical polygon soup
-engines such as Unreal or the Quake family of engines. Imprimis' octal tree
+engines such as Unreal or the Quake family of engines. Libprimis' octal tree
 geometry does not record map vertices in terms of typical positon vectors, as
 the vast majority of 3D rendering software uses, instead opting to use an octal
 tree format.
@@ -657,9 +657,9 @@ tree format.
 ### 2.1.1 Octree Data Structure & Cube Geometry
 ---
 
-Imprimis stores its data in an octal tree, in which each cube of edge length *l*
-is divided into eight cubes with edge length *l*/2. This allows for a level to
-be efficiently and recursively divided into smaller and smaller pieces. The
+Libprimis stores its data in an octal tree, in which each cube of edge length
+*l* is divided into eight cubes with edge length *l*/2. This allows for a level
+to be efficiently and recursively divided into smaller and smaller pieces. The
 power of this data structure is that large, faraway objects can occupy
 relatively fewer nodes in the data tree than objects in the level have.
 
@@ -673,9 +673,9 @@ default map is 2^10 = 2^7m = 128m on edge. Due to limitations of the renderer's
 z-buffer precision, distances beyond about half a kilometer on edge are not
 generally recommended.
 
-Cubes in Imprimis, the most basic form of geometry in the game, therefore occupy
-the octree; instead of vertices in other engines being determined by their 3D
-vector from the origin, a cube's place in the octal tree determines its
+Cubes in Libprimis, the most basic form of geometry in the game, therefore
+occupy the octree; instead of vertices in other engines being determined by
+their 3D vector from the origin, a cube's place in the octal tree determines its
 location.
 
 ### 2.1.2 Child Nodes
