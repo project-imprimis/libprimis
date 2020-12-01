@@ -29,7 +29,7 @@ that is written in the engine.
 To fully understand this text, it is expected that readers understand the basics
 of functional and object-oriented programming paradigms, as well as have a basic
 knowledge of linear and vector algebra; these mathematical concepts are the core
-of how 3D engines like Imprimis' are designed. A few rendering techniques, such
+of how 3D engines like Libprimis' are designed. A few rendering techniques, such
 as global illumination, additionally use more complex mathematics borrowed from
 linear analysis, including multipole expansions and Fourier series.
 
@@ -87,7 +87,7 @@ linear analysis, including multipole expansions and Fourier series.
 # 1. Standards
 ---
 
-To be a functioning project, Imprimis has some standards which make it
+To be a functioning project, Libprimis has some standards which make it
 straightforward to communicate effectively. While some particular standards may
 be clumsy for particular uses, it is important that the project be consistent,
 not only for clarity of code but also for documentation and ease of extension.
@@ -145,7 +145,7 @@ enum
 #### Enums
 
 Enums also are always expanded with a single element per line. For aesthetics,
-it is best to place all the equals in the same location (as above). Imprimis
+it is best to place all the equals in the same location (as above). Libprimis
 uses no named enums besides those inhereted from ENet.
 
 #### `for` loops
@@ -772,7 +772,7 @@ if desired.
 
 While octree subdivision allows for the inclusion of small pieces of geometry,
 this is not on its own adequate due to the fact that octree nodes are, well,
-cubes. To allow for maps which have shapes that are not all boxes, Imprimis,
+cubes. To allow for maps which have shapes that are not all boxes, Libprimis,
 like other games in the Cube family, allows for limited, discrete deformation of
 octree nodes.
 
@@ -830,7 +830,7 @@ textured.
 ## 2.2 Materials
 ---
 
-There are several materials in Imprimis which are capable of modifying their
+There are several materials in Libprimis which are capable of modifying their
 volume's properties. Materials in general are combinable (though there are many
 exceptions) so that multiple effects on the geometry can be combined. Because
 materials do not have the same deformation ability as geometry, materials are
@@ -1178,7 +1178,7 @@ fractional offsets are in powers of 2 (a 1024x texture needs to be offset by
 `refract` modifies the refractive behaviors of materials that are within alpha
 material. Refraction is the distortion of rays or light traveling through a
 material due to the change in the speed in light at material boundaries, and is
-handled in Imprimis via screenspace effects. The intensity of the refraction
+handled in Libprimis via screenspace effects. The intensity of the refraction
 is handled by the `scale` parameter and the color of the refraction is
 controlled by the `R G B` parameters; `1 1 1` is the default white color.
 
@@ -1231,7 +1231,7 @@ conveyor belts) and as such fractional values here are most commonly employed.
 ## 2.4 Global Properties
 ---
 
-The world in Imprimis has many global variables that affect the entire level
+The world in Libprimis has many global variables that affect the entire level
 evenly. These include ambient lighting, fog, and skybox settings, as well as
 more technical aspects such as mipping intensity. This section does not include
 the global settings for individual materials, as is covered in §2.2.
@@ -1244,11 +1244,11 @@ which casts shadows like any other light, but from a projection at infinity.
 Sunlight therefore projects perfect quadrilaterals from rectangular objects
 (as opposed to the trapezoids of point lights on the level).
 
-Sunlight is also the only type of light that takes advantage of Imprimis' global
-illumination capability, as enabling it for standard lights is too expensive.
-Global illumination by sunlight is capable of providing ambient lighting to
-partially lit rooms and is faster than using large numbers of on-level point
-lights.
+Sunlight is also the only type of light that takes advantage of Libprimis'
+global illumination capability, as enabling it for standard lights is too
+expensive. Global illumination by sunlight is capable of providing ambient
+lighting to partially lit rooms and is faster than using large numbers of
+on-level point lights.
 
 Sunlight has just four variables controlling its behavior, which set its size,
 color, and location.
@@ -1310,7 +1310,7 @@ particularly convenient for its simplicity of projection for the engine and its
 relatively low distortion (as opposed to a single-face projection like Mercator)
 while remaining fairly simple to comprehend.
 
-Skyboxes in Imprimis are passed as a set of six images:
+Skyboxes in Libprimis are passed as a set of six images:
 
 * **bk**: the backside texture (normal facing south)
 * **dn**: the bottom texture (normal facing upwards)
@@ -1410,9 +1410,9 @@ apparent intensity of the light source, and the characteristic color of the sky.
 ## 2.5 World Level Format
 ---
 
-Because of the Imprimis engine's recursive octree geometry format, it is not
+Because of the Libprimis engine's recursive octree geometry format, it is not
 practical to save levels in a standardized polygon soup format like GLTF.
-Instead, Imprimis saves levels in its own format, the general details of which
+Instead, Libprimis saves levels in its own format, the general details of which
 are explained in this section.
 
 ### 2.5.1 Map Format Summary
@@ -1537,7 +1537,7 @@ always themselves static on the level and do not move unless manipulated by an
 editor; however they can have dynamic effects which may make them appear to
 move.
 
-Entities in Imprimis all have five attributes each, though not all attributes
+Entities in Libprimis all have five attributes each, though not all attributes
 are necessarily defined for a given model. The consistency of ent attributes is
 designed to make user interface design as straightforward as possible such that
 complex dynamic methods for menus are not necessary to edit entities.
@@ -1566,7 +1566,7 @@ too expensive to enable on a light-by-light basis. For similar reasons, only
 point lights are supported, as it is in fact *very difficult* to create lights
 with configurations more complex than ideal point radiators.
 
-As lights are one of the key cogs of the deferred renderer used in Imprimis,
+As lights are one of the key cogs of the deferred renderer used in Libprimis,
 a more technical discussion of their behavior with respect to the rendering
 pipeline can be found in that section.
 
@@ -1617,9 +1617,9 @@ Mapmodels are usually supplied in the md3 (Quake III), obj (Wavefront), or iqm
 maps) to define their surface normals, speculars, and specularity. Unlike level
 geometry, mapmodels do not support parallax mapping.
 
-Mapmodels in Imprimis have support for hitboxes which closely mirror that of the
-physical model; however, mapmodels do not support decals and as a result weapons
-hitting mapmodels do not leave bullet marks like ordinary geometry does.
+Mapmodels in Libprimis have support for hitboxes which closely mirror that of
+the physical model; however, mapmodels do not support decals and as a result
+weapons hitting mapmodels do not leave bullet marks like ordinary geometry does.
 
 #### Attributes
 
@@ -2569,11 +2569,11 @@ Physents all have the following properties:
 # 5 Render
 ---
 
-The core of the Imprimis engine is its renderer. The renderer is what transforms
-the abstract objects in the world into visuals onscreen.
+The core of the Libprimis engine is its renderer. The renderer is what
+transforms the abstract objects in the world into visuals onscreen.
 
-Imprimis' rendering capabilities are essentially a subset of Tesseract's, as
-many static features in the Tesseract engine are not possible in Imprimis'
+Libprimis' rendering capabilities are essentially a subset of Tesseract's, as
+many static features in the Tesseract engine are not possible in Libprimis'
 dynamic use case. The renderer is deferred, as opposed to forward as with
 engines like Cube 2, and is capable of large numbers of dynamic lights onscreen
 due to its architecture.
@@ -2700,11 +2700,11 @@ areas, which must be done with an actual light entity.
 ## 5.2 Lighting
 ---
 
-Imprimis' light and shadow system is built on a deferred rendering pipeline
+Libprimis' light and shadow system is built on a deferred rendering pipeline
 and is the main difference between it and older engines such as Cube 2. This
 deferred pipeline offers advantages largely in the quantity of lights that can
 be dynamically rendered onto the scene; however, it is not superior to Cube 2's
-forward rendering pipeline in all aspects. The Imprimis rendering pipeline is
+forward rendering pipeline in all aspects. The Libprimis rendering pipeline is
 essentially the same as Tesseract's, and is outlined here.
 
 There are essentially three types of lights in the engine:
@@ -2785,7 +2785,7 @@ able to do.
 ### 5.2.4 Cascaded Shadow Maps (CSM)
 ---
 
-The sunlight in Imprimis is provided by a cascaded shadow map for maximum
+The sunlight in Libprimis is provided by a cascaded shadow map for maximum
 performance while retaining high angular sharpness. The cascaded shadow map,
 which for the sunlight is simply planar (as the sunlight comes collimated from
 infinitely far away, there is no point in a 3d projection), consists of multiple
@@ -2831,7 +2831,7 @@ at random directions at an equal rate. While this is not quite exactly true
 physically, it is a very good approximation to how lighting actually does
 diffusely reflect.
 
-The global illumination in Imprimis is calculated via the Radiance Hints
+The global illumination in Libprimis is calculated via the Radiance Hints
 algorithm, which allows for a cheap approximation of indirect lighting via a
 collection of *taps* placed automatically by the engine in the level. These taps
 have light seeded by the values of a reflective shadow map (RSM) that is
@@ -2869,7 +2869,7 @@ but have some level of visibility, including with respect to other non-trivial
 shaders (like specular or parallax mapping). Transparency is used by glass
 material as well as by geometry which has had alpha material applied to it.
 
-Transparency support in Imprimis is largely motivated by the particular
+Transparency support in Libprimis is largely motivated by the particular
 rendering architecture included therein. As a deferred renderer, which
 composites full-scene maps of particular properties, Tesseract faces steep costs
 to having multiple rendering layers (rendering a surface blended with another
@@ -2948,7 +2948,7 @@ way to provide the general appearance of reflectivity, and this is often good
 enough for casual users such as video gamers who are presumably concentrated on
 other things.
 
-Currently, Imprimis only uses SSR for its water material's top surface, which
+Currently, Libprimis only uses SSR for its water material's top surface, which
 satisfies nearly every condition where SSR is applicable: it's horizontal,
 non-metallic, and additionally its random movement distorts reflections, making
 extreme resolution less important.
@@ -3081,7 +3081,7 @@ quickly.
 ### 5.5.1 Supersample Antialiasing (SSAA)
 ---
 
-**SSAA is not implemented in Imprimis. It is described here as a useful basis
+**SSAA is not implemented in Libprimis. It is described here as a useful basis
 for the more advanced antialiasing techniques.**
 
 Supersample antialiasing is perhaps the simplest antialiasing method to
@@ -3120,15 +3120,15 @@ This is still quite expensive however, especially in a deferred renderer which
 presents many different images which have yet to be composited to a final output
 image. This then dictates that MSAA implementations have to do a MSAA pass over
 every buffer, of which there are several, in order to properly antialias the
-scene; this then makes MSAA several times slower in a game like Imprimis than
+scene; this then makes MSAA several times slower in a game like Libprimis than
 a forward-rendered game like Quake III or Cube 2.
 
 Like SSAA, MSAA tends to have large memory bandwidth demands relative to
 screenspace antialiasing methods.
 
-For this reason, while MSAA is included in Imprimis, it rapidly becomes
+For this reason, while MSAA is included in Libprimis, it rapidly becomes
 prohibitively expensive at high levels. For high performance antialiasing in a
-deferred engine like Imprimis, a different technique is needed: screenspace
+deferred engine like Libprimis, a different technique is needed: screenspace
 antialiasing.
 
 ### 5.5.3 Fast Approximate Antialiasing (FXAA)
@@ -3151,7 +3151,7 @@ from the scene at large.
 Unlike SSAA/MSAA however, FXAA is quite cheap with respect to memory bandwidth,
 instead utilizing the math units in a GPU more heavily to do its calculations.
 Usually, this ends up being cheaper than MSAA/SSAA, especially for a deferred
-engine like Imprimis, but it is worth noting that screenspace methods like FXAA
+engine like Libprimis, but it is worth noting that screenspace methods like FXAA
 do utilize a different part of the GPU heavily than MSAA/SSAA.
 
 ### 5.5.4 Temporal Quincunx Antialiasing (TQAA)
@@ -3199,7 +3199,7 @@ quite cheap and decently effective for all but the most picky of eyes.
 ### 5.5.5 Subpixel Morphological Antialiasing (SMAA)
 ---
 
-SMAA is the "crown jewel" antialiasing method included in Imprimis' parent
+SMAA is the "crown jewel" antialiasing method included in Libprimis' parent
 engine, Tesseract, and it is generally the most effective method overall for
 antialiasing; it uses TQAA and MSAA in addition to its own method at higher
 levels for additional scalibility.
@@ -3217,7 +3217,7 @@ Higher levels of SMAA utilize additional pixels stolen from TQAA and MSAA 2x in
 order to aid the filterer in sorting out interesting areas of the scene.
 
 Generally, SMAA is the best general-purpose antialiasing method available in
-Imprimis and is generally recommended as the default; methods like high MSAA
+Libprimis and is generally recommended as the default; methods like high MSAA
 values are only particularly useful for promotional purposes (e.g. screenshots).
 
 # 6 Actors and Models
@@ -3305,14 +3305,14 @@ and the following functions:
 ## 6.2 Models
 ---
 
-Models in Imprimis are not especially first-class citizens compared to the
+Models in Libprimis are not especially first-class citizens compared to the
 octree geometry that the world is built on, but they still play an important
 role, particularly in player models.
 
 ### 6.2.1 Model Format Overview
 ---
 
-Models for Imprimis currently are supported in two formats: OBJ (aka Wavefront)
+Models for Libprimis currently are supported in two formats: OBJ (aka Wavefront)
 and MD5 (aka Doom 3). These two formats do not particularly overlap in their
 utility and a very terse overview of the formats is given here. Neither of these
 formats are unique to Cube and OBJ in particular is extremely widely used.
@@ -3388,7 +3388,7 @@ to the player) console and scripting system.
 ## 7.4 Scripting
 ---
 
-Scripting in Imprimis is done using the language common to the entire Cube
+Scripting in Libprimis is done using the language common to the entire Cube
 series of engines, Cubescript. Cubescript, at least the part that can be
 considered consistent across games, is a very simple language; however, it has
 very large numbers of commands which extend it and make it useful.
@@ -3519,7 +3519,7 @@ foo = [
 ### 7.4.2 Commands
 ---
 
-Commands in Imprimis are the primary way to make Cubescript perform useful work
+Commands in Libprimis are the primary way to make Cubescript perform useful work
 (Cubescript is entirely useless without additional commands defined) as well as
 cause internal changes inside the engine. Commands are bound via a rather
 convoluted macro process, but the important part of how they work does not
@@ -3580,7 +3580,7 @@ equal to `fffs` would take three floats followed by a string.
 ### 7.4.3 Variables
 ---
 
-Variables, in the context of the Imprimis scripting system, refers to specific
+Variables, in the context of the Libprimis scripting system, refers to specific
 ingame variables which have been provided to the scripting system by way of yet
 another convoluted macro system. `VAR` macros allow different types of variables
 to be exposed to the scripting system in useful ways, meaning that options such
@@ -3589,7 +3589,7 @@ as settings can be directly controlled via Cubescript or the console.
 #### Integer Variables `VAR`
 
 Variables exposed to Cubescript which have the type of `int` are the most common
-ones used in Imprimis. These variables also take on the duty of boolean
+ones used in Libprimis. These variables also take on the duty of boolean
 settings, ones which are very common in the realm of settings, as Cubescript
 carries no notion of a boolean.
 
@@ -3721,7 +3721,7 @@ sense either.
 ## 8.2 Cube Objects
 ---
 
-Individual cube nodes, the heart of Imprimis' geometry system, are represented
+Individual cube nodes, the heart of Libprimis' geometry system, are represented
 in the code by C++ objects. There are two main objects which define a cube in
 the level, which are described here.
 
