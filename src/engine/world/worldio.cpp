@@ -272,7 +272,7 @@ enum
     OctaSave_Normal
 };
 
-#define LAYER_DUP (1<<7)
+static constexpr uint layerdup (1<<7);
 
 struct polysurfacecompat
 {
@@ -605,7 +605,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                         {
                             f->get<ushort>();
                         }
-                        if(surf.numverts&LAYER_DUP)
+                        if(surf.numverts & layerdup)
                         {
                             for(int k = 0; k < 4; ++k)
                             {
@@ -647,7 +647,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
                         }
                     }
                 }
-                if(hasuv && surf.numverts&LAYER_DUP)
+                if(hasuv && (surf.numverts & layerdup))
                 {
                     for(int k = 0; k < layerverts; ++k)
                     {
