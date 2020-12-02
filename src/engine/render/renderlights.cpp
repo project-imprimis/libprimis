@@ -9,6 +9,8 @@
 #include "rendertimers.h"
 #include "stain.h"
 
+#include "interface/control.h"
+
 #include "world/dynlight.h"
 #include "world/light.h"
 #include "world/material.h"

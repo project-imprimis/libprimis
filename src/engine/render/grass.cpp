@@ -4,6 +4,8 @@
 
 #include "grass.h"
 
+#include "interface/control.h"
+
 namespace //internal functionality not seen by other files
 {
     VARP(grass, 0, 1, 1);

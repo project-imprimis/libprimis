@@ -6,6 +6,8 @@
 #include "rendermodel.h"
 #include "renderwindow.h"
 
+#include "interface/control.h"
+
 #include "world/octaedit.h"
 #include "world/physics.h"
 

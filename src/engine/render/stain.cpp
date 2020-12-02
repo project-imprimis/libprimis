@@ -17,6 +17,8 @@
 #include "rendermodel.h"
 #include "stain.h"
 
+#include "interface/control.h"
+
 struct stainvert
 {
     vec pos;

@@ -12,6 +12,8 @@
 #include "rendergl.h"
 #include "rendertext.h"
 
+#include "interface/control.h"
+
 struct timer
 {
     enum

@@ -9,6 +9,7 @@
 #include "renderwindow.h"
 #include "rendersky.h"
 
+#include "interface/control.h"
 #include "world/octaedit.h"
 #include "world/raycube.h"
 

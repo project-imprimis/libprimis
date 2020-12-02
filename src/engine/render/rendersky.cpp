@@ -15,6 +15,8 @@
 #include "rendergl.h"
 #include "rendersky.h"
 
+#include "interface/control.h"
+
 #include "world/light.h"
 #include "world/octaedit.h"
 #include "world/raycube.h"

@@ -9,6 +9,7 @@
 #include "renderwindow.h"
 #include "stain.h"
 
+#include "interface/control.h"
 #include "interface/input.h"
 #include "interface/menus.h"
 

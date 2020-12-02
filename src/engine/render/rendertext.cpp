@@ -2,6 +2,8 @@
 
 #include "rendertext.h"
 
+#include "interface/control.h"
+
 static hashnameset<font> fonts;
 static font *fontdef = NULL;
 static int fontdeftex = 0;

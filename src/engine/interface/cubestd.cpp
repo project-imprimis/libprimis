@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "control.h"
+
 #include "render/hud.h"
 
 /*

@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include "control.h"
 #include "menus.h"
 
 bool inbetweenframes = false,

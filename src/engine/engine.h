@@ -10,11 +10,6 @@
 extern dynent *player;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
-extern int curtime;                     // current frame time
-extern int lastmillis;                  // last time
-extern int elapsedtime;                 // elapsed frame time
-extern int totalmillis;                 // total elapsed time
-extern uint totalsecs;
 extern int gamespeed, paused;
 
 extern int worldscale, worldsize;

@@ -4,6 +4,8 @@
 #include "rendergl.h"
 #include "water.h"
 
+#include "interface/control.h"
+
 #include "world/material.h"
 
 static const int numcaustics = 32;
