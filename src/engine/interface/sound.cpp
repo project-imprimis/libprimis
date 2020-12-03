@@ -3,6 +3,7 @@
 #include "engine.h"
 #include "SDL_mixer.h"
 
+#include "console.h"
 #include "control.h"
 #include "input.h"
 #include "menus.h"

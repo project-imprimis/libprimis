@@ -10,6 +10,7 @@
 #include "world/material.h"
 #include "world/octaedit.h"
 
+#include "interface/console.h"
 #include "interface/control.h"
 
 template<int BPP>

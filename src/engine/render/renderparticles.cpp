@@ -18,6 +18,7 @@
 #include "stain.h"
 #include "water.h"
 
+#include "interface/console.h"
 #include "interface/control.h"
 #include "interface/input.h"
 

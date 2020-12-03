@@ -2,6 +2,7 @@
 
 #include "engine.h"
 
+#include "console.h"
 #include "control.h"
 #include "ui.h"
 #include "menus.h"

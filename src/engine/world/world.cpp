@@ -8,6 +8,7 @@
 #include "raycube.h"
 #include "worldio.h"
 
+#include "interface/console.h"
 #include "interface/menus.h"
 #include "interface/sound.h"
 

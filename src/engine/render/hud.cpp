@@ -11,6 +11,7 @@
 #include "rendertimers.h"
 #include "renderwindow.h"
 
+#include "interface/console.h"
 #include "interface/control.h"
 #include "interface/input.h"
 #include "interface/menus.h"

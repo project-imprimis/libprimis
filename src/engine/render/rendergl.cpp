@@ -19,6 +19,7 @@
 #include "world/octaedit.h"
 #include "world/raycube.h"
 
+#include "interface/console.h"
 #include "interface/control.h"
 #include "interface/input.h"
 #include "interface/menus.h"

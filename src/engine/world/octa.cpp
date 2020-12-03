@@ -17,6 +17,8 @@
 #include "light.h"
 #include "raycube.h"
 
+#include "interface/console.h"
+
 #include "render/octarender.h"
 #include "render/renderwindow.h"
 

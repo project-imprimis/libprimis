@@ -6,6 +6,7 @@
 #include "rendermodel.h"
 #include "renderwindow.h"
 
+#include "interface/console.h"
 #include "interface/control.h"
 
 #include "world/octaedit.h"

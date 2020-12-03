@@ -5,6 +5,7 @@
 #include "physics.h"
 #include "raycube.h"
 
+#include "interface/console.h"
 #include "interface/control.h"
 #include "interface/input.h"
 #include "interface/ui.h"

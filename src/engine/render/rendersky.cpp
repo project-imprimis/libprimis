@@ -15,6 +15,7 @@
 #include "rendergl.h"
 #include "rendersky.h"
 
+#include "interface/console.h"
 #include "interface/control.h"
 
 #include "world/light.h"

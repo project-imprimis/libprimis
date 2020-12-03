@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include "console.h"
 #include "control.h"
 #include "input.h"
 #include "ui.h"

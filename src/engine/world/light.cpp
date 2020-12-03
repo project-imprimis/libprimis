@@ -2,6 +2,7 @@
 
 #include "light.h"
 
+#include "interface/console.h"
 #include "interface/input.h"
 
 #include "render/radiancehints.h"
