@@ -7,6 +7,7 @@
 
 #include "engine.h"
 
+#include "control.h"
 #include "menus.h"
 #include "ui.h"
 

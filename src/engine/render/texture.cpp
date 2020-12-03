@@ -10,6 +10,8 @@
 #include "world/material.h"
 #include "world/octaedit.h"
 
+#include "interface/control.h"
+
 template<int BPP>
 static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
 {

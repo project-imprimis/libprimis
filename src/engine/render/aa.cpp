@@ -11,6 +11,8 @@
 #include "rendergl.h"
 #include "rendertimers.h"
 
+#include "interface/control.h"
+
 extern int intel_texalpha_bug;
 //externally used vars
 VAR(tqaaresolvegather, 1, 0, 0);

@@ -7,6 +7,7 @@
 #include "rendergl.h"
 #include "rendersky.h"
 
+#include "interface/control.h"
 #include "interface/menus.h"
 
 #include "world/light.h"

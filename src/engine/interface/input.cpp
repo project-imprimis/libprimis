@@ -11,6 +11,7 @@
 
 #include "engine.h"
 
+#include "control.h"
 #include "ui.h"
 
 #include "render/rendergl.h"

@@ -22,6 +22,8 @@
 #include "rendermodel.h"
 #include "rendertimers.h"
 
+#include "interface/control.h"
+
 #include "world/light.h"
 
 GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },

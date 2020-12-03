@@ -3,6 +3,8 @@
 
 #include "engine.h"
 
+#include "control.h"
+
 #include "world/octaedit.h"
 
 hashnameset<ident> idents; // contains ALL vars/commands/aliases
