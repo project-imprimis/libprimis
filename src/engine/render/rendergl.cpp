@@ -4,6 +4,7 @@
 
 #include "aa.h"
 #include "grass.h"
+#include "hdr.h"
 #include "hud.h"
 #include "octarender.h"
 #include "radiancehints.h"

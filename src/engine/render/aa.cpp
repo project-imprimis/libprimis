@@ -8,6 +8,7 @@
 #include "engine.h"
 
 #include "aa.h"
+#include "hdr.h"
 #include "rendergl.h"
 #include "rendertimers.h"
 

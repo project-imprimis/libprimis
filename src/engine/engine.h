@@ -109,6 +109,13 @@ extern int spotlights;
 extern int volumetriclights;
 extern int nospeclights;
 extern int debugfullscreen;
+extern GLuint mshdrtex, mshdrfbo, msrefractfbo;
+extern GLuint refractfbo, refracttex;
+extern int hdrclear;
+
+extern int msaatonemap;
+extern int msaatonemapblit;
+
 
 enum
 {
@@ -186,8 +193,9 @@ inline void dummyfxn()
     return;
 }
 
+
+extern void resolvemsaacolor(int w, int h);
 extern bool shouldworkinoq();
-extern int  gethdrformat(int prec, int fallback = GL_RGB);
 extern void cleanupgbuffer();
 extern void initgbuffer();
 extern bool usepacknorm();
@@ -200,9 +208,6 @@ extern void shademinimap(const vec &color = vec(-1, -1, -1));
 extern void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
 extern void rendertransparent();
 extern void renderao();
-extern void loadhdrshaders(int aa);
-extern void processhdr(GLuint outfbo, int aa);
-extern void copyhdr(int sw, int sh, GLuint fbo, int dw = 0, int dh = 0, bool flipx = false, bool flipy = false, bool swapxy = false);
 extern void setuplights();
 extern void setupgbuffer();
 extern GLuint shouldscale();
