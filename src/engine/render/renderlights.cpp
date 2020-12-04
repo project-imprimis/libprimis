@@ -9,6 +9,7 @@
 #include "rendermodel.h"
 #include "rendersky.h"
 #include "rendertimers.h"
+#include "renderwindow.h"
 #include "stain.h"
 
 #include "interface/control.h"

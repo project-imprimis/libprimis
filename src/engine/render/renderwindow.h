@@ -2,6 +2,11 @@
 #define RENDERWINDOW_H_
 
 extern int fullscreen;
+extern int hudw, hudh;
+
+extern SDL_Window *screen;
+extern int screenw, screenh;
+
 extern void setupscreen();
 extern void restoregamma();
 extern void restorevsync();

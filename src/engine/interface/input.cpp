@@ -16,6 +16,7 @@
 #include "ui.h"
 
 #include "render/rendergl.h"
+#include "render/renderwindow.h"
 
 VARNP(relativemouse, userelativemouse, 0, 1, 1);
 

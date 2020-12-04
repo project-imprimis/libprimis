@@ -6,6 +6,7 @@
 
 #include "rendergl.h"
 #include "rendertimers.h"
+#include "renderwindow.h"
 
 #include "interface/control.h"
 

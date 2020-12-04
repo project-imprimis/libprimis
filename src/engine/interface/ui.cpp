@@ -13,6 +13,8 @@
 #include "render/rendertext.h"
 #include "textedit.h"
 
+#include "render/renderwindow.h"
+
 /* a quick note on unnamed function arguments, used here for many derived functions:
  *
  * c++ does legally allow functions to be defined with parameters with no name:

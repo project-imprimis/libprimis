@@ -4,6 +4,8 @@
 #include "control.h"
 #include "menus.h"
 
+#include "render/renderwindow.h"
+
 bool inbetweenframes = false,
      renderedframe = true;
 

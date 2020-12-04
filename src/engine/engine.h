@@ -19,9 +19,6 @@ extern vector<ushort> texmru;
 extern int xtraverts, xtravertsva;
 extern bool inbetweenframes, renderedframe;
 
-extern SDL_Window *screen;
-extern int screenw, screenh, renderw, renderh, hudw, hudh;
-
 extern vector<int> entgroup;
 
 // texture
