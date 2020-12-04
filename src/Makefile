@@ -77,6 +77,7 @@ CLIENT_OBJS= \
 	engine/interface/sound.o \
 	engine/interface/ui.o \
 	engine/render/aa.o \
+	engine/render/ao.o \
 	engine/render/grass.o \
 	engine/render/hdr.o \
 	engine/render/hud.o \

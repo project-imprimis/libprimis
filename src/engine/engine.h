@@ -109,6 +109,7 @@ extern int spotlights;
 extern int volumetriclights;
 extern int nospeclights;
 extern int debugfullscreen;
+extern matrix4 eyematrix;
 extern GLuint mshdrtex, mshdrfbo, msrefractfbo;
 extern GLuint refractfbo, refracttex;
 extern int hdrclear;
@@ -132,6 +133,10 @@ extern vec shadoworigin, shadowdir;
 extern float shadowradius, shadowbias;
 extern int shadowside, shadowspot;
 extern matrix4 shadowmatrix;
+
+extern void setbilateralshader(int radius, int pass, float depth);
+void clearbilateralshaders();
+void loadbilateralshaders();
 
 extern void loaddeferredlightshaders();
 extern void cleardeferredlightshaders();
