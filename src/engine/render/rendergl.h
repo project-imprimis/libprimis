@@ -1,6 +1,7 @@
 #ifndef RENDERGL_H_
 #define RENDERGL_H_
 
+extern int xtraverts, xtravertsva;
 extern int renderw, renderh;
 extern vec worldpos, camdir, camright, camup;
 extern bool hasS3TC, hasFXT1, hasLATC, hasFBMSBS, hasTQ, hasDBT, hasDBGO, hasES3, hasCI;

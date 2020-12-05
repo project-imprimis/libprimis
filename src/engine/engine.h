@@ -15,8 +15,6 @@ extern int gamespeed, paused;
 extern int worldscale, worldsize;
 extern int mapversion;
 extern char *maptitle;
-extern vector<ushort> texmru;
-extern int xtraverts, xtravertsva;
 extern bool inbetweenframes, renderedframe;
 
 extern vector<int> entgroup;

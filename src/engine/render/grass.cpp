@@ -3,6 +3,7 @@
 #include "engine.h"
 
 #include "grass.h"
+#include "rendergl.h"
 
 #include "interface/control.h"
 

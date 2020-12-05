@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include "rendergl.h"
 #include "rendertext.h"
 
 #include "interface/control.h"
