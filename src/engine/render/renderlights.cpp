@@ -51,6 +51,11 @@ GLuint msfbo = 0,
        msrefracttex = 0;
 std::vector<vec2> msaapositions;
 
+//`g`-buffer `scale`
+VARFP(gscale, 25, 100, 100, cleanupgbuffer());
+VARFP(gscalecubic, 0, 0, 1, cleanupgbuffer());
+VARFP(gscalenearest, 0, 0, 1, cleanupgbuffer());
+
 matrix4 eyematrix, worldmatrix, linearworldmatrix, screenmatrix;
 
 static Shader *bilateralshader[2] = { NULL, NULL };
@@ -141,8 +146,6 @@ void cleanupscale()
     }
     scalew = scaleh = -1;
 }
-
-extern int gscalecubic, gscalenearest;
 
 void setupscale(int sw, int sh, int w, int h)
 {
@@ -354,8 +357,6 @@ void maskgbuffer(const char *mask)
     }
     glDrawBuffers_(numbufs, drawbufs);
 }
-
-extern int hdrprec, gscale;
 
 void cleanupmsbuffer()
 {
@@ -871,11 +872,6 @@ void resolvemsaacolor(int w, int h)
     endtimer(resolvetimer);
 }
 
-//`g`-buffer `scale`
-VARFP(gscale, 25, 100, 100, cleanupgbuffer());
-VARFP(gscalecubic, 0, 0, 1, cleanupgbuffer());
-VARFP(gscalenearest, 0, 0, 1, cleanupgbuffer());
-
 float ldrscale = 1.0f,
       ldrscaleb = 1.0f/255;
 
@@ -940,7 +936,7 @@ static const int shadowatlassize = 4096;
 
 PackNode shadowatlaspacker(0, 0, shadowatlassize, shadowatlassize);
 
-extern int smminradius;
+VAR(smminradius, 0, 16, 10000);
 
 struct lightinfo
 {
@@ -1107,8 +1103,6 @@ struct shadowcache : hashtable<shadowcachekey, shadowcacheval>
     }
 };
 
-extern int smcache, smfilter, smgather;
-
 static const int shadowcacheevict = 2;
 
 GLuint shadowatlastex = 0,
@@ -1117,6 +1111,55 @@ GLenum shadowatlastarget = GL_NONE;
 shadowcache shadowcache;
 bool shadowcachefull = false;
 int evictshadowcache = 0;
+
+void cleanupshadowatlas()
+{
+    if(shadowatlastex)
+    {
+        glDeleteTextures(1, &shadowatlastex); shadowatlastex = 0;
+    }
+    if(shadowatlasfbo)
+    {
+        glDeleteFramebuffers_(1, &shadowatlasfbo);
+        shadowatlasfbo = 0;
+    }
+    clearshadowcache();
+}
+
+//`s`hadow `m`ap vars
+FVAR(smpolyfactor, -1e3f, 1, 1e3f);
+FVAR(smpolyoffset, -1e3f, 0, 1e3f);
+FVAR(smbias, -1e6f, 0.01f, 1e6f);
+FVAR(smpolyfactor2, -1e3f, 1.5f, 1e3f);
+FVAR(smpolyoffset2, -1e3f, 0, 1e3f);
+FVAR(smbias2, -1e6f, 0.02f, 1e6f);
+FVAR(smprec, 1e-3f, 1, 1e3f);
+FVAR(smcubeprec, 1e-3f, 1, 1e3f);
+FVAR(smspotprec, 1e-3f, 1, 1e3f);
+
+VARFP(smsize, 10, 12, 14, cleanupshadowatlas()); //size of shadow map: 2^size = x,y dimensions (1024x1024 at 10, 16384x16384 at 14)
+VARFP(smdepthprec, 0, 0, 2, cleanupshadowatlas());
+VAR(smsidecull, 0, 1, 1);
+VAR(smviscull, 0, 1, 1);
+VAR(smborder, 0, 3, 16);
+VAR(smborder2, 0, 4, 16);
+VAR(smminsize, 1, 96, 1024);
+VAR(smmaxsize, 1, 384, 1024);
+//VAR(smmaxsize, 1, 4096, 4096);
+VAR(smused, 1, 0, 0);
+VAR(smquery, 0, 1, 1);
+VARF(smcullside, 0, 1, 1, cleanupshadowatlas());
+VARF(smcache, 0, 1, 2, cleanupshadowatlas());
+VARFP(smfilter, 0, 2, 3, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
+VARFP(smgather, 0, 0, 1, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
+VAR(smnoshadow, 0, 0, 1);
+VAR(smdynshadow, 0, 1, 1);
+VAR(lightpassesused, 1, 0, 0);
+VAR(lightsvisible, 1, 0, 0);
+VAR(lightsoccluded, 1, 0, 0);
+VARN(lightbatches, lightbatchesused, 1, 0, 0);
+VARN(lightbatchrects, lightbatchrectsused, 1, 0, 0);
+VARN(lightbatchstacks, lightbatchstacksused, 1, 0, 0);
 
 static inline void setsmnoncomparemode() // use texture gather
 {
@@ -1132,7 +1175,6 @@ static inline void setsmcomparemode() // use embedded shadow cmp
     glTexParameteri(shadowatlastarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
-extern int usetexgather;
 static inline bool usegatherforsm()
 {
     return smfilter > 1 && smgather && usetexgather;
@@ -1175,8 +1217,6 @@ void viewshadowatlas()
 }
 VAR(debugshadowatlas, 0, 0, 1);
 
-extern int smdepthprec, smsize;
-
 void setupshadowatlas()
 {
     int size = min((1<<smsize), hwtexsize);
@@ -1207,20 +1247,6 @@ void setupshadowatlas()
     glBindFramebuffer_(GL_FRAMEBUFFER, 0);
 }
 
-void cleanupshadowatlas()
-{
-    if(shadowatlastex)
-    {
-        glDeleteTextures(1, &shadowatlastex); shadowatlastex = 0;
-    }
-    if(shadowatlasfbo)
-    {
-        glDeleteFramebuffers_(1, &shadowatlasfbo);
-        shadowatlasfbo = 0;
-    }
-    clearshadowcache();
-}
-
 const matrix4 cubeshadowviewmatrix[6] =
 {
     // sign-preserving cubemap projections
@@ -1231,42 +1257,6 @@ const matrix4 cubeshadowviewmatrix[6] =
     matrix4(vec(1, 0, 0), vec(0, 1, 0), vec(0, 0, -1)), // +Z
     matrix4(vec(1, 0, 0), vec(0, 1, 0), vec(0, 0,  1))  // -Z
 };
-
-//`s`hadow `m`ap vars
-FVAR(smpolyfactor, -1e3f, 1, 1e3f);
-FVAR(smpolyoffset, -1e3f, 0, 1e3f);
-FVAR(smbias, -1e6f, 0.01f, 1e6f);
-FVAR(smpolyfactor2, -1e3f, 1.5f, 1e3f);
-FVAR(smpolyoffset2, -1e3f, 0, 1e3f);
-FVAR(smbias2, -1e6f, 0.02f, 1e6f);
-FVAR(smprec, 1e-3f, 1, 1e3f);
-FVAR(smcubeprec, 1e-3f, 1, 1e3f);
-FVAR(smspotprec, 1e-3f, 1, 1e3f);
-
-VARFP(smsize, 10, 12, 14, cleanupshadowatlas()); //size of shadow map: 2^size = x,y dimensions (1024x1024 at 10, 16384x16384 at 14)
-VARFP(smdepthprec, 0, 0, 2, cleanupshadowatlas());
-VAR(smsidecull, 0, 1, 1);
-VAR(smviscull, 0, 1, 1);
-VAR(smborder, 0, 3, 16);
-VAR(smborder2, 0, 4, 16);
-VAR(smminradius, 0, 16, 10000);
-VAR(smminsize, 1, 96, 1024);
-VAR(smmaxsize, 1, 384, 1024);
-//VAR(smmaxsize, 1, 4096, 4096);
-VAR(smused, 1, 0, 0);
-VAR(smquery, 0, 1, 1);
-VARF(smcullside, 0, 1, 1, cleanupshadowatlas());
-VARF(smcache, 0, 1, 2, cleanupshadowatlas());
-VARFP(smfilter, 0, 2, 3, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
-VARFP(smgather, 0, 0, 1, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
-VAR(smnoshadow, 0, 0, 1);
-VAR(smdynshadow, 0, 1, 1);
-VAR(lightpassesused, 1, 0, 0);
-VAR(lightsvisible, 1, 0, 0);
-VAR(lightsoccluded, 1, 0, 0);
-VARN(lightbatches, lightbatchesused, 1, 0, 0);
-VARN(lightbatchrects, lightbatchrectsused, 1, 0, 0);
-VARN(lightbatchstacks, lightbatchstacksused, 1, 0, 0);
 
 static const int LightTile_MaxBatch = 8; //also used in lightbatchkey below
 
@@ -1843,7 +1833,17 @@ void clearvolumetricshaders()
     }
 }
 
-extern int volsteps, volbilateral, volblur, volreduce;
+VARFP(volumetric, 0, 1, 1, cleanupvolumetric());
+VARFP(volreduce, 0, 1, 2, cleanupvolumetric());
+VARFP(volbilateral, 0, 1, 3, cleanupvolumetric());
+FVAR(volbilateraldepth, 0, 4, 1e3f);
+VARFP(volblur, 0, 1, 3, cleanupvolumetric());
+VARFP(volsteps, 1, 32, 128, cleanupvolumetric());
+FVAR(volminstep, 0, 0.0625f, 1e3f);
+FVAR(volprefilter, 0, 0.1, 1e3f);
+FVAR(voldistclamp, 0, 0.99f, 2);
+CVAR1R(volcolor, 0x808080);
+FVARR(volscale, 0, 1, 16);
 
 Shader *loadvolumetricshader()
 {
@@ -1946,18 +1946,6 @@ void cleanupvolumetric()
 
     clearvolumetricshaders();
 }
-
-VARFP(volumetric, 0, 1, 1, cleanupvolumetric());
-VARFP(volreduce, 0, 1, 2, cleanupvolumetric());
-VARFP(volbilateral, 0, 1, 3, cleanupvolumetric());
-FVAR(volbilateraldepth, 0, 4, 1e3f);
-VARFP(volblur, 0, 1, 3, cleanupvolumetric());
-VARFP(volsteps, 1, 32, 128, cleanupvolumetric());
-FVAR(volminstep, 0, 0.0625f, 1e3f);
-FVAR(volprefilter, 0, 0.1, 1e3f);
-FVAR(voldistclamp, 0, 0.99f, 2);
-CVAR1R(volcolor, 0x808080);
-FVARR(volscale, 0, 1, 16);
 
 static Shader *deferredlightshader = NULL, *deferredminimapshader = NULL, *deferredmsaapixelshader = NULL, *deferredmsaasampleshader = NULL;
 

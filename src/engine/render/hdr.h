@@ -4,6 +4,7 @@
 extern float hdrgamma;
 extern GLuint hdrfbo, hdrtex, bloompbo, bloomfbo[6], bloomtex[6];
 extern int bloomw, bloomh;
+extern int hdrprec;
 extern GLenum hdrformat;
 
 extern int  gethdrformat(int prec, int fallback = GL_RGB);

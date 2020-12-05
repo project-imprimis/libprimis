@@ -30,6 +30,7 @@ extern int fog;
 extern bvec fogcolor;
 extern vec curfogcolor;
 extern int wireframe;
+extern int usetexgather;
 
 extern int glerr;
 extern void glerror(const char *file, int line, GLenum error);
