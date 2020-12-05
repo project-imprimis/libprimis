@@ -35,8 +35,6 @@ static vector<timer> timers;
 static vector<int> timerorder;
 static int timercycle = 0;
 
-extern int usetimers;
-
 timer *findtimer(const char *name, bool gpu)
 {
     for(int i = 0; i < timers.length(); i++)
