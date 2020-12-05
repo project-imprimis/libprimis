@@ -10,6 +10,7 @@
 #include "interface/input.h"
 #include "interface/ui.h"
 
+#include "render/hud.h"
 #include "render/octarender.h"
 #include "render/rendergl.h"
 
@@ -1623,8 +1624,6 @@ void genprefabmesh(prefab &p)
     useshaderbyname("prefab");
 }
 
-extern bvec outlinecolor;
-
 static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float roll, float size, const vec &color)
 {
     if(!p.numtris)
@@ -2577,7 +2576,6 @@ void rendertexturepanel(int w, int h)
 #define EDITSTAT(name, type, val) \
     ICOMMAND(editstat##name, "", (), \
     { \
-        extern int statrate; \
         static int laststat = 0; \
         static type prevstat = 0; \
         static type curstat = 0; \

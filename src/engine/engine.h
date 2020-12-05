@@ -234,6 +234,7 @@ extern void renderalphageom(int side);
 extern void rendermapmodels();
 extern void renderoutline();
 extern void cleanupva();
+extern bvec outlinecolor;
 
 extern bool isfoggedsphere(float rad, const vec &cv);
 extern int isvisiblesphere(float rad, const vec &cv);
