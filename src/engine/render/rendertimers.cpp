@@ -14,6 +14,10 @@
 
 #include "interface/control.h"
 
+void cleanuptimers(); //needed for timer script gvar
+VARFN(timer, usetimers, 0, 0, 1, cleanuptimers());
+VAR(frametimer, 0, 0, 1);
+
 struct timer
 {
     enum
@@ -137,8 +141,6 @@ void cleanuptimers()
     timerorder.shrink(0);
 }
 
-VARFN(timer, usetimers, 0, 0, 1, cleanuptimers());
-VAR(frametimer, 0, 0, 1);
 int framemillis = 0; // frame time (ie does not take into account the swap)
 
 void printtimers(int conw, int conh)
