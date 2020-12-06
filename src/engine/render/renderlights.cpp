@@ -1548,7 +1548,9 @@ void cascadedshadowmap::gencullplanes()
         splitinfo &split = splits[i];
         matrix4 mvp;
         mvp.mul(split.proj, model);
-        vec4 px = mvp.rowx(), py = mvp.rowy(), pw = mvp.roww();
+        vec4 px = mvp.rowx(),
+             py = mvp.rowy(),
+             pw = mvp.roww();
         split.cull[0] = plane(vec4(pw).add(px)).normalize(); // left plane
         split.cull[1] = plane(vec4(pw).sub(px)).normalize(); // right plane
         split.cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
@@ -1560,7 +1562,8 @@ void cascadedshadowmap::bindparams()
 {
     GLOBALPARAM(csmmatrix, matrix3(model));
 
-    static GlobalShaderParam csmtc("csmtc"), csmoffset("csmoffset");
+    static GlobalShaderParam csmtc("csmtc"),
+                             csmoffset("csmoffset");
     vec4 *csmtcv = csmtc.reserve<vec4>(csmsplits);
     vec  *csmoffsetv = csmoffset.reserve<vec>(csmsplits);
     for(int i = 0; i < csmsplits; ++i)
@@ -2490,7 +2493,11 @@ static inline void setlightglobals(bool transparent = false)
     GLOBALPARAM(lightmatrix, lightmatrix);
 }
 
-static LocalShaderParam lightpos("lightpos"), lightcolor("lightcolor"), spotparams("spotparams"), shadowparams("shadowparams"), shadowoffset("shadowoffset");
+static LocalShaderParam lightpos("lightpos"),
+                        lightcolor("lightcolor"),
+                        spotparams("spotparams"),
+                        shadowparams("shadowparams"),
+                        shadowoffset("shadowoffset");
 static vec4 lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
 static vec2 shadowoffsetv[8];
 
@@ -4565,8 +4572,6 @@ void rendergbuffer(bool depthclear, void (*gamefxn)())
         renderstains(StainBuffer_Opaque, true);
         renderstains(StainBuffer_Mapmodel, true);
         glerror();
-        //renderavatar();
-        //glerror();
     }
 
     endtimer(gtimer);
