@@ -130,13 +130,12 @@ bool allowediting = false;
 bool havesel = false;
 bool hmapsel = false;
 int horient  = 0;
+int entmoving = 0;
 
 void multiplayerwarn()
 {
     conoutf(Console_Error, "operation not available in multiplayer");
 }
-
-extern int entmoving;
 
 bool pointinsel(const selinfo &sel, const vec &o)
 {
