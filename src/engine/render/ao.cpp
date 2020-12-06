@@ -21,7 +21,31 @@ GLuint aofbo[4] = { 0, 0, 0, 0 },
        aotex[4] = { 0, 0, 0, 0 },
        aonoisetex = 0;
 
-extern int ao, aotaps, aoreduce, aoreducedepth, aonoise, aobilateral, aobilateralupscale, aopackdepth, aodepthformat, aoprec, aoderivnormal;
+void cleanupao(); //forward decl needed for VAR macros
+VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); });
+FVARR(aoradius, 0, 5, 256);
+FVAR(aocutoff, 0, 2.0f, 1e3f);
+FVARR(aodark, 1e-3f, 11.0f, 1e3f);
+FVARR(aosharp, 1e-3f, 1, 1e3f);
+FVAR(aoprefilterdepth, 0, 1, 1e3f);
+FVARR(aomin, 0, 0.25f, 1);
+VARFR(aosun, 0, 1, 1, cleardeferredlightshaders());
+FVARR(aosunmin, 0, 0.5f, 1);
+VARP(aoblur, 0, 4, 7);
+VARP(aoiter, 0, 0, 4);
+VARFP(aoreduce, 0, 1, 2, cleanupao());
+VARF(aoreducedepth, 0, 1, 2, cleanupao());
+VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", Init_Load, Change_Shaders));
+VARFP(aoprec, 0, 1, 1, cleanupao());
+VAR(aodepthformat, 1, 0, 0);
+VARF(aonoise, 0, 5, 8, cleanupao());
+VARFP(aobilateral, 0, 3, 10, cleanupao());
+FVARP(aobilateraldepth, 0, 4, 1e3f);
+VARFP(aobilateralupscale, 0, 0, 1, cleanupao());
+VARF(aopackdepth, 0, 1, 1, cleanupao());
+VARFP(aotaps, 1, 12, 12, cleanupao());
+VARF(aoderivnormal, 0, 0, 1, cleanupao());
+VAR(debugao, 0, 0, 1);
 
 static Shader *ambientobscuranceshader = NULL;
 
@@ -163,31 +187,6 @@ void cleanupao()
     clearaoshaders();
     clearbilateralshaders();
 }
-
-VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); });
-FVARR(aoradius, 0, 5, 256);
-FVAR(aocutoff, 0, 2.0f, 1e3f);
-FVARR(aodark, 1e-3f, 11.0f, 1e3f);
-FVARR(aosharp, 1e-3f, 1, 1e3f);
-FVAR(aoprefilterdepth, 0, 1, 1e3f);
-FVARR(aomin, 0, 0.25f, 1);
-VARFR(aosun, 0, 1, 1, cleardeferredlightshaders());
-FVARR(aosunmin, 0, 0.5f, 1);
-VARP(aoblur, 0, 4, 7);
-VARP(aoiter, 0, 0, 4);
-VARFP(aoreduce, 0, 1, 2, cleanupao());
-VARF(aoreducedepth, 0, 1, 2, cleanupao());
-VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", Init_Load, Change_Shaders));
-VARFP(aoprec, 0, 1, 1, cleanupao());
-VAR(aodepthformat, 1, 0, 0);
-VARF(aonoise, 0, 5, 8, cleanupao());
-VARFP(aobilateral, 0, 3, 10, cleanupao());
-FVARP(aobilateraldepth, 0, 4, 1e3f);
-VARFP(aobilateralupscale, 0, 0, 1, cleanupao());
-VARF(aopackdepth, 0, 1, 1, cleanupao());
-VARFP(aotaps, 1, 12, 12, cleanupao());
-VARF(aoderivnormal, 0, 0, 1, cleanupao());
-VAR(debugao, 0, 0, 1);
 
 void initao()
 {
