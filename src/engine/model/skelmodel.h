@@ -1464,7 +1464,7 @@ struct skelmodel : animmodel
             {
                 return;
             }
-            if(Shader::lastshader->uniformlocs.size() < 1)
+            if(Shader::lastshader->uniformlocs.length() < 1)
             {
                 return;
             }

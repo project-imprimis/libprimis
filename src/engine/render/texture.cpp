@@ -2229,9 +2229,9 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
 {
     if(diff & (1 << VSlot_ShParam))
     {
-        for(uint i = 0; i < src.params.size(); i++)
+        for(int i = 0; i < src.params.length(); i++)
         {
-            dst.params.push_back(src.params[i]);
+            dst.params.add(src.params[i]);
         }
     }
     if(diff & (1 << VSlot_Scale))
@@ -2294,10 +2294,10 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
 {
     if(diff & (1 << VSlot_ShParam))
     {
-        for(uint i = 0; i < src.params.size(); i++)
+        for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &sp = src.params[i];
-            for(uint j = 0; j < dst.params.size(); j++)
+            for(int j = 0; j < dst.params.length(); j++)
             {
                 SlotShaderParam &dp = dst.params[j];
                 if(sp.name == dp.name)
@@ -2306,7 +2306,7 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL
                     goto nextparam; //bail out of loop
                 }
             }
-            dst.params.push_back(sp);
+            dst.params.add(sp);
         nextparam:;
         }
     }
@@ -2401,11 +2401,11 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
 {
     if(diff & (1 << VSlot_ShParam))
     {
-        if(src.params.size() != dst.params.size())
+        if(src.params.length() != dst.params.length())
         {
             return false;
         }
-        for(uint i = 0; i < src.params.size(); i++)
+        for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &sp = src.params[i], &dp = dst.params[i];
             if(sp.name != dp.name || memcmp(sp.val, dp.val, sizeof(sp.val)))
@@ -2429,7 +2429,7 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
 {
     if(src.changed & (1 << VSlot_ShParam))
     {
-        for(uint i = 0; i < src.params.size(); i++)
+        for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &p = src.params[i];
             buf.put(VSlot_ShParam);
@@ -2539,7 +2539,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 }
                 if(p.name)
                 {
-                    dst.params.push_back(p);
+                    dst.params.add(p);
                 }
                 break;
             }

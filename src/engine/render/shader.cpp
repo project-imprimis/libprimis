@@ -29,7 +29,7 @@ static hashnameset<GlobalShaderParamState> globalparams(256);
 static hashtable<const char *, int> localparams(256);
 static hashnameset<Shader> shaders(256);
 static Shader *slotshader = NULL;
-static std::vector<SlotShaderParam> slotparams;
+static vector<SlotShaderParam> slotparams;
 static bool standardshaders = false,
             forceshaders = true,
             loadedshaders = false;
@@ -310,7 +310,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
         glAttachShader_(s.program, s.vsobj);
         glAttachShader_(s.program, s.psobj);
         uint attribs = 0;
-        for(uint i = 0; i < s.attriblocs.size(); i++)
+        for(int i = 0; i < s.attriblocs.length(); i++)
         {
             AttribLoc &a = s.attriblocs[i];
             glBindAttribLocation_(s.program, a.loc, a.name);
@@ -342,12 +342,12 @@ static void linkglslprogram(Shader &s, bool msg = true)
         {
             bindworldtexlocs(s);
         }
-        for(uint i = 0; i < s.defaultparams.size(); i++)
+        for(int i = 0; i < s.defaultparams.length(); i++)
         {
             SlotShaderParamState &param = s.defaultparams[i];
             param.loc = glGetUniformLocation_(s.program, param.name);
         }
-        for(uint i = 0; i < s.uniformlocs.size(); i++)
+        for(int i = 0; i < s.uniformlocs.length(); i++)
         {
             bindglsluniform(s, s.uniformlocs[i]);
         }
@@ -372,13 +372,17 @@ int getlocalparam(const char *name)
 static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
 {
     int idx = getlocalparam(name);
-    s.localparamremap[idx] = s.localparams.size();
-    LocalShaderParamState l;
+    if(idx >= s.localparamremap.length())
+    {
+        int n = idx + 1 - s.localparamremap.length();
+        memset(s.localparamremap.pad(n), 0xFF, n);
+    }
+    s.localparamremap[idx] = s.localparams.length();
+    LocalShaderParamState &l = s.localparams.add();
     l.name = name;
     l.loc = loc;
     l.size = size;
     l.format = format;
-    s.localparams.push_back(l);
     return idx;
 }
 
@@ -397,13 +401,12 @@ GlobalShaderParamState *getglobalparam(const char *name)
 
 static void addglobalparam(Shader &s, GlobalShaderParamState *param, int loc, int size, GLenum format)
 {
-    GlobalShaderParamUse g;
+    GlobalShaderParamUse &g = s.globalparams.add();
     g.param = param;
     g.version = -2;
     g.loc = loc;
     g.size = size;
     g.format = format;
-    s.globalparams.push_back(g);
 }
 
 static void setglsluniformformat(Shader &s, const char *name, GLenum format, int size)
@@ -446,7 +449,7 @@ static void setglsluniformformat(Shader &s, const char *name, GLenum format, int
     {
         return;
     }
-    for(uint j = 0; j < s.defaultparams.size(); j++)
+    for(int j = 0; j < s.defaultparams.length(); j++)
     {
         if(s.defaultparams[j].loc == loc)
         {
@@ -454,21 +457,21 @@ static void setglsluniformformat(Shader &s, const char *name, GLenum format, int
             return;
         }
     }
-    for(uint j = 0; j < s.uniformlocs.size(); j++)
+    for(int j = 0; j < s.uniformlocs.length(); j++)
     {
         if(s.uniformlocs[j].loc == loc)
         {
             return;
         }
     }
-    for(uint j = 0; j < s.globalparams.size(); j++)
+    for(int j = 0; j < s.globalparams.length(); j++)
     {
         if(s.globalparams[j].loc == loc)
         {
             return;
         }
     }
-    for(uint j = 0; j < s.localparams.size(); j++)
+    for(int j = 0; j < s.localparams.length(); j++)
     {
         if(s.localparams[j].loc == loc)
         {
@@ -525,7 +528,7 @@ void GlobalShaderParamState::resetversions()
 {
     ENUMERATE(shaders, Shader, s,
     {
-        for(uint i = 0; i < s.globalparams.size(); i++)
+        for(int i = 0; i < s.globalparams.length(); i++)
         {
             GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version != u.param->version)
@@ -538,7 +541,7 @@ void GlobalShaderParamState::resetversions()
     ENUMERATE(globalparams, GlobalShaderParamState, g, { g.version = ++nextversion; });
     ENUMERATE(shaders, Shader, s,
     {
-        for(uint i = 0; i < s.globalparams.size(); i++)
+        for(int i = 0; i < s.globalparams.length(); i++)
         {
             GlobalShaderParamUse &u = s.globalparams[i];
             if(u.version >= 0)
@@ -551,7 +554,7 @@ void GlobalShaderParamState::resetversions()
 
 static float *findslotparam(Slot &s, const char *name, float *noval = NULL)
 {
-    for(uint i = 0; i < s.params.size(); i++)
+    for(int i = 0; i < s.params.length(); i++)
     {
         SlotShaderParam &param = s.params[i];
         if(name == param.name)
@@ -559,7 +562,7 @@ static float *findslotparam(Slot &s, const char *name, float *noval = NULL)
             return param.val;
         }
     }
-    for(uint i = 0; i < s.shader->defaultparams.size(); i++)
+    for(int i = 0; i < s.shader->defaultparams.length(); i++)
     {
         SlotShaderParamState &param = s.shader->defaultparams[i];
         if(name == param.name)
@@ -572,7 +575,7 @@ static float *findslotparam(Slot &s, const char *name, float *noval = NULL)
 
 static float *findslotparam(VSlot &s, const char *name, float *noval = NULL)
 {
-    for(uint i = 0; i < s.params.size(); i++)
+    for(int i = 0; i < s.params.length(); i++)
     {
         SlotShaderParam &param = s.params[i];
         if(name == param.name)
@@ -663,10 +666,10 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
 } while(0)
 
 #define SETSLOTPARAMS(slotparams) \
-    for(uint i = 0; i < slotparams.size(); i++) \
+    for(int i = 0; i < slotparams.length(); i++) \
     { \
         SlotShaderParam &p = slotparams[i]; \
-        if(!(static_cast<int>(defaultparams.size()) > p.loc)) \
+        if(!(static_cast<int>(defaultparams.length()) > p.loc)) \
         { \
             continue; \
         } \
@@ -674,7 +677,7 @@ static inline void setslotparam(SlotShaderParamState &l, const float *val)
         SETSLOTPARAM(l, unimask, p.loc, p.val); \
     }
 #define SETDEFAULTPARAMS \
-    for(uint i = 0; i < defaultparams.size(); i++) \
+    for(int i = 0; i < defaultparams.length(); i++) \
     { \
         SlotShaderParamState &l = defaultparams[i]; \
         SETSLOTPARAM(l, unimask, i, l.val); \
@@ -699,7 +702,7 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
     else
     {
         SETSLOTPARAMS(slot.params)
-        for(uint i = 0; i < defaultparams.size(); i++)
+        for(int i = 0; i < defaultparams.length(); i++)
         {
             SlotShaderParamState &l = defaultparams[i];
             SETSLOTPARAM(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
@@ -765,26 +768,26 @@ void Shader::cleanup(bool full)
         glDeleteProgram_(program);
         program = 0;
     }
-    localparams.clear();
-    localparamremap.clear();
-    globalparams.clear();
+    localparams.setsize(0);
+    localparamremap.setsize(0);
+    globalparams.setsize(0);
     if(standard || full)
     {
         type = Shader_Invalid;
         DELETEA(vsstr);
         DELETEA(psstr);
         DELETEA(defer);
-        variants.clear();
+        variants.setsize(0);
         DELETEA(variantrows);
-        defaultparams.clear();
-        attriblocs.clear();
-        fragdatalocs.clear();
-        uniformlocs.clear();
+        defaultparams.setsize(0);
+        attriblocs.setsize(0);
+        fragdatalocs.setsize(0);
+        uniformlocs.setsize(0);
         reusevs = reuseps = NULL;
     }
     else
     {
-        for(uint i = 0; i < defaultparams.size(); i++)
+        for(int i = 0; i < defaultparams.length(); i++)
         {
             defaultparams[i].loc = -1;
         }
@@ -806,7 +809,7 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
         {
             if(sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             {
-                s.attriblocs.emplace_back(AttribLoc(getshaderparamname(name), loc));
+                s.attriblocs.add(AttribLoc(getshaderparamname(name), loc));
             }
             vs += len;
         }
@@ -829,11 +832,11 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *re
             int numargs = sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
             if(numargs >= 3)
             {
-                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
+                s.uniformlocs.add(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
             }
             else if(numargs >= 1)
             {
-                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name)));
+                s.uniformlocs.add(UniformLoc(getshaderparamname(name)));
             }
             vs += len;
         }
@@ -880,23 +883,23 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     }
     if(variant)
     {
-        for(uint i = 0; i < variant->defaultparams.size(); i++)
+        for(int i = 0; i < variant->defaultparams.length(); i++)
         {
-            s.defaultparams.push_back(variant->defaultparams[i]);
+            s.defaultparams.add(variant->defaultparams[i]);
         }
     }
     else
     {
-        for(uint i = 0; i < slotparams.size(); i++)
+        for(int i = 0; i < slotparams.length(); i++)
         {
-            s.defaultparams.push_back(slotparams[i]);
+            s.defaultparams.add(slotparams[i]);
         }
     }
-    s.attriblocs.clear();
-    s.uniformlocs.clear();
+    s.attriblocs.setsize(0);
+    s.uniformlocs.setsize(0);
     genattriblocs(s, vs, ps, s.reusevs, s.reuseps);
     genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
-    s.fragdatalocs.clear();
+    s.fragdatalocs.setsize(0);
     if(s.reuseps) //probably always true? its else was removed in shader cleanup
     {
         s.fragdatalocs = s.reuseps->fragdatalocs;
@@ -1103,7 +1106,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     psbuf.put(ps, psmain - ps);
     if(variant)
     {
-        for(uint i = 0; i < variant->defaultparams.size(); i++)
+        for(int i = 0; i < variant->defaultparams.length(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", variant->defaultparams[i].name);
             vsbuf.put(uni, strlen(uni));
@@ -1112,7 +1115,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     }
     else
     {
-        for(uint i = 0; i < slotparams.size(); i++)
+        for(int i = 0; i < slotparams.length(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", slotparams[i].name);
             vsbuf.put(uni, strlen(uni));
@@ -1250,7 +1253,7 @@ void Shader::force()
     standardshaders = standard;
     forceshaders = false;
     identflags &= ~Idf_Persist;
-    slotparams.clear();
+    slotparams.shrink(0);
     execute(cmd);
     identflags = oldflags;
     forceshaders = wasforcing;
@@ -1274,7 +1277,7 @@ int Shader::uniformlocversion()
     version = 0;
     ENUMERATE(shaders, Shader, s,
     {
-        for(uint j = 0; j < s.uniformlocs.size(); j++)
+        for(int j = 0; j < s.uniformlocs.length(); j++)
         {
             s.uniformlocs[j].version = -1;
         }
@@ -1336,7 +1339,7 @@ void shader(int *type, char *name, char *vs, char *ps)
     DEF_FORMAT_STRING(info, "shader %s", name);
     renderprogress(loadprogress, info);
     vector<char> vsbuf, psbuf, vsbak, psbak;
-    GENSHADER(slotparams.size(), genuniformdefs(vsbuf, psbuf, vs, ps));
+    GENSHADER(slotparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps));
     GENSHADER(strstr(vs, "//:fog") || strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
     Shader *s = newshader(*type, name, vs, ps);
     if(s)
@@ -1346,7 +1349,7 @@ void shader(int *type, char *name, char *vs, char *ps)
             gengenericvariant(*s, name, vs, ps);
         }
     }
-    slotparams.clear();
+    slotparams.shrink(0);
 }
 COMMAND(shader, "isss");
 
@@ -1370,10 +1373,10 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     if(*maxvariants > 0)
     {
         DEF_FORMAT_STRING(info, "shader %s", name);
-        renderprogress(min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
+        renderprogress(min(s->variants.length() / static_cast<float>(*maxvariants), 1.0f), info);
     }
     vector<char> vsbuf, psbuf, vsbak, psbak;
-    GENSHADER(s->defaultparams.size(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
+    GENSHADER(s->defaultparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
     GENSHADER(strstr(vs, "//:fog") || strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
     Shader *v = newshader(*type, varname, vs, ps, s, *row);
     if(v)
@@ -1390,7 +1393,7 @@ COMMAND(variantshader, "isissi");
 
 void setshader(char *name)
 {
-    slotparams.clear();
+    slotparams.shrink(0);
     Shader *s = shaders.access(name);
     if(!s)
     {
@@ -1406,7 +1409,7 @@ COMMAND(setshader, "s");
 void resetslotshader()
 {
     slotshader = NULL;
-    slotparams.clear();
+    slotparams.shrink(0);
 }
 
 void setslotshader(Slot &s)
@@ -1417,21 +1420,21 @@ void setslotshader(Slot &s)
         s.shader = stdworldshader;
         return;
     }
-    for(uint i = 0; i < slotparams.size(); i++)
+    for(int i = 0; i < slotparams.length(); i++)
     {
-        s.params.push_back(slotparams[i]);
+        s.params.add(slotparams[i]);
     }
 }
 
-static void linkslotshaderparams(std::vector<SlotShaderParam> &params, Shader *sh, bool load)
+static void linkslotshaderparams(vector<SlotShaderParam> &params, Shader *sh, bool load)
 {
     if(sh->loaded())
     {
-        for(uint i = 0; i < params.size(); i++)
+        for(int i = 0; i < params.length(); i++)
         {
             int loc = -1;
             SlotShaderParam &param = params[i];
-            for(uint i = 0; i < sh->defaultparams.size(); i++)
+            for(int i = 0; i < sh->defaultparams.length(); i++)
             {
                 SlotShaderParamState &dparam = sh->defaultparams[i];
                 if(dparam.name==param.name)
@@ -1448,7 +1451,7 @@ static void linkslotshaderparams(std::vector<SlotShaderParam> &params, Shader *s
     }
     else if(load)
     {
-        for(uint i = 0; i < params.size(); i++)
+        for(int i = 0; i < params.length(); i++)
         {
             params[i].loc = -1;
         }
@@ -1497,7 +1500,7 @@ bool shouldreuseparams(Slot &s, VSlot &p)
         return false;
     }
     Shader &sh = *s.shader;
-    for(uint i = 0; i < sh.defaultparams.size(); i++)
+    for(int i = 0; i < sh.defaultparams.length(); i++)
     {
         SlotShaderParamState &param = sh.defaultparams[i];
         if(param.flags & SlotShaderParam::REUSE)
@@ -1505,7 +1508,7 @@ bool shouldreuseparams(Slot &s, VSlot &p)
             const float *val = findslotparam(p, param.name);
             if(val && memcmp(param.val, val, sizeof(param.val)))
             {
-                for(uint j = 0; j < s.params.size(); j++)
+                for(int j = 0; j < s.params.length(); j++)
                 {
                     if(s.params[j].name == param.name)
                     {
@@ -1566,7 +1569,7 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     {
         name = getshaderparamname(name);
     }
-    for(uint i = 0; i < slotparams.size(); i++)
+    for(int i = 0; i < slotparams.length(); i++)
     {
         SlotShaderParam &param = slotparams[i];
         if(param.name==name)
@@ -1580,7 +1583,7 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
         }
     }
     SlotShaderParam param = {name, -1, flags, {x, y, z, w}};
-    slotparams.push_back(param);
+    slotparams.add(param);
 }
 
 ICOMMAND(setuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
@@ -1849,7 +1852,7 @@ void reloadshaders()
             {
                 s.cleanup(true);
             }
-            for(uint i = 0; i < s.variants.size(); i++)
+            for(int i = 0; i < s.variants.length(); i++)
             {
                 Shader *v = s.variants[i];
                 if((v->reusevs && v->reusevs->invalid()) ||

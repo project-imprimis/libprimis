@@ -214,18 +214,18 @@ struct Shader
     char *name, *vsstr, *psstr, *defer;
     int type;
     GLuint program, vsobj, psobj;
-    std::vector<SlotShaderParamState> defaultparams;
-    std::vector<GlobalShaderParamUse> globalparams;
-    std::vector<LocalShaderParamState> localparams;
-    std::vector<uchar> localparamremap;
+    vector<SlotShaderParamState> defaultparams;
+    vector<GlobalShaderParamUse> globalparams;
+    vector<LocalShaderParamState> localparams;
+    vector<uchar> localparamremap;
     Shader *variantshader;
-    std::vector<Shader *> variants;
+    vector<Shader *> variants;
     ushort *variantrows;
     bool standard, forced, used;
     Shader *reusevs, *reuseps;
-    std::vector<UniformLoc> uniformlocs;
-    std::vector<AttribLoc> attriblocs;
-    std::vector<FragDataLoc> fragdatalocs;
+    vector<UniformLoc> uniformlocs;
+    vector<AttribLoc> attriblocs;
+    vector<FragDataLoc> fragdatalocs;
     const void *owner;
 
     Shader() : name(NULL), vsstr(NULL), psstr(NULL), defer(NULL), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(NULL), variantrows(NULL), standard(false), forced(false), used(false), reusevs(NULL), reuseps(NULL), owner(NULL)
@@ -253,7 +253,7 @@ struct Shader
             allocparams(slot);
             used = true;
         }
-        for(uint i = 0; i < globalparams.size(); i++)
+        for(int i = 0; i < globalparams.length(); i++)
         {
             globalparams[i].flush();
         }
@@ -316,7 +316,7 @@ struct Shader
 
     void addvariant(int row, Shader *s)
     {
-        if(row < 0 || row >= maxvariantrows || variants.size() >= USHRT_MAX)
+        if(row < 0 || row >= maxvariantrows || variants.length() >= USHRT_MAX)
         {
             return;
         }
@@ -325,7 +325,7 @@ struct Shader
             variantrows = new ushort[maxvariantrows+1];
             memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
         }
-        variants.insert(variants.begin() + variantrows[row+1], s);
+        variants.insert(variantrows[row+1], s);
         for(int i = row+1; i <= maxvariantrows; ++i)
         {
             ++variantrows[i];
@@ -553,20 +553,20 @@ struct LocalShaderParam
         {
             return NULL;
         }
-        if(!(static_cast<int>(s->localparamremap.size()) > loc))
+        if(!s->localparamremap.inrange(loc))
         {
             extern int getlocalparam(const char *name);
             if(loc == -1)
             {
                 loc = getlocalparam(name);
             }
-            if(!(static_cast<int>(s->localparamremap.size()) > loc))
+            if(!s->localparamremap.inrange(loc))
             {
                 return NULL;
             }
         }
         uchar remap = s->localparamremap[loc];
-        return s->localparams.size() > remap ? &s->localparams[remap] : NULL;
+        return s->localparams.inrange(remap) ? &s->localparams[remap] : NULL;
     }
 
     void setf(float x = 0, float y = 0, float z = 0, float w = 0)
@@ -1088,7 +1088,7 @@ struct VSlot
     Slot *slot;
     VSlot *next;
     int index, changed;
-    std::vector<SlotShaderParam> params;
+    vector<SlotShaderParam> params;
     bool linked;
     float scale;
     int rotation;
@@ -1115,7 +1115,7 @@ struct VSlot
 
     void reset()
     {
-        params.clear();
+        params.setsize(0);
         linked = false;
         scale = 1;
         rotation = 0;
@@ -1161,7 +1161,7 @@ struct Slot
     int index, smooth;
     vector<Tex> sts;
     Shader *shader;
-    std::vector<SlotShaderParam> params;
+    vector<SlotShaderParam> params;
     VSlot *variants;
     bool loaded;
     uint texmask;
@@ -1202,7 +1202,7 @@ struct Slot
         smooth = -1;
         sts.setsize(0);
         shader = NULL;
-        params.clear();
+        params.setsize(0);
         loaded = false;
         texmask = 0;
         DELETEA(grass);
