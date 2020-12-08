@@ -157,7 +157,7 @@ void freeocta(cube *c)
     allocnodes--;
 }
 
-void freecubeext(cube &c)
+static void freecubeext(cube &c)
 {
     if(c.ext)
     {
@@ -255,7 +255,6 @@ void printcube()
     conoutf(Console_Debug, " y  %.8x", c.faces[1]);
     conoutf(Console_Debug, " z  %.8x", c.faces[2]);
 }
-
 COMMAND(printcube, "");
 
 bool isvalidcube(const cube &c)
@@ -370,7 +369,7 @@ int lookupmaterial(const vec &v)
 }
 
 const cube *neighborstack[32];
-int neighbordepth = -1;
+static int neighbordepth = -1;
 
 const cube &neighborcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
 {
@@ -654,7 +653,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     return perfect;
 }
 
-bool crushededge(uchar e, int dc)
+static bool crushededge(uchar e, int dc)
 {
     return dc ? e==0 : e==0x88;
 }
@@ -665,7 +664,7 @@ bool touchingface(const cube &c, int orient)
     return DIM_COORD(orient) ? (face&0xF0F0F0F0)==0x80808080 : (face&0x0F0F0F0F)==0;
 }
 
-bool notouchingface(const cube &c, int orient)
+static bool notouchingface(const cube &c, int orient)
 {
     uint face = c.faces[DIMENSION(orient)];
     return DIM_COORD(orient) ? (face&0x80808080)==0 : ((0x88888888-face)&0x08080808) == 0;
@@ -695,7 +694,7 @@ VAR(mipvis, 0, 0, 1);
 static int remipprogress = 0,
            remiptotal = 0;
 
-bool remip(cube &c, const ivec &co, int size)
+static bool remip(cube &c, const ivec &co, int size)
 {
     cube *ch = c.children;
     if(!ch)
@@ -1218,7 +1217,7 @@ static inline int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int siz
     return r;
 }
 
-bool collapsedface(const cube &c, int orient)
+static bool collapsedface(const cube &c, int orient)
 {
     int e0 = c.edges[faceedgesidx[orient][0]],
         e1 = c.edges[faceedgesidx[orient][1]],
