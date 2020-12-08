@@ -369,7 +369,7 @@ int lookupmaterial(const vec &v)
 }
 
 const cube *neighborstack[32];
-static int neighbordepth = -1;
+int neighbordepth = -1;
 
 const cube &neighborcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
 {
