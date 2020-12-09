@@ -9,6 +9,7 @@
 #include "menus.h"
 #include "sound.h"
 
+#include "render/rendergl.h"
 #include "render/renderwindow.h"
 
 bool nosound = true;

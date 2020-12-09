@@ -8,6 +8,7 @@ extern bool hasS3TC, hasFXT1, hasLATC, hasFBMSBS, hasTQ, hasDBT, hasDBGO, hasES3
 extern int glversion, glslversion, glcompat;
 extern int maxdrawbufs, maxdualdrawbufs;
 extern vec minimapcenter, minimapradius, minimapscale;
+extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
 enum
 {

@@ -12,6 +12,7 @@
 #include "interface/console.h"
 #include "interface/control.h"
 
+#include "render/rendergl.h"
 #include "render/rendermodel.h"
 
 int numdynents; //updated by engine, visible through iengine.h
