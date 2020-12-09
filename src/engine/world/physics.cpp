@@ -10,6 +10,7 @@
 #include "raycube.h"
 
 #include "interface/console.h"
+#include "interface/control.h"
 
 #include "render/rendermodel.h"
 

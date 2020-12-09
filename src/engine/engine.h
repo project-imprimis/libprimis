@@ -7,7 +7,6 @@
 #include "world/bih.h"
 #include "model/model.h"
 
-extern dynent *player;
 extern physent *camera1;                // special ent that acts as camera, same object as player1 in FPS mode
 
 extern int gamespeed, paused;
@@ -15,7 +14,6 @@ extern int gamespeed, paused;
 extern int worldscale, worldsize;
 extern int mapversion;
 extern char *maptitle;
-extern bool inbetweenframes, renderedframe;
 
 extern vector<int> entgroup;
 
