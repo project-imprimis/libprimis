@@ -2,6 +2,7 @@
 
 #include "aa.h"
 #include "ao.h"
+#include "csm.h"
 #include "hdr.h"
 #include "octarender.h"
 #include "radiancehints.h"
@@ -932,8 +933,6 @@ void viewrefract()
     debugquad(0, 0, w, h, 0, 0, gw, gh);
 }
 
-static const int shadowatlassize = 4096;
-
 PackNode shadowatlaspacker(0, 0, shadowatlassize, shadowatlassize);
 
 VAR(smminradius, 0, 16, 10000);
@@ -1076,14 +1075,6 @@ static inline bool htcmp(const shadowcachekey &x, const shadowcachekey &y)
     return x.o == y.o && x.radius == y.radius && x.dir == y.dir && x.spot == y.spot;
 }
 
-struct shadowcacheval;
-
-struct shadowmapinfo
-{
-    ushort x, y, size, sidemask;
-    int light;
-    shadowcacheval *cached;
-};
 
 struct shadowcacheval
 {
@@ -1392,7 +1383,7 @@ void clearshadowcache()
     clearshadowmeshes();
 }
 
-static void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, shadowcacheval *cached = NULL)
+void addshadowmap(ushort x, ushort y, int size, int &idx, int light, shadowcacheval *cached)
 {
     idx = shadowmaps.size();
     shadowmapinfo sm;
@@ -1403,301 +1394,6 @@ static void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1,
     sm.sidemask = 0;
     sm.cached = cached;
     shadowmaps.push_back(sm);
-}
-
-static const int csmmaxsplits = 8;
-
-//`c`ascaded `s`hadow `m`ap vars
-VARF(csmmaxsize, 256, 768, 2048, clearshadowcache());
-VARF(csmsplits, 1, 3, csmmaxsplits, { cleardeferredlightshaders(); clearshadowcache(); });
-FVAR(csmsplitweight, 0.20f, 0.75f, 0.95f);
-VARF(csmshadowmap, 0, 1, 1, { cleardeferredlightshaders(); clearshadowcache(); });
-
-// cascaded shadow maps
-struct cascadedshadowmap
-{
-    struct splitinfo
-    {
-        float nearplane;     // split distance to near plane
-        float farplane;      // split distance to farplane
-        matrix4 proj;      // one projection per split
-        vec scale, offset;   // scale and offset of the projection
-        int idx;             // shadowmapinfo indices
-        vec center, bounds;  // max extents of shadowmap in sunlight model space
-        plane cull[4];       // world space culling planes of the split's projected sides
-    };
-    matrix4 model;                // model view is shared by all splits
-    splitinfo splits[csmmaxsplits]; // per-split parameters
-    vec lightview;                  // view vector for light
-    void setup();                   // insert shadowmaps for each split frustum if there is sunlight
-    void updatesplitdist();         // compute split frustum distances
-    void getmodelmatrix();          // compute the shared model matrix
-    void getprojmatrix();           // compute each cropped projection matrix
-    void gencullplanes();           // generate culling planes for the mvp matrix
-    void bindparams();              // bind any shader params necessary for lighting
-};
-
-void cascadedshadowmap::setup()
-{
-    int size = (csmmaxsize * shadowatlaspacker.w) / shadowatlassize;
-    for(int i = 0; i < csmsplits; ++i)
-    {
-        ushort smx = USHRT_MAX,
-               smy = USHRT_MAX;
-        splits[i].idx = -1;
-        if(shadowatlaspacker.insert(smx, smy, size, size))
-        {
-            addshadowmap(smx, smy, size, splits[i].idx);
-        }
-    }
-    getmodelmatrix();
-    getprojmatrix();
-    gencullplanes();
-}
-//`c`ascaded `s`hadow `m`ap vars
-VAR(csmnearplane, 1, 1, 16); //short end cutoff of shadow rendering on view frustum
-VAR(csmfarplane, 64, 1024, 16384); //far end cutoff of shadow rendering on view frustum
-FVAR(csmpradiustweak, 1e-3f, 1, 1e3f);
-FVAR(csmdepthrange, 0, 1024, 1e6f);
-FVAR(csmdepthmargin, 0, 0.1f, 1e3f);
-FVAR(csmpolyfactor, -1e3f, 2, 1e3f);
-FVAR(csmpolyoffset, -1e4f, 0, 1e4f);
-FVAR(csmbias, -1e6f, 1e-4f, 1e6f);
-FVAR(csmpolyfactor2, -1e3f, 3, 1e3f);
-FVAR(csmpolyoffset2, -1e4f, 0, 1e4f);
-FVAR(csmbias2, -1e16f, 2e-4f, 1e6f);
-VAR(csmcull, 0, 1, 1);
-
-void cascadedshadowmap::updatesplitdist()
-{
-    float lambda = csmsplitweight,
-          nd     = csmnearplane,
-          fd     = csmfarplane,
-          ratio  = fd/nd;
-    splits[0].nearplane = nd;
-    for(int i = 1; i < csmsplits; ++i)
-    {
-        float si = i / static_cast<float>(csmsplits);
-        splits[i].nearplane = lambda*(nd*pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
-        splits[i-1].farplane = splits[i].nearplane * 1.005f;
-    }
-    splits[csmsplits-1].farplane = fd;
-}
-
-void cascadedshadowmap::getmodelmatrix()
-{
-    model = viewmatrix;
-    model.rotate_around_x(sunlightpitch*RAD);
-    model.rotate_around_z((180-sunlightyaw)*RAD);
-}
-
-void cascadedshadowmap::getprojmatrix()
-{
-    lightview = vec(sunlightdir).neg();
-
-    // compute the split frustums
-    updatesplitdist();
-
-    // find z extent
-    float minz = lightview.project_bb(worldmin, worldmax),
-          maxz = lightview.project_bb(worldmax, worldmin),
-          zmargin = std::max((maxz - minz)*csmdepthmargin, 0.5f*(csmdepthrange - (maxz - minz)));
-    minz -= zmargin;
-    maxz += zmargin;
-
-    // compute each split projection matrix
-    for(int i = 0; i < csmsplits; ++i)
-    {
-        splitinfo &split = splits[i];
-        if(split.idx < 0)
-        {
-            continue;
-        }
-        const shadowmapinfo &sm = shadowmaps[split.idx];
-
-        vec c;
-        float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir, c);
-
-        // compute the projected bounding box of the sphere
-        vec tc;
-        model.transform(c, tc);
-        int border = smfilter > 2 ? smborder2 : smborder;
-        const float pradius = ceil(radius * csmpradiustweak),
-                    step    = (2*pradius) / (sm.size - 2*border);
-        vec2 offset = vec2(tc).sub(pradius).div(step);
-        offset.x = floor(offset.x);
-        offset.y = floor(offset.y);
-        split.center = vec(vec2(offset).mul(step).add(pradius), -0.5f*(minz + maxz));
-        split.bounds = vec(pradius, pradius, 0.5f*(maxz - minz));
-
-        // modify mvp with a scale and offset
-        // now compute the update model view matrix for this split
-        split.scale = vec(1/step, 1/step, -1/(maxz - minz));
-        split.offset = vec(border - offset.x, border - offset.y, -minz/(maxz - minz));
-
-        split.proj.identity();
-        split.proj.settranslation(2*split.offset.x/sm.size - 1, 2*split.offset.y/sm.size - 1, 2*split.offset.z - 1);
-        split.proj.setscale(2*split.scale.x/sm.size, 2*split.scale.y/sm.size, 2*split.scale.z);
-    }
-}
-
-void cascadedshadowmap::gencullplanes()
-{
-    for(int i = 0; i < csmsplits; ++i)
-    {
-        splitinfo &split = splits[i];
-        matrix4 mvp;
-        mvp.mul(split.proj, model);
-        vec4 px = mvp.rowx(),
-             py = mvp.rowy(),
-             pw = mvp.roww();
-        split.cull[0] = plane(vec4(pw).add(px)).normalize(); // left plane
-        split.cull[1] = plane(vec4(pw).sub(px)).normalize(); // right plane
-        split.cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
-        split.cull[3] = plane(vec4(pw).sub(py)).normalize(); // top plane
-    }
-}
-
-void cascadedshadowmap::bindparams()
-{
-    GLOBALPARAM(csmmatrix, matrix3(model));
-
-    static GlobalShaderParam csmtc("csmtc"),
-                             csmoffset("csmoffset");
-    vec4 *csmtcv = csmtc.reserve<vec4>(csmsplits);
-    vec  *csmoffsetv = csmoffset.reserve<vec>(csmsplits);
-    for(int i = 0; i < csmsplits; ++i)
-    {
-        cascadedshadowmap::splitinfo &split = splits[i];
-        if(split.idx < 0)
-        {
-            continue;
-        }
-        const shadowmapinfo &sm = shadowmaps[split.idx];
-
-        csmtcv[i] = vec4(vec2(split.center).mul(-split.scale.x), split.scale.x, split.bounds.x*split.scale.x);
-
-        const float bias = (smfilter > 2 ? csmbias2 : csmbias) * (-512.0f / sm.size) * (split.farplane - split.nearplane) / (splits[0].farplane - splits[0].nearplane);
-        csmoffsetv[i] = vec(sm.x, sm.y, 0.5f + bias).add2(0.5f*sm.size);
-    }
-    GLOBALPARAMF(csmz, splits[0].center.z*-splits[0].scale.z, splits[0].scale.z);
-}
-
-cascadedshadowmap csm;
-
-int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
-{
-    int mask = (1<<csmsplits)-1;
-    if(!csmcull)
-    {
-        return mask;
-    }
-    for(int i = 0; i < csmsplits; ++i)
-    {
-        const cascadedshadowmap::splitinfo &split = csm.splits[i];
-        int k;
-        for(k = 0; k < 4; k++)
-        {
-            const plane &p = split.cull[k];
-            ivec omin, omax;
-            if(p.x > 0)
-            {
-                omin.x = bbmin.x;
-                omax.x = bbmax.x;
-            }
-            else
-            {
-                omin.x = bbmax.x;
-                omax.x = bbmin.x;
-            }
-            if(p.y > 0)
-            {
-                omin.y = bbmin.y;
-                omax.y = bbmax.y;
-            }
-            else
-            {
-                omin.y = bbmax.y;
-                omax.y = bbmin.y;
-            }
-            if(p.z > 0)
-            {
-                omin.z = bbmin.z;
-                omax.z = bbmax.z;
-            }
-            else
-            {
-                omin.z = bbmax.z;
-                omax.z = bbmin.z;
-            }
-            if(omax.dist(p) < 0)
-            {
-                mask &= ~(1<<i);
-                goto nextsplit;//skip rest and restart loop
-            }
-            if(omin.dist(p) < 0)
-            {
-                goto notinside;
-            }
-        }
-        mask &= (2<<i)-1;
-        break;
-    notinside:
-        while(++k < 4)
-        {
-            const plane &p = split.cull[k];
-            ivec omax(p.x > 0 ? bbmax.x : bbmin.x, p.y > 0 ? bbmax.y : bbmin.y, p.z > 0 ? bbmax.z : bbmin.z);
-            if(omax.dist(p) < 0)
-            {
-                mask &= ~(1<<i);
-                break;
-            }
-        }
-    nextsplit:;
-    }
-    return mask;
-}
-
-int calcspherecsmsplits(const vec &center, float radius)
-{
-    int mask = (1<<csmsplits)-1;
-    if(!csmcull)
-    {
-        return mask;
-    }
-    for(int i = 0; i < csmsplits; ++i)
-    {
-        const cascadedshadowmap::splitinfo &split = csm.splits[i];
-        int k;
-        for(k = 0; k < 4; k++)
-        {
-            const plane &p = split.cull[k];
-            float dist = p.dist(center);
-            if(dist < -radius)
-            {
-                mask &= ~(1<<i);
-                goto nextsplit; //skip rest and restart loop
-            }
-            if(dist < radius)
-            {
-                goto notinside;
-            }
-        }
-        mask &= (2<<i)-1;
-        break;
-    notinside:
-        while(++k < 4)
-        {
-            const plane &p = split.cull[k];
-            if(p.dist(center) < -radius)
-            {
-                mask &= ~(1<<i);
-                break;
-            }
-        }
-    nextsplit:;
-    }
-    return mask;
 }
 
 //calculate bouunding box reflective shadow map splits

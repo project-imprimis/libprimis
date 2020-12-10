@@ -16,6 +16,7 @@
 
 #include "engine.h"
 
+#include "csm.h"
 #include "hdr.h"
 #include "octarender.h"
 #include "radiancehints.h"

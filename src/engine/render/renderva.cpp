@@ -2,6 +2,7 @@
 
 #include "engine.h"
 
+#include "csm.h"
 #include "grass.h"
 #include "octarender.h"
 #include "rendergl.h"

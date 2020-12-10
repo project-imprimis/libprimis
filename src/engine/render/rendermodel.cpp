@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include "aa.h"
+#include "csm.h"
 #include "radiancehints.h"
 #include "rendergl.h"
 #include "rendermodel.h"

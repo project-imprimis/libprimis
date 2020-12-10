@@ -87,8 +87,76 @@ inline cubeext &ext(cube &c)
 
 // renderlights
 
+struct PackNode
+{
+    PackNode *child1, *child2;
+    ushort x, y, w, h;
+    int available;
+
+    PackNode(ushort x, ushort y, ushort w, ushort h) : child1(0), child2(0), x(x), y(y), w(w), h(h), available(min(w, h)) {}
+
+    void discardchildren()
+    {
+        DELETEP(child1);
+        DELETEP(child2);
+    }
+
+    void forceempty()
+    {
+        discardchildren();
+        available = 0;
+    }
+
+    void reset()
+    {
+        discardchildren();
+        available = min(w, h);
+    }
+
+    bool resize(int nw, int nh)
+    {
+        if(w == nw && h == nw)
+        {
+            return false;
+        }
+        discardchildren();
+        w = nw;
+        h = nh;
+        available = min(w, h);
+        return true;
+    }
+
+    ~PackNode()
+    {
+        discardchildren();
+    }
+
+    bool insert(ushort &tx, ushort &ty, ushort tw, ushort th);
+    void reserve(ushort tx, ushort ty, ushort tw, ushort th);
+};
+
+extern PackNode shadowatlaspacker;
+
+struct shadowcacheval;
+
+struct shadowmapinfo
+{
+    ushort x, y, size, sidemask;
+    int light;
+    shadowcacheval *cached;
+};
+
+extern std::vector<shadowmapinfo> shadowmaps;
+extern int smfilter;
+
+extern void addshadowmap(ushort x, ushort y, int size, int &idx, int light = -1, shadowcacheval *cached = NULL);
+
+constexpr int shadowatlassize = 4096;
+
 const int lighttilemaxwidth  = 16;
 const int lighttilemaxheight = 16;
+
+extern int smborder, smborder2;
 
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
 extern int spotlights;
@@ -145,8 +213,6 @@ extern void workinoq();
 extern int calcspheresidemask(const vec &p, float radius, float bias);
 extern int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias);
 extern int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border);
-extern int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax);
-extern int calcspherecsmsplits(const vec &center, float radius);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherersmsplits(const vec &center, float radius);
 
@@ -173,7 +239,7 @@ extern GLuint msdepthtex, mscolortex, msnormaltex, msglowtex, msdepthrb, msstenc
 extern std::vector<vec2> msaapositions;
 
 extern bool inoq;
-extern int csmshadowmap, rhinoq;
+extern int rhinoq;
 extern int rsmcull;
 extern GLuint gfbo, msfbo, rhfbo;
 
