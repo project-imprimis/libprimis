@@ -270,8 +270,8 @@ void initgbuffer()
     glGetIntegerv(GL_MAX_COLOR_TEXTURE_SAMPLES, &val);
     msaamaxcolortexsamples = val;
 
-    int maxsamples = min(msaamaxsamples, msaamaxcolortexsamples),
-        reqsamples = min(msaa, maxsamples);
+    int maxsamples = std::min(msaamaxsamples, msaamaxcolortexsamples),
+        reqsamples = std::min(msaa, maxsamples);
     if(reqsamples >= 2)
     {
         msaaminsamples = 2;
@@ -618,8 +618,8 @@ void setupgbuffer()
         sh = renderh;
     if(gscale != 100)
     {
-        sw = max((renderw*gscale + 99)/100, 1);
-        sh = max((renderh*gscale + 99)/100, 1);
+        sw = std::max((renderw*gscale + 99)/100, 1);
+        sh = std::max((renderh*gscale + 99)/100, 1);
     }
 
     if(gw == sw && gh == sh && ((sw >= hudw && sh >= hudh && !scalefbo[0]) || (scalew == hudw && scaleh == hudh)))
@@ -879,7 +879,7 @@ VAR(debugdepth, 0, 0, 1);
 
 void viewdepth()
 {
-    int w = (debugfullscreen) ? hudw : min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
+    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
     int h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
@@ -912,7 +912,7 @@ void viewstencil()
     glBindFramebuffer_(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, hudw, hudh);
 
-    int w = (debugfullscreen) ? hudw : min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
@@ -924,7 +924,7 @@ VAR(debugrefract, 0, 0, 1);
 
 void viewrefract()
 {
-    int w = (debugfullscreen) ? hudw : min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
@@ -996,17 +996,17 @@ struct lightinfo
 
     void addscissor(float &dx1, float &dy1, float &dx2, float &dy2) const
     {
-        dx1 = min(dx1, sx1);
-        dy1 = min(dy1, sy1);
-        dx2 = max(dx2, sx2);
-        dy2 = max(dy2, sy2);
+        dx1 = std::min(dx1, sx1);
+        dy1 = std::min(dy1, sy1);
+        dx2 = std::max(dx2, sx2);
+        dy2 = std::max(dy2, sy2);
     }
 
     void addscissor(float &dx1, float &dy1, float &dx2, float &dy2, float &dz1, float &dz2) const
     {
         addscissor(dx1, dy1, dx2, dy2);
-        dz1 = min(dz1, sz1);
-        dz2 = max(dz2, sz2);
+        dz1 = std::min(dz1, sz1);
+        dz2 = std::max(dz2, sz2);
     }
 
     bool validscissor() const
@@ -1187,7 +1187,7 @@ static inline bool usesmcomparemode()
 
 void viewshadowatlas()
 {
-    int w = min(hudw, hudh)/2,
+    int w = std::min(hudw, hudh)/2,
         h = (w*hudh)/hudw,
         x = hudw-w,
         y = hudh-h;
@@ -1219,7 +1219,7 @@ VAR(debugshadowatlas, 0, 0, 1);
 
 void setupshadowatlas()
 {
-    int size = min((1<<smsize), hwtexsize);
+    int size = std::min((1<<smsize), hwtexsize);
     shadowatlaspacker.resize(size, size);
 
     if(!shadowatlastex)
@@ -1288,10 +1288,10 @@ struct lightrect
 
     void intersect(const lightrect &o)
     {
-        x1 = max(x1, o.x1);
-        y1 = max(y1, o.y1);
-        x2 = min(x2, o.x2);
-        y2 = min(y2, o.y2);
+        x1 = std::max(x1, o.x1);
+        y1 = std::max(y1, o.y1);
+        x2 = std::min(x2, o.x2);
+        y2 = std::min(y2, o.y2);
     }
 
     bool overlaps(int tx1, int ty1, int tx2, int ty2, const uint *tilemask) const
@@ -1305,7 +1305,7 @@ struct lightrect
             return true;
         }
         uint xmask = (1<<x2) - (1<<x1);
-        for(int y = max(static_cast<int>(y1), ty1), end = min(static_cast<int>(y2), ty2); y < end; y++)
+        for(int y = std::max(static_cast<int>(y1), ty1), end = std::min(static_cast<int>(y2), ty2); y < end; y++)
         {
             if(tilemask[y] & xmask)
             {
@@ -1501,7 +1501,7 @@ void cascadedshadowmap::getprojmatrix()
     // find z extent
     float minz = lightview.project_bb(worldmin, worldmax),
           maxz = lightview.project_bb(worldmax, worldmin),
-          zmargin = max((maxz - minz)*csmdepthmargin, 0.5f*(csmdepthrange - (maxz - minz)));
+          zmargin = std::max((maxz - minz)*csmdepthmargin, 0.5f*(csmdepthrange - (maxz - minz)));
     minz -= zmargin;
     maxz += zmargin;
 
@@ -2140,8 +2140,8 @@ void calctilesize()
 {
     lighttilevieww = (vieww + lighttilealignw - 1)/lighttilealignw;
     lighttileviewh = (viewh + lighttilealignh - 1)/lighttilealignh;
-    lighttilew = min(lighttilevieww, lighttilemaxw);
-    lighttileh = min(lighttileviewh, lighttilemaxh);
+    lighttilew = std::min(lighttilevieww, lighttilemaxw);
+    lighttileh = std::min(lighttileviewh, lighttilemaxh);
 }
 
 void resetlights()
@@ -2322,10 +2322,10 @@ static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy
 
 static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
 {
-    int vx1 = max(static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
-        vy1 = max(static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
-        vx2 = min(static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)), min(((tx2*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
-        vy2 = min(static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh)), min(((ty2*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
+    int vx1 = std::max(static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
+        vy1 = std::max(static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
+        vx2 = std::min(static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)), std::min(((tx2*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
+        vy2 = std::min(static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh)), std::min(((ty2*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
     lightquads(z, (vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f, (vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f);
 }
 
@@ -2562,10 +2562,10 @@ static void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx
     {
         glDepthBounds_(0, depthtestlightsclamp);
     }
-    int tx1 = max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
-        ty1 = max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
-        tx2 = min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
-        ty2 = min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
+    int tx1 = std::max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
+        ty1 = std::max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
+        tx2 = std::min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
+        ty2 = std::min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
     s->setvariant(transparent ? 0 : -1, 16);
     lightquad(-1, (tx1*2.0f)/vieww-1.0f, (ty1*2.0f)/viewh-1.0f, (tx2*2.0f)/vieww-1.0f, (ty2*2.0f)/viewh-1.0f, tilemask);
     lightpassesused++;
@@ -2599,10 +2599,10 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
         for(uint i = 0; i < lightorder.size(); i++)
         {
             const lightinfo &l = lights[lightorder[i]];
-            float sx1 = max(bsx1, l.sx1),
-                  sy1 = max(bsy1, l.sy1),
-                  sx2 = min(bsx2, l.sx2),
-                  sy2 = min(bsy2, l.sy2);
+            float sx1 = std::max(bsx1, l.sx1),
+                  sy1 = std::max(bsy1, l.sy1),
+                  sx2 = std::min(bsx2, l.sx2),
+                  sy2 = std::min(bsy2, l.sy2);
             if(sx1 >= sx2 || sy1 >= sy2 || l.sz1 >= l.sz2 || (avatarpass && l.dist - l.radius > avatarshadowdist))
             {
                 continue;
@@ -2623,7 +2623,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
 
             if(hasDBT && depthtestlights > 1)
             {
-                glDepthBounds_(l.sz1*0.5f + 0.5f, min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
+                glDepthBounds_(l.sz1*0.5f + 0.5f, std::min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
             }
 
             if(camera1->o.dist(l.o) <= l.radius + nearplane + 1 && depthfaillights)
@@ -2704,10 +2704,10 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
         }
         else
         {
-            sx1 = max(sx1, bsx1);
-            sy1 = max(sy1, bsy1);
-            sx2 = min(sx2, bsx2);
-            sy2 = min(sy2, bsy2);
+            sx1 = std::max(sx1, bsx1);
+            sy1 = std::max(sy1, bsy1);
+            sx2 = std::min(sx2, bsx2);
+            sy2 = std::min(sy2, bsy2);
             if(sx1 >= sx2 || sy1 >= sy2 || sz1 >= sz2)
             {
                 continue;
@@ -2729,16 +2729,16 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
 
         if(hasDBT && depthtestlights > 1)
         {
-            glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
+            glDepthBounds_(sz1*0.5f + 0.5f, std::min(sz2*0.5f + 0.5f, depthtestlightsclamp));
         }
         gle::begin(GL_QUADS);
         for(uint j = 0; j < batch.rects.size(); j++)
         {
             const lightrect &r = batch.rects[j];
-            int x1 = max(static_cast<int>(r.x1), btx1),
-                y1 = max(static_cast<int>(r.y1), bty1),
-                x2 = min(static_cast<int>(r.x2), btx2),
-                y2 = min(static_cast<int>(r.y2), bty2);
+            int x1 = std::max(static_cast<int>(r.x1), btx1),
+                y1 = std::max(static_cast<int>(r.y1), bty1),
+                x2 = std::min(static_cast<int>(r.x2), btx2),
+                y2 = std::min(static_cast<int>(r.y2), bty2);
             if(x1 < x2 && y1 < y2)
             {
                 lightquads(sz1, sx1, sy1, sx2, sy2, x1, y1, x2, y2, tilemask);
@@ -2797,10 +2797,10 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
                 {
                     break;
                 }
-                sx1 = max(sx1, bsx1);
-                sy1 = max(sy1, bsy1);
-                sx2 = min(sx2, bsx2);
-                sy2 = min(sy2, bsy2);
+                sx1 = std::max(sx1, bsx1);
+                sy1 = std::max(sy1, bsy1);
+                sx2 = std::min(sx2, bsx2);
+                sy2 = std::min(sy2, bsy2);
                 if(sx1 >= sx2 || sy1 >= sy2 || sz1 >= sz2)
                 {
                     continue;
@@ -2817,7 +2817,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
             }
             if(hasDBT && depthtestlights > 1)
             {
-                glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
+                glDepthBounds_(sz1*0.5f + 0.5f, std::min(sz2*0.5f + 0.5f, depthtestlightsclamp));
             }
             lightquad(sz1, sx1, sy1, sx2, sy2, tilemask);
             lightpassesused++;
@@ -2855,10 +2855,10 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     int stencilref = -1;
     if(msaapass == 1 && ghasstencil)
     {
-        int tx1 = max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
-            ty1 = max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
-            tx2 = min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
-            ty2 = min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
+        int tx1 = std::max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
+            ty1 = std::max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
+            tx2 = std::min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
+            ty2 = std::min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         if(stencilmask)
         {
@@ -3178,10 +3178,10 @@ void rendervolumetric()
     if(volbilateral || volblur)
     {
         int radius = (volbilateral ? volbilateral : volblur)*2;
-        cx1 = max(cx1 - radius, 0);
-        cy1 = max(cy1 - radius, 0);
-        cx2 = min(cx2 + radius, volw);
-        cy2 = min(cy2 + radius, volh);
+        cx1 = std::max(cx1 - radius, 0);
+        cy1 = std::max(cy1 - radius, 0);
+        cx2 = std::min(cx2 + radius, volw);
+        cy2 = std::min(cy2 + radius, volh);
         glScissor(cx1, cy1, cx2-cx1, cy2-cy1);
 
         glDisable(GL_BLEND);
@@ -3220,10 +3220,10 @@ void rendervolumetric()
     glViewport(0, 0, vieww, viewh);
 
     int margin = (1<<volreduce) - 1;
-    cx1 = max((cx1 * vieww) / volw - margin, 0);
-    cy1 = max((cy1 * viewh) / volh - margin, 0);
-    cx2 = min((cx2 * vieww + margin + volw - 1) / volw, vieww);
-    cy2 = min((cy2 * viewh + margin + volh - 1) / volh, viewh);
+    cx1 = std::max((cx1 * vieww) / volw - margin, 0);
+    cy1 = std::max((cy1 * viewh) / volh - margin, 0);
+    cx2 = std::min((cx2 * vieww + margin + volw - 1) / volw, vieww);
+    cy2 = std::min((cy2 * viewh + margin + volh - 1) / volh, viewh);
     glScissor(cx1, cy1, cx2-cx1, cy2-cy1);
 
     bool avatar = useavatarmask();
@@ -3426,7 +3426,7 @@ void collectlights()
                     h = 2;
                     lod = smcubeprec;
                 }
-                lod *= std::clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
+                lod *= std::clamp(l.radius * prec / sqrtf(std::max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
                 int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
                 w *= size;
                 h *= size;
@@ -3549,7 +3549,7 @@ static void batchlights(const batchstack &initstack)
                 key.flags = flags | g;
                 flags |= BatchFlag_NoSun;
 
-                int n = min(groups[g], lighttilebatch);
+                int n = std::min(groups[g], lighttilebatch);
                 groups[g] -= n;
                 key.numlights = n;
                 for(int i = 0; i < n; ++i)
@@ -3675,7 +3675,7 @@ void packlights()
                 h = 2;
                 lod = smcubeprec;
             }
-            lod *= std::clamp(l.radius * prec / sqrtf(max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
+            lod *= std::clamp(l.radius * prec / sqrtf(std::max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
             int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
             w *= size;
             h *= size;
@@ -4119,17 +4119,17 @@ void rendertransparent()
         {
             glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
         }
-        float sx1 = min(alpharefractsx1, matrefractsx1),
-              sy1 = min(alpharefractsy1, matrefractsy1),
-              sx2 = max(alpharefractsx2, matrefractsx2),
-              sy2 = max(alpharefractsy2, matrefractsy2);
+        float sx1 = std::min(alpharefractsx1, matrefractsx1),
+              sy1 = std::min(alpharefractsy1, matrefractsy1),
+              sx2 = std::max(alpharefractsx2, matrefractsx2),
+              sy2 = std::max(alpharefractsy2, matrefractsy2);
         bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
         if(scissor)
         {
-            int x1 = static_cast<int>(floor(max(sx1*0.5f+0.5f-refractmargin*viewh/vieww, 0.0f)*vieww)),
-                y1 = static_cast<int>(floor(max(sy1*0.5f+0.5f-refractmargin, 0.0f)*viewh)),
-                x2 = static_cast<int>(ceil(min(sx2*0.5f+0.5f+refractmargin*viewh/vieww, 1.0f)*vieww)),
-                y2 = static_cast<int>(ceil(min(sy2*0.5f+0.5f+refractmargin, 1.0f)*viewh));
+            int x1 = static_cast<int>(floor(std::max(sx1*0.5f+0.5f-refractmargin*viewh/vieww, 0.0f)*vieww)),
+                y1 = static_cast<int>(floor(std::max(sy1*0.5f+0.5f-refractmargin, 0.0f)*viewh)),
+                x2 = static_cast<int>(ceil(std::min(sx2*0.5f+0.5f+refractmargin*viewh/vieww, 1.0f)*vieww)),
+                y2 = static_cast<int>(ceil(std::min(sy2*0.5f+0.5f+refractmargin, 1.0f)*viewh));
             glEnable(GL_SCISSOR_TEST);
             glScissor(x1, y1, x2 - x1, y2 - y1);
         }
@@ -4240,10 +4240,10 @@ void rendertransparent()
                 memcpy(tiles, alphatiles, sizeof(tiles));
                 if(hasmats&2)
                 {
-                    sx1 = min(sx1, matsolidsx1);
-                    sy1 = min(sy1, matsolidsy1);
-                    sx2 = max(sx2, matsolidsx2);
-                    sy2 = max(sy2, matsolidsy2);
+                    sx1 = std::min(sx1, matsolidsx1);
+                    sy1 = std::min(sy1, matsolidsy1);
+                    sx2 = std::max(sx2, matsolidsx2);
+                    sy2 = std::max(sy2, matsolidsy2);
                     for(int j = 0; j < lighttilemaxheight; ++j)
                     {
                         tiles[j] |= matsolidtiles[j];
@@ -4270,10 +4270,10 @@ void rendertransparent()
             }
         }
         transparentlayer = layer+1;
-        allsx1 = min(allsx1, sx1);
-        allsy1 = min(allsy1, sy1);
-        allsx2 = max(allsx2, sx2);
-        allsy2 = max(allsy2, sy2);
+        allsx1 = std::min(allsx1, sx1);
+        allsy1 = std::min(allsy1, sy1);
+        allsx2 = std::max(allsx2, sx2);
+        allsy2 = std::max(allsy2, sy2);
 
         glBindFramebuffer_(GL_FRAMEBUFFER, msaalight ? msfbo : gfbo);
         if(ghasstencil)
