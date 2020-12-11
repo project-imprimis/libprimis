@@ -263,8 +263,8 @@ const vector<physent *> &checkdynentcache(int x, int y)
 
 //============================================================== LOOPDYNENTCACHE
 #define LOOPDYNENTCACHE(curx, cury, o, radius) \
-    for(int curx = max(static_cast<int>(o.x-radius), 0)>>dynentsize, endx = min(static_cast<int>(o.x+radius), worldsize-1)>>dynentsize; curx <= endx; curx++) \
-    for(int cury = max(static_cast<int>(o.y-radius), 0)>>dynentsize, endy = min(static_cast<int>(o.y+radius), worldsize-1)>>dynentsize; cury <= endy; cury++)
+    for(int curx = std::max(static_cast<int>(o.x-radius), 0)>>dynentsize, endx = std::min(static_cast<int>(o.x+radius), worldsize-1)>>dynentsize; curx <= endx; curx++) \
+    for(int cury = std::max(static_cast<int>(o.y-radius), 0)>>dynentsize, endy = std::min(static_cast<int>(o.y+radius), worldsize-1)>>dynentsize; cury <= endy; cury++)
 
 void updatedynentcache(physent *d)
 {
@@ -1193,7 +1193,7 @@ void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space)
         if(dir[i] != 0)
         {
             float dist = ((dir[i] > 0 ? bbmax[i] : bbmin[i]) - d->o[i]) / dir[i];
-            mindist = min(mindist, dist);
+            mindist = std::min(mindist, dist);
         }
     }
     if(mindist >= 0.0f && mindist < 1e15f)
