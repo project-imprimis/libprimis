@@ -1,5 +1,3 @@
-// This code is based off the Minkowski Portal Refinement algorithm by Gary Snethen in XenoCollide & Game Programming Gems 7.
-
 namespace mpr
 {
     struct CubePlanes
@@ -8,23 +6,8 @@ namespace mpr
 
         CubePlanes(const clipplanes &p) : p(p) {}
 
-        vec center() const { return p.o; }
-
-        vec supportpoint(const vec &n) const
-        {
-            int besti = 7;
-            float bestd = n.dot(p.v[7]);
-            for(int i = 0; i < 7; ++i)
-            {
-                float d = n.dot(p.v[i]);
-                if(d > bestd)
-                {
-                    besti = i;
-                    bestd = d;
-                }
-            }
-            return p.v[besti];
-        }
+        vec center() const;
+        vec supportpoint(const vec &n) const;
     };
 
     struct SolidCube
@@ -36,25 +19,8 @@ namespace mpr
         SolidCube(const vec &o, int size) : o(o), size(size) {}
         SolidCube(const ivec &o, int size) : o(o), size(size) {}
 
-        vec center() const { return vec(o).add(size/2); }
-
-        vec supportpoint(const vec &n) const
-        {
-            vec p(o);
-            if(n.x > 0)
-            {
-                p.x += size;
-            }
-            if(n.y > 0)
-            {
-                p.y += size;
-            }
-            if(n.z > 0)
-            {
-                p.z += size;
-            }
-            return p;
-        }
+        vec center() const;
+        vec supportpoint(const vec &n) const;
     };
 
     struct Ent
@@ -63,10 +29,7 @@ namespace mpr
 
         Ent(physent *ent) : ent(ent) {}
 
-        vec center() const
-        {
-            return vec(ent->o.x, ent->o.y, ent->o.z + (ent->aboveeye - ent->eyeheight)/2);
-        }
+        vec center() const;
     };
 
     struct EntOBB : Ent
@@ -78,152 +41,52 @@ namespace mpr
             orient.setyaw(ent->yaw*RAD);
         }
 
-        vec contactface(const vec &wn, const vec &wdir) const
-        {
-            vec n = orient.transform(wn).div(vec(ent->xradius, ent->yradius, (ent->aboveeye + ent->eyeheight)/2)),
-                dir = orient.transform(wdir),
-                an(fabs(n.x), fabs(n.y), dir.z ? fabs(n.z) : 0),
-                fn(0, 0, 0);
-            if(an.x > an.y)
-            {
-                if(an.x > an.z)
-                {
-                    fn.x = n.x*dir.x < 0 ? (n.x > 0 ? 1 : -1) : 0;
-                }
-                else if(an.z > 0)
-                {
-                    fn.z = n.z*dir.z < 0 ? (n.z > 0 ? 1 : -1) : 0;
-                }
-            }
-            else if(an.y > an.z)
-            {
-                fn.y = n.y*dir.y < 0 ? (n.y > 0 ? 1 : -1) : 0;
-            }
-            else if(an.z > 0)
-            {
-                fn.z = n.z*dir.z < 0 ? (n.z > 0 ? 1 : -1) : 0;
-            }
-            return orient.transposedtransform(fn);
-        }
+        vec contactface(const vec &wn, const vec &wdir) const;
+        vec localsupportpoint(const vec &ln) const;
+        vec supportpoint(const vec &n) const;
+        float supportcoordneg(const vec &p) const;
+        float supportcoord(const vec &p) const;
 
-        vec localsupportpoint(const vec &ln) const
-        {
-            return vec(ln.x > 0 ? ent->xradius : -ent->xradius,
-                       ln.y > 0 ? ent->yradius : -ent->yradius,
-                       ln.z > 0 ? ent->aboveeye : -ent->eyeheight);
-        }
-
-        vec supportpoint(const vec &n) const
-        {
-            return orient.transposedtransform(localsupportpoint(orient.transform(n))).add(ent->o);
-        }
-
-        float supportcoordneg(const vec &p) const
-        {
-            return localsupportpoint(vec(p).neg()).dot(p);
-        }
-
-        float supportcoord(const vec &p) const
-        {
-            return localsupportpoint(p).dot(p);
-        }
-
-        float left()   const { return supportcoordneg(orient.a) + ent->o.x; }
-        float right()  const { return supportcoord(orient.a) + ent->o.x; }
-        float back()   const { return supportcoordneg(orient.b) + ent->o.y; }
-        float front()  const { return supportcoord(orient.b) + ent->o.y; }
-        float bottom() const { return ent->o.z - ent->eyeheight; }
-        float top()    const { return ent->o.z + ent->aboveeye; }
+        float left()   const;
+        float right()  const;
+        float back()   const;
+        float front()  const;
+        float bottom() const;
+        float top()    const;
     };
 
     struct EntFuzzy : Ent
     {
         EntFuzzy(physent *ent) : Ent(ent) {}
 
-        float left()   const { return ent->o.x - ent->radius; }
-        float right()  const { return ent->o.x + ent->radius; }
-        float back()   const { return ent->o.y - ent->radius; }
-        float front()  const { return ent->o.y + ent->radius; }
-        float bottom() const { return ent->o.z - ent->eyeheight; }
-        float top()    const { return ent->o.z + ent->aboveeye; }
+        float left()   const;
+        float right()  const;
+        float back()   const;
+        float front()  const;
+        float bottom() const;
+        float top()    const;
     };
 
     struct EntCylinder : EntFuzzy
     {
         EntCylinder(physent *ent) : EntFuzzy(ent) {}
 
-        vec contactface(const vec &n, const vec &dir) const
-        {
-            float dxy = n.dot2(n)/(ent->radius*ent->radius),
-                  dz = n.z*n.z*4/(ent->aboveeye + ent->eyeheight);
-            vec fn(0, 0, 0);
-            if(dz > dxy && dir.z)
-            {
-                fn.z = n.z*dir.z < 0 ? (n.z > 0 ? 1 : -1) : 0;
-            }
-            else if(n.dot2(dir) < 0)
-            {
-                fn.x = n.x;
-                fn.y = n.y;
-                fn.normalize();
-            }
-            return fn;
-        }
-
-        vec supportpoint(const vec &n) const
-        {
-            vec p(ent->o);
-            if(n.z > 0)
-            {
-                p.z += ent->aboveeye;
-            }
-            else
-            {
-                p.z -= ent->eyeheight;
-            }
-            if(n.x || n.y)
-            {
-                float r = ent->radius / n.magnitude2();
-                p.x += n.x*r;
-                p.y += n.y*r;
-            }
-            return p;
-        }
+        vec contactface(const vec &n, const vec &dir) const;
+        vec supportpoint(const vec &n) const;
     };
 
     struct EntCapsule : EntFuzzy
     {
         EntCapsule(physent *ent) : EntFuzzy(ent) {}
 
-        vec supportpoint(const vec &n) const
-        {
-            vec p(ent->o);
-            if(n.z > 0)
-            {
-                p.z += ent->aboveeye - ent->radius;
-            }
-            else
-            {
-                p.z -= ent->eyeheight - ent->radius;
-            }
-            p.add(vec(n).mul(ent->radius / n.magnitude()));
-            return p;
-        }
+        vec supportpoint(const vec &n) const;
     };
 
     struct EntEllipsoid : EntFuzzy
     {
         EntEllipsoid(physent *ent) : EntFuzzy(ent) {}
 
-        vec supportpoint(const vec &dir) const
-        {
-            vec p(ent->o);
-            vec n = vec(dir).normalize();
-            p.x += ent->radius*n.x;
-            p.y += ent->radius*n.y;
-            p.z += (ent->aboveeye + ent->eyeheight)/2*(1 + n.z) - ent->eyeheight;
-            return p;
-        }
+        vec supportpoint(const vec &dir) const;
     };
 
     struct Model
@@ -249,7 +112,7 @@ namespace mpr
             o.add(orient.transposedtransform(center));
         }
 
-        vec center() const { return o; }
+        vec center() const;
     };
 
     struct ModelOBB : Model
@@ -258,64 +121,10 @@ namespace mpr
             Model(ent, center, radius, yaw, pitch, roll)
         {}
 
-        vec contactface(const vec &wn, const vec &wdir) const
-        {
-            vec n = orient.transform(wn).div(radius),
-                dir = orient.transform(wdir),
-                an(fabs(n.x), fabs(n.y), dir.z ? fabs(n.z) : 0),
-                fn(0, 0, 0);
-            if(an.x > an.y)
-            {
-                if(an.x > an.z)
-                {
-                    fn.x = n.x*dir.x < 0 ? (n.x > 0 ? 1 : -1) : 0;
-                }
-                else if(an.z > 0)
-                {
-                    fn.z = n.z*dir.z < 0 ? (n.z > 0 ? 1 : -1) : 0;
-                }
-            }
-            else if(an.y > an.z)
-            {
-                fn.y = n.y*dir.y < 0 ? (n.y > 0 ? 1 : -1) : 0;
-            }
-            else if(an.z > 0)
-            {
-                fn.z = n.z*dir.z < 0 ? (n.z > 0 ? 1 : -1) : 0;
-            }
-            return orient.transposedtransform(fn);
-        }
-
-        vec supportpoint(const vec &n) const
-        {
-            vec ln = orient.transform(n), p(0, 0, 0);
-            if(ln.x > 0)
-            {
-                p.x += radius.x;
-            }
-            else
-            {
-                p.x -= radius.x;
-            }
-            if(ln.y > 0)
-            {
-                p.y += radius.y;
-            }
-            else
-            {
-                p.y -= radius.y;
-            }
-            if(ln.z > 0)
-            {
-                p.z += radius.z;
-            }
-            else
-            {
-                p.z -= radius.z;
-            }
-            return orient.transposedtransform(p).add(o);
-        }
+        vec contactface(const vec &wn, const vec &wdir) const;
+        vec supportpoint(const vec &n) const;
     };
+
 
     struct ModelEllipse : Model
     {
@@ -323,48 +132,11 @@ namespace mpr
             Model(ent, center, radius, yaw, pitch, roll)
         {}
 
-        vec contactface(const vec &wn, const vec &wdir) const
-        {
-            vec n = orient.transform(wn).div(radius),
-                dir = orient.transform(wdir);
-            float dxy = n.dot2(n),
-                  dz = n.z*n.z;
-            vec fn(0, 0, 0);
-            if(dz > dxy && dir.z)
-            {
-                fn.z = n.z*dir.z < 0 ? (n.z > 0 ? 1 : -1) : 0;
-            }
-            else if(n.dot2(dir) < 0)
-            {
-                fn.x = n.x*radius.y;
-                fn.y = n.y*radius.x;
-                fn.normalize();
-            }
-            return orient.transposedtransform(fn);
-        }
-
-        vec supportpoint(const vec &n) const
-        {
-            vec ln = orient.transform(n),
-                p(0, 0, 0);
-            if(ln.z > 0)
-            {
-                p.z += radius.z;
-            }
-            else
-            {
-                p.z -= radius.z;
-            }
-            if(ln.x || ln.y)
-            {
-                float r = ln.magnitude2();
-                p.x += ln.x*radius.x/r;
-                p.y += ln.y*radius.y/r;
-            }
-            return orient.transposedtransform(p).add(o);
-        }
+        vec contactface(const vec &wn, const vec &wdir) const;
+        vec supportpoint(const vec &n) const;
     };
 
+    //templates
     const float boundarytolerance = 1e-3f;
 
     template<class T, class U>
@@ -692,4 +464,3 @@ namespace mpr
         return false;
     }
 }
-

@@ -102,6 +102,7 @@ CLIENT_OBJS= \
 	engine/world/dynlight.o \
 	engine/world/light.o \
 	engine/world/material.o \
+	engine/world/mpr.o \
 	engine/world/octa.o \
 	engine/world/octaedit.o \
 	engine/world/physics.o \
