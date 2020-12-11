@@ -1,3 +1,6 @@
+#ifndef MPR_H_
+#define MPR_H_
+
 namespace mpr
 {
     struct CubePlanes
@@ -464,3 +467,5 @@ namespace mpr
         return false;
     }
 }
+
+#endif

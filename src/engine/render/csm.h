@@ -1,3 +1,6 @@
+#ifndef CSM_H_
+#define CSM_H_
+
 static const int csmmaxsplits = 8;
 
 extern int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax);
@@ -31,3 +34,5 @@ extern cascadedshadowmap csm;
 extern int csmsplits, csmshadowmap;
 extern float csmpolyoffset, csmpolyoffset2;
 extern float csmpolyfactor, csmpolyfactor2;
+
+#endif
