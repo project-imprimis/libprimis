@@ -1,6 +1,4 @@
-VARP(gpuskel, 0, 1, 1);
-
-VAR(maxskelanimdata, 1, 192, 0);
+extern int gpuskel, maxskelanimdata;
 
 enum
 {
@@ -2169,8 +2167,6 @@ struct skelmodel : animmodel
         return *p;
     }
 };
-
-hashnameset<skelmodel::skeleton *> skelmodel::skeletons;
 
 struct skeladjustment
 {

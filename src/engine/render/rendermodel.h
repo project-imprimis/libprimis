@@ -5,6 +5,8 @@ struct mapmodelinfo { string name; model *m, *collide; };
 
 extern vector<mapmodelinfo> mapmodels;
 
+std::vector<int> findanims(const char *pattern);
+
 extern float transmdlsx1, transmdlsy1, transmdlsx2, transmdlsy2;
 extern uint transmdltiles[lighttilemaxheight];
 

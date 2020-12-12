@@ -59,6 +59,8 @@ static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass
 #include "model/md5.h"
 #include "model/obj.h"
 
+vertcommands<obj> objcommands;
+
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
 

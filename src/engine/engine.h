@@ -414,6 +414,8 @@ namespace entities
 
 // renderparticles
 extern int particlelayers;
+extern int animationinterpolationtime;
+extern int numanims;
 
 enum
 {

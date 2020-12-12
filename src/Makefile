@@ -76,6 +76,10 @@ CLIENT_OBJS= \
 	engine/interface/menus.o \
 	engine/interface/sound.o \
 	engine/interface/ui.o \
+	engine/model/animmodel.o \
+	engine/model/obj.o \
+	engine/model/ragdoll.o \
+	engine/model/skelmodel.o \
 	engine/render/aa.o \
 	engine/render/ao.o \
 	engine/render/csm.o \
