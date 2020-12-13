@@ -120,82 +120,10 @@ struct ragdolldata
         }
     }
 
-    void calcanimjoint(int i, const matrix4x3 &anim)
-    {
-        if(!animjoints)
-        {
-            return;
-        }
-        ragdollskel::joint &j = skel->joints[i];
-        vec pos(0, 0, 0);
-        for(int k = 0; k < 3; ++k)
-        {
-            if(j.vert[k]>=0)
-            {
-                pos.add(verts[j.vert[k]].pos);
-            }
-        }
-        pos.mul(j.weight);
-
-        ragdollskel::tri &t = skel->tris[j.tri];
-        matrix4x3 m;
-        const vec &v1 = verts[t.vert[0]].pos,
-                  &v2 = verts[t.vert[1]].pos,
-                  &v3 = verts[t.vert[2]].pos;
-        m.a = vec(v2).sub(v1).normalize();
-        m.c.cross(m.a, vec(v3).sub(v1)).normalize();
-        m.b.cross(m.c, m.a);
-        m.d = pos;
-        animjoints[i].transposemul(m, anim);
-    }
-
-    void calctris()
-    {
-        for(int i = 0; i < skel->tris.length(); i++)
-        {
-            ragdollskel::tri &t = skel->tris[i];
-            matrix3 &m = tris[i];
-            const vec &v1 = verts[t.vert[0]].pos,
-                      &v2 = verts[t.vert[1]].pos,
-                      &v3 = verts[t.vert[2]].pos;
-            m.a = vec(v2).sub(v1).normalize();
-            m.c.cross(m.a, vec(v3).sub(v1)).normalize();
-            m.b.cross(m.c, m.a);
-        }
-    }
-
-    void calcboundsphere()
-    {
-        center = vec(0, 0, 0);
-        for(int i = 0; i < skel->verts.length(); i++)
-        {
-            center.add(verts[i].pos);
-        }
-        center.div(skel->verts.length());
-        radius = 0;
-        for(int i = 0; i < skel->verts.length(); i++)
-        {
-            radius = max(radius, verts[i].pos.dist(center));
-        }
-    }
-
-    void init(dynent *d)
-    {
-        extern int ragdolltimestepmin;
-        float ts = ragdolltimestepmin/1000.0f;
-        for(int i = 0; i < skel->verts.length(); i++)
-        {
-            (verts[i].oldpos = verts[i].pos).sub(vec(d->vel).add(d->falling).mul(ts));
-        }
-        timestep = ts;
-
-        calctris();
-        calcboundsphere();
-        offset = d->o;
-        offset.sub(skel->eye >= 0 ? verts[skel->eye].pos : center);
-        offset.z += (d->eyeheight + d->aboveeye)/2;
-    }
-
+    void calcanimjoint(int i, const matrix4x3 &anim);
+    void calctris();
+    void calcboundsphere();
+    void init(dynent *d);
     void move(dynent *pl, float ts);
     void constrain();
     void constraindist();
