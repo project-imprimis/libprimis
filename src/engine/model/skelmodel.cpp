@@ -1283,3 +1283,225 @@ void skelmodel::skelmesh::render(const animstate *as, skin &s, vbocacheentry &vc
     glde++;
     xtravertsva += numverts;
 }
+
+// skelmeshgroup
+
+void skelmodel::skelmeshgroup::shareskeleton(const char *name)
+{
+    if(!name)
+    {
+        skel = new skeleton;
+        skel->users.add(this);
+        return;
+    }
+
+    if(skeletons.access(name))
+    {
+        skel = skeletons[name];
+    }
+    else
+    {
+        skel = new skeleton;
+        skel->name = newstring(name);
+        skeletons.add(skel);
+    }
+    skel->users.add(this);
+    skel->shared++;
+}
+
+int skelmodel::skelmeshgroup::findtag(const char *name)
+{
+    return skel->findtag(name);
+}
+
+void *skelmodel::skelmeshgroup::animkey()
+{
+    return skel;
+}
+
+int skelmodel::skelmeshgroup::totalframes() const
+{
+    return max(skel->numframes, 1);
+}
+
+void skelmodel::skelmeshgroup::bindvbo(const animstate *as, part *p, vbocacheentry &vc, skelcacheentry *sc, blendcacheentry *bc)
+{
+    if(!skel->numframes)
+    {
+        bindvbo<vvertg>(as, p, vc);
+    }
+    else if(skel->usegpuskel)
+    {
+        bindvbo<vvertgw>(as, p, vc);
+    }
+    else
+    {
+        bindvbo<vvert>(as, p, vc);
+    }
+}
+
+void skelmodel::skelmeshgroup::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
+{
+    skel->concattagtransform(p, i, m, n);
+}
+
+int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
+{
+    for(int i = 0; i < blendcombos.length(); i++)
+    {
+        if(blendcombos[i]==c)
+        {
+            blendcombos[i].uses += c.uses;
+            return i;
+        }
+    }
+    numblends[c.size()-1]++;
+    blendcombo &a = blendcombos.add(c);
+    return a.interpindex = blendcombos.length()-1;
+}
+
+void skelmodel::skelmeshgroup::sortblendcombos()
+{
+    blendcombos.sort(blendcombo::sortcmp);
+    int *remap = new int[blendcombos.length()];
+    for(int i = 0; i < blendcombos.length(); i++)
+    {
+        remap[blendcombos[i].interpindex] = i;
+    }
+    LOOP_RENDER_MESHES(skelmesh, m,
+    {
+        for(int j = 0; j < m.numverts; ++j)
+        {
+            vert &v = m.verts[j];
+            v.blend = remap[v.blend];
+        }
+    });
+    delete[] remap;
+}
+
+int skelmodel::skelmeshgroup::remapblend(int blend)
+{
+    const blendcombo &c = blendcombos[blend];
+    return c.weights[1] ? c.interpindex : c.interpbones[0];
+}
+
+void skelmodel::skelmeshgroup::blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c)
+{
+    d = bdata[c.interpbones[0]];
+    d.mul(c.weights[0]);
+    d.accumulate(bdata[c.interpbones[1]], c.weights[1]);
+    if(c.weights[2])
+    {
+        d.accumulate(bdata[c.interpbones[2]], c.weights[2]);
+        if(c.weights[3])
+        {
+            d.accumulate(bdata[c.interpbones[3]], c.weights[3]);
+        }
+    }
+}
+
+void skelmodel::skelmeshgroup::blendbones(const skelcacheentry &sc, blendcacheentry &bc)
+{
+    bc.nextversion();
+    if(!bc.bdata)
+    {
+        bc.bdata = new dualquat[vblends];
+    }
+    dualquat *dst = bc.bdata - skel->numgpubones;
+    bool normalize = !skel->usegpuskel || vweights<=1;
+    for(int i = 0; i < blendcombos.length(); i++)
+    {
+        const blendcombo &c = blendcombos[i];
+        if(c.interpindex<0)
+        {
+            break;
+        }
+        dualquat &d = dst[c.interpindex];
+        blendbones(d, sc.bdata, c);
+        if(normalize)
+        {
+            d.normalize();
+        }
+    }
+}
+
+void skelmodel::skelmeshgroup::blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends)
+{
+    for(int i = 0; i < numblends; ++i)
+    {
+        dualquat &d = dst[i];
+        blendbones(d, bdata, c[i]);
+        d.normalize();
+    }
+}
+
+void skelmodel::skelmeshgroup::cleanup()
+{
+    for(int i = 0; i < maxblendcache; ++i)
+    {
+        blendcacheentry &c = blendcache[i];
+        DELETEA(c.bdata);
+        c.owner = -1;
+    }
+    for(int i = 0; i < maxvbocache; ++i)
+    {
+        vbocacheentry &c = vbocache[i];
+        if(c.vbuf)
+        {
+            glDeleteBuffers_(1, &c.vbuf);
+            c.vbuf = 0;
+        }
+        c.owner = -1;
+    }
+    if(ebuf)
+    {
+        glDeleteBuffers_(1, &ebuf);
+        ebuf = 0;
+    }
+    if(skel)
+    {
+        skel->cleanup(false);
+    }
+    cleanuphitdata();
+}
+
+//================================================================== SEARCHCACHE
+#define SEARCHCACHE(cachesize, cacheentry, cache, reusecheck) \
+    for(int i = 0; i < cachesize; ++i) \
+    { \
+        cacheentry &c = cache[i]; \
+        if(c.owner==owner) \
+        { \
+             if(c==sc) \
+             { \
+                 return c; \
+             } \
+             else \
+             { \
+                 c.owner = -1; \
+             } \
+             break; \
+        } \
+    } \
+    for(int i = 0; i < cachesize-1; ++i) \
+    { \
+        cacheentry &c = cache[i]; \
+        if(reusecheck c.owner < 0 || c.millis < lastmillis) \
+        { \
+            return c; \
+        } \
+    } \
+    return cache[cachesize-1];
+
+skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(skelcacheentry &sc, int owner)
+{
+    SEARCHCACHE(maxvbocache, vbocacheentry, vbocache, !c.vbuf || );
+}
+
+skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(skelcacheentry &sc, int owner)
+{
+    SEARCHCACHE(maxblendcache, blendcacheentry, blendcache, )
+}
+
+#undef SEARCHCACHE
+//==============================================================================

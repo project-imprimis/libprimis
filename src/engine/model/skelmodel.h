@@ -524,43 +524,10 @@ struct skelmodel : animmodel
             deletehitdata();
         }
 
-        void shareskeleton(const char *name)
-        {
-            if(!name)
-            {
-                skel = new skeleton;
-                skel->users.add(this);
-                return;
-            }
-
-            if(skeletons.access(name))
-            {
-                skel = skeletons[name];
-            }
-            else
-            {
-                skel = new skeleton;
-                skel->name = newstring(name);
-                skeletons.add(skel);
-            }
-            skel->users.add(this);
-            skel->shared++;
-        }
-
-        int findtag(const char *name)
-        {
-            return skel->findtag(name);
-        }
-
-        void *animkey()
-        {
-            return skel;
-        }
-
-        int totalframes() const
-        {
-            return max(skel->numframes, 1);
-        }
+        void shareskeleton(const char *name);
+        int findtag(const char *name);
+        void *animkey();
+        int totalframes() const;
 
         virtual skelanimspec *loadanim(const char *filename)
         {
@@ -611,184 +578,18 @@ struct skelmodel : animmodel
             bindbones(vverts);
         }
 
-        void bindvbo(const animstate *as, part *p, vbocacheentry &vc, skelcacheentry *sc = NULL, blendcacheentry *bc = NULL)
-        {
-            if(!skel->numframes)
-            {
-                bindvbo<vvertg>(as, p, vc);
-            }
-            else if(skel->usegpuskel)
-            {
-                bindvbo<vvertgw>(as, p, vc);
-            }
-            else
-            {
-                bindvbo<vvert>(as, p, vc);
-            }
-        }
-
-        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
-        {
-            skel->concattagtransform(p, i, m, n);
-        }
-
-        int addblendcombo(const blendcombo &c)
-        {
-            for(int i = 0; i < blendcombos.length(); i++)
-            {
-                if(blendcombos[i]==c)
-                {
-                    blendcombos[i].uses += c.uses;
-                    return i;
-                }
-            }
-            numblends[c.size()-1]++;
-            blendcombo &a = blendcombos.add(c);
-            return a.interpindex = blendcombos.length()-1;
-        }
-
-        void sortblendcombos()
-        {
-            blendcombos.sort(blendcombo::sortcmp);
-            int *remap = new int[blendcombos.length()];
-            for(int i = 0; i < blendcombos.length(); i++)
-            {
-                remap[blendcombos[i].interpindex] = i;
-            }
-            LOOP_RENDER_MESHES(skelmesh, m,
-            {
-                for(int j = 0; j < m.numverts; ++j)
-                {
-                    vert &v = m.verts[j];
-                    v.blend = remap[v.blend];
-                }
-            });
-            delete[] remap;
-        }
-
-        int remapblend(int blend)
-        {
-            const blendcombo &c = blendcombos[blend];
-            return c.weights[1] ? c.interpindex : c.interpbones[0];
-        }
-
-        static inline void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c)
-        {
-            d = bdata[c.interpbones[0]];
-            d.mul(c.weights[0]);
-            d.accumulate(bdata[c.interpbones[1]], c.weights[1]);
-            if(c.weights[2])
-            {
-                d.accumulate(bdata[c.interpbones[2]], c.weights[2]);
-                if(c.weights[3])
-                {
-                    d.accumulate(bdata[c.interpbones[3]], c.weights[3]);
-                }
-            }
-        }
-
-        void blendbones(const skelcacheentry &sc, blendcacheentry &bc)
-        {
-            bc.nextversion();
-            if(!bc.bdata)
-            {
-                bc.bdata = new dualquat[vblends];
-            }
-            dualquat *dst = bc.bdata - skel->numgpubones;
-            bool normalize = !skel->usegpuskel || vweights<=1;
-            for(int i = 0; i < blendcombos.length(); i++)
-            {
-                const blendcombo &c = blendcombos[i];
-                if(c.interpindex<0)
-                {
-                    break;
-                }
-                dualquat &d = dst[c.interpindex];
-                blendbones(d, sc.bdata, c);
-                if(normalize)
-                {
-                    d.normalize();
-                }
-            }
-        }
-
-        static inline void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends)
-        {
-            for(int i = 0; i < numblends; ++i)
-            {
-                dualquat &d = dst[i];
-                blendbones(d, bdata, c[i]);
-                d.normalize();
-            }
-        }
-
-        void cleanup()
-        {
-            for(int i = 0; i < maxblendcache; ++i)
-            {
-                blendcacheentry &c = blendcache[i];
-                DELETEA(c.bdata);
-                c.owner = -1;
-            }
-            for(int i = 0; i < maxvbocache; ++i)
-            {
-                vbocacheentry &c = vbocache[i];
-                if(c.vbuf)
-                {
-                    glDeleteBuffers_(1, &c.vbuf);
-                    c.vbuf = 0;
-                }
-                c.owner = -1;
-            }
-            if(ebuf)
-            {
-                glDeleteBuffers_(1, &ebuf);
-                ebuf = 0;
-            }
-            if(skel)
-            {
-                skel->cleanup(false);
-            }
-            cleanuphitdata();
-        }
-
-        #define SEARCHCACHE(cachesize, cacheentry, cache, reusecheck) \
-            for(int i = 0; i < cachesize; ++i) \
-            { \
-                cacheentry &c = cache[i]; \
-                if(c.owner==owner) \
-                { \
-                     if(c==sc) \
-                     { \
-                         return c; \
-                     } \
-                     else \
-                     { \
-                         c.owner = -1; \
-                     } \
-                     break; \
-                } \
-            } \
-            for(int i = 0; i < cachesize-1; ++i) \
-            { \
-                cacheentry &c = cache[i]; \
-                if(reusecheck c.owner < 0 || c.millis < lastmillis) \
-                { \
-                    return c; \
-                } \
-            } \
-            return cache[cachesize-1];
-
-        vbocacheentry &checkvbocache(skelcacheentry &sc, int owner)
-        {
-            SEARCHCACHE(maxvbocache, vbocacheentry, vbocache, !c.vbuf || );
-        }
-
-        blendcacheentry &checkblendcache(skelcacheentry &sc, int owner)
-        {
-            SEARCHCACHE(maxblendcache, blendcacheentry, blendcache, )
-        }
-
+        void bindvbo(const animstate *as, part *p, vbocacheentry &vc, skelcacheentry *sc = NULL, blendcacheentry *bc = NULL);
+        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
+        int addblendcombo(const blendcombo &c);
+        void sortblendcombos();
+        int remapblend(int blend);
+        static void blendbones(dualquat &d, const dualquat *bdata, const blendcombo &c);
+        void blendbones(const skelcacheentry &sc, blendcacheentry &bc);
+        static void blendbones(const dualquat *bdata, dualquat *dst, const blendcombo *c, int numblends);
+        void cleanup();
+        vbocacheentry &checkvbocache(skelcacheentry &sc, int owner);
+        blendcacheentry &checkblendcache(skelcacheentry &sc, int owner);
+        //hitzone
         void cleanuphitdata();
         void deletehitdata();
         void buildhitdata(const uchar *hitzones);
