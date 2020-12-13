@@ -1,3 +1,6 @@
+#ifndef OBJ_H_
+#define OBJ_H_
+
 struct obj;
 
 struct obj : vertloader<obj>
@@ -27,4 +30,6 @@ struct obj : vertloader<obj>
 
     bool loaddefaultparts();
 };
+
+#endif
 

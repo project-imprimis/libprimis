@@ -1,3 +1,6 @@
+#ifndef ANIMMODEL_H_
+#define ANIMMODEL_H_
+
 extern int fullbrightmodels, testtags, dbgcolmesh;
 
 struct animmodel : model
@@ -2195,3 +2198,4 @@ struct modelcommands
     }
 };
 
+#endif

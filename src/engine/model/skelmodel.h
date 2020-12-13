@@ -1,3 +1,6 @@
+#ifndef SKELMODEL_H_
+#define SKELMODEL_H_
+
 extern int gpuskel, maxskelanimdata;
 
 enum
@@ -1408,3 +1411,4 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     }
 };
 
+#endif

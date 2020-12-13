@@ -1,3 +1,6 @@
+#ifndef RAGDOLL_H_
+#define RAGDOLL_H_
+
 extern int ragdolleyesmoothmillis, ragdolltimestepmax, ragdolltimestepmin;
 extern float ragdolleyesmooth;
 
@@ -224,3 +227,5 @@ struct ragdolldata
 
 extern void cleanragdoll(dynent *d);
 extern void moveragdoll(dynent *d);
+
+#endif
