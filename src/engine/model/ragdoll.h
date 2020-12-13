@@ -12,20 +12,8 @@ struct ragdollskel
     struct tri
     {
         int vert[3];
-        bool shareverts(const tri &t) const
-        {
-            for(int i = 0; i < 3; ++i)
-            {
-                for(int j = 0; j < 3; ++j)
-                {
-                    if(vert[i] == t.vert[j])
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+
+        bool shareverts(const tri &t) const;
     };
 
     struct distlimit
@@ -71,84 +59,11 @@ struct ragdollskel
 
     ragdollskel() : loaded(false), animjoints(false), eye(-1) {}
 
-    void setupjoints()
-    {
-        for(int i = 0; i < verts.length(); i++)
-        {
-            verts[i].weight = 0;
-        }
-        for(int i = 0; i < joints.length(); i++)
-        {
-            joint &j = joints[i];
-            j.weight = 0;
-            vec pos(0, 0, 0);
-            for(int k = 0; k < 3; ++k)
-            {
-                if(j.vert[k]>=0)
-                {
-                    pos.add(verts[j.vert[k]].pos);
-                    j.weight++;
-                    verts[j.vert[k]].weight++;
-                }
-            }
-            for(int k = 0; k < j.weight; ++k)
-            {
-                j.weight = 1/j.weight;
-            }
-            pos.mul(j.weight);
+    void setupjoints();
+    void setuprotfrictions();
+    void setup();
+    void addreljoint(int bone, int parent);
 
-            tri &t = tris[j.tri];
-            matrix4x3 &m = j.orient;
-            const vec &v1 = verts[t.vert[0]].pos,
-                      &v2 = verts[t.vert[1]].pos,
-                      &v3 = verts[t.vert[2]].pos;
-            m.a = vec(v2).sub(v1).normalize();
-            m.c.cross(m.a, vec(v3).sub(v1)).normalize();
-            m.b.cross(m.c, m.a);
-            m.d = pos;
-            m.transpose();
-        }
-        for(int i = 0; i < verts.length(); i++)
-        {
-            if(verts[i].weight)
-            {
-                verts[i].weight = 1/verts[i].weight;
-            }
-        }
-        reljoints.shrink(0);
-    }
-
-    void setuprotfrictions()
-    {
-        rotfrictions.shrink(0);
-        for(int i = 0; i < tris.length(); i++)
-        {
-            for(int j = i+1; j < tris.length(); j++)
-            {
-                if(tris[i].shareverts(tris[j]))
-                {
-                    rotfriction &r = rotfrictions.add();
-                    r.tri[0] = i;
-                    r.tri[1] = j;
-                }
-            }
-        }
-    }
-
-    void setup()
-    {
-        setupjoints();
-        setuprotfrictions();
-
-        loaded = true;
-    }
-
-    void addreljoint(int bone, int parent)
-    {
-        reljoint &r = reljoints.add();
-        r.bone = bone;
-        r.parent = parent;
-    }
 };
 
 struct ragdolldata

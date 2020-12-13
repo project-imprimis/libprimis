@@ -20,6 +20,108 @@ FVAR(ragdollunstick, 0, 10, 1e3f);
 VAR(ragdollexpireoffset, 0, 2500, 30000);
 VAR(ragdollwaterexpireoffset, 0, 4000, 30000);
 
+
+/*               ragdollskel                  */
+
+//ragdollskel::tri
+
+bool ragdollskel::tri::shareverts(const tri &t) const
+{
+    for(int i = 0; i < 3; ++i)
+    {
+        for(int j = 0; j < 3; ++j)
+        {
+            if(vert[i] == t.vert[j])
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//ragdollskel
+
+void ragdollskel::setupjoints()
+{
+    for(int i = 0; i < verts.length(); i++)
+    {
+        verts[i].weight = 0;
+    }
+    for(int i = 0; i < joints.length(); i++)
+    {
+        joint &j = joints[i];
+        j.weight = 0;
+        vec pos(0, 0, 0);
+        for(int k = 0; k < 3; ++k)
+        {
+            if(j.vert[k]>=0)
+            {
+                pos.add(verts[j.vert[k]].pos);
+                j.weight++;
+                verts[j.vert[k]].weight++;
+            }
+        }
+        for(int k = 0; k < j.weight; ++k)
+        {
+            j.weight = 1/j.weight;
+        }
+        pos.mul(j.weight);
+
+        tri &t = tris[j.tri];
+        matrix4x3 &m = j.orient;
+        const vec &v1 = verts[t.vert[0]].pos,
+                  &v2 = verts[t.vert[1]].pos,
+                  &v3 = verts[t.vert[2]].pos;
+        m.a = vec(v2).sub(v1).normalize();
+        m.c.cross(m.a, vec(v3).sub(v1)).normalize();
+        m.b.cross(m.c, m.a);
+        m.d = pos;
+        m.transpose();
+    }
+    for(int i = 0; i < verts.length(); i++)
+    {
+        if(verts[i].weight)
+        {
+            verts[i].weight = 1/verts[i].weight;
+        }
+    }
+    reljoints.shrink(0);
+}
+
+void ragdollskel::setuprotfrictions()
+{
+    rotfrictions.shrink(0);
+    for(int i = 0; i < tris.length(); i++)
+    {
+        for(int j = i+1; j < tris.length(); j++)
+        {
+            if(tris[i].shareverts(tris[j]))
+            {
+                rotfriction &r = rotfrictions.add();
+                r.tri[0] = i;
+                r.tri[1] = j;
+            }
+        }
+    }
+}
+
+void ragdollskel::setup()
+{
+    setupjoints();
+    setuprotfrictions();
+
+    loaded = true;
+}
+
+void ragdollskel::addreljoint(int bone, int parent)
+{
+    reljoint &r = reljoints.add();
+    r.bone = bone;
+    r.parent = parent;
+}
+
+
 /*
     seed particle position = avg(modelview * base2anim * spherepos)
     mapped transform = invert(curtri) * origtrig
