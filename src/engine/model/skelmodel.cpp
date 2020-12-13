@@ -1075,3 +1075,211 @@ void skelmodel::skelmeshgroup::render(const animstate *as, float pitch, const ve
         d->ragdoll->init(d);
     }
 }
+
+//blendcombo
+
+int skelmodel::blendcombo::size() const
+{
+    int i = 1;
+    while(i < 4 && weights[i])
+    {
+        i++;
+    }
+    return i;
+}
+
+bool skelmodel::blendcombo::sortcmp(const blendcombo &x, const blendcombo &y)
+{
+    for(int i = 0; i < 4; ++i)
+    {
+        if(x.weights[i])
+        {
+            if(!y.weights[i])
+            {
+                return true;
+            }
+        }
+        else if(y.weights[i])
+        {
+            return false;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return false;
+}
+
+int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
+{
+    if(weight <= 1e-3f)
+    {
+        return sorted;
+    }
+    for(int k = 0; k < sorted; ++k)
+    {
+        if(weight > weights[k])
+        {
+            for(int l = min(sorted-1, 2); l >= k; l--)
+            {
+                weights[l+1] = weights[l];
+                bones[l+1] = bones[l];
+            }
+            weights[k] = weight;
+            bones[k] = bone;
+            return sorted<4 ? sorted+1 : sorted;
+        }
+    }
+    if(sorted>=4)
+    {
+        return sorted;
+    }
+    weights[sorted] = weight;
+    bones[sorted] = bone;
+    return sorted+1;
+}
+
+void skelmodel::blendcombo::finalize(int sorted)
+{
+    for(int j = 0; j < 4-sorted; ++j)
+    {
+        weights[sorted+j] = 0;
+        bones[sorted+j] = 0;
+    }
+    if(sorted <= 0)
+    {
+        return;
+    }
+    float total = 0;
+    for(int j = 0; j < sorted; ++j)
+    {
+        total += weights[j];
+    }
+    total = 1.0f/total;
+    for(int j = 0; j < sorted; ++j)
+    {
+        weights[j] *= total;
+    }
+}
+
+//skelmesh
+
+int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
+{
+    maxweights = max(maxweights, c.size());
+    return ((skelmeshgroup *)group)->addblendcombo(c);
+}
+
+void skelmodel::skelmesh::smoothnorms(float limit, bool areaweight)
+{
+    mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+}
+
+void skelmodel::skelmesh::buildnorms(bool areaweight)
+{
+    mesh::buildnorms(verts, numverts, tris, numtris, areaweight);
+}
+
+void skelmodel::skelmesh::calctangents(bool areaweight)
+{
+    mesh::calctangents(verts, verts, numverts, tris, numtris, areaweight);
+}
+
+void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
+{
+    for(int j = 0; j < numverts; ++j)
+    {
+        vec v = m.transform(verts[j].pos);
+        bbmin.min(v);
+        bbmax.max(v);
+    }
+}
+
+void skelmodel::skelmesh::genBIH(BIH::mesh &m)
+{
+    m.tris = (const BIH::tri *)tris;
+    m.numtris = numtris;
+    m.pos = (const uchar *)&verts->pos;
+    m.posstride = sizeof(vert);
+    m.tc = (const uchar *)&verts->tc;
+    m.tcstride = sizeof(vert);
+}
+
+void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
+{
+    for(int j = 0; j < numtris; ++j)
+    {
+        triangle t;
+        t.a = m.transform(verts[tris[j].vert[0]].pos);
+        t.b = m.transform(verts[tris[j].vert[1]].pos);
+        t.c = m.transform(verts[tris[j].vert[2]].pos);
+        out.push_back(t);
+    }
+}
+
+void skelmodel::skelmesh::assignvert(vvertg &vv, int j, vert &v, blendcombo &c)
+{
+    vv.pos = GenericVec4<half>(v.pos, 1);
+    vv.tc = v.tc;
+    vv.tangent = v.tangent;
+}
+
+void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, vert &v, blendcombo &c)
+{
+    vv.pos = GenericVec4<half>(v.pos, 1);
+    vv.tc = v.tc;
+    vv.tangent = v.tangent;
+    c.serialize(vv);
+}
+
+int skelmodel::skelmesh::genvbo(vector<ushort> &idxs, int offset)
+{
+    for(int i = 0; i < numverts; ++i)
+    {
+        verts[i].interpindex = ((skelmeshgroup *)group)->remapblend(verts[i].blend);
+    }
+
+    voffset = offset;
+    eoffset = idxs.length();
+    for(int i = 0; i < numtris; ++i)
+    {
+        tri &t = tris[i];
+        for(int j = 0; j < 3; ++j)
+        {
+            idxs.add(voffset+t.vert[j]);
+        }
+    }
+    minvert = voffset;
+    maxvert = voffset + numverts-1;
+    elen = idxs.length()-eoffset;
+    return numverts;
+}
+
+void skelmodel::skelmesh::setshader(Shader *s, int row)
+{
+    skelmeshgroup *g = (skelmeshgroup *)group;
+    if(row)
+    {
+        s->setvariant(g->skel->usegpuskel ? min(maxweights, g->vweights) : 0, row);
+    }
+    else if(g->skel->usegpuskel)
+    {
+        s->setvariant(min(maxweights, g->vweights)-1, 0);
+    }
+    else
+    {
+        s->set();
+    }
+}
+
+void skelmodel::skelmesh::render(const animstate *as, skin &s, vbocacheentry &vc)
+{
+    if(!Shader::lastshader)
+    {
+        return;
+    }
+    glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &((skelmeshgroup *)group)->edata[eoffset]);
+    glde++;
+    xtravertsva += numverts;
+}

@@ -73,90 +73,10 @@ struct skelmodel : animmodel
             return true;
         }
 
-        int size() const
-        {
-            int i = 1;
-            while(i < 4 && weights[i])
-            {
-                i++;
-            }
-            return i;
-        }
-
-        static bool sortcmp(const blendcombo &x, const blendcombo &y)
-        {
-            for(int i = 0; i < 4; ++i)
-            {
-                if(x.weights[i])
-                {
-                    if(!y.weights[i])
-                    {
-                        return true;
-                    }
-                }
-                else if(y.weights[i])
-                {
-                    return false;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return false;
-        }
-
-        int addweight(int sorted, float weight, int bone)
-        {
-            if(weight <= 1e-3f)
-            {
-                return sorted;
-            }
-            for(int k = 0; k < sorted; ++k)
-            {
-                if(weight > weights[k])
-                {
-                    for(int l = min(sorted-1, 2); l >= k; l--)
-                    {
-                        weights[l+1] = weights[l];
-                        bones[l+1] = bones[l];
-                    }
-                    weights[k] = weight;
-                    bones[k] = bone;
-                    return sorted<4 ? sorted+1 : sorted;
-                }
-            }
-            if(sorted>=4)
-            {
-                return sorted;
-            }
-            weights[sorted] = weight;
-            bones[sorted] = bone;
-            return sorted+1;
-        }
-
-        void finalize(int sorted)
-        {
-            for(int j = 0; j < 4-sorted; ++j)
-            {
-                weights[sorted+j] = 0;
-                bones[sorted+j] = 0;
-            }
-            if(sorted <= 0)
-            {
-                return;
-            }
-            float total = 0;
-            for(int j = 0; j < sorted; ++j)
-            {
-                total += weights[j];
-            }
-            total = 1.0f/total;
-            for(int j = 0; j < sorted; ++j)
-            {
-                weights[j] *= total;
-            }
-        }
+        int size() const;
+        static bool sortcmp(const blendcombo &x, const blendcombo &y);
+        int addweight(int sorted, float weight, int bone);
+        void finalize(int sorted);
 
         template<class T>
         void serialize(T &v)
@@ -295,73 +215,15 @@ struct skelmodel : animmodel
             DELETEA(tris);
         }
 
-        int addblendcombo(const blendcombo &c)
-        {
-            maxweights = max(maxweights, c.size());
-            return ((skelmeshgroup *)group)->addblendcombo(c);
-        }
-
-        void smoothnorms(float limit = 0, bool areaweight = true)
-        {
-            mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
-        }
-
-        void buildnorms(bool areaweight = true)
-        {
-            mesh::buildnorms(verts, numverts, tris, numtris, areaweight);
-        }
-
-        void calctangents(bool areaweight = true)
-        {
-            mesh::calctangents(verts, verts, numverts, tris, numtris, areaweight);
-        }
-
-        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
-        {
-            for(int j = 0; j < numverts; ++j)
-            {
-                vec v = m.transform(verts[j].pos);
-                bbmin.min(v);
-                bbmax.max(v);
-            }
-        }
-
-        void genBIH(BIH::mesh &m)
-        {
-            m.tris = (const BIH::tri *)tris;
-            m.numtris = numtris;
-            m.pos = (const uchar *)&verts->pos;
-            m.posstride = sizeof(vert);
-            m.tc = (const uchar *)&verts->tc;
-            m.tcstride = sizeof(vert);
-        }
-
-        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
-        {
-            for(int j = 0; j < numtris; ++j)
-            {
-                triangle t;
-                t.a = m.transform(verts[tris[j].vert[0]].pos);
-                t.b = m.transform(verts[tris[j].vert[1]].pos);
-                t.c = m.transform(verts[tris[j].vert[2]].pos);
-                out.push_back(t);
-            }
-        }
-
-        static inline void assignvert(vvertg &vv, int j, vert &v, blendcombo &c)
-        {
-            vv.pos = GenericVec4<half>(v.pos, 1);
-            vv.tc = v.tc;
-            vv.tangent = v.tangent;
-        }
-
-        static inline void assignvert(vvertgw &vv, int j, vert &v, blendcombo &c)
-        {
-            vv.pos = GenericVec4<half>(v.pos, 1);
-            vv.tc = v.tc;
-            vv.tangent = v.tangent;
-            c.serialize(vv);
-        }
+        int addblendcombo(const blendcombo &c);
+        void smoothnorms(float limit = 0, bool areaweight = true);
+        void buildnorms(bool areaweight = true);
+        void calctangents(bool areaweight = true);
+        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
+        void genBIH(BIH::mesh &m);
+        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
+        static void assignvert(vvertg &vv, int j, vert &v, blendcombo &c);
+        static void assignvert(vvertgw &vv, int j, vert &v, blendcombo &c);
 
         template<class T>
         int genvbo(vector<ushort> &idxs, int offset, vector<T> &vverts)
@@ -425,28 +287,7 @@ struct skelmodel : animmodel
             return vverts.length()-voffset;
         }
 
-        int genvbo(vector<ushort> &idxs, int offset)
-        {
-            for(int i = 0; i < numverts; ++i)
-            {
-                verts[i].interpindex = ((skelmeshgroup *)group)->remapblend(verts[i].blend);
-            }
-
-            voffset = offset;
-            eoffset = idxs.length();
-            for(int i = 0; i < numtris; ++i)
-            {
-                tri &t = tris[i];
-                for(int j = 0; j < 3; ++j)
-                {
-                    idxs.add(voffset+t.vert[j]);
-                }
-            }
-            minvert = voffset;
-            maxvert = voffset + numverts-1;
-            elen = idxs.length()-eoffset;
-            return numverts;
-        }
+        int genvbo(vector<ushort> &idxs, int offset);
 
         template<class T>
         static inline void fillvert(T &vv, int j, vert &v)
@@ -482,33 +323,8 @@ struct skelmodel : animmodel
             }
         }
 
-        void setshader(Shader *s, int row)
-        {
-            skelmeshgroup *g = (skelmeshgroup *)group;
-            if(row)
-            {
-                s->setvariant(g->skel->usegpuskel ? min(maxweights, g->vweights) : 0, row);
-            }
-            else if(g->skel->usegpuskel)
-            {
-                s->setvariant(min(maxweights, g->vweights)-1, 0);
-            }
-            else
-            {
-                s->set();
-            }
-        }
-
-        void render(const animstate *as, skin &s, vbocacheentry &vc)
-        {
-            if(!Shader::lastshader)
-            {
-                return;
-            }
-            glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &((skelmeshgroup *)group)->edata[eoffset]);
-            glde++;
-            xtravertsva += numverts;
-        }
+        void setshader(Shader *s, int row);
+        void render(const animstate *as, skin &s, vbocacheentry &vc);
     };
 
     struct tag
