@@ -18,6 +18,8 @@ VARP(gpuskel, 0, 1, 1);
 
 VAR(maxskelanimdata, 1, 192, 0);
 
+hashnameset<skelmodel::skeleton *> skelmodel::skeletons;
+
 skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep)
 {
     int len = sep ? strlen(name) : 0;
