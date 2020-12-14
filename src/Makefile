@@ -115,6 +115,7 @@ CLIENT_OBJS= \
 	engine/world/worldio.o \
 
 default: client
+install: client emplace
 
 clean:
 	-$(RM) -r $(CLIENT_OBJS)
@@ -131,6 +132,9 @@ else
 client: $(CLIENT_OBJS)
 	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS)
 endif
+
+emplace:
+	sudo cp libprimis.so /usr/lib/libprimis.so
 
 depend:
 	makedepend -Y -Ishared -Iengine -Igame $(CLIENT_OBJS:.o=.cpp)
