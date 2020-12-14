@@ -3,7 +3,8 @@
 
 extern int aow, aoh;
 extern GLuint aofbo[4], aotex[4], aonoisetex;
-extern int ao, aomin, aosunmin, aosun, aopackdepth, aoreduce, aoreducedepth;
+extern float aomin, aosunmin;
+extern int ao, aosun, aopackdepth, aoreduce, aoreducedepth;
 extern int aobilateral, aobilateralupscale;
 extern int debugao;
 
