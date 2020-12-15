@@ -9,9 +9,9 @@ INCLUDES= -Ishared -Iengine -Igame
 
 STRIP=
 ifeq (,$(findstring -g,$(CXXFLAGS)))
-    ifeq (,$(findstring -pg,$(CXXFLAGS)))
-        STRIP=strip
-    endif
+	ifeq (,$(findstring -pg,$(CXXFLAGS)))
+		STRIP=strip
+	endif
 endif
 
 MV=mv
@@ -19,45 +19,24 @@ MKDIR_P=mkdir -p
 
 #set appropriate library includes depending on platform
 ifneq (,$(findstring MINGW,$(PLATFORM)))
-    WINDRES= windres
-    ifneq (,$(findstring 64,$(PLATFORM)))
-        ifneq (,$(findstring CROSS,$(PLATFORM)))
-            CXX=x86_64-w64-mingw32-g++
-            WINDRES=x86_64-w64-mingw32-windres
-            ifneq (,$(STRIP))
-                STRIP=x86_64-w64-mingw32-strip
-            endif
-        endif
-        WINLIB=lib64
-        WINBIN=../bin64
-        override CXX+= -m64
-        override WINDRES+= -F pe-x86-64
-    else
-    ifneq (,$(findstring CROSS,$(PLATFORM)))
-        CXX=i686-w64-mingw32-g++
-        WINDRES=i686-w64-mingw32-windres
-        ifneq (,$(STRIP))
-            STRIP=i686-w64-mingw32-strip
-        endif
-    endif
-        WINLIB=lib
-        WINBIN=../bin
-        override CXX+= -m32
-        override WINDRES+= -F pe-i386
-    endif
-    CLIENT_INCLUDES= $(INCLUDES) -Iinclude
-    STD_LIBS= -static-libgcc -static-libstdc++
-    CLIENT_LIBS= -mwindows $(STD_LIBS) -L$(WINBIN) -L$(WINLIB) -lSDL2 -lSDL2_image -lSDL2_mixer -lzlib1 -lopengl32 -lws2_32 -lwinmm
-    else
-        CLIENT_INCLUDES= $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
-        CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lz -lGL
-    endif
-    ifeq ($(PLATFORM),Linux)
-        CLIENT_LIBS+= -lrt
-    else
-    ifneq (,$(findstring GNU,$(PLATFORM)))
-        CLIENT_LIBS+= -lrt
-    endif
+	WINDRES= windres
+	WINLIB=lib64
+	WINBIN=../bin64
+	override WINDRES+= -F pe-x86-64
+	CLIENT_INCLUDES= $(INCLUDES) -Iinclude
+	STD_LIBS= -static-libgcc -static-libstdc++
+	CLIENT_LIBS= -mwindows $(STD_LIBS) -L$(WINBIN) -L$(WINLIB) -lSDL2 -lSDL2_image -lSDL2_mixer -lzlib1 -lopengl32 -lws2_32 -lwinmm
+else
+	CLIENT_INCLUDES= $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
+	CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lz -lGL
+endif
+
+ifeq ($(PLATFORM),Linux)
+	CLIENT_LIBS+= -lrt
+else
+	ifneq (,$(findstring GNU,$(PLATFORM)))
+		CLIENT_LIBS+= -lrt
+	endif
 endif
 
 #list of source code files to be compiled
