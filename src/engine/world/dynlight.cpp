@@ -88,8 +88,8 @@ struct dynlight
     }
 };
 
-std::vector<dynlight> dynlights;
-std::vector<dynlight *> closedynlights;
+vector<dynlight> dynlights;
+vector<dynlight *> closedynlights;
 
 void adddynlight(const vec &o, float radius, const vec &color, int fade, int peak, int flags, float initradius, const vec &initcolor, physent *owner, const vec &dir, int spot)
 {
@@ -103,7 +103,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     }
     int insert = 0,
         expire = fade + peak + lastmillis;
-    for(uint i = dynlights.size(); --i >=0;) //note reverse iteration
+    for(int i = dynlights.length(); --i >=0;) //note reverse iteration
     {
         if(expire>=dynlights[i].expire)
         {
@@ -124,13 +124,13 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     d.owner = owner;
     d.dir = dir;
     d.spot = spot;
-    dynlights.insert(dynlights.begin() + insert, d);
+    dynlights.insert(insert, d);
 }
 
 void cleardynlights()
 {
     int faded = -1;
-    for(uint i = 0; i < dynlights.size(); i++)
+    for(int i = 0; i < dynlights.length(); i++)
     {
         if(lastmillis<dynlights[i].expire)
         {
@@ -140,21 +140,21 @@ void cleardynlights()
     }
     if(faded<0)
     {
-        dynlights.clear();
+        dynlights.setsize(0);
     }
     else if(faded>0)
     {
-        dynlights.erase(dynlights.begin(), dynlights.begin() + faded);
+        dynlights.remove(0, faded);
     }
 }
 
 void removetrackeddynlights(physent *owner)
 {
-    for(uint i = dynlights.size(); --i >=0;) //note reverse iteration
+    for(int i = dynlights.length(); --i >=0;) //note reverse iteration
     {
         if(owner ? dynlights[i].owner == owner : dynlights[i].owner != NULL)
         {
-            dynlights.erase(dynlights.begin() + i);
+            dynlights.remove(i);
         }
     }
 }
@@ -163,7 +163,7 @@ void updatedynlights()
 {
     cleardynlights();
 
-    for(uint i = 0; i < dynlights.size(); i++)
+    for(int i = 0; i < dynlights.length(); i++)
     {
         dynlight &d = dynlights[i];
         d.calcradius();
@@ -173,14 +173,14 @@ void updatedynlights()
 
 int finddynlights()
 {
-    closedynlights.clear();
+    closedynlights.setsize(0);
     if(!usedynlights)
     {
         return 0;
     }
     physent e;
     e.type = PhysEnt_Camera;
-    for(uint j = 0; j < dynlights.size(); j++)
+    for(int j = 0; j < dynlights.length(); j++)
     {
         dynlight &d = dynlights[j];
         if(d.curradius <= 0)
@@ -199,7 +199,7 @@ int finddynlights()
             continue;
         }
         int insert = 0;
-        for(uint i = closedynlights.size(); --i >=0;) //note reverse iteration
+        for(int i = closedynlights.length(); --i >=0;) //note reverse iteration
         {
             if(d.dist >= closedynlights[i]->dist)
             {
@@ -207,14 +207,14 @@ int finddynlights()
                 break;
             }
         }
-        closedynlights.insert(closedynlights.begin() + insert, &d);
+        closedynlights.insert(insert, &d);
     }
-    return closedynlights.size();
+    return closedynlights.length();
 }
 
 bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
 {
-    if(static_cast<int>(closedynlights.size()) < n)
+    if(!closedynlights.inrange(n))
     {
         return false;
     }
