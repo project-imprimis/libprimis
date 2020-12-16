@@ -61,8 +61,8 @@ void setupbloom(int w, int h)
         w /= 2;
         h /= 2;
     }
-    w = max(w, 1);
-    h = max(h, 1);
+    w = std::max(w, 1);
+    h = std::max(h, 1);
     if(w == bloomw && h == bloomh)
     {
         return;
@@ -87,8 +87,8 @@ void setupbloom(int w, int h)
     }
 
     bloomformat = gethdrformat(bloomprec);
-    createtexture(bloomtex[0], max(gw/2, bloomw), max(gh/2, bloomh), NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
-    createtexture(bloomtex[1], max(gw/4, bloomw), max(gh/4, bloomh), NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
+    createtexture(bloomtex[0], std::max(gw/2, bloomw), std::max(gh/2, bloomh), NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
+    createtexture(bloomtex[1], std::max(gw/4, bloomw), std::max(gh/4, bloomh), NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
     createtexture(bloomtex[2], bloomw, bloomh, NULL, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
     createtexture(bloomtex[3], bloomw, bloomh, NULL, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
     if(bloomformat != GL_RGB)
@@ -258,10 +258,10 @@ void processhdr(GLuint outfbo, int aa)
            b1fbo =  bloomfbo[0],
            b1tex = bloomtex[0],
            ptex = hdrtex;
-    int b0w = max(vieww/4, bloomw),
-        b0h = max(viewh/4, bloomh),
-        b1w = max(vieww/2, bloomw),
-        b1h = max(viewh/2, bloomh),
+    int b0w = std::max(vieww/4, bloomw),
+        b0h = std::max(viewh/4, bloomh),
+        b1w = std::max(vieww/2, bloomw),
+        b1h = std::max(viewh/2, bloomh),
         pw = vieww,
         ph = viewh;
     if(msaalight)
@@ -274,8 +274,8 @@ void processhdr(GLuint outfbo, int aa)
         }
         else if(hasFBMSBS && (vieww > bloomw || viewh > bloomh))
         {
-            int cw = max(vieww/2, bloomw),
-                ch = max(viewh/2, bloomh);
+            int cw = std::max(vieww/2, bloomw),
+                ch = std::max(viewh/2, bloomh);
             glBindFramebuffer_(GL_READ_FRAMEBUFFER, mshdrfbo);
             glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, hdrfbo);
             glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST_EXT);
@@ -314,8 +314,8 @@ void processhdr(GLuint outfbo, int aa)
         while(pw > bloomw || ph > bloomh)
         {
             GLuint cfbo = b1fbo, ctex = b1tex;
-            int cw = max(pw/2, bloomw),
-                ch = max(ph/2, bloomh);
+            int cw = std::max(pw/2, bloomw),
+                ch = std::max(ph/2, bloomh);
 
             if(hdrreduce > 1 && cw/2 >= bloomw)
             {
@@ -365,8 +365,8 @@ void processhdr(GLuint outfbo, int aa)
             lh = ph;
         for(int i = 0; lw > 2 || lh > 2; i++)
         {
-            int cw = max(lw/2, 2),
-                ch = max(lh/2, 2);
+            int cw = std::max(lw/2, 2),
+                ch = std::max(lh/2, 2);
 
             if(hdrreduce > 1 && cw/2 >= 2)
             {
