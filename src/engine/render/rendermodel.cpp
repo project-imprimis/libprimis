@@ -134,7 +134,7 @@ COMMAND(mdlgloss, "i");
 void mdlalphatest(float *cutoff)
 {
     checkmdl();
-    loadingmodel->setalphatest(max(0.0f, min(1.0f, *cutoff)));
+    loadingmodel->setalphatest(std::max(0.0f, std::min(1.0f, *cutoff)));
 }
 COMMAND(mdlalphatest, "f");
 
@@ -708,9 +708,9 @@ static inline void enablecullmodelquery()
 
 static inline void rendercullmodelquery(model *m, dynent *d, const vec &center, float radius)
 {
-    if(fabs(camera1->o.x-center.x) < radius+1 &&
-       fabs(camera1->o.y-center.y) < radius+1 &&
-       fabs(camera1->o.z-center.z) < radius+1)
+    if(std::fabs(camera1->o.x-center.x) < radius+1 &&
+       std::fabs(camera1->o.y-center.y) < radius+1 &&
+       std::fabs(camera1->o.z-center.z) < radius+1)
     {
         d->query = NULL;
         return;
@@ -954,10 +954,10 @@ void rendermodelbatches()
                 ivec bbmin(vec(bm.center).sub(bm.radius)), bbmax(vec(bm.center).add(bm.radius+1));
                 if(calcbbscissor(bbmin, bbmax, sx1, sy1, sx2, sy2))
                 {
-                    transmdlsx1 = min(transmdlsx1, sx1);
-                    transmdlsy1 = min(transmdlsy1, sy1);
-                    transmdlsx2 = max(transmdlsx2, sx2);
-                    transmdlsy2 = max(transmdlsy2, sy2);
+                    transmdlsx1 = std::min(transmdlsx1, sx1);
+                    transmdlsy1 = std::min(transmdlsy1, sy1);
+                    transmdlsx2 = std::max(transmdlsx2, sx2);
+                    transmdlsy2 = std::max(transmdlsy2, sy2);
                     masktiles(transmdltiles, sx1, sy1, sx2, sy2);
                 }
                 continue;
@@ -1208,7 +1208,7 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
         {
             if(anim & Anim_Ragdoll && d->ragdoll->millis >= basetime)
             {
-                radius = max(radius, d->ragdoll->radius);
+                radius = std::max(radius, d->ragdoll->radius);
                 center = d->ragdoll->center;
                 goto hasboundbox; //skip roll and pitch stuff
             }
@@ -1430,9 +1430,9 @@ void setbbfrommodel(dynent *d, const char *mdl)
     {
         d->collidetype = Collide_OrientedBoundingBox;
     }
-    d->xradius   = radius.x + fabs(center.x);
-    d->yradius   = radius.y + fabs(center.y);
-    d->radius    = d->collidetype==Collide_OrientedBoundingBox ? sqrtf(d->xradius*d->xradius + d->yradius*d->yradius) : max(d->xradius, d->yradius);
+    d->xradius   = radius.x + std::fabs(center.x);
+    d->yradius   = radius.y + std::fabs(center.y);
+    d->radius    = d->collidetype==Collide_OrientedBoundingBox ? sqrtf(d->xradius*d->xradius + d->yradius*d->yradius) : std::max(d->xradius, d->yradius);
     d->eyeheight = (center.z-radius.z) + radius.z*2*m->eyeheight;
     d->aboveeye  = radius.z*2*(1.0f-m->eyeheight);
     if (d->aboveeye + d->eyeheight <= 0.5f)
