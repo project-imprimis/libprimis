@@ -1,4 +1,12 @@
-
+/* ragdoll.cpp: ragdoll physics support
+ *
+ * Libprimis supports limited client-side ragdolls to simulate corpses. Ragdolls
+ * are created when actors are killed and support basic physical interaction with
+ * terrain (but not other players).
+ *
+ * This file contains implementation functions for the ragdoll class. For the
+ * class definition, see ragdoll.h.
+ */
 #include "engine.h"
 
 #include "interface/console.h"
