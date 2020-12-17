@@ -496,7 +496,7 @@ namespace
             {
                 orient.rotate_around_y(sincosmod360(-e.attr4));
             }
-            vec size(max(static_cast<float>(e.attr5), 1.0f));
+            vec size(std::max(static_cast<float>(e.attr5), 1.0f));
             size.y *= s.depth;
             if(!s.sts.empty())
             {
@@ -775,8 +775,8 @@ namespace
                         for(int j = 0; j < t.tris.length(); j++)
                         {
                             curbuf[j] += va->voffset;
-                            e.minvert = min(e.minvert, curbuf[j]);
-                            e.maxvert = max(e.maxvert, curbuf[j]);
+                            e.minvert = std::min(e.minvert, curbuf[j]);
+                            e.maxvert = std::max(e.maxvert, curbuf[j]);
                         }
                         curbuf += t.tris.length();
                     }
@@ -848,8 +848,8 @@ namespace
                         for(int j = 0; j < t.tris.length(); j++)
                         {
                             curbuf[j] += va->voffset;
-                            e.minvert = min(e.minvert, curbuf[j]);
-                            e.maxvert = max(e.maxvert, curbuf[j]);
+                            e.minvert = std::min(e.minvert, curbuf[j]);
+                            e.maxvert = std::max(e.maxvert, curbuf[j]);
                         }
                         curbuf += t.tris.length();
                     }
@@ -1003,13 +1003,13 @@ namespace
                         vertex &v1 = verts[e1],
                                &v2 = verts[e2];
                         ivec d(vec(v2.pos).sub(v1.pos).mul(8));
-                        int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
+                        int axis = std::abs(d.x) > std::abs(d.y) ? (std::abs(d.x) > std::abs(d.z) ? 0 : 2) : (std::abs(d.y) > std::abs(d.z) ? 1 : 2);
                         if(d[axis] < 0)
                         {
                             d.neg();
                         }
                         reduceslope(d);
-                        int origin =  static_cast<int>(min(v1.pos[axis], v2.pos[axis])*8)&~0x7FFF,
+                        int origin =  static_cast<int>(std::min(v1.pos[axis], v2.pos[axis])*8)&~0x7FFF,
                             offset1 = (static_cast<int>(v1.pos[axis]*8) - origin) / d[axis],
                             offset2 = (static_cast<int>(v2.pos[axis]*8) - origin) / d[axis];
                         vec o = vec(v1.pos).sub(vec(d).mul(offset1/8.0f));
@@ -1101,8 +1101,8 @@ namespace
             vc.grasstris.pop();
             return;
         }
-        g.minz = min(min(g.v[0].z, g.v[1].z), min(g.v[2].z, g.v[3].z));
-        g.maxz = max(max(g.v[0].z, g.v[1].z), max(g.v[2].z, g.v[3].z));
+        g.minz = std::min(std::min(g.v[0].z, g.v[1].z), std::min(g.v[2].z, g.v[3].z));
+        g.maxz = std::max(std::max(g.v[0].z, g.v[1].z), std::max(g.v[2].z, g.v[3].z));
         g.center = vec(0, 0, 0);
         for(int k = 0; k < numv; ++k)
         {
@@ -1112,7 +1112,7 @@ namespace
         g.radius = 0;
         for(int k = 0; k < numv; ++k)
         {
-            g.radius = max(g.radius, g.v[k].dist(g.center));
+            g.radius = std::max(g.radius, g.v[k].dist(g.center));
         }
         g.texture = texture;
     }
@@ -1703,7 +1703,7 @@ namespace
                 int level = calcmergedsize(i, co, size, mf.verts, mf.numverts&Face_MaxVerts);
                 if(level > minlevel)
                 {
-                    maxlevel = max(maxlevel, level);
+                    maxlevel = std::max(maxlevel, level);
 
                     while(tj >= 0 && tjoints[tj].edge < i*(Face_MaxVerts+1))
                     {
@@ -1728,7 +1728,7 @@ namespace
         }
         if(maxlevel >= 0)
         {
-            vamergemax = max(vamergemax, maxlevel);
+            vamergemax = std::max(vamergemax, maxlevel);
             vahasmerges |= Merge_Origin;
         }
         return maxlevel;
@@ -1747,7 +1747,7 @@ namespace
             {
                 ivec o(i, co, size/2);
                 int level = findmergedfaces(c.children[i], o, size/2, csi-1, minlevel);
-                maxlevel = max(maxlevel, level);
+                maxlevel = std::max(maxlevel, level);
             }
             return maxlevel;
         }
@@ -1807,7 +1807,7 @@ namespace
         //if(size<=16) return;
         if(c.ext && c.ext->va)
         {
-            maxlevel = max(maxlevel, c.ext->va->mergelevel);
+            maxlevel = std::max(maxlevel, c.ext->va->mergelevel);
             finddecals(c.ext->va);
             return; // don't re-render
         }
@@ -1825,7 +1825,7 @@ namespace
                 {
                     c.escaped |= 1<<i;
                 }
-                maxlevel = max(maxlevel, level);
+                maxlevel = std::max(maxlevel, level);
             }
             --neighbordepth;
 
@@ -1852,7 +1852,7 @@ namespace
             gencubeverts(c, co, size);
             if(c.merged)
             {
-                maxlevel = max(maxlevel, genmergedfaces(c, co, size));
+                maxlevel = std::max(maxlevel, genmergedfaces(c, co, size));
             }
         }
         if(c.material != Mat_Air)
@@ -1917,7 +1917,7 @@ namespace
         }
         int maxlevel = -1;
         rendercube(c, co, size, csi, maxlevel);
-        if(size == min(0x1000, worldsize/2) || !vc.emptyva())
+        if(size == std::min(0x1000, worldsize/2) || !vc.emptyva())
         {
             vtxarray *va = newva(co, size);
             ext(c).va = va;
@@ -2022,7 +2022,7 @@ namespace
                     count += setcubevisibility(c[i], o, size);
                 }
                 int tcount = count + (csi <= maxmergelevel ? vamerges[csi].length() : 0);
-                if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == min(0x1000, worldsize/2))
+                if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == std::min(0x1000, worldsize/2))
                 {
                     loadprogress = std::clamp(recalcprogress/static_cast<float>(allocnodes), 0.0f, 1.0f);
                     setva(c[i], o, size, csi);
@@ -2037,7 +2037,7 @@ namespace
                         varoot.add(c[i].ext->va);
                         if(vamergemax > size)
                         {
-                            cmergemax = max(cmergemax, vamergemax);
+                            cmergemax = std::max(cmergemax, vamergemax);
                             chasmerges |= vahasmerges&~Merge_Use;
                         }
                         continue;
@@ -2052,7 +2052,7 @@ namespace
             {
                 vamerges[csi+1].move(vamerges[csi]);
             }
-            cmergemax = max(cmergemax, vamergemax);
+            cmergemax = std::max(cmergemax, vamergemax);
             chasmerges |= vahasmerges;
             ccount += count;
         }
