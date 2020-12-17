@@ -694,7 +694,7 @@ namespace
                 va->maxvert += va->voffset;
             }
 
-            va->matbuf = NULL;
+            va->matbuf = nullptr;
             va->matsurfs = matsurfs.length();
             va->matmask = 0;
             if(va->matsurfs)
@@ -741,7 +741,7 @@ namespace
                 }
             }
 
-            va->texelems = NULL;
+            va->texelems = nullptr;
             va->texs = texs.length();
             va->alphabacktris = 0;
             va->alphaback = 0;
@@ -824,7 +824,7 @@ namespace
             va->decalbuf = 0;
             va->decaldata = 0;
             va->decaloffset = 0;
-            va->decalelems = NULL;
+            va->decalelems = nullptr;
             va->decaltexs = decaltexs.length();
             va->decaltris = decaltris/3;
             if(va->decaltexs)
@@ -1552,7 +1552,7 @@ namespace
             if(vismask&(1<<i) && (vis = visibletris(c, i, co, size)))
             {
                 vec pos[Face_MaxVerts];
-                vertinfo *verts = NULL;
+                vertinfo *verts = nullptr;
                 int numverts = c.ext ? c.ext->surfaces[i].numverts&Face_MaxVerts : 0,
                     convex   = 0;
                 if(numverts)
@@ -1599,7 +1599,7 @@ namespace
                     grassy = vslot.slot->grass && i!=Orient_Bottom ? (vis!=3 || convex ? 1 : 2) : 0;
                 if(!c.ext)
                 {
-                    addcubeverts(vslot, i, pos, c.texture[i], NULL, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0);
+                    addcubeverts(vslot, i, pos, c.texture[i], nullptr, numverts, hastj, grassy, (c.material&Mat_Alpha)!=0);
                 }
                 else
                 {
@@ -1622,12 +1622,12 @@ namespace
     vtxarray *newva(const ivec &o, int size)
     {
         vtxarray *va = new vtxarray;
-        va->parent = NULL;
+        va->parent = nullptr;
         va->o = o;
         va->size = size;
         va->curvfc = ViewFrustumCull_NotVisible;
         va->occluded = Occlude_Nothing;
-        va->query = NULL;
+        va->query = nullptr;
         va->bbmin = va->alphamin = va->refractmin = va->skymin = ivec(-1, -1, -1);
         va->bbmax = va->alphamax = va->refractmax = va->skymax = ivec(-1, -1, -1);
         va->hasmerges = 0;
@@ -2333,7 +2333,7 @@ void clearvas(cube *c)
             {
                 destroyva(c[i].ext->va, false);
             }
-            c[i].ext->va = NULL;
+            c[i].ext->va = nullptr;
             c[i].ext->tjoints = -1;
         }
         if(c[i].children)
@@ -2433,7 +2433,7 @@ void octarender()                               // creates va s for all leaf cub
         vtxarray *va = valist[i];
         explicitsky += va->sky;
     }
-    visibleva = NULL;
+    visibleva = nullptr;
 }
 
 void allchanged(bool load)
