@@ -59,7 +59,7 @@ namespace //internal functions incl. AA implementations
                 glGenFramebuffers_(1, &tqaafbo[i]);
             }
             glBindFramebuffer_(GL_FRAMEBUFFER, tqaafbo[i]);
-            createtexture(tqaatex[i], w, h, NULL, 3, 1, GL_RGBA8, GL_TEXTURE_RECTANGLE);
+            createtexture(tqaatex[i], w, h, nullptr, 3, 1, GL_RGBA8, GL_TEXTURE_RECTANGLE);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, tqaatex[i], 0);
             bindgdepth();
             if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -174,7 +174,7 @@ namespace //internal functions incl. AA implementations
     VARFP(fxaagreenluma, 0, 0, 1, cleanupfxaa());
 
     int fxaatype = -1;
-    Shader *fxaashader = NULL;
+    Shader *fxaashader = nullptr;
 
     void loadfxaashaders()
     {
@@ -194,7 +194,7 @@ namespace //internal functions incl. AA implementations
     void clearfxaashaders()
     {
         fxaatype = -1;
-        fxaashader = NULL;
+        fxaashader = nullptr;
     }
 
     void setupfxaa(int w, int h)
@@ -208,7 +208,7 @@ namespace //internal functions incl. AA implementations
             glGenFramebuffers_(1, &fxaafbo);
         }
         glBindFramebuffer_(GL_FRAMEBUFFER, fxaafbo);
-        createtexture(fxaatex, w, h, NULL, 3, 1, tqaa || (!fxaagreenluma && !intel_texalpha_bug) ? GL_RGBA8 : GL_RGB, GL_TEXTURE_RECTANGLE);
+        createtexture(fxaatex, w, h, nullptr, 3, 1, tqaa || (!fxaagreenluma && !intel_texalpha_bug) ? GL_RGBA8 : GL_RGB, GL_TEXTURE_RECTANGLE);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, fxaatex, 0);
         bindgdepth();
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -271,10 +271,10 @@ namespace //internal functions incl. AA implementations
     VAR(debugsmaa, 0, 0, 5); //see viewsmaa() below, displays one of the five smaa texs
 
     int smaatype = -1;
-    Shader *smaalumaedgeshader = NULL,
-                  *smaacoloredgeshader = NULL,
-                  *smaablendweightshader = NULL,
-                  *smaaneighborhoodshader = NULL;
+    Shader *smaalumaedgeshader = nullptr,
+                  *smaacoloredgeshader = nullptr,
+                  *smaablendweightshader = nullptr,
+                  *smaaneighborhoodshader = nullptr;
 
     void loadsmaashaders(bool split = false)
     {
@@ -317,7 +317,7 @@ namespace //internal functions incl. AA implementations
         {
             return;
         }
-        generateshader(NULL, "smaashaders %d \"%s\"", smaaquality, opts);
+        generateshader(nullptr, "smaashaders %d \"%s\"", smaaquality, opts);
         smaalumaedgeshader = lookupshaderbyname(lumaedgename);
         if(!smaalumaedgeshader)
         {
@@ -343,10 +343,10 @@ namespace //internal functions incl. AA implementations
     void clearsmaashaders()
     {
         smaatype = -1;
-        smaalumaedgeshader = NULL;
-        smaacoloredgeshader = NULL;
-        smaablendweightshader = NULL;
-        smaaneighborhoodshader = NULL;
+        smaalumaedgeshader = nullptr;
+        smaacoloredgeshader = nullptr;
+        smaablendweightshader = nullptr;
+        smaaneighborhoodshader = nullptr;
     }
 
     const int smaasearchtexwidth  = 66,
@@ -810,7 +810,7 @@ namespace //internal functions incl. AA implementations
                     break;
                 }
             }
-            createtexture(smaatex[i], w, h, NULL, 3, 1, format, GL_TEXTURE_RECTANGLE);
+            createtexture(smaatex[i], w, h, nullptr, 3, 1, format, GL_TEXTURE_RECTANGLE);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, smaatex[i], 0);
             if(!i && split)
             {
@@ -818,7 +818,7 @@ namespace //internal functions incl. AA implementations
                 {
                     glGenTextures(1, &smaatex[4]);
                 }
-                createtexture(smaatex[4], w, h, NULL, 3, 1, format, GL_TEXTURE_RECTANGLE);
+                createtexture(smaatex[4], w, h, nullptr, 3, 1, format, GL_TEXTURE_RECTANGLE);
                 glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, smaatex[4], 0);
                 static const GLenum drawbufs[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
                 glDrawBuffers_(2, drawbufs);
