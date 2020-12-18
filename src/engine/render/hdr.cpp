@@ -87,10 +87,10 @@ void setupbloom(int w, int h)
     }
 
     bloomformat = gethdrformat(bloomprec);
-    createtexture(bloomtex[0], std::max(gw/2, bloomw), std::max(gh/2, bloomh), NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
-    createtexture(bloomtex[1], std::max(gw/4, bloomw), std::max(gh/4, bloomh), NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
-    createtexture(bloomtex[2], bloomw, bloomh, NULL, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
-    createtexture(bloomtex[3], bloomw, bloomh, NULL, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
+    createtexture(bloomtex[0], std::max(gw/2, bloomw), std::max(gh/2, bloomh), nullptr, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
+    createtexture(bloomtex[1], std::max(gw/4, bloomw), std::max(gh/4, bloomh), nullptr, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
+    createtexture(bloomtex[2], bloomw, bloomh, nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
+    createtexture(bloomtex[3], bloomw, bloomh, nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
     if(bloomformat != GL_RGB)
     {
         if(!bloomtex[5])
@@ -101,7 +101,7 @@ void setupbloom(int w, int h)
         {
             glGenFramebuffers_(1, &bloomfbo[5]);
         }
-        createtexture(bloomtex[5], bloomw, bloomh, NULL, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
+        createtexture(bloomtex[5], bloomw, bloomh, nullptr, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
     }
     static const float grayf[12] = { 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f };
     createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, (const void *)grayf, 3, 1, GL_R16F);
@@ -428,7 +428,7 @@ void processhdr(GLuint outfbo, int aa)
         {
             glBindBuffer_(GL_PIXEL_PACK_BUFFER, bloompbo);
             glPixelStorei(GL_PACK_ALIGNMENT, 1);
-            glReadPixels(0, 0, 4, 1, GL_RED, GL_FLOAT, NULL);
+            glReadPixels(0, 0, 4, 1, GL_RED, GL_FLOAT, nullptr);
             glBindBuffer_(GL_PIXEL_PACK_BUFFER, 0);
         }
 

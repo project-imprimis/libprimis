@@ -47,7 +47,7 @@ VARFP(aotaps, 1, 12, 12, cleanupao());
 VARF(aoderivnormal, 0, 0, 1, cleanupao());
 VAR(debugao, 0, 0, 1);
 
-static Shader *ambientobscuranceshader = NULL;
+static Shader *ambientobscuranceshader = nullptr;
 
 Shader *loadambientobscuranceshader()
 {
@@ -80,7 +80,7 @@ void loadaoshaders()
 
 void clearaoshaders()
 {
-    ambientobscuranceshader = NULL;
+    ambientobscuranceshader = nullptr;
 }
 
 void setupao(int w, int h)
@@ -120,7 +120,7 @@ void setupao(int w, int h)
         {
             glGenFramebuffers_(1, &aofbo[i]);
         }
-        createtexture(aotex[i], upscale && i ? w : aow, upscale && i >= 2 ? h : aoh, NULL, 3, i < 2 ? packfilter : 1, i < 2 ? packformat : format, GL_TEXTURE_RECTANGLE);
+        createtexture(aotex[i], upscale && i ? w : aow, upscale && i >= 2 ? h : aoh, nullptr, 3, i < 2 ? packfilter : 1, i < 2 ? packformat : format, GL_TEXTURE_RECTANGLE);
         glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[i]);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[i], 0);
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -144,7 +144,7 @@ void setupao(int w, int h)
         {
             glGenFramebuffers_(1, &aofbo[3]);
         }
-        createtexture(aotex[3], aow, aoh, NULL, 3, 0, aodepthformat > 1 ? GL_R32F : (aodepthformat ? GL_R16F : GL_RGBA8), GL_TEXTURE_RECTANGLE);
+        createtexture(aotex[3], aow, aoh, nullptr, 3, 0, aodepthformat > 1 ? GL_R32F : (aodepthformat ? GL_R16F : GL_RGBA8), GL_TEXTURE_RECTANGLE);
         glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[3]);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[3], 0);
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
