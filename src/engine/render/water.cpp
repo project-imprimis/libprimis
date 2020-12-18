@@ -10,7 +10,7 @@
 
 static const int numcaustics = 32;
 
-static Texture *caustictex[numcaustics] = { NULL };
+static Texture *caustictex[numcaustics] = {nullptr};
 bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
 
 void loadcaustics(bool force)
@@ -40,7 +40,7 @@ void cleanupcaustics()
 {
     for(int i = 0; i < numcaustics; ++i)
     {
-        caustictex[i] = NULL;
+        caustictex[i] = nullptr;
     }
 }
 
@@ -468,7 +468,7 @@ static float wfwave = 0.0f,
              wfxscale = 1.0f,
              wfyscale = 1.0f;
 
-static void renderwaterfall(const materialsurface &m, float offset, const vec *normal = NULL)
+static void renderwaterfall(const materialsurface &m, float offset, const vec *normal = nullptr)
 {
     if(gle::attribbuf.empty())
     {
@@ -651,7 +651,7 @@ void renderwater()
 
         #define SETWATERSHADER(which, name) \
         do { \
-            static Shader *name##shader = NULL; \
+            static Shader *name##shader = nullptr; \
             if(!name##shader) \
             { \
                 name##shader = lookupshaderbyname(#name); \
@@ -659,7 +659,7 @@ void renderwater()
             which##shader = name##shader; \
         } while(0)
 
-        Shader *aboveshader = NULL;
+        Shader *aboveshader = nullptr;
         if(drawtex == Draw_TexMinimap)
         {
             SETWATERSHADER(above, waterminimap);
@@ -687,7 +687,7 @@ void renderwater()
             }
         }
 
-        Shader *belowshader = NULL;
+        Shader *belowshader = nullptr;
         if(drawtex != Draw_TexMinimap)
         {
             SETWATERSHADER(below, underwater);

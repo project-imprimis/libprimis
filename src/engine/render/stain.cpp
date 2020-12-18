@@ -57,7 +57,7 @@ struct stainbuffer
     GLuint vbo;
     bool dirty;
 
-    stainbuffer() : verts(NULL), maxverts(0), startvert(0), endvert(0), lastvert(0), availverts(0), vbo(0), dirty(false)
+    stainbuffer() : verts(nullptr), maxverts(0), startvert(0), endvert(0), lastvert(0), availverts(0), vbo(0), dirty(false)
     {}
 
     ~stainbuffer()
@@ -157,7 +157,7 @@ struct stainbuffer
         int count = endvert < startvert ? maxverts - startvert : endvert - startvert;
         if(dirty)
         {
-            glBufferData_(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), NULL, GL_STREAM_DRAW);
+            glBufferData_(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), nullptr, GL_STREAM_DRAW);
             glBufferSubData_(GL_ARRAY_BUFFER, 0, count*sizeof(stainvert), &verts[startvert]);
             if(endvert < startvert)
             {
@@ -229,8 +229,8 @@ struct stainrenderer
     stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
         : texname(texname), flags(flags),
           fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
-          tex(NULL),
-          stains(NULL), maxstains(0), startstain(0), endstain(0),
+          tex(nullptr),
+          stains(nullptr), maxstains(0), startstain(0), endstain(0),
           stainu(0), stainv(0)
     {
     }
@@ -316,7 +316,7 @@ struct stainrenderer
         int threshold = lastmillis - (timetolive>=0 ? timetolive : stainfade) - fadeouttime;
         staininfo *d = &stains[startstain],
                   *end = &stains[endstain < startstain ? maxstains : endstain],
-                  *cleared[StainBuffer_Number] = { NULL };
+                  *cleared[StainBuffer_Number] = {nullptr};
         for(; d < end && d->millis <= threshold; d++)
             cleared[d->owner] = d;
         if(d >= end && endstain < startstain)
@@ -610,7 +610,7 @@ struct stainrenderer
         }
     }
 
-    void gentris(cube &cu, int orient, const ivec &o, int size, materialsurface *mat = NULL, int vismask = 0)
+    void gentris(cube &cu, int orient, const ivec &o, int size, materialsurface *mat = nullptr, int vismask = 0)
     {
         vec pos[Face_MaxVerts+4];
         int numverts = 0,
@@ -975,7 +975,7 @@ struct stainrenderer
                         {
                             for(int j = 0; j < 6; ++j)
                             {
-                                gentris(cu, j, co, size, NULL, vismask);
+                                gentris(cu, j, co, size, nullptr, vismask);
                             }
                         }
                         else
