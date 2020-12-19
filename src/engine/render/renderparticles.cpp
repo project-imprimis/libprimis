@@ -25,10 +25,10 @@
 #include "world/octaedit.h"
 #include "world/raycube.h"
 
-Shader *particleshader          = NULL,
-       *particlenotextureshader = NULL,
-       *particlesoftshader      = NULL,
-       *particletextshader      = NULL;
+Shader *particleshader          = nullptr,
+       *particlenotextureshader = nullptr,
+       *particlesoftshader      = nullptr,
+       *particletextshader      = nullptr;
 
 VARP(particlelayers, 0, 1, 1);
 FVARP(particlebright, 0, 2, 100);
@@ -102,7 +102,7 @@ struct particleemitter
 };
 
 static std::vector<particleemitter> emitters;
-static particleemitter *seedemitter = NULL;
+static particleemitter *seedemitter = nullptr;
 
 const char * getentname(int i)
 {
@@ -213,11 +213,11 @@ struct partrenderer
     string info;
 
     partrenderer(const char *texname, int texclamp, int type, int stain = -1)
-        : tex(NULL), texname(texname), texclamp(texclamp), type(type), stain(stain)
+        : tex(nullptr), texname(texname), texclamp(texclamp), type(type), stain(stain)
     {
     }
     partrenderer(int type, int stain = -1)
-        : tex(NULL), texname(NULL), texclamp(0), type(type), stain(stain)
+        : tex(nullptr), texname(nullptr), texclamp(0), type(type), stain(stain)
     {
     }
     virtual ~partrenderer()
@@ -330,11 +330,11 @@ struct listrenderer : partrenderer
     listparticle *list;
 
     listrenderer(const char *texname, int texclamp, int type, int stain = -1)
-        : partrenderer(texname, texclamp, type, stain), list(NULL)
+        : partrenderer(texname, texclamp, type, stain), list(nullptr)
     {
     }
     listrenderer(int type, int stain = -1)
-        : partrenderer(type, stain), list(NULL)
+        : partrenderer(type, stain), list(nullptr)
     {
     }
 
@@ -367,7 +367,7 @@ struct listrenderer : partrenderer
         }
         p->next = parempty;
         parempty = list;
-        list = NULL;
+        list = nullptr;
     }
 
     void resettracked(physent *owner)
@@ -414,7 +414,7 @@ struct listrenderer : partrenderer
         p->millis = lastmillis + emitoffset;
         p->color = bvec::hexcolor(color);
         p->size = size;
-        p->owner = NULL;
+        p->owner = nullptr;
         p->flags = 0;
         return p;
     }
@@ -432,7 +432,7 @@ struct listrenderer : partrenderer
 
     bool haswork()
     {
-        return (list != NULL);
+        return (list != nullptr);
     }
 
     virtual void startrender() = 0;
@@ -487,7 +487,7 @@ struct listrenderer : partrenderer
     }
 };
 
-listparticle *listrenderer::parempty = NULL;
+listparticle *listrenderer::parempty = nullptr;
 
 struct meterrenderer : listrenderer
 {
@@ -596,7 +596,7 @@ struct textrenderer : listrenderer
 
     void endrender()
     {
-        textshader = NULL;
+        textshader = nullptr;
 
         popfont();
     }
@@ -626,7 +626,7 @@ struct textrenderer : listrenderer
 
         textmatrix = &m;
         draw_text(p->text, 0, 0, p->color.r, p->color.g, p->color.b, blend);
-        textmatrix = NULL;
+        textmatrix = nullptr;
     }
 };
 static textrenderer texts;
@@ -752,7 +752,7 @@ struct varenderer : partrenderer
 
     varenderer(const char *texname, int type, int stain = -1)
         : partrenderer(texname, 3, type, stain),
-          verts(NULL), parts(NULL), maxparts(0), numparts(0), lastupdate(-1), rndmask(0), vbo(0)
+          verts(nullptr), parts(nullptr), maxparts(0), numparts(0), lastupdate(-1), rndmask(0), vbo(0)
     {
         if(type & PT_HFLIP)
         {
@@ -835,7 +835,7 @@ struct varenderer : partrenderer
         p->millis = lastmillis + emitoffset;
         p->color = bvec::hexcolor(color);
         p->size = size;
-        p->owner = NULL;
+        p->owner = nullptr;
         p->flags = 0x80 | (rndmask ? randomint(0x80) & rndmask : 0);
         lastupdate = -1;
         return p;
@@ -988,7 +988,7 @@ struct varenderer : partrenderer
             glGenBuffers_(1, &vbo);
         }
         gle::bindvbo(vbo);
-        glBufferData_(GL_ARRAY_BUFFER, maxparts*4*sizeof(partvert), NULL, GL_STREAM_DRAW);
+        glBufferData_(GL_ARRAY_BUFFER, maxparts*4*sizeof(partvert), nullptr, GL_STREAM_DRAW);
         glBufferSubData_(GL_ARRAY_BUFFER, 0, numparts*4*sizeof(partvert), verts);
         gle::clearvbo();
     }
@@ -1031,8 +1031,8 @@ namespace sphere
     {
         vec pos;
         ushort s, t;
-    } *verts = NULL;
-    GLushort *indices = NULL;
+    } *verts = nullptr;
+    GLushort *indices = nullptr;
     int numverts = 0,
         numindices = 0;
     GLuint vbuf = 0,
@@ -1949,7 +1949,7 @@ void seedparticles()
         {
             makeparticles(e);
         }
-        seedemitter = NULL;
+        seedemitter = nullptr;
         pe.lastemit = -seedmillis;
         pe.finalize();
     }
