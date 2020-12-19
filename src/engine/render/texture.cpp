@@ -841,7 +841,7 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
     {
         pitch = pw*bpp;
     }
-    uchar *buf = NULL;
+    uchar *buf = nullptr;
     if(pw!=tw || ph!=th)
     {
         buf = new uchar[tw*th*bpp];
@@ -994,7 +994,7 @@ const GLint *swizzlemask(GLenum format)
             return luminancealpha;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLenum format, GLenum target, bool swizzle)
@@ -1275,7 +1275,7 @@ void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clam
 
 hashnameset<Texture> textures;
 
-Texture *notexture = NULL; // used as default, ensured to be loaded
+Texture *notexture = nullptr; // used as default, ensured to be loaded
 
 static GLenum texformat(int bpp, bool swizzle = false)
 {
@@ -1434,7 +1434,7 @@ SDL_Surface *wrapsurface(void *data, int width, int height, int bpp)
             return SDL_CreateRGBSurfaceFrom(data, width, height, 8*bpp, bpp*width, RGBAMASKS);
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 SDL_Surface *creatergbsurface(SDL_Surface *os)
@@ -1442,7 +1442,7 @@ SDL_Surface *creatergbsurface(SDL_Surface *os)
     SDL_Surface *ns = SDL_CreateRGBSurface(SDL_SWSURFACE, os->w, os->h, 24, RGBMASKS);
     if(ns)
     {
-        SDL_BlitSurface(os, NULL, ns, NULL);
+        SDL_BlitSurface(os, nullptr, ns, nullptr);
     }
     SDL_FreeSurface(os);
     return ns;
@@ -1454,7 +1454,7 @@ SDL_Surface *creatergbasurface(SDL_Surface *os)
     if(ns)
     {
         SDL_SetSurfaceBlendMode(os, SDL_BLENDMODE_NONE);
-        SDL_BlitSurface(os, NULL, ns, NULL);
+        SDL_BlitSurface(os, nullptr, ns, nullptr);
     }
     SDL_FreeSurface(os);
     return ns;
@@ -1465,7 +1465,7 @@ bool checkgrayscale(SDL_Surface *s)
     // gray scale images have 256 levels, no colorkey, and the palette is a ramp
     if(s->format->palette)
     {
-        if(s->format->palette->ncolors != 256 || SDL_GetColorKey(s, NULL) >= 0)
+        if(s->format->palette->ncolors != 256 || SDL_GetColorKey(s, nullptr) >= 0)
         {
             return false;
         }
@@ -1485,12 +1485,12 @@ SDL_Surface *fixsurfaceformat(SDL_Surface *s)
 {
     if(!s)
     {
-        return NULL;
+        return nullptr;
     }
     if(!s->pixels || min(s->w, s->h) <= 0 || s->format->BytesPerPixel <= 0)
     {
         SDL_FreeSurface(s);
-        return NULL;
+        return nullptr;
     }
     static const uint rgbmasks[]  = { RGBMASKS },
                       rgbamasks[] = { RGBAMASKS };
@@ -1499,7 +1499,7 @@ SDL_Surface *fixsurfaceformat(SDL_Surface *s)
         case 1:
             if(!checkgrayscale(s))
             {
-                return SDL_GetColorKey(s, NULL) >= 0 ? creatergbasurface(s) : creatergbsurface(s);
+                return SDL_GetColorKey(s, nullptr) >= 0 ? creatergbasurface(s) : creatergbsurface(s);
             }
             break;
         case 3:
@@ -1567,7 +1567,7 @@ bool canloadsurface(const char *name)
 
 SDL_Surface *loadsurface(const char *name)
 {
-    SDL_Surface *s = NULL;
+    SDL_Surface *s = nullptr;
     stream *z = openzipfile(name, "rb");
     if(z)
     {
@@ -1610,9 +1610,9 @@ static vec parsevec(const char *arg)
     return v;
 }
 
-static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *compress = NULL, int *wrap = NULL, const char *tdir = NULL, int ttype = Tex_Diffuse)
+static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *compress = nullptr, int *wrap = nullptr, const char *tdir = nullptr, int ttype = Tex_Diffuse)
 {
-    const char *cmds = NULL, *file = tname;
+    const char *cmds = nullptr, *file = tname;
     if(tname[0]=='<')
     {
         cmds = tname;
@@ -1636,7 +1636,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
     for(const char *pcmds = cmds; pcmds;)
     {
         #define PARSETEXCOMMANDS(cmds) \
-            const char *cmd = NULL, *end = NULL, *arg[4] = { NULL, NULL, NULL, NULL }; \
+            const char *cmd = nullptr, *end = nullptr, *arg[4] = { nullptr, nullptr, nullptr, nullptr }; \
             cmd = &cmds[1]; \
             end = strchr(cmd, '>'); \
             if(!end) \
@@ -1759,7 +1759,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
             string srcname, maskname;
             COPYTEXARG(srcname, arg[0]);
             COPYTEXARG(maskname, arg[1]);
-            if(srcname[0] && texturedata(src, srcname, false, NULL, NULL, tdir, ttype) && (!maskname[0] || texturedata(mask, maskname, false, NULL, NULL, tdir, ttype)))
+            if(srcname[0] && texturedata(src, srcname, false, nullptr, nullptr, tdir, ttype) && (!maskname[0] || texturedata(mask, maskname, false, nullptr, nullptr, tdir, ttype)))
             {
                 texblend(d, src, maskname[0] ? mask : src);
             }
@@ -1817,7 +1817,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
     return true;
 }
 
-static inline bool texturedata(ImageData &d, Slot &slot, Slot::Tex &tex, bool msg = true, int *compress = NULL, int *wrap = NULL)
+static inline bool texturedata(ImageData &d, Slot &slot, Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr)
 {
     return texturedata(d, tex.name, msg, compress, wrap, slot.texturedir(), tex.type);
 }
@@ -1830,12 +1830,12 @@ uchar *loadalphamask(Texture *t)
     }
     if(!(t->type&Texture::ALPHA))
     {
-        return NULL;
+        return nullptr;
     }
     ImageData s;
     if(!texturedata(s, t->name, false) || !s.data || s.compressed)
     {
-        return NULL;
+        return nullptr;
     }
     t->alphamask = new uchar[s.h * ((s.w+7)/8)];
     uchar *srcrow = s.data,
@@ -1874,7 +1874,7 @@ Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
     ImageData s;
     if(texturedata(s, tname, msg, &compress, &clamp))
     {
-        return newtexture(NULL, tname, s, clamp, mipit, false, false, compress);
+        return newtexture(nullptr, tname, s, clamp, mipit, false, false, compress);
     }
     return notexture;
 }
@@ -1893,7 +1893,7 @@ Slot dummyslot;
 VSlot dummyvslot(&dummyslot);
 vector<DecalSlot *> decalslots;
 DecalSlot dummydecalslot;
-Slot *defslot = NULL;
+Slot *defslot = nullptr;
 
 const char *Slot::name() const
 {
@@ -1917,7 +1917,7 @@ void texturereset(int *n)
     {
         return;
     }
-    defslot = NULL;
+    defslot = nullptr;
     resetslotshader();
     int limit = std::clamp(*n, 0, slots.length());
     for(int i = limit; i < slots.length(); i++)
@@ -1949,7 +1949,7 @@ void materialreset()
     {
         return;
     }
-    defslot = NULL;
+    defslot = nullptr;
     for(int i = 0; i < (MatFlag_Volume|MatFlag_Index)+1; ++i)
     {
         materialslots[i].reset();
@@ -1964,7 +1964,7 @@ void decalreset(int *n)
     {
         return;
     }
-    defslot = NULL;
+    defslot = nullptr;
     resetslotshader();
     decalslots.deletecontents(*n);
 }
@@ -1978,7 +1978,7 @@ static bool markingvslots = false;
 
 void clearslots()
 {
-    defslot = NULL;
+    defslot = nullptr;
     resetslotshader();
     slots.deletecontents();
     vslots.deletecontents();
@@ -2054,7 +2054,7 @@ void compactvslots(cube *c, int n)
 
 int compactvslots(bool cull)
 {
-    defslot = NULL;
+    defslot = nullptr;
     clonedvslots = 0;
     markingvslots = cull;
     compactedvslots = 0;
@@ -2184,7 +2184,7 @@ ICOMMAND(compactvslots, "i", (int *cull),
     allchanged();
 });
 
-static void clampvslotoffset(VSlot &dst, Slot *slot = NULL)
+static void clampvslotoffset(VSlot &dst, Slot *slot = nullptr)
 {
     if(!slot)
     {
@@ -2290,7 +2290,7 @@ static void propagatevslot(VSlot *root, int changed)
     }
 }
 
-static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = NULL)
+static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = nullptr)
 {
     if(diff & (1 << VSlot_ShParam))
     {
@@ -2532,7 +2532,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             {
                 string name;
                 getstring(name, buf);
-                SlotShaderParam p = { name[0] ? getshaderparamname(name) : NULL, -1, 0, { 0, 0, 0, 0 } };
+                SlotShaderParam p = { name[0] ? getshaderparamname(name) : nullptr, -1, 0, { 0, 0, 0, 0 } };
                 for(int i = 0; i < 4; ++i)
                 {
                     p.val[i] = getfloat(buf);
@@ -2632,7 +2632,7 @@ VSlot *findvslot(Slot &slot, const VSlot &src, const VSlot &delta)
             return dst;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 static VSlot *clonevslot(const VSlot &src, const VSlot &delta)
@@ -2659,7 +2659,7 @@ VSlot *editvslot(const VSlot &src, const VSlot &delta)
         allchanged();
         if(vslots.length()>=0x10000)
         {
-            return NULL;
+            return nullptr;
         }
     }
     if(autocompactvslots && ++clonedvslots >= autocompactvslots)
@@ -2800,7 +2800,7 @@ void texgrass(char *name)
     }
     Slot &s = *defslot;
     DELETEA(s.grass);
-    s.grass = name[0] ? newstring(makerelpath("media/texture", name)) : NULL;
+    s.grass = name[0] ? newstring(makerelpath("media/texture", name)) : nullptr;
 }
 COMMAND(texgrass, "s");
 
@@ -3077,7 +3077,7 @@ bool DecalSlot::shouldpremul(int type) const
     }
 }
 
-static void addname(vector<char> &key, Slot &slot, Slot::Tex &t, bool combined = false, const char *prefix = NULL)
+static void addname(vector<char> &key, Slot &slot, Slot::Tex &t, bool combined = false, const char *prefix = nullptr)
 {
     if(combined)
     {
@@ -3100,8 +3100,8 @@ static void addname(vector<char> &key, Slot &slot, Slot::Tex &t, bool combined =
 void Slot::load(int index, Slot::Tex &t)
 {
     vector<char> key;
-    addname(key, *this, t, false, shouldpremul(t.type) ? "<premul>" : NULL);
-    Slot::Tex *combine = NULL;
+    addname(key, *this, t, false, shouldpremul(t.type) ? "<premul>" : nullptr);
+    Slot::Tex *combine = nullptr;
     for(int i = 0; i < sts.length(); i++)
     {
         Slot::Tex &c = sts[i];
@@ -3181,7 +3181,7 @@ void Slot::load(int index, Slot::Tex &t)
     {
         texpremul(ts);
     }
-    t.t = newtexture(NULL, key.getbuf(), ts, wrap, true, true, true, compress);
+    t.t = newtexture(nullptr, key.getbuf(), ts, wrap, true, true, true, compress);
 }
 
 void Slot::load()
@@ -3428,7 +3428,7 @@ Texture *Slot::loadthumbnail()
             {
                 forcergbimage(s);
             }
-            t = newtexture(NULL, name.getbuf(), s, 0, false, false, true);
+            t = newtexture(nullptr, name.getbuf(), s, 0, false, false, true);
             t->xs = xs;
             t->ys = ys;
             thumbnail = t;
@@ -3506,7 +3506,7 @@ bool reloadtexture(Texture &tex)
         {
             int compress = 0;
             ImageData s;
-            if(!texturedata(s, tex.name, true, &compress) || !newtexture(&tex, NULL, s, tex.clamp, tex.mipmap, false, false, compress))
+            if(!texturedata(s, tex.name, true, &compress) || !newtexture(&tex, nullptr, s, tex.clamp, tex.mipmap, false, false, compress))
             {
                 return false;
             }
@@ -3556,7 +3556,7 @@ void reloadtextures()
     loadprogress = 0;
 }
 
-void writepngchunk(stream *f, const char *type, uchar *data = NULL, uint len = 0)
+void writepngchunk(stream *f, const char *type, uchar *data = nullptr, uint len = 0)
 {
     f->putbig<uint>(len);
     f->write(type, 4);
@@ -3624,9 +3624,9 @@ void savepng(const char *filename, ImageData &image, bool flip)
     uint crc = crc32(0, Z_NULL, 0);
     crc = crc32(crc, (const Bytef *)"IDAT", 4);
     z_stream z;
-    z.zalloc = NULL;
-    z.zfree = NULL;
-    z.opaque = NULL;
+    z.zalloc = nullptr;
+    z.zfree = nullptr;
+    z.opaque = nullptr;
     if(deflateInit(&z, compresspng) != Z_OK)
     {
         goto error; //goto is beneath FLUSHZ macro
@@ -3722,7 +3722,7 @@ void screenshot(char *filename)
     else
     {
         string sstime;
-        time_t t = time(NULL);
+        time_t t = time(nullptr);
         size_t len = strftime(sstime, sizeof(sstime), "%Y-%m-%d_%H.%M.%S.png", localtime(&t));
         sstime[min(len, sizeof(sstime)-1)] = '\0';
         concatstring(buf, sstime);
