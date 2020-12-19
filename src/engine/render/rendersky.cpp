@@ -60,7 +60,7 @@ void loadsky(const char *basename, Texture *texs[6])
     }
 }
 
-Texture *cloudoverlay = NULL;
+Texture *cloudoverlay = nullptr;
 
 Texture *loadskyoverlay(const char *basename)
 {
@@ -125,7 +125,7 @@ void drawenvboxface(float s0, float t0, int x0, int y0, int z0,
     xtraverts += gle::end();
 }
 
-void drawenvbox(Texture **sky = NULL, float z1clip = 0.0f, float z2clip = 1.0f, int faces = 0x3F)
+void drawenvbox(Texture **sky = nullptr, float z1clip = 0.0f, float z2clip = 1.0f, int faces = 0x3F)
 {
     if(z1clip >= z2clip)
     {
@@ -184,7 +184,7 @@ void drawenvbox(Texture **sky = NULL, float z1clip = 0.0f, float z2clip = 1.0f, 
     }
 }
 
-void drawenvoverlay(Texture *overlay = NULL, float tx = 0, float ty = 0)
+void drawenvoverlay(Texture *overlay = nullptr, float tx = 0, float ty = 0)
 {
     int w = farplane/2;
     float z = w*cloudheight,
