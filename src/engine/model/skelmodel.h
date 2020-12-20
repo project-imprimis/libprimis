@@ -693,25 +693,7 @@ struct skeladjustment
 
     skeladjustment(float yaw, float pitch, float roll, const vec &translate) : yaw(yaw), pitch(pitch), roll(roll), translate(translate) {}
 
-    void adjust(dualquat &dq)
-    {
-        if(yaw)
-        {
-            dq.mulorient(quat(vec(0, 0, 1), yaw*RAD));
-        }
-        if(pitch)
-        {
-            dq.mulorient(quat(vec(0, -1, 0), pitch*RAD));
-        }
-        if(roll)
-        {
-            dq.mulorient(quat(vec(-1, 0, 0), roll*RAD));
-        }
-        if(!translate.iszero())
-        {
-            dq.translate(translate);
-        }
-    }
+    void adjust(dualquat &dq);
 };
 
 template<class MDL>

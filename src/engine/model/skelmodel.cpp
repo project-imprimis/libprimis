@@ -1165,6 +1165,47 @@ void skelmodel::blendcombo::finalize(int sorted)
     }
 }
 
+//================================================================== SEARCHCACHE
+#define SEARCHCACHE(cachesize, cacheentry, cache, reusecheck) \
+    for(int i = 0; i < cachesize; ++i) \
+    { \
+        cacheentry &c = cache[i]; \
+        if(c.owner==owner) \
+        { \
+             if(c==sc) \
+             { \
+                 return c; \
+             } \
+             else \
+             { \
+                 c.owner = -1; \
+             } \
+             break; \
+        } \
+    } \
+    for(int i = 0; i < cachesize-1; ++i) \
+    { \
+        cacheentry &c = cache[i]; \
+        if(reusecheck c.owner < 0 || c.millis < lastmillis) \
+        { \
+            return c; \
+        } \
+    } \
+    return cache[cachesize-1];
+
+skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(skelcacheentry &sc, int owner)
+{
+    SEARCHCACHE(maxvbocache, vbocacheentry, vbocache, !c.vbuf || );
+}
+
+skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(skelcacheentry &sc, int owner)
+{
+    SEARCHCACHE(maxblendcache, blendcacheentry, blendcache, )
+}
+
+#undef SEARCHCACHE
+//==============================================================================
+
 //skelmesh
 
 int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
@@ -1557,44 +1598,25 @@ void skelmodel::skelpart::loaded()
     part::loaded();
 }
 
+/*    ====    skeladjustment    ====    */
+/*======================================*/
 
-//================================================================== SEARCHCACHE
-#define SEARCHCACHE(cachesize, cacheentry, cache, reusecheck) \
-    for(int i = 0; i < cachesize; ++i) \
-    { \
-        cacheentry &c = cache[i]; \
-        if(c.owner==owner) \
-        { \
-             if(c==sc) \
-             { \
-                 return c; \
-             } \
-             else \
-             { \
-                 c.owner = -1; \
-             } \
-             break; \
-        } \
-    } \
-    for(int i = 0; i < cachesize-1; ++i) \
-    { \
-        cacheentry &c = cache[i]; \
-        if(reusecheck c.owner < 0 || c.millis < lastmillis) \
-        { \
-            return c; \
-        } \
-    } \
-    return cache[cachesize-1];
-
-skelmodel::vbocacheentry &skelmodel::skelmeshgroup::checkvbocache(skelcacheentry &sc, int owner)
+void skeladjustment::adjust(dualquat &dq)
 {
-    SEARCHCACHE(maxvbocache, vbocacheentry, vbocache, !c.vbuf || );
+    if(yaw)
+    {
+        dq.mulorient(quat(vec(0, 0, 1), yaw*RAD));
+    }
+    if(pitch)
+    {
+        dq.mulorient(quat(vec(0, -1, 0), pitch*RAD));
+    }
+    if(roll)
+    {
+        dq.mulorient(quat(vec(-1, 0, 0), roll*RAD));
+    }
+    if(!translate.iszero())
+    {
+        dq.translate(translate);
+    }
 }
-
-skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(skelcacheentry &sc, int owner)
-{
-    SEARCHCACHE(maxblendcache, blendcacheentry, blendcache, )
-}
-
-#undef SEARCHCACHE
-//==============================================================================
