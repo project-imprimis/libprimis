@@ -1467,6 +1467,97 @@ void skelmodel::skelmeshgroup::cleanup()
     cleanuphitdata();
 }
 
+void skelmodel::skelmeshgroup::intersect(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray)
+{
+    if(!hitdata)
+    {
+        return;
+    }
+    if(skel->shouldcleanup())
+    {
+        skel->cleanup();
+    }
+    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? NULL : d->ragdoll);
+    intersect(hitdata, p, sc, o, ray);
+    skel->calctags(p, &sc);
+}
+
+void skelmodel::skelmeshgroup::preload(part *p)
+{
+    if(!skel->canpreload())
+    {
+        return;
+    }
+    if(skel->shouldcleanup())
+    {
+        skel->cleanup();
+    }
+    skel->preload();
+    if(!vbocache->vbuf)
+    {
+        genvbo(*vbocache);
+    }
+}
+
+// skelpart
+uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
+{
+    static animpartmask *partmasks = NULL;
+    animpartmask *p = partmasks;
+    for(; p; p = p->next) if(p->numbones==o->numbones && !memcmp(p->bones, o->bones, p->numbones))
+    {
+        delete[] (uchar *)o;
+        return p->bones;
+    }
+
+    o->next = p;
+    partmasks = o;
+    return o->bones;
+}
+
+skelmodel::animpartmask *skelmodel::skelpart::newpartmask()
+{
+    animpartmask *p = (animpartmask *)new uchar[sizeof(animpartmask) + ((skelmeshgroup *)meshes)->skel->numbones-1];
+    p->numbones = ((skelmeshgroup *)meshes)->skel->numbones;
+    memset(p->bones, 0, p->numbones);
+    return p;
+}
+
+void skelmodel::skelpart::initanimparts()
+{
+    DELETEA(buildingpartmask);
+    buildingpartmask = newpartmask();
+}
+
+bool skelmodel::skelpart::addanimpart(ushort *bonemask)
+{
+    if(!buildingpartmask || numanimparts>=maxanimparts)
+    {
+        return false;
+    }
+    ((skelmeshgroup *)meshes)->skel->applybonemask(bonemask, buildingpartmask->bones, numanimparts);
+    numanimparts++;
+    return true;
+}
+
+void skelmodel::skelpart::endanimparts()
+{
+    if(buildingpartmask)
+    {
+        partmask = sharepartmask(buildingpartmask);
+        buildingpartmask = NULL;
+    }
+
+    ((skelmeshgroup *)meshes)->skel->optimize();
+}
+
+void skelmodel::skelpart::loaded()
+{
+    endanimparts();
+    part::loaded();
+}
+
+
 //================================================================== SEARCHCACHE
 #define SEARCHCACHE(cachesize, cacheentry, cache, reusecheck) \
     for(int i = 0; i < cachesize; ++i) \
