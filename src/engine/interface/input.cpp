@@ -233,7 +233,7 @@ void checkinput()
         {
             case SDL_QUIT:
             {
-                fatal("sdl quit");
+                exit(EXIT_SUCCESS);
                 return;
             }
             case SDL_TEXTINPUT:
@@ -265,7 +265,7 @@ void checkinput()
                 {
                     case SDL_WINDOWEVENT_CLOSE:
                     {
-                        fatal("window closed");
+                        exit(EXIT_SUCCESS);
                         break;
                     }
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
