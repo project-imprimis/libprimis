@@ -23,8 +23,8 @@ VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
 int screenw = 0,
     screenh = 0;
-SDL_Window *screen = NULL;
-SDL_GLContext glcontext = NULL;
+SDL_Window *screen = nullptr;
+SDL_GLContext glcontext = nullptr;
 
 static void getbackgroundres(int &w, int &h)
 {
@@ -44,9 +44,9 @@ static void getbackgroundres(int &w, int &h)
 }
 
 static string backgroundcaption = "";
-static Texture *backgroundmapshot = NULL;
+static Texture *backgroundmapshot = nullptr;
 static string backgroundmapname = "";
-static char *backgroundmapinfo = NULL;
+static char *backgroundmapinfo = nullptr;
 
 void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
@@ -188,7 +188,7 @@ void swapbuffers(bool)
     SDL_GL_SwapWindow(screen);
 }
 
-void setbackgroundinfo(const char *caption = NULL, Texture *mapshot = NULL, const char *mapname = NULL, const char *mapinfo = NULL)
+void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr)
 {
     renderedframe = false;
     copystring(backgroundcaption, caption ? caption : "");
@@ -240,7 +240,7 @@ void restorebackground(int w, int h, bool force = false)
         }
         setbackgroundinfo();
     }
-    renderbackgroundview(w, h, backgroundcaption[0] ? backgroundcaption : NULL, backgroundmapshot, backgroundmapname[0] ? backgroundmapname : NULL, backgroundmapinfo);
+    renderbackgroundview(w, h, backgroundcaption[0] ? backgroundcaption : nullptr, backgroundmapshot, backgroundmapname[0] ? backgroundmapname : nullptr, backgroundmapinfo);
 }
 
 float loadprogress = 0;
@@ -449,12 +449,12 @@ void setupscreen()
     if(glcontext)
     {
         SDL_GL_DeleteContext(glcontext);
-        glcontext = NULL;
+        glcontext = nullptr;
     }
     if(screen)
     {
         SDL_DestroyWindow(screen);
-        screen = NULL;
+        screen = nullptr;
     }
     curvsync = -1;
 
