@@ -17,6 +17,7 @@ Additional contributors:
 
 * "beam brain" (@OlRabiesAbe)
 * "NoNo" (@nonoesimposible)
+* Kamil Zelech (@azkoon)
 * Sławomir Błauciak (@q009)
 
 Contributors to the original Tesseract engine are omitted here but listed in
