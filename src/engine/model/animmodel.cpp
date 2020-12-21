@@ -345,3 +345,62 @@ void animmodel::skin::bind(mesh &b, const animstate *as)
     setshader(b, as);
     setshaderparams(b, as);
 }
+
+//mesh
+
+void animmodel::mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t)
+{
+    BIH::mesh &m = bih.add();
+    m.xform = t;
+    m.tex = s.tex;
+    if(canrender)
+    {
+        m.flags |= BIH::Mesh_Render;
+    }
+    if(cancollide)
+    {
+        m.flags |= BIH::Mesh_Collide;
+    }
+    if(s.alphatested())
+    {
+        m.flags |= BIH::Mesh_Alpha;
+    }
+    if(noclip)
+    {
+        m.flags |= BIH::Mesh_NoClip;
+    }
+    if(s.cullface > 0)
+    {
+        m.flags |= BIH::Mesh_CullFace;
+    }
+    genBIH(m);
+    while(bih.last().numtris > BIH::mesh::Max_Triangles)
+    {
+        BIH::mesh &overflow = bih.dup();
+        overflow.tris += BIH::mesh::Max_Triangles;
+        overflow.numtris -= BIH::mesh::Max_Triangles;
+        bih[bih.length()-2].numtris = BIH::mesh::Max_Triangles;
+    }
+}
+
+void animmodel::mesh::fixqtangent(quat &q, float bt)
+{
+    static const float bias = -1.5f/65535,
+                       biasscale = sqrtf(1 - bias*bias);
+    if(bt < 0)
+    {
+        if(q.w >= 0)
+        {
+            q.neg();
+        }
+        if(q.w > bias)
+        {
+            q.mul3(biasscale);
+            q.w = bias;
+        }
+    }
+    else if(q.w < 0)
+    {
+        q.neg();
+    }
+}
