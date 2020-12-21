@@ -7,8 +7,8 @@ extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
 
 enum
 {
-    Zip_LocalFileSignature = 0x04034B50,
-    Zip_LocalFileSize      = 30,
+    Zip_LocalFileSignature  = 0x04034B50,
+    Zip_LocalFileSize       = 30,
     Zip_FileSignature       = 0x02014B50,
     Zip_FileSize            = 46,
     Zip_DirectorySignature  = 0x06054B50,
