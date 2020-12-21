@@ -436,7 +436,7 @@ namespace //internal functions incl. AA implementations
         return a;
     }
 
-    const int edgesortho[][2] =
+    const int orthoedges[][2] =
     {
         {0, 0}, {3, 0}, {0, 3}, {3, 3}, {1, 0}, {4, 0}, {1, 3}, {4, 3},
         {0, 1}, {3, 1}, {0, 4}, {3, 4}, {1, 1}, {4, 1}, {1, 4}, {4, 4}
@@ -712,8 +712,8 @@ namespace //internal functions incl. AA implementations
         {
             for(int pattern = 0; pattern < 16; ++pattern)
             {
-                int px = edgesortho[pattern][0]*16,
-                    py = (5*offset + edgesortho[pattern][1])*16;
+                int px = orthoedges[pattern][0]*16,
+                    py = (5*offset + orthoedges[pattern][1])*16;
                 uchar *dst = &smaaareadata[(py*smaaareatexwidth + px)*2];
                 for(int y = 0; y < 16; ++y)
                 {
