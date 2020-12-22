@@ -257,7 +257,7 @@ struct animmodel : model
             }
         }
 
-        static inline void fixqtangent(quat &q, float bt);
+        static void fixqtangent(quat &q, float bt);
 
         template<class V>
         static inline void calctangent(V &v, const vec &n, const vec &t, float bt)
