@@ -22,7 +22,7 @@
 
 void gl_drawmainmenu()
 {
-    renderbackground(NULL, NULL, NULL, NULL, true);
+    renderbackground(nullptr, nullptr, nullptr, nullptr, true);
 }
 
 VARNP(damagecompass, usedamagecompass, 0, 1, 1);
@@ -137,7 +137,7 @@ void drawdamagescreen(int w, int h)
         return;
     }
     hudshader->set();
-    static Texture *damagetex = NULL;
+    static Texture *damagetex = nullptr;
     if(!damagetex)
     {
         damagetex = textureload("media/interface/hud/damage.png", 3);
@@ -183,7 +183,7 @@ const char *defaultcrosshair(int index)
 }
 
 static const int maxcrosshairs  = 4;
-static Texture *crosshairs[maxcrosshairs] = { NULL, NULL, NULL, NULL };
+static Texture *crosshairs[maxcrosshairs] = { nullptr, nullptr, nullptr, nullptr };
 
 void loadcrosshair(const char *name, int i)
 {
@@ -249,7 +249,7 @@ void drawcrosshair(int w, int h, int crosshairindex)
     Texture *crosshair;
     if(windowhit)
     {
-        static Texture *cursor = NULL;
+        static Texture *cursor = nullptr;
         if(!cursor)
         {
             cursor = textureload("media/interface/cursor.png", 3, true);
@@ -272,7 +272,7 @@ void drawcrosshair(int w, int h, int crosshairindex)
         crosshair = crosshairs[index];
         if(!crosshair)
         {
-            loadcrosshair(NULL, index);
+            loadcrosshair(nullptr, index);
             crosshair = crosshairs[index];
         }
         chsize = crosshairsize*w/900.0f;
@@ -391,7 +391,7 @@ void gl_drawhud(int crosshairindex)
             {
                 if(!walltime)
                 {
-                    walltime = time(NULL);
+                    walltime = time(nullptr);
                     walltime -= totalmillis/1000;
                     if(!walltime)
                     {
