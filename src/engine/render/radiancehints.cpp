@@ -41,8 +41,8 @@ GLuint rsmdepthtex = 0,
 reflectiveshadowmap rsm;
 radiancehints rh;
 
-static Shader *radiancehintsshader = NULL;
-Shader *rsmworldshader = NULL;
+static Shader *radiancehintsshader = nullptr;
+Shader *rsmworldshader = nullptr;
 
 Shader *loadradiancehintsshader()
 {
@@ -68,8 +68,8 @@ void loadrhshaders()
 
 void clearrhshaders()
 {
-    radiancehintsshader = NULL;
-    rsmworldshader = NULL;
+    radiancehintsshader = nullptr;
+    rsmworldshader = nullptr;
 }
 
 void setupradiancehints()
@@ -81,7 +81,7 @@ void setupradiancehints()
         {
             glGenTextures(1, &rhtex[i]);
         }
-        create3dtexture(rhtex[i], rhgrid+2*rhborder, rhgrid+2*rhborder, (rhgrid+2*rhborder)*rhsplits, NULL, 7, 1, rhformat);
+        create3dtexture(rhtex[i], rhgrid+2*rhborder, rhgrid+2*rhborder, (rhgrid+2*rhborder)*rhsplits, nullptr, 7, 1, rhformat);
         if(rhborder)
         {
             glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -147,9 +147,9 @@ void setupradiancehints()
     glBindFramebuffer_(GL_FRAMEBUFFER, rsmfbo);
     GLenum rsmformat = gethdrformat(rsmprec, GL_RGBA8);
 
-    createtexture(rsmdepthtex, rsmsize, rsmsize, NULL, 3, 0, rsmdepthprec > 1 ? GL_DEPTH_COMPONENT32 : (rsmdepthprec ? GL_DEPTH_COMPONENT24 : GL_DEPTH_COMPONENT16), GL_TEXTURE_RECTANGLE);
-    createtexture(rsmcolortex, rsmsize, rsmsize, NULL, 3, 0, rsmformat, GL_TEXTURE_RECTANGLE);
-    createtexture(rsmnormaltex, rsmsize, rsmsize, NULL, 3, 0, rsmformat, GL_TEXTURE_RECTANGLE);
+    createtexture(rsmdepthtex, rsmsize, rsmsize, nullptr, 3, 0, rsmdepthprec > 1 ? GL_DEPTH_COMPONENT32 : (rsmdepthprec ? GL_DEPTH_COMPONENT24 : GL_DEPTH_COMPONENT16), GL_TEXTURE_RECTANGLE);
+    createtexture(rsmcolortex, rsmsize, rsmsize, nullptr, 3, 0, rsmformat, GL_TEXTURE_RECTANGLE);
+    createtexture(rsmnormaltex, rsmsize, rsmsize, nullptr, 3, 0, rsmformat, GL_TEXTURE_RECTANGLE);
 
     glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, rsmdepthtex, 0);
     glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, rsmcolortex, 0);
