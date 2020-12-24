@@ -4790,27 +4790,27 @@ namespace UI
             hold = 0;
         switch(code)
         {
-            case -1:
+            case Key_Left:
             {
                 action = isdown ? State_Press : State_Release; hold = State_Hold;
                 break;
             }
-            case -2:
+            case Key_Middle:
             {
                 action = isdown ? State_AltPress : State_AltRelease; hold = State_AltHold;
                 break;
             }
-            case -3:
+            case Key_Right:
             {
                 action = isdown ? State_EscPress : State_EscRelease; hold = State_EscHold;
                 break;
             }
-            case -4:
+            case Key_ScrollUp:
             {
                 action = State_ScrollUp;
                 break;
             }
-            case -5:
+            case Key_ScrollDown:
             {
                 action = State_ScrollDown;
                 break;

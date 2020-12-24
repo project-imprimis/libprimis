@@ -13,6 +13,7 @@
 
 #include "console.h"
 #include "control.h"
+#include "input.h"
 #include "ui.h"
 
 #include "render/rendergl.h"
@@ -340,27 +341,27 @@ void checkinput()
                 {
                     case SDL_BUTTON_LEFT:
                     {
-                        processkey(-1, event.button.state==SDL_PRESSED);
+                        processkey(Key_Left, event.button.state==SDL_PRESSED);
                         break;
                     }
                     case SDL_BUTTON_MIDDLE:
                     {
-                        processkey(-2, event.button.state==SDL_PRESSED);
+                        processkey(Key_Middle, event.button.state==SDL_PRESSED);
                         break;
                     }
                     case SDL_BUTTON_RIGHT:
                     {
-                        processkey(-3, event.button.state==SDL_PRESSED);
+                        processkey(Key_Right, event.button.state==SDL_PRESSED);
                         break;
                     }
                     case SDL_BUTTON_X1:
                     {
-                        processkey(-6, event.button.state==SDL_PRESSED);
+                        processkey(Key_X1, event.button.state==SDL_PRESSED);
                         break;
                     }
                     case SDL_BUTTON_X2:
                     {
-                        processkey(-7, event.button.state==SDL_PRESSED);
+                        processkey(Key_X2, event.button.state==SDL_PRESSED);
                         break;
                     }
                 }
@@ -371,14 +372,14 @@ void checkinput()
                 //up
                 if(event.wheel.y > 0)
                 {
-                    processkey(-4, true);
-                    processkey(-4, false);
+                    processkey(Key_ScrollUp, true);
+                    processkey(Key_ScrollUp, false);
                 }
                 //down
                 else if(event.wheel.y < 0)
                 {
-                    processkey(-5, true);
-                    processkey(-5, false);
+                    processkey(Key_ScrollDown, true);
+                    processkey(Key_ScrollDown, false);
                 }
                 break;
             }
