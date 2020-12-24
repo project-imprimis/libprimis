@@ -284,7 +284,7 @@ namespace //internal functionality not seen by other files
                 }
                 s.grasstex = textureload(s.grass, 2);
             }
-            grassgroup *group = NULL;
+            grassgroup *group = nullptr;
             for(int i = 0; i < numgrasswedges; ++i)
             {
                 grasswedge &w = grasswedges[i];
@@ -297,11 +297,11 @@ namespace //internal functionality not seen by other files
         }
     }
 
-    Shader *grassshader = NULL;
+    Shader *grassshader = nullptr;
 
     void cleargrassshaders()
     {
-        grassshader = NULL;
+        grassshader = nullptr;
     }
 
     Shader *loadgrassshader()
@@ -368,7 +368,7 @@ void generategrass()
     gle::bindvbo(grassvbo);
     int size = grassverts.size()*sizeof(grassvert);
     grassvbosize = max(grassvbosize, size);
-    glBufferData_(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.data() : NULL, GL_STREAM_DRAW);
+    glBufferData_(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.data() : nullptr, GL_STREAM_DRAW);
     if(size != grassvbosize)
     {
         glBufferSubData_(GL_ARRAY_BUFFER, 0, size, grassverts.data());
