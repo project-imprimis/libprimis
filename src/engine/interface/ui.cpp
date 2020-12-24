@@ -86,17 +86,29 @@ namespace UI
 
     static void pushclip(float x, float y, float w, float h)
     {
-        if(clipstack.empty()) glEnable(GL_SCISSOR_TEST);
+        if(clipstack.empty())
+        {
+            glEnable(GL_SCISSOR_TEST);
+        }
         ClipArea &c = clipstack.emplace_back(ClipArea(x, y, w, h));
-        if(clipstack.size() >= 2) c.intersect(clipstack[clipstack.size()-2]);
+        if(clipstack.size() >= 2)
+        {
+            c.intersect(clipstack[clipstack.size()-2]);
+        }
         c.scissor();
     }
 
     static void popclip()
     {
         clipstack.pop_back();
-        if(clipstack.empty()) glDisable(GL_SCISSOR_TEST);
-        else clipstack.back().scissor();
+        if(clipstack.empty())
+        {
+            glDisable(GL_SCISSOR_TEST);
+        }
+        else
+        {
+            clipstack.back().scissor();
+        }
     }
 
     static inline bool isfullyclipped(float x, float y, float w, float h)
@@ -1063,8 +1075,10 @@ namespace UI
 
         void draw()
         {
-            if(children.empty()) return;
-
+            if(children.empty())
+            {
+                return;
+            }
             LOOP_WINDOWS(w, w->draw());
         }
 
@@ -1145,8 +1159,10 @@ namespace UI
 
         void adjustchildren()
         {
-            if(children.empty()) return;
-
+            if(children.empty())
+            {
+                return;
+            }
             float offset = 0,
                   sx = 0,
                   cspace = (w - subw) / max(static_cast<int>(children.size()) - 1, 1),
@@ -4125,7 +4141,8 @@ namespace UI
             {
                 return;
             }
-            Texture *t = NULL, *glowtex = NULL;
+            Texture *t = NULL,
+                    *glowtex = NULL;
             if(slot.loaded)
             {
                 t = slot.sts[0].t;
@@ -4769,7 +4786,8 @@ namespace UI
         {
             return true;
         }
-        int action = 0, hold = 0;
+        int action = 0,
+            hold = 0;
         switch(code)
         {
             case -1:
