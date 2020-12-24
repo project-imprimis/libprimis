@@ -51,54 +51,9 @@
 					<Variable name="WINDRES_TARGET" value="pe-x86-64" />
 				</Environment>
 			</Target>
-			<Target title="client32">
-				<Option output="..\..\bin\tesseract.exe" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="..\..\" />
-				<Option object_output=".objs\client32" />
-				<Option type="0" />
-				<Option compiler="gcc" />
-				<Option parameters="-t0 -w640 -h480 -qhome" />
-				<Compiler>
-					<Add option="-fomit-frame-pointer" />
-					<Add option="-O3" />
-					<Add option="-ffast-math" />
-					<Add option="-Wall" />
-					<Add option="-m32" />
-					<Add option="-fsigned-char" />
-					<Add option="-fno-exceptions" />
-					<Add option="-fno-rtti" />
-					<Add directory="..\enet\include" />
-					<Add directory="..\include" />
-					<Add directory="..\engine" />
-					<Add directory="..\shared" />
-					<Add directory="..\vcpp" />
-					<Add directory="..\game" />
-				</Compiler>
-				<ResourceCompiler>
-					<Add directory="..\vcpp" />
-				</ResourceCompiler>
-				<Linker>
-					<Add option="-s" />
-					<Add option="-m32" />
-					<Add option="-mwindows" />
-					<Add library="SDL2" />
-					<Add library="SDL2_image" />
-					<Add library="SDL2_mixer" />
-					<Add library="zlib1" />
-					<Add library="opengl32" />
-					<Add library="enet" />
-					<Add library="ws2_32" />
-					<Add library="winmm" />
-					<Add directory="..\..\bin" />
-					<Add directory="..\lib" />
-				</Linker>
-				<Environment>
-					<Variable name="WINDRES_TARGET" value="pe-i386" />
-				</Environment>
-			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="client32;client64;" />
+			<Add alias="All" targets="client64;" />
 		</VirtualTargets>
 		<Unit filename="..\engine\aa.cpp" />
 		<Unit filename="..\engine\animmodel.h" />
@@ -131,7 +86,6 @@
 		<Unit filename="..\engine\octaedit.cpp" />
 		<Unit filename="..\engine\octarender.cpp" />
 		<Unit filename="..\engine\physics.cpp" />
-		<Unit filename="..\engine\pvs.cpp" />
 		<Unit filename="..\engine\ragdoll.h" />
 		<Unit filename="..\engine\rendergl.cpp" />
 		<Unit filename="..\engine\renderlights.cpp" />
@@ -144,7 +98,6 @@
 		<Unit filename="..\engine\serverbrowser.cpp" />
 		<Unit filename="..\engine\shader.cpp" />
 		<Unit filename="..\engine\skelmodel.h" />
-		<Unit filename="..\engine\smd.h" />
 		<Unit filename="..\engine\sound.cpp" />
 		<Unit filename="..\engine\stain.cpp" />
 		<Unit filename="..\engine\textedit.h" />
@@ -156,23 +109,9 @@
 		<Unit filename="..\engine\world.cpp" />
 		<Unit filename="..\engine\world.h" />
 		<Unit filename="..\engine\worldio.cpp" />
-		<Unit filename="..\game\ai.cpp" />
-		<Unit filename="..\game\ai.h" />
-		<Unit filename="..\game\aiman.h" />
-		<Unit filename="..\game\client.cpp" />
-		<Unit filename="..\game\ctf.h" />
-		<Unit filename="..\game\entities.cpp" />
-		<Unit filename="..\game\extinfo.h" />
-		<Unit filename="..\game\game.cpp" />
-		<Unit filename="..\game\game.h">
 			<Option compile="1" />
 			<Option weight="0" />
 		</Unit>
-		<Unit filename="..\game\render.cpp" />
-		<Unit filename="..\game\scoreboard.cpp" />
-		<Unit filename="..\game\server.cpp" />
-		<Unit filename="..\game\waypoint.cpp" />
-		<Unit filename="..\game\weapon.cpp" />
 		<Unit filename="..\shared\command.h" />
 		<Unit filename="..\shared\crypto.cpp" />
 		<Unit filename="..\shared\cube.h">
