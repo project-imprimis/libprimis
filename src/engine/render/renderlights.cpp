@@ -50,6 +50,10 @@ GLuint msfbo = 0,
        mshdrtex     = 0,
        msrefractfbo = 0,
        msrefracttex = 0;
+
+int spotlights       = 0,
+    volumetriclights = 0,
+    nospeclights     = 0;
 std::vector<vec2> msaapositions;
 
 //`g`-buffer `scale`
