@@ -4,8 +4,6 @@
 #include "../libprimis-headers/cube.h"
 
 #include "render/texture.h"
-#include "world/bih.h"
-#include "model/model.h"
 
 extern int gamespeed, paused;
 

@@ -13,7 +13,9 @@
 #include "interface/control.h"
 #include "world/octaedit.h"
 #include "world/raycube.h"
+#include "world/bih.h"
 
+#include "model/model.h"
 static inline void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
 {
     glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, numindices, GL_UNSIGNED_SHORT, indices);

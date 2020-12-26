@@ -20,6 +20,10 @@
 #include "interface/console.h"
 #include "interface/control.h"
 
+#include "world/bih.h"
+
+#include "model/model.h"
+
 struct stainvert
 {
     vec pos;

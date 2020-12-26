@@ -5,12 +5,15 @@
 
 #include "engine.h"
 
+#include "bih.h"
 #include "mpr.h"
 #include "physics.h"
 #include "raycube.h"
 
 #include "interface/console.h"
 #include "interface/control.h"
+
+#include "model/model.h"
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"

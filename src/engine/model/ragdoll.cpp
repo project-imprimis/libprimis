@@ -16,7 +16,9 @@
 #include "render/rendergl.h"
 
 #include "world/physics.h"
+#include "world/bih.h"
 
+#include "model.h"
 #include "ragdoll.h"
 
 FVAR(ragdollbodyfric, 0, 0.95f, 1);

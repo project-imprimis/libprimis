@@ -8,7 +8,9 @@
 #include "render/rendergl.h"
 
 #include "world/physics.h"
+#include "world/bih.h"
 
+#include "model.h"
 #include "ragdoll.h"
 #include "animmodel.h"
 

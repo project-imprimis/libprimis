@@ -6,7 +6,9 @@
 #include "ui.h"
 
 #include "world/octaedit.h"
-
+#include "world/bih.h"
+//model needs bih's objects
+#include "model/model.h"
 //textedit.h needs rendertext's objects
 #include "render/rendergl.h"
 #include "render/rendermodel.h"

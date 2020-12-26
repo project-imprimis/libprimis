@@ -12,6 +12,7 @@
 
 #include "world/octaedit.h"
 #include "world/physics.h"
+#include "world/bih.h"
 
 VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
@@ -22,7 +23,7 @@ std::vector<std::string> animnames; //set by game at runtime
 model *loadingmodel = nullptr;
 
 //need the above vars inited before these headers will load properly
-
+#include "model/model.h"
 #include "model/ragdoll.h"
 #include "model/animmodel.h"
 #include "model/vertmodel.h"

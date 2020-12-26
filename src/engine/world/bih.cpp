@@ -6,6 +6,10 @@
 #include "render/rendermodel.h"
 #include "render/stain.h"
 
+#include "world/bih.h"
+
+#include "model/model.h"
+
 extern vec hitsurface;
 
 /* diagram of a,b,c,n vectors

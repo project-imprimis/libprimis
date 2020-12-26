@@ -2,6 +2,7 @@
 
 #include "engine.h"
 
+#include "bih.h"
 #include "light.h"
 #include "octaedit.h"
 #include "physics.h"
@@ -11,6 +12,8 @@
 #include "interface/console.h"
 #include "interface/menus.h"
 #include "interface/sound.h"
+
+#include "model/model.h"
 
 #include "render/octarender.h"
 #include "render/rendermodel.h"

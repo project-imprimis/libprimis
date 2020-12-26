@@ -13,8 +13,11 @@
  */
 #include "engine.h"
 
+#include "bih.h"
 #include "physics.h"
 #include "raycube.h"
+
+#include "model/model.h"
 
 bool insideworld(const vec &o)
 {
