@@ -15,6 +15,8 @@ extern void changed(const ivec &bbmin, const ivec &bbmax, bool commit = true);
 extern void rendereditcursor();
 extern bool noedit(bool view = false, bool msg = true);
 
+extern void compactmruvslots();
+
 extern void previewprefab(const char *name, const vec &color);
 extern void cleanupprefabs();
 

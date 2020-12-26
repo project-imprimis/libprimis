@@ -411,9 +411,10 @@ namespace hmap
 {
     inline bool isheightmap(int orient, int d, bool empty, cube *c);
 }
-extern void entdrag(const vec &ray);
+
 extern bool hoveringonent(int ent, int orient);
 extern void renderentselection(const vec &o, const vec &ray, bool entmoving);
+
 
 VAR(gridlookup, 0, 0, 1);
 VAR(passthroughcube, 0, 1, 1);
@@ -444,10 +445,6 @@ void rendereditcursor()
             sel.o[R[od]] = o[R[od]];
             sel.o[C[od]] = o[C[od]];
         }
-    }
-    else if(entmoving)
-    {
-        entdrag(camdir);
     }
     else
     {
@@ -2361,6 +2358,42 @@ void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep
             }
         }
     }
+}
+
+void compactmruvslots()
+{
+    remappedvslots.setsize(0);
+    for(int i = texmru.length(); --i >=0;) //note reverse iteration
+    {
+        if(vslots.inrange(texmru[i]))
+        {
+            VSlot &vs = *vslots[texmru[i]];
+            if(vs.index >= 0)
+            {
+                texmru[i] = vs.index;
+                continue;
+            }
+        }
+        if(curtexindex > i)
+        {
+            curtexindex--;
+        }
+        else if(curtexindex == i)
+        {
+            curtexindex = -1;
+        }
+        texmru.remove(i);
+    }
+    if(vslots.inrange(lasttex))
+    {
+        VSlot &vs = *vslots[lasttex];
+        lasttex = vs.index >= 0 ? vs.index : 0;
+    }
+    else
+    {
+        lasttex = 0;
+    }
+    reptex = vslots.inrange(reptex) ? vslots[reptex]->index : -1;
 }
 
 void edittexcube(cube &c, int tex, int orient, bool &findrep)
