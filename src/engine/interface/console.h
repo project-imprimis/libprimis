@@ -18,6 +18,5 @@ extern const char *addreleaseaction(char *s);
 extern tagval *addreleaseaction(ident *id, int numargs);
 extern void writebinds(stream *f);
 extern void writecompletions(stream *f);
-extern FILE *getlogfile();
 
 #endif

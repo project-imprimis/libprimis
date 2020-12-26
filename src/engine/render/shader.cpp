@@ -114,52 +114,6 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     if(length > 1)
     {
         conoutf(Console_Error, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "Vertex shader" : (type == GL_FRAGMENT_SHADER ? "Fragment shader" : "PROG"), name);
-        FILE *l = getlogfile();
-        if(l)
-        {
-            GLchar *log = new GLchar[length];
-            if(type)
-            {
-                glGetShaderInfoLog_(obj, length, &length, log);
-            }
-            else
-            {
-                glGetProgramInfoLog_(obj, length, &length, log);
-            }
-            fprintf(l, "%s\n", log);
-            bool partlines = log[0] != '0';
-            int line = 0;
-            for(int i = 0; i < numparts; ++i)
-            {
-                const char *part = parts[i];
-                int startline = line;
-                while(*part)
-                {
-                    const char *next = strchr(part, '\n');
-                    if(++line > 1000)
-                    {
-                        goto done;
-                    }
-                    if(partlines)
-                    {
-                        fprintf(l, "%d(%d): ", i, line - startline);
-                    }
-                    else
-                    {
-                        fprintf(l, "%d: ", line);
-                    }
-                    fwrite(part, 1, next ? next - part + 1 : strlen(part), l);
-                    if(!next)
-                    {
-                        fputc('\n', l);
-                        break;
-                    }
-                    part = next + 1;
-                }
-            }
-        done:
-            delete[] log;
-        }
     }
 }
 
@@ -1522,32 +1476,6 @@ bool shouldreuseparams(Slot &s, VSlot &p)
     }
     return false;
 }
-
-ICOMMAND(dumpshader, "sbi", (const char *name, int *col, int *row),
-{
-    Shader *s = lookupshaderbyname(name);
-    FILE *l = getlogfile();
-    if(!s || !l)
-    {
-        return;
-    }
-    if(*col >= 0)
-    {
-        s = s->getvariant(*col, *row);
-        if(!s)
-        {
-            return;
-        }
-    }
-    if(s->vsstr)
-    {
-        fprintf(l, "%s:%s\n%s\n", s->name, "VS", s->vsstr);
-    }
-    if(s->psstr)
-    {
-        fprintf(l, "%s:%s\n%s\n", s->name, "FS", s->psstr);
-    }
-});
 
 ICOMMAND(isshaderdefined, "s", (char *name), intret(lookupshaderbyname(name) ? 1 : 0));
 
