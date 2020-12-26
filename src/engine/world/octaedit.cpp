@@ -123,7 +123,6 @@ int gridsize = 8;
 ivec cor, lastcor;
 ivec cur, lastcur;
 
-extern int entediting;
 bool editmode = false;
 bool multiplayer = false;
 bool allowediting = false;
@@ -131,6 +130,16 @@ bool havesel = false;
 bool hmapsel = false;
 int horient  = 0;
 int entmoving = 0;
+
+
+VARF(entediting, 0, 0, 1,
+{
+    if(!entediting)
+    {
+        entcancel();
+    }
+});
+
 
 void multiplayerwarn()
 {

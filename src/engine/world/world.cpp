@@ -22,6 +22,9 @@ VARNR(mapsize, worldsize, 1, 0, 0);
 SVARR(maptitle, "Untitled Map by Unknown");
 VARNR(emptymap, _emptymap, 1, 0, 0);
 
+vector<int> outsideents;
+vector<int> entgroup;
+
 namespace entities
 {
     vector<extentity *> ents;
