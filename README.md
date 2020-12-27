@@ -36,17 +36,17 @@ Libprimis' Tesseract base provides a bunch of rendering features such as:
 * screen-space refractive alpha cubes
 * deferred MSAA, subpixel morphological anti-aliasing (SMAA 1x, T2x, S2x, and 4x), FXAA, and temporal AA
 * support for OpenGL 4.0+ contexts
-* support for Windows* and Linux operating systems
+* support for Linux-based operating systems
 
-**NOTE:** Libprimis currently lacks Windows install semantics, though the code should be entirely compatible.
-If you would like to help with comprehensive Windows support please feel free to contact the project.
+**NOTE:** Libprimis currently lacks Windows install semantics, though progress is currently being made.
+Check back later for Windows support.
 
 For documentation on the engine, see `doc/engine.md`.
 
 
 #### Quick Linux Install Instructions
 
-To get the game, `git` is required. Using `git`, get the repository and its sumodules with
+To get the game, `git` is required. Using `git`, get the repository and its submodules with
 
 `git clone https://github.com/project-imprimis/libprimis.git --recurse-submodules`
 
@@ -62,7 +62,8 @@ To compile the game, the development versions of the libraries are required
 (on distros that seperate standard and dev packages).
 
 Once the library has been compiled, it should be placed the standard shared library folder
-(usually `/usr/lib/`) where it can be linked to.
+(usually `/usr/lib/`) where it can be linked to. Alternatively, use `make -Csrc install` to
+automatically compile and install the library to `/usr/lib/`.
 
 To build a game on libprimis, you will then need to get the required headers (located in a separate repository)
 and build your game against these headers and the shared library.
