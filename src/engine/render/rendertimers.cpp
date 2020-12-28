@@ -66,7 +66,7 @@ timer *begintimer(const char *name, bool gpu)
 {
     if(!usetimers || inbetweenframes || (gpu && (!hasTQ || deferquery)))
     {
-        return NULL;
+        return nullptr;
     }
     timer *t = findtimer(name, gpu);
     if(t->gpu)

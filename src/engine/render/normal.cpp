@@ -155,7 +155,7 @@ namespace //internal functionality not seen by other files
     inline bool findtnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
     {
         float bestangle = lerpthreshold;
-        tnormal *bestnorm = NULL;
+        tnormal *bestnorm = nullptr;
         for(int cur = g.tnormals; cur >= 0;)
         {
             tnormal &o = tnormals[cur];
