@@ -26,7 +26,7 @@ struct Change
     Change() {}
     Change(int type, const char *desc) : type(type), desc(desc) {}
 };
-static std::vector<Change> needsapply;
+static vector<Change> needsapply;
 
 VARP(applydialog, 0, 1, 1);
 
@@ -43,14 +43,14 @@ void addchange(const char *desc, int type)
     {
         return;
     }
-    for(uint i = 0; i < needsapply.size(); i++)
+    for(int i = 0; i < needsapply.length(); i++)
     {
         if(!strcmp(needsapply[i].desc, desc))
         {
             return;
         }
     }
-    needsapply.emplace_back(Change(type, desc));
+    needsapply.add(Change(type, desc));
     if(showchanges)
     {
         UI::showui("changes");
@@ -60,7 +60,7 @@ void addchange(const char *desc, int type)
 //clears out pending changes added by addchange()
 void clearchanges(int type)
 {
-    for(uint i = needsapply.size(); --i >=0;) //note reverse iteration
+    for(int i = needsapply.length(); --i >=0;) //note reverse iteration
     {
         Change &c = needsapply[i];
         if(c.type&type)
@@ -68,7 +68,7 @@ void clearchanges(int type)
             c.type &= ~type;
             if(!c.type)
             {
-                needsapply.erase(needsapply.begin() + i);
+                needsapply.remove(i);
             }
         }
     }
@@ -82,7 +82,7 @@ void clearchanges(int type)
 void applychanges()
 {
     int changetypes = 0;
-    for(uint i = 0; i < needsapply.size(); i++)
+    for(int i = 0; i < needsapply.length(); i++)
     {
         changetypes |= needsapply[i].type;
     }
@@ -106,13 +106,13 @@ COMMAND(applychanges, "");
 //returns if there are pending changes or not enqueued
 ICOMMAND(pendingchanges, "b", (int *idx),
 {
-    if(static_cast<int>(needsapply.size()) > *idx)
+    if(needsapply.inrange(*idx))
     {
         result(needsapply[*idx].desc);
     }
     else if(*idx < 0)
     {
-        intret(needsapply.size());
+        intret(needsapply.length());
     }
 });
 
