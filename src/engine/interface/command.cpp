@@ -3661,7 +3661,8 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                     {
                         break;
                     }
-                    args[i].setint(0); fakeargs++;
+                    args[i].setint(0);
+                    fakeargs++;
                 }
                 else
                 {
@@ -3700,8 +3701,8 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                 else
                 {
                     forcefloat(args[i]);
-                    break;
                 }
+                break;
             }
             [[fallthrough]];
             case 'F':
@@ -3764,7 +3765,8 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                     {
                         break;
                     }
-                    args[i].setnull(); fakeargs++;
+                    args[i].setnull();
+                    fakeargs++;
                 }
                 break;
             }
@@ -3806,15 +3808,18 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
             {
                 if(++i >= numargs)
                 {
-                    if(rep) break;
+                    if(rep)
+                    {
+                        break;
+                    }
                     args[i].setident(dummyident);
                     fakeargs++;
                 }
                 else
                 {
                     forceident(args[i]);
+                    break;
                 }
-                break;
             }
             case '$':
             {
@@ -3830,8 +3835,8 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
                 if(++i < numargs)
                 {
                     freearg(args[i]);
-                    args[i].setint(lookup ? -1 : i-fakeargs);
                 }
+                args[i].setint(lookup ? -1 : i-fakeargs);
                 break;
             }
             case 'D':
