@@ -40,10 +40,10 @@ GLuint animmodel::lastvbuf = 0,
        animmodel::lastxbuf = 0,
        animmodel::lastbbuf = 0,
        animmodel::lastebuf = 0;
-Texture *animmodel::lasttex = NULL,
-        *animmodel::lastdecal = NULL,
-        *animmodel::lastmasks = NULL,
-        *animmodel::lastnormalmap = NULL;
+Texture *animmodel::lasttex = nullptr,
+        *animmodel::lastdecal = nullptr,
+        *animmodel::lastmasks = nullptr,
+        *animmodel::lastnormalmap = nullptr;
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
 
@@ -116,7 +116,7 @@ bool animmodel::skin::masked() const
 
 bool animmodel::skin::bumpmapped() const
 {
-    return normalmap != NULL;
+    return normalmap != nullptr;
 }
 
 bool animmodel::skin::alphatested() const
@@ -126,7 +126,7 @@ bool animmodel::skin::alphatested() const
 
 bool animmodel::skin::decaled() const
 {
-    return decal != NULL;
+    return decal != nullptr;
 }
 
 void animmodel::skin::setkey()
@@ -187,7 +187,7 @@ Shader *animmodel::skin::loadshader()
 {
     #define DOMODELSHADER(name, body) \
         do { \
-            static Shader *name##shader = NULL; \
+            static Shader *name##shader = nullptr; \
             if(!name##shader) name##shader = useshaderbyname(#name); \
             body; \
         } while(0)
@@ -252,7 +252,7 @@ void animmodel::skin::cleanup()
 {
     if(shader && shader->standard)
     {
-        shader = NULL;
+        shader = nullptr;
     }
 }
 
