@@ -1030,14 +1030,14 @@ bool isthirdperson()
 
 void fixcamerarange()
 {
-    const float MAXPITCH = 90.0f;
-    if(camera1->pitch>MAXPITCH)
+    constexpr float maxpitch = 90.0f;
+    if(camera1->pitch>maxpitch)
     {
-        camera1->pitch = MAXPITCH;
+        camera1->pitch = maxpitch;
     }
-    if(camera1->pitch<-MAXPITCH)
+    if(camera1->pitch<-maxpitch)
     {
-        camera1->pitch = -MAXPITCH;
+        camera1->pitch = -maxpitch;
     }
     while(camera1->yaw<0.0f)
     {
