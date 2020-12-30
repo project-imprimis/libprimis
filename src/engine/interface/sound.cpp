@@ -19,7 +19,7 @@ struct SoundSample
     char *name;
     Mix_Chunk *chunk;
 
-    SoundSample() : name(NULL), chunk(NULL) {}
+    SoundSample() : name(nullptr), chunk(nullptr) {}
     ~SoundSample() { DELETEA(name); }
 
     void cleanup()
@@ -27,7 +27,7 @@ struct SoundSample
         if(chunk)
         {
             Mix_FreeChunk(chunk);
-            chunk = NULL;
+            chunk = nullptr;
         }
     }
 
@@ -92,8 +92,8 @@ struct SoundChannel
     {
         inuse = false;
         clearloc();
-        slot   = NULL;
-        ent    = NULL;
+        slot   = nullptr;
+        ent    = nullptr;
         radius = 0;
         volume = -1;
         pan    = -1;
@@ -105,7 +105,7 @@ vector<SoundChannel> channels;
 int maxchannels = 0;
 
 //creates a new SoundChannel object with passed properties
-SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = NULL, extentity *ent = NULL, int flags = 0, int radius = 0)
+SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, extentity *ent = nullptr, int flags = 0, int radius = 0)
 {
     if(ent)
     {
@@ -181,11 +181,11 @@ VARFP(soundvol, 0, 255, 255, if(!soundvol)
 });
 VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
-char *musicfile = NULL, *musicdonecmd = NULL;
+char *musicfile = nullptr, *musicdonecmd = nullptr;
 
-Mix_Music *music = NULL;
-SDL_RWops *musicrw = NULL;
-stream *musicstream = NULL;
+Mix_Music *music = nullptr;
+SDL_RWops *musicrw = nullptr;
+stream *musicstream = nullptr;
 
 void setmusicvol(int musicvol)
 {
@@ -211,12 +211,12 @@ void stopmusic()
     {
         Mix_HaltMusic();
         Mix_FreeMusic(music);
-        music = NULL;
+        music = nullptr;
     }
     if(musicrw)
     {
         SDL_FreeRW(musicrw);
-        musicrw = NULL;
+        musicrw = nullptr;
     }
     DELETEP(musicstream);
 }
@@ -321,12 +321,12 @@ void musicdone()
     {
         Mix_HaltMusic();
         Mix_FreeMusic(music);
-        music = NULL;
+        music = nullptr;
     }
     if(musicrw)
     {
         SDL_FreeRW(musicrw);
-        musicrw = NULL;
+        musicrw = nullptr;
     }
     DELETEP(musicstream);
     DELETEA(musicfile);
@@ -335,7 +335,7 @@ void musicdone()
         return;
     }
     char *cmd = musicdonecmd;
-    musicdonecmd = NULL;
+    musicdonecmd = nullptr;
     execute(cmd);
     delete[] cmd;
 }
@@ -371,7 +371,7 @@ Mix_Music *loadmusic(const char *name)
         if(musicrw)
         {
             SDL_FreeRW(musicrw);
-            musicrw = NULL;
+            musicrw = nullptr;
         }
         DELETEP(musicstream);
     }
@@ -414,7 +414,7 @@ COMMANDN(music, startmusic, "ss");
 
 static Mix_Chunk *loadwav(const char *name)
 {
-    Mix_Chunk *c = NULL;
+    Mix_Chunk *c = nullptr;
     stream *z = openzipfile(name, "rb");
     if(z)
     {
@@ -494,7 +494,7 @@ static struct SoundType
             char *n = newstring(name);
             s = &samples[n];
             s->name = n;
-            s->chunk = NULL;
+            s->chunk = nullptr;
         }
         soundslot *oldslots = slots.getbuf();
         int oldlen = slots.length();
@@ -691,7 +691,7 @@ void checkmapsounds()
         {
             if(!(e.flags&EntFlag_Sound))
             {
-                playsound(e.attr1, NULL, &e, Music_Map, -1);
+                playsound(e.attr1, nullptr, &e, Music_Map, -1);
             }
         }
         else if(e.flags&EntFlag_Sound)
@@ -1030,7 +1030,7 @@ int playsoundname(const char *s, const vec *loc, int vol, int flags, int loops, 
     {
         id = gamesounds.addsound(s, vol);
     }
-    return playsound(id, loc, NULL, flags, loops, fade, chanid, radius, expire);
+    return playsound(id, loc, nullptr, flags, loops, fade, chanid, radius, expire);
 }
 
 ICOMMAND(playsound, "i", (int *n), playsound(*n));
@@ -1059,7 +1059,7 @@ void resetsound()
     {
         DELETEA(musicfile);
         DELETEA(musicdonecmd);
-        music = NULL;
+        music = nullptr;
         gamesounds.cleanupsamples();
         mapsounds.cleanupsamples();
         return;
