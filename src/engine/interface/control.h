@@ -7,6 +7,10 @@ extern int lastmillis;                  // last time
 extern int elapsedtime;                 // elapsed frame time
 extern int totalmillis;                 // total elapsed time
 
+extern FILE *getlogfile();
+extern void logoutf(const char *fmt, ...) PRINTFARGS(1, 2);
+extern void logoutfv(const char *fmt, va_list args, FILE *f = getlogfile());
+
 extern bool inbetweenframes, renderedframe;
 
 extern void fatal(const char *s, ...) PRINTFARGS(1, 2);
