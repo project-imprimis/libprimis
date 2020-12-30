@@ -1933,7 +1933,7 @@ vec calcmodelpreviewpos(const vec &radius, float &yaw)
 int xtraverts, xtravertsva;
 
 //main scene rendering function
-void gl_drawview(void (*gamefxn)(), void(*hudfxn)())
+void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
 {
     GLuint scalefbo = shouldscale();
     if(scalefbo)
@@ -2056,7 +2056,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)())
         if(showhud)
         {
             glDepthMask(GL_FALSE);
-            rendereditcursor();
+            editfxn(); //edit cursor, passed as pointer
             glDepthMask(GL_TRUE);
         }
     }
@@ -2098,7 +2098,7 @@ void gl_setupframe(bool force)
     setuplights();
 }
 
-void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)())
+void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void (*editfxn)())
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
@@ -2113,7 +2113,7 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)())
     }
     else
     {
-        gl_drawview(gamefxn, hudfxn);
+        gl_drawview(gamefxn, hudfxn, editfxn);
     }
     UI::render();
     gl_drawhud(crosshairindex);

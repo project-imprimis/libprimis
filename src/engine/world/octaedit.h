@@ -12,7 +12,6 @@ extern void cancelsel();
 extern void rendertexturepanel(int w, int h);
 extern void commitchanges(bool force = false);
 extern void changed(const ivec &bbmin, const ivec &bbmax, bool commit = true);
-extern void rendereditcursor();
 extern bool noedit(bool view = false, bool msg = true);
 
 extern void compactmruvslots();
