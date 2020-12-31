@@ -141,6 +141,6 @@ void clearmainmenu()
     if(mainmenu && multiplayer)
     {
         mainmenu = 0;
-        UI::hideui(NULL);
+        UI::hideui(nullptr);
     }
 }

@@ -14,7 +14,7 @@ extern void cleargamma();
 // logging
 
 static const int logstrlen = 512;
-FILE *logfile = NULL;
+FILE *logfile = nullptr;
 
 FILE *getlogfile()
 {
@@ -89,7 +89,7 @@ void fatal(const char *s, ...)    // failure exit
                 cleargamma();
             }
             SDL_Quit();
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Imprimis fatal error", msg, NULL);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Imprimis fatal error", msg, nullptr);
         }
     }
 
@@ -101,7 +101,7 @@ int curtime = 0,
     elapsedtime = 0,
     totalmillis = 1;
 
-dynent *player = NULL;
+dynent *player = nullptr;
 
 int initing = Init_Not;
 
