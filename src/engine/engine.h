@@ -248,7 +248,6 @@ inline void dummyfxn()
     return;
 }
 
-
 extern void resolvemsaacolor(int w, int h);
 extern bool shouldworkinoq();
 extern void cleanupgbuffer();

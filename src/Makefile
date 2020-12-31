@@ -53,6 +53,7 @@ CLIENT_OBJS= \
 	engine/interface/input.o \
 	engine/interface/menus.o \
 	engine/interface/sound.o \
+	engine/interface/textedit.o \
 	engine/interface/ui.o \
 	engine/model/animmodel.o \
 	engine/model/obj.o \
