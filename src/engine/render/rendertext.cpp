@@ -42,7 +42,7 @@ void fontborder(float *bordermin, float *bordermax)
         return;
     }
     fontdef->bordermin = *bordermin;
-    fontdef->bordermax = max(*bordermax, *bordermin+0.01f);
+    fontdef->bordermax = std::max(*bordermax, *bordermin+0.01f);
 }
 
 void fontoutline(float *outlinemin, float *outlinemax)
@@ -51,7 +51,7 @@ void fontoutline(float *outlinemin, float *outlinemax)
     {
         return;
     }
-    fontdef->outlinemin = min(*outlinemin, *outlinemax-0.01f);
+    fontdef->outlinemin = std::min(*outlinemin, *outlinemax-0.01f);
     fontdef->outlinemax = *outlinemax;
 }
 
@@ -116,7 +116,7 @@ void fontskip(int *n)
     {
         return;
     }
-    for(int i = 0; i < max(*n, 1); ++i)
+    for(int i = 0; i < std::max(*n, 1); ++i)
     {
         font::charinfo &c = fontdef->chars.add();
         c.x = c.y = c.w = c.h = c.offsetx = c.offsety = c.advance = 0;
@@ -225,7 +225,7 @@ float text_widthf(const char *str)
 
 void tabify(const char *str, int *numtabs)
 {
-    int tw   = max(*numtabs, 0)*FONTTAB-1,
+    int tw   = std::max(*numtabs, 0)*FONTTAB-1,
         tabs = 0;
     for(float w = text_widthf(str); w <= tw; w = TEXTTAB(w))
     {

@@ -269,7 +269,7 @@ static void drawatmosphere()
 
     vec lambda(680e-9f, 550e-9f, 450e-9f),
         betar = vec(lambda).square().square().recip().mul(1.86e-31f / atmodensity),
-        betam = vec(lambda).recip().mul(2*M_PI).square().mul(atmohazefade.tocolor().mul(atmohazefadescale)).mul(1.36e-19f * max(atmohaze, 1e-3f)),
+        betam = vec(lambda).recip().mul(2*M_PI).square().mul(atmohazefade.tocolor().mul(atmohazefadescale)).mul(1.36e-19f * std::max(atmohaze, 1e-3f)),
         betarm = vec(betar).div(1+atmoclarity).add(betam);
     betar.div(betarm).mul(3/(16*M_PI));
     betam.div(betarm).mul((1-gm)*(1-gm)/(4*M_PI));
@@ -338,7 +338,7 @@ void drawskybox(bool clear)
         if(ldrscale < 1 && (skyboxoverbrightmin != 1 || (skyboxoverbright > 1 && skyboxoverbrightthreshold < 1)))
         {
             SETSHADER(skyboxoverbright);
-            LOCALPARAMF(overbrightparams, skyboxoverbrightmin, max(skyboxoverbright, skyboxoverbrightmin), skyboxoverbrightthreshold);
+            LOCALPARAMF(overbrightparams, skyboxoverbrightmin, std::max(skyboxoverbright, skyboxoverbrightmin), skyboxoverbrightthreshold);
         }
         else
         {
