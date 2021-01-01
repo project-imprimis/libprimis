@@ -242,7 +242,7 @@ void Editor::load()
     {
         return;
     }
-    clear(NULL);
+    clear(nullptr);
     stream *file = openutf8file(filename, "r");
     if(file)
     {
@@ -386,7 +386,7 @@ void Editor::copyselectionto(Editor *b)
     {
         return;
     }
-    b->clear(NULL);
+    b->clear(nullptr);
     int sx, sy, ex, ey;
     region(sx, sy, ex, ey);
     for(int i = 0; i < 1+ey-sy; ++i)
@@ -945,7 +945,7 @@ void Editor::draw(int x, int y, int color, bool hit)
 // global
 
 vector<Editor *> editors;
-Editor *textfocus = NULL;
+Editor *textfocus = nullptr;
 
 void readyeditors()
 {
@@ -964,7 +964,7 @@ void flusheditors()
             Editor *e = editors.remove(i);
             if(e == textfocus)
             {
-                textfocus = NULL;
+                textfocus = nullptr;
             }
             delete e;
         }
@@ -988,7 +988,7 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
     }
     if(mode < 0)
     {
-        return NULL;
+        return nullptr;
     }
     Editor *e = new Editor(name, mode, initval);
     editors.add(e);
@@ -1072,7 +1072,7 @@ ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into
     {
         return;
     }
-    Editor *e = NULL;
+    Editor *e = nullptr;
     for(int i = 0; i < editors.length(); i++)
     {
         if(!strcmp(editors[i]->name, name))
