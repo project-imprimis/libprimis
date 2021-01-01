@@ -913,8 +913,18 @@ LISTFIND(listfind=s, "s", char, int len = static_cast<int>(strlen(val)), static_
         init; \
         for(const char *s = list, *start, *end, *qstart; parselist(s, start, end);) \
         { \
-            if(cmp) { if(parselist(s, start, end, qstart)) stringret(listelem(start, end, qstart)); return; } \
-            if(!parselist(s)) break; \
+            if(cmp) \
+            { \
+                if(parselist(s, start, end, qstart)) \
+                { \
+                    stringret(listelem(start, end, qstart)); \
+                } \
+                return; \
+            } \
+            if(!parselist(s)) \
+            { \
+                break; \
+            } \
         } \
     });
 LISTASSOC(listassoc=, "i", int, , parseint(start) == *val);
