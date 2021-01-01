@@ -58,7 +58,7 @@ void damagecompass(int n, const vec &loc)
         yaw = 360 - fmod(-yaw, 360);
     }
     int dir = (static_cast<int>(yaw+22.5f)%360)/45;
-    damagedirs[dir] += max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
+    damagedirs[dir] += std::max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
     if(damagedirs[dir]>1)
     {
         damagedirs[dir] = 1;
@@ -69,7 +69,7 @@ void drawdamagecompass(int w, int h)
     hudnotextureshader->set();
 
     int dirs = 0;
-    float size = damagecompasssize/100.0f*min(h, w)/2.0f;
+    float size = damagecompasssize/100.0f*std::min(h, w)/2.0f;
     for(int i = 0; i < 8; ++i)
     {
         if(damagedirs[i]>0)
@@ -85,7 +85,7 @@ void drawdamagecompass(int w, int h)
 
             float logscale = 32,
                   scale = log(1 + (logscale - 1)*damagedirs[i]) / log(logscale),
-                  offset = -size/2.0f-min(h, w)/4.0f;
+                  offset = -size/2.0f-std::min(h, w)/4.0f;
             matrix4x3 m;
             m.identity();
             m.settranslation(w/2, h/2, 0);
@@ -422,12 +422,12 @@ void gl_drawhud(int crosshairindex)
         {
             resethudshader();
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            abovehud = min(abovehud, conh);
+            abovehud = std::min(abovehud, conh);
         }
         rendertexturepanel(w, h);
     }
 
-    abovehud = min(abovehud, conh*UI::abovehud());
+    abovehud = std::min(abovehud, conh*UI::abovehud());
 
     pushhudscale(conscale);
     abovehud -= rendercommand(FONTH/2, abovehud - FONTH/2, conw-FONTH);
