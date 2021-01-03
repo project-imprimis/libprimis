@@ -86,18 +86,18 @@ struct particleemitter
 
     void extendbb(const vec &o, float size = 0)
     {
-        bbmin.x = min(bbmin.x, o.x - size);
-        bbmin.y = min(bbmin.y, o.y - size);
-        bbmin.z = min(bbmin.z, o.z - size);
-        bbmax.x = max(bbmax.x, o.x + size);
-        bbmax.y = max(bbmax.y, o.y + size);
-        bbmax.z = max(bbmax.z, o.z + size);
+        bbmin.x = std::min(bbmin.x, o.x - size);
+        bbmin.y = std::min(bbmin.y, o.y - size);
+        bbmin.z = std::min(bbmin.z, o.z - size);
+        bbmax.x = std::max(bbmax.x, o.x + size);
+        bbmax.y = std::max(bbmax.y, o.y + size);
+        bbmax.z = std::max(bbmax.z, o.z + size);
     }
 
     void extendbb(float z, float size = 0)
     {
-        bbmin.z = min(bbmin.z, z - size);
-        bbmax.z = max(bbmax.z, z + size);
+        bbmin.z = std::min(bbmin.z, z - size);
+        bbmax.z = std::max(bbmax.z, z + size);
     }
 };
 
@@ -259,7 +259,7 @@ struct partrenderer
         else
         {
             ts = lastmillis-p->millis;
-            blend = max(255 - (ts<<8)/p->fade, 0);
+            blend = std::max(255 - (ts<<8)/p->fade, 0);
             if(p->gravity)
             {
                 if(ts > p->fade)
@@ -634,7 +634,7 @@ static textrenderer texts;
 template<int T>
 static inline void modifyblend(const vec &o, int &blend)
 {
-    blend = min(blend<<2, 255);
+    blend = std::min(blend<<2, 255);
 }
 
 template<>
@@ -843,7 +843,7 @@ struct varenderer : partrenderer
 
     void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
     {
-        pe.maxfade = max(pe.maxfade, fade);
+        pe.maxfade = std::max(pe.maxfade, fade);
         size *= SQRT2;
         pe.extendbb(o, size);
 
@@ -1180,7 +1180,7 @@ struct fireballrenderer : listrenderer
 
     void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
     {
-        pe.maxfade = max(pe.maxfade, fade);
+        pe.maxfade = std::max(pe.maxfade, fade);
         pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
     }
 
@@ -1322,7 +1322,7 @@ void initparticles()
     }
     for(int i = 0; i < numpartparts(); ++i)
     {
-        parts[i]->init(parts[i]->type&PT_FEW ? min(fewparticles, maxparticles) : maxparticles);
+        parts[i]->init(parts[i]->type&PT_FEW ? std::min(fewparticles, maxparticles) : maxparticles);
     }
     for(int i = 0; i < numpartparts(); ++i)
     {
@@ -1808,7 +1808,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
                 //long nasty ternary assignment
                 n->val = from.z - raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ?
                          collideradius :
-                         max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0);
+                         std::max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0);
             }
         }
     }
@@ -1820,14 +1820,14 @@ static void regularflame(int type, const vec &p, float radius, float height, int
     {
         return;
     }
-    float size = scale * min(radius, height);
-    vec v(0, 0, min(1.0f, height)*speed);
+    float size = scale * std::min(radius, height);
+    vec v(0, 0, std::min(1.0f, height)*speed);
     for(int i = 0; i < density; ++i)
     {
         vec s = p;
         s.x += randomfloat(radius*2.0f)-radius;
         s.y += randomfloat(radius*2.0f)-radius;
-        newparticle(s, v, randomint(max(static_cast<int>(fade*height), 1))+1, type, color, size, gravity);
+        newparticle(s, v, randomint(std::max(static_cast<int>(fade*height), 1))+1, type, color, size, gravity);
     }
 }
 
@@ -1849,7 +1849,7 @@ static void makeparticles(entity &e)
             float radius = e.attr2 ? static_cast<float>(e.attr2)/100.0f : 1.5f,
                   height = e.attr3 ? static_cast<float>(e.attr3)/100.0f : radius/3;
             regularflame(Part_Flame, e.o, radius, height, e.attr4 ? colorfromattr(e.attr4) : 0x903020, 3, 2.0f);
-            regularflame(Part_Smoke, vec(e.o.x, e.o.y, e.o.z + 4.0f*min(radius, height)), radius, height, 0x303020, 1, 4.0f, 100.0f, 2000.0f, -20);
+            regularflame(Part_Smoke, vec(e.o.x, e.o.y, e.o.z + 4.0f*std::min(radius, height)), radius, height, 0x303020, 1, 4.0f, 100.0f, 2000.0f, -20);
             break;
         }
         case 1: //steam vent - <dir>
@@ -1894,11 +1894,11 @@ static void makeparticles(entity &e)
             int gravity = gravmap[e.attr1-4];
             if(e.attr2 >= 256)
             {
-                regularshape(type, max(1+e.attr3, 1), colorfromattr(e.attr4), e.attr2-256, 5, e.attr5 > 0 ? min(static_cast<int>(e.attr5), 10000) : 200, e.o, size, gravity);
+                regularshape(type, std::max(1+e.attr3, 1), colorfromattr(e.attr4), e.attr2-256, 5, e.attr5 > 0 ? std::min(static_cast<int>(e.attr5), 10000) : 200, e.o, size, gravity);
             }
             else
             {
-                newparticle(e.o, offsetvec(e.o, e.attr2, max(1+e.attr3, 0)), 1, type, colorfromattr(e.attr4), size, gravity);
+                newparticle(e.o, offsetvec(e.o, e.attr2, std::max(1+e.attr3, 0)), 1, type, colorfromattr(e.attr4), size, gravity);
             }
             break;
         }
@@ -1945,7 +1945,7 @@ void seedparticles()
         particleemitter &pe = emitters[i];
         extentity &e = *pe.ent;
         seedemitter = &pe;
-        for(int millis = 0; millis < seedmillis; millis += min(emitmillis, seedmillis/10))
+        for(int millis = 0; millis < seedmillis; millis += std::min(emitmillis, seedmillis/10))
         {
             makeparticles(e);
         }
@@ -2005,7 +2005,7 @@ void updateparticles()
             emitted++;
             if(replayparticles && pe.maxfade > 5 && pe.lastcull > pe.lastemit) //recreate particles from previous ticks
             {
-                for(emitoffset = max(pe.lastemit + emitmillis - lastmillis, -pe.maxfade); emitoffset < 0; emitoffset += emitmillis)
+                for(emitoffset = std::max(pe.lastemit + emitmillis - lastmillis, -pe.maxfade); emitoffset < 0; emitoffset += emitmillis)
                 {
                     makeparticles(e);
                     replayed++;
