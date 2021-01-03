@@ -2,7 +2,7 @@
 
 #### This is a work in progress and subject to modification and additions.
 
-Written and © Alex "no-lex" Foster, 2020; released under the WTFPL v2.
+Written and © Alex "no-lex" Foster, 2020-2021; released under the WTFPL v2.
 
 Preface
 ---
@@ -536,23 +536,26 @@ and this folder is only included by `rendermodel.cpp`, located in `render`.
 The `render` folder contains the core rendering code used to implement the
 visual effects in the engine.
 
-* `aa.cpp` antialiasing functionality
-* `grass.cpp` grass rendering on octree geometry
-* `normal.cpp` normal maps & normal map interpolation
-* `octarender.cpp` octree geometry rendering
+* `aa.h/cpp` antialiasing functionality
+* `ao.h/cpp` screenspace ambient occlusion functionality
+* `csm.h/cpp` cascaded shadow maps (for sunlight)
+* `grass.h/cpp` grass rendering on octree geometry
+* `hdr.h/cpp` high dynamic range & tonemapping
+* `normal.h/cpp` normal maps & normal map interpolation
+* `octarender.h/cpp` octree geometry rendering
 * `radiancehints.h/cpp` radiance hints (global illumination)
-* `rendergl.cpp` lower-level renderer core
+* `rendergl.h/cpp` lower-level renderer core
 * `renderlights.cpp` point light & sunlight rendering
-* `rendermodel.cpp` player, world model rendering
-* `renderparticles.cpp` billboard particle rendering
-* `rendersky.cpp` skybox & other parallax free sky effects
-* `rendertext.cpp` ui text rendering
-* `renderva.cpp` octree geometry vertex array rendering
+* `rendermodel.h/cpp` player, world model rendering
+* `renderparticles.h/cpp` billboard particle rendering
+* `rendersky.h/cpp` skybox & other parallax free sky effects
+* `rendertext.h/cpp` ui text rendering
+* `renderva.h/cpp` octree geometry vertex array rendering
 * `renderwindow.h/cpp` window handling
 * `shader.cpp` glsl shader handling
-* `stain.cpp` dynamic stain creation and rendering
+* `stain.h/cpp` dynamic stain creation and rendering
 * `texture.h/cpp` world geometry texture application
-* `water.cpp` water material & its fx (screenspace reflection etc.)
+* `water.h/cpp` water material & its fx (screenspace reflection etc.)
 
 #### `/world`
 
