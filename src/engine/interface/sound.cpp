@@ -181,7 +181,8 @@ VARFP(soundvol, 0, 255, 255, if(!soundvol)
 });
 VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
-char *musicfile = nullptr, *musicdonecmd = nullptr;
+char *musicfile = nullptr,
+     *musicdonecmd = nullptr;
 
 Mix_Music *music = nullptr;
 SDL_RWops *musicrw = nullptr;
@@ -222,9 +223,9 @@ void stopmusic()
 }
 
 #ifdef WIN32
-#define AUDIODRIVER "directsound winmm"
+    #define AUDIODRIVER "directsound winmm"
 #else
-#define AUDIODRIVER ""
+    #define AUDIODRIVER ""
 #endif
 bool shouldinitaudio = true;
 SVARF(audiodriver, AUDIODRIVER, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
