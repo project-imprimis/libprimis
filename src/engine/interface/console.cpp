@@ -101,6 +101,7 @@ void fullconsole(int *val, int *numargs, ident *id)
     }
 }
 COMMAND(fullconsole, "iN$");
+
 void toggleconsole()
 {
     UI::toggleui("fullconsole");
@@ -161,6 +162,7 @@ void conskip(int *n)
     setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n);
 }
 COMMAND(conskip, "i");
+
 void miniconskip(int *n)
 {
     setconskip(miniconskip, miniconfilter, *n);
@@ -329,7 +331,6 @@ void keymap(int *code, char *key)
     DELETEA(km.name);
     km.name = newstring(key);
 }
-
 COMMAND(keymap, "is");
 
 KeyM *keypressed = nullptr;
@@ -413,41 +414,49 @@ void bind(char *key, char *action)
     bindkey(key, action, KeyM::Action_Default, "bind");
 }
 COMMAND(bind, "ss");
+
 void specbind(char *key, char *action)
 {
     bindkey(key, action, KeyM::Action_Spectator, "specbind");
 }
 COMMAND(specbind, "ss");
+
 void editbind(char *key, char *action)
 {
     bindkey(key, action, KeyM::Action_Editing, "editbind");
 }
 COMMAND(editbind, "ss");
+
 void getbind(char *key)
 {
     getbind(key, KeyM::Action_Default);
 }
 COMMAND(getbind, "s");
+
 void getspecbind(char *key)
 {
     getbind(key, KeyM::Action_Spectator);
 }
 COMMAND(getspecbind, "s"):
+
 void gededitbind(char *key)
 {
     getbind(key, KeyM::Action_Editing);
 }
 COMMAND(geteditbind, "s");
+
 void searchbinds(char *action)
 {
     searchbinds(action, KeyM::Action_Default);
 }
 COMMAND(searchbinds, "s");
+
 void searchspecbinds(char *action)
 {
     searchbinds(action, KeyM::Action_Spectator);
 }
 COMMAND(searchspecbinds, "s");
+
 void searcheditbinds(char *action)
 {
     searchbinds(action, KeyM::Action_Editing);
@@ -472,16 +481,19 @@ void clearbinds()
     ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
 }
 COMMAND(clearbinds, "");
+
 void clearspecbinds()
 {
     ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
 }
 COMMAND(clearspecbinds, "");
+
 void cleareditbinds()
 {
     ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
 }
 COMMAND(cleareditbinds, "");
+
 void clearallbinds()
 {
     ENUMERATE(keyms, KeyM, km, km.clear());
@@ -695,7 +707,6 @@ void onrelease(const char *s)
 {
     addreleaseaction(newstring(s));
 }
-
 COMMAND(onrelease, "s");
 
 void execbind(KeyM &k, bool isdown)
@@ -1135,13 +1146,12 @@ void addfilecomplete(char *command, char *dir, char *ext)
 {
     addcomplete(command, Files_Directory, dir, ext);
 }
+COMMANDN(complete, addfilecomplete, "sss");
 
 void addlistcomplete(char *command, char *list)
 {
     addcomplete(command, Files_List, list, nullptr);
 }
-
-COMMANDN(complete, addfilecomplete, "sss");
 COMMANDN(listcomplete, addlistcomplete, "ss");
 
 void complete(char *s, int maxlen, const char *cmdprefix)
