@@ -81,7 +81,7 @@ void conoutf(int type, const char *fmt, ...)
     va_end(args);
 }
 
-ICOMMAND(fullconsole, "iN$", (int *val, int *numargs, ident *id),
+void fullconsole(int *val, int *numargs, ident *id)
 {
     if(*numargs > 0)
     {
@@ -99,8 +99,14 @@ ICOMMAND(fullconsole, "iN$", (int *val, int *numargs, ident *id),
             printvar(id, vis);
         }
     }
-});
-ICOMMAND(toggleconsole, "", (), UI::toggleui("fullconsole"));
+}
+COMMAND(fullconsole, "iN$");
+
+void toggleconsole()
+{
+    UI::toggleui("fullconsole");
+}
+COMMAND(toggleconsole, "");
 
 float rendercommand(float x, float y, float w)
 {
@@ -151,16 +157,26 @@ void setconskip(int &skip, int filter, int n)
     }
 }
 
-ICOMMAND(conskip, "i", (int *n), setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n));
-ICOMMAND(miniconskip, "i", (int *n), setconskip(miniconskip, miniconfilter, *n));
+void conskip(int *n)
+{
+    setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n);
+}
+COMMAND(conskip, "i");
 
-ICOMMAND(clearconsole, "", (),
+void miniconskip(int *n)
+{
+    setconskip(miniconskip, miniconfilter, *n);
+}
+COMMAND(miniconskip, "i");
+
+void clearconsole()
 {
     while(conlines.length())
     {
         delete[] conlines.pop().line;
     }
-});
+}
+COMMAND(clearconsole, "");
 
 float drawconlines(int conskip, int confade, float conwidth, float conheight, float conoff, int filter, float y = 0, int dir = 1)
 {
@@ -315,7 +331,6 @@ void keymap(int *code, char *key)
     DELETEA(km.name);
     km.name = newstring(key);
 }
-
 COMMAND(keymap, "is");
 
 KeyM *keypressed = nullptr;
@@ -394,15 +409,59 @@ void bindkey(char *key, char *action, int state, const char *cmd)
     binding = newstring(action, len);
 }
 
-ICOMMAND(bind,     "ss", (char *key, char *action), bindkey(key, action, KeyM::Action_Default, "bind"));
-ICOMMAND(specbind, "ss", (char *key, char *action), bindkey(key, action, KeyM::Action_Spectator, "specbind"));
-ICOMMAND(editbind, "ss", (char *key, char *action), bindkey(key, action, KeyM::Action_Editing, "editbind"));
-ICOMMAND(getbind,     "s", (char *key), getbind(key, KeyM::Action_Default));
-ICOMMAND(getspecbind, "s", (char *key), getbind(key, KeyM::Action_Spectator));
-ICOMMAND(geteditbind, "s", (char *key), getbind(key, KeyM::Action_Editing));
-ICOMMAND(searchbinds,     "s", (char *action), searchbinds(action, KeyM::Action_Default));
-ICOMMAND(searchspecbinds, "s", (char *action), searchbinds(action, KeyM::Action_Spectator));
-ICOMMAND(searcheditbinds, "s", (char *action), searchbinds(action, KeyM::Action_Editing));
+void bind(char *key, char *action)
+{
+    bindkey(key, action, KeyM::Action_Default, "bind");
+}
+COMMAND(bind, "ss");
+
+void specbind(char *key, char *action)
+{
+    bindkey(key, action, KeyM::Action_Spectator, "specbind");
+}
+COMMAND(specbind, "ss");
+
+void editbind(char *key, char *action)
+{
+    bindkey(key, action, KeyM::Action_Editing, "editbind");
+}
+COMMAND(editbind, "ss");
+
+void getbind(char *key)
+{
+    getbind(key, KeyM::Action_Default);
+}
+COMMAND(getbind, "s");
+
+void getspecbind(char *key)
+{
+    getbind(key, KeyM::Action_Spectator);
+}
+COMMAND(getspecbind, "s"):
+
+void gededitbind(char *key)
+{
+    getbind(key, KeyM::Action_Editing);
+}
+COMMAND(geteditbind, "s");
+
+void searchbinds(char *action)
+{
+    searchbinds(action, KeyM::Action_Default);
+}
+COMMAND(searchbinds, "s");
+
+void searchspecbinds(char *action)
+{
+    searchbinds(action, KeyM::Action_Spectator);
+}
+COMMAND(searchspecbinds, "s");
+
+void searcheditbinds(char *action)
+{
+    searchbinds(action, KeyM::Action_Editing);
+}
+COMMAND(searcheditbinds, "s");
 
 void KeyM::clear(int type)
 {
@@ -417,10 +476,29 @@ void KeyM::clear(int type)
     }
 }
 
-ICOMMAND(clearbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default)));
-ICOMMAND(clearspecbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator)));
-ICOMMAND(cleareditbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing)));
-ICOMMAND(clearallbinds, "", (), ENUMERATE(keyms, KeyM, km, km.clear()));
+void clearbinds()
+{
+    ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
+}
+COMMAND(clearbinds, "");
+
+void clearspecbinds()
+{
+    ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
+}
+COMMAND(clearspecbinds, "");
+
+void cleareditbinds()
+{
+    ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
+}
+COMMAND(cleareditbinds, "");
+
+void clearallbinds()
+{
+    ENUMERATE(keyms, KeyM, km, km.clear());
+}
+COMMAND(clearallbinds, "");
 
 void inputcommand(char *init, char *action = nullptr, char *prompt = nullptr, char *flags = nullptr) // turns input to the command line on or off
 {
@@ -470,7 +548,11 @@ void inputcommand(char *init, char *action = nullptr, char *prompt = nullptr, ch
     }
 }
 
-ICOMMAND(saycommand, "C", (char *init), inputcommand(init));
+void saycommand(char *init)
+{
+    inputcommand(init);
+}
+COMMAND(saycommand, "C");
 COMMAND(inputcommand, "ssss");
 
 void pasteconsole()
@@ -625,7 +707,6 @@ void onrelease(const char *s)
 {
     addreleaseaction(newstring(s));
 }
-
 COMMAND(onrelease, "s");
 
 void execbind(KeyM &k, bool isdown)
@@ -1065,13 +1146,12 @@ void addfilecomplete(char *command, char *dir, char *ext)
 {
     addcomplete(command, Files_Directory, dir, ext);
 }
+COMMANDN(complete, addfilecomplete, "sss");
 
 void addlistcomplete(char *command, char *list)
 {
     addcomplete(command, Files_List, list, nullptr);
 }
-
-COMMANDN(complete, addfilecomplete, "sss");
 COMMANDN(listcomplete, addlistcomplete, "ss");
 
 void complete(char *s, int maxlen, const char *cmdprefix)
@@ -1170,4 +1250,3 @@ void writecompletions(stream *f)
         }
     }
 }
-
