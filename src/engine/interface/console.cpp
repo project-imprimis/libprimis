@@ -547,13 +547,13 @@ void inputcommand(char *init, char *action = nullptr, char *prompt = nullptr, ch
         commandflags |= CmdFlags_Complete|CmdFlags_Execute;
     }
 }
+COMMAND(inputcommand, "ssss");
 
 void saycommand(char *init)
 {
     inputcommand(init);
 }
 COMMAND(saycommand, "C");
-COMMAND(inputcommand, "ssss");
 
 void pasteconsole()
 {
