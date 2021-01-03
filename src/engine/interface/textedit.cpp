@@ -1,3 +1,12 @@
+/* textedit.cpp: ui text editing functionality
+ *
+ * libprimis supports text entry and large text editor blocks, for creating user
+ * interfaces that require input (files, string fields)
+ *
+ * For the objects which are actually called by ui.cpp, see textedit.h
+ *
+ */
+
 #include "engine.h"
 
 #include "textedit.h"
