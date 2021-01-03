@@ -157,17 +157,17 @@ void setconskip(int &skip, int filter, int n)
     }
 }
 
-void conskip(int *n)
+void conskipcmd(int *n)
 {
     setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n);
 }
-COMMAND(conskip, "i");
+COMMANDN(conskip, conskipcmd, "i");
 
-void miniconskip(int *n)
+void miniconskipcmd(int *n)
 {
     setconskip(miniconskip, miniconfilter, *n);
 }
-COMMAND(miniconskip, "i");
+COMMANDN(miniconskip, miniconskipcmd, "i");
 
 void clearconsole()
 {
@@ -427,29 +427,29 @@ void editbind(char *key, char *action)
 }
 COMMAND(editbind, "ss");
 
-void getbind(char *key)
+void getbindcmd(char *key)
 {
     getbind(key, KeyM::Action_Default);
 }
-COMMAND(getbind, "s");
+COMMANDN(getbind, getbindcmd, "s");
 
 void getspecbind(char *key)
 {
     getbind(key, KeyM::Action_Spectator);
 }
-COMMAND(getspecbind, "s"):
+COMMAND(getspecbind, "s");
 
-void gededitbind(char *key)
+void geteditbind(char *key)
 {
     getbind(key, KeyM::Action_Editing);
 }
 COMMAND(geteditbind, "s");
 
-void searchbinds(char *action)
+void searchbindscmd(char *action)
 {
     searchbinds(action, KeyM::Action_Default);
 }
-COMMAND(searchbinds, "s");
+COMMANDN(searchbinds, searchbindscmd, "s");
 
 void searchspecbinds(char *action)
 {
