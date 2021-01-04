@@ -51,9 +51,9 @@ hashtable<animmodel::shaderparams, animmodel::shaderparamskey> animmodel::shader
 int animmodel::shaderparamskey::firstversion = 0,
     animmodel::shaderparamskey::lastversion = 1;
 
-// animpos
+// AnimPos
 
-void animmodel::animpos::setframes(const animinfo &info)
+void animmodel::AnimPos::setframes(const animinfo &info)
 {
     anim = info.anim;
     if(info.range<=1)
