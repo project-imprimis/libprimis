@@ -406,3 +406,656 @@ void animmodel::mesh::fixqtangent(quat &q, float bt)
         q.neg();
     }
 }
+
+//meshgroup
+
+void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
+{
+    LOOP_RENDER_MESHES(mesh, m, m.calcbb(bbmin, bbmax, t));
+}
+
+void animmodel::meshgroup::genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
+{
+    for(int i = 0; i < meshes.length(); i++)
+    {
+        meshes[i]->genBIH(skins[i], bih, t);
+    }
+}
+
+void animmodel::meshgroup::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t)
+{
+    LOOP_RENDER_MESHES(mesh, m, m.genshadowmesh(tris, t));
+}
+
+bool animmodel::meshgroup::hasframe(int i) const
+{
+    return i>=0 && i<totalframes();
+}
+
+bool animmodel::meshgroup::hasframes(int i, int n) const
+{
+    return i>=0 && i+n<=totalframes();
+}
+
+int animmodel::meshgroup::clipframes(int i, int n) const
+{
+    return min(n, totalframes() - i);
+}
+
+void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size)
+{
+    if(lastebuf!=ebuf)
+    {
+        gle::bindebo(ebuf);
+        lastebuf = ebuf;
+    }
+    if(lastvbuf!=vbuf)
+    {
+        gle::bindvbo(vbuf);
+        if(!lastvbuf)
+        {
+            gle::enablevertex();
+        }
+        gle::vertexpointer(stride, v, type, size);
+        lastvbuf = vbuf;
+    }
+}
+void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride)
+{
+    bindpos(ebuf, vbuf, v, stride, GL_FLOAT, 3);
+}
+
+void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, GenericVec4<half> *v, int stride)
+{
+    bindpos(ebuf, vbuf, v, stride, GL_HALF_FLOAT, 4);
+}
+
+void animmodel::meshgroup::bindtc(void *v, int stride)
+{
+    if(!enabletc)
+    {
+        gle::enabletexcoord0();
+        enabletc = true;
+    }
+    if(lasttcbuf!=lastvbuf)
+    {
+        gle::texcoord0pointer(stride, v, GL_HALF_FLOAT);
+        lasttcbuf = lastvbuf;
+    }
+}
+
+void animmodel::meshgroup::bindtangents(void *v, int stride)
+{
+    if(!enabletangents)
+    {
+        gle::enabletangent();
+        enabletangents = true;
+    }
+    if(lastxbuf!=lastvbuf)
+    {
+        gle::tangentpointer(stride, v, GL_SHORT);
+        lastxbuf = lastvbuf;
+    }
+}
+
+void animmodel::meshgroup::bindbones(void *wv, void *bv, int stride)
+{
+    if(!enablebones)
+    {
+        gle::enableboneweight();
+        gle::enableboneindex();
+        enablebones = true;
+    }
+    if(lastbbuf!=lastvbuf)
+    {
+        gle::boneweightpointer(stride, wv);
+        gle::boneindexpointer(stride, bv);
+        lastbbuf = lastvbuf;
+    }
+}
+
+//part
+
+void animmodel::part::cleanup()
+{
+    if(meshes)
+    {
+        meshes->cleanup();
+    }
+    for(int i = 0; i < skins.length(); i++)
+    {
+        skins[i].cleanup();
+    }
+}
+
+void animmodel::part::disablepitch()
+{
+    pitchscale = pitchoffset = pitchmin = pitchmax = 0;
+}
+
+void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
+{
+    matrix4x3 t = m;
+    t.scale(model->scale);
+    meshes->calcbb(bbmin, bbmax, t);
+    for(int i = 0; i < links.length(); i++)
+    {
+        matrix4x3 n;
+        meshes->concattagtransform(this, links[i].tag, m, n);
+        n.translate(links[i].translate, model->scale);
+        links[i].p->calcbb(bbmin, bbmax, n);
+    }
+}
+
+void animmodel::part::genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m)
+{
+    matrix4x3 t = m;
+    t.scale(model->scale);
+    meshes->genBIH(skins, bih, t);
+    for(int i = 0; i < links.length(); i++)
+    {
+        matrix4x3 n;
+        meshes->concattagtransform(this, links[i].tag, m, n);
+        n.translate(links[i].translate, model->scale);
+        links[i].p->genBIH(bih, n);
+    }
+}
+
+void animmodel::part::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
+{
+    matrix4x3 t = m;
+    t.scale(model->scale);
+    meshes->genshadowmesh(tris, t);
+    for(int i = 0; i < links.length(); i++)
+    {
+        matrix4x3 n;
+        meshes->concattagtransform(this, links[i].tag, m, n);
+        n.translate(links[i].translate, model->scale);
+        links[i].p->genshadowmesh(tris, n);
+    }
+}
+
+bool animmodel::part::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos)
+{
+    int i = meshes ? meshes->findtag(tag) : -1;
+    if(i<0)
+    {
+        for(int i = 0; i < links.length(); i++)
+        {
+            if(links[i].p && links[i].p->link(p, tag, translate, anim, basetime, pos))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    linkedpart &l = links.add();
+    l.p = p;
+    l.tag = i;
+    l.anim = anim;
+    l.basetime = basetime;
+    l.translate = translate;
+    l.pos = pos;
+    return true;
+}
+
+bool animmodel::part::unlink(part *p)
+{
+    for(int i = links.length(); --i >=0;) //note reverse iteration
+    {
+        if(links[i].p==p)
+        {
+            links.remove(i, 1);
+            return true;
+        }
+    }
+    for(int i = 0; i < links.length(); i++)
+    {
+        if(links[i].p && links[i].p->unlink(p))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
+{
+    if(!limit)
+    {
+        if(!meshes)
+        {
+            return;
+        }
+        limit = meshes->meshes.length();
+    }
+    while(skins.length() < limit)
+    {
+        skin &s = skins.add();
+        s.owner = this;
+        s.tex = tex;
+        s.masks = masks;
+    }
+}
+
+bool animmodel::part::alphatested() const
+{
+    for(int i = 0; i < skins.length(); i++)
+    {
+        if(skins[i].alphatested())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void animmodel::part::preloadBIH()
+{
+    for(int i = 0; i < skins.length(); i++)
+    {
+        skins[i].preloadBIH();
+    }
+}
+
+void animmodel::part::preloadshaders()
+{
+    for(int i = 0; i < skins.length(); i++)
+    {
+        skins[i].preloadshader();
+    }
+}
+
+void animmodel::part::preloadmeshes()
+{
+    if(meshes)
+    {
+        meshes->preload(this);
+    }
+}
+
+void animmodel::part::getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d)
+{
+    info.frame = 0;
+    info.range = 1;
+}
+
+bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime)
+{
+    uint varseed = static_cast<uint>((size_t)d);
+    info.anim = anim;
+    info.basetime = basetime;
+    info.varseed = varseed;
+    info.speed = anim & Anim_SetSpeed ? basetime2 : 100.0f;
+    if((anim & Anim_Index) == Anim_All)
+    {
+        info.frame = 0;
+        info.range = meshes->totalframes();
+    }
+    else
+    {
+        animspec *spec = NULL;
+        if(anims[animpart])
+        {
+            vector<animspec> &primary = anims[animpart][anim & Anim_Index];
+            if(primary.length())
+            {
+                spec = &primary[static_cast<uint>(varseed + basetime)%primary.length()];
+            }
+            if((anim >> Anim_Secondary) & (Anim_Index | Anim_Dir))
+            {
+                vector<animspec> &secondary = anims[animpart][(anim >> Anim_Secondary) & Anim_Index];
+                if(secondary.length())
+                {
+                    animspec &spec2 = secondary[static_cast<uint>(varseed + basetime2)%secondary.length()];
+                    if(!spec || spec2.priority > spec->priority)
+                    {
+                        spec = &spec2;
+                        info.anim >>= Anim_Secondary;
+                        info.basetime = basetime2;
+                    }
+                }
+            }
+        }
+        if(spec)
+        {
+            info.frame = spec->frame;
+            info.range = spec->range;
+            if(spec->speed>0)
+            {
+                info.speed = 1000.0f/spec->speed;
+            }
+        }
+        else
+        {
+            getdefaultanim(info, anim, static_cast<uint>(varseed + info.basetime), d);
+        }
+    }
+
+    info.anim &= (1 << Anim_Secondary) - 1;
+    info.anim |= anim & Anim_Flags;
+    if(info.anim & Anim_Loop)
+    {
+        info.anim &= ~Anim_SetTime;
+        if(!info.basetime)
+        {
+            info.basetime = -(static_cast<int>(reinterpret_cast<size_t>(d)) & 0xFFF);
+        }
+        if(info.anim & Anim_Clamp)
+        {
+            if(info.anim & Anim_Reverse)
+            {
+                info.frame += info.range-1;
+            }
+            info.range = 1;
+        }
+    }
+
+    if(!meshes->hasframes(info.frame, info.range))
+    {
+        if(!meshes->hasframe(info.frame))
+        {
+            return false;
+        }
+        info.range = meshes->clipframes(info.frame, info.range);
+    }
+
+    if(d && interp>=0)
+    {
+        animinterpinfo &animationinterpolation = d->animinterp[interp];
+        if((info.anim&(Anim_Loop | Anim_Clamp)) == Anim_Clamp)
+        {
+            animinterptime = min(animinterptime, static_cast<int>(info.range*info.speed*0.5e-3f));
+        }
+        void *ak = meshes->animkey();
+        if(d->ragdoll && d->ragdoll->millis != lastmillis)
+        {
+            animationinterpolation.prev.range = animationinterpolation.cur.range = 0;
+            animationinterpolation.lastswitch = -1;
+        }
+        else if(animationinterpolation.lastmodel!=ak || animationinterpolation.lastswitch<0 || lastmillis-d->lastrendered>animinterptime)
+        {
+            animationinterpolation.prev = animationinterpolation.cur = info;
+            animationinterpolation.lastswitch = lastmillis-animinterptime*2;
+        }
+        else if(animationinterpolation.cur!=info)
+        {
+            if(lastmillis-animationinterpolation.lastswitch>animinterptime/2)
+            {
+                animationinterpolation.prev = animationinterpolation.cur;
+            }
+            animationinterpolation.cur = info;
+            animationinterpolation.lastswitch = lastmillis;
+        }
+        else if(info.anim & Anim_SetTime)
+        {
+            animationinterpolation.cur.basetime = info.basetime;
+        }
+        animationinterpolation.lastmodel = ak;
+    }
+    return true;
+}
+
+void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray)
+{
+    animstate as[maxanimparts];
+    intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
+}
+
+void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, animstate *as)
+{
+    if((anim & Anim_Reuse) != Anim_Reuse)
+    {
+        for(int i = 0; i < numanimparts; ++i)
+        {
+            animinfo info;
+            int interp = d && index+numanimparts<=maxanimparts ? index+i : -1,
+                animinterptime = animationinterpolationtime;
+            if(!calcanim(i, anim, basetime, basetime2, d, interp, info, animinterptime))
+            {
+                return;
+            }
+            animstate &p = as[i];
+            p.owner = this;
+            p.cur.setframes(info);
+            p.interp = 1;
+            if(interp>=0 && d->animinterp[interp].prev.range>0)
+            {
+                int diff = lastmillis-d->animinterp[interp].lastswitch;
+                if(diff<animinterptime)
+                {
+                    p.prev.setframes(d->animinterp[interp].prev);
+                    p.interp = diff/static_cast<float>(animinterptime);
+                }
+            }
+        }
+    }
+
+    float resize = model->scale * sizescale;
+    int oldpos = matrixpos;
+    vec oaxis, oforward, oo, oray;
+    matrixstack[matrixpos].transposedtransformnormal(axis, oaxis);
+    float pitchamount = pitchscale*pitch + pitchoffset;
+    if(pitchmin || pitchmax)
+    {
+        pitchamount = std::clamp(pitchamount, pitchmin, pitchmax);
+    }
+    if(as->cur.anim & Anim_NoPitch || (as->interp < 1 && as->prev.anim & Anim_NoPitch))
+    {
+        pitchamount *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
+    }
+    if(pitchamount)
+    {
+        ++matrixpos;
+        matrixstack[matrixpos] = matrixstack[matrixpos-1];
+        matrixstack[matrixpos].rotate(pitchamount*RAD, oaxis);
+    }
+    if(this == model->parts[0] && !model->translate.iszero())
+    {
+        if(oldpos == matrixpos)
+        {
+            ++matrixpos;
+            matrixstack[matrixpos] = matrixstack[matrixpos-1];
+        }
+        matrixstack[matrixpos].translate(model->translate, resize);
+    }
+    matrixstack[matrixpos].transposedtransformnormal(forward, oforward);
+    matrixstack[matrixpos].transposedtransform(o, oo);
+    oo.div(resize);
+    matrixstack[matrixpos].transposedtransformnormal(ray, oray);
+
+    intersectscale = resize;
+    meshes->intersect(as, pitch, oaxis, oforward, d, this, oo, oray);
+
+    if((anim & Anim_Reuse) != Anim_Reuse)
+    {
+        for(int i = 0; i < links.length(); i++)
+        {
+            linkedpart &link = links[i];
+            if(!link.p)
+            {
+                continue;
+            }
+            link.matrix.translate(link.translate, resize);
+
+            matrixpos++;
+            matrixstack[matrixpos].mul(matrixstack[matrixpos-1], link.matrix);
+
+            int nanim = anim,
+                nbasetime  = basetime,
+                nbasetime2 = basetime2;
+            if(link.anim>=0)
+            {
+                nanim = link.anim | (anim & Anim_Flags);
+                nbasetime = link.basetime;
+                nbasetime2 = 0;
+            }
+            link.p->intersect(nanim, nbasetime, nbasetime2, pitch, axis, forward, d, o, ray);
+
+            matrixpos--;
+        }
+    }
+
+    matrixpos = oldpos;
+}
+
+void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d)
+{
+    animstate as[maxanimparts];
+    render(anim, basetime, basetime2, pitch, axis, forward, d, as);
+}
+
+void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, animstate *as)
+{
+    if((anim & Anim_Reuse) != Anim_Reuse)
+    {
+        for(int i = 0; i < numanimparts; ++i)
+        {
+            animinfo info;
+            int interp = d && index+numanimparts<=maxanimparts ? index+i : -1, animinterptime = animationinterpolationtime;
+            if(!calcanim(i, anim, basetime, basetime2, d, interp, info, animinterptime))
+            {
+                return;
+            }
+            animstate &p = as[i];
+            p.owner = this;
+            p.cur.setframes(info);
+            p.interp = 1;
+            if(interp>=0 && d->animinterp[interp].prev.range>0)
+            {
+                int diff = lastmillis-d->animinterp[interp].lastswitch;
+                if(diff<animinterptime)
+                {
+                    p.prev.setframes(d->animinterp[interp].prev);
+                    p.interp = diff/static_cast<float>(animinterptime);
+                }
+            }
+        }
+    }
+
+    float resize = model->scale * sizescale;
+    int oldpos = matrixpos;
+    vec oaxis, oforward;
+    matrixstack[matrixpos].transposedtransformnormal(axis, oaxis);
+    float pitchamount = pitchscale*pitch + pitchoffset;
+    if(pitchmin || pitchmax)
+    {
+        pitchamount = std::clamp(pitchamount, pitchmin, pitchmax);
+    }
+    if(as->cur.anim & Anim_NoPitch || (as->interp < 1 && as->prev.anim & Anim_NoPitch))
+    {
+        pitchamount *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
+    }
+    if(pitchamount)
+    {
+        ++matrixpos;
+        matrixstack[matrixpos] = matrixstack[matrixpos-1];
+        matrixstack[matrixpos].rotate(pitchamount*RAD, oaxis);
+    }
+    if(this == model->parts[0] && !model->translate.iszero())
+    {
+        if(oldpos == matrixpos)
+        {
+            ++matrixpos;
+            matrixstack[matrixpos] = matrixstack[matrixpos-1];
+        }
+        matrixstack[matrixpos].translate(model->translate, resize);
+    }
+    matrixstack[matrixpos].transposedtransformnormal(forward, oforward);
+
+    if(!(anim & Anim_NoRender))
+    {
+        matrix4 modelmatrix;
+        modelmatrix.mul(shadowmapping ? shadowmatrix : camprojmatrix, matrixstack[matrixpos]);
+        if(resize!=1)
+        {
+            modelmatrix.scale(resize);
+        }
+        GLOBALPARAM(modelmatrix, modelmatrix);
+        if(!(anim & Anim_NoSkin))
+        {
+            GLOBALPARAM(modelworld, matrix3(matrixstack[matrixpos]));
+
+            vec modelcamera;
+            matrixstack[matrixpos].transposedtransform(camera1->o, modelcamera);
+            modelcamera.div(resize);
+            GLOBALPARAM(modelcamera, modelcamera);
+        }
+    }
+
+    meshes->render(as, pitch, oaxis, oforward, d, this);
+
+    if((anim & Anim_Reuse) != Anim_Reuse)
+    {
+        for(int i = 0; i < links.length(); i++)
+        {
+            linkedpart &link = links[i];
+            link.matrix.translate(link.translate, resize);
+            matrixpos++;
+            matrixstack[matrixpos].mul(matrixstack[matrixpos-1], link.matrix);
+            if(link.pos)
+            {
+                *link.pos = matrixstack[matrixpos].gettranslation();
+            }
+            if(!link.p)
+            {
+                matrixpos--;
+                continue;
+            }
+            int nanim = anim, nbasetime = basetime, nbasetime2 = basetime2;
+            if(link.anim>=0)
+            {
+                nanim = link.anim | (anim & Anim_Flags);
+                nbasetime = link.basetime;
+                nbasetime2 = 0;
+            }
+            link.p->render(nanim, nbasetime, nbasetime2, pitch, axis, forward, d);
+            matrixpos--;
+        }
+    }
+
+    matrixpos = oldpos;
+}
+
+void animmodel::part::setanim(int animpart, int num, int frame, int range, float speed, int priority)
+{
+    if(animpart<0 || animpart>=maxanimparts || num<0 || num >= numanims)
+    {
+        return;
+    }
+    if(frame<0 || range<=0 || !meshes || !meshes->hasframes(frame, range))
+    {
+        conoutf("invalid frame %d, range %d in model %s", frame, range, model->name);
+        return;
+    }
+    if(!anims[animpart])
+    {
+        anims[animpart] = new vector<animspec>[numanims];
+    }
+    animspec &spec = anims[animpart][num].add();
+    spec.frame = frame;
+    spec.range = range;
+    spec.speed = speed;
+    spec.priority = priority;
+}
+
+bool animmodel::part::animated() const
+{
+    for(int i = 0; i < maxanimparts; ++i)
+    {
+        if(anims[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void animmodel::part::loaded()
+{
+    meshes->shared++;
+    for(int i = 0; i < skins.length(); i++)
+    {
+        skins[i].setkey();
+    }
+}
