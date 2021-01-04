@@ -21,7 +21,7 @@ bool execfile(const char *cfgfile, bool msg)
 {
     string s;
     copystring(s, cfgfile);
-    char *buf = loadfile(path(s), NULL);
+    char *buf = loadfile(path(s), nullptr);
     if(!buf)
     {
         if(msg)
@@ -557,10 +557,10 @@ void format(tagval *args, int numargs)
 }
 COMMAND(format, "V");
 
-static const char *liststart = NULL,
-                  *listend = NULL,
-                  *listquotestart = NULL,
-                  *listquoteend = NULL;
+static const char *liststart = nullptr,
+                  *listend = nullptr,
+                  *listquotestart = nullptr,
+                  *listquoteend = nullptr;
 
 static inline void skiplist(const char *&p)
 {
@@ -1222,7 +1222,7 @@ ICOMMAND(loopfiles, "rsse", (ident *id, char *dir, char *ext, uint *body),
     }
     identstack stack;
     vector<char *> files;
-    listfiles(dir, ext[0] ? ext : NULL, files);
+    listfiles(dir, ext[0] ? ext : nullptr, files);
     files.sort();
     files.uniquedeletearrays();
     for(int i = 0; i < files.length(); i++)
@@ -1324,7 +1324,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
                 SortItem &item = items[i];
                 if(f(items[i-1], item))
                 {
-                    item.quotestart = NULL;
+                    item.quotestart = nullptr;
                 }
                 else
                 {
@@ -1347,7 +1347,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
                 SortItem &prev = items[j];
                 if(prev.quotestart && f(item, prev))
                 {
-                    item.quotestart = NULL;
+                    item.quotestart = nullptr;
                     break;
                 }
             }
@@ -1387,7 +1387,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     commandret->setstr(sorted);
 }
 COMMAND(sortlist, "srree");
-ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortlist(list, x, y, NULL, body));
+ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortlist(list, x, y, nullptr, body));
 
 //===========MATHCMD MATHICMDN MATHICMD MATHFCMDN MATHFCMD CMPCMD CMPICMDN CMPICMD CMPFCMDN CMPFCMD DIVCMD MINMAXCMD CASECOMMAND CMPSCMD
 #define MATHCMD(name, fmt, type, op, initval, unaryop) \
@@ -1813,7 +1813,7 @@ void checksleep(int millis)
         if(millis - s.millis >= s.delay)
         {
             char *cmd = s.command; // execute might create more sleep commands
-            s.command = NULL;
+            s.command = nullptr;
             int oldflags = identflags;
             identflags = s.flags;
             execute(cmd);
