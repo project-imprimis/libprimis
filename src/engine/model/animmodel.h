@@ -3,7 +3,7 @@
 
 extern int fullbrightmodels, testtags, dbgcolmesh;
 
-struct animmodel : model
+struct AnimModel : model
 {
     struct animspec
     {
@@ -12,43 +12,43 @@ struct animmodel : model
         int priority;
     };
 
-    struct animpos
+    struct AnimPos
     {
         int anim, fr1, fr2;
         float t;
 
         void setframes(const animinfo &info);
 
-        bool operator==(const animpos &a) const
+        bool operator==(const AnimPos &a) const
         {
             return fr1==a.fr1 && fr2==a.fr2 && (fr1==fr2 || t==a.t);
         }
-        bool operator!=(const animpos &a) const
+        bool operator!=(const AnimPos &a) const
         {
             return fr1!=a.fr1 || fr2!=a.fr2 || (fr1!=fr2 && t!=a.t);
         }
     };
 
-    struct part;
+    struct Part;
 
-    struct animstate
+    struct AnimState
     {
-        part *owner;
-        animpos cur, prev;
+        Part *owner;
+        AnimPos cur, prev;
         float interp;
 
-        bool operator==(const animstate &a) const
+        bool operator==(const AnimState &a) const
         {
             return cur==a.cur && (interp<1 ? interp==a.interp && prev==a.prev : a.interp>=1);
         }
-        bool operator!=(const animstate &a) const
+        bool operator!=(const AnimState &a) const
         {
             return cur!=a.cur || (interp<1 ? interp!=a.interp || prev!=a.prev : a.interp<1);
         }
     };
 
     struct linkedpart;
-    struct mesh;
+    struct Mesh;
 
     struct shaderparams
     {
@@ -75,52 +75,52 @@ struct animmodel : model
         }
     };
 
-    struct skin : shaderparams
+    struct Skin : shaderparams
     {
-        part *owner;
+        Part *owner;
         Texture *tex, *decal, *masks, *normalmap;
         Shader *shader, *rsmshader;
         int cullface;
         shaderparamskey *key;
 
-        skin() : owner(0), tex(notexture), decal(NULL), masks(notexture), normalmap(NULL), shader(NULL), rsmshader(NULL), cullface(1), key(NULL) {}
+        Skin() : owner(0), tex(notexture), decal(NULL), masks(notexture), normalmap(NULL), shader(NULL), rsmshader(NULL), cullface(1), key(NULL) {}
 
         bool masked() const;
         bool bumpmapped() const;
         bool alphatested() const;
         bool decaled() const;
         void setkey();
-        void setshaderparams(mesh &m, const animstate *as, bool skinned = true);
+        void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
         Shader *loadshader();
         void cleanup();
         void preloadBIH();
         void preloadshader();
-        void setshader(mesh &m, const animstate *as);
-        void bind(mesh &b, const animstate *as);
+        void setshader(Mesh &m, const AnimState *as);
+        void bind(Mesh &b, const AnimState *as);
     };
 
-    struct meshgroup;
+    struct MeshGroup;
 
-    struct mesh
+    struct Mesh
     {
-        meshgroup *group;
+        MeshGroup *group;
         char *name;
         bool cancollide, canrender, noclip;
 
-        mesh() : group(NULL), name(NULL), cancollide(true), canrender(true), noclip(false)
+        Mesh() : group(NULL), name(NULL), cancollide(true), canrender(true), noclip(false)
         {
         }
 
-        virtual ~mesh()
+        virtual ~Mesh()
         {
             DELETEA(name);
         }
 
         virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) {}
 
-        virtual void genBIH(BIH::mesh &m) {}
+        virtual void genBIH(BIH::Mesh &m) {}
 
-        void genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t);
+        void genBIH(Skin &s, vector<BIH::Mesh> &bih, const matrix4x3 &t);
 
         virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
         {
@@ -340,18 +340,18 @@ struct animmodel : model
         }
     };
 
-    struct meshgroup
+    struct MeshGroup
     {
-        meshgroup *next;
+        MeshGroup *next;
         int shared;
         char *name;
-        vector<mesh *> meshes;
+        vector<Mesh *> meshes;
 
-        meshgroup() : next(NULL), shared(0), name(NULL)
+        MeshGroup() : next(NULL), shared(0), name(NULL)
         {
         }
 
-        virtual ~meshgroup()
+        virtual ~MeshGroup()
         {
             DELETEA(name);
             meshes.deletecontents();
@@ -363,7 +363,7 @@ struct animmodel : model
             return -1;
         }
 
-        virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
+        virtual void concattagtransform(Part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
 
         #define LOOP_RENDER_MESHES(type, name, body) do { \
             for(int i = 0; i < meshes.length(); i++) \
@@ -377,7 +377,7 @@ struct animmodel : model
         } while(0)
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
-        void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
+        void genBIH(vector<Skin> &skins, vector<BIH::Mesh> &bih, const matrix4x3 &t);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
         virtual void *animkey()
@@ -395,9 +395,9 @@ struct animmodel : model
         int clipframes(int i, int n) const;
 
         virtual void cleanup() {}
-        virtual void preload(part *p) {}
-        virtual void render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
-        virtual void intersect(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
+        virtual void preload(Part *p) {}
+        virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, Part *p) {}
+        virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, Part *p, const vec &o, const vec &ray) {}
 
         void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
         void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
@@ -407,11 +407,11 @@ struct animmodel : model
         void bindbones(void *wv, void *bv, int stride);
     };
 
-    static hashnameset<meshgroup *> meshgroups;
+    static hashnameset<MeshGroup *> meshgroups;
 
     struct linkedpart
     {
-        part *p;
+        Part *p;
         int tag, anim, basetime;
         vec translate;
         vec *pos;
@@ -420,25 +420,25 @@ struct animmodel : model
         linkedpart() : p(NULL), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(NULL) {}
     };
 
-    struct part
+    struct Part
     {
-        animmodel *model;
+        AnimModel *model;
         int index;
-        meshgroup *meshes;
+        MeshGroup *meshes;
         vector<linkedpart> links;
-        vector<skin> skins;
+        vector<Skin> skins;
         vector<animspec> *anims[maxanimparts];
         int numanimparts;
         float pitchscale, pitchoffset, pitchmin, pitchmax;
 
-        part(animmodel *model, int index = 0) : model(model), index(index), meshes(NULL), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
+        Part(AnimModel *model, int index = 0) : model(model), index(index), meshes(NULL), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
         {
             for(int k = 0; k < maxanimparts; ++k)
             {
                 anims[k] = NULL;
             }
         }
-        virtual ~part()
+        virtual ~Part()
         {
             for(int k = 0; k < maxanimparts; ++k)
             {
@@ -449,10 +449,10 @@ struct animmodel : model
         virtual void cleanup();
         void disablepitch();
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-        void genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m);
+        void genBIH(vector<BIH::Mesh> &bih, const matrix4x3 &m);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
-        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL);
-        bool unlink(part *p);
+        bool link(Part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL);
+        bool unlink(Part *p);
         void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
         bool alphatested() const;
         void preloadBIH();
@@ -461,9 +461,9 @@ struct animmodel : model
         virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
         bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime);
         void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
-        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, animstate *as);
+        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
-        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, animstate *as);
+        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as);
         void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0);
         bool animated() const;
         virtual void loaded();
@@ -476,7 +476,7 @@ struct animmodel : model
         Link_Reuse
     };
 
-    virtual int linktype(animmodel *m, part *p) const
+    virtual int linktype(AnimModel *m, Part *p) const
     {
         return Link_Tag;
     }
@@ -490,12 +490,12 @@ struct animmodel : model
             for(int i = 0; a[i].tag; i++)
             {
                 numtags++;
-                animmodel *m = (animmodel *)a[i].m;
+                AnimModel *m = (AnimModel *)a[i].m;
                 if(!m)
                 {
                     continue;
                 }
-                part *p = m->parts[0];
+                Part *p = m->parts[0];
                 switch(linktype(m, p))
                 {
                     case Link_Tag:
@@ -517,12 +517,12 @@ struct animmodel : model
             }
         }
 
-        animstate as[maxanimparts];
+        AnimState as[maxanimparts];
         parts[0]->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
 
         for(int i = 1; i < parts.length(); i++)
         {
-            part *p = parts[i];
+            Part *p = parts[i];
             switch(linktype(this, p))
             {
                 case Link_Coop:
@@ -537,13 +537,13 @@ struct animmodel : model
 
         if(a) for(int i = numtags-1; i >= 0; i--)
         {
-            animmodel *m = (animmodel *)a[i].m;
+            AnimModel *m = (AnimModel *)a[i].m;
             if(!m)
             {
                 continue;
             }
 
-            part *p = m->parts[0];
+            Part *p = m->parts[0];
             switch(linktype(m, p))
             {
                 case Link_Tag:
@@ -639,13 +639,13 @@ struct animmodel : model
             {
                 numtags++;
 
-                animmodel *m = (animmodel *)a[i].m;
+                AnimModel *m = (AnimModel *)a[i].m;
                 if(!m)
                 {
                     if(a[i].pos) link(NULL, a[i].tag, vec(0, 0, 0), 0, 0, a[i].pos);
                     continue;
                 }
-                part *p = m->parts[0];
+                Part *p = m->parts[0];
                 switch(linktype(m, p))
                 {
                     case Link_Tag:
@@ -667,12 +667,12 @@ struct animmodel : model
             }
         }
 
-        animstate as[maxanimparts];
+        AnimState as[maxanimparts];
         parts[0]->render(anim, basetime, basetime2, pitch, axis, forward, d, as);
 
         for(int i = 1; i < parts.length(); i++)
         {
-            part *p = parts[i];
+            Part *p = parts[i];
             switch(linktype(this, p))
             {
                 case Link_Coop:
@@ -692,7 +692,7 @@ struct animmodel : model
         {
             for(int i = numtags-1; i >= 0; i--)
             {
-                animmodel *m = (animmodel *)a[i].m;
+                AnimModel *m = (AnimModel *)a[i].m;
                 if(!m)
                 {
                     if(a[i].pos)
@@ -701,7 +701,7 @@ struct animmodel : model
                     }
                     continue;
                 }
-                part *p = m->parts[0];
+                Part *p = m->parts[0];
                 switch(linktype(m, p))
                 {
                     case Link_Tag:
@@ -809,13 +809,13 @@ struct animmodel : model
         }
     }
 
-    vector<part *> parts;
+    vector<Part *> parts;
 
-    animmodel(const char *name) : model(name)
+    AnimModel(const char *name) : model(name)
     {
     }
 
-    ~animmodel()
+    ~AnimModel()
     {
         parts.deletecontents();
     }
@@ -830,10 +830,10 @@ struct animmodel : model
 
     virtual void flushpart() {}
 
-    part &addpart()
+    Part &addpart()
     {
         flushpart();
-        part *p = new part(this, parts.length());
+        Part *p = new Part(this, parts.length());
         parts.add(p);
         return *p;
     }
@@ -856,7 +856,7 @@ struct animmodel : model
         m.translate(translate, scale);
     }
 
-    void genBIH(vector<BIH::mesh> &bih)
+    void genBIH(vector<BIH::Mesh> &bih)
     {
         if(parts.empty())
         {
@@ -867,7 +867,7 @@ struct animmodel : model
         parts[0]->genBIH(bih, m);
         for(int i = 1; i < parts.length(); i++)
         {
-            part *p = parts[i];
+            Part *p = parts[i];
             switch(linktype(this, p))
             {
                 case Link_Coop:
@@ -892,7 +892,7 @@ struct animmodel : model
         parts[0]->genshadowmesh(tris, m);
         for(int i = 1; i < parts.length(); i++)
         {
-            part *p = parts[i];
+            Part *p = parts[i];
             switch(linktype(this, p))
             {
                 case Link_Coop:
@@ -923,13 +923,13 @@ struct animmodel : model
         {
             return bih;
         }
-        vector<BIH::mesh> meshes;
+        vector<BIH::Mesh> meshes;
         genBIH(meshes);
         bih = new BIH(meshes);
         return bih;
     }
 
-    bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL)
+    bool link(Part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL)
     {
         if(parts.empty())
         {
@@ -938,7 +938,7 @@ struct animmodel : model
         return parts[0]->link(p, tag, translate, anim, basetime, pos);
     }
 
-    bool unlink(part *p)
+    bool unlink(Part *p)
     {
         if(parts.empty())
         {
@@ -1104,7 +1104,7 @@ struct animmodel : model
         {
             for(int j = 0; j < parts[i]->skins.length(); j++)
             {
-                skin &s = parts[i]->skins[j];
+                Skin &s = parts[i]->skins[j];
                 s.glow = glow;
                 s.glowdelta = delta;
                 s.glowpulse = pulse;
@@ -1184,7 +1184,7 @@ struct animmodel : model
         parts[0]->calcbb(bbmin, bbmax, m);
         for(int i = 1; i < parts.length(); i++)
         {
-            part *p = parts[i];
+            Part *p = parts[i];
             switch(linktype(this, p))
             {
                 case Link_Coop:
@@ -1280,23 +1280,23 @@ struct animmodel : model
     }
 };
 
-static inline uint hthash(const animmodel::shaderparams &k)
+static inline uint hthash(const AnimModel::shaderparams &k)
 {
     return memhash(&k, sizeof(k));
 }
 
-static inline bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
+static inline bool htcmp(const AnimModel::shaderparams &x, const AnimModel::shaderparams &y)
 {
-    return !memcmp(&x, &y, sizeof(animmodel::shaderparams));
+    return !memcmp(&x, &y, sizeof(AnimModel::shaderparams));
 }
 
 template<class MDL, class BASE>
-struct modelloader : BASE
+struct ModelLoader : BASE
 {
     static MDL *loading;
     static string dir;
 
-    modelloader(const char *name) : BASE(name) {}
+    ModelLoader(const char *name) : BASE(name) {}
 
     static bool cananimate()
     {
@@ -1334,16 +1334,16 @@ struct modelloader : BASE
 };
 
 template<class MDL, class BASE>
-MDL *modelloader<MDL, BASE>::loading = NULL;
+MDL *ModelLoader<MDL, BASE>::loading = NULL;
 
 template<class MDL, class BASE>
-string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
+string ModelLoader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
 
 template<class MDL, class MESH>
-struct modelcommands
+struct ModelCommands
 {
-    typedef struct MDL::part part;
-    typedef struct MDL::skin skin;
+    typedef struct MDL::Part part;
+    typedef struct MDL::Skin skin;
 
     static void setdir(char *name)
     {
@@ -1361,7 +1361,7 @@ struct modelcommands
             conoutf("not loading an %s", MDL::formatname()); \
             return; \
         } \
-        part &mdl = *MDL::loading->parts.last(); \
+        Part &mdl = *MDL::loading->parts.last(); \
         if(!mdl.meshes) \
         { \
             return; \
@@ -1376,7 +1376,7 @@ struct modelcommands
         } \
     } while(0)
 
-    #define LOOP_SKINS(meshname, s, body) LOOP_MESHES(meshname, m, { skin &s = mdl.skins[i]; body; })
+    #define LOOP_SKINS(meshname, s, body) LOOP_MESHES(meshname, m, { Skin &s = mdl.skins[i]; body; })
 
     static void setskin(char *meshname, char *tex, char *masks)
     {
@@ -1507,25 +1507,25 @@ struct modelcommands
         addcommand(newstring(name), (identfun)fun, args);
     }
 
-    modelcommands()
+    ModelCommands()
     {
         modelcommand(setdir, "dir", "s");//<fmt>dir [name]
         if(MDL::multimeshed())
         {
-            modelcommand(setskin, "skin", "sss"); //<fmt>skin [meshname] [tex] [masks]
+            modelcommand(setskin, "skin", "sss"); //<fmt>skin [meshname] [tex] [masks]  //the skin struct has been renamed to Skin, should the skin here be renamed too? not sure
             modelcommand(setspec, "spec", "sf"); //<fmt>spec [tex] [scale]
             modelcommand(setgloss, "gloss", "si");//<fmt>gloss [tex] [type] type ranges 0..2
             modelcommand(setglow, "glow", "sfff"); //<fmt>glow [tex] [pct] [del] [pulse]
-            modelcommand(setalphatest, "alphatest", "sf");//<fmt>alphatest [mesh] [cutoff]
-            modelcommand(setcullface, "cullface", "si");//<fmt>cullface [mesh] [cullface]
-            modelcommand(setcolor, "color", "sfff");//<fmt>color [mesh] [r] [g] [b]
-            modelcommand(setbumpmap, "bumpmap", "ss");//<fmt>bumpmap [mesh] [tex]
-            modelcommand(setdecal, "decal", "ss");//<fmt>decal [mesh] [tex]
-            modelcommand(setfullbright, "fullbright", "sf"); //<fmt>fullbright [mesh] [bright]
-            modelcommand(setshader, "shader", "ss");//<fmt>shader [mesh] [shader]
-            modelcommand(setscroll, "scroll", "sff");//<fmt>scroll [mesh] [x] [y]
-            modelcommand(setnoclip, "noclip", "si");//<fmt>noclip [mesh] [bool]
-            modelcommand(settricollide, "tricollide", "s"); //<fmt>settricollide [mesh]
+            modelcommand(setalphatest, "alphatest", "sf");//<fmt>alphatest [Mesh] [cutoff] // the Mesh here and below used to be mesh. not sure if it's correct for it to be changed, but it's commented out so whatever
+            modelcommand(setcullface, "cullface", "si");//<fmt>cullface [Mesh] [cullface]
+            modelcommand(setcolor, "color", "sfff");//<fmt>color [Mesh] [r] [g] [b]
+            modelcommand(setbumpmap, "bumpmap", "ss");//<fmt>bumpmap [Mesh] [tex]
+            modelcommand(setdecal, "decal", "ss");//<fmt>decal [Mesh] [tex]
+            modelcommand(setfullbright, "fullbright", "sf"); //<fmt>fullbright [Mesh] [bright]
+            modelcommand(setshader, "shader", "ss");//<fmt>shader [Mesh] [shader]
+            modelcommand(setscroll, "scroll", "sff");//<fmt>scroll [Mesh] [x] [y]
+            modelcommand(setnoclip, "noclip", "si");//<fmt>noclip [Mesh] [bool]
+            modelcommand(settricollide, "tricollide", "s"); //<fmt>settricollide [Mesh]
         }
         if(MDL::multiparted())
         {
