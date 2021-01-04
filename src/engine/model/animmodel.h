@@ -12,18 +12,18 @@ struct animmodel : model
         int priority;
     };
 
-    struct animpos
+    struct AnimPos
     {
         int anim, fr1, fr2;
         float t;
 
         void setframes(const animinfo &info);
 
-        bool operator==(const animpos &a) const
+        bool operator==(const AnimPos &a) const
         {
             return fr1==a.fr1 && fr2==a.fr2 && (fr1==fr2 || t==a.t);
         }
-        bool operator!=(const animpos &a) const
+        bool operator!=(const AnimPos &a) const
         {
             return fr1!=a.fr1 || fr2!=a.fr2 || (fr1!=fr2 && t!=a.t);
         }
@@ -34,7 +34,7 @@ struct animmodel : model
     struct animstate
     {
         part *owner;
-        animpos cur, prev;
+        AnimPos cur, prev;
         float interp;
 
         bool operator==(const animstate &a) const
