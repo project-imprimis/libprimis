@@ -767,7 +767,6 @@ void gl_checkextensions()
         }
     }
 
-    extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather, tqaaresolvegather;
     if(amd)
     {
         msaalineardepth = glineardepth = 1; // reading back from depth-stencil still buggy on newer cards, and requires stencil for MSAA
@@ -2041,7 +2040,6 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
 
     if(editmode)
     {
-        extern int outline;
         if(!wireframe && outline)
         {
             renderoutline(); //edit mode geometry outline
@@ -2051,8 +2049,6 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         glerror();
         renderparticles();
         glerror();
-
-        extern int showhud;
         if(showhud)
         {
             glDepthMask(GL_FALSE);
@@ -2086,7 +2082,6 @@ int renderw = 0,
 
 void gl_setupframe(bool force)
 {
-    extern int scr_w, scr_h;
     renderw = min(scr_w, screenw);
     renderh = min(scr_h, screenh);
     hudw = screenw;
