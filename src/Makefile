@@ -1,42 +1,10 @@
 CXXFLAGS= -O3 -ffast-math -std=c++17 -march=x86-64 -Wall -fsigned-char -fno-rtti -fpic
 
-PLATFORM= $(shell uname -s)
-PLATFORM_ARCH= $(shell uname -m)
-PLATFORM_PREFIX= native
-
-INCLUDES= -Ishared -Iengine -Igame
-
-STRIP=
-ifeq (,$(findstring -g,$(CXXFLAGS)))
-	ifeq (,$(findstring -pg,$(CXXFLAGS)))
-		STRIP=strip
-	endif
-endif
-
 MV=mv
 MKDIR_P=mkdir -p
 
-#set appropriate library includes depending on platform
-ifneq (,$(findstring MINGW,$(PLATFORM)))
-	WINDRES= windres
-	WINLIB=lib64
-	WINBIN=../bin64
-	override WINDRES+= -F pe-x86-64
-	CLIENT_INCLUDES= $(INCLUDES) -Iinclude
-	STD_LIBS= -static-libgcc -static-libstdc++
-	CLIENT_LIBS= -mwindows $(STD_LIBS) -L$(WINBIN) -L$(WINLIB) -lSDL2 -lSDL2_image -lSDL2_mixer -lzlib1 -lopengl32 -lws2_32 -lwinmm
-else
-	CLIENT_INCLUDES= $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
-	CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lz -lGL
-endif
-
-ifeq ($(PLATFORM),Linux)
-	CLIENT_LIBS+= -lrt
-else
-	ifneq (,$(findstring GNU,$(PLATFORM)))
-		CLIENT_LIBS+= -lrt
-	endif
-endif
+	CLIENT_INCLUDES= -Ishared -Iengine -Igame $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
+	CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lz -lGL -lrt
 
 #list of source code files to be compiled
 CLIENT_OBJS= \
@@ -101,19 +69,9 @@ clean:
 
 $(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
 
-#mingw
-ifneq (,$(findstring MINGW,$(PLATFORM)))
-client: $(CLIENT_OBJS)
-	$(WINDRES) -I vcpp -i vcpp/mingw.rc -J rc -o vcpp/mingw.res -O coff
-	$(CXX) $(CXXFLAGS) -o $(WINBIN)/tesseract.exe vcpp/mingw.res $(CLIENT_OBJS) $(CLIENT_LIBS)
-else
-#native (gcc et. al.)
 client: $(CLIENT_OBJS)
 	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS)
-endif
 
 emplace:
 	sudo cp libprimis.so /usr/lib/libprimis.so
 
-depend:
-	makedepend -Y -Ishared -Iengine -Igame $(CLIENT_OBJS:.o=.cpp)
