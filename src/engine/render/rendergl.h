@@ -26,6 +26,10 @@ extern bool hdrfloat;
 extern float ldrscale, ldrscaleb;
 extern int drawtex;
 extern const matrix4 viewmatrix, invviewmatrix;
+
+inline const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
+inline const matrix4 invviewmatrix(vec(-1, 0, 0), vec(0, 0, -1), vec(0, 1, 0));
+
 extern matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix, invprojmatrix;
 extern int fog;
 extern bvec fogcolor;

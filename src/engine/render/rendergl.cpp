@@ -1108,8 +1108,6 @@ float calcfrustumboundsphere(float nearplane, float farplane,  const vec &pos, c
     }
 }
 
-extern const matrix4 viewmatrix(vec(-1, 0, 0), vec(0, 0, 1), vec(0, -1, 0));
-extern const matrix4 invviewmatrix(vec(-1, 0, 0), vec(0, 0, -1), vec(0, 1, 0));
 matrix4 cammatrix, projmatrix, camprojmatrix, invcammatrix, invcamprojmatrix, invprojmatrix;
 
 FVAR(nearplane, 0.01f, 0.54f, 2.0f);
