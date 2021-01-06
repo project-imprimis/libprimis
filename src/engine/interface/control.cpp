@@ -9,8 +9,6 @@
 bool inbetweenframes = false,
      renderedframe = true;
 
-extern void cleargamma();
-
 // logging
 
 static const int logstrlen = 512;

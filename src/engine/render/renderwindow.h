@@ -10,6 +10,7 @@ extern int screenw, screenh;
 
 extern void setupscreen();
 extern void restoregamma();
+extern void cleargamma();
 extern void restorevsync();
 extern void resetfpshistory();
 extern void limitfps(int &millis, int curmillis);
