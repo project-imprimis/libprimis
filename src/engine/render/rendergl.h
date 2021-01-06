@@ -38,6 +38,7 @@ extern int wireframe;
 extern int usetexgather;
 
 extern int glerr;
+extern int intel_texalpha_bug;
 extern void glerror(const char *file, int line, GLenum error);
 
 inline void glerror()
