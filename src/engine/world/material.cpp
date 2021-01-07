@@ -977,16 +977,6 @@ void rendermaterialmask()
     glEnable(GL_CULL_FACE);
 }
 
-extern const vec matnormals[6] =
-{
-    vec(-1, 0, 0),
-    vec( 1, 0, 0),
-    vec(0, -1, 0),
-    vec(0,  1, 0),
-    vec(0, 0, -1),
-    vec(0, 0,  1)
-};
-
 //these are the variables defined for each specific glass material (there are 4)
 #define GLASSVARS(name) \
     CVAR0R(name##color, 0xB0D8FF); \
