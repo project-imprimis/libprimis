@@ -1051,7 +1051,7 @@ void textfocuscmd(char *name, int *mode)
         result(editors.last()->name);
     }
 }
-COMMANDN(textfocus, textfocuscmd, "ci");
+COMMANDN(textfocus, textfocuscmd, "si");
 
 TEXTCOMMAND(textprev, "", (), editors.insert(0, textfocus); editors.pop();); // return to the previous editor
 TEXTCOMMAND(textmode, "i", (int *m), // (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args
