@@ -2,6 +2,7 @@
 #include "engine.h"
 
 #include "physics.h"
+#include "raycube.h"
 
 #include "render/rendermodel.h"
 #include "render/stain.h"
@@ -9,8 +10,6 @@
 #include "world/bih.h"
 
 #include "model/model.h"
-
-extern vec hitsurface;
 
 /* diagram of a,b,c,n vectors
  * a is the vector between the origin and the point 0 indicated
