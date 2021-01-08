@@ -134,7 +134,7 @@ void animmodel::skin::setkey()
     key = &shaderparamskey::keys[*this];
 }
 
-void animmodel::skin::setshaderparams(mesh &m, const animstate *as, bool skinned)
+void animmodel::skin::setshaderparams(mesh &m, const AnimState *as, bool skinned)
 {
     if(!Shader::lastshader)
     {
@@ -274,12 +274,12 @@ void animmodel::skin::preloadshader()
     }
 }
 
-void animmodel::skin::setshader(mesh &m, const animstate *as)
+void animmodel::skin::setshader(mesh &m, const AnimState *as)
 {
     m.setshader(loadshader(), transparentlayer ? 1 : 0);
 }
 
-void animmodel::skin::bind(mesh &b, const animstate *as)
+void animmodel::skin::bind(mesh &b, const AnimState *as)
 {
     if(cullface > 0)
     {
@@ -798,11 +798,11 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
 
 void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray)
 {
-    animstate as[maxanimparts];
+    AnimState as[maxanimparts];
     intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
 }
 
-void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, animstate *as)
+void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as)
 {
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
@@ -815,7 +815,7 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
             {
                 return;
             }
-            animstate &p = as[i];
+            AnimState &p = as[i];
             p.owner = this;
             p.cur.setframes(info);
             p.interp = 1;
@@ -901,11 +901,11 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
 
 void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d)
 {
-    animstate as[maxanimparts];
+    AnimState as[maxanimparts];
     render(anim, basetime, basetime2, pitch, axis, forward, d, as);
 }
 
-void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, animstate *as)
+void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as)
 {
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
@@ -917,7 +917,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
             {
                 return;
             }
-            animstate &p = as[i];
+            AnimState &p = as[i];
             p.owner = this;
             p.cur.setframes(info);
             p.interp = 1;
