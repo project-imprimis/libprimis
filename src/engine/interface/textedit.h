@@ -6,8 +6,8 @@ struct EditLine
     char *text;
     int len, maxlen;
 
-    EditLine() : text(NULL), len(0), maxlen(0) {}
-    EditLine(const char *init) : text(NULL), len(0), maxlen(0)
+    EditLine() : text(nullptr), len(0), maxlen(0) {}
+    EditLine(const char *init) : text(nullptr), len(0), maxlen(0)
     {
         set(init);
     }
@@ -52,7 +52,7 @@ struct Editor
     vector<EditLine> lines; // MUST always contain at least one line!
 
     Editor(const char *name, int mode, const char *initval) :
-        mode(mode), active(true), rendered(false), name(newstring(name)), filename(NULL),
+        mode(mode), active(true), rendered(false), name(newstring(name)), filename(nullptr),
         cx(0), cy(0), mx(-1), maxx(-1), maxy(-1), scrolly(0), linewrap(false), pixelwidth(-1), pixelheight(-1)
     {
         //printf("editor %08x '%s'\n", this, name);
@@ -64,7 +64,7 @@ struct Editor
         //printf("~editor %08x '%s'\n", this, name);
         DELETEA(name);
         DELETEA(filename);
-        clear(NULL);
+        clear(nullptr);
     }
 
     bool empty();
@@ -101,4 +101,4 @@ extern Editor *textfocus;
 
 extern void readyeditors();
 extern void flusheditors();
-extern Editor *useeditor(const char *name, int mode, bool focus, const char *initval = NULL);
+extern Editor *useeditor(const char *name, int mode, bool focus, const char *initval = nullptr);
