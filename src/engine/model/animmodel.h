@@ -12,18 +12,18 @@ struct animmodel : model
         int priority;
     };
 
-    struct animpos
+    struct AnimPos
     {
         int anim, fr1, fr2;
         float t;
 
         void setframes(const animinfo &info);
 
-        bool operator==(const animpos &a) const
+        bool operator==(const AnimPos &a) const
         {
             return fr1==a.fr1 && fr2==a.fr2 && (fr1==fr2 || t==a.t);
         }
-        bool operator!=(const animpos &a) const
+        bool operator!=(const AnimPos &a) const
         {
             return fr1!=a.fr1 || fr2!=a.fr2 || (fr1!=fr2 && t!=a.t);
         }
@@ -31,17 +31,17 @@ struct animmodel : model
 
     struct part;
 
-    struct animstate
+    struct AnimState
     {
         part *owner;
-        animpos cur, prev;
+        AnimPos cur, prev;
         float interp;
 
-        bool operator==(const animstate &a) const
+        bool operator==(const AnimState &a) const
         {
             return cur==a.cur && (interp<1 ? interp==a.interp && prev==a.prev : a.interp>=1);
         }
-        bool operator!=(const animstate &a) const
+        bool operator!=(const AnimState &a) const
         {
             return cur!=a.cur || (interp<1 ? interp!=a.interp || prev!=a.prev : a.interp<1);
         }
@@ -90,13 +90,13 @@ struct animmodel : model
         bool alphatested() const;
         bool decaled() const;
         void setkey();
-        void setshaderparams(mesh &m, const animstate *as, bool skinned = true);
+        void setshaderparams(mesh &m, const AnimState *as, bool skinned = true);
         Shader *loadshader();
         void cleanup();
         void preloadBIH();
         void preloadshader();
-        void setshader(mesh &m, const animstate *as);
-        void bind(mesh &b, const animstate *as);
+        void setshader(mesh &m, const AnimState *as);
+        void bind(mesh &b, const AnimState *as);
     };
 
     struct meshgroup;
@@ -396,8 +396,8 @@ struct animmodel : model
 
         virtual void cleanup() {}
         virtual void preload(part *p) {}
-        virtual void render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
-        virtual void intersect(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
+        virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
+        virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 
         void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
         void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
@@ -461,9 +461,9 @@ struct animmodel : model
         virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
         bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime);
         void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
-        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, animstate *as);
+        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
-        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, animstate *as);
+        void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as);
         void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0);
         bool animated() const;
         virtual void loaded();
@@ -517,7 +517,7 @@ struct animmodel : model
             }
         }
 
-        animstate as[maxanimparts];
+        AnimState as[maxanimparts];
         parts[0]->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
 
         for(int i = 1; i < parts.length(); i++)
@@ -667,7 +667,7 @@ struct animmodel : model
             }
         }
 
-        animstate as[maxanimparts];
+        AnimState as[maxanimparts];
         parts[0]->render(anim, basetime, basetime2, pitch, axis, forward, d, as);
 
         for(int i = 1; i < parts.length(); i++)
