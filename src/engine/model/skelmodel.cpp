@@ -536,7 +536,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
 }
 
 #define INTERPBONE(bone) \
-    const animstate &s = as[partmask[bone]]; \
+    const AnimState &s = as[partmask[bone]]; \
     const framedata &f = partframes[partmask[bone]]; \
     dualquat d; \
     (d = f.fr1[bone]).mul((1-s.cur.t)*s.interp); \
@@ -547,7 +547,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
         d.accumulate(f.pfr2[bone], s.prev.t*(1-s.interp)); \
     }
 
-void skelmodel::skeleton::interpbones(const animstate *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc)
+void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc)
 {
     if(!sc.bdata)
     {
@@ -776,7 +776,7 @@ void skelmodel::skeleton::preload()
     }
 }
 
-skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(part *p, const animstate *as, float pitch, const vec &axis, const vec &forward, ragdolldata *rdata)
+skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(part *p, const AnimState *as, float pitch, const vec &axis, const vec &forward, ragdolldata *rdata)
 {
     if(skelcache.empty())
     {
@@ -996,7 +996,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
     gle::clearebo();
 }
 
-void skelmodel::skelmeshgroup::render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
+void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
 {
     if(skel->shouldcleanup())
     {
@@ -1318,7 +1318,7 @@ void skelmodel::skelmesh::setshader(Shader *s, int row)
     }
 }
 
-void skelmodel::skelmesh::render(const animstate *as, skin &s, vbocacheentry &vc)
+void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc)
 {
     if(!Shader::lastshader)
     {
@@ -1369,7 +1369,7 @@ int skelmodel::skelmeshgroup::totalframes() const
     return max(skel->numframes, 1);
 }
 
-void skelmodel::skelmeshgroup::bindvbo(const animstate *as, part *p, vbocacheentry &vc, skelcacheentry *sc, blendcacheentry *bc)
+void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc, blendcacheentry *bc)
 {
     if(!skel->numframes)
     {
@@ -1510,7 +1510,7 @@ void skelmodel::skelmeshgroup::cleanup()
     cleanuphitdata();
 }
 
-void skelmodel::skelmeshgroup::intersect(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray)
+void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray)
 {
     if(!hitdata)
     {
