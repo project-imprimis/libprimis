@@ -2,6 +2,7 @@
 #define HUD_H_
 
 extern int statrate;
+extern int showhud;
 
 extern void gl_drawmainmenu();
 extern void gl_drawhud(int crosshairindex);

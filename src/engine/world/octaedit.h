@@ -6,6 +6,7 @@ extern bool allowediting;
 extern bool multiplayer;
 extern bool editmode;
 extern selinfo sel;
+extern int nompedit;
 
 extern void multiplayerwarn();
 extern void cancelsel();

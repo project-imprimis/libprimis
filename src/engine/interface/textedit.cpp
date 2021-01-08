@@ -1013,7 +1013,8 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
     body\
 )
 
-ICOMMAND(textlist, "", (), // @DEBUG return list of all the editors
+void textlist()
+{
     vector<char> s;
     for(int i = 0; i < editors.length(); i++)
     {
@@ -1025,14 +1026,18 @@ ICOMMAND(textlist, "", (), // @DEBUG return list of all the editors
     }
     s.add('\0');
     result(s.getbuf());
-);
+}
+COMMAND(textlist, "");
+
 TEXTCOMMAND(textshow, "", (), // @DEBUG return the start of the buffer
     EditLine line;
     line.combinelines(textfocus->lines);
     result(line.text);
     line.clear();
 );
-ICOMMAND(textfocus, "si", (char *name, int *mode), // focus on a (or create a persistent) specific editor, else returns current name
+
+void textfocuscmd(char *name, int *mode)
+{
     if(identflags&Idf_Overridden)
     {
         return;
@@ -1045,7 +1050,9 @@ ICOMMAND(textfocus, "si", (char *name, int *mode), // focus on a (or create a pe
     {
         result(editors.last()->name);
     }
-);
+}
+COMMANDN(textfocus, textfocuscmd, "si");
+
 TEXTCOMMAND(textprev, "", (), editors.insert(0, textfocus); editors.pop();); // return to the previous editor
 TEXTCOMMAND(textmode, "i", (int *m), // (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args
     if(*m)
@@ -1057,14 +1064,19 @@ TEXTCOMMAND(textmode, "i", (int *m), // (1= keep while focused, 2= keep while us
         intret(textfocus->mode);
     }
 );
-TEXTCOMMAND(textsave, "s", (char *file),  // saves the topmost (filename is optional)
+
+void textsave(char *file)
+{
     if(*file)
     {
         textfocus->setfile(path(file, true));
     }
     textfocus->save();
-);
-TEXTCOMMAND(textload, "s", (char *file), // loads into the textfocusmost editor, returns filename if no args
+}
+COMMAND(textsave, "s");
+
+void textload(char *file)
+{
     if(*file)
     {
         textfocus->setfile(path(file, true));
@@ -1074,8 +1086,10 @@ TEXTCOMMAND(textload, "s", (char *file), // loads into the textfocusmost editor,
     {
         result(textfocus->filename);
     }
-);
-ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into named editor if no file assigned and editor has been rendered
+}
+COMMAND(textload, "s");
+
+void textinit(char *name, char *file, char *initval)
 {
     if(identflags&Idf_Overridden)
     {
@@ -1095,7 +1109,8 @@ ICOMMAND(textinit, "sss", (char *name, char *file, char *initval), // loads into
         e->setfile(path(file, true));
         e->load();
     }
-});
+}
+COMMAND(textinit, "sss"); // loads into named editor if no file assigned and editor has been rendered
 
 #define PASTEBUFFER "#pastebuffer"
 

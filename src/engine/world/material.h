@@ -6,7 +6,15 @@ extern float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;
 extern float matrefractsx1, matrefractsy1, matrefractsx2, matrefractsy2;
 extern uint matliquidtiles[lighttilemaxheight], matsolidtiles[lighttilemaxheight];
 extern vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4];
-extern const vec matnormals[6];
+inline const vec matnormals[6] =
+{
+    vec(-1, 0, 0),
+    vec( 1, 0, 0),
+    vec(0, -1, 0),
+    vec(0,  1, 0),
+    vec(0, 0, -1),
+    vec(0, 0,  1)
+};
 
 extern int showmat;
 

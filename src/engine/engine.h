@@ -156,6 +156,7 @@ const int lighttilemaxheight = 16;
 
 extern int smborder, smborder2;
 
+    extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather, tqaaresolvegather;
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
 extern int spotlights;
 extern int volumetriclights;
@@ -278,6 +279,7 @@ extern void disableavatarmask();
 
 extern int outline;
 extern int oqfrags;
+extern int outline;
 
 extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphabacksx1, alphabacksx2, alphabacksy1, alphabacksy2, alpharefractsx1, alpharefractsx2, alpharefractsy1, alpharefractsy2;
 extern uint alphatiles[lighttilemaxheight];

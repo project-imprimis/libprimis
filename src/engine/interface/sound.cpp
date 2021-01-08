@@ -604,8 +604,17 @@ void altmapsound(char *name, int *vol)
 }
 COMMAND(altmapsound, "si");
 
-ICOMMAND(numsounds, "", (), intret(gamesounds.configs.length()));
-ICOMMAND(nummapsounds, "", (), intret(mapsounds.configs.length()));
+void numsounds()
+{
+    intret(gamesounds.configs.length());
+}
+COMMAND(numsounds, "");
+
+void nummapsounds()
+{
+    intret(mapsounds.configs.length());
+}
+COMMAND(nummapsounds, "");
 
 void soundreset()
 {
@@ -989,6 +998,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     }
     return playing;
 }
+COMMAND(playsound, "i");
 
 void stopsounds()
 {
@@ -1033,8 +1043,6 @@ int playsoundname(const char *s, const vec *loc, int vol, int flags, int loops, 
     }
     return playsound(id, loc, nullptr, flags, loops, fade, chanid, radius, expire);
 }
-
-ICOMMAND(playsound, "i", (int *n), playsound(*n));
 
 void resetsound()
 {
