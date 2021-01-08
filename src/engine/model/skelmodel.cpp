@@ -536,7 +536,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
 }
 
 #define INTERPBONE(bone) \
-    const animstate &s = as[partmask[bone]]; \
+    const AnimState &s = as[partmask[bone]]; \
     const framedata &f = partframes[partmask[bone]]; \
     dualquat d; \
     (d = f.fr1[bone]).mul((1-s.cur.t)*s.interp); \
