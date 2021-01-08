@@ -1,4 +1,6 @@
-// sound
+#ifndef SOUND_H_
+#define SOUND_H_
+
 extern void clearmapsounds();
 extern void checkmapsounds();
 extern void updatesounds();
@@ -10,3 +12,5 @@ extern void preloadmapsound(int n);
 extern bool stopsound(int n, int chanid, int fade = 0);
 extern void stopsounds();
 extern void initsound();
+
+#endif
