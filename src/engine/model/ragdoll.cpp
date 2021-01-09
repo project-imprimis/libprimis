@@ -197,9 +197,13 @@ void ragdolldata::calcboundsphere()
     }
 }
 
+VAR(ragdolltimestepmin, 1, 5, 50);
+VAR(ragdolltimestepmax, 1, 10, 50);
+FVAR(ragdollrotfric, 0, 0.85f, 1);
+FVAR(ragdollrotfricstop, 0, 0.1f, 1);
+
 void ragdolldata::init(dynent *d)
 {
-    extern int ragdolltimestepmin;
     float ts = ragdolltimestepmin/1000.0f;
     for(int i = 0; i < skel->verts.length(); i++)
     {
@@ -309,11 +313,6 @@ void ragdolldata::constrainrot()
         applyrotlimit(skel->tris[r.tri[0]], skel->tris[r.tri[1]], angle, axis);
     }
 }
-
-VAR(ragdolltimestepmin, 1, 5, 50);
-VAR(ragdolltimestepmax, 1, 10, 50);
-FVAR(ragdollrotfric, 0, 0.85f, 1);
-FVAR(ragdollrotfricstop, 0, 0.1f, 1);
 
 void ragdolldata::calcrotfriction()
 {
