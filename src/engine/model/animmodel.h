@@ -118,9 +118,9 @@ struct animmodel : model
 
         virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) {}
 
-        virtual void genBIH(BIH::Mesh &m) {}
+        virtual void genBIH(BIH::mesh &m) {}
 
-        void genBIH(skin &s, vector<BIH::Mesh> &bih, const matrix4x3 &t);
+        void genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t);
 
         virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
         {
@@ -377,7 +377,7 @@ struct animmodel : model
         } while(0)
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
-        void genBIH(vector<skin> &skins, vector<BIH::Mesh> &bih, const matrix4x3 &t);
+        void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
         virtual void *animkey()
@@ -449,7 +449,7 @@ struct animmodel : model
         virtual void cleanup();
         void disablepitch();
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-        void genBIH(vector<BIH::Mesh> &bih, const matrix4x3 &m);
+        void genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
         bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL);
         bool unlink(part *p);
@@ -856,7 +856,7 @@ struct animmodel : model
         m.translate(translate, scale);
     }
 
-    void genBIH(vector<BIH::Mesh> &bih)
+    void genBIH(vector<BIH::mesh> &bih)
     {
         if(parts.empty())
         {
@@ -923,7 +923,7 @@ struct animmodel : model
         {
             return bih;
         }
-        vector<BIH::Mesh> meshes;
+        vector<BIH::mesh> meshes;
         genBIH(meshes);
         bih = new BIH(meshes);
         return bih;

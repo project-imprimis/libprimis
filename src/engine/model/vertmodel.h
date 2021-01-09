@@ -92,7 +92,7 @@ struct vertmodel : animmodel
             }
         }
 
-        void genBIH(BIH::Mesh &m)
+        void genBIH(BIH::mesh &m)
         {
             m.tris = (const BIH::tri *)tris;
             m.numtris = numtris;
