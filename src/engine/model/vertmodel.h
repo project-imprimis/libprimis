@@ -39,7 +39,7 @@ struct vertmodel : animmodel
         vbocacheentry() : vbuf(0) { as.cur.fr1 = as.prev.fr1 = -1; }
     };
 
-    struct vertmesh : mesh
+    struct vertmesh : Mesh
     {
         vert *verts;
         tcvert *tcverts;
@@ -64,7 +64,7 @@ struct vertmodel : animmodel
         {
             if(((vertmeshgroup *)group)->numframes == 1)
             {
-                mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+                Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
             }
             else
             {
@@ -74,12 +74,12 @@ struct vertmodel : animmodel
 
         void buildnorms(bool areaweight = true)
         {
-            mesh::buildnorms(verts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
+            Mesh::buildnorms(verts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
         }
 
         void calctangents(bool areaweight = true)
         {
-            mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
+            Mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
         }
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
@@ -92,7 +92,7 @@ struct vertmodel : animmodel
             }
         }
 
-        void genBIH(BIH::mesh &m)
+        void genBIH(BIH::Mesh &m)
         {
             m.tris = (const BIH::tri *)tris;
             m.numtris = numtris;

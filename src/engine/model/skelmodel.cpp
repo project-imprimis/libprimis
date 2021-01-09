@@ -1218,17 +1218,17 @@ int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
 
 void skelmodel::skelmesh::smoothnorms(float limit, bool areaweight)
 {
-    mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+    Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
 }
 
 void skelmodel::skelmesh::buildnorms(bool areaweight)
 {
-    mesh::buildnorms(verts, numverts, tris, numtris, areaweight);
+    Mesh::buildnorms(verts, numverts, tris, numtris, areaweight);
 }
 
 void skelmodel::skelmesh::calctangents(bool areaweight)
 {
-    mesh::calctangents(verts, verts, numverts, tris, numtris, areaweight);
+    Mesh::calctangents(verts, verts, numverts, tris, numtris, areaweight);
 }
 
 void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
@@ -1241,7 +1241,7 @@ void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
     }
 }
 
-void skelmodel::skelmesh::genBIH(BIH::mesh &m)
+void skelmodel::skelmesh::genBIH(BIH::Mesh &m)
 {
     m.tris = (const BIH::tri *)tris;
     m.numtris = numtris;

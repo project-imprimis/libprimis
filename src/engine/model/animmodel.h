@@ -48,7 +48,7 @@ struct animmodel : model
     };
 
     struct linkedpart;
-    struct mesh;
+    struct Mesh;
 
     struct shaderparams
     {
@@ -58,14 +58,14 @@ struct animmodel : model
         shaderparams() : spec(1.0f), gloss(1), glow(3.0f), glowdelta(0), glowpulse(0), fullbright(0), scrollu(0), scrollv(0), alphatest(0.9f), color(1, 1, 1) {}
     };
 
-    struct shaderparamskey
+    struct ShaderParamsKey
     {
-        static hashtable<shaderparams, shaderparamskey> keys;
+        static hashtable<shaderparams, ShaderParamsKey> keys;
         static int firstversion, lastversion;
 
         int version;
 
-        shaderparamskey() : version(-1) {}
+        ShaderParamsKey() : version(-1) {}
 
         bool checkversion();
 
@@ -81,7 +81,7 @@ struct animmodel : model
         Texture *tex, *decal, *masks, *normalmap;
         Shader *shader, *rsmshader;
         int cullface;
-        shaderparamskey *key;
+        ShaderParamsKey *key;
 
         skin() : owner(0), tex(notexture), decal(NULL), masks(notexture), normalmap(NULL), shader(NULL), rsmshader(NULL), cullface(1), key(NULL) {}
 
@@ -90,37 +90,37 @@ struct animmodel : model
         bool alphatested() const;
         bool decaled() const;
         void setkey();
-        void setshaderparams(mesh &m, const AnimState *as, bool skinned = true);
+        void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
         Shader *loadshader();
         void cleanup();
         void preloadBIH();
         void preloadshader();
-        void setshader(mesh &m, const AnimState *as);
-        void bind(mesh &b, const AnimState *as);
+        void setshader(Mesh &m, const AnimState *as);
+        void bind(Mesh &b, const AnimState *as);
     };
 
     struct meshgroup;
 
-    struct mesh
+    struct Mesh
     {
         meshgroup *group;
         char *name;
         bool cancollide, canrender, noclip;
 
-        mesh() : group(NULL), name(NULL), cancollide(true), canrender(true), noclip(false)
+        Mesh() : group(NULL), name(NULL), cancollide(true), canrender(true), noclip(false)
         {
         }
 
-        virtual ~mesh()
+        virtual ~Mesh()
         {
             DELETEA(name);
         }
 
         virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) {}
 
-        virtual void genBIH(BIH::mesh &m) {}
+        virtual void genBIH(BIH::Mesh &m) {}
 
-        void genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t);
+        void genBIH(skin &s, vector<BIH::Mesh> &bih, const matrix4x3 &t);
 
         virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
         {
@@ -345,7 +345,7 @@ struct animmodel : model
         meshgroup *next;
         int shared;
         char *name;
-        vector<mesh *> meshes;
+        vector<Mesh *> meshes;
 
         meshgroup() : next(NULL), shared(0), name(NULL)
         {
@@ -377,7 +377,7 @@ struct animmodel : model
         } while(0)
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
-        void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
+        void genBIH(vector<skin> &skins, vector<BIH::Mesh> &bih, const matrix4x3 &t);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
         virtual void *animkey()
@@ -449,7 +449,7 @@ struct animmodel : model
         virtual void cleanup();
         void disablepitch();
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-        void genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m);
+        void genBIH(vector<BIH::Mesh> &bih, const matrix4x3 &m);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
         bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL);
         bool unlink(part *p);
@@ -791,7 +791,7 @@ struct animmodel : model
             if(colorscale != color)
             {
                 colorscale = color;
-                shaderparamskey::invalidate();
+                ShaderParamsKey::invalidate();
             }
         }
 
@@ -856,7 +856,7 @@ struct animmodel : model
         m.translate(translate, scale);
     }
 
-    void genBIH(vector<BIH::mesh> &bih)
+    void genBIH(vector<BIH::Mesh> &bih)
     {
         if(parts.empty())
         {
@@ -923,7 +923,7 @@ struct animmodel : model
         {
             return bih;
         }
-        vector<BIH::mesh> meshes;
+        vector<BIH::Mesh> meshes;
         genBIH(meshes);
         bih = new BIH(meshes);
         return bih;
@@ -1230,7 +1230,7 @@ struct animmodel : model
         enablecullface = true;
         lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf =0;
         lasttex = lastdecal = lastmasks = lastnormalmap = NULL;
-        shaderparamskey::invalidate();
+        ShaderParamsKey::invalidate();
     }
 
     static void disablebones()

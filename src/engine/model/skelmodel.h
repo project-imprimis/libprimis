@@ -199,7 +199,7 @@ struct skelmodel : animmodel
 
     struct skelmeshgroup;
 
-    struct skelmesh : mesh
+    struct skelmesh : Mesh
     {
         vert *verts;
         tri *tris;
@@ -223,7 +223,7 @@ struct skelmodel : animmodel
         void buildnorms(bool areaweight = true);
         void calctangents(bool areaweight = true);
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-        void genBIH(BIH::mesh &m);
+        void genBIH(BIH::Mesh &m);
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
         static void assignvert(vvertg &vv, int j, vert &v, blendcombo &c);
         static void assignvert(vvertgw &vv, int j, vert &v, blendcombo &c);
