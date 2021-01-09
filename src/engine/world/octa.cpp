@@ -36,8 +36,8 @@ static struct emptycube : cube
 {
     emptycube()
     {
-        children = NULL;
-        ext = NULL;
+        children = nullptr;
+        ext = nullptr;
         visible = 0;
         merged = 0;
         material = Mat_Air;
@@ -64,8 +64,8 @@ cubeext *growcubeext(cubeext *old, int maxverts)
     }
     else
     {
-        ext->va = NULL;
-        ext->ents = NULL;
+        ext->va = nullptr;
+        ext->ents = nullptr;
         ext->tjoints = -1;
     }
     ext->maxverts = maxverts;
@@ -114,8 +114,8 @@ cube *newcubes(uint face, int mat)
     cube *c = new cube[8];
     for(int i = 0; i < 8; ++i)
     {
-        c->children = NULL;
-        c->ext = NULL;
+        c->children = nullptr;
+        c->ext = nullptr;
         c->visible = 0;
         c->merged = 0;
         setcubefaces(*c, face);
@@ -162,7 +162,7 @@ static void freecubeext(cube &c)
     if(c.ext)
     {
         delete[] reinterpret_cast<uchar *>(c.ext);
-        c.ext = NULL;
+        c.ext = nullptr;
     }
 }
 
@@ -176,7 +176,7 @@ void discardchildren(cube &c, bool fixtex, int depth)
         {
             destroyva(c.ext->va);
         }
-        c.ext->va = NULL;
+        c.ext->va = nullptr;
         c.ext->tjoints = -1;
         freeoctaentities(c);
         freecubeext(c);
@@ -760,9 +760,9 @@ static bool remip(cube &c, const ivec &co, int size)
         }
     }
     cube n = c;
-    n.ext = NULL;
+    n.ext = nullptr;
     forcemip(n);
-    n.children = NULL;
+    n.children = nullptr;
     if(!subdividecube(n, false, false))
     {
         freeocta(n.children);
@@ -1032,7 +1032,7 @@ uint faceedges(const cube &c, int orient)
 }
 
 
-static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, ivec2 *fvecs, const ivec *v = NULL)
+static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, ivec2 *fvecs, const ivec *v = nullptr)
 {
     int i = 0;
     if(solid)
@@ -2643,7 +2643,7 @@ void invalidatemerges(cube &c)
                 return;
             }
             destroyva(c.ext->va);
-            c.ext->va = NULL;
+            c.ext->va = nullptr;
         }
         if(c.ext->tjoints >= 0)
         {
