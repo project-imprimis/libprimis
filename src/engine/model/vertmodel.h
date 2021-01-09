@@ -33,13 +33,13 @@ struct vertmodel : animmodel
     struct vbocacheentry
     {
         GLuint vbuf;
-        animstate as;
+        AnimState as;
         int millis;
 
         vbocacheentry() : vbuf(0) { as.cur.fr1 = as.prev.fr1 = -1; }
     };
 
-    struct vertmesh : mesh
+    struct vertmesh : Mesh
     {
         vert *verts;
         tcvert *tcverts;
@@ -64,7 +64,7 @@ struct vertmodel : animmodel
         {
             if(((vertmeshgroup *)group)->numframes == 1)
             {
-                mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+                Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
             }
             else
             {
@@ -74,12 +74,12 @@ struct vertmodel : animmodel
 
         void buildnorms(bool areaweight = true)
         {
-            mesh::buildnorms(verts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
+            Mesh::buildnorms(verts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
         }
 
         void calctangents(bool areaweight = true)
         {
-            mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
+            Mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
         }
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
@@ -92,7 +92,7 @@ struct vertmodel : animmodel
             }
         }
 
-        void genBIH(BIH::mesh &m)
+        void genBIH(BIH::Mesh &m)
         {
             m.tris = (const BIH::tri *)tris;
             m.numtris = numtris;
@@ -196,7 +196,7 @@ struct vertmodel : animmodel
         }
 
         template<class T>
-        void interpverts(const animstate &as, T * RESTRICT vdata, skin &s)
+        void interpverts(const AnimState &as, T * RESTRICT vdata, skin &s)
         {
             vdata += voffset;
             const vert * RESTRICT vert1 = &verts[as.cur.fr1 * numverts],
@@ -228,7 +228,7 @@ struct vertmodel : animmodel
             #undef IP_VERT_P
         }
 
-        void render(const animstate *as, skin &s, vbocacheentry &vc)
+        void render(const AnimState *as, skin &s, vbocacheentry &vc)
         {
             if(!Shader::lastshader)
             {
@@ -351,7 +351,7 @@ struct vertmodel : animmodel
             n.mul(m, tags[i].matrix);
         }
 
-        void calctagmatrix(part *p, int i, const animstate &as, matrix4 &matrix)
+        void calctagmatrix(part *p, int i, const AnimState &as, matrix4 &matrix)
         {
             const matrix4x3 &tag1 = tags[as.cur.fr1*numtags + i].matrix,
                             &tag2 = tags[as.cur.fr2*numtags + i].matrix;
@@ -431,7 +431,7 @@ struct vertmodel : animmodel
         }
 
         template<class T>
-        void bindvbo(const animstate *as, part *p, vbocacheentry &vc)
+        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
@@ -461,7 +461,7 @@ struct vertmodel : animmodel
             }
         }
 
-        void bindvbo(const animstate *as, part *p, vbocacheentry &vc)
+        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
         {
             if(numframes>1)
             {
@@ -504,7 +504,7 @@ struct vertmodel : animmodel
             }
         }
 
-        void render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
+        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
         {
             if(as->cur.anim & Anim_NoRender)
             {
