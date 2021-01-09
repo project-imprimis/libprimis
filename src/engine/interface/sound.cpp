@@ -444,7 +444,7 @@ bool SoundSample::load(const char *dir, bool msg)
     {
         return false;
     }
-    static const char * const exts[] = { "", ".wav", ".ogg" };
+    static const char * const exts[] = { "", ".ogg" };
     string filename;
     for(int i = 0; i < static_cast<int>(sizeof(exts)/sizeof(exts[0])); ++i)
     {
