@@ -47,9 +47,9 @@ Texture *animmodel::lasttex = nullptr,
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
 
-hashtable<animmodel::shaderparams, animmodel::shaderparamskey> animmodel::shaderparamskey::keys;
-int animmodel::shaderparamskey::firstversion = 0,
-    animmodel::shaderparamskey::lastversion = 1;
+hashtable<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys;
+int animmodel::ShaderParamsKey::firstversion = 0,
+    animmodel::ShaderParamsKey::lastversion = 1;
 
 // AnimPos
 
@@ -88,9 +88,9 @@ void animmodel::AnimPos::setframes(const animinfo &info)
     }
 }
 
-// shaderparamskey
+// ShaderParamsKey
 
-bool animmodel::shaderparamskey::checkversion()
+bool animmodel::ShaderParamsKey::checkversion()
 {
     if(version >= firstversion)
     {
@@ -99,7 +99,7 @@ bool animmodel::shaderparamskey::checkversion()
     version = lastversion;
     if(++lastversion <= 0)
     {
-        ENUMERATE(keys, shaderparamskey, key, key.version = -1);
+        ENUMERATE(keys, ShaderParamsKey, key, key.version = -1);
         firstversion = 0;
         lastversion = 1;
         version = 0;
@@ -131,10 +131,10 @@ bool animmodel::skin::decaled() const
 
 void animmodel::skin::setkey()
 {
-    key = &shaderparamskey::keys[*this];
+    key = &ShaderParamsKey::keys[*this];
 }
 
-void animmodel::skin::setshaderparams(mesh &m, const AnimState *as, bool skinned)
+void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned)
 {
     if(!Shader::lastshader)
     {
@@ -274,12 +274,12 @@ void animmodel::skin::preloadshader()
     }
 }
 
-void animmodel::skin::setshader(mesh &m, const AnimState *as)
+void animmodel::skin::setshader(Mesh &m, const AnimState *as)
 {
     m.setshader(loadshader(), transparentlayer ? 1 : 0);
 }
 
-void animmodel::skin::bind(mesh &b, const AnimState *as)
+void animmodel::skin::bind(Mesh &b, const AnimState *as)
 {
     if(cullface > 0)
     {
@@ -348,11 +348,11 @@ void animmodel::skin::bind(mesh &b, const AnimState *as)
     setshaderparams(b, as);
 }
 
-//mesh
+//Mesh
 
-void animmodel::mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::Mesh::genBIH(skin &s, vector<BIH::Mesh> &bih, const matrix4x3 &t)
 {
-    BIH::mesh &m = bih.add();
+    BIH::Mesh &m = bih.add();
     m.xform = t;
     m.tex = s.tex;
     if(canrender)
@@ -376,16 +376,16 @@ void animmodel::mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t
         m.flags |= BIH::Mesh_CullFace;
     }
     genBIH(m);
-    while(bih.last().numtris > BIH::mesh::Max_Triangles)
+    while(bih.last().numtris > BIH::Mesh::Max_Triangles)
     {
-        BIH::mesh &overflow = bih.dup();
-        overflow.tris += BIH::mesh::Max_Triangles;
-        overflow.numtris -= BIH::mesh::Max_Triangles;
-        bih[bih.length()-2].numtris = BIH::mesh::Max_Triangles;
+        BIH::Mesh &overflow = bih.dup();
+        overflow.tris += BIH::Mesh::Max_Triangles;
+        overflow.numtris -= BIH::Mesh::Max_Triangles;
+        bih[bih.length()-2].numtris = BIH::Mesh::Max_Triangles;
     }
 }
 
-void animmodel::mesh::fixqtangent(quat &q, float bt)
+void animmodel::Mesh::fixqtangent(quat &q, float bt)
 {
     static const float bias = -1.5f/65535,
                        biasscale = sqrtf(1 - bias*bias);
@@ -411,10 +411,10 @@ void animmodel::mesh::fixqtangent(quat &q, float bt)
 
 void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
 {
-    LOOP_RENDER_MESHES(mesh, m, m.calcbb(bbmin, bbmax, t));
+    LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));
 }
 
-void animmodel::meshgroup::genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::meshgroup::genBIH(vector<skin> &skins, vector<BIH::Mesh> &bih, const matrix4x3 &t)
 {
     for(int i = 0; i < meshes.length(); i++)
     {
@@ -424,7 +424,7 @@ void animmodel::meshgroup::genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, c
 
 void animmodel::meshgroup::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t)
 {
-    LOOP_RENDER_MESHES(mesh, m, m.genshadowmesh(tris, t));
+    LOOP_RENDER_MESHES(Mesh, m, m.genshadowmesh(tris, t));
 }
 
 bool animmodel::meshgroup::hasframe(int i) const
@@ -547,7 +547,7 @@ void animmodel::part::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
     }
 }
 
-void animmodel::part::genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m)
+void animmodel::part::genBIH(vector<BIH::Mesh> &bih, const matrix4x3 &m)
 {
     matrix4x3 t = m;
     t.scale(model->scale);

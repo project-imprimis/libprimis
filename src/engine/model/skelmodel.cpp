@@ -1241,7 +1241,7 @@ void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
     }
 }
 
-void skelmodel::skelmesh::genBIH(BIH::mesh &m)
+void skelmodel::skelmesh::genBIH(BIH::Mesh &m)
 {
     m.tris = (const BIH::tri *)tris;
     m.numtris = numtris;
