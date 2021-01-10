@@ -2172,7 +2172,7 @@ int compactvslots(bool cull)
     return total;
 }
 
-ICOMMAND(compactvslots, "i", (int *cull),
+void compactvslotscmd(int *cull)
 {
     extern int nompedit;
     if(nompedit && multiplayer)
@@ -2182,7 +2182,8 @@ ICOMMAND(compactvslots, "i", (int *cull),
     }
     compactvslots(*cull!=0);
     allchanged();
-});
+}
+COMMANDN(compactvslots, compactvslotscmd, "i");
 
 static void clampvslotoffset(VSlot &dst, Slot *slot = nullptr)
 {
@@ -2692,7 +2693,7 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
     }
 }
 
-ICOMMAND(fixinsidefaces, "i", (int *tex),
+void fixinsidefacescmd(int *tex)
 {
     extern int nompedit;
     if(noedit(true) || (nompedit && multiplayer))
@@ -2702,7 +2703,8 @@ ICOMMAND(fixinsidefaces, "i", (int *tex),
     }
     fixinsidefaces(worldroot, ivec(0, 0, 0), worldsize>>1, *tex && vslots.inrange(*tex) ? *tex : Default_Geom);
     allchanged();
-});
+}
+COMMANDN(fixinsidefaces, fixinsidefacescmd, "i");
 
 const struct slottex
 {
