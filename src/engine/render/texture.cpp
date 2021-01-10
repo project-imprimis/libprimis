@@ -2174,12 +2174,7 @@ int compactvslots(bool cull)
 
 void compactvslotscmd(int *cull)
 {
-    extern int nompedit;
-    if(nompedit && multiplayer)
-    {
-        multiplayerwarn();
-        return;
-    }
+    multiplayerwarn();
     compactvslots(*cull!=0);
     allchanged();
 }
@@ -2695,12 +2690,7 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
 
 void fixinsidefacescmd(int *tex)
 {
-    extern int nompedit;
-    if(noedit(true) || (nompedit && multiplayer))
-    {
-        multiplayerwarn();
-        return;
-    }
+    multiplayerwarn();
     fixinsidefaces(worldroot, ivec(0, 0, 0), worldsize>>1, *tex && vslots.inrange(*tex) ? *tex : Default_Geom);
     allchanged();
 }
