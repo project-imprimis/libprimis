@@ -270,10 +270,10 @@ namespace //internal functions incl. AA implementations
     VAR(debugsmaa, 0, 0, 5); //see viewsmaa() below, displays one of the five smaa texs
 
     int smaatype = -1;
-    Shader *smaalumaedgeshader = nullptr,
-                  *smaacoloredgeshader = nullptr,
-                  *smaablendweightshader = nullptr,
-                  *smaaneighborhoodshader = nullptr;
+    Shader  *smaalumaedgeshader = nullptr,
+            *smaacoloredgeshader = nullptr,
+            *smaablendweightshader = nullptr,
+            *smaaneighborhoodshader = nullptr;
 
     void loadsmaashaders(bool split = false)
     {
@@ -349,7 +349,7 @@ namespace //internal functions incl. AA implementations
     }
 
     const int smaasearchtexwidth  = 66,
-                     smaasearchtexheight = 33;
+              smaasearchtexheight = 33;
     uchar smaasearchdata[smaasearchtexwidth*smaasearchtexheight];
     bool smaasearchdatainited = false;
 
