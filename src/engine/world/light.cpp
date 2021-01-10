@@ -471,7 +471,7 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
         }
 
         VSlot &vslot = lookupvslot(c.texture[i], false),
-             *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, false) : NULL;
+             *layer = vslot.layer && !(c.material&Mat_Alpha) ? &lookupvslot(vslot.layer, false) : nullptr;
         Shader *shader = vslot.slot->shader;
         int shadertype = shader->type;
         if(layer)

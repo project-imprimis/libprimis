@@ -200,7 +200,7 @@ const char *findmaterialname(int mat)
             return materials[i].name;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 /* getmaterialdesc
@@ -532,7 +532,7 @@ void setupmaterials(int start, int len)
     for(int i = start; i < len; i++)
     {
         vtxarray *va = valist[i];
-        materialsurface *skip = NULL;
+        materialsurface *skip = nullptr;
         for(int j = 0; j < va -> matsurfs; ++j)
         {
             materialsurface &m = va->matbuf[j];
@@ -769,7 +769,7 @@ void rendermatgrid()
 static float glassxscale = 0,
              glassyscale = 0;
 
-static void drawglass(const materialsurface &m, float offset, const vec *normal = NULL)
+static void drawglass(const materialsurface &m, float offset, const vec *normal = nullptr)
 {
     if(gle::attribbuf.empty())
     {
