@@ -324,8 +324,17 @@ void initgbuffer()
 
 VARF(forcepacknorm, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));
 
-bool usepacknorm() { return forcepacknorm || msaasamples || !useavatarmask(); }
-ICOMMAND(usepacknorm, "", (), intret(usepacknorm() ? 1 : 0));
+bool usepacknorm()
+{
+    return forcepacknorm || msaasamples || !useavatarmask();
+}
+
+void usepacknormcmd()
+{
+    intret(usepacknorm() ? 1 : 0);
+}
+
+COMMANDN(usepacknorm, usepacknormcmd, "");
 
 void maskgbuffer(const char *mask)
 {
