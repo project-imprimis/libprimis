@@ -1,41 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\engine\aa.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\ai.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\bih.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\blend.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\client.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\client.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\command.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\console.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\shared\crypto.cpp">
       <Filter>shared</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\dynlight.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\entities.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\game.cpp">
-      <Filter>game</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\geom.cpp">
       <Filter>shared</Filter>
@@ -43,142 +10,64 @@
     <ClCompile Include="..\shared\glemu.cpp">
       <Filter>shared</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\grass.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\light.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\main.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\material.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\menus.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\normal.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\octa.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\octaedit.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\octarender.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\pch.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\shared\pch.cpp">
-      <Filter>shared</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\pch.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\physics.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\pvs.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\render.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\rendergl.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\renderlights.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\rendersky.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\rendermodel.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\renderparticles.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\rendertext.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\renderva.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\scoreboard.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\server.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\server.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\serverbrowser.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\shader.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\sound.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\stain.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\shared\stream.cpp">
       <Filter>shared</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\texture.cpp">
-      <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\shared\tools.cpp">
       <Filter>shared</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\ui.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\water.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\waypoint.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\game\weapon.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\world.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\engine\worldio.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\shared\zip.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="..\engine\interface\command.cpp" />
+    <ClCompile Include="..\engine\interface\console.cpp" />
+    <ClCompile Include="..\engine\interface\control.cpp" />
+    <ClCompile Include="..\engine\interface\cubestd.cpp" />
+    <ClCompile Include="..\engine\interface\input.cpp" />
+    <ClCompile Include="..\engine\interface\menus.cpp" />
+    <ClCompile Include="..\engine\interface\sound.cpp" />
+    <ClCompile Include="..\engine\interface\ui.cpp" />
+    <ClCompile Include="..\engine\model\animmodel.cpp" />
+    <ClCompile Include="..\engine\model\obj.cpp" />
+    <ClCompile Include="..\engine\model\ragdoll.cpp" />
+    <ClCompile Include="..\engine\model\skelmodel.cpp" />
+    <ClCompile Include="..\engine\render\aa.cpp" />
+    <ClCompile Include="..\engine\render\ao.cpp" />
+    <ClCompile Include="..\engine\render\csm.cpp" />
+    <ClCompile Include="..\engine\render\grass.cpp" />
+    <ClCompile Include="..\engine\render\hdr.cpp" />
+    <ClCompile Include="..\engine\render\hud.cpp" />
+    <ClCompile Include="..\engine\render\normal.cpp" />
+    <ClCompile Include="..\engine\render\octarender.cpp" />
+    <ClCompile Include="..\engine\render\radiancehints.cpp" />
+    <ClCompile Include="..\engine\render\rendergl.cpp" />
+    <ClCompile Include="..\engine\render\renderlights.cpp" />
+    <ClCompile Include="..\engine\render\rendermodel.cpp" />
+    <ClCompile Include="..\engine\render\renderparticles.cpp" />
+    <ClCompile Include="..\engine\render\rendersky.cpp" />
+    <ClCompile Include="..\engine\render\rendertext.cpp" />
+    <ClCompile Include="..\engine\render\rendertimers.cpp" />
+    <ClCompile Include="..\engine\render\renderva.cpp" />
+    <ClCompile Include="..\engine\render\renderwindow.cpp" />
+    <ClCompile Include="..\engine\render\shader.cpp" />
+    <ClCompile Include="..\engine\render\stain.cpp" />
+    <ClCompile Include="..\engine\render\texture.cpp" />
+    <ClCompile Include="..\engine\render\water.cpp" />
+    <ClCompile Include="..\engine\world\bih.cpp" />
+    <ClCompile Include="..\engine\world\dynlight.cpp" />
+    <ClCompile Include="..\engine\world\light.cpp" />
+    <ClCompile Include="..\engine\world\material.cpp" />
+    <ClCompile Include="..\engine\world\mpr.cpp" />
+    <ClCompile Include="..\engine\world\octa.cpp" />
+    <ClCompile Include="..\engine\world\octaedit.cpp" />
+    <ClCompile Include="..\engine\world\physics.cpp" />
+    <ClCompile Include="..\engine\world\raycube.cpp" />
+    <ClCompile Include="..\engine\world\world.cpp" />
+    <ClCompile Include="..\engine\world\worldio.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\game\ai.h">
-      <Filter>game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\game\aiman.h">
-      <Filter>game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\animmodel.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\bih.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\command.h">
       <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\game\ctf.h">
-      <Filter>game</Filter>
     </ClInclude>
     <ClInclude Include="..\shared\cube.h">
       <Filter>shared</Filter>
@@ -189,15 +78,6 @@
     <ClInclude Include="..\shared\ents.h">
       <Filter>shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\explosion.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\game\extinfo.h">
-      <Filter>game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\game\game.h">
-      <Filter>game</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\geom.h">
       <Filter>shared</Filter>
     </ClInclude>
@@ -207,57 +87,62 @@
     <ClInclude Include="..\shared\glexts.h">
       <Filter>shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\hitzone.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\iengine.h">
       <Filter>shared</Filter>
     </ClInclude>
     <ClInclude Include="..\shared\igame.h">
       <Filter>shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\light.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\md5.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\model.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\mpr.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\obj.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\octa.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\ragdoll.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\smd.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\skelmodel.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\textedit.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\texture.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\shared\tools.h">
       <Filter>shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\vertmodel.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\world.h">
-      <Filter>engine</Filter>
-    </ClInclude>
+    <ClInclude Include="..\engine\interface\console.h" />
+    <ClInclude Include="..\engine\interface\control.h" />
+    <ClInclude Include="..\engine\interface\input.h" />
+    <ClInclude Include="..\engine\interface\menus.h" />
+    <ClInclude Include="..\engine\interface\sound.h" />
+    <ClInclude Include="..\engine\interface\textedit.h" />
+    <ClInclude Include="..\engine\interface\ui.h" />
+    <ClInclude Include="..\engine\model\animmodel.h" />
+    <ClInclude Include="..\engine\model\hitzone.h" />
+    <ClInclude Include="..\engine\model\md5.h" />
+    <ClInclude Include="..\engine\model\model.h" />
+    <ClInclude Include="..\engine\model\obj.h" />
+    <ClInclude Include="..\engine\model\ragdoll.h" />
+    <ClInclude Include="..\engine\model\skelmodel.h" />
+    <ClInclude Include="..\engine\model\vertmodel.h" />
+    <ClInclude Include="..\engine\render\aa.h" />
+    <ClInclude Include="..\engine\render\ao.h" />
+    <ClInclude Include="..\engine\render\csm.h" />
+    <ClInclude Include="..\engine\render\grass.h" />
+    <ClInclude Include="..\engine\render\hdr.h" />
+    <ClInclude Include="..\engine\render\hud.h" />
+    <ClInclude Include="..\engine\render\octarender.h" />
+    <ClInclude Include="..\engine\render\radiancehints.h" />
+    <ClInclude Include="..\engine\render\rendergl.h" />
+    <ClInclude Include="..\engine\render\rendermodel.h" />
+    <ClInclude Include="..\engine\render\rendersky.h" />
+    <ClInclude Include="..\engine\render\rendertext.h" />
+    <ClInclude Include="..\engine\render\rendertimers.h" />
+    <ClInclude Include="..\engine\render\renderwindow.h" />
+    <ClInclude Include="..\engine\render\stain.h" />
+    <ClInclude Include="..\engine\render\texture.h" />
+    <ClInclude Include="..\engine\render\water.h" />
+    <ClInclude Include="..\engine\world\bih.h" />
+    <ClInclude Include="..\engine\world\dynlight.h" />
+    <ClInclude Include="..\engine\world\light.h" />
+    <ClInclude Include="..\engine\world\material.h" />
+    <ClInclude Include="..\engine\world\mpr.h" />
+    <ClInclude Include="..\engine\world\octaedit.h" />
+    <ClInclude Include="..\engine\world\physics.h" />
+    <ClInclude Include="..\engine\world\raycube.h" />
+    <ClInclude Include="..\engine\world\worldio.h" />
+    <ClInclude Include="..\include\SDL.h" />
+    <ClInclude Include="..\include\SDL_image.h" />
+    <ClInclude Include="..\include\SDL_mixer.h" />
+    <ClInclude Include="..\include\SDL_opengl.h" />
+    <ClInclude Include="..\include\zlib.h" />
+    <ClInclude Include="..\libprimis-headers\cube.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tesseract.rc" />
@@ -272,5 +157,11 @@
     <Filter Include="game">
       <UniqueIdentifier>{9b7a70df-c8ed-4662-8380-4ffe119eb216}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\lib64\SDL2.lib" />
+    <Library Include="..\lib64\SDL2_image.lib" />
+    <Library Include="..\lib64\SDL2_mixer.lib" />
+    <Library Include="..\lib64\zdll.lib" />
   </ItemGroup>
 </Project>
