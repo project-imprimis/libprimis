@@ -41,7 +41,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\include;..\engine;..\game;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libprimis-headers\3rdparty\headers;..\engine;..\game;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -155,6 +155,7 @@
     <ClCompile Include="..\engine\interface\input.cpp" />
     <ClCompile Include="..\engine\interface\menus.cpp" />
     <ClCompile Include="..\engine\interface\sound.cpp" />
+    <ClCompile Include="..\engine\interface\textedit.cpp" />
     <ClCompile Include="..\engine\interface\ui.cpp" />
     <ClCompile Include="..\engine\model\animmodel.cpp" />
     <ClCompile Include="..\engine\model\obj.cpp" />

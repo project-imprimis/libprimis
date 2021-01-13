@@ -64,6 +64,7 @@
     <ClCompile Include="..\engine\world\raycube.cpp" />
     <ClCompile Include="..\engine\world\world.cpp" />
     <ClCompile Include="..\engine\world\worldio.cpp" />
+    <ClCompile Include="..\engine\interface\textedit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\command.h">
