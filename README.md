@@ -38,28 +38,39 @@ Libprimis' Tesseract base provides a bunch of rendering features such as:
 * support for OpenGL 4.0+ contexts
 * support for Linux-based operating systems
 
-**NOTE:** Libprimis currently lacks Windows install semantics, though progress is currently being made.
-Check back later for Windows support.
-
 For documentation on the engine, see `doc/engine.md`.
 
+#### Quick Windows Install Instructions
+
+To get the source code, use your prefered `git` client (git for Windows, gitkraken, etc.). Be sure
+to get the submodules as well.
+
+The headers required to build the library are located in `libprimis-headers`, one of the
+submodules.
+
+The library has compilation semantics for MSVC/Visual Studio. Opening the Visual Studio project
+located in `src/vcpp` will allow you to build the project. The created library will be located
+in the `bin64/` folder.
+
+To build a game on libprimis, you will need to get the required headers (located in a separate repository)
+and build your game against the compiled library and the headers.
 
 #### Quick Linux Install Instructions
 
-To get the game, `git` is required. Using `git`, get the repository and its submodules with
+To get the source code, `git` is required. Using `git`, get the repository and its submodules with
 
 `git clone https://github.com/project-imprimis/libprimis.git --recurse-submodules`
 
 The `libprimis` folder will now be visible in the current directory.
 
-To compile the game, use `make -C src -jN` from the directory in which this file is located.
+To compile the library, use `make -C src -jN` from the directory in which this file is located.
 Set N to the number of threads to compile with. For example, for a quad-core processor, set -j4.
 
 (to reach this directory use `cd libprimis`)
 
-This game requires `libsdl2`, `libsdl2-image`, `libsdl2-mixer`, and drivers for OpenGL (usually already installed).
-To compile the game, the development versions of the libraries are required
-(on distros that seperate standard and dev packages).
+This library requires `libsdl2`, `libsdl2-image`, `libsdl2-mixer`, and drivers
+for OpenGL (usually already installed). To compile the library, the development
+versions of the libraries are required (on distros that seperate standard and dev packages).
 
 Once the library has been compiled, it should be placed the standard shared library folder
 (usually `/usr/lib/`) where it can be linked to. Alternatively, use `make -Csrc install` to
