@@ -10,6 +10,7 @@ extern int gi, gidist;
 extern float giscale, giaoscale;
 extern int debugrsm, debugrh;
 extern GLuint rhtex[8];
+extern Shader *rsmworldshader;
 
 struct reflectiveshadowmap
 {

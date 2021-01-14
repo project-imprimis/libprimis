@@ -5,6 +5,7 @@
 #include "csm.h"
 #include "grass.h"
 #include "octarender.h"
+#include "radiancehints.h"
 #include "rendergl.h"
 #include "rendermodel.h"
 #include "renderwindow.h"
@@ -1961,7 +1962,6 @@ static inline void changeshader(renderstate &cur, int pass, geombatch &b)
     Slot &slot = *vslot.slot;
     if(pass == RenderPass_ReflectiveShadowMap)
     {
-        extern Shader *rsmworldshader;
         if(b.es.layer&BlendLayer_Bottom)
         {
             rsmworldshader->setvariant(0, 0, slot, vslot);
@@ -3308,7 +3308,6 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
 
 static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo draws[6], const vec &v0, const vec &v1, const vec &v2)
 {
-    extern int smcullside;
     vec l0 = vec(v0).sub(shadoworigin);
     float side = l0.scalartriple(vec(v1).sub(v0), vec(v2).sub(v0));
     if(smcullside ? side > 0 : side < 0)
