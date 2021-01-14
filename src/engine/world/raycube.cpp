@@ -21,13 +21,11 @@
 
 bool insideworld(const vec &o)
 {
-    extern int worldsize;
     return o.x>=0 && o.x<worldsize && o.y>=0 && o.y<worldsize && o.z>=0 && o.z<worldsize;
 }
 
 bool insideworld(const ivec &o)
 {
-    extern int worldsize;
     return static_cast<uint>(o.x) < static_cast<uint>(worldsize) &&
            static_cast<uint>(o.y) < static_cast<uint>(worldsize) &&
            static_cast<uint>(o.z) < static_cast<uint>(worldsize);
@@ -143,7 +141,6 @@ static inline bool raycubeintersect(const clipplanes &p, const cube &c, const ve
     return true;
 }
 
-extern void entselectionbox(const entity &e, vec &eo, vec &es);
 float hitentdist;
 int hitent, hitorient;
 
