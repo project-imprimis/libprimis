@@ -39,7 +39,12 @@ bool execfile(const char *cfgfile, bool msg)
     delete[] buf;
     return true;
 }
-ICOMMAND(exec, "sb", (char *file, int *msg), intret(execfile(file, *msg != 0) ? 1 : 0));
+
+void exec(char *file, int *msg)
+{
+    intret(execfile(file, *msg != 0) ? 1 : 0);
+}
+COMMAND(exec, "sb");
 
 const char *escapestring(const char *s)
 {
@@ -63,14 +68,20 @@ const char *escapestring(const char *s)
     return buf.getbuf();
 }
 
-ICOMMAND(escape, "s", (char *s), result(escapestring(s)));
-ICOMMAND(unescape, "s", (char *s),
+void escapecmd(char *s)
+{
+    result(escapestring(s));
+}
+COMMANDN(escape, escapecmd, "s");
+
+void unescapecmd(char *s)
 {
     int len = strlen(s);
     char *d = newstring(len);
     unescapestring(d, s, &s[len]);
     stringret(d);
-});
+}
+COMMANDN(unescape, unescapecmd, "s");
 
 const char *escapeid(const char *s)
 {
