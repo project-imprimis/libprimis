@@ -430,7 +430,7 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
             {
                 int hasmerges = c[i].ext->va->hasmerges;
                 destroyva(c[i].ext->va);
-                c[i].ext->va = NULL;
+                c[i].ext->va = nullptr;
                 if(hasmerges)
                 {
                     invalidatemerges(c[i]);
@@ -508,7 +508,7 @@ static inline void copycube(const cube &src, cube &dst)
     dst = src;
     dst.visible = 0;
     dst.merged = 0;
-    dst.ext = NULL; // src cube is responsible for va destruction
+    dst.ext = nullptr; // src cube is responsible for va destruction
     //recursively apply to children
     if(src.children)
     {
@@ -538,7 +538,7 @@ block3 *blockcopy(const block3 &s, int rgrid)
     int bsize = sizeof(block3)+sizeof(cube)*s.size();
     if(bsize <= 0 || bsize > (100<<20))
     {
-        return NULL;
+        return nullptr;
     }
     block3 *b = reinterpret_cast<block3 *>(new uchar[bsize]);
     if(b)
@@ -630,12 +630,12 @@ undoblock *newundocube(const selinfo &s)
         blocksize = sizeof(block3)+ssize*sizeof(cube);
     if(blocksize <= 0 || blocksize > (undomegs<<20))
     {
-        return NULL;
+        return nullptr;
     }
     undoblock *u = reinterpret_cast<undoblock *>(new uchar[sizeof(undoblock) + blocksize + selgridsize]);
     if(!u)
     {
-        return NULL;
+        return nullptr;
     }
     u->numents = 0;
     block3 *b = u->block();
@@ -679,7 +679,7 @@ int countblock(block3 *b)
 }
 
 std::vector<editinfo *> editinfos;
-editinfo *localedit = NULL;
+editinfo *localedit = nullptr;
 
 template<class B>
 static void packcube(cube &c, B &buf)
@@ -792,7 +792,7 @@ static bool unpackblock(block3 *&b, B &buf)
     if(b)
     {
         freeblock(b);
-        b = NULL;
+        b = nullptr;
     }
     block3 hdr;
     if(buf.get(reinterpret_cast<uchar *>(&hdr), sizeof(hdr)) < static_cast<int>(sizeof(hdr)))
@@ -890,7 +890,7 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
     if(!outbuf || compress2((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen, Z_BEST_COMPRESSION) != Z_OK || len > (1<<16))
     {
         delete[] outbuf;
-        outbuf = NULL;
+        outbuf = nullptr;
         return false;
     }
     outlen = len;
@@ -908,7 +908,7 @@ bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outl
     if(!outbuf || uncompress((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen) != Z_OK)
     {
         delete[] outbuf;
-        outbuf = NULL;
+        outbuf = nullptr;
         return false;
     }
     outlen = len;
@@ -932,9 +932,9 @@ bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen)
     if(e && e->copy)
     {
         freeblock(e->copy);
-        e->copy = NULL;
+        e->copy = nullptr;
     }
-    uchar *outbuf = NULL;
+    uchar *outbuf = nullptr;
     if(!uncompresseditinfo(inbuf, inlen, outbuf, outlen))
     {
         return false;
@@ -967,7 +967,7 @@ void freeeditinfo(editinfo *&e)
         freeblock(e->copy);
     }
     delete e;
-    e = NULL;
+    e = nullptr;
 }
 
 bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
@@ -1024,7 +1024,7 @@ struct prefab : editinfo
     GLuint ebo, vbo;
     int numtris, numverts;
 
-    prefab() : name(NULL), ebo(0), vbo(0), numtris(0), numverts(0) {}
+    prefab() : name(nullptr), ebo(0), vbo(0), numtris(0), numverts(0) {}
     ~prefab()
     {
         DELETEA(name);
@@ -1079,7 +1079,7 @@ void pasteundoblock(block3 *b, uchar *g)
 // which are game-dependent)
 void unpackundocube(ucharbuf buf, uchar *outbuf)
 {
-    block3 *b = NULL;
+    block3 *b = nullptr;
     if(!unpackblock(b, buf) || b->grid >= worldsize || buf.remaining() < b->size())
     {
         freeblock(b);
@@ -1181,7 +1181,7 @@ prefab *loadprefab(const char *name, bool msg = true)
         {
             conoutf(Console_Error, "could not read prefab %s", filename);
         }
-        return NULL;
+        return nullptr;
     }
     prefabheader hdr;
     if(f->read(&hdr, sizeof(hdr)) != sizeof(prefabheader) || memcmp(hdr.magic, "OEBR", 4))
@@ -1190,7 +1190,7 @@ prefab *loadprefab(const char *name, bool msg = true)
         if(msg)
         {
             conoutf(Console_Error, "prefab %s has malformatted header", filename);
-            return NULL;
+            return nullptr;
         }
     }
     if(hdr.version != 0)
@@ -1199,18 +1199,18 @@ prefab *loadprefab(const char *name, bool msg = true)
         if(msg)
         {
            conoutf(Console_Error, "prefab %s uses unsupported version", filename);
-           return NULL;
+           return nullptr;
         }
     }
     streambuf<uchar> s(f);
-    block3 *copy = NULL;
+    block3 *copy = nullptr;
     if(!unpackblock(copy, s))
     {
         delete f;
         if(msg)
         {
             conoutf(Console_Error, "could not unpack prefab %s", filename);
-            return NULL;
+            return nullptr;
         }
     }
     delete f;
@@ -1624,7 +1624,7 @@ namespace hmap
         t[d] += dcr*f*gridsize;
         if(t[d] > nz || t[d] < mz)
         {
-            return NULL;
+            return nullptr;
         }
         cube *c = &lookupcube(t, gridsize);
         if(c->children)
@@ -1634,7 +1634,7 @@ namespace hmap
         discardchildren(*c, true);
         if(!isheightmap(sel.orient, d, true, c))
         {
-            return NULL;
+            return nullptr;
         }
         if     (t.x < changes.o.x) changes.o.x = t.x;
         else if(t.x > changes.s.x) changes.s.x = t.x;
@@ -1684,7 +1684,7 @@ namespace hmap
         cube **c = cmap[x][y];
         for(int k = 0; k < 4; ++k)
         {
-            c[k] = NULL;
+            c[k] = nullptr;
         }
         c[1] = getcube(t, 0);
         if(!c[1] || !iscubeempty(*c[1]))
@@ -1695,7 +1695,7 @@ namespace hmap
             {
                 c[0] = c[1];
                 c[1] = c[2];
-                c[2] = NULL;
+                c[2] = nullptr;
             }
             else
             {
@@ -1727,8 +1727,8 @@ namespace hmap
             c[2] = getcube(t, -1);
         }
         c[3] = getcube(t, -2);
-        c[2] = !c[2] || iscubeempty(*c[2]) ? NULL : c[2];
-        c[3] = !c[3] || iscubeempty(*c[3]) ? NULL : c[3];
+        c[2] = !c[2] || iscubeempty(*c[2]) ? nullptr : c[2];
+        c[3] = !c[3] || iscubeempty(*c[3]) ? nullptr : c[3];
 
         uint face = getface(c[1], d);
         if(face == 0x08080808 && (!c[0] || !iscubeempty(*c[0])))
@@ -2066,9 +2066,9 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
     VSlot &vs = lookupvslot(index, false);
     if(vs.index < 0 || vs.index == Default_Sky)
     {
-        return NULL;
+        return nullptr;
     }
-    VSlot *edit = NULL;
+    VSlot *edit = nullptr;
     if(delta)
     {
         VSlot ms;
@@ -2303,7 +2303,7 @@ void rendertexturepanel(int w, int h)
                 VSlot &vslot = lookupvslot(texmru[ti]);
                 Slot &slot = *vslot.slot;
                 Texture *tex = slot.sts.empty() ? notexture : slot.sts[0].t,
-                        *glowtex = NULL;
+                        *glowtex = nullptr;
                 if(slot.texmask&(1 << Tex_Glow))
                 {
                     for(int j = 0; j < slot.sts.length(); j++)
