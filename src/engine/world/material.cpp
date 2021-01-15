@@ -515,11 +515,6 @@ void preloadglassshaders(bool force = false)
         return;
     }
     useshaderbyname("glass");
-    extern int glassenv;
-    if(glassenv)
-    {
-        useshaderbyname("glassenv");
-    }
 }
 
 void setupmaterials(int start, int len)
@@ -992,8 +987,6 @@ GETMATIDXVAR(glass, color, const bvec &)
 GETMATIDXVAR(glass, refract, float)
 GETMATIDXVAR(glass, spec, int)
 
-VARFP(glassenv, 0, 1, 1, preloadglassshaders());
-
 void renderglass()
 {
     for(int k = 0; k < 4; ++k)
@@ -1021,10 +1014,6 @@ void renderglass()
         GLOBALPARAMF(glassrefract, col.x*refractscale, col.y*refractscale, col.z*refractscale, refract*viewh);
         GLOBALPARAMF(glassspec, spec/100.0f);
 
-        if(!glassenv)
-        {
-            SETSHADER(glass);
-        }
         for(int i = 0; i < surfs.length(); i++)
         {
             materialsurface &m = surfs[i];
