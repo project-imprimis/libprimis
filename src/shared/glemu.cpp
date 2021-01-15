@@ -18,8 +18,6 @@ namespace gle
             return type != a.type || size != a.size || format != a.format || offset != a.offset;
         }
     };
-
-    extern const char * const attribnames[Attribute_NumAttributes] = { "vvertex", "vcolor", "vtexcoord0", "vtexcoord1", "vnormal", "vtangent", "vboneweight", "vboneindex" };
     ucharbuf attribbuf;
     static uchar *attribdata;
     static attribinfo attribdefs[Attribute_NumAttributes], lastattribs[Attribute_NumAttributes];
