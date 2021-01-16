@@ -39,7 +39,7 @@ namespace entities
 
     const char *entmodel(const entity &e)
     {
-        return NULL;
+        return nullptr;
     }
 
     extentity *newentity()
@@ -83,8 +83,8 @@ void detachentity(extentity &e)
     {
         return;
     }
-    e.attached->attached = NULL;
-    e.attached = NULL;
+    e.attached->attached = nullptr;
+    e.attached = nullptr;
 }
 
 VAR(attachradius, 1, 100, 1000);
@@ -239,13 +239,13 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
     return true;
 }
 
-void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = NULL)
+void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = nullptr)
 {
     LOOP_OCTA_BOX(cor, size, bo, br)
     {
         ivec o(i, cor, size);
         vtxarray *va = c[i].ext && c[i].ext->va ? c[i].ext->va : lastva;
-        if(c[i].children != NULL && size > leafsize)
+        if(c[i].children != nullptr && size > leafsize)
         {
             modifyoctaentity(flags, id, e, c[i].children, o, size>>1, bo, br, leafsize, va);
         }
@@ -376,7 +376,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
         }
         if(c[i].ext && c[i].ext->ents)
         {
-            c[i].ext->ents->query = NULL;
+            c[i].ext->ents->query = nullptr;
         }
         if(va && va!=lastva)
         {
@@ -538,7 +538,7 @@ void freeoctaentities(cube &c)
     if(c.ext->ents)
     {
         delete c.ext->ents;
-        c.ext->ents = NULL;
+        c.ext->ents = nullptr;
     }
 }
 
@@ -553,7 +553,7 @@ void entitiesinoctanodes()
 
 void entselectionbox(const entity &e, vec &eo, vec &es)
 {
-    model *m = NULL;
+    model *m = nullptr;
     const char *mname = entities::entmodel(e);
     if(mname && (m = loadmodel(mname)))
     {
@@ -741,7 +741,7 @@ void shrinkmap()
         subdividecube(worldroot[octant], false, false);
     }
     cube *root = worldroot[octant].children;
-    worldroot[octant].children = NULL;
+    worldroot[octant].children = nullptr;
     freeocta(worldroot);
     worldroot = root;
     worldscale--;

@@ -14,7 +14,7 @@
 
 string clientmap = "";
 
-void validmapname(char *dst, const char *src, const char *prefix = NULL, const char *alt = "untitled", size_t maxlen = 100)
+void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
 {
     if(prefix)
     {
@@ -51,7 +51,7 @@ void validmapname(char *dst, const char *src, const char *prefix = NULL, const c
 
 void fixmapname(char *name)
 {
-    validmapname(name, name, NULL, "");
+    validmapname(name, name, nullptr, "");
 }
 
 static void fixent(entity &e, int version)
@@ -219,7 +219,7 @@ string ogzname, bakname, cfgname, picname;
 
 VARP(savebak, 0, 2, 2);
 
-void setmapfilenames(const char *fname, const char *cname = NULL)
+void setmapfilenames(const char *fname, const char *cname = nullptr)
 {
     string name;
     validmapname(name, fname);
@@ -232,7 +232,7 @@ void setmapfilenames(const char *fname, const char *cname = NULL)
     else
     {
         string baktime;
-        time_t t = time(NULL);
+        time_t t = time(nullptr);
         size_t len = strftime(baktime, sizeof(baktime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
         baktime[min(len, sizeof(baktime)-1)] = '\0';
         formatstring(bakname, "media/map/%s_%s.BAK", name, baktime);
@@ -892,14 +892,14 @@ void loadvslots(stream *f, int numvslots)
         {
             for(int i = 0; i < -changed; ++i)
             {
-                vslots.add(new VSlot(NULL, vslots.length()));
+                vslots.add(new VSlot(nullptr, vslots.length()));
             }
             numvslots += changed;
         }
         else
         {
             prev[vslots.length()] = f->get<int>();
-            loadvslot(f, *vslots.add(new VSlot(NULL, vslots.length())), changed);
+            loadvslot(f, *vslots.add(new VSlot(nullptr, vslots.length())), changed);
             numvslots--;
         }
     }
@@ -1069,7 +1069,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     setvar("mapversion", hdr.version, true, false);
     renderprogress(0, "clearing world...");
     freeocta(worldroot);
-    worldroot = NULL;
+    worldroot = nullptr;
     int worldscale = 0;
     while(1<<worldscale < hdr.worldsize)
     {
