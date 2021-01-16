@@ -801,7 +801,11 @@ void gl_checkextensions()
     tqaaresolvegather = 1;
 }
 
-ICOMMAND(glext, "s", (char *ext), intret(hasext(ext) ? 1 : 0));
+void glext(char *ext)
+{
+    intret(hasext(ext) ? 1 : 0);
+}
+COMMAND(glext, "s");
 
 void gl_resize()
 {
@@ -839,14 +843,30 @@ void gl_init()
 
 VAR(wireframe, 0, 0, 1);
 
-ICOMMAND(getcamyaw, "", (), floatret(camera1->yaw));
-ICOMMAND(getcampitch, "", (), floatret(camera1->pitch));
-ICOMMAND(getcamroll, "", (), floatret(camera1->roll));
-ICOMMAND(getcampos, "", (),
+void getcamyaw()
+{
+    floatret(camera1->yaw);
+}
+COMMAND(getcamyaw, "");
+
+void getcampitch()
+{
+    floatret(camera1->pitch);
+}
+COMMAND(getcampitch, "");
+
+void getcamroll()
+{
+    floatret(camera1->roll);
+}
+COMMAND(getcamroll, "");
+
+void getcampos()
 {
     DEF_FORMAT_STRING(pos, "%s %s %s", floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z));
     result(pos);
-});
+}
+COMMAND(getcampos, "");
 
 vec worldpos, camdir, camright, camup;
 
