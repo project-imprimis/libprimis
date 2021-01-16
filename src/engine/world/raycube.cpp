@@ -310,7 +310,7 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
                     dent = min(dent, edist); \
                 } \
             } \
-            if(lc->children==NULL) \
+            if(lc->children==nullptr) \
             { \
                 break; \
             } \
@@ -479,7 +479,7 @@ float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int
     float dist = raycube(o, ray, radius, mode, size);
     if((mode&Ray_Ents) == Ray_Ents)
     {
-        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, NULL);
+        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, nullptr);
         if(dent < 1e15f && (dist < 0 || dent < dist))
         {
             dist = dent;
