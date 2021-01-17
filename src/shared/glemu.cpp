@@ -29,7 +29,7 @@ namespace gle
                vertexsize = 0,
                lastvertexsize = 0;
     static GLenum primtype = GL_TRIANGLES;
-    static uchar *lastbuf = NULL;
+    static uchar *lastbuf = nullptr;
     static bool changedattribs = false;
     static std::vector<GLint> multidrawstart;
     static std::vector<GLsizei> multidrawcount;
@@ -320,7 +320,7 @@ namespace gle
                 glGenBuffers_(1, &vbo);
             }
             glBindBuffer_(GL_ARRAY_BUFFER, vbo);
-            glBufferData_(GL_ARRAY_BUFFER, maxvbosize, NULL, GL_STREAM_DRAW);
+            glBufferData_(GL_ARRAY_BUFFER, maxvbosize, nullptr, GL_STREAM_DRAW);
             vbooffset = 0;
         }
         else if(!lastvertexsize)
@@ -367,7 +367,7 @@ namespace gle
                     glGenBuffers_(1, &vbo);
                 }
                 glBindBuffer_(GL_ARRAY_BUFFER, vbo);
-                glBufferData_(GL_ARRAY_BUFFER, maxvbosize, NULL, GL_STREAM_DRAW);
+                glBufferData_(GL_ARRAY_BUFFER, maxvbosize, nullptr, GL_STREAM_DRAW);
                 vbooffset = 0;
             }
             else if(!lastvertexsize)
@@ -443,7 +443,7 @@ namespace gle
             }
         }
         numlastattribs = lastattribmask = lastvertexsize = 0;
-        lastbuf = NULL;
+        lastbuf = nullptr;
         if(quadsenabled)
         {
             disablequads();
