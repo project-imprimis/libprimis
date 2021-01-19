@@ -239,6 +239,7 @@ VAR(rsmcull, 0, 1, 1);
 VARFP(rhtaps, 0, 20, 32, cleanupradiancehints()); //`r`adiance `h`ints `taps`: number of sample points for global illumination
 VAR(rhdyntex, 0, 0, 1);
 VAR(rhdynmm, 0, 0, 1);
+
 VARFR(gidist, 0, 384, 1024, { clearradiancehintscache(); cleardeferredlightshaders(); if(!gidist) cleanupradiancehints(); });
 FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); }); //`g`lobal `i`llumination `scale`
 FVARR(giaoscale, 0, 3, 1e3f); //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces

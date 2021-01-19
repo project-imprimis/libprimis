@@ -1238,7 +1238,8 @@ static char *conc(vector<char> &buf, tagval *v, int n, bool space, const char *p
             case Value_String:
             case Value_CString:
             {
-                s = v[i].s; break;
+                s = v[i].s;
+                break;
             }
             case Value_Macro:
             {
