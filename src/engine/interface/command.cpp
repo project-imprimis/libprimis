@@ -410,7 +410,13 @@ static void debugcodeline(const char *p, const char *fmt, ...)
     debugalias();
 }
 
-ICOMMAND(nodebug, "e", (uint *body), { nodebug++; executeret(body, *commandret); nodebug--; });
+static void nodebugcmd(uint *body)
+{
+    nodebug++;
+    executeret(body, *commandret);
+    nodebug--;
+}
+COMMANDN(nodebug, nodebugcmd, "e");
 
 void addident(ident *id)
 {
@@ -464,7 +470,7 @@ void redoarg(ident &id, const identstack &stack)
     cleancode(id);
 }
 
-ICOMMAND(push, "rTe", (ident *id, tagval *v, uint *code),
+void pushcmd(ident *id, tagval *v, uint *code)
 {
     if(id->type != Id_Alias || id->index < Max_Args)
     {
@@ -476,7 +482,8 @@ ICOMMAND(push, "rTe", (ident *id, tagval *v, uint *code),
     id->flags &= ~Idf_Unknown;
     executeret(code, *commandret);
     poparg(*id);
-});
+}
+COMMANDN(push, pushcmd, "rTe");
 
 static inline void pushalias(ident &id, identstack &stack)
 {
@@ -708,11 +715,12 @@ void alias(const char *name, tagval &v)
     setalias(name, v);
 }
 
-ICOMMAND(alias, "sT", (const char *name, tagval *v),
+void aliascmd(const char *name, tagval *v)
 {
     setalias(name, *v);
     v->type = Value_Null;
-});
+}
+COMMANDN(alias, aliascmd, "sT");
 
 // variables and commands are registered through globals, see cube.h
 
