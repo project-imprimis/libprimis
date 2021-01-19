@@ -3562,14 +3562,14 @@ number of chars total.
 * `f`: a float (float *) argument
 * `F`:
 * `E`
-* `T`
+* `T` a tagval (tagval *) object
 * `t`
-* `e`
-* `r`
+* `e` an exec (uint *) code
+* `r` an id (ident *) object
 * `$`
-* `N`
-* `D`
-* `C`
+* `N` a number of args (int *) specifier
+* `D` an (int *) specifier for a cmd that checks for a key press (e.g. movement)
+* `C` a console (char *) argument to be printed
 * `V`
 * `1`
 * `2`
