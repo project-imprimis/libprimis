@@ -771,7 +771,7 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
 
 static Sint64 rwopsseek(SDL_RWops *rw, Sint64 pos, int whence)
 {
-    stream *f = (stream *)rw->hidden.unknown.data1;
+    stream *f = static_cast<stream *>(rw->hidden.unknown.data1);
     if((!pos && whence==SEEK_CUR) || f->seek(pos, whence))
     {
         return static_cast<int>(f->tell());
@@ -781,13 +781,13 @@ static Sint64 rwopsseek(SDL_RWops *rw, Sint64 pos, int whence)
 
 static size_t rwopsread(SDL_RWops *rw, void *buf, size_t size, size_t nmemb)
 {
-    stream *f = (stream *)rw->hidden.unknown.data1;
+    stream *f = static_cast<stream *>(rw->hidden.unknown.data1);
     return f->read(buf, size*nmemb)/size;
 }
 
 static size_t rwopswrite(SDL_RWops *rw, const void *buf, size_t size, size_t nmemb)
 {
-    stream *f = (stream *)rw->hidden.unknown.data1;
+    stream *f = static_cast<stream *>(rw->hidden.unknown.data1);
     return f->write(buf, size*nmemb)/size;
 }
 
@@ -1055,7 +1055,7 @@ struct gzstream : stream
     {
         while(n > 0 && zfile.avail_in > 0)
         {
-            size_t skipped = min(n, size_t(zfile.avail_in));
+            size_t skipped = min(n, static_cast<size_t>(zfile.avail_in));
             zfile.avail_in -= skipped;
             zfile.next_in += skipped;
             n -= skipped;
@@ -1083,7 +1083,7 @@ struct gzstream : stream
         if(flags & F_EXTRA)
         {
             size_t len = readbyte(512);
-            len |= size_t(readbyte(512))<<8;
+            len |= static_cast<size_t>(readbyte(512))<<8;
             skipbytes(len);
         }
         if(flags & F_NAME)
@@ -1104,7 +1104,7 @@ struct gzstream : stream
         {
             skipbytes(2);
         }
-        headersize = size_t(file->tell() - zfile.avail_in);
+        headersize = static_cast<size_t>(file->tell() - zfile.avail_in);
         return zfile.avail_in > 0 || !file->end();
     }
 
@@ -1308,7 +1308,7 @@ struct gzstream : stream
             uchar skip[512];
             while(read(skip, sizeof(skip)) == sizeof(skip))
             {
-                //(empty body)s
+                //(empty body)
             }
             return !pos;
         }
@@ -1377,7 +1377,7 @@ struct gzstream : stream
             int err = inflate(&zfile, Z_NO_FLUSH);
             if(err == Z_STREAM_END)
             {
-                crc = crc32(crc, (Bytef *)buf, len - zfile.avail_out);
+                crc = crc32(crc, static_cast<Bytef *>(buf), len - zfile.avail_out);
                 finishreading();
                 stopreading();
                 return len - zfile.avail_out;
@@ -1388,7 +1388,7 @@ struct gzstream : stream
                 break;
             }
         }
-        crc = crc32(crc, (Bytef *)buf, len - zfile.avail_out);
+        crc = crc32(crc, reinterpret_cast<Bytef *>(buf), len - zfile.avail_out);
         return len - zfile.avail_out;
     }
 
@@ -1421,7 +1421,7 @@ struct gzstream : stream
         {
             return 0;
         }
-        zfile.next_in = (Bytef *)buf;
+        zfile.next_in = static_cast<Bytef *>(const_cast<void *>(buf)); //cast away constness, then to Bytef
         zfile.avail_in = len;
         while(zfile.avail_in > 0)
         {
@@ -1589,7 +1589,10 @@ struct utf8stream : stream
         if(whence == SEEK_END)
         {
             uchar skip[512];
-            while(read(skip, sizeof(skip)) == sizeof(skip));
+            while(read(skip, sizeof(skip)) == sizeof(skip))
+            {
+                //(empty body)
+            }
             return !off;
         }
         else if(whence == SEEK_CUR) off += pos;
@@ -1612,7 +1615,7 @@ struct utf8stream : stream
         uchar skip[512];
         while(off > 0)
         {
-            size_t skipped = (size_t)min(off, (offset)sizeof(skip));
+            size_t skipped = static_cast<size_t>(min(off, (offset)sizeof(skip)));
             if(read(skip, skipped) != skipped)
             {
                 stopreading();
@@ -1643,7 +1646,7 @@ struct utf8stream : stream
                 break;
             }
             size_t n = min(len - next, bufcarry - bufread);
-            memcpy(&((uchar *)dst)[next], &buf[bufread], n);
+            memcpy(&(static_cast<uchar *>(dst))[next], &buf[bufread], n);
             next += n;
             bufread += n;
         }
@@ -1675,13 +1678,13 @@ struct utf8stream : stream
                 break;
             }
             size_t n = min(len - next, bufcarry - bufread);
-            uchar *endline = (uchar *)memchr(&buf[bufread], '\n', n);
+            uchar *endline = static_cast<uchar *>(memchr(&buf[bufread], '\n', n));
             if(endline)
             {
                 n = endline+1 - &buf[bufread];
                 len = next + n;
             }
-            memcpy(&((uchar *)dst)[next], &buf[bufread], n);
+            memcpy(&(reinterpret_cast<uchar *>(dst))[next], &buf[bufread], n);
             next += n;
             bufread += n;
         }
