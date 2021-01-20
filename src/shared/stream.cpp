@@ -1446,13 +1446,13 @@ struct utf8stream : stream
 {
     enum
     {
-        BUFSIZE = 4096
+        Buffer_Size = 4096
     };
     stream *file;
     offset pos;
     size_t bufread, bufcarry, buflen;
     bool reading, writing, autoclose;
-    uchar buf[BUFSIZE];
+    uchar buf[Buffer_Size];
 
     utf8stream() : file(nullptr), pos(0), bufread(0), bufcarry(0), buflen(0), reading(false), writing(false), autoclose(false)
     {
@@ -1463,7 +1463,7 @@ struct utf8stream : stream
         close();
     }
 
-    bool readbuf(size_t size = BUFSIZE)
+    bool readbuf(size_t size = Buffer_Size)
     {
         if(bufread >= bufcarry)
         {
@@ -1474,14 +1474,14 @@ struct utf8stream : stream
                 bufread = bufcarry = 0;
             }
         }
-        size_t n = file->read(&buf[buflen], min(size, BUFSIZE - buflen));
+        size_t n = file->read(&buf[buflen], min(size, Buffer_Size - buflen));
         if(n <= 0)
         {
             return false;
         }
         buflen += n;
         size_t carry = bufcarry;
-        bufcarry += decodeutf8(&buf[bufcarry], BUFSIZE-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
+        bufcarry += decodeutf8(&buf[bufcarry], Buffer_Size-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
         if(carry > bufcarry && carry < buflen)
         {
             memmove(&buf[bufcarry], &buf[carry], buflen - carry);
@@ -1638,7 +1638,7 @@ struct utf8stream : stream
         {
             if(bufread >= bufcarry)
             {
-                if(readbuf(BUFSIZE))
+                if(readbuf(Buffer_Size))
                 {
                     continue;
                 }
@@ -1666,7 +1666,7 @@ struct utf8stream : stream
         {
             if(bufread >= bufcarry)
             {
-                if(readbuf(BUFSIZE))
+                if(readbuf(Buffer_Size))
                 {
                     continue;
                 }
