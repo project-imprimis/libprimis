@@ -2262,7 +2262,7 @@ namespace UI
                 return true;
             }
 
-            return checkalphamask(tex, fmod(cx/tilew, 1), fmod(cy/tileh, 1));
+            return checkalphamask(tex, std::fmod(cx/tilew, 1), std::fmod(cy/tileh, 1));
         }
 
         void draw(float sx, float sy)
@@ -3344,7 +3344,7 @@ namespace UI
         {
             double newval = val + dir*vstep;
             newval += vstep * (newval < 0 ? -0.5 : 0.5);
-            newval -= fmod(newval, vstep);
+            newval -= std::fmod(newval, vstep);
             newval = std::clamp(newval, min(vmin, vmax), max(vmin, vmax));
             if(val != newval)
             {

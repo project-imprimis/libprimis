@@ -1556,7 +1556,7 @@ ICOMMANDK(||, Id_Or, "E1V", (tagval *args, int numargs),
 DIVCMD(div, i, int, val /= val2);
 DIVCMD(mod, i, int, val %= val2);
 DIVCMD(divf, f, float, val /= val2);
-DIVCMD(modf, f, float, val = fmod(val, val2));
+DIVCMD(modf, f, float, val = std::fmod(val, val2));
 MATHCMD("pow", f, float, val = pow(val, val2), 0, );
 
 ICOMMAND(sin, "f", (float *a), floatret(sin(*a*RAD)));
@@ -1602,7 +1602,7 @@ ICOMMAND(round, "ff", (float *n, float *k),
     if(step > 0)
     {
         r += step * (r < 0 ? -0.5 : 0.5);
-        r -= fmod(r, step);
+        r -= std::fmod(r, step);
     }
     else
     {

@@ -258,7 +258,7 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
     whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI);
     if(mat == Mat_Water)
     {
-        whoffset = fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
+        whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
         defvertwt();
         gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv);
         for(int x = wx1; x<wx2; x += subdiv)
@@ -553,7 +553,7 @@ void renderwaterfalls()
         MatSlot &wslot = lookupmaterialslot(Mat_Water+k);
 
         Texture *tex = wslot.sts.inrange(2) ? wslot.sts[2].t : (wslot.sts.inrange(0) ? wslot.sts[0].t : notexture);
-        float angle = fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f),
+        float angle = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f),
               s = angle - static_cast<int>(angle) - 0.5f;
         s *= 8 - fabs(s)*16;
         wfwave = vertwater ? wateramplitude*s-wateroffset : -wateroffset;

@@ -51,11 +51,11 @@ void damagecompass(int n, const vec &loc)
     }
     if(yaw >= 360)
     {
-        yaw = fmod(yaw, 360);
+        yaw = std::fmod(yaw, 360);
     }
     else if(yaw < 0)
     {
-        yaw = 360 - fmod(-yaw, 360);
+        yaw = 360 - std::fmod(-yaw, 360);
     }
     int dir = (static_cast<int>(yaw+22.5f)%360)/45;
     damagedirs[dir] += std::max(n, damagecompassmin)/static_cast<float>(damagecompassmax);

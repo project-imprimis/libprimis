@@ -425,8 +425,8 @@ namespace //internal functions incl. AA implementations
             return a < 0.0f ? vec2(-a, 0) : vec2(0, a);
         }
         x = -p1.y*d.x/d.y + p1.x;
-        float a1 = x > p1.x ? y1*fmod(x, 1.0f)/2 : 0,
-              a2 = x < p2.x ? y2*(1-fmod(x, 1.0f))/2 : 0;
+        float a1 = x > p1.x ? y1*std::fmod(x, 1.0f)/2 : 0,
+              a2 = x < p2.x ? y2*(1-std::fmod(x, 1.0f))/2 : 0;
         vec2 a(fabs(a1), fabs(a2));
         if((a.x > a.y ? a1 : -a2) >= 0)
         {
