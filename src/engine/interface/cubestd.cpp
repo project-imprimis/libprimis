@@ -30,7 +30,8 @@ bool execfile(const char *cfgfile, bool msg)
         }
         return false;
     }
-    const char *oldsourcefile = sourcefile, *oldsourcestr = sourcestr;
+    const char *oldsourcefile = sourcefile,
+               *oldsourcestr  = sourcestr;
     sourcefile = cfgfile;
     sourcestr = buf;
     execute(buf);
@@ -506,7 +507,10 @@ void append(ident *id, tagval *v, bool space)
     {
         setarg(*id, r);
     }
-    else setalias(*id, r);
+    else
+    {
+        setalias(*id, r);
+    }
 
 }
 ICOMMAND(append, "rt", (ident *id, tagval *v), append(id, v, true));
@@ -848,8 +852,8 @@ void listfind(ident *id, const char *list, const uint *body)
             goto found;
         }
     }
-    intret(-1);
-found:
+    intret(-1); //if element not found in list
+found: //if element is found in list
     if(n >= 0)
     {
         poparg(*id);
@@ -889,6 +893,7 @@ void listassoc(ident *id, const char *list, const uint *body)
 }
 COMMAND(listassoc, "rse");
 
+//note: the goto here is the opposite of listfind above: goto triggers when elem not found
 #define LISTFIND(name, fmt, type, init, cmp) \
     ICOMMAND(name, "s" fmt "i", (char *list, type *val, int *skip), \
     { \
@@ -1000,7 +1005,12 @@ void looplist3(ident *id, ident *id2, ident *id3, const char *list, const uint *
         setiter(*id3, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack3);
         execute(body);
     }
-    if(n) { poparg(*id); poparg(*id2); poparg(*id3); }
+    if(n)
+    {
+        poparg(*id);
+        poparg(*id2);
+        poparg(*id3);
+    }
 }
 COMMAND(looplist3, "rrrse");
 
