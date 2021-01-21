@@ -769,8 +769,8 @@ COMMAND(substr, "siiN");
 
 void sublist(const char *s, int *skip, int *count, int *numargs)
 {
-    int offset = max(*skip, 0),
-        len = *numargs >= 3 ? max(*count, 0) : -1;
+    int offset = std::max(*skip, 0),
+        len = *numargs >= 3 ? std::max(*count, 0) : -1;
     for(int i = 0; i < offset; ++i)
     {
         if(!parselist(s))
@@ -1179,8 +1179,8 @@ LISTMERGECMD(listunion, p.put(list, strlen(list)), elems, list, <);
 
 void listsplice(const char *s, const char *vals, int *skip, int *count)
 {
-    int offset = max(*skip, 0),
-        len = max(*count, 0);
+    int offset = std::max(*skip, 0),
+        len = std::max(*count, 0);
     const char *list = s,
                *start, *end, *qstart,
                *qend = s;
@@ -1382,7 +1382,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     poparg(*x);
     poparg(*y);
     char *sorted = cstr;
-    int sortedlen = totalunique + max(numunique - 1, 0);
+    int sortedlen = totalunique + std::max(numunique - 1, 0);
     if(clen < sortedlen)
     {
         delete[] cstr;
@@ -1477,7 +1477,7 @@ MATHICMD(|, 0, );
 MATHICMD(^~, 0, );
 MATHICMD(&~, 0, );
 MATHICMD(|~, 0, );
-MATHCMD("<<", i, int, val = val2 < 32 ? val << max(val2, 0) : 0, 0, );
+MATHCMD("<<", i, int, val = val2 < 32 ? val << std::max(val2, 0) : 0, 0, );
 MATHCMD(">>", i, int, val >>= std::clamp(val2, 0, 31), 0, );
 
 MATHFCMD(+, 0, );
@@ -1590,11 +1590,11 @@ MINMAXCMD(maxf, f, float, max);
 
 ICOMMAND(bitscan, "i", (int *n), intret(BITSCAN(*n)));
 
-ICOMMAND(abs, "i", (int *n), intret(abs(*n)));
-ICOMMAND(absf, "f", (float *n), floatret(fabs(*n)));
+ICOMMAND(abs, "i", (int *n), intret(std::abs(*n)));
+ICOMMAND(absf, "f", (float *n), floatret(std::fabs(*n)));
 
-ICOMMAND(floor, "f", (float *n), floatret(floor(*n)));
-ICOMMAND(ceil, "f", (float *n), floatret(ceil(*n)));
+ICOMMAND(floor, "f", (float *n), floatret(std::floor(*n)));
+ICOMMAND(ceil, "f", (float *n), floatret(std::ceil(*n)));
 ICOMMAND(round, "ff", (float *n, float *k),
 {
     double step = *k;
@@ -1606,7 +1606,7 @@ ICOMMAND(round, "ff", (float *n, float *k),
     }
     else
     {
-        r = r < 0 ? ceil(r - 0.5) : floor(r + 0.5);
+        r = r < 0 ? std::ceil(r - 0.5) : std::floor(r + 0.5);
     }
     floatret(static_cast<float>(r));
 });
@@ -1658,7 +1658,7 @@ ICOMMAND(rndstr, "i", (int *len),
     for(int i = 0; i < n;)
     {
         int r = rand();
-        for(int j = min(i + 4, n); i < j; i++)
+        for(int j = std::min(i + 4, n); i < j; i++)
         {
             s[i] = (r%255) + 1;
             r /= 255;
@@ -1672,7 +1672,7 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
 {
     const int len = 20;
     char *buf = newstring(len);
-    nformatstring(buf, len, "0x%.*X", max(*p, 1), *n);
+    nformatstring(buf, len, "0x%.*X", std::max(*p, 1), *n);
     stringret(buf);
 });
 
@@ -1818,7 +1818,7 @@ vector<sleepcmd> sleepcmds;
 void addsleep(int *msec, char *cmd)
 {
     sleepcmd &s = sleepcmds.add();
-    s.delay = max(*msec, 1);
+    s.delay = std::max(*msec, 1);
     s.millis = lastmillis;
     s.command = newstring(cmd);
     s.flags = identflags;
