@@ -240,7 +240,9 @@ void restorebackground(int w, int h, bool force = false)
         }
         setbackgroundinfo();
     }
-    renderbackgroundview(w, h, backgroundcaption[0] ? backgroundcaption : nullptr, backgroundmapshot, backgroundmapname[0] ? backgroundmapname : nullptr, backgroundmapinfo);
+    const char * caption = backgroundcaption[0] ? backgroundcaption : nullptr;
+    const char * mapname = backgroundmapname[0] ? backgroundmapname : nullptr;
+    renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo);
 }
 
 float loadprogress = 0;
@@ -494,8 +496,10 @@ void setupscreen()
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+
+    uint32_t windowflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags;
     //create new screen       title          x     y     w     h  flags
-    screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
+    screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, windowflags);
 
     if(!screen)
     {

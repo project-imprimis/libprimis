@@ -283,7 +283,8 @@ struct partrenderer
                     }
                     else
                     {
-                        addstain(stain, vec(o.x, o.y, collidez), vec(p->o).sub(o).normalize(), 2*p->size, p->color, type&PT_RND4 ? (p->flags>>5)&3 : 0);
+                        int staintype = type&PT_RND4 ? (p->flags>>5)&3 : 0;
+                        addstain(stain, vec(o.x, o.y, collidez), vec(p->o).sub(o).normalize(), 2*p->size, p->color, staintype);
                         blend = 0;
                     }
                 }

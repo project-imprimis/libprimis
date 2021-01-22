@@ -1519,7 +1519,11 @@ struct renderstate
     vec2 texgenscroll;
     int texgenorient, texgenmillis;
 
-    renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false), vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0), refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr), texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr), texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
+    renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
+                    vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
+                    refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
+                    texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
+                    texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
     {
         for(int k = 0; k < 7; ++k)
         {
@@ -1875,14 +1879,23 @@ static void changeslottmus(renderstate &cur, int pass, Slot &slot, VSlot &vslot)
         {
         changecolorparams:
             cur.colorscale = vslot.colorscale;
-            GLOBALPARAMF(colorparams, alpha*vslot.colorscale.x, alpha*vslot.colorscale.y, alpha*vslot.colorscale.z, alpha);
+            GLOBALPARAMF(colorparams,
+                         alpha*vslot.colorscale.x,
+                         alpha*vslot.colorscale.y,
+                         alpha*vslot.colorscale.z,
+                         alpha);
         }
-        if(cur.alphaing > 1 && vslot.refractscale > 0 && (cur.refractscale != vslot.refractscale || cur.refractcolor != vslot.refractcolor))
+        if(cur.alphaing > 1 && vslot.refractscale > 0 &&
+              (cur.refractscale != vslot.refractscale || cur.refractcolor != vslot.refractcolor))
         {
             cur.refractscale = vslot.refractscale;
             cur.refractcolor = vslot.refractcolor;
             float refractscale = 0.5f/ldrscale*(1-alpha);
-            GLOBALPARAMF(refractparams, vslot.refractcolor.x*refractscale, vslot.refractcolor.y*refractscale, vslot.refractcolor.z*refractscale, vslot.refractscale*viewh);
+            GLOBALPARAMF(refractparams,
+                         vslot.refractcolor.x*refractscale,
+                         vslot.refractcolor.y*refractscale,
+                         vslot.refractcolor.z*refractscale,
+                         vslot.refractscale*viewh);
         }
     }
     else if(cur.colorscale != vslot.colorscale)
@@ -2281,7 +2294,8 @@ void rendergeom()
                         va->occluded = Occlude_Parent;
                         continue;
                     }
-                    va->occluded = va->query && va->query->owner == va && checkquery(va->query) ? std::min(va->occluded+1, static_cast<int>(Occlude_BB)) : Occlude_Nothing;
+                    va->occluded = va->query && va->query->owner == va &&
+                                       checkquery(va->query) ? std::min(va->occluded+1, static_cast<int>(Occlude_BB)) : Occlude_Nothing;
                     va->query = newquery(va);
                     if(!va->query || !va->occluded)
                     {
