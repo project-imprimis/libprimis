@@ -319,7 +319,7 @@ void setvfcP(const vec &bbmin, const vec &bbmax)
     vfcP[3] = plane(vec4(pw).mul(bbmax.y).sub(py)).normalize(); // top plane
     vfcP[4] = plane(vec4(pw).add(pz)).normalize(); // near/far planes
 
-    vfcDfog = min(calcfogcull(), static_cast<float>(farplane));
+    vfcDfog = std::min(calcfogcull(), static_cast<float>(farplane));
     calcvfcD();
 }
 
@@ -858,12 +858,12 @@ int calcbbsidemask(const ivec &bbmin, const ivec &bbmax, const vec &lightpos, fl
     int mask = 0x3F;
     float dp1 = pmax.x + pmax.y,
           dn1 = pmax.x - pmin.y,
-          ap1 = fabs(dp1),
-          an1 = fabs(dn1),
+          ap1 = std::fabs(dp1),
+          an1 = std::fabs(dn1),
           dp2 = pmin.x + pmin.y,
           dn2 = pmin.x - pmax.y,
-          ap2 = fabs(dp2),
-          an2 = fabs(dn2);
+          ap2 = std::fabs(dp2),
+          an2 = std::fabs(dn2);
     if(ap1 > bias*an1 && ap2 > bias*an2)
     {
         mask &= (3<<4)
@@ -878,12 +878,12 @@ int calcbbsidemask(const ivec &bbmin, const ivec &bbmax, const vec &lightpos, fl
     }
     dp1 = pmax.y + pmax.z,
     dn1 = pmax.y - pmin.z,
-    ap1 = fabs(dp1),
-    an1 = fabs(dn1),
+    ap1 = std::fabs(dp1),
+    an1 = std::fabs(dn1),
     dp2 = pmin.y + pmin.z,
     dn2 = pmin.y - pmax.z,
-    ap2 = fabs(dp2),
-    an2 = fabs(dn2);
+    ap2 = std::fabs(dp2),
+    an2 = std::fabs(dn2);
     if(ap1 > bias*an1 && ap2 > bias*an2)
     {
         mask &= (3<<0)
@@ -898,12 +898,12 @@ int calcbbsidemask(const ivec &bbmin, const ivec &bbmax, const vec &lightpos, fl
     }
     dp1 = pmax.z + pmax.x,
     dn1 = pmax.z - pmin.x,
-    ap1 = fabs(dp1),
-    an1 = fabs(dn1),
+    ap1 = std::fabs(dp1),
+    an1 = std::fabs(dn1),
     dp2 = pmin.z + pmin.x,
     dn2 = pmin.z - pmax.x,
-    ap2 = fabs(dp2),
-    an2 = fabs(dn2);
+    ap2 = std::fabs(dp2),
+    an2 = std::fabs(dn2);
     if(ap1 > bias*an1 && ap2 > bias*an2)
     {
         mask &= (3<<2)
@@ -925,16 +925,16 @@ int calcspheresidemask(const vec &p, float radius, float bias)
     // bias = border/(size - border)
     float dxyp = p.x + p.y,
           dxyn = p.x - p.y,
-          axyp = fabs(dxyp),
-          axyn = fabs(dxyn),
+          axyp = std::fabs(dxyp),
+          axyn = std::fabs(dxyn),
           dyzp = p.y + p.z,
           dyzn = p.y - p.z,
-          ayzp = fabs(dyzp),
-          ayzn = fabs(dyzn),
+          ayzp = std::fabs(dyzp),
+          ayzn = std::fabs(dyzn),
           dzxp = p.z + p.x,
           dzxn = p.z - p.x,
-          azxp = fabs(dzxp),
-          azxn = fabs(dzxn);
+          azxp = std::fabs(dzxp),
+          azxn = std::fabs(dzxn);
     int mask = 0x3F;
     radius *= SQRT2;
     if(axyp > bias*axyn + radius)
@@ -971,16 +971,16 @@ int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias)
     int mask = 0x3F;
     float dp1 = p1.x + p1.y,
           dn1 = p1.x - p1.y,
-          ap1 = fabs(dp1),
-          an1 = fabs(dn1),
+          ap1 = std::fabs(dp1),
+          an1 = std::fabs(dn1),
           dp2 = p2.x + p2.y,
           dn2 = p2.x - p2.y,
-          ap2 = fabs(dp2),
-          an2 = fabs(dn2),
+          ap2 = std::fabs(dp2),
+          an2 = std::fabs(dn2),
           dp3 = p3.x + p3.y,
           dn3 = p3.x - p3.y,
-          ap3 = fabs(dp3),
-          an3 = fabs(dn3);
+          ap3 = std::fabs(dp3),
+          an3 = std::fabs(dn3);
     if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
         mask &= (3<<4)
             | (dp1 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
@@ -993,16 +993,16 @@ int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias)
             | (dn3 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
     dp1 = p1.y + p1.z,
     dn1 = p1.y - p1.z,
-    ap1 = fabs(dp1),
-    an1 = fabs(dn1),
+    ap1 = std::fabs(dp1),
+    an1 = std::fabs(dn1),
     dp2 = p2.y + p2.z,
     dn2 = p2.y - p2.z,
-    ap2 = fabs(dp2),
-    an2 = fabs(dn2),
+    ap2 = std::fabs(dp2),
+    an2 = std::fabs(dn2),
     dp3 = p3.y + p3.z,
     dn3 = p3.y - p3.z,
-    ap3 = fabs(dp3),
-    an3 = fabs(dn3);
+    ap3 = std::fabs(dp3),
+    an3 = std::fabs(dn3);
     if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
     {
         mask &= (3<<0)
@@ -1019,16 +1019,16 @@ int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias)
     }
     dp1 = p1.z + p1.x,
     dn1 = p1.z - p1.x,
-    ap1 = fabs(dp1),
-    an1 = fabs(dn1),
+    ap1 = std::fabs(dp1),
+    an1 = std::fabs(dn1),
     dp2 = p2.z + p2.x,
     dn2 = p2.z - p2.x,
-    ap2 = fabs(dp2),
-    an2 = fabs(dn2),
+    ap2 = std::fabs(dp2),
+    an2 = std::fabs(dn2),
     dp3 = p3.z + p3.x,
     dn3 = p3.z - p3.x,
-    ap3 = fabs(dp3),
-    an3 = fabs(dn3);
+    ap3 = std::fabs(dp3),
+    an3 = std::fabs(dn3);
     if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
     {
         mask &= (3<<2)
@@ -1098,19 +1098,19 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
     vec p = vec(camera1->o).sub(lightpos).div(lightradius);
     float dp = p.x + p.y,
           dn = p.x - p.y,
-          ap = fabs(dp),
-          an = fabs(dn);
+          ap = std::fabs(dp),
+          an = std::fabs(dn);
     masks[0] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
     masks[1] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
     dp = p.y + p.z, dn = p.y - p.z,
-    ap = fabs(dp),
-    an = fabs(dn);
+    ap = std::fabs(dp),
+    an = std::fabs(dn);
     masks[2] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4));
     masks[3] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4));
     dp = p.z + p.x,
     dn = p.z - p.x,
-    ap = fabs(dp),
-    an = fabs(dn);
+    ap = std::fabs(dp),
+    an = std::fabs(dn);
     masks[4] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0));
     masks[5] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0));
     for(int i = 0; i < 4; ++i)
@@ -1141,8 +1141,8 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
         }
         dp = n.x + n.y,
         dn = n.x - n.y,
-        ap = fabs(dp),
-        an = fabs(dn);
+        ap = std::fabs(dp),
+        an = std::fabs(dn);
         if(ap > 0)
         {
             masks[0] |= dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2);
@@ -1153,8 +1153,8 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
         }
         dp = n.y + n.z,
         dn = n.y - n.z,
-        ap = fabs(dp),
-        an = fabs(dn);
+        ap = std::fabs(dp),
+        an = std::fabs(dn);
         if(ap > 0)
         {
             masks[2] |= dp >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4);
@@ -1165,8 +1165,8 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
         }
         dp = n.z + n.x,
         dn = n.z - n.x,
-        ap = fabs(dp),
-        an = fabs(dn);
+        ap = std::fabs(dp),
+        an = std::fabs(dn);
         if(ap > 0)
         {
             masks[4] |= dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0);
@@ -2281,7 +2281,7 @@ void rendergeom()
                         va->occluded = Occlude_Parent;
                         continue;
                     }
-                    va->occluded = va->query && va->query->owner == va && checkquery(va->query) ? min(va->occluded+1, static_cast<int>(Occlude_BB)) : Occlude_Nothing;
+                    va->occluded = va->query && va->query->owner == va && checkquery(va->query) ? std::min(va->occluded+1, static_cast<int>(Occlude_BB)) : Occlude_Nothing;
                     va->query = newquery(va);
                     if(!va->query || !va->occluded)
                     {
@@ -2561,17 +2561,17 @@ int findalphavas()
             }
             alphavas.push_back(va);
             masktiles(alphatiles, sx1, sy1, sx2, sy2);
-            alphafrontsx1 = min(alphafrontsx1, sx1);
-            alphafrontsy1 = min(alphafrontsy1, sy1);
-            alphafrontsx2 = max(alphafrontsx2, sx2);
-            alphafrontsy2 = max(alphafrontsy2, sy2);
+            alphafrontsx1 = std::min(alphafrontsx1, sx1);
+            alphafrontsy1 = std::min(alphafrontsy1, sy1);
+            alphafrontsx2 = std::max(alphafrontsx2, sx2);
+            alphafrontsy2 = std::max(alphafrontsy2, sy2);
             if(va->alphabacktris)
             {
                 alphabackvas++;
-                alphabacksx1 = min(alphabacksx1, sx1);
-                alphabacksy1 = min(alphabacksy1, sy1);
-                alphabacksx2 = max(alphabacksx2, sx2);
-                alphabacksy2 = max(alphabacksy2, sy2);
+                alphabacksx1 = std::min(alphabacksx1, sx1);
+                alphabacksy1 = std::min(alphabacksy1, sy1);
+                alphabacksx2 = std::max(alphabacksx2, sx2);
+                alphabacksy2 = std::max(alphabacksy2, sy2);
             }
             if(va->refracttris)
             {
@@ -2580,10 +2580,10 @@ int findalphavas()
                     continue;
                 }
                 alpharefractvas++;
-                alpharefractsx1 = min(alpharefractsx1, sx1);
-                alpharefractsy1 = min(alpharefractsy1, sy1);
-                alpharefractsx2 = max(alpharefractsx2, sx2);
-                alpharefractsy2 = max(alpharefractsy2, sy2);
+                alpharefractsx1 = std::min(alpharefractsx1, sx1);
+                alpharefractsy1 = std::min(alpharefractsy1, sy1);
+                alpharefractsx2 = std::max(alpharefractsx2, sx2);
+                alpharefractsy2 = std::max(alpharefractsy2, sy2);
             }
         }
     }
@@ -3345,15 +3345,15 @@ static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo dra
     int i0 = shadowverts.add(v0),
         i1 = shadowverts.add(v1),
         i2 = shadowverts.add(v2);
-    ushort minvert = min(i0, min(i1, i2)),
-           maxvert = max(i0, max(i1, i2));
+    ushort minvert = std::min(i0, std::min(i1, i2)),
+           maxvert = std::max(i0, std::max(i1, i2));
     for(int k = 0; k < sides; ++k)
     {
         if(sidemask&(1<<k))
         {
             shadowdrawinfo &d = draws[k];
-            d.minvert = min(d.minvert, minvert);
-            d.maxvert = max(d.maxvert, maxvert);
+            d.minvert = std::min(d.minvert, minvert);
+            d.maxvert = std::max(d.maxvert, maxvert);
             shadowtris[k].push_back(i0);
             shadowtris[k].push_back(i1);
             shadowtris[k].push_back(i2);
