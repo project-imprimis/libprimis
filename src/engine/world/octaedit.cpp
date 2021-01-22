@@ -56,62 +56,62 @@ void boxs(int orient, vec o, const vec &s, float size)
     xtraverts += gle::end();
 }
 
-void boxs(int orient, vec o, const vec &s)
+void boxs(int orient, vec origin, const vec &s)
 {
     int d  = DIMENSION(orient),
         dc = DIM_COORD(orient);
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
-    o[D[d]] += dc * s[D[d]] + f;
+    origin[D[d]] += dc * s[D[d]] + f;
 
     gle::defvertex();
     gle::begin(GL_LINE_LOOP);
     //draw four surfaces
-    gle::attrib(o); o[R[d]] += s[R[d]];
-    gle::attrib(o); o[C[d]] += s[C[d]];
-    gle::attrib(o); o[R[d]] -= s[R[d]];
-    gle::attrib(o);
+    gle::attrib(origin); origin[R[d]] += s[R[d]];
+    gle::attrib(origin); origin[C[d]] += s[C[d]];
+    gle::attrib(origin); origin[R[d]] -= s[R[d]];
+    gle::attrib(origin);
 
     xtraverts += gle::end();
 }
 
-void boxs3D(const vec &o, vec s, int g)
+void boxs3D(const vec &origin, vec s, int g)
 {
     s.mul(g); //multiply displacement by g(ridpower)
     for(int i = 0; i < 6; ++i) //for each face
     {
-        boxs(i, o, s);
+        boxs(i, origin, s);
     }
 }
 
-void boxsgrid(int orient, vec o, vec s, int g)
+void boxsgrid(int orient, vec origin, vec s, int g)
 {
     int d  = DIMENSION(orient),
         dc = DIM_COORD(orient);
-    float ox = o[R[d]],
-          oy = o[C[d]],
+    float ox = origin[R[d]],
+          oy = origin[C[d]],
           xs = s[R[d]],
           ys = s[C[d]],
           f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
 
-    o[D[d]] += dc * s[D[d]]*g + f;
+    origin[D[d]] += dc * s[D[d]]*g + f;
 
     gle::defvertex();
     gle::begin(GL_LINES);
     for(int x = 0; x < xs; ++x)
     {
-        o[R[d]] += g;
-        gle::attrib(o);
-        o[C[d]] += ys*g;
-        gle::attrib(o);
-        o[C[d]] = oy;
+        origin[R[d]] += g;
+        gle::attrib(origin);
+        origin[C[d]] += ys*g;
+        gle::attrib(origin);
+        origin[C[d]] = oy;
     }
     for(int y = 0; y < ys; ++y)
     {
-        o[C[d]] += g;
-        o[R[d]] = ox;
-        gle::attrib(o);
-        o[R[d]] += xs*g;
-        gle::attrib(o);
+        origin[C[d]] += g;
+        origin[R[d]] = ox;
+        gle::attrib(origin);
+        origin[R[d]] += xs*g;
+        gle::attrib(origin);
     }
     xtraverts += gle::end();
 }
@@ -146,14 +146,14 @@ void multiplayerwarn()
     conoutf(Console_Error, "operation not available in multiplayer");
 }
 
-bool pointinsel(const selinfo &sel, const vec &o)
+bool pointinsel(const selinfo &sel, const vec &origin)
 {
-    return(o.x <= sel.o.x+sel.s.x*sel.grid
-        && o.x >= sel.o.x
-        && o.y <= sel.o.y+sel.s.y*sel.grid
-        && o.y >= sel.o.y
-        && o.z <= sel.o.z+sel.s.z*sel.grid
-        && o.z >= sel.o.z);
+    return(origin.x <= sel.o.x+sel.s.x*sel.grid
+        && origin.x >= sel.o.x
+        && origin.y <= sel.o.y+sel.s.y*sel.grid
+        && origin.y >= sel.o.y
+        && origin.z <= sel.o.z+sel.s.z*sel.grid
+        && origin.z >= sel.o.z);
 }
 
 VARF(dragging, 0, 0, 1,
