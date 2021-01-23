@@ -100,7 +100,7 @@ bool EditLine::read(stream *f, int chop)
         chop++;
     }
     set("");
-    while(len + 1 < chop && f->getline(&text[len], min(maxlen, chop) - len))
+    while(len + 1 < chop && f->getline(&text[len], std::min(maxlen, chop) - len))
     {
         len += strlen(&text[len]);
         if(len > 0 && text[len-1] == '\n')
@@ -550,7 +550,7 @@ void Editor::insert(char ch)
         {
             EditLine newline(&current.text[cx]);
             current.chop(cx);
-            cy = min(lines.length(), cy+1);
+            cy = std::min(lines.length(), cy+1);
             lines.insert(cy, newline);
         }
         else
@@ -604,7 +604,7 @@ void Editor::insertallfrom(Editor *b)
             int len = current.len;
             if(maxx >= 0 && slen + cx + len > maxx)
             {
-                len = max(0, maxx-(cx+slen));
+                len = std::max(0, maxx-(cx+slen));
             }
             current.insert(str, cx, slen);
             cx += slen;
