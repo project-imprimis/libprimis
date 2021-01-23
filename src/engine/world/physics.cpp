@@ -88,16 +88,16 @@ extern const float wallz = 0.2f; //steeper than this is considered a wall
 extern const float jumpvel = 50.0f; //impulse scale for player jump
 extern const float gravity = 100.0f; //downwards force scale
 
-bool ellipseboxcollide(physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo)
+bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
 {
-    float below = (o.z+center.z-lo) - (d->o.z+d->aboveeye),
-          above = (d->o.z-d->eyeheight) - (o.z+center.z+hi);
+    float below = (origin.z+center.z-lo) - (d->o.z+d->aboveeye),
+          above = (d->o.z-d->eyeheight) - (origin.z+center.z+hi);
     if(below>=0 || above>=0)
     {
         return false;
     }
     vec yo(d->o);
-    yo.sub(o);
+    yo.sub(origin);
     yo.rotate_around_z(-yaw*RAD);
     yo.sub(center);
 
