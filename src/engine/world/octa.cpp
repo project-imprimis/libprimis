@@ -1788,24 +1788,6 @@ static inline bool mergefacecmp(const facebounds &x, const facebounds &y)
     return false;
 }
 
-struct cfkey
-{
-    uchar orient;
-    ushort material, tex;
-    ivec n;
-    int offset;
-};
-
-static inline bool htcmp(const cfkey &x, const cfkey &y)
-{
-    return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
-}
-
-static inline uint hthash(const cfkey &k)
-{
-    return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
-}
-
 void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask)
 {
     int dim = DIMENSION(orient);
@@ -2524,6 +2506,24 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vect
 }
 
 static int genmergeprogress = 0;
+
+struct cfkey
+{
+    uchar orient;
+    ushort material, tex;
+    ivec n;
+    int offset;
+};
+
+static inline bool htcmp(const cfkey &x, const cfkey &y)
+{
+    return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
+}
+
+static inline uint hthash(const cfkey &k)
+{
+    return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
+}
 
 struct cfpolys
 {
