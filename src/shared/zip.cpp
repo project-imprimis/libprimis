@@ -766,5 +766,10 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
     return dirs;
 }
 
-ICOMMAND(addzip, "sss", (const char *name, const char *mount, const char *strip), addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr));
-ICOMMAND(removezip, "s", (const char *name), removezip(name));
+void addzipcmd(const char *name, const char *mount, const char *strip)
+{
+    addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr);
+}
+COMMANDN(addzip, addzipcmd, "sss");
+
+COMMAND(removezip, "s");
