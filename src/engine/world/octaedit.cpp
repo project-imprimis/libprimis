@@ -168,7 +168,8 @@ VARF(dragging, 0, 0, 1,
 );
 
 int moving = 0;
-ICOMMAND(moving, "b", (int *n),
+
+void movingcmd(int *n)
 {
     if(*n >= 0)
     {
@@ -182,7 +183,8 @@ ICOMMAND(moving, "b", (int *n),
         }
     }
     intret(moving);
-});
+}
+COMMANDN(moving, movingcmd, "b");
 
 VARF(gridpower, 0, 3, 12,
 {
@@ -315,8 +317,13 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 int selchildcount = 0,
     selchildmat = -1;
 
-ICOMMAND(havesel, "", (), intret(havesel ? selchildcount : 0));
-ICOMMAND(selchildcount, "", (),
+void haveselcmd()
+{
+    intret(havesel ? selchildcount : 0);
+}
+COMMANDN(havesel, haveselcmd, "");
+
+void selchildcountcmd()
 {
     if(selchildcount < 0)
     {
@@ -326,14 +333,17 @@ ICOMMAND(selchildcount, "", (),
     {
         intret(selchildcount);
     }
-});
-ICOMMAND(selchildmat, "s", (char *prefix),
+}
+COMMANDN(selchildcount, selchildcountcmd, "");
+
+void selchildmatcmd(char *prefix)
 {
     if(selchildmat > 0)
     {
         result(getmaterialdesc(selchildmat, prefix));
     }
-});
+}
+COMMANDN(selchildmat, selchildmatcmd, "s");
 
 void countselchild(cube *c, const ivec &cor, int size)
 {
