@@ -19,6 +19,9 @@
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
 
+VAR(menufps, 0, 60, 1000);
+VARP(maxfps, 0, 125, 1000);
+
 VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
 int screenw = 0,
@@ -301,6 +304,7 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
 }
 
 VAR(progressbackground, 0, 0, 1);
+int curvsync = -1;
 
 void renderprogress(float bar, const char *text, bool background)   // also used during loading
 {
@@ -308,7 +312,6 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     {
         return;
     }
-    extern int menufps, maxfps;
     int fps = menufps ? (maxfps ? min(maxfps, menufps) : menufps) : maxfps;
     if(fps)
     {
@@ -330,7 +333,6 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     getbackgroundres(w, h);
     gettextres(w, h);
 
-    extern int mesa_swap_bug, curvsync;
     bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || totalmillis==1));
     if(background || forcebackground)
     {
@@ -428,22 +430,22 @@ void cleargamma()
     }
 }
 
-int curvsync = -1;
+void restorevsync(); //prototype to fix chicken-egg initialization problem caused by VARFP
+
+VARFP(vsync, 0, 0, 1, restorevsync());
+VARFP(vsynctear, 0, 0, 1, { if(vsync) restorevsync(); });
+
 void restorevsync()
 {
     if(initing || !glcontext)
     {
         return;
     }
-    extern int vsync, vsynctear;
     if(!SDL_GL_SetSwapInterval(vsync ? (vsynctear ? -1 : 1) : 0))
     {
         curvsync = vsync;
     }
 }
-
-VARFP(vsync, 0, 0, 1, restorevsync());
-VARFP(vsynctear, 0, 0, 1, { if(vsync) restorevsync(); });
 
 void setupscreen()
 {
@@ -580,9 +582,6 @@ void resetgl()
 }
 
 COMMAND(resetgl, "");
-
-VAR(menufps, 0, 60, 1000);
-VARP(maxfps, 0, 125, 1000);
 
 void limitfps(int &millis, int curmillis)
 {
