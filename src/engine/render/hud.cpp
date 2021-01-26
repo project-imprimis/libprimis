@@ -203,14 +203,13 @@ void loadcrosshair(const char *name, int i)
     }
 }
 
-void loadcrosshair_(const char *name, int *i)
+void loadcrosshaircmd(const char *name, int *i)
 {
     loadcrosshair(name, *i);
 }
+COMMANDN(loadcrosshair, loadcrosshaircmd, "si");
 
-COMMANDN(loadcrosshair, loadcrosshair_, "si");
-
-ICOMMAND(getcrosshair, "i", (int *i),
+void getcrosshair(int *i)
 {
     const char *name = "";
     if(*i >= 0 && *i < maxcrosshairs)
@@ -222,7 +221,8 @@ ICOMMAND(getcrosshair, "i", (int *i),
         }
     }
     result(name);
-});
+}
+COMMAND(getcrosshair, "i");
 
 void writecrosshairs(stream *f)
 {
