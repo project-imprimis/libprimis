@@ -414,4 +414,8 @@ int smoothangle(int id, int angle)
     return id;
 }
 
-ICOMMAND(smoothangle, "ib", (int *id, int *angle), intret(smoothangle(*id, *angle)));
+void smoothanglecmd(int *id, int *angle)
+{
+    intret(smoothangle(*id, *angle));
+}
+COMMANDN(smoothangle, smoothanglecmd, "ib");
