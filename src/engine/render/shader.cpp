@@ -1327,7 +1327,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     if(*maxvariants > 0)
     {
         DEF_FORMAT_STRING(info, "shader %s", name);
-        renderprogress(min(s->variants.length() / static_cast<float>(*maxvariants), 1.0f), info);
+        renderprogress(std::min(s->variants.length() / static_cast<float>(*maxvariants), 1.0f), info);
     }
     vector<char> vsbuf, psbuf, vsbak, psbak;
     GENSHADER(s->defaultparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
@@ -1557,7 +1557,7 @@ static int allocatepostfxtex(int scale)
     postfxtex t;
     t.scale = scale;
     glGenTextures(1, &t.id);
-    createtexture(t.id, max(postfxw>>scale, 1), max(postfxh>>scale, 1), nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
+    createtexture(t.id, std::max(postfxw>>scale, 1), std::max(postfxh>>scale, 1), nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
     postfxtexs.push_back(t);
     return postfxtexs.size()-1;
 }
@@ -1634,8 +1634,8 @@ void renderpostfx(GLuint outfbo)
             tex = allocatepostfxtex(p.outputscale);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
         }
-        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
-            h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
+        int w = tex >= 0 ? std::max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
+            h = tex >= 0 ? std::max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
         glViewport(0, 0, w, h);
         p.shader->set();
         LOCALPARAM(params, p.params);
@@ -1648,8 +1648,8 @@ void renderpostfx(GLuint outfbo)
             {
                 if(!tmu)
                 {
-                    tw = max(postfxw>>postfxtexs[postfxbinds[j]].scale, 1);
-                    th = max(postfxh>>postfxtexs[postfxbinds[j]].scale, 1);
+                    tw = std::max(postfxw>>postfxtexs[postfxbinds[j]].scale, 1);
+                    th = std::max(postfxh>>postfxtexs[postfxbinds[j]].scale, 1);
                 }
                 else
                 {
@@ -1741,7 +1741,7 @@ void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, flo
     }
     inputmask &= (1<<numpostfxbinds)-1;
     freemask &= (1<<numpostfxbinds)-1;
-    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
 }
 COMMANDN(addpostfx, addpostfxcmd, "siisffff");
 
