@@ -41,9 +41,9 @@ static void getbackgroundres(int &w, int &h)
     {
         hk = 768.0f/h;
     }
-    wk = hk = max(wk, hk);
-    w = static_cast<int>(ceil(w*wk));
-    h = static_cast<int>(ceil(h*hk));
+    wk = hk = std::max(wk, hk);
+    w = static_cast<int>(std::ceil(w*wk));
+    h = static_cast<int>(std::ceil(h*hk));
 }
 
 static string backgroundcaption = "";
@@ -110,7 +110,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
     bgquad(0, 0, win_w, win_h);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     // Set position and size of logo
-    float logo_h = (1.f/3.f)*min(win_w, win_h),
+    float logo_h = (1.f/3.f)*std::min(win_w, win_h),
           logo_w = logo_h*(2.f/1.f), // Aspect ratio of logo, defined here
           logo_x = 0.5f*(win_w - logo_w),
           logo_y = 0.5f*(win_h*0.5f - logo_h);
@@ -126,9 +126,9 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
     if (caption)
     {
         int tw = text_width(caption);
-        float tsz = 0.04f*min(win_w, win_h)/FONTH,
+        float tsz = 0.04f*std::min(win_w, win_h)/FONTH,
               tx  = 0.5f*(win_w - tw*tsz),
-              ty  = win_h - 0.075f*1.5f*min(win_w, win_h) - FONTH*tsz;
+              ty  = win_h - 0.075f*1.5f*std::min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
         draw_text(caption, 0, 0);
         pophudmatrix();
@@ -136,8 +136,8 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
     if (mapshot || mapname)
     {
         float infowidth = 14*FONTH,
-              sz  = 0.35f*min(win_w, win_h),
-              msz = (0.85f*min(win_w, win_h) - sz)/(infowidth + FONTH),
+              sz  = 0.35f*std::min(win_w, win_h),
+              msz = (0.85f*std::min(win_w, win_h) - sz)/(infowidth + FONTH),
               x   = 0.5f*win_w,
               y   = logo_y+logo_h - sz/15,
               mx  = 0,
@@ -168,7 +168,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
         {
             float tw  = text_widthf(mapname),
                   tsz = sz/(8*FONTH),
-                  tx  = max(0.5f * (mw*msz - tw * tsz), 0.0f);
+                  tx  = std::max(0.5f * (mw*msz - tw * tsz), 0.0f);
             pushhudtranslate(x + mx + tx, y, tsz);
             draw_text(mapname, 0, 0);
             pophudmatrix();
@@ -216,7 +216,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     int w = hudw, h = hudh;
     if(forceaspect)
     {
-        w = static_cast<int>(ceil(h*forceaspect));
+        w = static_cast<int>(std::ceil(h*forceaspect));
     }
     getbackgroundres(w, h);
     gettextres(w, h);
@@ -259,7 +259,7 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     gle::defvertex(2);
     gle::deftexcoord0();
 
-    float fh = 0.060f*min(w, h),
+    float fh = 0.060f*std::min(w, h),
           fw = fh * 15,
           fx = renderedframe ? w - fw - fh/4 : 0.5f * (w - fw),
           fy = renderedframe ? fh/4 : h - fh * 1.5f;
@@ -280,7 +280,7 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
           eu2 = 32/32.0f,
           ew  = fw * 8/512.0f,
           mw  = bw - sw - ew,
-          ex  = bx+sw + max(mw*bar, fw * 8/512.0f);
+          ex  = bx+sw + std::max(mw*bar, fw * 8/512.0f);
     if(bar > 0)
     {
         settexture("media/interface/loading_bar.png", 3);
@@ -312,7 +312,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     {
         return;
     }
-    int fps = menufps ? (maxfps ? min(maxfps, menufps) : menufps) : maxfps;
+    int fps = menufps ? (maxfps ? std::min(maxfps, menufps) : menufps) : maxfps;
     if(fps)
     {
         static int lastprogress = 0;
@@ -328,7 +328,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         h = hudh;
     if(forceaspect)
     {
-        w = static_cast<int>(ceil(h*forceaspect));
+        w = static_cast<int>(std::ceil(h*forceaspect));
     }
     getbackgroundres(w, h);
     gettextres(w, h);
@@ -374,8 +374,8 @@ void screenres(int w, int h)
     scr_h = std::clamp(h, static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
     if(screen)
     {
-        scr_w = min(scr_w, desktopw);
-        scr_h = min(scr_h, desktoph);
+        scr_w = std::min(scr_w, desktopw);
+        scr_h = std::min(scr_h, desktoph);
         if(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN)
         {
             gl_resize();
@@ -478,8 +478,8 @@ void setupscreen()
     {
         scr_w = (scr_h*desktopw)/desktoph;
     }
-    scr_w = min(scr_w, desktopw);
-    scr_h = min(scr_h, desktoph);
+    scr_w = std::min(scr_w, desktopw);
+    scr_h = std::min(scr_h, desktoph);
 
     int winx = SDL_WINDOWPOS_UNDEFINED,
         winy = SDL_WINDOWPOS_UNDEFINED,
@@ -528,8 +528,8 @@ void setupscreen()
         fatal("failed to create OpenGL context: %s", SDL_GetError());
     }
     SDL_GetWindowSize(screen, &screenw, &screenh);
-    renderw = min(scr_w, screenw);
-    renderh = min(scr_h, screenh);
+    renderw = std::min(scr_w, screenw);
+    renderh = std::min(scr_h, screenh);
     hudw = screenw;
     hudh = screenh;
 }
@@ -585,7 +585,7 @@ COMMAND(resetgl, "");
 
 void limitfps(int &millis, int curmillis)
 {
-    int limit = (mainmenu || minimized) && menufps ? (maxfps ? min(maxfps, menufps) : menufps) : maxfps;
+    int limit = (mainmenu || minimized) && menufps ? (maxfps ? std::min(maxfps, menufps) : menufps) : maxfps;
     if(!limit)
     {
         return;
@@ -648,7 +648,7 @@ void resetfpshistory()
 
 void updatefpshistory(int millis)
 {
-    fpshistory[fpspos++] = max(1, min(1000, millis));
+    fpshistory[fpspos++] = std::max(1, std::min(1000, millis));
     if(fpspos>=maxfpshistory)
     {
         fpspos = 0;
