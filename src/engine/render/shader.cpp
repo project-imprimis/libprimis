@@ -1715,7 +1715,7 @@ void clearpostfx()
 }
 COMMAND(clearpostfx, "");
 
-ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs, float *x, float *y, float *z, float *w),
+void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, float *y, float *z, float *w)
 {
     int inputmask = inputs[0] ? 0 : 1;
     int freemask = inputs[0] ? 0 : 1;
@@ -1742,16 +1742,18 @@ ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs
     inputmask &= (1<<numpostfxbinds)-1;
     freemask &= (1<<numpostfxbinds)-1;
     addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
-});
+}
+COMMANDN(addpostfx, addpostfxcmd, "siisffff");
 
-ICOMMAND(setpostfx, "sffff", (char *name, float *x, float *y, float *z, float *w),
+void setpostfx(char *name, float *x, float *y, float *z, float *w)
 {
     clearpostfx();
     if(name[0])
     {
         addpostfx(name, 0, 0, 1, 1, vec4(*x, *y, *z, *w));
     }
-});
+}
+COMMAND(setpostfx, "sffff");
 
 void cleanupshaders()
 {
