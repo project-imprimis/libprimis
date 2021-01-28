@@ -297,6 +297,8 @@ void viewrh()
     }
 }
 
+// ============================ reflective shadow map =========================//
+
 void reflectiveshadowmap::setup()
 {
     getmodelmatrix();
@@ -353,6 +355,8 @@ void reflectiveshadowmap::gencullplanes()
     cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
     cull[3] = plane(vec4(pw).sub(py)).normalize(); // top plane
 }
+
+//=========================== end reflective shadow map =======================//
 
 void clearradiancehintscache()
 {
@@ -842,6 +846,25 @@ void radiancehints::renderslices()
     {
         glDisable(GL_SCISSOR_TEST);
     }
+}
+
+void radiancehints::clearcache()
+{
+    for(int i = 0; i < rhmaxsplits; ++i)
+    {
+        splits[i].clearcache();
+    }
+}
+bool radiancehints::allcached() const
+{
+    for(int i = 0; i < rhsplits; ++i)
+    {
+        if(splits[i].cached != splits[i].center)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 void renderradiancehints()

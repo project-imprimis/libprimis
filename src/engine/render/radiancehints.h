@@ -12,6 +12,8 @@ extern int debugrsm, debugrh;
 extern GLuint rhtex[8];
 extern Shader *rsmworldshader;
 
+//defines the size, position & projection info for a reflective shadow map
+// the reflective shadow map is then used to calculate global illumination
 struct reflectiveshadowmap
 {
     matrix4 model, proj;
@@ -29,6 +31,7 @@ extern reflectiveshadowmap rsm;
 
 struct radiancehints
 {
+    //splits are used to LOD global illumination (more detail near camera)
     struct splitinfo
     {
         float nearplane, farplane;
@@ -55,24 +58,8 @@ struct radiancehints
     void bindparams();
     void renderslices();
 
-    void clearcache()
-    {
-        for(int i = 0; i < rhmaxsplits; ++i)
-        {
-            splits[i].clearcache();
-        }
-    }
-    bool allcached() const
-    {
-        for(int i = 0; i < rhsplits; ++i)
-        {
-            if(splits[i].cached != splits[i].center)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    void clearcache();
+    bool allcached() const;
 };
 
 extern radiancehints rh;
