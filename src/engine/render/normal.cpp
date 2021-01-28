@@ -46,7 +46,7 @@ namespace //internal functionality not seen by other files
     hashset<normalgroup> normalgroups(1<<16);
     std::vector<normal> normals;
     std::vector<tnormal> tnormals;
-    vector<int> smoothgroups;
+    std::vector<int> smoothgroups;
 
     VARR(lerpangle, 0, 44, 180); //max angle to merge octree faces' normals smoothly
 
@@ -352,9 +352,10 @@ void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
 {
     normalkey key = { pos, smooth };
     const normalgroup *g = normalgroups.access(key);
+    bool usegroup = (static_cast<int>(smoothgroups.size()) > smooth) && smoothgroups[smooth] >= 0;
     if(g)
     {
-        int angle = smoothgroups.inrange(smooth) && smoothgroups[smooth] >= 0 ? smoothgroups[smooth] : lerpangle;
+        int angle = usegroup ? smoothgroups[smooth] : lerpangle;
         float lerpthreshold = cos360(angle) - 1e-5f;
         if(g->tnormals < 0 || !findtnormal(*g, lerpthreshold, surface, v))
         {
@@ -390,22 +391,22 @@ void clearnormals()
 
 void resetsmoothgroups()
 {
-    smoothgroups.setsize(0);
+    smoothgroups.clear();
 }
 
 int smoothangle(int id, int angle)
 {
     if(id < 0)
     {
-        id = smoothgroups.length();
+        id = smoothgroups.size();
     }
     if(id >= 10000)
     {
         return -1;
     }
-    while(smoothgroups.length() <= id)
+    while(static_cast<int>(smoothgroups.size()) <= id)
     {
-        smoothgroups.add(-1);
+        smoothgroups.push_back(-1);
     }
     if(angle >= 0)
     {
