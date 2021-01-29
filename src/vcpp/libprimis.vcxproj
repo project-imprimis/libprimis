@@ -137,15 +137,6 @@
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\zconf.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\zlib.h" />
     <ClInclude Include="..\libprimis-headers\cube.h" />
-    <ClInclude Include="..\shared\command.h" />
-    <ClInclude Include="..\shared\cube.h" />
-    <ClInclude Include="..\shared\ents.h" />
-    <ClInclude Include="..\shared\geom.h" />
-    <ClInclude Include="..\shared\glemu.h" />
-    <ClInclude Include="..\shared\glexts.h" />
-    <ClInclude Include="..\shared\iengine.h" />
-    <ClInclude Include="..\shared\igame.h" />
-    <ClInclude Include="..\shared\tools.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\interface\command.cpp" />

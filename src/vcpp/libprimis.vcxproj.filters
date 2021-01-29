@@ -67,35 +67,8 @@
     <ClCompile Include="..\engine\interface\textedit.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\shared\command.h">
-      <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\cube.h">
-      <Filter>shared</Filter>
-    </ClInclude>
     <ClInclude Include="..\engine\engine.h">
       <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\ents.h">
-      <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\geom.h">
-      <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\glemu.h">
-      <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\glexts.h">
-      <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\iengine.h">
-      <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\igame.h">
-      <Filter>shared</Filter>
-    </ClInclude>
-    <ClInclude Include="..\shared\tools.h">
-      <Filter>shared</Filter>
     </ClInclude>
     <ClInclude Include="..\engine\interface\console.h" />
     <ClInclude Include="..\engine\interface\control.h" />
