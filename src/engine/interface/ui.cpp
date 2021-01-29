@@ -257,7 +257,7 @@ namespace UI
                 } \
             } while(0)
 
-            Object() : adjust(0), state(0), childstate(0) {}
+            Object() : adjust(0), state(0), childstate(0), parent(), w(), h(), x(), y() {}
             virtual ~Object()
             {
                 clearchildren();
@@ -1124,6 +1124,8 @@ namespace UI
     {
         float space, subw;
 
+        HorizontalList () : space(), subw() {}
+
         static const char *typestr()
         {
             return "#HorizontalList";
@@ -1184,6 +1186,8 @@ namespace UI
     struct VerticalList : Object
     {
         float space, subh;
+
+        VerticalList() : space(), subh() {}
 
         static const char *typestr()
         {
@@ -1247,6 +1251,8 @@ namespace UI
         int columns;
         float spacew, spaceh, subw, subh;
         std::vector<float> widths, heights;
+
+        Grid() : columns(), spacew(), spaceh(), subw(), subh() {}
 
         static const char *typestr()
         {
@@ -1549,6 +1555,8 @@ namespace UI
     struct Spacer : Object
     {
         float spacew, spaceh;
+
+        Spacer() : spacew(), spaceh() {}
 
         void setup(float spacew_, float spaceh_)
         {
