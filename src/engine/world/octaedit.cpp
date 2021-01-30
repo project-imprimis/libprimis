@@ -1590,7 +1590,7 @@ namespace hmap
     {
         textures.setsize(0);
     }
-    COMMANDN(hmapcancel, cancel, "")
+    COMMANDN(hmapcancel, cancel, "");
 
     void hmapselect()
     {
@@ -1604,9 +1604,8 @@ namespace hmap
         {
             textures.remove(i);
         }
-    )
-    COMMAND(hmapselect, "")
-
+    }
+    COMMAND(hmapselect, "");
 
     bool isheightmap(int o, int d, bool empty, cube *c)
     {
@@ -2446,7 +2445,7 @@ void rendertexturepanel(int w, int h)
 }
 //defines editing readonly variables, useful for the HUD
 #define EDITSTAT(name, type, val) \
-    ICOMMAND(editstat##name, "", (), \
+    void editstat##name() \
     { \
         static int laststat = 0; \
         static type prevstat = 0; \
@@ -2458,7 +2457,9 @@ void rendertexturepanel(int w, int h)
         } \
         if(prevstat == curstat) curstat = (val); \
         type##ret(curstat); \
-    });
+    } \
+    COMMAND(editstat##name, "");
+
 EDITSTAT(wtr, int, wtris);
 EDITSTAT(vtr, int, (vtris*100)/std::max(wtris, 1));
 EDITSTAT(wvt, int, wverts);
@@ -2471,3 +2472,4 @@ EDITSTAT(glde, int, glde);
 EDITSTAT(geombatch, int, gbatches);
 EDITSTAT(oq, int, getnumqueries());
 
+#undef EDITSTAT
