@@ -1586,10 +1586,14 @@ namespace hmap
 {
     vector<int> textures;
 
-    void cancel() { textures.setsize(0); }
+    void cancel()
+    {
+        textures.setsize(0);
+    }
+    COMMANDN(hmapcancel, cancel, "")
 
-    ICOMMAND(hmapcancel, "", (), cancel());
-    ICOMMAND(hmapselect, "", (),
+    void hmapselect()
+    {
         int t = lookupcube(cur).texture[orient];
         int i = textures.find(t);
         if(i<0)
@@ -1600,7 +1604,9 @@ namespace hmap
         {
             textures.remove(i);
         }
-    );
+    )
+    COMMAND(hmapselect, "")
+
 
     bool isheightmap(int o, int d, bool empty, cube *c)
     {
