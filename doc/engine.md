@@ -3389,12 +3389,32 @@ unsurprisingly, InlineCOMMAND). This macro has the following arguments:
 These commands comprise of two parts: the declaration of the command, and a
 separate named function which is called upon the execution of the command.
 It is slightly less flexible than the `ICOMMAND` inline command macro in that it
-requires that the function to be called is the same as the command's name.
+requires that a function be created with the command's contents. If for some
+reason the function and command cannot have the same name as its associated
+function, it is possible to use the COMMANDN macro to define both the name of
+the command and its related function separately.
 
 This macro has the following arguments:
 * `name`: the name of the function to be called as well as the command's name
 * `nargs`: a string codifying the arguments the command accepts (see below)
 
+Multiple commands which reference the same function by name (e.g. COMMANDN)
+cannot be assigned, because the macros which define them cannot redefine the
+dummy variables used for their instantiation.
+
+#### Interpreter return types
+
+To return values to the interpreter, there are a handful of useful functions
+which allow this to be done.These functions should be set to "return" the
+desired value of a COMMAND or ICOMMAND's output (do not use the function's
+native return type).
+
+* `intret` returns an integer to the interpreter
+* `floatret` returns a float to the interpreter
+* `stringret` returns a string to the interpreter
+
+Returned values from commands are not displayed directly to the console at
+first, and must be manually displayed using `echo`.
 #### Decoding `nargs`
 
 The `nargs` part of the command macro is used to tell the command parser what
