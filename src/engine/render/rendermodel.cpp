@@ -388,18 +388,29 @@ const char *mapmodelname(int i)
     return mapmodels.inrange(i) ? mapmodels[i].name : nullptr;
 }
 
-ICOMMAND(mmodel, "s", (char *name), mapmodel(name));
 COMMAND(mapmodel, "s");
 COMMAND(mapmodelreset, "i");
-ICOMMAND(mapmodelname, "ii", (int *index, int *prefix),
+
+void mapmodelnamecmd(int *index, int *prefix)
 {
     if(mapmodels.inrange(*index))
     {
         result(mapmodels[*index].name[0] ? mapmodels[*index].name + (*prefix ? 0 : mmprefixlen) : "");
     }
-});
-ICOMMAND(mapmodelloaded, "i", (int *index), { intret(mapmodels.inrange(*index) && mapmodels[*index].m ? 1 : 0); });
-ICOMMAND(nummapmodels, "", (), { intret(mapmodels.length()); });
+}
+COMMANDN(mapmodelname, mapmodelnamecmd, "ii");
+
+void mapmodelloaded(int *index)
+{
+    intret(mapmodels.inrange(*index) && mapmodels[*index].m ? 1 : 0);
+}
+COMMAND(mapmodelloaded, "i");
+
+void nummapmodels()
+{
+    intret(mapmodels.length());
+}
+COMMAND(nummapmodels, "");
 
 // model registry
 
@@ -1373,7 +1384,7 @@ std::vector<int> findanims(const char *pattern)
     return anims;
 }
 
-ICOMMAND(findanims, "s", (char *name),
+void findanimscmd(char *name)
 {
     std::vector<int> anims = findanims(name);
     vector<char> buf;
@@ -1389,7 +1400,8 @@ ICOMMAND(findanims, "s", (char *name),
     }
     buf.add('\0');
     result(buf.getbuf());
-});
+}
+COMMANDN(findanims, findanimscmd, "s");
 
 #define TRY_LOAD(tex, prefix, cmd, name) \
     if((tex = textureload(makerelpath(mdir, name ".jpg", prefix, cmd), 0, true, false))==notexture) \
