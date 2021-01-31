@@ -95,7 +95,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     const uint signature = static_cast<uint>(Zip_DirectorySignature);
     while(offset > end)
     {
-        size_t carry = min(len, size_t(Zip_DirectorySize-1)), next = min(sizeof(buf) - carry, size_t(offset - end));
+        size_t carry = min(len, static_cast<size_t>(Zip_DirectorySize-1)), next = min(sizeof(buf) - carry, static_cast<size_t>(offset - end));
         offset -= next;
         memmove(&buf[next], buf, carry);
         if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, next, f) != next)
@@ -640,7 +640,7 @@ struct zipstream : stream
                 }
                 arch->owner = this;
             }
-            size_t n = fread(buf, 1, min(len, size_t(info->size + info->offset - reading)), arch->data);
+            size_t n = fread(buf, 1, min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
             reading += n;
             if(n < len)
             {

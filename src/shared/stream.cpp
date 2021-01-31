@@ -385,7 +385,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
         if(end)
         {
             size_t len = strlen(tmp);
-            copystring(&tmp[len], file, std::min(sizeof(tmp)-len, size_t(end+2-file)));
+            copystring(&tmp[len], file, std::min(sizeof(tmp)-len, static_cast<size_t>(end+2-file)));
             file = end+1;
         }
     }
@@ -1029,7 +1029,7 @@ struct gzstream : stream
         {
             zfile.next_in = (Bytef *)buf;
         }
-        size = std::min(size, size_t(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
+        size = std::min(size, static_cast<size_t>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
         size_t n = file->read(zfile.next_in + zfile.avail_in, size);
         if(n > 0)
         {
