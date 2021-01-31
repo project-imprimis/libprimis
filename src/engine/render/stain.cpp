@@ -1105,7 +1105,7 @@ VARP(maxstaindistance, 1, 512, 10000);
 
 void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color, int info)
 {
-    if(!showstains || type<0 || (size_t)type>=sizeof(stains)/sizeof(stains[0]) || center.dist(camera1->o) - radius > maxstaindistance)
+    if(!showstains || type<0 || static_cast<size_t>(type) >= sizeof(stains)/sizeof(stains[0]) || center.dist(camera1->o) - radius > maxstaindistance)
     {
         return;
     }

@@ -611,7 +611,7 @@ struct zipstream : stream
         uchar skip[512];
         while(pos > 0)
         {
-            size_t skipped = (size_t)min(pos, (offset)sizeof(skip));
+            size_t skipped = static_cast<size_t>(min(pos, (offset)sizeof(skip)));
             if(read(skip, skipped) != skipped)
             {
                 return false;

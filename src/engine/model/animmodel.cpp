@@ -682,7 +682,9 @@ void animmodel::part::getdefaultanim(animinfo &info, int anim, uint varseed, dyn
 
 bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime)
 {
-    uint varseed = static_cast<uint>((size_t)d);
+    //varseed uses an UGLY reinterpret cast from a pointer address to a size_t int
+    //presumably the address should be a fairly random value
+    uint varseed = static_cast<uint>(reinterpret_cast<size_t>(d));
     info.anim = anim;
     info.basetime = basetime;
     info.varseed = varseed;
