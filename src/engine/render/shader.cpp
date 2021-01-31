@@ -40,7 +40,7 @@ VAR(mintexoffset, 1, 0, 0);
 VAR(maxtexoffset, 1, 0, 0);
 VAR(mintexrectoffset, 1, 0, 0);
 VAR(maxtexrectoffset, 1, 0, 0);
-VAR(dbgshader, 0, 1, 2);
+VAR(debugshader, 0, 1, 2);
 
 void loadshaders()
 {
@@ -186,7 +186,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         glDeleteShader_(obj);
         obj = 0;
     }
-    else if(dbgshader > 1 && msg)
+    else if(debugshader > 1 && msg)
     {
         showglslinfo(type, obj, name, parts, numparts);
     }
@@ -685,7 +685,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(*this, GL_VERTEX_SHADER,   vsobj, vsstr, name, dbgshader || !variantshader);
+        compileglslshader(*this, GL_VERTEX_SHADER,   vsobj, vsstr, name, debugshader || !variantshader);
     }
     if(!psstr)
     {
@@ -693,7 +693,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, dbgshader || !variantshader);
+        compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
     }
     linkglslprogram(*this, !variantshader);
     return program!=0;
