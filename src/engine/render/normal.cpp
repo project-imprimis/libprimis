@@ -315,13 +315,13 @@ namespace //internal functionality not seen by other files
                     const vec &v1 = pos[e1],
                               &v2 = pos[e2];
                     ivec d(vec(v2).sub(v1).mul(8));
-                    int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
+                    int axis = std::abs(d.x) > std::abs(d.y) ? (std::abs(d.x) > std::abs(d.z) ? 0 : 2) : (std::abs(d.y) > std::abs(d.z) ? 1 : 2);
                     if(d[axis] < 0)
                     {
                         d.neg();
                     }
                     reduceslope(d);
-                    int origin  =  static_cast<int>(min(v1[axis], v2[axis])*8)&~0x7FFF,
+                    int origin  =  static_cast<int>(std::min(v1[axis], v2[axis])*8)&~0x7FFF,
                         offset1 = (static_cast<int>(v1[axis]*8) - origin) / d[axis],
                         offset2 = (static_cast<int>(v2[axis]*8) - origin) / d[axis];
                     vec o = vec(v1).sub(vec(d).mul(offset1/8.0f)),
@@ -410,7 +410,7 @@ int smoothangle(int id, int angle)
     }
     if(angle >= 0)
     {
-        smoothgroups[id] = min(angle, 180);
+        smoothgroups[id] = std::min(angle, 180);
     }
     return id;
 }
