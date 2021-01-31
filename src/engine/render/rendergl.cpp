@@ -332,7 +332,7 @@ VAR(usetexgather, 1, 0, 0);
 VAR(maxdrawbufs, 1, 0, 0);
 VAR(maxdualdrawbufs, 1, 0, 0);
 
-VAR(dbgexts, 0, 0, 1);
+VAR(debugexts, 0, 0, 1);
 
 hashset<const char *> glexts;
 
@@ -606,7 +606,7 @@ void gl_checkextensions()
     if(hasext("GL_EXT_gpu_shader4"))
     {
         hasEGPU4 = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
         }
@@ -659,7 +659,7 @@ void gl_checkextensions()
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
         }
@@ -670,7 +670,7 @@ void gl_checkextensions()
         glGetQueryObjecti64v_  =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64vEXT");
         glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64vEXT");
         hasTQ = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
         }
@@ -683,7 +683,7 @@ void gl_checkextensions()
         GLint val = 0;
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val);
         hwmaxaniso = val;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_texture_filter_anisotropic extension.");
         }
@@ -696,7 +696,7 @@ void gl_checkextensions()
     {
         glDepthBounds_ = (PFNGLDEPTHBOUNDSEXTPROC) getprocaddress("glDepthBoundsEXT");
         hasDBT = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_depth_bounds_test extension.");
         }
@@ -716,7 +716,7 @@ void gl_checkextensions()
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
     {
         hasES3 = true;
-        if(glversion < 430 && dbgexts)
+        if(glversion < 430 && debugexts)
         {
             conoutf(Console_Init, "Using GL_ARB_ES3_compatibility extension.");
         }
@@ -739,7 +739,7 @@ void gl_checkextensions()
             glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallbackARB");
             glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLogARB");
             hasDBGO = true;
-            if(dbgexts)
+            if(debugexts)
             {
                 conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
             }
@@ -751,7 +751,7 @@ void gl_checkextensions()
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubData");
 
         hasCI = true;
-        if(glversion < 430 && dbgexts)
+        if(glversion < 430 && debugexts)
         {
             conoutf(Console_Init, "Using GL_ARB_copy_image extension.");
         }
@@ -761,7 +761,7 @@ void gl_checkextensions()
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubDataNV");
 
         hasCI = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_NV_copy_image extension.");
         }
