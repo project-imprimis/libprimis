@@ -52,7 +52,7 @@ enum
 
 VARFP(maxstaintris, 1, 2048, 16384, initstains());
 VARMP(stainfade, 1, 15, 60, 1000);
-VAR(dbgstain, 0, 0, 1);
+VAR(debugstain, 0, 0, 1);
 
 struct stainbuffer
 {
@@ -597,7 +597,7 @@ struct stainrenderer
             {
                 continue;
             }
-            if(dbgstain)
+            if(debugstain)
             {
                 int nverts = buf.nextverts();
                 static const char * const sbufname[StainBuffer_Number] = { "opaque", "transparent", "mapmodel" };
