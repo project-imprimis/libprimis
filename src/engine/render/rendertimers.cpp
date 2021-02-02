@@ -95,7 +95,7 @@ void endtimer(timer *t)
     }
     else
     {
-        t->result = max(static_cast<float>(getclockmillis() - t->starttime), 0.0f);
+        t->result = std::max(static_cast<float>(getclockmillis() - t->starttime), 0.0f);
     }
 }
 
@@ -115,7 +115,7 @@ void synctimers()
             }
             GLuint64EXT result = 0;
             glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result);
-            t.result = max(static_cast<float>(result) * 1e-6f, 0.0f);
+            t.result = std::max(static_cast<float>(result) * 1e-6f, 0.0f);
             t.waiting &= ~(1<<timercycle);
         }
         else
