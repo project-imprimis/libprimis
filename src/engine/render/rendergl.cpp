@@ -1,4 +1,12 @@
-// rendergl.cpp: core opengl rendering stuff
+/* rendergl.cpp: core opengl rendering stuff
+ *
+ * rendergl.cpp handles the main rendering functions, which render the scene
+ * using OpenGL features aliased in this file. This file also handles the
+ * position of the camera and the projection frustum handling.
+ *
+ * While this file does not handle light and texture rendering, it does handle
+ * the simple world depth fog in libprimis.
+ */
 
 #include "engine.h"
 
@@ -39,6 +47,7 @@ bool mesa   = false,
 
 int hasstencil = 0;
 
+//read-only info for gl debugging
 VAR(glversion, 1, 0, 0);
 VAR(glslversion, 1, 0, 0);
 
@@ -712,7 +721,7 @@ void gl_checkextensions()
     glBlendFunci_ =             (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
     glBlendFuncSeparatei_ =     (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
     usetexgather = !intel && !nvidia ? 2 : 1;
-    //OpenGL 4.
+    //OpenGL 4.x
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
     {
         hasES3 = true;
