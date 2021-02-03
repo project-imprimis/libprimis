@@ -675,7 +675,7 @@ cube *loadchildren(stream *f, const ivec &co, int size, bool &failed)
     return c;
 }
 
-VAR(dbgvars, 0, 0, 1);
+VAR(debugvars, 0, 0, 1);
 
 void savevslot(stream *f, VSlot &vs, int prev)
 {
@@ -983,7 +983,7 @@ bool save_world(const char *mname, const char *gameident)
         switch(id.type)
         {
             case Id_Var:
-                if(dbgvars)
+                if(debugvars)
                 {
                     conoutf(Console_Debug, "wrote var %s: %d", id.name, *id.storage.i);
                 }
@@ -991,7 +991,7 @@ bool save_world(const char *mname, const char *gameident)
                 break;
 
             case Id_FloatVar:
-                if(dbgvars)
+                if(debugvars)
                 {
                     conoutf(Console_Debug, "wrote fvar %s: %f", id.name, *id.storage.f);
                 }
@@ -999,7 +999,7 @@ bool save_world(const char *mname, const char *gameident)
                 break;
 
             case Id_StringVar:
-                if(dbgvars)
+                if(debugvars)
                 {
                     conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.storage.s);
                 }
@@ -1008,7 +1008,7 @@ bool save_world(const char *mname, const char *gameident)
                 break;
         }
     });
-    if(dbgvars)
+    if(debugvars)
     {
         conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
     }
@@ -1131,7 +1131,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
                     if(id->minval <= id->maxval && i >= id->minval && i <= id->maxval)
                     {
                         setvar(name, i);
-                        if(dbgvars)
+                        if(debugvars)
                         {
                             conoutf(Console_Debug, "read var %s: %d", name, i);
                         }
@@ -1144,7 +1144,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
                     if(id->minvalf <= id->maxvalf && f >= id->minvalf && f <= id->maxvalf)
                     {
                         setfvar(name, f);
-                        if(dbgvars)
+                        if(debugvars)
                         {
                             conoutf(Console_Debug, "read fvar %s: %f", name, f);
                         }
@@ -1154,7 +1154,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
                 case Id_StringVar:
                 {
                     setsvar(name, val.getstr());
-                    if(dbgvars)
+                    if(debugvars)
                     {
                         conoutf(Console_Debug, "read svar %s: %s", name, val.getstr());
                     }
@@ -1163,7 +1163,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
             }
         }
     }
-    if(dbgvars)
+    if(debugvars)
     {
         conoutf(Console_Debug, "read %d vars", hdr.numvars);
     }
