@@ -8,6 +8,11 @@
 
 #include "world/material.h"
 
+// ======================= caustics ===================== //
+
+//caustics: lightening on surfaces underwater due to lensing effects from an
+// uneven water surface
+
 static const int numcaustics = 32;
 
 static Texture *caustictex[numcaustics] = {nullptr};
@@ -44,8 +49,6 @@ void cleanupcaustics()
     }
 }
 
-//caustics: lightening on surfaces underwater due to lensing effects from an
-// uneven water surface
 VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
 VARFR(causticmillis, 0, 75, 1000, preloadwatershaders());
 FVARR(causticcontrast, 0, 0.6f, 2);
@@ -178,6 +181,10 @@ void renderwaterfog(int mat, float surface)
 }
 
 /* vertex water */
+
+// vertex water refers to the ability for the engine to dynamically create geom
+// for the water material's surface, to simulate waviness directly by creating
+// 3d geometry
 
 //these variables control the vertex water geometry intensity
 //(nothing to do with any other rendering)
@@ -463,11 +470,12 @@ void preloadwatershaders(bool force)
     useshaderbyname("waterminimap");
 }
 
-static float wfwave = 0.0f,
-             wfscroll = 0.0f,
-             wfxscale = 1.0f,
-             wfyscale = 1.0f;
+static float wfwave = 0.0f, //waterfall wave
+             wfscroll = 0.0f, //waterfall scroll
+             wfxscale = 1.0f, //waterfall x scale
+             wfyscale = 1.0f; //waterfall y scale
 
+//"waterfall" refers to any rendered side of water material
 static void renderwaterfall(const materialsurface &m, float offset, const vec *normal = nullptr)
 {
     if(gle::attribbuf.empty())
