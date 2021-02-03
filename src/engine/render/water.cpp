@@ -425,7 +425,6 @@ GETMATIDXVAR(water, fallrefract, float)
 
 VARFP(waterreflect, 0, 1, 1, { preloadwatershaders(); });
 VARR(waterreflectstep, 1, 32, 10000);
-VARFP(waterfallenv, 0, 1, 1, preloadwatershaders());
 
 void preloadwatershaders(bool force)
 {
@@ -461,10 +460,6 @@ void preloadwatershaders(bool force)
         }
     }
     useshaderbyname("underwater");
-    if(waterfallenv)
-    {
-        useshaderbyname("waterfallenv");
-    }
     useshaderbyname("waterfall");
     useshaderbyname("waterfog");
     useshaderbyname("waterminimap");
@@ -587,14 +582,8 @@ void renderwaterfalls()
         GLOBALPARAMF(waterfallrefract, refractcolor.x*refractscale, refractcolor.y*refractscale, refractcolor.z*refractscale, refract*viewh);
         GLOBALPARAMF(waterfallspec, spec/100.0f);
 
-        if(waterfallenv)
-        {
-            SETSHADER(waterfallenv);
-        }
-        else
-        {
-            SETSHADER(waterfall);
-        }
+        SETSHADER(waterfall);
+
         glBindTexture(GL_TEXTURE_2D, tex->id);
         glActiveTexture_(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, wslot.sts.inrange(2) ? (wslot.sts.inrange(3) ? wslot.sts[3].t->id : notexture->id) : (wslot.sts.inrange(1) ? wslot.sts[1].t->id : notexture->id));
