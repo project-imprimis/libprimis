@@ -588,7 +588,9 @@ namespace
                         vertex v;
                         v.pos = p2[k];
                         vec ep = vec(v.pos).sub(v0);
-                        float dp1 = ep.dot(e1), dp2 = ep.dot(e2), denom = d11*d22 - d12*d12,
+                        float dp1 = ep.dot(e1),
+                              dp2 = ep.dot(e2),
+                              denom = d11*d22 - d12*d12,
                               b1 = (d22*dp1 - d12*dp2) / denom,
                               b2 = (d11*dp2 - d12*dp1) / denom,
                               b0 = 1 - b1 - b2;
