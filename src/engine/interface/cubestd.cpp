@@ -728,7 +728,12 @@ int listlen(const char *s)
     }
     return n;
 }
-ICOMMAND(listlen, "s", (char *s), intret(listlen(s)));
+
+void listlencmd(const char *s)
+{
+    intret(listlen(s));
+}
+COMMANDN(listlen, listlencmd, "s");
 
 void at(tagval *args, int numargs)
 {
@@ -801,13 +806,14 @@ void sublist(const char *s, int *skip, int *count, int *numargs)
 }
 COMMAND(sublist, "siiN");
 
-ICOMMAND(stripcolors, "s", (char *s),
+void stripcolors(char *s)
 {
     int len = strlen(s);
     char *d = newstring(len);
     filtertext(d, s, true, false, len);
     stringret(d);
-});
+}
+COMMAND(stripcolors, "s");
 
 static inline void setiter(ident &id, char *val, identstack &stack)
 {
@@ -1235,7 +1241,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
 }
 COMMAND(listsplice, "ssii");
 
-ICOMMAND(loopfiles, "rsse", (ident *id, char *dir, char *ext, uint *body),
+void loopfiles(ident *id, char *dir, char *ext, uint *body)
 {
     if(id->type!=Id_Alias)
     {
@@ -1255,7 +1261,8 @@ ICOMMAND(loopfiles, "rsse", (ident *id, char *dir, char *ext, uint *body),
     {
         poparg(*id);
     }
-});
+}
+COMMAND(loopfiles, "rsse");
 
 void findfile_(char *name)
 {
