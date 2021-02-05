@@ -35,9 +35,9 @@ static inline void drawvaskytris(vtxarray *va)
 
 ///////// view frustrum culling ///////////////////////
 
-plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
-float vfcDfog;  // far plane culling distance (fog limit).
-float vfcDnear[5], vfcDfar[5];
+static plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
+static float vfcDfog;  // far plane culling distance (fog limit).
+static float vfcDnear[5], vfcDfar[5];
 
 vtxarray *visibleva = nullptr;
 
@@ -199,7 +199,7 @@ static inline float vadist(vtxarray *va, const vec &p)
     return p.dist_to_bb(va->bbmin, va->bbmax);
 }
 
-const int vasortsize = 64;
+static const int vasortsize = 64;
 
 static vtxarray *vasort[vasortsize];
 
@@ -323,7 +323,7 @@ void setvfcP(const vec &bbmin, const vec &bbmax)
     calcvfcD();
 }
 
-plane oldvfcP[5];
+static plane oldvfcP[5];
 
 void savevfcP()
 {
