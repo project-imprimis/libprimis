@@ -395,8 +395,7 @@ void screenres(int w, int h)
         initwarning("screen resolution");
     }
 }
-
-ICOMMAND(screenres, "ii", (int *w, int *h), screenres(*w, *h));
+COMMAND(screenres, "ii");
 
 static void setgamma(int val)
 {
