@@ -1,5 +1,10 @@
-//screen rendering functions, such as background, progress bar, screen settings
-// (e.g. gamma);
+/* renderwindow: screen rendering functionality
+ *
+ * screen rendering functions, such as background, progress bar
+ * also handles stuff such as main menu rendering and other non-intensive rendering
+ * as well as global rendering settings such as gamma
+ */
+
 #include "engine.h"
 
 #include "octarender.h"
