@@ -1253,7 +1253,7 @@ Shader *useshaderbyname(const char *name)
     s->forced = true;
     return s;
 }
-ICOMMAND(forceshader, "s", (const char *name), useshaderbyname(name));
+COMMANDN(forceshader, useshaderbyname, "s");
 
 //=====================================================================GENSHADER
 #define GENSHADER(cond, body) \
@@ -1477,7 +1477,12 @@ bool shouldreuseparams(Slot &s, VSlot &p)
     return false;
 }
 
-ICOMMAND(isshaderdefined, "s", (char *name), intret(lookupshaderbyname(name) ? 1 : 0));
+
+void isshaderdefinedcmd(const char * name)
+{
+    intret(lookupshaderbyname(name) ? 1 : 0);
+}
+COMMANDN(isshaderdefined, isshaderdefinedcmd, "s");
 
 static hashset<const char *> shaderparamnames(256);
 
@@ -1514,7 +1519,6 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     slotparams.add(param);
 }
 
-ICOMMAND(setuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(setshaderparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(defuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(reuseuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE));
