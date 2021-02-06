@@ -372,6 +372,13 @@ void setfullscreen(bool enable)
 
 VARF(fullscreen, 0, 1, 1, setfullscreen(fullscreen!=0));
 
+/* screenres: sets the window size to w * h pixels, or reduces fullscreen
+ * resolution to w * h pixels
+ *
+ * arguments:
+ *    w: width of new screen res
+ *    h: height of new screen res
+ */
 void screenres(int w, int h)
 {
     //need to cast enum to int for std's clamp implementation
@@ -416,6 +423,9 @@ VARFNP(gamma, reqgamma, 30, 100, 300,
     setgamma(curgamma);
 });
 
+/* restoregamma: sets gamma to the previous set value, useful for reverting bad-
+ * looking gamma trial settings
+ */
 void restoregamma()
 {
     if(initing || reqgamma == 100)
@@ -584,9 +594,15 @@ void resetgl()
     reloadtextures();
     allchanged(true);
 }
-
 COMMAND(resetgl, "");
 
+/* limitfps: uses SDL_Delay to delay a frame, given the time the last frame was
+ * rendered and the current time
+ *
+ * Arguments:
+ *    millis: the time (in ms) since program started
+ *    curmillis: the last registered frame time
+ */
 void limitfps(int &millis, int curmillis)
 {
     int limit = (mainmenu || minimized) && menufps ? (maxfps ? std::min(maxfps, menufps) : menufps) : maxfps;
@@ -618,6 +634,7 @@ void limitfps(int &millis, int curmillis)
 
 #ifdef WIN32
     // Force Optimus setups to use the NVIDIA GPU
+    // or also for AMD dual graphics
     extern "C"
     {
         #ifdef __GNUC__
@@ -638,8 +655,8 @@ void limitfps(int &millis, int curmillis)
 
 static const int maxfpshistory = 60;
 
-
-int fpspos = 0, fpshistory[maxfpshistory];
+int fpspos = 0,
+    fpshistory[maxfpshistory];
 
 void resetfpshistory()
 {
@@ -682,7 +699,7 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
     worstdiff = fps-1000/worst;
 }
 
-void getfps_(int *raw)
+void getfpscmd(int *raw)
 {
     if(*raw)
     {
@@ -696,4 +713,4 @@ void getfps_(int *raw)
     }
 }
 
-COMMANDN(getfps, getfps_, "i");
+COMMANDN(getfps, getfpscmd, "i");
