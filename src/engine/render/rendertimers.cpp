@@ -22,14 +22,15 @@ struct timer
 {
     enum
     {
-        MAXQUERY = 4
+        MAXQUERY = 4        //max number of gl queries
     };
-    const char *name;
-    bool gpu;
-    GLuint query[MAXQUERY];
-    int waiting;
-    uint starttime;
-    float result, print;
+    const char *name;       //name the timer reports as
+    bool gpu;               //whether the timer is for gpu time (true) or cpu time
+    GLuint query[MAXQUERY]; //gpu query information
+    int waiting;            //internal bitmask for queries
+    uint starttime;         //time the timer was started (in terms of ms since game started)
+    float result,           //raw value of the timer, -1 if no info available
+          print;            //the time the timer displays: ms per frame for whatever object
 };
 static vector<timer> timers;
 static vector<int> timerorder;
