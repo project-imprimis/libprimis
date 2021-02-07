@@ -90,7 +90,7 @@ struct SoundChannel
 
     void reset()
     {
-        inuse = false;
+        inuse  = false;
         clearloc();
         slot   = nullptr;
         ent    = nullptr;
@@ -181,11 +181,11 @@ VARFP(soundvol, 0, 255, 255, if(!soundvol)
 });
 VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
-char *musicfile = nullptr,
+char *musicfile    = nullptr,
      *musicdonecmd = nullptr;
 
-Mix_Music *music = nullptr;
-SDL_RWops *musicrw = nullptr;
+Mix_Music *music    = nullptr;
+SDL_RWops *musicrw  = nullptr;
 stream *musicstream = nullptr;
 
 void setmusicvol(int musicvol)
@@ -227,14 +227,20 @@ void stopmusic()
 #else
     #define AUDIODRIVER ""
 #endif
+
 bool shouldinitaudio = true;
+
 SVARF(audiodriver, AUDIODRIVER, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
+
 //master sound toggle
 VARF(sound, 0, 1, 1, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
-//# of sound channels
+
+//# of sound channels (not physical output channels, but individual sound samples in use, such as weaps and light ents)
 VARF(soundchans, 1, 32, 128, initwarning("sound configuration", Init_Reset, Change_Sound));
+
 //max sound frequency (44.1KHz = CD)
 VARF(soundfreq, 0, 44100, 48000, initwarning("sound configuration", Init_Reset, Change_Sound));
+
 //length of sound buffer in milliseconds
 VARF(soundbufferlen, 128, 1024, 4096, initwarning("sound configuration", Init_Reset, Change_Sound));
 
