@@ -264,7 +264,7 @@ float renderfullconsole(float w, float h)
 float renderconsole(float w, float h, float abovehud)
 {
     float conpad = FONTH/2,
-          conheight = std::min(float(FONTH*consize), h - 2*conpad),
+          conheight = std::min(static_cast<float>(FONTH*consize), h - 2*conpad),
           conwidth = w - 2*conpad;
     float y = drawconlines(conskip, confade, conwidth, conheight, conpad, confilter);
     if(miniconsize && miniconwidth)
