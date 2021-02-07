@@ -588,7 +588,7 @@ COMMAND(registersound, "si");
 
 void mapsound(char *name, int *vol, int *maxuses)
 {
-    intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : max(1, *maxuses)));
+    intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : std::max(1, *maxuses)));
 }
 COMMAND(mapsound, "sii");
 
@@ -740,7 +740,7 @@ bool updatechannel(SoundChannel &chan)
         }
         else if(chan.radius > 0)
         {
-            rad = maxsoundradius ? min(maxsoundradius, chan.radius) : chan.radius;
+            rad = maxsoundradius ? std::min(maxsoundradius, chan.radius) : chan.radius;
         }
         if(rad > 0) //rad = 0 means no attenuation ever
         {
@@ -753,7 +753,7 @@ bool updatechannel(SoundChannel &chan)
         }
     }
     vol = (vol*MIX_MAX_VOLUME*chan.slot->volume)/255/255;
-    vol = min(vol, MIX_MAX_VOLUME);
+    vol = std::min(vol, MIX_MAX_VOLUME);
     if(vol == chan.volume && pan == chan.pan)
     {
         return false;
@@ -871,7 +871,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     {
         // cull sounds that are unlikely to be heard
         //if radius is greater than zero, clamp to maxsoundradius if maxsound radius is nonzero; if radius is zero, clamp to maxsoundradius
-        int rad = radius > 0 ? (maxsoundradius ? min(maxsoundradius, radius) : radius) : maxsoundradius;
+        int rad = radius > 0 ? (maxsoundradius ? std::min(maxsoundradius, radius) : radius) : maxsoundradius;
         if(camera1->o.dist(*loc) > 1.5f*rad)
         {
             if(channels.inrange(chanid) && sounds.playing(channels[chanid], config))
