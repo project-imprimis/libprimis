@@ -650,7 +650,7 @@ int histpos = 0;
 
 VARP(maxhistory, 0, 1000, 10000);
 
-void history_(int *n)
+void historycmd(int *n)
 {
     static bool inhistory = false;
     if(!inhistory && static_cast<int>(history.size()) > *n)
@@ -661,7 +661,7 @@ void history_(int *n)
     }
 }
 
-COMMANDN(history, history_, "i");
+COMMANDN(history, historycmd, "i");
 
 struct releaseaction
 {
