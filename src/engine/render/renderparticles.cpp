@@ -56,8 +56,8 @@ VARP(showparticles, 0, 1, 1);
 VAR(cullparticles, 0, 1, 1);
 VAR(replayparticles, 0, 1, 1);
 VARN(seedparticles, seedmillis, 0, 3000, 10000);
-VAR(dbgpcull, 0, 0, 1);
-VAR(dbgpseed, 0, 0, 1);
+VAR(debugpcull, 0, 0, 1);
+VAR(debugpseed, 0, 0, 1);
 
 struct particleemitter
 {
@@ -78,7 +78,7 @@ struct particleemitter
         radius = bbmin.dist(bbmax)/2;
         cullmin = ivec::floor(bbmin);
         cullmax = ivec::ceil(bbmax);
-        if(dbgpseed)
+        if(debugpseed)
         {
             conoutf(Console_Debug, "radius: %f, maxfade: %d", radius, maxfade);
         }
@@ -1359,11 +1359,11 @@ void removetrackedparticles(physent *owner)
     }
 }
 
-VARN(debugparticles, dbgparts, 0, 0, 1);
+VARN(debugparticles, debugparts, 0, 0, 1);
 
 void debugparticles()
 {
-    if(!dbgparts)
+    if(!debugparts)
     {
         return;
     }
@@ -1383,7 +1383,7 @@ void renderparticles(int layer)
     canstep = layer != ParticleLayer_Under;
 
     //want to debug BEFORE the lastpass render (that would delete particles)
-    if(dbgparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
+    if(debugparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
     {
         for(int i = 0; i < numpartparts(); ++i)
         {
@@ -2016,7 +2016,7 @@ void updateparticles()
             }
             pe.lastemit = lastmillis;
         }
-        if(dbgpcull && (canemit || replayed) && addedparticles)
+        if(debugpcull && (canemit || replayed) && addedparticles)
         {
             conoutf(Console_Debug, "%d emitters, %d particles", emitted, addedparticles);
         }
