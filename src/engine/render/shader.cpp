@@ -196,7 +196,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     }
 }
 
-VAR(dbgubo, 0, 0, 1);
+VAR(debugubo, 0, 0, 1);
 
 static void bindglsluniform(Shader &s, UniformLoc &u)
 {
@@ -228,7 +228,7 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
         u.offset = offsetval;
         u.size = sizeval;
         glUniformBlockBinding_(s.program, bidx, u.binding);
-        if(dbgubo)
+        if(debugubo)
         {
             conoutf(Console_Debug, "UBO: %s:%s:%d, offset: %d, size: %d, stride: %d", u.name, u.blockname, u.binding, offsetval, sizeval, strideval);
         }
