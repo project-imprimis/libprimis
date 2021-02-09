@@ -136,7 +136,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     return true;
 }
 
-VAR(dbgzip, 0, 0, 1);
+VAR(debugzip, 0, 0, 1);
 
 static bool readzipdirectory(const char *archname, FILE *f, int entries, int offset, uint size, vector<zipfile> &files)
 {
@@ -195,7 +195,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
         f.header = hdr.offset;
         f.size = hdr.uncompressedsize;
         f.compressedsize = hdr.compression ? hdr.compressedsize : 0;
-        if(dbgzip)
+        if(debugzip)
         {
             conoutf(Console_Debug, "%s: file %s, size %d, compress %d, flags %x", archname, name, hdr.uncompressedsize, hdr.compression, hdr.flags);
         }
@@ -476,7 +476,7 @@ struct zipstream : stream
         {
             return;
         }
-        if(dbgzip)
+        if(debugzip)
         {
             conoutf(Console_Debug, info->compressedsize ? "%s: zfile.total_out %u, info->size %u" : "%s: reading %u, info->size %u", info->name, info->compressedsize ? static_cast<uint>(zfile.total_out) : reading - info->offset, info->size);
         }
@@ -665,7 +665,7 @@ struct zipstream : stream
                 }
                 else
                 {
-                    if(dbgzip)
+                    if(debugzip)
                     {
                         conoutf(Console_Debug, "inflate error: %s", zError(err));
                     }

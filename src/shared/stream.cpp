@@ -974,7 +974,7 @@ struct filestream : stream
     }
 };
 
-VAR(dbggz, 0, 0, 1);
+VAR(debuggz, 0, 0, 1);
 
 struct gzstream : stream
 {
@@ -1172,7 +1172,7 @@ struct gzstream : stream
         {
             return;
         }
-        if(dbggz)
+        if(debuggz)
         {
             uint checkcrc = 0,
                  checksize = 0;
