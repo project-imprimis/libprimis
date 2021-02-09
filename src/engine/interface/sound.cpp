@@ -9,8 +9,7 @@
 #include "menus.h"
 #include "sound.h"
 
-#include "render/rendergl.h"
-#include "render/renderwindow.h"
+#include "render/rendergl.h" //needed to get camera position
 
 bool nosound = true;
 
@@ -31,7 +30,7 @@ struct SoundSample
         }
     }
 
-    bool load(const char *dir, bool msg = false);
+    bool load(const char *dir);
 };
 
 struct soundslot
@@ -440,7 +439,7 @@ static Mix_Chunk *loadwav(const char *name)
     return c;
 }
 
-bool SoundSample::load(const char *dir, bool msg)
+bool SoundSample::load(const char *dir)
 {
     if(chunk)
     {
@@ -455,10 +454,6 @@ bool SoundSample::load(const char *dir, bool msg)
     for(int i = 0; i < static_cast<int>(sizeof(exts)/sizeof(exts[0])); ++i)
     {
         formatstring(filename, "media/sound/%s%s%s", dir, name, exts[i]);
-        if(msg && !i)
-        {
-            renderprogress(0, filename);
-        }
         path(filename);
         chunk = loadwav(filename);
         if(chunk)
@@ -577,7 +572,7 @@ static struct SoundType
         SoundConfig &config = configs[n];
         for(int k = 0; k < config.numslots; ++k)
         {
-            slots[config.slots+k].sample->load(dir, true);
+            slots[config.slots+k].sample->load(dir);
         }
     }
     bool playing(const SoundChannel &chan, const SoundConfig &config) const
