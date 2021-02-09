@@ -10,7 +10,7 @@
 namespace //internal functionality not seen by other files
 {
     VARP(grass, 0, 1, 1);
-    VAR(dbggrass, 0, 0, 1);
+    VAR(debuggrass, 0, 0, 1);
     VARP(grassdist, 0, 256, 10000);
     FVARP(grasstaper, 0, 0.2, 1);
     FVARP(grassstep, 0.5, 2, 8);
@@ -383,7 +383,7 @@ void loadgrassshaders()
 
 void rendergrass()
 {
-    if(!grass || !grassdist || grassgroups.empty() || dbggrass || !grassshader)
+    if(!grass || !grassdist || grassgroups.empty() || debuggrass || !grassshader)
     {
         return;
     }
