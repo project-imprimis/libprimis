@@ -25,6 +25,37 @@ FVAR(refractdepth, 1e-3f, 16, 1e3f);
 
 int transparentlayer = 0;
 
+static void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
+{
+    if(particlelayers && ghasstencil)
+    {
+        bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
+        if(scissor)
+        {
+            int x1 = static_cast<int>(floor((allsx1*0.5f+0.5f)*vieww)),
+                y1 = static_cast<int>(floor((allsy1*0.5f+0.5f)*viewh)),
+                x2 = static_cast<int>(ceil((allsx2*0.5f+0.5f)*vieww)),
+                y2 = static_cast<int>(ceil((allsy2*0.5f+0.5f)*viewh));
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(x1, y1, x2 - x1, y2 - y1);
+        }
+        glStencilFunc(GL_NOTEQUAL, 0, 0x07);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+        glEnable(GL_STENCIL_TEST);
+        renderparticles(ParticleLayer_Over);
+        glDisable(GL_STENCIL_TEST);
+        if(scissor)
+        {
+            glDisable(GL_SCISSOR_TEST);
+        }
+        renderparticles(ParticleLayer_NoLayer);
+    }
+    else
+    {
+        renderparticles();
+    }
+}
+
 void rendertransparent()
 {
     int hasalphavas = findalphavas();
@@ -328,32 +359,5 @@ void rendertransparent()
     {
         return;
     }
-
-    if(particlelayers && ghasstencil)
-    {
-        bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
-        if(scissor)
-        {
-            int x1 = static_cast<int>(floor((allsx1*0.5f+0.5f)*vieww)),
-                y1 = static_cast<int>(floor((allsy1*0.5f+0.5f)*viewh)),
-                x2 = static_cast<int>(ceil((allsx2*0.5f+0.5f)*vieww)),
-                y2 = static_cast<int>(ceil((allsy2*0.5f+0.5f)*viewh));
-            glEnable(GL_SCISSOR_TEST);
-            glScissor(x1, y1, x2 - x1, y2 - y1);
-        }
-        glStencilFunc(GL_NOTEQUAL, 0, 0x07);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-        glEnable(GL_STENCIL_TEST);
-        renderparticles(ParticleLayer_Over);
-        glDisable(GL_STENCIL_TEST);
-        if(scissor)
-        {
-            glDisable(GL_SCISSOR_TEST);
-        }
-        renderparticles(ParticleLayer_NoLayer);
-    }
-    else
-    {
-        renderparticles();
-    }
+    alphaparticles(allsx1, allsy1, allsx2, allsy2);
 }
