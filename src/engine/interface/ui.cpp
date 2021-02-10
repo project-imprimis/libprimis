@@ -2711,7 +2711,12 @@ namespace UI
     };
 
     float uicontextscale = 0;
-    ICOMMAND(uicontextscale, "", (), floatret(FONTH*uicontextscale));
+
+    void uicontextscalecmd()
+    {
+        floatret(FONTH*uicontextscale);
+    }
+    COMMANDN(uicontextscale, uicontextscalecmd, "");
 
     struct Console : Filler
     {
@@ -4282,7 +4287,7 @@ namespace UI
         }
     };
 
-    ICOMMAND(newui, "ssss", (char *name, char *contents, char *onshow, char *onhide),
+    void newui(char *name, char *contents, char *onshow, char *onhide)
     {
         Window *window = windows.find(name, nullptr);
         if(window)
@@ -4295,9 +4300,10 @@ namespace UI
             delete window;
         }
         windows[name] = new Window(name, contents, onshow, onhide);
-    });
+    }
+    COMMAND(newui, "ssss");
 
-    ICOMMAND(uiallowinput, "b", (int *val),
+    void uiallowinput(int *val)
     {
         if(window)
         {
@@ -4307,8 +4313,21 @@ namespace UI
             }
             intret(window->allowinput ? 1 : 0);
         }
-    });
-    ICOMMAND(uieschide, "b", (int *val), { if(window) { if(*val >= 0) window->eschide = *val!=0; intret(window->eschide ? 1 : 0); } });
+    }
+    COMMAND(uiallowinput, "b");
+
+    void uieschide (int *val)
+    {
+        if(window)
+        {
+            if(*val >= 0)
+            {
+                window->eschide = *val!=0;
+                intret(window->eschide ? 1 : 0);
+            }
+        }
+    }
+    COMMAND(uieschide, "b");
 
     bool showui(const char *name)
     {
