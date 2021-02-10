@@ -164,6 +164,7 @@ extern int nospeclights;
 extern int debugfullscreen;
 extern matrix4 eyematrix;
 extern GLuint mshdrtex, mshdrfbo, msrefractfbo;
+extern int msaaedgedetect;
 extern GLuint refractfbo, refracttex;
 extern int hdrclear;
 
@@ -186,7 +187,8 @@ extern int smcullside;
 extern vec shadoworigin, shadowdir;
 extern float shadowradius, shadowbias;
 extern int shadowside, shadowspot;
-extern matrix4 shadowmatrix;
+extern matrix4 shadowmatrix, linearworldmatrix;
+extern GLuint msrefracttex;
 
 extern void setbilateralshader(int radius, int pass, float depth);
 void clearbilateralshaders();
@@ -201,6 +203,7 @@ extern void cleanupvolumetric();
 
 extern void findshadowvas();
 extern void findshadowmms();
+extern void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 = 1, const uint *tilemask = nullptr, int stencilmask = 0, int msaapass = 0, bool transparent = false);
 
 extern int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc, int &spotangle, float &bias);
 extern int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax);
