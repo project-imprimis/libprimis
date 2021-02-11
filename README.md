@@ -36,7 +36,7 @@ Libprimis' Tesseract base provides a bunch of rendering features such as:
 * screen-space refractive alpha cubes
 * deferred MSAA, subpixel morphological anti-aliasing (SMAA 1x, T2x, S2x, and 4x), FXAA, and temporal AA
 * support for OpenGL 4.0+ contexts
-* support for Linux-based operating systems
+* support for Windows and Linux-based operating systems
 
 For documentation on the engine, see `doc/engine.md`.
 
