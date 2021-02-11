@@ -65,6 +65,7 @@
     <ClCompile Include="..\engine\world\world.cpp" />
     <ClCompile Include="..\engine\world\worldio.cpp" />
     <ClCompile Include="..\engine\interface\textedit.cpp" />
+    <ClCompile Include="..\engine\render\renderalpha.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\engine.h">
@@ -118,6 +119,7 @@
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\zlib.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_mixer.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_image.h" />
+    <ClInclude Include="..\engine\render\renderalpha.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tesseract.rc" />

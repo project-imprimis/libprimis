@@ -112,6 +112,7 @@
     <ClInclude Include="..\engine\render\hud.h" />
     <ClInclude Include="..\engine\render\octarender.h" />
     <ClInclude Include="..\engine\render\radiancehints.h" />
+    <ClInclude Include="..\engine\render\renderalpha.h" />
     <ClInclude Include="..\engine\render\rendergl.h" />
     <ClInclude Include="..\engine\render\rendermodel.h" />
     <ClInclude Include="..\engine\render\rendersky.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="..\engine\render\normal.cpp" />
     <ClCompile Include="..\engine\render\octarender.cpp" />
     <ClCompile Include="..\engine\render\radiancehints.cpp" />
+    <ClCompile Include="..\engine\render\renderalpha.cpp" />
     <ClCompile Include="..\engine\render\rendergl.cpp" />
     <ClCompile Include="..\engine\render\renderlights.cpp" />
     <ClCompile Include="..\engine\render\rendermodel.cpp" />
