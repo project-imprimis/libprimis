@@ -1,22 +1,11 @@
 #include "engine.h"
 
-#include "aa.h"
-#include "ao.h"
-#include "csm.h"
 #include "hdr.h"
-#include "octarender.h"
-#include "radiancehints.h"
 #include "rendergl.h"
 #include "rendermodel.h"
-#include "rendersky.h"
 #include "rendertimers.h"
-#include "renderwindow.h"
 #include "stain.h"
 
-#include "interface/control.h"
-
-#include "world/dynlight.h"
-#include "world/light.h"
 #include "world/material.h"
 #include "world/octaedit.h"
 
