@@ -1,5 +1,18 @@
-// command.cpp: implements the parsing and execution of a tiny script language which
-// is largely backwards compatible with the quake console language.
+/* command.cpp: script binding and language interpretation functionality
+ *
+ * libprimis uses a bespoke scripting language called cubescript, which allows
+ * for commands to be declared in the code which can be natively called upon in
+ * games. cubescript "builtin" commands and variables are declared with macros
+ * (see command.h) and further aliases can be defined in cubescript files.
+ *
+ * for the file containing the cubescript "standard library", see cubestd.cpp.
+ * Other files contain their own relevant builtin declarations (e.g. sound vars
+ * in sound.cpp)
+ *
+ * command.cpp largely handles cubescript language interpretation, through a
+ * bytecode compiler which allows for greater speed than naive approaches; this
+ * is mostly necessary to handle the UI system, which is built on cubescript
+ */
 
 #include "engine.h"
 
