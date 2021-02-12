@@ -1,3 +1,12 @@
+/* renderalpha.cpp: alpha geoemtry rendering
+ *
+ * libprimis has support for a single level of alpha geometry, which is rendered
+ * using a single stencil layer over the base geometry
+ *
+ * combinations of alpha materials (glass, alpha, water) therefore do not stack
+ * since there is only one stencil and only the nearest layer in the view frustum
+ * is rendered
+ */
 #include "engine.h"
 
 #include "hdr.h"
@@ -14,6 +23,7 @@ FVAR(refractdepth, 1e-3f, 16, 1e3f);
 
 int transparentlayer = 0;
 
+//sets up alpha handling as needed then executes main particle rendering routine
 static void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
 {
     if(particlelayers && ghasstencil)
