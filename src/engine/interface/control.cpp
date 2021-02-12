@@ -87,7 +87,7 @@ void fatal(const char *s, ...)    // failure exit
                 cleargamma();
             }
             SDL_Quit();
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Imprimis fatal error", msg, nullptr);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Libprimis engine fatal error", msg, nullptr);
         }
     }
 
