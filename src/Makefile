@@ -52,6 +52,7 @@ CLIENT_OBJS= \
 	engine/render/water.o \
 	engine/world/bih.o \
 	engine/world/dynlight.o \
+	engine/world/heightmap.o \
 	engine/world/light.o \
 	engine/world/material.o \
 	engine/world/mpr.o \
