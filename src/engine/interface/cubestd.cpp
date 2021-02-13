@@ -415,32 +415,9 @@ ICOMMAND(loop+, "riie", (ident *id, int *offset, int *n, uint *body), doloop(*id
 ICOMMAND(loop*, "riie", (ident *id, int *step, int *n, uint *body), doloop(*id, 0, *n, *step, body));
 ICOMMAND(loop+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body), doloop(*id, *offset, *n, *step, body));
 
-static inline void loopwhile(ident &id, int offset, int n, int step, uint *cond, uint *body)
-{
-    if(n <= 0 || id.type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack;
-    for(int i = 0; i < n; ++i)
-    {
-        setiter(id, offset + i*step, stack);
-        if(!executebool(cond))
-        {
-            break;
-        }
-        execute(body);
-    }
-    poparg(id);
-}
-ICOMMAND(loopwhile, "riee", (ident *id, int *n, uint *cond, uint *body), loopwhile(*id, 0, *n, 1, cond, body));
-ICOMMAND(loopwhile+, "riiee", (ident *id, int *offset, int *n, uint *cond, uint *body), loopwhile(*id, *offset, *n, 1, cond, body));
-ICOMMAND(loopwhile*, "riiee", (ident *id, int *step, int *n, uint *cond, uint *body), loopwhile(*id, 0, *n, *step, cond, body));
-ICOMMAND(loopwhile+*, "riiiee", (ident *id, int *offset, int *step, int *n, uint *cond, uint *body), loopwhile(*id, *offset, *n, *step, cond, body));
-
 ICOMMAND(while, "ee", (uint *cond, uint *body), while(executebool(cond)) execute(body));
 
-static inline void loopconc(ident &id, int offset, int n, int step, uint *body, bool space)
+static inline void loopconc(ident &id, int offset, int n, uint *body, bool space)
 {
     if(n <= 0 || id.type != Id_Alias)
     {
@@ -450,7 +427,7 @@ static inline void loopconc(ident &id, int offset, int n, int step, uint *body, 
     vector<char> s;
     for(int i = 0; i < n; ++i)
     {
-        setiter(id, offset + i*step, stack);
+        setiter(id, offset + i, stack);
         tagval v;
         executeret(body, v);
         const char *vstr = v.getstr();
@@ -466,14 +443,8 @@ static inline void loopconc(ident &id, int offset, int n, int step, uint *body, 
     s.add('\0');
     commandret->setstr(s.disown());
 }
-ICOMMAND(loopconcat, "rie", (ident *id, int *n, uint *body), loopconc(*id, 0, *n, 1, body, true));
-ICOMMAND(loopconcat+, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, 1, body, true));
-ICOMMAND(loopconcat*, "riie", (ident *id, int *step, int *n, uint *body), loopconc(*id, 0, *n, *step, body, true));
-ICOMMAND(loopconcat+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body), loopconc(*id, *offset, *n, *step, body, true));
-ICOMMAND(loopconcatword, "rie", (ident *id, int *n, uint *body), loopconc(*id, 0, *n, 1, body, false));
-ICOMMAND(loopconcatword+, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, 1, body, false));
-ICOMMAND(loopconcatword*, "riie", (ident *id, int *step, int *n, uint *body), loopconc(*id, 0, *n, *step, body, false));
-ICOMMAND(loopconcatword+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body), loopconc(*id, *offset, *n, *step, body, false));
+ICOMMAND(loopconcat, "rie", (ident *id, int *n, uint *body), loopconc(*id, 0, *n, body, true));
+ICOMMAND(loopconcat+, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, body, true));
 
 void concat(tagval *v, int n)
 {
@@ -899,61 +870,6 @@ void listassoc(ident *id, const char *list, const uint *body)
 }
 COMMAND(listassoc, "rse");
 
-//note: the goto here is the opposite of listfind above: goto triggers when elem not found
-#define LISTFIND(name, fmt, type, init, cmp) \
-    ICOMMAND(name, "s" fmt "i", (char *list, type *val, int *skip), \
-    { \
-        int n = 0; \
-        init; \
-        for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++) \
-        { \
-            if(cmp) \
-            { \
-                intret(n); \
-                return; \
-            } \
-            for(int i = 0; i < static_cast<int>(*skip); ++i) \
-            { \
-                if(!parselist(s)) \
-                { \
-                    goto notfound; \
-                    n++; \
-                } \
-            } \
-        } \
-    notfound: \
-        intret(-1); \
-    });
-LISTFIND(listfind=, "i", int, , parseint(start) == *val);
-LISTFIND(listfind=f, "f", float, , parsefloat(start) == *val);
-LISTFIND(listfind=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
-#undef LISTFIND
-
-#define LISTASSOC(name, fmt, type, init, cmp) \
-    ICOMMAND(name, "s" fmt, (char *list, type *val), \
-    { \
-        init; \
-        for(const char *s = list, *start, *end, *qstart; parselist(s, start, end);) \
-        { \
-            if(cmp) \
-            { \
-                if(parselist(s, start, end, qstart)) \
-                { \
-                    stringret(listelem(start, end, qstart)); \
-                } \
-                return; \
-            } \
-            if(!parselist(s)) \
-            { \
-                break; \
-            } \
-        } \
-    });
-LISTASSOC(listassoc=, "i", int, , parseint(start) == *val);
-LISTASSOC(listassoc=f, "f", float, , parsefloat(start) == *val);
-LISTASSOC(listassoc=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
-#undef LISTASSOC
-
 void looplist(ident *id, const char *list, const uint *body)
 {
     if(id->type!=Id_Alias)
@@ -1053,38 +969,6 @@ void looplistconc(ident *id, const char *list, const uint *body, bool space)
 }
 ICOMMAND(looplistconcat, "rse", (ident *id, char *list, uint *body), looplistconc(id, list, body, true));
 ICOMMAND(looplistconcatword, "rse", (ident *id, char *list, uint *body), looplistconc(id, list, body, false));
-
-void listfilter(ident *id, const char *list, const uint *body)
-{
-    if(id->type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack;
-    vector<char> r;
-    int n = 0;
-    for(const char *s = list, *start, *end, *qstart, *qend; parselist(s, start, end, qstart, qend); n++)
-    {
-        char *val = newstring(start, end-start);
-        setiter(*id, val, stack);
-
-        if(executebool(body))
-        {
-            if(r.length())
-            {
-                r.add(' ');
-            }
-            r.put(qstart, qend-qstart);
-        }
-    }
-    if(n)
-    {
-        poparg(*id);
-    }
-    r.add('\0');
-    commandret->setstr(r.disown());
-}
-COMMAND(listfilter, "rse");
 
 void listcount(ident *id, const char *list, const uint *body)
 {
