@@ -178,6 +178,7 @@
     <ClCompile Include="..\engine\render\water.cpp" />
     <ClCompile Include="..\engine\world\bih.cpp" />
     <ClCompile Include="..\engine\world\dynlight.cpp" />
+    <ClCompile Include="..\engine\world\heightmap.cpp" />
     <ClCompile Include="..\engine\world\light.cpp" />
     <ClCompile Include="..\engine\world\material.cpp" />
     <ClCompile Include="..\engine\world\mpr.cpp" />

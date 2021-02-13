@@ -66,6 +66,7 @@
     <ClCompile Include="..\engine\world\worldio.cpp" />
     <ClCompile Include="..\engine\interface\textedit.cpp" />
     <ClCompile Include="..\engine\render\renderalpha.cpp" />
+    <ClCompile Include="..\engine\world\heightmap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\engine.h">
