@@ -1288,9 +1288,9 @@ struct prefabmesh
 
     static const int prefabmeshsize = 1<<9;
     int table[prefabmeshsize];
-    vector<vertex> verts;
-    vector<int> chain;
-    vector<ushort> tris;
+    std::vector<vertex> verts;
+    std::vector<int> chain;
+    std::vector<ushort> tris;
 
     prefabmesh() { memset(table, -1, sizeof(table)); }
 
@@ -1305,13 +1305,13 @@ struct prefabmesh
                 return i;
             }
         }
-        if(verts.length() >= USHRT_MAX)
+        if(verts.size() >= USHRT_MAX)
         {
             return -1;
         }
-        verts.add(v);
-        chain.add(table[h]);
-        return table[h] = verts.length()-1;
+        verts.emplace_back(v);
+        chain.emplace_back(table[h]);
+        return table[h] = verts.size()-1;
     }
 
     int addvert(const vec &pos, const bvec &norm)
@@ -1330,7 +1330,7 @@ struct prefabmesh
         }
         p.cleanup();
 
-        for(int i = 0; i < verts.length(); i++)
+        for(uint i = 0; i < verts.size(); i++)
         {
             verts[i].norm.flip();
         }
@@ -1339,18 +1339,18 @@ struct prefabmesh
             glGenBuffers_(1, &p.vbo);
         }
         gle::bindvbo(p.vbo);
-        glBufferData_(GL_ARRAY_BUFFER, verts.length()*sizeof(vertex), verts.getbuf(), GL_STATIC_DRAW);
+        glBufferData_(GL_ARRAY_BUFFER, verts.size()*sizeof(vertex), verts.data(), GL_STATIC_DRAW);
         gle::clearvbo();
-        p.numverts = verts.length();
+        p.numverts = verts.size();
 
         if(!p.ebo)
         {
             glGenBuffers_(1, &p.ebo);
         }
         gle::bindebo(p.ebo);
-        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, tris.length()*sizeof(ushort), tris.getbuf(), GL_STATIC_DRAW);
+        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, tris.size()*sizeof(ushort), tris.data(), GL_STATIC_DRAW);
         gle::clearebo();
-        p.numtris = tris.length()/3;
+        p.numtris = tris.size()/3;
     }
 
 };
@@ -1404,9 +1404,9 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
                 {
                     if(index[0]!=index[j+1] && index[j+1]!=index[j+2] && index[j+2]!=index[0])
                     {
-                        r.tris.add(index[0]);
-                        r.tris.add(index[j+1]);
-                        r.tris.add(index[j+2]);
+                        r.tris.emplace_back(index[0]);
+                        r.tris.emplace_back(index[j+1]);
+                        r.tris.emplace_back(index[j+2]);
                     }
                 }
             }
