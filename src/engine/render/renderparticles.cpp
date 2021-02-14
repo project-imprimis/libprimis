@@ -171,7 +171,7 @@ enum
     PT_FLIP      = PT_HFLIP | PT_VFLIP | PT_ROT
 };
 
-const char *partnames[] = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball"};
+const std::string partnames[] = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball"};
 
 struct particle
 {
@@ -298,7 +298,7 @@ struct partrenderer
 
     void debuginfo()
     {
-        formatstring(info, "%d\t%s(", count(), partnames[type&0xFF]);
+        formatstring(info, "%d\t%s(", count(), partnames[type&0xFF].c_str());
         if(type&PT_LERP)    concatstring(info, "l,");
         if(type&PT_MOD)     concatstring(info, "m,");
         if(type&PT_RND4)    concatstring(info, "r,");
