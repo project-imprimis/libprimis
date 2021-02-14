@@ -648,15 +648,15 @@ static inline bool editmatcmp(const materialsurface &x, const materialsurface &y
         {
             return false;
         }
-        xmin = abs(xmin - c);
-        xmax = abs(xmax - c);
-        ymin = abs(ymin - c);
-        ymax = abs(ymax - c);
-        if(max(xmin, xmax) <= min(ymin, ymax))
+        xmin = std::abs(xmin - c);
+        xmax = std::abs(xmax - c);
+        ymin = std::abs(ymin - c);
+        ymax = std::abs(ymax - c);
+        if(std::max(xmin, xmax) <= std::min(ymin, ymax))
         {
             return true;
         }
-        else if(max(ymin, ymax) <= min(xmin, xmax))
+        else if(std::max(ymin, ymax) <= std::min(xmin, xmax))
         {
             return false;
         }
@@ -877,15 +877,15 @@ int findmaterials()
         float sx1, sy1, sx2, sy2;
         if(va->watermin.x <= va->watermax.x && calcbbscissor(va->watermin, va->watermax, sx1, sy1, sx2, sy2))
         {
-            matliquidsx1 = min(matliquidsx1, sx1);
-            matliquidsy1 = min(matliquidsy1, sy1);
-            matliquidsx2 = max(matliquidsx2, sx2);
-            matliquidsy2 = max(matliquidsy2, sy2);
+            matliquidsx1 = std::min(matliquidsx1, sx1);
+            matliquidsy1 = std::min(matliquidsy1, sy1);
+            matliquidsx2 = std::max(matliquidsx2, sx2);
+            matliquidsy2 = std::max(matliquidsy2, sy2);
             masktiles(matliquidtiles, sx1, sy1, sx2, sy2);
-            matrefractsx1 = min(matrefractsx1, sx1);
-            matrefractsy1 = min(matrefractsy1, sy1);
-            matrefractsx2 = max(matrefractsx2, sx2);
-            matrefractsy2 = max(matrefractsy2, sy2);
+            matrefractsx1 = std::min(matrefractsx1, sx1);
+            matrefractsy1 = std::min(matrefractsy1, sy1);
+            matrefractsx2 = std::max(matrefractsx2, sx2);
+            matrefractsy2 = std::max(matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
@@ -909,15 +909,15 @@ int findmaterials()
         }
         if(va->glassmin.x <= va->glassmax.x && calcbbscissor(va->glassmin, va->glassmax, sx1, sy1, sx2, sy2))
         {
-            matsolidsx1 = min(matsolidsx1, sx1);
-            matsolidsy1 = min(matsolidsy1, sy1);
-            matsolidsx2 = max(matsolidsx2, sx2);
-            matsolidsy2 = max(matsolidsy2, sy2);
+            matsolidsx1 = std::min(matsolidsx1, sx1);
+            matsolidsy1 = std::min(matsolidsy1, sy1);
+            matsolidsx2 = std::max(matsolidsx2, sx2);
+            matsolidsy2 = std::max(matsolidsy2, sy2);
             masktiles(matsolidtiles, sx1, sy1, sx2, sy2);
-            matrefractsx1 = min(matrefractsx1, sx1);
-            matrefractsy1 = min(matrefractsy1, sy1);
-            matrefractsx2 = max(matrefractsx2, sx2);
-            matrefractsy2 = max(matrefractsy2, sy2);
+            matrefractsx1 = std::min(matrefractsx1, sx1);
+            matrefractsy1 = std::min(matrefractsy1, sy1);
+            matrefractsx2 = std::max(matrefractsx2, sx2);
+            matrefractsy2 = std::max(matrefractsy2, sy2);
             for(int i = 0; i < va->matsurfs; ++i)
             {
                 materialsurface &m = va->matbuf[i];
