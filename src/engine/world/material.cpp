@@ -452,15 +452,9 @@ static inline bool optmatcmp(const materialsurface &x, const materialsurface &y)
     return x.o[dim] < y.o[dim];
 }
 
-VARF(optmats, 0, 1, 1, allchanged());
-
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
     quicksort(matbuf, matsurfs, optmatcmp);
-    if(!optmats)
-    {
-        return matsurfs;
-    }
     materialsurface *cur = matbuf, *end = matbuf+matsurfs;
     while(cur < end)
     {
