@@ -257,7 +257,7 @@ namespace UI
                 } \
             } while(0)
 
-            Object() : adjust(0), state(0), childstate(0), parent(), w(), h(), x(), y() {}
+            Object() :  x(), y(), w(), h(), adjust(0), state(0), childstate(0), parent() {}
             virtual ~Object()
             {
                 clearchildren();
