@@ -2,21 +2,7 @@
 
 #include "engine.h"
 
-#include "light.h"
 #include "octaedit.h"
-#include "physics.h"
-#include "raycube.h"
-
-#include "interface/console.h"
-#include "interface/control.h"
-#include "interface/input.h"
-#include "interface/ui.h"
-
-#include "render/hud.h"
-#include "render/octarender.h"
-#include "render/rendergl.h"
-
-#include "world/material.h"
 
 namespace hmap
 {
