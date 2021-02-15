@@ -660,7 +660,6 @@ void historycmd(int *n)
         inhistory = false;
     }
 }
-
 COMMANDN(history, historycmd, "i");
 
 struct releaseaction

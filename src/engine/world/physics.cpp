@@ -1134,7 +1134,8 @@ bool collide(physent *d, const vec &dir, float cutoff, bool playercol, bool insi
     collidewall = vec(0, 0, 0);
     ivec bo(static_cast<int>(d->o.x-d->radius), static_cast<int>(d->o.y-d->radius), static_cast<int>(d->o.z-d->eyeheight)),
          bs(static_cast<int>(d->o.x+d->radius), static_cast<int>(d->o.y+d->radius), static_cast<int>(d->o.z+d->aboveeye));
-    bo.sub(1); bs.add(1);  // guard space for rounding errors
+    bo.sub(1);
+    bs.add(1);  // guard space for rounding errors
     return octacollide(d, dir, cutoff, bo, bs) || (playercol && plcollide(d, dir, insideplayercol)); // collide with world
 }
 

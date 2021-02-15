@@ -712,5 +712,4 @@ void getfpscmd(int *raw)
         intret(fps);
     }
 }
-
 COMMANDN(getfps, getfpscmd, "i");

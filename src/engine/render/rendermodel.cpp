@@ -382,14 +382,13 @@ void mapmodelreset(int *n)
     }
     mapmodels.shrink(std::clamp(*n, 0, mapmodels.length()));
 }
+COMMAND(mapmodelreset, "i");
 
 const char *mapmodelname(int i)
 {
     return mapmodels.inrange(i) ? mapmodels[i].name : nullptr;
 }
-
 COMMAND(mapmodel, "s");
-COMMAND(mapmodelreset, "i");
 
 void mapmodelnamecmd(int *index, int *prefix)
 {

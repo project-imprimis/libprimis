@@ -834,12 +834,12 @@ vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[
 float matliquidsx1 = -1,
       matliquidsy1 = -1,
       matliquidsx2 = 1,
-      matliquidsy2 = 1;
-float matsolidsx1 = -1,
+      matliquidsy2 = 1,
+      matsolidsx1 = -1,
       matsolidsy1 = -1,
       matsolidsx2 = 1,
-      matsolidsy2 = 1;
-float matrefractsx1 = -1,
+      matsolidsy2 = 1,
+      matrefractsx1 = -1,
       matrefractsy1 = -1,
       matrefractsx2 = 1,
       matrefractsy2 = 1;
