@@ -51,10 +51,10 @@ static void getbackgroundres(int &w, int &h)
     h = static_cast<int>(std::ceil(h*hk));
 }
 
-static string backgroundcaption = "";
+static string backgroundcaption   = "";
 static Texture *backgroundmapshot = nullptr;
-static string backgroundmapname = "";
-static char *backgroundmapinfo = nullptr;
+static string backgroundmapname   = "";
+static char *backgroundmapinfo    = nullptr;
 
 void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
