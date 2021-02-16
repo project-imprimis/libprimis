@@ -1,3 +1,15 @@
+/* normal.cpp: cube geometry normal interpolation
+ *
+ * cube geometry in the libprimis engine is faceted, only allowing 8 ticks of
+ * movement; as a result, normal vectors of geometry are not very smooth
+ *
+ * to resolve this, adjacent cube faces with low differences in their angle can
+ * have their faces "merged" by interpolating the normal maps of their respective
+ * faces
+ *
+ * this is controlled by the lerp variables and is generally uniformly done for
+ * all geometry on the map; see `lerpangle` for the threshold variable
+ */
 #include "engine.h"
 
 #include "octarender.h"
