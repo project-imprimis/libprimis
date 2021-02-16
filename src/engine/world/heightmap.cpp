@@ -1,5 +1,15 @@
-// heightmap.cpp: terrain-like cube pushing functionality
-
+/* heightmap.cpp: terrain-like cube pushing functionality
+ *
+ * to help the creation of natural terrain like geometry with cubes, heightmapping
+ * allows for convenient pushing and pulling of areas of geometry
+ *
+ * heightmapping is merely a different way of modifying cubes, and under the hood
+ * (and to other clients) behaves like bulk modification of cubes; the underlying
+ * geometry is still just cubes
+ *
+ * for this reason, heightmapping can be done along any of the main axes, though
+ * only along one at a time
+ */
 #include "engine.h"
 
 #include "octaedit.h"
