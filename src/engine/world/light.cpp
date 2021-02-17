@@ -419,21 +419,6 @@ void clearlightcache(int id)
 
 static uint lightprogress = 0;
 
-bool calclight_canceled = false;
-volatile bool check_calclight_progress = false;
-
-void check_calclight_canceled()
-{
-    if(interceptkey(SDLK_ESCAPE))
-    {
-        calclight_canceled = true;
-    }
-    if(!calclight_canceled)
-    {
-        check_calclight_progress = false;
-    }
-}
-
 void show_calclight_progress()
 {
     float bar1 = static_cast<float>(lightprogress) / static_cast<float>(allocnodes);
@@ -664,16 +649,10 @@ void calclight()
     remip();
     clearsurfaces(worldroot);
     lightprogress = 0;
-    calclight_canceled = false;
-    check_calclight_progress = false;
     calcnormals(filltjoints > 0);
     calcsurfaces(worldroot, ivec(0, 0, 0), worldsize >> 1);
     clearnormals();
     allchanged();
-    if(calclight_canceled)
-    {
-        conoutf("calclight aborted");
-    }
 }
 
 VAR(fullbright, 0, 0, 1);
