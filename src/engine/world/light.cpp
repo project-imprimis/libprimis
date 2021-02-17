@@ -36,7 +36,7 @@ void setsunlightdir()
     sunlightdir = vec(sunlightyaw*RAD, sunlightpitch*RAD);
     for(int k = 0; k < 3; ++k)
     {
-        if(fabs(sunlightdir[k]) < 1e-5f)
+        if(std::fabs(sunlightdir[k]) < 1e-5f)
         {
             sunlightdir[k] = 0;
         }
@@ -193,7 +193,7 @@ bool PackNode::insert(ushort &tx, ushort &ty, ushort tw, ushort th)
     {
         bool inserted = child1->insert(tx, ty, tw, th) ||
                         child2->insert(tx, ty, tw, th);
-        available = max(child1->available, child2->available);
+        available = std::max(child1->available, child2->available);
         if(!available)
         {
             discardchildren();
@@ -220,7 +220,7 @@ bool PackNode::insert(ushort &tx, ushort &ty, ushort tw, ushort th)
     }
 
     bool inserted = child1->insert(tx, ty, tw, th);
-    available = max(child1->available, child2->available);
+    available = std::max(child1->available, child2->available);
     return inserted;
 }
 
@@ -234,30 +234,30 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     {
         child1->reserve(tx, ty, tw, th);
         child2->reserve(tx, ty, tw, th);
-        available = max(child1->available, child2->available);
+        available = std::max(child1->available, child2->available);
         return;
     }
     int dx1 = tx - x,
         dx2 = x + w - tx - tw,
-        dx = max(dx1, dx2),
+        dx = std::max(dx1, dx2),
         dy1 = ty - y,
         dy2 = y + h - ty - th,
-        dy = max(dy1, dy2),
+        dy = std::max(dy1, dy2),
         split;
     if(dx > dy)
     {
         if(dx1 > dx2)
         {
-            split = min(dx1, static_cast<int>(w));
+            split = std::min(dx1, static_cast<int>(w));
         }
         else
         {
-            split = w - max(dx2, 0);
+            split = w - std::max(dx2, 0);
         }
         if(w - split <= 0)
         {
             w = split;
-            available = min(w, h);
+            available = std::min(w, h);
             if(dy > 0)
             {
                 reserve(tx, ty, tw, th);
@@ -272,7 +272,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
         {
             x += split;
             w -= split;
-            available = min(w, h);
+            available = std::min(w, h);
             if(dy > 0)
             {
                 reserve(tx, ty, tw, th);
@@ -290,16 +290,16 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     {
         if(dy1 > dy2)
         {
-            split = min(dy1, static_cast<int>(h));
+            split = std::min(dy1, static_cast<int>(h));
         }
         else
         {
-            split = h - max(dy2, 0);
+            split = h - std::max(dy2, 0);
         }
         if(h - split <= 0)
         {
             h = split;
-            available = min(w, h);
+            available = std::min(w, h);
             if(dx > 0)
             {
                 reserve(tx, ty, tw, th);
@@ -314,7 +314,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
         {
             y += split;
             h -= split;
-            available = min(w, h);
+            available = std::min(w, h);
             if(dx > 0)
             {
                 reserve(tx, ty, tw, th);
@@ -330,7 +330,7 @@ void PackNode::reserve(ushort tx, ushort ty, ushort tw, ushort th)
     }
     child1->reserve(tx, ty, tw, th);
     child2->reserve(tx, ty, tw, th);
-    available = max(child1->available, child2->available);
+    available = std::max(child1->available, child2->available);
 }
 
 static void clearsurfaces(cube *c)
@@ -396,9 +396,9 @@ void clearlightcache(int id)
         {
             return;
         }
-        for(int x = static_cast<int>(max(light.o.x-radius, 0.0f))>>lightcachesize, ex = static_cast<int>(min(light.o.x+radius, worldsize-1.0f))>>lightcachesize; x <= ex; x++)
+        for(int x = static_cast<int>(std::max(light.o.x-radius, 0.0f))>>lightcachesize, ex = static_cast<int>(std::min(light.o.x+radius, worldsize-1.0f))>>lightcachesize; x <= ex; x++)
         {
-            for(int y = static_cast<int>(max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
+            for(int y = static_cast<int>(std::max(light.o.y-radius, 0.0f))>>lightcachesize, ey = static_cast<int>(std::min(light.o.y+radius, worldsize-1.0f))>>lightcachesize; y <= ey; y++)
             {
                 lightcacheentry &lce = lightcache[lightcachehash(x, y)];
                 if(lce.x != x || lce.y != y)
@@ -585,13 +585,13 @@ static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int
             for(int j = 0; j < numverts-1; ++j)
             {
                 const vertinfo &v = curlitverts[j];
-                x1 = min(x1, static_cast<int>(v.x));
-                y1 = min(y1, static_cast<int>(v.y));
-                x2 = max(x2, static_cast<int>(v.x));
-                y2 = max(y2, static_cast<int>(v.y));
+                x1 = std::min(x1, static_cast<int>(v.x));
+                y1 = std::min(y1, static_cast<int>(v.y));
+                x2 = std::max(x2, static_cast<int>(v.x));
+                y2 = std::max(y2, static_cast<int>(v.y));
             }
-            x2 = max(x2, x1+1);
-            y2 = max(y2, y1+1);
+            x2 = std::max(x2, x1+1);
+            y2 = std::max(y2, y1+1);
             x1 = (x1>>3) + (co.x&~0xFFF);
             y1 = (y1>>3) + (co.y&~0xFFF);
             x2 = ((x2+7)>>3) + (co.x&~0xFFF);
