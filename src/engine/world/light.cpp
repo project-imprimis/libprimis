@@ -6,7 +6,6 @@
 #include "interface/input.h"
 
 #include "render/radiancehints.h"
-#include "render/renderwindow.h"
 #include "render/octarender.h"
 
 #include "world/raycube.h"
@@ -418,14 +417,6 @@ void clearlightcache(int id)
 }
 
 static uint lightprogress = 0;
-
-void show_calclight_progress()
-{
-    float bar1 = static_cast<float>(lightprogress) / static_cast<float>(allocnodes);
-    DEF_FORMAT_STRING(text1, "%d%%", static_cast<int>(bar1 * 100));
-
-    renderprogress(bar1, text1);
-}
 
 static void calcsurfaces(cube &c, const ivec &co, int size, int usefacemask, int preview = 0)
 {
