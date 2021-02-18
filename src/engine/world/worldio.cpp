@@ -174,7 +174,7 @@ bool loadents(const char *fname, const char *gameident, vector<entity> &ents, ui
     {
         f->read(gametype, len+1);
     }
-    gametype[max(len, 0)] = '\0';
+    gametype[std::max(len, 0)] = '\0';
     if(strcmp(gametype, gameident)) //compare game string from map with game
     {
         samegame = false;
@@ -187,7 +187,7 @@ bool loadents(const char *fname, const char *gameident, vector<entity> &ents, ui
     ushort nummru = f->get<ushort>();
     f->seek(nummru*sizeof(ushort), SEEK_CUR);
 
-    for(int i = 0; i < min(hdr.numents, maxents); ++i)
+    for(int i = 0; i < std::min(hdr.numents, maxents); ++i)
     {
         entity &e = ents.add();
         f->read(&e, sizeof(entity));
@@ -234,7 +234,7 @@ void setmapfilenames(const char *fname, const char *cname = nullptr)
         string baktime;
         time_t t = time(nullptr);
         size_t len = strftime(baktime, sizeof(baktime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
-        baktime[min(len, sizeof(baktime)-1)] = '\0';
+        baktime[std::min(len, sizeof(baktime)-1)] = '\0';
         formatstring(bakname, "media/map/%s_%s.BAK", name, baktime);
     }
     validmapname(name, cname ? cname : fname);
@@ -515,7 +515,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     {
         int surfmask, totalverts;
         surfmask = f->getchar();
-        totalverts = max(f->getchar(), 0);
+        totalverts = std::max(f->getchar(), 0);
         newcubeext(c, totalverts, false);
         memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
         memset(c.ext->verts(), 0, totalverts*sizeof(vertinfo));
@@ -807,8 +807,8 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         {
             SlotShaderParam &p = vs.params.add();
             int nlen = f->get<ushort>();
-            f->read(name, min(nlen, maxstrlen-1));
-            name[min(nlen, maxstrlen-1)] = '\0';
+            f->read(name, std::min(nlen, maxstrlen-1));
+            name[std::min(nlen, maxstrlen-1)] = '\0';
             if(nlen >= maxstrlen)
             {
                 f->seek(nlen - (maxstrlen-1), SEEK_CUR);
@@ -1083,8 +1083,8 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
         int type = f->getchar(),
             ilen = f->get<ushort>();
         string name;
-        f->read(name, min(ilen, maxstrlen-1));
-        name[min(ilen, maxstrlen-1)] = '\0';
+        f->read(name, std::min(ilen, maxstrlen-1));
+        name[std::min(ilen, maxstrlen-1)] = '\0';
         if(ilen >= maxstrlen)
         {
             f->seek(ilen - (maxstrlen-1), SEEK_CUR);
@@ -1107,8 +1107,8 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
             case Id_StringVar:
             {
                 int slen = f->get<ushort>();
-                f->read(str, min(slen, maxstrlen-1));
-                str[min(slen, maxstrlen-1)] = '\0';
+                f->read(str, std::min(slen, maxstrlen-1));
+                str[std::min(slen, maxstrlen-1)] = '\0';
                 if(slen >= maxstrlen)
                 {
                     f->seek(slen - (maxstrlen-1), SEEK_CUR);
@@ -1174,7 +1174,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     {
         f->read(gametype, len+1);
     }
-    gametype[max(len, 0)] = '\0';
+    gametype[std::max(len, 0)] = '\0';
     if(strcmp(gametype, gameident)!=0)
     {
         samegame = false;
@@ -1192,7 +1192,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     }
     renderprogress(0, "loading entities...");
     vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < (min(hdr.numents, maxents)); ++i)
+    for(int i = 0; i < (std::min(hdr.numents, maxents)); ++i)
     {
         extentity &e = *entities::newentity();
         ents.add(&e);
