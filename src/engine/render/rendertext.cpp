@@ -235,13 +235,16 @@ static int fonttab()
     return 4*FONTW;
 }
 
-#define TEXTTAB(x) ((static_cast<int>((x)/fonttab())+1.0f)*fonttab())
+static int texttab(float x)
+{
+    return (static_cast<int>((x)/fonttab())+1.0f)*fonttab();
+}
 
 void tabify(const char *str, int *numtabs)
 {
     int tw   = std::max(*numtabs, 0)*fonttab()-1,
         tabs = 0;
-    for(float w = text_widthf(str); w <= tw; w = TEXTTAB(w))
+    for(float w = text_widthf(str); w <= tw; w = texttab(w))
     {
         ++tabs;
     }
@@ -402,7 +405,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
         int c = static_cast<uchar>(str[i]);\
         if(c=='\t')\
         {\
-            x = TEXTTAB(x);\
+            x = texttab(x);\
             TEXTWHITE(i)\
         }\
         else if(c==' ') \
