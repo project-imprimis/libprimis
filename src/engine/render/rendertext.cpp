@@ -170,7 +170,6 @@ void fontalias(const char *dst, const char *src)
     fontdef = d;
     fontdeftex = d->texs.length()-1;
 }
-
 COMMAND(fontalias, "ss");
 
 font *findfont(const char *name)
@@ -231,12 +230,16 @@ float text_widthf(const char *str)
     return width;
 }
 
-#define FONTTAB (4*FONTW)
-#define TEXTTAB(x) ((static_cast<int>((x)/FONTTAB)+1.0f)*FONTTAB)
+static int fonttab()
+{
+    return 4*FONTW;
+}
+
+#define TEXTTAB(x) ((static_cast<int>((x)/fonttab())+1.0f)*fonttab())
 
 void tabify(const char *str, int *numtabs)
 {
-    int tw   = std::max(*numtabs, 0)*FONTTAB-1,
+    int tw   = std::max(*numtabs, 0)*fonttab()-1,
         tabs = 0;
     for(float w = text_widthf(str); w <= tw; w = TEXTTAB(w))
     {
