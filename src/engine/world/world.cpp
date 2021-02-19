@@ -187,7 +187,7 @@ static inline void mmcollisionbox(const entity &e, model *m, vec &center, vec &r
 
 static inline void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radius)
 {
-    float size = max(static_cast<float>(e.attr5), 1.0f);
+    float size = std::max(static_cast<float>(e.attr5), 1.0f);
     center = vec(0, s.depth * size/2, 0);
     radius = vec(size/2, s.depth * size/2, size/2);
     rotatebb(center, radius, e.attr2, e.attr3, e.attr4);
@@ -424,7 +424,7 @@ static bool modifyoctaent(int flags, int id, extentity &e)
     else
     {
         int leafsize = octaentsize,
-            limit    = max(r.x - o.x, max(r.y - o.y, r.z - o.z));
+            limit    = std::max(r.x - o.x, std::max(r.y - o.y, r.z - o.z));
         while(leafsize < limit)
         {
             leafsize *= 2;
