@@ -1605,7 +1605,7 @@ int curtexindex = -1,
     lasttex = 0,
     lasttexmillis = -1;
 int texpaneltimer = 0;
-vector<ushort> texmru;
+std::vector<ushort> texmru;
 
 selinfo repsel;
 int reptex = -1;
@@ -1701,7 +1701,7 @@ void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep
 void compactmruvslots()
 {
     remappedvslots.setsize(0);
-    for(int i = texmru.length(); --i >=0;) //note reverse iteration
+    for(uint i = texmru.size(); --i >=0;) //note reverse iteration
     {
         if(vslots.inrange(texmru[i]))
         {
@@ -1712,15 +1712,15 @@ void compactmruvslots()
                 continue;
             }
         }
-        if(curtexindex > i)
+        if(static_cast<uint>(curtexindex) > i)
         {
             curtexindex--;
         }
-        else if(curtexindex == i)
+        else if(static_cast<uint>(curtexindex) == i)
         {
             curtexindex = -1;
         }
-        texmru.remove(i);
+        texmru.erase(texmru.begin() + i);
     }
     if(vslots.inrange(lasttex))
     {
@@ -1856,7 +1856,7 @@ void rendertexturepanel(int w, int h)
         {
             int s = (i == 3 ? 285 : 220),
                 ti = curtexindex+i-3;
-            if(texmru.inrange(ti))
+            if(static_cast<int>(texmru.size()) > ti)
             {
                 VSlot &vslot = lookupvslot(texmru[ti]);
                 Slot &slot = *vslot.slot;

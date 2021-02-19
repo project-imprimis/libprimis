@@ -1,7 +1,7 @@
 #ifndef OCTAEDIT_H_
 #define OCTAEDIT_H_
 
-extern vector<ushort> texmru;
+extern std::vector<ushort> texmru;
 extern bool allowediting;
 extern bool multiplayer;
 extern bool editmode;

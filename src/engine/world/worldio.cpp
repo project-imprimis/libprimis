@@ -1019,8 +1019,8 @@ bool save_world(const char *mname, const char *gameident)
     f->put<ushort>(0);
     f->write(0, 0);
     //=== end of padding
-    f->put<ushort>(texmru.length());
-    for(int i = 0; i < texmru.length(); i++)
+    f->put<ushort>(texmru.size());
+    for(uint i = 0; i < texmru.size(); i++)
     {
         f->put<ushort>(texmru[i]);
     }
@@ -1184,11 +1184,11 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
         extrasize = f->get<ushort>();
     vector<char> extras;
     f->read(extras.pad(extrasize), extrasize);
-    texmru.shrink(0);
+    texmru.clear();
     ushort nummru = f->get<ushort>();
     for(int i = 0; i < nummru; ++i)
     {
-        texmru.add(f->get<ushort>());
+        texmru.push_back(f->get<ushort>());
     }
     renderprogress(0, "loading entities...");
     vector<extentity *> &ents = entities::getents();

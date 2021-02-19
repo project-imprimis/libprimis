@@ -642,7 +642,7 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
     setvar("mapscale", scale<10 ? 10 : (scale>16 ? 16 : scale), true, false);
     setvar("mapsize", 1<<worldscale, true, false);
     setvar("emptymap", 1, true, false);
-    texmru.shrink(0);
+    texmru.clear();
     freeocta(worldroot);
     worldroot = newcubes(faceempty);
     for(int i = 0; i < 4; ++i)
