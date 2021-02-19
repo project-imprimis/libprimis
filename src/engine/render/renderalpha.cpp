@@ -31,10 +31,10 @@ static void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy
         bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
         if(scissor)
         {
-            int x1 = static_cast<int>(floor((allsx1*0.5f+0.5f)*vieww)),
-                y1 = static_cast<int>(floor((allsy1*0.5f+0.5f)*viewh)),
-                x2 = static_cast<int>(ceil((allsx2*0.5f+0.5f)*vieww)),
-                y2 = static_cast<int>(ceil((allsy2*0.5f+0.5f)*viewh));
+            int x1 = static_cast<int>(std::floor((allsx1*0.5f+0.5f)*vieww)),
+                y1 = static_cast<int>(std::floor((allsy1*0.5f+0.5f)*viewh)),
+                x2 = static_cast<int>(std::ceil((allsx2*0.5f+0.5f)*vieww)),
+                y2 = static_cast<int>(std::ceil((allsy2*0.5f+0.5f)*viewh));
             glEnable(GL_SCISSOR_TEST);
             glScissor(x1, y1, x2 - x1, y2 - y1);
         }
@@ -92,10 +92,10 @@ void rendertransparent()
         bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
         if(scissor)
         {
-            int x1 = static_cast<int>(floor(std::max(sx1*0.5f+0.5f-refractmargin*viewh/vieww, 0.0f)*vieww)),
-                y1 = static_cast<int>(floor(std::max(sy1*0.5f+0.5f-refractmargin, 0.0f)*viewh)),
-                x2 = static_cast<int>(ceil(std::min(sx2*0.5f+0.5f+refractmargin*viewh/vieww, 1.0f)*vieww)),
-                y2 = static_cast<int>(ceil(std::min(sy2*0.5f+0.5f+refractmargin, 1.0f)*viewh));
+            int x1 = static_cast<int>(std::floor(std::max(sx1*0.5f+0.5f-refractmargin*viewh/vieww, 0.0f)*vieww)),
+                y1 = static_cast<int>(std::floor(std::max(sy1*0.5f+0.5f-refractmargin, 0.0f)*viewh)),
+                x2 = static_cast<int>(std::ceil(std::min(sx2*0.5f+0.5f+refractmargin*viewh/vieww, 1.0f)*vieww)),
+                y2 = static_cast<int>(std::ceil(std::min(sy2*0.5f+0.5f+refractmargin, 1.0f)*viewh));
             glEnable(GL_SCISSOR_TEST);
             glScissor(x1, y1, x2 - x1, y2 - y1);
         }
@@ -252,10 +252,10 @@ void rendertransparent()
             bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
             if(scissor)
             {
-                int x1 = static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)),
-                    y1 = static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)),
-                    x2 = static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)),
-                    y2 = static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh));
+                int x1 = static_cast<int>(std::floor((sx1*0.5f+0.5f)*vieww)),
+                    y1 = static_cast<int>(std::floor((sy1*0.5f+0.5f)*viewh)),
+                    x2 = static_cast<int>(std::ceil((sx2*0.5f+0.5f)*vieww)),
+                    y2 = static_cast<int>(std::ceil((sy2*0.5f+0.5f)*viewh));
                 glEnable(GL_SCISSOR_TEST);
                 glScissor(x1, y1, x2 - x1, y2 - y1);
             }
