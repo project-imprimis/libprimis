@@ -1448,20 +1448,20 @@ DIVCMD(div, i, int, val /= val2);
 DIVCMD(mod, i, int, val %= val2);
 DIVCMD(divf, f, float, val /= val2);
 DIVCMD(modf, f, float, val = std::fmod(val, val2));
-MATHCMD("pow", f, float, val = pow(val, val2), 0, );
+MATHCMD("pow", f, float, val = std::pow(val, val2), 0, );
 
-ICOMMAND(sin, "f", (float *a), floatret(sin(*a*RAD)));
-ICOMMAND(cos, "f", (float *a), floatret(cos(*a*RAD)));
-ICOMMAND(tan, "f", (float *a), floatret(tan(*a*RAD)));
-ICOMMAND(asin, "f", (float *a), floatret(asin(*a)/RAD));
-ICOMMAND(acos, "f", (float *a), floatret(acos(*a)/RAD));
-ICOMMAND(atan, "f", (float *a), floatret(atan(*a)/RAD));
-ICOMMAND(atan2, "ff", (float *y, float *x), floatret(atan2(*y, *x)/RAD));
-ICOMMAND(sqrt, "f", (float *a), floatret(sqrt(*a)));
-ICOMMAND(loge, "f", (float *a), floatret(log(*a)));
-ICOMMAND(log2, "f", (float *a), floatret(log(*a)/M_LN2));
-ICOMMAND(log10, "f", (float *a), floatret(log10(*a)));
-ICOMMAND(exp, "f", (float *a), floatret(exp(*a)));
+ICOMMAND(sin, "f", (float *a), floatret(std::sin(*a*RAD)));
+ICOMMAND(cos, "f", (float *a), floatret(std::cos(*a*RAD)));
+ICOMMAND(tan, "f", (float *a), floatret(std::tan(*a*RAD)));
+ICOMMAND(asin, "f", (float *a), floatret(std::asin(*a)/RAD));
+ICOMMAND(acos, "f", (float *a), floatret(std::acos(*a)/RAD));
+ICOMMAND(atan, "f", (float *a), floatret(std::atan(*a)/RAD));
+ICOMMAND(atan2, "ff", (float *y, float *x), floatret(std::atan2(*y, *x)/RAD));
+ICOMMAND(sqrt, "f", (float *a), floatret(std::sqrt(*a)));
+ICOMMAND(loge, "f", (float *a), floatret(std::log(*a)));
+ICOMMAND(log2, "f", (float *a), floatret(std::log(*a)/M_LN2));
+ICOMMAND(log10, "f", (float *a), floatret(std::log10(*a)));
+ICOMMAND(exp, "f", (float *a), floatret(std::exp(*a)));
 
 #define MINMAXCMD(name, fmt, type, op) \
     ICOMMAND(name, #fmt "1V", (tagval *args, int numargs), \
