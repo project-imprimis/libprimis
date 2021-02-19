@@ -25,6 +25,8 @@
  *        1_________2
  */
 
+constexpr float maxcollidedistance = -1e9f;
+
 bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode)
 {
     const tri &t = m.tris[tidx];
@@ -997,7 +999,7 @@ bool BIH::ellipsecollide(physent *d, const vec &dir, float cutoff, const vec &o,
         morient.mul(orient, m.xform);
         collide<Collide_Ellipse>(m, d, dir, cutoff, m.invxform.transform(bo), radius, morient, dist, m.nodes, icenter, iradius);
     }
-    return dist > -1e9f;
+    return dist > maxcollidedistance;
 }
 
 bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int yaw, int pitch, int roll, float scale)
@@ -1057,7 +1059,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
         morient.mul(dorient, dcenter, m.xform);
         collide<Collide_OrientedBoundingBox>(m, d, ddir, cutoff, center, radius, morient, dist, m.nodes, icenter, iradius);
     }
-    if(dist > -1e9f)
+    if(dist > maxcollidedistance)
     {
         collidewall = drot.transposedtransform(collidewall);
         return true;
