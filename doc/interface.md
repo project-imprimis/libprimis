@@ -1,4 +1,4 @@
-# The Imprimis Interface Specification
+# The Libprimis Interface Specification
 
 #### Note that this is a draft and subject to expansion and modification.
 
