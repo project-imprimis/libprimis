@@ -360,11 +360,11 @@ static const char *debugline(const char *p, const char *fmt)
     return fmt;
 }
 
-VAR(dbgalias, 0, 4, 1000);
+VAR(debugalias, 0, 4, 1000);
 
 static void debugalias()
 {
-    if(!dbgalias)
+    if(!debugalias)
     {
         return;
     }
@@ -378,13 +378,13 @@ static void debugalias()
     {
         ident *id = l->id;
         ++depth;
-        if(depth < dbgalias)
+        if(depth < debugalias)
         {
             conoutf(Console_Error, "  %d) %s", total-depth+1, id->name);
         }
         else if(l->next == &noalias)
         {
-            conoutf(Console_Error, depth == dbgalias ? "  %d) %s" : "  ..%d) %s", total-depth+1, id->name);
+            conoutf(Console_Error, depth == debugalias ? "  %d) %s" : "  ..%d) %s", total-depth+1, id->name);
         }
     }
 }
