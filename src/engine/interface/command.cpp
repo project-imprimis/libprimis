@@ -362,7 +362,7 @@ static const char *debugline(const char *p, const char *fmt)
 
 VAR(debugalias, 0, 4, 1000);
 
-static void debugalias()
+static void dodebugalias()
 {
     if(!debugalias)
     {
@@ -404,7 +404,7 @@ static void debugcode(const char *fmt, ...)
     conoutfv(Console_Error, fmt, args);
     va_end(args);
 
-    debugalias();
+    dodebugalias();
 }
 
 static void debugcodeline(const char *p, const char *fmt, ...) PRINTFARGS(2, 3);
@@ -420,7 +420,7 @@ static void debugcodeline(const char *p, const char *fmt, ...)
     conoutfv(Console_Error, debugline(p, fmt), args);
     va_end(args);
 
-    debugalias();
+    dodebugalias();
 }
 
 static void nodebugcmd(uint *body)
