@@ -830,7 +830,7 @@ void updatesounds()
 
 VARP(maxsoundsatonce, 0, 7, 100);
 
-VAR(dbgsound, 0, 0, 1); //toggles console debug messages
+VAR(debugsound, 0, 0, 1); //toggles console debug messages
 
 void preloadsound(int n)
 {
@@ -938,7 +938,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     {
         return -1;
     }
-    if(dbgsound)
+    if(debugsound)
     {
         conoutf("sound: %s%s", sounds.dir, slot.sample->name);
     }
@@ -1019,7 +1019,7 @@ bool stopsound(int n, int chanid, int fade)
     {
         return false;
     }
-    if(dbgsound)
+    if(debugsound)
     {
         conoutf("stopsound: %s%s", gamesounds.dir, channels[chanid].slot->sample->name);
     }
@@ -1085,5 +1085,4 @@ void resetsound()
         DELETEA(musicdonecmd);
     }
 }
-
 COMMAND(resetsound, "");
