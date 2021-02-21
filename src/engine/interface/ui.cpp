@@ -4377,14 +4377,56 @@ namespace UI
         return window && std::find(world->children.begin(), world->children.end(), window) != world->children.end();
     }
 
-    ICOMMAND(showui, "s", (char *name), intret(showui(name) ? 1 : 0));
-    ICOMMAND(hideui, "s", (char *name), intret(hideui(name) ? 1 : 0));
-    ICOMMAND(hidetopui, "", (), intret(world->hidetop() ? 1 : 0));
-    ICOMMAND(hideallui, "", (), intret(world->hideall()));
-    ICOMMAND(toggleui, "s", (char *name), intret(toggleui(name) ? 1 : 0));
-    ICOMMAND(holdui, "sD", (char *name, int *down), holdui(name, *down!=0));
-    ICOMMAND(uivisible, "s", (char *name), intret(uivisible(name) ? 1 : 0));
-    ICOMMAND(uiname, "", (), { if(window) result(window->name); });
+    void showuicmd(char * name)
+    {
+        intret(showui(name) ? 1 : 0);
+    }
+    COMMANDN(showui, showuicmd, "s");
+
+    void hideuicmd(char * name)
+    {
+        intret(hideui(name) ? 1 : 0);
+    }
+    COMMANDN(hideui, hideuicmd, "s");
+
+    void hidetopuicmd()
+    {
+        intret(world->hidetop() ? 1 : 0);
+    }
+    COMMANDN(hidetopui, hidetopuicmd, "");
+
+    void hidealluicmd()
+    {
+        intret(world->hideall());
+    }
+    COMMANDN(hideallui, hidealluicmd, "");
+
+    void toggleuicmd(char * name)
+    {
+        intret(toggleui(name) ? 1 : 0);
+    }
+    COMMANDN(toggleui, toggleuicmd, "s");
+
+    void holduicmd(char * name, int * down)
+    {
+        holdui(name, *down!=0);
+    }
+    COMMANDN(holdui, holduicmd, "sD");
+
+    void uivisiblecmd(char * name)
+    {
+        intret(uivisible(name) ? 1 : 0);
+    }
+    COMMANDN(uivisiblecmd, uivisible, "s");
+
+    void uinamecmd()
+    {
+        if(window)
+        {
+            result(window->name);
+        }
+    }
+    COMMANDN(uiname, uinamecmd, "");
 
     #define IFSTATEVAL(state,t,f) \
     { \
