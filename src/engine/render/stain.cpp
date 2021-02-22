@@ -244,7 +244,10 @@ struct stainrenderer
         DELETEA(stains);
     }
 
-    bool usegbuffer() const { return !(flags&(StainFlag_InvMod|StainFlag_Glow)); }
+    bool usegbuffer() const
+    {
+        return !(flags&(StainFlag_InvMod|StainFlag_Glow));
+    }
 
     void init(int tris)
     {
