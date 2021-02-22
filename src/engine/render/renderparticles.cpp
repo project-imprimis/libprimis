@@ -41,10 +41,10 @@ VARP(softparticleblend, 1, 8, 64);
 // Automatically stops particles being emitted when paused or in reflective drawing
 VARP(emitmillis, 1, 17, 1000); //note: 17 ms = ~60fps
 static int lastemitframe = 0,
-           emitoffset = 0;
-static bool canemit = false,
+           emitoffset    = 0;
+static bool canemit       = false,
             regenemitters = false,
-            canstep = false;
+            canstep       = false;
 
 static bool canemitparticles()
 {
@@ -52,12 +52,12 @@ static bool canemitparticles()
 }
 std::vector<std::string> entnames;
 
-VARP(showparticles, 0, 1, 1);
-VAR(cullparticles, 0, 1, 1);
+VARP(showparticles,  0, 1, 1);
+VAR(cullparticles,   0, 1, 1);
 VAR(replayparticles, 0, 1, 1);
 VARN(seedparticles, seedmillis, 0, 3000, 10000);
-VAR(debugpcull, 0, 0, 1);
-VAR(debugpseed, 0, 0, 1);
+VAR(debugparticlecull, 0, 0, 1);
+VAR(debugparticleseed, 0, 0, 1);
 
 struct particleemitter
 {
@@ -78,7 +78,7 @@ struct particleemitter
         radius = bbmin.dist(bbmax)/2;
         cullmin = ivec::floor(bbmin);
         cullmax = ivec::ceil(bbmax);
-        if(debugpseed)
+        if(debugparticleseed)
         {
             conoutf(Console_Debug, "radius: %f, maxfade: %d", radius, maxfade);
         }
@@ -2016,7 +2016,7 @@ void updateparticles()
             }
             pe.lastemit = lastmillis;
         }
-        if(debugpcull && (canemit || replayed) && addedparticles)
+        if(debugparticlecull && (canemit || replayed) && addedparticles)
         {
             conoutf(Console_Debug, "%d emitters, %d particles", emitted, addedparticles);
         }
