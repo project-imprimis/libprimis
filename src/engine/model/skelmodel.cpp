@@ -43,13 +43,13 @@ skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, cha
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
 {
     skelanimspec &sa = skelanims.add();
-    sa.name = name ? newstring(name) : NULL;
+    sa.name = name ? newstring(name) : nullptr;
     return sa;
 }
 
@@ -785,7 +785,7 @@ skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(part *p, const An
     }
     int numanimparts = ((skelpart *)as->owner)->numanimparts;
     uchar *partmask = ((skelpart *)as->owner)->partmask;
-    skelcacheentry *sc = NULL;
+    skelcacheentry *sc = nullptr;
     bool match = false;
     for(int i = 0; i < skelcache.length(); i++)
     {
@@ -1024,7 +1024,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
         return;
     }
 
-    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? NULL : d->ragdoll);
+    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
     if(!(as->cur.anim & Anim_NoRender))
     {
         int owner = &sc-&skel->skelcache[0];
@@ -1034,7 +1034,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
         {
             genvbo(vc);
         }
-        blendcacheentry *bc = NULL;
+        blendcacheentry *bc = nullptr;
         if(vblends)
         {
             bc = &checkblendcache(sc, owner);
@@ -1052,7 +1052,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             (animcacheentry &)vc = sc;
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                m.interpverts(sc.bdata, bc ? bc->bdata : NULL, (vvert *)vdata, p->skins[i]);
+                m.interpverts(sc.bdata, bc ? bc->bdata : nullptr, (vvert *)vdata, p->skins[i]);
             });
             gle::bindvbo(vc.vbuf);
             glBufferData_(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
@@ -1521,7 +1521,7 @@ void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const
     {
         skel->cleanup();
     }
-    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? NULL : d->ragdoll);
+    skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
     intersect(hitdata, p, sc, o, ray);
     skel->calctags(p, &sc);
 }
@@ -1546,7 +1546,7 @@ void skelmodel::skelmeshgroup::preload(part *p)
 // skelpart
 uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
 {
-    static animpartmask *partmasks = NULL;
+    static animpartmask *partmasks = nullptr;
     animpartmask *p = partmasks;
     for(; p; p = p->next) if(p->numbones==o->numbones && !memcmp(p->bones, o->bones, p->numbones))
     {
@@ -1589,7 +1589,7 @@ void skelmodel::skelpart::endanimparts()
     if(buildingpartmask)
     {
         partmask = sharepartmask(buildingpartmask);
-        buildingpartmask = NULL;
+        buildingpartmask = nullptr;
     }
 
     ((skelmeshgroup *)meshes)->skel->optimize();
