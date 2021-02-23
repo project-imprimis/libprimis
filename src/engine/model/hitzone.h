@@ -23,7 +23,7 @@ struct skelbih
 
     struct tri : skelmodel::tri
     {
-        uchar mesh, id;
+        uchar Mesh, id;
     };
 
     node *nodes;
@@ -100,7 +100,7 @@ inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
     }
     if((skelmodel::intersectmode&Ray_AlphaPoly)==Ray_AlphaPoly)
     {
-        Texture *tex = s[t.mesh].tex;
+        Texture *tex = s[t.Mesh].tex;
         if(tex->type&Texture::ALPHA && (tex->alphamask || loadalphamask(tex)))
         {
             int si = std::clamp(static_cast<int>(tex->xs * (va.tc.x + u*(vb.tc.x - va.tc.x) + v*(vc.tc.x - va.tc.x))), 0, tex->xs-1),
@@ -119,7 +119,7 @@ inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
 bool skelbih::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray)
 {
     const tri &t = tris[tidx];
-    skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.mesh];
+    skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.Mesh];
     const skelmodel::vert &va = tm->verts[t.vert[0]],
                           &vb = tm->verts[t.vert[1]],
                           &vc = tm->verts[t.vert[2]];
@@ -298,7 +298,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         for(left = 0, right = numindices, splitleft = SHRT_MIN, splitright = SHRT_MAX; left < right;)
         {
             tri &tri = tris[indices[left]];
-            skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
+            skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.Mesh];
             const vec &ta = tm->verts[tri.vert[0]].pos,
                       &tb = tm->verts[tri.vert[1]].pos,
                       &tc = tm->verts[tri.vert[2]].pos;
@@ -339,7 +339,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         for(int i = 0; i < numindices; ++i)
         {
             tri &tri = tris[indices[i]];
-            skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
+            skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.Mesh];
             const vec &ta = tm->verts[tri.vert[0]].pos,
                       &tb = tm->verts[tri.vert[1]].pos,
                       &tc = tm->verts[tri.vert[2]].pos;
@@ -390,7 +390,7 @@ skelbih::skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris)
     for(int i = 0; i < numtris; ++i)
     {
         tri &tri = tris[i];
-        skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.mesh];
+        skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.Mesh];
         const vec &ta = tm->verts[tri.vert[0]].pos,
                   &tb = tm->verts[tri.vert[1]].pos,
                   &tc = tm->verts[tri.vert[2]].pos;
@@ -533,7 +533,7 @@ struct skelhitzone
 
 bool skelhitzone::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray)
 {
-    skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.mesh];
+    skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.Mesh];
     const skelmodel::vert &va = tm->verts[t.vert[0]],
                           &vb = tm->verts[t.vert[1]],
                           &vc = tm->verts[t.vert[2]];
@@ -910,7 +910,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
                 info.add(&zi);
             }
             skelhitzone::tri &zt = zi.tris.add();
-            zt.mesh = i;
+            zt.Mesh = i;
             zt.id = chooseid(g, m, t, ids);
             memcpy(zt.vert, t.vert, sizeof(zt.vert));
         }
