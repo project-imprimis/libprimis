@@ -137,7 +137,7 @@ struct skelmodel : animmodel
 
     struct animcacheentry
     {
-        animstate as[maxanimparts];
+        AnimState as[maxanimparts];
         float pitch;
         int millis;
         uchar *partmask;
@@ -199,7 +199,7 @@ struct skelmodel : animmodel
 
     struct skelmeshgroup;
 
-    struct skelmesh : mesh
+    struct skelmesh : Mesh
     {
         vert *verts;
         tri *tris;
@@ -327,7 +327,7 @@ struct skelmodel : animmodel
         }
 
         void setshader(Shader *s, int row);
-        void render(const animstate *as, skin &s, vbocacheentry &vc);
+        void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
     struct tag
@@ -449,7 +449,7 @@ struct skelmodel : animmodel
         bool gpuaccelerate() const;
         float calcdeviation(const vec &axis, const vec &forward, const dualquat &pose1, const dualquat &pose2);
         void calcpitchcorrects(float pitch, const vec &axis, const vec &forward);
-        void interpbones(const animstate *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
+        void interpbones(const AnimState *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc);
         void initragdoll(ragdolldata &d, skelcacheentry &sc, part *p);
         void genragdollbones(ragdolldata &d, skelcacheentry &sc, part *p);
         void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
@@ -457,7 +457,7 @@ struct skelmodel : animmodel
         void cleanup(bool full = true);
         bool canpreload();
         void preload();
-        skelcacheentry &checkskelcache(part *p, const animstate *as, float pitch, const vec &axis, const vec &forward, ragdolldata *rdata);
+        skelcacheentry &checkskelcache(part *p, const AnimState *as, float pitch, const vec &axis, const vec &forward, ragdolldata *rdata);
         int getblendoffset(UniformLoc &u);
         void setglslbones(UniformLoc &u, skelcacheentry &sc, skelcacheentry &bc, int count);
         void setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count);
@@ -557,7 +557,7 @@ struct skelmodel : animmodel
         }
 
         template<class T>
-        void bindvbo(const animstate *as, part *p, vbocacheentry &vc)
+        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
@@ -585,7 +585,7 @@ struct skelmodel : animmodel
             bindbones(vverts);
         }
 
-        void bindvbo(const animstate *as, part *p, vbocacheentry &vc, skelcacheentry *sc = NULL, blendcacheentry *bc = NULL);
+        void bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc = NULL, blendcacheentry *bc = NULL);
         void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
         int addblendcombo(const blendcombo &c);
         void sortblendcombos();
@@ -602,10 +602,10 @@ struct skelmodel : animmodel
         void buildhitdata(const uchar *hitzones);
         void intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray);
         //end hitzone.h
-        void intersect(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
+        void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray);
         void preload(part *p);
 
-        void render(const animstate *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
+        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
 
         virtual bool load(const char *name, float smooth) = 0;
     };
