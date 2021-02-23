@@ -47,13 +47,13 @@ Texture *animmodel::lasttex = nullptr,
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
 
-hashtable<animmodel::shaderparams, animmodel::shaderparamskey> animmodel::shaderparamskey::keys;
-int animmodel::shaderparamskey::firstversion = 0,
-    animmodel::shaderparamskey::lastversion = 1;
+hashtable<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::ShaderParamsKey::keys;
+int animmodel::ShaderParamsKey::firstversion = 0,
+    animmodel::ShaderParamsKey::lastversion = 1;
 
-// animpos
+// AnimPos
 
-void animmodel::animpos::setframes(const animinfo &info)
+void animmodel::AnimPos::setframes(const animinfo &info)
 {
     anim = info.anim;
     if(info.range<=1)
@@ -88,9 +88,9 @@ void animmodel::animpos::setframes(const animinfo &info)
     }
 }
 
-// shaderparamskey
+// ShaderParamsKey
 
-bool animmodel::shaderparamskey::checkversion()
+bool animmodel::ShaderParamsKey::checkversion()
 {
     if(version >= firstversion)
     {
@@ -99,7 +99,7 @@ bool animmodel::shaderparamskey::checkversion()
     version = lastversion;
     if(++lastversion <= 0)
     {
-        ENUMERATE(keys, shaderparamskey, key, key.version = -1);
+        ENUMERATE(keys, ShaderParamsKey, key, key.version = -1);
         firstversion = 0;
         lastversion = 1;
         version = 0;
@@ -131,10 +131,10 @@ bool animmodel::skin::decaled() const
 
 void animmodel::skin::setkey()
 {
-    key = &shaderparamskey::keys[*this];
+    key = &ShaderParamsKey::keys[*this];
 }
 
-void animmodel::skin::setshaderparams(mesh &m, const animstate *as, bool skinned)
+void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned)
 {
     if(!Shader::lastshader)
     {
@@ -274,12 +274,12 @@ void animmodel::skin::preloadshader()
     }
 }
 
-void animmodel::skin::setshader(mesh &m, const animstate *as)
+void animmodel::skin::setshader(Mesh &m, const AnimState *as)
 {
     m.setshader(loadshader(), transparentlayer ? 1 : 0);
 }
 
-void animmodel::skin::bind(mesh &b, const animstate *as)
+void animmodel::skin::bind(Mesh &b, const AnimState *as)
 {
     if(cullface > 0)
     {
@@ -348,9 +348,9 @@ void animmodel::skin::bind(mesh &b, const animstate *as)
     setshaderparams(b, as);
 }
 
-//mesh
+//Mesh
 
-void animmodel::mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::Mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
     BIH::mesh &m = bih.add();
     m.xform = t;
@@ -385,7 +385,7 @@ void animmodel::mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t
     }
 }
 
-void animmodel::mesh::fixqtangent(quat &q, float bt)
+void animmodel::Mesh::fixqtangent(quat &q, float bt)
 {
     static const float bias = -1.5f/65535,
                        biasscale = sqrtf(1 - bias*bias);
@@ -411,7 +411,7 @@ void animmodel::mesh::fixqtangent(quat &q, float bt)
 
 void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
 {
-    LOOP_RENDER_MESHES(mesh, m, m.calcbb(bbmin, bbmax, t));
+    LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));
 }
 
 void animmodel::meshgroup::genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
@@ -424,7 +424,7 @@ void animmodel::meshgroup::genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, c
 
 void animmodel::meshgroup::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t)
 {
-    LOOP_RENDER_MESHES(mesh, m, m.genshadowmesh(tris, t));
+    LOOP_RENDER_MESHES(Mesh, m, m.genshadowmesh(tris, t));
 }
 
 bool animmodel::meshgroup::hasframe(int i) const
@@ -800,11 +800,11 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
 
 void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray)
 {
-    animstate as[maxanimparts];
+    AnimState as[maxanimparts];
     intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
 }
 
-void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, animstate *as)
+void animmodel::part::intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as)
 {
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
@@ -817,7 +817,7 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
             {
                 return;
             }
-            animstate &p = as[i];
+            AnimState &p = as[i];
             p.owner = this;
             p.cur.setframes(info);
             p.interp = 1;
@@ -903,11 +903,11 @@ void animmodel::part::intersect(int anim, int basetime, int basetime2, float pit
 
 void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d)
 {
-    animstate as[maxanimparts];
+    AnimState as[maxanimparts];
     render(anim, basetime, basetime2, pitch, axis, forward, d, as);
 }
 
-void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, animstate *as)
+void animmodel::part::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as)
 {
     if((anim & Anim_Reuse) != Anim_Reuse)
     {
@@ -919,7 +919,7 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
             {
                 return;
             }
-            animstate &p = as[i];
+            AnimState &p = as[i];
             p.owner = this;
             p.cur.setframes(info);
             p.interp = 1;
