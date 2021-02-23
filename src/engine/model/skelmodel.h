@@ -462,6 +462,13 @@ struct skelmodel : animmodel
         void setglslbones(UniformLoc &u, skelcacheentry &sc, skelcacheentry &bc, int count);
         void setgpubones(skelcacheentry &sc, blendcacheentry *bc, int count);
         bool shouldcleanup() const;
+
+        private:
+            struct framedata
+            {
+                const dualquat *fr1, *fr2, *pfr1, *pfr2;
+            };
+            dualquat interpbone(int bone, framedata partframes[maxanimparts], const animstate *as, const uchar *partmask);
     };
 
     static hashnameset<skeleton *> skeletons;

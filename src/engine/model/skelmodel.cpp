@@ -535,17 +535,21 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
     }
 }
 
-#define INTERPBONE(bone) \
-    const animstate &s = as[partmask[bone]]; \
-    const framedata &f = partframes[partmask[bone]]; \
-    dualquat d; \
-    (d = f.fr1[bone]).mul((1-s.cur.t)*s.interp); \
-    d.accumulate(f.fr2[bone], s.cur.t*s.interp); \
-    if(s.interp<1) \
-    { \
-        d.accumulate(f.pfr1[bone], (1-s.prev.t)*(1-s.interp)); \
-        d.accumulate(f.pfr2[bone], s.prev.t*(1-s.interp)); \
+//private helper function for interpbones
+dualquat skelmodel::skeleton::interpbone(int bone, framedata partframes[maxanimparts], const animstate *as, const uchar *partmask )
+{
+    const animstate &s = as[partmask[bone]];
+    const framedata &f = partframes[partmask[bone]];
+    dualquat d;
+    (d = f.fr1[bone]).mul((1-s.cur.t)*s.interp);
+    d.accumulate(f.fr2[bone], s.cur.t*s.interp);
+    if(s.interp<1)
+    {
+        d.accumulate(f.pfr1[bone], (1-s.prev.t)*(1-s.interp));
+        d.accumulate(f.pfr2[bone], s.prev.t*(1-s.interp));
     }
+    return d;
+}
 
 void skelmodel::skeleton::interpbones(const animstate *as, float pitch, const vec &axis, const vec &forward, int numanimparts, const uchar *partmask, skelcacheentry &sc)
 {
@@ -554,10 +558,7 @@ void skelmodel::skeleton::interpbones(const animstate *as, float pitch, const ve
         sc.bdata = new dualquat[numinterpbones];
     }
     sc.nextversion();
-    struct framedata
-    {
-        const dualquat *fr1, *fr2, *pfr1, *pfr2;
-    } partframes[maxanimparts];
+    framedata partframes[maxanimparts];
     for(int i = 0; i < numanimparts; ++i)
     {
         partframes[i].fr1 = &framebones[as[i].cur.fr1*numbones];
@@ -571,7 +572,7 @@ void skelmodel::skeleton::interpbones(const animstate *as, float pitch, const ve
     for(int i = 0; i < pitchdeps.length(); i++)
     {
         pitchdep &p = pitchdeps[i];
-        INTERPBONE(p.bone);
+        dualquat d = interpbone(p.bone, partframes, as, partmask);
         d.normalize();
         if(p.parent >= 0)
         {
@@ -587,7 +588,7 @@ void skelmodel::skeleton::interpbones(const animstate *as, float pitch, const ve
     {
         if(bones[i].interpindex>=0)
         {
-            INTERPBONE(i);
+            dualquat d = interpbone(i, partframes, as, partmask);
             d.normalize();
             const boneinfo &b = bones[i];
             if(b.interpparent<0)
