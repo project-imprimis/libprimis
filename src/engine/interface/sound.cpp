@@ -9,8 +9,7 @@
 #include "menus.h"
 #include "sound.h"
 
-#include "render/rendergl.h"
-#include "render/renderwindow.h"
+#include "render/rendergl.h" //needed to get camera position
 
 bool nosound = true;
 
@@ -31,7 +30,7 @@ struct SoundSample
         }
     }
 
-    bool load(const char *dir, bool msg = false);
+    bool load(const char *dir);
 };
 
 struct soundslot
@@ -90,7 +89,7 @@ struct SoundChannel
 
     void reset()
     {
-        inuse = false;
+        inuse  = false;
         clearloc();
         slot   = nullptr;
         ent    = nullptr;
@@ -181,11 +180,11 @@ VARFP(soundvol, 0, 255, 255, if(!soundvol)
 });
 VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
-char *musicfile = nullptr,
+char *musicfile    = nullptr,
      *musicdonecmd = nullptr;
 
-Mix_Music *music = nullptr;
-SDL_RWops *musicrw = nullptr;
+Mix_Music *music    = nullptr;
+SDL_RWops *musicrw  = nullptr;
 stream *musicstream = nullptr;
 
 void setmusicvol(int musicvol)
@@ -227,14 +226,20 @@ void stopmusic()
 #else
     #define AUDIODRIVER ""
 #endif
+
 bool shouldinitaudio = true;
+
 SVARF(audiodriver, AUDIODRIVER, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
+
 //master sound toggle
 VARF(sound, 0, 1, 1, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
-//# of sound channels
+
+//# of sound channels (not physical output channels, but individual sound samples in use, such as weaps and light ents)
 VARF(soundchans, 1, 32, 128, initwarning("sound configuration", Init_Reset, Change_Sound));
+
 //max sound frequency (44.1KHz = CD)
 VARF(soundfreq, 0, 44100, 48000, initwarning("sound configuration", Init_Reset, Change_Sound));
+
 //length of sound buffer in milliseconds
 VARF(soundbufferlen, 128, 1024, 4096, initwarning("sound configuration", Init_Reset, Change_Sound));
 
@@ -434,7 +439,7 @@ static Mix_Chunk *loadwav(const char *name)
     return c;
 }
 
-bool SoundSample::load(const char *dir, bool msg)
+bool SoundSample::load(const char *dir)
 {
     if(chunk)
     {
@@ -444,15 +449,11 @@ bool SoundSample::load(const char *dir, bool msg)
     {
         return false;
     }
-    static const char * const exts[] = { "", ".wav", ".ogg" };
+    static const char * const exts[] = { "", ".ogg" };
     string filename;
     for(int i = 0; i < static_cast<int>(sizeof(exts)/sizeof(exts[0])); ++i)
     {
         formatstring(filename, "media/sound/%s%s%s", dir, name, exts[i]);
-        if(msg && !i)
-        {
-            renderprogress(0, filename);
-        }
         path(filename);
         chunk = loadwav(filename);
         if(chunk)
@@ -571,7 +572,7 @@ static struct SoundType
         SoundConfig &config = configs[n];
         for(int k = 0; k < config.numslots; ++k)
         {
-            slots[config.slots+k].sample->load(dir, true);
+            slots[config.slots+k].sample->load(dir);
         }
     }
     bool playing(const SoundChannel &chan, const SoundConfig &config) const
@@ -588,7 +589,7 @@ COMMAND(registersound, "si");
 
 void mapsound(char *name, int *vol, int *maxuses)
 {
-    intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : max(1, *maxuses)));
+    intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : std::max(1, *maxuses)));
 }
 COMMAND(mapsound, "sii");
 
@@ -740,7 +741,7 @@ bool updatechannel(SoundChannel &chan)
         }
         else if(chan.radius > 0)
         {
-            rad = maxsoundradius ? min(maxsoundradius, chan.radius) : chan.radius;
+            rad = maxsoundradius ? std::min(maxsoundradius, chan.radius) : chan.radius;
         }
         if(rad > 0) //rad = 0 means no attenuation ever
         {
@@ -753,7 +754,7 @@ bool updatechannel(SoundChannel &chan)
         }
     }
     vol = (vol*MIX_MAX_VOLUME*chan.slot->volume)/255/255;
-    vol = min(vol, MIX_MAX_VOLUME);
+    vol = std::min(vol, MIX_MAX_VOLUME);
     if(vol == chan.volume && pan == chan.pan)
     {
         return false;
@@ -829,7 +830,7 @@ void updatesounds()
 
 VARP(maxsoundsatonce, 0, 7, 100);
 
-VAR(dbgsound, 0, 0, 1); //toggles console debug messages
+VAR(debugsound, 0, 0, 1); //toggles console debug messages
 
 void preloadsound(int n)
 {
@@ -871,7 +872,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     {
         // cull sounds that are unlikely to be heard
         //if radius is greater than zero, clamp to maxsoundradius if maxsound radius is nonzero; if radius is zero, clamp to maxsoundradius
-        int rad = radius > 0 ? (maxsoundradius ? min(maxsoundradius, radius) : radius) : maxsoundradius;
+        int rad = radius > 0 ? (maxsoundradius ? std::min(maxsoundradius, radius) : radius) : maxsoundradius;
         if(camera1->o.dist(*loc) > 1.5f*rad)
         {
             if(channels.inrange(chanid) && sounds.playing(channels[chanid], config))
@@ -937,7 +938,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     {
         return -1;
     }
-    if(dbgsound)
+    if(debugsound)
     {
         conoutf("sound: %s%s", sounds.dir, slot.sample->name);
     }
@@ -1018,7 +1019,7 @@ bool stopsound(int n, int chanid, int fade)
     {
         return false;
     }
-    if(dbgsound)
+    if(debugsound)
     {
         conoutf("stopsound: %s%s", gamesounds.dir, channels[chanid].slot->sample->name);
     }
@@ -1084,5 +1085,4 @@ void resetsound()
         DELETEA(musicdonecmd);
     }
 }
-
 COMMAND(resetsound, "");

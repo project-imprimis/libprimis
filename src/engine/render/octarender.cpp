@@ -204,8 +204,8 @@ namespace
 
     struct verthash
     {
-        static const int SIZE = 1<<13;
-        int table[SIZE];
+        static const int hashsize = 1<<13;
+        int table[hashsize];
         vector<vertex> verts;
         vector<int> chain;
 
@@ -220,7 +220,7 @@ namespace
 
         int addvert(const vertex &v)
         {
-            uint h = hthash(v.pos)&(SIZE-1);
+            uint h = hthash(v.pos)&(hashsize-1);
             for(int i = table[h]; i>=0; i = chain[i])
             {
                 const vertex &c = verts[i];
@@ -588,7 +588,9 @@ namespace
                         vertex v;
                         v.pos = p2[k];
                         vec ep = vec(v.pos).sub(v0);
-                        float dp1 = ep.dot(e1), dp2 = ep.dot(e2), denom = d11*d22 - d12*d12,
+                        float dp1 = ep.dot(e1),
+                              dp2 = ep.dot(e2),
+                              denom = d11*d22 - d12*d12,
                               b1 = (d22*dp1 - d12*dp2) / denom,
                               b2 = (d11*dp2 - d12*dp1) / denom,
                               b0 = 1 - b1 - b2;

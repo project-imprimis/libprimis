@@ -4,7 +4,7 @@ MV=mv
 MKDIR_P=mkdir -p
 
 	CLIENT_INCLUDES= -Ishared -Iengine -Igame $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
-	CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lz -lGL -lrt
+	CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lm -lz -lGL -lrt
 
 #list of source code files to be compiled
 CLIENT_OBJS= \
@@ -36,6 +36,7 @@ CLIENT_OBJS= \
 	engine/render/normal.o \
 	engine/render/octarender.o \
 	engine/render/radiancehints.o \
+	engine/render/renderalpha.o \
 	engine/render/rendergl.o \
 	engine/render/renderlights.o \
 	engine/render/rendermodel.o \
@@ -51,6 +52,7 @@ CLIENT_OBJS= \
 	engine/render/water.o \
 	engine/world/bih.o \
 	engine/world/dynlight.o \
+	engine/world/heightmap.o \
 	engine/world/light.o \
 	engine/world/material.o \
 	engine/world/mpr.o \

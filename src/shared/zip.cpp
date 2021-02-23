@@ -45,7 +45,7 @@ struct zipfile
     char *name;
     uint header, offset, size, compressedsize;
 
-    zipfile() : name(NULL), header(0), offset(~0U), size(0), compressedsize(0)
+    zipfile() : name(nullptr), header(0), offset(~0U), size(0), compressedsize(0)
     {
     }
     ~zipfile()
@@ -64,7 +64,7 @@ struct ziparchive
     int openfiles;
     zipstream *owner;
 
-    ziparchive() : name(NULL), data(NULL), files(512), openfiles(0), owner(NULL)
+    ziparchive() : name(nullptr), data(nullptr), files(512), openfiles(0), owner(nullptr)
     {
     }
     ~ziparchive()
@@ -73,7 +73,7 @@ struct ziparchive
         if(data)
         {
             fclose(data);
-            data = NULL;
+            data = nullptr;
         }
     }
 };
@@ -89,13 +89,13 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     {
         return false;
     }
-    uchar buf[1024], *src = NULL;
+    uchar buf[1024], *src = nullptr;
     long end = max(offset - 0xFFFFL - Zip_DirectorySize, 0L);
     size_t len = 0;
     const uint signature = static_cast<uint>(Zip_DirectorySignature);
     while(offset > end)
     {
-        size_t carry = min(len, size_t(Zip_DirectorySize-1)), next = min(sizeof(buf) - carry, size_t(offset - end));
+        size_t carry = min(len, static_cast<size_t>(Zip_DirectorySize-1)), next = min(sizeof(buf) - carry, static_cast<size_t>(offset - end));
         offset -= next;
         memmove(&buf[next], buf, carry);
         if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, next, f) != next)
@@ -136,7 +136,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     return true;
 }
 
-VAR(dbgzip, 0, 0, 1);
+VAR(debugzip, 0, 0, 1);
 
 static bool readzipdirectory(const char *archname, FILE *f, int entries, int offset, uint size, vector<zipfile> &files)
 {
@@ -195,7 +195,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
         f.header = hdr.offset;
         f.size = hdr.uncompressedsize;
         f.compressedsize = hdr.compression ? hdr.compressedsize : 0;
-        if(dbgzip)
+        if(debugzip)
         {
             conoutf(Console_Debug, "%s: file %s, size %d, compress %d, flags %x", archname, name, hdr.uncompressedsize, hdr.compression, hdr.flags);
         }
@@ -243,7 +243,7 @@ ziparchive *findzip(const char *name)
             return archives[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 static bool checkprefix(vector<zipfile> &files, const char *prefix, int prefixlen)
@@ -326,7 +326,7 @@ static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mount
     }
 }
 
-bool addzip(const char *name, const char *mount = NULL, const char *strip = NULL)
+bool addzip(const char *name, const char *mount = nullptr, const char *strip = nullptr)
 {
     string pname;
     copystring(pname, name);
@@ -405,12 +405,12 @@ struct zipstream : stream
     uchar *buf;
     uint reading;
     bool ended;
-    zipstream() : arch(NULL), info(NULL), buf(NULL), reading(~0U), ended(false)
+    zipstream() : arch(nullptr), info(nullptr), buf(nullptr), reading(~0U), ended(false)
     {
-        zfile.zalloc = NULL;
-        zfile.zfree = NULL;
-        zfile.opaque = NULL;
-        zfile.next_in = zfile.next_out = NULL;
+        zfile.zalloc = nullptr;
+        zfile.zfree = nullptr;
+        zfile.opaque = nullptr;
+        zfile.next_in = zfile.next_out = nullptr;
         zfile.avail_in = zfile.avail_out = 0;
     }
     ~zipstream()
@@ -426,7 +426,7 @@ struct zipstream : stream
         size = min(size, static_cast<uint>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
         if(arch->owner != this)
         {
-            arch->owner = NULL;
+            arch->owner = nullptr;
             if(fseek(arch->data, reading, SEEK_SET) >= 0)
             {
                 arch->owner = this;
@@ -447,7 +447,7 @@ struct zipstream : stream
         if(f->offset == ~0U)
         {
             ziplocalfileheader h;
-            a->owner = NULL;
+            a->owner = nullptr;
             if(!readlocalfileheader(a->data, h, f->header))
             {
                 return false;
@@ -476,7 +476,7 @@ struct zipstream : stream
         {
             return;
         }
-        if(dbgzip)
+        if(debugzip)
         {
             conoutf(Console_Debug, info->compressedsize ? "%s: zfile.total_out %u, info->size %u" : "%s: reading %u, info->size %u", info->name, info->compressedsize ? static_cast<uint>(zfile.total_out) : reading - info->offset, info->size);
         }
@@ -493,9 +493,9 @@ struct zipstream : stream
         DELETEA(buf);
         if(arch)
         {
-            arch->owner = NULL;
+            arch->owner = nullptr;
             arch->openfiles--;
-            arch = NULL;
+            arch = nullptr;
         }
     }
 
@@ -542,7 +542,7 @@ struct zipstream : stream
                 }
             }
             pos = std::clamp(pos, offset(info->offset), offset(info->offset + info->size));
-            arch->owner = NULL;
+            arch->owner = nullptr;
             if(fseek(arch->data, static_cast<int>(pos), SEEK_SET) < 0)
             {
                 return false;
@@ -580,7 +580,7 @@ struct zipstream : stream
             zfile.avail_in = 0;
             zfile.total_in = info->compressedsize;
             zfile.total_out = info->size;
-            arch->owner = NULL;
+            arch->owner = nullptr;
             ended = false;
             return true;
         }
@@ -601,9 +601,9 @@ struct zipstream : stream
             }
             else
             {
-                arch->owner = NULL;
+                arch->owner = nullptr;
                 zfile.avail_in = 0;
-                zfile.next_in = NULL;
+                zfile.next_in = nullptr;
                 reading = info->offset;
             }
             inflateReset(&zfile);
@@ -611,7 +611,7 @@ struct zipstream : stream
         uchar skip[512];
         while(pos > 0)
         {
-            size_t skipped = (size_t)min(pos, (offset)sizeof(skip));
+            size_t skipped = static_cast<size_t>(min(pos, (offset)sizeof(skip)));
             if(read(skip, skipped) != skipped)
             {
                 return false;
@@ -632,7 +632,7 @@ struct zipstream : stream
         {
             if(arch->owner != this)
             {
-                arch->owner = NULL;
+                arch->owner = nullptr;
                 if(fseek(arch->data, reading, SEEK_SET) < 0)
                 {
                     stopreading();
@@ -640,7 +640,7 @@ struct zipstream : stream
                 }
                 arch->owner = this;
             }
-            size_t n = fread(buf, 1, min(len, size_t(info->size + info->offset - reading)), arch->data);
+            size_t n = fread(buf, 1, min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
             reading += n;
             if(n < len)
             {
@@ -665,7 +665,7 @@ struct zipstream : stream
                 }
                 else
                 {
-                    if(dbgzip)
+                    if(debugzip)
                     {
                         conoutf(Console_Debug, "inflate error: %s", zError(err));
                     }
@@ -684,7 +684,7 @@ stream *openzipfile(const char *name, const char *mode)
     {
         if(*mode=='w' || *mode=='a')
         {
-            return NULL;
+            return nullptr;
         }
     }
     for(int i = archives.length(); --i >=0;) //note reverse iteration
@@ -702,7 +702,7 @@ stream *openzipfile(const char *name, const char *mode)
         }
         delete s;
     }
-    return NULL;
+    return nullptr;
 }
 
 bool findzipfile(const char *name)
@@ -766,5 +766,10 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
     return dirs;
 }
 
-ICOMMAND(addzip, "sss", (const char *name, const char *mount, const char *strip), addzip(name, mount[0] ? mount : NULL, strip[0] ? strip : NULL));
-ICOMMAND(removezip, "s", (const char *name), removezip(name));
+void addzipcmd(const char *name, const char *mount, const char *strip)
+{
+    addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr);
+}
+COMMANDN(addzip, addzipcmd, "sss");
+
+COMMAND(removezip, "s");

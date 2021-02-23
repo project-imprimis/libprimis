@@ -1,6 +1,6 @@
 /* input.h: SDL input handling
  *
- * SDL handles low-level window manager and key inputs for Imprimis
+ * SDL handles low-level window manager and key inputs for libprimis
  * this file determines how the game parses the SDL information it is given
  *
  * includes handling for when the window manager tells the game to change state

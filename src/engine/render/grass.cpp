@@ -10,7 +10,7 @@
 namespace //internal functionality not seen by other files
 {
     VARP(grass, 0, 1, 1);
-    VAR(dbggrass, 0, 0, 1);
+    VAR(debuggrass, 0, 0, 1);
     VARP(grassdist, 0, 256, 10000);
     FVARP(grasstaper, 0, 0.2, 1);
     FVARP(grassstep, 0.5, 2, 8);
@@ -83,20 +83,20 @@ namespace //internal functionality not seen by other files
     void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstri &g, Texture *tex)
     {
         float t = camera1->o.dot(w.dir);
-        int tstep = static_cast<int>(ceil(t/grassstep));
+        int tstep = static_cast<int>(std::ceil(t/grassstep));
         float tstart = tstep*grassstep,
               t0 = w.dir.dot(g.v[0]),
               t1 = w.dir.dot(g.v[1]),
               t2 = w.dir.dot(g.v[2]),
               t3 = w.dir.dot(g.v[3]),
-              tmin = min(min(t0, t1), min(t2, t3)),
-              tmax = max(max(t0, t1), max(t2, t3));
+              tmin = std::min(std::min(t0, t1), std::min(t2, t3)),
+              tmax = std::max(std::max(t0, t1), std::max(t2, t3));
         if(tmax < tstart || tmin > t + grassdist)
         {
             return;
         }
-        int minstep = max(static_cast<int>(ceil(tmin/grassstep)) - tstep, 1),
-            maxstep = static_cast<int>(floor(min(tmax, t + grassdist)/grassstep)) - tstep,
+        int minstep = std::max(static_cast<int>(std::ceil(tmin/grassstep)) - tstep, 1),
+            maxstep = static_cast<int>(std::floor(std::min(tmax, t + grassdist)/grassstep)) - tstep,
             numsteps = maxstep - minstep + 1;
 
         float texscale = (grassscale*tex->ys)/static_cast<float>(grassheight*tex->xs), animscale = grassheight*texscale;
@@ -367,7 +367,7 @@ void generategrass()
     }
     gle::bindvbo(grassvbo);
     int size = grassverts.size()*sizeof(grassvert);
-    grassvbosize = max(grassvbosize, size);
+    grassvbosize = std::max(grassvbosize, size);
     glBufferData_(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.data() : nullptr, GL_STREAM_DRAW);
     if(size != grassvbosize)
     {
@@ -383,7 +383,7 @@ void loadgrassshaders()
 
 void rendergrass()
 {
-    if(!grass || !grassdist || grassgroups.empty() || dbggrass || !grassshader)
+    if(!grass || !grassdist || grassgroups.empty() || debuggrass || !grassshader)
     {
         return;
     }

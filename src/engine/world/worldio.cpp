@@ -14,7 +14,7 @@
 
 string clientmap = "";
 
-void validmapname(char *dst, const char *src, const char *prefix = NULL, const char *alt = "untitled", size_t maxlen = 100)
+void validmapname(char *dst, const char *src, const char *prefix = nullptr, const char *alt = "untitled", size_t maxlen = 100)
 {
     if(prefix)
     {
@@ -51,7 +51,7 @@ void validmapname(char *dst, const char *src, const char *prefix = NULL, const c
 
 void fixmapname(char *name)
 {
-    validmapname(name, name, NULL, "");
+    validmapname(name, name, nullptr, "");
 }
 
 static void fixent(entity &e, int version)
@@ -174,7 +174,7 @@ bool loadents(const char *fname, const char *gameident, vector<entity> &ents, ui
     {
         f->read(gametype, len+1);
     }
-    gametype[max(len, 0)] = '\0';
+    gametype[std::max(len, 0)] = '\0';
     if(strcmp(gametype, gameident)) //compare game string from map with game
     {
         samegame = false;
@@ -187,7 +187,7 @@ bool loadents(const char *fname, const char *gameident, vector<entity> &ents, ui
     ushort nummru = f->get<ushort>();
     f->seek(nummru*sizeof(ushort), SEEK_CUR);
 
-    for(int i = 0; i < min(hdr.numents, maxents); ++i)
+    for(int i = 0; i < std::min(hdr.numents, maxents); ++i)
     {
         entity &e = ents.add();
         f->read(&e, sizeof(entity));
@@ -219,7 +219,7 @@ string ogzname, bakname, cfgname, picname;
 
 VARP(savebak, 0, 2, 2);
 
-void setmapfilenames(const char *fname, const char *cname = NULL)
+void setmapfilenames(const char *fname, const char *cname = nullptr)
 {
     string name;
     validmapname(name, fname);
@@ -232,9 +232,9 @@ void setmapfilenames(const char *fname, const char *cname = NULL)
     else
     {
         string baktime;
-        time_t t = time(NULL);
+        time_t t = time(nullptr);
         size_t len = strftime(baktime, sizeof(baktime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
-        baktime[min(len, sizeof(baktime)-1)] = '\0';
+        baktime[std::min(len, sizeof(baktime)-1)] = '\0';
         formatstring(bakname, "media/map/%s_%s.BAK", name, baktime);
     }
     validmapname(name, cname ? cname : fname);
@@ -515,7 +515,7 @@ void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
     {
         int surfmask, totalverts;
         surfmask = f->getchar();
-        totalverts = max(f->getchar(), 0);
+        totalverts = std::max(f->getchar(), 0);
         newcubeext(c, totalverts, false);
         memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
         memset(c.ext->verts(), 0, totalverts*sizeof(vertinfo));
@@ -675,7 +675,7 @@ cube *loadchildren(stream *f, const ivec &co, int size, bool &failed)
     return c;
 }
 
-VAR(dbgvars, 0, 0, 1);
+VAR(debugvars, 0, 0, 1);
 
 void savevslot(stream *f, VSlot &vs, int prev)
 {
@@ -807,8 +807,8 @@ void loadvslot(stream *f, VSlot &vs, int changed)
         {
             SlotShaderParam &p = vs.params.add();
             int nlen = f->get<ushort>();
-            f->read(name, min(nlen, maxstrlen-1));
-            name[min(nlen, maxstrlen-1)] = '\0';
+            f->read(name, std::min(nlen, maxstrlen-1));
+            name[std::min(nlen, maxstrlen-1)] = '\0';
             if(nlen >= maxstrlen)
             {
                 f->seek(nlen - (maxstrlen-1), SEEK_CUR);
@@ -892,14 +892,14 @@ void loadvslots(stream *f, int numvslots)
         {
             for(int i = 0; i < -changed; ++i)
             {
-                vslots.add(new VSlot(NULL, vslots.length()));
+                vslots.add(new VSlot(nullptr, vslots.length()));
             }
             numvslots += changed;
         }
         else
         {
             prev[vslots.length()] = f->get<int>();
-            loadvslot(f, *vslots.add(new VSlot(NULL, vslots.length())), changed);
+            loadvslot(f, *vslots.add(new VSlot(nullptr, vslots.length())), changed);
             numvslots--;
         }
     }
@@ -983,7 +983,7 @@ bool save_world(const char *mname, const char *gameident)
         switch(id.type)
         {
             case Id_Var:
-                if(dbgvars)
+                if(debugvars)
                 {
                     conoutf(Console_Debug, "wrote var %s: %d", id.name, *id.storage.i);
                 }
@@ -991,7 +991,7 @@ bool save_world(const char *mname, const char *gameident)
                 break;
 
             case Id_FloatVar:
-                if(dbgvars)
+                if(debugvars)
                 {
                     conoutf(Console_Debug, "wrote fvar %s: %f", id.name, *id.storage.f);
                 }
@@ -999,7 +999,7 @@ bool save_world(const char *mname, const char *gameident)
                 break;
 
             case Id_StringVar:
-                if(dbgvars)
+                if(debugvars)
                 {
                     conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.storage.s);
                 }
@@ -1008,7 +1008,7 @@ bool save_world(const char *mname, const char *gameident)
                 break;
         }
     });
-    if(dbgvars)
+    if(debugvars)
     {
         conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
     }
@@ -1019,8 +1019,8 @@ bool save_world(const char *mname, const char *gameident)
     f->put<ushort>(0);
     f->write(0, 0);
     //=== end of padding
-    f->put<ushort>(texmru.length());
-    for(int i = 0; i < texmru.length(); i++)
+    f->put<ushort>(texmru.size());
+    for(uint i = 0; i < texmru.size(); i++)
     {
         f->put<ushort>(texmru[i]);
     }
@@ -1069,7 +1069,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     setvar("mapversion", hdr.version, true, false);
     renderprogress(0, "clearing world...");
     freeocta(worldroot);
-    worldroot = NULL;
+    worldroot = nullptr;
     int worldscale = 0;
     while(1<<worldscale < hdr.worldsize)
     {
@@ -1083,8 +1083,8 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
         int type = f->getchar(),
             ilen = f->get<ushort>();
         string name;
-        f->read(name, min(ilen, maxstrlen-1));
-        name[min(ilen, maxstrlen-1)] = '\0';
+        f->read(name, std::min(ilen, maxstrlen-1));
+        name[std::min(ilen, maxstrlen-1)] = '\0';
         if(ilen >= maxstrlen)
         {
             f->seek(ilen - (maxstrlen-1), SEEK_CUR);
@@ -1107,8 +1107,8 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
             case Id_StringVar:
             {
                 int slen = f->get<ushort>();
-                f->read(str, min(slen, maxstrlen-1));
-                str[min(slen, maxstrlen-1)] = '\0';
+                f->read(str, std::min(slen, maxstrlen-1));
+                str[std::min(slen, maxstrlen-1)] = '\0';
                 if(slen >= maxstrlen)
                 {
                     f->seek(slen - (maxstrlen-1), SEEK_CUR);
@@ -1131,7 +1131,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
                     if(id->minval <= id->maxval && i >= id->minval && i <= id->maxval)
                     {
                         setvar(name, i);
-                        if(dbgvars)
+                        if(debugvars)
                         {
                             conoutf(Console_Debug, "read var %s: %d", name, i);
                         }
@@ -1144,7 +1144,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
                     if(id->minvalf <= id->maxvalf && f >= id->minvalf && f <= id->maxvalf)
                     {
                         setfvar(name, f);
-                        if(dbgvars)
+                        if(debugvars)
                         {
                             conoutf(Console_Debug, "read fvar %s: %f", name, f);
                         }
@@ -1154,7 +1154,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
                 case Id_StringVar:
                 {
                     setsvar(name, val.getstr());
-                    if(dbgvars)
+                    if(debugvars)
                     {
                         conoutf(Console_Debug, "read svar %s: %s", name, val.getstr());
                     }
@@ -1163,7 +1163,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
             }
         }
     }
-    if(dbgvars)
+    if(debugvars)
     {
         conoutf(Console_Debug, "read %d vars", hdr.numvars);
     }
@@ -1174,7 +1174,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     {
         f->read(gametype, len+1);
     }
-    gametype[max(len, 0)] = '\0';
+    gametype[std::max(len, 0)] = '\0';
     if(strcmp(gametype, gameident)!=0)
     {
         samegame = false;
@@ -1184,15 +1184,15 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
         extrasize = f->get<ushort>();
     vector<char> extras;
     f->read(extras.pad(extrasize), extrasize);
-    texmru.shrink(0);
+    texmru.clear();
     ushort nummru = f->get<ushort>();
     for(int i = 0; i < nummru; ++i)
     {
-        texmru.add(f->get<ushort>());
+        texmru.push_back(f->get<ushort>());
     }
     renderprogress(0, "loading entities...");
     vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < (min(hdr.numents, maxents)); ++i)
+    for(int i = 0; i < (std::min(hdr.numents, maxents)); ++i)
     {
         extentity &e = *entities::newentity();
         ents.add(&e);

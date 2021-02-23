@@ -52,7 +52,7 @@ enum
 
 VARFP(maxstaintris, 1, 2048, 16384, initstains());
 VARMP(stainfade, 1, 15, 60, 1000);
-VAR(dbgstain, 0, 0, 1);
+VAR(debugstain, 0, 0, 1);
 
 struct stainbuffer
 {
@@ -244,7 +244,10 @@ struct stainrenderer
         DELETEA(stains);
     }
 
-    bool usegbuffer() const { return !(flags&(StainFlag_InvMod|StainFlag_Glow)); }
+    bool usegbuffer() const
+    {
+        return !(flags&(StainFlag_InvMod|StainFlag_Glow));
+    }
 
     void init(int tris)
     {
@@ -597,7 +600,7 @@ struct stainrenderer
             {
                 continue;
             }
-            if(dbgstain)
+            if(debugstain)
             {
                 int nverts = buf.nextverts();
                 static const char * const sbufname[StainBuffer_Number] = { "opaque", "transparent", "mapmodel" };
@@ -1105,7 +1108,7 @@ VARP(maxstaindistance, 1, 512, 10000);
 
 void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color, int info)
 {
-    if(!showstains || type<0 || (size_t)type>=sizeof(stains)/sizeof(stains[0]) || center.dist(camera1->o) - radius > maxstaindistance)
+    if(!showstains || type<0 || static_cast<size_t>(type) >= sizeof(stains)/sizeof(stains[0]) || center.dist(camera1->o) - radius > maxstaindistance)
     {
         return;
     }

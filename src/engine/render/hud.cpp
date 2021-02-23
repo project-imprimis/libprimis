@@ -51,11 +51,11 @@ void damagecompass(int n, const vec &loc)
     }
     if(yaw >= 360)
     {
-        yaw = fmod(yaw, 360);
+        yaw = std::fmod(yaw, 360);
     }
     else if(yaw < 0)
     {
-        yaw = 360 - fmod(-yaw, 360);
+        yaw = 360 - std::fmod(-yaw, 360);
     }
     int dir = (static_cast<int>(yaw+22.5f)%360)/45;
     damagedirs[dir] += std::max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
@@ -203,14 +203,13 @@ void loadcrosshair(const char *name, int i)
     }
 }
 
-void loadcrosshair_(const char *name, int *i)
+void loadcrosshaircmd(const char *name, int *i)
 {
     loadcrosshair(name, *i);
 }
+COMMANDN(loadcrosshair, loadcrosshaircmd, "si");
 
-COMMANDN(loadcrosshair, loadcrosshair_, "si");
-
-ICOMMAND(getcrosshair, "i", (int *i),
+void getcrosshair(int *i)
 {
     const char *name = "";
     if(*i >= 0 && *i < maxcrosshairs)
@@ -222,7 +221,8 @@ ICOMMAND(getcrosshair, "i", (int *i),
         }
     }
     result(name);
-});
+}
+COMMAND(getcrosshair, "i");
 
 void writecrosshairs(stream *f)
 {

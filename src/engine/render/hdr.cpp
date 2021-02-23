@@ -34,6 +34,15 @@ GLuint hdrfbo = 0,
        bloomfbo[6] = { 0, 0, 0, 0, 0, 0 },
        bloomtex[6] = { 0, 0, 0, 0, 0, 0 };
 
+void cleanupbloom(); //needed for varfps
+
+FVAR(bloomthreshold, 1e-3f, 0.8f, 1e3f);
+FVARP(bloomscale, 0, 1.0f, 1e3f);
+VARP(bloomblur, 0, 7, 7);
+VARP(bloomiter, 0, 0, 4);
+VARFP(bloomsize, 6, 9, 11, cleanupbloom());
+VARFP(bloomprec, 0, 2, 3, cleanupbloom());
+
 int gethdrformat(int prec, int fallback)
 {
     if(prec >= 3)
@@ -50,8 +59,6 @@ int gethdrformat(int prec, int fallback)
     }
     return fallback;
 }
-
-extern int bloomsize, bloomprec;
 
 void setupbloom(int w, int h)
 {
@@ -141,12 +148,6 @@ void cleanupbloom()
     lasthdraccum = 0;
 }
 
-FVAR(bloomthreshold, 1e-3f, 0.8f, 1e3f);
-FVARP(bloomscale, 0, 1.0f, 1e3f);
-VARP(bloomblur, 0, 7, 7);
-VARP(bloomiter, 0, 0, 4);
-VARFP(bloomsize, 6, 9, 11, cleanupbloom());
-VARFP(bloomprec, 0, 2, 3, cleanupbloom());
 FVAR(hdraccumscale, 0, 0.98f, 1);
 VAR(hdraccummillis, 1, 33, 1000);
 VAR(hdrreduce, 0, 2, 2);

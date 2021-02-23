@@ -41,10 +41,10 @@ VARP(softparticleblend, 1, 8, 64);
 // Automatically stops particles being emitted when paused or in reflective drawing
 VARP(emitmillis, 1, 17, 1000); //note: 17 ms = ~60fps
 static int lastemitframe = 0,
-           emitoffset = 0;
-static bool canemit = false,
+           emitoffset    = 0;
+static bool canemit       = false,
             regenemitters = false,
-            canstep = false;
+            canstep       = false;
 
 static bool canemitparticles()
 {
@@ -52,12 +52,12 @@ static bool canemitparticles()
 }
 std::vector<std::string> entnames;
 
-VARP(showparticles, 0, 1, 1);
-VAR(cullparticles, 0, 1, 1);
+VARP(showparticles,  0, 1, 1);
+VAR(cullparticles,   0, 1, 1);
 VAR(replayparticles, 0, 1, 1);
 VARN(seedparticles, seedmillis, 0, 3000, 10000);
-VAR(dbgpcull, 0, 0, 1);
-VAR(dbgpseed, 0, 0, 1);
+VAR(debugparticlecull, 0, 0, 1);
+VAR(debugparticleseed, 0, 0, 1);
 
 struct particleemitter
 {
@@ -78,7 +78,7 @@ struct particleemitter
         radius = bbmin.dist(bbmax)/2;
         cullmin = ivec::floor(bbmin);
         cullmax = ivec::ceil(bbmax);
-        if(dbgpseed)
+        if(debugparticleseed)
         {
             conoutf(Console_Debug, "radius: %f, maxfade: %d", radius, maxfade);
         }
@@ -106,7 +106,7 @@ static particleemitter *seedemitter = nullptr;
 
 const char * getentname(int i)
 {
-    return i>=0 && size_t(i) < entnames.size() ? entnames[i].c_str() : "";
+    return i>=0 && static_cast<size_t>(i) < entnames.size() ? entnames[i].c_str() : "";
 }
 
 char * entname(entity &e)
@@ -171,7 +171,7 @@ enum
     PT_FLIP      = PT_HFLIP | PT_VFLIP | PT_ROT
 };
 
-const char *partnames[] = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball"};
+const std::string partnames[] = { "part", "tape", "trail", "text", "textup", "meter", "metervs", "fireball"};
 
 struct particle
 {
@@ -283,7 +283,8 @@ struct partrenderer
                     }
                     else
                     {
-                        addstain(stain, vec(o.x, o.y, collidez), vec(p->o).sub(o).normalize(), 2*p->size, p->color, type&PT_RND4 ? (p->flags>>5)&3 : 0);
+                        int staintype = type&PT_RND4 ? (p->flags>>5)&3 : 0;
+                        addstain(stain, vec(o.x, o.y, collidez), vec(p->o).sub(o).normalize(), 2*p->size, p->color, staintype);
                         blend = 0;
                     }
                 }
@@ -297,7 +298,7 @@ struct partrenderer
 
     void debuginfo()
     {
-        formatstring(info, "%d\t%s(", count(), partnames[type&0xFF]);
+        formatstring(info, "%d\t%s(", count(), partnames[type&0xFF].c_str());
         if(type&PT_LERP)    concatstring(info, "l,");
         if(type&PT_MOD)     concatstring(info, "m,");
         if(type&PT_RND4)    concatstring(info, "r,");
@@ -616,8 +617,9 @@ struct textrenderer : listrenderer
               yoff = 0;
         if((type&0xFF)==PT_TEXTUP)
         {
-            xoff += detrnd(size_t(p), 100)-50;
-            yoff -= detrnd(size_t(p), 101);
+            //this is an UGLY cast from a pointer to an unsigned int
+            xoff += detrnd(reinterpret_cast<size_t>(p), 100)-50;
+            yoff -= detrnd(reinterpret_cast<size_t>(p), 101);
         }
 
         matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
@@ -1357,11 +1359,11 @@ void removetrackedparticles(physent *owner)
     }
 }
 
-VARN(debugparticles, dbgparts, 0, 0, 1);
+VARN(debugparticles, debugparts, 0, 0, 1);
 
 void debugparticles()
 {
-    if(!dbgparts)
+    if(!debugparts)
     {
         return;
     }
@@ -1381,7 +1383,7 @@ void renderparticles(int layer)
     canstep = layer != ParticleLayer_Under;
 
     //want to debug BEFORE the lastpass render (that would delete particles)
-    if(dbgparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
+    if(debugparts && (layer == ParticleLayer_All || layer == ParticleLayer_Under))
     {
         for(int i = 0; i < numpartparts(); ++i)
         {
@@ -2014,7 +2016,7 @@ void updateparticles()
             }
             pe.lastemit = lastmillis;
         }
-        if(dbgpcull && (canemit || replayed) && addedparticles)
+        if(debugparticlecull && (canemit || replayed) && addedparticles)
         {
             conoutf(Console_Debug, "%d emitters, %d particles", emitted, addedparticles);
         }

@@ -88,16 +88,16 @@ extern const float wallz = 0.2f; //steeper than this is considered a wall
 extern const float jumpvel = 50.0f; //impulse scale for player jump
 extern const float gravity = 100.0f; //downwards force scale
 
-bool ellipseboxcollide(physent *d, const vec &dir, const vec &o, const vec &center, float yaw, float xr, float yr, float hi, float lo)
+bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
 {
-    float below = (o.z+center.z-lo) - (d->o.z+d->aboveeye),
-          above = (d->o.z-d->eyeheight) - (o.z+center.z+hi);
+    float below = (origin.z+center.z-lo) - (d->o.z+d->aboveeye),
+          above = (d->o.z-d->eyeheight) - (origin.z+center.z+hi);
     if(below>=0 || above>=0)
     {
         return false;
     }
     vec yo(d->o);
-    yo.sub(o);
+    yo.sub(origin);
     yo.rotate_around_z(-yaw*RAD);
     yo.sub(center);
 
@@ -225,7 +225,7 @@ dynent *iterdynents(int i)
     {
         return dynents[i];
     }
-    return NULL;
+    return nullptr;
 }
 
 VARF(dynentsize, 4, 7, 12, cleardynentcache());
@@ -288,7 +288,7 @@ static inline bool plcollide(physent *d, const vec &dir, physent *o)
     E entvol(d);
     O obvol(o);
     vec cp;
-    if(mpr::collide(entvol, obvol, NULL, NULL, &cp))
+    if(mpr::collide(entvol, obvol, nullptr, nullptr, &cp))
     {
         vec wn = cp.sub(obvol.center());
         collidewall = obvol.contactface(wn, dir.iszero() ? wn.neg() : dir);
@@ -341,7 +341,7 @@ bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide w
         return false;
     }
     int lastinside = collideinside;
-    physent *insideplayer = NULL;
+    physent *insideplayer = nullptr;
     LOOPDYNENTCACHE(x, y, d->o, d->radius)
     {
         const vector<physent *> &dynents = checkdynentcache(x, y);
@@ -401,7 +401,7 @@ static inline bool mmcollide(physent *d, const vec &dir, const extentity &e, con
     E entvol(d);
     M mdlvol(e.o, center, radius, yaw, pitch, roll);
     vec cp;
-    if(mpr::collide(entvol, mdlvol, NULL, NULL, &cp))
+    if(mpr::collide(entvol, mdlvol, nullptr, nullptr, &cp))
     {
         vec wn = cp.sub(mdlvol.center());
         collidewall = mdlvol.contactface(wn, dir.iszero() ? wn.neg() : dir);
@@ -605,7 +605,7 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
         model *m = mmi.collide;
         if(!m)
         {
-            if(!mmi.m && !loadmodel(NULL, e.attr1))
+            if(!mmi.m && !loadmodel(nullptr, e.attr1))
             {
                 continue;
             }
@@ -1130,11 +1130,12 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
 bool collide(physent *d, const vec &dir, float cutoff, bool playercol, bool insideplayercol)
 {
     collideinside = 0;
-    collideplayer = NULL;
+    collideplayer = nullptr;
     collidewall = vec(0, 0, 0);
     ivec bo(static_cast<int>(d->o.x-d->radius), static_cast<int>(d->o.y-d->radius), static_cast<int>(d->o.z-d->eyeheight)),
          bs(static_cast<int>(d->o.x+d->radius), static_cast<int>(d->o.y+d->radius), static_cast<int>(d->o.z+d->aboveeye));
-    bo.sub(1); bs.add(1);  // guard space for rounding errors
+    bo.sub(1);
+    bs.add(1);  // guard space for rounding errors
     return octacollide(d, dir, cutoff, bo, bs) || (playercol && plcollide(d, dir, insideplayercol)); // collide with world
 }
 

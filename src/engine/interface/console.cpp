@@ -139,7 +139,7 @@ int conskip = 0,
 
 void setconskip(int &skip, int filter, int n)
 {
-    int offsetnum = abs(n),
+    int offsetnum = std::abs(n),
         dir = n < 0 ? -1 : 1;
     skip = std::clamp(skip, 0, conlines.length()-1);
     while(offsetnum)
@@ -181,7 +181,7 @@ COMMAND(clearconsole, "");
 float drawconlines(int conskip, int confade, float conwidth, float conheight, float conoff, int filter, float y = 0, int dir = 1)
 {
     int numl = conlines.length(),
-        offsetlines = min(conskip, numl);
+        offsetlines = std::min(conskip, numl);
     if(confade)
     {
         if(!conskip)
@@ -264,12 +264,12 @@ float renderfullconsole(float w, float h)
 float renderconsole(float w, float h, float abovehud)
 {
     float conpad = FONTH/2,
-          conheight = min(float(FONTH*consize), h - 2*conpad),
+          conheight = std::min(static_cast<float>(FONTH*consize), h - 2*conpad),
           conwidth = w - 2*conpad;
     float y = drawconlines(conskip, confade, conwidth, conheight, conpad, confilter);
     if(miniconsize && miniconwidth)
     {
-        drawconlines(miniconskip, miniconfade, (miniconwidth*(w - 2*conpad))/100, min(static_cast<float>(FONTH*miniconsize), abovehud - y), conpad, miniconfilter, abovehud, -1);
+        drawconlines(miniconskip, miniconfade, (miniconwidth*(w - 2*conpad))/100, std::min(static_cast<float>(FONTH*miniconsize), abovehud - y), conpad, miniconfilter, abovehud, -1);
     }
     return y;
 }
@@ -650,7 +650,7 @@ int histpos = 0;
 
 VARP(maxhistory, 0, 1000, 10000);
 
-void history_(int *n)
+void historycmd(int *n)
 {
     static bool inhistory = false;
     if(!inhistory && static_cast<int>(history.size()) > *n)
@@ -660,8 +660,7 @@ void history_(int *n)
         inhistory = false;
     }
 }
-
-COMMANDN(history, history_, "i");
+COMMANDN(history, historycmd, "i");
 
 struct releaseaction
 {
@@ -767,7 +766,7 @@ bool consoleinput(const char *str, int len)
     resetcomplete();
     int cmdlen = static_cast<int>(strlen(commandbuf)),
         cmdspace = static_cast<int>(sizeof(commandbuf)) - (cmdlen+1);
-    len = min(len, cmdspace);
+    len = std::min(len, cmdspace);
     if(commandpos<0)
     {
         memcpy(&commandbuf[cmdlen], str, len);
@@ -1066,8 +1065,8 @@ static inline uint hthash(const FilesKey &k)
 
 static inline char *prependstring(char *d, const char *s, size_t len)
 {
-    size_t slen = min(strlen(s), len);
-    memmove(&d[slen], d, min(len - slen, strlen(d) + 1));
+    size_t slen = std::min(strlen(s), len);
+    memmove(&d[slen], d, std::min(len - slen, strlen(d) + 1));
     memcpy(d, s, slen);
     d[len-1] = 0;
     return d;
@@ -1214,7 +1213,7 @@ void complete(char *s, int maxlen, const char *cmdprefix)
     DELETEA(lastcomplete);
     if(nextcomplete)
     {
-        cmdlen = min(cmdlen, maxlen-1);
+        cmdlen = std::min(cmdlen, maxlen-1);
         if(cmdlen)
         {
             memmove(s, cmdprefix, cmdlen);

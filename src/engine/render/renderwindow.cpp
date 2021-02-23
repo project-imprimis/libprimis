@@ -1,5 +1,10 @@
-//screen rendering functions, such as background, progress bar, screen settings
-// (e.g. gamma);
+/* renderwindow: screen rendering functionality
+ *
+ * screen rendering functions, such as background, progress bar
+ * also handles stuff such as main menu rendering and other non-intensive rendering
+ * as well as global rendering settings such as gamma
+ */
+
 #include "engine.h"
 
 #include "octarender.h"
@@ -18,6 +23,9 @@
 
 VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
 VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
+
+VAR(menufps, 0, 60, 1000);
+VARP(maxfps, 0, 125, 1000);
 
 VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
@@ -38,15 +46,15 @@ static void getbackgroundres(int &w, int &h)
     {
         hk = 768.0f/h;
     }
-    wk = hk = max(wk, hk);
-    w = static_cast<int>(ceil(w*wk));
-    h = static_cast<int>(ceil(h*hk));
+    wk = hk = std::max(wk, hk);
+    w = static_cast<int>(std::ceil(w*wk));
+    h = static_cast<int>(std::ceil(h*hk));
 }
 
-static string backgroundcaption = "";
+static string backgroundcaption   = "";
 static Texture *backgroundmapshot = nullptr;
-static string backgroundmapname = "";
-static char *backgroundmapinfo = nullptr;
+static string backgroundmapname   = "";
+static char *backgroundmapinfo    = nullptr;
 
 void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
 {
@@ -107,7 +115,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
     bgquad(0, 0, win_w, win_h);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     // Set position and size of logo
-    float logo_h = (1.f/3.f)*min(win_w, win_h),
+    float logo_h = (1.f/3.f)*std::min(win_w, win_h),
           logo_w = logo_h*(2.f/1.f), // Aspect ratio of logo, defined here
           logo_x = 0.5f*(win_w - logo_w),
           logo_y = 0.5f*(win_h*0.5f - logo_h);
@@ -123,9 +131,9 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
     if (caption)
     {
         int tw = text_width(caption);
-        float tsz = 0.04f*min(win_w, win_h)/FONTH,
+        float tsz = 0.04f*std::min(win_w, win_h)/FONTH,
               tx  = 0.5f*(win_w - tw*tsz),
-              ty  = win_h - 0.075f*1.5f*min(win_w, win_h) - FONTH*tsz;
+              ty  = win_h - 0.075f*1.5f*std::min(win_w, win_h) - FONTH*tsz;
         pushhudtranslate(tx, ty, tsz);
         draw_text(caption, 0, 0);
         pophudmatrix();
@@ -133,8 +141,8 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
     if (mapshot || mapname)
     {
         float infowidth = 14*FONTH,
-              sz  = 0.35f*min(win_w, win_h),
-              msz = (0.85f*min(win_w, win_h) - sz)/(infowidth + FONTH),
+              sz  = 0.35f*std::min(win_w, win_h),
+              msz = (0.85f*std::min(win_w, win_h) - sz)/(infowidth + FONTH),
               x   = 0.5f*win_w,
               y   = logo_y+logo_h - sz/15,
               mx  = 0,
@@ -165,7 +173,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
         {
             float tw  = text_widthf(mapname),
                   tsz = sz/(8*FONTH),
-                  tx  = max(0.5f * (mw*msz - tw * tsz), 0.0f);
+                  tx  = std::max(0.5f * (mw*msz - tw * tsz), 0.0f);
             pushhudtranslate(x + mx + tx, y, tsz);
             draw_text(mapname, 0, 0);
             pophudmatrix();
@@ -213,7 +221,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     int w = hudw, h = hudh;
     if(forceaspect)
     {
-        w = static_cast<int>(ceil(h*forceaspect));
+        w = static_cast<int>(std::ceil(h*forceaspect));
     }
     getbackgroundres(w, h);
     gettextres(w, h);
@@ -240,7 +248,9 @@ void restorebackground(int w, int h, bool force = false)
         }
         setbackgroundinfo();
     }
-    renderbackgroundview(w, h, backgroundcaption[0] ? backgroundcaption : nullptr, backgroundmapshot, backgroundmapname[0] ? backgroundmapname : nullptr, backgroundmapinfo);
+    const char * caption = backgroundcaption[0] ? backgroundcaption : nullptr;
+    const char * mapname = backgroundmapname[0] ? backgroundmapname : nullptr;
+    renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo);
 }
 
 float loadprogress = 0;
@@ -254,7 +264,7 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
     gle::defvertex(2);
     gle::deftexcoord0();
 
-    float fh = 0.060f*min(w, h),
+    float fh = 0.060f*std::min(w, h),
           fw = fh * 15,
           fx = renderedframe ? w - fw - fh/4 : 0.5f * (w - fw),
           fy = renderedframe ? fh/4 : h - fh * 1.5f;
@@ -275,7 +285,7 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
           eu2 = 32/32.0f,
           ew  = fw * 8/512.0f,
           mw  = bw - sw - ew,
-          ex  = bx+sw + max(mw*bar, fw * 8/512.0f);
+          ex  = bx+sw + std::max(mw*bar, fw * 8/512.0f);
     if(bar > 0)
     {
         settexture("media/interface/loading_bar.png", 3);
@@ -299,6 +309,7 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
 }
 
 VAR(progressbackground, 0, 0, 1);
+int curvsync = -1;
 
 void renderprogress(float bar, const char *text, bool background)   // also used during loading
 {
@@ -306,8 +317,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
     {
         return;
     }
-    extern int menufps, maxfps;
-    int fps = menufps ? (maxfps ? min(maxfps, menufps) : menufps) : maxfps;
+    int fps = menufps ? (maxfps ? std::min(maxfps, menufps) : menufps) : maxfps;
     if(fps)
     {
         static int lastprogress = 0;
@@ -323,12 +333,11 @@ void renderprogress(float bar, const char *text, bool background)   // also used
         h = hudh;
     if(forceaspect)
     {
-        w = static_cast<int>(ceil(h*forceaspect));
+        w = static_cast<int>(std::ceil(h*forceaspect));
     }
     getbackgroundres(w, h);
     gettextres(w, h);
 
-    extern int mesa_swap_bug, curvsync;
     bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || totalmillis==1));
     if(background || forcebackground)
     {
@@ -363,6 +372,13 @@ void setfullscreen(bool enable)
 
 VARF(fullscreen, 0, 1, 1, setfullscreen(fullscreen!=0));
 
+/* screenres: sets the window size to w * h pixels, or reduces fullscreen
+ * resolution to w * h pixels
+ *
+ * arguments:
+ *    w: width of new screen res
+ *    h: height of new screen res
+ */
 void screenres(int w, int h)
 {
     //need to cast enum to int for std's clamp implementation
@@ -370,8 +386,8 @@ void screenres(int w, int h)
     scr_h = std::clamp(h, static_cast<int>(SCR_MINH), static_cast<int>(SCR_MAXH));
     if(screen)
     {
-        scr_w = min(scr_w, desktopw);
-        scr_h = min(scr_h, desktoph);
+        scr_w = std::min(scr_w, desktopw);
+        scr_h = std::min(scr_h, desktoph);
         if(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN)
         {
             gl_resize();
@@ -386,8 +402,7 @@ void screenres(int w, int h)
         initwarning("screen resolution");
     }
 }
-
-ICOMMAND(screenres, "ii", (int *w, int *h), screenres(*w, *h));
+COMMAND(screenres, "ii");
 
 static void setgamma(int val)
 {
@@ -408,6 +423,9 @@ VARFNP(gamma, reqgamma, 30, 100, 300,
     setgamma(curgamma);
 });
 
+/* restoregamma: sets gamma to the previous set value, useful for reverting bad-
+ * looking gamma trial settings
+ */
 void restoregamma()
 {
     if(initing || reqgamma == 100)
@@ -426,22 +444,22 @@ void cleargamma()
     }
 }
 
-int curvsync = -1;
+void restorevsync(); //prototype to fix chicken-egg initialization problem caused by VARFP
+
+VARFP(vsync, 0, 0, 1, restorevsync());
+VARFP(vsynctear, 0, 0, 1, { if(vsync) restorevsync(); });
+
 void restorevsync()
 {
     if(initing || !glcontext)
     {
         return;
     }
-    extern int vsync, vsynctear;
     if(!SDL_GL_SetSwapInterval(vsync ? (vsynctear ? -1 : 1) : 0))
     {
         curvsync = vsync;
     }
 }
-
-VARFP(vsync, 0, 0, 1, restorevsync());
-VARFP(vsynctear, 0, 0, 1, { if(vsync) restorevsync(); });
 
 void setupscreen()
 {
@@ -474,8 +492,8 @@ void setupscreen()
     {
         scr_w = (scr_h*desktopw)/desktoph;
     }
-    scr_w = min(scr_w, desktopw);
-    scr_h = min(scr_h, desktoph);
+    scr_w = std::min(scr_w, desktopw);
+    scr_h = std::min(scr_h, desktoph);
 
     int winx = SDL_WINDOWPOS_UNDEFINED,
         winy = SDL_WINDOWPOS_UNDEFINED,
@@ -494,8 +512,10 @@ void setupscreen()
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+
+    uint32_t windowflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags;
     //create new screen       title          x     y     w     h  flags
-    screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
+    screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, windowflags);
 
     if(!screen)
     {
@@ -522,8 +542,8 @@ void setupscreen()
         fatal("failed to create OpenGL context: %s", SDL_GetError());
     }
     SDL_GetWindowSize(screen, &screenw, &screenh);
-    renderw = min(scr_w, screenw);
-    renderh = min(scr_h, screenh);
+    renderw = std::min(scr_w, screenw);
+    renderh = std::min(scr_h, screenh);
     hudw = screenw;
     hudh = screenh;
 }
@@ -574,15 +594,18 @@ void resetgl()
     reloadtextures();
     allchanged(true);
 }
-
 COMMAND(resetgl, "");
 
-VAR(menufps, 0, 60, 1000);
-VARP(maxfps, 0, 125, 1000);
-
+/* limitfps: uses SDL_Delay to delay a frame, given the time the last frame was
+ * rendered and the current time
+ *
+ * Arguments:
+ *    millis: the time (in ms) since program started
+ *    curmillis: the last registered frame time
+ */
 void limitfps(int &millis, int curmillis)
 {
-    int limit = (mainmenu || minimized) && menufps ? (maxfps ? min(maxfps, menufps) : menufps) : maxfps;
+    int limit = (mainmenu || minimized) && menufps ? (maxfps ? std::min(maxfps, menufps) : menufps) : maxfps;
     if(!limit)
     {
         return;
@@ -611,6 +634,7 @@ void limitfps(int &millis, int curmillis)
 
 #ifdef WIN32
     // Force Optimus setups to use the NVIDIA GPU
+    // or also for AMD dual graphics
     extern "C"
     {
         #ifdef __GNUC__
@@ -631,8 +655,8 @@ void limitfps(int &millis, int curmillis)
 
 static const int maxfpshistory = 60;
 
-
-int fpspos = 0, fpshistory[maxfpshistory];
+int fpspos = 0,
+    fpshistory[maxfpshistory];
 
 void resetfpshistory()
 {
@@ -645,7 +669,7 @@ void resetfpshistory()
 
 void updatefpshistory(int millis)
 {
-    fpshistory[fpspos++] = max(1, min(1000, millis));
+    fpshistory[fpspos++] = std::max(1, std::min(1000, millis));
     if(fpspos>=maxfpshistory)
     {
         fpspos = 0;
@@ -675,7 +699,7 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
     worstdiff = fps-1000/worst;
 }
 
-void getfps_(int *raw)
+void getfpscmd(int *raw)
 {
     if(*raw)
     {
@@ -688,5 +712,4 @@ void getfps_(int *raw)
         intret(fps);
     }
 }
-
-COMMANDN(getfps, getfps_, "i");
+COMMANDN(getfps, getfpscmd, "i");

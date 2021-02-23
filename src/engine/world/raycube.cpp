@@ -21,13 +21,11 @@
 
 bool insideworld(const vec &o)
 {
-    extern int worldsize;
     return o.x>=0 && o.x<worldsize && o.y>=0 && o.y<worldsize && o.z>=0 && o.z<worldsize;
 }
 
 bool insideworld(const ivec &o)
 {
-    extern int worldsize;
     return static_cast<uint>(o.x) < static_cast<uint>(worldsize) &&
            static_cast<uint>(o.y) < static_cast<uint>(worldsize) &&
            static_cast<uint>(o.z) < static_cast<uint>(worldsize);
@@ -87,7 +85,7 @@ static inline clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
     { \
         if(ray[i]) \
         { \
-            float prad = fabs(p.r[i] * invray[i]), \
+            float prad = std::fabs(p.r[i] * invray[i]), \
                   pdist = (p.o[i] - v[i]) * invray[i], \
                   pmin = pdist - prad, \
                   pmax = pdist + prad; \
@@ -127,7 +125,7 @@ static inline bool raycubeintersect(const clipplanes &p, const cube &c, const ve
     {
         return false;
     }
-    dist = max(enterdist+0.1f, 0.0f);
+    dist = std::max(enterdist+0.1f, 0.0f);
     if(dist < maxdist)
     {
         if(bbentry>=0)
@@ -143,7 +141,6 @@ static inline bool raycubeintersect(const clipplanes &p, const cube &c, const ve
     return true;
 }
 
-extern void entselectionbox(const entity &e, vec &eo, vec &es);
 float hitentdist;
 int hitent, hitorient;
 
@@ -284,10 +281,10 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
                 { \
                     return (radius>0?radius:-1); \
                 } \
-                disttoworld = max(disttoworld, 0.1f + d); \
+                disttoworld = std::max(disttoworld, 0.1f + d); \
             } \
             float e = ((invray[i]>0?worldsize:0)-c)*invray[i]; \
-            exitworld = min(exitworld, e); \
+            exitworld = std::min(exitworld, e); \
         } \
         if(disttoworld > exitworld) \
         { \
@@ -308,12 +305,12 @@ static float shadowent(octaentities *oc, const vec &o, const vec &ray, float rad
                 float edist = disttoent(lc->ext->ents, o, ray, dent, mode, t); \
                 if(edist < dent) \
                 { \
-                    earlyexit return min(edist, dist); \
+                    earlyexit return std::min(edist, dist); \
                     elvl = lshift; \
-                    dent = min(dent, edist); \
+                    dent = std::min(dent, edist); \
                 } \
             } \
-            if(lc->children==NULL) \
+            if(lc->children==nullptr) \
             { \
                 break; \
             } \
@@ -413,15 +410,15 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
             float f = 0;
             if(raycubeintersect(p, c, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
             {
-                return min(dent, dist+f);
+                return std::min(dent, dist+f);
             }
         }
         FINDCLOSEST(closest = 0, closest = 1, closest = 2);
         if(radius>0 && dist>=radius)
         {
-            return min(dent, dist);
+            return std::min(dent, dist);
         }
-        UPOCTREE(return min(dent, radius>0 ? radius : dist));
+        UPOCTREE(return std::min(dent, radius>0 ? radius : dist));
     }
 }
 
@@ -453,7 +450,7 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
             INTERSECTBOX(side = (i<<1) + 1 - lsizemask[i], goto nextcube);
             if(exitdist >= 0)
             {
-                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist+max(enterdist+0.1f, 0.0f);
+                return c.texture[side]==Default_Sky && mode&Ray_SkipSky ? radius : dist+std::max(enterdist+0.1f, 0.0f);
             }
         }
 
@@ -482,7 +479,7 @@ float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int
     float dist = raycube(o, ray, radius, mode, size);
     if((mode&Ray_Ents) == Ray_Ents)
     {
-        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, NULL);
+        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, nullptr);
         if(dent < 1e15f && (dist < 0 || dent < dist))
         {
             dist = dent;

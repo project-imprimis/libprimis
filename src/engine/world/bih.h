@@ -57,7 +57,7 @@ struct BIH
         int flags;
         vec bbmin, bbmax;
 
-        mesh() : numnodes(0), numtris(0), tex(NULL), flags(0) {}
+        mesh() : numnodes(0), numtris(0), tex(nullptr), flags(0) {}
 
         vec getpos(int i) const
         {

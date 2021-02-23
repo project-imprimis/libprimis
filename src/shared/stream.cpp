@@ -133,7 +133,7 @@ size_t decodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srcl
     const uchar *src = srcbuf, *srcend = &srcbuf[srclen];
     if(dstbuf == srcbuf)
     {
-        int len = min(dstlen, srclen);
+        int len = std::min(dstlen, srclen);
         for(const uchar *end4 = &srcbuf[len&~3]; src < end4; src += 4) if(*(const int *)src & 0x80808080) goto decode;
         for(const uchar *end = &srcbuf[len]; src < end; src++) if(*src & 0x80) goto decode;
         if(carry) *carry += len;
@@ -271,7 +271,7 @@ size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srcl
                 {
                     goto done;
                 }
-                const uchar *end = min(srcend, &src[dstend-dst]);
+                const uchar *end = std::min(srcend, &src[dstend-dst]);
                 do
                 {
                     if(uni == '\f')
@@ -385,7 +385,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
         if(end)
         {
             size_t len = strlen(tmp);
-            copystring(&tmp[len], file, min(sizeof(tmp)-len, size_t(end+2-file)));
+            copystring(&tmp[len], file, std::min(sizeof(tmp)-len, static_cast<size_t>(end+2-file)));
             file = end+1;
         }
     }
@@ -428,7 +428,7 @@ char *path(char *s)
         {
             //(empty body)
         }
-        for(char *prevdir = NULL, *curdir = curpart;;)
+        for(char *prevdir = nullptr, *curdir = curpart;;)
         {
             prevdir = curdir[0]==PATHDIV ? curdir+1 : curdir;
             curdir = strchr(prevdir, PATHDIV);
@@ -523,7 +523,7 @@ bool createdir(const char *path)
         path = copystring(strip, path, len);
     }
 #ifdef WIN32
-    return CreateDirectory(path, NULL)!=0;
+    return CreateDirectory(path, nullptr)!=0;
 #else
     return mkdir(path, 0777)==0;
 #endif
@@ -553,7 +553,7 @@ bool subhomedir(char *dst, int len, const char *src)
 #ifdef WIN32
         char home[MAX_PATH+1];
         home[0] = '\0';
-        if(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, home) != S_OK || !home[0])
+        if(SHGetFolderPath(nullptr, CSIDL_PERSONAL, nullptr, 0, home) != S_OK || !home[0])
         {
             return false;
         }
@@ -577,7 +577,7 @@ const char *sethomedir(const char *dir)
     copystring(pdir, dir);
     if(!subhomedir(pdir, sizeof(pdir), dir) || !fixpackagedir(pdir))
     {
-        return NULL;
+        return nullptr;
     }
     copystring(homedir, pdir);
     return homedir;
@@ -589,7 +589,7 @@ const char *addpackagedir(const char *dir)
     copystring(pdir, dir);
     if(!subhomedir(pdir, sizeof(pdir), dir) || !fixpackagedir(pdir))
     {
-        return NULL;
+        return nullptr;
     }
     char *filter = pdir;
     for(;;)
@@ -609,7 +609,7 @@ const char *addpackagedir(const char *dir)
     packagedir &pf = packagedirs.add();
     pf.dir = filter ? newstring(pdir, filter-pdir) : newstring(pdir);
     pf.dirlen = filter ? filter-pdir : strlen(pdir);
-    pf.filter = filter ? newstring(filter) : NULL;
+    pf.filter = filter ? newstring(filter) : nullptr;
     pf.filterlen = filter ? strlen(filter) : 0;
     return pf.dir;
 }
@@ -661,7 +661,7 @@ const char *findfile(const char *filename, const char *mode)
     }
     if(mode[0]=='e')
     {
-        return NULL;
+        return nullptr;
     }
     return filename;
 }
@@ -699,7 +699,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
     if(d)
     {
         struct dirent *de;
-        while((de = readdir(d)) != NULL)
+        while((de = readdir(d)) != nullptr)
         {
             if(!ext)
             {
@@ -771,7 +771,7 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
 
 static Sint64 rwopsseek(SDL_RWops *rw, Sint64 pos, int whence)
 {
-    stream *f = (stream *)rw->hidden.unknown.data1;
+    stream *f = static_cast<stream *>(rw->hidden.unknown.data1);
     if((!pos && whence==SEEK_CUR) || f->seek(pos, whence))
     {
         return static_cast<int>(f->tell());
@@ -781,13 +781,13 @@ static Sint64 rwopsseek(SDL_RWops *rw, Sint64 pos, int whence)
 
 static size_t rwopsread(SDL_RWops *rw, void *buf, size_t size, size_t nmemb)
 {
-    stream *f = (stream *)rw->hidden.unknown.data1;
+    stream *f = static_cast<stream *>(rw->hidden.unknown.data1);
     return f->read(buf, size*nmemb)/size;
 }
 
 static size_t rwopswrite(SDL_RWops *rw, const void *buf, size_t size, size_t nmemb)
 {
-    stream *f = (stream *)rw->hidden.unknown.data1;
+    stream *f = static_cast<stream *>(rw->hidden.unknown.data1);
     return f->write(buf, size*nmemb)/size;
 }
 
@@ -796,7 +796,7 @@ SDL_RWops *stream::rwops()
     SDL_RWops *rw = SDL_AllocRW();
     if(!rw)
     {
-        return NULL;
+        return nullptr;
     }
     rw->hidden.unknown.data1 = this;
     rw->seek = rwopsseek;
@@ -886,7 +886,7 @@ struct filestream : stream
 {
     FILE *file;
 
-    filestream() : file(NULL) {}
+    filestream() : file(nullptr) {}
     ~filestream() { close(); }
 
     bool open(const char *name, const char *mode)
@@ -896,7 +896,7 @@ struct filestream : stream
             return false;
         }
         file = fopen(name, mode);
-        return file!=NULL;
+        return file!=nullptr;
     }
     #ifdef WIN32
         bool opentemp(const char *name, const char *mode)
@@ -906,7 +906,7 @@ struct filestream : stream
                 return false;
             }
             file = fopen(name, mode);
-            return file!=NULL;
+            return file!=nullptr;
         }
     #else
         bool opentemp(const char *, const char *)
@@ -916,7 +916,7 @@ struct filestream : stream
                 return false;
             }
             file = tmpfile();
-            return file!=NULL;
+            return file!=nullptr;
         }
     #endif
     void close()
@@ -924,7 +924,7 @@ struct filestream : stream
         if(file)
         {
             fclose(file);
-            file = NULL;
+            file = nullptr;
         }
     }
 
@@ -961,7 +961,7 @@ struct filestream : stream
     bool flush() { return !fflush(file); }
     int getchar() { return fgetc(file); }
     bool putchar(int c) { return fputc(c, file)!=EOF; }
-    bool getline(char *str, size_t len) { return fgets(str, len, file)!=NULL; }
+    bool getline(char *str, size_t len) { return fgets(str, len, file)!=nullptr; }
     bool putstring(const char *str) { return fputs(str, file)!=EOF; }
 
     size_t printf(const char *fmt, ...)
@@ -970,11 +970,11 @@ struct filestream : stream
         va_start(v, fmt);
         int result = vfprintf(file, fmt, v);
         va_end(v);
-        return max(result, 0);
+        return std::max(result, 0);
     }
 };
 
-VAR(dbggz, 0, 0, 1);
+VAR(debuggz, 0, 0, 1);
 
 struct gzstream : stream
 {
@@ -1003,12 +1003,12 @@ struct gzstream : stream
     uint crc;
     size_t headersize;
 
-    gzstream() : file(NULL), buf(NULL), reading(false), writing(false), autoclose(false), crc(0), headersize(0)
+    gzstream() : file(nullptr), buf(nullptr), reading(false), writing(false), autoclose(false), crc(0), headersize(0)
     {
-        zfile.zalloc = NULL;
-        zfile.zfree = NULL;
-        zfile.opaque = NULL;
-        zfile.next_in = zfile.next_out = NULL;
+        zfile.zalloc = nullptr;
+        zfile.zfree = nullptr;
+        zfile.opaque = nullptr;
+        zfile.next_in = zfile.next_out = nullptr;
         zfile.avail_in = zfile.avail_out = 0;
     }
 
@@ -1029,7 +1029,7 @@ struct gzstream : stream
         {
             zfile.next_in = (Bytef *)buf;
         }
-        size = min(size, size_t(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
+        size = std::min(size, static_cast<size_t>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
         size_t n = file->read(zfile.next_in + zfile.avail_in, size);
         if(n > 0)
         {
@@ -1055,7 +1055,7 @@ struct gzstream : stream
     {
         while(n > 0 && zfile.avail_in > 0)
         {
-            size_t skipped = min(n, size_t(zfile.avail_in));
+            size_t skipped = std::min(n, static_cast<size_t>(zfile.avail_in));
             zfile.avail_in -= skipped;
             zfile.next_in += skipped;
             n -= skipped;
@@ -1083,7 +1083,7 @@ struct gzstream : stream
         if(flags & F_EXTRA)
         {
             size_t len = readbyte(512);
-            len |= size_t(readbyte(512))<<8;
+            len |= static_cast<size_t>(readbyte(512))<<8;
             skipbytes(len);
         }
         if(flags & F_NAME)
@@ -1104,7 +1104,7 @@ struct gzstream : stream
         {
             skipbytes(2);
         }
-        headersize = size_t(file->tell() - zfile.avail_in);
+        headersize = static_cast<size_t>(file->tell() - zfile.avail_in);
         return zfile.avail_in > 0 || !file->end();
     }
 
@@ -1134,7 +1134,7 @@ struct gzstream : stream
                 reading = false;
             }
         }
-        else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK)
+        else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, std::min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK)
         {
             writing = false;
         }
@@ -1143,7 +1143,7 @@ struct gzstream : stream
             return false;
         }
         file = f;
-        crc = crc32(0, NULL, 0);
+        crc = crc32(0, nullptr, 0);
         buf = new uchar[BUFSIZE];
         if(reading)
         {
@@ -1172,7 +1172,7 @@ struct gzstream : stream
         {
             return;
         }
-        if(dbggz)
+        if(debuggz)
         {
             uint checkcrc = 0,
                  checksize = 0;
@@ -1308,7 +1308,7 @@ struct gzstream : stream
             uchar skip[512];
             while(read(skip, sizeof(skip)) == sizeof(skip))
             {
-                //(empty body)s
+                //(empty body)
             }
             return !pos;
         }
@@ -1334,16 +1334,16 @@ struct gzstream : stream
             else
             {
                 zfile.avail_in = 0;
-                zfile.next_in = NULL;
+                zfile.next_in = nullptr;
             }
             inflateReset(&zfile);
-            crc = crc32(0, NULL, 0);
+            crc = crc32(0, nullptr, 0);
         }
 
         uchar skip[512];
         while(pos > 0)
         {
-            size_t skipped = static_cast<size_t>(min(pos, static_cast<offset>(sizeof(skip))));
+            size_t skipped = static_cast<size_t>(std::min(pos, static_cast<offset>(sizeof(skip))));
             if(read(skip, skipped) != skipped)
             {
                 stopreading();
@@ -1377,7 +1377,7 @@ struct gzstream : stream
             int err = inflate(&zfile, Z_NO_FLUSH);
             if(err == Z_STREAM_END)
             {
-                crc = crc32(crc, (Bytef *)buf, len - zfile.avail_out);
+                crc = crc32(crc, static_cast<Bytef *>(buf), len - zfile.avail_out);
                 finishreading();
                 stopreading();
                 return len - zfile.avail_out;
@@ -1388,7 +1388,7 @@ struct gzstream : stream
                 break;
             }
         }
-        crc = crc32(crc, (Bytef *)buf, len - zfile.avail_out);
+        crc = crc32(crc, reinterpret_cast<Bytef *>(buf), len - zfile.avail_out);
         return len - zfile.avail_out;
     }
 
@@ -1421,7 +1421,7 @@ struct gzstream : stream
         {
             return 0;
         }
-        zfile.next_in = (Bytef *)buf;
+        zfile.next_in = static_cast<Bytef *>(const_cast<void *>(buf)); //cast away constness, then to Bytef
         zfile.avail_in = len;
         while(zfile.avail_in > 0)
         {
@@ -1446,15 +1446,15 @@ struct utf8stream : stream
 {
     enum
     {
-        BUFSIZE = 4096
+        Buffer_Size = 4096
     };
     stream *file;
     offset pos;
     size_t bufread, bufcarry, buflen;
     bool reading, writing, autoclose;
-    uchar buf[BUFSIZE];
+    uchar buf[Buffer_Size];
 
-    utf8stream() : file(NULL), pos(0), bufread(0), bufcarry(0), buflen(0), reading(false), writing(false), autoclose(false)
+    utf8stream() : file(nullptr), pos(0), bufread(0), bufcarry(0), buflen(0), reading(false), writing(false), autoclose(false)
     {
     }
 
@@ -1463,7 +1463,7 @@ struct utf8stream : stream
         close();
     }
 
-    bool readbuf(size_t size = BUFSIZE)
+    bool readbuf(size_t size = Buffer_Size)
     {
         if(bufread >= bufcarry)
         {
@@ -1474,14 +1474,14 @@ struct utf8stream : stream
                 bufread = bufcarry = 0;
             }
         }
-        size_t n = file->read(&buf[buflen], min(size, BUFSIZE - buflen));
+        size_t n = file->read(&buf[buflen], std::min(size, Buffer_Size - buflen));
         if(n <= 0)
         {
             return false;
         }
         buflen += n;
         size_t carry = bufcarry;
-        bufcarry += decodeutf8(&buf[bufcarry], BUFSIZE-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
+        bufcarry += decodeutf8(&buf[bufcarry], Buffer_Size-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
         if(carry > bufcarry && carry < buflen)
         {
             memmove(&buf[bufcarry], &buf[carry], buflen - carry);
@@ -1589,7 +1589,10 @@ struct utf8stream : stream
         if(whence == SEEK_END)
         {
             uchar skip[512];
-            while(read(skip, sizeof(skip)) == sizeof(skip));
+            while(read(skip, sizeof(skip)) == sizeof(skip))
+            {
+                //(empty body)
+            }
             return !off;
         }
         else if(whence == SEEK_CUR) off += pos;
@@ -1612,7 +1615,7 @@ struct utf8stream : stream
         uchar skip[512];
         while(off > 0)
         {
-            size_t skipped = (size_t)min(off, (offset)sizeof(skip));
+            size_t skipped = static_cast<size_t>(std::min(off, (offset)sizeof(skip)));
             if(read(skip, skipped) != skipped)
             {
                 stopreading();
@@ -1635,15 +1638,15 @@ struct utf8stream : stream
         {
             if(bufread >= bufcarry)
             {
-                if(readbuf(BUFSIZE))
+                if(readbuf(Buffer_Size))
                 {
                     continue;
                 }
                 stopreading();
                 break;
             }
-            size_t n = min(len - next, bufcarry - bufread);
-            memcpy(&((uchar *)dst)[next], &buf[bufread], n);
+            size_t n = std::min(len - next, bufcarry - bufread);
+            memcpy(&(static_cast<uchar *>(dst))[next], &buf[bufread], n);
             next += n;
             bufread += n;
         }
@@ -1663,7 +1666,7 @@ struct utf8stream : stream
         {
             if(bufread >= bufcarry)
             {
-                if(readbuf(BUFSIZE))
+                if(readbuf(Buffer_Size))
                 {
                     continue;
                 }
@@ -1674,14 +1677,14 @@ struct utf8stream : stream
                 }
                 break;
             }
-            size_t n = min(len - next, bufcarry - bufread);
-            uchar *endline = (uchar *)memchr(&buf[bufread], '\n', n);
+            size_t n = std::min(len - next, bufcarry - bufread);
+            uchar *endline = static_cast<uchar *>(memchr(&buf[bufread], '\n', n));
             if(endline)
             {
                 n = endline+1 - &buf[bufread];
                 len = next + n;
             }
-            memcpy(&((uchar *)dst)[next], &buf[bufread], n);
+            memcpy(&(reinterpret_cast<uchar *>(dst))[next], &buf[bufread], n);
             next += n;
             bufread += n;
         }
@@ -1721,13 +1724,13 @@ stream *openrawfile(const char *filename, const char *mode)
     const char *found = findfile(filename, mode);
     if(!found)
     {
-        return NULL;
+        return nullptr;
     }
     filestream *file = new filestream;
     if(!file->open(found, mode))
     {
         delete file;
-        return NULL;
+        return nullptr;
     }
     return file;
 }
@@ -1749,7 +1752,7 @@ stream *opentempfile(const char *name, const char *mode)
     if(!file->opentemp(found ? found : name, mode))
     {
         delete file;
-        return NULL;
+        return nullptr;
     }
     return file;
 }
@@ -1759,7 +1762,7 @@ stream *opengzfile(const char *filename, const char *mode, stream *file, int lev
     stream *source = file ? file : openfile(filename, mode);
     if(!source)
     {
-        return NULL;
+        return nullptr;
     }
     gzstream *gz = new gzstream;
     if(!gz->open(source, mode, !file, level))
@@ -1769,7 +1772,7 @@ stream *opengzfile(const char *filename, const char *mode, stream *file, int lev
             delete source;
         }
         delete gz;
-        return NULL;
+        return nullptr;
     }
     return gz;
 }
@@ -1779,7 +1782,7 @@ stream *openutf8file(const char *filename, const char *mode, stream *file)
     stream *source = file ? file : openfile(filename, mode);
     if(!source)
     {
-        return NULL;
+        return nullptr;
     }
     utf8stream *utf8 = new utf8stream;
     if(!utf8->open(source, mode, !file))
@@ -1789,7 +1792,7 @@ stream *openutf8file(const char *filename, const char *mode, stream *file)
             delete source;
         }
         delete utf8;
-        return NULL;
+        return nullptr;
     }
     return utf8;
 }
@@ -1799,20 +1802,20 @@ char *loadfile(const char *fn, size_t *size, bool utf8)
     stream *f = openfile(fn, "rb");
     if(!f)
     {
-        return NULL;
+        return nullptr;
     }
     stream::offset fsize = f->size();
     if(fsize <= 0)
     {
         delete f;
-        return NULL;
+        return nullptr;
     }
     size_t len = fsize;
     char *buf = new char[len+1];
     if(!buf)
     {
         delete f;
-        return NULL;
+        return nullptr;
     }
     size_t offset = 0;
     if(utf8 && len >= 3)
@@ -1821,7 +1824,7 @@ char *loadfile(const char *fn, size_t *size, bool utf8)
         {
             delete f;
             delete[] buf;
-            return NULL;
+            return nullptr;
         }
         if(((uchar *)buf)[0] == 0xEF && ((uchar *)buf)[1] == 0xBB && ((uchar *)buf)[2] == 0xBF)
         {
@@ -1837,14 +1840,14 @@ char *loadfile(const char *fn, size_t *size, bool utf8)
     if(rlen != len-offset)
     {
         delete[] buf;
-        return NULL;
+        return nullptr;
     }
     if(utf8)
     {
         len = decodeutf8((uchar *)buf, len, (uchar *)buf, len);
     }
     buf[len] = '\0';
-    if(size!=NULL)
+    if(size!=nullptr)
     {
         *size = len;
     }

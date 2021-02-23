@@ -95,6 +95,7 @@ FVARR(skyboxoverbrightmin, 0, 1, 16);
 FVARR(skyboxoverbrightthreshold, 0, 0.7f, 1);
 FVARR(skyboxspin, -720, 0, 720);
 VARR (skyboxyaw, 0, 0, 360);
+
 FVARR(cloudclip, 0, 0.5f, 1);
 SVARFR(cloudlayer, "", { if(cloudlayer[0]) cloudoverlay = loadskyoverlay(cloudlayer); });
 FVARR(cloudoffsetx, 0, 0, 1);
@@ -304,14 +305,17 @@ bool limitsky()
 void drawskybox(bool clear)
 {
     bool limited = false;
-    if(limitsky()) for(vtxarray *va = visibleva; va; va = va->next)
+    if(limitsky())
     {
-        if(va->sky && va->occluded < Occlude_BB &&
-           ((va->skymax.x >= 0 && isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
-            !insideworld(camera1->o)))
+        for(vtxarray *va = visibleva; va; va = va->next)
         {
-            limited = true;
-            break;
+            if(va->sky && va->occluded < Occlude_BB &&
+               ((va->skymax.x >= 0 && isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
+                !insideworld(camera1->o)))
+            {
+                limited = true;
+                break;
+            }
         }
     }
     if(limited)

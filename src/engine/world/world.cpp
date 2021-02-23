@@ -39,7 +39,7 @@ namespace entities
 
     const char *entmodel(const entity &e)
     {
-        return NULL;
+        return nullptr;
     }
 
     extentity *newentity()
@@ -83,8 +83,8 @@ void detachentity(extentity &e)
     {
         return;
     }
-    e.attached->attached = NULL;
-    e.attached = NULL;
+    e.attached->attached = nullptr;
+    e.attached = nullptr;
 }
 
 VAR(attachradius, 1, 100, 1000);
@@ -187,7 +187,7 @@ static inline void mmcollisionbox(const entity &e, model *m, vec &center, vec &r
 
 static inline void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radius)
 {
-    float size = max(static_cast<float>(e.attr5), 1.0f);
+    float size = std::max(static_cast<float>(e.attr5), 1.0f);
     center = vec(0, s.depth * size/2, 0);
     radius = vec(size/2, s.depth * size/2, size/2);
     rotatebb(center, radius, e.attr2, e.attr3, e.attr4);
@@ -239,13 +239,13 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
     return true;
 }
 
-void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = NULL)
+void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor, int size, const ivec &bo, const ivec &br, int leafsize, vtxarray *lastva = nullptr)
 {
     LOOP_OCTA_BOX(cor, size, bo, br)
     {
         ivec o(i, cor, size);
         vtxarray *va = c[i].ext && c[i].ext->va ? c[i].ext->va : lastva;
-        if(c[i].children != NULL && size > leafsize)
+        if(c[i].children != nullptr && size > leafsize)
         {
             modifyoctaentity(flags, id, e, c[i].children, o, size>>1, bo, br, leafsize, va);
         }
@@ -376,7 +376,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
         }
         if(c[i].ext && c[i].ext->ents)
         {
-            c[i].ext->ents->query = NULL;
+            c[i].ext->ents->query = nullptr;
         }
         if(va && va!=lastva)
         {
@@ -424,7 +424,7 @@ static bool modifyoctaent(int flags, int id, extentity &e)
     else
     {
         int leafsize = octaentsize,
-            limit    = max(r.x - o.x, max(r.y - o.y, r.z - o.z));
+            limit    = std::max(r.x - o.x, std::max(r.y - o.y, r.z - o.z));
         while(leafsize < limit)
         {
             leafsize *= 2;
@@ -538,7 +538,7 @@ void freeoctaentities(cube &c)
     if(c.ext->ents)
     {
         delete c.ext->ents;
-        c.ext->ents = NULL;
+        c.ext->ents = nullptr;
     }
 }
 
@@ -553,7 +553,7 @@ void entitiesinoctanodes()
 
 void entselectionbox(const entity &e, vec &eo, vec &es)
 {
-    model *m = NULL;
+    model *m = nullptr;
     const char *mname = entities::entmodel(e);
     if(mname && (m = loadmodel(mname)))
     {
@@ -642,7 +642,7 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
     setvar("mapscale", scale<10 ? 10 : (scale>16 ? 16 : scale), true, false);
     setvar("mapsize", 1<<worldscale, true, false);
     setvar("emptymap", 1, true, false);
-    texmru.shrink(0);
+    texmru.clear();
     freeocta(worldroot);
     worldroot = newcubes(faceempty);
     for(int i = 0; i < 4; ++i)
@@ -741,7 +741,7 @@ void shrinkmap()
         subdividecube(worldroot[octant], false, false);
     }
     cube *root = worldroot[octant].children;
-    worldroot[octant].children = NULL;
+    worldroot[octant].children = nullptr;
     freeocta(worldroot);
     worldroot = root;
     worldscale--;

@@ -40,7 +40,7 @@ VAR(mintexoffset, 1, 0, 0);
 VAR(maxtexoffset, 1, 0, 0);
 VAR(mintexrectoffset, 1, 0, 0);
 VAR(maxtexrectoffset, 1, 0, 0);
-VAR(dbgshader, 0, 1, 2);
+VAR(debugshader, 0, 1, 2);
 
 void loadshaders()
 {
@@ -186,7 +186,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         glDeleteShader_(obj);
         obj = 0;
     }
-    else if(dbgshader > 1 && msg)
+    else if(debugshader > 1 && msg)
     {
         showglslinfo(type, obj, name, parts, numparts);
     }
@@ -196,7 +196,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     }
 }
 
-VAR(dbgubo, 0, 0, 1);
+VAR(debugubo, 0, 0, 1);
 
 static void bindglsluniform(Shader &s, UniformLoc &u)
 {
@@ -228,7 +228,7 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
         u.offset = offsetval;
         u.size = sizeval;
         glUniformBlockBinding_(s.program, bidx, u.binding);
-        if(dbgubo)
+        if(debugubo)
         {
             conoutf(Console_Debug, "UBO: %s:%s:%d, offset: %d, size: %d, stride: %d", u.name, u.blockname, u.binding, offsetval, sizeval, strideval);
         }
@@ -685,7 +685,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(*this, GL_VERTEX_SHADER,   vsobj, vsstr, name, dbgshader || !variantshader);
+        compileglslshader(*this, GL_VERTEX_SHADER,   vsobj, vsstr, name, debugshader || !variantshader);
     }
     if(!psstr)
     {
@@ -693,7 +693,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, dbgshader || !variantshader);
+        compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
     }
     linkglslprogram(*this, !variantshader);
     return program!=0;
@@ -1253,7 +1253,7 @@ Shader *useshaderbyname(const char *name)
     s->forced = true;
     return s;
 }
-ICOMMAND(forceshader, "s", (const char *name), useshaderbyname(name));
+COMMANDN(forceshader, useshaderbyname, "s");
 
 //=====================================================================GENSHADER
 #define GENSHADER(cond, body) \
@@ -1327,7 +1327,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     if(*maxvariants > 0)
     {
         DEF_FORMAT_STRING(info, "shader %s", name);
-        renderprogress(min(s->variants.length() / static_cast<float>(*maxvariants), 1.0f), info);
+        renderprogress(std::min(s->variants.length() / static_cast<float>(*maxvariants), 1.0f), info);
     }
     vector<char> vsbuf, psbuf, vsbak, psbak;
     GENSHADER(s->defaultparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
@@ -1477,7 +1477,12 @@ bool shouldreuseparams(Slot &s, VSlot &p)
     return false;
 }
 
-ICOMMAND(isshaderdefined, "s", (char *name), intret(lookupshaderbyname(name) ? 1 : 0));
+
+void isshaderdefinedcmd(const char * name)
+{
+    intret(lookupshaderbyname(name) ? 1 : 0);
+}
+COMMANDN(isshaderdefined, isshaderdefinedcmd, "s");
 
 static hashset<const char *> shaderparamnames(256);
 
@@ -1514,7 +1519,6 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     slotparams.add(param);
 }
 
-ICOMMAND(setuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(setshaderparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(defuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
 ICOMMAND(reuseuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE));
@@ -1557,7 +1561,7 @@ static int allocatepostfxtex(int scale)
     postfxtex t;
     t.scale = scale;
     glGenTextures(1, &t.id);
-    createtexture(t.id, max(postfxw>>scale, 1), max(postfxh>>scale, 1), nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
+    createtexture(t.id, std::max(postfxw>>scale, 1), std::max(postfxh>>scale, 1), nullptr, 3, 1, GL_RGB, GL_TEXTURE_RECTANGLE);
     postfxtexs.push_back(t);
     return postfxtexs.size()-1;
 }
@@ -1634,8 +1638,8 @@ void renderpostfx(GLuint outfbo)
             tex = allocatepostfxtex(p.outputscale);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
         }
-        int w = tex >= 0 ? max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
-            h = tex >= 0 ? max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
+        int w = tex >= 0 ? std::max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
+            h = tex >= 0 ? std::max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;
         glViewport(0, 0, w, h);
         p.shader->set();
         LOCALPARAM(params, p.params);
@@ -1648,8 +1652,8 @@ void renderpostfx(GLuint outfbo)
             {
                 if(!tmu)
                 {
-                    tw = max(postfxw>>postfxtexs[postfxbinds[j]].scale, 1);
-                    th = max(postfxh>>postfxtexs[postfxbinds[j]].scale, 1);
+                    tw = std::max(postfxw>>postfxtexs[postfxbinds[j]].scale, 1);
+                    th = std::max(postfxh>>postfxtexs[postfxbinds[j]].scale, 1);
                 }
                 else
                 {
@@ -1715,7 +1719,7 @@ void clearpostfx()
 }
 COMMAND(clearpostfx, "");
 
-ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs, float *x, float *y, float *z, float *w),
+void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, float *y, float *z, float *w)
 {
     int inputmask = inputs[0] ? 0 : 1;
     int freemask = inputs[0] ? 0 : 1;
@@ -1741,17 +1745,19 @@ ICOMMAND(addpostfx, "siisffff", (char *name, int *bind, int *scale, char *inputs
     }
     inputmask &= (1<<numpostfxbinds)-1;
     freemask &= (1<<numpostfxbinds)-1;
-    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
-});
+    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+}
+COMMANDN(addpostfx, addpostfxcmd, "siisffff");
 
-ICOMMAND(setpostfx, "sffff", (char *name, float *x, float *y, float *z, float *w),
+void setpostfx(char *name, float *x, float *y, float *z, float *w)
 {
     clearpostfx();
     if(name[0])
     {
         addpostfx(name, 0, 0, 1, 1, vec4(*x, *y, *z, *w));
     }
-});
+}
+COMMAND(setpostfx, "sffff");
 
 void cleanupshaders()
 {

@@ -152,7 +152,7 @@ void removetrackeddynlights(physent *owner)
 {
     for(int i = dynlights.length(); --i >=0;) //note reverse iteration
     {
-        if(owner ? dynlights[i].owner == owner : dynlights[i].owner != NULL)
+        if(owner ? dynlights[i].owner == owner : dynlights[i].owner != nullptr)
         {
             dynlights.remove(i);
         }

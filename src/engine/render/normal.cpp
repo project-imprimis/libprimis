@@ -1,3 +1,15 @@
+/* normal.cpp: cube geometry normal interpolation
+ *
+ * cube geometry in the libprimis engine is faceted, only allowing 8 ticks of
+ * movement; as a result, normal vectors of geometry are not very smooth
+ *
+ * to resolve this, adjacent cube faces with low differences in their angle can
+ * have their faces "merged" by interpolating the normal maps of their respective
+ * faces
+ *
+ * this is controlled by the lerp variables and is generally uniformly done for
+ * all geometry on the map; see `lerpangle` for the threshold variable
+ */
 #include "engine.h"
 
 #include "octarender.h"
@@ -46,7 +58,7 @@ namespace //internal functionality not seen by other files
     hashset<normalgroup> normalgroups(1<<16);
     std::vector<normal> normals;
     std::vector<tnormal> tnormals;
-    vector<int> smoothgroups;
+    std::vector<int> smoothgroups;
 
     VARR(lerpangle, 0, 44, 180); //max angle to merge octree faces' normals smoothly
 
@@ -315,13 +327,13 @@ namespace //internal functionality not seen by other files
                     const vec &v1 = pos[e1],
                               &v2 = pos[e2];
                     ivec d(vec(v2).sub(v1).mul(8));
-                    int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
+                    int axis = std::abs(d.x) > std::abs(d.y) ? (std::abs(d.x) > std::abs(d.z) ? 0 : 2) : (std::abs(d.y) > std::abs(d.z) ? 1 : 2);
                     if(d[axis] < 0)
                     {
                         d.neg();
                     }
                     reduceslope(d);
-                    int origin  =  static_cast<int>(min(v1[axis], v2[axis])*8)&~0x7FFF,
+                    int origin  =  static_cast<int>(std::min(v1[axis], v2[axis])*8)&~0x7FFF,
                         offset1 = (static_cast<int>(v1[axis]*8) - origin) / d[axis],
                         offset2 = (static_cast<int>(v2[axis]*8) - origin) / d[axis];
                     vec o = vec(v1).sub(vec(d).mul(offset1/8.0f)),
@@ -352,9 +364,10 @@ void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
 {
     normalkey key = { pos, smooth };
     const normalgroup *g = normalgroups.access(key);
+    bool usegroup = (static_cast<int>(smoothgroups.size()) > smooth) && smoothgroups[smooth] >= 0;
     if(g)
     {
-        int angle = smoothgroups.inrange(smooth) && smoothgroups[smooth] >= 0 ? smoothgroups[smooth] : lerpangle;
+        int angle = usegroup ? smoothgroups[smooth] : lerpangle;
         float lerpthreshold = cos360(angle) - 1e-5f;
         if(g->tnormals < 0 || !findtnormal(*g, lerpthreshold, surface, v))
         {
@@ -390,28 +403,32 @@ void clearnormals()
 
 void resetsmoothgroups()
 {
-    smoothgroups.setsize(0);
+    smoothgroups.clear();
 }
 
 int smoothangle(int id, int angle)
 {
     if(id < 0)
     {
-        id = smoothgroups.length();
+        id = smoothgroups.size();
     }
     if(id >= 10000)
     {
         return -1;
     }
-    while(smoothgroups.length() <= id)
+    while(static_cast<int>(smoothgroups.size()) <= id)
     {
-        smoothgroups.add(-1);
+        smoothgroups.push_back(-1);
     }
     if(angle >= 0)
     {
-        smoothgroups[id] = min(angle, 180);
+        smoothgroups[id] = std::min(angle, 180);
     }
     return id;
 }
 
-ICOMMAND(smoothangle, "ib", (int *id, int *angle), intret(smoothangle(*id, *angle)));
+void smoothanglecmd(int *id, int *angle)
+{
+    intret(smoothangle(*id, *angle));
+}
+COMMANDN(smoothangle, smoothanglecmd, "ib");

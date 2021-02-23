@@ -1,9 +1,6 @@
 #ifndef RAGDOLL_H_
 #define RAGDOLL_H_
 
-extern int ragdolleyesmoothmillis, ragdolltimestepmax, ragdolltimestepmin;
-extern float ragdolleyesmooth;
-
 struct ragdollskel
 {
     struct vert

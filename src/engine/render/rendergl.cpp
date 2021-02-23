@@ -1,4 +1,12 @@
-// rendergl.cpp: core opengl rendering stuff
+/* rendergl.cpp: core opengl rendering stuff
+ *
+ * rendergl.cpp handles the main rendering functions, which render the scene
+ * using OpenGL features aliased in this file. This file also handles the
+ * position of the camera and the projection frustum handling.
+ *
+ * While this file does not handle light and texture rendering, it does handle
+ * the simple world depth fog in libprimis.
+ */
 
 #include "engine.h"
 
@@ -39,6 +47,7 @@ bool mesa   = false,
 
 int hasstencil = 0;
 
+//read-only info for gl debugging
 VAR(glversion, 1, 0, 0);
 VAR(glslversion, 1, 0, 0);
 
@@ -332,7 +341,7 @@ VAR(usetexgather, 1, 0, 0);
 VAR(maxdrawbufs, 1, 0, 0);
 VAR(maxdualdrawbufs, 1, 0, 0);
 
-VAR(dbgexts, 0, 0, 1);
+VAR(debugexts, 0, 0, 1);
 
 hashset<const char *> glexts;
 
@@ -606,7 +615,7 @@ void gl_checkextensions()
     if(hasext("GL_EXT_gpu_shader4"))
     {
         hasEGPU4 = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_gpu_shader4 extension.");
         }
@@ -659,7 +668,7 @@ void gl_checkextensions()
     if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
     {
         hasFBMSBS = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
         }
@@ -670,7 +679,7 @@ void gl_checkextensions()
         glGetQueryObjecti64v_  =  (PFNGLGETQUERYOBJECTI64VEXTPROC)  getprocaddress("glGetQueryObjecti64vEXT");
         glGetQueryObjectui64v_ = (PFNGLGETQUERYOBJECTUI64VEXTPROC) getprocaddress("glGetQueryObjectui64vEXT");
         hasTQ = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_timer_query extension.");
         }
@@ -683,7 +692,7 @@ void gl_checkextensions()
         GLint val = 0;
         glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val);
         hwmaxaniso = val;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_texture_filter_anisotropic extension.");
         }
@@ -696,7 +705,7 @@ void gl_checkextensions()
     {
         glDepthBounds_ = (PFNGLDEPTHBOUNDSEXTPROC) getprocaddress("glDepthBoundsEXT");
         hasDBT = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_EXT_depth_bounds_test extension.");
         }
@@ -712,11 +721,11 @@ void gl_checkextensions()
     glBlendFunci_ =             (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
     glBlendFuncSeparatei_ =     (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
     usetexgather = !intel && !nvidia ? 2 : 1;
-    //OpenGL 4.
+    //OpenGL 4.x
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
     {
         hasES3 = true;
-        if(glversion < 430 && dbgexts)
+        if(glversion < 430 && debugexts)
         {
             conoutf(Console_Init, "Using GL_ARB_ES3_compatibility extension.");
         }
@@ -739,7 +748,7 @@ void gl_checkextensions()
             glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallbackARB");
             glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLogARB");
             hasDBGO = true;
-            if(dbgexts)
+            if(debugexts)
             {
                 conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
             }
@@ -751,7 +760,7 @@ void gl_checkextensions()
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubData");
 
         hasCI = true;
-        if(glversion < 430 && dbgexts)
+        if(glversion < 430 && debugexts)
         {
             conoutf(Console_Init, "Using GL_ARB_copy_image extension.");
         }
@@ -761,7 +770,7 @@ void gl_checkextensions()
         glCopyImageSubData_ = (PFNGLCOPYIMAGESUBDATAPROC)getprocaddress("glCopyImageSubDataNV");
 
         hasCI = true;
-        if(dbgexts)
+        if(debugexts)
         {
             conoutf(Console_Init, "Using GL_NV_copy_image extension.");
         }
@@ -801,7 +810,11 @@ void gl_checkextensions()
     tqaaresolvegather = 1;
 }
 
-ICOMMAND(glext, "s", (char *ext), intret(hasext(ext) ? 1 : 0));
+void glext(char *ext)
+{
+    intret(hasext(ext) ? 1 : 0);
+}
+COMMAND(glext, "s");
 
 void gl_resize()
 {
@@ -839,14 +852,30 @@ void gl_init()
 
 VAR(wireframe, 0, 0, 1);
 
-ICOMMAND(getcamyaw, "", (), floatret(camera1->yaw));
-ICOMMAND(getcampitch, "", (), floatret(camera1->pitch));
-ICOMMAND(getcamroll, "", (), floatret(camera1->roll));
-ICOMMAND(getcampos, "", (),
+void getcamyaw()
+{
+    floatret(camera1->yaw);
+}
+COMMAND(getcamyaw, "");
+
+void getcampitch()
+{
+    floatret(camera1->pitch);
+}
+COMMAND(getcampitch, "");
+
+void getcamroll()
+{
+    floatret(camera1->roll);
+}
+COMMAND(getcamroll, "");
+
+void getcampos()
 {
     DEF_FORMAT_STRING(pos, "%s %s %s", floatstr(camera1->o.x), floatstr(camera1->o.y), floatstr(camera1->o.z));
     result(pos);
-});
+}
+COMMAND(getcampos, "");
 
 vec worldpos, camdir, camright, camup;
 
@@ -1922,7 +1951,7 @@ namespace modelpreview
 
 vec calcmodelpreviewpos(const vec &radius, float &yaw)
 {
-    yaw = fmod(lastmillis/10000.0f*360.0f, 360.0f);
+    yaw = std::fmod(lastmillis/10000.0f*360.0f, 360.0f);
     float dist = max(radius.magnitude2()/aspect, radius.magnitude())/sinf(fovy/2*RAD);
     return vec(0, dist, 0).rotate_around_x(camera1->pitch*RAD);
 }

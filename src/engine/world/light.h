@@ -20,8 +20,4 @@ extern void resetsmoothgroups();
 extern int smoothangle(int id, int angle);
 extern void findnormal(const vec &key, int smooth, const vec &surface, vec &v);
 
-extern bool calclight_canceled;
-
-extern void check_calclight_canceled();
-
 #endif

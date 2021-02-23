@@ -239,6 +239,7 @@ VAR(rsmcull, 0, 1, 1);
 VARFP(rhtaps, 0, 20, 32, cleanupradiancehints()); //`r`adiance `h`ints `taps`: number of sample points for global illumination
 VAR(rhdyntex, 0, 0, 1);
 VAR(rhdynmm, 0, 0, 1);
+
 VARFR(gidist, 0, 384, 1024, { clearradiancehintscache(); cleardeferredlightshaders(); if(!gidist) cleanupradiancehints(); });
 FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); }); //`g`lobal `i`llumination `scale`
 FVARR(giaoscale, 0, 3, 1e3f); //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces
@@ -247,7 +248,7 @@ VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); }); //
 VAR(debugrsm, 0, 0, 2); //displays the `r`adiance hints `s`hadow `m`ap in the bottom right of the screen; 1 for view from sun pos, 2 for view from sun pos, normal map
 void viewrsm()
 {
-    int w = min(hudw, hudh)/2,
+    int w = std::min(hudw, hudh)/2,
         h = (w*hudh)/hudw,
         x = hudw-w,
         y = hudh-h;
@@ -260,7 +261,7 @@ void viewrsm()
 VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 void viewrh()
 {
-    int w = min(hudw, hudh)/2,
+    int w = std::min(hudw, hudh)/2,
         h = (w*hudh)/hudw,
         x = hudw-w,
         y = hudh-h;
@@ -284,7 +285,7 @@ void viewrh()
     {
         SETSHADER(hud3d);
         glBindTexture(GL_TEXTURE_3D, rhtex[1]);
-        float z = (max(debugrh, 1)-1+0.5f)/static_cast<float>((rhgrid+2*rhborder)*rhsplits);
+        float z = (std::max(debugrh, 1)-1+0.5f)/static_cast<float>((rhgrid+2*rhborder)*rhsplits);
         gle::defvertex(2);
         gle::deftexcoord0(3);
         gle::begin(GL_TRIANGLE_STRIP);
@@ -295,6 +296,8 @@ void viewrh()
         gle::end();
     }
 }
+
+// ============================ reflective shadow map =========================//
 
 void reflectiveshadowmap::setup()
 {
@@ -316,7 +319,7 @@ void reflectiveshadowmap::getprojmatrix()
     // find z extent
     float minz = lightview.project_bb(worldmin, worldmax),
           maxz = lightview.project_bb(worldmax, worldmin),
-          zmargin = max((maxz - minz)*rsmdepthmargin, 0.5f*(rsmdepthrange - (maxz - minz)));
+          zmargin = std::max((maxz - minz)*rsmdepthmargin, 0.5f*(rsmdepthrange - (maxz - minz)));
     minz -= zmargin;
     maxz += zmargin;
     vec c;
@@ -324,11 +327,11 @@ void reflectiveshadowmap::getprojmatrix()
     // compute the projected bounding box of the sphere
     vec tc;
     model.transform(c, tc);
-    const float pradius = ceil((radius + gidist) * rsmpradiustweak),
+    const float pradius = std::ceil((radius + gidist) * rsmpradiustweak),
                 step = (2*pradius) / rsmsize;
     vec2 tcoff = vec2(tc).sub(pradius).div(step);
-    tcoff.x = floor(tcoff.x);
-    tcoff.y = floor(tcoff.y);
+    tcoff.x = std::floor(tcoff.x);
+    tcoff.y = std::floor(tcoff.y);
     center = vec(vec2(tcoff).mul(step).add(pradius), -0.5f*(minz + maxz));
     bounds = vec(pradius, pradius, 0.5f*(maxz - minz));
 
@@ -352,6 +355,8 @@ void reflectiveshadowmap::gencullplanes()
     cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
     cull[3] = plane(vec4(pw).sub(py)).normalize(); // top plane
 }
+
+//=========================== end reflective shadow map =======================//
 
 void clearradiancehintscache()
 {
@@ -387,12 +392,12 @@ void radiancehints::setup()
         float radius = calcfrustumboundsphere(split.nearplane, split.farplane, camera1->o, camdir, c);
 
         // compute the projected bounding box of the sphere
-        const float pradius = ceil(radius * rhpradiustweak),
+        const float pradius = std::ceil(radius * rhpradiustweak),
                     step = (2*pradius) / rhgrid;
         vec offset = vec(c).sub(pradius).div(step);
-        offset.x = floor(offset.x);
-        offset.y = floor(offset.y);
-        offset.z = floor(offset.z);
+        offset.x = std::floor(offset.x);
+        offset.y = std::floor(offset.y);
+        offset.z = std::floor(offset.z);
         split.cached = split.bounds == pradius ? split.center : vec(-1e16f, -1e16f, -1e16f);
         split.center = vec(offset).mul(step).add(pradius);
         split.bounds = pradius;
@@ -534,23 +539,23 @@ void radiancehints::renderslices()
             bmax(-1e16f, -1e16f, -1e16f);
         for(int k = 0; k < 3; ++k)
         {
-            cmin[k] = floor((worldmin[k] - nudge - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
-            cmax[k] = ceil((worldmax[k] + nudge - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
+            cmin[k] = std::floor((worldmin[k] - nudge - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
+            cmax[k] = std::ceil((worldmax[k] + nudge - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
         }
         if(prevdynmin.z < prevdynmax.z)
         {
             for(int k = 0; k < 3; ++k)
             {
-                dmin[k] = min(dmin[k], static_cast<float>(floor((prevdynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
-                dmax[k] = max(dmax[k], static_cast<float>(ceil((prevdynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
+                dmin[k] = std::min(dmin[k], static_cast<float>(std::floor((prevdynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
+                dmax[k] = std::max(dmax[k], static_cast<float>(std::ceil((prevdynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
             }
         }
         if(dynmin.z < dynmax.z)
         {
             for(int k = 0; k < 3; ++k)
             {
-                dmin[k] = min(dmin[k], static_cast<float>(floor((dynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
-                dmax[k] = max(dmax[k], static_cast<float>(ceil((dynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
+                dmin[k] = std::min(dmin[k], static_cast<float>(std::floor((dynmin[k] - gidist - cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
+                dmax[k] = std::max(dmax[k], static_cast<float>(std::ceil((dynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds));
             }
         }
         if((rhrect || !rhcache || hasCI) && split.cached == split.center && (!rhborder || prevcached) && !rhforce &&
@@ -586,8 +591,8 @@ void radiancehints::renderslices()
             splitinfo &next = splits[i+1];
             for(int k = 0; k < 3; ++k)
             {
-                bmin[k] = floor((max(static_cast<float>(worldmin[k] - nudge), next.center[k] - next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
-                bmax[k] = ceil((min(static_cast<float>(worldmax[k] + nudge), next.center[k] + next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
+                bmin[k] = std::floor((std::max(static_cast<float>(worldmin[k] - nudge), next.center[k] - next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
+                bmax[k] = std::ceil((std::min(static_cast<float>(worldmax[k] + nudge), next.center[k] + next.bounds) - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds;
             }
         }
 
@@ -654,10 +659,10 @@ void radiancehints::renderslices()
                     }
                     if(bx1 < bmin.x || bx2 > bmax.x || by1 < bmin.y || by2 > bmax.y)
                     {
-                        btx1 = max(bx1, bmin.x);
-                        btx2 = min(bx2, bmax.x);
-                        bty1 = max(by1, bmin.y);
-                        bty2 = min(by2, bmax.y);
+                        btx1 = std::max(bx1, bmin.x);
+                        btx2 = std::min(bx2, bmax.x);
+                        bty1 = std::max(by1, bmin.y);
+                        bty2 = std::min(by2, bmax.y);
                         if(btx1 > tx2 || bty1 > bty2)
                         {
                             goto noborder;
@@ -706,10 +711,10 @@ void radiancehints::renderslices()
                 }
                 if(x1 < cmin.x || x2 > cmax.x || y1 < cmin.y || y2 > cmax.y)
                 {
-                    tx1 = max(x1, cmin.x);
-                    tx2 = min(x2, cmax.x);
-                    ty1 = max(y1, cmin.y);
-                    ty2 = min(y2, cmax.y);
+                    tx1 = std::max(x1, cmin.x);
+                    tx2 = std::min(x2, cmax.x);
+                    ty1 = std::max(y1, cmin.y);
+                    ty2 = std::min(y2, cmax.y);
                     if(tx1 > tx2 || ty1 > ty2)
                     {
                         goto skipped;
@@ -733,10 +738,10 @@ void radiancehints::renderslices()
 
             if(rhcache && z > split.cached.z - split.bounds && z < split.cached.z + split.bounds)
             {
-                float px1 = max(tx1, split.cached.x - split.bounds),
-                      px2 = min(tx2, split.cached.x + split.bounds),
-                      py1 = max(ty1, split.cached.y - split.bounds),
-                      py2 = min(ty2, split.cached.y + split.bounds);
+                float px1 = std::max(tx1, split.cached.x - split.bounds),
+                      px2 = std::min(tx2, split.cached.x + split.bounds),
+                      py1 = std::max(ty1, split.cached.y - split.bounds),
+                      py2 = std::min(ty2, split.cached.y + split.bounds);
                 if(px1 < px2 && py1 < py2)
                 {
                     float pvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(px1 - x1)/(x2 - x1),
@@ -756,8 +761,8 @@ void radiancehints::renderslices()
                     }
                     if(z > dmin.z && z < dmax.z)
                     {
-                        float dx1 = max(px1, dmin.x), dx2 = min(px2, dmax.x),
-                              dy1 = max(py1, dmin.y), dy2 = min(py2, dmax.y);
+                        float dx1 = std::max(px1, dmin.x), dx2 = std::min(px2, dmax.x),
+                              dy1 = std::max(py1, dmin.y), dy2 = std::min(py2, dmax.y);
                         if(dx1 < dx2 && dy1 < dy2)
                         {
                             float dvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(dx1 - x1)/(x2 - x1),
@@ -843,6 +848,25 @@ void radiancehints::renderslices()
     }
 }
 
+void radiancehints::clearcache()
+{
+    for(int i = 0; i < rhmaxsplits; ++i)
+    {
+        splits[i].clearcache();
+    }
+}
+bool radiancehints::allcached() const
+{
+    for(int i = 0; i < rhsplits; ++i)
+    {
+        if(splits[i].cached != splits[i].center)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 void renderradiancehints()
 {
     if(rhinoq && !inoq && shouldworkinoq())
@@ -864,7 +888,7 @@ void renderradiancehints()
     shadoworigin = vec(0, 0, 0);
     shadowdir = rsm.lightview;
     shadowbias = rsm.lightview.project_bb(worldmin, worldmax);
-    shadowradius = fabs(rsm.lightview.project_bb(worldmax, worldmin));
+    shadowradius = std::fabs(rsm.lightview.project_bb(worldmax, worldmin));
 
     findshadowvas();
     findshadowmms();

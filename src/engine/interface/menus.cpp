@@ -104,7 +104,7 @@ void applychanges()
 COMMAND(applychanges, "");
 
 //returns if there are pending changes or not enqueued
-ICOMMAND(pendingchanges, "b", (int *idx),
+void pendingchanges (int *idx)
 {
     if(needsapply.inrange(*idx))
     {
@@ -114,7 +114,8 @@ ICOMMAND(pendingchanges, "b", (int *idx),
     {
         intret(needsapply.length());
     }
-});
+}
+COMMAND(pendingchanges, "b");
 
 static int lastmainmenu = -1;
 

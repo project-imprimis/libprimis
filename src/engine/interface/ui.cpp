@@ -187,7 +187,7 @@ namespace UI
     }
     struct Object;
 
-    static Object *buildparent = NULL;
+    static Object *buildparent = nullptr;
     static int buildchild = -1;
 
     #define BUILD(type, o, setup, contents) do { \
@@ -201,7 +201,7 @@ namespace UI
 
     static int changed = 0;
 
-    static Object *drawing = NULL;
+    static Object *drawing = nullptr;
 
     static int blendtype = Blend_Alpha;
 
@@ -257,7 +257,7 @@ namespace UI
                 } \
             } while(0)
 
-            Object() : adjust(0), state(0), childstate(0) {}
+            Object() :  x(), y(), w(), h(), adjust(0), state(0), childstate(0), parent() {}
             virtual ~Object()
             {
                 clearchildren();
@@ -556,7 +556,7 @@ namespace UI
             void reset()
             {
                 resetlayout();
-                parent = NULL;
+                parent = nullptr;
                 adjust = Align_HCenter | Align_VCenter;
             }
 
@@ -667,7 +667,7 @@ namespace UI
                 return gettype();
             }
 
-            Object *find(const char *name, bool recurse = true, const Object *exclude = NULL) const
+            Object *find(const char *name, bool recurse = true, const Object *exclude = nullptr) const
             {
                 //note that this is a macro
                 LOOP_CHILDREN(o,
@@ -692,7 +692,7 @@ namespace UI
                         }
                     });
                 }
-                return NULL;
+                return nullptr;
             }
 
             Object *findsibling(const char *name) const
@@ -705,7 +705,7 @@ namespace UI
                         return o;
                     }
                 }
-                return NULL;
+                return nullptr;
             }
 
         private:
@@ -737,13 +737,13 @@ namespace UI
         if(drawing)
         {
             drawing->enddraw(0);
-            drawing = NULL;
+            drawing = nullptr;
         }
     }
 
     struct Window;
 
-    static Window *window = NULL;
+    static Window *window = nullptr;
 
     struct Window : Object
     {
@@ -756,8 +756,8 @@ namespace UI
         Window(const char *name, const char *contents, const char *onshow, const char *onhide) :
             name(newstring(name)),
             contents(compilecode(contents)),
-            onshow(onshow && onshow[0] ? compilecode(onshow) : NULL),
-            onhide(onhide && onhide[0] ? compilecode(onhide) : NULL),
+            onshow(onshow && onshow[0] ? compilecode(onshow) : nullptr),
+            onhide(onhide && onhide[0] ? compilecode(onhide) : nullptr),
             allowinput(true), eschide(true), abovehud(false),
             px(0), py(0), pw(0), ph(0),
             sscale(1, 1), soffset(0, 0)
@@ -823,7 +823,7 @@ namespace UI
             }
             window = this;
             Object::layout();
-            window = NULL;
+            window = nullptr;
         }
 
         void draw(float sx, float sy)
@@ -843,7 +843,7 @@ namespace UI
             gle::colorf(1, 1, 1);
 
             changed = 0;
-            drawing = NULL;
+            drawing = nullptr;
 
             Object::draw(sx, sy);
 
@@ -851,7 +851,7 @@ namespace UI
 
             glDisable(GL_BLEND);
 
-            window = NULL;
+            window = nullptr;
         }
 
         void draw()
@@ -867,7 +867,7 @@ namespace UI
             }
             window = this;
             Object::adjustchildren();
-            window = NULL;
+            window = nullptr;
         }
 
         void adjustlayout()
@@ -1101,7 +1101,7 @@ namespace UI
 #undef LOOP_WINDOWS_REV
 #undef LOOP_WINDOWS
 
-    static World *world = NULL;
+    static World *world = nullptr;
 
     void Window::escrelease(float, float) //note unnamed function parameters
     {
@@ -1117,12 +1117,14 @@ namespace UI
         setup();
         window = this;
         buildchildren(contents);
-        window = NULL;
+        window = nullptr;
     }
 
     struct HorizontalList : Object
     {
         float space, subw;
+
+        HorizontalList () : space(), subw() {}
 
         static const char *typestr()
         {
@@ -1184,6 +1186,8 @@ namespace UI
     struct VerticalList : Object
     {
         float space, subh;
+
+        VerticalList() : space(), subh() {}
 
         static const char *typestr()
         {
@@ -1247,6 +1251,8 @@ namespace UI
         int columns;
         float spacew, spaceh, subw, subh;
         std::vector<float> widths, heights;
+
+        Grid() : columns(), spacew(), spaceh(), subw(), subh() {}
 
         static const char *typestr()
         {
@@ -1549,6 +1555,8 @@ namespace UI
     struct Spacer : Object
     {
         float spacew, spaceh;
+
+        Spacer() : spacew(), spaceh() {}
 
         void setup(float spacew_, float spaceh_)
         {
@@ -1892,7 +1900,7 @@ namespace UI
 
         void startdraw()
         {
-            lasttex = NULL;
+            lasttex = nullptr;
 
             gle::defvertex(2);
             gle::deftexcoord0();
@@ -1922,7 +1930,7 @@ namespace UI
         }
     };
 
-    Texture *Image::lasttex = NULL;
+    Texture *Image::lasttex = nullptr;
 
     struct CroppedImage : Image
     {
@@ -2262,7 +2270,7 @@ namespace UI
                 return true;
             }
 
-            return checkalphamask(tex, fmod(cx/tilew, 1), fmod(cy/tileh, 1));
+            return checkalphamask(tex, std::fmod(cx/tilew, 1), std::fmod(cy/tileh, 1));
         }
 
         void draw(float sx, float sy)
@@ -2529,7 +2537,7 @@ namespace UI
     {
         char *str;
 
-        TextString() : str(NULL) {}
+        TextString() : str(nullptr) {}
         ~TextString() { delete[] str; }
 
         void setup(const char *str_, float scale_ = 1, const Color &color_ = Color(255, 255, 255), float wrap_ = -1)
@@ -2627,7 +2635,7 @@ namespace UI
     {
         ::font *font;
 
-        Font() : font(NULL) {}
+        Font() : font(nullptr) {}
 
         void setup(const char *name)
         {
@@ -2703,7 +2711,12 @@ namespace UI
     };
 
     float uicontextscale = 0;
-    ICOMMAND(uicontextscale, "", (), floatret(FONTH*uicontextscale));
+
+    void uicontextscalecmd()
+    {
+        floatret(FONTH*uicontextscale);
+    }
+    COMMANDN(uicontextscale, uicontextscalecmd, "");
 
     struct Console : Filler
     {
@@ -3225,7 +3238,7 @@ namespace UI
             case Id_Command:
             {
                 tagval t;
-                executeret(id, NULL, 0, true, t);
+                executeret(id, nullptr, 0, true, t);
                 val = t.getnumber();
                 t.cleanup();
                 break;
@@ -3234,7 +3247,7 @@ namespace UI
         return val;
     }
 
-    static void setfval(ident *id, double val, uint *onchange = NULL)
+    static void setfval(ident *id, double val, uint *onchange = nullptr)
     {
         switch(id->type)
         {
@@ -3278,9 +3291,9 @@ namespace UI
         double val, vmin, vmax, vstep;
         bool changed;
 
-        Slider() : id(NULL), val(0), vmin(0), vmax(0), vstep(0), changed(false) {}
+        Slider() : id(nullptr), val(0), vmin(0), vmax(0), vstep(0), changed(false) {}
 
-        void setup(ident *id_, double vmin_ = 0, double vmax_ = 0, double vstep_ = 1, uint *onchange = NULL)
+        void setup(ident *id_, double vmin_ = 0, double vmax_ = 0, double vstep_ = 1, uint *onchange = nullptr)
         {
             Object::setup();
             if(!vmin_ && !vmax_)
@@ -3344,7 +3357,7 @@ namespace UI
         {
             double newval = val + dir*vstep;
             newval += vstep * (newval < 0 ? -0.5 : 0.5);
-            newval -= fmod(newval, vstep);
+            newval -= std::fmod(newval, vstep);
             newval = std::clamp(newval, min(vmin, vmax), max(vmin, vmax));
             if(val != newval)
             {
@@ -3548,9 +3561,9 @@ namespace UI
         Editor *edit;
         char *keyfilter;
 
-        TextEditor() : edit(NULL), keyfilter(NULL) {}
+        TextEditor() : edit(nullptr), keyfilter(nullptr) {}
 
-        void setup(const char *name, int length, int height, float scale_ = 1, const char *initval = NULL, int mode = Editor_Used, const char *keyfilter_ = NULL)
+        void setup(const char *name, int length, int height, float scale_ = 1, const char *initval = nullptr, int mode = Editor_Used, const char *keyfilter_ = nullptr)
         {
             Object::setup();
             Editor *edit_ = useeditor(name, mode, false, initval);
@@ -3606,7 +3619,7 @@ namespace UI
                 return;
             }
             focus = e;
-            bool allowtextinput = focus!=NULL && focus->allowtextinput();
+            bool allowtextinput = focus!=nullptr && focus->allowtextinput();
             ::textinput(allowtextinput, TextInput_GUI);
             ::keyrepeat(allowtextinput, KeyRepeat_GUI);
         }
@@ -3619,7 +3632,7 @@ namespace UI
         {
             if(focus == this)
             {
-                setfocus(NULL);
+                setfocus(nullptr);
             }
         }
 
@@ -3801,7 +3814,7 @@ namespace UI
         }
     };
 
-    TextEditor *TextEditor::focus = NULL;
+    TextEditor *TextEditor::focus = nullptr;
 
     static const char *getsval(ident *id, bool &shouldfree, const char *val = "")
     {
@@ -3829,7 +3842,7 @@ namespace UI
             }
             case Id_Command:
             {
-                val = executestr(id, NULL, 0, true);
+                val = executestr(id, nullptr, 0, true);
                 shouldfree = true;
                 break;
             }
@@ -3837,7 +3850,7 @@ namespace UI
         return val;
     }
 
-    static void setsval(ident *id, const char *val, uint *onchange = NULL)
+    static void setsval(ident *id, const char *val, uint *onchange = nullptr)
     {
         switch(id->type)
         {
@@ -3880,9 +3893,9 @@ namespace UI
         ident *id;
         bool changed;
 
-        Field() : id(NULL), changed(false) {}
+        Field() : id(nullptr), changed(false) {}
 
-        void setup(ident *id_, int length, uint *onchange, float scale = 1, const char *keyfilter_ = NULL)
+        void setup(ident *id_, int length, uint *onchange, float scale = 1, const char *keyfilter_ = nullptr)
         {
             if(isfocus() && !hasstate(State_Hover))
             {
@@ -3897,7 +3910,7 @@ namespace UI
                 changed = false;
             }
             bool shouldfree = false;
-            const char *initval = id != id_ || !isfocus() ? getsval(id_, shouldfree) : NULL;
+            const char *initval = id != id_ || !isfocus() ? getsval(id_, shouldfree) : nullptr;
             TextEditor::setup(id_->name, length, 0, scale, initval, Editor_Focused, keyfilter_);
             if(shouldfree)
             {
@@ -4013,7 +4026,7 @@ namespace UI
         char *name;
         int anim;
 
-        ModelPreview() : name(NULL) {}
+        ModelPreview() : name(nullptr) {}
         ~ModelPreview() { delete[] name; }
 
         void setup(const char *name_, const char *animspec, float minw_, float minh_)
@@ -4073,7 +4086,7 @@ namespace UI
                 m->boundbox(center, radius);
                 float yaw;
                 vec o = calcmodelpreviewpos(radius, yaw).sub(center);
-                rendermodel(name, anim, o, yaw, 0, 0, 0, NULL, NULL, 0);
+                rendermodel(name, anim, o, yaw, 0, 0, 0, nullptr, nullptr, 0);
             }
             if(clipstack.size())
             {
@@ -4088,7 +4101,7 @@ namespace UI
         char *name;
         vec color;
 
-        PrefabPreview() : name(NULL) {}
+        PrefabPreview() : name(nullptr) {}
         ~PrefabPreview() { delete[] name; }
 
         void setup(const char *name_, int color_, float minw_, float minh_)
@@ -4143,8 +4156,8 @@ namespace UI
             {
                 return;
             }
-            Texture *t = NULL,
-                    *glowtex = NULL;
+            Texture *t = nullptr,
+                    *glowtex = nullptr;
             if(slot.loaded)
             {
                 t = slot.sts[0].t;
@@ -4274,9 +4287,9 @@ namespace UI
         }
     };
 
-    ICOMMAND(newui, "ssss", (char *name, char *contents, char *onshow, char *onhide),
+    void newui(char *name, char *contents, char *onshow, char *onhide)
     {
-        Window *window = windows.find(name, NULL);
+        Window *window = windows.find(name, nullptr);
         if(window)
         {
             if (window == UI::window)
@@ -4287,9 +4300,10 @@ namespace UI
             delete window;
         }
         windows[name] = new Window(name, contents, onshow, onhide);
-    });
+    }
+    COMMAND(newui, "ssss");
 
-    ICOMMAND(uiallowinput, "b", (int *val),
+    void uiallowinput(int *val)
     {
         if(window)
         {
@@ -4299,12 +4313,25 @@ namespace UI
             }
             intret(window->allowinput ? 1 : 0);
         }
-    });
-    ICOMMAND(uieschide, "b", (int *val), { if(window) { if(*val >= 0) window->eschide = *val!=0; intret(window->eschide ? 1 : 0); } });
+    }
+    COMMAND(uiallowinput, "b");
+
+    void uieschide (int *val)
+    {
+        if(window)
+        {
+            if(*val >= 0)
+            {
+                window->eschide = *val!=0;
+                intret(window->eschide ? 1 : 0);
+            }
+        }
+    }
+    COMMAND(uieschide, "b");
 
     bool showui(const char *name)
     {
-        Window *window = windows.find(name, NULL);
+        Window *window = windows.find(name, nullptr);
         return window && world->show(window);
     }
 
@@ -4314,7 +4341,7 @@ namespace UI
         {
             return world->hideall() > 0;
         }
-        Window *window = windows.find(name, NULL);
+        Window *window = windows.find(name, nullptr);
         return window && world->hide(window);
     }
 
@@ -4346,18 +4373,60 @@ namespace UI
         {
             return world->children.size() > 0;
         }
-        Window *window = windows.find(name, NULL);
+        Window *window = windows.find(name, nullptr);
         return window && std::find(world->children.begin(), world->children.end(), window) != world->children.end();
     }
 
-    ICOMMAND(showui, "s", (char *name), intret(showui(name) ? 1 : 0));
-    ICOMMAND(hideui, "s", (char *name), intret(hideui(name) ? 1 : 0));
-    ICOMMAND(hidetopui, "", (), intret(world->hidetop() ? 1 : 0));
-    ICOMMAND(hideallui, "", (), intret(world->hideall()));
-    ICOMMAND(toggleui, "s", (char *name), intret(toggleui(name) ? 1 : 0));
-    ICOMMAND(holdui, "sD", (char *name, int *down), holdui(name, *down!=0));
-    ICOMMAND(uivisible, "s", (char *name), intret(uivisible(name) ? 1 : 0));
-    ICOMMAND(uiname, "", (), { if(window) result(window->name); });
+    void showuicmd(char * name)
+    {
+        intret(showui(name) ? 1 : 0);
+    }
+    COMMANDN(showui, showuicmd, "s");
+
+    void hideuicmd(char * name)
+    {
+        intret(hideui(name) ? 1 : 0);
+    }
+    COMMANDN(hideui, hideuicmd, "s");
+
+    void hidetopuicmd()
+    {
+        intret(world->hidetop() ? 1 : 0);
+    }
+    COMMANDN(hidetopui, hidetopuicmd, "");
+
+    void hidealluicmd()
+    {
+        intret(world->hideall());
+    }
+    COMMANDN(hideallui, hidealluicmd, "");
+
+    void toggleuicmd(char * name)
+    {
+        intret(toggleui(name) ? 1 : 0);
+    }
+    COMMANDN(toggleui, toggleuicmd, "s");
+
+    void holduicmd(char * name, int * down)
+    {
+        holdui(name, *down!=0);
+    }
+    COMMANDN(holdui, holduicmd, "sD");
+
+    void uivisiblecmd(char * name)
+    {
+        intret(uivisible(name) ? 1 : 0);
+    }
+    COMMANDN(uivisiblecmd, uivisible, "s");
+
+    void uinamecmd()
+    {
+        if(window)
+        {
+            result(window->name);
+        }
+    }
+    COMMANDN(uiname, uinamecmd, "");
 
     #define IFSTATEVAL(state,t,f) \
     { \

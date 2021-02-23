@@ -30,7 +30,8 @@ bool execfile(const char *cfgfile, bool msg)
         }
         return false;
     }
-    const char *oldsourcefile = sourcefile, *oldsourcestr = sourcestr;
+    const char *oldsourcefile = sourcefile,
+               *oldsourcestr  = sourcestr;
     sourcefile = cfgfile;
     sourcestr = buf;
     execute(buf);
@@ -39,7 +40,12 @@ bool execfile(const char *cfgfile, bool msg)
     delete[] buf;
     return true;
 }
-ICOMMAND(exec, "sb", (char *file, int *msg), intret(execfile(file, *msg != 0) ? 1 : 0));
+
+void exec(char *file, int *msg)
+{
+    intret(execfile(file, *msg != 0) ? 1 : 0);
+}
+COMMAND(exec, "sb");
 
 const char *escapestring(const char *s)
 {
@@ -63,14 +69,20 @@ const char *escapestring(const char *s)
     return buf.getbuf();
 }
 
-ICOMMAND(escape, "s", (char *s), result(escapestring(s)));
-ICOMMAND(unescape, "s", (char *s),
+void escapecmd(char *s)
+{
+    result(escapestring(s));
+}
+COMMANDN(escape, escapecmd, "s");
+
+void unescapecmd(char *s)
 {
     int len = strlen(s);
     char *d = newstring(len);
     unescapestring(d, s, &s[len]);
     stringret(d);
-});
+}
+COMMANDN(unescape, unescapecmd, "s");
 
 const char *escapeid(const char *s)
 {
@@ -403,32 +415,9 @@ ICOMMAND(loop+, "riie", (ident *id, int *offset, int *n, uint *body), doloop(*id
 ICOMMAND(loop*, "riie", (ident *id, int *step, int *n, uint *body), doloop(*id, 0, *n, *step, body));
 ICOMMAND(loop+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body), doloop(*id, *offset, *n, *step, body));
 
-static inline void loopwhile(ident &id, int offset, int n, int step, uint *cond, uint *body)
-{
-    if(n <= 0 || id.type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack;
-    for(int i = 0; i < n; ++i)
-    {
-        setiter(id, offset + i*step, stack);
-        if(!executebool(cond))
-        {
-            break;
-        }
-        execute(body);
-    }
-    poparg(id);
-}
-ICOMMAND(loopwhile, "riee", (ident *id, int *n, uint *cond, uint *body), loopwhile(*id, 0, *n, 1, cond, body));
-ICOMMAND(loopwhile+, "riiee", (ident *id, int *offset, int *n, uint *cond, uint *body), loopwhile(*id, *offset, *n, 1, cond, body));
-ICOMMAND(loopwhile*, "riiee", (ident *id, int *step, int *n, uint *cond, uint *body), loopwhile(*id, 0, *n, *step, cond, body));
-ICOMMAND(loopwhile+*, "riiiee", (ident *id, int *offset, int *step, int *n, uint *cond, uint *body), loopwhile(*id, *offset, *n, *step, cond, body));
-
 ICOMMAND(while, "ee", (uint *cond, uint *body), while(executebool(cond)) execute(body));
 
-static inline void loopconc(ident &id, int offset, int n, int step, uint *body, bool space)
+static inline void loopconc(ident &id, int offset, int n, uint *body, bool space)
 {
     if(n <= 0 || id.type != Id_Alias)
     {
@@ -438,7 +427,7 @@ static inline void loopconc(ident &id, int offset, int n, int step, uint *body, 
     vector<char> s;
     for(int i = 0; i < n; ++i)
     {
-        setiter(id, offset + i*step, stack);
+        setiter(id, offset + i, stack);
         tagval v;
         executeret(body, v);
         const char *vstr = v.getstr();
@@ -454,14 +443,8 @@ static inline void loopconc(ident &id, int offset, int n, int step, uint *body, 
     s.add('\0');
     commandret->setstr(s.disown());
 }
-ICOMMAND(loopconcat, "rie", (ident *id, int *n, uint *body), loopconc(*id, 0, *n, 1, body, true));
-ICOMMAND(loopconcat+, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, 1, body, true));
-ICOMMAND(loopconcat*, "riie", (ident *id, int *step, int *n, uint *body), loopconc(*id, 0, *n, *step, body, true));
-ICOMMAND(loopconcat+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body), loopconc(*id, *offset, *n, *step, body, true));
-ICOMMAND(loopconcatword, "rie", (ident *id, int *n, uint *body), loopconc(*id, 0, *n, 1, body, false));
-ICOMMAND(loopconcatword+, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, 1, body, false));
-ICOMMAND(loopconcatword*, "riie", (ident *id, int *step, int *n, uint *body), loopconc(*id, 0, *n, *step, body, false));
-ICOMMAND(loopconcatword+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body), loopconc(*id, *offset, *n, *step, body, false));
+ICOMMAND(loopconcat, "rie", (ident *id, int *n, uint *body), loopconc(*id, 0, *n, body, true));
+ICOMMAND(loopconcat+, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, body, true));
 
 void concat(tagval *v, int n)
 {
@@ -495,7 +478,10 @@ void append(ident *id, tagval *v, bool space)
     {
         setarg(*id, r);
     }
-    else setalias(*id, r);
+    else
+    {
+        setalias(*id, r);
+    }
 
 }
 ICOMMAND(append, "rt", (ident *id, tagval *v), append(id, v, true));
@@ -713,7 +699,12 @@ int listlen(const char *s)
     }
     return n;
 }
-ICOMMAND(listlen, "s", (char *s), intret(listlen(s)));
+
+void listlencmd(const char *s)
+{
+    intret(listlen(s));
+}
+COMMANDN(listlen, listlencmd, "s");
 
 void at(tagval *args, int numargs)
 {
@@ -754,8 +745,8 @@ COMMAND(substr, "siiN");
 
 void sublist(const char *s, int *skip, int *count, int *numargs)
 {
-    int offset = max(*skip, 0),
-        len = *numargs >= 3 ? max(*count, 0) : -1;
+    int offset = std::max(*skip, 0),
+        len = *numargs >= 3 ? std::max(*count, 0) : -1;
     for(int i = 0; i < offset; ++i)
     {
         if(!parselist(s))
@@ -786,13 +777,14 @@ void sublist(const char *s, int *skip, int *count, int *numargs)
 }
 COMMAND(sublist, "siiN");
 
-ICOMMAND(stripcolors, "s", (char *s),
+void stripcolors(char *s)
 {
     int len = strlen(s);
     char *d = newstring(len);
     filtertext(d, s, true, false, len);
     stringret(d);
-});
+}
+COMMAND(stripcolors, "s");
 
 static inline void setiter(ident &id, char *val, identstack &stack)
 {
@@ -837,8 +829,8 @@ void listfind(ident *id, const char *list, const uint *body)
             goto found;
         }
     }
-    intret(-1);
-found:
+    intret(-1); //if element not found in list
+found: //if element is found in list
     if(n >= 0)
     {
         poparg(*id);
@@ -877,60 +869,6 @@ void listassoc(ident *id, const char *list, const uint *body)
     }
 }
 COMMAND(listassoc, "rse");
-
-#define LISTFIND(name, fmt, type, init, cmp) \
-    ICOMMAND(name, "s" fmt "i", (char *list, type *val, int *skip), \
-    { \
-        int n = 0; \
-        init; \
-        for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++) \
-        { \
-            if(cmp) \
-            { \
-                intret(n); \
-                return; \
-            } \
-            for(int i = 0; i < static_cast<int>(*skip); ++i) \
-            { \
-                if(!parselist(s)) \
-                { \
-                    goto notfound; \
-                    n++; \
-                } \
-            } \
-        } \
-    notfound: \
-        intret(-1); \
-    });
-LISTFIND(listfind=, "i", int, , parseint(start) == *val);
-LISTFIND(listfind=f, "f", float, , parsefloat(start) == *val);
-LISTFIND(listfind=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
-#undef LISTFIND
-
-#define LISTASSOC(name, fmt, type, init, cmp) \
-    ICOMMAND(name, "s" fmt, (char *list, type *val), \
-    { \
-        init; \
-        for(const char *s = list, *start, *end, *qstart; parselist(s, start, end);) \
-        { \
-            if(cmp) \
-            { \
-                if(parselist(s, start, end, qstart)) \
-                { \
-                    stringret(listelem(start, end, qstart)); \
-                } \
-                return; \
-            } \
-            if(!parselist(s)) \
-            { \
-                break; \
-            } \
-        } \
-    });
-LISTASSOC(listassoc=, "i", int, , parseint(start) == *val);
-LISTASSOC(listassoc=f, "f", float, , parsefloat(start) == *val);
-LISTASSOC(listassoc=s, "s", char, int len = static_cast<int>(strlen(val)), static_cast<int>(end-start) == len && !memcmp(start, val, len));
-#undef LISTASSOC
 
 void looplist(ident *id, const char *list, const uint *body)
 {
@@ -989,7 +927,12 @@ void looplist3(ident *id, ident *id2, ident *id3, const char *list, const uint *
         setiter(*id3, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack3);
         execute(body);
     }
-    if(n) { poparg(*id); poparg(*id2); poparg(*id3); }
+    if(n)
+    {
+        poparg(*id);
+        poparg(*id2);
+        poparg(*id3);
+    }
 }
 COMMAND(looplist3, "rrrse");
 
@@ -1026,38 +969,6 @@ void looplistconc(ident *id, const char *list, const uint *body, bool space)
 }
 ICOMMAND(looplistconcat, "rse", (ident *id, char *list, uint *body), looplistconc(id, list, body, true));
 ICOMMAND(looplistconcatword, "rse", (ident *id, char *list, uint *body), looplistconc(id, list, body, false));
-
-void listfilter(ident *id, const char *list, const uint *body)
-{
-    if(id->type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack;
-    vector<char> r;
-    int n = 0;
-    for(const char *s = list, *start, *end, *qstart, *qend; parselist(s, start, end, qstart, qend); n++)
-    {
-        char *val = newstring(start, end-start);
-        setiter(*id, val, stack);
-
-        if(executebool(body))
-        {
-            if(r.length())
-            {
-                r.add(' ');
-            }
-            r.put(qstart, qend-qstart);
-        }
-    }
-    if(n)
-    {
-        poparg(*id);
-    }
-    r.add('\0');
-    commandret->setstr(r.disown());
-}
-COMMAND(listfilter, "rse");
 
 void listcount(ident *id, const char *list, const uint *body)
 {
@@ -1158,8 +1069,8 @@ LISTMERGECMD(listunion, p.put(list, strlen(list)), elems, list, <);
 
 void listsplice(const char *s, const char *vals, int *skip, int *count)
 {
-    int offset = max(*skip, 0),
-        len = max(*count, 0);
+    int offset = std::max(*skip, 0),
+        len = std::max(*count, 0);
     const char *list = s,
                *start, *end, *qstart,
                *qend = s;
@@ -1214,7 +1125,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
 }
 COMMAND(listsplice, "ssii");
 
-ICOMMAND(loopfiles, "rsse", (ident *id, char *dir, char *ext, uint *body),
+void loopfiles(ident *id, char *dir, char *ext, uint *body)
 {
     if(id->type!=Id_Alias)
     {
@@ -1234,7 +1145,8 @@ ICOMMAND(loopfiles, "rsse", (ident *id, char *dir, char *ext, uint *body),
     {
         poparg(*id);
     }
-});
+}
+COMMAND(loopfiles, "rsse");
 
 void findfile_(char *name)
 {
@@ -1361,7 +1273,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     poparg(*x);
     poparg(*y);
     char *sorted = cstr;
-    int sortedlen = totalunique + max(numunique - 1, 0);
+    int sortedlen = totalunique + std::max(numunique - 1, 0);
     if(clen < sortedlen)
     {
         delete[] cstr;
@@ -1456,7 +1368,7 @@ MATHICMD(|, 0, );
 MATHICMD(^~, 0, );
 MATHICMD(&~, 0, );
 MATHICMD(|~, 0, );
-MATHCMD("<<", i, int, val = val2 < 32 ? val << max(val2, 0) : 0, 0, );
+MATHCMD("<<", i, int, val = val2 < 32 ? val << std::max(val2, 0) : 0, 0, );
 MATHCMD(">>", i, int, val >>= std::clamp(val2, 0, 31), 0, );
 
 MATHFCMD(+, 0, );
@@ -1535,21 +1447,21 @@ ICOMMANDK(||, Id_Or, "E1V", (tagval *args, int numargs),
 DIVCMD(div, i, int, val /= val2);
 DIVCMD(mod, i, int, val %= val2);
 DIVCMD(divf, f, float, val /= val2);
-DIVCMD(modf, f, float, val = fmod(val, val2));
-MATHCMD("pow", f, float, val = pow(val, val2), 0, );
+DIVCMD(modf, f, float, val = std::fmod(val, val2));
+MATHCMD("pow", f, float, val = std::pow(val, val2), 0, );
 
-ICOMMAND(sin, "f", (float *a), floatret(sin(*a*RAD)));
-ICOMMAND(cos, "f", (float *a), floatret(cos(*a*RAD)));
-ICOMMAND(tan, "f", (float *a), floatret(tan(*a*RAD)));
-ICOMMAND(asin, "f", (float *a), floatret(asin(*a)/RAD));
-ICOMMAND(acos, "f", (float *a), floatret(acos(*a)/RAD));
-ICOMMAND(atan, "f", (float *a), floatret(atan(*a)/RAD));
-ICOMMAND(atan2, "ff", (float *y, float *x), floatret(atan2(*y, *x)/RAD));
-ICOMMAND(sqrt, "f", (float *a), floatret(sqrt(*a)));
-ICOMMAND(loge, "f", (float *a), floatret(log(*a)));
-ICOMMAND(log2, "f", (float *a), floatret(log(*a)/M_LN2));
-ICOMMAND(log10, "f", (float *a), floatret(log10(*a)));
-ICOMMAND(exp, "f", (float *a), floatret(exp(*a)));
+ICOMMAND(sin, "f", (float *a), floatret(std::sin(*a*RAD)));
+ICOMMAND(cos, "f", (float *a), floatret(std::cos(*a*RAD)));
+ICOMMAND(tan, "f", (float *a), floatret(std::tan(*a*RAD)));
+ICOMMAND(asin, "f", (float *a), floatret(std::asin(*a)/RAD));
+ICOMMAND(acos, "f", (float *a), floatret(std::acos(*a)/RAD));
+ICOMMAND(atan, "f", (float *a), floatret(std::atan(*a)/RAD));
+ICOMMAND(atan2, "ff", (float *y, float *x), floatret(std::atan2(*y, *x)/RAD));
+ICOMMAND(sqrt, "f", (float *a), floatret(std::sqrt(*a)));
+ICOMMAND(loge, "f", (float *a), floatret(std::log(*a)));
+ICOMMAND(log2, "f", (float *a), floatret(std::log(*a)/M_LN2));
+ICOMMAND(log10, "f", (float *a), floatret(std::log10(*a)));
+ICOMMAND(exp, "f", (float *a), floatret(std::exp(*a)));
 
 #define MINMAXCMD(name, fmt, type, op) \
     ICOMMAND(name, #fmt "1V", (tagval *args, int numargs), \
@@ -1569,11 +1481,11 @@ MINMAXCMD(maxf, f, float, max);
 
 ICOMMAND(bitscan, "i", (int *n), intret(BITSCAN(*n)));
 
-ICOMMAND(abs, "i", (int *n), intret(abs(*n)));
-ICOMMAND(absf, "f", (float *n), floatret(fabs(*n)));
+ICOMMAND(abs, "i", (int *n), intret(std::abs(*n)));
+ICOMMAND(absf, "f", (float *n), floatret(std::fabs(*n)));
 
-ICOMMAND(floor, "f", (float *n), floatret(floor(*n)));
-ICOMMAND(ceil, "f", (float *n), floatret(ceil(*n)));
+ICOMMAND(floor, "f", (float *n), floatret(std::floor(*n)));
+ICOMMAND(ceil, "f", (float *n), floatret(std::ceil(*n)));
 ICOMMAND(round, "ff", (float *n, float *k),
 {
     double step = *k;
@@ -1581,11 +1493,11 @@ ICOMMAND(round, "ff", (float *n, float *k),
     if(step > 0)
     {
         r += step * (r < 0 ? -0.5 : 0.5);
-        r -= fmod(r, step);
+        r -= std::fmod(r, step);
     }
     else
     {
-        r = r < 0 ? ceil(r - 0.5) : floor(r + 0.5);
+        r = r < 0 ? std::ceil(r - 0.5) : std::floor(r + 0.5);
     }
     floatret(static_cast<float>(r));
 });
@@ -1637,7 +1549,7 @@ ICOMMAND(rndstr, "i", (int *len),
     for(int i = 0; i < n;)
     {
         int r = rand();
-        for(int j = min(i + 4, n); i < j; i++)
+        for(int j = std::min(i + 4, n); i < j; i++)
         {
             s[i] = (r%255) + 1;
             r /= 255;
@@ -1651,7 +1563,7 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
 {
     const int len = 20;
     char *buf = newstring(len);
-    nformatstring(buf, len, "0x%.*X", max(*p, 1), *n);
+    nformatstring(buf, len, "0x%.*X", std::max(*p, 1), *n);
     stringret(buf);
 });
 
@@ -1797,7 +1709,7 @@ vector<sleepcmd> sleepcmds;
 void addsleep(int *msec, char *cmd)
 {
     sleepcmd &s = sleepcmds.add();
-    s.delay = max(*msec, 1);
+    s.delay = std::max(*msec, 1);
     s.millis = lastmillis;
     s.command = newstring(cmd);
     s.flags = identflags;

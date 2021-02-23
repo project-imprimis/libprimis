@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>libprimis</ProjectName>
+    <ProjectGuid>{06594C6D-6DA9-49DC-9A91-8F47221DDCFD}</ProjectGuid>
+    <RootNamespace>tesseract</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libprimis</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\libprimis-headers\3rdparty\headers;..\engine;..\game;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/MACHINE:X64 /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>zdll.lib;opengl32.lib;SDL2.lib;SDL2_image.lib;ws2_32.lib;SDL2_mixer.lib;winmm.lib;dbghelp.lib;kernel32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <MapExports>true</MapExports>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>dpiaware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\engine\engine.h" />
+    <ClInclude Include="..\engine\interface\console.h" />
+    <ClInclude Include="..\engine\interface\control.h" />
+    <ClInclude Include="..\engine\interface\input.h" />
+    <ClInclude Include="..\engine\interface\menus.h" />
+    <ClInclude Include="..\engine\interface\sound.h" />
+    <ClInclude Include="..\engine\interface\textedit.h" />
+    <ClInclude Include="..\engine\interface\ui.h" />
+    <ClInclude Include="..\engine\model\animmodel.h" />
+    <ClInclude Include="..\engine\model\hitzone.h" />
+    <ClInclude Include="..\engine\model\md5.h" />
+    <ClInclude Include="..\engine\model\model.h" />
+    <ClInclude Include="..\engine\model\obj.h" />
+    <ClInclude Include="..\engine\model\ragdoll.h" />
+    <ClInclude Include="..\engine\model\skelmodel.h" />
+    <ClInclude Include="..\engine\model\vertmodel.h" />
+    <ClInclude Include="..\engine\render\aa.h" />
+    <ClInclude Include="..\engine\render\ao.h" />
+    <ClInclude Include="..\engine\render\csm.h" />
+    <ClInclude Include="..\engine\render\grass.h" />
+    <ClInclude Include="..\engine\render\hdr.h" />
+    <ClInclude Include="..\engine\render\hud.h" />
+    <ClInclude Include="..\engine\render\octarender.h" />
+    <ClInclude Include="..\engine\render\radiancehints.h" />
+    <ClInclude Include="..\engine\render\renderalpha.h" />
+    <ClInclude Include="..\engine\render\rendergl.h" />
+    <ClInclude Include="..\engine\render\rendermodel.h" />
+    <ClInclude Include="..\engine\render\rendersky.h" />
+    <ClInclude Include="..\engine\render\rendertext.h" />
+    <ClInclude Include="..\engine\render\rendertimers.h" />
+    <ClInclude Include="..\engine\render\renderwindow.h" />
+    <ClInclude Include="..\engine\render\stain.h" />
+    <ClInclude Include="..\engine\render\texture.h" />
+    <ClInclude Include="..\engine\render\water.h" />
+    <ClInclude Include="..\engine\world\bih.h" />
+    <ClInclude Include="..\engine\world\dynlight.h" />
+    <ClInclude Include="..\engine\world\light.h" />
+    <ClInclude Include="..\engine\world\material.h" />
+    <ClInclude Include="..\engine\world\mpr.h" />
+    <ClInclude Include="..\engine\world\octaedit.h" />
+    <ClInclude Include="..\engine\world\physics.h" />
+    <ClInclude Include="..\engine\world\raycube.h" />
+    <ClInclude Include="..\engine\world\worldio.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_image.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_mixer.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_opengl.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\zconf.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\zlib.h" />
+    <ClInclude Include="..\libprimis-headers\cube.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\engine\interface\command.cpp" />
+    <ClCompile Include="..\engine\interface\console.cpp" />
+    <ClCompile Include="..\engine\interface\control.cpp" />
+    <ClCompile Include="..\engine\interface\cubestd.cpp" />
+    <ClCompile Include="..\engine\interface\input.cpp" />
+    <ClCompile Include="..\engine\interface\menus.cpp" />
+    <ClCompile Include="..\engine\interface\sound.cpp" />
+    <ClCompile Include="..\engine\interface\textedit.cpp" />
+    <ClCompile Include="..\engine\interface\ui.cpp" />
+    <ClCompile Include="..\engine\model\animmodel.cpp" />
+    <ClCompile Include="..\engine\model\obj.cpp" />
+    <ClCompile Include="..\engine\model\ragdoll.cpp" />
+    <ClCompile Include="..\engine\model\skelmodel.cpp" />
+    <ClCompile Include="..\engine\render\aa.cpp" />
+    <ClCompile Include="..\engine\render\ao.cpp" />
+    <ClCompile Include="..\engine\render\csm.cpp" />
+    <ClCompile Include="..\engine\render\grass.cpp" />
+    <ClCompile Include="..\engine\render\hdr.cpp" />
+    <ClCompile Include="..\engine\render\hud.cpp" />
+    <ClCompile Include="..\engine\render\normal.cpp" />
+    <ClCompile Include="..\engine\render\octarender.cpp" />
+    <ClCompile Include="..\engine\render\radiancehints.cpp" />
+    <ClCompile Include="..\engine\render\renderalpha.cpp" />
+    <ClCompile Include="..\engine\render\rendergl.cpp" />
+    <ClCompile Include="..\engine\render\renderlights.cpp" />
+    <ClCompile Include="..\engine\render\rendermodel.cpp" />
+    <ClCompile Include="..\engine\render\renderparticles.cpp" />
+    <ClCompile Include="..\engine\render\rendersky.cpp" />
+    <ClCompile Include="..\engine\render\rendertext.cpp" />
+    <ClCompile Include="..\engine\render\rendertimers.cpp" />
+    <ClCompile Include="..\engine\render\renderva.cpp" />
+    <ClCompile Include="..\engine\render\renderwindow.cpp" />
+    <ClCompile Include="..\engine\render\shader.cpp" />
+    <ClCompile Include="..\engine\render\stain.cpp" />
+    <ClCompile Include="..\engine\render\texture.cpp" />
+    <ClCompile Include="..\engine\render\water.cpp" />
+    <ClCompile Include="..\engine\world\bih.cpp" />
+    <ClCompile Include="..\engine\world\dynlight.cpp" />
+    <ClCompile Include="..\engine\world\heightmap.cpp" />
+    <ClCompile Include="..\engine\world\light.cpp" />
+    <ClCompile Include="..\engine\world\material.cpp" />
+    <ClCompile Include="..\engine\world\mpr.cpp" />
+    <ClCompile Include="..\engine\world\octa.cpp" />
+    <ClCompile Include="..\engine\world\octaedit.cpp" />
+    <ClCompile Include="..\engine\world\physics.cpp" />
+    <ClCompile Include="..\engine\world\raycube.cpp" />
+    <ClCompile Include="..\engine\world\world.cpp" />
+    <ClCompile Include="..\engine\world\worldio.cpp" />
+    <ClCompile Include="..\shared\crypto.cpp" />
+    <ClCompile Include="..\shared\geom.cpp" />
+    <ClCompile Include="..\shared\glemu.cpp" />
+    <ClCompile Include="..\shared\stream.cpp" />
+    <ClCompile Include="..\shared\tools.cpp" />
+    <ClCompile Include="..\shared\zip.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tesseract.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\libprimis-headers\3rdparty\bin\SDL2.lib" />
+    <Library Include="..\libprimis-headers\3rdparty\bin\SDL2_image.lib" />
+    <Library Include="..\libprimis-headers\3rdparty\bin\SDL2_mixer.lib" />
+    <Library Include="..\libprimis-headers\3rdparty\bin\zdll.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties DevPartner_IsInstrumented="0" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

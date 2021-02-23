@@ -270,10 +270,10 @@ namespace //internal functions incl. AA implementations
     VAR(debugsmaa, 0, 0, 5); //see viewsmaa() below, displays one of the five smaa texs
 
     int smaatype = -1;
-    Shader *smaalumaedgeshader = nullptr,
-                  *smaacoloredgeshader = nullptr,
-                  *smaablendweightshader = nullptr,
-                  *smaaneighborhoodshader = nullptr;
+    Shader  *smaalumaedgeshader = nullptr,
+            *smaacoloredgeshader = nullptr,
+            *smaablendweightshader = nullptr,
+            *smaaneighborhoodshader = nullptr;
 
     void loadsmaashaders(bool split = false)
     {
@@ -349,7 +349,7 @@ namespace //internal functions incl. AA implementations
     }
 
     const int smaasearchtexwidth  = 66,
-                     smaasearchtexheight = 33;
+              smaasearchtexheight = 33;
     uchar smaasearchdata[smaasearchtexwidth*smaasearchtexheight];
     bool smaasearchdatainited = false;
 
@@ -419,15 +419,15 @@ namespace //internal functions incl. AA implementations
         {
             return vec2(0, 0);
         }
-        if((y1 < 0) == (y2 < 0) || fabs(y1) < 1e-4f || fabs(y2) < 1e-4f)
+        if((y1 < 0) == (y2 < 0) || std::fabs(y1) < 1e-4f || std::fabs(y2) < 1e-4f)
         {
             float a = (y1 + y2) / 2;
             return a < 0.0f ? vec2(-a, 0) : vec2(0, a);
         }
         x = -p1.y*d.x/d.y + p1.x;
-        float a1 = x > p1.x ? y1*fmod(x, 1.0f)/2 : 0,
-              a2 = x < p2.x ? y2*(1-fmod(x, 1.0f))/2 : 0;
-        vec2 a(fabs(a1), fabs(a2));
+        float a1 = x > p1.x ? y1*std::fmod(x, 1.0f)/2 : 0,
+              a2 = x < p2.x ? y2*(1-std::fmod(x, 1.0f))/2 : 0;
+        vec2 a(std::fabs(a1), std::fabs(a2));
         if((a.x > a.y ? a1 : -a2) >= 0)
         {
             swap(a.x, a.y);
@@ -491,7 +491,7 @@ namespace //internal functions incl. AA implementations
             case 6:
             {
                 vec2 a = areaortho(0, o1, d, o2, left);
-                if(fabs(offset) > 0)
+                if(std::fabs(offset) > 0)
                 {
                     a.avg(areaortho(0, o1, d/2, 0, left).add(areaortho(d/2, 0, d, o2, left)));
                 }
@@ -508,7 +508,7 @@ namespace //internal functions incl. AA implementations
             case 9:
             {
                 vec2 a = areaortho(0, o2, d, o1, left);
-                if(fabs(offset) > 0)
+                if(std::fabs(offset) > 0)
                 {
                     a.avg(areaortho(0, o2, d/2, 0, left).add(areaortho(d/2, 0, d, o1, left)));
                 }
@@ -579,7 +579,7 @@ namespace //internal functions incl. AA implementations
                 }
                 if(d.y+d.x > dp)
                 {
-                    return min(1-b, 1-t) + 0.5f*fabs(b-t);
+                    return std::min(1-b, 1-t) + 0.5f*std::fabs(b-t);
                 }
                 return 0.5f*(1-b)*r;
             }
@@ -589,7 +589,7 @@ namespace //internal functions incl. AA implementations
                 {
                     return 0.5f*(1-l)*t;
                 }
-                return min(1-l, 1-r) + 0.5f*fabs(r-l);
+                return std::min(1-l, 1-r) + 0.5f*std::fabs(r-l);
             }
             return 1 - 0.5f*l*b;
         }
@@ -601,7 +601,7 @@ namespace //internal functions incl. AA implementations
             }
             if(d.y+d.x <= dp)
             {
-                return min(l, r) + 0.5f*fabs(r-l);
+                return std::min(l, r) + 0.5f*std::fabs(r-l);
             }
             return 1 - 0.5f*(1-l)*t;
         }
@@ -609,7 +609,7 @@ namespace //internal functions incl. AA implementations
         {
             if(d.y+d.x <= dp)
             {
-                return min(b, t) + 0.5f*fabs(b-t);
+                return std::min(b, t) + 0.5f*std::fabs(b-t);
             }
             return 1 - 0.5f*(1-b)*r;
         }
