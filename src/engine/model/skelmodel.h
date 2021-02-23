@@ -468,7 +468,7 @@ struct skelmodel : animmodel
             {
                 const dualquat *fr1, *fr2, *pfr1, *pfr2;
             };
-            dualquat interpbone(int bone, framedata partframes[maxanimparts], const animstate *as, const uchar *partmask);
+            dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
     };
 
     static hashnameset<skeleton *> skeletons;
