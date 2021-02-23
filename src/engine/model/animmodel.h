@@ -83,7 +83,7 @@ struct animmodel : model
         int cullface;
         ShaderParamsKey *key;
 
-        skin() : owner(0), tex(notexture), decal(NULL), masks(notexture), normalmap(NULL), shader(NULL), rsmshader(NULL), cullface(1), key(NULL) {}
+        skin() : owner(0), tex(notexture), decal(nullptr), masks(notexture), normalmap(nullptr), shader(nullptr), rsmshader(nullptr), cullface(1), key(nullptr) {}
 
         bool masked() const;
         bool bumpmapped() const;
@@ -107,7 +107,7 @@ struct animmodel : model
         char *name;
         bool cancollide, canrender, noclip;
 
-        Mesh() : group(NULL), name(NULL), cancollide(true), canrender(true), noclip(false)
+        Mesh() : group(nullptr), name(nullptr), cancollide(true), canrender(true), noclip(false)
         {
         }
 
@@ -347,7 +347,7 @@ struct animmodel : model
         char *name;
         vector<Mesh *> meshes;
 
-        meshgroup() : next(NULL), shared(0), name(NULL)
+        meshgroup() : next(nullptr), shared(0), name(nullptr)
         {
         }
 
@@ -417,7 +417,7 @@ struct animmodel : model
         vec *pos;
         matrix4 matrix;
 
-        linkedpart() : p(NULL), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(NULL) {}
+        linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
     };
 
     struct part
@@ -431,11 +431,11 @@ struct animmodel : model
         int numanimparts;
         float pitchscale, pitchoffset, pitchmin, pitchmax;
 
-        part(animmodel *model, int index = 0) : model(model), index(index), meshes(NULL), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
+        part(animmodel *model, int index = 0) : model(model), index(index), meshes(nullptr), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
         {
             for(int k = 0; k < maxanimparts; ++k)
             {
-                anims[k] = NULL;
+                anims[k] = nullptr;
             }
         }
         virtual ~part()
@@ -451,7 +451,7 @@ struct animmodel : model
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
         void genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m);
         void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
-        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL);
+        bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
         bool unlink(part *p);
         void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
         bool alphatested() const;
@@ -642,7 +642,7 @@ struct animmodel : model
                 animmodel *m = (animmodel *)a[i].m;
                 if(!m)
                 {
-                    if(a[i].pos) link(NULL, a[i].tag, vec(0, 0, 0), 0, 0, a[i].pos);
+                    if(a[i].pos) link(nullptr, a[i].tag, vec(0, 0, 0), 0, 0, a[i].pos);
                     continue;
                 }
                 part *p = m->parts[0];
@@ -697,7 +697,7 @@ struct animmodel : model
                 {
                     if(a[i].pos)
                     {
-                        unlink(NULL);
+                        unlink(nullptr);
                     }
                     continue;
                 }
@@ -929,7 +929,7 @@ struct animmodel : model
         return bih;
     }
 
-    bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = NULL)
+    bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr)
     {
         if(parts.empty())
         {
@@ -1229,7 +1229,7 @@ struct animmodel : model
         enabletc = enabletangents = enablebones = enabledepthoffset = false;
         enablecullface = true;
         lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf =0;
-        lasttex = lastdecal = lastmasks = lastnormalmap = NULL;
+        lasttex = lastdecal = lastmasks = lastnormalmap = nullptr;
         ShaderParamsKey::invalidate();
     }
 
@@ -1318,7 +1318,7 @@ struct modelloader : BASE
 
     void endload()
     {
-        loading = NULL;
+        loading = nullptr;
     }
 
     bool loadconfig()
@@ -1334,7 +1334,7 @@ struct modelloader : BASE
 };
 
 template<class MDL, class BASE>
-MDL *modelloader<MDL, BASE>::loading = NULL;
+MDL *modelloader<MDL, BASE>::loading = nullptr;
 
 template<class MDL, class BASE>
 string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here

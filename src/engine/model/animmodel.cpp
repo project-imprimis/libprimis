@@ -696,7 +696,7 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
     }
     else
     {
-        animspec *spec = NULL;
+        animspec *spec = nullptr;
         if(anims[animpart])
         {
             vector<animspec> &primary = anims[animpart][anim & Anim_Index];
