@@ -45,7 +45,7 @@ struct md5 : skelloader<md5>
         int numweights;
         md5vert *vertinfo;
 
-        md5mesh() : weightinfo(NULL), numweights(0), vertinfo(NULL)
+        md5mesh() : weightinfo(nullptr), numweights(0), vertinfo(nullptr)
         {
         }
 
@@ -117,7 +117,7 @@ struct md5 : skelloader<md5>
                 }
                 else if(strstr(buf, "shader"))
                 {
-                    char *start = strchr(buf, '"'), *end = start ? strchr(start+1, '"') : NULL;
+                    char *start = strchr(buf, '"'), *end = start ? strchr(start+1, '"') : nullptr;
                     if(start && end)
                     {
                         char *texname = newstring(start+1, end-(start+1));
@@ -353,14 +353,14 @@ struct md5 : skelloader<md5>
             stream *f = openfile(filename, "r");
             if(!f)
             {
-                return NULL;
+                return nullptr;
             }
             vector<md5hierarchy> hierarchy;
             vector<md5joint> basejoints;
             int animdatalen = 0,
                 animframes = 0;
-            float *animdata = NULL;
-            dualquat *animbones = NULL;
+            float *animdata = nullptr;
+            dualquat *animbones = nullptr;
             char buf[512]; //presumably lines over 512 char long will break this loader
             //for each line in the opened file
             while(f->getline(buf, sizeof(buf)))
@@ -371,7 +371,7 @@ struct md5 : skelloader<md5>
                     if(tmp != 10)
                     {
                         delete f; //bail out if md5version is not what we want
-                        return NULL;
+                        return nullptr;
                     }
                 }
                 else if(sscanf(buf, " numJoints %d", &tmp) == 1)
@@ -379,7 +379,7 @@ struct md5 : skelloader<md5>
                     if(tmp != skel->numbones)
                     {
                         delete f; //bail out if numbones is not consistent
-                        return NULL;
+                        return nullptr;
                     }
                 }
                 else if(sscanf(buf, " numFrames %d", &animframes) == 1)
@@ -387,7 +387,7 @@ struct md5 : skelloader<md5>
                     if(animframes < 1) //if there are no animated frames, don't do animated frame stuff
                     {
                         delete f;
-                        return NULL;
+                        return nullptr;
                     }
                 }
                 //apparently, do nothing with respect to framerate
@@ -443,7 +443,7 @@ struct md5 : skelloader<md5>
                         {
                             delete[] animdata;
                         }
-                        return NULL;
+                        return nullptr;
                     }
                     animbones = new dualquat[(skel->numframes+animframes)*skel->numbones];
                     if(skel->framebones)

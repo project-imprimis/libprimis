@@ -98,8 +98,8 @@ struct ragdolldata
           scale(scale),
           verts(new vert[skel->verts.length()]),
           tris(new matrix3[skel->tris.length()]),
-          animjoints(!skel->animjoints || skel->joints.empty() ? NULL : new matrix4x3[skel->joints.length()]),
-          reljoints(skel->reljoints.empty() ? NULL : new dualquat[skel->reljoints.length()])
+          animjoints(!skel->animjoints || skel->joints.empty() ? nullptr : new matrix4x3[skel->joints.length()]),
+          reljoints(skel->reljoints.empty() ? nullptr : new dualquat[skel->reljoints.length()])
     {
     }
 
