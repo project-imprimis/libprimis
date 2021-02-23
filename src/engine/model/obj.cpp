@@ -70,7 +70,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     vector<tri> tris;
 
     string meshname = "";
-    vertmesh *curmesh = NULL;
+    vertmesh *curmesh = nullptr;
     while(file->getline(buf, sizeof(buf)))
     {
         char *c = buf;
@@ -121,7 +121,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 {
                     flushmesh(meshname, curmesh, verts, tcverts, tris, attrib[2], smooth);
                 }
-                curmesh = NULL;
+                curmesh = nullptr;
                 break;
             }
             case 'f':
@@ -131,7 +131,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     //startmesh
                     vertmesh &m = *new vertmesh;
                     m.group = this;
-                    m.name = meshname[0] ? newstring(meshname) : NULL;
+                    m.name = meshname[0] ? newstring(meshname) : nullptr;
                     meshes.add(&m);
                     curmesh = &m;
                     verthash.clear();
