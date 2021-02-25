@@ -127,7 +127,7 @@ inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec
                 if(!curnode->isleaf(faridx))
                 {
                     curnode += curnode->childindex(faridx);
-                    tmin = max(tmin, farsplit);
+                    tmin = std::max(tmin, farsplit);
                     continue;
                 }
                 else if(triintersect(m, curnode->childindex(faridx), mo, mray, maxdist, dist, mode))
@@ -147,7 +147,7 @@ inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec
                 if(!curnode->isleaf(faridx))
                 {
                     curnode += curnode->childindex(faridx);
-                    tmin = max(tmin, farsplit);
+                    tmin = std::max(tmin, farsplit);
                     continue;
                 }
                 else if(triintersect(m, curnode->childindex(faridx), mo, mray, maxdist, dist, mode))
@@ -166,17 +166,17 @@ inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec
                     {
                         traversestate &save = stack[stacksize++];
                         save.node = curnode + curnode->childindex(faridx);
-                        save.tmin = max(tmin, farsplit);
+                        save.tmin = std::max(tmin, farsplit);
                         save.tmax = tmax;
                     }
                     else
                     {
-                        if(traverse(m, o, ray, invray, maxdist, dist, mode, curnode + curnode->childindex(nearidx), tmin, min(tmax, nearsplit)))
+                        if(traverse(m, o, ray, invray, maxdist, dist, mode, curnode + curnode->childindex(nearidx), tmin, std::min(tmax, nearsplit)))
                         {
                             return true;
                         }
                         curnode += curnode->childindex(faridx);
-                        tmin = max(tmin, farsplit);
+                        tmin = std::max(tmin, farsplit);
                         continue;
                     }
                 }
@@ -186,7 +186,7 @@ inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec
                 }
             }
             curnode += curnode->childindex(nearidx);
-            tmax = min(tmax, nearsplit);
+            tmax = std::min(tmax, nearsplit);
             continue;
         }
         if(stacksize <= 0)
@@ -228,27 +228,27 @@ inline bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &di
         t2 = (m.bbmax.y - o.y)*invray.y;
         if(invray.y > 0)
         {
-            tmin = max(tmin, t1);
-            tmax = min(tmax, t2);
+            tmin = std::max(tmin, t1);
+            tmax = std::min(tmax, t2);
         }
         else
         {
-            tmin = max(tmin, t2);
-            tmax = min(tmax, t1);
+            tmin = std::max(tmin, t2);
+            tmax = std::min(tmax, t1);
         }
         t1 = (m.bbmin.z - o.z)*invray.z;
         t2 = (m.bbmax.z - o.z)*invray.z;
         if(invray.z > 0)
         {
-            tmin = max(tmin, t1);
-            tmax = min(tmax, t2);
+            tmin = std::max(tmin, t1);
+            tmax = std::min(tmax, t2);
         }
         else
         {
-            tmin = max(tmin, t2);
-            tmax = min(tmax, t1);
+            tmin = std::max(tmin, t2);
+            tmax = std::min(tmax, t1);
         }
-        tmax = min(tmax, maxdist);
+        tmax = std::min(tmax, maxdist);
         if(tmin < tmax && traverse(m, o, ray, invray, maxdist, dist, mode, m.nodes, tmin, tmax))
         {
             return true;
@@ -282,10 +282,10 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
                  trimax = ivec(tri.center).add(ivec(tri.radius));
             int amin = trimin[axis],
                 amax = trimax[axis];
-            if(max(split - amin, 0) > max(amax - split, 0))
+            if(std::max(split - amin, 0) > std::max(amax - split, 0))
             {
                 ++left;
-                splitleft = max(splitleft, amax);
+                splitleft = std::max(splitleft, amax);
                 leftmin.min(trimin);
                 leftmax.max(trimax);
             }
@@ -293,7 +293,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
             {
                 --right;
                 swap(indices[left], indices[right]);
-                splitright = min(splitright, amin);
+                splitright = std::min(splitright, amin);
                 rightmin.min(trimin);
                 rightmax.max(trimax);
             }
@@ -319,13 +319,13 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
                  trimax = static_cast<ivec>(tri.center).add(static_cast<ivec>(tri.radius));
             if(i < left)
             {
-                splitleft = max(splitleft, trimax[axis]);
+                splitleft = std::max(splitleft, trimax[axis]);
                 leftmin.min(trimin);
                 leftmax.max(trimax);
             }
             else
             {
-                splitright = min(splitright, trimin[axis]);
+                splitright = std::min(splitright, trimin[axis]);
                 rightmin.min(trimin);
                 rightmax.max(trimax);
             }
@@ -428,7 +428,7 @@ BIH::BIH(vector<mesh> &buildmeshes)
 
     center = vec(bbmin).add(bbmax).mul(0.5f);
     radius = vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
-    entradius = max(bbmin.squaredlen(), bbmax.squaredlen());
+    entradius = std::max(bbmin.squaredlen(), bbmax.squaredlen());
 
     nodes = new node[numtris];
     node *curnode = nodes;
@@ -603,15 +603,15 @@ static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c,
         dist = segmentdistance(ab, pq, ap);
         if(bq.dot(nbc) < 0)
         {
-            dist = min(dist, segmentdistance(bc, pq, bp)); // Q outside BC
+            dist = std::min(dist, segmentdistance(bc, pq, bp)); // Q outside BC
         }
         else if(aq.dot(nca) < 0)
         {
-            dist = min(dist, segmentdistance(pq, ca, cp)); // Q outside CA
+            dist = std::min(dist, segmentdistance(pq, ca, cp)); // Q outside CA
         }
         else if(aq.dot(nab) >= 0)
         {
-            dist = min(dist, dq*dq/n.squaredlen()); // Q inside AB
+            dist = std::min(dist, dq*dq/n.squaredlen()); // Q inside AB
         }
         else
         {
@@ -623,15 +623,15 @@ static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c,
         dist = segmentdistance(bc, pq, bp);
         if(aq.dot(nca) < 0)
         {
-            dist = min(dist, segmentdistance(ca, pq, cp)); // Q outside CA
+            dist = std::min(dist, segmentdistance(ca, pq, cp)); // Q outside CA
         }
         else if(aq.dot(nab) < 0)
         {
-            dist = min(dist, segmentdistance(ab, pq, ap)); // Q outside AB
+            dist = std::min(dist, segmentdistance(ab, pq, ap)); // Q outside AB
         }
         else if(bq.dot(nbc) >= 0)
         {
-            dist = min(dist, dq*dq/n.squaredlen()); // Q inside BC
+            dist = std::min(dist, dq*dq/n.squaredlen()); // Q inside BC
         }
         else
         {
@@ -643,29 +643,29 @@ static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c,
         dist = segmentdistance(ca, pq, cp);
         if(aq.dot(nab) < 0)
         {
-            dist = min(dist, segmentdistance(ab, pq, ap)); // Q outside AB
+            dist = std::min(dist, segmentdistance(ab, pq, ap)); // Q outside AB
         }
         else if(bq.dot(nbc) < 0)
         {
-            dist = min(dist, segmentdistance(bc, pq, bp)); // Q outside BC
+            dist = std::min(dist, segmentdistance(bc, pq, bp)); // Q outside BC
         }
         else if(aq.dot(nca) >= 0)
         {
-            dist = min(dist, dq*dq/n.squaredlen()); // Q inside CA
+            dist = std::min(dist, dq*dq/n.squaredlen()); // Q inside CA
         }
         else return dist;
     }
     else if(aq.dot(nab) < 0)
     {
-        dist = min(segmentdistance(ab, pq, ap), dp); // Q outside AB
+        dist = std::min(segmentdistance(ab, pq, ap), dp); // Q outside AB
     }
     else if(bq.dot(nbc) < 0)
     {
-        dist = min(segmentdistance(bc, pq, bp), dp); // Q outside BC
+        dist = std::min(segmentdistance(bc, pq, bp), dp); // Q outside BC
     }
     else if(aq.dot(nca) < 0)
     {
-        dist = min(segmentdistance(ca, pq, cp), dp); // Q outside CA
+        dist = std::min(segmentdistance(ca, pq, cp), dp); // Q outside CA
     }
     else // both P and Q inside
     {
@@ -673,7 +673,7 @@ static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c,
         {
             return 0; // P and Q on different sides of triangle
         }
-        dist = min(dp*dp, dq*dq)/n.squaredlen();
+        dist = std::min(dp*dp, dq*dq)/n.squaredlen();
         return dist;
     }
     if(dp > 0 ? dq >= 0 : dq <= 0)
@@ -742,7 +742,7 @@ static inline bool triboxoverlap(const vec &radius, const vec &a, const vec &b, 
                     return false; \
                 } \
             } \
-            else if(b.w < -radius.w || min(a.w, c.w) > radius.w) \
+            else if(b.w < -radius.w || std::min(a.w, c.w) > radius.w) \
             { \
                 return false; \
             } \
@@ -754,7 +754,7 @@ static inline bool triboxoverlap(const vec &radius, const vec &a, const vec &b, 
                 return false; \
             } \
         } \
-        else if(a.w < -radius.w || min(b.w, c.w) > radius.w) \
+        else if(a.w < -radius.w || std::min(b.w, c.w) > radius.w) \
         { \
             return false; \
         } \
