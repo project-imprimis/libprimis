@@ -306,7 +306,7 @@ int renderwaterlod(int x, int y, int z, int size, int mat)
         int subdiv = calcwatersubdiv(x, y, z, size);
         if(subdiv < size * 2)
         {
-            rendervertwater(min(subdiv, size), x, y, z, size, mat);
+            rendervertwater(std::min(subdiv, size), x, y, z, size, mat);
         }
         return subdiv;
     }
@@ -327,9 +327,9 @@ int renderwaterlod(int x, int y, int z, int size, int mat)
             subdiv3 = renderwaterlod(x + childsize, y + childsize, z, childsize, mat),
             subdiv4 = renderwaterlod(x, y + childsize, z, childsize, mat),
             minsubdiv = subdiv1;
-        minsubdiv = min(minsubdiv, subdiv2);
-        minsubdiv = min(minsubdiv, subdiv3);
-        minsubdiv = min(minsubdiv, subdiv4);
+        minsubdiv = std::min(minsubdiv, subdiv2);
+        minsubdiv = std::min(minsubdiv, subdiv3);
+        minsubdiv = std::min(minsubdiv, subdiv4);
         if(minsubdiv < size * 2)
         {
             if(minsubdiv >= size)
