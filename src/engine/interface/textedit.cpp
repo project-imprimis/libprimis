@@ -943,8 +943,8 @@ void Editor::draw(int x, int y, int color, bool hit)
             gle::begin(GL_TRIANGLE_STRIP);
             gle::attribf(x,         y+h+FONTH);
             gle::attribf(x,         y+h+height);
-            gle::attribf(x-FONTW/2, y+h+FONTH);
-            gle::attribf(x-FONTW/2, y+h+height);
+            gle::attribf(x-fontwidth()/2, y+h+FONTH);
+            gle::attribf(x-fontwidth()/2, y+h+height);
             gle::end();
         }
         h+=height;

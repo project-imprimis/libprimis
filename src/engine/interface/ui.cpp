@@ -3587,7 +3587,7 @@ namespace UI
             edit->linewrap = length < 0;
             edit->maxx = edit->linewrap ? -1 : length;
             edit->maxy = height <= 0 ? 1 : -1;
-            edit->pixelwidth = abs(length)*FONTW;
+            edit->pixelwidth = abs(length)*fontwidth();
             if(edit->linewrap && edit->maxy == 1)
             {
                 edit->updateheight();
@@ -3670,7 +3670,7 @@ namespace UI
             float k = drawscale();
             pushhudtranslate(sx, sy, k);
 
-            edit->draw(FONTW/2, 0, 0xFFFFFF, isfocus());
+            edit->draw(fontwidth()/2, 0, 0xFFFFFF, isfocus());
 
             pophudmatrix();
 
@@ -3682,7 +3682,7 @@ namespace UI
             Object::layout();
 
             float k = drawscale();
-            w = max(w, (edit->pixelwidth + FONTW)*k);
+            w = max(w, (edit->pixelwidth + fontwidth())*k);
             h = max(h, edit->pixelheight*k);
         }
 
@@ -3705,7 +3705,7 @@ namespace UI
             {
                 float k = drawscale();
                 bool dragged = max(fabs(cx - offsetx), fabs(cy - offsety)) > (FONTH/8.0f)*k;
-                edit->hit(static_cast<int>(floor(cx/k - FONTW/2)), static_cast<int>(floor(cy/k)), dragged);
+                edit->hit(static_cast<int>(floor(cx/k - fontwidth()/2)), static_cast<int>(floor(cy/k)), dragged);
             }
         }
 

@@ -19,11 +19,16 @@ struct font
 };
 
 #define FONTH (curfont->scale)
-#define FONTW (FONTH/2)
+
+extern font *curfont;
+
+inline int fontwidth()
+{
+    return FONTH/2;
+}
 const int minreswidth = 640;
 const int minresheight = 480;
 
-extern font *curfont;
 extern Shader *textshader;
 extern const matrix4x3 *textmatrix;
 extern float textscale;

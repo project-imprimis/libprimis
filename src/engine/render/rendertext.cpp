@@ -232,7 +232,7 @@ float text_widthf(const char *str)
 
 static int fonttab()
 {
-    return 4*FONTW;
+    return 4*fontwidth();
 }
 
 static int texttab(float x)
@@ -580,7 +580,7 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
         color.scale(textbright, 100);
     }
     int colorpos = 0;
-    float cx = -FONTW,
+    float cx = -fontwidth(),
           cy = 0;
     bool usecolor = true;
     if(a < 0)
