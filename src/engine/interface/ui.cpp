@@ -69,10 +69,10 @@ namespace UI
 
         void intersect(const ClipArea &c)
         {
-            x1 = max(x1, c.x1);
-            y1 = max(y1, c.y1);
-            x2 = max(x1, min(x2, c.x2));
-            y2 = max(y1, min(y2, c.y2));
+            x1 = std::max(x1, c.x1);
+            y1 = std::max(y1, c.y1);
+            x2 = std::max(x1, std::min(x2, c.x2));
+            y2 = std::max(y1, std::min(y2, c.y2));
 
         }
 
@@ -297,8 +297,8 @@ namespace UI
                 {
                     o->x = o->y = 0;
                     o->layout();
-                    w = max(w, o->x + o->w);
-                    h = max(h, o->y + o->h);
+                    w = std::max(w, o->x + o->w);
+                    h = std::max(h, o->y + o->h);
                 });
             }
 
@@ -873,7 +873,7 @@ namespace UI
         void adjustlayout()
         {
             float aspect = static_cast<float>(hudw)/hudh;
-            ph = max(max(h, w/aspect), 1.0f);
+            ph = std::max(std::max(h, w/aspect), 1.0f);
             pw = aspect*ph;
             Object::adjustlayout(0, 0, pw, ph);
         }
@@ -909,10 +909,10 @@ namespace UI
         {
             vec2 s1 = vec2(x1, y2).mul(sscale).add(soffset),
                  s2 = vec2(x2, y1).mul(sscale).add(soffset);
-            sx1 = static_cast<int>(floor(s1.x*hudw + 0.5f));
-            sy1 = static_cast<int>(floor(s1.y*hudh + 0.5f));
-            sx2 = static_cast<int>(floor(s2.x*hudw + 0.5f));
-            sy2 = static_cast<int>(floor(s2.y*hudh + 0.5f));
+            sx1 = static_cast<int>(std::floor(s1.x*hudw + 0.5f));
+            sy1 = static_cast<int>(std::floor(s1.y*hudh + 0.5f));
+            sx2 = static_cast<int>(std::floor(s2.x*hudw + 0.5f));
+            sy2 = static_cast<int>(std::floor(s2.y*hudh + 0.5f));
             if(clip)
             {
                 sx1 = std::clamp(sx1, 0, hudw);
@@ -1091,7 +1091,7 @@ namespace UI
             {
                 if(w->abovehud && !(w->state & State_Hidden))
                 {
-                    y = min(y, w->calcabovehud());
+                    y = std::min(y, w->calcabovehud());
                 }
             });
             return y;
@@ -1156,9 +1156,9 @@ namespace UI
                 o->y = 0;
                 o->layout();
                 subw += o->w;
-                h = max(h, o->y + o->h);
+                h = std::max(h, o->y + o->h);
             });
-            w = subw + space*max(static_cast<int>(children.size()) - 1, 0);
+            w = subw + space*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1169,7 +1169,7 @@ namespace UI
             }
             float offset = 0,
                   sx = 0,
-                  cspace = (w - subw) / max(static_cast<int>(children.size()) - 1, 1),
+                  cspace = (w - subw) / std::max(static_cast<int>(children.size()) - 1, 1),
                   cstep = (w - subw) / children.size();
             for(int i = 0; i < static_cast<int>(children.size()); i++)
             {
@@ -1219,9 +1219,9 @@ namespace UI
                 o->y = subh;
                 o->layout();
                 subh += o->h;
-                w = max(w, o->x + o->w);
+                w = std::max(w, o->x + o->w);
             });
-            h = subh + space*max(static_cast<int>(children.size()) - 1, 0);
+            h = subh + space*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1233,7 +1233,7 @@ namespace UI
 
             float offset = 0,
                   sy     = 0,
-                  rspace = (h - subh) / max(static_cast<int>(children.size()) - 1, 1),
+                  rspace = (h - subh) / std::max(static_cast<int>(children.size()) - 1, 1),
                   rstep = (h - subh) / children.size();
             LOOP_CHILDREN(o,
             {
@@ -1319,8 +1319,8 @@ namespace UI
             {
                 subh += heights[i];
             }
-            w = subw + spacew*max(static_cast<int>(widths.size()) - 1, 0);
-            h = subh + spaceh*max(static_cast<int>(heights.size()) - 1, 0);
+            w = subw + spacew*std::max(static_cast<int>(widths.size()) - 1, 0);
+            h = subh + spaceh*std::max(static_cast<int>(heights.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1335,9 +1335,9 @@ namespace UI
                   sy = 0,
                   offsetx = 0,
                   sx = 0,
-                  cspace = (w - subw) / max(static_cast<int>(widths.size()) - 1, 1),
+                  cspace = (w - subw) / std::max(static_cast<int>(widths.size()) - 1, 1),
                   cstep = (w - subw) / widths.size(),
-                  rspace = (h - subh) / max(static_cast<int>(heights.size()) - 1, 1),
+                  rspace = (h - subh) / std::max(static_cast<int>(heights.size()) - 1, 1),
                   rstep = (h - subh) / heights.size();
             LOOP_CHILDREN(o,
             {
@@ -1501,7 +1501,7 @@ namespace UI
                         widths[j] = c->w;
                     }
                 }
-                w = max(w, o->w);
+                w = std::max(w, o->w);
                 subh += o->h;
             });
 
@@ -1510,8 +1510,8 @@ namespace UI
             {
                 subw += widths[i];
             }
-            w = max(w, subw + spacew*max(static_cast<int>(widths.size()) - 1, 0));
-            h = subh + spaceh*max(static_cast<int>(children.size()) - 1, 0);
+            w = std::max(w, subw + spacew*std::max(static_cast<int>(widths.size()) - 1, 0));
+            h = subh + spaceh*std::max(static_cast<int>(children.size()) - 1, 0);
         }
 
         void adjustchildren()
@@ -1522,9 +1522,9 @@ namespace UI
             }
             float offsety = 0,
                   sy = 0,
-                  cspace = (w - subw) / max(static_cast<int>(widths.size()) - 1, 1),
+                  cspace = (w - subw) / std::max(static_cast<int>(widths.size()) - 1, 1),
                   cstep = (w - subw) / widths.size(),
-                  rspace = (h - subh) / max(static_cast<int>(children.size()) - 1, 1),
+                  rspace = (h - subh) / std::max(static_cast<int>(children.size()) - 1, 1),
                   rstep = (h - subh) / children.size();
             LOOP_CHILDREN(o,
             {
@@ -1582,8 +1582,8 @@ namespace UI
                 o->x = spacew;
                 o->y = spaceh;
                 o->layout();
-                w = max(w, o->x + o->w);
-                h = max(h, o->y + o->h);
+                w = std::max(w, o->x + o->w);
+                h = std::max(h, o->y + o->h);
             });
             w += spacew;
             h += spaceh;
@@ -1653,8 +1653,8 @@ namespace UI
         void layout()
         {
             Object::layout();
-            w = max(w, minw);
-            h = max(h, minh);
+            w = std::max(w, minw);
+            h = std::max(h, minh);
         }
     };
 
@@ -2026,8 +2026,8 @@ namespace UI
 
             bindtex();
 
-            float splitw = (minw ? min(minw, w) : w) / 2,
-                  splith = (minh ? min(minh, h) : h) / 2,
+            float splitw = (minw ? std::min(minw, w) : w) / 2,
+                  splith = (minh ? std::min(minh, h) : h) / 2,
                   vy = sy,
                   ty = 0;
             for(int i = 0; i < 3; ++i)
@@ -2285,10 +2285,10 @@ namespace UI
             {
                 for(float dy = 0; dy < h; dy += tileh)
                 {
-                    float dh = min(tileh, h - dy);
+                    float dh = std::min(tileh, h - dy);
                     for(float dx = 0; dx < w; dx += tilew)
                     {
-                        float dw = min(tilew, w - dx);
+                        float dw = std::min(tilew, w - dx);
                         quads(sx + dx, sy + dy, dw, dh, 0, 0, dw / tilew, dh / tileh);
                     }
                 }
@@ -2415,7 +2415,7 @@ namespace UI
             {
                 return false;
             }
-            float r = radius <= 0 ? min(w, h)/2 : radius;
+            float r = radius <= 0 ? std::min(w, h)/2 : radius;
             return vec2(cx, cy).sub(r).squaredlen() <= r*r;
         }
 
@@ -2433,7 +2433,7 @@ namespace UI
                 resetblend();
             }
 
-            float r = radius <= 0 ? min(w, h)/2 : radius;
+            float r = radius <= 0 ? std::min(w, h)/2 : radius;
             color.init();
             vec2 center(sx + r, sy + r);
             if(type == OUTLINE)
@@ -2528,8 +2528,8 @@ namespace UI
 
             float k = drawscale(), tw, th;
             text_boundsf(getstr(), tw, th, wrap >= 0 ? static_cast<int>(wrap/k) : -1);
-            w = max(w, tw*k);
-            h = max(h, th*k);
+            w = std::max(w, tw*k);
+            h = std::max(h, th*k);
         }
     };
 
@@ -2783,11 +2783,11 @@ namespace UI
             virth = h;
             if(clipw)
             {
-                w = min(w, clipw);
+                w = std::min(w, clipw);
             }
             if(cliph)
             {
-                h = min(h, cliph);
+                h = std::min(h, cliph);
             }
         }
 
@@ -2837,8 +2837,8 @@ namespace UI
         void layout()
         {
             Clipper::layout();
-            offsetx = min(offsetx, hlimit());
-            offsety = min(offsety, vlimit());
+            offsetx = std::min(offsetx, hlimit());
+            offsety = std::min(offsety, vlimit());
         }
 
         #define DOSTATE(flags, func) \
@@ -2872,32 +2872,32 @@ namespace UI
 
         float hlimit() const
         {
-            return max(virtw - w, 0.0f);
+            return std::max(virtw - w, 0.0f);
         }
 
         float vlimit() const
         {
-            return max(virth - h, 0.0f);
+            return std::max(virth - h, 0.0f);
         }
 
         float hoffset() const
         {
-            return offsetx / max(virtw, w);
+            return offsetx / std::max(virtw, w);
         }
 
         float voffset() const
         {
-            return offsety / max(virth, h);
+            return offsety / std::max(virth, h);
         }
 
         float hscale() const
         {
-            return w / max(virtw, w);
+            return w / std::max(virtw, w);
         }
 
         float vscale() const
         {
-            return h / max(virth, h);
+            return h / std::max(virth, h);
         }
 
         void addhscroll(float hscroll)
@@ -3119,7 +3119,7 @@ namespace UI
                 return;
             }
             float bw = w*scroller->hscale();
-            button->w = max(button->w, bw);
+            button->w = std::max(button->w, bw);
             float bscale = scroller->hscale() < 1 ? (w - button->w) / (1 - scroller->hscale()) : 1;
             button->x = scroller->hoffset()*bscale;
             button->adjust &= ~Align_HMask;
@@ -3180,7 +3180,7 @@ namespace UI
                 return;
             }
             float bh = h*scroller->vscale();
-            button->h = max(button->h, bh);
+            button->h = std::max(button->h, bh);
             float bscale = scroller->vscale() < 1 ? (h - button->h) / (1 - scroller->vscale()) : 1;
             button->y = scroller->voffset()*bscale;
             button->adjust &= ~Align_VMask;
@@ -3358,7 +3358,7 @@ namespace UI
             double newval = val + dir*vstep;
             newval += vstep * (newval < 0 ? -0.5 : 0.5);
             newval -= std::fmod(newval, vstep);
-            newval = std::clamp(newval, min(vmin, vmax), max(vmin, vmax));
+            newval = std::clamp(newval, std::min(vmin, vmax), std::max(vmin, vmax));
             if(val != newval)
             {
                 changeval(newval);
@@ -3587,14 +3587,14 @@ namespace UI
             edit->linewrap = length < 0;
             edit->maxx = edit->linewrap ? -1 : length;
             edit->maxy = height <= 0 ? 1 : -1;
-            edit->pixelwidth = abs(length)*fontwidth();
+            edit->pixelwidth = std::abs(length)*fontwidth();
             if(edit->linewrap && edit->maxy == 1)
             {
                 edit->updateheight();
             }
             else
             {
-                edit->pixelheight = FONTH*max(height, 1);
+                edit->pixelheight = FONTH*std::max(height, 1);
             }
             scale = scale_;
             if(keyfilter_)
@@ -3682,8 +3682,8 @@ namespace UI
             Object::layout();
 
             float k = drawscale();
-            w = max(w, (edit->pixelwidth + fontwidth())*k);
-            h = max(h, edit->pixelheight*k);
+            w = std::max(w, (edit->pixelwidth + fontwidth())*k);
+            h = std::max(h, edit->pixelheight*k);
         }
 
         virtual void resetmark(float cx, float cy)
@@ -3704,8 +3704,8 @@ namespace UI
             if(isfocus())
             {
                 float k = drawscale();
-                bool dragged = max(fabs(cx - offsetx), fabs(cy - offsety)) > (FONTH/8.0f)*k;
-                edit->hit(static_cast<int>(floor(cx/k - fontwidth()/2)), static_cast<int>(floor(cy/k)), dragged);
+                bool dragged = std::max(std::fabs(cx - offsetx), std::fabs(cy - offsety)) > (FONTH/8.0f)*k;
+                edit->hit(static_cast<int>(std::floor(cx/k - fontwidth()/2)), static_cast<int>(std::floor(cy/k)), dragged);
             }
         }
 
@@ -3795,7 +3795,7 @@ namespace UI
             }
             else while(len > 0)
             {
-                int accept = min(len, static_cast<int>(strspn(str, keyfilter)));
+                int accept = std::min(len, static_cast<int>(strspn(str, keyfilter)));
                 if(accept > 0)
                 {
                     edit->input(str, accept);
@@ -4233,8 +4233,8 @@ namespace UI
                     }
                 }
             }
-            float xt = min(1.0f, t->xs/static_cast<float>(t->ys)),
-                  yt = min(1.0f, t->ys/static_cast<float>(t->xs));
+            float xt = std::min(1.0f, t->xs/static_cast<float>(t->ys)),
+                  yt = std::min(1.0f, t->ys/static_cast<float>(t->xs));
             for(int k = 0; k < 4; ++k)
             {
                 tc[k].x = tc[k].x/xt - static_cast<float>(xoff)/t->xs;
@@ -4940,7 +4940,7 @@ namespace UI
             th = hudh;
         if(forceaspect)
         {
-            tw = static_cast<int>(ceil(th*forceaspect));
+            tw = static_cast<int>(std::ceil(th*forceaspect));
         }
         gettextres(tw, th);
         uicontextscale = conscale/th;
