@@ -1835,8 +1835,8 @@ void setupblurkernel(int radius, float *weights, float *offsets)
     // transforms a*X + b*Y into (u+v)*[X*u/(u+v) + Y*(1 - u/(u+v))]
     for(int i = 0; i < radius; ++i)
     {
-        float weight1 = exp(-((2*i)*(2*i)) / (2*sigma*sigma)) / sigma,
-              weight2 = exp(-((2*i+1)*(2*i+1)) / (2*sigma*sigma)) / sigma,
+        float weight1 = std::exp(-((2*i)*(2*i)) / (2*sigma*sigma)) / sigma,
+              weight2 = std::exp(-((2*i+1)*(2*i+1)) / (2*sigma*sigma)) / sigma,
               scale = weight1 + weight2,
               offset = 2*i+1 + weight2 / scale;
         weights[i+1] = scale;

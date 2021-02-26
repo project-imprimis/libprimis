@@ -1622,7 +1622,7 @@ static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = 
     curfogcolor.mul(ldrscale);
     GLOBALPARAM(fogcolor, curfogcolor);
     float fogdensity = calcfogdensity(end-start);
-    GLOBALPARAMF(fogdensity, fogdensity, 1/exp(M_LN2*start*fogdensity));
+    GLOBALPARAMF(fogdensity, fogdensity, 1/std::exp(M_LN2*start*fogdensity));
 }
 
 static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
