@@ -1917,12 +1917,12 @@ namespace lightsphere
         {
             float rho    = M_PI*(1-t),
                   s      = 0.0f,
-                  sinrho = i && i < stacks ? sin(rho) : 0,
+                  sinrho = i && i < stacks ? std::sin(rho) : 0,
                   cosrho = !i ? 1 : (i < stacks ? cos(rho) : -1);
             for(int j = 0; j < slices+1; ++j)
             {
                 float theta = j==slices ? 0 : 2*M_PI*s;
-                verts[i*(slices+1) + j] = vec(-sin(theta)*sinrho, -cos(theta)*sinrho, cosrho);
+                verts[i*(slices+1) + j] = vec(-std::sin(theta)*sinrho, -cos(theta)*sinrho, cosrho);
                 s += ds;
             }
             t -= dt;

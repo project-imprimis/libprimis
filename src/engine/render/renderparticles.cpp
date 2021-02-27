@@ -1051,13 +1051,13 @@ namespace sphere
         {
             float rho = M_PI*(1-t),
                   s = 0.0f,
-                  sinrho = i && i < stacks ? sin(rho) : 0,
+                  sinrho = i && i < stacks ? std::sin(rho) : 0,
                   cosrho = !i ? 1 : (i < stacks ? cos(rho) : -1);
             for(int j = 0; j < slices+1; ++j)
             {
                 float theta = j==slices ? 0 : 2*M_PI*s;
                 vert &v = verts[i*(slices+1) + j];
-                v.pos = vec(sin(theta)*sinrho, cos(theta)*sinrho, -cosrho);
+                v.pos = vec(std::sin(theta)*sinrho, cos(theta)*sinrho, -cosrho);
                 v.s = static_cast<ushort>(s*0xFFFF);
                 v.t = static_cast<ushort>(t*0xFFFF);
                 s += ds;
