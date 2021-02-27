@@ -26,8 +26,8 @@ namespace //internal functionality not seen by other files
         grasswedge(int i) :
           dir(2*M_PI*(i+0.5f)/static_cast<float>(numgrasswedges), 0),
           across(2*M_PI*((i+0.5f)/static_cast<float>(numgrasswedges) + 0.25f), 0),
-          edge1(vec(2*M_PI*i/static_cast<float>(numgrasswedges), 0).div(cos(M_PI/numgrasswedges))),
-          edge2(vec(2*M_PI*(i+1)/static_cast<float>(numgrasswedges), 0).div(cos(M_PI/numgrasswedges))),
+          edge1(vec(2*M_PI*i/static_cast<float>(numgrasswedges), 0).div(std::cos(M_PI/numgrasswedges))),
+          edge2(vec(2*M_PI*(i+1)/static_cast<float>(numgrasswedges), 0).div(std::cos(M_PI/numgrasswedges))),
           bound1(vec(2*M_PI*(i/static_cast<float>(numgrasswedges) - 0.25f), 0), 0),
           bound2(vec(2*M_PI*((i+1)/static_cast<float>(numgrasswedges) + 0.25f), 0), 0)
         {
