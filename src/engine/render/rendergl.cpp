@@ -1022,11 +1022,11 @@ void computezoom()
     }
     if(zoom > 0)
     {
-        zoomprogress = zoominvel ? min(zoomprogress + static_cast<float>(elapsedtime) / zoominvel, 1.0f) : 1;
+        zoomprogress = zoominvel ? std::min(zoomprogress + static_cast<float>(elapsedtime) / zoominvel, 1.0f) : 1;
     }
     else
     {
-        zoomprogress = zoomoutvel ? max(zoomprogress - static_cast<float>(elapsedtime) / zoomoutvel, 0.0f) : 0;
+        zoomprogress = zoomoutvel ? std::max(zoomprogress - static_cast<float>(elapsedtime) / zoomoutvel, 0.0f) : 0;
         if(zoomprogress <= 0)
         {
             zoom = 0;
@@ -1234,12 +1234,12 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
         {
             dir.z = -dir.z;
         }
-        sx1 = max(projmatrix.a.x*(e.x - dir.x) + projmatrix.d.x, -1.0f);
-        sx2 = min(projmatrix.a.x*(e.x + dir.x) + projmatrix.d.x, 1.0f);
-        sy1 = max(projmatrix.b.y*(e.y - dir.y) + projmatrix.d.y, -1.0f);
-        sy2 = min(projmatrix.b.y*(e.y + dir.y) + projmatrix.d.y, 1.0f);
-        sz1 = max(projmatrix.c.z*(e.z - dir.z) + projmatrix.d.z, -1.0f);
-        sz2 = min(projmatrix.c.z*(e.z + dir.z) + projmatrix.d.z, 1.0f);
+        sx1 = std::max(projmatrix.a.x*(e.x - dir.x) + projmatrix.d.x, -1.0f);
+        sx2 = std::min(projmatrix.a.x*(e.x + dir.x) + projmatrix.d.x, 1.0f);
+        sy1 = std::max(projmatrix.b.y*(e.y - dir.y) + projmatrix.d.y, -1.0f);
+        sy2 = std::min(projmatrix.b.y*(e.y + dir.y) + projmatrix.d.y, 1.0f);
+        sz1 = std::max(projmatrix.c.z*(e.z - dir.z) + projmatrix.d.z, -1.0f);
+        sz2 = std::min(projmatrix.c.z*(e.z + dir.z) + projmatrix.d.z, 1.0f);
         return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
     }
     float zzrr = e.z*e.z - size*size,
@@ -1277,8 +1277,8 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
         CHECKPLANE(y, -, focaldist, sy1, sy2);
         CHECKPLANE(y, +, focaldist, sy1, sy2);
     }
-    float z1 = min(e.z + size, -1e-3f - nearplane),
-          z2 = min(e.z - size, -1e-3f - nearplane);
+    float z1 = std::min(e.z + size, -1e-3f - nearplane),
+          z2 = std::min(e.z - size, -1e-3f - nearplane);
     sz1 = (z1*projmatrix.c.z + projmatrix.d.z) / (z1*projmatrix.c.w + projmatrix.d.w);
     sz2 = (z2*projmatrix.c.z + projmatrix.d.z) / (z2*projmatrix.c.w + projmatrix.d.w);
     return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
@@ -1290,10 +1290,10 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
         if(p.z >= -p.w) \
         { \
             float x = p.x / p.w, y = p.y / p.w; \
-            sx1 = min(sx1, x); \
-            sy1 = min(sy1, y); \
-            sx2 = max(sx2, x); \
-            sy2 = max(sy2, y); \
+            sx1 = std::min(sx1, x); \
+            sy1 = std::min(sy1, y); \
+            sx2 = std::max(sx2, x); \
+            sy2 = std::max(sy2, y); \
         } \
     } while(0)
     vec4 v[8];
@@ -1338,18 +1338,18 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
                   w = p.w + t*(o.w - p.w), \
                   x = (p.x + t*(o.x - p.x))/w, \
                   y = (p.y + t*(o.y - p.y))/w; \
-            sx1 = min(sx1, x); \
-            sy1 = min(sy1, y); \
-            sx2 = max(sx2, x); \
-            sy2 = max(sy2, y); \
+            sx1 = std::min(sx1, x); \
+            sy1 = std::min(sy1, y); \
+            sx2 = std::max(sx2, x); \
+            sy2 = std::max(sy2, y); \
         } while(0)
             INTERPXYSCISSOR(p, o);
         }
     }
-    sx1 = max(sx1, -1.0f);
-    sy1 = max(sy1, -1.0f);
-    sx2 = min(sx2, 1.0f);
-    sy2 = min(sy2, 1.0f);
+    sx1 = std::max(sx1, -1.0f);
+    sy1 = std::max(sy1, -1.0f);
+    sx2 = std::min(sx2, 1.0f);
+    sy2 = std::min(sy2, 1.0f);
     return true;
 }
 
@@ -1365,12 +1365,12 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             float x = p.x / p.w, \
                   y = p.y / p.w, \
                   z = p.z / p.w; \
-            sx1 = min(sx1, x); \
-            sy1 = min(sy1, y); \
-            sz1 = min(sz1, z); \
-            sx2 = max(sx2, x); \
-            sy2 = max(sy2, y); \
-            sz2 = max(sz2, z); \
+            sx1 = std::min(sx1, x); \
+            sy1 = std::min(sy1, y); \
+            sz1 = std::min(sz1, z); \
+            sx2 = std::max(sx2, x); \
+            sy2 = std::max(sy2, y); \
+            sz2 = std::max(sz2, z); \
         } \
     } while(0)
     vec4 v[5];
@@ -1409,11 +1409,11 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
                   w = p.w + t*(o.w - p.w), \
                   x = (p.x + t*(o.x - p.x))/w, \
                   y = (p.y + t*(o.y - p.y))/w; \
-            sx1 = min(sx1, x); \
-            sy1 = min(sy1, y); \
-            sz1 = min(sz1, -1.0f); \
-            sx2 = max(sx2, x); \
-            sy2 = max(sy2, y); \
+            sx1 = std::min(sx1, x); \
+            sy1 = std::min(sy1, y); \
+            sz1 = std::min(sz1, -1.0f); \
+            sx2 = std::max(sx2, x); \
+            sy2 = std::max(sy2, y); \
         } while(0)
             INTERPXYZSCISSOR(p, o);
         }
@@ -1434,12 +1434,12 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             INTERPXYZSCISSOR(v[4], o);
         }
     }
-    sx1 = max(sx1, -1.0f);
-    sy1 = max(sy1, -1.0f);
-    sz1 = max(sz1, -1.0f);
-    sx2 = min(sx2, 1.0f);
-    sy2 = min(sy2, 1.0f);
-    sz2 = min(sz2, 1.0f);
+    sx1 = std::max(sx1, -1.0f);
+    sy1 = std::max(sy1, -1.0f);
+    sz1 = std::max(sz1, -1.0f);
+    sx2 = std::min(sx2, 1.0f);
+    sy2 = std::min(sy2, 1.0f);
+    sz2 = std::min(sz2, 1.0f);
     return true;
 }
 
@@ -1558,11 +1558,11 @@ static void blendfog(int fogmat, float below, float blend, float logblend, float
                        &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat),
                 wdeep = getwaterdeep(fogmat);
-            float deepfade = std::clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
+            float deepfade = std::clamp(below/std::max(wdeep, wfog), 0.0f, 1.0f);
             vec color;
             color.lerp(wcol.tocolor(), wdeepcol.tocolor(), deepfade);
             fogc.add(vec(color).mul(blend));
-            end += logblend*min(fog, max(wfog*2, 16));
+            end += logblend*std::min(fog, std::max(wfog*2, 16));
             break;
         }
         default:
@@ -1635,9 +1635,9 @@ static void blendfogoverlay(int fogmat, float below, float blend, vec &overlay)
                        &wdeepcol = getwaterdeepcolor(fogmat);
             int wfog = getwaterfog(fogmat),
                 wdeep = getwaterdeep(fogmat);
-            float deepfade = std::clamp(below/max(wdeep, wfog), 0.0f, 1.0f);
+            float deepfade = std::clamp(below/std::max(wdeep, wfog), 0.0f, 1.0f);
             vec color = vec(wcol.r, wcol.g, wcol.b).lerp(vec(wdeepcol.r, wdeepcol.g, wdeepcol.b), deepfade);
-            overlay.add(color.div(min(32.0f + max(color.r, max(color.g, color.b))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
+            overlay.add(color.div(std::min(32.0f + std::max(color.r, std::max(color.g, color.b))*7.0f/8.0f, 255.0f)).max(0.4f).mul(blend));
             break;
         }
         default:
@@ -1705,11 +1705,11 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
         {
             for(int k = 0; k < 3; ++k)
             {
-                bbmin[k] = min(bbmin[k], o[k]);
+                bbmin[k] = std::min(bbmin[k], o[k]);
             }
             for(int k = 0; k < 3; ++k)
             {
-                bbmax[k] = max(bbmax[k], o[k] + size);
+                bbmax[k] = std::max(bbmax[k], o[k] + size);
             }
         }
     }
@@ -1736,7 +1736,7 @@ void drawminimap()
     gl_setupframe(true);
 
     int size = 1<<minimapsize,
-        sizelimit = min(hwtexsize, min(gw, gh));
+        sizelimit = std::min(hwtexsize, std::min(gw, gh));
     while(size > sizelimit)
     {
         size /= 2;
@@ -1755,8 +1755,8 @@ void drawminimap()
             {
                 continue;
             }
-            bbmin[k] = min(bbmin[k], va->geommin[k]);
-            bbmax[k] = max(bbmax[k], va->geommax[k]);
+            bbmin[k] = std::min(bbmin[k], va->geommin[k]);
+            bbmax[k] = std::max(bbmax[k], va->geommax[k]);
         }
     }
     if(minimapclip)
@@ -1765,17 +1765,17 @@ void drawminimap()
         clipminimap(clipmin, clipmax);
         for(int k = 0; k < 2; ++k)
         {
-            bbmin[k] = max(bbmin[k], clipmin[k]);
+            bbmin[k] = std::max(bbmin[k], clipmin[k]);
         }
         for(int k = 0; k < 2; ++k)
         {
-            bbmax[k] = min(bbmax[k], clipmax[k]);
+            bbmax[k] = std::min(bbmax[k], clipmax[k]);
         }
     }
 
     minimapradius = vec(bbmax).sub(vec(bbmin)).mul(0.5f);
     minimapcenter = vec(bbmin).add(minimapradius);
-    minimapradius.x = minimapradius.y = max(minimapradius.x, minimapradius.y);
+    minimapradius.x = minimapradius.y = std::max(minimapradius.x, minimapradius.y);
     minimapscale = vec((0.5f - 1.0f/size)/minimapradius.x, (0.5f - 1.0f/size)/minimapradius.y, 1.0f);
 
     physent *oldcamera = camera1;
@@ -1796,7 +1796,7 @@ void drawminimap()
     farplane = worldsize*2;
     vieww = viewh = size;
 
-    float zscale = max(static_cast<float>(minimapheight), minimapcenter.z + minimapradius.z + 1) + 1;
+    float zscale = std::max(static_cast<float>(minimapheight), minimapcenter.z + minimapradius.z + 1) + 1;
 
     projmatrix.ortho(-minimapradius.x, minimapradius.x, -minimapradius.y, minimapradius.y, 0, 2*zscale);
     setcamprojmatrix();
@@ -1909,8 +1909,8 @@ namespace modelpreview
         fovy = modelpreviewfov;
         curfov = 2*atan2(tan(fovy/2*RAD), 1/aspect)/RAD;
         farplane = 1024;
-        vieww = min(gw, w);
-        viewh = min(gh, h);
+        vieww = std::min(gw, w);
+        viewh = std::min(gh, h);
         ldrscale = 1;
         ldrscaleb = ldrscale/255;
 
@@ -1952,7 +1952,7 @@ namespace modelpreview
 vec calcmodelpreviewpos(const vec &radius, float &yaw)
 {
     yaw = std::fmod(lastmillis/10000.0f*360.0f, 360.0f);
-    float dist = max(radius.magnitude2()/aspect, radius.magnitude())/sinf(fovy/2*RAD);
+    float dist = std::max(radius.magnitude2()/aspect, radius.magnitude())/sinf(fovy/2*RAD);
     return vec(0, dist, 0).rotate_around_x(camera1->pitch*RAD);
 }
 
@@ -2109,8 +2109,8 @@ int renderw = 0,
 
 void gl_setupframe(bool force)
 {
-    renderw = min(scr_w, screenw);
-    renderh = min(scr_h, screenh);
+    renderw = std::min(scr_w, screenw);
+    renderh = std::min(scr_h, screenh);
     hudw = screenw;
     hudh = screenh;
     if(!force)
