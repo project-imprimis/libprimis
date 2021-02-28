@@ -1,7 +1,7 @@
 #ifndef ANIMMODEL_H_
 #define ANIMMODEL_H_
 
-extern int fullbrightmodels, testtags, dbgcolmesh;
+extern int fullbrightmodels, testtags, debugcolmesh;
 
 struct animmodel : model
 {
@@ -369,7 +369,7 @@ struct animmodel : model
             for(int i = 0; i < meshes.length(); i++) \
             { \
                 type &name = *(type *)meshes[i]; \
-                if(name.canrender || dbgcolmesh) \
+                if(name.canrender || debugcolmesh) \
                 { \
                     body; \
                 } \

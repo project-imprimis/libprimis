@@ -17,7 +17,7 @@
 //animmodel
 VARP(fullbrightmodels, 0, 0, 200);
 VAR(testtags, 0, 0, 1);
-VARF(dbgcolmesh, 0, 0, 1,
+VARF(debugcolmesh, 0, 0, 1,
 {
     extern void cleanupmodels();
     cleanupmodels();
