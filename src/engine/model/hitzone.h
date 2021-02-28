@@ -154,12 +154,12 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
                 if(!curnode->isleaf(faridx))
                 {
                     curnode += curnode->childindex(faridx);
-                    tmin = max(tmin, farsplit);
+                    tmin = std::max(tmin, farsplit);
                     continue;
                 }
                 else if(triintersect(m, s, curnode->childindex(faridx), o, ray))
                 {
-                    smax = min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
+                    smax = std::min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
                 }
             }
         }
@@ -167,20 +167,20 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
         {
             if(triintersect(m, s, curnode->childindex(nearidx), o, ray))
             {
-                smax = min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
-                tmax = min(tmax, smax);
+                smax = std::min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
+                tmax = std::min(tmax, smax);
             }
             if(farsplit < tmax)
             {
                 if(!curnode->isleaf(faridx))
                 {
                     curnode += curnode->childindex(faridx);
-                    tmin = max(tmin, farsplit);
+                    tmin = std::max(tmin, farsplit);
                     continue;
                 }
                 else if(triintersect(m, s, curnode->childindex(faridx), o, ray))
                 {
-                    smax = min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
+                    smax = std::min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
                 }
             }
         }
@@ -194,24 +194,24 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
                     {
                         skelbihstack &save = stack[stacksize++];
                         save.node = curnode + curnode->childindex(faridx);
-                        save.tmin = max(tmin, farsplit);
+                        save.tmin = std::max(tmin, farsplit);
                         save.tmax = tmax;
                     }
                     else
                     {
                         intersect(m, s, o, ray, invray, curnode + curnode->childindex(nearidx), tmin, tmax);
                         curnode += curnode->childindex(faridx);
-                        tmin = max(tmin, farsplit);
+                        tmin = std::max(tmin, farsplit);
                     }
                 }
                 else if(triintersect(m, s, curnode->childindex(faridx), o, ray))
                 {
-                    smax = min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
-                    tmax = min(tmax, smax);
+                    smax = std::min(smax, skelmodel::intersectdist/skelmodel::intersectscale);
+                    tmax = std::min(tmax, smax);
                 }
             }
             curnode += curnode->childindex(nearidx);
-            tmax = min(tmax, nearsplit);
+            tmax = std::min(tmax, nearsplit);
             continue;
         }
         if(stacksize <= 0)
@@ -221,7 +221,7 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
         skelbihstack &restore = stack[--stacksize];
         curnode = restore.node;
         tmin = restore.tmin;
-        tmax = min(restore.tmax, smax);
+        tmax = std::min(restore.tmax, smax);
     }
 }
 
@@ -244,24 +244,27 @@ void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const v
     t2 = (bbmax.y - o.y)*invray.y;
     if(invray.y > 0)
     {
-        tmin = max(tmin, t1); tmax = min(tmax, t2);
+        tmin = std::max(tmin, t1);
+        tmax = std::min(tmax, t2);
     }
     else
     {
-        tmin = max(tmin, t2);
-        tmax = min(tmax, t1);
+        tmin = std::max(tmin, t2);
+        tmax = std::min(tmax, t1);
     }
     t1 = (bbmin.z - o.z)*invray.z;
     t2 = (bbmax.z - o.z)*invray.z;
     if(invray.z > 0)
     {
-        tmin = max(tmin, t1); tmax = min(tmax, t2);
+        tmin = std::max(tmin, t1);
+        tmax = std::min(tmax, t2);
     }
     else
     {
-        tmin = max(tmin, t2);
-        tmax = min(tmax, t1); }
-    tmax = min(tmax, skelmodel::intersectdist/skelmodel::intersectscale);
+        tmin = std::max(tmin, t2);
+        tmax = std::min(tmax, t1);
+    }
+    tmax = std::min(tmax, skelmodel::intersectdist/skelmodel::intersectscale);
     if(tmin >= tmax)
     {
         return;
@@ -306,10 +309,10 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
                 trimax = vec(ta).max(tb).max(tc);
             float amin = trimin[axis],
                   amax = trimax[axis];
-            if(max(split - amin, 0.0f) > max(amax - split, 0.0f))
+            if(std::max(split - amin, 0.0f) > std::max(amax - split, 0.0f))
             {
                 ++left;
-                splitleft = max(splitleft, amax);
+                splitleft = std::max(splitleft, amax);
                 leftmin.min(trimin);
                 leftmax.max(trimax);
             }
@@ -317,7 +320,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
             {
                 --right;
                 swap(indices[left], indices[right]);
-                splitright = min(splitright, amin);
+                splitright = std::min(splitright, amin);
                 rightmin.min(trimin);
                 rightmax.max(trimax);
             }
@@ -347,13 +350,13 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
                 trimax = vec(ta).max(tb).max(tc);
             if(i < left)
             {
-                splitleft = max(splitleft, trimax[axis]);
+                splitleft = std::max(splitleft, trimax[axis]);
                 leftmin.min(trimin);
                 leftmax.max(trimax);
             }
             else
             {
-                splitright = min(splitright, trimin[axis]);
+                splitright = std::min(splitright, trimin[axis]);
                 rightmin.min(trimin);
                 rightmax.max(trimax);
             }
@@ -361,8 +364,8 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
     }
     int offset = numnodes++;
     node &curnode = nodes[offset];
-    curnode.split[0] = static_cast<short>(ceil(splitleft));
-    curnode.split[1] = static_cast<short>(floor(splitright));
+    curnode.split[0] = static_cast<short>(std::ceil(splitleft));
+    curnode.split[1] = static_cast<short>(std::floor(splitright));
     if(left==1)
     {
         curnode.child[0] = (axis<<14) | indices[0];
@@ -690,12 +693,12 @@ struct skelzonebounds
 
     void addvert(const vec &p)
     {
-        bbmin.x = min(bbmin.x, p.x);
-        bbmin.y = min(bbmin.y, p.y);
-        bbmin.z = min(bbmin.z, p.z);
-        bbmax.x = max(bbmax.x, p.x);
-        bbmax.y = max(bbmax.y, p.y);
-        bbmax.z = max(bbmax.z, p.z);
+        bbmin.x = std::min(bbmin.x, p.x);
+        bbmin.y = std::min(bbmin.y, p.y);
+        bbmin.z = std::min(bbmin.z, p.z);
+        bbmax.x = std::max(bbmax.x, p.x);
+        bbmax.y = std::max(bbmax.y, p.y);
+        bbmax.z = std::max(bbmax.z, p.z);
     }
 
     bool empty() const
@@ -884,7 +887,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         }
     }
     blendcache.bdata = numblends > 0 ? new dualquat[numblends] : nullptr;
-    for(int i = 0; i < min(g->meshes.length(), 0x100); ++i)
+    for(int i = 0; i < std::min(g->meshes.length(), 0x100); ++i)
     {
         skelmodel::skelmesh *m = (skelmodel::skelmesh *)g->meshes[i];
         for(int j = 0; j < m->numtris; ++j)
