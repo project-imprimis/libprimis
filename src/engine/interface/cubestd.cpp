@@ -870,6 +870,49 @@ void listassoc(ident *id, const char *list, const uint *body)
 }
 COMMAND(listassoc, "rse");
 
+//note: the goto here is the opposite of listfind above: goto triggers when elem not found
+ICOMMAND(listfind=, "sii", (char *list, int *val, int *skip),
+{
+    int n = 0;
+    for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++)
+    {
+        if(parseint(start) == *val)
+        {
+            intret(n);
+            return;
+        }
+        for(int i = 0; i < static_cast<int>(*skip); ++i)
+        {
+            if(!parselist(s))
+            {
+                goto notfound;
+                n++;
+            }
+        }
+    }
+notfound:
+    intret(-1);
+});
+
+ICOMMAND(listassoc=, "si", (char *list, int *val),
+{
+    for(const char *s = list, *start, *end, *qstart; parselist(s, start, end);)
+    {
+        if(parseint(start) == *val)
+        {
+            if(parselist(s, start, end, qstart))
+            {
+                stringret(listelem(start, end, qstart));
+            }
+            return;
+        }
+        if(!parselist(s))
+        {
+            break;
+        }
+    }
+});
+
 void looplist(ident *id, const char *list, const uint *body)
 {
     if(id->type!=Id_Alias)
