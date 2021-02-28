@@ -838,38 +838,6 @@ found: //if element is found in list
 }
 COMMAND(listfind, "rse");
 
-void listassoc(ident *id, const char *list, const uint *body)
-{
-    if(id->type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack;
-    int n = -1;
-    for(const char *s = list, *start, *end, *qstart; parselist(s, start, end);)
-    {
-        ++n;
-        setiter(*id, newstring(start, end-start), stack);
-        if(executebool(body))
-        {
-            if(parselist(s, start, end, qstart))
-            {
-                stringret(listelem(start, end, qstart));
-            }
-            break;
-        }
-        if(!parselist(s))
-        {
-            break;
-        }
-    }
-    if(n >= 0)
-    {
-        poparg(*id);
-    }
-}
-COMMAND(listassoc, "rse");
-
 //note: the goto here is the opposite of listfind above: goto triggers when elem not found
 ICOMMAND(listfind=, "sii", (char *list, int *val, int *skip),
 {
