@@ -444,9 +444,9 @@ void texrotate(ImageData &s, int numrots, int type = Tex_Diffuse)
 
 void texoffset(ImageData &s, int xoffset, int yoffset)
 {
-    xoffset = max(xoffset, 0);
+    xoffset = std::max(xoffset, 0);
     xoffset %= s.w;
-    yoffset = max(yoffset, 0);
+    yoffset = std::max(yoffset, 0);
     yoffset %= s.h;
     if(!xoffset && !yoffset)
     {
@@ -468,8 +468,8 @@ void texcrop(ImageData &s, int x, int y, int w, int h)
 {
     x = std::clamp(x, 0, s.w);
     y = std::clamp(y, 0, s.h);
-    w = min(w < 0 ? s.w : w, s.w - x);
-    h = min(h < 0 ? s.h : h, s.h - y);
+    w = std::min(w < 0 ? s.w : w, s.w - x);
+    h = std::min(h < 0 ? s.h : h, s.h - y);
     if(!w || !h)
     {
         return;
@@ -492,7 +492,7 @@ void texmad(ImageData &s, const vec &mul, const vec &add)
     {
         swizzleimage(s);
     }
-    int maxk = min(static_cast<int>(s.bpp), 3);
+    int maxk = std::min(static_cast<int>(s.bpp), 3);
     WRITE_TEX(s,
         for(int k = 0; k < maxk; ++k)
         {
@@ -540,7 +540,7 @@ void texcolormask(ImageData &s, const vec &color1, const vec &color2)
 
 void texdup(ImageData &s, int srcchan, int dstchan)
 {
-    if(srcchan==dstchan || max(srcchan, dstchan) >= s.bpp)
+    if(srcchan==dstchan || std::max(srcchan, dstchan) >= s.bpp)
     {
         return;
     }
@@ -645,8 +645,8 @@ void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
         miny = (0 - y1) / (y2 - y1);
         maxy = (1 - y1) / (y2 - y1);
     }
-    float dx = (maxx - minx)/max(s.w-1, 1),
-          dy = (maxy - miny)/max(s.h-1, 1),
+    float dx = (maxx - minx)/std::max(s.w-1, 1),
+          dy = (maxy - miny)/std::max(s.h-1, 1),
           cury = miny;
     for(uchar *dstrow = s.data + s.bpp - 1, *endrow = dstrow + s.h*s.pitch; dstrow < endrow; dstrow += s.pitch)
     {
@@ -783,14 +783,14 @@ int formatsize(GLenum format)
 void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int compress, int &tw, int &th)
 {
     int hwlimit = target==GL_TEXTURE_CUBE_MAP ? hwcubetexsize : hwtexsize,
-        sizelimit = mipmap && maxtexsize ? min(maxtexsize, hwlimit) : hwlimit;
+        sizelimit = mipmap && maxtexsize ? std::min(maxtexsize, hwlimit) : hwlimit;
     if(compress > 0)
     {
-        w = max(w/compress, 1);
-        h = max(h/compress, 1);
+        w = std::max(w/compress, 1);
+        h = std::max(h/compress, 1);
     }
-    w = min(w, sizelimit);
-    h = min(h, sizelimit);
+    w = std::min(w, sizelimit);
+    h = std::min(h, sizelimit);
     if(target!=GL_TEXTURE_RECTANGLE && (w&(w-1) || h&(h-1)))
     {
         tw = th = 1;
@@ -893,7 +893,7 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
         {
             glPixelStorei(GL_UNPACK_ROW_LENGTH, row = 0);
         }
-        if(!mipmap || max(tw, th) <= 1)
+        if(!mipmap || std::max(tw, th) <= 1)
         {
             break;
         }
@@ -925,7 +925,7 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
 void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum format, int w, int h, const uchar *data, int align, int blocksize, int levels, bool mipmap)
 {
     int hwlimit = target==GL_TEXTURE_CUBE_MAP ? hwcubetexsize : hwtexsize,
-        sizelimit = levels > 1 && maxtexsize ? min(maxtexsize, hwlimit) : hwlimit;
+        sizelimit = levels > 1 && maxtexsize ? std::min(maxtexsize, hwlimit) : hwlimit;
     int level = 0;
     for(int i = 0; i < levels; ++i)
     {
@@ -946,7 +946,7 @@ void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum format, int
                 break;
             }
         }
-        if(max(w, h) <= 1)
+        if(std::max(w, h) <= 1)
         {
             break;
         }
@@ -1009,9 +1009,9 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
     {
         glTexParameteri(target, GL_TEXTURE_WRAP_R, clamp&4 ? GL_CLAMP_TO_EDGE : (clamp&0x400 ? GL_MIRRORED_REPEAT : GL_REPEAT));
     }
-    if(target==GL_TEXTURE_2D && min(aniso, hwmaxaniso) > 0 && filter > 1)
+    if(target==GL_TEXTURE_2D && std::min(aniso, hwmaxaniso) > 0 && filter > 1)
     {
-        glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, min(aniso, hwmaxaniso));
+        glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, std::min(aniso, hwmaxaniso));
     }
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter && bilinear ? GL_LINEAR : GL_NEAREST);
     glTexParameteri(target, GL_TEXTURE_MIN_FILTER,
@@ -1389,7 +1389,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     {
         uchar *data = s.data;
         int levels = s.levels, level = 0;
-        int sizelimit = mipit && maxtexsize ? min(maxtexsize, hwtexsize) : hwtexsize;
+        int sizelimit = mipit && maxtexsize ? std::min(maxtexsize, hwtexsize) : hwtexsize;
         while(t->w > sizelimit || t->h > sizelimit)
         {
             data += s.calclevelsize(level++);
@@ -1487,7 +1487,7 @@ SDL_Surface *fixsurfaceformat(SDL_Surface *s)
     {
         return nullptr;
     }
-    if(!s->pixels || min(s->w, s->h) <= 0 || s->format->BytesPerPixel <= 0)
+    if(!s->pixels || std::min(s->w, s->h) <= 0 || s->format->BytesPerPixel <= 0)
     {
         SDL_FreeSurface(s);
         return nullptr;
@@ -1685,7 +1685,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
             SDL_FreeSurface(s); conoutf(Console_Error, "texture must be 8, 16, 24, or 32 bpp: %s", file);
             return false;
         }
-        if(max(s->w, s->h) > (1<<12))
+        if(std::max(s->w, s->h) > (1<<12))
         {
             SDL_FreeSurface(s); conoutf(Console_Error, "texture size exceeded %dx%d pixels: %s", 1<<12, 1<<12, file);
             return false;
@@ -2023,7 +2023,7 @@ void compactvslots(cube *c, int n)
 {
     if((compactvslotsprogress++&0xFFF)==0)
     {
-        renderprogress(min(static_cast<float>(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
+        renderprogress(std::min(static_cast<float>(compactvslotsprogress)/allocnodes, 1.0f), markingvslots ? "marking slots..." : "compacting slots...");
     }
     for(int i = 0; i < n; ++i)
     {
@@ -2065,7 +2065,7 @@ int compactvslots(bool cull)
     }
     if(cull)
     {
-        int numdefaults = min(static_cast<int>(Default_NumDefaults), slots.length());
+        int numdefaults = std::min(static_cast<int>(Default_NumDefaults), slots.length());
         for(int i = 0; i < numdefaults; ++i)
         {
             slots[i]->variants->index = compactedvslots++;
@@ -3389,7 +3389,7 @@ Texture *Slot::loadthumbnail()
             int xs = s.w, ys = s.h;
             if(s.w > 128 || s.h > 128)
             {
-                scaleimage(s, min(s.w, 128), min(s.h, 128));
+                scaleimage(s, std::min(s.w, 128), std::min(s.h, 128));
             }
             if(g.data)
             {
@@ -3716,7 +3716,7 @@ void screenshot(char *filename)
         string sstime;
         time_t t = time(nullptr);
         size_t len = strftime(sstime, sizeof(sstime), "%Y-%m-%d_%H.%M.%S.png", localtime(&t));
-        sstime[min(len, sizeof(sstime)-1)] = '\0';
+        sstime[std::min(len, sizeof(sstime)-1)] = '\0';
         concatstring(buf, sstime);
         for(char *s = &buf[dirlen]; *s; s++)
         {
