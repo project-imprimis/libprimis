@@ -1,8 +1,5 @@
 CXXFLAGS= -O3 -ffast-math -std=c++17 -march=x86-64 -Wall -fsigned-char -fno-rtti -fpic
 
-MV=mv
-MKDIR_P=mkdir -p
-
 	CLIENT_INCLUDES= -Ishared -Iengine -Igame $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
 	CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lm -lz -lGL -lrt
 
