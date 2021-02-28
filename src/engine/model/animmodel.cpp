@@ -6,6 +6,7 @@
 
 #include "render/radiancehints.h"
 #include "render/rendergl.h"
+#include "render/rendermodel.h"
 
 #include "world/physics.h"
 #include "world/bih.h"
@@ -19,7 +20,6 @@ VARP(fullbrightmodels, 0, 0, 200);
 VAR(testtags, 0, 0, 1);
 VARF(debugcolmesh, 0, 0, 1,
 {
-    extern void cleanupmodels();
     cleanupmodels();
 });
 
