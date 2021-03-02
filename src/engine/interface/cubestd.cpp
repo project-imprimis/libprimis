@@ -839,7 +839,7 @@ found: //if element is found in list
 COMMAND(listfind, "rse");
 
 //note: the goto here is the opposite of listfind above: goto triggers when elem not found
-ICOMMAND(listfind=, "sii", (char *list, int *val, int *skip),
+void listfindeq(char *list, int *val, int *skip)
 {
     int n = 0;
     for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++)
@@ -860,9 +860,10 @@ ICOMMAND(listfind=, "sii", (char *list, int *val, int *skip),
     }
 notfound:
     intret(-1);
-});
+}
+COMMANDN(listfind=, listfindeq, "sii");
 
-ICOMMAND(listassoc=, "si", (char *list, int *val),
+void listassoceq(char *list, int *val)
 {
     for(const char *s = list, *start, *end, *qstart; parselist(s, start, end);)
     {
@@ -879,7 +880,8 @@ ICOMMAND(listassoc=, "si", (char *list, int *val),
             break;
         }
     }
-});
+}
+COMMANDN(listassoc=, listassoceq, "si");
 
 void looplist(ident *id, const char *list, const uint *body)
 {
