@@ -160,7 +160,7 @@ struct skelmodel : animmodel
                     return false;
                 }
             }
-            return pitch==c.pitch && partmask==c.partmask && ragdoll==c.ragdoll && (!ragdoll || min(millis, c.millis) >= ragdoll->lastmove);
+            return pitch==c.pitch && partmask==c.partmask && ragdoll==c.ragdoll && (!ragdoll || std::min(millis, c.millis) >= ragdoll->lastmove);
         }
 
         bool operator!=(const animcacheentry &c) const
@@ -278,15 +278,15 @@ struct skelmodel : animmodel
                         }
                         else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            minvert = min(minvert, idxs.add(static_cast<ushort>(vidx)));
+                            minvert = std::min(minvert, idxs.add(static_cast<ushort>(vidx)));
                             break;
                         }
                     }
                 }
             }
             elen = idxs.length()-eoffset;
-            minvert = min(minvert, static_cast<ushort>(voffset));
-            maxvert = max(minvert, static_cast<ushort>(vverts.length()-1));
+            minvert = std::min(minvert, static_cast<ushort>(voffset));
+            maxvert = std::max(minvert, static_cast<ushort>(vverts.length()-1));
             return vverts.length()-voffset;
         }
 
@@ -972,20 +972,20 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                     int start = sa->frame, end = sa->range;
                     if(*startoffset > 0)
                     {
-                        start += min(*startoffset, end-1);
+                        start += std::min(*startoffset, end-1);
                     }
                     else if(*startoffset < 0)
                     {
-                        start += max(end + *startoffset, 0);
+                        start += std::max(end + *startoffset, 0);
                     }
                     end -= start - sa->frame;
                     if(*endoffset > 0)
                     {
-                        end = min(end, *endoffset);
+                        end = std::min(end, *endoffset);
                     }
                     else if(*endoffset < 0)
                     {
-                        end = max(end + *endoffset, 1);
+                        end = std::max(end + *endoffset, 1);
                     }
                     MDL::loading->parts.last()->setanim(p->numanimparts-1, anims[i], start, end, *speed, *priority);
                 }
