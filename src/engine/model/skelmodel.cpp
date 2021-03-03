@@ -122,7 +122,7 @@ void skelmodel::skeleton::calcantipodes()
         const boneinfo &info = bones[bone];
         for(int j = 0; j < numbones; ++j)
         {
-            if(abs(bones[j].group) == bone && bones[j].scheduled < 0)
+            if(std::abs(bones[j].group) == bone && bones[j].scheduled < 0)
             {
                 antipodes.add(antipode(info.interpindex, bones[j].interpindex));
                 bones[j].scheduled = schedule.size();
@@ -136,7 +136,7 @@ void skelmodel::skeleton::calcantipodes()
             {
                 if(bones[j].group < numbones && bones[j].scheduled < 0)
                 {
-                    conflict = min(conflict, abs(bones[j].group));
+                    conflict = std::min(conflict, std::abs(bones[j].group));
                 }
             }
             if(conflict < numbones)
@@ -456,7 +456,7 @@ void skelmodel::skeleton::linkchildren()
 
 int skelmodel::skeleton::availgpubones() const
 {
-    return min(maxvsuniforms, maxskelanimdata) / 2;
+    return std::min(maxvsuniforms, maxskelanimdata) / 2;
 }
 
 bool skelmodel::skeleton::gpuaccelerate() const
@@ -1126,7 +1126,7 @@ int skelmodel::blendcombo::addweight(int sorted, float weight, int bone)
     {
         if(weight > weights[k])
         {
-            for(int l = min(sorted-1, 2); l >= k; l--)
+            for(int l = std::min(sorted-1, 2); l >= k; l--)
             {
                 weights[l+1] = weights[l];
                 bones[l+1] = bones[l];
@@ -1213,7 +1213,7 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(skelcachee
 
 int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
 {
-    maxweights = max(maxweights, c.size());
+    maxweights = std::max(maxweights, c.size());
     return ((skelmeshgroup *)group)->addblendcombo(c);
 }
 
@@ -1307,11 +1307,11 @@ void skelmodel::skelmesh::setshader(Shader *s, int row)
     skelmeshgroup *g = (skelmeshgroup *)group;
     if(row)
     {
-        s->setvariant(g->skel->usegpuskel ? min(maxweights, g->vweights) : 0, row);
+        s->setvariant(g->skel->usegpuskel ? std::min(maxweights, g->vweights) : 0, row);
     }
     else if(g->skel->usegpuskel)
     {
-        s->setvariant(min(maxweights, g->vweights)-1, 0);
+        s->setvariant(std::min(maxweights, g->vweights)-1, 0);
     }
     else
     {
@@ -1367,7 +1367,7 @@ void *skelmodel::skelmeshgroup::animkey()
 
 int skelmodel::skelmeshgroup::totalframes() const
 {
-    return max(skel->numframes, 1);
+    return std::max(skel->numframes, 1);
 }
 
 void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc, blendcacheentry *bc)
