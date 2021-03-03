@@ -1,3 +1,15 @@
+/* octaedit.cpp: world modification core functionality
+ *
+ * modifying the octree grid can be done by changing the states of cube nodes within
+ * the world, which is made easier with octaedit.cpp's notions of selections (a
+ * rectangular selection of cubes with which to modify together). Selections can
+ * be modified all at once, copied, and pasted throughout the world instead of individual
+ * cubes being modified.
+ *
+ * additionally, this file contains core functionality for rendering of selections
+ * and other constructs generally useful for modifying the level, such as entity
+ * locations and radii.
+ */
 #include "engine.h"
 
 #include "light.h"
