@@ -29,7 +29,6 @@ extern int scr_w, scr_h;
 
 extern float loadprogress;
 
-extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 extern int getclockmillis();
 
 
