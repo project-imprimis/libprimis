@@ -1004,7 +1004,9 @@ void animmodel::part::render(int anim, int basetime, int basetime2, float pitch,
                 matrixpos--;
                 continue;
             }
-            int nanim = anim, nbasetime = basetime, nbasetime2 = basetime2;
+            int nanim = anim,
+                nbasetime = basetime,
+                nbasetime2 = basetime2;
             if(link.anim>=0)
             {
                 nanim = link.anim | (anim & Anim_Flags);
@@ -1059,5 +1061,185 @@ void animmodel::part::loaded()
     for(int i = 0; i < skins.length(); i++)
     {
         skins[i].setkey();
+    }
+}
+
+void animmodel::render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a)
+{
+    int numtags = 0;
+    if(a)
+    {
+        int index = parts.last()->index + parts.last()->numanimparts;
+        for(int i = 0; a[i].tag; i++)
+        {
+            numtags++;
+
+            animmodel *m = (animmodel *)a[i].m;
+            if(!m)
+            {
+                if(a[i].pos) link(nullptr, a[i].tag, vec(0, 0, 0), 0, 0, a[i].pos);
+                continue;
+            }
+            part *p = m->parts[0];
+            switch(linktype(m, p))
+            {
+                case Link_Tag:
+                {
+                    p->index = link(p, a[i].tag, vec(0, 0, 0), a[i].anim, a[i].basetime, a[i].pos) ? index : -1;
+                    break;
+                }
+                case Link_Coop:
+                {
+                    p->index = index;
+                    break;
+                }
+                default:
+                {
+                    continue;
+                }
+            }
+            index += p->numanimparts;
+        }
+    }
+
+    AnimState as[maxanimparts];
+    parts[0]->render(anim, basetime, basetime2, pitch, axis, forward, d, as);
+
+    for(int i = 1; i < parts.length(); i++)
+    {
+        part *p = parts[i];
+        switch(linktype(this, p))
+        {
+            case Link_Coop:
+            {
+                p->render(anim, basetime, basetime2, pitch, axis, forward, d);
+                break;
+            }
+            case Link_Reuse:
+            {
+                p->render(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, as);
+                break;
+            }
+        }
+    }
+
+    if(a)
+    {
+        for(int i = numtags-1; i >= 0; i--)
+        {
+            animmodel *m = (animmodel *)a[i].m;
+            if(!m)
+            {
+                if(a[i].pos)
+                {
+                    unlink(nullptr);
+                }
+                continue;
+            }
+            part *p = m->parts[0];
+            switch(linktype(m, p))
+            {
+                case Link_Tag:
+                {
+                    if(p->index >= 0)
+                    {
+                        unlink(p);
+                    }
+                    p->index = 0;
+                    break;
+                }
+                case Link_Coop:
+                {
+                    p->render(anim, basetime, basetime2, pitch, axis, forward, d);
+                    p->index = 0;
+                    break;
+                }
+                case Link_Reuse:
+                {
+                    p->render(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, as);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void animmodel::render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4 &color)
+{
+    vec axis(1, 0, 0), forward(0, 1, 0);
+
+    matrixpos = 0;
+    matrixstack[0].identity();
+    if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
+    {
+        float secs = lastmillis/1000.0f;
+        yaw += spinyaw*secs;
+        pitch += spinpitch*secs;
+        roll += spinroll*secs;
+
+        matrixstack[0].settranslation(o);
+        matrixstack[0].rotate_around_z(yaw*RAD);
+        bool usepitch = pitched();
+        if(roll && !usepitch)
+        {
+            matrixstack[0].rotate_around_y(-roll*RAD);
+        }
+        matrixstack[0].transformnormal(vec(axis), axis);
+        matrixstack[0].transformnormal(vec(forward), forward);
+        if(roll && usepitch)
+        {
+            matrixstack[0].rotate_around_y(-roll*RAD);
+        }
+        if(offsetyaw)
+        {
+            matrixstack[0].rotate_around_z(offsetyaw*RAD);
+        }
+        if(offsetpitch)
+        {
+            matrixstack[0].rotate_around_x(offsetpitch*RAD);
+        }
+        if(offsetroll)
+        {
+            matrixstack[0].rotate_around_y(-offsetroll*RAD);
+        }
+    }
+    else
+    {
+        matrixstack[0].settranslation(d->ragdoll->center);
+        pitch = 0;
+    }
+
+    sizescale = size;
+
+    if(anim & Anim_NoRender)
+    {
+        render(anim, basetime, basetime2, pitch, axis, forward, d, a);
+        if(d)
+        {
+            d->lastrendered = lastmillis;
+        }
+        return;
+    }
+
+    if(!(anim & Anim_NoSkin))
+    {
+        if(colorscale != color)
+        {
+            colorscale = color;
+            ShaderParamsKey::invalidate();
+        }
+    }
+
+    if(depthoffset && !enabledepthoffset)
+    {
+        enablepolygonoffset(GL_POLYGON_OFFSET_FILL);
+        enabledepthoffset = true;
+    }
+
+    render(anim, basetime, basetime2, pitch, axis, forward, d, a);
+
+    if(d)
+    {
+        d->lastrendered = lastmillis;
     }
 }
