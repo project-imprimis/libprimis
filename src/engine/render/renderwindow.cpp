@@ -599,26 +599,91 @@ COMMAND(resetgl, "");
 //automatic settings modulation
 VARP(fpstarget, -1, -1, 240);
 
+void applysettinglevel(int gscalelvl, int smsizelvl, int smfilterlvl, int smaalvl)
+{
+    conoutf(Console_Info, "%d%d%d%d", gscalelvl, smsizelvl, smfilterlvl, smaalvl);
+    setvar("gscale", gscalelvl);
+    setvar("smsize", smsizelvl);
+    setvar("smfilter", smfilterlvl);
+    setvar("smaa", smaalvl);
+}
+
+void settinglevels(int level)
+{
+    conoutf(Console_Info, "%d", level);
+    switch(level)
+    {
+        case 0:
+        {
+            applysettinglevel( 25, 10, 0, 0);
+            break;
+        }
+        case 1:
+        {
+            applysettinglevel( 70, 10, 0, 0);
+            break;
+        }
+        case 1:
+        {
+            applysettinglevel(100, 10, 0, 0);
+            break;
+        }
+        case 2:
+        {
+            applysettinglevel(100, 10, 2, 0);
+            break;
+        }
+        case 3:
+        {
+            applysettinglevel(100, 11, 2, 0);
+            break;
+        }
+        case 4:
+        {
+            applysettinglevel(100, 12, 2, 0);
+            break;
+        }
+        case 5:
+        {
+            applysettinglevel(100, 12, 2, 1);
+            break;
+        }
+        case 6:
+        {
+            applysettinglevel(100, 13, 2, 1);
+            break;
+        }
+        case 7:
+        {
+            applysettinglevel(100, 14, 2, 1);
+            break;
+        }
+    }
+}
 void controlframerate(int millis)
 {
     static uint lastchanged;
+    static int settinglevel = 3;
     int fps[3];
     getfps(fps[0], fps[1], fps[2]);
     if(fpstarget > 0 && (millis - lastchanged > 5000))
     {
+        conoutf("fps:%d %d %d", *fps, fpstarget, settinglevel);
         if(*fps > 1.5f*fpstarget)
         {
-            if(smsize < 14)
+            if(settinglevel < 7)
             {
-                setvar("smsize", smsize + 1);
+                settinglevel++;
+                settinglevels(settinglevel);
                 lastchanged = millis;
             }
         }
         else if(*fps < fpstarget)
         {
-            if(smsize > 10)
+            if(settinglevel > 0)
             {
-                setvar("smsize", smsize - 1);
+                settinglevel--;
+                settinglevels(settinglevel);
                 lastchanged = millis;
             }
         }
@@ -634,6 +699,7 @@ void controlframerate(int millis)
  */
 void limitfps(int &millis, int curmillis)
 {
+    controlframerate(millis);
     int limit = (mainmenu || minimized) && menufps ? (maxfps ? std::min(maxfps, menufps) : menufps) : maxfps;
     if(!limit)
     {
@@ -659,7 +725,6 @@ void limitfps(int &millis, int curmillis)
             millis += delay;
         }
     }
-    controlframerate(millis);
 }
 
 #ifdef WIN32
