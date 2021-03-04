@@ -78,8 +78,8 @@ void animmodel::AnimPos::setframes(const animinfo &info)
     }
     else
     {
-        fr1 = min(fr1, info.range-1)+info.frame;
-        fr2 = min(fr1+1, info.frame+info.range-1);
+        fr1 = std::min(fr1, info.range-1)+info.frame;
+        fr2 = std::min(fr1+1, info.frame+info.range-1);
     }
     if(info.anim & Anim_Reverse)
     {
@@ -177,7 +177,7 @@ void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned
     if(glowpulse > 0)
     {
         float curpulse = lastmillis*glowpulse;
-        curpulse -= floor(curpulse);
+        curpulse -= std::floor(curpulse);
         curglow += glowdelta*2*fabs(curpulse - 0.5f);
     }
     LOCALPARAMF(maskscale, spec, gloss, curglow);
@@ -439,7 +439,7 @@ bool animmodel::meshgroup::hasframes(int i, int n) const
 
 int animmodel::meshgroup::clipframes(int i, int n) const
 {
-    return min(n, totalframes() - i);
+    return std::min(n, totalframes() - i);
 }
 
 void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size)
@@ -767,7 +767,7 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
         animinterpinfo &animationinterpolation = d->animinterp[interp];
         if((info.anim&(Anim_Loop | Anim_Clamp)) == Anim_Clamp)
         {
-            animinterptime = min(animinterptime, static_cast<int>(info.range*info.speed*0.5e-3f));
+            animinterptime = std::min(animinterptime, static_cast<int>(info.range*info.speed*0.5e-3f));
         }
         void *ak = meshes->animkey();
         if(d->ragdoll && d->ragdoll->millis != lastmillis)
