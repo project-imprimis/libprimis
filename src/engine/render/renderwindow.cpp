@@ -596,6 +596,35 @@ void resetgl()
 }
 COMMAND(resetgl, "");
 
+//automatic settings modulation
+VARP(fpstarget, -1, -1, 240);
+
+void controlframerate(int millis)
+{
+    static uint lastchanged;
+    int fps[3];
+    getfps(fps[0], fps[1], fps[2]);
+    if(fpstarget > 0 && (millis - lastchanged > 5000))
+    {
+        if(*fps > 1.5f*fpstarget)
+        {
+            if(smsize < 14)
+            {
+                setvar("smsize", smsize + 1);
+                lastchanged = millis;
+            }
+        }
+        else if(*fps < fpstarget)
+        {
+            if(smsize > 10)
+            {
+                setvar("smsize", smsize - 1);
+                lastchanged = millis;
+            }
+        }
+    }
+}
+
 /* limitfps: uses SDL_Delay to delay a frame, given the time the last frame was
  * rendered and the current time
  *
@@ -630,6 +659,7 @@ void limitfps(int &millis, int curmillis)
             millis += delay;
         }
     }
+    controlframerate(millis);
 }
 
 #ifdef WIN32
@@ -698,6 +728,7 @@ void getfps(int &fps, int &bestdiff, int &worstdiff)
     bestdiff = 1000/best-fps;
     worstdiff = fps-1000/worst;
 }
+
 
 void getfpscmd(int *raw)
 {

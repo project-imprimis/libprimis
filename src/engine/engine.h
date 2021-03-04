@@ -156,7 +156,7 @@ const int lighttilemaxheight = 16;
 
 extern int smborder, smborder2;
 
-extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smgather, tqaaresolvegather;
+extern int gdepthstencil, gstencil, glineardepth, msaalineardepth, batchsunlight, smsize, smgather, tqaaresolvegather;
 extern int lighttilealignw, lighttilealignh, lighttilevieww, lighttileviewh, lighttilew, lighttileh;
 extern int spotlights;
 extern int volumetriclights;
