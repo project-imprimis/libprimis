@@ -5,9 +5,9 @@ extern int gpuskel, maxskelanimdata;
 
 enum
 {
-    BONEMASK_NOT  = 0x8000,
-    BONEMASK_END  = 0xFFFF,
-    BONEMASK_BONE = 0x7FFF
+    Bonemask_Not  = 0x8000,
+    Bonemask_End  = 0xFFFF,
+    Bonemask_Bone = 0x7FFF
 };
 
 struct skelhitdata;
@@ -1014,13 +1014,13 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 conoutf("could not find bone %s for anim part mask [%s]", bonestr, maskstr); bonestrs.deletearrays();
                 return;
             }
-            bonemask.add(bone | (bonestr[0]=='!' ? BONEMASK_NOT : 0));
+            bonemask.add(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
         bonestrs.deletearrays();
         bonemask.sort();
         if(bonemask.length())
         {
-            bonemask.add(BONEMASK_END);
+            bonemask.add(Bonemask_End);
         }
         if(!p->addanimpart(bonemask.getbuf()))
         {
@@ -1084,7 +1084,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 bonestrs.deletearrays();
                 return;
             }
-            bonemask.add(bone | (bonestr[0]=='!' ? BONEMASK_NOT : 0));
+            bonemask.add(bone | (bonestr[0]=='!' ? Bonemask_Not : 0));
         }
         bonestrs.deletearrays();
         if(bonemask.empty())
@@ -1092,7 +1092,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             return;
         }
         bonemask.sort();
-        bonemask.add(BONEMASK_END);
+        bonemask.add(Bonemask_End);
 
         while(MDL::hitzones.length() < m->skel->numbones)
         {

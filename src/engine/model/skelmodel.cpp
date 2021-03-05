@@ -415,15 +415,15 @@ void skelmodel::skeleton::expandbonemask(uchar *expansion, int bone, int val)
 
 void skelmodel::skeleton::applybonemask(ushort *mask, uchar *partmask, int partindex)
 {
-    if(!mask || *mask==BONEMASK_END)
+    if(!mask || *mask==Bonemask_End)
     {
         return;
     }
     uchar *expansion = new uchar[numbones];
-    memset(expansion, *mask&BONEMASK_NOT ? 1 : 0, numbones);
-    while(*mask!=BONEMASK_END)
+    memset(expansion, *mask&Bonemask_Not ? 1 : 0, numbones);
+    while(*mask!=Bonemask_End)
     {
-        expandbonemask(expansion, *mask&BONEMASK_BONE, *mask&BONEMASK_NOT ? 0 : 1);
+        expandbonemask(expansion, *mask&Bonemask_Bone, *mask&Bonemask_Not ? 0 : 1);
         mask++;
     }
     for(int i = 0; i < numbones; ++i)
@@ -495,7 +495,9 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
         pitchtarget &t = pitchtargets[j];
         float tpitch = pitch - t.deviated;
         for(int parent = t.corrects; parent >= 0; parent = pitchcorrects[parent].parent)
+        {
             tpitch -= pitchcorrects[parent].pitchangle;
+        }
         if(t.pitchmin || t.pitchmax)
         {
             tpitch = std::clamp(tpitch, t.pitchmin, t.pitchmax);
