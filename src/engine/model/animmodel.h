@@ -1093,7 +1093,7 @@ struct modelcommands
 
     static void setalphatest(char *meshname, float *cutoff)
     {
-        LOOP_SKINS(meshname, s, s.alphatest = max(0.0f, min(1.0f, *cutoff)));
+        LOOP_SKINS(meshname, s, s.alphatest = std::max(0.0f, std::min(1.0f, *cutoff)));
     }
 
     static void setcullface(char *meshname, int *cullface)
