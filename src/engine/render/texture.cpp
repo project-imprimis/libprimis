@@ -2916,7 +2916,7 @@ COMMAND(texsmooth, "ib");
 
 void decaldepth(float *depth, float *fade)
 {
-    if(!defslot || defslot->type() != Slot::DECAL)
+    if(!defslot || defslot->type() != Slot::SlotType_Decal)
     {
         return;
     }

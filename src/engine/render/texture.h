@@ -1143,9 +1143,9 @@ struct Slot
 {
     enum
     {
-        OCTA,
-        MATERIAL,
-        DECAL
+        SlotType_Octa,
+        SlotType_Material,
+        SlotType_Decal
     };
 
     struct Tex
@@ -1173,7 +1173,7 @@ struct Slot
 
     virtual int type() const
     {
-        return OCTA;
+        return SlotType_Octa;
     }
 
     virtual const char *name() const;
@@ -1252,7 +1252,7 @@ struct MatSlot : Slot, VSlot
 
     int type() const
     {
-        return MATERIAL;
+        return SlotType_Material;
     }
     const char *name() const;
 
@@ -1287,7 +1287,7 @@ struct DecalSlot : Slot, VSlot
 
     int type() const
     {
-        return DECAL;
+        return SlotType_Decal;
     }
 
     const char *name() const;
