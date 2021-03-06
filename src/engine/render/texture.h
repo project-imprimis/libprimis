@@ -339,7 +339,7 @@ struct Shader
         {
             int start = variantrows[row],
                 end   = variantrows[row+1];
-            for(col = min(start + col, end-1); col >= start; --col)
+            for(col = std::min(start + col, end-1); col >= start; --col)
             {
                 if(!variants[col]->invalid())
                 {
@@ -951,7 +951,7 @@ struct ImageData
 
     int calclevelsize(int level) const
     {
-        return ((max(w>>level, 1)+align-1)/align)*((max(h>>level, 1)+align-1)/align)*bpp;
+        return ((std::max(w>>level, 1)+align-1)/align)*((std::max(h>>level, 1)+align-1)/align)*bpp;
     }
 
     int calcsize() const
