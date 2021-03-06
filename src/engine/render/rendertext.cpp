@@ -45,6 +45,7 @@ void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
     fontdef = f;
     fontdeftex = 0;
 }
+COMMANDN(font, newfont, "ssiii");
 
 void fontborder(float *bordermin, float *bordermax)
 {
@@ -55,6 +56,7 @@ void fontborder(float *bordermin, float *bordermax)
     fontdef->bordermin = *bordermin;
     fontdef->bordermax = std::max(*bordermax, *bordermin+0.01f);
 }
+COMMAND(fontborder, "ff");
 
 void fontoutline(float *outlinemin, float *outlinemax)
 {
@@ -65,6 +67,7 @@ void fontoutline(float *outlinemin, float *outlinemax)
     fontdef->outlinemin = std::min(*outlinemin, *outlinemax-0.01f);
     fontdef->outlinemax = *outlinemax;
 }
+COMMAND(fontoutline, "ff");
 
 void fontoffset(char *c)
 {
@@ -74,6 +77,7 @@ void fontoffset(char *c)
     }
     fontdef->charoffset = c[0];
 }
+COMMAND(fontoffset, "s");
 
 void fontscale(int *scale)
 {
@@ -84,6 +88,7 @@ void fontscale(int *scale)
 
 fontdef->scale = *scale > 0 ? *scale : fontdef->defaulth;
 }
+COMMAND(fontscale, "i");
 
 void fonttex(char *s)
 {
@@ -103,6 +108,7 @@ void fonttex(char *s)
     fontdeftex = fontdef->texs.length();
     fontdef->texs.add(t);
 }
+COMMAND(fonttex, "s");
 
 void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *offsety, float *advance)
 {
@@ -120,6 +126,7 @@ void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *off
     c.advance = *advance ? *advance : c.offsetx + c.w;
     c.tex = fontdeftex;
 }
+COMMAND(fontchar, "fffffff");
 
 void fontskip(int *n)
 {
@@ -134,14 +141,6 @@ void fontskip(int *n)
         c.tex = 0;
     }
 }
-
-COMMANDN(font, newfont, "ssiii");
-COMMAND(fontborder, "ff");
-COMMAND(fontoutline, "ff");
-COMMAND(fontoffset, "s");
-COMMAND(fontscale, "i");
-COMMAND(fonttex, "s");
-COMMAND(fontchar, "fffffff");
 COMMAND(fontskip, "i");
 
 void fontalias(const char *dst, const char *src)
@@ -255,7 +254,6 @@ void tabify(const char *str, int *numtabs)
     tstr[len+tabs] = '\0';
     stringret(tstr);
 }
-
 COMMAND(tabify, "si");
 
 void draw_textf(const char *fstr, float left, float top, ...)
