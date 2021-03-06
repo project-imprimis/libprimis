@@ -58,7 +58,8 @@ namespace //internal functionality not seen by other files
 
     const int numgrassoffsets = 32;
 
-    float grassoffsets[numgrassoffsets] = { -1 }, grassanimoffsets[numgrassoffsets];
+    float grassoffsets[numgrassoffsets] = { -1 },
+          grassanimoffsets[numgrassoffsets];
     int lastgrassanim = -1;
 
     VARR(grassanimmillis, 0, 3000, 60000);

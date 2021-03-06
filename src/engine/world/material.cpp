@@ -24,7 +24,6 @@
 #include "render/rendergl.h"
 #include "render/water.h"
 
-
 struct QuadNode
 {
     int x, y, size;
@@ -455,7 +454,8 @@ static inline bool optmatcmp(const materialsurface &x, const materialsurface &y)
 int optimizematsurfs(materialsurface *matbuf, int matsurfs)
 {
     quicksort(matbuf, matsurfs, optmatcmp);
-    materialsurface *cur = matbuf, *end = matbuf+matsurfs;
+    materialsurface *cur = matbuf,
+                    *end = matbuf+matsurfs;
     while(cur < end)
     {
          materialsurface *start = cur++;
