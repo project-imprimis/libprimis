@@ -22,11 +22,11 @@ struct timer
 {
     enum
     {
-        MAXQUERY = 4        //max number of gl queries
+        Timer_MaxQuery = 4        //max number of gl queries
     };
     const char *name;       //name the timer reports as
     bool gpu;               //whether the timer is for gpu time (true) or cpu time
-    GLuint query[MAXQUERY]; //gpu query information
+    GLuint query[Timer_MaxQuery]; //gpu query information
     int waiting;            //internal bitmask for queries
     uint starttime;         //time the timer was started (in terms of ms since game started)
     float result,           //raw value of the timer, -1 if no info available
@@ -54,7 +54,7 @@ timer *findtimer(const char *name, bool gpu)
     memset(t.query, 0, sizeof(t.query));
     if(gpu)
     {
-        glGenQueries_(timer::MAXQUERY, t.query);
+        glGenQueries_(timer::Timer_MaxQuery, t.query);
     }
     t.waiting = 0;
     t.starttime = 0;
@@ -102,7 +102,7 @@ void endtimer(timer *t)
 
 void synctimers()
 {
-    timercycle = (timercycle + 1) % timer::MAXQUERY;
+    timercycle = (timercycle + 1) % timer::Timer_MaxQuery;
 
     for(int i = 0; i < timers.length(); i++)
     {
@@ -133,7 +133,7 @@ void cleanuptimers()
         timer &t = timers[i];
         if(t.gpu)
         {
-            glDeleteQueries_(timer::MAXQUERY, t.query);
+            glDeleteQueries_(timer::Timer_MaxQuery, t.query);
         }
     }
     timers.shrink(0);
