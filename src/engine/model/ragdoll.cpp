@@ -193,7 +193,7 @@ void ragdolldata::calcboundsphere()
     radius = 0;
     for(int i = 0; i < skel->verts.length(); i++)
     {
-        radius = max(radius, verts[i].pos.dist(center));
+        radius = std::max(radius, verts[i].pos.dist(center));
     }
 }
 
@@ -448,7 +448,7 @@ void ragdolldata::move(dynent *pl, float ts)
 
     calcrotfriction();
     float tsfric = timestep ? ts/timestep : 1,
-          airfric = ragdollairfric + min((ragdollbodyfricscale*collisions)/skel->verts.length(), 1.0f)*(ragdollbodyfric - ragdollairfric);
+          airfric = ragdollairfric + std::min((ragdollbodyfricscale*collisions)/skel->verts.length(), 1.0f)*(ragdollbodyfric - ragdollairfric);
     collisions = 0;
     for(int i = 0; i < skel->verts.length(); i++)
     {
@@ -518,7 +518,7 @@ void moveragdoll(dynent *d)
         int lastmove = d->ragdoll->lastmove;
         while(d->ragdoll->lastmove + (lastmove == d->ragdoll->lastmove ? ragdolltimestepmin : ragdolltimestepmax) <= lastmillis)
         {
-            int timestep = min(ragdolltimestepmax, lastmillis - d->ragdoll->lastmove);
+            int timestep = std::min(ragdolltimestepmax, lastmillis - d->ragdoll->lastmove);
             d->ragdoll->move(d, timestep/1000.0f);
             d->ragdoll->lastmove += timestep;
         }
