@@ -1,12 +1,4 @@
-#include "engine.h"
-
-#include "console.h"
-#include "control.h"
-
-#include "render/hud.h"
-
-/*
- * cubescript commands
+/* cubescript commands
  *
  * these functions & assignment macros define standard functions used with the language
  * the language does not otherwise define special operators (besides bracket semantics)
@@ -16,6 +8,13 @@
  *    - arithmetic and boolean operators
  *    - control statements
  */
+
+#include "engine.h"
+
+#include "console.h"
+#include "control.h"
+
+#include "render/hud.h"
 
 bool execfile(const char *cfgfile, bool msg)
 {
