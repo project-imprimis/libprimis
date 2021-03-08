@@ -1,3 +1,14 @@
+/* ui.cpp: cubescript user interfaces and menu functionality
+ *
+ * ui.cpp defines a series of convenient objects that can be created and destroyed
+ * as groups to be used as interfaces by programs. They can be configured to grab
+ * user input or not, (the former being useful for interactive menus, the latter
+ * for passive interface material such as a HUD).
+ *
+ * ui.cpp uses font functionality in rendertext as well as textedit for interactive
+ * text modification objects
+ */
+
 #include "engine.h"
 
 #include "console.h"
