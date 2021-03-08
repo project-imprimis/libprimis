@@ -244,6 +244,8 @@ namespace UI
             ushort state, childstate;
             Object *parent;
 
+            //LOOP_CHILDREN: loops through all of the children, assigns them to
+            // a temp var, and executes the passed body
             #define LOOP_CHILDREN(o, body) do { \
                 for(int i = 0; i < static_cast<int>(children.size()); i++) \
                 { \
@@ -394,6 +396,13 @@ namespace UI
                 });
             }
 
+            /* DOSTATES: executes the DOSTATE macro for the applicable special keys
+             *
+             * ***NOTE***: DOSTATE is not defined by default, and is defined manually
+             * in the code at every location the DOSTATES macro is called --
+             * you cannot merely call DOSTATES whenever you wish;
+             * you must also define DOSTATE (and then undefine it)
+             */
             #define DOSTATES \
                 DOSTATE(State_Hover, hover) \
                 DOSTATE(State_Press, press) \
