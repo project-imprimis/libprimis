@@ -1326,7 +1326,7 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
 overflow:
     if(space)
     {
-        len += max(prefix ? i : i-1, 0);
+        len += std::max(prefix ? i : i-1, 0);
     }
     char *buf = newstring(len + numlen);
     int offset = 0,
@@ -3873,14 +3873,14 @@ static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup
             }
             case 'C':
             {
-                i = max(i+1, numargs);
+                i = std::max(i+1, numargs);
                 vector<char> buf;
                 ((comfun1)id->fun)(conc(buf, args, i, true));
                 goto cleanup;
             }
             case 'V':
             {
-                i = max(i+1, numargs);
+                i = std::max(i+1, numargs);
                 ((comfunv)id->fun)(args, i);
                 goto cleanup;
             }
