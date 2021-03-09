@@ -1,3 +1,11 @@
+/* rendermodel.cpp: world static and dynamic models
+ *
+ * Libprimis can handle static ("mapmodel") type models which are placed in levels
+ * as well as dynamic, animated models such as players or other actors. For animated
+ * models, the md5 model format is supported; simpler static models can use the
+ * common Wavefront (obj) model format.
+ *
+ */
 #include "engine.h"
 
 #include "aa.h"
@@ -14,7 +22,7 @@
 #include "world/physics.h"
 #include "world/bih.h"
 
-VAR(oqdynent, 0, 1, 1);
+VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
 VAR(animationinterpolationtime, 0, 200, 1000);
 
 int numanims; //set by game at runtime
@@ -50,10 +58,10 @@ static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
 }
 
 #define MODELTYPE(modeltype, modelclass) \
-static model *loadmodel_##modelclass(const char *filename) \
-{ \
-    return new modelclass(filename); \
-} \
+    static model *loadmodel_##modelclass(const char *filename) \
+    { \
+        return new modelclass(filename); \
+    } \
 static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass);
 
 //need the above macros & fxns inited before these headers will load properly
@@ -246,6 +254,10 @@ void mdlextendbb(float *x, float *y, float *z)
 }
 COMMAND(mdlextendbb, "fff");
 
+/* mdlname
+ *
+ * returns the name of the model currently loaded [most recently]
+ */
 void mdlname()
 {
     checkmdl();
@@ -281,7 +293,6 @@ COMMAND(mdlname, "");
         return; \
     }
 
-
 void rdvert(float *x, float *y, float *z, float *radius)
 {
     CHECK_RAGDOLL;
@@ -291,6 +302,9 @@ void rdvert(float *x, float *y, float *z, float *radius)
 }
 COMMAND(rdvert, "ffff");
 
+/* ragdoll eye level: sets the ragdoll's eye point to the level passed
+ * implicitly modifies the ragdoll selected by CHECK_RAGDOLL
+ */
 void rdeye(int *v)
 {
     CHECK_RAGDOLL;
@@ -623,7 +637,6 @@ void clearmodel(char *name)
     delete m;
     conoutf("cleared model %s", name);
 }
-
 COMMAND(clearmodel, "s");
 
 bool modeloccluded(const vec &center, float radius)
