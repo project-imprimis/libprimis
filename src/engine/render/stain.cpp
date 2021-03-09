@@ -96,7 +96,7 @@ struct stainbuffer
     void clear()
     {
         startvert = endvert = lastvert = 0;
-        availverts = max(maxverts - 3, 0);
+        availverts = std::max(maxverts - 3, 0);
         dirty = true;
     }
 
@@ -705,7 +705,7 @@ struct stainrenderer
             vec p = vec(pos[0]).sub(staincenter);
             // travel back along plane normal from the stain center
             float dist = n.dot(p);
-            if(fabs(dist) > stainradius)
+            if(std::fabs(dist) > stainradius)
             {
                 continue;
             }
@@ -806,7 +806,7 @@ struct stainrenderer
                    m.o[r] + m.rsize >= bbmin[r] && m.o[r] <= bbmax[r])
                 {
                     static cube dummy;
-                    gentris(dummy, m.orient, m.o, max(m.csize, m.rsize), &m);
+                    gentris(dummy, m.orient, m.o, std::max(m.csize, m.rsize), &m);
                 }
                 if(i+1 >= matsurfs)
                 {
@@ -863,7 +863,7 @@ struct stainrenderer
         }
         vec p = vec(v[0]).sub(staincenter);
         float dist = n.dot(p);
-        if(fabs(dist) > stainradius)
+        if(std::fabs(dist) > stainradius)
         {
             return;
         }
