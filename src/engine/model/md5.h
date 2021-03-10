@@ -131,7 +131,7 @@ struct md5 : skelloader<md5>
                 //create the vert arrays
                 else if(sscanf(buf, " numverts %d", &numverts)==1)
                 {
-                    numverts = max(numverts, 0);
+                    numverts = std::max(numverts, 0);
                     if(numverts)
                     {
                         vertinfo = new md5vert[numverts];
@@ -141,7 +141,7 @@ struct md5 : skelloader<md5>
                 //create tri array
                 else if(sscanf(buf, " numtris %d", &numtris)==1)
                 {
-                    numtris = max(numtris, 0);
+                    numtris = std::max(numtris, 0);
                     if(numtris)
                     {
                         tris = new tri[numtris];
@@ -150,7 +150,7 @@ struct md5 : skelloader<md5>
                 //create md5weight array
                 else if(sscanf(buf, " numweights %d", &numweights)==1)
                 {
-                    numweights = max(numweights, 0);
+                    numweights = std::max(numweights, 0);
                     if(numweights)
                     {
                         weightinfo = new md5weight[numweights];
