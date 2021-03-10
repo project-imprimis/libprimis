@@ -345,7 +345,7 @@ void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
     d.vert[0] = *v1;
     d.vert[1] = *v2;
     d.mindist = *mindist;
-    d.maxdist = max(*maxdist, *mindist);
+    d.maxdist = std::max(*maxdist, *mindist);
 }
 COMMAND(rdlimitdist, "iiff");
 
