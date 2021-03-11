@@ -7,9 +7,20 @@ struct BIH
         short split[2];
         ushort child[2];
 
-        int axis() const { return child[0]>>14; }
-        int childindex(int which) const { return child[which]&0x3FFF; }
-        bool isleaf(int which) const { return (child[1]&(1<<(14+which)))!=0; }
+        int axis() const
+        {
+            return child[0]>>14;
+        }
+
+        int childindex(int which) const
+        {
+            return child[which]&0x3FFF;
+        }
+
+        bool isleaf(int which) const
+        {
+            return (child[1]&(1<<(14+which)))!=0;
+        }
     };
 
     struct tri
@@ -30,10 +41,10 @@ struct BIH
 
     enum
     {
-        Mesh_Render = 1<<1,
-        Mesh_NoClip = 1<<2,
-        Mesh_Alpha = 1<<3,
-        Mesh_Collide = 1<<4,
+        Mesh_Render   = 1<<1,
+        Mesh_NoClip   = 1<<2,
+        Mesh_Alpha    = 1<<3,
+        Mesh_Collide  = 1<<4,
         Mesh_CullFace = 1<<5
     };
 
