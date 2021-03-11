@@ -54,8 +54,8 @@ inline void text_bounds(const char *str, int &width, int &height, int maxwidth =
 {
     float widthf, heightf;
     text_boundsf(str, widthf, heightf, maxwidth);
-    width = static_cast<int>(ceil(widthf));
-    height = static_cast<int>(ceil(heightf));
+    width = static_cast<int>(std::ceil(widthf));
+    height = static_cast<int>(std::ceil(heightf));
 }
 
 inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth)
@@ -68,6 +68,6 @@ inline void text_pos(const char *str, int cursor, int &cx, int &cy, int maxwidth
 
 inline int text_width(const char *str)
 {
-    return static_cast<int>(ceil(text_widthf(str)));
+    return static_cast<int>(std::ceil(text_widthf(str)));
 }
 #endif
