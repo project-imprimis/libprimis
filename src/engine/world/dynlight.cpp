@@ -1,7 +1,7 @@
 /* dynlight.cpp: handling of changing lights
  *
  * while the lighting system is dynamic, the changing state of the light entities
- * for the renderer to handle must be updated with new values that reflect the tyoe
+ * for the renderer to handle must be updated with new values that reflect the type
  * of light to be drawn
  *
  * this includes pulsating lights (which change in radius dynamically)
