@@ -1,4 +1,12 @@
-
+/* animmodel.cpp: implementation for animated models
+ *
+ * animmodel.cpp implements the animmodel object in animmodel.h and is the
+ * working form of an an animated model loaded from a file. The animmodel object
+ * supports skeletal animation along with the basics it inherits from model.h;
+ * see that file for non-animated functionality (e.g. normal, specular, etc mapping,
+ * position, orientation, etc).
+ *
+ */
 #include "engine.h"
 
 #include "interface/console.h"
