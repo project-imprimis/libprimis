@@ -1,3 +1,13 @@
+/* water.cpp: rendering of water special effects
+ *
+ * water is a special material to render because of its dynamic effects caused
+ * by the surface moving over time, and as a result has its own implementations
+ * for special water functionality
+ *
+ * implemented are caustics, (light/dark areas on underwater surfaces due to lensing)
+ * screenspace reflection, to capture the reflective surface, dynamic water surface
+ * geometry, and dynamic waterfalls
+ */
 #include "engine.h"
 
 #include "octarender.h"
