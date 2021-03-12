@@ -49,6 +49,11 @@ VAR(debugao, 0, 0, 1);
 
 static Shader *ambientobscuranceshader = nullptr;
 
+/* loadambientobscuranceshader
+ *
+ * creates a new ambient obscurance (ambient occlusion) object with values based
+ * on current settings
+ */
 Shader *loadambientobscuranceshader()
 {
     string opts;
@@ -73,6 +78,7 @@ Shader *loadambientobscuranceshader()
     return generateshader(name, "ambientobscuranceshader \"%s\" %d", opts, aotaps);
 }
 
+//sets the ambientobscuranceshader gvar to the value created by above fxn
 void loadaoshaders()
 {
     ambientobscuranceshader = loadambientobscuranceshader();
@@ -112,6 +118,7 @@ void setupao(int w, int h)
     int packfilter = upscale && aopackdepth && !aodepthformat ? 0 : 1;
     for(int i = 0; i < (upscale ? 3 : 2); ++i)
     {
+        //create framebuffer
         if(!aotex[i])
         {
             glGenTextures(1, &aotex[i]);
@@ -133,9 +140,9 @@ void setupao(int w, int h)
             glClear(GL_COLOR_BUFFER_BIT);
         }
     }
-
     if(aoreducedepth && (aoreduce || aoreducedepth > 1))
     {
+        //create framebuffer
         if(!aotex[3])
         {
             glGenTextures(1, &aotex[3]);
@@ -159,6 +166,10 @@ void setupao(int w, int h)
     loadbilateralshaders();
 }
 
+/* cleanupao
+ *
+ * deletes the framebuffer textures for ambient obscurance (ambient occlusion)
+ */
 void cleanupao()
 {
     for(int i = 0; i < 4; ++i)
@@ -193,6 +204,12 @@ void initao()
     aodepthformat = aofloatdepth ? aofloatdepth : 0;
 }
 
+/* viewao
+ *
+ * displays the raw output of the ao buffer, useful for debugging
+ *
+ * either fullscreen (if debugfullscreen is 1) or corner of screen
+ */
 void viewao()
 {
     if(!ao)
