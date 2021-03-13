@@ -218,8 +218,8 @@ struct bigint
     {
         parse(s);
     }
-    template<int Y_DIGITS>
-    bigint(const bigint<Y_DIGITS> &y)
+    template<int ydigits>
+    bigint(const bigint<ydigits> &y)
     {
         *this = y;
     }
@@ -293,8 +293,8 @@ struct bigint
         }
     }
 
-    template<int Y_DIGITS>
-    bigint &operator=(const bigint<Y_DIGITS> &y)
+    template<int ydigits>
+    bigint &operator=(const bigint<ydigits> &y)
     {
         len = y.len;
         memcpy(digits, y.digits, len*sizeof(digit));
@@ -341,8 +341,8 @@ struct bigint
         return len > n/bidigitbits;
     }
 
-    template<int X_DIGITS, int Y_DIGITS>
-    bigint &add(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
+    template<int xdigits, int ydigits>
+    bigint &add(const bigint<xdigits> &x, const bigint<ydigits> &y)
     {
         dbldigit carry = 0;
         int maxlen = std::max(x.len, y.len), i;
@@ -359,11 +359,11 @@ struct bigint
         len = std::max(i, maxlen);
         return *this;
     }
-    template<int Y_DIGITS>
-    bigint &add(const bigint<Y_DIGITS> &y) { return add(*this, y); }
+    template<int ydigits>
+    bigint &add(const bigint<ydigits> &y) { return add(*this, y); }
 
-    template<int X_DIGITS, int Y_DIGITS>
-    bigint &sub(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
+    template<int xdigits, int ydigits>
+    bigint &sub(const bigint<xdigits> &x, const bigint<ydigits> &y)
     {
         dbldigit borrow = 0;
         int i;
@@ -382,8 +382,8 @@ struct bigint
         return *this;
     }
 
-    template<int Y_DIGITS>
-    bigint &sub(const bigint<Y_DIGITS> &y)
+    template<int ydigits>
+    bigint &sub(const bigint<ydigits> &y)
     {
         return sub(*this, y);
     }
@@ -405,21 +405,21 @@ struct bigint
         shrinkdigits(n/bidigitbits);
     }
 
-    template<int Y_DIGITS>
-    void copyshrinkdigits(const bigint<Y_DIGITS> &y, int n)
+    template<int ydigits>
+    void copyshrinkdigits(const bigint<ydigits> &y, int n)
     {
         len = std::min(y.len, n);
         memcpy(digits, y.digits, len*sizeof(digit));
         shrink();
     }
-    template<int Y_DIGITS>
-    void copyshrinkbits(const bigint<Y_DIGITS> &y, int n)
+    template<int ydigits>
+    void copyshrinkbits(const bigint<ydigits> &y, int n)
     {
         copyshrinkdigits(y, n/bidigitbits);
     }
 
-    template<int X_DIGITS, int Y_DIGITS>
-    bigint &mul(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
+    template<int xdigits, int ydigits>
+    bigint &mul(const bigint<xdigits> &x, const bigint<ydigits> &y)
     {
         if(!x.len || !y.len)
         {
@@ -506,8 +506,8 @@ struct bigint
         zerodigits(i/bidigitbits, n/bidigitbits);
     }
 
-    template<int Y_DIGITS>
-    void copydigits(int to, const bigint<Y_DIGITS> &y, int from, int n)
+    template<int ydigits>
+    void copydigits(int to, const bigint<ydigits> &y, int from, int n)
     {
         int avail = std::min(y.len-from, n);
         memcpy(&digits[to], &y.digits[from], avail*sizeof(digit));
@@ -517,8 +517,8 @@ struct bigint
         }
     }
 
-    template<int Y_DIGITS>
-    void copybits(int to, const bigint<Y_DIGITS> &y, int from, int n)
+    template<int ydigits>
+    void copybits(int to, const bigint<ydigits> &y, int from, int n)
     {
         copydigits(to/bidigitbits, y, from/bidigitbits, n/bidigitbits);
     }
@@ -532,8 +532,8 @@ struct bigint
         dupdigits(to/bidigitbits, from/bidigitbits, n/bidigitbits);
     }
 
-    template<int Y_DIGITS>
-    bool operator==(const bigint<Y_DIGITS> &y) const
+    template<int ydigits>
+    bool operator==(const bigint<ydigits> &y) const
     {
         if(len!=y.len)
         {
@@ -549,11 +549,11 @@ struct bigint
         return true;
     }
 
-    template<int Y_DIGITS>
-    bool operator!=(const bigint<Y_DIGITS> &y) const { return !(*this==y); }
+    template<int ydigits>
+    bool operator!=(const bigint<ydigits> &y) const { return !(*this==y); }
 
-    template<int Y_DIGITS>
-    bool operator<(const bigint<Y_DIGITS> &y) const
+    template<int ydigits>
+    bool operator<(const bigint<ydigits> &y) const
     {
         if(len<y.len)
         {
@@ -577,14 +577,14 @@ struct bigint
         return false;
     }
 
-    template<int Y_DIGITS>
-    bool operator>(const bigint<Y_DIGITS> &y) const { return y<*this; }
+    template<int ydigits>
+    bool operator>(const bigint<ydigits> &y) const { return y<*this; }
 
-    template<int Y_DIGITS>
-    bool operator<=(const bigint<Y_DIGITS> &y) const { return !(y<*this); }
+    template<int ydigits>
+    bool operator<=(const bigint<ydigits> &y) const { return !(y<*this); }
 
-    template<int Y_DIGITS>
-    bool operator>=(const bigint<Y_DIGITS> &y) const { return !(*this<y); }
+    template<int ydigits>
+    bool operator>=(const bigint<ydigits> &y) const { return !(*this<y); }
 };
 
 constexpr int gfdigits = (192+bidigitbits-1)/bidigitbits;
@@ -602,28 +602,28 @@ struct gfield : gfint
     gfield(digit n) : gfint(n) {}
     gfield(const char *s) : gfint(s) {}
 
-    template<int Y_DIGITS>
-    gfield(const bigint<Y_DIGITS> &y) : gfint(y) {}
+    template<int ydigits>
+    gfield(const bigint<ydigits> &y) : gfint(y) {}
 
-    template<int Y_DIGITS>
-    gfield &operator=(const bigint<Y_DIGITS> &y)
+    template<int ydigits>
+    gfield &operator=(const bigint<ydigits> &y)
     {
         gfint::operator=(y);
         return *this;
     }
 
-    template<int X_DIGITS, int Y_DIGITS>
-    gfield &add(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
+    template<int xdigits, int ydigits>
+    gfield &add(const bigint<xdigits> &x, const bigint<ydigits> &y)
     {
         gfint::add(x, y);
         if(*this >= P) gfint::sub(*this, P);
         return *this;
     }
-    template<int Y_DIGITS>
-    gfield &add(const bigint<Y_DIGITS> &y) { return add(*this, y); }
+    template<int ydigits>
+    gfield &add(const bigint<ydigits> &y) { return add(*this, y); }
 
-    template<int X_DIGITS>
-    gfield &mul2(const bigint<X_DIGITS> &x) { return add(x, x); }
+    template<int xdigits>
+    gfield &mul2(const bigint<xdigits> &x) { return add(x, x); }
 
     gfield &mul2() { return mul2(*this); }
 
@@ -637,8 +637,8 @@ struct gfield : gfint
         return *this;
     }
 
-    template<int X_DIGITS, int Y_DIGITS>
-    gfield &sub(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
+    template<int xdigits, int ydigits>
+    gfield &sub(const bigint<xdigits> &x, const bigint<ydigits> &y)
     {
         if(x < y)
         {
@@ -652,14 +652,14 @@ struct gfield : gfint
         }
         return *this;
     }
-    template<int Y_DIGITS>
-    gfield &sub(const bigint<Y_DIGITS> &y)
+    template<int ydigits>
+    gfield &sub(const bigint<ydigits> &y)
     {
         return sub(*this, y);
     }
 
-    template<int X_DIGITS>
-    gfield &neg(const bigint<X_DIGITS> &x)
+    template<int xdigits>
+    gfield &neg(const bigint<xdigits> &x)
     {
         gfint::sub(P, x);
         return *this;
@@ -669,8 +669,8 @@ struct gfield : gfint
         return neg(*this);
     }
 
-    template<int X_DIGITS>
-    gfield &square(const bigint<X_DIGITS> &x)
+    template<int xdigits>
+    gfield &square(const bigint<xdigits> &x)
     {
         return mul(x, x);
     }
@@ -680,17 +680,17 @@ struct gfield : gfint
         return square(*this);
     }
 
-    template<int X_DIGITS, int Y_DIGITS>
-    gfield &mul(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
+    template<int xdigits, int ydigits>
+    gfield &mul(const bigint<xdigits> &x, const bigint<ydigits> &y)
     {
-        bigint<X_DIGITS+Y_DIGITS> result;
+        bigint<xdigits+ydigits> result;
         result.mul(x, y);
         reduce(result);
         return *this;
     }
 
-    template<int Y_DIGITS>
-    gfield &mul(const bigint<Y_DIGITS> &y)
+    template<int ydigits>
+    gfield &mul(const bigint<ydigits> &y)
     {
         return mul(*this, y);
     }
@@ -730,8 +730,8 @@ struct gfield : gfint
         }
     }
 
-    template<int X_DIGITS, int Y_DIGITS>
-    gfield &pow(const bigint<X_DIGITS> &x, const bigint<Y_DIGITS> &y)
+    template<int xdigits, int ydigits>
+    gfield &pow(const bigint<xdigits> &x, const bigint<ydigits> &y)
     {
         gfield a(x);
         if(y.hasbit(0))
@@ -758,8 +758,8 @@ struct gfield : gfint
         return *this;
     }
 
-    template<int Y_DIGITS>
-    gfield &pow(const bigint<Y_DIGITS> &y)
+    template<int ydigits>
+    gfield &pow(const bigint<ydigits> &y)
     {
         return pow(*this, y);
     }
@@ -856,8 +856,8 @@ struct gfield : gfint
         invert(*this);
     }
 
-    template<int X_DIGITS>
-    static int legendre(const bigint<X_DIGITS> &x)
+    template<int xdigits>
+    static int legendre(const bigint<xdigits> &x)
     {
         static const gfint Psub1div2(gfint(P).sub(bigint<1>(1)).rshift(1));
         gfield L;
