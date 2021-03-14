@@ -149,14 +149,14 @@ struct vertmodel : animmodel
                         }
                         else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            minvert = min(minvert, idxs.add(static_cast<ushort>(vidx)));
+                            minvert = std::min(minvert, idxs.add(static_cast<ushort>(vidx)));
                             break;
                         }
                     }
                 }
             }
-            minvert = min(minvert, static_cast<ushort>(voffset));
-            maxvert = max(minvert, static_cast<ushort>(vverts.length()-1));
+            minvert = std::min(minvert, static_cast<ushort>(voffset));
+            maxvert = std::max(minvert, static_cast<ushort>(vverts.length()-1));
             elen = idxs.length()-eoffset;
             return vverts.length()-voffset;
         }
@@ -690,8 +690,8 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
         }
         else
         {
-            mdl.pitchmin = -360*fabs(mdl.pitchscale) + mdl.pitchoffset;
-            mdl.pitchmax =  360*fabs(mdl.pitchscale) + mdl.pitchoffset;
+            mdl.pitchmin = -360*std::fabs(mdl.pitchscale) + mdl.pitchoffset;
+            mdl.pitchmax =  360*std::fabs(mdl.pitchscale) + mdl.pitchoffset;
         }
     }
 
