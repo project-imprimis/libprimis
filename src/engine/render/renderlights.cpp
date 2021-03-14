@@ -2031,10 +2031,10 @@ static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy
 
 static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
 {
-    int vx1 = std::max(static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
-        vy1 = std::max(static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
-        vx2 = std::min(static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)), std::min(((tx2*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
-        vy2 = std::min(static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh)), std::min(((ty2*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
+    int vx1 = std::max(static_cast<int>(std::floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
+        vy1 = std::max(static_cast<int>(std::floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
+        vx2 = std::min(static_cast<int>(std::ceil((sx2*0.5f+0.5f)*vieww)), std::min(((tx2*lighttilevieww)/lighttilew)*lighttilealignw, vieww)),
+        vy2 = std::min(static_cast<int>(std::ceil((sy2*0.5f+0.5f)*viewh)), std::min(((ty2*lighttileviewh)/lighttileh)*lighttilealignh, viewh));
     lightquads(z, (vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f, (vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f);
 }
 
@@ -2229,7 +2229,7 @@ static inline void setlightparams(int i, const lightinfo &l)
             shadowparamsv[i] = vec4(
                 -0.5f * sm.size * cotan360(l.spot),
                 (-smnearclip * smfarclip / (smfarclip - smnearclip) - 0.5f*bias),
-                1 / (1 + fabs(l.dir.z)),
+                1 / (1 + std::fabs(l.dir.z)),
                 0.5f + 0.5f * (smfarclip + smnearclip) / (smfarclip - smnearclip));
         }
         else
@@ -2271,10 +2271,10 @@ static void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx
     {
         glDepthBounds_(0, depthtestlightsclamp);
     }
-    int tx1 = std::max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
-        ty1 = std::max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
-        tx2 = std::min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
-        ty2 = std::min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
+    int tx1 = std::max(static_cast<int>(std::floor((bsx1*0.5f+0.5f)*vieww)), 0),
+        ty1 = std::max(static_cast<int>(std::floor((bsy1*0.5f+0.5f)*viewh)), 0),
+        tx2 = std::min(static_cast<int>(std::ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
+        ty2 = std::min(static_cast<int>(std::ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
     s->setvariant(transparent ? 0 : -1, 16);
     lightquad(-1, (tx1*2.0f)/vieww-1.0f, (ty1*2.0f)/viewh-1.0f, (tx2*2.0f)/vieww-1.0f, (ty2*2.0f)/viewh-1.0f, tilemask);
     lightpassesused++;
@@ -2324,10 +2324,10 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
             setlightparams(0, l);
             setlightshader(s, 1, false, l.shadowmap >= 0, l.spot > 0, transparent, avatarpass > 0);
 
-            int tx1 = static_cast<int>(floor((sx1*0.5f+0.5f)*vieww)),
-                ty1 = static_cast<int>(floor((sy1*0.5f+0.5f)*viewh)),
-                tx2 = static_cast<int>(ceil((sx2*0.5f+0.5f)*vieww)),
-                ty2 = static_cast<int>(ceil((sy2*0.5f+0.5f)*viewh));
+            int tx1 = static_cast<int>(std::floor((sx1*0.5f+0.5f)*vieww)),
+                ty1 = static_cast<int>(std::floor((sy1*0.5f+0.5f)*viewh)),
+                tx2 = static_cast<int>(std::ceil((sx2*0.5f+0.5f)*vieww)),
+                ty2 = static_cast<int>(std::ceil((sy2*0.5f+0.5f)*viewh));
             glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
             if(hasDBT && depthtestlights > 1)
@@ -2564,10 +2564,10 @@ void renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const uint *ti
     int stencilref = -1;
     if(msaapass == 1 && ghasstencil)
     {
-        int tx1 = std::max(static_cast<int>(floor((bsx1*0.5f+0.5f)*vieww)), 0),
-            ty1 = std::max(static_cast<int>(floor((bsy1*0.5f+0.5f)*viewh)), 0),
-            tx2 = std::min(static_cast<int>(ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
-            ty2 = std::min(static_cast<int>(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
+        int tx1 = std::max(static_cast<int>(std::floor((bsx1*0.5f+0.5f)*vieww)), 0),
+            ty1 = std::max(static_cast<int>(std::floor((bsy1*0.5f+0.5f)*viewh)), 0),
+            tx2 = std::min(static_cast<int>(std::ceil((bsx2*0.5f+0.5f)*vieww)), vieww),
+            ty2 = std::min(static_cast<int>(std::ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         if(stencilmask)
         {
@@ -2820,7 +2820,7 @@ void rendervolumetric()
                 LOCALPARAMF(shadowparams,
                     0.5f * sm.size * cotan360(l.spot),
                     (-smnearclip * smfarclip / (smfarclip - smnearclip) - 0.5f*bias),
-                    1 / (1 + fabs(l.dir.z)),
+                    1 / (1 + std::fabs(l.dir.z)),
                     0.5f + 0.5f * (smfarclip + smnearclip) / (smfarclip - smnearclip));
             }
             else
@@ -2834,10 +2834,10 @@ void rendervolumetric()
             LOCALPARAMF(shadowoffset, sm.x + 0.5f*sm.size, sm.y + 0.5f*sm.size);
         }
 
-        int tx1 = static_cast<int>(floor((l.sx1*0.5f+0.5f)*volw)),
-            ty1 = static_cast<int>(floor((l.sy1*0.5f+0.5f)*volh)),
-            tx2 = static_cast<int>(ceil((l.sx2*0.5f+0.5f)*volw)),
-            ty2 = static_cast<int>(ceil((l.sy2*0.5f+0.5f)*volh));
+        int tx1 = static_cast<int>(std::floor((l.sx1*0.5f+0.5f)*volw)),
+            ty1 = static_cast<int>(std::floor((l.sy1*0.5f+0.5f)*volh)),
+            tx2 = static_cast<int>(std::ceil((l.sx2*0.5f+0.5f)*volw)),
+            ty2 = static_cast<int>(std::ceil((l.sy2*0.5f+0.5f)*volh));
         glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
         if(camera1->o.dist(l.o) <= l.radius + nearplane + 1 && depthfaillights)
@@ -2880,10 +2880,10 @@ void rendervolumetric()
         glDisable(GL_DEPTH_TEST);
     }
 
-    int cx1 = static_cast<int>(floor((bsx1*0.5f+0.5f)*volw))&~1,
-        cy1 = static_cast<int>(floor((bsy1*0.5f+0.5f)*volh))&~1,
-        cx2 = (static_cast<int>(ceil((bsx2*0.5f+0.5f)*volw))&~1) + 2,
-        cy2 = (static_cast<int>(ceil((bsy2*0.5f+0.5f)*volh))&~1) + 2;
+    int cx1 = static_cast<int>(std::floor((bsx1*0.5f+0.5f)*volw))&~1,
+        cy1 = static_cast<int>(std::floor((bsy1*0.5f+0.5f)*volh))&~1,
+        cx2 = (static_cast<int>(std::ceil((bsx2*0.5f+0.5f)*volw))&~1) + 2,
+        cy2 = (static_cast<int>(std::ceil((bsy2*0.5f+0.5f)*volh))&~1) + 2;
     if(volbilateral || volblur)
     {
         int radius = (volbilateral ? volbilateral : volblur)*2;
@@ -3136,7 +3136,7 @@ void collectlights()
                     lod = smcubeprec;
                 }
                 lod *= std::clamp(l.radius * prec / sqrtf(std::max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-                int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
+                int size = std::clamp(static_cast<int>(std::ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
                 w *= size;
                 h *= size;
                 if(mismatched)
@@ -3385,7 +3385,7 @@ void packlights()
                 lod = smcubeprec;
             }
             lod *= std::clamp(l.radius * prec / sqrtf(std::max(1.0f, l.dist/l.radius)), static_cast<float>(smminsize), static_cast<float>(smmaxsize));
-            int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
+            int size = std::clamp(static_cast<int>(std::ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
             w *= size;
             h *= size;
             ushort x = USHRT_MAX,
@@ -3428,7 +3428,7 @@ void rendercsmshadowmaps()
     shadoworigin = vec(0, 0, 0);
     shadowdir = csm.lightview;
     shadowbias = csm.lightview.project_bb(worldmin, worldmax);
-    shadowradius = fabs(csm.lightview.project_bb(worldmax, worldmin));
+    shadowradius = std::fabs(csm.lightview.project_bb(worldmax, worldmin));
 
     float polyfactor = csmpolyfactor,
           polyoffset = csmpolyoffset;
@@ -3519,7 +3519,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
     }
 
     lod *= smminsize;
-    int size = std::clamp(static_cast<int>(ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
+    int size = std::clamp(static_cast<int>(std::ceil((lod * shadowatlaspacker.w) / shadowatlassize)), 1, shadowatlaspacker.w / w);
     bias = border / static_cast<float>(size - border);
 
     return type;
