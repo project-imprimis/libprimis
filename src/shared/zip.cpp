@@ -397,7 +397,7 @@ struct zipstream : stream
 {
     enum
     {
-        BUFSIZE  = 16384
+        Buffer_Size  = 16384
     };
     ziparchive *arch;
     zipfile *info;
@@ -417,13 +417,13 @@ struct zipstream : stream
     {
         close();
     }
-    void readbuf(uint size = BUFSIZE)
+    void readbuf(uint size = Buffer_Size)
     {
         if(!zfile.avail_in)
         {
             zfile.next_in = (Bytef *)buf;
         }
-        size = std::min(size, static_cast<uint>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
+        size = std::min(size, static_cast<uint>(&buf[Buffer_Size] - &zfile.next_in[zfile.avail_in]));
         if(arch->owner != this)
         {
             arch->owner = nullptr;
@@ -465,7 +465,7 @@ struct zipstream : stream
         ended = false;
         if(f->compressedsize)
         {
-            buf = new uchar[BUFSIZE];
+            buf = new uchar[Buffer_Size];
         }
         return true;
     }
@@ -654,7 +654,7 @@ struct zipstream : stream
         {
             if(!zfile.avail_in)
             {
-                readbuf(BUFSIZE);
+                readbuf(Buffer_Size);
             }
             int err = inflate(&zfile, Z_NO_FLUSH);
             if(err != Z_OK)
