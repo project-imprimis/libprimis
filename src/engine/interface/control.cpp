@@ -131,5 +131,5 @@ int getclockmillis()
         millis = static_cast<int>(millis*(static_cast<double>(clockerror)/1000000));
     }
     millis += clockvirtbase;
-    return max(millis, totalmillis);
+    return std::max(millis, totalmillis);
 }
