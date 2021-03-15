@@ -135,8 +135,8 @@ void drawenvbox(Texture **sky = nullptr, float z1clip = 0.0f, float z2clip = 1.0
     float v1 = 1-z1clip,
           v2 = 1-z2clip;
     int w = farplane/2,
-        z1 = static_cast<int>(ceil(2*w*(z1clip-0.5f))),
-        z2 = static_cast<int>(ceil(2*w*(z2clip-0.5f)));
+        z1 = static_cast<int>(std::ceil(2*w*(z1clip-0.5f))),
+        z2 = static_cast<int>(std::ceil(2*w*(z2clip-0.5f)));
 
     gle::defvertex();
     gle::deftexcoord0();
