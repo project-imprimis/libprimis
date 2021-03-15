@@ -1424,7 +1424,7 @@ namespace
                     {
                         continue;
                     }
-                    int axis = abs(d.x) > abs(d.y) ? (abs(d.x) > abs(d.z) ? 0 : 2) : (abs(d.y) > abs(d.z) ? 1 : 2);
+                    int axis = std::abs(d.x) > std::abs(d.y) ? (std::abs(d.x) > std::abs(d.z) ? 0 : 2) : (std::abs(d.y) > std::abs(d.z) ? 1 : 2);
                     if(d[axis] < 0)
                     {
                         d.neg();
@@ -2202,7 +2202,7 @@ void reduceslope(ivec &n)
     {
         if(n[i])
         {
-            int val = abs(n[i]);
+            int val = std::abs(n[i]);
             if(mindim < 0 || val < minval)
             {
                 mindim = i;
@@ -2477,5 +2477,4 @@ void recalc()
 {
     allchanged(true);
 }
-
 COMMAND(recalc, "");
