@@ -1112,10 +1112,10 @@ void textinit(char *name, char *file, char *initval)
 }
 COMMAND(textinit, "sss"); // loads into named editor if no file assigned and editor has been rendered
 
-#define PASTEBUFFER "#pastebuffer"
+static const char * pastebuffer = "#pastebuffer";
 
-TEXTCOMMAND(textcopy, "", (), Editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->copyselectionto(b););
-TEXTCOMMAND(textpaste, "", (), Editor *b = useeditor(PASTEBUFFER, Editor_Forever, false); textfocus->insertallfrom(b););
+TEXTCOMMAND(textcopy, "", (), Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->copyselectionto(b););
+TEXTCOMMAND(textpaste, "", (), Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->insertallfrom(b););
 TEXTCOMMAND(textmark, "i", (int *m),  // (1=mark, 2=unmark), return current mark setting if no args
     if(*m)
     {
