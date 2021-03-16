@@ -415,7 +415,6 @@ void startmusic(char *name, char *cmd)
         }
     }
 }
-
 COMMANDN(music, startmusic, "ss");
 
 static Mix_Chunk *loadwav(const char *name)
@@ -828,6 +827,8 @@ void updatesounds()
     }
 }
 
+//number of sounds before the game will refuse to play another sound (with `playsound()`);
+//set to 0 to disable checking (0 does not set no sounds to be playable)
 VARP(maxsoundsatonce, 0, 7, 100);
 
 VAR(debugsound, 0, 0, 1); //toggles console debug messages
@@ -999,7 +1000,7 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
     }
     return playing;
 }
-COMMAND(playsound, "i");
+COMMAND(playsound, "i"); //i: the index of the sound to be played
 
 void stopsounds()
 {
