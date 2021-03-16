@@ -1519,9 +1519,17 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     slotparams.add(param);
 }
 
-ICOMMAND(setshaderparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
-ICOMMAND(defuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w));
-ICOMMAND(reuseuniformparam, "sfFFf", (char *name, float *x, float *y, float *z, float *w), addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE));
+void setshaderparamcmd(char *name, float *x, float *y, float *z, float *w)
+{
+    addslotparam(name, *x, *y, *z, *w);
+}
+COMMANDN(setshaderparam, setshaderparamcmd, "sfFFf");
+
+void reuseuniformparamcmd(char *name, float *x, float *y, float *z, float *w)
+{
+    addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE);
+}
+COMMANDN(reuseuniformparam, reuseuniformparamcmd, "sfFFf");
 
 static const int numpostfxbinds = 10;
 
