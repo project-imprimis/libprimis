@@ -99,7 +99,7 @@ void drawdamagecompass(int w, int h)
 
             // fade in log space so short blips don't disappear too quickly
             scale -= static_cast<float>(curtime)/damagecompassfade;
-            damagedirs[i] = scale > 0 ? (pow(logscale, scale) - 1) / (logscale - 1) : 0;
+            damagedirs[i] = scale > 0 ? (std::pow(logscale, scale) - 1) / (logscale - 1) : 0;
         }
     }
     if(dirs)

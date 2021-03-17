@@ -327,7 +327,7 @@ void ragdolldata::applyrotfriction(float ts)
 {
     calctris();
     float stopangle = 2*M_PI*ts*ragdollrotfricstop,
-          rotfric = 1.0f - pow(ragdollrotfric, ts*1000.0f/ragdolltimestepmin);
+          rotfric = 1.0f - std::pow(ragdollrotfric, ts*1000.0f/ragdolltimestepmin);
     for(int i = 0; i < skel->rotfrictions.length(); i++)
     {
         ragdollskel::rotfriction &r = skel->rotfrictions[i];
@@ -459,7 +459,7 @@ void ragdolldata::move(dynent *pl, float ts)
         {
             dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
         }
-        dpos.mul(pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
+        dpos.mul(std::pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
         v.oldpos = v.pos;
         v.pos.add(dpos);
     }
@@ -526,7 +526,7 @@ void moveragdoll(dynent *d)
 
     vec eye = d->ragdoll->skel->eye >= 0 ? d->ragdoll->verts[d->ragdoll->skel->eye].pos : d->ragdoll->center;
     eye.add(d->ragdoll->offset);
-    float k = pow(ragdolleyesmooth, static_cast<float>(curtime)/ragdolleyesmoothmillis);
+    float k = std::pow(ragdolleyesmooth, static_cast<float>(curtime)/ragdolleyesmoothmillis);
     d->o.lerp(eye, 1-k);
 }
 

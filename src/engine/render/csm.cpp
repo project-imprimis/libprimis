@@ -64,7 +64,7 @@ void cascadedshadowmap::updatesplitdist()
     for(int i = 1; i < csmsplits; ++i)
     {
         float si = i / static_cast<float>(csmsplits);
-        splits[i].nearplane = lambda*(nd*pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
+        splits[i].nearplane = lambda*(nd*std::pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
         splits[i-1].farplane = splits[i].nearplane * 1.005f;
     }
     splits[csmsplits-1].farplane = fd;

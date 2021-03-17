@@ -374,7 +374,7 @@ void radiancehints::updatesplitdist()
     for(int i = 1; i < rhsplits; ++i)
     {
         float si = i / static_cast<float>(rhsplits);
-        splits[i].nearplane = lambda*(nd*pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
+        splits[i].nearplane = lambda*(nd*std::pow(ratio, si)) + (1-lambda)*(nd + (fd - nd)*si);
         splits[i-1].farplane = splits[i].nearplane * 1.005f;
     }
     splits[rhsplits-1].farplane = fd;

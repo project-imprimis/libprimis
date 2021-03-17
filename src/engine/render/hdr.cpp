@@ -421,7 +421,7 @@ void processhdr(GLuint outfbo, int aa)
         glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
         SETSHADER(hdraccum);
         glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
-        LOCALPARAMF(accumscale, lasthdraccum ? pow(hdraccumscale, static_cast<float>(lastmillis - lasthdraccum)/hdraccummillis) : 0);
+        LOCALPARAMF(accumscale, lasthdraccum ? std::pow(hdraccumscale, static_cast<float>(lastmillis - lasthdraccum)/hdraccummillis) : 0);
         screenquad(2, 2);
         glDisable(GL_BLEND);
 
