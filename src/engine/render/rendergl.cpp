@@ -1596,14 +1596,14 @@ FVAR(fogintensity, 0, 0.15f, 1);
 
 float calcfogdensity(float dist)
 {
-    return log(fogintensity)/(M_LN2*dist);
+    return std::log(fogintensity)/(M_LN2*dist);
 }
 
 FVAR(fogcullintensity, 0, 1e-3f, 1);
 
 float calcfogcull()
 {
-    return log(fogcullintensity) / (M_LN2*calcfogdensity(fog - (fog+64)/8));
+    return std::log(fogcullintensity) / (M_LN2*calcfogdensity(fog - (fog+64)/8));
 }
 
 static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = Mat_Air)
@@ -1611,7 +1611,7 @@ static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = 
     float start = 0,
           end = 0;
     float logscale = 256,
-          logblend = log(1 + (logscale - 1)*blend) / log(logscale);
+          logblend = std::log(1 + (logscale - 1)*blend) / std::log(logscale);
 
     curfogcolor = vec(0, 0, 0);
     blendfog(fogmat, below, blend, logblend, start, end, curfogcolor);
