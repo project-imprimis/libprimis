@@ -84,7 +84,7 @@ void drawdamagecompass(int w, int h)
             dirs++;
 
             float logscale = 32,
-                  scale = log(1 + (logscale - 1)*damagedirs[i]) / log(logscale),
+                  scale = log(1 + (logscale - 1)*damagedirs[i]) / std::log(logscale),
                   offset = -size/2.0f-std::min(h, w)/4.0f;
             matrix4x3 m;
             m.identity();
