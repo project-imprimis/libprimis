@@ -116,7 +116,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 {
                     namelen--;
                 }
-                copystring(meshname, name, min(namelen+1, sizeof(meshname)));
+                copystring(meshname, name, std::min(namelen+1, sizeof(meshname)));
                 if(curmesh)
                 {
                     flushmesh(meshname, curmesh, verts, tcverts, tris, attrib[2], smooth);

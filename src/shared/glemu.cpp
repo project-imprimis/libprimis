@@ -314,7 +314,7 @@ namespace gle
         int len = numverts * vertexsize;
         if(vbooffset + len >= maxvbosize)
         {
-            len = min(len, maxvbosize);
+            len = std::min(len, maxvbosize);
             if(!vbo)
             {
                 glGenBuffers_(1, &vbo);
