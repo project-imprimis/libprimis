@@ -73,7 +73,7 @@ bool raysphereintersect(const vec &center, float radius, const vec &o, const vec
     {
         return false;
     }
-    dist = v - std::sqrt((d);
+    dist = v - std::sqrt(d);
     return true;
 }
 
