@@ -1,12 +1,22 @@
 #include "../libprimis-headers/cube.h"
 
 //needed for det3
+/* det2x2()
+ *
+ * returns the determinant of a 2x2 matrix, provided a set of four doubles
+ * (rather than as a matrix2 object)
+ */
 static inline double det2x2(double a, double b, double c, double d)
 {
     return a*d - b*c;
 }
 
 //needed to invert matrix below
+/* det3x3()
+ *
+ * returns the determinant of a 3x3 matrix, provided a set of nine doubles
+ * (rather than as a matrix3 object)
+ */
 static inline double det3x3(double a1, double a2, double a3,
                             double b1, double b2, double b3,
                             double c1, double c2, double c3)
@@ -16,6 +26,15 @@ static inline double det3x3(double a1, double a2, double a3,
          + c1 * det2x2(a2, a3, b2, b3);
 }
 
+/* invert()
+ *
+ * sets the matrix values to the inverse of the provided matrix A*A^-1 = I
+ * returns false if singular (or nearly singular to within tolerance of mindet)
+ * or true if matrix was inverted successfully
+ *
+ * &m: a matrix4 object to be inverted and assigned to the object
+ * mindet: the minimum value at which matrices are considered
+ */
 bool matrix4::invert(const matrix4 &m, double mindet)
 {
     double a1 = m.a.x, a2 = m.a.y, a3 = m.a.z, a4 = m.a.w,
