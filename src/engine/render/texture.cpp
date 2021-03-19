@@ -1601,7 +1601,7 @@ static vec parsevec(const char *arg)
         {
             arg++;
         }
-        v[i] = atof(arg);
+        v[i] = std::atof(arg);
     }
     if(i==1)
     {
@@ -1751,7 +1751,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         }
         else if(matchstring(cmd, len, "agrad"))
         {
-            texagrad(d, atof(arg[0]), atof(arg[1]), atof(arg[2]), atof(arg[3]));
+            texagrad(d, std::atof(arg[0]), std::atof(arg[1]), std::atof(arg[2]), std::atof(arg[3]));
         }
         else if(matchstring(cmd, len, "blend"))
         {
