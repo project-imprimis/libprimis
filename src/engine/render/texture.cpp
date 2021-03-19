@@ -1714,32 +1714,32 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         }
         else if(matchstring(cmd, len, "normal"))
         {
-            int emphasis = atoi(arg[0]);
+            int emphasis = std::atoi(arg[0]);
             texnormal(d, emphasis > 0 ? emphasis : 3);
         }
         else if(matchstring(cmd, len, "dup"))
         {
-            texdup(d, atoi(arg[0]), atoi(arg[1]));
+            texdup(d, std::atoi(arg[0]), std::atoi(arg[1]));
         }
         else if(matchstring(cmd, len, "offset"))
         {
-            texoffset(d, atoi(arg[0]), atoi(arg[1]));
+            texoffset(d, std::atoi(arg[0]), std::atoi(arg[1]));
         }
         else if(matchstring(cmd, len, "rotate"))
         {
-            texrotate(d, atoi(arg[0]), ttype);
+            texrotate(d, std::atoi(arg[0]), ttype);
         }
         else if(matchstring(cmd, len, "reorient"))
         {
-            texreorient(d, atoi(arg[0])>0, atoi(arg[1])>0, atoi(arg[2])>0, ttype);
+            texreorient(d, std::atoi(arg[0])>0, std::atoi(arg[1])>0, std::atoi(arg[2])>0, ttype);
         }
         else if(matchstring(cmd, len, "crop"))
         {
-            texcrop(d, atoi(arg[0]), atoi(arg[1]), *arg[2] ? atoi(arg[2]) : -1, *arg[3] ? atoi(arg[3]) : -1);
+            texcrop(d, std::atoi(arg[0]), std::atoi(arg[1]), *arg[2] ? std::atoi(arg[2]) : -1, *arg[3] ? std::atoi(arg[3]) : -1);
         }
         else if(matchstring(cmd, len, "mix"))
         {
-            texmix(d, *arg[0] ? atoi(arg[0]) : -1, *arg[1] ? atoi(arg[1]) : -1, *arg[2] ? atoi(arg[2]) : -1, *arg[3] ? atoi(arg[3]) : -1);
+            texmix(d, *arg[0] ? std::atoi(arg[0]) : -1, *arg[1] ? std::atoi(arg[1]) : -1, *arg[2] ? std::atoi(arg[2]) : -1, *arg[3] ? std::atoi(arg[3]) : -1);
         }
         else if(matchstring(cmd, len, "grey"))
         {
@@ -1766,8 +1766,8 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         }
         else if(matchstring(cmd, len, "thumbnail"))
         {
-            int w = atoi(arg[0]),
-                h = atoi(arg[1]);
+            int w = std::atoi(arg[0]),
+                h = std::atoi(arg[1]);
             if(w <= 0 || w > (1<<12))
             {
                 w = 64;
@@ -1783,7 +1783,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         }
         else if(matchstring(cmd, len, "compress"))
         {
-            int scale = atoi(arg[0]);
+            int scale = std::atoi(arg[0]);
             if(compress)
             {
                 *compress = scale;
