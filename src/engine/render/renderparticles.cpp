@@ -195,9 +195,9 @@ struct particle
 
 struct partvert
 {
-    vec pos;
-    bvec4 color;
-    vec2 tc;
+    vec pos;     //x,y,z of particle
+    bvec4 color; //r,g,b,a color
+    vec2 tc;     //texture coordinate
 };
 
 static const float collideradius = 8.0f;
@@ -874,7 +874,7 @@ struct varenderer : partrenderer
         if(regen)
         {
             p->flags &= ~0x80;
-
+            //sets the partvert vs array's tc fields to four permutations of input parameters
             #define SETTEXCOORDS(u1c, u2c, v1c, v2c, body) \
             { \
                 float u1 = u1c, \
@@ -916,7 +916,10 @@ struct varenderer : partrenderer
             #define SETCOLOR(r, g, b, a) \
             do { \
                 bvec4 col(r, g, b, a); \
-                for(int i = 0; i < 4; ++i) vs[i].color = col; \
+                for(int i = 0; i < 4; ++i) \
+                { \
+                    vs[i].color = col; \
+                } \
             } while(0)
             #define SETMODCOLOR SETCOLOR((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255)
             if(type&PT_MOD)
