@@ -639,11 +639,6 @@ static inline void modifyblend(const vec &o, int &blend)
     blend = std::min(blend<<2, 255);
 }
 
-template<>
-inline void modifyblend<PT_TAPE>(const vec &o, int &blend)
-{
-}
-
 template<int T>
 static inline void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
 {
