@@ -30,9 +30,9 @@ Shader *particleshader          = nullptr,
        *particlesoftshader      = nullptr,
        *particletextshader      = nullptr;
 
-VARP(particlelayers, 0, 1, 1);
-FVARP(particlebright, 0, 2, 100);
-VARP(particlesize, 20, 100, 500);
+VARP(particlelayers, 0, 1, 1);    //used in renderalpha
+FVARP(particlebright, 0, 2, 100); //multiply particle colors by this factor in brightness
+VARP(particlesize, 20, 100, 500); //particle size factor
 
 VARP(softparticles, 0, 1, 1);
 VARP(softparticleblend, 1, 8, 64);
@@ -882,7 +882,10 @@ struct varenderer : partrenderer
 
             #define SETTEXCOORDS(u1c, u2c, v1c, v2c, body) \
             { \
-                float u1 = u1c, u2 = u2c, v1 = v1c, v2 = v2c; \
+                float u1 = u1c, \
+                      u2 = u2c, \
+                      v1 = v1c, \
+                      v2 = v2c; \
                 body; \
                 vs[0].tc = vec2(u1, v1); \
                 vs[1].tc = vec2(u2, v1); \
