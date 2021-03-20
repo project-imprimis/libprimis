@@ -3,7 +3,7 @@
 
 #include "../libprimis-headers/cube.h"
 
-#include "render/texture.h"
+#include "../libprimis-headers/texture.h"
 
 extern int gamespeed, paused;
 
