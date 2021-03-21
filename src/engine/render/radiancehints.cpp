@@ -533,9 +533,9 @@ void radiancehints::renderslices()
               step       = 2*cellradius,
               nudge      = rhnudge*2*splits[0].bounds/rhgrid + rhworldbias*step;
         vec cmin, cmax,
-            dmin(1e16f, 1e16f, 1e16f),
+            dmin( 1e16f,  1e16f,  1e16f),
             dmax(-1e16f, -1e16f, -1e16f),
-            bmin(1e16f, 1e16f, 1e16f),
+            bmin( 1e16f,  1e16f,  1e16f),
             bmax(-1e16f, -1e16f, -1e16f);
         for(int k = 0; k < 3; ++k)
         {
@@ -761,8 +761,10 @@ void radiancehints::renderslices()
                     }
                     if(z > dmin.z && z < dmax.z)
                     {
-                        float dx1 = std::max(px1, dmin.x), dx2 = std::min(px2, dmax.x),
-                              dy1 = std::max(py1, dmin.y), dy2 = std::min(py2, dmax.y);
+                        float dx1 = std::max(px1, dmin.x),
+                              dx2 = std::min(px2, dmax.x),
+                              dy1 = std::max(py1, dmin.y),
+                              dy2 = std::min(py2, dmax.y);
                         if(dx1 < dx2 && dy1 < dy2)
                         {
                             float dvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(dx1 - x1)/(x2 - x1),
