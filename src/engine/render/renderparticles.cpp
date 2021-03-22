@@ -34,7 +34,6 @@ VARP(particlelayers, 0, 1, 1);    //used in renderalpha
 FVARP(particlebright, 0, 2, 100); //multiply particle colors by this factor in brightness
 VARP(particlesize, 20, 100, 500); //particle size factor
 
-VARP(softparticles, 0, 1, 1);
 VARP(softparticleblend, 1, 8, 64);
 
 // Check canemitparticles() to limit the rate that paricles can be emitted for models/sparklies
@@ -1160,7 +1159,7 @@ struct fireballrenderer : listrenderer
 
     void startrender()
     {
-        if(softparticles && softexplosion)
+        if(softexplosion)
         {
             SETSHADER(explosionsoft);
         }
@@ -1457,7 +1456,7 @@ void renderparticles(int layer)
             {
                 if(changedbits&(PT_LERP|PT_SOFT|PT_NOTEX|PT_SHADER))
                 {
-                    if(flags&PT_SOFT && softparticles)
+                    if(flags&PT_SOFT)
                     {
                         particlesoftshader->set();
                         LOCALPARAMF(softparams, -1.0f/softparticleblend, 0, 0);
