@@ -1337,7 +1337,7 @@ void vectoyawpitch(const vec &v, float &yaw, float &pitch)
     }
     else
     {
-        yaw = -atan2(v.x, v.y)/RAD;
+        yaw = -std::atan2(v.x, v.y)/RAD;
         pitch = std::asin(v.z/v.magnitude())/RAD;
     }
 }

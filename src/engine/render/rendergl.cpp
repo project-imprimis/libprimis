@@ -1907,7 +1907,7 @@ namespace modelpreview
 
         aspect = w/static_cast<float>(h);
         fovy = modelpreviewfov;
-        curfov = 2*atan2(std::tan(fovy/2*RAD), 1/aspect)/RAD;
+        curfov = 2*std::atan2(std::tan(fovy/2*RAD), 1/aspect)/RAD;
         farplane = 1024;
         vieww = std::min(gw, w);
         viewh = std::min(gh, h);
@@ -2126,7 +2126,7 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void 
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
     flipqueries();
     aspect = forceaspect ? forceaspect : hudw/static_cast<float>(hudh);
-    fovy = 2*atan2(std::tan(curfov/2*RAD), aspect)/RAD;
+    fovy = 2*std::atan2(std::tan(curfov/2*RAD), aspect)/RAD;
     vieww = hudw;
     viewh = hudh;
     if(mainmenu)
