@@ -128,7 +128,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    if (caption)
+    if(caption)
     {
         int tw = text_width(caption);
         float tsz = 0.04f*std::min(win_w, win_h)/FONTH,
@@ -138,7 +138,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
         draw_text(caption, 0, 0);
         pophudmatrix();
     }
-    if (mapshot || mapname)
+    if(mapshot || mapname)
     {
         float infowidth = 14*FONTH,
               sz  = 0.35f*std::min(win_w, win_h),
@@ -150,7 +150,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
               mw  = 0,
               mh  = 0;
         // Prepare text area for map info
-        if (mapinfo)
+        if(mapinfo)
         {
             text_boundsf(mapinfo, mw, mh, infowidth);
             x -= 0.5f * mw * msz;
@@ -161,7 +161,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
             }
         }
         // Map shot was provided and isn't empty
-        if (mapshot && mapshot!=notexture)
+        if(mapshot && mapshot!=notexture)
         {
             x -= 0.5f * sz;
             resethudshader();
@@ -169,7 +169,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
             bgquad(x, y, sz, sz);
         }
         // Map name was provided
-        if (mapname)
+        if(mapname)
         {
             float tw  = text_widthf(mapname),
                   tsz = sz/(8*FONTH),
@@ -180,7 +180,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
             my = 1.5f*FONTH*tsz;
         }
         // Map info was provided
-        if (mapinfo)
+        if(mapinfo)
         {
             pushhudtranslate(x + mx, y + my, msz);
             draw_text(mapinfo, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, -1, infowidth);
