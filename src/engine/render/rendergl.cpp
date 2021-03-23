@@ -1289,7 +1289,8 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
 #define ADDXYSCISSOR(p) do { \
         if(p.z >= -p.w) \
         { \
-            float x = p.x / p.w, y = p.y / p.w; \
+            float x = p.x / p.w, \
+                  y = p.y / p.w; \
             sx1 = std::min(sx1, x); \
             sy1 = std::min(sy1, y); \
             sx2 = std::max(sx2, x); \

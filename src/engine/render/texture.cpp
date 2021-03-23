@@ -1612,7 +1612,8 @@ static vec parsevec(const char *arg)
 
 static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *compress = nullptr, int *wrap = nullptr, const char *tdir = nullptr, int ttype = Tex_Diffuse)
 {
-    const char *cmds = nullptr, *file = tname;
+    const char *cmds = nullptr,
+               *file = tname;
     if(tname[0]=='<')
     {
         cmds = tname;
@@ -1636,7 +1637,9 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
     for(const char *pcmds = cmds; pcmds;)
     {
         #define PARSETEXCOMMANDS(cmds) \
-            const char *cmd = nullptr, *end = nullptr, *arg[4] = { nullptr, nullptr, nullptr, nullptr }; \
+            const char *cmd = nullptr, \
+                       *end = nullptr, \
+                       *arg[4] = { nullptr, nullptr, nullptr, nullptr }; \
             cmd = &cmds[1]; \
             end = strchr(cmd, '>'); \
             if(!end) \
