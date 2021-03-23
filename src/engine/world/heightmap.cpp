@@ -95,10 +95,19 @@ namespace hmap
          map [maxbrush][maxbrush];
 
     selinfo changes;
-    bool selecting;
-    int d, dc, dr, dcr, biasup, br, hws, fg;
-    int gx, gy, gz, mx, my, mz, nx, ny, nz, bmx, bmy, bnx, bny;
-    uint fs;
+    bool selecting; //flag used by select() for continuing to adj cubes
+    int d,   //dimension
+        dc,  //dimension coordinate
+        dr,  //dimension sign
+        dcr, //dimension coordinate sign
+        biasup, //if dir < 0
+        hws, //heightmap [gridpower] world size
+        fg;  //+/- gridpower depending on dc
+    int gx, gy, gz,
+        mx, my, mz,
+        nx, ny, nz,
+        bmx, bmy, bnx, bny;
+    uint fs; //face
     selinfo hundo;
 
     cube *getcube(ivec t, int f)
@@ -441,7 +450,6 @@ namespace hmap
         dc = DIM_COORD(sel.orient);
         dcr= dc ? 1 : -1;
         dr = dir>0 ? 1 : -1;
-        br = dir>0 ? 0x08080808 : 0;
      //   biasup = mode == dir<0;
         biasup = dir < 0;
         bool paintme = paintbrush;
