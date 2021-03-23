@@ -46,14 +46,14 @@ namespace hmap
             textures.empty() ||
             textures.find(c->texture[o]) >= 0;
     }
-    //max brush consts
+    //max brush consts: number of cubes on end that can be heightmap brushed at once
     static const int maxbrush  = 64,
                      maxbrushc = 63,
                      maxbrush2 = 32;
 
     int brush[maxbrush][maxbrush];
-    VARN(hbrushx, brushx, 0, maxbrush2, maxbrush);
-    VARN(hbrushy, brushy, 0, maxbrush2, maxbrush);
+    VARN(hbrushx, brushx, 0, maxbrush2, maxbrush); //max width for a brush
+    VARN(hbrushy, brushy, 0, maxbrush2, maxbrush); //max length for a brush
     bool paintbrush = 0;
     int brushmaxx = 0,
         brushminx = maxbrush,
