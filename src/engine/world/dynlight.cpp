@@ -17,7 +17,7 @@
 #include "render/rendergl.h"
 
 VARNP(dynlights, usedynlights, 0, 1, 1);
-VARP(dynlightdist, 0, 1024, 10000);
+VARP(dynlightdist, 0, 1024, 10000); //distance after which dynamic lights are not rendered (1024 = 128m)
 
 struct dynlight
 {
@@ -91,6 +91,7 @@ struct dynlight
 vector<dynlight> dynlights;
 vector<dynlight *> closedynlights;
 
+//adds a dynamic light object to the dynlights vector with the attributes indicated (radius, color, fade, peak, flags, etc..)
 void adddynlight(const vec &o, float radius, const vec &color, int fade, int peak, int flags, float initradius, const vec &initcolor, physent *owner, const vec &dir, int spot)
 {
     if(!usedynlights)
@@ -127,6 +128,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     dynlights.insert(insert, d);
 }
 
+//cleans up dynlights, deletes dynlights contents once none have expire field
 void cleardynlights()
 {
     int faded = -1;
@@ -138,7 +140,7 @@ void cleardynlights()
             break;
         }
     }
-    if(faded<0)
+    if(faded<0) //if any light has lastmillis > expire field
     {
         dynlights.setsize(0);
     }
@@ -171,6 +173,8 @@ void updatedynlights()
     }
 }
 
+//finds which dynamic lights are near enough and are visible to the player
+//returns the number of lights (and sets `closedynlights` vector contents to the appropriate nearby light ents)
 int finddynlights()
 {
     closedynlights.setsize(0);
