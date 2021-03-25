@@ -118,7 +118,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     {
         return false;
     }
-    hdr.signature = *(uint *)src; src += 4;
+    hdr.signature = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes)
     hdr.disknumber = *(ushort *)src; src += 2;
     hdr.directorydisk = *(ushort *)src; src += 2;
     hdr.diskentries = *(ushort *)src; src += 2;
@@ -151,7 +151,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
             break;
         }
         zipfileheader hdr;
-        hdr.signature = *(uint *)src; src += 4;
+        hdr.signature = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes)
         hdr.version = *(ushort *)src; src += 2;
         hdr.needversion = *(ushort *)src; src += 2;
         hdr.flags = *(ushort *)src; src += 2;
@@ -210,7 +210,7 @@ static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
         return false;
     }
     uchar *src = buf;
-    h.signature = *(uint *)src; src += 4;
+    h.signature = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes e.g)
     h.version = *(ushort *)src; src += 2;
     h.flags = *(ushort *)src; src += 2;
     h.compression = *(ushort *)src; src += 2;
