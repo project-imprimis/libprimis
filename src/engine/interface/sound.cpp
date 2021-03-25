@@ -65,6 +65,7 @@ struct SoundConfig
 
 //sound channel object that is allocated to every sound emitter in use
 //(entities, players, weapons, etc.)
+//defined in world coordinates, and position mixing is done for the player dynamically
 struct SoundChannel
 {
     int id;
@@ -232,7 +233,11 @@ bool shouldinitaudio = true;
 SVARF(audiodriver, AUDIODRIVER, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
 
 //master sound toggle
-VARF(sound, 0, 1, 1, { shouldinitaudio = true; initwarning("sound configuration", Init_Reset, Change_Sound); });
+VARF(sound, 0, 1, 1,
+{
+    shouldinitaudio = true;
+    initwarning("sound configuration", Init_Reset, Change_Sound);
+});
 
 //# of sound channels (not physical output channels, but individual sound samples in use, such as weaps and light ents)
 VARF(soundchans, 1, 32, 128, initwarning("sound configuration", Init_Reset, Change_Sound));
@@ -713,9 +718,10 @@ void checkmapsounds()
 
 VAR(stereo, 0, 1, 1);
 
-//distance in cubits: how far away sound entities can start (340 = 42.5m)
+//distance in cubits: how far away sound entities can be heard at(340 = 42.5m)
 VAR(maxsoundradius, 1, 340, 0);
 
+//recalculates stereo mix & volume for a soundchannel (sound ent, or player generated sound)
 bool updatechannel(SoundChannel &chan)
 {
     if(!chan.slot)
