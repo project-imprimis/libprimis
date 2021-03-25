@@ -22,15 +22,15 @@
 VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
 bool shouldgrab = false,
-     grabinput = false,
-     minimized = false,
+     grabinput  = false,
+     minimized  = false,
      canrelativemouse = true,
-     relativemouse = false;
+     relativemouse    = false;
 int keyrepeatmask = 0,
     textinputmask = 0;
 Uint32 textinputtime = 0;
 
-VAR(textinputfilter, 0, 5, 1000);
+VAR(textinputfilter, 0, 5, 1000); //delay in ms between text input events
 
 void keyrepeat(bool on, int mask)
 {
@@ -180,6 +180,8 @@ void ignoremousemotion()
     }
 }
 
+/* resetmousemotion: resets the cursor to the middle of the screen regardless of where it is
+ */
 static void resetmousemotion()
 {
     if(grabinput && !relativemouse && !(SDL_GetWindowFlags(screen) & SDL_WINDOW_FULLSCREEN))
@@ -188,6 +190,14 @@ static void resetmousemotion()
     }
 }
 
+/* checkmousemotion
+ *
+ * gets the information from SDL2 about the amount by which the cursor has moved, and
+ * and changes the passed dx, dy values by that amount
+ *
+ * int &dx: pointer to the mouse x delta
+ * int &dy: pointer to the mouse y delta
+ */
 static void checkmousemotion(int &dx, int &dy)
 {
     for(uint i = 0; i < events.size(); i++)
