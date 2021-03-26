@@ -1,3 +1,12 @@
+# -o3: slowest compile times
+# -ffast-math:
+# -std=c++17: compile to c++17 standard, needed for some std library functions
+# -march=x86-64: compile only for x64 platforms (32 bit not officially supported)
+# -Wall: show "all" level of compiler warnings
+# -fsigned-char: have the `char` type be signed (as opposed to `uchar`)
+# -fno-rtti: disable runtime type interpretation, it's not used
+# -fpic: compile position independent code for library creation
+
 CXXFLAGS= -O3 -ffast-math -std=c++17 -march=x86-64 -Wall -fsigned-char -fno-rtti -fpic
 
 	CLIENT_INCLUDES= -Ishared -Iengine -Igame $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
