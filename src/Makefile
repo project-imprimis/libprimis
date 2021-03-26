@@ -1,5 +1,5 @@
-# -o3: slowest compile times
-# -ffast-math:
+# -o3: slowest compile times, but fastest code
+# -ffast-math: force less accurate but faster floating point calcs
 # -std=c++17: compile to c++17 standard, needed for some std library functions
 # -march=x86-64: compile only for x64 platforms (32 bit not officially supported)
 # -Wall: show "all" level of compiler warnings
