@@ -16,6 +16,13 @@
 
 #include "render/hud.h"
 
+/* execfile
+ *
+ * executes the cubescript in a file located at a relative path to the game's home dir
+ *
+ * *cfgfile: a pointer to the name of the file
+ * msg: if true, prints out a message if there is no file found
+ */
 bool execfile(const char *cfgfile, bool msg)
 {
     string s;
@@ -1230,8 +1237,10 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         return;
     }
     identstack xstack, ystack;
-    pusharg(*x, nullval, xstack); x->flags &= ~Idf_Unknown;
-    pusharg(*y, nullval, ystack); y->flags &= ~Idf_Unknown;
+    pusharg(*x, nullval, xstack);
+    x->flags &= ~Idf_Unknown;
+    pusharg(*y, nullval, ystack);
+    y->flags &= ~Idf_Unknown;
     int totalunique = total,
         numunique = items.length();
     if(body)
