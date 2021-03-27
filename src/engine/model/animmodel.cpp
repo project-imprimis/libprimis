@@ -1396,3 +1396,90 @@ void animmodel::render(int anim, int basetime, int basetime2, const vec &o, floa
         d->lastrendered = lastmillis;
     }
 }
+
+void animmodel::cleanup()
+{
+    for(int i = 0; i < parts.length(); i++)
+    {
+        parts[i]->cleanup();
+    }
+}
+
+void animmodel::initmatrix(matrix4x3 &m)
+{
+    m.identity();
+    if(offsetyaw)
+    {
+        m.rotate_around_z(offsetyaw*RAD);
+    }
+    if(offsetpitch)
+    {
+        m.rotate_around_x(offsetpitch*RAD);
+    }
+    if(offsetroll)
+    {
+        m.rotate_around_y(-offsetroll*RAD);
+    }
+    m.translate(translate, scale);
+}
+
+void animmodel::genBIH(vector<BIH::mesh> &bih)
+{
+    if(parts.empty())
+    {
+        return;
+    }
+    matrix4x3 m;
+    initmatrix(m);
+    parts[0]->genBIH(bih, m);
+    for(int i = 1; i < parts.length(); i++)
+    {
+        part *p = parts[i];
+        switch(linktype(this, p))
+        {
+            case Link_Coop:
+            case Link_Reuse:
+            {
+                p->genBIH(bih, m);
+                break;
+            }
+        }
+    }
+}
+
+void animmodel::genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient)
+{
+    if(parts.empty())
+    {
+        return;
+    }
+    matrix4x3 m;
+    initmatrix(m);
+    m.mul(orient, matrix4x3(m));
+    parts[0]->genshadowmesh(tris, m);
+    for(int i = 1; i < parts.length(); i++)
+    {
+        part *p = parts[i];
+        switch(linktype(this, p))
+        {
+            case Link_Coop:
+            case Link_Reuse:
+            {
+                p->genshadowmesh(tris, m);
+                break;
+            }
+        }
+    }
+}
+
+void animmodel::preloadBIH()
+{
+    model::preloadBIH();
+    if(bih)
+    {
+        for(int i = 0; i < parts.length(); i++)
+        {
+            parts[i]->preloadBIH();
+        }
+    }
+}
