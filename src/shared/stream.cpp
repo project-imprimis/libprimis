@@ -375,7 +375,10 @@ vector<packagedir> packagedirs;
 char *makerelpath(const char *dir, const char *file, const char *prefix, const char *cmd)
 {
     static string tmp;
-    if(prefix) copystring(tmp, prefix);
+    if(prefix)
+    {
+        copystring(tmp, prefix);
+    }
     else tmp[0] = '\0';
     if(file[0]=='<')
     {
@@ -954,13 +957,40 @@ struct filestream : stream
 #endif
     }
 
-    size_t read(void *buf, size_t len) { return fread(buf, 1, len, file); }
-    size_t write(const void *buf, size_t len) { return fwrite(buf, 1, len, file); }
-    bool flush() { return !fflush(file); }
-    int getchar() { return fgetc(file); }
-    bool putchar(int c) { return fputc(c, file)!=EOF; }
-    bool getline(char *str, size_t len) { return fgets(str, len, file)!=nullptr; }
-    bool putstring(const char *str) { return fputs(str, file)!=EOF; }
+    size_t read(void *buf, size_t len)
+    {
+        return fread(buf, 1, len, file);
+    }
+
+    size_t write(const void *buf, size_t len)
+    {
+        return fwrite(buf, 1, len, file);
+    }
+
+    bool flush()
+    {
+        return !fflush(file);
+    }
+
+    int getchar()
+    {
+        return fgetc(file);
+    }
+
+    bool putchar(int c)
+    {
+        return fputc(c, file)!=EOF;
+    }
+
+    bool getline(char *str, size_t len)
+    {
+        return fgets(str, len, file)!=nullptr;
+    }
+
+    bool putstring(const char *str)
+    {
+        return fputs(str, file)!=EOF;
+    }
 
     size_t printf(const char *fmt, ...)
     {
@@ -972,7 +1002,7 @@ struct filestream : stream
     }
 };
 
-VAR(debuggz, 0, 0, 1);
+VAR(debuggz, 0, 0, 1); //toggles gz checking routines
 
 struct gzstream : stream
 {
