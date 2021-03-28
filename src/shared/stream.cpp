@@ -1344,7 +1344,7 @@ struct gzstream : stream
         {
             pos += zfile.total_out;
         }
-        if(pos >= (offset)zfile.total_out)
+        if(pos >= static_cast<offset>(zfile.total_out))
         {
             pos -= zfile.total_out;
         }
@@ -1643,7 +1643,7 @@ struct utf8stream : stream
         uchar skip[512];
         while(off > 0)
         {
-            size_t skipped = static_cast<size_t>(std::min(off, (offset)sizeof(skip)));
+            size_t skipped = static_cast<size_t>(std::min(off, static_cast<offset>(sizeof(skip))));
             if(read(skip, skipped) != skipped)
             {
                 stopreading();
@@ -1732,7 +1732,7 @@ struct utf8stream : stream
         while(next < len)
         {
             size_t carry = 0,
-                   n = encodeutf8(dst, sizeof(dst), &((uchar *)src)[next], len - next, &carry);
+                   n = encodeutf8(dst, sizeof(dst), &(static_cast<uchar *>(const_cast<void *>(src)))[next], len - next, &carry);
             if(n > 0 && file->write(dst, n) != n)
             {
                 stopwriting();
@@ -1874,7 +1874,7 @@ char *loadfile(const char *fn, size_t *size, bool utf8)
     }
     if(utf8)
     {
-        len = decodeutf8((uchar *)buf, len, (uchar *)buf, len);
+        len = decodeutf8(reinterpret_cast<uchar *>(buf), len, reinterpret_cast<uchar *>(buf), len);
     }
     buf[len] = '\0';
     if(size!=nullptr)
