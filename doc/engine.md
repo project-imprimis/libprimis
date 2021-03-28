@@ -523,12 +523,13 @@ The `model` folder contains headers that implement functionality required to
 parse different model formats. There are no source code files in this folder,
 and this folder is only included by `rendermodel.cpp`, located in `render`.
 
-* `animmodel.h` generic animated model support
+* `animmodel.h/cpp` generic animated model support
+* `hitzone.h` model hitboxes
 * `md5.h` md5 model format support
 * `model.h` generic model support
-* `obj.h` obj (wavefront) model format support
-* `ragdoll.h` skeletal model ragdoll support
-* `skelmodel.h` generic skeletal model support
+* `obj.h/cpp` obj (wavefront) model format support
+* `ragdoll.h/cpp` skeletal model ragdoll support
+* `skelmodel.h/cpp` generic skeletal model support
 * `vertmodel.h` generic vertex model support
 
 #### `/render`
@@ -565,7 +566,6 @@ including entity, player, particle, and physics support.
 * `bih.h/cpp` bounded interval hierarchy (model collision)
 * `dynlight.cpp` light entities which move around on the level
 * `explosion.h` explosion effects
-* `hitzone.h` model hitboxes
 * `light.h/cpp` light entity support
 * `material.cpp` in-world special materials (water, lava, etc.)
 * `mpr.h` minkowski portal refinement (model collision)
