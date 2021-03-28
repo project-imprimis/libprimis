@@ -518,27 +518,8 @@ struct animmodel : model
     void genBIH(vector<BIH::mesh> &bih);
     void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &orient);
     void preloadBIH();
-
-    BIH *setBIH()
-    {
-        if(bih)
-        {
-            return bih;
-        }
-        vector<BIH::mesh> meshes;
-        genBIH(meshes);
-        bih = new BIH(meshes);
-        return bih;
-    }
-
-    bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr)
-    {
-        if(parts.empty())
-        {
-            return false;
-        }
-        return parts[0]->link(p, tag, translate, anim, basetime, pos);
-    }
+    BIH *setBIH();
+    bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
 
     bool unlink(part *p)
     {
@@ -549,21 +530,7 @@ struct animmodel : model
         return parts[0]->unlink(p);
     }
 
-    bool animated() const
-    {
-        if(spinyaw || spinpitch || spinroll)
-        {
-            return true;
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            if(parts[i]->animated())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+    bool animated() const;
 
     bool pitched() const
     {

@@ -1483,3 +1483,40 @@ void animmodel::preloadBIH()
         }
     }
 }
+
+BIH *animmodel::setBIH()
+{
+    if(bih)
+    {
+        return bih;
+    }
+    vector<BIH::mesh> meshes;
+    genBIH(meshes);
+    bih = new BIH(meshes);
+    return bih;
+}
+
+bool animmodel::link(part *p, const char *tag, const vec &translate, int anim, int basetime, vec *pos)
+{
+    if(parts.empty())
+    {
+        return false;
+    }
+    return parts[0]->link(p, tag, translate, anim, basetime, pos);
+}
+
+bool animmodel::animated() const
+{
+    if(spinyaw || spinpitch || spinroll)
+    {
+        return true;
+    }
+    for(int i = 0; i < parts.length(); i++)
+    {
+        if(parts[i]->animated())
+        {
+            return true;
+        }
+    }
+    return false;
+}
