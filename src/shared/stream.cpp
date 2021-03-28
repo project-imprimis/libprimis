@@ -1854,7 +1854,9 @@ char *loadfile(const char *fn, size_t *size, bool utf8)
             delete[] buf;
             return nullptr;
         }
-        if(((uchar *)buf)[0] == 0xEF && ((uchar *)buf)[1] == 0xBB && ((uchar *)buf)[2] == 0xBF)
+        if((reinterpret_cast<uchar*>(buf))[0] == 0xEF &&
+           (reinterpret_cast<uchar*>(buf))[1] == 0xBB &&
+           (reinterpret_cast<uchar*>(buf))[2] == 0xBF)
         {
             len -= 3;
         }
