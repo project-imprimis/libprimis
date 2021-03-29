@@ -1230,7 +1230,10 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
             animmodel *m = static_cast<animmodel *>(a[i].m);
             if(!m)
             {
-                if(a[i].pos) link(nullptr, a[i].tag, vec(0, 0, 0), 0, 0, a[i].pos);
+                if(a[i].pos)
+                {
+                    link(nullptr, a[i].tag, vec(0, 0, 0), 0, 0, a[i].pos);
+                }
                 continue;
             }
             part *p = m->parts[0];
