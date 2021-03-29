@@ -1081,7 +1081,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
         for(int i = 0; a[i].tag; i++)
         {
             numtags++;
-            animmodel *m = (animmodel *)a[i].m;
+            animmodel *m = static_cast<animmodel *>(a[i].m);
             if(!m)
             {
                 continue;
@@ -1128,7 +1128,7 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
 
     if(a) for(int i = numtags-1; i >= 0; i--)
     {
-        animmodel *m = (animmodel *)a[i].m;
+        animmodel *m = static_cast<animmodel *>(a[i].m);
         if(!m)
         {
             continue;
@@ -1227,7 +1227,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
         {
             numtags++;
 
-            animmodel *m = (animmodel *)a[i].m;
+            animmodel *m = static_cast<animmodel *>(a[i].m);
             if(!m)
             {
                 if(a[i].pos) link(nullptr, a[i].tag, vec(0, 0, 0), 0, 0, a[i].pos);
@@ -1280,7 +1280,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
     {
         for(int i = numtags-1; i >= 0; i--)
         {
-            animmodel *m = (animmodel *)a[i].m;
+            animmodel *m = static_cast<animmodel *>(a[i].m);
             if(!m)
             {
                 if(a[i].pos)
