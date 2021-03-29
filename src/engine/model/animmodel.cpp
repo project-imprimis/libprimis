@@ -1520,3 +1520,45 @@ bool animmodel::animated() const
     }
     return false;
 }
+
+bool animmodel::alphatested() const
+{
+    for(int i = 0; i < parts.length(); i++)
+    {
+        if(parts[i]->alphatested())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool animmodel::load()
+{
+    startload();
+    bool success = loadconfig() && parts.length(); // configured model, will call the model commands below
+    if(!success)
+    {
+        success = loaddefaultparts(); // model without configuration, try default tris and skin
+    }
+    flushpart();
+    endload();
+    if(flipy())
+    {
+        translate.y = -translate.y;
+    }
+
+    if(!success)
+    {
+        return false;
+    }
+    for(int i = 0; i < parts.length(); i++)
+    {
+        if(!parts[i]->meshes)
+        {
+            return false;
+        }
+    }
+    loaded();
+    return true;
+}
