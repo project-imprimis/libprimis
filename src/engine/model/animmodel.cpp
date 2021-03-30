@@ -1565,3 +1565,19 @@ bool animmodel::load()
     loaded();
     return true;
 }
+
+void animmodel::preloadshaders()
+{
+    for(int i = 0; i < parts.length(); i++)
+    {
+        parts[i]->preloadshaders();
+    }
+}
+
+void animmodel::preloadmeshes()
+{
+    for(int i = 0; i < parts.length(); i++)
+    {
+        parts[i]->preloadmeshes();
+    }
+}

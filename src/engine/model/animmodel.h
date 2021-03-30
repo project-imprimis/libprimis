@@ -564,21 +564,8 @@ struct animmodel : model
 
     bool load();
 
-    void preloadshaders()
-    {
-        for(int i = 0; i < parts.length(); i++)
-        {
-            parts[i]->preloadshaders();
-        }
-    }
-
-    void preloadmeshes()
-    {
-        for(int i = 0; i < parts.length(); i++)
-        {
-            parts[i]->preloadmeshes();
-        }
-    }
+    void preloadshaders();
+    void preloadmeshes();
 
     void setshader(Shader *shader)
     {
