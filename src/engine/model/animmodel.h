@@ -567,128 +567,14 @@ struct animmodel : model
     void preloadshaders();
     void preloadmeshes();
 
-    void setshader(Shader *shader)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                parts[i]->skins[j].shader = shader;
-            }
-        }
-    }
-
-    void setspec(float spec)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                parts[i]->skins[j].spec = spec;
-            }
-        }
-    }
-
-    void setgloss(int gloss)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                parts[i]->skins[j].gloss = gloss;
-            }
-        }
-    }
-
-    void setglow(float glow, float delta, float pulse)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                skin &s = parts[i]->skins[j];
-                s.glow = glow;
-                s.glowdelta = delta;
-                s.glowpulse = pulse;
-            }
-        }
-    }
-
-    void setalphatest(float alphatest)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                parts[i]->skins[j].alphatest = alphatest;
-            }
-        }
-    }
-
-    void setfullbright(float fullbright)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                parts[i]->skins[j].fullbright = fullbright;
-            }
-        }
-    }
-
-    void setcullface(int cullface)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                parts[i]->skins[j].cullface = cullface;
-            }
-        }
-    }
-
-    void setcolor(const vec &color)
-    {
-        if(parts.empty())
-        {
-            loaddefaultparts();
-        }
-        for(int i = 0; i < parts.length(); i++)
-        {
-            for(int j = 0; j < parts[i]->skins.length(); j++)
-            {
-                parts[i]->skins[j].color = color;
-            }
-        }
-    }
+    void setshader(Shader *shader);
+    void setspec(float spec);
+    void setgloss(int gloss);
+    void setglow(float glow, float delta, float pulse);
+    void setalphatest(float alphatest);
+    void setfullbright(float fullbright);
+    void setcullface(int cullface);
+    void setcolor(const vec &color);
 
     void calcbb(vec &center, vec &radius)
     {
