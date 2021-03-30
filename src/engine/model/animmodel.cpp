@@ -1675,7 +1675,7 @@ void animmodel::setfullbright(float fullbright)
     }
 }
 
-void animmodel::etcullface(int cullface)
+void animmodel::setcullface(int cullface)
 {
     if(parts.empty())
     {
