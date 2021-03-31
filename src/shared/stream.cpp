@@ -1,3 +1,10 @@
+/* stream.cpp: utilities for character streams
+ *
+ * stream.cpp defines character handling to enable character streams to be written
+ * into and out of files
+ * also included is utilities for gz archive support
+ *
+ */
 #include "../engine/engine.h"
 
 #include "../engine/interface/console.h"
@@ -1744,7 +1751,10 @@ struct utf8stream : stream
         return next;
     }
 
-    bool flush() { return file->flush(); }
+    bool flush()
+    {
+        return file->flush();
+    }
 };
 
 stream *openrawfile(const char *filename, const char *mode)
