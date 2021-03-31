@@ -1740,3 +1740,73 @@ void animmodel::calctransform(matrix4x3 &m)
     initmatrix(m);
     m.scale(scale);
 }
+
+void animmodel::startrender()
+{
+    enabletc = enabletangents = enablebones = enabledepthoffset = false;
+    enablecullface = true;
+    lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf =0;
+    lasttex = lastdecal = lastmasks = lastnormalmap = nullptr;
+    ShaderParamsKey::invalidate();
+}
+
+void animmodel::disablebones()
+{
+    gle::disableboneweight();
+    gle::disableboneindex();
+    enablebones = false;
+}
+
+void animmodel::disabletangents()
+{
+    gle::disabletangent();
+    enabletangents = false;
+}
+
+void animmodel::disabletc()
+{
+    gle::disabletexcoord0();
+    enabletc = false;
+}
+
+void animmodel::disablevbo()
+{
+    if(lastebuf)
+    {
+        gle::clearebo();
+    }
+    if(lastvbuf)
+    {
+        gle::clearvbo();
+        gle::disablevertex();
+    }
+    if(enabletc)
+    {
+        disabletc();
+    }
+    if(enabletangents)
+    {
+        disabletangents();
+    }
+    if(enablebones)
+    {
+        disablebones();
+    }
+    lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf = 0;
+}
+
+void animmodel::endrender()
+{
+    if(lastvbuf || lastebuf)
+    {
+        disablevbo();
+    }
+    if(!enablecullface)
+    {
+        glEnable(GL_CULL_FACE);
+    }
+    if(enabledepthoffset)
+    {
+        disablepolygonoffset(GL_POLYGON_OFFSET_FILL);
+    }
+}

@@ -595,60 +595,12 @@ struct animmodel : model
     static int matrixpos;
     static matrix4 matrixstack[64];
 
-    void startrender()
-    {
-        enabletc = enabletangents = enablebones = enabledepthoffset = false;
-        enablecullface = true;
-        lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf =0;
-        lasttex = lastdecal = lastmasks = lastnormalmap = nullptr;
-        ShaderParamsKey::invalidate();
-    }
-
-    static void disablebones()
-    {
-        gle::disableboneweight();
-        gle::disableboneindex();
-        enablebones = false;
-    }
-
-    static void disabletangents()
-    {
-        gle::disabletangent();
-        enabletangents = false;
-    }
-
-    static void disabletc()
-    {
-        gle::disabletexcoord0();
-        enabletc = false;
-    }
-
-    static void disablevbo()
-    {
-        if(lastebuf)
-        {
-            gle::clearebo();
-        }
-        if(lastvbuf)
-        {
-            gle::clearvbo();
-            gle::disablevertex();
-        }
-        if(enabletc)
-        {
-            disabletc();
-        }
-        if(enabletangents) disabletangents();
-        if(enablebones) disablebones();
-        lastvbuf = lasttcbuf = lastxbuf = lastbbuf = lastebuf = 0;
-    }
-
-    void endrender()
-    {
-        if(lastvbuf || lastebuf) disablevbo();
-        if(!enablecullface) glEnable(GL_CULL_FACE);
-        if(enabledepthoffset) disablepolygonoffset(GL_POLYGON_OFFSET_FILL);
-    }
+    void startrender();
+    static void disablebones();
+    static void disabletangents();
+    static void disabletc();
+    static void disablevbo();
+    void endrender();
 };
 
 static inline uint hthash(const animmodel::shaderparams &k)
