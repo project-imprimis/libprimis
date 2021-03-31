@@ -1704,3 +1704,39 @@ void animmodel::setcolor(const vec &color)
         }
     }
 }
+
+void animmodel::calcbb(vec &center, vec &radius)
+{
+    if(parts.empty())
+    {
+        return;
+    }
+    vec bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f);
+    matrix4x3 m;
+    initmatrix(m);
+    parts[0]->calcbb(bbmin, bbmax, m);
+    for(int i = 1; i < parts.length(); i++)
+    {
+        part *p = parts[i];
+        switch(linktype(this, p))
+        {
+            case Link_Coop:
+            case Link_Reuse:
+            {
+                p->calcbb(bbmin, bbmax, m);
+                break;
+            }
+        }
+    }
+    radius = bbmax;
+    radius.sub(bbmin);
+    radius.mul(0.5f);
+    center = bbmin;
+    center.add(radius);
+}
+
+void animmodel::calctransform(matrix4x3 &m)
+{
+    initmatrix(m);
+    m.scale(scale);
+}
