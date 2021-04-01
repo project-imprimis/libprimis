@@ -244,9 +244,6 @@ void changedvars()
 }
 COMMAND(changedvars, "");
 
-// below the commands that implement a small imperative language. thanks to the semantics of
-// () and [] expressions, any control construct can be defined trivially.
-
 static string retbuf[4];
 static int retidx = 0;
 
