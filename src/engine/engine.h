@@ -5,14 +5,6 @@
 
 #include "../libprimis-headers/texture.h"
 
-extern int gamespeed, paused;
-
-extern int worldscale, worldsize;
-extern int mapversion;
-extern char *maptitle;
-
-extern vector<int> entgroup;
-
 // texture
 extern int hwtexsize, hwcubetexsize, hwmaxaniso, maxtexsize, hwtexunits, hwvtexunits;
 
@@ -401,6 +393,11 @@ extern void clearsleep(bool clearoverrides = true);
 
 // world
 
+extern int worldscale, worldsize;
+extern int mapversion;
+extern char *maptitle;
+
+extern vector<int> entgroup;
 extern vector<int> outsideents;
 
 extern void resetmap();
