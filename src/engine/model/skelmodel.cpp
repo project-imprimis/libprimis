@@ -242,12 +242,17 @@ void skelmodel::skeleton::remapbones()
             continue;
         }
         for(int parent = info.parent; parent >= 0 && bones[parent].interpindex < 0; parent = bones[parent].parent)
+        {
             bones[parent].interpindex = numinterpbones++;
+        }
     }
     for(int i = 0; i < numbones; ++i)
     {
         boneinfo &info = bones[i];
-        if(info.interpindex < 0) continue;
+        if(info.interpindex < 0)
+        {
+            continue;
+        }
         info.interpparent = info.parent >= 0 ? bones[info.parent].interpindex : -1;
     }
     if(ragdoll)
@@ -1550,10 +1555,13 @@ uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
 {
     static animpartmask *partmasks = nullptr;
     animpartmask *p = partmasks;
-    for(; p; p = p->next) if(p->numbones==o->numbones && !memcmp(p->bones, o->bones, p->numbones))
+    for(; p; p = p->next)
     {
-        delete[] (uchar *)o;
-        return p->bones;
+        if(p->numbones==o->numbones && !memcmp(p->bones, o->bones, p->numbones))
+        {
+            delete[] (uchar *)o;
+            return p->bones;
+        }
     }
 
     o->next = p;
