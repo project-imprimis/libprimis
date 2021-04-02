@@ -1246,11 +1246,11 @@ void skelmodel::skelmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
 
 void skelmodel::skelmesh::genBIH(BIH::mesh &m)
 {
-    m.tris = (const BIH::tri *)tris;
+    m.tris = reinterpret_cast<const BIH::tri *>(tris);
     m.numtris = numtris;
-    m.pos = (const uchar *)&verts->pos;
+    m.pos = reinterpret_cast<const uchar *>(&verts->pos);
     m.posstride = sizeof(vert);
-    m.tc = (const uchar *)&verts->tc;
+    m.tc = reinterpret_cast<const uchar *>(&verts->tc);
     m.tcstride = sizeof(vert);
 }
 
