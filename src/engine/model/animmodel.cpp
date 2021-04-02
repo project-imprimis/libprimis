@@ -1126,36 +1126,39 @@ void animmodel::intersect(int anim, int basetime, int basetime2, float pitch, co
         }
     }
 
-    if(a) for(int i = numtags-1; i >= 0; i--)
+    if(a)
     {
-        animmodel *m = static_cast<animmodel *>(a[i].m);
-        if(!m)
+        for(int i = numtags-1; i >= 0; i--)
         {
-            continue;
-        }
+            animmodel *m = static_cast<animmodel *>(a[i].m);
+            if(!m)
+            {
+                continue;
+            }
 
-        part *p = m->parts[0];
-        switch(linktype(m, p))
-        {
-            case Link_Tag:
+            part *p = m->parts[0];
+            switch(linktype(m, p))
             {
-                if(p->index >= 0)
+                case Link_Tag:
                 {
-                    unlink(p);
+                    if(p->index >= 0)
+                    {
+                        unlink(p);
+                    }
+                    p->index = 0;
+                    break;
                 }
-                p->index = 0;
-                break;
-            }
-            case Link_Coop:
-            {
-                p->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray);
-                p->index = 0;
-                break;
-            }
-            case Link_Reuse:
-            {
-                p->intersect(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
-                break;
+                case Link_Coop:
+                {
+                    p->intersect(anim, basetime, basetime2, pitch, axis, forward, d, o, ray);
+                    p->index = 0;
+                    break;
+                }
+                case Link_Reuse:
+                {
+                    p->intersect(anim | Anim_Reuse, basetime, basetime2, pitch, axis, forward, d, o, ray, as);
+                    break;
+                }
             }
         }
     }
