@@ -94,7 +94,7 @@ struct vertmodel : animmodel
 
         void genBIH(BIH::mesh &m)
         {
-            m.tris = (const BIH::tri *)tris;
+            m.tris = reinterpret_cast<const BIH::tri *>(tris);
             m.numtris = numtris;
             m.pos = reinterpret_cast<const uchar *>(&verts->pos);
             m.posstride = sizeof(vert);
@@ -391,7 +391,7 @@ struct vertmodel : animmodel
                 vdata = new uchar[vlen*vertsize];
                 LOOP_RENDER_MESHES(vertmesh, m,
                 {
-                    m.fillverts((vvert *)vdata);
+                    m.fillverts(reinterpret_cast<vvert *>(vdata));
                 });
             }
             else
@@ -670,7 +670,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
                                               cx*cy*cz + sx*sy*sz)),
                     vec(*tx, *ty, *tz));
 
-        (static_cast<meshgroup *>(mdl.meshes))->addtag(tagname, m);
+        static_cast<meshgroup *>(mdl.meshes)->addtag(tagname, m);
     }
 
     static void setpitch(float *pitchscale, float *pitchoffset, float *pitchmin, float *pitchmax)
