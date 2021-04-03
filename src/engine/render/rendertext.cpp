@@ -505,10 +505,26 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
 int text_visible(const char *str, float hitx, float hity, int maxwidth)
 {
     #define TEXTINDEX(idx)
-    #define TEXTWHITE(idx) if(y+FONTH > hity && x >= hitx) return idx;
-    #define TEXTLINE(idx) if(y+FONTH > hity) return idx;
+    #define TEXTWHITE(idx) \
+    { \
+        if(y+FONTH > hity && x >= hitx) \
+        { \
+            return idx; \
+        } \
+    }
+    #define TEXTLINE(idx) \
+    { \
+        if(y+FONTH > hity) \
+        { \
+            return idx; \
+        } \
+    }
     #define TEXTCOLOR(idx)
-    #define TEXTCHAR(idx) x += cw; TEXTWHITE(idx)
+    #define TEXTCHAR(idx) \
+    { \
+        x += cw; \
+        TEXTWHITE(idx) \
+    }
     #define TEXTWORD TEXTWORDSKELETON
     TEXTSKELETON
     #undef TEXTINDEX
@@ -523,7 +539,15 @@ int text_visible(const char *str, float hitx, float hity, int maxwidth)
 //inverse of text_visible
 void text_posf(const char *str, int cursor, float &cx, float &cy, int maxwidth)
 {
-    #define TEXTINDEX(idx) if(idx == cursor) { cx = x; cy = y; break; }
+    #define TEXTINDEX(idx) \
+    { \
+        if(idx == cursor) \
+        { \
+            cx = x; \
+            cy = y; \
+            break; \
+        } \
+    }
     #define TEXTWHITE(idx)
     #define TEXTLINE(idx)
     #define TEXTCOLOR(idx)
@@ -564,11 +588,28 @@ Shader *textshader = nullptr;
 
 void draw_text(const char *str, float left, float top, int r, int g, int b, int a, int cursor, int maxwidth)
 {
-    #define TEXTINDEX(idx) if(idx == cursor) { cx = x; cy = y; }
+    #define TEXTINDEX(idx) \
+    { \
+        if(idx == cursor) \
+        { \
+            cx = x; \
+            cy = y; \
+        } \
+    }
     #define TEXTWHITE(idx)
     #define TEXTLINE(idx)
-    #define TEXTCOLOR(idx) if(usecolor) text_color(str[idx], colorstack, sizeof(colorstack), colorpos, color, a);
-    #define TEXTCHAR(idx) draw_char(tex, c, left+x, top+y, scale); x += cw;
+    #define TEXTCOLOR(idx) \
+    { \
+        if(usecolor) \
+        { \
+            text_color(str[idx], colorstack, sizeof(colorstack), colorpos, color, a); \
+        } \
+    }
+    #define TEXTCHAR(idx) \
+    { \
+        draw_char(tex, c, left+x, top+y, scale); \
+        x += cw; \
+    }
     #define TEXTWORD TEXTWORDSKELETON
     char colorstack[10];
     colorstack[0] = '\0'; //indicate user color
