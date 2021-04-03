@@ -57,10 +57,10 @@ static void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy
 
 void rendertransparent()
 {
-    int hasalphavas = findalphavas();
-    int hasmats = findmaterials();
+    int hasalphavas = findalphavas(),
+        hasmats = findmaterials();
     bool hasmodels = transmdlsx1 < transmdlsx2 && transmdlsy1 < transmdlsy2;
-    if(!hasalphavas && !hasmats && !hasmodels)
+    if(!hasalphavas && !hasmats && !hasmodels) //don't transparent render if there is no alpha
     {
         if(!editmode)
         {
@@ -157,8 +157,8 @@ void rendertransparent()
     GLOBALPARAM(linearworldmatrix, linearworldmatrix);
 
     uint tiles[lighttilemaxheight];
-    float allsx1 = 1,
-          allsy1 = 1,
+    float allsx1 =  1,
+          allsy1 =  1,
           allsx2 = -1,
           allsy2 = -1;
     float sx1, sy1, sx2, sy2;
