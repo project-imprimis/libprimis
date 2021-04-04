@@ -75,6 +75,15 @@ void fontoutline(float *outlinemin, float *outlinemax)
 }
 COMMAND(fontoutline, "ff");
 
+/* fontoffset
+ * sets the character offset for the currently loaded font
+ *
+ * Arguments:
+ *    c: a pointer to a char * array representing the character to be offset to
+ *
+ * Only the first element of the array is accepted, all others are ignored
+ *
+ */
 void fontoffset(char *c)
 {
     if(!fontdef)
@@ -85,6 +94,15 @@ void fontoffset(char *c)
 }
 COMMAND(fontoffset, "s");
 
+/* fontscale
+ * sets the global scale for fonts
+ *
+ * Arguments:
+ *    scale: a pointer to an integer representing the new scale to set the font to
+ *
+ * If the scale parameter points to the value 0, the font scale is et to its default value.
+ *
+ */
 void fontscale(int *scale)
 {
     if(!fontdef)
@@ -96,6 +114,12 @@ fontdef->scale = *scale > 0 ? *scale : fontdef->defaulth;
 }
 COMMAND(fontscale, "i");
 
+/* fonttex
+ * adds a texture for fonts to be loaded from
+ *
+ * Arguments:
+ *    s: a pointer to a char * array representing the path to a font texture file
+ */
 void fonttex(char *s)
 {
     if(!fontdef)
