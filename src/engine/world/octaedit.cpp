@@ -620,7 +620,7 @@ void freeblock(block3 *b, bool alloced = true)
 
 void selgridmap(const selinfo &sel, uchar *g)                           // generates a map of the cube sizes at each grid point
 {
-    LOOP_XYZ(sel, -sel.grid, (*g++ = BITSCAN(lusize), (void)c));
+    LOOP_XYZ(sel, -sel.grid, (*g++ = BITSCAN(lusize), static_cast<void>(c)));
 }
 
 void freeundo(undoblock *u)

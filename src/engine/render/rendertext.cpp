@@ -489,7 +489,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                 } \
                 if(x + w > maxwidth && x > 0) \
                 { \
-                    (void)j; \
+                    static_cast<void>(j); \
                     TEXTLINE(j-1); \
                     x = 0; \
                     y += FONTH; } \
