@@ -1,3 +1,6 @@
+# cpp Makefile for libprimis
+# intended for g++ c++17 and linux builds only, use vcpp project for Windows builds
+
 # -o3: slowest compile times, but fastest code
 # -ffast-math: force less accurate but faster floating point calcs
 # -std=c++17: compile to c++17 standard, needed for some std library functions
