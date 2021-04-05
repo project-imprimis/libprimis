@@ -67,25 +67,25 @@ inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
                                     skelmodel::skelmesh* tm,
                                     vec ray)
 {
-    vec eb = vec(b).sub(a),
+    vec eb = vec(b).sub(a), //eb,ec are displacement vectors for b,c from a
         ec = vec(c).sub(a);
     vec p;
-    p.cross(ray, ec);
-    float det = eb.dot(p);
+    p.cross(ray, ec); //p is the cross product of impinging ray and ec displacement vector
+    float det = eb.dot(p); // eb * p being zero implies that eb is normal to p
     if(det == 0)
     {
         return false;
     }
-    vec r = vec(o).sub(a);
+    vec r = vec(o).sub(a); // r is displacement between origin and the "a" vertex
     float u = r.dot(p) / det;
-    if(u < 0 || u > 1)
+    if(u < 0 || u > 1) //u < 0 implies r * p is negative: r faces away from p
     {
         return false;
     }
     vec q;
     q.cross(r, eb);
     float v = ray.dot(q) / det;
-    if(v < 0 || u + v > 1)
+    if(v < 0 || u + v > 1) // v < 0 implies ray * q is negative: ray faces away from q
     {
         return false;
     }
