@@ -817,7 +817,7 @@ void shadowmaskbatchedmodels(bool dynshadow)
     for(int i = 0; i < batchedmodels.length(); i++)
     {
         batchedmodel &b = batchedmodels[i];
-        if(b.flags&(Model_Mapmodel | Model_NoShadow))
+        if(b.flags&(Model_Mapmodel | Model_NoShadow)) //mapmodels are not dynamic models by definition
         {
             break;
         }
@@ -831,7 +831,7 @@ int batcheddynamicmodels()
     for(int i = 0; i < batchedmodels.length(); i++)
     {
         batchedmodel &b = batchedmodels[i];
-        if(b.flags&Model_Mapmodel)
+        if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
         {
             break;
         }
@@ -860,7 +860,7 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
     for(int i = 0; i < batchedmodels.length(); i++)
     {
         batchedmodel &b = batchedmodels[i];
-        if(b.flags&Model_Mapmodel)
+        if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
         {
             break;
         }
@@ -1421,6 +1421,7 @@ void findanimscmd(char *name)
 }
 COMMANDN(findanims, findanimscmd, "s");
 
+//literally goes and attempts a textureload for png, jpg four times using the inside of the if statement
 #define TRY_LOAD(tex, prefix, cmd, name) \
     if((tex = textureload(makerelpath(mdir, name ".jpg", prefix, cmd), 0, true, false))==notexture) \
     { \
