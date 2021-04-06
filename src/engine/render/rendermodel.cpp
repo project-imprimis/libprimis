@@ -203,6 +203,7 @@ void mdltrans(float *x, float *y, float *z)
 }
 COMMAND(mdltrans, "fff");
 
+//assigns angle to the offsetyaw field of the model object currently being loaded
 void mdlyaw(float *angle)
 {
     checkmdl();
@@ -210,6 +211,7 @@ void mdlyaw(float *angle)
 }
 COMMAND(mdlyaw, "f");
 
+//assigns angle to the offsetpitch field of the model object currently being loaded
 void mdlpitch(float *angle)
 {
     checkmdl();
@@ -217,6 +219,7 @@ void mdlpitch(float *angle)
 }
 COMMAND(mdlpitch, "f");
 
+//assigns angle to the offsetroll field of the model object currently being loaded
 void mdlroll(float *angle)
 {
     checkmdl();
@@ -224,6 +227,7 @@ void mdlroll(float *angle)
 }
 COMMAND(mdlroll, "f");
 
+//assigns shadow to the shadow field of the model object currently being loaded
 void mdlshadow(int *shadow)
 {
     checkmdl();
@@ -231,6 +235,7 @@ void mdlshadow(int *shadow)
 }
 COMMAND(mdlshadow, "i");
 
+//assigns alphashadow to the alphashadow field of the model object currently being loaded
 void mdlalphashadow(int *alphashadow)
 {
     checkmdl();
@@ -238,6 +243,7 @@ void mdlalphashadow(int *alphashadow)
 }
 COMMAND(mdlalphashadow, "i");
 
+//assigns rad, h, eyeheight to the fields of the model object currently being loaded
 void mdlbb(float *rad, float *h, float *eyeheight)
 {
     checkmdl();
