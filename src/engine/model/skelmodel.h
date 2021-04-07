@@ -229,10 +229,10 @@ struct skelmodel : animmodel
         static void assignvert(vvertgw &vv, int j, vert &v, blendcombo &c);
 
         template<class T>
-        int genvbo(vector<ushort> &idxs, int offset, vector<T> &vverts)
+        int genvbo(std::vector<ushort> &idxs, int offset, vector<T> &vverts)
         {
             voffset = offset;
-            eoffset = idxs.length();
+            eoffset = idxs.size();
             for(int i = 0; i < numverts; ++i)
             {
                 vert &v = verts[i];
@@ -242,20 +242,20 @@ struct skelmodel : animmodel
             {
                 for(int j = 0; j < 3; ++j)
                 {
-                    idxs.add(voffset + tris[i].vert[j]);
+                    idxs.push_back(voffset + tris[i].vert[j]);
                 }
             }
-            elen = idxs.length()-eoffset;
+            elen = idxs.size()-eoffset;
             minvert = voffset;
             maxvert = voffset + numverts-1;
             return numverts;
         }
 
         template<class T>
-        int genvbo(vector<ushort> &idxs, int offset, vector<T> &vverts, int *htdata, int htlen)
+        int genvbo(std::vector<ushort> &idxs, int offset, vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
-            eoffset = idxs.length();
+            eoffset = idxs.size();
             minvert = 0xFFFF;
             for(int i = 0; i < numtris; ++i)
             {
@@ -272,25 +272,25 @@ struct skelmodel : animmodel
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
                         if(vidx < 0)
                         {
-                            vidx = idxs.add(static_cast<ushort>(vverts.length()));
+                            vidx = idxs.emplace_back(static_cast<ushort>(vverts.length()));
                             vverts.add(vv);
                             break;
                         }
                         else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
                         {
-                            minvert = std::min(minvert, idxs.add(static_cast<ushort>(vidx)));
+                            minvert = std::min(minvert, idxs.emplace_back(static_cast<ushort>(vidx)));
                             break;
                         }
                     }
                 }
             }
-            elen = idxs.length()-eoffset;
+            elen = idxs.size()-eoffset;
             minvert = std::min(minvert, static_cast<ushort>(voffset));
             maxvert = std::max(minvert, static_cast<ushort>(vverts.length()-1));
             return vverts.length()-voffset;
         }
 
-        int genvbo(vector<ushort> &idxs, int offset);
+        int genvbo(std::vector<ushort> &idxs, int offset);
 
         template<class T>
         static inline void fillvert(T &vv, int j, vert &v)

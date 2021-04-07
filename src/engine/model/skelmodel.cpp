@@ -904,7 +904,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         return;
     }
 
-    vector<ushort> idxs;
+    std::vector<ushort> idxs;
 
     vlen = 0;
     vblends = 0;
@@ -1000,7 +1000,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
 
     glGenBuffers_(1, &ebuf);
     gle::bindebo(ebuf);
-    glBufferData_(GL_ELEMENT_ARRAY_BUFFER, idxs.length()*sizeof(ushort), idxs.getbuf(), GL_STATIC_DRAW);
+    glBufferData_(GL_ELEMENT_ARRAY_BUFFER, idxs.size()*sizeof(ushort), idxs.data(), GL_STATIC_DRAW);
     gle::clearebo();
 }
 
@@ -1286,7 +1286,7 @@ void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, vert &v, blendcombo &c)
     c.serialize(vv);
 }
 
-int skelmodel::skelmesh::genvbo(vector<ushort> &idxs, int offset)
+int skelmodel::skelmesh::genvbo(std::vector<ushort> &idxs, int offset)
 {
     for(int i = 0; i < numverts; ++i)
     {
@@ -1294,18 +1294,18 @@ int skelmodel::skelmesh::genvbo(vector<ushort> &idxs, int offset)
     }
 
     voffset = offset;
-    eoffset = idxs.length();
+    eoffset = idxs.size();
     for(int i = 0; i < numtris; ++i)
     {
         tri &t = tris[i];
         for(int j = 0; j < 3; ++j)
         {
-            idxs.add(voffset+t.vert[j]);
+            idxs.emplace_back(voffset+t.vert[j]);
         }
     }
     minvert = voffset;
     maxvert = voffset + numverts-1;
-    elen = idxs.length()-eoffset;
+    elen = idxs.size()-eoffset;
     return numverts;
 }
 
