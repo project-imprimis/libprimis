@@ -957,15 +957,15 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
             do \
             { \
                 vertsize = sizeof(type); \
-                vector<type> vverts; \
+                std::vector<type> vverts; \
                 LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo args); \
-                glBufferData_(GL_ARRAY_BUFFER, vverts.length()*sizeof(type), vverts.getbuf(), GL_STATIC_DRAW); \
+                glBufferData_(GL_ARRAY_BUFFER, vverts.size()*sizeof(type), vverts.data(), GL_STATIC_DRAW); \
             } while(0)
         /* need these macros so it's possible to pass a variadic chain of
          * args in a single package
          *
          * (the set of values in the latter argument are all passed together
-         * as "args" which can't be done by a single standard macro
+         * as "args" which can't be done by a single standard macro)
          */
         #define GENVBOANIM(type) GENVBO(type, (idxs, vlen, vverts))
         #define GENVBOSTAT(type) GENVBO(type, (idxs, vlen, vverts, htdata, htlen))

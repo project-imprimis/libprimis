@@ -229,14 +229,15 @@ struct skelmodel : animmodel
         static void assignvert(vvertgw &vv, int j, vert &v, blendcombo &c);
 
         template<class T>
-        int genvbo(std::vector<ushort> &idxs, int offset, vector<T> &vverts)
+        int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts)
         {
             voffset = offset;
             eoffset = idxs.size();
             for(int i = 0; i < numverts; ++i)
             {
                 vert &v = verts[i];
-                assignvert(vverts.add(), i, v, ((skelmeshgroup *)group)->blendcombos[v.blend]);
+                vverts.emplace_back(T());
+                assignvert(vverts.back(), i, v, ((skelmeshgroup *)group)->blendcombos[v.blend]);
             }
             for(int i = 0; i < numtris; ++i)
             {
@@ -252,7 +253,7 @@ struct skelmodel : animmodel
         }
 
         template<class T>
-        int genvbo(std::vector<ushort> &idxs, int offset, vector<T> &vverts, int *htdata, int htlen)
+        int genvbo(std::vector<ushort> &idxs, int offset, std::vector<T> &vverts, int *htdata, int htlen)
         {
             voffset = offset;
             eoffset = idxs.size();
@@ -272,8 +273,8 @@ struct skelmodel : animmodel
                         int &vidx = htdata[(htidx+k)&(htlen-1)];
                         if(vidx < 0)
                         {
-                            vidx = idxs.emplace_back(static_cast<ushort>(vverts.length()));
-                            vverts.add(vv);
+                            vidx = idxs.emplace_back(static_cast<ushort>(vverts.size()));
+                            vverts.push_back(vv);
                             break;
                         }
                         else if(!memcmp(&vverts[vidx], &vv, sizeof(vv)))
@@ -286,8 +287,8 @@ struct skelmodel : animmodel
             }
             elen = idxs.size()-eoffset;
             minvert = std::min(minvert, static_cast<ushort>(voffset));
-            maxvert = std::max(minvert, static_cast<ushort>(vverts.length()-1));
-            return vverts.length()-voffset;
+            maxvert = std::max(minvert, static_cast<ushort>(vverts.size()-1));
+            return vverts.size()-voffset;
         }
 
         int genvbo(std::vector<ushort> &idxs, int offset);
