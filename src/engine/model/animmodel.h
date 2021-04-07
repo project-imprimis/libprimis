@@ -699,14 +699,13 @@ struct modelcommands
         } \
     } while(0)
 
-    #define LOOP_SKINS(meshname, s, body) \
-    { \
+    #define LOOP_SKINS(meshname, s, body) do { \
         LOOP_MESHES(meshname, m, \
         { \
             skin &s = mdl.skins[i]; \
             body; \
-        }) \
-    }
+        }); \
+    } while(0)
 
     static void setskin(char *meshname, char *tex, char *masks)
     {
