@@ -181,7 +181,7 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
         reorienty(0, flipy ? -0.5f : 0.5f, 0.5f);
     if(swapxy)
     {
-        swap(reorientx, reorienty);
+        std::swap(reorientx, reorienty);
     }
     reorientx.mul(sw);
     reorienty.mul(sh);
@@ -353,10 +353,10 @@ void processhdr(GLuint outfbo, int aa)
             ptex = ctex;
             pw = cw;
             ph = ch;
-            swap(b0fbo, b1fbo);
-            swap(b0tex, b1tex);
-            swap(b0w, b1w);
-            swap(b0h, b1h);
+            std::swap(b0fbo, b1fbo);
+            std::swap(b0tex, b1tex);
+            std::swap(b0w, b1w);
+            std::swap(b0h, b1h);
         }
     }
     if(!lasthdraccum || lastmillis - lasthdraccum >= hdraccummillis)
@@ -409,10 +409,10 @@ void processhdr(GLuint outfbo, int aa)
             ltex = b1tex;
             lw = cw;
             lh = ch;
-            swap(b0fbo, b1fbo);
-            swap(b0tex, b1tex);
-            swap(b0w, b1w);
-            swap(b0h, b1h);
+            std::swap(b0fbo, b1fbo);
+            std::swap(b0tex, b1tex);
+            std::swap(b0w, b1w);
+            std::swap(b0h, b1h);
         }
 
         glBindFramebuffer_(GL_FRAMEBUFFER, bloomfbo[4]);
@@ -473,10 +473,10 @@ void processhdr(GLuint outfbo, int aa)
             setblurshader(i%2, 1, bloomblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
             glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
             screenquad(b0w, b0h);
-            swap(b0w, b1w);
-            swap(b0h, b1h);
-            swap(b0tex, b1tex);
-            swap(b0fbo, b1fbo);
+            std::swap(b0w, b1w);
+            std::swap(b0h, b1h);
+            std::swap(b0tex, b1tex);
+            std::swap(b0fbo, b1fbo);
         }
     }
 
