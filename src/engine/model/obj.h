@@ -18,9 +18,9 @@ struct obj : vertloader<obj>
             bool load(const char *filename, float smooth);
 
         private:
-            void parsevert(char *s, vector<vec> &out);
+            void parsevert(char *s, std::vector<vec> &out);
             const void flushmesh(string meshname, vertmesh *curmesh, vector<vert> verts, vector<tcvert> tcverts,
-                                               vector<tri> tris, vector<vec> attrib, float smooth);
+                                               vector<tri> tris, std::vector<vec> attrib, float smooth);
     };
 
     vertmeshgroup *newmeshes()

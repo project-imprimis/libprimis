@@ -62,7 +62,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     }
     name = newstring(filename);
     numframes = 1;
-    vector<vec> attrib[3];
+    std::vector<vec> attrib[3];
     char buf[512];
     hashtable<ivec, int> verthash(1<<11);
     vector<vert> verts;
@@ -161,13 +161,13 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         vkey[i] = strtol(c, &c, 10);
                         if(vkey[i] < 0)
                         {
-                            vkey[i] = attrib[i].length() + vkey[i];
+                            vkey[i] = attrib[i].size() + vkey[i];
                         }
                         else
                         {
                             vkey[i]--;
                         }
-                        if(!attrib[i].inrange(vkey[i]))
+                        if(!(attrib[i].size() > static_cast<int>(vkey[i])))
                         {
                             vkey[i] = -1;
                         }
@@ -219,9 +219,10 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     return true;
 }
 
-void obj::objmeshgroup::parsevert(char *s, vector<vec> &out)
+void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
 {
-    vec &v = out.add(vec(0, 0, 0));
+    out.emplace_back(vec(0, 0, 0));
+    vec &v = out.back();
     while(isalpha(*s))
     {
         s++;
@@ -241,7 +242,7 @@ void obj::objmeshgroup::parsevert(char *s, vector<vec> &out)
 }
 
 const void obj::objmeshgroup::flushmesh(string meshname, vertmesh *curmesh, vector<vert> verts, vector<tcvert> tcverts,
-                                   vector<tri> tris, vector<vec> attrib, float smooth)
+                                   vector<tri> tris, std::vector<vec> attrib, float smooth)
 {
     curmesh->numverts = verts.length();
     if(verts.length())
