@@ -217,17 +217,17 @@ void cleanupradiancehints()
 VARF(rhrect, 0, 0, 1, cleanupradiancehints());
 VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); });
 VARF(rhborder, 0, 1, 1, cleanupradiancehints());
-VARF(rsmsize, 64, 512, 2048, cleanupradiancehints()); //`r`adiance hints `s`hadow `m`ap `size`: resolution (squared) of global illumination
+VARF(rsmsize, 64, 512, 2048, cleanupradiancehints()); //`r`eflective `s`hadow `m`ap `size`: resolution (squared) of global illumination
 VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());//`r`adiance `h`ints `near plane`: distance in gridpower 0 cubes before global illumination gets rendered
 VARF(rhfarplane, 64, 1024, 16384, clearradiancehintscache());//`r`adiance `h`ints `far plane`: distance in gridpower 0 cubes whereafter global illumination no longer gets calculated
-FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`adiance hints `s`hadow `m`ap `p`robe `radius tweak`
+FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`eflective `s`hadow `m`ap `p`robe `radius tweak`
 FVARF(rhpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`adiance `h`ints `p`robe `radius tweak`
-FVARF(rsmdepthrange, 0, 1024, 1e6f, clearradiancehintscache());
+FVARF(rsmdepthrange, 0, 1024, 1e6f, clearradiancehintscache()); //`r`eflective `s`hadow `m`ap `depth range`
 FVARF(rsmdepthmargin, 0, 0.1f, 1e3f, clearradiancehintscache());
-VARFP(rhprec, 0, 0, 1, cleanupradiancehints());
-VARFP(rsmprec, 0, 0, 3, cleanupradiancehints());
-VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints());
-FVAR(rhnudge, 0, 0.5f, 4);
+VARFP(rhprec, 0, 0, 1, cleanupradiancehints()); //`r`adiance `h`ints `prec`ision: toggles between rgba16 or rgba8 map for radiance hints
+VARFP(rsmprec, 0, 0, 3, cleanupradiancehints()); //`r`eflective `s`hadow `m`ap `prec`ision: toggles the rsm bit depth between rgb8 (0,1) , r11g11b10 (rgb 32bit) (2), or rgb16 (3)
+VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints()); // `r`eflective `s`hadow `m`ap `depth` `prec`ision: toggles the rsm depth map (buffer) between 16b, 24b, or 32b
+FVAR(rhnudge, 0, 0.5f, 4); //`r`adiance `h`ints `nudge`: (minor) factor for rsmsplits offset
 FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());
 FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());
 VARF(rhgrid, 3, 27, rhmaxgrid, cleanupradiancehints()); //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
