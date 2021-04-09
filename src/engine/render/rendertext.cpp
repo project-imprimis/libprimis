@@ -441,7 +441,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
     int i;\
     for(i = 0; str[i]; i++)\
     {\
-        TEXTINDEX(i)\
+        TEXTINDEX(i)\ //textindex *must* be defined before runtime, it is not defined above here
         int c = static_cast<uchar>(str[i]);\
         if(c=='\t')\
         {\
@@ -451,7 +451,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
         else if(c==' ') \
         { \
             x += scale*curfont->defaultw; \
-            TEXTWHITE(i) \
+            TEXTWHITE(i) \ //textwhite *must* be defined before runtime, it is not defined above here
         }\
         else if(c=='\n') \
         { \
@@ -463,7 +463,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
             if(str[i+1]) \
             { \
                 i++; \
-                TEXTCOLOR(i) \
+                TEXTCOLOR(i) \ //textcolor *must* be defined before runtime, it is not defined above here
             } \
         }\
         else if(curfont->chars.inrange(c-curfont->charoffset))\
@@ -518,14 +518,14 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
 #define TEXTWORDSKELETON \
     for(; j <= i; j++)\
     {\
-        TEXTINDEX(j)\
+        TEXTINDEX(j)\ //textindex *must* be defined before runtime, it is not defined above here
         int c = static_cast<uchar>(str[j]);\
         if(c=='\f') \
         { \
             if(str[j+1]) \
             { \
                 j++; \
-                TEXTCOLOR(j) \
+                TEXTCOLOR(j) \ //textcolor *must* be defined before runtime, it is not defined above here
             } \
         }\
         else \
@@ -540,7 +540,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
     { \
         do \
         { \
-            TEXTINDEX(cursor); \
+            TEXTINDEX(cursor); \ //textindex *must* be defined before runtime, it is not defined above here
         } while(0); \
     } \
 
