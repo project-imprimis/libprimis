@@ -140,6 +140,11 @@ void fonttex(char *s)
 }
 COMMAND(fonttex, "s");
 
+/* fontchar
+ * adds an entry to the fontdef vector
+ * sets the new entry in the vector to have the parameters passed
+ *
+ */
 void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *offsety, float *advance)
 {
     if(!fontdef)
@@ -158,6 +163,9 @@ void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *off
 }
 COMMAND(fontchar, "fffffff");
 
+/* fontskip
+ * addes an entry to the fontdef vector, which is empty
+ */
 void fontskip(int *n)
 {
     if(!fontdef)
@@ -173,6 +181,10 @@ void fontskip(int *n)
 }
 COMMAND(fontskip, "i");
 
+/* fontalias
+ * copies an entry in the fontdef vector to another one
+ * copies the entry at *src to *dst
+ */
 void fontalias(const char *dst, const char *src)
 {
     font *s = fonts.access(src);
