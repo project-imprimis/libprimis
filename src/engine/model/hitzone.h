@@ -649,7 +649,7 @@ struct skelzonekey
 
     void addbones(skelmodel::skelmesh *m, const skelmodel::tri &t)
     {
-        skelmodel::skelmeshgroup *g = (skelmodel::skelmeshgroup *)m->group;
+        skelmodel::skelmeshgroup *g = reinterpret_cast<skelmodel::skelmeshgroup *>(m->group);
         int b0 = m->verts[t.vert[0]].blend,
             b1 = m->verts[t.vert[1]].blend,
             b2 = m->verts[t.vert[1]].blend;
@@ -889,7 +889,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     blendcache.bdata = numblends > 0 ? new dualquat[numblends] : nullptr;
     for(int i = 0; i < std::min(g->meshes.length(), 0x100); ++i)
     {
-        skelmodel::skelmesh *m = (skelmodel::skelmesh *)g->meshes[i];
+        skelmodel::skelmesh *m = reinterpret_cast<skelmodel::skelmesh *>(g->meshes[i]);
         for(int j = 0; j < m->numtris; ++j)
         {
             const skelmodel::tri &t = m->tris[j];
@@ -1104,4 +1104,3 @@ void skelmodel::skelmeshgroup::buildhitdata(const uchar *hitzones)
     hitdata = new skelhitdata;
     hitdata->build(this, hitzones);
 }
-
