@@ -923,7 +923,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
         vdata = new uchar[vlen*vertsize];
         LOOP_RENDER_MESHES(skelmesh, m,
         {
-            m.fillverts((vvert *)vdata);
+            m.fillverts(reinterpret_cast<vvert *>(vdata));
         });
     }
     else
@@ -1049,7 +1049,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             if(bc->owner!=owner)
             {
                 bc->owner = owner;
-                *(animcacheentry *)bc = sc;
+                *reinterpret_cast<animcacheentry *>(bc) = sc;
                 blendbones(sc, *bc);
             }
         }
@@ -1059,7 +1059,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             (animcacheentry &)vc = sc;
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                m.interpverts(sc.bdata, bc ? bc->bdata : nullptr, (vvert *)vdata, p->skins[i]);
+                m.interpverts(sc.bdata, bc ? bc->bdata : nullptr, reinterpret_cast<vvert *>(vdata), p->skins[i]);
             });
             gle::bindvbo(vc.vbuf);
             glBufferData_(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
@@ -1221,7 +1221,7 @@ skelmodel::blendcacheentry &skelmodel::skelmeshgroup::checkblendcache(skelcachee
 int skelmodel::skelmesh::addblendcombo(const blendcombo &c)
 {
     maxweights = std::max(maxweights, c.size());
-    return ((skelmeshgroup *)group)->addblendcombo(c);
+    return (reinterpret_cast<skelmeshgroup *>(group))->addblendcombo(c);
 }
 
 void skelmodel::skelmesh::smoothnorms(float limit, bool areaweight)
