@@ -264,15 +264,15 @@ inline void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t
          &v2a = verts[t2.vert[0]],
          &v2b = verts[t2.vert[1]],
          &v2c = verts[t2.vert[2]];
-    vec m1 = vec(v1a.pos).add(v1b.pos).add(v1c.pos).div(3),
-        m2 = vec(v2a.pos).add(v2b.pos).add(v2c.pos).div(3),
+    vec m1 = (v1a.pos).add(v1b.pos).add(v1c.pos).div(3),
+        m2 = (v2a.pos).add(v2b.pos).add(v2c.pos).div(3),
         q1a, q1b, q1c, q2a, q2b, q2c;
-    float w1 = q1a.cross(axis, vec(v1a.pos).sub(m1)).magnitude() +
-               q1b.cross(axis, vec(v1b.pos).sub(m1)).magnitude() +
-               q1c.cross(axis, vec(v1c.pos).sub(m1)).magnitude(),
-          w2 = q2a.cross(axis, vec(v2a.pos).sub(m2)).magnitude() +
-               q2b.cross(axis, vec(v2b.pos).sub(m2)).magnitude() +
-               q2c.cross(axis, vec(v2c.pos).sub(m2)).magnitude();
+    float w1 = q1a.cross(axis, (v1a.pos).sub(m1)).magnitude() +
+               q1b.cross(axis, (v1b.pos).sub(m1)).magnitude() +
+               q1c.cross(axis, (v1c.pos).sub(m1)).magnitude(),
+          w2 = q2a.cross(axis, (v2a.pos).sub(m2)).magnitude() +
+               q2b.cross(axis, (v2b.pos).sub(m2)).magnitude() +
+               q2c.cross(axis, (v2c.pos).sub(m2)).magnitude();
     angle /= w1 + w2 + 1e-9f;
     float a1 = angle*w2, a2 = -angle*w1,
           s1 = sinf(a1), s2 = sinf(a2);
