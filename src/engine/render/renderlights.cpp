@@ -1146,12 +1146,12 @@ VARFP(smdepthprec, 0, 0, 2, cleanupshadowatlas()); //bit depth of sm depth map: 
 VAR(smsidecull, 0, 1, 1);
 VAR(smviscull, 0, 1, 1);
 VAR(smborder, 0, 3, 16);
-VAR(smborder2, 0, 4, 16);
+VAR(smborder2, 0, 4, 16); //smborder if smfilter > 2, for filter bleed reasons
 VAR(smminsize, 1, 96, 1024); //min size for individual sm, not whole buffer
 VAR(smmaxsize, 1, 384, 1024); //max size for individual sm, not whole buffer
 //VAR(smmaxsize, 1, 4096, 4096);
-VAR(smused, 1, 0, 0);
-VAR(smquery, 0, 1, 1);
+VAR(smused, 1, 0, 0); //read only: shadow map area used
+VAR(smquery, 0, 1, 1); // `s`hadow `m`ap `query1: whether to occlusion query lights
 VARF(smcullside, 0, 1, 1, cleanupshadowatlas());
 VARF(smcache, 0, 1, 2, cleanupshadowatlas());
 VARFP(smfilter, 0, 2, 3, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
