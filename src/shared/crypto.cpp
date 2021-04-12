@@ -118,7 +118,7 @@ namespace tiger
         {
             for(int col = 0; col < 2; ++col)
             {
-                ((uchar *)&sboxes[i])[col] = i&0xFF;
+                reinterpret_cast<uchar *>(&sboxes[i])[col] = i&0xFF;
             }
         }
 
@@ -136,9 +136,9 @@ namespace tiger
                     }
                     for(int col = 0; col < 8; ++col)
                     {
-                        uchar val = ((uchar *)&sboxes[sb+i])[col];
-                        ((uchar *)&sboxes[sb+i])[col] = ((uchar *)&sboxes[sb + ((uchar *)&state[abc])[col]])[col];
-                        ((uchar *)&sboxes[sb + ((uchar *)&state[abc])[col]])[col] = val;
+                        uchar val = reinterpret_cast<uchar *>(&sboxes[sb+i])[col];
+                        reinterpret_cast<uchar *>(&sboxes[sb+i])[col] = (reinterpret_cast<uchar *>(&sboxes[sb + (reinterpret_cast<uchar *>(&state[abc]))[col]]))[col];
+                        reinterpret_cast<uchar *>(&sboxes[sb + (reinterpret_cast<uchar *>(&state[abc]))[col]])[col] = val;
                     }
                 }
             }
