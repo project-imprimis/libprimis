@@ -139,9 +139,24 @@ size_t decodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srcl
     if(dstbuf == srcbuf)
     {
         int len = std::min(dstlen, srclen);
-        for(const uchar *end4 = &srcbuf[len&~3]; src < end4; src += 4) if(*reinterpret_cast<const int *>(src) & 0x80808080) goto decode;
-        for(const uchar *end = &srcbuf[len]; src < end; src++) if(*src & 0x80) goto decode;
-        if(carry) *carry += len;
+        for(const uchar *end4 = &srcbuf[len&~3]; src < end4; src += 4)
+        {
+            if(*reinterpret_cast<const int *>(src) & 0x80808080)
+            {
+                goto decode;
+            }
+        }
+        for(const uchar *end = &srcbuf[len]; src < end; src++)
+        {
+            if(*src & 0x80)
+            {
+                goto decode;
+            }
+        }
+        if(carry)
+        {
+            *carry += len;
+        }
         return len;
     }
 
