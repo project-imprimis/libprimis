@@ -1097,7 +1097,7 @@ bool calcpubkey(const char *privstr, vector<char> &pubstr)
 void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr)
 {
     tiger::hashval hash;
-    tiger::hash((const uchar *)seed, (int)strlen(seed), hash);
+    tiger::hash(reinterpret_cast<const uchar *>(seed), static_cast<int>(strlen(seed)), hash);
     bigint<8*sizeof(hash.bytes)/bidigitbits> privkey;
     memcpy(privkey.digits, hash.bytes, sizeof(hash.bytes));
     privkey.len = 8*sizeof(hash.bytes)/bidigitbits;
@@ -1111,11 +1111,11 @@ void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr)
 bool hashstring(const char *str, char *result, int maxlen)
 {
     tiger::hashval hv;
-    if(maxlen < 2*(int)sizeof(hv.bytes) + 1)
+    if(maxlen < 2*static_cast<int>(sizeof(hv.bytes) + 1))
     {
         return false;
     }
-    tiger::hash((uchar *)str, strlen(str), hv);
+    tiger::hash(const_cast<uchar *>(reinterpret_cast<const uchar *>((str))), strlen(str), hv);
     for(int i = 0; i < static_cast<int>(sizeof(hv.bytes)); ++i)
     {
         uchar c = hv.bytes[i];
