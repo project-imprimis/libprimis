@@ -330,7 +330,7 @@ namespace gle
         void *buf = glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, len, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
         if(buf)
         {
-            attribbuf.reset((uchar *)buf, len);
+            attribbuf.reset(static_cast<uchar *>(buf), len);
         }
     }
 
@@ -383,7 +383,7 @@ namespace gle
         {
             glUnmapBuffer_(GL_ARRAY_BUFFER);
         }
-        buf = (uchar *)0 + vbooffset;
+        buf = static_cast<uchar *>(nullptr) + vbooffset;
         if(vertexsize == lastvertexsize && buf >= lastbuf)
         {
             start = static_cast<int>(buf - lastbuf)/vertexsize;
