@@ -1143,9 +1143,9 @@ FVAR(smspotprec, 1e-3f, 1, 1e3f);
 
 VARFP(smsize, 10, 12, 14, cleanupshadowatlas()); //size of shadow map: 2^size = x,y dimensions (1024x1024 at 10, 16384x16384 at 14)
 VARFP(smdepthprec, 0, 0, 2, cleanupshadowatlas()); //bit depth of sm depth map: 16bpp, 24bpp, or 32bpp respectively
-VAR(smsidecull, 0, 1, 1);
-VAR(smviscull, 0, 1, 1);
-VAR(smborder, 0, 3, 16);
+VAR(smsidecull, 0, 1, 1); //`s`hadow `m`ap `side` `cull`: toggles culling lights outside the view frustum (outside the fov)
+VAR(smviscull, 0, 1, 1);  //`s`hadow `m`ap `vis`ibility `cull`ing: toggles visibility culling based of distance
+VAR(smborder, 0, 3, 16);  //`s`hadow `m`ap border
 VAR(smborder2, 0, 4, 16); //smborder if smfilter > 2, for filter bleed reasons
 VAR(smminsize, 1, 96, 1024); //min size for individual sm, not whole buffer
 VAR(smmaxsize, 1, 384, 1024); //max size for individual sm, not whole buffer
@@ -1157,7 +1157,7 @@ VARF(smcache, 0, 1, 2, cleanupshadowatlas());
 VARFP(smfilter, 0, 2, 3, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
 VARFP(smgather, 0, 0, 1, { cleardeferredlightshaders(); cleanupshadowatlas(); cleanupvolumetric(); });
 VAR(smnoshadow, 0, 0, 1);
-VAR(smdynshadow, 0, 1, 1);
+VAR(smdynshadow, 0, 1, 1); //`s`hadow `m`ap `dyn`amic `shadow`
 VAR(lightpassesused, 1, 0, 0); //read only: number of passes to render lights
 VAR(lightsvisible, 1, 0, 0);   //read only: lights being drawn
 VAR(lightsoccluded, 1, 0, 0);  //read only: lights not being drawn
