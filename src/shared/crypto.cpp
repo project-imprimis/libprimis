@@ -1115,7 +1115,7 @@ bool hashstring(const char *str, char *result, int maxlen)
     {
         return false;
     }
-    tiger::hash(const_cast<uchar *>(reinterpret_cast<const uchar *>((str))), strlen(str), hv);
+    tiger::hash(const_cast<uchar *>(reinterpret_cast<const uchar *>(str)), strlen(str), hv);
     for(int i = 0; i < static_cast<int>(sizeof(hv.bytes)); ++i)
     {
         uchar c = hv.bytes[i];
