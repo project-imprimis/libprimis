@@ -2967,9 +2967,9 @@ void rendervolumetric()
     endtimer(voltimer);
 }
 
-VAR(oqvol, 0, 1, 1);
-VAR(oqlights, 0, 1, 1);
-VAR(debuglightscissor, 0, 0, 1);
+VAR(oqvol, 0, 1, 1); //`o`cclusion `q`uery `vol`umetrics: toggles occlusion queries of volumetric lights
+VAR(oqlights, 0, 1, 1); //`o`cclusion `q`uery `lights: toggles occlusion queries of lights behind geometry
+VAR(debuglightscissor, 0, 0, 1); //displays the light scissor map in the corner of the screen
 
 void viewlightscissor()
 {
