@@ -24,10 +24,10 @@ namespace //internal functions incl. AA implementations
     /* TQAA: Temporal Quincunx Anti Aliasing */
     ///////////////////////////////////////////
 
-    VARFP(tqaa, 0, 0, 1, cleanupaa());
-    FVAR(tqaareproject, 0, 75, 1e3f);
+    VARFP(tqaa, 0, 0, 1, cleanupaa()); //`t`emporal `q`uincunx `a`nti `a`liasing: toggles temporal/quincunx antialiasing in general
+    FVAR(tqaareproject, 0, 75, 1e3f); // `t`emporal `q`uincunx `a`nti `a`liasing `re-project`: factor which determines how much the tqaa algo is allowed to shift frame to frame (lower = more movementallowed)
     VARF(tqaamovemask, 0, 1, 1, cleanupaa());
-    VARP(tqaaquincunx, 0, 1, 1);
+    VARP(tqaaquincunx, 0, 1, 1); // `t`emporal `q`uincunx `a`nti `a`liasing `quincunx` toggles quincunx antialiasing for temporal AA (half pixel offset)
     FVAR(tqaacolorweightscale, 0, 0.25f, 1e3f);
     FVAR(tqaacolorweightbias, 0, 0.01f, 1);
 
