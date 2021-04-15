@@ -695,7 +695,7 @@ namespace //internal functions incl. AA implementations
 
 
     const int smaaareatexwidth = 160,
-                     smaaareatexheight = 560;
+              smaaareatexheight = 560;
 
     uchar smaaareadata[smaaareatexwidth*smaaareatexheight*2];
     bool smaaareadatainited = false;
