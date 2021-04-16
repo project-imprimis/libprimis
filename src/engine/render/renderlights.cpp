@@ -57,9 +57,9 @@ int spotlights       = 0,
 std::vector<vec2> msaapositions;
 
 //`g`-buffer `scale`
-VARFP(gscale, 25, 100, 100, cleanupgbuffer());
-VARFP(gscalecubic, 0, 0, 1, cleanupgbuffer());
-VARFP(gscalenearest, 0, 0, 1, cleanupgbuffer());
+VARFP(gscale, 25, 100, 100, cleanupgbuffer()); //size of g buffer, approximately correlates to g buffer linear dimensions
+VARFP(gscalecubic, 0, 0, 1, cleanupgbuffer()); //g-buffer scale cubic: use cubic interpolation for g buffer upscaling to screen output
+VARFP(gscalenearest, 0, 0, 1, cleanupgbuffer()); //g buffer nearest neighbor interpolation
 
 matrix4 eyematrix, worldmatrix, linearworldmatrix, screenmatrix;
 
