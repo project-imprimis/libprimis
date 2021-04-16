@@ -2388,11 +2388,11 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
         }
 
         int n = batch.numlights;
-        float sx1 = 1,
-              sy1 = 1,
+        float sx1 =  1,
+              sy1 =  1,
               sx2 = -1,
               sy2 = -1,
-              sz1 = 1,
+              sz1 =  1,
               sz2 = -1;
         for(int j = 0; j < n; ++j)
         {
@@ -2409,7 +2409,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
             sx2 = bsx2;
             sy2 = bsy2;
             sz1 = -1;
-            sz2 = 1;
+            sz2 =  1;
         }
         else
         {
@@ -2498,7 +2498,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
                 sx2 = bsx2;
                 sy2 = bsy2;
                 sz1 = -1;
-                sz2 = 1;
+                sz2 =  1;
             }
             else
             {
