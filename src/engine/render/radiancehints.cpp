@@ -32,44 +32,124 @@
 GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },
        rhrb[4] = { 0, 0, 0, 0 },
        rhfbo = 0;
-uint rhclearmasks[2][rhmaxsplits][(rhmaxgrid+2+31)/32];
-GLuint rsmdepthtex = 0,
-       rsmcolortex = 0,
-       rsmnormaltex = 0,
-       rsmfbo = 0;
+
+//radiance hints (global illumination) vars
+VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); });
+VARF(rhrect, 0, 0, 1, cleanupradiancehints());
+VARF(rhborder, 0, 1, 1, cleanupradiancehints());
+VARF(rsmsize, 64, 512, 2048, cleanupradiancehints()); //`r`eflective `s`hadow `m`ap `size`: resolution (squared) of global illumination
+VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());//`r`adiance `h`ints `near plane`: distance in gridpower 0 cubes before global illumination gets rendered
+VARF(rhfarplane, 64, 1024, 16384, clearradiancehintscache());//`r`adiance `h`ints `far plane`: distance in gridpower 0 cubes whereafter global illumination no longer gets calculated
+FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`eflective `s`hadow `m`ap `p`robe `radius tweak`
+FVARF(rhpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`adiance `h`ints `p`robe `radius tweak`
+FVARF(rsmdepthrange, 0, 1024, 1e6f, clearradiancehintscache()); //`r`eflective `s`hadow `m`ap `depth range`
+FVARF(rsmdepthmargin, 0, 0.1f, 1e3f, clearradiancehintscache());
+VARFP(rhprec, 0, 0, 1, cleanupradiancehints()); //`r`adiance `h`ints `prec`ision: toggles between rgba16 or rgba8 map for radiance hints
+VARFP(rsmprec, 0, 0, 3, cleanupradiancehints()); //`r`eflective `s`hadow `m`ap `prec`ision: toggles the rsm bit depth between rgb8 (0,1) , r11g11b10 (rgb 32bit) (2), or rgb16 (3)
+VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints()); // `r`eflective `s`hadow `m`ap `depth` `prec`ision: toggles the rsm depth map (buffer) between 16b, 24b, or 32b
+FVAR(rhnudge, 0, 0.5f, 4); //`r`adiance `h`ints `nudge`: (minor) factor for rsmsplits offset
+FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());
+FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());
+VARF(rhgrid, 3, 27, rhmaxgrid, cleanupradiancehints()); //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
+FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache()); //smoothness of `r`adiance hints `s`hadow `m`ap: higher is more blurred
+VAR(rhclipgrid, 0, 1, 1);
+VARF(rhcache, 0, 1, 1, cleanupradiancehints());
+VARF(rhforce, 0, 0, 1, cleanupradiancehints());
+VAR(rsmcull, 0, 1, 1);
+VARFP(rhtaps, 0, 20, 32, cleanupradiancehints()); //`r`adiance `h`ints `taps`: number of sample points for global illumination
+VAR(rhdyntex, 0, 0, 1);
+VAR(rhdynmm, 0, 0, 1);
+
+VARFR(gidist, 0, 384, 1024, { clearradiancehintscache(); cleardeferredlightshaders(); if(!gidist) cleanupradiancehints(); });
+FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); }); //`g`lobal `i`llumination `scale`
+FVARR(giaoscale, 0, 3, 1e3f); //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces
+VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`g`lobal `i`llumination toggle: 0 disables global illumination
+
+VAR(debugrsm, 0, 0, 2); //displays the `r`adiance hints `s`hadow `m`ap in the bottom right of the screen; 1 for view from sun pos, 2 for view from sun pos, normal map
+VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 
 reflectiveshadowmap rsm;
 radiancehints rh;
 
-static Shader *radiancehintsshader = nullptr;
-Shader *rsmworldshader = nullptr;
-
-Shader *loadradiancehintsshader()
+namespace //internal functionality
 {
-    DEF_FORMAT_STRING(name, "radiancehints%d", rhtaps);
-    return generateshader(name, "radiancehintsshader %d", rhtaps);
+    uint rhclearmasks[2][rhmaxsplits][(rhmaxgrid+2+31)/32];
+    GLuint rsmdepthtex = 0,
+           rsmcolortex = 0,
+           rsmnormaltex = 0,
+           rsmfbo = 0;
+
+    static Shader *radiancehintsshader = nullptr;
+    Shader *rsmworldshader = nullptr;
+
+    Shader *loadradiancehintsshader()
+    {
+        DEF_FORMAT_STRING(name, "radiancehints%d", rhtaps);
+        return generateshader(name, "radiancehintsshader %d", rhtaps);
+    }
+
+    void loadrhshaders()
+    {
+        if(rhborder)
+        {
+            useshaderbyname("radiancehintsborder");
+        }
+        if(rhcache)
+        {
+            useshaderbyname("radiancehintscached");
+        }
+        useshaderbyname("radiancehintsdisable");
+        radiancehintsshader = loadradiancehintsshader();
+        rsmworldshader = useshaderbyname("rsmworld");
+        useshaderbyname("rsmsky");
+    }
+
+    void clearrhshaders()
+    {
+        radiancehintsshader = nullptr;
+        rsmworldshader = nullptr;
+    }
+
+    static inline void rhquad(float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2, float tz)
+    {
+        gle::begin(GL_TRIANGLE_STRIP);
+        gle::attribf(x2, y1); gle::attribf(tx2, ty1, tz);
+        gle::attribf(x1, y1); gle::attribf(tx1, ty1, tz);
+        gle::attribf(x2, y2); gle::attribf(tx2, ty2, tz);
+        gle::attribf(x1, y2); gle::attribf(tx1, ty2, tz);
+        gle::end();
+    }
+
+    static inline void rhquad(float dx1, float dy1, float dx2, float dy2, float dtx1, float dty1, float dtx2, float dty2, float dtz,
+                              float px1, float py1, float px2, float py2, float ptx1, float pty1, float ptx2, float pty2, float ptz)
+    {
+        gle::begin(GL_TRIANGLE_STRIP);
+        gle::attribf(dx2, dy1); gle::attribf(dtx2, dty1, dtz);
+            gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
+        gle::attribf(dx1, dy1); gle::attribf(dtx1, dty1, dtz);
+            gle::attribf(px1, py1); gle::attribf(ptx1, pty1, ptz);
+        gle::attribf(dx1, dy2); gle::attribf(dtx1, dty2, dtz);
+            gle::attribf(px1, py2); gle::attribf(ptx1, pty2, ptz);
+        gle::attribf(dx2, dy2); gle::attribf(dtx2, dty2, dtz);
+            gle::attribf(px2, py2); gle::attribf(ptx2, pty2, ptz);
+        gle::attribf(dx2, dy1); gle::attribf(dtx2, dty1, dtz);
+            gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
+        gle::end();
+    }
 }
 
-void loadrhshaders()
-{
-    if(rhborder)
-    {
-        useshaderbyname("radiancehintsborder");
-    }
-    if(rhcache)
-    {
-        useshaderbyname("radiancehintscached");
-    }
-    useshaderbyname("radiancehintsdisable");
-    radiancehintsshader = loadradiancehintsshader();
-    rsmworldshader = useshaderbyname("rsmworld");
-    useshaderbyname("rsmsky");
-}
+//externally relevant functionality
 
-void clearrhshaders()
+void viewrsm()
 {
-    radiancehintsshader = nullptr;
-    rsmworldshader = nullptr;
+    int w = std::min(hudw, hudh)/2,
+        h = (w*hudh)/hudw,
+        x = hudw-w,
+        y = hudh-h;
+    SETSHADER(hudrect);
+    gle::colorf(1, 1, 1);
+    glBindTexture(GL_TEXTURE_RECTANGLE, debugrsm == 2 ? rsmnormaltex : rsmcolortex);
+    debugquad(x, y, w, h, 0, 0, rsmsize, rsmsize);
 }
 
 void setupradiancehints()
@@ -213,52 +293,7 @@ void cleanupradiancehints()
 
     clearrhshaders();
 }
-//radiance hints (global illumination) vars
-VARF(rhrect, 0, 0, 1, cleanupradiancehints());
-VARF(rhsplits, 1, 2, rhmaxsplits, { cleardeferredlightshaders(); cleanupradiancehints(); });
-VARF(rhborder, 0, 1, 1, cleanupradiancehints());
-VARF(rsmsize, 64, 512, 2048, cleanupradiancehints()); //`r`eflective `s`hadow `m`ap `size`: resolution (squared) of global illumination
-VARF(rhnearplane, 1, 1, 16, clearradiancehintscache());//`r`adiance `h`ints `near plane`: distance in gridpower 0 cubes before global illumination gets rendered
-VARF(rhfarplane, 64, 1024, 16384, clearradiancehintscache());//`r`adiance `h`ints `far plane`: distance in gridpower 0 cubes whereafter global illumination no longer gets calculated
-FVARF(rsmpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`eflective `s`hadow `m`ap `p`robe `radius tweak`
-FVARF(rhpradiustweak, 1e-3f, 1, 1e3f, clearradiancehintscache());//`r`adiance `h`ints `p`robe `radius tweak`
-FVARF(rsmdepthrange, 0, 1024, 1e6f, clearradiancehintscache()); //`r`eflective `s`hadow `m`ap `depth range`
-FVARF(rsmdepthmargin, 0, 0.1f, 1e3f, clearradiancehintscache());
-VARFP(rhprec, 0, 0, 1, cleanupradiancehints()); //`r`adiance `h`ints `prec`ision: toggles between rgba16 or rgba8 map for radiance hints
-VARFP(rsmprec, 0, 0, 3, cleanupradiancehints()); //`r`eflective `s`hadow `m`ap `prec`ision: toggles the rsm bit depth between rgb8 (0,1) , r11g11b10 (rgb 32bit) (2), or rgb16 (3)
-VARFP(rsmdepthprec, 0, 0, 2, cleanupradiancehints()); // `r`eflective `s`hadow `m`ap `depth` `prec`ision: toggles the rsm depth map (buffer) between 16b, 24b, or 32b
-FVAR(rhnudge, 0, 0.5f, 4); //`r`adiance `h`ints `nudge`: (minor) factor for rsmsplits offset
-FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());
-FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());
-VARF(rhgrid, 3, 27, rhmaxgrid, cleanupradiancehints()); //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
-FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache()); //smoothness of `r`adiance hints `s`hadow `m`ap: higher is more blurred
-VAR(rhclipgrid, 0, 1, 1);
-VARF(rhcache, 0, 1, 1, cleanupradiancehints());
-VARF(rhforce, 0, 0, 1, cleanupradiancehints());
-VAR(rsmcull, 0, 1, 1);
-VARFP(rhtaps, 0, 20, 32, cleanupradiancehints()); //`r`adiance `h`ints `taps`: number of sample points for global illumination
-VAR(rhdyntex, 0, 0, 1);
-VAR(rhdynmm, 0, 0, 1);
 
-VARFR(gidist, 0, 384, 1024, { clearradiancehintscache(); cleardeferredlightshaders(); if(!gidist) cleanupradiancehints(); });
-FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); }); //`g`lobal `i`llumination `scale`
-FVARR(giaoscale, 0, 3, 1e3f); //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces
-VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); }); //`g`lobal `i`llumination toggle: 0 disables global illumination
-
-VAR(debugrsm, 0, 0, 2); //displays the `r`adiance hints `s`hadow `m`ap in the bottom right of the screen; 1 for view from sun pos, 2 for view from sun pos, normal map
-void viewrsm()
-{
-    int w = std::min(hudw, hudh)/2,
-        h = (w*hudh)/hudw,
-        x = hudw-w,
-        y = hudh-h;
-    SETSHADER(hudrect);
-    gle::colorf(1, 1, 1);
-    glBindTexture(GL_TEXTURE_RECTANGLE, debugrsm == 2 ? rsmnormaltex : rsmcolortex);
-    debugquad(x, y, w, h, 0, 0, rsmsize, rsmsize);
-}
-
-VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 void viewrh()
 {
     int w = std::min(hudw, hudh)/2,
@@ -297,73 +332,18 @@ void viewrh()
     }
 }
 
-// ============================ reflective shadow map =========================//
-
-void reflectiveshadowmap::setup()
-{
-    getmodelmatrix();
-    getprojmatrix();
-    gencullplanes();
-}
-
-void reflectiveshadowmap::getmodelmatrix()
-{
-    model = viewmatrix;
-    model.rotate_around_x(sunlightpitch*RAD);
-    model.rotate_around_z((180-sunlightyaw)*RAD);
-}
-
-void reflectiveshadowmap::getprojmatrix()
-{
-    lightview = vec(sunlightdir).neg();
-    // find z extent
-    float minz = lightview.project_bb(worldmin, worldmax),
-          maxz = lightview.project_bb(worldmax, worldmin),
-          zmargin = std::max((maxz - minz)*rsmdepthmargin, 0.5f*(rsmdepthrange - (maxz - minz)));
-    minz -= zmargin;
-    maxz += zmargin;
-    vec c;
-    float radius = calcfrustumboundsphere(rhnearplane, rhfarplane, camera1->o, camdir, c);
-    // compute the projected bounding box of the sphere
-    vec tc;
-    model.transform(c, tc);
-    const float pradius = std::ceil((radius + gidist) * rsmpradiustweak),
-                step = (2*pradius) / rsmsize;
-    vec2 tcoff = vec2(tc).sub(pradius).div(step);
-    tcoff.x = std::floor(tcoff.x);
-    tcoff.y = std::floor(tcoff.y);
-    center = vec(vec2(tcoff).mul(step).add(pradius), -0.5f*(minz + maxz));
-    bounds = vec(pradius, pradius, 0.5f*(maxz - minz));
-
-    scale = vec(1/step, 1/step, -1/(maxz - minz));
-    offset = vec(-tcoff.x, -tcoff.y, -minz/(maxz - minz));
-
-    proj.identity();
-    proj.settranslation(2*offset.x/rsmsize - 1, 2*offset.y/rsmsize - 1, 2*offset.z - 1);
-    proj.setscale(2*scale.x/rsmsize, 2*scale.y/rsmsize, 2*scale.z);
-}
-
-void reflectiveshadowmap::gencullplanes()
-{
-    matrix4 mvp;
-    mvp.mul(proj, model);
-    vec4 px = mvp.rowx(),
-         py = mvp.rowy(),
-         pw = mvp.roww();
-    cull[0] = plane(vec4(pw).add(px)).normalize(); // left plane
-    cull[1] = plane(vec4(pw).sub(px)).normalize(); // right plane
-    cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
-    cull[3] = plane(vec4(pw).sub(py)).normalize(); // top plane
-}
-
-//=========================== end reflective shadow map =======================//
-
 void clearradiancehintscache()
 {
     rh.clearcache();
     memset(rhclearmasks, 0, sizeof(rhclearmasks));
 }
 
+bool useradiancehints()
+{
+    return !sunlight.iszero() && csmshadowmap && gi && giscale && gidist;
+}
+
+//radiance hints object
 void radiancehints::updatesplitdist()
 {
     float lambda = rhsplitweight,
@@ -423,36 +403,24 @@ void radiancehints::bindparams()
     GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));
 }
 
-bool useradiancehints()
-{
-    return !sunlight.iszero() && csmshadowmap && gi && giscale && gidist;
-}
 
-static inline void rhquad(float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2, float tz)
+void radiancehints::clearcache()
 {
-    gle::begin(GL_TRIANGLE_STRIP);
-    gle::attribf(x2, y1); gle::attribf(tx2, ty1, tz);
-    gle::attribf(x1, y1); gle::attribf(tx1, ty1, tz);
-    gle::attribf(x2, y2); gle::attribf(tx2, ty2, tz);
-    gle::attribf(x1, y2); gle::attribf(tx1, ty2, tz);
-    gle::end();
+    for(int i = 0; i < rhmaxsplits; ++i)
+    {
+        splits[i].clearcache();
+    }
 }
-
-static inline void rhquad(float dx1, float dy1, float dx2, float dy2, float dtx1, float dty1, float dtx2, float dty2, float dtz,
-                          float px1, float py1, float px2, float py2, float ptx1, float pty1, float ptx2, float pty2, float ptz)
+bool radiancehints::allcached() const
 {
-    gle::begin(GL_TRIANGLE_STRIP);
-    gle::attribf(dx2, dy1); gle::attribf(dtx2, dty1, dtz);
-        gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
-    gle::attribf(dx1, dy1); gle::attribf(dtx1, dty1, dtz);
-        gle::attribf(px1, py1); gle::attribf(ptx1, pty1, ptz);
-    gle::attribf(dx1, dy2); gle::attribf(dtx1, dty2, dtz);
-        gle::attribf(px1, py2); gle::attribf(ptx1, pty2, ptz);
-    gle::attribf(dx2, dy2); gle::attribf(dtx2, dty2, dtz);
-        gle::attribf(px2, py2); gle::attribf(ptx2, pty2, ptz);
-    gle::attribf(dx2, dy1); gle::attribf(dtx2, dty1, dtz);
-        gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
-    gle::end();
+    for(int i = 0; i < rhsplits; ++i)
+    {
+        if(splits[i].cached != splits[i].center)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 void radiancehints::renderslices()
@@ -850,25 +818,6 @@ void radiancehints::renderslices()
     }
 }
 
-void radiancehints::clearcache()
-{
-    for(int i = 0; i < rhmaxsplits; ++i)
-    {
-        splits[i].clearcache();
-    }
-}
-bool radiancehints::allcached() const
-{
-    for(int i = 0; i < rhsplits; ++i)
-    {
-        if(splits[i].cached != splits[i].center)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 void renderradiancehints()
 {
     if(rhinoq && !inoq && shouldworkinoq())
@@ -943,3 +892,64 @@ void renderradiancehints()
     endtimer(rhtimer);
     endtimer(rhcputimer);
 }
+
+// ============================ reflective shadow map =========================//
+
+void reflectiveshadowmap::setup()
+{
+    getmodelmatrix();
+    getprojmatrix();
+    gencullplanes();
+}
+
+void reflectiveshadowmap::getmodelmatrix()
+{
+    model = viewmatrix;
+    model.rotate_around_x(sunlightpitch*RAD);
+    model.rotate_around_z((180-sunlightyaw)*RAD);
+}
+
+void reflectiveshadowmap::getprojmatrix()
+{
+    lightview = vec(sunlightdir).neg();
+    // find z extent
+    float minz = lightview.project_bb(worldmin, worldmax),
+          maxz = lightview.project_bb(worldmax, worldmin),
+          zmargin = std::max((maxz - minz)*rsmdepthmargin, 0.5f*(rsmdepthrange - (maxz - minz)));
+    minz -= zmargin;
+    maxz += zmargin;
+    vec c;
+    float radius = calcfrustumboundsphere(rhnearplane, rhfarplane, camera1->o, camdir, c);
+    // compute the projected bounding box of the sphere
+    vec tc;
+    model.transform(c, tc);
+    const float pradius = std::ceil((radius + gidist) * rsmpradiustweak),
+                step = (2*pradius) / rsmsize;
+    vec2 tcoff = vec2(tc).sub(pradius).div(step);
+    tcoff.x = std::floor(tcoff.x);
+    tcoff.y = std::floor(tcoff.y);
+    center = vec(vec2(tcoff).mul(step).add(pradius), -0.5f*(minz + maxz));
+    bounds = vec(pradius, pradius, 0.5f*(maxz - minz));
+
+    scale = vec(1/step, 1/step, -1/(maxz - minz));
+    offset = vec(-tcoff.x, -tcoff.y, -minz/(maxz - minz));
+
+    proj.identity();
+    proj.settranslation(2*offset.x/rsmsize - 1, 2*offset.y/rsmsize - 1, 2*offset.z - 1);
+    proj.setscale(2*scale.x/rsmsize, 2*scale.y/rsmsize, 2*scale.z);
+}
+
+void reflectiveshadowmap::gencullplanes()
+{
+    matrix4 mvp;
+    mvp.mul(proj, model);
+    vec4 px = mvp.rowx(),
+         py = mvp.rowy(),
+         pw = mvp.roww();
+    cull[0] = plane(vec4(pw).add(px)).normalize(); // left plane
+    cull[1] = plane(vec4(pw).sub(px)).normalize(); // right plane
+    cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
+    cull[3] = plane(vec4(pw).sub(py)).normalize(); // top plane
+}
+
+//=========================== end reflective shadow map =======================//
