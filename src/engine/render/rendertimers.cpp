@@ -32,36 +32,43 @@ struct timer
     float result,           //raw value of the timer, -1 if no info available
           print;            //the time the timer displays: ms per frame for whatever object
 };
-static vector<timer> timers;
-static vector<int> timerorder;
-static int timercycle = 0;
 
-timer *findtimer(const char *name, bool gpu)
+//locally relevant functionality
+namespace
 {
-    for(int i = 0; i < timers.length(); i++)
+    static vector<timer> timers;
+    static vector<int> timerorder;
+    static int timercycle = 0;
+
+    timer *findtimer(const char *name, bool gpu)
     {
-        if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
+        for(int i = 0; i < timers.length(); i++)
         {
-            timerorder.removeobj(i);
-            timerorder.add(i);
-            return &timers[i];
+            if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
+            {
+                timerorder.removeobj(i);
+                timerorder.add(i);
+                return &timers[i];
+            }
         }
+        timerorder.add(timers.length());
+        timer &t = timers.add();
+        t.name = name;
+        t.gpu = gpu;
+        memset(t.query, 0, sizeof(t.query));
+        if(gpu)
+        {
+            glGenQueries_(timer::Timer_MaxQuery, t.query);
+        }
+        t.waiting = 0;
+        t.starttime = 0;
+        t.result = -1;
+        t.print = -1;
+        return &t;
     }
-    timerorder.add(timers.length());
-    timer &t = timers.add();
-    t.name = name;
-    t.gpu = gpu;
-    memset(t.query, 0, sizeof(t.query));
-    if(gpu)
-    {
-        glGenQueries_(timer::Timer_MaxQuery, t.query);
-    }
-    t.waiting = 0;
-    t.starttime = 0;
-    t.result = -1;
-    t.print = -1;
-    return &t;
 }
+
+//externally relevant functionality
 
 timer *begintimer(const char *name, bool gpu)
 {
