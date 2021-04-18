@@ -70,6 +70,8 @@ VAR(debugrh, -1, 0, rhmaxsplits*(rhmaxgrid + 2));
 
 reflectiveshadowmap rsm;
 radiancehints rh;
+Shader *rsmworldshader = nullptr;
+
 
 namespace //internal functionality
 {
@@ -80,7 +82,6 @@ namespace //internal functionality
            rsmfbo = 0;
 
     static Shader *radiancehintsshader = nullptr;
-    Shader *rsmworldshader = nullptr;
 
     Shader *loadradiancehintsshader()
     {
