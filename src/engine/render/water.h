@@ -29,10 +29,6 @@ extern float getwaterrefract(int mat);
 extern int getwaterfallspec(int mat);
 extern float getwaterfallrefract(int mat);
 
-extern const bvec &getglasscolor(int mat);
-extern float getglassrefract(int mat);
-extern int getglassspec(int mat);
-
 extern void renderwater();
 extern void renderwaterfalls();
 extern void loadcaustics(bool force = false);
