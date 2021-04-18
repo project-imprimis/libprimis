@@ -977,9 +977,9 @@ GLASSVARS(glass2)
 GLASSVARS(glass3)
 GLASSVARS(glass4)
 
-GETMATIDXVAR(glass, color, const bvec &)
-GETMATIDXVAR(glass, refract, float)
-GETMATIDXVAR(glass, spec, int)
+GETMATIDXVAR(glass, color, const bvec &) //this is the getglasscolor() function
+GETMATIDXVAR(glass, refract, float)// this is the getglassrefract() function
+GETMATIDXVAR(glass, spec, int)// this is the getglassspec() function
 
 void renderglass()
 {
