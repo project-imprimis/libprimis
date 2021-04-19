@@ -290,6 +290,7 @@ extern void renderrefractmask();
 extern void renderalphageom(int side);
 extern void rendermapmodels();
 extern void renderoutline();
+extern bool renderexplicitsky(bool outline = false);
 extern void cleanupva();
 extern bvec outlinecolor;
 
