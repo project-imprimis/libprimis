@@ -16,80 +16,107 @@
 
 #include "render/rendergl.h"
 
-VARNP(dynlights, usedynlights, 0, 1, 1);
-VARP(dynlightdist, 0, 1024, 10000); //distance after which dynamic lights are not rendered (1024 = 128m)
-
-struct dynlight
+//internally relevant functionality
+namespace
 {
-    vec o, hud;
-    float radius, initradius, curradius, dist;
-    vec color, initcolor, curcolor;
-    int fade, peak, expire, flags;
-    physent *owner;
-    vec dir;
-    int spot;
+    VARNP(dynlights, usedynlights, 0, 1, 1);
+    VARP(dynlightdist, 0, 1024, 10000); //distance after which dynamic lights are not rendered (1024 = 128m)
 
-    void calcradius()
+    struct dynlight
     {
-        if(fade + peak > 0)
+        vec o, hud;
+        float radius, initradius, curradius, dist;
+        vec color, initcolor, curcolor;
+        int fade, peak, expire, flags;
+        physent *owner;
+        vec dir;
+        int spot;
+
+        void calcradius()
         {
-            int remaining = expire - lastmillis;
-            if(flags&DynLight_Expand)
+            if(fade + peak > 0)
             {
-                curradius = initradius + (radius - initradius) * (1.0f - remaining/static_cast<float>(fade + peak));
-            }
-            else if(!(flags&DynLight_Flash) && remaining > fade)
-            {
-                curradius = initradius + (radius - initradius) * (1.0f - static_cast<float>(remaining - fade)/peak);
-            }
-            else if(flags&DynLight_Shrink)
-            {
-                curradius = (radius*remaining)/fade;
+                int remaining = expire - lastmillis;
+                if(flags&DynLight_Expand)
+                {
+                    curradius = initradius + (radius - initradius) * (1.0f - remaining/static_cast<float>(fade + peak));
+                }
+                else if(!(flags&DynLight_Flash) && remaining > fade)
+                {
+                    curradius = initradius + (radius - initradius) * (1.0f - static_cast<float>(remaining - fade)/peak);
+                }
+                else if(flags&DynLight_Shrink)
+                {
+                    curradius = (radius*remaining)/fade;
+                }
+                else
+                {
+                    curradius = radius;
+                }
             }
             else
             {
                 curradius = radius;
             }
         }
-        else
-        {
-            curradius = radius;
-        }
-    }
 
-    void calccolor()
-    {
-        if(flags&DynLight_Flash || peak <= 0)
+        void calccolor()
         {
-            curcolor = color;
-        }
-        else
-        {
-            int peaking = expire - lastmillis - fade;
-            if(peaking <= 0)
+            if(flags&DynLight_Flash || peak <= 0)
             {
                 curcolor = color;
             }
             else
             {
-                curcolor.lerp(initcolor, color, 1.0f - static_cast<float>(peaking)/peak);
+                int peaking = expire - lastmillis - fade;
+                if(peaking <= 0)
+                {
+                    curcolor = color;
+                }
+                else
+                {
+                    curcolor.lerp(initcolor, color, 1.0f - static_cast<float>(peaking)/peak);
+                }
             }
-        }
-        float intensity = 1.0f;
-        if(fade > 0)
-        {
-            int fading = expire - lastmillis;
-            if(fading < fade)
+            float intensity = 1.0f;
+            if(fade > 0)
             {
-                intensity = static_cast<float>(fading)/fade;
+                int fading = expire - lastmillis;
+                if(fading < fade)
+                {
+                    intensity = static_cast<float>(fading)/fade;
+                }
+            }
+            curcolor.mul(intensity);
+        }
+    };
+
+    vector<dynlight> dynlights;
+    vector<dynlight *> closedynlights;
+
+    //cleans up dynlights, deletes dynlights contents once none have expire field
+    void cleardynlights()
+    {
+        int faded = -1;
+        for(int i = 0; i < dynlights.length(); i++)
+        {
+            if(lastmillis<dynlights[i].expire)
+            {
+                faded = i;
+                break;
             }
         }
-        curcolor.mul(intensity);
+        if(faded<0) //if any light has lastmillis > expire field
+        {
+            dynlights.setsize(0);
+        }
+        else if(faded>0)
+        {
+            dynlights.remove(0, faded);
+        }
     }
-};
-
-vector<dynlight> dynlights;
-vector<dynlight *> closedynlights;
+}
+//externally relevant functionality
 
 //adds a dynamic light object to the dynlights vector with the attributes indicated (radius, color, fade, peak, flags, etc..)
 void adddynlight(const vec &o, float radius, const vec &color, int fade, int peak, int flags, float initradius, const vec &initcolor, physent *owner, const vec &dir, int spot)
@@ -128,28 +155,6 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     dynlights.insert(insert, d);
 }
 
-//cleans up dynlights, deletes dynlights contents once none have expire field
-void cleardynlights()
-{
-    int faded = -1;
-    for(int i = 0; i < dynlights.length(); i++)
-    {
-        if(lastmillis<dynlights[i].expire)
-        {
-            faded = i;
-            break;
-        }
-    }
-    if(faded<0) //if any light has lastmillis > expire field
-    {
-        dynlights.setsize(0);
-    }
-    else if(faded>0)
-    {
-        dynlights.remove(0, faded);
-    }
-}
-
 void removetrackeddynlights(physent *owner)
 {
     for(int i = dynlights.length(); --i >=0;) //note reverse iteration
@@ -158,18 +163,6 @@ void removetrackeddynlights(physent *owner)
         {
             dynlights.remove(i);
         }
-    }
-}
-
-void updatedynlights()
-{
-    cleardynlights();
-
-    for(int i = 0; i < dynlights.length(); i++)
-    {
-        dynlight &d = dynlights[i];
-        d.calcradius();
-        d.calccolor();
     }
 }
 
@@ -232,3 +225,14 @@ bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, 
     return true;
 }
 
+void updatedynlights()
+{
+    cleardynlights();
+
+    for(int i = 0; i < dynlights.length(); i++)
+    {
+        dynlight &d = dynlights[i];
+        d.calcradius();
+        d.calccolor();
+    }
+}
