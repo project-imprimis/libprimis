@@ -19,6 +19,234 @@
 
 #include "model/model.h"
 
+//internally relevant functionality
+namespace
+{
+    clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
+    {
+        clipplanes &p = getclipbounds(c, o, size, c.visible&0x80 ? 2 : 0);
+        if(p.visible&0x80)
+        {
+            genclipplanes(c, o, size, p, false, false);
+        }
+        return p;
+    }
+
+    //==================================================INTERSECTPLANES INTERSECTBOX
+    #define INTERSECTPLANES(setentry, exit) \
+        float enterdist = -1e16f, \
+              exitdist  = 1e16f; \
+        for(int i = 0; i < p.size; ++i) \
+        { \
+            float pdist = p.p[i].dist(v), \
+                  facing = ray.dot(p.p[i]); \
+            if(facing < 0) \
+            { \
+                pdist /= -facing; \
+                if(pdist > enterdist) \
+                { \
+                    if(pdist > exitdist) \
+                    { \
+                        exit; \
+                    } \
+                    enterdist = pdist; \
+                    setentry; \
+                } \
+            } \
+            else if(facing > 0) \
+            { \
+                pdist /= -facing; \
+                if(pdist < exitdist) \
+                { \
+                    if(pdist < enterdist) \
+                    { \
+                        exit; \
+                    } \
+                    exitdist = pdist; \
+                } \
+            } \
+            else if(pdist > 0) \
+            { \
+                exit; \
+            } \
+        }
+
+    #define INTERSECTBOX(setentry, exit) \
+        for(int i = 0; i < 3; ++i) \
+        { \
+            if(ray[i]) \
+            { \
+                float prad = std::fabs(p.r[i] * invray[i]), \
+                      pdist = (p.o[i] - v[i]) * invray[i], \
+                      pmin = pdist - prad, \
+                      pmax = pdist + prad; \
+                if(pmin > enterdist) \
+                { \
+                    if(pmin > exitdist) \
+                    { \
+                        exit; \
+                    } \
+                    enterdist = pmin; \
+                    setentry; \
+                } \
+                if(pmax < exitdist) \
+                { \
+                    if(pmax < enterdist) \
+                    { \
+                        exit; \
+                    } \
+                    exitdist = pmax; \
+                } \
+            } \
+            else if(v[i] < p.o[i]-p.r[i] || v[i] > p.o[i]+p.r[i]) \
+            { \
+                exit; \
+            } \
+        }
+
+
+    bool raycubeintersect(const clipplanes &p, const cube &c, const vec &v, const vec &ray, const vec &invray, float maxdist, float &dist)
+    {
+        int entry   = -1,
+            bbentry = -1;
+        INTERSECTPLANES(entry = i, return false);
+        INTERSECTBOX(bbentry = i, return false);
+        if(exitdist < 0)
+        {
+            return false;
+        }
+        dist = std::max(enterdist+0.1f, 0.0f);
+        if(dist < maxdist)
+        {
+            if(bbentry>=0)
+            {
+                hitsurface = vec(0, 0, 0);
+                hitsurface[bbentry] = ray[bbentry]>0 ? -1 : 1;
+            }
+            else
+            {
+                hitsurface = p.p[entry];
+            }
+        }
+        return true;
+    }
+
+    float hitentdist;
+    int hitent, hitorient;
+
+    float disttoent(octaentities *oc, const vec &o, const vec &ray, float radius, int mode, extentity *t)
+    {
+        vec eo, es;
+        int orient = -1;
+        float dist = radius,
+              f = 0.0f;
+        const vector<extentity *> &ents = entities::getents();
+    //=======ENT_SEL_INTERSECT ENT_INTERSECT
+        #define ENT_INTERSECT(type, func) do { \
+            for(int i = 0; i < oc->type.length(); i++) \
+            { \
+                extentity &e = *ents[oc->type[i]]; \
+                if(!(e.flags&EntFlag_Octa) || &e==t) \
+                { \
+                    continue; \
+                } \
+                func; \
+                if(f < dist && f > 0 && vec(ray).mul(f).add(o).insidebb(oc->o, oc->size)) \
+                { \
+                    hitentdist = dist = f; \
+                    hitent = oc->type[i]; \
+                    hitorient = orient; \
+                } \
+            } \
+        } while(0)
+
+        if((mode&Ray_Poly) == Ray_Poly)
+        {
+            ENT_INTERSECT(mapmodels,
+            {
+                if(!mmintersect(e, o, ray, radius, mode, f))
+                {
+                    continue;
+                }
+            });
+        }
+
+        #define ENT_SEL_INTERSECT(type) ENT_INTERSECT(type, { \
+            entselectionbox(e, eo, es); \
+            if(!rayboxintersect(eo, es, o, ray, f, orient)) \
+            { \
+                continue; \
+            } \
+        })
+
+        if((mode&Ray_Ents) == Ray_Ents)
+        {
+            ENT_SEL_INTERSECT(other);
+            ENT_SEL_INTERSECT(mapmodels);
+            ENT_SEL_INTERSECT(decals);
+        }
+
+        return dist;
+    }
+    #undef ENT_INTERSECT
+    #undef ENT_SEL_INTERSECT
+    //======================================
+    float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, extentity *t)
+    {
+        vec eo, es;
+        int orient;
+        float dist = radius,
+              f = 0.0f;
+        const vector<extentity *> &ents = entities::getents();
+        for(int i = 0; i < outsideents.length(); i++)
+        {
+            extentity &e = *ents[outsideents[i]];
+            if(!(e.flags&EntFlag_Octa) || &e == t)
+            {
+                continue;
+            }
+            entselectionbox(e, eo, es);
+            if(!rayboxintersect(eo, es, o, ray, f, orient))
+            {
+                continue;
+            }
+            if(f<dist && f>0)
+            {
+                hitentdist = dist = f;
+                hitent = outsideents[i];
+                hitorient = orient;
+            }
+        }
+        return dist;
+    }
+
+    // optimized shadow version
+    float shadowent(octaentities *oc, const vec &o, const vec &ray, float radius, int mode, extentity *t)
+    {
+        float dist = radius,
+              f = 0.0f;
+        const vector<extentity *> &ents = entities::getents();
+        for(int i = 0; i < oc->mapmodels.length(); i++)
+        {
+            extentity &e = *ents[oc->mapmodels[i]];
+            if(!(e.flags&EntFlag_Octa) || &e==t)
+            {
+                continue;
+            }
+            if(!mmintersect(e, o, ray, radius, mode, f))
+            {
+                continue;
+            }
+            if(f>0 && f<dist)
+            {
+                dist = f;
+            }
+        }
+        return dist;
+    }
+}
+
+//externally relevant functionality
 bool insideworld(const vec &o)
 {
     return o.x>=0 && o.x<worldsize && o.y>=0 && o.y<worldsize && o.z>=0 && o.z<worldsize;
@@ -31,229 +259,8 @@ bool insideworld(const ivec &o)
            static_cast<uint>(o.z) < static_cast<uint>(worldsize);
 }
 
-static inline clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
-{
-    clipplanes &p = getclipbounds(c, o, size, c.visible&0x80 ? 2 : 0);
-    if(p.visible&0x80)
-    {
-        genclipplanes(c, o, size, p, false, false);
-    }
-    return p;
-}
-
-//==================================================INTERSECTPLANES INTERSECTBOX
-#define INTERSECTPLANES(setentry, exit) \
-    float enterdist = -1e16f, \
-          exitdist  = 1e16f; \
-    for(int i = 0; i < p.size; ++i) \
-    { \
-        float pdist = p.p[i].dist(v), \
-              facing = ray.dot(p.p[i]); \
-        if(facing < 0) \
-        { \
-            pdist /= -facing; \
-            if(pdist > enterdist) \
-            { \
-                if(pdist > exitdist) \
-                { \
-                    exit; \
-                } \
-                enterdist = pdist; \
-                setentry; \
-            } \
-        } \
-        else if(facing > 0) \
-        { \
-            pdist /= -facing; \
-            if(pdist < exitdist) \
-            { \
-                if(pdist < enterdist) \
-                { \
-                    exit; \
-                } \
-                exitdist = pdist; \
-            } \
-        } \
-        else if(pdist > 0) \
-        { \
-            exit; \
-        } \
-    }
-
-#define INTERSECTBOX(setentry, exit) \
-    for(int i = 0; i < 3; ++i) \
-    { \
-        if(ray[i]) \
-        { \
-            float prad = std::fabs(p.r[i] * invray[i]), \
-                  pdist = (p.o[i] - v[i]) * invray[i], \
-                  pmin = pdist - prad, \
-                  pmax = pdist + prad; \
-            if(pmin > enterdist) \
-            { \
-                if(pmin > exitdist) \
-                { \
-                    exit; \
-                } \
-                enterdist = pmin; \
-                setentry; \
-            } \
-            if(pmax < exitdist) \
-            { \
-                if(pmax < enterdist) \
-                { \
-                    exit; \
-                } \
-                exitdist = pmax; \
-            } \
-        } \
-        else if(v[i] < p.o[i]-p.r[i] || v[i] > p.o[i]+p.r[i]) \
-        { \
-            exit; \
-        } \
-    }
-
 vec hitsurface;
 
-static inline bool raycubeintersect(const clipplanes &p, const cube &c, const vec &v, const vec &ray, const vec &invray, float maxdist, float &dist)
-{
-    int entry   = -1,
-        bbentry = -1;
-    INTERSECTPLANES(entry = i, return false);
-    INTERSECTBOX(bbentry = i, return false);
-    if(exitdist < 0)
-    {
-        return false;
-    }
-    dist = std::max(enterdist+0.1f, 0.0f);
-    if(dist < maxdist)
-    {
-        if(bbentry>=0)
-        {
-            hitsurface = vec(0, 0, 0);
-            hitsurface[bbentry] = ray[bbentry]>0 ? -1 : 1;
-        }
-        else
-        {
-            hitsurface = p.p[entry];
-        }
-    }
-    return true;
-}
-
-float hitentdist;
-int hitent, hitorient;
-
-static float disttoent(octaentities *oc, const vec &o, const vec &ray, float radius, int mode, extentity *t)
-{
-    vec eo, es;
-    int orient = -1;
-    float dist = radius,
-          f = 0.0f;
-    const vector<extentity *> &ents = entities::getents();
-//=======ENT_SEL_INTERSECT ENT_INTERSECT
-    #define ENT_INTERSECT(type, func) do { \
-        for(int i = 0; i < oc->type.length(); i++) \
-        { \
-            extentity &e = *ents[oc->type[i]]; \
-            if(!(e.flags&EntFlag_Octa) || &e==t) \
-            { \
-                continue; \
-            } \
-            func; \
-            if(f < dist && f > 0 && vec(ray).mul(f).add(o).insidebb(oc->o, oc->size)) \
-            { \
-                hitentdist = dist = f; \
-                hitent = oc->type[i]; \
-                hitorient = orient; \
-            } \
-        } \
-    } while(0)
-
-    if((mode&Ray_Poly) == Ray_Poly)
-    {
-        ENT_INTERSECT(mapmodels,
-        {
-            if(!mmintersect(e, o, ray, radius, mode, f))
-            {
-                continue;
-            }
-        });
-    }
-
-    #define ENT_SEL_INTERSECT(type) ENT_INTERSECT(type, { \
-        entselectionbox(e, eo, es); \
-        if(!rayboxintersect(eo, es, o, ray, f, orient)) \
-        { \
-            continue; \
-        } \
-    })
-
-    if((mode&Ray_Ents) == Ray_Ents)
-    {
-        ENT_SEL_INTERSECT(other);
-        ENT_SEL_INTERSECT(mapmodels);
-        ENT_SEL_INTERSECT(decals);
-    }
-
-    return dist;
-}
-#undef ENT_INTERSECT
-#undef ENT_SEL_INTERSECT
-//======================================
-static float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, extentity *t)
-{
-    vec eo, es;
-    int orient;
-    float dist = radius,
-          f = 0.0f;
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < outsideents.length(); i++)
-    {
-        extentity &e = *ents[outsideents[i]];
-        if(!(e.flags&EntFlag_Octa) || &e == t)
-        {
-            continue;
-        }
-        entselectionbox(e, eo, es);
-        if(!rayboxintersect(eo, es, o, ray, f, orient))
-        {
-            continue;
-        }
-        if(f<dist && f>0)
-        {
-            hitentdist = dist = f;
-            hitent = outsideents[i];
-            hitorient = orient;
-        }
-    }
-    return dist;
-}
-
-// optimized shadow version
-static float shadowent(octaentities *oc, const vec &o, const vec &ray, float radius, int mode, extentity *t)
-{
-    float dist = radius,
-          f = 0.0f;
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < oc->mapmodels.length(); i++)
-    {
-        extentity &e = *ents[oc->mapmodels[i]];
-        if(!(e.flags&EntFlag_Octa) || &e==t)
-        {
-            continue;
-        }
-        if(!mmintersect(e, o, ray, radius, mode, f))
-        {
-            continue;
-        }
-        if(f>0 && f<dist)
-        {
-            dist = f;
-        }
-    }
-    return dist;
-}
 //==================INITRAYCUBE CHECKINSIDEWORLD DOWNOCTREE FINDCLOSEST UPOCTREE
 #define INITRAYCUBE \
     float dist = 0, \
