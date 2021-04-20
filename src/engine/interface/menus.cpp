@@ -13,26 +13,73 @@
 
 #include "world/octaedit.h"
 
-void notifywelcome()
+namespace
 {
-    UI::hideui("servers");
+    void notifywelcome()
+    {
+        UI::hideui("servers");
+    }
+
+    struct Change
+    {
+        int type;
+        const char *desc;
+
+        Change() {}
+        Change(int type, const char *desc) : type(type), desc(desc) {}
+    };
+    vector<Change> needsapply;
+
+    VARP(applydialog, 0, 1, 1);
+
+    //when 1: change UI shows up whenever a pending change is added
+    //when 0: change UI does not appear and applychanges must be used manually
+    VAR(showchanges, 0, 1, 1);
+
+    //goes through and applies changes that are enqueued
+    void applychanges()
+    {
+        int changetypes = 0;
+        for(int i = 0; i < needsapply.length(); i++)
+        {
+            changetypes |= needsapply[i].type;
+        }
+        if(changetypes&Change_Graphics)
+        {
+            execident("resetgl");
+        }
+        else if(changetypes&Change_Shaders)
+        {
+            execident("resetshaders");
+        }
+        if(changetypes&Change_Sound)
+        {
+            execident("resetsound");
+        }
+    }
+
+    //executes applychanges()
+    COMMAND(applychanges, "");
+
+    //returns if there are pending changes or not enqueued
+    void pendingchanges (int *idx)
+    {
+        if(needsapply.inrange(*idx))
+        {
+            result(needsapply[*idx].desc);
+        }
+        else if(*idx < 0)
+        {
+            intret(needsapply.length());
+        }
+    }
+    COMMAND(pendingchanges, "b");
+
+    int lastmainmenu = -1;
 }
 
-struct Change
-{
-    int type;
-    const char *desc;
-
-    Change() {}
-    Change(int type, const char *desc) : type(type), desc(desc) {}
-};
-static vector<Change> needsapply;
-
-VARP(applydialog, 0, 1, 1);
-
-//when 1: change UI shows up whenever a pending change is added
-//when 0: change UI does not appear and applychanges must be used manually
-VAR(showchanges, 0, 1, 1);
+//toggles if the main menu is shown
+VAR(mainmenu, 1, 1, 0);
 
 //adds a change to the queue of settings changes,
 //if applydialog = 0 then this function does nothing
@@ -78,47 +125,6 @@ void clearchanges(int type)
     }
 }
 
-//goes through and applies changes that are enqueued
-void applychanges()
-{
-    int changetypes = 0;
-    for(int i = 0; i < needsapply.length(); i++)
-    {
-        changetypes |= needsapply[i].type;
-    }
-    if(changetypes&Change_Graphics)
-    {
-        execident("resetgl");
-    }
-    else if(changetypes&Change_Shaders)
-    {
-        execident("resetshaders");
-    }
-    if(changetypes&Change_Sound)
-    {
-        execident("resetsound");
-    }
-}
-
-//executes applychanges()
-COMMAND(applychanges, "");
-
-//returns if there are pending changes or not enqueued
-void pendingchanges (int *idx)
-{
-    if(needsapply.inrange(*idx))
-    {
-        result(needsapply[*idx].desc);
-    }
-    else if(*idx < 0)
-    {
-        intret(needsapply.length());
-    }
-}
-COMMAND(pendingchanges, "b");
-
-static int lastmainmenu = -1;
-
 //used in main.cpp
 void menuprocess()
 {
@@ -132,9 +138,6 @@ void menuprocess()
         UI::showui("main");
     }
 }
-
-//toggles if the main menu is shown
-VAR(mainmenu, 1, 1, 0);
 
 void clearmainmenu()
 {
