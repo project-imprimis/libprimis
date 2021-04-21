@@ -1633,9 +1633,23 @@ ICOMMAND(error, "C", (char *s), conoutf(Console_Error, "%s", s));
 ICOMMAND(strstr, "ss", (char *a, char *b), { char *s = strstr(a, b); intret(s ? s-a : -1); });
 ICOMMAND(strlen, "s", (char *s), intret(strlen(s)));
 ICOMMAND(strcode, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : static_cast<uchar>(s[*i])) : static_cast<uchar>(s[0])));
-ICOMMAND(codestr, "i", (int *i), { char *s = newstring(1); s[0] = static_cast<char>(*i); s[1] = '\0'; stringret(s); });
+
+ICOMMAND(codestr, "i", (int *i),
+{
+    char *s = newstring(1);
+    s[0] = static_cast<char>(*i);
+    s[1] = '\0';
+    stringret(s);
+});
+
 ICOMMAND(struni, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : cube2uni(s[*i])) : cube2uni(s[0])));
-ICOMMAND(unistr, "i", (int *i), { char *s = newstring(1); s[0] = uni2cube(*i); s[1] = '\0'; stringret(s); });
+ICOMMAND(unistr, "i", (int *i),
+{
+    char *s = newstring(1);
+    s[0] = uni2cube(*i);
+    s[1] = '\0';
+    stringret(s);
+});
 
 #define STRMAPCOMMAND(name, map) \
     ICOMMAND(name, "s", (char *s), \
