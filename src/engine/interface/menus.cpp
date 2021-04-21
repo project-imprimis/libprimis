@@ -13,6 +13,7 @@
 
 #include "world/octaedit.h"
 
+//internally relevant functionality
 namespace
 {
     void notifywelcome()
@@ -77,6 +78,8 @@ namespace
 
     int lastmainmenu = -1;
 }
+
+//externally relevant functionality
 
 //toggles if the main menu is shown
 VAR(mainmenu, 1, 1, 0);
