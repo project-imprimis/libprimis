@@ -167,7 +167,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         {
                             vkey[i]--;
                         }
-                        if(!(attrib[i].size() > static_cast<int>(vkey[i])))
+                        if(!(attrib[i].size() > static_cast<uint>(vkey[i])))
                         {
                             vkey[i] = -1;
                         }
