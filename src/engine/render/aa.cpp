@@ -441,12 +441,12 @@ namespace //internal functions incl. AA implementations
         {0, 1}, {3, 1}, {0, 4}, {3, 4}, {1, 1}, {4, 1}, {1, 4}, {4, 4}
     };
 
-    inline vec2 areaortho(float p1x, float p1y, float p2x, float p2y, float left)
+    vec2 areaortho(float p1x, float p1y, float p2x, float p2y, float left)
     {
         return areaunderortho(vec2(p1x, p1y), vec2(p2x, p2y), left);
     }
 
-    inline void smootharea(float d, vec2 &a1, vec2 &a2)
+    void smootharea(float d, vec2 &a1, vec2 &a2)
     {
         vec2 b1(sqrtf(a1.x*2)*0.5f, sqrtf(a1.y*2)*0.5f),
              b2(sqrtf(a2.x*2)*0.5f, sqrtf(a2.y*2)*0.5f);
@@ -620,7 +620,7 @@ namespace //internal functions incl. AA implementations
         return 1;
     }
 
-    inline vec2 areadiag(const vec2 &p1, const vec2 &p2, float left)
+    vec2 areadiag(const vec2 &p1, const vec2 &p2, float left)
     {
         return vec2(1 - areaunderdiag(p1, p2, vec2(1, 0).add(left)), areaunderdiag(p1, p2, vec2(1, 1).add(left)));
     }
@@ -631,7 +631,7 @@ namespace //internal functions incl. AA implementations
         {0, 1}, {1, 1}, {0, 3}, {1, 3}, {2, 1}, {3, 1}, {2, 3}, {3, 3}
     };
 
-    inline vec2 areadiag(float p1x, float p1y, float p2x, float p2y, float d, float left, const vec2 &offset, int pattern)
+    vec2 areadiag(float p1x, float p1y, float p2x, float p2y, float d, float left, const vec2 &offset, int pattern)
     {
         vec2 p1(p1x, p1y),
              p2(p2x+d, p2y+d);
@@ -646,7 +646,7 @@ namespace //internal functions incl. AA implementations
         return areadiag(p1, p2, left);
     }
 
-    inline vec2 areadiag2(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y, float p4x, float p4y, float d, float left, const vec2 &offset, int pattern)
+    vec2 areadiag2(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y, float p4x, float p4y, float d, float left, const vec2 &offset, int pattern)
     {
         vec2 p1(p1x, p1y),
              p2(p2x+d, p2y+d),
