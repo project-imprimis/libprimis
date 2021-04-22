@@ -348,8 +348,8 @@ namespace //internal functions incl. AA implementations
         smaaneighborhoodshader = nullptr;
     }
 
-    const int smaasearchtexwidth  = 66,
-              smaasearchtexheight = 33;
+    constexpr int smaasearchtexwidth  = 66,
+                  smaasearchtexheight = 33;
     uchar smaasearchdata[smaasearchtexwidth*smaasearchtexheight];
     bool smaasearchdatainited = false;
 
@@ -435,7 +435,7 @@ namespace //internal functions incl. AA implementations
         return a;
     }
 
-    const int orthoedges[][2] =
+    constexpr int orthoedges[][2] =
     {
         {0, 0}, {3, 0}, {0, 3}, {3, 3}, {1, 0}, {4, 0}, {1, 3}, {4, 3},
         {0, 1}, {3, 1}, {0, 4}, {3, 4}, {1, 1}, {4, 1}, {1, 4}, {4, 4}
@@ -625,7 +625,7 @@ namespace //internal functions incl. AA implementations
         return vec2(1 - areaunderdiag(p1, p2, vec2(1, 0).add(left)), areaunderdiag(p1, p2, vec2(1, 1).add(left)));
     }
 
-    const int edgesdiag[][2] =
+    constexpr int edgesdiag[][2] =
     {
         {0, 0}, {1, 0}, {0, 2}, {1, 2}, {2, 0}, {3, 0}, {2, 2}, {3, 2},
         {0, 1}, {1, 1}, {0, 3}, {1, 3}, {2, 1}, {3, 1}, {2, 3}, {3, 3}
@@ -690,12 +690,12 @@ namespace //internal functions incl. AA implementations
         return vec2(0, 0);
     }
 
-    const float offsetsortho[] = { 0.0f, -0.25f, 0.25f, -0.125f, 0.125f, -0.375f, 0.375f };
-    const float offsetsdiag[][2] = {{ 0.0f, 0.0f, }, { 0.25f, -0.25f }, { -0.25f, 0.25f }, { 0.125f, -0.125f }, { -0.125f, 0.125f } };
+    constexpr float offsetsortho[] = { 0.0f, -0.25f, 0.25f, -0.125f, 0.125f, -0.375f, 0.375f };
+    constexpr float offsetsdiag[][2] = {{ 0.0f, 0.0f, }, { 0.25f, -0.25f }, { -0.25f, 0.25f }, { 0.125f, -0.125f }, { -0.125f, 0.125f } };
 
 
-    const int smaaareatexwidth = 160,
-              smaaareatexheight = 560;
+    constexpr int smaaareatexwidth = 160,
+                  smaaareatexheight = 560;
 
     uchar smaaareadata[smaaareatexwidth*smaaareatexheight*2];
     bool smaaareadatainited = false;
