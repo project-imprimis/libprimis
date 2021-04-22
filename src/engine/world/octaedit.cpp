@@ -130,18 +130,18 @@ void boxsgrid(int orient, vec origin, vec s, int g)
 
 selinfo sel, lastsel, savedsel;
 
-int orient = 0;
-int gridsize = 8;
-ivec cor, lastcor;
-ivec cur, lastcur;
+int orient = 0,
+    gridsize = 8;
+ivec cor, lastcor,
+     cur, lastcur;
 
-bool editmode = false;
-bool multiplayer = false;
-bool allowediting = false;
-bool havesel = false;
-bool hmapsel = false;
-int horient  = 0;
-int entmoving = 0;
+bool editmode     = false,
+     multiplayer  = false,
+     allowediting = false,
+     havesel      = false,
+     hmapsel      = false;
+int horient  = 0,
+    entmoving = 0;
 
 
 VARF(entediting, 0, 0, 1,
