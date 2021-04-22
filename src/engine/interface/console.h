@@ -1,8 +1,6 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
-extern float conscale;
-
 extern void processkey(int code, bool isdown);
 extern void processtextinput(const char *str, int len);
 extern float rendercommand(float x, float y, float w);
