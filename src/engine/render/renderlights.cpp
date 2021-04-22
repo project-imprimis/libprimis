@@ -14,6 +14,7 @@
 #include "stain.h"
 
 #include "interface/control.h"
+#include "interface/console.h"
 
 #include "world/dynlight.h"
 #include "world/light.h"

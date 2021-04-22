@@ -13,6 +13,7 @@
 #include "engine.h"
 
 #include "rendergl.h"
+#include "renderparticles.h"
 #include "renderwindow.h"
 #include "rendertext.h"
 #include "stain.h"

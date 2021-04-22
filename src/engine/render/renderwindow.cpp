@@ -10,6 +10,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "rendermodel.h"
+#include "renderparticles.h"
 #include "rendertext.h"
 #include "renderwindow.h"
 #include "stain.h"

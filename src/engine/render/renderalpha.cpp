@@ -12,6 +12,7 @@
 #include "hdr.h"
 #include "rendergl.h"
 #include "rendermodel.h"
+#include "renderparticles.h"
 #include "rendertimers.h"
 #include "stain.h"
 
