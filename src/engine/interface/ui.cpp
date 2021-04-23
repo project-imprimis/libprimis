@@ -18,6 +18,9 @@
 
 #include "world/octaedit.h"
 #include "world/bih.h"
+
+#include "render/hud.h"
+
 //model needs bih's objects
 #include "model/model.h"
 //textedit.h needs rendertext's objects
