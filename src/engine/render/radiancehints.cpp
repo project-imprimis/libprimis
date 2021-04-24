@@ -55,10 +55,10 @@ FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache()); //smoothness of `r`adi
 VAR(rhclipgrid, 0, 1, 1);
 VARF(rhcache, 0, 1, 1, cleanupradiancehints());
 VARF(rhforce, 0, 0, 1, cleanupradiancehints());
-VAR(rsmcull, 0, 1, 1);
+VAR(rsmcull, 0, 1, 1); //`r`eflective `s`hadow `m`ap `cull`ing
 VARFP(rhtaps, 0, 20, 32, cleanupradiancehints()); //`r`adiance `h`ints `taps`: number of sample points for global illumination
-VAR(rhdyntex, 0, 0, 1);
-VAR(rhdynmm, 0, 0, 1);
+VAR(rhdyntex, 0, 0, 1); //`r`adiance `h`ints `dyn`amic `tex`tures
+VAR(rhdynmm, 0, 0, 1); //`r`adiance `h`ints `dyn`amic `m`ap `m`odels
 
 VARFR(gidist, 0, 384, 1024, { clearradiancehintscache(); cleardeferredlightshaders(); if(!gidist) cleanupradiancehints(); });
 FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); }); //`g`lobal `i`llumination `scale`
@@ -344,7 +344,8 @@ bool useradiancehints()
     return !sunlight.iszero() && csmshadowmap && gi && giscale && gidist;
 }
 
-//radiance hints object
+//============================= radiance hints object ==========================//
+
 void radiancehints::updatesplitdist()
 {
     float lambda = rhsplitweight,
@@ -737,9 +738,9 @@ void radiancehints::renderslices()
                         if(dx1 < dx2 && dy1 < dy2)
                         {
                             float dvx1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(dx1 - x1)/(x2 - x1),
-                                  dvx2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(dx2 - x2)/(x2 - x1),
+                                  dvx2 =  1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sw)*(dx2 - x2)/(x2 - x1),
                                   dvy1 = -1 + rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(dy1 - y1)/(y2 - y1),
-                                  dvy2 = 1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(dy2 - y2)/(y2 - y1),
+                                  dvy2 =  1 - rhborder*2.0f/(rhgrid+2) + 2*rhgrid/static_cast<float>(sh)*(dy2 - y2)/(y2 - y1),
                                   dtx1 = (dx1 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                                   dtx2 = (dx2 + split.center.x - split.cached.x)*split.scale.x + split.offset.x,
                                   dty1 = (dy1 + split.center.y - split.cached.y)*split.scale.y + split.offset.y,
