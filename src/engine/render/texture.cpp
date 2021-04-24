@@ -981,8 +981,8 @@ GLenum textarget(GLenum subtarget)
 
 const GLint *swizzlemask(GLenum format)
 {
-    static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE };
-    static const GLint luminancealpha[4] = { GL_RED, GL_RED, GL_RED, GL_GREEN };
+    static const GLint luminance[4] = { GL_RED, GL_RED, GL_RED, GL_ONE },
+                       luminancealpha[4] = { GL_RED, GL_RED, GL_RED, GL_GREEN };
     switch(format)
     {
         case GL_RED:
@@ -1521,7 +1521,8 @@ SDL_Surface *fixsurfaceformat(SDL_Surface *s)
 void texflip(ImageData &s)
 {
     ImageData d(s.w, s.h, s.bpp);
-    uchar *dst = d.data, *src = &s.data[s.pitch*s.h];
+    uchar *dst = d.data,
+          *src = &s.data[s.pitch*s.h];
     for(int i = 0; i < s.h; ++i)
     {
         src -= s.pitch;
@@ -2779,7 +2780,6 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
         propagatevslot(&vs, (1 << VSlot_Num) - 1);
     }
 }
-
 COMMAND(texture, "ssiiif");
 
 void texgrass(char *name)
