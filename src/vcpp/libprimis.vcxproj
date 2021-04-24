@@ -182,7 +182,7 @@
     <ClCompile Include="..\engine\world\light.cpp" />
     <ClCompile Include="..\engine\world\material.cpp" />
     <ClCompile Include="..\engine\world\mpr.cpp" />
-    <ClCompile Include="..\engine\world\octa.cpp" />
+    <ClCompile Include="..\engine\world\octaworld.cpp" />
     <ClCompile Include="..\engine\world\octaedit.cpp" />
     <ClCompile Include="..\engine\world\physics.cpp" />
     <ClCompile Include="..\engine\world\raycube.cpp" />

@@ -65,8 +65,8 @@ CLIENT_OBJS= \
 	engine/world/light.o \
 	engine/world/material.o \
 	engine/world/mpr.o \
-	engine/world/octa.o \
 	engine/world/octaedit.o \
+	engine/world/octaworld.o \
 	engine/world/physics.o \
 	engine/world/raycube.o \
 	engine/world/world.o \

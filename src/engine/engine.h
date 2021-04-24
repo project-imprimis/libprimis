@@ -31,7 +31,7 @@ extern void reloadtextures();
 extern void cleanuptextures();
 extern bool settexture(const char *name, int clamp = 0);
 
-// octa
+// octaworld
 extern cube *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);

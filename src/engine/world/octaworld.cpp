@@ -1,6 +1,6 @@
 // core world management routines
 
-/* octa.cpp: the octree world
+/* octaworld.cpp: the octree world
  *
  * the octree world structure, consisting of nested cube objects (with tex, geom info)
  * is defined here
