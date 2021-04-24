@@ -1120,7 +1120,7 @@ namespace
         g.texture = texture;
     }
 
-    inline void calctexgen(VSlot &vslot, int orient, vec4 &sgen, vec4 &tgen)
+    void calctexgen(VSlot &vslot, int orient, vec4 &sgen, vec4 &tgen)
     {
         Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
         const texrotation &r = texrotations[vslot.rotation];
@@ -1944,7 +1944,7 @@ namespace
         vc.clear();
     }
 
-    inline int setcubevisibility(cube &c, const ivec &co, int size)
+    int setcubevisibility(cube &c, const ivec &co, int size)
     {
         if(iscubeempty(c) && (c.material&MatFlag_Clip) != Mat_Clip)
         {
