@@ -2391,11 +2391,6 @@ static VSlot *emptyvslot(Slot &owner)
     return vslots.add(new VSlot(&owner, vslots.length()));
 }
 
-VSlot &Slot::emptyvslot()
-{
-    return *::emptyvslot(*this);
-}
-
 static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
 {
     if(diff & (1 << VSlot_ShParam))
@@ -3007,37 +3002,6 @@ static void collapsespec(ImageData &s)
     s.replace(d);
 }
 
-int Slot::findtextype(int type, int last) const
-{
-    for(int i = last+1; i<sts.length(); i++)
-    {
-        if((type&(1<<sts[i].type)) && sts[i].combined<0)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-int Slot::cancombine(int type) const
-{
-    switch(type)
-    {
-        case Tex_Diffuse:
-        {
-            return texmask&((1 << Tex_Spec) | (1 << Tex_Normal)) ? Tex_Spec : Tex_Alpha;
-        }
-        case Tex_Normal:
-        {
-            return texmask&(1 << Tex_Depth) ? Tex_Depth : Tex_Alpha;
-        }
-        default:
-        {
-            return -1;
-        }
-    }
-}
-
 int DecalSlot::cancombine(int type) const
 {
     switch(type)
@@ -3089,6 +3053,44 @@ static void addname(vector<char> &key, Slot &slot, Slot::Tex &t, bool combined =
     for(const char *s = path(tname); *s; key.add(*s++))
     {
         //(empty body)
+    }
+}
+
+// Slot object
+
+VSlot &Slot::emptyvslot()
+{
+    return *::emptyvslot(*this);
+}
+
+int Slot::findtextype(int type, int last) const
+{
+    for(int i = last+1; i<sts.length(); i++)
+    {
+        if((type&(1<<sts[i].type)) && sts[i].combined<0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int Slot::cancombine(int type) const
+{
+    switch(type)
+    {
+        case Tex_Diffuse:
+        {
+            return texmask&((1 << Tex_Spec) | (1 << Tex_Normal)) ? Tex_Spec : Tex_Alpha;
+        }
+        case Tex_Normal:
+        {
+            return texmask&(1 << Tex_Depth) ? Tex_Depth : Tex_Alpha;
+        }
+        default:
+        {
+            return -1;
+        }
     }
 }
 
@@ -3214,6 +3216,8 @@ void Slot::load()
     }
     loaded = true;
 }
+
+// end of Slot
 
 MatSlot &lookupmaterialslot(int index, bool load)
 {
