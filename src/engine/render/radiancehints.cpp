@@ -81,7 +81,7 @@ namespace //internal functionality
            rsmnormaltex = 0,
            rsmfbo = 0;
 
-    static Shader *radiancehintsshader = nullptr;
+    Shader *radiancehintsshader = nullptr;
 
     Shader *loadradiancehintsshader()
     {
@@ -111,7 +111,7 @@ namespace //internal functionality
         rsmworldshader = nullptr;
     }
 
-    static inline void rhquad(float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2, float tz)
+    void rhquad(float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2, float tz)
     {
         gle::begin(GL_TRIANGLE_STRIP);
         gle::attribf(x2, y1); gle::attribf(tx2, ty1, tz);
@@ -121,7 +121,7 @@ namespace //internal functionality
         gle::end();
     }
 
-    static inline void rhquad(float dx1, float dy1, float dx2, float dy2, float dtx1, float dty1, float dtx2, float dty2, float dtz,
+    void rhquad(float dx1, float dy1, float dx2, float dy2, float dtx1, float dty1, float dtx2, float dty2, float dtz,
                               float px1, float py1, float px2, float py2, float ptx1, float pty1, float ptx2, float pty2, float ptz)
     {
         gle::begin(GL_TRIANGLE_STRIP);
