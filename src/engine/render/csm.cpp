@@ -274,3 +274,20 @@ void cascadedshadowmap::bindparams()
     GLOBALPARAMF(csmz, splits[0].center.z*-splits[0].scale.z, splits[0].scale.z);
 }
 
+void cascadedshadowmap::setup()
+{
+    int size = (csmmaxsize * shadowatlaspacker.w) / shadowatlassize;
+    for(int i; i < csmsplits; i++)
+    {
+        ushort smx = USHRT_MAX,
+               smy = USHRT_MAX;
+        splits[i].idx = -1;
+        if(shadowatlaspacker.insert(smx, smy, size, size))
+        {
+            addshadowmap(smx, smy, size, splits[i].idx);
+        }
+    }
+    getmodelmatrix();
+    getprojmatrix();
+    gencullplanes();
+}
