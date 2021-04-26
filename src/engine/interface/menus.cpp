@@ -16,11 +16,6 @@
 //internally relevant functionality
 namespace
 {
-    void notifywelcome()
-    {
-        UI::hideui("servers");
-    }
-
     struct Change
     {
         int type;
@@ -105,6 +100,11 @@ void addchange(const char *desc, int type)
     {
         UI::showui("changes");
     }
+}
+
+void notifywelcome()
+{
+    UI::hideui("servers");
 }
 
 //clears out pending changes added by addchange()
