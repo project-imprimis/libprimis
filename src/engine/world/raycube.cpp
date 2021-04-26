@@ -14,6 +14,7 @@
 #include "engine.h"
 
 #include "bih.h"
+#include "octaworld.h"
 #include "physics.h"
 #include "raycube.h"
 

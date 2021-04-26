@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include "light.h"
+#include "octaworld.h"
 
 #include "interface/console.h"
 #include "interface/input.h"

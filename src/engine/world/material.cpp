@@ -19,6 +19,7 @@
 
 #include "material.h"
 #include "octaedit.h"
+#include "octaworld.h"
 
 #include "render/octarender.h"
 #include "render/rendergl.h"

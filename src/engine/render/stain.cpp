@@ -21,6 +21,7 @@
 #include "interface/control.h"
 
 #include "world/bih.h"
+#include "world/octaworld.h"
 
 #include "model/model.h"
 

@@ -26,6 +26,7 @@
 
 #include "world/material.h"
 #include "world/octaedit.h"
+#include "world/octaworld.h"
 #include "world/raycube.h"
 
 #include "interface/console.h"

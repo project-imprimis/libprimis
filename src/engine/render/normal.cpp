@@ -14,6 +14,8 @@
 
 #include "octarender.h"
 
+#include "world/octaworld.h"
+
 namespace //internal functionality not seen by other files
 {
     struct normalkey

@@ -15,6 +15,7 @@
 #include "engine.h"
 
 #include "light.h"
+#include "octaworld.h"
 #include "raycube.h"
 
 #include "interface/console.h"

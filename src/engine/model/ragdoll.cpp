@@ -15,6 +15,7 @@
 #include "render/radiancehints.h"
 #include "render/rendergl.h"
 
+#include "world/octaworld.h"
 #include "world/physics.h"
 #include "world/bih.h"
 

@@ -13,6 +13,7 @@
 #include "engine.h"
 
 #include "octaedit.h"
+#include "octaworld.h"
 
 namespace hmap
 {
