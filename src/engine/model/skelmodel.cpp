@@ -1559,7 +1559,7 @@ uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
     {
         if(p->numbones==o->numbones && !memcmp(p->bones, o->bones, p->numbones))
         {
-            delete[] (uchar *)o;
+            delete[] reinterpret_cast<uchar *>(o);
             return p->bones;
         }
     }
@@ -1571,8 +1571,8 @@ uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
 
 skelmodel::animpartmask *skelmodel::skelpart::newpartmask()
 {
-    animpartmask *p = (animpartmask *)new uchar[sizeof(animpartmask) + ((skelmeshgroup *)meshes)->skel->numbones-1];
-    p->numbones = ((skelmeshgroup *)meshes)->skel->numbones;
+    animpartmask *p = reinterpret_cast<animpartmask *>(new uchar[sizeof(animpartmask) + static_cast<skelmeshgroup *>(meshes)->skel->numbones-1]);
+    p->numbones = (static_cast<skelmeshgroup *>(meshes))->skel->numbones;
     memset(p->bones, 0, p->numbones);
     return p;
 }
