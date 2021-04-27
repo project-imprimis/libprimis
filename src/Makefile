@@ -5,7 +5,7 @@
 # -ffast-math: force less accurate but faster floating point calcs
 # -std=c++17: compile to c++17 standard, needed for some std library functions
 # -march=x86-64: compile only for x64 platforms (32 bit not officially supported)
-# -Wall: show "all" level of compiler warnings
+# -Wall: show "all" level of compiler warnings (which is not actually all possible warnings)
 # -fsigned-char: have the `char` type be signed (as opposed to `uchar`)
 # -fno-rtti: disable runtime type interpretation, it's not used
 # -fpic: compile position independent code for library creation
@@ -72,7 +72,9 @@ CLIENT_OBJS= \
 	engine/world/world.o \
 	engine/world/worldio.o \
 
+#default: compiles the library and places it in the same directory as this file
 default: client
+#install/emplace: places the library into the /usr/lib directory
 install: client emplace
 
 clean:
