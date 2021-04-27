@@ -920,7 +920,7 @@ namespace //internal functions incl. AA implementations
         int cleardepth = msaalight ? GL_DEPTH_BUFFER_BIT | (ghasstencil > 1 ? GL_STENCIL_BUFFER_BIT : 0) : 0;
         bool depthmask = smaadepthmask && (!tqaa || msaalight),
              stencil = smaastencil && ghasstencil > (msaasamples ? 1 : 0);
-        for(int pass = 0; pass < (split ? 2 : 1); ++pass)
+        for(int pass = 0; pass < (split ? 2 : 1); ++pass) // loop through multiple passes if doing multisample aa
         {
             glBindFramebuffer_(GL_FRAMEBUFFER, smaafbo[1]);
             if(depthmask || stencil)
