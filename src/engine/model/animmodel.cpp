@@ -13,6 +13,7 @@
 #include "interface/control.h"
 
 #include "render/radiancehints.h"
+#include "render/renderalpha.h"
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"

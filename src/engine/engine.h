@@ -180,8 +180,6 @@ inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec
 
 extern matrix4 worldmatrix, screenmatrix;
 
-extern int transparentlayer;
-
 extern int gw, gh, gdepthformat, ghasstencil;
 extern GLuint gdepthtex, gcolortex, gnormaltex, gglowtex, gdepthrb, gstencilrb;
 extern int msaasamples, msaalight;
@@ -212,7 +210,6 @@ extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
 extern void shademinimap(const vec &color = vec(-1, -1, -1));
 extern void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
-extern void rendertransparent();
 extern void renderao();
 extern void setuplights();
 extern void setupgbuffer();
