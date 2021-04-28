@@ -275,7 +275,7 @@ namespace
             return tex==o.tex && orient==o.orient && layer==o.layer && alpha==o.alpha;
         }
 
-        static inline bool sort(const sortkey &x, const sortkey &y)
+        static bool sort(const sortkey &x, const sortkey &y)
         {
             if(x.alpha < y.alpha)
             {
@@ -358,7 +358,7 @@ namespace
             return tex==o.tex && reuse==o.reuse;
         }
 
-        static inline bool sort(const decalkey &x, const decalkey &y)
+        static bool sort(const decalkey &x, const decalkey &y)
         {
             if(x.tex == y.tex)
             {
@@ -1796,7 +1796,7 @@ namespace
         mfl.setsize(0);
     }
 
-    inline void finddecals(vtxarray *va)
+    void finddecals(vtxarray *va)
     {
         if(va->hasmerges&(Merge_Origin|Merge_Part))
         {
