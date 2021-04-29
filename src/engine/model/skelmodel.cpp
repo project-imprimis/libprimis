@@ -1290,7 +1290,7 @@ int skelmodel::skelmesh::genvbo(std::vector<ushort> &idxs, int offset)
 {
     for(int i = 0; i < numverts; ++i)
     {
-        verts[i].interpindex = ((skelmeshgroup *)group)->remapblend(verts[i].blend);
+        verts[i].interpindex = (static_cast<skelmeshgroup *>(group))->remapblend(verts[i].blend);
     }
 
     voffset = offset;
@@ -1311,7 +1311,7 @@ int skelmodel::skelmesh::genvbo(std::vector<ushort> &idxs, int offset)
 
 void skelmodel::skelmesh::setshader(Shader *s, int row)
 {
-    skelmeshgroup *g = (skelmeshgroup *)group;
+    skelmeshgroup *g = static_cast<skelmeshgroup *>(group);
     if(row)
     {
         s->setvariant(g->skel->usegpuskel ? std::min(maxweights, g->vweights) : 0, row);
@@ -1332,7 +1332,7 @@ void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc
     {
         return;
     }
-    glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &((skelmeshgroup *)group)->edata[eoffset]);
+    glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<skelmeshgroup *>(group))->edata[eoffset]);
     glde++;
     xtravertsva += numverts;
 }
@@ -1589,7 +1589,7 @@ bool skelmodel::skelpart::addanimpart(ushort *bonemask)
     {
         return false;
     }
-    ((skelmeshgroup *)meshes)->skel->applybonemask(bonemask, buildingpartmask->bones, numanimparts);
+    (static_cast<skelmeshgroup *>(meshes))->skel->applybonemask(bonemask, buildingpartmask->bones, numanimparts);
     numanimparts++;
     return true;
 }
@@ -1602,7 +1602,7 @@ void skelmodel::skelpart::endanimparts()
         buildingpartmask = nullptr;
     }
 
-    ((skelmeshgroup *)meshes)->skel->optimize();
+    (static_cast<skelmeshgroup *>(meshes))->skel->optimize();
 }
 
 void skelmodel::skelpart::loaded()
