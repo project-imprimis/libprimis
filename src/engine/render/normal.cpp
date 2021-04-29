@@ -102,7 +102,7 @@ namespace //internal functionality not seen by other files
         return axis - 6;
     }
 
-    inline void findnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
+    void findnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
     {
         v = vec(0, 0, 0);
         int total = 0;
@@ -166,7 +166,7 @@ namespace //internal functionality not seen by other files
         }
     }
 
-    inline bool findtnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
+    bool findtnormal(const normalgroup &g, float lerpthreshold, const vec &surface, vec &v)
     {
         float bestangle = lerpthreshold;
         tnormal *bestnorm = nullptr;
