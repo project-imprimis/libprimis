@@ -1166,26 +1166,26 @@ VARN(lightbatches, lightbatchesused, 1, 0, 0);
 VARN(lightbatchrects, lightbatchrectsused, 1, 0, 0);
 VARN(lightbatchstacks, lightbatchstacksused, 1, 0, 0);
 
-static inline void setsmnoncomparemode() // use texture gather
+static void setsmnoncomparemode() // use texture gather
 {
     glTexParameteri(shadowatlastarget, GL_TEXTURE_COMPARE_MODE, GL_NONE);
     glTexParameteri(shadowatlastarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(shadowatlastarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
-static inline void setsmcomparemode() // use embedded shadow cmp
+static void setsmcomparemode() // use embedded shadow cmp
 {
     glTexParameteri(shadowatlastarget, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
     glTexParameteri(shadowatlastarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(shadowatlastarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
-static inline bool usegatherforsm()
+static bool usegatherforsm()
 {
     return smfilter > 1 && smgather && usetexgather;
 }
 
-static inline bool usesmcomparemode()
+static bool usesmcomparemode()
 {
     return !usegatherforsm() || (usetexgather > 1);
 }
@@ -1799,7 +1799,7 @@ void loaddeferredlightshaders()
     }
 }
 
-static inline bool sortlights(int x, int y)
+static bool sortlights(int x, int y)
 {
     const lightinfo &xl = lights[x],
                     &yl = lights[y];
@@ -2022,7 +2022,7 @@ static inline void lightquad(float z = -1, float sx1 = -1, float sy1 = -1, float
     gle::end();
 }
 
-static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy2)
+static void lightquads(float z, float sx1, float sy1, float sx2, float sy2)
 {
     gle::attribf(sx1, sy2, z);
     gle::attribf(sx2, sy2, z);
@@ -2030,7 +2030,7 @@ static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy
     gle::attribf(sx1, sy1, z);
 }
 
-static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
+static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int tx1, int ty1, int tx2, int ty2)
 {
     int vx1 = std::max(static_cast<int>(std::floor((sx1*0.5f+0.5f)*vieww)), ((tx1*lighttilevieww)/lighttilew)*lighttilealignw),
         vy1 = std::max(static_cast<int>(std::floor((sy1*0.5f+0.5f)*viewh)), ((ty1*lighttileviewh)/lighttileh)*lighttilealignh),
@@ -2039,7 +2039,7 @@ static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy
     lightquads(z, (vx1*2.0f)/vieww-1.0f, (vy1*2.0f)/viewh-1.0f, (vx2*2.0f)/vieww-1.0f, (vy2*2.0f)/viewh-1.0f);
 }
 
-static inline void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int x1, int y1, int x2, int y2, const uint *tilemask)
+static void lightquads(float z, float sx1, float sy1, float sx2, float sy2, int x1, int y1, int x2, int y2, const uint *tilemask)
 {
     if(!tilemask)
     {
@@ -2153,7 +2153,7 @@ static void bindlighttexs(int msaapass = 0, bool transparent = false)
     glActiveTexture_(GL_TEXTURE0);
 }
 
-static inline void setlightglobals(bool transparent = false)
+static void setlightglobals(bool transparent = false)
 {
     GLOBALPARAMF(shadowatlasscale, 1.0f/shadowatlaspacker.w, 1.0f/shadowatlaspacker.h);
     if(ao)
@@ -2211,7 +2211,7 @@ static LocalShaderParam lightpos("lightpos"),
 static vec4 lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
 static vec2 shadowoffsetv[8];
 
-static inline void setlightparams(int i, const lightinfo &l)
+static void setlightparams(int i, const lightinfo &l)
 {
     lightposv[i]   = vec4(l.o, 1).div(l.radius);
     lightcolorv[i] = vec4(vec(l.color).mul(2*ldrscaleb), l.nospec() ? 0 : 1);
@@ -2245,7 +2245,7 @@ static inline void setlightparams(int i, const lightinfo &l)
     }
 }
 
-static inline void setlightshader(Shader *s, int n, bool baselight, bool shadowmap, bool spotlight, bool transparent = false, bool avatar = false)
+static void setlightshader(Shader *s, int n, bool baselight, bool shadowmap, bool spotlight, bool transparent = false, bool avatar = false)
 {
     s->setvariant(n-1, (shadowmap ? 1 : 0) + (baselight ? 0 : 2) + (spotlight ? 4 : 0) + (transparent ? 8 : 0) + (avatar ? 24 : 0));
     lightpos.setv(lightposv, n);
@@ -2261,7 +2261,7 @@ static inline void setlightshader(Shader *s, int n, bool baselight, bool shadowm
     }
 }
 
-static inline void setavatarstencil(int stencilref, bool on)
+static void setavatarstencil(int stencilref, bool on)
 {
     glStencilFunc(GL_EQUAL, (on ? 0x40 : 0) | stencilref, !(stencilref&0x08) && msaalight==2 ? 0x47 : 0x4F);
 }
@@ -3317,7 +3317,7 @@ static void batchlights(const batchstack &initstack)
     }
 }
 
-static inline bool sortlightbatches(const lightbatch *x, const lightbatch *y)
+static bool sortlightbatches(const lightbatch *x, const lightbatch *y)
 {
     if(x->flags < y->flags)
     {
