@@ -73,7 +73,7 @@ vertcommands<obj> objcommands;
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
 
-static inline void checkmdl()
+static void checkmdl()
 {
     if(!loadingmodel)
     {
@@ -705,7 +705,7 @@ foundbatch:
     b->batched = idx;
 }
 
-static inline void renderbatchedmodel(model *m, const batchedmodel &b)
+static void renderbatchedmodel(model *m, const batchedmodel &b)
 {
     modelattach *a = nullptr;
     if(b.attached>=0)
@@ -731,12 +731,12 @@ static inline void renderbatchedmodel(model *m, const batchedmodel &b)
 //ratio between model size and distance at which to cull: at 200, model must be 200 times smaller than distance to model
 VAR(maxmodelradiusdistance, 10, 200, 1000);
 
-static inline void enablecullmodelquery()
+static void enablecullmodelquery()
 {
     startbb();
 }
 
-static inline void rendercullmodelquery(model *m, dynent *d, const vec &center, float radius)
+static void rendercullmodelquery(model *m, dynent *d, const vec &center, float radius)
 {
     if(std::fabs(camera1->o.x-center.x) < radius+1 &&
        std::fabs(camera1->o.y-center.y) < radius+1 &&
@@ -756,12 +756,12 @@ static inline void rendercullmodelquery(model *m, dynent *d, const vec &center, 
     endquery();
 }
 
-static inline void disablecullmodelquery()
+static void disablecullmodelquery()
 {
     endbb();
 }
 
-static inline int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
+static int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
@@ -782,7 +782,7 @@ static inline int cullmodel(model *m, const vec &center, float radius, int flags
     return 0;
 }
 
-static inline int shadowmaskmodel(const vec &center, float radius)
+static int shadowmaskmodel(const vec &center, float radius)
 {
     switch(shadowmapping)
     {
