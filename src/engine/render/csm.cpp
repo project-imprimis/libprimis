@@ -277,7 +277,7 @@ void cascadedshadowmap::bindparams()
 void cascadedshadowmap::setup()
 {
     int size = (csmmaxsize * shadowatlaspacker.w) / shadowatlassize;
-    for(int i; i < csmsplits; i++)
+    for(int i = 0; i < csmsplits; i++)
     {
         ushort smx = USHRT_MAX,
                smy = USHRT_MAX;
