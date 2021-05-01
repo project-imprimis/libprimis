@@ -1,60 +1,60 @@
 struct skelbih
 {
-    struct node
-    {
-        short split[2];
-        ushort child[2];
-
-        int axis() const
+    public:
+        struct tri : skelmodel::tri
         {
-            return child[0]>>14;
+            uchar Mesh, id;
+        };
+        vec calccenter() const
+        {
+            return vec(bbmin).add(bbmax).mul(0.5f);
         }
 
-        int childindex(int which) const
+        float calcradius() const
         {
-            return child[which]&0x3FFF;
+            return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
         }
 
-        bool isleaf(int which) const
+        skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris);
+
+        ~skelbih()
         {
-            return (child[1]&(1<<(14+which)))!=0;
+            DELETEA(nodes);
         }
-    };
 
-    struct tri : skelmodel::tri
-    {
-        uchar Mesh, id;
-    };
+        struct node
+        {
+            short split[2];
+            ushort child[2];
 
-    node *nodes;
-    int numnodes;
-    tri *tris;
+            int axis() const
+            {
+                return child[0]>>14;
+            }
 
-    vec bbmin, bbmax;
+            int childindex(int which) const
+            {
+                return child[which]&0x3FFF;
+            }
 
-    skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris);
+            bool isleaf(int which) const
+            {
+                return (child[1]&(1<<(14+which)))!=0;
+            }
+        };
 
-    ~skelbih()
-    {
-        DELETEA(nodes);
-    }
+        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray);
 
-    bool triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray);
+    private:
+        node *nodes;
+        int numnodes;
+        tri *tris;
 
-    void build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax);
+        vec bbmin, bbmax;
 
-    void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float tmin, float tmax);
-    void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray);
-
-    vec calccenter() const
-    {
-        return vec(bbmin).add(bbmax).mul(0.5f);
-    }
-
-    float calcradius() const
-    {
-        return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
-    }
+        bool triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray);
+        void build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices, const vec &vmin, const vec &vmax);
+        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float tmin, float tmax);
 };
 
 //gets used just twice, in skelbih::triintersect, skelhitzone::triintersect
