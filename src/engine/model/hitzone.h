@@ -548,140 +548,142 @@ bool skelhitzone::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
 
 struct skelzonekey
 {
-    int blend;
-    uchar bones[12];
-
-    skelzonekey() : blend(-1) { memset(bones, 0xFF, sizeof(bones)); }
-    skelzonekey(int bone) : blend(INT_MAX) { bones[0] = bone; memset(&bones[1], 0xFF, sizeof(bones)-1); }
-    skelzonekey(skelmodel::skelmesh *m, const skelmodel::tri &t)
-      : blend(-1)
-    {
-        memset(bones, 0xFF, sizeof(bones));
-        addbones(m, t);
-    }
-
-    bool includes(const skelzonekey &o)
-    {
-        int j = 0;
-        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    public:
+        skelzonekey() : blend(-1) { memset(bones, 0xFF, sizeof(bones)); }
+        skelzonekey(int bone) : blend(INT_MAX) { bones[0] = bone; memset(&bones[1], 0xFF, sizeof(bones)-1); }
+        skelzonekey(skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
         {
-            if(bones[i] > o.bones[j])
-            {
-                return false;
-            }
-            if(bones[i] == o.bones[j])
-            {
-                j++;
-            }
+            memset(bones, 0xFF, sizeof(bones));
+            addbones(m, t);
         }
-        return j < static_cast<int>(sizeof(bones)) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
-    }
 
-    void subtract(const skelzonekey &o)
-    {
-        int len = 0,
-            j   = 0;
-        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
-        {
-        retry:
-            if(j >= static_cast<int>(sizeof(o.bones)) || bones[i] < o.bones[j])
-            {
-                bones[len++] = bones[i];
-                continue;
-            }
-            if(bones[i] == o.bones[j])
-            {
-                j++;
-                continue;
-            }
-            do
-            {
-                j++;
-            } while(j < static_cast<int>(sizeof(o.bones)) && bones[i] > o.bones[j]);
-            goto retry;
-        }
-        memset(&bones[len], 0xFF, sizeof(bones) - len);
-    }
+        int blend;
+        uchar bones[12];
 
-    bool hasbone(int n)
-    {
-        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+        bool includes(const skelzonekey &o)
         {
-            if(bones[i] == n)
+            int j = 0;
+            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
             {
-                return true;
-            }
-            if(bones[i] == 0xFF)
-            {
-                break;
-            }
-        }
-        return false;
-    }
-
-    int numbones()
-    {
-        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
-        {
-            if(bones[i] == 0xFF)
-            {
-                return i;
-            }
-        }
-        return sizeof(bones);
-    }
-
-    void addbone(int n)
-    {
-        for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
-        {
-            if(n <= bones[i])
-            {
-                if(n < bones[i])
+                if(bones[i] > o.bones[j])
                 {
-                    memmove(&bones[i+1], &bones[i], sizeof(bones) - (i+1));
-                    bones[i] = n;
+                    return false;
                 }
-                return;
-            }
-        }
-    }
-
-    void addbones(skelmodel::skelmesh *m, const skelmodel::tri &t)
-    {
-        skelmodel::skelmeshgroup *g = reinterpret_cast<skelmodel::skelmeshgroup *>(m->group);
-        int b0 = m->verts[t.vert[0]].blend,
-            b1 = m->verts[t.vert[1]].blend,
-            b2 = m->verts[t.vert[1]].blend;
-        const skelmodel::blendcombo &c0 = g->blendcombos[b0];
-        for(int i = 0; i < 4; ++i)
-        {
-            if(c0.weights[i])
-            {
-                addbone(c0.bones[i]);
-            }
-        }
-        if(b0 != b1 || b0 != b2)
-        {
-            const skelmodel::blendcombo &c1 = g->blendcombos[b1];
-            for(int i = 0; i < 4; ++i)
-            {
-                if(c1.weights[i])
+                if(bones[i] == o.bones[j])
                 {
-                    addbone(c1.bones[i]);
+                    j++;
                 }
             }
-            const skelmodel::blendcombo &c2 = g->blendcombos[b2];
-            for(int i = 0; i < 4; ++i)
+            return j < static_cast<int>(sizeof(bones)) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
+        }
+
+        void subtract(const skelzonekey &o)
+        {
+            int len = 0,
+                j   = 0;
+            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
             {
-                if(c2.weights[i]) addbone(c2.bones[i]);
+            retry:
+                if(j >= static_cast<int>(sizeof(o.bones)) || bones[i] < o.bones[j])
+                {
+                    bones[len++] = bones[i];
+                    continue;
+                }
+                if(bones[i] == o.bones[j])
+                {
+                    j++;
+                    continue;
+                }
+                do
+                {
+                    j++;
+                } while(j < static_cast<int>(sizeof(o.bones)) && bones[i] > o.bones[j]);
+                goto retry;
+            }
+            memset(&bones[len], 0xFF, sizeof(bones) - len);
+        }
+
+    private:
+        bool hasbone(int n)
+        {
+            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+            {
+                if(bones[i] == n)
+                {
+                    return true;
+                }
+                if(bones[i] == 0xFF)
+                {
+                    break;
+                }
+            }
+            return false;
+        }
+
+        int numbones()
+        {
+            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+            {
+                if(bones[i] == 0xFF)
+                {
+                    return i;
+                }
+            }
+            return sizeof(bones);
+        }
+
+        void addbone(int n)
+        {
+            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+            {
+                if(n <= bones[i])
+                {
+                    if(n < bones[i])
+                    {
+                        memmove(&bones[i+1], &bones[i], sizeof(bones) - (i+1));
+                        bones[i] = n;
+                    }
+                    return;
+                }
             }
         }
-        else
+
+        void addbones(skelmodel::skelmesh *m, const skelmodel::tri &t)
         {
-            blend = b0;
+            skelmodel::skelmeshgroup *g = reinterpret_cast<skelmodel::skelmeshgroup *>(m->group);
+            int b0 = m->verts[t.vert[0]].blend,
+                b1 = m->verts[t.vert[1]].blend,
+                b2 = m->verts[t.vert[1]].blend;
+            const skelmodel::blendcombo &c0 = g->blendcombos[b0];
+            for(int i = 0; i < 4; ++i)
+            {
+                if(c0.weights[i])
+                {
+                    addbone(c0.bones[i]);
+                }
+            }
+            if(b0 != b1 || b0 != b2)
+            {
+                const skelmodel::blendcombo &c1 = g->blendcombos[b1];
+                for(int i = 0; i < 4; ++i)
+                {
+                    if(c1.weights[i])
+                    {
+                        addbone(c1.bones[i]);
+                    }
+                }
+                const skelmodel::blendcombo &c2 = g->blendcombos[b2];
+                for(int i = 0; i < 4; ++i)
+                {
+                    if(c2.weights[i]) addbone(c2.bones[i]);
+                }
+            }
+            else
+            {
+                blend = b0;
+            }
         }
-    }
+
 };
 
 struct skelzonebounds
