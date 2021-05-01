@@ -75,8 +75,10 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
 {
     uint wfrac = (sw<<12)/dw,
          hfrac = (sh<<12)/dh,
-         darea = dw*dh, sarea = sw*sh;
+         darea = dw*dh,
+         sarea = sw*sh;
     int over, under;
+    //the for loops here are merely to increment over & under vars which are used later
     for(over = 0; (darea>>over) > sarea; over++)
     {
         //(empty body)
@@ -88,7 +90,7 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
     uint cscale = std::clamp(under, over - 12, 12),
          ascale = std::clamp(12 + under - over, 0, 24),
          dscale = ascale + 12 - cscale,
-         area = ((ullong)darea<<ascale)/sarea;
+         area = (static_cast<ullong>(darea)<<ascale)/sarea;
     dw *= wfrac;
     dh *= hfrac;
     for(uint y = 0; y < dh; y += hfrac)
