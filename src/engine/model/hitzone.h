@@ -688,35 +688,34 @@ struct skelzonekey
 
 struct skelzonebounds
 {
-    int owner;
-    vec bbmin, bbmax;
+    public:
+        skelzonebounds() : owner(-1), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f) {}
+        int owner;
 
-    skelzonebounds() : owner(-1), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f) {}
+        bool empty() const
+        {
+            return bbmin.x > bbmax.x;
+        }
 
-    void addvert(const vec &p)
-    {
-        bbmin.x = std::min(bbmin.x, p.x);
-        bbmin.y = std::min(bbmin.y, p.y);
-        bbmin.z = std::min(bbmin.z, p.z);
-        bbmax.x = std::max(bbmax.x, p.x);
-        bbmax.y = std::max(bbmax.y, p.y);
-        bbmax.z = std::max(bbmax.z, p.z);
-    }
-
-    bool empty() const
-    {
-        return bbmin.x > bbmax.x;
-    }
-
-    vec calccenter() const
-    {
-        return vec(bbmin).add(bbmax).mul(0.5f);
-    }
-
-    float calcradius() const
-    {
-        return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
-    }
+        vec calccenter() const
+        {
+            return vec(bbmin).add(bbmax).mul(0.5f);
+        }
+        void addvert(const vec &p)
+        {
+            bbmin.x = std::min(bbmin.x, p.x);
+            bbmin.y = std::min(bbmin.y, p.y);
+            bbmin.z = std::min(bbmin.z, p.z);
+            bbmax.x = std::max(bbmax.x, p.x);
+            bbmax.y = std::max(bbmax.y, p.y);
+            bbmax.z = std::max(bbmax.z, p.z);
+        }
+        float calcradius() const
+        {
+            return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
+        }
+    private:
+        vec bbmin, bbmax;
 };
 
 struct skelzoneinfo
