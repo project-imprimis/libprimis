@@ -10,7 +10,7 @@ enum
     Bonemask_Bone = 0x7FFF
 };
 
-struct skelhitdata;
+struct skelhitdata; //defined in hitzone.h
 
 struct skelmodel : animmodel
 {
@@ -237,7 +237,7 @@ struct skelmodel : animmodel
             {
                 vert &v = verts[i];
                 vverts.emplace_back(T());
-                assignvert(vverts.back(), i, v, ((skelmeshgroup *)group)->blendcombos[v.blend]);
+                assignvert(vverts.back(), i, v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
             }
             for(int i = 0; i < numtris; ++i)
             {
@@ -266,7 +266,7 @@ struct skelmodel : animmodel
                     int index = t.vert[j];
                     vert &v = verts[index];
                     T vv;
-                    assignvert(vv, index, v, ((skelmeshgroup *)group)->blendcombos[v.blend]);
+                    assignvert(vv, index, v, (static_cast<skelmeshgroup *>(group))->blendcombos[v.blend]);
                     int htidx = hthash(v.pos)&(htlen-1);
                     for(int k = 0; k < htlen; ++k)
                     {
@@ -312,7 +312,7 @@ struct skelmodel : animmodel
         template<class T>
         void interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, T * RESTRICT vdata, skin &s)
         {
-            const int blendoffset = ((skelmeshgroup *)group)->skel->numgpubones;
+            const int blendoffset = (static_cast<skelmeshgroup *>(group))->skel->numgpubones;
             bdata2 -= blendoffset;
             vdata += voffset;
             for(int i = 0; i < numverts; ++i)
@@ -675,7 +675,7 @@ struct skelmodel : animmodel
     int linktype(animmodel *m, part *p) const
     {
         return type()==m->type() &&
-            ((skelmeshgroup *)parts[0]->meshes)->skel == ((skelmeshgroup *)p->meshes)->skel ?
+            (static_cast<skelmeshgroup *>(parts[0]->meshes))->skel == (static_cast<skelmeshgroup *>(p->meshes))->skel ?
                 Link_Reuse :
                 Link_Tag;
     }
