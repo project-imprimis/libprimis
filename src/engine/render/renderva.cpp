@@ -17,18 +17,18 @@
 #include "world/bih.h"
 
 #include "model/model.h"
-static inline void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
+static void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
 {
     glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, numindices, GL_UNSIGNED_SHORT, indices);
     glde++;
 }
 
-static inline void drawvatris(vtxarray *va, GLsizei numindices, int offset)
+static void drawvatris(vtxarray *va, GLsizei numindices, int offset)
 {
     drawtris(numindices, (ushort *)0 + va->eoffset + offset, va->minvert, va->maxvert);
 }
 
-static inline void drawvaskytris(vtxarray *va)
+static void drawvaskytris(vtxarray *va)
 {
     drawtris(va->sky, (ushort *)0 + va->skyoffset, va->minvert, va->maxvert);
 }
@@ -84,7 +84,7 @@ int isvisiblesphere(float rad, const vec &cv)
     return v;
 }
 
-static inline int ishiddencube(const ivec &o, int size)
+static int ishiddencube(const ivec &o, int size)
 {
     for(int i = 0; i < 5; ++i)
     {
@@ -96,7 +96,7 @@ static inline int ishiddencube(const ivec &o, int size)
     return false;
 }
 
-static inline int isfoggedcube(const ivec &o, int size)
+static int isfoggedcube(const ivec &o, int size)
 {
     for(int i = 0; i < 4; ++i)
     {
@@ -194,7 +194,7 @@ int isvisiblebb(const ivec &bo, const ivec &br)
     return v;
 }
 
-static inline float vadist(vtxarray *va, const vec &p)
+static float vadist(vtxarray *va, const vec &p)
 {
     return p.dist_to_bb(va->bbmin, va->bbmax);
 }
@@ -203,7 +203,7 @@ static const int vasortsize = 64;
 
 static vtxarray *vasort[vasortsize];
 
-static inline void addvisibleva(vtxarray *va)
+static void addvisibleva(vtxarray *va)
 {
     float dist = vadist(va, camera1->o);
     va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
@@ -241,7 +241,7 @@ void sortvisiblevas()
 }
 
 template<bool fullvis, bool resetocclude>
-static inline void findvisiblevas(vector<vtxarray *> &vas)
+static void findvisiblevas(vector<vtxarray *> &vas)
 {
     for(int i = 0; i < vas.length(); i++)
     {
@@ -468,7 +468,7 @@ VARF(oqany, 0, 0, 2, clearqueries());
 VAR(oqfrags, 0, 8, 64); //occlusion query fragments
 VAR(oqwait, 0, 1, 1);
 
-static inline GLenum querytarget()
+static GLenum querytarget()
 {
     return oqany ? (oqany > 1 && hasES3 ? GL_ANY_SAMPLES_PASSED_CONSERVATIVE : GL_ANY_SAMPLES_PASSED) : GL_SAMPLES_PASSED;
 }
@@ -659,7 +659,7 @@ void findvisiblemms(const vector<extentity *> &ents, bool doquery)
 
 VAR(oqmm, 0, 4, 8); //`o`cclusion `q`uery `m`ap `m`odel
 
-static inline void rendermapmodel(extentity &e)
+static void rendermapmodel(extentity &e)
 {
     int anim = Anim_Mapmodel | Anim_Loop, basetime = 0;
     rendermapmodel(e.attr1, anim, e.o, e.attr2, e.attr3, e.attr4, Model_CullVFC | Model_CullDist, basetime, e.attr5 > 0 ? e.attr5/100.0f : 1.0f);
@@ -728,13 +728,13 @@ void rendermapmodels()
     }
 }
 
-static inline bool bbinsideva(const ivec &bo, const ivec &br, vtxarray *va)
+static bool bbinsideva(const ivec &bo, const ivec &br, vtxarray *va)
 {
     return bo.x >= va->bbmin.x && bo.y >= va->bbmin.y && bo.z >= va->bbmin.z &&
         br.x <= va->bbmax.x && br.y <= va->bbmax.y && br.z <= va->bbmax.z;
 }
 
-static inline bool bboccluded(const ivec &bo, const ivec &br, cube *c, const ivec &o, int size)
+static bool bboccluded(const ivec &bo, const ivec &br, cube *c, const ivec &o, int size)
 {
     LOOP_OCTA_BOX(o, size, bo, br)
     {
@@ -1192,7 +1192,7 @@ int shadowside = 0,
 
 vtxarray *shadowva = nullptr;
 
-static inline void addshadowva(vtxarray *va, float dist)
+static void addshadowva(vtxarray *va, float dist)
 {
     va->rdistance = static_cast<int>(dist);
 
@@ -1532,14 +1532,14 @@ struct renderstate
     }
 };
 
-static inline void disablevbuf(renderstate &cur)
+static void disablevbuf(renderstate &cur)
 {
     gle::clearvbo();
     gle::clearebo();
     cur.vbuf = 0;
 }
 
-static inline void enablevquery(renderstate &cur)
+static void enablevquery(renderstate &cur)
 {
     if(cur.colormask)
     {
@@ -1555,7 +1555,7 @@ static inline void enablevquery(renderstate &cur)
     cur.vquery = true;
 }
 
-static inline void disablevquery(renderstate &cur)
+static void disablevquery(renderstate &cur)
 {
     endbb(false);
     cur.vquery = false;
@@ -1782,7 +1782,7 @@ static void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = nullptr
     } while(++curtex < numtexs);
 }
 
-static inline void enablevattribs(renderstate &cur, bool all = true)
+static void enablevattribs(renderstate &cur, bool all = true)
 {
     gle::enablevertex();
     if(all)
@@ -1794,7 +1794,7 @@ static inline void enablevattribs(renderstate &cur, bool all = true)
     cur.vattribs = true;
 }
 
-static inline void disablevattribs(renderstate &cur, bool all = true)
+static void disablevattribs(renderstate &cur, bool all = true)
 {
     gle::disablevertex();
     if(all)
@@ -1832,7 +1832,7 @@ static void changebatchtmus(renderstate &cur)
     }
 }
 
-static inline void bindslottex(renderstate &cur, int type, Texture *tex, GLenum target = GL_TEXTURE_2D)
+static void bindslottex(renderstate &cur, int type, Texture *tex, GLenum target = GL_TEXTURE_2D)
 {
     if(cur.textures[type] != tex->id)
     {
@@ -1969,7 +1969,7 @@ static void changetexgen(renderstate &cur, int orient, Slot &slot, VSlot &vslot)
     cur.texgenorient = orient;
 }
 
-static inline void changeshader(renderstate &cur, int pass, geombatch &b)
+static void changeshader(renderstate &cur, int pass, geombatch &b)
 {
     VSlot &vslot = b.vslot;
     Slot &slot = *vslot.slot;
@@ -2000,7 +2000,7 @@ static inline void changeshader(renderstate &cur, int pass, geombatch &b)
 }
 
 template<class T>
-static inline void updateshader(T &cur)
+static void updateshader(T &cur)
 {
     if(cur.globals != GlobalShaderParamState::nextversion)
     {
@@ -2937,7 +2937,7 @@ static void changebatchtmus(decalrenderer &cur)
     }
 }
 
-static inline void bindslottex(decalrenderer &cur, int type, Texture *tex, GLenum target = GL_TEXTURE_2D)
+static void bindslottex(decalrenderer &cur, int type, Texture *tex, GLenum target = GL_TEXTURE_2D)
 {
     if(cur.textures[type] != tex->id)
     {
@@ -2988,7 +2988,7 @@ static void changeslottmus(decalrenderer &cur, DecalSlot &slot)
     cur.slot = &slot;
 }
 
-static inline void changeshader(decalrenderer &cur, int pass, decalbatch &b)
+static void changeshader(decalrenderer &cur, int pass, decalbatch &b)
 {
     DecalSlot &slot = b.slot;
     if(b.es.reuse)
@@ -3320,7 +3320,7 @@ static void flushshadowmeshdraws(shadowmesh &m, int sides, shadowdrawinfo draws[
     shadowvbos.push_back(vbuf);
 }
 
-static inline void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo draws[6], const vec &v0, const vec &v1, const vec &v2)
+static void addshadowmeshtri(shadowmesh &m, int sides, shadowdrawinfo draws[6], const vec &v0, const vec &v1, const vec &v2)
 {
     vec l0 = vec(v0).sub(shadoworigin);
     float side = l0.scalartriple(vec(v1).sub(v0), vec(v2).sub(v0));
