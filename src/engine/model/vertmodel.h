@@ -114,7 +114,7 @@ struct vertmodel : animmodel
             }
         }
 
-        static inline void assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
+        static void assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
         {
             vv.pos = GenericVec4<half>(v.pos, 1);
             vv.tc = tc.tc;
@@ -180,7 +180,7 @@ struct vertmodel : animmodel
         }
 
         template<class T>
-        static inline void fillvert(T &vv, int j, tcvert &tc, vert &v)
+        static void fillvert(T &vv, int j, tcvert &tc, vert &v)
         {
             vv.tc = tc.tc;
         }
