@@ -1429,9 +1429,9 @@ namespace
                     //axistemp1/2 used in `axis` only
                     // x = 0, y = 1, z = 2, `int axis` is the largest component of `d` using
                     // axistemp1/2 to determine if x,y > z and then if x > y
-                    int axistemp1 = std::abs(d.x) > std::abs(d.z) ? 0 : 2;
-                    int axistemp2 = std::abs(d.y) > std::abs(d.z) ? 1 : 2;
-                    int axis = std::abs(d.x) > std::abs(d.y) ? axistemp1 : axistemp2;
+                    int axistemp1 = std::abs(d.x) > std::abs(d.z) ? 0 : 2,
+                        axistemp2 = std::abs(d.y) > std::abs(d.z) ? 1 : 2,
+                        axis = std::abs(d.x) > std::abs(d.y) ? axistemp1 : axistemp2;
                     if(d[axis] < 0)
                     {
                         d.neg();
