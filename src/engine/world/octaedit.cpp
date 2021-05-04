@@ -1623,11 +1623,11 @@ std::vector<ushort> texmru;
 selinfo repsel;
 int reptex = -1;
 
-vector<vslotmap> remappedvslots;
+std::vector<vslotmap> remappedvslots;
 
 static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
 {
-    for(int i = 0; i < remappedvslots.length(); i++)
+    for(uint i = 0; i < remappedvslots.size(); i++)
     {
         if(remappedvslots[i].index == index)
         {
@@ -1654,7 +1654,7 @@ static VSlot *remapvslot(int index, bool delta, const VSlot &ds)
     {
         edit = &vs;
     }
-    remappedvslots.add(vslotmap(vs.index, edit));
+    remappedvslots.emplace_back(vslotmap(vs.index, edit));
     return edit;
 }
 
@@ -1713,7 +1713,7 @@ void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep
 
 void compactmruvslots()
 {
-    remappedvslots.setsize(0);
+    remappedvslots.clear();
     for(uint i = texmru.size(); --i >=0;) //note reverse iteration
     {
         if(vslots.inrange(texmru[i]))
