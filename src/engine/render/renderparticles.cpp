@@ -634,13 +634,13 @@ struct textrenderer : listrenderer
 static textrenderer texts;
 
 template<int T>
-static inline void modifyblend(const vec &o, int &blend)
+static void modifyblend(const vec &o, int &blend)
 {
     blend = std::min(blend<<2, 255);
 }
 
 template<int T>
-static inline void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
+static void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
 {
     vec udir = vec(camup).sub(camright).mul(size),
         vdir = vec(camup).add(camright).mul(size);
@@ -651,7 +651,7 @@ static inline void genpos(const vec &o, const vec &d, float size, int grav, int 
 }
 
 template<>
-inline void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
+void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
 {
     vec dir1 = vec(d).sub(o),
         dir2 = vec(d).sub(camera1->o), c;
@@ -663,7 +663,7 @@ inline void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int ts, int 
 }
 
 template<>
-inline void genpos<PT_TRAIL>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
+void genpos<PT_TRAIL>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
 {
     vec e = d;
     if(grav)
@@ -675,7 +675,7 @@ inline void genpos<PT_TRAIL>(const vec &o, const vec &d, float size, int ts, int
 }
 
 template<int T>
-static inline void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
+void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
 {
     genpos<T>(o, d, size, grav, ts, vs);
 }
@@ -695,7 +695,7 @@ static const vec2 rotcoeffs[32][4] =
 };
 
 template<>
-inline void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
+void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
 {
     const vec2 *coeffs = rotcoeffs[rot];
     vs[0].pos = vec(o).madd(camright, coeffs[0].x*size).madd(camup, coeffs[0].y*size);
@@ -705,7 +705,7 @@ inline void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav,
 }
 
 template<int T>
-static inline void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
+void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
     if(grav)
     {
@@ -722,13 +722,13 @@ static inline void seedpos(particleemitter &pe, const vec &o, const vec &d, int 
 }
 
 template<>
-inline void seedpos<PT_TAPE>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
+void seedpos<PT_TAPE>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
     pe.extendbb(d, size);
 }
 
 template<>
-inline void seedpos<PT_TRAIL>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
+void seedpos<PT_TRAIL>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
     vec e = d;
     if(grav)
@@ -1502,7 +1502,7 @@ void renderparticles(int layer)
 
 static int addedparticles = 0;
 
-static inline particle *newparticle(const vec &o, const vec &d, int fade, int type, int color, float size, int gravity = 0)
+static particle *newparticle(const vec &o, const vec &d, int fade, int type, int color, float size, int gravity = 0)
 {
     static particle dummy;
     if(seedemitter)
@@ -1677,7 +1677,7 @@ void particle_fireball(const vec &dest, float maxsize, int type, int fade, int c
 }
 
 //dir = 0..6 where 0=up
-static inline vec offsetvec(vec o, int dir, int dist)
+static vec offsetvec(vec o, int dir, int dist)
 {
     vec v = vec(o);
     v[(2+dir)%3] += (dir>2)?(-dist):dist;
@@ -1685,7 +1685,7 @@ static inline vec offsetvec(vec o, int dir, int dist)
 }
 
 //converts a 16bit color to 24bit
-static inline int colorfromattr(int attr)
+static int colorfromattr(int attr)
 {
     return (((attr&0xF)<<4) | ((attr&0xF0)<<8) | ((attr&0xF00)<<12)) + 0x0F0F0F;
 }
