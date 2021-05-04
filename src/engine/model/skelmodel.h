@@ -716,8 +716,8 @@ struct skelloader : modelloader<MDL, skelmodel>
     {
         if(hitzones.length() && skelmodel::parts.length())
         {
-            skelmodel::skelpart *p = (skelmodel::skelpart *)skelmodel::parts.last();
-            skelmodel::skelmeshgroup *m = (skelmodel::skelmeshgroup *)p->meshes;
+            skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(skelmodel::parts.last());
+            skelmodel::skelmeshgroup *m = static_cast<skelmodel::skelmeshgroup *>(p->meshes);
             if(m)
             {
                 m->buildhitdata(hitzones.getbuf());
@@ -765,7 +765,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         else
         {
-            if(mdl.meshes && ((meshgroup *)mdl.meshes)->skel->numbones > 0)
+            if(mdl.meshes && static_cast<meshgroup *>(mdl.meshes)->skel->numbones > 0)
             {
                 mdl.disablepitch();
             }
@@ -781,8 +781,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *(part *)MDL::loading->parts.last();
-        int i = mdl.meshes ? ((meshgroup *)mdl.meshes)->skel->findbone(name) : -1;
+        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
+        int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
         if(i >= 0)
         {
             float cx = *rx ? cosf(*rx/2*RAD) : 1, sx = *rx ? sinf(*rx/2*RAD) : 0,
@@ -790,7 +790,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                   cz = *rz ? cosf(*rz/2*RAD) : 1, sz = *rz ? sinf(*rz/2*RAD) : 0;
             matrix4x3 m(matrix3(quat(sx*cy*cz - cx*sy*sz, cx*sy*cz + sx*cy*sz, cx*cy*sz - sx*sy*cz, cx*cy*cz + sx*sy*sz)),
                         vec(*tx, *ty, *tz));
-            ((meshgroup *)mdl.meshes)->skel->addtag(tagname, i, m);
+            static_cast<meshgroup *>(mdl.meshes)->skel->addtag(tagname, i, m);
             return;
         }
         conoutf("could not find bone %s for tag %s", name, tagname);
@@ -803,14 +803,14 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *(part *)MDL::loading->parts.last();
+        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
 
         if(name[0])
         {
-            int i = mdl.meshes ? ((meshgroup *)mdl.meshes)->skel->findbone(name) : -1;
+            int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
             if(i>=0)
             {
-                boneinfo &b = ((meshgroup *)mdl.meshes)->skel->bones[i];
+                boneinfo &b = static_cast<meshgroup *>(mdl.meshes)->skel->bones[i];
                 b.pitchscale = *pitchscale;
                 b.pitchoffset = *pitchoffset;
                 if(*pitchmin || *pitchmax)
@@ -850,19 +850,19 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("\frnot loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *(part *)MDL::loading->parts.last();
+        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
         if(!mdl.meshes)
         {
             return;
         }
         DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
-        animspec *sa = ((meshgroup *)mdl.meshes)->loadanim(path(filename));
+        animspec *sa = static_cast<meshgroup *>(mdl.meshes)->loadanim(path(filename));
         if(!sa)
         {
             conoutf("\frcould not load %s anim file %s", MDL::formatname(), filename);
             return;
         }
-        skeleton *skel = ((meshgroup *)mdl.meshes)->skel;
+        skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
         int bone = skel ? skel->findbone(name) : -1;
         if(bone < 0)
         {
@@ -890,12 +890,12 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("\frnot loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *(part *)MDL::loading->parts.last();
+        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
         if(!mdl.meshes)
         {
             return;
         }
-        skeleton *skel = ((meshgroup *)mdl.meshes)->skel;
+        skeleton *skel = static_cast<meshgroup *>(mdl.meshes)->skel;
         int bone = skel ? skel->findbone(name) : -1;
         if(bone < 0)
         {
@@ -955,13 +955,13 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         else
         {
-            part *p = (part *)MDL::loading->parts.last();
+            part *p = static_cast<part *>(MDL::loading->parts.last());
             if(!p->meshes)
             {
                 return;
             }
             DEF_FORMAT_STRING(filename, "%s/%s", MDL::dir, animfile);
-            animspec *sa = ((meshgroup *)p->meshes)->loadanim(path(filename));
+            animspec *sa = static_cast<meshgroup *>(p->meshes)->loadanim(path(filename));
             if(!sa)
             {
                 conoutf("could not load %s anim file %s", MDL::formatname(), filename);
@@ -1001,7 +1001,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part *p = (part *)MDL::loading->parts.last();
+        part *p = static_cast<part *>(MDL::loading->parts.last());
 
         vector<char *> bonestrs;
         explodelist(maskstr, bonestrs);
@@ -1009,7 +1009,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         for(int i = 0; i < bonestrs.length(); i++)
         {
             char *bonestr = bonestrs[i];
-            int bone = p->meshes ? ((meshgroup *)p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
+            int bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
             if(bone<0)
             {
                 conoutf("could not find bone %s for anim part mask [%s]", bonestr, maskstr); bonestrs.deletearrays();
@@ -1036,12 +1036,12 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *(part *)MDL::loading->parts.last();
+        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
         if(!name[0])
         {
             return;
         }
-        int i = mdl.meshes ? ((meshgroup *)mdl.meshes)->skel->findbone(name) : -1;
+        int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
         if(i < 0)
         {
             conoutf("could not find bone %s to adjust", name);
@@ -1066,8 +1066,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("invalid hit zone id %d", *id);
             return;
         }
-        part *p = (part *)MDL::loading->parts.last();
-        meshgroup *m = (meshgroup *)p->meshes;
+        part *p = static_cast<part *>(MDL::loading->parts.last());
+        meshgroup *m = static_cast<meshgroup *>(p->meshes);
         if(!m || m->hitdata)
         {
             return;
@@ -1078,7 +1078,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         for(int i = 0; i < bonestrs.length(); i++)
         {
             char *bonestr = bonestrs[i];
-            int bone = p->meshes ? ((meshgroup *)p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
+            int bone = p->meshes ? static_cast<meshgroup *>(p->meshes)->skel->findbone(bonestr[0]=='!' ? bonestr+1 : bonestr) : -1;
             if(bone<0)
             {
                 conoutf("could not find bone %s for hit zone mask [%s]", bonestr, maskstr);
