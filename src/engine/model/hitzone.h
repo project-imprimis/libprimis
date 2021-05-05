@@ -119,7 +119,7 @@ inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
 bool skelbih::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray)
 {
     const tri &t = tris[tidx];
-    skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.Mesh];
+    skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[t.Mesh]);
     const skelmodel::vert &va = tm->verts[t.vert[0]],
                           &vb = tm->verts[t.vert[1]],
                           &vc = tm->verts[t.vert[2]];
@@ -301,7 +301,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         for(left = 0, right = numindices, splitleft = SHRT_MIN, splitright = SHRT_MAX; left < right;)
         {
             tri &tri = tris[indices[left]];
-            skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.Mesh];
+            skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
             const vec &ta = tm->verts[tri.vert[0]].pos,
                       &tb = tm->verts[tri.vert[1]].pos,
                       &tc = tm->verts[tri.vert[2]].pos;
@@ -342,7 +342,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
         for(int i = 0; i < numindices; ++i)
         {
             tri &tri = tris[indices[i]];
-            skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.Mesh];
+            skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
             const vec &ta = tm->verts[tri.vert[0]].pos,
                       &tb = tm->verts[tri.vert[1]].pos,
                       &tc = tm->verts[tri.vert[2]].pos;
@@ -393,7 +393,7 @@ skelbih::skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris)
     for(int i = 0; i < numtris; ++i)
     {
         tri &tri = tris[i];
-        skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[tri.Mesh];
+        skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[tri.Mesh]);
         const vec &ta = tm->verts[tri.vert[0]].pos,
                   &tb = tm->verts[tri.vert[1]].pos,
                   &tc = tm->verts[tri.vert[2]].pos;
@@ -536,7 +536,7 @@ struct skelhitzone
 
 bool skelhitzone::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray)
 {
-    skelmodel::skelmesh *tm = (skelmodel::skelmesh *)m->meshes[t.Mesh];
+    skelmodel::skelmesh *tm = static_cast<skelmodel::skelmesh *>(m->meshes[t.Mesh]);
     const skelmodel::vert &va = tm->verts[t.vert[0]],
                           &vb = tm->verts[t.vert[1]],
                           &vc = tm->verts[t.vert[2]];
