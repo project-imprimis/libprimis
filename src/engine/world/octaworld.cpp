@@ -56,7 +56,7 @@ void calcmerges();
 
 cubeext *growcubeext(cubeext *old, int maxverts)
 {
-    cubeext *ext = (cubeext *)new uchar[sizeof(cubeext) + maxverts*sizeof(vertinfo)];
+    cubeext *ext = reinterpret_cast<cubeext *>(new uchar[sizeof(cubeext) + maxverts*sizeof(vertinfo)]);
     if(old)
     {
         ext->va = old->va;
@@ -83,7 +83,7 @@ void setcubeext(cube &c, cubeext *ext)
     c.ext = ext;
     if(old)
     {
-        delete[] (uchar *)old;
+        delete[] reinterpret_cast<uchar *>(old);
     }
 }
 
@@ -240,7 +240,7 @@ static inline void setcubevector(cube &c, int i, const ivec &p)
 
 void optiface(uchar *p, cube &c)
 {
-    uint f = *(uint *)p;
+    uint f = *reinterpret_cast<uint *>(p);
     if(((f>>4)&0x0F0F0F0FU) == (f&0x0F0F0F0FU))
     {
         setcubefaces(c, faceempty);
@@ -250,7 +250,7 @@ void optiface(uchar *p, cube &c)
 void printcube()
 {
     cube &c = lookupcube(lu); // assume this is cube being pointed at
-    conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", (void *)&c, lu.x, lu.y, lu.z, lusize);
+    conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", static_cast<void *>(&c), lu.x, lu.y, lu.z, lusize);
     conoutf(Console_Debug, " x  %.8x", c.faces[0]);
     conoutf(Console_Debug, " y  %.8x", c.faces[1]);
     conoutf(Console_Debug, " z  %.8x", c.faces[2]);
