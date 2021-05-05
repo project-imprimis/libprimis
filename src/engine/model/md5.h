@@ -322,7 +322,7 @@ struct md5 : skelloader<md5>
 
             for(int i = 0; i < meshes.length(); i++)
             {
-                md5mesh &m = *(md5mesh *)meshes[i];
+                md5mesh &m = *static_cast<md5mesh *>(meshes[i]);
                 m.buildverts(basejoints);
                 if(smooth <= 1)
                 {
@@ -573,7 +573,7 @@ struct md5 : skelloader<md5>
         mdl.initanimparts();
         mdl.initskins();
         DEF_FORMAT_STRING(animname, "media/model/%s/%s.md5anim", name, fname);
-        ((md5meshgroup *)mdl.meshes)->loadanim(path(animname));
+        static_cast<md5meshgroup *>(mdl.meshes)->loadanim(path(animname));
         return true;
     }
 };
