@@ -3,69 +3,71 @@
 
 struct ragdollskel
 {
-    struct vert
-    {
-        vec pos;
-        float radius, weight;
-    };
+    public:
+        ragdollskel() : loaded(false), animjoints(false), eye(-1) {}
 
-    struct tri
-    {
-        int vert[3];
+        bool loaded, animjoints;
 
-        bool shareverts(const tri &t) const;
-    };
+        struct tri
+        {
+            int vert[3];
 
-    struct distlimit
-    {
-        int vert[2];
-        float mindist, maxdist;
-    };
+            bool shareverts(const tri &t) const;
+        };
+        vector<tri> tris;
 
-    struct rotlimit
-    {
-        int tri[2];
-        float maxangle, maxtrace;
-        matrix3 middle;
-    };
+        struct reljoint
+        {
+            int bone, parent;
+        };
+        vector<reljoint> reljoints;
 
-    struct rotfriction
-    {
-        int tri[2];
-        matrix3 middle;
-    };
+        struct vert
+        {
+            vec pos;
+            float radius, weight;
+        };
+        vector<vert> verts;
 
-    struct joint
-    {
-        int bone, tri, vert[3];
-        float weight;
-        matrix4x3 orient;
-    };
+        struct joint
+        {
+            int bone, tri, vert[3];
+            float weight;
+            matrix4x3 orient;
+        };
+        vector<joint> joints;
 
-    struct reljoint
-    {
-        int bone, parent;
-    };
+        struct rotlimit
+        {
+            int tri[2];
+            float maxangle, maxtrace;
+            matrix3 middle;
+        };
+        vector<rotlimit> rotlimits;
 
-    bool loaded, animjoints;
-    int eye;
-    vector<vert> verts;
-    vector<tri> tris;
-    vector<distlimit> distlimits;
-    vector<rotlimit> rotlimits;
-    vector<rotfriction> rotfrictions;
-    vector<joint> joints;
-    vector<reljoint> reljoints;
+        struct rotfriction
+        {
+            int tri[2];
+            matrix3 middle;
+        };
+        vector<rotfriction> rotfrictions;
 
-    ragdollskel() : loaded(false), animjoints(false), eye(-1) {}
+        struct distlimit
+        {
+            int vert[2];
+            float mindist, maxdist;
+        };
+        vector<distlimit> distlimits;
 
-    void setupjoints();
-    void setuprotfrictions();
-    void setup();
-    void addreljoint(int bone, int parent);
+        int eye;
 
+        void setup();
+        void addreljoint(int bone, int parent);
+
+    private:
+        void setupjoints();
+        void setuprotfrictions();
 };
-
 
 struct ragdolldata
 {
@@ -156,8 +158,6 @@ struct ragdolldata
             return collide(&v, dir, 0, false);
         }
 };
-
-
 
 extern void cleanragdoll(dynent *d);
 extern void moveragdoll(dynent *d);
