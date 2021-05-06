@@ -1,7 +1,7 @@
 #ifndef RAGDOLL_H_
 #define RAGDOLL_H_
 
-struct ragdollskel
+class ragdollskel
 {
     public:
         ragdollskel() : loaded(false), animjoints(false), eye(-1) {}
@@ -69,7 +69,7 @@ struct ragdollskel
         void setuprotfrictions();
 };
 
-struct ragdolldata
+class ragdolldata
 {
     public:
         ragdollskel *skel;

@@ -1,4 +1,4 @@
-struct skelbih
+class skelbih
 {
     public:
         struct tri : skelmodel::tri
@@ -546,7 +546,7 @@ bool skelhitzone::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
     return skeltriintersect(a, b, c, o, s, t, va, vb, vc, tm, ray);
 }
 
-struct skelzonekey
+class skelzonekey
 {
     public:
         skelzonekey() : blend(-1) { memset(bones, 0xFF, sizeof(bones)); }
@@ -686,7 +686,7 @@ struct skelzonekey
 
 };
 
-struct skelzonebounds
+class skelzonebounds
 {
     public:
         skelzonebounds() : owner(-1), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f) {}
@@ -745,7 +745,7 @@ static inline uint hthash(const skelzonekey &k)
     return conv.i[0]^conv.i[1]^conv.i[2];
 }
 
-struct skelhitdata
+class skelhitdata
 {
     public:
         int numblends;

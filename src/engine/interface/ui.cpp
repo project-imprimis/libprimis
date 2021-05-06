@@ -238,7 +238,7 @@ namespace UI
         changeblend(Blend_Mod, GL_ZERO, GL_SRC_COLOR);
     }
 
-    struct Object
+    class Object
     {
         public:
             float x, y, w, h;
