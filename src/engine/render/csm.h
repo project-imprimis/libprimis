@@ -6,27 +6,29 @@ static const int csmmaxsplits = 8;
 extern int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherecsmsplits(const vec &center, float radius);
 
-struct cascadedshadowmap
+class cascadedshadowmap
 {
-    struct splitinfo
-    {
-        float nearplane;     // split distance to near plane
-        float farplane;      // split distance to farplane
-        matrix4 proj;      // one projection per split
-        vec scale, offset;   // scale and offset of the projection
-        int idx;             // shadowmapinfo indices
-        vec center, bounds;  // max extents of shadowmap in sunlight model space
-        plane cull[4];       // world space culling planes of the split's projected sides
-    };
-    matrix4 model;                // model view is shared by all splits
-    splitinfo splits[csmmaxsplits]; // per-split parameters
-    vec lightview;                  // view vector for light
-    void setup();                   // insert shadowmaps for each split frustum if there is sunlight
-    void updatesplitdist();         // compute split frustum distances
-    void getmodelmatrix();          // compute the shared model matrix
-    void getprojmatrix();           // compute each cropped projection matrix
-    void gencullplanes();           // generate culling planes for the mvp matrix
-    void bindparams();              // bind any shader params necessary for lighting
+    public:
+        struct splitinfo
+        {
+            float nearplane;     // split distance to near plane
+            float farplane;      // split distance to farplane
+            matrix4 proj;      // one projection per split
+            vec scale, offset;   // scale and offset of the projection
+            int idx;             // shadowmapinfo indices
+            vec center, bounds;  // max extents of shadowmap in sunlight model space
+            plane cull[4];       // world space culling planes of the split's projected sides
+        };
+        matrix4 model;                // model view is shared by all splits
+        splitinfo splits[csmmaxsplits]; // per-split parameters
+        vec lightview;                  // view vector for light
+        void setup();                   // insert shadowmaps for each split frustum if there is sunlight
+        void bindparams();              // bind any shader params necessary for lighting
+    private:
+        void updatesplitdist();         // compute split frustum distances
+        void getmodelmatrix();          // compute the shared model matrix
+        void getprojmatrix();           // compute each cropped projection matrix
+        void gencullplanes();           // generate culling planes for the mvp matrix
 };
 
 extern cascadedshadowmap csm;
