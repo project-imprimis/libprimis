@@ -718,15 +718,16 @@ class skelzonebounds
         vec bbmin, bbmax;
 };
 
-struct skelzoneinfo
+class skelzoneinfo
 {
-    int index, parents, conflicts;
-    skelzonekey key;
-    vector<skelzoneinfo *> children;
-    vector<skelhitzone::tri> tris;
+    public:
+        int index, parents, conflicts;
+        skelzonekey key;
+        vector<skelzoneinfo *> children;
+        vector<skelhitzone::tri> tris;
 
-    skelzoneinfo() : index(-1), parents(0), conflicts(0) {}
-    skelzoneinfo(const skelzonekey &key) : index(-1), parents(0), conflicts(0), key(key) {}
+        skelzoneinfo() : index(-1), parents(0), conflicts(0) {}
+        skelzoneinfo(const skelzonekey &key) : index(-1), parents(0), conflicts(0), key(key) {}
 };
 
 static inline bool htcmp(const skelzonekey &x, const skelzoneinfo &y)
