@@ -2237,24 +2237,26 @@ bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, in
     }
     return true;
 }
-struct plink : pedge
+
+class plink : public pedge
 {
-    int polys[2];
+    public:
+        int polys[2];
 
-    plink()
-    {
-        clear();
-    }
+        plink()
+        {
+            clear();
+        }
 
-    plink(const pedge &p) : pedge(p)
-    {
-        clear();
-    }
-
-    void clear()
-    {
-        polys[0] = polys[1] = -1;
-    }
+        plink(const pedge &p) : pedge(p)
+        {
+            clear();
+        }
+    private:
+        void clear()
+        {
+            polys[0] = polys[1] = -1;
+        }
 };
 
 bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, int owner, poly &p, poly &q, const pedge &e)
