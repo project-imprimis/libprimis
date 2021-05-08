@@ -35,27 +35,28 @@ namespace mpr
         vec center() const;
     };
 
-    struct EntOBB : Ent
+    class EntOBB : public Ent
     {
-        matrix3 orient;
+        public:
+            EntOBB(physent *ent) : Ent(ent)
+            {
+                orient.setyaw(ent->yaw*RAD);
+            }
 
-        EntOBB(physent *ent) : Ent(ent)
-        {
-            orient.setyaw(ent->yaw*RAD);
-        }
+            vec contactface(const vec &wn, const vec &wdir) const;
+            vec localsupportpoint(const vec &ln) const;
+            vec supportpoint(const vec &n) const;
 
-        vec contactface(const vec &wn, const vec &wdir) const;
-        vec localsupportpoint(const vec &ln) const;
-        vec supportpoint(const vec &n) const;
-        float supportcoordneg(const vec &p) const;
-        float supportcoord(const vec &p) const;
-
-        float left()   const;
-        float right()  const;
-        float back()   const;
-        float front()  const;
-        float bottom() const;
-        float top()    const;
+            float left()   const;
+            float right()  const;
+            float back()   const;
+            float front()  const;
+            float bottom() const;
+            float top()    const;
+        private:
+            matrix3 orient;
+            float supportcoord(const vec &p) const;
+            float supportcoordneg(const vec &p) const;
     };
 
     struct EntFuzzy : Ent
