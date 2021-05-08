@@ -325,167 +325,167 @@ struct listparticle : particle
 
 VARP(outlinemeters, 0, 0, 1);
 
-struct listrenderer : partrenderer
+class listrenderer : public partrenderer
 {
-    static listparticle *parempty;
-    listparticle *list;
-
-    listrenderer(const char *texname, int texclamp, int type, int stain = -1)
-        : partrenderer(texname, texclamp, type, stain), list(nullptr)
-    {
-    }
-    listrenderer(int type, int stain = -1)
-        : partrenderer(type, stain), list(nullptr)
-    {
-    }
-
-    virtual ~listrenderer()
-    {
-    }
-
-    virtual void killpart(listparticle *p)
-    {
-    }
-
-    void reset()
-    {
-        if(!list)
+    public:
+        listrenderer(const char *texname, int texclamp, int type, int stain = -1)
+            : partrenderer(texname, texclamp, type, stain), list(nullptr)
         {
-            return;
         }
-        listparticle *p = list;
-        for(;;)
+        listrenderer(int type, int stain = -1)
+            : partrenderer(type, stain), list(nullptr)
         {
-            killpart(p);
-            if(p->next)
+        }
+
+        virtual ~listrenderer()
+        {
+        }
+
+    private:
+        virtual void killpart(listparticle *p)
+        {
+        }
+
+        virtual void startrender() = 0;
+        virtual void endrender() = 0;
+        virtual void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts) = 0;
+
+        bool haswork()
+        {
+            return (list != nullptr);
+        }
+
+        bool renderpart(listparticle *p)
+        {
+            vec o, d;
+            int blend, ts;
+            calc(p, blend, ts, o, d, canstep);
+            if(blend <= 0)
             {
-                p = p->next;
+                return false;
             }
-            else
+            renderpart(p, o, d, blend, ts);
+            return p->fade > 5;
+        }
+
+        void render()
+        {
+            startrender();
+            if(tex)
             {
-                break;
+                glBindTexture(GL_TEXTURE_2D, tex->id);
             }
-        }
-        p->next = parempty;
-        parempty = list;
-        list = nullptr;
-    }
-
-    void resettracked(physent *owner)
-    {
-        if(!(type&PT_TRACK))
-        {
-            return;
-        }
-        for(listparticle **prev = &list, *cur = list; cur; cur = *prev)
-        {
-            if(!owner || cur->owner==owner)
+            if(canstep)
             {
-                *prev = cur->next;
-                cur->next = parempty;
-                parempty = cur;
-            }
-            else
-            {
-                prev = &cur->next;
-            }
-        }
-    }
-
-    particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity)
-    {
-        if(!parempty)
-        {
-            listparticle *ps = new listparticle[256];
-            for(int i = 0; i < 255; ++i)
-            {
-                ps[i].next = &ps[i+1];
-            }
-            ps[255].next = parempty;
-            parempty = ps;
-        }
-        listparticle *p = parempty;
-        parempty = p->next;
-        p->next = list;
-        list = p;
-        p->o = o;
-        p->d = d;
-        p->gravity = gravity;
-        p->fade = fade;
-        p->millis = lastmillis + emitoffset;
-        p->color = bvec::hexcolor(color);
-        p->size = size;
-        p->owner = nullptr;
-        p->flags = 0;
-        return p;
-    }
-
-    int count()
-    {
-        int num = 0;
-        listparticle *lp;
-        for(lp = list; lp; lp = lp->next)
-        {
-            num++;
-        }
-        return num;
-    }
-
-    bool haswork()
-    {
-        return (list != nullptr);
-    }
-
-    virtual void startrender() = 0;
-    virtual void endrender() = 0;
-    virtual void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts) = 0;
-
-    bool renderpart(listparticle *p)
-    {
-        vec o, d;
-        int blend, ts;
-        calc(p, blend, ts, o, d, canstep);
-        if(blend <= 0)
-        {
-            return false;
-        }
-        renderpart(p, o, d, blend, ts);
-        return p->fade > 5;
-    }
-
-    void render()
-    {
-        startrender();
-        if(tex)
-        {
-            glBindTexture(GL_TEXTURE_2D, tex->id);
-        }
-        if(canstep)
-        {
-            for(listparticle **prev = &list, *p = list; p; p = *prev)
-            {
-                if(renderpart(p))
+                for(listparticle **prev = &list, *p = list; p; p = *prev)
                 {
-                    prev = &p->next;
+                    if(renderpart(p))
+                    {
+                        prev = &p->next;
+                    }
+                    else
+                    { // remove
+                        *prev = p->next;
+                        p->next = parempty;
+                        killpart(p);
+                        parempty = p;
+                    }
+                }
+            }
+            else
+            {
+                for(listparticle *p = list; p; p = p->next)
+                {
+                    renderpart(p);
+                }
+            }
+            endrender();
+        }
+        void reset()
+        {
+            if(!list)
+            {
+                return;
+            }
+            listparticle *p = list;
+            for(;;)
+            {
+                killpart(p);
+                if(p->next)
+                {
+                    p = p->next;
                 }
                 else
-                { // remove
-                    *prev = p->next;
-                    p->next = parempty;
-                    killpart(p);
-                    parempty = p;
+                {
+                    break;
+                }
+            }
+            p->next = parempty;
+            parempty = list;
+            list = nullptr;
+        }
+
+        void resettracked(physent *owner)
+        {
+            if(!(type&PT_TRACK))
+            {
+                return;
+            }
+            for(listparticle **prev = &list, *cur = list; cur; cur = *prev)
+            {
+                if(!owner || cur->owner==owner)
+                {
+                    *prev = cur->next;
+                    cur->next = parempty;
+                    parempty = cur;
+                }
+                else
+                {
+                    prev = &cur->next;
                 }
             }
         }
-        else
+
+        particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity)
         {
-            for(listparticle *p = list; p; p = p->next)
+            if(!parempty)
             {
-                renderpart(p);
+                listparticle *ps = new listparticle[256];
+                for(int i = 0; i < 255; ++i)
+                {
+                    ps[i].next = &ps[i+1];
+                }
+                ps[255].next = parempty;
+                parempty = ps;
             }
+            listparticle *p = parempty;
+            parempty = p->next;
+            p->next = list;
+            list = p;
+            p->o = o;
+            p->d = d;
+            p->gravity = gravity;
+            p->fade = fade;
+            p->millis = lastmillis + emitoffset;
+            p->color = bvec::hexcolor(color);
+            p->size = size;
+            p->owner = nullptr;
+            p->flags = 0;
+            return p;
         }
-        endrender();
-    }
+
+        int count()
+        {
+            int num = 0;
+            listparticle *lp;
+            for(lp = list; lp; lp = lp->next)
+            {
+                num++;
+            }
+            return num;
+        }
+        static listparticle *parempty;
+        listparticle *list;
 };
 
 listparticle *listrenderer::parempty = nullptr;
