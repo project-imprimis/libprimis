@@ -413,125 +413,128 @@ skelbih::skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris)
     }
 }
 
-struct skelhitzone
+class skelhitzone
 {
-    typedef skelbih::tri tri;
+    public:
+        typedef skelbih::tri tri;
 
-    int numparents, numchildren;
-    skelhitzone **parents, **children;
-    vec center, animcenter;
-    float radius;
-    int visited;
-    union
-    {
-        int blend;
-        int numtris;
-    };
-    union
-    {
-        tri *tris;
-        skelbih *bih;
-    };
-
-    skelhitzone() : numparents(0), numchildren(0), parents(nullptr), children(nullptr), center(0, 0, 0), animcenter(0, 0, 0), radius(0), visited(-1)
-    {
-        blend = -1;
-        bih = nullptr;
-    }
-
-    ~skelhitzone()
-    {
-        if(!numchildren)
+        int numparents, numchildren;
+        skelhitzone **parents, **children;
+        vec center;
+        float radius;
+        int visited;
+        union
         {
-            DELETEP(bih);
+            int blend;
+            int numtris;
+        };
+        union
+        {
+            tri *tris;
+            skelbih *bih;
+        };
+
+        skelhitzone() : numparents(0), numchildren(0), parents(nullptr), children(nullptr), center(0, 0, 0), radius(0), visited(-1), animcenter(0, 0, 0)
+        {
+            blend = -1;
+            bih = nullptr;
         }
-        else
-        {
-            DELETEA(tris);
-        }
-    }
 
-    static bool triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray);
-
-    bool shellintersect(const vec &o, const vec &ray)
-    {
-        vec c(animcenter);
-        c.sub(o);
-        float v = c.dot(ray),
-              inside = radius*radius - c.squaredlen();
-        if(inside < 0 && v < 0)
+        ~skelhitzone()
         {
-            return false;
+            if(!numchildren)
+            {
+                DELETEP(bih);
+            }
+            else
+            {
+                DELETEA(tris);
+            }
         }
-        float d = inside + v*v;
-        if(d < 0)
-        {
-            return false;
-        }
-        v -= skelmodel::intersectdist/skelmodel::intersectscale;
-        return v < 0 || d >= v*v;
-    }
 
-    void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const vec &o, const vec &ray)
-    {
-        if(!numchildren)
+        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const vec &o, const vec &ray)
         {
-            if(bih)
+            if(!numchildren)
+            {
+                if(bih)
+                {
+                    const dualquat &b = blend < numblends ? bdata2[blend] : bdata1[m->skel->bones[blend - numblends].interpindex];
+                    vec bo = b.transposedtransform(o),
+                        bray = b.transposedtransformnormal(ray);
+                    bih->intersect(m, s, bo, bray);
+                }
+            }
+            else if(shellintersect(o, ray))
+            {
+                for(int i = 0; i < numtris; ++i)
+                {
+                    triintersect(m, s, bdata1, bdata2, numblends, tris[i], o, ray);
+                }
+                for(int i = 0; i < numchildren; ++i)
+                {
+                    if(children[i]->visited != visited)
+                    {
+                        children[i]->visited = visited;
+                        children[i]->intersect(m, s, bdata1, bdata2, numblends, o, ray);
+                    }
+                }
+            }
+        }
+
+        void propagate(skelmodel::skelmeshgroup *m, const dualquat *bdata1, const dualquat *bdata2, int numblends)
+        {
+            if(!numchildren)
             {
                 const dualquat &b = blend < numblends ? bdata2[blend] : bdata1[m->skel->bones[blend - numblends].interpindex];
-                vec bo = b.transposedtransform(o),
-                    bray = b.transposedtransformnormal(ray);
-                bih->intersect(m, s, bo, bray);
+                animcenter = b.transform(center);
             }
-        }
-        else if(shellintersect(o, ray))
-        {
-            for(int i = 0; i < numtris; ++i)
+            else
             {
-                triintersect(m, s, bdata1, bdata2, numblends, tris[i], o, ray);
-            }
-            for(int i = 0; i < numchildren; ++i)
-            {
-                if(children[i]->visited != visited)
+                animcenter = children[numchildren-1]->animcenter;
+                radius = children[numchildren-1]->radius;
+                for(int i = 0; i < numchildren-1; ++i)
                 {
-                    children[i]->visited = visited;
-                    children[i]->intersect(m, s, bdata1, bdata2, numblends, o, ray);
+                    skelhitzone *child = children[i];
+                    vec n = child->animcenter;
+                    n.sub(animcenter);
+                    float dist = n.magnitude();
+                    if(child->radius >= dist + radius)
+                    {
+                        animcenter = child->animcenter;
+                        radius = child->radius;
+                    }
+                    else if(radius < dist + child->radius)
+                    {
+                        float newradius = 0.5f*(radius + dist + child->radius);
+                        animcenter.add(n.mul((newradius - radius)/dist));
+                        radius = newradius;
+                    }
                 }
             }
         }
-    }
 
-    void propagate(skelmodel::skelmeshgroup *m, const dualquat *bdata1, const dualquat *bdata2, int numblends)
-    {
-        if(!numchildren)
+    private:
+        vec animcenter;
+        static bool triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray);
+
+        bool shellintersect(const vec &o, const vec &ray)
         {
-            const dualquat &b = blend < numblends ? bdata2[blend] : bdata1[m->skel->bones[blend - numblends].interpindex];
-            animcenter = b.transform(center);
-        }
-        else
-        {
-            animcenter = children[numchildren-1]->animcenter;
-            radius = children[numchildren-1]->radius;
-            for(int i = 0; i < numchildren-1; ++i)
+            vec c(animcenter);
+            c.sub(o);
+            float v = c.dot(ray),
+                  inside = radius*radius - c.squaredlen();
+            if(inside < 0 && v < 0)
             {
-                skelhitzone *child = children[i];
-                vec n = child->animcenter;
-                n.sub(animcenter);
-                float dist = n.magnitude();
-                if(child->radius >= dist + radius)
-                {
-                    animcenter = child->animcenter;
-                    radius = child->radius;
-                }
-                else if(radius < dist + child->radius)
-                {
-                    float newradius = 0.5f*(radius + dist + child->radius);
-                    animcenter.add(n.mul((newradius - radius)/dist));
-                    radius = newradius;
-                }
+                return false;
             }
+            float d = inside + v*v;
+            if(d < 0)
+            {
+                return false;
+            }
+            v -= skelmodel::intersectdist/skelmodel::intersectscale;
+            return v < 0 || d >= v*v;
         }
-    }
 };
 
 bool skelhitzone::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const tri &t, const vec &o, const vec &ray)
