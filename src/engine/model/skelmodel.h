@@ -47,91 +47,92 @@ struct skelmodel : animmodel
         ushort vert[3];
     };
 
-    struct blendcombo
+    class blendcombo
     {
-        int uses, interpindex;
-        float weights[4];
-        uchar bones[4], interpbones[4];
+        public:
+            int uses, interpindex;
+            float weights[4];
+            uchar bones[4], interpbones[4];
 
-        blendcombo() : uses(1)
-        {
-        }
-
-        bool operator==(const blendcombo &c) const
-        {
-            for(int k = 0; k < 4; ++k)
+            blendcombo() : uses(1)
             {
-                if(bones[k] != c.bones[k])
-                {
-                    return false;
-                }
             }
-            for(int k = 0; k < 4; ++k)
-            {
-                if(weights[k] != c.weights[k])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
 
-        int size() const;
-        static bool sortcmp(const blendcombo &x, const blendcombo &y);
-        int addweight(int sorted, float weight, int bone);
-        void finalize(int sorted);
-
-        template<class T>
-        void serialize(T &v)
-        {
-            if(interpindex >= 0)
+            bool operator==(const blendcombo &c) const
             {
-                v.weights[0] = 255;
-                for(int k = 0; k < 3; ++k)
-                {
-                    v.weights[k+1] = 0;
-                }
-                v.bones[0] = 2*interpindex;
-                for(int k = 0; k < 3; ++k)
-                {
-                    v.bones[k+1] = v.bones[0];
-                }
-            }
-            else
-            {
-                int total = 0;
                 for(int k = 0; k < 4; ++k)
                 {
-                    total += (v.weights[k] = static_cast<uchar>(0.5f + weights[k]*255));
-                }
-                while(total > 255)
-                {
-                    for(int k = 0; k < 4; ++k)
+                    if(bones[k] != c.bones[k])
                     {
-                        if(v.weights[k] > 0 && total > 255)
-                        {
-                            v.weights[k]--;
-                            total--;
-                        }
-                    }
-                }
-                while(total < 255)
-                {
-                    for(int k = 0; k < 4; ++k)
-                    {
-                        if(v.weights[k] < 255 && total < 255)
-                        {
-                            v.weights[k]++;
-                            total++;
-                        }
+                        return false;
                     }
                 }
                 for(int k = 0; k < 4; ++k)
                 {
-                    v.bones[k] = 2*interpbones[k];
+                    if(weights[k] != c.weights[k])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            int size() const;
+            static bool sortcmp(const blendcombo &x, const blendcombo &y);
+            int addweight(int sorted, float weight, int bone);
+            void finalize(int sorted);
+
+            template<class T>
+            void serialize(T &v)
+            {
+                if(interpindex >= 0)
+                {
+                    v.weights[0] = 255;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        v.weights[k+1] = 0;
+                    }
+                    v.bones[0] = 2*interpindex;
+                    for(int k = 0; k < 3; ++k)
+                    {
+                        v.bones[k+1] = v.bones[0];
+                    }
+                }
+                else
+                {
+                    int total = 0;
+                    for(int k = 0; k < 4; ++k)
+                    {
+                        total += (v.weights[k] = static_cast<uchar>(0.5f + weights[k]*255));
+                    }
+                    while(total > 255)
+                    {
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            if(v.weights[k] > 0 && total > 255)
+                            {
+                                v.weights[k]--;
+                                total--;
+                            }
+                        }
+                    }
+                    while(total < 255)
+                    {
+                        for(int k = 0; k < 4; ++k)
+                        {
+                            if(v.weights[k] < 255 && total < 255)
+                            {
+                                v.weights[k]++;
+                                total++;
+                            }
+                        }
+                    }
+                    for(int k = 0; k < 4; ++k)
+                    {
+                        v.bones[k] = 2*interpbones[k];
+                    }
                 }
             }
-        }
     };
 
 
