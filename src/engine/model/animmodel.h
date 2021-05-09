@@ -259,18 +259,6 @@ struct animmodel : model
 
         static void fixqtangent(quat &q, float bt);
 
-        template<class V>
-        static inline void calctangent(V &v, const vec &n, const vec &t, float bt)
-        {
-            matrix3 m;
-            m.c = n;
-            m.a = t;
-            m.b.cross(m.c, m.a);
-            quat q(m);
-            fixqtangent(q, bt);
-            v.tangent = q;
-        }
-
         template<class V, class TC, class T>
         void calctangents(V *verts, TC *tcverts, int numverts, T *tris, int numtris, bool areaweight)
         {
