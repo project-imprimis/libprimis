@@ -39,150 +39,151 @@ struct md5 : skelloader<md5>
         return MDL_MD5;
     }
 
-    struct md5mesh : skelmesh
+    class md5mesh : public skelmesh
     {
-        md5weight *weightinfo;
-        int numweights;
-        md5vert *vertinfo;
-
-        md5mesh() : weightinfo(nullptr), numweights(0), vertinfo(nullptr)
-        {
-        }
-
-        ~md5mesh()
-        {
-            cleanup();
-        }
-
-        void cleanup()
-        {
-            DELETEA(weightinfo);
-            DELETEA(vertinfo);
-        }
-
-        void buildverts(vector<md5joint> &joints)
-        {
-            for(int i = 0; i < numverts; ++i)
+        public:
+            md5mesh() : weightinfo(nullptr), numweights(0), vertinfo(nullptr)
             {
-                md5vert &v = vertinfo[i];
-                vec pos(0, 0, 0);
-                for(int k = 0; k < v.count; ++k)
-                {
-                    md5weight &w = weightinfo[v.start+k];
-                    md5joint &j = joints[w.joint];
-                    vec wpos = j.orient.rotate(w.pos);
-                    wpos.add(j.pos);
-                    wpos.mul(w.bias);
-                    pos.add(wpos);
-                }
-                vert &vv = verts[i];
-                vv.pos = pos;
-                vv.tc = v.tc;
-
-                blendcombo c;
-                int sorted = 0;
-                for(int j = 0; j < v.count; ++j)
-                {
-                    md5weight &w = weightinfo[v.start+j];
-                    sorted = c.addweight(sorted, w.bias, w.joint);
-                }
-                c.finalize(sorted);
-                vv.blend = addblendcombo(c);
             }
-        }
 
-        //md5 model loader
-        void load(stream *f, char *buf, size_t bufsize)
-        {
-            md5weight w;
-            md5vert v;
-            tri t;
-            int index;
-
-            while(f->getline(buf, bufsize) && buf[0]!='}')
+            ~md5mesh()
             {
-                if(strstr(buf, "// meshes:"))
+                cleanup();
+            }
+
+            void cleanup()
+            {
+                DELETEA(weightinfo);
+                DELETEA(vertinfo);
+            }
+
+            void buildverts(vector<md5joint> &joints)
+            {
+                for(int i = 0; i < numverts; ++i)
                 {
-                    char *start = strchr(buf, ':')+1;
-                    if(*start==' ')
+                    md5vert &v = vertinfo[i];
+                    vec pos(0, 0, 0);
+                    for(int k = 0; k < v.count; ++k)
                     {
-                        start++;
+                        md5weight &w = weightinfo[v.start+k];
+                        md5joint &j = joints[w.joint];
+                        vec wpos = j.orient.rotate(w.pos);
+                        wpos.add(j.pos);
+                        wpos.mul(w.bias);
+                        pos.add(wpos);
                     }
-                    char *end = start + strlen(start)-1;
-                    while(end >= start && isspace(*end))
+                    vert &vv = verts[i];
+                    vv.pos = pos;
+                    vv.tc = v.tc;
+
+                    blendcombo c;
+                    int sorted = 0;
+                    for(int j = 0; j < v.count; ++j)
                     {
-                        end--;
+                        md5weight &w = weightinfo[v.start+j];
+                        sorted = c.addweight(sorted, w.bias, w.joint);
                     }
-                    name = newstring(start, end+1-start);
+                    c.finalize(sorted);
+                    vv.blend = addblendcombo(c);
                 }
-                else if(strstr(buf, "shader"))
+            }
+
+            //md5 model loader
+            void load(stream *f, char *buf, size_t bufsize)
+            {
+                md5weight w;
+                md5vert v;
+                tri t;
+                int index;
+
+                while(f->getline(buf, bufsize) && buf[0]!='}')
                 {
-                    char *start = strchr(buf, '"'), *end = start ? strchr(start+1, '"') : nullptr;
-                    if(start && end)
+                    if(strstr(buf, "// meshes:"))
                     {
-                        char *texname = newstring(start+1, end-(start+1));
-                        part *p = loading->parts.last();
-                        p->initskins(notexture, notexture, group->meshes.length());
-                        skin &s = p->skins.last();
-                        s.tex = textureload(makerelpath(dir, texname), 0, true, false);
-                        delete[] texname;
+                        char *start = strchr(buf, ':')+1;
+                        if(*start==' ')
+                        {
+                            start++;
+                        }
+                        char *end = start + strlen(start)-1;
+                        while(end >= start && isspace(*end))
+                        {
+                            end--;
+                        }
+                        name = newstring(start, end+1-start);
                     }
-                }
-                //create the vert arrays
-                else if(sscanf(buf, " numverts %d", &numverts)==1)
-                {
-                    numverts = std::max(numverts, 0);
-                    if(numverts)
+                    else if(strstr(buf, "shader"))
                     {
-                        vertinfo = new md5vert[numverts];
-                        verts = new vert[numverts];
+                        char *start = strchr(buf, '"'), *end = start ? strchr(start+1, '"') : nullptr;
+                        if(start && end)
+                        {
+                            char *texname = newstring(start+1, end-(start+1));
+                            part *p = loading->parts.last();
+                            p->initskins(notexture, notexture, group->meshes.length());
+                            skin &s = p->skins.last();
+                            s.tex = textureload(makerelpath(dir, texname), 0, true, false);
+                            delete[] texname;
+                        }
                     }
-                }
-                //create tri array
-                else if(sscanf(buf, " numtris %d", &numtris)==1)
-                {
-                    numtris = std::max(numtris, 0);
-                    if(numtris)
+                    //create the vert arrays
+                    else if(sscanf(buf, " numverts %d", &numverts)==1)
                     {
-                        tris = new tri[numtris];
+                        numverts = std::max(numverts, 0);
+                        if(numverts)
+                        {
+                            vertinfo = new md5vert[numverts];
+                            verts = new vert[numverts];
+                        }
                     }
-                }
-                //create md5weight array
-                else if(sscanf(buf, " numweights %d", &numweights)==1)
-                {
-                    numweights = std::max(numweights, 0);
-                    if(numweights)
+                    //create tri array
+                    else if(sscanf(buf, " numtris %d", &numtris)==1)
                     {
-                        weightinfo = new md5weight[numweights];
+                        numtris = std::max(numtris, 0);
+                        if(numtris)
+                        {
+                            tris = new tri[numtris];
+                        }
                     }
-                }
-                //assign md5verts to vertinfo array
-                else if(sscanf(buf, " vert %d ( %f %f ) %hu %hu", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
-                {
-                    if(index>=0 && index<numverts)
+                    //create md5weight array
+                    else if(sscanf(buf, " numweights %d", &numweights)==1)
                     {
-                        vertinfo[index] = v;
+                        numweights = std::max(numweights, 0);
+                        if(numweights)
+                        {
+                            weightinfo = new md5weight[numweights];
+                        }
                     }
-                }
-                // assign tris to tri array
-                else if(sscanf(buf, " tri %d %hu %hu %hu", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
-                {
-                    if(index>=0 && index<numtris)
+                    //assign md5verts to vertinfo array
+                    else if(sscanf(buf, " vert %d ( %f %f ) %hu %hu", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
                     {
-                        tris[index] = t;
+                        if(index>=0 && index<numverts)
+                        {
+                            vertinfo[index] = v;
+                        }
                     }
-                }
-                //assign md5weights to weights array
-                else if(sscanf(buf, " weight %d %d %f ( %f %f %f ) ", &index, &w.joint, &w.bias, &w.pos.x, &w.pos.y, &w.pos.z)==6)
-                {
-                    w.pos.y = -w.pos.y;
-                    if(index>=0 && index<numweights)
+                    // assign tris to tri array
+                    else if(sscanf(buf, " tri %d %hu %hu %hu", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
                     {
-                        weightinfo[index] = w;
+                        if(index>=0 && index<numtris)
+                        {
+                            tris[index] = t;
+                        }
+                    }
+                    //assign md5weights to weights array
+                    else if(sscanf(buf, " weight %d %d %f ( %f %f %f ) ", &index, &w.joint, &w.bias, &w.pos.x, &w.pos.y, &w.pos.z)==6)
+                    {
+                        w.pos.y = -w.pos.y;
+                        if(index>=0 && index<numweights)
+                        {
+                            weightinfo[index] = w;
+                        }
                     }
                 }
             }
-        }
+        private:
+            md5weight *weightinfo;
+            int numweights;
+            md5vert *vertinfo;
     };
 
     struct md5meshgroup : skelmeshgroup
