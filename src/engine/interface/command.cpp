@@ -1403,12 +1403,12 @@ static inline void cutstring(const char *&p, stringslice &s)
 
     stridx = (stridx + 1)%4;
     vector<char> &buf = strbuf[stridx];
-    if(buf.alen < maxlen)
+    if(buf.capacity() < maxlen)
     {
         buf.growbuf(maxlen);
     }
-    s.str = buf.buf;
-    s.len = unescapestring(buf.buf, p, end);
+    s.str = buf.getbuf();
+    s.len = unescapestring(buf.getbuf(), p, end);
     p = end;
     if(*p=='\"')
     {
