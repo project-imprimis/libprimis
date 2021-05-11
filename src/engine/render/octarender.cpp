@@ -913,8 +913,8 @@ namespace
 
     void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *index, int numverts, int tj)
     {
-        int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris;
-        int edge = orient*(Face_MaxVerts+1);
+        int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris,
+             edge  = orient*(Face_MaxVerts+1);
         for(int i = 0; i < numverts-2; ++i)
         {
             if(index[0]!=index[i+1] && index[i+1]!=index[i+2] && index[i+2]!=index[0])
