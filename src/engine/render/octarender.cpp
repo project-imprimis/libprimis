@@ -204,51 +204,54 @@ namespace
         return buf;
     }
 
-    struct verthash
+    class verthash
     {
-        static const int hashsize = 1<<13;
-        int table[hashsize];
-        vector<vertex> verts;
-        vector<int> chain;
+        public:
+            vector<vertex> verts;
 
-        verthash() { clearverts(); }
+            verthash() { clearverts(); }
 
-        void clearverts()
-        {
-            memset(table, -1, sizeof(table));
-            chain.setsize(0);
-            verts.setsize(0);
-        }
-
-        int addvert(const vertex &v)
-        {
-            uint h = hthash(v.pos)&(hashsize-1);
-            for(int i = table[h]; i>=0; i = chain[i])
+            int addvert(const vertex &v)
             {
-                const vertex &c = verts[i];
-                if(c.pos==v.pos && c.tc==v.tc && c.norm==v.norm && c.tangent==v.tangent)
+                uint h = hthash(v.pos)&(hashsize-1);
+                for(int i = table[h]; i>=0; i = chain[i])
                 {
-                     return i;
-                 }
+                    const vertex &c = verts[i];
+                    if(c.pos==v.pos && c.tc==v.tc && c.norm==v.norm && c.tangent==v.tangent)
+                    {
+                         return i;
+                     }
+                }
+                if(verts.length() >= USHRT_MAX)
+                {
+                    return -1;
+                }
+                verts.add(v);
+                chain.add(table[h]);
+                return table[h] = verts.length()-1;
             }
-            if(verts.length() >= USHRT_MAX)
-            {
-                return -1;
-            }
-            verts.add(v);
-            chain.add(table[h]);
-            return table[h] = verts.length()-1;
-        }
 
-        int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const bvec4 &tangent = bvec4(128, 128, 128, 128))
-        {
-            vertex vtx;
-            vtx.pos = pos;
-            vtx.tc = tc;
-            vtx.norm = norm;
-            vtx.tangent = tangent;
-            return addvert(vtx);
-        }
+            void clearverts()
+            {
+                memset(table, -1, sizeof(table));
+                chain.setsize(0);
+                verts.setsize(0);
+            }
+        private:
+            static const int hashsize = 1<<13;
+            int table[hashsize];
+
+            vector<int> chain;
+
+            int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const bvec4 &tangent = bvec4(128, 128, 128, 128))
+            {
+                vertex vtx;
+                vtx.pos = pos;
+                vtx.tc = tc;
+                vtx.norm = norm;
+                vtx.tangent = tangent;
+                return addvert(vtx);
+            }
     };
 
     //alpha enum local to this file
