@@ -263,78 +263,79 @@ namespace
         Alpha_Refract
     };
 
-    struct sortkey
+    class sortkey
     {
-        ushort tex;
-        uchar orient, layer, alpha;
+        public:
+            ushort tex;
+            uchar orient, layer, alpha;
 
-        sortkey() {}
-        sortkey(ushort tex, uchar orient, uchar layer = BlendLayer_Top, uchar alpha = Alpha_None)
-         : tex(tex), orient(orient), layer(layer), alpha(alpha)
-        {}
+            sortkey() {}
+            sortkey(ushort tex, uchar orient, uchar layer = BlendLayer_Top, uchar alpha = Alpha_None)
+             : tex(tex), orient(orient), layer(layer), alpha(alpha)
+            {}
 
-        bool operator==(const sortkey &o) const
-        {
-            return tex==o.tex && orient==o.orient && layer==o.layer && alpha==o.alpha;
-        }
+            bool operator==(const sortkey &o) const
+            {
+                return tex==o.tex && orient==o.orient && layer==o.layer && alpha==o.alpha;
+            }
 
-        static bool sort(const sortkey &x, const sortkey &y)
-        {
-            if(x.alpha < y.alpha)
+            static bool sort(const sortkey &x, const sortkey &y)
             {
-                return true;
-            }
-            if(x.alpha > y.alpha)
-            {
-                return false;
-            }
-            if(x.layer < y.layer)
-            {
-                return true;
-            }
-            if(x.layer > y.layer)
-            {
-                return false;
-            }
-            if(x.tex == y.tex)
-            {
-                if(x.orient < y.orient)
+                if(x.alpha < y.alpha)
                 {
                     return true;
                 }
-                if(x.orient > y.orient)
+                if(x.alpha > y.alpha)
                 {
                     return false;
                 }
-                return false;
+                if(x.layer < y.layer)
+                {
+                    return true;
+                }
+                if(x.layer > y.layer)
+                {
+                    return false;
+                }
+                if(x.tex == y.tex)
+                {
+                    if(x.orient < y.orient)
+                    {
+                        return true;
+                    }
+                    if(x.orient > y.orient)
+                    {
+                        return false;
+                    }
+                    return false;
+                }
+                VSlot &xs = lookupvslot(x.tex, false),
+                      &ys = lookupvslot(y.tex, false);
+                if(xs.slot->shader < ys.slot->shader)
+                {
+                    return true;
+                }
+                if(xs.slot->shader > ys.slot->shader)
+                {
+                    return false;
+                }
+                if(xs.slot->params.length() < ys.slot->params.length())
+                {
+                    return true;
+                }
+                if(xs.slot->params.length() > ys.slot->params.length())
+                {
+                    return false;
+                }
+                if(x.tex < y.tex)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            VSlot &xs = lookupvslot(x.tex, false),
-                  &ys = lookupvslot(y.tex, false);
-            if(xs.slot->shader < ys.slot->shader)
-            {
-                return true;
-            }
-            if(xs.slot->shader > ys.slot->shader)
-            {
-                return false;
-            }
-            if(xs.slot->params.length() < ys.slot->params.length())
-            {
-                return true;
-            }
-            if(xs.slot->params.length() > ys.slot->params.length())
-            {
-                return false;
-            }
-            if(x.tex < y.tex)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
     };
 
     inline bool htcmp(const sortkey &x, const sortkey &y)
