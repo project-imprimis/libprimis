@@ -490,93 +490,94 @@ class listrenderer : public partrenderer
 
 listparticle *listrenderer::parempty = nullptr;
 
-struct meterrenderer : listrenderer
+class meterrenderer : public listrenderer
 {
-    meterrenderer(int type)
-        : listrenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
-    {
-    }
-
-    void startrender()
-    {
-        glDisable(GL_BLEND);
-        gle::defvertex();
-    }
-
-    void endrender()
-    {
-        glEnable(GL_BLEND);
-    }
-
-    void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
-    {
-        int basetype = type&0xFF;
-        float scale  = FONTH*p->size/80.0f,
-              right  = 8,
-              left   = p->progress/100.0f*right;
-        matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
-        m.scale(scale);
-        m.translate(-right/2.0f, 0, 0);
-
-        if(outlinemeters)
+    public:
+        meterrenderer(int type)
+            : listrenderer(type|PT_NOTEX|PT_LERP|PT_NOLAYER)
         {
-            gle::colorf(0, 0.8f, 0);
+        }
+    private:
+        void startrender()
+        {
+            glDisable(GL_BLEND);
+            gle::defvertex();
+        }
+
+        void endrender()
+        {
+            glEnable(GL_BLEND);
+        }
+
+        void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
+        {
+            int basetype = type&0xFF;
+            float scale  = FONTH*p->size/80.0f,
+                  right  = 8,
+                  left   = p->progress/100.0f*right;
+            matrix4x3 m(camright, vec(camup).neg(), vec(camdir).neg(), o);
+            m.scale(scale);
+            m.translate(-right/2.0f, 0, 0);
+
+            if(outlinemeters)
+            {
+                gle::colorf(0, 0.8f, 0);
+                gle::begin(GL_TRIANGLE_STRIP);
+                for(int k = 0; k < 10; ++k)
+                {
+                    const vec2 &sc = sincos360[k*(180/(10-1))];
+                    float c = (0.5f + 0.1f)*sc.y,
+                          s = 0.5f - (0.5f + 0.1f)*sc.x;
+                    gle::attrib(m.transform(vec2(-c, s)));
+                    gle::attrib(m.transform(vec2(right + c, s)));
+                }
+                gle::end();
+            }
+            if(basetype==PT_METERVS)
+            {
+                gle::colorub(p->color2[0], p->color2[1], p->color2[2]);
+            }
+            else
+            {
+                gle::colorf(0, 0, 0);
+            }
             gle::begin(GL_TRIANGLE_STRIP);
             for(int k = 0; k < 10; ++k)
             {
                 const vec2 &sc = sincos360[k*(180/(10-1))];
-                float c = (0.5f + 0.1f)*sc.y,
-                      s = 0.5f - (0.5f + 0.1f)*sc.x;
-                gle::attrib(m.transform(vec2(-c, s)));
+                float c = 0.5f*sc.y,
+                      s = 0.5f - 0.5f*sc.x;
+                gle::attrib(m.transform(vec2(left + c, s)));
                 gle::attrib(m.transform(vec2(right + c, s)));
             }
             gle::end();
-        }
-        if(basetype==PT_METERVS)
-        {
-            gle::colorub(p->color2[0], p->color2[1], p->color2[2]);
-        }
-        else
-        {
-            gle::colorf(0, 0, 0);
-        }
-        gle::begin(GL_TRIANGLE_STRIP);
-        for(int k = 0; k < 10; ++k)
-        {
-            const vec2 &sc = sincos360[k*(180/(10-1))];
-            float c = 0.5f*sc.y,
-                  s = 0.5f - 0.5f*sc.x;
-            gle::attrib(m.transform(vec2(left + c, s)));
-            gle::attrib(m.transform(vec2(right + c, s)));
-        }
-        gle::end();
 
-        if(outlinemeters)
-        {
-            gle::colorf(0, 0.8f, 0);
-            gle::begin(GL_TRIANGLE_FAN);
+            if(outlinemeters)
+            {
+                gle::colorf(0, 0.8f, 0);
+                gle::begin(GL_TRIANGLE_FAN);
+                for(int k = 0; k < 10; ++k)
+                {
+                    const vec2 &sc = sincos360[k*(180/(10-1))];
+                    float c = (0.5f + 0.1f)*sc.y,
+                          s = 0.5f - (0.5f + 0.1f)*sc.x;
+                    gle::attrib(m.transform(vec2(left + c, s)));
+                }
+                gle::end();
+            }
+
+            gle::color(p->color);
+            gle::begin(GL_TRIANGLE_STRIP);
             for(int k = 0; k < 10; ++k)
             {
                 const vec2 &sc = sincos360[k*(180/(10-1))];
-                float c = (0.5f + 0.1f)*sc.y,
-                      s = 0.5f - (0.5f + 0.1f)*sc.x;
+                float c = 0.5f*sc.y,
+                      s = 0.5f - 0.5f*sc.x;
+                gle::attrib(m.transform(vec2(-c, s)));
                 gle::attrib(m.transform(vec2(left + c, s)));
             }
             gle::end();
         }
-
-        gle::color(p->color);
-        gle::begin(GL_TRIANGLE_STRIP);
-        for(int k = 0; k < 10; ++k)
-        {
-            const vec2 &sc = sincos360[k*(180/(10-1))];
-            float c = 0.5f*sc.y,
-                  s = 0.5f - 0.5f*sc.x;
-            gle::attrib(m.transform(vec2(-c, s)));
-            gle::attrib(m.transform(vec2(left + c, s)));
-        }
-        gle::end();
-    }
 };
 static meterrenderer meters(PT_METER), metervs(PT_METERVS);
 
