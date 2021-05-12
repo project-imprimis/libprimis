@@ -224,8 +224,8 @@ namespace //internal functionality not seen by other files
             return;
         }
         vec pos[Face_MaxVerts];
-        int norms[Face_MaxVerts];
-        int tj = usetnormals && c.ext ? c.ext->tjoints : -1, vis;
+        int norms[Face_MaxVerts],
+            tj = usetnormals && c.ext ? c.ext->tjoints : -1, vis;
         for(int i = 0; i < 6; ++i)
         {
             if((vis = visibletris(c, i, o, size)))
