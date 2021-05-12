@@ -37,9 +37,9 @@ GLuint hdrfbo = 0,
 void cleanupbloom(); //needed for varfps
 
 FVAR(bloomthreshold, 1e-3f, 0.8f, 1e3f);
-FVARP(bloomscale, 0, 1.0f, 1e3f);
-VARP(bloomblur, 0, 7, 7);
-VARP(bloomiter, 0, 0, 4);
+FVARP(bloomscale, 0, 1.0f, 1e3f); //scale factor for bloom effect
+VARP(bloomblur, 0, 7, 7); //blur factor for bloom effect
+VARP(bloomiter, 0, 0, 4); //number of interations for bloom generation
 VARFP(bloomsize, 6, 9, 11, cleanupbloom());
 VARFP(bloomprec, 0, 2, 3, cleanupbloom());
 
