@@ -224,14 +224,14 @@ void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p)
     }
 }
 
-static inline void getcubevector(cube &c, int i, ivec &p)
+static void getcubevector(cube &c, int i, ivec &p)
 {
     p.x = EDGE_GET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1);
     p.y = EDGE_GET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1);
     p.z = EDGE_GET(CUBE_EDGE(c, 2, (i>>R[2])&1, (i>>C[2])&1), (i>>D[2])&1);
 }
 
-static inline void setcubevector(cube &c, int i, const ivec &p)
+static void setcubevector(cube &c, int i, const ivec &p)
 {
     EDGE_SET(CUBE_EDGE(c, 0, (i>>R[0])&1, (i>>C[0])&1), (i>>D[0])&1, p.x);
     EDGE_SET(CUBE_EDGE(c, 1, (i>>R[1])&1, (i>>C[1])&1), (i>>D[1])&1, p.y);
@@ -535,7 +535,7 @@ static int midedge(const ivec &a, const ivec &b, int xd, int yd, bool &perfect)
     return crossy ? 8 : std::min(std::max(y, 0), 16);
 }
 
-static inline bool crosscenter(const ivec &a, const ivec &b, int xd, int yd)
+static bool crosscenter(const ivec &a, const ivec &b, int xd, int yd)
 {
     int ax = a[xd],
         ay = a[yd],
@@ -861,7 +861,7 @@ const ivec cubecoords[8] = // verts of bounding cube
 };
 
 template<class T>
-static inline void gencubevert(const cube &c, int i, T &v)
+static void gencubevert(const cube &c, int i, T &v)
 {
     switch(i)
     {
@@ -1013,7 +1013,7 @@ int faceorder(const cube &c, int orient) // gets above 'fv' so that each face is
     return faceconvexity(c, orient)<0 ? 1 : 0;
 }
 
-static inline void faceedges(const cube &c, int orient, uchar edges[4])
+static void faceedges(const cube &c, int orient, uchar edges[4])
 {
     for(int k = 0; k < 4; ++k)
     {
@@ -1033,7 +1033,7 @@ uint faceedges(const cube &c, int orient)
 }
 
 
-static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, ivec2 *fvecs, const ivec *v = nullptr)
+static int genfacevecs(const cube &cu, int orient, const ivec &pos, int size, bool solid, ivec2 *fvecs, const ivec *v = nullptr)
 {
     int i = 0;
     if(solid)
@@ -1108,7 +1108,7 @@ static inline int genfacevecs(const cube &cu, int orient, const ivec &pos, int s
     return i;
 }
 
-static inline int clipfacevecy(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 &r)
+static int clipfacevecy(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 &r)
 {
     if(dir.x >= 0)
     {
@@ -1131,7 +1131,7 @@ static inline int clipfacevecy(const ivec2 &o, const ivec2 &dir, int cx, int cy,
     return 1;
 }
 
-static inline int clipfacevecx(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 &r)
+static int clipfacevecx(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 &r)
 {
     if(dir.y >= 0)
     {
@@ -1154,7 +1154,7 @@ static inline int clipfacevecx(const ivec2 &o, const ivec2 &dir, int cx, int cy,
     return 1;
 }
 
-static inline int clipfacevec(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 *rvecs)
+static int clipfacevec(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 *rvecs)
 {
     int r = 0;
     if(o.x >= cx && o.x <= cx+size &&
@@ -1171,7 +1171,7 @@ static inline int clipfacevec(const ivec2 &o, const ivec2 &dir, int cx, int cy, 
     return r;
 }
 
-static inline bool insideface(const ivec2 *p, int nump, const ivec2 *o, int numo)
+static bool insideface(const ivec2 *p, int nump, const ivec2 *o, int numo)
 {
     int bounds = 0;
     ivec2 prev = o[numo-1];
@@ -1193,7 +1193,7 @@ static inline bool insideface(const ivec2 *p, int nump, const ivec2 *o, int numo
     return bounds>=3;
 }
 
-static inline int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int size, ivec2 *rvecs)
+static int clipfacevecs(const ivec2 *o, int numo, int cx, int cy, int size, ivec2 *rvecs)
 {
     cx <<= 3;
     cy <<= 3;
@@ -1250,7 +1250,7 @@ static bool collapsedface(const cube &c, int orient)
            ivec().cross(v2, v3.sub(v0)).iszero();
 }
 
-static inline bool occludesface(const cube &c, int orient, const ivec &o, int size, const ivec &vo, int vsize, ushort vmat, ushort nmat, ushort matmask, const ivec2 *vf, int numv)
+static bool occludesface(const cube &c, int orient, const ivec &o, int size, const ivec &vo, int vsize, ushort vmat, ushort nmat, ushort matmask, const ivec2 *vf, int numv)
 {
     int dim = DIMENSION(orient);
     if(!c.children)
@@ -1768,7 +1768,7 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
     }
 }
 
-static inline bool mergefacecmp(const facebounds &x, const facebounds &y)
+static bool mergefacecmp(const facebounds &x, const facebounds &y)
 {
     if(x.v2 < y.v2)
     {
@@ -2432,7 +2432,7 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
     setsurface(cu, orient, surf, verts, p.numverts);
 }
 
-static inline void clearmerge(cube &c, int orient)
+static void clearmerge(cube &c, int orient)
 {
     if(c.merged&(1<<orient))
     {
