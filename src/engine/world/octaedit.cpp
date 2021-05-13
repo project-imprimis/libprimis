@@ -561,7 +561,7 @@ void changed(const block3 &sel, bool commit)
 }
 
 //////////// copy and undo /////////////
-static inline void copycube(const cube &src, cube &dst)
+static void copycube(const cube &src, cube &dst)
 {
     dst = src;
     dst.visible = 0;
@@ -633,7 +633,7 @@ void freeundo(undoblock *u)
     delete[] reinterpret_cast<uchar *>(u);
 }
 
-static inline int undosize(undoblock *u)
+static int undosize(undoblock *u)
 {
     if(u->numents)
     {
@@ -714,7 +714,7 @@ void addundo(undoblock *u)
 
 VARP(nompedit, 0, 1, 1);
 
-static inline int countblock(cube *c, int n = 8)
+static int countblock(cube *c, int n = 8)
 {
     int r = 0;
     for(int i = 0; i < n; ++i)
