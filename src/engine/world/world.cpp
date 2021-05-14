@@ -496,11 +496,6 @@ static bool modifyoctaent(int flags, int id)
     return ents.inrange(id) && modifyoctaent(flags, id, *ents[id]);
 }
 
-static void addentity(int id)
-{
-    modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB, id);
-}
-
 void addentityedit(int id)
 {
     modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id);
