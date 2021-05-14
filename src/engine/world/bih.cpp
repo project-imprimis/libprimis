@@ -106,7 +106,7 @@ struct traversestate
     float tmin, tmax;
 };
 
-inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, node *curnode, float tmin, float tmax)
+bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, node *curnode, float tmin, float tmax)
 {
     traversestate stack[128];
     int stacksize = 0;
@@ -200,7 +200,7 @@ inline bool BIH::traverse(const mesh &m, const vec &o, const vec &ray, const vec
     }
 }
 
-inline bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode)
+bool BIH::traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode)
 {
     //if components are zero, set component to large value: 1e16, else invert
     vec invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f);
@@ -531,7 +531,7 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     return false;
 }
 
-static inline float segmentdistance(const vec &d1, const vec &d2, const vec &r)
+static float segmentdistance(const vec &d1, const vec &d2, const vec &r)
 {
     float a = d1.squaredlen(),
           e = d2.squaredlen(),
@@ -578,7 +578,7 @@ static inline float segmentdistance(const vec &d1, const vec &d2, const vec &r)
     return vec(c2).sub(c1).add(r).squaredlen();
 }
 
-static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c, const vec &p, const vec &q)
+static float trisegmentdistance(const vec &a, const vec &b, const vec &c, const vec &p, const vec &q)
 {
     //displacement vectors
     vec pq = vec(q).sub(p),
@@ -696,7 +696,7 @@ static inline float trisegmentdistance(const vec &a, const vec &b, const vec &c,
 }
 
 //=============================================================TESTAXIS TESTFACE
-static inline bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
+static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const vec &c)
 {
     vec ab = vec(b).sub(a),
         bc = vec(c).sub(b),
@@ -770,7 +770,7 @@ static inline bool triboxoverlap(const vec &radius, const vec &a, const vec &b, 
 //==============================================================================
 //used in the tricollide templates below
 //returns true if physent is a player and passed vec is close enough to matter (determined by radius,pdist)
-static inline bool playercollidecheck(physent *d, float pdist, vec dir, vec n, vec radius)
+static bool playercollidecheck(physent *d, float pdist, vec dir, vec n, vec radius)
 {
     float a = 2*radius.z*(d->zmargin/(d->aboveeye+d->eyeheight)-(dir.z < 0 ? 1/3.0f : 1/4.0f)),
           b = (dir.x*n.x < 0 || dir.y*n.y < 0 ? -radius.x : 0);
@@ -785,7 +785,7 @@ static inline bool playercollidecheck(physent *d, float pdist, vec dir, vec n, v
 }
 
 template<>
-inline void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -826,7 +826,7 @@ inline void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d
 }
 
 template<>
-inline void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
+void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physent *d, const vec &dir, float cutoff, const vec &, const vec &radius, const matrix4x3 &orient, float &dist, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
@@ -870,7 +870,7 @@ inline void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx
 }
 
 template<int C>
-inline void BIH::collide(const mesh &m, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br)
+void BIH::collide(const mesh &m, physent *d, const vec &dir, float cutoff, const vec &center, const vec &radius, const matrix4x3 &orient, float &dist, node *curnode, const ivec &bo, const ivec &br)
 {
     node *stack[128];
     int stacksize = 0;
@@ -1067,7 +1067,7 @@ bool BIH::boxcollide(physent *d, const vec &dir, float cutoff, const vec &o, int
     return false;
 }
 
-inline void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br)
+void BIH::genstaintris(stainrenderer *s, const mesh &m, int tidx, const vec &, float, const matrix4x3 &orient, const ivec &bo, const ivec &br)
 {
     if(m.tribbs[tidx].outside(bo, br))
     {
