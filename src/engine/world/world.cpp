@@ -164,7 +164,7 @@ enum
     ModOctaEnt_Changed  = 1<<2
 };
 
-static inline void transformbb(const entity &e, vec &center, vec &radius)
+static void transformbb(const entity &e, vec &center, vec &radius)
 {
     if(e.attr5 > 0)
     {
@@ -181,13 +181,13 @@ void mmboundbox(const entity &e, model *m, vec &center, vec &radius)
     transformbb(e, center, radius);
 }
 
-static inline void mmcollisionbox(const entity &e, model *m, vec &center, vec &radius)
+static void mmcollisionbox(const entity &e, model *m, vec &center, vec &radius)
 {
     m->collisionbox(center, radius);
     transformbb(e, center, radius);
 }
 
-static inline void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radius)
+static void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radius)
 {
     float size = std::max(static_cast<float>(e.attr5), 1.0f);
     center = vec(0, s.depth * size/2, 0);
@@ -490,13 +490,13 @@ static bool modifyoctaent(int flags, int id, extentity &e)
     return true;
 }
 
-static inline bool modifyoctaent(int flags, int id)
+static bool modifyoctaent(int flags, int id)
 {
     vector<extentity *> &ents = entities::getents();
     return ents.inrange(id) && modifyoctaent(flags, id, *ents[id]);
 }
 
-static inline void addentity(int id)
+static void addentity(int id)
 {
     modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB, id);
 }
@@ -506,7 +506,7 @@ void addentityedit(int id)
     modifyoctaent(ModOctaEnt_Add|ModOctaEnt_UpdateBB|ModOctaEnt_Changed, id);
 }
 
-static inline void removeentity(int id)
+static void removeentity(int id)
 {
     modifyoctaent(ModOctaEnt_UpdateBB, id);
 }
