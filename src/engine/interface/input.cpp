@@ -122,7 +122,7 @@ static bool filterevent(const SDL_Event &event)
     return true;
 }
 
-static inline bool pollevent(SDL_Event &event)
+static bool pollevent(SDL_Event &event)
 {
     while(SDL_PollEvent(&event))
     {
