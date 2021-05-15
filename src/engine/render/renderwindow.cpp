@@ -52,9 +52,9 @@ static void getbackgroundres(int &w, int &h)
     h = static_cast<int>(std::ceil(h*hk));
 }
 
-static string backgroundcaption   = "";
+static string backgroundcaption   = "",
+              backgroundmapname   = "";
 static Texture *backgroundmapshot = nullptr;
-static string backgroundmapname   = "";
 static char *backgroundmapinfo    = nullptr;
 
 void bgquad(float x, float y, float w, float h, float tx = 0, float ty = 0, float tw = 1, float th = 1)
@@ -219,7 +219,8 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
     {
         return;
     }
-    int w = hudw, h = hudh;
+    int w = hudw,
+        h = hudh;
     if(forceaspect)
     {
         w = static_cast<int>(std::ceil(h*forceaspect));
@@ -249,8 +250,8 @@ void restorebackground(int w, int h, bool force = false)
         }
         setbackgroundinfo();
     }
-    const char * caption = backgroundcaption[0] ? backgroundcaption : nullptr;
-    const char * mapname = backgroundmapname[0] ? backgroundmapname : nullptr;
+    const char * caption = backgroundcaption[0] ? backgroundcaption : nullptr,
+               * mapname = backgroundmapname[0] ? backgroundmapname : nullptr;
     renderbackgroundview(w, h, caption , backgroundmapshot, mapname, backgroundmapinfo);
 }
 
@@ -654,7 +655,7 @@ void limitfps(int &millis, int curmillis)
     }
 #endif
 
-static const int maxfpshistory = 60;
+constexpr int maxfpshistory = 60;
 
 int fpspos = 0,
     fpshistory[maxfpshistory];
