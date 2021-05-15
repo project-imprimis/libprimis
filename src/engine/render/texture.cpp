@@ -246,7 +246,7 @@ static void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int s
 }
 
 template<int BPP>
-static inline void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
     int stridex = BPP, stridey = BPP;
     if(swapxy)
@@ -1824,7 +1824,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
     return true;
 }
 
-static inline bool texturedata(ImageData &d, Slot &slot, Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr)
+static bool texturedata(ImageData &d, Slot &slot, Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr)
 {
     return texturedata(d, tex.name, msg, compress, wrap, slot.texturedir(), tex.type);
 }
