@@ -379,7 +379,7 @@ static struct lightcacheentry
     int x, y;
 } lightcache[lightcacheentries];
 
-static inline int lightcachehash(int x, int y)
+static int lightcachehash(int x, int y)
 {
     return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (lightcacheentries - 1));
 }
