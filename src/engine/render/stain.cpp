@@ -499,7 +499,8 @@ struct stainrenderer
 
     void render(int sbuf)
     {
-        float colorscale = 1, alphascale = 1;
+        float colorscale = 1,
+              alphascale = 1;
         if(flags&StainFlag_Overbright)
         {
             glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
@@ -798,7 +799,8 @@ struct stainrenderer
                 i += m.skip;
                 continue;
             }
-            int c = C[dim], r = R[dim];
+            int c = C[dim],
+                r = R[dim];
             for(;;)
             {
                 materialsurface &m = matbuf[i];
