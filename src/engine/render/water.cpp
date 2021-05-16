@@ -205,12 +205,12 @@ static int wx1, wy1, wx2, wy2, wsize;
 static float whscale, whoffset;
 
 #define VERTW(vertw, defbody, body) \
-    static inline void def##vertw() \
+    static void def##vertw() \
     { \
         gle::defvertex(); \
         defbody; \
     } \
-    static inline void vertw(float v1, float v2, float v3) \
+    static void vertw(float v1, float v2, float v3) \
     { \
         float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset; \
         float s = angle - static_cast<int>(angle) - 0.5f; \
@@ -220,12 +220,12 @@ static float whscale, whoffset;
         body; \
     }
 #define VERTWN(vertw, defbody, body) \
-    static inline void def##vertw() \
+    static void def##vertw() \
     { \
         gle::defvertex(); \
         defbody; \
     } \
-    static inline void vertw(float v1, float v2, float v3) \
+    static void vertw(float v1, float v2, float v3) \
     { \
         float h = -wateroffset; \
         gle::attribf(v1, v2, v3+h); \
