@@ -112,7 +112,10 @@ namespace
 
         void genmatsurfs(ushort mat, uchar orient, uchar visible, int z, materialsurface *&matbuf)
         {
-            if(filled == 0xF) genmatsurf(mat, orient, visible, x, y, z, size, matbuf);
+            if(filled == 0xF)
+            {
+                genmatsurf(mat, orient, visible, x, y, z, size, matbuf);
+            }
             else if(filled)
             {
                 int csize = size>>1;
@@ -271,8 +274,8 @@ namespace
     int mergematc(materialsurface &m, materialsurface &n)
     {
         int dim = DIMENSION(n.orient),
-            c = C[dim],
-            r = R[dim];
+            c   = C[dim],
+            r   = R[dim];
         if(m.o[r] == n.o[r] && m.rsize == n.rsize && m.o[c] + m.csize == n.o[c])
         {
             n.o[c] = m.o[c];
@@ -360,7 +363,8 @@ namespace
 
     bool editmatcmp(const materialsurface &x, const materialsurface &y)
     {
-        int xdim = DIMENSION(x.orient), ydim = DIMENSION(y.orient);
+        int xdim = DIMENSION(x.orient),
+            ydim = DIMENSION(y.orient);
         for(int i = 0; i < 3; ++i)
         {
             int dim = sortdim[i], xmin, xmax, ymin, ymax;
@@ -859,7 +863,9 @@ void setupmaterials(int start, int len)
                 skip->skip++;
             }
             else
+            {
                 skip = &m;
+            }
         }
     }
     if(hasmat&(0xF<<Mat_Water))
