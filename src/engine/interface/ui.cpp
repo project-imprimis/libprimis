@@ -641,21 +641,21 @@ namespace UI
             }
 
             #define PROPAGATE_STATE(o, cx, cy, mask, inside, body) \
-                LOOP_CHILDREN_REV(o, \
+                LOOP_CHILDREN_REV(o, \ // loop through children back to front
                 { \
                     if(((o->state | o->childstate) & mask) != mask) \
                     { \
                         continue; \
                     } \
-                    float o##x = cx - o->x; \
-                    float o##y = cy - o->y; \
+                    float o##x = cx - o->x; \ //offset x
+                    float o##y = cy - o->y; \ //offset y
                     if(!inside) \
                     { \
-                        o##x = std::clamp(o##x, 0.0f, o->w); \
-                        o##y = std::clamp(o##y, 0.0f, o->h); \
+                        o##x = std::clamp(o##x, 0.0f, o->w); \ //clamp offsets to Object bounds in x
+                        o##y = std::clamp(o##y, 0.0f, o->h); \ //clamp offsets to Object bounds in y
                         body; \
                     } \
-                    else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \
+                    else if(o##x >= 0 && o##x < o->w && o##y >= 0 && o##y < o->h) \ //if in bounds execute body
                     { \
                         body; \
                     } \
@@ -666,8 +666,8 @@ namespace UI
                 { \
                     PROPAGATE_STATE(o, cx, cy, mask, inside, \
                     { \
-                        o->func##children(ox, oy, mask, inside, setflags); \
-                        childstate |= (o->state | o->childstate) & (setflags); \
+                        o->func##children(ox, oy, mask, inside, setflags); \ //child's->func##children fxn called
+                        childstate |= (o->state | o->childstate) & (setflags); \ //set childstate
                     }); \
                     if(target(cx, cy)) \
                     { \
