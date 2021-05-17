@@ -755,7 +755,7 @@ namespace UI
 
     };
 
-    static inline void stopdrawing()
+    static void stopdrawing()
     {
         if(drawing)
         {
