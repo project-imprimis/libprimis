@@ -375,7 +375,7 @@ void loopend(ident *id, identstack &stack)
     }
 }
 
-static inline void setiter(ident &id, int i, identstack &stack)
+static void setiter(ident &id, int i, identstack &stack)
 {
     if(id.stack == &stack)
     {
@@ -399,7 +399,7 @@ static inline void setiter(ident &id, int i, identstack &stack)
     }
 }
 
-static inline void doloop(ident &id, int offset, int n, int step, uint *body)
+static void doloop(ident &id, int offset, int n, int step, uint *body)
 {
     if(n <= 0 || id.type != Id_Alias)
     {
@@ -420,7 +420,7 @@ ICOMMAND(loop+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body
 
 ICOMMAND(while, "ee", (uint *cond, uint *body), while(executebool(cond)) execute(body));
 
-static inline void loopconc(ident &id, int offset, int n, uint *body, bool space)
+static void loopconc(ident &id, int offset, int n, uint *body, bool space)
 {
     if(n <= 0 || id.type != Id_Alias)
     {
@@ -551,7 +551,7 @@ static const char *liststart = nullptr,
                   *listquotestart = nullptr,
                   *listquoteend = nullptr;
 
-static inline void skiplist(const char *&p)
+static void skiplist(const char *&p)
 {
     for(;;)
     {
@@ -668,7 +668,7 @@ static bool parselist(const char *&s, const char *&start = liststart, const char
     return true;
 }
 
-static inline char *listelem(const char *start = liststart, const char *end = listend, const char *quotestart = listquotestart)
+static char *listelem(const char *start = liststart, const char *end = listend, const char *quotestart = listquotestart)
 {
     size_t len = end-start;
     char *s = newstring(len);
@@ -789,7 +789,7 @@ void stripcolors(char *s)
 }
 COMMAND(stripcolors, "s");
 
-static inline void setiter(ident &id, char *val, identstack &stack)
+static void setiter(ident &id, char *val, identstack &stack)
 {
     if(id.stack == &stack)
     {
