@@ -36,7 +36,13 @@ extern float textscale;
 extern font *findfont(const char *name);
 extern void reloadfonts();
 
-inline void setfont(font *f) { if(f) curfont = f; }
+inline void setfont(font *f)
+{
+    if(f)
+    {
+        curfont = f;
+    }
+}
 
 extern bool setfont(const char *name);
 extern void pushfont();
