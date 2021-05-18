@@ -540,7 +540,7 @@ static float *findslotparam(VSlot &s, const char *name, float *noval = nullptr)
     return findslotparam(*s.slot, name, noval);
 }
 
-static inline void setslotparam(SlotShaderParamState &l, const float *val)
+static void setslotparam(SlotShaderParamState &l, const float *val)
 {
     switch(l.format)
     {
