@@ -232,7 +232,7 @@ namespace gle
         }
     }
 
-    static inline void setattrib(const attribinfo &a, uchar *buf)
+    static void setattrib(const attribinfo &a, uchar *buf)
     {
         switch(a.type)
         {
@@ -260,13 +260,13 @@ namespace gle
         }
     }
 
-    static inline void unsetattrib(const attribinfo &a)
+    static void unsetattrib(const attribinfo &a)
     {
         glDisableVertexAttribArray_(a.type);
         enabled &= ~(1<<a.type);
     }
 
-    static inline void setattribs(uchar *buf)
+    static void setattribs(uchar *buf)
     {
         bool forceattribs = numattribs != numlastattribs || vertexsize != lastvertexsize || buf != lastbuf;
         if(forceattribs || changedattribs)
