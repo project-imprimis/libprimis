@@ -6,7 +6,7 @@
  * returns the determinant of a 2x2 matrix, provided a set of four doubles
  * (rather than as a matrix2 object)
  */
-static inline double det2x2(double a, double b, double c, double d)
+static double det2x2(double a, double b, double c, double d)
 {
     return a*d - b*c;
 }
@@ -17,7 +17,7 @@ static inline double det2x2(double a, double b, double c, double d)
  * returns the determinant of a 3x3 matrix, provided a set of nine doubles
  * (rather than as a matrix3 object)
  */
-static inline double det3x3(double a1, double a2, double a3,
+static double det3x3(double a1, double a2, double a3,
                             double b1, double b2, double b3,
                             double c1, double c2, double c3)
 {
