@@ -1768,27 +1768,6 @@ void genclipplanes(const cube &c, const ivec &co, int size, clipplanes &p, bool 
     }
 }
 
-static bool mergefacecmp(const facebounds &x, const facebounds &y)
-{
-    if(x.v2 < y.v2)
-    {
-        return true;
-    }
-    if(x.v2 > y.v2)
-    {
-        return false;
-    }
-    if(x.u1 < y.u1)
-    {
-        return true;
-    }
-    if(x.u1 > y.u1)
-    {
-        return false;
-    }
-    return false;
-}
-
 void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask)
 {
     int dim = DIMENSION(orient);
