@@ -389,7 +389,7 @@ void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
 
 VARFP(vertwater, 0, 1, 1, allchanged());
 
-static inline void renderwater(const materialsurface &m, int mat = Mat_Water)
+static void renderwater(const materialsurface &m, int mat = Mat_Water)
 {
     if(!vertwater || drawtex == Draw_TexMinimap)
     {
