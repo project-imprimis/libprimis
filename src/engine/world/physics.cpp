@@ -39,13 +39,13 @@ clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset)
     return p;
 }
 
-static inline clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent *d)
+static clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent *d)
 {
     int offset = !(c.visible&0x80) || d->type==PhysEnt_Player ? 0 : 1;
     return getclipbounds(c, o, size, offset);
 }
 
-static inline int forceclipplanes(const cube &c, const ivec &o, int size, clipplanes &p)
+static int forceclipplanes(const cube &c, const ivec &o, int size, clipplanes &p)
 {
     if(p.visible&0x80)
     {
@@ -231,7 +231,7 @@ dynent *iterdynents(int i)
 
 VARF(dynentsize, 4, 7, 12, cleardynentcache());
 
-static inline int dynenthash(int x, int y)
+static int dynenthash(int x, int y)
 {
     return (((((x)^(y))<<5) + (((x)^(y))>>5)) & (dynentcachesize - 1));
 }
@@ -284,7 +284,7 @@ void updatedynentcache(physent *d)
 }
 
 template<class E, class O>
-static inline bool plcollide(physent *d, const vec &dir, physent *o)
+static bool plcollide(physent *d, const vec &dir, physent *o)
 {
     E entvol(d);
     O obvol(o);
@@ -302,7 +302,7 @@ static inline bool plcollide(physent *d, const vec &dir, physent *o)
     return false;
 }
 
-static inline bool plcollide(physent *d, const vec &dir, physent *o)
+static bool plcollide(physent *d, const vec &dir, physent *o)
 {
     switch(d->collidetype)
     {
@@ -397,7 +397,7 @@ void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll)
 }
 
 template<class E, class M>
-static inline bool mmcollide(physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, int yaw, int pitch, int roll)
+static bool mmcollide(physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, int yaw, int pitch, int roll)
 {
     E entvol(d);
     M mdlvol(e.o, center, radius, yaw, pitch, roll);
@@ -781,7 +781,7 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
 }
 
 template<class E>
-static inline bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, const vec &pw)
+static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, const vec &pw)
 {
     if(w.x && (w.y || w.z) && fabs(pw.x - p.o.x) > p.r.x)
     {
@@ -992,7 +992,7 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
     return true;
 }
 
-static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
+static bool cubecollide(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
 {
     switch(d->collidetype)
     {
@@ -1025,7 +1025,7 @@ static inline bool cubecollide(physent *d, const vec &dir, float cutoff, const c
     }
 }
 
-static inline bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cube *c, const ivec &cor, int size) // collide with octants
+static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs, const cube *c, const ivec &cor, int size) // collide with octants
 {
     LOOP_OCTA_BOX(cor, size, bo, bs)
     {
@@ -1075,7 +1075,7 @@ static inline bool octacollide(physent *d, const vec &dir, float cutoff, const i
     return false;
 }
 
-static inline bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs)
+static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs)
 {
     int diff = (bo.x^bs.x) | (bo.y^bs.y) | (bo.z^bs.z),
         scale = worldscale-1;
