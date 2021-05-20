@@ -1483,7 +1483,7 @@ void screenquad()
 
 static LocalShaderParam screentexcoord[2] = { LocalShaderParam("screentexcoord0"), LocalShaderParam("screentexcoord1") };
 
-static inline void setscreentexcoord(int i, float w, float h, float x = 0, float y = 0)
+static void setscreentexcoord(int i, float w, float h, float x = 0, float y = 0)
 {
     screentexcoord[i].setf(w*0.5f, h*0.5f, x + w*0.5f, y + fabs(h)*0.5f);
 }
