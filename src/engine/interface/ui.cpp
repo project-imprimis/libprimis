@@ -127,7 +127,7 @@ namespace UI
         }
     }
 
-    static inline bool isfullyclipped(float x, float y, float w, float h)
+    static bool isfullyclipped(float x, float y, float w, float h)
     {
         if(clipstack.empty())
         {
@@ -219,7 +219,7 @@ namespace UI
 
     static int blendtype = Blend_Alpha;
 
-    static inline void changeblend(int type, GLenum src, GLenum dst)
+    static void changeblend(int type, GLenum src, GLenum dst)
     {
         if(blendtype != type)
         {
@@ -1883,7 +1883,7 @@ namespace UI
         }
     };
 
-    static inline bool checkalphamask(Texture *tex, float x, float y)
+    static bool checkalphamask(Texture *tex, float x, float y)
     {
         if(!tex->alphamask)
         {
@@ -4688,7 +4688,7 @@ namespace UI
     ICOMMAND(uimodcircle, "ife", (int *c, float *size, uint *children),
         BUILD(Circle, o, o->setup(Color(*c), *size, Circle::MODULATE), children));
 
-    static inline void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
+    static void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
     {
         if(scale <= 0)
         {
@@ -4779,7 +4779,7 @@ namespace UI
     ICOMMAND(uistretchedimage, "sffe", (char *texname, float *minw, float *minh, uint *children),
         BUILD(StretchedImage, o, o->setup(textureload(texname, 3, true, false), *minw, *minh), children));
 
-    static inline float parsepixeloffset(const tagval *t, int size)
+    static float parsepixeloffset(const tagval *t, int size)
     {
         switch(t->type)
         {
