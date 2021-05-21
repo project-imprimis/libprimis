@@ -61,7 +61,7 @@ void freearg(tagval &v)
     }
 }
 
-static inline void forcenull(tagval &v)
+static void forcenull(tagval &v)
 {
     switch(v.type)
     {
@@ -74,7 +74,7 @@ static inline void forcenull(tagval &v)
     v.setnull();
 }
 
-static inline float forcefloat(tagval &v)
+static float forcefloat(tagval &v)
 {
     float f = 0.0f;
     switch(v.type)
@@ -101,7 +101,7 @@ static inline float forcefloat(tagval &v)
     return f;
 }
 
-static inline int forceint(tagval &v)
+static int forceint(tagval &v)
 {
     int i = 0;
     switch(v.type)
@@ -128,7 +128,7 @@ static inline int forceint(tagval &v)
     return i;
 }
 
-static inline const char *forcestr(tagval &v)
+static const char *forcestr(tagval &v)
 {
     const char *s = "";
     switch(v.type)
@@ -159,7 +159,7 @@ static inline const char *forcestr(tagval &v)
     return s;
 }
 
-static inline void forcearg(tagval &v, int type)
+static void forcearg(tagval &v, int type)
 {
     switch(type)
     {
@@ -195,7 +195,7 @@ void tagval::cleanup()
     freearg(*this);
 }
 
-static inline void freeargs(tagval *args, int &oldnum, int newnum)
+static void freeargs(tagval *args, int &oldnum, int newnum)
 {
     for(int i = newnum; i < oldnum; i++)
     {
@@ -286,7 +286,7 @@ void clearoverrides()
 static bool initedidents = false;
 static vector<ident> *identinits = nullptr;
 
-static inline ident *addident(const ident &id)
+static ident *addident(const ident &id)
 {
     if(!initedidents)
     {
@@ -498,7 +498,7 @@ void pushcmd(ident *id, tagval *v, uint *code)
 }
 COMMANDN(push, pushcmd, "rTe");
 
-static inline void pushalias(ident &id, identstack &stack)
+static void pushalias(ident &id, identstack &stack)
 {
     if(id.type == Id_Alias && id.index >= Max_Args)
     {
@@ -507,7 +507,7 @@ static inline void pushalias(ident &id, identstack &stack)
     }
 }
 
-static inline void popalias(ident &id)
+static void popalias(ident &id)
 {
     if(id.type == Id_Alias && id.index >= Max_Args)
     {
@@ -517,7 +517,7 @@ static inline void popalias(ident &id)
 
 KEYWORD(local, Id_Local);
 
-static inline bool checknumber(const char *s)
+static bool checknumber(const char *s)
 {
     if(isdigit(s[0]))
     {
@@ -540,13 +540,13 @@ static inline bool checknumber(const char *s)
         }
     }
 }
-static inline bool checknumber(const stringslice &s)
+static bool checknumber(const stringslice &s)
 {
     return checknumber(s.str);
 }
 
 template<class T>
-static inline ident *newident(const T &name, int flags)
+static ident *newident(const T &name, int flags)
 {
     ident *id = idents.access(name);
     if(!id)
@@ -561,7 +561,7 @@ static inline ident *newident(const T &name, int flags)
     return id;
 }
 
-static inline ident *forceident(tagval &v)
+static ident *forceident(tagval &v)
 {
     switch(v.type)
     {
@@ -1006,7 +1006,7 @@ void setvarchecked(ident *id, int val)
     }
 }
 
-static inline void setvarchecked(ident *id, tagval *args, int numargs)
+static void setvarchecked(ident *id, tagval *args, int numargs)
 {
     int val = forceint(args[0]);
     if(id->flags&Idf_Hex && numargs > 1)
@@ -1382,7 +1382,7 @@ char *conc(tagval *v, int n, bool space, const char *prefix)
 }
 
 //ignore double slashes in cubescript lines
-static inline void skipcomments(const char *&p)
+static void skipcomments(const char *&p)
 {
     for(;;)
     {
@@ -1395,7 +1395,7 @@ static inline void skipcomments(const char *&p)
     }
 }
 
-static inline void cutstring(const char *&p, stringslice &s)
+static void cutstring(const char *&p, stringslice &s)
 {
     p++;
     const char *end = parsestring(p);
@@ -1416,7 +1416,7 @@ static inline void cutstring(const char *&p, stringslice &s)
     }
 }
 
-static inline char *cutstring(const char *&p)
+static char *cutstring(const char *&p)
 {
     p++;
     const char *end = parsestring(p);
@@ -1427,7 +1427,7 @@ static inline char *cutstring(const char *&p)
     return buf;
 }
 
-inline const char *parseword(const char *p)
+const char *parseword(const char *p)
 {
     const int maxbrak = 100;
     static char brakstack[maxbrak];
@@ -1488,14 +1488,14 @@ inline const char *parseword(const char *p)
     return p;
 }
 
-static inline void cutword(const char *&p, stringslice &s)
+static void cutword(const char *&p, stringslice &s)
 {
     s.str = p;
     p = parseword(p);
     s.len = static_cast<int>(p-s.str);
 }
 
-static inline char *cutword(const char *&p)
+static char *cutword(const char *&p)
 {
     const char *word = p;
     p = parseword(p);
@@ -1508,7 +1508,7 @@ static inline char *cutword(const char *&p)
 #define RET_CODE_ANY(type) RET_CODE(type, 0)
 #define RET_CODE_STRING(type) ((type) >= Value_Any ? Ret_String : (type) << Code_Ret)
 
-static inline void compilestr(vector<uint> &code, const char *word, int len, bool macro = false)
+static void compilestr(vector<uint> &code, const char *word, int len, bool macro = false)
 {
     if(len <= 3 && !macro)
     {
@@ -1533,23 +1533,23 @@ static inline void compilestr(vector<uint> &code, const char *word, int len, boo
     code.add(end.u);
 }
 
-static inline void compilestr(vector<uint> &code)
+static void compilestr(vector<uint> &code)
 {
     code.add(Code_ValI|Ret_String);
 }
 
-static inline void compilestr(vector<uint> &code, const stringslice &word, bool macro = false)
+static void compilestr(vector<uint> &code, const stringslice &word, bool macro = false)
 {
     compilestr(code, word.str, word.len, macro);
 }
 
-static inline void compilestr(vector<uint> &code, const char *word, bool macro = false)
+static void compilestr(vector<uint> &code, const char *word, bool macro = false)
 {
     compilestr(code, word, static_cast<int>(strlen(word)), macro);
 }
 
 //compile un-escape string
-static inline void compileunescapestring(vector<uint> &code, const char *&p, bool macro = false)
+static void compileunescapestring(vector<uint> &code, const char *&p, bool macro = false)
 {
     p++;
     const char *end = parsestring(p);
@@ -1566,7 +1566,7 @@ static inline void compileunescapestring(vector<uint> &code, const char *&p, boo
     }
 }
 
-static inline void compileint(vector<uint> &code, int i = 0)
+static void compileint(vector<uint> &code, int i = 0)
 {
     if(i >= -0x800000 && i <= 0x7FFFFF)
     {
@@ -1579,7 +1579,7 @@ static inline void compileint(vector<uint> &code, int i = 0)
     }
 }
 
-static inline void compilenull(vector<uint> &code)
+static void compilenull(vector<uint> &code)
 {
     code.add(Code_ValI|Ret_Null);
 }
@@ -1592,14 +1592,14 @@ static uint emptyblock[Value_Any][2] =
     { Code_Start + 0x100, Code_Exit|Ret_String }
 };
 
-static inline void compileblock(vector<uint> &code)
+static void compileblock(vector<uint> &code)
 {
     code.add(Code_Empty);
 }
 
 static void compilestatements(vector<uint> &code, const char *&p, int rettype, int brak = '\0', int prevargs = 0);
 
-static inline const char *compileblock(vector<uint> &code, const char *p, int rettype = Ret_Null, int brak = '\0')
+static const char *compileblock(vector<uint> &code, const char *p, int rettype = Ret_Null, int brak = '\0')
 {
     int start = code.length();
     code.add(Code_Block);
@@ -1621,22 +1621,22 @@ static inline const char *compileblock(vector<uint> &code, const char *p, int re
     return p;
 }
 
-static inline void compileident(vector<uint> &code, ident *id = dummyident)
+static void compileident(vector<uint> &code, ident *id = dummyident)
 {
     code.add((id->index < Max_Args ? Code_IdentArg : Code_Ident)|(id->index<<8));
 }
 
-static inline void compileident(vector<uint> &code, const stringslice &word)
+static void compileident(vector<uint> &code, const stringslice &word)
 {
     compileident(code, newident(word, Idf_Unknown));
 }
 
-static inline void compileint(vector<uint> &code, const stringslice &word)
+static void compileint(vector<uint> &code, const stringslice &word)
 {
     compileint(code, word.len ? parseint(word.str) : 0);
 }
 
-static inline void compilefloat(vector<uint> &code, float f = 0.0f)
+static void compilefloat(vector<uint> &code, float f = 0.0f)
 {
     if(static_cast<int>(f) == f && f >= -0x800000 && f <= 0x7FFFFF)
     {
@@ -1655,12 +1655,12 @@ static inline void compilefloat(vector<uint> &code, float f = 0.0f)
     }
 }
 
-static inline void compilefloat(vector<uint> &code, const stringslice &word)
+static void compilefloat(vector<uint> &code, const stringslice &word)
 {
     compilefloat(code, word.len ? parsefloat(word.str) : 0.0f);
 }
 
-static inline bool getbool(const char *s)
+static bool getbool(const char *s)
 {
     switch(s[0])
     {
@@ -1743,7 +1743,7 @@ bool getbool(const tagval &v)
     }
 }
 
-static inline void compileval(vector<uint> &code, int wordtype, const stringslice &word = stringslice(nullptr, 0))
+static void compileval(vector<uint> &code, int wordtype, const stringslice &word = stringslice(nullptr, 0))
 {
     switch(wordtype)
     {
@@ -3386,7 +3386,7 @@ uint *compilecode(const char *p)
     return code;
 }
 
-static inline const uint *forcecode(tagval &v)
+static const uint *forcecode(tagval &v)
 {
     if(v.type != Value_Code)
     {
@@ -3399,7 +3399,7 @@ static inline const uint *forcecode(tagval &v)
     return v.code;
 }
 
-static inline void forcecond(tagval &v)
+static void forcecond(tagval &v)
 {
     switch(v.type)
     {
@@ -3608,7 +3608,7 @@ static const uint *skipcode(const uint *code, tagval &result = noret)
     }
 }
 
-static inline uint *copycode(const uint *src)
+static uint *copycode(const uint *src)
 {
     const uint *end = skipcode(src);
     size_t len = end - src;
@@ -3618,7 +3618,7 @@ static inline uint *copycode(const uint *src)
     return dst;
 }
 
-static inline void copyarg(tagval &dst, const tagval &src)
+static void copyarg(tagval &dst, const tagval &src)
 {
     switch(src.type)
     {
@@ -3649,7 +3649,7 @@ static inline void copyarg(tagval &dst, const tagval &src)
     }
 }
 
-static inline void addreleaseaction(ident *id, tagval *args, int numargs)
+static void addreleaseaction(ident *id, tagval *args, int numargs)
 {
     tagval *dst = addreleaseaction(id, numargs+1);
     if(dst)
@@ -3666,7 +3666,7 @@ static inline void addreleaseaction(ident *id, tagval *args, int numargs)
     }
 }
 
-static inline void callcommand(ident *id, tagval *args, int numargs, bool lookup = false)
+static void callcommand(ident *id, tagval *args, int numargs, bool lookup = false)
 {
     int i = -1,
         fakeargs = 0;
