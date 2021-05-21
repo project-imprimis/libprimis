@@ -1543,11 +1543,6 @@ static void compilestr(vector<uint> &code, const stringslice &word, bool macro =
     compilestr(code, word.str, word.len, macro);
 }
 
-static void compilestr(vector<uint> &code, const char *word, bool macro = false)
-{
-    compilestr(code, word, static_cast<int>(strlen(word)), macro);
-}
-
 //compile un-escape string
 static void compileunescapestring(vector<uint> &code, const char *&p, bool macro = false)
 {
