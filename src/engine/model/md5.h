@@ -186,369 +186,370 @@ struct md5 : skelloader<md5>
             md5vert *vertinfo;
     };
 
-    struct md5meshgroup : skelmeshgroup
+    class md5meshgroup : public skelmeshgroup
     {
-        md5meshgroup()
-        {
-        }
-
-        // main mesh loading functionality
-        bool loadmesh(const char *filename, float smooth)
-        {
-            stream *f = openfile(filename, "r");
-            if(!f) //immediately bail if no file present
+        public:
+            md5meshgroup()
             {
-                return false;
             }
-            char buf[512]; //presumably this will fail with lines over 512 char long
-            vector<md5joint> basejoints;
-            while(f->getline(buf, sizeof(buf)))
+
+            //main anim loading functionality
+            skelanimspec *loadanim(const char *filename)
             {
-                int tmp;
-                if(sscanf(buf, " MD5Version %d", &tmp)==1)
+                skelanimspec *sa = skel->findskelanim(filename);
+                if(sa)
                 {
-                    if(tmp!=10)
-                    {
-                        delete f; //bail out if md5version is not what we want
-                        return false;
-                    }
+                    return sa;
                 }
-                else if(sscanf(buf, " numJoints %d", &tmp)==1)
+                stream *f = openfile(filename, "r");
+                if(!f)
                 {
-                    if(tmp<1)
-                    {
-                        delete f; //bail out if no joints found
-                        return false;
-                    }
-                    if(skel->numbones>0) //if we have bones, keep going
-                    {
-                        continue;
-                    }
-                    skel->numbones = tmp;
-                    skel->bones = new boneinfo[skel->numbones];
+                    return nullptr;
                 }
-                else if(sscanf(buf, " numMeshes %d", &tmp)==1)
+                vector<md5hierarchy> hierarchy;
+                vector<md5joint> basejoints;
+                int animdatalen = 0,
+                    animframes = 0;
+                float *animdata = nullptr;
+                dualquat *animbones = nullptr;
+                char buf[512]; //presumably lines over 512 char long will break this loader
+                //for each line in the opened file
+                while(f->getline(buf, sizeof(buf)))
                 {
-                    if(tmp<1)
+                    int tmp;
+                    if(sscanf(buf, " MD5Version %d", &tmp) == 1)
                     {
-                        delete f; //if there's no meshes, nothing to be done
-                        return false;
-                    }
-                }
-                else if(strstr(buf, "joints {"))
-                {
-                    string name;
-                    int parent;
-                    md5joint j;
-                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
-                    {
-                        char *curbuf = buf,
-                             *curname = name;
-                        bool allowspace = false;
-                        while(*curbuf && isspace(*curbuf))
+                        if(tmp != 10)
                         {
-                            curbuf++;
-                        }
-                        if(*curbuf == '"')
-                        {
-                            curbuf++;
-                            allowspace = true;
-                        }
-                        while(*curbuf && curname < &name[sizeof(name)-1])
-                        {
-                            char c = *curbuf++;
-                            if(c == '"')
-                            {
-                                break;
-                            }
-                            if(isspace(c) && !allowspace)
-                            {
-                                break;
-                            }
-                            *curname++ = c;
-                        }
-                        *curname = '\0';
-                        //pickup parent, pos/orient 3-vectors
-                        if(sscanf(curbuf, " %d ( %f %f %f ) ( %f %f %f )",
-                            &parent, &j.pos.x, &j.pos.y, &j.pos.z,
-                            &j.orient.x, &j.orient.y, &j.orient.z)==7)
-                        {
-                            j.pos.y = -j.pos.y;
-                            j.orient.x = -j.orient.x;
-                            j.orient.z = -j.orient.z;
-                            if(basejoints.length()<skel->numbones)
-                            {
-                                if(!skel->bones[basejoints.length()].name)
-                                {
-                                    skel->bones[basejoints.length()].name = newstring(name);
-                                }
-                                skel->bones[basejoints.length()].parent = parent;
-                            }
-                            j.orient.restorew();
-                            basejoints.add(j);
+                            delete f; //bail out if md5version is not what we want
+                            return nullptr;
                         }
                     }
-                    if(basejoints.length()!=skel->numbones)
+                    else if(sscanf(buf, " numJoints %d", &tmp) == 1)
                     {
-                        delete f;
-                        return false;
+                        if(tmp != skel->numbones)
+                        {
+                            delete f; //bail out if numbones is not consistent
+                            return nullptr;
+                        }
                     }
-                }
-                //load up meshes
-                else if(strstr(buf, "mesh {"))
-                {
-                    md5mesh *m = new md5mesh;
-                    m->group = this;
-                    meshes.add(m);
-                    m->load(f, buf, sizeof(buf));
-                    if(!m->numtris || !m->numverts) //if no content in the mesh
+                    else if(sscanf(buf, " numFrames %d", &animframes) == 1)
                     {
-                        conoutf("empty mesh in %s", filename);
-                        meshes.removeobj(m);
-                        delete m;
+                        if(animframes < 1) //if there are no animated frames, don't do animated frame stuff
+                        {
+                            delete f;
+                            return nullptr;
+                        }
                     }
-                }
-            }
-
-            if(skel->shared <= 1)
-            {
-                skel->linkchildren();
-                for(int i = 0; i < basejoints.length(); i++)
-                {
-                    boneinfo &b = skel->bones[i];
-                    b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
-                    (b.invbase = b.base).invert();
-                }
-            }
-
-            for(int i = 0; i < meshes.length(); i++)
-            {
-                md5mesh &m = *static_cast<md5mesh *>(meshes[i]);
-                m.buildverts(basejoints);
-                if(smooth <= 1)
-                {
-                    m.smoothnorms(smooth);
-                }
-                else
-                {
-                    m.buildnorms();
-                }
-                m.calctangents();
-                m.cleanup();
-            }
-
-            sortblendcombos();
-
-            delete f;
-            return true;
-        }
-
-        //main anim loading functionality
-        skelanimspec *loadanim(const char *filename)
-        {
-            skelanimspec *sa = skel->findskelanim(filename);
-            if(sa)
-            {
-                return sa;
-            }
-            stream *f = openfile(filename, "r");
-            if(!f)
-            {
-                return nullptr;
-            }
-            vector<md5hierarchy> hierarchy;
-            vector<md5joint> basejoints;
-            int animdatalen = 0,
-                animframes = 0;
-            float *animdata = nullptr;
-            dualquat *animbones = nullptr;
-            char buf[512]; //presumably lines over 512 char long will break this loader
-            //for each line in the opened file
-            while(f->getline(buf, sizeof(buf)))
-            {
-                int tmp;
-                if(sscanf(buf, " MD5Version %d", &tmp) == 1)
-                {
-                    if(tmp != 10)
-                    {
-                        delete f; //bail out if md5version is not what we want
-                        return nullptr;
-                    }
-                }
-                else if(sscanf(buf, " numJoints %d", &tmp) == 1)
-                {
-                    if(tmp != skel->numbones)
-                    {
-                        delete f; //bail out if numbones is not consistent
-                        return nullptr;
-                    }
-                }
-                else if(sscanf(buf, " numFrames %d", &animframes) == 1)
-                {
-                    if(animframes < 1) //if there are no animated frames, don't do animated frame stuff
-                    {
-                        delete f;
-                        return nullptr;
-                    }
-                }
-                //apparently, do nothing with respect to framerate
-                else if(sscanf(buf, " frameRate %d", &tmp) == 1)
-                {
-                    //(empty body)
-                }
-                //create animdata if there is some relevant info in file
-                else if(sscanf(buf, " numAnimatedComponents %d", &animdatalen)==1)
-                {
-                    if(animdatalen > 0)
-                    {
-                        animdata = new float[animdatalen];
-                    }
-                }
-                else if(strstr(buf, "bounds {"))
-                {
-                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
+                    //apparently, do nothing with respect to framerate
+                    else if(sscanf(buf, " frameRate %d", &tmp) == 1)
                     {
                         //(empty body)
                     }
-                }
-                else if(strstr(buf, "hierarchy {"))
-                {
-                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
+                    //create animdata if there is some relevant info in file
+                    else if(sscanf(buf, " numAnimatedComponents %d", &animdatalen)==1)
                     {
-                        md5hierarchy h;
-                        if(sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
+                        if(animdatalen > 0)
                         {
-                            hierarchy.add(h);
+                            animdata = new float[animdatalen];
                         }
                     }
-                }
-                else if(strstr(buf, "baseframe {"))
-                {
-                    while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
+                    else if(strstr(buf, "bounds {"))
                     {
-                        md5joint j;
-                        //pick up pos/orient 3-vectors within
-                        if(sscanf(buf, " ( %f %f %f ) ( %f %f %f )", &j.pos.x, &j.pos.y, &j.pos.z, &j.orient.x, &j.orient.y, &j.orient.z)==6)
+                        while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                         {
-                            j.pos.y = -j.pos.y;
-                            j.orient.x = -j.orient.x;
-                            j.orient.z = -j.orient.z;
-                            j.orient.restorew();
-                            basejoints.add(j);
+                            //(empty body)
                         }
                     }
-                    if(basejoints.length()!=skel->numbones)
+                    else if(strstr(buf, "hierarchy {"))
                     {
-                        delete f;
-                        if(animdata)
+                        while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                         {
-                            delete[] animdata;
-                        }
-                        return nullptr;
-                    }
-                    animbones = new dualquat[(skel->numframes+animframes)*skel->numbones];
-                    if(skel->framebones)
-                    {
-                        memcpy(animbones, skel->framebones, skel->numframes*skel->numbones*sizeof(dualquat));
-                        delete[] skel->framebones;
-                    }
-                    skel->framebones = animbones;
-                    animbones += skel->numframes*skel->numbones;
-
-                    sa = &skel->addskelanim(filename);
-                    sa->frame = skel->numframes;
-                    sa->range = animframes;
-
-                    skel->numframes += animframes;
-                }
-                else if(sscanf(buf, " frame %d", &tmp)==1)
-                {
-                    for(int numdata = 0; f->getline(buf, sizeof(buf)) && buf[0]!='}';)
-                    {
-                        for(char *src = buf, *next = src; numdata < animdatalen; numdata++, src = next)
-                        {
-                            animdata[numdata] = strtod(src, &next);
-                            if(next <= src)
+                            md5hierarchy h;
+                            if(sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
                             {
-                                break;
+                                hierarchy.add(h);
                             }
                         }
                     }
-                    dualquat *frame = &animbones[tmp*skel->numbones];
+                    else if(strstr(buf, "baseframe {"))
+                    {
+                        while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
+                        {
+                            md5joint j;
+                            //pick up pos/orient 3-vectors within
+                            if(sscanf(buf, " ( %f %f %f ) ( %f %f %f )", &j.pos.x, &j.pos.y, &j.pos.z, &j.orient.x, &j.orient.y, &j.orient.z)==6)
+                            {
+                                j.pos.y = -j.pos.y;
+                                j.orient.x = -j.orient.x;
+                                j.orient.z = -j.orient.z;
+                                j.orient.restorew();
+                                basejoints.add(j);
+                            }
+                        }
+                        if(basejoints.length()!=skel->numbones)
+                        {
+                            delete f;
+                            if(animdata)
+                            {
+                                delete[] animdata;
+                            }
+                            return nullptr;
+                        }
+                        animbones = new dualquat[(skel->numframes+animframes)*skel->numbones];
+                        if(skel->framebones)
+                        {
+                            memcpy(animbones, skel->framebones, skel->numframes*skel->numbones*sizeof(dualquat));
+                            delete[] skel->framebones;
+                        }
+                        skel->framebones = animbones;
+                        animbones += skel->numframes*skel->numbones;
+
+                        sa = &skel->addskelanim(filename);
+                        sa->frame = skel->numframes;
+                        sa->range = animframes;
+
+                        skel->numframes += animframes;
+                    }
+                    else if(sscanf(buf, " frame %d", &tmp)==1)
+                    {
+                        for(int numdata = 0; f->getline(buf, sizeof(buf)) && buf[0]!='}';)
+                        {
+                            for(char *src = buf, *next = src; numdata < animdatalen; numdata++, src = next)
+                            {
+                                animdata[numdata] = strtod(src, &next);
+                                if(next <= src)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        dualquat *frame = &animbones[tmp*skel->numbones];
+                        for(int i = 0; i < basejoints.length(); i++)
+                        {
+                            md5hierarchy &h = hierarchy[i];
+                            md5joint j = basejoints[i];
+                            if(h.start < animdatalen && h.flags)
+                            {
+                                float *jdata = &animdata[h.start];
+                                //bitwise AND against bits 0...5
+                                if(h.flags & 1)
+                                {
+                                    j.pos.x = *jdata++;
+                                }
+                                if(h.flags & 2)
+                                {
+                                    j.pos.y = -*jdata++;
+                                }
+                                if(h.flags & 4)
+                                {
+                                    j.pos.z = *jdata++;
+                                }
+                                if(h.flags & 8)
+                                {
+                                    j.orient.x = -*jdata++;
+                                }
+                                if(h.flags & 16)
+                                {
+                                    j.orient.y = *jdata++;
+                                }
+                                if(h.flags & 32)
+                                {
+                                    j.orient.z = -*jdata++;
+                                }
+                                j.orient.restorew();
+                            }
+                            dualquat dq(j.orient, j.pos);
+                            if(adjustments.inrange(i))
+                            {
+                                adjustments[i].adjust(dq);
+                            }
+                            boneinfo &b = skel->bones[i];
+                            dq.mul(b.invbase);
+                            dualquat &dst = frame[i];
+                            if(h.parent < 0)
+                            {
+                                dst = dq;
+                            }
+                            else
+                            {
+                                dst.mul(skel->bones[h.parent].base, dq);
+                            }
+                            dst.fixantipodal(skel->framebones[i]);
+                        }
+                    }
+                }
+
+                if(animdata)
+                {
+                    delete[] animdata;
+                }
+                delete f;
+
+                return sa;
+            }
+
+        private:
+            bool loadmesh(const char *filename, float smooth)
+            {
+                stream *f = openfile(filename, "r");
+                if(!f) //immediately bail if no file present
+                {
+                    return false;
+                }
+                char buf[512]; //presumably this will fail with lines over 512 char long
+                vector<md5joint> basejoints;
+                while(f->getline(buf, sizeof(buf)))
+                {
+                    int tmp;
+                    if(sscanf(buf, " MD5Version %d", &tmp)==1)
+                    {
+                        if(tmp!=10)
+                        {
+                            delete f; //bail out if md5version is not what we want
+                            return false;
+                        }
+                    }
+                    else if(sscanf(buf, " numJoints %d", &tmp)==1)
+                    {
+                        if(tmp<1)
+                        {
+                            delete f; //bail out if no joints found
+                            return false;
+                        }
+                        if(skel->numbones>0) //if we have bones, keep going
+                        {
+                            continue;
+                        }
+                        skel->numbones = tmp;
+                        skel->bones = new boneinfo[skel->numbones];
+                    }
+                    else if(sscanf(buf, " numMeshes %d", &tmp)==1)
+                    {
+                        if(tmp<1)
+                        {
+                            delete f; //if there's no meshes, nothing to be done
+                            return false;
+                        }
+                    }
+                    else if(strstr(buf, "joints {"))
+                    {
+                        string name;
+                        int parent;
+                        md5joint j;
+                        while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
+                        {
+                            char *curbuf = buf,
+                                 *curname = name;
+                            bool allowspace = false;
+                            while(*curbuf && isspace(*curbuf))
+                            {
+                                curbuf++;
+                            }
+                            if(*curbuf == '"')
+                            {
+                                curbuf++;
+                                allowspace = true;
+                            }
+                            while(*curbuf && curname < &name[sizeof(name)-1])
+                            {
+                                char c = *curbuf++;
+                                if(c == '"')
+                                {
+                                    break;
+                                }
+                                if(isspace(c) && !allowspace)
+                                {
+                                    break;
+                                }
+                                *curname++ = c;
+                            }
+                            *curname = '\0';
+                            //pickup parent, pos/orient 3-vectors
+                            if(sscanf(curbuf, " %d ( %f %f %f ) ( %f %f %f )",
+                                &parent, &j.pos.x, &j.pos.y, &j.pos.z,
+                                &j.orient.x, &j.orient.y, &j.orient.z)==7)
+                            {
+                                j.pos.y = -j.pos.y;
+                                j.orient.x = -j.orient.x;
+                                j.orient.z = -j.orient.z;
+                                if(basejoints.length()<skel->numbones)
+                                {
+                                    if(!skel->bones[basejoints.length()].name)
+                                    {
+                                        skel->bones[basejoints.length()].name = newstring(name);
+                                    }
+                                    skel->bones[basejoints.length()].parent = parent;
+                                }
+                                j.orient.restorew();
+                                basejoints.add(j);
+                            }
+                        }
+                        if(basejoints.length()!=skel->numbones)
+                        {
+                            delete f;
+                            return false;
+                        }
+                    }
+                    //load up meshes
+                    else if(strstr(buf, "mesh {"))
+                    {
+                        md5mesh *m = new md5mesh;
+                        m->group = this;
+                        meshes.add(m);
+                        m->load(f, buf, sizeof(buf));
+                        if(!m->numtris || !m->numverts) //if no content in the mesh
+                        {
+                            conoutf("empty mesh in %s", filename);
+                            meshes.removeobj(m);
+                            delete m;
+                        }
+                    }
+                }
+
+                if(skel->shared <= 1)
+                {
+                    skel->linkchildren();
                     for(int i = 0; i < basejoints.length(); i++)
                     {
-                        md5hierarchy &h = hierarchy[i];
-                        md5joint j = basejoints[i];
-                        if(h.start < animdatalen && h.flags)
-                        {
-                            float *jdata = &animdata[h.start];
-                            //bitwise AND against bits 0...5
-                            if(h.flags & 1)
-                            {
-                                j.pos.x = *jdata++;
-                            }
-                            if(h.flags & 2)
-                            {
-                                j.pos.y = -*jdata++;
-                            }
-                            if(h.flags & 4)
-                            {
-                                j.pos.z = *jdata++;
-                            }
-                            if(h.flags & 8)
-                            {
-                                j.orient.x = -*jdata++;
-                            }
-                            if(h.flags & 16)
-                            {
-                                j.orient.y = *jdata++;
-                            }
-                            if(h.flags & 32)
-                            {
-                                j.orient.z = -*jdata++;
-                            }
-                            j.orient.restorew();
-                        }
-                        dualquat dq(j.orient, j.pos);
-                        if(adjustments.inrange(i))
-                        {
-                            adjustments[i].adjust(dq);
-                        }
                         boneinfo &b = skel->bones[i];
-                        dq.mul(b.invbase);
-                        dualquat &dst = frame[i];
-                        if(h.parent < 0)
-                        {
-                            dst = dq;
-                        }
-                        else
-                        {
-                            dst.mul(skel->bones[h.parent].base, dq);
-                        }
-                        dst.fixantipodal(skel->framebones[i]);
+                        b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
+                        (b.invbase = b.base).invert();
                     }
                 }
+
+                for(int i = 0; i < meshes.length(); i++)
+                {
+                    md5mesh &m = *static_cast<md5mesh *>(meshes[i]);
+                    m.buildverts(basejoints);
+                    if(smooth <= 1)
+                    {
+                        m.smoothnorms(smooth);
+                    }
+                    else
+                    {
+                        m.buildnorms();
+                    }
+                    m.calctangents();
+                    m.cleanup();
+                }
+
+                sortblendcombos();
+
+                delete f;
+                return true;
             }
 
-            if(animdata)
+            bool load(const char *meshfile, float smooth)
             {
-                delete[] animdata;
+                name = newstring(meshfile);
+
+                if(!loadmesh(meshfile, smooth))
+                {
+                    return false;
+                }
+                return true;
             }
-            delete f;
-
-            return sa;
-        }
-
-        bool load(const char *meshfile, float smooth)
-        {
-            name = newstring(meshfile);
-
-            if(!loadmesh(meshfile, smooth))
-            {
-                return false;
-            }
-            return true;
-        }
     };
 
     skelmeshgroup *newmeshes()
