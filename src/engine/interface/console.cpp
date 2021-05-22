@@ -1137,8 +1137,8 @@ float renderconsole(float w, float h, float abovehud)
 {
     float conpad = FONTH/2,
           conheight = std::min(static_cast<float>(FONTH*consize), h - 2*conpad),
-          conwidth = w - 2*conpad;
-    float y = drawconlines(conskip, confade, conwidth, conheight, conpad, confilter);
+          conwidth = w - 2*conpad,
+          y = drawconlines(conskip, confade, conwidth, conheight, conpad, confilter);
     if(miniconsize && miniconwidth)
     {
         drawconlines(miniconskip, miniconfade, (miniconwidth*(w - 2*conpad))/100, std::min(static_cast<float>(FONTH*miniconsize), abovehud - y), conpad, miniconfilter, abovehud, -1);
@@ -1203,6 +1203,7 @@ tagval *addreleaseaction(ident *id, int numargs)
     return ra.args;
 }
 
+//print to a stream f the binds in the binds vector
 void writebinds(stream *f)
 {
     static const char * const cmds[3] = { "bind", "specbind", "editbind" };
@@ -1229,6 +1230,7 @@ void writebinds(stream *f)
     }
 }
 
+//print to a stream f the listcompletions in the completions filesval
 void writecompletions(stream *f)
 {
     vector<char *> cmds;
