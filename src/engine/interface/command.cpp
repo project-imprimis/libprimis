@@ -54,7 +54,8 @@ void freearg(tagval &v)
         {
             if(v.code[-1] == Code_Start)
             {
-                delete[] (uchar *)&v.code[-1];
+                //need to cast away constness then mangle type to uchar to delete w/ same type as created
+                delete[] reinterpret_cast<uchar *>(const_cast<uint *>(&v.code[-1]));
             }
             break;
         }
@@ -739,19 +740,19 @@ COMMANDN(alias, aliascmd, "sT");
 
 int variable(const char *name, int min, int cur, int max, int *storage, identfun fun, int flags)
 {
-    addident(ident(Id_Var, name, min, max, storage, (void *)fun, flags));
+    addident(ident(Id_Var, name, min, max, storage, reinterpret_cast<void *>(fun), flags));
     return cur;
 }
 
 float fvariable(const char *name, float min, float cur, float max, float *storage, identfun fun, int flags)
 {
-    addident(ident(Id_FloatVar, name, min, max, storage, (void *)fun, flags));
+    addident(ident(Id_FloatVar, name, min, max, storage, reinterpret_cast<void *>(fun), flags));
     return cur;
 }
 
 char *svariable(const char *name, const char *cur, char **storage, identfun fun, int flags)
 {
-    addident(ident(Id_StringVar, name, storage, (void *)fun, flags));
+    addident(ident(Id_StringVar, name, storage, reinterpret_cast<void *>(fun), flags));
     return newstring(cur);
 }
 
@@ -773,7 +774,7 @@ struct DefVar : identval
 
     static void changed(ident *id)
     {
-        DefVar *v = (DefVar *)id->storage.p;
+        DefVar *v = static_cast<DefVar *>(id->storage.p);
         if(v->onchange)
         {
             execute(v->onchange);
@@ -1147,7 +1148,7 @@ bool addcommand(const char *name, identfun fun, const char *args, int type)
     {
         fatal("builtin %s declared with too many args: %d", name, numargs);
     }
-    addident(ident(type, name, args, argmask, numargs, (void *)fun));
+    addident(ident(type, name, args, argmask, numargs, reinterpret_cast<void *>(fun)));
     return false;
 }
 
@@ -1521,7 +1522,7 @@ static void compilestr(vector<uint> &code, const char *word, int len, bool macro
         return;
     }
     code.add((macro ? Code_Macro : Code_Val|Ret_String)|(len<<8));
-    code.put((const uint *)word, len/sizeof(uint));
+    code.put(reinterpret_cast<const uint *>(word), len/sizeof(uint));
     size_t endlen = len%sizeof(uint);
     union
     {
