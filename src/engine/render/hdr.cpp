@@ -267,7 +267,7 @@ void processhdr(GLuint outfbo, int aa)
         ph = viewh;
     if(msaalight)
     {
-        if(aa < AA_Split && (msaalight <= 1 || !msaatonemap))
+        if(aa < AA_Split && (msaalight <= 1 || !msaatonemap)) //only bind relevant framebuffers
         {
             glBindFramebuffer_(GL_READ_FRAMEBUFFER, mshdrfbo);
             glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, hdrfbo);
@@ -537,7 +537,7 @@ void processhdr(GLuint outfbo, int aa)
                     SETSHADER(hdrtonemapstencil);
                     screenquad(vieww, viewh, b0w, b0h);
                     glDisable(GL_STENCIL_TEST);
-                    goto done;
+                    goto done; //see bottom of fxn
                 }
                 SETSHADER(hdrtonemapmasked);
                 setaavelocityparams(GL_TEXTURE3);
