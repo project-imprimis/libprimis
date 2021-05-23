@@ -3537,6 +3537,10 @@ void printvar(ident *id)
 }
 //You know what they awoke in the darkness of Khazad-dum... shadow and flame.
 // these are typedefs for argument lists of variable sizes
+
+// they will be used below to typecast various id->fun objects to different lengths
+// which allows them to only accept certain lengths of arguments
+// up to 12 args typedef'd here, could be extended with more typedefs (buy why?)
 typedef void (__cdecl *comfun)();
 typedef void (__cdecl *comfun1)(void *);
 typedef void (__cdecl *comfun2)(void *, void *);
@@ -3895,6 +3899,8 @@ static void callcommand(ident *id, tagval *args, int numargs, bool lookup = fals
         }
     }
     ++i;
+    //note about offsetarg: offsetarg is not defined the same way in different parts of command.cpp:
+    //it is undefined as 'n' and redefined as something else
     #define OFFSETARG(n) n
     #define ARG(n) (id->argmask&(1<<(n)) ? reinterpret_cast<void *>(args[OFFSETARG(n)].s) : reinterpret_cast<void *>(&args[OFFSETARG(n)].i))
 
