@@ -3871,13 +3871,13 @@ static void callcommand(ident *id, tagval *args, int numargs, bool lookup = fals
             {
                 i = std::max(i+1, numargs);
                 vector<char> buf;
-                ((comfun1)id->fun)(conc(buf, args, i, true));
+                (reinterpret_cast<comfun1>(id->fun))(conc(buf, args, i, true));
                 goto cleanup;
             }
             case 'V':
             {
                 i = std::max(i+1, numargs);
-                ((comfunv)id->fun)(args, i);
+                (reinterpret_cast<comfunv>(id->fun))(args, i);
                 goto cleanup;
             }
             case '1':
@@ -3897,22 +3897,27 @@ static void callcommand(ident *id, tagval *args, int numargs, bool lookup = fals
     ++i;
     #define OFFSETARG(n) n
     #define ARG(n) (id->argmask&(1<<(n)) ? reinterpret_cast<void *>(args[OFFSETARG(n)].s) : reinterpret_cast<void *>(&args[OFFSETARG(n)].i))
+
+
+    //callcom macro: takes a number n and type mangles the id->fun field to whatever length function is desired
+    // e.g. CALLCOM(6) takes the function pointer id->fun and changes its type to comfun6 (command function w/ 6 args)
+    // each argument is then described by the above ARG macro for each argument slot
     #define CALLCOM(n) \
         switch(n) \
         { \
-            case 0: ((comfun)id->fun)(); break; \
-            case 1: ((comfun1)id->fun)(ARG(0)); break; \
-            case 2: ((comfun2)id->fun)(ARG(0), ARG(1)); break; \
-            case 3: ((comfun3)id->fun)(ARG(0), ARG(1), ARG(2)); break; \
-            case 4: ((comfun4)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3)); break; \
-            case 5: ((comfun5)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4)); break; \
-            case 6: ((comfun6)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5)); break; \
-            case 7: ((comfun7)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6)); break; \
-            case 8: ((comfun8)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7)); break; \
-            case 9: ((comfun9)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8)); break; \
-            case 10: ((comfun10)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8), ARG(9)); break; \
-            case 11: ((comfun11)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8), ARG(9), ARG(10)); break; \
-            case 12: ((comfun12)id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8), ARG(9), ARG(10), ARG(11)); break; \
+            case 0: reinterpret_cast<comfun>(id->fun)(); break; \
+            case 1: reinterpret_cast<comfun1>(id->fun)(ARG(0)); break; \
+            case 2: reinterpret_cast<comfun2>(id->fun)(ARG(0), ARG(1)); break; \
+            case 3: reinterpret_cast<comfun3>(id->fun)(ARG(0), ARG(1), ARG(2)); break; \
+            case 4: reinterpret_cast<comfun4>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3)); break; \
+            case 5: reinterpret_cast<comfun5>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4)); break; \
+            case 6: reinterpret_cast<comfun6>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5)); break; \
+            case 7: reinterpret_cast<comfun7>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6)); break; \
+            case 8: reinterpret_cast<comfun8>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7)); break; \
+            case 9: reinterpret_cast<comfun9>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8)); break; \
+            case 10: reinterpret_cast<comfun10>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8), ARG(9)); break; \
+            case 11: reinterpret_cast<comfun11>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8), ARG(9), ARG(10)); break; \
+            case 12: reinterpret_cast<comfun12>(id->fun)(ARG(0), ARG(1), ARG(2), ARG(3), ARG(4), ARG(5), ARG(6), ARG(7), ARG(8), ARG(9), ARG(10), ARG(11)); break; \
         }
     CALLCOM(i)
     #undef OFFSETARG
@@ -4567,7 +4572,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 int callargs = (op>>8)&0x1F,
                     offset = numargs-callargs;
                 forcenull(result);
-                ((comfunv)id->fun)(&args[offset], callargs);
+                (reinterpret_cast<comfunv>(id->fun))(&args[offset], callargs);
                 forcearg(result, op&Code_RetMask);
                 freeargs(args, numargs, offset);
                 continue;
@@ -4584,7 +4589,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 {
                     vector<char> buf;
                     buf.reserve(maxstrlen);
-                    ((comfun1)id->fun)(conc(buf, &args[offset], callargs, true));
+                    (reinterpret_cast<comfun1>(id->fun))(conc(buf, &args[offset], callargs, true));
                 }
                 forcearg(result, op&Code_RetMask);
                 freeargs(args, numargs, offset);
