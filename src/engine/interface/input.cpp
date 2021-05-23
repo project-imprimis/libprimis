@@ -256,7 +256,7 @@ void checkinput()
                     if(len > 0)
                     {
                         buf[len] = '\0';
-                        processtextinput((const char *)buf, len);
+                        processtextinput(reinterpret_cast<const char *>(buf), len);
                     }
                 }
                 break;
