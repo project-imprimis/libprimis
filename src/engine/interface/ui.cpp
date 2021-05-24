@@ -2992,7 +2992,7 @@ namespace UI
 
         void hold(float cx, float cy)
         {
-            ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
+            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
             if(button && button->haschildstate(State_Hold))
             {
                 movebutton(button, offsetx, offsety, cx - button->x, cy - button->y);
@@ -3001,7 +3001,7 @@ namespace UI
 
         void press(float cx, float cy)
         {
-            ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
+            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
             if(button && button->haschildstate(State_Press))
             {
                 offsetx = cx - button->x;
@@ -3120,7 +3120,7 @@ namespace UI
             {
                 return;
             }
-            ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
+            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
             if(!button)
             {
                 return;
@@ -3137,7 +3137,7 @@ namespace UI
             {
                 return;
             }
-            ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
+            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
             if(!button)
             {
                 return;
@@ -3181,7 +3181,7 @@ namespace UI
             {
                 return;
             }
-            ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
+            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
             if(!button)
             {
                 return;
@@ -3198,7 +3198,7 @@ namespace UI
             {
                 return;
             }
-            ScrollButton *button = (ScrollButton *)find(ScrollButton::typestr(), false);
+            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
             if(!button)
             {
                 return;
