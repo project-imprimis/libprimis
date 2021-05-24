@@ -3017,7 +3017,7 @@ namespace UI
 
         void addscroll(float dir)
         {
-            Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
+            Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(scroller)
             {
                 addscroll(scroller, dir);
@@ -3115,7 +3115,7 @@ namespace UI
 
         void scrollto(float cx, float, bool closest = false) //note unnamed function parameter
         {
-            Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
+            Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
             {
                 return;
@@ -3132,7 +3132,7 @@ namespace UI
 
         void adjustchildren()
         {
-            Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
+            Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
             {
                 return;
@@ -3176,7 +3176,7 @@ namespace UI
 
         void scrollto(float, float cy, bool closest = false) //note unnamed function parameter
         {
-            Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
+            Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
             {
                 return;
@@ -3193,7 +3193,7 @@ namespace UI
 
         void adjustchildren()
         {
-            Scroller *scroller = (Scroller *)findsibling(Scroller::typestr());
+            Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
             if(!scroller)
             {
                 return;
@@ -4608,7 +4608,7 @@ namespace UI
     {
         if(buildparent && buildparent->istype<Scroller>())
         {
-            Scroller *scroller = (Scroller *)buildparent;
+            Scroller *scroller = static_cast<Scroller *>(buildparent);
             floatret(scroller->offsetx);
         }
     });
@@ -4617,7 +4617,7 @@ namespace UI
     {
         if(buildparent && buildparent->istype<Scroller>())
         {
-            Scroller *scroller = (Scroller *)buildparent;
+            Scroller *scroller = static_cast<Scroller *>(buildparent);
             floatret(scroller->offsety);
         }
     });
