@@ -3495,7 +3495,7 @@ namespace UI
 
         void scrollto(float cx, float) //note unnamed function parameter
         {
-            SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
+            SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
             {
                 return;
@@ -3511,7 +3511,7 @@ namespace UI
 
         void adjustchildren()
         {
-            SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
+            SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
             {
                 return;
@@ -3542,7 +3542,7 @@ namespace UI
 
         void scrollto(float, float cy) //note unnamed function parameter
         {
-            SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
+            SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
             {
                 return;
@@ -3558,7 +3558,7 @@ namespace UI
 
         void adjustchildren()
         {
-            SliderButton *button = (SliderButton *)find(SliderButton::typestr(), false);
+            SliderButton *button = static_cast<SliderButton *>(find(SliderButton::typestr(), false));
             if(!button)
             {
                 return;
