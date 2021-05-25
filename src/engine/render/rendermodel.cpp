@@ -278,12 +278,12 @@ COMMAND(mdlname, "");
         conoutf(Console_Error, "not loading a skeletal model"); \
         return; \
     } \
-    skelmodel *m = (skelmodel *)loadingmodel; \
+    skelmodel *m = static_cast<skelmodel *>(loadingmodel); \
     if(m->parts.empty()) \
     { \
         return; \
     } \
-    skelmodel::skelmeshgroup *meshes = (skelmodel::skelmeshgroup *)m->parts.last()->meshes; \
+    skelmodel::skelmeshgroup *meshes = static_cast<skelmodel::skelmeshgroup *>(m->parts.last()->meshes); \
     if(!meshes) \
     { \
         return; \
