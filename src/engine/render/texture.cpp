@@ -459,7 +459,7 @@ void texoffset(ImageData &s, int xoffset, int yoffset)
     uchar *src = s.data;
     for(int y = 0; y < s.h; ++y)
     {
-        uchar *dst = (uchar *)d.data+((y+yoffset)%d.h)*d.pitch;
+        uchar *dst = static_cast<uchar *>(d.data)+((y+yoffset)%d.h)*d.pitch;
         memcpy(dst+xoffset*s.bpp, src, (s.w-xoffset)*s.bpp);
         memcpy(dst, src+(s.w-xoffset)*s.bpp, xoffset*s.bpp);
         src += s.pitch;
@@ -848,7 +848,7 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
     if(pw!=tw || ph!=th)
     {
         buf = new uchar[tw*th*bpp];
-        scaletexture((uchar *)pixels, pw, ph, bpp, pitch, buf, tw, th);
+        scaletexture(static_cast<uchar *>(const_cast<void *>(pixels)), pw, ph, bpp, pitch, buf, tw, th);
     }
     else if(tw*bpp != pitch)
     {
@@ -3619,7 +3619,7 @@ void savepng(const char *filename, ImageData &image, bool flip)
         uint width, height;
         uchar bitdepth, colortype, compress, filter, interlace;
     } ihdr = { static_cast<uint>(endianswap(image.w)), static_cast<uint>(endianswap(image.h)), 8, ctype, 0, 0, 0 };
-    writepngchunk(f, "IHDR", (uchar *)&ihdr, 13);
+    writepngchunk(f, "IHDR", reinterpret_cast<uchar *>(&ihdr), 13);
     stream::offset idat = f->tell();
     uint len = 0;
     f->write("\0\0\0\0IDAT", 8);
