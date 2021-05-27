@@ -1077,7 +1077,7 @@ struct gzstream : stream
     {
         if(!zfile.avail_in)
         {
-            zfile.next_in = (Bytef *)buf;
+            zfile.next_in = static_cast<Bytef *>(buf);
         }
         size = std::min(size, static_cast<size_t>(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
         size_t n = file->read(zfile.next_in + zfile.avail_in, size);
@@ -1411,7 +1411,7 @@ struct gzstream : stream
         {
             return 0;
         }
-        zfile.next_out = (Bytef *)buf;
+        zfile.next_out = static_cast<Bytef *>(buf);
         zfile.avail_out = len;
         while(zfile.avail_out > 0)
         {
@@ -1487,7 +1487,7 @@ struct gzstream : stream
                 break;
             }
         }
-        crc = crc32(crc, (Bytef *)buf, len - zfile.avail_in);
+        crc = crc32(crc, static_cast<Bytef *>(const_cast<void *>(buf)), len - zfile.avail_in);
         return len - zfile.avail_in;
     }
 };
