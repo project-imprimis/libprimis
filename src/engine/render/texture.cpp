@@ -2921,7 +2921,7 @@ void decaldepth(float *depth, float *fade)
     {
         return;
     }
-    DecalSlot &s = *(DecalSlot *)defslot;
+    DecalSlot &s = *static_cast<DecalSlot *>(defslot);
     s.depth = std::clamp(*depth, 1e-3f, 1e3f);
     s.fade = std::clamp(*fade, 0.0f, s.depth);
 }
@@ -3565,7 +3565,7 @@ void writepngchunk(stream *f, const char *type, uchar *data = nullptr, uint len 
     f->write(data, len);
 
     uint crc = crc32(0, Z_NULL, 0);
-    crc = crc32(crc, (const Bytef *)type, 4);
+    crc = crc32(crc, reinterpret_cast<const Bytef *>(type), 4);
     if(data)
     {
         crc = crc32(crc, data, len);
@@ -3624,7 +3624,7 @@ void savepng(const char *filename, ImageData &image, bool flip)
     uint len = 0;
     f->write("\0\0\0\0IDAT", 8);
     uint crc = crc32(0, Z_NULL, 0);
-    crc = crc32(crc, (const Bytef *)"IDAT", 4);
+    crc = crc32(crc, reinterpret_cast<const Bytef *>("IDAT"), 4);
     z_stream z;
     z.zalloc = nullptr;
     z.zfree = nullptr;
@@ -3634,14 +3634,14 @@ void savepng(const char *filename, ImageData &image, bool flip)
         goto error; //goto is beneath FLUSHZ macro
     }
     uchar buf[1<<12];
-    z.next_out = (Bytef *)buf;
+    z.next_out = static_cast<Bytef *>(buf);
     z.avail_out = sizeof(buf);
     for(int i = 0; i < image.h; ++i)
     {
         uchar filter = 0;
         for(int j = 0; j < 2; ++j)
         {
-            z.next_in = j ? (Bytef *)image.data + (flip ? image.h-i-1 : i)*image.pitch : (Bytef *)&filter;
+            z.next_in = j ? static_cast<Bytef *>(image.data) + (flip ? image.h-i-1 : i)*image.pitch : static_cast<Bytef *>(&filter);
             z.avail_in = j ? image.w*image.bpp : 1;
             while(z.avail_in > 0)
             {
@@ -3655,7 +3655,7 @@ void savepng(const char *filename, ImageData &image, bool flip)
                     crc = crc32(crc, buf, flush); \
                     len += flush; \
                     f->write(buf, flush); \
-                    z.next_out = (Bytef *)buf; \
+                    z.next_out = static_cast<Bytef *>(buf); \
                     z.avail_out = sizeof(buf); \
                 } while(0)
                 FLUSHZ;
