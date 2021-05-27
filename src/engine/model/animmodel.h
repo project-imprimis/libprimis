@@ -357,7 +357,7 @@ struct animmodel : model
         #define LOOP_RENDER_MESHES(type, name, body) do { \
             for(int i = 0; i < meshes.length(); i++) \
             { \
-                type &name = *(type *)meshes[i]; \
+                type &name = *static_cast<type *>(meshes[i]); \
                 if(name.canrender || debugcolmesh) \
                 { \
                     body; \
@@ -625,7 +625,7 @@ struct modelloader : BASE
 
     void startload()
     {
-        loading = (MDL *)this;
+        loading = static_cast<MDL *>(this);
     }
 
     void endload()
@@ -680,7 +680,7 @@ struct modelcommands
         } \
         for(int i = 0; i < mdl.meshes->meshes.length(); i++) \
         { \
-            MESH &m = *(MESH *)mdl.meshes->meshes[i]; \
+            MESH &m = *static_cast<MESH *>(mdl.meshes->meshes[i]); \
             if(!strcmp(meshname, "*") || (m.name && !strcmp(m.name, meshname))) \
             { \
                 body; \
