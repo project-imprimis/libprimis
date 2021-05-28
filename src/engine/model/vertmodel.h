@@ -62,7 +62,7 @@ struct vertmodel : animmodel
 
         void smoothnorms(float limit = 0, bool areaweight = true)
         {
-            if(((vertmeshgroup *)group)->numframes == 1)
+            if((static_cast<vertmeshgroup *>(group))->numframes == 1)
             {
                 Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
             }
@@ -74,12 +74,12 @@ struct vertmodel : animmodel
 
         void buildnorms(bool areaweight = true)
         {
-            Mesh::buildnorms(verts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
+            Mesh::buildnorms(verts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
         }
 
         void calctangents(bool areaweight = true)
         {
-            Mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, ((vertmeshgroup *)group)->numframes);
+            Mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
         }
 
         void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
@@ -234,7 +234,7 @@ struct vertmodel : animmodel
             {
                 return;
             }
-            glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &((vertmeshgroup *)group)->edata[eoffset]);
+            glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
             glde++;
             xtravertsva += numverts;
         }
@@ -656,7 +656,7 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
             conoutf("not loading an %s", MDL::formatname());
             return;
         }
-        part &mdl = *(part *)MDL::loading->parts.last();
+        part &mdl = *static_cast<part *>(MDL::loading->parts.last());
         float cx = *rx ? cosf(*rx/2*RAD) : 1,
               sx = *rx ? sinf(*rx/2*RAD) : 0,
               cy = *ry ? cosf(*ry/2*RAD) : 1,
