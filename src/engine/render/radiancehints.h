@@ -31,37 +31,37 @@ class reflectiveshadowmap
 
 extern reflectiveshadowmap rsm;
 
-struct radiancehints
+class radiancehints
 {
-    //splits are used to LOD global illumination (more detail near camera)
-    struct splitinfo
-    {
-        float nearplane, farplane;
-        vec offset, scale;
-        vec center; float bounds;
-        vec cached; bool copied;
+    public:
+        radiancehints() : dynmin(1e16f, 1e16f, 1e16f), dynmax(-1e16f, -1e16f, -1e16f), prevdynmin(1e16f, 1e16f, 1e16f), prevdynmax(-1e16f, -1e16f, -1e16f) {}
 
-        splitinfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false)
+        vec dynmin, dynmax, prevdynmin, prevdynmax;
+        void setup();
+        void renderslices();
+        void bindparams();
+        void clearcache();
+        bool allcached() const;
+    private:
+        //splits are used to LOD global illumination (more detail near camera)
+        struct splitinfo
         {
-        }
+            float nearplane, farplane;
+            vec offset, scale;
+            vec center; float bounds;
+            vec cached; bool copied;
 
-        void clearcache()
-        {
-            bounds = -1e16f;
-        }
-    } splits[rhmaxsplits];
+            splitinfo() : center(-1e16f, -1e16f, -1e16f), bounds(-1e16f), cached(-1e16f, -1e16f, -1e16f), copied(false)
+            {
+            }
 
-    vec dynmin, dynmax, prevdynmin, prevdynmax;
+            void clearcache()
+            {
+                bounds = -1e16f;
+            }
+        } splits[rhmaxsplits];
 
-    radiancehints() : dynmin(1e16f, 1e16f, 1e16f), dynmax(-1e16f, -1e16f, -1e16f), prevdynmin(1e16f, 1e16f, 1e16f), prevdynmax(-1e16f, -1e16f, -1e16f) {}
-
-    void setup();
-    void updatesplitdist();
-    void bindparams();
-    void renderslices();
-
-    void clearcache();
-    bool allcached() const;
+        void updatesplitdist();
 };
 
 extern radiancehints rh;
