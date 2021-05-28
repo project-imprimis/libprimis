@@ -14,17 +14,19 @@ extern Shader *rsmworldshader;
 
 //defines the size, position & projection info for a reflective shadow map
 // the reflective shadow map is then used to calculate global illumination
-struct reflectiveshadowmap
+class reflectiveshadowmap
 {
-    matrix4 model, proj;
-    vec lightview;
-    plane cull[4];
-    vec scale, offset;
-    vec center, bounds;
-    void setup();
-    void getmodelmatrix();
-    void getprojmatrix();
-    void gencullplanes();
+    public:
+        plane cull[4];
+        matrix4 model, proj;
+        vec lightview;
+        vec scale, offset;
+        void setup();
+    private:
+        vec center, bounds;
+        void getmodelmatrix();
+        void getprojmatrix();
+        void gencullplanes();
 };
 
 extern reflectiveshadowmap rsm;
