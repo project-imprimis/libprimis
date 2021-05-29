@@ -56,6 +56,9 @@ struct shadowmesh
     int draws[6];
 };
 
+/* internally relevant functionality */
+///////////////////////////////////////
+
 namespace
 {
     static void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
@@ -2542,6 +2545,9 @@ namespace
 
     VARF(smmesh, 0, 1, 1, { if(!smmesh) clearshadowmeshes(); });
 }
+
+/* externally relevant functionality */
+///////////////////////////////////////
 
 // vfc
 
