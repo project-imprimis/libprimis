@@ -131,9 +131,6 @@ enum
 extern int shadowmapping;
 extern int smcullside;
 
-extern vec shadoworigin, shadowdir;
-extern float shadowradius, shadowbias;
-extern int shadowside, shadowspot;
 extern matrix4 shadowmatrix, linearworldmatrix;
 extern GLuint msrefracttex;
 
@@ -161,7 +158,6 @@ extern void renderrsmgeom(bool dyntex = false);
 extern void workinoq();
 
 extern int calcspheresidemask(const vec &p, float radius, float bias);
-extern int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias);
 extern int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherersmsplits(const vec &center, float radius);
@@ -228,6 +224,10 @@ extern void disableavatarmask();
 extern int outline;
 extern int oqfrags;
 
+extern vec shadoworigin, shadowdir;
+extern float shadowradius, shadowbias;
+extern int shadowside, shadowspot;
+
 extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphabacksx1, alphabacksx2, alphabacksy1, alphabacksy2, alpharefractsx1, alpharefractsx2, alpharefractsy1, alpharefractsy2;
 extern uint alphatiles[lighttilemaxheight];
 extern vtxarray *visibleva;
@@ -260,6 +260,7 @@ extern int getnumqueries();
 extern void startbb(bool mask = true);
 extern void endbb(bool mask = true);
 extern void drawbb(const ivec &bo, const ivec &br);
+extern int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias);
 
 extern void renderdecals();
 
