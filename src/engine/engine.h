@@ -231,7 +231,6 @@ extern int oqfrags;
 extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphabacksx1, alphabacksx2, alphabacksy1, alphabacksy2, alpharefractsx1, alpharefractsx2, alpharefractsy1, alpharefractsy2;
 extern uint alphatiles[lighttilemaxheight];
 extern vtxarray *visibleva;
-extern int octaentsize;
 
 extern void visiblecubes(bool cull = true);
 extern void setvfcP(const vec &bbmin = vec(-1, -1, -1), const vec &bbmax = vec(1, 1, 1));
@@ -348,6 +347,7 @@ extern void clearsleep(bool clearoverrides = true);
 extern int worldscale, worldsize;
 extern int mapversion;
 extern char *maptitle;
+extern int octaentsize;
 
 extern vector<int> entgroup;
 extern vector<int> outsideents;
