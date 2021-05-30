@@ -59,6 +59,8 @@ struct shadowmesh
 /* internally relevant functionality */
 ///////////////////////////////////////
 
+void findshadowvas(vector<vtxarray *> &vas);
+
 namespace
 {
     void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
@@ -559,183 +561,6 @@ namespace
         return mask;
     }
 
-    int calcspheresidemask(const vec &p, float radius, float bias)
-    {
-        // p is in the cubemap's local coordinate system
-        // bias = border/(size - border)
-        float dxyp = p.x + p.y,
-              dxyn = p.x - p.y,
-              axyp = std::fabs(dxyp),
-              axyn = std::fabs(dxyn),
-              dyzp = p.y + p.z,
-              dyzn = p.y - p.z,
-              ayzp = std::fabs(dyzp),
-              ayzn = std::fabs(dyzn),
-              dzxp = p.z + p.x,
-              dzxn = p.z - p.x,
-              azxp = std::fabs(dzxp),
-              azxn = std::fabs(dzxn);
-        int mask = 0x3F;
-        radius *= SQRT2;
-        if(axyp > bias*axyn + radius)
-        {
-            mask &= dxyp < 0 ? ~((1<<0)|(1<<2)) : ~((2<<0)|(2<<2));
-        }
-        if(axyn > bias*axyp + radius)
-        {
-            mask &= dxyn < 0 ? ~((1<<0)|(2<<2)) : ~((2<<0)|(1<<2));
-        }
-        if(ayzp > bias*ayzn + radius)
-        {
-            mask &= dyzp < 0 ? ~((1<<2)|(1<<4)) : ~((2<<2)|(2<<4));
-        }
-        if(ayzn > bias*ayzp + radius)
-        {
-            mask &= dyzn < 0 ? ~((1<<2)|(2<<4)) : ~((2<<2)|(1<<4));
-        }
-        if(azxp > bias*azxn + radius)
-        {
-            mask &= dzxp < 0 ? ~((1<<4)|(1<<0)) : ~((2<<4)|(2<<0));
-        }
-        if(azxn > bias*azxp + radius)
-        {
-            mask &= dzxn < 0 ? ~((1<<4)|(2<<0)) : ~((2<<4)|(1<<0));
-        }
-        return mask;
-    }
-
-    int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border)
-    {
-        int sides = 0x3F,
-            masks[6] = { 3<<4, 3<<4, 3<<0, 3<<0, 3<<2, 3<<2 };
-        float scale = (size - 2*border)/size,
-              bias = border / static_cast<float>(size - border);
-        // check if cone enclosing side would cross frustum plane
-        scale = 2 / (scale*scale + 2);
-        for(int i = 0; i < 5; ++i)
-        {
-            if(vfcP[i].dist(lightpos) <= -0.03125f)
-            {
-                vec n = vec(vfcP[i]).div(lightradius);
-                float len = scale*n.squaredlen();
-                if(n.x*n.x > len)
-                {
-                    sides &= n.x < 0 ? ~(1<<0) : ~(2 << 0);
-                }
-                if(n.y*n.y > len)
-                {
-                    sides &= n.y < 0 ? ~(1<<2) : ~(2 << 2);
-                }
-                if(n.z*n.z > len)
-                {
-                    sides &= n.z < 0 ? ~(1<<4) : ~(2 << 4);
-                }
-            }
-        }
-        if (vfcP[4].dist(lightpos) >= vfcDfog + 0.03125f)
-        {
-            vec n = vec(vfcP[4]).div(lightradius);
-            float len = scale*n.squaredlen();
-            if(n.x*n.x > len)
-            {
-                sides &= n.x >= 0 ? ~(1<<0) : ~(2 << 0);
-            }
-            if(n.y*n.y > len)
-            {
-                sides &= n.y >= 0 ? ~(1<<2) : ~(2 << 2);
-            }
-            if(n.z*n.z > len)
-            {
-                sides &= n.z >= 0 ? ~(1<<4) : ~(2 << 4);
-            }
-        }
-        // this next test usually clips off more sides than the former, but occasionally clips fewer/different ones, so do both and combine results
-        // check if frustum corners/origin cross plane sides
-        // infinite version, assumes frustum corners merely give direction and extend to infinite distance
-        vec p = vec(camera1->o).sub(lightpos).div(lightradius);
-        float dp = p.x + p.y,
-              dn = p.x - p.y,
-              ap = std::fabs(dp),
-              an = std::fabs(dn);
-        masks[0] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
-        masks[1] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
-        dp = p.y + p.z, dn = p.y - p.z,
-        ap = std::fabs(dp),
-        an = std::fabs(dn);
-        masks[2] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4));
-        masks[3] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4));
-        dp = p.z + p.x,
-        dn = p.z - p.x,
-        ap = std::fabs(dp),
-        an = std::fabs(dn);
-        masks[4] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0));
-        masks[5] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0));
-        for(int i = 0; i < 4; ++i)
-        {
-            vec n;
-            switch(i)
-            {
-                case 0:
-                {
-                    n.cross(vfcP[0], vfcP[2]);
-                    break;
-                }
-                case 1:
-                {
-                    n.cross(vfcP[3], vfcP[0]);
-                    break;
-                }
-                case 2:
-                {
-                    n.cross(vfcP[2], vfcP[1]);
-                    break;
-                }
-                case 3:
-                {
-                    n.cross(vfcP[1], vfcP[3]);
-                    break;
-                }
-            }
-            dp = n.x + n.y,
-            dn = n.x - n.y,
-            ap = std::fabs(dp),
-            an = std::fabs(dn);
-            if(ap > 0)
-            {
-                masks[0] |= dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2);
-            }
-            if(an > 0)
-            {
-                masks[1] |= dn >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2);
-            }
-            dp = n.y + n.z,
-            dn = n.y - n.z,
-            ap = std::fabs(dp),
-            an = std::fabs(dn);
-            if(ap > 0)
-            {
-                masks[2] |= dp >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4);
-            }
-            if(an > 0)
-            {
-                masks[3] |= dn >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4);
-            }
-            dp = n.z + n.x,
-            dn = n.z - n.x,
-            ap = std::fabs(dp),
-            an = std::fabs(dn);
-            if(ap > 0)
-            {
-                masks[4] |= dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0);
-            }
-            if(an > 0)
-            {
-                masks[5] |= dn >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0);
-            }
-        }
-        return sides & masks[0] & masks[1] & masks[2] & masks[3] & masks[4] & masks[5];
-    }
-
     VAR(smbbcull, 0, 1, 1);
     VAR(smdistcull, 0, 1, 1);
     VAR(smnodraw, 0, 0, 1);
@@ -774,26 +599,6 @@ namespace
                     va = va->rnext;
                 }
                 last = &va->rnext;
-            }
-        }
-    }
-
-    void findshadowvas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            float dist = vadist(&v, shadoworigin);
-            if(dist < shadowradius || !smdistcull)
-            {
-                v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.length() ?
-                                    calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
-                                    calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
-                addshadowva(&v, dist);
-                if(v.children.length())
-                {
-                    findshadowvas(v.children);
-                }
             }
         }
     }
@@ -876,181 +681,7 @@ namespace
         }
     }
 
-    void findshadowvas()
-    {
-        memset(vasort, 0, sizeof(vasort));
-        switch(shadowmapping)
-        {
-            case ShadowMap_Reflect:
-            {
-                findrsmshadowvas(varoot);
-                break;
-            }
-            case ShadowMap_CubeMap:
-            {
-                findshadowvas(varoot);
-                break;
-            }
-            case ShadowMap_Cascade:
-            {
-                findcsmshadowvas(varoot);
-                break;
-            }
-            case ShadowMap_Spot:
-            {
-                findspotshadowvas(varoot);
-                break;
-            }
-        }
-        sortshadowvas();
-    }
-
-    void rendershadowmapworld()
-    {
-        SETSHADER(shadowmapworld);
-
-        gle::enablevertex();
-
-        vtxarray *prev = nullptr;
-        for(vtxarray *va = shadowva; va; va = va->rnext)
-        {
-            if(va->tris && va->shadowmask&(1<<shadowside))
-            {
-                if(!prev || va->vbuf != prev->vbuf)
-                {
-                    gle::bindvbo(va->vbuf);
-                    gle::bindebo(va->ebuf);
-                    const vertex *ptr = 0;
-                    gle::vertexpointer(sizeof(vertex), ptr->pos.v);
-                }
-                if(!smnodraw)
-                {
-                    drawvatris(va, 3*va->tris, 0);
-                }
-                xtravertsva += va->verts;
-                prev = va;
-            }
-        }
-        if(skyshadow)
-        {
-            prev = nullptr;
-            for(vtxarray *va = shadowva; va; va = va->rnext)
-            {
-                if(va->sky && va->shadowmask&(1<<shadowside))
-                {
-                    if(!prev || va->vbuf != prev->vbuf)
-                    {
-                        gle::bindvbo(va->vbuf);
-                        gle::bindebo(va->skybuf);
-                        const vertex *ptr = 0;
-                        gle::vertexpointer(sizeof(vertex), ptr->pos.v);
-                    }
-                    if(!smnodraw)
-                    {
-                        drawvaskytris(va);
-                    }
-                    xtravertsva += va->sky/3;
-                    prev = va;
-                }
-            }
-        }
-
-        gle::clearvbo();
-        gle::clearebo();
-        gle::disablevertex();
-    }
-
     octaentities *shadowmms = nullptr;
-
-    void findshadowmms()
-    {
-        shadowmms = nullptr;
-        octaentities **lastmms = &shadowmms;
-        for(vtxarray *va = shadowva; va; va = va->rnext)
-        {
-            for(int j = 0; j < va->mapmodels.length(); j++)
-            {
-                octaentities *oe = va->mapmodels[j];
-                switch(shadowmapping)
-                {
-                    case ShadowMap_Reflect:
-                    {
-                        break;
-                    }
-                    case ShadowMap_Cascade:
-                    {
-                        if(!calcbbcsmsplits(oe->bbmin, oe->bbmax))
-                        {
-                            continue;
-                        }
-                        break;
-                    }
-                    case ShadowMap_CubeMap:
-                    {
-                        if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
-                        {
-                            continue;
-                        }
-                        break;
-                    }
-                    case ShadowMap_Spot:
-                    {
-                        if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
-                        {
-                            continue;
-                        }
-                        if(smbbcull && !bbinsidespot(shadoworigin, shadowdir, shadowspot, oe->bbmin, oe->bbmax))
-                        {
-                            continue;
-                        }
-                        break;
-                    }
-                }
-                oe->rnext = nullptr;
-                *lastmms = oe;
-                lastmms = &oe->rnext;
-            }
-        }
-    }
-
-    void batchshadowmapmodels(bool skipmesh)
-    {
-        if(!shadowmms)
-        {
-            return;
-        }
-        int nflags = EntFlag_NoVis|EntFlag_NoShadow;
-        if(skipmesh)
-        {
-            nflags |= EntFlag_ShadowMesh;
-        }
-        const vector<extentity *> &ents = entities::getents();
-        for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
-        {
-            for(int k = 0; k < oe->mapmodels.length(); k++)
-            {
-                extentity &e = *ents[oe->mapmodels[k]];
-                if(e.flags&nflags)
-                {
-                    continue;
-                }
-                e.flags |= EntFlag_Render;
-            }
-        }
-        for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
-        {
-            for(int j = 0; j < oe->mapmodels.length(); j++)
-            {
-                extentity &e = *ents[oe->mapmodels[j]];
-                if(!(e.flags&EntFlag_Render))
-                {
-                    continue;
-                }
-                rendermapmodel(e);
-                e.flags &= ~EntFlag_Render;
-            }
-        }
-    }
 
     struct renderstate
     {
@@ -1815,70 +1446,6 @@ namespace
     }
 
     VAR(oqgeom, 0, 1, 1);
-
-    int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
-    {
-        int vis = 0;
-        for(vtxarray *va = shadowva; va; va = va->rnext)
-        {
-            if(va->shadowmask&mask && va->dyntexs)
-            {
-                bbmin.min(vec(va->geommin));
-                bbmax.max(vec(va->geommax));
-                vis++;
-            }
-        }
-        return vis;
-    }
-
-    void renderrsmgeom(bool dyntex)
-    {
-        renderstate cur;
-        if(!dyntex)
-        {
-            cur.texgenmillis = 0;
-        }
-        setupgeom();
-        if(skyshadow)
-        {
-            enablevattribs(cur, false);
-            SETSHADER(rsmsky);
-            vtxarray *prev = nullptr;
-            for(vtxarray *va = shadowva; va; va = va->rnext)
-            {
-                if(va->sky)
-                {
-                    if(!prev || va->vbuf != prev->vbuf)
-                    {
-                        gle::bindvbo(va->vbuf);
-                        gle::bindebo(va->skybuf);
-                        const vertex *ptr = 0;
-                        gle::vertexpointer(sizeof(vertex), ptr->pos.v);
-                    }
-                    drawvaskytris(va);
-                    xtravertsva += va->sky/3;
-                    prev = va;
-                }
-            }
-            if(cur.vattribs)
-            {
-                disablevattribs(cur, false);
-            }
-        }
-        resetbatches();
-        for(vtxarray *va = shadowva; va; va = va->rnext)
-        {
-            if(va->texs)
-            {
-                renderva(cur, va, RenderPass_ReflectiveShadowMap);
-            }
-        }
-        if(geombatches.length())
-        {
-            renderbatches(cur, RenderPass_ReflectiveShadowMap);
-        }
-        cleanupgeom(cur);
-    }
 
     std::vector<vtxarray *> alphavas;
     int alphabackvas = 0,
@@ -3599,4 +3166,440 @@ void rendershadowmesh(shadowmesh *m)
     gle::disablevertex();
     gle::clearebo();
     gle::clearvbo();
+}
+
+//external api functions
+int calcspheresidemask(const vec &p, float radius, float bias)
+{
+    // p is in the cubemap's local coordinate system
+    // bias = border/(size - border)
+    float dxyp = p.x + p.y,
+          dxyn = p.x - p.y,
+          axyp = std::fabs(dxyp),
+          axyn = std::fabs(dxyn),
+          dyzp = p.y + p.z,
+          dyzn = p.y - p.z,
+          ayzp = std::fabs(dyzp),
+          ayzn = std::fabs(dyzn),
+          dzxp = p.z + p.x,
+          dzxn = p.z - p.x,
+          azxp = std::fabs(dzxp),
+          azxn = std::fabs(dzxn);
+    int mask = 0x3F;
+    radius *= SQRT2;
+    if(axyp > bias*axyn + radius)
+    {
+        mask &= dxyp < 0 ? ~((1<<0)|(1<<2)) : ~((2<<0)|(2<<2));
+    }
+    if(axyn > bias*axyp + radius)
+    {
+        mask &= dxyn < 0 ? ~((1<<0)|(2<<2)) : ~((2<<0)|(1<<2));
+    }
+    if(ayzp > bias*ayzn + radius)
+    {
+        mask &= dyzp < 0 ? ~((1<<2)|(1<<4)) : ~((2<<2)|(2<<4));
+    }
+    if(ayzn > bias*ayzp + radius)
+    {
+        mask &= dyzn < 0 ? ~((1<<2)|(2<<4)) : ~((2<<2)|(1<<4));
+    }
+    if(azxp > bias*azxn + radius)
+    {
+        mask &= dzxp < 0 ? ~((1<<4)|(1<<0)) : ~((2<<4)|(2<<0));
+    }
+    if(azxn > bias*azxp + radius)
+    {
+        mask &= dzxn < 0 ? ~((1<<4)|(2<<0)) : ~((2<<4)|(1<<0));
+    }
+    return mask;
+}
+
+int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border)
+{
+    int sides = 0x3F,
+        masks[6] = { 3<<4, 3<<4, 3<<0, 3<<0, 3<<2, 3<<2 };
+    float scale = (size - 2*border)/size,
+          bias = border / static_cast<float>(size - border);
+    // check if cone enclosing side would cross frustum plane
+    scale = 2 / (scale*scale + 2);
+    for(int i = 0; i < 5; ++i)
+    {
+        if(vfcP[i].dist(lightpos) <= -0.03125f)
+        {
+            vec n = vec(vfcP[i]).div(lightradius);
+            float len = scale*n.squaredlen();
+            if(n.x*n.x > len)
+            {
+                sides &= n.x < 0 ? ~(1<<0) : ~(2 << 0);
+            }
+            if(n.y*n.y > len)
+            {
+                sides &= n.y < 0 ? ~(1<<2) : ~(2 << 2);
+            }
+            if(n.z*n.z > len)
+            {
+                sides &= n.z < 0 ? ~(1<<4) : ~(2 << 4);
+            }
+        }
+    }
+    if (vfcP[4].dist(lightpos) >= vfcDfog + 0.03125f)
+    {
+        vec n = vec(vfcP[4]).div(lightradius);
+        float len = scale*n.squaredlen();
+        if(n.x*n.x > len)
+        {
+            sides &= n.x >= 0 ? ~(1<<0) : ~(2 << 0);
+        }
+        if(n.y*n.y > len)
+        {
+            sides &= n.y >= 0 ? ~(1<<2) : ~(2 << 2);
+        }
+        if(n.z*n.z > len)
+        {
+            sides &= n.z >= 0 ? ~(1<<4) : ~(2 << 4);
+        }
+    }
+    // this next test usually clips off more sides than the former, but occasionally clips fewer/different ones, so do both and combine results
+    // check if frustum corners/origin cross plane sides
+    // infinite version, assumes frustum corners merely give direction and extend to infinite distance
+    vec p = vec(camera1->o).sub(lightpos).div(lightradius);
+    float dp = p.x + p.y,
+          dn = p.x - p.y,
+          ap = std::fabs(dp),
+          an = std::fabs(dn);
+    masks[0] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
+    masks[1] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
+    dp = p.y + p.z, dn = p.y - p.z,
+    ap = std::fabs(dp),
+    an = std::fabs(dn);
+    masks[2] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4));
+    masks[3] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4));
+    dp = p.z + p.x,
+    dn = p.z - p.x,
+    ap = std::fabs(dp),
+    an = std::fabs(dn);
+    masks[4] |= ap <= bias*an ? 0x3F : (dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0));
+    masks[5] |= an <= bias*ap ? 0x3F : (dn >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0));
+    for(int i = 0; i < 4; ++i)
+    {
+        vec n;
+        switch(i)
+        {
+            case 0:
+            {
+                n.cross(vfcP[0], vfcP[2]);
+                break;
+            }
+            case 1:
+            {
+                n.cross(vfcP[3], vfcP[0]);
+                break;
+            }
+            case 2:
+            {
+                n.cross(vfcP[2], vfcP[1]);
+                break;
+            }
+            case 3:
+            {
+                n.cross(vfcP[1], vfcP[3]);
+                break;
+            }
+        }
+        dp = n.x + n.y,
+        dn = n.x - n.y,
+        ap = std::fabs(dp),
+        an = std::fabs(dn);
+        if(ap > 0)
+        {
+            masks[0] |= dp >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2);
+        }
+        if(an > 0)
+        {
+            masks[1] |= dn >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2);
+        }
+        dp = n.y + n.z,
+        dn = n.y - n.z,
+        ap = std::fabs(dp),
+        an = std::fabs(dn);
+        if(ap > 0)
+        {
+            masks[2] |= dp >= 0 ? (1<<2)|(1<<4) : (2<<2)|(2<<4);
+        }
+        if(an > 0)
+        {
+            masks[3] |= dn >= 0 ? (1<<2)|(2<<4) : (2<<2)|(1<<4);
+        }
+        dp = n.z + n.x,
+        dn = n.z - n.x,
+        ap = std::fabs(dp),
+        an = std::fabs(dn);
+        if(ap > 0)
+        {
+            masks[4] |= dp >= 0 ? (1<<4)|(1<<0) : (2<<4)|(2<<0);
+        }
+        if(an > 0)
+        {
+            masks[5] |= dn >= 0 ? (1<<4)|(2<<0) : (2<<4)|(1<<0);
+        }
+    }
+    return sides & masks[0] & masks[1] & masks[2] & masks[3] & masks[4] & masks[5];
+}
+
+void findshadowvas(vector<vtxarray *> &vas)
+{
+    for(int i = 0; i < vas.length(); i++)
+    {
+        vtxarray &v = *vas[i];
+        float dist = vadist(&v, shadoworigin);
+        if(dist < shadowradius || !smdistcull)
+        {
+            v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.length() ?
+                                calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
+                                calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
+            addshadowva(&v, dist);
+            if(v.children.length())
+            {
+                findshadowvas(v.children);
+            }
+        }
+    }
+}
+
+void renderrsmgeom(bool dyntex)
+{
+    renderstate cur;
+    if(!dyntex)
+    {
+        cur.texgenmillis = 0;
+    }
+    setupgeom();
+    if(skyshadow)
+    {
+        enablevattribs(cur, false);
+        SETSHADER(rsmsky);
+        vtxarray *prev = nullptr;
+        for(vtxarray *va = shadowva; va; va = va->rnext)
+        {
+            if(va->sky)
+            {
+                if(!prev || va->vbuf != prev->vbuf)
+                {
+                    gle::bindvbo(va->vbuf);
+                    gle::bindebo(va->skybuf);
+                    const vertex *ptr = 0;
+                    gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+                }
+                drawvaskytris(va);
+                xtravertsva += va->sky/3;
+                prev = va;
+            }
+        }
+        if(cur.vattribs)
+        {
+            disablevattribs(cur, false);
+        }
+    }
+    resetbatches();
+    for(vtxarray *va = shadowva; va; va = va->rnext)
+    {
+        if(va->texs)
+        {
+            renderva(cur, va, RenderPass_ReflectiveShadowMap);
+        }
+    }
+    if(geombatches.length())
+    {
+        renderbatches(cur, RenderPass_ReflectiveShadowMap);
+    }
+    cleanupgeom(cur);
+}
+
+int dynamicshadowvabounds(int mask, vec &bbmin, vec &bbmax)
+{
+    int vis = 0;
+    for(vtxarray *va = shadowva; va; va = va->rnext)
+    {
+        if(va->shadowmask&mask && va->dyntexs)
+        {
+            bbmin.min(vec(va->geommin));
+            bbmax.max(vec(va->geommax));
+            vis++;
+        }
+    }
+    return vis;
+}
+
+void findshadowmms()
+{
+    shadowmms = nullptr;
+    octaentities **lastmms = &shadowmms;
+    for(vtxarray *va = shadowva; va; va = va->rnext)
+    {
+        for(int j = 0; j < va->mapmodels.length(); j++)
+        {
+            octaentities *oe = va->mapmodels[j];
+            switch(shadowmapping)
+            {
+                case ShadowMap_Reflect:
+                {
+                    break;
+                }
+                case ShadowMap_Cascade:
+                {
+                    if(!calcbbcsmsplits(oe->bbmin, oe->bbmax))
+                    {
+                        continue;
+                    }
+                    break;
+                }
+                case ShadowMap_CubeMap:
+                {
+                    if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
+                    {
+                        continue;
+                    }
+                    break;
+                }
+                case ShadowMap_Spot:
+                {
+                    if(smdistcull && shadoworigin.dist_to_bb(oe->bbmin, oe->bbmax) >= shadowradius)
+                    {
+                        continue;
+                    }
+                    if(smbbcull && !bbinsidespot(shadoworigin, shadowdir, shadowspot, oe->bbmin, oe->bbmax))
+                    {
+                        continue;
+                    }
+                    break;
+                }
+            }
+            oe->rnext = nullptr;
+            *lastmms = oe;
+            lastmms = &oe->rnext;
+        }
+    }
+}
+
+void rendershadowmapworld()
+{
+    SETSHADER(shadowmapworld);
+
+    gle::enablevertex();
+
+    vtxarray *prev = nullptr;
+    for(vtxarray *va = shadowva; va; va = va->rnext)
+    {
+        if(va->tris && va->shadowmask&(1<<shadowside))
+        {
+            if(!prev || va->vbuf != prev->vbuf)
+            {
+                gle::bindvbo(va->vbuf);
+                gle::bindebo(va->ebuf);
+                const vertex *ptr = 0;
+                gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+            }
+            if(!smnodraw)
+            {
+                drawvatris(va, 3*va->tris, 0);
+            }
+            xtravertsva += va->verts;
+            prev = va;
+        }
+    }
+    if(skyshadow)
+    {
+        prev = nullptr;
+        for(vtxarray *va = shadowva; va; va = va->rnext)
+        {
+            if(va->sky && va->shadowmask&(1<<shadowside))
+            {
+                if(!prev || va->vbuf != prev->vbuf)
+                {
+                    gle::bindvbo(va->vbuf);
+                    gle::bindebo(va->skybuf);
+                    const vertex *ptr = 0;
+                    gle::vertexpointer(sizeof(vertex), ptr->pos.v);
+                }
+                if(!smnodraw)
+                {
+                    drawvaskytris(va);
+                }
+                xtravertsva += va->sky/3;
+                prev = va;
+            }
+        }
+    }
+
+    gle::clearvbo();
+    gle::clearebo();
+    gle::disablevertex();
+}
+
+void batchshadowmapmodels(bool skipmesh)
+{
+    if(!shadowmms)
+    {
+        return;
+    }
+    int nflags = EntFlag_NoVis|EntFlag_NoShadow;
+    if(skipmesh)
+    {
+        nflags |= EntFlag_ShadowMesh;
+    }
+    const vector<extentity *> &ents = entities::getents();
+    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
+    {
+        for(int k = 0; k < oe->mapmodels.length(); k++)
+        {
+            extentity &e = *ents[oe->mapmodels[k]];
+            if(e.flags&nflags)
+            {
+                continue;
+            }
+            e.flags |= EntFlag_Render;
+        }
+    }
+    for(octaentities *oe = shadowmms; oe; oe = oe->rnext)
+    {
+        for(int j = 0; j < oe->mapmodels.length(); j++)
+        {
+            extentity &e = *ents[oe->mapmodels[j]];
+            if(!(e.flags&EntFlag_Render))
+            {
+                continue;
+            }
+            rendermapmodel(e);
+            e.flags &= ~EntFlag_Render;
+        }
+    }
+}
+
+void findshadowvas()
+{
+    memset(vasort, 0, sizeof(vasort));
+    switch(shadowmapping)
+    {
+        case ShadowMap_Reflect:
+        {
+            findrsmshadowvas(varoot);
+            break;
+        }
+        case ShadowMap_CubeMap:
+        {
+            findshadowvas(varoot);
+            break;
+        }
+        case ShadowMap_Cascade:
+        {
+            findcsmshadowvas(varoot);
+            break;
+        }
+        case ShadowMap_Spot:
+        {
+            findspotshadowvas(varoot);
+            break;
+        }
+    }
+    sortshadowvas();
 }
