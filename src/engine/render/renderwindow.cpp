@@ -86,7 +86,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
         (renderedframe && !mainmenu && lastupdate != lastmillis)
         || lastw != win_w
         || lasth != win_h;
-    if (needsRefresh)
+    if(needsRefresh)
     {
         lastupdate = lastmillis;
         lastw = win_w;
@@ -95,7 +95,7 @@ void renderbackgroundview(int win_w, int win_h, const char *caption, Texture *ma
         backgroundu = randomfloat(1);
         backgroundv = randomfloat(1);
     }
-    else if (lastupdate != lastmillis)
+    else if(lastupdate != lastmillis)
     {
         lastupdate = lastmillis;
     }
