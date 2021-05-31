@@ -23,7 +23,7 @@
 //caustics: lightening on surfaces underwater due to lensing effects from an
 // uneven water surface
 
-static const int numcaustics = 32;
+static constexpr int numcaustics = 32;
 
 static Texture *caustictex[numcaustics] = {nullptr};
 bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
@@ -272,7 +272,7 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
     wx2 = wx1 + size,
     wy2 = wy1 + size;
     wsize = size;
-    whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI);
+    whscale = 59.0f/(23.0f*wsize*wsize)/(2*M_PI); //59, 23 magic numbers
     if(mat == Mat_Water)
     {
         whoffset = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f);
@@ -370,6 +370,8 @@ int renderwaterlod(int x, int y, int z, int size, int mat)
     }
 }
 
+/* renderflatwater: renders water with no vertex water subdivision
+ */
 void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
 {
     if(mat == Mat_Water)
