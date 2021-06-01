@@ -22,8 +22,8 @@
 int numdynents; //updated by engine, visible through iengine.h
 vector<dynent *> dynents;
 
-static const int maxclipoffset = 4;
-static const int maxclipplanes = 1024;
+static constexpr int maxclipoffset = 4;
+static constexpr int maxclipplanes = 1024;
 static clipplanes clipcache[maxclipplanes];
 static int clipcacheversion = -maxclipoffset;
 
@@ -192,7 +192,7 @@ bool ellipsecollide(physent *d, const vec &dir, const vec &o, const vec &center,
     return false;
 }
 
-static const int dynentcachesize = 1024;
+static constexpr int dynentcachesize = 1024;
 
 static uint dynentframe = 0;
 
