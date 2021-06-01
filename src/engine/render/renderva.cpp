@@ -248,11 +248,6 @@ namespace
 
     plane oldvfcP[5];
 
-    void savevfcP()
-    {
-        memcpy(oldvfcP, vfcP, sizeof(vfcP));
-    }
-
     ///////// occlusion queries /////////////
 
     const int maxquery = 2048;
