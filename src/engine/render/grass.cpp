@@ -16,7 +16,7 @@ namespace //internal functionality not seen by other files
     FVARP(grassstep, 0.5, 2, 8);
     VARP(grassheight, 1, 4, 64);
 
-    const int numgrasswedges = 8;
+    constexpr int numgrasswedges = 8;
 
     struct grasswedge
     {
@@ -56,7 +56,7 @@ namespace //internal functionality not seen by other files
 
     std::vector<grassgroup> grassgroups;
 
-    const int numgrassoffsets = 32;
+    constexpr int numgrassoffsets = 32;
 
     float grassoffsets[numgrassoffsets] = { -1 },
           grassanimoffsets[numgrassoffsets];
