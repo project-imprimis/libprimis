@@ -148,6 +148,13 @@ Enums also are always expanded with a single element per line. For aesthetics,
 it is best to place all the equals in the same location (as above). Libprimis
 uses no named enums besides those inhereted from ENet.
 
+#### Objects
+
+Objects of POD type (Plain Old Data) should be assigned the keyword `struct`,
+and objects of a complex type should be given the keyword `class`. Where
+applicable, objects should be separated into `public` and `private`, with
+`public` members being declared first.
+
 #### `for` loops
 
 The accepted conventional variables for loops are the single letter `i`,`j`,`k`,
