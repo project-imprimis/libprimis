@@ -2,7 +2,7 @@
 
 Check out the project timeline at `doc/timeline.md`!
 
-#### A True Open Source Engine
+#### An Open Source Standalone Engine
 
 Libprimis is a game engine, based on Tesseract and the Cube 2 family of programs.
 Unlike the Cube/Cube 2/Tesseract games, which featured tightly integrated rendering
@@ -37,13 +37,14 @@ Libprimis' Tesseract base provides a bunch of rendering features such as:
 * deferred MSAA, subpixel morphological anti-aliasing (SMAA 1x, T2x, S2x, and 4x), FXAA, and temporal AA
 * support for OpenGL 4.0+ contexts
 * support for Windows and Linux-based operating systems
+* support for realtime geometry modification during gameplay
 
 For documentation on the engine, see `doc/engine.md`.
 
 #### Quick Windows Install Instructions
 
-To get the source code, use your prefered `git` client (git for Windows, gitkraken, etc.). Be sure
-to get the submodules as well.
+To get the source code, use your prefered `git` client (git for Windows, Visual Studio, gitkraken, etc.).
+Be sure to get the submodules as well.
 
 The headers required to build the library are located in `libprimis-headers`, one of the
 submodules.
@@ -52,8 +53,8 @@ The library has compilation semantics for MSVC/Visual Studio. Opening the Visual
 located in `src/vcpp` will allow you to build the project. The created library will be located
 in the `bin64/` folder.
 
-To build a game on libprimis, you will need to get the required headers (located in a separate repository)
-and build your game against the compiled library and the headers.
+To build a game on libprimis, you will need to get the required headers (located in a separate
+repository, `libprimis-headers`) and build your game against the compiled library and the headers.
 
 #### Quick Linux Install Instructions
 
