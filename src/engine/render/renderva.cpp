@@ -1814,8 +1814,8 @@ namespace
 
     struct shadowverts
     {
-        static const int SIZE = 1<<13;
-        int table[SIZE];
+        static const int tablesize = 1<<13;
+        int table[tablesize];
         std::vector<vec> verts;
         std::vector<int> chain;
 
@@ -1830,7 +1830,7 @@ namespace
 
         int add(const vec &v)
         {
-            uint h = hthash(v)&(SIZE-1);
+            uint h = hthash(v)&(tablesize-1);
             for(int i = table[h]; i>=0; i = chain[i])
             {
                 if(verts[i] == v)
