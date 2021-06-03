@@ -135,7 +135,7 @@ namespace
         return p.dist_to_bb(va->bbmin, va->bbmax);
     }
 
-    const int vasortsize = 64;
+    constexpr int vasortsize = 64;
 
     vtxarray *vasort[vasortsize];
 
@@ -250,8 +250,8 @@ namespace
 
     ///////// occlusion queries /////////////
 
-    const int maxquery = 2048;
-    const int maxqueryframes = 2;
+    constexpr int maxquery = 2048;
+    constexpr int maxqueryframes = 2;
 
     //all members of this struct are used elsewhere (must be public)
     struct queryframe
