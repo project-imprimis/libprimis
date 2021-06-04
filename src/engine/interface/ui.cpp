@@ -199,7 +199,7 @@ namespace UI
             Change_Blend  = 1 << 2
         };
     }
-    struct Object;
+    class Object;
 
     static Object *buildparent = nullptr;
     static int buildchild = -1;
