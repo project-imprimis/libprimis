@@ -1507,25 +1507,26 @@ void screenquadoffset(float x, float y, float w, float h)
     screenquad();
 }
 
-#define HUDQUAD(x1, y1, x2, y2, sx1, sy1, sx2, sy2) { \
-    gle::defvertex(2); \
-    gle::deftexcoord0(); \
-    gle::begin(GL_TRIANGLE_STRIP); \
-    gle::attribf(x2, y1); gle::attribf(sx2, sy1); \
-    gle::attribf(x1, y1); gle::attribf(sx1, sy1); \
-    gle::attribf(x2, y2); gle::attribf(sx2, sy2); \
-    gle::attribf(x1, y2); gle::attribf(sx1, sy2); \
-    gle::end(); \
+// creates a hud quad for hudquad, debugquad
+static void createhudquad(float x1, float y1, float x2, float y2, float sx1, float sy1, float sx2, float sy2) {
+    gle::defvertex(2);
+    gle::deftexcoord0();
+    gle::begin(GL_TRIANGLE_STRIP);
+    gle::attribf(x2, y1); gle::attribf(sx2, sy1);
+    gle::attribf(x1, y1); gle::attribf(sx1, sy1);
+    gle::attribf(x2, y2); gle::attribf(sx2, sy2);
+    gle::attribf(x1, y2); gle::attribf(sx1, sy2);
+    gle::end();
 }
 
 void hudquad(float x, float y, float w, float h, float tx, float ty, float tw, float th)
 {
-    HUDQUAD(x, y, x+w, y+h, tx, ty, tx+tw, ty+th);
+    createhudquad(x, y, x+w, y+h, tx, ty, tx+tw, ty+th);
 }
 
 void debugquad(float x, float y, float w, float h, float tx, float ty, float tw, float th)
 {
-    HUDQUAD(x, y, x+w, y+h, tx, ty+th, tx+tw, ty);
+    creathudquad(x, y, x+w, y+h, tx, ty+th, tx+tw, ty);
 }
 
 VARR(fog, 16, 4000, 1000024);
