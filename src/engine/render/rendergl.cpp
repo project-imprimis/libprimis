@@ -1526,7 +1526,7 @@ void hudquad(float x, float y, float w, float h, float tx, float ty, float tw, f
 
 void debugquad(float x, float y, float w, float h, float tx, float ty, float tw, float th)
 {
-    creathudquad(x, y, x+w, y+h, tx, ty+th, tx+tw, ty);
+    createhudquad(x, y, x+w, y+h, tx, ty+th, tx+tw, ty);
 }
 
 VARR(fog, 16, 4000, 1000024);
