@@ -10,7 +10,7 @@ enum
     Bonemask_Bone = 0x7FFF
 };
 
-struct skelhitdata; //defined in hitzone.h
+class skelhitdata; //defined in hitzone.h
 
 struct skelmodel : animmodel
 {

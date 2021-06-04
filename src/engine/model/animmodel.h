@@ -48,7 +48,7 @@ struct animmodel : model
     };
 
     struct linkedpart;
-    struct Mesh;
+    class Mesh;
 
     struct shaderparams
     {
