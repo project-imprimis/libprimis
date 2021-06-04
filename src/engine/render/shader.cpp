@@ -234,27 +234,28 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
         }
     }
 }
-//====================================================================UNIFORMTEX
-#define UNIFORMTEX(name, tmu) \
+
+static void uniformtex(const char * name, int tmu, Shader &s) \
+{ \
     do { \
         int loc = glGetUniformLocation_(s.program, name); \
         if(loc != -1) \
         { \
             glUniform1i_(loc, tmu); \
         } \
-    } while(0)
+    } while(0);
+}
 
 static void bindworldtexlocs(Shader &s)
 {
-    UNIFORMTEX("diffusemap", Tex_Diffuse);
-    UNIFORMTEX("normalmap", Tex_Normal);
-    UNIFORMTEX("glowmap", Tex_Glow);
-    UNIFORMTEX("blendmap", 7);
-    UNIFORMTEX("refractmask", 7);
-    UNIFORMTEX("refractlight", 8);
+    uniformtex("diffusemap", Tex_Diffuse, s);
+    uniformtex("normalmap", Tex_Normal, s);
+    uniformtex("glowmap", Tex_Glow, s);
+    uniformtex("blendmap", 7, s);
+    uniformtex("refractmask", 7, s);
+    uniformtex("refractlight", 8, s);
 }
-#undef UNIFORMTEX
-//==============================================================================
+
 static void linkglslprogram(Shader &s, bool msg = true)
 {
     s.program = s.vsobj && s.psobj ? glCreateProgram_() : 0;
