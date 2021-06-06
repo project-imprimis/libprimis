@@ -313,7 +313,7 @@ struct skelmodel : animmodel
         template<class T>
         void interpverts(const dualquat * RESTRICT bdata1, const dualquat * RESTRICT bdata2, T * RESTRICT vdata, skin &s)
         {
-            constexpr int blendoffset = (static_cast<skelmeshgroup *>(group))->skel->numgpubones;
+            const int blendoffset = (static_cast<skelmeshgroup *>(group))->skel->numgpubones;
             bdata2 -= blendoffset;
             vdata += voffset;
             for(int i = 0; i < numverts; ++i)
