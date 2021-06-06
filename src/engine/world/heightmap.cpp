@@ -27,8 +27,8 @@ namespace hmap
 
     void hmapselect()
     {
-        int t = lookupcube(cur).texture[orient];
-        int i = textures.find(t);
+        int t = lookupcube(cur).texture[orient],
+            i = textures.find(t);
         if(i<0)
         {
             textures.add(t);
@@ -48,11 +48,11 @@ namespace hmap
             textures.find(c->texture[o]) >= 0;
     }
     //max brush consts: number of cubes on end that can be heightmap brushed at once
-    static const int maxbrush  = 64,
-                     maxbrushc = 63,
-                     maxbrush2 = 32;
+    static constexpr int maxbrush  = 64,
+                         maxbrushc = 63,
+                         maxbrush2 = 32;
 
-    int brush[maxbrush][maxbrush];
+    int brush[maxbrush][maxbrush]; //2d array of heights for heightmap brushs
     VARN(hbrushx, brushx, 0, maxbrush2, maxbrush); //max width for a brush
     VARN(hbrushy, brushy, 0, maxbrush2, maxbrush); //max length for a brush
     bool paintbrush = 0;
@@ -107,7 +107,8 @@ namespace hmap
     int gx, gy, gz,
         mx, my, mz,
         nx, ny, nz,
-        bmx, bmy, bnx, bny;
+        bmx, bmy,
+        bnx, bny;
     uint fs; //face
     selinfo hundo;
 
