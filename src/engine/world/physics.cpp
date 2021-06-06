@@ -82,11 +82,11 @@ vec collidewall; // just the normal vectors.
  * these vars are declared extern inline to allow a `const` (implicitly also
  * `static`) to be linked to other files as a `const`.
  */
-extern const float stairheight = 4.1f; //max height in cubits of an allowable step (4 = 0.5m)
-extern const float floorz = 0.867f; //to be considered a level floor, slope is below this
-extern const float slopez = 0.5f; //maximum climbable slope
-extern const float wallz = 0.2f; //steeper than this is considered a wall
-extern const float gravity = 100.0f; //downwards force scale
+extern constexpr float stairheight = 4.1f; //max height in cubits of an allowable step (4 = 0.5m)
+extern constexpr float floorz = 0.867f; //to be considered a level floor, slope is below this
+extern constexpr float slopez = 0.5f; //maximum climbable slope
+extern constexpr float wallz = 0.2f; //steeper than this is considered a wall
+extern constexpr float gravity = 100.0f; //downwards force scale
 
 bool ellipseboxcollide(physent *d, const vec &dir, const vec &origin, const vec &center, float yaw, float xr, float yr, float hi, float lo)
 {
