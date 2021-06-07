@@ -36,24 +36,31 @@ VARF(debugcolmesh, 0, 0, 1,
 hashnameset<animmodel::meshgroup *> animmodel::meshgroups;
 int animmodel::intersectresult = -1,
     animmodel::intersectmode = 0;
+
 float animmodel::intersectdist = 0,
       animmodel::intersectscale = 1;
+
 bool animmodel::enabletc = false,
      animmodel::enabletangents = false,
      animmodel::enablebones = false,
      animmodel::enablecullface = true,
      animmodel::enabledepthoffset = false;
+
 float animmodel::sizescale = 1;
+
 vec4 animmodel::colorscale(1, 1, 1, 1);
+
 GLuint animmodel::lastvbuf = 0,
        animmodel::lasttcbuf = 0,
        animmodel::lastxbuf = 0,
        animmodel::lastbbuf = 0,
        animmodel::lastebuf = 0;
+
 Texture *animmodel::lasttex = nullptr,
         *animmodel::lastdecal = nullptr,
         *animmodel::lastmasks = nullptr,
         *animmodel::lastnormalmap = nullptr;
+
 int animmodel::matrixpos = 0;
 matrix4 animmodel::matrixstack[64];
 
