@@ -34,11 +34,11 @@ namespace gle
     static std::vector<GLint> multidrawstart;
     static std::vector<GLsizei> multidrawcount;
 
-    static const int maxquads = (0x10000/4); //65635/4 = 16384
+    static constexpr int maxquads = (0x10000/4); //65635/4 = 16384
     static GLuint quadindexes = 0;
     static bool quadsenabled = false;
 
-    static const int maxvbosize = (1024*1024*4);
+    static constexpr int maxvbosize = (1024*1024*4);
     static GLuint vbo = 0;
     static int vbooffset = maxvbosize;
 
