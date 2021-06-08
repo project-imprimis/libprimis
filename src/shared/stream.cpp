@@ -29,6 +29,11 @@
     U, U, U, U, u, u, u, u, u, u, u, u, u, u, u, u, \
     u, u, u, u, u, u, u, u, u, u, u, u, u, u, U, u
 
+/* note here:
+ * these vars are declared extern inline to allow a `const` (implicitly also
+ * `static`) to be linked to other files as a `const`.
+ */
+
 extern const uchar cubectype[256] =
 {
     CUBECTYPE(CubeType_Space,
