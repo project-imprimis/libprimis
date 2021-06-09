@@ -87,9 +87,9 @@ namespace hmap
     }
     COMMAND(hbrushvert, "iii");
 
-    static const int painted = 1,
-                     nothmap = 2,
-                     mapped  = 16;
+    static constexpr int painted = 1,
+                         nothmap = 2,
+                         mapped  = 16;
     uchar  flags[maxbrush][maxbrush];
     cube   *cmap[maxbrushc][maxbrushc][4];
     int  mapz[maxbrushc][maxbrushc],
