@@ -1108,7 +1108,7 @@ struct shadowcache : hashtable<shadowcachekey, shadowcacheval>
     }
 };
 
-static const int shadowcacheevict = 2;
+static constexpr int shadowcacheevict = 2;
 
 GLuint shadowatlastex = 0,
        shadowatlasfbo = 0;
@@ -1263,7 +1263,7 @@ const matrix4 cubeshadowviewmatrix[6] =
     matrix4(vec(1, 0, 0), vec(0, 1, 0), vec(0, 0,  1))  // -Z
 };
 
-static const int LightTile_MaxBatch = 8; //also used in lightbatchkey below
+static constexpr int LightTile_MaxBatch = 8; //also used in lightbatchkey below
 
 VARF(lighttilebatch, 0, LightTile_MaxBatch, LightTile_MaxBatch, cleardeferredlightshaders());
 VARF(batchsunlight, 0, 2, 2, cleardeferredlightshaders());
