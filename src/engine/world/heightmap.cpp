@@ -129,10 +129,13 @@ namespace hmap
         {
             return nullptr;
         }
+        //x
         if     (t.x < changes.o.x) changes.o.x = t.x;
         else if(t.x > changes.s.x) changes.s.x = t.x;
+        //y
         if     (t.y < changes.o.y) changes.o.y = t.y;
         else if(t.y > changes.s.y) changes.s.y = t.y;
+        //z
         if     (t.z < changes.o.z) changes.o.z = t.z;
         else if(t.z > changes.s.z) changes.s.z = t.z;
         return c;

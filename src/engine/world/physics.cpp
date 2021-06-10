@@ -531,12 +531,14 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
             default:
             case 0:
             {
-                w = mdlvol.orient.rowz(); dist = -radius.z;
+                w = mdlvol.orient.rowz();
+                dist = -radius.z;
                 break;
             }
             case 1:
             {
-                w = mdlvol.orient.rowz().neg(); dist = -radius.z;
+                w = mdlvol.orient.rowz().neg();
+                dist = -radius.z;
                 break;
             }
             case 2:
