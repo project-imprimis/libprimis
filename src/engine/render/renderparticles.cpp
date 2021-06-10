@@ -59,46 +59,48 @@ VARN(seedparticles, seedmillis, 0, 3000, 10000);
 VAR(debugparticlecull, 0, 0, 1);
 VAR(debugparticleseed, 0, 0, 1);
 
-struct particleemitter
+class particleemitter
 {
-    extentity *ent;
-    vec bbmin, bbmax;
-    vec center;
-    float radius;
-    ivec cullmin, cullmax;
-    int maxfade, lastemit, lastcull;
+    public:
+        extentity *ent;
+        vec center;
+        float radius;
+        int maxfade, lastemit, lastcull;
 
-    particleemitter(extentity *ent)
-        : ent(ent), bbmin(ent->o), bbmax(ent->o), maxfade(-1), lastemit(0), lastcull(0)
-    {}
+        particleemitter(extentity *ent)
+            : ent(ent), bbmin(ent->o), bbmax(ent->o), maxfade(-1), lastemit(0), lastcull(0)
+        {}
 
-    void finalize()
-    {
-        center = vec(bbmin).add(bbmax).mul(0.5f);
-        radius = bbmin.dist(bbmax)/2;
-        cullmin = ivec::floor(bbmin);
-        cullmax = ivec::ceil(bbmax);
-        if(debugparticleseed)
+        void finalize()
         {
-            conoutf(Console_Debug, "radius: %f, maxfade: %d", radius, maxfade);
+            center = vec(bbmin).add(bbmax).mul(0.5f);
+            radius = bbmin.dist(bbmax)/2;
+            cullmin = ivec::floor(bbmin);
+            cullmax = ivec::ceil(bbmax);
+            if(debugparticleseed)
+            {
+                conoutf(Console_Debug, "radius: %f, maxfade: %d", radius, maxfade);
+            }
         }
-    }
 
-    void extendbb(const vec &o, float size = 0)
-    {
-        bbmin.x = std::min(bbmin.x, o.x - size);
-        bbmin.y = std::min(bbmin.y, o.y - size);
-        bbmin.z = std::min(bbmin.z, o.z - size);
-        bbmax.x = std::max(bbmax.x, o.x + size);
-        bbmax.y = std::max(bbmax.y, o.y + size);
-        bbmax.z = std::max(bbmax.z, o.z + size);
-    }
+        void extendbb(const vec &o, float size = 0)
+        {
+            bbmin.x = std::min(bbmin.x, o.x - size);
+            bbmin.y = std::min(bbmin.y, o.y - size);
+            bbmin.z = std::min(bbmin.z, o.z - size);
+            bbmax.x = std::max(bbmax.x, o.x + size);
+            bbmax.y = std::max(bbmax.y, o.y + size);
+            bbmax.z = std::max(bbmax.z, o.z + size);
+        }
 
-    void extendbb(float z, float size = 0)
-    {
-        bbmin.z = std::min(bbmin.z, z - size);
-        bbmax.z = std::max(bbmax.z, z + size);
-    }
+        void extendbb(float z, float size = 0)
+        {
+            bbmin.z = std::min(bbmin.z, z - size);
+            bbmax.z = std::max(bbmax.z, z + size);
+        }
+    private:
+        vec bbmin, bbmax;
+        ivec cullmin, cullmax;
 };
 
 static std::vector<particleemitter> emitters;
