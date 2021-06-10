@@ -57,169 +57,173 @@ VAR(debugstain, 0, 0, 1);
 
 struct stainbuffer
 {
-    stainvert *verts;
-    int maxverts, startvert, endvert, lastvert, availverts;
-    GLuint vbo;
-    bool dirty;
+    private:
+        stainvert *verts;
+        int startvert;
+        GLuint vbo;
+        bool dirty;
+        
+        //debug functions, not used by any of the code
+        int totalverts() const
+        {
+            return endvert < startvert ? maxverts - (startvert - endvert) : endvert - startvert;
+        }
 
-    stainbuffer() : verts(nullptr), maxverts(0), startvert(0), endvert(0), lastvert(0), availverts(0), vbo(0), dirty(false)
-    {}
+    public:
+        int maxverts, endvert, lastvert, availverts;
+        stainbuffer() : verts(nullptr), maxverts(0), startvert(0), endvert(0), lastvert(0), availverts(0), vbo(0), dirty(false)
+        {}
 
-    ~stainbuffer()
-    {
-        DELETEA(verts);
-    }
-
-    void init(int tris)
-    {
-        if(verts)
+        ~stainbuffer()
         {
             DELETEA(verts);
-            maxverts = startvert = endvert = lastvert = availverts = 0;
         }
-        if(tris)
+
+        void init(int tris)
         {
-            maxverts = tris*3 + 3;
-            availverts = maxverts - 3;
-            verts = new stainvert[maxverts];
+            if(verts)
+            {
+                DELETEA(verts);
+                maxverts = startvert = endvert = lastvert = availverts = 0;
+            }
+            if(tris)
+            {
+                maxverts = tris*3 + 3;
+                availverts = maxverts - 3;
+                verts = new stainvert[maxverts];
+            }
         }
-    }
 
-    void cleanup()
-    {
-        if(vbo)
+        void cleanup()
         {
-            glDeleteBuffers_(1, &vbo);
-            vbo = 0;
+            if(vbo)
+            {
+                glDeleteBuffers_(1, &vbo);
+                vbo = 0;
+            }
         }
-    }
 
-    void clear()
-    {
-        startvert = endvert = lastvert = 0;
-        availverts = std::max(maxverts - 3, 0);
-        dirty = true;
-    }
-
-    int freestain(const staininfo &d)
-    {
-        int removed = d.endvert < d.startvert ? maxverts - (d.startvert - d.endvert) : d.endvert - d.startvert;
-        startvert = d.endvert;
-        if(startvert==endvert)
+        void clear()
         {
             startvert = endvert = lastvert = 0;
+            availverts = std::max(maxverts - 3, 0);
+            dirty = true;
         }
-        availverts += removed;
-        return removed;
-    }
 
-    void clearstains(const staininfo &d)
-    {
-        startvert = d.endvert;
-        availverts = endvert < startvert ? startvert - endvert - 3 : maxverts - 3 - (endvert - startvert);
-        dirty = true;
-    }
-
-    bool faded(const staininfo &d) const
-    {
-        return verts[d.startvert].color.a < 255;
-    }
-
-    void fadestain(const staininfo &d, const bvec4 &color)
-    {
-        stainvert *vert = &verts[d.startvert],
-                  *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
-        while(vert < end)
+        int freestain(const staininfo &d)
         {
-            vert->color = color;
-            vert++;
+            int removed = d.endvert < d.startvert ? maxverts - (d.startvert - d.endvert) : d.endvert - d.startvert;
+            startvert = d.endvert;
+            if(startvert==endvert)
+            {
+                startvert = endvert = lastvert = 0;
+            }
+            availverts += removed;
+            return removed;
         }
-        if(d.endvert < d.startvert)
+
+        void clearstains(const staininfo &d)
         {
-            vert = verts;
-            end = &verts[d.endvert];
+            startvert = d.endvert;
+            availverts = endvert < startvert ? startvert - endvert - 3 : maxverts - 3 - (endvert - startvert);
+            dirty = true;
+        }
+
+        bool faded(const staininfo &d) const
+        {
+            return verts[d.startvert].color.a < 255;
+        }
+
+        void fadestain(const staininfo &d, const bvec4 &color)
+        {
+            stainvert *vert = &verts[d.startvert],
+                      *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
             while(vert < end)
             {
                 vert->color = color;
                 vert++;
             }
-        }
-        dirty = true;
-    }
-
-    void render()
-    {
-        if(startvert == endvert)
-        {
-            return;
-        }
-        if(!vbo)
-        {
-            glGenBuffers_(1, &vbo);
+            if(d.endvert < d.startvert)
+            {
+                vert = verts;
+                end = &verts[d.endvert];
+                while(vert < end)
+                {
+                    vert->color = color;
+                    vert++;
+                }
+            }
             dirty = true;
         }
-        gle::bindvbo(vbo);
-        int count = endvert < startvert ? maxverts - startvert : endvert - startvert;
-        if(dirty)
+
+        void render()
         {
-            glBufferData_(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), nullptr, GL_STREAM_DRAW);
-            glBufferSubData_(GL_ARRAY_BUFFER, 0, count*sizeof(stainvert), &verts[startvert]);
-            if(endvert < startvert)
+            if(startvert == endvert)
             {
-                glBufferSubData_(GL_ARRAY_BUFFER, count*sizeof(stainvert), endvert*sizeof(stainvert), verts);
+                return;
+            }
+            if(!vbo)
+            {
+                glGenBuffers_(1, &vbo);
+                dirty = true;
+            }
+            gle::bindvbo(vbo);
+            int count = endvert < startvert ? maxverts - startvert : endvert - startvert;
+            if(dirty)
+            {
+                glBufferData_(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), nullptr, GL_STREAM_DRAW);
+                glBufferSubData_(GL_ARRAY_BUFFER, 0, count*sizeof(stainvert), &verts[startvert]);
+                if(endvert < startvert)
+                {
+                    glBufferSubData_(GL_ARRAY_BUFFER, count*sizeof(stainvert), endvert*sizeof(stainvert), verts);
+                    count += endvert;
+                }
+                dirty = false;
+            }
+            else if(endvert < startvert)
+            {
                 count += endvert;
             }
-            dirty = false;
+            const stainvert *ptr = 0;
+            gle::vertexpointer(sizeof(stainvert), ptr->pos.v);
+            gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
+            gle::colorpointer(sizeof(stainvert), ptr->color.v);
+
+            glDrawArrays(GL_TRIANGLES, 0, count);
+            xtravertsva += count;
         }
-        else if(endvert < startvert)
+
+        stainvert *addtri()
         {
-            count += endvert;
+            stainvert *tri = &verts[endvert];
+            availverts -= 3;
+            endvert += 3;
+            if(endvert >= maxverts)
+            {
+                endvert = 0;
+            }
+            return tri;
         }
-        const stainvert *ptr = 0;
-        gle::vertexpointer(sizeof(stainvert), ptr->pos.v);
-        gle::texcoord0pointer(sizeof(stainvert), ptr->tc.v);
-        gle::colorpointer(sizeof(stainvert), ptr->color.v);
 
-        glDrawArrays(GL_TRIANGLES, 0, count);
-        xtravertsva += count;
-    }
-
-    stainvert *addtri()
-    {
-        stainvert *tri = &verts[endvert];
-        availverts -= 3;
-        endvert += 3;
-        if(endvert >= maxverts)
+        void addstain(staininfo &d)
         {
-            endvert = 0;
+            dirty = true;
         }
-        return tri;
-    }
 
-    void addstain(staininfo &d)
-    {
-        dirty = true;
-    }
+        bool hasverts() const
+        {
+            return startvert != endvert;
+        }
 
-    bool hasverts() const
-    {
-        return startvert != endvert;
-    }
+        int nextverts() const
+        {
+            return endvert < lastvert ? endvert + maxverts - lastvert : endvert - lastvert;
+        }
 
-    int nextverts() const
-    {
-        return endvert < lastvert ? endvert + maxverts - lastvert : endvert - lastvert;
-    }
-
-    int totalverts() const
-    {
-        return endvert < startvert ? maxverts - (startvert - endvert) : endvert - startvert;
-    }
-
-    int totaltris() const
-    {
-        return (maxverts - 3 - availverts)/3;
-    }
+        int totaltris() const
+        {
+            return (maxverts - 3 - availverts)/3;
+        }
 };
 
 struct stainrenderer
