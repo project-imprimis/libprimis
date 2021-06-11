@@ -372,7 +372,7 @@ static void clearsurfaces(cube *c)
 }
 
 
-static const int lightcacheentries = 1024;
+static constexpr int lightcacheentries = 1024;
 
 static struct lightcacheentry
 {
