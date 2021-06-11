@@ -35,7 +35,8 @@ static inline uint hthash(const FilesKey &k)
 
 namespace
 {
-    const int maxconsolelines = 1000;
+    constexpr int maxconsolelines = 1000;
+
     struct cline
     {
         char *line;
@@ -64,7 +65,7 @@ namespace
         }
     });
 
-    const int constrlen = 512;
+    constexpr int constrlen = 512;
 
     void resetcomplete();
     void complete(char *s, int maxlen, const char *cmdprefix);
