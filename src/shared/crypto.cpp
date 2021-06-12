@@ -7,7 +7,7 @@
  * http://www.cs.technion.ac.il/~biham/Reports/Tiger/
  */
 
-static const int tigerpasses = 3;
+static constexpr int tigerpasses = 3;
 
 namespace tiger
 {
