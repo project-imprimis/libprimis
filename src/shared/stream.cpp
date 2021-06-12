@@ -9,7 +9,7 @@
 
 #include "../engine/interface/console.h"
 
-///////////////////////// character conversion ///////////////
+///////////////////////// character conversion /////////////////////////////////
 
 #define CUBECTYPE(s, p, d, a, A, u, U) \
     0, U, U, U, U, U, U, U, U, s, s, s, s, s, U, U, \
@@ -139,8 +139,10 @@ extern const uchar cubeupperchars[256] =
 
 size_t decodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry)
 {
-    uchar *dst = dstbuf, *dstend = &dstbuf[dstlen];
-    const uchar *src = srcbuf, *srcend = &srcbuf[srclen];
+    uchar *dst = dstbuf,
+          *dstend = &dstbuf[dstlen];
+    const uchar *src = srcbuf,
+                *srcend = &srcbuf[srclen];
     if(dstbuf == srcbuf)
     {
         int len = std::min(dstlen, srclen);
