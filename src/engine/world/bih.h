@@ -81,10 +81,12 @@ class BIH
             }
         };
 
-        float entradius;
         BIH(vector<mesh> &buildmeshes);
 
         ~BIH();
+
+
+        float entradius;
 
         bool traverse(const vec &o, const vec &ray, float maxdist, float &dist, int mode);
         bool traverse(const mesh &m, const vec &o, const vec &ray, const vec &invray, float maxdist, float &dist, int mode, node *curnode, float tmin, float tmax);

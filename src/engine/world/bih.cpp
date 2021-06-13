@@ -359,7 +359,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
 }
 
 BIH::BIH(vector<mesh> &buildmeshes)
-  : meshes(nullptr), nummeshes(0), nodes(nullptr), numnodes(0), tribbs(nullptr), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0), entradius(0)
+  :  entradius(0), meshes(nullptr), nummeshes(0), nodes(nullptr), numnodes(0), tribbs(nullptr), numtris(0), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f), center(0, 0, 0), radius(0)
 {
     if(buildmeshes.empty())
     {
