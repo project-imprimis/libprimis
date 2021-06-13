@@ -68,7 +68,7 @@ class particleemitter
         int maxfade, lastemit, lastcull;
 
         particleemitter(extentity *ent)
-            : ent(ent), bbmin(ent->o), bbmax(ent->o), maxfade(-1), lastemit(0), lastcull(0)
+            : ent(ent), maxfade(-1), lastemit(0), lastcull(0), bbmin(ent->o), bbmax(ent->o)
         {}
 
         void finalize()
