@@ -10,7 +10,7 @@ enum
     StainBuffer_Number,
 };
 
-struct stainrenderer;
+class stainrenderer;
 
 extern void initstains();
 extern void clearstains();

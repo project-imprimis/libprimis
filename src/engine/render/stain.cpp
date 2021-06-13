@@ -55,20 +55,8 @@ VARFP(maxstaintris, 1, 2048, 16384, initstains());
 VARMP(stainfade, 1, 15, 60, 1000);
 VAR(debugstain, 0, 0, 1);
 
-struct stainbuffer
+class stainbuffer
 {
-    private:
-        stainvert *verts;
-        int startvert;
-        GLuint vbo;
-        bool dirty;
-        
-        //debug functions, not used by any of the code
-        int totalverts() const
-        {
-            return endvert < startvert ? maxverts - (startvert - endvert) : endvert - startvert;
-        }
-
     public:
         int maxverts, endvert, lastvert, availverts;
         stainbuffer() : verts(nullptr), maxverts(0), startvert(0), endvert(0), lastvert(0), availverts(0), vbo(0), dirty(false)
@@ -224,6 +212,18 @@ struct stainbuffer
         {
             return (maxverts - 3 - availverts)/3;
         }
+    private:
+        stainvert *verts;
+        int startvert;
+        GLuint vbo;
+        bool dirty;
+
+        //debug functions, not used by any of the code
+        int totalverts() const
+        {
+            return endvert < startvert ? maxverts - (startvert - endvert) : endvert - startvert;
+        }
+
 };
 
 struct stainrenderer
