@@ -202,8 +202,8 @@ struct partvert
     vec2 tc;     //texture coordinate
 };
 
-static const float collideradius = 8.0f;
-static const float collideerror  = 1.0f;
+static constexpr float collideradius = 8.0f;
+static constexpr float collideerror  = 1.0f;
 
 struct partrenderer
 {
@@ -1153,7 +1153,7 @@ namespace sphere
     }
 }
 
-static const float wobble = 1.25f;
+static constexpr float wobble = 1.25f;
 
 struct fireballrenderer : listrenderer
 {
@@ -1892,9 +1892,9 @@ static void makeparticles(entity &e)
         case 10: //water
         case 13: //snow
         {
-            static const int typemap[]   = { Part_Streak, -1, -1, -1, -1, Part_Steam, Part_Water, -1, -1, Part_Snow };
-            static const float sizemap[] = { 0.28f, 0.0f, 0.0f, 1.0f, 0.0f, 2.4f, 0.60f, 0.0f, 0.0f, 0.5f };
-            static const int gravmap[]   = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
+            static constexpr int typemap[]   = { Part_Streak, -1, -1, -1, -1, Part_Steam, Part_Water, -1, -1, Part_Snow };
+            static constexpr float sizemap[] = { 0.28f, 0.0f, 0.0f, 1.0f, 0.0f, 2.4f, 0.60f, 0.0f, 0.0f, 0.5f };
+            static constexpr int gravmap[]   = { 0, 0, 0, 0, 0, -20, 2, 0, 0, 20 };
             int type = typemap[e.attr1-4];
             float size = sizemap[e.attr1-4];
             int gravity = gravmap[e.attr1-4];
