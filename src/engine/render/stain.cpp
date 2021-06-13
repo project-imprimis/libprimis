@@ -59,7 +59,7 @@ class stainbuffer
 {
     public:
         int maxverts, endvert, lastvert, availverts;
-        stainbuffer() : verts(nullptr), maxverts(0), startvert(0), endvert(0), lastvert(0), availverts(0), vbo(0), dirty(false)
+        stainbuffer() : maxverts(0), endvert(0), lastvert(0), availverts(0), verts(nullptr), startvert(0), vbo(0), dirty(false)
         {}
 
         ~stainbuffer()
