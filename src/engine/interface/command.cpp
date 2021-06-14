@@ -3878,13 +3878,13 @@ static void callcommand(ident *id, tagval *args, int numargs, bool lookup = fals
             {
                 i = std::max(i+1, numargs);
                 vector<char> buf;
-                (reinterpret_cast<comfun1>(id->fun))(conc(buf, args, i, true));
+                reinterpret_cast<comfun1>(id->fun)(conc(buf, args, i, true));
                 goto cleanup;
             }
             case 'V':
             {
                 i = std::max(i+1, numargs);
-                (reinterpret_cast<comfunv>(id->fun))(args, i);
+                reinterpret_cast<comfunv>(id->fun)(args, i);
                 goto cleanup;
             }
             case '1':
@@ -4581,7 +4581,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 int callargs = (op>>8)&0x1F,
                     offset = numargs-callargs;
                 forcenull(result);
-                (reinterpret_cast<comfunv>(id->fun))(&args[offset], callargs);
+                reinterpret_cast<comfunv>(id->fun)(&args[offset], callargs);
                 forcearg(result, op&Code_RetMask);
                 freeargs(args, numargs, offset);
                 continue;
@@ -4598,7 +4598,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 {
                     vector<char> buf;
                     buf.reserve(maxstrlen);
-                    (reinterpret_cast<comfun1>(id->fun))(conc(buf, &args[offset], callargs, true));
+                    reinterpret_cast<comfun1>(id->fun)(conc(buf, &args[offset], callargs, true));
                 }
                 forcearg(result, op&Code_RetMask);
                 freeargs(args, numargs, offset);
