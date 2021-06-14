@@ -1430,7 +1430,7 @@ static char *cutstring(const char *&p)
 
 const char *parseword(const char *p)
 {
-    const int maxbrak = 100;
+    constexpr int maxbrak = 100;
     static char brakstack[maxbrak];
     int brakdepth = 0;
     for(;; p++)
@@ -3938,7 +3938,7 @@ cleanup:
     }
 }
 
-static const int maxrundepth = 255; //limit for rundepth (nesting depth) var below
+static constexpr int maxrundepth = 255; //limit for rundepth (nesting depth) var below
 static int rundepth = 0;
 
 static const uint *runcode(const uint *code, tagval &result)
