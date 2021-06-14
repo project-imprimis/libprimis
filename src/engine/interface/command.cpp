@@ -2383,22 +2383,25 @@ static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, i
 done:
     if(p-1 > start)
     {
-        if(!concs) switch(wordtype)
+        if(!concs)
         {
-            case Value_Pop:
+            switch(wordtype)
             {
-                return;
-            }
-            case Value_Code:
-            case Value_Cond:
-            {
-                p = compileblock(code, start, Ret_Null, ']');
-                return;
-            }
-            case Value_Ident:
-            {
-                compileident(code, stringslice(start, p-1));
-                return;
+                case Value_Pop:
+                {
+                    return;
+                }
+                case Value_Code:
+                case Value_Cond:
+                {
+                    p = compileblock(code, start, Ret_Null, ']');
+                    return;
+                }
+                case Value_Ident:
+                {
+                    compileident(code, stringslice(start, p-1));
+                    return;
+                }
             }
         }
         switch(wordtype)
