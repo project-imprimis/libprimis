@@ -287,7 +287,7 @@ namespace UI
                     Object *o = children[buildchild];
                     if(o->istype<T>())
                     {
-                        t = (T *)o;
+                        t = static_cast<T *>(o);
                     }
                     else
                     {
@@ -969,7 +969,7 @@ namespace UI
         #define LOOP_WINDOWS(o, body) do { \
             for(int i = 0; i < static_cast<int>(children.size()); i++) \
             { \
-                Window *o = (Window *)children[i]; \
+                Window *o = static_cast<Window *>(children[i]); \
                 body; \
             } \
         } while(0)
@@ -977,7 +977,7 @@ namespace UI
         #define LOOP_WINDOWS_REV(o, body) do { \
             for(int i = static_cast<int>(children.size()); --i >=0;) \
             { \
-                Window *o = (Window *)children[i]; \
+                Window *o = static_cast<Window *>(children[i]); \
                 body; \
             } \
         } while(0)
@@ -3039,7 +3039,7 @@ namespace UI
 
     void Scroller::scrollup(float, float) //note unnamed function parameters
     {
-        ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
+        ScrollBar *scrollbar = static_cast<ScrollBar *>(findsibling(ScrollBar::typestr()));
         if(scrollbar)
         {
             scrollbar->wheelscroll(-scrollbar->wheelscrolldirection());
@@ -3048,7 +3048,7 @@ namespace UI
 
     void Scroller::scrolldown(float, float) //note unnamed function parameters
     {
-        ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
+        ScrollBar *scrollbar = static_cast<ScrollBar *>(findsibling(ScrollBar::typestr()));
         if(scrollbar)
         {
             scrollbar->wheelscroll(scrollbar->wheelscrolldirection());
@@ -3077,7 +3077,7 @@ namespace UI
 
         void hold(float, float) //note unnamed function parameters
         {
-            ScrollBar *scrollbar = (ScrollBar *)findsibling(ScrollBar::typestr());
+            ScrollBar *scrollbar = static_cast<ScrollBar *>(findsibling(ScrollBar::typestr()));
             if(scrollbar)
             {
                 scrollbar->arrowscroll(arrowspeed);
@@ -3089,7 +3089,7 @@ namespace UI
 
     void ScrollBar::wheelscroll(float step)
     {
-        ScrollArrow *arrow = (ScrollArrow *)findsibling(ScrollArrow::typestr());
+        ScrollArrow *arrow = static_cast<ScrollArrow *>(findsibling(ScrollArrow::typestr()));
         if(arrow)
         {
             addscroll(arrow->arrowspeed*step*uiscrollsteptime/1000.0f);
