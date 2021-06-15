@@ -16,7 +16,7 @@
 
 void cleanuptimers(); //needed for timer script gvar
 VARFN(timer, usetimers, 0, 0, 1, cleanuptimers());
-VAR(frametimer, 0, 0, 1);
+VAR(frametimer, 0, 0, 1); //toggles timing how long each frame takes (and rendering it to timer ui)
 
 struct timer
 {
@@ -70,6 +70,7 @@ namespace
 
 //externally relevant functionality
 
+//used to start a timer in some part of the code, cannot be used outside of rendering part
 timer *begintimer(const char *name, bool gpu)
 {
     if(!usetimers || inbetweenframes || (gpu && (!hasTQ || deferquery)))
@@ -90,6 +91,8 @@ timer *begintimer(const char *name, bool gpu)
     return t;
 }
 
+//used to end a timer started by begintimer(), needs to be included sometime after begintimer
+//the part between begintimer() and endtimer() is what gets timed
 void endtimer(timer *t)
 {
     if(!t)
@@ -107,6 +110,7 @@ void endtimer(timer *t)
     }
 }
 
+//foreach timer, query what time has passed since last update
 void synctimers()
 {
     timercycle = (timercycle + 1) % timer::Timer_MaxQuery;
