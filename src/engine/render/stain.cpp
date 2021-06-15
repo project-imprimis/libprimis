@@ -51,8 +51,8 @@ enum
     StainFlag_Saturate   = 1<<5
 };
 
-VARFP(maxstaintris, 1, 2048, 16384, initstains());
-VARMP(stainfade, 1, 15, 60, 1000);
+VARFP(maxstaintris, 1, 2048, 16384, initstains()); //need to call initstains to potentially cull extra stain tris
+VARMP(stainfade, 1, 15, 60, 1000); //number of seconds before stain geom fades
 VAR(debugstain, 0, 0, 1);
 
 class stainbuffer
@@ -859,7 +859,7 @@ struct stainrenderer
         }
     }
 
-    void genmmtri(const vec v[3])
+    void genmmtri(const vec v[3]) // gen map model triangles
     {
         vec n;
         n.cross(v[0], v[1], v[2]).normalize();
@@ -1066,7 +1066,7 @@ void clearstains()
     }
 }
 
-VARNP(stains, showstains, 0, 1, 1);
+VARNP(stains, showstains, 0, 1, 1); // toggles rendering stains at all
 
 bool renderstains(int sbuf, bool gbuf, int layer)
 {
@@ -1111,7 +1111,7 @@ void cleanupstains()
     }
 }
 
-VARP(maxstaindistance, 1, 512, 10000);
+VARP(maxstaindistance, 1, 512, 10000); //distance in cubes before stains stop rendering
 
 void addstain(int type, const vec &center, const vec &surface, float radius, const bvec &color, int info)
 {
