@@ -33,6 +33,7 @@ const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
     { 2,  3,  5, 7 },
 };
 
+//this is simply a cube() object but with a constructor that indicates nothing is in it
 static struct emptycube : cube
 {
     emptycube()
@@ -674,8 +675,8 @@ int visibleorient(const cube &c, int orient)
 {
     for(int i = 0; i < 2; ++i)
     {
-        int a = faceedgesidx[orient][i*2 + 0];
-        int b = faceedgesidx[orient][i*2 + 1];
+        int a = faceedgesidx[orient][i*2 + 0],
+            b = faceedgesidx[orient][i*2 + 1];
         for(int j = 0; j < 2; ++j)
         {
             if(crushededge(c.edges[a],j) &&
@@ -2274,8 +2275,8 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
      *  b----a
      */
     pvert verts[2*Face_MaxVerts];
-    int numverts = 0;
-    int index = pe+2; // starts at A = T+1, ends at F = T+p.numverts
+    int numverts = 0,
+        index = pe+2; // starts at A = T+1, ends at F = T+p.numverts
     for(int i = 0; i < p.numverts-1; ++i)
     {
         if(index >= p.numverts)
@@ -2285,8 +2286,8 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
         verts[numverts++] = p.verts[index++];
     }
     index = qe+2; // starts at C = T+2 = F+1, ends at T = T+q.numverts
-    int px = static_cast<int>(verts[numverts-1].x) - static_cast<int>(verts[numverts-2].x);
-    int py = static_cast<int>(verts[numverts-1].y) - static_cast<int>(verts[numverts-2].y);
+    int px = static_cast<int>(verts[numverts-1].x) - static_cast<int>(verts[numverts-2].x),
+        py = static_cast<int>(verts[numverts-1].y) - static_cast<int>(verts[numverts-2].y);
     for(int i = 0; i < q.numverts-1; ++i)
     {
         if(index >= q.numverts)
@@ -2294,9 +2295,9 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
             index -= q.numverts;
         }
         pvert &src = q.verts[index++];
-        int cx = static_cast<int>(src.x) - static_cast<int>(verts[numverts-1].x);
-        int cy = static_cast<int>(src.y) - static_cast<int>(verts[numverts-1].y);
-        int dir = px*cy - py*cx;
+        int cx = static_cast<int>(src.x) - static_cast<int>(verts[numverts-1].x),
+            cy = static_cast<int>(src.y) - static_cast<int>(verts[numverts-1].y),
+            dir = px*cy - py*cx;
         if(dir > 0)
         {
             return false;
@@ -2309,9 +2310,9 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
         px = cx;
         py = cy;
     }
-    int cx = static_cast<int>(verts[0].x) - static_cast<int>(verts[numverts-1].x);
-    int cy = static_cast<int>(verts[0].y) - static_cast<int>(verts[numverts-1].y);
-    int dir = px*cy - py*cx;
+    int cx = static_cast<int>(verts[0].x) - static_cast<int>(verts[numverts-1].x),
+        cy = static_cast<int>(verts[0].y) - static_cast<int>(verts[numverts-1].y),
+        dir = px*cy - py*cx;
     if(dir > 0)
     {
         return false;
