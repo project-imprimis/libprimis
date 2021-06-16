@@ -757,7 +757,7 @@ static void packcube(cube &c, B &buf)
         buf.put(c.material&0xFF);
         buf.put(c.material>>8);
         buf.put(data.edges, sizeof(data.edges));
-        buf.put((uchar *)data.texture, sizeof(data.texture));
+        buf.put(reinterpret_cast<uchar *>(data.texture), sizeof(data.texture));
     }
 }
 
@@ -909,7 +909,7 @@ static void unpackvslots(block3 &b, ucharbuf &buf)
 {
     while(buf.remaining() >= static_cast<int>(sizeof(vslothdr)))
     {
-        vslothdr &hdr = *(vslothdr *)buf.pad(sizeof(vslothdr));
+        vslothdr &hdr = *reinterpret_cast<vslothdr *>(buf.pad(sizeof(vslothdr)));
         if(!hdr.index)
         {
             break;
@@ -945,7 +945,7 @@ static bool compresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int 
         return false;
     }
     outbuf = new uchar[len];
-    if(!outbuf || compress2((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen, Z_BEST_COMPRESSION) != Z_OK || len > (1<<16))
+    if(!outbuf || compress2(static_cast<Bytef *>(outbuf), &len, static_cast<const Bytef *>(inbuf), inlen, Z_BEST_COMPRESSION) != Z_OK || len > (1<<16))
     {
         delete[] outbuf;
         outbuf = nullptr;
@@ -963,7 +963,7 @@ bool uncompresseditinfo(const uchar *inbuf, int inlen, uchar *&outbuf, int &outl
     }
     uLongf len = outlen;
     outbuf = new uchar[len];
-    if(!outbuf || uncompress((Bytef *)outbuf, &len, (const Bytef *)inbuf, inlen) != Z_OK)
+    if(!outbuf || uncompress(static_cast<Bytef *>(outbuf), &len, static_cast<const Bytef *>(inbuf), inlen) != Z_OK)
     {
         delete[] outbuf;
         outbuf = nullptr;
@@ -1039,7 +1039,7 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
         for(int i = 0; i < u->numents; ++i)
         {
             *reinterpret_cast<ushort *>(buf.pad(2)) = static_cast<ushort>(ue[i].i);
-            entity &e = *(entity *)buf.pad(sizeof(entity));
+            entity &e = *reinterpret_cast<entity *>(buf.pad(sizeof(entity)));
             e = ue[i].e;
         }
     }
