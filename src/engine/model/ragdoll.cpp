@@ -276,8 +276,10 @@ void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, floa
                q2b.cross(axis, vec(v2b.pos).sub(m2)).magnitude() +
                q2c.cross(axis, vec(v2c.pos).sub(m2)).magnitude();
     angle /= w1 + w2 + 1e-9f;
-    float a1 = angle*w2, a2 = -angle*w1,
-          s1 = sinf(a1), s2 = sinf(a2);
+    float a1 = angle*w2,
+          a2 = -angle*w1,
+          s1 = sinf(a1),
+          s2 = sinf(a2);
     vec c1 = vec(axis).mul(1 - cosf(a1)),
         c2 = vec(axis).mul(1 - cosf(a2));
     v1a.newpos.add(vec().cross(c1, q1a).madd(q1a, s1).add(v1a.pos));
