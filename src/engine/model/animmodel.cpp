@@ -404,8 +404,8 @@ void animmodel::Mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t
 
 void animmodel::Mesh::fixqtangent(quat &q, float bt)
 {
-    static const float bias = -1.5f/65535,
-                       biasscale = sqrtf(1 - bias*bias);
+    static constexpr float bias = -1.5f/65535,
+                           biasscale = sqrtf(1 - bias*bias);
     if(bt < 0)
     {
         if(q.w >= 0)
@@ -1723,7 +1723,8 @@ void animmodel::calcbb(vec &center, vec &radius)
     {
         return;
     }
-    vec bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f);
+    vec bbmin(1e16f, 1e16f, 1e16f),
+        bbmax(-1e16f, -1e16f, -1e16f);
     matrix4x3 m;
     initmatrix(m);
     parts[0]->calcbb(bbmin, bbmax, m);
