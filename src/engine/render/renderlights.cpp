@@ -2808,7 +2808,8 @@ void rendervolumetric()
         if(l.shadowmap >= 0)
         {
             shadowmapinfo &sm = shadowmaps[l.shadowmap];
-            float smnearclip = SQRT3 / l.radius, smfarclip = SQRT3,
+            float smnearclip = SQRT3 / l.radius,
+                  smfarclip = SQRT3,
                   bias = (smfilter > 2 ? smbias2 : smbias) * (smcullside ? 1 : -1) * smnearclip * (1024.0f / sm.size);
             int border = smfilter > 2 ? smborder2 : smborder;
             if(l.spot > 0)
@@ -3730,8 +3731,8 @@ void rendershadowmaps(int offset = 0)
 
 void rendershadowatlas()
 {
-    timer *smcputimer = begintimer("shadow map", false);
-    timer *smtimer = begintimer("shadow map");
+    timer *smcputimer = begintimer("shadow map", false),
+          *smtimer = begintimer("shadow map");
 
     glBindFramebuffer_(GL_FRAMEBUFFER, shadowatlasfbo);
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -3906,8 +3907,8 @@ void preparegbuffer(bool depthclear)
 
 void rendergbuffer(bool depthclear, void (*gamefxn)())
 {
-    timer *gcputimer = drawtex ? nullptr : begintimer("g-buffer", false);
-    timer *gtimer = drawtex ? nullptr : begintimer("g-buffer");
+    timer *gcputimer = drawtex ? nullptr : begintimer("g-buffer", false),
+          *gtimer = drawtex ? nullptr : begintimer("g-buffer");
 
     preparegbuffer(depthclear);
 
@@ -4045,8 +4046,8 @@ void shadegbuffer()
     }
     glerror();
 
-    timer *shcputimer = begintimer("deferred shading", false);
-    timer *shtimer = begintimer("deferred shading");
+    timer *shcputimer = begintimer("deferred shading", false),
+          *shtimer = begintimer("deferred shading");
 
     shadesky();
 
