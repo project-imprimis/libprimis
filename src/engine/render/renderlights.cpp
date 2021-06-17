@@ -731,7 +731,9 @@ void setupgbuffer()
             createtexture(gglowtex, gw, gh, nullptr, 3, 0, GL_RGBA8, GL_TEXTURE_RECTANGLE);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_RECTANGLE, gglowtex, 0);
             if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            {
                 fatal("failed allocating g-buffer!");
+            }
         }
 
         glClearColor(0, 0, 0, 0);
@@ -894,8 +896,8 @@ VAR(debugdepth, 0, 0, 1);
 
 void viewdepth()
 {
-    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
-    int h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
+    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+        h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, gdepthtex);
@@ -1660,13 +1662,16 @@ void cleanupvolumetric()
     clearvolumetricshaders();
 }
 
-static Shader *deferredlightshader = nullptr, *deferredminimapshader = nullptr, *deferredmsaapixelshader = nullptr, *deferredmsaasampleshader = nullptr;
+static Shader *deferredlightshader      = nullptr,
+              *deferredminimapshader    = nullptr,
+              *deferredmsaapixelshader  = nullptr,
+              *deferredmsaasampleshader = nullptr;
 
 void cleardeferredlightshaders()
 {
-    deferredlightshader = nullptr;
-    deferredminimapshader = nullptr;
-    deferredmsaapixelshader = nullptr;
+    deferredlightshader      = nullptr;
+    deferredminimapshader    = nullptr;
+    deferredmsaapixelshader  = nullptr;
     deferredmsaasampleshader = nullptr;
 }
 
