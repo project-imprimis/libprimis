@@ -98,7 +98,7 @@ const char *escapeid(const char *s)
 
 bool validateblock(const char *s)
 {
-    const int maxbrak = 100;
+    constexpr int maxbrak = 100;
     static char brakstack[maxbrak];
     int brakdepth = 0;
     for(; *s; s++) switch(*s)
@@ -1579,7 +1579,7 @@ ICOMMAND(rndstr, "i", (int *len),
 
 ICOMMAND(tohex, "ii", (int *n, int *p),
 {
-    const int len = 20;
+    constexpr int len = 20;
     char *buf = newstring(len);
     nformatstring(buf, len, "0x%.*X", std::max(*p, 1), *n);
     stringret(buf);
