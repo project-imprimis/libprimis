@@ -906,8 +906,8 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     vsv.put(vs, strlen(vs)+1);
     psv.put(ps, strlen(ps)+1);
 
-    static const int len = strlen("//:variant"),
-                     olen = strlen("override");
+    static constexpr int len  = strlen("//:variant"),
+                         olen = strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
         vspragma = strstr(vspragma, "//:variant");
@@ -981,7 +981,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
     {
         return;
     }
-    static const int pragmalen = strlen("//:fog");
+    static constexpr int pragmalen = strlen("//:fog");
     const char *vsmain = findglslmain(vs),
                *vsend  = strrchr(vs, '}');
     if(vsmain && vsend)
@@ -1532,7 +1532,7 @@ void reuseuniformparamcmd(char *name, float *x, float *y, float *z, float *w)
 }
 COMMANDN(reuseuniformparam, reuseuniformparamcmd, "sfFFf");
 
-static const int numpostfxbinds = 10;
+static constexpr int numpostfxbinds = 10;
 
 struct postfxtex
 {
