@@ -100,7 +100,8 @@ namespace //internal functionality not seen by other files
             maxstep = static_cast<int>(std::floor(std::min(tmax, t + grassdist)/grassstep)) - tstep,
             numsteps = maxstep - minstep + 1;
 
-        float texscale = (grassscale*tex->ys)/static_cast<float>(grassheight*tex->xs), animscale = grassheight*texscale;
+        float texscale = (grassscale*tex->ys)/static_cast<float>(grassheight*tex->xs),
+              animscale = grassheight*texscale;
         vec tc;
         tc.cross(g.surface, w.dir).mul(texscale);
 
