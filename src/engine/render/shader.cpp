@@ -14,16 +14,16 @@
 
 Shader *Shader::lastshader = nullptr;
 
-Shader *nullshader = nullptr,
-       *hudshader = nullptr,
-       *hudtextshader = nullptr,
-       *hudnotextureshader = nullptr,
-       *nocolorshader = nullptr,
-       *foggedshader = nullptr,
+Shader *nullshader            = nullptr,
+       *hudshader             = nullptr,
+       *hudtextshader         = nullptr,
+       *hudnotextureshader    = nullptr,
+       *nocolorshader         = nullptr,
+       *foggedshader          = nullptr,
        *foggednotextureshader = nullptr,
-       *ldrshader = nullptr,
-       *ldrnotextureshader = nullptr,
-       *stdworldshader = nullptr;
+       *ldrshader             = nullptr,
+       *ldrnotextureshader    = nullptr,
+       *stdworldshader        = nullptr;
 
 static hashnameset<GlobalShaderParamState> globalparams(256);
 static hashtable<const char *, int> localparams(256);
@@ -205,12 +205,14 @@ static void bindglsluniform(Shader &s, UniformLoc &u)
     {
         return;
     }
-    GLuint bidx = glGetUniformBlockIndex_(s.program, u.blockname);
-    GLuint uidx = GL_INVALID_INDEX;
+    GLuint bidx = glGetUniformBlockIndex_(s.program, u.blockname),
+           uidx = GL_INVALID_INDEX;
     glGetUniformIndices_(s.program, 1, &u.name, &uidx);
     if(bidx != GL_INVALID_INDEX && uidx != GL_INVALID_INDEX)
     {
-        GLint sizeval = 0, offsetval = 0, strideval = 0;
+        GLint sizeval   = 0,
+              offsetval = 0,
+              strideval = 0;
         glGetActiveUniformBlockiv_(s.program, bidx, GL_UNIFORM_BLOCK_DATA_SIZE, &sizeval);
         if(sizeval <= 0)
         {
@@ -1014,8 +1016,8 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
             "#define fogcoord lineardepth*length(vec3(gl_FragCoord.xy*radialfogscale.xy + radialfogscale.zw, 1.0))\n";
         psbuf.put(fogparams, strlen(fogparams));
         psbuf.put(psmain, psend - psmain);
-        const char *psdef = "\n#define FOG_COLOR ";
-        const char *psfog =
+        const char *psdef = "\n#define FOG_COLOR ",
+                   *psfog =
             pspragma && !strncmp(pspragma+pragmalen, "rgba", 4) ?
                 "\nfragcolor = mix((FOG_COLOR), fragcolor, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n" :
                 "\nfragcolor.rgb = mix((FOG_COLOR).rgb, fragcolor.rgb, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n";
@@ -1052,7 +1054,8 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     {
         return;
     }
-    const char *vsmain = findglslmain(vs), *psmain = findglslmain(ps);
+    const char *vsmain = findglslmain(vs),
+               *psmain = findglslmain(ps);
     if(!vsmain || !psmain)
     {
         return;
@@ -1730,8 +1733,8 @@ COMMAND(clearpostfx, "");
 
 void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, float *y, float *z, float *w)
 {
-    int inputmask = inputs[0] ? 0 : 1;
-    int freemask = inputs[0] ? 0 : 1;
+    int inputmask = inputs[0] ? 0 : 1,
+        freemask = inputs[0] ? 0 : 1;
     bool freeinputs = true;
     for(; *inputs; inputs++)
     {
