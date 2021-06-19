@@ -29,6 +29,7 @@ static int fontdeftex = 0;
 font *curfont = nullptr;
 int curfonttex = 0;
 
+//adds a new font to the hashnameset "fonts" given the parameters passed
 void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
 {
     font *f = &fonts[name];
@@ -53,6 +54,7 @@ void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
 }
 COMMANDN(font, newfont, "ssiii");
 
+//sets the fontdef gvar's bordermin/max to the values passed
 void fontborder(float *bordermin, float *bordermax)
 {
     if(!fontdef)
@@ -64,6 +66,7 @@ void fontborder(float *bordermin, float *bordermax)
 }
 COMMAND(fontborder, "ff");
 
+//sets the fontdef gvar's outlinemin/max to the values passed
 void fontoutline(float *outlinemin, float *outlinemax)
 {
     if(!fontdef)
@@ -271,6 +274,7 @@ float text_widthf(const char *str)
     return width;
 }
 
+//returns the size of a tab character, which is hardcoded to 4 spaces
 static int fonttab()
 {
     return 4*fontwidth();
