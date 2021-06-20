@@ -142,7 +142,7 @@ namespace
         }
         float v1 = 1-z1clip,
               v2 = 1-z2clip;
-        int w = farplane/2,
+        int w  = farplane/2,
             z1 = static_cast<int>(std::ceil(2*w*(z1clip-0.5f))),
             z2 = static_cast<int>(std::ceil(2*w*(z2clip-0.5f)));
 
@@ -196,7 +196,7 @@ namespace
     void drawenvoverlay(Texture *overlay = nullptr, float tx = 0, float ty = 0)
     {
         int w = farplane/2;
-        float z = w*cloudheight,
+        float z   = w*cloudheight,
               tsz = 0.5f*(1-cloudfade)/cloudscale,
               psz = w*(1-cloudfade);
         glBindTexture(GL_TEXTURE_2D, (overlay ? overlay : notexture)->id);
@@ -267,10 +267,10 @@ namespace
         sundiskparams.z = atmosundiskbright;
         LOCALPARAM(sundiskparams, sundiskparams);
 
-        const float earthradius = 6.371e6f, //radius of earth in meters
+        const float earthradius     = 6.371e6f, //radius of earth in meters
                     earthatmoheight = 100e3f; //atmospheric height (100km)
         float planetradius = earthradius*atmoplanetsize,
-              atmoradius = planetradius + earthatmoheight*atmoheight;
+              atmoradius   = planetradius + earthatmoheight*atmoheight;
         LOCALPARAMF(atmoradius, planetradius, atmoradius*atmoradius, atmoradius*atmoradius - planetradius*planetradius);
 
         float gm = (1 - atmohaze)*0.2f + 0.75f;
@@ -357,7 +357,8 @@ void drawskybox(bool clear)
         }
         gle::color(skyboxcolor);
 
-        matrix4 skymatrix = cammatrix, skyprojmatrix;
+        matrix4 skymatrix = cammatrix,
+                skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
         skymatrix.rotate_around_z((skyboxspin*lastmillis/1000.0f+skyboxyaw)*RAD);
         skyprojmatrix.mul(projmatrix, skymatrix);
@@ -389,7 +390,8 @@ void drawskybox(bool clear)
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        matrix4 skymatrix = cammatrix, skyprojmatrix;
+        matrix4 skymatrix = cammatrix,
+                skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
         skymatrix.rotate_around_z((cloudspin*lastmillis/1000.0f+cloudyaw)*RAD);
         skyprojmatrix.mul(projmatrix, skymatrix);
