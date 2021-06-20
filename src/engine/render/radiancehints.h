@@ -2,8 +2,8 @@
 #define RADIANCEHINTS_H_
 
 //note that radiance hints is the term for the mechanism by which global illumination is done
-constexpr int rhmaxsplits = 4; //maximum number of times that radiance hints can split to increase resolution (note exponential increase in nodes)
-constexpr int rhmaxgrid = 64; //subdivision count for radiance hints
+constexpr int rhmaxsplits = 4, //maximum number of times that radiance hints can split to increase resolution (note exponential increase in nodes)
+              rhmaxgrid = 64; //subdivision count for radiance hints
 
 extern int rhrect, rhgrid, rhsplits, rhborder, rhprec, rhtaps, rhcache, rhforce, rsmprec, rsmdepthprec, rsmsize;
 extern int gi, gidist;
