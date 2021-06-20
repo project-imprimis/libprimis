@@ -145,7 +145,8 @@ namespace
         va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
 
         int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
-        vtxarray **prev = &vasort[hash], *cur = vasort[hash];
+        vtxarray **prev = &vasort[hash],
+                  *cur = vasort[hash];
 
         while(cur && va->distance >= cur->distance)
         {
@@ -250,8 +251,8 @@ namespace
 
     ///////// occlusion queries /////////////
 
-    constexpr int maxquery = 2048;
-    constexpr int maxqueryframes = 2;
+    constexpr int maxquery = 2048,
+                  maxqueryframes = 2;
 
     //all members of this struct are used elsewhere (must be public)
     struct queryframe
@@ -478,9 +479,15 @@ namespace
             if(c[i].ext && c[i].ext->va)
             {
                 vtxarray *va = c[i].ext->va;
-                if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, va))) continue;
+                if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, va)))
+                {
+                    continue;
+                }
             }
-            if(c[i].children && bboccluded(bo, br, c[i].children, co, size>>1)) continue;
+            if(c[i].children && bboccluded(bo, br, c[i].children, co, size>>1))
+            {
+                continue;
+            }
             return false;
         }
         return true;
@@ -2392,31 +2399,34 @@ void rendermapmodels()
     const vector<extentity *> &ents = entities::getents();
     findvisiblemms(ents, doquery);
 
-    for(octaentities *oe = visiblemms; oe; oe = oe->next) if(oe->distance>=0)
+    for(octaentities *oe = visiblemms; oe; oe = oe->next)
     {
-        bool rendered = false;
-        for(int i = 0; i < oe->mapmodels.length(); i++)
+        if(oe->distance>=0)
         {
-            extentity &e = *ents[oe->mapmodels[i]];
-            if(!(e.flags&EntFlag_Render))
+            bool rendered = false;
+            for(int i = 0; i < oe->mapmodels.length(); i++)
             {
-                continue;
-            }
-            if(!rendered)
-            {
-                rendered = true;
-                oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? newquery(oe) : nullptr;
-                if(oe->query)
+                extentity &e = *ents[oe->mapmodels[i]];
+                if(!(e.flags&EntFlag_Render))
                 {
-                    startmodelquery(oe->query);
+                    continue;
                 }
+                if(!rendered)
+                {
+                    rendered = true;
+                    oe->query = doquery && oe->distance>0 && !(++skipoq%oqmm) ? newquery(oe) : nullptr;
+                    if(oe->query)
+                    {
+                        startmodelquery(oe->query);
+                    }
+                }
+                rendermapmodel(e);
+                e.flags &= ~EntFlag_Render;
             }
-            rendermapmodel(e);
-            e.flags &= ~EntFlag_Render;
-        }
-        if(rendered && oe->query)
-        {
-            endmodelquery();
+            if(rendered && oe->query)
+            {
+                endmodelquery();
+            }
         }
     }
     rendermapmodelbatches();
@@ -2596,15 +2606,17 @@ int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias)
           ap3 = std::fabs(dp3),
           an3 = std::fabs(dn3);
     if(ap1 > bias*an1 && ap2 > bias*an2 && ap3 > bias*an3)
-        mask &= (3<<4)
-            | (dp1 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
-            | (dp2 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
-            | (dp3 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
+    {
+        mask &=  (3<<4)
+               | (dp1 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
+               | (dp2 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2))
+               | (dp3 >= 0 ? (1<<0)|(1<<2) : (2<<0)|(2<<2));
+    }
     if(an1 > bias*ap1 && an2 > bias*ap2 && an3 > bias*ap3)
-        mask &= (3<<4)
-            | (dn1 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
-            | (dn2 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
-            | (dn3 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
+        mask &=  (3<<4)
+               | (dn1 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
+               | (dn2 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2))
+               | (dn3 >= 0 ? (1<<0)|(2<<2) : (2<<0)|(1<<2));
     dp1 = p1.y + p1.z,
     dn1 = p1.y - p1.z,
     ap1 = std::fabs(dp1),
@@ -3039,7 +3051,10 @@ void renderdecals()
                 }
             }
         }
-        if(decalbatches.size()) renderdecalbatches(cur, 1);
+        if(decalbatches.size())
+        {
+            renderdecalbatches(cur, 1);
+        }
     }
     else
     {
@@ -3051,7 +3066,10 @@ void renderdecals()
             if(va->decaltris && va->occluded < Occlude_BB)
             {
                 mergedecals(va);
-                if(!batchdecals && decalbatches.size()) renderdecalbatches(cur, 0);
+                if(!batchdecals && decalbatches.size())
+                {
+                    renderdecalbatches(cur, 0);
+                }
             }
         }
         if(decalbatches.size())
