@@ -7,6 +7,7 @@
 
 #include "engine.h"
 
+#include "hud.h"
 #include "octarender.h"
 #include "rendergl.h"
 #include "rendermodel.h"
