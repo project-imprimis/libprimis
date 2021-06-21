@@ -354,7 +354,7 @@ void parseglexts()
     glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
     for(int i = 0; i < numexts; ++i)
     {
-        const char *ext = (const char *)glGetStringi_(GL_EXTENSIONS, i);
+        const char *ext = static_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
         glexts.add(newstring(ext));
     }
 }
@@ -397,9 +397,9 @@ bool checkdepthtexstencilrb()
 
 void gl_checkextensions()
 {
-    const char *vendor   = reinterpret_cast<const char *>(glGetString(GL_VENDOR));
-    const char *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
-    const char *version  = reinterpret_cast<const char *>(glGetString(GL_VERSION));
+    const char *vendor   = reinterpret_cast<const char *>(glGetString(GL_VENDOR)),
+               *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+               *version  = reinterpret_cast<const char *>(glGetString(GL_VERSION));
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
 
@@ -783,7 +783,7 @@ void gl_checkextensions()
     {
         msaalineardepth = glineardepth = 1; // reading back from depth-stencil still buggy on newer cards, and requires stencil for MSAA
     }
-    else if(nvidia)
+    else if(nvidia) //no errata on nvidia cards (yet)
     {
     }
     else if(intel)
@@ -1100,7 +1100,7 @@ void mousemove(int dx, int dy)
     {
         if(zoomautosens)
         {
-            cursens = static_cast<float>(sensitivity*zoomfov)/fov;
+            cursens  = static_cast<float>(sensitivity*zoomfov)/fov;
             curaccel = static_cast<float>(mouseaccel*zoomfov)/fov;
         }
         else
@@ -1148,7 +1148,8 @@ vec calcavatarpos(const vec &pos, float dist)
 {
     vec eyepos;
     cammatrix.transform(pos, eyepos);
-    GLdouble ydist = nearplane * std::tan(curavatarfov/2*RAD), xdist = ydist * aspect;
+    GLdouble ydist = nearplane * std::tan(curavatarfov/2*RAD),
+             xdist = ydist * aspect;
     vec4 scrpos;
     scrpos.x = eyepos.x*nearplane/xdist;
     scrpos.y = eyepos.y*nearplane/ydist;
@@ -1263,7 +1264,10 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
             { \
                 low = c; \
             } \
-            else if(pc > e.c) high = c; \
+            else if(pc > e.c)
+            { \
+                high = c; \
+            } \
         } \
     } while(0)
     if(dx > 0)
