@@ -1299,7 +1299,7 @@ struct prefabmesh
 {
     struct vertex { vec pos; bvec4 norm; };
 
-    static const int prefabmeshsize = 1<<9;
+    static constexpr int prefabmeshsize = 1<<9;
     int table[prefabmeshsize];
     std::vector<vertex> verts;
     std::vector<int> chain;
