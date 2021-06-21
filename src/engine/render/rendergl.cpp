@@ -354,7 +354,7 @@ void parseglexts()
     glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
     for(int i = 0; i < numexts; ++i)
     {
-        const char *ext = static_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
+        const char *ext = reinterpret_cast<const char *>(glGetStringi_(GL_EXTENSIONS, i));
         glexts.add(newstring(ext));
     }
 }
@@ -398,7 +398,7 @@ bool checkdepthtexstencilrb()
 void gl_checkextensions()
 {
     const char *vendor   = reinterpret_cast<const char *>(glGetString(GL_VENDOR)),
-               *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+               *renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER)),
                *version  = reinterpret_cast<const char *>(glGetString(GL_VERSION));
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
@@ -1264,7 +1264,7 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
             { \
                 low = c; \
             } \
-            else if(pc > e.c)
+            else if(pc > e.c) \
             { \
                 high = c; \
             } \
