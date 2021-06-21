@@ -483,74 +483,74 @@ void gl_checkextensions()
     glGetQueryObjectiv_ =         (PFNGLGETQUERYOBJECTIVPROC)         getprocaddress("glGetQueryObjectiv");
     glGetQueryObjectuiv_ =        (PFNGLGETQUERYOBJECTUIVPROC)        getprocaddress("glGetQueryObjectuiv");
 
-    glCreateProgram_ =            (PFNGLCREATEPROGRAMPROC)            getprocaddress("glCreateProgram");
-    glDeleteProgram_ =            (PFNGLDELETEPROGRAMPROC)            getprocaddress("glDeleteProgram");
-    glUseProgram_ =               (PFNGLUSEPROGRAMPROC)               getprocaddress("glUseProgram");
-    glCreateShader_ =             (PFNGLCREATESHADERPROC)             getprocaddress("glCreateShader");
-    glDeleteShader_ =             (PFNGLDELETESHADERPROC)             getprocaddress("glDeleteShader");
-    glShaderSource_ =             (PFNGLSHADERSOURCEPROC)             getprocaddress("glShaderSource");
-    glCompileShader_ =            (PFNGLCOMPILESHADERPROC)            getprocaddress("glCompileShader");
-    glGetShaderiv_ =              (PFNGLGETSHADERIVPROC)              getprocaddress("glGetShaderiv");
-    glGetProgramiv_ =             (PFNGLGETPROGRAMIVPROC)             getprocaddress("glGetProgramiv");
-    glAttachShader_ =             (PFNGLATTACHSHADERPROC)             getprocaddress("glAttachShader");
-    glGetProgramInfoLog_ =        (PFNGLGETPROGRAMINFOLOGPROC)        getprocaddress("glGetProgramInfoLog");
-    glGetShaderInfoLog_ =         (PFNGLGETSHADERINFOLOGPROC)         getprocaddress("glGetShaderInfoLog");
-    glLinkProgram_ =              (PFNGLLINKPROGRAMPROC)              getprocaddress("glLinkProgram");
-    glGetUniformLocation_ =       (PFNGLGETUNIFORMLOCATIONPROC)       getprocaddress("glGetUniformLocation");
-    glUniform1f_ =                (PFNGLUNIFORM1FPROC)                getprocaddress("glUniform1f");
-    glUniform2f_ =                (PFNGLUNIFORM2FPROC)                getprocaddress("glUniform2f");
-    glUniform3f_ =                (PFNGLUNIFORM3FPROC)                getprocaddress("glUniform3f");
-    glUniform4f_ =                (PFNGLUNIFORM4FPROC)                getprocaddress("glUniform4f");
-    glUniform1fv_ =               (PFNGLUNIFORM1FVPROC)               getprocaddress("glUniform1fv");
-    glUniform2fv_ =               (PFNGLUNIFORM2FVPROC)               getprocaddress("glUniform2fv");
-    glUniform3fv_ =               (PFNGLUNIFORM3FVPROC)               getprocaddress("glUniform3fv");
-    glUniform4fv_ =               (PFNGLUNIFORM4FVPROC)               getprocaddress("glUniform4fv");
-    glUniform1i_ =                (PFNGLUNIFORM1IPROC)                getprocaddress("glUniform1i");
-    glUniform2i_ =                (PFNGLUNIFORM2IPROC)                getprocaddress("glUniform2i");
-    glUniform3i_ =                (PFNGLUNIFORM3IPROC)                getprocaddress("glUniform3i");
-    glUniform4i_ =                (PFNGLUNIFORM4IPROC)                getprocaddress("glUniform4i");
-    glUniform1iv_ =               (PFNGLUNIFORM1IVPROC)               getprocaddress("glUniform1iv");
-    glUniform2iv_ =               (PFNGLUNIFORM2IVPROC)               getprocaddress("glUniform2iv");
-    glUniform3iv_ =               (PFNGLUNIFORM3IVPROC)               getprocaddress("glUniform3iv");
-    glUniform4iv_ =               (PFNGLUNIFORM4IVPROC)               getprocaddress("glUniform4iv");
-    glUniformMatrix2fv_ =         (PFNGLUNIFORMMATRIX2FVPROC)         getprocaddress("glUniformMatrix2fv");
-    glUniformMatrix3fv_ =         (PFNGLUNIFORMMATRIX3FVPROC)         getprocaddress("glUniformMatrix3fv");
-    glUniformMatrix4fv_ =         (PFNGLUNIFORMMATRIX4FVPROC)         getprocaddress("glUniformMatrix4fv");
-    glBindAttribLocation_ =       (PFNGLBINDATTRIBLOCATIONPROC)       getprocaddress("glBindAttribLocation");
-    glGetActiveUniform_ =         (PFNGLGETACTIVEUNIFORMPROC)         getprocaddress("glGetActiveUniform");
-    glEnableVertexAttribArray_ =  (PFNGLENABLEVERTEXATTRIBARRAYPROC)  getprocaddress("glEnableVertexAttribArray");
+    glCreateProgram_            = (PFNGLCREATEPROGRAMPROC)            getprocaddress("glCreateProgram");
+    glDeleteProgram_            = (PFNGLDELETEPROGRAMPROC)            getprocaddress("glDeleteProgram");
+    glUseProgram_               = (PFNGLUSEPROGRAMPROC)               getprocaddress("glUseProgram");
+    glCreateShader_             = (PFNGLCREATESHADERPROC)             getprocaddress("glCreateShader");
+    glDeleteShader_             = (PFNGLDELETESHADERPROC)             getprocaddress("glDeleteShader");
+    glShaderSource_             = (PFNGLSHADERSOURCEPROC)             getprocaddress("glShaderSource");
+    glCompileShader_            = (PFNGLCOMPILESHADERPROC)            getprocaddress("glCompileShader");
+    glGetShaderiv_              = (PFNGLGETSHADERIVPROC)              getprocaddress("glGetShaderiv");
+    glGetProgramiv_             = (PFNGLGETPROGRAMIVPROC)             getprocaddress("glGetProgramiv");
+    glAttachShader_             = (PFNGLATTACHSHADERPROC)             getprocaddress("glAttachShader");
+    glGetProgramInfoLog_        = (PFNGLGETPROGRAMINFOLOGPROC)        getprocaddress("glGetProgramInfoLog");
+    glGetShaderInfoLog_         = (PFNGLGETSHADERINFOLOGPROC)         getprocaddress("glGetShaderInfoLog");
+    glLinkProgram_              = (PFNGLLINKPROGRAMPROC)              getprocaddress("glLinkProgram");
+    glGetUniformLocation_       = (PFNGLGETUNIFORMLOCATIONPROC)       getprocaddress("glGetUniformLocation");
+    glUniform1f_                = (PFNGLUNIFORM1FPROC)                getprocaddress("glUniform1f");
+    glUniform2f_                = (PFNGLUNIFORM2FPROC)                getprocaddress("glUniform2f");
+    glUniform3f_                = (PFNGLUNIFORM3FPROC)                getprocaddress("glUniform3f");
+    glUniform4f_                = (PFNGLUNIFORM4FPROC)                getprocaddress("glUniform4f");
+    glUniform1fv_               = (PFNGLUNIFORM1FVPROC)               getprocaddress("glUniform1fv");
+    glUniform2fv_               = (PFNGLUNIFORM2FVPROC)               getprocaddress("glUniform2fv");
+    glUniform3fv_               = (PFNGLUNIFORM3FVPROC)               getprocaddress("glUniform3fv");
+    glUniform4fv_               = (PFNGLUNIFORM4FVPROC)               getprocaddress("glUniform4fv");
+    glUniform1i_                = (PFNGLUNIFORM1IPROC)                getprocaddress("glUniform1i");
+    glUniform2i_                = (PFNGLUNIFORM2IPROC)                getprocaddress("glUniform2i");
+    glUniform3i_                = (PFNGLUNIFORM3IPROC)                getprocaddress("glUniform3i");
+    glUniform4i_                = (PFNGLUNIFORM4IPROC)                getprocaddress("glUniform4i");
+    glUniform1iv_               = (PFNGLUNIFORM1IVPROC)               getprocaddress("glUniform1iv");
+    glUniform2iv_               = (PFNGLUNIFORM2IVPROC)               getprocaddress("glUniform2iv");
+    glUniform3iv_               = (PFNGLUNIFORM3IVPROC)               getprocaddress("glUniform3iv");
+    glUniform4iv_               = (PFNGLUNIFORM4IVPROC)               getprocaddress("glUniform4iv");
+    glUniformMatrix2fv_         = (PFNGLUNIFORMMATRIX2FVPROC)         getprocaddress("glUniformMatrix2fv");
+    glUniformMatrix3fv_         = (PFNGLUNIFORMMATRIX3FVPROC)         getprocaddress("glUniformMatrix3fv");
+    glUniformMatrix4fv_         = (PFNGLUNIFORMMATRIX4FVPROC)         getprocaddress("glUniformMatrix4fv");
+    glBindAttribLocation_       = (PFNGLBINDATTRIBLOCATIONPROC)       getprocaddress("glBindAttribLocation");
+    glGetActiveUniform_         = (PFNGLGETACTIVEUNIFORMPROC)         getprocaddress("glGetActiveUniform");
+    glEnableVertexAttribArray_  = (PFNGLENABLEVERTEXATTRIBARRAYPROC)  getprocaddress("glEnableVertexAttribArray");
     glDisableVertexAttribArray_ = (PFNGLDISABLEVERTEXATTRIBARRAYPROC) getprocaddress("glDisableVertexAttribArray");
 
-    glVertexAttrib1f_ =           (PFNGLVERTEXATTRIB1FPROC)           getprocaddress("glVertexAttrib1f");
-    glVertexAttrib1fv_ =          (PFNGLVERTEXATTRIB1FVPROC)          getprocaddress("glVertexAttrib1fv");
-    glVertexAttrib1s_ =           (PFNGLVERTEXATTRIB1SPROC)           getprocaddress("glVertexAttrib1s");
-    glVertexAttrib1sv_ =          (PFNGLVERTEXATTRIB1SVPROC)          getprocaddress("glVertexAttrib1sv");
-    glVertexAttrib2f_ =           (PFNGLVERTEXATTRIB2FPROC)           getprocaddress("glVertexAttrib2f");
-    glVertexAttrib2fv_ =          (PFNGLVERTEXATTRIB2FVPROC)          getprocaddress("glVertexAttrib2fv");
-    glVertexAttrib2s_ =           (PFNGLVERTEXATTRIB2SPROC)           getprocaddress("glVertexAttrib2s");
-    glVertexAttrib2sv_ =          (PFNGLVERTEXATTRIB2SVPROC)          getprocaddress("glVertexAttrib2sv");
-    glVertexAttrib3f_ =           (PFNGLVERTEXATTRIB3FPROC)           getprocaddress("glVertexAttrib3f");
-    glVertexAttrib3fv_ =          (PFNGLVERTEXATTRIB3FVPROC)          getprocaddress("glVertexAttrib3fv");
-    glVertexAttrib3s_ =           (PFNGLVERTEXATTRIB3SPROC)           getprocaddress("glVertexAttrib3s");
-    glVertexAttrib3sv_ =          (PFNGLVERTEXATTRIB3SVPROC)          getprocaddress("glVertexAttrib3sv");
-    glVertexAttrib4f_ =           (PFNGLVERTEXATTRIB4FPROC)           getprocaddress("glVertexAttrib4f");
-    glVertexAttrib4fv_ =          (PFNGLVERTEXATTRIB4FVPROC)          getprocaddress("glVertexAttrib4fv");
-    glVertexAttrib4s_ =           (PFNGLVERTEXATTRIB4SPROC)           getprocaddress("glVertexAttrib4s");
-    glVertexAttrib4sv_ =          (PFNGLVERTEXATTRIB4SVPROC)          getprocaddress("glVertexAttrib4sv");
-    glVertexAttrib4bv_ =          (PFNGLVERTEXATTRIB4BVPROC)          getprocaddress("glVertexAttrib4bv");
-    glVertexAttrib4iv_ =          (PFNGLVERTEXATTRIB4IVPROC)          getprocaddress("glVertexAttrib4iv");
-    glVertexAttrib4ubv_ =         (PFNGLVERTEXATTRIB4UBVPROC)         getprocaddress("glVertexAttrib4ubv");
-    glVertexAttrib4uiv_ =         (PFNGLVERTEXATTRIB4UIVPROC)         getprocaddress("glVertexAttrib4uiv");
-    glVertexAttrib4usv_ =         (PFNGLVERTEXATTRIB4USVPROC)         getprocaddress("glVertexAttrib4usv");
-    glVertexAttrib4Nbv_ =         (PFNGLVERTEXATTRIB4NBVPROC)         getprocaddress("glVertexAttrib4Nbv");
-    glVertexAttrib4Niv_ =         (PFNGLVERTEXATTRIB4NIVPROC)         getprocaddress("glVertexAttrib4Niv");
-    glVertexAttrib4Nub_ =         (PFNGLVERTEXATTRIB4NUBPROC)         getprocaddress("glVertexAttrib4Nub");
-    glVertexAttrib4Nubv_ =        (PFNGLVERTEXATTRIB4NUBVPROC)        getprocaddress("glVertexAttrib4Nubv");
-    glVertexAttrib4Nuiv_ =        (PFNGLVERTEXATTRIB4NUIVPROC)        getprocaddress("glVertexAttrib4Nuiv");
-    glVertexAttrib4Nusv_ =        (PFNGLVERTEXATTRIB4NUSVPROC)        getprocaddress("glVertexAttrib4Nusv");
+    glVertexAttrib1f_      =      (PFNGLVERTEXATTRIB1FPROC)           getprocaddress("glVertexAttrib1f");
+    glVertexAttrib1fv_     =      (PFNGLVERTEXATTRIB1FVPROC)          getprocaddress("glVertexAttrib1fv");
+    glVertexAttrib1s_      =      (PFNGLVERTEXATTRIB1SPROC)           getprocaddress("glVertexAttrib1s");
+    glVertexAttrib1sv_     =      (PFNGLVERTEXATTRIB1SVPROC)          getprocaddress("glVertexAttrib1sv");
+    glVertexAttrib2f_      =      (PFNGLVERTEXATTRIB2FPROC)           getprocaddress("glVertexAttrib2f");
+    glVertexAttrib2fv_     =      (PFNGLVERTEXATTRIB2FVPROC)          getprocaddress("glVertexAttrib2fv");
+    glVertexAttrib2s_      =      (PFNGLVERTEXATTRIB2SPROC)           getprocaddress("glVertexAttrib2s");
+    glVertexAttrib2sv_     =      (PFNGLVERTEXATTRIB2SVPROC)          getprocaddress("glVertexAttrib2sv");
+    glVertexAttrib3f_      =      (PFNGLVERTEXATTRIB3FPROC)           getprocaddress("glVertexAttrib3f");
+    glVertexAttrib3fv_     =      (PFNGLVERTEXATTRIB3FVPROC)          getprocaddress("glVertexAttrib3fv");
+    glVertexAttrib3s_      =      (PFNGLVERTEXATTRIB3SPROC)           getprocaddress("glVertexAttrib3s");
+    glVertexAttrib3sv_     =      (PFNGLVERTEXATTRIB3SVPROC)          getprocaddress("glVertexAttrib3sv");
+    glVertexAttrib4f_      =      (PFNGLVERTEXATTRIB4FPROC)           getprocaddress("glVertexAttrib4f");
+    glVertexAttrib4fv_     =      (PFNGLVERTEXATTRIB4FVPROC)          getprocaddress("glVertexAttrib4fv");
+    glVertexAttrib4s_      =      (PFNGLVERTEXATTRIB4SPROC)           getprocaddress("glVertexAttrib4s");
+    glVertexAttrib4sv_     =      (PFNGLVERTEXATTRIB4SVPROC)          getprocaddress("glVertexAttrib4sv");
+    glVertexAttrib4bv_     =      (PFNGLVERTEXATTRIB4BVPROC)          getprocaddress("glVertexAttrib4bv");
+    glVertexAttrib4iv_     =      (PFNGLVERTEXATTRIB4IVPROC)          getprocaddress("glVertexAttrib4iv");
+    glVertexAttrib4ubv_    =      (PFNGLVERTEXATTRIB4UBVPROC)         getprocaddress("glVertexAttrib4ubv");
+    glVertexAttrib4uiv_    =      (PFNGLVERTEXATTRIB4UIVPROC)         getprocaddress("glVertexAttrib4uiv");
+    glVertexAttrib4usv_    =      (PFNGLVERTEXATTRIB4USVPROC)         getprocaddress("glVertexAttrib4usv");
+    glVertexAttrib4Nbv_    =      (PFNGLVERTEXATTRIB4NBVPROC)         getprocaddress("glVertexAttrib4Nbv");
+    glVertexAttrib4Niv_    =      (PFNGLVERTEXATTRIB4NIVPROC)         getprocaddress("glVertexAttrib4Niv");
+    glVertexAttrib4Nub_    =      (PFNGLVERTEXATTRIB4NUBPROC)         getprocaddress("glVertexAttrib4Nub");
+    glVertexAttrib4Nubv_   =      (PFNGLVERTEXATTRIB4NUBVPROC)        getprocaddress("glVertexAttrib4Nubv");
+    glVertexAttrib4Nuiv_   =      (PFNGLVERTEXATTRIB4NUIVPROC)        getprocaddress("glVertexAttrib4Nuiv");
+    glVertexAttrib4Nusv_   =      (PFNGLVERTEXATTRIB4NUSVPROC)        getprocaddress("glVertexAttrib4Nusv");
     glVertexAttribPointer_ =      (PFNGLVERTEXATTRIBPOINTERPROC)      getprocaddress("glVertexAttribPointer");
-    glDrawBuffers_ =              (PFNGLDRAWBUFFERSPROC)              getprocaddress("glDrawBuffers");
-    glGetStringi_ =            (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
+    glDrawBuffers_         =      (PFNGLDRAWBUFFERSPROC)              getprocaddress("glDrawBuffers");
+    glGetStringi_          =      (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
 
     const char *glslstr = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
     conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
@@ -597,24 +597,24 @@ void gl_checkextensions()
         fatal("Hardware does not support at least 4 draw buffers.");
     }
     //OpenGL 3.0
-    glBindVertexArray_ =    (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
+    glBindVertexArray_    = (PFNGLBINDVERTEXARRAYPROC)   getprocaddress("glBindVertexArray");
     glDeleteVertexArrays_ = (PFNGLDELETEVERTEXARRAYSPROC)getprocaddress("glDeleteVertexArrays");
-    glGenVertexArrays_ =    (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
-    glIsVertexArray_ =      (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArray");
+    glGenVertexArrays_    = (PFNGLGENVERTEXARRAYSPROC)   getprocaddress("glGenVertexArrays");
+    glIsVertexArray_      = (PFNGLISVERTEXARRAYPROC)     getprocaddress("glIsVertexArray");
 
-    glBindFragDataLocation_ = (PFNGLBINDFRAGDATALOCATIONPROC)getprocaddress("glBindFragDataLocation");
-    glUniform1ui_ =           (PFNGLUNIFORM1UIPROC)          getprocaddress("glUniform1ui");
-    glUniform2ui_ =           (PFNGLUNIFORM2UIPROC)          getprocaddress("glUniform2ui");
-    glUniform3ui_ =           (PFNGLUNIFORM3UIPROC)          getprocaddress("glUniform3ui");
-    glUniform4ui_ =           (PFNGLUNIFORM4UIPROC)          getprocaddress("glUniform4ui");
-    glUniform1uiv_ =          (PFNGLUNIFORM1UIVPROC)         getprocaddress("glUniform1uiv");
-    glUniform2uiv_ =          (PFNGLUNIFORM2UIVPROC)         getprocaddress("glUniform2uiv");
-    glUniform3uiv_ =          (PFNGLUNIFORM3UIVPROC)         getprocaddress("glUniform3uiv");
-    glUniform4uiv_ =          (PFNGLUNIFORM4UIVPROC)         getprocaddress("glUniform4uiv");
-    glClearBufferiv_ =        (PFNGLCLEARBUFFERIVPROC)       getprocaddress("glClearBufferiv");
-    glClearBufferuiv_ =       (PFNGLCLEARBUFFERUIVPROC)      getprocaddress("glClearBufferuiv");
-    glClearBufferfv_ =        (PFNGLCLEARBUFFERFVPROC)       getprocaddress("glClearBufferfv");
-    glClearBufferfi_ =        (PFNGLCLEARBUFFERFIPROC)       getprocaddress("glClearBufferfi");
+    glBindFragDataLocation_ = (PFNGLBINDFRAGDATALOCATIONPROC)    getprocaddress("glBindFragDataLocation");
+    glUniform1ui_     =           (PFNGLUNIFORM1UIPROC)          getprocaddress("glUniform1ui");
+    glUniform2ui_     =           (PFNGLUNIFORM2UIPROC)          getprocaddress("glUniform2ui");
+    glUniform3ui_     =           (PFNGLUNIFORM3UIPROC)          getprocaddress("glUniform3ui");
+    glUniform4ui_     =           (PFNGLUNIFORM4UIPROC)          getprocaddress("glUniform4ui");
+    glUniform1uiv_    =           (PFNGLUNIFORM1UIVPROC)         getprocaddress("glUniform1uiv");
+    glUniform2uiv_    =           (PFNGLUNIFORM2UIVPROC)         getprocaddress("glUniform2uiv");
+    glUniform3uiv_    =           (PFNGLUNIFORM3UIVPROC)         getprocaddress("glUniform3uiv");
+    glUniform4uiv_    =           (PFNGLUNIFORM4UIVPROC)         getprocaddress("glUniform4uiv");
+    glClearBufferiv_  =           (PFNGLCLEARBUFFERIVPROC)       getprocaddress("glClearBufferiv");
+    glClearBufferuiv_ =           (PFNGLCLEARBUFFERUIVPROC)      getprocaddress("glClearBufferuiv");
+    glClearBufferfv_  =           (PFNGLCLEARBUFFERFVPROC)       getprocaddress("glClearBufferfv");
+    glClearBufferfi_  =           (PFNGLCLEARBUFFERFIPROC)       getprocaddress("glClearBufferfi");
     if(hasext("GL_EXT_gpu_shader4"))
     {
         hasEGPU4 = true;
@@ -625,14 +625,14 @@ void gl_checkextensions()
     }
     glClampColor_ = (PFNGLCLAMPCOLORPROC)getprocaddress("glClampColor");
     glColorMaski_ = (PFNGLCOLORMASKIPROC)getprocaddress("glColorMaski");
-    glEnablei_ =    (PFNGLENABLEIPROC)   getprocaddress("glEnablei");
-    glDisablei_ =   (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
+    glEnablei_    = (PFNGLENABLEIPROC)   getprocaddress("glEnablei");
+    glDisablei_   = (PFNGLENABLEIPROC)   getprocaddress("glDisablei");
     glBeginConditionalRender_ = (PFNGLBEGINCONDITIONALRENDERPROC)getprocaddress("glBeginConditionalRender");
-    glEndConditionalRender_ =   (PFNGLENDCONDITIONALRENDERPROC)  getprocaddress("glEndConditionalRender");
-    glTexParameterIiv_ =     (PFNGLTEXPARAMETERIIVPROC)    getprocaddress("glTexParameterIiv");
-    glTexParameterIuiv_ =    (PFNGLTEXPARAMETERIUIVPROC)   getprocaddress("glTexParameterIuiv");
-    glGetTexParameterIiv_ =  (PFNGLGETTEXPARAMETERIIVPROC) getprocaddress("glGetTexParameterIiv");
-    glGetTexParameterIuiv_ = (PFNGLGETTEXPARAMETERIUIVPROC)getprocaddress("glGetTexParameterIuiv");
+    glEndConditionalRender_   = (PFNGLENDCONDITIONALRENDERPROC)  getprocaddress("glEndConditionalRender");
+    glTexParameterIiv_        = (PFNGLTEXPARAMETERIIVPROC)       getprocaddress("glTexParameterIiv");
+    glTexParameterIuiv_       = (PFNGLTEXPARAMETERIUIVPROC)      getprocaddress("glTexParameterIuiv");
+    glGetTexParameterIiv_     = (PFNGLGETTEXPARAMETERIIVPROC)    getprocaddress("glGetTexParameterIiv");
+    glGetTexParameterIuiv_    = (PFNGLGETTEXPARAMETERIUIVPROC)   getprocaddress("glGetTexParameterIuiv");
 
     glBindRenderbuffer_               = (PFNGLBINDRENDERBUFFERPROC)              getprocaddress("glBindRenderbuffer");
     glDeleteRenderbuffers_            = (PFNGLDELETERENDERBUFFERSPROC)           getprocaddress("glDeleteRenderbuffers");
@@ -718,11 +718,11 @@ void gl_checkextensions()
     glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs);
     maxdualdrawbufs = dualbufs;
     //OpenGL 4.0
-    glMinSampleShading_ = (PFNGLMINSAMPLESHADINGPROC)getprocaddress("glMinSampleShading");
-    glBlendEquationi_ =         (PFNGLBLENDEQUATIONIPROC)        getprocaddress("glBlendEquationi");
+    glMinSampleShading_       = (PFNGLMINSAMPLESHADINGPROC)      getprocaddress("glMinSampleShading");
+    glBlendEquationi_         = (PFNGLBLENDEQUATIONIPROC)        getprocaddress("glBlendEquationi");
     glBlendEquationSeparatei_ = (PFNGLBLENDEQUATIONSEPARATEIPROC)getprocaddress("glBlendEquationSeparatei");
-    glBlendFunci_ =             (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
-    glBlendFuncSeparatei_ =     (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
+    glBlendFunci_             = (PFNGLBLENDFUNCIPROC)            getprocaddress("glBlendFunci");
+    glBlendFuncSeparatei_     = (PFNGLBLENDFUNCSEPARATEIPROC)    getprocaddress("glBlendFuncSeparatei");
     usetexgather = !intel && !nvidia ? 2 : 1;
     //OpenGL 4.x
     if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
@@ -736,10 +736,10 @@ void gl_checkextensions()
 
     if(glversion >= 430)
     {
-        glDebugMessageControl_ =  (PFNGLDEBUGMESSAGECONTROLPROC) getprocaddress("glDebugMessageControl");
-        glDebugMessageInsert_ =   (PFNGLDEBUGMESSAGEINSERTPROC)  getprocaddress("glDebugMessageInsert");
+        glDebugMessageControl_  = (PFNGLDEBUGMESSAGECONTROLPROC) getprocaddress("glDebugMessageControl");
+        glDebugMessageInsert_   = (PFNGLDEBUGMESSAGEINSERTPROC)  getprocaddress("glDebugMessageInsert");
         glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallback");
-        glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLog");
+        glGetDebugMessageLog_   = (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLog");
         hasDBGO = true;
     }
     else
