@@ -3573,6 +3573,26 @@ objects are much less common and also have less operators defined for it,
 befitting a 3d engine where locations of objects in the world are nearly always
 defined as a 3d vector.
 
+An important note about the `vec` object's many member functions is that they
+are destructive: when you call a member function such as in the following
+example, the state of `vec a` is changed by the call to `mul()`:
+```
+vec a(1,1,1);
+
+float b = 2;
+
+// `c` is (2,2,2), but `b` is ALSO (2,2,2) because mul() changes its state
+vec c = a.mul(b);
+```
+To work around this, it is typical to see what appears to be an unnecessary
+constructor call `vec(vec T)`. This is to create a new tempoary object using the
+constructor call which can have member functions applied to it without mangling
+the original vector.
+
+While this property of `vec`'s many member functions is most commonly seen in
+`vec` objects, the same behavior also applies to other related objects, such as
+`vec2` or `ivec`.
+
 #### 8.1.2 `bvec`
 ---
 
