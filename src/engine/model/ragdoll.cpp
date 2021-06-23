@@ -36,13 +36,13 @@ VAR(ragdollwaterexpireoffset, 0, 4000, 30000);
 
 //ragdollskel::tri
 
-bool ragdollskel::tri::shareverts(const tri &t) const
+bool ragdollskel::tri::shareverts(const tri *t) const
 {
     for(int i = 0; i < 3; ++i)
     {
         for(int j = 0; j < 3; ++j)
         {
-            if(vert[i] == t.vert[j])
+            if(vert[i] == t->vert[j])
             {
                 return true;
             }
@@ -79,11 +79,11 @@ void ragdollskel::setupjoints()
         }
         pos.mul(j.weight);
 
-        tri &t = tris[j.tri];
+        tri *t = tris[j.tri];
         matrix4x3 &m = j.orient;
-        const vec &v1 = verts[t.vert[0]].pos,
-                  &v2 = verts[t.vert[1]].pos,
-                  &v3 = verts[t.vert[2]].pos;
+        const vec &v1 = verts[t->vert[0]].pos,
+                  &v2 = verts[t->vert[1]].pos,
+                  &v3 = verts[t->vert[2]].pos;
         m.a = vec(v2).sub(v1).normalize();
         m.c.cross(m.a, vec(v3).sub(v1)).normalize();
         m.b.cross(m.c, m.a);
@@ -103,11 +103,11 @@ void ragdollskel::setupjoints()
 void ragdollskel::setuprotfrictions()
 {
     rotfrictions.shrink(0);
-    for(int i = 0; i < tris.length(); i++)
+    for(uint i = 0; i < tris.size(); i++)
     {
-        for(int j = i+1; j < tris.length(); j++)
+        for(uint j = i+1; j < tris.size(); j++)
         {
-            if(tris[i].shareverts(tris[j]))
+            if(tris[i]->shareverts(tris[j]))
             {
                 rotfriction &r = rotfrictions.add();
                 r.tri[0] = i;
@@ -156,11 +156,11 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
     }
     pos.mul(j.weight);
 
-    ragdollskel::tri &t = skel->tris[j.tri];
+    ragdollskel::tri *t = skel->tris[j.tri];
     matrix4x3 m;
-    const vec &v1 = verts[t.vert[0]].pos,
-              &v2 = verts[t.vert[1]].pos,
-              &v3 = verts[t.vert[2]].pos;
+    const vec &v1 = verts[t->vert[0]].pos,
+              &v2 = verts[t->vert[1]].pos,
+              &v3 = verts[t->vert[2]].pos;
     m.a = vec(v2).sub(v1).normalize();
     m.c.cross(m.a, vec(v3).sub(v1)).normalize();
     m.b.cross(m.c, m.a);
@@ -170,13 +170,13 @@ void ragdolldata::calcanimjoint(int i, const matrix4x3 &anim)
 
 void ragdolldata::calctris()
 {
-    for(int i = 0; i < skel->tris.length(); i++)
+    for(uint i = 0; i < skel->tris.size(); i++)
     {
-        ragdollskel::tri &t = skel->tris[i];
+        ragdollskel::tri *t = skel->tris[i];
         matrix3 &m = tris[i];
-        const vec &v1 = verts[t.vert[0]].pos,
-                  &v2 = verts[t.vert[1]].pos,
-                  &v3 = verts[t.vert[2]].pos;
+        const vec &v1 = verts[t->vert[0]].pos,
+                  &v2 = verts[t->vert[1]].pos,
+                  &v3 = verts[t->vert[2]].pos;
         m.a = vec(v2).sub(v1).normalize();
         m.c.cross(m.a, vec(v3).sub(v1)).normalize();
         m.b.cross(m.c, m.a);
@@ -257,14 +257,14 @@ void ragdolldata::constraindist()
     }
 }
 
-void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, float angle, const vec &axis)
+void ragdolldata::applyrotlimit(ragdollskel::tri *t1, ragdollskel::tri *t2, float angle, const vec &axis)
 {
-    vert &v1a = verts[t1.vert[0]],
-         &v1b = verts[t1.vert[1]],
-         &v1c = verts[t1.vert[2]],
-         &v2a = verts[t2.vert[0]],
-         &v2b = verts[t2.vert[1]],
-         &v2c = verts[t2.vert[2]];
+    vert &v1a = verts[t1->vert[0]],
+         &v1b = verts[t1->vert[1]],
+         &v1c = verts[t1->vert[2]],
+         &v2a = verts[t2->vert[0]],
+         &v2b = verts[t2->vert[1]],
+         &v2c = verts[t2->vert[2]];
     // vec() copy constructor used below to deal with the fact that vec.add/sub() are destructive operations
     vec m1 = vec(v1a.pos).add(v1b.pos).add(v1c.pos).div(3),
         m2 = vec(v2a.pos).add(v2b.pos).add(v2c.pos).div(3),

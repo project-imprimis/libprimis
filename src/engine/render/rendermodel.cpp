@@ -321,10 +321,11 @@ COMMAND(rdeye, "i");
 void rdtri(int *v1, int *v2, int *v3)
 {
     CHECK_RAGDOLL;
-    ragdollskel::tri &t = ragdoll->tris.add();
-    t.vert[0] = *v1;
-    t.vert[1] = *v2;
-    t.vert[2] = *v3;
+    ragdollskel::tri *t = new ragdollskel::tri;
+    t->vert[0] = *v1;
+    t->vert[1] = *v2;
+    t->vert[2] = *v3;
+    ragdoll->tris.emplace_back(t);
 }
 COMMAND(rdtri, "iii");
 
