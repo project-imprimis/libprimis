@@ -345,7 +345,7 @@ void ragdolldata::applyrotfriction(float ts)
         {
             continue;
         }
-        angle *= -(fabs(angle) >= stopangle ? rotfric : 1.0f);
+        angle *= -(std::fabs(angle) >= stopangle ? rotfric : 1.0f);
         applyrotlimit(skel->tris[r.tri[0]], skel->tris[r.tri[1]], angle, axis);
     }
     for(int i = 0; i < skel->verts.length(); i++)
