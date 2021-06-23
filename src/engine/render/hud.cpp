@@ -33,36 +33,6 @@ namespace
 
     float damagedirs[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-    void damagecompass(int n, const vec &loc)
-    {
-        if(!usedamagecompass || minimized)
-        {
-            return;
-        }
-        vec delta(loc);
-        delta.sub(camera1->o);
-        float yaw = 0,
-              pitch;
-        if(delta.magnitude() > 4)
-        {
-            vectoyawpitch(delta, yaw, pitch);
-            yaw -= camera1->yaw;
-        }
-        if(yaw >= 360)
-        {
-            yaw = std::fmod(yaw, 360);
-        }
-        else if(yaw < 0)
-        {
-            yaw = 360 - std::fmod(-yaw, 360);
-        }
-        int dir = (static_cast<int>(yaw+22.5f)%360)/45;
-        damagedirs[dir] += std::max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
-        if(damagedirs[dir]>1)
-        {
-            damagedirs[dir] = 1;
-        }
-    }
     void drawdamagecompass(int w, int h)
     {
         hudnotextureshader->set();
@@ -115,19 +85,6 @@ namespace
     VARP(damagescreenfade, 0, 1000, 1000);
     VARP(damagescreenmin, 1, 10, 1000);
     VARP(damagescreenmax, 1, 100, 1000);
-
-    void damageblend(int n)
-    {
-        if(!damagescreen || minimized)
-        {
-            return;
-        }
-        if(lastmillis > damageblendmillis)
-        {
-            damageblendmillis = lastmillis;
-        }
-        damageblendmillis += std::clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
-    }
 
     void drawdamagescreen(int w, int h)
     {
@@ -451,3 +408,48 @@ FVARP(conscale, 1e-3f, 0.33f, 1e3f); //size of readouts, console, and history
 //note: fps displayed is the average over the statrate duration
 VAR(statrate, 1, 200, 1000);  //update time for fps (not other hud readouts)
 VAR(showhud, 0, 1, 1);
+
+// iengine functionality
+void damagecompass(int n, const vec &loc)
+{
+    if(!usedamagecompass || minimized)
+    {
+        return;
+    }
+    vec delta(loc);
+    delta.sub(camera1->o);
+    float yaw = 0,
+          pitch;
+    if(delta.magnitude() > 4)
+    {
+        vectoyawpitch(delta, yaw, pitch);
+        yaw -= camera1->yaw;
+    }
+    if(yaw >= 360)
+    {
+        yaw = std::fmod(yaw, 360);
+    }
+    else if(yaw < 0)
+    {
+        yaw = 360 - std::fmod(-yaw, 360);
+    }
+    int dir = (static_cast<int>(yaw+22.5f)%360)/45;
+    damagedirs[dir] += std::max(n, damagecompassmin)/static_cast<float>(damagecompassmax);
+    if(damagedirs[dir]>1)
+    {
+        damagedirs[dir] = 1;
+    }
+}
+
+void damageblend(int n)
+{
+    if(!damagescreen || minimized)
+    {
+        return;
+    }
+    if(lastmillis > damageblendmillis)
+    {
+        damageblendmillis = lastmillis;
+    }
+    damageblendmillis += std::clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
+}
