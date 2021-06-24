@@ -15,6 +15,11 @@ CXXFLAGS= -O3 -ffast-math -std=c++17 -march=x86-64 -Wall -fsigned-char -fno-rtti
 	CLIENT_INCLUDES= -Ishared -Iengine $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
 	CLIENT_LIBS= -L/usr/X11R6/lib -lX11 `sdl2-config --libs` -lSDL2_image -lSDL2_mixer -lm -lz -lGL -lrt
 
+COVERAGE_BUILD ?= 0
+
+ifeq (1,$(COVERAGE_BUILD))
+	CXXFLAGS += --coverage -fno-inline -fno-inline-small-functions -fno-default-inline
+endif
 #list of source code files to be compiled
 CLIENT_OBJS= \
 	shared/crypto.o \
@@ -74,16 +79,25 @@ CLIENT_OBJS= \
 
 #default: compiles the library and places it in the same directory as this file
 default: client
+
 #install/emplace: places the library into the /usr/lib directory
 install: client emplace
 
 clean:
 	-$(RM) -r $(CLIENT_OBJS)
 
+#compiles the objects
 $(CLIENT_OBJS): CXXFLAGS += $(CLIENT_INCLUDES)
 
+#change whether -lgcov is included depending on whether the build is intended
+#for gcc coverage checking
+ifeq (1,$(COVERAGE_BUILD))
+client: $(CLIENT_OBJS)
+	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS) -lgcov
+else
 client: $(CLIENT_OBJS)
 	$(CXX) -shared -o libprimis.so $(CLIENT_OBJS)
+endif
 
 emplace:
 	sudo cp libprimis.so /usr/lib/libprimis.so
