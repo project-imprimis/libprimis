@@ -821,8 +821,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 }
                 else
                 {
-                    b.pitchmin = -360*fabs(b.pitchscale) + b.pitchoffset;
-                    b.pitchmax = 360*fabs(b.pitchscale) + b.pitchoffset;
+                    b.pitchmin = -360*std::fabs(b.pitchscale) + b.pitchoffset;
+                    b.pitchmax = 360*std::fabs(b.pitchscale) + b.pitchoffset;
                 }
                 return;
             }
@@ -839,8 +839,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         }
         else
         {
-            mdl.pitchmin = -360*fabs(mdl.pitchscale) + mdl.pitchoffset;
-            mdl.pitchmax = 360*fabs(mdl.pitchscale) + mdl.pitchoffset;
+            mdl.pitchmin = -360*std::fabs(mdl.pitchscale) + mdl.pitchoffset;
+            mdl.pitchmax = 360*std::fabs(mdl.pitchscale) + mdl.pitchoffset;
         }
     }
 
