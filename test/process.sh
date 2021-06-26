@@ -30,8 +30,8 @@ do
 done < output3.txt
 
 #rounding
-total1=$(bc -l <<< "100 * 100 * $points / $total")
+total1=$(bc -l <<< "1000 * 100 * $points / $total")
 total2=$(bc <<< "$total1 / 1")
 
 #final output
-echo $(bc -l <<< "$total2 / 100")
+echo $(bc -l <<< "$total2 / 1000")
