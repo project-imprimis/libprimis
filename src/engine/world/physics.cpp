@@ -419,7 +419,7 @@ static bool fuzzycollidebox(physent *d, const vec &dir, float cutoff, const vec 
 {
     mpr::ModelOBB mdlvol(o, center, radius, yaw, pitch, roll);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
-    if(fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
+    if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
        d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z || d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
     {
         return false;
@@ -514,7 +514,7 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
     mpr::ModelEllipse mdlvol(o, center, radius, yaw, pitch, roll);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
 
-    if(fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
+    if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
        d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z || d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
     {
         return false;
@@ -730,7 +730,7 @@ template<class E>
 static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
 {
     int crad = size/2;
-    if(fabs(d->o.x - co.x - crad) > d->radius + crad || fabs(d->o.y - co.y - crad) > d->radius + crad ||
+    if(std::fabs(d->o.x - co.x - crad) > d->radius + crad || std::fabs(d->o.y - co.y - crad) > d->radius + crad ||
        d->o.z + d->aboveeye < co.z || d->o.z - d->eyeheight > co.z + size)
     {
         return false;
@@ -784,7 +784,7 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
 template<class E>
 static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, const vec &pw)
 {
-    if(w.x && (w.y || w.z) && fabs(pw.x - p.o.x) > p.r.x)
+    if(w.x && (w.y || w.z) && std::fabs(pw.x - p.o.x) > p.r.x)
     {
         vec c = entvol.center();
         float fv = pw.x < p.o.x ? p.o.x-p.r.x : p.o.x+p.r.x,
@@ -795,7 +795,7 @@ static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, c
             return true;
         }
     }
-    if(w.y && (w.x || w.z) && fabs(pw.y - p.o.y) > p.r.y)
+    if(w.y && (w.x || w.z) && std::fabs(pw.y - p.o.y) > p.r.y)
     {
         vec c = entvol.center();
         float fv = pw.y < p.o.y ? p.o.y-p.r.y : p.o.y+p.r.y,
@@ -806,7 +806,7 @@ static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, c
             return true;
         }
     }
-    if(w.z && (w.x || w.y) && fabs(pw.z - p.o.z) > p.r.z)
+    if(w.z && (w.x || w.y) && std::fabs(pw.z - p.o.z) > p.r.z)
     {
         vec c = entvol.center();
         float fv = pw.z < p.o.z ? p.o.z-p.r.z : p.o.z+p.r.z,
@@ -825,7 +825,7 @@ static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const c
 {
     clipplanes &p = getclipbounds(c, co, size, d);
 
-    if(fabs(d->o.x - p.o.x) > p.r.x + d->radius || fabs(d->o.y - p.o.y) > p.r.y + d->radius ||
+    if(std::fabs(d->o.x - p.o.x) > p.r.x + d->radius || std::fabs(d->o.y - p.o.y) > p.r.y + d->radius ||
        d->o.z + d->aboveeye < p.o.z - p.r.z || d->o.z - d->eyeheight > p.o.z + p.r.z)
     {
         return false;
@@ -895,7 +895,7 @@ template<class E>
 static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
 {
     int crad = size/2;
-    if(fabs(d->o.x - co.x - crad) > d->radius + crad || fabs(d->o.y - co.y - crad) > d->radius + crad ||
+    if(std::fabs(d->o.x - co.x - crad) > d->radius + crad || std::fabs(d->o.y - co.y - crad) > d->radius + crad ||
        d->o.z + d->aboveeye < co.z || d->o.z - d->eyeheight > co.z + size)
     {
         return false;
@@ -927,7 +927,7 @@ template<class E>
 static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
 {
     clipplanes &p = getclipbounds(c, co, size, d);
-    if(fabs(d->o.x - p.o.x) > p.r.x + d->radius || fabs(d->o.y - p.o.y) > p.r.y + d->radius ||
+    if(std::fabs(d->o.x - p.o.x) > p.r.x + d->radius || std::fabs(d->o.y - p.o.y) > p.r.y + d->radius ||
        d->o.z + d->aboveeye < p.o.z - p.r.z || d->o.z - d->eyeheight > p.o.z + p.r.z)
     {
         return false;
