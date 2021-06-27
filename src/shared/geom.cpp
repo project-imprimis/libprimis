@@ -47,7 +47,7 @@ bool matrix4::invert(const matrix4 &m, double mindet)
            det4 = -det3x3(a2, a3, a4, b2, b3, b4, c2, c3, c4),
            det = a1*det1 + b1*det2 + c1*det3 + d1*det4;
 
-    if(fabs(det) < mindet)
+    if(std::fabs(det) < mindet)
     {
         return false;
     }
@@ -142,7 +142,7 @@ bool linecylinderintersect(const vec &from, const vec &to, const vec &start, con
           a = dd*nn - nd*nd,
           k = m.squaredlen() - radius*radius,
           c = dd*k - md*md;
-    if(fabs(a) < 0.005f)
+    if(std::fabs(a) < 0.005f)
     {
         if(c > 0)
         {
