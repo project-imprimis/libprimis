@@ -214,7 +214,7 @@ static float whscale, whoffset;
     { \
         float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset; \
         float s = angle - static_cast<int>(angle) - 0.5f; \
-        s *= 8 - fabs(s)*16; \
+        s *= 8 - std::fabs(s)*16; \
         float h = wateramplitude*s-wateroffset; \
         gle::attribf(v1, v2, v3+h); \
         body; \
@@ -234,7 +234,7 @@ static float whscale, whoffset;
 #define VERTWT(vertwt, defbody, body) \
     VERTW(vertwt, defbody, { \
         float v = angle - static_cast<int>(angle+0.25f) - 0.25f; \
-        v *= 8 - fabs(v)*16; \
+        v *= 8 - std::fabs(v)*16; \
         float duv = 0.5f*v; \
         body; \
     })
@@ -299,7 +299,7 @@ int calcwatersubdiv(int x, int y, int z, int size)
     if(camera1->o.x >= x && camera1->o.x < x + size &&
        camera1->o.y >= y && camera1->o.y < y + size)
     {
-        dist = fabs(camera1->o.z - static_cast<float>(z));
+        dist = std::fabs(camera1->o.z - static_cast<float>(z));
     }
     else
     {
@@ -570,7 +570,7 @@ void renderwaterfalls()
         Texture *tex = wslot.sts.inrange(2) ? wslot.sts[2].t : (wslot.sts.inrange(0) ? wslot.sts[0].t : notexture);
         float angle = std::fmod(static_cast<float>(lastmillis/600.0f/(2*M_PI)), 1.0f),
               s = angle - static_cast<int>(angle) - 0.5f;
-        s *= 8 - fabs(s)*16;
+        s *= 8 - std::fabs(s)*16;
         wfwave = vertwater ? wateramplitude*s-wateroffset : -wateroffset;
         wfscroll = 16.0f*lastmillis/1000.0f;
         wfxscale = defaulttexscale/(tex->xs*wslot.scale);
