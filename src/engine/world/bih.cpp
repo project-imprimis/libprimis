@@ -413,7 +413,7 @@ BIH::BIH(vector<mesh> &buildmeshes)
         }
         for(int k = 0; k < 3; ++k)
         {
-            if(fabs(mmax[k] - mmin[k]) < 0.125f)
+            if(std::fabs(mmax[k] - mmin[k]) < 0.125f)
             {
                 float mid = (mmin[k] + mmax[k]) / 2;
                 mmin[k] = mid - 0.0625f;
@@ -681,7 +681,7 @@ static float trisegmentdistance(const vec &a, const vec &b, const vec &c, const 
         return dist; // both P and Q on same side of triangle
     }
     vec e = vec().cross(pq, ap);
-    float det = fabs(dq - dp),
+    float det = std::fabs(dq - dp),
           v = ca.dot(e);
     if(v < 0 || v > det)
     {
@@ -705,7 +705,7 @@ static bool triboxoverlap(const vec &radius, const vec &a, const vec &b, const v
     #define TESTAXIS(v0, v1, v2, e, s, t) { \
         float p = v0.s*v1.t - v0.t*v1.s, \
               q = v2.s*e.t - v2.t*e.s, \
-              r = radius.s*fabs(e.t) + radius.t*fabs(e.s); \
+              r = radius.s*std::fabs(e.t) + radius.t*std::fabs(e.s); \
         if(p < q) \
         { \
             if(q < -r || p > r) \
@@ -802,7 +802,7 @@ void BIH::tricollide<Collide_Ellipse>(const mesh &m, int tidx, physent *d, const
     }
     vec n;
     n.cross(a, b, c).normalize();
-    float pdist = (n.dot(vec(center).sub(a)) - fabs(n.dot(zdir)))*m.scale - radius.x;
+    float pdist = (n.dot(vec(center).sub(a)) - std::fabs(n.dot(zdir)))*m.scale - radius.x;
     if(pdist > 0 || pdist <= dist)
     {
         return;
@@ -844,7 +844,7 @@ void BIH::tricollide<Collide_OrientedBoundingBox>(const mesh &m, int tidx, physe
     n.cross(a, b, c).normalize();
     float pdist = -n.dot(a),
           r = radius.absdot(n);
-    if(fabs(pdist) > r)
+    if(std::fabs(pdist) > r)
     {
         return;
     }
