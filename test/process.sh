@@ -7,7 +7,12 @@ make clean && make
 
 ./libprimis_testsuite
 
-gcov ../src/engine/*/* -r > output.txt
+for FILE in ../src/engine/*/*;
+do
+    cp -al ../src .
+done
+
+gcov -r ../src/engine/*/* > output.txt;
 
 grep 'Lines' output.txt > output2.txt #only get lines with numbers
 grep -Eo '+[.1234567890]*[1234567890]' output2.txt > output3.txt #-Eo: regex & only select grepped text
