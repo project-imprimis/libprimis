@@ -254,25 +254,25 @@ void doscale(GLuint outfbo)
     endtimer(scaletimer);
 }
 
-VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", Init_Load, Change_Shaders));
-VAR(gdepthformat, 1, 0, 0);
-VARF(gstencil, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));
-VARF(gdepthstencil, 0, 2, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders));
-VAR(ghasstencil, 1, 0, 0);
-VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", Init_Load, Change_Shaders));
-VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", Init_Load, Change_Shaders));
-VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));
-VARF(msaaedgedetect, 0, 1, 1, cleanupgbuffer());
-VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", Init_Load, Change_Shaders));
-VARFP(msaatonemap, 0, 0, 1, cleanupgbuffer());
-VARF(msaatonemapblit, 0, 0, 1, cleanupgbuffer());
-VAR(msaamaxsamples, 1, 0, 0);
-VAR(msaamaxdepthtexsamples, 1, 0, 0);
-VAR(msaamaxcolortexsamples, 1, 0, 0);
-VAR(msaaminsamples, 1, 0, 0);
-VAR(msaasamples, 1, 0, 0);
-VAR(msaalight, 1, 0, 0);
-VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));
+VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", Init_Load, Change_Shaders)); // g-buffer linear depth buffer
+VAR(gdepthformat, 1, 0, 0);                                                             // g-buffer depth buffer format
+VARF(gstencil, 0, 0, 1, initwarning("g-buffer setup", Init_Load, Change_Shaders));      // g-buffer stenciling
+VARF(gdepthstencil, 0, 2, 2, initwarning("g-buffer setup", Init_Load, Change_Shaders)); // g-buffer depth buffer stenciling
+VAR(ghasstencil, 1, 0, 0);                                                              // g buffer has stencil
+VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", Init_Load, Change_Shaders));            // multi-sample antialiasing
+VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", Init_Load, Change_Shaders));  // multi-sample antialiasing depth buffer stenciling
+VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));       // multi-sample antialiasing stenciling
+VARF(msaaedgedetect, 0, 1, 1, cleanupgbuffer());                                        // multi-sample antialiasing edge detection
+VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", Init_Load, Change_Shaders));// multi-sample antialiasing linear depth
+VARFP(msaatonemap, 0, 0, 1, cleanupgbuffer());                                          // multi-sample antialiasing tone mapping
+VARF(msaatonemapblit, 0, 0, 1, cleanupgbuffer());                                       // multi-sample antialiasing tone map bit blitting
+VAR(msaamaxsamples, 1, 0, 0);                                                           // multi-sample antialiasing maximum samples
+VAR(msaamaxdepthtexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum depth buffer texture sample count
+VAR(msaamaxcolortexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum color buffer texture sample count
+VAR(msaaminsamples, 1, 0, 0);                                                           // multi-sample antialiasing minimum sample count
+VAR(msaasamples, 1, 0, 0);                                                              // multi-sample antialiasing sampling
+VAR(msaalight, 1, 0, 0);                                                                // multi-sample antialias lights
+VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));     // preserve multi-sample antialiasing
 
 void checkmsaasamples()
 {
