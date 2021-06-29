@@ -99,7 +99,14 @@ Shader *loadbilateralshader(int pass)
     DEF_FORMAT_STRING(name, "bilateral%c%s%d", 'x' + pass, opts, aobilateral);
     return generateshader(name, "bilateralshader \"%s\" %d %d", opts, aobilateral, reduce ? aoreduce : 0);
 }
-
+/* loadbilateralshaders: sets bilateralshader array using bilateralshader()
+ * args:
+ *      void
+ * returns:
+ *      void
+ * other state changes:
+ *      bilateralshader[2] elements point to Shader objects representing the two passes
+ */
 void loadbilateralshaders()
 {
     for(int k = 0; k < 2; ++k)
@@ -108,6 +115,14 @@ void loadbilateralshaders()
     }
 }
 
+/* clearsbilateralshaders: clears bilateralarray
+ * args:
+ *      void
+ * returns:
+ *      void
+ * other state changes:
+ *      bilateralshader[2] elements point to the null pointer
+ */
 void clearbilateralshaders()
 {
     for(int k = 0; k < 2; ++k)
@@ -122,6 +137,16 @@ void setbilateralparams(int radius, float depth)
     LOCALPARAMF(bilateralparams, 1.0f/(M_LN2*2*sigma*sigma), 1.0f/(M_LN2*depth*depth));
 }
 
+/* clearsbilateralshaders: sets values for one of the bilateralshader[] elements
+ * args:
+ *      int radius: the bilateral filter radius to set
+ *      int pass: [0-1] the element of the bilateralshader() array to change
+ *      float depth: the depth of the bilateral filtering to set
+ * returns:
+ *      void
+ * other state changes:
+ *      bilateralshader[2] elements' referenced Shader objects have their parameters changed
+ */
 void setbilateralshader(int radius, int pass, float depth)
 {
     bilateralshader[pass]->set();
