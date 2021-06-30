@@ -1675,6 +1675,8 @@ void drawfogoverlay(int fogmat, float fogbelow, float fogblend, int abovemat)
 
 int drawtex = 0;
 
+/* =========================== minimap functionality ======================== */
+
 GLuint minimaptex = 0;
 vec minimapcenter(0, 0, 0),
     minimapradius(0, 0, 0),
@@ -1867,6 +1869,8 @@ void drawminimap()
 VAR(modelpreviewfov, 10, 20, 100);
 VAR(modelpreviewpitch, -90, -15, 90);
 
+/* ======================== model preview windows =========================== */
+
 namespace modelpreview
 {
     physent *oldcamera;
@@ -1966,6 +1970,8 @@ vec calcmodelpreviewpos(const vec &radius, float &yaw)
 }
 
 int xtraverts, xtravertsva;
+
+/* ============================= core rendering ============================= */
 
 //main scene rendering function
 void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
