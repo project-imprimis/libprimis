@@ -1618,8 +1618,8 @@ float calcfogcull()
 static void setfog(int fogmat, float below = 0, float blend = 1, int abovemat = Mat_Air)
 {
     float start = 0,
-          end = 0;
-    float logscale = 256,
+          end = 0,
+          logscale = 256,
           logblend = std::log(1 + (logscale - 1)*blend) / std::log(logscale);
 
     curfogcolor = vec(0, 0, 0);
@@ -1756,7 +1756,8 @@ void drawminimap()
     {
         glGenTextures(1, &minimaptex);
     }
-    ivec bbmin(worldsize, worldsize, worldsize), bbmax(0, 0, 0);
+    ivec bbmin(worldsize, worldsize, worldsize),
+         bbmax(0, 0, 0);
     for(int i = 0; i < valist.length(); i++)
     {
         vtxarray *va = valist[i];
@@ -1772,7 +1773,8 @@ void drawminimap()
     }
     if(minimapclip)
     {
-        ivec clipmin(worldsize, worldsize, worldsize), clipmax(0, 0, 0);
+        ivec clipmin(worldsize, worldsize, worldsize),
+             clipmax(0, 0, 0);
         clipminimap(clipmin, clipmax);
         for(int k = 0; k < 2; ++k)
         {
