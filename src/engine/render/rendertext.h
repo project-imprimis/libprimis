@@ -26,8 +26,8 @@ inline int fontwidth()
 {
     return FONTH/2;
 }
-constexpr int minreswidth = 640;
-constexpr int minresheight = 480;
+constexpr int minreswidth = 640,
+              minresheight = 480;
 
 extern Shader *textshader;
 extern const matrix4x3 *textmatrix;
