@@ -60,8 +60,25 @@ VARFP(rhtaps, 0, 20, 32, cleanupradiancehints());                               
 VAR(rhdyntex, 0, 0, 1);                                                         //`r`adiance `h`ints `dyn`amic `tex`tures
 VAR(rhdynmm, 0, 0, 1);                                                          //`r`adiance `h`ints `dyn`amic `m`ap `m`odels
 
-VARFR(gidist, 0, 384, 1024, { clearradiancehintscache(); cleardeferredlightshaders(); if(!gidist) cleanupradiancehints(); });
-FVARFR(giscale, 0, 1.5f, 1e3f, { cleardeferredlightshaders(); if(!giscale) cleanupradiancehints(); }); //`g`lobal `i`llumination `scale`
+VARFR(gidist, 0, 384, 1024,
+{
+    clearradiancehintscache();
+    cleardeferredlightshaders();
+    if(!gidist)
+    {
+        cleanupradiancehints();
+    }
+});
+
+FVARFR(giscale, 0, 1.5f, 1e3f,
+{
+    cleardeferredlightshaders();
+    if(!giscale)
+    {
+        cleanupradiancehints();
+    }
+}); //`g`lobal `i`llumination `scale`
+
 FVARR(giaoscale, 0, 3, 1e3f);                                                   //`g`lobal `i`llumination `a`mbient `o`cclusion `scale`: scale of ambient occlusion (corner darkening) on globally illuminated surfaces
 VARFP(gi, 0, 1, 1, { cleardeferredlightshaders(); cleanupradiancehints(); });   //`g`lobal `i`llumination toggle: 0 disables global illumination
 
