@@ -2962,79 +2962,81 @@ namespace UI
         }
     };
 
-    struct ScrollBar : Object
+    class ScrollBar : public Object
     {
-        float offsetx, offsety;
 
-        ScrollBar() : offsetx(0), offsety(0) {}
+        public:
+            ScrollBar() : offsetx(0), offsety(0) {}
 
-        static const char *typestr()
-        {
-            return "#ScrollBar";
-        }
-
-        const char *gettype() const
-        {
-            return typestr();
-        }
-
-        const char *gettypename() const
-        {
-            return typestr();
-        }
-
-        bool target(float, float) //note unnamed function parameters
-        {
-            return true;
-        }
-
-        virtual void scrollto(float, float, bool) {} //note unnamed function parameters
-
-        void hold(float cx, float cy)
-        {
-            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
-            if(button && button->haschildstate(State_Hold))
+            static const char *typestr()
             {
-                movebutton(button, offsetx, offsety, cx - button->x, cy - button->y);
+                return "#ScrollBar";
             }
-        }
 
-        void press(float cx, float cy)
-        {
-            ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
-            if(button && button->haschildstate(State_Press))
+            void hold(float cx, float cy)
             {
-                offsetx = cx - button->x;
-                offsety = cy - button->y;
+                ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
+                if(button && button->haschildstate(State_Hold))
+                {
+                    movebutton(button, offsetx, offsety, cx - button->x, cy - button->y);
+                }
             }
-            else
+
+            void press(float cx, float cy)
             {
-                scrollto(cx, cy, true);
+                ScrollButton *button = static_cast<ScrollButton *>(find(ScrollButton::typestr(), false));
+                if(button && button->haschildstate(State_Press))
+                {
+                    offsetx = cx - button->x;
+                    offsety = cy - button->y;
+                }
+                else
+                {
+                    scrollto(cx, cy, true);
+                }
             }
-        }
 
-        virtual void addscroll(Scroller *scroller, float dir) = 0;
-
-        void addscroll(float dir)
-        {
-            Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
-            if(scroller)
+            void arrowscroll(float dir)
             {
-                addscroll(scroller, dir);
+                addscroll(dir*curtime/1000.0f);
             }
-        }
+            void wheelscroll(float step);
+            virtual int wheelscrolldirection() const
+            {
+                return 1;
+            }
 
-        void arrowscroll(float dir)
-        {
-            addscroll(dir*curtime/1000.0f);
-        }
-        void wheelscroll(float step);
-        virtual int wheelscrolldirection() const
-        {
-            return 1;
-        }
+        protected:
+            const char *gettype() const
+            {
+                return typestr();
+            }
 
-        virtual void movebutton(Object *o, float fromx, float fromy, float tox, float toy) = 0;
+            const char *gettypename() const
+            {
+                return typestr();
+            }
+
+            bool target(float, float) //note unnamed function parameters
+            {
+                return true;
+            }
+
+            virtual void scrollto(float, float, bool) {} //note unnamed function parameters
+            virtual void movebutton(Object *o, float fromx, float fromy, float tox, float toy) = 0;
+            virtual void addscroll(Scroller *scroller, float dir) = 0;
+
+        private:
+            float offsetx, offsety;
+
+            void addscroll(float dir)
+            {
+                Scroller *scroller = static_cast<Scroller *>(findsibling(Scroller::typestr()));
+                if(scroller)
+                {
+                    addscroll(scroller, dir);
+                }
+            }
     };
 
     void Scroller::scrollup(float, float) //note unnamed function parameters
