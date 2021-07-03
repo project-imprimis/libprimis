@@ -7,7 +7,7 @@ extern int showhud;
 extern float conscale;
 
 extern void gl_drawmainmenu();
-extern void gl_drawhud(int crosshairindex);
+extern void gl_drawhud(int crosshairindex, void(* hud2d)());
 extern void writecrosshairs(stream *f);
 extern void resethudshader();
 #endif

@@ -1726,7 +1726,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
     }
 }
 
-void drawminimap()
+void drawminimap(int yaw, int pitch, vec loc)
 {
     if(!showminimap)
     {
@@ -1739,7 +1739,6 @@ void drawminimap()
     }
 
     glerror();
-    renderprogress(0, "generating mini-map...", !renderedframe);
 
     drawtex = Draw_TexMinimap;
 
@@ -1786,8 +1785,8 @@ void drawminimap()
         }
     }
 
-    minimapradius = vec(bbmax).sub(vec(bbmin)).mul(0.5f);
-    minimapcenter = vec(bbmin).add(minimapradius);
+    minimapradius = vec(bbmax).sub(vec(bbmin));
+    minimapcenter = loc;
     minimapradius.x = minimapradius.y = std::max(minimapradius.x, minimapradius.y);
     minimapscale = vec((0.5f - 1.0f/size)/minimapradius.x, (0.5f - 1.0f/size)/minimapradius.y, 1.0f);
 
@@ -1795,9 +1794,9 @@ void drawminimap()
     physent cmcamera = *player;
     cmcamera.reset();
     cmcamera.type = PhysEnt_Camera;
-    cmcamera.o = vec(minimapcenter.x, minimapcenter.y, minimapheight > 0 ? minimapheight : minimapcenter.z + minimapradius.z + 1);
-    cmcamera.yaw = 0;
-    cmcamera.pitch = -90;
+    cmcamera.o = loc;
+    cmcamera.yaw = yaw;
+    cmcamera.pitch = pitch;
     cmcamera.roll = 0;
     camera1 = &cmcamera;
 
@@ -2137,7 +2136,7 @@ void gl_setupframe(bool force)
     setuplights();
 }
 
-void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void (*editfxn)())
+void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void (*editfxn)(), void (*hud2d)())
 {
     synctimers();
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
@@ -2155,7 +2154,7 @@ void gl_drawframe(int crosshairindex, void (*gamefxn)(), void (*hudfxn)(), void 
         gl_drawview(gamefxn, hudfxn, editfxn);
     }
     UI::render();
-    gl_drawhud(crosshairindex);
+    gl_drawhud(crosshairindex, hud2d);
 }
 
 void cleanupgl()

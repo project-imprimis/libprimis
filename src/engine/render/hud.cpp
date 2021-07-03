@@ -257,7 +257,7 @@ void gl_drawmainmenu()
     renderbackground(nullptr, nullptr, nullptr, nullptr, true);
 }
 
-void gl_drawhud(int crosshairindex)
+void gl_drawhud(int crosshairindex, void(* hud2d)())
 {
     int w = hudw,
         h = hudh;
@@ -362,6 +362,7 @@ void gl_drawhud(int crosshairindex)
         {
             resethudshader();
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            hud2d();
             abovehud = std::min(abovehud, conh);
         }
         rendertexturepanel(w, h);
