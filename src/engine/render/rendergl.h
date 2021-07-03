@@ -60,7 +60,6 @@ extern void gl_resize();
 extern void gl_setupframe(bool force = false);
 extern void gl_drawframe();
 extern void cleanupgl();
-extern void drawminimap();
 extern void enablepolygonoffset(GLenum type);
 extern void disablepolygonoffset(GLenum type);
 extern bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, float &sx2, float &sy2, float &sz1, float &sz2);

@@ -1694,9 +1694,9 @@ void clearminimap()
 VARR(minimapheight, 0, 0, 2<<16);
 CVARR(minimapcolor, 0);
 VARR(minimapclip, 0, 0, 1);
-VARFP(minimapsize, 7, 8, 10, { if(minimaptex) drawminimap(); });
-VARFP(showminimap, 0, 1, 1, { if(minimaptex) drawminimap(); });
-CVARFP(nominimapcolor, 0x101010, { if(minimaptex && !showminimap) drawminimap(); });
+VARP(minimapsize, 7, 8, 10);
+VARP(showminimap, 0, 1, 1);
+CVARP(nominimapcolor, 0x101010);
 
 void bindminimap()
 {

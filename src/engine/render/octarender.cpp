@@ -2484,7 +2484,6 @@ void allchanged(bool load)
     {
         genshadowmeshes();
         seedparticles();
-        drawminimap();
     }
 }
 
