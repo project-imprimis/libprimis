@@ -1769,50 +1769,55 @@ namespace UI
         }
     };
 
-    struct Gradient : FillColor
+    class Gradient : public FillColor
     {
-        enum { VERTICAL, HORIZONTAL };
+        public:
+            enum { VERTICAL, HORIZONTAL };
 
-        int dir;
-        Color color2;
+            int dir;
 
-        void setup(int type_, int dir_, const Color &color_, const Color &color2_, float minw_ = 0, float minh_ = 0)
-        {
-            FillColor::setup(type_, color_, minw_, minh_);
-            dir = dir_;
-            color2 = color2_;
-        }
-
-        static const char *typestr() { return "#Gradient"; }
-        const char *gettype() const { return typestr(); }
-
-        void startdraw()
-        {
-            hudnotextureshader->set();
-            gle::defvertex(2);
-            Color::def();
-        }
-
-        void draw(float sx, float sy)
-        {
-            changedraw(Change_Shader | Change_Color | Change_Blend);
-            if(type==MODULATE)
+            void setup(int type_, int dir_, const Color &color_, const Color &color2_, float minw_ = 0, float minh_ = 0)
             {
-                modblend();
+                FillColor::setup(type_, color_, minw_, minh_);
+                dir = dir_;
+                color2 = color2_;
             }
-            else
-            {
-                resetblend();
-            }
-            gle::begin(GL_TRIANGLE_STRIP);
-            gle::attribf(sx+w, sy);   (dir == HORIZONTAL ? color2 : color).attrib();
-            gle::attribf(sx,   sy);   color.attrib();
-            gle::attribf(sx+w, sy+h); color2.attrib();
-            gle::attribf(sx,   sy+h); (dir == HORIZONTAL ? color : color2).attrib();
-            gle::end();
 
-            Object::draw(sx, sy);
-        }
+            static const char *typestr() { return "#Gradient"; }
+
+        protected:
+            const char *gettype() const { return typestr(); }
+
+            void startdraw()
+            {
+                hudnotextureshader->set();
+                gle::defvertex(2);
+                Color::def();
+            }
+
+        private:
+            Color color2;
+
+            void draw(float sx, float sy)
+            {
+                changedraw(Change_Shader | Change_Color | Change_Blend);
+                if(type==MODULATE)
+                {
+                    modblend();
+                }
+                else
+                {
+                    resetblend();
+                }
+                gle::begin(GL_TRIANGLE_STRIP);
+                gle::attribf(sx+w, sy);   (dir == HORIZONTAL ? color2 : color).attrib();
+                gle::attribf(sx,   sy);   color.attrib();
+                gle::attribf(sx+w, sy+h); color2.attrib();
+                gle::attribf(sx,   sy+h); (dir == HORIZONTAL ? color : color2).attrib();
+                gle::end();
+
+                Object::draw(sx, sy);
+            }
     };
 
     struct Line : Filler
