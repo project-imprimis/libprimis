@@ -2507,59 +2507,64 @@ namespace UI
 
     struct Text : Object
     {
-        float scale, wrap;
-        Color color;
+        public:
 
-        void setup(float scale_ = 1, const Color &color_ = Color(255, 255, 255), float wrap_ = -1)
-        {
-            Object::setup();
+            void setup(float scale_ = 1, const Color &color_ = Color(255, 255, 255), float wrap_ = -1)
+            {
+                Object::setup();
 
-            scale = scale_;
-            color = color_;
-            wrap = wrap_;
-        }
+                scale = scale_;
+                color = color_;
+                wrap = wrap_;
+            }
 
-        static const char *typestr()
-        {
-            return "#Text";
-        }
+            virtual const char *getstr() const
+            {
+                return "";
+            }
 
-        const char *gettype() const
-        {
-            return typestr();
-        }
+        protected:
+            const char *gettype() const
+            {
+                return typestr();
+            }
 
-        float drawscale() const
-        {
-            return scale / FONTH;
-        }
+            void draw(float sx, float sy)
+            {
+                Object::draw(sx, sy);
 
-        virtual const char *getstr() const
-        {
-            return "";
-        }
+                changedraw(Change_Shader | Change_Color);
 
-        void draw(float sx, float sy)
-        {
-            Object::draw(sx, sy);
+                float oldscale = textscale;
+                textscale = drawscale();
+                draw_text(getstr(), sx/textscale, sy/textscale, color.r, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
+                textscale = oldscale;
+            }
 
-            changedraw(Change_Shader | Change_Color);
+            void layout()
+            {
+                Object::layout();
 
-            float oldscale = textscale;
-            textscale = drawscale();
-            draw_text(getstr(), sx/textscale, sy/textscale, color.r, color.g, color.b, color.a, -1, wrap >= 0 ? static_cast<int>(wrap/textscale) : -1);
-            textscale = oldscale;
-        }
+                float k = drawscale(), tw, th;
+                text_boundsf(getstr(), tw, th, wrap >= 0 ? static_cast<int>(wrap/k) : -1);
+                w = std::max(w, tw*k);
+                h = std::max(h, th*k);
+            }
 
-        void layout()
-        {
-            Object::layout();
+        private:
+            float scale, wrap;
+            Color color;
 
-            float k = drawscale(), tw, th;
-            text_boundsf(getstr(), tw, th, wrap >= 0 ? static_cast<int>(wrap/k) : -1);
-            w = std::max(w, tw*k);
-            h = std::max(h, th*k);
-        }
+            static const char *typestr()
+            {
+                return "#Text";
+            }
+
+            float drawscale() const
+            {
+                return scale / FONTH;
+            }
+
     };
 
     struct TextString : Text
