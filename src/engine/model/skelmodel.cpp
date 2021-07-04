@@ -1,4 +1,14 @@
-
+/* skelmodel.cpp: implementation for the skeletal animation object
+ *
+ * the skelmodel object handles the behavior of animated skeletal models -- such
+ * as the ones used by the player and bots
+ *
+ * for the procedural modification of skeletal models using ragdoll physics, see
+ * ragdoll.h
+ *
+ * this file contains the implementation for the skelmodel object, see skelmodel.h
+ * for the class definition
+ */
 #include "engine.h"
 
 #include "interface/console.h"
