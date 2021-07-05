@@ -1,3 +1,10 @@
+/* renderlights.cpp: render lights to deferred buffers
+ *
+ * light entities and sunlight in the game is rendered to deferred buffers
+ * "g-buffers" which are used to compose a scene
+ * lights are cached using a shadow map to allow rendering less than once per
+ * frame, improving performance and light count allowed
+ */
 #include "engine.h"
 
 #include "aa.h"
