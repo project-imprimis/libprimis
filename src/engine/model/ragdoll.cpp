@@ -278,8 +278,8 @@ void ragdolldata::applyrotlimit(ragdollskel::tri *t1, ragdollskel::tri *t2, floa
     angle /= w1 + w2 + 1e-9f;
     float a1 = angle*w2,
           a2 = -angle*w1,
-          s1 = sinf(a1),
-          s2 = sinf(a2);
+          s1 = std::sin(a1),
+          s2 = std::sin(a2);
     vec c1 = vec(axis).mul(1 - cosf(a1)),
         c2 = vec(axis).mul(1 - cosf(a2));
     v1a.newpos.add(vec().cross(c1, q1a).madd(q1a, s1).add(v1a.pos));
@@ -461,7 +461,7 @@ void ragdolldata::move(dynent *pl, float ts)
         dpos.z -= gravity*ts*ts;
         if(water)
         {
-            dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
+            dpos.z += 0.25f*std::sin(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
         }
         dpos.mul(std::pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
         v.oldpos = v.pos;
