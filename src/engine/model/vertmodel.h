@@ -658,11 +658,11 @@ struct vertcommands : modelcommands<MDL, struct MDL::vertmesh>
         }
         part &mdl = *static_cast<part *>(MDL::loading->parts.last());
         float cx = *rx ? std::cos(*rx/2*RAD) : 1,
-              sx = *rx ? sinf(*rx/2*RAD) : 0,
+              sx = *rx ? std::sin(*rx/2*RAD) : 0,
               cy = *ry ? std::cos(*ry/2*RAD) : 1,
-              sy = *ry ? sinf(*ry/2*RAD) : 0,
+              sy = *ry ? std::sin(*ry/2*RAD) : 0,
               cz = *rz ? std::cos(*rz/2*RAD) : 1,
-              sz = *rz ? sinf(*rz/2*RAD) : 0;
+              sz = *rz ? std::sin(*rz/2*RAD) : 0;
         //matrix m created from (matrix3 created from quat) + (vec) appended afterwards
         matrix4x3 m(static_cast<matrix3>(quat(sx*cy*cz - cx*sy*sz,
                                               cx*sy*cz + sx*cy*sz,
