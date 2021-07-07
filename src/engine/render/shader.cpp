@@ -908,8 +908,9 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     vsv.put(vs, strlen(vs)+1);
     psv.put(ps, strlen(ps)+1);
 
-    static constexpr int len  = strlen("//:variant"),
-                         olen = strlen("override");
+    //cannot be constexpr-- strlen is not compile time
+    static const int len  = strlen("//:variant");
+                     olen = strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
         vspragma = strstr(vspragma, "//:variant");
@@ -983,7 +984,8 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
     {
         return;
     }
-    static constexpr int pragmalen = strlen("//:fog");
+    //cannot be constexpr -- strlen is not compile time
+    static const int pragmalen = strlen("//:fog");
     const char *vsmain = findglslmain(vs),
                *vsend  = strrchr(vs, '}');
     if(vsmain && vsend)
