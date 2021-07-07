@@ -467,13 +467,6 @@ class animmodel : public model
             Link_Reuse
         };
 
-        virtual int linktype(animmodel *m, part *p) const
-        {
-            return Link_Tag;
-        }
-
-        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray);
-
         static int intersectresult, intersectmode;
         static float intersectdist, intersectscale;
 
@@ -589,7 +582,15 @@ class animmodel : public model
         static void disabletc();
         static void disablevbo();
         void endrender();
+    protected:
+        virtual int linktype(animmodel *m, part *p) const
+        {
+            return Link_Tag;
+        }
+
     private:
+        void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray);
+
         static bool enablecullface, enabledepthoffset;
         static vec4 colorscale;
         static GLuint lastvbuf, lasttcbuf, lastxbuf, lastbbuf, lastebuf;
