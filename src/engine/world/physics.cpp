@@ -162,9 +162,9 @@ bool ellipsecollide(physent *d, const vec &dir, const vec &o, const vec &center,
           angle = atan2f(y, x),
           dangle = angle-d->yaw*RAD,
           eangle = angle-yaw*RAD,
-          dx = d->xradius*cosf(dangle),
+          dx = d->xradius*std::cos(dangle),
           dy = d->yradius*std::sin(dangle),
-          ex = xr*cosf(eangle),
+          ex = xr*std::cos(eangle),
           ey = yr*std::sin(eangle),
           dist = sqrtf(x*x + y*y) - sqrtf(dx*dx + dy*dy) - sqrtf(ex*ex + ey*ey);
     if(dist < 0)
@@ -1306,7 +1306,7 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
     if(move)
     {
         m.x = move*-std::sin(RAD*yaw);
-        m.y = move*cosf(RAD*yaw);
+        m.y = move*std::cos(RAD*yaw);
     }
     else
     {
@@ -1315,8 +1315,8 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
 
     if(pitch)
     {
-        m.x *= cosf(RAD*pitch);
-        m.y *= cosf(RAD*pitch);
+        m.x *= std::cos(RAD*pitch);
+        m.y *= std::cos(RAD*pitch);
         m.z = move*std::sin(RAD*pitch);
     }
     else
@@ -1326,7 +1326,7 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
 
     if(strafe)
     {
-        m.x += strafe*cosf(RAD*yaw);
+        m.x += strafe*std::cos(RAD*yaw);
         m.y += strafe*std::sin(RAD*yaw);
     }
 }
