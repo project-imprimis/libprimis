@@ -909,7 +909,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     psv.put(ps, strlen(ps)+1);
 
     //cannot be constexpr-- strlen is not compile time
-    static const int len  = strlen("//:variant");
+    static const int len  = strlen("//:variant"),
                      olen = strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
