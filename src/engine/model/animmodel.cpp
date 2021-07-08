@@ -404,8 +404,8 @@ void animmodel::Mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t
 
 void animmodel::Mesh::fixqtangent(quat &q, float bt)
 {
-    static constexpr float bias = -1.5f/65535,
-                           biasscale = sqrtf(1 - bias*bias);
+    static constexpr float bias = -1.5f/65535;
+    static const float biasscale = sqrtf(1 - bias*bias); //cannot be constexpr, sqrtf is not compile time
     if(bt < 0)
     {
         if(q.w >= 0)
