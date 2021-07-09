@@ -227,21 +227,21 @@ namespace
                     return -1;
                 }
                 verts.add(v);
-                chain.add(table[h]);
+                chain.emplace_back(table[h]);
                 return table[h] = verts.length()-1;
             }
 
             void clearverts()
             {
                 memset(table, -1, sizeof(table));
-                chain.setsize(0);
+                chain.clear();
                 verts.setsize(0);
             }
         private:
             static const int hashsize = 1<<13;
             int table[hashsize];
 
-            vector<int> chain;
+            std::vector<int> chain;
 
             int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const bvec4 &tangent = bvec4(128, 128, 128, 128))
             {
