@@ -1381,7 +1381,7 @@ namespace
         uchar index, flags;
     };
 
-    vector<cubeedge> cubeedges;
+    std::vector<cubeedge> cubeedges;
     hashtable<edgegroup, int> edgegroups(1<<13);
 
     void gencubeedges(cube &c, const ivec &co, int size)
@@ -1505,21 +1505,21 @@ namespace
                             }
                             if(prev>=0)
                             {
-                                cubeedges[prev].next = cubeedges.length();
+                                cubeedges[prev].next = cubeedges.size();
                             }
                             else
                             {
-                                *exists = cubeedges.length();
+                                *exists = cubeedges.size();
                             }
                         }
                     }
                     else
                     {
-                        edgegroups[g] = cubeedges.length();
+                        edgegroups[g] = cubeedges.size();
                     }
                     if(insert)
                     {
-                        cubeedges.add(ce);
+                        cubeedges.push_back(ce);
                     }
                 }
             }
@@ -2428,7 +2428,7 @@ void findtjoints()
     gencubeedges();
     tjoints.clear();
     ENUMERATE_KT(edgegroups, edgegroup, g, int, e, findtjoints(e, g));
-    cubeedges.setsize(0);
+    cubeedges.clear();
     edgegroups.clear();
 }
 
