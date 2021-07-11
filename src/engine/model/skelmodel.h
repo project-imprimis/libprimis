@@ -786,9 +786,9 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         int i = mdl.meshes ? static_cast<meshgroup *>(mdl.meshes)->skel->findbone(name) : -1;
         if(i >= 0)
         {
-            float cx = *rx ? std::cos(*rx/2*RAD) : 1, sx = *rx ? sinf(*rx/2*RAD) : 0,
-                  cy = *ry ? std::cos(*ry/2*RAD) : 1, sy = *ry ? sinf(*ry/2*RAD) : 0,
-                  cz = *rz ? std::cos(*rz/2*RAD) : 1, sz = *rz ? sinf(*rz/2*RAD) : 0;
+            float cx = *rx ? std::cos(*rx/2*RAD) : 1, sx = *rx ? std::sin(*rx/2*RAD) : 0,
+                  cy = *ry ? std::cos(*ry/2*RAD) : 1, sy = *ry ? std::sin(*ry/2*RAD) : 0,
+                  cz = *rz ? std::cos(*rz/2*RAD) : 1, sz = *rz ? std::sin(*rz/2*RAD) : 0;
             matrix4x3 m(matrix3(quat(sx*cy*cz - cx*sy*sz, cx*sy*cz + sx*cy*sz, cx*cy*sz - sx*sy*cz, cx*cy*cz + sx*sy*sz)),
                         vec(*tx, *ty, *tz));
             static_cast<meshgroup *>(mdl.meshes)->skel->addtag(tagname, i, m);
