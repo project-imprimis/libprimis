@@ -1966,7 +1966,7 @@ namespace modelpreview
 vec calcmodelpreviewpos(const vec &radius, float &yaw)
 {
     yaw = std::fmod(lastmillis/10000.0f*360.0f, 360.0f);
-    float dist = std::max(radius.magnitude2()/aspect, radius.magnitude())/std::sin((fovy/2*RAD);
+    float dist = std::max(radius.magnitude2()/aspect, radius.magnitude())/std::sin(fovy/2*RAD);
     return vec(0, dist, 0).rotate_around_x(camera1->pitch*RAD);
 }
 

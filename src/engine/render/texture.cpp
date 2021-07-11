@@ -2841,7 +2841,7 @@ void texangle_(float *a)
         return;
     }
     Slot &s = *defslot;
-    s.variants->angle = vec(*a, sinf(RAD**a), std::cos((RAD**a));
+    s.variants->angle = vec(*a, sinf(RAD**a), std::cos(RAD**a));
     propagatevslot(s.variants, 1 << VSlot_Angle);
 }
 COMMANDN(texangle, texangle_, "f");
