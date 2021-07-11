@@ -69,7 +69,7 @@ namespace //internal functionality not seen by other files
     {
         for(int i = 0; i < numgrassoffsets; ++i)
         {
-            grassanimoffsets[i] = grassanimscale*std::sin((2*M_PI*(grassoffsets[i] + lastmillis/static_cast<float>(grassanimmillis)));
+            grassanimoffsets[i] = grassanimscale*std::sin(2*M_PI*(grassoffsets[i] + lastmillis/static_cast<float>(grassanimmillis)));
         }
         lastgrassanim = lastmillis;
     }
