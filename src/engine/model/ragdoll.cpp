@@ -280,8 +280,8 @@ void ragdolldata::applyrotlimit(ragdollskel::tri *t1, ragdollskel::tri *t2, floa
           a2 = -angle*w1,
           s1 = std::sin(a1),
           s2 = std::sin(a2);
-    vec c1 = vec(axis).mul(1 - std::cos((a1)),
-        c2 = vec(axis).mul(1 - std::cos((a2));
+    vec c1 = vec(axis).mul(1 - std::cos(a1)),
+        c2 = vec(axis).mul(1 - std::cos(a2));
     v1a.newpos.add(vec().cross(c1, q1a).madd(q1a, s1).add(v1a.pos));
     v1a.weight++;
     v1b.newpos.add(vec().cross(c1, q1b).madd(q1b, s1).add(v1b.pos));
