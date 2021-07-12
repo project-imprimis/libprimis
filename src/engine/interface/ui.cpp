@@ -75,27 +75,28 @@ namespace UI
         gle::end();
     }
 
-    struct ClipArea
+    class ClipArea
     {
-        float x1, y1, x2, y2;
+        public:
+            ClipArea(float x, float y, float w, float h) : x1(x), y1(y), x2(x+w), y2(y+h) {}
 
-        ClipArea(float x, float y, float w, float h) : x1(x), y1(y), x2(x+w), y2(y+h) {}
+            void intersect(const ClipArea &c)
+            {
+                x1 = std::max(x1, c.x1);
+                y1 = std::max(y1, c.y1);
+                x2 = std::max(x1, std::min(x2, c.x2));
+                y2 = std::max(y1, std::min(y2, c.y2));
 
-        void intersect(const ClipArea &c)
-        {
-            x1 = std::max(x1, c.x1);
-            y1 = std::max(y1, c.y1);
-            x2 = std::max(x1, std::min(x2, c.x2));
-            y2 = std::max(y1, std::min(y2, c.y2));
+            }
 
-        }
+            bool isfullyclipped(float x, float y, float w, float h)
+            {
+                return x1 == x2 || y1 == y2 || x >= x2 || y >= y2 || x+w <= x1 || y+h <= y1;
+            }
 
-        bool isfullyclipped(float x, float y, float w, float h)
-        {
-            return x1 == x2 || y1 == y2 || x >= x2 || y >= y2 || x+w <= x1 || y+h <= y1;
-        }
-
-        void scissor();
+            void scissor();
+        private:
+            float x1, y1, x2, y2;
     };
 
     static std::vector<ClipArea> clipstack;
