@@ -96,7 +96,13 @@ namespace
         return t;
     }
 
-    SVARFR(skybox, "", { if(skybox[0]) loadsky(skybox, sky); });
+    SVARFR(skybox, "",
+    {
+        if(skybox[0])
+        {
+            loadsky(skybox, sky);
+        }
+    });
     CVARR(skyboxcolor, 0xFFFFFF);
     FVARR(skyboxoverbright, 1, 2, 16);
     FVARR(skyboxoverbrightmin, 0, 1, 16);
@@ -105,7 +111,13 @@ namespace
     VARR (skyboxyaw, 0, 0, 360);
 
     FVARR(cloudclip, 0, 0.5f, 1);
-    SVARFR(cloudlayer, "", { if(cloudlayer[0]) cloudoverlay = loadskyoverlay(cloudlayer); });
+    SVARFR(cloudlayer, "",
+    {
+        if(cloudlayer[0])
+        {
+            cloudoverlay = loadskyoverlay(cloudlayer);
+        }
+    });
     FVARR(cloudoffsetx, 0, 0, 1);
     FVARR(cloudoffsety, 0, 0, 1);
     FVARR(cloudscrollx, -16, 0, 16);
