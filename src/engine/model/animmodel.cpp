@@ -195,7 +195,7 @@ void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned
     {
         float curpulse = lastmillis*glowpulse;
         curpulse -= std::floor(curpulse);
-        curglow += glowdelta*2*fabs(curpulse - 0.5f);
+        curglow += glowdelta*2*std::fabs(curpulse - 0.5f);
     }
     LOCALPARAMF(maskscale, spec, gloss, curglow);
 }
