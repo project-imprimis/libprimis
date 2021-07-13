@@ -84,6 +84,7 @@ void loadaoshaders()
     ambientobscuranceshader = loadambientobscuranceshader();
 }
 
+//un-sets the ambientobscuranceshader gvar defined by loadaoshaders
 void clearaoshaders()
 {
     ambientobscuranceshader = nullptr;
@@ -130,6 +131,7 @@ void setupao(int w, int h)
         createtexture(aotex[i], upscale && i ? w : aow, upscale && i >= 2 ? h : aoh, nullptr, 3, i < 2 ? packfilter : 1, i < 2 ? packformat : format, GL_TEXTURE_RECTANGLE);
         glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[i]);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[i], 0);
+        //make sure we have a framebuffer
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating AO buffer!");
@@ -154,6 +156,7 @@ void setupao(int w, int h)
         createtexture(aotex[3], aow, aoh, nullptr, 3, 0, aodepthformat > 1 ? GL_R32F : (aodepthformat ? GL_R16F : GL_RGBA8), GL_TEXTURE_RECTANGLE);
         glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[3]);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[3], 0);
+        //make sure we have a framebuffer
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating AO buffer!");
@@ -199,6 +202,10 @@ void cleanupao()
     clearbilateralshaders();
 }
 
+/* initao
+ *
+ * sets the ao buffer depth format flag depending on the aofloatdepth variable
+ */
 void initao()
 {
     aodepthformat = aofloatdepth ? aofloatdepth : 0;
