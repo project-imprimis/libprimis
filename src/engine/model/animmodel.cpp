@@ -213,8 +213,6 @@ Shader *animmodel::skin::loadshader()
             body; \
         } while(0)
     #define SETMODELSHADER(m, name) DOMODELSHADER(name, (m).setshader(name##shader))
-    #undef DOMODELSHADER
-    //==========================================================================
     if(shadowmapping == ShadowMap_Reflect)
     {
         if(rsmshader)
@@ -369,6 +367,9 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     setshader(b, as);
     setshaderparams(b, as);
 }
+
+#undef DOMODELSHADER
+//==============================================================================
 
 //Mesh
 
