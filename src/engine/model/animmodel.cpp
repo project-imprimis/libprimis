@@ -202,14 +202,19 @@ void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned
 
 Shader *animmodel::skin::loadshader()
 {
+    //============================================================ DOMODELSHADER
     #define DOMODELSHADER(name, body) \
         do { \
             static Shader *name##shader = nullptr; \
-            if(!name##shader) name##shader = useshaderbyname(#name); \
+            if(!name##shader) \
+            { \
+                name##shader = useshaderbyname(#name); \
+            } \
             body; \
         } while(0)
     #define SETMODELSHADER(m, name) DOMODELSHADER(name, (m).setshader(name##shader))
-
+    #undef DOMODELSHADER
+    //==========================================================================
     if(shadowmapping == ShadowMap_Reflect)
     {
         if(rsmshader)
