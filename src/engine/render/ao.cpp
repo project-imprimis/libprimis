@@ -9,6 +9,7 @@
 
 #include "engine.h"
 
+#include "ao.h"
 #include "rendergl.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
@@ -21,7 +22,6 @@ GLuint aofbo[4] = { 0, 0, 0, 0 },
        aotex[4] = { 0, 0, 0, 0 },
        aonoisetex = 0;
 
-void cleanupao(); //forward decl needed for VAR macros
 VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); });
 FVARR(aoradius, 0, 5, 256);
 FVAR(aocutoff, 0, 2.0f, 1e3f);
