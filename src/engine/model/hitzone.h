@@ -228,8 +228,8 @@ inline void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, 
 void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray)
 {
     vec invray(ray.x ? 1/ray.x : 1e16f, ray.y ? 1/ray.y : 1e16f, ray.z ? 1/ray.z : 1e16f);
-    float tmin, tmax;
-    float t1 = (bbmin.x - o.x)*invray.x,
+    float tmin, tmax,
+          t1 = (bbmin.x - o.x)*invray.x,
           t2 = (bbmax.x - o.x)*invray.x;
     if(invray.x > 0)
     {
@@ -936,7 +936,13 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
         info.add(&zi);
     }
     int leafzones = info.length();
-    ENUMERATE(infomap, skelzoneinfo, zi, { if(zi.index < 0) info.add(&zi); });
+    ENUMERATE(infomap, skelzoneinfo, zi,
+    {
+        if(zi.index < 0)
+        {
+            info.add(&zi);
+        }
+    });
     for(int i = leafzones; i < info.length(); i++)
     {
         skelzoneinfo &zi = *info[i];
