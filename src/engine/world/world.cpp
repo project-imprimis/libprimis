@@ -12,7 +12,6 @@
 
 #include "interface/console.h"
 #include "interface/menus.h"
-#include "interface/sound.h"
 
 #include "model/model.h"
 
@@ -611,7 +610,6 @@ void splitocta(cube *c, int size)
 void resetmap()
 {
     clearoverrides();
-    clearmapsounds();
     clearlights();
     clearslots();
     clearparticles();

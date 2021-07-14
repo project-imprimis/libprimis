@@ -7,7 +7,6 @@
 #include "control.h"
 #include "input.h"
 #include "menus.h"
-#include "sound.h"
 
 #include "render/rendergl.h" //needed to get camera position
 
@@ -660,24 +659,6 @@ void clear_sound()
     resetchannels();
 }
 
-void stopmapsounds()
-{
-    for(int i = 0; i < channels.length(); i++)
-    {
-        if(channels[i].inuse && channels[i].ent)
-        {
-            Mix_HaltChannel(i);
-            freechannel(i);
-        }
-    }
-}
-
-void clearmapsounds()
-{
-    stopmapsounds();
-    mapsounds.clear();
-}
-
 void stopmapsound(extentity *e)
 {
     for(int i = 0; i < channels.length(); i++)
@@ -687,31 +668,6 @@ void stopmapsound(extentity *e)
         {
             Mix_HaltChannel(i);
             freechannel(i);
-        }
-    }
-}
-
-//check map entities to see what sounds need to be played because of them
-void checkmapsounds()
-{
-    const vector<extentity *> &ents = entities::getents();
-    for(int i = 0; i < ents.length(); i++)
-    {
-        extentity &e = *ents[i];
-        if(e.type!=EngineEnt_Sound) //ents that aren't soundents don't make sound (!)
-        {
-            continue;
-        }
-        if(camera1->o.dist(e.o) < e.attr2) //if distance to entity < ent attr 2 (radius)
-        {
-            if(!(e.flags&EntFlag_Sound))
-            {
-                playsound(e.attr1, nullptr, &e, Music_Map, -1);
-            }
-        }
-        else if(e.flags&EntFlag_Sound)
-        {
-            stopmapsound(&e);
         }
     }
 }
@@ -797,42 +753,6 @@ void syncchannels()
 
 VARP(minimizedsounds, 0, 0, 1); //toggles playing sound when window minimized
 
-void updatesounds()
-{
-    if(nosound) //don't update sounds if disabled
-    {
-        return;
-    }
-    if(minimized && !minimizedsounds)//minimizedsounds check
-    {
-        stopsounds();
-    }
-    else
-    {
-        reclaimchannels(); //cull channels first
-        if(mainmenu) //turn off map sounds if you reach main menu
-        {
-            stopmapsounds();
-        }
-        else
-        {
-            checkmapsounds();
-        }
-        syncchannels();
-    }
-    if(music)
-    {
-        if(!Mix_PlayingMusic())
-        {
-            musicdone();
-        }
-        else if(Mix_PausedMusic())
-        {
-            Mix_ResumeMusic();
-        }
-    }
-}
-
 //number of sounds before the game will refuse to play another sound (with `playsound()`);
 //set to 0 to disable checking (0 does not set no sounds to be playable)
 VARP(maxsoundsatonce, 0, 7, 100);
@@ -862,7 +782,7 @@ void preloadmapsounds()
     }
 }
 
-int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int fade, int chanid, int radius, int expire)
+int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int flags = 0, int loops = 0, int fade = 0, int chanid = -1, int radius = 0, int expire = -1)
 {
     if(nosound || !soundvol || (minimized && !minimizedsounds)) //mute check
     {
@@ -1008,18 +928,6 @@ int playsound(int n, const vec *loc, extentity *ent, int flags, int loops, int f
 }
 COMMAND(playsound, "i"); //i: the index of the sound to be played
 
-void stopsounds()
-{
-    for(int i = 0; i < channels.length(); i++)
-    {
-        if(channels[i].inuse)
-        {
-            Mix_HaltChannel(i);
-            freechannel(i);
-        }
-    }
-}
-
 bool stopsound(int n, int chanid, int fade)
 {
     if(!gamesounds.configs.inrange(n) || !channels.inrange(chanid) || !gamesounds.playing(channels[chanid], gamesounds.configs[n]))
@@ -1036,6 +944,97 @@ bool stopsound(int n, int chanid, int fade)
         freechannel(chanid);
     }
     return true;
+}
+
+void stopmapsounds()
+{
+    for(int i = 0; i < channels.length(); i++)
+    {
+        if(channels[i].inuse && channels[i].ent)
+        {
+            Mix_HaltChannel(i);
+            freechannel(i);
+        }
+    }
+}
+
+void clearmapsounds()
+{
+    stopmapsounds();
+    mapsounds.clear();
+}
+
+//check map entities to see what sounds need to be played because of them
+void checkmapsounds()
+{
+    const vector<extentity *> &ents = entities::getents();
+    for(int i = 0; i < ents.length(); i++)
+    {
+        extentity &e = *ents[i];
+        if(e.type!=EngineEnt_Sound) //ents that aren't soundents don't make sound (!)
+        {
+            continue;
+        }
+        if(camera1->o.dist(e.o) < e.attr2) //if distance to entity < ent attr 2 (radius)
+        {
+            if(!(e.flags&EntFlag_Sound))
+            {
+                playsound(e.attr1, nullptr, &e, Music_Map, -1);
+            }
+        }
+        else if(e.flags&EntFlag_Sound)
+        {
+            stopmapsound(&e);
+        }
+    }
+}
+
+void stopsounds()
+{
+    for(int i = 0; i < channels.length(); i++)
+    {
+        if(channels[i].inuse)
+        {
+            Mix_HaltChannel(i);
+            freechannel(i);
+        }
+    }
+}
+
+void updatesounds()
+{
+    if(nosound) //don't update sounds if disabled
+    {
+        return;
+    }
+    if(minimized && !minimizedsounds)//minimizedsounds check
+    {
+        stopsounds();
+    }
+    else
+    {
+        reclaimchannels(); //cull channels first
+        if(mainmenu) //turn off map sounds if you reach main menu
+        {
+            stopmapsounds();
+        }
+        else
+        {
+            checkmapsounds();
+        }
+        syncchannels();
+    }
+    if(music)
+    {
+        if(!Mix_PlayingMusic())
+        {
+            musicdone();
+        }
+        else if(Mix_PausedMusic())
+        {
+            Mix_ResumeMusic();
+        }
+    }
 }
 
 int playsoundname(const char *s, const vec *loc, int vol, int flags, int loops, int fade, int chanid, int radius, int expire)
