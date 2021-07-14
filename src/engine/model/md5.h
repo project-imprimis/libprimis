@@ -114,7 +114,8 @@ struct md5 : skelloader<md5>
                     }
                     else if(strstr(buf, "shader"))
                     {
-                        char *start = strchr(buf, '"'), *end = start ? strchr(start+1, '"') : nullptr;
+                        char *start = strchr(buf, '"'),
+                             *end = start ? strchr(start+1, '"') : nullptr;
                         if(start && end)
                         {
                             char *texname = newstring(start+1, end-(start+1));
