@@ -46,7 +46,7 @@ namespace //internal functionality not seen by other files
     GLuint grassvbo = 0;
     int grassvbosize = 0;
 
-    VAR(maxgrass, 10, 10000, 10000);
+    VAR(maxgrass, 10, 10000, 10000);            //number of grass squares allowed to be rendered at a time
 
     struct grassgroup
     {
@@ -62,9 +62,10 @@ namespace //internal functionality not seen by other files
           grassanimoffsets[numgrassoffsets];
     int lastgrassanim = -1;
 
-    VARR(grassanimmillis, 0, 3000, 60000);
-    FVARR(grassanimscale, 0, 0.03f, 1);
+    VARR(grassanimmillis, 0, 3000, 60000);      //sets the characteristic rate of grass animation change
+    FVARR(grassanimscale, 0, 0.03f, 1);         //sets the intensity of the animation (size of waviness)
 
+    //updates the grass animation offset values based on the current time
     void animategrass()
     {
         for(int i = 0; i < numgrassoffsets; ++i)
@@ -263,6 +264,7 @@ namespace //internal functionality not seen by other files
         }
     }
 
+    // generates grass geometry for a given vertex array
     void gengrassquads(vtxarray *va)
     {
         for(int i = 0; i < va->grasstris.length(); i++)
