@@ -16,6 +16,7 @@
  */
 
 #include "engine.h"
+#include "SDL_ttf.h"
 
 #include "rendergl.h"
 #include "rendertext.h"
