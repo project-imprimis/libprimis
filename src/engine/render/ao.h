@@ -2,7 +2,7 @@
 #define AO_H_
 
 extern int aow, aoh;
-extern GLuint aofbo[4], aotex[4], aonoisetex;
+extern GLuint aotex[4];
 extern float aomin, aosunmin;
 extern int ao, aosun, aopackdepth, aoreduce, aoreducedepth;
 extern int aobilateral, aobilateralupscale;
