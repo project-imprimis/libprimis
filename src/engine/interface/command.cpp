@@ -361,7 +361,7 @@ static const char *debugline(const char *p, const char *fmt)
     return fmt;
 }
 
-VAR(debugalias, 0, 4, 1000);
+VAR(debugalias, 0, 4, 1000); //depth to which alias aliasing should be debugged (disabled if 0)
 
 static void dodebugalias()
 {
@@ -927,10 +927,16 @@ ICOMMAND(getvarmax, "s", (char *s), intret(getvarmax(s)));
 ICOMMAND(getfvarmin, "s", (char *s), floatret(getfvarmin(s)));
 ICOMMAND(getfvarmax, "s", (char *s), floatret(getfvarmax(s)));
 
-bool identexists(const char *name) { return idents.access(name)!=nullptr; }
+bool identexists(const char *name)
+{
+    return idents.access(name) != nullptr;
+}
 ICOMMAND(identexists, "s", (char *s), intret(identexists(s) ? 1 : 0));
 
-ident *getident(const char *name) { return idents.access(name); }
+ident *getident(const char *name)
+{
+    return idents.access(name);
+}
 
 void touchvar(const char *name)
 {
@@ -1424,7 +1430,10 @@ static char *cutstring(const char *&p)
     char *buf = newstring(end-p);
     unescapestring(buf, p, end);
     p = end;
-    if(*p=='\"') p++;
+    if(*p=='\"')
+    {
+        p++;
+    }
     return buf;
 }
 
