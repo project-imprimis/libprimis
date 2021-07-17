@@ -347,11 +347,11 @@ Windows: `~/My Games/Imprimis` is the "home" directory by default.
 ### 1.2.2 Libraries
 ---
 
-This game requires `libsdl2, libsdl2-mixer, libsdl2-image` to run, including the
-`-dev` versions for those package managers which elect to seperate them (such as
-Ubuntu) if compiling the game. As the main way of getting the game is via Git,
-the best way to retrieve the assets for the game is by the command line utility
-`git`.
+This game requires `libsdl2, libsdl2-mixer, libsdl2-image`, and `libsdl2-ttf`
+to run, including the `-dev` versions for those package managers which elect to
+seperate them (such as Ubuntu) if compiling the game. As the main way of getting
+the game is via Git, the best way to retrieve the assets for the game is by the
+command line utility `git`.
 
 ### 1.3 Conventions and Units
 ---
