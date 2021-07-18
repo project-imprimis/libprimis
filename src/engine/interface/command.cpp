@@ -2536,6 +2536,7 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
     skipcomments(p);
     switch(*p)
     {
+        //cases for special chars: \[]()$
         case '\"':
         {
             switch(wordtype)
@@ -2654,6 +2655,7 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
             compileblockmain(code, p, wordtype, prevargs);
             return true;
         }
+        //search for aliases
         default:
             switch(wordtype)
             {
@@ -3951,7 +3953,7 @@ cleanup:
 }
 
 static constexpr int maxrundepth = 255; //limit for rundepth (nesting depth) var below
-static int rundepth = 0;
+static int rundepth = 0; //current rundepth
 
 static const uint *runcode(const uint *code, tagval &result)
 {
