@@ -435,7 +435,10 @@ static void loopconc(ident &id, int offset, int n, uint *body, bool space)
         executeret(body, v);
         const char *vstr = v.getstr();
         int len = strlen(vstr);
-        if(space && i) s.add(' ');
+        if(space && i)
+        {
+            s.add(' ');
+        }
         s.put(vstr, len);
         freearg(v);
     }
@@ -546,10 +549,10 @@ void format(tagval *args, int numargs)
 }
 COMMAND(format, "V");
 
-static const char *liststart = nullptr,
-                  *listend = nullptr,
+static const char *liststart      = nullptr,
+                  *listend        = nullptr,
                   *listquotestart = nullptr,
-                  *listquoteend = nullptr;
+                  *listquoteend   = nullptr;
 
 static void skiplist(const char *&p)
 {
@@ -1045,6 +1048,7 @@ void prettylist(const char *s, const char *conj)
 }
 COMMAND(prettylist, "ss");
 
+//returns the int position of the needle inside the passed list
 int listincludes(const char *list, const char *needle, int needlelen)
 {
     int offset = 0;
@@ -1141,6 +1145,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
 }
 COMMAND(listsplice, "ssii");
 
+//executes the body for each file in the given path, using ident passed
 void loopfiles(ident *id, char *dir, char *ext, uint *body)
 {
     if(id->type!=Id_Alias)
