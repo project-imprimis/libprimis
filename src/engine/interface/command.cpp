@@ -4362,31 +4362,66 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_LookupU|Ret_String:
                 #define LOOKUPU(aval, sval, ival, fval, nval) { \
                     tagval &arg = args[numargs-1]; \
-                    if(arg.type != Value_String && arg.type != Value_Macro && arg.type != Value_CString) continue; \
-                    ident *id = idents.access(arg.s); \
-                    if(id) switch(id->type) \
+                    if(arg.type != Value_String && arg.type != Value_Macro && arg.type != Value_CString) \
                     { \
-                        case Id_Alias: \
-                            if(id->flags&Idf_Unknown) break; \
-                            freearg(arg); \
-                            if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index))) { nval; continue; } \
-                            aval; \
-                            continue; \
-                        case Id_StringVar: freearg(arg); sval; continue; \
-                        case Id_Var: freearg(arg); ival; continue; \
-                        case Id_FloatVar: freearg(arg); fval; continue; \
-                        case Id_Command: \
+                        continue; \
+                    } \
+                    ident *id = idents.access(arg.s); \
+                    if(id) \
+                    { \
+                        switch(id->type) \
                         { \
-                            freearg(arg); \
-                            arg.setnull(); \
-                            commandret = &arg; \
-                            tagval buf[Max_Args]; \
-                            callcommand(id, buf, 0, true); \
-                            forcearg(arg, op&Code_RetMask); \
-                            commandret = &result; \
-                            continue; \
+                            case Id_Alias: \
+                            { \
+                                if(id->flags&Idf_Unknown) \
+                                { \
+                                    break; \
+                                } \
+                                freearg(arg); \
+                                if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index))) \
+                                { \
+                                    nval; \
+                                    continue; \
+                                } \
+                                aval; \
+                                continue; \
+                            } \
+                            case Id_StringVar: \
+                            { \
+                                freearg(arg); \
+                                sval; \
+                                continue; \
+                            } \
+                            case Id_Var: \
+                            { \
+                                freearg(arg); \
+                                ival; \
+                                continue; \
+                            } \
+                            case Id_FloatVar: \
+                            { \
+                                freearg(arg); \
+                                fval; \
+                                continue; \
+                            } \
+                            case Id_Command: \
+                            { \
+                                freearg(arg); \
+                                arg.setnull(); \
+                                commandret = &arg; \
+                                tagval buf[Max_Args]; \
+                                callcommand(id, buf, 0, true); \
+                                forcearg(arg, op&Code_RetMask); \
+                                commandret = &result; \
+                                continue; \
+                            } \
+                            default: \
+                            { \
+                                freearg(arg); \
+                                nval; \
+                                continue; \
+                            } \
                         } \
-                        default: freearg(arg); nval; continue; \
                     } \
                     debugcode("unknown alias lookup: %s", arg.s); \
                     freearg(arg); \
