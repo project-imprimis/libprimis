@@ -19,7 +19,6 @@
 #include "interface/menus.h"
 #include "interface/ui.h"
 
-#include "world/physics.h"
 #include "world/octaedit.h"
 
 namespace
@@ -236,6 +235,19 @@ namespace
         glBindTexture(GL_TEXTURE_2D, crosshair->id);
 
         hudquad(x, y, chsize, chsize);
+    }
+
+    void vectoyawpitch(const vec &v, float &yaw, float &pitch)
+    {
+        if(v.iszero())
+        {
+            yaw = pitch = 0;
+        }
+        else
+        {
+            yaw = -std::atan2(v.x, v.y)/RAD;
+            pitch = std::asin(v.z/v.magnitude())/RAD;
+        }
     }
 
     //hud time displays

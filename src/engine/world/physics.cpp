@@ -1331,19 +1331,6 @@ void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
     }
 }
 
-void vectoyawpitch(const vec &v, float &yaw, float &pitch)
-{
-    if(v.iszero())
-    {
-        yaw = pitch = 0;
-    }
-    else
-    {
-        yaw = -std::atan2(v.x, v.y)/RAD;
-        pitch = std::asin(v.z/v.magnitude())/RAD;
-    }
-}
-
 VAR(floatspeed, 1, 100, 10000);
 
 bool entinmap(dynent *d, bool avoidplayers)        // brute force but effective way to find a free spawn spot in the map

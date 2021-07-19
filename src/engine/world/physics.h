@@ -17,7 +17,6 @@ extern void modifyorient(float yaw, float pitch);
 extern void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll = 0);
 
 extern void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m);
-extern void vectoyawpitch(const vec &v, float &yaw, float &pitch);
 extern void updatephysstate(physent *d);
 extern void cleardynentcache();
 extern void updatedynentcache(physent *d);
