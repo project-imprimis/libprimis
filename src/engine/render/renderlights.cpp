@@ -4161,13 +4161,10 @@ void setuplights()
 
 bool debuglights()
 {
+    viewao(); //this fxn checks for the appropriate debug var
     if(debugshadowatlas)
     {
         viewshadowatlas();
-    }
-    else if(debugao)
-    {
-        viewao();
     }
     else if(debugdepth)
     {

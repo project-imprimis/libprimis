@@ -6,7 +6,6 @@ extern GLuint aotex[4];
 extern float aomin, aosunmin;
 extern int ao, aosun, aopackdepth, aoreduce, aoreducedepth;
 extern int aobilateral, aobilateralupscale;
-extern int debugao;
 
 extern void initao();
 extern void cleanupao();

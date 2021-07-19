@@ -219,7 +219,7 @@ void initao()
  */
 void viewao()
 {
-    if(!ao)
+    if(!ao || !debugao)
     {
         return;
     }
