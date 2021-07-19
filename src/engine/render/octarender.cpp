@@ -9,7 +9,6 @@
 #include "rendersky.h"
 
 #include "interface/console.h"
-#include "interface/control.h"
 #include "interface/menus.h"
 
 #include "world/light.h"
@@ -2041,7 +2040,6 @@ namespace
                 int tcount = count + (csi <= maxmergelevel ? vamerges[csi].length() : 0);
                 if(tcount > vafacemax || (tcount >= vafacemin && size >= vacubesize) || size == std::min(0x1000, worldsize/2))
                 {
-                    loadprogress = std::clamp(recalcprogress/static_cast<float>(allocnodes), 0.0f, 1.0f);
                     setva(c[i], o, size, csi);
                     if(c[i].ext && c[i].ext->va)
                     {
@@ -2184,10 +2182,8 @@ namespace
         }
         for(int i = 0; i < texs.length(); i++)
         {
-            loadprogress = static_cast<float>(i+1)/texs.length();
             lookupvslot(texs[i]);
         }
-        loadprogress = 0;
     }
 }
 
@@ -2442,7 +2438,6 @@ void octarender()                               // creates va s for all leaf cub
     recalcprogress = 0;
     varoot.setsize(0);
     updateva(worldroot, ivec(0, 0, 0), worldsize/2, csi-1);
-    loadprogress = 0;
     flushvbo();
     explicitsky = 0;
     for(int i = 0; i < valist.length(); i++)
