@@ -12,11 +12,9 @@
 #include "raycube.h"
 
 #include "interface/console.h"
-#include "interface/control.h"
 
 #include "model/model.h"
 
-#include "render/rendergl.h"
 #include "render/rendermodel.h"
 
 int numdynents; //updated by engine, visible through iengine.h
@@ -1290,16 +1288,6 @@ void dropenttofloor(entity *e)
 {
     droptofloor(e->o, 1.0f, dropheight(*e));
 }
-
-//prints out player & cam information to command line (not ingame console)
-void phystest()
-{
-    static const char * const states[] = {"float", "fall", "slide", "slope", "floor", "step up", "step down", "bounce"};
-    printf ("PHYS(pl): %s, air %d, floor: (%f, %f, %f), vel: (%f, %f, %f), g: (%f, %f, %f)\n", states[player->physstate], player->timeinair, player->floor.x, player->floor.y, player->floor.z, player->vel.x, player->vel.y, player->vel.z, player->falling.x, player->falling.y, player->falling.z);
-    printf ("PHYS(cam): %s, air %d, floor: (%f, %f, %f), vel: (%f, %f, %f), g: (%f, %f, %f)\n", states[camera1->physstate], camera1->timeinair, camera1->floor.x, camera1->floor.y, camera1->floor.z, camera1->vel.x, camera1->vel.y, camera1->vel.z, camera1->falling.x, camera1->falling.y, camera1->falling.z);
-}
-
-COMMAND(phystest, "");
 
 void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m)
 {
