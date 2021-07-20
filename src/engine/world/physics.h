@@ -14,7 +14,6 @@ extern void resetclipplanes();
 extern clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset);
 extern bool collide(physent *d, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool playercol = true, bool insideplayercol = false);
 extern void modifyorient(float yaw, float pitch);
-extern void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll = 0);
 
 extern void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m);
 extern void updatephysstate(physent *d);

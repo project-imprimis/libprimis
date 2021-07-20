@@ -6,7 +6,6 @@
 #include "light.h"
 #include "octaedit.h"
 #include "octaworld.h"
-#include "physics.h"
 #include "raycube.h"
 #include "worldio.h"
 
@@ -162,6 +161,26 @@ enum
     ModOctaEnt_UpdateBB = 1<<1,
     ModOctaEnt_Changed  = 1<<2
 };
+
+static void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll)
+{
+    matrix3 orient;
+    orient.identity();
+    if(yaw)
+    {
+        orient.rotate_around_z(sincosmod360(yaw));
+    }
+    if(pitch)
+    {
+        orient.rotate_around_x(sincosmod360(pitch));
+    }
+    if(roll)
+    {
+        orient.rotate_around_y(sincosmod360(-roll));
+    }
+    center = orient.transform(center);
+    radius = orient.abstransform(radius);
+}
 
 static void transformbb(const entity &e, vec &center, vec &radius)
 {

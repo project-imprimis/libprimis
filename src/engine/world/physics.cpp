@@ -373,26 +373,6 @@ bool plcollide(physent *d, const vec &dir, bool insideplayercol)    // collide w
 #undef LOOPDYNENTCACHE
 //==============================================================================
 
-void rotatebb(vec &center, vec &radius, int yaw, int pitch, int roll)
-{
-    matrix3 orient;
-    orient.identity();
-    if(yaw)
-    {
-        orient.rotate_around_z(sincosmod360(yaw));
-    }
-    if(pitch)
-    {
-        orient.rotate_around_x(sincosmod360(pitch));
-    }
-    if(roll)
-    {
-        orient.rotate_around_y(sincosmod360(-roll));
-    }
-    center = orient.transform(center);
-    radius = orient.abstransform(radius);
-}
-
 template<class E, class M>
 static bool mmcollide(physent *d, const vec &dir, const extentity &e, const vec &center, const vec &radius, int yaw, int pitch, int roll)
 {
