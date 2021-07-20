@@ -237,7 +237,7 @@ namespace
         hudquad(x, y, chsize, chsize);
     }
 
-    void vectoyawpitch(const vec &v, float &yaw, float &pitch)
+    void vectoryawpitch(const vec &v, float &yaw, float &pitch)
     {
         if(v.iszero())
         {
@@ -435,7 +435,7 @@ void damagecompass(int n, const vec &loc)
           pitch;
     if(delta.magnitude() > 4)
     {
-        vectoyawpitch(delta, yaw, pitch);
+        vectoryawpitch(delta, yaw, pitch);
         yaw -= camera1->yaw;
     }
     if(yaw >= 360)
