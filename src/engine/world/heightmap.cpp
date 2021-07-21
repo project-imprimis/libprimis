@@ -236,11 +236,11 @@ namespace hmap
         {
             face += 0x08080808;
         }
-        else                               // was pair
+        else                                 // was pair
         {
             face += c[2] ? getface(c[2], d) : 0x08080808;
         }
-        face += 0x08080808;                // c[3]
+        face += 0x08080808;                  // c[3]
         uchar *f = reinterpret_cast<uchar*>(&face);
         addpoint(x,   y,   z, f[0]);
         addpoint(x+1, y,   z, f[1]);
@@ -315,11 +315,13 @@ namespace hmap
             } \
             else { \
                 for(int j = 0; j < 4; ++j) \
+                { \
                     if(*o[j] GT par) \
                     { \
                         *o[j] = par; \
                         changed = true; \
                     } \
+                } \
             } \
         } while(0)
 
@@ -335,8 +337,8 @@ namespace hmap
         #undef PULL_HEIGHTMAP
 
         cube **c  = cmap[x][y];
-        int e[2][2];
-        int notempty = 0;
+        int e[2][2],
+            notempty = 0;
 
         for(int k = 0; k < 4; ++k)
         {
