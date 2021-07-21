@@ -18,8 +18,6 @@
 #include "physics.h"
 #include "raycube.h"
 
-#include "model/model.h"
-
 //internally relevant functionality
 namespace
 {
