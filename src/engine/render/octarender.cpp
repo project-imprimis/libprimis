@@ -8,7 +8,6 @@
 #include "renderparticles.h"
 #include "rendersky.h"
 
-#include "interface/console.h"
 #include "interface/menus.h"
 
 #include "world/light.h"
@@ -51,7 +50,6 @@ namespace
 
     hashtable<GLuint, vboinfo> vbos;
 
-    VAR(printvbo, 0, 0, 1);
     VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, allchanged());
 
     //vbo (vertex buffer object) enum is local to this file
@@ -108,10 +106,6 @@ namespace
         vbi.data = new uchar[len];
         memcpy(vbi.data, buf, len);
 
-        if(printvbo)
-        {
-            conoutf(Console_Debug, "vbo %d: type %d, size %d, %d uses", vbo, type, len, numva);
-        }
         for(int i = 0; i < numva; ++i)
         {
             vtxarray *va = vas[i];
