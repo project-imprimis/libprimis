@@ -1375,9 +1375,11 @@ ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortl
 #define CMPFCMDN(name, op) CMPCMD(#name "f", f, float, op)
 #define CMPFCMD(name) CMPFCMDN(name, name)
 
-MATHICMD(+, 0, );
-MATHICMD(*, 1, );
-MATHICMD(-, 0, val = -val);
+//integer and boolean operators, used with named symbol, i.e. + or *
+//no native boolean type, they are treated like integers
+MATHICMD(+, 0, ); //0 substituted if nothing passed in arg2: n + 0 is still n
+MATHICMD(*, 1, ); //1 substituted if nothing passed in arg2: n * 1 is still n
+MATHICMD(-, 0, val = -val); //the minus operator inverts if used as unary
 CMPICMDN(=, ==);
 CMPICMD(!=);
 CMPICMD(<);
@@ -1394,6 +1396,7 @@ MATHICMD(|~, 0, );
 MATHCMD("<<", i, int, val = val2 < 32 ? val << std::max(val2, 0) : 0, 0, );
 MATHCMD(">>", i, int, val >>= std::clamp(val2, 0, 31), 0, );
 
+//floating point operators, used with <operator>f, i.e. +f or *f
 MATHFCMD(+, 0, );
 MATHFCMD(*, 1, );
 MATHFCMD(-, 0, val = -val);
@@ -1467,12 +1470,15 @@ ICOMMANDK(||, Id_Or, "E1V", (tagval *args, int numargs),
 
 #define DIVCMD(name, fmt, type, op) MATHCMD(#name, fmt, type, { if(val2) op; else val = 0; }, 0, )
 
+//int division
 DIVCMD(div, i, int, val /= val2);
 DIVCMD(mod, i, int, val %= val2);
+//float division
 DIVCMD(divf, f, float, val /= val2);
 DIVCMD(modf, f, float, val = std::fmod(val, val2));
 MATHCMD("pow", f, float, val = std::pow(val, val2), 0, );
 
+//float transcendentals
 ICOMMAND(sin, "f", (float *a), floatret(std::sin(*a*RAD)));
 ICOMMAND(cos, "f", (float *a), floatret(std::cos(*a*RAD)));
 ICOMMAND(tan, "f", (float *a), floatret(std::tan(*a*RAD)));
