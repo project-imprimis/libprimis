@@ -678,6 +678,14 @@ bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main 
     return true;
 }
 
+/* enlargemap: grows the map to an additional gridsize
+ * bool force forces the growth even if not in edit mode
+ *
+ * expands the map by placing the old map in the corner nearest the origin and
+ * adding 7 old-map sized cubes to create a new largest cube
+ *
+ * this moves the worldroot cube to the new parent cube of the old map
+ */
 bool enlargemap(bool force)
 {
     if(!force && !editmode)
@@ -707,6 +715,15 @@ bool enlargemap(bool force)
     return true;
 }
 
+/* isallempty: checks whether the cube, and all of its children, are empty
+ *
+ * returns true if cube is empty and has no children, OR
+ * returns true if cube has children cubes and none of their children (recursively)
+ * have children that are not empty
+ *
+ * returns false if any cube or child cube is not empty (has geometry)
+ *
+ */
 static bool isallempty(cube &c)
 {
     if(!c.children)
@@ -723,6 +740,11 @@ static bool isallempty(cube &c)
     return true;
 }
 
+/* shrinkmap: attempts to reduce the mapsize by 1 (halves all linear dimensions)
+ *
+ * fails if the 7 octants not at the origin are not empty
+ * on success, the new map will have its maximum gridsize reduced by 1
+ */
 void shrinkmap()
 {
     if(noedit(true) || (nompedit && multiplayer))
@@ -730,7 +752,7 @@ void shrinkmap()
         multiplayerwarn();
         return;
     }
-    if(worldsize <= 1<<10)
+    if(worldsize <= 1<<10) //do not allow maps smaller than 2^10 cubits
     {
         return;
     }
@@ -754,8 +776,8 @@ void shrinkmap()
     {
         subdividecube(worldroot[octant], false, false);
     }
-    cube *root = worldroot[octant].children;
-    worldroot[octant].children = nullptr;
+    cube *root = worldroot[octant].children; //change worldroot to cube 0
+    worldroot[octant].children = nullptr; //free the old largest cube
     freeocta(worldroot);
     worldroot = root;
     worldscale--;
