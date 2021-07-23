@@ -51,10 +51,7 @@ class BIH
 
         struct mesh
         {
-            enum
-            {
-                Max_Triangles = 1<<14
-            };
+            constexpr int maxtriangles = 1<<14;
             matrix4x3 xform, invxform;
             matrix3 xformnorm, invxformnorm;
             float scale, invscale;

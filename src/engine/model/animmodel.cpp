@@ -399,12 +399,12 @@ void animmodel::Mesh::genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t
         m.flags |= BIH::Mesh_CullFace;
     }
     genBIH(m);
-    while(bih.last().numtris > BIH::mesh::Max_Triangles)
+    while(bih.last().numtris > BIH::mesh::maxtriangles)
     {
         BIH::mesh &overflow = bih.dup();
-        overflow.tris += BIH::mesh::Max_Triangles;
-        overflow.numtris -= BIH::mesh::Max_Triangles;
-        bih[bih.length()-2].numtris = BIH::mesh::Max_Triangles;
+        overflow.tris += BIH::mesh::maxtriangles;
+        overflow.numtris -= BIH::mesh::maxtriangles;
+        bih[bih.length()-2].numtris = BIH::mesh::maxtriangles;
     }
 }
 
