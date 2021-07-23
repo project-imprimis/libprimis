@@ -773,6 +773,7 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
     }
 }
 
+// adds to uniformlocs vector defined uniformlocs
 static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
 {
     static int len = strlen("//:uniform");
@@ -1703,6 +1704,7 @@ void renderpostfx(GLuint outfbo)
     endtimer(postfxtimer);
 }
 
+//adds to the global postfxpasses vector a postfx by the given name
 static bool addpostfx(const char *name, int outputbind, int outputscale, uint inputs, uint freeinputs, const vec4 &params)
 {
     if(!*name)
