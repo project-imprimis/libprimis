@@ -202,7 +202,7 @@ void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned
 
 Shader *animmodel::skin::loadshader()
 {
-    //============================================================ DOMODELSHADER
+    //============================================= SETMODELSHADER DOMODELSHADER
     #define DOMODELSHADER(name, body) \
         do { \
             static Shader *name##shader = nullptr; \
@@ -368,6 +368,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     setshaderparams(b, as);
 }
 
+#undef SETMODELSHADER
 #undef DOMODELSHADER
 //==============================================================================
 
