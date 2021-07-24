@@ -97,7 +97,7 @@ void ragdollskel::setupjoints()
             verts[i].weight = 1/verts[i].weight;
         }
     }
-    reljoints.shrink(0);
+    reljoints.clear();
 }
 
 void ragdollskel::setuprotfrictions()
@@ -127,9 +127,10 @@ void ragdollskel::setup()
 
 void ragdollskel::addreljoint(int bone, int parent)
 {
-    reljoint &r = reljoints.add();
+    reljoint r;
     r.bone = bone;
     r.parent = parent;
+    reljoints.push_back(r);
 }
 /*                  ragdolldata                   */
 

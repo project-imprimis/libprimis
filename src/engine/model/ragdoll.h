@@ -20,7 +20,7 @@ class ragdollskel
         {
             int bone, parent;
         };
-        vector<reljoint> reljoints;
+        std::vector<reljoint> reljoints;
 
         struct vert
         {
@@ -98,7 +98,7 @@ class ragdolldata
               radius(0),
               tris(new matrix3[skel->tris.size()]),
               animjoints(!skel->animjoints || skel->joints.empty() ? NULL : new matrix4x3[skel->joints.length()]),
-              reljoints(skel->reljoints.empty() ? NULL : new dualquat[skel->reljoints.length()]),
+              reljoints(skel->reljoints.empty() ? NULL : new dualquat[skel->reljoints.size()]),
               verts(new vert[skel->verts.length()]),
               collisions(0),
               floating(0),
