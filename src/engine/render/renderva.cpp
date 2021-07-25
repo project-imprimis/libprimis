@@ -1324,7 +1324,7 @@ namespace
         nocolorshader->set();
         drawvatris(va, 3*numtris, offset);
     }
-
+//====================================================== STARTVAQUERY ENDVAQUERY
     #define STARTVAQUERY(va, flush) \
         do { \
             if(va->query) \
@@ -1429,6 +1429,9 @@ namespace
         }
     }
 
+    #undef STARTVAQUERY
+    #undef ENDVAQUERY
+//==============================================================================
     void setupgeom()
     {
         glActiveTexture_(GL_TEXTURE0);
