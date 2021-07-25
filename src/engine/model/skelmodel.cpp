@@ -679,7 +679,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, skelcacheentry &sc, part *
         ragdolldata::vert &dv = d.verts[i];
         matrixstack[matrixpos].transform(vec(dv.pos).mul(p->model->scale), dv.pos);
     }
-    for(int i = 0; i < ragdoll->reljoints.length(); i++)
+    for(uint i = 0; i < ragdoll->reljoints.size(); i++)
     {
         const ragdollskel::reljoint &r = ragdoll->reljoints[i];
         const ragdollskel::joint &j = ragdoll->joints[r.parent];
@@ -713,7 +713,7 @@ void skelmodel::skeleton::genragdollbones(ragdolldata &d, skelcacheentry &sc, pa
         m.mul(d.tris[j.tri], pos, d.animjoints ? d.animjoints[i] : j.orient);
         sc.bdata[b.interpindex] = dualquat(m);
     }
-    for(int i = 0; i < ragdoll->reljoints.length(); i++)
+    for(uint i = 0; i < ragdoll->reljoints.size(); i++)
     {
         const ragdollskel::reljoint &r = ragdoll->reljoints[i];
         const ragdollskel::joint &j = ragdoll->joints[r.parent];
