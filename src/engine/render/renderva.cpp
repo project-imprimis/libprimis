@@ -995,7 +995,7 @@ namespace
         gle::bindebo(va->ebuf);
         cur.vbuf = va->vbuf;
 
-        vertex *vdata = (vertex *)0;
+        vertex *vdata = nullptr;
         gle::vertexpointer(sizeof(vertex), vdata->pos.v);
 
         if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
@@ -1633,7 +1633,7 @@ namespace
         gle::bindvbo(va->vbuf);
         gle::bindebo(va->decalbuf);
         cur.vbuf = va->vbuf;
-        vertex *vdata = (vertex *)0;
+        vertex *vdata = nullptr;
         gle::vertexpointer(sizeof(vertex), vdata->pos.v);
         gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
         gle::texcoord0pointer(sizeof(vertex), vdata->tc.v, GL_FLOAT, 3);
