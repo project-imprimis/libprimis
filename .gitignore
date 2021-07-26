@@ -10,3 +10,6 @@ bin_unix/*
 src/tess_client
 src/tess_server
 .idea/
+*.gcov
+*.gcda
+*.gcno
