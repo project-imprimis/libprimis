@@ -408,7 +408,10 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
     {
         copystring(tmp, prefix);
     }
-    else tmp[0] = '\0';
+    else
+    {
+        tmp[0] = '\0';
+    }
     if(file[0]=='<')
     {
         const char *end = strrchr(file, '>');
@@ -706,7 +709,10 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
     if(Find != INVALID_HANDLE_VALUE)
     {
         do {
-            if(!ext) files.add(newstring(FindFileData.cFileName));
+            if(!ext)
+            {
+                files.add(newstring(FindFileData.cFileName));
+            }
             else
             {
                 size_t namelen = strlen(FindFileData.cFileName);
@@ -958,7 +964,10 @@ struct filestream : stream
         }
     }
 
-    bool end() { return feof(file)!=0; }
+    bool end()
+    {
+        return feof(file)!=0;
+    }
     offset tell()
     {
 #ifdef WIN32
