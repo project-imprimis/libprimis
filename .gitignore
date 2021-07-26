@@ -13,3 +13,6 @@ src/tess_server
 *.gcov
 *.gcda
 *.gcno
+*.srctrldb
+*.srctrlbm
+*.srctrlprj
