@@ -86,7 +86,8 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     {
         return false;
     }
-    uchar buf[1024], *src = nullptr;
+    uchar buf[1024],
+          *src = nullptr;
     long end = std::max(offset - 0xFFFFL - Zip_DirectorySize, 0L);
     size_t len = 0;
     const uint signature = static_cast<uint>(Zip_DirectorySignature);
@@ -717,7 +718,8 @@ bool findzipfile(const char *name)
 
 int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
 {
-    size_t extsize = ext ? strlen(ext)+1 : 0, dirsize = strlen(dir);
+    size_t extsize = ext ? strlen(ext)+1 : 0,
+           dirsize = strlen(dir);
     int dirs = 0;
     for(int i = archives.length(); --i >=0;) //note reverse iteration
     {
