@@ -41,8 +41,8 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
         n = vec().cross(b, c), //normal of the triangle
         r = vec(a).sub(mo), //mo is transform of o
         e = vec().cross(r, mray); //mray is transform of ray
-    float det = mray.dot(n);
-    float v, w, f;
+    float det = mray.dot(n),
+          v, w, f;
     if(det >= 0)
     {
         if(!(mode&Ray_Shadow) && m.flags&Mesh_CullFace)
@@ -273,8 +273,8 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
         }
     }
     ivec leftmin, leftmax, rightmin, rightmax;
-    int splitleft, splitright;
-    int left, right;
+    int splitleft, splitright,
+        left, right;
     for(int k = 0; k < 3; ++k)
     {
         leftmin = rightmin = ivec(INT_MAX, INT_MAX, INT_MAX);
@@ -540,8 +540,8 @@ static float segmentdistance(const vec &d1, const vec &d2, const vec &r)
 {
     float a = d1.squaredlen(),
           e = d2.squaredlen(),
-          f = d2.dot(r);
-    float s, t;
+          f = d2.dot(r),
+          s, t;
     if(a <= 1e-4f)
     {
         if(e <= 1e-4f)
@@ -883,7 +883,8 @@ void BIH::collide(const mesh &m, physent *d, const vec &dir, float cutoff, const
     for(;;)
     {
         int axis = curnode->axis();
-        const int nearidx = 0, faridx = nearidx^1;
+        const int nearidx = 0,
+                  faridx = nearidx^1;
         int nearsplit = bmin[axis] - curnode->split[nearidx],
             farsplit = curnode->split[faridx] - bmax[axis];
 
