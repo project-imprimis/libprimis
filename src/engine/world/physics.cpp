@@ -267,7 +267,7 @@ const vector<physent *> &checkdynentcache(int x, int y)
 //============================================================== LOOPDYNENTCACHE
 #define LOOPDYNENTCACHE(curx, cury, o, radius) \
     for(int curx = std::max(static_cast<int>(o.x-radius), 0)>>dynentsize, endx = std::min(static_cast<int>(o.x+radius), worldsize-1)>>dynentsize; curx <= endx; curx++) \
-    for(int cury = std::max(static_cast<int>(o.y-radius), 0)>>dynentsize, endy = std::min(static_cast<int>(o.y+radius), worldsize-1)>>dynentsize; cury <= endy; cury++)
+        for(int cury = std::max(static_cast<int>(o.y-radius), 0)>>dynentsize, endy = std::min(static_cast<int>(o.y+radius), worldsize-1)>>dynentsize; cury <= endy; cury++)
 
 void updatedynentcache(physent *d)
 {
@@ -494,8 +494,10 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
     mpr::ModelEllipse mdlvol(o, center, radius, yaw, pitch, roll);
     vec bbradius = mdlvol.orient.abstransposedtransform(radius);
 
-    if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius || std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
-       d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z || d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
+    if(std::fabs(d->o.x - mdlvol.o.x) > bbradius.x + d->radius ||
+       std::fabs(d->o.y - mdlvol.o.y) > bbradius.y + d->radius ||
+       d->o.z + d->aboveeye < mdlvol.o.z - bbradius.z ||
+       d->o.z - d->eyeheight > mdlvol.o.z + bbradius.z)
     {
         return false;
     }
