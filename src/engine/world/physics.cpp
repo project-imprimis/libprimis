@@ -201,6 +201,7 @@ static struct dynentcacheentry
     vector<physent *> dynents;
 } dynentcache[dynentcachesize];
 
+//resets the dynentcache[] array entries
 void cleardynentcache()
 {
     dynentframe++;
@@ -217,6 +218,7 @@ void cleardynentcache()
     }
 }
 
+//returns the dynent at location i in the dynents vector
 dynent *iterdynents(int i)
 {
     if(i<dynents.length())
