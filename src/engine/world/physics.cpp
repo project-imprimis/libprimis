@@ -718,6 +718,7 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
+//==================================================================== CHECKSIDE
     #define CHECKSIDE(side, distval, dotval, margin, normal) \
         if(visible&(1<<side)) \
         { \
@@ -973,6 +974,8 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
     return true;
 }
 
+#undef CHECKSIDE
+//==============================================================================
 static bool cubecollide(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
 {
     switch(d->collidetype)
