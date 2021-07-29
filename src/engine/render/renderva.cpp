@@ -257,67 +257,70 @@ namespace
     //all members of this struct are used elsewhere (must be public)
     struct queryframe
     {
-        int cur, max, defer;
-        occludequery queries[maxquery];
+        public:
+            int cur;
 
-        queryframe() : cur(0), max(0), defer(0) {}
+            queryframe() : cur(0), max(0), defer(0) {}
 
-        void flip()
-        {
-            for(int i = 0; i < cur; ++i)
+            void flip()
             {
-                queries[i].owner = nullptr;
-            }
-            for(; defer > 0 && max < maxquery; defer--)
-            {
-                queries[max].owner = nullptr;
-                queries[max].fragments = -1;
-                glGenQueries_(1, &queries[max++].id);
-            }
-            cur = defer = 0;
-        }
-
-        occludequery *newquery(void *owner)
-        {
-            if(cur >= max)
-            {
-                if(max >= maxquery)
+                for(int i = 0; i < cur; ++i)
                 {
-                    return nullptr;
+                    queries[i].owner = nullptr;
                 }
-                if(deferquery)
+                for(; defer > 0 && max < maxquery; defer--)
                 {
-                    if(max + defer < maxquery)
+                    queries[max].owner = nullptr;
+                    queries[max].fragments = -1;
+                    glGenQueries_(1, &queries[max++].id);
+                }
+                cur = defer = 0;
+            }
+
+            occludequery *newquery(void *owner)
+            {
+                if(cur >= max)
+                {
+                    if(max >= maxquery)
                     {
-                        defer++;
+                        return nullptr;
                     }
-                    return nullptr;
+                    if(deferquery)
+                    {
+                        if(max + defer < maxquery)
+                        {
+                            defer++;
+                        }
+                        return nullptr;
+                    }
+                    glGenQueries_(1, &queries[max++].id);
                 }
-                glGenQueries_(1, &queries[max++].id);
+                occludequery *query = &queries[cur++];
+                query->owner = owner;
+                query->fragments = -1;
+                return query;
             }
-            occludequery *query = &queries[cur++];
-            query->owner = owner;
-            query->fragments = -1;
-            return query;
-        }
 
-        void reset()
-        {
-            for(int i = 0; i < max; ++i)
+            void reset()
             {
-                queries[i].owner = nullptr;
+                for(int i = 0; i < max; ++i)
+                {
+                    queries[i].owner = nullptr;
+                }
             }
-        }
 
-        void cleanup()
-        {
-            for(int i = 0; i < max; ++i)
+            void cleanup()
             {
-                glDeleteQueries_(1, &queries[i].id);
-                queries[i].owner = nullptr;
+                for(int i = 0; i < max; ++i)
+                {
+                    glDeleteQueries_(1, &queries[i].id);
+                    queries[i].owner = nullptr;
+                }
+                cur = max = defer = 0;
             }
-            cur = max = defer = 0;
-        }
+        private:
+            int max, defer;
+            occludequery queries[maxquery];
     };
 
     queryframe queryframes[maxqueryframes];
