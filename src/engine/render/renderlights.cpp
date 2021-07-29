@@ -1305,55 +1305,58 @@ VARF(batchsunlight, 0, 2, 2, cleardeferredlightshaders());
 
 int shadowmapping = 0;
 
-struct lightrect
+class lightrect
 {
-    uchar x1, y1, x2, y2;
+    public:
+        uchar x1, y1, x2, y2;
 
-    lightrect() {}
-    lightrect(uchar x1, uchar y1, uchar x2, uchar y2) : x1(x1), y1(y1), x2(x2), y2(y2) {}
-    lightrect(const lightinfo &l)
-    {
-        calctilebounds(l.sx1, l.sy1, l.sx2, l.sy2, x1, y1, x2, y2);
-    }
-
-    bool outside(const lightrect &o) const
-    {
-        return x1 >= o.x2 || x2 <= o.x1 || y1 >= o.y2 || y2 <= o.y1;
-    }
-
-    bool inside(const lightrect &o) const
-    {
-        return x1 >= o.x1 && x2 <= o.x2 && y1 >= o.y1 && y2 <= o.y2;
-    }
-
-    void intersect(const lightrect &o)
-    {
-        x1 = std::max(x1, o.x1);
-        y1 = std::max(y1, o.y1);
-        x2 = std::min(x2, o.x2);
-        y2 = std::min(y2, o.y2);
-    }
-
-    bool overlaps(int tx1, int ty1, int tx2, int ty2, const uint *tilemask) const
-    {
-        if(static_cast<int>(x2) <= tx1 || static_cast<int>(x1) >= tx2 || static_cast<int>(y2) <= ty1 || static_cast<int>(y1) >= ty2)
+        lightrect() {}
+        lightrect(const lightinfo &l)
         {
-            return false;
+            calctilebounds(l.sx1, l.sy1, l.sx2, l.sy2, x1, y1, x2, y2);
         }
-        if(!tilemask)
+
+        bool outside(const lightrect &o) const
         {
-            return true;
+            return x1 >= o.x2 || x2 <= o.x1 || y1 >= o.y2 || y2 <= o.y1;
         }
-        uint xmask = (1<<x2) - (1<<x1);
-        for(int y = std::max(static_cast<int>(y1), ty1), end = std::min(static_cast<int>(y2), ty2); y < end; y++)
+
+        bool inside(const lightrect &o) const
         {
-            if(tilemask[y] & xmask)
+            return x1 >= o.x1 && x2 <= o.x2 && y1 >= o.y1 && y2 <= o.y2;
+        }
+
+        void intersect(const lightrect &o)
+        {
+            x1 = std::max(x1, o.x1);
+            y1 = std::max(y1, o.y1);
+            x2 = std::min(x2, o.x2);
+            y2 = std::min(y2, o.y2);
+        }
+
+        bool overlaps(int tx1, int ty1, int tx2, int ty2, const uint *tilemask) const
+        {
+            if(static_cast<int>(x2) <= tx1 || static_cast<int>(x1) >= tx2 || static_cast<int>(y2) <= ty1 || static_cast<int>(y1) >= ty2)
+            {
+                return false;
+            }
+            if(!tilemask)
             {
                 return true;
             }
+            uint xmask = (1<<x2) - (1<<x1);
+            for(int y = std::max(static_cast<int>(y1), ty1), end = std::min(static_cast<int>(y2), ty2); y < end; y++)
+            {
+                if(tilemask[y] & xmask)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
-    }
+    protected:
+        //only called by child batchstack object
+        lightrect(uchar x1, uchar y1, uchar x2, uchar y2) : x1(x1), y1(y1), x2(x2), y2(y2) {}
 };
 
 //batchflag enum is local to this file
