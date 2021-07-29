@@ -985,121 +985,122 @@ PackNode shadowatlaspacker(0, 0, shadowatlassize, shadowatlassize);
 
 VAR(smminradius, 0, 16, 10000);
 
-struct lightinfo
+class lightinfo
 {
-    int ent, shadowmap, flags;
-    vec o, color;
-    float radius, dist;
-    vec dir, spotx, spoty;
-    int spot;
-    float sx1, sy1, sx2, sy2, sz1, sz2;
-    occludequery *query;
+    public:
+        int ent, shadowmap, flags;
+        vec o, color;
+        float radius, dist;
+        vec dir, spotx, spoty;
+        int spot;
+        float sx1, sy1, sx2, sy2, sz1, sz2;
+        occludequery *query;
 
-    lightinfo() {}
-    lightinfo(const vec &o, const vec &color, float radius, int flags = 0, const vec &dir = vec(0, 0, 0), int spot = 0)
-      : ent(-1), shadowmap(-1), flags(flags),
-        o(o), color(color), radius(radius), dist(camera1->o.dist(o)),
-        dir(dir), spot(spot), query(nullptr)
-    {
-        if(spot > 0)
+        lightinfo() {}
+        lightinfo(const vec &o, const vec &color, float radius, int flags = 0, const vec &dir = vec(0, 0, 0), int spot = 0)
+          : ent(-1), shadowmap(-1), flags(flags),
+            o(o), color(color), radius(radius), dist(camera1->o.dist(o)),
+            dir(dir), spot(spot), query(nullptr)
         {
-            calcspot();
+            if(spot > 0)
+            {
+                calcspot();
+            }
+            calcscissor();
         }
-        calcscissor();
-    }
-    lightinfo(int i, const extentity &e)
-      : ent(i), shadowmap(-1), flags(e.attr5),
-        o(e.o), color(vec(e.attr2, e.attr3, e.attr4).max(0)), radius(e.attr1), dist(camera1->o.dist(e.o)),
-        dir(0, 0, 0), spot(0), query(nullptr)
-    {
-        if(e.attached && e.attached->type == EngineEnt_Spotlight)
+        lightinfo(int i, const extentity &e)
+          : ent(i), shadowmap(-1), flags(e.attr5),
+            o(e.o), color(vec(e.attr2, e.attr3, e.attr4).max(0)), radius(e.attr1), dist(camera1->o.dist(e.o)),
+            dir(0, 0, 0), spot(0), query(nullptr)
         {
-            dir = vec(e.attached->o).sub(e.o).normalize();
-            spot = std::clamp(static_cast<int>(e.attached->attr1), 1, 89);
-            calcspot();
+            if(e.attached && e.attached->type == EngineEnt_Spotlight)
+            {
+                dir = vec(e.attached->o).sub(e.o).normalize();
+                spot = std::clamp(static_cast<int>(e.attached->attr1), 1, 89);
+                calcspot();
+            }
+            calcscissor();
         }
-        calcscissor();
-    }
 
-    void calcspot()
-    {
-        quat orient(dir, vec(0, 0, dir.z < 0 ? -1 : 1));
-        spotx = orient.invertedrotate(vec(1, 0, 0));
-        spoty = orient.invertedrotate(vec(0, 1, 0));
-    }
-
-    bool noshadow() const
-    {
-        return flags&LightEnt_NoShadow || radius <= smminradius;
-    }
-    bool nospec() const
-    {
-        return (flags&LightEnt_NoSpecular) != 0;
-    }
-    bool volumetric() const
-    {
-        return (flags&LightEnt_Volumetric) != 0;
-    }
-
-    void addscissor(float &dx1, float &dy1, float &dx2, float &dy2) const
-    {
-        dx1 = std::min(dx1, sx1);
-        dy1 = std::min(dy1, sy1);
-        dx2 = std::max(dx2, sx2);
-        dy2 = std::max(dy2, sy2);
-    }
-
-    void addscissor(float &dx1, float &dy1, float &dx2, float &dy2, float &dz1, float &dz2) const
-    {
-        addscissor(dx1, dy1, dx2, dy2);
-        dz1 = std::min(dz1, sz1);
-        dz2 = std::max(dz2, sz2);
-    }
-
-    bool validscissor() const
-    {
-        return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
-    }
-
-    void calcscissor()
-    {
-        sx1 = sy1 = sz1 = -1;
-        sx2 = sy2 = sz2 = 1;
-        if(spot > 0)
+        bool noshadow() const
         {
-            calcspotscissor(o, radius, dir, spot, spotx, spoty, sx1, sy1, sx2, sy2, sz1, sz2);
+            return flags&LightEnt_NoShadow || radius <= smminradius;
         }
-        else
+        bool nospec() const
         {
-            calcspherescissor(o, radius, sx1, sy1, sx2, sy2, sz1, sz2);
+            return (flags&LightEnt_NoSpecular) != 0;
         }
-    }
+        bool volumetric() const
+        {
+            return (flags&LightEnt_Volumetric) != 0;
+        }
 
-    bool checkquery() const
-    {
-        return query && query->owner == this && ::checkquery(query);
-    }
+        void addscissor(float &dx1, float &dy1, float &dx2, float &dy2) const
+        {
+            dx1 = std::min(dx1, sx1);
+            dy1 = std::min(dy1, sy1);
+            dx2 = std::max(dx2, sx2);
+            dy2 = std::max(dy2, sy2);
+        }
 
-    void calcbb(vec &bbmin, vec &bbmax)
-    {
-        if(spot > 0)
+        void addscissor(float &dx1, float &dy1, float &dx2, float &dy2, float &dz1, float &dz2) const
         {
-            float spotscale = radius * tan360(spot);
-            vec up     = vec(spotx).mul(spotscale).abs(),
-                right  = vec(spoty).mul(spotscale).abs(),
-                center = vec(dir).mul(radius).add(o);
-            bbmin = bbmax = center;
-            bbmin.sub(up).sub(right);
-            bbmax.add(up).add(right);
-            bbmin.min(o);
-            bbmax.max(o);
+            addscissor(dx1, dy1, dx2, dy2);
+            dz1 = std::min(dz1, sz1);
+            dz2 = std::max(dz2, sz2);
         }
-        else
+
+        bool validscissor() const
         {
-            bbmin = vec(o).sub(radius);
-            bbmax = vec(o).add(radius);
+            return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
         }
-    }
+
+        bool checkquery() const
+        {
+            return query && query->owner == this && ::checkquery(query);
+        }
+
+        void calcbb(vec &bbmin, vec &bbmax)
+        {
+            if(spot > 0)
+            {
+                float spotscale = radius * tan360(spot);
+                vec up     = vec(spotx).mul(spotscale).abs(),
+                    right  = vec(spoty).mul(spotscale).abs(),
+                    center = vec(dir).mul(radius).add(o);
+                bbmin = bbmax = center;
+                bbmin.sub(up).sub(right);
+                bbmax.add(up).add(right);
+                bbmin.min(o);
+                bbmax.max(o);
+            }
+            else
+            {
+                bbmin = vec(o).sub(radius);
+                bbmax = vec(o).add(radius);
+            }
+        }
+    private:
+        void calcspot()
+        {
+            quat orient(dir, vec(0, 0, dir.z < 0 ? -1 : 1));
+            spotx = orient.invertedrotate(vec(1, 0, 0));
+            spoty = orient.invertedrotate(vec(0, 1, 0));
+        }
+
+        void calcscissor()
+        {
+            sx1 = sy1 = sz1 = -1;
+            sx2 = sy2 = sz2 = 1;
+            if(spot > 0)
+            {
+                calcspotscissor(o, radius, dir, spot, spotx, spoty, sx1, sy1, sx2, sy2, sz1, sz2);
+            }
+            else
+            {
+                calcspherescissor(o, radius, sx1, sy1, sx2, sy2, sz1, sz2);
+            }
+        }
 };
 
 struct shadowcachekey
