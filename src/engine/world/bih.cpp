@@ -575,7 +575,10 @@ static float segmentdistance(const vec &d1, const vec &d2, const vec &r)
                 t = 1;
                 s = std::clamp((b + c) / a, 0.0f, 1.0f);
             }
-            else t /= e;
+            else
+            {
+                t /= e;
+            }
         }
     }
     vec c1 = static_cast<vec>(d1).mul(s),
@@ -879,7 +882,8 @@ void BIH::collide(const mesh &m, physent *d, const vec &dir, float cutoff, const
 {
     node *stack[128];
     int stacksize = 0;
-    ivec bmin = ivec(bo).sub(br), bmax = ivec(bo).add(br);
+    ivec bmin = ivec(bo).sub(br),
+         bmax = ivec(bo).add(br);
     for(;;)
     {
         int axis = curnode->axis();
