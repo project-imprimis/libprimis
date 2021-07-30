@@ -52,7 +52,7 @@ enum
 };
 
 VARFP(maxstaintris, 1, 2048, 16384, initstains()); //need to call initstains to potentially cull extra stain tris
-VARMP(stainfade, 1, 15, 60, 1000); //number of seconds before stain geom fades
+VARP(stainfade, 1000, 15000, 60000); //number of milliseconds before stain geom fades
 VAR(debugstain, 0, 0, 1);
 
 class stainbuffer
