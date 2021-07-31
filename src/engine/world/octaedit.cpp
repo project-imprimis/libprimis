@@ -1294,76 +1294,81 @@ void pasteprefab(char *name)
 }
 COMMAND(pasteprefab, "s");
 
-struct prefabmesh
+class prefabmesh
 {
-    struct vertex { vec pos; bvec4 norm; };
-
-    static constexpr int prefabmeshsize = 1<<9;
-    int table[prefabmeshsize];
-    std::vector<vertex> verts;
-    std::vector<int> chain;
-    std::vector<ushort> tris;
-
-    prefabmesh() { memset(table, -1, sizeof(table)); }
-
-    int addvert(const vertex &v)
-    {
-        uint h = hthash(v.pos)&(prefabmeshsize-1);
-        for(int i = table[h]; i>=0; i = chain[i])
+    public:
+        struct vertex
         {
-            const vertex &c = verts[i];
-            if(c.pos==v.pos && c.norm==v.norm)
+            vec pos;
+            bvec4 norm;
+        };
+
+        static constexpr int prefabmeshsize = 1<<9;
+        int table[prefabmeshsize];
+        std::vector<vertex> verts;
+        std::vector<int> chain;
+        std::vector<ushort> tris;
+
+        prefabmesh() { memset(table, -1, sizeof(table)); }
+
+        int addvert(const vec &pos, const bvec &norm)
+        {
+            vertex vtx;
+            vtx.pos = pos;
+            vtx.norm = norm;
+            return addvert(vtx);
+        }
+
+        void setup(prefab &p)
+        {
+            if(tris.empty())
             {
-                return i;
+                return;
             }
-        }
-        if(verts.size() >= USHRT_MAX)
-        {
-            return -1;
-        }
-        verts.emplace_back(v);
-        chain.emplace_back(table[h]);
-        return table[h] = verts.size()-1;
-    }
+            p.cleanup();
 
-    int addvert(const vec &pos, const bvec &norm)
-    {
-        vertex vtx;
-        vtx.pos = pos;
-        vtx.norm = norm;
-        return addvert(vtx);
-    }
+            for(uint i = 0; i < verts.size(); i++)
+            {
+                verts[i].norm.flip();
+            }
+            if(!p.vbo)
+            {
+                glGenBuffers_(1, &p.vbo);
+            }
+            gle::bindvbo(p.vbo);
+            glBufferData_(GL_ARRAY_BUFFER, verts.size()*sizeof(vertex), verts.data(), GL_STATIC_DRAW);
+            gle::clearvbo();
+            p.numverts = verts.size();
 
-    void setup(prefab &p)
-    {
-        if(tris.empty())
-        {
-            return;
+            if(!p.ebo)
+            {
+                glGenBuffers_(1, &p.ebo);
+            }
+            gle::bindebo(p.ebo);
+            glBufferData_(GL_ELEMENT_ARRAY_BUFFER, tris.size()*sizeof(ushort), tris.data(), GL_STATIC_DRAW);
+            gle::clearebo();
+            p.numtris = tris.size()/3;
         }
-        p.cleanup();
-
-        for(uint i = 0; i < verts.size(); i++)
+    private:
+        int addvert(const vertex &v)
         {
-            verts[i].norm.flip();
+            uint h = hthash(v.pos)&(prefabmeshsize-1);
+            for(int i = table[h]; i>=0; i = chain[i])
+            {
+                const vertex &c = verts[i];
+                if(c.pos==v.pos && c.norm==v.norm)
+                {
+                    return i;
+                }
+            }
+            if(verts.size() >= USHRT_MAX)
+            {
+                return -1;
+            }
+            verts.emplace_back(v);
+            chain.emplace_back(table[h]);
+            return table[h] = verts.size()-1;
         }
-        if(!p.vbo)
-        {
-            glGenBuffers_(1, &p.vbo);
-        }
-        gle::bindvbo(p.vbo);
-        glBufferData_(GL_ARRAY_BUFFER, verts.size()*sizeof(vertex), verts.data(), GL_STATIC_DRAW);
-        gle::clearvbo();
-        p.numverts = verts.size();
-
-        if(!p.ebo)
-        {
-            glGenBuffers_(1, &p.ebo);
-        }
-        gle::bindebo(p.ebo);
-        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, tris.size()*sizeof(ushort), tris.data(), GL_STATIC_DRAW);
-        gle::clearebo();
-        p.numtris = tris.size()/3;
-    }
 
 };
 
