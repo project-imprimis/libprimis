@@ -237,19 +237,6 @@ namespace
         hudquad(x, y, chsize, chsize);
     }
 
-    void vectoryawpitch(const vec &v, float &yaw, float &pitch)
-    {
-        if(v.iszero())
-        {
-            yaw = pitch = 0;
-        }
-        else
-        {
-            yaw = -std::atan2(v.x, v.y)/RAD;
-            pitch = std::asin(v.z/v.magnitude())/RAD;
-        }
-    }
-
     //hud time displays
     VARP(wallclock, 0, 0, 1);     //toggles hud readout
     VARP(wallclock24, 0, 0, 1);   //toggles 12h (US) or 24h time
@@ -421,6 +408,19 @@ FVARP(conscale, 1e-3f, 0.33f, 1e3f); //size of readouts, console, and history
 //note: fps displayed is the average over the statrate duration
 VAR(statrate, 1, 200, 1000);  //update time for fps (not other hud readouts)
 VAR(showhud, 0, 1, 1);
+
+void vectoryawpitch(const vec &v, float &yaw, float &pitch)
+{
+    if(v.iszero())
+    {
+        yaw = pitch = 0;
+    }
+    else
+    {
+        yaw = -std::atan2(v.x, v.y)/RAD;
+        pitch = std::asin(v.z/v.magnitude())/RAD;
+    }
+}
 
 // iengine functionality
 void damagecompass(int n, const vec &loc)
