@@ -37,7 +37,8 @@ void boxs(int orient, vec o, const vec &s, float size)
     float f = boxoutline ? (dc>0 ? 0.2f : -0.2f) : 0;
     o[D[d]] += dc * s[D[d]] + f;
 
-    vec r(0, 0, 0), c(0, 0, 0);
+    vec r(0, 0, 0),
+        c(0, 0, 0);
     r[R[d]] = s[R[d]];
     c[C[d]] = s[C[d]];
 
