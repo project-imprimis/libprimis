@@ -1964,38 +1964,41 @@ namespace UI
 
     struct CroppedImage : Image
     {
-        float cropx, cropy, cropw, croph;
-
-        void setup(Texture *tex_, float minw_ = 0, float minh_ = 0, float cropx_ = 0, float cropy_ = 0, float cropw_ = 1, float croph_ = 1)
-        {
-            Image::setup(tex_, minw_, minh_);
-            cropx = cropx_;
-            cropy = cropy_;
-            cropw = cropw_;
-            croph = croph_;
-        }
-
-        static const char *typestr() { return "#CroppedImage"; }
-        const char *gettype() const { return typestr(); }
-
-        bool target(float cx, float cy)
-        {
-            return !(tex->type&Texture::ALPHA) || checkalphamask(tex, cropx + cx/w*cropw, cropy + cy/h*croph);
-        }
-
-        void draw(float sx, float sy)
-        {
-            if(tex == notexture)
+        public:
+            void setup(Texture *tex_, float minw_ = 0, float minh_ = 0, float cropx_ = 0, float cropy_ = 0, float cropw_ = 1, float croph_ = 1)
             {
-                Object::draw(sx, sy);
-                return;
+                Image::setup(tex_, minw_, minh_);
+                cropx = cropx_;
+                cropy = cropy_;
+                cropw = cropw_;
+                croph = croph_;
             }
 
-            bindtex();
-            quads(sx, sy, w, h, cropx, cropy, cropw, croph);
+            static const char *typestr() { return "#CroppedImage"; }
 
-            Object::draw(sx, sy);
-        }
+        private:
+            bool target(float cx, float cy)
+            {
+                return !(tex->type&Texture::ALPHA) || checkalphamask(tex, cropx + cx/w*cropw, cropy + cy/h*croph);
+            }
+
+            void draw(float sx, float sy)
+            {
+                if(tex == notexture)
+                {
+                    Object::draw(sx, sy);
+                    return;
+                }
+
+                bindtex();
+                quads(sx, sy, w, h, cropx, cropy, cropw, croph);
+
+                Object::draw(sx, sy);
+            }
+
+            const char *gettype() const { return typestr(); }
+
+            float cropx, cropy, cropw, croph;
     };
 
     struct StretchedImage : Image
