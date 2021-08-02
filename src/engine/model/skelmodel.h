@@ -437,8 +437,6 @@ struct skelmodel : animmodel
         int findbone(const char *name);
         int findtag(const char *name);
         bool addtag(const char *name, int bone, const matrix4x3 &matrix);
-        void calcantipodes();
-        void remapbones();
         void addpitchdep(int bone, int frame);
         int findpitchdep(int bone);
         int findpitchcorrect(int bone);
@@ -464,10 +462,15 @@ struct skelmodel : animmodel
         bool shouldcleanup() const;
 
         private:
+
+            void calcantipodes();
+            void remapbones();
+
             struct framedata
             {
                 const dualquat *fr1, *fr2, *pfr1, *pfr2;
             };
+
             void setglslbones(UniformLoc &u, skelcacheentry &sc, skelcacheentry &bc, int count);
             bool gpuaccelerate() const;
             dualquat interpbone(int bone, framedata partframes[maxanimparts], const AnimState *as, const uchar *partmask);
