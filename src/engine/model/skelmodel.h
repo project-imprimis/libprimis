@@ -649,27 +649,29 @@ struct skelmodel : animmodel
         uchar bones[1];
     };
 
-    struct skelpart : part
+    class skelpart : public part
     {
-        animpartmask *buildingpartmask;
+        public:
+            animpartmask *buildingpartmask;
 
-        uchar *partmask;
+            uchar *partmask;
 
-        skelpart(animmodel *model, int index = 0) : part(model, index), buildingpartmask(nullptr), partmask(nullptr)
-        {
-        }
+            skelpart(animmodel *model, int index = 0) : part(model, index), buildingpartmask(nullptr), partmask(nullptr)
+            {
+            }
 
-        virtual ~skelpart()
-        {
-            DELETEA(buildingpartmask);
-        }
+            virtual ~skelpart()
+            {
+                DELETEA(buildingpartmask);
+            }
 
-        uchar *sharepartmask(animpartmask *o);
-        animpartmask *newpartmask();
-        void initanimparts();
-        bool addanimpart(ushort *bonemask);
-        void endanimparts();
-        void loaded();
+            void initanimparts();
+            bool addanimpart(ushort *bonemask);
+            void loaded();
+        private:
+            uchar *sharepartmask(animpartmask *o);
+            animpartmask *newpartmask();
+            void endanimparts();
     };
 
     skelmodel(const char *name) : animmodel(name)
