@@ -987,7 +987,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             {
                 for(int i = 0; i < static_cast<int>(anims.size()); i++)
                 {
-                    int start = sa->frame, end = sa->range;
+                    int start = sa->frame,
+                        end = sa->range;
                     if(*startoffset > 0)
                     {
                         start += std::min(*startoffset, end-1);
