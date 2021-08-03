@@ -485,8 +485,8 @@ struct skelmodel : animmodel
         vector<blendcombo> blendcombos;
         int numblends[4];
 
-        static constexpr int maxblendcache = 16;
-        static constexpr int maxvbocache = 16;
+        static constexpr int maxblendcache = 16; //number of entries in the blendcache entry array
+        static constexpr int maxvbocache = 16;   //number of entries in the vertex buffer object array
 
         blendcacheentry blendcache[maxblendcache];
 
@@ -741,6 +741,12 @@ vector<skeladjustment> skelloader<MDL>::adjustments;
 template<class MDL>
 vector<uchar> skelloader<MDL>::hitzones;
 
+/*
+ * this template structure defines a series of commands for a model object (or
+ * child of the model object) which can be used to set its dynamically modifiable
+ * properties
+ *
+ */
 template<class MDL>
 struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
 {
@@ -802,6 +808,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         conoutf("could not find bone %s for tag %s", name, tagname);
     }
 
+    //attempts to set the pitch of a named bone within a MDL object, within the bounds set
+    //prints to console failure messages if no model or no bone with name passed
     static void setpitch(char *name, float *pitchscale, float *pitchoffset, float *pitchmin, float *pitchmax)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
@@ -947,6 +955,9 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         skel->pitchcorrects.insert(pos, c);
     }
 
+    //attempts to give a model object an animation by the name of *anim parameter
+    //loaded from *animfile with speed/priority/offsets to determine how fast
+    //and what frames play
     static void setanim(char *anim, char *animfile, float *speed, int *priority, int *startoffset, int *endoffset)
     {
         if(!MDL::loading || MDL::loading->parts.empty())
