@@ -277,8 +277,8 @@ struct partrenderer
                 if(stain >= 0)
                 {
                     vec surface;
-                    float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, collideradius);
-                    float collidez = floorz<0 ? o.z-collideradius : p->val - floorz;
+                    float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, collideradius),
+                          collidez = floorz<0 ? o.z-collideradius : p->val - floorz;
                     if(o.z >= collidez+collideerror)
                     {
                         p->val = collidez+collideerror;
