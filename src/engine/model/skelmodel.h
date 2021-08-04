@@ -12,6 +12,15 @@ enum
 
 class skelhitdata; //defined in hitzone.h
 
+/* skelmodel: implementation of model object for a skeletally rigged model
+ *
+ * skelmodel implements most of what is required to render a skeletally rigged
+ * and animated model, using animmodel's specialization of model to implement
+ * animations.
+ *
+ * extending skelmodel for a specific file format allows a program to use these
+ * formats with skeletal animation support
+ */
 struct skelmodel : animmodel
 {
     struct vert
