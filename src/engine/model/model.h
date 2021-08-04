@@ -8,7 +8,14 @@ enum
     MDL_NumMDLTypes
 };
 
-
+/* model: the base class for an ingame model
+ *
+ * extended by animmodel (animated model) which is itself extended by skelmodel
+ *
+ * a model format loader (e.g. md5 or obj) extends model or one of its children
+ * and assigns the data from the file format into the object (by setting its
+ * fields and overriding its methods)
+ */
 class model
 {
     public:
