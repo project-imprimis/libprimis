@@ -3,6 +3,15 @@
 
 extern int fullbrightmodels, testtags, debugcolmesh;
 
+/* animmodel: generic class for an animated model object, derived from the very
+ * general model structure
+ *
+ * animmodel provides functionality to implement an animated model consisting of
+ * multiple mesh groups which are treated as a single model
+ *
+ * animmodel is extended by skelmodel to allow multipart objects to be rigged by
+ * a skeleton/bone type animation methodology
+ */
 class animmodel : public model
 {
     public:
