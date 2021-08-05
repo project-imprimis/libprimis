@@ -229,7 +229,6 @@ class stainbuffer
 class stainrenderer
 {
     public:
-        const char *texname;
         int flags, fadeintime, fadeouttime, timetolive;
         Texture *tex;
         staininfo *stains;
@@ -237,11 +236,11 @@ class stainrenderer
         stainbuffer verts[StainBuffer_Number];
 
         stainrenderer(const char *texname, int flags = 0, int fadeintime = 0, int fadeouttime = 1000, int timetolive = -1)
-            : texname(texname), flags(flags),
+            : flags(flags),
               fadeintime(fadeintime), fadeouttime(fadeouttime), timetolive(timetolive),
               tex(nullptr),
               stains(nullptr), maxstains(0), startstain(0), endstain(0),
-              stainu(0), stainv(0)
+              stainu(0), stainv(0), texname(texname)
         {
         }
 
@@ -692,6 +691,8 @@ class stainrenderer
         }
 
     private:
+        const char *texname;
+
         void findmaterials(vtxarray *va)
         {
             materialsurface *matbuf = va->matbuf;
