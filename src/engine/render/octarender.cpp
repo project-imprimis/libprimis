@@ -676,21 +676,22 @@ namespace
                 matsurfs.shrink(optimizematsurfs(matsurfs.getbuf(), matsurfs.length()));
             }
 
-        #define GENVERTS(type, ptr, body) do \
-            { \
-                type *f = reinterpret_cast<type *>(ptr); \
-                for(int i = 0; i < verts.length(); i++) \
+            #define GENVERTS(type, ptr, body) do \
                 { \
-                    const vertex &v = verts[i]; \
-                    body; \
-                    f++; \
-                } \
-            } while(0)
+                    type *f = reinterpret_cast<type *>(ptr); \
+                    for(int i = 0; i < verts.length(); i++) \
+                    { \
+                        const vertex &v = verts[i]; \
+                        body; \
+                        f++; \
+                    } \
+                } while(0)
 
             void genverts(void *buf)
             {
                 GENVERTS(vertex, buf, { *f = v; f->norm.flip(); f->tangent.flip(); });
             }
+            #undef GENVERTS
 
             void gendecal(const extentity &e, DecalSlot &s, const decalkey &key)
             {
