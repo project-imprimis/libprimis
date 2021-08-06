@@ -1412,17 +1412,20 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             {
                 continue;
             }
-#define INTERPXYZSCISSOR(p, o) do { \
-            float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
-                  w = p.w + t*(o.w - p.w), \
-                  x = (p.x + t*(o.x - p.x))/w, \
-                  y = (p.y + t*(o.y - p.y))/w; \
-            sx1 = std::min(sx1, x); \
-            sy1 = std::min(sy1, y); \
-            sz1 = std::min(sz1, -1.0f); \
-            sx2 = std::max(sx2, x); \
-            sy2 = std::max(sy2, y); \
+
+    #define INTERPXYZSCISSOR(p, o) do { \
+        float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
+              w = p.w + t*(o.w - p.w), \
+              x = (p.x + t*(o.x - p.x))/w, \
+              y = (p.y + t*(o.y - p.y))/w; \
+        sx1 = std::min(sx1, x); \
+        sy1 = std::min(sy1, y); \
+        sz1 = std::min(sz1, -1.0f); \
+        sx2 = std::max(sx2, x); \
+        sy2 = std::max(sy2, y); \
+
         } while(0)
+
             INTERPXYZSCISSOR(p, o);
         }
         if(v[4].z > -v[4].w)
@@ -1442,6 +1445,9 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             INTERPXYZSCISSOR(v[4], o);
         }
     }
+
+    #undef INTERPXYZSCISSOR
+
     sx1 = std::max(sx1, -1.0f);
     sy1 = std::max(sy1, -1.0f);
     sz1 = std::max(sz1, -1.0f);
