@@ -340,71 +340,74 @@ class animmodel : public model
             private:
         };
 
-        struct meshgroup
+        class meshgroup
         {
-            meshgroup *next;
-            int shared;
-            char *name;
-            vector<Mesh *> meshes;
+            public:
+                int shared;
+                char *name;
+                vector<Mesh *> meshes;
 
-            meshgroup() : next(nullptr), shared(0), name(nullptr)
-            {
-            }
+                meshgroup() : next(nullptr), shared(0), name(nullptr)
+                {
+                }
 
-            virtual ~meshgroup()
-            {
-                DELETEA(name);
-                meshes.deletecontents();
-                DELETEP(next);
-            }
+                virtual ~meshgroup()
+                {
+                    DELETEA(name);
+                    meshes.deletecontents();
+                    DELETEP(next);
+                }
 
-            virtual int findtag(const char *name)
-            {
-                return -1;
-            }
+                virtual int findtag(const char *name)
+                {
+                    return -1;
+                }
 
-            virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
+                virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
 
-            #define LOOP_RENDER_MESHES(type, name, body) do { \
-                for(int i = 0; i < meshes.length(); i++) \
-                { \
-                    type &name = *static_cast<type *>(meshes[i]); \
-                    if(name.canrender || debugcolmesh) \
+                #define LOOP_RENDER_MESHES(type, name, body) do { \
+                    for(int i = 0; i < meshes.length(); i++) \
                     { \
-                        body; \
+                        type &name = *static_cast<type *>(meshes[i]); \
+                        if(name.canrender || debugcolmesh) \
+                        { \
+                            body; \
+                        } \
                     } \
-                } \
-            } while(0)
+                } while(0)
 
-            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
-            void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
-            void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
+                void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
-            virtual void *animkey()
-            {
-                return this;
-            }
+                virtual void *animkey()
+                {
+                    return this;
+                }
 
-            virtual int totalframes() const
-            {
-                return 1;
-            }
+                virtual int totalframes() const
+                {
+                    return 1;
+                }
 
-            bool hasframe(int i) const;
-            bool hasframes(int i, int n) const;
-            int clipframes(int i, int n) const;
+                bool hasframe(int i) const;
+                bool hasframes(int i, int n) const;
+                int clipframes(int i, int n) const;
 
-            virtual void cleanup() {}
-            virtual void preload(part *p) {}
-            virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
-            virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
+                virtual void cleanup() {}
+                virtual void preload(part *p) {}
+                virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
+                virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 
-            void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
-            void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
-            void bindpos(GLuint ebuf, GLuint vbuf, GenericVec4<half> *v, int stride);
-            void bindtc(void *v, int stride);
-            void bindtangents(void *v, int stride);
-            void bindbones(void *wv, void *bv, int stride);
+                void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
+                void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
+                void bindpos(GLuint ebuf, GLuint vbuf, GenericVec4<half> *v, int stride);
+                void bindtc(void *v, int stride);
+                void bindtangents(void *v, int stride);
+                void bindbones(void *wv, void *bv, int stride);
+            private:
+                meshgroup *next;
+
         };
 
         static hashnameset<meshgroup *> meshgroups;
