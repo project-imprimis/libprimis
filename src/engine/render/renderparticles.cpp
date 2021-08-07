@@ -204,120 +204,123 @@ struct partvert
 
 static constexpr float collideradius = 8.0f;
 static constexpr float collideerror  = 1.0f;
-
-struct partrenderer
+class partrenderer
 {
-    Texture *tex;
-    const char *texname;
-    int texclamp;
-    uint type;
-    int stain;
-    string info;
+    public:
+        uint type;
+        int stain;
+        string info;
 
-    partrenderer(const char *texname, int texclamp, int type, int stain = -1)
-        : tex(nullptr), texname(texname), texclamp(texclamp), type(type), stain(stain)
-    {
-    }
-    partrenderer(int type, int stain = -1)
-        : tex(nullptr), texname(nullptr), texclamp(0), type(type), stain(stain)
-    {
-    }
-    virtual ~partrenderer()
-    {
-    }
-
-    virtual void init(int n) { }
-    virtual void reset() = 0;
-    virtual void resettracked(physent *owner) { }
-    virtual particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity = 0) = 0;
-    virtual void update() { }
-    virtual void render() = 0;
-    virtual bool haswork() = 0;
-    virtual int count() = 0; //for debug
-    virtual void cleanup() {}
-
-    virtual void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
-    {
-    }
-
-    virtual void preload()
-    {
-        if(texname && !tex)
+        partrenderer(const char *texname, int texclamp, int type, int stain = -1)
+            : tex(nullptr), texname(texname), texclamp(texclamp), type(type), stain(stain)
         {
-            tex = textureload(texname, texclamp);
         }
-    }
-
-    //blend = 0 => remove it
-    void calc(particle *p, int &blend, int &ts, vec &o, vec &d, bool step = true)
-    {
-        o = p->o;
-        d = p->d;
-        if(p->fade <= 5)
+        partrenderer(int type, int stain = -1)
+            : tex(nullptr), texname(nullptr), texclamp(0), type(type), stain(stain)
         {
-            ts = 1;
-            blend = 255;
         }
-        else
+        virtual ~partrenderer()
         {
-            ts = lastmillis-p->millis;
-            blend = std::max(255 - (ts<<8)/p->fade, 0);
-            if(p->gravity)
+        }
+
+        virtual void init(int n) { }
+        virtual void reset() = 0;
+        virtual void resettracked(physent *owner) { }
+        virtual particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity = 0) = 0;
+        virtual void update() { }
+        virtual void render() = 0;
+        virtual bool haswork() = 0;
+        virtual int count() = 0; //for debug
+        virtual void cleanup() {}
+
+        virtual void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
+        {
+        }
+
+        virtual void preload()
+        {
+            if(texname && !tex)
             {
-                if(ts > p->fade)
-                {
-                    ts = p->fade;
-                }
-                float t = ts;
-                o.add(vec(d).mul(t/5000.0f));
-                o.z -= t*t/(2.0f * 5000.0f * p->gravity);
+                tex = textureload(texname, texclamp);
             }
-            if(type&PT_COLLIDE && o.z < p->val && step)
+        }
+
+        //blend = 0 => remove it
+        void calc(particle *p, int &blend, int &ts, vec &o, vec &d, bool step = true)
+        {
+            o = p->o;
+            d = p->d;
+            if(p->fade <= 5)
             {
-                if(stain >= 0)
+                ts = 1;
+                blend = 255;
+            }
+            else
+            {
+                ts = lastmillis-p->millis;
+                blend = std::max(255 - (ts<<8)/p->fade, 0);
+                if(p->gravity)
                 {
-                    vec surface;
-                    float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, collideradius),
-                          collidez = floorz<0 ? o.z-collideradius : p->val - floorz;
-                    if(o.z >= collidez+collideerror)
+                    if(ts > p->fade)
                     {
-                        p->val = collidez+collideerror;
+                        ts = p->fade;
+                    }
+                    float t = ts;
+                    o.add(vec(d).mul(t/5000.0f));
+                    o.z -= t*t/(2.0f * 5000.0f * p->gravity);
+                }
+                if(type&PT_COLLIDE && o.z < p->val && step)
+                {
+                    if(stain >= 0)
+                    {
+                        vec surface;
+                        float floorz = rayfloor(vec(o.x, o.y, p->val), surface, Ray_ClipMat, collideradius),
+                              collidez = floorz<0 ? o.z-collideradius : p->val - floorz;
+                        if(o.z >= collidez+collideerror)
+                        {
+                            p->val = collidez+collideerror;
+                        }
+                        else
+                        {
+                            int staintype = type&PT_RND4 ? (p->flags>>5)&3 : 0;
+                            addstain(stain, vec(o.x, o.y, collidez), vec(p->o).sub(o).normalize(), 2*p->size, p->color, staintype);
+                            blend = 0;
+                        }
                     }
                     else
                     {
-                        int staintype = type&PT_RND4 ? (p->flags>>5)&3 : 0;
-                        addstain(stain, vec(o.x, o.y, collidez), vec(p->o).sub(o).normalize(), 2*p->size, p->color, staintype);
                         blend = 0;
                     }
                 }
-                else
+            }
+        }
+
+        void debuginfo()
+        {
+            formatstring(info, "%d\t%s(", count(), partnames[type&0xFF].c_str());
+            if(type&PT_LERP)    concatstring(info, "l,");
+            if(type&PT_MOD)     concatstring(info, "m,");
+            if(type&PT_RND4)    concatstring(info, "r,");
+            if(type&PT_TRACK)   concatstring(info, "t,");
+            if(type&PT_FLIP)    concatstring(info, "f,");
+            if(type&PT_COLLIDE) concatstring(info, "c,");
+            int len = strlen(info);
+            info[len-1] = info[len-1] == ',' ? ')' : '\0';
+            if(texname)
+            {
+                const char *title = strrchr(texname, '/');
+                if(title)
                 {
-                    blend = 0;
+                    concformatstring(info, ": %s", title+1);
                 }
             }
         }
-    }
+    protected:
+        Texture *tex;
+    private:
+        const char *texname;
+        int texclamp;
 
-    void debuginfo()
-    {
-        formatstring(info, "%d\t%s(", count(), partnames[type&0xFF].c_str());
-        if(type&PT_LERP)    concatstring(info, "l,");
-        if(type&PT_MOD)     concatstring(info, "m,");
-        if(type&PT_RND4)    concatstring(info, "r,");
-        if(type&PT_TRACK)   concatstring(info, "t,");
-        if(type&PT_FLIP)    concatstring(info, "f,");
-        if(type&PT_COLLIDE) concatstring(info, "c,");
-        int len = strlen(info);
-        info[len-1] = info[len-1] == ',' ? ')' : '\0';
-        if(texname)
-        {
-            const char *title = strrchr(texname, '/');
-            if(title)
-            {
-                concformatstring(info, ": %s", title+1);
-            }
-        }
-    }
 };
 
 struct listparticle : particle
