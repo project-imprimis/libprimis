@@ -1427,7 +1427,6 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
         sz1 = std::min(sz1, -1.0f); \
         sx2 = std::max(sx2, x); \
         sy2 = std::max(sy2, y); \
-
         } while(0)
 
             INTERPXYZSCISSOR(p, o);
