@@ -39,6 +39,7 @@ struct md5 : skelloader<md5>
         return MDL_MD5;
     }
 
+    //extensions to skelmesh objects for md5 specifically
     class md5mesh : public skelmesh
     {
         public:
