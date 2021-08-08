@@ -26,7 +26,7 @@
 #include "animmodel.h"
 #include "skelmodel.h"
 
-VARP(gpuskel, 0, 1, 1);
+VARP(gpuskel, 0, 1, 1); //toggles gpu acceleration of skeletal models
 
 VAR(maxskelanimdata, 1, 192, 0);
 
