@@ -1,6 +1,10 @@
 #ifndef RAGDOLL_H_
 #define RAGDOLL_H_
 
+/* ragdollskel defines a skeletal animation object for use by skelmodel, which
+ * is able to be dynamically modified by physics (rather than by an animation file
+ *
+ */
 class ragdollskel
 {
     public:
