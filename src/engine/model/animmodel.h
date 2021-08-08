@@ -618,6 +618,14 @@ static inline bool htcmp(const animmodel::shaderparams &x, const animmodel::shad
     return !memcmp(&x, &y, sizeof(animmodel::shaderparams));
 }
 
+/* modelloader
+ *
+ * modelloader is a template for a wrapper to load a model into a model/animmodel
+ * object from a transactional format
+ *
+ * skelloader is a specialization of this class which uses modelloader to load
+ * a skeletal model
+ */
 template<class MDL, class BASE>
 struct modelloader : BASE
 {
