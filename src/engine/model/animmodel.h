@@ -39,7 +39,7 @@ class animmodel : public model
             }
         };
 
-        struct part;
+        class part;
 
         struct AnimState
         {
@@ -423,53 +423,56 @@ class animmodel : public model
             linkedpart() : p(nullptr), tag(-1), anim(-1), basetime(0), translate(0, 0, 0), pos(nullptr) {}
         };
 
-        struct part
+        class part
         {
-            animmodel *model;
-            int index;
-            meshgroup *meshes;
-            vector<linkedpart> links;
-            vector<skin> skins;
-            vector<animspec> *anims[maxanimparts];
-            int numanimparts;
-            float pitchscale, pitchoffset, pitchmin, pitchmax;
+            public:
+                animmodel *model;
+                int index;
+                meshgroup *meshes;
+                vector<linkedpart> links;
+                vector<skin> skins;
+                int numanimparts;
+                float pitchscale, pitchoffset, pitchmin, pitchmax;
 
-            part(animmodel *model, int index = 0) : model(model), index(index), meshes(nullptr), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
-            {
-                for(int k = 0; k < maxanimparts; ++k)
+                part(animmodel *model, int index = 0) : model(model), index(index), meshes(nullptr), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
                 {
-                    anims[k] = nullptr;
+                    for(int k = 0; k < maxanimparts; ++k)
+                    {
+                        anims[k] = nullptr;
+                    }
                 }
-            }
-            virtual ~part()
-            {
-                for(int k = 0; k < maxanimparts; ++k)
+                virtual ~part()
                 {
-                    DELETEA(anims[k]);
+                    for(int k = 0; k < maxanimparts; ++k)
+                    {
+                        DELETEA(anims[k]);
+                    }
                 }
-            }
 
-            virtual void cleanup();
-            void disablepitch();
-            void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
-            void genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m);
-            void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
-            bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
-            bool unlink(part *p);
-            void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
-            bool alphatested() const;
-            void preloadBIH();
-            void preloadshaders();
-            void preloadmeshes();
-            virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
-            bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime);
-            void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
-            void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
-            void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
-            void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as);
-            void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0);
-            bool animated() const;
-            virtual void loaded();
+                virtual void cleanup();
+                void disablepitch();
+                void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
+                void genBIH(vector<BIH::mesh> &bih, const matrix4x3 &m);
+                void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m);
+                bool link(part *p, const char *tag, const vec &translate = vec(0, 0, 0), int anim = -1, int basetime = 0, vec *pos = nullptr);
+                bool unlink(part *p);
+                void initskins(Texture *tex = notexture, Texture *masks = notexture, int limit = 0);
+                bool alphatested() const;
+                void preloadBIH();
+                void preloadshaders();
+                void preloadmeshes();
+                virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
+                bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime);
+                void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
+                void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
+                void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d);
+                void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, AnimState *as);
+                void setanim(int animpart, int num, int frame, int range, float speed, int priority = 0);
+                bool animated() const;
+                virtual void loaded();
+            private:
+                vector<animspec> *anims[maxanimparts];
+
         };
 
         enum
