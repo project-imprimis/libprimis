@@ -109,7 +109,7 @@ class animmodel : public model
             void bind(Mesh &b, const AnimState *as);
         };
 
-        struct meshgroup;
+        class meshgroup;
 
         class Mesh
         {
