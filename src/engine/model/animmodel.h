@@ -678,6 +678,14 @@ MDL *modelloader<MDL, BASE>::loading = nullptr;
 template<class MDL, class BASE>
 string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
 
+/* modelloader
+ *
+ * this template class adds a series of commands to the cubescript binding
+ * adaptable to a specific model type
+ *
+ * this template class generates unique command names for each separate model type
+ * such as objcolor for obj, or md5color for md5 models
+ */
 template<class MDL, class MESH>
 struct modelcommands
 {
