@@ -75,7 +75,9 @@ versions of the libraries are required (on distros that seperate standard and de
 
 Once the library has been compiled, it should be placed the standard shared library folder
 (usually `/usr/lib/`) where it can be linked to. Alternatively, use `make -Csrc install` to
-automatically compile and install the library to `/usr/lib/`.
+automatically compile and install the library to `/usr/lib/`. Distros without `sudo` or
+which do not have their `ld` library path at `/usr/lib` can configure the Makefile to
+point to the appropriate location or copy the file manually to their `ld` library path.
 
 To build a game on libprimis, you will then need to get the required headers (located in a separate repository)
 and build your game against these headers and the shared library.
