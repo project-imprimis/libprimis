@@ -21,6 +21,7 @@
 
 #include "world/octaedit.h"
 
+//internal functionality not seen by other files
 namespace
 {
     VARNP(damagecompass, usedamagecompass, 0, 1, 1);
@@ -250,6 +251,7 @@ namespace
 }
 
 //externally relevant functionality
+//from here to iengine section, functions stay local to the libprimis codebase
 
 void gl_drawmainmenu()
 {
