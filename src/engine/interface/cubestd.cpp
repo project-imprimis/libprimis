@@ -860,8 +860,8 @@ void listfindeq(char *list, int *val, int *skip)
             if(!parselist(s))
             {
                 goto notfound;
-                n++;
             }
+            n++;
         }
     }
 notfound:
