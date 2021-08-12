@@ -133,3 +133,14 @@ int getclockmillis()
     millis += clockvirtbase;
     return std::max(millis, totalmillis);
 }
+
+//identification info about engine
+std::string enginestr()
+{
+    return "Libprimis v0.8a";
+}
+
+std::string enginebuilddate()
+{
+    return __DATE__;
+}
