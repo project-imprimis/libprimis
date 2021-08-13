@@ -1,7 +1,8 @@
-// physics.cpp: no physics books were hurt nor consulted in the construction of this code.
-// All physics computations and constants were invented on the fly and simply tweaked until
-// they "felt right", and have no basis in reality. Collision detection is simplistic but
-// very robust (uses discrete steps at fixed fps).
+/* physics.cpp: no physics books were hurt nor consulted in the construction of this code.
+ * All physics computations and constants were invented on the fly and simply tweaked until
+ * they "felt right", and have no basis in reality. Collision detection is simplistic but
+ * very robust (uses discrete steps at fixed fps).
+ */
 
 #include "engine.h"
 
