@@ -35,7 +35,7 @@ ivec worldmin(0, 0, 0),
 
 std::vector<tjoint> tjoints;
 
-VARFP(filltjoints, 0, 1, 1, allchanged());
+VARFP(filltjoints, 0, 1, 1, allchanged()); //eliminate "sparklies" by filling in geom t-joints
 
 /* internally relevant functionality */
 ///////////////////////////////////////
