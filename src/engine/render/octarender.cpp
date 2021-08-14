@@ -757,7 +757,9 @@ namespace
                             tmax = vec(v0).max(v1).max(v2);
                         if(tmin.x >= bbmax.x || tmin.y >= bbmax.y || tmin.z >= bbmax.z ||
                            tmax.x <= bbmin.x || tmax.y <= bbmin.y || tmax.z <= bbmin.z)
+                        {
                             continue;
+                        }
                         float f0 = t0.norm.tonormal().dot(orient.b),
                               f1 = t1.norm.tonormal().dot(orient.b),
                               f2 = t2.norm.tonormal().dot(orient.b);
@@ -897,6 +899,7 @@ namespace
         { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
         { vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  0,  1), vec( 0,  1,  0), vec( 0, -1,  0) },
     };
+
     const vec orientation_bitangent[8][6] =
     {
         { vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0,  0, -1), vec( 0, -1,  0), vec( 0,  1,  0) },
