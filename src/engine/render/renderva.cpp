@@ -373,10 +373,12 @@ namespace
                 tris[offset + 4] = v2; \
                 tris[offset + 5] = v3; \
             } while(0);
+            //====================================================== GENFACEVERT
             #define GENFACEVERT(orient, vert, ox,oy,oz, rx,ry,rz) (ox | oy | oz)
             GENFACEVERTS(0, 1, 0, 2, 0, 4, , , , , , )
             #undef GENFACEORIENT
             #undef GENFACEVERT
+            //==================================================================
             glBufferData_(GL_ELEMENT_ARRAY_BUFFER, sizeof(tris), tris, GL_STATIC_DRAW);
             gle::clearebo();
         }
