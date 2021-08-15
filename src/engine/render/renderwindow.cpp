@@ -33,9 +33,9 @@ VAR(desktopw, 1, 0, 0);
 VAR(desktoph, 1, 0, 0);
 int screenw = 0,
     screenh = 0;
-SDL_Window *screen = nullptr;
+SDL_Window   *screen    = nullptr;
 SDL_GLContext glcontext = nullptr;
-SDL_Renderer *renderer = nullptr;
+SDL_Renderer *renderer  = nullptr;
 
 static void getbackgroundres(int &w, int &h)
 {
@@ -499,15 +499,15 @@ void setupscreen()
     scr_w = std::min(scr_w, desktopw);
     scr_h = std::min(scr_h, desktoph);
 
-    int winx = SDL_WINDOWPOS_UNDEFINED,
-        winy = SDL_WINDOWPOS_UNDEFINED,
-        winw = scr_w,
-        winh = scr_h,
+    int winx  = SDL_WINDOWPOS_UNDEFINED,
+        winy  = SDL_WINDOWPOS_UNDEFINED,
+        winw  = scr_w,
+        winh  = scr_h,
         flags = SDL_WINDOW_RESIZABLE;
     if(fullscreen)
     {
-        winw = desktopw;
-        winh = desktoph;
+        winw   = desktopw;
+        winh   = desktoph;
         flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         initwindowpos = true;
     }
