@@ -35,6 +35,7 @@ int screenw = 0,
     screenh = 0;
 SDL_Window *screen = nullptr;
 SDL_GLContext glcontext = nullptr;
+SDL_Renderer *renderer = nullptr;
 
 static void getbackgroundres(int &w, int &h)
 {
@@ -519,6 +520,7 @@ void setupscreen()
     uint32_t windowflags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags;
     //create new screen       title          x     y     w     h  flags
     screen = SDL_CreateWindow("Imprimis", winx, winy, winw, winh, windowflags);
+    renderer = SDL_CreateRenderer(screen, -1, 0);
 
     if(!screen)
     {
