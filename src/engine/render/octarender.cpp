@@ -2277,6 +2277,12 @@ void guessnormals(const vec *pos, int numverts, vec *normals)
 
 //va external fxns
 
+/* destroyva
+ * destroys the vertex array object, its various buffer objects and information from
+ * the valist object
+ *
+ * if reparent is set to true, assigns child vertex arrays to the parent of the selected va
+ */
 void destroyva(vtxarray *va, bool reparent)
 {
     wverts -= va->verts;
@@ -2334,6 +2340,7 @@ void destroyva(vtxarray *va, bool reparent)
     delete va;
 }
 
+//recursively clear vertex arrays for a cube object and its children
 void clearvas(cube *c)
 {
     for(int i = 0; i < 8; ++i)
@@ -2391,6 +2398,7 @@ void updatevabb(vtxarray *va, bool force)
     worldmax.max(va->bbmax);
 }
 
+//update vertex array bounding boxes recursively from the root va object down to all children
 void updatevabbs(bool force)
 {
     if(force)
