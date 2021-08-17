@@ -676,6 +676,7 @@ namespace
                 matsurfs.shrink(optimizematsurfs(matsurfs.getbuf(), matsurfs.length()));
             }
 
+            //========================================================= GENVERTS
             #define GENVERTS(type, ptr, body) do \
                 { \
                     type *f = reinterpret_cast<type *>(ptr); \
@@ -692,6 +693,7 @@ namespace
                 GENVERTS(vertex, buf, { *f = v; f->norm.flip(); f->tangent.flip(); });
             }
             #undef GENVERTS
+            //==================================================================
 
             void gendecal(const extentity &e, DecalSlot &s, const decalkey &key)
             {
