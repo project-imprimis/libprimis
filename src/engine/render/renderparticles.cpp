@@ -295,6 +295,7 @@ class partrenderer
             }
         }
 
+        //prints out info for a particle, with its letter denoting particle type
         void debuginfo()
         {
             formatstring(info, "%d\t%s(", count(), partnames[type&0xFF].c_str());
