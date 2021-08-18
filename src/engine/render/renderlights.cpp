@@ -924,7 +924,7 @@ void resolvemsaacolor(int w, int h)
 float ldrscale = 1.0f,
       ldrscaleb = 1.0f/255;
 
-VAR(debugdepth, 0, 0, 1);
+VAR(debugdepth, 0, 0, 1); //toggles showing depth buffer onscreen
 
 void viewdepth()
 {
