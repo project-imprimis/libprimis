@@ -52,10 +52,10 @@ static bool canemitparticles()
 }
 std::vector<std::string> entnames;
 
-VARP(showparticles,  0, 1, 1);
-VAR(cullparticles,   0, 1, 1);
-VAR(replayparticles, 0, 1, 1);
-VARN(seedparticles, seedmillis, 0, 3000, 10000);
+VARP(showparticles,  0, 1, 1);                  //toggles showing billboarded particles
+VAR(cullparticles,   0, 1, 1);                  //toggles culling particles beyond fog distance
+VAR(replayparticles, 0, 1, 1);                  //toggles re-rendering previously generated particles
+VARN(seedparticles, seedmillis, 0, 3000, 10000);//sets the time between seeding particles
 VAR(debugparticlecull, 0, 0, 1);
 VAR(debugparticleseed, 0, 0, 1);
 
