@@ -204,6 +204,8 @@ struct vertmodel : animmodel
                        * RESTRICT pvert1 = as.interp<1 ? &verts[as.prev.fr1 * numverts] : nullptr,
                        * RESTRICT pvert2 = as.interp<1 ? &verts[as.prev.fr2 * numverts] : nullptr;
                        //lerp: Linear intERPolation
+            //========================================================== IP_VERT
+            //InterPolate_VERTex
             #define IP_VERT(attrib, type) v.attrib.lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t)
             #define IP_VERT_P(attrib, type) v.attrib.lerp(type().lerp(pvert1[i].attrib, pvert2[i].attrib, as.prev.t), type().lerp(vert1[i].attrib, vert2[i].attrib, as.cur.t), as.interp)
             if(as.interp<1)
@@ -226,6 +228,7 @@ struct vertmodel : animmodel
             }
             #undef IP_VERT
             #undef IP_VERT_P
+            //==================================================================
         }
 
         void render(const AnimState *as, skin &s, vbocacheentry &vc)
