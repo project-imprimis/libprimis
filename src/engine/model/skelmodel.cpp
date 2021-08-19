@@ -112,7 +112,7 @@ bool skelmodel::skeleton::addtag(const char *name, int bone, const matrix4x3 &ma
 
 void skelmodel::skeleton::calcantipodes()
 {
-    antipodes.shrink(0);
+    antipodes.clear();
     std::vector<int> schedule;
     for(int i = 0; i < numbones; ++i)
     {
@@ -134,7 +134,7 @@ void skelmodel::skeleton::calcantipodes()
         {
             if(std::abs(bones[j].group) == bone && bones[j].scheduled < 0)
             {
-                antipodes.add(antipode(info.interpindex, bones[j].interpindex));
+                antipodes.emplace_back(antipode(info.interpindex, bones[j].interpindex));
                 bones[j].scheduled = schedule.size();
                 schedule.push_back(j);
             }
@@ -640,7 +640,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             sc.bdata[b.interpindex].mulorient(quat(axis, angle*RAD), b.base);
         }
     }
-    for(int i = 0; i < antipodes.length(); i++)
+    for(uint i = 0; i < antipodes.size(); i++)
     {
         sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
     }
@@ -720,7 +720,7 @@ void skelmodel::skeleton::genragdollbones(ragdolldata &d, skelcacheentry &sc, pa
         const boneinfo &br = bones[r.bone], &bj = bones[j.bone];
         sc.bdata[br.interpindex].mul(sc.bdata[bj.interpindex], d.reljoints[i]);
     }
-    for(int i = 0; i < antipodes.length(); i++)
+    for(uint i = 0; i < antipodes.size(); i++)
     {
         sc.bdata[antipodes[i].child].fixantipodal(sc.bdata[antipodes[i].parent]);
     }

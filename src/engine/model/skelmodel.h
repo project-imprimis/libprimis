@@ -415,7 +415,7 @@ struct skelmodel : animmodel
         dualquat *framebones;
         vector<skelanimspec> skelanims;
         vector<tag> tags;
-        vector<antipode> antipodes;
+        std::vector<antipode> antipodes;
         ragdollskel *ragdoll;
         vector<pitchdep> pitchdeps;
         vector<pitchtarget> pitchtargets;
