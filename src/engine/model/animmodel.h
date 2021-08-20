@@ -347,7 +347,7 @@ class animmodel : public model
                 char *name;
                 vector<Mesh *> meshes;
 
-                meshgroup() : next(nullptr), shared(0), name(nullptr)
+                meshgroup() : shared(0), name(nullptr), next(nullptr)
                 {
                 }
 
