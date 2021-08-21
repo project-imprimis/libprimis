@@ -417,7 +417,7 @@ struct skelmodel : animmodel
         std::vector<tag> tags;
         std::vector<antipode> antipodes;
         ragdollskel *ragdoll;
-        vector<pitchdep> pitchdeps;
+        std::vector<pitchdep> pitchdeps;
         vector<pitchtarget> pitchtargets;
         vector<pitchcorrect> pitchcorrects;
 

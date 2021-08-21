@@ -292,8 +292,8 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
 {
     for(; bone >= 0; bone = bones[bone].parent)
     {
-        int pos = pitchdeps.length();
-        for(int j = 0; j < pitchdeps.length(); j++)
+        uint pos = pitchdeps.size();
+        for(uint j = 0; j < pitchdeps.size(); j++)
         {
             if(bone <= pitchdeps[j].bone)
             {
@@ -310,7 +310,7 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
             d.bone = bone;
             d.parent = -1;
             d.pose = framebones[frame*numbones + bone];
-            pitchdeps.insert(pos, d);
+            pitchdeps.insert(pitchdeps.begin() + pos, d);
         }
     nextbone:;
     }
@@ -318,7 +318,7 @@ void skelmodel::skeleton::addpitchdep(int bone, int frame)
 
 int skelmodel::skeleton::findpitchdep(int bone)
 {
-    for(int i = 0; i < pitchdeps.length(); i++)
+    for(uint i = 0; i < pitchdeps.size(); i++)
     {
         if(bone <= pitchdeps[i].bone)
         {
@@ -342,7 +342,7 @@ int skelmodel::skeleton::findpitchcorrect(int bone)
 
 void skelmodel::skeleton::initpitchdeps()
 {
-    pitchdeps.setsize(0);
+    pitchdeps.clear();
     if(pitchtargets.empty())
     {
         return;
@@ -353,7 +353,7 @@ void skelmodel::skeleton::initpitchdeps()
         t.deps = -1;
         addpitchdep(t.bone, t.frame);
     }
-    for(int i = 0; i < pitchdeps.length(); i++)
+    for(uint i = 0; i < pitchdeps.size(); i++)
     {
         pitchdep &d = pitchdeps[i];
         int parent = bones[d.bone].parent;
@@ -587,7 +587,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             partframes[i].pfr2 = &framebones[as[i].prev.fr2*numbones];
         }
     }
-    for(int i = 0; i < pitchdeps.length(); i++)
+    for(uint i = 0; i < pitchdeps.size(); i++)
     {
         pitchdep &p = pitchdeps[i];
         dualquat d = interpbone(p.bone, partframes, as, partmask);
