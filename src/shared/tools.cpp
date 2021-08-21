@@ -40,13 +40,13 @@ void putint(vector<uchar> &p, int n)
 int getint(ucharbuf &p)
 {
     int c = static_cast<char>(p.get());
-    if(c==-128)
+    if(c == -128)
     {
         int n = p.get();
         n |= static_cast<char>(p.get()) << 8;
         return n;
     }
-    else if(c==-127)
+    else if(c == -127)
     {
         int n = p.get();
         n |= p.get() << 8;
@@ -127,7 +127,7 @@ void getstring(char *text, ucharbuf &p, size_t len)
     char *t = text;
     do
     {
-        if(t>=&text[len])
+        if(t >= &text[len])
         {
             text[len-1] = 0;
             return;
