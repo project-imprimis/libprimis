@@ -149,14 +149,6 @@ class animmodel : public model
                     }
                 }
 
-                struct smoothdata
-                {
-                    vec norm;
-                    int next;
-
-                    smoothdata() : norm(0, 0, 0), next(-1) {}
-                };
-
                 template<class V, class T>
                 void smoothnorms(V *verts, int numverts, T *tris, int numtris, float limit, bool areaweight)
                 {
@@ -338,6 +330,13 @@ class animmodel : public model
                     }
                 }
             private:
+                struct smoothdata
+                {
+                    vec norm;
+                    int next;
+
+                    smoothdata() : norm(0, 0, 0), next(-1) {}
+                };
         };
 
         class meshgroup
