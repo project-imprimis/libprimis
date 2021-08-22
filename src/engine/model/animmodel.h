@@ -376,7 +376,7 @@ class animmodel : public model
                 } while(0)
 
                 void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t);
-                void genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
+                void genBIH(std::vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t);
                 void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &t);
 
                 virtual void *animkey()
@@ -429,7 +429,7 @@ class animmodel : public model
                 int index;
                 meshgroup *meshes;
                 vector<linkedpart> links;
-                vector<skin> skins;
+                std::vector<skin> skins;
                 int numanimparts;
                 float pitchscale, pitchoffset, pitchmin, pitchmax;
 

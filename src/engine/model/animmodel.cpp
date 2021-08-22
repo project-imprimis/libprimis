@@ -438,7 +438,7 @@ void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
     LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));
 }
 
-void animmodel::meshgroup::genBIH(vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
+void animmodel::meshgroup::genBIH(std::vector<skin> &skins, vector<BIH::mesh> &bih, const matrix4x3 &t)
 {
     for(int i = 0; i < meshes.length(); i++)
     {
@@ -546,7 +546,7 @@ void animmodel::part::cleanup()
     {
         meshes->cleanup();
     }
-    for(int i = 0; i < skins.length(); i++)
+    for(uint i = 0; i < skins.size(); i++)
     {
         skins[i].cleanup();
     }
@@ -653,18 +653,19 @@ void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
         }
         limit = meshes->meshes.length();
     }
-    while(skins.length() < limit)
+    while(skins.size() < static_cast<int>(limit))
     {
-        skin &s = skins.add();
+        skin s;
         s.owner = this;
         s.tex = tex;
         s.masks = masks;
+        skins.push_back(s);
     }
 }
 
 bool animmodel::part::alphatested() const
 {
-    for(int i = 0; i < skins.length(); i++)
+    for(uint i = 0; i < skins.size(); i++)
     {
         if(skins[i].alphatested())
         {
@@ -676,7 +677,7 @@ bool animmodel::part::alphatested() const
 
 void animmodel::part::preloadBIH()
 {
-    for(int i = 0; i < skins.length(); i++)
+    for(uint i = 0; i < skins.size(); i++)
     {
         skins[i].preloadBIH();
     }
@@ -684,7 +685,7 @@ void animmodel::part::preloadBIH()
 
 void animmodel::part::preloadshaders()
 {
-    for(int i = 0; i < skins.length(); i++)
+    for(uint i = 0; i < skins.size(); i++)
     {
         skins[i].preloadshader();
     }
@@ -1082,7 +1083,7 @@ bool animmodel::part::animated() const
 void animmodel::part::loaded()
 {
     meshes->shared++;
-    for(int i = 0; i < skins.length(); i++)
+    for(uint i = 0; i < skins.size(); i++)
     {
         skins[i].setkey();
     }
@@ -1609,7 +1610,7 @@ void animmodel::setshader(Shader *shader)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             parts[i]->skins[j].shader = shader;
         }
@@ -1624,7 +1625,7 @@ void animmodel::setspec(float spec)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             parts[i]->skins[j].spec = spec;
         }
@@ -1639,7 +1640,7 @@ void animmodel::setgloss(int gloss)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             parts[i]->skins[j].gloss = gloss;
         }
@@ -1654,7 +1655,7 @@ void animmodel::setglow(float glow, float delta, float pulse)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             skin &s = parts[i]->skins[j];
             s.glow = glow;
@@ -1672,7 +1673,7 @@ void animmodel::setalphatest(float alphatest)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             parts[i]->skins[j].alphatest = alphatest;
         }
@@ -1687,7 +1688,7 @@ void animmodel::setfullbright(float fullbright)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             parts[i]->skins[j].fullbright = fullbright;
         }
@@ -1702,7 +1703,7 @@ void animmodel::setcullface(int cullface)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             parts[i]->skins[j].cullface = cullface;
         }
@@ -1717,7 +1718,7 @@ void animmodel::setcolor(const vec &color)
     }
     for(int i = 0; i < parts.length(); i++)
     {
-        for(int j = 0; j < parts[i]->skins.length(); j++)
+        for(uint j = 0; j < parts[i]->skins.size(); j++)
         {
             parts[i]->skins[j].color = color;
         }
