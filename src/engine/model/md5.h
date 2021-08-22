@@ -122,7 +122,7 @@ struct md5 : skelloader<md5>
                             char *texname = newstring(start+1, end-(start+1));
                             part *p = loading->parts.last();
                             p->initskins(notexture, notexture, group->meshes.length());
-                            skin &s = p->skins.last();
+                            skin &s = p->skins.back();
                             s.tex = textureload(makerelpath(dir, texname), 0, true, false);
                             delete[] texname;
                         }

@@ -829,7 +829,7 @@ void skelmodel::skelmeshgroup::intersect(skelhitdata *z, part *p, const skelmode
         blendbones(sc.bdata, bc.bdata, blendcombos.getbuf(), z->numblends);
         z->propagate(this, sc.bdata, bc.bdata);
     }
-    z->intersect(this, p->skins.getbuf(), sc.bdata, bc.bdata, o, ray);
+    z->intersect(this, p->skins.data(), sc.bdata, bc.bdata, o, ray);
 }
 
 uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids)
