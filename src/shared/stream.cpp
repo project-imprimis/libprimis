@@ -177,7 +177,10 @@ decode:
     while(src < srcend && dst < dstend)
     {
         int c = *src++;
-        if(c < 0x80) *dst++ = c;
+        if(c < 0x80)
+        {
+            *dst++ = c;
+        }
         else if(c >= 0xC0)
         {
             int uni;
@@ -555,15 +558,15 @@ bool fileexists(const char *path, const char *mode)
 bool createdir(const char *path)
 {
     size_t len = strlen(path);
-    if(path[len-1]==PATHDIV)
+    if(path[len-1] == PATHDIV)
     {
         static string strip;
         path = copystring(strip, path, len);
     }
 #ifdef WIN32
-    return CreateDirectory(path, nullptr)!=0;
+    return CreateDirectory(path, nullptr) != 0;
 #else
-    return mkdir(path, 0777)==0;
+    return mkdir(path, 0777) == 0;
 #endif
 }
 
@@ -662,11 +665,11 @@ const char *findfile(const char *filename, const char *mode)
         {
             return s;
         }
-        if(mode[0]=='w' || mode[0]=='a')
+        if(mode[0] == 'w' || mode[0] == 'a')
         {
             string dirs;
             copystring(dirs, s);
-            char *dir = strchr(dirs[0]==PATHDIV ? dirs+1 : dirs, PATHDIV);
+            char *dir = strchr(dirs[0] == PATHDIV ? dirs+1 : dirs, PATHDIV);
             while(dir)
             {
                 *dir = '\0';
@@ -680,7 +683,7 @@ const char *findfile(const char *filename, const char *mode)
             return s;
         }
     }
-    if(mode[0]=='w' || mode[0]=='a')
+    if(mode[0] == 'w' || mode[0] == 'a')
     {
         return filename;
     }
