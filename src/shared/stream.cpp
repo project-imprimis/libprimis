@@ -67,6 +67,8 @@ extern const int uni2cubeoffsets[8] =
 {
     0, 256, 658, 658, 512, 658, 658, 658
 };
+
+//only 255 chars can be aliased by the text renderer
 extern const uchar uni2cubechars[878] =
 {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 10, 11, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -98,6 +100,9 @@ extern const uchar uni2cubechars[878] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
+//lowercase chars occupy mostly slots 128+
+//upercase chars are mutually exclusive from lowercase chars in the char map
 extern const uchar cubelowerchars[256] =
 {
     0, 130, 131, 132, 133, 134, 135, 136, 137, 9, 10, 11, 12, 13, 138, 139,
