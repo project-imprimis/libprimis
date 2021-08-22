@@ -108,7 +108,7 @@ void putfloat(vector<uchar> &p, float f)
 float getfloat(ucharbuf &p)
 {
     float f;
-    p.get((uchar *)&f, sizeof(float));
+    p.get(reinterpret_cast<uchar *>(&f), sizeof(float));
     return f;
 }
 
