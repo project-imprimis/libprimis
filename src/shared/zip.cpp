@@ -183,7 +183,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
             break;
         }
         string pname;
-        int namelen = std::min((int)hdr.namelength, (int)sizeof(pname)-1);
+        int namelen = std::min(static_cast<int>(hdr.namelength), static_cast<int>(sizeof(pname)-1));
         memcpy(pname, src, namelen);
         pname[namelen] = '\0';
         path(pname);
