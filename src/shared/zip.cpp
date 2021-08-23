@@ -152,23 +152,23 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
             break;
         }
         zipfileheader hdr;
-        hdr.signature = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes)
-        hdr.version = *(ushort *)src; src += 2;
+        hdr.signature   = *(uint *)src; src += 4; //src is incremented by the size of the field (int is 4 bytes)
+        hdr.version     = *(ushort *)src; src += 2;
         hdr.needversion = *(ushort *)src; src += 2;
-        hdr.flags = *(ushort *)src; src += 2;
+        hdr.flags       = *(ushort *)src; src += 2;
         hdr.compression = *(ushort *)src; src += 2;
-        hdr.modtime = *(ushort *)src; src += 2;
-        hdr.moddate = *(ushort *)src; src += 2;
-        hdr.crc32 = *(uint *)src; src += 4;
-        hdr.compressedsize = *(uint *)src; src += 4;
+        hdr.modtime     = *(ushort *)src; src += 2;
+        hdr.moddate     = *(ushort *)src; src += 2;
+        hdr.crc32            = *(uint *)src; src += 4;
+        hdr.compressedsize   = *(uint *)src; src += 4;
         hdr.uncompressedsize = *(uint *)src; src += 4;
-        hdr.namelength = *(ushort *)src; src += 2;
-        hdr.extralength = *(ushort *)src; src += 2;
-        hdr.commentlength = *(ushort *)src; src += 2;
-        hdr.disknumber = *(ushort *)src; src += 2;
-        hdr.internalattribs = *(ushort *)src; src += 2;
-        hdr.externalattribs = *(uint *)src; src += 4;
-        hdr.offset = *(uint *)src; src += 4;
+        hdr.namelength       = *(ushort *)src; src += 2;
+        hdr.extralength      = *(ushort *)src; src += 2;
+        hdr.commentlength    = *(ushort *)src; src += 2;
+        hdr.disknumber       = *(ushort *)src; src += 2;
+        hdr.internalattribs  = *(ushort *)src; src += 2;
+        hdr.externalattribs  = *(uint *)src; src += 4;
+        hdr.offset           = *(uint *)src; src += 4;
         if(hdr.signature != Zip_FileSignature)
         {
             break;
