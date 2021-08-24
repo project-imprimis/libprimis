@@ -61,7 +61,7 @@ class ragdollskel
             int vert[2];
             float mindist, maxdist;
         };
-        vector<distlimit> distlimits;
+        std::vector<distlimit> distlimits;
 
         int eye;
 

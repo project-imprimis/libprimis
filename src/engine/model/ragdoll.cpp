@@ -223,7 +223,7 @@ void ragdolldata::init(dynent *d)
 void ragdolldata::constraindist()
 {
     float invscale = 1.0f/scale;
-    for(int i = 0; i < skel->distlimits.length(); i++)
+    for(uint i = 0; i < skel->distlimits.size(); i++)
     {
         ragdollskel::distlimit &d = skel->distlimits[i];
         vert &v1 = verts[d.vert[0]],
