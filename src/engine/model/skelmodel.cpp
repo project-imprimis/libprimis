@@ -28,7 +28,7 @@
 
 VARP(gpuskel, 0, 1, 1); //toggles gpu acceleration of skeletal models
 
-VAR(maxskelanimdata, 1, 192, 0);
+VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
 
 hashnameset<skelmodel::skeleton *> skelmodel::skeletons;
 
