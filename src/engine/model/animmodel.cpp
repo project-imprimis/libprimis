@@ -653,7 +653,7 @@ void animmodel::part::initskins(Texture *tex, Texture *masks, int limit)
         }
         limit = meshes->meshes.length();
     }
-    while(skins.size() < static_cast<int>(limit))
+    while(skins.size() < static_cast<uint>(limit))
     {
         skin s;
         s.owner = this;
