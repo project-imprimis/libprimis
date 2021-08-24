@@ -407,7 +407,7 @@ struct packagedir
     char *dir, *filter;
     size_t dirlen, filterlen;
 };
-vector<packagedir> packagedirs;
+static std::vector<packagedir> packagedirs;
 
 char *makerelpath(const char *dir, const char *file, const char *prefix, const char *cmd)
 {
@@ -647,11 +647,12 @@ const char *addpackagedir(const char *dir)
         }
         filter += len;
     }
-    packagedir &pf = packagedirs.add();
+    packagedir pf;
     pf.dir = filter ? newstring(pdir, filter-pdir) : newstring(pdir);
     pf.dirlen = filter ? filter-pdir : strlen(pdir);
     pf.filter = filter ? newstring(filter) : nullptr;
     pf.filterlen = filter ? strlen(filter) : 0;
+    packagedirs.push_back(pf);
     return pf.dir;
 }
 
@@ -687,7 +688,7 @@ const char *findfile(const char *filename, const char *mode)
     {
         return filename;
     }
-    for(int i = 0; i < packagedirs.length(); i++)
+    for(uint i = 0; i < packagedirs.size(); i++)
     {
         packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(filename, pf.filter, pf.filterlen))
@@ -796,7 +797,7 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
             dirs++;
         }
     }
-    for(int i = 0; i < packagedirs.length(); i++)
+    for(uint i = 0; i < packagedirs.size(); i++)
     {
         packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
