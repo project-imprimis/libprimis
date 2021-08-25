@@ -31,7 +31,7 @@ class ragdollskel
             vec pos;
             float radius, weight;
         };
-        vector<vert> verts;
+        std::vector<vert> verts;
 
         struct joint
         {
@@ -103,7 +103,7 @@ class ragdolldata
               tris(new matrix3[skel->tris.size()]),
               animjoints(!skel->animjoints || skel->joints.empty() ? NULL : new matrix4x3[skel->joints.length()]),
               reljoints(skel->reljoints.empty() ? NULL : new dualquat[skel->reljoints.size()]),
-              verts(new vert[skel->verts.length()]),
+              verts(new vert[skel->verts.size()]),
               collisions(0),
               floating(0),
               unsticks(INT_MAX),

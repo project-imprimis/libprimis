@@ -302,9 +302,10 @@ COMMAND(mdlname, "");
 void rdvert(float *x, float *y, float *z, float *radius)
 {
     CHECK_RAGDOLL;
-    ragdollskel::vert &v = ragdoll->verts.add();
+    ragdollskel::vert v;
     v.pos = vec(*x, *y, *z);
     v.radius = *radius > 0 ? *radius : 1;
+    ragdoll->verts.push_back(v);
 }
 COMMAND(rdvert, "ffff");
 
