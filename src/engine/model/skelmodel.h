@@ -722,33 +722,33 @@ struct skeladjustment
 template<class MDL>
 struct skelloader : modelloader<MDL, skelmodel>
 {
-    static vector<skeladjustment> adjustments;
-    static vector<uchar> hitzones;
+    static std::vector<skeladjustment> adjustments;
+    static std::vector<uchar> hitzones;
 
     skelloader(const char *name) : modelloader<MDL, skelmodel>(name) {}
 
     void flushpart()
     {
-        if(hitzones.length() && skelmodel::parts.length())
+        if(hitzones.size() && skelmodel::parts.length())
         {
             skelmodel::skelpart *p = static_cast<skelmodel::skelpart *>(skelmodel::parts.last());
             skelmodel::skelmeshgroup *m = static_cast<skelmodel::skelmeshgroup *>(p->meshes);
             if(m)
             {
-                m->buildhitdata(hitzones.getbuf());
+                m->buildhitdata(hitzones.data());
             }
         }
 
-        adjustments.setsize(0);
-        hitzones.setsize(0);
+        adjustments.clear();
+        hitzones.clear();
     }
 };
 
 template<class MDL>
-vector<skeladjustment> skelloader<MDL>::adjustments;
+std::vector<skeladjustment> skelloader<MDL>::adjustments;
 
 template<class MDL>
-vector<uchar> skelloader<MDL>::hitzones;
+std::vector<uchar> skelloader<MDL>::hitzones;
 
 /*
  * this template structure defines a series of commands for a model object (or
@@ -1074,9 +1074,9 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("could not find bone %s to adjust", name);
             return;
         }
-        while(!MDL::adjustments.inrange(i))
+        while(!(static_cast<int>(MDL::adjustments.size()) > i))
         {
-            MDL::adjustments.add(skeladjustment(0, 0, 0, vec(0, 0, 0)));
+            MDL::adjustments.push_back(skeladjustment(0, 0, 0, vec(0, 0, 0)));
         }
         MDL::adjustments[i] = skeladjustment(*yaw, *pitch, *roll, vec(*tx/4, *ty/4, *tz/4));
     }
@@ -1122,11 +1122,11 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         bonemask.sort();
         bonemask.add(Bonemask_End);
 
-        while(MDL::hitzones.length() < m->skel->numbones)
+        while(static_cast<int>(MDL::hitzones.size()) < m->skel->numbones)
         {
-            MDL::hitzones.add(0xFF);
+            MDL::hitzones.emplace_back(0xFF);
         }
-        m->skel->applybonemask(bonemask.getbuf(), MDL::hitzones.getbuf(), *id < 0 ? 0xFF : *id);
+        m->skel->applybonemask(bonemask.getbuf(), MDL::hitzones.data(), *id < 0 ? 0xFF : *id);
     }
 
     skelcommands()

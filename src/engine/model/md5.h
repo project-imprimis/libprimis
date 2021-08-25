@@ -362,7 +362,7 @@ struct md5 : skelloader<md5>
                                 j.orient.restorew();
                             }
                             dualquat dq(j.orient, j.pos);
-                            if(adjustments.inrange(i))
+                            if(static_cast<int>(adjustments.size()) > i)
                             {
                                 adjustments[i].adjust(dq);
                             }
