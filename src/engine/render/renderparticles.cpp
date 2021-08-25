@@ -212,11 +212,11 @@ class partrenderer
         string info;
 
         partrenderer(const char *texname, int texclamp, int type, int stain = -1)
-            : tex(nullptr), texname(texname), texclamp(texclamp), type(type), stain(stain)
+            : type(type), stain(stain), tex(nullptr), texname(texname), texclamp(texclamp)
         {
         }
         partrenderer(int type, int stain = -1)
-            : tex(nullptr), texname(nullptr), texclamp(0), type(type), stain(stain)
+            : type(type), stain(stain), tex(nullptr), texname(nullptr), texclamp(0)
         {
         }
         virtual ~partrenderer()
