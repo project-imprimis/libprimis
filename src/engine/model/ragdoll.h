@@ -39,7 +39,7 @@ class ragdollskel
             float weight;
             matrix4x3 orient;
         };
-        vector<joint> joints;
+        std::vector<joint> joints;
 
         struct rotlimit
         {
@@ -101,7 +101,7 @@ class ragdolldata
               lastmove(lastmillis),
               radius(0),
               tris(new matrix3[skel->tris.size()]),
-              animjoints(!skel->animjoints || skel->joints.empty() ? NULL : new matrix4x3[skel->joints.length()]),
+              animjoints(!skel->animjoints || skel->joints.empty() ? NULL : new matrix4x3[skel->joints.size()]),
               reljoints(skel->reljoints.empty() ? NULL : new dualquat[skel->reljoints.size()]),
               verts(new vert[skel->verts.size()]),
               collisions(0),

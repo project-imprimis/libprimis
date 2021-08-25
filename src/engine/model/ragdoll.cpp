@@ -59,7 +59,7 @@ void ragdollskel::setupjoints()
     {
         verts[i].weight = 0;
     }
-    for(int i = 0; i < joints.length(); i++)
+    for(uint i = 0; i < joints.size(); i++)
     {
         joint &j = joints[i];
         j.weight = 0;

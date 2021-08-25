@@ -235,7 +235,7 @@ void skelmodel::skeleton::remapbones()
     }
     if(ragdoll)
     {
-        for(int i = 0; i < ragdoll->joints.length(); i++)
+        for(uint i = 0; i < ragdoll->joints.size(); i++)
         {
             boneinfo &info = bones[ragdoll->joints[i].bone];
             if(info.interpindex < 0)
@@ -650,7 +650,7 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
 void skelmodel::skeleton::initragdoll(ragdolldata &d, skelcacheentry &sc, part *p)
 {
     const dualquat *bdata = sc.bdata;
-    for(int i = 0; i < ragdoll->joints.length(); i++)
+    for(uint i = 0; i < ragdoll->joints.size(); i++)
     {
         const ragdollskel::joint &j = ragdoll->joints[i];
         const boneinfo &b = bones[j.bone];
@@ -667,7 +667,7 @@ void skelmodel::skeleton::initragdoll(ragdolldata &d, skelcacheentry &sc, part *
     }
     if(ragdoll->animjoints)
     {
-        for(int i = 0; i < ragdoll->joints.length(); i++)
+        for(uint i = 0; i < ragdoll->joints.size(); i++)
         {
             const ragdollskel::joint &j = ragdoll->joints[i];
             const boneinfo &b = bones[j.bone];
@@ -697,7 +697,7 @@ void skelmodel::skeleton::genragdollbones(ragdolldata &d, skelcacheentry &sc, pa
     }
     sc.nextversion();
     vec trans = vec(d.center).div(p->model->scale).add(p->model->translate);
-    for(int i = 0; i < ragdoll->joints.length(); i++)
+    for(uint i = 0; i < ragdoll->joints.size(); i++)
     {
         const ragdollskel::joint &j = ragdoll->joints[i];
         const boneinfo &b = bones[j.bone];

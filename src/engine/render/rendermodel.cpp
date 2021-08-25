@@ -337,12 +337,13 @@ void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
     {
         return;
     }
-    ragdollskel::joint &j = ragdoll->joints.add();
+    ragdollskel::joint j;
     j.bone = *n;
     j.tri = *t;
     j.vert[0] = *v1;
     j.vert[1] = *v2;
     j.vert[2] = *v3;
+    ragdoll->joints.push_back(j);
 }
 COMMAND(rdjoint, "iibbb");
 
