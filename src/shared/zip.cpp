@@ -136,7 +136,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
 
 VAR(debugzip, 0, 0, 1);
 
-static bool readzipdirectory(const char *archname, FILE *f, int entries, int offset, uint size, vector<zipfile> &files)
+static bool readzipdirectory(const char *archname, FILE *f, int entries, int offset, uint size, std::vector<zipfile> &files)
 {
     uchar *buf = new uchar[size],
           *src = buf;
@@ -188,10 +188,11 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
         pname[namelen] = '\0';
         path(pname);
         char *name = newstring(pname);
-        zipfile &f = files.add();
+        zipfile f;
         f.name = name;
         f.header = hdr.offset;
         f.size = hdr.uncompressedsize;
+        files.push_back(f);
         f.compressedsize = hdr.compression ? hdr.compressedsize : 0;
         if(debugzip)
         {
@@ -200,7 +201,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
         src += hdr.namelength + hdr.extralength + hdr.commentlength;
     }
     delete[] buf;
-    return files.length() > 0;
+    return files.size() > 0;
 }
 
 static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
@@ -244,9 +245,9 @@ ziparchive *findzip(const char *name)
     return nullptr;
 }
 
-static bool checkprefix(vector<zipfile> &files, const char *prefix, int prefixlen)
+static bool checkprefix(std::vector<zipfile> &files, const char *prefix, int prefixlen)
 {
-    for(int i = 0; i < files.length(); i++)
+    for(uint i = 0; i < files.size(); i++)
     {
         if(!strncmp(files[i].name, prefix, prefixlen))
         {
@@ -256,14 +257,14 @@ static bool checkprefix(vector<zipfile> &files, const char *prefix, int prefixle
     return true;
 }
 
-static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mountdir, const char *stripdir)
+static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *mountdir, const char *stripdir)
 {
     string packagesdir = "media/";
     path(packagesdir);
     size_t striplen = stripdir ? strlen(stripdir) : 0;
     if(!mountdir && !stripdir)
     {
-        for(int i = 0; i < files.length(); i++)
+        for(uint i = 0; i < files.size(); i++)
         {
             zipfile &f = files[i];
             const char *foundpackages = strstr(f.name, packagesdir);
@@ -309,7 +310,7 @@ static void mountzip(ziparchive &arch, vector<zipfile> &files, const char *mount
             mdir[0] = '\0';
         }
     }
-    for(int i = 0; i < files.length(); i++)
+    for(uint i = 0; i < files.size(); i++)
     {
         zipfile &f = files[i];
         formatstring(fname, "%s%s", mdir, striplen && !strncmp(f.name, stripdir, striplen) ? &f.name[striplen] : f.name);
@@ -348,7 +349,7 @@ bool addzip(const char *name, const char *mount = nullptr, const char *strip = n
         return false;
     }
     zipdirectoryheader h;
-    vector<zipfile> files;
+    std::vector<zipfile> files;
     if(!findzipdirectory(f, h) || !readzipdirectory(pname, f, h.entries, h.offset, h.size, files))
     {
         conoutf(Console_Error, "could not read directory in zip %s", pname);
