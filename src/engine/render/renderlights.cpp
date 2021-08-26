@@ -1421,10 +1421,10 @@ static inline bool htcmp(const lightbatchkey &x, const lightbatchkey &y)
            (!x.numlights || !memcmp(x.lights, y.lights, x.numlights*sizeof(x.lights[0])));
 }
 
-std::vector<lightinfo> lights;
-std::vector<int> lightorder;
-hashset<lightbatch> lightbatcher(128);
-vector<lightbatch *> lightbatches;
+static std::vector<lightinfo> lights;
+static std::vector<int> lightorder;
+static hashset<lightbatch> lightbatcher(128);
+static vector<lightbatch *> lightbatches;
 std::vector<shadowmapinfo> shadowmaps;
 
 void clearshadowcache()
