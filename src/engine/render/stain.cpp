@@ -883,6 +883,8 @@ class stainrenderer
                 planes[0] = vec(0, 0, 0);
                 switch(orient)
                 {
+                //want to define GENFACEORIENT and GENFACEVERT to pass the appropriate code to GENFACEVERTS
+                //GENFACEVERTS has different GENFACEORIENT and GENFACEVERT for many different calls in other files
                 #define GENFACEORIENT(orient, v0, v1, v2, v3) \
                     case orient: \
                         planes[0][DIMENSION(orient)] = DIM_COORD(orient) ? 1 : -1; \
