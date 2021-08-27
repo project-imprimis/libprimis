@@ -234,6 +234,7 @@ void renderbackground(const char *caption, Texture *mapshot, const char *mapname
         renderbackgroundview(w, h, caption, mapshot, mapname, mapinfo);
         return;
     }
+    //renders renderbackgroundview three times, with an identical call each time
     for(int i = 0; i < 3; ++i)
     {
         renderbackgroundview(w, h, caption, mapshot, mapname, mapinfo);
