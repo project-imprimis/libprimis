@@ -587,8 +587,8 @@ void renderwaterfalls()
             refractcolor = getwaterrefractcolor(k);
         }
         float colorscale = (0.5f/255),
-              refractscale = colorscale/ldrscale;
-        float refract = getwaterfallrefract(k);
+              refractscale = colorscale/ldrscale,
+              refract = getwaterfallrefract(k);
         int spec = getwaterfallspec(k);
         GLOBALPARAMF(waterfallcolor, color.x*colorscale, color.y*colorscale, color.z*colorscale);
         GLOBALPARAMF(waterfallrefract, refractcolor.x*refractscale, refractcolor.y*refractscale, refractcolor.z*refractscale, refract*viewh);
