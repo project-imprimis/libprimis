@@ -126,11 +126,11 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     static const struct { int version; const char * const header; } glslversions[] =
     {
         { 400, "#version 400\n" }, //OpenGL 4.0
-        { 330, "#version 330\n" }, //OpenGL 3.3
-        { 150, "#version 150\n" }, //OpenGL 3.2
-        { 140, "#version 140\n" }, //OpenGL 3.1
-        { 130, "#version 130\n" }, //OpenGL 3.0
-        { 120, "#version 120\n" }  //OpenGL 2.1
+        { 330, "#version 330\n" }, //OpenGL 3.3 (not supported)
+        { 150, "#version 150\n" }, //OpenGL 3.2 (not supported)
+        { 140, "#version 140\n" }, //OpenGL 3.1 (not supported)
+        { 130, "#version 130\n" }, //OpenGL 3.0 (not supported)
+        { 120, "#version 120\n" }  //OpenGL 2.1 (not supported)
     };
     for(int i = 0; i < static_cast<int>(sizeof(glslversions)/sizeof(glslversions[0])); ++i)
     {
