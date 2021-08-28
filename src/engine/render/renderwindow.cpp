@@ -451,8 +451,8 @@ void cleargamma()
 
 void restorevsync(); //prototype to fix chicken-egg initialization problem caused by VARFP
 
-VARFP(vsync, 0, 0, 1, restorevsync());
-VARFP(vsynctear, 0, 0, 1, { if(vsync) restorevsync(); });
+VARFP(vsync, 0, 0, 1, restorevsync());                      //vertical sync of framebuffer to refresh rate
+VARFP(vsynctear, 0, 0, 1, { if(vsync) restorevsync(); });   //toggles sdl2's adaptive sync function
 
 void restorevsync()
 {
