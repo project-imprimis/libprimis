@@ -77,7 +77,7 @@ int skelmodel::skeleton::findbone(const char *name)
 
 int skelmodel::skeleton::findtag(const char *name)
 {
-    for(uint i = 0; i < tags.size(); i++)
+    for(int i = 0; i < tags.length(); i++)
     {
         if(!strcmp(tags[i].name, name))
         {
@@ -102,11 +102,10 @@ bool skelmodel::skeleton::addtag(const char *name, int bone, const matrix4x3 &ma
     }
     else
     {
-        tag t;
+        tag &t = tags.add();
         t.name = newstring(name);
         t.bone = bone;
         t.matrix = matrix;
-        tags.push_back(t);
     }
     return true;
 }
@@ -225,7 +224,7 @@ void skelmodel::skeleton::remapbones()
         }
     }
     numinterpbones = numgpubones;
-    for(uint i = 0; i < tags.size(); i++)
+    for(int i = 0; i < tags.length(); i++)
     {
         boneinfo &info = bones[tags[i].bone];
         if(info.interpindex < 0)
