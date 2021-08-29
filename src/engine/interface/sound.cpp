@@ -224,7 +224,7 @@ void stopmusic()
 #ifdef WIN32
     #define AUDIODRIVER "directsound winmm"
 #else
-    #define AUDIODRIVER ""
+    #define AUDIODRIVER "pulseaudio alsa arts esd jack pipewire dsp"
 #endif
 
 bool shouldinitaudio = true;
