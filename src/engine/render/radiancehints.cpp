@@ -144,15 +144,19 @@ namespace //internal functionality
     {
         gle::begin(GL_TRIANGLE_STRIP);
         gle::attribf(dx2, dy1); gle::attribf(dtx2, dty1, dtz);
-            gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
+        gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
+
         gle::attribf(dx1, dy1); gle::attribf(dtx1, dty1, dtz);
-            gle::attribf(px1, py1); gle::attribf(ptx1, pty1, ptz);
+        gle::attribf(px1, py1); gle::attribf(ptx1, pty1, ptz);
+
         gle::attribf(dx1, dy2); gle::attribf(dtx1, dty2, dtz);
-            gle::attribf(px1, py2); gle::attribf(ptx1, pty2, ptz);
+        gle::attribf(px1, py2); gle::attribf(ptx1, pty2, ptz);
+
         gle::attribf(dx2, dy2); gle::attribf(dtx2, dty2, dtz);
-            gle::attribf(px2, py2); gle::attribf(ptx2, pty2, ptz);
+        gle::attribf(px2, py2); gle::attribf(ptx2, pty2, ptz);
+
         gle::attribf(dx2, dy1); gle::attribf(dtx2, dty1, dtz);
-            gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
+        gle::attribf(px2, py1); gle::attribf(ptx2, pty1, ptz);
         gle::end();
     }
 }
