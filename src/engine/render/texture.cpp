@@ -1416,13 +1416,10 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     return t;
 }
 
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    #define RGBAMASKS 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff
-    #define RGBMASKS  0xff0000, 0x00ff00, 0x0000ff, 0
-#else
-    #define RGBAMASKS 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
-    #define RGBMASKS  0x0000ff, 0x00ff00, 0xff0000, 0
-#endif
+
+//little endian order for masks
+#define RGBAMASKS 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
+#define RGBMASKS  0x0000ff, 0x00ff00, 0xff0000, 0
 
 SDL_Surface *wrapsurface(void *data, int width, int height, int bpp)
 {
