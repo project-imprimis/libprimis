@@ -335,7 +335,7 @@ namespace
         }
     }
 
-    VARF(oqany, 0, 0, 2, clearqueries());
+    VARF(oqany, 0, 0, 2, clearqueries()); //occlusion query settings: 0: GL_SAMPLES_PASSED, 1: GL_ANY_SAMPLES_PASSED, 2: GL_ANY_SAMPLES_PASSED_CONSERVATIVE
     VAR(oqwait, 0, 1, 1);
 
     GLenum querytarget()
@@ -1456,11 +1456,11 @@ namespace
         }
     }
 
-    VAR(oqgeom, 0, 1, 1);
+    VAR(oqgeom, 0, 1, 1); //occlusion query geometry
 
     std::vector<vtxarray *> alphavas;
-    int alphabackvas = 0,
-               alpharefractvas = 0;
+    int alphabackvas    = 0,
+        alpharefractvas = 0;
 
     CVARP(explicitskycolor, 0x800080);
 
@@ -2127,7 +2127,7 @@ namespace
 /* externally relevant functionality */
 ///////////////////////////////////////
 
-// vfc
+// vfc - view frustum culling
 
 bool isfoggedsphere(float rad, const vec &cv)
 {
