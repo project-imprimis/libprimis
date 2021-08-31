@@ -22,7 +22,7 @@
 #include "world/octaedit.h"
 #include "world/raycube.h"
 
-VARNR(skytexture, useskytexture, 0, 0, 1);
+VARNR(skytexture, useskytexture, 0, 0, 1);       //toggles rendering sky texture instead of nothing on skytex'd geometry
 VARFR(skyshadow, 0, 0, 1, clearshadowcache());
 
 int explicitsky = 0;
@@ -102,14 +102,15 @@ namespace
         {
             loadsky(skybox, sky);
         }
-    });
-    CVARR(skyboxcolor, 0xFFFFFF);
-    FVARR(skyboxoverbright, 1, 2, 16);
+    });                                             //path to skybox
+    CVARR(skyboxcolor, 0xFFFFFF);                   //color to multiply skybox texture by
+    FVARR(skyboxoverbright, 1, 2, 16);              //amount by which skybox can exceed 0xFFFFFF
     FVARR(skyboxoverbrightmin, 0, 1, 16);
     FVARR(skyboxoverbrightthreshold, 0, 0.7f, 1);
-    FVARR(skyboxspin, -720, 0, 720);
-    VARR (skyboxyaw, 0, 0, 360);
+    FVARR(skyboxspin, -720, 0, 720);                //skybox spin rate in degrees per second
+    VARR (skyboxyaw, 0, 0, 360);                    //skybox rotation offset in degrees
 
+    //cloud layer variables
     FVARR(cloudclip, 0, 0.5f, 1);
     SVARFR(cloudlayer, "",
     {
@@ -161,6 +162,7 @@ namespace
         gle::defvertex();
         gle::deftexcoord0();
 
+        //daw the six faces of the skybox's cubemap
         if(faces&0x01)
         {
             drawenvboxface(1.0f, v2,  -w, -w, z2,
@@ -348,7 +350,7 @@ void drawskybox(bool clear)
     }
     if(clampsky)
     {
-        glDepthRange(1, 1);
+        glDepthRange(1, 1); //set gl depth range min and max to 1 (all far away)
     }
     if(clear || (!skybox[0] && (!atmo || atmoalpha < 1)))
     {
@@ -417,7 +419,7 @@ void drawskybox(bool clear)
     }
     if(clampsky)
     {
-        glDepthRange(0, 1);
+        glDepthRange(0, 1); //return depth range to normal
     }
     if(limited)
     {
