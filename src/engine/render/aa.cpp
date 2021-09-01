@@ -144,8 +144,8 @@ namespace //internal functions incl. AA implementations
         LOCALPARAM(quincunx, quincunx);
         screenquad(vieww, viewh);
 
-        swap(tqaafbo[0], tqaafbo[1]);
-        swap(tqaatex[0], tqaatex[1]);
+        std::swap(tqaafbo[0], tqaafbo[1]);
+        std::swap(tqaatex[0], tqaatex[1]);
         tqaaprevscreenmatrix = screenmatrix;
         tqaaframe++;
     }
@@ -430,7 +430,7 @@ namespace //internal functions incl. AA implementations
         vec2 a(std::fabs(a1), std::fabs(a2));
         if((a.x > a.y ? a1 : -a2) >= 0)
         {
-            swap(a.x, a.y);
+            std::swap(a.x, a.y);
         }
         return a;
     }
