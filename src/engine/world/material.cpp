@@ -429,15 +429,15 @@ namespace
         }
         if(dir[sortdim[2]] > dir[sortdim[1]])
         {
-            swap(sortdim[2], sortdim[1]);
+            std::swap(sortdim[2], sortdim[1]);
         }
         if(dir[sortdim[1]] > dir[sortdim[0]])
         {
-            swap(sortdim[1], sortdim[0]);
+            std::swap(sortdim[1], sortdim[0]);
         }
         if(dir[sortdim[2]] > dir[sortdim[1]])
         {
-            swap(sortdim[2], sortdim[1]);
+            std::swap(sortdim[2], sortdim[1]);
         }
         editsurfs.sort(editmatcmp);
     }
