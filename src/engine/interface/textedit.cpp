@@ -346,12 +346,12 @@ bool Editor::region(int &sx, int &sy, int &ex, int &ey)
     ey = cy;
     if(sy > ey)
     {
-        swap(sy, ey);
-        swap(sx, ex);
+        std::swap(sy, ey);
+        std::swap(sx, ex);
     }
     else if(sy==ey && sx > ex)
     {
-        swap(sx, ex);
+        std::swap(sx, ex);
     }
     if(mx >= 0)
     {
