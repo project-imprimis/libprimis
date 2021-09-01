@@ -422,7 +422,10 @@ void Editor::copyselectionto(Editor *b)
         }
         b->lines.add().set(line, len);
     }
-    if(b->lines.empty()) b->lines.add().set("");
+    if(b->lines.empty())
+    {
+        b->lines.add().set("");
+    }
 }
 
 char *Editor::tostring()
@@ -803,8 +806,8 @@ void Editor::hit(int hitx, int hity, bool dragged)
 
 int Editor::limitscrolly()
 {
-    int maxwidth = linewrap?pixelwidth:-1;
-    int slines = lines.length();
+    int maxwidth = linewrap?pixelwidth:-1,
+        slines = lines.length();
     for(int ph = pixelheight; slines > 0 && ph > 0;)
     {
         int width, height;
@@ -821,8 +824,8 @@ int Editor::limitscrolly()
 
 void Editor::draw(int x, int y, int color, bool hit)
 {
-    int maxwidth = linewrap?pixelwidth:-1;
-    int sx, sy, ex, ey;
+    int maxwidth = linewrap?pixelwidth:-1,
+        sx, sy, ex, ey;
     bool selection = region(sx, sy, ex, ey);
     // fix scrolly so that <cx, cy> is always on screen
     if(cy < scrolly)
@@ -855,8 +858,8 @@ void Editor::draw(int x, int y, int color, bool hit)
         int psx, psy, pex, pey;
         text_pos(lines[sy].text, sx, psx, psy, maxwidth);
         text_pos(lines[ey].text, ex, pex, pey, maxwidth);
-        int maxy = lines.length();
-        int h = 0;
+        int maxy = lines.length(),
+            h = 0;
         for(int i = scrolly; i < maxy; i++)
         {
             int width, height;
