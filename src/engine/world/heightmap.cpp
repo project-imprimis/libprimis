@@ -388,6 +388,7 @@ namespace hmap
         if(y>my) ripple(x, y-1, mapz[x][y], true);
         if(y<ny) ripple(x, y+1, mapz[x][y], true);
 
+//============================================================== DIAGONAL_RIPPLE
 #define DIAGONAL_RIPPLE(a,b,exp) \
     if(exp) { \
             if(flags[x a][ y] & painted) \
@@ -406,7 +407,8 @@ namespace hmap
     }
 
 #undef DIAGONAL_RIPPLE
-
+//==============================================================================
+//=================================================================== LOOP_BRUSH
 #define LOOP_BRUSH(i) for(int x=bmx; x<=bnx+i; x++) for(int y=bmy; y<=bny+i; y++)
 
     void paint()
@@ -450,7 +452,7 @@ namespace hmap
     }
 
 #undef LOOP_BRUSH
-
+//==============================================================================
     void run(int dir, int mode)
     {
         d  = DIMENSION(sel.orient);
