@@ -591,6 +591,8 @@ namespace
     GLASSVARS(glass3)
     GLASSVARS(glass4)
 
+    #undef GLASSVARS
+
     GETMATIDXVAR(glass, color, const bvec &) //this is the getglasscolor() function
     GETMATIDXVAR(glass, refract, float)// this is the getglassrefract() function
     GETMATIDXVAR(glass, spec, int)// this is the getglassspec() function
