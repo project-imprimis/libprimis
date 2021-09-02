@@ -1442,7 +1442,7 @@ namespace
                     if(d[axis] < 0)
                     {
                         d.neg();
-                        swap(e1, e2);
+                        std::swap(e1, e2);
                     }
                     reduceslope(d);
                     int t1 = pos[e1][axis]/d[axis],
