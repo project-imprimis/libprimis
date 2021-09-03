@@ -521,6 +521,7 @@ namespace
             gle::deftexcoord0();
             gle::begin(GL_QUADS);
         }
+        //undefine GENFACEVERT* helper macros so they can be redefined here
         #define GENFACEORIENT(orient, v0, v1, v2, v3) \
             case orient: v0 v1 v2 v3 break;
         #undef GENFACEVERTX
@@ -558,7 +559,7 @@ namespace
             vec n = *normal;
             switch(m.orient)
             {
-                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset)
+                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) //pass /**/ (nothing) to some params
             }
         }
         #undef GENFACENORMAL
@@ -567,7 +568,7 @@ namespace
         {
             switch(m.orient)
             {
-                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset)
+                GENFACEVERTS(x, x, y, y, z, z, /**/, + csize, /**/, + rsize, + offset, - offset) //pass /**/ (nothing) to some params
             }
         }
         #undef GENFACENORMAL
