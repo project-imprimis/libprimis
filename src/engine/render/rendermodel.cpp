@@ -31,6 +31,7 @@ std::vector<std::string> animnames; //set by game at runtime
 model *loadingmodel = nullptr;
 
 //need the above vars inited before these headers will load properly
+
 #include "model/model.h"
 #include "model/ragdoll.h"
 #include "model/animmodel.h"
