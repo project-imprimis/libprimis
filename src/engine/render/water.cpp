@@ -204,6 +204,7 @@ VARP(waterlod, 0, 1, 3);    //larger means that geometry is finer for longer dis
 static int wx1, wy1, wx2, wy2, wsize;
 static float whscale, whoffset;
 
+//========================================================== VERTW VERTWN VERTWT
 #define VERTW(vertw, defbody, body) \
     static void def##vertw() \
     { \
@@ -264,6 +265,10 @@ VERTWN(vertln, {
 }, {
     gle::attribf(wxscale*(v1+wscroll), wyscale*(v2+wscroll));
 })
+#undef VERTW
+#undef VERTWN
+#undef VERTWT
+//==============================================================================
 
 void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
 {
