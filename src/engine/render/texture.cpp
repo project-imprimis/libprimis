@@ -248,7 +248,8 @@ static void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int s
 template<int BPP>
 static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
-    int stridex = BPP, stridey = BPP;
+    int stridex = BPP,
+        stridey = BPP;
     if(swapxy)
     {
         stridex *= sh;
