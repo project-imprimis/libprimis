@@ -229,7 +229,7 @@ static void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int s
             }
             if(swapxy)
             {
-                swap(nx, ny);
+                std::swap(nx, ny);
             }
             curdst[0] = nx;
             curdst[1] = ny;
@@ -2165,7 +2165,7 @@ int compactvslots(bool cull)
     {
         while(vslots[i]->index >= 0 && vslots[i]->index != i)
         {
-            swap(vslots[i], vslots[vslots[i]->index]);
+            std::swap(vslots[i], vslots[vslots[i]->index]);
         }
     }
     for(int i = compactedvslots; i < vslots.length(); i++)
