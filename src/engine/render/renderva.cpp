@@ -1135,7 +1135,7 @@ namespace
                 vec2 scroll(vslot.scroll);
                 if(r.swapxy)
                 {
-                    swap(scroll.x, scroll.y);
+                    std::swap(scroll.x, scroll.y);
                 }
                 scroll.x *= cur.texgenmillis*tex->xs/xs;
                 scroll.y *= cur.texgenmillis*tex->ys/ys;
