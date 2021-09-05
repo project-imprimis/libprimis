@@ -1,17 +1,12 @@
 //hitzone.cpp: implementations of hitbox functionality exposed in hitzone.h
 #include "engine.h"
 
-#include "render/aa.h"
-#include "render/csm.h"
-#include "render/radiancehints.h"
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
-#include "render/renderwindow.h"
 
 #include "interface/console.h"
 #include "interface/control.h"
 
-#include "world/octaedit.h"
 #include "world/physics.h"
 #include "world/bih.h"
 
