@@ -129,51 +129,11 @@ class skelzonekey
             addbones(m, t);
         }
 
+        bool includes(const skelzonekey &o);
+        void subtract(const skelzonekey &o);
+
         int blend;
         uchar bones[12];
-
-        bool includes(const skelzonekey &o)
-        {
-            int j = 0;
-            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
-            {
-                if(bones[i] > o.bones[j])
-                {
-                    return false;
-                }
-                if(bones[i] == o.bones[j])
-                {
-                    j++;
-                }
-            }
-            return j < static_cast<int>(sizeof(bones)) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
-        }
-
-        void subtract(const skelzonekey &o)
-        {
-            int len = 0,
-                j   = 0;
-            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
-            {
-            retry:
-                if(j >= static_cast<int>(sizeof(o.bones)) || bones[i] < o.bones[j])
-                {
-                    bones[len++] = bones[i];
-                    continue;
-                }
-                if(bones[i] == o.bones[j])
-                {
-                    j++;
-                    continue;
-                }
-                do
-                {
-                    j++;
-                } while(j < static_cast<int>(sizeof(o.bones)) && bones[i] > o.bones[j]);
-                goto retry;
-            }
-            memset(&bones[len], 0xFF, sizeof(bones) - len);
-        }
 
     private:
         bool hasbone(int n)

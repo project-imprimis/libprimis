@@ -467,6 +467,50 @@ bool skelhitzone::shellintersect(const vec &o, const vec &ray)
     return v < 0 || d >= v*v;
 }
 
+//skelzonekey
+bool skelzonekey::includes(const skelzonekey &o)
+{
+    int j = 0;
+    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    {
+        if(bones[i] > o.bones[j])
+        {
+            return false;
+        }
+        if(bones[i] == o.bones[j])
+        {
+            j++;
+        }
+    }
+    return j < static_cast<int>(sizeof(bones)) ? o.bones[j] == 0xFF : blend < 0 || blend == o.blend;
+}
+
+void skelzonekey::subtract(const skelzonekey &o)
+{
+    int len = 0,
+        j   = 0;
+    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    {
+    retry:
+        if(j >= static_cast<int>(sizeof(o.bones)) || bones[i] < o.bones[j])
+        {
+            bones[len++] = bones[i];
+            continue;
+        }
+        if(bones[i] == o.bones[j])
+        {
+            j++;
+            continue;
+        }
+        do
+        {
+            j++;
+        } while(j < static_cast<int>(sizeof(o.bones)) && bones[i] > o.bones[j]);
+        goto retry;
+    }
+    memset(&bones[len], 0xFF, sizeof(bones) - len);
+}
+
 //skelhitdata
 
 uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids)
