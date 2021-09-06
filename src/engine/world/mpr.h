@@ -175,7 +175,7 @@ namespace mpr
         // If the origin is on the - side of the plane, reverse the direction of the plane
         if(n.dot(v0) > 0)
         {
-            swap(v1, v2);
+            std::swap(v1, v2);
             n.neg();
         }
         ///
@@ -321,9 +321,9 @@ namespace mpr
         // If the origin is on the - side of the plane, reverse the direction of the plane
         if(n.dot(v0) > 0)
         {
-            swap(v1, v2);
-            swap(v11, v21);
-            swap(v12, v22);
+            std::swap(v1, v2);
+            std::swap(v11, v21);
+            std::swap(v12, v22);
             n.neg();
         }
         ///
