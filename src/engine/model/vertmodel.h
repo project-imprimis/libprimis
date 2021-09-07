@@ -319,7 +319,8 @@ struct vertmodel : animmodel
                 tag *newtags = new tag[(numtags+1)*numframes];
                 for(int i = 0; i < numframes; ++i)
                 {
-                    tag *dst = &newtags[(numtags+1)*i], *src = &tags[numtags*i];
+                    tag *dst = &newtags[(numtags+1)*i],
+                        *src = &tags[numtags*i];
                     if(!i)
                     {
                         for(int j = 0; j < numtags; ++j)
@@ -401,6 +402,7 @@ struct vertmodel : animmodel
             {
                 vertsize = sizeof(vvertg);
                 gle::bindvbo(vc.vbuf);
+
                 #define GENVBO(type) \
                     do \
                     { \
@@ -408,6 +410,7 @@ struct vertmodel : animmodel
                         LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen, vverts, htdata, htlen)); \
                         glBufferData_(GL_ARRAY_BUFFER, vverts.length()*sizeof(type), vverts.getbuf(), GL_STATIC_DRAW); \
                     } while(0)
+
                 int numverts = 0,
                     htlen = 128;
                 LOOP_RENDER_MESHES(vertmesh, m, numverts += m.numverts);
@@ -423,7 +426,9 @@ struct vertmodel : animmodel
                 memset(htdata, -1, htlen*sizeof(int));
                 GENVBO(vvertg);
                 delete[] htdata;
+
                 #undef GENVBO
+
                 gle::clearvbo();
             }
 
