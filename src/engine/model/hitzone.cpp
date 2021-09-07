@@ -1,4 +1,12 @@
-//hitzone.cpp: implementations of hitbox functionality exposed in hitzone.h
+/*hitzone.cpp: implementations of hitbox functionality exposed in hitzone.h
+ *
+ * hitzone implements the mechanics required to perform collision calculations between
+ * skeletal models in arbitrary positions and the surrounding geometry (or projectiles)
+ *
+ * hitzone implements part of skelmodel's functionality, but is separated as it
+ * implements a seperate class of functionality; skeletal models not using collision
+ * will not use hitzone functions.
+ */
 #include "engine.h"
 
 #include "render/rendergl.h"
