@@ -324,7 +324,7 @@ struct vertmodel : animmodel
                     {
                         for(int j = 0; j < numtags; ++j)
                         {
-                            swap(dst[j].name, src[j].name);
+                            std::swap(dst[j].name, src[j].name);
                         }
                         dst[numtags].name = newstring(name);
                     }
