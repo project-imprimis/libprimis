@@ -84,6 +84,16 @@ inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
     return true;
 }
 
+vec skelbih::calccenter() const
+{
+    return vec(bbmin).add(bbmax).mul(0.5f);
+}
+
+float skelbih::calcradius() const
+{
+    return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
+}
+
 bool skelbih::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int tidx, const vec &o, const vec &ray)
 {
     const tri &t = tris[tidx];

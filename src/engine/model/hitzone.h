@@ -7,16 +7,8 @@ class skelbih
         {
             uchar Mesh, id;
         };
-        vec calccenter() const
-        {
-            return vec(bbmin).add(bbmax).mul(0.5f);
-        }
-
-        float calcradius() const
-        {
-            return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
-        }
-
+        vec calccenter() const;
+        float calcradius() const;
         skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris);
 
         ~skelbih()
