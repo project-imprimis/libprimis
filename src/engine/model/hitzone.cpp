@@ -287,7 +287,7 @@ void skelbih::build(skelmodel::skelmeshgroup *m, ushort *indices, int numindices
             else
             {
                 --right;
-                swap(indices[left], indices[right]);
+                std::swap(indices[left], indices[right]);
                 splitright = std::min(splitright, amin);
                 rightmin.min(trimin);
                 rightmax.max(trimax);
