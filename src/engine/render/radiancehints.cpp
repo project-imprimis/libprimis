@@ -595,7 +595,7 @@ void radiancehints::renderslices()
         for(int j = sh; --j >= 0;) //note reverse iteration
         {
             int sx = rhrect ? j*sw : 0;
-
+//=================================================================== BIND_SLICE
             #define BIND_SLICE do { \
                 if(rhrect) \
                 { \
@@ -681,6 +681,8 @@ void radiancehints::renderslices()
                 clearmasks[j/32] &= ~(1 << (j%32));
             }
 
+        #undef BIND_SLICE
+//==============================================================================
         noborder:
             if(j < rhborder || j >= rhgrid + rhborder)
             {
