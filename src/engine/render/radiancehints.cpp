@@ -459,7 +459,7 @@ void radiancehints::renderslices()
         {
             for(int i = 0; i < 4; ++i)
             {
-                swap(rhtex[i], rhtex[i+4]);
+                std::swap(rhtex[i], rhtex[i+4]);
             }
             uint clearmasks[rhmaxsplits][(rhmaxgrid+2+31)/32];
             memcpy(clearmasks, rhclearmasks[0], sizeof(clearmasks));
