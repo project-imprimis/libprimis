@@ -13,13 +13,13 @@ class cascadedshadowmap
         {
             float nearplane;     // split distance to near plane
             float farplane;      // split distance to farplane
-            matrix4 proj;      // one projection per split
+            matrix4 proj;        // one projection per split
             vec scale, offset;   // scale and offset of the projection
             int idx;             // shadowmapinfo indices
             vec center, bounds;  // max extents of shadowmap in sunlight model space
             plane cull[4];       // world space culling planes of the split's projected sides
         };
-        matrix4 model;                // model view is shared by all splits
+        matrix4 model;                  // model view is shared by all splits
         splitinfo splits[csmmaxsplits]; // per-split parameters
         vec lightview;                  // view vector for light
         void setup();                   // insert shadowmaps for each split frustum if there is sunlight
