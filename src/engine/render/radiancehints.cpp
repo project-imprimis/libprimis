@@ -129,6 +129,7 @@ namespace //internal functionality
         rsmworldshader = nullptr;
     }
 
+    //defines a rectangle with corners at x1...y2
     void rhquad(float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2, float tz)
     {
         gle::begin(GL_TRIANGLE_STRIP);
@@ -930,11 +931,13 @@ void reflectiveshadowmap::setup()
     gencullplanes();
 }
 
+// sets the reflectiveshadowmap's model to the global viewmatrix, then points it
+// to be oriented like the sun
 void reflectiveshadowmap::getmodelmatrix()
 {
-    model = viewmatrix;
-    model.rotate_around_x(sunlightpitch*RAD);
-    model.rotate_around_z((180-sunlightyaw)*RAD);
+    model = viewmatrix;                             //copy global view matrix
+    model.rotate_around_x(sunlightpitch*RAD);       //orient camera in same yaw as sunlight
+    model.rotate_around_z((180-sunlightyaw)*RAD);   //orient camera in same pitch as sunlight
 }
 
 void reflectiveshadowmap::getprojmatrix()
@@ -967,6 +970,7 @@ void reflectiveshadowmap::getprojmatrix()
     proj.setscale(2*scale.x/rsmsize, 2*scale.y/rsmsize, 2*scale.z);
 }
 
+//sets the culling plane objects' location within the reflectiveshadowmap object
 void reflectiveshadowmap::gencullplanes()
 {
     matrix4 mvp;
