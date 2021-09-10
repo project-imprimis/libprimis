@@ -681,8 +681,6 @@ void radiancehints::renderslices()
                 clearmasks[j/32] &= ~(1 << (j%32));
             }
 
-        #undef BIND_SLICE
-//==============================================================================
         noborder:
             if(j < rhborder || j >= rhgrid + rhborder)
             {
@@ -729,6 +727,9 @@ void radiancehints::renderslices()
                 }
                 clearmasks[j/32] &= ~(1 << (j%32));
             }
+
+            #undef BIND_SLICE
+//==============================================================================
 
             if(rhcache && z > split.cached.z - split.bounds && z < split.cached.z + split.bounds)
             {
