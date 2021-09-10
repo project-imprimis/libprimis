@@ -90,6 +90,8 @@ namespace
         }
     }
 
+    //sets up vbos (vertex buffer objects) for the pointer-to-array-of-vtxarray **vas
+    //by setting up each vertex array's vbuf and vdata
     void genvbo(int type, void *buf, int len, vtxarray **vas, int numva)
     {
         gle::disable();
@@ -1084,6 +1086,10 @@ namespace
         }
     }
 
+    //face: index of which face to cover
+    //verts: information about grass texs' face
+    //numv: number of grass vertices
+    //texture: index for the grass texture to use
     void addgrasstri(int face, vertex *verts, int numv, ushort texture)
     {
         grasstri &g = vc.grasstris.add();
