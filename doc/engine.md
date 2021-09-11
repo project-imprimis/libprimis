@@ -2935,6 +2935,11 @@ requires smoothing an area of many pixels (about two million a frame for a 1080p
 display) and therefore some serious hacks are needed to pump pixels very
 quickly.
 
+Libprimis' implementation of screenspace antialiasing techniques, it should be
+noted, are mutually exclusive: only one can take effect at a time. Generally,
+however, there are limited benefits to stacking AA techniques (beyond MSAA), and
+so providing multiple screenspace AA techniques is not worth the effort
+
 ### 5.5.1 Supersample Antialiasing (SSAA)
 ---
 
