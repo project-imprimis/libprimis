@@ -1174,6 +1174,17 @@ bool multisampledaa()
     return msaasamples == 2 && (smaa ? msaalight && smaaspatial : tqaa);
 }
 
+//used by rendergl
+
+/* doaa: executes one type of screenspace aa
+ *
+ * only one screenspace aa can be used at a time, and smaa will always be used
+ * instead of fxaa or tqaa; fxaa will always be used instead of tqaa
+ *
+ * does not apply to multisample aa, msaa is not a screenspace aa
+ *
+ * function pointer resolve is used to setup the fbo for the specified aa
+ */
 void doaa(GLuint outfbo, void (*resolve)(GLuint, int))
 {
     if(smaa)
