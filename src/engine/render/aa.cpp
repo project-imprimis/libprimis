@@ -878,6 +878,13 @@ namespace //internal functions incl. AA implementations
             th = gh;
         SETSHADER(hudrect);
         gle::colorf(1, 1, 1);
+        /* debugsmaa levels:
+         *  1: show the output tex resulting from smaa
+         *  2: show the raw filtering output applied to the screen buffer
+         *  3: show the refined filtering output applied to the screen buffer
+         *  4: show the buffer of edge-detect patterns
+         *  5: show the smaa search texture
+         */
         switch(debugsmaa)
         {
             case 1:
