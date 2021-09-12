@@ -24,8 +24,9 @@
 //internal functionality not seen by other files
 namespace
 {
+    //damagecompass* vars control display of directional hints as to damage location
     VARNP(damagecompass, usedamagecompass, 0, 1, 1);
-    VARP(damagecompassfade, 1, 1000, 10000);
+    VARP(damagecompassfade, 1, 1000, 10000); //sets milliseconds before damage hints fade
     VARP(damagecompasssize, 1, 30, 100);
     VARP(damagecompassalpha, 1, 25, 100);
     VARP(damagecompassmin, 1, 25, 1000);
@@ -79,10 +80,11 @@ namespace
 
     int damageblendmillis = 0;
 
+    //damagescreen variables control the display of a texture upon player being damaged
     VARFP(damagescreen, 0, 1, 1, { if(!damagescreen) damageblendmillis = 0; });
     VARP(damagescreenfactor, 1, 75, 100);
     VARP(damagescreenalpha, 1, 45, 100);
-    VARP(damagescreenfade, 0, 1000, 1000);
+    VARP(damagescreenfade, 0, 1000, 1000); //number of ms before screen damage fades
     VARP(damagescreenmin, 1, 10, 1000);
     VARP(damagescreenmax, 1, 100, 1000);
 
