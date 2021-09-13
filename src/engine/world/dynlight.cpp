@@ -209,6 +209,19 @@ int finddynlights()
     return closedynlights.length();
 }
 
+/* getdynlight: gets the nth dynlight near camera and sets references to its values
+ *
+ * Parameters:
+ *  n: the nth closest dynamic light
+ *  o: a reference to set as the location of the specified dynlight
+ *  radius: a reference to set as the radius of the specified dynlight
+ *  color: a reference to set as the color of the specifeid dynlight
+ *  dir: a reference to set as the direction the dynlight is pointing
+ *  flags: a reference to the flag bitmap for the dynlight
+ * Returns:
+ *  bool: true if light at position n was found, false otherwise
+ *
+ */
 bool getdynlight(int n, vec &o, float &radius, vec &color, vec &dir, int &spot, int &flags)
 {
     if(!closedynlights.inrange(n))
