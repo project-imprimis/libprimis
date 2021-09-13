@@ -4100,14 +4100,20 @@ static const uint *runcode(const uint *code, tagval &result)
             case Code_JumpTrue:
             {
                 uint len = op>>8;
-                if(getbool(args[--numargs])) code += len;
+                if(getbool(args[--numargs]))
+                {
+                    code += len;
+                }
                 freearg(args[numargs]);
                 continue;
             }
             case Code_JumpFalse:
             {
                 uint len = op>>8;
-                if(!getbool(args[--numargs])) code += len;
+                if(!getbool(args[--numargs]))
+                {
+                    code += len;
+                }
                 freearg(args[numargs]);
                 continue;
             }
@@ -4116,9 +4122,19 @@ static const uint *runcode(const uint *code, tagval &result)
                 uint len = op>>8;
                 freearg(result);
                 --numargs;
-                if(args[numargs].type == Value_Code) { runcode(args[numargs].code, result); freearg(args[numargs]); }
-                else result = args[numargs];
-                if(getbool(result)) code += len;
+                if(args[numargs].type == Value_Code)
+                {
+                    runcode(args[numargs].code, result);
+                    freearg(args[numargs]);
+                }
+                else
+                {
+                    result = args[numargs];
+                }
+                if(getbool(result))
+                {
+                    code += len;
+                }
                 continue;
             }
             case Code_JumpResultFalse:
@@ -4126,12 +4142,21 @@ static const uint *runcode(const uint *code, tagval &result)
                 uint len = op>>8;
                 freearg(result);
                 --numargs;
-                if(args[numargs].type == Value_Code) { runcode(args[numargs].code, result); freearg(args[numargs]); }
-                else result = args[numargs];
-                if(!getbool(result)) code += len;
+                if(args[numargs].type == Value_Code)
+                {
+                    runcode(args[numargs].code, result);
+                    freearg(args[numargs]);
+                }
+                else
+                {
+                    result = args[numargs];
+                }
+                if(!getbool(result))
+                {
+                    code += len;
+                }
                 continue;
             }
-
             case Code_Macro:
             {
                 uint len = op>>8;
@@ -4139,7 +4164,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 code += len/sizeof(uint) + 1;
                 continue;
             }
-
             case Code_Val|Ret_String:
             {
                 uint len = op>>8;
