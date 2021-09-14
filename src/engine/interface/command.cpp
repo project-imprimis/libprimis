@@ -1292,43 +1292,46 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
     int len    = prefixlen,
         numlen = 0,
         i      = 0;
-    for(; i < n; i++) switch(v[i].type)
+    for(; i < n; i++)
     {
-        case Value_Macro:
+        switch(v[i].type)
         {
-            len += (vlen[i] = v[i].code[-1]>>8);
-            break;
-        }
-        case Value_String:
-        case Value_CString:
-        {
-            len += (vlen[i] = static_cast<int>(strlen(v[i].s)));
-            break;
-        }
-        case Value_Integer:
-        {
-            if(numlen + maxstrlen > static_cast<int>(sizeof(numbuf)))
+            case Value_Macro:
             {
-                goto overflow;
+                len += (vlen[i] = v[i].code[-1]>>8);
+                break;
             }
-            intformat(&numbuf[numlen], v[i].i);
-            numlen += (vlen[i] = strlen(&numbuf[numlen]));
-            break;
-        }
-        case Value_Float:
-        {
-            if(numlen + maxstrlen > static_cast<int>(sizeof(numbuf)))
+            case Value_String:
+            case Value_CString:
             {
-                goto overflow;
+                len += (vlen[i] = static_cast<int>(strlen(v[i].s)));
+                break;
             }
-            floatformat(&numbuf[numlen], v[i].f);
-            numlen += (vlen[i] = strlen(&numbuf[numlen]));
-            break;
-        }
-        default:
-        {
-            vlen[i] = 0;
-            break;
+            case Value_Integer:
+            {
+                if(numlen + maxstrlen > static_cast<int>(sizeof(numbuf)))
+                {
+                    goto overflow;
+                }
+                intformat(&numbuf[numlen], v[i].i);
+                numlen += (vlen[i] = strlen(&numbuf[numlen]));
+                break;
+            }
+            case Value_Float:
+            {
+                if(numlen + maxstrlen > static_cast<int>(sizeof(numbuf)))
+                {
+                    goto overflow;
+                }
+                floatformat(&numbuf[numlen], v[i].f);
+                numlen += (vlen[i] = strlen(&numbuf[numlen]));
+                break;
+            }
+            default:
+            {
+                vlen[i] = 0;
+                break;
+            }
         }
     }
 overflow:
