@@ -409,7 +409,7 @@ void resetsmoothgroups()
 }
 
 static constexpr int maxsmoothgroups = 10000;
-//smooths the smoothgroup at the idth location in the smoothgroups vector
+//returns the smoothgroup at the idth location in the smoothgroups vector
 //returns -1 (failure) if you try to ask for an id greater than 10,000
 int smoothangle(int id, int angle)
 {
