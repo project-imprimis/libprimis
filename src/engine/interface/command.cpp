@@ -3559,6 +3559,8 @@ void printvar(ident *id)
 // they will be used below to typecast various id->fun objects to different lengths
 // which allows them to only accept certain lengths of arguments
 // up to 12 args typedef'd here, could be extended with more typedefs (buy why?)
+
+//comfun stands for COMmand FUNction
 typedef void (__cdecl *comfun)();
 typedef void (__cdecl *comfun1)(void *);
 typedef void (__cdecl *comfun2)(void *, void *);
