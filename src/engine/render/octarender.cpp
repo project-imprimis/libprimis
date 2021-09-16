@@ -202,7 +202,7 @@ namespace
     class verthash
     {
         public:
-            vector<vertex> verts;
+            std::vector<vertex> verts;
 
             verthash() { clearverts(); }
 
@@ -217,20 +217,20 @@ namespace
                          return i;
                      }
                 }
-                if(verts.length() >= USHRT_MAX)
+                if(verts.size() >= USHRT_MAX)
                 {
                     return -1;
                 }
-                verts.add(v);
+                verts.push_back(v);
                 chain.emplace_back(table[h]);
-                return table[h] = verts.length()-1;
+                return table[h] = verts.size()-1;
             }
 
             void clearverts()
             {
                 memset(table, -1, sizeof(table));
                 chain.clear();
-                verts.setsize(0);
+                verts.clear();
             }
         private:
             static const int hashsize = 1<<13;
@@ -454,7 +454,7 @@ namespace
                 optimize();
                 gendecals();
 
-                va->verts = verts.length();
+                va->verts = verts.size();
                 va->tris = worldtris/3;
                 va->vbuf = 0;
                 va->vdata = 0;
@@ -463,7 +463,7 @@ namespace
                 va->voffset = 0;
                 if(va->verts)
                 {
-                    if(vbosize[VBO_VBuf] + verts.length() > maxvbosize ||
+                    if(vbosize[VBO_VBuf] + static_cast<int>(verts.size()) > maxvbosize ||
                        vbosize[VBO_EBuf] + worldtris > USHRT_MAX ||
                        vbosize[VBO_SkyBuf] + skytris > USHRT_MAX ||
                        vbosize[VBO_DecalBuf] + decaltris > USHRT_MAX)
@@ -682,7 +682,7 @@ namespace
             #define GENVERTS(type, ptr, body) do \
                 { \
                     type *f = reinterpret_cast<type *>(ptr); \
-                    for(int i = 0; i < verts.length(); i++) \
+                    for(uint i = 0; i < verts.size(); i++) \
                     { \
                         const vertex &v = verts[i]; \
                         body; \
@@ -1906,7 +1906,7 @@ namespace
             vmax = vmin;
         vmin.add(size);
 
-        for(int i = 0; i < vc.verts.length(); i++)
+        for(uint i = 0; i < vc.verts.size(); i++)
         {
             const vec &v = vc.verts[i].pos;
             vmin.min(v);
