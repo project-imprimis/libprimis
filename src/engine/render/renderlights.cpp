@@ -1584,12 +1584,12 @@ void clearvolumetricshaders()
     }
 }
 
-VARFP(volumetric, 0, 1, 1, cleanupvolumetric());
-VARFP(volreduce, 0, 1, 2, cleanupvolumetric());
-VARFP(volbilateral, 0, 1, 3, cleanupvolumetric());
-FVAR(volbilateraldepth, 0, 4, 1e3f);
+VARFP(volumetric, 0, 1, 1, cleanupvolumetric());    //toggles displaying volumetric lights
+VARFP(volreduce, 0, 1, 2, cleanupvolumetric());     //size reduction factor for volumetric tex: 1 is 1/4, 2 is 1/16
+VARFP(volbilateral, 0, 1, 3, cleanupvolumetric());  //toggles bilateral filtering
+FVAR(volbilateraldepth, 0, 4, 1e3f);                //bilateral filtering depth
 VARFP(volblur, 0, 1, 3, cleanupvolumetric());
-VARFP(volsteps, 1, 32, 128, cleanupvolumetric());
+VARFP(volsteps, 1, 32, 128, cleanupvolumetric());   //iterations to run for volumetric algorithm
 FVAR(volminstep, 0, 0.0625f, 1e3f);
 FVAR(volprefilter, 0, 0.1, 1e3f);
 FVAR(voldistclamp, 0, 0.99f, 2);
