@@ -148,7 +148,7 @@ void cleanupbloom()
     lasthdraccum = 0;
 }
 
-FVAR(hdraccumscale, 0, 0.98f, 1);
+FVAR(hdraccumscale, 0, 0.98f, 1); //for hdr, exponent base for time decay of accumulation buffer (always <= 1 so decaying with time)
 VAR(hdraccummillis, 1, 33, 1000); //number of ms between samplings for the hdr buffer
 VAR(hdrreduce, 0, 2, 2);
 VARFP(hdrprec, 0, 2, 3, cleanupgbuffer()); //precision of hdr buffer
