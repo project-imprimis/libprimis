@@ -525,6 +525,7 @@ void processhdr(GLuint outfbo, int aa)
                 break;
             }
             case AA_Masked:
+            {
                 if(!msaasamples && ghasstencil)
                 {
                     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
@@ -542,6 +543,7 @@ void processhdr(GLuint outfbo, int aa)
                 SETSHADER(hdrtonemapmasked);
                 setaavelocityparams(GL_TEXTURE3);
                 break;
+            }
             default:
             {
                 SETSHADER(hdrtonemap);
