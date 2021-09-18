@@ -41,7 +41,7 @@ model *loadingmodel = nullptr;
 
 model *loadmapmodel(int n)
 {
-    if(mapmodels.inrange(n))
+    if(static_cast<int>(mapmodels.size()) > n)
     {
         model *m = mapmodels[n].m;
         return m ? m : loadmodel(nullptr, n);
@@ -380,13 +380,13 @@ COMMAND(rdanimjoints, "i");
 
 // mapmodels
 
-vector<mapmodelinfo> mapmodels;
+std::vector<mapmodelinfo> mapmodels;
 static const char * const mmprefix = "mapmodel/";
 static const int mmprefixlen = strlen(mmprefix);
 
 void mapmodel(char *name)
 {
-    mapmodelinfo &mmi = mapmodels.add();
+    mapmodelinfo mmi;
     if(name[0])
     {
         formatstring(mmi.name, "%s%s", mmprefix, name);
@@ -396,6 +396,7 @@ void mapmodel(char *name)
         mmi.name[0] = '\0';
     }
     mmi.m = mmi.collide = nullptr;
+    mapmodels.push_back(mmi);
 }
 
 void mapmodelreset(int *n)
@@ -404,19 +405,19 @@ void mapmodelreset(int *n)
     {
         return;
     }
-    mapmodels.shrink(std::clamp(*n, 0, mapmodels.length()));
+    mapmodels.resize(std::clamp(*n, 0, static_cast<int>(mapmodels.size())));
 }
 COMMAND(mapmodelreset, "i");
 
 const char *mapmodelname(int i)
 {
-    return mapmodels.inrange(i) ? mapmodels[i].name : nullptr;
+    return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name : nullptr;
 }
 COMMAND(mapmodel, "s");
 
 void mapmodelnamecmd(int *index, int *prefix)
 {
-    if(mapmodels.inrange(*index))
+    if(static_cast<int>(mapmodels.size()) > *index)
     {
         result(mapmodels[*index].name[0] ? mapmodels[*index].name + (*prefix ? 0 : mmprefixlen) : "");
     }
@@ -425,13 +426,13 @@ COMMANDN(mapmodelname, mapmodelnamecmd, "ii");
 
 void mapmodelloaded(int *index)
 {
-    intret(mapmodels.inrange(*index) && mapmodels[*index].m ? 1 : 0);
+    intret(static_cast<int>(mapmodels.size()) > *index && mapmodels[*index].m ? 1 : 0);
 }
 COMMAND(mapmodelloaded, "i");
 
 void nummapmodels()
 {
-    intret(mapmodels.length());
+    intret(mapmodels.size());
 }
 COMMAND(nummapmodels, "");
 
@@ -491,7 +492,7 @@ void preloadusedmapmodels(bool msg, bool bih)
     {
         loadprogress = static_cast<float>(i+1)/used.size();
         int mmindex = used[i];
-        if(!mapmodels.inrange(mmindex))
+        if(!(static_cast<int>(mapmodels.size()) > (mmindex)))
         {
             if(msg)
             {
@@ -555,7 +556,7 @@ model *loadmodel(const char *name, int i, bool msg)
 {
     if(!name)
     {
-        if(!mapmodels.inrange(i))
+        if(!(static_cast<int>(mapmodels.size()) > i))
         {
             return nullptr;
         }
@@ -605,7 +606,7 @@ model *loadmodel(const char *name, int i, bool msg)
         }
         models.access(m->name, m);
     }
-    if(mapmodels.inrange(i) && !mapmodels[i].m)
+    if((static_cast<int>(mapmodels.size()) > i) && !mapmodels[i].m)
     {
         mapmodels[i].m = m;
     }
@@ -630,7 +631,7 @@ void clearmodel(char *name)
         conoutf("model %s is not loaded", name);
         return;
     }
-    for(int i = 0; i < mapmodels.length(); i++)
+    for(uint i = 0; i < mapmodels.size(); i++)
     {
         mapmodelinfo &mmi = mapmodels[i];
         if(mmi.m == m)
@@ -1162,7 +1163,7 @@ void clearbatchedmapmodels()
 
 void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, float roll, int flags, int basetime, float size)
 {
-    if(!mapmodels.inrange(idx))
+    if(!(static_cast<int>(mapmodels.size()) > idx))
     {
         return;
     }

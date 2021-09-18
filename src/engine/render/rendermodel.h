@@ -3,7 +3,7 @@
 
 struct mapmodelinfo { string name; model *m, *collide; };
 
-extern vector<mapmodelinfo> mapmodels;
+extern std::vector<mapmodelinfo> mapmodels;
 
 std::vector<int> findanims(const char *pattern);
 
@@ -29,6 +29,6 @@ extern void cleanupmodels();
 extern model *loadmapmodel(int n);
 extern std::vector<int> findanims(const char *pattern);
 
-inline mapmodelinfo *getmminfo(int n) { return mapmodels.inrange(n) ? &mapmodels[n] : nullptr; }
+inline mapmodelinfo *getmminfo(int n) { return (static_cast<int>(mapmodels.size()) > n) ? &mapmodels[n] : nullptr; }
 
 #endif
