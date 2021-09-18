@@ -290,22 +290,8 @@ void numberret(double v)
         commandret->setfloat(v);
     }
 }
-/* some very clumsy macro kludging to overwrite command.h defaults
- *
- * why this needs to happen:
- *
- * some (many) of the commands below contain invalid C++ characters for symbols
- * such as !, =, +, -, etc. (as these are operators in C++)
- *
- * so to work around it, the name of the command symbols is just "libcmd"
- * (for *lib*rary *i*nline *c*om*m*an*d*)
- */
-#undef ICOMMANDNAME
-#define ICOMMANDNAME(name) _lib_icmd
-#undef ICOMMANDSNAME
-#define ICOMMANDSNAME _lib_icmd
 
-ICOMMANDK(do, Id_Do, "e", (uint *body), executeret(body, *commandret));
+ICOMMANDKN(do, Id_Do, docmd, "e", (uint *body), executeret(body, *commandret));
 
 static void doargs(uint *body)
 {
@@ -322,10 +308,10 @@ static void doargs(uint *body)
 }
 COMMANDK(doargs, Id_DoArgs, "e");
 
-ICOMMANDK(if, Id_If, "tee", (tagval *cond, uint *t, uint *f), executeret(getbool(*cond) ? t : f, *commandret));
-ICOMMAND(?, "tTT", (tagval *cond, tagval *t, tagval *f), result(*(getbool(*cond) ? t : f)));
+ICOMMANDKN(if, Id_If, ifcmd, "tee", (tagval *cond, uint *t, uint *f), executeret(getbool(*cond) ? t : f, *commandret));
+ICOMMANDN(?, boolcmd, "tTT", (tagval *cond, tagval *t, tagval *f), result(*(getbool(*cond) ? t : f)));
 
-ICOMMAND(pushif, "rTe", (ident *id, tagval *v, uint *code),
+ICOMMANDN(pushif, pushifcmd, "rTe", (ident *id, tagval *v, uint *code),
 {
     if(id->type != Id_Alias || id->index < Max_Args)
     {
@@ -413,12 +399,12 @@ static void doloop(ident &id, int offset, int n, int step, uint *body)
     }
     poparg(id);
 }
-ICOMMAND(loop, "rie", (ident *id, int *n, uint *body), doloop(*id, 0, *n, 1, body));
-ICOMMAND(loop+, "riie", (ident *id, int *offset, int *n, uint *body), doloop(*id, *offset, *n, 1, body));
-ICOMMAND(loop*, "riie", (ident *id, int *step, int *n, uint *body), doloop(*id, 0, *n, *step, body));
-ICOMMAND(loop+*, "riiie", (ident *id, int *offset, int *step, int *n, uint *body), doloop(*id, *offset, *n, *step, body));
+ICOMMANDN(loop,  loopcmd,       "rie", (ident *id, int *n, uint *body), doloop(*id, 0, *n, 1, body));
+ICOMMANDN(loop+, looppluscmd,  "riie", (ident *id, int *offset, int *n, uint *body), doloop(*id, *offset, *n, 1, body));
+ICOMMANDN(loop*, loopstarcmd,  "riie", (ident *id, int *step, int *n, uint *body), doloop(*id, 0, *n, *step, body));
+ICOMMANDN(loop+*,loopstarplus,"riiie", (ident *id, int *offset, int *step, int *n, uint *body), doloop(*id, *offset, *n, *step, body));
 
-ICOMMAND(while, "ee", (uint *cond, uint *body), while(executebool(cond)) execute(body));
+ICOMMANDN(while, whilecmd, "ee", (uint *cond, uint *body), while(executebool(cond)) execute(body));
 
 static void loopconc(ident &id, int offset, int n, uint *body, bool space)
 {
@@ -450,7 +436,7 @@ static void loopconc(ident &id, int offset, int n, uint *body, bool space)
     commandret->setstr(s.disown());
 }
 ICOMMAND(loopconcat, "rie", (ident *id, int *n, uint *body), loopconc(*id, 0, *n, body, true));
-ICOMMAND(loopconcat+, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, body, true));
+ICOMMANDN(loopconcat+, loopconcatplus, "riie", (ident *id, int *offset, int *n, uint *body), loopconc(*id, *offset, *n, body, true));
 
 void concat(tagval *v, int n)
 {
@@ -1325,8 +1311,8 @@ COMMAND(sortlist, "srree");
 ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortlist(list, x, y, nullptr, body));
 
 //===========MATHCMD MATHICMDN MATHICMD MATHFCMDN MATHFCMD CMPCMD CMPICMDN CMPICMD CMPFCMDN CMPFCMD DIVCMD MINMAXCMD CASECOMMAND CMPSCMD
-#define MATHCMD(name, fmt, type, op, initval, unaryop) \
-    ICOMMANDS(name, #fmt "1V", (tagval *args, int numargs), \
+#define MATHCMD(name, alias, fmt, type, op, initval, unaryop) \
+    ICOMMANDNS(name, alias, #fmt "1V", (tagval *args, int numargs), \
     { \
         type val; \
         if(numargs >= 2) \
@@ -1347,13 +1333,13 @@ ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortl
         } \
         type##ret(val); \
     })
-#define MATHICMDN(name, op, initval, unaryop) MATHCMD(#name, i, int, val = val op val2, initval, unaryop)
-#define MATHICMD(name, initval, unaryop) MATHICMDN(name, name, initval, unaryop)
-#define MATHFCMDN(name, op, initval, unaryop) MATHCMD(#name "f", f, float, val = val op val2, initval, unaryop)
-#define MATHFCMD(name, initval, unaryop) MATHFCMDN(name, name, initval, unaryop)
+#define MATHICMDN(name, alias, op, initval, unaryop) MATHCMD(#name, alias, i, int, val = val op val2, initval, unaryop)
+#define MATHICMD(name, alias, initval, unaryop) MATHICMDN(name, alias, name, initval, unaryop)
+#define MATHFCMDN(name, alias, op, initval, unaryop) MATHCMD(#name "f", alias, f, float, val = val op val2, initval, unaryop)
+#define MATHFCMD(name, alias, initval, unaryop) MATHFCMDN(name, alias, name, initval, unaryop)
 
-#define CMPCMD(name, fmt, type, op) \
-    ICOMMANDS(name, #fmt "1V", (tagval *args, int numargs), \
+#define CMPCMD(name, alias, fmt, type, op) \
+    ICOMMANDNS(name, alias, #fmt "1V", (tagval *args, int numargs), \
     { \
         bool val; \
         if(numargs >= 2) \
@@ -1370,45 +1356,45 @@ ICOMMAND(uniquelist, "srre", (char *list, ident *x, ident *y, uint *body), sortl
         } \
         intret(static_cast<int>(val)); \
     })
-#define CMPICMDN(name, op) CMPCMD(#name, i, int, op)
-#define CMPICMD(name) CMPICMDN(name, name)
-#define CMPFCMDN(name, op) CMPCMD(#name "f", f, float, op)
-#define CMPFCMD(name) CMPFCMDN(name, name)
+#define CMPICMDN(name, alias, op) CMPCMD(#name, alias, i, int, op)
+#define CMPICMD(name, alias) CMPICMDN(name, alias, name)
+#define CMPFCMDN(name, alias, op) CMPCMD(#name "f", alias, f, float, op)
+#define CMPFCMD(name, alias) CMPFCMDN(name, alias, name)
 
 //integer and boolean operators, used with named symbol, i.e. + or *
 //no native boolean type, they are treated like integers
-MATHICMD(+, 0, ); //0 substituted if nothing passed in arg2: n + 0 is still n
-MATHICMD(*, 1, ); //1 substituted if nothing passed in arg2: n * 1 is still n
-MATHICMD(-, 0, val = -val); //the minus operator inverts if used as unary
-CMPICMDN(=, ==);
-CMPICMD(!=);
-CMPICMD(<);
-CMPICMD(>);
-CMPICMD(<=);
-CMPICMD(>=);
-MATHICMD(^, 0, val = ~val);
-MATHICMDN(~, ^, 0, val = ~val);
-MATHICMD(&, 0, );
-MATHICMD(|, 0, );
-MATHICMD(^~, 0, );
-MATHICMD(&~, 0, );
-MATHICMD(|~, 0, );
-MATHCMD("<<", i, int, val = val2 < 32 ? val << std::max(val2, 0) : 0, 0, );
-MATHCMD(">>", i, int, val >>= std::clamp(val2, 0, 31), 0, );
+MATHICMD(+, plus, 0, ); //0 substituted if nothing passed in arg2: n + 0 is still n
+MATHICMD(*, star, 1, ); //1 substituted if nothing passed in arg2: n * 1 is still n
+MATHICMD(-, minus, 0, val = -val); //the minus operator inverts if used as unary
+CMPICMDN(=, equal, ==);
+CMPICMD(!=, neq);
+CMPICMD(<, lt);
+CMPICMD(>, gt);
+CMPICMD(<=, le);
+CMPICMD(>=, ge);
+MATHICMD(^, inv, 0, val = ~val);
+MATHICMDN(~, notc, ^, 0, val = ~val);
+MATHICMD(&, andc, 0, );
+MATHICMD(|, orc, 0, );
+MATHICMD(^~, invc, 0, );
+MATHICMD(&~, nand, 0, );
+MATHICMD(|~, nor, 0, );
+MATHCMD("<<", lsft, i, int, val = val2 < 32 ? val << std::max(val2, 0) : 0, 0, );
+MATHCMD(">>", rsft, i, int, val >>= std::clamp(val2, 0, 31), 0, );
 
 //floating point operators, used with <operator>f, i.e. +f or *f
-MATHFCMD(+, 0, );
-MATHFCMD(*, 1, );
-MATHFCMD(-, 0, val = -val);
-CMPFCMDN(=, ==);
-CMPFCMD(!=);
-CMPFCMD(<);
-CMPFCMD(>);
-CMPFCMD(<=);
-CMPFCMD(>=);
+MATHFCMD(+, fplus, 0, );
+MATHFCMD(*, fstar, 1, );
+MATHFCMD(-, fminus, 0, val = -val);
+CMPFCMDN(=, feq, ==);
+CMPFCMD(!=, fneq);
+CMPFCMD(<, flt);
+CMPFCMD(>, fgt);
+CMPFCMD(<=, fle);
+CMPFCMD(>=, fge);
 
-ICOMMANDK(!, Id_Not, "t", (tagval *a), intret(getbool(*a) ? 0 : 1));
-ICOMMANDK(&&, Id_And, "E1V", (tagval *args, int numargs),
+ICOMMANDKN(!, Id_Not, notcmd, "t", (tagval *a), intret(getbool(*a) ? 0 : 1));
+ICOMMANDKN(&&, Id_And, andcmd, "E1V", (tagval *args, int numargs),
 {
     if(!numargs)
     {
@@ -1437,7 +1423,7 @@ ICOMMANDK(&&, Id_And, "E1V", (tagval *args, int numargs),
         }
     }
 });
-ICOMMANDK(||, Id_Or, "E1V", (tagval *args, int numargs),
+ICOMMANDKN(||, Id_Or, orcmd, "E1V", (tagval *args, int numargs),
 {
     if(!numargs)
     {
@@ -1468,15 +1454,15 @@ ICOMMANDK(||, Id_Or, "E1V", (tagval *args, int numargs),
 });
 
 
-#define DIVCMD(name, fmt, type, op) MATHCMD(#name, fmt, type, { if(val2) op; else val = 0; }, 0, )
+#define DIVCMD(name, alias, fmt, type, op) MATHCMD(#name, alias, fmt, type, { if(val2) op; else val = 0; }, 0, )
 
 //int division
-DIVCMD(div, i, int, val /= val2);
-DIVCMD(mod, i, int, val %= val2);
+DIVCMD(div, divc, i, int, val /= val2);
+DIVCMD(mod, modc, i, int, val %= val2);
 //float division
-DIVCMD(divf, f, float, val /= val2);
-DIVCMD(modf, f, float, val = std::fmod(val, val2));
-MATHCMD("pow", f, float, val = std::pow(val, val2), 0, );
+DIVCMD(divf, divfc, f, float, val /= val2);
+DIVCMD(modf, modfc, f, float, val = std::fmod(val, val2));
+MATHCMD("pow", power, f, float, val = std::pow(val, val2), 0, );
 
 //float transcendentals
 ICOMMAND(sin, "f", (float *a), floatret(std::sin(*a*RAD)));
@@ -1596,8 +1582,8 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
     stringret(buf);
 });
 
-#define CMPSCMD(name, op) \
-    ICOMMAND(name, "s1V", (tagval *args, int numargs), \
+#define CMPSCMD(name, alias, op) \
+    ICOMMANDN(name, alias, "s1V", (tagval *args, int numargs), \
     { \
         bool val; \
         if(numargs >= 2) \
@@ -1615,13 +1601,13 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
         intret(static_cast<int>(val)); \
     })
 
-CMPSCMD(strcmp, ==);
-CMPSCMD(=s, ==);
-CMPSCMD(!=s, !=);
-CMPSCMD(<s, <);
-CMPSCMD(>s, >);
-CMPSCMD(<=s, <=);
-CMPSCMD(>=s, >=);
+CMPSCMD(strcmp, strcomp, ==);
+CMPSCMD(=s, eqstr, ==);
+CMPSCMD(!=s, neqstr, !=);
+CMPSCMD(<s, lts, <);
+CMPSCMD(>s, gts, >);
+CMPSCMD(<=s, les, <=);
+CMPSCMD(>=s, ges, >=);
 
 #undef MATHCMD
 #undef MATHICMDN
