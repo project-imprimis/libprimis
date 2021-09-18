@@ -202,8 +202,8 @@ namespace //internal functionality not seen by other files
         return true;
     }
 
-    VARR(lerpsubdiv, 0, 2, 4);
-    VARR(lerpsubdivsize, 4, 4, 128);
+    VARR(lerpsubdiv, 0, 2, 4);      //Linear intERPolation SUBDIVisions
+    VARR(lerpsubdivsize, 4, 4, 128);//Linear intERPolation SUBDIVision cube SIZE
 
     uint normalprogress = 0;
 
