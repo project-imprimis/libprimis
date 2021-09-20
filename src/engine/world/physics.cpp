@@ -574,7 +574,11 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
     return true;
 }
 
-VAR(testtricol, 0, 0, 2); //force a collision type
+//force a collision type:
+// 0: do not force
+// 1: Collide_Ellipse
+// 2: Collide_OrientedBoundingBox
+VAR(testtricol, 0, 0, 2);
 
 bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // collide with a mapmodel
 {
