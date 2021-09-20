@@ -4250,10 +4250,10 @@ namespace UI
                 const texrotation &r = texrotations[vslot.rotation];
                 if(r.swapxy)
                 {
-                    swap(xoff, yoff);
+                    std::swap(xoff, yoff);
                     for(int k = 0; k < 4; ++k)
                     {
-                        swap(tc[k].x, tc[k].y);
+                        std::swap(tc[k].x, tc[k].y);
                     }
                 }
                 if(r.flipx)
