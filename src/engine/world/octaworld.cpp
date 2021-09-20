@@ -2337,7 +2337,7 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
         int order = e.from.x > e.to.x || (e.from.x == e.to.x && e.from.y > e.to.y) ? 1 : 0;
         if(order)
         {
-            swap(e.from, e.to);
+            std::swap(e.from, e.to);
         }
         plink &l = links.access(e, e);
         bool shouldqueue = l.polys[order] < 0 && l.polys[order^1] >= 0;
@@ -2459,7 +2459,7 @@ void mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vect
             int order = e.from.x > e.to.x || (e.from.x == e.to.x && e.from.y > e.to.y) ? 1 : 0;
             if(order)
             {
-                swap(e.from, e.to);
+                std::swap(e.from, e.to);
             }
             plink &l = links.access(e, e);
             l.polys[order] = i;
