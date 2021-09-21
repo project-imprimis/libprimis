@@ -297,7 +297,7 @@ void BIH::build(mesh &m, ushort *indices, int numindices, const ivec &vmin, cons
             else
             {
                 --right;
-                swap(indices[left], indices[right]);
+                std::swap(indices[left], indices[right]);
                 splitright = std::min(splitright, amin);
                 rightmin.min(trimin);
                 rightmax.max(trimax);
