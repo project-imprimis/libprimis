@@ -1179,7 +1179,8 @@ void saveprefab(char *name)
         return;
     }
     prefabheader hdr;
-    memcpy(hdr.magic, "OEBR", 4);
+    std::string headermagic = "OEBR";
+    std::copy(headermagic.begin(), headermagic.end(), hdr.magic);
     hdr.version = 0;
     f->write(&hdr, sizeof(hdr));
     streambuf<uchar> s(f);
