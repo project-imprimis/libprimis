@@ -1150,7 +1150,18 @@ void unpackundocube(ucharbuf buf, uchar *outbuf)
     changed(*b, false);
     freeblock(b);
 }
-
+/* saveprefab: saves the current selection to a prefab file
+ *
+ * Parameters:
+ *  char * name: a string containing the name of the prefab to save (sans file type)
+ * Returns:
+ *  void
+ * Effects:
+ * Using the global variables for selection information, writes the current selection
+ * to a prefab file with the given name. Does not save slot information, so pasting
+ * into a map with a different texture slot list will result in meaningless textures.
+ *
+ */
 void saveprefab(char *name)
 {
     if(!name[0] || noedit(true) || (nompedit && multiplayer))
