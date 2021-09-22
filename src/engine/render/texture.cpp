@@ -2207,7 +2207,7 @@ static void clampvslotoffset(VSlot &dst, Slot *slot = nullptr)
         }
         if(texrotations[dst.rotation].swapxy)
         {
-            swap(xs, ys);
+            std::swap(xs, ys);
         }
         dst.offset.x %= xs;
         if(dst.offset.x < 0)
