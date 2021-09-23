@@ -1713,8 +1713,7 @@ void cleardeferredlightshaders()
 
 Shader *loaddeferredlightshader(const char *type = nullptr)
 {
-    string common;
-    std::string shadow, sun;
+    string common, shadow, sun;
     int commonlen = 0,
         shadowlen = 0,
         sunlen    = 0;
@@ -1810,7 +1809,7 @@ Shader *loaddeferredlightshader(const char *type = nullptr)
     }
     sun[sunlen] = '\0';
 
-    DEF_FORMAT_STRING(name, "deferredlight%s%s%s", common, shadow.c_str(), sun.c_str());
+    DEF_FORMAT_STRING(name, "deferredlight%s%s%s", common, shadow, sun);
     return generateshader(name, "deferredlightshader \"%s\" \"%s\" \"%s\" %d %d %d", common, shadow, sun, usecsm, userh, !minimap ? lighttilebatch : 0);
 }
 
