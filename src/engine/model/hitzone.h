@@ -128,21 +128,7 @@ class skelzonekey
         uchar bones[12];
 
     private:
-        bool hasbone(int n)
-        {
-            for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
-            {
-                if(bones[i] == n)
-                {
-                    return true;
-                }
-                if(bones[i] == 0xFF)
-                {
-                    break;
-                }
-            }
-            return false;
-        }
+        bool hasbone(int n);
 
         int numbones()
         {

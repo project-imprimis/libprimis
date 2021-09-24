@@ -529,6 +529,22 @@ void skelzonekey::subtract(const skelzonekey &o)
     memset(&bones[len], 0xFF, sizeof(bones) - len);
 }
 
+bool skelzonekey::hasbone(int n)
+{
+    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    {
+        if(bones[i] == n)
+        {
+            return true;
+        }
+        if(bones[i] == 0xFF)
+        {
+            break;
+        }
+    }
+    return false;
+}
+
 //skelhitdata
 
 uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids)
