@@ -75,13 +75,13 @@ const char *escapestring(const char *s)
     return buf.getbuf();
 }
 
-void escapecmd(char *s)
+static void escapecmd(char *s)
 {
     result(escapestring(s));
 }
 COMMANDN(escape, escapecmd, "s");
 
-void unescapecmd(char *s)
+static void unescapecmd(char *s)
 {
     int len = strlen(s);
     char *d = newstring(len);
@@ -155,7 +155,7 @@ bool validateblock(const char *s)
     return brakdepth == 0;
 }
 
-void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
+static void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
 {
     stream *f = openutf8file(path(name && name[0] ? name : savedconfig, true), "w");
     if(!f)
@@ -229,7 +229,6 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
     writecompletions(f);
     delete f;
 }
-
 COMMAND(writecfg, "s");
 
 void changedvars()
@@ -1582,6 +1581,7 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
     stringret(buf);
 });
 
+//CoMPariSonCoMmanD (CMPSCMD)
 #define CMPSCMD(name, alias, op) \
     ICOMMANDN(name, alias, "s1V", (tagval *args, int numargs), \
     { \
