@@ -310,7 +310,7 @@ COMMANDK(doargs, Id_DoArgs, "e");
 ICOMMANDKN(if, Id_If, ifcmd, "tee", (tagval *cond, uint *t, uint *f), executeret(getbool(*cond) ? t : f, *commandret));
 ICOMMANDN(?, boolcmd, "tTT", (tagval *cond, tagval *t, tagval *f), result(*(getbool(*cond) ? t : f)));
 
-ICOMMANDN(pushif, pushifcmd, "rTe", (ident *id, tagval *v, uint *code),
+ICOMMAND(pushif, "rTe", (ident *id, tagval *v, uint *code),
 {
     if(id->type != Id_Alias || id->index < Max_Args)
     {
