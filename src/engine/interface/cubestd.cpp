@@ -47,13 +47,13 @@ bool execfile(const char *cfgfile, bool msg)
     return true;
 }
 
-void exec(char *file, int *msg)
+static void exec(char *file, int *msg)
 {
     intret(execfile(file, *msg != 0) ? 1 : 0);
 }
 COMMAND(exec, "sb");
 
-const char *escapestring(const char *s)
+static const char *escapestring(const char *s)
 {
     stridx = (stridx + 1)%4;
     vector<char> &buf = strbuf[stridx];
@@ -90,13 +90,13 @@ static void unescapecmd(char *s)
 }
 COMMANDN(unescape, unescapecmd, "s");
 
-const char *escapeid(const char *s)
+static const char *escapeid(const char *s)
 {
     const char *end = s + strcspn(s, "\"/;()[]@ \f\t\r\n\0");
     return *end ? escapestring(s) : s;
 }
 
-bool validateblock(const char *s)
+static bool validateblock(const char *s)
 {
     constexpr int maxbrak = 100;
     static char brakstack[maxbrak];
