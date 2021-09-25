@@ -53,7 +53,7 @@ static void exec(char *file, int *msg)
 }
 COMMAND(exec, "sb");
 
-static const char *escapestring(const char *s)
+const char *escapestring(const char *s)
 {
     stridx = (stridx + 1)%4;
     vector<char> &buf = strbuf[stridx];
@@ -90,13 +90,13 @@ static void unescapecmd(char *s)
 }
 COMMANDN(unescape, unescapecmd, "s");
 
-static const char *escapeid(const char *s)
+const char *escapeid(const char *s)
 {
     const char *end = s + strcspn(s, "\"/;()[]@ \f\t\r\n\0");
     return *end ? escapestring(s) : s;
 }
 
-static bool validateblock(const char *s)
+bool validateblock(const char *s)
 {
     constexpr int maxbrak = 100;
     static char brakstack[maxbrak];
