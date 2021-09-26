@@ -1050,6 +1050,7 @@ int listincludes(const char *list, const char *needle, int needlelen)
 }
 ICOMMAND(indexof, "ss", (char *list, char *elem), intret(listincludes(list, elem, strlen(elem))));
 
+//================================================================= LISTMERGECMD
 #define LISTMERGECMD(name, init, iter, filter, dir) \
     ICOMMAND(name, "ss", (const char *list, const char *elems), \
     { \
@@ -1071,6 +1072,8 @@ ICOMMAND(indexof, "ss", (char *list, char *elem), intret(listincludes(list, elem
 LISTMERGECMD(listdel, , list, elems, <);
 LISTMERGECMD(listintersect, , list, elems, >=);
 LISTMERGECMD(listunion, p.put(list, strlen(list)), elems, list, <);
+#undef LISTMERGECMD
+//==============================================================================
 
 void listsplice(const char *s, const char *vals, int *skip, int *count)
 {
