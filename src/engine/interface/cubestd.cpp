@@ -398,7 +398,7 @@ static void doloop(ident &id, int offset, int n, int step, uint *body)
     }
     poparg(id);
 }
-ICOMMANDN(loop,  loopcmd,       "rie", (ident *id, int *n, uint *body), doloop(*id, 0, *n, 1, body));
+ICOMMAND(loop,                  "rie", (ident *id, int *n, uint *body), doloop(*id, 0, *n, 1, body));
 ICOMMANDN(loop+, looppluscmd,  "riie", (ident *id, int *offset, int *n, uint *body), doloop(*id, *offset, *n, 1, body));
 ICOMMANDN(loop*, loopstarcmd,  "riie", (ident *id, int *step, int *n, uint *body), doloop(*id, 0, *n, *step, body));
 ICOMMANDN(loop+*,loopstarplus,"riiie", (ident *id, int *offset, int *step, int *n, uint *body), doloop(*id, *offset, *n, *step, body));
