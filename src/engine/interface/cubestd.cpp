@@ -1648,6 +1648,7 @@ ICOMMAND(unistr, "i", (int *i),
     stringret(s);
 });
 
+//================================================================ STRMAPCOMMAND
 #define STRMAPCOMMAND(name, map) \
     ICOMMAND(name, "s", (char *s), \
     { \
@@ -1663,7 +1664,8 @@ ICOMMAND(unistr, "i", (int *i),
 
 STRMAPCOMMAND(strlower, cubelower);
 STRMAPCOMMAND(strupper, cubeupper);
-
+#undef STRMAPCOMMAND
+//==============================================================================
 char *strreplace(const char *s, const char *oldval, const char *newval, const char *newval2)
 {
     vector<char> buf;
