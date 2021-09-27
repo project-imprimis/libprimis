@@ -1,0 +1,25 @@
+name: Makefile CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+      
+    - name: Install dependencies
+      run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+      
+    - name: Build
+      run: make -C src -j4
+    
+    - name: Upload libprimis.so artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: libprimis-linux
+        path: ./src/libprimis.so
