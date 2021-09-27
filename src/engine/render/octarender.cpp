@@ -681,9 +681,9 @@ namespace
             void genverts(void *buf)
             {
                 vertex *f = reinterpret_cast<vertex *>(buf);
-                for(uint i = 0; i < verts.size(); i++)
+                for(vertex i : verts)
                 {
-                    const vertex &v = verts[i];
+                    const vertex &v = i;
                     *f = v;
                     f->norm.flip();
                     f->tangent.flip();
