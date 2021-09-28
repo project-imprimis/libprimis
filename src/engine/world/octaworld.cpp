@@ -1564,7 +1564,8 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
       // order 1: concave
         { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 2, 0 },
     };
-    int order = convex < 0 ? 1 : 0, notouch = notouchmasks[order][touching];
+    int order = convex < 0 ? 1 : 0,
+        notouch = notouchmasks[order][touching];
     if((vis&notouch)==vis)
     {
         return vis;
@@ -1674,6 +1675,7 @@ static void calcvert(const cube &c, const ivec &co, int size, vec &v, int i, boo
     v.mul(size/8.0f).add(vec(co));
 }
 
+//sets clipplanes values for a cube c and location co
 void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p)
 {
     // generate tight bounding box
@@ -2424,7 +2426,7 @@ static void clearmerge(cube &c, int orient)
     }
 }
 
-void addmerges(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
+static void addmerges(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
     for(uint i = 0; i < polys.size(); i++)
     {
@@ -2440,7 +2442,7 @@ void addmerges(int orient, const ivec &co, const ivec &n, int offset, std::vecto
     }
 }
 
-void mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
+static void mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
     if(polys.size() <= 1)
     {
@@ -2515,7 +2517,8 @@ struct cfpolys
 
 static hashtable<cfkey, cfpolys> cpolys;
 
-void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = worldsize>>1)
+//recursively goes through children of cube passed and attempts to merge faces together
+static void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = worldsize>>1)
 {
     neighborstack[++neighbordepth] = c;
     for(int i = 0; i < 8; ++i)
