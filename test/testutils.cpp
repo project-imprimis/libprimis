@@ -24,6 +24,18 @@ namespace header_tools
         assert(b[0] == *testtextstart);
         assert(b[9] == *testtextend);
 
+        //check sorting a vector using sort()
+        vector<int> c;
+        c.add(5);
+        c.add(3);
+        c.add(7);
+        c.add(9);
+
+        assert(c.length() == 4);
+        c.sort();
+        assert(c[0] == 3);
+        assert(c[3] == 9);
+
         //setsize
         b.setsize(5);
         assert(b.length() == 5);
