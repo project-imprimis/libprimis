@@ -43,7 +43,7 @@ namespace hmap
     bool isheightmap(int o, int d, bool empty, cube *c)
     {
         return havesel ||
-            (empty && iscubeempty(*c)) ||
+            (empty && c->isempty()) ||
             textures.empty() ||
             textures.find(c->texture[o]) >= 0;
     }
@@ -183,11 +183,11 @@ namespace hmap
             c[k] = nullptr;
         }
         c[1] = getcube(t, 0);
-        if(!c[1] || !iscubeempty(*c[1]))
+        if(!c[1] || !(c[1]->isempty()))
         {   // try up
             c[2] = c[1];
             c[1] = getcube(t, 1);
-            if(!c[1] || iscubeempty(*c[1]))
+            if(!c[1] || c[1]->isempty())
             {
                 c[0] = c[1];
                 c[1] = c[2];
@@ -207,7 +207,7 @@ namespace hmap
             c[1] = getcube(t, 0);
         }
 
-        if(!c[1] || iscubeempty(*c[1]))
+        if(!c[1] || c[1]->isempty())
         {
             flags[x][y] |= nothmap;
             return;
@@ -223,11 +223,11 @@ namespace hmap
             c[2] = getcube(t, -1);
         }
         c[3] = getcube(t, -2);
-        c[2] = !c[2] || iscubeempty(*c[2]) ? nullptr : c[2];
-        c[3] = !c[3] || iscubeempty(*c[3]) ? nullptr : c[3];
+        c[2] = !c[2] || c[2]->isempty() ? nullptr : c[2];
+        c[3] = !c[3] || c[3]->isempty() ? nullptr : c[3];
 
         uint face = getface(c[1], d);
-        if(face == 0x08080808 && (!c[0] || !iscubeempty(*c[0])))
+        if(face == 0x08080808 && (!c[0] || !(c[0]->isempty())))
         {
             flags[x][y] |= nothmap;
             return;

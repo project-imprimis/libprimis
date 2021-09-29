@@ -620,7 +620,7 @@ void splitocta(cube *c, int size)
     {
         if(!c[i].children)
         {
-            c[i].children = newcubes(iscubeempty(c[i]) ? faceempty : facesolid);
+            c[i].children = newcubes(c[i].isempty() ? faceempty : facesolid);
         }
         splitocta(c[i].children, size>>1);
     }
@@ -728,7 +728,7 @@ static bool isallempty(cube &c)
 {
     if(!c.children)
     {
-        return iscubeempty(c);
+        return c.isempty();
     }
     for(int i = 0; i < 8; ++i)
     {

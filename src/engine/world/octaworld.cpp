@@ -434,10 +434,10 @@ int getmippedtexture(const cube &p, int orient)
         for(int y = 0; y < 2; ++y)
         {
             int n = OCTA_INDEX(d, x, y, dc);
-            if(iscubeempty(c[n]))
+            if(c[n].isempty())
             {
                 n = OPPOSITE_OCTA(d, n);
-                if(iscubeempty(c[n]))
+                if(c[n].isempty())
                 {
                     continue;
                 }
@@ -475,7 +475,7 @@ void forcemip(cube &c, bool fixtex)
         for(int j = 0; j < 8; ++j)
         {
             int n = i^(j==3 ? 4 : (j==4 ? 3 : j));
-            if(!iscubeempty(ch[n])) // breadth first search for cube near vert
+            if(!(ch[n].isempty())) // breadth first search for cube near vert
             {
                 ivec v;
                 getcubevector(ch[n], i, v);
@@ -556,16 +556,16 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     {
         memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
     }
-    if(iscubeempty(c) || iscubesolid(c))
+    if(c.isempty() || iscubesolid(c))
     {
-        c.children = newcubes(iscubeempty(c) ? faceempty : facesolid, c.material);
+        c.children = newcubes(c.isempty() ? faceempty : facesolid, c.material);
         for(int i = 0; i < 8; ++i)
         {
             for(int l = 0; l < 6; ++l) //note this is a loop l (level 4)
             {
                 c.children[i].texture[l] = c.texture[l];
             }
-            if(brighten && !iscubeempty(c))
+            if(brighten && !(c.isempty()))
             {
                 brightencube(c.children[i]);
             }
@@ -645,7 +645,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     {
         for(int i = 0; i < 8; ++i)
         {
-            if(!iscubeempty(ch[i]))
+            if(!(ch[i].isempty()))
             {
                 brightencube(ch[i]);
             }
@@ -782,7 +782,7 @@ static bool remip(cube &c, const ivec &co, int size)
             return false;
         }
 
-        if(iscubeempty(ch[i]) && iscubeempty(nh[i]))
+        if(ch[i].isempty() && nh[i].isempty())
         {
             continue;
         }
@@ -1282,7 +1282,7 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
         {
             return true;
         }
-        if(iscubeempty(c) || notouchingface(c, orient))
+        if(c.isempty() || notouchingface(c, orient))
         {
             return false;
         }
@@ -1346,7 +1346,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
         {
             return false;
         }
-        if(iscubeempty(o) || notouchingface(o, opp))
+        if(o.isempty() || notouchingface(o, opp))
         {
             return true;
         }
@@ -1386,7 +1386,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
             break;
         }
     }
-    if(iscubeempty(c) || collapsedface(c, orient))
+    if(c.isempty() || collapsedface(c, orient))
     {
         if(!vismask)
         {
@@ -1443,7 +1443,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
         }
         if(vismask && !iscubesolid(o))
         {
-            if(iscubeempty(o) || notouchingface(o, opp))
+            if(o.isempty() || notouchingface(o, opp))
             {
                 forcevis |= vismask;
             }
@@ -1596,7 +1596,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
                 return vis;
             }
         }
-        if(iscubeempty(o) || notouchingface(o, opp))
+        if(o.isempty() || notouchingface(o, opp))
         {
             return vis;
         }
@@ -1799,7 +1799,7 @@ void mincubeface(const cube &cu, int orient, const ivec &o, int size, const face
     uc2 = std::min(uc2, orig.u2);
     vc1 = std::max(vc1, orig.v1);
     vc2 = std::min(vc2, orig.v2);
-    if(!iscubeempty(cu) && touchingface(cu, orient) && !(nmat!=Mat_Air && (cu.material&matmask)==nmat))
+    if(!(cu.isempty()) && touchingface(cu, orient) && !(nmat!=Mat_Air && (cu.material&matmask)==nmat))
     {
         uchar r1 = cu.edges[faceedgesidx[orient][0]],
               r2 = cu.edges[faceedgesidx[orient][1]],
@@ -2529,7 +2529,7 @@ static void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int si
         {
             genmerges(c[i].children, co, size>>1);
         }
-        else if(!iscubeempty(c[i]))
+        else if(!(c[i].isempty()))
         {
             for(int j = 0; j < 6; ++j)
             {

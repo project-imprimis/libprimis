@@ -219,7 +219,7 @@ namespace //internal functionality not seen by other files
             }
             return;
         }
-        else if(iscubeempty(c))
+        else if(c.isempty())
         {
             return;
         }

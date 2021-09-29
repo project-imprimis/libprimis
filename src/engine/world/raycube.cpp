@@ -387,7 +387,7 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
         if((dist>0 || !(mode&Ray_SkipFirst)) &&
            (((mode&Ray_ClipMat) && IS_CLIPPED(c.material&MatFlag_Volume)) ||
             ((mode&Ray_EditMat) && c.material != Mat_Air) ||
-            (!(mode&Ray_Pass) && lsize==size && !iscubeempty(c)) ||
+            (!(mode&Ray_Pass) && lsize==size && !(c.isempty())) ||
             iscubesolid(c) ||
             dent < dist) &&
             (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
@@ -410,7 +410,7 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
 
         ivec lo(x&(~0U<<lshift), y&(~0U<<lshift), z&(~0U<<lshift));
 
-        if(!iscubeempty(c))
+        if(!(c.isempty()))
         {
             const clipplanes &p = getclipplanes(c, lo, lsize);
             float f = 0;
@@ -445,7 +445,7 @@ float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity 
         cube &c = *lc;
         ivec lo(x&(~0U<<lshift), y&(~0U<<lshift), z&(~0U<<lshift));
 
-        if(!iscubeempty(c) && !(c.material&Mat_Alpha))
+        if(!(c.isempty()) && !(c.material&Mat_Alpha))
         {
             if(iscubesolid(c))
             {

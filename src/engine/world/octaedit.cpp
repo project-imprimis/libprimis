@@ -1231,7 +1231,7 @@ void pasteblock(block3 &b, selinfo &sel, bool local)
     int o = sel.orient;
     sel.orient = b.orient;
     cube *s = b.c();
-    LOOP_SEL_XYZ(if(!iscubeempty(*s) || s->children || s->material != Mat_Air) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
+    LOOP_SEL_XYZ(if(!(s->isempty()) || s->children || s->material != Mat_Air) pastecube(*s, c); s++); // 'transparent'. old opaque by 'delcube; paste'
     sel.orient = o;
 }
 
@@ -1398,7 +1398,7 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
         }
         --neighbordepth;
     }
-    else if(!iscubeempty(c))
+    else if(!(c.isempty()))
     {
         int vis;
         for(int i = 0; i < 6; ++i) //for each face
@@ -1463,7 +1463,7 @@ void genprefabmesh(prefab &p)
     }
 
     cube *s = p.copy->c();
-    LOOP_XYZ(b, b.grid, if(!iscubeempty(*s) || s->children) pastecube(*s, c); s++);
+    LOOP_XYZ(b, b.grid, if(!(s->isempty()) || s->children) pastecube(*s, c); s++);
 
     prefabmesh r;
     neighborstack[++neighbordepth] = worldroot;
@@ -1824,7 +1824,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
         {
             case EditMatFlag_Empty:
             {
-                if(iscubeempty(c))
+                if(c.isempty())
                 {
                     break;
                 }
@@ -1832,7 +1832,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
             }
             case EditMatFlag_NotEmpty:
             {
-                if(!iscubeempty(c))
+                if(!(c.isempty()))
                 {
                     break;
                 }
