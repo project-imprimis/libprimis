@@ -12,7 +12,6 @@
 
 #include "world/light.h"
 #include "world/material.h"
-#include "world/octaedit.h"
 #include "world/octaworld.h"
 #include "world/physics.h"
 
@@ -2458,7 +2457,7 @@ void octarender()                               // creates va s for all leaf cub
 
 void allchanged(bool load)
 {
-    if(mainmenu && !multiplayer)
+    if(mainmenu)
     {
         load = false;
     }
