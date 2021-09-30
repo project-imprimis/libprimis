@@ -365,6 +365,7 @@ namespace
             glGenBuffers_(1, &bbebo);
             gle::bindebo(bbebo);
             GLushort tris[3*2*6];
+            //======================================== GENFACEVERT GENFACEORIENT
             #define GENFACEORIENT(orient, v0, v1, v2, v3) do { \
                 int offset = orient*3*2; \
                 tris[offset + 0] = v0; \
@@ -374,7 +375,6 @@ namespace
                 tris[offset + 4] = v2; \
                 tris[offset + 5] = v3; \
             } while(0);
-            //====================================================== GENFACEVERT
             #define GENFACEVERT(orient, vert, ox,oy,oz, rx,ry,rz) (ox | oy | oz)
             GENFACEVERTS(0, 1, 0, 2, 0, 4, , , , , , )
             #undef GENFACEORIENT
