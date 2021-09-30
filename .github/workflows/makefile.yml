@@ -11,13 +11,16 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-      
+
+    - name: Update package list
+      run: sudo apt-get update
+
     - name: Install dependencies
       run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
-      
+
     - name: Build
       run: make -C src -j4
-    
+
     - name: Upload libprimis.so artifact
       uses: actions/upload-artifact@v2
       with:
