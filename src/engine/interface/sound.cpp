@@ -173,11 +173,13 @@ void stopchannels()
 }
 
 void setmusicvol(int musicvol);
+
 VARFP(soundvol, 0, 255, 255, if(!soundvol)
 { //don't use sound infrastructure if volume is 0
     stopchannels();
     setmusicvol(0);
 });
+
 VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
 char *musicfile    = nullptr,
@@ -672,12 +674,13 @@ void stopmapsound(extentity *e)
     }
 }
 
-VAR(stereo, 0, 1, 1);
+VAR(stereo, 0, 1, 1); //toggles mixing of sounds by direction
 
 //distance in cubits: how far away sound entities can be heard at(340 = 42.5m)
 VAR(maxsoundradius, 1, 340, 0);
 
 //recalculates stereo mix & volume for a soundchannel (sound ent, or player generated sound)
+//(unless stereo is disabled, in which case the mix is only by distance)
 bool updatechannel(SoundChannel &chan)
 {
     if(!chan.slot)
@@ -1091,4 +1094,4 @@ void resetsound()
         DELETEA(musicdonecmd);
     }
 }
-COMMAND(resetsound, "");
+COMMAND(resetsound, ""); //stop all sounds and re-play background music
