@@ -56,8 +56,8 @@ VARP(showparticles,  0, 1, 1);                  //toggles showing billboarded pa
 VAR(cullparticles,   0, 1, 1);                  //toggles culling particles beyond fog distance
 VAR(replayparticles, 0, 1, 1);                  //toggles re-rendering previously generated particles
 VARN(seedparticles, seedmillis, 0, 3000, 10000);//sets the time between seeding particles
-VAR(debugparticlecull, 0, 0, 1);
-VAR(debugparticleseed, 0, 0, 1);
+VAR(debugparticlecull, 0, 0, 1);                //print out console information about particles culled
+VAR(debugparticleseed, 0, 0, 1);                //print out radius/maxfade info for particles upon spawn
 
 class particleemitter
 {
