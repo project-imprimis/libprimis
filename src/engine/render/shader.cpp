@@ -753,7 +753,7 @@ void Shader::cleanup(bool full)
 
 static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
 {
-    static int len = strlen("//:attrib");
+    static int len = std::strlen("//:attrib");
     string name;
     int loc;
     if(reusevs)
@@ -776,7 +776,7 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
 // adds to uniformlocs vector defined uniformlocs
 static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
 {
-    static int len = strlen("//:uniform");
+    static int len = std::strlen("//:uniform");
     string name, blockname;
     int binding, stride;
     if(reusevs)
@@ -906,12 +906,11 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     bool vschanged = false,
          pschanged = false;
     vector<char> vsv, psv;
-    vsv.put(vs, strlen(vs)+1);
-    psv.put(ps, strlen(ps)+1);
+    vsv.put(vs, std::strlen(vs)+1);
+    psv.put(ps, std::strlen(ps)+1);
 
-    //cannot be constexpr-- strlen is not compile time
-    static const int len  = strlen("//:variant"),
-                     olen = strlen("override");
+    static constexpr int len  = std::strlen("//:variant"),
+                         olen = std::strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
         vspragma = strstr(vspragma, "//:variant");
