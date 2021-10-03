@@ -1721,7 +1721,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
         {
             clipminimap(bbmin, bbmax, c[i].children, o, size>>1);
         }
-        else if(!iscubesolid(c[i]) && (c[i].material&MatFlag_Clip)!=Mat_Clip)
+        else if(!(c[i].issolid()) && (c[i].material&MatFlag_Clip)!=Mat_Clip)
         {
             for(int k = 0; k < 3; ++k)
             {

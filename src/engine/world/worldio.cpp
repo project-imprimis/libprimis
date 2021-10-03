@@ -333,7 +333,7 @@ void savec(cube *c, const ivec &o, int size, stream *f)
                         }
                     }
                 }
-                if(iscubesolid(c[i]))
+                if(c[i].issolid())
                 {
                     f->putchar(oflags | OctaSave_Solid);
                 }

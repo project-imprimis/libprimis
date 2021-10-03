@@ -556,7 +556,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     {
         memset(c.ext->surfaces, 0, sizeof(c.ext->surfaces));
     }
-    if(c.isempty() || iscubesolid(c))
+    if(c.isempty() || c.issolid())
     {
         c.children = newcubes(c.isempty() ? faceempty : facesolid, c.material);
         for(int i = 0; i < 8; ++i)
@@ -748,12 +748,12 @@ static bool remip(cube &c, const ivec &co, int size)
             }
             break;
         }
-        else if(!iscubesolid(ch[i]))
+        else if(!(ch[i].issolid()))
         {
             while(++i < 8)
             {
                 int omat = ch[i].material;
-                if(iscubesolid(ch[i]) ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
+                if(ch[i].issolid() ? (omat&MatFlag_Clip) == Mat_NoClip || omat&Mat_Alpha : mat != omat)
                 {
                     return false;
                 }
@@ -1268,7 +1268,7 @@ static bool occludesface(const cube &c, int orient, const ivec &o, int size, con
                 return true;
             }
         }
-        if(iscubesolid(c))
+        if(c.issolid())
         {
             return true;
         }
@@ -1342,7 +1342,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
                 return false;
             }
         }
-        if(iscubesolid(o))
+        if(o.issolid())
         {
             return false;
         }
@@ -1441,7 +1441,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
                 }
             }
         }
-        if(vismask && !iscubesolid(o))
+        if(vismask && !(o.issolid()))
         {
             if(o.isempty() || notouchingface(o, opp))
             {
@@ -1600,7 +1600,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
         {
             return vis;
         }
-        if(iscubesolid(o) || (touchingface(o, opp) && faceedges(o, opp) == facesolid))
+        if(o.issolid() || (touchingface(o, opp) && faceedges(o, opp) == facesolid))
         {
             return vis&notouch;
         }
