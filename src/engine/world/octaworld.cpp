@@ -153,7 +153,7 @@ void freeocta(cube *c)
     }
     for(int i = 0; i < 8; ++i)
     {
-        discardchildren(c[i]);
+        c[i].discardchildren();
     }
     delete[] c;
     allocnodes--;
@@ -168,41 +168,41 @@ static void freecubeext(cube &c)
     }
 }
 
-void discardchildren(cube &c, bool fixtex, int depth)
+void cube::discardchildren(bool fixtex, int depth)
 {
-    c.visible = 0;
-    c.merged = 0;
-    if(c.ext)
+    visible = 0;
+    merged = 0;
+    if(ext)
     {
-        if(c.ext->va)
+        if(ext->va)
         {
-            destroyva(c.ext->va);
+            destroyva(ext->va);
         }
-        c.ext->va = nullptr;
-        c.ext->tjoints = -1;
-        freeoctaentities(c);
-        freecubeext(c);
+        ext->va = nullptr;
+        ext->tjoints = -1;
+        freeoctaentities(*this);
+        freecubeext(*this);
     }
-    if(c.children)
+    if(children)
     {
         uint filled = faceempty;
         for(int i = 0; i < 8; ++i)
         {
-            discardchildren(c.children[i], fixtex, depth+1);
-            filled |= c.children[i].faces[0];
+            children[i].discardchildren(fixtex, depth+1);
+            filled |= children[i].faces[0];
         }
         if(fixtex)
         {
             for(int i = 0; i < 6; ++i)
             {
-                c.texture[i] = getmippedtexture(c, i);
+                texture[i] = getmippedtexture(*this, i);
             }
             if(depth > 0 && filled != faceempty)
             {
-                c.faces[0] = facesolid;
+                faces[0] = facesolid;
             }
         }
-        DELETEA(c.children);
+        DELETEA(children);
         allocnodes--;
     }
 }
@@ -287,7 +287,7 @@ void validatec(cube *c, int size)
             if(size<=1)
             {
                 setcubefaces(c[i], facesolid);
-                discardchildren(c[i], true);
+                c[i].discardchildren(true);
             }
             else
             {
@@ -819,7 +819,7 @@ static bool remip(cube &c, const ivec &co, int size)
         }
     }
     freeocta(nh);
-    discardchildren(c);
+    c.discardchildren();
     for(int i = 0; i < 3; ++i)
     {
         c.faces[i] = n.faces[i];

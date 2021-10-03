@@ -502,7 +502,7 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
             if(size<=1)
             {
                 setcubefaces(c[i], facesolid);
-                discardchildren(c[i], true);
+                c[i].discardchildren(true);
                 brightencube(c[i]);
             }
             else
@@ -580,7 +580,7 @@ static void copycube(const cube &src, cube &dst)
 
 void pastecube(const cube &src, cube &dst)
 {
-    discardchildren(dst);
+    dst.discardchildren();
     copycube(src, dst);
 }
 
@@ -611,7 +611,7 @@ void freeblock(block3 *b, bool alloced = true)
     cube *q = b->c();
     for(int i = 0; i < static_cast<int>(b->size()); ++i)
     {
-        discardchildren(*q++);
+        (*q++).discardchildren(); //note: incrementing pointer
     }
     if(alloced)
     {
@@ -1808,23 +1808,23 @@ void edittexcube(cube &c, int tex, int orient, bool &findrep)
  *  filtermask: filter material mask
  *  filtergeom: type of geometry inside the cube (empty, solid, partially solid)
  */
-void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)
+void cube::setmat(ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)
 {
     //recursively sets material for all child nodes
-    if(c.children)
+    if(children)
     {
         for(int i = 0; i < 8; ++i)
         {
-            setmat(c.children[i], mat, matmask, filtermat, filtermask, filtergeom);
+            children[i].setmat( mat, matmask, filtermat, filtermask, filtergeom);
         }
     }
-    else if((c.material&filtermask) == filtermat)
+    else if((material&filtermask) == filtermat)
     {
         switch(filtergeom)
         {
             case EditMatFlag_Empty:
             {
-                if(c.isempty())
+                if(isempty())
                 {
                     break;
                 }
@@ -1832,7 +1832,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
             }
             case EditMatFlag_NotEmpty:
             {
-                if(!(c.isempty()))
+                if(!(isempty()))
                 {
                     break;
                 }
@@ -1840,7 +1840,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
             }
             case EditMatFlag_Solid:
             {
-                if(c.issolid())
+                if(issolid())
                 {
                     break;
                 }
@@ -1848,7 +1848,7 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
             }
             case EditMatFlag_NotSolid:
             {
-                if(!(c.issolid()))
+                if(!(issolid()))
                 {
                     break;
                 }
@@ -1857,12 +1857,12 @@ void setmat(cube &c, ushort mat, ushort matmask, ushort filtermat, ushort filter
         }
         if(mat!=Mat_Air)
         {
-            c.material &= matmask;
-            c.material |= mat;
+            material &= matmask;
+            material |= mat;
         }
         else
         {
-            c.material = Mat_Air;
+            material = Mat_Air;
         }
     }
 }

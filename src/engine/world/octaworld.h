@@ -9,7 +9,6 @@ extern void getcubevector(cube &c, int d, int x, int y, int z, ivec &p);
 extern void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p);
 extern int familysize(const cube &c);
 extern void freeocta(cube *c);
-extern void discardchildren(cube &c, bool fixtex = false, int depth = 0);
 extern void validatec(cube *c, int size = 0);
 extern ivec lu;
 extern int lusize;

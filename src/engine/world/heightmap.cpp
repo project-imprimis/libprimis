@@ -124,7 +124,7 @@ namespace hmap
         {
             forcemip(*c, false);
         }
-        discardchildren(*c, true);
+        c->discardchildren(true);
         if(!isheightmap(sel.orient, d, true, c))
         {
             return nullptr;
