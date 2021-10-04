@@ -1888,26 +1888,27 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
 VAR(maxmerge, 0, 6, 12); //max gridpower to remip merge
 VAR(minface, 0, 4, 12);
 
-static inline uint hthash(const pedge &x)
+uint hthash(const cube::pedge &x)
 {
     return static_cast<uint>(x.from.x)^(static_cast<uint>(x.from.y)<<8);
 }
-static inline bool htcmp(const pedge &x, const pedge &y)
+
+bool htcmp(const cube::pedge &x, const cube::pedge &y)
 {
     return x == y;
 }
 
-bool clippoly(poly &p, const facebounds &b)
+bool cube::poly::clippoly(const facebounds &b)
 {
     pvert verts1[Face_MaxVerts+4], verts2[Face_MaxVerts+4];
     int numverts1 = 0,
         numverts2 = 0,
-        px = p.verts[p.numverts-1].x,
-        py = p.verts[p.numverts-1].y;
-    for(int i = 0; i < p.numverts; ++i)
+        px = verts[numverts-1].x,
+        py = verts[numverts-1].y;
+    for(int i = 0; i < numverts; ++i)
     {
-        int x = p.verts[i].x,
-            y = p.verts[i].y;
+        int x = verts[i].x,
+            y = verts[i].y;
         if(x < b.u1)
         {
             if(px > b.u2)
@@ -2005,8 +2006,8 @@ bool clippoly(poly &p, const facebounds &b)
     {
         return false;
     }
-    memcpy(p.verts, verts2, numverts2*sizeof(pvert));
-    p.numverts = numverts2;
+    memcpy(verts, verts2, numverts2*sizeof(pvert));
+    numverts = numverts2;
     return true;
 }
 
@@ -2170,7 +2171,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
             b.v1 = std::min(b.v1, v.y);
             b.v2 = std::max(b.v2, v.y);
         }
-        if(mincubeface(*this, orient, o, size, b) && clippoly(p, b))
+        if(mincubeface(*this, orient, o, size, b) && p.clippoly(b))
         {
             p.merged = true;
         }
@@ -2178,34 +2179,13 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
     return true;
 }
 
-class plink : public pedge
-{
-    public:
-        int polys[2];
-
-        plink()
-        {
-            clear();
-        }
-
-        plink(const pedge &p) : pedge(p)
-        {
-            clear();
-        }
-    private:
-        void clear()
-        {
-            polys[0] = polys[1] = -1;
-        }
-};
-
-bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, int owner, poly &p, poly &q, const pedge &e)
+bool cube::poly::mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, int owner, poly &q, const pedge &e)
 {
     int pe = -1,
         qe = -1;
-    for(int i = 0; i < p.numverts; ++i)
+    for(int i = 0; i < numverts; ++i)
     {
-        if(p.verts[i] == e.from)
+        if(verts[i] == e.from)
         {
             pe = i;
             break;
@@ -2223,7 +2203,7 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
     {
         return false;
     }
-    if(p.verts[(pe+1)%p.numverts] != e.to || q.verts[(qe+1)%q.numverts] != e.from)
+    if(verts[(pe+1)%numverts] != e.to || q.verts[(qe+1)%q.numverts] != e.from)
     {
         return false;
     }
@@ -2234,20 +2214,20 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
      *  |  P |
      *  b----a
      */
-    pvert verts[2*Face_MaxVerts];
-    int numverts = 0,
-        index = pe+2; // starts at A = T+1, ends at F = T+p.numverts
-    for(int i = 0; i < p.numverts-1; ++i)
+    pvert mergeverts[2*Face_MaxVerts];
+    int nummergeverts = 0,
+        index = pe+2; // starts at A = T+1, ends at F = T+this.numverts
+    for(int i = 0; i < numverts-1; ++i)
     {
-        if(index >= p.numverts)
+        if(index >= numverts)
         {
-            index -= p.numverts;
+            index -= numverts;
         }
-        verts[numverts++] = p.verts[index++];
+        mergeverts[nummergeverts++] = verts[index++];
     }
     index = qe+2; // starts at C = T+2 = F+1, ends at T = T+q.numverts
-    int px = static_cast<int>(verts[numverts-1].x) - static_cast<int>(verts[numverts-2].x),
-        py = static_cast<int>(verts[numverts-1].y) - static_cast<int>(verts[numverts-2].y);
+    int px = static_cast<int>(mergeverts[nummergeverts-1].x) - static_cast<int>(mergeverts[nummergeverts-2].x),
+        py = static_cast<int>(mergeverts[nummergeverts-1].y) - static_cast<int>(mergeverts[nummergeverts-2].y);
     for(int i = 0; i < q.numverts-1; ++i)
     {
         if(index >= q.numverts)
@@ -2255,8 +2235,8 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
             index -= q.numverts;
         }
         pvert &src = q.verts[index++];
-        int cx = static_cast<int>(src.x) - static_cast<int>(verts[numverts-1].x),
-            cy = static_cast<int>(src.y) - static_cast<int>(verts[numverts-1].y),
+        int cx = static_cast<int>(src.x) - static_cast<int>(mergeverts[nummergeverts-1].x),
+            cy = static_cast<int>(src.y) - static_cast<int>(mergeverts[nummergeverts-1].y),
             dir = px*cy - py*cx;
         if(dir > 0)
         {
@@ -2264,14 +2244,14 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
         }
         if(!dir)
         {
-            numverts--;
+            nummergeverts--;
         }
-        verts[numverts++] = src;
+        mergeverts[nummergeverts++] = src;
         px = cx;
         py = cy;
     }
-    int cx = static_cast<int>(verts[0].x) - static_cast<int>(verts[numverts-1].x),
-        cy = static_cast<int>(verts[0].y) - static_cast<int>(verts[numverts-1].y),
+    int cx = static_cast<int>(mergeverts[0].x) - static_cast<int>(mergeverts[nummergeverts-1].x),
+        cy = static_cast<int>(mergeverts[0].y) - static_cast<int>(mergeverts[nummergeverts-1].y),
         dir = px*cy - py*cx;
     if(dir > 0)
     {
@@ -2279,21 +2259,21 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
     }
     if(!dir)
     {
-        numverts--;
+        nummergeverts--;
     }
-    if(numverts > Face_MaxVerts)
+    if(nummergeverts > Face_MaxVerts)
     {
         return false;
     }
     q.merged = true;
     q.numverts = 0;
-    p.merged = true;
-    p.numverts = numverts;
-    memcpy(p.verts, verts, numverts*sizeof(pvert));
-    int prev = p.numverts-1;
-    for(int j = 0; j < p.numverts; ++j)
+    merged = true;
+    numverts = nummergeverts;
+    memcpy(verts, mergeverts, nummergeverts*sizeof(pvert));
+    int prev = numverts-1;
+    for(int j = 0; j < numverts; ++j)
     {
-        pedge e(p.verts[prev], p.verts[j]);
+        pedge e(verts[prev], verts[j]);
         int order = e.from.x > e.to.x || (e.from.x == e.to.x && e.from.y > e.to.y) ? 1 : 0;
         if(order)
         {
@@ -2312,14 +2292,14 @@ bool mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, 
     return true;
 }
 
-void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, poly &p)
+void cube::addmerge(int orient, const ivec &co, const ivec &n, int offset, poly &p)
 {
-    cu.merged |= 1<<orient;
+    merged |= 1<<orient;
     if(!p.numverts)
     {
-        if(cu.ext)
+        if(ext)
         {
-            cu.ext->surfaces[orient] = topsurface;
+            ext->surfaces[orient] = topsurface;
         }
         return;
     }
@@ -2340,14 +2320,14 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
         v[dim] = -(offset + n[c]*src.x + n[r]*src.y)/n[dim];
         dst.set(v);
     }
-    if(cu.ext)
+    if(ext)
     {
-        const surfaceinfo &oldsurf = cu.ext->surfaces[orient];
+        const surfaceinfo &oldsurf = ext->surfaces[orient];
         int numverts = oldsurf.numverts&Face_MaxVerts;
         if(numverts == p.numverts)
         {
             ivec v0 = verts[0].getxyz();
-            const vertinfo *oldverts = cu.ext->verts() + oldsurf.verts;
+            const vertinfo *oldverts = ext->verts() + oldsurf.verts;
             for(int j = 0; j < numverts; ++j)
             {
                 if(v0 == oldverts[j].getxyz())
@@ -2369,38 +2349,38 @@ void addmerge(cube &cu, int orient, const ivec &co, const ivec &n, int offset, p
         nomatch:;
         }
     }
-    setsurface(cu, orient, surf, verts, p.numverts);
+    setsurface(*this, orient, surf, verts, p.numverts);
 }
 
-static void clearmerge(cube &c, int orient)
+void cube::clearmerge(int orient)
 {
-    if(c.merged&(1<<orient))
+    if(merged&(1<<orient))
     {
-        c.merged &= ~(1<<orient);
-        if(c.ext)
+        merged &= ~(1<<orient);
+        if(ext)
         {
-            c.ext->surfaces[orient] = topsurface;
+            ext->surfaces[orient] = topsurface;
         }
     }
 }
 
-static void addmerges(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::addmerges(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
     for(uint i = 0; i < polys.size(); i++)
     {
         poly &p = polys[i];
         if(p.merged)
         {
-            addmerge(*p.c, orient, co, n, offset, p);
+            (*p.c).addmerge(orient, co, n, offset, p);
         }
         else
         {
-            clearmerge(*p.c, orient);
+            (*p.c).clearmerge(orient);
         }
     }
 }
 
-static void mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
     if(polys.size() <= 1)
     {
@@ -2438,7 +2418,7 @@ static void mergepolys(int orient, const ivec &co, const ivec &n, int offset, st
             plink &l = *queue[i];
             if(l.polys[0] >= 0 && l.polys[1] >= 0)
             {
-                mergepolys(orient, links, nextqueue, l.polys[0], polys[l.polys[0]], polys[l.polys[1]], l);
+                polys[l.polys[0]].mergepolys(orient, links, nextqueue, l.polys[0], polys[l.polys[1]], l);
             }
         }
         queue.clear();
@@ -2450,30 +2430,16 @@ static void mergepolys(int orient, const ivec &co, const ivec &n, int offset, st
 
 static int genmergeprogress = 0;
 
-struct cfkey
-{
-    uchar orient;
-    ushort material, tex;
-    ivec n;
-    int offset;
-};
-
-static inline bool htcmp(const cfkey &x, const cfkey &y)
+bool htcmp(const cube::cfkey &x, const cube::cfkey &y)
 {
     return x.orient == y.orient && x.tex == y.tex && x.n == y.n && x.offset == y.offset && x.material==y.material;
 }
 
-static inline uint hthash(const cfkey &k)
+uint hthash(const cube::cfkey &k)
 {
     return hthash(k.n)^k.offset^k.tex^k.orient^k.material;
 }
 
-struct cfpolys
-{
-    std::vector<poly> polys;
-};
-
-static hashtable<cfkey, cfpolys> cpolys;
 
 //recursively goes through children of cube passed and attempts to merge faces together
 void cube::genmerges(const ivec &o, int size)
@@ -2510,11 +2476,11 @@ void cube::genmerges(const ivec &o, int size)
                     {
                         if(genpoly(j, co, size, vis, k.n, k.offset, p) && p.merged)
                         {
-                            addmerge(this[i], j, co, k.n, k.offset, p);
+                            this[i].addmerge( j, co, k.n, k.offset, p);
                             continue;
                         }
                     }
-                    clearmerge(this[i], j);
+                    this[i].clearmerge(j);
                 }
             }
         }
