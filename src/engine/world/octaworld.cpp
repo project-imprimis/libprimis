@@ -849,7 +849,7 @@ void remip()
         ivec o(i, ivec(0, 0, 0), worldsize>>1);
         remip(worldroot[i], o, worldsize>>2);
     }
-    calcmerges();
+    worldroot->calcmerges();
 }
 
 const ivec cubecoords[8] = // verts of bounding cube
@@ -1888,40 +1888,6 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
 VAR(maxmerge, 0, 6, 12); //max gridpower to remip merge
 VAR(minface, 0, 4, 12);
 
-struct pvert
-{
-    ushort x, y;
-
-    pvert() {}
-    pvert(ushort x, ushort y) : x(x), y(y) {}
-
-    bool operator==(const pvert &o) const
-    {
-        return x == o.x && y == o.y;
-    }
-    bool operator!=(const pvert &o) const
-    {
-        return x != o.x || y != o.y;
-    }
-};
-
-struct pedge
-{
-    pvert from, to;
-
-    pedge() {}
-    pedge(const pvert &from, const pvert &to) : from(from), to(to) {}
-
-    bool operator==(const pedge &o) const
-    {
-        return from == o.from && to == o.to;
-    }
-    bool operator!=(const pedge &o) const
-    {
-        return from != o.from || to != o.to;
-    }
-};
-
 static inline uint hthash(const pedge &x)
 {
     return static_cast<uint>(x.from.x)^(static_cast<uint>(x.from.y)<<8);
@@ -1930,14 +1896,6 @@ static inline bool htcmp(const pedge &x, const pedge &y)
 {
     return x == y;
 }
-
-struct poly
-{
-    cube *c;
-    int numverts;
-    bool merged;
-    pvert verts[Face_MaxVerts];
-};
 
 bool clippoly(poly &p, const facebounds &b)
 {
@@ -2052,13 +2010,13 @@ bool clippoly(poly &p, const facebounds &b)
     return true;
 }
 
-bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, int &offset, poly &p)
+bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &offset, poly &p)
 {
     int dim = DIMENSION(orient),
         coord = DIM_COORD(orient);
     ivec v[4];
-    genfaceverts(cu, orient, v);
-    if(flataxisface(cu, orient))
+    genfaceverts(*this, orient, v);
+    if(flataxisface(*this, orient))
     {
          n = ivec(0, 0, 0);
          n[dim] = coord ? 1 : -1;
@@ -2123,7 +2081,7 @@ bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, in
         p.verts[p.numverts++] = pvert(v0[c], v0[r]);
     }
 
-    if(faceedges(cu, orient) != facesolid)
+    if(faceedges(*this, orient) != facesolid)
     {
         int px = static_cast<int>(p.verts[p.numverts-2].x) - static_cast<int>(p.verts[p.numverts-3].x),
             py = static_cast<int>(p.verts[p.numverts-2].y) - static_cast<int>(p.verts[p.numverts-3].y),
@@ -2197,9 +2155,9 @@ bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, in
             p.numverts--;
         }
     }
-    p.c = &cu;
+    p.c = this;
     p.merged = false;
-    if(minface && size >= 1<<minface && touchingface(cu, orient))
+    if(minface && size >= 1<<minface && touchingface(*this, orient))
     {
         facebounds b;
         b.u1 = b.u2 = p.verts[0].x;
@@ -2212,7 +2170,7 @@ bool genpoly(cube &cu, int orient, const ivec &o, int size, int vis, ivec &n, in
             b.v1 = std::min(b.v1, v.y);
             b.v2 = std::max(b.v2, v.y);
         }
-        if(mincubeface(cu, orient, o, size, b) && clippoly(p, b))
+        if(mincubeface(*this, orient, o, size, b) && clippoly(p, b))
         {
             p.merged = true;
         }
@@ -2518,49 +2476,49 @@ struct cfpolys
 static hashtable<cfkey, cfpolys> cpolys;
 
 //recursively goes through children of cube passed and attempts to merge faces together
-static void genmerges(cube *c = worldroot, const ivec &o = ivec(0, 0, 0), int size = worldsize>>1)
+void cube::genmerges(const ivec &o, int size)
 {
-    neighborstack[++neighbordepth] = c;
+    neighborstack[++neighbordepth] = this;
     for(int i = 0; i < 8; ++i)
     {
         ivec co(i, o, size);
         int vis;
-        if(c[i].children)
+        if(this[i].children)
         {
-            genmerges(c[i].children, co, size>>1);
+            this[i].children->genmerges( co, size>>1);
         }
-        else if(!(c[i].isempty()))
+        else if(!(this[i].isempty()))
         {
             for(int j = 0; j < 6; ++j)
             {
-                if((vis = visibletris(c[i], j, co, size)))
+                if((vis = visibletris(this[i], j, co, size)))
                 {
                     cfkey k;
                     poly p;
-                    if(size < 1<<maxmerge && c != worldroot)
+                    if(size < 1<<maxmerge && this != worldroot)
                     {
-                        if(genpoly(c[i], j, co, size, vis, k.n, k.offset, p))
+                        if(genpoly(j, co, size, vis, k.n, k.offset, p))
                         {
                             k.orient = j;
-                            k.tex = c[i].texture[j];
-                            k.material = c[i].material&Mat_Alpha;
+                            k.tex = this[i].texture[j];
+                            k.material = this[i].material&Mat_Alpha;
                             cpolys[k].polys.push_back(p);
                             continue;
                         }
                     }
-                    else if(minface && size >= 1<<minface && touchingface(c[i], j))
+                    else if(minface && size >= 1<<minface && touchingface(this[i], j))
                     {
-                        if(genpoly(c[i], j, co, size, vis, k.n, k.offset, p) && p.merged)
+                        if(genpoly(j, co, size, vis, k.n, k.offset, p) && p.merged)
                         {
-                            addmerge(c[i], j, co, k.n, k.offset, p);
+                            addmerge(this[i], j, co, k.n, k.offset, p);
                             continue;
                         }
                     }
-                    clearmerge(c[i], j);
+                    clearmerge(this[i], j);
                 }
             }
         }
-        if((size == 1<<maxmerge || c == worldroot) && cpolys.numelems)
+        if((size == 1<<maxmerge || this == worldroot) && cpolys.numelems)
         {
             ENUMERATE_KT(cpolys, cfkey, key, cfpolys, val,
             {
@@ -2645,7 +2603,7 @@ void invalidatemerges(cube &c)
     }
 }
 
-void calcmerges()
+void cube::calcmerges()
 {
     genmergeprogress = 0;
     genmerges();
