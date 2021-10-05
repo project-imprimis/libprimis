@@ -764,11 +764,6 @@ static void rendercullmodelquery(model *m, dynent *d, const vec &center, float r
     endquery();
 }
 
-static void disablecullmodelquery()
-{
-    endbb();
-}
-
 static int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
@@ -1046,7 +1041,7 @@ void rendermodelbatches()
             }
             if(queried)
             {
-                disablecullmodelquery();
+                endbb();
             }
         }
     }
@@ -1304,7 +1299,7 @@ hasboundbox:
             {
                 enablecullmodelquery();
                 rendercullmodelquery(m, d, center, radius);
-                disablecullmodelquery();
+                endbb();
             }
             return;
         }
