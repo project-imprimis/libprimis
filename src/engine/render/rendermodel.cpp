@@ -271,6 +271,7 @@ void mdlname()
 }
 COMMAND(mdlname, "");
 
+//========================================================= CHECK_RAGDOLL
 #define CHECK_RAGDOLL \
     checkmdl(); \
     if(!loadingmodel->skeletal()) \
@@ -378,6 +379,8 @@ void rdanimjoints(int *on)
 }
 COMMAND(rdanimjoints, "i");
 
+#undef CHECK_RAGDOLL
+//==============================================================================
 // mapmodels
 
 std::vector<mapmodelinfo> mapmodels;
