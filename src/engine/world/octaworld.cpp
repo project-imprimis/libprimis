@@ -258,11 +258,11 @@ void printcube()
 }
 COMMAND(printcube, "");
 
-bool isvalidcube(const cube &c)
+bool cube::isvalidcube()
 {
     clipplanes p;
-    genclipbounds(c, ivec(0, 0, 0), 256, p);
-    genclipplanes(c, ivec(0, 0, 0), 256, p);
+    genclipbounds(*this, ivec(0, 0, 0), 256, p);
+    genclipplanes(*this, ivec(0, 0, 0), 256, p);
     // test that cube is convex
     for(int i = 0; i < 8; ++i)
     {
@@ -634,7 +634,7 @@ bool subdividecube(cube &c, bool fullcheck, bool brighten)
     {
         for(int i = 0; i < 8; ++i)
         {
-            if(!isvalidcube(ch[i])) // not so good...
+            if(!ch[i].isvalidcube()) // not so good...
             {
                 setcubefaces(ch[i], faceempty);
                 perfect=false;
