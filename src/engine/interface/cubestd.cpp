@@ -1630,7 +1630,7 @@ CMPSCMD(>=s, ges, >=);
 
 ICOMMAND(echo, "C", (char *s), conoutf("\f1%s", s));
 ICOMMAND(error, "C", (char *s), conoutf(Console_Error, "%s", s));
-ICOMMAND(strstr, "ss", (char *a, char *b), { char *s = strstr(a, b); intret(s ? s-a : -1); });
+ICOMMAND(strstr, "ss", (char *a, char *b), { char *s = std::strstr(a, b); intret(s ? s-a : -1); });
 ICOMMAND(strlen, "s", (char *s), intret(strlen(s)));
 ICOMMAND(strcode, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : static_cast<uchar>(s[*i])) : static_cast<uchar>(s[0])));
 
@@ -1680,7 +1680,7 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
     }
     for(int i = 0;; i++)
     {
-        const char *found = strstr(s, oldval);
+        const char *found = std::strstr(s, oldval);
         if(found)
         {
             while(s < found)
