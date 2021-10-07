@@ -403,23 +403,23 @@ void gl_checkextensions()
     conoutf(Console_Init, "Renderer: %s (%s)", renderer, vendor);
     conoutf(Console_Init, "Driver: %s", version);
 
-    if(strstr(renderer, "Mesa") || strstr(version, "Mesa"))
+    if(std::strstr(renderer, "Mesa") || std::strstr(version, "Mesa"))
     {
         mesa = true;
-        if(strstr(renderer, "Intel"))
+        if(std::strstr(renderer, "Intel"))
         {
             intel = true;
         }
     }
-    else if(strstr(vendor, "NVIDIA"))
+    else if(std::strstr(vendor, "NVIDIA"))
     {
         nvidia = true;
     }
-    else if(strstr(vendor, "ATI") || strstr(vendor, "Advanced Micro Devices"))
+    else if(std::strstr(vendor, "ATI") || std::strstr(vendor, "Advanced Micro Devices"))
     {
         amd = true;
     }
-    else if(strstr(vendor, "Intel"))
+    else if(std::strstr(vendor, "Intel"))
     {
         intel = true;
     }
