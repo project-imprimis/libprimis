@@ -159,7 +159,7 @@ void freeocta(cube *c)
     allocnodes--;
 }
 
-static void freecubeext(cube &c)
+void cube::freecubeext(cube &c)
 {
     if(c.ext)
     {
