@@ -584,7 +584,7 @@ size_t fixpackagedir(char *dir)
 
 bool subhomedir(char *dst, int len, const char *src)
 {
-    const char *sub = strstr(src, "$HOME");
+    const char *sub = std::strstr(src, "$HOME");
     if(!sub)
     {
         sub = strchr(src, '~');
@@ -636,7 +636,7 @@ const char *addpackagedir(const char *dir)
     for(;;)
     {
         static int len = strlen("media");
-        filter = strstr(filter, "media");
+        filter = std::strstr(filter, "media");
         if(!filter)
         {
             break;
