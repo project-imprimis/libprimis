@@ -267,7 +267,7 @@ static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *
         for(uint i = 0; i < files.size(); i++)
         {
             zipfile &f = files[i];
-            const char *foundpackages = strstr(f.name, packagesdir);
+            const char *foundpackages = std::strstr(f.name, packagesdir);
             if(foundpackages)
             {
                 if(foundpackages > f.name)
@@ -277,7 +277,7 @@ static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *
                 }
                 break;
             }
-            const char *foundogz = strstr(f.name, ".ogz");
+            const char *foundogz = std::strstr(f.name, ".ogz");
             if(foundogz)
             {
                 const char *ogzdir = foundogz;
