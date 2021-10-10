@@ -53,7 +53,7 @@ void EditLine::set(const char *str, int slen)
 {
     if(slen < 0)
     {
-        slen = strlen(str);
+        slen = std::strlen(str);
         if(!grow(slen, "%s", str))
         {
             memcpy(text, str, slen + 1);
@@ -70,7 +70,7 @@ void EditLine::set(const char *str, int slen)
 
 void EditLine::prepend(const char *str)
 {
-    int slen = strlen(str);
+    int slen = std::strlen(str);
     if(!grow(slen + len, "%s%s", str, text ? text : ""))
     {
         memmove(&text[slen], text, len + 1);
@@ -81,7 +81,7 @@ void EditLine::prepend(const char *str)
 
 void EditLine::append(const char *str)
 {
-    int slen = strlen(str);
+    int slen = std::strlen(str);
     if(!grow(len + slen, "%s%s", text ? text : "", str))
     {
         memcpy(&text[len], str, slen + 1);
@@ -102,7 +102,7 @@ bool EditLine::read(stream *f, int chop)
     set("");
     while(len + 1 < chop && f->getline(&text[len], std::min(maxlen, chop) - len))
     {
-        len += strlen(&text[len]);
+        len += std::strlen(&text[len]);
         if(len > 0 && text[len-1] == '\n')
         {
             text[--len] = '\0';
@@ -118,7 +118,7 @@ bool EditLine::read(stream *f, int chop)
         char buf[Chunk_Size];
         while(f->getline(buf, sizeof(buf)))
         {
-            int blen = strlen(buf);
+            int blen = std::strlen(buf);
             if(blen > 0 && buf[blen-1] == '\n')
             {
                 return true;
@@ -165,7 +165,7 @@ void EditLine::insert(char *str, int start, int count)
 {
     if(count <= 0)
     {
-        count = strlen(str);
+        count = std::strlen(str);
     }
     start = std::clamp(start, 0, len);
     grow(len + count, "%s", text ? text : "");
@@ -1025,7 +1025,7 @@ void textlist()
         {
             s.put(", ", 2);
         }
-        s.put(editors[i]->name, strlen(editors[i]->name));
+        s.put(editors[i]->name, std::strlen(editors[i]->name));
     }
     s.add('\0');
     result(s.getbuf());
