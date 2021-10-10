@@ -305,7 +305,7 @@ class partrenderer
             if(type&PT_TRACK)   concatstring(info, "t,");
             if(type&PT_FLIP)    concatstring(info, "f,");
             if(type&PT_COLLIDE) concatstring(info, "c,");
-            int len = strlen(info);
+            int len = std::strlen(info);
             info[len-1] = info[len-1] == ',' ? ')' : '\0';
             if(texname)
             {
