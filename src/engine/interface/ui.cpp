@@ -980,13 +980,15 @@ namespace UI
         static const char *typestr() { return "#World"; }
         const char *gettype() const { return typestr(); }
 
-        #define LOOP_WINDOWS(o, body) do { \
-            for(int i = 0; i < static_cast<int>(children.size()); i++) \
-            { \
-                Window *o = static_cast<Window *>(children[i]); \
-                body; \
-            } \
-        } while(0)
+        void loopwindows(std::function<void(Window * w, int i)> body)
+        {
+            for(int i = 0; i < static_cast<int>(children.size()); i++)
+            {
+                Window *w = static_cast<Window *>(children[i]);
+                body(w, i);
+            }
+        }
+
         //note reverse iteration
         #define LOOP_WINDOWS_REV(o, body) do { \
             for(int i = static_cast<int>(children.size()); --i >=0;) \
@@ -998,7 +1000,7 @@ namespace UI
 
         void adjustchildren()
         {
-            LOOP_WINDOWS(w, w->adjustlayout());
+            loopwindows([] (Window * w, int) {w->adjustlayout();});
         }
 
         #define DOSTATE(flags, func) \
@@ -1026,16 +1028,20 @@ namespace UI
         {
             reset();
             setup();
-            LOOP_WINDOWS(w,
+            loopwindows( [this] (Window * w, int i)
             {
+                bool vecrange = true;
                 w->build();
                 if(static_cast<int>(children.size()) < i )
                 {
-                    break;
+                    vecrange = false;
                 }
-                if(children[i] != w)
+                if(vecrange)
                 {
-                    i--;
+                    if(children[i] != w)
+                    {
+                        i--;
+                    }
                 }
             });
             resetstate();
@@ -1099,16 +1105,17 @@ namespace UI
             return hidden;
         }
 
-        bool allowinput() const
+        bool allowinput()
         {
-            LOOP_WINDOWS(w,
+            bool allow = false;
+            loopwindows( [&allow, this] (Window * w, int)
             {
                 if(w->allowinput && !(w->state & State_Hidden))
                 {
-                    return true;
+                    allow = true;
                 }
             });
-            return false;
+            return allow;
         }
 
         void draw(float, float) {} //note unnamed function parameters
@@ -1119,13 +1126,13 @@ namespace UI
             {
                 return;
             }
-            LOOP_WINDOWS(w, w->draw());
+            loopwindows( [] (Window * w, int) {w->draw();} );
         }
 
         float abovehud()
         {
             float y = 1;
-            LOOP_WINDOWS(w,
+            loopwindows( [&y] (Window * w, int)
             {
                 if(w->abovehud && !(w->state & State_Hidden))
                 {
@@ -1137,7 +1144,6 @@ namespace UI
     };
 
 #undef LOOP_WINDOWS_REV
-#undef LOOP_WINDOWS
 
     static World *world = nullptr;
 
