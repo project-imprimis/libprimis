@@ -4481,27 +4481,27 @@ namespace UI
     }
     COMMANDN(uiname, uinamecmd, "");
 
-    #define IFSTATEVAL(state,t,f) \
-    { \
-        if(state) \
-        { \
-            if(t->type == Value_Null) \
-            { \
-                intret(1); \
-            } \
-            else \
-            { \
-                result(*t); \
-            } \
-        } \
-        else if(f->type == Value_Null) \
-        { \
-            intret(0); \
-        } \
-        else \
-        { \
-            result(*f); \
-        } \
+    void ifstateval(bool state, tagval * t, tagval * f)
+    {
+        if(state)
+        {
+            if(t->type == Value_Null)
+            {
+                intret(1);
+            }
+            else
+            {
+                result(*t);
+            }
+        }
+        else if(f->type == Value_Null)
+        {
+            intret(0);
+        }
+        else
+        {
+            result(*f);
+        }
     }
 
     template<class T>
@@ -4521,28 +4521,28 @@ namespace UI
         ICOMMANDNS("ui" #func, ui##func##_, "ee", (uint *t, uint *f), \
             executeret(buildparent && buildparent->haschildstate(flags) ? t : f)); \
         ICOMMANDNS("ui!" #func "?", uinot##func##__, "tt", (tagval *t, tagval *f), \
-            IFSTATEVAL(buildparent && buildparent->hasstate(flags), t, f)); \
+            ifstateval(buildparent && buildparent->hasstate(flags), t, f)); \
         ICOMMANDNS("ui" #func "?", ui##func##__, "tt", (tagval *t, tagval *f), \
-            IFSTATEVAL(buildparent && buildparent->haschildstate(flags), t, f)); \
+            ifstateval(buildparent && buildparent->haschildstate(flags), t, f)); \
         ICOMMANDNS("ui!" #func "+", uinextnot##func##_, "ee", (uint *t, uint *f), \
             executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->hasstate(flags) ? t : f)); \
         ICOMMANDNS("ui" #func "+", uinext##func##_, "ee", (uint *t, uint *f), \
             executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags) ? t : f)); \
         ICOMMANDNS("ui!" #func "+?", uinextnot##func##__, "tt", (tagval *t, tagval *f), \
-            IFSTATEVAL(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->hasstate(flags), t, f)); \
+            ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->hasstate(flags), t, f)); \
         ICOMMANDNS("ui" #func "+?", uinext##func##__, "tt", (tagval *t, tagval *f), \
-            IFSTATEVAL(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags), t, f));
+            ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags), t, f));
     DOSTATES
     #undef DOSTATE
 
     ICOMMANDNS("uifocus", uifocusexec_, "ee", (uint *t, uint *f),
         executeret(buildparent && TextEditor::focus == buildparent ? t : f));
     ICOMMANDNS("uifocus?", uifocustagval_, "tt", (tagval *t, tagval *f),
-        IFSTATEVAL(buildparent && TextEditor::focus == buildparent, t, f));
+        ifstateval(buildparent && TextEditor::focus == buildparent, t, f));
     ICOMMANDNS("uifocus+", uinextfocusexec_, "ee", (uint *t, uint *f),
         executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild] ? t : f));
     ICOMMANDNS("uifocus+?", uinextfocustagval_, "tt", (tagval *t, tagval *f),
-        IFSTATEVAL(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild], t, f));
+        ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild], t, f));
 
     ICOMMAND(uialign, "ii", (int *xalign, int *yalign),
     {
