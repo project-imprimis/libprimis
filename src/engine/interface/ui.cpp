@@ -990,13 +990,14 @@ namespace UI
         }
 
         //note reverse iteration
-        #define LOOP_WINDOWS_REV(o, body) do { \
-            for(int i = static_cast<int>(children.size()); --i >=0;) \
-            { \
-                Window *o = static_cast<Window *>(children[i]); \
-                body; \
-            } \
-        } while(0)
+        void loopwindowsrev(std::function<void(Window * w, int &i)> body)
+        {
+            for(int i = static_cast<int>(children.size()); --i >=0;)
+            {
+                Window *w = static_cast<Window *>(children[i]);
+                body(w, i);
+            }
+        }
 
         void adjustchildren()
         {
@@ -1006,18 +1007,22 @@ namespace UI
         #define DOSTATE(flags, func) \
             void func##children(float cx, float cy, int mask, bool inside, int setflags) \
             { \
-                LOOP_WINDOWS_REV(w, \
+                bool shouldcontinue = false; \
+                loopwindowsrev( [this, &shouldcontinue, cx, cy, mask, inside, setflags] (Window * w, int & i) \
                 { \
                     if(((w->state | w->childstate) & mask) != mask) \
                     { \
-                        continue; \
+                        shouldcontinue = true; \
                     } \
-                    w->func##children(cx, cy, mask, inside, setflags); \
-                    int wflags = (w->state | w->childstate) & (setflags); \
-                    if(wflags) \
+                    if(shouldcontinue) \
                     { \
-                        childstate |= wflags; \
-                        break; \
+                        w->func##children(cx, cy, mask, inside, setflags); \
+                        int wflags = (w->state | w->childstate) & (setflags); \
+                        if(wflags) \
+                        { \
+                            childstate |= wflags; \
+                            i = 0; /* break by rolling i down to 0 (since this is a reverse loop)*/ \
+                        } \
                     } \
                 }); \
             }
@@ -1083,21 +1088,22 @@ namespace UI
 
         bool hidetop()
         {
-            LOOP_WINDOWS_REV(w,
+            bool ishidden = false;
+            loopwindowsrev( [&ishidden, this] (Window * w, int & i)
             {
                 if(w->allowinput && !(w->state & State_Hidden))
                 {
                     hide(w, i);
-                    return true;
+                    ishidden = true;
                 }
             });
-            return false;
+            return ishidden;
         }
 
         int hideall()
         {
             int hidden = 0;
-            LOOP_WINDOWS_REV(w,
+            loopwindowsrev( [&hidden, this] (Window * w, int & i)
             {
                 hide(w, i);
                 hidden++;
@@ -1142,8 +1148,6 @@ namespace UI
             return y;
         }
     };
-
-#undef LOOP_WINDOWS_REV
 
     static World *world = nullptr;
 
