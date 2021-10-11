@@ -261,7 +261,7 @@ static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *
 {
     string packagesdir = "media/";
     path(packagesdir);
-    size_t striplen = stripdir ? strlen(stripdir) : 0;
+    size_t striplen = stripdir ? std::strlen(stripdir) : 0;
     if(!mountdir && !stripdir)
     {
         for(uint i = 0; i < files.size(); i++)
@@ -330,7 +330,7 @@ bool addzip(const char *name, const char *mount = nullptr, const char *strip = n
     string pname;
     copystring(pname, name);
     path(pname);
-    size_t plen = strlen(pname);
+    size_t plen = std::strlen(pname);
     if(plen < 4 || !strchr(&pname[plen-4], '.'))
     {
         concatstring(pname, ".zip");
@@ -370,7 +370,7 @@ bool removezip(const char *name)
     string pname;
     copystring(pname, name);
     path(pname);
-    int plen = (int)strlen(pname);
+    int plen = (int)std::strlen(pname);
     if(plen < 4 || !strchr(&pname[plen-4], '.'))
     {
         concatstring(pname, ".zip");
@@ -719,8 +719,8 @@ bool findzipfile(const char *name)
 
 int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
 {
-    size_t extsize = ext ? strlen(ext)+1 : 0,
-           dirsize = strlen(dir);
+    size_t extsize = ext ? std::strlen(ext)+1 : 0,
+           dirsize = std::strlen(dir);
     int dirs = 0;
     for(int i = archives.length(); --i >=0;) //note reverse iteration
     {
@@ -747,7 +747,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
             }
             else
             {
-                size_t namelen = strlen(name);
+                size_t namelen = std::strlen(name);
                 if(namelen > extsize)
                 {
                     namelen -= extsize;
