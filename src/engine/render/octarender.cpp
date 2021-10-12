@@ -2361,41 +2361,41 @@ void clearvas(cube *c)
     }
 }
 
-void updatevabb(vtxarray *va, bool force)
+void vtxarray::updatevabb(bool force)
 {
-    if(!force && va->bbmin.x >= 0)
+    if(!force && bbmin.x >= 0)
     {
         return;
     }
-    va->bbmin = va->geommin;
-    va->bbmax = va->geommax;
-    va->bbmin.min(va->watermin);
-    va->bbmax.max(va->watermax);
-    va->bbmin.min(va->glassmin);
-    va->bbmax.max(va->glassmax);
-    for(int i = 0; i < va->children.length(); i++)
+    bbmin = geommin;
+    bbmax = geommax;
+    bbmin.min(watermin);
+    bbmax.max(watermax);
+    bbmin.min(glassmin);
+    bbmax.max(glassmax);
+    for(int i = 0; i < children.length(); i++)
     {
-        vtxarray *child = va->children[i];
-        updatevabb(child, force);
-        va->bbmin.min(child->bbmin);
-        va->bbmax.max(child->bbmax);
+        vtxarray *child = children[i];
+        child->updatevabb(force);
+        bbmin.min(child->bbmin);
+        bbmax.max(child->bbmax);
     }
-    for(int i = 0; i < va->mapmodels.length(); i++)
+    for(int i = 0; i < mapmodels.length(); i++)
     {
-        octaentities *oe = va->mapmodels[i];
-        va->bbmin.min(oe->bbmin);
-        va->bbmax.max(oe->bbmax);
+        octaentities *oe = mapmodels[i];
+        bbmin.min(oe->bbmin);
+        bbmax.max(oe->bbmax);
     }
-    for(int i = 0; i < va->decals.length(); i++)
+    for(int i = 0; i < decals.length(); i++)
     {
-        octaentities *oe = va->decals[i];
-        va->bbmin.min(oe->bbmin);
-        va->bbmax.max(oe->bbmax);
+        octaentities *oe = decals[i];
+        bbmin.min(oe->bbmin);
+        bbmax.max(oe->bbmax);
     }
-    va->bbmin.max(va->o);
-    va->bbmax.min(ivec(va->o).add(va->size));
-    worldmin.min(va->bbmin);
-    worldmax.max(va->bbmax);
+    bbmin.max(o);
+    bbmax.min(ivec(o).add(size));
+    worldmin.min(bbmin);
+    worldmax.max(bbmax);
 }
 
 //update vertex array bounding boxes recursively from the root va object down to all children
@@ -2407,7 +2407,7 @@ void updatevabbs(bool force)
         worldmax = ivec(0, 0, 0);
         for(int i = 0; i < varoot.length(); i++)
         {
-            updatevabb(varoot[i], true);
+            varoot[i]->updatevabb(true);
         }
         if(worldmin.x >= worldmax.x)
         {
@@ -2419,7 +2419,7 @@ void updatevabbs(bool force)
     {
         for(int i = 0; i < varoot.length(); i++)
         {
-            updatevabb(varoot[i]);
+            varoot[i]->updatevabb();
         }
     }
 }
