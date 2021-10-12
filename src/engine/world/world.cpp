@@ -475,7 +475,7 @@ static void modifyoctaentity(int flags, int id, const extentity &e, std::array<c
             }
             else if(flags&ModOctaEnt_UpdateBB)
             {
-                updatevabb(va);
+                va->updatevabb();
             }
         }
     }
