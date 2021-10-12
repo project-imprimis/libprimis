@@ -12,6 +12,7 @@
  */
 #include "engine.h"
 
+#include "octarender.h"
 #include "rendergl.h"
 #include "rendersky.h"
 
