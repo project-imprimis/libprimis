@@ -460,77 +460,68 @@ namespace
         }
     }
 
-    void findcsmshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
+    void findcsmshadowvas(vtxarray *v, std::array<vtxarray *, vasortsize> &vasort)
     {
-        for(vtxarray * const &v : vas)
+        ivec bbmin, bbmax;
+        if(v->children.size() || v->mapmodels.size())
         {
-            ivec bbmin, bbmax;
-            if(v->children.size() || v->mapmodels.size())
+            bbmin = v->bbmin;
+            bbmax = v->bbmax;
+        }
+        else
+        {
+            bbmin = v->geommin;
+            bbmax = v->geommax;
+        }
+        v->shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
+        if(v->shadowmask)
+        {
+            float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
+            addshadowva(v, dist, vasort);
+            for(size_t i = 0; i < v->children.size(); ++i)
             {
-                bbmin = v->bbmin;
-                bbmax = v->bbmax;
-            }
-            else
-            {
-                bbmin = v->geommin;
-                bbmax = v->geommax;
-            }
-            v->shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
-            if(v->shadowmask)
-            {
-                float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(v, dist, vasort);
-                if(v->children.size())
-                {
-                    findcsmshadowvas(v->children, vasort);
-                }
+                findcsmshadowvas(v->children[i], vasort);
             }
         }
     }
 
-    void findrsmshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
+    void findrsmshadowvas(vtxarray *v, std::array<vtxarray *, vasortsize> &vasort)
     {
-        for(vtxarray *v :vas)
+        ivec bbmin, bbmax;
+        if(v->children.size() || v->mapmodels.size())
         {
-            ivec bbmin, bbmax;
-            if(v->children.size() || v->mapmodels.size())
+            bbmin = v->bbmin;
+            bbmax = v->bbmax;
+        }
+        else
+        {
+            bbmin = v->geommin;
+            bbmax = v->geommax;
+        }
+        v->shadowmask = calcbbrsmsplits(bbmin, bbmax);
+        if(v->shadowmask)
+        {
+            float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
+            addshadowva(v, dist, vasort);
+            for(size_t i = 0; i < v->children.size(); ++i)
             {
-                bbmin = v->bbmin;
-                bbmax = v->bbmax;
-            }
-            else
-            {
-                bbmin = v->geommin;
-                bbmax = v->geommax;
-            }
-            v->shadowmask = calcbbrsmsplits(bbmin, bbmax);
-            if(v->shadowmask)
-            {
-                float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(v, dist, vasort);
-                if(v->children.size())
-                {
-                    findrsmshadowvas(v->children, vasort);
-                }
+                findrsmshadowvas(v->children[i], vasort);
             }
         }
     }
 
-    void findspotshadowvas(std::vector<vtxarray *> &vas, std::array<vtxarray *, vasortsize> &vasort)
+    void findspotshadowvas(vtxarray *v, std::array<vtxarray *, vasortsize> &vasort)
     {
-        for(vtxarray *v : vas)
+        float dist = vadist(*v, shadoworigin);
+        if(dist < shadowradius || !smdistcull)
         {
-            float dist = vadist(*v, shadoworigin);
-            if(dist < shadowradius || !smdistcull)
+            v->shadowmask = !smbbcull || (v->children.size() || v->mapmodels.size() ?
+                                bbinsidespot(shadoworigin, shadowdir, shadowspot, v->bbmin, v->bbmax) :
+                                bbinsidespot(shadoworigin, shadowdir, shadowspot, v->geommin, v->geommax)) ? 1 : 0;
+            addshadowva(v, dist, vasort);
+            for(size_t i = 0; i < v->children.size(); ++i)
             {
-                v->shadowmask = !smbbcull || (v->children.size() || v->mapmodels.size() ?
-                                    bbinsidespot(shadoworigin, shadowdir, shadowspot, v->bbmin, v->bbmax) :
-                                    bbinsidespot(shadoworigin, shadowdir, shadowspot, v->geommin, v->geommax)) ? 1 : 0;
-                addshadowva(v, dist, vasort);
-                if(v->children.size())
-                {
-                    findspotshadowvas(v->children, vasort);
-                }
+                findspotshadowvas(v->children[i], vasort);
             }
         }
     }
@@ -3634,7 +3625,10 @@ void findshadowvas()
     {
         case ShadowMap_Reflect:
         {
-            findrsmshadowvas(varoot, vasort);
+            for(size_t i = 0; i < varoot.size(); ++i)
+            {
+                findrsmshadowvas(varoot[i], vasort);
+            }
             break;
         }
         case ShadowMap_CubeMap:
@@ -3644,12 +3638,18 @@ void findshadowvas()
         }
         case ShadowMap_Cascade:
         {
-            findcsmshadowvas(varoot, vasort);
+            for(size_t i = 0; i < varoot.size(); ++i)
+            {
+                findcsmshadowvas(varoot[i], vasort);
+            }
             break;
         }
         case ShadowMap_Spot:
         {
-            findspotshadowvas(varoot, vasort);
+            for(size_t i = 0; i < varoot.size(); ++i)
+            {
+                findspotshadowvas(varoot[i], vasort);
+            }
             break;
         }
     }
