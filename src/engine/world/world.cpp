@@ -409,7 +409,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
             }
             else if(flags&ModOctaEnt_UpdateBB)
             {
-                updatevabb(va);
+                va->updatevabb();
             }
         }
     }
