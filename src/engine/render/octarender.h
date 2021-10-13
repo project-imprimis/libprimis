@@ -42,6 +42,9 @@ class vtxarray
         int hasmerges, mergelevel;
         int shadowmask;
         void updatevabb(bool force = false);
+        void findspotshadowvas();
+        void findrsmshadowvas();
+        void findcsmshadowvas();
     private:
 };
 
