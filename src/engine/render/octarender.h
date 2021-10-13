@@ -45,6 +45,8 @@ struct grasstri
     ushort texture;
 };
 
+constexpr int vasortsize = 64;
+
 class vtxarray
 {
     public:
@@ -86,6 +88,9 @@ class vtxarray
         int hasmerges, mergelevel;
         int shadowmask;
         void updatevabb(bool force = false);
+        void findspotshadowvas(std::array<vtxarray *, vasortsize> &vasort);
+        void findrsmshadowvas(std::array<vtxarray *, vasortsize> &vasort);
+        void findcsmshadowvas(std::array<vtxarray *, vasortsize> &vasort);
     private:
 };
 
