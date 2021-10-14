@@ -45,6 +45,9 @@ class vtxarray
         void findspotshadowvas();
         void findrsmshadowvas();
         void findcsmshadowvas();
+
+        template<bool fullvis, bool resetocclude>
+        void findvisiblevas();
     private:
 };
 
