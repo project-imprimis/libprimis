@@ -661,8 +661,10 @@ void bindgdepth()
 
 void setupgbuffer()
 {
+    //start with screen resolution
     int sw = renderw,
         sh = renderh;
+    //scale sw and sh if gscale (g-buffer scale) is not 100%
     if(gscale != 100)
     {
         sw = std::max((renderw*gscale + 99)/100, 1);
@@ -673,6 +675,7 @@ void setupgbuffer()
     {
         return;
     }
+    //clean up various buffers & info with them
     cleanupscale();
     cleanupbloom();
     cleanupao();
