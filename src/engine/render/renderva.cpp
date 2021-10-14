@@ -178,53 +178,13 @@ namespace
         }
     }
 
-    template<bool fullvis, bool resetocclude>
-    void findvisiblevas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            int prevvfc = v.curvfc;
-            v.curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(v.o, v.size);
-            if(v.curvfc != ViewFrustumCull_NotVisible)
-            {
-                bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
-                if(resetchildren)
-                {
-                    v.occluded = !v.texs ? Occlude_Geom : Occlude_Nothing;
-                    v.query = nullptr;
-                }
-                addvisibleva(&v);
-                if(v.children.length())
-                {
-                    if(fullvis || v.curvfc == ViewFrustumCull_FullyVisible)
-                    {
-                        if(resetchildren)
-                        {
-                            findvisiblevas<true, true>(v.children);
-                        }
-                        else
-                        {
-                            findvisiblevas<true, false>(v.children);
-                        }
-                    }
-                    else if(resetchildren)
-                    {
-                        findvisiblevas<false, true>(v.children);
-                    }
-                    else
-                    {
-                        findvisiblevas<false, false>(v.children);
-                    }
-                }
-            }
-        }
-    }
-
     void findvisiblevas()
     {
         memset(vasort, 0, sizeof(vasort));
-        findvisiblevas<false, false>(varoot);
+        for(int i = 0; i < varoot.length(); ++i)
+        {
+            varoot[i]->findvisiblevas<false, false>();
+        }
         sortvisiblevas();
     }
 
@@ -607,84 +567,6 @@ namespace
                     va = va->rnext;
                 }
                 last = &va->rnext;
-            }
-        }
-    }
-
-    void findcsmshadowvas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.length())
-            {
-                bbmin = v.bbmin;
-                bbmax = v.bbmax;
-            }
-            else
-            {
-                bbmin = v.geommin;
-                bbmax = v.geommax;
-            }
-            v.shadowmask = calcbbcsmsplits(bbmin, bbmax);
-            if(v.shadowmask)
-            {
-                float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(&v, dist);
-                if(v.children.length())
-                {
-                    findcsmshadowvas(v.children);
-                }
-            }
-        }
-    }
-
-    void findrsmshadowvas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.length())
-            {
-                bbmin = v.bbmin;
-                bbmax = v.bbmax;
-            }
-            else
-            {
-                bbmin = v.geommin;
-                bbmax = v.geommax;
-            }
-            v.shadowmask = calcbbrsmsplits(bbmin, bbmax);
-            if(v.shadowmask)
-            {
-                float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(&v, dist);
-                if(v.children.length())
-                {
-                    findrsmshadowvas(v.children);
-                }
-            }
-        }
-    }
-
-    void findspotshadowvas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            float dist = vadist(&v, shadoworigin);
-            if(dist < shadowradius || !smdistcull)
-            {
-                v.shadowmask = !smbbcull || (v.children.length() || v.mapmodels.length() ?
-                                    bbinsidespot(shadoworigin, shadowdir, shadowspot, v.bbmin, v.bbmax) :
-                                    bbinsidespot(shadoworigin, shadowdir, shadowspot, v.geommin, v.geommax)) ? 1 : 0;
-                addshadowva(&v, dist);
-                if(v.children.length())
-                {
-                    findspotshadowvas(v.children);
-                }
             }
         }
     }
@@ -3597,6 +3479,125 @@ void batchshadowmapmodels(bool skipmesh)
     }
 }
 
+//vertex array object methods
+
+template<bool fullvis, bool resetocclude>
+void vtxarray::findvisiblevas()
+{
+    int prevvfc = curvfc;
+    curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(o, size);
+    if(curvfc != ViewFrustumCull_NotVisible)
+    {
+        bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
+        if(resetchildren)
+        {
+            occluded = !texs ? Occlude_Geom : Occlude_Nothing;
+            query = nullptr;
+        }
+        addvisibleva(this);
+        if(children.length())
+        {
+            if(fullvis || curvfc == ViewFrustumCull_FullyVisible)
+            {
+                if(resetchildren)
+                {
+                    for(int i = 0; i < children.length(); ++i)
+                    {
+                        children[i]->findvisiblevas<true, true>();
+                    }
+                }
+                else
+                {
+                    for(int i = 0; i < children.length(); ++i)
+                    {
+                        children[i]->findvisiblevas<true, false>();
+                    }
+                }
+            }
+            else if(resetchildren)
+            {
+                for(int i = 0; i < children.length(); ++i)
+                {
+                    children[i]->findvisiblevas<false, true>();
+                }
+            }
+            else
+            {
+                for(int i = 0; i < children.length(); ++i)
+                {
+                    children[i]->findvisiblevas<false, false>();
+                }
+            }
+        }
+    }
+}
+
+void vtxarray::findrsmshadowvas()
+{
+    ivec bbmin, bbmax;
+    if(children.length() || mapmodels.length())
+    {
+        bbmin = bbmin;
+        bbmax = bbmax;
+    }
+    else
+    {
+        bbmin = geommin;
+        bbmax = geommax;
+    }
+    shadowmask = calcbbrsmsplits(bbmin, bbmax);
+    if(shadowmask)
+    {
+        float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
+        addshadowva(this, dist);
+        for(int i = 0; i < children.length(); ++i)
+        {
+            children[i]->findrsmshadowvas();
+        }
+    }
+}
+
+void vtxarray::findcsmshadowvas()
+{
+    ivec bbmin, bbmax;
+    if(children.length() || mapmodels.length())
+    {
+        bbmin = bbmin;
+        bbmax = bbmax;
+    }
+    else
+    {
+        bbmin = geommin;
+        bbmax = geommax;
+    }
+    shadowmask = calcbbcsmsplits(bbmin, bbmax);
+    if(shadowmask)
+    {
+        float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
+        addshadowva(this, dist);
+        for(int i = 0; i < children.length(); ++i)
+        {
+            children[i]->findcsmshadowvas();
+        }
+    }
+}
+
+void vtxarray::findspotshadowvas()
+{
+    float dist = vadist(this, shadoworigin);
+    if(dist < shadowradius || !smdistcull)
+    {
+        shadowmask = !smbbcull || (children.length() || mapmodels.length() ?
+                            bbinsidespot(shadoworigin, shadowdir, shadowspot, bbmin, bbmax) :
+                            bbinsidespot(shadoworigin, shadowdir, shadowspot, geommin, geommax)) ? 1 : 0;
+        addshadowva(this, dist);
+        for(int i = 0; i < children.length(); ++i)
+        {
+            children[i]->findspotshadowvas();
+        }
+    }
+}
+
 void findshadowvas()
 {
     memset(vasort, 0, sizeof(vasort));
@@ -3604,7 +3605,10 @@ void findshadowvas()
     {
         case ShadowMap_Reflect:
         {
-            findrsmshadowvas(varoot);
+            for(int i = 0; i < varoot.length(); ++i)
+            {
+                varoot[i]->findrsmshadowvas();
+            }
             break;
         }
         case ShadowMap_CubeMap:
@@ -3614,12 +3618,18 @@ void findshadowvas()
         }
         case ShadowMap_Cascade:
         {
-            findcsmshadowvas(varoot);
+            for(int i = 0; i < varoot.length(); ++i)
+            {
+                varoot[i]->findcsmshadowvas();
+            }
             break;
         }
         case ShadowMap_Spot:
         {
-            findspotshadowvas(varoot);
+            for(int i = 0; i < varoot.length(); ++i)
+            {
+                varoot[i]->findspotshadowvas();
+            }
             break;
         }
     }
