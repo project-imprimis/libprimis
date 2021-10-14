@@ -47,10 +47,10 @@ class vtxarray
         void findcsmshadowvas();
         void finddecals();
 
-
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
     private:
+        void addvisibleva();
 };
 
 extern ivec worldmin, worldmax;
