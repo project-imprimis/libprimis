@@ -1802,28 +1802,13 @@ namespace
         mfl.setsize(0);
     }
 
-    void finddecals(vtxarray *va)
-    {
-        if(va->hasmerges&(Merge_Origin|Merge_Part))
-        {
-            for(int i = 0; i < va->decals.length(); i++)
-            {
-                vc.extdecals.add(va->decals[i]);
-            }
-            for(int i = 0; i < va->children.length(); i++)
-            {
-                finddecals(va->children[i]);
-            }
-        }
-    }
-
     void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // creates vertices and indices ready to be put into a va
     {
         //if(size<=16) return;
         if(c.ext && c.ext->va)
         {
             maxlevel = std::max(maxlevel, c.ext->va->mergelevel);
-            finddecals(c.ext->va);
+            c.ext->va->finddecals();
             return; // don't re-render
         }
 
@@ -2357,6 +2342,22 @@ void clearvas(cube *c)
         if(c[i].children)
         {
             clearvas(c[i].children);
+        }
+    }
+}
+
+//recursively adds to the vc vertexcollect object the decals at every vertex array (and its children)
+void vtxarray::finddecals()
+{
+    if(hasmerges&(Merge_Origin|Merge_Part))
+    {
+        for(int i = 0; i < decals.length(); i++)
+        {
+            vc.extdecals.add(decals[i]);
+        }
+        for(int i = 0; i < children.length(); i++)
+        {
+            children[i]->finddecals();
         }
     }
 }
