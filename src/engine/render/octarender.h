@@ -96,6 +96,8 @@ class vtxarray
         void findspotshadowvas();
         void findrsmshadowvas();
         void findcsmshadowvas();
+        void finddecals();
+
 
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
