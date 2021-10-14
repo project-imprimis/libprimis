@@ -178,53 +178,13 @@ namespace
         }
     }
 
-    template<bool fullvis, bool resetocclude>
-    void findvisiblevas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            int prevvfc = v.curvfc;
-            v.curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(v.o, v.size);
-            if(v.curvfc != ViewFrustumCull_NotVisible)
-            {
-                bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
-                if(resetchildren)
-                {
-                    v.occluded = !v.texs ? Occlude_Geom : Occlude_Nothing;
-                    v.query = nullptr;
-                }
-                addvisibleva(&v);
-                if(v.children.length())
-                {
-                    if(fullvis || v.curvfc == ViewFrustumCull_FullyVisible)
-                    {
-                        if(resetchildren)
-                        {
-                            findvisiblevas<true, true>(v.children);
-                        }
-                        else
-                        {
-                            findvisiblevas<true, false>(v.children);
-                        }
-                    }
-                    else if(resetchildren)
-                    {
-                        findvisiblevas<false, true>(v.children);
-                    }
-                    else
-                    {
-                        findvisiblevas<false, false>(v.children);
-                    }
-                }
-            }
-        }
-    }
-
     void findvisiblevas()
     {
         memset(vasort, 0, sizeof(vasort));
-        findvisiblevas<false, false>(varoot);
+        for(int i = 0; i < varoot.length(); ++i)
+        {
+            varoot[i]->findvisiblevas<false, false>();
+        }
         sortvisiblevas();
     }
 
@@ -3515,6 +3475,59 @@ void batchshadowmapmodels(bool skipmesh)
             }
             rendermapmodel(e);
             e.flags &= ~EntFlag_Render;
+        }
+    }
+}
+
+//vertex array object methods
+
+template<bool fullvis, bool resetocclude>
+void vtxarray::findvisiblevas()
+{
+    int prevvfc = curvfc;
+    curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(o, size);
+    if(curvfc != ViewFrustumCull_NotVisible)
+    {
+        bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
+        if(resetchildren)
+        {
+            occluded = !texs ? Occlude_Geom : Occlude_Nothing;
+            query = nullptr;
+        }
+        addvisibleva(this);
+        if(children.length())
+        {
+            if(fullvis || curvfc == ViewFrustumCull_FullyVisible)
+            {
+                if(resetchildren)
+                {
+                    for(int i = 0; i < children.length(); ++i)
+                    {
+                        children[i]->findvisiblevas<true, true>();
+                    }
+                }
+                else
+                {
+                    for(int i = 0; i < children.length(); ++i)
+                    {
+                        children[i]->findvisiblevas<true, false>();
+                    }
+                }
+            }
+            else if(resetchildren)
+            {
+                for(int i = 0; i < children.length(); ++i)
+                {
+                    children[i]->findvisiblevas<false, true>();
+                }
+            }
+            else
+            {
+                for(int i = 0; i < children.length(); ++i)
+                {
+                    children[i]->findvisiblevas<false, false>();
+                }
+            }
         }
     }
 }
