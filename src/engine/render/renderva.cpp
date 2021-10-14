@@ -140,25 +140,6 @@ namespace
 
     vtxarray *vasort[vasortsize];
 
-    void addvisibleva(vtxarray *va)
-    {
-        float dist = vadist(va, camera1->o);
-        va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
-
-        int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
-        vtxarray **prev = &vasort[hash],
-                  *cur = vasort[hash];
-
-        while(cur && va->distance >= cur->distance)
-        {
-            prev = &cur->next;
-            cur = cur->next;
-        }
-
-        va->next = cur;
-        *prev = va;
-    }
-
     void sortvisiblevas()
     {
         visibleva = nullptr;
@@ -3494,7 +3475,7 @@ void vtxarray::findvisiblevas()
             occluded = !texs ? Occlude_Geom : Occlude_Nothing;
             query = nullptr;
         }
-        addvisibleva(this);
+        addvisibleva();
         if(children.length())
         {
             if(fullvis || curvfc == ViewFrustumCull_FullyVisible)
@@ -3580,6 +3561,25 @@ void vtxarray::findcsmshadowvas()
             children[i]->findcsmshadowvas();
         }
     }
+}
+
+void vtxarray::addvisibleva()
+{
+    float dist = vadist(this, camera1->o);
+    distance = static_cast<int>(dist); /*cv.dist(camera1->o) - size*SQRT3/2*/
+
+    int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
+    vtxarray **prev = &vasort[hash],
+              *cur = vasort[hash];
+
+    while(cur && distance >= cur->distance)
+    {
+        prev = &cur->next;
+        cur = cur->next;
+    }
+
+    next = cur;
+    *prev = this;
 }
 
 void vtxarray::findspotshadowvas()
