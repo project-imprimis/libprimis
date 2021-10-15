@@ -3518,7 +3518,7 @@ bool reloadtexture(Texture &tex)
 
 void reloadtex(char *name)
 {
-    Texture *t = textures.access(path(name, true));
+    Texture *t = textures.access(path(name));
     if(!t)
     {
         conoutf(Console_Error, "texture %s is not loaded", name);
