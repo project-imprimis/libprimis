@@ -3486,7 +3486,7 @@ void cleanuptextures()
 
 bool reloadtexture(const char *name)
 {
-    Texture *t = textures.access(path(name, true));
+    Texture *t = textures.access(path(name));
     if(t)
     {
         return reloadtexture(*t);
