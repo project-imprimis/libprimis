@@ -34,7 +34,7 @@ hashnameset<skelmodel::skeleton *> skelmodel::skeletons;
 
 skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep)
 {
-    int len = sep ? strlen(name) : 0;
+    int len = sep ? std::strlen(name) : 0;
     for(int i = 0; i < skelanims.length(); i++)
     {
         if(skelanims[i].name)
