@@ -4605,13 +4605,13 @@ namespace UI
     });
 
     ICOMMAND(uigroup, "e", (uint *children),
-        buildobject<Object>([] (Object o) {o.setup();}, children));
+        BUILD(Object, o, o->setup(), children));
 
     ICOMMAND(uihlist, "fe", (float *space, uint *children),
-        buildobject<HorizontalList>([space] (HorizontalList o) {o.setup(*space);}, children));
+        BUILD(HorizontalList, o, o->setup(*space), children));
 
     ICOMMAND(uivlist, "fe", (float *space, uint *children),
-        buildobject<VerticalList>([space] (VerticalList o) {o.setup(*space);}, children));
+        BUILD(VerticalList, o, o->setup(*space), children));
 
     ICOMMAND(uilist, "fe", (float *space, uint *children),
     {
@@ -4623,11 +4623,11 @@ namespace UI
                 return;
             }
         }
-        buildobject<HorizontalList>([space] (HorizontalList o) {o.setup(*space);}, children);
+        BUILD(HorizontalList, o, o->setup(*space), children);
     });
 
     ICOMMAND(uigrid, "iffe", (int *columns, float *spacew, float *spaceh, uint *children),
-        buildobject<Grid>([columns, spacew, spaceh] (Grid o) {o.setup(*columns, *spacew, *spaceh);}, children));
+        BUILD(Grid, o, o->setup(*columns, *spacew, *spaceh), children));
 
     ICOMMAND(uitableheader, "ee", (uint *columndata, uint *children),
         BUILDCOLUMNS(TableHeader, o, o->setup(), columndata, children));
