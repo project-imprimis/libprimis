@@ -51,6 +51,9 @@ static struct emptycube : cube
     }
 } emptycube;
 
+// this cube static private object needs to be defined in a cpp file
+hashtable<cube::cfkey, cube::cfpolys> cube::cpolys;
+
 cube *worldroot = newcubes(facesolid);
 int allocnodes = 0;
 void calcmerges();
