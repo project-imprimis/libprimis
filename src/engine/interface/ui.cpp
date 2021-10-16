@@ -4619,7 +4619,7 @@ namespace UI
         {
             if(parent->istype<HorizontalList>())
             {
-                buildobject<VerticalList>([space] (VerticalList o) {o.setup(*space);}, children);
+                BUILD(VerticalList, o, o->setup(*space), children);
                 return;
             }
         }
@@ -4634,25 +4634,25 @@ namespace UI
     ICOMMAND(uitablerow, "ee", (uint *columndata, uint *children),
         BUILDCOLUMNS(TableRow, o, o->setup(), columndata, children));
     ICOMMAND(uitable, "ffe", (float *spacew, float *spaceh, uint *children),
-        buildobject<Table>([spacew, spaceh] (Table o) {o.setup(*spacew, *spaceh);}, children));
+        BUILD(Table, o, o->setup(*spacew, *spaceh), children));
 
     ICOMMAND(uispace, "ffe", (float *spacew, float *spaceh, uint *children),
-        buildobject<Spacer>([spacew, spaceh] (Spacer o) {o.setup(*spacew, *spaceh);}, children));
+        BUILD(Spacer, o, o->setup(*spacew, *spaceh), children));
 
     ICOMMAND(uioffset, "ffe", (float *offsetx, float *offsety, uint *children),
-        buildobject<Offsetter>([offsetx, offsety] (Offsetter o) {o.setup(*offsetx, *offsety);}, children));
+        BUILD(Offsetter, o, o->setup(*offsetx, *offsety), children));
 
     ICOMMAND(uifill, "ffe", (float *minw, float *minh, uint *children),
-        buildobject<Filler>([minw, minh] (Filler o) {o.setup(*minw, *minh);}, children));
+        BUILD(Filler, o, o->setup(*minw, *minh), children));
 
     ICOMMAND(uitarget, "ffe", (float *minw, float *minh, uint *children),
-        buildobject<Target>([minw,minh] (Target o) {o.setup(*minw, *minh);}, children));
+        BUILD(Target, o, o->setup(*minw, *minh), children));
 
     ICOMMAND(uiclip, "ffe", (float *clipw, float *cliph, uint *children),
-        buildobject<Clipper>([clipw, cliph] (Clipper o) {o.setup(*clipw, *cliph);}, children));
+        BUILD(Clipper, o, o->setup(*clipw, *cliph), children));
 
     ICOMMAND(uiscroll, "ffe", (float *clipw, float *cliph, uint *children),
-        buildobject<Scroller>([clipw, cliph] (Clipper o) {o.setup(*clipw, *cliph);}, children));
+        BUILD(Scroller, o, o->setup(*clipw, *cliph), children));
 
     ICOMMAND(uihscrolloffset, "", (),
     {
