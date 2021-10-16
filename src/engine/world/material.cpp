@@ -698,7 +698,7 @@ const char *getmaterialdesc(int mat, const char *prefix)
     return desc;
 }
 
-void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface> &matsurfs)
+void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsurface> &matsurfs)
 {
     for(int i = 0; i < 6; ++i)
     {
@@ -719,18 +719,18 @@ void genmatsurfs(const cube &c, const ivec &co, int size, vector<materialsurface
                 {
                     m.o[DIMENSION(i)] += size;
                 }
-                matsurfs.add(m);
+                matsurfs.push_back(m);
                 break;
             }
         }
     }
 }
 
-void calcmatbb(vtxarray *va, const ivec &co, int size, vector<materialsurface> &matsurfs)
+void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurface> &matsurfs)
 {
     va->watermax = va->glassmax = co;
     va->watermin = va->glassmin = ivec(co).add(size);
-    for(int i = 0; i < matsurfs.length(); i++)
+    for(uint i = 0; i < matsurfs.size(); i++)
     {
         materialsurface &m = matsurfs[i];
         switch(m.material&MatFlag_Volume)

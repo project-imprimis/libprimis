@@ -420,7 +420,7 @@ namespace
         public:
             int size;
             ivec origin;
-            vector<materialsurface> matsurfs;
+            std::vector<materialsurface> matsurfs;
             vector<octaentities *> mapmodels, decals, extdecals;
             vec skymin, skymax;
             vec alphamin, alphamax;
@@ -437,7 +437,7 @@ namespace
                 indices.clear();
                 decalindices.clear();
                 skyindices.setsize(0);
-                matsurfs.setsize(0);
+                matsurfs.clear();
                 mapmodels.setsize(0);
                 decals.setsize(0);
                 extdecals.setsize(0);
@@ -476,13 +476,13 @@ namespace
                 }
 
                 va->matbuf = nullptr;
-                va->matsurfs = matsurfs.length();
+                va->matsurfs = matsurfs.size();
                 va->matmask = 0;
                 if(va->matsurfs)
                 {
-                    va->matbuf = new materialsurface[matsurfs.length()];
-                    memcpy(va->matbuf, matsurfs.getbuf(), matsurfs.length()*sizeof(materialsurface));
-                    for(int i = 0; i < matsurfs.length(); i++)
+                    va->matbuf = new materialsurface[matsurfs.size()];
+                    memcpy(va->matbuf, matsurfs.data(), matsurfs.size()*sizeof(materialsurface));
+                    for(uint i = 0; i < matsurfs.size(); i++)
                     {
                         materialsurface &m = matsurfs[i];
                         if(m.visible == MatSurf_EditOnly)
@@ -674,7 +674,7 @@ namespace
                 });
                 texs.sort(sortkey::sort);
 
-                matsurfs.shrink(optimizematsurfs(matsurfs.getbuf(), matsurfs.length()));
+                matsurfs.resize(optimizematsurfs(matsurfs.data(), matsurfs.size()));
             }
 
             void genverts(void *buf)
