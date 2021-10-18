@@ -119,7 +119,6 @@ namespace
         }
     }
 
-<<<<<<< HEAD
     template<bool fullvis, bool resetocclude>
     void findvisiblevas(vector<vtxarray *> &vas)
     {
@@ -163,8 +162,6 @@ namespace
         }
     }
 
-=======
->>>>>>> make findvisiblevas<> a vtxarray method
     void findvisiblevas()
     {
         memset(vasort, 0, sizeof(vasort));
@@ -3371,6 +3368,20 @@ void batchshadowmapmodels(bool skipmesh)
             rendermapmodel(e);
             e.flags &= ~EntFlag_Render;
         }
+    }
+}
+
+//renderstate methods
+
+renderstate::renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
+                            vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
+                            refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
+                            texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
+                            texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
+{
+    for(int k = 0; k < 7; ++k)
+    {
+        textures[k] = 0;
     }
 }
 
