@@ -140,25 +140,6 @@ namespace
 
     vtxarray *vasort[vasortsize];
 
-    void addvisibleva(vtxarray *va)
-    {
-        float dist = vadist(va, camera1->o);
-        va->distance = static_cast<int>(dist); /*cv.dist(camera1->o) - va->size*SQRT3/2*/
-
-        int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
-        vtxarray **prev = &vasort[hash],
-                  *cur = vasort[hash];
-
-        while(cur && va->distance >= cur->distance)
-        {
-            prev = &cur->next;
-            cur = cur->next;
-        }
-
-        va->next = cur;
-        *prev = va;
-    }
-
     void sortvisiblevas()
     {
         visibleva = nullptr;
@@ -178,53 +159,13 @@ namespace
         }
     }
 
-    template<bool fullvis, bool resetocclude>
-    void findvisiblevas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            int prevvfc = v.curvfc;
-            v.curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(v.o, v.size);
-            if(v.curvfc != ViewFrustumCull_NotVisible)
-            {
-                bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
-                if(resetchildren)
-                {
-                    v.occluded = !v.texs ? Occlude_Geom : Occlude_Nothing;
-                    v.query = nullptr;
-                }
-                addvisibleva(&v);
-                if(v.children.length())
-                {
-                    if(fullvis || v.curvfc == ViewFrustumCull_FullyVisible)
-                    {
-                        if(resetchildren)
-                        {
-                            findvisiblevas<true, true>(v.children);
-                        }
-                        else
-                        {
-                            findvisiblevas<true, false>(v.children);
-                        }
-                    }
-                    else if(resetchildren)
-                    {
-                        findvisiblevas<false, true>(v.children);
-                    }
-                    else
-                    {
-                        findvisiblevas<false, false>(v.children);
-                    }
-                }
-            }
-        }
-    }
-
     void findvisiblevas()
     {
         memset(vasort, 0, sizeof(vasort));
-        findvisiblevas<false, false>(varoot);
+        for(int i = 0; i < varoot.length(); ++i)
+        {
+            varoot[i]->findvisiblevas<false, false>();
+        }
         sortvisiblevas();
     }
 
@@ -611,115 +552,7 @@ namespace
         }
     }
 
-    void findcsmshadowvas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.length())
-            {
-                bbmin = v.bbmin;
-                bbmax = v.bbmax;
-            }
-            else
-            {
-                bbmin = v.geommin;
-                bbmax = v.geommax;
-            }
-            v.shadowmask = calcbbcsmsplits(bbmin, bbmax);
-            if(v.shadowmask)
-            {
-                float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(&v, dist);
-                if(v.children.length())
-                {
-                    findcsmshadowvas(v.children);
-                }
-            }
-        }
-    }
-
-    void findrsmshadowvas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            ivec bbmin, bbmax;
-            if(v.children.length() || v.mapmodels.length())
-            {
-                bbmin = v.bbmin;
-                bbmax = v.bbmax;
-            }
-            else
-            {
-                bbmin = v.geommin;
-                bbmax = v.geommax;
-            }
-            v.shadowmask = calcbbrsmsplits(bbmin, bbmax);
-            if(v.shadowmask)
-            {
-                float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-                addshadowva(&v, dist);
-                if(v.children.length())
-                {
-                    findrsmshadowvas(v.children);
-                }
-            }
-        }
-    }
-
-    void findspotshadowvas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            float dist = vadist(&v, shadoworigin);
-            if(dist < shadowradius || !smdistcull)
-            {
-                v.shadowmask = !smbbcull || (v.children.length() || v.mapmodels.length() ?
-                                    bbinsidespot(shadoworigin, shadowdir, shadowspot, v.bbmin, v.bbmax) :
-                                    bbinsidespot(shadoworigin, shadowdir, shadowspot, v.geommin, v.geommax)) ? 1 : 0;
-                addshadowva(&v, dist);
-                if(v.children.length())
-                {
-                    findspotshadowvas(v.children);
-                }
-            }
-        }
-    }
-
     octaentities *shadowmms = nullptr;
-
-    struct renderstate
-    {
-        bool colormask, depthmask;
-        int alphaing;
-        GLuint vbuf;
-        bool vattribs, vquery;
-        vec colorscale;
-        float alphascale;
-        float refractscale;
-        vec refractcolor;
-        int globals, tmu;
-        GLuint textures[7];
-        Slot *slot, *texgenslot;
-        VSlot *vslot, *texgenvslot;
-        vec2 texgenscroll;
-        int texgenorient, texgenmillis;
-
-        renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
-                        vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
-                        refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
-                        texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
-                        texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
-        {
-            for(int k = 0; k < 7; ++k)
-            {
-                textures[k] = 0;
-            }
-        }
-    };
 
     void disablevbuf(renderstate &cur)
     {
@@ -1330,114 +1163,7 @@ namespace
         nocolorshader->set();
         drawvatris(va, 3*numtris, offset);
     }
-//====================================================== STARTVAQUERY ENDVAQUERY
-    #define STARTVAQUERY(va, flush) \
-        do { \
-            if(va->query) \
-            { \
-                flush; \
-                startquery(va->query); \
-            } \
-        } while(0)
 
-
-    #define ENDVAQUERY(va, flush) \
-        do { \
-            if(va->query) \
-            { \
-                flush; \
-                endquery(); \
-            } \
-        } while(0)
-
-    VAR(batchgeom, 0, 1, 1);
-
-    void renderva(renderstate &cur, vtxarray *va, int pass = RenderPass_GBuffer, bool doquery = false)
-    {
-        switch(pass)
-        {
-            case RenderPass_GBuffer:
-                if(!cur.alphaing)
-                {
-                    vverts += va->verts;
-                }
-                if(doquery)
-                {
-                    STARTVAQUERY(va, { if(geombatches.length()) renderbatches(cur, pass); });
-                }
-                mergetexs(cur, va);
-                if(doquery)
-                {
-                    ENDVAQUERY(va, { if(geombatches.length()) renderbatches(cur, pass); });
-                }
-                else if(!batchgeom && geombatches.length())
-                {
-                    renderbatches(cur, pass);
-                }
-                break;
-
-            case RenderPass_GBufferBlend:
-                if(doquery)
-                {
-                    STARTVAQUERY(va, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
-                }
-                mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
-                if(doquery)
-                {
-                    ENDVAQUERY(va, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
-                }
-                else if(!batchgeom && geombatches.length())
-                {
-                    renderbatches(cur, RenderPass_GBuffer);
-                }
-                break;
-
-            case RenderPass_Caustics:
-                if(!cur.vattribs)
-                {
-                    enablevattribs(cur, false);
-                }
-                if(cur.vbuf!=va->vbuf)
-                {
-                    changevbuf(cur, pass, va);
-                }
-                drawvatris(va, 3*va->tris, 0);
-                xtravertsva += va->verts;
-                break;
-
-            case RenderPass_Z:
-                if(doquery)
-                {
-                    STARTVAQUERY(va, );
-                }
-                renderzpass(cur, va);
-                if(doquery)
-                {
-                    ENDVAQUERY(va, );
-                }
-                break;
-
-            case RenderPass_ReflectiveShadowMap:
-                mergetexs(cur, va);
-                if(!batchgeom && geombatches.length())
-                {
-                    renderbatches(cur, pass);
-                }
-                break;
-
-            case RenderPass_ReflectiveShadowMapBlend:
-                mergetexs(cur, va, &va->texelems[va->texs], 3*va->tris);
-                if(!batchgeom && geombatches.length())
-                {
-                    renderbatches(cur, RenderPass_ReflectiveShadowMap);
-                }
-                break;
-        }
-    }
-
-    #undef STARTVAQUERY
-    #undef ENDVAQUERY
-//==============================================================================
     void setupgeom()
     {
         glActiveTexture_(GL_TEXTURE0);
@@ -2782,7 +2508,7 @@ void renderalphageom(int side)
     {
         for(uint i = 0; i < alphavas.size(); i++)
         {
-            renderva(cur, alphavas[i], RenderPass_GBuffer);
+            alphavas[i]->renderva(cur, RenderPass_GBuffer);
         }
         if(geombatches.length())
         {
@@ -2796,7 +2522,7 @@ void renderalphageom(int side)
         {
             if(alphavas[i]->alphabacktris)
             {
-                renderva(cur, alphavas[i], RenderPass_GBuffer);
+                alphavas[i]->renderva(cur, RenderPass_GBuffer);
             }
         }
         if(geombatches.length())
@@ -2862,7 +2588,7 @@ void rendergeom()
                         continue;
                     }
                 }
-                renderva(cur, va, RenderPass_Z, true);
+                va->renderva(cur, RenderPass_Z, true);
             }
         }
 
@@ -2912,7 +2638,7 @@ void rendergeom()
         {
             if(va->texs && va->occluded < Occlude_Geom)
             {
-                renderva(cur, va, RenderPass_GBuffer);
+                va->renderva(cur, RenderPass_GBuffer);
             }
         }
         if(geombatches.length())
@@ -2938,7 +2664,7 @@ void rendergeom()
                     }
                 }
 
-                renderva(cur, va, RenderPass_GBuffer);
+                va->renderva(cur, RenderPass_GBuffer);
             }
         }
         if(geombatches.length())
@@ -2960,7 +2686,7 @@ void rendergeom()
                 {
                     continue;
                 }
-                renderva(cur, va, RenderPass_GBuffer);
+                va->renderva(cur, RenderPass_GBuffer);
             }
         }
         if(geombatches.length())
@@ -3427,7 +3153,7 @@ void renderrsmgeom(bool dyntex)
     {
         if(va->texs)
         {
-            renderva(cur, va, RenderPass_ReflectiveShadowMap);
+            va->renderva(cur, RenderPass_ReflectiveShadowMap);
         }
     }
     if(geombatches.length())
@@ -3597,6 +3323,267 @@ void batchshadowmapmodels(bool skipmesh)
     }
 }
 
+//renderstate methods
+
+renderstate::renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
+                            vquery(false), colorscale(1, 1, 1), alphascale(0), refractscale(0),
+                            refractcolor(1, 1, 1), globals(-1), tmu(-1), slot(nullptr),
+                            texgenslot(nullptr), vslot(nullptr), texgenvslot(nullptr),
+                            texgenscroll(0, 0), texgenorient(-1), texgenmillis(lastmillis)
+{
+    for(int k = 0; k < 7; ++k)
+    {
+        textures[k] = 0;
+    }
+}
+
+//vertex array object methods
+
+template<bool fullvis, bool resetocclude>
+void vtxarray::findvisiblevas()
+{
+    int prevvfc = curvfc;
+    curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(o, size);
+    if(curvfc != ViewFrustumCull_NotVisible)
+    {
+        bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
+        if(resetchildren)
+        {
+            occluded = !texs ? Occlude_Geom : Occlude_Nothing;
+            query = nullptr;
+        }
+        addvisibleva();
+        if(children.length())
+        {
+            if(fullvis || curvfc == ViewFrustumCull_FullyVisible)
+            {
+                if(resetchildren)
+                {
+                    for(int i = 0; i < children.length(); ++i)
+                    {
+                        children[i]->findvisiblevas<true, true>();
+                    }
+                }
+                else
+                {
+                    for(int i = 0; i < children.length(); ++i)
+                    {
+                        children[i]->findvisiblevas<true, false>();
+                    }
+                }
+            }
+            else if(resetchildren)
+            {
+                for(int i = 0; i < children.length(); ++i)
+                {
+                    children[i]->findvisiblevas<false, true>();
+                }
+            }
+            else
+            {
+                for(int i = 0; i < children.length(); ++i)
+                {
+                    children[i]->findvisiblevas<false, false>();
+                }
+            }
+        }
+    }
+}
+
+void vtxarray::findrsmshadowvas()
+{
+    ivec bbmin, bbmax;
+    if(children.length() || mapmodels.length())
+    {
+        bbmin = bbmin;
+        bbmax = bbmax;
+    }
+    else
+    {
+        bbmin = geommin;
+        bbmax = geommax;
+    }
+    shadowmask = calcbbrsmsplits(bbmin, bbmax);
+    if(shadowmask)
+    {
+        float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
+        addshadowva(this, dist);
+        for(int i = 0; i < children.length(); ++i)
+        {
+            children[i]->findrsmshadowvas();
+        }
+    }
+}
+
+void vtxarray::findcsmshadowvas()
+{
+    ivec bbmin, bbmax;
+    if(children.length() || mapmodels.length())
+    {
+        bbmin = bbmin;
+        bbmax = bbmax;
+    }
+    else
+    {
+        bbmin = geommin;
+        bbmax = geommax;
+    }
+    shadowmask = calcbbcsmsplits(bbmin, bbmax);
+    if(shadowmask)
+    {
+        float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
+        addshadowva(this, dist);
+        for(int i = 0; i < children.length(); ++i)
+        {
+            children[i]->findcsmshadowvas();
+        }
+    }
+}
+
+void vtxarray::addvisibleva()
+{
+    float dist = vadist(this, camera1->o);
+    distance = static_cast<int>(dist); /*cv.dist(camera1->o) - size*SQRT3/2*/
+
+    int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
+    vtxarray **prev = &vasort[hash],
+              *cur = vasort[hash];
+
+    while(cur && distance >= cur->distance)
+    {
+        prev = &cur->next;
+        cur = cur->next;
+    }
+
+    next = cur;
+    *prev = this;
+}
+
+void vtxarray::findspotshadowvas()
+{
+    float dist = vadist(this, shadoworigin);
+    if(dist < shadowradius || !smdistcull)
+    {
+        shadowmask = !smbbcull || (children.length() || mapmodels.length() ?
+                            bbinsidespot(shadoworigin, shadowdir, shadowspot, bbmin, bbmax) :
+                            bbinsidespot(shadoworigin, shadowdir, shadowspot, geommin, geommax)) ? 1 : 0;
+        addshadowva(this, dist);
+        for(int i = 0; i < children.length(); ++i)
+        {
+            children[i]->findspotshadowvas();
+        }
+    }
+}
+
+//====================================================== STARTVAQUERY ENDVAQUERY
+#define STARTVAQUERY(va, flush) \
+    do { \
+        if(va->query) \
+        { \
+            flush; \
+            startquery(va->query); \
+        } \
+    } while(0)
+
+
+#define ENDVAQUERY(va, flush) \
+    do { \
+        if(va->query) \
+        { \
+            flush; \
+            endquery(); \
+        } \
+    } while(0)
+
+VAR(batchgeom, 0, 1, 1);
+
+void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
+{
+    switch(pass)
+    {
+        case RenderPass_GBuffer:
+            if(!cur.alphaing)
+            {
+                vverts += this->verts;
+            }
+            if(doquery)
+            {
+                STARTVAQUERY(this, { if(geombatches.length()) renderbatches(cur, pass); });
+            }
+            mergetexs(cur, this);
+            if(doquery)
+            {
+                ENDVAQUERY(this, { if(geombatches.length()) renderbatches(cur, pass); });
+            }
+            else if(!batchgeom && geombatches.length())
+            {
+                renderbatches(cur, pass);
+            }
+            break;
+
+        case RenderPass_GBufferBlend:
+            if(doquery)
+            {
+                STARTVAQUERY(this, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
+            }
+            mergetexs(cur, this, &this->texelems[this->texs], 3*this->tris);
+            if(doquery)
+            {
+                ENDVAQUERY(this, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
+            }
+            else if(!batchgeom && geombatches.length())
+            {
+                renderbatches(cur, RenderPass_GBuffer);
+            }
+            break;
+
+        case RenderPass_Caustics:
+            if(!cur.vattribs)
+            {
+                enablevattribs(cur, false);
+            }
+            if(cur.vbuf!=this->vbuf)
+            {
+                changevbuf(cur, pass, this);
+            }
+            drawvatris(this, 3*this->tris, 0);
+            xtravertsva += this->verts;
+            break;
+
+        case RenderPass_Z:
+            if(doquery)
+            {
+                STARTVAQUERY(this, );
+            }
+            renderzpass(cur, this);
+            if(doquery)
+            {
+                ENDVAQUERY(this, );
+            }
+            break;
+
+        case RenderPass_ReflectiveShadowMap:
+            mergetexs(cur, this);
+            if(!batchgeom && geombatches.length())
+            {
+                renderbatches(cur, pass);
+            }
+            break;
+
+        case RenderPass_ReflectiveShadowMapBlend:
+            mergetexs(cur, this, &this->texelems[this->texs], 3*this->tris);
+            if(!batchgeom && geombatches.length())
+            {
+                renderbatches(cur, RenderPass_ReflectiveShadowMap);
+            }
+            break;
+    }
+}
+
+#undef STARTVAQUERY
+#undef ENDVAQUERY
+//==============================================================================
+
 void findshadowvas()
 {
     memset(vasort, 0, sizeof(vasort));
@@ -3604,7 +3591,10 @@ void findshadowvas()
     {
         case ShadowMap_Reflect:
         {
-            findrsmshadowvas(varoot);
+            for(int i = 0; i < varoot.length(); ++i)
+            {
+                varoot[i]->findrsmshadowvas();
+            }
             break;
         }
         case ShadowMap_CubeMap:
@@ -3614,12 +3604,18 @@ void findshadowvas()
         }
         case ShadowMap_Cascade:
         {
-            findcsmshadowvas(varoot);
+            for(int i = 0; i < varoot.length(); ++i)
+            {
+                varoot[i]->findcsmshadowvas();
+            }
             break;
         }
         case ShadowMap_Spot:
         {
-            findspotshadowvas(varoot);
+            for(int i = 0; i < varoot.length(); ++i)
+            {
+                varoot[i]->findspotshadowvas();
+            }
             break;
         }
     }
