@@ -50,7 +50,7 @@ int obj::type() const
 
 bool obj::objmeshgroup::load(const char *filename, float smooth)
 {
-    int len = strlen(filename);
+    int len = std::strlen(filename);
     if(len < 4 || strcasecmp(&filename[len-4], ".obj"))
     {
         return false;
@@ -111,7 +111,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                     c++;
                 }
                 char *name = c;
-                size_t namelen = strlen(name);
+                size_t namelen = std::strlen(name);
                 while(namelen > 0 && isspace(name[namelen-1]))
                 {
                     namelen--;
