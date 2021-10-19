@@ -59,8 +59,6 @@ struct shadowmesh
 /* internally relevant functionality */
 ///////////////////////////////////////
 
-void findshadowvas(vector<vtxarray *> &vas);
-
 namespace
 {
     void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
@@ -3094,21 +3092,20 @@ int cullfrustumsides(const vec &lightpos, float lightradius, float size, float b
     return sides & masks[0] & masks[1] & masks[2] & masks[3] & masks[4] & masks[5];
 }
 
-void findshadowvas(vector<vtxarray *> &vas)
+void vtxarray::findshadowvas()
 {
-    for(int i = 0; i < vas.length(); i++)
+    float dist = vadist(this, shadoworigin);
+    if(dist < shadowradius || !smdistcull)
     {
-        vtxarray &v = *vas[i];
-        float dist = vadist(&v, shadoworigin);
-        if(dist < shadowradius || !smdistcull)
+        shadowmask = !smbbcull ? 0x3F : (children.length() || mapmodels.length() ?
+                            calcbbsidemask(bbmin, bbmax, shadoworigin, shadowradius, shadowbias) :
+                            calcbbsidemask(geommin, geommax, shadoworigin, shadowradius, shadowbias));
+        addshadowva(this, dist);
+        if(children.length())
         {
-            v.shadowmask = !smbbcull ? 0x3F : (v.children.length() || v.mapmodels.length() ?
-                                calcbbsidemask(v.bbmin, v.bbmax, shadoworigin, shadowradius, shadowbias) :
-                                calcbbsidemask(v.geommin, v.geommax, shadoworigin, shadowradius, shadowbias));
-            addshadowva(&v, dist);
-            if(v.children.length())
+            for(int i = 0; i < children.length(); ++i)
             {
-                findshadowvas(v.children);
+                children[i]->findshadowvas();
             }
         }
     }
@@ -3599,7 +3596,10 @@ void findshadowvas()
         }
         case ShadowMap_CubeMap:
         {
-            findshadowvas(varoot);
+            for(int i = 0; i < varoot.length(); ++i)
+            {
+                varoot[i]->findshadowvas();
+            }
             break;
         }
         case ShadowMap_Cascade:
