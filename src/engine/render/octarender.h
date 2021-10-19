@@ -73,6 +73,7 @@ class vtxarray
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
     private:
+        float vadist(const vec &p);
         void addvisibleva();
 };
 
