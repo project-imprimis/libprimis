@@ -2,6 +2,8 @@
 
 Check out the project timeline at `doc/timeline.md`!
 
+[![windows](https://github.com/project-imprimis/libprimis/actions/workflows/msbuild.yml/badge.svg)](https://github.com/project-imprimis/libprimis/actions/workflows/msbuild.yml)
+[![ubuntu](https://github.com/project-imprimis/libprimis/actions/workflows/makefile.yml/badge.svg)](https://github.com/project-imprimis/libprimis/actions/workflows/makefile.yml)
 #### An Open Source Standalone Engine
 
 Libprimis is a game engine, based on Tesseract and the Cube 2 family of programs.
