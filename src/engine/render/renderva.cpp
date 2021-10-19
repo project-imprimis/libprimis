@@ -3142,7 +3142,7 @@ int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, fl
 
 void vtxarray::findshadowvas()
 {
-    float dist = vadist(this, shadoworigin);
+    float dist = vadist(shadoworigin);
     if(dist < shadowradius || !smdistcull)
     {
         shadowmask = !smbbcull ? 0x3F : (children.length() || mapmodels.length() ?
@@ -3384,6 +3384,11 @@ renderstate::renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf
 
 //vertex array object methods
 
+float vtxarray::vadist(const vec &p)
+{
+    return p.dist_to_bb(bbmin, bbmax);
+}
+
 template<bool fullvis, bool resetocclude>
 void vtxarray::findvisiblevas()
 {
@@ -3487,7 +3492,7 @@ void vtxarray::findcsmshadowvas()
 
 void vtxarray::addvisibleva()
 {
-    float dist = vadist(this, camera1->o);
+    float dist = vadist(camera1->o);
     distance = static_cast<int>(dist); /*cv.dist(camera1->o) - size*SQRT3/2*/
 
     int hash = std::clamp(static_cast<int>(dist*vasortsize/worldsize), 0, vasortsize-1);
@@ -3506,7 +3511,7 @@ void vtxarray::addvisibleva()
 
 void vtxarray::findspotshadowvas()
 {
-    float dist = vadist(this, shadoworigin);
+    float dist = vadist(shadoworigin);
     if(dist < shadowradius || !smdistcull)
     {
         shadowmask = !smbbcull || (children.length() || mapmodels.length() ?
