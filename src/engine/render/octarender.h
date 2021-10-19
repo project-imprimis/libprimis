@@ -116,6 +116,7 @@ class vtxarray
         void findrsmshadowvas();
         void findcsmshadowvas();
         void finddecals();
+        void findshadowvas();
 
         void renderva(renderstate &cur, int pass = 0, bool doquery = false);
 
