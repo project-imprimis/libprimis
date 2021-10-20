@@ -391,12 +391,6 @@ namespace
         rendermapmodel(e.attr1, anim, e.o, e.attr2, e.attr3, e.attr4, Model_CullVFC | Model_CullDist, basetime, e.attr5 > 0 ? e.attr5/100.0f : 1.0f);
     }
 
-    bool bbinsideva(const ivec &bo, const ivec &br, vtxarray *va)
-    {
-        return bo.x >= va->bbmin.x && bo.y >= va->bbmin.y && bo.z >= va->bbmin.z &&
-            br.x <= va->bbmax.x && br.y <= va->bbmax.y && br.z <= va->bbmax.z;
-    }
-
     bool bboccluded(const ivec &bo, const ivec &br, cube *c, const ivec &o, int size)
     {
         LOOP_OCTA_BOX(o, size, bo, br)
@@ -405,7 +399,7 @@ namespace
             if(c[i].ext && c[i].ext->va)
             {
                 vtxarray *va = c[i].ext->va;
-                if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, va)))
+                if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && va->bbinsideva(bo, br)))
                 {
                     continue;
                 }
@@ -2038,7 +2032,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
     if(c->ext && c->ext->va)
     {
         vtxarray *va = c->ext->va;
-        if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, va)))
+        if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && va->bbinsideva(bo, br)))
         {
             return true;
         }
@@ -2050,7 +2044,7 @@ bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
         if(c->ext && c->ext->va)
         {
             vtxarray *va = c->ext->va;
-            if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && bbinsideva(bo, br, va)))
+            if(va->curvfc >= ViewFrustumCull_Fogged || (va->occluded >= Occlude_BB && va->bbinsideva(bo, br)))
             {
                 return true;
             }
@@ -3523,6 +3517,12 @@ void vtxarray::findspotshadowvas()
             children[i]->findspotshadowvas();
         }
     }
+}
+
+bool vtxarray::bbinsideva(const ivec &bo, const ivec &br)
+{
+    return bo.x >= bbmin.x && bo.y >= bbmin.y && bo.z >= bbmin.z &&
+        br.x <= bbmax.x && br.y <= bbmax.y && br.z <= bbmax.z;
 }
 
 //====================================================== STARTVAQUERY ENDVAQUERY

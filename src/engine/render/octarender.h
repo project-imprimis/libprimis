@@ -119,6 +119,8 @@ class vtxarray
         void findshadowvas();
         void calcgeombb(const ivec &co, int size);
 
+        bool bbinsideva(const ivec &bo, const ivec &br);
+
         void renderva(renderstate &cur, int pass = 0, bool doquery = false);
 
         template<bool fullvis, bool resetocclude>
