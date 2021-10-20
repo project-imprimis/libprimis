@@ -1802,28 +1802,13 @@ namespace
         mfl.setsize(0);
     }
 
-    void finddecals(vtxarray *va)
-    {
-        if(va->hasmerges&(Merge_Origin|Merge_Part))
-        {
-            for(int i = 0; i < va->decals.length(); i++)
-            {
-                vc.extdecals.add(va->decals[i]);
-            }
-            for(int i = 0; i < va->children.length(); i++)
-            {
-                finddecals(va->children[i]);
-            }
-        }
-    }
-
     void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // creates vertices and indices ready to be put into a va
     {
         //if(size<=16) return;
         if(c.ext && c.ext->va)
         {
             maxlevel = std::max(maxlevel, c.ext->va->mergelevel);
-            finddecals(c.ext->va);
+            c.ext->va->finddecals();
             return; // don't re-render
         }
 
@@ -1892,23 +1877,6 @@ namespace
         }
     }
 
-    void calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax)
-    {
-        vec vmin(co),
-            vmax = vmin;
-        vmin.add(size);
-
-        for(uint i = 0; i < vc.verts.size(); i++)
-        {
-            const vec &v = vc.verts[i].pos;
-            vmin.min(v);
-            vmax.max(v);
-        }
-
-        bbmin = ivec(vmin.mul(8)).shr(3);
-        bbmax = ivec(vmax.mul(8)).add(7).shr(3);
-    }
-
     int entdepth = -1;
     octaentities *entstack[32];
 
@@ -1935,7 +1903,7 @@ namespace
         {
             vtxarray *va = newva(co, size);
             ext(c).va = va;
-            calcgeombb(co, size, va->geommin, va->geommax);
+            va->calcgeombb(co, size);
             calcmatbb(va, co, size, vc.matsurfs);
             va->hasmerges = vahasmerges;
             va->mergelevel = vamergemax;
@@ -2361,41 +2329,74 @@ void clearvas(cube *c)
     }
 }
 
-void updatevabb(vtxarray *va, bool force)
+//recursively adds to the vc vertexcollect object the decals at every vertex array (and its children)
+void vtxarray::finddecals()
 {
-    if(!force && va->bbmin.x >= 0)
+    if(hasmerges&(Merge_Origin|Merge_Part))
+    {
+        for(int i = 0; i < decals.length(); i++)
+        {
+            vc.extdecals.add(decals[i]);
+        }
+        for(int i = 0; i < children.length(); i++)
+        {
+            children[i]->finddecals();
+        }
+    }
+}
+
+void vtxarray::updatevabb(bool force)
+{
+    if(!force && bbmin.x >= 0)
     {
         return;
     }
-    va->bbmin = va->geommin;
-    va->bbmax = va->geommax;
-    va->bbmin.min(va->watermin);
-    va->bbmax.max(va->watermax);
-    va->bbmin.min(va->glassmin);
-    va->bbmax.max(va->glassmax);
-    for(int i = 0; i < va->children.length(); i++)
+    bbmin = geommin;
+    bbmax = geommax;
+    bbmin.min(watermin);
+    bbmax.max(watermax);
+    bbmin.min(glassmin);
+    bbmax.max(glassmax);
+    for(int i = 0; i < children.length(); i++)
     {
-        vtxarray *child = va->children[i];
-        updatevabb(child, force);
-        va->bbmin.min(child->bbmin);
-        va->bbmax.max(child->bbmax);
+        vtxarray *child = children[i];
+        child->updatevabb(force);
+        bbmin.min(child->bbmin);
+        bbmax.max(child->bbmax);
     }
-    for(int i = 0; i < va->mapmodels.length(); i++)
+    for(int i = 0; i < mapmodels.length(); i++)
     {
-        octaentities *oe = va->mapmodels[i];
-        va->bbmin.min(oe->bbmin);
-        va->bbmax.max(oe->bbmax);
+        octaentities *oe = mapmodels[i];
+        bbmin.min(oe->bbmin);
+        bbmax.max(oe->bbmax);
     }
-    for(int i = 0; i < va->decals.length(); i++)
+    for(int i = 0; i < decals.length(); i++)
     {
-        octaentities *oe = va->decals[i];
-        va->bbmin.min(oe->bbmin);
-        va->bbmax.max(oe->bbmax);
+        octaentities *oe = decals[i];
+        bbmin.min(oe->bbmin);
+        bbmax.max(oe->bbmax);
     }
-    va->bbmin.max(va->o);
-    va->bbmax.min(ivec(va->o).add(va->size));
-    worldmin.min(va->bbmin);
-    worldmax.max(va->bbmax);
+    bbmin.max(o);
+    bbmax.min(ivec(o).add(size));
+    worldmin.min(bbmin);
+    worldmax.max(bbmax);
+}
+
+void vtxarray::calcgeombb(const ivec &co, int size)
+{
+    vec vmin(co),
+        vmax = vmin;
+    vmin.add(size);
+
+    for(uint i = 0; i < vc.verts.size(); i++)
+    {
+        const vec &v = vc.verts[i].pos;
+        vmin.min(v);
+        vmax.max(v);
+    }
+
+    bbmin = ivec(vmin.mul(8)).shr(3);
+    bbmax = ivec(vmax.mul(8)).add(7).shr(3);
 }
 
 //update vertex array bounding boxes recursively from the root va object down to all children
@@ -2407,7 +2408,7 @@ void updatevabbs(bool force)
         worldmax = ivec(0, 0, 0);
         for(int i = 0; i < varoot.length(); i++)
         {
-            updatevabb(varoot[i], true);
+            varoot[i]->updatevabb(true);
         }
         if(worldmin.x >= worldmax.x)
         {
@@ -2419,7 +2420,7 @@ void updatevabbs(bool force)
     {
         for(int i = 0; i < varoot.length(); i++)
         {
-            updatevabb(varoot[i]);
+            varoot[i]->updatevabb();
         }
     }
 }
