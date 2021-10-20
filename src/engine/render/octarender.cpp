@@ -1877,23 +1877,6 @@ namespace
         }
     }
 
-    void calcgeombb(const ivec &co, int size, ivec &bbmin, ivec &bbmax)
-    {
-        vec vmin(co),
-            vmax = vmin;
-        vmin.add(size);
-
-        for(uint i = 0; i < vc.verts.size(); i++)
-        {
-            const vec &v = vc.verts[i].pos;
-            vmin.min(v);
-            vmax.max(v);
-        }
-
-        bbmin = ivec(vmin.mul(8)).shr(3);
-        bbmax = ivec(vmax.mul(8)).add(7).shr(3);
-    }
-
     int entdepth = -1;
     octaentities *entstack[32];
 
@@ -1920,7 +1903,7 @@ namespace
         {
             vtxarray *va = newva(co, size);
             ext(c).va = va;
-            calcgeombb(co, size, va->geommin, va->geommax);
+            va->calcgeombb(co, size);
             calcmatbb(va, co, size, vc.matsurfs);
             va->hasmerges = vahasmerges;
             va->mergelevel = vamergemax;
@@ -2398,6 +2381,23 @@ void vtxarray::updatevabb(bool force)
     bbmax.min(ivec(o).add(size));
     worldmin.min(bbmin);
     worldmax.max(bbmax);
+}
+
+void vtxarray::calcgeombb(const ivec &co, int size)
+{
+    vec vmin(co),
+        vmax = vmin;
+    vmin.add(size);
+
+    for(uint i = 0; i < vc.verts.size(); i++)
+    {
+        const vec &v = vc.verts[i].pos;
+        vmin.min(v);
+        vmax.max(v);
+    }
+
+    bbmin = ivec(vmin.mul(8)).shr(3);
+    bbmax = ivec(vmax.mul(8)).add(7).shr(3);
 }
 
 //update vertex array bounding boxes recursively from the root va object down to all children
