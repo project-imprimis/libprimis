@@ -75,6 +75,8 @@ class vtxarray
         void renderva(renderstate &cur, int pass = 0, bool doquery = false);
         void drawvatris(GLsizei numindices, int offset);
         void drawvaskytris();
+        void calcmatbb(const ivec &co, int size, std::vector<materialsurface> &matsurfs); //from material.cpp
+
 
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
