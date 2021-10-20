@@ -79,6 +79,8 @@ class vtxarray
         float vadist(const vec &p);
         void addvisibleva();
         void mergetexs(renderstate &cur, elementset *texs = nullptr, int offset = 0);
+        void renderzpass(renderstate &cur);
+
 };
 
 extern ivec worldmin, worldmax;
