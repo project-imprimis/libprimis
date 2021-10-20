@@ -84,16 +84,6 @@ namespace
         glde++;
     }
 
-    void drawvatris(vtxarray *va, GLsizei numindices, int offset)
-    {
-        drawtris(numindices, (ushort *)0 + va->eoffset + offset, va->minvert, va->maxvert);
-    }
-
-    void drawvaskytris(vtxarray *va)
-    {
-        drawtris(va->sky, (ushort *)0 + va->skyoffset, va->minvert, va->maxvert);
-    }
-
     ///////// view frustrum culling ///////////////////////
 
     plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
@@ -519,23 +509,6 @@ namespace
     VAR(smnodraw, 0, 0, 1);
 
     vtxarray *shadowva = nullptr;
-
-    void addshadowva(vtxarray *va, float dist)
-    {
-        va->rdistance = static_cast<int>(dist);
-
-        int hash = std::clamp(static_cast<int>(dist*vasortsize/shadowradius), 0, vasortsize-1);
-        vtxarray **prev = &vasort[hash], *cur = vasort[hash];
-
-        while(cur && va->rdistance > cur->rdistance)
-        {
-            prev = &cur->rnext;
-            cur = cur->rnext;
-        }
-
-        va->rnext = cur;
-        *prev = va;
-    }
 
     void sortshadowvas()
     {
@@ -2043,12 +2016,12 @@ void renderoutline()
             }
             if(va->texs && va->occluded < Occlude_Geom)
             {
-                drawvatris(va, 3*va->tris, 0);
+                va->drawvatris(3*va->tris, 0);
                 xtravertsva += va->verts;
             }
             if(va->alphaback || va->alphafront || va->refract)
             {
-                drawvatris(va, 3*(va->alphabacktris + va->alphafronttris + va->refracttris), 3*(va->tris));
+                va->drawvatris(3*(va->alphabacktris + va->alphafronttris + va->refracttris), 3*(va->tris));
                 xtravertsva += 3*(va->alphabacktris + va->alphafronttris + va->refracttris);
             }
             prev = va;
@@ -2103,7 +2076,7 @@ bool renderexplicitsky(bool outline)
                 const vertex *ptr = 0;
                 gle::vertexpointer(sizeof(vertex), ptr->pos.v);
             }
-            drawvaskytris(va);
+            va->drawvaskytris();
             xtraverts += va->sky;
             prev = va;
         }
@@ -2301,7 +2274,7 @@ void renderrefractmask()
             const vertex *ptr = 0;
             gle::vertexpointer(sizeof(vertex), ptr->pos.v);
         }
-        drawvatris(va, 3*va->refracttris, 3*(va->tris + va->alphabacktris + va->alphafronttris));
+        va->drawvatris(3*va->refracttris, 3*(va->tris + va->alphabacktris + va->alphafronttris));
         xtravertsva += 3*va->refracttris;
         prev = va;
     }
@@ -2919,7 +2892,7 @@ void vtxarray::findshadowvas()
         shadowmask = !smbbcull ? 0x3F : (children.length() || mapmodels.length() ?
                             calcbbsidemask(bbmin, bbmax, shadoworigin, shadowradius, shadowbias) :
                             calcbbsidemask(geommin, geommax, shadoworigin, shadowradius, shadowbias));
-        addshadowva(this, dist);
+        addshadowva(dist);
         if(children.length())
         {
             for(int i = 0; i < children.length(); ++i)
@@ -2954,7 +2927,7 @@ void renderrsmgeom(bool dyntex)
                     const vertex *ptr = 0;
                     gle::vertexpointer(sizeof(vertex), ptr->pos.v);
                 }
-                drawvaskytris(va);
+                va->drawvaskytris();
                 xtravertsva += va->sky/3;
                 prev = va;
             }
@@ -3065,7 +3038,7 @@ void rendershadowmapworld()
             }
             if(!smnodraw)
             {
-                drawvatris(va, 3*va->tris, 0);
+                va->drawvatris(3*va->tris, 0);
             }
             xtravertsva += va->verts;
             prev = va;
@@ -3087,7 +3060,7 @@ void rendershadowmapworld()
                 }
                 if(!smnodraw)
                 {
-                    drawvaskytris(va);
+                    va->drawvaskytris();
                 }
                 xtravertsva += va->sky/3;
                 prev = va;
@@ -3154,6 +3127,16 @@ renderstate::renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf
 }
 
 //vertex array object methods
+
+void vtxarray::drawvaskytris()
+{
+    drawtris(sky, (ushort *)0 + skyoffset, minvert, maxvert);
+}
+
+void vtxarray::drawvatris(GLsizei numindices, int offset)
+{
+    drawtris(numindices, (ushort *)0 + eoffset + offset, minvert, maxvert);
+}
 
 float vtxarray::vadist(const vec &p)
 {
@@ -3228,7 +3211,7 @@ void vtxarray::findrsmshadowvas()
     if(shadowmask)
     {
         float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-        addshadowva(this, dist);
+        addshadowva(dist);
         for(int i = 0; i < children.length(); ++i)
         {
             children[i]->findrsmshadowvas();
@@ -3253,7 +3236,7 @@ void vtxarray::findcsmshadowvas()
     if(shadowmask)
     {
         float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
-        addshadowva(this, dist);
+        addshadowva(dist);
         for(int i = 0; i < children.length(); ++i)
         {
             children[i]->findcsmshadowvas();
@@ -3288,7 +3271,7 @@ void vtxarray::findspotshadowvas()
         shadowmask = !smbbcull || (children.length() || mapmodels.length() ?
                             bbinsidespot(shadoworigin, shadowdir, shadowspot, bbmin, bbmax) :
                             bbinsidespot(shadoworigin, shadowdir, shadowspot, geommin, geommax)) ? 1 : 0;
-        addshadowva(this, dist);
+        addshadowva(dist);
         for(int i = 0; i < children.length(); ++i)
         {
             children[i]->findspotshadowvas();
@@ -3469,7 +3452,24 @@ void vtxarray::renderzpass(renderstate &cur)
         xtravertsva += verts;
     }
     nocolorshader->set();
-    drawvatris(this, 3*numtris, offset);
+    drawvatris(3*numtris, offset);
+}
+
+void vtxarray::addshadowva(float dist)
+{
+    rdistance = static_cast<int>(dist);
+
+    int hash = std::clamp(static_cast<int>(dist*vasortsize/shadowradius), 0, vasortsize-1);
+    vtxarray **prev = &vasort[hash], *cur = vasort[hash];
+
+    while(cur && rdistance > cur->rdistance)
+    {
+        prev = &cur->rnext;
+        cur = cur->rnext;
+    }
+
+    rnext = cur;
+    *prev = this;
 }
 
 //====================================================== STARTVAQUERY ENDVAQUERY
@@ -3543,7 +3543,7 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             {
                 changevbuf(cur, pass);
             }
-            drawvatris(this, 3*this->tris, 0);
+            drawvatris(3*this->tris, 0);
             xtravertsva += this->verts;
             break;
 
