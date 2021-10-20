@@ -122,20 +122,22 @@ class vtxarray
         void calcgeombb(const ivec &co, int size);
 
         bool bbinsideva(const ivec &bo, const ivec &br);
-
         void renderva(renderstate &cur, int pass = 0, bool doquery = false);
+        void drawvatris(GLsizei numindices, int offset);
+        void drawvaskytris();
 
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
 
         void changevbuf(decalrenderer &cur);
         void changevbuf(renderstate &cur, int pass);
+
     private:
         float vadist(const vec &p);
         void addvisibleva();
         void mergetexs(renderstate &cur, elementset *texs = nullptr, int offset = 0);
         void renderzpass(renderstate &cur);
-
+        void addshadowva(float dist);
 };
 
 extern ivec worldmin, worldmax;
