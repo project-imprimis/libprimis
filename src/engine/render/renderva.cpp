@@ -1010,48 +1010,6 @@ namespace
         resetbatches();
     }
 
-    void renderzpass(renderstate &cur, vtxarray *va)
-    {
-        if(!cur.vattribs)
-        {
-            if(cur.vquery)
-            {
-                disablevquery(cur);
-            }
-            enablevattribs(cur, false);
-        }
-        if(cur.vbuf!=va->vbuf)
-        {
-            changevbuf(cur, RenderPass_Z, va);
-        }
-        if(!cur.depthmask)
-        {
-            cur.depthmask = true;
-            glDepthMask(GL_TRUE);
-        }
-        if(cur.colormask)
-        {
-            cur.colormask = false;
-            glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-        }
-        int firsttex = 0,
-            numtris = va->tris,
-            offset = 0;
-        if(cur.alphaing)
-        {
-            firsttex += va->texs;
-            offset += 3*(va->tris);
-            numtris = va->alphabacktris + va->alphafronttris + va->refracttris;
-            xtravertsva += 3*numtris;
-        }
-        else
-        {
-            xtravertsva += va->verts;
-        }
-        nocolorshader->set();
-        drawvatris(va, 3*numtris, offset);
-    }
-
     void setupgeom()
     {
         glActiveTexture_(GL_TEXTURE0);
@@ -3472,6 +3430,48 @@ void vtxarray::mergetexs(renderstate &cur, elementset *texin, int offset)
     } while(++curtex < numtexs);
 }
 
+void vtxarray::renderzpass(renderstate &cur)
+{
+    if(!cur.vattribs)
+    {
+        if(cur.vquery)
+        {
+            disablevquery(cur);
+        }
+        enablevattribs(cur, false);
+    }
+    if(cur.vbuf!=vbuf)
+    {
+        changevbuf(cur, RenderPass_Z, this);
+    }
+    if(!cur.depthmask)
+    {
+        cur.depthmask = true;
+        glDepthMask(GL_TRUE);
+    }
+    if(cur.colormask)
+    {
+        cur.colormask = false;
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    }
+    int firsttex = 0,
+        numtris = tris,
+        offset = 0;
+    if(cur.alphaing)
+    {
+        firsttex += texs;
+        offset += 3*(tris);
+        numtris = alphabacktris + alphafronttris + refracttris;
+        xtravertsva += 3*numtris;
+    }
+    else
+    {
+        xtravertsva += verts;
+    }
+    nocolorshader->set();
+    drawvatris(this, 3*numtris, offset);
+}
+
 //====================================================== STARTVAQUERY ENDVAQUERY
 #define STARTVAQUERY(va, flush) \
     do { \
@@ -3552,7 +3552,7 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             {
                 STARTVAQUERY(this, );
             }
-            renderzpass(cur, this);
+            renderzpass(cur);
             if(doquery)
             {
                 ENDVAQUERY(this, );
