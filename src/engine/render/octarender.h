@@ -117,6 +117,7 @@ class vtxarray
         void findcsmshadowvas();
         void finddecals();
         void findshadowvas();
+        void calcgeombb(const ivec &co, int size);
 
         void renderva(renderstate &cur, int pass = 0, bool doquery = false);
 
