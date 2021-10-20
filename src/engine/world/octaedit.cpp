@@ -598,10 +598,10 @@ block3 *blockcopy(const block3 &s, int rgrid)
     {
         return nullptr;
     }
-    block3 *b = reinterpret_cast<block3 *>(new uchar[bsize]);
-    if(b)
+    block3 *b = reinterpret_cast<block3 *>(new uchar[bsize]); //create a new block3 pointing to an appropriate sized memory area
+    if(b) //should always be true
     {
-        blockcopy(s, rgrid, b);
+        blockcopy(s, rgrid, b); //copy the block3 s to b
     }
     return b;
 }
@@ -609,7 +609,7 @@ block3 *blockcopy(const block3 &s, int rgrid)
 void freeblock(block3 *b, bool alloced = true)
 {
     cube *q = b->c();
-    for(int i = 0; i < static_cast<int>(b->size()); ++i)
+    for(int i = 0; i < b->size(); ++i)
     {
         (*q++).discardchildren(); //note: incrementing pointer
     }
@@ -630,7 +630,7 @@ void freeundo(undoblock *u)
     {
         freeblock(u->block(), false);
     }
-    delete[] reinterpret_cast<uchar *>(u);
+    delete[] reinterpret_cast<uchar *>(u);  //re-cast to uchar array so it can be destructed properly
 }
 
 static int undosize(undoblock *u)
