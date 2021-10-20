@@ -66,6 +66,23 @@ struct shadowmesh
     int draws[6];
 };
 
+struct decalrenderer
+{
+    GLuint vbuf;
+    vec colorscale;
+    int globals, tmu;
+    GLuint textures[7];
+    DecalSlot *slot;
+
+    decalrenderer() : vbuf(0), colorscale(1, 1, 1), globals(-1), tmu(-1), slot(nullptr)
+    {
+        for(int i = 0; i < 7; ++i)
+        {
+            textures[i] = 0;
+        }
+    }
+};
+
 /* internally relevant functionality */
 ///////////////////////////////////////
 
@@ -702,23 +719,6 @@ namespace
         cur.vattribs = false;
     }
 
-    void changevbuf(renderstate &cur, int pass, vtxarray *va)
-    {
-        gle::bindvbo(va->vbuf);
-        gle::bindebo(va->ebuf);
-        cur.vbuf = va->vbuf;
-
-        vertex *vdata = nullptr;
-        gle::vertexpointer(sizeof(vertex), vdata->pos.v);
-
-        if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
-        {
-            gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE);
-            gle::texcoord0pointer(sizeof(vertex), vdata->tc.v);
-            gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
-        }
-    }
-
     void changebatchtmus(renderstate &cur)
     {
         if(cur.tmu != 0)
@@ -966,7 +966,7 @@ namespace
 
             if(cur.vbuf != b.va->vbuf)
             {
-                changevbuf(cur, pass, b.va);
+                b.va->changevbuf(cur, pass);
             }
             if(pass == RenderPass_GBuffer || pass == RenderPass_ReflectiveShadowMap)
             {
@@ -1021,23 +1021,6 @@ namespace
         alpharefractvas = 0;
 
     CVARP(explicitskycolor, 0x800080);
-
-    struct decalrenderer
-    {
-        GLuint vbuf;
-        vec colorscale;
-        int globals, tmu;
-        GLuint textures[7];
-        DecalSlot *slot;
-
-        decalrenderer() : vbuf(0), colorscale(1, 1, 1), globals(-1), tmu(-1), slot(nullptr)
-        {
-            for(int i = 0; i < 7; ++i)
-            {
-                textures[i] = 0;
-            }
-        }
-    };
 
     struct decalbatch
     {
@@ -1195,18 +1178,6 @@ namespace
         numbatches = 0;
     }
 
-    void changevbuf(decalrenderer &cur, vtxarray *va)
-    {
-        gle::bindvbo(va->vbuf);
-        gle::bindebo(va->decalbuf);
-        cur.vbuf = va->vbuf;
-        vertex *vdata = nullptr;
-        gle::vertexpointer(sizeof(vertex), vdata->pos.v);
-        gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
-        gle::texcoord0pointer(sizeof(vertex), vdata->tc.v, GL_FLOAT, 3);
-        gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
-    }
-
     void changebatchtmus(decalrenderer &cur)
     {
         if(cur.tmu != 0)
@@ -1326,7 +1297,7 @@ namespace
             }
             if(cur.vbuf != b.va->vbuf)
             {
-                changevbuf(cur, b.va);
+                b.va->changevbuf(cur);
             }
             changebatchtmus(cur);
             if(cur.slot != &b.slot)
@@ -3483,6 +3454,35 @@ void vtxarray::mergetexs(renderstate &cur, elementset *texin, int offset)
     } while(++curtex < numtexs);
 }
 
+void vtxarray::changevbuf(decalrenderer &cur)
+{
+    gle::bindvbo(vbuf);
+    gle::bindebo(decalbuf);
+    cur.vbuf = vbuf;
+    vertex *vdata = nullptr;
+    gle::vertexpointer(sizeof(vertex), vdata->pos.v);
+    gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE, 4);
+    gle::texcoord0pointer(sizeof(vertex), vdata->tc.v, GL_FLOAT, 3);
+    gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
+}
+
+void vtxarray::changevbuf(renderstate &cur, int pass)
+{
+    gle::bindvbo(vbuf);
+    gle::bindebo(ebuf);
+    cur.vbuf = vbuf;
+
+    vertex *vdata = nullptr;
+    gle::vertexpointer(sizeof(vertex), vdata->pos.v);
+
+    if(pass==RenderPass_GBuffer || pass==RenderPass_ReflectiveShadowMap)
+    {
+        gle::normalpointer(sizeof(vertex), vdata->norm.v, GL_BYTE);
+        gle::texcoord0pointer(sizeof(vertex), vdata->tc.v);
+        gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
+    }
+}
+
 void vtxarray::renderzpass(renderstate &cur)
 {
     if(!cur.vattribs)
@@ -3495,7 +3495,7 @@ void vtxarray::renderzpass(renderstate &cur)
     }
     if(cur.vbuf!=vbuf)
     {
-        changevbuf(cur, RenderPass_Z, this);
+        changevbuf(cur, RenderPass_Z);
     }
     if(!cur.depthmask)
     {
@@ -3594,7 +3594,7 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             }
             if(cur.vbuf!=this->vbuf)
             {
-                changevbuf(cur, pass, this);
+                changevbuf(cur, pass);
             }
             drawvatris(this, 3*this->tris, 0);
             xtravertsva += this->verts;

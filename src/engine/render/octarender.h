@@ -71,6 +71,8 @@ struct renderstate
     renderstate();
 };
 
+struct decalrenderer;
+
 class vtxarray
 {
     public:
@@ -125,6 +127,9 @@ class vtxarray
 
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
+
+        void changevbuf(decalrenderer &cur);
+        void changevbuf(renderstate &cur, int pass);
     private:
         float vadist(const vec &p);
         void addvisibleva();
