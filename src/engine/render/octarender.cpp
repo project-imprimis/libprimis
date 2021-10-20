@@ -1904,7 +1904,7 @@ namespace
             vtxarray *va = newva(co, size);
             ext(c).va = va;
             va->calcgeombb(co, size);
-            calcmatbb(va, co, size, vc.matsurfs);
+            va->calcmatbb(co, size, vc.matsurfs);
             va->hasmerges = vahasmerges;
             va->mergelevel = vamergemax;
         }
