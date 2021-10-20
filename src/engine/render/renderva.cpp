@@ -676,106 +676,7 @@ namespace
 
     vector<geombatch> geombatches;
     int firstbatch = -1,
-               numbatches = 0;
-
-    void mergetexs(renderstate &cur, vtxarray *va, elementset *texs = nullptr, int offset = 0)
-    {
-        int numtexs;
-        if(!texs)
-        {
-            texs = va->texelems;
-            numtexs = va->texs;
-            if(cur.alphaing)
-            {
-                texs += va->texs;
-                offset += 3*(va->tris);
-                numtexs = va->alphaback;
-                if(cur.alphaing > 1)
-                {
-                    numtexs += va->alphafront + va->refract;
-                }
-            }
-        }
-
-        if(firstbatch < 0)
-        {
-            firstbatch = geombatches.length();
-            numbatches = numtexs;
-            for(int i = 0; i < numtexs-1; ++i)
-            {
-                geombatches.add(geombatch(texs[i], offset, va)).next = i+1;
-                offset += texs[i].length;
-            }
-            geombatches.add(geombatch(texs[numtexs-1], offset, va));
-            return;
-        }
-
-        int prevbatch = -1,
-            curbatch = firstbatch,
-            curtex = 0;
-        do
-        {
-            geombatch &b = geombatches.add(geombatch(texs[curtex], offset, va));
-            offset += texs[curtex].length;
-            int dir = -1;
-            while(curbatch >= 0)
-            {
-                dir = b.compare(geombatches[curbatch]);
-                if(dir <= 0)
-                {
-                    break;
-                }
-                prevbatch = curbatch;
-                curbatch = geombatches[curbatch].next;
-            }
-            if(!dir)
-            {
-                int last = curbatch, next;
-                for(;;)
-                {
-                    next = geombatches[last].batch;
-                    if(next < 0)
-                    {
-                        break;
-                    }
-                    last = next;
-                }
-                if(last==curbatch)
-                {
-                    b.batch = curbatch;
-                    b.next = geombatches[curbatch].next;
-                    if(prevbatch < 0)
-                    {
-                        firstbatch = geombatches.length()-1;
-                    }
-                    else
-                    {
-                        geombatches[prevbatch].next = geombatches.length()-1;
-                    }
-                    curbatch = geombatches.length()-1;
-                }
-                else
-                {
-                    b.batch = next;
-                    geombatches[last].batch = geombatches.length()-1;
-                }
-            }
-            else
-            {
-                numbatches++;
-                b.next = curbatch;
-                if(prevbatch < 0)
-                {
-                    firstbatch = geombatches.length()-1;
-                }
-                else
-                {
-                    geombatches[prevbatch].next = geombatches.length()-1;
-                }
-                prevbatch = geombatches.length()-1;
-            }
-        } while(++curtex < numtexs);
-    }
+        numbatches = 0;
 
     void enablevattribs(renderstate &cur, bool all = true)
     {
@@ -3525,6 +3426,105 @@ bool vtxarray::bbinsideva(const ivec &bo, const ivec &br)
         br.x <= bbmax.x && br.y <= bbmax.y && br.z <= bbmax.z;
 }
 
+void vtxarray::mergetexs(renderstate &cur, elementset *texin, int offset)
+{
+    int numtexs;
+    if(!texin)
+    {
+        texin = texelems;
+        numtexs = texs;
+        if(cur.alphaing)
+        {
+            texin += texs;
+            offset += 3*(tris);
+            numtexs = alphaback;
+            if(cur.alphaing > 1)
+            {
+                numtexs += alphafront + refract;
+            }
+        }
+    }
+
+    if(firstbatch < 0)
+    {
+        firstbatch = geombatches.length();
+        numbatches = numtexs;
+        for(int i = 0; i < numtexs-1; ++i)
+        {
+            geombatches.add(geombatch(texin[i], offset, this)).next = i+1;
+            offset += texin[i].length;
+        }
+        geombatches.add(geombatch(texin[numtexs-1], offset, this));
+        return;
+    }
+
+    int prevbatch = -1,
+        curbatch = firstbatch,
+        curtex = 0;
+    do
+    {
+        geombatch &b = geombatches.add(geombatch(texin[curtex], offset, this));
+        offset += texin[curtex].length;
+        int dir = -1;
+        while(curbatch >= 0)
+        {
+            dir = b.compare(geombatches[curbatch]);
+            if(dir <= 0)
+            {
+                break;
+            }
+            prevbatch = curbatch;
+            curbatch = geombatches[curbatch].next;
+        }
+        if(!dir)
+        {
+            int last = curbatch, next;
+            for(;;)
+            {
+                next = geombatches[last].batch;
+                if(next < 0)
+                {
+                    break;
+                }
+                last = next;
+            }
+            if(last==curbatch)
+            {
+                b.batch = curbatch;
+                b.next = geombatches[curbatch].next;
+                if(prevbatch < 0)
+                {
+                    firstbatch = geombatches.length()-1;
+                }
+                else
+                {
+                    geombatches[prevbatch].next = geombatches.length()-1;
+                }
+                curbatch = geombatches.length()-1;
+            }
+            else
+            {
+                b.batch = next;
+                geombatches[last].batch = geombatches.length()-1;
+            }
+        }
+        else
+        {
+            numbatches++;
+            b.next = curbatch;
+            if(prevbatch < 0)
+            {
+                firstbatch = geombatches.length()-1;
+            }
+            else
+            {
+                geombatches[prevbatch].next = geombatches.length()-1;
+            }
+            prevbatch = geombatches.length()-1;
+        }
+    } while(++curtex < numtexs);
+}
+
 //====================================================== STARTVAQUERY ENDVAQUERY
 #define STARTVAQUERY(va, flush) \
     do { \
@@ -3560,7 +3560,7 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             {
                 STARTVAQUERY(this, { if(geombatches.length()) renderbatches(cur, pass); });
             }
-            mergetexs(cur, this);
+            mergetexs(cur);
             if(doquery)
             {
                 ENDVAQUERY(this, { if(geombatches.length()) renderbatches(cur, pass); });
@@ -3576,7 +3576,7 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             {
                 STARTVAQUERY(this, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
             }
-            mergetexs(cur, this, &this->texelems[this->texs], 3*this->tris);
+            mergetexs(cur, &this->texelems[this->texs], 3*this->tris);
             if(doquery)
             {
                 ENDVAQUERY(this, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
@@ -3613,7 +3613,7 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             break;
 
         case RenderPass_ReflectiveShadowMap:
-            mergetexs(cur, this);
+            mergetexs(cur);
             if(!batchgeom && geombatches.length())
             {
                 renderbatches(cur, pass);
@@ -3621,7 +3621,7 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             break;
 
         case RenderPass_ReflectiveShadowMapBlend:
-            mergetexs(cur, this, &this->texelems[this->texs], 3*this->tris);
+            mergetexs(cur, &this->texelems[this->texs], 3*this->tris);
             if(!batchgeom && geombatches.length())
             {
                 renderbatches(cur, RenderPass_ReflectiveShadowMap);
