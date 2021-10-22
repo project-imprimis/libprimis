@@ -68,6 +68,7 @@ class vtxarray
         void findrsmshadowvas();
         void findcsmshadowvas();
         void finddecals();
+        void mergedecals();
         void findshadowvas();
         void calcgeombb(const ivec &co, int size);
 
@@ -76,7 +77,6 @@ class vtxarray
         void drawvatris(GLsizei numindices, int offset);
         void drawvaskytris();
         void calcmatbb(const ivec &co, int size, std::vector<materialsurface> &matsurfs); //from material.cpp
-
 
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
