@@ -1056,94 +1056,6 @@ namespace
 
     std::vector<decalbatch> decalbatches;
 
-    void mergedecals(vtxarray *va)
-    {
-        elementset *texs = va->decalelems;
-        int numtexs = va->decaltexs,
-            offset  = 0;
-
-        if(firstbatch < 0)
-        {
-            firstbatch = decalbatches.size();
-            numbatches = numtexs;
-            for(int i = 0; i < numtexs-1; ++i)
-            {
-                decalbatches.emplace_back(decalbatch(texs[i], offset, va));
-                decalbatches.back().next = i+1;
-                offset += texs[i].length;
-            }
-            decalbatches.emplace_back(decalbatch(texs[numtexs-1], offset, va));
-            return;
-        }
-
-        int prevbatch = -1,
-            curbatch = firstbatch,
-            curtex = 0;
-        do
-        {
-            decalbatch b = decalbatch(texs[curtex], offset, va);
-            offset += texs[curtex].length;
-            int dir = -1;
-            while(curbatch >= 0)
-            {
-                dir = b.compare(decalbatches[curbatch]);
-                if(dir <= 0)
-                {
-                    break;
-                }
-                prevbatch = curbatch;
-                curbatch = decalbatches[curbatch].next;
-            }
-            if(!dir)
-            {
-                int last = curbatch, next;
-                for(;;)
-                {
-                    next = decalbatches[last].batch;
-                    if(next < 0)
-                    {
-                        break;
-                    }
-                    last = next;
-                }
-                if(last==curbatch)
-                {
-                    b.batch = curbatch;
-                    b.next = decalbatches[curbatch].next;
-                    if(prevbatch < 0)
-                    {
-                        firstbatch = decalbatches.size()-1;
-                    }
-                    else
-                    {
-                        decalbatches[prevbatch].next = decalbatches.size()-1;
-                    }
-                    curbatch = decalbatches.size()-1;
-                }
-                else
-                {
-                    b.batch = next;
-                    decalbatches[last].batch = decalbatches.size()-1;
-                }
-            }
-            else
-            {
-                numbatches++;
-                b.next = curbatch;
-                if(prevbatch < 0)
-                {
-                    firstbatch = decalbatches.size()-1;
-                }
-                else
-                {
-                    decalbatches[prevbatch].next = decalbatches.size()-1;
-                }
-                prevbatch = decalbatches.size()-1;
-            }
-            decalbatches.push_back(b);
-        } while(++curtex < numtexs);
-    }
-
     void resetdecalbatches()
     {
         decalbatches.clear();
@@ -2596,7 +2508,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(va);
+                va->mergedecals();
                 if(!batchdecals && decalbatches.size())
                 {
                     renderdecalbatches(cur, 0);
@@ -2622,7 +2534,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(va);
+                va->mergedecals();
                 if(!batchdecals && decalbatches.size())
                 {
                     renderdecalbatches(cur, 1);
@@ -2643,7 +2555,7 @@ void renderdecals()
         {
             if(va->decaltris && va->occluded < Occlude_BB)
             {
-                mergedecals(va);
+                va->mergedecals();
                 if(!batchdecals && decalbatches.size())
                 {
                     renderdecalbatches(cur, 0);
@@ -3336,6 +3248,94 @@ bool vtxarray::bbinsideva(const ivec &bo, const ivec &br)
 {
     return bo.x >= bbmin.x && bo.y >= bbmin.y && bo.z >= bbmin.z &&
         br.x <= bbmax.x && br.y <= bbmax.y && br.z <= bbmax.z;
+}
+
+void vtxarray::mergedecals()
+{
+    elementset *texs = decalelems;
+    int numtexs = decaltexs,
+        offset  = 0;
+
+    if(firstbatch < 0)
+    {
+        firstbatch = decalbatches.size();
+        numbatches = numtexs;
+        for(int i = 0; i < numtexs-1; ++i)
+        {
+            decalbatches.emplace_back(decalbatch(texs[i], offset, this));
+            decalbatches.back().next = i+1;
+            offset += texs[i].length;
+        }
+        decalbatches.emplace_back(decalbatch(texs[numtexs-1], offset, this));
+        return;
+    }
+
+    int prevbatch = -1,
+        curbatch = firstbatch,
+        curtex = 0;
+    do
+    {
+        decalbatch b = decalbatch(texs[curtex], offset, this);
+        offset += texs[curtex].length;
+        int dir = -1;
+        while(curbatch >= 0)
+        {
+            dir = b.compare(decalbatches[curbatch]);
+            if(dir <= 0)
+            {
+                break;
+            }
+            prevbatch = curbatch;
+            curbatch = decalbatches[curbatch].next;
+        }
+        if(!dir)
+        {
+            int last = curbatch, next;
+            for(;;)
+            {
+                next = decalbatches[last].batch;
+                if(next < 0)
+                {
+                    break;
+                }
+                last = next;
+            }
+            if(last==curbatch)
+            {
+                b.batch = curbatch;
+                b.next = decalbatches[curbatch].next;
+                if(prevbatch < 0)
+                {
+                    firstbatch = decalbatches.size()-1;
+                }
+                else
+                {
+                    decalbatches[prevbatch].next = decalbatches.size()-1;
+                }
+                curbatch = decalbatches.size()-1;
+            }
+            else
+            {
+                b.batch = next;
+                decalbatches[last].batch = decalbatches.size()-1;
+            }
+        }
+        else
+        {
+            numbatches++;
+            b.next = curbatch;
+            if(prevbatch < 0)
+            {
+                firstbatch = decalbatches.size()-1;
+            }
+            else
+            {
+                decalbatches[prevbatch].next = decalbatches.size()-1;
+            }
+            prevbatch = decalbatches.size()-1;
+        }
+        decalbatches.push_back(b);
+    } while(++curtex < numtexs);
 }
 
 void vtxarray::mergetexs(renderstate &cur, elementset *texin, int offset)
