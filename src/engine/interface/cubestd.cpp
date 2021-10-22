@@ -83,7 +83,7 @@ COMMANDN(escape, escapecmd, "s");
 
 static void unescapecmd(char *s)
 {
-    int len = strlen(s);
+    int len = std::strlen(s);
     char *d = newstring(len);
     unescapestring(d, s, &s[len]);
     stringret(d);
@@ -419,7 +419,7 @@ static void loopconc(ident &id, int offset, int n, uint *body, bool space)
         tagval v;
         executeret(body, v);
         const char *vstr = v.getstr();
-        int len = strlen(vstr);
+        int len = std::strlen(vstr);
         if(space && i)
         {
             s.add(' ');
@@ -704,7 +704,7 @@ void at(tagval *args, int numargs)
         return;
     }
     const char *start  = args[0].getstr(),
-               *end    = start + strlen(start),
+               *end    = start + std::strlen(start),
                *qstart = "";
     for(int i = 1; i < numargs; i++)
     {
@@ -728,7 +728,7 @@ COMMAND(at, "si1V");
 
 void substr(char *s, int *start, int *count, int *numargs)
 {
-    int len = strlen(s),
+    int len = std::strlen(s),
         offset = std::clamp(*start, 0, len);
     commandret->setstr(newstring(&s[offset], *numargs >= 3 ? std::clamp(*count, 0, len - offset) : len - offset));
 }
@@ -770,7 +770,7 @@ COMMAND(sublist, "siiN");
 
 void stripcolors(char *s)
 {
-    int len = strlen(s);
+    int len = std::strlen(s);
     char *d = newstring(len);
     filtertext(d, s, true, false, len);
     stringret(d);
@@ -960,7 +960,7 @@ void looplistconc(ident *id, const char *list, const uint *body, bool space)
         tagval v;
         executeret(body, v);
         const char *vstr = v.getstr();
-        int len = strlen(vstr);
+        int len = std::strlen(vstr);
         r.put(vstr, len);
         freearg(v);
     }
@@ -1023,7 +1023,7 @@ void prettylist(const char *s, const char *conj)
             if(n+2 == len && conj[0])
             {
                 p.add(' ');
-                p.put(conj, strlen(conj));
+                p.put(conj, std::strlen(conj));
             }
             p.add(' ');
         }
@@ -1048,7 +1048,7 @@ int listincludes(const char *list, const char *needle, int needlelen)
     }
     return -1;
 }
-ICOMMAND(indexof, "ss", (char *list, char *elem), intret(listincludes(list, elem, strlen(elem))));
+ICOMMAND(indexof, "ss", (char *list, char *elem), intret(listincludes(list, elem, std::strlen(elem))));
 
 //================================================================= LISTMERGECMD
 #define LISTMERGECMD(name, init, iter, filter, dir) \
@@ -1071,7 +1071,7 @@ ICOMMAND(indexof, "ss", (char *list, char *elem), intret(listincludes(list, elem
 
 LISTMERGECMD(listdel, , list, elems, <);
 LISTMERGECMD(listintersect, , list, elems, >=);
-LISTMERGECMD(listunion, p.put(list, strlen(list)), elems, list, <);
+LISTMERGECMD(listunion, p.put(list, std::strlen(list)), elems, list, <);
 #undef LISTMERGECMD
 //==============================================================================
 
@@ -1100,7 +1100,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
         {
             p.add(' ');
         }
-        p.put(vals, strlen(vals));
+        p.put(vals, std::strlen(vals));
     }
     for(int i = 0; i < len; ++i)
     {
@@ -1124,7 +1124,7 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
             {
                 p.add(' ');
             }
-            p.put(s, strlen(s));
+            p.put(s, std::strlen(s));
             break;
         }
     }
@@ -1209,7 +1209,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         return;
     }
     vector<SortItem> items;
-    int clen = strlen(list),
+    int clen = std::strlen(list),
         total = 0;
     char *cstr = newstring(list, clen);
     const char *curlist = list,
@@ -1631,7 +1631,7 @@ CMPSCMD(>=s, ges, >=);
 ICOMMAND(echo, "C", (char *s), conoutf("\f1%s", s));
 ICOMMAND(error, "C", (char *s), conoutf(Console_Error, "%s", s));
 ICOMMAND(strstr, "ss", (char *a, char *b), { char *s = std::strstr(a, b); intret(s ? s-a : -1); });
-ICOMMAND(strlen, "s", (char *s), intret(strlen(s)));
+ICOMMAND(strlen, "s", (char *s), intret(std::strlen(s)));
 ICOMMAND(strcode, "si", (char *s, int *i), intret(*i > 0 ? (memchr(s, 0, *i) ? 0 : static_cast<uchar>(s[*i])) : static_cast<uchar>(s[0])));
 
 ICOMMAND(codestr, "i", (int *i),
@@ -1655,7 +1655,7 @@ ICOMMAND(unistr, "i", (int *i),
 #define STRMAPCOMMAND(name, map) \
     ICOMMAND(name, "s", (char *s), \
     { \
-        int len = strlen(s); \
+        int len = std::strlen(s); \
         char *m = newstring(len); \
         for(int i = 0; i < static_cast<int>(len); ++i) \
         { \
@@ -1673,7 +1673,7 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
 {
     vector<char> buf;
 
-    int oldlen = strlen(oldval);
+    int oldlen = std::strlen(oldval);
     if(!oldlen)
     {
         return newstring(s);
@@ -1709,8 +1709,8 @@ ICOMMAND(strreplace, "ssss", (char *s, char *o, char *n, char *n2), commandret->
 
 void strsplice(const char *s, const char *vals, int *skip, int *count)
 {
-    int slen   = strlen(s),
-        vlen   = strlen(vals),
+    int slen   = std::strlen(s),
+        vlen   = std::strlen(vals),
         offset = std::clamp(*skip, 0, slen),
         len    = std::clamp(*count, 0, slen - offset);
     char *p = newstring(slen - len + vlen);
