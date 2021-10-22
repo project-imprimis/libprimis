@@ -3526,19 +3526,19 @@ void vtxarray::addshadowva(float dist)
 }
 
 //====================================================== STARTVAQUERY ENDVAQUERY
-#define STARTVAQUERY(va, flush) \
+#define STARTVAQUERY(flush) \
     do { \
-        if(va->query) \
+        if(query) \
         { \
             flush; \
-            startquery(va->query); \
+            startquery(query); \
         } \
     } while(0)
 
 
-#define ENDVAQUERY(va, flush) \
+#define ENDVAQUERY(flush) \
     do { \
-        if(va->query) \
+        if(query) \
         { \
             flush; \
             endquery(); \
@@ -3558,12 +3558,12 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
             }
             if(doquery)
             {
-                STARTVAQUERY(this, { if(geombatches.length()) renderbatches(cur, pass); });
+                STARTVAQUERY( { if(geombatches.length()) renderbatches(cur, pass); });
             }
             mergetexs(cur);
             if(doquery)
             {
-                ENDVAQUERY(this, { if(geombatches.length()) renderbatches(cur, pass); });
+                ENDVAQUERY( { if(geombatches.length()) renderbatches(cur, pass); });
             }
             else if(!batchgeom && geombatches.length())
             {
@@ -3574,12 +3574,12 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
         case RenderPass_GBufferBlend:
             if(doquery)
             {
-                STARTVAQUERY(this, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
+                STARTVAQUERY( { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
             }
             mergetexs(cur, &this->texelems[this->texs], 3*this->tris);
             if(doquery)
             {
-                ENDVAQUERY(this, { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
+                ENDVAQUERY( { if(geombatches.length()) renderbatches(cur, RenderPass_GBuffer); });
             }
             else if(!batchgeom && geombatches.length())
             {
@@ -3603,12 +3603,12 @@ void vtxarray::renderva(renderstate &cur, int pass, bool doquery)
         case RenderPass_Z:
             if(doquery)
             {
-                STARTVAQUERY(this, );
+                STARTVAQUERY();
             }
             renderzpass(cur);
             if(doquery)
             {
-                ENDVAQUERY(this, );
+                ENDVAQUERY();
             }
             break;
 
