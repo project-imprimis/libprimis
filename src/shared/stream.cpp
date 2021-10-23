@@ -1332,7 +1332,11 @@ struct gzstream : stream
         DELETEA(buf);
         if(autoclose)
         {
-            DELETEP(file);
+            if(file)
+            {
+                delete file;
+                file = nullptr;
+            }
         }
     }
 
@@ -1640,7 +1644,11 @@ struct utf8stream : stream
         stopwriting();
         if(autoclose)
         {
-            DELETEP(file);
+            if(file)
+            {
+                delete file;
+                file = nullptr;
+            }
         }
     }
 

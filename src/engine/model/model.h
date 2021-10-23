@@ -55,7 +55,15 @@ class model
                                   collideradius(-1, -1, -1),
                                   rejectradius(-1) {}
 
-        virtual ~model() { DELETEA(name); DELETEP(bih); }
+        virtual ~model()
+        {
+            DELETEA(name);
+            if(bih)
+            {
+                delete bih;
+                bih = nullptr;
+            }
+        }
         virtual void calcbb(vec &center, vec &radius) = 0;
         virtual void calctransform(matrix4x3 &m) = 0;
         virtual int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode) = 0;

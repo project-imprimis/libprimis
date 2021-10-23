@@ -539,5 +539,9 @@ void moveragdoll(dynent *d)
 
 void cleanragdoll(dynent *d)
 {
-    DELETEP(d->ragdoll);
+    if(d->ragdoll)
+    {
+        delete d->ragdoll;
+        d->ragdoll = nullptr;
+    }
 }

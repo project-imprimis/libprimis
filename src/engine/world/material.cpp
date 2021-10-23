@@ -47,7 +47,11 @@ namespace
         {
             for(int i = 0; i < 4; ++i)
             {
-                DELETEP(child[i]);
+                if(child[i])
+                {
+                    delete child[i];
+                    child[i] = nullptr;
+                }
             }
         }
 
@@ -89,7 +93,11 @@ namespace
                 {
                     if(child[j]->filled == 0xF)
                     {
-                        DELETEP(child[j]);
+                        if(child[j])
+                        {
+                            delete child[j];
+                            child[j] = nullptr;
+                        }
                         filled |= (1 << j);
                     }
                 }

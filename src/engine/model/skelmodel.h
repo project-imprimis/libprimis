@@ -434,7 +434,11 @@ struct skelmodel : animmodel
             DELETEA(name);
             DELETEA(bones);
             DELETEA(framebones);
-            DELETEP(ragdoll);
+            if(ragdoll)
+            {
+                delete ragdoll;
+                ragdoll = nullptr;
+            }
             for(int i = 0; i < skelcache.length(); i++)
             {
                 DELETEA(skelcache[i].bdata);
@@ -523,7 +527,11 @@ struct skelmodel : animmodel
                 }
                 else
                 {
-                    DELETEP(skel);
+                    if(skel)
+                    {
+                        delete skel;
+                        skel = nullptr;
+                    }
                 }
             }
             if(ebuf)
