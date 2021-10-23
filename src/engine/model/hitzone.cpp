@@ -832,7 +832,11 @@ void skelmodel::skelmeshgroup::cleanuphitdata()
 
 void skelmodel::skelmeshgroup::deletehitdata()
 {
-    DELETEP(hitdata);
+    if(hitdata)
+    {
+        delete hitdata;
+        hitdata = nullptr;
+    }
 }
 
 void skelmodel::skelmeshgroup::intersect(skelhitdata *z, part *p, const skelmodel::skelcacheentry &sc, const vec &o, const vec &ray)

@@ -319,7 +319,11 @@ bool initidents()
         {
             addident((*identinits)[i]);
         }
-        DELETEP(identinits);
+        if(identinits)
+        {
+            delete identinits;
+            identinits = nullptr;
+        }
     }
     return true;
 }

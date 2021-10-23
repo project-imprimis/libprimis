@@ -5003,7 +5003,11 @@ namespace UI
         world->children.resize(0);
         ENUMERATE(windows, Window *, w, delete w);
         windows.clear();
-        DELETEP(world);
+        if(world)
+        {
+            delete world;
+            world = nullptr;
+        }
     }
 
     void calctextscale()
