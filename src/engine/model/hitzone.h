@@ -82,7 +82,11 @@ class skelhitzone
         {
             if(!numchildren)
             {
-                DELETEP(bih);
+                if(bih)
+                {
+                    delete bih;
+                    bih = nullptr;
+                }
             }
             else
             {

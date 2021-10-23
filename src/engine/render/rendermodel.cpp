@@ -600,7 +600,11 @@ model *loadmodel(const char *name, int i, bool msg)
             {
                 break;
             }
-            DELETEP(m);
+            if(m)
+            {
+                delete m;
+                m = nullptr;
+            }
         }
         loadingmodel = nullptr;
         if(!m)
@@ -1246,7 +1250,11 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
                 center = d->ragdoll->center;
                 goto hasboundbox; //skip roll and pitch stuff
             }
-            DELETEP(d->ragdoll);
+            if(d->ragdoll)
+            {
+                delete d->ragdoll;
+                d->ragdoll = nullptr;
+            }
         }
         if(anim & Anim_Ragdoll)
         {
@@ -1368,7 +1376,11 @@ int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float p
     }
     if(d && d->ragdoll && (!(anim & Anim_Ragdoll) || d->ragdoll->millis < basetime))
     {
-        DELETEP(d->ragdoll);
+        if(d->ragdoll)
+        {
+            delete d->ragdoll;
+            d->ragdoll = nullptr;
+        }
     }
     if(a)
     {

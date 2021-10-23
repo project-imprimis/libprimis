@@ -354,7 +354,11 @@ class animmodel : public model
                 {
                     DELETEA(name);
                     meshes.deletecontents();
-                    DELETEP(next);
+                    if(next)
+                    {
+                        delete next;
+                        next = nullptr;
+                    }
                 }
 
                 virtual int findtag(const char *name)

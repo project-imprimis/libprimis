@@ -43,8 +43,16 @@ struct PackNode
 
     void discardchildren()
     {
-        DELETEP(child1);
-        DELETEP(child2);
+        if(child1)
+        {
+            delete child1;
+            child1 = nullptr;
+        }
+        if(child2)
+        {
+            delete child2;
+            child2 = nullptr;
+        }
     }
 
     void forceempty()

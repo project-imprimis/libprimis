@@ -220,7 +220,11 @@ void stopmusic()
         SDL_FreeRW(musicrw);
         musicrw = nullptr;
     }
-    DELETEP(musicstream);
+    if(musicstream)
+    {
+        delete musicstream;
+        musicstream = nullptr;
+    }
 }
 
 #ifdef WIN32
@@ -340,7 +344,11 @@ void musicdone()
         SDL_FreeRW(musicrw);
         musicrw = nullptr;
     }
-    DELETEP(musicstream);
+    if(musicstream)
+    {
+        delete musicstream;
+        musicstream = nullptr;
+    }
     DELETEA(musicfile);
     if(!musicdonecmd)
     {
@@ -367,7 +375,11 @@ Mix_Music *loadmusic(const char *name)
         }
         if(!musicrw)
         {
-            DELETEP(musicstream);
+            if(musicstream)
+            {
+                delete musicstream;
+                musicstream = nullptr;
+            }
         }
     }
     if(musicrw)
@@ -385,7 +397,11 @@ Mix_Music *loadmusic(const char *name)
             SDL_FreeRW(musicrw);
             musicrw = nullptr;
         }
-        DELETEP(musicstream);
+        if(musicstream)
+        {
+            delete musicstream;
+            musicstream = nullptr;
+        }
     }
     return music;
 }
