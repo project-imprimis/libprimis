@@ -32,7 +32,7 @@ FILE *getlogfile()
 static void writelog(FILE *file, const char *buf)
 {
     static uchar ubuf[512];
-    size_t len = strlen(buf),
+    size_t len = std::strlen(buf),
            carry = 0;
     while(carry < len)
     {
