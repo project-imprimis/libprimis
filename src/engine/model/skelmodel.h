@@ -224,8 +224,16 @@ struct skelmodel : animmodel
 
         virtual ~skelmesh()
         {
-            DELETEA(verts);
-            DELETEA(tris);
+            if(verts)
+            {
+                delete[] verts;
+                verts = nullptr;
+            }
+            if(tris)
+            {
+                delete[] verts;
+                verts = nullptr;
+            }
         }
 
         int addblendcombo(const blendcombo &c);
@@ -348,7 +356,14 @@ struct skelmodel : animmodel
         matrix4x3 matrix;
 
         tag() : name(nullptr) {}
-        ~tag() { DELETEA(name); }
+        ~tag()
+        {
+            if(name)
+            {
+                delete[] name;
+                name = nullptr;
+            }
+        }
     };
 
     struct skelanimspec
@@ -359,7 +374,11 @@ struct skelmodel : animmodel
         skelanimspec() : name(nullptr), frame(0), range(0) {}
         ~skelanimspec()
         {
-            DELETEA(name);
+            if(name)
+            {
+                delete[] name;
+                name = nullptr;
+            }
         }
     };
 
@@ -373,7 +392,11 @@ struct skelmodel : animmodel
         boneinfo() : name(nullptr), parent(-1), children(-1), next(-1), group(INT_MAX), scheduled(-1), interpindex(-1), interpparent(-1), ragdollindex(-1), correctindex(-1), pitchscale(0), pitchoffset(0), pitchmin(0), pitchmax(0) {}
         ~boneinfo()
         {
-            DELETEA(name);
+            if(name)
+            {
+                delete[] name;
+                name = nullptr;
+            }
         }
     };
 
@@ -431,9 +454,21 @@ struct skelmodel : animmodel
 
         ~skeleton()
         {
-            DELETEA(name);
-            DELETEA(bones);
-            DELETEA(framebones);
+            if(name)
+            {
+                delete[] name;
+                name = nullptr;
+            }
+            if(bones)
+            {
+                delete[] bones;
+                bones = nullptr;
+            }
+            if(framebones)
+            {
+                delete[] framebones;
+                framebones = nullptr;
+            }
             if(ragdoll)
             {
                 delete ragdoll;
@@ -441,8 +476,12 @@ struct skelmodel : animmodel
             }
             for(int i = 0; i < skelcache.length(); i++)
             {
-                DELETEA(skelcache[i].bdata);
-            }
+                if(skelcache[i].bdata)
+                    {
+                        delete[] skelcache[i].bdata;
+                        skelcache[i].bdata = nullptr;
+                    }
+                }
         }
 
         skelanimspec *findskelanim(const char *name, char sep = '\0');
@@ -540,7 +579,11 @@ struct skelmodel : animmodel
             }
             for(int i = 0; i < maxblendcache; ++i)
             {
-                DELETEA(blendcache[i].bdata);
+                if(blendcache[i].bdata)
+                {
+                    delete[] blendcache[i].bdata;
+                    blendcache[i].bdata = nullptr;
+                }
             }
             for(int i = 0; i < maxvbocache; ++i)
             {
@@ -549,7 +592,11 @@ struct skelmodel : animmodel
                     glDeleteBuffers_(1, &vbocache[i].vbuf);
                 }
             }
-            DELETEA(vdata);
+            if(vdata)
+            {
+                delete[] vdata;
+                vdata = nullptr;
+            }
             deletehitdata();
         }
 
@@ -679,7 +726,11 @@ struct skelmodel : animmodel
 
             virtual ~skelpart()
             {
-                DELETEA(buildingpartmask);
+                if(buildingpartmask)
+                {
+                    delete[] buildingpartmask;
+                    buildingpartmask = nullptr;
+                }
             }
 
             void initanimparts();

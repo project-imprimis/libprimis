@@ -124,7 +124,11 @@ class animmodel : public model
 
                 virtual ~Mesh()
                 {
-                    DELETEA(name);
+                    if(name)
+                    {
+                        delete[] name;
+                        name = nullptr;
+                    }
                 }
 
                 virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) {}
@@ -352,7 +356,11 @@ class animmodel : public model
 
                 virtual ~meshgroup()
                 {
-                    DELETEA(name);
+                    if(name)
+                    {
+                        delete[] name;
+                        name = nullptr;
+                    }
                     meshes.deletecontents();
                     if(next)
                     {
@@ -448,7 +456,11 @@ class animmodel : public model
                 {
                     for(int k = 0; k < maxanimparts; ++k)
                     {
-                        DELETEA(anims[k]);
+                        if(anims[k])
+                        {
+                            delete[] anims[k];
+                            anims[k] = nullptr;
+                        }
                     }
                 }
 
