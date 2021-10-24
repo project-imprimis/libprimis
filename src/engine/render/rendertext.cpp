@@ -294,7 +294,7 @@ void tabify(const char *str, int *numtabs)
     {
         ++tabs;
     }
-    int len = strlen(str);
+    int len = std::strlen(str);
     char *tstr = newstring(len + tabs);
     memcpy(tstr, str, len);
     memset(&tstr[len], '\t', tabs);
