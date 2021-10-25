@@ -167,41 +167,6 @@ namespace
         vbosize[type] = 0;
     }
 
-    uchar *addvbo(vtxarray *va, int type, int numelems, int elemsize)
-    {
-        switch(type)
-        {
-            case VBO_VBuf:
-            {
-                va->voffset = vbosize[type];
-                break;
-            }
-            case VBO_EBuf:
-            {
-                va->eoffset = vbosize[type];
-                break;
-            }
-            case VBO_SkyBuf:
-            {
-                va->skyoffset = vbosize[type];
-                break;
-            }
-            case VBO_DecalBuf:
-            {
-                va->decaloffset = vbosize[type];
-                break;
-            }
-        }
-        vbosize[type] += numelems;
-        vector<uchar> &data = vbodata[type];
-        vector<vtxarray *> &vas = vbovas[type];
-        vas.add(va);
-        int len = numelems*elemsize;
-        uchar *buf = data.reserve(len).buf;
-        data.advance(len);
-        return buf;
-    }
-
     class verthash
     {
         public:
@@ -473,7 +438,7 @@ namespace
                     {
                         flushvbo();
                     }
-                    uchar *vdata = addvbo(va, VBO_VBuf, va->verts, sizeof(vertex));
+                    uchar *vdata = va->addvbo(VBO_VBuf, va->verts, sizeof(vertex));
                     genverts(vdata);
                     va->minvert += va->voffset;
                     va->maxvert += va->voffset;
@@ -515,7 +480,7 @@ namespace
                 va->sky = skyindices.length();
                 if(va->sky)
                 {
-                    ushort *skydata = reinterpret_cast<ushort *>(addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort)));
+                    ushort *skydata = reinterpret_cast<ushort *>(va->addvbo(VBO_SkyBuf, va->sky, sizeof(ushort)));
                     memcpy(skydata, skyindices.getbuf(), va->sky*sizeof(ushort));
                     if(va->voffset)
                     {
@@ -540,7 +505,7 @@ namespace
                 if(va->texs)
                 {
                     va->texelems = new elementset[va->texs];
-                    ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_EBuf, worldtris, sizeof(ushort))),
+                    ushort *edata = reinterpret_cast<ushort *>(va->addvbo(VBO_EBuf, worldtris, sizeof(ushort))),
                            *curbuf = edata;
                     for(int i = 0; i < texs.length(); i++)
                     {
@@ -615,7 +580,7 @@ namespace
                 if(va->decaltexs)
                 {
                     va->decalelems = new elementset[va->decaltexs];
-                    ushort *edata = reinterpret_cast<ushort *>(addvbo(va, VBO_DecalBuf, decaltris, sizeof(ushort))),
+                    ushort *edata = reinterpret_cast<ushort *>(va->addvbo(VBO_DecalBuf, decaltris, sizeof(ushort))),
                            *curbuf = edata;
                     for(int i = 0; i < decaltexs.length(); i++)
                     {
@@ -2402,6 +2367,41 @@ void vtxarray::calcgeombb(const ivec &co, int size)
 
     bbmin = ivec(vmin.mul(8)).shr(3);
     bbmax = ivec(vmax.mul(8)).add(7).shr(3);
+}
+
+uchar * vtxarray::addvbo(int type, int numelems, int elemsize)
+{
+    switch(type)
+    {
+        case VBO_VBuf:
+        {
+            voffset = vbosize[type];
+            break;
+        }
+        case VBO_EBuf:
+        {
+            eoffset = vbosize[type];
+            break;
+        }
+        case VBO_SkyBuf:
+        {
+            skyoffset = vbosize[type];
+            break;
+        }
+        case VBO_DecalBuf:
+        {
+            decaloffset = vbosize[type];
+            break;
+        }
+    }
+    vbosize[type] += numelems;
+    vector<uchar> &data = vbodata[type];
+    vector<vtxarray *> &vas = vbovas[type];
+    vas.add(this);
+    int len = numelems*elemsize;
+    uchar *buf = data.reserve(len).buf;
+    data.advance(len);
+    return buf;
 }
 
 //update vertex array bounding boxes recursively from the root va object down to all children
