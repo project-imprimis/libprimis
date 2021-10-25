@@ -73,6 +73,8 @@ struct renderstate
 
 struct decalrenderer;
 
+class vacollect;
+
 class vtxarray
 {
     public:
@@ -134,6 +136,7 @@ class vtxarray
         void changevbuf(decalrenderer &cur);
         void changevbuf(renderstate &cur, int pass);
         uchar * addvbo(int type, int numelems, int elemsize);
+        void setupdata(vacollect* vacol);
 
 
     private:
