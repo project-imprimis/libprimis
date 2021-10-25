@@ -32,10 +32,9 @@ class vtxarray
         vector<vtxarray *> children;
         vtxarray *next, *rnext;  // linked list of visible VOBs
         vertex *vdata;           // vertex data
-        ushort voffset, eoffset, skyoffset, decaloffset; // offset into vertex data
+        ushort eoffset, skyoffset, decaloffset; // offset into vertex data
         ushort *edata, *skydata, *decaldata; // vertex indices
         GLuint vbuf, ebuf, skybuf, decalbuf; // VBOs
-        ushort minvert, maxvert; // DRE info
         elementset *texelems, *decalelems;   // List of element indices sets (range) per texture
         materialsurface *matbuf; // buffer of material surfaces
         int verts,
@@ -44,12 +43,11 @@ class vtxarray
             alphabacktris, alphaback,
             alphafronttris, alphafront,
             refracttris, refract,
-            texmask,
             sky,
-            matsurfs, matmask,
+            matsurfs,
             distance, rdistance,
             dyntexs, //dynamic if vscroll presentss
-            decaltris, decaltexs;
+            decaltris;
         ivec o;
         int size;                // location and size of cube.
         ivec geommin, geommax;   // BB of geom
@@ -90,6 +88,13 @@ class vtxarray
 
 
     private:
+        ushort voffset;
+        ushort minvert, maxvert; // DRE info
+
+        int texmask;
+        int matmask;
+        int decaltexs;
+
         float vadist(const vec &p);
         void addvisibleva();
         void mergetexs(renderstate &cur, elementset *texs = nullptr, int offset = 0);
