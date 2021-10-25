@@ -83,6 +83,8 @@ class vtxarray
 
         void changevbuf(decalrenderer &cur);
         void changevbuf(renderstate &cur, int pass);
+        uchar * addvbo(int type, int numelems, int elemsize);
+
 
     private:
         float vadist(const vec &p);
