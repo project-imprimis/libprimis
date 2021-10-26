@@ -83,7 +83,6 @@ class vtxarray
 
         void changevbuf(decalrenderer &cur);
         void changevbuf(renderstate &cur, int pass);
-        uchar * addvbo(int type, int numelems, int elemsize);
         void setupdata(vacollect* vacol);
 
         //basically a destructor
@@ -102,6 +101,7 @@ class vtxarray
         void mergetexs(renderstate &cur, elementset *texs = nullptr, int offset = 0);
         void renderzpass(renderstate &cur);
         void addshadowva(float dist);
+        uchar * addvbo(int type, int numelems, int elemsize);
 };
 
 extern ivec worldmin, worldmax;
