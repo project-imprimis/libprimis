@@ -86,6 +86,8 @@ class vtxarray
         uchar * addvbo(int type, int numelems, int elemsize);
         void setupdata(vacollect* vacol);
 
+        //basically a destructor
+        void destroyva(bool reparent = true);
 
     private:
         ushort voffset;
@@ -114,7 +116,6 @@ extern void findtjoints();
 extern void octarender();
 extern void allchanged(bool load = false);
 extern void clearvas(cube *c);
-extern void destroyva(vtxarray *va, bool reparent = true);
 extern void updatevabbs(bool force = false);
 
 #endif

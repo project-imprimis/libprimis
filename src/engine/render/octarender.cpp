@@ -2024,61 +2024,61 @@ void guessnormals(const vec *pos, int numverts, vec *normals)
  *
  * if reparent is set to true, assigns child vertex arrays to the parent of the selected va
  */
-void destroyva(vtxarray *va, bool reparent)
+void vtxarray::destroyva(bool reparent)
 {
-    wverts -= va->verts;
-    wtris -= va->tris + va->alphabacktris + va->alphafronttris + va->refracttris + va->decaltris;
+    wverts -= verts;
+    wtris -= tris + alphabacktris + alphafronttris + refracttris + decaltris;
     allocva--;
-    valist.removeobj(va);
-    if(!va->parent)
+    valist.removeobj(this);
+    if(!parent)
     {
-        varoot.removeobj(va);
+        varoot.removeobj(this);
     }
     if(reparent)
     {
-        if(va->parent)
+        if(parent)
         {
-            va->parent->children.removeobj(va);
+            parent->children.removeobj(this);
         }
-        for(int i = 0; i < va->children.length(); i++)
+        for(int i = 0; i < children.length(); i++)
         {
-            vtxarray *child = va->children[i];
-            child->parent = va->parent;
+            vtxarray *child = children[i];
+            child->parent = parent;
             if(child->parent)
             {
                 child->parent->children.add(child);
             }
         }
     }
-    if(va->vbuf)
+    if(vbuf)
     {
-        destroyvbo(va->vbuf);
+        destroyvbo(vbuf);
     }
-    if(va->ebuf)
+    if(ebuf)
     {
-        destroyvbo(va->ebuf);
+        destroyvbo(ebuf);
     }
-    if(va->skybuf)
+    if(skybuf)
     {
-        destroyvbo(va->skybuf);
+        destroyvbo(skybuf);
     }
-    if(va->decalbuf)
+    if(decalbuf)
     {
-        destroyvbo(va->decalbuf);
+        destroyvbo(decalbuf);
     }
-    if(va->texelems)
+    if(texelems)
     {
-        delete[] va->texelems;
+        delete[] texelems;
     }
-    if(va->decalelems)
+    if(decalelems)
     {
-        delete[] va->decalelems;
+        delete[] decalelems;
     }
-    if(va->matbuf)
+    if(matbuf)
     {
-        delete[] va->matbuf;
+        delete[] matbuf;
     }
-    delete va;
+    delete this;
 }
 
 //recursively clear vertex arrays for a cube object and its children
@@ -2090,7 +2090,7 @@ void clearvas(cube *c)
         {
             if(c[i].ext->va)
             {
-                destroyva(c[i].ext->va, false);
+                c[i].ext->va->destroyva(false);
             }
             c[i].ext->va = nullptr;
             c[i].ext->tjoints = -1;
