@@ -35,7 +35,7 @@ class vtxarray
         ushort eoffset, skyoffset, decaloffset; // offset into vertex data
         ushort *edata, *skydata, *decaldata; // vertex indices
         GLuint vbuf, ebuf, skybuf, decalbuf; // VBOs
-        elementset *texelems, *decalelems;   // List of element indices sets (range) per texture
+        elementset *texelems;
         materialsurface *matbuf; // buffer of material surfaces
         int verts,
             tris,
@@ -92,7 +92,7 @@ class vtxarray
     private:
         ushort voffset;
         ushort minvert, maxvert; // DRE info
-
+        elementset *decalelems;   // List of element indices sets (range) per texture
         int texmask;
         int matmask;
         int decaltexs;
