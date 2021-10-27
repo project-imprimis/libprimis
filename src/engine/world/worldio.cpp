@@ -688,8 +688,8 @@ void savevslot(stream *f, VSlot &vs, int prev)
         for(int i = 0; i < vs.params.length(); i++)
         {
             SlotShaderParam &p = vs.params[i];
-            f->put<ushort>(strlen(p.name));
-            f->write(p.name, strlen(p.name));
+            f->put<ushort>(std::strlen(p.name));
+            f->write(p.name, std::strlen(p.name));
             for(int k = 0; k < 4; ++k)
             {
                 f->put<float>(p.val[k]);
@@ -979,8 +979,8 @@ bool save_world(const char *mname, const char *gameident)
             continue;
         }
         f->putchar(id.type);
-        f->put<ushort>(strlen(id.name));
-        f->write(id.name, strlen(id.name));
+        f->put<ushort>(std::strlen(id.name));
+        f->write(id.name, std::strlen(id.name));
         switch(id.type)
         {
             case Id_Var:
@@ -1004,8 +1004,8 @@ bool save_world(const char *mname, const char *gameident)
                 {
                     conoutf(Console_Debug, "wrote svar %s: %s", id.name, *id.storage.s);
                 }
-                f->put<ushort>(strlen(*id.storage.s));
-                f->write(*id.storage.s, strlen(*id.storage.s));
+                f->put<ushort>(std::strlen(*id.storage.s));
+                f->write(*id.storage.s, std::strlen(*id.storage.s));
                 break;
         }
     });
@@ -1013,8 +1013,8 @@ bool save_world(const char *mname, const char *gameident)
     {
         conoutf(Console_Debug, "wrote %d vars", hdr.numvars);
     }
-    f->putchar(static_cast<int>(strlen(gameident)));
-    f->write(gameident, static_cast<int>(strlen(gameident)+1));
+    f->putchar(static_cast<int>(std::strlen(gameident)));
+    f->write(gameident, static_cast<int>(std::strlen(gameident)+1));
     //=== padding for compatibility (extent properties no longer a feature)
     f->put<ushort>(0);
     f->put<ushort>(0);
