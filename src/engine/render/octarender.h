@@ -83,7 +83,7 @@ class vtxarray
         vtxarray *next, *rnext;  // linked list of visible VOBs
         vertex *vdata;           // vertex data
         ushort eoffset, skyoffset, decaloffset; // offset into vertex data
-        ushort *edata, *skydata, *decaldata; // vertex indices
+        ushort *edata, *skydata; // vertex indices
         GLuint vbuf, ebuf, skybuf, decalbuf; // VBOs
         elementset *texelems;
         materialsurface *matbuf; // buffer of material surfaces
@@ -141,6 +141,7 @@ class vtxarray
 
     private:
         ushort voffset;
+        ushort *decaldata; // vertex indices
         ushort minvert, maxvert; // DRE info
         elementset *decalelems;   // List of element indices sets (range) per texture
         int texmask;
