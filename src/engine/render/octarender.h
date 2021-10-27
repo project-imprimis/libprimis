@@ -84,6 +84,7 @@ class vtxarray
         void changevbuf(decalrenderer &cur);
         void changevbuf(renderstate &cur, int pass);
         void setupdata(vacollect* vacol);
+        void vavbo(GLuint vbo, int type, uchar * data);
 
         //basically a destructor
         void destroyva(bool reparent = true);
