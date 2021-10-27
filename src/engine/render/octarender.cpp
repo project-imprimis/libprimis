@@ -88,6 +88,37 @@ void destroyvbo(GLuint vbo)
     }
 }
 
+//vtxarray function for handling private vtxarray members
+void vtxarray::vavbo(GLuint vbo, int type, uchar * data)
+{
+    switch(type)
+    {
+        case VBO_VBuf:
+        {
+            vbuf = vbo;
+            vdata = reinterpret_cast<vertex *>(data);
+            break;
+        }
+        case VBO_EBuf:
+        {
+            ebuf = vbo;
+            edata = reinterpret_cast<ushort *>(data);
+            break;
+        }
+        case VBO_SkyBuf:
+        {
+            skybuf = vbo;
+            skydata = reinterpret_cast<ushort *>(data);
+            break;
+        }
+        case VBO_DecalBuf:
+        {
+            decalbuf = vbo;
+            decaldata = reinterpret_cast<ushort *>(data);
+            break;
+        }
+    }
+}
 //sets up vbos (vertex buffer objects) for the pointer-to-array-of-vtxarray **vas
 //by setting up each vertex array's vbuf and vdata
 void genvbo(int type, void *buf, int len, vtxarray **vas, int numva)
@@ -109,33 +140,7 @@ void genvbo(int type, void *buf, int len, vtxarray **vas, int numva)
     for(int i = 0; i < numva; ++i)
     {
         vtxarray *va = vas[i];
-        switch(type)
-        {
-            case VBO_VBuf:
-            {
-                va->vbuf = vbo;
-                va->vdata = reinterpret_cast<vertex *>(vbi.data);
-                break;
-            }
-            case VBO_EBuf:
-            {
-                va->ebuf = vbo;
-                va->edata = reinterpret_cast<ushort *>(vbi.data);
-                break;
-            }
-            case VBO_SkyBuf:
-            {
-                va->skybuf = vbo;
-                va->skydata = reinterpret_cast<ushort *>(vbi.data);
-                break;
-            }
-            case VBO_DecalBuf:
-            {
-                va->decalbuf = vbo;
-                va->decaldata = reinterpret_cast<ushort *>(vbi.data);
-                break;
-            }
-        }
+        va->vavbo(vbo, type, vbi.data);
     }
 }
 
