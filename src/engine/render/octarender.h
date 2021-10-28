@@ -77,6 +77,7 @@ class vtxarray
         void drawvatris(GLsizei numindices, int offset);
         void drawvaskytris();
         void calcmatbb(const ivec &co, int size, std::vector<materialsurface> &matsurfs); //from material.cpp
+        void gengrassquads(); //from grass.cpp
 
         template<bool fullvis, bool resetocclude>
         void findvisiblevas();
