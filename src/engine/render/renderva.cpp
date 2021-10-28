@@ -546,24 +546,6 @@ namespace
         cur.vquery = false;
     }
 
-    void renderquery(renderstate &cur, occludequery *query, vtxarray *va, bool full = true)
-    {
-        if(!cur.vquery)
-        {
-            enablevquery(cur);
-        }
-        startquery(query);
-        if(full)
-        {
-            drawbb(ivec(va->bbmin).sub(1), ivec(va->bbmax).sub(va->bbmin).add(2));
-        }
-        else
-        {
-            drawbb(va->geommin, ivec(va->geommax).sub(va->geommin));
-        }
-        endquery();
-    }
-
     enum
     {
         RenderPass_GBuffer = 0,
@@ -2329,7 +2311,7 @@ void rendergeom()
                             {
                                 disablevbuf(cur);
                             }
-                            renderquery(cur, va->query, va);
+                            va->renderquery(cur);
                         }
                         continue;
                     }
@@ -3092,6 +3074,24 @@ renderstate::renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf
 }
 
 //vertex array object methods
+
+void vtxarray::renderquery(renderstate &cur, bool full)
+{
+    if(!cur.vquery)
+    {
+        enablevquery(cur);
+    }
+    startquery(query);
+    if(full)
+    {
+        drawbb(ivec(bbmin).sub(1), ivec(bbmax).sub(bbmin).add(2));
+    }
+    else
+    {
+        drawbb(geommin, ivec(geommax).sub(geommin));
+    }
+    endquery();
+}
 
 void vtxarray::drawvaskytris()
 {

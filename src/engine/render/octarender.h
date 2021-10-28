@@ -135,6 +135,8 @@ class vtxarray
         void changevbuf(renderstate &cur, int pass);
         void setupdata(vacollect* vacol);
         void vavbo(GLuint vbo, int type, uchar * data);
+        void renderquery(renderstate &cur, bool full = true);
+
 
         //basically a destructor
         void destroyva(bool reparent = true);
