@@ -3703,7 +3703,7 @@ void screenshot(char *filename)
     copystring(buf, screenshotdir);
     if(screenshotdir[0])
     {
-        dirlen = strlen(buf);
+        dirlen = std::strlen(buf);
         if(buf[dirlen] != '/' && buf[dirlen] != '\\' && dirlen+1 < static_cast<int>(sizeof(buf)))
         {
             buf[dirlen++] = '/';
