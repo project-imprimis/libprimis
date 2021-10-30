@@ -66,6 +66,7 @@ namespace tiger
                 x7 -= x6 ^ 0x0123456789ABCDEFULL;
             }
 
+//============================================================= SB_1 2 3 4 ROUND
 #define SB_1 (sboxes)
 #define SB_2 (sboxes+256)
 #define SB_3 (sboxes+256*2)
@@ -88,7 +89,10 @@ namespace tiger
             ROUND(a, b, c, x6)
             ROUND(b, c, a, x7)
 
-            chunk tmp = a; a = c; c = b; b = tmp;
+            chunk tmp = a;
+            a = c;
+            c = b;
+            b = tmp;
         }
 
         a ^= aa;
@@ -104,7 +108,7 @@ namespace tiger
 #undef SB_2
 #undef SB_3
 #undef SB_4
-
+//==============================================================================
     void gensboxes()
     {
         const char *str = "Tiger - A Fast New Hash Function, by Ross Anderson and Eli Biham";
