@@ -106,7 +106,7 @@ struct md5 : skelloader<md5>
                         {
                             start++;
                         }
-                        char *end = start + strlen(start)-1;
+                        char *end = start + std::strlen(start)-1;
                         while(end >= start && isspace(*end))
                         {
                             end--;
@@ -562,7 +562,7 @@ struct md5 : skelloader<md5>
     bool loaddefaultparts()
     {
         skelpart &mdl = addpart();
-        const char *fname = name + strlen(name);
+        const char *fname = name + std::strlen(name);
         do
         {
             --fname;
