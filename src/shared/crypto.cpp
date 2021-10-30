@@ -1097,7 +1097,7 @@ bool calcpubkey(const char *privstr, vector<char> &pubstr)
 void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr)
 {
     tiger::hashval hash;
-    tiger::hash(reinterpret_cast<const uchar *>(seed), static_cast<int>(strlen(seed)), hash);
+    tiger::hash(reinterpret_cast<const uchar *>(seed), static_cast<int>(std::strlen(seed)), hash);
     bigint<8*sizeof(hash.bytes)/bidigitbits> privkey;
     memcpy(privkey.digits, hash.bytes, sizeof(hash.bytes));
     privkey.len = 8*sizeof(hash.bytes)/bidigitbits;
@@ -1115,7 +1115,7 @@ bool hashstring(const char *str, char *result, int maxlen)
     {
         return false;
     }
-    tiger::hash(const_cast<uchar *>(reinterpret_cast<const uchar *>(str)), strlen(str), hv);
+    tiger::hash(const_cast<uchar *>(reinterpret_cast<const uchar *>(str)), std::strlen(str), hv);
     for(int i = 0; i < static_cast<int>(sizeof(hv.bytes)); ++i)
     {
         uchar c = hv.bytes[i];
