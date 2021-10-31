@@ -99,7 +99,7 @@ struct md5 : skelloader<md5>
 
                 while(f->getline(buf, bufsize) && buf[0]!='}')
                 {
-                    if(strstr(buf, "// meshes:"))
+                    if(std::strstr(buf, "// meshes:"))
                     {
                         char *start = strchr(buf, ':')+1;
                         if(*start==' ')
@@ -113,7 +113,7 @@ struct md5 : skelloader<md5>
                         }
                         name = newstring(start, end+1-start);
                     }
-                    else if(strstr(buf, "shader"))
+                    else if(std::strstr(buf, "shader"))
                     {
                         char *start = strchr(buf, '"'),
                              *end = start ? strchr(start+1, '"') : nullptr;
@@ -256,14 +256,14 @@ struct md5 : skelloader<md5>
                             animdata = new float[animdatalen];
                         }
                     }
-                    else if(strstr(buf, "bounds {"))
+                    else if(std::strstr(buf, "bounds {"))
                     {
                         while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                         {
                             //(empty body)
                         }
                     }
-                    else if(strstr(buf, "hierarchy {"))
+                    else if(std::strstr(buf, "hierarchy {"))
                     {
                         while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                         {
@@ -274,7 +274,7 @@ struct md5 : skelloader<md5>
                             }
                         }
                     }
-                    else if(strstr(buf, "baseframe {"))
+                    else if(std::strstr(buf, "baseframe {"))
                     {
                         while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                         {
@@ -434,7 +434,7 @@ struct md5 : skelloader<md5>
                             return false;
                         }
                     }
-                    else if(strstr(buf, "joints {"))
+                    else if(std::strstr(buf, "joints {"))
                     {
                         string name;
                         int parent;
@@ -494,7 +494,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     //load up meshes
-                    else if(strstr(buf, "mesh {"))
+                    else if(std::strstr(buf, "mesh {"))
                     {
                         md5mesh *m = new md5mesh;
                         m->group = this;
