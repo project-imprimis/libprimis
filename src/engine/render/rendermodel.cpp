@@ -386,7 +386,7 @@ COMMAND(rdanimjoints, "i");
 
 std::vector<mapmodelinfo> mapmodels;
 static const char * const mmprefix = "mapmodel/";
-static const int mmprefixlen = strlen(mmprefix);
+static const int mmprefixlen = std::strlen(mmprefix);
 
 void mapmodel(char *name)
 {
@@ -1430,7 +1430,7 @@ void findanimscmd(char *name)
         {
             buf.add(' ');
         }
-        buf.put(num, strlen(num));
+        buf.put(num, std::strlen(num));
     }
     buf.add('\0');
     result(buf.getbuf());
