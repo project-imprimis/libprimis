@@ -40,9 +40,9 @@ class vtxarray
         int verts,
             tris,
             texs,
-            alphabacktris, alphaback,
-            alphafronttris, alphafront,
-            refracttris, refract,
+            alphabacktris,
+            alphafronttris,
+            refracttris,
             sky,
             matsurfs,
             distance, rdistance,
@@ -86,8 +86,8 @@ class vtxarray
         void changevbuf(renderstate &cur, int pass);
         void setupdata(vacollect* vacol);
         void vavbo(GLuint vbo, int type, uchar * data);
-        void renderquery(renderstate &cur, bool full = true);
-
+        void renderoutline();
+        void rendergeom();
 
         //basically a destructor
         void destroyva(bool reparent = true);
@@ -97,6 +97,8 @@ class vtxarray
         ushort *decaldata; // vertex indices
         ushort minvert, maxvert; // DRE info
         elementset *decalelems;   // List of element indices sets (range) per texture
+        int alphaback, alphafront;
+        int refract;
         int texmask;
         int matmask;
         int decaltexs;
@@ -107,6 +109,7 @@ class vtxarray
         void renderzpass(renderstate &cur);
         void addshadowva(float dist);
         uchar * addvbo(int type, int numelems, int elemsize);
+        void renderquery(renderstate &cur, bool full = true);
 };
 
 extern ivec worldmin, worldmax;

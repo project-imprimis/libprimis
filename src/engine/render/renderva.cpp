@@ -1877,7 +1877,7 @@ void rendermapmodels()
     }
 }
 
-void renderoutline()
+void vtxarray::renderoutline()
 {
     ldrnotextureshader->set();
 
@@ -1893,7 +1893,7 @@ void renderoutline()
         glDisable(GL_DEPTH_TEST);
     }
     vtxarray *prev = nullptr;
-    for(vtxarray *va = visibleva; va; va = va->next)
+    for(vtxarray *va = this; va; va = va->next)
     {
         if(va->occluded < Occlude_BB)
         {
@@ -2219,7 +2219,8 @@ void renderalphageom(int side)
     cleanupgeom(cur);
 }
 
-void rendergeom()
+//starting from `this`, and looping through all va->next entries for `this`, render geometry to the world
+void vtxarray::rendergeom()
 {
     bool doOQ = oqfrags && oqgeom && !drawtex,
          multipassing = false;
@@ -2227,7 +2228,7 @@ void rendergeom()
 
     if(doOQ)
     {
-        for(vtxarray *va = visibleva; va; va = va->next)
+        for(vtxarray *va = this; va; va = va->next)
         {
             if(va->texs)
             {
@@ -2318,7 +2319,7 @@ void rendergeom()
         cur.texgenorient = -1;
         setupgeom();
         resetbatches();
-        for(vtxarray *va = visibleva; va; va = va->next)
+        for(vtxarray *va = this; va; va = va->next)
         {
             if(va->texs && va->occluded < Occlude_Geom)
             {
@@ -2330,7 +2331,7 @@ void rendergeom()
             renderbatches(cur, RenderPass_GBuffer);
             glFlush();
         }
-        for(vtxarray *va = visibleva; va; va = va->next)
+        for(vtxarray *va = this; va; va = va->next)
         {
             if(va->texs && va->occluded >= Occlude_Geom)
             {
@@ -2360,7 +2361,7 @@ void rendergeom()
     {
         setupgeom();
         resetbatches();
-        for(vtxarray *va = visibleva; va; va = va->next)
+        for(vtxarray *va = this; va; va = va->next)
         {
             if(va->texs)
             {
