@@ -242,12 +242,10 @@ extern vtxarray *visibleva;
 
 extern void visiblecubes(bool cull = true);
 extern void setvfcP(const vec &bbmin = vec(-1, -1, -1), const vec &bbmax = vec(1, 1, 1));
-extern void rendergeom();
 extern int findalphavas();
 extern void renderrefractmask();
 extern void renderalphageom(int side);
 extern void rendermapmodels();
-extern void renderoutline();
 extern bool renderexplicitsky(bool outline = false);
 extern void cleanupva();
 extern bvec outlinecolor;
