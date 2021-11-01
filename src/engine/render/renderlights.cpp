@@ -3951,7 +3951,7 @@ void rendergbuffer(bool depthclear, void (*gamefxn)())
         renderexplicitsky();
         glerror();
     }
-    rendergeom();
+    visibleva->rendergeom();
     glerror();
     renderdecals();
     glerror();

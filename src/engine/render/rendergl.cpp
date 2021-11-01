@@ -2112,7 +2112,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     {
         if(!wireframe && outline)
         {
-            renderoutline(); //edit mode geometry outline
+            visibleva->renderoutline(); //edit mode geometry outline
         }
         glerror();
         rendereditmaterials();
