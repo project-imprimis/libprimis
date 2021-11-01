@@ -988,14 +988,13 @@ namespace UI
             } \
         } while(0)
         //note reverse iteration
-        void loopwindowsrev(std::function<void(Window * w, int &i)> body)
-        {
-            for(int i = static_cast<int>(children.size()); --i >=0;)
-            {
-                Window *w = static_cast<Window *>(children[i]);
-                body(w, i);
-            }
-        }
+        #define LOOP_WINDOWS_REV(o, body) do { \
+            for(int i = static_cast<int>(children.size()); --i >=0;) \
+            { \
+                Window *o = static_cast<Window *>(children[i]); \
+                body; \
+            } \
+        } while(0)
 
         void adjustchildren()
         {
@@ -1005,22 +1004,18 @@ namespace UI
         #define DOSTATE(flags, func) \
             void func##children(float cx, float cy, int mask, bool inside, int setflags) \
             { \
-                bool shouldcontinue = false; \
-                loopwindowsrev( [this, &shouldcontinue, cx, cy, mask, inside, setflags] (Window * w, int & i) \
+                LOOP_WINDOWS_REV(w, \
                 { \
                     if(((w->state | w->childstate) & mask) != mask) \
                     { \
-                        shouldcontinue = true; \
+                        continue; \
                     } \
-                    if(shouldcontinue) \
+                    w->func##children(cx, cy, mask, inside, setflags); \
+                    int wflags = (w->state | w->childstate) & (setflags); \
+                    if(wflags) \
                     { \
-                        w->func##children(cx, cy, mask, inside, setflags); \
-                        int wflags = (w->state | w->childstate) & (setflags); \
-                        if(wflags) \
-                        { \
-                            childstate |= wflags; \
-                            i = 0; /* break by rolling i down to 0 (since this is a reverse loop)*/ \
-                        } \
+                        childstate |= wflags; \
+                        break; \
                     } \
                 }); \
             }
@@ -1082,22 +1077,21 @@ namespace UI
 
         bool hidetop()
         {
-            bool ishidden = false;
-            loopwindowsrev( [&ishidden, this] (Window * w, int & i)
+            LOOP_WINDOWS_REV(w,
             {
                 if(w->allowinput && !(w->state & State_Hidden))
                 {
                     hide(w, i);
-                    ishidden = true;
+                    return true;
                 }
             });
-            return ishidden;
+            return false;
         }
 
         int hideall()
         {
             int hidden = 0;
-            loopwindowsrev( [&hidden, this] (Window * w, int & i)
+            LOOP_WINDOWS_REV(w,
             {
                 hide(w, i);
                 hidden++;
