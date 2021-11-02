@@ -270,43 +270,6 @@ namespace //internal functionality not seen by other files
         }
     }
 
-    // generates grass geometry for a given vertex array
-    void gengrassquads(vtxarray *va)
-    {
-        for(int i = 0; i < va->grasstris.length(); i++)
-        {
-            grasstri &g = va->grasstris[i];
-            if(isfoggedsphere(g.radius, g.center))
-            {
-                continue;
-            }
-            float dist = g.center.dist(camera1->o);
-            if(dist - g.radius > grassdist)
-            {
-                continue;
-            }
-            Slot &s = *lookupvslot(g.texture, false).slot;
-            if(!s.grasstex)
-            {
-                if(!s.grass)
-                {
-                    continue;
-                }
-                s.grasstex = textureload(s.grass, 2);
-            }
-            grassgroup *group = nullptr;
-            for(int i = 0; i < numgrasswedges; ++i)
-            {
-                grasswedge &w = grasswedges[i];
-                if(w.bound1.dist(g.center) > g.radius || w.bound2.dist(g.center) > g.radius)
-                {
-                    continue;
-                }
-                gengrassquads(group, w, g, s.grasstex);
-            }
-        }
-    }
-
     Shader *grassshader = nullptr;
 
     void cleargrassshaders()
@@ -329,6 +292,43 @@ namespace //internal functionality not seen by other files
 
 /* externally relevant functions */
 ///////////////////////////////////
+
+// generates grass geometry for a given vertex array
+void vtxarray::gengrassquads()
+{
+    for(int i = 0; i < grasstris.length(); i++)
+    {
+        grasstri &g = grasstris[i];
+        if(isfoggedsphere(g.radius, g.center))
+        {
+            continue;
+        }
+        float dist = g.center.dist(camera1->o);
+        if(dist - g.radius > grassdist)
+        {
+            continue;
+        }
+        Slot &s = *lookupvslot(g.texture, false).slot;
+        if(!s.grasstex)
+        {
+            if(!s.grass)
+            {
+                continue;
+            }
+            s.grasstex = textureload(s.grass, 2);
+        }
+        grassgroup *group = nullptr;
+        for(int i = 0; i < numgrasswedges; ++i)
+        {
+            grasswedge &w = grasswedges[i];
+            if(w.bound1.dist(g.center) > g.radius || w.bound2.dist(g.center) > g.radius)
+            {
+                continue;
+            }
+            ::gengrassquads(group, w, g, s.grasstex); //we want the free function, so need ::
+        }
+    }
+}
 
 void generategrass()
 {
@@ -364,7 +364,7 @@ void generategrass()
         {
             continue;
         }
-        gengrassquads(va);
+        va->gengrassquads();
     }
 
     if(grassgroups.empty())
