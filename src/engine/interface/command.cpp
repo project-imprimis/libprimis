@@ -341,7 +341,7 @@ static const char *debugline(const char *p, const char *fmt)
         const char *end = strchr(line, '\n');
         if(!end)
         {
-            end = line + strlen(line);
+            end = line + std::strlen(line);
         }
         if(p >= line && p <= end)
         {
@@ -1273,7 +1273,7 @@ static char *conc(vector<char> &buf, tagval *v, int n, bool space, const char *p
                 goto haslen; //skip `len` assignment
             }
         }
-        len = static_cast<int>(strlen(s));
+        len = static_cast<int>(std::strlen(s));
     haslen:
         buf.put(s, len);
         if(i == n-1)
@@ -1308,7 +1308,7 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
             case Value_String:
             case Value_CString:
             {
-                len += (vlen[i] = static_cast<int>(strlen(v[i].s)));
+                len += (vlen[i] = static_cast<int>(std::strlen(v[i].s)));
                 break;
             }
             case Value_Integer:
@@ -1318,7 +1318,7 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
                     goto overflow;
                 }
                 intformat(&numbuf[numlen], v[i].i);
-                numlen += (vlen[i] = strlen(&numbuf[numlen]));
+                numlen += (vlen[i] = std::strlen(&numbuf[numlen]));
                 break;
             }
             case Value_Float:
@@ -1328,7 +1328,7 @@ static char *conc(tagval *v, int n, bool space, const char *prefix, int prefixle
                     goto overflow;
                 }
                 floatformat(&numbuf[numlen], v[i].f);
-                numlen += (vlen[i] = strlen(&numbuf[numlen]));
+                numlen += (vlen[i] = std::strlen(&numbuf[numlen]));
                 break;
             }
             default:
@@ -1393,7 +1393,7 @@ char *conc(tagval *v, int n, bool space)
 
 char *conc(tagval *v, int n, bool space, const char *prefix)
 {
-    return conc(v, n, space, prefix, strlen(prefix));
+    return conc(v, n, space, prefix, std::strlen(prefix));
 }
 
 //ignore double slashes in cubescript lines
