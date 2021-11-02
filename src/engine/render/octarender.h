@@ -136,8 +136,12 @@ class vtxarray
         void changevbuf(renderstate &cur, int pass);
         void setupdata(vacollect* vacol);
         void vavbo(GLuint vbo, int type, uchar * data);
+
+        //visibleva functions: loops through va->next
         void renderoutline();
         void rendergeom();
+        bool renderexplicitsky(bool outline = false);
+        int findalphavas();
 
         //basically a destructor
         void destroyva(bool reparent = true);

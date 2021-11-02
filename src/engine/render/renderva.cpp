@@ -1985,10 +1985,10 @@ void vtxarray::renderoutline()
     gle::disablevertex();
 }
 
-bool renderexplicitsky(bool outline)
+bool vtxarray::renderexplicitsky(bool outline)
 {
     vtxarray *prev = nullptr;
-    for(vtxarray *va = visibleva; va; va = va->next)
+    for(vtxarray *va = this; va; va = va->next)
     {
         if(va->sky && va->occluded < Occlude_BB &&
             ((va->skymax.x >= 0 && view.isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
@@ -2144,7 +2144,7 @@ int calctrisidemask(const vec &p1, const vec &p2, const vec &p3, float bias)
     return mask;
 }
 
-int findalphavas()
+int vtxarray::findalphavas()
 {
     alphavas.clear();
     alphafrontsx1 = alphafrontsy1 = alphabacksx1 = alphabacksy1 = alpharefractsx1 = alpharefractsy1 = 1;
