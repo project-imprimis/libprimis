@@ -3963,7 +3963,7 @@ void rendergbuffer(bool depthclear, void (*gamefxn)())
 
     if(limitsky())
     {
-        renderexplicitsky();
+        visibleva->renderexplicitsky();
         glerror();
     }
     visibleva->rendergeom();

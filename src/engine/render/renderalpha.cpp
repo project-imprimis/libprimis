@@ -11,6 +11,7 @@
 #include "engine.h"
 
 #include "hdr.h"
+#include "octarender.h"
 #include "rendergl.h"
 #include "rendermodel.h"
 #include "renderparticles.h"
@@ -65,7 +66,7 @@ namespace
 
 void rendertransparent()
 {
-    int hasalphavas = findalphavas(),
+    int hasalphavas = visibleva->findalphavas(),
         hasmats = findmaterials();
     bool hasmodels = transmdlsx1 < transmdlsx2 && transmdlsy1 < transmdlsy2;
     if(!hasalphavas && !hasmats && !hasmodels) //don't transparent render if there is no alpha
