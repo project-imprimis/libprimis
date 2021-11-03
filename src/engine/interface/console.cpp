@@ -308,7 +308,7 @@ namespace
                 {
                     names.add(' ');
                 }
-                names.put(km.name, strlen(km.name));
+                names.put(km.name, std::strlen(km.name));
             }
         });
         names.add('\0');
@@ -356,7 +356,7 @@ namespace
         {
             action++;
         }
-        int len = strlen(action);
+        int len = std::strlen(action);
         while(len>0 && iscubespace(action[len-1]))
         {
             len--;
@@ -521,8 +521,8 @@ namespace
         {
             return;
         }
-        size_t cblen = strlen(cb),
-               commandlen = strlen(commandbuf),
+        size_t cblen = std::strlen(cb),
+               commandlen = std::strlen(commandbuf),
                decoded = decodeutf8(reinterpret_cast<uchar *>(&commandbuf[commandlen]), sizeof(commandbuf)-1-commandlen, reinterpret_cast<const uchar *>(cb), cblen);
         commandbuf[commandlen + decoded] = '\0';
         SDL_free(cb);
@@ -544,7 +544,7 @@ namespace
         void restore()
         {
             copystring(commandbuf, buf);
-            if(commandpos >= static_cast<int>(strlen(commandbuf)))
+            if(commandpos >= static_cast<int>(std::strlen(commandbuf)))
             {
                 commandpos = -1;
             }
@@ -692,7 +692,7 @@ namespace
             return false;
         }
         resetcomplete();
-        int cmdlen = static_cast<int>(strlen(commandbuf)),
+        int cmdlen = static_cast<int>(std::strlen(commandbuf)),
             cmdspace = static_cast<int>(sizeof(commandbuf)) - (cmdlen+1);
         len = std::min(len, cmdspace);
         if(commandpos<0)
@@ -727,7 +727,7 @@ namespace
                 }
                 case SDLK_HOME:
                 {
-                    if(strlen(commandbuf))
+                    if(std::strlen(commandbuf))
                     {
                         commandpos = 0;
                     }
@@ -740,7 +740,7 @@ namespace
                 }
                 case SDLK_DELETE:
                 {
-                    int len = static_cast<int>(strlen(commandbuf));
+                    int len = static_cast<int>(std::strlen(commandbuf));
                     if(commandpos<0)
                     {
                         break;
@@ -755,7 +755,7 @@ namespace
                 }
                 case SDLK_BACKSPACE:
                 {
-                    int len = static_cast<int>(strlen(commandbuf)),
+                    int len = static_cast<int>(std::strlen(commandbuf)),
                         i = commandpos>=0 ? commandpos : len;
                     if(i<1)
                     {
@@ -781,13 +781,13 @@ namespace
                     }
                     else if(commandpos<0)
                     {
-                        commandpos = static_cast<int>(strlen(commandbuf))-1;
+                        commandpos = static_cast<int>(std::strlen(commandbuf))-1;
                     }
                     break;
                 }
                 case SDLK_RIGHT:
                 {
-                    if(commandpos>=0 && ++commandpos >= static_cast<int>(strlen(commandbuf)))
+                    if(commandpos>=0 && ++commandpos >= static_cast<int>(std::strlen(commandbuf)))
                     {
                         commandpos = -1;
                     }
@@ -818,7 +818,7 @@ namespace
                     if(commandflags&CmdFlags_Complete)
                     {
                         complete(commandbuf, sizeof(commandbuf), commandflags&CmdFlags_Execute ? "/" : nullptr);
-                        if(commandpos>=0 && commandpos >= static_cast<int>(strlen(commandbuf)))
+                        if(commandpos>=0 && commandpos >= static_cast<int>(std::strlen(commandbuf)))
                         {
                             commandpos = -1;
                         }
@@ -916,8 +916,8 @@ namespace
 
     char *prependstring(char *d, const char *s, size_t len)
     {
-        size_t slen = std::min(strlen(s), len);
-        memmove(&d[slen], d, std::min(len - slen, strlen(d) + 1));
+        size_t slen = std::min(std::strlen(s), len);
+        memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
         memcpy(d, s, slen);
         d[len-1] = 0;
         return d;
@@ -952,7 +952,7 @@ namespace
         }
         if(type==Files_Directory)
         {
-            int dirlen = static_cast<int>(strlen(dir));
+            int dirlen = static_cast<int>(std::strlen(dir));
             while(dirlen > 0 && (dir[dirlen-1] == '/' || dir[dirlen-1] == '\\'))
             {
                 dir[--dirlen] = '\0';
@@ -1009,7 +1009,7 @@ namespace
         int cmdlen = 0;
         if(cmdprefix)
         {
-            cmdlen = strlen(cmdprefix);
+            cmdlen = std::strlen(cmdprefix);
             if(strncmp(s, cmdprefix, cmdlen))
             {
                 prependstring(s, cmdprefix, maxlen);
@@ -1021,7 +1021,7 @@ namespace
         }
         if(!completesize)
         {
-            completesize = static_cast<int>(strlen(&s[cmdlen]));
+            completesize = static_cast<int>(std::strlen(&s[cmdlen]));
             DELETEA(lastcomplete);
         }
         FilesVal *f = nullptr;
@@ -1121,7 +1121,7 @@ float rendercommand(float x, float y, float w)
     float width, height;
     text_boundsf(buf, width, height, w);
     y -= height;
-    draw_text(buf, x, y, 0xFF, 0xFF, 0xFF, 0xFF, commandpos>=0 ? commandpos+1 + strlen(prompt) : strlen(buf), w);
+    draw_text(buf, x, y, 0xFF, 0xFF, 0xFF, 0xFF, commandpos>=0 ? commandpos+1 + std::strlen(prompt) : std::strlen(buf), w);
     return height;
 }
 
