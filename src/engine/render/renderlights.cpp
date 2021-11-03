@@ -1739,7 +1739,7 @@ Shader *loaddeferredlightshader(const char *type = nullptr)
             avatar = false;
         }
         copystring(common, type);
-        commonlen = strlen(common);
+        commonlen = std::strlen(common);
     }
     if(!minimap)
     {
