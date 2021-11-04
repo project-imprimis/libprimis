@@ -986,7 +986,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         return;
     }
     //cannot be constexpr -- strlen is not compile time
-    static const int pragmalen = strlen("//:fog");
+    static const int pragmalen = std::strlen("//:fog");
     const char *vsmain = findglslmain(vs),
                *vsend  = strrchr(vs, '}');
     if(vsmain && vsend)
@@ -995,11 +995,11 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         {
             vsbuf.put(vs, vsmain - vs);
             const char *fogparams = "\nuniform vec2 lineardepthscale;\nvarying float lineardepth;\n";
-            vsbuf.put(fogparams, strlen(fogparams));
+            vsbuf.put(fogparams, std::strlen(fogparams));
             vsbuf.put(vsmain, vsend - vsmain);
             const char *vsfog = "\nlineardepth = dot(lineardepthscale, gl_Position.zw);\n";
-            vsbuf.put(vsfog, strlen(vsfog));
-            vsbuf.put(vsend, strlen(vsend)+1);
+            vsbuf.put(vsfog, std::strlen(vsfog));
+            vsbuf.put(vsend, std::strlen(vsend)+1);
         }
     }
     const char *psmain = findglslmain(ps),
@@ -1010,14 +1010,14 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         if(!strstr(ps, "lineardepth"))
         {
             const char *foginterp = "\nvarying float lineardepth;\n";
-            psbuf.put(foginterp, strlen(foginterp));
+            psbuf.put(foginterp, std::strlen(foginterp));
         }
         const char *fogparams =
             "\nuniform vec3 fogcolor;\n"
             "uniform vec2 fogdensity;\n"
             "uniform vec4 radialfogscale;\n"
             "#define fogcoord lineardepth*length(vec3(gl_FragCoord.xy*radialfogscale.xy + radialfogscale.zw, 1.0))\n";
-        psbuf.put(fogparams, strlen(fogparams));
+        psbuf.put(fogparams, std::strlen(fogparams));
         psbuf.put(psmain, psend - psmain);
         const char *psdef = "\n#define FOG_COLOR ",
                    *psfog =
@@ -1042,12 +1042,12 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         if(clen <= 0)
         {
             pspragma = "fogcolor";
-            clen = strlen(pspragma);
+            clen = std::strlen(pspragma);
         }
-        psbuf.put(psdef, strlen(psdef));
+        psbuf.put(psdef, std::strlen(psdef));
         psbuf.put(pspragma, clen);
-        psbuf.put(psfog, strlen(psfog));
-        psbuf.put(psend, strlen(psend)+1);
+        psbuf.put(psfog, std::strlen(psfog));
+        psbuf.put(psend, std::strlen(psend)+1);
     }
 }
 
@@ -1070,8 +1070,8 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
         for(int i = 0; i < variant->defaultparams.length(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", variant->defaultparams[i].name);
-            vsbuf.put(uni, strlen(uni));
-            psbuf.put(uni, strlen(uni));
+            vsbuf.put(uni, std::strlen(uni));
+            psbuf.put(uni, std::strlen(uni));
         }
     }
     else
@@ -1079,12 +1079,12 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
         for(int i = 0; i < slotparams.length(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", slotparams[i].name);
-            vsbuf.put(uni, strlen(uni));
-            psbuf.put(uni, strlen(uni));
+            vsbuf.put(uni, std::strlen(uni));
+            psbuf.put(uni, std::strlen(uni));
         }
     }
-    vsbuf.put(vsmain, strlen(vsmain)+1);
-    psbuf.put(psmain, strlen(psmain)+1);
+    vsbuf.put(vsmain, std::strlen(vsmain)+1);
+    psbuf.put(psmain, std::strlen(psmain)+1);
 }
 
 void setupshaders()
@@ -1278,14 +1278,14 @@ COMMANDN(forceshader, useshaderbyname, "s");
         if(vsbuf.length()) \
         { \
             vsbak.setsize(0); \
-            vsbak.put(vs, strlen(vs)+1); \
+            vsbak.put(vs, std::strlen(vs)+1); \
             vs = vsbak.getbuf(); \
             vsbuf.setsize(0); \
         } \
         if(psbuf.length()) \
         { \
             psbak.setsize(0); \
-            psbak.put(ps, strlen(ps)+1); \
+            psbak.put(ps, std::strlen(ps)+1); \
             ps = psbak.getbuf(); \
             psbuf.setsize(0); \
         } \
