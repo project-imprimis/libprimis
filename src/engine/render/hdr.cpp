@@ -41,7 +41,7 @@ FVARP(bloomscale, 0, 1.0f, 1e3f); //scale factor for bloom effect
 VARP(bloomblur, 0, 7, 7); //blur factor for bloom effect
 VARP(bloomiter, 0, 0, 4); //number of interations for bloom generation
 VARFP(bloomsize, 6, 9, 11, cleanupbloom());
-VARFP(bloomprec, 0, 2, 3, cleanupbloom());
+VARFP(bloomprec, 0, 2, 3, cleanupbloom()); //HDR buffer bit depth: 3: RGB16 2: R11G11B10 1:RGB10 0: RGB8
 
 int gethdrformat(int prec, int fallback)
 {
