@@ -21,12 +21,11 @@
 
 #include "interface/control.h"
 
-GLenum bloomformat   = 0,
-       hdrformat     = 0;
+
+GLenum hdrformat = 0;
 
 int bloomw = -1,
-    bloomh = -1,
-    lasthdraccum = 0;
+    bloomh = -1;
 
 //gl buffers needed for bloom effect
 GLuint hdrfbo = 0,
@@ -35,14 +34,24 @@ GLuint hdrfbo = 0,
        bloomfbo[6] = { 0, 0, 0, 0, 0, 0 },
        bloomtex[6] = { 0, 0, 0, 0, 0, 0 };
 
-void cleanupbloom(); //needed for varfps
+namespace
+{
+    GLenum bloomformat = 0;
+    int lasthdraccum = 0;
 
-FVAR(bloomthreshold, 1e-3f, 0.8f, 1e3f);
-FVARP(bloomscale, 0, 1.0f, 1e3f); //scale factor for bloom effect
-VARP(bloomblur, 0, 7, 7); //blur factor for bloom effect
-VARP(bloomiter, 0, 0, 4); //number of interations for bloom generation
-VARFP(bloomsize, 6, 9, 11, cleanupbloom()); //size of HDR buffer: 6 -> 2^6 = 64x64 ... 11 -> 2^11 = 2048x2048
-VARFP(bloomprec, 0, 2, 3, cleanupbloom()); //HDR buffer bit depth: 3: RGB16 2: R11G11B10 1:RGB10 0: RGB8
+    FVAR(bloomthreshold, 1e-3f, 0.8f, 1e3f);
+    FVARP(bloomscale, 0, 1.0f, 1e3f); //scale factor for bloom effect
+    VARP(bloomblur, 0, 7, 7); //blur factor for bloom effect
+    VARP(bloomiter, 0, 0, 4); //number of interations for bloom generation
+    VARFP(bloomsize, 6, 9, 11, cleanupbloom()); //size of HDR buffer: 6 -> 2^6 = 64x64 ... 11 -> 2^11 = 2048x2048
+    VARFP(bloomprec, 0, 2, 3, cleanupbloom()); //HDR buffer bit depth: 3: RGB16 2: R11G11B10 1:RGB10 0: RGB8
+
+    FVAR(hdraccumscale, 0, 0.98f, 1); //for hdr, exponent base for time decay of accumulation buffer (always <= 1 so decaying with time)
+    VAR(hdraccummillis, 1, 33, 1000); //number of ms between samplings for the hdr buffer
+    VAR(hdrreduce, 0, 2, 2);
+    FVARR(hdrbright, 1e-4f, 1.0f, 1e4f);
+    FVAR(hdrsaturate, 1e-3f, 0.8f, 1e3f);
+}
 
 int gethdrformat(int prec, int fallback)
 {
@@ -149,13 +158,8 @@ void cleanupbloom()
     lasthdraccum = 0;
 }
 
-FVAR(hdraccumscale, 0, 0.98f, 1); //for hdr, exponent base for time decay of accumulation buffer (always <= 1 so decaying with time)
-VAR(hdraccummillis, 1, 33, 1000); //number of ms between samplings for the hdr buffer
-VAR(hdrreduce, 0, 2, 2);
-VARFP(hdrprec, 0, 2, 3, cleanupgbuffer()); //precision of hdr buffer
 FVARFP(hdrgamma, 1e-3f, 2, 1e3f, initwarning("HDR setup", Init_Load, Change_Shaders));
-FVARR(hdrbright, 1e-4f, 1.0f, 1e4f);
-FVAR(hdrsaturate, 1e-3f, 0.8f, 1e3f);
+VARFP(hdrprec, 0, 2, 3, cleanupgbuffer()); //precision of hdr buffer
 
 void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy, bool swapxy)
 {
