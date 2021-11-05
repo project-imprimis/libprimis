@@ -28,6 +28,7 @@ int bloomw = -1,
     bloomh = -1,
     lasthdraccum = 0;
 
+//gl buffers needed for bloom effect
 GLuint hdrfbo = 0,
        hdrtex = 0,
        bloompbo = 0,
@@ -314,7 +315,8 @@ void processhdr(GLuint outfbo, int aa)
     {
         while(pw > bloomw || ph > bloomh)
         {
-            GLuint cfbo = b1fbo, ctex = b1tex;
+            GLuint cfbo = b1fbo,
+                   ctex = b1tex;
             int cw = std::max(pw/2, bloomw),
                 ch = std::max(ph/2, bloomh);
 
