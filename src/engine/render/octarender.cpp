@@ -1347,6 +1347,7 @@ namespace
         }
     }
 
+    //edgegroup: struct used for tjoint joining (to reduce sparklies between geom faces)
     struct edgegroup
     {
         ivec slope, origin;
@@ -1802,6 +1803,7 @@ namespace
         mfl.setsize(0);
     }
 
+    //recursively finds and adds decals to vacollect object vc
     void finddecals(vtxarray *va)
     {
         if(va->hasmerges&(Merge_Origin|Merge_Part))
@@ -1995,6 +1997,7 @@ namespace
     VARF(vafacemin, 0, 96, 256*256, allchanged());
     VARF(vacubesize, 32, 128, 0x1000, allchanged()); //note that performance drops off at low values -> large numbers of VAs
 
+    //updates the va that contains the cube c
     int updateva(cube *c, const ivec &co, int size, int csi)
     {
         int ccount = 0,
@@ -2224,7 +2227,7 @@ void reduceslope(ivec &n)
     }
     while(!((n.x|n.y|n.z)&1))
     {
-        n.shr(1);
+        n.shr(1); //shift right 1 to reduce slope
     }
 }
 
