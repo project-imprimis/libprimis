@@ -22,14 +22,14 @@ GLuint aofbo[4] = { 0, 0, 0, 0 },
        aotex[4] = { 0, 0, 0, 0 },
        aonoisetex = 0;
 
-VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); });
+VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); }); //toggles ao use in general
 FVARR(aoradius, 0, 5, 256);
 FVAR(aocutoff, 0, 2.0f, 1e3f);
 FVARR(aodark, 1e-3f, 11.0f, 1e3f);
 FVARR(aosharp, 1e-3f, 1, 1e3f);
 FVAR(aoprefilterdepth, 0, 1, 1e3f);
 FVARR(aomin, 0, 0.25f, 1);
-VARFR(aosun, 0, 1, 1, cleardeferredlightshaders());
+VARFR(aosun, 0, 1, 1, cleardeferredlightshaders()); //toggles ambient occlusion fo sunlight
 FVARR(aosunmin, 0, 0.5f, 1);
 VARP(aoblur, 0, 4, 7);
 VARP(aoiter, 0, 0, 4);
