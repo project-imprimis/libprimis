@@ -1819,7 +1819,6 @@ namespace
 
     void rendercube(cube &c, const ivec &co, int size, int csi, int &maxlevel) // creates vertices and indices ready to be put into a va
     {
-        //if(size<=16) return;
         if(c.ext && c.ext->va)
         {
             maxlevel = std::max(maxlevel, c.ext->va->mergelevel);
