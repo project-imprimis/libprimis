@@ -425,7 +425,7 @@ void gl_checkextensions()
     }
 
     uint glmajorversion, glminorversion;
-    if(sscanf(version, " %u.%u", &glmajorversion, &glminorversion) != 2)
+    if(std::sscanf(version, " %u.%u", &glmajorversion, &glminorversion) != 2)
     {
         glversion = 100; //__really__ legacy systems (which won't run anyways)
     }
@@ -556,7 +556,7 @@ void gl_checkextensions()
     conoutf(Console_Init, "GLSL: %s", glslstr ? glslstr : "unknown");
 
     uint glslmajorversion, glslminorversion;
-    if(glslstr && sscanf(glslstr, " %u.%u", &glslmajorversion, &glslminorversion) == 2)
+    if(glslstr && std::sscanf(glslstr, " %u.%u", &glslmajorversion, &glslminorversion) == 2)
     {
         glslversion = glslmajorversion*100 + glslminorversion;
     }
