@@ -762,7 +762,7 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
     }
     else
     {
-        while((vs = strstr(vs, "//:attrib")))
+        while((vs = std::strstr(vs, "//:attrib")))
         {
             if(sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             {
@@ -785,7 +785,7 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *re
     }
     else
     {
-        while((vs = strstr(vs, "//:uniform")))
+        while((vs = std::strstr(vs, "//:uniform")))
         {
             int numargs = sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
             if(numargs >= 3)
@@ -880,7 +880,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
 
 static const char *findglslmain(const char *s)
 {
-    const char *main = strstr(s, "main");
+    const char *main = std::strstr(s, "main");
     if(!main)
     {
         return nullptr;
@@ -914,7 +914,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
                      olen = std::strlen("override");
     for(char *vspragma = vsv.getbuf();; vschanged = true)
     {
-        vspragma = strstr(vspragma, "//:variant");
+        vspragma = std::strstr(vspragma, "//:variant");
         if(!vspragma)
         {
             break;
@@ -937,7 +937,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
     }
     for(char *pspragma = psv.getbuf();; pschanged = true)
     {
-        pspragma = strstr(pspragma, "//:variant");
+        pspragma = std::strstr(pspragma, "//:variant");
         if(!pspragma)
         {
             break;
@@ -979,8 +979,8 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
 
 static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *vs, const char *ps)
 {
-    const char *vspragma = strstr(vs, "//:fog"),
-               *pspragma = strstr(ps, "//:fog");
+    const char *vspragma = std::strstr(vs, "//:fog"),
+               *pspragma = std::strstr(ps, "//:fog");
     if(!vspragma && !pspragma)
     {
         return;
@@ -991,7 +991,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
                *vsend  = strrchr(vs, '}');
     if(vsmain && vsend)
     {
-        if(!strstr(vs, "lineardepth"))
+        if(!std::strstr(vs, "lineardepth"))
         {
             vsbuf.put(vs, vsmain - vs);
             const char *fogparams = "\nuniform vec2 lineardepthscale;\nvarying float lineardepth;\n";
@@ -1007,7 +1007,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
     if(psmain && psend)
     {
         psbuf.put(ps, psmain - ps);
-        if(!strstr(ps, "lineardepth"))
+        if(!std::strstr(ps, "lineardepth"))
         {
             const char *foginterp = "\nvarying float lineardepth;\n";
             psbuf.put(foginterp, std::strlen(foginterp));
@@ -1310,11 +1310,11 @@ void shader(int *type, char *name, char *vs, char *ps)
     renderprogress(loadprogress, info);
     vector<char> vsbuf, psbuf, vsbak, psbak;
     GENSHADER(slotparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps));
-    GENSHADER(strstr(vs, "//:fog") || strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
+    GENSHADER(std::strstr(vs, "//:fog") || std::strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
     Shader *s = newshader(*type, name, vs, ps);
     if(s)
     {
-        if(strstr(ps, "//:variant") || strstr(vs, "//:variant"))
+        if(std::strstr(ps, "//:variant") || std::strstr(vs, "//:variant"))
         {
             gengenericvariant(*s, name, vs, ps);
         }
@@ -1347,11 +1347,11 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     }
     vector<char> vsbuf, psbuf, vsbak, psbak;
     GENSHADER(s->defaultparams.length(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
-    GENSHADER(strstr(vs, "//:fog") || strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
+    GENSHADER(std::strstr(vs, "//:fog") || std::strstr(ps, "//:fog"), genfogshader(vsbuf, psbuf, vs, ps));
     Shader *v = newshader(*type, varname, vs, ps, s, *row);
     if(v)
     {
-        if(strstr(ps, "//:variant") || strstr(vs, "//:variant"))
+        if(std::strstr(ps, "//:variant") || std::strstr(vs, "//:variant"))
         {
             gengenericvariant(*s, varname, vs, ps, *row);
         }
