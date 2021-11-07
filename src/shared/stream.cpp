@@ -425,7 +425,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
         const char *end = strrchr(file, '>');
         if(end)
         {
-            size_t len = strlen(tmp);
+            size_t len = std::strlen(tmp);
             copystring(&tmp[len], file, std::min(sizeof(tmp)-len, static_cast<size_t>(end+2-file)));
             file = end+1;
         }
@@ -479,7 +479,7 @@ char *pathhelper(char *s)
             }
             if(prevdir+1==curdir && prevdir[0]=='.')
             {
-                memmove(prevdir, curdir+1, strlen(curdir+1)+1);
+                memmove(prevdir, curdir+1, std::strlen(curdir+1)+1);
                 curdir = prevdir;
             }
             else if(curdir[1]=='.' && curdir[2]=='.' && curdir[3]==PATHDIV)
@@ -488,7 +488,7 @@ char *pathhelper(char *s)
                 {
                     continue;
                 }
-                memmove(prevdir, curdir+4, strlen(curdir+4)+1);
+                memmove(prevdir, curdir+4, std::strlen(curdir+4)+1);
                 if(prevdir-2 >= curpart && prevdir[-1]==PATHDIV)
                 {
                     prevdir -= 2;
@@ -523,7 +523,7 @@ char *path(const char *s)
 
 const char *parentdir(const char *directory)
 {
-    const char *p = directory + strlen(directory);
+    const char *p = directory + std::strlen(directory);
     while(p > directory && *p != '/' && *p != '\\')
     {
         p--;
@@ -557,7 +557,7 @@ bool fileexists(const char *path, const char *mode)
 
 bool createdir(const char *path)
 {
-    size_t len = strlen(path);
+    size_t len = std::strlen(path);
     if(path[len-1] == PATHDIV)
     {
         static string strip;
@@ -573,7 +573,7 @@ bool createdir(const char *path)
 size_t fixpackagedir(char *dir)
 {
     path(dir);
-    size_t len = strlen(dir);
+    size_t len = std::strlen(dir);
     if(len > 0 && dir[len-1] != PATHDIV)
     {
         dir[len] = PATHDIV;
@@ -607,7 +607,7 @@ bool subhomedir(char *dst, int len, const char *src)
 #endif
         dst[sub-src] = '\0';
         concatstring(dst, home, len);
-        concatstring(dst, sub+(*sub == '~' ? 1 : strlen("$HOME")), len);
+        concatstring(dst, sub+(*sub == '~' ? 1 : std::strlen("$HOME")), len);
     }
     return true;
 }
@@ -635,7 +635,7 @@ const char *addpackagedir(const char *dir)
     char *filter = pdir;
     for(;;)
     {
-        static int len = strlen("media");
+        static int len = std::strlen("media");
         filter = std::strstr(filter, "media");
         if(!filter)
         {
@@ -649,9 +649,9 @@ const char *addpackagedir(const char *dir)
     }
     packagedir pf;
     pf.dir = filter ? newstring(pdir, filter-pdir) : newstring(pdir);
-    pf.dirlen = filter ? filter-pdir : strlen(pdir);
+    pf.dirlen = filter ? filter-pdir : std::strlen(pdir);
     pf.filter = filter ? newstring(filter) : nullptr;
-    pf.filterlen = filter ? strlen(filter) : 0;
+    pf.filterlen = filter ? std::strlen(filter) : 0;
     packagedirs.push_back(pf);
     return pf.dir;
 }
@@ -710,7 +710,7 @@ const char *findfile(const char *filename, const char *mode)
 
 bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &files)
 {
-    size_t extsize = ext ? strlen(ext)+1 : 0;
+    size_t extsize = ext ? std::strlen(ext)+1 : 0;
 #ifdef WIN32
     DEF_FORMAT_STRING(pathname, rel ? ".\\%s\\*.%s" : "%s\\*.%s", dirname, ext ? ext : "*");
     WIN32_FIND_DATA FindFileData;
@@ -724,7 +724,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
             }
             else
             {
-                size_t namelen = strlen(FindFileData.cFileName);
+                size_t namelen = std::strlen(FindFileData.cFileName);
                 if(namelen > extsize)
                 {
                     namelen -= extsize;
@@ -752,7 +752,7 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
             }
             else
             {
-                size_t namelen = strlen(de->d_name);
+                size_t namelen = std::strlen(de->d_name);
                 if(namelen > extsize)
                 {
                     namelen -= extsize;
@@ -778,7 +778,7 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
     string dirname;
     copystring(dirname, dir);
     path(dirname);
-    size_t dirlen = strlen(dirname);
+    size_t dirlen = std::strlen(dirname);
     while(dirlen > 1 && dirname[dirlen-1] == PATHDIV)
     {
         dirname[--dirlen] = '\0';
