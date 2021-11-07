@@ -764,7 +764,7 @@ static void genattriblocs(Shader &s, const char *vs, const char *ps, Shader *reu
     {
         while((vs = std::strstr(vs, "//:attrib")))
         {
-            if(sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
+            if(std::sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             {
                 s.attriblocs.add(AttribLoc(getshaderparamname(name), loc));
             }
@@ -787,7 +787,7 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *re
     {
         while((vs = std::strstr(vs, "//:uniform")))
         {
-            int numargs = sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
+            int numargs = std::sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
             if(numargs >= 3)
             {
                 s.uniformlocs.add(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
@@ -827,13 +827,13 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     {
         int row = 0,
             col = 0;
-        if(!vs[0] || sscanf(vs, "%d , %d", &row, &col) >= 1)
+        if(!vs[0] || std::sscanf(vs, "%d , %d", &row, &col) >= 1)
         {
             DELETEA(s.vsstr);
             s.reusevs = !vs[0] ? variant : variant->getvariant(col, row);
         }
         row = col = 0;
-        if(!ps[0] || sscanf(ps, "%d , %d", &row, &col) >= 1)
+        if(!ps[0] || std::sscanf(ps, "%d , %d", &row, &col) >= 1)
         {
             DELETEA(s.psstr);
             s.reuseps = !ps[0] ? variant : variant->getvariant(col, row);
@@ -919,7 +919,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         {
             break;
         }
-        if(sscanf(vspragma + len, "row %d", &rowoffset) == 1)
+        if(std::sscanf(vspragma + len, "row %d", &rowoffset) == 1)
         {
             continue;
         }
@@ -942,7 +942,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         {
             break;
         }
-        if(sscanf(pspragma + len, "row %d", &rowoffset) == 1)
+        if(std::sscanf(pspragma + len, "row %d", &rowoffset) == 1)
         {
             continue;
         }
