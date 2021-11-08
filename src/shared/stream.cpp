@@ -1043,7 +1043,7 @@ struct filestream : stream
     {
         va_list v;
         va_start(v, fmt);
-        int result = vfprintf(file, fmt, v);
+        int result = std::vfprintf(file, fmt, v);
         va_end(v);
         return std::max(result, 0);
     }
