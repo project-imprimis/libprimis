@@ -334,7 +334,7 @@ void glerror(const char *file, int line, GLenum error)
             break;
         }
     }
-    printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
+    std::printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
 }
 
 VAR(intel_texalpha_bug, 0, 0, 1);
