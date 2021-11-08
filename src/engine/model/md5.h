@@ -128,7 +128,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     //create the vert arrays
-                    else if(sscanf(buf, " numverts %d", &numverts)==1)
+                    else if(std::sscanf(buf, " numverts %d", &numverts)==1)
                     {
                         numverts = std::max(numverts, 0);
                         if(numverts)
@@ -138,7 +138,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     //create tri array
-                    else if(sscanf(buf, " numtris %d", &numtris)==1)
+                    else if(std::sscanf(buf, " numtris %d", &numtris)==1)
                     {
                         numtris = std::max(numtris, 0);
                         if(numtris)
@@ -147,7 +147,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     //create md5weight array
-                    else if(sscanf(buf, " numweights %d", &numweights)==1)
+                    else if(std::sscanf(buf, " numweights %d", &numweights)==1)
                     {
                         numweights = std::max(numweights, 0);
                         if(numweights)
@@ -156,7 +156,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     //assign md5verts to vertinfo array
-                    else if(sscanf(buf, " vert %d ( %f %f ) %hu %hu", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
+                    else if(std::sscanf(buf, " vert %d ( %f %f ) %hu %hu", &index, &v.tc.x, &v.tc.y, &v.start, &v.count)==5)
                     {
                         if(index>=0 && index<numverts)
                         {
@@ -164,7 +164,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     // assign tris to tri array
-                    else if(sscanf(buf, " tri %d %hu %hu %hu", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
+                    else if(std::sscanf(buf, " tri %d %hu %hu %hu", &index, &t.vert[0], &t.vert[1], &t.vert[2])==4)
                     {
                         if(index>=0 && index<numtris)
                         {
@@ -172,7 +172,7 @@ struct md5 : skelloader<md5>
                         }
                     }
                     //assign md5weights to weights array
-                    else if(sscanf(buf, " weight %d %d %f ( %f %f %f ) ", &index, &w.joint, &w.bias, &w.pos.x, &w.pos.y, &w.pos.z)==6)
+                    else if(std::sscanf(buf, " weight %d %d %f ( %f %f %f ) ", &index, &w.joint, &w.bias, &w.pos.x, &w.pos.y, &w.pos.z)==6)
                     {
                         w.pos.y = -w.pos.y;
                         if(index>=0 && index<numweights)
@@ -219,7 +219,7 @@ struct md5 : skelloader<md5>
                 while(f->getline(buf, sizeof(buf)))
                 {
                     int tmp;
-                    if(sscanf(buf, " MD5Version %d", &tmp) == 1)
+                    if(std::sscanf(buf, " MD5Version %d", &tmp) == 1)
                     {
                         if(tmp != 10)
                         {
@@ -227,7 +227,7 @@ struct md5 : skelloader<md5>
                             return nullptr;
                         }
                     }
-                    else if(sscanf(buf, " numJoints %d", &tmp) == 1)
+                    else if(std::sscanf(buf, " numJoints %d", &tmp) == 1)
                     {
                         if(tmp != skel->numbones)
                         {
@@ -235,7 +235,7 @@ struct md5 : skelloader<md5>
                             return nullptr;
                         }
                     }
-                    else if(sscanf(buf, " numFrames %d", &animframes) == 1)
+                    else if(std::sscanf(buf, " numFrames %d", &animframes) == 1)
                     {
                         if(animframes < 1) //if there are no animated frames, don't do animated frame stuff
                         {
@@ -244,12 +244,12 @@ struct md5 : skelloader<md5>
                         }
                     }
                     //apparently, do nothing with respect to framerate
-                    else if(sscanf(buf, " frameRate %d", &tmp) == 1)
+                    else if(std::sscanf(buf, " frameRate %d", &tmp) == 1)
                     {
                         //(empty body)
                     }
                     //create animdata if there is some relevant info in file
-                    else if(sscanf(buf, " numAnimatedComponents %d", &animdatalen)==1)
+                    else if(std::sscanf(buf, " numAnimatedComponents %d", &animdatalen)==1)
                     {
                         if(animdatalen > 0)
                         {
@@ -268,7 +268,7 @@ struct md5 : skelloader<md5>
                         while(f->getline(buf, sizeof(buf)) && buf[0]!='}') //loop until end of {} block
                         {
                             md5hierarchy h;
-                            if(sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
+                            if(std::sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
                             {
                                 hierarchy.add(h);
                             }
@@ -280,7 +280,7 @@ struct md5 : skelloader<md5>
                         {
                             md5joint j;
                             //pick up pos/orient 3-vectors within
-                            if(sscanf(buf, " ( %f %f %f ) ( %f %f %f )", &j.pos.x, &j.pos.y, &j.pos.z, &j.orient.x, &j.orient.y, &j.orient.z)==6)
+                            if(std::sscanf(buf, " ( %f %f %f ) ( %f %f %f )", &j.pos.x, &j.pos.y, &j.pos.z, &j.orient.x, &j.orient.y, &j.orient.z)==6)
                             {
                                 j.pos.y = -j.pos.y;
                                 j.orient.x = -j.orient.x;
@@ -313,7 +313,7 @@ struct md5 : skelloader<md5>
 
                         skel->numframes += animframes;
                     }
-                    else if(sscanf(buf, " frame %d", &tmp)==1)
+                    else if(std::sscanf(buf, " frame %d", &tmp)==1)
                     {
                         for(int numdata = 0; f->getline(buf, sizeof(buf)) && buf[0]!='}';)
                         {
@@ -404,7 +404,7 @@ struct md5 : skelloader<md5>
                 while(f->getline(buf, sizeof(buf)))
                 {
                     int tmp;
-                    if(sscanf(buf, " MD5Version %d", &tmp)==1)
+                    if(std::sscanf(buf, " MD5Version %d", &tmp)==1)
                     {
                         if(tmp!=10)
                         {
@@ -412,7 +412,7 @@ struct md5 : skelloader<md5>
                             return false;
                         }
                     }
-                    else if(sscanf(buf, " numJoints %d", &tmp)==1)
+                    else if(std::sscanf(buf, " numJoints %d", &tmp)==1)
                     {
                         if(tmp<1)
                         {
@@ -426,7 +426,7 @@ struct md5 : skelloader<md5>
                         skel->numbones = tmp;
                         skel->bones = new boneinfo[skel->numbones];
                     }
-                    else if(sscanf(buf, " numMeshes %d", &tmp)==1)
+                    else if(std::sscanf(buf, " numMeshes %d", &tmp)==1)
                     {
                         if(tmp<1)
                         {
@@ -468,7 +468,7 @@ struct md5 : skelloader<md5>
                             }
                             *curname = '\0';
                             //pickup parent, pos/orient 3-vectors
-                            if(sscanf(curbuf, " %d ( %f %f %f ) ( %f %f %f )",
+                            if(std::sscanf(curbuf, " %d ( %f %f %f ) ( %f %f %f )",
                                 &parent, &j.pos.x, &j.pos.y, &j.pos.z,
                                 &j.orient.x, &j.orient.y, &j.orient.z)==7)
                             {
