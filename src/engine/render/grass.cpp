@@ -409,7 +409,7 @@ void rendergrass()
     gle::enabletexcoord0();
     gle::enablequads();
 
-    GLOBALPARAMF(grasstest, grasstest);
+    GLOBALPARAMF(grasstest, grasstest); //toggles use of grass (depth) test shader
 
     int texid = -1;
     for(uint i = 0; i < grassgroups.size(); i++)
