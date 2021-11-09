@@ -223,8 +223,8 @@ void viewao()
     {
         return;
     }
-    int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2; //if debugfullscreen, set to hudw/hudh size; if not, do small size
-    int h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
+    int w = debugfullscreen ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
+        h = debugfullscreen ? hudh : (w*hudh)/hudw;
     SETSHADER(hudrect);
     gle::colorf(1, 1, 1);
     glBindTexture(GL_TEXTURE_RECTANGLE, aotex[2] ? aotex[2] : aotex[0]);
