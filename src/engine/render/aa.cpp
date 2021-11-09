@@ -870,6 +870,7 @@ namespace //internal functions incl. AA implementations
         clearsmaashaders();
     }
 
+    //debug view for smaa buffers
     void viewsmaa()
     {
         int w = debugfullscreen ? hudw : std::min(hudw, hudh)/2,
@@ -920,6 +921,8 @@ namespace //internal functions incl. AA implementations
         debugquad(0, 0, w, h, 0, 0, tw, th);
     }
 
+    //executes the smaa process on the given output framebuffer object (outfbo)
+    //split toggles splitting process into two passes
     void dosmaa(GLuint outfbo = 0, bool split = false)
     {
         timer *smaatimer = begintimer("smaa");
