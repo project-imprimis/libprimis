@@ -101,7 +101,7 @@ namespace //internal functions incl. AA implementations
             h = debugfullscreen ? hudh : (w*hudh)/hudw,
             tw = gw,
             th = gh;
-        SETSHADER(hudrect);
+        SETSHADER(hudrect,);
         gle::colorf(1, 1, 1);
         switch(debugtqaa)
         {
@@ -122,7 +122,7 @@ namespace //internal functions incl. AA implementations
     void resolvetqaa(GLuint outfbo)
     {
         glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
-        SETSHADER(tqaaresolve);
+        SETSHADER(tqaaresolve,);
         LOCALPARAMF(colorweight, tqaacolorweightscale, -tqaacolorweightbias*tqaacolorweightscale);
         glBindTexture(GL_TEXTURE_RECTANGLE, tqaatex[0]);
         glActiveTexture_(GL_TEXTURE1);
@@ -877,7 +877,7 @@ namespace //internal functions incl. AA implementations
             h = debugfullscreen ? hudh : (w*hudh)/hudw,
             tw = gw,
             th = gh;
-        SETSHADER(hudrect);
+        SETSHADER(hudrect,);
         gle::colorf(1, 1, 1);
         /* debugsmaa levels:
          *  1: show the output tex resulting from smaa
