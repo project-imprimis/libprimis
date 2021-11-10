@@ -24,7 +24,7 @@ namespace
     FVAR(csmsplitweight, 0.20f, 0.75f, 0.95f);
     VAR(csmnearplane, 1, 1, 16); //short end cutoff of shadow rendering on view frustum
     VAR(csmfarplane, 64, 1024, 16384); //far end cutoff of shadow rendering on view frustum
-    FVAR(csmpradiustweak, 1e-3f, 1, 1e3f);
+    FVAR(csmpradiustweak, 1e-3f, 1, 1e3f); //csm projection radius tweak factor to multiply calcfrustumboundsphere by
     FVAR(csmdepthrange, 0, 1024, 1e6f);
     FVAR(csmdepthmargin, 0, 0.1f, 1e3f);
     FVAR(csmbias, -1e6f, 1e-4f, 1e6f);
