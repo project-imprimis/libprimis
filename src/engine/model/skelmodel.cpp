@@ -41,7 +41,7 @@ skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, cha
         {
             if(sep)
             {
-                const char *end = strchr(skelanims[i].name, ':');
+                const char *end = std::strchr(skelanims[i].name, ':');
                 if(end && end - skelanims[i].name == len && !memcmp(name, skelanims[i].name, len))
                 {
                     return &skelanims[i];
