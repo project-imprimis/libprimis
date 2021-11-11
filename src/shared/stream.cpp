@@ -447,7 +447,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
 }
 
 
-char *pathhelper(char *s)
+char *path(char *s)
 {
     for(char *curpart = s;;)
     {
@@ -513,11 +513,11 @@ char *pathhelper(char *s)
     return s;
 }
 
-char *path(const char *s)
+char *copypath(const char *s)
 {
     static string tmp;
     copystring(tmp, s);
-    pathhelper(tmp);
+    path(tmp);
     return tmp;
 }
 

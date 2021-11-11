@@ -157,7 +157,7 @@ bool validateblock(const char *s)
 
 void writecfg(const char *savedconfig, const char *autoexec, const char *defaultconfig, const char *name)
 {
-    stream *f = openutf8file(path(name && name[0] ? name : savedconfig), "w");
+    stream *f = openutf8file(copypath(name && name[0] ? name : savedconfig), "w");
     if(!f)
     {
         return;

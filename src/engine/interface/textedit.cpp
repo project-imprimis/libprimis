@@ -1072,7 +1072,7 @@ void textsave(char *file)
 {
     if(*file)
     {
-        textfocus->setfile(path(file));
+        textfocus->setfile(copypath(file));
     }
     textfocus->save();
 }
@@ -1082,7 +1082,7 @@ void textload(char *file)
 {
     if(*file)
     {
-        textfocus->setfile(path(file));
+        textfocus->setfile(copypath(file));
         textfocus->load();
     }
     else if(textfocus->filename)
@@ -1109,7 +1109,7 @@ void textinit(char *name, char *file, char *initval)
     }
     if(e && e->rendered && !e->filename && *file && (e->lines.empty() || (e->lines.length() == 1 && !strcmp(e->lines[0].text, initval))))
     {
-        e->setfile(path(file));
+        e->setfile(copypath(file));
         e->load();
     }
 }
