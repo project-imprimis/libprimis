@@ -338,7 +338,7 @@ static const char *debugline(const char *p, const char *fmt)
     const char *line = sourcestr;
     for(;;)
     {
-        const char *end = strchr(line, '\n');
+        const char *end = std::strchr(line, '\n'); //search for newline
         if(!end)
         {
             end = line + std::strlen(line);
@@ -3533,7 +3533,7 @@ void printfvar(ident *id, float f)
 
 void printsvar(ident *id, const char *s)
 {
-    conoutf(strchr(s, '"') ? "%s = [%s]" : "%s = \"%s\"", id->name, s);
+    conoutf(std::strchr(s, '"') ? "%s = [%s]" : "%s = \"%s\"", id->name, s);
 }
 
 void printvar(ident *id)
