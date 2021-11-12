@@ -224,7 +224,7 @@ void Editor::clear(const char *init)
 
 void Editor::init(const char *inittext)
 {
-    if(strcmp(lines[0].text, inittext))
+    if(std::strcmp(lines[0].text, inittext))
     {
         clear(inittext);
     }
@@ -987,7 +987,7 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
 {
     for(int i = 0; i < editors.length(); i++)
     {
-        if(!strcmp(editors[i]->name, name))
+        if(!std::strcmp(editors[i]->name, name))
         {
             Editor *e = editors[i];
             if(focus)
@@ -1101,13 +1101,13 @@ void textinit(char *name, char *file, char *initval)
     Editor *e = nullptr;
     for(int i = 0; i < editors.length(); i++)
     {
-        if(!strcmp(editors[i]->name, name))
+        if(!std::strcmp(editors[i]->name, name))
         {
             e = editors[i];
             break;
         }
     }
-    if(e && e->rendered && !e->filename && *file && (e->lines.empty() || (e->lines.length() == 1 && !strcmp(e->lines[0].text, initval))))
+    if(e && e->rendered && !e->filename && *file && (e->lines.empty() || (e->lines.length() == 1 && !std::strcmp(e->lines[0].text, initval))))
     {
         e->setfile(copypath(file));
         e->load();
