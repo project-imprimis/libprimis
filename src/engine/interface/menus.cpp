@@ -90,7 +90,7 @@ void addchange(const char *desc, int type)
     }
     for(int i = 0; i < needsapply.length(); i++)
     {
-        if(!strcmp(needsapply[i].desc, desc))
+        if(!std::strcmp(needsapply[i].desc, desc))
         {
             return;
         }
