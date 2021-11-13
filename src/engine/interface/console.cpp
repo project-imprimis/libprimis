@@ -959,7 +959,7 @@ namespace
             }
             if(ext)
             {
-                if(strchr(ext, '*'))
+                if(std::strchr(ext, '*'))
                 {
                     ext[0] = '\0';
                 }
@@ -1027,7 +1027,7 @@ namespace
         FilesVal *f = nullptr;
         if(completesize)
         {
-            char *end = strchr(&s[cmdlen], ' ');
+            char *end = std::strchr(&s[cmdlen], ' ');
             if(end)
             {
                 f = completions.find(stringslice(&s[cmdlen], end), nullptr);
@@ -1036,7 +1036,7 @@ namespace
         const char *nextcomplete = nullptr;
         if(f) // complete using filenames
         {
-            int commandsize = strchr(&s[cmdlen], ' ')+1-s;
+            int commandsize = std::strchr(&s[cmdlen], ' ')+1-s;
             f->update();
             for(int i = 0; i < f->files.length(); i++)
             {
