@@ -1726,15 +1726,15 @@ Shader *loaddeferredlightshader(const char *type = nullptr)
          avatar      = true;
     if(type)
     {
-        if(strchr(type, 'm'))
+        if(std::strchr(type, 'm'))
         {
             minimap = true;
         }
-        if(strchr(type, 'M'))
+        if(std::strchr(type, 'M'))
         {
             multisample = true;
         }
-        if(strchr(type, 'D'))
+        if(std::strchr(type, 'D'))
         {
             avatar = false;
         }
