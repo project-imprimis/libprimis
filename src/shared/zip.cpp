@@ -331,7 +331,7 @@ bool addzip(const char *name, const char *mount = nullptr, const char *strip = n
     copystring(pname, name);
     path(pname);
     size_t plen = std::strlen(pname);
-    if(plen < 4 || !strchr(&pname[plen-4], '.'))
+    if(plen < 4 || !std::strchr(&pname[plen-4], '.'))
     {
         concatstring(pname, ".zip");
     }
@@ -371,7 +371,7 @@ bool removezip(const char *name)
     copystring(pname, name);
     path(pname);
     int plen = (int)std::strlen(pname);
-    if(plen < 4 || !strchr(&pname[plen-4], '.'))
+    if(plen < 4 || !std::strchr(&pname[plen-4], '.'))
     {
         concatstring(pname, ".zip");
     }
@@ -737,7 +737,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
             {
                 name++;
             }
-            if(strchr(name, PATHDIV))
+            if(std::strchr(name, PATHDIV))
             {
                 continue;
             }
