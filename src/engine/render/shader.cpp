@@ -465,7 +465,7 @@ static void allocglslactiveuniforms(Shader &s)
             continue;
         }
         name[std::clamp(static_cast<int>(namelen), 0, static_cast<int>(sizeof(name))-2)] = '\0';
-        char *brak = strchr(name, '[');
+        char *brak = std::strchr(name, '[');
         if(brak)
         {
             *brak = '\0';
