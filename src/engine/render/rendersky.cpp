@@ -35,7 +35,7 @@ namespace
 
     void loadsky(const char *basename, Texture *texs[6])
     {
-        const char *wildcard = strchr(basename, '*');
+        const char *wildcard = std::strchr(basename, '*');
         for(int i = 0; i < 6; ++i) //six sides for a cubemap
         {
             const char *side = cubemapsides[i].name;
@@ -43,7 +43,7 @@ namespace
             copystring(name, makerelpath("media/sky", basename));
             if(wildcard)
             {
-                char *chop = strchr(name, '*');
+                char *chop = std::strchr(name, '*');
                 if(chop)
                 {
                     *chop = '\0';
