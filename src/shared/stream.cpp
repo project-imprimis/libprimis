@@ -451,7 +451,7 @@ char *path(char *s)
 {
     for(char *curpart = s;;)
     {
-        char *endpart = strchr(curpart, '&');
+        char *endpart = std::strchr(curpart, '&');
         if(endpart)
         {
             *endpart = '\0';
@@ -472,7 +472,7 @@ char *path(char *s)
         for(char *prevdir = nullptr, *curdir = curpart;;)
         {
             prevdir = curdir[0]==PATHDIV ? curdir+1 : curdir;
-            curdir = strchr(prevdir, PATHDIV);
+            curdir = std::strchr(prevdir, PATHDIV);
             if(!curdir)
             {
                 break;
@@ -587,7 +587,7 @@ bool subhomedir(char *dst, int len, const char *src)
     const char *sub = std::strstr(src, "$HOME");
     if(!sub)
     {
-        sub = strchr(src, '~');
+        sub = std::strchr(src, '~');
     }
     if(sub && sub-src < len)
     {
@@ -670,7 +670,7 @@ const char *findfile(const char *filename, const char *mode)
         {
             string dirs;
             copystring(dirs, s);
-            char *dir = strchr(dirs[0] == PATHDIV ? dirs+1 : dirs, PATHDIV);
+            char *dir = std::strchr(dirs[0] == PATHDIV ? dirs+1 : dirs, PATHDIV);
             while(dir)
             {
                 *dir = '\0';
@@ -679,7 +679,7 @@ const char *findfile(const char *filename, const char *mode)
                     return s;
                 }
                 *dir = PATHDIV;
-                dir = strchr(dir+1, PATHDIV);
+                dir = std::strchr(dir+1, PATHDIV);
             }
             return s;
         }
