@@ -1401,7 +1401,7 @@ static void skipcomments(const char *&p)
 {
     for(;;)
     {
-        p += strspn(p, " \t\r");
+        p += std::strspn(p, " \t\r");
         if(p[0]!='/' || p[1]!='/')
         {
             break;
