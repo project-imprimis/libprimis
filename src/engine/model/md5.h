@@ -101,7 +101,7 @@ struct md5 : skelloader<md5>
                 {
                     if(std::strstr(buf, "// meshes:"))
                     {
-                        char *start = strchr(buf, ':')+1;
+                        char *start = std::strchr(buf, ':')+1;
                         if(*start==' ')
                         {
                             start++;
@@ -115,8 +115,8 @@ struct md5 : skelloader<md5>
                     }
                     else if(std::strstr(buf, "shader"))
                     {
-                        char *start = strchr(buf, '"'),
-                             *end = start ? strchr(start+1, '"') : nullptr;
+                        char *start = std::strchr(buf, '"'),
+                             *end = start ? std::strchr(start+1, '"') : nullptr;
                         if(start && end)
                         {
                             char *texname = newstring(start+1, end-(start+1));
