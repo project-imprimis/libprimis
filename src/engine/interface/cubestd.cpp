@@ -543,7 +543,7 @@ static void skiplist(const char *&p)
 {
     for(;;)
     {
-        p += strspn(p, " \t\r\n");
+        p += std::strspn(p, " \t\r\n");
         if(p[0]!='/' || p[1]!='/')
         {
             break;
