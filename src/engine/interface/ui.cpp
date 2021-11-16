@@ -3848,7 +3848,7 @@ namespace UI
             }
             else while(len > 0)
             {
-                int accept = std::min(len, static_cast<int>(strspn(str, keyfilter)));
+                int accept = std::min(len, static_cast<int>(std::strspn(str, keyfilter)));
                 if(accept > 0)
                 {
                     edit->input(str, accept);
