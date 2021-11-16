@@ -1406,7 +1406,7 @@ static void skipcomments(const char *&p)
         {
             break;
         }
-        p += strcspn(p, "\n\0");
+        p += std::strcspn(p, "\n\0");
     }
 }
 
@@ -1452,7 +1452,7 @@ const char *parseword(const char *p)
     int brakdepth = 0;
     for(;; p++)
     {
-        p += strcspn(p, "\"/;()[] \t\r\n\0");
+        p += std::strcspn(p, "\"/;()[] \t\r\n\0");
         switch(p[0])
         {
             case '"':
@@ -2174,7 +2174,7 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
     int len = 0;
     while(str < end)
     {
-        int n = strcspn(str, "\r/\"@]\0");
+        int n = std::strcspn(str, "\r/\"@]\0");
         memcpy(&buf[len], str, n);
         len += n;
         str += n;
@@ -2200,7 +2200,7 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
             case '/':
                 if(str[1] == '/')
                 {
-                    size_t comment = strcspn(str, "\n\0");
+                    size_t comment = std::strcspn(str, "\n\0");
                     if (iscubepunct(str[2]))
                     {
                         memcpy(&buf[len], str, comment);
@@ -2317,7 +2317,7 @@ static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, i
     int concs = 0;
     for(int brak = 1; brak;)
     {
-        p += strcspn(p, "@\"/[]\0");
+        p += std::strcspn(p, "@\"/[]\0");
         int c = *p++;
         switch(c)
         {
@@ -2339,7 +2339,7 @@ static void compileblockmain(vector<uint> &code, const char *&p, int wordtype, i
             case '/':
                 if(*p=='/')
                 {
-                    p += strcspn(p, "\n\0");
+                    p += std::strcspn(p, "\n\0");
                 }
                 break;
             case '[':
@@ -3351,7 +3351,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                 //(empty body)
             }
         }
-        p += strcspn(p, ")];/\n\0");
+        p += std::strcspn(p, ")];/\n\0");
         int c = *p++;
         switch(c)
         {
@@ -3378,7 +3378,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
             {
                 if(*p == '/')
                 {
-                    p += strcspn(p, "\n\0");
+                    p += std::strcspn(p, "\n\0");
                 }
                 goto endstatement;
             }
