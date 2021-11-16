@@ -119,7 +119,7 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
 
 static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
 {
-    const char *source = def + strspn(def, " \t\r\n");
+    const char *source = def + std::strspn(def, " \t\r\n");
     char *modsource = nullptr;
     const char *parts[16];
     int numparts = 0;
@@ -930,7 +930,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
             memset(vspragma, ' ', olen);
             vspragma += olen;
             char *end = vspragma + strcspn(vspragma, "\n\r");
-            end += strspn(end, "\n\r");
+            end += std::strspn(end, "\n\r");
             int endlen = strcspn(end, "\n\r");
             memset(end, ' ', endlen);
         }
@@ -953,7 +953,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
             memset(pspragma, ' ', olen);
             pspragma += olen;
             char *end = pspragma + strcspn(pspragma, "\n\r");
-            end += strspn(end, "\n\r");
+            end += std::strspn(end, "\n\r");
             int endlen = strcspn(end, "\n\r");
             memset(end, ' ', endlen);
         }
@@ -1036,7 +1036,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
             {
                 pspragma++;
             }
-            pspragma += strspn(pspragma, " \t\v\f");
+            pspragma += std::strspn(pspragma, " \t\v\f");
             clen = strcspn(pspragma, "\r\n");
         }
         if(clen <= 0)
