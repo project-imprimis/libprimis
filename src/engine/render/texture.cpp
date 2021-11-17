@@ -1597,7 +1597,7 @@ static vec parsevec(const char *arg)
 {
     vec v(0, 0, 0);
     int i = 0;
-    for(; arg[0] && (!i || arg[0]=='/') && i<3; arg += strcspn(arg, "/,><"), i++)
+    for(; arg[0] && (!i || arg[0]=='/') && i<3; arg += std::strcspn(arg, "/,><"), i++)
     {
         if(i)
         {
@@ -1649,7 +1649,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
                 break; \
             } \
             cmds = strchr(cmd, '<'); \
-            size_t len = strcspn(cmd, ":,><"); \
+            size_t len = std::strcspn(cmd, ":,><"); \
             for(int i = 0; i < 4; ++i) \
             { \
                 arg[i] = strchr(i ? arg[i-1] : cmd, i ? ',' : ':'); \
@@ -1662,7 +1662,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
                     arg[i]++; \
                 } \
             }
-        #define COPYTEXARG(dst, src) copystring(dst, stringslice(src, strcspn(src, ":,><")))
+        #define COPYTEXARG(dst, src) copystring(dst, stringslice(src, std::strcspn(src, ":,><")))
         PARSETEXCOMMANDS(pcmds);
         if(matchstring(cmd, len, "stub"))
         {
