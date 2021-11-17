@@ -929,9 +929,9 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         {
             memset(vspragma, ' ', olen);
             vspragma += olen;
-            char *end = vspragma + strcspn(vspragma, "\n\r");
+            char *end = vspragma + std::strcspn(vspragma, "\n\r");
             end += std::strspn(end, "\n\r");
-            int endlen = strcspn(end, "\n\r");
+            int endlen = std::strcspn(end, "\n\r");
             memset(end, ' ', endlen);
         }
     }
@@ -952,9 +952,9 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         {
             memset(pspragma, ' ', olen);
             pspragma += olen;
-            char *end = pspragma + strcspn(pspragma, "\n\r");
+            char *end = pspragma + std::strcspn(pspragma, "\n\r");
             end += std::strspn(end, "\n\r");
-            int endlen = strcspn(end, "\n\r");
+            int endlen = std::strcspn(end, "\n\r");
             memset(end, ' ', endlen);
         }
     }
@@ -1037,7 +1037,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
                 pspragma++;
             }
             pspragma += std::strspn(pspragma, " \t\v\f");
-            clen = strcspn(pspragma, "\r\n");
+            clen = std::strcspn(pspragma, "\r\n");
         }
         if(clen <= 0)
         {
