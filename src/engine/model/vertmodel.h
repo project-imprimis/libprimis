@@ -291,7 +291,7 @@ struct vertmodel : animmodel
         {
             for(int i = 0; i < numtags; ++i)
             {
-                if(!strcmp(tags[i].name, name))
+                if(!std::strcmp(tags[i].name, name))
                 {
                     return i;
                 }
