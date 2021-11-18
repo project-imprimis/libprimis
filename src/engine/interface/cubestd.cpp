@@ -1556,7 +1556,7 @@ ICOMMAND(cond, "ee2V", (tagval *args, int numargs),
 
 CASECOMMAND(case, "i", int, args[0].getint(), args[i].type == Value_Null || args[i].getint() == val);
 CASECOMMAND(casef, "f", float, args[0].getfloat(), args[i].type == Value_Null || args[i].getfloat() == val);
-CASECOMMAND(cases, "s", const char *, args[0].getstr(), args[i].type == Value_Null || !strcmp(args[i].getstr(), val));
+CASECOMMAND(cases, "s", const char *, args[0].getstr(), args[i].type == Value_Null || !std::strcmp(args[i].getstr(), val));
 
 ICOMMAND(rnd, "ii", (int *a, int *b), intret(*a - *b > 0 ? randomint(*a - *b) + *b : *b));
 ICOMMAND(rndstr, "i", (int *len),
@@ -1591,10 +1591,10 @@ ICOMMAND(tohex, "ii", (int *n, int *p),
         bool val; \
         if(numargs >= 2) \
         { \
-            val = strcmp(args[0].s, args[1].s) op 0; /* note here the bizzare syntax caused by macro substitution */ \
+            val = std::strcmp(args[0].s, args[1].s) op 0; /* note here the bizzare syntax caused by macro substitution */ \
             for(int i = 2; i < numargs && val; i++) \
             { \
-                val = strcmp(args[i-1].s, args[i].s) op 0;  /* note here the bizzare syntax caused by macro substitution */ \
+                val = std::strcmp(args[i-1].s, args[i].s) op 0;  /* note here the bizzare syntax caused by macro substitution */ \
             } \
         } \
         else \
