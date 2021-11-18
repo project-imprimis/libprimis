@@ -92,7 +92,7 @@ COMMANDN(unescape, unescapecmd, "s");
 
 const char *escapeid(const char *s)
 {
-    const char *end = s + strcspn(s, "\"/;()[]@ \f\t\r\n\0");
+    const char *end = s + std::strcspn(s, "\"/;()[]@ \f\t\r\n\0");
     return *end ? escapestring(s) : s;
 }
 
@@ -548,7 +548,7 @@ static void skiplist(const char *&p)
         {
             break;
         }
-        p += strcspn(p, "\n\0");
+        p += std::strcspn(p, "\n\0");
     }
 }
 
@@ -576,7 +576,7 @@ static bool parselist(const char *&s, const char *&start = liststart, const char
             start = s+1;
             for(int braktype = *s++, brak = 1;;)
             {
-                s += strcspn(s, "\"/;()[]\0");
+                s += std::strcspn(s, "\"/;()[]\0");
                 int c = *s++;
                 switch(c)
                 {
@@ -599,7 +599,7 @@ static bool parselist(const char *&s, const char *&start = liststart, const char
                     {
                         if(*s == '/')
                         {
-                            s += strcspn(s, "\n\0");
+                            s += std::strcspn(s, "\n\0");
                         }
                         break;
                     }
