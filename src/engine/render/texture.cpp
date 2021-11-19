@@ -2718,7 +2718,7 @@ int findslottex(const char *name)
 {
     for(int i = 0; i < static_cast<int>(sizeof(slottexs)/sizeof(slottex)); ++i)
     {
-        if(!strcmp(slottexs[i].name, name))
+        if(!std::strcmp(slottexs[i].name, name))
         {
             return slottexs[i].id;
         }
@@ -2737,7 +2737,7 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
         }
         defslot = slots.add(new Slot(slots.length()));
     }
-    else if(!strcmp(type, "decal"))
+    else if(!std::strcmp(type, "decal"))
     {
         if(decalslots.length() >= 0x10000)
         {
