@@ -44,7 +44,7 @@ namespace
     {
         for(int i = 0; i < timers.length(); i++)
         {
-            if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
+            if(!std::strcmp(timers[i].name, name) && timers[i].gpu == gpu)
             {
                 timerorder.removeobj(i);
                 timerorder.add(i);
