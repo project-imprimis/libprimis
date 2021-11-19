@@ -176,7 +176,7 @@ bool loadents(const char *fname, const char *gameident, vector<entity> &ents, ui
         f->read(gametype, len+1);
     }
     gametype[std::max(len, 0)] = '\0';
-    if(strcmp(gametype, gameident)) //compare game string from map with game
+    if(std::strcmp(gametype, gameident)) //compare game string from map with game
     {
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
@@ -1176,7 +1176,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
         f->read(gametype, len+1);
     }
     gametype[std::max(len, 0)] = '\0';
-    if(strcmp(gametype, gameident)!=0)
+    if(std::strcmp(gametype, gameident)!=0)
     {
         samegame = false;
         conoutf(Console_Warn, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
@@ -1248,7 +1248,7 @@ bool load_world(const char *mname, const char *gameident, const char *gameinfo, 
     identflags &= ~Idf_Overridden;
     renderbackground("loading...", mapshot, mname, gameinfo);
 
-    if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown"))
+    if(maptitle[0] && std::strcmp(maptitle, "Untitled Map by Unknown"))
     {
         conoutf(Console_Echo, "%s", maptitle);
     }
