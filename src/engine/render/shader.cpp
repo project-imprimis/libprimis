@@ -26,7 +26,7 @@ Shader *nullshader            = nullptr,
        *stdworldshader        = nullptr;
 
 static hashnameset<GlobalShaderParamState> globalparams(256);
-static std::unordered_map<const char *, int> localparams(256);
+static hashtable<const char *, int> localparams(256);
 static hashnameset<Shader> shaders(256);
 static Shader *slotshader = nullptr;
 static vector<SlotShaderParam> slotparams;
@@ -323,7 +323,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
 
 int getlocalparam(const char *name)
 {
-    return localparams[name];
+    return localparams.access(name, static_cast<int>(localparams.numelems));
 }
 
 static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum format)
