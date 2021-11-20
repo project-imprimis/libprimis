@@ -58,7 +58,7 @@ namespace
                 concatstring(name, ext);
                 if((texs[i] = textureload(name, 3, true, false))==notexture)
                 {
-                    strcpy(name+std::strlen(name)-3, "png");
+                    std::strcpy(name+std::strlen(name)-3, "png");
                     texs[i] = textureload(name, 3, true, false);
                 }
             }
@@ -86,7 +86,7 @@ namespace
             concatstring(name, ".jpg");
             if((t = textureload(name, 0, true, false)) == notexture)
             {
-                strcpy(name+std::strlen(name)-3, "png");
+                std::strcpy(name+std::strlen(name)-3, "png");
                 t = textureload(name, 0, true, false);
             }
         }
