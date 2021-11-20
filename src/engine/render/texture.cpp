@@ -1643,16 +1643,16 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
                        *end = nullptr, \
                        *arg[4] = { nullptr, nullptr, nullptr, nullptr }; \
             cmd = &cmds[1]; \
-            end = strchr(cmd, '>'); \
+            end = std::strchr(cmd, '>'); \
             if(!end) \
             { \
                 break; \
             } \
-            cmds = strchr(cmd, '<'); \
+            cmds = std::strchr(cmd, '<'); \
             size_t len = std::strcspn(cmd, ":,><"); \
             for(int i = 0; i < 4; ++i) \
             { \
-                arg[i] = strchr(i ? arg[i-1] : cmd, i ? ',' : ':'); \
+                arg[i] = std::strchr(i ? arg[i-1] : cmd, i ? ',' : ':'); \
                 if(!arg[i] || arg[i] >= end) \
                 { \
                     arg[i] = ""; \
