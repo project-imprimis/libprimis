@@ -719,7 +719,7 @@ struct modelcommands
         for(int i = 0; i < mdl.meshes->meshes.length(); i++) \
         { \
             MESH &m = *static_cast<MESH *>(mdl.meshes->meshes[i]); \
-            if(!strcmp(meshname, "*") || (m.name && !strcmp(m.name, meshname))) \
+            if(!std::strcmp(meshname, "*") || (m.name && !std::strcmp(m.name, meshname))) \
             { \
                 body; \
             } \
