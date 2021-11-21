@@ -25,7 +25,7 @@ struct FilesKey
 
 static inline bool htcmp(const FilesKey &x, const FilesKey &y)
 {
-    return x.type == y.type && !strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !strcmp(x.ext, y.ext)));
+    return x.type == y.type && !std::strcmp(x.dir, y.dir) && (x.ext == y.ext || (x.ext && y.ext && !std::strcmp(x.ext, y.ext)));
 }
 
 static inline uint hthash(const FilesKey &k)
@@ -302,7 +302,7 @@ namespace
         vector<char> names;
         ENUMERATE(keyms, KeyM, km,
         {
-            if(!strcmp(km.actions[type], action))
+            if(!std::strcmp(km.actions[type], action))
             {
                 if(names.length())
                 {
@@ -563,9 +563,9 @@ namespace
 
         bool shouldsave()
         {
-            return strcmp(commandbuf, buf) ||
-                   (commandaction ? !action || strcmp(commandaction, action) : action!=nullptr) ||
-                   (commandprompt ? !prompt || strcmp(commandprompt, prompt) : prompt!=nullptr) ||
+            return std::strcmp(commandbuf, buf) ||
+                   (commandaction ? !action || std::strcmp(commandaction, action) : action!=nullptr) ||
+                   (commandprompt ? !prompt || std::strcmp(commandprompt, prompt) : prompt!=nullptr) ||
                    commandflags != flags;
         }
 
@@ -905,7 +905,7 @@ namespace
             files.sort();
             for(int i = 0; i < files.length(); i++)
             {
-                if(i && !strcmp(files[i], files[i-1]))
+                if(i && !std::strcmp(files[i], files[i-1]))
                 {
                     delete[] files.remove(i--);
                 }
@@ -1041,8 +1041,8 @@ namespace
             for(int i = 0; i < f->files.length(); i++)
             {
                 if(strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
-                          (!lastcomplete || strcmp(f->files[i], lastcomplete) > 0) &&
-                          (!nextcomplete || strcmp(f->files[i], nextcomplete) < 0))
+                          (!lastcomplete || std::strcmp(f->files[i], lastcomplete) > 0) &&
+                          (!nextcomplete || std::strcmp(f->files[i], nextcomplete) < 0))
                 {
                     nextcomplete = f->files[i];
                 }
@@ -1054,8 +1054,8 @@ namespace
         {
             ENUMERATE(idents, ident, id,
                 if(strncmp(id.name, &s[cmdlen], completesize)==0 &&
-                          (!lastcomplete || strcmp(id.name, lastcomplete) > 0) &&
-                          (!nextcomplete || strcmp(id.name, nextcomplete) < 0))
+                          (!lastcomplete || std::strcmp(id.name, lastcomplete) > 0) &&
+                          (!nextcomplete || std::strcmp(id.name, nextcomplete) < 0))
                 {
                     nextcomplete = id.name;
                 }
