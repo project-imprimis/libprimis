@@ -47,7 +47,7 @@ skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, cha
                     return &skelanims[i];
                 }
             }
-            if(!strcmp(name, skelanims[i].name))
+            if(!std::strcmp(name, skelanims[i].name))
             {
                 return &skelanims[i];
             }
@@ -67,7 +67,7 @@ int skelmodel::skeleton::findbone(const char *name)
 {
     for(int i = 0; i < numbones; ++i)
     {
-        if(bones[i].name && !strcmp(bones[i].name, name))
+        if(bones[i].name && !std::strcmp(bones[i].name, name))
         {
             return i;
         }
@@ -79,7 +79,7 @@ int skelmodel::skeleton::findtag(const char *name)
 {
     for(int i = 0; i < tags.length(); i++)
     {
-        if(!strcmp(tags[i].name, name))
+        if(!std::strcmp(tags[i].name, name))
         {
             return i;
         }
