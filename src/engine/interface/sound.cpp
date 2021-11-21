@@ -501,7 +501,7 @@ static struct SoundType
             for(int j = 0; j < s.numslots; ++j)
             {
                 soundslot &c = slots[s.slots+j];
-                if(!strcmp(c.sample->name, name) && (!vol || c.volume==vol))
+                if(!std::strcmp(c.sample->name, name) && (!vol || c.volume==vol))
                 {
                     return i;
                 }
