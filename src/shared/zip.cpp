@@ -237,7 +237,7 @@ ziparchive *findzip(const char *name)
 {
     for(int i = 0; i < archives.length(); i++)
     {
-        if(!strcmp(name, archives[i]->name))
+        if(!std::strcmp(name, archives[i]->name))
         {
             return archives[i];
         }
