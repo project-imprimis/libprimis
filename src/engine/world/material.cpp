@@ -658,7 +658,7 @@ int findmaterial(const char *name)
 {
     for(int i = 0; i < static_cast<int>(sizeof(materials)/sizeof(material)); ++i)
     {
-        if(!strcmp(materials[i].name, name))
+        if(!std::strcmp(materials[i].name, name))
         {
             return materials[i].id;
         }
