@@ -397,7 +397,7 @@ static void setglsluniformformat(Shader &s, const char *name, GLenum format, int
             return;
         }
     }
-    if(!strncmp(name, "gl_", 3))
+    if(!std::strncmp(name, "gl_", 3))
     {
         return;
     }
@@ -925,7 +925,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         }
         memset(vspragma, ' ', len);
         vspragma += len;
-        if(!strncmp(vspragma, "override", olen))
+        if(!std::strncmp(vspragma, "override", olen))
         {
             memset(vspragma, ' ', olen);
             vspragma += olen;
@@ -948,7 +948,7 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         }
         memset(pspragma, ' ', len);
         pspragma += len;
-        if(!strncmp(pspragma, "override", olen))
+        if(!std::strncmp(pspragma, "override", olen))
         {
             memset(pspragma, ' ', olen);
             pspragma += olen;
@@ -1021,7 +1021,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         psbuf.put(psmain, psend - psmain);
         const char *psdef = "\n#define FOG_COLOR ",
                    *psfog =
-            pspragma && !strncmp(pspragma+pragmalen, "rgba", 4) ?
+            pspragma && !std::strncmp(pspragma+pragmalen, "rgba", 4) ?
                 "\nfragcolor = mix((FOG_COLOR), fragcolor, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n" :
                 "\nfragcolor.rgb = mix((FOG_COLOR).rgb, fragcolor.rgb, clamp(exp2(fogcoord*-fogdensity.x)*fogdensity.y, 0.0, 1.0));\n";
         int clen = 0;
