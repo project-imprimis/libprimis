@@ -1576,7 +1576,7 @@ SDL_Surface *loadsurface(const char *name)
         SDL_RWops *rw = z->rwops();
         if(rw)
         {
-            const char *ext = strrchr(name, '.');
+            const char *ext = std::strrchr(name, '.');
             if(ext)
             {
                 ++ext;
@@ -1619,7 +1619,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
     if(tname[0]=='<')
     {
         cmds = tname;
-        file = strrchr(tname, '>');
+        file = std::strrchr(tname, '>');
         if(!file)
         {
             if(msg)
