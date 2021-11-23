@@ -988,7 +988,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
     //cannot be constexpr -- strlen is not compile time
     static const int pragmalen = std::strlen("//:fog");
     const char *vsmain = findglslmain(vs),
-               *vsend  = strrchr(vs, '}');
+               *vsend  = std::strrchr(vs, '}');
     if(vsmain && vsend)
     {
         if(!std::strstr(vs, "lineardepth"))
@@ -1003,7 +1003,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         }
     }
     const char *psmain = findglslmain(ps),
-               *psend  = strrchr(ps, '}');
+               *psend  = std::strrchr(ps, '}');
     if(psmain && psend)
     {
         psbuf.put(ps, psmain - ps);
