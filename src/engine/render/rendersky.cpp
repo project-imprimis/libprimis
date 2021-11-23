@@ -73,7 +73,7 @@ namespace
 
     Texture *loadskyoverlay(const char *basename)
     {
-        const char *ext = strrchr(basename, '.');
+        const char *ext = std::strrchr(basename, '.');
         string name;
         copystring(name, makerelpath("media/sky", basename));
         Texture *t = notexture;
