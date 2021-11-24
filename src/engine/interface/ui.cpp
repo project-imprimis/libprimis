@@ -765,7 +765,7 @@ namespace UI
 
             bool isnamed(const char *name) const
             {
-                return name[0] == '#' ? name == gettypename() : !strcmp(name, getname());
+                return name[0] == '#' ? name == gettypename() : !std::strcmp(name, getname());
             }
 
     };
@@ -2513,7 +2513,7 @@ namespace UI
     #define SETSTR(dst, src) do { \
         if(dst) \
         { \
-            if(dst != src && strcmp(dst, src)) \
+            if(dst != src && std::strcmp(dst, src)) \
             { \
                 delete[] dst; \
                 dst = newstring(src); \
@@ -2692,7 +2692,7 @@ namespace UI
         {
             Object::setup();
 
-            if(!font || !strcmp(font->name, name))
+            if(!font || !std::strcmp(font->name, name))
             {
                 font = findfont(name);
             }
