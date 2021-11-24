@@ -309,7 +309,7 @@ class partrenderer
             info[len-1] = info[len-1] == ',' ? ')' : '\0';
             if(texname)
             {
-                const char *title = strrchr(texname, '/');
+                const char *title = std::strrchr(texname, '/');
                 if(title)
                 {
                     concformatstring(info, ": %s", title+1);
