@@ -422,7 +422,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
     }
     if(file[0]=='<')
     {
-        const char *end = strrchr(file, '>');
+        const char *end = std::strrchr(file, '>');
         if(end)
         {
             size_t len = std::strlen(tmp);
@@ -458,7 +458,7 @@ char *path(char *s)
         }
         if(curpart[0]=='<')
         {
-            char *file = strrchr(curpart, '>');
+            char *file = std::strrchr(curpart, '>');
             if(!file)
             {
                 return s;
