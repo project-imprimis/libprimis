@@ -1157,7 +1157,7 @@ namespace sphere
     }
 }
 
-static constexpr float wobble = 1.25f;
+static constexpr float wobble = 1.25f; //factor to extend particle hitbox by due to placement movement
 
 struct fireballrenderer : listrenderer
 {
