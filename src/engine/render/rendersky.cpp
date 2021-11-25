@@ -24,7 +24,7 @@
 #include "world/raycube.h"
 
 VARNR(skytexture, useskytexture, 0, 0, 1);       //toggles rendering sky texture instead of nothing on skytex'd geometry
-VARFR(skyshadow, 0, 0, 1, clearshadowcache());
+VARFR(skyshadow, 0, 0, 1, clearshadowcache());   //toggles rsm features in renderva.cpp
 
 int explicitsky = 0;
 
