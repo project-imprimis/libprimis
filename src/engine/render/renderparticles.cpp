@@ -1305,8 +1305,8 @@ static constexpr int numpartparts()
 
 void initparticles(); //need to prototype either the vars or the the function
 
-VARFP(maxparticles, 10, 4000, 10000, initparticles());
-VARFP(fewparticles, 10, 100, 10000, initparticles());
+VARFP(maxparticles, 10, 4000, 10000, initparticles()); //maximum number of particle objects to create
+VARFP(fewparticles, 10, 100, 10000, initparticles()); //if PT_FEW enabled, # of particles to create
 
 void initparticles()
 {
