@@ -161,6 +161,8 @@ namespace
         switch(m.orient)
         {
     //================================================ GENFACEORIENT GENFACEVERT
+
+    //passing /**/ empty comments instead of nothing (they have the same effect)
     #define GENFACEORIENT(orient, v0, v1, v2, v3) \
             case orient: v0 v1 v2 v3 break;
     #define GENFACEVERT(orient, vert, mx,my,mz, sx,sy,sz) \
