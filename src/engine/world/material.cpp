@@ -908,7 +908,7 @@ void setupmaterials(int start, int len)
     }
 }
 
-VARP(showmat, 0, 1, 1);
+VARP(showmat, 0, 1, 1); //toggles rendering material faces
 
 vector<materialsurface> editsurfs, glasssurfs[4], watersurfs[4], waterfallsurfs[4];
 
