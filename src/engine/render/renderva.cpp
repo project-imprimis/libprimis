@@ -81,11 +81,18 @@ namespace
 
     ///////// view frustrum culling ///////////////////////
 
+    struct vfc
+    {
+        plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
+        float vfcDfog;  // far plane culling distance (fog limit).
+        float vfcDnear[5], //near plane culling
+              vfcDfar[5];  //far plane culling
+    } view;
+
     plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
     float vfcDfog;  // far plane culling distance (fog limit).
     float vfcDnear[5], //near plane culling
           vfcDfar[5];  //far plane culling
-
 
     int isfoggedcube(const ivec &o, int size)
     {
