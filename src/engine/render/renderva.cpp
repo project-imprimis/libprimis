@@ -8,6 +8,7 @@
 #include "radiancehints.h"
 #include "rendergl.h"
 #include "rendermodel.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "rendersky.h"
 
@@ -43,6 +44,7 @@ vec shadoworigin(0, 0, 0),
 
 uint alphatiles[lighttilemaxheight];
 vtxarray *visibleva = nullptr;
+vfc view;
 
 int deferquery = 0;
 
@@ -81,62 +83,8 @@ namespace
 
     ///////// view frustrum culling ///////////////////////
 
-    struct vfc
-    {
-        plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
-        float vfcDfog;  // far plane culling distance (fog limit).
-        float vfcDnear[5], //near plane culling
-              vfcDfar[5];  //far plane culling
-    } view;
-
     plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
-    float vfcDfog;  // far plane culling distance (fog limit).
-    float vfcDnear[5], //near plane culling
-          vfcDfar[5];  //far plane culling
 
-    int isfoggedcube(const ivec &o, int size)
-    {
-        for(int i = 0; i < 4; ++i)
-        {
-            if(o.dist(vfcP[i]) < -vfcDfar[i]*size)
-            {
-                return true;
-            }
-        }
-        float dist = o.dist(vfcP[4]);
-        return dist < -vfcDfar[4]*size || dist > vfcDfog - vfcDnear[4]*size;
-    }
-
-    int isvisiblecube(const ivec &o, int size)
-    {
-        int v = ViewFrustumCull_FullyVisible;
-        float dist;
-
-        for(int i = 0; i < 5; ++i)
-        {
-            dist = o.dist(vfcP[i]);
-            if(dist < -vfcDfar[i]*size)
-            {
-                return ViewFrustumCull_NotVisible;
-            }
-            if(dist < -vfcDnear[i]*size)
-            {
-                v = ViewFrustumCull_PartlyVisible;
-            }
-        }
-
-        dist -= vfcDfog;
-        if(dist > -vfcDnear[4]*size)
-        {
-            return ViewFrustumCull_Fogged;
-        }
-        if(dist > -vfcDfar[4]*size)
-        {
-            v = ViewFrustumCull_PartlyVisible;
-        }
-
-        return v;
-    }
 
     float vadist(vtxarray *va, const vec &p)
     {
@@ -192,7 +140,7 @@ namespace
         {
             vtxarray &v = *vas[i];
             int prevvfc = v.curvfc;
-            v.curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(v.o, v.size);
+            v.curvfc = fullvis ? ViewFrustumCull_FullyVisible : view.isvisiblecube(v.o, v.size);
             if(v.curvfc != ViewFrustumCull_NotVisible)
             {
                 bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
@@ -234,28 +182,6 @@ namespace
         findvisiblevas<false, false>(varoot);
         sortvisiblevas();
     }
-
-    void calcvfcD()
-    {
-        for(int i = 0; i < 5; ++i)
-        {
-            plane &p = vfcP[i];
-            vfcDnear[i] = vfcDfar[i] = 0;
-            for(int k = 0; k < 3; ++k)
-            {
-                if(p[k] > 0)
-                {
-                    vfcDfar[i] += p[k];
-                }
-                else
-                {
-                    vfcDnear[i] += p[k];
-                }
-            }
-        }
-    }
-
-    plane oldvfcP[5];
 
     ///////// occlusion queries /////////////
 
@@ -420,7 +346,7 @@ namespace
                 for(int i = 0; i < va->mapmodels.length(); i++)
                 {
                     octaentities *oe = va->mapmodels[i];
-                    if(isfoggedcube(oe->o, oe->size))
+                    if(view.isfoggedcube(oe->o, oe->size))
                     {
                         continue;
                     }
@@ -2136,7 +2062,98 @@ namespace
 
 // vfc - view frustum culling
 
-bool isfoggedsphere(float rad, const vec &cv)
+int vfc::isfoggedcube(const ivec &o, int size)
+{
+    for(int i = 0; i < 4; ++i)
+    {
+        if(o.dist(vfcP[i]) < -vfcDfar[i]*size)
+        {
+            return true;
+        }
+    }
+    float dist = o.dist(vfcP[4]);
+    return dist < -vfcDfar[4]*size || dist > vfcDfog - vfcDnear[4]*size;
+}
+
+int vfc::isvisiblecube(const ivec &o, int size)
+{
+    int v = ViewFrustumCull_FullyVisible;
+    float dist;
+
+    for(int i = 0; i < 5; ++i)
+    {
+        dist = o.dist(vfcP[i]);
+        if(dist < -vfcDfar[i]*size)
+        {
+            return ViewFrustumCull_NotVisible;
+        }
+        if(dist < -vfcDnear[i]*size)
+        {
+            v = ViewFrustumCull_PartlyVisible;
+        }
+    }
+
+    dist -= vfcDfog;
+    if(dist > -vfcDnear[4]*size)
+    {
+        return ViewFrustumCull_Fogged;
+    }
+    if(dist > -vfcDfar[4]*size)
+    {
+        v = ViewFrustumCull_PartlyVisible;
+    }
+
+    return v;
+}
+
+void vfc::calcvfcD()
+{
+    for(int i = 0; i < 5; ++i)
+    {
+        plane &p = vfcP[i];
+        vfcDnear[i] = vfcDfar[i] = 0;
+        for(int k = 0; k < 3; ++k)
+        {
+            if(p[k] > 0)
+            {
+                vfcDfar[i] += p[k];
+            }
+            else
+            {
+                vfcDnear[i] += p[k];
+            }
+        }
+    }
+}
+
+void vfc::visiblecubes(bool cull)
+{
+    if(cull)
+    {
+        setvfcP();
+        findvisiblevas();
+    }
+    else
+    {
+        memset(vfcP, 0, sizeof(vfcP));
+        vfcDfog = farplane;
+        memset(vfcDnear, 0, sizeof(vfcDnear));
+        memset(vfcDfar, 0, sizeof(vfcDfar));
+        visibleva = nullptr;
+        for(int i = 0; i < valist.length(); i++)
+        {
+            vtxarray *va = valist[i];
+            va->distance = 0;
+            va->curvfc = ViewFrustumCull_FullyVisible;
+            va->occluded = !va->texs ? Occlude_Geom : Occlude_Nothing;
+            va->query = nullptr;
+            va->next = visibleva;
+            visibleva = va;
+        }
+    }
+}
+
+bool vfc::isfoggedsphere(float rad, const vec &cv)
 {
     for(int i = 0; i < 4; ++i)
     {
@@ -2149,7 +2166,7 @@ bool isfoggedsphere(float rad, const vec &cv)
     return dist < -rad || dist > vfcDfog + rad; // true if abs(dist) is large
 }
 
-int isvisiblesphere(float rad, const vec &cv)
+int vfc::isvisiblesphere(float rad, const vec &cv)
 {
     int v = ViewFrustumCull_FullyVisible;
     float dist;
@@ -2179,34 +2196,7 @@ int isvisiblesphere(float rad, const vec &cv)
     return v;
 }
 
-void visiblecubes(bool cull)
-{
-    if(cull)
-    {
-        setvfcP();
-        findvisiblevas();
-    }
-    else
-    {
-        memset(vfcP, 0, sizeof(vfcP));
-        vfcDfog = farplane;
-        memset(vfcDnear, 0, sizeof(vfcDnear));
-        memset(vfcDfar, 0, sizeof(vfcDfar));
-        visibleva = nullptr;
-        for(int i = 0; i < valist.length(); i++)
-        {
-            vtxarray *va = valist[i];
-            va->distance = 0;
-            va->curvfc = ViewFrustumCull_FullyVisible;
-            va->occluded = !va->texs ? Occlude_Geom : Occlude_Nothing;
-            va->query = nullptr;
-            va->next = visibleva;
-            visibleva = va;
-        }
-    }
-}
-
-int isvisiblebb(const ivec &bo, const ivec &br)
+int vfc::isvisiblebb(const ivec &bo, const ivec &br)
 {
     int v = ViewFrustumCull_FullyVisible;
     float dnear, dfar;
@@ -2393,7 +2383,7 @@ void drawbb(const ivec &bo, const ivec &br)
     xtraverts += 8;
 }
 
-void setvfcP(const vec &bbmin, const vec &bbmax)
+void vfc::setvfcP(const vec &bbmin, const vec &bbmax)
 {
     vec4 px = camprojmatrix.rowx(), py = camprojmatrix.rowy(), pz = camprojmatrix.rowz(), pw = camprojmatrix.roww();
     vfcP[0] = plane(vec4(pw).mul(-bbmin.x).add(px)).normalize(); // left plane
@@ -2403,7 +2393,7 @@ void setvfcP(const vec &bbmin, const vec &bbmax)
     vfcP[4] = plane(vec4(pw).add(pz)).normalize(); // near/far planes
 
     vfcDfog = std::min(calcfogcull(), static_cast<float>(farplane));
-    calcvfcD();
+    view.calcvfcD();
 }
 
 //oq
@@ -2535,7 +2525,7 @@ bool renderexplicitsky(bool outline)
     for(vtxarray *va = visibleva; va; va = va->next)
     {
         if(va->sky && va->occluded < Occlude_BB &&
-            ((va->skymax.x >= 0 && isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
+            ((va->skymax.x >= 0 && view.isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
             !insideworld(camera1->o)))
         {
             if(!prev || va->vbuf != prev->vbuf)
@@ -3243,7 +3233,7 @@ int calcspheresidemask(const vec &p, float radius, float bias)
     return mask;
 }
 
-int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border)
+int vfc::cullfrustumsides(const vec &lightpos, float lightradius, float size, float border)
 {
     int sides = 0x3F,
         masks[6] = { 3<<4, 3<<4, 3<<0, 3<<0, 3<<2, 3<<2 };

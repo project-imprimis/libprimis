@@ -15,6 +15,7 @@
 #include "interface/control.h"
 
 #include "render/rendergl.h"
+#include "render/renderva.h"
 
 //internally relevant functionality
 namespace
@@ -185,7 +186,7 @@ int finddynlights()
             continue;
         }
         d.dist = camera1->o.dist(d.o) - d.curradius;
-        if(d.dist > dynlightdist || isfoggedsphere(d.curradius, d.o))
+        if(d.dist > dynlightdist || view.isfoggedsphere(d.curradius, d.o))
         {
             continue;
         }

@@ -10,6 +10,7 @@
 #include "grass.h"
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderva.h"
 
 #include "interface/control.h"
 
@@ -275,7 +276,7 @@ namespace //internal functionality not seen by other files
         for(int i = 0; i < va->grasstris.length(); i++)
         {
             grasstri &g = va->grasstris[i];
-            if(isfoggedsphere(g.radius, g.center))
+            if(view.isfoggedsphere(g.radius, g.center))
             {
                 continue;
             }

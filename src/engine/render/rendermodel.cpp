@@ -13,6 +13,7 @@
 #include "radiancehints.h"
 #include "rendergl.h"
 #include "rendermodel.h"
+#include "renderva.h"
 #include "renderwindow.h"
 
 #include "interface/console.h"
@@ -775,7 +776,7 @@ static int cullmodel(model *m, const vec &center, float radius, int flags, dynen
     {
         return Model_CullDist;
     }
-    if(flags&Model_CullVFC && isfoggedsphere(radius, center))
+    if(flags&Model_CullVFC && view.isfoggedsphere(radius, center))
     {
         return Model_CullVFC;
     }
