@@ -470,9 +470,6 @@ namespace hmap
     bool isheightmap(int o, int d, bool empty, cube *c);
 }
 
-VAR(gridlookup, 0, 0, 1);
-VAR(passthroughcube, 0, 1, 1);
-
 //////////// ready changes to vertex arrays ////////////
 
 static bool haschanged = false;
