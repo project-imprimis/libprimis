@@ -25,6 +25,8 @@
 #include "render/hud.h"
 #include "render/octarender.h"
 #include "render/rendergl.h"
+#include "render/renderva.h"
+
 
 #include "world/material.h"
 
@@ -240,7 +242,7 @@ bool haveselent()
     return entgroup.length() > 0;
 }
 
-bool noedit(bool view, bool msg)
+bool noedit(bool inview, bool msg)
 {
     if(!editmode)
     {
@@ -250,7 +252,7 @@ bool noedit(bool view, bool msg)
         }
         return true;
     }
-    if(view || haveselent())
+    if(inview || haveselent())
     {
         return false;
     }
@@ -258,7 +260,7 @@ bool noedit(bool view, bool msg)
     s.mul(sel.grid / 2.0f);
     o.add(s);
     float r = std::max(std::max(s.x, s.y), s.z);
-    bool viewable = (isvisiblesphere(r, o) != ViewFrustumCull_NotVisible);
+    bool viewable = view.isvisiblesphere(r, o) != ViewFrustumCull_NotVisible;
     if(!viewable && msg)
     {
         conoutf(Console_Error, "selection not in view");
