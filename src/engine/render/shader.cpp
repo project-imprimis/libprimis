@@ -1782,7 +1782,7 @@ void setpostfx(char *name, float *x, float *y, float *z, float *w)
         addpostfx(name, 0, 0, 1, 1, vec4(*x, *y, *z, *w));
     }
 }
-COMMAND(setpostfx, "sffff");
+COMMAND(setpostfx, "sffff"); //add a postfx shader to the global vector, with name & 4d pos vector
 
 void cleanupshaders()
 {
