@@ -83,9 +83,6 @@ namespace
 
     ///////// view frustrum culling ///////////////////////
 
-    plane vfcP[5];  // perpindictular vectors to view frustrum bounding planes
-
-
     float vadist(vtxarray *va, const vec &p)
     {
         return p.dist_to_bb(va->bbmin, va->bbmax);
