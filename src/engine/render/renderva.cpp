@@ -2385,7 +2385,10 @@ void drawbb(const ivec &bo, const ivec &br)
 
 void vfc::setvfcP(const vec &bbmin, const vec &bbmax)
 {
-    vec4 px = camprojmatrix.rowx(), py = camprojmatrix.rowy(), pz = camprojmatrix.rowz(), pw = camprojmatrix.roww();
+    vec4 px = camprojmatrix.rowx(),
+         py = camprojmatrix.rowy(),
+         pz = camprojmatrix.rowz(),
+         pw = camprojmatrix.roww();
     vfcP[0] = plane(vec4(pw).mul(-bbmin.x).add(px)).normalize(); // left plane
     vfcP[1] = plane(vec4(pw).mul(bbmax.x).sub(px)).normalize(); // right plane
     vfcP[2] = plane(vec4(pw).mul(-bbmin.y).add(py)).normalize(); // bottom plane
