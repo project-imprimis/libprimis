@@ -4,6 +4,7 @@
 
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
@@ -1633,7 +1634,7 @@ GLuint setuppostfx(int w, int h, GLuint outfbo)
     glBindFramebuffer_(GL_FRAMEBUFFER, postfxfb);
     int tex = allocatepostfxtex(0);
     glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
-    bindgdepth();
+    gbuf.bindgdepth();
 
     postfxbinds[0] = tex;
     postfxtexs[tex].used = 0;

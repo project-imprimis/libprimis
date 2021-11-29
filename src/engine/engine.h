@@ -150,7 +150,6 @@ extern void loaddeferredlightshaders();
 extern void cleardeferredlightshaders();
 extern void clearshadowcache();
 
-extern void rendervolumetric();
 extern void cleanupvolumetric();
 
 extern void findshadowvas();
@@ -204,19 +203,13 @@ inline void dummyfxn()
 
 extern void resolvemsaacolor(int w, int h);
 extern bool shouldworkinoq();
-extern void cleanupgbuffer();
 extern void initgbuffer();
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
-extern void bindgdepth();
-extern void preparegbuffer(bool depthclear = true);
 extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
 extern void shademinimap(const vec &color = vec(-1, -1, -1));
-extern void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
-extern void renderao();
 extern void setuplights();
-extern void setupgbuffer();
 extern GLuint shouldscale();
 extern void doscale(GLuint outfbo = 0);
 extern bool debuglights();

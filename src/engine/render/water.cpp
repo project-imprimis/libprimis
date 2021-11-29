@@ -12,6 +12,7 @@
 
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "water.h"
 
 #include "interface/control.h"
@@ -120,7 +121,7 @@ void rendercaustics(float surface, float syl, float syr)
     gle::end();
 }
 
-void renderwaterfog(int mat, float surface)
+void GBuffer::renderwaterfog(int mat, float surface)
 {
     glDepthFunc(GL_NOTEQUAL);
     glDepthMask(GL_FALSE);

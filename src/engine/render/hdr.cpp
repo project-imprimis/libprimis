@@ -17,6 +17,7 @@
 #include "aa.h"
 #include "hdr.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendertimers.h"
 
 #include "interface/control.h"
@@ -159,7 +160,7 @@ void cleanupbloom()
 }
 
 FVARFP(hdrgamma, 1e-3f, 2, 1e3f, initwarning("HDR setup", Init_Load, Change_Shaders));
-VARFP(hdrprec, 0, 2, 3, cleanupgbuffer()); //precision of hdr buffer
+VARFP(hdrprec, 0, 2, 3, gbuf.cleanupgbuffer()); //precision of hdr buffer
 
 void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy, bool swapxy)
 {
@@ -504,7 +505,7 @@ void processhdr(GLuint outfbo, int aa)
             case AA_SplitMasked:
             {
                 SETSHADER(msaatonemapsplitmasked);
-                setaavelocityparams(GL_TEXTURE3);
+                gbuf.setaavelocityparams(GL_TEXTURE3);
                 break;
             }
             default:
@@ -547,7 +548,7 @@ void processhdr(GLuint outfbo, int aa)
                     goto done; //see bottom of fxn
                 }
                 SETSHADER(hdrtonemapmasked);
-                setaavelocityparams(GL_TEXTURE3);
+                gbuf.setaavelocityparams(GL_TEXTURE3);
                 break;
             }
             default:
@@ -585,7 +586,7 @@ void processhdr(GLuint outfbo, int aa)
                 case AA_Masked:
                 {
                     SETSHADER(msaatonemapmasked);
-                    setaavelocityparams(GL_TEXTURE3);
+                    gbuf.setaavelocityparams(GL_TEXTURE3);
                     break;
                 }
                 default:
@@ -623,7 +624,7 @@ void processhdr(GLuint outfbo, int aa)
                         case AA_Masked:
                         {
                             SETSHADER(hdrnopmasked);
-                            setaavelocityparams(GL_TEXTURE3);
+                            gbuf.setaavelocityparams(GL_TEXTURE3);
                             break;
                         }
                         default:
