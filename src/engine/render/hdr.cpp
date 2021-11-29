@@ -254,7 +254,7 @@ void loadhdrshaders(int aa)
     }
 }
 
-void processhdr(GLuint outfbo, int aa)
+void GBuffer::processhdr(GLuint outfbo, int aa)
 {
     timer *hdrtimer = begintimer("hdr processing");
 

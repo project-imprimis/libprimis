@@ -2118,7 +2118,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
     //antialiasing
-    doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
+    doaa(setuppostfx(vieww, viewh, scalefbo), gbuf);
     //postfx
     renderpostfx(scalefbo);
     if(scalefbo)

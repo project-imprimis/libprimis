@@ -1187,29 +1187,29 @@ bool multisampledaa()
  *
  * does not apply to multisample aa, msaa is not a screenspace aa
  *
- * function pointer resolve is used to setup the fbo for the specified aa
+ * method pointer resolve is used to setup the fbo for the specified aa
  */
-void doaa(GLuint outfbo, void (*resolve)(GLuint, int))
+void doaa(GLuint outfbo, GBuffer gbuffer)
 {
     if(smaa)
     {
         bool split = multisampledaa();
-        resolve(smaafbo[0], smaatype);
+        gbuffer.processhdr(smaafbo[0], smaatype);
         dosmaa(outfbo, split);
     }
     else if(fxaa)
     {
-        resolve(fxaafbo, fxaatype);
+        gbuffer.processhdr(fxaafbo, fxaatype);
         dofxaa(outfbo);
     }
     else if(tqaa)
     {
-        resolve(tqaafbo[0], tqaatype);
+        gbuffer.processhdr(tqaafbo[0], tqaatype);
         dotqaa(outfbo);
     }
     else
     {
-        resolve(outfbo, AA_Unused);
+        gbuffer.processhdr(outfbo, AA_Unused);
     }
 }
 

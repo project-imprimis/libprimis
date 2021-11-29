@@ -9,6 +9,7 @@ class GBuffer
     public:
         GBuffer()
         {
+            //set all of the textures to 0/null
             gfbo = 0;
             gdepthtex = 0;
             gcolortex = 0;
@@ -16,8 +17,10 @@ class GBuffer
             gglowtex = 0;
             gdepthrb = 0;
             gstencilrb = 0;
+            refractfbo = 0;
+            refracttex = 0;
         }
-
+        //main g-buffers
         void cleanupgbuffer();
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps();
@@ -35,8 +38,12 @@ class GBuffer
         void setaavelocityparams(GLenum tmu = GL_TEXTURE0);
         void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
         void viewdepth();
+        //refractive
+        void processhdr(GLuint outfbo, int aa);
+        void viewrefract();
 
     private:
+        //main g-buffers
         GLuint gfbo,
            gdepthtex,
            gcolortex,
@@ -44,6 +51,9 @@ class GBuffer
            gglowtex,
            gdepthrb,
            gstencilrb;
+        //refractive g-buffers
+        GLuint refractfbo,
+               refracttex;
 
 };
 

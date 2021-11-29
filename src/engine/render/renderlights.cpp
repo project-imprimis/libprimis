@@ -41,8 +41,7 @@ int scalew = -1,
 GLuint scalefbo[2] = { 0, 0 },
        scaletex[2] = { 0, 0 };
 int hdrclear = 0;
-GLuint refractfbo    = 0,
-       refracttex    = 0;
+
 GLenum stencilformat = 0;
 bool hdrfloat = false;
 GLuint msfbo = 0,
@@ -972,7 +971,7 @@ void viewstencil()
 
 VAR(debugrefract, 0, 0, 1);
 
-void viewrefract()
+void GBuffer::viewrefract()
 {
     int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
@@ -4181,7 +4180,7 @@ bool debuglights()
     }
     else if(debugrefract)
     {
-        viewrefract();
+        gbuf.viewrefract();
     }
     else if(debuglightscissor)
     {
