@@ -15,6 +15,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "rendersky.h"
+#include "renderva.h"
 
 #include "interface/console.h"
 #include "interface/control.h"
@@ -332,7 +333,7 @@ void drawskybox(bool clear)
         for(vtxarray *va = visibleva; va; va = va->next)
         {
             if(va->sky && va->occluded < Occlude_BB &&
-               ((va->skymax.x >= 0 && isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
+               ((va->skymax.x >= 0 && view.isvisiblebb(va->skymin, ivec(va->skymax).sub(va->skymin)) != ViewFrustumCull_NotVisible) ||
                 !insideworld(camera1->o)))
             {
                 limited = true;

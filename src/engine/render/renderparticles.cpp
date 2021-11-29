@@ -14,6 +14,7 @@
 
 #include "rendergl.h"
 #include "renderparticles.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "rendertext.h"
 #include "stain.h"
@@ -1200,7 +1201,7 @@ struct fireballrenderer : listrenderer
               size = p->fade ? static_cast<float>(ts)/p->fade : 1,
               psize = p->size + pmax * size;
 
-        if(isfoggedsphere(psize*wobble, p->o))
+        if(view.isfoggedsphere(psize*wobble, p->o))
         {
             return;
         }
@@ -2005,7 +2006,7 @@ void updateparticles()
             }
             if(cullparticles && pe.maxfade >= 0)
             {
-                if(isfoggedsphere(pe.radius, pe.center))
+                if(view.isfoggedsphere(pe.radius, pe.center))
                 {
                     pe.lastcull = lastmillis;
                     continue;

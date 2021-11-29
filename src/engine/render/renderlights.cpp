@@ -17,6 +17,7 @@
 #include "rendermodel.h"
 #include "rendersky.h"
 #include "rendertimers.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "stain.h"
 
@@ -3061,7 +3062,7 @@ void collectlights()
             {
                 continue;
             }
-            if(smviscull && isfoggedsphere(e->attr1, e->o))
+            if(smviscull && view.isfoggedsphere(e->attr1, e->o))
             {
                 continue;
             }

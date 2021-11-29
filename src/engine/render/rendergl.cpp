@@ -22,6 +22,7 @@
 #include "renderparticles.h"
 #include "rendersky.h"
 #include "rendertimers.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "water.h"
 
@@ -1831,7 +1832,7 @@ void drawminimap(int yaw, int pitch, vec loc)
     ldrscale = 1;
     ldrscaleb = ldrscale/255;
 
-    visiblecubes(false);
+    view.visiblecubes(false);
     rendergbuffer();
     rendershadowatlas();
 
@@ -2026,7 +2027,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     ldrscale = 0.5f;
     ldrscaleb = ldrscale/255;
     //do occlusion culling
-    visiblecubes();
+    view.visiblecubes();
     //set to wireframe if applicable
     if(wireframe && editmode)
     {
