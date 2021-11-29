@@ -121,7 +121,6 @@ extern int debugfullscreen;
 extern matrix4 eyematrix;
 extern GLuint mshdrtex, mshdrfbo, msrefractfbo;
 extern int msaaedgedetect;
-extern GLuint refractfbo, refracttex;
 extern int hdrclear;
 
 extern int msaatonemap;
@@ -184,7 +183,6 @@ inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec
 extern matrix4 worldmatrix, screenmatrix;
 
 extern int gw, gh, gdepthformat, ghasstencil;
-extern GLuint gdepthtex, gcolortex, gnormaltex, gglowtex, gdepthrb, gstencilrb;
 extern int msaasamples, msaalight;
 extern GLuint msdepthtex, mscolortex, msnormaltex, msglowtex, msdepthrb, msstencilrb;
 extern std::vector<vec2> msaapositions;
@@ -192,7 +190,7 @@ extern std::vector<vec2> msaapositions;
 extern bool inoq;
 extern int rhinoq;
 extern int rsmcull;
-extern GLuint gfbo, msfbo, rhfbo;
+extern GLuint msfbo, rhfbo;
 
 //allows passing nothing to internal uses of gbuffer fxn
 //(the parameter is for taking a game function to be rendered onscreen)
