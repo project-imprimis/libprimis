@@ -45,12 +45,12 @@ class GBuffer
     private:
         //main g-buffers
         GLuint gfbo,
-           gdepthtex,
-           gcolortex,
-           gnormaltex,
-           gglowtex,
-           gdepthrb,
-           gstencilrb;
+               gdepthtex,
+               gcolortex,
+               gnormaltex,
+               gglowtex,
+               gdepthrb,
+               gstencilrb;
         //refractive g-buffers
         GLuint refractfbo,
                refracttex;
