@@ -10,12 +10,12 @@ class GBuffer
         GBuffer()
         {
             //set all of the textures to 0/null
-            gfbo = 0;
-            gdepthtex = 0;
-            gcolortex = 0;
+            gfbo       = 0;
+            gdepthtex  = 0;
+            gcolortex  = 0;
             gnormaltex = 0;
-            gglowtex = 0;
-            gdepthrb = 0;
+            gglowtex   = 0;
+            gdepthrb   = 0;
             gstencilrb = 0;
             refractfbo = 0;
             refracttex = 0;
