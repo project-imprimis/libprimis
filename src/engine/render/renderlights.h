@@ -25,17 +25,17 @@ class GBuffer
         void preparegbuffer(bool depthclear = true);
         void rendercsmshadowmaps();
         void rendershadowmaps(int offset = 0);
-        void renderao();
-        void renderradiancehints();
-        void rendertransparent();
+        void renderao();                                    //ao.cpp
+        void renderradiancehints();                         //radiancehints.cpp
+        void rendertransparent();                           //rendertransparent.cpp
         void resolvemsaadepth(int w, int h);
         void setupgbuffer();
         void bindgdepth();
         void bindlighttexs(int msaapass, bool transparent);
-        void renderparticles(int layer = 0);
+        void renderparticles(int layer = 0);                //renderparticles.cpp
         void rendervolumetric();
-        void renderwaterfog(int mat, float surface);
-        void setaavelocityparams(GLenum tmu = GL_TEXTURE0);
+        void renderwaterfog(int mat, float surface);        //water.cpp
+        void setaavelocityparams(GLenum tmu = GL_TEXTURE0); //aa.cpp
         void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
         void viewdepth();
         //refractive
