@@ -121,7 +121,6 @@ extern int debugfullscreen;
 extern matrix4 eyematrix;
 extern GLuint mshdrtex, mshdrfbo, msrefractfbo;
 extern int msaaedgedetect;
-extern GLuint refractfbo, refracttex;
 extern int hdrclear;
 
 extern int msaatonemap;
@@ -150,7 +149,6 @@ extern void loaddeferredlightshaders();
 extern void cleardeferredlightshaders();
 extern void clearshadowcache();
 
-extern void rendervolumetric();
 extern void cleanupvolumetric();
 
 extern void findshadowvas();
@@ -185,7 +183,6 @@ inline bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec
 extern matrix4 worldmatrix, screenmatrix;
 
 extern int gw, gh, gdepthformat, ghasstencil;
-extern GLuint gdepthtex, gcolortex, gnormaltex, gglowtex, gdepthrb, gstencilrb;
 extern int msaasamples, msaalight;
 extern GLuint msdepthtex, mscolortex, msnormaltex, msglowtex, msdepthrb, msstencilrb;
 extern std::vector<vec2> msaapositions;
@@ -193,7 +190,7 @@ extern std::vector<vec2> msaapositions;
 extern bool inoq;
 extern int rhinoq;
 extern int rsmcull;
-extern GLuint gfbo, msfbo, rhfbo;
+extern GLuint msfbo, rhfbo;
 
 //allows passing nothing to internal uses of gbuffer fxn
 //(the parameter is for taking a game function to be rendered onscreen)
@@ -204,19 +201,13 @@ inline void dummyfxn()
 
 extern void resolvemsaacolor(int w, int h);
 extern bool shouldworkinoq();
-extern void cleanupgbuffer();
 extern void initgbuffer();
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
-extern void bindgdepth();
-extern void preparegbuffer(bool depthclear = true);
 extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
 extern void shademinimap(const vec &color = vec(-1, -1, -1));
-extern void shademodelpreview(int x, int y, int w, int h, bool background = true, bool scissor = false);
-extern void renderao();
 extern void setuplights();
-extern void setupgbuffer();
 extern GLuint shouldscale();
 extern void doscale(GLuint outfbo = 0);
 extern bool debuglights();

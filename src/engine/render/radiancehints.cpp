@@ -21,6 +21,7 @@
 #include "octarender.h"
 #include "radiancehints.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
@@ -846,7 +847,7 @@ void radiancehints::renderslices()
     }
 }
 
-void renderradiancehints()
+void GBuffer::renderradiancehints()
 {
     if(rhinoq && !inoq && shouldworkinoq())
     {

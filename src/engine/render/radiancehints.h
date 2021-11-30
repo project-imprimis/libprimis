@@ -68,7 +68,6 @@ extern radiancehints rh;
 
 extern void clearradiancehintscache();
 extern bool useradiancehints();
-extern void renderradiancehints();
 extern void setupradiancehints();
 extern void cleanupradiancehints();
 
