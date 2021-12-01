@@ -11,6 +11,7 @@
 
 #include "ao.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
 
@@ -233,7 +234,7 @@ void viewao()
     debugquad(0, 0, w, h, 0, 0, tw, th);
 }
 
-void renderao()
+void GBuffer::renderao()
 {
     if(!ao)
     {

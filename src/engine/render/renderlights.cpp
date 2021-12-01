@@ -14,6 +14,7 @@
 #include "octarender.h"
 #include "radiancehints.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "rendersky.h"
 #include "rendertimers.h"
@@ -31,21 +32,16 @@
 
 int gw = -1,
     gh = -1;
-GLuint gfbo = 0,
-       gdepthtex  = 0,
-       gcolortex  = 0,
-       gnormaltex = 0,
-       gglowtex   = 0,
-       gdepthrb   = 0,
-       gstencilrb = 0;
+
+GBuffer gbuf;
+
 bool gdepthinit = false;
 int scalew = -1,
     scaleh = -1;
 GLuint scalefbo[2] = { 0, 0 },
        scaletex[2] = { 0, 0 };
 int hdrclear = 0;
-GLuint refractfbo    = 0,
-       refracttex    = 0;
+
 GLenum stencilformat = 0;
 bool hdrfloat = false;
 GLuint msfbo = 0,
@@ -66,9 +62,9 @@ int spotlights       = 0,
 std::vector<vec2> msaapositions;
 
 //`g`-buffer `scale`
-VARFP(gscale, 25, 100, 100, cleanupgbuffer()); //size of g buffer, approximately correlates to g buffer linear dimensions
-VARFP(gscalecubic, 0, 0, 1, cleanupgbuffer()); //g-buffer scale cubic: use cubic interpolation for g buffer upscaling to screen output
-VARFP(gscalenearest, 0, 0, 1, cleanupgbuffer()); //g buffer nearest neighbor interpolation
+VARFP(gscale, 25, 100, 100, gbuf.cleanupgbuffer()); //size of g buffer, approximately correlates to g buffer linear dimensions
+VARFP(gscalecubic, 0, 0, 1, gbuf.cleanupgbuffer()); //g-buffer scale cubic: use cubic interpolation for g buffer upscaling to screen output
+VARFP(gscalenearest, 0, 0, 1, gbuf.cleanupgbuffer()); //g buffer nearest neighbor interpolation
 
 matrix4 eyematrix, worldmatrix, linearworldmatrix, screenmatrix;
 
@@ -208,7 +204,7 @@ void setupscale(int sw, int sh, int w, int h)
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, scaletex[i], 0);
         if(!i)
         {
-            bindgdepth();
+            gbuf.bindgdepth();
         }
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
@@ -270,10 +266,10 @@ VAR(ghasstencil, 1, 0, 0);                                                      
 VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", Init_Load, Change_Shaders));            // multi-sample antialiasing
 VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", Init_Load, Change_Shaders));  // multi-sample antialiasing depth buffer stenciling
 VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders));       // multi-sample antialiasing stenciling
-VARF(msaaedgedetect, 0, 1, 1, cleanupgbuffer());                                        // multi-sample antialiasing edge detection
+VARF(msaaedgedetect, 0, 1, 1, gbuf.cleanupgbuffer());                                        // multi-sample antialiasing edge detection
 VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", Init_Load, Change_Shaders));// multi-sample antialiasing linear depth
-VARFP(msaatonemap, 0, 0, 1, cleanupgbuffer());                                          // multi-sample antialiasing tone mapping
-VARF(msaatonemapblit, 0, 0, 1, cleanupgbuffer());                                       // multi-sample antialiasing tone map bit blitting
+VARFP(msaatonemap, 0, 0, 1, gbuf.cleanupgbuffer());                                          // multi-sample antialiasing tone mapping
+VARF(msaatonemapblit, 0, 0, 1, gbuf.cleanupgbuffer());                                       // multi-sample antialiasing tone map bit blitting
 VAR(msaamaxsamples, 1, 0, 0);                                                           // multi-sample antialiasing maximum samples
 VAR(msaamaxdepthtexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum depth buffer texture sample count
 VAR(msaamaxcolortexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum color buffer texture sample count
@@ -632,7 +628,7 @@ void setupmsbuffer(int w, int h)
     }
 }
 
-void bindgdepth()
+void GBuffer::bindgdepth()
 {
     if(gdepthformat || msaalight)
     {
@@ -660,7 +656,7 @@ void bindgdepth()
     }
 }
 
-void setupgbuffer()
+void GBuffer::setupgbuffer()
 {
     //start with screen resolution
     int sw = renderw,
@@ -754,7 +750,7 @@ void setupgbuffer()
         createtexture(gnormaltex, gw, gh, nullptr, 3, 0, GL_RGBA8, GL_TEXTURE_RECTANGLE);
         createtexture(gglowtex, gw, gh, nullptr, 3, 0, hdrformat, GL_TEXTURE_RECTANGLE);
 
-        bindgdepth();
+        gbuf.bindgdepth();
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, gcolortex, 0);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, gnormaltex, 0);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_RECTANGLE, gglowtex, 0);
@@ -790,7 +786,7 @@ void setupgbuffer()
     createtexture(hdrtex, gw, gh, nullptr, 3, 1, hdrformat, GL_TEXTURE_RECTANGLE);
 
     glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, hdrtex, 0);
-    bindgdepth();
+    gbuf.bindgdepth();
 
     if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
@@ -811,7 +807,7 @@ void setupgbuffer()
         createtexture(refracttex, gw, gh, nullptr, 3, 0, GL_RGB, GL_TEXTURE_RECTANGLE);
 
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, refracttex, 0);
-        bindgdepth();
+        gbuf.bindgdepth();
 
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
@@ -827,28 +823,28 @@ void setupgbuffer()
     }
 }
 
-void cleanupgbuffer()
-{
-    if(gfbo)       { glDeleteFramebuffers_(1, &gfbo);        gfbo       = 0; }
-    if(gdepthtex)  { glDeleteTextures(1, &gdepthtex);        gdepthtex  = 0; }
-    if(gcolortex)  { glDeleteTextures(1, &gcolortex);        gcolortex  = 0; }
-    if(gnormaltex) { glDeleteTextures(1, &gnormaltex);       gnormaltex = 0; }
-    if(gglowtex)   { glDeleteTextures(1, &gglowtex);         gglowtex   = 0; }
-    if(gstencilrb) { glDeleteRenderbuffers_(1, &gstencilrb); gstencilrb = 0; }
-    if(gdepthrb)   { glDeleteRenderbuffers_(1, &gdepthrb);   gdepthrb   = 0; }
-    if(hdrfbo)     { glDeleteFramebuffers_(1, &hdrfbo);      hdrfbo     = 0; }
-    if(hdrtex)     { glDeleteTextures(1, &hdrtex);           hdrtex     = 0; }
-    if(refractfbo) { glDeleteFramebuffers_(1, &refractfbo);  refractfbo = 0; }
-    if(refracttex) { glDeleteTextures(1, &refracttex);       refracttex = 0; }
-    gw = gh = -1;
-    cleanupscale();
-    cleanupmsbuffer();
-    cleardeferredlightshaders();
-}
+    void GBuffer::cleanupgbuffer()
+    {
+        if(gfbo)       { glDeleteFramebuffers_(1, &gfbo);        gfbo       = 0; }
+        if(gdepthtex)  { glDeleteTextures(1, &gdepthtex);        gdepthtex  = 0; }
+        if(gcolortex)  { glDeleteTextures(1, &gcolortex);        gcolortex  = 0; }
+        if(gnormaltex) { glDeleteTextures(1, &gnormaltex);       gnormaltex = 0; }
+        if(gglowtex)   { glDeleteTextures(1, &gglowtex);         gglowtex   = 0; }
+        if(gstencilrb) { glDeleteRenderbuffers_(1, &gstencilrb); gstencilrb = 0; }
+        if(gdepthrb)   { glDeleteRenderbuffers_(1, &gdepthrb);   gdepthrb   = 0; }
+        if(hdrfbo)     { glDeleteFramebuffers_(1, &hdrfbo);      hdrfbo     = 0; }
+        if(hdrtex)     { glDeleteTextures(1, &hdrtex);           hdrtex     = 0; }
+        if(refractfbo) { glDeleteFramebuffers_(1, &refractfbo);  refractfbo = 0; }
+        if(refracttex) { glDeleteTextures(1, &refracttex);       refracttex = 0; }
+        gw = gh = -1;
+        cleanupscale();
+        cleanupmsbuffer();
+        cleardeferredlightshaders();
+    }
 
 VAR(msaadepthblit, 0, 0, 1);
 
-void resolvemsaadepth(int w = vieww, int h = viewh)
+void GBuffer::resolvemsaadepth(int w, int h)
 {
     if(!msaasamples || msaalight)
     {
@@ -930,7 +926,7 @@ float ldrscale = 1.0f,
 
 VAR(debugdepth, 0, 0, 1); //toggles showing depth buffer onscreen
 
-void viewdepth()
+void GBuffer::viewdepth()
 {
     int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
@@ -975,7 +971,7 @@ void viewstencil()
 
 VAR(debugrefract, 0, 0, 1);
 
-void viewrefract()
+void GBuffer::viewrefract()
 {
     int w = (debugfullscreen) ? hudw : std::min(hudw, hudh)/2, //if debugfullscreen, set to hudw/hudh size; if not, do small size
         h = (debugfullscreen) ? hudh : (w*hudh)/hudw;
@@ -2122,7 +2118,7 @@ static void lightquad(float sz1, float bsx1, float bsy1, float bsx2, float bsy2,
     gle::end();
 }
 
-static void bindlighttexs(int msaapass = 0, bool transparent = false)
+void GBuffer::bindlighttexs(int msaapass, bool transparent)
 {
     if(msaapass)
     {
@@ -2591,7 +2587,7 @@ void renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const uint *ti
         glDepthMask(GL_FALSE);
     }
 
-    bindlighttexs(msaapass, transparent);
+    gbuf.bindlighttexs(msaapass, transparent);
     setlightglobals(transparent);
 
     gle::defvertex(3);
@@ -2737,7 +2733,7 @@ void renderlights(float bsx1, float bsy1, float bsx2, float bsy2, const uint *ti
     }
 }
 
-void rendervolumetric()
+void GBuffer::rendervolumetric()
 {
     if(!volumetric || !volumetriclights || !volscale)
     {
@@ -3445,7 +3441,7 @@ void packlights()
     batchlights();
 }
 
-void rendercsmshadowmaps()
+void GBuffer::rendercsmshadowmaps()
 {
     if(csminoq && !debugshadowatlas && !inoq && shouldworkinoq())
     {
@@ -3564,7 +3560,7 @@ int calcshadowinfo(const extentity &e, vec &origin, float &radius, vec &spotloc,
 
 matrix4 shadowmatrix;
 
-void rendershadowmaps(int offset = 0)
+void GBuffer::rendershadowmaps(int offset)
 {
     if(!(sminoq && !debugshadowatlas && !inoq && shouldworkinoq()))
     {
@@ -3785,14 +3781,14 @@ void rendershadowatlas()
     }
 
     // sun light
-    rendercsmshadowmaps();
+    gbuf.rendercsmshadowmaps();
 
     int smoffset = shadowmaps.size();
 
     packlights();
 
     // point lights
-    rendershadowmaps(smoffset);
+    gbuf.rendershadowmaps(smoffset);
 
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
@@ -3815,15 +3811,15 @@ void workinoq()
 
         if(csminoq && !debugshadowatlas)
         {
-            rendercsmshadowmaps();
+            gbuf.rendercsmshadowmaps();
         }
         if(sminoq && !debugshadowatlas)
         {
-            rendershadowmaps();
+            gbuf.rendershadowmaps();
         }
         if(rhinoq)
         {
-            renderradiancehints();
+            gbuf.renderradiancehints();
         }
 
         inoq = false;
@@ -3833,7 +3829,7 @@ void workinoq()
 VAR(gdepthclear, 0, 1, 1);
 VAR(gcolorclear, 0, 1, 1);
 
-void preparegbuffer(bool depthclear)
+void GBuffer::preparegbuffer(bool depthclear)
 {
     glBindFramebuffer_(GL_FRAMEBUFFER, msaasamples && (msaalight || !drawtex) ? msfbo : gfbo);
     glViewport(0, 0, vieww, viewh);
@@ -3960,7 +3956,7 @@ void rendergbuffer(bool depthclear, void (*gamefxn)())
     timer *gcputimer = drawtex ? nullptr : begintimer("g-buffer", false),
           *gtimer = drawtex ? nullptr : begintimer("g-buffer");
 
-    preparegbuffer(depthclear);
+    gbuf.preparegbuffer(depthclear);
 
     if(limitsky())
     {
@@ -4013,7 +4009,7 @@ void shademinimap(const vec &color)
     glerror();
 }
 
-void shademodelpreview(int x, int y, int w, int h, bool background, bool scissor)
+void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, bool scissor)
 {
     glerror();
 
@@ -4092,7 +4088,7 @@ void shadegbuffer()
 {
     if(msaasamples && !msaalight && !drawtex)
     {
-        resolvemsaadepth();
+        gbuf.resolvemsaadepth(vieww, viewh);
     }
     glerror();
 
@@ -4134,7 +4130,7 @@ void shadegbuffer()
 void setuplights()
 {
     glerror();
-    setupgbuffer();
+    gbuf.setupgbuffer();
     if(bloomw < 0 || bloomh < 0)
     {
         setupbloom(gw, gh);
@@ -4176,7 +4172,7 @@ bool debuglights()
     }
     else if(debugdepth)
     {
-        viewdepth();
+        gbuf.viewdepth();
     }
     else if(debugstencil)
     {
@@ -4184,7 +4180,7 @@ bool debuglights()
     }
     else if(debugrefract)
     {
-        viewrefract();
+        gbuf.viewrefract();
     }
     else if(debuglightscissor)
     {
@@ -4207,7 +4203,7 @@ bool debuglights()
 
 void cleanuplights()
 {
-    cleanupgbuffer();
+    gbuf.cleanupgbuffer();
     cleanupbloom();
     cleanupao();
     cleanupvolumetric();
