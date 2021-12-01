@@ -175,7 +175,7 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
 
     if(msaalight)
     {
-        resolvemsaacolor(sw, sh);
+        gbuf.resolvemsaacolor(sw, sh);
     }
     glerror();
 

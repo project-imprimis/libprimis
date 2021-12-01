@@ -1837,7 +1837,7 @@ void drawminimap(int yaw, int pitch, vec loc)
     rendergbuffer();
     rendershadowatlas();
 
-    shademinimap(minimapcolor.tocolor().mul(ldrscale));
+    gbuf.shademinimap(minimapcolor.tocolor().mul(ldrscale));
 
     if(minimapheight > 0 && minimapheight < minimapcenter.z + minimapradius.z)
     {
@@ -1845,7 +1845,7 @@ void drawminimap(int yaw, int pitch, vec loc)
         projmatrix.ortho(-minimapradius.x, minimapradius.x, -minimapradius.y, minimapradius.y, -zscale, zscale);
         setcamprojmatrix();
         rendergbuffer(false);
-        shademinimap();
+        gbuf.shademinimap();
     }
 
     glDisable(GL_DEPTH_TEST);

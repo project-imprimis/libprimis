@@ -44,17 +44,6 @@ int hdrclear = 0;
 
 GLenum stencilformat = 0;
 bool hdrfloat = false;
-GLuint msfbo = 0,
-       msdepthtex   = 0,
-       mscolortex   = 0,
-       msnormaltex  = 0,
-       msglowtex    = 0,
-       msdepthrb    = 0,
-       msstencilrb  = 0,
-       mshdrfbo     = 0,
-       mshdrtex     = 0,
-       msrefractfbo = 0,
-       msrefracttex = 0;
 
 int spotlights       = 0,
     volumetriclights = 0,
@@ -402,7 +391,7 @@ void maskgbuffer(const char *mask)
     glDrawBuffers_(numbufs, drawbufs);
 }
 
-void cleanupmsbuffer()
+void GBuffer::cleanupmsbuffer()
 {
     if(msfbo)        { glDeleteFramebuffers_(1, &msfbo);        msfbo        = 0; }
     if(msdepthtex)   { glDeleteTextures(1, &msdepthtex);        msdepthtex   = 0; }
@@ -417,7 +406,7 @@ void cleanupmsbuffer()
     if(msrefracttex) { glDeleteTextures(1, &msrefracttex);      msrefracttex = 0; }
 }
 
-void bindmsdepth()
+void GBuffer::bindmsdepth()
 {
     if(gdepthformat)
     {
@@ -445,7 +434,7 @@ void bindmsdepth()
     }
 }
 
-void setupmsbuffer(int w, int h)
+void GBuffer::setupmsbuffer(int w, int h)
 {
     if(!msfbo)
     {
@@ -688,7 +677,7 @@ void GBuffer::setupgbuffer()
 
     if(msaasamples)
     {
-        setupmsbuffer(gw, gh);
+        gbuf.setupmsbuffer(gw, gh);
     }
     hdrfloat = floatformat(hdrformat);
     hdrclear = 3;
@@ -904,7 +893,7 @@ void GBuffer::resolvemsaadepth(int w, int h)
     endtimer(resolvetimer);
 }
 
-void resolvemsaacolor(int w, int h)
+void GBuffer::resolvemsaacolor(int w, int h)
 {
     if(!msaalight)
     {
@@ -3992,7 +3981,7 @@ void rendergbuffer(bool depthclear, void (*gamefxn)())
     endtimer(gcputimer);
 }
 
-void shademinimap(const vec &color)
+void GBuffer::shademinimap(const vec &color)
 {
     glerror();
 
@@ -4076,7 +4065,7 @@ void GBuffer::shademodelpreview(int x, int y, int w, int h, bool background, boo
     glerror();
 }
 
-void shadesky()
+void GBuffer::shadesky()
 {
     glBindFramebuffer_(GL_FRAMEBUFFER, msaalight ? mshdrfbo : hdrfbo);
     glViewport(0, 0, vieww, viewh);
@@ -4095,7 +4084,7 @@ void shadegbuffer()
     timer *shcputimer = begintimer("deferred shading", false),
           *shtimer = begintimer("deferred shading");
 
-    shadesky();
+    gbuf.shadesky();
 
     if(msaasamples && (msaalight || !drawtex))
     {
