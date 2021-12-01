@@ -3611,7 +3611,7 @@ void GBuffer::rendershadowmaps(int offset)
         {
             shadowmapping = ShadowMap_CubeMap;
             border = smfilter > 2 ? smborder2 : smborder;
-            sidemask = drawtex == Draw_TexMinimap ? 0x2F : (smsidecull ? cullfrustumsides(l.o, l.radius, sm.size, border) : 0x3F);
+            sidemask = drawtex == Draw_TexMinimap ? 0x2F : (smsidecull ? view.cullfrustumsides(l.o, l.radius, sm.size, border) : 0x3F);
         }
 
         sm.sidemask = sidemask;
