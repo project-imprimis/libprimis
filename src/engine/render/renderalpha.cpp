@@ -12,6 +12,7 @@
 
 #include "hdr.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertimers.h"
@@ -46,24 +47,24 @@ namespace
             glStencilFunc(GL_NOTEQUAL, 0, 0x07);
             glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
             glEnable(GL_STENCIL_TEST);
-            renderparticles(ParticleLayer_Over);
+            gbuf.renderparticles(ParticleLayer_Over);
             glDisable(GL_STENCIL_TEST);
             if(scissor)
             {
                 glDisable(GL_SCISSOR_TEST);
             }
-            renderparticles(ParticleLayer_NoLayer);
+            gbuf.renderparticles(ParticleLayer_NoLayer);
         }
         else
         {
-            renderparticles();
+            gbuf.renderparticles();
         }
     }
 }
 
 //externally relevant functionality
 
-void rendertransparent()
+void GBuffer::rendertransparent()
 {
     int hasalphavas = findalphavas(),
         hasmats = findmaterials();
@@ -72,13 +73,13 @@ void rendertransparent()
     {
         if(!editmode)
         {
-            renderparticles();
+            gbuf.renderparticles();
         }
         return;
     }
     if(!editmode && particlelayers && ghasstencil)
     {
-        renderparticles(ParticleLayer_Under);
+        gbuf.renderparticles(ParticleLayer_Under);
     }
     timer *transtimer = begintimer("transparent");
     if(hasalphavas&4 || hasmats&4)
