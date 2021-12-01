@@ -162,7 +162,6 @@ extern void renderrsmgeom(bool dyntex = false);
 extern void workinoq();
 
 extern int calcspheresidemask(const vec &p, float radius, float bias);
-extern int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherersmsplits(const vec &center, float radius);
 
