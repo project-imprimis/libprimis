@@ -119,7 +119,6 @@ extern int volumetriclights;
 extern int nospeclights;
 extern int debugfullscreen;
 extern matrix4 eyematrix;
-extern GLuint mshdrtex, mshdrfbo, msrefractfbo;
 extern int msaaedgedetect;
 extern int hdrclear;
 
@@ -139,7 +138,6 @@ extern int shadowmapping;
 extern int smcullside;
 
 extern matrix4 shadowmatrix, linearworldmatrix;
-extern GLuint msrefracttex;
 
 extern void setbilateralshader(int radius, int pass, float depth);
 void clearbilateralshaders();
@@ -164,7 +162,6 @@ extern void renderrsmgeom(bool dyntex = false);
 extern void workinoq();
 
 extern int calcspheresidemask(const vec &p, float radius, float bias);
-extern int cullfrustumsides(const vec &lightpos, float lightradius, float size, float border);
 extern int calcbbrsmsplits(const ivec &bbmin, const ivec &bbmax);
 extern int calcspherersmsplits(const vec &center, float radius);
 
@@ -184,7 +181,6 @@ extern matrix4 worldmatrix, screenmatrix;
 
 extern int gw, gh, gdepthformat, ghasstencil;
 extern int msaasamples, msaalight;
-extern GLuint msdepthtex, mscolortex, msnormaltex, msglowtex, msdepthrb, msstencilrb;
 extern std::vector<vec2> msaapositions;
 
 extern bool inoq;
@@ -199,14 +195,12 @@ inline void dummyfxn()
     return;
 }
 
-extern void resolvemsaacolor(int w, int h);
 extern bool shouldworkinoq();
 extern void initgbuffer();
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
 extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
-extern void shademinimap(const vec &color = vec(-1, -1, -1));
 extern void setuplights();
 extern GLuint shouldscale();
 extern void doscale(GLuint outfbo = 0);
