@@ -12,6 +12,7 @@
 
 #include "engine.h"
 
+#include "renderlights.h"
 #include "rendergl.h"
 #include "renderparticles.h"
 #include "renderva.h"
@@ -1387,7 +1388,7 @@ void debugparticles()
     pophudmatrix();
 }
 
-void renderparticles(int layer)
+void GBuffer::renderparticles(int layer)
 {
     canstep = layer != ParticleLayer_Under;
 
