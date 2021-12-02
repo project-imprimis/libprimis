@@ -186,7 +186,7 @@ extern std::vector<vec2> msaapositions;
 extern bool inoq;
 extern int rhinoq;
 extern int rsmcull;
-extern GLuint msfbo, rhfbo;
+extern GLuint rhfbo;
 
 //allows passing nothing to internal uses of gbuffer fxn
 //(the parameter is for taking a game function to be rendered onscreen)
