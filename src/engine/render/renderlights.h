@@ -34,6 +34,7 @@ class GBuffer
             scalefbo[1]  = 0;
             scaletex[0]  = 0;
             scaletex[1]  = 0;
+            gdepthinit   = false;
         }
         //main g-buffers
         void cleanupgbuffer();
@@ -69,6 +70,8 @@ class GBuffer
         void bindmsdepth();
         void cleanupscale();
         void cleanupmsbuffer();
+
+        bool gdepthinit;
 
         //main g-buffers
         GLuint gfbo,

@@ -35,7 +35,6 @@ int gw = -1,
 
 GBuffer gbuf;
 
-bool gdepthinit = false;
 int scalew = -1,
     scaleh = -1;
 
