@@ -30,6 +30,10 @@ class GBuffer
             msrefracttex = 0;
             refractfbo   = 0;
             refracttex   = 0;
+            scalefbo[0]  = 0;
+            scalefbo[1]  = 0;
+            scaletex[0]  = 0;
+            scaletex[1]  = 0;
         }
         //main g-buffers
         void cleanupgbuffer();
@@ -58,9 +62,14 @@ class GBuffer
         //refractive
         void processhdr(GLuint outfbo, int aa);
         void viewrefract();
+        void doscale(GLuint outfbo = 0);
+        void setupscale(int sw, int sh, int w, int h);
+        GLuint shouldscale();
 
     private:
         void bindmsdepth();
+        void cleanupscale();
+
         //main g-buffers
         GLuint gfbo,
                gdepthtex,
@@ -84,6 +93,9 @@ class GBuffer
         //refractive g-buffers
         GLuint refractfbo,
                refracttex;
+        //rescaling g-buffers
+        GLuint scalefbo[2],
+               scaletex[2];
 
 };
 

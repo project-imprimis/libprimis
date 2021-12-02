@@ -1986,7 +1986,7 @@ int xtraverts, xtravertsva;
 //main scene rendering function
 void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
 {
-    GLuint scalefbo = shouldscale();
+    GLuint scalefbo = gbuf.shouldscale();
     if(scalefbo)
     {
         vieww = gw;
@@ -2123,7 +2123,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     renderpostfx(scalefbo);
     if(scalefbo)
     {
-        doscale();
+        gbuf.doscale();
     }
 }
 

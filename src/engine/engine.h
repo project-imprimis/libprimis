@@ -202,8 +202,6 @@ extern void maskgbuffer(const char *mask);
 extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
 extern void shadegbuffer();
 extern void setuplights();
-extern GLuint shouldscale();
-extern void doscale(GLuint outfbo = 0);
 extern bool debuglights();
 extern void cleanuplights();
 

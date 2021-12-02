@@ -38,8 +38,7 @@ GBuffer gbuf;
 bool gdepthinit = false;
 int scalew = -1,
     scaleh = -1;
-GLuint scalefbo[2] = { 0, 0 },
-       scaletex[2] = { 0, 0 };
+
 int hdrclear = 0;
 
 GLenum stencilformat = 0;
@@ -150,7 +149,7 @@ void setbilateralshader(int radius, int pass, float depth)
 //for individual debug commands, see respective functions lower in the file
 VAR(debugfullscreen, 0, 0, 1);
 
-void cleanupscale()
+void GBuffer::cleanupscale()
 {
     for(int i = 0; i < 2; ++i)
     {
@@ -171,7 +170,7 @@ void cleanupscale()
     scalew = scaleh = -1;
 }
 
-void setupscale(int sw, int sh, int w, int h)
+void GBuffer::setupscale(int sw, int sh, int w, int h)
 {
     scalew = w;
     scaleh = h;
@@ -210,12 +209,12 @@ void setupscale(int sw, int sh, int w, int h)
     }
 }
 
-GLuint shouldscale()
+GLuint GBuffer::shouldscale()
 {
     return scalefbo[0];
 }
 
-void doscale(GLuint outfbo)
+void GBuffer::doscale(GLuint outfbo)
 {
     if(!scaletex[0])
     {
