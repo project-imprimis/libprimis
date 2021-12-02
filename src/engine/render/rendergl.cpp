@@ -18,6 +18,7 @@
 #include "radiancehints.h"
 #include "renderalpha.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendersky.h"
@@ -1836,7 +1837,7 @@ void drawminimap(int yaw, int pitch, vec loc)
     rendergbuffer();
     rendershadowatlas();
 
-    shademinimap(minimapcolor.tocolor().mul(ldrscale));
+    gbuf.shademinimap(minimapcolor.tocolor().mul(ldrscale));
 
     if(minimapheight > 0 && minimapheight < minimapcenter.z + minimapradius.z)
     {
@@ -1844,7 +1845,7 @@ void drawminimap(int yaw, int pitch, vec loc)
         projmatrix.ortho(-minimapradius.x, minimapradius.x, -minimapradius.y, minimapradius.y, -zscale, zscale);
         setcamprojmatrix();
         rendergbuffer(false);
-        shademinimap();
+        gbuf.shademinimap();
     }
 
     glDisable(GL_DEPTH_TEST);
@@ -1903,7 +1904,7 @@ namespace modelpreview
         modelpreview::background = background;
         modelpreview::scissor = scissor;
 
-        setupgbuffer();
+        gbuf.setupgbuffer();
 
         useshaderbyname("modelpreview");
 
@@ -1943,8 +1944,6 @@ namespace modelpreview
 
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);
-
-        preparegbuffer();
     }
 
     void end()
@@ -1954,7 +1953,7 @@ namespace modelpreview
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
 
-        shademodelpreview(x, y, w, h, background, scissor);
+        gbuf.shademodelpreview(x, y, w, h, background, scissor);
 
         aspect = oldaspect;
         fovy = oldfovy;
@@ -1987,7 +1986,7 @@ int xtraverts, xtravertsva;
 //main scene rendering function
 void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
 {
-    GLuint scalefbo = shouldscale();
+    GLuint scalefbo = gbuf.shouldscale();
     if(scalefbo)
     {
         vieww = gw;
@@ -2045,7 +2044,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     }
 
     //ambient obscurance (ambient occlusion) on geometry & models only
-    renderao();
+    gbuf.renderao();
     glerror();
 
     // render avatar after AO to avoid weird contact shadows
@@ -2059,7 +2058,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
 
     glFlush();
     //global illumination
-    renderradiancehints();
+    gbuf.renderradiancehints();
     glerror();
     //lighting
     rendershadowatlas();
@@ -2073,13 +2072,13 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     {
         setfog(fogmat, fogbelow, 1, abovemat);
 
-        renderwaterfog(fogmat, fogbelow);
+        gbuf.renderwaterfog(fogmat, fogbelow);
 
         setfog(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
 
     //alpha
-    rendertransparent();
+    gbuf.rendertransparent();
     glerror();
 
     if(fogmat)
@@ -2088,7 +2087,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     }
 
     //volumetric lights
-    rendervolumetric();
+    gbuf.rendervolumetric();
     glerror();
 
     if(editmode)
@@ -2100,7 +2099,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         glerror();
         rendereditmaterials();
         glerror();
-        renderparticles();
+        gbuf.renderparticles();
         glerror();
         if(showhud)
         {
@@ -2119,12 +2118,12 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         drawfogoverlay(fogmat, fogbelow, std::clamp(fogbelow, 0.0f, 1.0f), abovemat);
     }
     //antialiasing
-    doaa(setuppostfx(vieww, viewh, scalefbo), processhdr);
+    doaa(setuppostfx(vieww, viewh, scalefbo), gbuf);
     //postfx
     renderpostfx(scalefbo);
     if(scalefbo)
     {
-        doscale();
+        gbuf.doscale();
     }
 }
 
