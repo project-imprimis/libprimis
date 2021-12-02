@@ -82,17 +82,17 @@ class GBuffer
                gdepthrb,
                gstencilrb;
         //multisample antialiasing g-buffers
-        GLuint msfbo = 0,
-               msdepthtex   = 0,
-               mscolortex   = 0,
-               msnormaltex  = 0,
-               msglowtex    = 0,
-               msdepthrb    = 0,
-               msstencilrb  = 0,
-               mshdrfbo     = 0,
-               mshdrtex     = 0,
-               msrefractfbo = 0,
-               msrefracttex = 0;
+        GLuint msfbo,
+               msdepthtex,
+               mscolortex,
+               msnormaltex,
+               msglowtex,
+               msdepthrb,
+               msstencilrb,
+               mshdrfbo,
+               mshdrtex,
+               msrefractfbo,
+               msrefracttex;
         //refractive g-buffers
         GLuint refractfbo,
                refracttex;
