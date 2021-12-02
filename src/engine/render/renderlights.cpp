@@ -40,9 +40,6 @@ int scalew = -1,
 
 int hdrclear = 0;
 
-GLenum stencilformat = 0;
-bool hdrfloat = false;
-
 int spotlights       = 0,
     volumetriclights = 0,
     nospeclights     = 0;

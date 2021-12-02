@@ -34,7 +34,9 @@ class GBuffer
             scalefbo[1]  = 0;
             scaletex[0]  = 0;
             scaletex[1]  = 0;
+            stencilformat= 0;
             gdepthinit   = false;
+            hdrfloat     = false;
         }
         //main g-buffers
         void cleanupgbuffer();
@@ -72,6 +74,7 @@ class GBuffer
         void cleanupmsbuffer();
 
         bool gdepthinit;
+        bool hdrfloat;
 
         //main g-buffers
         GLuint gfbo,
@@ -99,7 +102,7 @@ class GBuffer
         //rescaling g-buffers
         GLuint scalefbo[2],
                scaletex[2];
-
+        GLenum stencilformat;
 };
 
 extern GBuffer gbuf;
