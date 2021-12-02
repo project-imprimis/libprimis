@@ -55,7 +55,6 @@ class GBuffer
         void viewdepth();
         //multisample antialiasing specific buffers
         void setupmsbuffer(int w, int h);
-        void cleanupmsbuffer();
         void resolvemsaacolor(int w, int h);
         void shademinimap(const vec &color = vec(-1, -1, -1));
         void shadesky();
@@ -69,6 +68,7 @@ class GBuffer
     private:
         void bindmsdepth();
         void cleanupscale();
+        void cleanupmsbuffer();
 
         //main g-buffers
         GLuint gfbo,
