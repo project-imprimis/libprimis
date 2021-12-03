@@ -50,7 +50,7 @@ VARFP(gscale, 25, 100, 100, gbuf.cleanupgbuffer()); //size of g buffer, approxim
 VARFP(gscalecubic, 0, 0, 1, gbuf.cleanupgbuffer()); //g-buffer scale cubic: use cubic interpolation for g buffer upscaling to screen output
 VARFP(gscalenearest, 0, 0, 1, gbuf.cleanupgbuffer()); //g buffer nearest neighbor interpolation
 
-matrix4 eyematrix, worldmatrix, linearworldmatrix, screenmatrix;
+matrix4 worldmatrix, linearworldmatrix, screenmatrix;
 
 static Shader *bilateralshader[2] = { nullptr, nullptr };
 

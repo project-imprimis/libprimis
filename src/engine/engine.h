@@ -118,7 +118,6 @@ extern int spotlights;
 extern int volumetriclights;
 extern int nospeclights;
 extern int debugfullscreen;
-extern matrix4 eyematrix;
 extern int msaaedgedetect;
 extern int hdrclear;
 
