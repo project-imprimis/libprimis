@@ -36,7 +36,6 @@ extern float getwaterfallrefract(int mat);
 extern void renderwater();
 extern void renderwaterfalls();
 extern void loadcaustics(bool force = false);
-extern void renderwaterfog(int mat, float blend);
 extern void preloadwatershaders(bool force = false);
 
 #endif
