@@ -253,7 +253,6 @@ VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", Init_Load, Change_Shaders))
 VARF(msaaedgedetect, 0, 1, 1, gbuf.cleanupgbuffer());                                        // multi-sample antialiasing edge detection
 VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", Init_Load, Change_Shaders));// multi-sample antialiasing linear depth
 VARFP(msaatonemap, 0, 0, 1, gbuf.cleanupgbuffer());                                          // multi-sample antialiasing tone mapping
-VARF(msaatonemapblit, 0, 0, 1, gbuf.cleanupgbuffer());                                       // multi-sample antialiasing tone map bit blitting
 VAR(msaamaxsamples, 1, 0, 0);                                                           // multi-sample antialiasing maximum samples
 VAR(msaamaxdepthtexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum depth buffer texture sample count
 VAR(msaamaxcolortexsamples, 1, 0, 0);                                                   // multi-sample antialiasing maximum color buffer texture sample count

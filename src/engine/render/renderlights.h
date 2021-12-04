@@ -38,6 +38,7 @@ class GBuffer
             gdepthinit   = false;
             hdrfloat     = false;
             msaadepthblit= false;
+            msaatonemapblit = false;
         }
         //main g-buffers
         void cleanupgbuffer();
@@ -77,6 +78,7 @@ class GBuffer
         bool gdepthinit;
         bool hdrfloat;
         bool msaadepthblit; //no way to change this outside constructor atm
+        bool msaatonemapblit;
 
         //main g-buffers
         GLuint gfbo,
