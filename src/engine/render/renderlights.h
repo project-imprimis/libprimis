@@ -37,6 +37,7 @@ class GBuffer
             stencilformat= 0;
             gdepthinit   = false;
             hdrfloat     = false;
+            msaadepthblit= false;
         }
         //main g-buffers
         void cleanupgbuffer();
@@ -75,6 +76,7 @@ class GBuffer
 
         bool gdepthinit;
         bool hdrfloat;
+        bool msaadepthblit; //no way to change this outside constructor atm
 
         //main g-buffers
         GLuint gfbo,

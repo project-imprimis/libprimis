@@ -826,8 +826,6 @@ void GBuffer::setupgbuffer()
         cleardeferredlightshaders();
     }
 
-VAR(msaadepthblit, 0, 0, 1);
-
 void GBuffer::resolvemsaadepth(int w, int h)
 {
     if(!msaasamples || msaalight)
