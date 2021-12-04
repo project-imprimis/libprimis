@@ -34,7 +34,7 @@
  * `static`) to be linked to other files as a `const`.
  */
 
-extern constexpr uchar cubectype[256] =
+extern const uchar cubectype[256] =
 {
     CUBECTYPE(CubeType_Space,
               CubeType_Print,
