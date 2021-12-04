@@ -105,7 +105,8 @@ class GBuffer
         GLuint scalefbo[2],
                scaletex[2];
         GLenum stencilformat;
-        matrix4 eyematrix;
+        matrix4 eyematrix,
+                linearworldmatrix;
 };
 
 extern GBuffer gbuf;

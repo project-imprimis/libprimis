@@ -136,7 +136,7 @@ enum
 extern int shadowmapping;
 extern int smcullside;
 
-extern matrix4 shadowmatrix, linearworldmatrix;
+extern matrix4 shadowmatrix;
 
 extern void setbilateralshader(int radius, int pass, float depth);
 void clearbilateralshaders();
