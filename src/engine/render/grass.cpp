@@ -16,11 +16,11 @@
 
 namespace //internal functionality not seen by other files
 {
-    VARP(grass, 0, 1, 1);
-    VARP(grassdist, 0, 256, 10000);
+    VARP(grass, 0, 1, 1);           //toggles rendering of grass
+    VARP(grassdist, 0, 256, 10000); //maximum distance to render grass
     FVARP(grasstaper, 0, 0.2, 1);
     FVARP(grassstep, 0.5, 2, 8);
-    VARP(grassheight, 1, 4, 64);
+    VARP(grassheight, 1, 4, 64);    //height of grass in cube units
 
     constexpr int numgrasswedges = 8;
 
