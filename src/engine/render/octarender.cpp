@@ -2004,11 +2004,11 @@ namespace
             cmergemax  = vamergemax,
             chasmerges = vahasmerges;
         neighborstack[++neighbordepth] = c;
-        for(int i = 0; i < 8; ++i)                                   // counting number of semi-solid/solid children cubes
+        for(int i = 0; i < 8; ++i)                                  // counting number of semi-solid/solid children cubes
         {
             int count = 0,
                 childpos = varoot.length();
-            ivec o(i, co, size);
+            ivec o(i, co, size);                                    //translate cube vector to world vector
             vamergemax = 0;
             vahasmerges = 0;
             if(c[i].ext && c[i].ext->va)
