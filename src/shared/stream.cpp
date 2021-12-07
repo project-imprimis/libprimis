@@ -32,6 +32,9 @@
 /* note here:
  * these vars are declared extern inline to allow a `const` (implicitly also
  * `static`) to be linked to other files as a `const`.
+ *
+ * these vars cannot be `constexpr` due to it not being legal to define constexpr
+ * prototypes in headers
  */
 
 extern const uchar cubectype[256] =
@@ -44,7 +47,7 @@ extern const uchar cubectype[256] =
               CubeType_Print | CubeType_Unicode | CubeType_Alpha | CubeType_Lower,
               CubeType_Print | CubeType_Unicode | CubeType_Alpha | CubeType_Upper)
 };
-extern constexpr int cube2unichars[256] =
+extern const int cube2unichars[256] =
 {
     0, 192, 193, 194, 195, 196, 197, 198, 199, 9, 10, 11, 12, 13, 200, 201,
     202, 203, 204, 205, 206, 207, 209, 210, 211, 212, 213, 214, 216, 217, 218, 219,
@@ -63,13 +66,13 @@ extern constexpr int cube2unichars[256] =
     0x42C, 0x42D, 0x42E, 0x42F, 0x431, 0x432, 0x433, 0x434, 0x436, 0x437, 0x438, 0x439, 0x43A, 0x43B, 0x43C, 0x43D,
     0x43F, 0x442, 0x444, 0x446, 0x447, 0x448, 0x449, 0x44A, 0x44B, 0x44C, 0x44D, 0x44E, 0x44F, 0x454, 0x490, 0x491
 };
-extern constexpr int uni2cubeoffsets[8] =
+extern const int uni2cubeoffsets[8] =
 {
     0, 256, 658, 658, 512, 658, 658, 658
 };
 
 //only 255 chars can be aliased by the text renderer
-extern constexpr uchar uni2cubechars[878] =
+extern const uchar uni2cubechars[878] =
 {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 10, 11, 12, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
@@ -122,7 +125,7 @@ extern const uchar cubelowerchars[256] =
     224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
     240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255
 };
-extern constexpr uchar cubeupperchars[256] =
+extern const uchar cubeupperchars[256] =
 {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
