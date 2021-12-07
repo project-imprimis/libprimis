@@ -271,7 +271,6 @@ struct shadowmesh;
 extern void clearshadowmeshes();
 extern void genshadowmeshes();
 extern shadowmesh *findshadowmesh(int idx, extentity &e);
-extern void rendershadowmesh(shadowmesh *m);
 
 // command
 

@@ -1,6 +1,20 @@
 #ifndef RENDERVA_H_
 #define RENDERVA_H_
 
+class shadowmesh
+{
+    public:
+        vec origin;
+        float radius;
+        vec spotloc;
+        int spotangle;
+        int type;
+        int draws[6];
+
+        void rendershadowmesh();
+};
+
+
 class vfc
 {
     public:

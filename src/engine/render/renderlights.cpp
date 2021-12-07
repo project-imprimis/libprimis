@@ -3695,7 +3695,7 @@ void rendershadowmaps(int offset = 0)
 
             if(mesh)
             {
-                rendershadowmesh(mesh);
+                mesh->rendershadowmesh();
             }
             else
             {
@@ -3738,7 +3738,7 @@ void rendershadowmaps(int offset = 0)
 
                     if(mesh)
                     {
-                        rendershadowmesh(mesh);
+                        mesh->rendershadowmesh();
                     }
                     else
                     {

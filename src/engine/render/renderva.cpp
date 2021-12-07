@@ -48,16 +48,6 @@ vfc view;
 
 int deferquery = 0;
 
-struct shadowmesh
-{
-    vec origin;
-    float radius;
-    vec spotloc;
-    int spotangle;
-    int type;
-    int draws[6];
-};
-
 /* internally relevant functionality */
 ///////////////////////////////////////
 
@@ -3154,9 +3144,9 @@ shadowmesh *findshadowmesh(int idx, extentity &e)
     return m;
 }
 
-void rendershadowmesh(shadowmesh *m)
+void shadowmesh::rendershadowmesh()
 {
-    int draw = m->draws[shadowside];
+    int draw = draws[shadowside];
     if(draw < 0)
     {
         return;
