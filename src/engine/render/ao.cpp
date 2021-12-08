@@ -32,7 +32,7 @@ FVARR(aomin, 0, 0.25f, 1);
 VARFR(aosun, 0, 1, 1, cleardeferredlightshaders()); //toggles ambient occlusion fo sunlight
 FVARR(aosunmin, 0, 0.5f, 1);
 VARP(aoblur, 0, 4, 7);
-VARP(aoiter, 0, 0, 4);
+VARP(aoiter, 0, 0, 4); //number of times to run ao shader (higher is smoother)
 VARFP(aoreduce, 0, 1, 2, cleanupao());
 VARF(aoreducedepth, 0, 1, 2, cleanupao());
 VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", Init_Load, Change_Shaders));
