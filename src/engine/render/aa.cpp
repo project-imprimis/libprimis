@@ -252,10 +252,12 @@ namespace //internal functions incl. AA implementations
     /* SMAA: Subpixel Morphological Anti Aliasing */
     ////////////////////////////////////////////////
 
+    //smaa graphics buffers
     GLuint smaaareatex = 0,
            smaasearchtex = 0,
            smaafbo[4] = { 0, 0, 0, 0 },
            smaatex[5] = { 0, 0, 0, 0, 0 };
+    //affects subsample vector direction
     int smaasubsampleorder = -1;
 
     void cleanupsmaa(); //fxn prototype required due to VARFP initialization chicken/egg
