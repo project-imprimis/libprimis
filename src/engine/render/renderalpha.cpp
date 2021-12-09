@@ -25,8 +25,8 @@ int transparentlayer = 0;
 //internally relevant functionality
 namespace
 {
-    FVAR(refractmargin, 0, 0.1f, 1);
-    FVAR(refractdepth, 1e-3f, 16, 1e3f);
+    FVAR(refractmargin, 0, 0.1f, 1);     //margin for gl scissoring around refractive materials
+    FVAR(refractdepth, 1e-3f, 16, 1e3f); //sets depth for refract shader effect
 
     //sets up alpha handling as needed then executes main particle rendering routine
     void alphaparticles(float allsx1, float allsy1, float allsx2, float allsy2)
