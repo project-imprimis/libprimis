@@ -172,6 +172,10 @@ void setupao(int w, int h)
 /* cleanupao
  *
  * deletes the framebuffer textures for ambient obscurance (ambient occlusion)
+ *
+ * aofbo[0-3] and aotex[0-3] as well as aonoisetex if enabled
+ * sets ao buffer width and height to -1 to indicate buffers not there
+ * cleans up ao shaders
  */
 void cleanupao()
 {
