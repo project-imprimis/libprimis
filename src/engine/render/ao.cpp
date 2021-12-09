@@ -36,9 +36,9 @@ VARP(aoiter, 0, 0, 4); //number of times to run ao shader (higher is smoother)
 VARFP(aoreduce, 0, 1, 2, cleanupao());
 VARF(aoreducedepth, 0, 1, 2, cleanupao());
 VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", Init_Load, Change_Shaders));
-VARFP(aoprec, 0, 1, 1, cleanupao());
+VARFP(aoprec, 0, 1, 1, cleanupao()); //toggles between r8 and rgba8 buffer format
 VAR(aodepthformat, 1, 0, 0);
-VARF(aonoise, 0, 5, 8, cleanupao());
+VARF(aonoise, 0, 5, 8, cleanupao()); //power or two scale factor for ao noise effect
 VARFP(aobilateral, 0, 3, 10, cleanupao());
 FVARP(aobilateraldepth, 0, 4, 1e3f);
 VARFP(aobilateralupscale, 0, 0, 1, cleanupao());
