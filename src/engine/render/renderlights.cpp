@@ -2986,8 +2986,8 @@ void rendervolumetric()
 
     if(volbilateral || volblur)
     {
-        swap(volfbo[0], volfbo[1]);
-        swap(voltex[0], voltex[1]);
+        std::swap(volfbo[0], volfbo[1]);
+        std::swap(voltex[0], voltex[1]);
     }
 
     if(avatar)
@@ -3269,14 +3269,14 @@ static void batchlights(const batchstack &initstack)
             {
                 if(i != outside)
                 {
-                    swap(batchrects[i], batchrects[outside]);
+                    std::swap(batchrects[i], batchrects[outside]);
                 }
                 ++outside;
             }
             else if(s.inside(r))
             {
                 ++groups[r.group];
-                swap(batchrects[i--], batchrects[--inside]);
+                std::swap(batchrects[i--], batchrects[--inside]);
             }
             else if(r.idx < splitidx)
             {
@@ -3314,7 +3314,7 @@ static void batchlights(const batchstack &initstack)
                         }
                     }
                     key.lights[i] = lightorder[bestidx];
-                    swap(batchrects[best], batchrects[--batched]);
+                    std::swap(batchrects[best], batchrects[--batched]);
                 }
 
                 lightbatch &batch = lightbatcher[key];
