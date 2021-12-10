@@ -903,11 +903,11 @@ struct varenderer : partrenderer
                 {
                     if(p->flags&0x01)
                     {
-                        swap(u1, u2);
+                        std::swap(u1, u2);
                     }
                     if(p->flags&0x02)
                     {
-                        swap(v1, v2);
+                        std::swap(v1, v2);
                     }
                 });
             }
@@ -1792,7 +1792,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         }
         if(inv)
         {
-            swap(from, to);
+            std::swap(from, to);
         }
         if(taper)
         {
