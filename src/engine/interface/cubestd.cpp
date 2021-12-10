@@ -1491,10 +1491,10 @@ ICOMMAND(exp, "f", (float *a), floatret(std::exp(*a)));
         type##ret(val); \
     })
 
-MINMAXCMD(min, i, int, min);
-MINMAXCMD(max, i, int, max);
-MINMAXCMD(minf, f, float, min);
-MINMAXCMD(maxf, f, float, max);
+MINMAXCMD(min, i, int, std::min);
+MINMAXCMD(max, i, int, std::max);
+MINMAXCMD(minf, f, float, std::min);
+MINMAXCMD(maxf, f, float, std::max);
 
 ICOMMAND(bitscan, "i", (int *n), intret(BITSCAN(*n)));
 
