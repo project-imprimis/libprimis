@@ -137,7 +137,11 @@ void setupbloom(int w, int h)
 
 void cleanupbloom()
 {
-    if(bloompbo) { glDeleteBuffers_(1, &bloompbo); bloompbo = 0; }
+    if(bloompbo)
+    {
+        glDeleteBuffers_(1, &bloompbo);
+        bloompbo = 0;
+    }
     for(int i = 0; i < 6; ++i)
     {
         if(bloomfbo[i])
