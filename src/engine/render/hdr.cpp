@@ -40,15 +40,15 @@ namespace
     int lasthdraccum = 0;
 
     FVAR(bloomthreshold, 1e-3f, 0.8f, 1e3f);
-    FVARP(bloomscale, 0, 1.0f, 1e3f); //scale factor for bloom effect
-    VARP(bloomblur, 0, 7, 7); //blur factor for bloom effect
-    VARP(bloomiter, 0, 0, 4); //number of interations for bloom generation
+    FVARP(bloomscale, 0, 1.0f, 1e3f);           //scale factor for bloom effect
+    VARP(bloomblur, 0, 7, 7);                   //blur factor for bloom effect
+    VARP(bloomiter, 0, 0, 4);                   //number of interations for bloom generation
     VARFP(bloomsize, 6, 9, 11, cleanupbloom()); //size of HDR buffer: 6 -> 2^6 = 64x64 ... 11 -> 2^11 = 2048x2048
-    VARFP(bloomprec, 0, 2, 3, cleanupbloom()); //HDR buffer bit depth: 3: RGB16 2: R11G11B10 1:RGB10 0: RGB8
+    VARFP(bloomprec, 0, 2, 3, cleanupbloom());  //HDR buffer bit depth: 3: RGB16 2: R11G11B10 1:RGB10 0: RGB8
 
-    FVAR(hdraccumscale, 0, 0.98f, 1); //for hdr, exponent base for time decay of accumulation buffer (always <= 1 so decaying with time)
-    VAR(hdraccummillis, 1, 33, 1000); //number of ms between samplings for the hdr buffer
-    VAR(hdrreduce, 0, 2, 2);    //number of powers to reduce hdr buffer size relative to g buffer (2 = 1/4, 1 = 1/2, 0 = g-buffer size)
+    FVAR(hdraccumscale, 0, 0.98f, 1);           //for hdr, exponent base for time decay of accumulation buffer (always <= 1 so decaying with time)
+    VAR(hdraccummillis, 1, 33, 1000);           //number of ms between samplings for the hdr buffer
+    VAR(hdrreduce, 0, 2, 2);                    //number of powers to reduce hdr buffer size relative to g buffer (2 = 1/4, 1 = 1/2, 0 = g-buffer size)
     FVARR(hdrbright, 1e-4f, 1.0f, 1e4f);
     FVAR(hdrsaturate, 1e-3f, 0.8f, 1e3f);
 }
