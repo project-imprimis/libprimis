@@ -93,7 +93,7 @@ namespace //internal functions incl. AA implementations
         tqaaframe = 0;
     }
 
-    VAR(debugtqaa, 0, 0, 2);
+    VAR(debugtqaa, 0, 0, 2); //renders either the first or second tqaa texture at 1 or 2
 
     void viewtqaa()
     {
