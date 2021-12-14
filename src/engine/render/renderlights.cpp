@@ -2047,7 +2047,7 @@ namespace lightsphere
 }
 
 VAR(depthtestlights, 0, 2, 2);
-FVAR(depthtestlightsclamp, 0, 0.999995f, 1);
+FVAR(depthtestlightsclamp, 0, 0.999995f, 1); //z margin for light depth testing at depthtestlights = 2
 VAR(depthfaillights, 0, 1, 1);
 
 static void lightquads(float z, float sx1, float sy1, float sx2, float sy2)
