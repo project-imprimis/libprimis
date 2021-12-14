@@ -33,6 +33,8 @@ VARF(debugcolmesh, 0, 0, 1,
     cleanupmodels();
 });
 
+VAR(animationinterpolationtime, 0, 200, 1000);
+
 hashnameset<animmodel::meshgroup *> animmodel::meshgroups;
 int animmodel::intersectresult = -1,
     animmodel::intersectmode = 0;

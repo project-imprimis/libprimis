@@ -24,7 +24,6 @@
 #include "world/bih.h"
 
 VAR(oqdynent, 0, 1, 1); //occlusion query dynamic ents
-VAR(animationinterpolationtime, 0, 200, 1000);
 
 int numanims; //set by game at runtime
 std::vector<std::string> animnames; //set by game at runtime
