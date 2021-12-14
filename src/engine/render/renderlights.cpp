@@ -1874,8 +1874,8 @@ static bool sortlights(int x, int y)
     return xl.dist - xl.radius < yl.dist - yl.radius;
 }
 
-VAR(lighttilealignw, 1, 16, 256);
-VAR(lighttilealignh, 1, 16, 256);
+VAR(lighttilealignw, 1, 16, 256); // x tiling size for lights inside the shadow cache (pixel grid size to snap to)
+VAR(lighttilealignh, 1, 16, 256); // y tiling size for lights
 VARN(lighttilew, lighttilemaxw, 1, 10, lighttilemaxwidth);
 VARN(lighttileh, lighttilemaxh, 1, 10, lighttilemaxheight);
 
