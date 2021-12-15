@@ -1033,7 +1033,7 @@ typedef varenderer<PT_TRAIL> trailrenderer;
 
 // explosions
 
-VARP(softexplosion, 0, 1, 1);
+VARP(softexplosion, 0, 1, 1); //toggles EXPLOSIONSOFT shader
 VARP(softexplosionblend, 1, 16, 64);
 
 namespace sphere
