@@ -656,7 +656,7 @@ void clearmodel(char *name)
     delete m;
     conoutf("cleared model %s", name);
 }
-COMMAND(clearmodel, "s");
+COMMAND(clearmodel, "s"); //removes the model with the name string given; returns error message to game if not possible to unload
 
 bool modeloccluded(const vec &center, float radius)
 {
