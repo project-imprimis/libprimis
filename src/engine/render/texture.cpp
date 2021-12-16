@@ -565,21 +565,22 @@ void texmix(ImageData &s, int c1, int c2, int c3, int c4)
             case 4:
             {
                 dst[3] = src[c4];
+                break;
             }
-            [[fallthrough]];
             case 3:
             {
                 dst[2] = src[c3];
+                break;
             }
-            [[fallthrough]];
             case 2:
             {
                 dst[1] = src[c2];
+                break;
             }
-            [[fallthrough]];
             case 1:
             {
                 dst[0] = src[c1];
+                break;
             }
         }
     );
