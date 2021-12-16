@@ -244,10 +244,9 @@ bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
                 radius.max(entselradius);
                 o = ivec(vec(center).sub(radius));
                 r = ivec(vec(center).add(radius).add(1));
-                break;
             }
+            break;
         }
-        [[fallthrough]];
         // invisible mapmodels use entselradius: lights sounds spawns etc.
         default:
         {
