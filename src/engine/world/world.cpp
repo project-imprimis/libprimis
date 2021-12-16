@@ -307,10 +307,9 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
                         oe.mapmodels.add(id);
                         oe.bbmin.min(bo).max(oe.o);
                         oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
-                        break;
                     }
+                    break;
                 }
-                [[fallthrough]];
                 // invisible mapmodels: lights sounds spawns etc.
                 default:
                 {
