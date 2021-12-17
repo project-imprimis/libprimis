@@ -37,19 +37,22 @@ SDL_Window   *screen    = nullptr;
 SDL_GLContext glcontext = nullptr;
 SDL_Renderer *renderer  = nullptr;
 
+//helper function for main menu rendering routines
+//returns w and h if both are above 1024x768
+//returns w and h multiplied by the factor by which the smallest dimension is smaller than 1024x768
 static void getbackgroundres(int &w, int &h)
 {
     float wk = 1,
           hk = 1;
     if(w < 1024)
     {
-        wk = 1024.0f/w;
+        wk = 1024.0f/w; //calculate w subsize factor (if greater than 1)
     }
     if(h < 768)
     {
-        hk = 768.0f/h;
+        hk = 768.0f/h; //calculate h subsize factor (if greater than 1)
     }
-    wk = hk = std::max(wk, hk);
+    wk = hk = std::max(wk, hk); //pick the largest factor and multiply both by this
     w = static_cast<int>(std::ceil(w*wk));
     h = static_cast<int>(std::ceil(h*hk));
 }
