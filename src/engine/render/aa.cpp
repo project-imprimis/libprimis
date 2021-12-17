@@ -10,6 +10,7 @@
 #include "aa.h"
 #include "hdr.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
 
@@ -60,7 +61,7 @@ namespace //internal functions incl. AA implementations
             glBindFramebuffer_(GL_FRAMEBUFFER, tqaafbo[i]);
             createtexture(tqaatex[i], w, h, nullptr, 3, 1, GL_RGBA8, GL_TEXTURE_RECTANGLE);
             glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, tqaatex[i], 0);
-            bindgdepth();
+            gbuf.bindgdepth();
             if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
                 fatal("failed allocating TQAA buffer!");
@@ -127,7 +128,7 @@ namespace //internal functions incl. AA implementations
         glBindTexture(GL_TEXTURE_RECTANGLE, tqaatex[0]);
         glActiveTexture_(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_RECTANGLE, tqaaframe ? tqaatex[1] : tqaatex[0]);
-        setaavelocityparams(GL_TEXTURE2);
+        gbuf.setaavelocityparams(GL_TEXTURE2);
         glActiveTexture_(GL_TEXTURE0);
         vec4 quincunx(0, 0, 0, 0);
         if(tqaaquincunx)
@@ -209,7 +210,7 @@ namespace //internal functions incl. AA implementations
         glBindFramebuffer_(GL_FRAMEBUFFER, fxaafbo);
         createtexture(fxaatex, w, h, nullptr, 3, 1, tqaa || (!fxaagreenluma && !intel_texalpha_bug) ? GL_RGBA8 : GL_RGB, GL_TEXTURE_RECTANGLE);
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, fxaatex, 0);
-        bindgdepth();
+        gbuf.bindgdepth();
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating FXAA buffer!");
@@ -262,8 +263,8 @@ namespace //internal functions incl. AA implementations
 
     void cleanupsmaa(); //fxn prototype required due to VARFP initialization chicken/egg
 
-    VARFP(smaa, 0, 0, 1, cleanupgbuffer()); //toggles smaa
-    VARFP(smaaspatial, 0, 1, 1, cleanupgbuffer());
+    VARFP(smaa, 0, 0, 1, gbuf.cleanupgbuffer()); //toggles smaa
+    VARFP(smaaspatial, 0, 1, 1, gbuf.cleanupgbuffer());
     VARFP(smaaquality, 0, 2, 3, cleanupsmaa());
     VARFP(smaacoloredge, 0, 0, 1, cleanupsmaa()); //toggle between color & luma edge shaders
     VARFP(smaagreenluma, 0, 0, 1, cleanupsmaa());
@@ -826,7 +827,7 @@ namespace //internal functions incl. AA implementations
             }
             if(!i || (smaadepthmask && (!tqaa || msaalight)) || (smaastencil && ghasstencil > (msaasamples ? 1 : 0)))
             {
-                bindgdepth();
+                gbuf.bindgdepth();
             }
             if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
@@ -1041,7 +1042,7 @@ namespace //internal functions incl. AA implementations
 }
 
 //for temporal aa, called externally
-void setaavelocityparams(GLenum tmu)
+void GBuffer::setaavelocityparams(GLenum tmu)
 {
     glActiveTexture_(tmu);
     if(msaalight)
@@ -1188,29 +1189,29 @@ bool multisampledaa()
  *
  * does not apply to multisample aa, msaa is not a screenspace aa
  *
- * function pointer resolve is used to setup the fbo for the specified aa
+ * method pointer resolve is used to setup the fbo for the specified aa
  */
-void doaa(GLuint outfbo, void (*resolve)(GLuint, int))
+void doaa(GLuint outfbo, GBuffer gbuffer)
 {
     if(smaa)
     {
         bool split = multisampledaa();
-        resolve(smaafbo[0], smaatype);
+        gbuffer.processhdr(smaafbo[0], smaatype);
         dosmaa(outfbo, split);
     }
     else if(fxaa)
     {
-        resolve(fxaafbo, fxaatype);
+        gbuffer.processhdr(fxaafbo, fxaatype);
         dofxaa(outfbo);
     }
     else if(tqaa)
     {
-        resolve(tqaafbo[0], tqaatype);
+        gbuffer.processhdr(tqaafbo[0], tqaatype);
         dotqaa(outfbo);
     }
     else
     {
-        resolve(outfbo, AA_Unused);
+        gbuffer.processhdr(outfbo, AA_Unused);
     }
 }
 

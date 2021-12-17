@@ -16,7 +16,6 @@ extern void clearparticles();
 extern void clearparticleemitters();
 extern void seedparticles();
 extern void debugparticles();
-extern void renderparticles(int layer = ParticleLayer_All);
 extern void cleanupparticles();
 
 extern void regular_particle_splash(int type, int num, int fade, const vec &p, int color = 0xFFFFFF, float size = 1.0f, int radius = 150, int gravity = 2, int delay = 0);
