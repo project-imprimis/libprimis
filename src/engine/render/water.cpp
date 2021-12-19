@@ -24,7 +24,7 @@
 //caustics: lightening on surfaces underwater due to lensing effects from an
 // uneven water surface
 
-static constexpr int numcaustics = 32;
+static constexpr int numcaustics = 32; //number of separate caustics textures to load
 
 static Texture *caustictex[numcaustics] = {nullptr};
 bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
