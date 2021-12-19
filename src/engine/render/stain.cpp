@@ -1046,6 +1046,11 @@ stainrenderer stains[] =
     stainrenderer("<grey>media/particle/rail_glow.png",  StainFlag_Rotate|StainFlag_Glow|StainFlag_Saturate, 100, 1100, 100)
 };
 
+/* initstains: sets up each entry in the stains global variable array using init() method
+ * and then preloads them
+ *
+ * fails to do anything if initing is set (early game loading time)
+ */
 void initstains()
 {
     if(initing)
@@ -1064,6 +1069,8 @@ void initstains()
     loadprogress = 0;
 }
 
+/* clearstains: loops through the stains[] global variable array and runs clearstains for each entry
+ */
 void clearstains()
 {
     for(int i = 0; i < static_cast<int>(sizeof(stains)/sizeof(stains[0])); ++i)
