@@ -82,7 +82,8 @@ void setupcaustics(int tmu, float surface = -1e16f)
         glBindTexture(GL_TEXTURE_2D, caustictex[(tex+i)%numcaustics]->id);
     }
     glActiveTexture_(GL_TEXTURE0);
-    float blendscale = causticcontrast, blendoffset = 1;
+    float blendscale = causticcontrast,
+          blendoffset = 1;
     if(surface > -1e15f)
     {
         float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0);
