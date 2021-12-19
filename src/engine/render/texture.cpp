@@ -437,7 +437,7 @@ extern const texrotation texrotations[8] =
     {  true,  true,  true }, // 7: flipped transpose
 };
 
-void texrotate(ImageData &s, int numrots, int type = Tex_Diffuse)
+static void texrotate(ImageData &s, int numrots, int type = Tex_Diffuse)
 {
     if(numrots>=1 && numrots<=7)
     {
@@ -446,7 +446,7 @@ void texrotate(ImageData &s, int numrots, int type = Tex_Diffuse)
     }
 }
 
-void texoffset(ImageData &s, int xoffset, int yoffset)
+static void texoffset(ImageData &s, int xoffset, int yoffset)
 {
     xoffset = std::max(xoffset, 0);
     xoffset %= s.w;
@@ -468,7 +468,7 @@ void texoffset(ImageData &s, int xoffset, int yoffset)
     s.replace(d);
 }
 
-void texcrop(ImageData &s, int x, int y, int w, int h)
+static void texcrop(ImageData &s, int x, int y, int w, int h)
 {
     x = std::clamp(x, 0, s.w);
     y = std::clamp(y, 0, s.h);
@@ -542,7 +542,7 @@ void texcolormask(ImageData &s, const vec &color1, const vec &color2)
     s.replace(d);
 }
 
-void texdup(ImageData &s, int srcchan, int dstchan)
+static void texdup(ImageData &s, int srcchan, int dstchan)
 {
     if(srcchan==dstchan || std::max(srcchan, dstchan) >= s.bpp)
     {
@@ -551,7 +551,7 @@ void texdup(ImageData &s, int srcchan, int dstchan)
     WRITE_TEX(s, dst[dstchan] = dst[srcchan]);
 }
 
-void texmix(ImageData &s, int c1, int c2, int c3, int c4)
+static void texmix(ImageData &s, int c1, int c2, int c3, int c4)
 {
     int numchans = c1 < 0 ? 0 : (c2 < 0 ? 1 : (c3 < 0 ? 2 : (c4 < 0 ? 3 : 4)));
     if(numchans <= 0)
@@ -587,7 +587,7 @@ void texmix(ImageData &s, int c1, int c2, int c3, int c4)
     s.replace(d);
 }
 
-void texgrey(ImageData &s)
+static void texgrey(ImageData &s)
 {
     if(s.bpp <= 2)
     {
@@ -608,7 +608,7 @@ void texgrey(ImageData &s)
     s.replace(d);
 }
 
-void texpremul(ImageData &s)
+static void texpremul(ImageData &s)
 {
     switch(s.bpp)
     {
@@ -628,7 +628,7 @@ void texpremul(ImageData &s)
     }
 }
 
-void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
+static void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
 {
     if(s.bpp != 2 && s.bpp != 4)
     {
@@ -665,7 +665,7 @@ void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
     }
 }
 
-void texblend(ImageData &d, ImageData &s, ImageData &m)
+static void texblend(ImageData &d, ImageData &s, ImageData &m)
 {
     if(s.w != d.w || s.h != d.h)
     {
