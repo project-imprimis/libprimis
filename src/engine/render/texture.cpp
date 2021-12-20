@@ -1423,22 +1423,6 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
 #define RGBAMASKS 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
 #define RGBMASKS  0x0000ff, 0x00ff00, 0xff0000, 0
 
-SDL_Surface *wrapsurface(void *data, int width, int height, int bpp)
-{
-    switch(bpp)
-    {
-        case 3:
-        {
-            return SDL_CreateRGBSurfaceFrom(data, width, height, 8*bpp, bpp*width, RGBMASKS);
-        }
-        case 4:
-        {
-            return SDL_CreateRGBSurfaceFrom(data, width, height, 8*bpp, bpp*width, RGBAMASKS);
-        }
-    }
-    return nullptr;
-}
-
 SDL_Surface *creatergbsurface(SDL_Surface *os)
 {
     SDL_Surface *ns = SDL_CreateRGBSurface(SDL_SWSURFACE, os->w, os->h, 24, RGBMASKS);
