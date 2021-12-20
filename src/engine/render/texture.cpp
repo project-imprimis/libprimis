@@ -1504,20 +1504,6 @@ static SDL_Surface *fixsurfaceformat(SDL_Surface *s)
     return s;
 }
 
-void texflip(ImageData &s)
-{
-    ImageData d(s.w, s.h, s.bpp);
-    uchar *dst = d.data,
-          *src = &s.data[s.pitch*s.h];
-    for(int i = 0; i < s.h; ++i)
-    {
-        src -= s.pitch;
-        memcpy(dst, src, s.bpp*s.w);
-        dst += d.pitch;
-    }
-    s.replace(d);
-}
-
 void texnormal(ImageData &s, int emphasis)
 {
     ImageData d(s.w, s.h, 3);
