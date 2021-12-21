@@ -785,7 +785,7 @@ int formatsize(GLenum format)
     }
 }
 
-void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int compress, int &tw, int &th)
+static void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int compress, int &tw, int &th)
 {
     int hwlimit = target==GL_TEXTURE_CUBE_MAP ? hwcubetexsize : hwtexsize,
         sizelimit = mipmap && maxtexsize ? std::min(maxtexsize, hwlimit) : hwlimit;
@@ -823,7 +823,7 @@ void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int
     }
 }
 
-int texalign(const void *data, int w, int bpp)
+static int texalign(const void *data, int w, int bpp)
 {
     int stride = w*bpp;
     if(stride&1)
@@ -837,7 +837,7 @@ int texalign(const void *data, int w, int bpp)
     return 4;
 }
 
-void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format, GLenum type, const void *pixels, int pw, int ph, int pitch, bool mipmap)
+static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format, GLenum type, const void *pixels, int pw, int ph, int pitch, bool mipmap)
 {
     int bpp = formatsize(format),
         row = 0,
@@ -927,7 +927,7 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
     }
 }
 
-void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum format, int w, int h, const uchar *data, int align, int blocksize, int levels, bool mipmap)
+static void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum format, int w, int h, const uchar *data, int align, int blocksize, int levels, bool mipmap)
 {
     int hwlimit = target==GL_TEXTURE_CUBE_MAP ? hwcubetexsize : hwtexsize,
         sizelimit = levels > 1 && maxtexsize ? std::min(maxtexsize, hwlimit) : hwlimit;
@@ -967,7 +967,7 @@ void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum format, int
     }
 }
 
-GLenum textarget(GLenum subtarget)
+static GLenum textarget(GLenum subtarget)
 {
     switch(subtarget)
     {
