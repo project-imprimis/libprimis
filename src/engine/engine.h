@@ -19,7 +19,6 @@ extern void cleanuppostfx(bool fullclean = false);
 extern void renderpostfx(GLuint outfbo = 0);
 extern bool reloadtexture(Texture &tex);
 extern bool reloadtexture(const char *name);
-extern void setuptexcompress();
 extern void clearslots();
 extern void compacteditvslots();
 extern void compactmruvslots();
