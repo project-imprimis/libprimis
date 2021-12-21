@@ -1504,7 +1504,7 @@ static SDL_Surface *fixsurfaceformat(SDL_Surface *s)
     return s;
 }
 
-void texnormal(ImageData &s, int emphasis)
+static void texnormal(ImageData &s, int emphasis)
 {
     ImageData d(s.w, s.h, 3);
     uchar *src = s.data,
@@ -1527,7 +1527,7 @@ void texnormal(ImageData &s, int emphasis)
     s.replace(d);
 }
 
-bool canloadsurface(const char *name)
+static bool canloadsurface(const char *name)
 {
     stream *f = openfile(name, "rb");
     if(!f)
