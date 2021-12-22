@@ -351,7 +351,7 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int s
         } \
     }
 
-void forcergbimage(ImageData &s)
+static void forcergbimage(ImageData &s)
 {
     if(s.bpp >= 3)
     {
@@ -383,7 +383,7 @@ void forcergbimage(ImageData &s)
         } \
     }
 
-void swizzleimage(ImageData &s)
+static void swizzleimage(ImageData &s)
 {
     if(s.bpp==2)
     {
@@ -399,14 +399,14 @@ void swizzleimage(ImageData &s)
     }
 }
 
-void scaleimage(ImageData &s, int w, int h)
+static void scaleimage(ImageData &s, int w, int h)
 {
     ImageData d(w, h, s.bpp);
     scaletexture(s.data, s.w, s.h, s.bpp, s.pitch, d.data, w, h);
     s.replace(d);
 }
 
-void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = Tex_Diffuse)
+static void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = Tex_Diffuse)
 {
     ImageData d(swapxy ? s.h : s.w, swapxy ? s.w : s.h, s.bpp, s.levels, s.align, s.compressed);
     switch(s.compressed)
@@ -2696,7 +2696,7 @@ int findslottex(const char *name)
     return -1;
 }
 
-void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float *scale)
+static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float *scale)
 {
     int tnum = findslottex(type), matslot;
     if(tnum == Tex_Diffuse)
@@ -3526,7 +3526,7 @@ void reloadtextures()
     loadprogress = 0;
 }
 
-void writepngchunk(stream *f, const char *type, uchar *data = nullptr, uint len = 0)
+static void writepngchunk(stream *f, const char *type, uchar *data = nullptr, uint len = 0)
 {
     f->putbig<uint>(len);
     f->write(type, 4);
@@ -3543,7 +3543,7 @@ void writepngchunk(stream *f, const char *type, uchar *data = nullptr, uint len 
 
 VARP(compresspng, 0, 9, 9);
 
-void savepng(const char *filename, ImageData &image, bool flip)
+static void savepng(const char *filename, ImageData &image, bool flip)
 {
     uchar ctype = 0;
     switch(image.bpp)
