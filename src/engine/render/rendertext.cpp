@@ -88,7 +88,7 @@ COMMAND(fontoutline, "ff");
  * Only the first element of the array is accepted, all others are ignored
  *
  */
-void fontoffset(char *c)
+static void fontoffset(char *c)
 {
     if(!fontdef)
     {
@@ -107,7 +107,7 @@ COMMAND(fontoffset, "s");
  * If the scale parameter points to the value 0, the font scale is et to its default value.
  *
  */
-void fontscale(int *scale)
+static void fontscale(int *scale)
 {
     if(!fontdef)
     {
@@ -124,7 +124,7 @@ COMMAND(fontscale, "i");
  * Arguments:
  *    s: a pointer to a char * array representing the path to a font texture file
  */
-void fonttex(char *s)
+static void fonttex(char *s)
 {
     if(!fontdef)
     {
@@ -149,7 +149,7 @@ COMMAND(fonttex, "s");
  * sets the new entry in the vector to have the parameters passed
  *
  */
-void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *offsety, float *advance)
+static void fontchar(float *x, float *y, float *w, float *h, float *offsetx, float *offsety, float *advance)
 {
     if(!fontdef)
     {
@@ -170,7 +170,7 @@ COMMAND(fontchar, "fffffff");
 /* fontskip
  * addes an entry to the fontdef vector, which is empty
  */
-void fontskip(int *n)
+static void fontskip(int *n)
 {
     if(!fontdef)
     {
@@ -189,7 +189,7 @@ COMMAND(fontskip, "i");
  * copies an entry in the fontdef vector to another one
  * copies the entry at *src to *dst
  */
-void fontalias(const char *dst, const char *src)
+static void fontalias(const char *dst, const char *src)
 {
     font *s = fonts.access(src);
     if(!s)
