@@ -215,7 +215,7 @@ static void decalboundbox(const entity &e, DecalSlot &s, vec &center, vec &radiu
 
 void freeoctaentities(cube &c);
 
-bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
+static bool getentboundingbox(const extentity &e, ivec &o, ivec &r)
 {
     switch(e.type)
     {
