@@ -52,14 +52,6 @@ void loadcaustics(bool force)
     }
 }
 
-void cleanupcaustics()
-{
-    for(int i = 0; i < numcaustics; ++i)
-    {
-        caustictex[i] = nullptr;
-    }
-}
-
 VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
 VARFR(causticmillis, 0, 75, 1000, preloadwatershaders());
 FVARR(causticcontrast, 0, 0.6f, 2);
