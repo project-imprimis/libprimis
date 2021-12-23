@@ -27,7 +27,6 @@
 static constexpr int numcaustics = 32; //number of separate caustics textures to load
 
 static Texture *caustictex[numcaustics] = {nullptr};
-bool getentboundingbox(const extentity &e, ivec &o, ivec &r);
 
 void loadcaustics(bool force)
 {
