@@ -1344,21 +1344,17 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
                 continue;
             }
 
-    #define INTERPXYSCISSOR(p, o) do { \
-        float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
-              w = p.w + t*(o.w - p.w), \
-              x = (p.x + t*(o.x - p.x))/w, \
-              y = (p.y + t*(o.y - p.y))/w; \
-        sx1 = std::min(sx1, x); \
-        sy1 = std::min(sy1, y); \
-        sx2 = std::max(sx2, x); \
-        sy2 = std::max(sy2, y); \
-    } while(0)
-            INTERPXYSCISSOR(p, o);
+            float t = (p.z + p.w)/(p.z + p.w - o.z - o.w),
+                  w = p.w + t*(o.w - p.w),
+                  x = (p.x + t*(o.x - p.x))/w,
+                  y = (p.y + t*(o.y - p.y))/w;
+            sx1 = std::min(sx1, x);
+            sy1 = std::min(sy1, y);
+            sx2 = std::max(sx2, x);
+            sy2 = std::max(sy2, y);
         }
     }
 
-    #undef INTERPXYSCISSOR
 
     sx1 = std::max(sx1, -1.0f);
     sy1 = std::max(sy1, -1.0f);
