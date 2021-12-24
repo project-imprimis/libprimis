@@ -1293,6 +1293,8 @@ bool calcspherescissor(const vec &center, float size, float &sx1, float &sy1, fl
     return sx1 < sx2 && sy1 < sy2 && sz1 < sz2;
 }
 
+#undef CHECKPLANE
+
 bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1, float &sx2, float &sy2)
 {
 #define ADDXYSCISSOR(p) do { \
