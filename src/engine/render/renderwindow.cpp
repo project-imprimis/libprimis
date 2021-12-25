@@ -317,7 +317,7 @@ void renderprogressview(int w, int h, float bar, const char *text)   // also use
 }
 
 VAR(progressbackground, 0, 0, 1); //force rendering progress bar background texture
-int curvsync = -1;
+static int curvsync = -1;
 
 void renderprogress(float bar, const char *text, bool background)   // also used during loading
 {
