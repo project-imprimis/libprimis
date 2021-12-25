@@ -31,7 +31,7 @@ font *curfont = nullptr;
 int curfonttex = 0;
 
 //adds a new font to the hashnameset "fonts" given the parameters passed
-void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
+static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
 {
     font *f = &fonts[name];
     if(!f->name)
@@ -56,7 +56,7 @@ void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
 COMMANDN(font, newfont, "ssiii");
 
 //sets the fontdef gvar's bordermin/max to the values passed
-void fontborder(float *bordermin, float *bordermax)
+static void fontborder(float *bordermin, float *bordermax)
 {
     if(!fontdef)
     {
@@ -68,7 +68,7 @@ void fontborder(float *bordermin, float *bordermax)
 COMMAND(fontborder, "ff");
 
 //sets the fontdef gvar's outlinemin/max to the values passed
-void fontoutline(float *outlinemin, float *outlinemax)
+static void fontoutline(float *outlinemin, float *outlinemax)
 {
     if(!fontdef)
     {
