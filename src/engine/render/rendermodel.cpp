@@ -631,7 +631,7 @@ void cleanupmodels()
     ENUMERATE(models, model *, m, m->cleanup());
 }
 
-void clearmodel(char *name)
+static void clearmodel(char *name)
 {
     model *m = models.find(name, nullptr);
     if(!m)
@@ -658,7 +658,7 @@ void clearmodel(char *name)
 }
 COMMAND(clearmodel, "s"); //removes the model with the name string given; returns error message to game if not possible to unload
 
-bool modeloccluded(const vec &center, float radius)
+static bool modeloccluded(const vec &center, float radius)
 {
     ivec bbmin(vec(center).sub(radius)),
          bbmax(vec(center).add(radius+1));
