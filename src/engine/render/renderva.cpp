@@ -330,7 +330,7 @@ namespace
     }
 
     octaentities *visiblemms,
-                       **lastvisiblemms;
+                **lastvisiblemms;
 
     void findvisiblemms(const vector<extentity *> &ents, bool doquery)
     {
