@@ -1107,7 +1107,7 @@ struct prefab : editinfo
     }
 };
 
-hashnameset<prefab> prefabs;
+static hashnameset<prefab> prefabs;
 
 void cleanupprefabs()
 {
