@@ -263,7 +263,7 @@ VERTWN(vertln, {
 #undef VERTWT
 //==============================================================================
 
-void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
+static void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
 {
     wx1 = xo;
     wy1 = yo;
@@ -291,7 +291,7 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
     }
 }
 
-int calcwatersubdiv(int x, int y, int z, int size)
+static int calcwatersubdiv(int x, int y, int z, int size)
 {
     float dist;
     if(camera1->o.x >= x && camera1->o.x < x + size &&
@@ -307,7 +307,7 @@ int calcwatersubdiv(int x, int y, int z, int size)
     return subdiv >= 31 ? INT_MAX : 1<<subdiv;
 }
 
-int renderwaterlod(int x, int y, int z, int size, int mat)
+static int renderwaterlod(int x, int y, int z, int size, int mat)
 {
     if(size <= (32 << waterlod))
     {
