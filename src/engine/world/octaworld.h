@@ -23,7 +23,6 @@ extern int faceconvexity(const ivec v[4], int &vis);
 extern int faceconvexity(const vertinfo *verts, int numverts, int size);
 extern int faceconvexity(const cube &c, int orient);
 extern uint faceedges(const cube &c, int orient);
-extern bool touchingface(const cube &c, int orient);
 extern bool flataxisface(const cube &c, int orient);
 extern bool collideface(const cube &c, int orient);
 extern void genclipbounds(const cube &c, const ivec &co, int size, clipplanes &p);
