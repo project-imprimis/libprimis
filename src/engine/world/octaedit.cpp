@@ -1291,7 +1291,7 @@ prefab *loadprefab(const char *name, bool msg = true)
     return b;
 }
 
-void pasteprefab(char *name)
+static void pasteprefab(char *name)
 {
     if(!name[0] || noedit() || (nompedit && multiplayer))
     {
