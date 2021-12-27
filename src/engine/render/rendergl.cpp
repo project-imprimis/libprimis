@@ -1193,7 +1193,7 @@ FVAR(polygonoffsetfactor, -1e4f, -3.0f, 1e4f);
 FVAR(polygonoffsetunits, -1e4f, -3.0f, 1e4f);
 FVAR(depthoffset, -1e4f, 0.01f, 1e4f);
 
-matrix4 nooffsetmatrix;
+static matrix4 nooffsetmatrix;
 
 void enablepolygonoffset(GLenum type)
 {
