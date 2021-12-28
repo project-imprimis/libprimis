@@ -1420,11 +1420,10 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
 
 //little endian order for masks
 #define RGBAMASKS 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
-#define RGBMASKS  0x0000ff, 0x00ff00, 0xff0000, 0
 
 static SDL_Surface *creatergbsurface(SDL_Surface *os)
 {
-    SDL_Surface *ns = SDL_CreateRGBSurface(SDL_SWSURFACE, os->w, os->h, 24, RGBMASKS);
+    SDL_Surface *ns = SDL_CreateRGBSurface(SDL_SWSURFACE, os->w, os->h, 24, 0x0000ff, 0x00ff00, 0xff0000, 0);
     if(ns)
     {
         SDL_BlitSurface(os, nullptr, ns, nullptr);
@@ -1477,7 +1476,7 @@ static SDL_Surface *fixsurfaceformat(SDL_Surface *s)
         SDL_FreeSurface(s);
         return nullptr;
     }
-    static const uint rgbmasks[]  = { RGBMASKS },
+    static const uint rgbmasks[]  = { 0x0000ff, 0x00ff00, 0xff0000, 0 },
                       rgbamasks[] = { RGBAMASKS };
     switch(s->format->BytesPerPixel)
     {
