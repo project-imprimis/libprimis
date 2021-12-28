@@ -689,6 +689,7 @@ void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partver
     genpos<T>(o, d, size, grav, ts, vs);
 }
 
+//==================================================================== ROTCOEFFS
 #define ROTCOEFFS(n) { \
     vec2(-1,  1).rotate_around_z(n*2*M_PI/32.0f), \
     vec2( 1,  1).rotate_around_z(n*2*M_PI/32.0f), \
@@ -713,6 +714,8 @@ void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts
     vs[3].pos = vec(o).madd(camright, coeffs[3].x*size).madd(camup, coeffs[3].y*size);
 }
 
+#undef ROTCOEFFS
+//==============================================================================
 template<int T>
 void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
