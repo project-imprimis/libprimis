@@ -321,6 +321,7 @@ void validatec(cube *c, int size)
 
 ivec lu;
 int lusize;
+
 cube &lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
 {
     int tx = std::clamp(to.x, 0, worldsize-1),
