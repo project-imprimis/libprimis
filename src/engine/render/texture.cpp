@@ -1627,7 +1627,6 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
                     arg[i]++; \
                 } \
             }
-        #define COPYTEXARG(dst, src) copystring(dst, stringslice(src, std::strcspn(src, ":,><")))
         PARSETEXCOMMANDS(pcmds);
         if(matchstring(cmd, len, "stub"))
         {
@@ -1727,8 +1726,8 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         {
             ImageData src, mask;
             string srcname, maskname;
-            COPYTEXARG(srcname, arg[0]);
-            COPYTEXARG(maskname, arg[1]);
+            copystring(srcname, stringslice(arg[0], std::strcspn(arg[0], ":,><")));
+            copystring(maskname, stringslice(arg[1], std::strcspn(arg[1], ":,><")));
             if(srcname[0] && texturedata(src, srcname, false, nullptr, nullptr, tdir, ttype) && (!maskname[0] || texturedata(mask, maskname, false, nullptr, nullptr, tdir, ttype)))
             {
                 texblend(d, src, maskname[0] ? mask : src);
