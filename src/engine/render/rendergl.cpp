@@ -1378,6 +1378,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     vec up     = vec(spotx).mul(spotscale),
         right  = vec(spoty).mul(spotscale),
         center = vec(dir).mul(radius).add(origin);
+//================================================================ ADDXYZSCISSOR
 #define ADDXYZSCISSOR(p) do { \
         if(p.z >= -p.w) \
         { \
@@ -1423,6 +1424,9 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             {
                 continue;
             }
+
+    #undef ADDXYZSCISSOR
+//==============================================================================
 
     #define INTERPXYZSCISSOR(p, o) do { \
         float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
