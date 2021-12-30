@@ -53,7 +53,7 @@ FVARF(rhworldbias, 0, 0.5f, 10, clearradiancehintscache());                     
 FVARF(rhsplitweight, 0.20f, 0.6f, 0.95f, clearradiancehintscache());            //`r`adiance `h`ints `split weight`
 VARF(rhgrid, 3, 27, rhmaxgrid, cleanupradiancehints());                         //`r`adiance `h`ints `grid`: subdivisions for the radiance hints to calculate
 FVARF(rsmspread, 0, 0.35f, 1, clearradiancehintscache());                       //smoothness of `r`adiance hints `s`hadow `m`ap: higher is more blurred
-VAR(rhclipgrid, 0, 1, 1);
+VAR(rhclipgrid, 0, 1, 1);                                                       //`r`adiance `h`ints `clip` `grid`: determines whether the radiance hints clips to grid
 VARF(rhcache, 0, 1, 1, cleanupradiancehints());
 VARF(rhforce, 0, 0, 1, cleanupradiancehints());
 VAR(rsmcull, 0, 1, 1);                                                          //`r`eflective `s`hadow `m`ap `cull`ing
