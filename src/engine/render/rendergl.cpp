@@ -1428,6 +1428,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     #undef ADDXYZSCISSOR
 //==============================================================================
 
+//============================================================= INTERPXYZSCISSOR
     #define INTERPXYZSCISSOR(p, o) do { \
         float t = (p.z + p.w)/(p.z + p.w - o.z - o.w), \
               w = p.w + t*(o.w - p.w), \
@@ -1461,6 +1462,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     }
 
     #undef INTERPXYZSCISSOR
+//==============================================================================
 
     sx1 = std::max(sx1, -1.0f);
     sy1 = std::max(sy1, -1.0f);
