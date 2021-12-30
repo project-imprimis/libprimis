@@ -1465,9 +1465,9 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     sx1 = std::max(sx1, -1.0f);
     sy1 = std::max(sy1, -1.0f);
     sz1 = std::max(sz1, -1.0f);
-    sx2 = std::min(sx2, 1.0f);
-    sy2 = std::min(sy2, 1.0f);
-    sz2 = std::min(sz2, 1.0f);
+    sx2 = std::min(sx2,  1.0f);
+    sy2 = std::min(sy2,  1.0f);
+    sz2 = std::min(sz2,  1.0f);
     return true;
 }
 
