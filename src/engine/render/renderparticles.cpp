@@ -1048,7 +1048,7 @@ namespace sphere
         ushort s, t;
     } *verts = nullptr;
     GLushort *indices = nullptr;
-    int numverts = 0,
+    int numverts   = 0,
         numindices = 0;
     GLuint vbuf = 0,
            ebuf = 0;
