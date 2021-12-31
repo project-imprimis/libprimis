@@ -139,8 +139,8 @@ namespace
         }
     }
 
-    static const int maxcrosshairs  = 4;
-    static Texture *crosshairs[maxcrosshairs] = { nullptr, nullptr, nullptr, nullptr };
+    const int maxcrosshairs  = 4;
+    Texture *crosshairs[maxcrosshairs] = { nullptr, nullptr, nullptr, nullptr };
 
     void loadcrosshair(const char *name, int i)
     {
@@ -245,7 +245,7 @@ namespace
     VARP(wallclock24, 0, 0, 1);   //toggles 12h (US) or 24h time
     VARP(wallclocksecs, 0, 0, 1); //seconds precision on hud readout
 
-    static time_t walltime = 0;
+    time_t walltime = 0;
 
     //hud fps displays
     VARP(showfps, 0, 1, 1);      //toggles showing game framerate
