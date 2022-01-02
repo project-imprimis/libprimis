@@ -1053,7 +1053,7 @@ namespace
             cmdprefix = s;
             cmdlen = commandsize;
         }
-        else // complete using command names
+        else // complete using command or var (ident) names
         {
             ENUMERATE(idents, ident, id,
                 if(strncmp(id.name, &s[cmdlen], completesize)==0 &&
