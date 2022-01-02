@@ -30,6 +30,48 @@ namespace
     FVAR(csmbias, -1e6f, 1e-4f, 1e6f);                  //csm bias factor if smfilter <= 2
     FVAR(csmbias2, -1e16f, 2e-4f, 1e6f);                //csm bias factor if smfilter >  2
     VAR(csmcull, 0, 1, 1);
+
+    int calcspherecsmsplits(const vec &center, float radius)
+    {
+        int mask = (1<<csmsplits)-1;
+        if(!csmcull)
+        {
+            return mask;
+        }
+        for(int i = 0; i < csmsplits; ++i)
+        {
+            const cascadedshadowmap::splitinfo &split = csm.splits[i];
+            int k;
+            for(k = 0; k < 4; k++)
+            {
+                const plane &p = split.cull[k];
+                float dist = p.dist(center);
+                if(dist < -radius)
+                {
+                    mask &= ~(1<<i);
+                    goto nextsplit; //skip rest and restart loop
+                }
+                if(dist < radius)
+                {
+                    goto notinside;
+                }
+            }
+            mask &= (2<<i)-1;
+            break;
+        notinside:
+            while(++k < 4)
+            {
+                const plane &p = split.cull[k];
+                if(p.dist(center) < -radius)
+                {
+                    mask &= ~(1<<i);
+                    break;
+                }
+            }
+        nextsplit:;
+        }
+        return mask;
+    }
 }
 
 //vars used in other files
@@ -105,48 +147,6 @@ int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
             const plane &p = split.cull[k];
             ivec omax(p.x > 0 ? bbmax.x : bbmin.x, p.y > 0 ? bbmax.y : bbmin.y, p.z > 0 ? bbmax.z : bbmin.z);
             if(omax.dist(p) < 0)
-            {
-                mask &= ~(1<<i);
-                break;
-            }
-        }
-    nextsplit:;
-    }
-    return mask;
-}
-
-int calcspherecsmsplits(const vec &center, float radius)
-{
-    int mask = (1<<csmsplits)-1;
-    if(!csmcull)
-    {
-        return mask;
-    }
-    for(int i = 0; i < csmsplits; ++i)
-    {
-        const cascadedshadowmap::splitinfo &split = csm.splits[i];
-        int k;
-        for(k = 0; k < 4; k++)
-        {
-            const plane &p = split.cull[k];
-            float dist = p.dist(center);
-            if(dist < -radius)
-            {
-                mask &= ~(1<<i);
-                goto nextsplit; //skip rest and restart loop
-            }
-            if(dist < radius)
-            {
-                goto notinside;
-            }
-        }
-        mask &= (2<<i)-1;
-        break;
-    notinside:
-        while(++k < 4)
-        {
-            const plane &p = split.cull[k];
-            if(p.dist(center) < -radius)
             {
                 mask &= ~(1<<i);
                 break;
