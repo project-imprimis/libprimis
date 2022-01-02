@@ -17,7 +17,7 @@
 
 //`c`ascaded `s`hadow `m`ap vars
 
-//vars not used in other files
+//vars & functions not used in other files
 namespace
 {
     VARF(csmmaxsize, 256, 768, 2048, clearshadowcache());
