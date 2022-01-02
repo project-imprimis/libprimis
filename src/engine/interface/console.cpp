@@ -886,32 +886,35 @@ namespace
 
     struct FilesVal
     {
-        int type;
-        char *dir, *ext;
-        vector<char *> files;
-        int millis;
+        public:
+            int type;
+            char *dir, *ext;
+            vector<char *> files;
 
-        FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1) {}
-        ~FilesVal() { DELETEA(dir); DELETEA(ext); files.deletearrays(); }
+            FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1) {}
+            ~FilesVal() { DELETEA(dir); DELETEA(ext); files.deletearrays(); }
 
-        void update()
-        {
-            if(type!=Files_Directory || millis >= commandmillis)
+            void update()
             {
-                return;
-            }
-            files.deletearrays();
-            listfiles(dir, ext, files);
-            files.sort();
-            for(int i = 0; i < files.length(); i++)
-            {
-                if(i && !std::strcmp(files[i], files[i-1]))
+                if(type!=Files_Directory || millis >= commandmillis)
                 {
-                    delete[] files.remove(i--);
+                    return;
                 }
+                files.deletearrays();
+                listfiles(dir, ext, files);
+                files.sort();
+                for(int i = 0; i < files.length(); i++)
+                {
+                    if(i && !std::strcmp(files[i], files[i-1]))
+                    {
+                        delete[] files.remove(i--);
+                    }
+                }
+                millis = totalmillis;
             }
-            millis = totalmillis;
-        }
+
+        private:
+            int millis;
     };
 
     char *prependstring(char *d, const char *s, size_t len)
