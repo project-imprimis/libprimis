@@ -70,7 +70,14 @@ static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass
 #include "model/md5.h"
 #include "model/obj.h"
 
-vertcommands<obj> objcommands;
+
+/* note about objcommands variable:
+ *
+ * this variable is never used anywhere at all in the codebase
+ * it only exists to call its constructor which adds commands to the cubescript
+ * ident hash table of the given template type (obj)
+ */
+static vertcommands<obj> objcommands;
 
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
