@@ -58,6 +58,7 @@ static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
     return type;
 }
 
+//==================================================================== MODELTYPE
 #define MODELTYPE(modeltype, modelclass) \
     static model *loadmodel_##modelclass(const char *filename) \
     { \
@@ -74,6 +75,8 @@ vertcommands<obj> objcommands;
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
 
+#undef MODELTYPE
+//==============================================================================
 static void checkmdl()
 {
     if(!loadingmodel)
