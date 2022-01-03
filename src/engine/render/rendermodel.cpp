@@ -301,7 +301,7 @@ COMMAND(mdlname, "");
         return; \
     }
 
-void rdvert(float *x, float *y, float *z, float *radius)
+static void rdvert(float *x, float *y, float *z, float *radius)
 {
     CHECK_RAGDOLL;
     ragdollskel::vert v;
@@ -314,14 +314,14 @@ COMMAND(rdvert, "ffff");
 /* ragdoll eye level: sets the ragdoll's eye point to the level passed
  * implicitly modifies the ragdoll selected by CHECK_RAGDOLL
  */
-void rdeye(int *v)
+static void rdeye(int *v)
 {
     CHECK_RAGDOLL;
     ragdoll->eye = *v;
 }
 COMMAND(rdeye, "i");
 
-void rdtri(int *v1, int *v2, int *v3)
+static void rdtri(int *v1, int *v2, int *v3)
 {
     CHECK_RAGDOLL;
     ragdollskel::tri *t = new ragdollskel::tri;
@@ -332,7 +332,7 @@ void rdtri(int *v1, int *v2, int *v3)
 }
 COMMAND(rdtri, "iii");
 
-void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
+static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
 {
     CHECK_RAGDOLL;
     if(*n < 0 || *n >= skel->numbones)
@@ -349,7 +349,7 @@ void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
 }
 COMMAND(rdjoint, "iibbb");
 
-void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
+static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 {
     CHECK_RAGDOLL;
     ragdollskel::distlimit d;
@@ -361,7 +361,7 @@ void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 }
 COMMAND(rdlimitdist, "iiff");
 
-void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
+static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
 {
     CHECK_RAGDOLL;
     ragdollskel::rotlimit &r = ragdoll->rotlimits.add();
@@ -373,7 +373,7 @@ void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *
 }
 COMMAND(rdlimitrot, "iifffff");
 
-void rdanimjoints(int *on)
+static void rdanimjoints(int *on)
 {
     CHECK_RAGDOLL;
     ragdoll->animjoints = *on!=0;
