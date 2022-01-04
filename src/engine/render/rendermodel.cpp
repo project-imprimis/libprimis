@@ -92,35 +92,35 @@ static void checkmdl()
     }
 }
 
-void mdlcullface(int *cullface)
+static void mdlcullface(int *cullface)
 {
     checkmdl();
     loadingmodel->setcullface(*cullface);
 }
 COMMAND(mdlcullface, "i");
 
-void mdlcolor(float *r, float *g, float *b)
+static void mdlcolor(float *r, float *g, float *b)
 {
     checkmdl();
     loadingmodel->setcolor(vec(*r, *g, *b));
 }
 COMMAND(mdlcolor, "fff");
 
-void mdlcollide(int *collide)
+static void mdlcollide(int *collide)
 {
     checkmdl();
     loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OrientedBoundingBox) : Collide_None;
 }
 COMMAND(mdlcollide, "i");
 
-void mdlellipsecollide(int *collide)
+static void mdlellipsecollide(int *collide)
 {
     checkmdl();
     loadingmodel->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
 }
 COMMAND(mdlellipsecollide, "i");
 
-void mdltricollide(char *collide)
+static void mdltricollide(char *collide)
 {
     checkmdl();
     DELETEA(loadingmodel->collidemodel);
@@ -135,7 +135,7 @@ void mdltricollide(char *collide)
 }
 COMMAND(mdltricollide, "s");
 
-void mdlspec(float *percent)
+static void mdlspec(float *percent)
 {
     checkmdl();
     float spec = *percent > 0 ? *percent/100.0f : 0.0f;
@@ -143,28 +143,28 @@ void mdlspec(float *percent)
 }
 COMMAND(mdlspec, "f");
 
-void mdlgloss(int *gloss)
+static void mdlgloss(int *gloss)
 {
     checkmdl();
     loadingmodel->setgloss(std::clamp(*gloss, 0, 2));
 }
 COMMAND(mdlgloss, "i");
 
-void mdlalphatest(float *cutoff)
+static void mdlalphatest(float *cutoff)
 {
     checkmdl();
     loadingmodel->setalphatest(std::max(0.0f, std::min(1.0f, *cutoff)));
 }
 COMMAND(mdlalphatest, "f");
 
-void mdldepthoffset(int *offset)
+static void mdldepthoffset(int *offset)
 {
     checkmdl();
     loadingmodel->depthoffset = *offset!=0;
 }
 COMMAND(mdldepthoffset, "i");
 
-void mdlglow(float *percent, float *delta, float *pulse)
+static void mdlglow(float *percent, float *delta, float *pulse)
 {
     checkmdl();
     float glow = *percent > 0 ? *percent/100.0f : 0.0f,
@@ -175,14 +175,14 @@ void mdlglow(float *percent, float *delta, float *pulse)
 }
 COMMAND(mdlglow, "fff");
 
-void mdlfullbright(float *fullbright)
+static void mdlfullbright(float *fullbright)
 {
     checkmdl();
     loadingmodel->setfullbright(*fullbright);
 }
 COMMAND(mdlfullbright, "f");
 
-void mdlshader(char *shader)
+static void mdlshader(char *shader)
 {
     checkmdl();
     loadingmodel->setshader(lookupshaderbyname(shader));
@@ -190,7 +190,7 @@ void mdlshader(char *shader)
 COMMAND(mdlshader, "s");
 
 //assigns a new spin speed in three euler angles for the model object currently being loaded
-void mdlspin(float *yaw, float *pitch, float *roll)
+static void mdlspin(float *yaw, float *pitch, float *roll)
 {
     checkmdl();
     loadingmodel->spinyaw = *yaw;
@@ -200,7 +200,7 @@ void mdlspin(float *yaw, float *pitch, float *roll)
 COMMAND(mdlspin, "fff");
 
 //assigns a new scale factor in % for the model object currently being loaded
-void mdlscale(float *percent)
+static void mdlscale(float *percent)
 {
     checkmdl();
     float scale = *percent > 0 ? *percent/100.0f : 1.0f;
@@ -209,7 +209,7 @@ void mdlscale(float *percent)
 COMMAND(mdlscale, "f");
 
 //assigns translation in x,y,z in cube units for the model object currently being loaded
-void mdltrans(float *x, float *y, float *z)
+static void mdltrans(float *x, float *y, float *z)
 {
     checkmdl();
     loadingmodel->translate = vec(*x, *y, *z);
@@ -217,7 +217,7 @@ void mdltrans(float *x, float *y, float *z)
 COMMAND(mdltrans, "fff");
 
 //assigns angle to the offsetyaw field of the model object currently being loaded
-void mdlyaw(float *angle)
+static void mdlyaw(float *angle)
 {
     checkmdl();
     loadingmodel->offsetyaw = *angle;
@@ -225,7 +225,7 @@ void mdlyaw(float *angle)
 COMMAND(mdlyaw, "f");
 
 //assigns angle to the offsetpitch field of the model object currently being loaded
-void mdlpitch(float *angle)
+static void mdlpitch(float *angle)
 {
     checkmdl();
     loadingmodel->offsetpitch = *angle;
@@ -233,7 +233,7 @@ void mdlpitch(float *angle)
 COMMAND(mdlpitch, "f");
 
 //assigns angle to the offsetroll field of the model object currently being loaded
-void mdlroll(float *angle)
+static void mdlroll(float *angle)
 {
     checkmdl();
     loadingmodel->offsetroll = *angle;
@@ -241,7 +241,7 @@ void mdlroll(float *angle)
 COMMAND(mdlroll, "f");
 
 //assigns shadow to the shadow field of the model object currently being loaded
-void mdlshadow(int *shadow)
+static void mdlshadow(int *shadow)
 {
     checkmdl();
     loadingmodel->shadow = *shadow!=0;
@@ -249,7 +249,7 @@ void mdlshadow(int *shadow)
 COMMAND(mdlshadow, "i");
 
 //assigns alphashadow to the alphashadow field of the model object currently being loaded
-void mdlalphashadow(int *alphashadow)
+static void mdlalphashadow(int *alphashadow)
 {
     checkmdl();
     loadingmodel->alphashadow = *alphashadow!=0;
@@ -257,7 +257,7 @@ void mdlalphashadow(int *alphashadow)
 COMMAND(mdlalphashadow, "i");
 
 //assigns rad, h, eyeheight to the fields of the model object currently being loaded
-void mdlbb(float *rad, float *h, float *eyeheight)
+static void mdlbb(float *rad, float *h, float *eyeheight)
 {
     checkmdl();
     loadingmodel->collidexyradius = *rad;
@@ -266,7 +266,7 @@ void mdlbb(float *rad, float *h, float *eyeheight)
 }
 COMMAND(mdlbb, "fff");
 
-void mdlextendbb(float *x, float *y, float *z)
+static void mdlextendbb(float *x, float *y, float *z)
 {
     checkmdl();
     loadingmodel->bbextend = vec(*x, *y, *z);
@@ -277,7 +277,7 @@ COMMAND(mdlextendbb, "fff");
  *
  * returns the name of the model currently loaded [most recently]
  */
-void mdlname()
+static void mdlname()
 {
     checkmdl();
     result(loadingmodel->name);
