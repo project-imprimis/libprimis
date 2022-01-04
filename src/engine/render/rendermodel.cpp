@@ -58,18 +58,9 @@ static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
     return type;
 }
 
-//==================================================================== MODELTYPE
-#define MODELTYPE(modeltype, modelclass) \
-    static model *loadmodel_##modelclass(const char *filename) \
-    { \
-        return new modelclass(filename); \
-    } \
-static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass);
-
 //need the above macros & fxns inited before these headers will load properly
 #include "model/md5.h"
 #include "model/obj.h"
-
 
 /* note about objcommands variable:
  *
@@ -78,6 +69,14 @@ static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass
  * ident hash table of the given template type (obj)
  */
 static vertcommands<obj> objcommands;
+
+//==================================================================== MODELTYPE
+#define MODELTYPE(modeltype, modelclass) \
+    static model *loadmodel_##modelclass(const char *filename) \
+    { \
+        return new modelclass(filename); \
+    } \
+static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass);
 
 MODELTYPE(MDL_MD5, md5);
 MODELTYPE(MDL_OBJ, obj);
