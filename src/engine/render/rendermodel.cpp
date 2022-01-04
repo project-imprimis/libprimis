@@ -189,6 +189,7 @@ void mdlshader(char *shader)
 }
 COMMAND(mdlshader, "s");
 
+//assigns a new spin speed in three euler angles for the model object currently being loaded
 void mdlspin(float *yaw, float *pitch, float *roll)
 {
     checkmdl();
@@ -198,6 +199,7 @@ void mdlspin(float *yaw, float *pitch, float *roll)
 }
 COMMAND(mdlspin, "fff");
 
+//assigns a new scale factor in % for the model object currently being loaded
 void mdlscale(float *percent)
 {
     checkmdl();
@@ -206,6 +208,7 @@ void mdlscale(float *percent)
 }
 COMMAND(mdlscale, "f");
 
+//assigns translation in x,y,z in cube units for the model object currently being loaded
 void mdltrans(float *x, float *y, float *z)
 {
     checkmdl();
