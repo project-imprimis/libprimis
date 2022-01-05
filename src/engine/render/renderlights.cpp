@@ -1604,7 +1604,7 @@ Shader *loadvolumetricshader()
     return generateshader(name, "volumetricshader \"%s\" \"%s\" %d", common, shadow, volsteps);
 }
 
-void loadvolumetricshaders()
+static void loadvolumetricshaders()
 {
     volumetricshader = loadvolumetricshader();
 
@@ -1623,7 +1623,7 @@ static int volw = -1,
 static GLuint volfbo[2] = { 0, 0 },
               voltex[2] = { 0, 0 };
 
-void setupvolumetric(int w, int h)
+static void setupvolumetric(int w, int h)
 {
     volw = w>>volreduce;
     volh = h>>volreduce;
