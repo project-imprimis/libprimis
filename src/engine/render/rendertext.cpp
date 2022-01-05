@@ -28,7 +28,6 @@ static font *fontdef = nullptr;
 static int fontdeftex = 0;
 
 font *curfont = nullptr;
-int curfonttex = 0;
 
 //adds a new font to the hashnameset "fonts" given the parameters passed
 static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *scale)
