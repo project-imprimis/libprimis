@@ -1,6 +1,15 @@
 #ifndef OCTARENDER_H_
 #define OCTARENDER_H_
 
+struct materialsurface
+{
+    ivec o;
+    ushort csize, rsize;
+    ushort material, skip;
+    uchar orient, visible;
+    uchar ends;
+};
+
 struct vtxarray
 {
     vtxarray *parent;
