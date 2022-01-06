@@ -31,7 +31,6 @@
 #include "world/light.h"
 
 GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },
-       rhrb[4] = { 0, 0, 0, 0 },
        rhfbo = 0;
 
 //radiance hints (global illumination) vars
@@ -98,7 +97,8 @@ namespace //internal functionality
     GLuint rsmdepthtex = 0,
            rsmcolortex = 0,
            rsmnormaltex = 0,
-           rsmfbo = 0;
+           rsmfbo = 0,
+           rhrb[4] = { 0, 0, 0, 0 };
 
     Shader *radiancehintsshader = nullptr;
 
