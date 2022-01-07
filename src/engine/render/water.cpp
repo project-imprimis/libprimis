@@ -660,6 +660,7 @@ void renderwater()
         GLOBALPARAMF(waterreflect, reflectscale, reflectscale, reflectscale, waterreflectstep);
         GLOBALPARAMF(waterrefract, refractcolor.x*refractscale, refractcolor.y*refractscale, refractcolor.z*refractscale, refract*viewh);
 
+        //======================================================= SETWATERSHADER
         #define SETWATERSHADER(which, name) \
         do { \
             static Shader *name##shader = nullptr; \
@@ -703,6 +704,9 @@ void renderwater()
         {
             SETWATERSHADER(below, underwater);
         }
+        #undef SETWATERSHADER
+        //======================================================================
+
         aboveshader->set();
         for(int i = 0; i < surfs.length(); i++)
         {
