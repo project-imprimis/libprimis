@@ -401,6 +401,7 @@ static void renderwater(const materialsurface &m, int mat = Mat_Water)
     }
 }
 
+//==================================================================== WATERVARS
 #define WATERVARS(name) \
     CVAR0R(name##color, 0x01212C); \
     CVAR0R(name##deepcolor, 0x010A10); \
@@ -419,6 +420,9 @@ WATERVARS(water)
 WATERVARS(water2)
 WATERVARS(water3)
 WATERVARS(water4)
+
+#undef WATERVARS
+//==============================================================================
 
 GETMATIDXVAR(water, color, const bvec &)
 GETMATIDXVAR(water, deepcolor, const bvec &)
