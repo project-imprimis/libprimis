@@ -28,10 +28,10 @@
 #include "world/octaedit.h"
 #include "world/raycube.h"
 
-Shader *particleshader          = nullptr,
-       *particlenotextureshader = nullptr,
-       *particlesoftshader      = nullptr,
-       *particletextshader      = nullptr;
+static Shader *particleshader          = nullptr,
+              *particlenotextureshader = nullptr,
+              *particlesoftshader      = nullptr,
+              *particletextshader      = nullptr;
 
 VARP(particlelayers, 0, 1, 1);    //used in renderalpha
 FVARP(particlebright, 0, 2, 100); //multiply particle colors by this factor in brightness
