@@ -94,6 +94,7 @@ Shader *rsmworldshader = nullptr;
 namespace //internal functionality
 {
     uint rhclearmasks[2][rhmaxsplits][(rhmaxgrid+2+31)/32];
+    //reflective shadow map buffers, rendered from sun location
     GLuint rsmdepthtex = 0,
            rsmcolortex = 0,
            rsmnormaltex = 0,
