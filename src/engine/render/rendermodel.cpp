@@ -1450,6 +1450,8 @@ void findanimscmd(char *name)
 COMMANDN(findanims, findanimscmd, "s");
 
 //literally goes and attempts a textureload for png, jpg four times using the inside of the if statement
+
+//===================================================================== TRY_LOAD
 #define TRY_LOAD(tex, prefix, cmd, name) \
     if((tex = textureload(makerelpath(mdir, name ".jpg", prefix, cmd), 0, true, false))==notexture) \
     { \
@@ -1475,6 +1477,7 @@ void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&mas
 }
 
 #undef TRY_LOAD
+//==============================================================================
 
 void setbbfrommodel(dynent *d, const char *mdl)
 {
