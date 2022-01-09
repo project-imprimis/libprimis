@@ -348,9 +348,9 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                     }
                 }
                 time_t walloffset = walltime + totalmillis/1000;
-                struct tm *localvals = std::localtime(&walloffset);
+                std::tm* localvals = std::localtime(&walloffset);
                 static string buf;
-                if(localvals && strftime(buf, sizeof(buf), wallclocksecs ? (wallclock24 ? "%H:%M:%S" : "%I:%M:%S%p") : (wallclock24 ? "%H:%M" : "%I:%M%p"), localvals))
+                if(localvals && std::strftime(buf, sizeof(buf), wallclocksecs ? (wallclock24 ? "%H:%M:%S" : "%I:%M:%S%p") : (wallclock24 ? "%H:%M" : "%I:%M%p"), localvals))
                 {
                     // hack because not all platforms (windows) support %P lowercase option
                     // also strip leading 0 from 12 hour time
