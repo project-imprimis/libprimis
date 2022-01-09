@@ -348,7 +348,7 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                     }
                 }
                 time_t walloffset = walltime + totalmillis/1000;
-                struct tm *localvals = localtime(&walloffset);
+                struct tm *localvals = std::localtime(&walloffset);
                 static string buf;
                 if(localvals && strftime(buf, sizeof(buf), wallclocksecs ? (wallclock24 ? "%H:%M:%S" : "%I:%M:%S%p") : (wallclock24 ? "%H:%M" : "%I:%M%p"), localvals))
                 {
