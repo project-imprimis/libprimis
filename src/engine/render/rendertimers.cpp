@@ -151,9 +151,7 @@ void cleanuptimers()
     timerorder.shrink(0);
 }
 
-int framemillis = 0; // frame time (ie does not take into account the swap)
-
-void printtimers(int conw, int conh)
+void printtimers(int conw, int conh, int framemillis)
 {
     if(!frametimer && !usetimers)
     {

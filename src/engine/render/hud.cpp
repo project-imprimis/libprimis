@@ -262,6 +262,12 @@ void gl_drawmainmenu()
 
 void gl_drawhud(int crosshairindex, void(* hud2d)())
 {
+    /* we want to get the length of the frame at the end of the frame,
+     * not the middle, so we have a persistent variable inside the
+     * function scope
+     */
+    static int framemillis = 0;
+
     int w = hudw,
         h = hudh;
     if(forceaspect)
@@ -329,7 +335,7 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                 }
                 roffset += FONTH;
             }
-            printtimers(conw, conh);
+            printtimers(conw, conh, framemillis);
             if(wallclock)
             {
                 if(!walltime)

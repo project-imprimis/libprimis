@@ -4,9 +4,8 @@ struct timer;
 extern timer *begintimer(const char *name, bool gpu = true);
 extern void endtimer(timer *t);
 
-extern void printtimers(int conw, int conh);
+extern void printtimers(int conw, int conh, int framemillis);
 extern int frametimer;
-extern int framemillis;
 extern void synctimers();
 extern void cleanuptimers();
 
