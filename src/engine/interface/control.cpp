@@ -29,6 +29,15 @@ FILE *getlogfile()
 #endif
 }
 
+/* initsdl
+ * calls the SDL 2 init procedure
+ * returns false on failure, true on success
+ */
+bool initsdl()
+{
+    return (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0 ? false : true);
+}
+
 static void writelog(FILE *file, const char *buf)
 {
     static uchar ubuf[512];
