@@ -5,6 +5,7 @@
 
 #include "octarender.h"
 #include "renderwindow.h"
+#include "texture.h"
 
 #include "world/light.h"
 #include "world/material.h"
@@ -3706,3 +3707,9 @@ void screenshot(char *filename)
 }
 
 COMMAND(screenshot, "s");
+
+//used in libprimis api, avoids having to provide entire Shader iface
+void setldrnotexture()
+{
+    ldrnotextureshader->set();
+}

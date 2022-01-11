@@ -17,6 +17,7 @@
 #include "renderparticles.h"
 #include "rendertimers.h"
 #include "stain.h"
+#include "texture.h"
 
 #include "world/material.h"
 #include "world/octaedit.h"

@@ -11,6 +11,7 @@
 
 #include "textedit.h"
 #include "render/rendertext.h"
+#include "render/texture.h"
 
 // editline
 

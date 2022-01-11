@@ -16,6 +16,7 @@
 #include "rendergl.h"
 #include "rendersky.h"
 #include "renderva.h"
+#include "texture.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

@@ -12,6 +12,7 @@
 #include "rendertext.h"
 #include "rendertimers.h"
 #include "renderwindow.h"
+#include "texture.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

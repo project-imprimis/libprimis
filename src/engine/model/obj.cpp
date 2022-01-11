@@ -11,6 +11,7 @@
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/renderwindow.h"
+#include "render/texture.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

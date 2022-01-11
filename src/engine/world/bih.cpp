@@ -11,6 +11,7 @@
 
 #include "render/rendermodel.h"
 #include "render/stain.h"
+#include "render/texture.h"
 
 #include "world/bih.h"
 

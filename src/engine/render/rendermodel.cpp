@@ -15,6 +15,7 @@
 #include "rendermodel.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "texture.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

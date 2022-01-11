@@ -11,6 +11,7 @@
 #include "renderva.h"
 #include "renderwindow.h"
 #include "rendersky.h"
+#include "texture.h"
 
 #include "interface/control.h"
 #include "world/octaedit.h"

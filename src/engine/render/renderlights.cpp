@@ -21,6 +21,7 @@
 #include "renderva.h"
 #include "renderwindow.h"
 #include "stain.h"
+#include "texture.h"
 
 #include "interface/control.h"
 #include "interface/console.h"

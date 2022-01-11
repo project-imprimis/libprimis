@@ -11,6 +11,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderva.h"
+#include "texture.h"
 
 #include "interface/control.h"
 

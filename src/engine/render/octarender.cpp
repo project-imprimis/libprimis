@@ -7,6 +7,7 @@
 #include "rendergl.h"
 #include "renderparticles.h"
 #include "rendersky.h"
+#include "texture.h"
 
 #include "interface/menus.h"
 

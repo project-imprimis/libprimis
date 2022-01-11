@@ -17,6 +17,7 @@
 #include "render/radiancehints.h"
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
+#include "render/texture.h"
 
 #include "world/physics.h"
 #include "world/bih.h"

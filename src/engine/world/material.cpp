@@ -24,6 +24,7 @@
 #include "render/octarender.h"
 #include "render/rendergl.h"
 #include "render/water.h"
+#include "render/texture.h"
 
 //internally relevant functionality
 

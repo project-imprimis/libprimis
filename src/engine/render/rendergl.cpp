@@ -25,6 +25,7 @@
 #include "rendertimers.h"
 #include "renderva.h"
 #include "renderwindow.h"
+#include "texture.h"
 #include "water.h"
 
 #include "world/material.h"

@@ -13,6 +13,7 @@
 #include "octarender.h"
 #include "rendergl.h"
 #include "renderlights.h"
+#include "texture.h"
 #include "water.h"
 
 #include "interface/control.h"

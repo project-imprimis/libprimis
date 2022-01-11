@@ -16,6 +16,7 @@
 
 #include "render/radiancehints.h"
 #include "render/octarender.h"
+#include "render/texture.h"
 
 #include "world/raycube.h"
 

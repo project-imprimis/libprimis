@@ -19,6 +19,7 @@
 #include "renderwindow.h"
 #include "rendertext.h"
 #include "stain.h"
+#include "texture.h"
 #include "water.h"
 
 #include "interface/console.h"

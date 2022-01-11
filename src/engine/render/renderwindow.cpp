@@ -15,6 +15,7 @@
 #include "rendertext.h"
 #include "renderwindow.h"
 #include "stain.h"
+#include "texture.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

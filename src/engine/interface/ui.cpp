@@ -27,6 +27,8 @@
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/rendertext.h"
+#include "render/texture.h"
+
 #include "textedit.h"
 
 #include "render/renderwindow.h"

@@ -12,6 +12,7 @@
 #include "csm.h"
 #include "octarender.h"
 #include "rendergl.h"
+#include "texture.h"
 
 #include "world/light.h"
 

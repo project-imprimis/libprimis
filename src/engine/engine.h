@@ -3,8 +3,6 @@
 
 #include "../libprimis-headers/cube.h"
 
-#include "../libprimis-headers/texture.h"
-
 // texture
 extern int hwtexsize, hwcubetexsize, hwmaxaniso, maxtexsize, hwtexunits, hwvtexunits;
 

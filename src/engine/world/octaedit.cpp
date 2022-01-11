@@ -26,6 +26,7 @@
 #include "render/octarender.h"
 #include "render/rendergl.h"
 #include "render/renderva.h"
+#include "render/texture.h"
 
 
 #include "world/material.h"
