@@ -643,7 +643,7 @@ void resetmap()
     nospeclights = 0;
 }
 
-bool emptymap(int scale, bool force, const char *mname, bool usecfg)    // main empty world creation routine
+bool emptymap(int scale, bool force, bool usecfg)    // main empty world creation routine
 {
     if(!force && !editmode)
     {
