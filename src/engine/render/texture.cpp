@@ -11,6 +11,7 @@
 #include "world/material.h"
 #include "world/octaedit.h"
 #include "world/octaworld.h"
+#include "world/world.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

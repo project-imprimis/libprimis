@@ -10,6 +10,8 @@
 
 #include "light.h"
 #include "octaworld.h"
+#include "raycube.h"
+#include "world.h"
 
 #include "interface/console.h"
 #include "interface/input.h"
@@ -17,8 +19,6 @@
 #include "render/radiancehints.h"
 #include "render/octarender.h"
 #include "render/texture.h"
-
-#include "world/raycube.h"
 
 CVAR1R(ambient, 0x191919);
 FVARR(ambientscale, 0, 1, 16);

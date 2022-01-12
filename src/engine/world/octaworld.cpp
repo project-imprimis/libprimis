@@ -17,6 +17,7 @@
 #include "light.h"
 #include "octaworld.h"
 #include "raycube.h"
+#include "world.h"
 
 #include "interface/console.h"
 

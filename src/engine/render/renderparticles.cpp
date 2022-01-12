@@ -28,6 +28,7 @@
 
 #include "world/octaedit.h"
 #include "world/raycube.h"
+#include "world/world.h"
 
 static Shader *particleshader          = nullptr,
               *particlenotextureshader = nullptr,

@@ -10,6 +10,8 @@
 
 #include "render/rendergl.h" //needed to get camera position
 
+#include "world/world.h"
+
 bool nosound = true;
 
 struct SoundSample

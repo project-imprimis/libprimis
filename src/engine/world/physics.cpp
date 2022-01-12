@@ -11,6 +11,7 @@
 #include "octaworld.h"
 #include "physics.h"
 #include "raycube.h"
+#include "world.h"
 
 #include "interface/console.h"
 

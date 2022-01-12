@@ -17,6 +17,7 @@
 #include "octaworld.h"
 #include "physics.h"
 #include "raycube.h"
+#include "world/world.h"
 
 //internally relevant functionality
 namespace

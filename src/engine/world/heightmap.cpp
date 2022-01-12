@@ -14,6 +14,8 @@
 
 #include "octaedit.h"
 #include "octaworld.h"
+#include "world.h"
+
 
 namespace hmap
 {

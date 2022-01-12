@@ -15,6 +15,8 @@
 #include "octarender.h"
 
 #include "world/octaworld.h"
+#include "world/world.h"
+
 
 namespace //internal functionality not seen by other files
 {

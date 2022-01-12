@@ -24,6 +24,7 @@
 
 #include "world/bih.h"
 #include "world/octaworld.h"
+#include "world/world.h"
 
 #include "model/model.h"
 

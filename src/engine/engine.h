@@ -324,27 +324,4 @@ extern void clearoverrides();
 
 extern void checksleep(int millis);
 extern void clearsleep(bool clearoverrides = true);
-
-// world
-
-extern int worldscale, worldsize;
-extern int mapversion;
-extern char *maptitle;
-extern int octaentsize;
-
-extern vector<int> entgroup;
-extern vector<int> outsideents;
-
-extern void resetmap();
-extern void freeoctaentities(cube &c);
-extern void entitiesinoctanodes();
-extern void entcancel();
-extern void entselectionbox(const entity &e, vec &eo, vec &es);
-
-namespace entities
-{
-    extern extentity *newentity();
-    extern void deleteentity(extentity *e);
-    extern vector<extentity *> &getents();
-}
 #endif

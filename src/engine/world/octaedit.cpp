@@ -29,7 +29,8 @@
 #include "render/texture.h"
 
 
-#include "world/material.h"
+#include "material.h"
+#include "world.h"
 
 bool boxoutline = false;
 
