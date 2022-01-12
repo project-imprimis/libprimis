@@ -1,6 +1,8 @@
 #ifndef OCTARENDER_H_
 #define OCTARENDER_H_
 
+struct vertex;
+
 struct materialsurface
 {
     ivec o;

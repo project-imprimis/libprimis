@@ -8,6 +8,7 @@
 #include "octaworld.h"
 #include "raycube.h"
 #include "worldio.h"
+#include "world.h"
 
 #include "interface/console.h"
 #include "interface/menus.h"

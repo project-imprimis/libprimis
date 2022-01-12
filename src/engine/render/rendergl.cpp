@@ -32,6 +32,7 @@
 #include "world/octaedit.h"
 #include "world/octaworld.h"
 #include "world/raycube.h"
+#include "world/world.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

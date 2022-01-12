@@ -30,6 +30,7 @@
 #include "interface/control.h"
 
 #include "world/light.h"
+#include "world/world.h"
 
 GLuint rhtex[8] = { 0, 0, 0, 0, 0, 0, 0, 0 },
        rhfbo = 0;
