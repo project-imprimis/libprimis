@@ -1,7 +1,13 @@
 #ifndef OCTARENDER_H_
 #define OCTARENDER_H_
 
-struct vertex;
+struct vertex
+{
+    vec pos;
+    bvec4 norm;
+    vec tc;
+    bvec4 tangent;
+};
 
 struct materialsurface
 {
