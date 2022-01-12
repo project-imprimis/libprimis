@@ -1,3 +1,4 @@
+# The Game Timeline
 
 This is a rough outline of what the Imprimis project plans to have worked on en
 route to its eventual completion. This schedule is tentative and may be changed
@@ -6,7 +7,7 @@ underway and which has already been completed.
 
 **The project is most accurately described as currently being in Phase II.**
 
-### Phase I: Project Scope
+## Phase I: Project Scope
 
 *Q1-Q2 2020*
 
@@ -15,7 +16,7 @@ underway and which has already been completed.
 * timescale for completion
 * determination of feasable features
 
-### Phase II: Codebase Preparation
+## Phase II: Codebase Preparation
 
 *Q1 2020 - Q2 2021*
 
@@ -24,7 +25,7 @@ underway and which has already been completed.
 * separation of scope (engine,game,server)
 * removal of needless features
 
-### Phase III: Feature Implementation
+## Phase III: Feature Implementation
 
 *Q3 2020 - Q4 2021*
 
@@ -32,7 +33,7 @@ underway and which has already been completed.
 * interface improvements to aid game writing
 * continued documentation of interface, etc.
 
-### Phase IV: Game Implementation
+## Phase IV: Game Implementation
 
 *Q2 2021 - Q2 2022*
 
@@ -41,7 +42,7 @@ underway and which has already been completed.
 * utilization of new engine features
 * addition of visual resources and assets
 
-### Phase V: UX Refinement
+## Phase V: UX Refinement
 
 *Q1 2022 - Q4 2022*
 
@@ -51,7 +52,7 @@ underway and which has already been completed.
 * installation simplification
 * website polish
 
-### Phase VI: Final Release Prep
+## Phase VI: Final Release Prep
 
 *Q3 2022 - Q2 2023*
 

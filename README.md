@@ -1,10 +1,19 @@
-## Libprimis
-
-Check out the project timeline at `doc/timeline.md`!
+# Libprimis
 
 [![windows](https://github.com/project-imprimis/libprimis/actions/workflows/msbuild.yml/badge.svg)](https://github.com/project-imprimis/libprimis/actions/workflows/msbuild.yml)
 [![ubuntu](https://github.com/project-imprimis/libprimis/actions/workflows/makefile.yml/badge.svg)](https://github.com/project-imprimis/libprimis/actions/workflows/makefile.yml)
-#### An Open Source Standalone Engine
+
+## Documentation
+
+  - [API Documentation Website](docs/index.html)
+  - [Engine](doc/engine.md)
+  - [Interaface](doc/interface.md)
+  - [Tesseract Renderer](doc/tesseract-renderer.md)
+  - [Timeline](doc/timeline.md)
+
+Check out the project [timeline](doc/timeline.md) to see future plans!
+
+## An Open Source Standalone Engine
 
 Libprimis is a game engine, based on Tesseract and the Cube 2 family of programs.
 Unlike the Cube/Cube 2/Tesseract games, which featured tightly integrated rendering
@@ -22,7 +31,7 @@ tone mapping support, Libprimis' core is fast, capable, and modern, and fully op
 All this combines to make an engine that allows for an unprecedented ability to manipulate
 a vibrant and dynamic world using simple, accessible semantics.
 
-#### Key Features
+## Key Features
 
 Libprimis' Tesseract base provides a bunch of rendering features such as:
 
@@ -41,9 +50,9 @@ Libprimis' Tesseract base provides a bunch of rendering features such as:
 * support for Windows and Linux-based operating systems
 * support for realtime geometry modification during gameplay
 
-For documentation on the engine, see `doc/engine.md`.
+For documentation on the engine, see [engine](doc/engine.md).
 
-#### Quick Windows Install Instructions
+## Quick Windows Install Instructions
 
 To get the source code, use your prefered `git` client (git for Windows, Visual Studio, gitkraken, etc.).
 Be sure to get the submodules as well.
@@ -58,7 +67,7 @@ in the `bin64/` folder.
 To build a game on libprimis, you will need to get the required headers (located in a separate
 repository, `libprimis-headers`) and build your game against the compiled library and the headers.
 
-#### Quick Linux Install Instructions
+## Quick Linux Install Instructions
 
 To get the source code, `git` is required. Using `git`, get the repository and its submodules with
 
@@ -81,10 +90,10 @@ automatically compile and install the library to `/usr/lib/`. Distros without `s
 which do not have their `ld` library path at `/usr/lib` can configure the Makefile to
 point to the appropriate location or copy the file manually to their `ld` library path.
 
-To build a game on libprimis, you will then need to get the required headers (located in a separate repository)
-and build your game against these headers and the shared library.
+To build a game on libprimis, you will then need to get the required headers (located in
+a separate repository) and build your game against these headers and the shared library.
 
-#### Join Us
+## Join Us
 
 Libprimis is an open source project created by volunteers who work on the game as
 a hobby, and we'd love for it to be your hobby too! The Libprimis project tries

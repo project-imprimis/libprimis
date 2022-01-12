@@ -1,11 +1,10 @@
 # The Libprimis Engine
 
-#### This is a work in progress and subject to modification and additions.
+**This is a work in progress and subject to modification and additions.**
 
 Written and © Alex "no-lex" Foster, 2020-2021; released under the WTFPL v2.
 
-Preface
----
+## Preface
 
 This text is an expository one, describing the *what* and some of the *why*
 things are implemented as they are in the engine. This document does not attempt
@@ -33,70 +32,16 @@ of how 3D engines like Libprimis' are designed. A few rendering techniques, such
 as global illumination, additionally use more complex mathematics borrowed from
 linear analysis, including multipole expansions and Fourier series.
 
-## Chapters
-
-#### 1. Standards
-* 1.1 Coding Standards
-* 1.2 Default Paths & Libraries
-* 1.3 Conventions and Units
-* 1.4 Program Structure
-* 1.5 System Contexts
-
-#### 2. World
-* 2.1 Octree
-* 2.2 Materials
-* 2.3 Textures
-* 2.4 Global Properties
-* 2.5 World File Format
-
-#### 3. Entities
-* 3.1 Static Entities
-* 3.2 Projectiles
-* 3.3 Bouncers
-* 3.4 Stains
-* 3.5 Particles
-* 3.6 Physics
-
-#### 4. Sound
-* 4.1 Sound Interface
-* 4.2 HUD Sounds
-* 4.3 World Sounds
-
-#### 5. Render
-* 5.1 Texturing
-* 5.2 Lighting
-* 5.3 Transparency
-* 5.4 Screenspace Postfx
-* 5.5 Antialiasing
-
-#### 6. Actors and Models
-* 6.1 Actor Objects
-* 6.2 Model Rendering
-* 6.3 AI
-
-#### 7. User and System Interfaces
-* 7.1 Menus
-* 7.2 Hudgun
-* 7.3 File I/O & Assets
-* 7.4 Scripting
-* 7.5 Console
-
-#### 8. Internal Objects
-* 8.1 Vector Objects
-
-# 1. Standards
----
+## 1. Standards
 
 To be a functioning project, Libprimis has some standards which make it
 straightforward to communicate effectively. While some particular standards may
 be clumsy for particular uses, it is important that the project be consistent,
 not only for clarity of code but also for documentation and ease of extension.
 
-## 1.1 Coding Standards
----
+### 1.1 Coding Standards
 
-### 1.1.1 This File
----
+#### 1.1.1 This File
 
 This file is written to be interpreted by GitHub Flavored Markdown (GFM) and
 must satisfy the standards laid out therein.
@@ -106,13 +51,12 @@ Text should institute a line break after 80 characters.
 Chapters use `#`; sections use `##`; subsections use `###`. Minor topics within
 subsections can use `####`.
 
-### 1.1.2 C/C++ Standards
----
+#### 1.1.2 C/C++ Standards
 
 Four spaces per indentation, spaces only.
 Opening brackets get their own new line; this is called "Allman style".
 
-#### Symbol Names
+##### Symbol Names
 
 Macros are always fully capitalized and seperated with underscores:
 
@@ -142,20 +86,20 @@ enum
 };
 ```
 
-#### Enums
+##### Enums
 
 Enums also are always expanded with a single element per line. For aesthetics,
 it is best to place all the equals in the same location (as above). Libprimis
 uses no named enums besides those inhereted from ENet.
 
-#### Objects
+##### Objects
 
 Objects of POD type (Plain Old Data) should be assigned the keyword `struct`,
 and objects of a complex type should be given the keyword `class`. Where
 applicable, objects should be separated into `public` and `private`, with
 `public` members being declared first.
 
-#### `for` loops
+##### \`for\` loops
 
 The accepted conventional variables for loops are the single letter `i`,`j`,`k`,
 `l` temp vars. Use later loop variables only if the earlier ones are already
@@ -183,7 +127,7 @@ for(int j = 0; j < N.length(); j++) //forward iteration
 for(int v = m; --v >= 0;) //reverse iteration
 
 ```
-#### Indentation and Bracing
+##### Indentation and Bracing
 
 The codebase uses the Allman style; that is, statements are enclosed in brackets
 on newlines. Case statements are indented one tab past their opening switch
@@ -304,7 +248,7 @@ if(foo)
     doStuff;
 ```
 
-#### Spacing
+##### Spacing
 
 Ternaries and boolean operators should be spaced out between each element:
 
@@ -335,17 +279,14 @@ while(bar)
 }
 ```
 
-## 1.2 Default Paths & Libraries
----
+### 1.2 Default Paths & Libraries
 
-### 1.2.1 Paths
----
+#### 1.2.1 Paths
 
 Linux: `~/.imprimis` is the "home" directory by default.
 Windows: `~/My Games/Imprimis` is the "home" directory by default.
 
-### 1.2.2 Libraries
----
+#### 1.2.2 Libraries
 
 This game requires `libsdl2, libsdl2-mixer, libsdl2-image`, and `libsdl2-ttf`
 to run, including the `-dev` versions for those package managers which elect to
@@ -354,20 +295,17 @@ the game is via Git, the best way to retrieve the assets for the game is by the
 command line utility `git`.
 
 ### 1.3 Conventions and Units
----
 
 Libprimis uses some standard units which allow for users to contextualize and
 orient themselves in the worlds it creates.
 
 #### 1.3.1 Distances
----
 
 Distance is always in the unit of cube units ("cubits"), which is the size of a
 gridpower 0 cube, when not specified. This distance is equal to an eighth of a
 meter, 12.5 centimeters, or approximately five inches (to within a couple %).
 
 #### 1.3.2 Coordinates
----
 
 Octree nodes, in particular, are always positive and the origin is located at
 the bottom northwest corner of the map; the coordinates count upwards as you
@@ -407,7 +345,6 @@ at larger coordinates; a smaller map will occupy the SE corner of a larger map.
 ```
 
 #### 1.3.3 Mathematical Notes
-----
 
 As a 3D engine is largely defined in terms of vectors and linear algebra, some
 understanding of these concepts is very helpful in understanding positions and
@@ -437,15 +374,13 @@ similarly their eight values seperated into dual numbers which are each
 designated x, y, z, w.
 
 #### 1.3.4 Colors
----
 
 Colors which are defined past 0xFFFFFF (hex color for white) are generally
 passed as a set of three paramaters `R G B` where `1.0 1.0 1.0` is 0xFFFFFF.
 These colors tend to have `1.0 1.0 1.0` as the default and are expected to vary
 upwards as much as downwards in practice.
 
-## 1.4 Program Structure
----
+### 1.4 Program Structure
 
 The Imprimis project is, at its highest level, organized into four main projects
 as well as a pair of utilities which are perhaps not considered direct members
@@ -495,8 +430,7 @@ The components of the system handled by the Libprimis project is the:
 * Game server: a locally or remotely hosted server that manages game clients
 * Master server: a service that provides a list of game server names to clients
 
-## 1.5 File Structure
----
+### 1.5 File Structure
 
 Libprimis' files are organized essentially into three folders, which carry out
 largely different roles in the application. The folder containing the engine
@@ -504,14 +438,13 @@ proper, naturally, is called `/engine`. There is also a folder for shared
 library-like functionality in `/shared` while the game code is located in a
 folder called `/game`.
 
-### 1.5.1 `/engine` files
----
+#### 1.5.1 \`/engine\` files
 
 The engine's core functionality is implemented in the `engine` folder. This
 folder is itself separated into four main catagories, the scope of which is
 briefly described below:
 
-#### `/interface`
+##### \`/interface\`
 
 The interface folder contains the source code used for user-interfacing purposes
 such as the UI system, scripting, sound, and input.
@@ -524,7 +457,7 @@ such as the UI system, scripting, sound, and input.
 * `textedit.h` text box UI functionality
 * `ui.cpp` Cubescript user interface functionality
 
-#### `/model`
+##### \`/model\`
 
 The `model` folder contains headers that implement functionality required to
 parse different model formats. There are no source code files in this folder,
@@ -539,7 +472,7 @@ and this folder is only included by `rendermodel.cpp`, located in `render`.
 * `skelmodel.h/cpp` generic skeletal model support
 * `vertmodel.h` generic vertex model support
 
-#### `/render`
+##### \`/render\`
 
 The `render` folder contains the core rendering code used to implement the
 visual effects in the engine.
@@ -565,7 +498,7 @@ visual effects in the engine.
 * `texture.h/cpp` world geometry texture application
 * `water.h/cpp` water material & its fx (screenspace reflection etc.)
 
-#### `/world`
+##### \`/world\`
 
 The `world` folder contains code creating and handling the ingame world,
 including entity, player, particle, and physics support.
@@ -583,8 +516,7 @@ including entity, player, particle, and physics support.
 * `world.h/cpp` world handling and modification
 * `worldio.cpp` world loading and saving
 
-## 1.6 System Contexts
----
+### 1.6 System Contexts
 
 The Libprimis engine, like any other program, is designed for particular
 underlying hardware and software contexts. The Libprimis engine does not
@@ -592,8 +524,7 @@ especially target a huge breadth of hardware and operating system contexts, less
 than even its predecessor engines, as a result of Libprimis' focus on providing
 good support to the platforms it does target.
 
-### 1.6.1 Operating System
----
+#### 1.6.1 Operating System
 
 Libprimis officially supports only the 64-bit Windows and Linux platforms. While
 a 64-bit OS is not strictly required to implement the engine, 32-bit OSes have
@@ -607,8 +538,7 @@ reasons:
 * macOS has deprecated OpenGL support, required for the game to run
 * macOS is moving away from x86 and commodity CPUs & GPUs
 
-### 1.6.2 Hardware
----
+#### 1.6.2 Hardware
 
 Libprimis currently targets only the x86-64 instruction set, widely used by
 desktops and laptops. Libprimis does not currently target ARMv8 (used by mobile
@@ -627,7 +557,7 @@ The engine does not require the SSSE3 (Supplemental Streaming SIMD Extension 3)
 extensions required of many games and as a result can run on Phenom era
 processors without issue.
 
-#### Performance Considerations
+##### Performance Considerations
 
 The Libprimis engine is single-threaded, making multicore CPUs irrelevant to the
 engine's performance; therefore, any big-core (non Atom or Jaguar based) CPU
@@ -641,8 +571,7 @@ Nearly all graphics cards that support the OpenGL 4.0 standard should be able to
 run Libprimis at reasonable speeds, though a card of the RX 460/GTX 950 class is
 needed to bump graphics up to high levels.
 
-# 2. World
----
+## 2. World
 
 The *world* is the name for the level that the game is played on, including the
 octree geometry, materials, and cloud/skyboxes. The world does include the
@@ -654,8 +583,7 @@ geometry. This geometry has the advantage of being easily occludable and simple
 to modify on the fly, as opposed to models which are placed on the world as
 static entities.
 
-## 2.1 Octree Geometry
----
+### 2.1 Octree Geometry
 
 The Libprimis engine's geometry system is very different than most engines and
 has different strengths and weaknesses with respect to typical polygon soup
@@ -664,8 +592,7 @@ geometry does not record map vertices in terms of typical positon vectors, as
 the vast majority of 3D rendering software uses, instead opting to use an octal
 tree format.
 
-### 2.1.1 Octree Data Structure & Cube Geometry
----
+#### 2.1.1 Octree Data Structure & Cube Geometry
 
 Libprimis stores its data in an octal tree, in which each cube of edge length
 *l* is divided into eight cubes with edge length *l*/2. This allows for a level
@@ -688,8 +615,7 @@ occupy the octree; instead of vertices in other engines being determined by
 their 3D vector from the origin, a cube's place in the octal tree determines its
 location.
 
-### 2.1.2 Child Nodes
----
+#### 2.1.2 Child Nodes
 
 As mentioned above, each node can have *children* defined for them which
 themselves can have their own child nodes. The maximum depth of this tree is
@@ -751,8 +677,7 @@ volume. This is very fast compared to a pile of vectors which need to be
 individually treated in order to ensure they can be excluded from the render
 process.
 
-### 2.1.3 World Root
----
+#### 2.1.3 World Root
 
 The worldroot, indicated in the octal tree diagram above at the top, is the
 master cube inside which all geometry fits. Geometry may not leave the area
@@ -767,7 +692,7 @@ node is as well.
 * Maps' range of gridpowers allowed is determined by the size of the worldroot
 cube.
 
-#### Map Expansion
+##### Map Expansion
 
 There is a command, `mapenlarge`, that can grow a map such that the worldroot
 takes up a larger volume. The existing map, accordingly, is placed as child 0 of
@@ -777,8 +702,7 @@ inconvenient for those seeking to expand the scenery bounds of their level
 uniformly; a copy and paste of the geometry is needed to re-center the old level
 if desired.
 
-### 2.1.4 Cube Manipulation
----
+#### 2.1.4 Cube Manipulation
 
 While octree subdivision allows for the inclusion of small pieces of geometry,
 this is not on its own adequate due to the fact that octree nodes are, well,
@@ -809,10 +733,9 @@ geometry is to increase the octree node density (by using a smaller gridpower).
 
 For more information on texture projection, see §2.3.3.
 
-### 2.1.5 Remipping and Subdivision
----
+#### 2.1.5 Remipping and Subdivision
 
-#### Subdivision
+##### Subdivision
 
 The engine automatically attempts to subdivide cubes when a user attempts to
 place a cube within a node which is of a larger gridpower. This means that many
@@ -821,7 +744,7 @@ poor approximations of the prior form. It is recommended to take care when
 placing new cubes in proximity to existing geometry of a larger gridpower, as
 this can inadvertently cause unseemly changes to the level's geometry.
 
-#### Remipping
+##### Remipping
 
 The engine, when given a `remip` command, attempts to merge nodes with redundant
 vertices together such that the renderer has less faces to deal with when later
@@ -832,13 +755,12 @@ determines the maximum gridpower that can be simplified. Having this value too
 high causes large surfaces to occlude poorly, as the entire face has to be
 textured.
 
-#### Commands
+##### Commands
 
 `remip`: performs a remip calculation on the level
 `maxmerge N`: sets the maximum merge gridpower to N
 
-## 2.2 Materials
----
+### 2.2 Materials
 
 There are several materials in Libprimis which are capable of modifying their
 volume's properties. Materials in general are combinable (though there are many
@@ -864,8 +786,7 @@ act on actors and objects in the level. Death material kills all who enter its
 volume; clipping keeps players out while letting particles through, and noclip
 keeps geometry from hampering the travel of projectiles and players.
 
-### 2.2.1 Air
----
+#### 2.2.1 Air
 
 Air, the name for the lack of materials, unsurprisingly is the default
 "material" for the level. Air can be "placed" by `/editmat air` or `/air`
@@ -875,8 +796,7 @@ selection.
 The name "air" does not imply that there is any oxygen mechanics in the game
 and there is no material representing the lack of air.
 
-### 2.2.2 Water
----
+#### 2.2.2 Water
 
 Water, the material with the largest change with respect to prior engines, has
 four types that can be modified seperately to apply in different situations
@@ -895,7 +815,7 @@ Commands which apply to the four water types seperately are designated
 materials, and the first one does *not* get appended with a "1" like 2/3/4 all
 do.
 
-#### Commands
+##### Commands
 
 * `causticscale`
 * `causticmillis`
@@ -919,8 +839,7 @@ do.
 * `waterlod`
 * `watersubdiv`
 
-### 2.2.3 Glass
----
+#### 2.2.3 Glass
 
 Another one of the four-variant materials, and the second most interesting
 (after water) with respect to engine features, glass is a cheap and effective
@@ -942,14 +861,13 @@ In itself, glass material does not block movement, but in practice it always
 does because clipping material is mandatory for all types of glass. The engine
 will automatically place clip wherever glass is placed.
 
-#### Commands
+##### Commands
 
 * `glass<N>color` Tint color of the glass material
 * `glass<N>spec` Specularity (glossiness) scale of the glass material
 * `glass<N>refract` Refraction (light distortion behind) of the glass material
 
-### 2.2.5 Clip
----
+#### 2.2.5 Clip
 
 An entirely transparent material, clip, unlike the materials prior, does not
 affect the rendering of the scene in any way. Clip, instead, impedes the ability
@@ -965,8 +883,7 @@ random projectiles bouncing or dying on collision with its bounds.
 If it is required that projectiles be deleted upon contact, using death material
 in tandem with clip is a viable solution.
 
-### 2.2.6 Noclip
----
+#### 2.2.6 Noclip
 
 The opposite material to clip (unsurprisingly), noclip instead permits the
 passage of actors through otherwise impenetrable geometry. Noclip additionally
@@ -983,8 +900,7 @@ noclip, it is advisable to check it by spawning into the level and making sure
 that there is no unseemly visibility issues (where you can see through the wall)
 that would break immersion.
 
-### 2.2.7 Death
----
+#### 2.2.7 Death
 
 Death material forces the suicide of those players who enter its bounds,
 instantly killing them.
@@ -997,8 +913,7 @@ The bottom of the map (z < 0) also acts as death material and players who leave
 the bottom of the map automatically are killed. No such effect takes place on
 the sides or top of the map volume.
 
-### 2.2.8 No GI
----
+#### 2.2.8 No GI
 
 No GI material flags its volume as not being lit by global illumination. This
 does not have a material impact (or improvement) in performance but may be
@@ -1008,8 +923,7 @@ Note that those regions beyond the radiance hints far plane (`rhfarplane`) will
 be lit regardless of their No GI status. Keep this in mind whenever placing
 long-distance radiance hints.
 
-### 2.2.9 Alpha
----
+#### 2.2.9 Alpha
 
 Alpha material is the more versatile but slower companion to glass for the
 creation of transparency. Alpha material draws cube geometry within its bounds
@@ -1026,8 +940,7 @@ is always constant for a given texture. While this is certainly a limitation,
 typical transparent objects like windows generally have constant opacity across
 their full area.
 
-## 2.3 Textures
----
+### 2.3 Textures
 
 The faces of cubes within the game can be given textures on a cube face by cube
 face basis, allowing for immersive, complete scenes to be generated via cube
@@ -1043,12 +956,11 @@ Each cube has a texture defined for each of its six faces; this means that
 information for invisible geometry. For this reason, there is a command
 `fixinsidefaces` which can set all invisible faces to the default texture.
 
-#### Commands
+##### Commands
 
 * `fixinsidefaces [vslot]` Sets all invisible faces to the vslot given.
 
-### 2.3.1 Texture Slots
----
+#### 2.3.1 Texture Slots
 
 Textures are registered to a file that accompanies the map, generally named
 the same as the map file and with the `.cfg` extension. Texture slots are for
@@ -1087,8 +999,7 @@ These definitions of textures are largely set beforehand and then called with
 `texload` upon running the map's config (automatically run at map load); most
 textures have only a couple of possible appropriate shader combinations anyways.
 
-### 2.3.2 Virtual Slots
----
+#### 2.3.2 Virtual Slots
 
 Virtual slots encode simple manipulation of textures, such as coloration, scale,
 rotation, and orientation. These do not require declaration upon map generation
@@ -1100,8 +1011,7 @@ a modified copy to be stored in video memory.
 The modifications that a vslot can store are described below in the V-command
 section.
 
-### 2.3.3 Texture Projection
----
+#### 2.3.3 Texture Projection
 
 The standard scaling of textures is such that there are 512 linear pixels per
 gridpower 5 cube, leading to a density of 512/32 = 16 pixels per power 0 cube
@@ -1124,8 +1034,7 @@ This problem can be solved with the `triplanar` shader, which forces textures to
 be projected in three different directions such that the true normal caused by
 the distorted cube can be found accurately.
 
-### 2.3.4 Texture Slot Properties
----
+#### 2.3.4 Texture Slot Properties
 
 The V-commands are a set of texture modification commands that allow for
 textures to be flipped, rotated, scaled, tinted, and offset as necessary.
@@ -1140,7 +1049,7 @@ Other than their means of assigning texture behavior to slots, however, the two
 commands are otherwise identical in their behavior. V-commands are the ones used
 ingame; tex-commands are generally placed in texture definitions.
 
-#### `texalpha <front> <back>`, `valpha <front> <back>`: transparency modifiers
+##### \`texalpha <front> <back>\`, \`valpha <front> <back>\`: transparency modifiers
 
 `alpha` sets the amount of transparency to render the texture if it is within
 the volume of placed alpha material. The property has no effect otherwise, and
@@ -1160,14 +1069,14 @@ requires another geometry pass in the renderer and *is* measurably slower than
 leaving it off, but also is the only way to simulate glass-behind-glass in
 levels.
 
-#### `texangle <index>`, `vangle <index>` : fine texture rotation
+##### \`texangle <index>\`, \`vangle <index>\` : fine texture rotation
 
 `angle` rotates the texture by a given angle; capable of rotating textures
 by arbitrary amounts through 360 degrees. If needed, this can be combined with
 `rotate` which works by a different mechanism (and is the only way to get
 flipped/transposed textures).
 
-#### `texcolor <R> <G> <B>`, `vcolor <R> <G> <B>`: texture tinting
+##### \`texcolor <R> <G> <B>\`, \`vcolor <R> <G> <B>\`: texture tinting
 
 `color` changes the color of the texture evenly through the values of the three
 parameters passed to it. `color 1 1 1` is the identity operator (has no effect)
@@ -1176,14 +1085,14 @@ combination of red, green, and blue is the standard basis for additive colors
 (like on a monitor), any color can be created by using the three channels
 appropriately.
 
-#### `texoffset <x> <y>`, `voffset <x> <y>`: translational texture offset
+##### \`texoffset <x> <y>\`, \`voffset <x> <y>\`: translational texture offset
 
 `offset` offsets a texture by a given number of pixels; this means that higher
 resolution textures need larger offsets, and that for standard textures,
 fractional offsets are in powers of 2 (a 1024x texture needs to be offset by
 512 to be shifted by half a texture).
 
-#### `texrefract <scale> <R> <G> <B>`, `vrefract <scale> <R> <G> <B>`: refract
+##### \`texrefract <scale> <R> <G> <B>\`, \`vrefract <scale> <R> <G> <B>\`: refract
 
 `refract` modifies the refractive behaviors of materials that are within alpha
 material. Refraction is the distortion of rays or light traveling through a
@@ -1192,7 +1101,7 @@ handled in Libprimis via screenspace effects. The intensity of the refraction
 is handled by the `scale` parameter and the color of the refraction is
 controlled by the `R G B` parameters; `1 1 1` is the default white color.
 
-#### `texrotate <index>` `vrotate <index>`: coarse texture rotations/transforms
+##### \`texrotate <index>\` \`vrotate <index>\`: coarse texture rotations/transforms
 
 `rotate` transforms a texture by the possible "simple" 2x2 matrix transforms,
 of which there are seven.
@@ -1212,7 +1121,7 @@ These transforms are basic means of getting new orientations for situations
 which do not require the more granular `vrotate` command and is the only way
 to flip/transpose textures.
 
-#### `texscale <scale>`, `vscale <scale>`: texture scaling
+##### \`texscale <scale>\`, \`vscale <scale>\`: texture scaling
 
 `scale` changes the size of the texture linearly along its axes. As a result,
 a texture at `vscale 4` takes up four times the area as `vscale 2` while having
@@ -1230,7 +1139,7 @@ such that the texture tiles in sync with the cube grid. Exceptions where other
 scales may be appropriate include instances where 3/2 scaling is desired for a 3
 cube wide area or organic textures which are not intended to noticibly tile.
 
-#### `texscroll <x> <y>`, `vscroll <x> <y>`: time-varying translational offset
+##### \`texscroll <x> <y>\`, \`vscroll <x> <y>\`: time-varying translational offset
 
 `scroll` causes the texture to take on a linear time-varying offset such that
 the texture appears to move with respect to the surface it is applied to. The
@@ -1238,16 +1147,14 @@ scale for this scrolling effect is such that `scroll 1` is 1 texture per second;
 this is usually too large for common scrolling objects (like banners or
 conveyor belts) and as such fractional values here are most commonly employed.
 
-## 2.4 Global Properties
----
+### 2.4 Global Properties
 
 The world in Libprimis has many global variables that affect the entire level
 evenly. These include ambient lighting, fog, and skybox settings, as well as
 more technical aspects such as mipping intensity. This section does not include
 the global settings for individual materials, as is covered in §2.2.
 
-### 2.4.1 Sunlight
----
+#### 2.4.1 Sunlight
 
 Sunlight, the cheapest form of bulk lighting in the game, is a dynamic light
 which casts shadows like any other light, but from a projection at infinity.
@@ -1263,15 +1170,14 @@ on-level point lights.
 Sunlight has just four variables controlling its behavior, which set its size,
 color, and location.
 
-#### Commands
+##### Commands
 
 * `sunlight <color>` Sets the color of the sunlight, passed as a hex color.
 * `sunlightpitch <angle>` Sets the sun's inclination angle above the horizon.
 * `sunlightyaw <angle>` Sets the yaw angle (about z axis) of the sunlight.
 * `sunlightscale <scale>` Sets the intensity scale of the sunlight.
 
-### 2.4.2 Fog
----
+#### 2.4.2 Fog
 
 Fog is an effect that fades objects to a particular color as the distance to
 that object grows larger. Fog is useful for creating a closed, damp ambiance,
@@ -1282,7 +1188,7 @@ to its implementation.
 Fog also culls the rendering of entities once they pass into the realm of
 complete obscurance, which is set by the `fogcullintensity` variable.
 
-#### Commands
+##### Commands
 
 * `fog <dist>` The characteristic distance for the onset of fog effects.
 * `fogcolor <color>` The color of the fog, as a hex color.
@@ -1290,8 +1196,7 @@ complete obscurance, which is set by the `fogcullintensity` variable.
 * `fogintensity <scale>` The fog effect intensity (lower values -> more fog).
 * `fogoverlay`
 
-### 2.4.3 Ambient Lighting
----
+#### 2.4.3 Ambient Lighting
 
 The cheapest type of global lighting, changing the ambient light level for the
 map makes everything at least as bring as the set ambient level. This reduces
@@ -1304,13 +1209,12 @@ Ambient lighting does not require shading resources like sunlight or point
 lights and so is not a performance issue like the other types of lighting can
 be.
 
-#### Commands
+##### Commands
 
 * `ambient` Hex color for ambient color, typically dimmer than `0x333333`
 * `ambientscale` Multiplier for ambient color (usually left at 1)
 
-### 2.4.4 Skybox
----
+#### 2.4.4 Skybox
 
 The skybox is a static rendering of a scene surrounding the map which provides
 a backdrop to the level. The skybox is a cubemap, a type of environment
@@ -1338,7 +1242,7 @@ These six textures are loaded whenever the skybox is set: setting `skybox
 foo/bar` will automatically load `foo/bar_bk`, `foo/bar_dn`, etc. as the skybox.
 Implicit in the path is the location of skyboxes in `/media/sky`.
 
-#### Commands:
+##### Commands:
 
 * `skybox <path>` Sets the path of the skybox, excluding the _XX and format.
 * `skyboxcolor <color>` Tints the skybox to the given hex color.
@@ -1348,8 +1252,7 @@ Implicit in the path is the location of skyboxes in `/media/sky`.
 * `skyboxyaw <angle>` Sets the overall orientation of the skybox in the world.
 * `skyboxspin <angular vel>` Sets the rotation speed of the sky in deg/s.
 
-### 2.4.5 Cloud Layer
----
+#### 2.4.5 Cloud Layer
 
 Additionally, the engine supports a single planar layer of clouds. The "height"
 of this layer is adjustable, but there is no parallax regardless of height:
@@ -1365,7 +1268,7 @@ use, able to scroll (have a translational movement with respect to time) in
 addition to being able to spin about the z-axis. This allows for somewhat
 realistic cloud movement when done in moderation.
 
-#### Commands:
+##### Commands:
 
 * `cloudalpha <value>` Sets the opacity of the cloudlayer (0..1, 1 for opaque).
 * `cloudclip <value` Sets level of clipping passed to env box draw.
@@ -1382,8 +1285,7 @@ realistic cloud movement when done in moderation.
 * `cloudspin <value>` Sets the spin rate of the clouds in the CW direction.
 * `cloudyaw <value>` Sets the yaw offset angle of the cloud layer.
 
-### 2.4.6 Atmo
----
+#### 2.4.6 Atmo
 
 Atmo is the way that the game can create a procedural skybox such that the sky
 follows the sun's position and lights itself according to the sun's position.
@@ -1402,7 +1304,7 @@ Atmo takes many physical parameters which affect the simulated atmosphere that
 is created. These include the opacity of the air, the size of the planet, the
 apparent intensity of the light source, and the characteristic color of the sky.
 
-#### Commands:
+##### Commands:
 
 * `atmoalpha <value>` Sets the opacity of the atmo layer (0..1, 1 for opaque)
 * `atmobright <value>` Sets the overall brightness of the atmo sky.
@@ -1417,16 +1319,14 @@ apparent intensity of the light source, and the characteristic color of the sky.
 * `atmosunlight <value>` Sets the color of the atmo sun & overall sky color.
 * `atmosunlightscale <value>` Sets the ratio of the sunlight brightness vs atmo.
 
-## 2.5 World Level Format
----
+### 2.5 World Level Format
 
 Because of the Libprimis engine's recursive octree geometry format, it is not
 practical to save levels in a standardized polygon soup format like GLTF.
 Instead, Libprimis saves levels in its own format, the general details of which
 are explained in this section.
 
-### 2.5.1 Map Format Summary
----
+#### 2.5.1 Map Format Summary
 
 The file is a gz-compressed stream of data, with the following main components:
 
@@ -1436,9 +1336,7 @@ The file is a gz-compressed stream of data, with the following main components:
 * A list of virtual texture slots "vslots" which map surfaces to texture indices
 * An octal tree of cube nodes which make up the level's geometry.
 
-
-### 2.5.2 Map Header
----
+#### 2.5.2 Map Header
 
 The header tells the engine how many of particular quantities show up in the
 body of the map file. The header is of fixed length and encodes the following
@@ -1460,8 +1358,7 @@ of the level file (and so nothing needs to have its location indexed beyond it),
 and because the octree nodes themselves are recursively loaded due to the octal
 tree structure of how they are related to each other.
 
-### 2.5.3 Map Variables
----
+#### 2.5.3 Map Variables
 
 The map saves a list of the variables which are to be modified away from the
 engine defaults. As the engine defaults may change over time, only variables
@@ -1477,8 +1374,7 @@ There is a technical limit of 65636 changed variables for a map due to the size
 of the data type (ushort) used to index variables, but this is far in excess of
 the number of variables that the engine has in total.
 
-### 2.5.4 Map Entities
----
+#### 2.5.4 Map Entities
 
 The static map entities (such as lights, spawns, etc.) have their location
 saved to the level as well as the values of the five attributes which can modify
@@ -1501,8 +1397,7 @@ to several hundred, and the maximum limit imposed, either by the `MAXENTS` macro
 or the architectural limit, is far in excess of reasonable level making in this
 engine.
 
-### 2.5.5 Map Vslots
----
+#### 2.5.5 Map Vslots
 
 Following the two (relatively straightforward) lists of variables is the virtual
 texture slot (vslot) list. This list defines a set of indices which are the
@@ -1518,11 +1413,9 @@ usually provided along with the map file. This configuration file runs a script
 which tells the engines which texture & shader information to allocate to a
 particular slot; this is not filed by the map binary itself.
 
-# 3. Entities
----
+## 3. Entities
 
-## 3.1 Static Entities
----
+### 3.1 Static Entities
 
 The static entities are world elements which get saved to the level and are
 loaded on game start. These entities have the following types:
@@ -1558,8 +1451,7 @@ moot. There exists issues with very excessive numbers of lights overfilling the
 light buffer or very excessive numbers of sounds causing sound issues, but these
 are not a concern until the level is already unplayable.
 
-### 3.1.1 Lights
----
+#### 3.1.1 Lights
 
 Lights are entities where light appears to eminate from. Lights are point
 entities and the light they cast is as from a perfect point source. Because
@@ -1580,33 +1472,33 @@ As lights are one of the key cogs of the deferred renderer used in Libprimis,
 a more technical discussion of their behavior with respect to the rendering
 pipeline can be found in that section.
 
-#### Attributes
+##### Attributes
 
 Lights have five attributes, the last of which itself has a set of flags
 which control the light's technical behavior.
 
-#### 0: `radius`
+###### 0: \`radius\`
 The maximum distance the light entity can cast light; strongly related to
 performance impact of the light and shadow map usage
 
 The radius of the light is, as with other distances, defined in cubits.
 
-#### 1: `red`
+###### 1: \`red\`
 
 The intensity of the red channel of the light's output. Nominally, 255 is "full"
 red, but this can be exceeded for an overbright light.
 
-#### 2: `green`
+###### 2: \`green\`
 
 The intensity of the green channel of the light's output. Nominally, 255 is
 "full" green, but this can be exceeded for an overbright light.
 
-#### 3: `blue`
+###### 3: \`blue\`
 
 The intensity of the blue channel of the light's output. Nominally, 255 is
 "full" blue, but this can be exceeded for an overbright light.
 
-#### 4: `flags`
+###### 4: \`flags\`
 
 Lights support four flags which can be combined to achieve particular effects.
 
@@ -1615,8 +1507,7 @@ Lights support four flags which can be combined to achieve particular effects.
 * 4 `volumetric`: simulates light reflection off of dust in the air
 * 8 `nospec`: disables specular highlights
 
-### 3.1.2 Mapmodels
----
+#### 3.1.2 Mapmodels
 
 Mapmodels are entities which represent a 3D model. While this object can be
 animated (e.g. a fan or reciprocating device) it cannot undergo reactive or
@@ -1631,14 +1522,14 @@ Mapmodels in Libprimis have support for hitboxes which closely mirror that of
 the physical model; however, mapmodels do not support decals and as a result
 weapons hitting mapmodels do not leave bullet marks like ordinary geometry does.
 
-#### Attributes
+##### Attributes
 
 Mapmodels have controllable attributes for their size and orientation; the
 particular mapmodel to be used is given by an index. Note that the possession of
 only three degrees of freedom means that the model can become gimbal locked if
 orientation values are chosen poorly.
 
-#### 0: `index`
+###### 0: \`index\`
 
 Selects the index of the passed models which are loaded into the map to display.
 As usual, this index begins at 0 and counts upwards; the engine will simply
@@ -1647,23 +1538,23 @@ display nothing if there is no valid model at the index.
 Mapmodels are generally defined in map configuration files and therefore the
 specific model assigned to each index is not enforced game-wide.
 
-#### 1: `yaw`
+###### 1: \`yaw\`
 
 The yaw (azimuthal) angle of the model, in left-handed (clockwise) degrees.
 Values larger than 360 can be passed but are identical to passing in their
 modulus 360.
 
-#### 2: `pitch`
+###### 2: \`pitch\`
 
 The pitch (altitude) angle of the model, expressed as an inclination from the
 horizon. Negative values can be used to pitch the model towards the -z axis.
 
-#### 3: `roll`
+###### 3: \`roll\`
 
 The roll angle of the model, expressed as a right-handed rotation about the
 axis set by the `pitch`/`roll` attributes.
 
-#### 4: `scale`
+###### 4: \`scale\`
 
 The scale factor of the model. Scaling is always isotropic (no distortion) and
 the identity point is at 100 (100 is "normal" scale) as opposed to 1 for many
@@ -1671,8 +1562,7 @@ other engine features; this is because the arguments passed to entities are
 always integers (and obviously setting 1 as unity w/ only integral steps would
 be not quite optimal).
 
-### 3.1.3 Playerstarts
----
+#### 3.1.3 Playerstarts
 
 The playerstarts define where players respawn after they are killed.
 Unsurprisingly, playerstarts have a team associated with them which determines
@@ -1683,21 +1573,20 @@ Playerstarts have attributes which define the orientation of players who spawn
 at them. The playerstart entity has only two relevant attributes; the last three
 attributes have no effect on the behavior of the entity.
 
-#### Attributes
+##### Attributes
 
-#### 0: `team`
+###### 0: \`team\`
 
 0 for FFA, 1/2 for teams blue and red respectively. Available spawns for any
 arbitrary player are limited to playerstarts who share the same team index.
 
-#### 1: `yaw`
+###### 1: \`yaw\`
 
 The yaw (azimuthal) angle of the player when they spawn, in left-handed
 (clockwise) degrees. Setting the yaw of the playerstart is important to prevent
 players from spawning facing the wrong way, such as towards a wall.
 
-### 3.1.4 Particles
----
+#### 3.1.4 Particles
 
 The six types of implemented particles use their five attributes differently.
 As a result, this section is has its last four attributes' descriptions
@@ -1719,14 +1608,14 @@ Additionally, particles are client side effects, meaning that one person's view
 of a particle is not representative of the effect rendered on other people's
 machines.
 
-#### Attributes
+##### Attributes
 
 Easily the most complex entity with respect to its attributes, particles have
 unique specifications for each value passed to its first attribute `type`. This
 means that particles cannot have their `type` changed and have attributes
 consistently transfer.
 
-#### 0: `type`
+###### 0: \`type\`
 
 The type of particle for the game to render. There are six types implemented:
 
@@ -1770,7 +1659,7 @@ their bar color set, but the background and outline colors are fixed.
 Each of these has different attributes 1-4 and obviously shows the particle type
 aformentioned.
 
-#### 1: `radius` (fire, plasma); `dir` (smoke, water, tape); `fill` (status)
+###### 1: \`radius\` (fire, plasma); \`dir\` (smoke, water, tape); \`fill\` (status)
 
 For fire and plasma, the radius paramater controls how large the particle can
 be. For fire, this is the areal size; the size that the "base" of the flame
@@ -1853,7 +1742,7 @@ For a status particle, this parameter defines the particle's fullness, as a
 range between 0 and 100. At 100, the bar is full; values above this have no
 additional effect.
 
-#### 2: `color` (water, plasma, status); `size` (tape, fire); `null` (smoke)
+###### 2: \`color\` (water, plasma, status); \`size\` (tape, fire); \`null\` (smoke)
 
 For water, plasma, and status entities, parameter 2 specifies the particle's
 color. This is passed as a hexadecimal triple (`0x000`...`0xFFF`) which
@@ -1876,7 +1765,7 @@ fixed) and therefore rise to a greater height before fading.
 This parameter has no effect on smoke particles and any value specified will be
 ignored.
 
-#### 3: `color` (tape, fire); `null` (smoke, plasma, water, status)
+###### 3: \`color\` (tape, fire); \`null\` (smoke, plasma, water, status)
 
 Tape has its color parameter on the third attribute, and it works in the same
 hexadecimal triple form as the above explaination of color for the other
@@ -1887,7 +1776,7 @@ None of the other entities take this attribute into account and setting a value
 for any of them will be ignored.
 
 
-#### 4: `null` (fire, plasma, smoke, status, water); `fade` (tape)
+###### 4: \`null\` (fire, plasma, smoke, status, water); \`fade\` (tape)
 
 Only tape particles take this parameter into account; fade sets the time in
 milliseconds for the particle to delete itself once it has been spawned. Tape
@@ -1899,8 +1788,7 @@ relatively quickly.
 For all other particle types, this parameter can be set to any value but will be
 ignored.
 
-### 3.1.5 Sound
----
+#### 3.1.5 Sound
 
 Sound entities place a static, looping sound effect at the point where the
 entity is placed. Sound entities can only have their volume modulated globally
@@ -1915,12 +1803,12 @@ Sound playback from entities does take into account location of the entity and
 therefore plays back the sound in stereo, with the sound intensity per channel
 defined by the location of the entity.
 
-#### Attributes
+##### Attributes
 
 There are two attributes for the sound entity, the index of the sound and radius
 at which it starts playing.
 
-#### 0: `index`
+###### 0: \`index\`
 
 The index of the sound entity indicates to the engine which of the set sounds
 declared in the map configuration file is to be played by the entity. This index
@@ -1928,7 +1816,7 @@ counts up from zero (negative values never index a valid sound) and values
 beyond the number of indexed sounds simply fail silently (heh) and no sound
 effect is played.
 
-#### 1: `radius`
+###### 1: \`radius\`
 
 The radius within which the game will play the index-defined sound at the
 player. This radius, as always, is in cube units of 1/8m, and the bounding
@@ -1937,8 +1825,7 @@ by a wireframe bounding indicator. At distances beyond this radius, sound
 playback from the entity is automatically rejected and the sound entity does not
 playback in any form.
 
-### 3.1.6 Spotlights
----
+#### 3.1.6 Spotlights
 
 Spotlight entities require linking to standard entities, such as by `entlink`.
 Once attached to a light, the spotlight acts as a modifier to the light entity,
@@ -1955,13 +1842,13 @@ direction, there exists aliasing issues along that face, and as a result large
 cone sizes which project onto faces parallel with the spotlight vector is not
 recommended.
 
-#### Attributes
+##### Attributes
 
 The lone attribute for the spotlight entity determines the spread of the cone of
 light. An implicit attribute, the position of the entity, sets the direction of
 the beam (measured relative to the location of the linked light.
 
-#### 0: `angle`
+###### 0: \`angle\`
 
 This attribute sets the spread of the cone of light set by the spotlight entity.
 The overall inside angle of the cone is equal to twice the value of this
@@ -1971,7 +1858,6 @@ mapping, "spotlights" with a cone of light beyond 180 degrees is not
 representable with the projection.
 
 #### 3.1.7 Decals
----
 
 Decals are static entities which act to project an image (specified by an index)
 onto a surface of cube geometry. The limitation to cube geometry is an important
@@ -1984,14 +1870,14 @@ textures are. The order in which the decals are defined sets their map-specific
 index, which is then referenced when specifying the image used by the decal
 entity.
 
-#### Attributes
+##### Attributes
 
 Decal entities have all five attributes contribute to the entity's behavior: the
 first is the decal index, declared in the map configuration, while the last four
 determine the orientation (1,2,3) and scale (4) of the decal. This is the same
 set and order of attributes used for the `mapmodel` entity.
 
-#### 0: `index`
+###### 0: \`index\`
 
 Selects the index determining which of the decals that are loaded into the map
 are to be displayed. As usual, this index begins at 0 and counts upwards; the
@@ -2003,23 +1889,23 @@ index is simply allocated by the position of the decal's reference relative to
 other decal references (the first mapmodel declared in the configuration file is
 indexed 0, the second one 1, etc.).
 
-#### 1: `yaw`
+###### 1: \`yaw\`
 
 The yaw (azimuthal) angle of the decal, in left-handed (clockwise) degrees.
 Values larger than 360 can be passed but are identical to passing in their
 modulus 360.
 
-#### 2: `pitch`
+###### 2: \`pitch\`
 
 The pitch (altitude) angle of the decal, expressed as an inclination from the
 horizon. Negative values can be used to pitch the decal towards the -z axis.
 
-#### 3: `roll`
+###### 3: \`roll\`
 
 The roll angle of the decal, expressed as a right-handed rotation about the
 axis set by the `pitch`/`roll` attributes.
 
-#### 4: `scale`
+###### 4: \`scale\`
 
 The scale factor of the decal. Scaling is always isotropic (no distortion) and
 the identity point is at 100 (100 is "normal" scale) as opposed to 1 for many
@@ -2027,8 +1913,7 @@ other engine features; this is because the arguments passed to entities are
 always integers (and obviously setting 1 as unity w/ only integral steps would
 be not quite optimal).
 
-## 3.2 Projectiles
----
+### 3.2 Projectiles
 
 Unlike static entities, projectiles are not created directly by mappers and are
 instead created primarily by weapons as their fired projectiles. Projectiles
@@ -2036,8 +1921,7 @@ are synced across the server (as befitting their usually deadly nature) and
 carry a number of properties befitting this which are distinct from static
 entities.
 
-### 3.2.1 Projectile Attribute Overview
----
+#### 3.2.1 Projectile Attribute Overview
 
 Projectiles have eleven attributes encoded within them which define their entire
 behavior from birth to death. Projectiles are created when a weapon fires, and
@@ -2055,14 +1939,13 @@ as a result they have owners and attack data.
 * int `offsetmillis` time delay for the projectile
 * int `id` unique identifier for the projectile
 
-### 3.2.2 Projectile Vector Attributes
----
+#### 3.2.2 Projectile Vector Attributes
 
 There are five vector attributes which describe the orientation and velocity of
 the projectile. These are the `dir`ection, l`o`cation, `from` originating
 position, `to` destination position, and `offset` displacement from path.
 
-#### `dir`ection
+##### \`dir\`ection
 
 The first attribute of these is the `dir`ection, which determines the
 orientation of the projectile. This vector determines the orientation of the
@@ -2076,7 +1959,7 @@ changes to the direction of this parameter.
 As this attribute is a 3 dimensional vector, there is no way of controlling
 the roll of the projectile. As a result, spiraling projectiles are not possible.
 
-#### l`o`cation
+##### l\`o\`cation
 
 The second attribute is the l`o`cation of the projectile currently. At t=0 this
 parameter is set to be the same as the `from` parameter, and the l`o`cation at
@@ -2084,7 +1967,7 @@ later times evolves towards the `to` location with respect to time. This vector
 is expressed in the world coordinate system, which is the same for every
 projectile.
 
-#### `from`
+##### \`from\`
 
 The third attribute is the place where the vector is `from`. This is, for a
 weapon-generated projectile, the location that the gun is when the projectile is
@@ -2094,14 +1977,14 @@ the projectile is created.
 As with the l`o`cation vector, this vector is expressed in terms of world
 coordinates, and all projectiles share the same coordinate system.
 
-#### `to`
+##### \`to\`
 
 The point on the map where the projectile is pointed towards. This is, for a
 weapon-generated projectile, the location at a distance given in the `range`
 parameter; this point may be inside geometry, in which case the collision
 checker will destroy the projectile at that point.
 
-#### `offset`
+##### \`offset\`
 
 The `offset` vector determines the location the projectile appears to originate,
 as a distance away from the actual start position. This is used to make the
@@ -2109,27 +1992,27 @@ projectile appear from the gun rather than from the player's coordinate, and as
 a result this attribute, unsurprisingly, is a displacement rather than a
 position vector.
 
-### 3.2.3 Other Projectile Attributes
----
+#### 3.2.3 Other Projectile Attributes
 
 The non-vector attributes that projectiles posess include the projectile's speed
 (which does contribute to the not-explicitly-defined velocity vector), the owner
 of the projectile, the attack type of the projectile, the locality flag, the
 delay time for
 
-#### `speed`
+##### \`speed\`
 
 The `speed` of the projectile is the rate, in cubits, that the projectile moves
 through the world. This, along with the direction determined by the difference
 of the `to` and `from` vectors, defines the projectile's velocity vector.
 
-#### `*owner`
+<!-- ##### \`*owner\` -->
+##### \`owner\`
 
 The pointer to the `gameent` object that the projectile is credited to.
 Projectiles are created by players, so to track accuracy and kills, projectiles
 are always associated with a player object.
 
-#### `atk`
+##### \`atk\`
 
 The index for the attack type the projectile embodies. This attack type
 corresponds to a particular weapon's attack, and therefore serves as a proxy for
@@ -2137,7 +2020,7 @@ the properties that particular weapon attacks have, such as the projectile's
 visible type, size, and damage. As a result, this value can only correspond to
 defined weapon attack types and encodes specific, specified sets of values.
 
-#### `local`
+##### \`local\`
 
 This attribute flags the projectile as being local. Projectiles created by the
 player will have this flag set as true, and projectiles that are created as
@@ -2149,20 +2032,19 @@ projectiles. While this has some issues with abuse, this does mean that players
 who see their bullets hit a target will always be credited with those hits, even
 if other clients did not see the bullet hit them.
 
-#### `offsetmillis`
+##### \`offsetmillis\`
 
 As the name indicates, this attribute sets the offset time for the projectile to
 start moving. This attribute is expressed in milliseconds, and needs to always
 be positive to have any meaning.
 
-#### `id`
+##### \`id\`
 
 Each projectile is given a unique tracking id by the engine, which is set by the
 time at which the projectile spawns. This is the handle by which the projectile
 can later be identified (such as to find its owner).
 
-### 3.2.4 Projectile Time Evolution
----
+#### 3.2.4 Projectile Time Evolution
 
 Projectiles in the engine have simple kinematics, as neither gravity nor drag
 act upon them. As such, projectiles move in straight lines at constant speed,
@@ -2186,8 +2068,7 @@ Since the trajectory of the projectile is parameterized in terms of its end
 location and its speed, the maximum time in flight must be calculated by the
 range by the speed.
 
-## 3.3 Bouncers
----
+### 3.3 Bouncers
 
 Bouncers are entirely unrelated to jumppad entities and are the name given to
 the particles which can bounce off of surfaces. Bouncers do not interfere with
@@ -2217,15 +2098,14 @@ The twelve unique parameters that bouncers have are as follows:
 * int `offsetmillis` time of projectile creation
 * int `id` unique id assigned to each bouncer entity
 
-## 3.4 Stains
+### 3.4 Stains
 
 Stains are a type of decal that is generally applied by the effect of another
 entity's death. Examples of this include the bullet holes left behind when a
 projectile makes contact with a surface or the blood stains left behind by a
 dead actor's giblet.
 
-### 3.4.1 Stain Objects
----
+#### 3.4.1 Stain Objects
 
 Stain objects have the following properties in their individual objects:
 
@@ -2235,8 +2115,7 @@ Stain objects have the following properties in their individual objects:
 * ushort `startvert` The vertex in the buffer the stain starts at
 * ushort `endvert` The vertex in the buffer the stain ends at
 
-### 3.4.2 Stain Settings
----
+#### 3.4.2 Stain Settings
 
 Unlike typical particles and decals, stains, by virtue of their entirely
 cosmetic nature, have user-configurable settings to control their impact on
@@ -2252,8 +2131,7 @@ The commands:
 There are some Cubescript aliases which relate to shaders; those are not user
 commands and are not covered here.
 
-## 3.5 Particles
----
+### 3.5 Particles
 
 Particles are billboarded objects which are rendered clientside and simulate
 small objects of various types. Particles broadly have three types: traditional
@@ -2268,8 +2146,7 @@ Particles are not physents and do not bounce off of geometry nor interact with
 the world in any particular way. Particles do, however, cull themselves upon
 contact with geometry to prevent excessive resource usage.
 
-### 3.5.1 Particle Types
----
+#### 3.5.1 Particle Types
 
 Particles have many specific types which behave in different ways.
 
@@ -2282,12 +2159,11 @@ Particles have many specific types which behave in different ways.
 * `metervs`
 * `fireball` an animated fireball
 
-### 3.5.2 Particle Properties
----
+#### 3.5.2 Particle Properties
 
 * vec `o` origin vector triple
 * vec `d` direction vector triple
-* int `gravity` gravity scale (<0 for upwards floaters)
+* int `gravity` gravity scale (\<0 for upwards floaters)
 * int `fade` fade scale
 * int `millis` time in ms before fade
 * bvec `color` color vector triple
@@ -2313,8 +2189,7 @@ present:
 * `*owner` pointer for a particle's owner
 * `color2[3]` array and `progress` values for a meter
 
-### 3.5.3 Pointlike Particles
----
+#### 3.5.3 Pointlike Particles
 
 The pointlike particles are internally refered to as being of the type `part`;
 they are the particles that are most accurately refered to as a "particle".
@@ -2325,23 +2200,20 @@ direction.
 Particle static entities of type `water`, `fire`, `smoke` are rendered as
 pointlike particles.
 
-### 3.5.4 Tape Particles
----
+#### 3.5.4 Tape Particles
 
 Tape particles are called `tape` for their resemblance to barricade tape in its
 stationary, straight appearance, and act to create beam-like effects in the
 level. The static particle entity which uses tape particles also goes by the
 name `tape`; it creates tape particles along a certain direction.
 
-### 3.5.5 Trail Particles
----
+#### 3.5.5 Trail Particles
 
 Trail particles create a number of standard particles radiating out from a
 region of space. The `water` static particle entity type uses a particle trail.
 Trail particles are potentially useful for following a projectile.
 
-### 3.5.6 Text and Textup Particles
----
+#### 3.5.6 Text and Textup Particles
 
 Text particles are most notably used ingame to render player names above their
 heads. They also make an appearance while editing entities, as the entity type
@@ -2352,8 +2224,7 @@ the content, transparency, font size, and color of the rendered text. There font
 size is proportional to the particle's size parameter and does not follow
 typesetting convention (as these don't make much sense with a 3D engine).
 
-### 3.5.7 Meter and Metervs Particles
----
+#### 3.5.7 Meter and Metervs Particles
 
 Meters are a status particle used to show the size of a particular value passed
 to its `progress` value. `progress` is capped to values up to 100, and as a
@@ -2363,8 +2234,7 @@ More resolution is not particularly important for these particles, as they do
 not display the actual value passed as a value, and those reading a meter
 particle ingame would have trouble discerning values within a percent.
 
-### 3.5.8 Fireball Particles
----
+#### 3.5.8 Fireball Particles
 
 Fireballs are animated billboards which appear as a large ball of bright gas.
 They are round and their general appearance is isotropic (no particular
@@ -2375,8 +2245,7 @@ are static and hence fairly boring if they are multiple meters across.)
 Fireballs are perhaps the particle least obviously a 2d billboard, as a result
 its constant animation and scale change.
 
-## 3.6 Physics
----
+### 3.6 Physics
 
 Physics apply to game entities called `physents`. Physents have a large number
 of properties which affect their time evolution, and additionally are able to
@@ -2386,8 +2255,7 @@ Physents include item drops, players, non-player actors, and bouncers. These
 entities also have additional properties unique to their respective entity
 types, as they are all seperate children of the physent class.
 
-### 3.6.1 Physent Properties
----
+#### 3.6.1 Physent Properties
 
 Physents all have the following properties:
 
@@ -2421,10 +2289,9 @@ Physents all have the following properties:
 * uchar `collidetype` bounding box type (e.g. elliptical)
 * bool `blocked` toggles whether the ai should consider the physent blocked
 
-### 3.6.2 Collision
+#### 3.6.2 Collision
 
-# 5 Render
----
+## 5 Render
 
 The core of the Libprimis engine is its renderer. The renderer is what
 transforms the abstract objects in the world into visuals onscreen.
@@ -2435,17 +2302,15 @@ dynamic use case. The renderer is deferred, as opposed to forward as with
 engines like Cube 2, and is capable of large numbers of dynamic lights onscreen
 due to its architecture.
 
-## 5.1 Texturing
----
+### 5.1 Texturing
 
 Textures on world geometry can have one or several shaders applied to it which
 affects its appearance. These effects are usually defined per-texture and
 therefore immutable ingame, and can be modified on a per-map basis.
 
-### 5.1.1 Shader Overview
----
+#### 5.1.1 Shader Overview
 
-#### Diffuse mapping (`stdworld`)
+##### Diffuse mapping (\`stdworld\`)
 
 This is the standard color image of the texture, and what the texture browser
 displays in its tiles. All other shaders also implicity present the diffuse map.
@@ -2453,7 +2318,7 @@ displays in its tiles. All other shaders also implicity present the diffuse map.
 It is not possible (nor sensible) to have a texture without diffuse mapping, as
 it provides the base image upon which other shaders may take effect.
 
-#### Normal mapping (`bumpworld`)
+##### Normal mapping (\`bumpworld\`)
 
 This is mapping the surface normals (the actual orientation of the surfaces) and
 calculating how the diffuse map's irradiated light changes because of the
@@ -2469,7 +2334,7 @@ Normal maps have three channels, corresponding to the three components of the
 normal vector at any given point. By packing these three channels into a texture
 file, it's possible to encode normal vector information for an entire surface.
 
-#### Specular highlights (`specworld`)
+##### Specular highlights (\`specworld\`)
 
 This creates a specular reflection (where the surface reflects light sources
 like a mirror) over the entire surface uniformly. The specular reflection
@@ -2481,7 +2346,7 @@ reflectivity of the surface, which is taken to be a defined constant. Most
 real-world surfaces are not this homogeneous, and require a more complex shader,
 outlined immediately below.
 
-#### Specular mapping (`specmapworld`)
+##### Specular mapping (\`specmapworld\`)
 
 This maps out certain areas of the texture to have more specular reflection than
 others: some parts of a texture, e.g. metal parts or areas worn smooth, are
@@ -2490,7 +2355,7 @@ going to specularly reflect more than other parts of a texture.
 A specular map is a single channel grayscale file encoding how reflective an
 area is for all locations on the surface.
 
-#### Parallax mapping (`bumpparallaxworld`)*
+##### Parallax mapping (\`bumpparallaxworld\`)
 
 * Note that bump is currently required to assign parallax to a texture, even
 though the two are not necessarily required to be together. There are very few
@@ -2509,7 +2374,7 @@ A parallax map (also called a heightmap, as it encodes vertical position) is a
 single channel, which can be either its own grayscale file or the alpha channel
 of the normal map.
 
-#### Triplanar mapping (`triplanarworld`)
+##### Triplanar mapping (\`triplanarworld\`)
 
 Triplanar mapping involves mapping the texture from three directions (x,y,z)
 rather than one and using the information from those three orientations to allow
@@ -2522,7 +2387,7 @@ Because triplanar mapping is fairly expensive, it is not recommended to be used
 unless it is visibly needed. Triplanar mapping also disallows texture transforms
 such as `vrotate`, so it cannot be used where texture rotations are needed.
 
-#### Triplanar detail mapping (`triplanardetailworld`)
+##### Triplanar detail mapping (\`triplanardetailworld\`)
 
 While standard triplanar mapping is useful for blending a texture with itself,
 blending a texture with another according to angle is possibly useful (maybe???)
@@ -2541,7 +2406,7 @@ as usual.
 The vslot to be blended should then be declared using `texdetail <vslot>` along
 with other texture commands (e.g. `texscale`) at the end.
 
-#### Glow mapping (`glowworld`)
+##### Glow mapping (\`glowworld\`)
 
 Glow mapping makes certain of the textures always be lit. This is typical for
 lights fixtures and computer equipment textures as well as other objects which
@@ -2554,8 +2419,7 @@ Note that this glow effect merely fixes the brightness of the texture to a
 specified level. It does not actually create a light entity or light nearby
 areas, which must be done with an actual light entity.
 
-## 5.2 Lighting
----
+### 5.2 Lighting
 
 Libprimis' light and shadow system is built on a deferred rendering pipeline
 and is the main difference between it and older engines such as Cube 2. This
@@ -2573,8 +2437,7 @@ In the renderer, the latter two are treated in largely similar ways, while
 sunlight is in a privileged position in the engine, being the only source for
 which the engine's global illumination is enabled (due to performance issues).
 
-### 5.2.1 Shadow Atlas
----
+#### 5.2.1 Shadow Atlas
 
 The engine's renderer uses a texture called a *shadow atlas* to cache the
 mapping of lights onto surfaces in the game. The shadow atlas is a monochromatic
@@ -2593,8 +2456,8 @@ per pixel (16bpp) to 32 bits by changing the `smdepthprec` variable. In general,
 however, there is essentially no benefit to doubling the depth of the shadow
 atlas to 32 bits.
 
-### 5.2.2 Shadow Map
----
+#### 5.2.2 Shadow Map
+
 The shadow map is the actual texture which gets applied to textures ingame.
 Using the depth information encoded in the shadow atlas, the shadow map contains
 brightness information for lights which are being rendered. Like the shadow
@@ -2612,8 +2475,7 @@ particular color from the monochromatic shadow map. In doing so, Tesseract's
 renderer saves the overhead of three channels per bit (or conversely, increases
 the allowable precision by three times).
 
-### 5.2.3 Shadow Map Filtering
----
+#### 5.2.3 Shadow Map Filtering
 
 The shadow map texture does not generally line up with shadow features, causing
 ugly zig-zag aliasing which is particularly noticible at low shadow map
@@ -2639,8 +2501,7 @@ ugly shadow map aliasing than shadow map resolution increases, though shadow
 filtering cannot construct sharper shadows like high shadow map resolutions are
 able to do.
 
-### 5.2.4 Cascaded Shadow Maps (CSM)
----
+#### 5.2.4 Cascaded Shadow Maps (CSM)
 
 The sunlight in Libprimis is provided by a cascaded shadow map for maximum
 performance while retaining high angular sharpness. The cascaded shadow map,
@@ -2678,8 +2539,7 @@ Relevant CSM commands:
 * `csmsplits <value>` Sets the number of CSM levels to use.
 * `csmsplitweight <value>` Bias towards splitting CSM close (high) or far (low).
 
-### 5.2.5 Global Illumination (GI)
----
+#### 5.2.5 Global Illumination (GI)
 
 Global illumination, also known as indirect lighting, is the illumination of
 surfaces by the light reflected off of other surfaces. Global illumination
@@ -2703,7 +2563,7 @@ is dynamic and therefore relatively expensive) by spreading the global sunlight
 around the level. As this global lighting is fairly inexpensive, levels should
 use sunlight + GI when possible.
 
-#### The Reflective Shadow Map (RSM)
+##### The Reflective Shadow Map (RSM)
 
 The RSM, unlike the shadow map, stores its values in a total of six channels
 and two logical maps: the diffuse color of surfaces the sunlight impinges upon
@@ -2718,8 +2578,7 @@ radiance hint taps generally don't have enough resolution to take advantage of a
 very sharp map, and the RSM requires six channels compared to the shadowmap's
 two.
 
-## 5.3 Transparency
----
+### 5.3 Transparency
 
 Transparency, also known as alpha, applies to objects which are partially clear,
 but have some level of visibility, including with respect to other non-trivial
@@ -2733,8 +2592,7 @@ to having multiple rendering layers (rendering a surface blended with another
 surfaces). The compromise solution, while rather limited, does allow for limited
 (single-layer) transparency.
 
-### 5.3.1 Transparency Stenciling
----
+#### 5.3.1 Transparency Stenciling
 
 Transparent regions in the engine, as marked by alpha material for cube
 geometry, is rendered in a seperate step from ordinary geometry. The background
@@ -2748,8 +2606,7 @@ arbitrary numbers of transparency stencils followed by arbitrary numbers of
 rendering passes. Not only is the shading costs high for such an approach, but
 also the memory space and bandwith requirements for such an arrangement.
 
-### 5.3.2 Backface Transparency
----
+#### 5.3.2 Backface Transparency
 
 A limited form of two-layered transparency, however, is supported by the engine.
 The geometry that is flagged as alpha by the presence of alpha material can
@@ -2763,8 +2620,7 @@ two seperate panes of reflective material.
 This backface alpha property is enabled whenever the texture slot's `alpha`
 property is set to a value greater than zero.
 
-## 5.4 Screenspace Posteffects
----
+### 5.4 Screenspace Posteffects
 
 Screenspace posteffects are a family of methods which use raster buffers
 (essentially cached images) rather than the underlying geometry in order to do
@@ -2772,8 +2628,7 @@ their effects. These effects are fairly inexpensive, owing to the fact that GPUs
 are very good at manipulating raster images, and as such they can approximate
 techniques that are otherwise impractical to implement.
 
-### 5.4.1 Screenspace Reflection (SSR)
----
+#### 5.4.1 Screenspace Reflection (SSR)
 
 Screenspace reflection may be the most well-known reflection technique as well
 as the most well-known screenspace effect, as it allows for a relatively cheap
@@ -2810,8 +2665,7 @@ satisfies nearly every condition where SSR is applicable: it's horizontal,
 non-metallic, and additionally its random movement distorts reflections, making
 extreme resolution less important.
 
-### 5.4.2 Screenspace Ambient Occlusion (SSAO)
----
+#### 5.4.2 Screenspace Ambient Occlusion (SSAO)
 
 A particular phenomenon of light propagation in real life is the darkening of
 corners by the lack of available space for light to propagate inwards from. A
@@ -2834,8 +2688,7 @@ manipulate) and therefore allows for the simulation of the darkness generated by
 the topology of the region. This darkening is then filtered to improve
 smoothness, creating a realtime darkening effect of corners ingame.
 
-### 5.4.3 Screenspace Refraction
----
+#### 5.4.3 Screenspace Refraction
 
 A screenspace effect only applicable to transparent surfaces, such as glass and
 alpha material, refraction emulates a particular effect that occurs when light
@@ -2855,8 +2708,7 @@ transparent using the transparent surface's topside normal map, providing the
 impression that the imperfections in the material distorted the light coming
 through it.
 
-## 5.5 Antialiasing
----
+### 5.5 Antialiasing
 
 Antialiasing is a means of overcoming particular artifacts common to nearly
 every type of raster graphics.
@@ -2940,8 +2792,7 @@ noted, are mutually exclusive: only one can take effect at a time. Generally,
 however, there are limited benefits to stacking AA techniques (beyond MSAA), and
 so providing multiple screenspace AA techniques is not worth the effort.
 
-### 5.5.1 Supersample Antialiasing (SSAA)
----
+#### 5.5.1 Supersample Antialiasing (SSAA)
 
 **SSAA is not implemented in Libprimis. It is described here as a useful basis
 for the more advanced antialiasing techniques.**
@@ -2967,8 +2818,7 @@ subsystem of graphics cards: working with huge buffers at ~4k resolution
 requires a lot of shuttling of graphics information between the cache and VRAM
 of a graphics card.
 
-### 5.5.2 Multisample Antialiasing (MSAA)
----
+#### 5.5.2 Multisample Antialiasing (MSAA)
 
 Multisample antialiasing is a significantly more useful AA technique than SSAA,
 but it suffers from many of the same issues that SSAA does. MSAA works by
@@ -2993,8 +2843,7 @@ prohibitively expensive at high levels. For high performance antialiasing in a
 deferred engine like Libprimis, a different technique is needed: screenspace
 antialiasing.
 
-### 5.5.3 Fast Approximate Antialiasing (FXAA)
----
+#### 5.5.3 Fast Approximate Antialiasing (FXAA)
 
 Fast approximate antialiasing is, as its helpfully honest name implies, a way
 to quickly approximate nicer forms of antialiasing such as MSAA. To do this,
@@ -3016,8 +2865,7 @@ Usually, this ends up being cheaper than MSAA/SSAA, especially for a deferred
 engine like Libprimis, but it is worth noting that screenspace methods like FXAA
 do utilize a different part of the GPU heavily than MSAA/SSAA.
 
-### 5.5.4 Temporal Quincunx Antialiasing (TQAA)
----
+#### 5.5.4 Temporal Quincunx Antialiasing (TQAA)
 
 A rather clever form of screenspace antialiasing, TQAA borrows the information
 from the previous frame to use as data to antialias the scene much as SSAA does,
@@ -3058,8 +2906,7 @@ TQAA, then, has to calculate what parts of an old frame it can map to a new one,
 eating up some shader resources in the process. In general, however, TQAA is
 quite cheap and decently effective for all but the most picky of eyes.
 
-### 5.5.5 Subpixel Morphological Antialiasing (SMAA)
----
+#### 5.5.5 Subpixel Morphological Antialiasing (SMAA)
 
 SMAA is the "crown jewel" antialiasing method included in Libprimis' parent
 engine, Tesseract, and it is generally the most effective method overall for
@@ -3082,8 +2929,7 @@ Generally, SMAA is the best general-purpose antialiasing method available in
 Libprimis and is generally recommended as the default; methods like high MSAA
 values are only particularly useful for promotional purposes (e.g. screenshots).
 
-# 6 Actors and Models
----
+## 6 Actors and Models
 
 Actors are the entities that play the game: this includes human controlled
 players and bot controlled players. At this time, no support for nonplayer
@@ -3091,7 +2937,7 @@ models exists: the only actors supported are ones that take the form of the
 player model.
 
 Actors are enlarged humans with a height of 2.5m (8') and a breadth of about 1m
-(3' 3"). This slightly exaggerated size is such that a player can jump onto a 1m
+(3' 3\"). This slightly exaggerated size is such that a player can jump onto a 1m
 tall box without being too exaggerated. As a result, players can fit in 3m by 1m
 corridors without a problem, and crouch to fit in 2m by 1m corridors if
 necessary.
@@ -3099,15 +2945,15 @@ necessary.
 As the most intensive use of models is here in the creation of actors, this
 section also covers the technical implementation of the game's models.
 
-## 6.1 Actor Objects
+
+### 6.1 Actor Objects
 
 Actors are objects ingame with a large number of properties kept which are
 synced to other players by the server ingame. This is significantly larger than
 that of conventional entities and is synced much more carefully, as they are the
 entities which are directly manipulated by players.
 
-### 6.1.1 Actor Entity Properties
----
+#### 6.1.1 Actor Entity Properties
 
 Actors are stored as an object `gameent` which is the object synced to other
 clients. The information kept for each actor is kept regardless of their
@@ -3164,22 +3010,20 @@ and the following functions:
 * void `hitpush`
 * void `startgame`
 
-## 6.2 Models
----
+### 6.2 Models
 
 Models in Libprimis are not especially first-class citizens compared to the
 octree geometry that the world is built on, but they still play an important
 role, particularly in player models.
 
-### 6.2.1 Model Format Overview
----
+#### 6.2.1 Model Format Overview
 
 Models for Libprimis currently are supported in two formats: OBJ (aka Wavefront)
 and MD5 (aka Doom 3). These two formats do not particularly overlap in their
 utility and a very terse overview of the formats is given here. Neither of these
 formats are unique to Cube and OBJ in particular is extremely widely used.
 
-#### OBJ (Wavefront)
+##### OBJ (Wavefront)
 
 OBJ models are most useful for static, non-animated objects such as scenery,
 level assets, and other applications that do not rely on a complicated, feature
@@ -3188,7 +3032,7 @@ accompanying texture files to be used to skin them. OBJ is a plaintext, easy to
 read (compared to other formats) format and therefore is very commonly used for
 basic models in all types of 3D graphics applications.
 
-#### MD5 (Doom 3)
+##### MD5 (Doom 3)
 
 The MD5 format is the in-house format for the id 4 engine most notably used in
 Doom 3. It is a game-centric model format that allows for a skeleton to animate
@@ -3197,8 +3041,7 @@ characters or other entities in the game. MD5 therefore is the model format of
 choice for the player model, as it requires animations to allow the player to
 move realistically ingame.
 
-### 6.2.2 Basic Model Commands
----
+#### 6.2.2 Basic Model Commands
 
 These are commands which are available to all formats, including static, non
 animated ones such as Wavefront (OBJ).
@@ -3224,7 +3067,7 @@ animated ones such as Wavefront (OBJ).
 * `<fmt>pitch [scale] [offset] [min] [max]`
 * `<fmt>anim [anim] [frame] [range] [speed] [priority]`
 
-### 6.2.3 Animated Model Commands
+#### 6.2.3 Animated Model Commands
 
 These are commands which are only available to animated model formats, of which
 the only current one is MD5.
@@ -3239,24 +3082,21 @@ the only current one is MD5.
 * `<fmt>animpart [maskstr]`
 * `<fmt>adjust [name] [yaw] [pitch] [tx] [ty] [tz]`
 
-# 7. User and System Interfaces
----
+## 7. User and System Interfaces
 
 The game is largely accessed by the user using various interfaces defined in the
 engine that power the game's user experience. This includes the menu system and
 heads-up display (HUD), as well as the somewhat lower-level (but still exposed
 to the player) console and scripting system.
 
-## 7.4 Scripting
----
+### 7.4 Scripting
 
 Scripting in Libprimis is done using the language common to the entire Cube
 series of engines, Cubescript. Cubescript, at least the part that can be
 considered consistent across games, is a very simple language; however, it has
 very large numbers of commands which extend it and make it useful.
 
-### 7.4.1 Cubescript Semantics
----
+#### 7.4.1 Cubescript Semantics
 
 Cubescript itself has a simple set of semantics which defines how operations are
 carried out. There is essentially one type of object in Cubescript, the alias,
@@ -3266,7 +3106,7 @@ purpose one, Cubescript's actual control operations are not explicitly codified
 into the language's semantics and instead are implemented as commands on the
 same tier as typical game modifying commands.
 
-#### Lazy Execution `[]`
+##### Lazy Execution \`[]\`
 
 The `[]` chars define a block of code to be evaluated when necessary (at the
 end of the parser's job, after other parts of the code have been resolved). This
@@ -3302,7 +3142,7 @@ foo =
 Do note that these semantics are at odds with the C++ standards for the
 codebase, which adopt a style similar to the latter example.
 
-#### Eager Execution `()`
+##### Eager Execution \`()\`
 
 The `()` parentheses act like the `[]` braces except that code within these are
 executed early, such that their actions are carried out before parsing commands
@@ -3311,7 +3151,7 @@ determine the behavior of control commands, as their result is relevant for
 other parts of the code. These blocks of code are always executed, meaning that
 `()` chars are useless for control commands.
 
-#### Assignment `=`
+##### Assignment \`=\`
 
 The `=` equals sign, like in many languages, allows defining an *alias*, the
 unit equivalent to a variable. Aliases can not only be used like variables but
@@ -3323,7 +3163,7 @@ set of braces) by defining arguments within the body as the reserved alias names
 foo = bar
 ```
 
-#### Lookup Alias `$`
+##### Lookup Alias \`$\`
 
 The `$` symbol causes the parser to look for a defined alias with the name
 appended, allowing for the value of variables to be used by other functions.
@@ -3336,7 +3176,7 @@ foo = 1
 bar = $foo //bar = 1
 ```
 
-#### Literal Substitution `@`
+##### Literal Substitution \`@\`
 
 The `@` symbol causes the value stored by an alias to be directly inserted where
 it is called, from a scope determined by the nesting level. The `@` symbol thus
@@ -3363,7 +3203,7 @@ foo = 2
 bar //baz = 1
 ```
 
-#### Comments `//`
+##### Comments \`//\`
 
 Cubescript only supports inline comments (no comment blocks) using a pair of
 slashes. This can be done at the beginning of a line, or following the end of a
@@ -3378,8 +3218,7 @@ foo = [
 ]
 ```
 
-### 7.4.2 Commands
----
+#### 7.4.2 Commands
 
 Commands in Libprimis are the primary way to make Cubescript perform useful work
 (Cubescript is entirely useless without additional commands defined) as well as
@@ -3387,7 +3226,7 @@ cause internal changes inside the engine. Commands are bound via a rather
 convoluted macro process, but the important part of how they work does not
 require fully understanding the technicalities of the way they are bound.
 
-#### Inline Commands
+##### Inline Commands
 
 These commands are bound in a single self-contained macro, called ICOMMAND (for,
 unsurprisingly, InlineCOMMAND). This macro has the following arguments:
@@ -3396,7 +3235,7 @@ unsurprisingly, InlineCOMMAND). This macro has the following arguments:
 * `proto`: the C++ types that the arguments will pass to the body
 * `b`ody: the C++ logic body of the command
 
-#### Standard Commands
+##### Standard Commands
 
 These commands comprise of two parts: the declaration of the command, and a
 separate named function which is called upon the execution of the command.
@@ -3414,7 +3253,7 @@ Multiple commands which reference the same function by name (e.g. COMMANDN)
 cannot be assigned, because the macros which define them cannot redefine the
 dummy variables used for their instantiation.
 
-#### Interpreter return types
+##### Interpreter return types
 
 To return values to the interpreter, there are a handful of useful functions
 which allow this to be done.These functions should be set to "return" the
@@ -3427,7 +3266,8 @@ native return type).
 
 Returned values from commands are not displayed directly to the console at
 first, and must be manually displayed using `echo`.
-#### Decoding `nargs`
+
+##### Decoding \`nargs\`
 
 The `nargs` part of the command macro is used to tell the command parser what
 kind of arguments it should be interpreting. A single character corresponds to a
@@ -3459,8 +3299,7 @@ For example, a command with `nargs` equal to `ssssif` would take four string
 arguments followed by an integer and float argument; a command with `nargs`
 equal to `fffs` would take three floats followed by a string.
 
-### 7.4.3 Variables
----
+#### 7.4.3 Variables
 
 Variables, in the context of the Libprimis scripting system, refers to specific
 ingame variables which have been provided to the scripting system by way of yet
@@ -3468,7 +3307,7 @@ another convoluted macro system. `VAR` macros allow different types of variables
 to be exposed to the scripting system in useful ways, meaning that options such
 as settings can be directly controlled via Cubescript or the console.
 
-#### Integer Variables `VAR`
+##### Integer Variables \`VAR\`
 
 Variables exposed to Cubescript which have the type of `int` are the most common
 ones used in Libprimis. These variables also take on the duty of boolean
@@ -3481,7 +3320,7 @@ A standard `VAR` carries the following arguments:
 * `min` The minimum value that the variable is allowed to be set from ingame
 * `max` The maximum value that the variable is allowed to be set from ingame
 
-#### Float Variables `FVAR`
+##### Float Variables \`FVAR\`
 
 For floating-point numbers with decimals, it is possible to define accessible
 variables with the `FVAR` macro. This macro behaves nearly the same as the int
@@ -3494,7 +3333,7 @@ A standard `FVAR` carries the following arguments:
 * `min` The minimum value that the variable is allowed to be set from ingame
 * `max` The maximum value that the variable is allowed to be set from ingame
 
-#### Hex Variables `HVAR`
+##### Hex Variables \`HVAR\`
 
 For hexadecimal values, it is possible to define values as a `HVAR` which makes
 entry and display more straightforward. This type of variable is similar to an
@@ -3506,7 +3345,7 @@ A standard `HVAR` carries the following arguments:
 * `min` The minimum value that the variable is allowed to be set from ingame
 * `max` The maximum value that the variable is allowed to be set from ingame
 
-#### Color Variables `CVAR`
+##### Color Variables \`CVAR\`
 
 For colors, it is convenient to save and use information using the widely used
 six-digit hexadecimal HTML format (`0xRRGGBB`), so a `CVAR` macro is provided
@@ -3518,7 +3357,7 @@ A standard `CVAR` carries the following arguments:
 * `name` The name of the variable, both to the engine and ingame
 * `cur` The value which the variable is initiated with at the start of the game*
 
-#### String Variables `SVAR`
+##### String Variables \`SVAR\`
 
 For the storage of strings, such as those used for e.g. a player's name, it is
 possible to define accessible string variables with the `SVAR` macro. This macro
@@ -3532,7 +3371,7 @@ A standard `SVAR` carries the following arguments:
 *Note that the `cur` value is always true at the very beginning of the game, but
 can be changed ingame to differ from this value.
 
-#### Persistent Variables `*VARP`
+##### Persistent Variables \`*VARP\`
 
 Persistent variables are variables which are saved to a configuration file at
 the time that the program is closed. This makes it useful for settings which are
@@ -3544,8 +3383,7 @@ be executed when the game is started again. These variables initialize their
 `cur` values to their defined values as normal, but rely on a startup script to
 change them to their persistent states from the previous run.
 
-# 8 Internal Objects
----
+## 8 Internal Objects
 
 A number of C++ objects are defined in the engine to facilitate manipulation in
 a replicable way. Many of these are geometry constructs which carry with them
@@ -3555,14 +3393,12 @@ The game also has many specific-purpose objects which are described in their
 particular section. This chapter is reserved for general, extensible objects
 with utility in many potential parts of the engine.
 
-## 8.1 Vector Objects
----
+### 8.1 Vector Objects
 
 A large number of vector objects exist in the game to facilitate working with
 objects in 2D, 3D, 4D, quaternion, and dual quaternion vector spaces.
 
-#### 8.1.1 `vec`
----
+##### 8.1.1 \`vec\`
 
 `vec` is an incredibly ubiquitous object in the engine, where it is referenced
 thousands of times over essentially every part of the game code. Key features of
@@ -3598,8 +3434,7 @@ While this property of `vec`'s many member functions is most commonly seen in
 `vec` objects, the same behavior also applies to other related objects, such as
 `vec2` or `ivec`.
 
-#### 8.1.2 `bvec`
----
+##### 8.1.2 \`bvec\`
 
 `bvec` is a 3d color vector object. As opposed to the standard `vec` object,
 which is useful mainly in world geometry, the `bvec` vector is intended for use
@@ -3620,14 +3455,13 @@ long and can encode values between 0 and 255. There is no notion of sign with a
 `char`, and indeed having colors with negative values in its channels makes no
 sense either.
 
-## 8.2 Cube Objects
----
+### 8.2 Cube Objects
 
 Individual cube nodes, the heart of Libprimis' geometry system, are represented
 in the code by C++ objects. There are two main objects which define a cube in
 the level, which are described here.
 
-### 8.2.1 `cube`
+#### 8.2.1 \`cube\`
 
 The base object which defines a cube in the world. It has several attributes:
 
@@ -3639,8 +3473,7 @@ The base object which defines a cube in the world. It has several attributes:
 * `merged` The bitmask of faces of the cubes which have been merged
 * `union: escaped visible` union of unmerged children nodes/visible faces
 
-### 8.2.2 `cubeext`
----
+#### 8.2.2 \`cubeext\`
 
 The extended information belonging to a cube.
 
