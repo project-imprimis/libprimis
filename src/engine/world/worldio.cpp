@@ -236,7 +236,7 @@ void setmapfilenames(const char *fname, const char *cname = nullptr)
     {
         string baktime;
         time_t t = time(nullptr);
-        size_t len = strftime(baktime, sizeof(baktime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
+        size_t len = std::strftime(baktime, sizeof(baktime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
         baktime[std::min(len, sizeof(baktime)-1)] = '\0';
         formatstring(bakname, "media/map/%s_%s.BAK", name, baktime);
     }
