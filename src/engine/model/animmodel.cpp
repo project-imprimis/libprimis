@@ -15,6 +15,7 @@
 #include "render/radiancehints.h"
 #include "render/renderalpha.h"
 #include "render/rendergl.h"
+#include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"
 #include "render/texture.h"

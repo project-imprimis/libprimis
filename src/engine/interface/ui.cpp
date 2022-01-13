@@ -25,6 +25,7 @@
 #include "model/model.h"
 //textedit.h needs rendertext's objects
 #include "render/rendergl.h"
+#include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/rendertext.h"
 #include "render/texture.h"

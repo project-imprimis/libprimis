@@ -16,6 +16,7 @@
 #include "model/model.h"
 
 #include "render/octarender.h"
+#include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"
 #include "render/stain.h"

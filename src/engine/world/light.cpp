@@ -17,6 +17,7 @@
 #include "interface/input.h"
 
 #include "render/radiancehints.h"
+#include "render/renderlights.h"
 #include "render/octarender.h"
 #include "render/texture.h"
 

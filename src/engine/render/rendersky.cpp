@@ -14,6 +14,7 @@
 
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendersky.h"
 #include "renderva.h"
 #include "texture.h"

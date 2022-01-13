@@ -290,6 +290,13 @@ PFNGLBINDFRAGDATALOCATIONINDEXEDPROC glBindFragDataLocationIndexed_ = nullptr;
 // GL_ARB_copy_image
 PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_ = nullptr;
 
+void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
+{
+    int tx1, ty1, tx2, ty2;
+    calctilebounds(sx1, sy1, sx2, sy2, tx1, ty1, tx2, ty2);
+    for(int ty = ty1; ty < ty2; ty++) tiles[ty] |= ((1<<(tx2-tx1))-1)<<tx1;
+}
+
 void *getprocaddress(const char *name)
 {
     return SDL_GL_GetProcAddress(name);
@@ -1003,8 +1010,6 @@ void pushhudtranslate(float tx, float ty, float sx, float sy)
     flushhudmatrix();
 }
 
-int vieww = -1,
-    viewh = -1;
 float curfov, curavatarfov, fovy, aspect;
 int farplane;
 VARP(zoominvel, 0, 40, 500);

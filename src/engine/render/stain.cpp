@@ -15,6 +15,7 @@
 
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "stain.h"
 #include "texture.h"

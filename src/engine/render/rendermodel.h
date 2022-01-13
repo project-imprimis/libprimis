@@ -8,7 +8,7 @@ extern std::vector<mapmodelinfo> mapmodels;
 std::vector<int> findanims(const char *pattern);
 
 extern float transmdlsx1, transmdlsy1, transmdlsx2, transmdlsy2;
-extern uint transmdltiles[lighttilemaxheight];
+extern uint transmdltiles[];
 
 extern void loadskin(const char *dir, const char *altdir, Texture *&skin, Texture *&masks);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);

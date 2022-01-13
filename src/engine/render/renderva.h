@@ -31,7 +31,7 @@ extern float shadowradius, shadowbias;
 extern int shadowside, shadowspot;
 
 extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphabacksx1, alphabacksx2, alphabacksy1, alphabacksy2, alpharefractsx1, alpharefractsx2, alpharefractsy1, alpharefractsy2;
-extern uint alphatiles[lighttilemaxheight];
+extern uint alphatiles[];
 extern vtxarray *visibleva;
 
 extern void rendergeom();

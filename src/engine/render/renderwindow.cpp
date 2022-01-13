@@ -10,6 +10,7 @@
 #include "hud.h"
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertext.h"

@@ -8,6 +8,7 @@
 
 #include "hud.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "renderparticles.h"
 #include "rendertext.h"
 #include "rendertimers.h"

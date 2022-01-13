@@ -32,6 +32,9 @@
 #include "world/octaedit.h"
 #include "world/world.h"
 
+int vieww = -1,
+    viewh = -1;
+
 int gw = -1,
     gh = -1;
 
