@@ -16,6 +16,7 @@
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertimers.h"
+#include "renderva.h"
 #include "stain.h"
 #include "texture.h"
 

@@ -24,6 +24,7 @@
 #include "renderlights.h"
 #include "rendermodel.h"
 #include "rendertimers.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "texture.h"
 

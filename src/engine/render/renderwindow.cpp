@@ -13,6 +13,7 @@
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertext.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "stain.h"
 #include "texture.h"
