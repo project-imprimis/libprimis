@@ -13,6 +13,7 @@
 
 #include "render/octarender.h"
 #include "render/renderwindow.h"
+#include "render/texture.h"
 
 string clientmap = "";
 

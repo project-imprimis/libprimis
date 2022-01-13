@@ -19,6 +19,7 @@
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"
 #include "render/stain.h"
+#include "render/texture.h"
 
 VARR(mapversion, 1, currentmapversion, 0);
 VARNR(mapscale, worldscale, 1, 0, 0);
