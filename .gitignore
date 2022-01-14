@@ -16,3 +16,7 @@ src/tess_server
 *.srctrldb
 *.srctrlbm
 *.srctrlprj
+# Files auto-produced by VSCode.
+.vscode/
+# Documentation files in the docs folder.
+docs
