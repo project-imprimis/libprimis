@@ -1,5 +1,8 @@
+# The Tesseract Renderer
+
 This document is a verbatim copy of the Tesseract rendering document
-(http://tesseract.gg/renderer.txt), converted to GFM (GitHub Flavored Markdown).
+[http://tesseract.gg/renderer.txt](http://tesseract.gg/renderer.txt), converted
+to GFM (GitHub Flavored Markdown).
 
 This is for the engine that Imprimis is based upon, and its design choices may
 not always apply to Imprimis. However, in most cases, Imprimis uses the same
@@ -110,7 +113,7 @@ textures to avoid some extra texture coordinate math. The filter (with the
 unoptimized yet more precise box filter in comments) is listed here for
 posterity's sake:
 
-```
+```cpp
 #define shadowval(center, xoff, yoff) float(shadow2DRect(shadowatlas, center + vec3(xoff, yoff, 0.0)))
 float filtershadow(vec3 shadowtc)
 {
@@ -149,7 +152,7 @@ partitions.
 For further information about the basics of rendering cubemap shadowmaps, see
 page 42+ of:
 
-ftp://download.nvidia.com/developer/presentations/2004/GPU_Jackpot/Shadow_Mapping.pdf
+https://http.download.nvidia.com/developer/presentations/2004/GPU_Jackpot/Shadow_Mapping.pdf
 
 Both of these problems may be addressed by unrolled cubemaps, or rather, by
 emulating cubemaps within a 2D texture by manually computing the offset of each
@@ -178,7 +181,7 @@ and removed precision issues inherent in the lookup texture strategy. The lookup
 function that provided the best balance of performance across Nvidia and AMD
 GPUs is listed here:
 
-```
+```cpp
 vec3 getshadowtc(vec3 dir, vec4 shadowparams, vec2 shadowoffset)
 {
     vec3 adir = abs(dir);
@@ -228,7 +231,7 @@ instability/shadow swim that would otherwise occur. For further information,
 see:
 
 http://dice.se/publications/title-shadows-decals-d3d10-techniques-from-frostbite/
- 
+
 "Caching is the new culling." Lights can often have large radiuses that pass
 through walls and other such occluders, often making occlusion culling or
 view-frustum culling of light volumes ineffective. As an alternative to never
@@ -506,7 +509,7 @@ Sauerbraten, the depth buffer and shading results are more easily available
 without having to read back the frame buffer or using special-cased kluges to
 avoid such read-backs, making effects like soft or refractive particles cheaper
 and simpler to implement.
- 
+
 ### Tonemapping and bloom
 
 The light accumulation buffer is first quickly downscaled to approximately
@@ -636,4 +639,4 @@ Homepage - Tesseract, http://tesseract.gg
 Developer - Lee Salzman, http://sauerbraten.org/lee/
 
 Last revised November 7, 2013
- 
+
