@@ -6,11 +6,12 @@
  *
  * used in rendergl.cpp
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "rendergl.h"
 #include "rendertext.h"
+#include "renderva.h"
 
 #include "interface/control.h"
 

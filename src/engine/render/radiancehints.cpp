@@ -13,8 +13,8 @@
  * has to worry about a single RSM (reflective shadow map) rather than 6 sided cube
  * maps (as point lights would require).
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "csm.h"
 #include "hdr.h"
@@ -24,6 +24,7 @@
 #include "renderlights.h"
 #include "rendermodel.h"
 #include "rendertimers.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "texture.h"
 

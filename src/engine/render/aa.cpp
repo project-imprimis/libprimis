@@ -5,7 +5,8 @@
  * FXAA (fast approximate antialiasing)
  * SMAA (subpixel morphological antialiasing)
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "aa.h"
 #include "hdr.h"

@@ -6,12 +6,13 @@
  * shadow atlas and are treated the same as any other light (though their size
  * is typically a sizable portion of the atlas space)
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "csm.h"
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "texture.h"
 
 #include "world/light.h"

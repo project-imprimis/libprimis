@@ -9,8 +9,8 @@
  * face the camera, which works fairly well for small, simple effects. Particles are not
  * recommended for large, high detail special effects.
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "renderlights.h"
 #include "rendergl.h"

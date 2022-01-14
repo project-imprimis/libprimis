@@ -5,7 +5,7 @@
  * does not implement menus, just some low level bindings for main menu functionality
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "control.h"
 #include "menus.h"

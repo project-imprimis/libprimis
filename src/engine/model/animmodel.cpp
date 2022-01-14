@@ -7,7 +7,9 @@
  * position, orientation, etc).
  *
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
+
 
 #include "interface/console.h"
 #include "interface/control.h"
@@ -15,6 +17,7 @@
 #include "render/radiancehints.h"
 #include "render/renderalpha.h"
 #include "render/rendergl.h"
+#include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"
 #include "render/texture.h"

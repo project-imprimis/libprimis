@@ -1,6 +1,7 @@
 // worldio.cpp: loading & saving of maps and savegames
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "octaedit.h"
 #include "octaworld.h"
@@ -9,10 +10,12 @@
 #include "world.h"
 
 #include "interface/console.h"
+#include "interface/cs.h"
 #include "interface/menus.h"
 
 #include "render/octarender.h"
 #include "render/renderwindow.h"
+#include "render/texture.h"
 
 string clientmap = "";
 
@@ -235,7 +238,7 @@ void setmapfilenames(const char *fname, const char *cname = nullptr)
     {
         string baktime;
         time_t t = time(nullptr);
-        size_t len = strftime(baktime, sizeof(baktime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
+        size_t len = std::strftime(baktime, sizeof(baktime), "%Y-%m-%d_%H.%M.%S", localtime(&t));
         baktime[std::min(len, sizeof(baktime)-1)] = '\0';
         formatstring(bakname, "media/map/%s_%s.BAK", name, baktime);
     }

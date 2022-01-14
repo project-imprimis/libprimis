@@ -7,7 +7,8 @@
  * implements a seperate class of functionality; skeletal models not using collision
  * will not use hitzone functions.
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "render/rendergl.h"
 #include "render/rendermodel.h"

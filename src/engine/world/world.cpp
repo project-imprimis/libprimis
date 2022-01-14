@@ -1,6 +1,7 @@
 // world.cpp: core map management stuff
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "bih.h"
 #include "light.h"
@@ -11,14 +12,17 @@
 #include "world.h"
 
 #include "interface/console.h"
+#include "interface/cs.h"
 #include "interface/menus.h"
 
 #include "model/model.h"
 
 #include "render/octarender.h"
+#include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/renderparticles.h"
 #include "render/stain.h"
+#include "render/texture.h"
 
 VARR(mapversion, 1, currentmapversion, 0);
 VARNR(mapscale, worldscale, 1, 0, 0);

@@ -11,10 +11,12 @@
  * particles must be present at once for there to be a noticable performance drop.
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "stain.h"
 #include "texture.h"

@@ -6,12 +6,14 @@
  * common Wavefront (obj) model format.
  *
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "aa.h"
 #include "csm.h"
 #include "radiancehints.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "renderva.h"
 #include "renderwindow.h"

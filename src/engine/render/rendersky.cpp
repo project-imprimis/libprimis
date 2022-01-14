@@ -10,10 +10,12 @@
  * for parallax (cloud layers do not move relative to background sky as the player
  * moves)
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendersky.h"
 #include "renderva.h"
 #include "texture.h"

@@ -5,7 +5,8 @@
  * lights are cached using a shadow map to allow rendering less than once per
  * frame, improving performance and light count allowed
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "aa.h"
 #include "ao.h"
@@ -31,6 +32,9 @@
 #include "world/material.h"
 #include "world/octaedit.h"
 #include "world/world.h"
+
+int vieww = -1,
+    viewh = -1;
 
 int gw = -1,
     gh = -1;
