@@ -11,7 +11,7 @@
  * Octree cube collision is necessary for physics (as players need to interact with the world geometry)
  * and for other world interaction by players (e.g. identifying where structure in the world is)
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "bih.h"
 #include "octaworld.h"

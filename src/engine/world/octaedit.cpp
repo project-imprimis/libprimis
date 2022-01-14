@@ -10,7 +10,8 @@
  * and other constructs generally useful for modifying the level, such as entity
  * locations and radii.
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "light.h"
 #include "octaedit.h"
@@ -25,9 +26,9 @@
 #include "render/hud.h"
 #include "render/octarender.h"
 #include "render/rendergl.h"
+#include "render/renderlights.h"
 #include "render/renderva.h"
 #include "render/texture.h"
-
 
 #include "material.h"
 #include "world.h"

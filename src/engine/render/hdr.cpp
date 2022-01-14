@@ -11,8 +11,8 @@
  * objects to appear more overbright (and realistic) than the light entities can
  * project on their own.
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "aa.h"
 #include "hdr.h"

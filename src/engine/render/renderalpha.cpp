@@ -7,8 +7,8 @@
  * since there is only one stencil and only the nearest layer in the view frustum
  * is rendered
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "hdr.h"
 #include "rendergl.h"
@@ -16,6 +16,7 @@
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertimers.h"
+#include "renderva.h"
 #include "stain.h"
 #include "texture.h"
 

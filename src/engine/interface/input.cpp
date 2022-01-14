@@ -9,7 +9,7 @@
  *
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "console.h"
 #include "control.h"

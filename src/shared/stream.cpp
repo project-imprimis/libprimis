@@ -5,7 +5,7 @@
  * also included is utilities for gz archive support
  *
  */
-#include "../engine/engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "../engine/interface/console.h"
 

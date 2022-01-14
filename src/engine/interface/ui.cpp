@@ -9,12 +9,14 @@
  * text modification objects
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "console.h"
 #include "control.h"
 #include "input.h"
 #include "ui.h"
+#include "cs.h"
 
 #include "world/octaedit.h"
 #include "world/bih.h"
@@ -25,6 +27,7 @@
 #include "model/model.h"
 //textedit.h needs rendertext's objects
 #include "render/rendergl.h"
+#include "render/renderlights.h"
 #include "render/rendermodel.h"
 #include "render/rendertext.h"
 #include "render/texture.h"

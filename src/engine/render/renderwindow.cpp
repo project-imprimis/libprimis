@@ -5,14 +5,17 @@
  * as well as global rendering settings such as gamma
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "hud.h"
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "renderparticles.h"
 #include "rendertext.h"
+#include "renderva.h"
 #include "renderwindow.h"
 #include "stain.h"
 #include "texture.h"

@@ -1,12 +1,14 @@
 // renderva.cpp: handles the occlusion and rendering of vertex arrays
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "csm.h"
 #include "grass.h"
 #include "octarender.h"
 #include "radiancehints.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "rendermodel.h"
 #include "renderva.h"
 #include "renderwindow.h"

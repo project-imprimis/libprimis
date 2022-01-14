@@ -14,10 +14,11 @@
  * is mostly necessary to handle the UI system, which is built on cubescript
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "console.h"
 #include "control.h"
+#include "cs.h"
 
 #include "world/octaedit.h"
 

@@ -1,12 +1,14 @@
 // octarender.cpp: fill vertex arrays with different cube surfaces.
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "grass.h"
 #include "octarender.h"
 #include "rendergl.h"
+#include "renderlights.h"
 #include "renderparticles.h"
 #include "rendersky.h"
+#include "renderva.h"
 #include "texture.h"
 
 #include "interface/menus.h"

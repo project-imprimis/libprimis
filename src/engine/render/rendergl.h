@@ -18,7 +18,6 @@ enum
     Draw_TexModelPreview,
 };
 
-extern int vieww, viewh;
 extern int fov;
 extern float curfov, fovy, aspect, forceaspect;
 extern float nearplane;
@@ -91,24 +90,5 @@ namespace modelpreview
     extern void end();
 }
 
-template<class T>
-inline void calctilebounds(float sx1, float sy1, float sx2, float sy2, T &bx1, T &by1, T &bx2, T &by2)
-{
-    int tx1 = std::max(static_cast<int>(std::floor(((sx1 + 1)*0.5f*vieww)/lighttilealignw)), 0),
-        ty1 = std::max(static_cast<int>(std::floor(((sy1 + 1)*0.5f*viewh)/lighttilealignh)), 0),
-        tx2 = std::min(static_cast<int>(std::ceil(((sx2 + 1)*0.5f*vieww)/lighttilealignw)), lighttilevieww),
-        ty2 = std::min(static_cast<int>(std::ceil(((sy2 + 1)*0.5f*viewh)/lighttilealignh)), lighttileviewh);
-    bx1 = T((tx1 * lighttilew) / lighttilevieww);
-    by1 = T((ty1 * lighttileh) / lighttileviewh);
-    bx2 = T((tx2 * lighttilew + lighttilevieww - 1) / lighttilevieww);
-    by2 = T((ty2 * lighttileh + lighttileviewh - 1) / lighttileviewh);
-}
-
-inline void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
-{
-    int tx1, ty1, tx2, ty2;
-    calctilebounds(sx1, sy1, sx2, sy2, tx1, ty1, tx2, ty2);
-    for(int ty = ty1; ty < ty2; ty++) tiles[ty] |= ((1<<(tx2-tx1))-1)<<tx1;
-}
-
+extern void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2);
 #endif

@@ -14,8 +14,8 @@
  * the material data is saved in world files along with the octree geometry (see
  * worldio.cpp)
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "material.h"
 #include "octaedit.h"
@@ -24,6 +24,8 @@
 
 #include "render/octarender.h"
 #include "render/rendergl.h"
+#include "render/renderlights.h"
+#include "render/renderva.h"
 #include "render/water.h"
 #include "render/texture.h"
 

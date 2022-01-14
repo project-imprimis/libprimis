@@ -11,8 +11,7 @@
  * also handles geometry simplification, where octree nodes are combined to reduce rendering
  * overhead
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "light.h"
 #include "octaworld.h"

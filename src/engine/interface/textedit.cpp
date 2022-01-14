@@ -7,7 +7,8 @@
  *
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "textedit.h"
 #include "render/rendertext.h"

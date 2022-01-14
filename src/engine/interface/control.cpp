@@ -4,7 +4,7 @@
  * using the library, including logging (to file), program crash handling, engine
  * timestate information, and engine version information
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "console.h"
 #include "control.h"

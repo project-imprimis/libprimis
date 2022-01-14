@@ -1,4 +1,4 @@
-#include "../engine/engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "../engine/interface/console.h"
 

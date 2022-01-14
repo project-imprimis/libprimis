@@ -1,6 +1,8 @@
 // texture.cpp: texture slot management
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
+
 #include "SDL_image.h"
 
 #include "octarender.h"

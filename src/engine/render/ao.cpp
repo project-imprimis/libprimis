@@ -6,8 +6,8 @@
  * darkens those areas. Various settings allow for more or less artifact-free
  * rendition of this darkening effect.
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "ao.h"
 #include "rendergl.h"

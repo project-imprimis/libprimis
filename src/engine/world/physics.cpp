@@ -3,8 +3,7 @@
  * they "felt right", and have no basis in reality. Collision detection is simplistic but
  * very robust (uses discrete steps at fixed fps).
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "bih.h"
 #include "mpr.h"
