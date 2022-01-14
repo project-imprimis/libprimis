@@ -1,0 +1,61 @@
+name: Doxyfile CD
+
+# Controls when the workflow will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "run-doxygen"
+  run-doxygen:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:     
+      
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          # Get the libprimis-header submodules.
+          submodules: true
+      
+      # Show the current working directory. Nice for debugging.
+      - run: pwd
+      
+      # Show what files are in the repo. Nice for debugging.
+      - run: ls --recursive
+      
+      - name: Doxygen Action
+      # You may pin to the exact commit or the version.
+      # uses: mattnotmitt/doxygen-action@9039b4cfaf5097b76489c53c0cdc8cba59091b57
+        # Use the latest version of Doxygen.
+        uses: mattnotmitt/doxygen-action@edge
+        # Use Doxygen version 1.9.2.
+        # uses: mattnotmitt/doxygen-action@v1.9.2
+        with:
+          # Path to Doxyfile.
+          doxyfile-path: Doxyfile
+          # Working directory. Move to where the Doxyfile is so that
+          # relative paths inside of the Doxyfile do not change.
+          working-directory: doc/
+          # Generate latex documentation. False, use MathJax instead.
+          enable-latex: false
+          # Extra alpine packages for the build environment.
+          # additional-packages: # optional
+      
+      # Show what files were created. Nice for debugging.
+      - run: ls --recursive
+      
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # Provide a GitHub token to authenticate pushing files.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Push documentation files in docs folder to gh-pages repo.
+          publish_dir: ./docs
