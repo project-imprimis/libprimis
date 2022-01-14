@@ -5,6 +5,7 @@
  * distance
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "grass.h"
 #include "octarender.h"

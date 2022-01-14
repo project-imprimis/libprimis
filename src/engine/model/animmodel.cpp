@@ -8,6 +8,8 @@
  *
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
+
 
 #include "interface/console.h"
 #include "interface/control.h"

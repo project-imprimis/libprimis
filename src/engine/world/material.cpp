@@ -15,6 +15,7 @@
  * worldio.cpp)
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "material.h"
 #include "octaedit.h"

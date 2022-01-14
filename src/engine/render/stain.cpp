@@ -12,6 +12,7 @@
  */
 
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "octarender.h"
 #include "rendergl.h"

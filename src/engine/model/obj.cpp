@@ -5,6 +5,7 @@
  * model type is located in obj.h.
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "render/radiancehints.h"
 #include "render/rendergl.h"

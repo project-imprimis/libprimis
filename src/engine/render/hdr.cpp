@@ -12,6 +12,7 @@
  * project on their own.
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glexts.h"
 
 #include "aa.h"
 #include "hdr.h"
