@@ -6,8 +6,7 @@
  *
  * used in physics.cpp and for model-related collision purposes
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "mpr.h"
 

@@ -5,7 +5,7 @@
  * as well as global rendering settings such as gamma
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "hud.h"
 #include "octarender.h"

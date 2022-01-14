@@ -6,8 +6,7 @@
  *
  * used in rendergl.cpp
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "rendergl.h"
 #include "rendertext.h"

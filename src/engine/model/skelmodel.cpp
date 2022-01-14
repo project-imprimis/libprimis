@@ -9,7 +9,7 @@
  * this file contains the implementation for the skelmodel object, see skelmodel.h
  * for the class definition
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

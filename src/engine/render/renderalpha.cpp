@@ -7,8 +7,7 @@
  * since there is only one stencil and only the nearest layer in the view frustum
  * is rendered
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "hdr.h"
 #include "rendergl.h"

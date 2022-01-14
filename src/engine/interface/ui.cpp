@@ -9,12 +9,13 @@
  * text modification objects
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "console.h"
 #include "control.h"
 #include "input.h"
 #include "ui.h"
+#include "cs.h"
 
 #include "world/octaedit.h"
 #include "world/bih.h"

@@ -7,8 +7,7 @@
  * While this file does not handle light and texture rendering, it does handle
  * the simple world depth fog in libprimis.
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "aa.h"
 #include "grass.h"

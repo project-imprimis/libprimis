@@ -10,7 +10,7 @@
  * and other constructs generally useful for modifying the level, such as entity
  * locations and radii.
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "light.h"
 #include "octaedit.h"

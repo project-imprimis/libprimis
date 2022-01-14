@@ -1,6 +1,6 @@
 // shader.cpp: OpenGL GLSL shader management
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "octarender.h"
 #include "rendergl.h"

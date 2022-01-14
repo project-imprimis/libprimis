@@ -4,8 +4,7 @@
  * This file contains the implementation functions, while the class for the obj
  * model type is located in obj.h.
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "render/radiancehints.h"
 #include "render/rendergl.h"

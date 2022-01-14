@@ -4,7 +4,7 @@
  * and the world, specifically for physics collision calculations. BIH methods
  * are also used for the procedural ragdoll physics.
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "physics.h"
 #include "raycube.h"

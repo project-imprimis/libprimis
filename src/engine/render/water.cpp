@@ -8,7 +8,7 @@
  * screenspace reflection, to capture the reflective surface, dynamic water surface
  * geometry, and dynamic waterfalls
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "octarender.h"
 #include "rendergl.h"

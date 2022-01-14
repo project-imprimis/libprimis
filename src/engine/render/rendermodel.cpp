@@ -6,7 +6,7 @@
  * common Wavefront (obj) model format.
  *
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "aa.h"
 #include "csm.h"

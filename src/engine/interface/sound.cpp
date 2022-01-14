@@ -1,6 +1,7 @@
 // sound.cpp: basic positional sound using sdl_mixer
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
+
 #include "SDL_mixer.h"
 
 #include "console.h"

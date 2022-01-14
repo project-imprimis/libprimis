@@ -7,7 +7,7 @@
  * this includes pulsating lights (which change in radius dynamically)
  * and multicolored lights (which change hue dynamically)
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "dynlight.h"
 #include "physics.h"

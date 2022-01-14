@@ -4,8 +4,7 @@
  * grass is billboarded, and faces the camera, and can be modified as to its draw
  * distance
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "grass.h"
 #include "octarender.h"

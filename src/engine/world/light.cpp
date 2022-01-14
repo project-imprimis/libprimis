@@ -6,7 +6,7 @@
  * includes sunlight variables (direction/color of no-parallax sun lighting)
  * world light entity packing for the renderer to use
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "light.h"
 #include "octaworld.h"

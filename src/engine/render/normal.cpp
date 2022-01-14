@@ -10,7 +10,7 @@
  * this is controlled by the lerp variables and is generally uniformly done for
  * all geometry on the map; see `lerpangle` for the threshold variable
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "octarender.h"
 

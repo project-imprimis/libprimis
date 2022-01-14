@@ -1,6 +1,6 @@
 // world.cpp: core map management stuff
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "bih.h"
 #include "light.h"
@@ -11,6 +11,7 @@
 #include "world.h"
 
 #include "interface/console.h"
+#include "interface/cs.h"
 #include "interface/menus.h"
 
 #include "model/model.h"

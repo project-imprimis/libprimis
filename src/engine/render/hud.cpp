@@ -3,8 +3,7 @@
  * includes hud compass, hud readouts, crosshair handling
  * main hud rendering
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "hud.h"
 #include "rendergl.h"

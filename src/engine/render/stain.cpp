@@ -11,7 +11,7 @@
  * particles must be present at once for there to be a noticable performance drop.
  */
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "octarender.h"
 #include "rendergl.h"

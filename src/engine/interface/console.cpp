@@ -1,9 +1,10 @@
 // console.cpp: the console buffer, its display, and command line control
 
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "console.h"
 #include "control.h"
+#include "cs.h"
 #include "ui.h"
 #include "menus.h"
 

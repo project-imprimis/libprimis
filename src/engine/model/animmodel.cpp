@@ -7,7 +7,7 @@
  * position, orientation, etc).
  *
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

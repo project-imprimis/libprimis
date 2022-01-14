@@ -10,7 +10,7 @@
  * for this reason, heightmapping can be done along any of the main axes, though
  * only along one at a time
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "octaedit.h"
 #include "octaworld.h"

@@ -5,7 +5,7 @@
  * lights are cached using a shadow map to allow rendering less than once per
  * frame, improving performance and light count allowed
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "aa.h"
 #include "ao.h"

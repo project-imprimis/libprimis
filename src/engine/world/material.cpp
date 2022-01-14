@@ -14,8 +14,7 @@
  * the material data is saved in world files along with the octree geometry (see
  * worldio.cpp)
  */
-
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "material.h"
 #include "octaedit.h"

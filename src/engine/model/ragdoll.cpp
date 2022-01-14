@@ -7,7 +7,7 @@
  * This file contains implementation functions for the ragdoll class. For the
  * class definition, see ragdoll.h.
  */
-#include "engine.h"
+#include "../libprimis-headers/cube.h"
 
 #include "interface/console.h"
 #include "interface/control.h"
