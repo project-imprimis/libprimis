@@ -365,6 +365,13 @@ extern const char *sourcefile,
 extern vector<char> strbuf[4];
 extern int stridx;
 
+extern tagval *commandret;
+extern void executeret(const uint *code, tagval &result = *commandret);
+extern void executeret(const char *p, tagval &result = *commandret);
+extern void executeret(ident *id, tagval *args, int numargs, bool lookup = false, tagval &result = *commandret);
+
+extern void addident(ident *id);
+
 extern void poparg(ident &id);
 extern void pusharg(ident &id, const tagval &v, identstack &stack);
 extern bool getbool(const tagval &v);
