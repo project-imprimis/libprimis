@@ -77,7 +77,7 @@ Functions are always lowercase:
 
 Enum elements are in PascalCase:
 
-```
+```cpp
 enum
 {
     Name_ElementOne   = 1,
@@ -107,7 +107,7 @@ present (don't use a loop over `j` unless it's inside a loop over `i`).
 
 The convention for incrementing loops (counting upwards) is as follows:
 
-```c++
+```cpp
 for(int i = 0; i < N; ++i)
 ```
 Change the value passed to `N` rather than using a less than or equals sign `<=`
@@ -116,13 +116,13 @@ immediately.
 
 For decrementing loops (counting downwards):
 
-```c++
+```cpp
 for(int i = N; --i >= 0;)
 ```
 
 For loops over the length of a vector, use
 
-```c++
+```cpp
 for(int j = 0; j < N.length(); j++) //forward iteration
 for(int v = m; --v >= 0;) //reverse iteration
 
@@ -133,7 +133,7 @@ The codebase uses the Allman style; that is, statements are enclosed in brackets
 on newlines. Case statements are indented one tab past their opening switch
 statement.
 
-```c++
+```cpp
 namespace MyNamespace
 {
     int var1, var2, var3;
@@ -229,14 +229,14 @@ line.
 Control flow statements (if/while/do-while etc.) should get their own line;
 don't do stuff like
 
-```c++
+```cpp
 if(foo) for(int i; i < N; ++i) { doStuff; doMoreStuff }
 ```
 
 In addition, always delimit statements after control expressions with curly
 braces, even if there is only one expression:
 
-```c++
+```cpp
 //do this
 if(foo)
 {
@@ -252,7 +252,7 @@ if(foo)
 
 Ternaries and boolean operators should be spaced out between each element:
 
-```c++
+```cpp
 foo ? bar : baz
 foo >= bar
 foo || bar
@@ -260,14 +260,14 @@ foo || bar
 
 Arithmetic can be done without spaces, however:
 
-```c++
+```cpp
 foo+1
 3*bar
 ```
 
 Operators should remain packed against their parentheses:
 
-```c++
+```cpp
 if(foo)
 {
     stuff
@@ -387,32 +387,36 @@ as well as a pair of utilities which are perhaps not considered direct members
 of the engine.
 
 ```
-    Serverside    .                     Clientside
-------------------+-------------------------------------------------------------
-                  .
-+--------+  (A)   .
-| Master |_____   .
-| Server |     \  .  +--------+   +--------+   +------+
-+--------+      \-.->|        |   |        |   |      |
-    ^             .  |        |   |        |   |      |(F)+--------------+
-    | +--------+  .  |        |   |        |   |      |-->| Window Output|
-    \_|  Game  |<-.->|        |   |        |   |      |   +--------------+
-    | | Server |  .  |        |   |        |   |Simple|   +--------------+
-    | +--------+  .  |  Game  |(D)|  Game  |(E)|Direct|-->| Sound Output |
- (B)| +--------+ (C) |  Code  |<->| Engine |<->|Media |   +--------------+
-    \_|  Game  |<-.->|        |   |        |   |Layer |
-    | | Server |  .  |        |   |        |   |(SDL) |   +--------------+
-    | +--------+  .  |        |   |        |   |      |<--|  User Input  |
-    | +--------+  .  |        |   |        |   |      |   +--------------+
-    \_|  Game  |<-.->|        |   |        |   |      |
-      | Server |  .  +--------+   +--------+   +------+
-      +--------+  .      ^
-                  .      |(G)
-                  .      v
-                  .  +--------+
-                  .  | Local  |
-                  .  | Server |
-                  .  +--------+
+/--------------------+-----------------------------------------------------------\
+|   Serverside       |                     Clientside                            |
++--------------------+-----------------------------------------------------------+
+| +--------+  (A)    |                                                           |
+| | Master +---------+------\                                                    |
+| | Server |         |      |                                                    |
+| +--------+         |      v                                                    |
+|     ^              |  +--------+   +--------+   +--------+                     |
+|     |  +--------+  |  |        |   |        |   |        |                     |
+|     +--+ Game   |<-+->|        |   |        |   |        |   +--------------+  |
+|     |  | Server |  |  |        |   |        |   |        +-->| Window Output|  |
+|     |  +--------+  |  |        |   |        |   | Simple |   +--------------+  |
+|     |              |  |  Game  |   | Game   |   | Direct |                     |
+|  (B)|  +--------+ (C) |  Code  |(D)| Engine |(E)| Media  |(F)+--------------+  |
+|     +--+  Game  |<-+->|        |<->|        |<->| Layer  +-->| Sound Output |  |
+|     |  | Server |  |  |        |   |        |   | (SDL)  |   +--------------+  |
+|     |  +--------+  |  |        |   |        |   |        |                     |
+|     |              |  |        |   |        |   |        |   +--------------+  |
+|     |  +--------+  |  |        |   |        |   |        |<--+  User Input  |  |
+|     \--+  Game  |<-+->|        |   |        |   |        |   +--------------+  |
+|        | Server |  |  |        |   |        |   |        |                     |
+|        +--------+  |  +--------+   +--------+   +--------+                     |
+|                    |      ^                                                    |
+|                    |      |(G)                                                 |
+|                    |      v                                                    |
+|                    |  +--------+                                               |
+|                    |  | Local  |                                               |
+|                    |  | Server |                                               |
+|                    |  +--------+                                               |
+\--------------------+-----------------------------------------------------------/
 ```
 
 * A: Master server provides a list of game servers to the game code via enet.
@@ -974,7 +978,7 @@ each distinct texture in the game. A texture slot declares the following:
 
 An example of a typical texture declaration is shown below.
 
-```
+```cpp
 setshader bumpenvspecmapglowworld
 setshaderparam envscale  0.7 0.7 0.7
    texture 0 "nieb/complex/light01_c.png"
@@ -2171,14 +2175,31 @@ Particles have many specific types which behave in different ways.
 * float `size` radius of particle
 * union `(char *text, float val, physent *owner, (uchar color2[3], progress)`
 
-The union type has a whole pile of objects inside it, and its structure is
-outlined below:
+The union type can be any of the objects listed inside the union. However, it
+can only be one object at once. The union structure is outlined below:
 
 ```
-|-----------------------------*text----------------------------|
-|-------------val--------------|
-|----------------------------*owner----------------------------|
-|color2||color2||color2||-prog-|
+                              union
+
+0                                                             63 bit
++--------------------------------------------------------------+
+|                            *text                             |
++--------------------------------------------------------------+
+                               OR
+0                              31                             63 bit
++-------------------------------+------------------------------+
+|             val               ||||||||||||||||||||||||||||||||
++-------------------------------+------------------------------+
+                               OR
+0                                                             63 bit
++--------------------------------------------------------------+
+|                            *owner                            |
++--------------------------------------------------------------+
+                               OR
+0       7      15      23      31                             63 bit
++-------+-------+-------+-------+------------------------------+
+|color2 |color2 |color2 |-prog- ||||||||||||||||||||||||||||||||
++-------+-------+-------+-------+------------------------------+
 ```
 
 The union is set as one of the four rows depending on the type of particle
@@ -3124,14 +3145,14 @@ A notable side effect of the way brackets and parens work within the parser is
 that they must be defined inline with the command or assignment which they
 belong to. This means that while the following Cubescript is valid:
 
-```
+```cpp
 foo = [
     "bar"
     "baz"
 ]
 ```
 this code cannot be parsed by the Cubescript parser.
-```
+```cpp
 foo =
 [
     "bar"
@@ -3159,7 +3180,7 @@ also like functions, accepting arguments to a body (typically delineated by a
 set of braces) by defining arguments within the body as the reserved alias names
 `$arg1 $arg2 ....$arg25` (there is a 25 argument limit in the parser).
 
-```
+```cpp
 foo = bar
 ```
 
@@ -3171,7 +3192,7 @@ The behavior of this is similar to unix's `bash` shell language, while the
 behavior is implicit in many other languages (Cubescript interprets symbols not
 delineated by a `$` at the beginning as a string literal).
 
-```
+```cpp
 foo = 1
 bar = $foo //bar = 1
 ```
@@ -3185,7 +3206,7 @@ depositing the value of a variable in an already-in-progress string, which is
 then evaluated in full after the `@` symbol has taken effect).
 
 Note the difference between the `$` lookup and the `@` literal substitution:
-```
+```cpp
 foo = 1
 bar = [
     baz = $foo
@@ -3194,7 +3215,7 @@ foo = 2
 bar //baz = 2
 ```
 
-```
+```cpp
 foo = 1
 bar = [
     baz = @foo
@@ -3209,7 +3230,7 @@ Cubescript only supports inline comments (no comment blocks) using a pair of
 slashes. This can be done at the beginning of a line, or following the end of a
 written code line.
 
-```
+```cpp
 //I defined an alias `foo` here
 
 foo = [
@@ -3417,7 +3438,7 @@ defined as a 3d vector.
 An important note about the `vec` object's many member functions is that they
 are destructive: when you call a member function such as in the following
 example, the state of `vec a` is changed by the call to `mul()`:
-```
+```cpp
 vec a(1,1,1);
 
 float b = 2;
