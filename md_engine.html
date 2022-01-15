@@ -128,7 +128,7 @@ Symbol Names</h4>
 <p >Functions are always lowercase:</p>
 <p ><code>void functionname()</code></p>
 <p >Enum elements are in PascalCase:</p>
-<div class="fragment"><div class="line">enum</div>
+<div class="fragment"><div class="line"><span class="keyword">enum</span></div>
 <div class="line">{</div>
 <div class="line">    Name_ElementOne   = 1,</div>
 <div class="line">    Name_ElementTwo   = 2,</div>
@@ -144,88 +144,84 @@ Objects</h4>
 `for` loops</h4>
 <p >The accepted conventional variables for loops are the single letter <code>i</code>,<code>j</code>,<code>k</code>, <code>l</code> temp vars. Use later loop variables only if the earlier ones are already present (don't use a loop over <code>j</code> unless it's inside a loop over <code>i</code>).</p>
 <p >The convention for incrementing loops (counting upwards) is as follows:</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">for(int i = 0; i &lt; N; ++i)</div>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; N; ++i)</div>
 </div><!-- fragment --><p> Change the value passed to <code>N</code> rather than using a less than or equals sign <code>&lt;=</code> so as to keep all for() statements clear as to their termination point immediately.</p>
 <p >For decrementing loops (counting downwards):</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">for(int i = N; --i &gt;= 0;)</div>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = N; --i &gt;= 0;)</div>
 </div><!-- fragment --><p >For loops over the length of a vector, use</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">for(int j = 0; j &lt; N.length(); j++) //forward iteration</div>
-<div class="line">for(int v = m; --v &gt;= 0;) //reverse iteration</div>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = 0; j &lt; N.length(); j++) <span class="comment">//forward iteration</span></div>
+<div class="line"><span class="keywordflow">for</span>(<span class="keywordtype">int</span> v = m; --v &gt;= 0;) <span class="comment">//reverse iteration</span></div>
 </div><!-- fragment --> <h4><a class="anchor" id="autotoc_md10"></a>
 Indentation and Bracing</h4>
 <p >The codebase uses the Allman style; that is, statements are enclosed in brackets on newlines. Case statements are indented one tab past their opening switch statement.</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">namespace MyNamespace</div>
+<div class="fragment"><div class="line"><span class="keyword">namespace </span>MyNamespace</div>
 <div class="line">{</div>
-<div class="line">    int var1, var2, var3;</div>
+<div class="line">    <span class="keywordtype">int</span> var1, var2, var3;</div>
 <div class="line"> </div>
-<div class="line">    int var4 = foo(myfunction()),</div>
+<div class="line">    <span class="keywordtype">int</span> var4 = foo(myfunction()),</div>
 <div class="line">        var5 = bar(foo()),</div>
 <div class="line">        var6 = foo(foo() || foo(bar) || foo(baz));</div>
 <div class="line"> </div>
-<div class="line">    enum</div>
+<div class="line">    <span class="keyword">enum</span></div>
 <div class="line">    {</div>
 <div class="line">        Name_ElementOne   = 1,</div>
 <div class="line">        Name_ElementTwo   = 2,</div>
 <div class="line">        Name_ElementThree = 3,</div>
 <div class="line">    };</div>
 <div class="line"> </div>
-<div class="line">    struct baz</div>
+<div class="line">    <span class="keyword">struct </span>baz</div>
 <div class="line">    {</div>
-<div class="line">        int var1;</div>
-<div class="line">        char var2;</div>
-<div class="line">        union</div>
+<div class="line">        <span class="keywordtype">int</span> var1;</div>
+<div class="line">        <span class="keywordtype">char</span> var2;</div>
+<div class="line">        <span class="keyword">union</span></div>
 <div class="line">        {</div>
-<div class="line">            char var3[8];</div>
-<div class="line">            int var4;</div>
+<div class="line">            <span class="keywordtype">char</span> var3[8];</div>
+<div class="line">            <span class="keywordtype">int</span> var4;</div>
 <div class="line">        };</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">    if(foo())</div>
+<div class="line">    <span class="keywordflow">if</span>(foo())</div>
 <div class="line">    {</div>
-<div class="line">        int a;</div>
-<div class="line">        int b;</div>
+<div class="line">        <span class="keywordtype">int</span> a;</div>
+<div class="line">        <span class="keywordtype">int</span> b;</div>
 <div class="line">        doStuff;</div>
 <div class="line">        doMoreStuff;</div>
 <div class="line">    }</div>
-<div class="line">    else</div>
+<div class="line">    <span class="keywordflow">else</span></div>
 <div class="line">    {</div>
 <div class="line">        doStuff;</div>
 <div class="line">    }</div>
 <div class="line"> </div>
-<div class="line">    do</div>
+<div class="line">    <span class="keywordflow">do</span></div>
 <div class="line">    {</div>
 <div class="line">        doStuff;</div>
-<div class="line">    } while(bar)</div>
+<div class="line">    } <span class="keywordflow">while</span>(bar)</div>
 <div class="line"> </div>
-<div class="line">    while(foo)</div>
+<div class="line">    <span class="keywordflow">while</span>(foo)</div>
 <div class="line">    {</div>
 <div class="line">        doStuff;</div>
 <div class="line">    }</div>
-<div class="line">//=====================================================================MACRONAME</div>
-<div class="line">#define MACRO_NAME(a,b) stuff(a,b)</div>
-<div class="line">    int myfunction(int a, int b = 0)</div>
+<div class="line"><span class="comment">//=====================================================================MACRONAME</span></div>
+<div class="line"><span class="preprocessor">#define MACRO_NAME(a,b) stuff(a,b)</span></div>
+<div class="line">    <span class="keywordtype">int</span> myfunction(<span class="keywordtype">int</span> a, <span class="keywordtype">int</span> b = 0)</div>
 <div class="line">    {</div>
-<div class="line">        for(int i; i &lt; N; ++N)</div>
+<div class="line">        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i; i &lt; N; ++N)</div>
 <div class="line">        {</div>
-<div class="line">            if(bar)</div>
+<div class="line">            <span class="keywordflow">if</span>(bar)</div>
 <div class="line">            {</div>
-<div class="line">                switch(n)</div>
+<div class="line">                <span class="keywordflow">switch</span>(n)</div>
 <div class="line">                {</div>
-<div class="line">                    case 1:</div>
+<div class="line">                    <span class="keywordflow">case</span> 1:</div>
 <div class="line">                    {</div>
 <div class="line">                        doStuff;</div>
 <div class="line">                    }</div>
-<div class="line">                    case 2:</div>
+<div class="line">                    <span class="keywordflow">case</span> 2:</div>
 <div class="line">                    {</div>
 <div class="line">                        doStuff;</div>
 <div class="line">                    }</div>
-<div class="line">                    case 3:</div>
-<div class="line">                    case 4:</div>
-<div class="line">                    case N:</div>
+<div class="line">                    <span class="keywordflow">case</span> 3:</div>
+<div class="line">                    <span class="keywordflow">case</span> 4:</div>
+<div class="line">                    <span class="keywordflow">case</span> N:</div>
 <div class="line">                    {</div>
 <div class="line">                        doStuff;</div>
 <div class="line">                    }</div>
@@ -233,52 +229,47 @@ Indentation and Bracing</h4>
 <div class="line">            }</div>
 <div class="line">        }</div>
 <div class="line">        MACRO_NAME(a,b)</div>
-<div class="line">        return a;</div>
+<div class="line">        <span class="keywordflow">return</span> a;</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="line">#undef MACRONAME</div>
-<div class="line">//==============================================================================</div>
+<div class="line"><span class="preprocessor">#undef MACRONAME</span></div>
+<div class="line"><span class="comment">//==============================================================================</span></div>
 <div class="line"> </div>
-<div class="line">template&lt;class Foo&gt;</div>
-<div class="line">inline Foo func(Foo var)</div>
+<div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> Foo&gt;</div>
+<div class="line"><span class="keyword">inline</span> Foo func(Foo var)</div>
 <div class="line">{</div>
 <div class="line">    bar(var);</div>
-<div class="line">    return(var);</div>
+<div class="line">    <span class="keywordflow">return</span>(var);</div>
 <div class="line">}</div>
 </div><!-- fragment --><p >Note that template declarations should have the template declaration on its own line.</p>
 <p >Control flow statements (if/while/do-while etc.) should get their own line; don't do stuff like</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">if(foo) for(int i; i &lt; N; ++i) { doStuff; doMoreStuff }</div>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span>(foo) <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i; i &lt; N; ++i) { doStuff; doMoreStuff }</div>
 </div><!-- fragment --><p >In addition, always delimit statements after control expressions with curly braces, even if there is only one expression:</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">//do this</div>
-<div class="line">if(foo)</div>
+<div class="fragment"><div class="line"><span class="comment">//do this</span></div>
+<div class="line"><span class="keywordflow">if</span>(foo)</div>
 <div class="line">{</div>
 <div class="line">    doStuff;</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line">//not this</div>
-<div class="line">if(foo)</div>
+<div class="line"><span class="comment">//not this</span></div>
+<div class="line"><span class="keywordflow">if</span>(foo)</div>
 <div class="line">    doStuff;</div>
 </div><!-- fragment --><h4><a class="anchor" id="autotoc_md11"></a>
 Spacing</h4>
 <p >Ternaries and boolean operators should be spaced out between each element:</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">foo ? bar : baz</div>
+<div class="fragment"><div class="line">foo ? bar : baz</div>
 <div class="line">foo &gt;= bar</div>
 <div class="line">foo || bar</div>
 </div><!-- fragment --><p >Arithmetic can be done without spaces, however:</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">foo+1</div>
+<div class="fragment"><div class="line">foo+1</div>
 <div class="line">3*bar</div>
 </div><!-- fragment --><p >Operators should remain packed against their parentheses:</p>
-<div class="fragment"><div class="line"> {c++}</div>
-<div class="line">if(foo)</div>
+<div class="fragment"><div class="line"><span class="keywordflow">if</span>(foo)</div>
 <div class="line">{</div>
 <div class="line">    stuff</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line">while(bar)</div>
+<div class="line"><span class="keywordflow">while</span>(bar)</div>
 <div class="line">{</div>
 <div class="line">    stuff</div>
 <div class="line">}</div>
@@ -325,32 +316,36 @@ Spacing</h4>
 <h2><a class="anchor" id="autotoc_md20"></a>
 1.4 Program Structure</h2>
 <p >The Imprimis project is, at its highest level, organized into four main projects as well as a pair of utilities which are perhaps not considered direct members of the engine.</p>
-<div class="fragment"><div class="line">    Serverside    .                     Clientside</div>
-<div class="line">------------------+-------------------------------------------------------------</div>
-<div class="line">                  .</div>
-<div class="line">+--------+  (A)   .</div>
-<div class="line">| Master |_____   .</div>
-<div class="line">| Server |     \  .  +--------+   +--------+   +------+</div>
-<div class="line">+--------+      \-.-&gt;|        |   |        |   |      |</div>
-<div class="line">    ^             .  |        |   |        |   |      |(F)+--------------+</div>
-<div class="line">    | +--------+  .  |        |   |        |   |      |--&gt;| Window Output|</div>
-<div class="line">    \_|  Game  |&lt;-.-&gt;|        |   |        |   |      |   +--------------+</div>
-<div class="line">    | | Server |  .  |        |   |        |   |Simple|   +--------------+</div>
-<div class="line">    | +--------+  .  |  Game  |(D)|  Game  |(E)|Direct|--&gt;| Sound Output |</div>
-<div class="line"> (B)| +--------+ (C) |  Code  |&lt;-&gt;| Engine |&lt;-&gt;|Media |   +--------------+</div>
-<div class="line">    \_|  Game  |&lt;-.-&gt;|        |   |        |   |Layer |</div>
-<div class="line">    | | Server |  .  |        |   |        |   |(SDL) |   +--------------+</div>
-<div class="line">    | +--------+  .  |        |   |        |   |      |&lt;--|  User Input  |</div>
-<div class="line">    | +--------+  .  |        |   |        |   |      |   +--------------+</div>
-<div class="line">    \_|  Game  |&lt;-.-&gt;|        |   |        |   |      |</div>
-<div class="line">      | Server |  .  +--------+   +--------+   +------+</div>
-<div class="line">      +--------+  .      ^</div>
-<div class="line">                  .      |(G)</div>
-<div class="line">                  .      v</div>
-<div class="line">                  .  +--------+</div>
-<div class="line">                  .  | Local  |</div>
-<div class="line">                  .  | Server |</div>
-<div class="line">                  .  +--------+</div>
+<div class="fragment"><div class="line">/--------------------+-----------------------------------------------------------\</div>
+<div class="line">|   Serverside       |                     Clientside                            |</div>
+<div class="line">+--------------------+-----------------------------------------------------------+</div>
+<div class="line">| +--------+  (A)    |                                                           |</div>
+<div class="line">| | Master +---------+------\                                                    |</div>
+<div class="line">| | Server |         |      |                                                    |</div>
+<div class="line">| +--------+         |      v                                                    |</div>
+<div class="line">|     ^              |  +--------+   +--------+   +--------+                     |</div>
+<div class="line">|     |  +--------+  |  |        |   |        |   |        |                     |</div>
+<div class="line">|     +--+ Game   |&lt;-+-&gt;|        |   |        |   |        |   +--------------+  |</div>
+<div class="line">|     |  | Server |  |  |        |   |        |   |        +--&gt;| Window Output|  |</div>
+<div class="line">|     |  +--------+  |  |        |   |        |   | Simple |   +--------------+  |</div>
+<div class="line">|     |              |  |  Game  |   | Game   |   | Direct |                     |</div>
+<div class="line">|  (B)|  +--------+ (C) |  Code  |(D)| Engine |(E)| Media  |(F)+--------------+  |</div>
+<div class="line">|     +--+  Game  |&lt;-+-&gt;|        |&lt;-&gt;|        |&lt;-&gt;| Layer  +--&gt;| Sound Output |  |</div>
+<div class="line">|     |  | Server |  |  |        |   |        |   | (SDL)  |   +--------------+  |</div>
+<div class="line">|     |  +--------+  |  |        |   |        |   |        |                     |</div>
+<div class="line">|     |              |  |        |   |        |   |        |   +--------------+  |</div>
+<div class="line">|     |  +--------+  |  |        |   |        |   |        |&lt;--+  User Input  |  |</div>
+<div class="line">|     \--+  Game  |&lt;-+-&gt;|        |   |        |   |        |   +--------------+  |</div>
+<div class="line">|        | Server |  |  |        |   |        |   |        |                     |</div>
+<div class="line">|        +--------+  |  +--------+   +--------+   +--------+                     |</div>
+<div class="line">|                    |      ^                                                    |</div>
+<div class="line">|                    |      |(G)                                                 |</div>
+<div class="line">|                    |      v                                                    |</div>
+<div class="line">|                    |  +--------+                                               |</div>
+<div class="line">|                    |  | Local  |                                               |</div>
+<div class="line">|                    |  | Server |                                               |</div>
+<div class="line">|                    |  +--------+                                               |</div>
+<div class="line">\--------------------+-----------------------------------------------------------/</div>
 </div><!-- fragment --><ul>
 <li>A: Master server provides a list of game servers to the game code via enet.</li>
 <li>B: Game servers register to a master server via enet.</li>
@@ -648,10 +643,10 @@ Commands</h4>
 <p >An example of a typical texture declaration is shown below.</p>
 <div class="fragment"><div class="line">setshader bumpenvspecmapglowworld</div>
 <div class="line">setshaderparam envscale  0.7 0.7 0.7</div>
-<div class="line">   texture 0 &quot;nieb/complex/light01_c.png&quot;</div>
-<div class="line">   texture n &quot;nieb/complex/light01_n.png&quot;</div>
-<div class="line">   texture s &quot;nieb/complex/light01_s.png&quot;</div>
-<div class="line">   texture g &quot;nieb/complex/light01_g.png&quot;</div>
+<div class="line">   texture 0 <span class="stringliteral">&quot;nieb/complex/light01_c.png&quot;</span></div>
+<div class="line">   texture n <span class="stringliteral">&quot;nieb/complex/light01_n.png&quot;</span></div>
+<div class="line">   texture s <span class="stringliteral">&quot;nieb/complex/light01_s.png&quot;</span></div>
+<div class="line">   texture g <span class="stringliteral">&quot;nieb/complex/light01_g.png&quot;</span></div>
 </div><!-- fragment --><p >This shader is set to <code>bumpenvspecmapglowworld</code>, meaning it uses bump (normal), environment mapping, specular mapping, and glow mapping. The <code>world</code> on the end is to declare it as a cube geometry shader as opposed to a decal. Afterwards, the four relevant maps are provided for the different shaders that are to be applied with the <code>texture</code> command;</p>
 <ul>
 <li><code>0/c</code> declares a diffuse map</li>
@@ -1278,11 +1273,28 @@ l`o`cation</h4>
 <li>float <code>size</code> radius of particle</li>
 <li>union <code>(char *text, float val, physent *owner, (uchar color2[3], progress)</code></li>
 </ul>
-<p >The union type has a whole pile of objects inside it, and its structure is outlined below:</p>
-<div class="fragment"><div class="line">|-----------------------------*text----------------------------|</div>
-<div class="line">|-------------val--------------|</div>
-<div class="line">|----------------------------*owner----------------------------|</div>
-<div class="line">|color2||color2||color2||-prog-|</div>
+<p >The union type can be any of the objects listed inside the union. However, it can only be one object at once. The union structure is outlined below:</p>
+<div class="fragment"><div class="line">                              union</div>
+<div class="line"> </div>
+<div class="line">0                                                             63 bit</div>
+<div class="line">+--------------------------------------------------------------+</div>
+<div class="line">|                            *text                             |</div>
+<div class="line">+--------------------------------------------------------------+</div>
+<div class="line">                               OR</div>
+<div class="line">0                              31                             63 bit</div>
+<div class="line">+-------------------------------+------------------------------+</div>
+<div class="line">|             val               ||||||||||||||||||||||||||||||||</div>
+<div class="line">+-------------------------------+------------------------------+</div>
+<div class="line">                               OR</div>
+<div class="line">0                                                             63 bit</div>
+<div class="line">+--------------------------------------------------------------+</div>
+<div class="line">|                            *owner                            |</div>
+<div class="line">+--------------------------------------------------------------+</div>
+<div class="line">                               OR</div>
+<div class="line">0       7      15      23      31                             63 bit</div>
+<div class="line">+-------+-------+-------+-------+------------------------------+</div>
+<div class="line">|color2 |color2 |color2 |-prog- ||||||||||||||||||||||||||||||||</div>
+<div class="line">+-------+-------+-------+-------+------------------------------+</div>
 </div><!-- fragment --><p >The union is set as one of the four rows depending on the type of particle present:</p>
 <ul>
 <li><code>*text</code> pointer for a text entity</li>
@@ -1717,13 +1729,13 @@ Lazy Execution `[]`</h4>
 <p >As expected for a delimiting pair of chars, the <code>[]</code> braces delimit the order of operations: interior nested pairs of <code>[]</code> braces are executed before outside ones. However, generally, disambiguation of the order of operations should be done by the <code>()</code> parentheses defined below.</p>
 <p >A notable side effect of the way brackets and parens work within the parser is that they must be defined inline with the command or assignment which they belong to. This means that while the following Cubescript is valid:</p>
 <div class="fragment"><div class="line">foo = [</div>
-<div class="line">    &quot;bar&quot;</div>
-<div class="line">    &quot;baz&quot;</div>
+<div class="line">    <span class="stringliteral">&quot;bar&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;baz&quot;</span></div>
 <div class="line">]</div>
 </div><!-- fragment --><p> this code cannot be parsed by the Cubescript parser. </p><div class="fragment"><div class="line">foo =</div>
 <div class="line">[</div>
-<div class="line">    &quot;bar&quot;</div>
-<div class="line">    &quot;baz&quot;</div>
+<div class="line">    <span class="stringliteral">&quot;bar&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;baz&quot;</span></div>
 <div class="line">]</div>
 </div><!-- fragment --><p >Do note that these semantics are at odds with the C++ standards for the codebase, which adopt a style similar to the latter example.</p>
 <h4><a class="anchor" id="autotoc_md178"></a>
@@ -1737,7 +1749,7 @@ Assignment `=`</h4>
 Lookup Alias `$`</h4>
 <p >The <code>$</code> symbol causes the parser to look for a defined alias with the name appended, allowing for the value of variables to be used by other functions. The behavior of this is similar to unix's <code>bash</code> shell language, while the behavior is implicit in many other languages (Cubescript interprets symbols not delineated by a <code>$</code> at the beginning as a string literal).</p>
 <div class="fragment"><div class="line">foo = 1</div>
-<div class="line">bar = $foo //bar = 1</div>
+<div class="line">bar = $foo <span class="comment">//bar = 1</span></div>
 </div><!-- fragment --><h4><a class="anchor" id="autotoc_md181"></a>
 Literal Substitution `@`</h4>
 <p >The <code>@</code> symbol causes the value stored by an alias to be directly inserted where it is called, from a scope determined by the nesting level. The <code>@</code> symbol thus allows for application in synthesis of compound alias names (by directly depositing the value of a variable in an already-in-progress string, which is then evaluated in full after the <code>@</code> symbol has taken effect).</p>
@@ -1746,21 +1758,21 @@ Literal Substitution `@`</h4>
 <div class="line">    baz = $foo</div>
 <div class="line">]</div>
 <div class="line">foo = 2</div>
-<div class="line">bar //baz = 2</div>
+<div class="line">bar <span class="comment">//baz = 2</span></div>
 </div><!-- fragment --><div class="fragment"><div class="line">foo = 1</div>
 <div class="line">bar = [</div>
 <div class="line">    baz = @foo</div>
 <div class="line">]</div>
 <div class="line">foo = 2</div>
-<div class="line">bar //baz = 1</div>
+<div class="line">bar <span class="comment">//baz = 1</span></div>
 </div><!-- fragment --><h4><a class="anchor" id="autotoc_md182"></a>
 Comments `//`</h4>
 <p >Cubescript only supports inline comments (no comment blocks) using a pair of slashes. This can be done at the beginning of a line, or following the end of a written code line.</p>
-<div class="fragment"><div class="line">//I defined an alias `foo` here</div>
+<div class="fragment"><div class="line"><span class="comment">//I defined an alias `foo` here</span></div>
 <div class="line"> </div>
 <div class="line">foo = [</div>
-<div class="line">    &quot;bar&quot;</div>
-<div class="line">    &quot;baz&quot; //I defined `baz` here</div>
+<div class="line">    <span class="stringliteral">&quot;bar&quot;</span></div>
+<div class="line">    <span class="stringliteral">&quot;baz&quot;</span> <span class="comment">//I defined `baz` here</span></div>
 <div class="line">]</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md183"></a>
 7.4.2 Commands</h3>
@@ -1881,12 +1893,13 @@ Persistent Variables `*VARP`</h4>
 <li><code>vec</code> has many linear algebra operators defined for it: see <code>shared/geom.h</code></li>
 </ul>
 <p >As the <code>vec</code> object is only defined for a 3-vector, seperate classes like <code><a class="el" href="structvec2.html">vec2</a></code> and <code><a class="el" href="structvec4.html">vec4</a></code> are used to do two or four dimensional linear algebra. However, these objects are much less common and also have less operators defined for it, befitting a 3d engine where locations of objects in the world are nearly always defined as a 3d vector.</p>
-<p >An important note about the <code>vec</code> object's many member functions is that they are destructive: when you call a member function such as in the following example, the state of <code>vec a</code> is changed by the call to <code>mul()</code>: </p><div class="fragment"><div class="line">vec a(1,1,1);</div>
+<p >An important note about the <code>vec</code> object's many member functions is that they are destructive: when you call a member function such as in the following example, the state of <code>vec a</code> is changed by the call to <code>mul()</code>: </p><div class="fragment"><div class="line"><a class="code hl_struct" href="structvec.html">vec</a> a(1,1,1);</div>
 <div class="line"> </div>
-<div class="line">float b = 2;</div>
+<div class="line"><span class="keywordtype">float</span> b = 2;</div>
 <div class="line"> </div>
-<div class="line">// `c` is (2,2,2), but `b` is ALSO (2,2,2) because mul() changes its state</div>
-<div class="line">vec c = a.mul(b);</div>
+<div class="line"><span class="comment">// `c` is (2,2,2), but `b` is ALSO (2,2,2) because mul() changes its state</span></div>
+<div class="line"><a class="code hl_struct" href="structvec.html">vec</a> c = a.mul(b);</div>
+<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdef"><b>Definition:</b> geom.h:140</div></div>
 </div><!-- fragment --><p> To work around this, it is typical to see what appears to be an unnecessary constructor call <code><a class="el" href="structvec.html">vec(vec T)</a></code>. This is to create a new tempoary object using the constructor call which can have member functions applied to it without mangling the original vector.</p>
 <p >While this property of <code>vec</code>'s many member functions is most commonly seen in <code>vec</code> objects, the same behavior also applies to other related objects, such as <code><a class="el" href="structvec2.html">vec2</a></code> or <code>ivec</code>.</p>
 <h4><a class="anchor" id="autotoc_md198"></a>
