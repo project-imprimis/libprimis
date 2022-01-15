@@ -5,7 +5,7 @@
 
 ## Documentation
 
-  - [API Documentation Website](docs/index.html)
+  - [API Documentation Website](https://project-imprimis.github.io/libprimis/)
   - [Engine](doc/engine.md)
   - [Interaface](doc/interface.md)
   - [Tesseract Renderer](doc/tesseract-renderer.md)
