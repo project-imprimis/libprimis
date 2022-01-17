@@ -42,6 +42,7 @@ var iengine_8h =
     [ "rendermodel", "iengine_8h.html#a03d8f03bd1f66efef039dcc372ccf0db", null ],
     [ "resetcursor", "iengine_8h.html#a1f3133491aa8930122b3e22542ccc48d", null ],
     [ "setfont", "iengine_8h.html#a57fe5ec515ab801397e4bca80059cd4e", null ],
+    [ "swapbuffers", "iengine_8h.html#aef6750cb30230be48e99f7298276e1f1", null ],
     [ "updatefpshistory", "iengine_8h.html#a62536bc1addc4abef4f8216cb43b127f", null ],
     [ "vecfromyawpitch", "iengine_8h.html#a6692daba13dccb4afccdea6c3dad3a29", null ],
     [ "vectoryawpitch", "iengine_8h.html#a19db406be1891683192cd071c05b5e7c", null ],
