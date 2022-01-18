@@ -889,6 +889,7 @@ struct varenderer : partrenderer
         {
             p->flags &= ~0x80;
             //sets the partvert vs array's tc fields to four permutations of input parameters
+            //===================================================== SETTEXCOORDS
             #define SETTEXCOORDS(u1c, u2c, v1c, v2c, body) \
             { \
                 float u1 = u1c, \
@@ -927,6 +928,8 @@ struct varenderer : partrenderer
             {
                 SETTEXCOORDS(0, 1, 0, 1, {});
             }
+            #undef SETTEXCOORDS
+            //==================================================================
             #define SETCOLOR(r, g, b, a) \
             do { \
                 bvec4 col(r, g, b, a); \
