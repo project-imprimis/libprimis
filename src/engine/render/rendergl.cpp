@@ -1896,8 +1896,8 @@ void drawminimap(int yaw, int pitch, vec loc)
     glViewport(0, 0, hudw, hudh);
 }
 
-VAR(modelpreviewfov, 10, 20, 100);
-VAR(modelpreviewpitch, -90, -15, 90);
+VAR(modelpreviewfov, 10, 20, 100);    //y axis field of view
+VAR(modelpreviewpitch, -90, -15, 90); //pitch above model to render
 
 /* ======================== model preview windows =========================== */
 
