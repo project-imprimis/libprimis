@@ -1720,12 +1720,12 @@ void clearminimap()
     }
 }
 
-VARR(minimapheight, 0, 0, 2<<16);
+VARR(minimapheight, 0, 0, 2<<16); //height above bottom of map to render at
 CVARR(minimapcolor, 0);
 VARR(minimapclip, 0, 0, 1);
-VARP(minimapsize, 7, 9, 10);
+VARP(minimapsize, 7, 9, 10);      //2^n size of the minimap texture (along edge)
 VARP(showminimap, 0, 1, 1);
-CVARP(nominimapcolor, 0x101010);
+CVARP(nominimapcolor, 0x101010);  //color for the part of the minimap that isn't the map texture
 
 void bindminimap()
 {
