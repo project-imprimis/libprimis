@@ -1,4 +1,9 @@
 var searchData=
 [
-  ['updatefpshistory_0',['updatefpshistory',['../iengine_8h.html#a62536bc1addc4abef4f8216cb43b127f',1,'iengine.h']]]
+  ['setfont_0',['setfont',['../iengine_8h.html#a57fe5ec515ab801397e4bca80059cd4e',1,'iengine.h']]],
+  ['setsize_1',['setsize',['../structvector.html#a63a989ce0517774b2390d0641eccf835',1,'vector']]],
+  ['shrink_2',['shrink',['../structvector.html#aee8f5fea5bb485f72d4044a6b121e264',1,'vector']]],
+  ['sort_3',['sort',['../structvector.html#a2f7b573d71c078d65dc0e40b8409b700',1,'vector']]],
+  ['sortname_4',['sortname',['../structvector.html#a0feade3a2946e44e2e13759fbe6bfd72',1,'vector']]],
+  ['swapbuffers_5',['swapbuffers',['../iengine_8h.html#aef6750cb30230be48e99f7298276e1f1',1,'iengine.h']]]
 ];

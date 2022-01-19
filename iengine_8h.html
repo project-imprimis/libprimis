@@ -737,8 +737,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>freeblock</b> (<a cla
 <tr class="memitem:a479a2f0dcaef0374aac87a93ef94a9c8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a479a2f0dcaef0374aac87a93ef94a9c8">emptymap</a> (int factor, bool force, bool usecfg=true)</td></tr>
 <tr class="memdesc:a479a2f0dcaef0374aac87a93ef94a9c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the old level and creates a new one.  <a href="iengine_8h.html#a479a2f0dcaef0374aac87a93ef94a9c8">More...</a><br /></td></tr>
 <tr class="separator:a479a2f0dcaef0374aac87a93ef94a9c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1e45db741aa48409e1e04553295d8cb"><td class="memItemLeft" align="right" valign="top"><a id="aa1e45db741aa48409e1e04553295d8cb" name="aa1e45db741aa48409e1e04553295d8cb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>enlargemap</b> (bool force)</td></tr>
+<tr class="memitem:aa1e45db741aa48409e1e04553295d8cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#aa1e45db741aa48409e1e04553295d8cb">enlargemap</a> (bool force)</td></tr>
+<tr class="memdesc:aa1e45db741aa48409e1e04553295d8cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grows the map to an additional gridsize.  <a href="iengine_8h.html#aa1e45db741aa48409e1e04553295d8cb">More...</a><br /></td></tr>
 <tr class="separator:aa1e45db741aa48409e1e04553295d8cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a223198d6e04d3af1848c60ebf64b1708"><td class="memItemLeft" align="right" valign="top"><a id="a223198d6e04d3af1848c60ebf64b1708" name="a223198d6e04d3af1848c60ebf64b1708"></a>
 <a class="el" href="structvec.html">vec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getselpos</b> ()</td></tr>
@@ -1323,18 +1323,15 @@ false If the strings do not match and do not make a private-public key pair. </d
 </div><div class="memdoc">
 
 <p>Clears the old level and creates a new one. </p>
-<p >Grows the map to an additional gridsize.</p>
 <p >This function unloads the old map, including textures, and creates a new level of the size specified.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">factor</td><td>sets the gridscale (power of 2 size) of the map; limit 10 to 15 </td></tr>
     <tr><td class="paramname">force</td><td>if true, creates map regardless of check variables </td></tr>
-    <tr><td class="paramname">usecfg</td><td>if true, uses the default map config path</td></tr>
+    <tr><td class="paramname">usecfg</td><td>if true, uses the default map config path </td></tr>
   </table>
   </dd>
 </dl>
-<p>Expands the map by placing the old map in the corner nearest the origin and adding 7 old-map sized cubes to create a new largest cube.</p>
-<p >This moves the worldroot cube to the new parent cube of the old map. </p>
 
 </div>
 </div>
@@ -1377,6 +1374,28 @@ false If the strings do not match and do not make a private-public key pair. </d
 <p>Returns the engine library's name string. </p>
 <p >Returns the version string for the engine library, which is a compiled-in constant inside the engine library. The purpose of the function is to quickly disambiguate different versions of the library.</p>
 <dl class="section return"><dt>Returns</dt><dd>a std::string corresponding to the engine's name string </dd></dl>
+
+</div>
+</div>
+<a id="aa1e45db741aa48409e1e04553295d8cb" name="aa1e45db741aa48409e1e04553295d8cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1e45db741aa48409e1e04553295d8cb">&#9670;&nbsp;</a></span>enlargemap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool enlargemap </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>force</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Grows the map to an additional gridsize. </p>
+<p >Expands the map by placing the old map in the corner nearest the origin and adding 7 old-map sized cubes to create a new largest cube.</p>
+<p >This moves the worldroot cube to the new parent cube of the old map. </p>
 
 </div>
 </div>

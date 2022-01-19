@@ -10,6 +10,7 @@ var iengine_8h =
     [ "emptymap", "iengine_8h.html#a479a2f0dcaef0374aac87a93ef94a9c8", null ],
     [ "enginebuilddate", "iengine_8h.html#a8ef879cc5c463110ac5688289a2bcd66", null ],
     [ "enginestr", "iengine_8h.html#a10981386f25017ca2cd1797547e708db", null ],
+    [ "enlargemap", "iengine_8h.html#aa1e45db741aa48409e1e04553295d8cb", null ],
     [ "entcancel", "iengine_8h.html#a535d85af13285be7cf8080694055076b", null ],
     [ "fatal", "iengine_8h.html#acbfddc484ef16496a323777a7d6ab62e", null ],
     [ "findmaterial", "iengine_8h.html#af1a38a2e34aad80b862a0c5915ecb101", null ],

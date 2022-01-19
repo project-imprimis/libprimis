@@ -5,7 +5,7 @@ var tools_8h =
     [ "sortnameless", "structsortnameless.html", null ],
     [ "isclass< T >", "structisclass.html", null ],
     [ "stringslice", "structstringslice.html", null ],
-    [ "vector< T >", "structvector.html", null ],
+    [ "vector< T >", "structvector.html", "structvector" ],
     [ "hashbase< H, E, K, T >", "structhashbase.html", "structhashbase" ],
     [ "hashbase< H, E, K, T >::chain", "structhashbase_1_1chain.html", null ],
     [ "hashbase< H, E, K, T >::chainchunk", "structhashbase_1_1chainchunk.html", null ],

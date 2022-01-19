@@ -206,9 +206,9 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keywordtype">void</span> reset()</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    {</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        smooth = -1;</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        sts.setsize(0);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        sts.<a class="code hl_function" href="structvector.html#a63a989ce0517774b2390d0641eccf835">setsize</a>(0);</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        shader = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        params.setsize(0);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        params.<a class="code hl_function" href="structvector.html#a63a989ce0517774b2390d0641eccf835">setsize</a>(0);</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        loaded = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        texmask = 0;</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        DELETEA(grass);</div>
@@ -221,7 +221,7 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        loaded = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        grasstex = <span class="keyword">nullptr</span>;</div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        thumbnail = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; sts.length(); i++)</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; sts.<a class="code hl_function" href="structvector.html#a6c907908675387470a149acfe8684811">length</a>(); i++)</div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        {</div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            Tex &amp;t = sts[i];</div>
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>            t.t = <span class="keyword">nullptr</span>;</div>
@@ -262,7 +262,7 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
 <div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordtype">void</span> reset()</div>
 <div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    {</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        params.setsize(0);</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        params.<a class="code hl_function" href="structvector.html#a63a989ce0517774b2390d0641eccf835">setsize</a>(0);</div>
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        linked = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        scale = 1;</div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        rotation = 0;</div>
@@ -365,7 +365,9 @@ $(document).ready(function(){initNavTree('slot_8h_source.html',''); initResizabl
 <div class="ttc" id="astructivec2_html"><div class="ttname"><a href="structivec2.html">ivec2</a></div><div class="ttdef"><b>Definition:</b> geom.h:1601</div></div>
 <div class="ttc" id="astructvec2_html"><div class="ttname"><a href="structvec2.html">vec2</a></div><div class="ttdef"><b>Definition:</b> geom.h:14</div></div>
 <div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdef"><b>Definition:</b> geom.h:140</div></div>
-<div class="ttc" id="astructvector_html"><div class="ttname"><a href="structvector.html">vector</a></div><div class="ttdef"><b>Definition:</b> tools.h:599</div></div>
+<div class="ttc" id="astructvector_html"><div class="ttname"><a href="structvector.html">vector</a></div><div class="ttdoc">A container template for storing variable lists of items.</div><div class="ttdef"><b>Definition:</b> tools.h:611</div></div>
+<div class="ttc" id="astructvector_html_a63a989ce0517774b2390d0641eccf835"><div class="ttname"><a href="structvector.html#a63a989ce0517774b2390d0641eccf835">vector::setsize</a></div><div class="ttdeci">void setsize(int i)</div><div class="ttdoc">Sets the used size of the array to i.</div><div class="ttdef"><b>Definition:</b> tools.h:902</div></div>
+<div class="ttc" id="astructvector_html_a6c907908675387470a149acfe8684811"><div class="ttname"><a href="structvector.html#a6c907908675387470a149acfe8684811">vector::length</a></div><div class="ttdeci">int length() const</div><div class="ttdoc">Returns the size of the array.</div><div class="ttdef"><b>Definition:</b> tools.h:846</div></div>
 <div class="ttc" id="astructvslotmap_html"><div class="ttname"><a href="structvslotmap.html">vslotmap</a></div><div class="ttdef"><b>Definition:</b> slot.h:224</div></div>
 <div class="ttc" id="astructvslotref_html"><div class="ttname"><a href="structvslotref.html">vslotref</a></div><div class="ttdef"><b>Definition:</b> slot.h:237</div></div>
 </div><!-- fragment --></div><!-- contents -->
