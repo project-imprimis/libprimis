@@ -930,6 +930,8 @@ struct varenderer : partrenderer
             }
             #undef SETTEXCOORDS
             //==================================================================
+
+            //========================================================= SETCOLOR
             #define SETCOLOR(r, g, b, a) \
             do { \
                 bvec4 col(r, g, b, a); \
@@ -947,11 +949,14 @@ struct varenderer : partrenderer
             {
                 SETCOLOR(p->color.r, p->color.g, p->color.b, blend);
             }
+
         }
         else if(type&PT_MOD)
         {
             SETMODCOLOR;
         }
+        #undef SETCOLOR
+        //======================================================================
         else
         {
             for(int i = 0; i < 4; ++i)
