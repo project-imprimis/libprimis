@@ -7,7 +7,7 @@ var searchData=
   ['slot_4',['Slot',['../structSlot.html',1,'']]],
   ['slot_2eh_5',['slot.h',['../slot_8h.html',1,'']]],
   ['slotshaderparam_6',['SlotShaderParam',['../structSlotShaderParam.html',1,'']]],
-  ['sort_7',['sort',['../structvector.html#a2f7b573d71c078d65dc0e40b8409b700',1,'vector']]],
+  ['sort_7',['sort',['../structvector.html#a2f7b573d71c078d65dc0e40b8409b700',1,'vector::sort()'],['../structvector.html#aa8ed3bcb552484154fb959aa1f02a3a0',1,'vector::sort(F fun, int i=0, int n=-1)']]],
   ['sortless_8',['sortless',['../structsortless.html',1,'']]],
   ['sortname_9',['sortname',['../structvector.html#a0feade3a2946e44e2e13759fbe6bfd72',1,'vector']]],
   ['sortnameless_10',['sortnameless',['../structsortnameless.html',1,'']]],

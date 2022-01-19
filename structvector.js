@@ -1,5 +1,8 @@
 var structvector =
 [
+    [ "vector", "structvector.html#a00d237f22fd5eb1aa9a536993e82e54f", null ],
+    [ "vector", "structvector.html#ac636edc485bffa973b50b8bdfb1cc9cb", null ],
+    [ "~vector", "structvector.html#a7bc236f547bb5debe890fa8ebaabe965", null ],
     [ "add", "structvector.html#ad171b6218fb3c14a2d5d61d492f49a58", null ],
     [ "add", "structvector.html#a3bec1ffcada3738e7cdc86453f9b5c7d", null ],
     [ "addunique", "structvector.html#a6228008b964380b3e519a9949efda079", null ],
@@ -10,6 +13,7 @@ var structvector =
     [ "drop", "structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66", null ],
     [ "dup", "structvector.html#a46500dd47fc3f4ec51807719dbe0a793", null ],
     [ "empty", "structvector.html#a9af39ba556fbaeaa09cff474c6308076", null ],
+    [ "find", "structvector.html#a6189bf4fa76f6304289a706b8b81767e", null ],
     [ "getbuf", "structvector.html#a37662a6675e018cefdfc3543de9c731b", null ],
     [ "getbuf", "structvector.html#a15a5e04878f77f49540e149c9f8d427f", null ],
     [ "inbuf", "structvector.html#a1597d5f5683b5666dca9edf2365c6c27", null ],
@@ -25,6 +29,7 @@ var structvector =
     [ "pop", "structvector.html#a86b505ce7f65a2e6fc5ae20d783da9c2", null ],
     [ "put", "structvector.html#ac3d44f0f942b1210dc91b8a3e8e88cc5", null ],
     [ "remove", "structvector.html#a515096bf4dcf9d9aeda81ece3c8b24b6", null ],
+    [ "remove", "structvector.html#a32cb8f72325a5f52298ffac9abd8d102", null ],
     [ "removeobj", "structvector.html#a10daba22a06b056f79048f614dccbd52", null ],
     [ "removeunordered", "structvector.html#a6a92723c52a0b1a02c2ad43e2a7672de", null ],
     [ "replacewithlast", "structvector.html#a5f1fe4bf71fda4f1f9fa65d7e810e6c4", null ],
@@ -32,5 +37,9 @@ var structvector =
     [ "setsize", "structvector.html#a63a989ce0517774b2390d0641eccf835", null ],
     [ "shrink", "structvector.html#aee8f5fea5bb485f72d4044a6b121e264", null ],
     [ "sort", "structvector.html#a2f7b573d71c078d65dc0e40b8409b700", null ],
-    [ "sortname", "structvector.html#a0feade3a2946e44e2e13759fbe6bfd72", null ]
+    [ "sort", "structvector.html#aa8ed3bcb552484154fb959aa1f02a3a0", null ],
+    [ "sortname", "structvector.html#a0feade3a2946e44e2e13759fbe6bfd72", null ],
+    [ "alen", "structvector.html#a7bf3e117a2c8618edc5dc0ef7c06e455", null ],
+    [ "buf", "structvector.html#a2bb835cb1456a5a1700906a49fe72483", null ],
+    [ "ulen", "structvector.html#add07f68356671ba0bf6537267fde2946", null ]
 ];

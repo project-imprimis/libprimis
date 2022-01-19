@@ -16,6 +16,7 @@ var NAVTREEINDEX0 =
 "files.html":[11,0],
 "functions.html":[10,3,0],
 "functions_func.html":[10,3,1],
+"functions_vars.html":[10,3,2],
 "geom_8h.html":[11,0,0,0,4],
 "geom_8h.html#ae991d89d766b25a0e9b0f07509128749":[11,0,0,0,4,23],
 "geom_8h_source.html":[11,0,0,0,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "md_engine.html#autotoc_md62":[6,2,2,3,4],
 "md_engine.html#autotoc_md63":[6,2,2,3,5],
 "md_engine.html#autotoc_md64":[6,2,2,3,6],
-"md_engine.html#autotoc_md65":[6,2,2,3,7],
-"md_engine.html#autotoc_md66":[6,2,2,3,8]
+"md_engine.html#autotoc_md65":[6,2,2,3,7]
 };
