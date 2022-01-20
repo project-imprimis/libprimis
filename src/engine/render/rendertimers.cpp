@@ -15,23 +15,23 @@
 
 #include "interface/control.h"
 
-void cleanuptimers(); //needed for timer script gvar
-VARFN(timer, usetimers, 0, 0, 1, cleanuptimers());
-VAR(frametimer, 0, 0, 1); //toggles timing how long each frame takes (and rendering it to timer ui)
+void cleanuptimers();                              //needed for timer script gvar
+VARFN(timer, usetimers, 0, 0, 1, cleanuptimers()); //toggles logging timer information & rendering it
+VAR(frametimer, 0, 0, 1);                          //toggles timing how long each frame takes (and rendering it to timer ui)
 
 struct timer
 {
     enum
     {
-        Timer_MaxQuery = 4        //max number of gl queries
+        Timer_MaxQuery = 4          //max number of gl queries
     };
-    const char *name;       //name the timer reports as
-    bool gpu;               //whether the timer is for gpu time (true) or cpu time
-    GLuint query[Timer_MaxQuery]; //gpu query information
-    int waiting;            //internal bitmask for queries
-    uint starttime;         //time the timer was started (in terms of ms since game started)
-    float result,           //raw value of the timer, -1 if no info available
-          print;            //the time the timer displays: ms per frame for whatever object
+    const char *name;               //name the timer reports as
+    bool gpu;                       //whether the timer is for gpu time (true) or cpu time
+    GLuint query[Timer_MaxQuery];   //gpu query information
+    int waiting;                    //internal bitmask for queries
+    uint starttime;                 //time the timer was started (in terms of ms since game started)
+    float result,                   //raw value of the timer, -1 if no info available
+          print;                    //the time the timer displays: ms per frame for whatever object
 };
 
 //locally relevant functionality
