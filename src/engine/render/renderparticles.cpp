@@ -940,6 +940,7 @@ struct varenderer : partrenderer
                     vs[i].color = col; \
                 } \
             } while(0)
+            //====================================================== SETMODCOLOR
             #define SETMODCOLOR SETCOLOR((p->color.r*blend)>>8, (p->color.g*blend)>>8, (p->color.b*blend)>>8, 255)
             if(type&PT_MOD)
             {
@@ -956,6 +957,7 @@ struct varenderer : partrenderer
             SETMODCOLOR;
         }
         #undef SETCOLOR
+        #undef SETMODCOLOR
         //======================================================================
         else
         {
