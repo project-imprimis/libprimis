@@ -1315,7 +1315,7 @@ class prefabmesh
         struct vertex
         {
             vec pos;
-            bvec4 norm;
+            vec4<uchar> norm;
         };
 
         static constexpr int prefabmeshsize = 1<<9;

@@ -54,7 +54,7 @@ bool animmodel::enabletc = false,
 
 float animmodel::sizescale = 1;
 
-vec4 animmodel::colorscale(1, 1, 1, 1);
+vec4<float> animmodel::colorscale(1, 1, 1, 1);
 
 GLuint animmodel::lastvbuf = 0,
        animmodel::lasttcbuf = 0,
@@ -495,7 +495,7 @@ void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride)
     bindpos(ebuf, vbuf, v, stride, GL_FLOAT, 3);
 }
 
-void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, GenericVec4<half> *v, int stride)
+void animmodel::meshgroup::bindpos(GLuint ebuf, GLuint vbuf, vec4<half> *v, int stride)
 {
     bindpos(ebuf, vbuf, v, stride, GL_HALF_FLOAT, 4);
 }
@@ -1346,7 +1346,7 @@ void animmodel::render(int anim, int basetime, int basetime2, float pitch, const
     }
 }
 
-void animmodel::render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4 &color)
+void animmodel::render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color)
 {
     vec axis(1, 0, 0), forward(0, 1, 0);
 

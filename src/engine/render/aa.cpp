@@ -132,10 +132,10 @@ namespace //internal functions incl. AA implementations
         glBindTexture(GL_TEXTURE_RECTANGLE, tqaaframe ? tqaatex[1] : tqaatex[0]);
         gbuf.setaavelocityparams(GL_TEXTURE2);
         glActiveTexture_(GL_TEXTURE0);
-        vec4 quincunx(0, 0, 0, 0);
+        vec4<float> quincunx(0, 0, 0, 0);
         if(tqaaquincunx)
         {
-            quincunx = tqaaframe&1 ? vec4(0.25f, 0.25f, -0.25f, -0.25f) : vec4(-0.25f, -0.25f, 0.25f, 0.25f);
+            quincunx = tqaaframe&1 ? vec4<float>(0.25f, 0.25f, -0.25f, -0.25f) : vec4<float>(-0.25f, -0.25f, 0.25f, 0.25f);
         }
         if(multisampledaa())
         {
@@ -982,20 +982,20 @@ namespace //internal functions incl. AA implementations
                 glClear(GL_COLOR_BUFFER_BIT);
             }
             smaablendweightshader->set();
-            vec4 subsamples(0, 0, 0, 0);
+            vec4<float> subsamples(0, 0, 0, 0);
             if(tqaa && split)
             {
                 subsamples = tqaaframe&1 ?
-                             (pass != smaasubsampleorder ? vec4(6, 4, 2, 4) : vec4(3, 5, 1, 4)) :
-                             (pass != smaasubsampleorder ? vec4(4, 6, 2, 3) : vec4(5, 3, 1, 3));
+                             (pass != smaasubsampleorder ? vec4<float>(6, 4, 2, 4) : vec4<float>(3, 5, 1, 4)) :
+                             (pass != smaasubsampleorder ? vec4<float>(4, 6, 2, 3) : vec4<float>(5, 3, 1, 3));
             }
             else if(tqaa)
             {
-                subsamples = tqaaframe&1 ? vec4(2, 2, 2, 0) : vec4(1, 1, 1, 0);
+                subsamples = tqaaframe&1 ? vec4<float>(2, 2, 2, 0) : vec4<float>(1, 1, 1, 0);
             }
             else if(split)
             {
-                subsamples = pass != smaasubsampleorder ? vec4(2, 2, 2, 0) : vec4(1, 1, 1, 0);
+                subsamples = pass != smaasubsampleorder ? vec4<float>(2, 2, 2, 0) : vec4<float>(1, 1, 1, 0);
             }
             LOCALPARAM(subsamples, subsamples);
             glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[1]);

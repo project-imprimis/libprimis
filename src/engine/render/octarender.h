@@ -4,9 +4,9 @@
 struct vertex
 {
     vec pos;
-    bvec4 norm;
+    vec4<uchar> norm;
     vec tc;
-    bvec4 tangent;
+    vec4<uchar> tangent;
 };
 
 struct materialsurface

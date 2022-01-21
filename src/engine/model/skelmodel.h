@@ -40,7 +40,7 @@ struct skelmodel : animmodel
 
     struct vvertg
     {
-        GenericVec4<half> pos;
+        vec4<half> pos;
         GenericVec2<half> tc;
         squat tangent;
     };

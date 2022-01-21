@@ -2226,16 +2226,16 @@ static LocalShaderParam lightpos("lightpos"),
                         spotparams("spotparams"),
                         shadowparams("shadowparams"),
                         shadowoffset("shadowoffset");
-static vec4 lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
+static vec4<float> lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
 static vec2 shadowoffsetv[8];
 
 static void setlightparams(int i, const lightinfo &l)
 {
-    lightposv[i]   = vec4(l.o, 1).div(l.radius);
-    lightcolorv[i] = vec4(vec(l.color).mul(2*ldrscaleb), l.nospec() ? 0 : 1);
+    lightposv[i]   = vec4<float>(l.o, 1).div(l.radius);
+    lightcolorv[i] = vec4<float>(vec(l.color).mul(2*ldrscaleb), l.nospec() ? 0 : 1);
     if(l.spot > 0)
     {
-        spotparamsv[i] = vec4(vec(l.dir).neg(), 1/(1 - cos360(l.spot)));
+        spotparamsv[i] = vec4<float>(vec(l.dir).neg(), 1/(1 - cos360(l.spot)));
     }
     if(l.shadowmap >= 0)
     {
@@ -2245,7 +2245,7 @@ static void setlightparams(int i, const lightinfo &l)
         int border = smfilter > 2 ? smborder2 : smborder;
         if(l.spot > 0)
         {
-            shadowparamsv[i] = vec4(
+            shadowparamsv[i] = vec4<float>(
                 -0.5f * sm.size * cotan360(l.spot),
                 (-smnearclip * smfarclip / (smfarclip - smnearclip) - 0.5f*bias),
                 1 / (1 + std::fabs(l.dir.z)),
@@ -2253,7 +2253,7 @@ static void setlightparams(int i, const lightinfo &l)
         }
         else
         {
-            shadowparamsv[i] = vec4(
+            shadowparamsv[i] = vec4<float>(
                 -0.5f * (sm.size - border),
                 -smnearclip * smfarclip / (smfarclip - smnearclip) - 0.5f*bias,
                 sm.size,
@@ -2813,7 +2813,7 @@ void GBuffer::rendervolumetric()
         if(l.spot > 0)
         {
             volumetricshader->setvariant(0, l.shadowmap >= 0 ? 2 : 1);
-            LOCALPARAM(spotparams, vec4(l.dir, 1/(1 - cos360(l.spot))));
+            LOCALPARAM(spotparams, vec4<float>(l.dir, 1/(1 - cos360(l.spot))));
         }
         else if(l.shadowmap >= 0)
         {
@@ -2824,7 +2824,7 @@ void GBuffer::rendervolumetric()
             volumetricshader->set();
         }
 
-        LOCALPARAM(lightpos, vec4(l.o, 1).div(l.radius));
+        LOCALPARAM(lightpos, vec4<float>(l.o, 1).div(l.radius));
         vec color = vec(l.color).mul(ldrscaleb).mul(volcolor.tocolor().mul(volscale));
         LOCALPARAM(lightcolor, color);
 
@@ -3654,10 +3654,10 @@ void GBuffer::rendershadowmaps(int offset)
 
         float smnearclip = SQRT3 / l.radius,
               smfarclip = SQRT3;
-        matrix4 smprojmatrix(vec4(static_cast<float>(sm.size - border) / sm.size, 0, 0, 0),
-                              vec4(0, static_cast<float>(sm.size - border) / sm.size, 0, 0),
-                              vec4(0, 0, -(smfarclip + smnearclip) / (smfarclip - smnearclip), -1),
-                              vec4(0, 0, -2*smnearclip*smfarclip / (smfarclip - smnearclip), 0));
+        matrix4 smprojmatrix(vec4<float>(static_cast<float>(sm.size - border) / sm.size, 0, 0, 0),
+                              vec4<float>(0, static_cast<float>(sm.size - border) / sm.size, 0, 0),
+                              vec4<float>(0, 0, -(smfarclip + smnearclip) / (smfarclip - smnearclip), -1),
+                              vec4<float>(0, 0, -2*smnearclip*smfarclip / (smfarclip - smnearclip), 0));
 
         if(shadowmapping == ShadowMap_Spot)
         {

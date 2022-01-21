@@ -481,7 +481,7 @@ struct GlobalShaderParam
         setf(v.x, v.y, z, w);
     }
 
-    void set(const vec4 &v)
+    void set(const vec4<float> &v)
     {
         setf(v.x, v.y, v.z, v.w);
     }
@@ -530,7 +530,7 @@ struct GlobalShaderParam
         seti(v.x, v.y, z, w);
     }
 
-    void set(const ivec4 &v)
+    void set(const vec4<int> &v)
     {
         seti(v.x, v.y, v.z, v.w);
     }
@@ -663,7 +663,7 @@ struct LocalShaderParam
         setf(v.x, v.y, z, w);
     }
 
-    void set(const vec4 &v)
+    void set(const vec4<float> &v)
     {
         setf(v.x, v.y, v.z, v.w);
     }
@@ -700,7 +700,7 @@ struct LocalShaderParam
         }
     }
 
-    void setv(const vec4 *v, int n = 1)
+    void setv(const vec4<float> *v, int n = 1)
     {
         ShaderParamBinding *b = resolve();
         if(b)
@@ -850,7 +850,7 @@ struct LocalShaderParam
         seti(v.x, v.y, z, w);
     }
 
-    void set(const ivec4 &v)
+    void set(const vec4<int> &v)
     {
         seti(v.x, v.y, v.z, v.w);
     }
@@ -879,7 +879,7 @@ struct LocalShaderParam
             glUniform2iv_(b->loc, n, v->v);
         }
     }
-    void setv(const ivec4 *v, int n = 1)
+    void setv(const vec4<int> *v, int n = 1)
     {
         ShaderParamBinding *b = resolve();
         if(b)

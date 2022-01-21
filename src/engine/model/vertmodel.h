@@ -3,7 +3,7 @@ struct vertmodel : animmodel
     struct vert
     {
         vec pos, norm;
-        vec4 tangent;
+        vec4<float> tangent;
     };
 
     struct vvert
@@ -15,7 +15,7 @@ struct vertmodel : animmodel
 
     struct vvertg
     {
-        GenericVec4<half> pos;
+        vec4<half> pos;
         GenericVec2<half> tc;
         squat tangent;
     };
@@ -116,7 +116,7 @@ struct vertmodel : animmodel
 
         static void assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
         {
-            vv.pos = GenericVec4<half>(v.pos, 1);
+            vv.pos = vec4<half>(v.pos, 1);
             vv.tc = tc.tc;
             vv.tangent = v.tangent;
         }
@@ -214,7 +214,7 @@ struct vertmodel : animmodel
                 {
                     T &v = vdata[i];
                     IP_VERT_P(pos, vec);
-                    IP_VERT_P(tangent, vec4);
+                    IP_VERT_P(tangent, vec4<float>);
                 }
             }
             else
@@ -223,7 +223,7 @@ struct vertmodel : animmodel
                 {
                     T &v = vdata[i];
                     IP_VERT(pos, vec);
-                    IP_VERT(tangent, vec4);
+                    IP_VERT(tangent, vec4<float>);
                 }
             }
             #undef IP_VERT

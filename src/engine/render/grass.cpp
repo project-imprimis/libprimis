@@ -45,7 +45,7 @@ namespace //internal functionality not seen by other files
     struct grassvert
     {
         vec pos;
-        bvec4 color;
+        vec4<uchar> color;
         vec2 tc;
     };
 
@@ -250,7 +250,7 @@ namespace //internal functionality not seen by other files
                   tc2 = tc.dot(p2) + tcoffset,
                   fade = dist - t > taperdist ? (grassdist - (dist - t))*taperscale : 1,
                   height = grassheight * fade;
-            bvec4 color(grasscolor, 255);
+            vec4<uchar> color(grasscolor, 255);
     //=====================================================================GRASSVERT
             #define GRASSVERT(n, tcv, modify) { \
                 grassvert gv; \

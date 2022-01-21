@@ -1018,7 +1018,7 @@ static void genfogshader(vector<char> &vsbuf, vector<char> &psbuf, const char *v
         const char *fogparams =
             "\nuniform vec3 fogcolor;\n"
             "uniform vec2 fogdensity;\n"
-            "uniform vec4 radialfogscale;\n"
+            "uniform vec4<float> radialfogscale;\n"
             "#define fogcoord lineardepth*length(vec3(gl_FragCoord.xy*radialfogscale.xy + radialfogscale.zw, 1.0))\n";
         psbuf.put(fogparams, std::strlen(fogparams));
         psbuf.put(psmain, psend - psmain);
@@ -1072,7 +1072,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     {
         for(int i = 0; i < variant->defaultparams.length(); i++)
         {
-            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", variant->defaultparams[i].name);
+            DEF_FORMAT_STRING(uni, "\nuniform vec4<float> %s;\n", variant->defaultparams[i].name);
             vsbuf.put(uni, std::strlen(uni));
             psbuf.put(uni, std::strlen(uni));
         }
@@ -1081,7 +1081,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     {
         for(int i = 0; i < slotparams.length(); i++)
         {
-            DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", slotparams[i].name);
+            DEF_FORMAT_STRING(uni, "\nuniform vec4<float> %s;\n", slotparams[i].name);
             vsbuf.put(uni, std::strlen(uni));
             psbuf.put(uni, std::strlen(uni));
         }
@@ -1109,20 +1109,20 @@ void setupshaders()
 
     standardshaders = true;
     nullshader = newshader(0, "<init>null",
-        "attribute vec4 vvertex;\n"
+        "attribute vec4<float> vvertex;\n"
         "void main(void) {\n"
         "   gl_Position = vvertex;\n"
         "}\n",
-        "fragdata(0) vec4 fragcolor;\n"
+        "fragdata(0) vec4<float> fragcolor;\n"
         "void main(void) {\n"
-        "   fragcolor = vec4(1.0, 0.0, 1.0, 1.0);\n"
+        "   fragcolor = vec4<float>(1.0, 0.0, 1.0, 1.0);\n"
         "}\n");
     hudshader = newshader(0, "<init>hud",
-        "attribute vec4 vvertex, vcolor;\n"
+        "attribute vec4<float> vvertex, vcolor;\n"
         "attribute vec2 vtexcoord0;\n"
         "uniform mat4 hudmatrix;\n"
         "varying vec2 texcoord0;\n"
-        "varying vec4 colorscale;\n"
+        "varying vec4<float> colorscale;\n"
         "void main(void) {\n"
         "    gl_Position = hudmatrix * vvertex;\n"
         "    texcoord0 = vtexcoord0;\n"
@@ -1130,44 +1130,44 @@ void setupshaders()
         "}\n",
         "uniform sampler2D tex0;\n"
         "varying vec2 texcoord0;\n"
-        "varying vec4 colorscale;\n"
-        "fragdata(0) vec4 fragcolor;\n"
+        "varying vec4<float> colorscale;\n"
+        "fragdata(0) vec4<float> fragcolor;\n"
         "void main(void) {\n"
-        "    vec4 color = texture2D(tex0, texcoord0);\n"
+        "    vec4<float> color = texture2D(tex0, texcoord0);\n"
         "    fragcolor = colorscale * color;\n"
         "}\n");
     hudtextshader = newshader(0, "<init>hudtext",
-        "attribute vec4 vvertex, vcolor;\n"
+        "attribute vec4<float> vvertex, vcolor;\n"
         "attribute vec2 vtexcoord0;\n"
         "uniform mat4 hudmatrix;\n"
         "varying vec2 texcoord0;\n"
-        "varying vec4 colorscale;\n"
+        "varying vec4<float> colorscale;\n"
         "void main(void) {\n"
         "    gl_Position = hudmatrix * vvertex;\n"
         "    texcoord0 = vtexcoord0;\n"
         "    colorscale = vcolor;\n"
         "}\n",
         "uniform sampler2D tex0;\n"
-        "uniform vec4 textparams;\n"
+        "uniform vec4<float> textparams;\n"
         "varying vec2 texcoord0;\n"
-        "varying vec4 colorscale;\n"
-        "fragdata(0) vec4 fragcolor;\n"
+        "varying vec4<float> colorscale;\n"
+        "fragdata(0) vec4<float> fragcolor;\n"
         "void main(void) {\n"
         "    float dist = texture2D(tex0, texcoord0).r;\n"
         "    float border = smoothstep(textparams.x, textparams.y, dist);\n"
         "    float outline = smoothstep(textparams.z, textparams.w, dist);\n"
-        "    fragcolor = vec4(colorscale.rgb * outline, colorscale.a * border);\n"
+        "    fragcolor = vec4<float>(colorscale.rgb * outline, colorscale.a * border);\n"
         "}\n");
     hudnotextureshader = newshader(0, "<init>hudnotexture",
-        "attribute vec4 vvertex, vcolor;\n"
+        "attribute vec4<float> vvertex, vcolor;\n"
         "uniform mat4 hudmatrix;"
-        "varying vec4 color;\n"
+        "varying vec4<float> color;\n"
         "void main(void) {\n"
         "    gl_Position = hudmatrix * vvertex;\n"
         "    color = vcolor;\n"
         "}\n",
-        "varying vec4 color;\n"
-        "fragdata(0) vec4 fragcolor;\n"
+        "varying vec4<float> color;\n"
+        "fragdata(0) vec4<float> fragcolor;\n"
         "void main(void) {\n"
         "    fragcolor = color;\n"
         "}\n");
@@ -1567,7 +1567,7 @@ int postfxw = 0,
 struct postfxpass
 {
     Shader *shader;
-    vec4 params;
+    vec4<float> params;
     uint inputs, freeinputs;
     int outputbind, outputscale;
 
@@ -1717,7 +1717,7 @@ void renderpostfx(GLuint outfbo)
 }
 
 //adds to the global postfxpasses vector a postfx by the given name
-static bool addpostfx(const char *name, int outputbind, int outputscale, uint inputs, uint freeinputs, const vec4 &params)
+static bool addpostfx(const char *name, int outputbind, int outputscale, uint inputs, uint freeinputs, const vec4<float> &params)
 {
     if(!*name)
     {
@@ -1773,7 +1773,7 @@ void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, flo
     }
     inputmask &= (1<<numpostfxbinds)-1;
     freemask &= (1<<numpostfxbinds)-1;
-    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4<float>(*x, *y, *z, *w));
 }
 COMMANDN(addpostfx, addpostfxcmd, "siisffff");
 
@@ -1782,7 +1782,7 @@ void setpostfx(char *name, float *x, float *y, float *z, float *w)
     clearpostfx();
     if(name[0])
     {
-        addpostfx(name, 0, 0, 1, 1, vec4(*x, *y, *z, *w));
+        addpostfx(name, 0, 0, 1, 1, vec4<float>(*x, *y, *z, *w));
     }
 }
 COMMAND(setpostfx, "sffff"); //add a postfx shader to the global vector, with name & 4d pos vector
