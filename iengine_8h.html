@@ -347,9 +347,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>drawminimap</b> (int 
 <tr class="memitem:a279b07f34d381a6947e84a1c8289b582"><td class="memItemLeft" align="right" valign="top"><a id="a279b07f34d381a6947e84a1c8289b582" name="a279b07f34d381a6947e84a1c8289b582"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>clearshadowcache</b> ()</td></tr>
 <tr class="separator:a279b07f34d381a6947e84a1c8289b582"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03d8f03bd1f66efef039dcc372ccf0db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a03d8f03bd1f66efef039dcc372ccf0db">rendermodel</a> (const char *mdl, int anim, const <a class="el" href="structvec.html">vec</a> &amp;o, float yaw=0, float pitch=0, float roll=0, int cull=Model_CullVFC|Model_CullDist|Model_CullOccluded, <a class="el" href="structdynent.html">dynent</a> *d=nullptr, <a class="el" href="structmodelattach.html">modelattach</a> *a=nullptr, int basetime=0, int basetime2=0, float size=1, const <a class="el" href="structvec4.html">vec4</a> &amp;color=<a class="el" href="structvec4.html">vec4</a>(1, 1, 1, 1))</td></tr>
-<tr class="memdesc:a03d8f03bd1f66efef039dcc372ccf0db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders a world model.  <a href="iengine_8h.html#a03d8f03bd1f66efef039dcc372ccf0db">More...</a><br /></td></tr>
-<tr class="separator:a03d8f03bd1f66efef039dcc372ccf0db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07d9c9f4730889f9e8bad6a1b6834f3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#a07d9c9f4730889f9e8bad6a1b6834f3e">rendermodel</a> (const char *mdl, int anim, const <a class="el" href="structvec.html">vec</a> &amp;o, float yaw=0, float pitch=0, float roll=0, int cull=Model_CullVFC|Model_CullDist|Model_CullOccluded, <a class="el" href="structdynent.html">dynent</a> *d=nullptr, <a class="el" href="structmodelattach.html">modelattach</a> *a=nullptr, int basetime=0, int basetime2=0, float size=1, float r=1, float g=1, float b=1 float a=1)</td></tr>
+<tr class="memdesc:a07d9c9f4730889f9e8bad6a1b6834f3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders a world model.  <a href="iengine_8h.html#a07d9c9f4730889f9e8bad6a1b6834f3e">More...</a><br /></td></tr>
+<tr class="separator:a07d9c9f4730889f9e8bad6a1b6834f3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa222a491edbf5e801a52933d7a1b1c7"><td class="memItemLeft" align="right" valign="top"><a id="afa222a491edbf5e801a52933d7a1b1c7" name="afa222a491edbf5e801a52933d7a1b1c7"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>intersectmodel</b> (const char *mdl, int anim, const <a class="el" href="structvec.html">vec</a> &amp;pos, float yaw, float pitch, float roll, const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, float &amp;dist, int mode=0, <a class="el" href="structdynent.html">dynent</a> *d=nullptr, <a class="el" href="structmodelattach.html">modelattach</a> *a=nullptr, int basetime=0, int basetime2=0, float size=1)</td></tr>
 <tr class="separator:afa222a491edbf5e801a52933d7a1b1c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2251,8 +2251,8 @@ false if the vector is outside the selinfo object </dd></dl>
 
 </div>
 </div>
-<a id="a03d8f03bd1f66efef039dcc372ccf0db" name="a03d8f03bd1f66efef039dcc372ccf0db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03d8f03bd1f66efef039dcc372ccf0db">&#9670;&nbsp;</a></span>rendermodel()</h2>
+<a id="a07d9c9f4730889f9e8bad6a1b6834f3e" name="a07d9c9f4730889f9e8bad6a1b6834f3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07d9c9f4730889f9e8bad6a1b6834f3e">&#9670;&nbsp;</a></span>rendermodel()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2332,8 +2332,20 @@ false if the vector is outside the selinfo object </dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structvec4.html">vec4</a> &amp;&#160;</td>
-          <td class="paramname"><em>color</em> = <code><a class="el" href="structvec4.html">vec4</a>(1,&#160;1,&#160;1,&#160;1)</code>&#160;</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>r</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>g</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>b</em> = <code>1&#160;float&#160;a=1</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

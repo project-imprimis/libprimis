@@ -4,7 +4,6 @@ var hierarchy =
     [ "animinterpinfo", "structaniminterpinfo.html", null ],
     [ "block3", "structblock3.html", null ],
     [ "bvec", "structbvec.html", null ],
-    [ "bvec4", "structbvec4.html", null ],
     [ "hashbase< H, E, K, T >::chain", "structhashbase_1_1chain.html", null ],
     [ "hashbase< H, E, K, T >::chainchunk", "structhashbase_1_1chainchunk.html", null ],
     [ "clipplanes", "structclipplanes.html", null ],
@@ -12,7 +11,6 @@ var hierarchy =
     [ "cubeext", "structcubeext.html", null ],
     [ "databuf< T >", "structdatabuf.html", null ],
     [ "dualquat", "structdualquat.html", null ],
-    [ "dvec4", "structdvec4.html", null ],
     [ "editinfo", "structeditinfo.html", null ],
     [ "elementset", "structelementset.html", null ],
     [ "entity", "structentity.html", [
@@ -21,7 +19,6 @@ var hierarchy =
     [ "facebounds", "structfacebounds.html", null ],
     [ "GenericVec2< T >", "structGenericVec2.html", null ],
     [ "GenericVec3< T >", "structGenericVec3.html", null ],
-    [ "GenericVec4< T >", "structGenericVec4.html", null ],
     [ "grasstri", "structgrasstri.html", null ],
     [ "half", "structhalf.html", null ],
     [ "hashbase< H, E, K, T >", "structhashbase.html", null ],
@@ -44,7 +41,6 @@ var hierarchy =
     [ "isclass< T >", "structisclass.html", null ],
     [ "ivec", "structivec.html", null ],
     [ "ivec2", "structivec2.html", null ],
-    [ "ivec4", "structivec4.html", null ],
     [ "matrix2", "structmatrix2.html", null ],
     [ "matrix3", "structmatrix3.html", null ],
     [ "matrix4", "structmatrix4.html", null ],
@@ -82,7 +78,8 @@ var hierarchy =
       [ "plane", "structplane.html", null ]
     ] ],
     [ "vec2", "structvec2.html", null ],
-    [ "vec4", "structvec4.html", [
+    [ "vec4< T >", "structvec4.html", null ],
+    [ "vec4< float >", "structvec4.html", [
       [ "quat", "structquat.html", null ]
     ] ],
     [ "vector< T >", "structvector.html", null ],

@@ -10,6 +10,5 @@ var searchData=
   ['drop_7',['drop',['../structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66',1,'vector']]],
   ['dualquat_8',['dualquat',['../structdualquat.html',1,'']]],
   ['dup_9',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]],
-  ['dvec4_10',['dvec4',['../structdvec4.html',1,'']]],
-  ['dynent_11',['dynent',['../structdynent.html',1,'']]]
+  ['dynent_10',['dynent',['../structdynent.html',1,'']]]
 ];

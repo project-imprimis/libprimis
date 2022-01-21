@@ -121,7 +121,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvec.html">vec</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvec4.html">vec4</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbvec.html">bvec</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvec4.html">vec4&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structquat.html">quat</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,15 +141,7 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structivec2.html">ivec2</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structivec4.html">ivec4</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbvec.html">bvec</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbvec4.html">bvec4</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsvec.html">svec</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdvec4.html">dvec4</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmatrix4.html">matrix4</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -158,8 +152,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenericVec2.html">GenericVec2&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenericVec3.html">GenericVec3&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenericVec4.html">GenericVec4&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsquat.html">squat</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -190,12 +182,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const <a c
 <tr class="memitem:a7497d82a93d833e81a5278f3290b283b"><td class="memItemLeft" align="right" valign="top"><a id="a7497d82a93d833e81a5278f3290b283b" name="a7497d82a93d833e81a5278f3290b283b"></a>
 uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const <a class="el" href="structivec2.html">ivec2</a> &amp;k)</td></tr>
 <tr class="separator:a7497d82a93d833e81a5278f3290b283b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25f7b31e6af792283dfd8617ca3acd2a"><td class="memItemLeft" align="right" valign="top"><a id="a25f7b31e6af792283dfd8617ca3acd2a" name="a25f7b31e6af792283dfd8617ca3acd2a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const <a class="el" href="structivec4.html">ivec4</a> &amp;x, const <a class="el" href="structivec4.html">ivec4</a> &amp;y)</td></tr>
-<tr class="separator:a25f7b31e6af792283dfd8617ca3acd2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6771a033f169aa528399482e4641a568"><td class="memItemLeft" align="right" valign="top"><a id="a6771a033f169aa528399482e4641a568" name="a6771a033f169aa528399482e4641a568"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const <a class="el" href="structivec4.html">ivec4</a> &amp;k)</td></tr>
-<tr class="separator:a6771a033f169aa528399482e4641a568"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03ceb861bf4c60c1616a33c555abaef7"><td class="memItemLeft" align="right" valign="top"><a id="a03ceb861bf4c60c1616a33c555abaef7" name="a03ceb861bf4c60c1616a33c555abaef7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>raysphereintersect</b> (const <a class="el" href="structvec.html">vec</a> &amp;center, float radius, const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, float &amp;dist)</td></tr>
 <tr class="separator:a03ceb861bf4c60c1616a33c555abaef7"><td class="memSeparator" colspan="2">&#160;</td></tr>

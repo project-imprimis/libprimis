@@ -13,6 +13,5 @@ var searchData=
   ['isclass_10',['isclass',['../structisclass.html',1,'']]],
   ['iterdynents_11',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]],
   ['ivec_12',['ivec',['../structivec.html',1,'']]],
-  ['ivec2_13',['ivec2',['../structivec2.html',1,'']]],
-  ['ivec4_14',['ivec4',['../structivec4.html',1,'']]]
+  ['ivec2_13',['ivec2',['../structivec2.html',1,'']]]
 ];
