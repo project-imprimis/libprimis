@@ -1598,7 +1598,7 @@ void particle_splash(int type, int num, int fade, const vec &p, int color, float
     splash(type, color, radius, num, fade, p, size, gravity);
 }
 
-VARP(maxtrail, 1, 500, 10000);
+VARP(maxtrail, 1, 500, 10000); //maximum number of steps allowed in a trail projectile
 
 void particle_trail(int type, int fade, const vec &s, const vec &e, int color, float size, int gravity)
 {
