@@ -248,7 +248,7 @@ extern int calcspherersmsplits(const vec &center, float radius);
 
 inline bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
 {
-    const vec2 &sc = sincos360[spot];
+    const vec2<float> &sc = sincos360[spot];
     float cdist = dir.dot(center), cradius = radius + sc.y*cdist;
     return sc.x*sc.x*(center.dot(center) - cdist*cdist) <= cradius*cradius;
 }
@@ -262,7 +262,7 @@ extern matrix4 worldmatrix, screenmatrix;
 
 extern int gw, gh, gdepthformat, ghasstencil;
 extern int msaasamples, msaalight;
-extern std::vector<vec2> msaapositions;
+extern std::vector<vec2<float>> msaapositions;
 
 extern bool inoq;
 extern int rhinoq;
