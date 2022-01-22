@@ -9,14 +9,14 @@ struct vertmodel : animmodel
     struct vvert
     {
         vec pos;
-        GenericVec2<half> tc;
+        vec2<half> tc;
         squat tangent;
     };
 
     struct vvertg
     {
         vec4<half> pos;
-        GenericVec2<half> tc;
+        vec2<half> tc;
         squat tangent;
     };
 
