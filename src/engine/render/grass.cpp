@@ -48,7 +48,7 @@ namespace //internal functionality not seen by other files
     {
         vec pos;
         vec4<uchar> color;
-        vec2 tc;
+        vec2<float> tc;
     };
 
     std::vector<grassvert> grassverts;

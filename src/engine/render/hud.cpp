@@ -65,9 +65,9 @@ namespace
                 m.translate(0, offset, 0);
                 m.scale(size*scale);
 
-                gle::attrib(m.transform(vec2(1, 1)));
-                gle::attrib(m.transform(vec2(-1, 1)));
-                gle::attrib(m.transform(vec2(0, 0)));
+                gle::attrib(m.transform(vec2(1.f, 1.f)));
+                gle::attrib(m.transform(vec2(-1.f, 1.f)));
+                gle::attrib(m.transform(vec2(0.f, 0.f)));
 
                 // fade in log space so short blips don't disappear too quickly
                 scale -= static_cast<float>(curtime)/damagecompassfade;
