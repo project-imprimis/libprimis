@@ -2,11 +2,14 @@ var searchData=
 [
   ['aboveeye_0',['aboveeye',['../structphysent.html#a284dcaeb1abad58fd576ee40da286475',1,'physent']]],
   ['add_1',['add',['../structvector.html#a3bec1ffcada3738e7cdc86453f9b5c7d',1,'vector::add(const T &amp;x)'],['../structvector.html#ad171b6218fb3c14a2d5d61d492f49a58',1,'vector::add()']]],
-  ['addunique_2',['addunique',['../structvector.html#a6228008b964380b3e519a9949efda079',1,'vector']]],
-  ['alen_3',['alen',['../structvector.html#a7bf3e117a2c8618edc5dc0ef7c06e455',1,'vector']]],
-  ['animinfo_4',['animinfo',['../structaniminfo.html',1,'']]],
-  ['animinterpinfo_5',['animinterpinfo',['../structaniminterpinfo.html',1,'']]],
-  ['attachentities_6',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
-  ['attachentity_7',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]],
-  ['attr5_8',['attr5',['../structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac',1,'entity']]]
+  ['addbuf_2',['addbuf',['../structvector.html#a5c232d5d8e81ee353c64ad51745fff54',1,'vector']]],
+  ['addheap_3',['addheap',['../structvector.html#a2c88e3f1982738d7547c81c0b4a2bdfc',1,'vector']]],
+  ['addunique_4',['addunique',['../structvector.html#a6228008b964380b3e519a9949efda079',1,'vector']]],
+  ['advance_5',['advance',['../structvector.html#ac4030f469794397798fff6928ea9b91c',1,'vector']]],
+  ['alen_6',['alen',['../structvector.html#a7bf3e117a2c8618edc5dc0ef7c06e455',1,'vector']]],
+  ['animinfo_7',['animinfo',['../structaniminfo.html',1,'']]],
+  ['animinterpinfo_8',['animinterpinfo',['../structaniminterpinfo.html',1,'']]],
+  ['attachentities_9',['attachentities',['../iengine_8h.html#a953c37e171793d0497ef616925523ec3',1,'iengine.h']]],
+  ['attachentity_10',['attachentity',['../iengine_8h.html#a9c17c31b53fe00ea247fa07d87cd6423',1,'iengine.h']]],
+  ['attr5_11',['attr5',['../structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac',1,'entity']]]
 ];

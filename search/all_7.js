@@ -10,5 +10,7 @@ var searchData=
   ['hashset_7',['hashset',['../structhashset.html',1,'']]],
   ['hashtable_8',['hashtable',['../structhashtable.html',1,'']]],
   ['hashtableentry_9',['hashtableentry',['../structhashtableentry.html',1,'']]],
-  ['htfind_10',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
+  ['heapchild_10',['heapchild',['../structvector.html#a960f7ccf713e2e29475b4534607573a5',1,'vector']]],
+  ['heapparent_11',['heapparent',['../structvector.html#ad5053033279ea5d16860228c1fb460b3',1,'vector']]],
+  ['htfind_12',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
 ];

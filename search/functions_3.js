@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['empty_0',['empty',['../structvector.html#a9af39ba556fbaeaa09cff474c6308076',1,'vector']]],
-  ['emptymap_1',['emptymap',['../iengine_8h.html#a479a2f0dcaef0374aac87a93ef94a9c8',1,'iengine.h']]],
-  ['enginebuilddate_2',['enginebuilddate',['../iengine_8h.html#a8ef879cc5c463110ac5688289a2bcd66',1,'iengine.h']]],
-  ['enginestr_3',['enginestr',['../iengine_8h.html#a10981386f25017ca2cd1797547e708db',1,'iengine.h']]],
-  ['enlargemap_4',['enlargemap',['../iengine_8h.html#aa1e45db741aa48409e1e04553295d8cb',1,'iengine.h']]],
-  ['entcancel_5',['entcancel',['../iengine_8h.html#a535d85af13285be7cf8080694055076b',1,'iengine.h']]]
+  ['deletearrays_0',['deletearrays',['../structvector.html#ac71e8013132ee3a5ec582d147579d2f2',1,'vector']]],
+  ['deletecontents_1',['deletecontents',['../structvector.html#af48aa137e8665f0e08ca13044312c828',1,'vector']]],
+  ['detachentity_2',['detachentity',['../iengine_8h.html#a2301bf3a66a569344ee652f96dfd47a1',1,'iengine.h']]],
+  ['disown_3',['disown',['../structvector.html#a1031db09c7d4027790ccb7b5e7d25472',1,'vector']]],
+  ['downheap_4',['downheap',['../structvector.html#afd018336bccb491ad569e12c9ec6092b',1,'vector']]],
+  ['drop_5',['drop',['../structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66',1,'vector']]],
+  ['dup_6',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]]
 ];
