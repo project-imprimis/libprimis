@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['r_0',['R',['../geom_8h.html#ae991d89d766b25a0e9b0f07509128749',1,'geom.h']]]
+  ['k_5fdown_0',['k_down',['../structdynent.html#a093fb4ab684f252e4b315fbef20ee213',1,'dynent']]]
 ];

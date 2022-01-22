@@ -16,6 +16,7 @@ var structvector =
     [ "find", "structvector.html#a6189bf4fa76f6304289a706b8b81767e", null ],
     [ "getbuf", "structvector.html#a37662a6675e018cefdfc3543de9c731b", null ],
     [ "getbuf", "structvector.html#a15a5e04878f77f49540e149c9f8d427f", null ],
+    [ "htfind", "structvector.html#aeb422be9160e47b6960ac83078e725bc", null ],
     [ "inbuf", "structvector.html#a1597d5f5683b5666dca9edf2365c6c27", null ],
     [ "inrange", "structvector.html#a4fc5cf788f4ff40e5c9c31f7ac10b5ce", null ],
     [ "inrange", "structvector.html#a9c8b60b827cee171c65238526b27a623", null ],
@@ -39,6 +40,9 @@ var structvector =
     [ "sort", "structvector.html#a2f7b573d71c078d65dc0e40b8409b700", null ],
     [ "sort", "structvector.html#aa8ed3bcb552484154fb959aa1f02a3a0", null ],
     [ "sortname", "structvector.html#a0feade3a2946e44e2e13759fbe6bfd72", null ],
+    [ "unique", "structvector.html#adf718ba43138d1e28f8e914fca4fd332", null ],
+    [ "uniquedeletearrays", "structvector.html#a55ec5680fd3731aaf7364b86e3e21f5a", null ],
+    [ "uniquedeletecontents", "structvector.html#a9ce497c56e52a9e9ef5593928692eae0", null ],
     [ "alen", "structvector.html#a7bf3e117a2c8618edc5dc0ef7c06e455", null ],
     [ "buf", "structvector.html#a2bb835cb1456a5a1700906a49fe72483", null ],
     [ "ulen", "structvector.html#add07f68356671ba0bf6537267fde2946", null ]

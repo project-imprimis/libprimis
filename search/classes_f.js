@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['tagval_0',['tagval',['../structtagval.html',1,'']]],
-  ['tex_1',['Tex',['../structSlot_1_1Tex.html',1,'Slot']]],
-  ['tjoint_2',['tjoint',['../structtjoint.html',1,'']]],
-  ['triangle_3',['triangle',['../structtriangle.html',1,'']]]
+  ['undoblock_0',['undoblock',['../structundoblock.html',1,'']]],
+  ['undoent_1',['undoent',['../structundoent.html',1,'']]],
+  ['undolist_2',['undolist',['../structundolist.html',1,'']]]
 ];

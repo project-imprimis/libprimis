@@ -277,18 +277,18 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>downheap</b> (int i)</
 <tr class="memitem:aae7414b428036a6a109e2a40976e0eb1"><td class="memItemLeft" align="right" valign="top"><a id="aae7414b428036a6a109e2a40976e0eb1" name="aae7414b428036a6a109e2a40976e0eb1"></a>
 T&#160;</td><td class="memItemRight" valign="bottom"><b>removeheap</b> ()</td></tr>
 <tr class="separator:aae7414b428036a6a109e2a40976e0eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb422be9160e47b6960ac83078e725bc"><td class="memTemplParams" colspan="2"><a id="aeb422be9160e47b6960ac83078e725bc" name="aeb422be9160e47b6960ac83078e725bc"></a>
-template&lt;class K &gt; </td></tr>
-<tr class="memitem:aeb422be9160e47b6960ac83078e725bc"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><b>htfind</b> (const K &amp;key)</td></tr>
+<tr class="memitem:aeb422be9160e47b6960ac83078e725bc"><td class="memTemplParams" colspan="2">template&lt;class K &gt; </td></tr>
+<tr class="memitem:aeb422be9160e47b6960ac83078e725bc"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structvector.html#aeb422be9160e47b6960ac83078e725bc">htfind</a> (const K &amp;key)</td></tr>
+<tr class="memdesc:aeb422be9160e47b6960ac83078e725bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">finds the key from a hashtable in the vector.  <a href="structvector.html#aeb422be9160e47b6960ac83078e725bc">More...</a><br /></td></tr>
 <tr class="separator:aeb422be9160e47b6960ac83078e725bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf718ba43138d1e28f8e914fca4fd332"><td class="memItemLeft" align="right" valign="top"><a id="adf718ba43138d1e28f8e914fca4fd332" name="adf718ba43138d1e28f8e914fca4fd332"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unique</b> ()</td></tr>
+<tr class="memitem:adf718ba43138d1e28f8e914fca4fd332"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvector.html#adf718ba43138d1e28f8e914fca4fd332">unique</a> ()</td></tr>
+<tr class="memdesc:adf718ba43138d1e28f8e914fca4fd332"><td class="mdescLeft">&#160;</td><td class="mdescRight">removes every duplicate <b>stack allocated value</b> from the vector.  <a href="structvector.html#adf718ba43138d1e28f8e914fca4fd332">More...</a><br /></td></tr>
 <tr class="separator:adf718ba43138d1e28f8e914fca4fd332"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ce497c56e52a9e9ef5593928692eae0"><td class="memItemLeft" align="right" valign="top"><a id="a9ce497c56e52a9e9ef5593928692eae0" name="a9ce497c56e52a9e9ef5593928692eae0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>uniquedeletecontents</b> ()</td></tr>
+<tr class="memitem:a9ce497c56e52a9e9ef5593928692eae0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvector.html#a9ce497c56e52a9e9ef5593928692eae0">uniquedeletecontents</a> ()</td></tr>
+<tr class="memdesc:a9ce497c56e52a9e9ef5593928692eae0"><td class="mdescLeft">&#160;</td><td class="mdescRight">removes every duplicate <b>heap-allocated value</b> from the vector.  <a href="structvector.html#a9ce497c56e52a9e9ef5593928692eae0">More...</a><br /></td></tr>
 <tr class="separator:a9ce497c56e52a9e9ef5593928692eae0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55ec5680fd3731aaf7364b86e3e21f5a"><td class="memItemLeft" align="right" valign="top"><a id="a55ec5680fd3731aaf7364b86e3e21f5a" name="a55ec5680fd3731aaf7364b86e3e21f5a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>uniquedeletearrays</b> ()</td></tr>
+<tr class="memitem:a55ec5680fd3731aaf7364b86e3e21f5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structvector.html#a55ec5680fd3731aaf7364b86e3e21f5a">uniquedeletearrays</a> ()</td></tr>
+<tr class="memdesc:a55ec5680fd3731aaf7364b86e3e21f5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">removes every duplicate <b>array value</b> from the vector.  <a href="structvector.html#a55ec5680fd3731aaf7364b86e3e21f5a">More...</a><br /></td></tr>
 <tr class="separator:a55ec5680fd3731aaf7364b86e3e21f5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
@@ -866,6 +866,46 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="aeb422be9160e47b6960ac83078e725bc" name="aeb422be9160e47b6960ac83078e725bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb422be9160e47b6960ac83078e725bc">&#9670;&nbsp;</a></span>htfind()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<div class="memtemplate">
+template&lt;class K &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structvector.html">vector</a>&lt; T &gt;::htfind </td>
+          <td>(</td>
+          <td class="paramtype">const K &amp;&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>finds the key from a hashtable in the vector. </p>
+<p >the implementation takes advantage of the numerous overloads of the htcmp() function. Note that this means the generic parameter can be one of the following:</p><ul>
+<li>const char *</li>
+<li>const stringslice <br  />
+</li>
+<li>int</li>
+<li>GLuint</li>
+</ul>
+<dl class="section return"><dt>Returns</dt><dd>the index of the element if it exists; -1 otherwise </dd></dl>
+
+</div>
+</div>
 <a id="a1597d5f5683b5666dca9edf2365c6c27" name="a1597d5f5683b5666dca9edf2365c6c27"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1597d5f5683b5666dca9edf2365c6c27">&#9670;&nbsp;</a></span>inbuf()</h2>
 
@@ -1149,7 +1189,7 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Returns the size of the array. </p>
-<p >Returns the number of entries in the array.</p>
+<p >Returns the number of entries in the array. The std::vector&lt;&gt; equivalent of this method is called size()</p>
 <dl class="section return"><dt>Returns</dt><dd>the length of the array </dd></dl>
 
 </div>
@@ -1749,6 +1789,97 @@ template&lt;class T &gt; </div>
 <p>Sorts the values of the array in ascending order. </p>
 <p >Runs the quicksort algorithm to sort the values in the vector in ascending order. This function calls <a class="el" href="structsortnameless.html">sortnameless()</a> which calls <a class="el" href="structsortless.html">sortless()</a>, so the behavior is the same as <a class="el" href="structvector.html#a2f7b573d71c078d65dc0e40b8409b700" title="Sorts the values of the array in ascending order.">sort()</a> The std::vector&lt;&gt; equivalent of this operation is std::sort(vector.begin(), vector.end()).</p>
 <p >This operation has a time complexity of n*log(n) on average and n^2 in the worst-case scenario. </p>
+
+</div>
+</div>
+<a id="adf718ba43138d1e28f8e914fca4fd332" name="adf718ba43138d1e28f8e914fca4fd332"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf718ba43138d1e28f8e914fca4fd332">&#9670;&nbsp;</a></span>unique()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="structvector.html">vector</a>&lt; T &gt;::unique </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>removes every duplicate <b>stack allocated value</b> from the vector. </p>
+<p >Contents must be initally sorted. Duplicated items get deleted via a call to <a class="el" href="structvector.html#a63a989ce0517774b2390d0641eccf835" title="Sets the used size of the array to i.">setsize()</a>.</p>
+<p ><b>It may leak memory if used with heap allocated and array items.</b> <b>see <a class="el" href="structvector.html#a9ce497c56e52a9e9ef5593928692eae0" title="removes every duplicate heap-allocated value from the vector.">uniquedeletecontents()</a> and <a class="el" href="structvector.html#a55ec5680fd3731aaf7364b86e3e21f5a" title="removes every duplicate array value from the vector.">uniquedeletearrays()</a> for that case</b> </p>
+
+</div>
+</div>
+<a id="a55ec5680fd3731aaf7364b86e3e21f5a" name="a55ec5680fd3731aaf7364b86e3e21f5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55ec5680fd3731aaf7364b86e3e21f5a">&#9670;&nbsp;</a></span>uniquedeletearrays()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="structvector.html">vector</a>&lt; T &gt;::uniquedeletearrays </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>removes every duplicate <b>array value</b> from the vector. </p>
+<p >Duplicated items get deleted via <a class="el" href="structvector.html#ac71e8013132ee3a5ec582d147579d2f2" title="Deletes array contents beyond the passed argument.">deletearrays()</a>. for the equivalent function for stack values see <a class="el" href="structvector.html#adf718ba43138d1e28f8e914fca4fd332" title="removes every duplicate stack allocated value from the vector.">unique()</a>. for the equivalent function for heap-allocated values see <a class="el" href="structvector.html#a9ce497c56e52a9e9ef5593928692eae0" title="removes every duplicate heap-allocated value from the vector.">uniquedeletecontents()</a>. </p>
+
+</div>
+</div>
+<a id="a9ce497c56e52a9e9ef5593928692eae0" name="a9ce497c56e52a9e9ef5593928692eae0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ce497c56e52a9e9ef5593928692eae0">&#9670;&nbsp;</a></span>uniquedeletecontents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="structvector.html">vector</a>&lt; T &gt;::uniquedeletecontents </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>removes every duplicate <b>heap-allocated value</b> from the vector. </p>
+<p >Duplicated items get deleted via <a class="el" href="structvector.html#af48aa137e8665f0e08ca13044312c828" title="Deletes contents beyond the passed argument.">deletecontents()</a>. for the equivalent function for stack values see <a class="el" href="structvector.html#adf718ba43138d1e28f8e914fca4fd332" title="removes every duplicate stack allocated value from the vector.">unique()</a>. for the equivalent function for array values see <a class="el" href="structvector.html#a55ec5680fd3731aaf7364b86e3e21f5a" title="removes every duplicate array value from the vector.">uniquedeletearrays()</a>. </p>
 
 </div>
 </div>

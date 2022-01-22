@@ -11,7 +11,9 @@ var searchData=
   ['insert_8',['insert',['../structvector.html#ae14839b92fd4f03eddd2026d72a3210e',1,'vector::insert(int i, const T &amp;e)'],['../structvector.html#a085b2d77456aa7cb59ccdd5a0f98705a',1,'vector::insert(int i, const T *e, int n)']]],
   ['insideworld_9',['insideworld',['../iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9',1,'iengine.h']]],
   ['isclass_10',['isclass',['../structisclass.html',1,'']]],
-  ['iterdynents_11',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]],
-  ['ivec_12',['ivec',['../structivec.html',1,'']]],
-  ['ivec2_13',['ivec2',['../structivec2.html',1,'']]]
+  ['isempty_11',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
+  ['issolid_12',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
+  ['iterdynents_13',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]],
+  ['ivec_14',['ivec',['../structivec.html',1,'']]],
+  ['ivec2_15',['ivec2',['../structivec2.html',1,'']]]
 ];

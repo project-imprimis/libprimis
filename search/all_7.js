@@ -9,5 +9,6 @@ var searchData=
   ['hashnameset_6',['hashnameset',['../structhashnameset.html',1,'']]],
   ['hashset_7',['hashset',['../structhashset.html',1,'']]],
   ['hashtable_8',['hashtable',['../structhashtable.html',1,'']]],
-  ['hashtableentry_9',['hashtableentry',['../structhashtableentry.html',1,'']]]
+  ['hashtableentry_9',['hashtableentry',['../structhashtableentry.html',1,'']]],
+  ['htfind_10',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
 ];

@@ -1,21 +1,15 @@
 var octa_8h =
 [
-    [ "elementset", "structelementset.html", null ],
-    [ "vertinfo", "structvertinfo.html", null ],
-    [ "surfaceinfo", "structsurfaceinfo.html", null ],
-    [ "grasstri", "structgrasstri.html", null ],
-    [ "occludequery", "structoccludequery.html", null ],
-    [ "octaentities", "structoctaentities.html", null ],
-    [ "clipplanes", "structclipplanes.html", null ],
     [ "facebounds", "structfacebounds.html", null ],
-    [ "tjoint", "structtjoint.html", null ],
-    [ "cubeext", "structcubeext.html", null ],
-    [ "cube", "classcube.html", null ],
+    [ "cube", "classcube.html", "classcube" ],
     [ "selinfo", "structselinfo.html", null ],
     [ "block3", "structblock3.html", null ],
     [ "editinfo", "structeditinfo.html", null ],
-    [ "prefabheader", "structprefabheader.html", null ],
     [ "undoent", "structundoent.html", null ],
-    [ "undoblock", "structundoblock.html", null ],
-    [ "undolist", "structundolist.html", null ]
+    [ "undoblock", "structundoblock.html", "structundoblock" ],
+    [ "undolist", "structundolist.html", null ],
+    [ "setcubefaces", "octa_8h.html#a4430b561a204df665b15f88337201173", null ],
+    [ "faceempty", "octa_8h.html#a9392cbbd2ed30129294d84c5032432af", null ],
+    [ "facesolid", "octa_8h.html#a1eb1a9d704d2a37241ea5ccac905cae2", null ],
+    [ "worldroot", "octa_8h.html#ac1685fed1287b3a9abf6a362cc6dbdcf", null ]
 ];

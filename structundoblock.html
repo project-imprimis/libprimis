@@ -112,6 +112,8 @@ $(document).ready(function(){initNavTree('structundoblock.html',''); initResizab
   <div class="headertitle"><div class="title">undoblock Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="octa_8h_source.html">octa.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -133,16 +135,61 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:abb50e7d7cd833049aba813ad9eb9b08a"><td class="memItemLeft" align="right" valign="top"><a id="abb50e7d7cd833049aba813ad9eb9b08a" name="abb50e7d7cd833049aba813ad9eb9b08a"></a>
 <a class="el" href="structundoblock.html">undoblock</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>next</b></td></tr>
 <tr class="separator:abb50e7d7cd833049aba813ad9eb9b08a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fb516658877a3ab5933b04708332a3b"><td class="memItemLeft" align="right" valign="top"><a id="a0fb516658877a3ab5933b04708332a3b" name="a0fb516658877a3ab5933b04708332a3b"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
+<tr class="memitem:a0fb516658877a3ab5933b04708332a3b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">size</a></td></tr>
 <tr class="separator:a0fb516658877a3ab5933b04708332a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7993663dac147f8134a9f24ec91a876"><td class="memItemLeft" align="right" valign="top"><a id="ac7993663dac147f8134a9f24ec91a876" name="ac7993663dac147f8134a9f24ec91a876"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>timestamp</b></td></tr>
+<tr class="memitem:ac7993663dac147f8134a9f24ec91a876"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">timestamp</a></td></tr>
 <tr class="separator:ac7993663dac147f8134a9f24ec91a876"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1dec53ad5f85909e6796642ea8e4b663"><td class="memItemLeft" align="right" valign="top"><a id="a1dec53ad5f85909e6796642ea8e4b663" name="a1dec53ad5f85909e6796642ea8e4b663"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>numents</b></td></tr>
+<tr class="memitem:a1dec53ad5f85909e6796642ea8e4b663"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">numents</a></td></tr>
 <tr class="separator:a1dec53ad5f85909e6796642ea8e4b663"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >&lt; undo header, all data sits in payload </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a1dec53ad5f85909e6796642ea8e4b663" name="a1dec53ad5f85909e6796642ea8e4b663"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dec53ad5f85909e6796642ea8e4b663">&#9670;&nbsp;</a></span>numents</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int undoblock::numents</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >if numents is 0, is a cube undo record, otherwise an entity undo record </p>
+
+</div>
+</div>
+<a id="a0fb516658877a3ab5933b04708332a3b" name="a0fb516658877a3ab5933b04708332a3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0fb516658877a3ab5933b04708332a3b">&#9670;&nbsp;</a></span>size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int undoblock::size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >size of undo block </p>
+
+</div>
+</div>
+<a id="ac7993663dac147f8134a9f24ec91a876" name="ac7993663dac147f8134a9f24ec91a876"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7993663dac147f8134a9f24ec91a876">&#9670;&nbsp;</a></span>timestamp</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int undoblock::timestamp</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >time of creation </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="octa_8h_source.html">octa.h</a></li>
 </ul>

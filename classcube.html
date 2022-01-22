@@ -117,11 +117,12 @@ $(document).ready(function(){initNavTree('classcube.html',''); initResizable(); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ace6395d626569d6a0ab7c6ec6f6abd4a"><td class="memItemLeft" align="right" valign="top"><a id="ace6395d626569d6a0ab7c6ec6f6abd4a" name="ace6395d626569d6a0ab7c6ec6f6abd4a"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isempty</b> () const</td></tr>
+<tr class="memitem:ace6395d626569d6a0ab7c6ec6f6abd4a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a">isempty</a> () const</td></tr>
+<tr class="memdesc:ace6395d626569d6a0ab7c6ec6f6abd4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns if the cube is empty (face 0 does not exist)  <a href="classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a">More...</a><br /></td></tr>
 <tr class="separator:ace6395d626569d6a0ab7c6ec6f6abd4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bd59248e1c0b30104036600a5f5c964"><td class="memItemLeft" align="right" valign="top"><a id="a5bd59248e1c0b30104036600a5f5c964" name="a5bd59248e1c0b30104036600a5f5c964"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>issolid</b> () const</td></tr>
+<tr class="memdesc:a5bd59248e1c0b30104036600a5f5c964"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns if the cube passed is entirely solid (no distortions) <br /></td></tr>
 <tr class="separator:a5bd59248e1c0b30104036600a5f5c964"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7983aa3d12a0ebca7bc96c9dfab014e"><td class="memItemLeft" align="right" valign="top"><a id="ac7983aa3d12a0ebca7bc96c9dfab014e" name="ac7983aa3d12a0ebca7bc96c9dfab014e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setmat</b> (ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)</td></tr>
@@ -138,41 +139,32 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isvalidcube</b> ()</t
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aafb02cf1aa0596ea8677b84654da9e79"><td class="memItemLeft" align="right" valign="top"><a id="aafb02cf1aa0596ea8677b84654da9e79" name="aafb02cf1aa0596ea8677b84654da9e79"></a>
-<a class="el" href="classcube.html">cube</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>children</b></td></tr>
+<tr class="memitem:aafb02cf1aa0596ea8677b84654da9e79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcube.html">cube</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#aafb02cf1aa0596ea8677b84654da9e79">children</a></td></tr>
 <tr class="separator:aafb02cf1aa0596ea8677b84654da9e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6369b99225574ebfc5e4806004492f21"><td class="memItemLeft" align="right" valign="top"><a id="a6369b99225574ebfc5e4806004492f21" name="a6369b99225574ebfc5e4806004492f21"></a>
-<a class="el" href="structcubeext.html">cubeext</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>ext</b></td></tr>
+<tr class="memitem:a6369b99225574ebfc5e4806004492f21"><td class="memItemLeft" align="right" valign="top">cubeext *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#a6369b99225574ebfc5e4806004492f21">ext</a></td></tr>
 <tr class="separator:a6369b99225574ebfc5e4806004492f21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afaed28e665cf16fe727d5bcd9a671d86"><td class="memItemLeft" ><a id="afaed28e665cf16fe727d5bcd9a671d86" name="afaed28e665cf16fe727d5bcd9a671d86"></a>
+<tr class="memitem:a9eb994d3a1f69e2c331dea88d9cd7a8c"><td class="memItemLeft" ><a id="a9eb994d3a1f69e2c331dea88d9cd7a8c" name="a9eb994d3a1f69e2c331dea88d9cd7a8c"></a>
 union {</td></tr>
-<tr class="memitem:a3226142371f6cf7f562716fde0309015"><td class="memItemLeft" >
-&#160;&#160;&#160;uchar&#160;&#160;&#160;<b>edges</b> [12]</td></tr>
-<tr class="separator:a3226142371f6cf7f562716fde0309015"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae888cbfe903e699b8e5397a012090f1c"><td class="memItemLeft" >
-&#160;&#160;&#160;uint&#160;&#160;&#160;<b>faces</b> [3]</td></tr>
-<tr class="separator:ae888cbfe903e699b8e5397a012090f1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afaed28e665cf16fe727d5bcd9a671d86"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:afaed28e665cf16fe727d5bcd9a671d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd1fe0c107339a3c20060cda213b8aa5"><td class="memItemLeft" align="right" valign="top"><a id="afd1fe0c107339a3c20060cda213b8aa5" name="afd1fe0c107339a3c20060cda213b8aa5"></a>
-ushort&#160;</td><td class="memItemRight" valign="bottom"><b>texture</b> [6]</td></tr>
+<tr class="memitem:a32089322d50368113fd82cdd54f3d1be"><td class="memItemLeft" >&#160;&#160;&#160;uchar&#160;&#160;&#160;<a class="el" href="classcube.html#aeb55655cef2a95f24d7456e9422c2aff">edges</a> [12]</td></tr>
+<tr class="separator:a32089322d50368113fd82cdd54f3d1be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b033f964ea33f47a7a408f865a257ab"><td class="memItemLeft" >&#160;&#160;&#160;uint&#160;&#160;&#160;<a class="el" href="classcube.html#a2260c52d69daed945371581af8dcf637">faces</a> [3]</td></tr>
+<tr class="separator:a8b033f964ea33f47a7a408f865a257ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eb994d3a1f69e2c331dea88d9cd7a8c"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a9eb994d3a1f69e2c331dea88d9cd7a8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd1fe0c107339a3c20060cda213b8aa5"><td class="memItemLeft" align="right" valign="top">ushort&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#afd1fe0c107339a3c20060cda213b8aa5">texture</a> [6]</td></tr>
 <tr class="separator:afd1fe0c107339a3c20060cda213b8aa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adabf7826306d245930ea049e0a8bf76e"><td class="memItemLeft" align="right" valign="top"><a id="adabf7826306d245930ea049e0a8bf76e" name="adabf7826306d245930ea049e0a8bf76e"></a>
-ushort&#160;</td><td class="memItemRight" valign="bottom"><b>material</b></td></tr>
+<tr class="memitem:adabf7826306d245930ea049e0a8bf76e"><td class="memItemLeft" align="right" valign="top">ushort&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#adabf7826306d245930ea049e0a8bf76e">material</a></td></tr>
 <tr class="separator:adabf7826306d245930ea049e0a8bf76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a715d3e7eef34036806eaa216a36afdbe"><td class="memItemLeft" align="right" valign="top"><a id="a715d3e7eef34036806eaa216a36afdbe" name="a715d3e7eef34036806eaa216a36afdbe"></a>
-uchar&#160;</td><td class="memItemRight" valign="bottom"><b>merged</b></td></tr>
+<tr class="memitem:a715d3e7eef34036806eaa216a36afdbe"><td class="memItemLeft" align="right" valign="top">uchar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#a715d3e7eef34036806eaa216a36afdbe">merged</a></td></tr>
 <tr class="separator:a715d3e7eef34036806eaa216a36afdbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a047d96ef0a79d068a0cd27825af48c96"><td class="memItemLeft" ><a id="a047d96ef0a79d068a0cd27825af48c96" name="a047d96ef0a79d068a0cd27825af48c96"></a>
+<tr class="memitem:a899026997aac2b3b90bad16501dc4062"><td class="memItemLeft" ><a id="a899026997aac2b3b90bad16501dc4062" name="a899026997aac2b3b90bad16501dc4062"></a>
 union {</td></tr>
-<tr class="memitem:a004500d45653cf02eb8cebb65d8d50df"><td class="memItemLeft" >
-&#160;&#160;&#160;uchar&#160;&#160;&#160;<b>escaped</b></td></tr>
-<tr class="separator:a004500d45653cf02eb8cebb65d8d50df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f7f684636569d6da899caf75ee7c4a0"><td class="memItemLeft" >
-&#160;&#160;&#160;uchar&#160;&#160;&#160;<b>visible</b></td></tr>
-<tr class="separator:a2f7f684636569d6da899caf75ee7c4a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a047d96ef0a79d068a0cd27825af48c96"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="separator:a047d96ef0a79d068a0cd27825af48c96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fa9341c9ef9aa8e221268b3817b0ee8"><td class="memItemLeft" >&#160;&#160;&#160;uchar&#160;&#160;&#160;<a class="el" href="classcube.html#a5dc26caa3de7b4aa133a42c1a224e4fe">escaped</a></td></tr>
+<tr class="separator:a5fa9341c9ef9aa8e221268b3817b0ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d07dc40cf823ccd46712e0923bbf2fa"><td class="memItemLeft" >&#160;&#160;&#160;uchar&#160;&#160;&#160;<a class="el" href="classcube.html#a8b3bf44db777a571dc5ec004c53b8204">visible</a></td></tr>
+<tr class="separator:a5d07dc40cf823ccd46712e0923bbf2fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a899026997aac2b3b90bad16501dc4062"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a899026997aac2b3b90bad16501dc4062"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
 Friends</h2></td></tr>
@@ -189,6 +181,171 @@ uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const cub
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const cube::pedge &amp;x, const cube::pedge &amp;y)</td></tr>
 <tr class="separator:aa4e8c6625f9782146625993e199dd9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ace6395d626569d6a0ab7c6ec6f6abd4a" name="ace6395d626569d6a0ab7c6ec6f6abd4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace6395d626569d6a0ab7c6ec6f6abd4a">&#9670;&nbsp;</a></span>isempty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cube::isempty </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns if the cube is empty (face 0 does not exist) </p>
+<p >note that a non-empty (but distorted) cube missing faces for an axis is impossible unless there are no faces at all (impossible to construct a 3d cube otherwise) </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aafb02cf1aa0596ea8677b84654da9e79" name="aafb02cf1aa0596ea8677b84654da9e79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafb02cf1aa0596ea8677b84654da9e79">&#9670;&nbsp;</a></span>children</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcube.html">cube</a>* cube::children</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >points to 8 cube structures which are its children, or nullptr. -Z first, then -Y, -X </p>
+
+</div>
+</div>
+<a id="aeb55655cef2a95f24d7456e9422c2aff" name="aeb55655cef2a95f24d7456e9422c2aff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb55655cef2a95f24d7456e9422c2aff">&#9670;&nbsp;</a></span>edges</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uchar cube::edges[12]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >edges of the cube, each uchar is 2 4bit values denoting the range. see documentation jpgs for more info. </p>
+
+</div>
+</div>
+<a id="a5dc26caa3de7b4aa133a42c1a224e4fe" name="a5dc26caa3de7b4aa133a42c1a224e4fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dc26caa3de7b4aa133a42c1a224e4fe">&#9670;&nbsp;</a></span>escaped</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uchar cube::escaped</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >mask of which children have escaped merges </p>
+
+</div>
+</div>
+<a id="a6369b99225574ebfc5e4806004492f21" name="a6369b99225574ebfc5e4806004492f21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6369b99225574ebfc5e4806004492f21">&#9670;&nbsp;</a></span>ext</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">cubeext* cube::ext</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >extended info for the cube </p>
+
+</div>
+</div>
+<a id="a2260c52d69daed945371581af8dcf637" name="a2260c52d69daed945371581af8dcf637"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2260c52d69daed945371581af8dcf637">&#9670;&nbsp;</a></span>faces</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint cube::faces[3]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >4 edges of each dimension together representing 2 perpendicular faces </p>
+
+</div>
+</div>
+<a id="adabf7826306d245930ea049e0a8bf76e" name="adabf7826306d245930ea049e0a8bf76e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adabf7826306d245930ea049e0a8bf76e">&#9670;&nbsp;</a></span>material</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ushort cube::material</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >empty-space material </p>
+
+</div>
+</div>
+<a id="a715d3e7eef34036806eaa216a36afdbe" name="a715d3e7eef34036806eaa216a36afdbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a715d3e7eef34036806eaa216a36afdbe">&#9670;&nbsp;</a></span>merged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uchar cube::merged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >merged faces of the cube </p>
+
+</div>
+</div>
+<a id="afd1fe0c107339a3c20060cda213b8aa5" name="afd1fe0c107339a3c20060cda213b8aa5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd1fe0c107339a3c20060cda213b8aa5">&#9670;&nbsp;</a></span>texture</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ushort cube::texture[6]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >one for each face. same order as orient. </p>
+
+</div>
+</div>
+<a id="a8b3bf44db777a571dc5ec004c53b8204" name="a8b3bf44db777a571dc5ec004c53b8204"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b3bf44db777a571dc5ec004c53b8204">&#9670;&nbsp;</a></span>visible</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uchar cube::visible</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >visibility info for faces </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="octa_8h_source.html">octa.h</a></li>
 </ul>
