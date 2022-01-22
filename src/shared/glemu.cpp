@@ -500,7 +500,7 @@ namespace gle
     void vertexf(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_Vertex, x, y, z, w); }
     void vertex(const vec &v) { glVertexAttrib3fv_(Attribute_Vertex, v.v); }
     void vertex(const vec &v, float w) { glVertexAttrib4f_(Attribute_Vertex, v.x, v.y, v.z, w); }
-    void vertex(const vec2 &v) { glVertexAttrib2fv_(Attribute_Vertex, v.v); }
+    void vertex(const vec2<float> &v) { glVertexAttrib2fv_(Attribute_Vertex, v.v); }
     void vertex(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_Vertex, v.v); }
 
     void colorf(float x) { glVertexAttrib1f_(Attribute_Color, x); }
@@ -510,7 +510,7 @@ namespace gle
 
     void color(const vec &v) { glVertexAttrib3fv_(Attribute_Color, v.v); }
     void color(const vec &v, float w) { glVertexAttrib4f_(Attribute_Color, v.x, v.y, v.z, w); }
-    void color(const vec2 &v) { glVertexAttrib2fv_(Attribute_Color, v.v); }
+    void color(const vec2<float> &v) { glVertexAttrib2fv_(Attribute_Color, v.v); }
     void color(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_Color, v.v); }
 
     void colorub(uchar x, uchar y, uchar z, uchar w) { glVertexAttrib4Nub_(Attribute_Color, x, y, z, w); }
@@ -523,7 +523,7 @@ namespace gle
 
     void texcoord0(const vec &v) { glVertexAttrib3fv_(Attribute_TexCoord0, v.v); }
     void texcoord0(const vec &v, float w) { glVertexAttrib4f_(Attribute_TexCoord0, v.x, v.y, v.z, w); }
-    void texcoord0(const vec2 &v) { glVertexAttrib2fv_(Attribute_TexCoord0, v.v); }
+    void texcoord0(const vec2<float> &v) { glVertexAttrib2fv_(Attribute_TexCoord0, v.v); }
     void texcoord0(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_TexCoord0, v.v); }
     void texcoord1f(float x) { glVertexAttrib1f_(Attribute_TexCoord1, x); }
     void texcoord1f(float x, float y) { glVertexAttrib2f_(Attribute_TexCoord1, x, y); }
@@ -531,7 +531,7 @@ namespace gle
     void texcoord1f(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_TexCoord1, x, y, z, w); }
     void texcoord1(const vec &v) { glVertexAttrib3fv_(Attribute_TexCoord1, v.v); }
     void texcoord1(const vec &v, float w) { glVertexAttrib4f_(Attribute_TexCoord1, v.x, v.y, v.z, w); }
-    void texcoord1(const vec2 &v) { glVertexAttrib2fv_(Attribute_TexCoord1, v.v); }
+    void texcoord1(const vec2<float> &v) { glVertexAttrib2fv_(Attribute_TexCoord1, v.v); }
     void texcoord1(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_TexCoord1, v.v); }
     void normal(float x, float y, float z) { glVertexAttrib4f_(Attribute_Normal, x, y, z, 0.0f); }
     void normal(const vec &v) { glVertexAttrib4f_(Attribute_Normal, v.x, v.y, v.z, 0.0f); }
@@ -658,7 +658,7 @@ namespace gle
 
     void attrib(const vec &v) { attribf(v.x, v.y, v.z); }
     void attrib(const vec &v, float w) { attribf(v.x, v.y, v.z, w); }
-    void attrib(const vec2 &v) { attribf(v.x, v.y); }
+    void attrib(const vec2<float> &v) { attribf(v.x, v.y); }
     void attrib(const vec4<float> &v) { attribf(v.x, v.y, v.z, v.w); }
     void attrib(const ivec &v) { attribi(v.x, v.y, v.z); }
     void attrib(const ivec &v, int w) { attribi(v.x, v.y, v.z, w); }
