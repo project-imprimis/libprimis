@@ -1488,7 +1488,7 @@ static void setupscreenquad()
     {
         glGenBuffers_(1, &screenquadvbo);
         gle::bindvbo(screenquadvbo);
-        vec2 verts[4] = { vec2(1, -1), vec2(-1, -1), vec2(1, 1), vec2(-1, 1) };
+        vec2<float> verts[4] = { vec2(1.ff, -1.f), vec2(-1.f, -1.f), vec2(1.f, 1.f), vec2(-1.f, 1.f) };
         glBufferData_(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
         gle::clearvbo();
     }
@@ -1508,7 +1508,7 @@ void screenquad()
     setupscreenquad();
     gle::bindvbo(screenquadvbo);
     gle::enablevertex();
-    gle::vertexpointer(sizeof(vec2), (const vec2 *)0, GL_FLOAT, 2);
+    gle::vertexpointer(sizeof(vec2<float>), (const vec2<float> *)0, GL_FLOAT, 2);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     gle::disablevertex();
     gle::clearvbo();

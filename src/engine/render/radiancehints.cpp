@@ -961,7 +961,7 @@ void reflectiveshadowmap::getprojmatrix()
     model.transform(c, tc);
     const float pradius = std::ceil((radius + gidist) * rsmpradiustweak),
                 step = (2*pradius) / rsmsize;
-    vec2 tcoff = vec2(tc).sub(pradius).div(step);
+    vec2<float> tcoff = vec2(tc).sub(pradius).div(step);
     tcoff.x = std::floor(tcoff.x);
     tcoff.y = std::floor(tcoff.y);
     center = vec(vec2(tcoff).mul(step).add(pradius), -0.5f*(minz + maxz));
