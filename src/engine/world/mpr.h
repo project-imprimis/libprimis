@@ -1,6 +1,8 @@
 #ifndef MPR_H_
 #define MPR_H_
 
+struct clipplanes;
+
 namespace mpr
 {
     struct CubePlanes

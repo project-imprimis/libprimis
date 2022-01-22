@@ -31,6 +31,7 @@
 #include "world/light.h"
 #include "world/material.h"
 #include "world/octaedit.h"
+#include "world/octaworld.h"
 #include "world/world.h"
 
 int vieww = -1,

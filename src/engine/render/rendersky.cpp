@@ -25,6 +25,7 @@
 
 #include "world/light.h"
 #include "world/octaedit.h"
+#include "world/octaworld.h"
 #include "world/raycube.h"
 
 VARNR(skytexture, useskytexture, 0, 0, 1);       //toggles rendering sky texture instead of nothing on skytex'd geometry

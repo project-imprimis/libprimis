@@ -1,6 +1,15 @@
 #ifndef OCTARENDER_H_
 #define OCTARENDER_H_
 
+struct octaentities;
+
+struct tjoint
+{
+    int next;
+    ushort offset;
+    uchar edge;
+};
+
 struct vertex
 {
     vec pos;
@@ -16,6 +25,31 @@ struct materialsurface
     ushort material, skip;
     uchar orient, visible;
     uchar ends;
+};
+
+struct elementset
+{
+    ushort texture;
+    union
+    {
+        struct
+        {
+            uchar orient, layer;
+        };
+        ushort reuse;
+    };
+    ushort length, minvert, maxvert;
+};
+
+struct grasstri
+{
+    vec v[4];
+    int numv;
+    plane surface;
+    vec center;
+    float radius;
+    float minz, maxz;
+    ushort texture;
 };
 
 struct vtxarray

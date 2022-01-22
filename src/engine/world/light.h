@@ -1,6 +1,10 @@
 #ifndef LIGHT_H_
 #define LIGHT_H_
 
+struct vertinfo;
+
+struct surfaceinfo;
+
 extern bvec ambient, skylight, sunlight;
 extern float ambientscale, skylightscale, sunlightscale;
 extern float sunlightyaw, sunlightpitch;

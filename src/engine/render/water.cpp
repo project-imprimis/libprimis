@@ -20,6 +20,7 @@
 #include "interface/control.h"
 
 #include "world/material.h"
+#include "world/octaworld.h"
 #include "world/world.h"
 
 // ======================= caustics ===================== //

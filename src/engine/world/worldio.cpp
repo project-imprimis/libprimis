@@ -3,6 +3,7 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/glexts.h"
 
+#include "light.h"
 #include "octaedit.h"
 #include "octaworld.h"
 #include "raycube.h"

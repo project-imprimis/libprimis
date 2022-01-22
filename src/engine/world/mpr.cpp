@@ -8,6 +8,8 @@
  */
 #include "../libprimis-headers/cube.h"
 
+#include "octaworld.h"
+
 #include "mpr.h"
 
 namespace mpr

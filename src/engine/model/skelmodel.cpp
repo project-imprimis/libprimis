@@ -22,6 +22,7 @@
 #include "render/rendermodel.h"
 #include "render/texture.h"
 
+#include "world/octaworld.h"
 #include "world/physics.h"
 #include "world/bih.h"
 

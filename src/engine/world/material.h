@@ -2,6 +2,7 @@
 #define MATERIAL_H_
 
 struct materialsurface;
+struct vtxarray;
 
 extern float matliquidsx1, matliquidsy1, matliquidsx2, matliquidsy2;
 extern float matsolidsx1, matsolidsy1, matsolidsx2, matsolidsy2;

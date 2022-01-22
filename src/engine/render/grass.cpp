@@ -15,6 +15,8 @@
 
 #include "interface/control.h"
 
+#include "world/octaworld.h"
+
 namespace //internal functionality not seen by other files
 {
     VARP(grass, 0, 1, 1);           //toggles rendering of grass

@@ -11,6 +11,9 @@ extern void dropenttofloor(entity *e);
 extern bool droptofloor(vec &o, float radius, float height);
 
 extern void resetclipplanes();
+
+struct clipplanes;
+
 extern clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset);
 extern bool collide(physent *d, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool playercol = true, bool insideplayercol = false);
 extern void modifyorient(float yaw, float pitch);

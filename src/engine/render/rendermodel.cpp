@@ -23,6 +23,7 @@
 #include "interface/control.h"
 
 #include "world/octaedit.h"
+#include "world/octaworld.h"
 #include "world/physics.h"
 #include "world/bih.h"
 #include "world/world.h"
