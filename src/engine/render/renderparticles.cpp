@@ -204,7 +204,7 @@ struct partvert
 {
     vec pos;     //x,y,z of particle
     vec4<float> color; //r,g,b,a color
-    vec2 tc;     //texture coordinate
+    vec2<float> tc;     //texture coordinate
 };
 
 static constexpr float collideradius = 8.0f;
@@ -536,7 +536,7 @@ class meterrenderer : public listrenderer
                 gle::begin(GL_TRIANGLE_STRIP);
                 for(int k = 0; k < 10; ++k)
                 {
-                    const vec2 &sc = sincos360[k*(180/(10-1))];
+                    const vec2<float> &sc = sincos360[k*(180/(10-1))];
                     float c = (0.5f + 0.1f)*sc.y,
                           s = 0.5f - (0.5f + 0.1f)*sc.x;
                     gle::attrib(m.transform(vec2(-c, s)));
@@ -555,7 +555,7 @@ class meterrenderer : public listrenderer
             gle::begin(GL_TRIANGLE_STRIP);
             for(int k = 0; k < 10; ++k)
             {
-                const vec2 &sc = sincos360[k*(180/(10-1))];
+                const vec2<float> &sc = sincos360[k*(180/(10-1))];
                 float c = 0.5f*sc.y,
                       s = 0.5f - 0.5f*sc.x;
                 gle::attrib(m.transform(vec2(left + c, s)));
@@ -569,7 +569,7 @@ class meterrenderer : public listrenderer
                 gle::begin(GL_TRIANGLE_FAN);
                 for(int k = 0; k < 10; ++k)
                 {
-                    const vec2 &sc = sincos360[k*(180/(10-1))];
+                    const vec2<float> &sc = sincos360[k*(180/(10-1))];
                     float c = (0.5f + 0.1f)*sc.y,
                           s = 0.5f - (0.5f + 0.1f)*sc.x;
                     gle::attrib(m.transform(vec2(left + c, s)));
@@ -581,7 +581,7 @@ class meterrenderer : public listrenderer
             gle::begin(GL_TRIANGLE_STRIP);
             for(int k = 0; k < 10; ++k)
             {
-                const vec2 &sc = sincos360[k*(180/(10-1))];
+                const vec2<float> &sc = sincos360[k*(180/(10-1))];
                 float c = 0.5f*sc.y,
                       s = 0.5f - 0.5f*sc.x;
                 gle::attrib(m.transform(vec2(-c, s)));
@@ -694,10 +694,10 @@ void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partver
 
 //==================================================================== ROTCOEFFS
 #define ROTCOEFFS(n) { \
-    vec2(-1,  1).rotate_around_z(n*2*M_PI/32.0f), \
-    vec2( 1,  1).rotate_around_z(n*2*M_PI/32.0f), \
-    vec2( 1, -1).rotate_around_z(n*2*M_PI/32.0f), \
-    vec2(-1, -1).rotate_around_z(n*2*M_PI/32.0f) \
+    vec2(-1.f,  1.f).rotate_around_z(n*2*M_PI/32.0f), \
+    vec2( 1.f,  1.f).rotate_around_z(n*2*M_PI/32.0f), \
+    vec2( 1.f, -1.f).rotate_around_z(n*2*M_PI/32.0f), \
+    vec2(-1.f, -1.f).rotate_around_z(n*2*M_PI/32.0f) \
 }
 static const vec2 rotcoeffs[32][4] =
 {
