@@ -34,7 +34,7 @@ struct stainvert
 {
     vec pos;
     vec4<uchar> color;
-    vec2 tc;
+    vec2<float> tc;
 };
 
 struct staininfo
