@@ -22,7 +22,7 @@ struct vertmodel : animmodel
 
     struct tcvert
     {
-        vec2 tc;
+        vec2<float> tc;
     };
 
     struct tri
