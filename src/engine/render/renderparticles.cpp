@@ -699,7 +699,7 @@ void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partver
     vec2( 1.f, -1.f).rotate_around_z(n*2*M_PI/32.0f), \
     vec2(-1.f, -1.f).rotate_around_z(n*2*M_PI/32.0f) \
 }
-static const vec2 rotcoeffs[32][4] =
+static const vec2<float> rotcoeffs[32][4] =
 {
     ROTCOEFFS(0),  ROTCOEFFS(1),  ROTCOEFFS(2),  ROTCOEFFS(3),  ROTCOEFFS(4),  ROTCOEFFS(5),  ROTCOEFFS(6),  ROTCOEFFS(7),
     ROTCOEFFS(8),  ROTCOEFFS(9),  ROTCOEFFS(10), ROTCOEFFS(11), ROTCOEFFS(12), ROTCOEFFS(13), ROTCOEFFS(14), ROTCOEFFS(15),
@@ -898,10 +898,10 @@ struct varenderer : partrenderer
                       v1 = v1c, \
                       v2 = v2c; \
                 body; \
-                vs[0].tc = vec2(u1, v1); \
-                vs[1].tc = vec2(u2, v1); \
-                vs[2].tc = vec2(u2, v2); \
-                vs[3].tc = vec2(u1, v2); \
+                vs[0].tc = vec2<float>(u1, v1); \
+                vs[1].tc = vec2<float>(u2, v1); \
+                vs[2].tc = vec2<float>(u2, v2); \
+                vs[3].tc = vec2<float>(u1, v2); \
             }
             if(type&PT_RND4)
             {
@@ -1742,7 +1742,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
         vec to, from;
         if(dir < 12)
         {
-            const vec2 &sc = sincos360[randomint(360)];
+            const vec2<float> &sc = sincos360[randomint(360)];
             to[dir%3] = sc.y*radius;
             to[(dir+1)%3] = sc.x*radius;
             to[(dir+2)%3] = 0.0;
