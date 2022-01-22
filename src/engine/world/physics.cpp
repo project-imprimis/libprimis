@@ -526,13 +526,13 @@ static bool fuzzycollideellipse(physent *d, const vec &dir, float cutoff, const 
             }
             case 2:
             {
-                vec2 ln(mdlvol.orient.transform(entvol.center().sub(mdlvol.o)));
+                vec2<float> ln(mdlvol.orient.transform(entvol.center().sub(mdlvol.o)));
                 float r = ln.magnitude();
                 if(r < 1e-6f)
                 {
                     continue;
                 }
-                vec2 lw = vec2(ln.x*radius.y, ln.y*radius.x).normalize();
+                vec2<float> lw = vec2(ln.x*radius.y, ln.y*radius.x).normalize();
                 w = mdlvol.orient.transposedtransform(lw);
                 dist = -vec2(ln.x*radius.x, ln.y*radius.y).dot(lw)/r;
                 break;
