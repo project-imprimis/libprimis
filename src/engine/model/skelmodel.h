@@ -26,7 +26,7 @@ struct skelmodel : animmodel
     struct vert
     {
         vec pos, norm;
-        vec2 tc;
+        vec2<float> tc;
         quat tangent;
         int blend, interpindex;
     };
@@ -34,14 +34,14 @@ struct skelmodel : animmodel
     struct vvert
     {
         vec pos;
-        GenericVec2<half> tc;
+        vec2<half> tc;
         squat tangent;
     };
 
     struct vvertg
     {
         vec4<half> pos;
-        GenericVec2<half> tc;
+        vec2<half> tc;
         squat tangent;
     };
 
