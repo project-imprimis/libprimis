@@ -7,10 +7,13 @@ var searchData=
   ['deletecontents_4',['deletecontents',['../structvector.html#af48aa137e8665f0e08ca13044312c828',1,'vector']]],
   ['detachedcamera_5',['detachedcamera',['../iengine_8h.html#a83cbb429c7fcf7be669949cdc33217c3',1,'iengine.h']]],
   ['detachentity_6',['detachentity',['../iengine_8h.html#a2301bf3a66a569344ee652f96dfd47a1',1,'iengine.h']]],
-  ['disown_7',['disown',['../structvector.html#a1031db09c7d4027790ccb7b5e7d25472',1,'vector']]],
-  ['downheap_8',['downheap',['../structvector.html#afd018336bccb491ad569e12c9ec6092b',1,'vector']]],
-  ['drop_9',['drop',['../structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66',1,'vector']]],
-  ['dualquat_10',['dualquat',['../structdualquat.html',1,'']]],
-  ['dup_11',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]],
-  ['dynent_12',['dynent',['../structdynent.html',1,'']]]
+  ['disablezoom_7',['disablezoom',['../iengine_8h.html#a22c96f585456f856035322b5bb4a6169',1,'iengine.h']]],
+  ['disown_8',['disown',['../structvector.html#a1031db09c7d4027790ccb7b5e7d25472',1,'vector']]],
+  ['downheap_9',['downheap',['../structvector.html#afd018336bccb491ad569e12c9ec6092b',1,'vector']]],
+  ['drawminimap_10',['drawminimap',['../iengine_8h.html#a89e18b6ae319c259c9036fb782952235',1,'iengine.h']]],
+  ['drop_11',['drop',['../structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66',1,'vector']]],
+  ['dropenttofloor_12',['dropenttofloor',['../iengine_8h.html#a0ad347f2277926b638e58f460536b2b8',1,'iengine.h']]],
+  ['dualquat_13',['dualquat',['../structdualquat.html',1,'']]],
+  ['dup_14',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]],
+  ['dynent_15',['dynent',['../structdynent.html',1,'']]]
 ];

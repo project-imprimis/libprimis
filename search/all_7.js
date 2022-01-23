@@ -10,7 +10,8 @@ var searchData=
   ['hashset_7',['hashset',['../structhashset.html',1,'']]],
   ['hashtable_8',['hashtable',['../structhashtable.html',1,'']]],
   ['hashtableentry_9',['hashtableentry',['../structhashtableentry.html',1,'']]],
-  ['heapchild_10',['heapchild',['../structvector.html#a960f7ccf713e2e29475b4534607573a5',1,'vector']]],
-  ['heapparent_11',['heapparent',['../structvector.html#ad5053033279ea5d16860228c1fb460b3',1,'vector']]],
-  ['htfind_12',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
+  ['haveselent_10',['haveselent',['../iengine_8h.html#a29b1538f06e1c2b2dd6644db6e3a120c',1,'iengine.h']]],
+  ['heapchild_11',['heapchild',['../structvector.html#a960f7ccf713e2e29475b4534607573a5',1,'vector']]],
+  ['heapparent_12',['heapparent',['../structvector.html#ad5053033279ea5d16860228c1fb460b3',1,'vector']]],
+  ['htfind_13',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
 ];

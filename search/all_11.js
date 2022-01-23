@@ -16,9 +16,11 @@ var searchData=
   ['sortnameless_13',['sortnameless',['../structsortnameless.html',1,'']]],
   ['spotlights_14',['spotlights',['../iengine_8h.html#a91ed2134b80d69e9d3145a5fe0081346',1,'iengine.h']]],
   ['squat_15',['squat',['../structsquat.html',1,'']]],
-  ['stream_16',['stream',['../structstream.html',1,'']]],
-  ['streambuf_17',['streambuf',['../structstreambuf.html',1,'']]],
-  ['stringslice_18',['stringslice',['../structstringslice.html',1,'']]],
-  ['svec_19',['svec',['../structsvec.html',1,'']]],
-  ['swapbuffers_20',['swapbuffers',['../iengine_8h.html#aef6750cb30230be48e99f7298276e1f1',1,'iengine.h']]]
+  ['stopsound_16',['stopsound',['../iengine_8h.html#aae9922a13a2b42ba5c093ae7f53f43e6',1,'iengine.h']]],
+  ['stopsounds_17',['stopsounds',['../iengine_8h.html#a507031a90887d8f0ec5123f5ac53d3b9',1,'iengine.h']]],
+  ['stream_18',['stream',['../structstream.html',1,'']]],
+  ['streambuf_19',['streambuf',['../structstreambuf.html',1,'']]],
+  ['stringslice_20',['stringslice',['../structstringslice.html',1,'']]],
+  ['svec_21',['svec',['../structsvec.html',1,'']]],
+  ['swapbuffers_22',['swapbuffers',['../iengine_8h.html#aef6750cb30230be48e99f7298276e1f1',1,'iengine.h']]]
 ];

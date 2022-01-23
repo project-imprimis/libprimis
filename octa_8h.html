@@ -153,7 +153,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>LOOP_XYZ</b>(b,  r,  f)&#160;&#160;&#160;{ for(int z = 0; z &lt; (b).s[<a class="el" href="geom_8h.html#af360aec895a04b5f852dbd4a58340ab6">D</a>[DIMENSION((b).orient)]]; ++z) LOOP_XY((b)) { <a class="el" href="classcube.html">cube</a> &amp;c = blockcube(x,y,z,b,r); f; } }</td></tr>
 <tr class="separator:ae89027fe7d1320051f0e36036c99bddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac96b4ab5a6f34c41e8525ef261503435"><td class="memItemLeft" align="right" valign="top"><a id="ac96b4ab5a6f34c41e8525ef261503435" name="ac96b4ab5a6f34c41e8525ef261503435"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>LOOP_SEL_XYZ</b>(f)&#160;&#160;&#160;{ if(local) makeundo(); LOOP_XYZ(sel, sel.grid, f); changed(sel); }</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LOOP_SEL_XYZ</b>(f)&#160;&#160;&#160;{ if(local) <a class="el" href="iengine_8h.html#a07e15e66cf0ecad0e7325668aeb44314">makeundo</a>(); LOOP_XYZ(sel, sel.grid, f); changed(sel); }</td></tr>
 <tr class="separator:ac96b4ab5a6f34c41e8525ef261503435"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a251d6c08e05eba0953abb7f2ce326aab"><td class="memItemLeft" align="right" valign="top"><a id="a251d6c08e05eba0953abb7f2ce326aab" name="a251d6c08e05eba0953abb7f2ce326aab"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SELECT_CUBE</b>(x,  y,  z)&#160;&#160;&#160;blockcube(x, y, z, sel, sel.grid)</td></tr>
