@@ -203,7 +203,7 @@ struct particle
 struct partvert
 {
     vec pos;     //x,y,z of particle
-    vec4<float> color; //r,g,b,a color
+    vec4<uchar> color; //r,g,b,a color
     vec2<float> tc;     //texture coordinate
 };
 
@@ -935,7 +935,7 @@ struct varenderer : partrenderer
             //========================================================= SETCOLOR
             #define SETCOLOR(r, g, b, a) \
             do { \
-                vec4<float> col(r, g, b, a); \
+                vec4<uchar> col(r, g, b, a); \
                 for(int i = 0; i < 4; ++i) \
                 { \
                     vs[i].color = col; \
