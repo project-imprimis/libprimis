@@ -1940,433 +1940,429 @@ $(document).ready(function(){initNavTree('geom_8h_source.html',''); initResizabl
 <div class="line"><a id="l01896" name="l01896"></a><span class="lineno"> 1896</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><a id="l01897" name="l01897"></a><span class="lineno"> 1897</span>    <span class="keywordtype">void</span> mult(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;x, <span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y)</div>
 <div class="line"><a id="l01898" name="l01898"></a><span class="lineno"> 1898</span>    {</div>
-<div class="line"><a id="l01899" name="l01899"></a><span class="lineno"> 1899</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> a2 = x.a,</div>
-<div class="line"><a id="l01900" name="l01900"></a><span class="lineno"> 1900</span>                    b2 = x.b,</div>
-<div class="line"><a id="l01901" name="l01901"></a><span class="lineno"> 1901</span>                    c2 = x.c,</div>
-<div class="line"><a id="l01902" name="l01902"></a><span class="lineno"> 1902</span>                    d2 = x.d;</div>
-<div class="line"><a id="l01903" name="l01903"></a><span class="lineno"> 1903</span>        a = <a class="code hl_struct" href="structvec4.html">vec4&lt;T&gt;</a>(a2).mul(y.a.x).madd(b2, y.a.y).madd(c2, y.a.z).madd(d2, y.a.w);</div>
-<div class="line"><a id="l01904" name="l01904"></a><span class="lineno"> 1904</span>        b = <a class="code hl_struct" href="structvec4.html">vec4&lt;T&gt;</a>(b2).mul(y.b.x).madd(b2, y.b.y).madd(c2, y.b.z).madd(d2, y.b.w);</div>
-<div class="line"><a id="l01905" name="l01905"></a><span class="lineno"> 1905</span>        c = <a class="code hl_struct" href="structvec4.html">vec4&lt;T&gt;</a>(c2).mul(y.c.x).madd(b2, y.c.y).madd(c2, y.c.z).madd(d2, y.c.w);</div>
-<div class="line"><a id="l01906" name="l01906"></a><span class="lineno"> 1906</span>        d = <a class="code hl_struct" href="structvec4.html">vec4&lt;T&gt;</a>(d2).mul(y.d.x).madd(b2, y.d.y).madd(c2, y.d.z).madd(d2, y.d.w);</div>
-<div class="line"><a id="l01907" name="l01907"></a><span class="lineno"> 1907</span>    }</div>
-<div class="line"><a id="l01908" name="l01908"></a><span class="lineno"> 1908</span> </div>
-<div class="line"><a id="l01909" name="l01909"></a><span class="lineno"> 1909</span>    <span class="keywordtype">void</span> mul(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;x, <span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;float&gt;(x, y); }</div>
-<div class="line"><a id="l01910" name="l01910"></a><span class="lineno"> 1910</span>    <span class="keywordtype">void</span> mul(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;float&gt;(<a class="code hl_struct" href="structmatrix4.html">matrix4</a>(*<span class="keyword">this</span>), y); }</div>
-<div class="line"><a id="l01911" name="l01911"></a><span class="lineno"> 1911</span> </div>
-<div class="line"><a id="l01912" name="l01912"></a><span class="lineno"> 1912</span>    <span class="keywordtype">void</span> muld(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;x, <span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;double&gt;(x, y); }</div>
-<div class="line"><a id="l01913" name="l01913"></a><span class="lineno"> 1913</span>    <span class="keywordtype">void</span> muld(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;double&gt;(<a class="code hl_struct" href="structmatrix4.html">matrix4</a>(*<span class="keyword">this</span>), y); }</div>
-<div class="line"><a id="l01914" name="l01914"></a><span class="lineno"> 1914</span> </div>
-<div class="line"><a id="l01915" name="l01915"></a><span class="lineno"> 1915</span>    <span class="keywordtype">void</span> rotate_around_x(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk)</div>
-<div class="line"><a id="l01916" name="l01916"></a><span class="lineno"> 1916</span>    {</div>
-<div class="line"><a id="l01917" name="l01917"></a><span class="lineno"> 1917</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rb = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(b).mul(ck).madd(c, sk),</div>
-<div class="line"><a id="l01918" name="l01918"></a><span class="lineno"> 1918</span>                    rc = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(c).mul(ck).msub(b, sk);</div>
-<div class="line"><a id="l01919" name="l01919"></a><span class="lineno"> 1919</span>        b = rb;</div>
-<div class="line"><a id="l01920" name="l01920"></a><span class="lineno"> 1920</span>        c = rc;</div>
-<div class="line"><a id="l01921" name="l01921"></a><span class="lineno"> 1921</span>    }</div>
-<div class="line"><a id="l01922" name="l01922"></a><span class="lineno"> 1922</span>    <span class="keywordtype">void</span> rotate_around_x(<span class="keywordtype">float</span> angle) { rotate_around_x(cosf(angle), std::sin(angle)); }</div>
-<div class="line"><a id="l01923" name="l01923"></a><span class="lineno"> 1923</span>    <span class="keywordtype">void</span> rotate_around_x(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc) { rotate_around_x(sc.x, sc.y); }</div>
-<div class="line"><a id="l01924" name="l01924"></a><span class="lineno"> 1924</span> </div>
-<div class="line"><a id="l01925" name="l01925"></a><span class="lineno"> 1925</span>    <span class="keywordtype">void</span> rotate_around_y(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk)</div>
-<div class="line"><a id="l01926" name="l01926"></a><span class="lineno"> 1926</span>    {</div>
-<div class="line"><a id="l01927" name="l01927"></a><span class="lineno"> 1927</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rc = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(c).mul(ck).madd(a, sk),</div>
-<div class="line"><a id="l01928" name="l01928"></a><span class="lineno"> 1928</span>                    ra = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(ck).msub(c, sk);</div>
-<div class="line"><a id="l01929" name="l01929"></a><span class="lineno"> 1929</span>        c = rc;</div>
-<div class="line"><a id="l01930" name="l01930"></a><span class="lineno"> 1930</span>        a = ra;</div>
-<div class="line"><a id="l01931" name="l01931"></a><span class="lineno"> 1931</span>    }</div>
-<div class="line"><a id="l01932" name="l01932"></a><span class="lineno"> 1932</span>    <span class="keywordtype">void</span> rotate_around_y(<span class="keywordtype">float</span> angle) { rotate_around_y(cosf(angle), std::sin(angle)); }</div>
-<div class="line"><a id="l01933" name="l01933"></a><span class="lineno"> 1933</span>    <span class="keywordtype">void</span> rotate_around_y(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc) { rotate_around_y(sc.x, sc.y); }</div>
-<div class="line"><a id="l01934" name="l01934"></a><span class="lineno"> 1934</span> </div>
-<div class="line"><a id="l01935" name="l01935"></a><span class="lineno"> 1935</span>    <span class="keywordtype">void</span> rotate_around_z(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk)</div>
-<div class="line"><a id="l01936" name="l01936"></a><span class="lineno"> 1936</span>    {</div>
-<div class="line"><a id="l01937" name="l01937"></a><span class="lineno"> 1937</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> ra = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(ck).madd(b, sk),</div>
-<div class="line"><a id="l01938" name="l01938"></a><span class="lineno"> 1938</span>                    rb = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(b).mul(ck).msub(a, sk);</div>
-<div class="line"><a id="l01939" name="l01939"></a><span class="lineno"> 1939</span>        a = ra;</div>
-<div class="line"><a id="l01940" name="l01940"></a><span class="lineno"> 1940</span>        b = rb;</div>
-<div class="line"><a id="l01941" name="l01941"></a><span class="lineno"> 1941</span>    }</div>
-<div class="line"><a id="l01942" name="l01942"></a><span class="lineno"> 1942</span>    <span class="keywordtype">void</span> rotate_around_z(<span class="keywordtype">float</span> angle) { rotate_around_z(cosf(angle), std::sin(angle)); }</div>
-<div class="line"><a id="l01943" name="l01943"></a><span class="lineno"> 1943</span>    <span class="keywordtype">void</span> rotate_around_z(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc) { rotate_around_z(sc.x, sc.y); }</div>
-<div class="line"><a id="l01944" name="l01944"></a><span class="lineno"> 1944</span> </div>
-<div class="line"><a id="l01945" name="l01945"></a><span class="lineno"> 1945</span>    <span class="keywordtype">void</span> rotate(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;axis)</div>
-<div class="line"><a id="l01946" name="l01946"></a><span class="lineno"> 1946</span>    {</div>
-<div class="line"><a id="l01947" name="l01947"></a><span class="lineno"> 1947</span>        <a class="code hl_struct" href="structmatrix3.html">matrix3</a> m;</div>
-<div class="line"><a id="l01948" name="l01948"></a><span class="lineno"> 1948</span>        m.rotate(ck, sk, axis);</div>
-<div class="line"><a id="l01949" name="l01949"></a><span class="lineno"> 1949</span>        mul(m);</div>
-<div class="line"><a id="l01950" name="l01950"></a><span class="lineno"> 1950</span>    }</div>
-<div class="line"><a id="l01951" name="l01951"></a><span class="lineno"> 1951</span>    <span class="keywordtype">void</span> rotate(<span class="keywordtype">float</span> angle, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir) { rotate(cosf(angle), std::sin(angle), dir); }</div>
-<div class="line"><a id="l01952" name="l01952"></a><span class="lineno"> 1952</span>    <span class="keywordtype">void</span> rotate(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir) { rotate(sc.x, sc.y, dir); }</div>
-<div class="line"><a id="l01953" name="l01953"></a><span class="lineno"> 1953</span> </div>
-<div class="line"><a id="l01954" name="l01954"></a><span class="lineno"> 1954</span>    <span class="keywordtype">void</span> identity()</div>
-<div class="line"><a id="l01955" name="l01955"></a><span class="lineno"> 1955</span>    {</div>
-<div class="line"><a id="l01956" name="l01956"></a><span class="lineno"> 1956</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(1, 0, 0, 0);</div>
-<div class="line"><a id="l01957" name="l01957"></a><span class="lineno"> 1957</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 1, 0, 0);</div>
-<div class="line"><a id="l01958" name="l01958"></a><span class="lineno"> 1958</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 1, 0);</div>
-<div class="line"><a id="l01959" name="l01959"></a><span class="lineno"> 1959</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 0, 1);</div>
-<div class="line"><a id="l01960" name="l01960"></a><span class="lineno"> 1960</span>    }</div>
-<div class="line"><a id="l01961" name="l01961"></a><span class="lineno"> 1961</span> </div>
-<div class="line"><a id="l01962" name="l01962"></a><span class="lineno"> 1962</span>    <span class="keywordtype">void</span> settranslation(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) { d.setxyz(v); }</div>
-<div class="line"><a id="l01963" name="l01963"></a><span class="lineno"> 1963</span>    <span class="keywordtype">void</span> settranslation(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z) { d.x = x; d.y = y; d.z = z; }</div>
+<div class="line"><a id="l01899" name="l01899"></a><span class="lineno"> 1899</span>        a = T(x.a).mul(y.a.x).madd(x.b, y.a.y).madd(x.c, y.a.z).madd(x.d, y.a.w);</div>
+<div class="line"><a id="l01900" name="l01900"></a><span class="lineno"> 1900</span>        b = T(x.a).mul(y.b.x).madd(x.b, y.b.y).madd(x.c, y.b.z).madd(x.d, y.b.w);</div>
+<div class="line"><a id="l01901" name="l01901"></a><span class="lineno"> 1901</span>        c = T(x.a).mul(y.c.x).madd(x.b, y.c.y).madd(x.c, y.c.z).madd(x.d, y.c.w);</div>
+<div class="line"><a id="l01902" name="l01902"></a><span class="lineno"> 1902</span>        d = T(x.a).mul(y.d.x).madd(x.b, y.d.y).madd(x.c, y.d.z).madd(x.d, y.d.w);</div>
+<div class="line"><a id="l01903" name="l01903"></a><span class="lineno"> 1903</span>    }</div>
+<div class="line"><a id="l01904" name="l01904"></a><span class="lineno"> 1904</span> </div>
+<div class="line"><a id="l01905" name="l01905"></a><span class="lineno"> 1905</span>    <span class="keywordtype">void</span> mul(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;x, <span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;vec4&lt;float&gt;&gt;(x, y); }</div>
+<div class="line"><a id="l01906" name="l01906"></a><span class="lineno"> 1906</span>    <span class="keywordtype">void</span> mul(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;vec4&lt;float&gt;&gt;(<a class="code hl_struct" href="structmatrix4.html">matrix4</a>(*<span class="keyword">this</span>), y); }</div>
+<div class="line"><a id="l01907" name="l01907"></a><span class="lineno"> 1907</span> </div>
+<div class="line"><a id="l01908" name="l01908"></a><span class="lineno"> 1908</span>    <span class="keywordtype">void</span> muld(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;x, <span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;vec4&lt;float&gt;&gt;(x, y); }</div>
+<div class="line"><a id="l01909" name="l01909"></a><span class="lineno"> 1909</span>    <span class="keywordtype">void</span> muld(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;y) { mult&lt;vec4&lt;float&gt;&gt;(<a class="code hl_struct" href="structmatrix4.html">matrix4</a>(*<span class="keyword">this</span>), y); }</div>
+<div class="line"><a id="l01910" name="l01910"></a><span class="lineno"> 1910</span> </div>
+<div class="line"><a id="l01911" name="l01911"></a><span class="lineno"> 1911</span>    <span class="keywordtype">void</span> rotate_around_x(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk)</div>
+<div class="line"><a id="l01912" name="l01912"></a><span class="lineno"> 1912</span>    {</div>
+<div class="line"><a id="l01913" name="l01913"></a><span class="lineno"> 1913</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rb = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(b).mul(ck).madd(c, sk),</div>
+<div class="line"><a id="l01914" name="l01914"></a><span class="lineno"> 1914</span>                    rc = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(c).mul(ck).msub(b, sk);</div>
+<div class="line"><a id="l01915" name="l01915"></a><span class="lineno"> 1915</span>        b = rb;</div>
+<div class="line"><a id="l01916" name="l01916"></a><span class="lineno"> 1916</span>        c = rc;</div>
+<div class="line"><a id="l01917" name="l01917"></a><span class="lineno"> 1917</span>    }</div>
+<div class="line"><a id="l01918" name="l01918"></a><span class="lineno"> 1918</span>    <span class="keywordtype">void</span> rotate_around_x(<span class="keywordtype">float</span> angle) { rotate_around_x(cosf(angle), std::sin(angle)); }</div>
+<div class="line"><a id="l01919" name="l01919"></a><span class="lineno"> 1919</span>    <span class="keywordtype">void</span> rotate_around_x(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc) { rotate_around_x(sc.x, sc.y); }</div>
+<div class="line"><a id="l01920" name="l01920"></a><span class="lineno"> 1920</span> </div>
+<div class="line"><a id="l01921" name="l01921"></a><span class="lineno"> 1921</span>    <span class="keywordtype">void</span> rotate_around_y(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk)</div>
+<div class="line"><a id="l01922" name="l01922"></a><span class="lineno"> 1922</span>    {</div>
+<div class="line"><a id="l01923" name="l01923"></a><span class="lineno"> 1923</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rc = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(c).mul(ck).madd(a, sk),</div>
+<div class="line"><a id="l01924" name="l01924"></a><span class="lineno"> 1924</span>                    ra = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(ck).msub(c, sk);</div>
+<div class="line"><a id="l01925" name="l01925"></a><span class="lineno"> 1925</span>        c = rc;</div>
+<div class="line"><a id="l01926" name="l01926"></a><span class="lineno"> 1926</span>        a = ra;</div>
+<div class="line"><a id="l01927" name="l01927"></a><span class="lineno"> 1927</span>    }</div>
+<div class="line"><a id="l01928" name="l01928"></a><span class="lineno"> 1928</span>    <span class="keywordtype">void</span> rotate_around_y(<span class="keywordtype">float</span> angle) { rotate_around_y(cosf(angle), std::sin(angle)); }</div>
+<div class="line"><a id="l01929" name="l01929"></a><span class="lineno"> 1929</span>    <span class="keywordtype">void</span> rotate_around_y(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc) { rotate_around_y(sc.x, sc.y); }</div>
+<div class="line"><a id="l01930" name="l01930"></a><span class="lineno"> 1930</span> </div>
+<div class="line"><a id="l01931" name="l01931"></a><span class="lineno"> 1931</span>    <span class="keywordtype">void</span> rotate_around_z(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk)</div>
+<div class="line"><a id="l01932" name="l01932"></a><span class="lineno"> 1932</span>    {</div>
+<div class="line"><a id="l01933" name="l01933"></a><span class="lineno"> 1933</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> ra = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(ck).madd(b, sk),</div>
+<div class="line"><a id="l01934" name="l01934"></a><span class="lineno"> 1934</span>                    rb = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(b).mul(ck).msub(a, sk);</div>
+<div class="line"><a id="l01935" name="l01935"></a><span class="lineno"> 1935</span>        a = ra;</div>
+<div class="line"><a id="l01936" name="l01936"></a><span class="lineno"> 1936</span>        b = rb;</div>
+<div class="line"><a id="l01937" name="l01937"></a><span class="lineno"> 1937</span>    }</div>
+<div class="line"><a id="l01938" name="l01938"></a><span class="lineno"> 1938</span>    <span class="keywordtype">void</span> rotate_around_z(<span class="keywordtype">float</span> angle) { rotate_around_z(cosf(angle), std::sin(angle)); }</div>
+<div class="line"><a id="l01939" name="l01939"></a><span class="lineno"> 1939</span>    <span class="keywordtype">void</span> rotate_around_z(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc) { rotate_around_z(sc.x, sc.y); }</div>
+<div class="line"><a id="l01940" name="l01940"></a><span class="lineno"> 1940</span> </div>
+<div class="line"><a id="l01941" name="l01941"></a><span class="lineno"> 1941</span>    <span class="keywordtype">void</span> rotate(<span class="keywordtype">float</span> ck, <span class="keywordtype">float</span> sk, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;axis)</div>
+<div class="line"><a id="l01942" name="l01942"></a><span class="lineno"> 1942</span>    {</div>
+<div class="line"><a id="l01943" name="l01943"></a><span class="lineno"> 1943</span>        <a class="code hl_struct" href="structmatrix3.html">matrix3</a> m;</div>
+<div class="line"><a id="l01944" name="l01944"></a><span class="lineno"> 1944</span>        m.rotate(ck, sk, axis);</div>
+<div class="line"><a id="l01945" name="l01945"></a><span class="lineno"> 1945</span>        mul(m);</div>
+<div class="line"><a id="l01946" name="l01946"></a><span class="lineno"> 1946</span>    }</div>
+<div class="line"><a id="l01947" name="l01947"></a><span class="lineno"> 1947</span>    <span class="keywordtype">void</span> rotate(<span class="keywordtype">float</span> angle, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir) { rotate(cosf(angle), std::sin(angle), dir); }</div>
+<div class="line"><a id="l01948" name="l01948"></a><span class="lineno"> 1948</span>    <span class="keywordtype">void</span> rotate(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir) { rotate(sc.x, sc.y, dir); }</div>
+<div class="line"><a id="l01949" name="l01949"></a><span class="lineno"> 1949</span> </div>
+<div class="line"><a id="l01950" name="l01950"></a><span class="lineno"> 1950</span>    <span class="keywordtype">void</span> identity()</div>
+<div class="line"><a id="l01951" name="l01951"></a><span class="lineno"> 1951</span>    {</div>
+<div class="line"><a id="l01952" name="l01952"></a><span class="lineno"> 1952</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(1, 0, 0, 0);</div>
+<div class="line"><a id="l01953" name="l01953"></a><span class="lineno"> 1953</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 1, 0, 0);</div>
+<div class="line"><a id="l01954" name="l01954"></a><span class="lineno"> 1954</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 1, 0);</div>
+<div class="line"><a id="l01955" name="l01955"></a><span class="lineno"> 1955</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 0, 1);</div>
+<div class="line"><a id="l01956" name="l01956"></a><span class="lineno"> 1956</span>    }</div>
+<div class="line"><a id="l01957" name="l01957"></a><span class="lineno"> 1957</span> </div>
+<div class="line"><a id="l01958" name="l01958"></a><span class="lineno"> 1958</span>    <span class="keywordtype">void</span> settranslation(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) { d.setxyz(v); }</div>
+<div class="line"><a id="l01959" name="l01959"></a><span class="lineno"> 1959</span>    <span class="keywordtype">void</span> settranslation(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z) { d.x = x; d.y = y; d.z = z; }</div>
+<div class="line"><a id="l01960" name="l01960"></a><span class="lineno"> 1960</span> </div>
+<div class="line"><a id="l01961" name="l01961"></a><span class="lineno"> 1961</span>    <span class="keywordtype">void</span> translate(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;p) { d.madd(a, p.x).madd(b, p.y).madd(c, p.z); }</div>
+<div class="line"><a id="l01962" name="l01962"></a><span class="lineno"> 1962</span>    <span class="keywordtype">void</span> translate(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z) { translate(<a class="code hl_struct" href="structvec.html">vec</a>(x, y, z)); }</div>
+<div class="line"><a id="l01963" name="l01963"></a><span class="lineno"> 1963</span>    <span class="keywordtype">void</span> translate(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;p, <span class="keywordtype">float</span> scale) { translate(<a class="code hl_struct" href="structvec.html">vec</a>(p).mul(scale)); }</div>
 <div class="line"><a id="l01964" name="l01964"></a><span class="lineno"> 1964</span> </div>
-<div class="line"><a id="l01965" name="l01965"></a><span class="lineno"> 1965</span>    <span class="keywordtype">void</span> translate(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;p) { d.madd(a, p.x).madd(b, p.y).madd(c, p.z); }</div>
-<div class="line"><a id="l01966" name="l01966"></a><span class="lineno"> 1966</span>    <span class="keywordtype">void</span> translate(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z) { translate(<a class="code hl_struct" href="structvec.html">vec</a>(x, y, z)); }</div>
-<div class="line"><a id="l01967" name="l01967"></a><span class="lineno"> 1967</span>    <span class="keywordtype">void</span> translate(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;p, <span class="keywordtype">float</span> scale) { translate(<a class="code hl_struct" href="structvec.html">vec</a>(p).mul(scale)); }</div>
+<div class="line"><a id="l01965" name="l01965"></a><span class="lineno"> 1965</span>    <span class="keywordtype">void</span> setscale(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z) { a.x = x; b.y = y; c.z = z; }</div>
+<div class="line"><a id="l01966" name="l01966"></a><span class="lineno"> 1966</span>    <span class="keywordtype">void</span> setscale(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) { setscale(v.x, v.y, v.z); }</div>
+<div class="line"><a id="l01967" name="l01967"></a><span class="lineno"> 1967</span>    <span class="keywordtype">void</span> setscale(<span class="keywordtype">float</span> n) { setscale(n, n, n); }</div>
 <div class="line"><a id="l01968" name="l01968"></a><span class="lineno"> 1968</span> </div>
-<div class="line"><a id="l01969" name="l01969"></a><span class="lineno"> 1969</span>    <span class="keywordtype">void</span> setscale(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z) { a.x = x; b.y = y; c.z = z; }</div>
-<div class="line"><a id="l01970" name="l01970"></a><span class="lineno"> 1970</span>    <span class="keywordtype">void</span> setscale(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) { setscale(v.x, v.y, v.z); }</div>
-<div class="line"><a id="l01971" name="l01971"></a><span class="lineno"> 1971</span>    <span class="keywordtype">void</span> setscale(<span class="keywordtype">float</span> n) { setscale(n, n, n); }</div>
-<div class="line"><a id="l01972" name="l01972"></a><span class="lineno"> 1972</span> </div>
-<div class="line"><a id="l01973" name="l01973"></a><span class="lineno"> 1973</span>    <span class="keywordtype">void</span> scale(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z)</div>
-<div class="line"><a id="l01974" name="l01974"></a><span class="lineno"> 1974</span>    {</div>
-<div class="line"><a id="l01975" name="l01975"></a><span class="lineno"> 1975</span>        a.mul(x);</div>
-<div class="line"><a id="l01976" name="l01976"></a><span class="lineno"> 1976</span>        b.mul(y);</div>
-<div class="line"><a id="l01977" name="l01977"></a><span class="lineno"> 1977</span>        c.mul(z);</div>
-<div class="line"><a id="l01978" name="l01978"></a><span class="lineno"> 1978</span>    }</div>
-<div class="line"><a id="l01979" name="l01979"></a><span class="lineno"> 1979</span>    <span class="keywordtype">void</span> scale(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) { scale(v.x, v.y, v.z); }</div>
-<div class="line"><a id="l01980" name="l01980"></a><span class="lineno"> 1980</span>    <span class="keywordtype">void</span> scale(<span class="keywordtype">float</span> n) { scale(n, n, n); }</div>
-<div class="line"><a id="l01981" name="l01981"></a><span class="lineno"> 1981</span> </div>
-<div class="line"><a id="l01982" name="l01982"></a><span class="lineno"> 1982</span>    <span class="keywordtype">void</span> scalexy(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y)</div>
-<div class="line"><a id="l01983" name="l01983"></a><span class="lineno"> 1983</span>    {</div>
-<div class="line"><a id="l01984" name="l01984"></a><span class="lineno"> 1984</span>        a.x *= x; a.y *= y;</div>
-<div class="line"><a id="l01985" name="l01985"></a><span class="lineno"> 1985</span>        b.x *= x; b.y *= y;</div>
-<div class="line"><a id="l01986" name="l01986"></a><span class="lineno"> 1986</span>        c.x *= x; c.y *= y;</div>
-<div class="line"><a id="l01987" name="l01987"></a><span class="lineno"> 1987</span>        d.x *= x; d.y *= y;</div>
-<div class="line"><a id="l01988" name="l01988"></a><span class="lineno"> 1988</span>    }</div>
-<div class="line"><a id="l01989" name="l01989"></a><span class="lineno"> 1989</span> </div>
-<div class="line"><a id="l01990" name="l01990"></a><span class="lineno"> 1990</span>    <span class="keywordtype">void</span> scalez(<span class="keywordtype">float</span> k)</div>
-<div class="line"><a id="l01991" name="l01991"></a><span class="lineno"> 1991</span>    {</div>
-<div class="line"><a id="l01992" name="l01992"></a><span class="lineno"> 1992</span>        a.z *= k;</div>
-<div class="line"><a id="l01993" name="l01993"></a><span class="lineno"> 1993</span>        b.z *= k;</div>
-<div class="line"><a id="l01994" name="l01994"></a><span class="lineno"> 1994</span>        c.z *= k;</div>
-<div class="line"><a id="l01995" name="l01995"></a><span class="lineno"> 1995</span>        d.z *= k;</div>
-<div class="line"><a id="l01996" name="l01996"></a><span class="lineno"> 1996</span>    }</div>
-<div class="line"><a id="l01997" name="l01997"></a><span class="lineno"> 1997</span> </div>
-<div class="line"><a id="l01998" name="l01998"></a><span class="lineno"> 1998</span>    <span class="keywordtype">void</span> reflectz(<span class="keywordtype">float</span> z)</div>
-<div class="line"><a id="l01999" name="l01999"></a><span class="lineno"> 1999</span>    {</div>
-<div class="line"><a id="l02000" name="l02000"></a><span class="lineno"> 2000</span>        d.add(<a class="code hl_struct" href="structvec4.html">vec4</a>(c).mul(2*z));</div>
-<div class="line"><a id="l02001" name="l02001"></a><span class="lineno"> 2001</span>        c.neg();</div>
-<div class="line"><a id="l02002" name="l02002"></a><span class="lineno"> 2002</span>    }</div>
-<div class="line"><a id="l02003" name="l02003"></a><span class="lineno"> 2003</span> </div>
-<div class="line"><a id="l02004" name="l02004"></a><span class="lineno"> 2004</span>    <span class="keywordtype">void</span> jitter(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y)</div>
-<div class="line"><a id="l02005" name="l02005"></a><span class="lineno"> 2005</span>    {</div>
-<div class="line"><a id="l02006" name="l02006"></a><span class="lineno"> 2006</span>        a.x += x * a.w;</div>
-<div class="line"><a id="l02007" name="l02007"></a><span class="lineno"> 2007</span>        a.y += y * a.w;</div>
-<div class="line"><a id="l02008" name="l02008"></a><span class="lineno"> 2008</span>        b.x += x * b.w;</div>
-<div class="line"><a id="l02009" name="l02009"></a><span class="lineno"> 2009</span>        b.y += y * b.w;</div>
-<div class="line"><a id="l02010" name="l02010"></a><span class="lineno"> 2010</span>        c.x += x * c.w;</div>
-<div class="line"><a id="l02011" name="l02011"></a><span class="lineno"> 2011</span>        c.y += y * c.w;</div>
-<div class="line"><a id="l02012" name="l02012"></a><span class="lineno"> 2012</span>        d.x += x * d.w;</div>
-<div class="line"><a id="l02013" name="l02013"></a><span class="lineno"> 2013</span>        d.y += y * d.w;</div>
-<div class="line"><a id="l02014" name="l02014"></a><span class="lineno"> 2014</span>    }</div>
-<div class="line"><a id="l02015" name="l02015"></a><span class="lineno"> 2015</span> </div>
-<div class="line"><a id="l02016" name="l02016"></a><span class="lineno"> 2016</span>    <span class="keywordtype">void</span> transpose()</div>
-<div class="line"><a id="l02017" name="l02017"></a><span class="lineno"> 2017</span>    {</div>
-<div class="line"><a id="l02018" name="l02018"></a><span class="lineno"> 2018</span>        swap(a.y, b.x); swap(a.z, c.x); swap(a.w, d.x);</div>
-<div class="line"><a id="l02019" name="l02019"></a><span class="lineno"> 2019</span>        swap(b.z, c.y); swap(b.w, d.y);</div>
-<div class="line"><a id="l02020" name="l02020"></a><span class="lineno"> 2020</span>        swap(c.w, d.z);</div>
-<div class="line"><a id="l02021" name="l02021"></a><span class="lineno"> 2021</span>    }</div>
-<div class="line"><a id="l02022" name="l02022"></a><span class="lineno"> 2022</span> </div>
-<div class="line"><a id="l02023" name="l02023"></a><span class="lineno"> 2023</span>    <span class="keywordtype">void</span> transpose(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
-<div class="line"><a id="l02024" name="l02024"></a><span class="lineno"> 2024</span>    {</div>
-<div class="line"><a id="l02025" name="l02025"></a><span class="lineno"> 2025</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.x, m.b.x, m.c.x, m.d.x);</div>
-<div class="line"><a id="l02026" name="l02026"></a><span class="lineno"> 2026</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.y, m.b.y, m.c.y, m.d.y);</div>
-<div class="line"><a id="l02027" name="l02027"></a><span class="lineno"> 2027</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.z, m.b.z, m.c.z, m.d.z);</div>
-<div class="line"><a id="l02028" name="l02028"></a><span class="lineno"> 2028</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.w, m.b.w, m.c.w, m.d.w);</div>
-<div class="line"><a id="l02029" name="l02029"></a><span class="lineno"> 2029</span>    }</div>
-<div class="line"><a id="l02030" name="l02030"></a><span class="lineno"> 2030</span> </div>
-<div class="line"><a id="l02031" name="l02031"></a><span class="lineno"> 2031</span>    <span class="keywordtype">void</span> frustum(<span class="keywordtype">float</span> left, <span class="keywordtype">float</span> right, <span class="keywordtype">float</span> bottom, <span class="keywordtype">float</span> top, <span class="keywordtype">float</span> znear, <span class="keywordtype">float</span> zfar)</div>
-<div class="line"><a id="l02032" name="l02032"></a><span class="lineno"> 2032</span>    {</div>
-<div class="line"><a id="l02033" name="l02033"></a><span class="lineno"> 2033</span>        <span class="keywordtype">float</span> width = right - left,</div>
-<div class="line"><a id="l02034" name="l02034"></a><span class="lineno"> 2034</span>              height = top - bottom,</div>
-<div class="line"><a id="l02035" name="l02035"></a><span class="lineno"> 2035</span>              zrange = znear - zfar;</div>
-<div class="line"><a id="l02036" name="l02036"></a><span class="lineno"> 2036</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(2*znear/width, 0, 0, 0);</div>
-<div class="line"><a id="l02037" name="l02037"></a><span class="lineno"> 2037</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 2*znear/height, 0, 0);</div>
-<div class="line"><a id="l02038" name="l02038"></a><span class="lineno"> 2038</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>((right + left)/width, (top + bottom)/height, (zfar + znear)/zrange, -1);</div>
-<div class="line"><a id="l02039" name="l02039"></a><span class="lineno"> 2039</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 2*znear*zfar/zrange, 0);</div>
-<div class="line"><a id="l02040" name="l02040"></a><span class="lineno"> 2040</span>    }</div>
-<div class="line"><a id="l02041" name="l02041"></a><span class="lineno"> 2041</span> </div>
-<div class="line"><a id="l02042" name="l02042"></a><span class="lineno"> 2042</span>    <span class="keywordtype">void</span> perspective(<span class="keywordtype">float</span> fovy, <span class="keywordtype">float</span> aspect, <span class="keywordtype">float</span> znear, <span class="keywordtype">float</span> zfar)</div>
-<div class="line"><a id="l02043" name="l02043"></a><span class="lineno"> 2043</span>    {</div>
-<div class="line"><a id="l02044" name="l02044"></a><span class="lineno"> 2044</span>        <span class="keywordtype">float</span> ydist = znear * std::tan(fovy/2*RAD),</div>
-<div class="line"><a id="l02045" name="l02045"></a><span class="lineno"> 2045</span>              xdist = ydist * aspect;</div>
-<div class="line"><a id="l02046" name="l02046"></a><span class="lineno"> 2046</span>        frustum(-xdist, xdist, -ydist, ydist, znear, zfar);</div>
-<div class="line"><a id="l02047" name="l02047"></a><span class="lineno"> 2047</span>    }</div>
-<div class="line"><a id="l02048" name="l02048"></a><span class="lineno"> 2048</span> </div>
-<div class="line"><a id="l02049" name="l02049"></a><span class="lineno"> 2049</span>    <span class="keywordtype">void</span> ortho(<span class="keywordtype">float</span> left, <span class="keywordtype">float</span> right, <span class="keywordtype">float</span> bottom, <span class="keywordtype">float</span> top, <span class="keywordtype">float</span> znear, <span class="keywordtype">float</span> zfar)</div>
-<div class="line"><a id="l02050" name="l02050"></a><span class="lineno"> 2050</span>    {</div>
-<div class="line"><a id="l02051" name="l02051"></a><span class="lineno"> 2051</span>        <span class="keywordtype">float</span> width = right - left,</div>
-<div class="line"><a id="l02052" name="l02052"></a><span class="lineno"> 2052</span>              height = top - bottom,</div>
-<div class="line"><a id="l02053" name="l02053"></a><span class="lineno"> 2053</span>              zrange = znear - zfar;</div>
-<div class="line"><a id="l02054" name="l02054"></a><span class="lineno"> 2054</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(2/width, 0, 0, 0);</div>
-<div class="line"><a id="l02055" name="l02055"></a><span class="lineno"> 2055</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 2/height, 0, 0);</div>
-<div class="line"><a id="l02056" name="l02056"></a><span class="lineno"> 2056</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 2/zrange, 0);</div>
-<div class="line"><a id="l02057" name="l02057"></a><span class="lineno"> 2057</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(-(right+left)/width, -(top+bottom)/height, (zfar+znear)/zrange, 1);</div>
-<div class="line"><a id="l02058" name="l02058"></a><span class="lineno"> 2058</span>    }</div>
-<div class="line"><a id="l02059" name="l02059"></a><span class="lineno"> 2059</span> </div>
-<div class="line"><a id="l02060" name="l02060"></a><span class="lineno"> 2060</span>    <span class="keywordtype">void</span> clip(<span class="keyword">const</span> <a class="code hl_struct" href="structplane.html">plane</a> &amp;p, <span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
-<div class="line"><a id="l02061" name="l02061"></a><span class="lineno"> 2061</span>    {</div>
-<div class="line"><a id="l02062" name="l02062"></a><span class="lineno"> 2062</span>        <span class="keywordtype">float</span> x = ((p.x&lt;0 ? -1 : (p.x&gt;0 ? 1 : 0)) + m.c.x) / m.a.x,</div>
-<div class="line"><a id="l02063" name="l02063"></a><span class="lineno"> 2063</span>              y = ((p.y&lt;0 ? -1 : (p.y&gt;0 ? 1 : 0)) + m.c.y) / m.b.y,</div>
-<div class="line"><a id="l02064" name="l02064"></a><span class="lineno"> 2064</span>              w = (1 + m.c.z) / m.d.z,</div>
-<div class="line"><a id="l02065" name="l02065"></a><span class="lineno"> 2065</span>            scale = 2 / (x*p.x + y*p.y - p.z + w*p.offset);</div>
-<div class="line"><a id="l02066" name="l02066"></a><span class="lineno"> 2066</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.x, m.a.y, p.x*scale, m.a.w);</div>
-<div class="line"><a id="l02067" name="l02067"></a><span class="lineno"> 2067</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.b.x, m.b.y, p.y*scale, m.b.w);</div>
-<div class="line"><a id="l02068" name="l02068"></a><span class="lineno"> 2068</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.c.x, m.c.y, p.z*scale + 1.0f, m.c.w);</div>
-<div class="line"><a id="l02069" name="l02069"></a><span class="lineno"> 2069</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.d.x, m.d.y, p.offset*scale, m.d.w);</div>
-<div class="line"><a id="l02070" name="l02070"></a><span class="lineno"> 2070</span>    }</div>
-<div class="line"><a id="l02071" name="l02071"></a><span class="lineno"> 2071</span> </div>
-<div class="line"><a id="l02072" name="l02072"></a><span class="lineno"> 2072</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02073" name="l02073"></a><span class="lineno"> 2073</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02074" name="l02074"></a><span class="lineno"> 2074</span>        out = <a class="code hl_struct" href="structvec.html">vec</a>(a).mul(in.x).add(<a class="code hl_struct" href="structvec.html">vec</a>(b).mul(in.y)).add(<a class="code hl_struct" href="structvec.html">vec</a>(c).mul(in.z)).add(<a class="code hl_struct" href="structvec.html">vec</a>(d));</div>
-<div class="line"><a id="l02075" name="l02075"></a><span class="lineno"> 2075</span>    }</div>
-<div class="line"><a id="l02076" name="l02076"></a><span class="lineno"> 2076</span> </div>
-<div class="line"><a id="l02077" name="l02077"></a><span class="lineno"> 2077</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02078" name="l02078"></a><span class="lineno"> 2078</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02079" name="l02079"></a><span class="lineno"> 2079</span>        out = <a class="code hl_struct" href="structvec.html">vec</a>(a).mul(in.x).add(<a class="code hl_struct" href="structvec.html">vec</a>(b).mul(in.y)).add(<a class="code hl_struct" href="structvec.html">vec</a>(c).mul(in.z)).add(<a class="code hl_struct" href="structvec.html">vec</a>(d).mul(in.w));</div>
-<div class="line"><a id="l02080" name="l02080"></a><span class="lineno"> 2080</span>    }</div>
-<div class="line"><a id="l02081" name="l02081"></a><span class="lineno"> 2081</span> </div>
-<div class="line"><a id="l02082" name="l02082"></a><span class="lineno"> 2082</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02083" name="l02083"></a><span class="lineno"> 2083</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02084" name="l02084"></a><span class="lineno"> 2084</span>        out = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(in.x).madd(b, in.y).madd(c, in.z).add(d);</div>
-<div class="line"><a id="l02085" name="l02085"></a><span class="lineno"> 2085</span>    }</div>
-<div class="line"><a id="l02086" name="l02086"></a><span class="lineno"> 2086</span> </div>
-<div class="line"><a id="l02087" name="l02087"></a><span class="lineno"> 2087</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;in, <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02088" name="l02088"></a><span class="lineno"> 2088</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02089" name="l02089"></a><span class="lineno"> 2089</span>        out = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(in.x).madd(b, in.y).madd(c, in.z).madd(d, in.w);</div>
-<div class="line"><a id="l02090" name="l02090"></a><span class="lineno"> 2090</span>    }</div>
-<div class="line"><a id="l02091" name="l02091"></a><span class="lineno"> 2091</span> </div>
-<div class="line"><a id="l02092" name="l02092"></a><span class="lineno"> 2092</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><a id="l02093" name="l02093"></a><span class="lineno"> 2093</span>    T transform(<span class="keyword">const</span> U &amp;in)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02094" name="l02094"></a><span class="lineno"> 2094</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02095" name="l02095"></a><span class="lineno"> 2095</span>        T v;</div>
-<div class="line"><a id="l02096" name="l02096"></a><span class="lineno"> 2096</span>        transform(in, v);</div>
-<div class="line"><a id="l02097" name="l02097"></a><span class="lineno"> 2097</span>        <span class="keywordflow">return</span> v;</div>
-<div class="line"><a id="l02098" name="l02098"></a><span class="lineno"> 2098</span>    }</div>
-<div class="line"><a id="l02099" name="l02099"></a><span class="lineno"> 2099</span> </div>
-<div class="line"><a id="l02100" name="l02100"></a><span class="lineno"> 2100</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a id="l02101" name="l02101"></a><span class="lineno"> 2101</span>    <a class="code hl_struct" href="structvec.html">vec</a> perspectivetransform(<span class="keyword">const</span> T &amp;in)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02102" name="l02102"></a><span class="lineno"> 2102</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02103" name="l02103"></a><span class="lineno"> 2103</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> v;</div>
-<div class="line"><a id="l02104" name="l02104"></a><span class="lineno"> 2104</span>        transform(in, v);</div>
-<div class="line"><a id="l02105" name="l02105"></a><span class="lineno"> 2105</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec.html">vec</a>(v).div(v.w);</div>
-<div class="line"><a id="l02106" name="l02106"></a><span class="lineno"> 2106</span>    }</div>
-<div class="line"><a id="l02107" name="l02107"></a><span class="lineno"> 2107</span> </div>
-<div class="line"><a id="l02108" name="l02108"></a><span class="lineno"> 2108</span>    <span class="keywordtype">void</span> transformnormal(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02109" name="l02109"></a><span class="lineno"> 2109</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02110" name="l02110"></a><span class="lineno"> 2110</span>        out = <a class="code hl_struct" href="structvec.html">vec</a>(a).mul(in.x).add(<a class="code hl_struct" href="structvec.html">vec</a>(b).mul(in.y)).add(<a class="code hl_struct" href="structvec.html">vec</a>(c).mul(in.z));</div>
-<div class="line"><a id="l02111" name="l02111"></a><span class="lineno"> 2111</span>    }</div>
-<div class="line"><a id="l02112" name="l02112"></a><span class="lineno"> 2112</span> </div>
-<div class="line"><a id="l02113" name="l02113"></a><span class="lineno"> 2113</span>    <span class="keywordtype">void</span> transformnormal(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02114" name="l02114"></a><span class="lineno"> 2114</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02115" name="l02115"></a><span class="lineno"> 2115</span>        out = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(in.x).madd(b, in.y).madd(c, in.z);</div>
-<div class="line"><a id="l02116" name="l02116"></a><span class="lineno"> 2116</span>    }</div>
-<div class="line"><a id="l02117" name="l02117"></a><span class="lineno"> 2117</span> </div>
-<div class="line"><a id="l02118" name="l02118"></a><span class="lineno"> 2118</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><a id="l02119" name="l02119"></a><span class="lineno"> 2119</span>    T transformnormal(<span class="keyword">const</span> U &amp;in)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02120" name="l02120"></a><span class="lineno"> 2120</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02121" name="l02121"></a><span class="lineno"> 2121</span>        T v;</div>
-<div class="line"><a id="l02122" name="l02122"></a><span class="lineno"> 2122</span>        transformnormal(in, v);</div>
-<div class="line"><a id="l02123" name="l02123"></a><span class="lineno"> 2123</span>        <span class="keywordflow">return</span> v;</div>
-<div class="line"><a id="l02124" name="l02124"></a><span class="lineno"> 2124</span>    }</div>
-<div class="line"><a id="l02125" name="l02125"></a><span class="lineno"> 2125</span> </div>
-<div class="line"><a id="l02126" name="l02126"></a><span class="lineno"> 2126</span>    <span class="keywordtype">void</span> transposedtransform(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02127" name="l02127"></a><span class="lineno"> 2127</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02128" name="l02128"></a><span class="lineno"> 2128</span>        <a class="code hl_struct" href="structvec.html">vec</a> p = <a class="code hl_struct" href="structvec.html">vec</a>(in).sub(<a class="code hl_struct" href="structvec.html">vec</a>(d));</div>
-<div class="line"><a id="l02129" name="l02129"></a><span class="lineno"> 2129</span>        out.x = a.dot3(p);</div>
-<div class="line"><a id="l02130" name="l02130"></a><span class="lineno"> 2130</span>        out.y = b.dot3(p);</div>
-<div class="line"><a id="l02131" name="l02131"></a><span class="lineno"> 2131</span>        out.z = c.dot3(p);</div>
-<div class="line"><a id="l02132" name="l02132"></a><span class="lineno"> 2132</span>    }</div>
-<div class="line"><a id="l02133" name="l02133"></a><span class="lineno"> 2133</span> </div>
-<div class="line"><a id="l02134" name="l02134"></a><span class="lineno"> 2134</span>    <span class="keywordtype">void</span> transposedtransformnormal(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02135" name="l02135"></a><span class="lineno"> 2135</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02136" name="l02136"></a><span class="lineno"> 2136</span>        out.x = a.dot3(in);</div>
-<div class="line"><a id="l02137" name="l02137"></a><span class="lineno"> 2137</span>        out.y = b.dot3(in);</div>
-<div class="line"><a id="l02138" name="l02138"></a><span class="lineno"> 2138</span>        out.z = c.dot3(in);</div>
-<div class="line"><a id="l02139" name="l02139"></a><span class="lineno"> 2139</span>    }</div>
-<div class="line"><a id="l02140" name="l02140"></a><span class="lineno"> 2140</span> </div>
-<div class="line"><a id="l02141" name="l02141"></a><span class="lineno"> 2141</span>    <span class="keywordtype">void</span> transposedtransform(<span class="keyword">const</span> <a class="code hl_struct" href="structplane.html">plane</a> &amp;in, <a class="code hl_struct" href="structplane.html">plane</a> &amp;out)<span class="keyword"> const</span></div>
-<div class="line"><a id="l02142" name="l02142"></a><span class="lineno"> 2142</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02143" name="l02143"></a><span class="lineno"> 2143</span>        out.x = in.dist(a);</div>
-<div class="line"><a id="l02144" name="l02144"></a><span class="lineno"> 2144</span>        out.y = in.dist(b);</div>
-<div class="line"><a id="l02145" name="l02145"></a><span class="lineno"> 2145</span>        out.z = in.dist(c);</div>
-<div class="line"><a id="l02146" name="l02146"></a><span class="lineno"> 2146</span>        out.offset = in.dist(d);</div>
-<div class="line"><a id="l02147" name="l02147"></a><span class="lineno"> 2147</span>    }</div>
-<div class="line"><a id="l02148" name="l02148"></a><span class="lineno"> 2148</span> </div>
-<div class="line"><a id="l02149" name="l02149"></a><span class="lineno"> 2149</span>    <span class="keywordtype">float</span> getscale()<span class="keyword"> const</span></div>
-<div class="line"><a id="l02150" name="l02150"></a><span class="lineno"> 2150</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02151" name="l02151"></a><span class="lineno"> 2151</span>        <span class="keywordflow">return</span> sqrtf(a.x*a.y + b.x*b.x + c.x*c.x);</div>
-<div class="line"><a id="l02152" name="l02152"></a><span class="lineno"> 2152</span>    }</div>
-<div class="line"><a id="l02153" name="l02153"></a><span class="lineno"> 2153</span> </div>
-<div class="line"><a id="l02154" name="l02154"></a><span class="lineno"> 2154</span>    <a class="code hl_struct" href="structvec.html">vec</a> gettranslation()<span class="keyword"> const</span></div>
-<div class="line"><a id="l02155" name="l02155"></a><span class="lineno"> 2155</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02156" name="l02156"></a><span class="lineno"> 2156</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec.html">vec</a>(d);</div>
-<div class="line"><a id="l02157" name="l02157"></a><span class="lineno"> 2157</span>    }</div>
-<div class="line"><a id="l02158" name="l02158"></a><span class="lineno"> 2158</span> </div>
-<div class="line"><a id="l02159" name="l02159"></a><span class="lineno"> 2159</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rowx()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.x, b.x, c.x, d.x); }</div>
-<div class="line"><a id="l02160" name="l02160"></a><span class="lineno"> 2160</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rowy()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.y, b.y, c.y, d.y); }</div>
-<div class="line"><a id="l02161" name="l02161"></a><span class="lineno"> 2161</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rowz()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.z, b.z, c.z, d.z); }</div>
-<div class="line"><a id="l02162" name="l02162"></a><span class="lineno"> 2162</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> roww()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.w, b.w, c.w, d.w); }</div>
-<div class="line"><a id="l02163" name="l02163"></a><span class="lineno"> 2163</span> </div>
-<div class="line"><a id="l02164" name="l02164"></a><span class="lineno"> 2164</span>    <span class="keywordtype">bool</span> invert(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m, <span class="keywordtype">double</span> mindet = 1.0e-12);</div>
-<div class="line"><a id="l02165" name="l02165"></a><span class="lineno"> 2165</span> </div>
-<div class="line"><a id="l02166" name="l02166"></a><span class="lineno"> 2166</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> lineardepthscale()<span class="keyword"> const</span></div>
-<div class="line"><a id="l02167" name="l02167"></a><span class="lineno"> 2167</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l02168" name="l02168"></a><span class="lineno"> 2168</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec2.html">vec2</a>(d.w, -d.z).div(c.z*d.w - d.z*c.w);</div>
-<div class="line"><a id="l02169" name="l02169"></a><span class="lineno"> 2169</span>    }</div>
-<div class="line"><a id="l02170" name="l02170"></a><span class="lineno"> 2170</span>};</div>
+<div class="line"><a id="l01969" name="l01969"></a><span class="lineno"> 1969</span>    <span class="keywordtype">void</span> scale(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z)</div>
+<div class="line"><a id="l01970" name="l01970"></a><span class="lineno"> 1970</span>    {</div>
+<div class="line"><a id="l01971" name="l01971"></a><span class="lineno"> 1971</span>        a.mul(x);</div>
+<div class="line"><a id="l01972" name="l01972"></a><span class="lineno"> 1972</span>        b.mul(y);</div>
+<div class="line"><a id="l01973" name="l01973"></a><span class="lineno"> 1973</span>        c.mul(z);</div>
+<div class="line"><a id="l01974" name="l01974"></a><span class="lineno"> 1974</span>    }</div>
+<div class="line"><a id="l01975" name="l01975"></a><span class="lineno"> 1975</span>    <span class="keywordtype">void</span> scale(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) { scale(v.x, v.y, v.z); }</div>
+<div class="line"><a id="l01976" name="l01976"></a><span class="lineno"> 1976</span>    <span class="keywordtype">void</span> scale(<span class="keywordtype">float</span> n) { scale(n, n, n); }</div>
+<div class="line"><a id="l01977" name="l01977"></a><span class="lineno"> 1977</span> </div>
+<div class="line"><a id="l01978" name="l01978"></a><span class="lineno"> 1978</span>    <span class="keywordtype">void</span> scalexy(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y)</div>
+<div class="line"><a id="l01979" name="l01979"></a><span class="lineno"> 1979</span>    {</div>
+<div class="line"><a id="l01980" name="l01980"></a><span class="lineno"> 1980</span>        a.x *= x; a.y *= y;</div>
+<div class="line"><a id="l01981" name="l01981"></a><span class="lineno"> 1981</span>        b.x *= x; b.y *= y;</div>
+<div class="line"><a id="l01982" name="l01982"></a><span class="lineno"> 1982</span>        c.x *= x; c.y *= y;</div>
+<div class="line"><a id="l01983" name="l01983"></a><span class="lineno"> 1983</span>        d.x *= x; d.y *= y;</div>
+<div class="line"><a id="l01984" name="l01984"></a><span class="lineno"> 1984</span>    }</div>
+<div class="line"><a id="l01985" name="l01985"></a><span class="lineno"> 1985</span> </div>
+<div class="line"><a id="l01986" name="l01986"></a><span class="lineno"> 1986</span>    <span class="keywordtype">void</span> scalez(<span class="keywordtype">float</span> k)</div>
+<div class="line"><a id="l01987" name="l01987"></a><span class="lineno"> 1987</span>    {</div>
+<div class="line"><a id="l01988" name="l01988"></a><span class="lineno"> 1988</span>        a.z *= k;</div>
+<div class="line"><a id="l01989" name="l01989"></a><span class="lineno"> 1989</span>        b.z *= k;</div>
+<div class="line"><a id="l01990" name="l01990"></a><span class="lineno"> 1990</span>        c.z *= k;</div>
+<div class="line"><a id="l01991" name="l01991"></a><span class="lineno"> 1991</span>        d.z *= k;</div>
+<div class="line"><a id="l01992" name="l01992"></a><span class="lineno"> 1992</span>    }</div>
+<div class="line"><a id="l01993" name="l01993"></a><span class="lineno"> 1993</span> </div>
+<div class="line"><a id="l01994" name="l01994"></a><span class="lineno"> 1994</span>    <span class="keywordtype">void</span> reflectz(<span class="keywordtype">float</span> z)</div>
+<div class="line"><a id="l01995" name="l01995"></a><span class="lineno"> 1995</span>    {</div>
+<div class="line"><a id="l01996" name="l01996"></a><span class="lineno"> 1996</span>        d.add(<a class="code hl_struct" href="structvec4.html">vec4</a>(c).mul(2*z));</div>
+<div class="line"><a id="l01997" name="l01997"></a><span class="lineno"> 1997</span>        c.neg();</div>
+<div class="line"><a id="l01998" name="l01998"></a><span class="lineno"> 1998</span>    }</div>
+<div class="line"><a id="l01999" name="l01999"></a><span class="lineno"> 1999</span> </div>
+<div class="line"><a id="l02000" name="l02000"></a><span class="lineno"> 2000</span>    <span class="keywordtype">void</span> jitter(<span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y)</div>
+<div class="line"><a id="l02001" name="l02001"></a><span class="lineno"> 2001</span>    {</div>
+<div class="line"><a id="l02002" name="l02002"></a><span class="lineno"> 2002</span>        a.x += x * a.w;</div>
+<div class="line"><a id="l02003" name="l02003"></a><span class="lineno"> 2003</span>        a.y += y * a.w;</div>
+<div class="line"><a id="l02004" name="l02004"></a><span class="lineno"> 2004</span>        b.x += x * b.w;</div>
+<div class="line"><a id="l02005" name="l02005"></a><span class="lineno"> 2005</span>        b.y += y * b.w;</div>
+<div class="line"><a id="l02006" name="l02006"></a><span class="lineno"> 2006</span>        c.x += x * c.w;</div>
+<div class="line"><a id="l02007" name="l02007"></a><span class="lineno"> 2007</span>        c.y += y * c.w;</div>
+<div class="line"><a id="l02008" name="l02008"></a><span class="lineno"> 2008</span>        d.x += x * d.w;</div>
+<div class="line"><a id="l02009" name="l02009"></a><span class="lineno"> 2009</span>        d.y += y * d.w;</div>
+<div class="line"><a id="l02010" name="l02010"></a><span class="lineno"> 2010</span>    }</div>
+<div class="line"><a id="l02011" name="l02011"></a><span class="lineno"> 2011</span> </div>
+<div class="line"><a id="l02012" name="l02012"></a><span class="lineno"> 2012</span>    <span class="keywordtype">void</span> transpose()</div>
+<div class="line"><a id="l02013" name="l02013"></a><span class="lineno"> 2013</span>    {</div>
+<div class="line"><a id="l02014" name="l02014"></a><span class="lineno"> 2014</span>        swap(a.y, b.x); swap(a.z, c.x); swap(a.w, d.x);</div>
+<div class="line"><a id="l02015" name="l02015"></a><span class="lineno"> 2015</span>        swap(b.z, c.y); swap(b.w, d.y);</div>
+<div class="line"><a id="l02016" name="l02016"></a><span class="lineno"> 2016</span>        swap(c.w, d.z);</div>
+<div class="line"><a id="l02017" name="l02017"></a><span class="lineno"> 2017</span>    }</div>
+<div class="line"><a id="l02018" name="l02018"></a><span class="lineno"> 2018</span> </div>
+<div class="line"><a id="l02019" name="l02019"></a><span class="lineno"> 2019</span>    <span class="keywordtype">void</span> transpose(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
+<div class="line"><a id="l02020" name="l02020"></a><span class="lineno"> 2020</span>    {</div>
+<div class="line"><a id="l02021" name="l02021"></a><span class="lineno"> 2021</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.x, m.b.x, m.c.x, m.d.x);</div>
+<div class="line"><a id="l02022" name="l02022"></a><span class="lineno"> 2022</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.y, m.b.y, m.c.y, m.d.y);</div>
+<div class="line"><a id="l02023" name="l02023"></a><span class="lineno"> 2023</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.z, m.b.z, m.c.z, m.d.z);</div>
+<div class="line"><a id="l02024" name="l02024"></a><span class="lineno"> 2024</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.w, m.b.w, m.c.w, m.d.w);</div>
+<div class="line"><a id="l02025" name="l02025"></a><span class="lineno"> 2025</span>    }</div>
+<div class="line"><a id="l02026" name="l02026"></a><span class="lineno"> 2026</span> </div>
+<div class="line"><a id="l02027" name="l02027"></a><span class="lineno"> 2027</span>    <span class="keywordtype">void</span> frustum(<span class="keywordtype">float</span> left, <span class="keywordtype">float</span> right, <span class="keywordtype">float</span> bottom, <span class="keywordtype">float</span> top, <span class="keywordtype">float</span> znear, <span class="keywordtype">float</span> zfar)</div>
+<div class="line"><a id="l02028" name="l02028"></a><span class="lineno"> 2028</span>    {</div>
+<div class="line"><a id="l02029" name="l02029"></a><span class="lineno"> 2029</span>        <span class="keywordtype">float</span> width = right - left,</div>
+<div class="line"><a id="l02030" name="l02030"></a><span class="lineno"> 2030</span>              height = top - bottom,</div>
+<div class="line"><a id="l02031" name="l02031"></a><span class="lineno"> 2031</span>              zrange = znear - zfar;</div>
+<div class="line"><a id="l02032" name="l02032"></a><span class="lineno"> 2032</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(2*znear/width, 0, 0, 0);</div>
+<div class="line"><a id="l02033" name="l02033"></a><span class="lineno"> 2033</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 2*znear/height, 0, 0);</div>
+<div class="line"><a id="l02034" name="l02034"></a><span class="lineno"> 2034</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>((right + left)/width, (top + bottom)/height, (zfar + znear)/zrange, -1);</div>
+<div class="line"><a id="l02035" name="l02035"></a><span class="lineno"> 2035</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 2*znear*zfar/zrange, 0);</div>
+<div class="line"><a id="l02036" name="l02036"></a><span class="lineno"> 2036</span>    }</div>
+<div class="line"><a id="l02037" name="l02037"></a><span class="lineno"> 2037</span> </div>
+<div class="line"><a id="l02038" name="l02038"></a><span class="lineno"> 2038</span>    <span class="keywordtype">void</span> perspective(<span class="keywordtype">float</span> fovy, <span class="keywordtype">float</span> aspect, <span class="keywordtype">float</span> znear, <span class="keywordtype">float</span> zfar)</div>
+<div class="line"><a id="l02039" name="l02039"></a><span class="lineno"> 2039</span>    {</div>
+<div class="line"><a id="l02040" name="l02040"></a><span class="lineno"> 2040</span>        <span class="keywordtype">float</span> ydist = znear * std::tan(fovy/2*RAD),</div>
+<div class="line"><a id="l02041" name="l02041"></a><span class="lineno"> 2041</span>              xdist = ydist * aspect;</div>
+<div class="line"><a id="l02042" name="l02042"></a><span class="lineno"> 2042</span>        frustum(-xdist, xdist, -ydist, ydist, znear, zfar);</div>
+<div class="line"><a id="l02043" name="l02043"></a><span class="lineno"> 2043</span>    }</div>
+<div class="line"><a id="l02044" name="l02044"></a><span class="lineno"> 2044</span> </div>
+<div class="line"><a id="l02045" name="l02045"></a><span class="lineno"> 2045</span>    <span class="keywordtype">void</span> ortho(<span class="keywordtype">float</span> left, <span class="keywordtype">float</span> right, <span class="keywordtype">float</span> bottom, <span class="keywordtype">float</span> top, <span class="keywordtype">float</span> znear, <span class="keywordtype">float</span> zfar)</div>
+<div class="line"><a id="l02046" name="l02046"></a><span class="lineno"> 2046</span>    {</div>
+<div class="line"><a id="l02047" name="l02047"></a><span class="lineno"> 2047</span>        <span class="keywordtype">float</span> width = right - left,</div>
+<div class="line"><a id="l02048" name="l02048"></a><span class="lineno"> 2048</span>              height = top - bottom,</div>
+<div class="line"><a id="l02049" name="l02049"></a><span class="lineno"> 2049</span>              zrange = znear - zfar;</div>
+<div class="line"><a id="l02050" name="l02050"></a><span class="lineno"> 2050</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(2/width, 0, 0, 0);</div>
+<div class="line"><a id="l02051" name="l02051"></a><span class="lineno"> 2051</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 2/height, 0, 0);</div>
+<div class="line"><a id="l02052" name="l02052"></a><span class="lineno"> 2052</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(0, 0, 2/zrange, 0);</div>
+<div class="line"><a id="l02053" name="l02053"></a><span class="lineno"> 2053</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(-(right+left)/width, -(top+bottom)/height, (zfar+znear)/zrange, 1);</div>
+<div class="line"><a id="l02054" name="l02054"></a><span class="lineno"> 2054</span>    }</div>
+<div class="line"><a id="l02055" name="l02055"></a><span class="lineno"> 2055</span> </div>
+<div class="line"><a id="l02056" name="l02056"></a><span class="lineno"> 2056</span>    <span class="keywordtype">void</span> clip(<span class="keyword">const</span> <a class="code hl_struct" href="structplane.html">plane</a> &amp;p, <span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
+<div class="line"><a id="l02057" name="l02057"></a><span class="lineno"> 2057</span>    {</div>
+<div class="line"><a id="l02058" name="l02058"></a><span class="lineno"> 2058</span>        <span class="keywordtype">float</span> x = ((p.x&lt;0 ? -1 : (p.x&gt;0 ? 1 : 0)) + m.c.x) / m.a.x,</div>
+<div class="line"><a id="l02059" name="l02059"></a><span class="lineno"> 2059</span>              y = ((p.y&lt;0 ? -1 : (p.y&gt;0 ? 1 : 0)) + m.c.y) / m.b.y,</div>
+<div class="line"><a id="l02060" name="l02060"></a><span class="lineno"> 2060</span>              w = (1 + m.c.z) / m.d.z,</div>
+<div class="line"><a id="l02061" name="l02061"></a><span class="lineno"> 2061</span>            scale = 2 / (x*p.x + y*p.y - p.z + w*p.offset);</div>
+<div class="line"><a id="l02062" name="l02062"></a><span class="lineno"> 2062</span>        a = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.a.x, m.a.y, p.x*scale, m.a.w);</div>
+<div class="line"><a id="l02063" name="l02063"></a><span class="lineno"> 2063</span>        b = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.b.x, m.b.y, p.y*scale, m.b.w);</div>
+<div class="line"><a id="l02064" name="l02064"></a><span class="lineno"> 2064</span>        c = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.c.x, m.c.y, p.z*scale + 1.0f, m.c.w);</div>
+<div class="line"><a id="l02065" name="l02065"></a><span class="lineno"> 2065</span>        d = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(m.d.x, m.d.y, p.offset*scale, m.d.w);</div>
+<div class="line"><a id="l02066" name="l02066"></a><span class="lineno"> 2066</span>    }</div>
+<div class="line"><a id="l02067" name="l02067"></a><span class="lineno"> 2067</span> </div>
+<div class="line"><a id="l02068" name="l02068"></a><span class="lineno"> 2068</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02069" name="l02069"></a><span class="lineno"> 2069</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02070" name="l02070"></a><span class="lineno"> 2070</span>        out = <a class="code hl_struct" href="structvec.html">vec</a>(a).mul(in.x).add(<a class="code hl_struct" href="structvec.html">vec</a>(b).mul(in.y)).add(<a class="code hl_struct" href="structvec.html">vec</a>(c).mul(in.z)).add(<a class="code hl_struct" href="structvec.html">vec</a>(d));</div>
+<div class="line"><a id="l02071" name="l02071"></a><span class="lineno"> 2071</span>    }</div>
+<div class="line"><a id="l02072" name="l02072"></a><span class="lineno"> 2072</span> </div>
+<div class="line"><a id="l02073" name="l02073"></a><span class="lineno"> 2073</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02074" name="l02074"></a><span class="lineno"> 2074</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02075" name="l02075"></a><span class="lineno"> 2075</span>        out = <a class="code hl_struct" href="structvec.html">vec</a>(a).mul(in.x).add(<a class="code hl_struct" href="structvec.html">vec</a>(b).mul(in.y)).add(<a class="code hl_struct" href="structvec.html">vec</a>(c).mul(in.z)).add(<a class="code hl_struct" href="structvec.html">vec</a>(d).mul(in.w));</div>
+<div class="line"><a id="l02076" name="l02076"></a><span class="lineno"> 2076</span>    }</div>
+<div class="line"><a id="l02077" name="l02077"></a><span class="lineno"> 2077</span> </div>
+<div class="line"><a id="l02078" name="l02078"></a><span class="lineno"> 2078</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02079" name="l02079"></a><span class="lineno"> 2079</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02080" name="l02080"></a><span class="lineno"> 2080</span>        out = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(in.x).madd(b, in.y).madd(c, in.z).add(d);</div>
+<div class="line"><a id="l02081" name="l02081"></a><span class="lineno"> 2081</span>    }</div>
+<div class="line"><a id="l02082" name="l02082"></a><span class="lineno"> 2082</span> </div>
+<div class="line"><a id="l02083" name="l02083"></a><span class="lineno"> 2083</span>    <span class="keywordtype">void</span> transform(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;in, <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02084" name="l02084"></a><span class="lineno"> 2084</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02085" name="l02085"></a><span class="lineno"> 2085</span>        out = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(in.x).madd(b, in.y).madd(c, in.z).madd(d, in.w);</div>
+<div class="line"><a id="l02086" name="l02086"></a><span class="lineno"> 2086</span>    }</div>
+<div class="line"><a id="l02087" name="l02087"></a><span class="lineno"> 2087</span> </div>
+<div class="line"><a id="l02088" name="l02088"></a><span class="lineno"> 2088</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
+<div class="line"><a id="l02089" name="l02089"></a><span class="lineno"> 2089</span>    T transform(<span class="keyword">const</span> U &amp;in)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02090" name="l02090"></a><span class="lineno"> 2090</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02091" name="l02091"></a><span class="lineno"> 2091</span>        T v;</div>
+<div class="line"><a id="l02092" name="l02092"></a><span class="lineno"> 2092</span>        transform(in, v);</div>
+<div class="line"><a id="l02093" name="l02093"></a><span class="lineno"> 2093</span>        <span class="keywordflow">return</span> v;</div>
+<div class="line"><a id="l02094" name="l02094"></a><span class="lineno"> 2094</span>    }</div>
+<div class="line"><a id="l02095" name="l02095"></a><span class="lineno"> 2095</span> </div>
+<div class="line"><a id="l02096" name="l02096"></a><span class="lineno"> 2096</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l02097" name="l02097"></a><span class="lineno"> 2097</span>    <a class="code hl_struct" href="structvec.html">vec</a> perspectivetransform(<span class="keyword">const</span> T &amp;in)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02098" name="l02098"></a><span class="lineno"> 2098</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02099" name="l02099"></a><span class="lineno"> 2099</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> v;</div>
+<div class="line"><a id="l02100" name="l02100"></a><span class="lineno"> 2100</span>        transform(in, v);</div>
+<div class="line"><a id="l02101" name="l02101"></a><span class="lineno"> 2101</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec.html">vec</a>(v).div(v.w);</div>
+<div class="line"><a id="l02102" name="l02102"></a><span class="lineno"> 2102</span>    }</div>
+<div class="line"><a id="l02103" name="l02103"></a><span class="lineno"> 2103</span> </div>
+<div class="line"><a id="l02104" name="l02104"></a><span class="lineno"> 2104</span>    <span class="keywordtype">void</span> transformnormal(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02105" name="l02105"></a><span class="lineno"> 2105</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02106" name="l02106"></a><span class="lineno"> 2106</span>        out = <a class="code hl_struct" href="structvec.html">vec</a>(a).mul(in.x).add(<a class="code hl_struct" href="structvec.html">vec</a>(b).mul(in.y)).add(<a class="code hl_struct" href="structvec.html">vec</a>(c).mul(in.z));</div>
+<div class="line"><a id="l02107" name="l02107"></a><span class="lineno"> 2107</span>    }</div>
+<div class="line"><a id="l02108" name="l02108"></a><span class="lineno"> 2108</span> </div>
+<div class="line"><a id="l02109" name="l02109"></a><span class="lineno"> 2109</span>    <span class="keywordtype">void</span> transformnormal(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02110" name="l02110"></a><span class="lineno"> 2110</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02111" name="l02111"></a><span class="lineno"> 2111</span>        out = <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a).mul(in.x).madd(b, in.y).madd(c, in.z);</div>
+<div class="line"><a id="l02112" name="l02112"></a><span class="lineno"> 2112</span>    }</div>
+<div class="line"><a id="l02113" name="l02113"></a><span class="lineno"> 2113</span> </div>
+<div class="line"><a id="l02114" name="l02114"></a><span class="lineno"> 2114</span>    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
+<div class="line"><a id="l02115" name="l02115"></a><span class="lineno"> 2115</span>    T transformnormal(<span class="keyword">const</span> U &amp;in)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02116" name="l02116"></a><span class="lineno"> 2116</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02117" name="l02117"></a><span class="lineno"> 2117</span>        T v;</div>
+<div class="line"><a id="l02118" name="l02118"></a><span class="lineno"> 2118</span>        transformnormal(in, v);</div>
+<div class="line"><a id="l02119" name="l02119"></a><span class="lineno"> 2119</span>        <span class="keywordflow">return</span> v;</div>
+<div class="line"><a id="l02120" name="l02120"></a><span class="lineno"> 2120</span>    }</div>
+<div class="line"><a id="l02121" name="l02121"></a><span class="lineno"> 2121</span> </div>
+<div class="line"><a id="l02122" name="l02122"></a><span class="lineno"> 2122</span>    <span class="keywordtype">void</span> transposedtransform(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02123" name="l02123"></a><span class="lineno"> 2123</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02124" name="l02124"></a><span class="lineno"> 2124</span>        <a class="code hl_struct" href="structvec.html">vec</a> p = <a class="code hl_struct" href="structvec.html">vec</a>(in).sub(<a class="code hl_struct" href="structvec.html">vec</a>(d));</div>
+<div class="line"><a id="l02125" name="l02125"></a><span class="lineno"> 2125</span>        out.x = a.dot3(p);</div>
+<div class="line"><a id="l02126" name="l02126"></a><span class="lineno"> 2126</span>        out.y = b.dot3(p);</div>
+<div class="line"><a id="l02127" name="l02127"></a><span class="lineno"> 2127</span>        out.z = c.dot3(p);</div>
+<div class="line"><a id="l02128" name="l02128"></a><span class="lineno"> 2128</span>    }</div>
+<div class="line"><a id="l02129" name="l02129"></a><span class="lineno"> 2129</span> </div>
+<div class="line"><a id="l02130" name="l02130"></a><span class="lineno"> 2130</span>    <span class="keywordtype">void</span> transposedtransformnormal(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;in, <a class="code hl_struct" href="structvec.html">vec</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02131" name="l02131"></a><span class="lineno"> 2131</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02132" name="l02132"></a><span class="lineno"> 2132</span>        out.x = a.dot3(in);</div>
+<div class="line"><a id="l02133" name="l02133"></a><span class="lineno"> 2133</span>        out.y = b.dot3(in);</div>
+<div class="line"><a id="l02134" name="l02134"></a><span class="lineno"> 2134</span>        out.z = c.dot3(in);</div>
+<div class="line"><a id="l02135" name="l02135"></a><span class="lineno"> 2135</span>    }</div>
+<div class="line"><a id="l02136" name="l02136"></a><span class="lineno"> 2136</span> </div>
+<div class="line"><a id="l02137" name="l02137"></a><span class="lineno"> 2137</span>    <span class="keywordtype">void</span> transposedtransform(<span class="keyword">const</span> <a class="code hl_struct" href="structplane.html">plane</a> &amp;in, <a class="code hl_struct" href="structplane.html">plane</a> &amp;out)<span class="keyword"> const</span></div>
+<div class="line"><a id="l02138" name="l02138"></a><span class="lineno"> 2138</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02139" name="l02139"></a><span class="lineno"> 2139</span>        out.x = in.dist(a);</div>
+<div class="line"><a id="l02140" name="l02140"></a><span class="lineno"> 2140</span>        out.y = in.dist(b);</div>
+<div class="line"><a id="l02141" name="l02141"></a><span class="lineno"> 2141</span>        out.z = in.dist(c);</div>
+<div class="line"><a id="l02142" name="l02142"></a><span class="lineno"> 2142</span>        out.offset = in.dist(d);</div>
+<div class="line"><a id="l02143" name="l02143"></a><span class="lineno"> 2143</span>    }</div>
+<div class="line"><a id="l02144" name="l02144"></a><span class="lineno"> 2144</span> </div>
+<div class="line"><a id="l02145" name="l02145"></a><span class="lineno"> 2145</span>    <span class="keywordtype">float</span> getscale()<span class="keyword"> const</span></div>
+<div class="line"><a id="l02146" name="l02146"></a><span class="lineno"> 2146</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02147" name="l02147"></a><span class="lineno"> 2147</span>        <span class="keywordflow">return</span> sqrtf(a.x*a.y + b.x*b.x + c.x*c.x);</div>
+<div class="line"><a id="l02148" name="l02148"></a><span class="lineno"> 2148</span>    }</div>
+<div class="line"><a id="l02149" name="l02149"></a><span class="lineno"> 2149</span> </div>
+<div class="line"><a id="l02150" name="l02150"></a><span class="lineno"> 2150</span>    <a class="code hl_struct" href="structvec.html">vec</a> gettranslation()<span class="keyword"> const</span></div>
+<div class="line"><a id="l02151" name="l02151"></a><span class="lineno"> 2151</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02152" name="l02152"></a><span class="lineno"> 2152</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec.html">vec</a>(d);</div>
+<div class="line"><a id="l02153" name="l02153"></a><span class="lineno"> 2153</span>    }</div>
+<div class="line"><a id="l02154" name="l02154"></a><span class="lineno"> 2154</span> </div>
+<div class="line"><a id="l02155" name="l02155"></a><span class="lineno"> 2155</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rowx()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.x, b.x, c.x, d.x); }</div>
+<div class="line"><a id="l02156" name="l02156"></a><span class="lineno"> 2156</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rowy()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.y, b.y, c.y, d.y); }</div>
+<div class="line"><a id="l02157" name="l02157"></a><span class="lineno"> 2157</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> rowz()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.z, b.z, c.z, d.z); }</div>
+<div class="line"><a id="l02158" name="l02158"></a><span class="lineno"> 2158</span>    <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> roww()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a>(a.w, b.w, c.w, d.w); }</div>
+<div class="line"><a id="l02159" name="l02159"></a><span class="lineno"> 2159</span> </div>
+<div class="line"><a id="l02160" name="l02160"></a><span class="lineno"> 2160</span>    <span class="keywordtype">bool</span> invert(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m, <span class="keywordtype">double</span> mindet = 1.0e-12);</div>
+<div class="line"><a id="l02161" name="l02161"></a><span class="lineno"> 2161</span> </div>
+<div class="line"><a id="l02162" name="l02162"></a><span class="lineno"> 2162</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> lineardepthscale()<span class="keyword"> const</span></div>
+<div class="line"><a id="l02163" name="l02163"></a><span class="lineno"> 2163</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l02164" name="l02164"></a><span class="lineno"> 2164</span>        <span class="keywordflow">return</span> <a class="code hl_struct" href="structvec2.html">vec2</a>(d.w, -d.z).div(c.z*d.w - d.z*c.w);</div>
+<div class="line"><a id="l02165" name="l02165"></a><span class="lineno"> 2165</span>    }</div>
+<div class="line"><a id="l02166" name="l02166"></a><span class="lineno"> 2166</span>};</div>
+<div class="line"><a id="l02167" name="l02167"></a><span class="lineno"> 2167</span> </div>
+<div class="line"><a id="l02168" name="l02168"></a><span class="lineno"> 2168</span><span class="keyword">inline</span> matrix3::matrix3(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
+<div class="line"><a id="l02169" name="l02169"></a><span class="lineno"> 2169</span>    : a(m.a), b(m.b), c(m.c)</div>
+<div class="line"><a id="l02170" name="l02170"></a><span class="lineno"> 2170</span>{}</div>
 <div class="line"><a id="l02171" name="l02171"></a><span class="lineno"> 2171</span> </div>
-<div class="line"><a id="l02172" name="l02172"></a><span class="lineno"> 2172</span><span class="keyword">inline</span> matrix3::matrix3(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
-<div class="line"><a id="l02173" name="l02173"></a><span class="lineno"> 2173</span>    : a(m.a), b(m.b), c(m.c)</div>
+<div class="line"><a id="l02172" name="l02172"></a><span class="lineno"> 2172</span><span class="keyword">inline</span> matrix4x3::matrix4x3(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
+<div class="line"><a id="l02173" name="l02173"></a><span class="lineno"> 2173</span>    : a(m.a), b(m.b), c(m.c), d(m.d)</div>
 <div class="line"><a id="l02174" name="l02174"></a><span class="lineno"> 2174</span>{}</div>
 <div class="line"><a id="l02175" name="l02175"></a><span class="lineno"> 2175</span> </div>
-<div class="line"><a id="l02176" name="l02176"></a><span class="lineno"> 2176</span><span class="keyword">inline</span> matrix4x3::matrix4x3(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m)</div>
-<div class="line"><a id="l02177" name="l02177"></a><span class="lineno"> 2177</span>    : a(m.a), b(m.b), c(m.c), d(m.d)</div>
-<div class="line"><a id="l02178" name="l02178"></a><span class="lineno"> 2178</span>{}</div>
+<div class="line"><a id="l02176" name="l02176"></a><span class="lineno"><a class="line" href="structmatrix2.html"> 2176</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmatrix2.html">matrix2</a></div>
+<div class="line"><a id="l02177" name="l02177"></a><span class="lineno"> 2177</span>{</div>
+<div class="line"><a id="l02178" name="l02178"></a><span class="lineno"> 2178</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> a, b;</div>
 <div class="line"><a id="l02179" name="l02179"></a><span class="lineno"> 2179</span> </div>
-<div class="line"><a id="l02180" name="l02180"></a><span class="lineno"><a class="line" href="structmatrix2.html"> 2180</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structmatrix2.html">matrix2</a></div>
-<div class="line"><a id="l02181" name="l02181"></a><span class="lineno"> 2181</span>{</div>
-<div class="line"><a id="l02182" name="l02182"></a><span class="lineno"> 2182</span>    <a class="code hl_struct" href="structvec2.html">vec2</a> a, b;</div>
-<div class="line"><a id="l02183" name="l02183"></a><span class="lineno"> 2183</span> </div>
-<div class="line"><a id="l02184" name="l02184"></a><span class="lineno"> 2184</span>    <a class="code hl_struct" href="structmatrix2.html">matrix2</a>() {}</div>
-<div class="line"><a id="l02185" name="l02185"></a><span class="lineno"> 2185</span>    <a class="code hl_struct" href="structmatrix2.html">matrix2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;a, <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;b) : a(a), b(b) {}</div>
-<div class="line"><a id="l02186" name="l02186"></a><span class="lineno"> 2186</span>    <span class="keyword">explicit</span> <a class="code hl_struct" href="structmatrix2.html">matrix2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m) : a(m.a), b(m.b) {}</div>
-<div class="line"><a id="l02187" name="l02187"></a><span class="lineno"> 2187</span>    <span class="keyword">explicit</span> <a class="code hl_struct" href="structmatrix2.html">matrix2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix3.html">matrix3</a> &amp;m) : a(m.a), b(m.b) {}</div>
-<div class="line"><a id="l02188" name="l02188"></a><span class="lineno"> 2188</span>};</div>
-<div class="line"><a id="l02189" name="l02189"></a><span class="lineno"> 2189</span> </div>
-<div class="line"><a id="l02193" name="l02193"></a><span class="lineno"><a class="line" href="structhalf.html"> 2193</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structhalf.html">half</a></div>
-<div class="line"><a id="l02194" name="l02194"></a><span class="lineno"> 2194</span>{</div>
-<div class="line"><a id="l02195" name="l02195"></a><span class="lineno"> 2195</span>    ushort val;</div>
-<div class="line"><a id="l02196" name="l02196"></a><span class="lineno"> 2196</span> </div>
-<div class="line"><a id="l02197" name="l02197"></a><span class="lineno"> 2197</span>    <a class="code hl_struct" href="structhalf.html">half</a>() {}</div>
-<div class="line"><a id="l02198" name="l02198"></a><span class="lineno"> 2198</span>    <a class="code hl_struct" href="structhalf.html">half</a>(<span class="keywordtype">float</span> f) <span class="comment">//truncates a 32 bit float to a 16 bit half</span></div>
-<div class="line"><a id="l02199" name="l02199"></a><span class="lineno"> 2199</span>    {</div>
-<div class="line"><a id="l02200" name="l02200"></a><span class="lineno"> 2200</span>        <span class="keyword">union</span></div>
-<div class="line"><a id="l02201" name="l02201"></a><span class="lineno"> 2201</span>        {</div>
-<div class="line"><a id="l02202" name="l02202"></a><span class="lineno"> 2202</span>            <span class="keywordtype">int</span> i;</div>
-<div class="line"><a id="l02203" name="l02203"></a><span class="lineno"> 2203</span>            <span class="keywordtype">float</span> f;</div>
-<div class="line"><a id="l02204" name="l02204"></a><span class="lineno"> 2204</span>        } conv;</div>
-<div class="line"><a id="l02205" name="l02205"></a><span class="lineno"> 2205</span>        conv.f = f;</div>
-<div class="line"><a id="l02206" name="l02206"></a><span class="lineno"> 2206</span>        ushort signbit = (conv.i&gt;&gt;(31-15)) &amp; (1&lt;&lt;15),</div>
-<div class="line"><a id="l02207" name="l02207"></a><span class="lineno"> 2207</span>               mantissa = (conv.i&gt;&gt;(23-10)) &amp; 0x3FF;</div>
-<div class="line"><a id="l02208" name="l02208"></a><span class="lineno"> 2208</span>        <span class="keywordtype">int</span> exponent = ((conv.i&gt;&gt;23)&amp;0xFF) - 127 + 15;</div>
-<div class="line"><a id="l02209" name="l02209"></a><span class="lineno"> 2209</span>        <span class="keywordflow">if</span>(exponent &lt;= 0)</div>
-<div class="line"><a id="l02210" name="l02210"></a><span class="lineno"> 2210</span>        {</div>
-<div class="line"><a id="l02211" name="l02211"></a><span class="lineno"> 2211</span>            mantissa |= 0x400;</div>
-<div class="line"><a id="l02212" name="l02212"></a><span class="lineno"> 2212</span>            mantissa &gt;&gt;= min(1-exponent, 10+1);</div>
-<div class="line"><a id="l02213" name="l02213"></a><span class="lineno"> 2213</span>            exponent = 0;</div>
-<div class="line"><a id="l02214" name="l02214"></a><span class="lineno"> 2214</span>        }</div>
-<div class="line"><a id="l02215" name="l02215"></a><span class="lineno"> 2215</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(exponent &gt;= 0x1F)</div>
-<div class="line"><a id="l02216" name="l02216"></a><span class="lineno"> 2216</span>        {</div>
-<div class="line"><a id="l02217" name="l02217"></a><span class="lineno"> 2217</span>            mantissa = 0;</div>
-<div class="line"><a id="l02218" name="l02218"></a><span class="lineno"> 2218</span>            exponent = 0x1F;</div>
-<div class="line"><a id="l02219" name="l02219"></a><span class="lineno"> 2219</span>        }</div>
-<div class="line"><a id="l02220" name="l02220"></a><span class="lineno"> 2220</span>        val = signbit | (<span class="keyword">static_cast&lt;</span>ushort<span class="keyword">&gt;</span>(exponent)&lt;&lt;10) | mantissa;</div>
-<div class="line"><a id="l02221" name="l02221"></a><span class="lineno"> 2221</span>    }</div>
+<div class="line"><a id="l02180" name="l02180"></a><span class="lineno"> 2180</span>    <a class="code hl_struct" href="structmatrix2.html">matrix2</a>() {}</div>
+<div class="line"><a id="l02181" name="l02181"></a><span class="lineno"> 2181</span>    <a class="code hl_struct" href="structmatrix2.html">matrix2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;a, <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;b) : a(a), b(b) {}</div>
+<div class="line"><a id="l02182" name="l02182"></a><span class="lineno"> 2182</span>    <span class="keyword">explicit</span> <a class="code hl_struct" href="structmatrix2.html">matrix2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix4.html">matrix4</a> &amp;m) : a(m.a), b(m.b) {}</div>
+<div class="line"><a id="l02183" name="l02183"></a><span class="lineno"> 2183</span>    <span class="keyword">explicit</span> <a class="code hl_struct" href="structmatrix2.html">matrix2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structmatrix3.html">matrix3</a> &amp;m) : a(m.a), b(m.b) {}</div>
+<div class="line"><a id="l02184" name="l02184"></a><span class="lineno"> 2184</span>};</div>
+<div class="line"><a id="l02185" name="l02185"></a><span class="lineno"> 2185</span> </div>
+<div class="line"><a id="l02189" name="l02189"></a><span class="lineno"><a class="line" href="structhalf.html"> 2189</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structhalf.html">half</a></div>
+<div class="line"><a id="l02190" name="l02190"></a><span class="lineno"> 2190</span>{</div>
+<div class="line"><a id="l02191" name="l02191"></a><span class="lineno"> 2191</span>    ushort val;</div>
+<div class="line"><a id="l02192" name="l02192"></a><span class="lineno"> 2192</span> </div>
+<div class="line"><a id="l02193" name="l02193"></a><span class="lineno"> 2193</span>    <a class="code hl_struct" href="structhalf.html">half</a>() {}</div>
+<div class="line"><a id="l02194" name="l02194"></a><span class="lineno"> 2194</span>    <a class="code hl_struct" href="structhalf.html">half</a>(<span class="keywordtype">float</span> f) <span class="comment">//truncates a 32 bit float to a 16 bit half</span></div>
+<div class="line"><a id="l02195" name="l02195"></a><span class="lineno"> 2195</span>    {</div>
+<div class="line"><a id="l02196" name="l02196"></a><span class="lineno"> 2196</span>        <span class="keyword">union</span></div>
+<div class="line"><a id="l02197" name="l02197"></a><span class="lineno"> 2197</span>        {</div>
+<div class="line"><a id="l02198" name="l02198"></a><span class="lineno"> 2198</span>            <span class="keywordtype">int</span> i;</div>
+<div class="line"><a id="l02199" name="l02199"></a><span class="lineno"> 2199</span>            <span class="keywordtype">float</span> f;</div>
+<div class="line"><a id="l02200" name="l02200"></a><span class="lineno"> 2200</span>        } conv;</div>
+<div class="line"><a id="l02201" name="l02201"></a><span class="lineno"> 2201</span>        conv.f = f;</div>
+<div class="line"><a id="l02202" name="l02202"></a><span class="lineno"> 2202</span>        ushort signbit = (conv.i&gt;&gt;(31-15)) &amp; (1&lt;&lt;15),</div>
+<div class="line"><a id="l02203" name="l02203"></a><span class="lineno"> 2203</span>               mantissa = (conv.i&gt;&gt;(23-10)) &amp; 0x3FF;</div>
+<div class="line"><a id="l02204" name="l02204"></a><span class="lineno"> 2204</span>        <span class="keywordtype">int</span> exponent = ((conv.i&gt;&gt;23)&amp;0xFF) - 127 + 15;</div>
+<div class="line"><a id="l02205" name="l02205"></a><span class="lineno"> 2205</span>        <span class="keywordflow">if</span>(exponent &lt;= 0)</div>
+<div class="line"><a id="l02206" name="l02206"></a><span class="lineno"> 2206</span>        {</div>
+<div class="line"><a id="l02207" name="l02207"></a><span class="lineno"> 2207</span>            mantissa |= 0x400;</div>
+<div class="line"><a id="l02208" name="l02208"></a><span class="lineno"> 2208</span>            mantissa &gt;&gt;= min(1-exponent, 10+1);</div>
+<div class="line"><a id="l02209" name="l02209"></a><span class="lineno"> 2209</span>            exponent = 0;</div>
+<div class="line"><a id="l02210" name="l02210"></a><span class="lineno"> 2210</span>        }</div>
+<div class="line"><a id="l02211" name="l02211"></a><span class="lineno"> 2211</span>        <span class="keywordflow">else</span> <span class="keywordflow">if</span>(exponent &gt;= 0x1F)</div>
+<div class="line"><a id="l02212" name="l02212"></a><span class="lineno"> 2212</span>        {</div>
+<div class="line"><a id="l02213" name="l02213"></a><span class="lineno"> 2213</span>            mantissa = 0;</div>
+<div class="line"><a id="l02214" name="l02214"></a><span class="lineno"> 2214</span>            exponent = 0x1F;</div>
+<div class="line"><a id="l02215" name="l02215"></a><span class="lineno"> 2215</span>        }</div>
+<div class="line"><a id="l02216" name="l02216"></a><span class="lineno"> 2216</span>        val = signbit | (<span class="keyword">static_cast&lt;</span>ushort<span class="keyword">&gt;</span>(exponent)&lt;&lt;10) | mantissa;</div>
+<div class="line"><a id="l02217" name="l02217"></a><span class="lineno"> 2217</span>    }</div>
+<div class="line"><a id="l02218" name="l02218"></a><span class="lineno"> 2218</span> </div>
+<div class="line"><a id="l02219" name="l02219"></a><span class="lineno"> 2219</span>    <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code hl_struct" href="structhalf.html">half</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> val == h.val; }</div>
+<div class="line"><a id="l02220" name="l02220"></a><span class="lineno"> 2220</span>    <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> <a class="code hl_struct" href="structhalf.html">half</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> val != h.val; }</div>
+<div class="line"><a id="l02221" name="l02221"></a><span class="lineno"> 2221</span>};</div>
 <div class="line"><a id="l02222" name="l02222"></a><span class="lineno"> 2222</span> </div>
-<div class="line"><a id="l02223" name="l02223"></a><span class="lineno"> 2223</span>    <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code hl_struct" href="structhalf.html">half</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> val == h.val; }</div>
-<div class="line"><a id="l02224" name="l02224"></a><span class="lineno"> 2224</span>    <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> <a class="code hl_struct" href="structhalf.html">half</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> val != h.val; }</div>
-<div class="line"><a id="l02225" name="l02225"></a><span class="lineno"> 2225</span>};</div>
-<div class="line"><a id="l02226" name="l02226"></a><span class="lineno"> 2226</span> </div>
-<div class="line"><a id="l02227" name="l02227"></a><span class="lineno"> 2227</span><span class="comment">//generic two dimensional vector</span></div>
-<div class="line"><a id="l02228" name="l02228"></a><span class="lineno"> 2228</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a id="l02229" name="l02229"></a><span class="lineno"><a class="line" href="structGenericVec2.html"> 2229</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a></div>
-<div class="line"><a id="l02230" name="l02230"></a><span class="lineno"> 2230</span>{</div>
-<div class="line"><a id="l02231" name="l02231"></a><span class="lineno"> 2231</span>    T x,y;</div>
+<div class="line"><a id="l02223" name="l02223"></a><span class="lineno"> 2223</span><span class="comment">//generic two dimensional vector</span></div>
+<div class="line"><a id="l02224" name="l02224"></a><span class="lineno"> 2224</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l02225" name="l02225"></a><span class="lineno"><a class="line" href="structGenericVec2.html"> 2225</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a></div>
+<div class="line"><a id="l02226" name="l02226"></a><span class="lineno"> 2226</span>{</div>
+<div class="line"><a id="l02227" name="l02227"></a><span class="lineno"> 2227</span>    T x,y;</div>
+<div class="line"><a id="l02228" name="l02228"></a><span class="lineno"> 2228</span> </div>
+<div class="line"><a id="l02229" name="l02229"></a><span class="lineno"> 2229</span>    <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a>() {}</div>
+<div class="line"><a id="l02230" name="l02230"></a><span class="lineno"> 2230</span>    <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a>(T x, T y) : x(x), y(y) {}</div>
+<div class="line"><a id="l02231" name="l02231"></a><span class="lineno"> 2231</span>    <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;v) : x(v.x), y(v.y) {}</div>
 <div class="line"><a id="l02232" name="l02232"></a><span class="lineno"> 2232</span> </div>
-<div class="line"><a id="l02233" name="l02233"></a><span class="lineno"> 2233</span>    <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a>() {}</div>
-<div class="line"><a id="l02234" name="l02234"></a><span class="lineno"> 2234</span>    <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a>(T x, T y) : x(x), y(y) {}</div>
-<div class="line"><a id="l02235" name="l02235"></a><span class="lineno"> 2235</span>    <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;v) : x(v.x), y(v.y) {}</div>
+<div class="line"><a id="l02233" name="l02233"></a><span class="lineno"> 2233</span>    <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x == h.x &amp;&amp; y == h.y; }</div>
+<div class="line"><a id="l02234" name="l02234"></a><span class="lineno"> 2234</span>    <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x != h.x || y != h.y; }</div>
+<div class="line"><a id="l02235" name="l02235"></a><span class="lineno"> 2235</span>};</div>
 <div class="line"><a id="l02236" name="l02236"></a><span class="lineno"> 2236</span> </div>
-<div class="line"><a id="l02237" name="l02237"></a><span class="lineno"> 2237</span>    <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x == h.x &amp;&amp; y == h.y; }</div>
-<div class="line"><a id="l02238" name="l02238"></a><span class="lineno"> 2238</span>    <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec2.html">GenericVec2</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x != h.x || y != h.y; }</div>
-<div class="line"><a id="l02239" name="l02239"></a><span class="lineno"> 2239</span>};</div>
-<div class="line"><a id="l02240" name="l02240"></a><span class="lineno"> 2240</span> </div>
-<div class="line"><a id="l02241" name="l02241"></a><span class="lineno"> 2241</span><span class="comment">//generic three dmensional vector</span></div>
-<div class="line"><a id="l02242" name="l02242"></a><span class="lineno"> 2242</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a id="l02243" name="l02243"></a><span class="lineno"><a class="line" href="structGenericVec3.html"> 2243</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a></div>
-<div class="line"><a id="l02244" name="l02244"></a><span class="lineno"> 2244</span>{</div>
-<div class="line"><a id="l02245" name="l02245"></a><span class="lineno"> 2245</span>    T x,y,z;</div>
+<div class="line"><a id="l02237" name="l02237"></a><span class="lineno"> 2237</span><span class="comment">//generic three dmensional vector</span></div>
+<div class="line"><a id="l02238" name="l02238"></a><span class="lineno"> 2238</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a id="l02239" name="l02239"></a><span class="lineno"><a class="line" href="structGenericVec3.html"> 2239</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a></div>
+<div class="line"><a id="l02240" name="l02240"></a><span class="lineno"> 2240</span>{</div>
+<div class="line"><a id="l02241" name="l02241"></a><span class="lineno"> 2241</span>    T x,y,z;</div>
+<div class="line"><a id="l02242" name="l02242"></a><span class="lineno"> 2242</span> </div>
+<div class="line"><a id="l02243" name="l02243"></a><span class="lineno"> 2243</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a>() {}</div>
+<div class="line"><a id="l02244" name="l02244"></a><span class="lineno"> 2244</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a>(T x, T y, T z) : x(x), y(y), z(z) {}</div>
+<div class="line"><a id="l02245" name="l02245"></a><span class="lineno"> 2245</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) : x(v.x), y(v.y), z(v.z) {}</div>
 <div class="line"><a id="l02246" name="l02246"></a><span class="lineno"> 2246</span> </div>
-<div class="line"><a id="l02247" name="l02247"></a><span class="lineno"> 2247</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a>() {}</div>
-<div class="line"><a id="l02248" name="l02248"></a><span class="lineno"> 2248</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a>(T x, T y, T z) : x(x), y(y), z(z) {}</div>
-<div class="line"><a id="l02249" name="l02249"></a><span class="lineno"> 2249</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v) : x(v.x), y(v.y), z(v.z) {}</div>
-<div class="line"><a id="l02250" name="l02250"></a><span class="lineno"> 2250</span> </div>
-<div class="line"><a id="l02251" name="l02251"></a><span class="lineno"> 2251</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> operator+(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a>(x+h.x, y+h.y,z+h.z); }</div>
-<div class="line"><a id="l02252" name="l02252"></a><span class="lineno"> 2252</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> operator-(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a>(x-h.x, y-h.y, z-h.z); }</div>
-<div class="line"><a id="l02253" name="l02253"></a><span class="lineno"> 2253</span> </div>
-<div class="line"><a id="l02254" name="l02254"></a><span class="lineno"> 2254</span>    <span class="comment">//comparison</span></div>
-<div class="line"><a id="l02255" name="l02255"></a><span class="lineno"> 2255</span>    <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x == h.x &amp;&amp; y == h.y &amp;&amp; z == h.z; }</div>
-<div class="line"><a id="l02256" name="l02256"></a><span class="lineno"> 2256</span>    <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x != h.x || y != h.y || z != h.z; }</div>
-<div class="line"><a id="l02257" name="l02257"></a><span class="lineno"> 2257</span>    <span class="keywordtype">bool</span> operator&gt;(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &gt; h.x &amp;&amp; y &gt; h.y &amp;&amp; z &gt; h.z; }</div>
-<div class="line"><a id="l02258" name="l02258"></a><span class="lineno"> 2258</span>    <span class="keywordtype">bool</span> operator&lt;(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &lt; h.x &amp;&amp; y &lt; h.y &amp;&amp; z &lt; h.z; }</div>
-<div class="line"><a id="l02259" name="l02259"></a><span class="lineno"> 2259</span>    <span class="keywordtype">bool</span> operator&gt;=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &gt;= h.x &amp;&amp; y &gt;= h.y &amp;&amp; z &gt;= h.z; }</div>
-<div class="line"><a id="l02260" name="l02260"></a><span class="lineno"> 2260</span>    <span class="keywordtype">bool</span> operator&lt;=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &lt;= h.x &amp;&amp; y &lt;= h.y &amp;&amp; z &lt;= h.z; }</div>
-<div class="line"><a id="l02261" name="l02261"></a><span class="lineno"> 2261</span>};</div>
-<div class="line"><a id="l02262" name="l02262"></a><span class="lineno"> 2262</span> </div>
-<div class="line"><a id="l02263" name="l02263"></a><span class="lineno"> 2263</span><span class="comment">//short integer quaternion</span></div>
-<div class="line"><a id="l02264" name="l02264"></a><span class="lineno"><a class="line" href="structsquat.html"> 2264</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsquat.html">squat</a></div>
-<div class="line"><a id="l02265" name="l02265"></a><span class="lineno"> 2265</span>{</div>
-<div class="line"><a id="l02266" name="l02266"></a><span class="lineno"> 2266</span>    <span class="keywordtype">short</span> x, y, z, w;</div>
-<div class="line"><a id="l02267" name="l02267"></a><span class="lineno"> 2267</span> </div>
-<div class="line"><a id="l02268" name="l02268"></a><span class="lineno"> 2268</span>    <a class="code hl_struct" href="structsquat.html">squat</a>() {}</div>
-<div class="line"><a id="l02269" name="l02269"></a><span class="lineno"> 2269</span>    <a class="code hl_struct" href="structsquat.html">squat</a>(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;q) { convert(q); }</div>
-<div class="line"><a id="l02270" name="l02270"></a><span class="lineno"> 2270</span> </div>
-<div class="line"><a id="l02271" name="l02271"></a><span class="lineno"> 2271</span>    <span class="keywordtype">void</span> convert(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;q)</div>
-<div class="line"><a id="l02272" name="l02272"></a><span class="lineno"> 2272</span>    {</div>
-<div class="line"><a id="l02273" name="l02273"></a><span class="lineno"> 2273</span>        x = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.x*32767.5f-0.5f);</div>
-<div class="line"><a id="l02274" name="l02274"></a><span class="lineno"> 2274</span>        y = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.y*32767.5f-0.5f);</div>
-<div class="line"><a id="l02275" name="l02275"></a><span class="lineno"> 2275</span>        z = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.z*32767.5f-0.5f);</div>
-<div class="line"><a id="l02276" name="l02276"></a><span class="lineno"> 2276</span>        w = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.w*32767.5f-0.5f);</div>
-<div class="line"><a id="l02277" name="l02277"></a><span class="lineno"> 2277</span>    }</div>
-<div class="line"><a id="l02278" name="l02278"></a><span class="lineno"> 2278</span> </div>
-<div class="line"><a id="l02279" name="l02279"></a><span class="lineno"> 2279</span>    <span class="keywordtype">void</span> lerp(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;a, <span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;b, <span class="keywordtype">float</span> t)</div>
-<div class="line"><a id="l02280" name="l02280"></a><span class="lineno"> 2280</span>    {</div>
-<div class="line"><a id="l02281" name="l02281"></a><span class="lineno"> 2281</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> q;</div>
-<div class="line"><a id="l02282" name="l02282"></a><span class="lineno"> 2282</span>        q.lerp(a, b, t);</div>
-<div class="line"><a id="l02283" name="l02283"></a><span class="lineno"> 2283</span>        convert(q);</div>
-<div class="line"><a id="l02284" name="l02284"></a><span class="lineno"> 2284</span>    }</div>
-<div class="line"><a id="l02285" name="l02285"></a><span class="lineno"> 2285</span>};</div>
-<div class="line"><a id="l02286" name="l02286"></a><span class="lineno"> 2286</span> </div>
-<div class="line"><a id="l02287" name="l02287"></a><span class="lineno"> 2287</span><span class="keyword">extern</span> <span class="keywordtype">bool</span> raysphereintersect(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;center, <span class="keywordtype">float</span> radius, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> &amp;dist);</div>
-<div class="line"><a id="l02288" name="l02288"></a><span class="lineno"> 2288</span><span class="keyword">extern</span> <span class="keywordtype">bool</span> rayboxintersect(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;b, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;s, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> &amp;dist, <span class="keywordtype">int</span> &amp;orient);</div>
-<div class="line"><a id="l02289" name="l02289"></a><span class="lineno"> 2289</span><span class="keyword">extern</span> <span class="keywordtype">bool</span> linecylinderintersect(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;from, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;to, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;start, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;end, <span class="keywordtype">float</span> radius, <span class="keywordtype">float</span> &amp;dist);</div>
-<div class="line"><a id="l02290" name="l02290"></a><span class="lineno"> 2290</span><span class="keyword">extern</span> <span class="keywordtype">int</span> polyclip(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *in, <span class="keywordtype">int</span> numin, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir, <span class="keywordtype">float</span> below, <span class="keywordtype">float</span> above, <a class="code hl_struct" href="structvec.html">vec</a> *out);</div>
-<div class="line"><a id="l02291" name="l02291"></a><span class="lineno"> 2291</span> </div>
-<div class="line"><a id="l02292" name="l02292"></a><span class="lineno"> 2292</span><span class="keyword">extern</span> <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> sincos360[];</div>
-<div class="line"><a id="l02293" name="l02293"></a><span class="lineno"> 2293</span><span class="keyword">inline</span> <span class="keywordtype">int</span> mod360(<span class="keywordtype">int</span> angle)</div>
-<div class="line"><a id="l02294" name="l02294"></a><span class="lineno"> 2294</span>{</div>
-<div class="line"><a id="l02295" name="l02295"></a><span class="lineno"> 2295</span>    <span class="keywordflow">if</span>(angle &lt; 0)</div>
+<div class="line"><a id="l02247" name="l02247"></a><span class="lineno"> 2247</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> operator+(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a>(x+h.x, y+h.y,z+h.z); }</div>
+<div class="line"><a id="l02248" name="l02248"></a><span class="lineno"> 2248</span>    <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> operator-(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a>(x-h.x, y-h.y, z-h.z); }</div>
+<div class="line"><a id="l02249" name="l02249"></a><span class="lineno"> 2249</span> </div>
+<div class="line"><a id="l02250" name="l02250"></a><span class="lineno"> 2250</span>    <span class="comment">//comparison</span></div>
+<div class="line"><a id="l02251" name="l02251"></a><span class="lineno"> 2251</span>    <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x == h.x &amp;&amp; y == h.y &amp;&amp; z == h.z; }</div>
+<div class="line"><a id="l02252" name="l02252"></a><span class="lineno"> 2252</span>    <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x != h.x || y != h.y || z != h.z; }</div>
+<div class="line"><a id="l02253" name="l02253"></a><span class="lineno"> 2253</span>    <span class="keywordtype">bool</span> operator&gt;(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &gt; h.x &amp;&amp; y &gt; h.y &amp;&amp; z &gt; h.z; }</div>
+<div class="line"><a id="l02254" name="l02254"></a><span class="lineno"> 2254</span>    <span class="keywordtype">bool</span> operator&lt;(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &lt; h.x &amp;&amp; y &lt; h.y &amp;&amp; z &lt; h.z; }</div>
+<div class="line"><a id="l02255" name="l02255"></a><span class="lineno"> 2255</span>    <span class="keywordtype">bool</span> operator&gt;=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &gt;= h.x &amp;&amp; y &gt;= h.y &amp;&amp; z &gt;= h.z; }</div>
+<div class="line"><a id="l02256" name="l02256"></a><span class="lineno"> 2256</span>    <span class="keywordtype">bool</span> operator&lt;=(<span class="keyword">const</span> <a class="code hl_struct" href="structGenericVec3.html">GenericVec3&lt;T&gt;</a> &amp;h)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> x &lt;= h.x &amp;&amp; y &lt;= h.y &amp;&amp; z &lt;= h.z; }</div>
+<div class="line"><a id="l02257" name="l02257"></a><span class="lineno"> 2257</span>};</div>
+<div class="line"><a id="l02258" name="l02258"></a><span class="lineno"> 2258</span> </div>
+<div class="line"><a id="l02259" name="l02259"></a><span class="lineno"> 2259</span><span class="comment">//short integer quaternion</span></div>
+<div class="line"><a id="l02260" name="l02260"></a><span class="lineno"><a class="line" href="structsquat.html"> 2260</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsquat.html">squat</a></div>
+<div class="line"><a id="l02261" name="l02261"></a><span class="lineno"> 2261</span>{</div>
+<div class="line"><a id="l02262" name="l02262"></a><span class="lineno"> 2262</span>    <span class="keywordtype">short</span> x, y, z, w;</div>
+<div class="line"><a id="l02263" name="l02263"></a><span class="lineno"> 2263</span> </div>
+<div class="line"><a id="l02264" name="l02264"></a><span class="lineno"> 2264</span>    <a class="code hl_struct" href="structsquat.html">squat</a>() {}</div>
+<div class="line"><a id="l02265" name="l02265"></a><span class="lineno"> 2265</span>    <a class="code hl_struct" href="structsquat.html">squat</a>(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;q) { convert(q); }</div>
+<div class="line"><a id="l02266" name="l02266"></a><span class="lineno"> 2266</span> </div>
+<div class="line"><a id="l02267" name="l02267"></a><span class="lineno"> 2267</span>    <span class="keywordtype">void</span> convert(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;q)</div>
+<div class="line"><a id="l02268" name="l02268"></a><span class="lineno"> 2268</span>    {</div>
+<div class="line"><a id="l02269" name="l02269"></a><span class="lineno"> 2269</span>        x = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.x*32767.5f-0.5f);</div>
+<div class="line"><a id="l02270" name="l02270"></a><span class="lineno"> 2270</span>        y = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.y*32767.5f-0.5f);</div>
+<div class="line"><a id="l02271" name="l02271"></a><span class="lineno"> 2271</span>        z = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.z*32767.5f-0.5f);</div>
+<div class="line"><a id="l02272" name="l02272"></a><span class="lineno"> 2272</span>        w = <span class="keyword">static_cast&lt;</span><span class="keywordtype">short</span><span class="keyword">&gt;</span>(q.w*32767.5f-0.5f);</div>
+<div class="line"><a id="l02273" name="l02273"></a><span class="lineno"> 2273</span>    }</div>
+<div class="line"><a id="l02274" name="l02274"></a><span class="lineno"> 2274</span> </div>
+<div class="line"><a id="l02275" name="l02275"></a><span class="lineno"> 2275</span>    <span class="keywordtype">void</span> lerp(<span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;a, <span class="keyword">const</span> <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> &amp;b, <span class="keywordtype">float</span> t)</div>
+<div class="line"><a id="l02276" name="l02276"></a><span class="lineno"> 2276</span>    {</div>
+<div class="line"><a id="l02277" name="l02277"></a><span class="lineno"> 2277</span>        <a class="code hl_class" href="structvec4.html">vec4&lt;float&gt;</a> q;</div>
+<div class="line"><a id="l02278" name="l02278"></a><span class="lineno"> 2278</span>        q.lerp(a, b, t);</div>
+<div class="line"><a id="l02279" name="l02279"></a><span class="lineno"> 2279</span>        convert(q);</div>
+<div class="line"><a id="l02280" name="l02280"></a><span class="lineno"> 2280</span>    }</div>
+<div class="line"><a id="l02281" name="l02281"></a><span class="lineno"> 2281</span>};</div>
+<div class="line"><a id="l02282" name="l02282"></a><span class="lineno"> 2282</span> </div>
+<div class="line"><a id="l02283" name="l02283"></a><span class="lineno"> 2283</span><span class="keyword">extern</span> <span class="keywordtype">bool</span> raysphereintersect(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;center, <span class="keywordtype">float</span> radius, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> &amp;dist);</div>
+<div class="line"><a id="l02284" name="l02284"></a><span class="lineno"> 2284</span><span class="keyword">extern</span> <span class="keywordtype">bool</span> rayboxintersect(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;b, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;s, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> &amp;dist, <span class="keywordtype">int</span> &amp;orient);</div>
+<div class="line"><a id="l02285" name="l02285"></a><span class="lineno"> 2285</span><span class="keyword">extern</span> <span class="keywordtype">bool</span> linecylinderintersect(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;from, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;to, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;start, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;end, <span class="keywordtype">float</span> radius, <span class="keywordtype">float</span> &amp;dist);</div>
+<div class="line"><a id="l02286" name="l02286"></a><span class="lineno"> 2286</span><span class="keyword">extern</span> <span class="keywordtype">int</span> polyclip(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> *in, <span class="keywordtype">int</span> numin, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir, <span class="keywordtype">float</span> below, <span class="keywordtype">float</span> above, <a class="code hl_struct" href="structvec.html">vec</a> *out);</div>
+<div class="line"><a id="l02287" name="l02287"></a><span class="lineno"> 2287</span> </div>
+<div class="line"><a id="l02288" name="l02288"></a><span class="lineno"> 2288</span><span class="keyword">extern</span> <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> sincos360[];</div>
+<div class="line"><a id="l02289" name="l02289"></a><span class="lineno"> 2289</span><span class="keyword">inline</span> <span class="keywordtype">int</span> mod360(<span class="keywordtype">int</span> angle)</div>
+<div class="line"><a id="l02290" name="l02290"></a><span class="lineno"> 2290</span>{</div>
+<div class="line"><a id="l02291" name="l02291"></a><span class="lineno"> 2291</span>    <span class="keywordflow">if</span>(angle &lt; 0)</div>
+<div class="line"><a id="l02292" name="l02292"></a><span class="lineno"> 2292</span>    {</div>
+<div class="line"><a id="l02293" name="l02293"></a><span class="lineno"> 2293</span>        angle = 360 + (angle &lt;= -360 ? angle%360 : angle);</div>
+<div class="line"><a id="l02294" name="l02294"></a><span class="lineno"> 2294</span>    }</div>
+<div class="line"><a id="l02295" name="l02295"></a><span class="lineno"> 2295</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(angle &gt;= 360)</div>
 <div class="line"><a id="l02296" name="l02296"></a><span class="lineno"> 2296</span>    {</div>
-<div class="line"><a id="l02297" name="l02297"></a><span class="lineno"> 2297</span>        angle = 360 + (angle &lt;= -360 ? angle%360 : angle);</div>
+<div class="line"><a id="l02297" name="l02297"></a><span class="lineno"> 2297</span>        angle %= 360;</div>
 <div class="line"><a id="l02298" name="l02298"></a><span class="lineno"> 2298</span>    }</div>
-<div class="line"><a id="l02299" name="l02299"></a><span class="lineno"> 2299</span>    <span class="keywordflow">else</span> <span class="keywordflow">if</span>(angle &gt;= 360)</div>
-<div class="line"><a id="l02300" name="l02300"></a><span class="lineno"> 2300</span>    {</div>
-<div class="line"><a id="l02301" name="l02301"></a><span class="lineno"> 2301</span>        angle %= 360;</div>
-<div class="line"><a id="l02302" name="l02302"></a><span class="lineno"> 2302</span>    }</div>
-<div class="line"><a id="l02303" name="l02303"></a><span class="lineno"> 2303</span>    <span class="keywordflow">return</span> angle;</div>
-<div class="line"><a id="l02304" name="l02304"></a><span class="lineno"> 2304</span>}</div>
-<div class="line"><a id="l02305" name="l02305"></a><span class="lineno"> 2305</span><span class="keyword">inline</span> <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sincosmod360(<span class="keywordtype">int</span> angle) { <span class="keywordflow">return</span> sincos360[mod360(angle)]; }</div>
-<div class="line"><a id="l02306" name="l02306"></a><span class="lineno"> 2306</span><span class="keyword">inline</span> <span class="keywordtype">float</span> cos360(<span class="keywordtype">int</span> angle) { <span class="keywordflow">return</span> sincos360[angle].x; }</div>
-<div class="line"><a id="l02307" name="l02307"></a><span class="lineno"> 2307</span><span class="keyword">inline</span> <span class="keywordtype">float</span> sin360(<span class="keywordtype">int</span> angle) { <span class="keywordflow">return</span> sincos360[angle].y; }</div>
-<div class="line"><a id="l02308" name="l02308"></a><span class="lineno"> 2308</span><span class="keyword">inline</span> <span class="keywordtype">float</span> tan360(<span class="keywordtype">int</span> angle) { <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc = sincos360[angle]; <span class="keywordflow">return</span> sc.y/sc.x; }</div>
-<div class="line"><a id="l02309" name="l02309"></a><span class="lineno"> 2309</span><span class="keyword">inline</span> <span class="keywordtype">float</span> cotan360(<span class="keywordtype">int</span> angle) { <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc = sincos360[angle]; <span class="keywordflow">return</span> sc.x/sc.y; }</div>
-<div class="line"><a id="l02310" name="l02310"></a><span class="lineno"> 2310</span> </div>
-<div class="line"><a id="l02311" name="l02311"></a><span class="lineno"> 2311</span><span class="preprocessor">#endif </span><span class="comment">/* GEOM_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l02299" name="l02299"></a><span class="lineno"> 2299</span>    <span class="keywordflow">return</span> angle;</div>
+<div class="line"><a id="l02300" name="l02300"></a><span class="lineno"> 2300</span>}</div>
+<div class="line"><a id="l02301" name="l02301"></a><span class="lineno"> 2301</span><span class="keyword">inline</span> <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sincosmod360(<span class="keywordtype">int</span> angle) { <span class="keywordflow">return</span> sincos360[mod360(angle)]; }</div>
+<div class="line"><a id="l02302" name="l02302"></a><span class="lineno"> 2302</span><span class="keyword">inline</span> <span class="keywordtype">float</span> cos360(<span class="keywordtype">int</span> angle) { <span class="keywordflow">return</span> sincos360[angle].x; }</div>
+<div class="line"><a id="l02303" name="l02303"></a><span class="lineno"> 2303</span><span class="keyword">inline</span> <span class="keywordtype">float</span> sin360(<span class="keywordtype">int</span> angle) { <span class="keywordflow">return</span> sincos360[angle].y; }</div>
+<div class="line"><a id="l02304" name="l02304"></a><span class="lineno"> 2304</span><span class="keyword">inline</span> <span class="keywordtype">float</span> tan360(<span class="keywordtype">int</span> angle) { <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc = sincos360[angle]; <span class="keywordflow">return</span> sc.y/sc.x; }</div>
+<div class="line"><a id="l02305" name="l02305"></a><span class="lineno"> 2305</span><span class="keyword">inline</span> <span class="keywordtype">float</span> cotan360(<span class="keywordtype">int</span> angle) { <span class="keyword">const</span> <a class="code hl_struct" href="structvec2.html">vec2</a> &amp;sc = sincos360[angle]; <span class="keywordflow">return</span> sc.x/sc.y; }</div>
+<div class="line"><a id="l02306" name="l02306"></a><span class="lineno"> 2306</span> </div>
+<div class="line"><a id="l02307" name="l02307"></a><span class="lineno"> 2307</span><span class="preprocessor">#endif </span><span class="comment">/* GEOM_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="ageom_8h_html_ae991d89d766b25a0e9b0f07509128749"><div class="ttname"><a href="geom_8h.html#ae991d89d766b25a0e9b0f07509128749">R</a></div><div class="ttdeci">const int R[3]</div><div class="ttdef"><b>Definition:</b> geom.h:1704</div></div>
 <div class="ttc" id="ageom_8h_html_aed5ba577f9756174f4bac8f51b02a91d"><div class="ttname"><a href="geom_8h.html#aed5ba577f9756174f4bac8f51b02a91d">C</a></div><div class="ttdeci">const int C[3]</div><div class="ttdef"><b>Definition:</b> geom.h:1705</div></div>
 <div class="ttc" id="ageom_8h_html_af360aec895a04b5f852dbd4a58340ab6"><div class="ttname"><a href="geom_8h.html#af360aec895a04b5f852dbd4a58340ab6">D</a></div><div class="ttdeci">const int D[3]</div><div class="ttdef"><b>Definition:</b> geom.h:1706</div></div>
-<div class="ttc" id="astructGenericVec2_html"><div class="ttname"><a href="structGenericVec2.html">GenericVec2</a></div><div class="ttdef"><b>Definition:</b> geom.h:2230</div></div>
-<div class="ttc" id="astructGenericVec3_html"><div class="ttname"><a href="structGenericVec3.html">GenericVec3</a></div><div class="ttdef"><b>Definition:</b> geom.h:2244</div></div>
+<div class="ttc" id="astructGenericVec2_html"><div class="ttname"><a href="structGenericVec2.html">GenericVec2</a></div><div class="ttdef"><b>Definition:</b> geom.h:2226</div></div>
+<div class="ttc" id="astructGenericVec3_html"><div class="ttname"><a href="structGenericVec3.html">GenericVec3</a></div><div class="ttdef"><b>Definition:</b> geom.h:2240</div></div>
 <div class="ttc" id="astructbvec_html"><div class="ttname"><a href="structbvec.html">bvec</a></div><div class="ttdoc">color vector3 (r,g,b)</div><div class="ttdef"><b>Definition:</b> geom.h:448</div></div>
 <div class="ttc" id="astructdualquat_html"><div class="ttname"><a href="structdualquat.html">dualquat</a></div><div class="ttdoc">dual quaternion object</div><div class="ttdef"><b>Definition:</b> geom.h:898</div></div>
-<div class="ttc" id="astructhalf_html"><div class="ttname"><a href="structhalf.html">half</a></div><div class="ttdoc">half precision floating point object, similar to float but with less data bits</div><div class="ttdef"><b>Definition:</b> geom.h:2194</div></div>
+<div class="ttc" id="astructhalf_html"><div class="ttname"><a href="structhalf.html">half</a></div><div class="ttdoc">half precision floating point object, similar to float but with less data bits</div><div class="ttdef"><b>Definition:</b> geom.h:2190</div></div>
 <div class="ttc" id="astructivec2_html"><div class="ttname"><a href="structivec2.html">ivec2</a></div><div class="ttdoc">integer vector2</div><div class="ttdef"><b>Definition:</b> geom.h:1789</div></div>
 <div class="ttc" id="astructivec_html"><div class="ttname"><a href="structivec.html">ivec</a></div><div class="ttdef"><b>Definition:</b> geom.h:1712</div></div>
-<div class="ttc" id="astructmatrix2_html"><div class="ttname"><a href="structmatrix2.html">matrix2</a></div><div class="ttdef"><b>Definition:</b> geom.h:2181</div></div>
+<div class="ttc" id="astructmatrix2_html"><div class="ttname"><a href="structmatrix2.html">matrix2</a></div><div class="ttdef"><b>Definition:</b> geom.h:2177</div></div>
 <div class="ttc" id="astructmatrix3_html"><div class="ttname"><a href="structmatrix3.html">matrix3</a></div><div class="ttdoc">matrix3: 3x3 matrix comprised of three vec3 vectors arranged as follows: [ a1 b1 c1 a2 b2 c2 a3 b3 c3...</div><div class="ttdef"><b>Definition:</b> geom.h:1043</div></div>
 <div class="ttc" id="astructmatrix4_html"><div class="ttname"><a href="structmatrix4.html">matrix4</a></div><div class="ttdoc">floating point 4x4 array object</div><div class="ttdef"><b>Definition:</b> geom.h:1869</div></div>
 <div class="ttc" id="astructmatrix4x3_html"><div class="ttname"><a href="structmatrix4x3.html">matrix4x3</a></div><div class="ttdoc">floating point 4x3 matrix object defined as four column vectors, a-d takes the form as follows: [ a1 ...</div><div class="ttdef"><b>Definition:</b> geom.h:1284</div></div>
 <div class="ttc" id="astructplane_html"><div class="ttname"><a href="structplane.html">plane</a></div><div class="ttdef"><b>Definition:</b> geom.h:1555</div></div>
 <div class="ttc" id="astructquat_html"><div class="ttname"><a href="structquat.html">quat</a></div><div class="ttdoc">quaternion object: four component &quot;vector&quot; with three imaginary components used for object rotations ...</div><div class="ttdef"><b>Definition:</b> geom.h:764</div></div>
-<div class="ttc" id="astructsquat_html"><div class="ttname"><a href="structsquat.html">squat</a></div><div class="ttdef"><b>Definition:</b> geom.h:2265</div></div>
+<div class="ttc" id="astructsquat_html"><div class="ttname"><a href="structsquat.html">squat</a></div><div class="ttdef"><b>Definition:</b> geom.h:2261</div></div>
 <div class="ttc" id="astructsvec_html"><div class="ttname"><a href="structsvec.html">svec</a></div><div class="ttdoc">short integer three-vector object</div><div class="ttdef"><b>Definition:</b> geom.h:1847</div></div>
 <div class="ttc" id="astructtriangle_html"><div class="ttname"><a href="structtriangle.html">triangle</a></div><div class="ttdef"><b>Definition:</b> geom.h:1658</div></div>
 <div class="ttc" id="astructvec2_html"><div class="ttname"><a href="structvec2.html">vec2</a></div><div class="ttdoc">2 dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:20</div></div>
