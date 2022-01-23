@@ -1166,7 +1166,7 @@ vec calcavatarpos(const vec &pos, float dist)
     cammatrix.transform(pos, eyepos);
     GLdouble ydist = nearplane * std::tan(curavatarfov/2*RAD),
              xdist = ydist * aspect;
-    vec4 scrpos;
+    vec4<float> scrpos;
     scrpos.x = eyepos.x*nearplane/xdist;
     scrpos.y = eyepos.y*nearplane/ydist;
     scrpos.z = (eyepos.z*(farplane + nearplane) - 2*nearplane*farplane) / (farplane - nearplane);
@@ -1322,7 +1322,7 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
             sy2 = std::max(sy2, y); \
         } \
     } while(0)
-    vec4 v[8];
+    vec4<float> v[8];
     sx1 = sy1 = 1;
     sx2 = sy2 = -1;
     camprojmatrix.transform(vec(bbmin.x, bbmin.y, bbmin.z), v[0]);
@@ -1347,14 +1347,14 @@ bool calcbbscissor(const ivec &bbmin, const ivec &bbmax, float &sx1, float &sy1,
     }
     for(int i = 0; i < 8; ++i)
     {
-        const vec4 &p = v[i];
+        const vec4<float> &p = v[i];
         if(p.z >= -p.w)
         {
             continue;
         }
         for(int j = 0; j < 3; ++j)
         {
-            const vec4 &o = v[i^(1<<j)];
+            const vec4<float> &o = v[i^(1<<j)];
             if(o.z <= -o.w)
             {
                 continue;
@@ -1400,7 +1400,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
             sz2 = std::max(sz2, z); \
         } \
     } while(0)
-    vec4 v[5];
+    vec4<float> v[5];
     sx1 = sy1 = sz1 = 1;
     sx2 = sy2 = sz2 = -1;
     camprojmatrix.transform(vec(center).sub(right).sub(up), v[0]);
@@ -1419,14 +1419,14 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     }
     for(int i = 0; i < 4; ++i)
     {
-        const vec4 &p = v[i];
+        const vec4<float> &p = v[i];
         if(p.z >= -p.w)
         {
             continue;
         }
         for(int j = 0; j < 2; ++j)
         {
-            const vec4 &o = v[i^(1<<j)];
+            const vec4<float> &o = v[i^(1<<j)];
             if(o.z <= -o.w)
             {
                 continue;
@@ -1459,7 +1459,7 @@ bool calcspotscissor(const vec &origin, float radius, const vec &dir, int spot, 
     {
         for(int j = 0; j < 4; ++j)
         {
-            const vec4 &o = v[j];
+            const vec4<float> &o = v[j];
             if(o.z <= -o.w)
             {
                 continue;

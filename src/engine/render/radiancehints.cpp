@@ -424,11 +424,11 @@ void radiancehints::bindparams()
     float step = 2*splits[0].bounds/rhgrid;
     GLOBALPARAMF(rhnudge, rhnudge*step);
     static GlobalShaderParam rhtc("rhtc");
-    vec4 *rhtcv = rhtc.reserve<vec4>(rhsplits);
+    vec4<float> *rhtcv = rhtc.reserve<vec4<float>>(rhsplits);
     for(int i = 0; i < rhsplits; ++i)
     {
         splitinfo &split = splits[i];
-        rhtcv[i] = vec4(vec(split.center).mul(-split.scale.x), split.scale.x);//split.bounds*(1 + rhborder*2*0.5f/rhgrid));
+        rhtcv[i] = vec4<float>(vec(split.center).mul(-split.scale.x), split.scale.x);//split.bounds*(1 + rhborder*2*0.5f/rhgrid));
     }
     GLOBALPARAMF(rhbounds, 0.5f*(rhgrid + rhborder)/static_cast<float>(rhgrid + 2*rhborder));
 }
@@ -980,13 +980,13 @@ void reflectiveshadowmap::gencullplanes()
 {
     matrix4 mvp;
     mvp.mul(proj, model);
-    vec4 px = mvp.rowx(),
+    vec4<float> px = mvp.rowx(),
          py = mvp.rowy(),
          pw = mvp.roww();
-    cull[0] = plane(vec4(pw).add(px)).normalize(); // left plane
-    cull[1] = plane(vec4(pw).sub(px)).normalize(); // right plane
-    cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
-    cull[3] = plane(vec4(pw).sub(py)).normalize(); // top plane
+    cull[0] = plane(vec4<float>(pw).add(px)).normalize(); // left plane
+    cull[1] = plane(vec4<float>(pw).sub(px)).normalize(); // right plane
+    cull[2] = plane(vec4<float>(pw).add(py)).normalize(); // bottom plane
+    cull[3] = plane(vec4<float>(pw).sub(py)).normalize(); // top plane
 }
 
 //=========================== end reflective shadow map =======================//

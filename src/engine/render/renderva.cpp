@@ -2388,15 +2388,15 @@ void drawbb(const ivec &bo, const ivec &br)
 
 void vfc::setvfcP(const vec &bbmin, const vec &bbmax)
 {
-    vec4 px = camprojmatrix.rowx(),
+    vec4<float> px = camprojmatrix.rowx(),
          py = camprojmatrix.rowy(),
          pz = camprojmatrix.rowz(),
          pw = camprojmatrix.roww();
-    vfcP[0] = plane(vec4(pw).mul(-bbmin.x).add(px)).normalize(); // left plane
-    vfcP[1] = plane(vec4(pw).mul(bbmax.x).sub(px)).normalize(); // right plane
-    vfcP[2] = plane(vec4(pw).mul(-bbmin.y).add(py)).normalize(); // bottom plane
-    vfcP[3] = plane(vec4(pw).mul(bbmax.y).sub(py)).normalize(); // top plane
-    vfcP[4] = plane(vec4(pw).add(pz)).normalize(); // near/far planes
+    vfcP[0] = plane(vec4<float>(pw).mul(-bbmin.x).add(px)).normalize(); // left plane
+    vfcP[1] = plane(vec4<float>(pw).mul(bbmax.x).sub(px)).normalize(); // right plane
+    vfcP[2] = plane(vec4<float>(pw).mul(-bbmin.y).add(py)).normalize(); // bottom plane
+    vfcP[3] = plane(vec4<float>(pw).mul(bbmax.y).sub(py)).normalize(); // top plane
+    vfcP[4] = plane(vec4<float>(pw).add(pz)).normalize(); // near/far planes
 
     vfcDfog = std::min(calcfogcull(), static_cast<float>(farplane));
     view.calcvfcD();

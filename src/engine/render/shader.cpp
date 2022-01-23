@@ -1567,7 +1567,7 @@ int postfxw = 0,
 struct postfxpass
 {
     Shader *shader;
-    vec4 params;
+    vec4<float> params;
     uint inputs, freeinputs;
     int outputbind, outputscale;
 
@@ -1717,7 +1717,7 @@ void renderpostfx(GLuint outfbo)
 }
 
 //adds to the global postfxpasses vector a postfx by the given name
-static bool addpostfx(const char *name, int outputbind, int outputscale, uint inputs, uint freeinputs, const vec4 &params)
+static bool addpostfx(const char *name, int outputbind, int outputscale, uint inputs, uint freeinputs, const vec4<float> &params)
 {
     if(!*name)
     {
@@ -1773,7 +1773,7 @@ void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, flo
     }
     inputmask &= (1<<numpostfxbinds)-1;
     freemask &= (1<<numpostfxbinds)-1;
-    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4(*x, *y, *z, *w));
+    addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4<float>(*x, *y, *z, *w));
 }
 COMMANDN(addpostfx, addpostfxcmd, "siisffff");
 
@@ -1782,7 +1782,7 @@ void setpostfx(char *name, float *x, float *y, float *z, float *w)
     clearpostfx();
     if(name[0])
     {
-        addpostfx(name, 0, 0, 1, 1, vec4(*x, *y, *z, *w));
+        addpostfx(name, 0, 0, 1, 1, vec4<float>(*x, *y, *z, *w));
     }
 }
 COMMAND(setpostfx, "sffff"); //add a postfx shader to the global vector, with name & 4d pos vector

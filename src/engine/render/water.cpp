@@ -81,10 +81,10 @@ void setupcaustics(int tmu, float surface = -1e16f)
     if(surface > -1e15f)
     {
         float bz = surface + camera1->o.z + (vertwater ? wateramplitude : 0);
-        matrix4 m(vec4(s.x, t.x,  0, 0),
-                  vec4(s.y, t.y,  0, 0),
-                  vec4(s.z, t.z, -1, 0),
-                  vec4(  0,   0, bz, 1));
+        matrix4 m(vec4<float>(s.x, t.x,  0, 0),
+                  vec4<float>(s.y, t.y,  0, 0),
+                  vec4<float>(s.z, t.z, -1, 0),
+                  vec4<float>(  0,   0, bz, 1));
         m.mul(worldmatrix);
         GLOBALPARAM(causticsmatrix, m);
         blendscale *= 0.5f;

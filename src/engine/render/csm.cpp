@@ -241,13 +241,13 @@ void cascadedshadowmap::gencullplanes()
         splitinfo &split = splits[i];
         matrix4 mvp;
         mvp.mul(split.proj, model);
-        vec4 px = mvp.rowx(),
+        vec4<float> px = mvp.rowx(),
              py = mvp.rowy(),
              pw = mvp.roww();
-        split.cull[0] = plane(vec4(pw).add(px)).normalize(); // left plane
-        split.cull[1] = plane(vec4(pw).sub(px)).normalize(); // right plane
-        split.cull[2] = plane(vec4(pw).add(py)).normalize(); // bottom plane
-        split.cull[3] = plane(vec4(pw).sub(py)).normalize(); // top plane
+        split.cull[0] = plane(vec4<float>(pw).add(px)).normalize(); // left plane
+        split.cull[1] = plane(vec4<float>(pw).sub(px)).normalize(); // right plane
+        split.cull[2] = plane(vec4<float>(pw).add(py)).normalize(); // bottom plane
+        split.cull[3] = plane(vec4<float>(pw).sub(py)).normalize(); // top plane
     }
 }
 
@@ -257,7 +257,7 @@ void cascadedshadowmap::bindparams()
 
     static GlobalShaderParam csmtc("csmtc"),
                              csmoffset("csmoffset");
-    vec4 *csmtcv = csmtc.reserve<vec4>(csmsplits);
+    vec4<float> *csmtcv = csmtc.reserve<vec4<float>>(csmsplits);
     vec  *csmoffsetv = csmoffset.reserve<vec>(csmsplits);
     for(int i = 0; i < csmsplits; ++i)
     {
@@ -268,7 +268,7 @@ void cascadedshadowmap::bindparams()
         }
         const shadowmapinfo &sm = shadowmaps[split.idx];
 
-        csmtcv[i] = vec4(vec2(split.center).mul(-split.scale.x), split.scale.x, split.bounds.x*split.scale.x);
+        csmtcv[i] = vec4<float>(vec2(split.center).mul(-split.scale.x), split.scale.x, split.bounds.x*split.scale.x);
 
         const float bias = (smfilter > 2 ? csmbias2 : csmbias) * (-512.0f / sm.size) * (split.farplane - split.nearplane) / (splits[0].farplane - splits[0].nearplane);
         csmoffsetv[i] = vec(sm.x, sm.y, 0.5f + bias).add2(0.5f*sm.size);

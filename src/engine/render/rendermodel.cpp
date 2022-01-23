@@ -685,7 +685,7 @@ struct batchedmodel
 {
     vec pos, center;
     float radius, yaw, pitch, roll, sizescale;
-    vec4 colorscale;
+    vec4<float> colorscale;
     int anim, basetime, basetime2, flags, attached;
     union
     {
@@ -1237,7 +1237,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     b.basetime = basetime;
     b.basetime2 = 0;
     b.sizescale = size;
-    b.colorscale = vec4(1, 1, 1, 1);
+    b.colorscale = vec4<float>(1, 1, 1, 1);
     b.flags = flags | Model_Mapmodel;
     b.visible = visible;
     b.d = nullptr;
@@ -1245,7 +1245,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     addbatchedmodel(m, b, batchedmodels.length()-1);
 }
 
-void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, dynent *d, modelattach *a, int basetime, int basetime2, float size, const vec4 &color)
+void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, dynent *d, modelattach *a, int basetime, int basetime2, float size, const vec4<float> &color)
 {
     model *m = loadmodel(mdl);
     if(!m)

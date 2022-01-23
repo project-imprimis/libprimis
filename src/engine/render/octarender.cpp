@@ -241,7 +241,7 @@ namespace
 
             std::vector<int> chain;
 
-            int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const bvec4 &tangent = bvec4(128, 128, 128, 128))
+            int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const vec4<uchar> &tangent = vec4<uchar>(128, 128, 128, 128))
             {
                 vertex vtx;
                 vtx.pos = pos;
@@ -787,7 +787,7 @@ namespace
                         {
                             continue;
                         }
-                        bvec4 n0 = t0.norm,
+                        vec4<uchar> n0 = t0.norm,
                               n1 = t1.norm,
                               n2 = t2.norm,
                               x0 = t0.tangent,
@@ -1131,7 +1131,7 @@ namespace
         g.texture = texture;
     }
 
-    void calctexgen(VSlot &vslot, int orient, vec4 &sgen, vec4 &tgen)
+    void calctexgen(VSlot &vslot, int orient, vec4<float> &sgen, vec4<float> &tgen)
     {
         Texture *tex = vslot.slot->sts.empty() ? notexture : vslot.slot->sts[0].t;
         const texrotation &r = texrotations[vslot.rotation];
@@ -1141,8 +1141,8 @@ namespace
               sk = k/xs, tk = k/ys,
               soff = -(r.swapxy ? vslot.offset.y : vslot.offset.x)/xs,
               toff = -(r.swapxy ? vslot.offset.x : vslot.offset.y)/ys;
-        sgen = vec4(0, 0, 0, soff);
-        tgen = vec4(0, 0, 0, toff);
+        sgen = vec4<float>(0, 0, 0, soff);
+        tgen = vec4<float>(0, 0, 0, toff);
         if(r.swapxy)
         {
             switch(orient)
@@ -1244,7 +1244,7 @@ namespace
 
     void addcubeverts(VSlot &vslot, int orient, vec *pos, ushort texture, vertinfo *vinfo, int numverts, int tj = -1, int grassy = 0, bool alpha = false, int layer = BlendLayer_Top)
     {
-        vec4 sgen, tgen;
+        vec4<float> sgen, tgen;
         calctexgen(vslot, orient, sgen, tgen);
         vertex verts[Face_MaxVerts];
         int index[Face_MaxVerts];
@@ -1260,7 +1260,7 @@ namespace
                     t = orientation_tangent[vslot.rotation][orient];
                 t.project(n).normalize();
                 v.norm = bvec(n);
-                v.tangent = bvec4(bvec(t), orientation_bitangent[vslot.rotation][orient].scalartriple(n, t) < 0 ? 0 : 255);
+                v.tangent = vec4<uchar>(bvec(t), orientation_bitangent[vslot.rotation][orient].scalartriple(n, t) < 0 ? 0 : 255);
             }
             else if(texture != Default_Sky)
             {
@@ -1272,12 +1272,12 @@ namespace
                 vec t = orientation_tangent[vslot.rotation][orient];
                 t.project(n).normalize();
                 v.norm = bvec(n);
-                v.tangent = bvec4(bvec(t), orientation_bitangent[vslot.rotation][orient].scalartriple(n, t) < 0 ? 0 : 255);
+                v.tangent = vec4<uchar>(bvec(t), orientation_bitangent[vslot.rotation][orient].scalartriple(n, t) < 0 ? 0 : 255);
             }
             else
             {
                 v.norm = bvec(128, 128, 255);
-                v.tangent = bvec4(255, 128, 128, 255);
+                v.tangent = vec4<uchar>(255, 128, 128, 255);
             }
             index[k] = vc.addvert(v);
             if(index[k] < 0)

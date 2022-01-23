@@ -3,7 +3,7 @@ struct vertmodel : animmodel
     struct vert
     {
         vec pos, norm;
-        vec4 tangent;
+        vec4<float> tangent;
     };
 
     struct vvert
@@ -214,7 +214,7 @@ struct vertmodel : animmodel
                 {
                     T &v = vdata[i];
                     IP_VERT_P(pos, vec);
-                    IP_VERT_P(tangent, vec4);
+                    IP_VERT_P(tangent, vec4<float>);
                 }
             }
             else
@@ -223,7 +223,7 @@ struct vertmodel : animmodel
                 {
                     T &v = vdata[i];
                     IP_VERT(pos, vec);
-                    IP_VERT(tangent, vec4);
+                    IP_VERT(tangent, vec4<float>);
                 }
             }
             #undef IP_VERT

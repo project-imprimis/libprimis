@@ -489,7 +489,7 @@ class animmodel : public model
         static float intersectdist, intersectscale;
 
         void render(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a);
-        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4 &color);
+        void render(int anim, int basetime, int basetime2, const vec &o, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec4<float> &color);
 
         vector<part *> parts;
 
@@ -609,7 +609,7 @@ class animmodel : public model
         void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray);
 
         static bool enablecullface, enabledepthoffset;
-        static vec4 colorscale;
+        static vec4<float> colorscale;
         static GLuint lastvbuf, lasttcbuf, lastxbuf, lastbbuf, lastebuf;
         static Texture *lasttex, *lastdecal, *lastmasks, *lastnormalmap;
 };

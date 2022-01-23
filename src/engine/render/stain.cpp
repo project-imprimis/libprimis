@@ -33,7 +33,7 @@
 struct stainvert
 {
     vec pos;
-    bvec4 color;
+    vec4<uchar> color;
     vec2 tc;
 };
 
@@ -127,7 +127,7 @@ class stainbuffer
             return verts[d.startvert].color.a < 255;
         }
 
-        void fadestain(const staininfo &d, const bvec4 &color)
+        void fadestain(const staininfo &d, const vec4<uchar> &color)
         {
             stainvert *vert = &verts[d.startvert],
                       *end = &verts[d.endvert < d.startvert ? maxverts : d.endvert];
@@ -325,7 +325,7 @@ class stainrenderer
             {
                 color.scale(alpha, 255);
             }
-            verts[d.owner].fadestain(d, bvec4(color, alpha));
+            verts[d.owner].fadestain(d, vec4<uchar>(color, alpha));
         }
 
         void clearfadedstains()
@@ -568,7 +568,7 @@ class stainrenderer
         ivec bbmin, bbmax;
         vec staincenter, stainnormal, staintangent, stainbitangent;
         float stainradius, stainu, stainv;
-        bvec4 staincolor;
+        vec4<uchar> staincolor;
 
         void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info)
         {
@@ -579,7 +579,7 @@ class stainrenderer
             bbmin = ivec(center).sub(radius);
             bbmax = ivec(center).add(radius).add(1);
 
-            staincolor = bvec4(color, 255);
+            staincolor = vec4<uchar>(color, 255);
             staincenter = center;
             stainradius = radius;
             stainnormal = dir;
