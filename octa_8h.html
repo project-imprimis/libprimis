@@ -132,6 +132,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structundoblock.html">undoblock</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html">cubeworld</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structundolist.html">undolist</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -153,7 +155,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>LOOP_XYZ</b>(b,  r,  f)&#160;&#160;&#160;{ for(int z = 0; z &lt; (b).s[<a class="el" href="geom_8h.html#af360aec895a04b5f852dbd4a58340ab6">D</a>[DIMENSION((b).orient)]]; ++z) LOOP_XY((b)) { <a class="el" href="classcube.html">cube</a> &amp;c = blockcube(x,y,z,b,r); f; } }</td></tr>
 <tr class="separator:ae89027fe7d1320051f0e36036c99bddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac96b4ab5a6f34c41e8525ef261503435"><td class="memItemLeft" align="right" valign="top"><a id="ac96b4ab5a6f34c41e8525ef261503435" name="ac96b4ab5a6f34c41e8525ef261503435"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>LOOP_SEL_XYZ</b>(f)&#160;&#160;&#160;{ if(local) <a class="el" href="iengine_8h.html#a07e15e66cf0ecad0e7325668aeb44314">makeundo</a>(); LOOP_XYZ(sel, sel.grid, f); changed(sel); }</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LOOP_SEL_XYZ</b>(f)&#160;&#160;&#160;{ if(local) <a class="el" href="iengine_8h.html#a07e15e66cf0ecad0e7325668aeb44314">makeundo</a>(); LOOP_XYZ(sel, sel.grid, f); rootworld.changed(sel); }</td></tr>
 <tr class="separator:ac96b4ab5a6f34c41e8525ef261503435"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a251d6c08e05eba0953abb7f2ce326aab"><td class="memItemLeft" align="right" valign="top"><a id="a251d6c08e05eba0953abb7f2ce326aab" name="a251d6c08e05eba0953abb7f2ce326aab"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SELECT_CUBE</b>(x,  y,  z)&#160;&#160;&#160;blockcube(x, y, z, sel, sel.grid)</td></tr>
@@ -190,14 +192,21 @@ const int&#160;</td><td class="memItemRight" valign="bottom"><b>Face_MaxVerts</b
 <tr class="separator:a9392cbbd2ed30129294d84c5032432af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1eb1a9d704d2a37241ea5ccac905cae2"><td class="memItemLeft" align="right" valign="top">constexpr uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="octa_8h.html#a1eb1a9d704d2a37241ea5ccac905cae2">facesolid</a> = 0x80808080</td></tr>
 <tr class="separator:a1eb1a9d704d2a37241ea5ccac905cae2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1685fed1287b3a9abf6a362cc6dbdcf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcube.html">cube</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="octa_8h.html#ac1685fed1287b3a9abf6a362cc6dbdcf">worldroot</a></td></tr>
-<tr class="separator:ac1685fed1287b3a9abf6a362cc6dbdcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d4bed7bbae3bf7f953d1ad6a2c408af"><td class="memItemLeft" align="right" valign="top"><a id="a4d4bed7bbae3bf7f953d1ad6a2c408af" name="a4d4bed7bbae3bf7f953d1ad6a2c408af"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>selchildcount</b></td></tr>
 <tr class="separator:a4d4bed7bbae3bf7f953d1ad6a2c408af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad76c263f5535034ae28558c67b941d31"><td class="memItemLeft" align="right" valign="top"><a id="ad76c263f5535034ae28558c67b941d31" name="ad76c263f5535034ae28558c67b941d31"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>selchildmat</b></td></tr>
 <tr class="separator:ad76c263f5535034ae28558c67b941d31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa44c3880865bb1ae091860ab9ea1325a"><td class="memItemLeft" align="right" valign="top"><a id="aa44c3880865bb1ae091860ab9ea1325a" name="aa44c3880865bb1ae091860ab9ea1325a"></a>
+<a class="el" href="structivec.html">ivec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lu</b></td></tr>
+<tr class="separator:aa44c3880865bb1ae091860ab9ea1325a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab6c3740ef4456cffb1bd6c9fec16ec1"><td class="memItemLeft" align="right" valign="top"><a id="aab6c3740ef4456cffb1bd6c9fec16ec1" name="aab6c3740ef4456cffb1bd6c9fec16ec1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>lusize</b></td></tr>
+<tr class="separator:aab6c3740ef4456cffb1bd6c9fec16ec1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf43dcf88d74eb097df5845d47c949a8"><td class="memItemLeft" align="right" valign="top"><a id="acf43dcf88d74eb097df5845d47c949a8" name="acf43dcf88d74eb097df5845d47c949a8"></a>
+<a class="el" href="structcubeworld.html">cubeworld</a>&#160;</td><td class="memItemRight" valign="bottom"><b>rootworld</b></td></tr>
+<tr class="separator:acf43dcf88d74eb097df5845d47c949a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a9392cbbd2ed30129294d84c5032432af" name="a9392cbbd2ed30129294d84c5032432af"></a>
@@ -243,29 +252,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>selchildmat</b></td></
 </table>
 </div><div class="memdoc">
 <p >all edges in the range (0,8) </p>
-
-</div>
-</div>
-<a id="ac1685fed1287b3a9abf6a362cc6dbdcf" name="ac1685fed1287b3a9abf6a362cc6dbdcf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1685fed1287b3a9abf6a362cc6dbdcf">&#9670;&nbsp;</a></span>worldroot</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcube.html">cube</a>* worldroot</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >the world data. only a ptr to 8 cubes (ie: like <a class="el" href="classcube.html#aafb02cf1aa0596ea8677b84654da9e79">cube.children</a> above) </p>
 
 </div>
 </div>
