@@ -207,13 +207,10 @@ namespace //internal functionality not seen by other files
     VARR(lerpsubdiv, 0, 2, 4);      //Linear intERPolation SUBDIVisions
     VARR(lerpsubdivsize, 4, 4, 128);//Linear intERPolation SUBDIVision cube SIZE
 
-    uint normalprogress = 0;
-
     void addnormals(cube &c, const ivec &o, int size)
     {
         if(c.children)
         {
-            normalprogress++;
             size >>= 1;
             for(int i = 0; i < 8; ++i)
             {
@@ -391,7 +388,6 @@ void cubeworld::calcnormals(bool lerptjoints)
     {
         findtjoints();
     }
-    normalprogress = 1;
     for(int i = 0; i < 8; ++i)
     {
         addnormals(worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
