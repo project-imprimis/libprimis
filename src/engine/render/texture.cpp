@@ -2025,7 +2025,7 @@ void compactvslots(cube *c, int n)
     }
 }
 
-int compactvslots(bool cull)
+int cubeworld::compactvslots(bool cull)
 {
     defslot = nullptr;
     clonedvslots = 0;
@@ -2148,8 +2148,8 @@ int compactvslots(bool cull)
 void compactvslotscmd(int *cull)
 {
     multiplayerwarn();
-    compactvslots(*cull!=0);
-    allchanged();
+    rootworld.compactvslots(*cull!=0);
+    rootworld.allchanged();
 }
 COMMANDN(compactvslots, compactvslotscmd, "i");
 
@@ -2619,8 +2619,8 @@ VSlot *editvslot(const VSlot &src, const VSlot &delta)
     }
     if(vslots.length()>=0x10000)
     {
-        compactvslots();
-        allchanged();
+        ::rootworld.compactvslots();
+        rootworld.allchanged();
         if(vslots.length()>=0x10000)
         {
             return nullptr;
@@ -2628,8 +2628,8 @@ VSlot *editvslot(const VSlot &src, const VSlot &delta)
     }
     if(autocompactvslots && ++clonedvslots >= autocompactvslots)
     {
-        compactvslots();
-        allchanged();
+        ::rootworld.compactvslots();
+        rootworld.allchanged();
     }
     return clonevslot(src, delta);
 }
@@ -2655,14 +2655,6 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
         }
     }
 }
-
-void fixinsidefacescmd(int *tex)
-{
-    multiplayerwarn();
-    fixinsidefaces(worldroot, ivec(0, 0, 0), worldsize>>1, *tex && vslots.inrange(*tex) ? *tex : Default_Geom);
-    allchanged();
-}
-COMMANDN(fixinsidefaces, fixinsidefacescmd, "i");
 
 const struct slottex
 {

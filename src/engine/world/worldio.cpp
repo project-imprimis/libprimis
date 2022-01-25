@@ -919,7 +919,7 @@ void loadvslots(stream *f, int numvslots)
     delete[] prev;
 }
 
-bool save_world(const char *mname, const char *gameident)
+bool cubeworld::save_world(const char *mname, const char *gameident)
 {
     if(!*mname)
     {
@@ -1051,7 +1051,7 @@ static uint mapcrc = 0;
 uint getmapcrc() { return mapcrc; }
 void clearmapcrc() { mapcrc = 0; }
 
-bool load_world(const char *mname, const char *gameident, const char *gameinfo, const char *cname)
+bool cubeworld::load_world(const char *mname, const char *gameident, const char *gameinfo, const char *cname)
 {
     int loadingstart = SDL_GetTicks();
     setmapfilenames(mname, cname);

@@ -570,7 +570,7 @@ class stainrenderer
         float stainradius, stainu, stainv;
         vec4<uchar> staincolor;
 
-        void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info)
+        void addstain(const vec &center, const vec &dir, float radius, const bvec &color, int info, cubeworld world)
         {
             if(dir.iszero())
             {
@@ -603,7 +603,7 @@ class stainrenderer
             {
                 verts[i].lastvert = verts[i].endvert;
             }
-            gentris(worldroot, ivec(0, 0, 0), worldsize>>1);
+            gentris(world.worldroot, ivec(0, 0, 0), worldsize>>1);
             for(int i = 0; i < StainBuffer_Number; ++i)
             {
                 stainbuffer &buf = verts[i];
@@ -1137,7 +1137,7 @@ void addstain(int type, const vec &center, const vec &surface, float radius, con
         return;
     }
     stainrenderer &d = stains[type];
-    d.addstain(center, surface, radius, color, info);
+    d.addstain(center, surface, radius, color, info, rootworld);
 }
 
 void genstainmmtri(stainrenderer *s, const vec v[3])

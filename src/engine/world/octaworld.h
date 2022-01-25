@@ -8,6 +8,8 @@ enum
     BlendLayer_Blend  = BlendLayer_Top|BlendLayer_Bottom,
 };
 
+struct prefab;
+
 struct vertinfo
 {
     ushort x, y, z, norm;
@@ -205,6 +207,7 @@ struct prefabheader
     int version;
 };
 
+
 extern cube *newcubes(uint face = faceempty, int mat = Mat_Air);
 extern cubeext *growcubeext(cubeext *ext, int maxverts);
 extern void setcubeext(cube &c, cubeext *ext);
@@ -214,9 +217,7 @@ extern void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p);
 extern int familysize(const cube &c);
 extern void freeocta(cube *c);
 extern void validatec(cube *c, int size = 0);
-extern ivec lu;
-extern int lusize;
-extern cube &lookupcube(const ivec &to, int tsize = 0, ivec &ro = lu, int &rsize = lusize);
+
 extern const cube *neighborstack[32];
 extern int neighbordepth;
 extern int getmippedtexture(const cube &p, int orient);
@@ -239,7 +240,6 @@ extern void genfaceverts(const cube &c, int orient, ivec v[4]);
 extern int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts);
 extern void invalidatemerges(cube &c);
 extern void remip();
-extern int lookupmaterial(const vec &o);
 
 inline cubeext &ext(cube &c)
 {

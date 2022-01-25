@@ -1842,7 +1842,7 @@ void resetshaders()
     setupshaders();
     initgbuffer();
     reloadshaders();
-    allchanged(true);
+    rootworld.allchanged(true);
     glerror();
 }
 COMMAND(resetshaders, "");

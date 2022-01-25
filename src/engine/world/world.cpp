@@ -418,7 +418,7 @@ void modifyoctaentity(int flags, int id, extentity &e, cube *c, const ivec &cor,
     }
 }
 
-static bool modifyoctaent(int flags, int id, extentity &e)
+bool cubeworld::modifyoctaent(int flags, int id, extentity &e)
 {
     if(flags&ModOctaEnt_Add ? e.flags&EntFlag_Octa : !(e.flags&EntFlag_Octa))
     {
@@ -514,7 +514,7 @@ static bool modifyoctaent(int flags, int id, extentity &e)
 static bool modifyoctaent(int flags, int id)
 {
     vector<extentity *> &ents = entities::getents();
-    return ents.inrange(id) && modifyoctaent(flags, id, *ents[id]);
+    return ents.inrange(id) && ::rootworld.modifyoctaent(flags, id, *ents[id]);
 }
 
 void addentityedit(int id)
@@ -565,7 +565,7 @@ void entitiesinoctanodes()
     vector<extentity *> &ents = entities::getents();
     for(int i = 0; i < ents.length(); i++)
     {
-        modifyoctaent(ModOctaEnt_Add, i, *ents[i]);
+        ::rootworld.modifyoctaent(ModOctaEnt_Add, i, *ents[i]);
     }
 }
 
@@ -648,7 +648,7 @@ void resetmap()
     nospeclights = 0;
 }
 
-bool emptymap(int scale, bool force, bool usecfg)    // main empty world creation routine
+bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty world creation routine
 {
     if(!force && !editmode)
     {
@@ -689,7 +689,7 @@ bool emptymap(int scale, bool force, bool usecfg)    // main empty world creatio
  *
  * this moves the worldroot cube to the new parent cube of the old map
  */
-bool enlargemap(bool force)
+bool cubeworld::enlargemap(bool force)
 {
     if(!force && !editmode)
     {
@@ -748,7 +748,7 @@ static bool isallempty(cube &c)
  * fails if the 7 octants not at the origin are not empty
  * on success, the new map will have its maximum gridsize reduced by 1
  */
-void shrinkmap()
+void cubeworld::shrinkmap()
 {
     if(noedit(true) || (nompedit && multiplayer))
     {
@@ -794,8 +794,6 @@ void shrinkmap()
     allchanged();
     conoutf("shrunk map to size %d", worldscale);
 }
-
-COMMAND(shrinkmap, "");
 
 int getworldsize()
 {

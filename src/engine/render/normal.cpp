@@ -384,7 +384,7 @@ void findnormal(const vec &pos, int smooth, const vec &surface, vec &v)
     }
 }
 
-void calcnormals(bool lerptjoints)
+void cubeworld::calcnormals(bool lerptjoints)
 {
     usetnormals = lerptjoints;
     if(usetnormals)

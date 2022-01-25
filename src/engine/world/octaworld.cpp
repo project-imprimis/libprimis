@@ -23,6 +23,8 @@
 #include "render/octarender.h"
 #include "render/renderwindow.h"
 
+int allocnodes = 0;
+
 const uchar faceedgesidx[6][4] = // ordered edges surrounding each orient
 {//0..1 = row edges, 2..3 = column edges
     { 4,  5,  8, 10 },
@@ -54,8 +56,8 @@ static struct emptycube : cube
 // this cube static private object needs to be defined in a cpp file
 hashtable<cube::cfkey, cube::cfpolys> cube::cpolys;
 
-cube *worldroot = newcubes(facesolid);
-int allocnodes = 0;
+cubeworld rootworld;
+
 void calcmerges();
 
 cubeext *growcubeext(cubeext *old, int maxverts)
@@ -253,7 +255,7 @@ void optiface(uchar *p, cube &c)
 
 void printcube()
 {
-    cube &c = lookupcube(lu); // assume this is cube being pointed at
+    cube &c = rootworld.lookupcube(lu); // assume this is cube being pointed at
     conoutf(Console_Debug, "= %p = (%d, %d, %d) @ %d", static_cast<void *>(&c), lu.x, lu.y, lu.z, lusize);
     conoutf(Console_Debug, " x  %.8x", c.faces[0]);
     conoutf(Console_Debug, " y  %.8x", c.faces[1]);
@@ -322,7 +324,7 @@ void validatec(cube *c, int size)
 ivec lu;
 int lusize;
 
-cube &lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
+cube &cubeworld::lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
 {
     int tx = std::clamp(to.x, 0, worldsize-1),
         ty = std::clamp(to.y, 0, worldsize-1),
@@ -356,7 +358,7 @@ cube &lookupcube(const ivec &to, int tsize, ivec &ro, int &rsize)
     return *c;
 }
 
-int lookupmaterial(const vec &v)
+int cubeworld::lookupmaterial(const vec &v)
 {
     ivec o(v);
     if(!insideworld(o))
@@ -376,7 +378,7 @@ int lookupmaterial(const vec &v)
 const cube *neighborstack[32];
 int neighbordepth = -1;
 
-const cube &neighborcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
+const cube &cubeworld::neighborcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
 {
     ivec n = co;
     int dim = DIMENSION(orient);
@@ -844,16 +846,16 @@ static bool remip(cube &c, const ivec &co, int size)
     return true;
 }
 
-void remip()
+void cubeworld::remip()
 {
     remipprogress = 1;
     remiptotal = allocnodes;
     for(int i = 0; i < 8; ++i)
     {
         ivec o(i, ivec(0, 0, 0), worldsize>>1);
-        remip(worldroot[i], o, worldsize>>2);
+        ::remip(worldroot[i], o, worldsize>>2);
     }
-    worldroot->calcmerges();
+    worldroot->calcmerges(worldroot); //created as result of calcmerges being cube member
 }
 
 const ivec cubecoords[8] = // verts of bounding cube
@@ -1331,7 +1333,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
     }
     ivec no;
     int nsize;
-    const cube &o = neighborcube(c, orient, co, size, no, nsize);
+    const cube &o = ::rootworld.neighborcube(c, orient, co, size, no, nsize);
     int opp = OPPOSITE(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
@@ -1415,7 +1417,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     }
     ivec no;
     int nsize;
-    const cube &o = neighborcube(c, orient, co, size, no, nsize);
+    const cube &o = ::rootworld.neighborcube(c, orient, co, size, no, nsize);
     if(&o==&c)
     {
         return 0;
@@ -1576,7 +1578,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     }
     ivec no;
     int nsize;
-    const cube &o = neighborcube(c, orient, co, size, no, nsize);
+    const cube &o = ::rootworld.neighborcube(c, orient, co, size, no, nsize);
     if((c.material&matmask) == nmat)
     {
         nmat = Mat_Air;
@@ -1858,7 +1860,7 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
 {
     ivec no;
     int nsize;
-    const cube &nc = neighborcube(cu, orient, co, size, no, nsize);
+    const cube &nc = rootworld.neighborcube(cu, orient, co, size, no, nsize);
     facebounds mincf;
     mincf.u1 = orig.u2;
     mincf.u2 = orig.u1;
@@ -2446,7 +2448,7 @@ uint hthash(const cube::cfkey &k)
 
 
 //recursively goes through children of cube passed and attempts to merge faces together
-void cube::genmerges(const ivec &o, int size)
+void cube::genmerges(cube * root, const ivec &o, int size)
 {
     neighborstack[++neighbordepth] = this;
     for(int i = 0; i < 8; ++i)
@@ -2455,7 +2457,7 @@ void cube::genmerges(const ivec &o, int size)
         int vis;
         if(this[i].children)
         {
-            this[i].children->genmerges( co, size>>1);
+            this[i].children->genmerges(root, co, size>>1);
         }
         else if(!(this[i].isempty()))
         {
@@ -2465,7 +2467,7 @@ void cube::genmerges(const ivec &o, int size)
                 {
                     cfkey k;
                     poly p;
-                    if(size < 1<<maxmerge && this != worldroot)
+                    if(size < 1<<maxmerge && this != root)
                     {
                         if(genpoly(j, co, size, vis, k.n, k.offset, p))
                         {
@@ -2488,7 +2490,7 @@ void cube::genmerges(const ivec &o, int size)
                 }
             }
         }
-        if((size == 1<<maxmerge || this == worldroot) && cpolys.numelems)
+        if((size == 1<<maxmerge || this == root) && cpolys.numelems)
         {
             ENUMERATE_KT(cpolys, cfkey, key, cfpolys, val,
             {
@@ -2573,8 +2575,8 @@ void invalidatemerges(cube &c)
     }
 }
 
-void cube::calcmerges()
+void cube::calcmerges(cube * root)
 {
     genmergeprogress = 0;
-    genmerges();
+    genmerges(root);
 }

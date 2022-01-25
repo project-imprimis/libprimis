@@ -19,8 +19,6 @@ extern void multiplayerwarn();
 extern void cancelsel();
 extern void rendertexturepanel(int w, int h);
 extern void commitchanges(bool force = false);
-extern void changed(const ivec &bbmin, const ivec &bbmax, bool commit = true);
-extern void changed(const block3 &sel, bool commit = true);
 extern bool noedit(bool view = false, bool msg = true);
 
 extern void compactmruvslots();

@@ -29,7 +29,7 @@ namespace hmap
 
     void hmapselect()
     {
-        int t = lookupcube(cur).texture[orient],
+        int t = rootworld.lookupcube(cur).texture[orient],
             i = textures.find(t);
         if(i<0)
         {
@@ -121,7 +121,7 @@ namespace hmap
         {
             return nullptr;
         }
-        cube *c = &lookupcube(t, gridsize);
+        cube *c = &rootworld.lookupcube(t, gridsize);
         if(c->children)
         {
             forcemip(*c, false);
@@ -521,6 +521,6 @@ namespace hmap
         }
         rippleandset();                       // pull up points to cubify, and set
         changes.s.sub(changes.o).shr(gridpower).add(1);
-        changed(changes);
+        rootworld.changed(changes);
     }
 }

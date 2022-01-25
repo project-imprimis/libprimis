@@ -1553,7 +1553,7 @@ static void splash(int type, int color, int radius, int num, int fade, const vec
     }
     //ugly ternary assignment
     float collidez = parts[type]->type&PT_COLLIDE ?
-                     p.z - raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0) :
+                     p.z - rootworld.raycube(p, vec(0, 0, -1), collideradius, Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0) :
                      -1;
     int fmin = 1,
         fmax = fade*3;
@@ -1834,7 +1834,7 @@ static void regularshape(int type, int radius, int color, int dir, int num, int 
             if(parts[type]->type&PT_COLLIDE)
             {
                 //long nasty ternary assignment
-                n->val = from.z - raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ?
+                n->val = from.z - rootworld.raycube(from, vec(0, 0, -1), parts[type]->stain >= 0 ?
                          collideradius :
                          std::max(from.z, 0.0f), Ray_ClipMat) + (parts[type]->stain >= 0 ? collideerror : 0);
             }

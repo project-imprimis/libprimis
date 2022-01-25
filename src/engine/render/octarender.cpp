@@ -38,7 +38,7 @@ ivec worldmin(0, 0, 0),
 
 std::vector<tjoint> tjoints;
 
-VARFP(filltjoints, 0, 1, 1, allchanged()); //eliminate "sparklies" by filling in geom t-joints
+VARFP(filltjoints, 0, 1, 1, rootworld.allchanged()); //eliminate "sparklies" by filling in geom t-joints
 
 /* internally relevant functionality */
 ///////////////////////////////////////
@@ -53,7 +53,7 @@ namespace
 
     hashtable<GLuint, vboinfo> vbos;
 
-    VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, allchanged());
+    VARFN(vbosize, maxvbosize, 0, 1<<14, 1<<16, rootworld.allchanged());
 
     //vbo (vertex buffer object) enum is local to this file
     enum
@@ -1529,7 +1529,7 @@ namespace
         }
     }
 
-    void gencubeedges(cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
+    void gencubeedges(cube *c, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
     {
         neighborstack[++neighbordepth] = c;
         for(int i = 0; i < 8; ++i)
@@ -1997,9 +1997,9 @@ namespace
     }
 
     //va settings, used in updateva below
-    VARF(vafacemax, 64, 384, 256*256, allchanged());
-    VARF(vafacemin, 0, 96, 256*256, allchanged());
-    VARF(vacubesize, 32, 128, 0x1000, allchanged()); //note that performance drops off at low values -> large numbers of VAs
+    VARF(vafacemax, 64, 384, 256*256, rootworld.allchanged());
+    VARF(vafacemin, 0, 96, 256*256, rootworld.allchanged());
+    VARF(vacubesize, 32, 128, 0x1000, rootworld.allchanged()); //note that performance drops off at low values -> large numbers of VAs
 
     //updates the va that contains the cube c
     int updateva(cube *c, const ivec &co, int size, int csi)
@@ -2112,63 +2112,6 @@ namespace
         }
     }
 
-    void findtjoints(int cur, const edgegroup &g)
-    {
-        int active = -1;
-        while(cur >= 0)
-        {
-            cubeedge &e = cubeedges[cur];
-            int prevactive = -1,
-                curactive  = active;
-            while(curactive >= 0)
-            {
-                cubeedge &a = cubeedges[curactive];
-                if(a.offset+a.size <= e.offset)
-                {
-                    if(prevactive >= 0)
-                    {
-                        cubeedges[prevactive].next = a.next;
-                    }
-                    else
-                    {
-                        active = a.next;
-                    }
-                }
-                else
-                {
-                    prevactive = curactive;
-                    if(!(a.flags&CubeEdge_Dup))
-                    {
-                        if(e.flags&CubeEdge_Start && e.offset > a.offset && e.offset < a.offset+a.size)
-                        {
-                            addtjoint(g, a, e.offset);
-                        }
-                        if(e.flags&CubeEdge_End && e.offset+e.size > a.offset && e.offset+e.size < a.offset+a.size)
-                        {
-                            addtjoint(g, a, e.offset+e.size);
-                        }
-                    }
-                    if(!(e.flags&CubeEdge_Dup))
-                    {
-                        if(a.flags&CubeEdge_Start && a.offset > e.offset && a.offset < e.offset+e.size)
-                        {
-                            addtjoint(g, e, a.offset);
-                        }
-                        if(a.flags&CubeEdge_End && a.offset+a.size > e.offset && a.offset+a.size < e.offset+e.size)
-                        {
-                            addtjoint(g, e, a.offset+a.size);
-                        }
-                    }
-                }
-                curactive = a.next;
-            }
-            int next = e.next;
-            e.next = active;
-            active = cur;
-            cur = next;
-        }
-    }
-
     void precachetextures()
     {
         vector<int> texs;
@@ -2193,6 +2136,63 @@ namespace
 
 /* externally relevant functionality */
 ///////////////////////////////////////
+
+void findtjoints(int cur, const edgegroup &g)
+{
+    int active = -1;
+    while(cur >= 0)
+    {
+        cubeedge &e = cubeedges[cur];
+        int prevactive = -1,
+            curactive  = active;
+        while(curactive >= 0)
+        {
+            cubeedge &a = cubeedges[curactive];
+            if(a.offset+a.size <= e.offset)
+            {
+                if(prevactive >= 0)
+                {
+                    cubeedges[prevactive].next = a.next;
+                }
+                else
+                {
+                    active = a.next;
+                }
+            }
+            else
+            {
+                prevactive = curactive;
+                if(!(a.flags&CubeEdge_Dup))
+                {
+                    if(e.flags&CubeEdge_Start && e.offset > a.offset && e.offset < a.offset+a.size)
+                    {
+                        addtjoint(g, a, e.offset);
+                    }
+                    if(e.flags&CubeEdge_End && e.offset+e.size > a.offset && e.offset+e.size < a.offset+a.size)
+                    {
+                        addtjoint(g, a, e.offset+e.size);
+                    }
+                }
+                if(!(e.flags&CubeEdge_Dup))
+                {
+                    if(a.flags&CubeEdge_Start && a.offset > e.offset && a.offset < e.offset+e.size)
+                    {
+                        addtjoint(g, e, a.offset);
+                    }
+                    if(a.flags&CubeEdge_End && a.offset+a.size > e.offset && a.offset+a.size < e.offset+e.size)
+                    {
+                        addtjoint(g, e, a.offset+a.size);
+                    }
+                }
+            }
+            curactive = a.next;
+        }
+        int next = e.next;
+        e.next = active;
+        active = cur;
+        cur = next;
+    }
+}
 
 //takes a 3d vec3 and transforms it into a packed ushort vector
 //the output ushort is in base 360 and has yaw in the first place and pitch in the second place
@@ -2430,17 +2430,17 @@ void updatevabbs(bool force)
     }
 }
 
-void findtjoints()
+void cubeworld::findtjoints()
 {
     recalcprogress = 0;
-    gencubeedges();
+    gencubeedges(worldroot);
     tjoints.clear();
-    ENUMERATE_KT(edgegroups, edgegroup, g, int, e, findtjoints(e, g));
+    ENUMERATE_KT(edgegroups, edgegroup, g, int, e, ::findtjoints(e, g));
     cubeedges.clear();
     edgegroups.clear();
 }
 
-void octarender()                               // creates va s for all leaf cubes that don't already have them
+void cubeworld::octarender()                               // creates va s for all leaf cubes that don't already have them
 {
     int csi = 0;
     while(1<<csi < worldsize)
@@ -2460,7 +2460,7 @@ void octarender()                               // creates va s for all leaf cub
     visibleva = nullptr;
 }
 
-void allchanged(bool load)
+void cubeworld::allchanged(bool load)
 {
     if(mainmenu)
     {
@@ -2496,6 +2496,6 @@ void allchanged(bool load)
 
 void recalc()
 {
-    allchanged(true);
+    rootworld.allchanged(true);
 }
 COMMAND(recalc, "");
