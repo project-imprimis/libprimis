@@ -110,8 +110,8 @@ namespace
 
     VARP(consize, 0, 5, 100);
     VARP(miniconsize, 0, 5, 100);
-    VARP(miniconwidth, 0, 40, 100);
-    VARP(confade, 0, 30, 60);
+    VARP(miniconwidth, 0, 40, 100);             //miniature console width
+    VARP(confade, 0, 30, 60);                   //seconds before fading console
     VARP(miniconfade, 0, 30, 60);
     HVARP(confilter, 0, 0xFFFFFF, 0xFFFFFF);
     HVARP(fullconfilter, 0, 0xFFFFFF, 0xFFFFFF);
