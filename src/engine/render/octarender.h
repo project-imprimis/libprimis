@@ -50,6 +50,7 @@ struct grasstri
     float radius;
     float minz, maxz;
     ushort texture;
+};
 
 struct renderstate
 {

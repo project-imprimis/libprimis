@@ -185,17 +185,8 @@ class verthash
                      return i;
                  }
             }
-<<<<<<< HEAD
-        private:
-            static const int hashsize = 1<<13;
-            int table[hashsize];
 
-            std::vector<int> chain;
-
-            int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const vec4<uchar> &tangent = vec4<uchar>(128, 128, 128, 128))
-=======
             if(verts.size() >= USHRT_MAX)
->>>>>>> move setupdata from vacollect to vtxarray
             {
                 return -1;
             }
@@ -216,7 +207,7 @@ class verthash
 
         std::vector<int> chain;
 
-        int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const bvec4 &tangent = bvec4(128, 128, 128, 128))
+        int addvert(const vec &pos, const vec &tc = vec(0, 0, 0), const bvec &norm = bvec(128, 128, 128), const vec4<uchar> &tangent = vec4<uchar>(128, 128, 128, 128))
         {
             vertex vtx;
             vtx.pos = pos;
@@ -424,149 +415,9 @@ class vacollect : public verthash
 
         void genverts(void *buf);
 
-<<<<<<< HEAD
-            void gendecal(const extentity &e, DecalSlot &s, const decalkey &key)
-            {
-                matrix3 orient;
-                orient.identity();
-                if(e.attr2)
-                {
-                    orient.rotate_around_z(sincosmod360(e.attr2));
-                }
-                if(e.attr3)
-                {
-                    orient.rotate_around_x(sincosmod360(e.attr3));
-                }
-                if(e.attr4)
-                {
-                    orient.rotate_around_y(sincosmod360(-e.attr4));
-                }
-                vec size(std::max(static_cast<float>(e.attr5), 1.0f));
-                size.y *= s.depth;
-                if(!s.sts.empty())
-                {
-                    Texture *t = s.sts[0].t;
-                    if(t->xs < t->ys)
-                    {
-                        size.x *= t->xs / static_cast<float>(t->ys);
-                    }
-                    else if(t->xs > t->ys)
-                    {
-                        size.z *= t->ys / static_cast<float>(t->xs);
-                    }
-                }
-                vec center = orient.transform(vec(0, size.y*0.5f, 0)).add(e.o),
-                    radius = orient.abstransform(vec(size).mul(0.5f)),
-                    bbmin = vec(center).sub(radius),
-                    bbmax = vec(center).add(radius),
-                    clipoffset = orient.transposedtransform(center).msub(size, 0.5f);
-                for(int i = 0; i < texs.length(); i++)
-                {
-                    const sortkey &k = texs[i];
-                    if(k.layer == BlendLayer_Blend || k.alpha != Alpha_None)
-                    {
-                        continue;
-                    }
-                    const sortval &t = indices[k];
-                    if(t.tris.empty())
-                    {
-                        continue;
-                    }
-                    decalkey tkey(key);
-                    if(shouldreuseparams(s, lookupvslot(k.tex, false)))
-                    {
-                        tkey.reuse = k.tex;
-                    }
-                    for(int j = 0; j < t.tris.length(); j += 3)
-                    {
-                        const vertex &t0 = verts[t.tris[j]],
-                                     &t1 = verts[t.tris[j+1]],
-                                     &t2 = verts[t.tris[j+2]];
-                        vec v0 = t0.pos,
-                            v1 = t1.pos,
-                            v2 = t2.pos,
-                            tmin = vec(v0).min(v1).min(v2),
-                            tmax = vec(v0).max(v1).max(v2);
-                        if(tmin.x >= bbmax.x || tmin.y >= bbmax.y || tmin.z >= bbmax.z ||
-                           tmax.x <= bbmin.x || tmax.y <= bbmin.y || tmax.z <= bbmin.z)
-                        {
-                            continue;
-                        }
-                        float f0 = t0.norm.tonormal().dot(orient.b),
-                              f1 = t1.norm.tonormal().dot(orient.b),
-                              f2 = t2.norm.tonormal().dot(orient.b);
-                        if(f0 >= 0 && f1 >= 0 && f2 >= 0)
-                        {
-                            continue;
-                        }
-                        vec p1[9], p2[9];
-                        p1[0] = v0;
-                        p1[1] = v1;
-                        p1[2] = v2;
-                        int nump = polyclip(p1, 3, orient.b, clipoffset.y, clipoffset.y + size.y, p2);
-                        if(nump < 3)
-                        {
-                            continue;
-                        }
-                        nump = polyclip(p2, nump, orient.a, clipoffset.x, clipoffset.x + size.x, p1);
-                        if(nump < 3)
-                        {
-                            continue;
-                        }
-                        nump = polyclip(p1, nump, orient.c, clipoffset.z, clipoffset.z + size.z, p2);
-                        if(nump < 3)
-                        {
-                            continue;
-                        }
-                        vec4<uchar> n0 = t0.norm,
-                              n1 = t1.norm,
-                              n2 = t2.norm,
-                              x0 = t0.tangent,
-                              x1 = t1.tangent,
-                              x2 = t2.tangent;
-                        vec e1 = vec(v1).sub(v0),
-                            e2 = vec(v2).sub(v0);
-                        float d11 = e1.dot(e1),
-                              d12 = e1.dot(e2),
-                              d22 = e2.dot(e2);
-                        int idx[9];
-                        for(int k = 0; k < nump; ++k)
-                        {
-                            vertex v;
-                            v.pos = p2[k];
-                            vec ep = vec(v.pos).sub(v0);
-                            float dp1 = ep.dot(e1),
-                                  dp2 = ep.dot(e2),
-                                  denom = d11*d22 - d12*d12,
-                                  b1 = (d22*dp1 - d12*dp2) / denom,
-                                  b2 = (d11*dp2 - d12*dp1) / denom,
-                                  b0 = 1 - b1 - b2;
-                            v.norm.lerp(n0, n1, n2, b0, b1, b2);
-                            v.norm.w = static_cast<uchar>(127.5f - 127.5f*(f0*b0 + f1*b1 + f2*b2));
-                            vec tc = orient.transposedtransform(vec(center).sub(v.pos)).div(size).add(0.5f);
-                            v.tc = vec(tc.x, tc.z, s.fade ? tc.y * s.depth / s.fade : 1.0f);
-                            v.tangent.lerp(x0, x1, x2, b0, b1, b2);
-                            idx[k] = addvert(v);
-                        }
-                        vector<ushort> &tris = decalindices[tkey].tris;
-                        for(int k = 0; k < nump-2; ++k)
-                        {
-                            if(idx[0] != idx[k+1] && idx[k+1] != idx[k+2] && idx[k+2] != idx[0])
-                            {
-                                tris.add(idx[0]);
-                                tris.add(idx[k+1]);
-                                tris.add(idx[k+2]);
-                                decaltris += 3;
-                            }
-                        }
-                    }
-                }
-            }
-=======
     private:
         void gendecal(const extentity &e, DecalSlot &s, const decalkey &key);
 } vc;
->>>>>>> move setupdata from vacollect to vtxarray
 
 /* internally relevant functionality */
 ///////////////////////////////////////
@@ -1984,7 +1835,7 @@ void vacollect::gendecal(const extentity &e, DecalSlot &s, const decalkey &key)
             {
                 continue;
             }
-            bvec4 n0 = t0.norm,
+            vec4<uchar> n0 = t0.norm,
                   n1 = t1.norm,
                   n2 = t2.norm,
                   x0 = t0.tangent,

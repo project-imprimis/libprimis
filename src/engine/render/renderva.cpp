@@ -124,49 +124,6 @@ namespace
         }
     }
 
-    template<bool fullvis, bool resetocclude>
-    void findvisiblevas(vector<vtxarray *> &vas)
-    {
-        for(int i = 0; i < vas.length(); i++)
-        {
-            vtxarray &v = *vas[i];
-            int prevvfc = v.curvfc;
-            v.curvfc = fullvis ? ViewFrustumCull_FullyVisible : view.isvisiblecube(v.o, v.size);
-            if(v.curvfc != ViewFrustumCull_NotVisible)
-            {
-                bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;
-                if(resetchildren)
-                {
-                    v.occluded = !v.texs ? Occlude_Geom : Occlude_Nothing;
-                    v.query = nullptr;
-                }
-                addvisibleva(&v);
-                if(v.children.length())
-                {
-                    if(fullvis || v.curvfc == ViewFrustumCull_FullyVisible)
-                    {
-                        if(resetchildren)
-                        {
-                            findvisiblevas<true, true>(v.children);
-                        }
-                        else
-                        {
-                            findvisiblevas<true, false>(v.children);
-                        }
-                    }
-                    else if(resetchildren)
-                    {
-                        findvisiblevas<false, true>(v.children);
-                    }
-                    else
-                    {
-                        findvisiblevas<false, false>(v.children);
-                    }
-                }
-            }
-        }
-    }
-
     void findvisiblevas()
     {
         memset(vasort, 0, sizeof(vasort));
@@ -3113,7 +3070,7 @@ template<bool fullvis, bool resetocclude>
 void vtxarray::findvisiblevas()
 {
     int prevvfc = curvfc;
-    curvfc = fullvis ? ViewFrustumCull_FullyVisible : isvisiblecube(o, size);
+    curvfc = fullvis ? ViewFrustumCull_FullyVisible : view.isvisiblecube(o, size);
     if(curvfc != ViewFrustumCull_NotVisible)
     {
         bool resetchildren = prevvfc >= ViewFrustumCull_NotVisible || resetocclude;

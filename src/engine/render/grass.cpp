@@ -302,7 +302,7 @@ void vtxarray::gengrassquads()
     for(int i = 0; i < grasstris.length(); i++)
     {
         grasstri &g = grasstris[i];
-        if(isfoggedsphere(g.radius, g.center))
+        if(view.isfoggedsphere(g.radius, g.center))
         {
             continue;
         }
