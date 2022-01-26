@@ -113,7 +113,6 @@ namespace
     VARP(miniconwidth, 0, 40, 100);
     VARP(confade, 0, 30, 60);
     VARP(miniconfade, 0, 30, 60);
-    VARP(fullconsize, 0, 75, 100);
     HVARP(confilter, 0, 0xFFFFFF, 0xFFFFFF);
     HVARP(fullconfilter, 0, 0xFFFFFF, 0xFFFFFF);
     HVARP(miniconfilter, 0, 0, 0xFFFFFF);
