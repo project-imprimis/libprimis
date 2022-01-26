@@ -41,7 +41,7 @@ clipplanes &cubeworld::getclipbounds(const cube &c, const ivec &o, int size, int
 static clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent *d)
 {
     int offset = !(c.visible&0x80) || d->type==PhysEnt_Player ? 0 : 1;
-    return getclipbounds(c, o, size, offset);
+    return rootworld.getclipbounds(c, o, size, offset);
 }
 
 static int forceclipplanes(const cube &c, const ivec &o, int size, clipplanes &p)

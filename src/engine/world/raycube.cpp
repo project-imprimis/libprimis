@@ -24,7 +24,7 @@ namespace
 {
     clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
     {
-        clipplanes &p = getclipbounds(c, o, size, c.visible&0x80 ? 2 : 0);
+        clipplanes &p = rootworld.getclipbounds(c, o, size, c.visible&0x80 ? 2 : 0);
         if(p.visible&0x80)
         {
             genclipplanes(c, o, size, p, false, false);
