@@ -2058,7 +2058,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     }
     else if(limitsky() && editmode)
     {
-        renderexplicitsky(true);
+        visibleva->renderexplicitsky(true);
     }
 
     //ambient obscurance (ambient occlusion) on geometry & models only
@@ -2112,7 +2112,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
     {
         if(!wireframe && outline)
         {
-            renderoutline(); //edit mode geometry outline
+            visibleva->renderoutline(); //edit mode geometry outline
         }
         glerror();
         rendereditmaterials();

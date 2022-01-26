@@ -740,10 +740,10 @@ void genmatsurfs(const cube &c, const ivec &co, int size, std::vector<materialsu
     }
 }
 
-void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurface> &matsurfs)
+void vtxarray::calcmatbb(const ivec &co, int size, std::vector<materialsurface> &matsurfs)
 {
-    va->watermax = va->glassmax = co;
-    va->watermin = va->glassmin = ivec(co).add(size);
+    watermax = glassmax = co;
+    watermin = glassmin = ivec(co).add(size);
     for(uint i = 0; i < matsurfs.size(); i++)
     {
         materialsurface &m = matsurfs[i];
@@ -755,12 +755,12 @@ void calcmatbb(vtxarray *va, const ivec &co, int size, std::vector<materialsurfa
                 {
                     continue;
                 }
-                addmatbb(va->watermin, va->watermax, m);
+                addmatbb(watermin, watermax, m);
                 break;
             }
             case Mat_Glass:
             {
-                addmatbb(va->glassmin, va->glassmax, m);
+                addmatbb(glassmin, glassmax, m);
                 break;
             }
             default:
