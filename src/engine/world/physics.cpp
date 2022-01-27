@@ -26,7 +26,7 @@ static constexpr int maxclipplanes = 1024;
 static clipplanes clipcache[maxclipplanes];
 static int clipcacheversion = -maxclipoffset;
 
-clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset)
+clipplanes &cubeworld::getclipbounds(const cube &c, const ivec &o, int size, int offset)
 {
     clipplanes &p = clipcache[static_cast<int>(&c - worldroot) & (maxclipplanes-1)];
     if(p.owner != &c || p.version != clipcacheversion+offset)
@@ -41,7 +41,7 @@ clipplanes &getclipbounds(const cube &c, const ivec &o, int size, int offset)
 static clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent *d)
 {
     int offset = !(c.visible&0x80) || d->type==PhysEnt_Player ? 0 : 1;
-    return getclipbounds(c, o, size, offset);
+    return rootworld.getclipbounds(c, o, size, offset);
 }
 
 static int forceclipplanes(const cube &c, const ivec &o, int size, clipplanes &p)
@@ -1066,13 +1066,13 @@ static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo
     return false;
 }
 
-static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs)
+bool cubeworld::octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo, const ivec &bs)
 {
     int diff = (bo.x^bs.x) | (bo.y^bs.y) | (bo.z^bs.z),
         scale = worldscale-1;
     if(diff&~((1<<scale)-1) || static_cast<uint>(bo.x|bo.y|bo.z|bs.x|bs.y|bs.z) >= static_cast<uint>(worldsize))
     {
-       return octacollide(d, dir, cutoff, bo, bs, worldroot, ivec(0, 0, 0), worldsize>>1);
+       return ::octacollide(d, dir, cutoff, bo, bs, worldroot, ivec(0, 0, 0), worldsize>>1);
     }
     const cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->ents && mmcollide(d, dir, cutoff, *c->ext->ents))
@@ -1091,7 +1091,7 @@ static bool octacollide(physent *d, const vec &dir, float cutoff, const ivec &bo
     }
     if(c->children)
     {
-        return octacollide(d, dir, cutoff, bo, bs, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
+        return ::octacollide(d, dir, cutoff, bo, bs, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
     }
     bool solid = false;
     switch(c->material&MatFlag_Clip)
@@ -1128,7 +1128,7 @@ bool collide(physent *d, const vec &dir, float cutoff, bool playercol, bool insi
          bs(static_cast<int>(d->o.x+d->radius), static_cast<int>(d->o.y+d->radius), static_cast<int>(d->o.z+d->aboveeye));
     bo.sub(1);
     bs.add(1);  // guard space for rounding errors
-    return octacollide(d, dir, cutoff, bo, bs) || (playercol && plcollide(d, dir, insideplayercol)); // collide with world
+    return rootworld.octacollide(d, dir, cutoff, bo, bs) || (playercol && plcollide(d, dir, insideplayercol)); // collide with world
 }
 
 void recalcdir(physent *d, const vec &oldvel, vec &dir)
@@ -1245,7 +1245,7 @@ bool droptofloor(vec &o, float radius, float height)
     }
     vec v(0.0001f, 0.0001f, -1);
     v.normalize();
-    if(raycube(d.o, v, worldsize) >= worldsize)
+    if(rootworld.raycube(d.o, v, worldsize) >= worldsize)
     {
         return false;
     }

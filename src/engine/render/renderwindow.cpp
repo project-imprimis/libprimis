@@ -568,7 +568,7 @@ void resetgl()
 
     renderbackground("resetting OpenGL");
 
-    cleanupva();
+    rootworld.cleanupva();
     cleanupparticles();
     cleanupstains();
     cleanupmodels();
@@ -605,7 +605,7 @@ void resetgl()
     initgbuffer();
     reloadshaders();
     reloadtextures();
-    allchanged(true);
+    rootworld.allchanged(true);
 }
 COMMAND(resetgl, "");
 

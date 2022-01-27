@@ -647,7 +647,7 @@ static void calcsurfaces(cube *c, const ivec &co, int size)
     }
 }
 
-void calclight()
+void cubeworld::calclight()
 {
     remip();
     clearsurfaces(worldroot);

@@ -43,10 +43,7 @@ extern void renderalphageom(int side);
 extern void rendermapmodels();
 extern void renderoutline();
 extern bool renderexplicitsky(bool outline = false);
-extern void cleanupva();
 extern bvec outlinecolor;
-
-extern bool bboccluded(const ivec &bo, const ivec &br);
 
 extern int deferquery;
 extern void flipqueries();

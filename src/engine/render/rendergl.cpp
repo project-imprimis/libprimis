@@ -1573,7 +1573,7 @@ static float findsurface(int fogmat, const vec &v, int &abovemat)
     int csize;
     do
     {
-        cube &c = lookupcube(o, 0, co, csize);
+        cube &c = rootworld.lookupcube(o, 0, co, csize);
         int mat = c.material&MatFlag_Volume;
         if(mat != fogmat)
         {
@@ -1732,7 +1732,7 @@ void bindminimap()
     glBindTexture(GL_TEXTURE_2D, minimaptex);
 }
 
-void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
+void clipminimap(ivec &bbmin, ivec &bbmax, cube *c, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
 {
     for(int i = 0; i < 8; ++i)
     {
@@ -1755,7 +1755,7 @@ void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co =
     }
 }
 
-void drawminimap(int yaw, int pitch, vec loc)
+void drawminimap(int yaw, int pitch, vec loc, cubeworld world)
 {
     if(!showminimap)
     {
@@ -1803,7 +1803,7 @@ void drawminimap(int yaw, int pitch, vec loc)
     {
         ivec clipmin(worldsize, worldsize, worldsize),
              clipmax(0, 0, 0);
-        clipminimap(clipmin, clipmax);
+        clipminimap(clipmin, clipmax, world.worldroot);
         for(int k = 0; k < 2; ++k)
         {
             bbmin[k] = std::max(bbmin[k], clipmin[k]);
@@ -2011,7 +2011,7 @@ void gl_drawview(void (*gamefxn)(), void(*hudfxn)(), void(*editfxn)())
         viewh = gh;
     }
     float fogmargin = 1 + wateramplitude + nearplane;
-    int fogmat = lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index),
+    int fogmat = rootworld.lookupmaterial(vec(camera1->o.x, camera1->o.y, camera1->o.z - fogmargin))&(MatFlag_Volume|MatFlag_Index),
         abovemat = Mat_Air;
     float fogbelow = 0;
     if(IS_LIQUID(fogmat&MatFlag_Volume)) //if in the water

@@ -3814,8 +3814,8 @@ void workinoq()
     }
 }
 
-VAR(gdepthclear, 0, 1, 1);
-VAR(gcolorclear, 0, 1, 1);
+VAR(gdepthclear, 0, 1, 1); //toggles whether to clear the g depth buffer to 0000/1111 (black or white depending on gdepthformat) upon creation
+VAR(gcolorclear, 0, 1, 1); //toggles whether to clear the g buffer to 0,0,0,0 (black) upon creation
 
 void GBuffer::preparegbuffer(bool depthclear)
 {

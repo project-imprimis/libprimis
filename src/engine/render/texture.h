@@ -20,7 +20,6 @@ extern void compactmruvslots();
 extern void compactvslots(cube *c, int n = 8);
 extern void compactvslot(int &index);
 extern void compactvslot(VSlot &vs);
-extern int compactvslots(bool cull = false);
 extern void reloadtextures();
 extern void cleanuptextures();
 extern bool settexture(const char *name, int clamp = 0);

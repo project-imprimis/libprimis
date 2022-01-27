@@ -2255,7 +2255,7 @@ int vfc::isvisiblebb(const ivec &bo, const ivec &br)
     return v;
 }
 
-bool bboccluded(const ivec &bo, const ivec &br)
+bool cubeworld::bboccluded(const ivec &bo, const ivec &br)
 {
     int diff = (bo.x^br.x) | (bo.y^br.y) | (bo.z^br.z);
     if(diff&~((1<<worldscale)-1))
@@ -2265,7 +2265,7 @@ bool bboccluded(const ivec &bo, const ivec &br)
     int scale = worldscale-1;
     if(diff&(1<<scale))
     {
-        return bboccluded(bo, br, worldroot, ivec(0, 0, 0), 1<<scale);
+        return ::bboccluded(bo, br, worldroot, ivec(0, 0, 0), 1<<scale);
     }
     cube *c = &worldroot[OCTA_STEP(bo.x, bo.y, bo.z, scale)];
     if(c->ext && c->ext->va)
@@ -2292,7 +2292,7 @@ bool bboccluded(const ivec &bo, const ivec &br)
     }
     if(c->children)
     {
-        return bboccluded(bo, br, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
+        return ::bboccluded(bo, br, c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale);
     }
     return false;
 }
@@ -2594,7 +2594,7 @@ bool renderexplicitsky(bool outline)
     return true;
 }
 
-void cleanupva()
+void cubeworld::cleanupva()
 {
     clearvas(worldroot);
     clearqueries();

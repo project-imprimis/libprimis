@@ -362,7 +362,7 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
     {
         s[dim] += z*b.grid;
     }
-    return lookupcube(s, rgrid);
+    return rootworld.lookupcube(s, rgrid);
 }
 
 ////////////// cursor ///////////////
@@ -530,14 +530,14 @@ void commitchanges(bool force)
     resetclipplanes();
     entitiesinoctanodes();
     inbetweenframes = false;
-    octarender();
+    rootworld.octarender();
     inbetweenframes = true;
     setupmaterials(oldlen);
     clearshadowcache();
     updatevabbs();
 }
 
-void changed(const ivec &bbmin, const ivec &bbmax, bool commit)
+void cubeworld::changed(const ivec &bbmin, const ivec &bbmax, bool commit)
 {
     readychanges(bbmin, bbmax, worldroot, ivec(0, 0, 0), worldsize/2);
     haschanged = true;
@@ -548,7 +548,7 @@ void changed(const ivec &bbmin, const ivec &bbmax, bool commit)
     }
 }
 
-void changed(const block3 &sel, bool commit)
+void cubeworld::changed(const block3 &sel, bool commit)
 {
     if(sel.s.iszero())
     {
@@ -1149,7 +1149,7 @@ void unpackundocube(ucharbuf buf, uchar *outbuf)
     uchar *g = buf.pad(b->size());
     unpackvslots(*b, buf);
     pasteundoblock(b, g);
-    changed(*b, false);
+    rootworld.changed(*b, false);
     freeblock(b);
 }
 /* saveprefab: saves the current selection to a prefab file
@@ -1182,7 +1182,7 @@ void saveprefab(char *name)
         freeblock(b->copy);
     }
     PROTECT_SEL(b->copy = blockcopy(block3(sel), sel.grid));
-    changed(sel);
+    rootworld.changed(sel);
     DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
     path(filename);
     stream *f = opengzfile(filename, "wb");
@@ -1446,7 +1446,7 @@ static void genprefabmesh(prefabmesh &r, cube &c, const ivec &co, int size)
     }
 }
 
-void genprefabmesh(prefab &p)
+void cubeworld::genprefabmesh(prefab &p)
 {
     block3 b = *p.copy;
     b.o = ivec(0, 0, 0);
@@ -1472,7 +1472,7 @@ void genprefabmesh(prefab &p)
     //recursively apply to children
     for(int i = 0; i < 8; ++i)
     {
-        genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
+        ::genprefabmesh(r, worldroot[i], ivec(i, ivec(0, 0, 0), worldsize/2), worldsize/2);
     }
     --neighbordepth;
     r.setup(p);
@@ -1490,7 +1490,7 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
 {
     if(!p.numtris)
     {
-        genprefabmesh(p);
+        rootworld.genprefabmesh(p);
         if(!p.numtris)
         {
             return;

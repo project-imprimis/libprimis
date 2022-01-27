@@ -449,7 +449,7 @@ void ragdolldata::move(dynent *pl, float ts)
     {
         return;
     }
-    int material = lookupmaterial(vec(center.x, center.y, center.z + radius/2));
+    int material = rootworld.lookupmaterial(vec(center.x, center.y, center.z + radius/2));
     bool water = IS_LIQUID(material&MatFlag_Volume);
     pl->inwater = water ? material&MatFlag_Volume : Mat_Air;
 

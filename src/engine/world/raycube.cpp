@@ -24,7 +24,7 @@ namespace
 {
     clipplanes &getclipplanes(const cube &c, const ivec &o, int size)
     {
-        clipplanes &p = getclipbounds(c, o, size, c.visible&0x80 ? 2 : 0);
+        clipplanes &p = rootworld.getclipbounds(c, o, size, c.visible&0x80 ? 2 : 0);
         if(p.visible&0x80)
         {
             genclipplanes(c, o, size, p, false, false);
@@ -365,7 +365,7 @@ vec hitsurface;
             diff >>= 1; \
         } while(diff);
 
-float raycube(const vec &o, const vec &ray, float radius, int mode, int size, extentity *t)
+float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, int size, extentity *t)
 {
     if(ray.iszero())
     {
@@ -430,7 +430,7 @@ float raycube(const vec &o, const vec &ray, float radius, int mode, int size, ex
 }
 
 // optimized version for light shadowing... every cycle here counts!!!
-float shadowray(const vec &o, const vec &ray, float radius, int mode, extentity *t)
+float cubeworld::shadowray(const vec &o, const vec &ray, float radius, int mode, extentity *t)
 {
     INITRAYCUBE;
     CHECKINSIDEWORLD;
@@ -483,7 +483,7 @@ float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int
     hitent = -1;
     hitentdist = radius;
     hitorient = -1;
-    float dist = raycube(o, ray, radius, mode, size);
+    float dist = rootworld.raycube(o, ray, radius, mode, size);
     if((mode&Ray_Ents) == Ray_Ents)
     {
         float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, nullptr);
@@ -500,7 +500,7 @@ float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int
 float raycubepos(const vec &o, const vec &ray, vec &hitpos, float radius, int mode, int size)
 {
     hitpos = ray;
-    float dist = raycube(o, ray, radius, mode, size);
+    float dist = rootworld.raycube(o, ray, radius, mode, size);
     if(radius>0 && dist>=radius)
     {
         dist = radius;
@@ -526,7 +526,7 @@ float rayfloor(const vec &o, vec &floor, int mode, float radius)
         return -1;
     }
     hitsurface = vec(0, 0, 1);
-    float dist = raycube(o, vec(0, 0, -1), radius, mode);
+    float dist = rootworld.raycube(o, vec(0, 0, -1), radius, mode);
     if(dist<0 || (radius>0 && dist>=radius))
     {
         return dist;

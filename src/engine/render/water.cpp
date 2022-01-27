@@ -391,7 +391,7 @@ void renderflatwater(int x, int y, int z, int rsize, int csize, int mat)
     }
 }
 
-VARFP(vertwater, 0, 1, 1, allchanged());
+VARFP(vertwater, 0, 1, 1, rootworld.allchanged());
 
 static void renderwater(const materialsurface &m, int mat = Mat_Water)
 {
