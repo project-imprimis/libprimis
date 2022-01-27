@@ -643,7 +643,7 @@ namespace
         GLuint textures[7];
         Slot *slot, *texgenslot;
         VSlot *vslot, *texgenvslot;
-        vec2 texgenscroll;
+        vec2<float> texgenscroll;
         int texgenorient, texgenmillis;
 
         renderstate() : colormask(true), depthmask(true), alphaing(0), vbuf(0), vattribs(false),
@@ -1070,7 +1070,7 @@ namespace
                 const texrotation &r = texrotations[vslot.rotation];
                 float xs = r.flipx ? -tex->xs : tex->xs,
                       ys = r.flipy ? -tex->ys : tex->ys;
-                vec2 scroll(vslot.scroll);
+                vec2<float> scroll(vslot.scroll);
                 if(r.swapxy)
                 {
                     std::swap(scroll.x, scroll.y);

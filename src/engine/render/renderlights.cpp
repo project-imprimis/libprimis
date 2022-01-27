@@ -50,7 +50,7 @@ int hdrclear = 0;
 int spotlights       = 0,
     volumetriclights = 0,
     nospeclights     = 0;
-std::vector<vec2> msaapositions;
+std::vector<vec2<float>> msaapositions;
 
 //`g`-buffer `scale`
 VARFP(gscale, 25, 100, 100, gbuf.cleanupgbuffer()); //size of g buffer, approximately correlates to g buffer linear dimensions
@@ -2184,7 +2184,7 @@ static void setlightglobals(bool transparent = false)
         }
         else
         {
-            GLOBALPARAM(aoscale, aotex[2] ? vec2(1, 1) : vec2(static_cast<float>(aow)/vieww, static_cast<float>(aoh)/viewh));
+            GLOBALPARAM(aoscale, aotex[2] ? vec2(1.f, 1.f) : vec2(static_cast<float>(aow)/vieww, static_cast<float>(aoh)/viewh));
             GLOBALPARAMF(aoparams, aomin, 1.0f-aomin, aosunmin, 1.0f-aosunmin);
         }
     }
@@ -2228,7 +2228,7 @@ static LocalShaderParam lightpos("lightpos"),
                         shadowparams("shadowparams"),
                         shadowoffset("shadowoffset");
 static vec4<float> lightposv[8], lightcolorv[8], spotparamsv[8], shadowparamsv[8];
-static vec2 shadowoffsetv[8];
+static vec2<float> shadowoffsetv[8];
 
 static void setlightparams(int i, const lightinfo &l)
 {

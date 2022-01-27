@@ -190,7 +190,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                         v.norm = vkey.z < 0 ? vec(0, 0, 0) : attrib[2][vkey.z];
                         v.norm = vec(v.norm.z, -v.norm.x, v.norm.y);
                         tcvert &tcv = tcverts.add();
-                        tcv.tc = vkey.y < 0 ? vec2(0, 0) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y);
+                        tcv.tc = vkey.y < 0 ? vec2(0.f, 0.f) : vec2(attrib[1][vkey.y].x, 1-attrib[1][vkey.y].y);
                     }
                     if(v0 < 0)
                     {
