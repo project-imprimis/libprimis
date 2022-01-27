@@ -1,9 +1,9 @@
 var searchData=
 [
   ['r_0',['R',['../geom_8h.html#ae991d89d766b25a0e9b0f07509128749',1,'geom.h']]],
-  ['raycube_1',['raycube',['../iengine_8h.html#a9172264971c9a27c8ef3e7d2291e5936',1,'iengine.h']]],
+  ['raycube_1',['raycube',['../structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d',1,'cubeworld']]],
   ['raycubepos_2',['raycubepos',['../iengine_8h.html#ae18d06933ae2dd87e478835b5c7e700b',1,'iengine.h']]],
-  ['remip_3',['remip',['../iengine_8h.html#abcde01b10381205fd87f15e6eb3bf858',1,'iengine.h']]],
+  ['remip_3',['remip',['../structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2',1,'cubeworld']]],
   ['remove_4',['remove',['../structvector.html#a32cb8f72325a5f52298ffac9abd8d102',1,'vector::remove(int i, int n)'],['../structvector.html#a515096bf4dcf9d9aeda81ece3c8b24b6',1,'vector::remove(int i)']]],
   ['removeheap_5',['removeheap',['../structvector.html#aae7414b428036a6a109e2a40976e0eb1',1,'vector']]],
   ['removeobj_6',['removeobj',['../structvector.html#a10daba22a06b056f79048f614dccbd52',1,'vector']]],

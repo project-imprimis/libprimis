@@ -115,14 +115,14 @@ $(document).ready(function(){initNavTree('structcubeworld.html',''); initResizab
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6818f64cfc8a9cff6b26e46bf948e2d4"><td class="memItemLeft" align="right" valign="top"><a id="a6818f64cfc8a9cff6b26e46bf948e2d4" name="a6818f64cfc8a9cff6b26e46bf948e2d4"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>lookupmaterial</b> (const <a class="el" href="structvec.html">vec</a> &amp;v)</td></tr>
+<tr class="memitem:a6818f64cfc8a9cff6b26e46bf948e2d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">lookupmaterial</a> (const <a class="el" href="structvec.html">vec</a> &amp;v)</td></tr>
+<tr class="memdesc:a6818f64cfc8a9cff6b26e46bf948e2d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the material bitmask value at the given location.  <a href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">More...</a><br /></td></tr>
 <tr class="separator:a6818f64cfc8a9cff6b26e46bf948e2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07f49b6f607dcc5af8de628cde1925eb"><td class="memItemLeft" align="right" valign="top"><a id="a07f49b6f607dcc5af8de628cde1925eb" name="a07f49b6f607dcc5af8de628cde1925eb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>emptymap</b> (int scale, bool force, bool usecfg)</td></tr>
-<tr class="separator:a07f49b6f607dcc5af8de628cde1925eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b0a574f37d4613b6fa97d80d10984ce"><td class="memItemLeft" align="right" valign="top"><a id="a5b0a574f37d4613b6fa97d80d10984ce" name="a5b0a574f37d4613b6fa97d80d10984ce"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>enlargemap</b> (bool force)</td></tr>
+<tr class="memitem:a12e042d30ab218c7764519e10008adef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">emptymap</a> (int factor, bool force, bool usecfg=true)</td></tr>
+<tr class="memdesc:a12e042d30ab218c7764519e10008adef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the old level and creates a new one.  <a href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">More...</a><br /></td></tr>
+<tr class="separator:a12e042d30ab218c7764519e10008adef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b0a574f37d4613b6fa97d80d10984ce"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">enlargemap</a> (bool force)</td></tr>
+<tr class="memdesc:a5b0a574f37d4613b6fa97d80d10984ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grows the map to an additional gridsize.  <a href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">More...</a><br /></td></tr>
 <tr class="separator:a5b0a574f37d4613b6fa97d80d10984ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b23d6714590d026a044bc52c89fd535"><td class="memItemLeft" align="right" valign="top"><a id="a1b23d6714590d026a044bc52c89fd535" name="a1b23d6714590d026a044bc52c89fd535"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>modifyoctaent</b> (int flags, int id, <a class="el" href="structextentity.html">extentity</a> &amp;e)</td></tr>
@@ -130,12 +130,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>modifyoctaent</b> (in
 <tr class="memitem:a308713724b534880c00163b87142c4c3"><td class="memItemLeft" align="right" valign="top"><a id="a308713724b534880c00163b87142c4c3" name="a308713724b534880c00163b87142c4c3"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>shrinkmap</b> ()</td></tr>
 <tr class="separator:a308713724b534880c00163b87142c4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5dd0231a357fb27274aa8c5ff2b5ad9"><td class="memItemLeft" align="right" valign="top"><a id="af5dd0231a357fb27274aa8c5ff2b5ad9" name="af5dd0231a357fb27274aa8c5ff2b5ad9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>load_world</b> (const char *mname, const char *gameident, const char *gameinfo=nullptr, const char *cname=nullptr)</td></tr>
+<tr class="separator:af5dd0231a357fb27274aa8c5ff2b5ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2793ba734b2561823d72b5e5fd8c360"><td class="memItemLeft" align="right" valign="top"><a id="ac2793ba734b2561823d72b5e5fd8c360" name="ac2793ba734b2561823d72b5e5fd8c360"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>save_world</b> (const char *mname, const char *gameident)</td></tr>
 <tr class="separator:ac2793ba734b2561823d72b5e5fd8c360"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85e2a97c6a6f3a084bfdac5f8ddde254"><td class="memItemLeft" align="right" valign="top"><a id="a85e2a97c6a6f3a084bfdac5f8ddde254" name="a85e2a97c6a6f3a084bfdac5f8ddde254"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>load_world</b> (const char *mname, const char *gameident, const char *gameinfo, const char *cname)</td></tr>
-<tr class="separator:a85e2a97c6a6f3a084bfdac5f8ddde254"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab674bb2b758999fdd377ef5bc7561f98"><td class="memItemLeft" align="right" valign="top"><a id="ab674bb2b758999fdd377ef5bc7561f98" name="ab674bb2b758999fdd377ef5bc7561f98"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>compactvslots</b> (bool cull=false)</td></tr>
 <tr class="separator:ab674bb2b758999fdd377ef5bc7561f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,8 +148,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>octarender</b> ()</td
 <tr class="memitem:a445b1bb007a38a2449bac939748c0d92"><td class="memItemLeft" align="right" valign="top"><a id="a445b1bb007a38a2449bac939748c0d92" name="a445b1bb007a38a2449bac939748c0d92"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>cleanupva</b> ()</td></tr>
 <tr class="separator:a445b1bb007a38a2449bac939748c0d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d586f0ba0d3ca1a5d087d91cff42a5d"><td class="memItemLeft" align="right" valign="top"><a id="a2d586f0ba0d3ca1a5d087d91cff42a5d" name="a2d586f0ba0d3ca1a5d087d91cff42a5d"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>raycube</b> (const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, float radius=0, int mode=3, int size=0, <a class="el" href="structextentity.html">extentity</a> *t=0)</td></tr>
+<tr class="memitem:a2d586f0ba0d3ca1a5d087d91cff42a5d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">raycube</a> (const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, float radius=0, int mode=3, int size=0, <a class="el" href="structextentity.html">extentity</a> *t=0)</td></tr>
+<tr class="memdesc:a2d586f0ba0d3ca1a5d087d91cff42a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance before a ray hits a cube.  <a href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">More...</a><br /></td></tr>
 <tr class="separator:a2d586f0ba0d3ca1a5d087d91cff42a5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a354c76d634238206e6db531c8f4a842f"><td class="memItemLeft" align="right" valign="top"><a id="a354c76d634238206e6db531c8f4a842f" name="a354c76d634238206e6db531c8f4a842f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>octacollide</b> (<a class="el" href="structphysent.html">physent</a> *d, const <a class="el" href="structvec.html">vec</a> &amp;dir, float cutoff, const <a class="el" href="structivec.html">ivec</a> &amp;bo, const <a class="el" href="structivec.html">ivec</a> &amp;bs)</td></tr>
@@ -169,8 +169,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>allchanged</b> (bool 
 <tr class="memitem:a5acf8c8b0c29ed664da9a46f86f17fee"><td class="memItemLeft" align="right" valign="top"><a id="a5acf8c8b0c29ed664da9a46f86f17fee" name="a5acf8c8b0c29ed664da9a46f86f17fee"></a>
 const <a class="el" href="classcube.html">cube</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>neighborcube</b> (const <a class="el" href="classcube.html">cube</a> &amp;c, int orient, const <a class="el" href="structivec.html">ivec</a> &amp;co, int size, <a class="el" href="structivec.html">ivec</a> &amp;ro, int &amp;rsize)</td></tr>
 <tr class="separator:a5acf8c8b0c29ed664da9a46f86f17fee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eac3f5488f4c52b15ce1de57d31cfcc"><td class="memItemLeft" align="right" valign="top"><a id="a9eac3f5488f4c52b15ce1de57d31cfcc" name="a9eac3f5488f4c52b15ce1de57d31cfcc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>calclight</b> ()</td></tr>
+<tr class="memitem:a9eac3f5488f4c52b15ce1de57d31cfcc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">calclight</a> ()</td></tr>
+<tr class="memdesc:a9eac3f5488f4c52b15ce1de57d31cfcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates normals and re-calculates geometry.  <a href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">More...</a><br /></td></tr>
 <tr class="separator:a9eac3f5488f4c52b15ce1de57d31cfcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af64d57ea6efb867a609c941a444c2ae7"><td class="memItemLeft" align="right" valign="top"><a id="af64d57ea6efb867a609c941a444c2ae7" name="af64d57ea6efb867a609c941a444c2ae7"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>shadowray</b> (const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, float radius, int mode, <a class="el" href="structextentity.html">extentity</a> *t=nullptr)</td></tr>
@@ -187,8 +187,8 @@ clipplanes &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getclipbo
 <tr class="memitem:ad18c8060b62eb25f0af0dc0698c57a52"><td class="memItemLeft" align="right" valign="top"><a id="ad18c8060b62eb25f0af0dc0698c57a52" name="ad18c8060b62eb25f0af0dc0698c57a52"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>calcnormals</b> (bool lerptjoints)</td></tr>
 <tr class="separator:ad18c8060b62eb25f0af0dc0698c57a52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fe409c8dd963be4883f4c8870c0f6c2"><td class="memItemLeft" align="right" valign="top"><a id="a2fe409c8dd963be4883f4c8870c0f6c2" name="a2fe409c8dd963be4883f4c8870c0f6c2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>remip</b> ()</td></tr>
+<tr class="memitem:a2fe409c8dd963be4883f4c8870c0f6c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">remip</a> ()</td></tr>
+<tr class="memdesc:a2fe409c8dd963be4883f4c8870c0f6c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reduces the number of cubes on the level losslessly.  <a href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">More...</a><br /></td></tr>
 <tr class="separator:a2fe409c8dd963be4883f4c8870c0f6c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -197,6 +197,201 @@ Public Attributes</h2></td></tr>
 <a class="el" href="classcube.html">cube</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>worldroot</b> = nullptr</td></tr>
 <tr class="separator:a186f977846ee6323310570d5479f90a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9eac3f5488f4c52b15ce1de57d31cfcc" name="a9eac3f5488f4c52b15ce1de57d31cfcc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9eac3f5488f4c52b15ce1de57d31cfcc">&#9670;&nbsp;</a></span>calclight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cubeworld::calclight </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculates normals and re-calculates geometry. </p>
+<p >Re-mips the cube structure of the level to remove unnecessary nodes, then calculates normal maps for corners. </p>
+
+</div>
+</div>
+<a id="a12e042d30ab218c7764519e10008adef" name="a12e042d30ab218c7764519e10008adef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12e042d30ab218c7764519e10008adef">&#9670;&nbsp;</a></span>emptymap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cubeworld::emptymap </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>factor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>force</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>usecfg</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clears the old level and creates a new one. </p>
+<p >This function unloads the old map, including textures, and creates a new level of the size specified.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">factor</td><td>sets the gridscale (power of 2 size) of the map; limit 10 to 15 </td></tr>
+    <tr><td class="paramname">force</td><td>if true, creates map regardless of check variables </td></tr>
+    <tr><td class="paramname">usecfg</td><td>if true, uses the default map config path </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5b0a574f37d4613b6fa97d80d10984ce" name="a5b0a574f37d4613b6fa97d80d10984ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b0a574f37d4613b6fa97d80d10984ce">&#9670;&nbsp;</a></span>enlargemap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cubeworld::enlargemap </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>force</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Grows the map to an additional gridsize. </p>
+<p >Expands the map by placing the old map in the corner nearest the origin and adding 7 old-map sized cubes to create a new largest cube.</p>
+<p >This moves the worldroot cube to the new parent cube of the old map. </p>
+
+</div>
+</div>
+<a id="a6818f64cfc8a9cff6b26e46bf948e2d4" name="a6818f64cfc8a9cff6b26e46bf948e2d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6818f64cfc8a9cff6b26e46bf948e2d4">&#9670;&nbsp;</a></span>lookupmaterial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int cubeworld::lookupmaterial </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the material bitmask value at the given location. </p>
+<p >Given a world location, returns the material bitmask at the specified location. This bitmask may be the sum of multiple materials if present. Returns 0 (air) if the location specified has no material or is outside the world.</p>
+<dl class="section return"><dt>Returns</dt><dd>an integer corresponding to the material(s) at the specified location </dd></dl>
+
+</div>
+</div>
+<a id="a2d586f0ba0d3ca1a5d087d91cff42a5d" name="a2d586f0ba0d3ca1a5d087d91cff42a5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d586f0ba0d3ca1a5d087d91cff42a5d">&#9670;&nbsp;</a></span>raycube()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float cubeworld::raycube </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>o</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structvec.html">vec</a> &amp;&#160;</td>
+          <td class="paramname"><em>ray</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>3</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structextentity.html">extentity</a> *&#160;</td>
+          <td class="paramname"><em>t</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the distance before a ray hits a cube. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">o</td><td>the starting location of the ray to be drawn </td></tr>
+    <tr><td class="paramname">ray</td><td>normalized direction vector for the ray to point </td></tr>
+    <tr><td class="paramname">radius</td><td>region around ray that counts as a hit </td></tr>
+    <tr><td class="paramname">mode</td><td>flags which determine what counts as a hit </td></tr>
+    <tr><td class="paramname">size</td><td>size of cube which registers a hit </td></tr>
+    <tr><td class="paramname">t</td><td>entity to check against </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2fe409c8dd963be4883f4c8870c0f6c2" name="a2fe409c8dd963be4883f4c8870c0f6c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fe409c8dd963be4883f4c8870c0f6c2">&#9670;&nbsp;</a></span>remip()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cubeworld::remip </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reduces the number of cubes on the level losslessly. </p>
+<p >Loops through all cube objects, dissolving child nodes where it is possible to convert them to their parent nodes. The largest gridpower that can be optimizied can be controlled by the maxmerge variable. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="octa_8h_source.html">octa.h</a></li>
 </ul>
