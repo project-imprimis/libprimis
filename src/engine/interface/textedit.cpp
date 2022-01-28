@@ -806,24 +806,6 @@ void Editor::hit(int hitx, int hity, bool dragged)
     }
 }
 
-int Editor::limitscrolly()
-{
-    int maxwidth = linewrap?pixelwidth:-1,
-        slines = lines.length();
-    for(int ph = pixelheight; slines > 0 && ph > 0;)
-    {
-        int width, height;
-        text_bounds(lines[slines-1].text, width, height, maxwidth);
-        if(height > ph)
-        {
-            break;
-        }
-        ph -= height;
-        slines--;
-    }
-    return slines;
-}
-
 void Editor::draw(int x, int y, int color, bool hit)
 {
     int maxwidth = linewrap?pixelwidth:-1,

@@ -94,7 +94,6 @@ struct Editor
     void key(int code);
     void input(const char *str, int len);
     void hit(int hitx, int hity, bool dragged);
-    int limitscrolly();
     void draw(int x, int y, int color, bool hit);
 };
 
