@@ -55,7 +55,7 @@ var annotated_dup =
     [ "undolist", "structundolist.html", null ],
     [ "vec", "structvec.html", "structvec" ],
     [ "vec2", "structvec2.html", null ],
-    [ "vec4", "structvec4.html", null ],
+    [ "vec4", "structvec4.html", "structvec4" ],
     [ "vector", "structvector.html", "structvector" ],
     [ "VSlot", "structVSlot.html", null ],
     [ "vslotmap", "structvslotmap.html", null ],
