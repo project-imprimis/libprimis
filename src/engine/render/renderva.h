@@ -36,13 +36,9 @@ extern float alphafrontsx1, alphafrontsx2, alphafrontsy1, alphafrontsy2, alphaba
 extern uint alphatiles[];
 extern vtxarray *visibleva;
 
-extern void rendergeom();
-extern int findalphavas();
 extern void renderrefractmask();
 extern void renderalphageom(int side);
 extern void rendermapmodels();
-extern void renderoutline();
-extern bool renderexplicitsky(bool outline = false);
 extern bvec outlinecolor;
 
 extern int deferquery;

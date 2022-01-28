@@ -489,7 +489,7 @@ void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor
             if(c[i].ext->va)             // removes va s so that octarender will recreate
             {
                 int hasmerges = c[i].ext->va->hasmerges;
-                destroyva(c[i].ext->va);
+                c[i].ext->va->destroyva();
                 c[i].ext->va = nullptr;
                 if(hasmerges)
                 {

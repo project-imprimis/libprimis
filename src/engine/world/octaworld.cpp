@@ -181,7 +181,7 @@ void cube::discardchildren(bool fixtex, int depth)
     {
         if(ext->va)
         {
-            destroyva(ext->va);
+            ext->va->destroyva();
         }
         ext->va = nullptr;
         ext->tjoints = -1;
@@ -2558,7 +2558,7 @@ void invalidatemerges(cube &c)
             {
                 return;
             }
-            destroyva(c.ext->va);
+            c.ext->va->destroyva();
             c.ext->va = nullptr;
         }
         if(c.ext->tjoints >= 0)
