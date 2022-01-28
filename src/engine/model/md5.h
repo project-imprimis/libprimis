@@ -15,7 +15,7 @@ struct md5weight
 
 struct md5vert
 {
-    vec2 tc;
+    vec2<float> tc;
     ushort start, count;
 };
 

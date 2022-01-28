@@ -415,24 +415,24 @@ namespace //internal functions incl. AA implementations
         smaasearchdatainited = true;
     }
 
-    vec2 areaunderortho(const vec2 &p1, const vec2 &p2, float x)
+    vec2<float> areaunderortho(const vec2<float> &p1, const vec2<float> &p2, float x)
     {
-        vec2 d(p2.x - p1.x, p2.y - p1.y);
+        vec2<float> d(p2.x - p1.x, p2.y - p1.y);
         float y1 = p1.y + (x - p1.x)*d.y/d.x,
               y2 = p1.y + (x+1 - p1.x)*d.y/d.x;
         if((x < p1.x || x >= p2.x) && (x+1 <= p1.x || x+1 > p2.x))
         {
-            return vec2(0, 0);
+            return vec2(0.f, 0.f);
         }
         if((y1 < 0) == (y2 < 0) || std::fabs(y1) < 1e-4f || std::fabs(y2) < 1e-4f)
         {
             float a = (y1 + y2) / 2;
-            return a < 0.0f ? vec2(-a, 0) : vec2(0, a);
+            return a < 0.0f ? vec2(-a, 0.f) : vec2(0.f, a);
         }
         x = -p1.y*d.x/d.y + p1.x;
         float a1 = x > p1.x ? y1*std::fmod(x, 1.0f)/2 : 0,
               a2 = x < p2.x ? y2*(1-std::fmod(x, 1.0f))/2 : 0;
-        vec2 a(std::fabs(a1), std::fabs(a2));
+        vec2<float> a(std::fabs(a1), std::fabs(a2));
         if((a.x > a.y ? a1 : -a2) >= 0)
         {
             std::swap(a.x, a.y);
@@ -446,21 +446,21 @@ namespace //internal functions incl. AA implementations
         {0, 1}, {3, 1}, {0, 4}, {3, 4}, {1, 1}, {4, 1}, {1, 4}, {4, 4}
     };
 
-    vec2 areaortho(float p1x, float p1y, float p2x, float p2y, float left)
+    vec2<float> areaortho(float p1x, float p1y, float p2x, float p2y, float left)
     {
         return areaunderortho(vec2(p1x, p1y), vec2(p2x, p2y), left);
     }
 
-    void smootharea(float d, vec2 &a1, vec2 &a2)
+    void smootharea(float d, vec2<float> &a1, vec2<float> &a2)
     {
-        vec2 b1(sqrtf(a1.x*2)*0.5f, sqrtf(a1.y*2)*0.5f),
-             b2(sqrtf(a2.x*2)*0.5f, sqrtf(a2.y*2)*0.5f);
+        vec2<float> b1(sqrtf(a1.x*2)*0.5f, sqrtf(a1.y*2)*0.5f),
+                    b2(sqrtf(a2.x*2)*0.5f, sqrtf(a2.y*2)*0.5f);
         float p = std::clamp(d / 32.0f, 0.0f, 1.0f);
         a1.lerp(b1, a1, p);
         a2.lerp(b2, a2, p);
     }
 
-    vec2 areaortho(int pattern, float left, float right, float offset)
+    vec2<float> areaortho(int pattern, float left, float right, float offset)
     {
         float d = left + right + 1,
               o1 = offset + 0.5f,
@@ -469,33 +469,33 @@ namespace //internal functions incl. AA implementations
         {
             case 0:
             {
-                return vec2(0, 0);
+                return vec2(0.f, 0.f);
             }
             case 1:
             {
-                return left <= right ? areaortho(0, o2, d/2, 0, left) : vec2(0, 0);
+                return left <= right ? areaortho(0, o2, d/2, 0, left) : vec2(0.f, 0.f);
             }
             case 2:
             {
-                return left >= right ? areaortho(d/2, 0, d, o2, left) : vec2(0, 0);
+                return left >= right ? areaortho(d/2, 0, d, o2, left) : vec2(0.f, 0.f);
             }
             case 3:
             {
-                vec2 a1 = areaortho(0, o2, d/2, 0, left), a2 = areaortho(d/2, 0, d, o2, left);
+                vec2<float> a1 = areaortho(0, o2, d/2, 0, left), a2 = areaortho(d/2, 0, d, o2, left);
                 smootharea(d, a1, a2);
                 return a1.add(a2);
             }
             case 4:
             {
-                return left <= right ? areaortho(0, o1, d/2, 0, left) : vec2(0, 0);
+                return left <= right ? areaortho(0, o1, d/2, 0, left) : vec2(0.f, 0.f);
             }
             case 5:
             {
-                return vec2(0, 0);
+                return vec2(0.f, 0.f);
             }
             case 6:
             {
-                vec2 a = areaortho(0, o1, d, o2, left);
+                vec2<float> a = areaortho(0, o1, d, o2, left);
                 if(std::fabs(offset) > 0)
                 {
                     a.avg(areaortho(0, o1, d/2, 0, left).add(areaortho(d/2, 0, d, o2, left)));
@@ -508,11 +508,11 @@ namespace //internal functions incl. AA implementations
             }
             case 8:
             {
-                return left >= right ? areaortho(d/2, 0, d, o1, left) : vec2(0, 0);
+                return left >= right ? areaortho(d/2, 0, d, o1, left) : vec2(0.f, 0.f);
             }
             case 9:
             {
-                vec2 a = areaortho(0, o2, d, o1, left);
+                vec2<float> a = areaortho(0, o2, d, o1, left);
                 if(std::fabs(offset) > 0)
                 {
                     a.avg(areaortho(0, o2, d/2, 0, left).add(areaortho(d/2, 0, d, o1, left)));
@@ -521,7 +521,7 @@ namespace //internal functions incl. AA implementations
             }
             case 10:
             {
-                return vec2(0, 0);
+                return vec2(0.f, 0.f);
             }
             case 11:
             {
@@ -529,8 +529,8 @@ namespace //internal functions incl. AA implementations
             }
             case 12:
             {
-                vec2 a1 = areaortho(0, o1, d/2, 0, left),
-                     a2 = areaortho(d/2, 0, d, o1, left);
+                vec2<float> a1 = areaortho(0, o1, d/2, 0, left),
+                            a2 = areaortho(d/2, 0, d, o1, left);
                 smootharea(d, a1, a2);
                 return a1.add(a2);
             }
@@ -544,15 +544,15 @@ namespace //internal functions incl. AA implementations
             }
             case 15:
             {
-                return vec2(0, 0);
+                return vec2(0.f, 0.f);
             }
         }
-        return vec2(0, 0);
+        return vec2(0.f, 0.f);
     }
 
-    float areaunderdiag(const vec2 &p1, const vec2 &p2, const vec2 &p)
+    float areaunderdiag(const vec2<float> &p1, const vec2<float> &p2, const vec2<float> &p)
     {
-        vec2 d(p2.y - p1.y, p1.x - p2.x);
+        vec2<float> d(p2.y - p1.y, p1.x - p2.x);
         float dp = d.dot(vec2(p1).sub(p));
         if(!d.x)
         {
@@ -625,9 +625,9 @@ namespace //internal functions incl. AA implementations
         return 1;
     }
 
-    vec2 areadiag(const vec2 &p1, const vec2 &p2, float left)
+    vec2<float> areadiag(const vec2<float> &p1, const vec2<float> &p2, float left)
     {
-        return vec2(1 - areaunderdiag(p1, p2, vec2(1, 0).add(left)), areaunderdiag(p1, p2, vec2(1, 1).add(left)));
+        return vec2(1 - areaunderdiag(p1, p2, vec2(1.f, 0.f).add(left)), areaunderdiag(p1, p2, vec2(1.f, 1.f).add(left)));
     }
 
     constexpr int edgesdiag[][2] =
@@ -636,10 +636,10 @@ namespace //internal functions incl. AA implementations
         {0, 1}, {1, 1}, {0, 3}, {1, 3}, {2, 1}, {3, 1}, {2, 3}, {3, 3}
     };
 
-    vec2 areadiag(float p1x, float p1y, float p2x, float p2y, float d, float left, const vec2 &offset, int pattern)
+    vec2<float> areadiag(float p1x, float p1y, float p2x, float p2y, float d, float left, const vec2<float> &offset, int pattern)
     {
-        vec2 p1(p1x, p1y),
-             p2(p2x+d, p2y+d);
+        vec2<float> p1(p1x, p1y),
+                    p2(p2x+d, p2y+d);
         if(edgesdiag[pattern][0])
         {
             p1.add(offset);
@@ -651,12 +651,12 @@ namespace //internal functions incl. AA implementations
         return areadiag(p1, p2, left);
     }
 
-    vec2 areadiag2(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y, float p4x, float p4y, float d, float left, const vec2 &offset, int pattern)
+    vec2<float> areadiag2(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y, float p4x, float p4y, float d, float left, const vec2<float> &offset, int pattern)
     {
-        vec2 p1(p1x, p1y),
-             p2(p2x+d, p2y+d),
-             p3(p3x, p3y),
-             p4(p4x+d, p4y+d);
+        vec2<float> p1(p1x, p1y),
+                    p2(p2x+d, p2y+d),
+                    p3(p3x, p3y),
+                    p4(p4x+d, p4y+d);
         if(edgesdiag[pattern][0])
         {
             p1.add(offset);
@@ -670,7 +670,7 @@ namespace //internal functions incl. AA implementations
         return areadiag(p1, p2, left).avg(areadiag(p3, p4, left));
     }
 
-    vec2 areadiag(int pattern, float left, float right, const vec2 &offset)
+    vec2<float> areadiag(int pattern, float left, float right, const vec2<float> &offset)
     {
         float d = left + right + 1;
         switch(pattern)
@@ -692,7 +692,7 @@ namespace //internal functions incl. AA implementations
             case 14: return areadiag2(1, 1, 1, 1, 1, 1, 1, 0, d, left, offset, pattern);
             case 15: return areadiag2(1, 1, 1, 1, 1, 0, 1, 0, d, left, offset, pattern);
         }
-        return vec2(0, 0);
+        return vec2(0.f, 0.f);
     }
 
     constexpr float offsetsortho[] = { 0.0f, -0.25f, 0.25f, -0.125f, 0.125f, -0.375f, 0.375f };
@@ -723,7 +723,7 @@ namespace //internal functions incl. AA implementations
                 {
                     for(int x = 0; x < 16; ++x)
                     {
-                        vec2 a = areaortho(pattern, x*x, y*y, offsetsortho[offset]);
+                        vec2<float> a = areaortho(pattern, x*x, y*y, offsetsortho[offset]);
                         dst[0] = static_cast<uchar>(255*a.x);
                         dst[1] = static_cast<uchar>(255*a.y);
                         dst += 2;
@@ -743,7 +743,7 @@ namespace //internal functions incl. AA implementations
                 {
                     for(int x = 0; x < 20; ++x)
                     {
-                        vec2 a = areadiag(pattern, x, y, vec2(offsetsdiag[offset][0], offsetsdiag[offset][1]));
+                        vec2<float> a = areadiag(pattern, x, y, vec2(offsetsdiag[offset][0], offsetsdiag[offset][1]));
                         dst[0] = static_cast<uchar>(255*a.x);
                         dst[1] = static_cast<uchar>(255*a.y);
                         dst += 2;
@@ -1068,7 +1068,7 @@ void GBuffer::setaavelocityparams(GLenum tmu)
 
     matrix4 reproject;
     reproject.muld(tqaaframe ? tqaaprevscreenmatrix : screenmatrix, worldmatrix);
-    vec2 jitter = tqaaframe&1 ? vec2(0.5f, 0.5f) : vec2(-0.5f, -0.5f);
+    vec2<float> jitter = tqaaframe&1 ? vec2(0.5f, 0.5f) : vec2(-0.5f, -0.5f);
     if(multisampledaa())
     {
         jitter.x *= 0.5f;
@@ -1111,7 +1111,7 @@ void jitteraa()
     nojittermatrix = projmatrix;
     if(!drawtex && tqaa)
     {
-        vec2 jitter = tqaaframe&1 ? vec2(0.25f, 0.25f) : vec2(-0.25f, -0.25f);
+        vec2<float> jitter = tqaaframe&1 ? vec2(0.25f, 0.25f) : vec2(-0.25f, -0.25f);
         if(multisampledaa())
         {
             jitter.x *= 0.5f;

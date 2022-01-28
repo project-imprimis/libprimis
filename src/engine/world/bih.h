@@ -72,9 +72,9 @@ class BIH
             {
                 return *reinterpret_cast<const vec *>(pos + i*posstride);
             }
-            vec2 gettc(int i) const
+            vec2<float> gettc(int i) const
             {
-                return *reinterpret_cast<const vec2 *>(tc + i*tcstride);
+                return *reinterpret_cast<const vec2<float> *>(tc + i*tcstride);
             }
         };
 
