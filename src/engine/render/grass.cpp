@@ -84,8 +84,8 @@ namespace //internal functionality not seen by other files
         lastgrassanim = lastmillis;
     }
 
-    VARR(grassscale, 1, 2, 64);
-    CVAR0R(grasscolor, 0xFFFFFF);
+    VARR(grassscale, 1, 2, 64);  //scale factor for grass texture
+    CVAR0R(grasscolor, 0xFFFFFF);//tint color for grass
     FVARR(grasstest, 0, 0.6f, 1);
 
     //generate the grass geometry placed above cubes
