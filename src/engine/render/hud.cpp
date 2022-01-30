@@ -342,7 +342,7 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
             {
                 if(!walltime)
                 {
-                    walltime = time(nullptr);
+                    walltime = std::time(nullptr);
                     walltime -= totalmillis/1000;
                     if(!walltime)
                     {
