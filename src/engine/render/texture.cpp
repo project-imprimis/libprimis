@@ -3683,7 +3683,7 @@ void screenshot(char *filename)
     {
         string sstime;
         time_t t = std::time(nullptr);
-        size_t len = std::strftime(sstime, sizeof(sstime), "%Y-%m-%d_%H.%M.%S.png", localtime(&t));
+        size_t len = std::strftime(sstime, sizeof(sstime), "%Y-%m-%d_%H.%M.%S.png", std::localtime(&t));
         sstime[std::min(len, sizeof(sstime)-1)] = '\0';
         concatstring(buf, sstime);
         for(char *s = &buf[dirlen]; *s; s++)
