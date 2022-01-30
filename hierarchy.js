@@ -25,6 +25,9 @@ var hierarchy =
     [ "hashbase< hashset< T >, T, T, T >", "structhashbase.html", [
       [ "hashset< T >", "structhashset.html", null ]
     ] ],
+    [ "hashbase< hashtable< cube::cfkey, cube::cfpolys >, hashtableentry< cube::cfkey, cube::cfpolys >, cube::cfkey, cube::cfpolys >", "structhashbase.html", [
+      [ "hashtable< cube::cfkey, cube::cfpolys >", "structhashtable.html", null ]
+    ] ],
     [ "hashbase< hashtable< K, T >, hashtableentry< K, T >, K, T >", "structhashbase.html", [
       [ "hashtable< K, T >", "structhashtable.html", null ]
     ] ],
@@ -75,6 +78,8 @@ var hierarchy =
       [ "quat", "structquat.html", null ]
     ] ],
     [ "vector< T >", "structvector.html", null ],
+    [ "vector< Slot::Tex >", "structvector.html", null ],
+    [ "vector< SlotShaderParam >", "structvector.html", null ],
     [ "VSlot", "structVSlot.html", [
       [ "DecalSlot", "structDecalSlot.html", null ]
     ] ],
