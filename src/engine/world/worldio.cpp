@@ -279,7 +279,7 @@ enum
     OctaSave_Normal
 };
 
-static constexpr uint layerdup (1<<7);
+static constexpr uint layerdup (1<<7); //if numverts is larger than this, get additional precision
 
 struct polysurfacecompat
 {
