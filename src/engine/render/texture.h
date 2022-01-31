@@ -475,7 +475,7 @@ struct GlobalShaderParam
         setf(v.x, v.y, v.z, w);
     }
 
-    void set(const vec2 &v, float z = 0, float w = 0)
+    void set(const vec2<float> &v, float z = 0, float w = 0)
     {
         setf(v.x, v.y, z, w);
     }
@@ -657,7 +657,7 @@ struct LocalShaderParam
         setf(v.x, v.y, v.z, w);
     }
 
-    void set(const vec2 &v, float z = 0, float w = 0)
+    void set(const vec2<float> &v, float z = 0, float w = 0)
     {
         setf(v.x, v.y, z, w);
     }
@@ -690,7 +690,7 @@ struct LocalShaderParam
         }
     }
 
-    void setv(const vec2 *v, int n = 1)
+    void setv(const vec2<float> *v, int n = 1)
     {
         ShaderParamBinding *b = resolve();
         if(b)

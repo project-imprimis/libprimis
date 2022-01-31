@@ -1237,7 +1237,7 @@ namespace
             return vec(0, 0, 1);
         }
         norm--;
-        const vec2 &yaw = sincos360[norm%360],
+        const vec2<float> &yaw = sincos360[norm%360],
                    &pitch = sincos360[norm/360+270];
         return vec(-yaw.y*pitch.x, yaw.x*pitch.x, pitch.y);
     }

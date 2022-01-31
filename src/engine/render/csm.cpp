@@ -217,7 +217,7 @@ void cascadedshadowmap::getprojmatrix()
         int border = smfilter > 2 ? smborder2 : smborder;
         const float pradius = std::ceil(radius * csmpradiustweak),
                     step    = (2*pradius) / (sm.size - 2*border);
-        vec2 offset = vec2(tc).sub(pradius).div(step);
+        vec2<float> offset = vec2(tc).sub(pradius).div(step);
         offset.x = std::floor(offset.x);
         offset.y = std::floor(offset.y);
         split.center = vec(vec2(offset).mul(step).add(pradius), -0.5f*(minz + maxz));

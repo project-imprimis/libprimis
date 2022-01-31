@@ -276,9 +276,9 @@ class animmodel : public model
                         vec e1 = vec(verts[t.vert[1]].pos).sub(e0),
                             e2 = vec(verts[t.vert[2]].pos).sub(e0);
 
-                        const vec2 &tc0 = tcverts[t.vert[0]].tc,
-                                   &tc1 = tcverts[t.vert[1]].tc,
-                                   &tc2 = tcverts[t.vert[2]].tc;
+                        const vec2<float> &tc0 = tcverts[t.vert[0]].tc,
+                                          &tc1 = tcverts[t.vert[1]].tc,
+                                          &tc2 = tcverts[t.vert[2]].tc;
                         float u1 = tc1.x - tc0.x,
                               v1 = tc1.y - tc0.y,
                               u2 = tc2.x - tc0.x,
