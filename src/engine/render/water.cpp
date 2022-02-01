@@ -56,7 +56,7 @@ void loadcaustics(bool force)
 }
 
 VARFR(causticscale, 0, 50, 10000, preloadwatershaders());
-VARFR(causticmillis, 0, 75, 1000, preloadwatershaders());
+VARFR(causticmillis, 0, 75, 1000, preloadwatershaders()); //milliseconds between caustics frames
 FVARR(causticcontrast, 0, 0.6f, 2);
 FVARR(causticoffset, 0, 0.7f, 1);
 VARFP(caustics, 0, 1, 1, { loadcaustics(); preloadwatershaders(); });

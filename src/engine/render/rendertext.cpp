@@ -350,7 +350,7 @@ static float draw_char(Texture *&tex, int c, float x, float y, float scale)
     return scale*info.advance;
 }
 
-VARP(textbright, 0, 85, 100);
+VARP(textbright, 0, 85, 100);  //brightness factor for rendered text (no change if at 100)
 
 //stack[sp] is current color index
 static void text_color(char c, char *stack, int size, int &sp, bvec color, int a)
