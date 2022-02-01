@@ -9,11 +9,13 @@ var searchData=
   ['detachentity_6',['detachentity',['../iengine_8h.html#a2301bf3a66a569344ee652f96dfd47a1',1,'iengine.h']]],
   ['disablezoom_7',['disablezoom',['../iengine_8h.html#a22c96f585456f856035322b5bb4a6169',1,'iengine.h']]],
   ['disown_8',['disown',['../structvector.html#a1031db09c7d4027790ccb7b5e7d25472',1,'vector']]],
-  ['downheap_9',['downheap',['../structvector.html#afd018336bccb491ad569e12c9ec6092b',1,'vector']]],
-  ['drawminimap_10',['drawminimap',['../iengine_8h.html#aaaca628ac539ed8575ddb8bbc4d55a75',1,'iengine.h']]],
-  ['drop_11',['drop',['../structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66',1,'vector']]],
-  ['dropenttofloor_12',['dropenttofloor',['../iengine_8h.html#a0ad347f2277926b638e58f460536b2b8',1,'iengine.h']]],
-  ['dualquat_13',['dualquat',['../structdualquat.html',1,'']]],
-  ['dup_14',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]],
-  ['dynent_15',['dynent',['../structdynent.html',1,'']]]
+  ['div_9',['div',['../structvec4.html#a2e97209612f0301cc6d568c0c418c1b7',1,'vec4']]],
+  ['div3_10',['div3',['../structvec4.html#a57cb25be766855ad53d38cc5eb1a57d1',1,'vec4']]],
+  ['downheap_11',['downheap',['../structvector.html#afd018336bccb491ad569e12c9ec6092b',1,'vector']]],
+  ['drawminimap_12',['drawminimap',['../iengine_8h.html#aaaca628ac539ed8575ddb8bbc4d55a75',1,'iengine.h']]],
+  ['drop_13',['drop',['../structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66',1,'vector']]],
+  ['dropenttofloor_14',['dropenttofloor',['../iengine_8h.html#a0ad347f2277926b638e58f460536b2b8',1,'iengine.h']]],
+  ['dualquat_15',['dualquat',['../structdualquat.html',1,'']]],
+  ['dup_16',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]],
+  ['dynent_17',['dynent',['../structdynent.html',1,'']]]
 ];
