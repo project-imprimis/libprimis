@@ -88,9 +88,9 @@ bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, 
     float invdet = 1/det;
     if(m.flags&Mesh_Alpha && (mode&Ray_Shadow)==Ray_Shadow && (m.tex->alphamask || loadalphamask(m.tex)))
     {
-        vec2 at = m.gettc(t.vert[0]),
-             bt = m.gettc(t.vert[1]).sub(at).mul(v*invdet),
-             ct = m.gettc(t.vert[2]).sub(at).mul(w*invdet);
+        vec2<float> at = m.gettc(t.vert[0]),
+                    bt = m.gettc(t.vert[1]).sub(at).mul(v*invdet),
+                    ct = m.gettc(t.vert[2]).sub(at).mul(w*invdet);
         at.add(bt).add(ct);
         int si = std::clamp(static_cast<int>(m.tex->xs * at.x), 0, m.tex->xs-1),
             ti = std::clamp(static_cast<int>(m.tex->ys * at.y), 0, m.tex->ys-1);
@@ -498,19 +498,19 @@ bool mmintersect(const extentity &e, const vec &o, const vec &ray, float maxdist
     //reorientation of rotated mmodels
     if(yaw != 0)
     {
-        const vec2 &rot = sincosmod360(-yaw);
+        const vec2<float> &rot = sincosmod360(-yaw);
         mo.rotate_around_z(rot);
         mray.rotate_around_z(rot);
     }
     if(pitch != 0)
     {
-        const vec2 &rot = sincosmod360(-pitch);
+        const vec2<float> &rot = sincosmod360(-pitch);
         mo.rotate_around_x(rot);
         mray.rotate_around_x(rot);
     }
     if(roll != 0)
     {
-        const vec2 &rot = sincosmod360(roll);
+        const vec2<float> &rot = sincosmod360(roll);
         mo.rotate_around_y(rot);
         mray.rotate_around_y(rot);
     }
