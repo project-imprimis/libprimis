@@ -14,6 +14,7 @@
  * maps (as point lights would require).
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
 #include "csm.h"

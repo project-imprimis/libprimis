@@ -8,6 +8,7 @@
  *
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
 

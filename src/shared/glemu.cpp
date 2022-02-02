@@ -1,7 +1,7 @@
 #include "../libprimis-headers/cube.h"
 
+#include "glemu.h"
 #include "glexts.h"
-
 namespace gle
 {
     struct attribinfo
