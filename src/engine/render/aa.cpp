@@ -6,6 +6,7 @@
  * SMAA (subpixel morphological antialiasing)
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
 #include "aa.h"

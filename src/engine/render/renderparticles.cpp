@@ -10,6 +10,7 @@
  * recommended for large, high detail special effects.
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 
 #include "renderlights.h"
