@@ -178,62 +178,6 @@ namespace gle
         vertexsize += a.formatsize;
     }
 
-    void defattribs(const char *fmt)
-    {
-        for(;; fmt += 3)
-        {
-            GLenum format;
-            switch(fmt[0])
-            {
-                case 'v':
-                {
-                    format = Attribute_Vertex;
-                    break;
-                }
-                case 'c':
-                {
-                    format = Attribute_Color;
-                    break;
-                }
-                case 't':
-                {
-                    format = Attribute_TexCoord0;
-                    break;
-                }
-                case 'T':
-                {
-                    format = Attribute_TexCoord1;
-                    break;
-                }
-                case 'n':
-                {
-                    format = Attribute_Normal;
-                    break;
-                }
-                case 'x':
-                {
-                    format = Attribute_Tangent;
-                    break;
-                }
-                case 'w':
-                {
-                    format = Attribute_BoneWeight;
-                    break;
-                }
-                case 'i':
-                {
-                    format = Attribute_BoneIndex;
-                    break;
-                }
-                default:
-                {
-                    return;
-                }
-            }
-            defattrib(format, fmt[1]-'0', fmt[2]);
-        }
-    }
-
     static void setattrib(const attribinfo &a, uchar *buf)
     {
         switch(a.type)
@@ -488,59 +432,17 @@ namespace gle
     void defvertex(int size, int format) { defattrib(Attribute_Vertex, size, format); }
     void defcolor(int size, int format) { defattrib(Attribute_Color, size, format); }
     void deftexcoord0(int size, int format) { defattrib(Attribute_TexCoord0, size, format); }
-    void deftexcoord1(int size, int format) { defattrib(Attribute_TexCoord1, size, format); }
     void defnormal(int size, int format) { defattrib(Attribute_Normal, size, format); }
-    void deftangent(int size, int format) { defattrib(Attribute_Tangent, size, format); }
-    void defboneweight(int size, int format) { defattrib(Attribute_BoneWeight, size, format); }
-    void defboneindex(int size, int format) { defattrib(Attribute_BoneIndex, size, format); }
 
-    void vertexf(float x) { glVertexAttrib1f_(Attribute_Vertex, x); }
-    void vertexf(float x, float y) { glVertexAttrib2f_(Attribute_Vertex, x, y); }
-    void vertexf(float x, float y, float z) { glVertexAttrib3f_(Attribute_Vertex, x, y, z); }
-    void vertexf(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_Vertex, x, y, z, w); }
-    void vertex(const vec &v) { glVertexAttrib3fv_(Attribute_Vertex, v.v); }
-    void vertex(const vec &v, float w) { glVertexAttrib4f_(Attribute_Vertex, v.x, v.y, v.z, w); }
-    void vertex(const vec2 &v) { glVertexAttrib2fv_(Attribute_Vertex, v.v); }
-    void vertex(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_Vertex, v.v); }
-
-    void colorf(float x) { glVertexAttrib1f_(Attribute_Color, x); }
-    void colorf(float x, float y) { glVertexAttrib2f_(Attribute_Color, x, y); }
     void colorf(float x, float y, float z) { glVertexAttrib3f_(Attribute_Color, x, y, z); }
     void colorf(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_Color, x, y, z, w); }
 
     void color(const vec &v) { glVertexAttrib3fv_(Attribute_Color, v.v); }
     void color(const vec &v, float w) { glVertexAttrib4f_(Attribute_Color, v.x, v.y, v.z, w); }
-    void color(const vec2 &v) { glVertexAttrib2fv_(Attribute_Color, v.v); }
-    void color(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_Color, v.v); }
 
     void colorub(uchar x, uchar y, uchar z, uchar w) { glVertexAttrib4Nub_(Attribute_Color, x, y, z, w); }
     void color(const bvec &v, uchar alpha) { glVertexAttrib4Nub_(Attribute_Color, v.x, v.y, v.z, alpha); }
-    void color(const vec4<uchar> &v) { glVertexAttrib4Nubv_(Attribute_Color, v.v); }
-    void texcoord0f(float x) { glVertexAttrib1f_(Attribute_TexCoord0, x); }
-    void texcoord0f(float x, float y) { glVertexAttrib2f_(Attribute_TexCoord0, x, y); }
-    void texcoord0f(float x, float y, float z) { glVertexAttrib3f_(Attribute_TexCoord0, x, y, z); }
-    void texcoord0f(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_TexCoord0, x, y, z, w); }
 
-    void texcoord0(const vec &v) { glVertexAttrib3fv_(Attribute_TexCoord0, v.v); }
-    void texcoord0(const vec &v, float w) { glVertexAttrib4f_(Attribute_TexCoord0, v.x, v.y, v.z, w); }
-    void texcoord0(const vec2 &v) { glVertexAttrib2fv_(Attribute_TexCoord0, v.v); }
-    void texcoord0(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_TexCoord0, v.v); }
-    void texcoord1f(float x) { glVertexAttrib1f_(Attribute_TexCoord1, x); }
-    void texcoord1f(float x, float y) { glVertexAttrib2f_(Attribute_TexCoord1, x, y); }
-    void texcoord1f(float x, float y, float z) { glVertexAttrib3f_(Attribute_TexCoord1, x, y, z); }
-    void texcoord1f(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_TexCoord1, x, y, z, w); }
-    void texcoord1(const vec &v) { glVertexAttrib3fv_(Attribute_TexCoord1, v.v); }
-    void texcoord1(const vec &v, float w) { glVertexAttrib4f_(Attribute_TexCoord1, v.x, v.y, v.z, w); }
-    void texcoord1(const vec2 &v) { glVertexAttrib2fv_(Attribute_TexCoord1, v.v); }
-    void texcoord1(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_TexCoord1, v.v); }
-    void normal(float x, float y, float z) { glVertexAttrib4f_(Attribute_Normal, x, y, z, 0.0f); }
-    void normal(const vec &v) { glVertexAttrib4f_(Attribute_Normal, v.x, v.y, v.z, 0.0f); }
-    void tangent(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_Tangent, x, y, z, w); }
-    void tangent(const vec &v, float w) { glVertexAttrib4f_(Attribute_Tangent, v.x, v.y, v.z, w); }
-    void tangent(const vec4<float> &v) { glVertexAttrib4fv_(Attribute_Tangent, v.v); }
-
-    void enableattrib(int index) { disable(); glEnableVertexAttribArray_(index); }
-    void disableattrib(int index) { glDisableVertexAttribArray_(index); }
     void enablevertex() { disable(); glEnableVertexAttribArray_(Attribute_Vertex); }
     void disablevertex() { glDisableVertexAttribArray_(Attribute_Vertex); }
     void vertexpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { disable(); glVertexAttribPointer_(Attribute_Vertex, size, type, normalized, stride, data); }
@@ -550,9 +452,6 @@ namespace gle
     void enabletexcoord0() { ; glEnableVertexAttribArray_(Attribute_TexCoord0); }
     void disabletexcoord0() { glDisableVertexAttribArray_(Attribute_TexCoord0); }
     void texcoord0pointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_TexCoord0, size, type, normalized, stride, data); }
-    void enabletexcoord1() { ; glEnableVertexAttribArray_(Attribute_TexCoord1); }
-    void disabletexcoord1() { glDisableVertexAttribArray_(Attribute_TexCoord1); }
-    void texcoord1pointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_TexCoord1, size, type, normalized, stride, data); }
     void enablenormal() { ; glEnableVertexAttribArray_(Attribute_Normal); }
     void disablenormal() { glDisableVertexAttribArray_(Attribute_Normal); }
     void normalpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_Normal, size, type, normalized, stride, data); }
@@ -570,16 +469,6 @@ namespace gle
     void clearebo() { glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, 0); }
     void bindvbo(GLuint vbo) { disable(); glBindBuffer_(GL_ARRAY_BUFFER, vbo); }
     void clearvbo() { glBindBuffer_(GL_ARRAY_BUFFER, 0); }
-
-    template<class T>
-    void attrib(T x)
-    {
-        if(attribbuf.check(sizeof(T)))
-        {
-            T *buf = (T *)attribbuf.pad(sizeof(T));
-            buf[0] = x;
-        }
-    }
 
     template<class T>
     void attrib(T x, T y)
@@ -617,55 +506,13 @@ namespace gle
         }
     }
 
-    template<size_t N, class T>
-    void attribv(const T *v)
-    {
-        attribbuf.put((const uchar *)v, N*sizeof(T));
-    }
-
-    void attribf(float x) { attrib<float>(x); }
     void attribf(float x, float y) { attrib<float>(x, y); }
     void attribf(float x, float y, float z) { attrib<float>(x, y, z); }
-    void attribf(float x, float y, float z, float w) { attrib<float>(x, y, z, w); }
-    void attribd(double x) { attrib<double>(x); }
-    void attribd(double x, double y) { attrib<double>(x, y); }
-    void attribd(double x, double y, double z) { attrib<double>(x, y, z); }
-    void attribd(double x, double y, double z, double w) { attrib<double>(x, y, z, w); }
-    void attribb(char x) { attrib<char>(x); }
-    void attribb(char x, char y) { attrib<char>(x, y); }
-    void attribb(char x, char y, char z) { attrib<char>(x, y, z); }
-    void attribb(char x, char y, char z, char w) { attrib<char>(x, y, z, w); }
-    void attribub(uchar x) { attrib<uchar>(x); }
-    void attribub(uchar x, uchar y) { attrib<uchar>(x, y); }
-    void attribub(uchar x, uchar y, uchar z) { attrib<uchar>(x, y, z); }
-    void attribub(uchar x, uchar y, uchar z, uchar w) { attrib<uchar>(x, y, z, w); }
-    void attribs(short x) { attrib<short>(x); }
-    void attribs(short x, short y) { attrib<short>(x, y); }
-    void attribs(short x, short y, short z) { attrib<short>(x, y, z); }
-    void attribs(short x, short y, short z, short w) { attrib<short>(x, y, z, w); }
-    void attribus(ushort x) { attrib<ushort>(x); }
-    void attribus(ushort x, ushort y) { attrib<ushort>(x, y); }
-    void attribus(ushort x, ushort y, ushort z) { attrib<ushort>(x, y, z); }
-    void attribus(ushort x, ushort y, ushort z, ushort w) { attrib<ushort>(x, y, z, w); }
-    void attribi(int x) { attrib<int>(x); }
-    void attribi(int x, int y) { attrib<int>(x, y); }
-    void attribi(int x, int y, int z) { attrib<int>(x, y, z); }
-    void attribi(int x, int y, int z, int w) { attrib<int>(x, y, z, w); }
-    void attribui(uint x) { attrib<uint>(x); }
-    void attribui(uint x, uint y) { attrib<uint>(x, y); }
-    void attribui(uint x, uint y, uint z) { attrib<uint>(x, y, z); }
-    void attribui(uint x, uint y, uint z, uint w) { attrib<uint>(x, y, z, w); }
 
-    void attrib(const vec &v) { attribf(v.x, v.y, v.z); }
-    void attrib(const vec &v, float w) { attribf(v.x, v.y, v.z, w); }
-    void attrib(const vec2 &v) { attribf(v.x, v.y); }
-    void attrib(const vec4<float> &v) { attribf(v.x, v.y, v.z, v.w); }
-    void attrib(const ivec &v) { attribi(v.x, v.y, v.z); }
-    void attrib(const ivec &v, int w) { attribi(v.x, v.y, v.z, w); }
-    void attrib(const ivec2 &v) { attribi(v.x, v.y); }
-    void attrib(const vec4<int> &v) { attribi(v.x, v.y, v.z, v.w); }
-    void attrib(const bvec &b) { attribub(b.x, b.y, b.z); }
-    void attrib(const bvec &b, uchar w) { attribub(b.x, b.y, b.z, w); }
-    void attrib(const vec4<uchar> &b) { attribub(b.x, b.y, b.z, b.w); }
+    void attribub(uchar x, uchar y, uchar z, uchar w) { attrib<uchar>(x, y, z, w); }
+
+    void attrib(const vec &v) { attrib<float>(v.x, v.y, v.z); }
+    void attrib(const vec &v, float w) { attrib<float>(v.x, v.y, v.z, w); }
+    void attrib(const vec2 &v) { attrib<float>(v.x, v.y); }
 }
 
