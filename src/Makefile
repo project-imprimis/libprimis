@@ -22,7 +22,6 @@ ifeq (1,$(COVERAGE_BUILD))
 endif
 #list of source code files to be compiled
 CLIENT_OBJS= \
-	shared/crypto.o \
 	shared/geom.o \
 	shared/glemu.o \
 	shared/stream.o \
