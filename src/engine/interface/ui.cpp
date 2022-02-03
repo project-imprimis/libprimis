@@ -69,7 +69,7 @@ namespace UI
         gle::attribf(x,   y+h); gle::attribf(tx,    ty+th);
     }
 
-    static void quad(float x, float y, float w, float h, const vec2 tc[4])
+    static void quad(float x, float y, float w, float h, const vec2<float> tc[4])
     {
         gle::defvertex(2);
         gle::deftexcoord0();
@@ -795,7 +795,7 @@ namespace UI
         uint *contents, *onshow, *onhide;
         bool allowinput, eschide, abovehud;
         float px, py, pw, ph;
-        vec2 sscale, soffset;
+        vec2<float> sscale, soffset;
 
         Window(const char *name, const char *contents, const char *onshow, const char *onhide) :
             name(newstring(name)),
@@ -951,8 +951,8 @@ namespace UI
 
         void calcscissor(float x1, float y1, float x2, float y2, int &sx1, int &sy1, int &sx2, int &sy2, bool clip = true)
         {
-            vec2 s1 = vec2(x1, y2).mul(sscale).add(soffset),
-                 s2 = vec2(x2, y1).mul(sscale).add(soffset);
+            vec2<float> s1 = vec2(x1, y2).mul(sscale).add(soffset),
+                        s2 = vec2(x2, y1).mul(sscale).add(soffset);
             sx1 = static_cast<int>(std::floor(s1.x*hudw + 0.5f));
             sy1 = static_cast<int>(std::floor(s1.y*hudh + 0.5f));
             sx2 = static_cast<int>(std::floor(s2.x*hudw + 0.5f));
@@ -2382,7 +2382,7 @@ namespace UI
 
     struct Triangle : Shape
     {
-        vec2 a, b, c;
+        vec2<float> a, b, c;
 
         void setup(const Color &color_, float w = 0, float h = 0, int angle = 0, int type_ = SOLID)
         {
@@ -2391,16 +2391,16 @@ namespace UI
             c = vec2(w/2, h/3);
             if(angle)
             {
-                vec2 rot = sincosmod360(-angle);
+                vec2<float> rot = sincosmod360(-angle);
                 a.rotate_around_z(rot);
                 b.rotate_around_z(rot);
                 c.rotate_around_z(rot);
             }
-            vec2 bbmin = vec2(a).min(b).min(c);
+            vec2<float> bbmin = vec2(a).min(b).min(c);
             a.sub(bbmin);
             b.sub(bbmin);
             c.sub(bbmin);
-            vec2 bbmax = vec2(a).max(b).max(c);
+            vec2<float> bbmax = vec2(a).max(b).max(c);
 
             Shape::setup(color_, type_, bbmax.x, bbmax.y);
         }
@@ -2487,7 +2487,7 @@ namespace UI
 
             float r = radius <= 0 ? std::min(w, h)/2 : radius;
             color.init();
-            vec2 center(sx + r, sy + r);
+            vec2<float> center(sx + r, sy + r);
             if(type == OUTLINE)
             {
                 gle::begin(GL_LINE_LOOP);
@@ -2502,7 +2502,7 @@ namespace UI
                 gle::attribf(center.x + r, center.y);
                 for(int angle = 360/15; angle < 360; angle += 360/15)
                 {
-                    vec2 p = vec2(sincos360[angle]).mul(r).add(center);
+                    vec2<float> p = vec2(sincos360[angle]).mul(r).add(center);
                     gle::attrib(p);
                     gle::attrib(p);
                 }
@@ -4261,7 +4261,7 @@ namespace UI
             changedraw(Change_Shader | Change_Color);
 
             SETSHADER(hudrgb);
-            vec2 tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
+            vec2<float> tc[4] = { vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1) };
             int xoff = vslot.offset.x,
                 yoff = vslot.offset.y;
             if(vslot.rotation)

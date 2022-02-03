@@ -18,5 +18,6 @@ src/tess_server
 *.srctrlprj
 # Files auto-produced by VSCode.
 .vscode/
+.ionide/
 # Documentation files in the docs folder.
 docs
