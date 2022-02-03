@@ -189,7 +189,6 @@
     <ClCompile Include="..\engine\world\raycube.cpp" />
     <ClCompile Include="..\engine\world\world.cpp" />
     <ClCompile Include="..\engine\world\worldio.cpp" />
-    <ClCompile Include="..\shared\crypto.cpp" />
     <ClCompile Include="..\shared\geom.cpp" />
     <ClCompile Include="..\shared\glemu.cpp" />
     <ClCompile Include="..\shared\stream.cpp" />

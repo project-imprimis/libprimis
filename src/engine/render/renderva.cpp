@@ -1403,23 +1403,6 @@ namespace
 
     CVARP(explicitskycolor, 0x800080);
 
-    struct decalrenderer
-    {
-        GLuint vbuf;
-        vec colorscale;
-        int globals, tmu;
-        GLuint textures[7];
-        DecalSlot *slot;
-
-        decalrenderer() : vbuf(0), colorscale(1, 1, 1), globals(-1), tmu(-1), slot(nullptr)
-        {
-            for(int i = 0; i < 7; ++i)
-            {
-                textures[i] = 0;
-            }
-        }
-    };
-
     struct decalbatch
     {
         const elementset &es;
@@ -1480,6 +1463,33 @@ namespace
     };
 
     std::vector<decalbatch> decalbatches;
+
+    class decalrenderer
+    {
+        public:
+            GLuint vbuf;
+            int globals;
+
+            void renderdecalbatches(int pass);
+
+            decalrenderer() : vbuf(0), globals(-1), colorscale(1, 1, 1), tmu(-1), slot(nullptr)
+            {
+                for(int i = 0; i < 7; ++i)
+                {
+                    textures[i] = 0;
+                }
+            }
+        private:
+            vec colorscale;
+            int tmu;
+            GLuint textures[7];
+            DecalSlot *slot;
+
+            void changebatchtmus();
+            void bindslottex(int type, Texture *tex, GLenum target = GL_TEXTURE_2D);
+            void changeslottmus(DecalSlot &slot);
+            void changeshader(int pass, decalbatch &b);
+    };
 
     void mergedecals(vtxarray *va)
     {
@@ -1588,67 +1598,67 @@ namespace
         gle::tangentpointer(sizeof(vertex), vdata->tangent.v, GL_BYTE);
     }
 
-    void changebatchtmus(decalrenderer &cur)
+    void decalrenderer::changebatchtmus()
     {
-        if(cur.tmu != 0)
+        if(tmu != 0)
         {
-            cur.tmu = 0;
+            tmu = 0;
             glActiveTexture_(GL_TEXTURE0);
         }
     }
 
-    void bindslottex(decalrenderer &cur, int type, Texture *tex, GLenum target = GL_TEXTURE_2D)
+    void decalrenderer::bindslottex(int type, Texture *tex, GLenum target)
     {
-        if(cur.textures[type] != tex->id)
+        if(textures[type] != tex->id)
         {
-            if(cur.tmu != type)
+            if(tmu != type)
             {
-                cur.tmu = type;
+                tmu = type;
                 glActiveTexture_(GL_TEXTURE0 + type);
             }
-            glBindTexture(target, cur.textures[type] = tex->id);
+            glBindTexture(target, textures[type] = tex->id);
         }
     }
 
-    void changeslottmus(decalrenderer &cur, DecalSlot &slot)
+    void decalrenderer::changeslottmus(DecalSlot &dslot)
     {
-        Texture *diffuse = slot.sts.empty() ? notexture : slot.sts[0].t;
-        bindslottex(cur, Tex_Diffuse, diffuse);
-        for(int i = 0; i < slot.sts.length(); i++)
+        Texture *diffuse = dslot.sts.empty() ? notexture : dslot.sts[0].t;
+        bindslottex(Tex_Diffuse, diffuse);
+        for(int i = 0; i < dslot.sts.length(); i++)
         {
-            Slot::Tex &t = slot.sts[i];
+            Slot::Tex &t = dslot.sts[i];
             switch(t.type)
             {
                 case Tex_Normal:
                 case Tex_Glow:
                 {
-                    bindslottex(cur, t.type, t.t);
+                    bindslottex(t.type, t.t);
                     break;
                 }
                 case Tex_Spec:
                 {
                     if(t.combined < 0)
                     {
-                        bindslottex(cur, Tex_Glow, t.t);
+                        bindslottex(Tex_Glow, t.t);
                     }
                     break;
                 }
             }
         }
-        if(cur.tmu != 0)
+        if(tmu != 0)
         {
-            cur.tmu = 0;
+            tmu = 0;
             glActiveTexture_(GL_TEXTURE0);
         }
-        if(cur.colorscale != slot.colorscale)
+        if(colorscale != dslot.colorscale)
         {
-            cur.colorscale = slot.colorscale;
-            GLOBALPARAMF(colorparams, slot.colorscale.x, slot.colorscale.y, slot.colorscale.z, 1);
+            colorscale = dslot.colorscale;
+            GLOBALPARAMF(colorparams, dslot.colorscale.x, dslot.colorscale.y, dslot.colorscale.z, 1);
         }
-        cur.slot = &slot;
+        slot = &dslot;
     }
 
-    void changeshader(decalrenderer &cur, int pass, decalbatch &b)
+    void decalrenderer::changeshader(int pass, decalbatch &b)
     {
         DecalSlot &slot = b.slot;
         if(b.es.reuse)
@@ -1671,7 +1681,7 @@ namespace
         {
             slot.shader->set(slot);
         }
-        cur.globals = GlobalShaderParamState::nextversion;
+        globals = GlobalShaderParamState::nextversion;
     }
 
     void renderdecalbatch(decalbatch &b)
@@ -1692,9 +1702,9 @@ namespace
         }
     }
 
-    void renderdecalbatches(decalrenderer &cur, int pass)
+    void decalrenderer::renderdecalbatches(int pass)
     {
-        cur.slot = nullptr;
+        slot = nullptr;
         int curbatch = firstbatch;
         while(curbatch >= 0)
         {
@@ -1705,19 +1715,19 @@ namespace
             {
                 continue;
             }
-            if(cur.vbuf != b.va->vbuf)
+            if(vbuf != b.va->vbuf)
             {
-                changevbuf(cur, b.va);
+                changevbuf(*this, b.va);
             }
-            changebatchtmus(cur);
-            if(cur.slot != &b.slot)
+            changebatchtmus();
+            if(slot != &b.slot)
             {
-                changeslottmus(cur, b.slot);
-                changeshader(cur, pass, b);
+                changeslottmus(b.slot);
+                changeshader(pass, b);
             }
             else
             {
-                updateshader(cur);
+                updateshader(*this);
             }
 
             renderdecalbatch(b);
@@ -3036,13 +3046,13 @@ void renderdecals()
                 mergedecals(va);
                 if(!batchdecals && decalbatches.size())
                 {
-                    renderdecalbatches(cur, 0);
+                    cur.renderdecalbatches(0);
                 }
             }
         }
         if(decalbatches.size())
         {
-            renderdecalbatches(cur, 0);
+            cur.renderdecalbatches(0);
         }
         if(usepacknorm())
         {
@@ -3062,13 +3072,13 @@ void renderdecals()
                 mergedecals(va);
                 if(!batchdecals && decalbatches.size())
                 {
-                    renderdecalbatches(cur, 1);
+                    cur.renderdecalbatches(1);
                 }
             }
         }
         if(decalbatches.size())
         {
-            renderdecalbatches(cur, 1);
+            cur.renderdecalbatches(1);
         }
     }
     else
@@ -3083,13 +3093,13 @@ void renderdecals()
                 mergedecals(va);
                 if(!batchdecals && decalbatches.size())
                 {
-                    renderdecalbatches(cur, 0);
+                    cur.renderdecalbatches(0);
                 }
             }
         }
         if(decalbatches.size())
         {
-            renderdecalbatches(cur, 0);
+            cur.renderdecalbatches(0);
         }
     }
     cleanupdecals();
