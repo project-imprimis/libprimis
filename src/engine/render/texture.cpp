@@ -5,6 +5,7 @@
 
 #include "SDL_image.h"
 
+#include "imagedata.h"
 #include "octarender.h"
 #include "renderwindow.h"
 #include "texture.h"
@@ -17,6 +18,18 @@
 
 #include "interface/console.h"
 #include "interface/control.h"
+
+extern const texrotation texrotations[8] =
+{
+    { false, false, false }, // 0: default
+    { false,  true,  true }, // 1: 90 degrees
+    {  true,  true, false }, // 2: 180 degrees
+    {  true, false,  true }, // 3: 270 degrees
+    {  true, false, false }, // 4: flip X
+    { false,  true, false }, // 5: flip Y
+    { false, false,  true }, // 6: transpose
+    {  true,  true,  true }, // 7: flipped transpose
+};
 
 template<int BPP>
 static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
@@ -161,7 +174,7 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uc
     }
 }
 
-static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh)
+void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh)
 {
     if(sw == dw*2 && sh == dh*2)
     {
@@ -195,7 +208,7 @@ static void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint 
     }
 }
 
-static void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
     int stridex = bpp,
         stridey = bpp;
@@ -288,7 +301,7 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int stride, uc
     }
 }
 
-static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
+void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy)
 {
     switch(bpp)
     {
@@ -296,454 +309,6 @@ static void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int s
         case 2: return reorienttexture<2>(src, sw, sh, stride, dst, flipx, flipy, swapxy);
         case 3: return reorienttexture<3>(src, sw, sh, stride, dst, flipx, flipy, swapxy);
         case 4: return reorienttexture<4>(src, sw, sh, stride, dst, flipx, flipy, swapxy);
-    }
-}
-
-#define WRITE_TEX(t, body) do \
-    { \
-        uchar *dstrow = t.data; \
-        for(int y = 0; y < t.h; ++y) \
-        { \
-            for(uchar *dst = dstrow, *end = &dstrow[t.w*t.bpp]; dst < end; dst += t.bpp) \
-            { \
-                body; \
-            } \
-            dstrow += t.pitch; \
-        } \
-    } while(0)
-
-#define READ_WRITE_TEX(t, s, body) do \
-    { \
-        uchar *dstrow = t.data, *srcrow = s.data; \
-        for(int y = 0; y < t.h; ++y) \
-        { \
-            for(uchar *dst = dstrow, *src = srcrow, *end = &srcrow[s.w*s.bpp]; src < end; dst += t.bpp, src += s.bpp) \
-            { \
-                body; \
-            } \
-            dstrow += t.pitch; \
-            srcrow += s.pitch; \
-        } \
-    } while(0)
-
-#define READ_2_WRITE_TEX(t, s1, src1, s2, src2, body) do \
-    { \
-        uchar *dstrow = t.data, *src1row = s1.data, *src2row = s2.data; \
-        for(int y = 0; y < t.h; ++y) \
-        { \
-            for(uchar *dst = dstrow, *end = &dstrow[t.w*t.bpp], *src1 = src1row, *src2 = src2row; dst < end; dst += t.bpp, src1 += s1.bpp, src2 += s2.bpp) \
-            { \
-                body; \
-            } \
-            dstrow += t.pitch; \
-            src1row += s1.pitch; \
-            src2row += s2.pitch; \
-        } \
-    } while(0)
-
-#define READ_WRITE_RGB_TEX(t, s, body) \
-    { \
-        if(t.bpp >= 3) \
-        { \
-            READ_WRITE_TEX(t, s, body); \
-        } \
-        else \
-        { \
-            ImageData rgb(t.w, t.h, 3); \
-            READ_2_WRITE_TEX(rgb, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
-            t.replace(rgb); \
-        } \
-    }
-
-static void forcergbimage(ImageData &s)
-{
-    if(s.bpp >= 3)
-    {
-        return;
-    }
-    ImageData d(s.w, s.h, 3);
-    READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
-    s.replace(d);
-}
-
-#define READ_WRITE_RGBA_TEX(t, s, body) \
-    { \
-        if(t.bpp >= 4) \
-        { \
-            READ_WRITE_TEX(t, s, body); \
-        } \
-        else \
-        { \
-            ImageData rgba(t.w, t.h, 4); \
-            if(t.bpp==3) \
-            { \
-                READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = orig[0]; dst[1] = orig[1]; dst[2] = orig[2]; body; }); \
-            } \
-            else \
-            { \
-                READ_2_WRITE_TEX(rgba, t, orig, s, src, { dst[0] = dst[1] = dst[2] = orig[0]; body; }); \
-            } \
-            t.replace(rgba); \
-        } \
-    }
-
-static void swizzleimage(ImageData &s)
-{
-    if(s.bpp==2)
-    {
-        ImageData d(s.w, s.h, 4);
-        READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; dst[3] = src[1]; });
-        s.replace(d);
-    }
-    else if(s.bpp==1)
-    {
-        ImageData d(s.w, s.h, 3);
-        READ_WRITE_TEX(d, s, { dst[0] = dst[1] = dst[2] = src[0]; });
-        s.replace(d);
-    }
-}
-
-static void scaleimage(ImageData &s, int w, int h)
-{
-    ImageData d(w, h, s.bpp);
-    scaletexture(s.data, s.w, s.h, s.bpp, s.pitch, d.data, w, h);
-    s.replace(d);
-}
-
-static void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = Tex_Diffuse)
-{
-    ImageData d(swapxy ? s.h : s.w, swapxy ? s.w : s.h, s.bpp, s.levels, s.align, s.compressed);
-    switch(s.compressed)
-    {
-        default:
-            if(type == Tex_Normal && s.bpp >= 3)
-            {
-                reorientnormals(s.data, s.w, s.h, s.bpp, s.pitch, d.data, flipx, flipy, swapxy);
-            }
-            else
-            {
-                reorienttexture(s.data, s.w, s.h, s.bpp, s.pitch, d.data, flipx, flipy, swapxy);
-            }
-            break;
-    }
-    s.replace(d);
-}
-
-extern const texrotation texrotations[8] =
-{
-    { false, false, false }, // 0: default
-    { false,  true,  true }, // 1: 90 degrees
-    {  true,  true, false }, // 2: 180 degrees
-    {  true, false,  true }, // 3: 270 degrees
-    {  true, false, false }, // 4: flip X
-    { false,  true, false }, // 5: flip Y
-    { false, false,  true }, // 6: transpose
-    {  true,  true,  true }, // 7: flipped transpose
-};
-
-static void texrotate(ImageData &s, int numrots, int type = Tex_Diffuse)
-{
-    if(numrots>=1 && numrots<=7)
-    {
-        const texrotation &r = texrotations[numrots];
-        texreorient(s, r.flipx, r.flipy, r.swapxy, type);
-    }
-}
-
-static void texoffset(ImageData &s, int xoffset, int yoffset)
-{
-    xoffset = std::max(xoffset, 0);
-    xoffset %= s.w;
-    yoffset = std::max(yoffset, 0);
-    yoffset %= s.h;
-    if(!xoffset && !yoffset)
-    {
-        return;
-    }
-    ImageData d(s.w, s.h, s.bpp);
-    uchar *src = s.data;
-    for(int y = 0; y < s.h; ++y)
-    {
-        uchar *dst = static_cast<uchar *>(d.data)+((y+yoffset)%d.h)*d.pitch;
-        memcpy(dst+xoffset*s.bpp, src, (s.w-xoffset)*s.bpp);
-        memcpy(dst, src+(s.w-xoffset)*s.bpp, xoffset*s.bpp);
-        src += s.pitch;
-    }
-    s.replace(d);
-}
-
-static void texcrop(ImageData &s, int x, int y, int w, int h)
-{
-    x = std::clamp(x, 0, s.w);
-    y = std::clamp(y, 0, s.h);
-    w = std::min(w < 0 ? s.w : w, s.w - x);
-    h = std::min(h < 0 ? s.h : h, s.h - y);
-    if(!w || !h)
-    {
-        return;
-    }
-    ImageData d(w, h, s.bpp);
-    uchar *src = s.data + y*s.pitch + x*s.bpp,
-          *dst = d.data;
-    for(int y = 0; y < h; ++y)
-    {
-        memcpy(dst, src, w*s.bpp);
-        src += s.pitch;
-        dst += d.pitch;
-    }
-    s.replace(d);
-}
-
-void texmad(ImageData &s, const vec &mul, const vec &add)
-{
-    if(s.bpp < 3 && (mul.x != mul.y || mul.y != mul.z || add.x != add.y || add.y != add.z))
-    {
-        swizzleimage(s);
-    }
-    int maxk = std::min(static_cast<int>(s.bpp), 3);
-    WRITE_TEX(s,
-        for(int k = 0; k < maxk; ++k)
-        {
-            dst[k] = static_cast<uchar>(std::clamp(dst[k]*mul[k] + 255*add[k], 0.0f, 255.0f));
-        }
-    );
-}
-
-void texcolorify(ImageData &s, const vec &color, vec weights)
-{
-    if(s.bpp < 3)
-    {
-        return;
-    }
-    if(weights.iszero())
-    {
-        weights = vec(0.21f, 0.72f, 0.07f);
-    }
-    WRITE_TEX(s,
-        float lum = dst[0]*weights.x + dst[1]*weights.y + dst[2]*weights.z;
-        for(int k = 0; k < 3; ++k)
-        {
-            dst[k] = static_cast<uchar>(std::clamp(lum*color[k], 0.0f, 255.0f));
-        }
-    );
-}
-
-void texcolormask(ImageData &s, const vec &color1, const vec &color2)
-{
-    if(s.bpp < 4)
-    {
-        return;
-    }
-    ImageData d(s.w, s.h, 3);
-    READ_WRITE_TEX(d, s,
-        vec color;
-        color.lerp(color2, color1, src[3]/255.0f);
-        for(int k = 0; k < 3; ++k)
-        {
-            dst[k] = static_cast<uchar>(std::clamp(color[k]*src[k], 0.0f, 255.0f));
-        }
-    );
-    s.replace(d);
-}
-
-static void texdup(ImageData &s, int srcchan, int dstchan)
-{
-    if(srcchan==dstchan || std::max(srcchan, dstchan) >= s.bpp)
-    {
-        return;
-    }
-    WRITE_TEX(s, dst[dstchan] = dst[srcchan]);
-}
-
-static void texmix(ImageData &s, int c1, int c2, int c3, int c4)
-{
-    int numchans = c1 < 0 ? 0 : (c2 < 0 ? 1 : (c3 < 0 ? 2 : (c4 < 0 ? 3 : 4)));
-    if(numchans <= 0)
-    {
-        return;
-    }
-    ImageData d(s.w, s.h, numchans);
-    READ_WRITE_TEX(d, s,
-        switch(numchans)
-        {
-            case 4:
-            {
-                dst[3] = src[c4];
-                break;
-            }
-            case 3:
-            {
-                dst[2] = src[c3];
-                break;
-            }
-            case 2:
-            {
-                dst[1] = src[c2];
-                break;
-            }
-            case 1:
-            {
-                dst[0] = src[c1];
-                break;
-            }
-        }
-    );
-    s.replace(d);
-}
-
-static void texgrey(ImageData &s)
-{
-    if(s.bpp <= 2)
-    {
-        return;
-    }
-    ImageData d(s.w, s.h, s.bpp >= 4 ? 2 : 1);
-    if(s.bpp >= 4)
-    {
-        READ_WRITE_TEX(d, s,
-            dst[0] = src[0];
-            dst[1] = src[3];
-        );
-    }
-    else
-    {
-        READ_WRITE_TEX(d, s, dst[0] = src[0]);
-    }
-    s.replace(d);
-}
-
-static void texpremul(ImageData &s)
-{
-    switch(s.bpp)
-    {
-        case 2:
-            WRITE_TEX(s,
-                dst[0] = static_cast<uchar>((static_cast<uint>(dst[0])*static_cast<uint>(dst[1]))/255);
-            );
-            break;
-        case 4:
-            WRITE_TEX(s,
-                uint alpha = dst[3];
-                dst[0] = static_cast<uchar>((static_cast<uint>(dst[0])*alpha)/255);
-                dst[1] = static_cast<uchar>((static_cast<uint>(dst[1])*alpha)/255);
-                dst[2] = static_cast<uchar>((static_cast<uint>(dst[2])*alpha)/255);
-            );
-            break;
-    }
-}
-
-static void texagrad(ImageData &s, float x2, float y2, float x1, float y1)
-{
-    if(s.bpp != 2 && s.bpp != 4)
-    {
-        return;
-    }
-    y1 = 1 - y1;
-    y2 = 1 - y2;
-    float minx = 1,
-          miny = 1,
-          maxx = 1,
-          maxy = 1;
-    if(x1 != x2)
-    {
-        minx = (0 - x1) / (x2 - x1);
-        maxx = (1 - x1) / (x2 - x1);
-    }
-    if(y1 != y2)
-    {
-        miny = (0 - y1) / (y2 - y1);
-        maxy = (1 - y1) / (y2 - y1);
-    }
-    float dx = (maxx - minx)/std::max(s.w-1, 1),
-          dy = (maxy - miny)/std::max(s.h-1, 1),
-          cury = miny;
-    for(uchar *dstrow = s.data + s.bpp - 1, *endrow = dstrow + s.h*s.pitch; dstrow < endrow; dstrow += s.pitch)
-    {
-        float curx = minx;
-        for(uchar *dst = dstrow, *end = &dstrow[s.w*s.bpp]; dst < end; dst += s.bpp)
-        {
-            dst[0] = static_cast<uchar>(dst[0]*std::clamp(curx, 0.0f, 1.0f)*std::clamp(cury, 0.0f, 1.0f));
-            curx += dx;
-        }
-        cury += dy;
-    }
-}
-
-static void texblend(ImageData &d, ImageData &s, ImageData &m)
-{
-    if(s.w != d.w || s.h != d.h)
-    {
-        scaleimage(s, d.w, d.h);
-    }
-    if(m.w != d.w || m.h != d.h)
-    {
-        scaleimage(m, d.w, d.h);
-    }
-    if(&s == &m)
-    {
-        if(s.bpp == 2)
-        {
-            if(d.bpp >= 3)
-            {
-                swizzleimage(s);
-            }
-        }
-        else if(s.bpp == 4)
-        {
-            if(d.bpp < 3)
-            {
-                swizzleimage(d);
-            }
-        }
-        else
-        {
-            return;
-        }
-        //need to declare int for each var because it's inside a macro body
-        if(d.bpp < 3) READ_WRITE_TEX(d, s,
-            int srcblend = src[1];
-            int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-        );
-        else READ_WRITE_TEX(d, s,
-            int srcblend = src[3];
-            int dstblend = 255 - srcblend;
-            dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-            dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
-            dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
-        );
-    }
-    else
-    {
-        if(s.bpp < 3)
-        {
-            if(d.bpp >= 3)
-            {
-                swizzleimage(s);
-            }
-        }
-        else if(d.bpp < 3)
-        {
-            swizzleimage(d);
-        }
-        if(d.bpp < 3)
-        {
-            READ_2_WRITE_TEX(d, s, src, m, mask,
-                int srcblend = mask[0];
-                int dstblend = 255 - srcblend;
-                dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-            );
-        }
-        else
-        {
-            READ_2_WRITE_TEX(d, s, src, m, mask,
-                int srcblend = mask[0];
-                int dstblend = 255 - srcblend;
-                dst[0] = static_cast<uchar>((dst[0]*dstblend + src[0]*srcblend)/255);
-                dst[1] = static_cast<uchar>((dst[1]*dstblend + src[1]*srcblend)/255);
-                dst[2] = static_cast<uchar>((dst[2]*dstblend + src[2]*srcblend)/255);
-            );
-        }
     }
 }
 /*  var             min  default max  */
@@ -1285,7 +850,7 @@ hashnameset<Texture> textures;
 
 Texture *notexture = nullptr; // used as default, ensured to be loaded
 
-static GLenum texformat(int bpp, bool swizzle = false)
+GLenum texformat(int bpp, bool swizzle)
 {
     switch(bpp)
     {
@@ -1502,40 +1067,6 @@ static SDL_Surface *fixsurfaceformat(SDL_Surface *s)
     return s;
 }
 
-static void texnormal(ImageData &s, int emphasis)
-{
-    ImageData d(s.w, s.h, 3);
-    uchar *src = s.data,
-          *dst = d.data;
-    for(int y = 0; y < s.h; ++y)
-    {
-        for(int x = 0; x < s.w; ++x)
-        {
-            vec normal(0.0f, 0.0f, 255.0f/emphasis);
-            normal.x += src[y*s.pitch + ((x+s.w-1)%s.w)*s.bpp];
-            normal.x -= src[y*s.pitch + ((x+1)%s.w)*s.bpp];
-            normal.y += src[((y+s.h-1)%s.h)*s.pitch + x*s.bpp];
-            normal.y -= src[((y+1)%s.h)*s.pitch + x*s.bpp];
-            normal.normalize();
-            *dst++ = static_cast<uchar>(127.5f + normal.x*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.y*127.5f);
-            *dst++ = static_cast<uchar>(127.5f + normal.z*127.5f);
-        }
-    }
-    s.replace(d);
-}
-
-static bool canloadsurface(const char *name)
-{
-    stream *f = openfile(name, "rb");
-    if(!f)
-    {
-        return false;
-    }
-    delete f;
-    return true;
-}
-
 SDL_Surface *loadsurface(const char *name)
 {
     SDL_Surface *s = nullptr;
@@ -1562,239 +1093,6 @@ SDL_Surface *loadsurface(const char *name)
     return fixsurfaceformat(s);
 }
 
-static vec parsevec(const char *arg)
-{
-    vec v(0, 0, 0);
-    int i = 0;
-    for(; arg[0] && (!i || arg[0]=='/') && i<3; arg += std::strcspn(arg, "/,><"), i++)
-    {
-        if(i)
-        {
-            arg++;
-        }
-        v[i] = std::atof(arg);
-    }
-    if(i==1)
-    {
-        v.y = v.z = v.x;
-    }
-    return v;
-}
-
-static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *compress = nullptr, int *wrap = nullptr, const char *tdir = nullptr, int ttype = Tex_Diffuse)
-{
-    const char *cmds = nullptr,
-               *file = tname;
-    if(tname[0]=='<')
-    {
-        cmds = tname;
-        file = std::strrchr(tname, '>');
-        if(!file)
-        {
-            if(msg)
-            {
-                conoutf(Console_Error, "could not load texture %s", tname);
-            }
-            return false;
-        }
-        file++;
-    }
-    string pname;
-    if(tdir)
-    {
-        formatstring(pname, "%s/%s", tdir, file);
-        file = path(pname);
-    }
-    for(const char *pcmds = cmds; pcmds;)
-    {
-        #define PARSETEXCOMMANDS(cmds) \
-            const char *cmd = nullptr, \
-                       *end = nullptr, \
-                       *arg[4] = { nullptr, nullptr, nullptr, nullptr }; \
-            cmd = &cmds[1]; \
-            end = std::strchr(cmd, '>'); \
-            if(!end) \
-            { \
-                break; \
-            } \
-            cmds = std::strchr(cmd, '<'); \
-            size_t len = std::strcspn(cmd, ":,><"); \
-            for(int i = 0; i < 4; ++i) \
-            { \
-                arg[i] = std::strchr(i ? arg[i-1] : cmd, i ? ',' : ':'); \
-                if(!arg[i] || arg[i] >= end) \
-                { \
-                    arg[i] = ""; \
-                } \
-                else \
-                { \
-                    arg[i]++; \
-                } \
-            }
-        PARSETEXCOMMANDS(pcmds);
-        if(matchstring(cmd, len, "stub"))
-        {
-            return canloadsurface(file);
-        }
-    }
-    if(msg)
-    {
-        renderprogress(loadprogress, file);
-    }
-    if(!d.data)
-    {
-        SDL_Surface *s = loadsurface(file);
-        if(!s)
-        {
-            if(msg)
-            {
-                conoutf(Console_Error, "could not load texture %s", file);
-            }
-            return false;
-        }
-        int bpp = s->format->BitsPerPixel;
-        if(bpp%8 || !texformat(bpp/8))
-        {
-            SDL_FreeSurface(s); conoutf(Console_Error, "texture must be 8, 16, 24, or 32 bpp: %s", file);
-            return false;
-        }
-        if(std::max(s->w, s->h) > (1<<12))
-        {
-            SDL_FreeSurface(s); conoutf(Console_Error, "texture size exceeded %dx%d pixels: %s", 1<<12, 1<<12, file);
-            return false;
-        }
-        d.wrap(s);
-    }
-
-    while(cmds)
-    {
-        PARSETEXCOMMANDS(cmds);
-        if(d.compressed)
-        {
-            goto compressed; //see `compressed` nested between else & if (yes it's ugly)
-        }
-        if(matchstring(cmd, len, "mad"))
-        {
-            texmad(d, parsevec(arg[0]), parsevec(arg[1]));
-        }
-        else if(matchstring(cmd, len, "colorify"))
-        {
-            texcolorify(d, parsevec(arg[0]), parsevec(arg[1]));
-        }
-        else if(matchstring(cmd, len, "colormask"))
-        {
-            texcolormask(d, parsevec(arg[0]), *arg[1] ? parsevec(arg[1]) : vec(1, 1, 1));
-        }
-        else if(matchstring(cmd, len, "normal"))
-        {
-            int emphasis = std::atoi(arg[0]);
-            texnormal(d, emphasis > 0 ? emphasis : 3);
-        }
-        else if(matchstring(cmd, len, "dup"))
-        {
-            texdup(d, std::atoi(arg[0]), std::atoi(arg[1]));
-        }
-        else if(matchstring(cmd, len, "offset"))
-        {
-            texoffset(d, std::atoi(arg[0]), std::atoi(arg[1]));
-        }
-        else if(matchstring(cmd, len, "rotate"))
-        {
-            texrotate(d, std::atoi(arg[0]), ttype);
-        }
-        else if(matchstring(cmd, len, "reorient"))
-        {
-            texreorient(d, std::atoi(arg[0])>0, std::atoi(arg[1])>0, std::atoi(arg[2])>0, ttype);
-        }
-        else if(matchstring(cmd, len, "crop"))
-        {
-            texcrop(d, std::atoi(arg[0]), std::atoi(arg[1]), *arg[2] ? std::atoi(arg[2]) : -1, *arg[3] ? std::atoi(arg[3]) : -1);
-        }
-        else if(matchstring(cmd, len, "mix"))
-        {
-            texmix(d, *arg[0] ? std::atoi(arg[0]) : -1, *arg[1] ? std::atoi(arg[1]) : -1, *arg[2] ? std::atoi(arg[2]) : -1, *arg[3] ? std::atoi(arg[3]) : -1);
-        }
-        else if(matchstring(cmd, len, "grey"))
-        {
-            texgrey(d);
-        }
-        else if(matchstring(cmd, len, "premul"))
-        {
-            texpremul(d);
-        }
-        else if(matchstring(cmd, len, "agrad"))
-        {
-            texagrad(d, std::atof(arg[0]), std::atof(arg[1]), std::atof(arg[2]), std::atof(arg[3]));
-        }
-        else if(matchstring(cmd, len, "blend"))
-        {
-            ImageData src, mask;
-            string srcname, maskname;
-            copystring(srcname, stringslice(arg[0], std::strcspn(arg[0], ":,><")));
-            copystring(maskname, stringslice(arg[1], std::strcspn(arg[1], ":,><")));
-            if(srcname[0] && texturedata(src, srcname, false, nullptr, nullptr, tdir, ttype) && (!maskname[0] || texturedata(mask, maskname, false, nullptr, nullptr, tdir, ttype)))
-            {
-                texblend(d, src, maskname[0] ? mask : src);
-            }
-        }
-        else if(matchstring(cmd, len, "thumbnail"))
-        {
-            int w = std::atoi(arg[0]),
-                h = std::atoi(arg[1]);
-            if(w <= 0 || w > (1<<12))
-            {
-                w = 64;
-            }
-            if(h <= 0 || h > (1<<12))
-            {
-                h = w;
-            }
-            if(d.w > w || d.h > h)
-            {
-                scaleimage(d, w, h);
-            }
-        }
-        else if(matchstring(cmd, len, "compress"))
-        {
-            int scale = std::atoi(arg[0]);
-            if(compress)
-            {
-                *compress = scale;
-            }
-        }
-        else if(matchstring(cmd, len, "nocompress"))
-        {
-            if(compress)
-            {
-                *compress = -1;
-            }
-        }
-        // note that the else/if in else-if is separated by a goto breakpoint
-        else
-    compressed:
-        if(matchstring(cmd, len, "mirror"))
-        {
-            if(wrap)
-            {
-                *wrap |= 0x300;
-            }
-        }
-        else if(matchstring(cmd, len, "noswizzle"))
-        {
-            if(wrap)
-            {
-                *wrap |= 0x10000;
-            }
-        }
-    }
-    return true;
-}
-
-static bool texturedata(ImageData &d, Slot &slot, Slot::Tex &tex, bool msg = true, int *compress = nullptr, int *wrap = nullptr)
-{
-    return texturedata(d, tex.name, msg, compress, wrap, slot.texturedir(), tex.type);
-}
-
 uchar *loadalphamask(Texture *t)
 {
     if(t->alphamask)
@@ -1806,7 +1104,7 @@ uchar *loadalphamask(Texture *t)
         return nullptr;
     }
     ImageData s;
-    if(!texturedata(s, t->name, false) || !s.data || s.compressed)
+    if(!s.texturedata(t->name, false) || !s.data || s.compressed)
     {
         return nullptr;
     }
@@ -1845,7 +1143,7 @@ Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
     }
     int compress = 0;
     ImageData s;
-    if(texturedata(s, tname, msg, &compress, &clamp))
+    if(s.texturedata(tname, msg, &compress, &clamp))
     {
         return newtexture(nullptr, tname, s, clamp, mipit, false, false, compress);
     }
@@ -2885,84 +2183,6 @@ void decaldepth(float *depth, float *fade)
 }
 COMMAND(decaldepth, "ff");
 
-static void addglow(ImageData &c, ImageData &g, const vec &glowcolor)
-{
-    if(g.bpp < 3)
-    {
-        READ_WRITE_RGB_TEX(c, g,
-            for(int k = 0; k < 3; ++k)
-            {
-                dst[k] = std::clamp(static_cast<int>(dst[k]) + static_cast<int>(src[0]*glowcolor[k]), 0, 255);
-            }
-        );
-    }
-    else
-    {
-        READ_WRITE_RGB_TEX(c, g,
-            for(int k = 0; k < 3; ++k)
-            {
-                dst[k] = std::clamp(static_cast<int>(dst[k]) + static_cast<int>(src[k]*glowcolor[k]), 0, 255);
-            }
-        );
-    }
-}
-
-static void mergespec(ImageData &c, ImageData &s)
-{
-    if(s.bpp < 3)
-    {
-        READ_WRITE_RGBA_TEX(c, s,
-            dst[3] = src[0];
-        );
-    }
-    else
-    {
-        READ_WRITE_RGBA_TEX(c, s,
-            dst[3] = (static_cast<int>(src[0]) + static_cast<int>(src[1]) + static_cast<int>(src[2]))/3;
-        );
-    }
-}
-
-static void mergedepth(ImageData &c, ImageData &z)
-{
-    READ_WRITE_RGBA_TEX(c, z,
-        dst[3] = src[0];
-    );
-}
-
-static void mergealpha(ImageData &c, ImageData &s)
-{
-    if(s.bpp < 3)
-    {
-        READ_WRITE_RGBA_TEX(c, s,
-            dst[3] = src[0];
-        );
-    }
-    else
-    {
-        READ_WRITE_RGBA_TEX(c, s,
-            dst[3] = src[3];
-        );
-    }
-}
-
-static void collapsespec(ImageData &s)
-{
-    ImageData d(s.w, s.h, 1);
-    if(s.bpp >= 3)
-    {
-        READ_WRITE_TEX(d, s,
-        {
-            dst[0] = (static_cast<int>(src[0]) + static_cast<int>(src[1]) + static_cast<int>(src[2]))/3;
-        });
-    }
-    else
-    {
-        READ_WRITE_TEX(d, s, { dst[0] = src[0]; });
-    }
-    s.replace(d);
-}
-
 int DecalSlot::cancombine(int type) const
 {
     switch(type)
@@ -3079,7 +2299,7 @@ void Slot::load(int index, Slot::Tex &t)
     int compress = 0,
         wrap = 0;
     ImageData ts;
-    if(!texturedata(ts, *this, t, true, &compress, &wrap))
+    if(!ts.texturedata(*this, t, true, &compress, &wrap))
     {
         t.t = notexture;
         return;
@@ -3092,7 +2312,7 @@ void Slot::load(int index, Slot::Tex &t)
             {
                 if(ts.bpp > 1)
                 {
-                    collapsespec(ts);
+                    ts.collapsespec();
                 }
                 break;
             }
@@ -3102,27 +2322,27 @@ void Slot::load(int index, Slot::Tex &t)
                 if(combine)
                 {
                     ImageData cs;
-                    if(texturedata(cs, *this, *combine))
+                    if(cs.texturedata(*this, *combine))
                     {
                         if(cs.w!=ts.w || cs.h!=ts.h)
                         {
-                            scaleimage(cs, ts.w, ts.h);
+                            cs.scaleimage(ts.w, ts.h);
                         }
                         switch(combine->type)
                         {
                             case Tex_Spec:
                             {
-                                mergespec(ts, cs);
+                                ts.mergespec(cs);
                                 break;
                             }
                             case Tex_Depth:
                             {
-                                mergedepth(ts, cs);
+                                ts.mergedepth(cs);
                                 break;
                             }
                             case Tex_Alpha:
                             {
-                                mergealpha(ts, cs);
+                                ts.mergealpha(cs);
                                 break;
                             }
                         }
@@ -3130,14 +2350,14 @@ void Slot::load(int index, Slot::Tex &t)
                 }
                 if(ts.bpp < 3)
                 {
-                    swizzleimage(ts);
+                    ts.swizzleimage();
                 }
                 break;
         }
     }
     if(!ts.compressed && shouldpremul(t.type))
     {
-        texpremul(ts);
+        ts.texpremul();
     }
     t.t = newtexture(nullptr, key.getbuf(), ts, wrap, true, true, true, compress);
 }
@@ -3271,8 +2491,8 @@ void linkslotshaders()
 
 static void blitthumbnail(ImageData &d, ImageData &s, int x, int y)
 {
-    forcergbimage(d);
-    forcergbimage(s);
+    d.forcergbimage();
+    s.forcergbimage();
     uchar *dstrow = &d.data[d.pitch*y + d.bpp*x],
           *srcrow = s.data;
     for(int y = 0; y < s.h; ++y)
@@ -3339,10 +2559,10 @@ Texture *Slot::loadthumbnail()
     else
     {
         ImageData s, g, l, d;
-        texturedata(s, *this, sts[0], false);
+        s.texturedata(*this, sts[0], false);
         if(glow >= 0)
         {
-            texturedata(g, *this, sts[glow], false);
+            g.texturedata(*this, sts[glow], false);
         }
         if(!s.data)
         {
@@ -3352,23 +2572,23 @@ Texture *Slot::loadthumbnail()
         {
             if(vslot.colorscale != vec(1, 1, 1))
             {
-                texmad(s, vslot.colorscale, vec(0, 0, 0));
+                s.texmad(vslot.colorscale, vec(0, 0, 0));
             }
             int xs = s.w, ys = s.h;
             if(s.w > 128 || s.h > 128)
             {
-                scaleimage(s, std::min(s.w, 128), std::min(s.h, 128));
+                s.scaleimage(std::min(s.w, 128), std::min(s.h, 128));
             }
             if(g.data)
             {
-                if(g.w != s.w || g.h != s.h) scaleimage(g, s.w, s.h);
-                addglow(s, g, vslot.glowcolor);
+                if(g.w != s.w || g.h != s.h) g.scaleimage(s.w, s.h);
+                s.addglow(g, vslot.glowcolor);
             }
             if(l.data)
             {
                 if(l.w != s.w/2 || l.h != s.h/2)
                 {
-                    scaleimage(l, s.w/2, s.h/2);
+                    l.scaleimage(s.w/2, s.h/2);
                 }
                 blitthumbnail(s, l, s.w-l.w, s.h-l.h);
             }
@@ -3376,17 +2596,17 @@ Texture *Slot::loadthumbnail()
             {
                 if(vslot.colorscale != vec(1, 1, 1))
                 {
-                    texmad(d, vslot.colorscale, vec(0, 0, 0));
+                    d.texmad(vslot.colorscale, vec(0, 0, 0));
                 }
                 if(d.w != s.w/2 || d.h != s.h/2)
                 {
-                    scaleimage(d, s.w/2, s.h/2);
+                    d.scaleimage(s.w/2, s.h/2);
                 }
                 blitthumbnail(s, d, 0, 0);
             }
             if(s.bpp < 3)
             {
-                forcergbimage(s);
+                s.forcergbimage();
             }
             t = newtexture(nullptr, name.getbuf(), s, 0, false, false, true);
             t->xs = xs;
@@ -3466,7 +2686,7 @@ bool reloadtexture(Texture &tex)
         {
             int compress = 0;
             ImageData s;
-            if(!texturedata(s, tex.name, true, &compress) || !newtexture(&tex, nullptr, s, tex.clamp, tex.mipmap, false, false, compress))
+            if(!s.texturedata(tex.name, true, &compress) || !newtexture(&tex, nullptr, s, tex.clamp, tex.mipmap, false, false, compress))
             {
                 return false;
             }

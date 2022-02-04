@@ -24,6 +24,12 @@ extern void reloadtextures();
 extern void cleanuptextures();
 extern bool settexture(const char *name, int clamp = 0);
 
+//for imagedata manipulation
+extern void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh);
+extern void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
+extern void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
+extern GLenum texformat(int bpp, bool swizzle = false);
+
 struct GlobalShaderParamState
 {
     const char *name;
@@ -915,125 +921,6 @@ struct LocalShaderParam
         if(!name##shader) name##shader = lookupshaderbyname(#name); \
         name##shader->setvariant(__VA_ARGS__); \
     } while(0)
-
-struct ImageData
-{
-    int w, h, bpp, levels, align, pitch;
-    GLenum compressed;
-    uchar *data;
-    void *owner;
-    void (*freefunc)(void *);
-
-    ImageData()
-        : data(nullptr), owner(nullptr), freefunc(nullptr)
-    {}
-
-
-    ImageData(int nw, int nh, int nbpp, int nlevels = 1, int nalign = 0, GLenum ncompressed = GL_FALSE)
-    {
-        setdata(nullptr, nw, nh, nbpp, nlevels, nalign, ncompressed);
-    }
-
-    ImageData(int nw, int nh, int nbpp, uchar *data)
-        : owner(nullptr), freefunc(nullptr)
-    {
-        setdata(data, nw, nh, nbpp);
-    }
-
-    ImageData(SDL_Surface *s) { wrap(s); }
-    ~ImageData() { cleanup(); }
-
-    void setdata(uchar *ndata, int nw, int nh, int nbpp, int nlevels = 1, int nalign = 0, GLenum ncompressed = GL_FALSE)
-    {
-        w = nw;
-        h = nh;
-        bpp = nbpp;
-        levels = nlevels;
-        align = nalign;
-        pitch = align ? 0 : w*bpp;
-        compressed = ncompressed;
-        data = ndata ? ndata : new uchar[calcsize()];
-        if(!ndata)
-        {
-            owner = this;
-            freefunc = nullptr;
-        }
-    }
-
-    int calclevelsize(int level) const
-    {
-        return ((std::max(w>>level, 1)+align-1)/align)*((std::max(h>>level, 1)+align-1)/align)*bpp;
-    }
-
-    int calcsize() const
-    {
-        if(!align)
-        {
-            return w*h*bpp;
-        }
-        int lw = w,
-            lh = h,
-            size = 0;
-        for(int i = 0; i < levels; ++i)
-        {
-            if(lw<=0)
-            {
-                lw = 1;
-            }
-            if(lh<=0)
-            {
-                lh = 1;
-            }
-            size += ((lw+align-1)/align)*((lh+align-1)/align)*bpp;
-            if(lw*lh==1)
-            {
-                break;
-            }
-            lw >>= 1;
-            lh >>= 1;
-        }
-        return size;
-    }
-
-    void disown()
-    {
-        data = nullptr;
-        owner = nullptr;
-        freefunc = nullptr;
-    }
-
-    void cleanup()
-    {
-        if(owner==this)
-        {
-            delete[] data;
-        }
-        else if(freefunc)
-        {
-            (*freefunc)(owner);
-        }
-        disown();
-    }
-
-    void replace(ImageData &d)
-    {
-        cleanup();
-        *this = d;
-        if(owner == &d)
-        {
-            owner = this;
-        }
-        d.disown();
-    }
-
-    void wrap(SDL_Surface *s)
-    {
-        setdata((uchar *)s->pixels, s->w, s->h, s->format->BytesPerPixel);
-        pitch = s->pitch;
-        owner = s;
-        freefunc = (void (*)(void *))SDL_FreeSurface;
-    }
-};
 
 // management of texture slots
 // each texture slot can have multiple texture frames, of which currently only the first is used
