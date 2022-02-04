@@ -15,7 +15,6 @@ extern void restorevsync();
 extern void resetfpshistory();
 extern void limitfps(int &millis, int curmillis);
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
-extern void updatefpshistory(int millis);
 
 extern void renderbackground(const char *caption = nullptr, Texture *mapshot = nullptr, const char *mapname = nullptr, const char *mapinfo = nullptr, bool force = false);
 extern void renderprogress(float bar, const char *text, bool background = false);
