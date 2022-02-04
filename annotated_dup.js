@@ -25,7 +25,6 @@ var annotated_dup =
     [ "ident", "structident.html", "structident" ],
     [ "identstack", "structidentstack.html", null ],
     [ "identval", "structidentval.html", null ],
-    [ "isclass", "structisclass.html", null ],
     [ "ivec", "structivec.html", null ],
     [ "ivec2", "structivec2.html", null ],
     [ "matrix2", "structmatrix2.html", null ],

@@ -38,7 +38,6 @@ var hierarchy =
       [ "tagval", "structtagval.html", null ]
     ] ],
     [ "ident::identvalptr", "unionident_1_1identvalptr.html", null ],
-    [ "isclass< T >", "structisclass.html", null ],
     [ "ivec", "structivec.html", null ],
     [ "ivec2", "structivec2.html", null ],
     [ "matrix2", "structmatrix2.html", null ],

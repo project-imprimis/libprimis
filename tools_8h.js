@@ -3,7 +3,6 @@ var tools_8h =
     [ "databuf< T >", "structdatabuf.html", null ],
     [ "sortless", "structsortless.html", null ],
     [ "sortnameless", "structsortnameless.html", null ],
-    [ "isclass< T >", "structisclass.html", null ],
     [ "stringslice", "structstringslice.html", null ],
     [ "vector< T >", "structvector.html", "structvector" ],
     [ "hashbase< H, E, K, T >", "structhashbase.html", "structhashbase" ],
