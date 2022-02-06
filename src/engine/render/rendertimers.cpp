@@ -41,7 +41,7 @@ namespace
     static vector<int> timerorder;
     static int timercycle = 0;
 
-    timer *findtimer(const char *name, bool gpu)
+    timer *findtimer(const char *name, bool gpu) //also creates a new timer if none found
     {
         for(int i = 0; i < timers.length(); i++)
         {
@@ -72,6 +72,16 @@ namespace
 //externally relevant functionality
 
 //used to start a timer in some part of the code, cannot be used outside of rendering part
+/**
+ * @brief activates a timer that starts its query from a given point in the code
+ *
+ * Creates a new timer if necessary.
+ *
+ * @param name The name of the timer to use
+ * @param gpu Toggles timing GPU rendering time
+ *
+ * @return a pointer to the relevant timer
+ */
 timer *begintimer(const char *name, bool gpu)
 {
     if(!usetimers || inbetweenframes || (gpu && (!hasTQ || deferquery)))
@@ -138,6 +148,12 @@ void synctimers()
     }
 }
 
+/**
+ * @brief deletes the elements in the timers global vector
+ *
+ * Deletes the elements in the `timer` global variable. If any GPU queries are active,
+ * they are cancelled so as not to waste the GPU's time
+ */
 void cleanuptimers()
 {
     for(int i = 0; i < timers.length(); i++)
