@@ -52,7 +52,7 @@ namespace
     FVAR(hdraccumscale, 0, 0.98f, 1);           //for hdr, exponent base for time decay of accumulation buffer (always <= 1 so decaying with time)
     VAR(hdraccummillis, 1, 33, 1000);           //number of ms between samplings for the hdr buffer
     VAR(hdrreduce, 0, 2, 2);                    //number of powers to reduce hdr buffer size relative to g buffer (2 = 1/4, 1 = 1/2, 0 = g-buffer size)
-    FVARR(hdrbright, 1e-4f, 1.0f, 1e4f);
+    FVARR(hdrbright, 1e-4f, 1.0f, 1e4f);        //brightness factor for high dynamic range rendering
     FVAR(hdrsaturate, 1e-3f, 0.8f, 1e3f);
 }
 
