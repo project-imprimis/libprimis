@@ -167,92 +167,94 @@ namespace //internal functions incl. AA implementations
     /* FXAA: Fast approXimate Anti Aliasing */
     //////////////////////////////////////////
 
-    GLuint fxaafbo = 0,
-           fxaatex = 0;
-
-    void cleanupfxaa(); //fxn prototype required due to VARFP initialization chicken/egg
-
-    VARFP(fxaa, 0, 0, 1, cleanupfxaa());
-    VARFP(fxaaquality, 0, 1, 3, cleanupfxaa());
-    VARFP(fxaagreenluma, 0, 0, 1, cleanupfxaa());
-
-    int fxaatype = -1;
-    Shader *fxaashader = nullptr;
-
-    void loadfxaashaders()
+    namespace fxaa
     {
-        fxaatype = tqaatype >= 0 ? tqaatype : (!fxaagreenluma && !intel_texalpha_bug ? AA_Luma : AA_Unused);
-        loadhdrshaders(fxaatype);
-        string opts;
-        int optslen = 0;
-        if(tqaa || fxaagreenluma || intel_texalpha_bug)
+        GLuint fxaafbo = 0,
+               fxaatex = 0;
+
+        void cleanupfxaa(); //fxn prototype required due to VARFP initialization chicken/egg
+
+        VARFP(fxaa, 0, 0, 1, cleanupfxaa());
+        VARFP(fxaaquality, 0, 1, 3, cleanupfxaa());
+        VARFP(fxaagreenluma, 0, 0, 1, cleanupfxaa());
+
+        int fxaatype = -1;
+        Shader *fxaashader = nullptr;
+
+        void loadfxaashaders()
         {
-            opts[optslen++] = 'g';
+            fxaatype = tqaatype >= 0 ? tqaatype : (!fxaagreenluma && !intel_texalpha_bug ? AA_Luma : AA_Unused);
+            loadhdrshaders(fxaatype);
+            string opts;
+            int optslen = 0;
+            if(tqaa || fxaagreenluma || intel_texalpha_bug)
+            {
+                opts[optslen++] = 'g';
+            }
+            opts[optslen] = '\0';
+            DEF_FORMAT_STRING(fxaaname, "fxaa%d%s", fxaaquality, opts);
+            fxaashader = generateshader(fxaaname, "fxaashaders %d \"%s\"", fxaaquality, opts);
         }
-        opts[optslen] = '\0';
-        DEF_FORMAT_STRING(fxaaname, "fxaa%d%s", fxaaquality, opts);
-        fxaashader = generateshader(fxaaname, "fxaashaders %d \"%s\"", fxaaquality, opts);
+
+        void clearfxaashaders()
+        {
+            fxaatype = -1;
+            fxaashader = nullptr;
+        }
+
+        void setupfxaa(int w, int h)
+        {
+            if(!fxaatex)
+            {
+                glGenTextures(1, &fxaatex);
+            }
+            if(!fxaafbo)
+            {
+                glGenFramebuffers_(1, &fxaafbo);
+            }
+            glBindFramebuffer_(GL_FRAMEBUFFER, fxaafbo);
+            createtexture(fxaatex, w, h, nullptr, 3, 1, tqaa || (!fxaagreenluma && !intel_texalpha_bug) ? GL_RGBA8 : GL_RGB, GL_TEXTURE_RECTANGLE);
+            glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, fxaatex, 0);
+            gbuf.bindgdepth();
+            if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            {
+                fatal("failed allocating FXAA buffer!");
+            }
+            glBindFramebuffer_(GL_FRAMEBUFFER, 0);
+
+            loadfxaashaders();
+        }
+
+        void cleanupfxaa()
+        {
+            if(fxaafbo)
+            {
+                glDeleteFramebuffers_(1, &fxaafbo);
+                fxaafbo = 0;
+            }
+            if(fxaatex)
+            {
+                glDeleteTextures(1, &fxaatex);
+                fxaatex = 0;
+            }
+            clearfxaashaders();
+        }
+
+        void dofxaa(GLuint outfbo = 0)
+        {
+            timer *fxaatimer = begintimer("fxaa");
+            glBindFramebuffer_(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
+            fxaashader->set();
+            glBindTexture(GL_TEXTURE_RECTANGLE, fxaatex);
+            screenquad(vieww, viewh);
+            if(tqaa)
+            {
+                resolvetqaa(outfbo);
+            }
+            endtimer(fxaatimer);
+        }
+        //end of FXAA code
     }
-
-    void clearfxaashaders()
-    {
-        fxaatype = -1;
-        fxaashader = nullptr;
-    }
-
-    void setupfxaa(int w, int h)
-    {
-        if(!fxaatex)
-        {
-            glGenTextures(1, &fxaatex);
-        }
-        if(!fxaafbo)
-        {
-            glGenFramebuffers_(1, &fxaafbo);
-        }
-        glBindFramebuffer_(GL_FRAMEBUFFER, fxaafbo);
-        createtexture(fxaatex, w, h, nullptr, 3, 1, tqaa || (!fxaagreenluma && !intel_texalpha_bug) ? GL_RGBA8 : GL_RGB, GL_TEXTURE_RECTANGLE);
-        glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, fxaatex, 0);
-        gbuf.bindgdepth();
-        if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        {
-            fatal("failed allocating FXAA buffer!");
-        }
-        glBindFramebuffer_(GL_FRAMEBUFFER, 0);
-
-        loadfxaashaders();
-    }
-
-    void cleanupfxaa()
-    {
-        if(fxaafbo)
-        {
-            glDeleteFramebuffers_(1, &fxaafbo);
-            fxaafbo = 0;
-        }
-        if(fxaatex)
-        {
-            glDeleteTextures(1, &fxaatex);
-            fxaatex = 0;
-        }
-        clearfxaashaders();
-    }
-
-    void dofxaa(GLuint outfbo = 0)
-    {
-        timer *fxaatimer = begintimer("fxaa");
-        glBindFramebuffer_(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
-        fxaashader->set();
-        glBindTexture(GL_TEXTURE_RECTANGLE, fxaatex);
-        screenquad(vieww, viewh);
-        if(tqaa)
-        {
-            resolvetqaa(outfbo);
-        }
-        endtimer(fxaatimer);
-    }
-    //end of FXAA code
-
     /* SMAA: Subpixel Morphological Anti Aliasing */
     ////////////////////////////////////////////////
 
@@ -1098,11 +1100,11 @@ void setupaa(int w, int h)
             setupsmaa(w, h);
         }
     }
-    else if(fxaa)
+    else if(fxaa::fxaa)
     {
-        if(!fxaafbo)
+        if(!fxaa::fxaafbo)
         {
-            setupfxaa(w, h);
+            fxaa::setupfxaa(w, h);
         }
     }
 }
@@ -1202,10 +1204,10 @@ void doaa(GLuint outfbo, GBuffer gbuffer)
         gbuffer.processhdr(smaafbo[0], smaatype);
         dosmaa(outfbo, split);
     }
-    else if(fxaa)
+    else if(fxaa::fxaa)
     {
-        gbuffer.processhdr(fxaafbo, fxaatype);
-        dofxaa(outfbo);
+        gbuffer.processhdr(fxaa::fxaafbo, fxaa::fxaatype);
+        fxaa::dofxaa(outfbo);
     }
     else if(tqaa)
     {
@@ -1238,6 +1240,6 @@ bool debugaa()
 void cleanupaa()
 {
     cleanupsmaa();
-    cleanupfxaa();
+    fxaa::cleanupfxaa();
     cleanuptqaa();
 }
