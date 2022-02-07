@@ -109,8 +109,8 @@ namespace
     }
     COMMAND(toggleconsole, "");
 
-    VARP(consize, 0, 5, 100);
-    VARP(miniconsize, 0, 5, 100);
+    VARP(consize, 0, 5, 100);                   //font size of the console text
+    VARP(miniconsize, 0, 5, 100);               //miniature console font size
     VARP(miniconwidth, 0, 40, 100);             //miniature console width
     VARP(confade, 0, 30, 60);                   //seconds before fading console
     VARP(miniconfade, 0, 30, 60);
