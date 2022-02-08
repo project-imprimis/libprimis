@@ -117,7 +117,7 @@ int cascadedshadowmap::calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
     return mask;
 }
 
-int calcspherecsmsplits(const vec &center, float radius)
+int cascadedshadowmap::calcspherecsmsplits(const vec &center, float radius)
 {
     int mask = (1<<csmsplits)-1;
     if(!csmcull)

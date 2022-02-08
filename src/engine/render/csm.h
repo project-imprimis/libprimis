@@ -3,8 +3,6 @@
 
 static const int csmmaxsplits = 8;
 
-extern int calcspherecsmsplits(const vec &center, float radius);
-
 class cascadedshadowmap
 {
     public:
@@ -24,6 +22,7 @@ class cascadedshadowmap
         void setup();                   // insert shadowmaps for each split frustum if there is sunlight
         void bindparams();              // bind any shader params necessary for lighting
         int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax);
+        int calcspherecsmsplits(const vec &center, float radius);
 
     private:
         void updatesplitdist();         // compute split frustum distances
