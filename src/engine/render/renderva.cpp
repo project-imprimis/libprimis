@@ -566,7 +566,7 @@ namespace
                 bbmin = v.geommin;
                 bbmax = v.geommax;
             }
-            v.shadowmask = calcbbcsmsplits(bbmin, bbmax);
+            v.shadowmask = csm.calcbbcsmsplits(bbmin, bbmax);
             if(v.shadowmask)
             {
                 float dist = shadowdir.project_bb(bbmin, bbmax) - shadowbias;
@@ -3485,7 +3485,7 @@ void findshadowmms()
                 }
                 case ShadowMap_Cascade:
                 {
-                    if(!calcbbcsmsplits(oe->bbmin, oe->bbmax))
+                    if(!csm.calcbbcsmsplits(oe->bbmin, oe->bbmax))
                     {
                         continue;
                     }

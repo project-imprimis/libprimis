@@ -44,7 +44,7 @@ FVAR(csmpolyfactor2, -1e3f, 3, 1e3f);
 FVAR(csmpolyoffset2, -1e4f, 0, 1e4f);
 cascadedshadowmap csm;
 
-int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
+int cascadedshadowmap::calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
 {
     int mask = (1<<csmsplits)-1;
     if(!csmcull)
@@ -53,7 +53,7 @@ int calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
     }
     for(int i = 0; i < csmsplits; ++i)
     {
-        const cascadedshadowmap::splitinfo &split = csm.splits[i];
+        const cascadedshadowmap::splitinfo &split = splits[i];
         int k;
         for(k = 0; k < 4; k++)
         {
@@ -126,7 +126,7 @@ int calcspherecsmsplits(const vec &center, float radius)
     }
     for(int i = 0; i < csmsplits; ++i)
     {
-        const cascadedshadowmap::splitinfo &split = csm.splits[i];
+        const cascadedshadowmap::splitinfo &split = splits[i];
         int k;
         for(k = 0; k < 4; k++)
         {
