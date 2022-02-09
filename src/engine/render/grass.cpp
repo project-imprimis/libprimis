@@ -405,7 +405,7 @@ void rendergrass()
 
     gle::bindvbo(grassvbo);
 
-    const grassvert *ptr = 0;
+    const grassvert *ptr = nullptr;
     gle::vertexpointer(sizeof(grassvert), ptr->pos.v);
     gle::colorpointer(sizeof(grassvert), ptr->color.v);
     gle::texcoord0pointer(sizeof(grassvert), ptr->tc.v);
