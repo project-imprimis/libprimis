@@ -150,7 +150,7 @@ Shadows</h2>
 <div class="line">             shadowval(center, 1.0, 1.0)));</div>
 <div class="line">}</div>
 <div class="ttc" id="astructvec2_html"><div class="ttname"><a href="structvec2.html">vec2</a></div><div class="ttdoc">2 dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:20</div></div>
-<div class="ttc" id="astructvec4_html"><div class="ttname"><a href="structvec4.html">vec4</a></div><div class="ttdoc">four dimensional vector template intented to be specialized for any arithmetic type</div><div class="ttdef"><b>Definition:</b> geom.h:562</div></div>
+<div class="ttc" id="astructvec4_html"><div class="ttname"><a href="structvec4.html">vec4</a></div><div class="ttdoc">A four dimensional Cartesian-space vector template.</div><div class="ttdef"><b>Definition:</b> geom.h:566</div></div>
 </div><!-- fragment --><p >This idea is extended to larger filter radiuses but is not shown here.</p>
 <p >After experimenting with different projection setups for omnidirectional shadows such as tetrahedral (4 faces) or dual-parabolic (2 faces), it was found that the ordinary cubemap (6 faces) layout was best as the larger number of smaller frustums actually provides better opportunities for culling and caching of faces while providing the least amount of projection distortion. However, for multi-tap shadowmap filters, the native cubemap format is insufficient for easily computing the locations of neighboring taps. Also, despite texture arrays allowing for batching of many shadowmaps during a single rendering pass, they do not allow adequate control of sizing of individual shadowmaps and their partitions.</p>
 <p >For further information about the basics of rendering cubemap shadowmaps, see page 42+ of:</p>
