@@ -33,6 +33,7 @@ var iengine_8h =
     [ "initparticles", "iengine_8h.html#ab4bf9fc23e899dc5d9ff219ba7abeb90", null ],
     [ "initsound", "iengine_8h.html#a1f6f31af749d7c6f20319e004dccedf7", null ],
     [ "initstains", "iengine_8h.html#aa31e3758c7277c026c3c241156abc909", null ],
+    [ "inituicmds", "iengine_8h.html#acd92a89f1ab2250b271c931797e178f4", null ],
     [ "insideworld", "iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9", null ],
     [ "iterdynents", "iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046", null ],
     [ "limitfps", "iengine_8h.html#a1738c13bae99737597bd32a9fde99c1e", null ],

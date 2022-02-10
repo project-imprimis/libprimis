@@ -284,6 +284,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>UI::holdui</b> (const
 <tr class="memitem:af16736487eb50cec13ef576f4507f82c"><td class="memItemLeft" align="right" valign="top"><a id="af16736487eb50cec13ef576f4507f82c" name="af16736487eb50cec13ef576f4507f82c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>UI::uivisible</b> (const char *name)</td></tr>
 <tr class="separator:af16736487eb50cec13ef576f4507f82c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd92a89f1ab2250b271c931797e178f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#acd92a89f1ab2250b271c931797e178f4">UI::inituicmds</a> ()</td></tr>
+<tr class="memdesc:acd92a89f1ab2250b271c931797e178f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the UI commands to the command parser.  <a href="iengine_8h.html#acd92a89f1ab2250b271c931797e178f4">More...</a><br /></td></tr>
+<tr class="separator:acd92a89f1ab2250b271c931797e178f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab47d2789c10a03538fe1ffc8bd94365f"><td class="memItemLeft" align="right" valign="top"><a id="ab47d2789c10a03538fe1ffc8bd94365f" name="ab47d2789c10a03538fe1ffc8bd94365f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addchange</b> (const char *desc, int type)</td></tr>
 <tr class="separator:ab47d2789c10a03538fe1ffc8bd94365f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1877,6 +1880,47 @@ false if no entities selected </dd></dl>
 <p>Loads stains into the global stains array. </p>
 <p >Sets up each entry in the stains global variable array using init() method and then preloads them.</p>
 <p >Fails to do anything if initing is set (early game loading time). </p>
+
+</div>
+</div>
+<a id="acd92a89f1ab2250b271c931797e178f4" name="acd92a89f1ab2250b271c931797e178f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd92a89f1ab2250b271c931797e178f4">&#9670;&nbsp;</a></span>inituicmds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void UI::inituicmds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Binds the UI commands to the command parser. </p>
+<p >Places into the CubeScript interpreter a series of UI commands, required before it is possible to use CubeScript to create UI elements.</p>
+<p >Commands defined:</p>
+<p >ui!hover uihover ui!hover? uihover? ui!hover+ uihover+ ui!hover+? uihover+?</p>
+<p >ui!press uipress ui!press? uipress? ui!press+ uipress+ ui!press+? uipress+?</p>
+<p >ui!hold uihold ui!hold? uihold? ui!hold+ uihold+ ui!hold+? uihold+?</p>
+<p >ui!release uirelease ui!release? uirelease? ui!release+ uirelease+ ui!release+? uirelease+?</p>
+<p >ui!althold uialthold ui!althold? uialthold? ui!althold+ uialthold+ ui!althold+? uialthold+?</p>
+<p >ui!altpress uialtpress ui!altpress? uialtpress? ui!altpress+ uialtpress+ ui!altpress+? uialtpress+?</p>
+<p >ui!altrelease uialtrelease ui!altrelease? uialtrelease? ui!altrelease+ uialtrelease+ ui!altrelease+? uialtrelease+?</p>
+<p >ui!eschold uieschold ui!eschold? uieschold? ui!eschold+ uieschold+ ui!eschold+? uieschold+?</p>
+<p >ui!escpress uiescpress ui!escpress? uiescpress? ui!escpress+ uiescpress+ ui!escpress+? uiescpress+?</p>
+<p >ui!escrelease uiescrelease ui!escrelease? uiescrelease? ui!escrelease+ uiescrelease+ ui!escrelease+? uiescrelease+?</p>
+<p >ui!scrollup uiscrollup ui!scrollup? uiscrollup? ui!scrollup+ uiscrollup+ ui!scrollup+? uiscrollup+?</p>
+<p >ui!scrolldown uiscrolldown ui!scrolldown? uiscrolldown? ui!scrolldown+ uiscrolldown+ ui!scrolldown+? uiscrolldown+?</p>
+<p >uifocus uifocus? uifocus+ uifocus+? uialign uialign- uialign* uiclamp uiclamp- uiclamp*</p>
+<p >uigroup uihlist uivlist uilist uigrid uitableheader uitablerow uitable uispace uioffset uifill uitarget uiclip</p>
+<p >uiscroll uihscrolloffset uivscrolloffset uihscrollbar uivscrollbar uiscrollarrow uiscrollbutton uihslider uivslider uisliderarrow uisliderbutton</p>
+<p >uicolor uimodcolor uivgradient uimodvgradient uihgradient uimodhgradient</p>
+<p >uioutline uiline uitriangle uitriangleoutline uimodtriangle uicircle uicircleoutline uimodcircle</p>
+<p >uicolortext uitext uitextfill uiwrapcolortext uiwraptext uicolorcontext uicontext uicontextfill uiwrapcolorcontext uiwrapcontext uitexteditor uifont uiabovehud uiconsole uifield uikeyfield</p>
+<p >uiimage uistretchedimage uicroppedimage uiborderedimage uitiledimage</p>
+<p >uimodelpreview uiprefabpreview uislotview uivslotview </p>
 
 </div>
 </div>
