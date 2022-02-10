@@ -4521,371 +4521,372 @@ namespace UI
         }
     }
 
-    #define DOSTATE(flags, func) \
-        ICOMMANDNS("ui!" #func, uinot##func##_, "ee", (uint *t, uint *f), \
-            executeret(buildparent && buildparent->hasstate(flags) ? t : f)); \
-        ICOMMANDNS("ui" #func, ui##func##_, "ee", (uint *t, uint *f), \
-            executeret(buildparent && buildparent->haschildstate(flags) ? t : f)); \
-        ICOMMANDNS("ui!" #func "?", uinot##func##__, "tt", (tagval *t, tagval *f), \
-            ifstateval(buildparent && buildparent->hasstate(flags), t, f)); \
-        ICOMMANDNS("ui" #func "?", ui##func##__, "tt", (tagval *t, tagval *f), \
-            ifstateval(buildparent && buildparent->haschildstate(flags), t, f)); \
-        ICOMMANDNS("ui!" #func "+", uinextnot##func##_, "ee", (uint *t, uint *f), \
-            executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->hasstate(flags) ? t : f)); \
-        ICOMMANDNS("ui" #func "+", uinext##func##_, "ee", (uint *t, uint *f), \
-            executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags) ? t : f)); \
-        ICOMMANDNS("ui!" #func "+?", uinextnot##func##__, "tt", (tagval *t, tagval *f), \
-            ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->hasstate(flags), t, f)); \
-        ICOMMANDNS("ui" #func "+?", uinext##func##__, "tt", (tagval *t, tagval *f), \
-            ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags), t, f));
-    DOSTATES
-    #undef DOSTATE
-
-    ICOMMANDNS("uifocus", uifocusexec_, "ee", (uint *t, uint *f),
-        executeret(buildparent && TextEditor::focus == buildparent ? t : f));
-    ICOMMANDNS("uifocus?", uifocustagval_, "tt", (tagval *t, tagval *f),
-        ifstateval(buildparent && TextEditor::focus == buildparent, t, f));
-    ICOMMANDNS("uifocus+", uinextfocusexec_, "ee", (uint *t, uint *f),
-        executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild] ? t : f));
-    ICOMMANDNS("uifocus+?", uinextfocustagval_, "tt", (tagval *t, tagval *f),
-        ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild], t, f));
-
-    ICOMMAND(uialign, "ii", (int *xalign, int *yalign),
-    {
-        if(buildparent)
+        static float parsepixeloffset(const tagval *t, int size)
         {
-            buildparent->setalign(*xalign, *yalign);
-        }
-    });
-    ICOMMANDNS("uialign-", uialign_, "ii", (int *xalign, int *yalign),
-    {
-        if(buildparent && buildchild > 0)
-        {
-            buildparent->children[buildchild-1]->setalign(*xalign, *yalign);
-        }
-    });
-    ICOMMANDNS("uialign*", uialign__, "ii", (int *xalign, int *yalign),
-    {
-        if(buildparent)
-        {
-            for(int i = 0; i < buildchild; ++i)
+            switch(t->type)
             {
-                buildparent->children[i]->setalign(*xalign, *yalign);
-            }
-        }
-    });
-
-    ICOMMAND(uiclamp, "iiii", (int *left, int *right, int *top, int *bottom),
-    {
-        if(buildparent)
-        {
-            buildparent->setclamp(*left, *right, *top, *bottom);
-        }
-    });
-    ICOMMANDNS("uiclamp-", uiclamp_, "iiii", (int *left, int *right, int *top, int *bottom),
-    {
-        if(buildparent && buildchild > 0)
-        {
-            buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom);
-        }
-    });
-    ICOMMANDNS("uiclamp*", uiclamp__, "iiii", (int *left, int *right, int *top, int *bottom),
-    {
-        if(buildparent)
-        {
-            for(int i = 0; i < buildchild; ++i)
-            {
-                buildparent->children[i]->setclamp(*left, *right, *top, *bottom);
-            }
-        }
-    });
-
-    ICOMMAND(uigroup, "e", (uint *children),
-        BUILD(Object, o, o->setup(), children));
-
-    ICOMMAND(uihlist, "fe", (float *space, uint *children),
-        BUILD(HorizontalList, o, o->setup(*space), children));
-
-    ICOMMAND(uivlist, "fe", (float *space, uint *children),
-        BUILD(VerticalList, o, o->setup(*space), children));
-
-    ICOMMAND(uilist, "fe", (float *space, uint *children),
-    {
-        for(Object *parent = buildparent; parent && !parent->istype<VerticalList>(); parent = parent->parent)
-        {
-            if(parent->istype<HorizontalList>())
-            {
-                BUILD(VerticalList, o, o->setup(*space), children);
-                return;
-            }
-        }
-        BUILD(HorizontalList, o, o->setup(*space), children);
-    });
-
-    ICOMMAND(uigrid, "iffe", (int *columns, float *spacew, float *spaceh, uint *children),
-        BUILD(Grid, o, o->setup(*columns, *spacew, *spaceh), children));
-
-    ICOMMAND(uitableheader, "ee", (uint *columndata, uint *children),
-        BUILDCOLUMNS(TableHeader, o, o->setup(), columndata, children));
-    ICOMMAND(uitablerow, "ee", (uint *columndata, uint *children),
-        BUILDCOLUMNS(TableRow, o, o->setup(), columndata, children));
-    ICOMMAND(uitable, "ffe", (float *spacew, float *spaceh, uint *children),
-        BUILD(Table, o, o->setup(*spacew, *spaceh), children));
-
-    ICOMMAND(uispace, "ffe", (float *spacew, float *spaceh, uint *children),
-        BUILD(Spacer, o, o->setup(*spacew, *spaceh), children));
-
-    ICOMMAND(uioffset, "ffe", (float *offsetx, float *offsety, uint *children),
-        BUILD(Offsetter, o, o->setup(*offsetx, *offsety), children));
-
-    ICOMMAND(uifill, "ffe", (float *minw, float *minh, uint *children),
-        BUILD(Filler, o, o->setup(*minw, *minh), children));
-
-    ICOMMAND(uitarget, "ffe", (float *minw, float *minh, uint *children),
-        BUILD(Target, o, o->setup(*minw, *minh), children));
-
-    ICOMMAND(uiclip, "ffe", (float *clipw, float *cliph, uint *children),
-        BUILD(Clipper, o, o->setup(*clipw, *cliph), children));
-
-    ICOMMAND(uiscroll, "ffe", (float *clipw, float *cliph, uint *children),
-        BUILD(Scroller, o, o->setup(*clipw, *cliph), children));
-
-    ICOMMAND(uihscrolloffset, "", (),
-    {
-        if(buildparent && buildparent->istype<Scroller>())
-        {
-            Scroller *scroller = static_cast<Scroller *>(buildparent);
-            floatret(scroller->offsetx);
-        }
-    });
-
-    ICOMMAND(uivscrolloffset, "", (),
-    {
-        if(buildparent && buildparent->istype<Scroller>())
-        {
-            Scroller *scroller = static_cast<Scroller *>(buildparent);
-            floatret(scroller->offsety);
-        }
-    });
-
-    ICOMMAND(uihscrollbar, "e", (uint *children),
-        BUILD(HorizontalScrollBar, o, o->setup(), children));
-
-    ICOMMAND(uivscrollbar, "e", (uint *children),
-        BUILD(VerticalScrollBar, o, o->setup(), children));
-
-    ICOMMAND(uiscrollarrow, "fe", (float *dir, uint *children),
-        BUILD(ScrollArrow, o, o->setup(*dir), children));
-
-    ICOMMAND(uiscrollbutton, "e", (uint *children),
-        BUILD(ScrollButton, o, o->setup(), children));
-
-    ICOMMAND(uihslider, "rfffee", (ident *var, float *vmin, float *vmax, float *vstep, uint *onchange, uint *children),
-        BUILD(HorizontalSlider, o, o->setup(var, *vmin, *vmax, *vstep, onchange), children));
-
-    ICOMMAND(uivslider, "rfffee", (ident *var, float *vmin, float *vmax, float *vstep, uint *onchange, uint *children),
-        BUILD(VerticalSlider, o, o->setup(var, *vmin, *vmax, *vstep, onchange), children));
-
-    ICOMMAND(uisliderarrow, "fe", (float *dir, uint *children),
-        BUILD(SliderArrow, o, o->setup(*dir), children));
-
-    ICOMMAND(uisliderbutton, "e", (uint *children),
-        BUILD(SliderButton, o, o->setup(), children));
-
-    ICOMMAND(uicolor, "iffe", (int *c, float *minw, float *minh, uint *children),
-        BUILD(FillColor, o, o->setup(FillColor::SOLID, Color(*c), *minw, *minh), children));
-
-    ICOMMAND(uimodcolor, "iffe", (int *c, float *minw, float *minh, uint *children),
-        BUILD(FillColor, o, o->setup(FillColor::MODULATE, Color(*c), *minw, *minh), children));
-
-    ICOMMAND(uivgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
-        BUILD(Gradient, o, o->setup(Gradient::SOLID, Gradient::VERTICAL, Color(*c), Color(*c2), *minw, *minh), children));
-
-    ICOMMAND(uimodvgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
-        BUILD(Gradient, o, o->setup(Gradient::MODULATE, Gradient::VERTICAL, Color(*c), Color(*c2), *minw, *minh), children));
-
-    ICOMMAND(uihgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
-        BUILD(Gradient, o, o->setup(Gradient::SOLID, Gradient::HORIZONTAL, Color(*c), Color(*c2), *minw, *minh), children));
-
-    ICOMMAND(uimodhgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
-        BUILD(Gradient, o, o->setup(Gradient::MODULATE, Gradient::HORIZONTAL, Color(*c), Color(*c2), *minw, *minh), children));
-
-    ICOMMAND(uioutline, "iffe", (int *c, float *minw, float *minh, uint *children),
-        BUILD(Outline, o, o->setup(Color(*c), *minw, *minh), children));
-
-    ICOMMAND(uiline, "iffe", (int *c, float *minw, float *minh, uint *children),
-        BUILD(Line, o, o->setup(Color(*c), *minw, *minh), children));
-
-    ICOMMAND(uitriangle, "iffie", (int *c, float *minw, float *minh, int *angle, uint *children),
-        BUILD(Triangle, o, o->setup(Color(*c), *minw, *minh, *angle, Triangle::SOLID), children));
-
-    ICOMMAND(uitriangleoutline, "iffie", (int *c, float *minw, float *minh, int *angle, uint *children),
-        BUILD(Triangle, o, o->setup(Color(*c), *minw, *minh, *angle, Triangle::OUTLINE), children));
-
-    ICOMMAND(uimodtriangle, "iffie", (int *c, float *minw, float *minh, int *angle, uint *children),
-        BUILD(Triangle, o, o->setup(Color(*c), *minw, *minh, *angle, Triangle::MODULATE), children));
-
-    ICOMMAND(uicircle, "ife", (int *c, float *size, uint *children),
-        BUILD(Circle, o, o->setup(Color(*c), *size, Circle::SOLID), children));
-
-    ICOMMAND(uicircleoutline, "ife", (int *c, float *size, uint *children),
-        BUILD(Circle, o, o->setup(Color(*c), *size, Circle::OUTLINE), children));
-
-    ICOMMAND(uimodcircle, "ife", (int *c, float *size, uint *children),
-        BUILD(Circle, o, o->setup(Color(*c), *size, Circle::MODULATE), children));
-
-    static void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
-    {
-        if(scale <= 0)
-        {
-            scale = 1;
-        }
-        scale *= scalemod;
-        switch(t.type)
-        {
-            case Value_Integer:
-            {
-                BUILD(TextInt, o, o->setup(t.i, scale, color, wrap), children);
-                break;
-            }
-            case Value_Float:
-            {
-                BUILD(TextFloat, o, o->setup(t.f, scale, color, wrap), children);
-                break;
-            }
-            case Value_CString:
-            case Value_Macro:
-            case Value_String:
-            {
-                if(t.s[0])
+                case Value_Integer:
                 {
-                    BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
+                    return t->i;
+                }
+                case Value_Float:
+                {
+                    return t->f;
+                }
+                case Value_Null:
+                {
+                    return 0;
+                }
+                default:
+                {
+                    const char *s = t->getstr();
+                    char *end;
+                    float val = strtod(s, &end);
+                    return *end == 'p' ? val/size : val;
+                }
+            }
+        }
+
+        static void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
+        {
+            if(scale <= 0)
+            {
+                scale = 1;
+            }
+            scale *= scalemod;
+            switch(t.type)
+            {
+                case Value_Integer:
+                {
+                    BUILD(TextInt, o, o->setup(t.i, scale, color, wrap), children);
+                    break;
+                }
+                case Value_Float:
+                {
+                    BUILD(TextFloat, o, o->setup(t.f, scale, color, wrap), children);
+                    break;
+                }
+                case Value_CString:
+                case Value_Macro:
+                case Value_String:
+                {
+                    if(t.s[0])
+                    {
+                        BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
+                        break;
+                    }
+                }
+                [[fallthrough]];
+                default:
+                {
+                    BUILD(Object, o, o->setup(), children);
                     break;
                 }
             }
-            [[fallthrough]];
-            default:
-            {
-                BUILD(Object, o, o->setup(), children);
-                break;
-            }
         }
-    }
 
-    ICOMMAND(uicolortext, "tife", (tagval *text, int *c, float *scale, uint *children),
-        buildtext(*text, *scale, uitextscale, Color(*c), -1, children));
-
-    ICOMMAND(uitext, "tfe", (tagval *text, float *scale, uint *children),
-        buildtext(*text, *scale, uitextscale, Color(255, 255, 255), -1, children));
-
-    ICOMMAND(uitextfill, "ffe", (float *minw, float *minh, uint *children),
-        BUILD(Filler, o, o->setup(*minw * uitextscale*0.5f, *minh * uitextscale), children));
-
-    ICOMMAND(uiwrapcolortext, "tfife", (tagval *text, float *wrap, int *c, float *scale, uint *children),
-        buildtext(*text, *scale, uitextscale, Color(*c), *wrap, children));
-
-    ICOMMAND(uiwraptext, "tffe", (tagval *text, float *wrap, float *scale, uint *children),
-        buildtext(*text, *scale, uitextscale, Color(255, 255, 255), *wrap, children));
-
-    ICOMMAND(uicolorcontext, "tife", (tagval *text, int *c, float *scale, uint *children),
-        buildtext(*text, *scale, FONTH*uicontextscale, Color(*c), -1, children));
-
-    ICOMMAND(uicontext, "tfe", (tagval *text, float *scale, uint *children),
-        buildtext(*text, *scale, FONTH*uicontextscale, Color(255, 255, 255), -1, children));
-
-    ICOMMAND(uicontextfill, "ffe", (float *minw, float *minh, uint *children),
-        BUILD(Filler, o, o->setup(*minw * FONTH*uicontextscale*0.5f, *minh * FONTH*uicontextscale), children));
-
-    ICOMMAND(uiwrapcolorcontext, "tfife", (tagval *text, float *wrap, int *c, float *scale, uint *children),
-        buildtext(*text, *scale, FONTH*uicontextscale, Color(*c), *wrap, children));
-
-    ICOMMAND(uiwrapcontext, "tffe", (tagval *text, float *wrap, float *scale, uint *children),
-        buildtext(*text, *scale, FONTH*uicontextscale, Color(255, 255, 255), *wrap, children));
-
-    ICOMMAND(uitexteditor, "siifsie", (char *name, int *length, int *height, float *scale, char *initval, int *mode, uint *children),
-        BUILD(TextEditor, o, o->setup(name, *length, *height, (*scale <= 0 ? 1 : *scale) * uitextscale, initval, *mode <= 0 ? Editor_Forever : *mode), children));
-
-    ICOMMAND(uifont, "se", (char *name, uint *children),
-        BUILD(Font, o, o->setup(name), children));
-
-    ICOMMAND(uiabovehud, "", (), { if(window) window->abovehud = true; });
-
-    ICOMMAND(uiconsole, "ffe", (float *minw, float *minh, uint *children),
-        BUILD(Console, o, o->setup(*minw, *minh), children));
-
-    ICOMMAND(uifield, "riefe", (ident *var, int *length, uint *onchange, float *scale, uint *children),
-        BUILD(Field, o, o->setup(var, *length, onchange, (*scale <= 0 ? 1 : *scale) * uitextscale), children));
-
-    ICOMMAND(uikeyfield, "riefe", (ident *var, int *length, uint *onchange, float *scale, uint *children),
-        BUILD(KeyField, o, o->setup(var, *length, onchange, (*scale <= 0 ? 1 : *scale) * uitextscale), children));
-
-    ICOMMAND(uiimage, "sffe", (char *texname, float *minw, float *minh, uint *children),
-        BUILD(Image, o, o->setup(textureload(texname, 3, true, false), *minw, *minh), children));
-
-    ICOMMAND(uistretchedimage, "sffe", (char *texname, float *minw, float *minh, uint *children),
-        BUILD(StretchedImage, o, o->setup(textureload(texname, 3, true, false), *minw, *minh), children));
-
-    static float parsepixeloffset(const tagval *t, int size)
+    void inituicmds()
     {
-        switch(t->type)
+        #define DOSTATE(flags, func) \
+            ICOMMANDNS("ui!" #func, uinot##func##_, "ee", (uint *t, uint *f), \
+                executeret(buildparent && buildparent->hasstate(flags) ? t : f)); \
+            ICOMMANDNS("ui" #func, ui##func##_, "ee", (uint *t, uint *f), \
+                executeret(buildparent && buildparent->haschildstate(flags) ? t : f)); \
+            ICOMMANDNS("ui!" #func "?", uinot##func##__, "tt", (tagval *t, tagval *f), \
+                ifstateval(buildparent && buildparent->hasstate(flags), t, f)); \
+            ICOMMANDNS("ui" #func "?", ui##func##__, "tt", (tagval *t, tagval *f), \
+                ifstateval(buildparent && buildparent->haschildstate(flags), t, f)); \
+            ICOMMANDNS("ui!" #func "+", uinextnot##func##_, "ee", (uint *t, uint *f), \
+                executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild && buildparent->children[buildchild]->hasstate(flags) ? t : f)); \
+            ICOMMANDNS("ui" #func "+", uinext##func##_, "ee", (uint *t, uint *f), \
+                executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags) ? t : f)); \
+            ICOMMANDNS("ui!" #func "+?", uinextnot##func##__, "tt", (tagval *t, tagval *f), \
+                ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->hasstate(flags), t, f)); \
+            ICOMMANDNS("ui" #func "+?", uinext##func##__, "tt", (tagval *t, tagval *f), \
+                ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && buildparent->children[buildchild]->haschildstate(flags), t, f));
+        DOSTATES
+        #undef DOSTATE
+
+        ICOMMANDNS("uifocus", uifocusexec_, "ee", (uint *t, uint *f),
+            executeret(buildparent && TextEditor::focus == buildparent ? t : f));
+        ICOMMANDNS("uifocus?", uifocustagval_, "tt", (tagval *t, tagval *f),
+            ifstateval(buildparent && TextEditor::focus == buildparent, t, f));
+        ICOMMANDNS("uifocus+", uinextfocusexec_, "ee", (uint *t, uint *f),
+            executeret(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild] ? t : f));
+        ICOMMANDNS("uifocus+?", uinextfocustagval_, "tt", (tagval *t, tagval *f),
+            ifstateval(buildparent && static_cast<int>(buildparent->children.size()) > buildchild  && TextEditor::focus == buildparent->children[buildchild], t, f));
+
+        ICOMMAND(uialign, "ii", (int *xalign, int *yalign),
         {
-            case Value_Integer:
+            if(buildparent)
             {
-                return t->i;
+                buildparent->setalign(*xalign, *yalign);
             }
-            case Value_Float:
+        });
+        ICOMMANDNS("uialign-", uialign_, "ii", (int *xalign, int *yalign),
+        {
+            if(buildparent && buildchild > 0)
             {
-                return t->f;
+                buildparent->children[buildchild-1]->setalign(*xalign, *yalign);
             }
-            case Value_Null:
+        });
+        ICOMMANDNS("uialign*", uialign__, "ii", (int *xalign, int *yalign),
+        {
+            if(buildparent)
             {
-                return 0;
+                for(int i = 0; i < buildchild; ++i)
+                {
+                    buildparent->children[i]->setalign(*xalign, *yalign);
+                }
             }
-            default:
+        });
+
+        ICOMMAND(uiclamp, "iiii", (int *left, int *right, int *top, int *bottom),
+        {
+            if(buildparent)
             {
-                const char *s = t->getstr();
-                char *end;
-                float val = strtod(s, &end);
-                return *end == 'p' ? val/size : val;
+                buildparent->setclamp(*left, *right, *top, *bottom);
             }
-        }
+        });
+        ICOMMANDNS("uiclamp-", uiclamp_, "iiii", (int *left, int *right, int *top, int *bottom),
+        {
+            if(buildparent && buildchild > 0)
+            {
+                buildparent->children[buildchild-1]->setclamp(*left, *right, *top, *bottom);
+            }
+        });
+        ICOMMANDNS("uiclamp*", uiclamp__, "iiii", (int *left, int *right, int *top, int *bottom),
+        {
+            if(buildparent)
+            {
+                for(int i = 0; i < buildchild; ++i)
+                {
+                    buildparent->children[i]->setclamp(*left, *right, *top, *bottom);
+                }
+            }
+        });
+
+        ICOMMAND(uigroup, "e", (uint *children),
+            BUILD(Object, o, o->setup(), children));
+
+        ICOMMAND(uihlist, "fe", (float *space, uint *children),
+            BUILD(HorizontalList, o, o->setup(*space), children));
+
+        ICOMMAND(uivlist, "fe", (float *space, uint *children),
+            BUILD(VerticalList, o, o->setup(*space), children));
+
+        ICOMMAND(uilist, "fe", (float *space, uint *children),
+        {
+            for(Object *parent = buildparent; parent && !parent->istype<VerticalList>(); parent = parent->parent)
+            {
+                if(parent->istype<HorizontalList>())
+                {
+                    BUILD(VerticalList, o, o->setup(*space), children);
+                    return;
+                }
+            }
+            BUILD(HorizontalList, o, o->setup(*space), children);
+        });
+
+        ICOMMAND(uigrid, "iffe", (int *columns, float *spacew, float *spaceh, uint *children),
+            BUILD(Grid, o, o->setup(*columns, *spacew, *spaceh), children));
+
+        ICOMMAND(uitableheader, "ee", (uint *columndata, uint *children),
+            BUILDCOLUMNS(TableHeader, o, o->setup(), columndata, children));
+        ICOMMAND(uitablerow, "ee", (uint *columndata, uint *children),
+            BUILDCOLUMNS(TableRow, o, o->setup(), columndata, children));
+        ICOMMAND(uitable, "ffe", (float *spacew, float *spaceh, uint *children),
+            BUILD(Table, o, o->setup(*spacew, *spaceh), children));
+
+        ICOMMAND(uispace, "ffe", (float *spacew, float *spaceh, uint *children),
+            BUILD(Spacer, o, o->setup(*spacew, *spaceh), children));
+
+        ICOMMAND(uioffset, "ffe", (float *offsetx, float *offsety, uint *children),
+            BUILD(Offsetter, o, o->setup(*offsetx, *offsety), children));
+
+        ICOMMAND(uifill, "ffe", (float *minw, float *minh, uint *children),
+            BUILD(Filler, o, o->setup(*minw, *minh), children));
+
+        ICOMMAND(uitarget, "ffe", (float *minw, float *minh, uint *children),
+            BUILD(Target, o, o->setup(*minw, *minh), children));
+
+        ICOMMAND(uiclip, "ffe", (float *clipw, float *cliph, uint *children),
+            BUILD(Clipper, o, o->setup(*clipw, *cliph), children));
+
+        ICOMMAND(uiscroll, "ffe", (float *clipw, float *cliph, uint *children),
+            BUILD(Scroller, o, o->setup(*clipw, *cliph), children));
+
+        ICOMMAND(uihscrolloffset, "", (),
+        {
+            if(buildparent && buildparent->istype<Scroller>())
+            {
+                Scroller *scroller = static_cast<Scroller *>(buildparent);
+                floatret(scroller->offsetx);
+            }
+        });
+
+        ICOMMAND(uivscrolloffset, "", (),
+        {
+            if(buildparent && buildparent->istype<Scroller>())
+            {
+                Scroller *scroller = static_cast<Scroller *>(buildparent);
+                floatret(scroller->offsety);
+            }
+        });
+
+        ICOMMAND(uihscrollbar, "e", (uint *children),
+            BUILD(HorizontalScrollBar, o, o->setup(), children));
+
+        ICOMMAND(uivscrollbar, "e", (uint *children),
+            BUILD(VerticalScrollBar, o, o->setup(), children));
+
+        ICOMMAND(uiscrollarrow, "fe", (float *dir, uint *children),
+            BUILD(ScrollArrow, o, o->setup(*dir), children));
+
+        ICOMMAND(uiscrollbutton, "e", (uint *children),
+            BUILD(ScrollButton, o, o->setup(), children));
+
+        ICOMMAND(uihslider, "rfffee", (ident *var, float *vmin, float *vmax, float *vstep, uint *onchange, uint *children),
+            BUILD(HorizontalSlider, o, o->setup(var, *vmin, *vmax, *vstep, onchange), children));
+
+        ICOMMAND(uivslider, "rfffee", (ident *var, float *vmin, float *vmax, float *vstep, uint *onchange, uint *children),
+            BUILD(VerticalSlider, o, o->setup(var, *vmin, *vmax, *vstep, onchange), children));
+
+        ICOMMAND(uisliderarrow, "fe", (float *dir, uint *children),
+            BUILD(SliderArrow, o, o->setup(*dir), children));
+
+        ICOMMAND(uisliderbutton, "e", (uint *children),
+            BUILD(SliderButton, o, o->setup(), children));
+
+        ICOMMAND(uicolor, "iffe", (int *c, float *minw, float *minh, uint *children),
+            BUILD(FillColor, o, o->setup(FillColor::SOLID, Color(*c), *minw, *minh), children));
+
+        ICOMMAND(uimodcolor, "iffe", (int *c, float *minw, float *minh, uint *children),
+            BUILD(FillColor, o, o->setup(FillColor::MODULATE, Color(*c), *minw, *minh), children));
+
+        ICOMMAND(uivgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
+            BUILD(Gradient, o, o->setup(Gradient::SOLID, Gradient::VERTICAL, Color(*c), Color(*c2), *minw, *minh), children));
+
+        ICOMMAND(uimodvgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
+            BUILD(Gradient, o, o->setup(Gradient::MODULATE, Gradient::VERTICAL, Color(*c), Color(*c2), *minw, *minh), children));
+
+        ICOMMAND(uihgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
+            BUILD(Gradient, o, o->setup(Gradient::SOLID, Gradient::HORIZONTAL, Color(*c), Color(*c2), *minw, *minh), children));
+
+        ICOMMAND(uimodhgradient, "iiffe", (int *c, int *c2, float *minw, float *minh, uint *children),
+            BUILD(Gradient, o, o->setup(Gradient::MODULATE, Gradient::HORIZONTAL, Color(*c), Color(*c2), *minw, *minh), children));
+
+        ICOMMAND(uioutline, "iffe", (int *c, float *minw, float *minh, uint *children),
+            BUILD(Outline, o, o->setup(Color(*c), *minw, *minh), children));
+
+        ICOMMAND(uiline, "iffe", (int *c, float *minw, float *minh, uint *children),
+            BUILD(Line, o, o->setup(Color(*c), *minw, *minh), children));
+
+        ICOMMAND(uitriangle, "iffie", (int *c, float *minw, float *minh, int *angle, uint *children),
+            BUILD(Triangle, o, o->setup(Color(*c), *minw, *minh, *angle, Triangle::SOLID), children));
+
+        ICOMMAND(uitriangleoutline, "iffie", (int *c, float *minw, float *minh, int *angle, uint *children),
+            BUILD(Triangle, o, o->setup(Color(*c), *minw, *minh, *angle, Triangle::OUTLINE), children));
+
+        ICOMMAND(uimodtriangle, "iffie", (int *c, float *minw, float *minh, int *angle, uint *children),
+            BUILD(Triangle, o, o->setup(Color(*c), *minw, *minh, *angle, Triangle::MODULATE), children));
+
+        ICOMMAND(uicircle, "ife", (int *c, float *size, uint *children),
+            BUILD(Circle, o, o->setup(Color(*c), *size, Circle::SOLID), children));
+
+        ICOMMAND(uicircleoutline, "ife", (int *c, float *size, uint *children),
+            BUILD(Circle, o, o->setup(Color(*c), *size, Circle::OUTLINE), children));
+
+        ICOMMAND(uimodcircle, "ife", (int *c, float *size, uint *children),
+            BUILD(Circle, o, o->setup(Color(*c), *size, Circle::MODULATE), children));
+
+        ICOMMAND(uicolortext, "tife", (tagval *text, int *c, float *scale, uint *children),
+            buildtext(*text, *scale, uitextscale, Color(*c), -1, children));
+
+        ICOMMAND(uitext, "tfe", (tagval *text, float *scale, uint *children),
+            buildtext(*text, *scale, uitextscale, Color(255, 255, 255), -1, children));
+
+        ICOMMAND(uitextfill, "ffe", (float *minw, float *minh, uint *children),
+            BUILD(Filler, o, o->setup(*minw * uitextscale*0.5f, *minh * uitextscale), children));
+
+        ICOMMAND(uiwrapcolortext, "tfife", (tagval *text, float *wrap, int *c, float *scale, uint *children),
+            buildtext(*text, *scale, uitextscale, Color(*c), *wrap, children));
+
+        ICOMMAND(uiwraptext, "tffe", (tagval *text, float *wrap, float *scale, uint *children),
+            buildtext(*text, *scale, uitextscale, Color(255, 255, 255), *wrap, children));
+
+        ICOMMAND(uicolorcontext, "tife", (tagval *text, int *c, float *scale, uint *children),
+            buildtext(*text, *scale, FONTH*uicontextscale, Color(*c), -1, children));
+
+        ICOMMAND(uicontext, "tfe", (tagval *text, float *scale, uint *children),
+            buildtext(*text, *scale, FONTH*uicontextscale, Color(255, 255, 255), -1, children));
+
+        ICOMMAND(uicontextfill, "ffe", (float *minw, float *minh, uint *children),
+            BUILD(Filler, o, o->setup(*minw * FONTH*uicontextscale*0.5f, *minh * FONTH*uicontextscale), children));
+
+        ICOMMAND(uiwrapcolorcontext, "tfife", (tagval *text, float *wrap, int *c, float *scale, uint *children),
+            buildtext(*text, *scale, FONTH*uicontextscale, Color(*c), *wrap, children));
+
+        ICOMMAND(uiwrapcontext, "tffe", (tagval *text, float *wrap, float *scale, uint *children),
+            buildtext(*text, *scale, FONTH*uicontextscale, Color(255, 255, 255), *wrap, children));
+
+        ICOMMAND(uitexteditor, "siifsie", (char *name, int *length, int *height, float *scale, char *initval, int *mode, uint *children),
+            BUILD(TextEditor, o, o->setup(name, *length, *height, (*scale <= 0 ? 1 : *scale) * uitextscale, initval, *mode <= 0 ? Editor_Forever : *mode), children));
+
+        ICOMMAND(uifont, "se", (char *name, uint *children),
+            BUILD(Font, o, o->setup(name), children));
+
+        ICOMMAND(uiabovehud, "", (), { if(window) window->abovehud = true; });
+
+        ICOMMAND(uiconsole, "ffe", (float *minw, float *minh, uint *children),
+            BUILD(Console, o, o->setup(*minw, *minh), children));
+
+        ICOMMAND(uifield, "riefe", (ident *var, int *length, uint *onchange, float *scale, uint *children),
+            BUILD(Field, o, o->setup(var, *length, onchange, (*scale <= 0 ? 1 : *scale) * uitextscale), children));
+
+        ICOMMAND(uikeyfield, "riefe", (ident *var, int *length, uint *onchange, float *scale, uint *children),
+            BUILD(KeyField, o, o->setup(var, *length, onchange, (*scale <= 0 ? 1 : *scale) * uitextscale), children));
+
+        ICOMMAND(uiimage, "sffe", (char *texname, float *minw, float *minh, uint *children),
+            BUILD(Image, o, o->setup(textureload(texname, 3, true, false), *minw, *minh), children));
+
+        ICOMMAND(uistretchedimage, "sffe", (char *texname, float *minw, float *minh, uint *children),
+            BUILD(StretchedImage, o, o->setup(textureload(texname, 3, true, false), *minw, *minh), children));
+
+        ICOMMAND(uicroppedimage, "sfftttte", (char *texname, float *minw, float *minh, tagval *cropx, tagval *cropy, tagval *cropw, tagval *croph, uint *children),
+            BUILD(CroppedImage, o, {
+                Texture *tex = textureload(texname, 3, true, false);
+                o->setup(tex, *minw, *minh,
+                    parsepixeloffset(cropx, tex->xs), parsepixeloffset(cropy, tex->ys),
+                    parsepixeloffset(cropw, tex->xs), parsepixeloffset(croph, tex->ys));
+            }, children));
+
+        ICOMMAND(uiborderedimage, "stfe", (char *texname, tagval *texborder, float *screenborder, uint *children),
+            BUILD(BorderedImage, o, {
+                Texture *tex = textureload(texname, 3, true, false);
+                o->setup(tex,
+                    parsepixeloffset(texborder, tex->xs),
+                    *screenborder);
+            }, children));
+
+        ICOMMAND(uitiledimage, "sffffe", (char *texname, float *tilew, float *tileh, float *minw, float *minh, uint *children),
+            BUILD(TiledImage, o, {
+                Texture *tex = textureload(texname, 0, true, false);
+                o->setup(tex, *minw, *minh, *tilew <= 0 ? 1 : *tilew, *tileh <= 0 ? 1 : *tileh);
+            }, children));
+
+        ICOMMAND(uimodelpreview, "ssffe", (char *model, char *animspec, float *minw, float *minh, uint *children),
+            BUILD(ModelPreview, o, o->setup(model, animspec, *minw, *minh), children));
+
+        ICOMMAND(uiprefabpreview, "siffe", (char *prefab, int *color, float *minw, float *minh, uint *children),
+            BUILD(PrefabPreview, o, o->setup(prefab, *color, *minw, *minh), children));
+
+        ICOMMAND(uislotview, "iffe", (int *index, float *minw, float *minh, uint *children),
+            BUILD(SlotViewer, o, o->setup(*index, *minw, *minh), children));
+
+        ICOMMAND(uivslotview, "iffe", (int *index, float *minw, float *minh, uint *children),
+            BUILD(VSlotViewer, o, o->setup(*index, *minw, *minh), children));
     }
-
-    ICOMMAND(uicroppedimage, "sfftttte", (char *texname, float *minw, float *minh, tagval *cropx, tagval *cropy, tagval *cropw, tagval *croph, uint *children),
-        BUILD(CroppedImage, o, {
-            Texture *tex = textureload(texname, 3, true, false);
-            o->setup(tex, *minw, *minh,
-                parsepixeloffset(cropx, tex->xs), parsepixeloffset(cropy, tex->ys),
-                parsepixeloffset(cropw, tex->xs), parsepixeloffset(croph, tex->ys));
-        }, children));
-
-    ICOMMAND(uiborderedimage, "stfe", (char *texname, tagval *texborder, float *screenborder, uint *children),
-        BUILD(BorderedImage, o, {
-            Texture *tex = textureload(texname, 3, true, false);
-            o->setup(tex,
-                parsepixeloffset(texborder, tex->xs),
-                *screenborder);
-        }, children));
-
-    ICOMMAND(uitiledimage, "sffffe", (char *texname, float *tilew, float *tileh, float *minw, float *minh, uint *children),
-        BUILD(TiledImage, o, {
-            Texture *tex = textureload(texname, 0, true, false);
-            o->setup(tex, *minw, *minh, *tilew <= 0 ? 1 : *tilew, *tileh <= 0 ? 1 : *tileh);
-        }, children));
-
-    ICOMMAND(uimodelpreview, "ssffe", (char *model, char *animspec, float *minw, float *minh, uint *children),
-        BUILD(ModelPreview, o, o->setup(model, animspec, *minw, *minh), children));
-
-    ICOMMAND(uiprefabpreview, "siffe", (char *prefab, int *color, float *minw, float *minh, uint *children),
-        BUILD(PrefabPreview, o, o->setup(prefab, *color, *minw, *minh), children));
-
-    ICOMMAND(uislotview, "iffe", (int *index, float *minw, float *minh, uint *children),
-        BUILD(SlotViewer, o, o->setup(*index, *minw, *minh), children));
-
-    ICOMMAND(uivslotview, "iffe", (int *index, float *minw, float *minh, uint *children),
-        BUILD(VSlotViewer, o, o->setup(*index, *minw, *minh), children));
-
-    FVARP(uisensitivity, 1e-4f, 1, 1e4f);
 
     bool hascursor()
     {
@@ -4909,6 +4910,8 @@ namespace UI
     {
         cursorx = cursory = 0.5f;
     }
+
+    FVARP(uisensitivity, 1e-4f, 1, 1e4f);
 
     bool movecursor(int dx, int dy)
     {
