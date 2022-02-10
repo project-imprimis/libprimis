@@ -1901,26 +1901,175 @@ false if no entities selected </dd></dl>
 <p>Binds the UI commands to the command parser. </p>
 <p >Places into the CubeScript interpreter a series of UI commands, required before it is possible to use CubeScript to create UI elements.</p>
 <p >Commands defined:</p>
-<p >ui!hover uihover ui!hover? uihover? ui!hover+ uihover+ ui!hover+? uihover+?</p>
-<p >ui!press uipress ui!press? uipress? ui!press+ uipress+ ui!press+? uipress+?</p>
-<p >ui!hold uihold ui!hold? uihold? ui!hold+ uihold+ ui!hold+? uihold+?</p>
-<p >ui!release uirelease ui!release? uirelease? ui!release+ uirelease+ ui!release+? uirelease+?</p>
-<p >ui!althold uialthold ui!althold? uialthold? ui!althold+ uialthold+ ui!althold+? uialthold+?</p>
-<p >ui!altpress uialtpress ui!altpress? uialtpress? ui!altpress+ uialtpress+ ui!altpress+? uialtpress+?</p>
-<p >ui!altrelease uialtrelease ui!altrelease? uialtrelease? ui!altrelease+ uialtrelease+ ui!altrelease+? uialtrelease+?</p>
-<p >ui!eschold uieschold ui!eschold? uieschold? ui!eschold+ uieschold+ ui!eschold+? uieschold+?</p>
-<p >ui!escpress uiescpress ui!escpress? uiescpress? ui!escpress+ uiescpress+ ui!escpress+? uiescpress+?</p>
-<p >ui!escrelease uiescrelease ui!escrelease? uiescrelease? ui!escrelease+ uiescrelease+ ui!escrelease+? uiescrelease+?</p>
-<p >ui!scrollup uiscrollup ui!scrollup? uiscrollup? ui!scrollup+ uiscrollup+ ui!scrollup+? uiscrollup+?</p>
-<p >ui!scrolldown uiscrolldown ui!scrolldown? uiscrolldown? ui!scrolldown+ uiscrolldown+ ui!scrolldown+? uiscrolldown+?</p>
-<p >uifocus uifocus? uifocus+ uifocus+? uialign uialign- uialign* uiclamp uiclamp- uiclamp*</p>
-<p >uigroup uihlist uivlist uilist uigrid uitableheader uitablerow uitable uispace uioffset uifill uitarget uiclip</p>
-<p >uiscroll uihscrolloffset uivscrolloffset uihscrollbar uivscrollbar uiscrollarrow uiscrollbutton uihslider uivslider uisliderarrow uisliderbutton</p>
-<p >uicolor uimodcolor uivgradient uimodvgradient uihgradient uimodhgradient</p>
-<p >uioutline uiline uitriangle uitriangleoutline uimodtriangle uicircle uicircleoutline uimodcircle</p>
-<p >uicolortext uitext uitextfill uiwrapcolortext uiwraptext uicolorcontext uicontext uicontextfill uiwrapcolorcontext uiwrapcontext uitexteditor uifont uiabovehud uiconsole uifield uikeyfield</p>
-<p >uiimage uistretchedimage uicroppedimage uiborderedimage uitiledimage</p>
-<p >uimodelpreview uiprefabpreview uislotview uivslotview </p>
+<p ><code>ui!hover</code></p>
+<p ><code>uihover</code></p>
+<p ><code>ui!hover?</code></p>
+<p ><code>uihover?</code></p>
+<p ><code>ui!hover+</code></p>
+<p ><code>uihover+</code></p>
+<p ><code>ui!hover+?</code></p>
+<p ><code>uihover+?</code></p>
+<p ><code>ui!press</code></p>
+<p ><code>uipress</code></p>
+<p ><code>ui!press?</code></p>
+<p ><code>uipress?</code></p>
+<p ><code>ui!press+</code></p>
+<p ><code>uipress+</code></p>
+<p ><code>ui!press+?</code></p>
+<p ><code>uipress+?</code></p>
+<p ><code>ui!hold</code></p>
+<p ><code>uihold</code></p>
+<p ><code>ui!hold?</code></p>
+<p ><code>uihold?</code></p>
+<p ><code>ui!hold+</code></p>
+<p ><code>uihold+</code></p>
+<p ><code>ui!hold+?</code></p>
+<p ><code>uihold+?</code></p>
+<p ><code>ui!release</code></p>
+<p ><code>uirelease</code></p>
+<p ><code>ui!release?</code></p>
+<p ><code>uirelease?</code></p>
+<p ><code>ui!release+</code></p>
+<p ><code>uirelease+</code></p>
+<p ><code>ui!release+?</code></p>
+<p ><code>uirelease+?</code></p>
+<p ><code>ui!althold</code></p>
+<p ><code>uialthold</code></p>
+<p ><code>ui!althold?</code></p>
+<p ><code>uialthold?</code></p>
+<p ><code>ui!althold+</code></p>
+<p ><code>uialthold+</code></p>
+<p ><code>ui!althold+?</code></p>
+<p ><code>uialthold+?</code></p>
+<p ><code>ui!altpress</code></p>
+<p ><code>uialtpress</code></p>
+<p ><code>ui!altpress?</code></p>
+<p ><code>uialtpress?</code></p>
+<p ><code>ui!altpress+</code></p>
+<p ><code>uialtpress+</code></p>
+<p ><code>ui!altpress+?</code></p>
+<p ><code>uialtpress+?</code></p>
+<p ><code>ui!altrelease</code></p>
+<p ><code>uialtrelease</code></p>
+<p ><code>ui!altrelease?</code></p>
+<p ><code>uialtrelease?</code></p>
+<p ><code>ui!altrelease+</code></p>
+<p ><code>uialtrelease+</code></p>
+<p ><code>ui!altrelease+?</code></p>
+<p ><code>uialtrelease+?</code></p>
+<p ><code>ui!eschold</code></p>
+<p ><code>uieschold</code></p>
+<p ><code>ui!eschold?</code></p>
+<p ><code>uieschold?</code></p>
+<p ><code>ui!eschold+</code></p>
+<p ><code>uieschold+</code></p>
+<p ><code>ui!eschold+?</code></p>
+<p ><code>uieschold+?</code></p>
+<p ><code>ui!escpress</code></p>
+<p ><code>uiescpress</code></p>
+<p ><code>ui!escpress?</code></p>
+<p ><code>uiescpress?</code></p>
+<p ><code>ui!escpress+</code></p>
+<p ><code>uiescpress+</code></p>
+<p ><code>ui!escpress+?</code></p>
+<p ><code>uiescpress+?</code></p>
+<p ><code>ui!escrelease</code></p>
+<p ><code>uiescrelease</code></p>
+<p ><code>ui!escrelease?</code></p>
+<p ><code>uiescrelease?</code></p>
+<p ><code>ui!escrelease+</code></p>
+<p ><code>uiescrelease+</code></p>
+<p ><code>ui!escrelease+?</code></p>
+<p ><code>uiescrelease+?</code></p>
+<p ><code>ui!scrollup</code></p>
+<p ><code>uiscrollup</code></p>
+<p ><code>ui!scrollup?</code></p>
+<p ><code>uiscrollup?</code></p>
+<p ><code>ui!scrollup+</code></p>
+<p ><code>uiscrollup+</code></p>
+<p ><code>ui!scrollup+?</code></p>
+<p ><code>uiscrollup+?</code></p>
+<p ><code>ui!scrolldown</code></p>
+<p ><code>uiscrolldown</code></p>
+<p ><code>ui!scrolldown?</code></p>
+<p ><code>uiscrolldown?</code></p>
+<p ><code>ui!scrolldown+</code></p>
+<p ><code>uiscrolldown+</code></p>
+<p ><code>ui!scrolldown+?</code></p>
+<p ><code>uiscrolldown+?</code></p>
+<p ><code>uifocus</code></p>
+<p ><code>uifocus?</code></p>
+<p ><code>uifocus+</code></p>
+<p ><code>uifocus+?</code></p>
+<p ><code>uialign</code></p>
+<p ><code>uialign-</code></p>
+<p ><code>uialign*</code></p>
+<p ><code>uiclamp</code></p>
+<p ><code>uiclamp-</code></p>
+<p ><code>uiclamp*</code></p>
+<p ><code>uigroup</code></p>
+<p ><code>uihlist</code></p>
+<p ><code>uivlist</code></p>
+<p ><code>uilist</code></p>
+<p ><code>uigrid</code></p>
+<p ><code>uitableheader</code></p>
+<p ><code>uitablerow</code></p>
+<p ><code>uitable</code></p>
+<p ><code>uispace</code></p>
+<p ><code>uioffset</code></p>
+<p ><code>uifill</code></p>
+<p ><code>uitarget</code></p>
+<p ><code>uiclip</code></p>
+<p ><code>uiscroll</code></p>
+<p ><code>uihscrolloffset</code></p>
+<p ><code>uivscrolloffset</code></p>
+<p ><code>uihscrollbar</code></p>
+<p ><code>uivscrollbar</code></p>
+<p ><code>uiscrollarrow</code></p>
+<p ><code>uiscrollbutton</code></p>
+<p ><code>uihslider</code></p>
+<p ><code>uivslider</code></p>
+<p ><code>uisliderarrow</code></p>
+<p ><code>uisliderbutton</code></p>
+<p ><code>uicolor</code></p>
+<p ><code>uimodcolor</code></p>
+<p ><code>uivgradient</code></p>
+<p ><code>uimodvgradient</code></p>
+<p ><code>uihgradient</code></p>
+<p ><code>uimodhgradient</code></p>
+<p ><code>uioutline</code></p>
+<p ><code>uiline</code></p>
+<p ><code>uitriangle</code></p>
+<p ><code>uitriangleoutline</code></p>
+<p ><code>uimodtriangle</code></p>
+<p ><code>uicircle</code></p>
+<p ><code>uicircleoutline</code></p>
+<p ><code>uimodcircle</code></p>
+<p ><code>uicolortext</code></p>
+<p ><code>uitext</code></p>
+<p ><code>uitextfill</code></p>
+<p ><code>uiwrapcolortext</code></p>
+<p ><code>uiwraptext</code></p>
+<p ><code>uicolorcontext</code></p>
+<p ><code>uicontext</code></p>
+<p ><code>uicontextfill</code></p>
+<p ><code>uiwrapcolorcontext</code></p>
+<p ><code>uiwrapcontext</code></p>
+<p ><code>uitexteditor</code></p>
+<p ><code>uifont</code></p>
+<p ><code>uiabovehud</code></p>
+<p ><code>uiconsole</code></p>
+<p ><code>uifield</code></p>
+<p ><code>uikeyfield</code></p>
+<p ><code>uiimage</code></p>
+<p ><code>uistretchedimage</code></p>
+<p ><code>uicroppedimage</code></p>
+<p ><code>uiborderedimage</code></p>
+<p ><code>uitiledimage</code></p>
+<p ><code>uimodelpreview</code></p>
+<p ><code>uiprefabpreview</code></p>
+<p ><code>uislotview</code></p>
+<p ><code>uivslotview</code> </p>
 
 </div>
 </div>
