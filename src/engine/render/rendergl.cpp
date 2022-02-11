@@ -44,7 +44,6 @@
 bool hasFBMSBS = false,
      hasTQ     = false,
      hasDBT    = false,
-     hasDBGO   = false,
      hasEGPU4  = false,
      hasES3    = false,
      hasCI     = false;
@@ -752,7 +751,6 @@ void gl_checkextensions()
         glDebugMessageInsert_   = (PFNGLDEBUGMESSAGEINSERTPROC)  getprocaddress("glDebugMessageInsert");
         glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallback");
         glGetDebugMessageLog_   = (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLog");
-        hasDBGO = true;
     }
     else
     {
@@ -762,7 +760,6 @@ void gl_checkextensions()
             glDebugMessageInsert_ =   (PFNGLDEBUGMESSAGEINSERTPROC)  getprocaddress("glDebugMessageInsertARB");
             glDebugMessageCallback_ = (PFNGLDEBUGMESSAGECALLBACKPROC)getprocaddress("glDebugMessageCallbackARB");
             glGetDebugMessageLog_ =   (PFNGLGETDEBUGMESSAGELOGPROC)  getprocaddress("glGetDebugMessageLogARB");
-            hasDBGO = true;
             if(debugexts)
             {
                 conoutf(Console_Init, "Using GL_ARB_debug_output extension.");
