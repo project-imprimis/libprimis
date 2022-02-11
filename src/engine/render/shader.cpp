@@ -1598,7 +1598,7 @@ void cleanuppostfx(bool fullclean)
 {
     if(fullclean && postfxfb)
     {
-        glDeleteFramebuffers_(1, &postfxfb);
+        glDeleteFramebuffers(1, &postfxfb);
         postfxfb = 0;
     }
     for(uint i = 0; i < postfxtexs.size(); i++)
@@ -1632,11 +1632,11 @@ GLuint setuppostfx(int w, int h, GLuint outfbo)
     }
     if(!postfxfb)
     {
-        glGenFramebuffers_(1, &postfxfb);
+        glGenFramebuffers(1, &postfxfb);
     }
-    glBindFramebuffer_(GL_FRAMEBUFFER, postfxfb);
+    glBindFramebuffer(GL_FRAMEBUFFER, postfxfb);
     int tex = allocatepostfxtex(0);
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
     gbuf.bindgdepth();
 
     postfxbinds[0] = tex;
@@ -1659,12 +1659,12 @@ void renderpostfx(GLuint outfbo)
         int tex = -1;
         if(!(postfxpasses.size() < i+1))
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         }
         else
         {
             tex = allocatepostfxtex(p.outputscale);
-            glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, postfxtexs[tex].id, 0);
         }
         int w = tex >= 0 ? std::max(postfxw>>postfxtexs[tex].scale, 1) : postfxw,
             h = tex >= 0 ? std::max(postfxh>>postfxtexs[tex].scale, 1) : postfxh;

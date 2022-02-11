@@ -62,22 +62,6 @@ VAR(glslversion, 1, 0, 0);
 PFNGLGETQUERYOBJECTI64VEXTPROC glGetQueryObjecti64v_  = nullptr;
 PFNGLGETQUERYOBJECTUI64VEXTPROC glGetQueryObjectui64v_ = nullptr;
 
-// GL_EXT_framebuffer_object
-PFNGLBINDRENDERBUFFERPROC           glBindRenderbuffer_           = nullptr;
-PFNGLDELETERENDERBUFFERSPROC        glDeleteRenderbuffers_        = nullptr;
-PFNGLGENFRAMEBUFFERSPROC            glGenRenderbuffers_           = nullptr;
-PFNGLRENDERBUFFERSTORAGEPROC        glRenderbufferStorage_        = nullptr;
-PFNGLGETRENDERBUFFERPARAMETERIVPROC glGetRenderbufferParameteriv_ = nullptr;
-PFNGLCHECKFRAMEBUFFERSTATUSPROC     glCheckFramebufferStatus_     = nullptr;
-PFNGLBINDFRAMEBUFFERPROC            glBindFramebuffer_            = nullptr;
-PFNGLDELETEFRAMEBUFFERSPROC         glDeleteFramebuffers_         = nullptr;
-PFNGLGENFRAMEBUFFERSPROC            glGenFramebuffers_            = nullptr;
-PFNGLFRAMEBUFFERTEXTURE1DPROC       glFramebufferTexture1D_       = nullptr;
-PFNGLFRAMEBUFFERTEXTURE2DPROC       glFramebufferTexture2D_       = nullptr;
-PFNGLFRAMEBUFFERTEXTURE3DPROC       glFramebufferTexture3D_       = nullptr;
-PFNGLFRAMEBUFFERRENDERBUFFERPROC    glFramebufferRenderbuffer_    = nullptr;
-PFNGLGENERATEMIPMAPPROC             glGenerateMipmap_             = nullptr;
-
 // GL_EXT_framebuffer_blit
 PFNGLBLITFRAMEBUFFERPROC         glBlitFramebuffer_         = nullptr;
 
@@ -380,28 +364,28 @@ bool checkdepthtexstencilrb()
     int w = 256,
         h = 256;
     GLuint fbo = 0;
-    glGenFramebuffers_(1, &fbo);
-    glBindFramebuffer_(GL_FRAMEBUFFER, fbo);
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
     GLuint depthtex = 0;
     glGenTextures(1, &depthtex);
     createtexture(depthtex, w, h, nullptr, 3, 0, GL_DEPTH_COMPONENT24, GL_TEXTURE_RECTANGLE);
     glBindTexture(GL_TEXTURE_RECTANGLE, 0);
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, depthtex, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, depthtex, 0);
 
     GLuint stencilrb = 0;
-    glGenRenderbuffers_(1, &stencilrb);
-    glBindRenderbuffer_(GL_RENDERBUFFER, stencilrb);
-    glRenderbufferStorage_(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h);
-    glBindRenderbuffer_(GL_RENDERBUFFER, 0);
-    glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilrb);
+    glGenRenderbuffers(1, &stencilrb);
+    glBindRenderbuffer(GL_RENDERBUFFER, stencilrb);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilrb);
 
-    bool supported = glCheckFramebufferStatus_(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+    bool supported = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
-    glDeleteFramebuffers_(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &fbo);
     glDeleteTextures(1, &depthtex);
-    glDeleteRenderbuffers_(1, &stencilrb);
+    glDeleteRenderbuffers(1, &stencilrb);
 
     return supported;
 }
@@ -645,20 +629,6 @@ void gl_checkextensions()
     glGetTexParameterIiv_     = (PFNGLGETTEXPARAMETERIIVPROC)    getprocaddress("glGetTexParameterIiv");
     glGetTexParameterIuiv_    = (PFNGLGETTEXPARAMETERIUIVPROC)   getprocaddress("glGetTexParameterIuiv");
 
-    glBindRenderbuffer_               = (PFNGLBINDRENDERBUFFERPROC)              getprocaddress("glBindRenderbuffer");
-    glDeleteRenderbuffers_            = (PFNGLDELETERENDERBUFFERSPROC)           getprocaddress("glDeleteRenderbuffers");
-    glGenRenderbuffers_               = (PFNGLGENFRAMEBUFFERSPROC)               getprocaddress("glGenRenderbuffers");
-    glRenderbufferStorage_            = (PFNGLRENDERBUFFERSTORAGEPROC)           getprocaddress("glRenderbufferStorage");
-    glGetRenderbufferParameteriv_     = (PFNGLGETRENDERBUFFERPARAMETERIVPROC)    getprocaddress("glGetRenderbufferParameteriv");
-    glCheckFramebufferStatus_         = (PFNGLCHECKFRAMEBUFFERSTATUSPROC)        getprocaddress("glCheckFramebufferStatus");
-    glBindFramebuffer_                = (PFNGLBINDFRAMEBUFFERPROC)               getprocaddress("glBindFramebuffer");
-    glDeleteFramebuffers_             = (PFNGLDELETEFRAMEBUFFERSPROC)            getprocaddress("glDeleteFramebuffers");
-    glGenFramebuffers_                = (PFNGLGENFRAMEBUFFERSPROC)               getprocaddress("glGenFramebuffers");
-    glFramebufferTexture1D_           = (PFNGLFRAMEBUFFERTEXTURE1DPROC)          getprocaddress("glFramebufferTexture1D");
-    glFramebufferTexture2D_           = (PFNGLFRAMEBUFFERTEXTURE2DPROC)          getprocaddress("glFramebufferTexture2D");
-    glFramebufferTexture3D_           = (PFNGLFRAMEBUFFERTEXTURE3DPROC)          getprocaddress("glFramebufferTexture3D");
-    glFramebufferRenderbuffer_        = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)       getprocaddress("glFramebufferRenderbuffer");
-    glGenerateMipmap_                 = (PFNGLGENERATEMIPMAPPROC)                getprocaddress("glGenerateMipmap");
     glBlitFramebuffer_                = (PFNGLBLITFRAMEBUFFERPROC)               getprocaddress("glBlitFramebuffer");
     glRenderbufferStorageMultisample_ = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)getprocaddress("glRenderbufferStorageMultisample");
 
@@ -1884,12 +1854,12 @@ void drawminimap(int yaw, int pitch, vec loc, cubeworld world)
     glBindTexture(GL_TEXTURE_2D, 0);
 
     GLuint fbo = 0;
-    glGenFramebuffers_(1, &fbo);
-    glBindFramebuffer_(GL_FRAMEBUFFER, fbo);
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, minimaptex, 0);
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, minimaptex, 0);
     copyhdr(size, size, fbo);
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
-    glDeleteFramebuffers_(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &fbo);
 
     glViewport(0, 0, hudw, hudh);
 }

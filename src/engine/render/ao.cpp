@@ -129,13 +129,13 @@ void setupao(int w, int h)
         }
         if(!aofbo[i])
         {
-            glGenFramebuffers_(1, &aofbo[i]);
+            glGenFramebuffers(1, &aofbo[i]);
         }
         createtexture(aotex[i], upscale && i ? w : aow, upscale && i >= 2 ? h : aoh, nullptr, 3, i < 2 ? packfilter : 1, i < 2 ? packformat : format, GL_TEXTURE_RECTANGLE);
-        glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[i]);
-        glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[i], 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, aofbo[i]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[i], 0);
         //make sure we have a framebuffer
-        if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating AO buffer!");
         }
@@ -154,19 +154,19 @@ void setupao(int w, int h)
         }
         if(!aofbo[3])
         {
-            glGenFramebuffers_(1, &aofbo[3]);
+            glGenFramebuffers(1, &aofbo[3]);
         }
         createtexture(aotex[3], aow, aoh, nullptr, 3, 0, aodepthformat > 1 ? GL_R32F : (aodepthformat ? GL_R16F : GL_RGBA8), GL_TEXTURE_RECTANGLE);
-        glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[3]);
-        glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[3], 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, aofbo[3]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, aotex[3], 0);
         //make sure we have a framebuffer
-        if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating AO buffer!");
         }
     }
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     loadaoshaders();
     loadbilateralshaders();
@@ -186,7 +186,7 @@ void cleanupao()
     {
         if(aofbo[i])
         {
-            glDeleteFramebuffers_(1, &aofbo[i]);
+            glDeleteFramebuffers(1, &aofbo[i]);
             aofbo[i] = 0;
         }
     }
@@ -261,7 +261,7 @@ void GBuffer::renderao()
           yscale = eyematrix.b.y;
     if(linear)
     {
-        glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[3]);
+        glBindFramebuffer(GL_FRAMEBUFFER, aofbo[3]);
         glViewport(0, 0, aow, aoh);
         SETSHADER(linearizedepth);
         screenquad(vieww, viewh);
@@ -274,7 +274,7 @@ void GBuffer::renderao()
 
     ambientobscuranceshader->set();
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[0]);
+    glBindFramebuffer(GL_FRAMEBUFFER, aofbo[0]);
     glViewport(0, 0, aow, aoh);
     glActiveTexture_(GL_TEXTURE1);
     if(aoderivnormal)
@@ -317,7 +317,7 @@ void GBuffer::renderao()
             for(int i = 0; i < 2; ++i)
             {
                 setbilateralshader(aobilateral, i, aobilateraldepth);
-                glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[i+1]);
+                glBindFramebuffer(GL_FRAMEBUFFER, aofbo[i+1]);
                 glViewport(0, 0, vieww, i ? viewh : aoh);
                 glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i]);
                 glActiveTexture_(GL_TEXTURE1);
@@ -338,7 +338,7 @@ void GBuffer::renderao()
             for(int i = 0; i < 2 + 2*aoiter; ++i)
             {
                 setbilateralshader(aobilateral, i%2, aobilateraldepth);
-                glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
+                glBindFramebuffer(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
                 glViewport(0, 0, aow, aoh);
                 glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i%2]);
                 glActiveTexture_(GL_TEXTURE1);
@@ -366,7 +366,7 @@ void GBuffer::renderao()
         setupblurkernel(aoblur, blurweights, bluroffsets);
         for(int i = 0; i < 2+2*aoiter; ++i)
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
+            glBindFramebuffer(GL_FRAMEBUFFER, aofbo[(i+1)%2]);
             glViewport(0, 0, aow, aoh);
             setblurshader(i%2, 1, aoblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
             glBindTexture(GL_TEXTURE_RECTANGLE, aotex[i%2]);
@@ -374,7 +374,7 @@ void GBuffer::renderao()
         }
     }
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, msaasamples ? msfbo : gfbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, msaasamples ? msfbo : gfbo);
     glViewport(0, 0, vieww, viewh);
 
     endtimer(aotimer);

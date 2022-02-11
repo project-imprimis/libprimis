@@ -203,9 +203,9 @@ void setupradiancehints()
     }
     if(!rhfbo)
     {
-        glGenFramebuffers_(1, &rhfbo);
+        glGenFramebuffers(1, &rhfbo);
     }
-    glBindFramebuffer_(GL_FRAMEBUFFER, rhfbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, rhfbo);
 
     if(rhrect)
     {
@@ -213,26 +213,26 @@ void setupradiancehints()
         {
             if(!rhrb[i])
             {
-                glGenRenderbuffers_(1, &rhrb[i]);
+                glGenRenderbuffers(1, &rhrb[i]);
             }
-            glBindRenderbuffer_(GL_RENDERBUFFER, rhrb[i]);
-            glRenderbufferStorage_(GL_RENDERBUFFER, rhformat, (rhgrid + 2*rhborder)*(rhgrid + 2*rhborder), (rhgrid + 2*rhborder)*rhsplits);
-            glBindRenderbuffer_(GL_RENDERBUFFER, 0);
-            glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, rhrb[i]);
+            glBindRenderbuffer(GL_RENDERBUFFER, rhrb[i]);
+            glRenderbufferStorage(GL_RENDERBUFFER, rhformat, (rhgrid + 2*rhborder)*(rhgrid + 2*rhborder), (rhgrid + 2*rhborder)*rhsplits);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, rhrb[i]);
         }
     }
     else
     {
         for(int i = 0; i < 4; ++i)
         {
-            glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_3D, rhtex[i], 0, 0);
+            glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_3D, rhtex[i], 0, 0);
         }
     }
 
     static const GLenum drawbufs[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
     glDrawBuffers_(4, drawbufs);
 
-    if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
         fatal("failed allocating radiance hints buffer!");
     }
@@ -251,27 +251,27 @@ void setupradiancehints()
     }
     if(!rsmfbo)
     {
-        glGenFramebuffers_(1, &rsmfbo);
+        glGenFramebuffers(1, &rsmfbo);
     }
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, rsmfbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, rsmfbo);
     GLenum rsmformat = gethdrformat(rsmprec, GL_RGBA8);
 
     createtexture(rsmdepthtex, rsmsize, rsmsize, nullptr, 3, 0, rsmdepthprec > 1 ? GL_DEPTH_COMPONENT32 : (rsmdepthprec ? GL_DEPTH_COMPONENT24 : GL_DEPTH_COMPONENT16), GL_TEXTURE_RECTANGLE);
     createtexture(rsmcolortex, rsmsize, rsmsize, nullptr, 3, 0, rsmformat, GL_TEXTURE_RECTANGLE);
     createtexture(rsmnormaltex, rsmsize, rsmsize, nullptr, 3, 0, rsmformat, GL_TEXTURE_RECTANGLE);
 
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, rsmdepthtex, 0);
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, rsmcolortex, 0);
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, rsmnormaltex, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, rsmdepthtex, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, rsmcolortex, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, rsmnormaltex, 0);
 
     glDrawBuffers_(2, drawbufs);
 
-    if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
         fatal("failed allocating RSM buffer!");
     }
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     loadrhshaders();
     clearradiancehintscache();
 }
@@ -292,12 +292,12 @@ void cleanupradiancehints()
     {
         if(rhrb[i])
         {
-            glDeleteRenderbuffers_(1, &rhrb[i]); rhrb[i] = 0;
+            glDeleteRenderbuffers(1, &rhrb[i]); rhrb[i] = 0;
         }
     }
     if(rhfbo)
     {
-        glDeleteFramebuffers_(1, &rhfbo);
+        glDeleteFramebuffers(1, &rhfbo);
         rhfbo = 0;
     }
     if(rsmdepthtex)
@@ -317,7 +317,7 @@ void cleanupradiancehints()
     }
     if(rsmfbo)
     {
-        glDeleteFramebuffers_(1, &rsmfbo);
+        glDeleteFramebuffers(1, &rsmfbo);
         rsmfbo = 0;
     }
 
@@ -458,7 +458,7 @@ void radiancehints::renderslices()
 {
     int sw = rhgrid+2*rhborder,
         sh = rhgrid+2*rhborder;
-    glBindFramebuffer_(GL_FRAMEBUFFER, rhfbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, rhfbo);
     if(!rhrect)
     {
         glViewport(0, 0, sw, sh);
@@ -611,10 +611,10 @@ void radiancehints::renderslices()
                 } \
                 else \
                 { \
-                    glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, rhtex[0], 0, i*sh + j); \
-                    glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_3D, rhtex[1], 0, i*sh + j); \
-                    glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_3D, rhtex[2], 0, i*sh + j); \
-                    glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_3D, rhtex[3], 0, i*sh + j); \
+                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, rhtex[0], 0, i*sh + j); \
+                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_3D, rhtex[1], 0, i*sh + j); \
+                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_3D, rhtex[2], 0, i*sh + j); \
+                    glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_3D, rhtex[3], 0, i*sh + j); \
                 } \
             } while(0)
 
@@ -900,7 +900,7 @@ void GBuffer::renderradiancehints()
             glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
             glDepthMask(GL_TRUE);
         }
-        glBindFramebuffer_(GL_FRAMEBUFFER, rsmfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, rsmfbo);
         shadowmatrix.mul(rsm.proj, rsm.model);
         GLOBALPARAM(rsmmatrix, shadowmatrix);
         GLOBALPARAMF(rsmdir, -rsm.lightview.x, -rsm.lightview.y, -rsm.lightview.z);
@@ -914,7 +914,7 @@ void GBuffer::renderradiancehints()
         rh.renderslices();
         if(inoq)
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, msaasamples ? msfbo : gfbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, msaasamples ? msfbo : gfbo);
             glViewport(0, 0, vieww, viewh);
 
             glFlush();

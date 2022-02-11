@@ -102,7 +102,7 @@ void setupbloom(int w, int h)
     {
         if(!bloomfbo[i])
         {
-            glGenFramebuffers_(1, &bloomfbo[i]);
+            glGenFramebuffers(1, &bloomfbo[i]);
         }
     }
 
@@ -119,7 +119,7 @@ void setupbloom(int w, int h)
         }
         if(!bloomfbo[5])
         {
-            glGenFramebuffers_(1, &bloomfbo[5]);
+            glGenFramebuffers(1, &bloomfbo[5]);
         }
         createtexture(bloomtex[5], bloomw, bloomh, nullptr, 3, 1, bloomformat, GL_TEXTURE_RECTANGLE);
     }
@@ -127,15 +127,15 @@ void setupbloom(int w, int h)
     createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, reinterpret_cast<const void *>(grayf), 3, 1, GL_R16F);
     for(int i = 0; i < (5 + (bloomformat != GL_RGB ? 1 : 0)); ++i)
     {
-        glBindFramebuffer_(GL_FRAMEBUFFER, bloomfbo[i]);
-        glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i==4 ? GL_TEXTURE_2D : GL_TEXTURE_RECTANGLE, bloomtex[i], 0);
-        if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        glBindFramebuffer(GL_FRAMEBUFFER, bloomfbo[i]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, i==4 ? GL_TEXTURE_2D : GL_TEXTURE_RECTANGLE, bloomtex[i], 0);
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating bloom buffer!");
         }
     }
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void cleanupbloom()
@@ -149,7 +149,7 @@ void cleanupbloom()
     {
         if(bloomfbo[i])
         {
-            glDeleteFramebuffers_(1, &bloomfbo[i]);
+            glDeleteFramebuffers(1, &bloomfbo[i]);
             bloomfbo[i] = 0;
         }
     }
@@ -185,7 +185,7 @@ void copyhdr(int sw, int sh, GLuint fbo, int dw, int dh, bool flipx, bool flipy,
     }
     glerror();
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glViewport(0, 0, dw, dh);
 
     SETSHADER(reorient);
@@ -281,23 +281,23 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
     {
         if(aa < AA_Split && (msaalight <= 1 || !msaatonemap)) //only bind relevant framebuffers
         {
-            glBindFramebuffer_(GL_READ_FRAMEBUFFER, mshdrfbo);
-            glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, hdrfbo);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, mshdrfbo);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, hdrfbo);
             glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, vieww, viewh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
         }
         else if(hasFBMSBS && (vieww > bloomw || viewh > bloomh))
         {
             int cw = std::max(vieww/2, bloomw),
                 ch = std::max(viewh/2, bloomh);
-            glBindFramebuffer_(GL_READ_FRAMEBUFFER, mshdrfbo);
-            glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, hdrfbo);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, mshdrfbo);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, hdrfbo);
             glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST_EXT);
             pw = cw;
             ph = ch;
         }
         else
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, hdrfbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, hdrfbo);
             if(vieww/2 >= bloomw)
             {
                 pw = vieww/2;
@@ -358,7 +358,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
                     ctex = bloomtex[2];
                 }
             }
-            glBindFramebuffer_(GL_FRAMEBUFFER, cfbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, cfbo);
             glViewport(0, 0, cw, ch);
             glBindTexture(GL_TEXTURE_RECTANGLE, ptex);
             screenquad(pw, ph);
@@ -414,7 +414,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
             {
                 SETSHADER(hdrluminance);
             }
-            glBindFramebuffer_(GL_FRAMEBUFFER, b1fbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, b1fbo);
             glViewport(0, 0, cw, ch);
             glBindTexture(GL_TEXTURE_RECTANGLE, ltex);
             screenquad(lw, lh);
@@ -428,7 +428,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
             std::swap(b0h, b1h);
         }
 
-        glBindFramebuffer_(GL_FRAMEBUFFER, bloomfbo[4]);
+        glBindFramebuffer(GL_FRAMEBUFFER, bloomfbo[4]);
         glViewport(0, 0, bloompbo ? 4 : 1, 1);
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
@@ -468,7 +468,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
     glBindTexture(GL_TEXTURE_2D, bloomtex[4]);
     glActiveTexture_(GL_TEXTURE0);
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, b0fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, b0fbo);
     glViewport(0, 0, b0w, b0h);
     SETSHADER(hdrbloom);
     glBindTexture(GL_TEXTURE_RECTANGLE, ptex);
@@ -481,7 +481,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
         setupblurkernel(bloomblur, blurweights, bluroffsets);
         for(int i = 0; i < (2 + 2*bloomiter); ++i)
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, b1fbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, b1fbo);
             glViewport(0, 0, b1w, b1h);
             setblurshader(i%2, 1, bloomblur, blurweights, bluroffsets, GL_TEXTURE_RECTANGLE);
             glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
@@ -495,7 +495,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
 
     if(aa >= AA_Split)
     {
-        glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, vieww, viewh);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, mshdrtex);
         glActiveTexture_(GL_TEXTURE1);
@@ -524,7 +524,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
     }
     else if(msaalight <= 1 || !msaatonemap)
     {
-        glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         glViewport(0, 0, vieww, viewh);
         glBindTexture(GL_TEXTURE_RECTANGLE, hdrtex);
         glActiveTexture_(GL_TEXTURE1);
@@ -569,7 +569,7 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
     {
         bool blit = msaalight > 2 && msaatonemapblit && (!aa || !outfbo);
 
-        glBindFramebuffer_(GL_FRAMEBUFFER, blit ? msrefractfbo : outfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, blit ? msrefractfbo : outfbo);
         glViewport(0, 0, vieww, viewh);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, mshdrtex);
         glActiveTexture_(GL_TEXTURE1);
@@ -606,13 +606,13 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
 
         if(blit)
         {
-            glBindFramebuffer_(GL_READ_FRAMEBUFFER, msrefractfbo);
-            glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, aa || !outfbo ? refractfbo : outfbo);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, msrefractfbo);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, aa || !outfbo ? refractfbo : outfbo);
             glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, vieww, viewh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
             if(!outfbo)
             {
-                glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
+                glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
                 glViewport(0, 0, vieww, viewh);
                 if(!blit)
                 {

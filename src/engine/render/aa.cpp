@@ -59,18 +59,18 @@ namespace //internal functions incl. AA implementations
             }
             if(!tqaafbo[i])
             {
-                glGenFramebuffers_(1, &tqaafbo[i]);
+                glGenFramebuffers(1, &tqaafbo[i]);
             }
-            glBindFramebuffer_(GL_FRAMEBUFFER, tqaafbo[i]);
+            glBindFramebuffer(GL_FRAMEBUFFER, tqaafbo[i]);
             createtexture(tqaatex[i], w, h, nullptr, 3, 1, GL_RGBA8, GL_TEXTURE_RECTANGLE);
-            glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, tqaatex[i], 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, tqaatex[i], 0);
             gbuf.bindgdepth();
-            if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
                 fatal("failed allocating TQAA buffer!");
             }
         }
-        glBindFramebuffer_(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         tqaaprevscreenmatrix.identity();
         loadtqaashaders();
     }
@@ -90,7 +90,7 @@ namespace //internal functions incl. AA implementations
         {
             if(tqaafbo[i])
             {
-                glDeleteFramebuffers_(1, &tqaafbo[i]);
+                glDeleteFramebuffers(1, &tqaafbo[i]);
                 tqaafbo[i] = 0;
             }
         }
@@ -125,7 +125,7 @@ namespace //internal functions incl. AA implementations
 
     void resolvetqaa(GLuint outfbo)
     {
-        glBindFramebuffer_(GL_FRAMEBUFFER, outfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, outfbo);
         SETSHADER(tqaaresolve,);
         LOCALPARAMF(colorweight, tqaacolorweightscale, -tqaacolorweightbias*tqaacolorweightscale);
         glBindTexture(GL_TEXTURE_RECTANGLE, tqaatex[0]);
@@ -221,17 +221,17 @@ namespace //internal functions incl. AA implementations
         }
         if(!fxaafbo)
         {
-            glGenFramebuffers_(1, &fxaafbo);
+            glGenFramebuffers(1, &fxaafbo);
         }
-        glBindFramebuffer_(GL_FRAMEBUFFER, fxaafbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, fxaafbo);
         createtexture(fxaatex, w, h, nullptr, 3, 1, tqaa || (!fxaagreenluma && !intel_texalpha_bug) ? GL_RGBA8 : GL_RGB, GL_TEXTURE_RECTANGLE);
-        glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, fxaatex, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, fxaatex, 0);
         gbuf.bindgdepth();
-        if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             fatal("failed allocating FXAA buffer!");
         }
-        glBindFramebuffer_(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         loadfxaashaders();
     }
@@ -240,7 +240,7 @@ namespace //internal functions incl. AA implementations
     {
         if(fxaafbo)
         {
-            glDeleteFramebuffers_(1, &fxaafbo);
+            glDeleteFramebuffers(1, &fxaafbo);
             fxaafbo = 0;
         }
         if(fxaatex)
@@ -254,7 +254,7 @@ namespace //internal functions incl. AA implementations
     void fxaa::dofxaa(GLuint outfbo )
     {
         timer *fxaatimer = begintimer("fxaa");
-        glBindFramebuffer_(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
         fxaashader->set();
         glBindTexture(GL_TEXTURE_RECTANGLE, fxaatex);
         screenquad(vieww, viewh);
@@ -832,9 +832,9 @@ namespace //internal functions incl. AA implementations
             }
             if(!smaafbo[i])
             {
-                glGenFramebuffers_(1, &smaafbo[i]);
+                glGenFramebuffers(1, &smaafbo[i]);
             }
-            glBindFramebuffer_(GL_FRAMEBUFFER, smaafbo[i]);
+            glBindFramebuffer(GL_FRAMEBUFFER, smaafbo[i]);
             GLenum format = GL_RGB;
             switch(i)
             {
@@ -856,7 +856,7 @@ namespace //internal functions incl. AA implementations
                 }
             }
             createtexture(smaatex[i], w, h, nullptr, 3, 1, format, GL_TEXTURE_RECTANGLE);
-            glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, smaatex[i], 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, smaatex[i], 0);
             if(!i && split)
             {
                 if(!smaatex[4])
@@ -864,7 +864,7 @@ namespace //internal functions incl. AA implementations
                     glGenTextures(1, &smaatex[4]);
                 }
                 createtexture(smaatex[4], w, h, nullptr, 3, 1, format, GL_TEXTURE_RECTANGLE);
-                glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, smaatex[4], 0);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, smaatex[4], 0);
                 static const GLenum drawbufs[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
                 glDrawBuffers_(2, drawbufs);
             }
@@ -872,12 +872,12 @@ namespace //internal functions incl. AA implementations
             {
                 gbuf.bindgdepth();
             }
-            if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
                 fatal("failed allocating SMAA buffer!");
             }
         }
-        glBindFramebuffer_(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         loadsmaashaders(split);
     }
@@ -898,7 +898,7 @@ namespace //internal functions incl. AA implementations
         {
             if(smaafbo[i])
             {
-                glDeleteFramebuffers_(1, &smaafbo[i]);
+                glDeleteFramebuffers(1, &smaafbo[i]);
                 smaafbo[i] = 0;
             }
         }
@@ -975,7 +975,7 @@ namespace //internal functions incl. AA implementations
              stencil = smaastencil && ghasstencil > (msaasamples ? 1 : 0);
         for(int pass = 0; pass < (split ? 2 : 1); ++pass) // loop through multiple passes if doing multisample aa
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, smaafbo[1]);
+            glBindFramebuffer(GL_FRAMEBUFFER, smaafbo[1]);
             if(depthmask || stencil)
             {
                 glClearColor(0, 0, 0, 0);
@@ -1004,7 +1004,7 @@ namespace //internal functions incl. AA implementations
             }
             glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[pass ? 4 : 0]);
             screenquad(vieww, viewh);
-            glBindFramebuffer_(GL_FRAMEBUFFER, smaafbo[2 + pass]);
+            glBindFramebuffer(GL_FRAMEBUFFER, smaafbo[2 + pass]);
             if(depthmask)
             {
                 glDepthFunc(GL_EQUAL);
@@ -1055,7 +1055,7 @@ namespace //internal functions incl. AA implementations
                 glDisable(GL_STENCIL_TEST);
             }
         }
-        glBindFramebuffer_(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, tqaa ? tqaafbo[0] : outfbo);
         smaaneighborhoodshader->set();
         glBindTexture(GL_TEXTURE_RECTANGLE, smaatex[0]);
         glActiveTexture_(GL_TEXTURE1);

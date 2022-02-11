@@ -86,7 +86,7 @@ void GBuffer::rendertransparent()
     timer *transtimer = begintimer("transparent");
     if(hasalphavas&4 || hasmats&4)
     {
-        glBindFramebuffer_(GL_FRAMEBUFFER, msaalight ? msrefractfbo : refractfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, msaalight ? msrefractfbo : refractfbo);
         glDepthMask(GL_FALSE);
         if(msaalight)
         {
@@ -252,7 +252,7 @@ void GBuffer::rendertransparent()
         allsx2 = std::max(allsx2, sx2);
         allsy2 = std::max(allsy2, sy2);
 
-        glBindFramebuffer_(GL_FRAMEBUFFER, msaalight ? msfbo : gfbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, msaalight ? msfbo : gfbo);
         if(ghasstencil)
         {
             glStencilFunc(GL_ALWAYS, layer+1, ~0);
@@ -327,7 +327,7 @@ void GBuffer::rendertransparent()
 
         if(msaalight)
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, mshdrfbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, mshdrfbo);
             if((ghasstencil && msaaedgedetect) || msaalight==2)
             {
                 for(int i = 0; i < 2; ++i)
@@ -342,7 +342,7 @@ void GBuffer::rendertransparent()
         }
         else
         {
-            glBindFramebuffer_(GL_FRAMEBUFFER, hdrfbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, hdrfbo);
             renderlights(sx1, sy1, sx2, sy2, tiles, layer+1, 0, true);
         }
 
