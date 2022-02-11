@@ -44,6 +44,8 @@ FVAR(csmpolyfactor2, -1e3f, 3, 1e3f);
 FVAR(csmpolyoffset2, -1e4f, 0, 1e4f);
 cascadedshadowmap csm;
 
+//====================== cascaded shadow map object ============================//
+
 int cascadedshadowmap::calcbbcsmsplits(const ivec &bbmin, const ivec &bbmax)
 {
     int mask = (1<<csmsplits)-1;
@@ -158,8 +160,6 @@ int cascadedshadowmap::calcspherecsmsplits(const vec &center, float radius)
     }
     return mask;
 }
-
-//====================== cascaded shadow map object ============================//
 
 void cascadedshadowmap::updatesplitdist()
 {
