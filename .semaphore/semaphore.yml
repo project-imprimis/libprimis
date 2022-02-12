@@ -13,7 +13,7 @@ blocks:
             - checkout
             - sem-version cpp 9
             - sudo apt-get update
-            - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+            - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev
             - git submodule update --init --remote src/libprimis-headers
             - make -C src clean
             - make -C src -j3
@@ -27,7 +27,7 @@ blocks:
             - checkout
             - sem-version cpp 9
             - sudo apt-get update
-            - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev bc
+            - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev bc
             - git submodule update --init --remote src/libprimis-headers
             - cd test
             - ./process.sh

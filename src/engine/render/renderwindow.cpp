@@ -550,6 +550,15 @@ void setupscreen()
     //set core profile
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     glcontext = SDL_GL_CreateContext(screen);
+
+    //
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+      /* Problem: glewInit failed, something is seriously wrong. */
+      logoutf("Error: %s", glewGetErrorString(err));
+    }
+    logoutf("init: GLEW %s", glewGetString(GLEW_VERSION));
     //check if OpenGL context is sane
     if(!glcontext)
     {

@@ -132,10 +132,11 @@
     <ClInclude Include="..\engine\world\physics.h" />
     <ClInclude Include="..\engine\world\raycube.h" />
     <ClInclude Include="..\engine\world\worldio.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\GL\glew.h" />
+    <ClInclude Include="..\libprimis-headers\3rdparty\headers\GL\gl.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_image.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_mixer.h" />
-    <ClInclude Include="..\libprimis-headers\3rdparty\headers\SDL_opengl.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\zconf.h" />
     <ClInclude Include="..\libprimis-headers\3rdparty\headers\zlib.h" />
     <ClInclude Include="..\libprimis-headers\cube.h" />
@@ -201,6 +202,7 @@
     <ResourceCompile Include="tesseract.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="..\libprimis-headers\3rdparty\bin\glew32.lib" />
     <Library Include="..\libprimis-headers\3rdparty\bin\SDL2.lib" />
     <Library Include="..\libprimis-headers\3rdparty\bin\SDL2_image.lib" />
     <Library Include="..\libprimis-headers\3rdparty\bin\SDL2_mixer.lib" />
