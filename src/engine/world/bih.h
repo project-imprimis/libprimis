@@ -1,4 +1,4 @@
-struct stainrenderer;
+class stainrenderer;
 
 class BIH
 {
