@@ -377,15 +377,15 @@ void generategrass()
     }
     if(!grassvbo)
     {
-        glGenBuffers_(1, &grassvbo);
+        glGenBuffers(1, &grassvbo);
     }
     gle::bindvbo(grassvbo);
     int size = grassverts.size()*sizeof(grassvert);
     grassvbosize = std::max(grassvbosize, size);
-    glBufferData_(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.data() : nullptr, GL_STREAM_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, grassvbosize, size == grassvbosize ? grassverts.data() : nullptr, GL_STREAM_DRAW);
     if(size != grassvbosize)
     {
-        glBufferSubData_(GL_ARRAY_BUFFER, 0, size, grassverts.data());
+        glBufferSubData(GL_ARRAY_BUFFER, 0, size, grassverts.data());
     }
     gle::clearvbo();
 }
@@ -445,7 +445,7 @@ void cleanupgrass()
 {
     if(grassvbo)
     {
-        glDeleteBuffers_(1, &grassvbo);
+        glDeleteBuffers(1, &grassvbo);
         grassvbo = 0;
     }
     grassvbosize = 0;

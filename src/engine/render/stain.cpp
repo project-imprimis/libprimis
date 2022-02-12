@@ -92,7 +92,7 @@ class stainbuffer
         {
             if(vbo)
             {
-                glDeleteBuffers_(1, &vbo);
+                glDeleteBuffers(1, &vbo);
                 vbo = 0;
             }
         }
@@ -158,18 +158,18 @@ class stainbuffer
             }
             if(!vbo)
             {
-                glGenBuffers_(1, &vbo);
+                glGenBuffers(1, &vbo);
                 dirty = true;
             }
             gle::bindvbo(vbo);
             int count = endvert < startvert ? maxverts - startvert : endvert - startvert;
             if(dirty)
             {
-                glBufferData_(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), nullptr, GL_STREAM_DRAW);
-                glBufferSubData_(GL_ARRAY_BUFFER, 0, count*sizeof(stainvert), &verts[startvert]);
+                glBufferData(GL_ARRAY_BUFFER, maxverts*sizeof(stainvert), nullptr, GL_STREAM_DRAW);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, count*sizeof(stainvert), &verts[startvert]);
                 if(endvert < startvert)
                 {
-                    glBufferSubData_(GL_ARRAY_BUFFER, count*sizeof(stainvert), endvert*sizeof(stainvert), verts);
+                    glBufferSubData(GL_ARRAY_BUFFER, count*sizeof(stainvert), endvert*sizeof(stainvert), verts);
                     count += endvert;
                 }
                 dirty = false;

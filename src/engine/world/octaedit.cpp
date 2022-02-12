@@ -1099,12 +1099,12 @@ struct prefab : editinfo
     {
         if(ebo)
         {
-            glDeleteBuffers_(1, &ebo);
+            glDeleteBuffers(1, &ebo);
             ebo = 0;
         }
         if(vbo)
         {
-            glDeleteBuffers_(1, &vbo);
+            glDeleteBuffers(1, &vbo);
             vbo = 0;
         }
         numtris = numverts = 0;
@@ -1349,19 +1349,19 @@ class prefabmesh
             }
             if(!p.vbo)
             {
-                glGenBuffers_(1, &p.vbo);
+                glGenBuffers(1, &p.vbo);
             }
             gle::bindvbo(p.vbo);
-            glBufferData_(GL_ARRAY_BUFFER, verts.size()*sizeof(vertex), verts.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(vertex), verts.data(), GL_STATIC_DRAW);
             gle::clearvbo();
             p.numverts = verts.size();
 
             if(!p.ebo)
             {
-                glGenBuffers_(1, &p.ebo);
+                glGenBuffers(1, &p.ebo);
             }
             gle::bindebo(p.ebo);
-            glBufferData_(GL_ELEMENT_ARRAY_BUFFER, tris.size()*sizeof(ushort), tris.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, tris.size()*sizeof(ushort), tris.data(), GL_STATIC_DRAW);
             gle::clearebo();
             p.numtris = tris.size()/3;
         }

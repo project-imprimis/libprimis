@@ -390,7 +390,7 @@ void maskgbuffer(const char *mask)
             }
         }
     }
-    glDrawBuffers_(numbufs, drawbufs);
+    glDrawBuffers(numbufs, drawbufs);
 }
 
 void GBuffer::cleanupmsbuffer()
@@ -1983,17 +1983,17 @@ namespace lightsphere
         }
         if(!vbuf)
         {
-            glGenBuffers_(1, &vbuf);
+            glGenBuffers(1, &vbuf);
         }
         gle::bindvbo(vbuf);
-        glBufferData_(GL_ARRAY_BUFFER, numverts*sizeof(vec), verts, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, numverts*sizeof(vec), verts, GL_STATIC_DRAW);
         DELETEA(verts);
         if(!ebuf)
         {
-            glGenBuffers_(1, &ebuf);
+            glGenBuffers(1, &ebuf);
         }
         gle::bindebo(ebuf);
-        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
         DELETEA(indices);
     }
 
@@ -2001,12 +2001,12 @@ namespace lightsphere
     {
         if(vbuf)
         {
-            glDeleteBuffers_(1, &vbuf);
+            glDeleteBuffers(1, &vbuf);
             vbuf = 0;
         }
         if(ebuf)
         {
-            glDeleteBuffers_(1, &ebuf);
+            glDeleteBuffers(1, &ebuf);
             ebuf = 0;
         }
     }

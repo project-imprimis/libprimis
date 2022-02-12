@@ -51,11 +51,11 @@ namespace gle
         quadsenabled = true;
         if(quadindexes)
         {
-            glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, quadindexes);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadindexes);
             return;
         }
 
-        glGenBuffers_(1, &quadindexes);
+        glGenBuffers(1, &quadindexes);
         ushort *data = new ushort[maxquads*6],
                *dst = data;
         for(int idx = 0; idx < maxquads*4; idx += 4, dst += 6)
@@ -67,15 +67,15 @@ namespace gle
             dst[4] = idx + 2;
             dst[5] = idx + 3;
         }
-        glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, quadindexes);
-        glBufferData_(GL_ELEMENT_ARRAY_BUFFER, maxquads*6*sizeof(ushort), data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quadindexes);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxquads*6*sizeof(ushort), data, GL_STATIC_DRAW);
         delete[] data;
     }
 
     void disablequads()
     {
         quadsenabled = false;
-        glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     void drawquads(int offset, int count)
@@ -187,7 +187,7 @@ namespace gle
             case Attribute_TexCoord1:
             case Attribute_BoneIndex:
             {
-                glVertexAttribPointer_(a.type, a.size, a.format, GL_FALSE, vertexsize, buf);
+                glVertexAttribPointer(a.type, a.size, a.format, GL_FALSE, vertexsize, buf);
                 break;
             }
             case Attribute_Color:
@@ -195,20 +195,20 @@ namespace gle
             case Attribute_Tangent:
             case Attribute_BoneWeight:
             {
-                glVertexAttribPointer_(a.type, a.size, a.format, GL_TRUE, vertexsize, buf);
+                glVertexAttribPointer(a.type, a.size, a.format, GL_TRUE, vertexsize, buf);
                 break;
             }
         }
         if(!(enabled&(1<<a.type)))
         {
-            glEnableVertexAttribArray_(a.type);
+            glEnableVertexAttribArray(a.type);
             enabled |= 1<<a.type;
         }
     }
 
     static void unsetattrib(const attribinfo &a)
     {
-        glDisableVertexAttribArray_(a.type);
+        glDisableVertexAttribArray(a.type);
         enabled &= ~(1<<a.type);
     }
 
@@ -263,15 +263,15 @@ namespace gle
             len = std::min(len, maxvbosize);
             if(!vbo)
             {
-                glGenBuffers_(1, &vbo);
+                glGenBuffers(1, &vbo);
             }
-            glBindBuffer_(GL_ARRAY_BUFFER, vbo);
-            glBufferData_(GL_ARRAY_BUFFER, maxvbosize, nullptr, GL_STREAM_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glBufferData(GL_ARRAY_BUFFER, maxvbosize, nullptr, GL_STREAM_DRAW);
             vbooffset = 0;
         }
         else if(!lastvertexsize)
         {
-            glBindBuffer_(GL_ARRAY_BUFFER, vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
         }
         void *buf = glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, len, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
         if(buf)
@@ -298,7 +298,7 @@ namespace gle
         {
             if(buf != attribdata)
             {
-                glUnmapBuffer_(GL_ARRAY_BUFFER);
+                glUnmapBuffer(GL_ARRAY_BUFFER);
                 attribbuf.reset(attribdata, maxvbosize);
             }
             return 0;
@@ -310,24 +310,24 @@ namespace gle
             {
                 if(!vbo)
                 {
-                    glGenBuffers_(1, &vbo);
+                    glGenBuffers(1, &vbo);
                 }
-                glBindBuffer_(GL_ARRAY_BUFFER, vbo);
-                glBufferData_(GL_ARRAY_BUFFER, maxvbosize, nullptr, GL_STREAM_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo);
+                glBufferData(GL_ARRAY_BUFFER, maxvbosize, nullptr, GL_STREAM_DRAW);
                 vbooffset = 0;
             }
             else if(!lastvertexsize)
             {
-                glBindBuffer_(GL_ARRAY_BUFFER, vbo);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo);
             }
             //void pointer warning!
             void *dst = glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, attribbuf.length(), GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
             memcpy(dst, attribbuf.getbuf(), attribbuf.length());
-            glUnmapBuffer_(GL_ARRAY_BUFFER);
+            glUnmapBuffer(GL_ARRAY_BUFFER);
         }
         else
         {
-            glUnmapBuffer_(GL_ARRAY_BUFFER);
+            glUnmapBuffer(GL_ARRAY_BUFFER);
         }
         buf = static_cast<uchar *>(nullptr) + vbooffset;
         if(vertexsize == lastvertexsize && buf >= lastbuf)
@@ -365,7 +365,7 @@ namespace gle
                         multidrawstart[i] += start;
                     }
                 }
-                glMultiDrawArrays_(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
+                glMultiDrawArrays(primtype, multidrawstart.data(), multidrawcount.data(), multidrawstart.size());
                 multidrawstart.resize(0);
                 multidrawcount.resize(0);
             }
@@ -384,7 +384,7 @@ namespace gle
         {
             if(enabled&(1<<i))
             {
-                glDisableVertexAttribArray_(i);
+                glDisableVertexAttribArray(i);
                 enabled &= ~(1<<i);
             }
         }
@@ -394,7 +394,7 @@ namespace gle
         {
             disablequads();
         }
-        glBindBuffer_(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     void setup()
@@ -413,12 +413,12 @@ namespace gle
         disable();
         if(quadindexes)
         {
-            glDeleteBuffers_(1, &quadindexes);
+            glDeleteBuffers(1, &quadindexes);
             quadindexes = 0;
         }
         if(vbo)
         {
-            glDeleteBuffers_(1, &vbo);
+            glDeleteBuffers(1, &vbo);
             vbo = 0;
         }
         vbooffset = maxvbosize;
@@ -434,41 +434,41 @@ namespace gle
     void deftexcoord0(int size, int format) { defattrib(Attribute_TexCoord0, size, format); }
     void defnormal(int size, int format) { defattrib(Attribute_Normal, size, format); }
 
-    void colorf(float x, float y, float z) { glVertexAttrib3f_(Attribute_Color, x, y, z); }
-    void colorf(float x, float y, float z, float w) { glVertexAttrib4f_(Attribute_Color, x, y, z, w); }
+    void colorf(float x, float y, float z) { glVertexAttrib3f(Attribute_Color, x, y, z); }
+    void colorf(float x, float y, float z, float w) { glVertexAttrib4f(Attribute_Color, x, y, z, w); }
 
-    void color(const vec &v) { glVertexAttrib3fv_(Attribute_Color, v.v); }
-    void color(const vec &v, float w) { glVertexAttrib4f_(Attribute_Color, v.x, v.y, v.z, w); }
+    void color(const vec &v) { glVertexAttrib3fv(Attribute_Color, v.v); }
+    void color(const vec &v, float w) { glVertexAttrib4f(Attribute_Color, v.x, v.y, v.z, w); }
 
-    void colorub(uchar x, uchar y, uchar z, uchar w) { glVertexAttrib4Nub_(Attribute_Color, x, y, z, w); }
-    void color(const bvec &v, uchar alpha) { glVertexAttrib4Nub_(Attribute_Color, v.x, v.y, v.z, alpha); }
+    void colorub(uchar x, uchar y, uchar z, uchar w) { glVertexAttrib4Nub(Attribute_Color, x, y, z, w); }
+    void color(const bvec &v, uchar alpha) { glVertexAttrib4Nub(Attribute_Color, v.x, v.y, v.z, alpha); }
 
-    void enablevertex() { disable(); glEnableVertexAttribArray_(Attribute_Vertex); }
-    void disablevertex() { glDisableVertexAttribArray_(Attribute_Vertex); }
-    void vertexpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { disable(); glVertexAttribPointer_(Attribute_Vertex, size, type, normalized, stride, data); }
-    void enablecolor() { ; glEnableVertexAttribArray_(Attribute_Color); }
-    void disablecolor() { glDisableVertexAttribArray_(Attribute_Color); }
-    void colorpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_Color, size, type, normalized, stride, data); }
-    void enabletexcoord0() { ; glEnableVertexAttribArray_(Attribute_TexCoord0); }
-    void disabletexcoord0() { glDisableVertexAttribArray_(Attribute_TexCoord0); }
-    void texcoord0pointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_TexCoord0, size, type, normalized, stride, data); }
-    void enablenormal() { ; glEnableVertexAttribArray_(Attribute_Normal); }
-    void disablenormal() { glDisableVertexAttribArray_(Attribute_Normal); }
-    void normalpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_Normal, size, type, normalized, stride, data); }
-    void enabletangent() { ; glEnableVertexAttribArray_(Attribute_Tangent); }
-    void disabletangent() { glDisableVertexAttribArray_(Attribute_Tangent); }
-    void tangentpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_Tangent, size, type, normalized, stride, data); }
-    void enableboneweight() { ; glEnableVertexAttribArray_(Attribute_BoneWeight); }
-    void disableboneweight() { glDisableVertexAttribArray_(Attribute_BoneWeight); }
-    void boneweightpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_BoneWeight, size, type, normalized, stride, data); }
-    void enableboneindex() { ; glEnableVertexAttribArray_(Attribute_BoneIndex); }
-    void disableboneindex() { glDisableVertexAttribArray_(Attribute_BoneIndex); }
-    void boneindexpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer_(Attribute_BoneIndex, size, type, normalized, stride, data); }
+    void enablevertex() { disable(); glEnableVertexAttribArray(Attribute_Vertex); }
+    void disablevertex() { glDisableVertexAttribArray(Attribute_Vertex); }
+    void vertexpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { disable(); glVertexAttribPointer(Attribute_Vertex, size, type, normalized, stride, data); }
+    void enablecolor() { ; glEnableVertexAttribArray(Attribute_Color); }
+    void disablecolor() { glDisableVertexAttribArray(Attribute_Color); }
+    void colorpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer(Attribute_Color, size, type, normalized, stride, data); }
+    void enabletexcoord0() { ; glEnableVertexAttribArray(Attribute_TexCoord0); }
+    void disabletexcoord0() { glDisableVertexAttribArray(Attribute_TexCoord0); }
+    void texcoord0pointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer(Attribute_TexCoord0, size, type, normalized, stride, data); }
+    void enablenormal() { ; glEnableVertexAttribArray(Attribute_Normal); }
+    void disablenormal() { glDisableVertexAttribArray(Attribute_Normal); }
+    void normalpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer(Attribute_Normal, size, type, normalized, stride, data); }
+    void enabletangent() { ; glEnableVertexAttribArray(Attribute_Tangent); }
+    void disabletangent() { glDisableVertexAttribArray(Attribute_Tangent); }
+    void tangentpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer(Attribute_Tangent, size, type, normalized, stride, data); }
+    void enableboneweight() { ; glEnableVertexAttribArray(Attribute_BoneWeight); }
+    void disableboneweight() { glDisableVertexAttribArray(Attribute_BoneWeight); }
+    void boneweightpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer(Attribute_BoneWeight, size, type, normalized, stride, data); }
+    void enableboneindex() { ; glEnableVertexAttribArray(Attribute_BoneIndex); }
+    void disableboneindex() { glDisableVertexAttribArray(Attribute_BoneIndex); }
+    void boneindexpointer(int stride, const void *data, GLenum type, int size, GLenum normalized) { ; glVertexAttribPointer(Attribute_BoneIndex, size, type, normalized, stride, data); }
 
-    void bindebo(GLuint ebo) { disable(); glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, ebo); }
-    void clearebo() { glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, 0); }
-    void bindvbo(GLuint vbo) { disable(); glBindBuffer_(GL_ARRAY_BUFFER, vbo); }
-    void clearvbo() { glBindBuffer_(GL_ARRAY_BUFFER, 0); }
+    void bindebo(GLuint ebo) { disable(); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo); }
+    void clearebo() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+    void bindvbo(GLuint vbo) { disable(); glBindBuffer(GL_ARRAY_BUFFER, vbo); }
+    void clearvbo() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 
     template<class T>
     void attrib(T x, T y)

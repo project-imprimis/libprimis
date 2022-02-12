@@ -59,7 +59,7 @@ namespace
         memset(t.query, 0, sizeof(t.query));
         if(gpu)
         {
-            glGenQueries_(timer::Timer_MaxQuery, t.query);
+            glGenQueries(timer::Timer_MaxQuery, t.query);
         }
         t.waiting = 0;
         t.starttime = 0;
@@ -92,7 +92,7 @@ timer *begintimer(const char *name, bool gpu)
     if(t->gpu)
     {
         deferquery++;
-        glBeginQuery_(GL_TIME_ELAPSED_EXT, t->query[timercycle]);
+        glBeginQuery(GL_TIME_ELAPSED_EXT, t->query[timercycle]);
         t->waiting |= 1<<timercycle;
     }
     else
@@ -112,7 +112,7 @@ void endtimer(timer *t)
     }
     if(t->gpu)
     {
-        glEndQuery_(GL_TIME_ELAPSED_EXT);
+        glEndQuery(GL_TIME_ELAPSED_EXT);
         deferquery--;
     }
     else
@@ -134,7 +134,7 @@ void synctimers()
             GLint available = 0;
             while(!available)
             {
-                glGetQueryObjectiv_(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available);
+                glGetQueryObjectiv(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available);
             }
             GLuint64EXT result = 0;
             glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result);
@@ -161,7 +161,7 @@ void cleanuptimers()
         timer &t = timers[i];
         if(t.gpu)
         {
-            glDeleteQueries_(timer::Timer_MaxQuery, t.query);
+            glDeleteQueries(timer::Timer_MaxQuery, t.query);
         }
     }
     timers.shrink(0);

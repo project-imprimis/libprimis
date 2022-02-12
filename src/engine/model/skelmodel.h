@@ -536,7 +536,7 @@ struct skelmodel : animmodel
             }
             if(ebuf)
             {
-                glDeleteBuffers_(1, &ebuf);
+                glDeleteBuffers(1, &ebuf);
             }
             for(int i = 0; i < maxblendcache; ++i)
             {
@@ -546,7 +546,7 @@ struct skelmodel : animmodel
             {
                 if(vbocache[i].vbuf)
                 {
-                    glDeleteBuffers_(1, &vbocache[i].vbuf);
+                    glDeleteBuffers(1, &vbocache[i].vbuf);
                 }
             }
             DELETEA(vdata);

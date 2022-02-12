@@ -142,7 +142,7 @@ void cleanupbloom()
 {
     if(bloompbo)
     {
-        glDeleteBuffers_(1, &bloompbo);
+        glDeleteBuffers(1, &bloompbo);
         bloompbo = 0;
     }
     for(int i = 0; i < 6; ++i)
@@ -440,10 +440,10 @@ void GBuffer::processhdr(GLuint outfbo, int aa)
 
         if(bloompbo)
         {
-            glBindBuffer_(GL_PIXEL_PACK_BUFFER, bloompbo);
+            glBindBuffer(GL_PIXEL_PACK_BUFFER, bloompbo);
             glPixelStorei(GL_PACK_ALIGNMENT, 1);
             glReadPixels(0, 0, 4, 1, GL_RED, GL_FLOAT, nullptr);
-            glBindBuffer_(GL_PIXEL_PACK_BUFFER, 0);
+            glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
         }
 
         lasthdraccum = lastmillis;

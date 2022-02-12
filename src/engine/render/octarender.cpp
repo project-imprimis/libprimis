@@ -85,7 +85,7 @@ namespace
         vbi.uses--;
         if(!vbi.uses)
         {
-            glDeleteBuffers_(1, &vbo);
+            glDeleteBuffers(1, &vbo);
             if(vbi.data)
             {
                 delete[] vbi.data;
@@ -101,11 +101,11 @@ namespace
         gle::disable();
 
         GLuint vbo;
-        glGenBuffers_(1, &vbo);
+        glGenBuffers(1, &vbo);
         GLenum target = type==VBO_VBuf ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER;
-        glBindBuffer_(target, vbo);
-        glBufferData_(target, len, buf, GL_STATIC_DRAW);
-        glBindBuffer_(target, 0);
+        glBindBuffer(target, vbo);
+        glBufferData(target, len, buf, GL_STATIC_DRAW);
+        glBindBuffer(target, 0);
 
         vboinfo &vbi = vbos[vbo];
         vbi.uses = numva;

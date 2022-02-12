@@ -866,7 +866,7 @@ namespace //internal functions incl. AA implementations
                 createtexture(smaatex[4], w, h, nullptr, 3, 1, format, GL_TEXTURE_RECTANGLE);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_RECTANGLE, smaatex[4], 0);
                 static const GLenum drawbufs[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-                glDrawBuffers_(2, drawbufs);
+                glDrawBuffers(2, drawbufs);
             }
             if(!i || (smaadepthmask && (!tqaa || msaalight)) || (smaastencil && ghasstencil > (msaasamples ? 1 : 0)))
             {
