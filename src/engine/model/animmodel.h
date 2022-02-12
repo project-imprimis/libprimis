@@ -692,7 +692,7 @@ string modelloader<MDL, BASE>::dir = {'\0'}; // crashes clang if "" is used here
 template<class MDL, class MESH>
 struct modelcommands
 {
-    typedef struct MDL::part part;
+    typedef class MDL::part part;
     typedef struct MDL::skin skin;
 
     static void setdir(char *name)
