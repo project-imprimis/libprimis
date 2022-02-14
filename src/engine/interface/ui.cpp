@@ -4440,43 +4440,36 @@ namespace UI
     {
         intret(showui(name) ? 1 : 0);
     }
-    COMMANDN(showui, showuicmd, "s");
 
     void hideuicmd(char * name)
     {
         intret(hideui(name) ? 1 : 0);
     }
-    COMMANDN(hideui, hideuicmd, "s");
 
     void hidetopuicmd()
     {
         intret(world->hidetop() ? 1 : 0);
     }
-    COMMANDN(hidetopui, hidetopuicmd, "");
 
     void hidealluicmd()
     {
         intret(world->hideall());
     }
-    COMMANDN(hideallui, hidealluicmd, "");
 
     void toggleuicmd(char * name)
     {
         intret(toggleui(name) ? 1 : 0);
     }
-    COMMANDN(toggleui, toggleuicmd, "s");
 
     void holduicmd(char * name, int * down)
     {
         holdui(name, *down!=0);
     }
-    COMMANDN(holdui, holduicmd, "sD");
 
     void uivisiblecmd(char * name)
     {
         intret(uivisible(name) ? 1 : 0);
     }
-    COMMANDN(uivisiblecmd, uivisible, "s");
 
     void uinamecmd()
     {
@@ -4485,7 +4478,6 @@ namespace UI
             result(window->name);
         }
     }
-    COMMANDN(uiname, uinamecmd, "");
 
     void ifstateval(bool state, tagval * t, tagval * f)
     {
@@ -4587,6 +4579,16 @@ namespace UI
 
     void inituicmds()
     {
+
+        COMMANDN(showui, showuicmd, "s");
+        COMMANDN(hideui, hideuicmd, "s");
+        COMMANDN(hidetopui, hidetopuicmd, "");
+        COMMANDN(hideallui, hidealluicmd, "");
+        COMMANDN(toggleui, toggleuicmd, "s");
+        COMMANDN(holdui, holduicmd, "sD");
+        COMMANDN(uivisiblecmd, uivisible, "s");
+        COMMANDN(uiname, uinamecmd, "");
+
         #define DOSTATE(flags, func) \
             ICOMMANDNS("ui!" #func, uinot##func##_, "ee", (uint *t, uint *f), \
                 executeret(buildparent && buildparent->hasstate(flags) ? t : f)); \
