@@ -206,67 +206,33 @@ static float wxscale = 1.0f,
              wyscale = 1.0f,
              wscroll = 0.0f;
 
-//========================================================== VERTW VERTWN VERTWT
-#define VERTW(vertw, defbody, body) \
-    static void def##vertw() \
-    { \
-        gle::defvertex(); \
-        defbody; \
-    } \
-    static void vertw(float v1, float v2, float v3) \
-    { \
-        float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset; \
-        float s = angle - static_cast<int>(angle) - 0.5f; \
-        s *= 8 - std::fabs(s)*16; \
-        float h = wateramplitude*s-wateroffset; \
-        gle::attribf(v1, v2, v3+h); \
-        body; \
-    }
-#define VERTWN(vertw, defbody, body) \
-    static void def##vertw() \
-    { \
-        gle::defvertex(); \
-        defbody; \
-    } \
-    static void vertw(float v1, float v2, float v3) \
-    { \
-        float h = -wateroffset; \
-        gle::attribf(v1, v2, v3+h); \
-        body; \
-    }
-#define VERTWT(vertwt, defbody, body) \
-    VERTW(vertwt, defbody, { \
-        float v = angle - static_cast<int>(angle+0.25f) - 0.25f; \
-        v *= 8 - std::fabs(v)*16; \
-        float duv = 0.5f*v; \
-        body; \
-    })
+static void defvertwt()
+{
+    gle::defvertex();
+    gle::deftexcoord0();
+}
 
-VERTW(vertwt, {
-    gle::deftexcoord0();
-}, {
+static void vertwt(float v1, float v2, float v3)
+{
+    float angle = (v1 - wx1) * (v2 - wy1) * (v1 - wx2) * (v2 - wy2) * whscale + whoffset;
+    float s = angle - static_cast<int>(angle) - 0.5f; s *= 8 - std::fabs(s)*16;
+    float h = wateramplitude*s-wateroffset;
+    gle::attribf(v1, v2, v3+h);
     gle::attribf(wxscale*v1, wyscale*v2);
-})
-VERTWN(vertwtn, {
-    gle::deftexcoord0();
-}, {
-    gle::attribf(wxscale*v1, wyscale*v2);
-})
+}
 
-VERTW(vertl, {
+static void defvertwtn()
+{
+    gle::defvertex();
     gle::deftexcoord0();
-}, {
-    gle::attribf(wxscale*(v1+wscroll), wyscale*(v2+wscroll));
-})
-VERTWN(vertln, {
-    gle::deftexcoord0();
-}, {
-    gle::attribf(wxscale*(v1+wscroll), wyscale*(v2+wscroll));
-})
-#undef VERTW
-#undef VERTWN
-#undef VERTWT
-//==============================================================================
+}
+
+static void vertwtn(float v1, float v2, float v3)
+{
+    float h = -wateroffset;
+    gle::attribf(v1, v2, v3+h);
+    gle::attribf(wxscale*v1, wyscale*v2);
+}
 
 static void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
 {
