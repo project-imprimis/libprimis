@@ -4513,69 +4513,69 @@ namespace UI
         }
     }
 
-        static float parsepixeloffset(const tagval *t, int size)
+    static float parsepixeloffset(const tagval *t, int size)
+    {
+        switch(t->type)
         {
-            switch(t->type)
+            case Value_Integer:
             {
-                case Value_Integer:
-                {
-                    return t->i;
-                }
-                case Value_Float:
-                {
-                    return t->f;
-                }
-                case Value_Null:
-                {
-                    return 0;
-                }
-                default:
-                {
-                    const char *s = t->getstr();
-                    char *end;
-                    float val = strtod(s, &end);
-                    return *end == 'p' ? val/size : val;
-                }
+                return t->i;
+            }
+            case Value_Float:
+            {
+                return t->f;
+            }
+            case Value_Null:
+            {
+                return 0;
+            }
+            default:
+            {
+                const char *s = t->getstr();
+                char *end;
+                float val = strtod(s, &end);
+                return *end == 'p' ? val/size : val;
             }
         }
+    }
 
-        static void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
+    static void buildtext(tagval &t, float scale, float scalemod, const Color &color, float wrap, uint *children)
+    {
+        if(scale <= 0)
         {
-            if(scale <= 0)
+            scale = 1;
+        }
+        scale *= scalemod;
+        switch(t.type)
+        {
+            case Value_Integer:
             {
-                scale = 1;
+                BUILD(TextInt, o, o->setup(t.i, scale, color, wrap), children);
+                break;
             }
-            scale *= scalemod;
-            switch(t.type)
+            case Value_Float:
             {
-                case Value_Integer:
+                BUILD(TextFloat, o, o->setup(t.f, scale, color, wrap), children);
+                break;
+            }
+            case Value_CString:
+            case Value_Macro:
+            case Value_String:
+            {
+                if(t.s[0])
                 {
-                    BUILD(TextInt, o, o->setup(t.i, scale, color, wrap), children);
+                    BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
                     break;
                 }
-                case Value_Float:
-                {
-                    BUILD(TextFloat, o, o->setup(t.f, scale, color, wrap), children);
-                    break;
-                }
-                case Value_CString:
-                case Value_Macro:
-                case Value_String:
-                {
-                    if(t.s[0])
-                    {
-                        BUILD(TextString, o, o->setup(t.s, scale, color, wrap), children);
-                        break;
-                    }
-                }
-                [[fallthrough]];
-                default:
-                {
-                    BUILD(Object, o, o->setup(), children);
-                    break;
-                }
+            }
+            [[fallthrough]];
+            default:
+            {
+                BUILD(Object, o, o->setup(), children);
+                break;
             }
         }
+    }
 
     void inituicmds()
     {
