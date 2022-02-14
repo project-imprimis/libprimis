@@ -80,8 +80,8 @@ Set N to the number of threads to compile with. For example, for a quad-core pro
 
 (to reach this directory use `cd libprimis`)
 
-This library requires `libsdl2`, `libsdl2-image`, `libsdl2-mixer`, `libsdl2-ttf`, and drivers
-for OpenGL (usually already installed). To compile the library, the development
+This library requires `libsdl2`, `libsdl2-image`, `libsdl2-mixer`, `libsdl2-ttf`, `libglew`,
+and drivers for OpenGL (usually already installed). To compile the library, the development
 versions of the libraries are required (on distros that seperate standard and dev packages).
 
 Once the library has been compiled, it should be placed the standard shared library folder
