@@ -4579,14 +4579,14 @@ namespace UI
 
     void inituicmds()
     {
-        addcommand("showui", (identfun)showuicmd, "s", Id_Command);
-        addcommand("hideui", (identfun)hideuicmd, "s", Id_Command);
-        addcommand("hidetopui", (identfun)hidetopuicmd, "", Id_Command);
-        addcommand("hideallui", (identfun)hidealluicmd, "", Id_Command);
-        addcommand("toggleui", (identfun)toggleuicmd, "s", Id_Command);
-        addcommand("holdui", (identfun)holduicmd, "sD", Id_Command);
-        addcommand("uivisiblecmd", (identfun)uivisible, "s", Id_Command);
-        addcommand("uiname", (identfun)uinamecmd, "", Id_Command);
+        addcommand("showui",        reinterpret_cast<identfun>(showuicmd),   "s",    Id_Command);
+        addcommand("hideui",        reinterpret_cast<identfun>(hideuicmd),   "s",    Id_Command);
+        addcommand("hidetopui",     reinterpret_cast<identfun>(hidetopuicmd),"",     Id_Command);
+        addcommand("hideallui",     reinterpret_cast<identfun>(hidealluicmd),"",     Id_Command);
+        addcommand("toggleui",      reinterpret_cast<identfun>(toggleuicmd), "s",    Id_Command);
+        addcommand("holdui",        reinterpret_cast<identfun>(holduicmd),   "sD",   Id_Command);
+        addcommand("uivisiblecmd",  reinterpret_cast<identfun>(uivisible),   "s",    Id_Command);
+        addcommand("uiname",        reinterpret_cast<identfun>(uinamecmd),   "",     Id_Command);
 
         #define DOSTATE(flags, func) \
             addcommand("ui" #func, reinterpret_cast<identfun>(+[] (uint *t, uint *f) { executeret(buildparent && buildparent->haschildstate(flags) ? t : f); }), "ee", Id_Command); \
