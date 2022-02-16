@@ -75,6 +75,16 @@ hashtable<animmodel::shaderparams, animmodel::ShaderParamsKey> animmodel::Shader
 int animmodel::ShaderParamsKey::firstversion = 0,
     animmodel::ShaderParamsKey::lastversion = 1;
 
+uint hthash(const animmodel::shaderparams &k)
+{
+    return memhash(&k, sizeof(k));
+}
+
+bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
+{
+    return !memcmp(&x, &y, sizeof(animmodel::shaderparams));
+}
+
 // AnimPos
 
 void animmodel::AnimPos::setframes(const animinfo &info)

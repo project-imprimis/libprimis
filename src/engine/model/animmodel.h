@@ -614,15 +614,8 @@ class animmodel : public model
         static Texture *lasttex, *lastdecal, *lastmasks, *lastnormalmap;
 };
 
-static inline uint hthash(const animmodel::shaderparams &k)
-{
-    return memhash(&k, sizeof(k));
-}
-
-static inline bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
-{
-    return !memcmp(&x, &y, sizeof(animmodel::shaderparams));
-}
+extern uint hthash(const animmodel::shaderparams &k);
+extern bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y);
 
 /* modelloader
  *
