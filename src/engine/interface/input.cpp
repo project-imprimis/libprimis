@@ -19,6 +19,7 @@
 #include "render/rendergl.h"
 #include "render/renderwindow.h"
 
+//sets SDL relative mouse mode to enabled if 1, 0 otherwise
 VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
 bool shouldgrab = false,
