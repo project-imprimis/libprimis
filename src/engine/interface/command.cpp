@@ -4088,7 +4088,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 runcode(args[--numargs].code, result);
                 freearg(args[numargs]);
                 forcearg(result, op&Code_RetMask);
-                REDOARGS
+                redoargs(aliasstack, aliaslink, prevstack, identmap, argstack);
                 continue;
             }
             case Code_Do|Ret_Null:

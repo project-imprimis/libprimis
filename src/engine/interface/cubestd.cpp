@@ -299,7 +299,7 @@ static void doargs(uint *body)
     {
         UNDOARGS
         executeret(body, *commandret);
-        REDOARGS
+        redoargs(aliasstack, aliaslink, prevstack, identmap, argstack);
     }
     else
     {
