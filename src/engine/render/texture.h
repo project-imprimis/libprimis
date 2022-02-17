@@ -301,14 +301,9 @@ struct Shader
         return (type & Shader_Dynamic) != 0;
     }
 
-    static inline bool isnull(const Shader *s)
-    {
-        return !s;
-    }
-
     bool isnull() const
     {
-        return isnull(this);
+        return (this == nullptr);
     }
 
     int numvariants(int row) const
