@@ -29,6 +29,22 @@
 #include "skelmodel.h"
 #include "hitzone.h"
 
+bool htcmp(const skelzonekey &x, const skelzoneinfo &y)
+{
+    return !memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
+}
+
+uint hthash(const skelzonekey &k)
+{
+    union
+    {
+        uint i[3];
+        uchar b[12];
+    } conv;
+    memcpy(conv.b, k.bones, sizeof(conv.b));
+    return conv.i[0]^conv.i[1]^conv.i[2];
+}
+
 //gets used just twice, in skelbih::triintersect, skelhitzone::triintersect
 inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
                                     animmodel::skin* s,

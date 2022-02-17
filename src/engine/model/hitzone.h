@@ -244,21 +244,9 @@ class skelzoneinfo
         skelzoneinfo(const skelzonekey &key) : index(-1), parents(0), conflicts(0), key(key) {}
 };
 
-static inline bool htcmp(const skelzonekey &x, const skelzoneinfo &y)
-{
-    return !memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
-}
+bool htcmp(const skelzonekey &x, const skelzoneinfo &y);
+uint hthash(const skelzonekey &k);
 
-static inline uint hthash(const skelzonekey &k)
-{
-    union
-    {
-        uint i[3];
-        uchar b[12];
-    } conv;
-    memcpy(conv.b, k.bones, sizeof(conv.b));
-    return conv.i[0]^conv.i[1]^conv.i[2];
-}
 
 class skelhitdata
 {
