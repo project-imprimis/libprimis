@@ -79,7 +79,7 @@ class animmodel : public model
 
             bool checkversion();
 
-            static inline void invalidate()
+            static void invalidate()
             {
                 firstversion = lastversion;
             }
