@@ -46,7 +46,7 @@ uint hthash(const skelzonekey &k)
 }
 
 //gets used just twice, in skelbih::triintersect, skelhitzone::triintersect
-inline static bool skeltriintersect(vec a, vec b, vec c, vec o,
+static bool skeltriintersect(vec a, vec b, vec c, vec o,
                                     animmodel::skin* s,
                                     const skelbih::tri t,
                                     const skelmodel::vert va,
