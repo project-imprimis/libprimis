@@ -262,10 +262,12 @@ namespace
         }
         ~KeyM()
         {
-            DELETEA(name);
+            delete[] name;
+            name = nullptr;
             for(int i = 0; i < Action_NumActions; ++i)
             {
-                DELETEA(actions[i]);
+                delete[] actions[i];
+                actions[i] = nullptr;
             }
         }
 
@@ -290,7 +292,7 @@ namespace
         }
         KeyM &km = keyms[*code];
         km.code = *code;
-        DELETEA(km.name);
+        delete[] km.name;
         km.name = newstring(key);
     }
     COMMAND(keymap, "is");
@@ -462,8 +464,12 @@ namespace
         textinput(commandmillis >= 0, TextInput_Console);
         keyrepeat(commandmillis >= 0, KeyRepeat_Console);
         copystring(commandbuf, init ? init : "");
-        DELETEA(commandaction);
-        DELETEA(commandprompt);
+
+        delete[] commandaction;
+        delete[] commandprompt;
+        commandaction = nullptr;
+        commandprompt = nullptr;
+
         commandpos = -1;
         if(action && action[0])
         {
@@ -537,9 +543,13 @@ namespace
         HLine() : buf(nullptr), action(nullptr), prompt(nullptr), flags(0) {}
         ~HLine()
         {
-            DELETEA(buf);
-            DELETEA(action);
-            DELETEA(prompt);
+            delete[] buf;
+            delete[] action;
+            delete[] prompt;
+
+            buf = nullptr;
+            action = nullptr;
+            prompt = nullptr;
         }
 
         void restore()
@@ -549,8 +559,13 @@ namespace
             {
                 commandpos = -1;
             }
-            DELETEA(commandaction);
-            DELETEA(commandprompt);
+
+            delete[] commandaction;
+            delete[] commandprompt;
+
+            commandaction = nullptr;
+            commandprompt = nullptr;
+
             if(action)
             {
                 commandaction = newstring(action);
@@ -893,7 +908,15 @@ namespace
             vector<char *> files;
 
             FilesVal(int type, const char *dir, const char *ext) : type(type), dir(newstring(dir)), ext(ext && ext[0] ? newstring(ext) : nullptr), millis(-1) {}
-            ~FilesVal() { DELETEA(dir); DELETEA(ext); files.deletearrays(); }
+            ~FilesVal()
+            {
+                delete[] dir;
+                delete[] ext;
+
+                dir = nullptr;
+                ext = nullptr;
+                files.deletearrays();
+            }
 
             void update()
             {
@@ -1026,7 +1049,8 @@ namespace
         if(!completesize)
         {
             completesize = static_cast<int>(std::strlen(&s[cmdlen]));
-            DELETEA(lastcomplete);
+            delete[] lastcomplete;
+            lastcomplete = nullptr;
         }
         FilesVal *f = nullptr;
         if(completesize)
@@ -1065,7 +1089,9 @@ namespace
                 }
             );
         }
-        DELETEA(lastcomplete);
+
+        delete[] lastcomplete;
+        lastcomplete = nullptr;
         if(nextcomplete)
         {
             cmdlen = std::min(cmdlen, maxlen-1);
