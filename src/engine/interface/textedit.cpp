@@ -24,7 +24,8 @@ bool EditLine::empty()
 
 void EditLine::clear()
 {
-    DELETEA(text);
+    delete[] text;
+    text = nullptr;
     len = maxlen = 0;
 }
 
@@ -47,7 +48,7 @@ bool EditLine::grow(int total, const char *fmt, ...)
     {
         newtext[0] = '\0';
     }
-    DELETEA(text);
+    delete[] text;
     text = newtext;
     return true;
 }
@@ -241,10 +242,14 @@ void Editor::updateheight()
 
 void Editor::setfile(const char *fname)
 {
-    DELETEA(filename);
+    delete[] filename;
     if(fname)
     {
         filename = newstring(fname);
+    }
+    else
+    {
+        filename = nullptr;
     }
 }
 
