@@ -62,8 +62,11 @@ class Editor
         ~Editor()
         {
             //printf("~editor %08x '%s'\n", this, name);
-            DELETEA(name);
-            DELETEA(filename);
+            delete[] name;
+            delete[] filename;
+
+            name = nullptr;
+            filename = nullptr;
             clear(nullptr);
         }
 
