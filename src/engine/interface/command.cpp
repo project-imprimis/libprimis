@@ -228,9 +228,13 @@ void clear_command()
     {
         if(i.type==Id_Alias)
         {
-            DELETEA(i.name);
+            delete[] i.name;
+            i.name = nullptr;
+
             i.forcenull();
-            DELETEA(i.code);
+
+            delete[] i.code;
+            i.code = nullptr;
         }
     });
 }
