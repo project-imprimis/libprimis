@@ -3662,13 +3662,15 @@ namespace UI
             }
             else
             {
-                DELETEA(keyfilter);
+                delete[] keyfilter;
+                keyfilter = nullptr;
             }
         }
         ~TextEditor()
         {
             clearfocus();
-            DELETEA(keyfilter);
+            delete[] keyfilter;
+            keyfilter = nullptr;
         }
 
         static void setfocus(TextEditor *e)
