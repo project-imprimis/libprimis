@@ -57,7 +57,8 @@ class model
 
         virtual ~model()
         {
-            DELETEA(name);
+            delete[] name;
+            name = nullptr;
             if(bih)
             {
                 delete bih;
