@@ -2048,7 +2048,7 @@ void texgrass(char *name)
         return;
     }
     Slot &s = *defslot;
-    DELETEA(s.grass);
+    delete[] s.grass;
     s.grass = name[0] ? newstring(makerelpath("media/texture", name)) : nullptr;
 }
 COMMAND(texgrass, "s");
@@ -2631,7 +2631,8 @@ extern const cubemapside cubemapsides[6] =
 
 void cleanuptexture(Texture *t)
 {
-    DELETEA(t->alphamask);
+    delete[] t->alphamask;
+    t->alphamask = nullptr;
     if(t->id)
     {
         glDeleteTextures(1, &t->id);
@@ -2709,7 +2710,8 @@ void reloadtex(char *name)
         conoutf(Console_Error, "can't reload transient texture %s", name);
         return;
     }
-    DELETEA(t->alphamask);
+    delete[] t->alphamask;
+    t->alphamask = nullptr;
     Texture oldtex = *t;
     t->id = 0;
     if(!reloadtexture(*t))
