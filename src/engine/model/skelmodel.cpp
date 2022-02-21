@@ -770,7 +770,8 @@ void skelmodel::skeleton::cleanup(bool full)
         {
             sc.as[j].cur.fr1 = -1;
         }
-        DELETEA(sc.bdata);
+        delete[] sc.bdata;
+        sc.bdata = nullptr;
     }
     skelcache.setsize(0);
     blendoffsets.clear();
@@ -935,7 +936,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
 
         vertsize = sizeof(vvert);
         LOOP_RENDER_MESHES(skelmesh, m, vlen += m.genvbo(idxs, vlen));
-        DELETEA(vdata);
+        delete[] vdata;
         vdata = new uchar[vlen*vertsize];
         LOOP_RENDER_MESHES(skelmesh, m,
         {
@@ -1509,7 +1510,8 @@ void skelmodel::skelmeshgroup::cleanup()
     for(int i = 0; i < maxblendcache; ++i)
     {
         blendcacheentry &c = blendcache[i];
-        DELETEA(c.bdata);
+        delete[] c.bdata;
+        c.bdata = nullptr;
         c.owner = -1;
     }
     for(int i = 0; i < maxvbocache; ++i)
@@ -1595,7 +1597,7 @@ skelmodel::animpartmask *skelmodel::skelpart::newpartmask()
 
 void skelmodel::skelpart::initanimparts()
 {
-    DELETEA(buildingpartmask);
+    delete[] buildingpartmask;
     buildingpartmask = newpartmask();
 }
 
