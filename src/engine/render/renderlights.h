@@ -273,18 +273,11 @@ extern int rhinoq;
 extern int rsmcull;
 extern GLuint rhfbo;
 
-//allows passing nothing to internal uses of gbuffer fxn
-//(the parameter is for taking a game function to be rendered onscreen)
-inline void dummyfxn()
-{
-    return;
-}
-
 extern bool shouldworkinoq();
 extern void initgbuffer();
 extern bool usepacknorm();
 extern void maskgbuffer(const char *mask);
-extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = dummyfxn);
+extern void rendergbuffer(bool depthclear = true, void (*gamefxn)() = nullptr);
 extern void shadegbuffer();
 extern void setuplights();
 extern bool debuglights();
