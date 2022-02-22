@@ -3443,36 +3443,6 @@ static void forcecond(tagval &v)
     }
 }
 
-void keepcode(uint *code)
-{
-    if(!code)
-    {
-        return;
-    }
-    switch(*code&Code_OpMask)
-    {
-        case Code_Start:
-        {
-            *code += 0x100;
-            return;
-        }
-    }
-    switch(code[-1]&Code_OpMask)
-    {
-        case Code_Start:
-        {
-            code[-1] += 0x100;
-            break;
-        }
-        case Code_Offset:
-        {
-            code -= static_cast<int>(code[-1]>>8);
-            *code += 0x100;
-            break;
-        }
-    }
-}
-
 void freecode(uint *code)
 {
     if(!code)
