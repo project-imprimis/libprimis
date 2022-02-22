@@ -43,9 +43,6 @@ int gw = -1,
 
 GBuffer gbuf;
 
-int scalew = -1,
-    scaleh = -1;
-
 int hdrclear = 0;
 
 int spotlights       = 0,

@@ -10,6 +10,8 @@ class GBuffer
         GBuffer()
         {
             //set all of the textures to 0/null
+            scalew       = 0;
+            scaleh       = 0;
             gfbo         = 0;
             gdepthtex    = 0;
             gcolortex    = 0;
@@ -80,6 +82,8 @@ class GBuffer
         bool msaadepthblit; //no way to change this outside constructor atm
         bool msaatonemapblit;
 
+        int scalew,
+            scaleh;
         //main g-buffers
         GLuint gfbo,
                gdepthtex,
