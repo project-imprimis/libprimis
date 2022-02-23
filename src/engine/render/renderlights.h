@@ -117,60 +117,64 @@ class GBuffer
 
 extern GBuffer gbuf;
 
-struct PackNode
+class PackNode
 {
-    PackNode *child1, *child2;
-    ushort x, y, w, h;
-    int available;
+    public:
+        ushort w, h;
 
-    PackNode(ushort x, ushort y, ushort w, ushort h) : child1(0), child2(0), x(x), y(y), w(w), h(h), available(std::min(w, h)) {}
+        PackNode(ushort x, ushort y, ushort w, ushort h) :  w(w), h(h), child1(0), child2(0), x(x), y(y), available(std::min(w, h)) {}
 
-    void discardchildren()
-    {
-        if(child1)
+        void reset()
         {
-            delete child1;
-            child1 = nullptr;
+            discardchildren();
+            available = std::min(w, h);
         }
-        if(child2)
+
+        bool resize(int nw, int nh)
         {
-            delete child2;
-            child2 = nullptr;
+            if(w == nw && h == nw)
+            {
+                return false;
+            }
+            discardchildren();
+            w = nw;
+            h = nh;
+            available = std::min(w, h);
+            return true;
         }
-    }
 
-    void forceempty()
-    {
-        discardchildren();
-        available = 0;
-    }
-
-    void reset()
-    {
-        discardchildren();
-        available = std::min(w, h);
-    }
-
-    bool resize(int nw, int nh)
-    {
-        if(w == nw && h == nw)
+        ~PackNode()
         {
-            return false;
+            discardchildren();
         }
-        discardchildren();
-        w = nw;
-        h = nh;
-        available = std::min(w, h);
-        return true;
-    }
 
-    ~PackNode()
-    {
-        discardchildren();
-    }
+        bool insert(ushort &tx, ushort &ty, ushort tw, ushort th);
+        void reserve(ushort tx, ushort ty, ushort tw, ushort th);
 
-    bool insert(ushort &tx, ushort &ty, ushort tw, ushort th);
-    void reserve(ushort tx, ushort ty, ushort tw, ushort th);
+    private:
+        PackNode *child1, *child2;
+        ushort x, y;
+        int available;
+
+        void discardchildren()
+        {
+            if(child1)
+            {
+                delete child1;
+                child1 = nullptr;
+            }
+            if(child2)
+            {
+                delete child2;
+                child2 = nullptr;
+            }
+        }
+
+        void forceempty()
+        {
+            discardchildren();
+            available = 0;
+        }
 };
 
 extern PackNode shadowatlaspacker;
