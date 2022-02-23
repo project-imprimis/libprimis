@@ -138,7 +138,6 @@ GETNUMBER(int, int)
 GETNUMBER(float, float)
 GETNUMBER(number, double)
 
-//rolls back the previous arguments
 #define UNDOARGS \
     identstack argstack[Max_Args]; \
     IdentLink *prevstack = aliasstack; \
@@ -171,6 +170,21 @@ GETNUMBER(number, double)
             break; \
         } \
     } \
+
+
+#define REDOARGS \
+    if(aliasstack == &aliaslink) \
+    { \
+        prevstack->usedargs |= aliaslink.usedargs & ~undoflag; \
+        aliasstack = aliaslink.next; \
+        for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++) \
+        { \
+            if(argmask&1) \
+            { \
+                redoarg(*identmap[i], argstack[i]); \
+            } \
+        } \
+    }
 
 inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
 inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==static_cast<int>(v) ? "%.1f" : "%.7g", v); }
@@ -342,25 +356,6 @@ struct IdentLink
     identstack *argstack;
 };
 
-extern void redoarg(ident &id, const identstack &stack);
-
-//re-applies the arguments taken away by UNDOARGS
-inline void redoargs(IdentLink * aliasstack, IdentLink aliaslink, IdentLink * prevstack, vector<ident *> identmap, identstack argstack[Max_Args])
-{
-    if(aliasstack == &aliaslink)
-    {
-        prevstack->usedargs |= aliaslink.usedargs & ~undoflag;
-        aliasstack = aliaslink.next;
-        for(int argmask = aliasstack->usedargs & ~undoflag, i = 0; argmask; argmask >>= 1, i++)
-        {
-            if(argmask&1)
-            {
-                redoarg(*identmap[i], argstack[i]);
-            }
-        }
-    }
-}
-
 extern IdentLink noalias;
 extern IdentLink *aliasstack;
 
@@ -389,6 +384,7 @@ extern const char *parsestring(const char *p);
 extern void setarg(ident &id, tagval &v);
 extern void setalias(ident &id, tagval &v);
 extern void undoarg(ident &id, identstack &stack);
+extern void redoarg(ident &id, const identstack &stack);
 extern const char *parseword(const char *p);
 
 extern bool validateblock(const char *s);
