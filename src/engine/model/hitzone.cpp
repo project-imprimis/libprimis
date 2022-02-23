@@ -29,7 +29,7 @@
 #include "skelmodel.h"
 #include "hitzone.h"
 
-bool htcmp(const skelzonekey &x, const skelzoneinfo &y)
+bool htcmp(const skelzonekey &x, const skelhitdata::skelzoneinfo &y)
 {
     return !memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
 }
@@ -123,12 +123,6 @@ bool skelbih::triintersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, int 
                           &vc = tm->verts[t.vert[2]];
     return skeltriintersect(va.pos, vb.pos, vc.pos, o, s, t, va, vb, vc, tm, ray);
 }
-
-struct skelbihstack
-{
-    skelbih::node *node;
-    float tmin, tmax;
-};
 
 void skelbih::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const vec &o, const vec &ray, const vec &invray, node *curnode, float smin, float smax)
 {
