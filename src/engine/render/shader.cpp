@@ -653,6 +653,7 @@ void Shader::setslotparams(Slot &slot)
 
 void Shader::setslotparams(Slot &slot, VSlot &vslot)
 {
+    static bool thrown = false; //only throw error message once (will spam per frame otherwise)
     uint unimask = 0;
     if(vslot.slot == &slot)
     {
@@ -667,9 +668,13 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
             SlotShaderParamState &l = defaultparams[p.loc];
             if(p.loc < 0)
             {
-                std::printf("Invalid slot shader param index: some slot shaders may not be in use");
+                if(!thrown)
+                {
+                    std::printf("Invalid slot shader param index: some slot shaders may not be in use\n");
+                    thrown = true;
+                }
             }
-            if(!(unimask&(1<<p.loc)))
+            else if(!(unimask&(1<<p.loc)))
             {
                 unimask |= 1<<p.loc;
                 setslotparam(l, p.val);
