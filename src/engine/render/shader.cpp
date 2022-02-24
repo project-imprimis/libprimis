@@ -657,7 +657,24 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
     if(vslot.slot == &slot)
     {
         SETSLOTPARAMS(vslot.params)
-        SETSLOTPARAMS(slot.params)
+        for(int i = 0; i < slot.params.length(); i++)
+        {
+            SlotShaderParam &p = slot.params[i];
+            if(!(static_cast<int>(defaultparams.length()) > p.loc))
+            {
+                continue;
+            }
+            SlotShaderParamState &l = defaultparams[p.loc];
+            if(p.loc < 0)
+            {
+                std::printf("Invalid slot shader param index: some slot shaders may not be in use");
+            }
+            if(!(unimask&(1<<p.loc)))
+            {
+                unimask |= 1<<p.loc;
+                setslotparam(l, p.val);
+            }
+        }
         SETDEFAULTPARAMS
     }
     else
