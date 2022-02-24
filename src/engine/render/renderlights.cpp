@@ -982,7 +982,9 @@ class lightinfo
         float sx1, sy1, sx2, sy2, sz1, sz2;
         occludequery *query;
 
-        lightinfo() {}
+        lightinfo() : query(nullptr)
+        {
+        }
         lightinfo(const vec &o, const vec &color, float radius, int flags = 0, const vec &dir = vec(0, 0, 0), int spot = 0)
           : ent(-1), shadowmap(-1), flags(flags),
             o(o), color(color), radius(radius), dist(camera1->o.dist(o)),
@@ -3049,11 +3051,11 @@ void collectlights()
                 continue;
             }
             lightinfo l = lightinfo(i, *e);
+            lights.push_back(l);
             if(l.validscissor())
             {
                 lightorder.emplace_back(lights.size()-1);
             }
-            lights.push_back(l);
         }
     }
 
