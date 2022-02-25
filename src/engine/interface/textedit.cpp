@@ -265,9 +265,8 @@ void Editor::load()
     {
         while(lines.add().read(file, maxx) && (maxy < 0 || lines.length() <= maxy))
         {
-            //(empty body)
+            lines.pop().clear();
         }
-        lines.pop().clear();
         delete file;
     }
     if(lines.empty())
