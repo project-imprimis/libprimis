@@ -1,6 +1,6 @@
 var tools_8h =
 [
-    [ "databuf< T >", "structdatabuf.html", null ],
+    [ "databuf< T >", "structdatabuf.html", "structdatabuf" ],
     [ "sortless", "structsortless.html", null ],
     [ "sortnameless", "structsortnameless.html", null ],
     [ "stringslice", "structstringslice.html", null ],
@@ -15,5 +15,7 @@ var tools_8h =
     [ "queue< T, SIZE >", "structqueue.html", null ],
     [ "reversequeue< T, SIZE >", "structreversequeue.html", null ],
     [ "stream", "structstream.html", null ],
-    [ "streambuf< T >", "structstreambuf.html", null ]
+    [ "streambuf< T >", "structstreambuf.html", null ],
+    [ "insertionsort", "tools_8h.html#a5c7af8666d89a580098180b2a3204469", null ],
+    [ "quicksort", "tools_8h.html#ac689abc18c3afee2ad0016533bcab8f4", null ]
 ];

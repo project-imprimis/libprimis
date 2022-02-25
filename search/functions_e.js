@@ -1,14 +1,17 @@
 var searchData=
 [
-  ['scalartriple_0',['scalartriple',['../structvec.html#a7569fdf206ec0be0beb74d8f4a21961c',1,'vec']]],
-  ['setcubefaces_1',['setcubefaces',['../octa_8h.html#a4430b561a204df665b15f88337201173',1,'octa.h']]],
-  ['setfont_2',['setfont',['../iengine_8h.html#a57fe5ec515ab801397e4bca80059cd4e',1,'iengine.h']]],
-  ['setsize_3',['setsize',['../structvector.html#a63a989ce0517774b2390d0641eccf835',1,'vector']]],
-  ['shrink_4',['shrink',['../structvector.html#aee8f5fea5bb485f72d4044a6b121e264',1,'vector']]],
-  ['sort_5',['sort',['../structvector.html#aa8ed3bcb552484154fb959aa1f02a3a0',1,'vector::sort(F fun, int i=0, int n=-1)'],['../structvector.html#a2f7b573d71c078d65dc0e40b8409b700',1,'vector::sort()']]],
-  ['sortname_6',['sortname',['../structvector.html#a0feade3a2946e44e2e13759fbe6bfd72',1,'vector']]],
-  ['square_7',['square',['../structvec4.html#ab9948ab8d952e5a36dde54c0e606a69b',1,'vec4']]],
-  ['stopsound_8',['stopsound',['../iengine_8h.html#aae9922a13a2b42ba5c093ae7f53f43e6',1,'iengine.h']]],
-  ['stopsounds_9',['stopsounds',['../iengine_8h.html#a507031a90887d8f0ec5123f5ac53d3b9',1,'iengine.h']]],
-  ['swapbuffers_10',['swapbuffers',['../iengine_8h.html#aef6750cb30230be48e99f7298276e1f1',1,'iengine.h']]]
+  ['raycube_0',['raycube',['../structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d',1,'cubeworld']]],
+  ['raycubepos_1',['raycubepos',['../iengine_8h.html#ae18d06933ae2dd87e478835b5c7e700b',1,'iengine.h']]],
+  ['recip_2',['recip',['../structvec4.html#a3e918f4203f76877740e6c67886c099e',1,'vec4']]],
+  ['remaining_3',['remaining',['../structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e',1,'databuf']]],
+  ['remip_4',['remip',['../structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2',1,'cubeworld']]],
+  ['remove_5',['remove',['../structvector.html#a32cb8f72325a5f52298ffac9abd8d102',1,'vector::remove(int i, int n)'],['../structvector.html#a515096bf4dcf9d9aeda81ece3c8b24b6',1,'vector::remove(int i)']]],
+  ['removeheap_6',['removeheap',['../structvector.html#aae7414b428036a6a109e2a40976e0eb1',1,'vector']]],
+  ['removeobj_7',['removeobj',['../structvector.html#a10daba22a06b056f79048f614dccbd52',1,'vector']]],
+  ['removeunordered_8',['removeunordered',['../structvector.html#a6a92723c52a0b1a02c2ad43e2a7672de',1,'vector']]],
+  ['rendermodel_9',['rendermodel',['../iengine_8h.html#a588f8916f10be65cba999dbb647548bf',1,'iengine.h']]],
+  ['replacewithlast_10',['replacewithlast',['../structvector.html#a5f1fe4bf71fda4f1f9fa65d7e810e6c4',1,'vector']]],
+  ['reserve_11',['reserve',['../structvector.html#a0a83310c79698cbf1a0942ce80dfcd1d',1,'vector']]],
+  ['resetcursor_12',['resetcursor',['../iengine_8h.html#a1f3133491aa8930122b3e22542ccc48d',1,'UI']]],
+  ['reverse_13',['reverse',['../structvector.html#a34d321ce952d2ac32c673623cb8cdb63',1,'vector']]]
 ];

@@ -136,14 +136,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>reset</b> (T *buf_, i
 <tr class="memitem:a2b29579b6f347d7d37330957b6aabf75"><td class="memItemLeft" align="right" valign="top"><a id="a2b29579b6f347d7d37330957b6aabf75" name="a2b29579b6f347d7d37330957b6aabf75"></a>
 const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> ()</td></tr>
 <tr class="separator:a2b29579b6f347d7d37330957b6aabf75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="memItemLeft" align="right" valign="top"><a id="a531caf46f8bf35bb2a16b4e7bc294b6c" name="a531caf46f8bf35bb2a16b4e7bc294b6c"></a>
-<a class="el" href="structdatabuf.html">databuf</a>&#160;</td><td class="memItemRight" valign="bottom"><b>subbuf</b> (int sz)</td></tr>
+<tr class="memitem:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdatabuf.html">databuf</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c">subbuf</a> (int sz)</td></tr>
+<tr class="memdesc:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a a databuf&lt;T&gt; object containing the first n entries.  <a href="structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c">More...</a><br /></td></tr>
 <tr class="separator:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96a3266c8d62a2bb467c133e815fb216"><td class="memItemLeft" align="right" valign="top"><a id="a96a3266c8d62a2bb467c133e815fb216" name="a96a3266c8d62a2bb467c133e815fb216"></a>
 T *&#160;</td><td class="memItemRight" valign="bottom"><b>pad</b> (int numvals)</td></tr>
 <tr class="separator:a96a3266c8d62a2bb467c133e815fb216"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ddb1dbc1bcc6e5c589bb248060b2e24"><td class="memItemLeft" align="right" valign="top"><a id="a4ddb1dbc1bcc6e5c589bb248060b2e24" name="a4ddb1dbc1bcc6e5c589bb248060b2e24"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>put</b> (const T &amp;val)</td></tr>
+<tr class="memitem:a4ddb1dbc1bcc6e5c589bb248060b2e24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24">put</a> (const T &amp;val)</td></tr>
+<tr class="memdesc:a4ddb1dbc1bcc6e5c589bb248060b2e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an entry to the databuf if space is available.  <a href="structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24">More...</a><br /></td></tr>
 <tr class="separator:a4ddb1dbc1bcc6e5c589bb248060b2e24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa22fdfb9de579e0aa2a95b413f7aa9fe"><td class="memItemLeft" align="right" valign="top"><a id="aa22fdfb9de579e0aa2a95b413f7aa9fe" name="aa22fdfb9de579e0aa2a95b413f7aa9fe"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>put</b> (const T *vals, int numvals)</td></tr>
@@ -154,23 +154,23 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (T *vals, int 
 <tr class="memitem:ad5b5187b99d3dab4242ae6305b2d703c"><td class="memItemLeft" align="right" valign="top"><a id="ad5b5187b99d3dab4242ae6305b2d703c" name="ad5b5187b99d3dab4242ae6305b2d703c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>offset</b> (int n)</td></tr>
 <tr class="separator:ad5b5187b99d3dab4242ae6305b2d703c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae66739c6506f6208d2815222b1da6f6f"><td class="memItemLeft" align="right" valign="top"><a id="ae66739c6506f6208d2815222b1da6f6f" name="ae66739c6506f6208d2815222b1da6f6f"></a>
-T *&#160;</td><td class="memItemRight" valign="bottom"><b>getbuf</b> () const</td></tr>
+<tr class="memitem:ae66739c6506f6208d2815222b1da6f6f"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#ae66739c6506f6208d2815222b1da6f6f">getbuf</a> () const</td></tr>
+<tr class="memdesc:ae66739c6506f6208d2815222b1da6f6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to the internal data array.  <a href="structdatabuf.html#ae66739c6506f6208d2815222b1da6f6f">More...</a><br /></td></tr>
 <tr class="separator:ae66739c6506f6208d2815222b1da6f6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac462a5159900a306d67117cabbbf17db"><td class="memItemLeft" align="right" valign="top"><a id="ac462a5159900a306d67117cabbbf17db" name="ac462a5159900a306d67117cabbbf17db"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>empty</b> () const</td></tr>
+<tr class="memitem:ac462a5159900a306d67117cabbbf17db"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#ac462a5159900a306d67117cabbbf17db">empty</a> () const</td></tr>
+<tr class="memdesc:ac462a5159900a306d67117cabbbf17db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether any entries have been assigned to the array.  <a href="structdatabuf.html#ac462a5159900a306d67117cabbbf17db">More...</a><br /></td></tr>
 <tr class="separator:ac462a5159900a306d67117cabbbf17db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49524245867f8f8b7a7e8d5a6c2e9afa"><td class="memItemLeft" align="right" valign="top"><a id="a49524245867f8f8b7a7e8d5a6c2e9afa" name="a49524245867f8f8b7a7e8d5a6c2e9afa"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>length</b> () const</td></tr>
+<tr class="memitem:a49524245867f8f8b7a7e8d5a6c2e9afa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a49524245867f8f8b7a7e8d5a6c2e9afa">length</a> () const</td></tr>
+<tr class="memdesc:a49524245867f8f8b7a7e8d5a6c2e9afa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of allocated entries in the databuf.  <a href="structdatabuf.html#a49524245867f8f8b7a7e8d5a6c2e9afa">More...</a><br /></td></tr>
 <tr class="separator:a49524245867f8f8b7a7e8d5a6c2e9afa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e6bb0d4a4c7e47495c1b33d9856337e"><td class="memItemLeft" align="right" valign="top"><a id="a9e6bb0d4a4c7e47495c1b33d9856337e" name="a9e6bb0d4a4c7e47495c1b33d9856337e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>remaining</b> () const</td></tr>
+<tr class="memitem:a9e6bb0d4a4c7e47495c1b33d9856337e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e">remaining</a> () const</td></tr>
+<tr class="memdesc:a9e6bb0d4a4c7e47495c1b33d9856337e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of values remaining before the databuf overflows.  <a href="structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e">More...</a><br /></td></tr>
 <tr class="separator:a9e6bb0d4a4c7e47495c1b33d9856337e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c8c5031dcedbf681924e5166ea190ae"><td class="memItemLeft" align="right" valign="top"><a id="a7c8c5031dcedbf681924e5166ea190ae" name="a7c8c5031dcedbf681924e5166ea190ae"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>overread</b> () const</td></tr>
+<tr class="memitem:a7c8c5031dcedbf681924e5166ea190ae"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a7c8c5031dcedbf681924e5166ea190ae">overread</a> () const</td></tr>
+<tr class="memdesc:a7c8c5031dcedbf681924e5166ea190ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the databuf has been accessed with too large of an index.  <a href="structdatabuf.html#a7c8c5031dcedbf681924e5166ea190ae">More...</a><br /></td></tr>
 <tr class="separator:a7c8c5031dcedbf681924e5166ea190ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6060c72019fdeaf82ea0810091800b6"><td class="memItemLeft" align="right" valign="top"><a id="af6060c72019fdeaf82ea0810091800b6" name="af6060c72019fdeaf82ea0810091800b6"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>overwrote</b> () const</td></tr>
+<tr class="memitem:af6060c72019fdeaf82ea0810091800b6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#af6060c72019fdeaf82ea0810091800b6">overwrote</a> () const</td></tr>
+<tr class="memdesc:af6060c72019fdeaf82ea0810091800b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the databuf has had invalid writes to it.  <a href="structdatabuf.html#af6060c72019fdeaf82ea0810091800b6">More...</a><br /></td></tr>
 <tr class="separator:af6060c72019fdeaf82ea0810091800b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a058c8df40617db3950380737db05bc9a"><td class="memItemLeft" align="right" valign="top"><a id="a058c8df40617db3950380737db05bc9a" name="a058c8df40617db3950380737db05bc9a"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>check</b> (int n)</td></tr>
@@ -194,6 +194,274 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>maxlen</b></td></tr>
 uchar&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b></td></tr>
 <tr class="separator:a90dff9f73f4103c4ff0cc151de2c12b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac462a5159900a306d67117cabbbf17db" name="ac462a5159900a306d67117cabbbf17db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac462a5159900a306d67117cabbbf17db">&#9670;&nbsp;</a></span>empty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::empty </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether any entries have been assigned to the array. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if the array has not been assigned to </dd>
+<dd>
+false if the array has assigned values </dd></dl>
+
+</div>
+</div>
+<a id="ae66739c6506f6208d2815222b1da6f6f" name="ae66739c6506f6208d2815222b1da6f6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae66739c6506f6208d2815222b1da6f6f">&#9670;&nbsp;</a></span>getbuf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T * <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::getbuf </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a pointer to the internal data array. </p>
+<p >This is a naked pointer to the internal data array and can therefore be used to potentially break this container, if used carelessly.</p>
+<dl class="section return"><dt>Returns</dt><dd>A pointer the data array </dd></dl>
+
+</div>
+</div>
+<a id="a49524245867f8f8b7a7e8d5a6c2e9afa" name="a49524245867f8f8b7a7e8d5a6c2e9afa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49524245867f8f8b7a7e8d5a6c2e9afa">&#9670;&nbsp;</a></span>length()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::length </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the number of allocated entries in the databuf. </p>
+<p >Returns the number of entries which have been added to the databuf (not the overall databuf size).</p>
+<dl class="section return"><dt>Returns</dt><dd>the number of entries allocated in the databuf. </dd></dl>
+
+</div>
+</div>
+<a id="a7c8c5031dcedbf681924e5166ea190ae" name="a7c8c5031dcedbf681924e5166ea190ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c8c5031dcedbf681924e5166ea190ae">&#9670;&nbsp;</a></span>overread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::overread </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether the databuf has been accessed with too large of an index. </p>
+<p >Returns whether the OVERREAD flag has been set. If the databuf was attempted to be accessed with an index larger than the number of allocated members, this value will be set.</p>
+<dl class="section return"><dt>Returns</dt><dd>true if the array has been overread </dd>
+<dd>
+false if all read operations have been to valid entries </dd></dl>
+
+</div>
+</div>
+<a id="af6060c72019fdeaf82ea0810091800b6" name="af6060c72019fdeaf82ea0810091800b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6060c72019fdeaf82ea0810091800b6">&#9670;&nbsp;</a></span>overwrote()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::overwrote </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether the databuf has had invalid writes to it. </p>
+<p >Returns whether the OVERWROTE flag has been set. If the databuf was attempted to be wrote to while the databuf is already full, this flag will be set.</p>
+<dl class="section return"><dt>Returns</dt><dd>true if the databuf has not been overwritten </dd>
+<dd>
+false if the databuf has had only valid writes </dd></dl>
+
+</div>
+</div>
+<a id="a4ddb1dbc1bcc6e5c589bb248060b2e24" name="a4ddb1dbc1bcc6e5c589bb248060b2e24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ddb1dbc1bcc6e5c589bb248060b2e24">&#9670;&nbsp;</a></span>put()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::put </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds an entry to the databuf if space is available. </p>
+<p >If no space is available, applies the OVERWROTE flag to the flags field.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">val</td><td>A const reference to the object to add </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9e6bb0d4a4c7e47495c1b33d9856337e" name="a9e6bb0d4a4c7e47495c1b33d9856337e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e6bb0d4a4c7e47495c1b33d9856337e">&#9670;&nbsp;</a></span>remaining()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::remaining </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the number of values remaining before the databuf overflows. </p>
+<p >Returns the allocatable space remaining within the databuf object, in terms of the number of entires which can be <code>put</code> into it before it becomes OVERWROTE.</p>
+<dl class="section return"><dt>Returns</dt><dd>the number of available entries in the databuf. </dd></dl>
+
+</div>
+</div>
+<a id="a531caf46f8bf35bb2a16b4e7bc294b6c" name="a531caf46f8bf35bb2a16b4e7bc294b6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a531caf46f8bf35bb2a16b4e7bc294b6c">&#9670;&nbsp;</a></span>subbuf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdatabuf.html">databuf</a> <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::subbuf </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sz</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a a databuf&lt;T&gt; object containing the first n entries. </p>
+<p >Returns a databuf object of type T which represents the first n elements inside the databuf's array.</p>
+<p >If the size passed is larger than the databuf, the entire databuf object is copied and returned.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sz</td><td>the size of the output array (aka get the first <code>sz</code> entries)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the sub-buffer of <code>this</code> object </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="tools_8h_source.html">tools.h</a></li>
 </ul>

@@ -12,11 +12,12 @@ var searchData=
   ['initstains_9',['initstains',['../iengine_8h.html#aa31e3758c7277c026c3c241156abc909',1,'iengine.h']]],
   ['inituicmds_10',['inituicmds',['../iengine_8h.html#acd92a89f1ab2250b271c931797e178f4',1,'UI']]],
   ['inrange_11',['inrange',['../structvector.html#a9c8b60b827cee171c65238526b27a623',1,'vector::inrange(size_t i) const'],['../structvector.html#a4fc5cf788f4ff40e5c9c31f7ac10b5ce',1,'vector::inrange(int i) const']]],
-  ['insert_12',['insert',['../structvector.html#ae14839b92fd4f03eddd2026d72a3210e',1,'vector::insert(int i, const T &amp;e)'],['../structvector.html#a085b2d77456aa7cb59ccdd5a0f98705a',1,'vector::insert(int i, const T *e, int n)']]],
-  ['insideworld_13',['insideworld',['../iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9',1,'iengine.h']]],
-  ['isempty_14',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
-  ['issolid_15',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
-  ['iterdynents_16',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]],
-  ['ivec_17',['ivec',['../structivec.html',1,'']]],
-  ['ivec2_18',['ivec2',['../structivec2.html',1,'']]]
+  ['insert_12',['insert',['../structvector.html#a085b2d77456aa7cb59ccdd5a0f98705a',1,'vector::insert()'],['../structhashbase.html#a433f045960a72ba4a6385f2c51f674a0',1,'hashbase::insert()'],['../structvector.html#ae14839b92fd4f03eddd2026d72a3210e',1,'vector::insert()']]],
+  ['insertionsort_13',['insertionsort',['../tools_8h.html#a5c7af8666d89a580098180b2a3204469',1,'tools.h']]],
+  ['insideworld_14',['insideworld',['../iengine_8h.html#ac7760111305debbc0a54d9959d9ed6b9',1,'iengine.h']]],
+  ['isempty_15',['isempty',['../classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a',1,'cube']]],
+  ['issolid_16',['issolid',['../classcube.html#a5bd59248e1c0b30104036600a5f5c964',1,'cube']]],
+  ['iterdynents_17',['iterdynents',['../iengine_8h.html#a78cab1ab3f1088bee83818bc2a65f046',1,'iengine.h']]],
+  ['ivec_18',['ivec',['../structivec.html',1,'']]],
+  ['ivec2_19',['ivec2',['../structivec2.html',1,'']]]
 ];

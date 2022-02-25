@@ -115,12 +115,16 @@ $(document).ready(function(){initNavTree('structhashbase.html',''); initResizabl
   <div class="headertitle"><div class="title">hashbase&lt; H, E, K, T &gt; Struct Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="tools_8h_source.html">tools.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase_1_1chain.html">chain</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A chain entry. Capable of being created into a singly linked list.  <a href="structhashbase_1_1chain.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase_1_1chainchunk.html">chainchunk</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A series of chains capable of being created into a singly linked list.  <a href="structhashbase_1_1chainchunk.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
@@ -144,10 +148,10 @@ typedef T&#160;</td><td class="memItemRight" valign="bottom"><b>datatype</b></td
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af21a8ef4ce7ae76ebab5971533521a59"><td class="memItemLeft" align="right" valign="top"><a id="af21a8ef4ce7ae76ebab5971533521a59" name="af21a8ef4ce7ae76ebab5971533521a59"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>hashbase</b> (int size=DEFAULTSIZE)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>hashbase</b> (int <a class="el" href="structhashbase.html#a600b191339f6da94d03bd9d69bcd9baf">size</a>=DEFAULTSIZE)</td></tr>
 <tr class="separator:af21a8ef4ce7ae76ebab5971533521a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a433f045960a72ba4a6385f2c51f674a0"><td class="memItemLeft" align="right" valign="top"><a id="a433f045960a72ba4a6385f2c51f674a0" name="a433f045960a72ba4a6385f2c51f674a0"></a>
-<a class="el" href="structhashbase_1_1chain.html">chain</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (uint h)</td></tr>
+<tr class="memitem:a433f045960a72ba4a6385f2c51f674a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structhashbase_1_1chain.html">chain</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase.html#a433f045960a72ba4a6385f2c51f674a0">insert</a> (uint h)</td></tr>
+<tr class="memdesc:a433f045960a72ba4a6385f2c51f674a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new hash entry using the given hash value.  <a href="structhashbase.html#a433f045960a72ba4a6385f2c51f674a0">More...</a><br /></td></tr>
 <tr class="separator:a433f045960a72ba4a6385f2c51f674a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abacc68862cf2206ec0309740bf89d8ed"><td class="memTemplParams" colspan="2"><a id="abacc68862cf2206ec0309740bf89d8ed" name="abacc68862cf2206ec0309740bf89d8ed"></a>
 template&lt;class U &gt; </td></tr>
@@ -201,14 +205,11 @@ static T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>enumdata</b
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a600b191339f6da94d03bd9d69bcd9baf"><td class="memItemLeft" align="right" valign="top"><a id="a600b191339f6da94d03bd9d69bcd9baf" name="a600b191339f6da94d03bd9d69bcd9baf"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
+<tr class="memitem:a600b191339f6da94d03bd9d69bcd9baf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase.html#a600b191339f6da94d03bd9d69bcd9baf">size</a></td></tr>
 <tr class="separator:a600b191339f6da94d03bd9d69bcd9baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a330deb84e27f14c22f27d870f3686c56"><td class="memItemLeft" align="right" valign="top"><a id="a330deb84e27f14c22f27d870f3686c56" name="a330deb84e27f14c22f27d870f3686c56"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>numelems</b></td></tr>
+<tr class="memitem:a330deb84e27f14c22f27d870f3686c56"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase.html#a330deb84e27f14c22f27d870f3686c56">numelems</a></td></tr>
 <tr class="separator:a330deb84e27f14c22f27d870f3686c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94b490f872197369d1cdf618a5bcaf95"><td class="memItemLeft" align="right" valign="top"><a id="a94b490f872197369d1cdf618a5bcaf95" name="a94b490f872197369d1cdf618a5bcaf95"></a>
-<a class="el" href="structhashbase_1_1chain.html">chain</a> **&#160;</td><td class="memItemRight" valign="bottom"><b>chains</b></td></tr>
+<tr class="memitem:a94b490f872197369d1cdf618a5bcaf95"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structhashbase_1_1chain.html">chain</a> **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashbase.html#a94b490f872197369d1cdf618a5bcaf95">chains</a></td></tr>
 <tr class="separator:a94b490f872197369d1cdf618a5bcaf95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a558356b897ae6305cdf9365fcdd76d1b"><td class="memItemLeft" align="right" valign="top"><a id="a558356b897ae6305cdf9365fcdd76d1b" name="a558356b897ae6305cdf9365fcdd76d1b"></a>
 <a class="el" href="structhashbase_1_1chainchunk.html">chainchunk</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>chunks</b></td></tr>
@@ -217,6 +218,110 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>numelems</b></td></tr>
 <a class="el" href="structhashbase_1_1chain.html">chain</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>unused</b></td></tr>
 <tr class="separator:a2e6fb865c933c90e21b4b0ec504d7a63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;class H, class E, class K, class T&gt;<br />
+struct hashbase&lt; H, E, K, T &gt;</div><p >A specializable hash base class for the creation of hash tables and other objects.</p>
+<p >Implemented via the hash chaining method; there are DEFAULTSIZE chains that can have multiple elements in the case of a hash collision, connected by a single directional linked list. The base size of the hash table is fixed at the construction of the hash table and cannot be changed later.</p>
+<p >Note that E (the element type being stored) and T (the type that gets added) are not necessarily the same.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">H</td><td>The inheriting object </td></tr>
+    <tr><td class="paramname">E</td><td>The type of the element type to be stored </td></tr>
+    <tr><td class="paramname">K</td><td>the type of the element's key </td></tr>
+    <tr><td class="paramname">T</td><td>the type of the data being added </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a433f045960a72ba4a6385f2c51f674a0" name="a433f045960a72ba4a6385f2c51f674a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a433f045960a72ba4a6385f2c51f674a0">&#9670;&nbsp;</a></span>insert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class H , class E , class K , class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structhashbase_1_1chain.html">chain</a> * <a class="el" href="structhashbase.html">hashbase</a>&lt; H, E, K, T &gt;::insert </td>
+          <td>(</td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>h</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new hash entry using the given hash value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">h</td><td>The hash chain to use. Must be between 0 and <code>size</code>.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to the created hash location. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a94b490f872197369d1cdf618a5bcaf95" name="a94b490f872197369d1cdf618a5bcaf95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94b490f872197369d1cdf618a5bcaf95">&#9670;&nbsp;</a></span>chains</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class H , class E , class K , class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structhashbase_1_1chain.html">chain</a>** <a class="el" href="structhashbase.html">hashbase</a>&lt; H, E, K, T &gt;::chains</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Pointer to the array containing the base chains. </p>
+
+</div>
+</div>
+<a id="a330deb84e27f14c22f27d870f3686c56" name="a330deb84e27f14c22f27d870f3686c56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a330deb84e27f14c22f27d870f3686c56">&#9670;&nbsp;</a></span>numelems</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class H , class E , class K , class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structhashbase.html">hashbase</a>&lt; H, E, K, T &gt;::numelems</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Total number of elements. </p>
+
+</div>
+</div>
+<a id="a600b191339f6da94d03bd9d69bcd9baf" name="a600b191339f6da94d03bd9d69bcd9baf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a600b191339f6da94d03bd9d69bcd9baf">&#9670;&nbsp;</a></span>size</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class H , class E , class K , class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structhashbase.html">hashbase</a>&lt; H, E, K, T &gt;::size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >The size of the base chain array. Cannot be changed after creation. </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="tools_8h_source.html">tools.h</a></li>
 </ul>

@@ -319,7 +319,13 @@ Static Public Attributes</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
 struct vector&lt; T &gt;</div><p >A container template for storing variable lists of items. </p>
 <p >This template implements a generic container class, consisting of a databuf object holding the data which changes size as the container has elements added to it. This container is similar in principle to std::vector&lt;&gt; but has a few notable differences in semantics.</p>
-<p >The vector container does not support iterators, and therefore std library functions depending on them (such as <a class="el" href="structvector.html#a2f7b573d71c078d65dc0e40b8409b700" title="Sorts the values of the array in ascending order.">sort()</a>) will not work. Instead, the builtin functions for some such features are included in the class. </p>
+<p >The vector container does not support iterators, and therefore std library functions depending on them (such as <a class="el" href="structvector.html#a2f7b573d71c078d65dc0e40b8409b700" title="Sorts the values of the array in ascending order.">sort()</a>) will not work. Instead, the builtin functions for some such features are included in the class.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the type of the vector members </td></tr>
+  </table>
+  </dd>
+</dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a00d237f22fd5eb1aa9a536993e82e54f" name="a00d237f22fd5eb1aa9a536993e82e54f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00d237f22fd5eb1aa9a536993e82e54f">&#9670;&nbsp;</a></span>vector() <span class="overload">[1/2]</span></h2>
