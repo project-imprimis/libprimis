@@ -1060,22 +1060,15 @@ bool packundo(undoblock *u, int &inlen, uchar *&outbuf, int &outlen)
     return compresseditinfo(buf.getbuf(), buf.length(), outbuf, outlen);
 }
 
-bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen)
+bool packundo(bool undo, int &inlen, uchar *&outbuf, int &outlen)
 {
-    switch(op)
+    if(undo)
     {
-        case Edit_Undo:
-        {
-            return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
-        }
-        case Edit_Redo:
-        {
-            return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
-        }
-        default:
-        {
-            return false;
-        }
+        return !undos.empty() && packundo(undos.last, inlen, outbuf, outlen);
+    }
+    else
+    {
+        return !redos.empty() && packundo(redos.last, inlen, outbuf, outlen);
     }
 }
 
