@@ -137,10 +137,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>reset</b> (T *buf_, i
 const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> ()</td></tr>
 <tr class="separator:a2b29579b6f347d7d37330957b6aabf75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdatabuf.html">databuf</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c">subbuf</a> (int sz)</td></tr>
-<tr class="memdesc:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a a databuf&lt;T&gt; object containing the first n entries.  <a href="structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c">More...</a><br /></td></tr>
+<tr class="memdesc:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a databuf&lt;T&gt; object containing the first n entries.  <a href="structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c">More...</a><br /></td></tr>
 <tr class="separator:a531caf46f8bf35bb2a16b4e7bc294b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96a3266c8d62a2bb467c133e815fb216"><td class="memItemLeft" align="right" valign="top"><a id="a96a3266c8d62a2bb467c133e815fb216" name="a96a3266c8d62a2bb467c133e815fb216"></a>
-T *&#160;</td><td class="memItemRight" valign="bottom"><b>pad</b> (int numvals)</td></tr>
+<tr class="memitem:a96a3266c8d62a2bb467c133e815fb216"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a96a3266c8d62a2bb467c133e815fb216">pad</a> (int numvals)</td></tr>
+<tr class="memdesc:a96a3266c8d62a2bb467c133e815fb216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds N empty elements to the end of the array and returns a pointer.  <a href="structdatabuf.html#a96a3266c8d62a2bb467c133e815fb216">More...</a><br /></td></tr>
 <tr class="separator:a96a3266c8d62a2bb467c133e815fb216"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ddb1dbc1bcc6e5c589bb248060b2e24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24">put</a> (const T &amp;val)</td></tr>
 <tr class="memdesc:a4ddb1dbc1bcc6e5c589bb248060b2e24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an entry to the databuf if space is available.  <a href="structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24">More...</a><br /></td></tr>
@@ -355,6 +355,44 @@ false if the databuf has had only valid writes </dd></dl>
 
 </div>
 </div>
+<a id="a96a3266c8d62a2bb467c133e815fb216" name="a96a3266c8d62a2bb467c133e815fb216"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96a3266c8d62a2bb467c133e815fb216">&#9670;&nbsp;</a></span>pad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T * <a class="el" href="structdatabuf.html">databuf</a>&lt; T &gt;::pad </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numvals</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Adds N empty elements to the end of the array and returns a pointer. </p>
+<p >Creates an array of size <code>sz</code> which is then pointed to and returned as a naked pointer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sz</td><td>the size of the buffer</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a pointer to the sub-array created </dd></dl>
+
+</div>
+</div>
 <a id="a4ddb1dbc1bcc6e5c589bb248060b2e24" name="a4ddb1dbc1bcc6e5c589bb248060b2e24"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4ddb1dbc1bcc6e5c589bb248060b2e24">&#9670;&nbsp;</a></span>put()</h2>
 
@@ -449,7 +487,7 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Returns a a databuf&lt;T&gt; object containing the first n entries. </p>
+<p>Returns a databuf&lt;T&gt; object containing the first n entries. </p>
 <p >Returns a databuf object of type T which represents the first n elements inside the databuf's array.</p>
 <p >If the size passed is larger than the databuf, the entire databuf object is copied and returned.</p>
 <dl class="params"><dt>Parameters</dt><dd>

@@ -125,10 +125,11 @@ var NAVTREEINDEX1 =
 "structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc":[10,0,5,0],
 "structdatabuf.html":[10,0,6],
 "structdatabuf.html#a49524245867f8f8b7a7e8d5a6c2e9afa":[10,0,6,2],
-"structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24":[10,0,6,5],
-"structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c":[10,0,6,7],
+"structdatabuf.html#a4ddb1dbc1bcc6e5c589bb248060b2e24":[10,0,6,6],
+"structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c":[10,0,6,8],
 "structdatabuf.html#a7c8c5031dcedbf681924e5166ea190ae":[10,0,6,3],
-"structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e":[10,0,6,6],
+"structdatabuf.html#a96a3266c8d62a2bb467c133e815fb216":[10,0,6,5],
+"structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e":[10,0,6,7],
 "structdatabuf.html#ac462a5159900a306d67117cabbbf17db":[10,0,6,0],
 "structdatabuf.html#ae66739c6506f6208d2815222b1da6f6f":[10,0,6,1],
 "structdatabuf.html#af6060c72019fdeaf82ea0810091800b6":[10,0,6,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "structvector.html#a6c907908675387470a149acfe8684811":[10,0,55,29],
 "structvector.html#a6d35bc5e9b1f66d671c86432807f32f8":[10,0,55,33],
 "structvector.html#a7bc236f547bb5debe890fa8ebaabe965":[10,0,55,2],
-"structvector.html#a7bf3e117a2c8618edc5dc0ef7c06e455":[10,0,55,55],
-"structvector.html#a86b505ce7f65a2e6fc5ae20d783da9c2":[10,0,55,35]
+"structvector.html#a7bf3e117a2c8618edc5dc0ef7c06e455":[10,0,55,55]
 };
