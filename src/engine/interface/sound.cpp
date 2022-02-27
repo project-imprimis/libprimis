@@ -181,11 +181,13 @@ void stopchannels()
 
 void setmusicvol(int musicvol);
 
-VARFP(soundvol, 0, 255, 255, if(!soundvol)
-{ //don't use sound infrastructure if volume is 0
-    stopchannels();
-    setmusicvol(0);
-});
+VARFP(soundvol, 0, 255, 255,
+    if(!soundvol)
+    { //don't use sound infrastructure if volume is 0
+        stopchannels();
+        setmusicvol(0);
+    }
+);
 
 VARFP(musicvol, 0, 60, 255, setmusicvol(soundvol ? musicvol : 0)); //background music volume
 
