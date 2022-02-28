@@ -12,8 +12,6 @@ var tools_8h =
     [ "hashnameset< T >", "structhashnameset.html", null ],
     [ "hashtableentry< K, T >", "structhashtableentry.html", null ],
     [ "hashtable< K, T >", "structhashtable.html", null ],
-    [ "queue< T, SIZE >", "structqueue.html", null ],
-    [ "reversequeue< T, SIZE >", "structreversequeue.html", null ],
     [ "stream", "structstream.html", null ],
     [ "streambuf< T >", "structstreambuf.html", null ],
     [ "insertionsort", "tools_8h.html#a5c7af8666d89a580098180b2a3204469", null ],

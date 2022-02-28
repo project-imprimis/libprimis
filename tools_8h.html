@@ -150,10 +150,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashtable.html">hashtable&lt; K, T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structqueue.html">queue&lt; T, SIZE &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structreversequeue.html">reversequeue&lt; T, SIZE &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstream.html">stream</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstreambuf.html">streambuf&lt; T &gt;</a></td></tr>
@@ -164,9 +160,6 @@ Macros</h2></td></tr>
 <tr class="memitem:aae3356b63849abbe8789dd41648ee90a"><td class="memItemLeft" align="right" valign="top"><a id="aae3356b63849abbe8789dd41648ee90a" name="aae3356b63849abbe8789dd41648ee90a"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>RESTRICT</b></td></tr>
 <tr class="separator:aae3356b63849abbe8789dd41648ee90a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89e9b604726c2ff81dd701c03c8f07fe"><td class="memItemLeft" align="right" valign="top"><a id="a89e9b604726c2ff81dd701c03c8f07fe" name="a89e9b604726c2ff81dd701c03c8f07fe"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DELETEP</b>(p)&#160;&#160;&#160;if(p) { delete   p; p = nullptr; }</td></tr>
-<tr class="separator:a89e9b604726c2ff81dd701c03c8f07fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36fd8ce424f12b281ed79e7c7cf4b82f"><td class="memItemLeft" align="right" valign="top"><a id="a36fd8ce424f12b281ed79e7c7cf4b82f" name="a36fd8ce424f12b281ed79e7c7cf4b82f"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>DELETEA</b>(p)&#160;&#160;&#160;if(p) { delete[] p; p = nullptr; }</td></tr>
 <tr class="separator:a36fd8ce424f12b281ed79e7c7cf4b82f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -423,15 +416,6 @@ template&lt;class T &gt; </td></tr>
 template&lt;class K , class T &gt; </td></tr>
 <tr class="memitem:a77a0aa89c83770b93e4394f986341367"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>htrecycle</b> (<a class="el" href="structhashtableentry.html">hashtableentry</a>&lt; K, T &gt; &amp;entry)</td></tr>
 <tr class="separator:a77a0aa89c83770b93e4394f986341367"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae713214c3d11cd65bf025cd7b1f7eee"><td class="memItemLeft" align="right" valign="top"><a id="aae713214c3d11cd65bf025cd7b1f7eee" name="aae713214c3d11cd65bf025cd7b1f7eee"></a>
-ushort&#160;</td><td class="memItemRight" valign="bottom"><b>endianswap16</b> (ushort n)</td></tr>
-<tr class="separator:aae713214c3d11cd65bf025cd7b1f7eee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7bebbc9d3c22739d959d72f66169288"><td class="memItemLeft" align="right" valign="top"><a id="ab7bebbc9d3c22739d959d72f66169288" name="ab7bebbc9d3c22739d959d72f66169288"></a>
-uint&#160;</td><td class="memItemRight" valign="bottom"><b>endianswap32</b> (uint n)</td></tr>
-<tr class="separator:ab7bebbc9d3c22739d959d72f66169288"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adeb9177101dafaa0be34444c88d51bb0"><td class="memItemLeft" align="right" valign="top"><a id="adeb9177101dafaa0be34444c88d51bb0" name="adeb9177101dafaa0be34444c88d51bb0"></a>
-ullong&#160;</td><td class="memItemRight" valign="bottom"><b>endianswap64</b> (ullong n)</td></tr>
-<tr class="separator:adeb9177101dafaa0be34444c88d51bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07b4a5b199bf625f5bded414843ecc28"><td class="memTemplParams" colspan="2"><a id="a07b4a5b199bf625f5bded414843ecc28" name="a07b4a5b199bf625f5bded414843ecc28"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a07b4a5b199bf625f5bded414843ecc28"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>endianswap</b> (T n)</td></tr>

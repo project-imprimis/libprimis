@@ -35,8 +35,6 @@ var annotated_dup =
     [ "physent", "structphysent.html", "structphysent" ],
     [ "plane", "structplane.html", null ],
     [ "quat", "structquat.html", null ],
-    [ "queue", "structqueue.html", null ],
-    [ "reversequeue", "structreversequeue.html", null ],
     [ "selinfo", "structselinfo.html", null ],
     [ "Slot", "structSlot.html", "structSlot" ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],

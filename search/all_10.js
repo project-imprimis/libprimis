@@ -14,6 +14,5 @@ var searchData=
   ['replacewithlast_11',['replacewithlast',['../structvector.html#a5f1fe4bf71fda4f1f9fa65d7e810e6c4',1,'vector']]],
   ['reserve_12',['reserve',['../structvector.html#a0a83310c79698cbf1a0942ce80dfcd1d',1,'vector']]],
   ['resetcursor_13',['resetcursor',['../iengine_8h.html#a1f3133491aa8930122b3e22542ccc48d',1,'UI']]],
-  ['reverse_14',['reverse',['../structvector.html#a34d321ce952d2ac32c673623cb8cdb63',1,'vector']]],
-  ['reversequeue_15',['reversequeue',['../structreversequeue.html',1,'']]]
+  ['reverse_14',['reverse',['../structvector.html#a34d321ce952d2ac32c673623cb8cdb63',1,'vector']]]
 ];

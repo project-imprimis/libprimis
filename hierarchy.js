@@ -48,9 +48,6 @@ var hierarchy =
     [ "physent", "structphysent.html", [
       [ "dynent", "structdynent.html", null ]
     ] ],
-    [ "queue< T, SIZE >", "structqueue.html", [
-      [ "reversequeue< T, SIZE >", "structreversequeue.html", null ]
-    ] ],
     [ "selinfo", "structselinfo.html", null ],
     [ "Slot", "structSlot.html", [
       [ "DecalSlot", "structDecalSlot.html", null ]

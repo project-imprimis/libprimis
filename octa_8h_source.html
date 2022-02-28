@@ -225,7 +225,7 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            pvert verts[Face_MaxVerts];</div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
 <div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>            <span class="keywordtype">bool</span> clippoly(<span class="keyword">const</span> <a class="code hl_struct" href="structfacebounds.html">facebounds</a> &amp;b);</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordtype">bool</span> mergepolys(<span class="keywordtype">int</span> orient, <a class="code hl_struct" href="structhashset.html">hashset&lt;plink&gt;</a> &amp;links, std::vector&lt;plink *&gt; &amp;<a class="code hl_struct" href="structqueue.html">queue</a>, <span class="keywordtype">int</span> owner, poly &amp;q, <span class="keyword">const</span> pedge &amp;e);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordtype">bool</span> mergepolys(<span class="keywordtype">int</span> orient, <a class="code hl_struct" href="structhashset.html">hashset&lt;plink&gt;</a> &amp;links, std::vector&lt;plink *&gt; &amp;queue, <span class="keywordtype">int</span> owner, poly &amp;q, <span class="keyword">const</span> pedge &amp;e);</div>
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        };</div>
 <div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        <span class="keywordtype">void</span> freecubeext(<a class="code hl_class" href="classcube.html">cube</a> &amp;c);</div>
@@ -524,11 +524,10 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="ttc" id="astructentity_html"><div class="ttname"><a href="structentity.html">entity</a></div><div class="ttdef"><b>Definition:</b> ents.h:29</div></div>
 <div class="ttc" id="astructextentity_html"><div class="ttname"><a href="structextentity.html">extentity</a></div><div class="ttdef"><b>Definition:</b> ents.h:51</div></div>
 <div class="ttc" id="astructfacebounds_html"><div class="ttname"><a href="structfacebounds.html">facebounds</a></div><div class="ttdef"><b>Definition:</b> octa.h:12</div></div>
-<div class="ttc" id="astructhashset_html"><div class="ttname"><a href="structhashset.html">hashset</a></div><div class="ttdef"><b>Definition:</b> tools.h:1940</div></div>
+<div class="ttc" id="astructhashset_html"><div class="ttname"><a href="structhashset.html">hashset</a></div><div class="ttdef"><b>Definition:</b> tools.h:1939</div></div>
 <div class="ttc" id="astructhashtable_html"><div class="ttname"><a href="structhashtable.html">hashtable&lt; cube::cfkey, cube::cfpolys &gt;</a></div></div>
 <div class="ttc" id="astructivec_html"><div class="ttname"><a href="structivec.html">ivec</a></div><div class="ttdef"><b>Definition:</b> geom.h:1859</div></div>
 <div class="ttc" id="astructphysent_html"><div class="ttname"><a href="structphysent.html">physent</a></div><div class="ttdef"><b>Definition:</b> ents.h:130</div></div>
-<div class="ttc" id="astructqueue_html"><div class="ttname"><a href="structqueue.html">queue</a></div><div class="ttdef"><b>Definition:</b> tools.h:2036</div></div>
 <div class="ttc" id="astructselinfo_html"><div class="ttname"><a href="structselinfo.html">selinfo</a></div><div class="ttdef"><b>Definition:</b> octa.h:169</div></div>
 <div class="ttc" id="astructundoblock_html"><div class="ttname"><a href="structundoblock.html">undoblock</a></div><div class="ttdef"><b>Definition:</b> octa.h:254</div></div>
 <div class="ttc" id="astructundoblock_html_a0fb516658877a3ab5933b04708332a3b"><div class="ttname"><a href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">undoblock::size</a></div><div class="ttdeci">int size</div><div class="ttdef"><b>Definition:</b> octa.h:256</div></div>
