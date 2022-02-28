@@ -44,7 +44,7 @@ namespace
         int type,     //one of the enum values Console_* in headers/consts.h
             outtime;  //timestamp when the console line was created
     };
-    reversequeue<cline, maxconsolelines> conlines; //global storage of console lines
+    std::deque<cline> conlines; //global storage of console lines
 
     int commandmillis = -1;
     string commandbuf;
@@ -61,9 +61,10 @@ namespace
 
     VARFP(maxcon, 10, 200, maxconsolelines,
     {
-        while(conlines.length() > maxcon)
+        while(conlines.size() > maxcon)
         {
-            delete[] conlines.pop().line;
+            delete[] conlines.front().line;
+            conlines.pop_back();
         }
     });
 
@@ -74,12 +75,17 @@ namespace
 
     void conline(int type, const char *sf)        // add a line to the console buffer
     {
-        char *buf = conlines.length() >= maxcon ? conlines.remove().line : newstring("", constrlen-1);
-        cline &cl = conlines.add();
+        char *buf = conlines.size() >= maxcon ? conlines.back().line : newstring("", constrlen-1);
+        if(conlines.size() >= maxcon)
+        {
+            conlines.pop_back();
+        }
+        cline cl;
         cl.line = buf;
         cl.type = type;
         cl.outtime = totalmillis;                // for how long to keep line on screen
         copystring(cl.line, sf, constrlen);
+        conlines.push_front(cl);
     }
 
     void fullconsole(int *val, int *numargs, ident *id)
@@ -125,13 +131,13 @@ namespace
     {
         int offsetnum = std::abs(n),
             dir = n < 0 ? -1 : 1;
-        skip = std::clamp(skip, 0, conlines.length()-1);
+        skip = std::clamp(skip, 0, static_cast<int>(conlines.size()-1));
         while(offsetnum)
         {
             skip += dir;
-            if(!conlines.inrange(skip))
+            if(!(conlines.size() > skip))
             {
-                skip = std::clamp(skip, 0, conlines.length()-1);
+                skip = std::clamp(skip, 0, static_cast<int>(conlines.size()-1));
                 return;
             }
             if(conlines[skip].type&filter)
@@ -155,23 +161,24 @@ namespace
 
     void clearconsole()
     {
-        while(conlines.length())
+        while(conlines.size())
         {
-            delete[] conlines.pop().line;
+            delete[] conlines.back().line;
+            conlines.pop_back();
         }
     }
     COMMAND(clearconsole, "");
 
     float drawconlines(int conskip, int confade, float conwidth, float conheight, float conoff, int filter, float y = 0, int dir = 1)
     {
-        int numl = conlines.length(),
+        int numl = conlines.size(),
             offsetlines = std::min(conskip, numl);
         if(confade)
         {
             if(!conskip)
             {
                 numl = 0;
-                for(int i = conlines.length(); --i >=0;) //note reverse iteration
+                for(int i = conlines.size(); --i >=0;) //note reverse iteration
                 {
                     if(totalmillis-conlines[i].outtime < confade*1000)
                     {
