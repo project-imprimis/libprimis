@@ -775,7 +775,8 @@ struct DefVar : identval
 
     ~DefVar()
     {
-        DELETEA(name);
+        delete[] name;
+        name = nullptr;
         if(onchange)
         {
             freecode(onchange);
