@@ -224,8 +224,8 @@ struct skelmodel : animmodel
 
         virtual ~skelmesh()
         {
-            DELETEA(verts);
-            DELETEA(tris);
+            delete[] verts;
+            delete[] tris;
         }
 
         int addblendcombo(const blendcombo &c);
@@ -348,7 +348,10 @@ struct skelmodel : animmodel
         matrix4x3 matrix;
 
         tag() : name(nullptr) {}
-        ~tag() { DELETEA(name); }
+        ~tag()
+        {
+            delete[] name;
+        }
     };
 
     struct skelanimspec
@@ -359,7 +362,7 @@ struct skelmodel : animmodel
         skelanimspec() : name(nullptr), frame(0), range(0) {}
         ~skelanimspec()
         {
-            DELETEA(name);
+            delete[] name;
         }
     };
 
@@ -373,7 +376,7 @@ struct skelmodel : animmodel
         boneinfo() : name(nullptr), parent(-1), children(-1), next(-1), group(INT_MAX), scheduled(-1), interpindex(-1), interpparent(-1), ragdollindex(-1), correctindex(-1), pitchscale(0), pitchoffset(0), pitchmin(0), pitchmax(0) {}
         ~boneinfo()
         {
-            DELETEA(name);
+            delete[] name;
         }
     };
 
@@ -431,9 +434,9 @@ struct skelmodel : animmodel
 
         ~skeleton()
         {
-            DELETEA(name);
-            DELETEA(bones);
-            DELETEA(framebones);
+            delete[] name;
+            delete[] bones;
+            delete[] framebones;
             if(ragdoll)
             {
                 delete ragdoll;
@@ -441,7 +444,7 @@ struct skelmodel : animmodel
             }
             for(int i = 0; i < skelcache.length(); i++)
             {
-                DELETEA(skelcache[i].bdata);
+                delete[] skelcache[i].bdata;
             }
         }
 
@@ -540,7 +543,7 @@ struct skelmodel : animmodel
             }
             for(int i = 0; i < maxblendcache; ++i)
             {
-                DELETEA(blendcache[i].bdata);
+                delete[] blendcache[i].bdata;
             }
             for(int i = 0; i < maxvbocache; ++i)
             {
@@ -549,7 +552,7 @@ struct skelmodel : animmodel
                     glDeleteBuffers(1, &vbocache[i].vbuf);
                 }
             }
-            DELETEA(vdata);
+            delete[] vdata;
             deletehitdata();
         }
 
@@ -679,7 +682,7 @@ struct skelmodel : animmodel
 
             virtual ~skelpart()
             {
-                DELETEA(buildingpartmask);
+                delete[] buildingpartmask;
             }
 
             void initanimparts();

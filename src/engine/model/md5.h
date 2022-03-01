@@ -449,8 +449,10 @@ class md5 : public skelloader<md5>
 
                 void cleanup()
                 {
-                    DELETEA(weightinfo);
-                    DELETEA(vertinfo);
+                    delete[] weightinfo;
+                    delete[] vertinfo;
+                    vertinfo = nullptr;
+                    weightinfo = nullptr;
                 }
 
                 void buildverts(vector<md5joint> &joints)

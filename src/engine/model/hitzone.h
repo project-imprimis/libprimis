@@ -13,7 +13,7 @@ class skelbih
 
         ~skelbih()
         {
-            DELETEA(nodes);
+            delete[] nodes;
         }
 
         struct node
@@ -97,7 +97,7 @@ class skelhitzone
             }
             else
             {
-                DELETEA(tris);
+                delete[] tris;
             }
         }
 
@@ -247,10 +247,10 @@ class skelhitdata
         skelhitdata() : numblends(0), numzones(0), rootzones(0), visited(0), zones(nullptr), links(nullptr), tris(nullptr) {}
         ~skelhitdata()
         {
-            DELETEA(zones);
-            DELETEA(links);
-            DELETEA(tris);
-            DELETEA(blendcache.bdata);
+            delete[] zones;
+            delete[] links;
+            delete[] tris;
+            delete[] blendcache.bdata;
         }
         void build(skelmodel::skelmeshgroup *g, const uchar *ids);
 

@@ -55,9 +55,9 @@ struct vertmodel : animmodel
 
         virtual ~vertmesh()
         {
-            DELETEA(verts);
-            DELETEA(tcverts);
-            DELETEA(tris);
+            delete[] verts;
+            delete[] tcverts;
+            delete[] tris;
         }
 
         void smoothnorms(float limit = 0, bool areaweight = true)
@@ -249,7 +249,10 @@ struct vertmodel : animmodel
         matrix4x3 matrix;
 
         tag() : name(nullptr) {}
-        ~tag() { DELETEA(name); }
+        ~tag()
+        {
+            delete[] name;
+        }
     };
 
     struct vertmeshgroup : meshgroup
@@ -272,7 +275,7 @@ struct vertmodel : animmodel
 
         virtual ~vertmeshgroup()
         {
-            DELETEA(tags);
+            delete[] tags;
             if(ebuf)
             {
                 glDeleteBuffers(1, &ebuf);
@@ -284,7 +287,7 @@ struct vertmodel : animmodel
                     glDeleteBuffers(1, &vbocache[i].vbuf);
                 }
             }
-            DELETEA(vdata);
+            delete[] vdata;
         }
 
         int findtag(const char *name)
@@ -391,7 +394,7 @@ struct vertmodel : animmodel
             {
                 vertsize = sizeof(vvert);
                 LOOP_RENDER_MESHES(vertmesh, m, vlen += m.genvbo(idxs, vlen));
-                DELETEA(vdata);
+                delete[] vdata;
                 vdata = new uchar[vlen*vertsize];
                 LOOP_RENDER_MESHES(vertmesh, m,
                 {
@@ -426,7 +429,7 @@ struct vertmodel : animmodel
                 memset(htdata, -1, htlen*sizeof(int));
                 GENVBO(vvertg);
                 delete[] htdata;
-
+                htdata = nullptr;
                 #undef GENVBO
 
                 gle::clearvbo();
