@@ -136,6 +136,9 @@ var NAVTREEINDEX1 =
 "structdualquat.html":[10,0,8],
 "structdynent.html":[10,0,9],
 "structdynent.html#a093fb4ab684f252e4b315fbef20ee213":[10,0,9,0],
+"structdynent.html#a328ca39121b002c30b585162adec026b":[10,0,9,2],
+"structdynent.html#a4d1a81af37056f80ad90cee60b9ecca8":[10,0,9,1],
+"structdynent.html#afaa0d5d6115b157e1b9bf3d61ee42543":[10,0,9,3],
 "structeditinfo.html":[10,0,10],
 "structentity.html":[10,0,11],
 "structentity.html#a525c90c5512cbb504f7ac9ab7014336f":[10,0,11,1],
@@ -246,8 +249,5 @@ var NAVTREEINDEX1 =
 "structvector.html#a6a92723c52a0b1a02c2ad43e2a7672de":[10,0,53,42],
 "structvector.html#a6c907908675387470a149acfe8684811":[10,0,53,29],
 "structvector.html#a6d35bc5e9b1f66d671c86432807f32f8":[10,0,53,33],
-"structvector.html#a7bc236f547bb5debe890fa8ebaabe965":[10,0,53,2],
-"structvector.html#a7bf3e117a2c8618edc5dc0ef7c06e455":[10,0,53,55],
-"structvector.html#a86b505ce7f65a2e6fc5ae20d783da9c2":[10,0,53,35],
-"structvector.html#a8b5dc28a2e0035fc84a41f3588194853":[10,0,53,32]
+"structvector.html#a7bc236f547bb5debe890fa8ebaabe965":[10,0,53,2]
 };
