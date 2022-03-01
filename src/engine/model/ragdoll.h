@@ -16,9 +16,9 @@ class ragdollskel
         {
             int vert[3];
 
-            bool shareverts(const tri *t) const;
+            bool shareverts(const tri &t) const;
         };
-        std::vector<tri *> tris;
+        std::vector<tri> tris;
 
         struct reljoint
         {
@@ -138,7 +138,7 @@ class ragdolldata
         void calcboundsphere();
         void constrain();
         void constraindist();
-        void applyrotlimit(ragdollskel::tri *t1, ragdollskel::tri *t2, float angle, const vec &axis);
+        void applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, float angle, const vec &axis);
         void constrainrot();
         void calcrotfriction();
         void applyrotfriction(float ts);
