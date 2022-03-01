@@ -54,6 +54,7 @@
     <ClCompile Include="..\engine\render\water.cpp" />
     <ClCompile Include="..\engine\world\bih.cpp" />
     <ClCompile Include="..\engine\world\dynlight.cpp" />
+    <ClCompile Include="..\engine\world\entities.cpp" />
     <ClCompile Include="..\engine\world\light.cpp" />
     <ClCompile Include="..\engine\world\material.cpp" />
     <ClCompile Include="..\engine\world\mpr.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="..\engine\render\water.h" />
     <ClInclude Include="..\engine\world\bih.h" />
     <ClInclude Include="..\engine\world\dynlight.h" />
+    <ClInclude Include="..\engine\world\entities.h" />
     <ClInclude Include="..\engine\world\light.h" />
     <ClInclude Include="..\engine\world\material.h" />
     <ClInclude Include="..\engine\world\mpr.h" />

@@ -14,6 +14,7 @@
 
 #include "interface/menus.h"
 
+#include "world/entities.h"
 #include "world/light.h"
 #include "world/material.h"
 #include "world/octaworld.h"

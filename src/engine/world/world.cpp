@@ -4,6 +4,7 @@
 #include "../../shared/glexts.h"
 
 #include "bih.h"
+#include "entities.h"
 #include "light.h"
 #include "octaedit.h"
 #include "octaworld.h"

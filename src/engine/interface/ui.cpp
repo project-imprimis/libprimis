@@ -19,6 +19,7 @@
 #include "ui.h"
 #include "cs.h"
 
+#include "world/entities.h"
 #include "world/octaedit.h"
 #include "world/bih.h"
 

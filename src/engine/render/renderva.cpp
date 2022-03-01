@@ -18,6 +18,7 @@
 
 #include "interface/control.h"
 
+#include "world/entities.h"
 #include "world/light.h"
 #include "world/octaedit.h"
 #include "world/octaworld.h"

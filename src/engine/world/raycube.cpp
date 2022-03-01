@@ -14,6 +14,7 @@
 #include "../libprimis-headers/cube.h"
 
 #include "bih.h"
+#include "entities.h"
 #include "octaworld.h"
 #include "physics.h"
 #include "raycube.h"

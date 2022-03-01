@@ -11,6 +11,7 @@
 
 #include "render/rendergl.h" //needed to get camera position
 
+#include "world/entities.h"
 #include "world/world.h"
 
 bool nosound = true;

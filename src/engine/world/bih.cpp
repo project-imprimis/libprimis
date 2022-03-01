@@ -7,6 +7,7 @@
 #include "../libprimis-headers/cube.h"
 #include "../../shared/glexts.h"
 
+#include "entities.h"
 #include "physics.h"
 #include "raycube.h"
 

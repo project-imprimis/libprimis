@@ -6,6 +6,7 @@
 #include "../libprimis-headers/cube.h"
 
 #include "bih.h"
+#include "entities.h"
 #include "mpr.h"
 #include "octaworld.h"
 #include "physics.h"

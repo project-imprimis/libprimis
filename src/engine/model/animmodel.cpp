@@ -23,6 +23,7 @@
 #include "render/renderparticles.h"
 #include "render/texture.h"
 
+#include "world/entities.h"
 #include "world/physics.h"
 #include "world/bih.h"
 
