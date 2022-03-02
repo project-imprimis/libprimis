@@ -6,6 +6,7 @@
  *
  */
 #include "../libprimis-headers/cube.h"
+#include "stream.h"
 
 #include "../engine/interface/console.h"
 

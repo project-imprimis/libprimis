@@ -8,6 +8,7 @@
 #include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
+#include "../../shared/stream.h"
 
 #include "render/radiancehints.h"
 #include "render/rendergl.h"

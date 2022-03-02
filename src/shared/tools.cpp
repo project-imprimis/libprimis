@@ -1,6 +1,7 @@
 // implementation of generic tools
 
 #include "../libprimis-headers/cube.h"
+#include "stream.h"
 
 ////////////////////////// strings ////////////////////////////////////////
 

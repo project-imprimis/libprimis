@@ -5,6 +5,7 @@
  * timestate information, and engine version information
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/stream.h"
 
 #include "console.h"
 #include "control.h"
