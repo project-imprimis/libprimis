@@ -15,7 +15,6 @@ var searchData=
   ['drawminimap_12',['drawminimap',['../iengine_8h.html#aaaca628ac539ed8575ddb8bbc4d55a75',1,'iengine.h']]],
   ['drop_13',['drop',['../structvector.html#a0cbbd7fecd97f3c5e3262966ecd15a66',1,'vector']]],
   ['dropenttofloor_14',['dropenttofloor',['../iengine_8h.html#a0ad347f2277926b638e58f460536b2b8',1,'iengine.h']]],
-  ['dualquat_15',['dualquat',['../structdualquat.html',1,'']]],
-  ['dup_16',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]],
-  ['dynent_17',['dynent',['../structdynent.html',1,'']]]
+  ['dup_15',['dup',['../structvector.html#a46500dd47fc3f4ec51807719dbe0a793',1,'vector']]],
+  ['dynent_16',['dynent',['../structdynent.html',1,'']]]
 ];

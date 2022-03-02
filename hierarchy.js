@@ -9,7 +9,6 @@ var hierarchy =
     [ "cube", "classcube.html", null ],
     [ "cubeworld", "structcubeworld.html", null ],
     [ "databuf< T >", "structdatabuf.html", null ],
-    [ "dualquat", "structdualquat.html", null ],
     [ "editinfo", "structeditinfo.html", null ],
     [ "entity", "structentity.html", [
       [ "extentity", "structextentity.html", null ]
@@ -17,7 +16,6 @@ var hierarchy =
     [ "facebounds", "structfacebounds.html", null ],
     [ "GenericVec2< T >", "structGenericVec2.html", null ],
     [ "GenericVec3< T >", "structGenericVec3.html", null ],
-    [ "half", "structhalf.html", null ],
     [ "hashbase< H, E, K, T >", "structhashbase.html", null ],
     [ "hashbase< hashnameset< T >, T, const char *, T >", "structhashbase.html", [
       [ "hashnameset< T >", "structhashnameset.html", null ]
@@ -40,7 +38,6 @@ var hierarchy =
     [ "ident::identvalptr", "unionident_1_1identvalptr.html", null ],
     [ "ivec", "structivec.html", null ],
     [ "ivec2", "structivec2.html", null ],
-    [ "matrix2", "structmatrix2.html", null ],
     [ "matrix3", "structmatrix3.html", null ],
     [ "matrix4", "structmatrix4.html", null ],
     [ "matrix4x3", "structmatrix4x3.html", null ],
@@ -55,24 +52,18 @@ var hierarchy =
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
     [ "sortless", "structsortless.html", null ],
     [ "sortnameless", "structsortnameless.html", null ],
-    [ "squat", "structsquat.html", null ],
     [ "stream", "structstream.html", null ],
     [ "streambuf< T >", "structstreambuf.html", null ],
     [ "stringslice", "structstringslice.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "Slot::Tex", "structSlot_1_1Tex.html", null ],
-    [ "triangle", "structtriangle.html", null ],
     [ "undoblock", "structundoblock.html", null ],
     [ "undoent", "structundoent.html", null ],
     [ "undolist", "structundolist.html", null ],
-    [ "vec", "structvec.html", [
-      [ "plane", "structplane.html", null ]
-    ] ],
+    [ "vec", "structvec.html", null ],
     [ "vec2", "structvec2.html", null ],
     [ "vec4< T >", "structvec4.html", null ],
-    [ "vec4< float >", "structvec4.html", [
-      [ "quat", "structquat.html", null ]
-    ] ],
+    [ "vec4< float >", "structvec4.html", null ],
     [ "vector< T >", "structvector.html", null ],
     [ "vector< Slot::Tex >", "structvector.html", null ],
     [ "vector< SlotShaderParam >", "structvector.html", null ],

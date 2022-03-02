@@ -10,6 +10,5 @@ var searchData=
   ['the_20tesseract_20renderer_7',['The Tesseract Renderer',['../md_tesseract_renderer.html',1,'']]],
   ['timestamp_8',['timestamp',['../structundoblock.html#ac7993663dac147f8134a9f24ec91a876',1,'undoblock']]],
   ['tools_2eh_9',['tools.h',['../tools_8h.html',1,'']]],
-  ['triangle_10',['triangle',['../structtriangle.html',1,'']]],
-  ['type_11',['type',['../structentity.html#a8149790bddae92665ede0d60432f2dee',1,'entity::type()'],['../structphysent.html#a5f05656ab22794accdccf288f4056831',1,'physent::type()']]]
+  ['type_10',['type',['../structentity.html#a8149790bddae92665ede0d60432f2dee',1,'entity::type()'],['../structphysent.html#a5f05656ab22794accdccf288f4056831',1,'physent::type()']]]
 ];

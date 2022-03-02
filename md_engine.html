@@ -1910,7 +1910,7 @@ Persistent Variables `*VARP`</h4>
 <div class="line"> </div>
 <div class="line"><span class="comment">// `c` is (2,2,2), but `b` is ALSO (2,2,2) because mul() changes its state</span></div>
 <div class="line"><a class="code hl_struct" href="structvec.html">vec</a> c = a.mul(b);</div>
-<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:149</div></div>
+<div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
 </div><!-- fragment --><p> To work around this, it is typical to see what appears to be an unnecessary constructor call <code><a class="el" href="structvec.html" title="three dimensional vector object">vec(vec T)</a></code>. This is to create a new tempoary object using the constructor call which can have member functions applied to it without mangling the original vector.</p>
 <p >While this property of <code>vec</code>'s many member functions is most commonly seen in <code>vec</code> objects, the same behavior also applies to other related objects, such as <code><a class="el" href="structvec2.html" title="2 dimensional vector object">vec2</a></code> or <code>ivec</code>.</p>
 <h4><a class="anchor" id="autotoc_md205"></a>
