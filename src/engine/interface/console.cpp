@@ -61,7 +61,7 @@ namespace
 
     VARFP(maxcon, 10, 200, maxconsolelines,
     {
-        while(conlines.size() > maxcon)
+        while(static_cast<int>(conlines.size()) > maxcon)
         {
             delete[] conlines.front().line;
             conlines.pop_back();
@@ -75,8 +75,8 @@ namespace
 
     void conline(int type, const char *sf)        // add a line to the console buffer
     {
-        char *buf = conlines.size() >= maxcon ? conlines.back().line : newstring("", constrlen-1);
-        if(conlines.size() >= maxcon)
+        char *buf = static_cast<int>(conlines.size()) >= maxcon ? conlines.back().line : newstring("", constrlen-1);
+        if(static_cast<int>(conlines.size()) >= maxcon)
         {
             conlines.pop_back();
         }
@@ -135,7 +135,7 @@ namespace
         while(offsetnum)
         {
             skip += dir;
-            if(!(conlines.size() > skip))
+            if(!(static_cast<int>(conlines.size()) > skip))
             {
                 skip = std::clamp(skip, 0, static_cast<int>(conlines.size()-1));
                 return;
