@@ -7,6 +7,7 @@
  * world light entity packing for the renderer to use
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
 #include "light.h"

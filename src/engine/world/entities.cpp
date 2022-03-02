@@ -4,6 +4,7 @@
  * This file implements the behavior in the ents.h interface header.
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "entities.h"
 

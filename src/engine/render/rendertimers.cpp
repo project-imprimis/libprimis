@@ -7,6 +7,7 @@
  * used in rendergl.cpp
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
 #include "rendergl.h"

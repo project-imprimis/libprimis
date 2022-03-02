@@ -15,6 +15,7 @@
  * raster image containing the acceptable characters which are sampled as needed
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 

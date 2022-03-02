@@ -5,6 +5,7 @@
  * are also used for the procedural ragdoll physics.
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
 #include "entities.h"

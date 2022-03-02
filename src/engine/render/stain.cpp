@@ -12,6 +12,7 @@
  */
 
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glemu.h"
 #include "../../shared/glexts.h"
 

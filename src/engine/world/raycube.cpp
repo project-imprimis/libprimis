@@ -12,6 +12,7 @@
  * and for other world interaction by players (e.g. identifying where structure in the world is)
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "bih.h"
 #include "entities.h"

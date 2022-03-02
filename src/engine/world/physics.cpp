@@ -4,6 +4,7 @@
  * very robust (uses discrete steps at fixed fps).
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "bih.h"
 #include "entities.h"

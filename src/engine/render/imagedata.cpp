@@ -5,6 +5,7 @@
  * It is only used by texture.cpp.
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
 #include "imagedata.h"

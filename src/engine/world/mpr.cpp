@@ -7,6 +7,7 @@
  * used in physics.cpp and for model-related collision purposes
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "octaworld.h"
 

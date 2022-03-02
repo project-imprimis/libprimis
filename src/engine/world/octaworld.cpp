@@ -12,6 +12,7 @@
  * overhead
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "light.h"
 #include "octaworld.h"

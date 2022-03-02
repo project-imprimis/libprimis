@@ -11,6 +11,7 @@
  * only along one at a time
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "octaedit.h"
 #include "octaworld.h"

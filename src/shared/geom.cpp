@@ -1,4 +1,5 @@
 #include "../libprimis-headers/cube.h"
+#include "geomexts.h"
 
 //needed for det3
 /* det2x2()
@@ -383,3 +384,52 @@ extern const vec2 sincos360[721] =
     vec2(1.00000000, 0.00000000) // 720
 };
 
+//object member functions
+
+matrix3::matrix3(const quat &q)
+{
+    float x   = q.x,   y  = q.y,    z = q.z, w = q.w,
+          tx  = 2*x,   ty = 2*y,   tz = 2*z,
+          txx = tx*x, tyy = ty*y, tzz = tz*z,
+          txy = tx*y, txz = tx*z, tyz = ty*z,
+          twx = w*tx, twy = w*ty, twz = w*tz;
+    a = vec(1 - (tyy + tzz), txy + twz, txz - twy);
+    b = vec(txy - twz, 1 - (txx + tzz), tyz + twx);
+    c = vec(txz + twy, tyz - twx, 1 - (txx + tyy));
+}
+
+matrix4x3::matrix4x3(const dualquat &dq)
+{
+    vec4<float> r = vec4<float>(dq.real).mul(1/dq.real.squaredlen()), rr = vec4<float>(r).mul(dq.real);
+    r.mul(2);
+    float xy = r.x*dq.real.y, xz = r.x*dq.real.z, yz = r.y*dq.real.z,
+          wx = r.w*dq.real.x, wy = r.w*dq.real.y, wz = r.w*dq.real.z;
+    a = vec(rr.w + rr.x - rr.y - rr.z, xy + wz, xz - wy);
+    b = vec(xy - wz, rr.w + rr.y - rr.x - rr.z, yz + wx);
+    c = vec(xz + wy, yz - wx, rr.w + rr.z - rr.x - rr.y);
+    d = vec(-(dq.dual.w*r.x - dq.dual.x*r.w + dq.dual.y*r.z - dq.dual.z*r.y),
+            -(dq.dual.w*r.y - dq.dual.x*r.z - dq.dual.y*r.w + dq.dual.z*r.x),
+            -(dq.dual.w*r.z + dq.dual.x*r.y - dq.dual.y*r.x - dq.dual.z*r.w));
+}
+
+float ivec::dist(const plane &p) const { return x*p.x + y*p.y + z*p.z + p.offset; }
+
+void matrix4::clip(const plane &p, const matrix4 &m)
+{
+    float x = ((p.x<0 ? -1 : (p.x>0 ? 1 : 0)) + m.c.x) / m.a.x,
+          y = ((p.y<0 ? -1 : (p.y>0 ? 1 : 0)) + m.c.y) / m.b.y,
+          w = (1 + m.c.z) / m.d.z,
+        scale = 2 / (x*p.x + y*p.y - p.z + w*p.offset);
+    a = vec4<float>(m.a.x, m.a.y, p.x*scale, m.a.w);
+    b = vec4<float>(m.b.x, m.b.y, p.y*scale, m.b.w);
+    c = vec4<float>(m.c.x, m.c.y, p.z*scale + 1.0f, m.c.w);
+    d = vec4<float>(m.d.x, m.d.y, p.offset*scale, m.d.w);
+}
+
+void matrix4::transposedtransform(const plane &in, plane &out) const
+{
+    out.x = in.dist(a);
+    out.y = in.dist(b);
+    out.z = in.dist(c);
+    out.offset = in.dist(d);
+}

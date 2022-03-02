@@ -8,6 +8,7 @@
  * class definition, see ragdoll.h.
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "interface/console.h"
 #include "interface/control.h"

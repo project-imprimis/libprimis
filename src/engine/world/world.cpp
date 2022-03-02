@@ -1,6 +1,7 @@
 // world.cpp: core map management stuff
 
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
 #include "bih.h"

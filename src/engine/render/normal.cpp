@@ -11,6 +11,7 @@
  * all geometry on the map; see `lerpangle` for the threshold variable
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "octarender.h"
 

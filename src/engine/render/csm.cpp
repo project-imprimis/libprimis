@@ -7,6 +7,7 @@
  * is typically a sizable portion of the atlas space)
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 #include "../../shared/glexts.h"
 
 #include "csm.h"

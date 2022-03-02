@@ -8,6 +8,7 @@
  * and multicolored lights (which change hue dynamically)
  */
 #include "../libprimis-headers/cube.h"
+#include "../../shared/geomexts.h"
 
 #include "dynlight.h"
 #include "physics.h"
