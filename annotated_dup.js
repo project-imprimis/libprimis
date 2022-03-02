@@ -36,7 +36,6 @@ var annotated_dup =
     [ "sortless", "structsortless.html", null ],
     [ "sortnameless", "structsortnameless.html", null ],
     [ "stream", "structstream.html", null ],
-    [ "streambuf", "structstreambuf.html", null ],
     [ "stringslice", "structstringslice.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "tagval", "structtagval.html", null ],

@@ -13,7 +13,6 @@ var tools_8h =
     [ "hashtableentry< K, T >", "structhashtableentry.html", null ],
     [ "hashtable< K, T >", "structhashtable.html", null ],
     [ "stream", "structstream.html", null ],
-    [ "streambuf< T >", "structstreambuf.html", null ],
     [ "insertionsort", "tools_8h.html#a5c7af8666d89a580098180b2a3204469", null ],
     [ "quicksort", "tools_8h.html#ac689abc18c3afee2ad0016533bcab8f4", null ]
 ];

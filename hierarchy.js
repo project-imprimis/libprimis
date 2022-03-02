@@ -53,7 +53,6 @@ var hierarchy =
     [ "sortless", "structsortless.html", null ],
     [ "sortnameless", "structsortnameless.html", null ],
     [ "stream", "structstream.html", null ],
-    [ "streambuf< T >", "structstreambuf.html", null ],
     [ "stringslice", "structstringslice.html", null ],
     [ "svec", "structsvec.html", null ],
     [ "Slot::Tex", "structSlot_1_1Tex.html", null ],

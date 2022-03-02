@@ -109,7 +109,6 @@ $(document).ready(function(){initNavTree('tools_8h.html',''); initResizable(); }
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">tools.h File Reference</div></div>
@@ -151,8 +150,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structhashtable.html">hashtable&lt; K, T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstream.html">stream</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstreambuf.html">streambuf&lt; T &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -222,21 +219,6 @@ typedef <a class="el" href="structdatabuf.html">databuf</a>&lt; char &gt;&#160;<
 <tr class="memitem:a3523e52f56486d52e182e506d4dc3f80"><td class="memItemLeft" align="right" valign="top"><a id="a3523e52f56486d52e182e506d4dc3f80" name="a3523e52f56486d52e182e506d4dc3f80"></a>
 typedef <a class="el" href="structdatabuf.html">databuf</a>&lt; uchar &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ucharbuf</b></td></tr>
 <tr class="separator:a3523e52f56486d52e182e506d4dc3f80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:ae33c78feb670de33d2abf21ec0624531"><td class="memItemLeft" align="right" valign="top"><a id="ae33c78feb670de33d2abf21ec0624531" name="ae33c78feb670de33d2abf21ec0624531"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
-&#160;&#160;<b>CubeType_Print</b> = 1 &lt;&lt; 0
-, <b>CubeType_Space</b> = 1 &lt;&lt; 1
-, <b>CubeType_Digit</b> = 1 &lt;&lt; 2
-, <b>CubeType_Alpha</b> = 1 &lt;&lt; 3
-, <br />
-&#160;&#160;<b>CubeType_Lower</b> = 1 &lt;&lt; 4
-, <b>CubeType_Upper</b> = 1 &lt;&lt; 5
-, <b>CubeType_Unicode</b> = 1 &lt;&lt; 6
-<br />
- }</td></tr>
-<tr class="separator:ae33c78feb670de33d2abf21ec0624531"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -428,78 +410,18 @@ template&lt;&gt; </td></tr>
 template&lt;&gt; </td></tr>
 <tr class="memitem:a78b659d46b11d2f4846712b53902fc51"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><b>endianswap&lt; int &gt;</b> (int n)</td></tr>
 <tr class="separator:a78b659d46b11d2f4846712b53902fc51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a087c0d5b6ca31f17c0a5fdf7c06ba373"><td class="memItemLeft" align="right" valign="top"><a id="a087c0d5b6ca31f17c0a5fdf7c06ba373" name="a087c0d5b6ca31f17c0a5fdf7c06ba373"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>iscubeprint</b> (uchar c)</td></tr>
-<tr class="separator:a087c0d5b6ca31f17c0a5fdf7c06ba373"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57bd783ece4f3e6ca24fee42be4e89cd"><td class="memItemLeft" align="right" valign="top"><a id="a57bd783ece4f3e6ca24fee42be4e89cd" name="a57bd783ece4f3e6ca24fee42be4e89cd"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>iscubespace</b> (uchar c)</td></tr>
-<tr class="separator:a57bd783ece4f3e6ca24fee42be4e89cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3e2858a0f15ef507ba53f441ac1d97d"><td class="memItemLeft" align="right" valign="top"><a id="ac3e2858a0f15ef507ba53f441ac1d97d" name="ac3e2858a0f15ef507ba53f441ac1d97d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>iscubealpha</b> (uchar c)</td></tr>
-<tr class="separator:ac3e2858a0f15ef507ba53f441ac1d97d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0263d934506bdffdcc687b2c2f0b087c"><td class="memItemLeft" align="right" valign="top"><a id="a0263d934506bdffdcc687b2c2f0b087c" name="a0263d934506bdffdcc687b2c2f0b087c"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>iscubealnum</b> (uchar c)</td></tr>
-<tr class="separator:a0263d934506bdffdcc687b2c2f0b087c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a497bf69f9426127a763b4215895dac1a"><td class="memItemLeft" align="right" valign="top"><a id="a497bf69f9426127a763b4215895dac1a" name="a497bf69f9426127a763b4215895dac1a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>iscubelower</b> (uchar c)</td></tr>
-<tr class="separator:a497bf69f9426127a763b4215895dac1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a1efcd8ae6cf4162406fcb1cdd68ad3"><td class="memItemLeft" align="right" valign="top"><a id="a3a1efcd8ae6cf4162406fcb1cdd68ad3" name="a3a1efcd8ae6cf4162406fcb1cdd68ad3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>iscubeupper</b> (uchar c)</td></tr>
-<tr class="separator:a3a1efcd8ae6cf4162406fcb1cdd68ad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ecf461eac39cc66d36ce7149bed9611"><td class="memItemLeft" align="right" valign="top"><a id="a5ecf461eac39cc66d36ce7149bed9611" name="a5ecf461eac39cc66d36ce7149bed9611"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>iscubepunct</b> (uchar c)</td></tr>
-<tr class="separator:a5ecf461eac39cc66d36ce7149bed9611"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3388b11b6110ffe4ef4134dc7187aca9"><td class="memItemLeft" align="right" valign="top"><a id="a3388b11b6110ffe4ef4134dc7187aca9" name="a3388b11b6110ffe4ef4134dc7187aca9"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>cube2uni</b> (uchar c)</td></tr>
-<tr class="separator:a3388b11b6110ffe4ef4134dc7187aca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7afefa39add18779885f9f121503f973"><td class="memItemLeft" align="right" valign="top"><a id="a7afefa39add18779885f9f121503f973" name="a7afefa39add18779885f9f121503f973"></a>
-uchar&#160;</td><td class="memItemRight" valign="bottom"><b>uni2cube</b> (int c)</td></tr>
-<tr class="separator:a7afefa39add18779885f9f121503f973"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a984109a804ed669804cb38ad9ec7128c"><td class="memItemLeft" align="right" valign="top"><a id="a984109a804ed669804cb38ad9ec7128c" name="a984109a804ed669804cb38ad9ec7128c"></a>
-uchar&#160;</td><td class="memItemRight" valign="bottom"><b>cubelower</b> (uchar c)</td></tr>
-<tr class="separator:a984109a804ed669804cb38ad9ec7128c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30b4aedf08a20691358bc7545be130fd"><td class="memItemLeft" align="right" valign="top"><a id="a30b4aedf08a20691358bc7545be130fd" name="a30b4aedf08a20691358bc7545be130fd"></a>
-uchar&#160;</td><td class="memItemRight" valign="bottom"><b>cubeupper</b> (uchar c)</td></tr>
-<tr class="separator:a30b4aedf08a20691358bc7545be130fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec3d193468bbe952836aeb6edd9f328d"><td class="memItemLeft" align="right" valign="top"><a id="aec3d193468bbe952836aeb6edd9f328d" name="aec3d193468bbe952836aeb6edd9f328d"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>decodeutf8</b> (uchar *dst, size_t dstlen, const uchar *src, size_t srclen, size_t *carry=nullptr)</td></tr>
-<tr class="separator:aec3d193468bbe952836aeb6edd9f328d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa38d24466ca8b3be5ae5f14e27c7c29a"><td class="memItemLeft" align="right" valign="top"><a id="aa38d24466ca8b3be5ae5f14e27c7c29a" name="aa38d24466ca8b3be5ae5f14e27c7c29a"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>encodeutf8</b> (uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry=nullptr)</td></tr>
-<tr class="separator:aa38d24466ca8b3be5ae5f14e27c7c29a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa340a2a52e04bc02a641f25eaedd96b3"><td class="memItemLeft" align="right" valign="top"><a id="aa340a2a52e04bc02a641f25eaedd96b3" name="aa340a2a52e04bc02a641f25eaedd96b3"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>makerelpath</b> (const char *dir, const char *file, const char *prefix=nullptr, const char *cmd=nullptr)</td></tr>
-<tr class="separator:aa340a2a52e04bc02a641f25eaedd96b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5405cbe86c56e6326ebe45066362bcaf"><td class="memItemLeft" align="right" valign="top"><a id="a5405cbe86c56e6326ebe45066362bcaf" name="a5405cbe86c56e6326ebe45066362bcaf"></a>
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>path</b> (char *s)</td></tr>
 <tr class="separator:a5405cbe86c56e6326ebe45066362bcaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f288ef0fd3530a11a507b0d27cf49cf"><td class="memItemLeft" align="right" valign="top"><a id="a4f288ef0fd3530a11a507b0d27cf49cf" name="a4f288ef0fd3530a11a507b0d27cf49cf"></a>
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>copypath</b> (const char *s)</td></tr>
 <tr class="separator:a4f288ef0fd3530a11a507b0d27cf49cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec918ff7460ee9c4b9150158109cd080"><td class="memItemLeft" align="right" valign="top"><a id="aec918ff7460ee9c4b9150158109cd080" name="aec918ff7460ee9c4b9150158109cd080"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>parentdir</b> (const char *directory)</td></tr>
-<tr class="separator:aec918ff7460ee9c4b9150158109cd080"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aecf572462aea03f9bd3214b35b35bcfd"><td class="memItemLeft" align="right" valign="top"><a id="aecf572462aea03f9bd3214b35b35bcfd" name="aecf572462aea03f9bd3214b35b35bcfd"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>fileexists</b> (const char *path, const char *mode)</td></tr>
-<tr class="separator:aecf572462aea03f9bd3214b35b35bcfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed299a0b7944880d7c3e07a8c88bf2a6"><td class="memItemLeft" align="right" valign="top"><a id="aed299a0b7944880d7c3e07a8c88bf2a6" name="aed299a0b7944880d7c3e07a8c88bf2a6"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>createdir</b> (const char *path)</td></tr>
-<tr class="separator:aed299a0b7944880d7c3e07a8c88bf2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22daabf236352a186ccaefa6818161a3"><td class="memItemLeft" align="right" valign="top"><a id="a22daabf236352a186ccaefa6818161a3" name="a22daabf236352a186ccaefa6818161a3"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>fixpackagedir</b> (char *dir)</td></tr>
-<tr class="separator:a22daabf236352a186ccaefa6818161a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e4b6b73543fe8aa3e861f9ecaac81a4"><td class="memItemLeft" align="right" valign="top"><a id="a3e4b6b73543fe8aa3e861f9ecaac81a4" name="a3e4b6b73543fe8aa3e861f9ecaac81a4"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>sethomedir</b> (const char *dir)</td></tr>
 <tr class="separator:a3e4b6b73543fe8aa3e861f9ecaac81a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a703fb9de92f963b199c17f69495c9629"><td class="memItemLeft" align="right" valign="top"><a id="a703fb9de92f963b199c17f69495c9629" name="a703fb9de92f963b199c17f69495c9629"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>addpackagedir</b> (const char *dir)</td></tr>
-<tr class="separator:a703fb9de92f963b199c17f69495c9629"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01e5394c9c654f5c39398903e91df4a4"><td class="memItemLeft" align="right" valign="top"><a id="a01e5394c9c654f5c39398903e91df4a4" name="a01e5394c9c654f5c39398903e91df4a4"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>findfile</b> (const char *filename, const char *mode)</td></tr>
 <tr class="separator:a01e5394c9c654f5c39398903e91df4a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97c551b88f148a6f77f49581baa47610"><td class="memItemLeft" align="right" valign="top"><a id="a97c551b88f148a6f77f49581baa47610" name="a97c551b88f148a6f77f49581baa47610"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>findzipfile</b> (const char *filename)</td></tr>
-<tr class="separator:a97c551b88f148a6f77f49581baa47610"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a583a46b7935133ab6144e93b661b3209"><td class="memItemLeft" align="right" valign="top"><a id="a583a46b7935133ab6144e93b661b3209" name="a583a46b7935133ab6144e93b661b3209"></a>
 <a class="el" href="structstream.html">stream</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>openrawfile</b> (const char *filename, const char *mode)</td></tr>
 <tr class="separator:a583a46b7935133ab6144e93b661b3209"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -509,27 +431,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>findzipfile</b> (cons
 <tr class="memitem:a36db9b4623ad1fb98e72911b4cb30b4f"><td class="memItemLeft" align="right" valign="top"><a id="a36db9b4623ad1fb98e72911b4cb30b4f" name="a36db9b4623ad1fb98e72911b4cb30b4f"></a>
 <a class="el" href="structstream.html">stream</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>openfile</b> (const char *filename, const char *mode)</td></tr>
 <tr class="separator:a36db9b4623ad1fb98e72911b4cb30b4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b11b7135c0177fad3e4978c0be3c52f"><td class="memItemLeft" align="right" valign="top"><a id="a4b11b7135c0177fad3e4978c0be3c52f" name="a4b11b7135c0177fad3e4978c0be3c52f"></a>
-<a class="el" href="structstream.html">stream</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>opentempfile</b> (const char *filename, const char *mode)</td></tr>
-<tr class="separator:a4b11b7135c0177fad3e4978c0be3c52f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a814c44ff527ee718b3f0f1ad19ca9aec"><td class="memItemLeft" align="right" valign="top"><a id="a814c44ff527ee718b3f0f1ad19ca9aec" name="a814c44ff527ee718b3f0f1ad19ca9aec"></a>
 <a class="el" href="structstream.html">stream</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>opengzfile</b> (const char *filename, const char *mode, <a class="el" href="structstream.html">stream</a> *file=nullptr, int level=Z_BEST_COMPRESSION)</td></tr>
 <tr class="separator:a814c44ff527ee718b3f0f1ad19ca9aec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9143e2a951ac81d907b9b17ac030ab4b"><td class="memItemLeft" align="right" valign="top"><a id="a9143e2a951ac81d907b9b17ac030ab4b" name="a9143e2a951ac81d907b9b17ac030ab4b"></a>
 <a class="el" href="structstream.html">stream</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>openutf8file</b> (const char *filename, const char *mode, <a class="el" href="structstream.html">stream</a> *file=nullptr)</td></tr>
 <tr class="separator:a9143e2a951ac81d907b9b17ac030ab4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2bda6f3e08c54952ec92c87c46cbec7"><td class="memItemLeft" align="right" valign="top"><a id="af2bda6f3e08c54952ec92c87c46cbec7" name="af2bda6f3e08c54952ec92c87c46cbec7"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>loadfile</b> (const char *fn, size_t *size, bool utf8=true)</td></tr>
-<tr class="separator:af2bda6f3e08c54952ec92c87c46cbec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65037bf9e2b60d0f70869d1ecff088ee"><td class="memItemLeft" align="right" valign="top"><a id="a65037bf9e2b60d0f70869d1ecff088ee" name="a65037bf9e2b60d0f70869d1ecff088ee"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>listdir</b> (const char *dir, bool rel, const char *ext, <a class="el" href="structvector.html">vector</a>&lt; char * &gt; &amp;files)</td></tr>
-<tr class="separator:a65037bf9e2b60d0f70869d1ecff088ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4af27b63135b15739954464eb1042847"><td class="memItemLeft" align="right" valign="top"><a id="a4af27b63135b15739954464eb1042847" name="a4af27b63135b15739954464eb1042847"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>listfiles</b> (const char *dir, const char *ext, <a class="el" href="structvector.html">vector</a>&lt; char * &gt; &amp;files)</td></tr>
-<tr class="separator:a4af27b63135b15739954464eb1042847"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a07c4cb9993ea791a1f1ca68f80bdeee8"><td class="memItemLeft" align="right" valign="top"><a id="a07c4cb9993ea791a1f1ca68f80bdeee8" name="a07c4cb9993ea791a1f1ca68f80bdeee8"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>listzipfiles</b> (const char *dir, const char *ext, <a class="el" href="structvector.html">vector</a>&lt; char * &gt; &amp;files)</td></tr>
-<tr class="separator:a07c4cb9993ea791a1f1ca68f80bdeee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a964bb01a7b515ae73bbbb96cd1cdfc22"><td class="memTemplParams" colspan="2"><a id="a964bb01a7b515ae73bbbb96cd1cdfc22" name="a964bb01a7b515ae73bbbb96cd1cdfc22"></a>
 template&lt;class T &gt; </td></tr>
 <tr class="memitem:a964bb01a7b515ae73bbbb96cd1cdfc22"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>putint_</b> (T &amp;p, int n)</td></tr>
@@ -549,36 +456,24 @@ template&lt;class T &gt; </td></tr>
 <tr class="memitem:a0d51f5671b91a82183db8e59dedebd07"><td class="memItemLeft" align="right" valign="top"><a id="a0d51f5671b91a82183db8e59dedebd07" name="a0d51f5671b91a82183db8e59dedebd07"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>putint</b> (<a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p, int n)</td></tr>
 <tr class="separator:a0d51f5671b91a82183db8e59dedebd07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc0cc620354f4276f67bc3b59eae8447"><td class="memItemLeft" align="right" valign="top"><a id="afc0cc620354f4276f67bc3b59eae8447" name="afc0cc620354f4276f67bc3b59eae8447"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>putint</b> (<a class="el" href="structvector.html">vector</a>&lt; uchar &gt; &amp;p, int n)</td></tr>
-<tr class="separator:afc0cc620354f4276f67bc3b59eae8447"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fde82047ad8a83ae8849dbc64b8cf35"><td class="memItemLeft" align="right" valign="top"><a id="a8fde82047ad8a83ae8849dbc64b8cf35" name="a8fde82047ad8a83ae8849dbc64b8cf35"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>getint</b> (<a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p)</td></tr>
 <tr class="separator:a8fde82047ad8a83ae8849dbc64b8cf35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01b18f4374707e9329fca65983ff5480"><td class="memItemLeft" align="right" valign="top"><a id="a01b18f4374707e9329fca65983ff5480" name="a01b18f4374707e9329fca65983ff5480"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>putuint</b> (<a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p, int n)</td></tr>
 <tr class="separator:a01b18f4374707e9329fca65983ff5480"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c5f78a7becafb158b0913a591d30967"><td class="memItemLeft" align="right" valign="top"><a id="a4c5f78a7becafb158b0913a591d30967" name="a4c5f78a7becafb158b0913a591d30967"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>putuint</b> (<a class="el" href="structvector.html">vector</a>&lt; uchar &gt; &amp;p, int n)</td></tr>
-<tr class="separator:a4c5f78a7becafb158b0913a591d30967"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8041381052e62c0bcb2001728701b240"><td class="memItemLeft" align="right" valign="top"><a id="a8041381052e62c0bcb2001728701b240" name="a8041381052e62c0bcb2001728701b240"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>getuint</b> (<a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p)</td></tr>
 <tr class="separator:a8041381052e62c0bcb2001728701b240"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a347404b1fadcfa5c4ec9f0cb1fd45b78"><td class="memItemLeft" align="right" valign="top"><a id="a347404b1fadcfa5c4ec9f0cb1fd45b78" name="a347404b1fadcfa5c4ec9f0cb1fd45b78"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>putfloat</b> (<a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p, float f)</td></tr>
 <tr class="separator:a347404b1fadcfa5c4ec9f0cb1fd45b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74b1f7ef2d862fe5a139577ea21dae19"><td class="memItemLeft" align="right" valign="top"><a id="a74b1f7ef2d862fe5a139577ea21dae19" name="a74b1f7ef2d862fe5a139577ea21dae19"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>putfloat</b> (<a class="el" href="structvector.html">vector</a>&lt; uchar &gt; &amp;p, float f)</td></tr>
-<tr class="separator:a74b1f7ef2d862fe5a139577ea21dae19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad54462a1326d3d1f8c69cb1b02049177"><td class="memItemLeft" align="right" valign="top"><a id="ad54462a1326d3d1f8c69cb1b02049177" name="ad54462a1326d3d1f8c69cb1b02049177"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>getfloat</b> (<a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p)</td></tr>
 <tr class="separator:ad54462a1326d3d1f8c69cb1b02049177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d6f6d8ad9928f98342abf496a21eb0a"><td class="memItemLeft" align="right" valign="top"><a id="a6d6f6d8ad9928f98342abf496a21eb0a" name="a6d6f6d8ad9928f98342abf496a21eb0a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>sendstring</b> (const char *t, <a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p)</td></tr>
 <tr class="separator:a6d6f6d8ad9928f98342abf496a21eb0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad80c71bfd9f400992354899f54c27853"><td class="memItemLeft" align="right" valign="top"><a id="ad80c71bfd9f400992354899f54c27853" name="ad80c71bfd9f400992354899f54c27853"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>sendstring</b> (const char *t, <a class="el" href="structvector.html">vector</a>&lt; uchar &gt; &amp;p)</td></tr>
-<tr class="separator:ad80c71bfd9f400992354899f54c27853"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e25b640aad775efd3a2346a5037a175"><td class="memItemLeft" align="right" valign="top"><a id="a7e25b640aad775efd3a2346a5037a175" name="a7e25b640aad775efd3a2346a5037a175"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>getstring</b> (char *t, <a class="el" href="structdatabuf.html">ucharbuf</a> &amp;p, size_t len)</td></tr>
 <tr class="separator:a7e25b640aad775efd3a2346a5037a175"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -605,9 +500,6 @@ constexpr double&#160;</td><td class="memItemRight" valign="bottom"><b>SQRT3</b>
 <tr class="memitem:a91dac9e74a2ca1f032c4fed741dc1639"><td class="memItemLeft" align="right" valign="top"><a id="a91dac9e74a2ca1f032c4fed741dc1639" name="a91dac9e74a2ca1f032c4fed741dc1639"></a>
 const int&#160;</td><td class="memItemRight" valign="bottom"><b>maxstrlen</b> = 260</td></tr>
 <tr class="separator:a91dac9e74a2ca1f032c4fed741dc1639"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c4897720c500ab5d0039382eb2ff31d"><td class="memItemLeft" align="right" valign="top"><a id="a2c4897720c500ab5d0039382eb2ff31d" name="a2c4897720c500ab5d0039382eb2ff31d"></a>
-const uchar&#160;</td><td class="memItemRight" valign="bottom"><b>cubectype</b> [256]</td></tr>
-<tr class="separator:a2c4897720c500ab5d0039382eb2ff31d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a870fd00202ed0c34721c7245d2c467a8"><td class="memItemLeft" align="right" valign="top"><a id="a870fd00202ed0c34721c7245d2c467a8" name="a870fd00202ed0c34721c7245d2c467a8"></a>
 string&#160;</td><td class="memItemRight" valign="bottom"><b>homedir</b></td></tr>
 <tr class="separator:a870fd00202ed0c34721c7245d2c467a8"><td class="memSeparator" colspan="2">&#160;</td></tr>

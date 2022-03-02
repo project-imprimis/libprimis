@@ -6,7 +6,6 @@ var searchData=
   ['sortless_3',['sortless',['../structsortless.html',1,'']]],
   ['sortnameless_4',['sortnameless',['../structsortnameless.html',1,'']]],
   ['stream_5',['stream',['../structstream.html',1,'']]],
-  ['streambuf_6',['streambuf',['../structstreambuf.html',1,'']]],
-  ['stringslice_7',['stringslice',['../structstringslice.html',1,'']]],
-  ['svec_8',['svec',['../structsvec.html',1,'']]]
+  ['stringslice_6',['stringslice',['../structstringslice.html',1,'']]],
+  ['svec_7',['svec',['../structsvec.html',1,'']]]
 ];
