@@ -759,11 +759,20 @@ void Shader::cleanup(bool full)
     if(standard || full)
     {
         type = Shader_Invalid;
-        DELETEA(vsstr);
-        DELETEA(psstr);
-        DELETEA(defer);
+
+        delete[] vsstr;
+        delete[] psstr;
+        delete[] defer;
+
+        vsstr = nullptr;
+        psstr = nullptr;
+        defer = nullptr;
+
         variants.setsize(0);
-        DELETEA(variantrows);
+
+        delete[] variantrows;
+        variantrows = nullptr;
+
         defaultparams.setsize(0);
         attriblocs.setsize(0);
         fragdatalocs.setsize(0);
@@ -842,7 +851,10 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     s.name = rname;
     s.vsstr = newstring(vs);
     s.psstr = newstring(ps);
-    DELETEA(s.defer);
+
+    delete[] s.defer;
+    s.defer = nullptr;
+
     s.type = type & ~(Shader_Invalid | Shader_Deferred);
     s.variantshader = variant;
     s.standard = standardshaders;
@@ -857,13 +869,15 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
             col = 0;
         if(!vs[0] || std::sscanf(vs, "%d , %d", &row, &col) >= 1)
         {
-            DELETEA(s.vsstr);
+            delete[] s.vsstr;
+            s.vsstr = nullptr;
             s.reusevs = !vs[0] ? variant : variant->getvariant(col, row);
         }
         row = col = 0;
         if(!ps[0] || std::sscanf(ps, "%d , %d", &row, &col) >= 1)
         {
-            DELETEA(s.psstr);
+            delete[] s.psstr;
+            s.psstr = nullptr;
             s.reuseps = !ps[0] ? variant : variant->getvariant(col, row);
         }
     }
@@ -1221,7 +1235,7 @@ void defershader(int *type, const char *name, const char *contents)
     char *rname = exists ? exists->name : newstring(name);
     Shader &s = shaders[rname];
     s.name = rname;
-    DELETEA(s.defer);
+    delete[] s.defer;
     s.defer = newstring(contents);
     s.type = Shader_Deferred | (*type & ~Shader_Invalid);
     s.standard = standardshaders;
@@ -1251,7 +1265,8 @@ void Shader::force()
 
     if(deferred())
     {
-        DELETEA(defer);
+        delete[] defer;
+        defer = nullptr;
         type = Shader_Invalid;
     }
 }
