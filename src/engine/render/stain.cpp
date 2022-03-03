@@ -72,14 +72,15 @@ class stainbuffer
 
         ~stainbuffer()
         {
-            DELETEA(verts);
+            delete[] verts;
         }
 
         void init(int tris)
         {
             if(verts)
             {
-                DELETEA(verts);
+                delete[] verts;
+                verts = nullptr;
                 maxverts = startvert = endvert = lastvert = availverts = 0;
             }
             if(tris)
@@ -254,7 +255,7 @@ class stainrenderer
 
         ~stainrenderer()
         {
-            DELETEA(stains);
+            delete[] stains;
         }
 
         bool usegbuffer() const
@@ -266,7 +267,7 @@ class stainrenderer
         {
             if(stains)
             {
-                DELETEA(stains);
+                delete[] stains; //do not need to set null, immediately reassigned below
                 maxstains = startstain = endstain = 0;
             }
             stains = new staininfo[tris];
