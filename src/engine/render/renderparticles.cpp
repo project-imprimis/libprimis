@@ -797,8 +797,8 @@ struct varenderer : partrenderer
 
     void init(int n)
     {
-        DELETEA(parts);
-        DELETEA(verts);
+        delete[] parts;
+        delete[] verts;
         parts = new particle[n];
         verts = new partvert[n*4];
         maxparts = n;
@@ -1121,14 +1121,16 @@ namespace sphere
         }
         gle::bindvbo(vbuf);
         glBufferData(GL_ARRAY_BUFFER, numverts*sizeof(vert), verts, GL_STATIC_DRAW);
-        DELETEA(verts);
+        delete[] verts;
+        verts = nullptr;
         if(!ebuf)
         {
             glGenBuffers(1, &ebuf);
         }
         gle::bindebo(ebuf);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
-        DELETEA(indices);
+        delete[] indices;
+        indices = nullptr;
     }
 
     void cleanup()
