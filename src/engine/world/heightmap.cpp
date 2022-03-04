@@ -43,12 +43,12 @@ namespace hmap
     }
     COMMAND(hmapselect, "");
 
-    bool isheightmap(int o, int d, bool empty, cube *c)
+    bool isheightmap(int o, int d, bool empty, cube &c)
     {
         return havesel ||
-            (empty && c->isempty()) ||
+            (empty && c.isempty()) ||
             textures.empty() ||
-            textures.find(c->texture[o]) >= 0;
+            textures.find(c.texture[o]) >= 0;
     }
     //max brush consts: number of cubes on end that can be heightmap brushed at once
     static constexpr int maxbrush  = 64,
@@ -128,7 +128,7 @@ namespace hmap
             forcemip(*c, false);
         }
         c->discardchildren(true);
-        if(!isheightmap(sel.orient, d, true, c))
+        if(!isheightmap(sel.orient, d, true, *c))
         {
             return nullptr;
         }
