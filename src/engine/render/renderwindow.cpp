@@ -216,10 +216,14 @@ void setbackgroundinfo(const char *caption = nullptr, Texture *mapshot = nullptr
     copystring(backgroundmapname, mapname ? mapname : "");
     if(mapinfo != backgroundmapinfo)
     {
-        DELETEA(backgroundmapinfo);
+        delete[] backgroundmapinfo;
         if(mapinfo)
         {
             backgroundmapinfo = newstring(mapinfo);
+        }
+        else
+        {
+            backgroundmapinfo = nullptr;
         }
     }
 }
