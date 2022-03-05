@@ -251,11 +251,11 @@ struct Shader
 
     ~Shader()
     {
-        DELETEA(name);
-        DELETEA(vsstr);
-        DELETEA(psstr);
-        DELETEA(defer);
-        DELETEA(variantrows);
+        delete[] name;
+        delete[] vsstr;
+        delete[] psstr;
+        delete[] defer;
+        delete[] variantrows;
     }
 
     void allocparams(Slot *slot = nullptr);
