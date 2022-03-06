@@ -482,7 +482,7 @@ namespace hmap
 
 static bool haschanged = false;
 
-void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor, int size)
+static void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const ivec &cor, int size)
 {
     LOOP_OCTA_BOX(cor, size, bbmin, bbmax)
     {
