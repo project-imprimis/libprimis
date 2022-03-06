@@ -1987,14 +1987,16 @@ namespace lightsphere
         }
         gle::bindvbo(vbuf);
         glBufferData(GL_ARRAY_BUFFER, numverts*sizeof(vec), verts, GL_STATIC_DRAW);
-        DELETEA(verts);
+        delete[] verts;
+        verts = nullptr;
         if(!ebuf)
         {
             glGenBuffers(1, &ebuf);
         }
         gle::bindebo(ebuf);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices*sizeof(GLushort), indices, GL_STATIC_DRAW);
-        DELETEA(indices);
+        delete[] indices;
+        indices = nullptr;
     }
 
     void cleanup()
