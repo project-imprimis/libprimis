@@ -715,6 +715,36 @@ bool mmcollide(physent *d, const vec &dir, float cutoff, octaentities &oc) // co
     return false;
 }
 
+static bool checkside(physent &d, int side, const vec &dir, const int visible, const float cutoff, float distval, float dotval, float margin, vec normal, vec &collidewall, float &bestdist)
+{
+    if(visible&(1<<side))
+    {
+        float dist = distval;
+        if(dist > 0)
+        {
+            return false;
+        }
+        if(dist <= bestdist)
+        {
+            return true;
+        }
+        if(!dir.iszero())
+        {
+            if(dotval >= -cutoff*dir.magnitude())
+            {
+                return true;
+            }
+            if(d.type==PhysEnt_Player && dotval < 0 && dist < margin)
+            {
+                return true;
+            }
+        }
+        collidewall = normal;
+        bestdist = dist;
+    }
+    return true;
+}
+
 template<class E>
 static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with solid cube geometry
 {
@@ -727,42 +757,18 @@ static bool fuzzycollidesolid(physent *d, const vec &dir, float cutoff, const cu
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
-//==================================================================== CHECKSIDE
-    #define CHECKSIDE(side, distval, dotval, margin, normal) \
-        if(visible&(1<<side)) \
-        { \
-            do \
-            { \
-                float dist = distval; \
-                if(dist > 0) \
-                { \
-                    return false; \
-                } \
-                if(dist <= bestdist) \
-                { \
-                    continue; \
-                } \
-                if(!dir.iszero()) \
-                { \
-                    if(dotval >= -cutoff*dir.magnitude()) \
-                    { \
-                        continue; \
-                    } \
-                    if(d->type==PhysEnt_Player && dotval < 0 && dist < margin) \
-                    { \
-                        continue; \
-                    } \
-                } \
-                collidewall = normal; \
-                bestdist = dist; \
-            } while(0); \
-        }
-    CHECKSIDE(Orient_Left, co.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(Orient_Right, d->o.x - d->radius - (co.x + size), dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(Orient_Back, co.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(Orient_Front, d->o.y - d->radius - (co.y + size), dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(Orient_Bottom, co.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(Orient_Top, d->o.z - d->eyeheight - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+
+    //if any of these checks are false (NAND of all of these checks)
+    if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - (d->o.x + d->radius), -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Right, dir, visible, cutoff, d->o.x - d->radius - (co.x + size), dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Back, dir, visible, cutoff, co.y - (d->o.y + d->radius), -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Front, dir, visible, cutoff, d->o.y - d->radius - (co.y + size), dir.y, -d->radius, vec(0, 1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Bottom, dir, visible, cutoff, co.z - (d->o.z + d->aboveeye), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), collidewall, bestdist)
+       && checkside(*d, Orient_Top, dir, visible, cutoff, d->o.z - d->eyeheight - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), collidewall, bestdist))
+       )
+    {
+        return false;
+    }
     if(collidewall.iszero())
     {
         collideinside++;
@@ -823,12 +829,17 @@ static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const c
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = forceclipplanes(c, co, size, p);
-    CHECKSIDE(Orient_Left,   p.o.x - p.r.x - (d->o.x + d->radius),   -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(Orient_Right,  d->o.x - d->radius - (p.o.x + p.r.x),    dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(Orient_Back,   p.o.y - p.r.y - (d->o.y + d->radius),   -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(Orient_Front,  d->o.y - d->radius - (p.o.y + p.r.y),    dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(Orient_Bottom, p.o.z - p.r.z - (d->o.z + d->aboveeye), -dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(Orient_Top,    d->o.z - d->eyeheight - (p.o.z + p.r.z), dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+
+    if(!( checkside(*d, Orient_Left, dir, visible, cutoff,   p.o.x - p.r.x - (d->o.x + d->radius),   -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Right, dir, visible, cutoff,  d->o.x - d->radius - (p.o.x + p.r.x),    dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Back, dir, visible, cutoff,   p.o.y - p.r.y - (d->o.y + d->radius),   -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Front, dir, visible, cutoff,  d->o.y - d->radius - (p.o.y + p.r.y),    dir.y, -d->radius, vec(0, 1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Bottom, dir, visible, cutoff, p.o.z - p.r.z - (d->o.z + d->aboveeye), -dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), collidewall, bestdist)
+       && checkside(*d, Orient_Top, dir, visible, cutoff,    d->o.z - d->eyeheight - (p.o.z + p.r.z), dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), collidewall, bestdist))
+       )
+    {
+        return false;
+    }
 
     E entvol(d);
     int bestplane = -1;
@@ -899,12 +910,18 @@ static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cub
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = !(c.visible&0x80) || d->type==PhysEnt_Player ? c.visible : 0xFF;
-    CHECKSIDE(Orient_Left, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(Orient_Right, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(Orient_Back, co.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(Orient_Front, entvol.back() - (co.y + size), dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(Orient_Bottom, co.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(Orient_Top, entvol.bottom() - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+
+    if(!( checkside(*d, Orient_Left, dir, visible, cutoff, co.x - entvol.right(), -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Right, dir, visible, cutoff, entvol.left() - (co.x + size), dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Back, dir, visible, cutoff, co.y - entvol.front(), -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Front, dir, visible, cutoff, entvol.back() - (co.y + size), dir.y, -d->radius, vec(0, 1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Bottom, dir, visible, cutoff, co.z - entvol.top(), -dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), collidewall, bestdist)
+       && checkside(*d, Orient_Top, dir, visible, cutoff, entvol.bottom() - (co.z + size), dir.z, d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), collidewall, bestdist))
+      )
+    {
+        return false;
+    }
+
     if(collidewall.iszero())
     {
         collideinside++;
@@ -931,12 +948,16 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
     collidewall = vec(0, 0, 0);
     float bestdist = -1e10f;
     int visible = forceclipplanes(c, co, size, p);
-    CHECKSIDE(Orient_Left, p.o.x - p.r.x - entvol.right(),  -dir.x, -d->radius, vec(-1, 0, 0));
-    CHECKSIDE(Orient_Right, entvol.left() - (p.o.x + p.r.x), dir.x, -d->radius, vec(1, 0, 0));
-    CHECKSIDE(Orient_Back, p.o.y - p.r.y - entvol.front(),  -dir.y, -d->radius, vec(0, -1, 0));
-    CHECKSIDE(Orient_Front, entvol.back() - (p.o.y + p.r.y), dir.y, -d->radius, vec(0, 1, 0));
-    CHECKSIDE(Orient_Bottom, p.o.z - p.r.z - entvol.top(),  -dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1));
-    CHECKSIDE(Orient_Top, entvol.bottom() - (p.o.z + p.r.z), dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1));
+    if(!( checkside(*d, Orient_Left, dir, visible, cutoff, p.o.x - p.r.x - entvol.right(),  -dir.x, -d->radius, vec(-1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Right, dir, visible, cutoff, entvol.left() - (p.o.x + p.r.x), dir.x, -d->radius, vec(1, 0, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Back, dir, visible, cutoff, p.o.y - p.r.y - entvol.front(),  -dir.y, -d->radius, vec(0, -1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Front, dir, visible, cutoff, entvol.back() - (p.o.y + p.r.y), dir.y, -d->radius, vec(0, 1, 0), collidewall, bestdist)
+       && checkside(*d, Orient_Bottom, dir, visible, cutoff, p.o.z - p.r.z - entvol.top(),  -dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/4.0f, vec(0, 0, -1), collidewall, bestdist)
+       && checkside(*d, Orient_Top, dir, visible, cutoff, entvol.bottom() - (p.o.z + p.r.z), dir.z,  d->zmargin-(d->eyeheight+d->aboveeye)/3.0f, vec(0, 0, 1), collidewall, bestdist))
+      )
+    {
+        return false;
+    }
 
     int bestplane = -1;
     for(int i = 0; i < p.size; ++i)
@@ -983,8 +1004,6 @@ static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cu
     return true;
 }
 
-#undef CHECKSIDE
-//==============================================================================
 static bool cubecollide(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size, bool solid)
 {
     switch(d->collidetype)
