@@ -40,9 +40,9 @@ clipplanes &cubeworld::getclipbounds(const cube &c, const ivec &o, int size, int
     return p;
 }
 
-static clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent *d)
+static clipplanes &getclipbounds(const cube &c, const ivec &o, int size, physent &d)
 {
-    int offset = !(c.visible&0x80) || d->type==PhysEnt_Player ? 0 : 1;
+    int offset = !(c.visible&0x80) || d.type==PhysEnt_Player ? 0 : 1;
     return rootworld.getclipbounds(c, o, size, offset);
 }
 
@@ -813,7 +813,7 @@ static bool clampcollide(const clipplanes &p, const E &entvol, const plane &w, c
 template<class E>
 static bool fuzzycollideplanes(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
 {
-    clipplanes &p = getclipbounds(c, co, size, d);
+    clipplanes &p = getclipbounds(c, co, size, *d);
 
     if(std::fabs(d->o.x - p.o.x) > p.r.x + d->radius || std::fabs(d->o.y - p.o.y) > p.r.y + d->radius ||
        d->o.z + d->aboveeye < p.o.z - p.r.z || d->o.z - d->eyeheight > p.o.z + p.r.z)
@@ -916,7 +916,7 @@ static bool cubecollidesolid(physent *d, const vec &dir, float cutoff, const cub
 template<class E>
 static bool cubecollideplanes(physent *d, const vec &dir, float cutoff, const cube &c, const ivec &co, int size) // collide with deformed cube geometry
 {
-    clipplanes &p = getclipbounds(c, co, size, d);
+    clipplanes &p = getclipbounds(c, co, size, *d);
     if(std::fabs(d->o.x - p.o.x) > p.r.x + d->radius || std::fabs(d->o.y - p.o.y) > p.r.y + d->radius ||
        d->o.z + d->aboveeye < p.o.z - p.r.z || d->o.z - d->eyeheight > p.o.z + p.r.z)
     {
