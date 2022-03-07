@@ -79,17 +79,11 @@ static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
  */
 static vertcommands<obj> objcommands;
 
-static model *loadmodel_md5(const char *filename)
-{
-    return new md5(filename);
-}
-static int dummy_md5 = addmodeltype((MDL_MD5), loadmodel_md5);
+// this dummy variable only exists to call addmodeltype() before game's main()
+static int dummy_md5 = addmodeltype((MDL_MD5), +[] (const char *filename) -> model* { return new md5(filename); });
 
-static model *loadmodel_obj(const char *filename)
-{
-    return new obj(filename);
-}
-static int dummy_obj = addmodeltype((MDL_OBJ), loadmodel_obj);
+// this dummy variable only exists to call addmodeltype() before game's main()
+static int dummy_obj = addmodeltype((MDL_OBJ), +[] (const char *filename) -> model* { return new obj(filename); });
 
 static void checkmdl()
 {
