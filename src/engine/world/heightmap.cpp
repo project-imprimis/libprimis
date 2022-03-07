@@ -411,51 +411,60 @@ namespace hmap
 
 #undef DIAGONAL_RIPPLE
 //==============================================================================
-//=================================================================== LOOP_BRUSH
-#define LOOP_BRUSH(i) for(int x=bmx; x<=bnx+i; x++) for(int y=bmy; y<=bny+i; y++)
 
     void paint()
     {
-        LOOP_BRUSH(1)
-            map[x][y] -= dr * brush[x][y];
+        for(int x=bmx; x<=bnx+1; x++)
+        {
+            for(int y=bmy; y<=bny+1; y++)
+            {
+                map[x][y] -= dr * brush[x][y];
+            }
+        }
     }
 
     void smooth()
     {
         int sum, div;
-        LOOP_BRUSH(-2)
+        for(int x=bmx; x<=bnx-2; x++)
         {
-            sum = 0;
-            div = 9;
-            for(int i = 0; i < 3; ++i)
+            for(int y=bmy; y<=bny-2; y++)
             {
-                for(int j = 0; j < 3; ++j)
+                sum = 0;
+                div = 9;
+                for(int i = 0; i < 3; ++i)
                 {
-                    if(flags[x+i][y+j] & mapped)
+                    for(int j = 0; j < 3; ++j)
                     {
-                        sum += map[x+i][y+j];
-                    }
-                    else
-                    {
-                        div--;
+                        if(flags[x+i][y+j] & mapped)
+                        {
+                            sum += map[x+i][y+j];
+                        }
+                        else
+                        {
+                            div--;
+                        }
                     }
                 }
-            }
-            if(div)
-            {
-                map[x+1][y+1] = sum / div;
+                if(div)
+                {
+                    map[x+1][y+1] = sum / div;
+                }
             }
         }
     }
 
     void rippleandset()
     {
-        LOOP_BRUSH(0)
-            ripple(x, y, gz, false);
+        for(int x=bmx; x<=bnx; x++)
+        {
+            for(int y=bmy; y<=bny; y++)
+            {
+                ripple(x, y, gz, false);
+            }
+        }
     }
 
-#undef LOOP_BRUSH
-//==============================================================================
     void run(int dir, int mode)
     {
         d  = DIMENSION(sel.orient);
