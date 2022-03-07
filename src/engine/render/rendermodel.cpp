@@ -132,7 +132,8 @@ COMMAND(mdlellipsecollide, "i");
 static void mdltricollide(char *collide)
 {
     checkmdl();
-    DELETEA(loadingmodel->collidemodel);
+    delete[] loadingmodel->collidemodel;
+    loadingmodel->collidemodel = nullptr;
     char *end = nullptr;
     int val = strtol(collide, &end, 0);
     if(*end)
