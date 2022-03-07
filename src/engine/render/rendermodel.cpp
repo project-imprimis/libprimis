@@ -79,19 +79,18 @@ static int addmodeltype(int type, model *(__cdecl *loader)(const char *))
  */
 static vertcommands<obj> objcommands;
 
-//==================================================================== MODELTYPE
-#define MODELTYPE(modeltype, modelclass) \
-    static model *loadmodel_##modelclass(const char *filename) \
-    { \
-        return new modelclass(filename); \
-    } \
-static int dummy_##modelclass = addmodeltype((modeltype), loadmodel_##modelclass);
+static model *loadmodel_md5(const char *filename)
+{
+    return new md5(filename);
+}
+static int dummy_md5 = addmodeltype((MDL_MD5), loadmodel_md5);
 
-MODELTYPE(MDL_MD5, md5);
-MODELTYPE(MDL_OBJ, obj);
+static model *loadmodel_obj(const char *filename)
+{
+    return new obj(filename);
+}
+static int dummy_obj = addmodeltype((MDL_OBJ), loadmodel_obj);
 
-#undef MODELTYPE
-//==============================================================================
 static void checkmdl()
 {
     if(!loadingmodel)
