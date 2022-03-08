@@ -1162,6 +1162,7 @@ static int clipfacevecx(const ivec2 &o, const ivec2 &dir, int cx, int cy, int si
     return 1;
 }
 
+//param rvecs: an array of ivec2s
 static int clipfacevec(const ivec2 &o, const ivec2 &dir, int cx, int cy, int size, ivec2 *rvecs)
 {
     int r = 0;
