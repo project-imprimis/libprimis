@@ -15,7 +15,10 @@ struct font
     float bordermin, bordermax, outlinemin, outlinemax;
 
     font() : name(nullptr) {}
-    ~font() { DELETEA(name); }
+    ~font()
+    {
+        delete[] name;
+    }
 };
 
 #define FONTH (curfont->scale)
