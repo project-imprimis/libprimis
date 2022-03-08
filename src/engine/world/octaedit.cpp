@@ -1083,7 +1083,7 @@ struct prefab : editinfo
     prefab() : name(nullptr), ebo(0), vbo(0), numtris(0), numverts(0) {}
     ~prefab()
     {
-        DELETEA(name);
+        delete[] name;
         if(copy)
         {
             freeblock(copy);
