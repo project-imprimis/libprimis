@@ -1333,7 +1333,8 @@ struct gzstream : stream
             finishwriting();
         }
         stopwriting();
-        DELETEA(buf);
+        delete[] buf;
+        buf = nullptr;
         if(autoclose)
         {
             if(file)
