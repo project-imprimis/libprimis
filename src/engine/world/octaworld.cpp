@@ -208,7 +208,8 @@ void cube::discardchildren(bool fixtex, int depth)
                 faces[0] = facesolid;
             }
         }
-        DELETEA(children);
+        delete[] children;
+        children = nullptr;
         allocnodes--;
     }
 }
