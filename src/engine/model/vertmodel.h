@@ -36,7 +36,10 @@ struct vertmodel : animmodel
         AnimState as;
         int millis;
 
-        vbocacheentry() : vbuf(0) { as.cur.fr1 = as.prev.fr1 = -1; }
+        vbocacheentry() : vbuf(0)
+        {
+            as.cur.fr1 = as.prev.fr1 = -1;
+        }
     };
 
     struct vertmesh : Mesh
