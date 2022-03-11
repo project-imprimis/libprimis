@@ -506,13 +506,34 @@ namespace gle
         }
     }
 
-    void attribf(float x, float y) { attrib<float>(x, y); }
-    void attribf(float x, float y, float z) { attrib<float>(x, y, z); }
+    void attribf(float x, float y)
+    {
+        attrib<float>(x, y);
+    }
 
-    void attribub(uchar x, uchar y, uchar z, uchar w) { attrib<uchar>(x, y, z, w); }
+    void attribf(float x, float y, float z)
+    {
+        attrib<float>(x, y, z);
+    }
 
-    void attrib(const vec &v) { attrib<float>(v.x, v.y, v.z); }
-    void attrib(const vec &v, float w) { attrib<float>(v.x, v.y, v.z, w); }
-    void attrib(const vec2 &v) { attrib<float>(v.x, v.y); }
+    void attribub(uchar x, uchar y, uchar z, uchar w)
+    {
+        attrib<uchar>(x, y, z, w);
+    }
+
+    void attrib(const vec &v)
+    {
+        attrib<float>(v.x, v.y, v.z);
+    }
+
+    void attrib(const vec &v, float w)
+    {
+        attrib<float>(v.x, v.y, v.z, w);
+    }
+
+    void attrib(const vec2 &v)
+    {
+        attrib<float>(v.x, v.y);
+    }
 }
 
