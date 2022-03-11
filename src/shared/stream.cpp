@@ -483,7 +483,7 @@ char *path(char *s)
             }
             if(prevdir+1==curdir && prevdir[0]=='.')
             {
-                memmove(prevdir, curdir+1, std::strlen(curdir+1)+1);
+                std::memmove(prevdir, curdir+1, std::strlen(curdir+1)+1);
                 curdir = prevdir;
             }
             else if(curdir[1]=='.' && curdir[2]=='.' && curdir[3]==PATHDIV)
@@ -492,7 +492,7 @@ char *path(char *s)
                 {
                     continue;
                 }
-                memmove(prevdir, curdir+4, std::strlen(curdir+4)+1);
+                std::memmove(prevdir, curdir+4, std::strlen(curdir+4)+1);
                 if(prevdir-2 >= curpart && prevdir[-1]==PATHDIV)
                 {
                     prevdir -= 2;
@@ -1553,7 +1553,7 @@ struct utf8stream : stream
         {
             if(bufcarry > 0 && bufcarry < buflen)
             {
-                memmove(buf, &buf[bufcarry], buflen - bufcarry);
+                std::memmove(buf, &buf[bufcarry], buflen - bufcarry);
                 buflen -= bufcarry;
                 bufread = bufcarry = 0;
             }
@@ -1568,7 +1568,7 @@ struct utf8stream : stream
         bufcarry += decodeutf8(&buf[bufcarry], Buffer_Size-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
         if(carry > bufcarry && carry < buflen)
         {
-            memmove(&buf[bufcarry], &buf[carry], buflen - carry);
+            std::memmove(&buf[bufcarry], &buf[carry], buflen - carry);
             buflen -= carry - bufcarry;
         }
         return true;
