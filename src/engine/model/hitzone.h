@@ -105,8 +105,17 @@ class skelhitzone
 class skelzonekey
 {
     public:
-        skelzonekey() : blend(-1) { memset(bones, 0xFF, sizeof(bones)); }
-        skelzonekey(int bone) : blend(INT_MAX) { bones[0] = bone; memset(&bones[1], 0xFF, sizeof(bones)-1); }
+        skelzonekey() : blend(-1)
+        {
+            memset(bones, 0xFF, sizeof(bones));
+        }
+
+        skelzonekey(int bone) : blend(INT_MAX)
+        {
+            bones[0] = bone;
+            memset(&bones[1], 0xFF, sizeof(bones)-1);
+        }
+
         skelzonekey(skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
         {
             memset(bones, 0xFF, sizeof(bones));
