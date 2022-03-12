@@ -912,6 +912,42 @@ bool skelmodel::skeleton::shouldcleanup() const
     return numframes && (skelcache.empty() || gpuaccelerate()!=usegpuskel);
 }
 
+skelmodel::skelmeshgroup::~skelmeshgroup()
+{
+    if(skel)
+    {
+        if(skel->shared)
+        {
+            skel->users.removeobj(this);
+        }
+        else
+        {
+            if(skel)
+            {
+                delete skel;
+                skel = nullptr;
+            }
+        }
+    }
+    if(ebuf)
+    {
+        glDeleteBuffers(1, &ebuf);
+    }
+    for(int i = 0; i < maxblendcache; ++i)
+    {
+        delete[] blendcache[i].bdata;
+    }
+    for(int i = 0; i < maxvbocache; ++i)
+    {
+        if(vbocache[i].vbuf)
+        {
+            glDeleteBuffers(1, &vbocache[i].vbuf);
+        }
+    }
+    delete[] vdata;
+    deletehitdata();
+}
+
 void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
 {
     if(!vc.vbuf)

@@ -520,41 +520,7 @@ struct skelmodel : animmodel
             memset(numblends, 0, sizeof(numblends));
         }
 
-        virtual ~skelmeshgroup()
-        {
-            if(skel)
-            {
-                if(skel->shared)
-                {
-                    skel->users.removeobj(this);
-                }
-                else
-                {
-                    if(skel)
-                    {
-                        delete skel;
-                        skel = nullptr;
-                    }
-                }
-            }
-            if(ebuf)
-            {
-                glDeleteBuffers(1, &ebuf);
-            }
-            for(int i = 0; i < maxblendcache; ++i)
-            {
-                delete[] blendcache[i].bdata;
-            }
-            for(int i = 0; i < maxvbocache; ++i)
-            {
-                if(vbocache[i].vbuf)
-                {
-                    glDeleteBuffers(1, &vbocache[i].vbuf);
-                }
-            }
-            delete[] vdata;
-            deletehitdata();
-        }
+        virtual ~skelmeshgroup();
 
         void shareskeleton(const char *name);
         int findtag(const char *name);
