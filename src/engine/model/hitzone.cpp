@@ -409,6 +409,28 @@ skelbih::skelbih(skelmodel::skelmeshgroup *m, int numtris, tri *tris)
 
 //skelhitzone
 
+skelhitzone::skelhitzone() : numparents(0), numchildren(0), parents(nullptr), children(nullptr), center(0, 0, 0), radius(0), visited(-1), animcenter(0, 0, 0)
+{
+    blend = -1;
+    bih = nullptr;
+}
+
+skelhitzone::~skelhitzone()
+{
+    if(!numchildren)
+    {
+        if(bih)
+        {
+            delete bih;
+            bih = nullptr;
+        }
+    }
+    else
+    {
+        delete[] tris;
+    }
+}
+
 void skelhitzone::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, const dualquat *bdata2, int numblends, const vec &o, const vec &ray)
 {
     if(!numchildren)

@@ -79,27 +79,8 @@ class skelhitzone
             skelbih *bih;
         };
 
-        skelhitzone() : numparents(0), numchildren(0), parents(nullptr), children(nullptr), center(0, 0, 0), radius(0), visited(-1), animcenter(0, 0, 0)
-        {
-            blend = -1;
-            bih = nullptr;
-        }
-
-        ~skelhitzone()
-        {
-            if(!numchildren)
-            {
-                if(bih)
-                {
-                    delete bih;
-                    bih = nullptr;
-                }
-            }
-            else
-            {
-                delete[] tris;
-            }
-        }
+        skelhitzone();
+        ~skelhitzone();
 
         void intersect(skelmodel::skelmeshgroup *m,
                        skelmodel::skin *s,
