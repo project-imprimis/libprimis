@@ -161,7 +161,7 @@ class skelzonekey
                 {
                     if(n < bones[i])
                     {
-                        memmove(&bones[i+1], &bones[i], sizeof(bones) - (i+1));
+                        std::memmove(&bones[i+1], &bones[i], sizeof(bones) - (i+1));
                         bones[i] = n;
                     }
                     return;
