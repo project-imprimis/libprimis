@@ -721,12 +721,12 @@ namespace
         len = std::min(len, cmdspace);
         if(commandpos<0)
         {
-            memcpy(&commandbuf[cmdlen], str, len);
+            std::memcpy(&commandbuf[cmdlen], str, len);
         }
         else
         {
             std::memmove(&commandbuf[commandpos+len], &commandbuf[commandpos], cmdlen - commandpos);
-            memcpy(&commandbuf[commandpos], str, len);
+            std::memcpy(&commandbuf[commandpos], str, len);
             commandpos += len;
         }
         commandbuf[cmdlen + len] = '\0';
@@ -953,7 +953,7 @@ namespace
     {
         size_t slen = std::min(std::strlen(s), len);
         std::memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
-        memcpy(d, s, slen);
+        std::memcpy(d, s, slen);
         d[len-1] = 0;
         return d;
     }
