@@ -234,47 +234,14 @@ class skelhitdata
     public:
         int numblends;
         skelmodel::blendcacheentry blendcache;
-        skelhitdata() : numblends(0), numzones(0), rootzones(0), visited(0), zones(nullptr), links(nullptr), tris(nullptr) {}
-        ~skelhitdata()
-        {
-            delete[] zones;
-            delete[] links;
-            delete[] tris;
-            delete[] blendcache.bdata;
-        }
+        skelhitdata();
+        ~skelhitdata();
         void build(skelmodel::skelmeshgroup *g, const uchar *ids);
 
-        void propagate(skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2)
-        {
-            visited = 0;
-            for(int i = 0; i < numzones; ++i)
-            {
-                zones[i].visited = -1;
-                zones[i].propagate(m, bdata1, bdata2, numblends);
-            }
-        }
+        void propagate(skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2);
 
-        void cleanup()
-        {
-            blendcache.owner = -1;
-        }
-
-        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, dualquat *bdata2, const vec &o, const vec &ray)
-        {
-            if(++visited < 0)
-            {
-                visited = 0;
-                for(int i = 0; i < numzones; ++i)
-                {
-                    zones[i].visited = -1;
-                }
-            }
-            for(int i = numzones - rootzones; i < numzones; i++)
-            {
-                zones[i].visited = visited;
-                zones[i].intersect(m, s, bdata1, bdata2, numblends, o, ray);
-            }
-        }
+        void cleanup();
+        void intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, dualquat *bdata2, const vec &o, const vec &ray);
     private:
         int numzones, rootzones, visited;
         skelhitzone *zones;

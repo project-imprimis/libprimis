@@ -585,6 +585,50 @@ bool skelzonekey::hasbone(int n)
 
 //skelhitdata
 
+skelhitdata::skelhitdata() : numblends(0), numzones(0), rootzones(0), visited(0), zones(nullptr), links(nullptr), tris(nullptr)
+{
+}
+
+skelhitdata::~skelhitdata()
+{
+    delete[] zones;
+    delete[] links;
+    delete[] tris;
+    delete[] blendcache.bdata;
+}
+
+void skelhitdata::propagate(skelmodel::skelmeshgroup *m, const dualquat *bdata1, dualquat *bdata2)
+{
+    visited = 0;
+    for(int i = 0; i < numzones; ++i)
+    {
+        zones[i].visited = -1;
+        zones[i].propagate(m, bdata1, bdata2, numblends);
+    }
+}
+
+void skelhitdata::cleanup()
+{
+    blendcache.owner = -1;
+}
+
+void skelhitdata::intersect(skelmodel::skelmeshgroup *m, skelmodel::skin *s, const dualquat *bdata1, dualquat *bdata2, const vec &o, const vec &ray)
+{
+    if(++visited < 0)
+    {
+        visited = 0;
+        for(int i = 0; i < numzones; ++i)
+        {
+            zones[i].visited = -1;
+        }
+    }
+    for(int i = numzones - rootzones; i < numzones; i++)
+    {
+        zones[i].visited = visited;
+        zones[i].intersect(m, s, bdata1, bdata2, numblends, o, ray);
+    }
+}
+
 uchar skelhitdata::chooseid(skelmodel::skelmeshgroup *g, skelmodel::skelmesh *m, const skelmodel::tri &t, const uchar *ids)
 {
     int numused = 0;
