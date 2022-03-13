@@ -86,6 +86,17 @@ bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
     return !memcmp(&x, &y, sizeof(animmodel::shaderparams));
 }
 
+//animmodel
+
+animmodel::animmodel(const char *name) : model(name)
+{
+}
+
+animmodel::~animmodel()
+{
+    parts.deletecontents();
+}
+
 // AnimPos
 
 void animmodel::AnimPos::setframes(const animinfo &info)

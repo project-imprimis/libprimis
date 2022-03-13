@@ -493,14 +493,8 @@ class animmodel : public model
 
         vector<part *> parts;
 
-        animmodel(const char *name) : model(name)
-        {
-        }
-
-        ~animmodel()
-        {
-            parts.deletecontents();
-        }
+        animmodel(const char *name);
+        ~animmodel();
 
         void cleanup();
 
