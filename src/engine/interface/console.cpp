@@ -725,7 +725,7 @@ namespace
         }
         else
         {
-            memmove(&commandbuf[commandpos+len], &commandbuf[commandpos], cmdlen - commandpos);
+            std::memmove(&commandbuf[commandpos+len], &commandbuf[commandpos], cmdlen - commandpos);
             memcpy(&commandbuf[commandpos], str, len);
             commandpos += len;
         }
@@ -769,7 +769,7 @@ namespace
                     {
                         break;
                     }
-                    memmove(&commandbuf[commandpos], &commandbuf[commandpos+1], len - commandpos);
+                    std::memmove(&commandbuf[commandpos], &commandbuf[commandpos+1], len - commandpos);
                     resetcomplete();
                     if(commandpos>=len-1)
                     {
@@ -785,7 +785,7 @@ namespace
                     {
                         break;
                     }
-                    memmove(&commandbuf[i-1], &commandbuf[i], len - i + 1);
+                    std::memmove(&commandbuf[i-1], &commandbuf[i], len - i + 1);
                     resetcomplete();
                     if(commandpos>0)
                     {
@@ -952,7 +952,7 @@ namespace
     char *prependstring(char *d, const char *s, size_t len)
     {
         size_t slen = std::min(std::strlen(s), len);
-        memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
+        std::memmove(&d[slen], d, std::min(len - slen, std::strlen(d) + 1));
         memcpy(d, s, slen);
         d[len-1] = 0;
         return d;
@@ -1105,7 +1105,7 @@ namespace
             cmdlen = std::min(cmdlen, maxlen-1);
             if(cmdlen)
             {
-                memmove(s, cmdprefix, cmdlen);
+                std::memmove(s, cmdprefix, cmdlen);
             }
             copystring(&s[cmdlen], nextcomplete, maxlen-cmdlen);
             lastcomplete = newstring(nextcomplete);
