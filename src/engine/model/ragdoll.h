@@ -94,37 +94,8 @@ class ragdolldata
 
         vert *verts;
 
-        ragdolldata(ragdollskel *skel, float scale = 1)
-            : skel(skel),
-              millis(lastmillis),
-              collidemillis(0),
-              lastmove(lastmillis),
-              radius(0),
-              tris(new matrix3[skel->tris.size()]),
-              animjoints(!skel->animjoints || skel->joints.empty() ? nullptr : new matrix4x3[skel->joints.size()]),
-              reljoints(skel->reljoints.empty() ? nullptr : new dualquat[skel->reljoints.size()]),
-              verts(new vert[skel->verts.size()]),
-              collisions(0),
-              floating(0),
-              unsticks(INT_MAX),
-              timestep(0),
-              scale(scale)
-        {
-        }
-
-        ~ragdolldata()
-        {
-            delete[] verts;
-            delete[] tris;
-            if(animjoints)
-            {
-                delete[] animjoints;
-            }
-            if(reljoints)
-            {
-                delete[] reljoints;
-            }
-        }
+        ragdolldata(ragdollskel *skel, float scale = 1);
+        ~ragdolldata();
 
         void move(dynent *pl, float ts);
         void calcanimjoint(int i, const matrix4x3 &anim);

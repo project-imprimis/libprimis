@@ -136,6 +136,38 @@ void ragdollskel::addreljoint(int bone, int parent)
 }
 /*                  ragdolldata                   */
 
+ragdolldata::ragdolldata(ragdollskel *skel, float scale)
+    : skel(skel),
+      millis(lastmillis),
+      collidemillis(0),
+      lastmove(lastmillis),
+      radius(0),
+      tris(new matrix3[skel->tris.size()]),
+      animjoints(!skel->animjoints || skel->joints.empty() ? nullptr : new matrix4x3[skel->joints.size()]),
+      reljoints(skel->reljoints.empty() ? nullptr : new dualquat[skel->reljoints.size()]),
+      verts(new vert[skel->verts.size()]),
+      collisions(0),
+      floating(0),
+      unsticks(INT_MAX),
+      timestep(0),
+      scale(scale)
+{
+}
+
+ragdolldata::~ragdolldata()
+{
+    delete[] verts;
+    delete[] tris;
+    if(animjoints)
+    {
+        delete[] animjoints;
+    }
+    if(reljoints)
+    {
+        delete[] reljoints;
+    }
+}
+
 /*
     seed particle position = avg(modelview * base2anim * spherepos)
     mapped transform = invert(curtri) * origtrig
