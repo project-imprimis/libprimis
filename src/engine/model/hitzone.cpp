@@ -583,6 +583,70 @@ bool skelzonekey::hasbone(int n)
     return false;
 }
 
+int skelzonekey::numbones()
+{
+    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    {
+        if(bones[i] == 0xFF)
+        {
+            return i;
+        }
+    }
+    return sizeof(bones);
+}
+
+void skelzonekey::addbone(int n)
+{
+    for(int i = 0; i < static_cast<int>(sizeof(bones)); ++i)
+    {
+        if(n <= bones[i])
+        {
+            if(n < bones[i])
+            {
+                std::memmove(&bones[i+1], &bones[i], sizeof(bones) - (i+1));
+                bones[i] = n;
+            }
+            return;
+        }
+    }
+}
+
+void skelzonekey::addbones(skelmodel::skelmesh *m, const skelmodel::tri &t)
+{
+    skelmodel::skelmeshgroup *g = reinterpret_cast<skelmodel::skelmeshgroup *>(m->group);
+    int b0 = m->verts[t.vert[0]].blend,
+        b1 = m->verts[t.vert[1]].blend,
+        b2 = m->verts[t.vert[1]].blend;
+    const skelmodel::blendcombo &c0 = g->blendcombos[b0];
+    for(int i = 0; i < 4; ++i)
+    {
+        if(c0.weights[i])
+        {
+            addbone(c0.bones[i]);
+        }
+    }
+    if(b0 != b1 || b0 != b2)
+    {
+        const skelmodel::blendcombo &c1 = g->blendcombos[b1];
+        for(int i = 0; i < 4; ++i)
+        {
+            if(c1.weights[i])
+            {
+                addbone(c1.bones[i]);
+            }
+        }
+        const skelmodel::blendcombo &c2 = g->blendcombos[b2];
+        for(int i = 0; i < 4; ++i)
+        {
+            if(c2.weights[i]) addbone(c2.bones[i]);
+        }
+    }
+    else
+    {
+        blend = b0;
+    }
+}
+
 //skelhitdata
 
 skelhitdata::skelhitdata() : numblends(0), numzones(0), rootzones(0), visited(0), zones(nullptr), links(nullptr), tris(nullptr)
