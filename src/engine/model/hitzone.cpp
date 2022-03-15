@@ -524,6 +524,24 @@ bool skelhitzone::shellintersect(const vec &o, const vec &ray)
 }
 
 //skelzonekey
+
+skelzonekey::skelzonekey() : blend(-1)
+{
+    memset(bones, 0xFF, sizeof(bones));
+}
+
+skelzonekey::skelzonekey(int bone) : blend(INT_MAX)
+{
+    bones[0] = bone;
+    memset(&bones[1], 0xFF, sizeof(bones)-1);
+}
+
+skelzonekey::skelzonekey(skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
+{
+    memset(bones, 0xFF, sizeof(bones));
+    addbones(m, t);
+}
+
 bool skelzonekey::includes(const skelzonekey &o)
 {
     int j = 0;
