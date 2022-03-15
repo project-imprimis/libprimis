@@ -1355,7 +1355,7 @@ overflow:
         numoffset = 0;
     if(prefix)
     {
-        memcpy(buf, prefix, prefixlen);
+        std::memcpy(buf, prefix, prefixlen);
         offset += prefixlen;
         if(space && i)
         {
@@ -1366,12 +1366,12 @@ overflow:
     {
         if(v[j].type == Value_Integer || v[j].type == Value_Float)
         {
-            memcpy(&buf[offset], &numbuf[numoffset], vlen[j]);
+            std::memcpy(&buf[offset], &numbuf[numoffset], vlen[j]);
             numoffset += vlen[j];
         }
         else if(vlen[j])
         {
-            memcpy(&buf[offset], v[j].s, vlen[j]);
+            std::memcpy(&buf[offset], v[j].s, vlen[j]);
         }
         offset += vlen[j];
         if(j==i-1)
@@ -1554,7 +1554,7 @@ static void compilestr(vector<uint> &code, const char *word, int len, bool macro
         uint u;
     } end;
     end.u = 0;
-    memcpy(end.c, word + len - endlen, endlen);
+    std::memcpy(end.c, word + len - endlen, endlen);
     code.add(end.u);
 }
 
@@ -2182,7 +2182,7 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
     while(str < end)
     {
         int n = std::strcspn(str, "\r/\"@]\0");
-        memcpy(&buf[len], str, n);
+        std::memcpy(&buf[len], str, n);
         len += n;
         str += n;
         switch(*str)
@@ -2200,7 +2200,7 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
                 {
                     str++;
                 }
-                memcpy(&buf[len], start, str-start);
+                std::memcpy(&buf[len], start, str-start);
                 len += str-start;
                 break;
             }
@@ -2210,7 +2210,7 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
                     size_t comment = std::strcspn(str, "\n\0");
                     if (iscubepunct(str[2]))
                     {
-                        memcpy(&buf[len], str, comment);
+                        std::memcpy(&buf[len], str, comment);
                         len += comment;
                     }
                     str += comment;
@@ -3406,7 +3406,7 @@ uint *compilecode(const char *p)
     buf.reserve(64);
     compilemain(buf, p);
     uint *code = new uint[buf.length()];
-    memcpy(code, buf.getbuf(), buf.length()*sizeof(uint));
+    std::memcpy(code, buf.getbuf(), buf.length()*sizeof(uint));
     code[0] += 0x100;
     return code;
 }
@@ -3615,7 +3615,7 @@ static uint *copycode(const uint *src)
     size_t len = end - src;
     uint *dst = new uint[len + 1];
     *dst++ = Code_Start;
-    memcpy(dst, src, len*sizeof(uint));
+    std::memcpy(dst, src, len*sizeof(uint));
     return dst;
 }
 
@@ -4952,7 +4952,7 @@ void executeret(ident *id, tagval *args, int numargs, bool lookup, tagval &resul
                 if(numargs < id->numargs)
                 {
                     tagval buf[Max_Args];
-                    memcpy(buf, args, numargs*sizeof(tagval));
+                    std::memcpy(buf, args, numargs*sizeof(tagval));
                     callcommand(id, buf, numargs, lookup);
                 }
                 else
