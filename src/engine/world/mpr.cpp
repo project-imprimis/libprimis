@@ -15,6 +15,9 @@
 
 namespace mpr
 {
+
+    //CubePlanes
+
     vec CubePlanes::center() const
     {
         return p.o;
@@ -35,6 +38,8 @@ namespace mpr
         }
         return p.v[besti];
     }
+
+    //SolidCube
 
     vec SolidCube::center() const
     {
@@ -59,10 +64,14 @@ namespace mpr
         return p;
     }
 
+    //Ent
+
     vec Ent::center() const
     {
         return vec(ent->o.x, ent->o.y, ent->o.z + (ent->aboveeye - ent->eyeheight)/2);
     }
+
+    //EntOBB
 
     vec EntOBB::contactface(const vec &wn, const vec &wdir) const
     {
@@ -120,12 +129,16 @@ namespace mpr
     float EntOBB::bottom() const { return ent->o.z - ent->eyeheight; }
     float EntOBB::top()    const { return ent->o.z + ent->aboveeye; }
 
+    //EntFuzzy
+
     float EntFuzzy::left()   const { return ent->o.x - ent->radius; }
     float EntFuzzy::right()  const { return ent->o.x + ent->radius; }
     float EntFuzzy::back()   const { return ent->o.y - ent->radius; }
     float EntFuzzy::front()  const { return ent->o.y + ent->radius; }
     float EntFuzzy::bottom() const { return ent->o.z - ent->eyeheight; }
     float EntFuzzy::top()    const { return ent->o.z + ent->aboveeye; }
+
+    //EntCylinder
 
     vec EntCylinder::contactface(const vec &n, const vec &dir) const
     {
@@ -165,6 +178,8 @@ namespace mpr
         return p;
     }
 
+    //EntCapsule
+
     vec EntCapsule::supportpoint(const vec &n) const
     {
         vec p(ent->o);
@@ -180,6 +195,8 @@ namespace mpr
         return p;
     }
 
+    //EntEllipsoid
+
     vec EntEllipsoid::supportpoint(const vec &dir) const
     {
         vec p(ent->o);
@@ -189,6 +206,8 @@ namespace mpr
         p.z += (ent->aboveeye + ent->eyeheight)/2*(1 + n.z) - ent->eyeheight;
         return p;
     }
+
+    //Model
 
     Model::Model(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll) : o(ent), radius(radius)
     {
@@ -212,6 +231,8 @@ namespace mpr
     {
         return o;
     }
+
+    //ModelOBB
 
     vec ModelOBB::contactface(const vec &wn, const vec &wdir) const
     {
@@ -270,6 +291,8 @@ namespace mpr
         }
         return orient.transposedtransform(p).add(o);
     }
+
+    //ModelEllipse
 
     vec ModelEllipse::contactface(const vec &wn, const vec &wdir) const
     {
