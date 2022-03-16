@@ -100,23 +100,7 @@ namespace mpr
         vec o, radius;
         matrix3 orient;
 
-        Model(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll) : o(ent), radius(radius)
-        {
-            orient.identity();
-            if(roll)
-            {
-                orient.rotate_around_y(sincosmod360(roll));
-            }
-            if(pitch)
-            {
-                orient.rotate_around_x(sincosmod360(-pitch));
-            }
-            if(yaw)
-            {
-                orient.rotate_around_z(sincosmod360(-yaw));
-            }
-            o.add(orient.transposedtransform(center));
-        }
+        Model(const vec &ent, const vec &center, const vec &radius, int yaw, int pitch, int roll);
 
         vec center() const;
     };
