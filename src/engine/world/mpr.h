@@ -40,10 +40,7 @@ namespace mpr
     class EntOBB : public Ent
     {
         public:
-            EntOBB(physent *ent) : Ent(ent)
-            {
-                orient.setyaw(ent->yaw*RAD);
-            }
+            EntOBB(physent *ent);
 
             vec contactface(const vec &wn, const vec &wdir) const;
             vec localsupportpoint(const vec &ln) const;

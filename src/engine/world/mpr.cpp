@@ -73,6 +73,11 @@ namespace mpr
 
     //EntOBB
 
+    EntOBB::EntOBB(physent *ent) : Ent(ent)
+    {
+        orient.setyaw(ent->yaw*RAD);
+    }
+
     vec EntOBB::contactface(const vec &wn, const vec &wdir) const
     {
         vec n = orient.transform(wn).div(vec(ent->xradius, ent->yradius, (ent->aboveeye + ent->eyeheight)/2)),
