@@ -470,9 +470,9 @@ void radiancehints::renderslices()
                 std::swap(rhtex[i], rhtex[i+4]);
             }
             uint clearmasks[rhmaxsplits][(rhmaxgrid+2+31)/32];
-            memcpy(clearmasks, rhclearmasks[0], sizeof(clearmasks));
-            memcpy(rhclearmasks[0], rhclearmasks[1], sizeof(clearmasks));
-            memcpy(rhclearmasks[1], clearmasks, sizeof(clearmasks));
+            std::memcpy(clearmasks, rhclearmasks[0], sizeof(clearmasks));
+            std::memcpy(rhclearmasks[0], rhclearmasks[1], sizeof(clearmasks));
+            std::memcpy(rhclearmasks[1], clearmasks, sizeof(clearmasks));
         }
     }
 
@@ -845,7 +845,7 @@ void radiancehints::renderslices()
                 }
             }
         }
-        memcpy(rhclearmasks[0][i], clearmasks, sizeof(clearmasks));
+        std::memcpy(rhclearmasks[0][i], clearmasks, sizeof(clearmasks));
     }
     if(rhrect)
     {
