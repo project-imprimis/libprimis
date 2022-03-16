@@ -665,6 +665,37 @@ void skelzonekey::addbones(skelmodel::skelmesh *m, const skelmodel::tri &t)
     }
 }
 
+//skelzonebounds
+
+skelzonebounds::skelzonebounds() : owner(-1), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f)
+{
+}
+
+bool skelzonebounds::empty() const
+{
+    return bbmin.x > bbmax.x;
+}
+
+vec skelzonebounds::calccenter() const
+{
+    return vec(bbmin).add(bbmax).mul(0.5f);
+}
+
+void skelzonebounds::addvert(const vec &p)
+{
+    bbmin.x = std::min(bbmin.x, p.x);
+    bbmin.y = std::min(bbmin.y, p.y);
+    bbmin.z = std::min(bbmin.z, p.z);
+    bbmax.x = std::max(bbmax.x, p.x);
+    bbmax.y = std::max(bbmax.y, p.y);
+    bbmax.z = std::max(bbmax.z, p.z);
+}
+
+float skelzonebounds::calcradius() const
+{
+    return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
+}
+
 //skelhitdata
 
 skelhitdata::skelhitdata() : numblends(0), numzones(0), rootzones(0), visited(0), zones(nullptr), links(nullptr), tris(nullptr)

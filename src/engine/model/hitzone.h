@@ -126,31 +126,13 @@ class skelzonekey
 class skelzonebounds
 {
     public:
-        skelzonebounds() : owner(-1), bbmin(1e16f, 1e16f, 1e16f), bbmax(-1e16f, -1e16f, -1e16f) {}
+        skelzonebounds();
         int owner;
 
-        bool empty() const
-        {
-            return bbmin.x > bbmax.x;
-        }
-
-        vec calccenter() const
-        {
-            return vec(bbmin).add(bbmax).mul(0.5f);
-        }
-        void addvert(const vec &p)
-        {
-            bbmin.x = std::min(bbmin.x, p.x);
-            bbmin.y = std::min(bbmin.y, p.y);
-            bbmin.z = std::min(bbmin.z, p.z);
-            bbmax.x = std::max(bbmax.x, p.x);
-            bbmax.y = std::max(bbmax.y, p.y);
-            bbmax.z = std::max(bbmax.z, p.z);
-        }
-        float calcradius() const
-        {
-            return vec(bbmax).sub(bbmin).mul(0.5f).magnitude();
-        }
+        bool empty() const;
+        vec calccenter() const;
+        void addvert(const vec &p);
+        float calcradius() const;
     private:
         vec bbmin, bbmax;
 };
