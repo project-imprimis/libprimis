@@ -50,7 +50,7 @@ skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, cha
             if(sep)
             {
                 const char *end = std::strchr(skelanims[i].name, ':');
-                if(end && end - skelanims[i].name == len && !memcmp(name, skelanims[i].name, len))
+                if(end && end - skelanims[i].name == len && !std::memcmp(name, skelanims[i].name, len))
                 {
                     return &skelanims[i];
                 }
@@ -1613,7 +1613,7 @@ uchar *skelmodel::skelpart::sharepartmask(animpartmask *o)
     animpartmask *p = partmasks;
     for(; p; p = p->next)
     {
-        if(p->numbones==o->numbones && !memcmp(p->bones, o->bones, p->numbones))
+        if(p->numbones==o->numbones && !std::memcmp(p->bones, o->bones, p->numbones))
         {
             delete[] reinterpret_cast<uchar *>(o);
             return p->bones;
