@@ -43,7 +43,7 @@ uint hthash(const skelzonekey &k)
         uint i[3];
         uchar b[12];
     } conv;
-    memcpy(conv.b, k.bones, sizeof(conv.b));
+    std::memcpy(conv.b, k.bones, sizeof(conv.b));
     return conv.i[0]^conv.i[1]^conv.i[2];
 }
 
@@ -831,7 +831,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
             skelhitzone::tri &zt = zi.tris.add();
             zt.Mesh = i;
             zt.id = chooseid(g, m, t, ids);
-            memcpy(zt.vert, t.vert, sizeof(zt.vert));
+            std::memcpy(zt.vert, t.vert, sizeof(zt.vert));
         }
     }
     for(int i = 0; i < (g->skel->numbones); ++i)
@@ -971,7 +971,7 @@ void skelhitdata::build(skelmodel::skelmeshgroup *g, const uchar *ids)
     {
         skelhitzone &z = zones[i];
         skelzoneinfo &zi = *info[info.length()-1 - i];
-        memcpy(curtris, zi.tris.getbuf(), zi.tris.length()*sizeof(skelhitzone::tri));
+        std::memcpy(curtris, zi.tris.getbuf(), zi.tris.length()*sizeof(skelhitzone::tri));
         if(zi.key.blend >= numblends)
         {
             z.blend = zi.key.bones[0] + numblends;
