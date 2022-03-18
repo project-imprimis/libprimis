@@ -188,7 +188,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             animbones = new dualquat[(skel->numframes+animframes)*skel->numbones];
             if(skel->framebones)
             {
-                memcpy(animbones, skel->framebones, skel->numframes*skel->numbones*sizeof(dualquat));
+                std::memcpy(animbones, skel->framebones, skel->numframes*skel->numbones*sizeof(dualquat));
                 delete[] skel->framebones;
             }
             skel->framebones = animbones;
