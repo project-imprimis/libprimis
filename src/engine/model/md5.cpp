@@ -1,9 +1,10 @@
 
-/* obj.cpp: wavefront model support
+/* md5.cpp: md5 (id tech 4) model support
  *
- * Libprimis supports the Wavefront (obj) model format for simple static models.
- * This file contains the implementation functions, while the class for the obj
- * model type is located in obj.h.
+ * Libprimis supports the md5 (id Tech 4) skeletal model format for animated
+ * models. Ragdolls and animated models (such as players) use this model format.
+ * The implmentation for the md5 class is in this file, while the object is defined
+ * inside md5.h.
  */
 
 //includes copied from obj.cpp
