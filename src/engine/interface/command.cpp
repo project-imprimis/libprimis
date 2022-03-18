@@ -33,8 +33,6 @@ int identflags = 0;
 const char *sourcefile = nullptr,
            *sourcestr  = nullptr;
 
-NullVal nullval;
-
 vector<char> strbuf[4];
 int stridx = 0;
 
@@ -220,7 +218,7 @@ void cleancode(ident &id)
     }
 }
 
-tagval noret = nullval,
+tagval noret = NullVal(),
        *commandret = &noret;
 
 void clear_command()
@@ -514,7 +512,7 @@ static void pushalias(ident &id, identstack &stack)
 {
     if(id.type == Id_Alias && id.index >= Max_Args)
     {
-        pusharg(id, nullval, stack);
+        pusharg(id, NullVal(), stack);
         id.flags &= ~Idf_Unknown;
     }
 }
@@ -611,7 +609,7 @@ ident *writeident(const char *name, int flags)
     ident *id = newident(name, flags);
     if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
     {
-        pusharg(*id, nullval, aliasstack->argstack[id->index]);
+        pusharg(*id, NullVal(), aliasstack->argstack[id->index]);
         aliasstack->usedargs |= 1<<id->index;
     }
     return id;
@@ -4350,7 +4348,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 ident *id = identmap[op>>8];
                 if(!(aliasstack->usedargs&(1<<id->index)))
                 {
-                    pusharg(*id, nullval, aliasstack->argstack[id->index]);
+                    pusharg(*id, NullVal(), aliasstack->argstack[id->index]);
                     aliasstack->usedargs |= 1<<id->index;
                 }
                 args[numargs++].setident(id);
@@ -4364,7 +4362,7 @@ static const uint *runcode(const uint *code, tagval &result)
                                          || arg.type == Value_CString ? newident(arg.s, Idf_Unknown) : dummyident;
                 if(id->index < Max_Args && !(aliasstack->usedargs&(1<<id->index)))
                 {
-                    pusharg(*id, nullval, aliasstack->argstack[id->index]);
+                    pusharg(*id, NullVal(), aliasstack->argstack[id->index]);
                     aliasstack->usedargs |= 1<<id->index;
                 }
                 freearg(arg);

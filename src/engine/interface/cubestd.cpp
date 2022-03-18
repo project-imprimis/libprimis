@@ -1229,9 +1229,9 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         return;
     }
     identstack xstack, ystack;
-    pusharg(*x, nullval, xstack);
+    pusharg(*x, NullVal(), xstack);
     x->flags &= ~Idf_Unknown;
-    pusharg(*y, nullval, ystack);
+    pusharg(*y, NullVal(), ystack);
     y->flags &= ~Idf_Unknown;
     int totalunique = total,
         numunique = items.length();

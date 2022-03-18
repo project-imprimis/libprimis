@@ -346,8 +346,6 @@ struct NullVal : tagval
     NullVal() { setnull(); }
 };
 
-extern NullVal nullval;
-
 struct IdentLink
 {
     ident *id;
