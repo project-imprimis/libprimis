@@ -527,18 +527,18 @@ bool skelhitzone::shellintersect(const vec &o, const vec &ray)
 
 skelzonekey::skelzonekey() : blend(-1)
 {
-    memset(bones, 0xFF, sizeof(bones));
+    std::memset(bones, 0xFF, sizeof(bones));
 }
 
 skelzonekey::skelzonekey(int bone) : blend(INT_MAX)
 {
     bones[0] = bone;
-    memset(&bones[1], 0xFF, sizeof(bones)-1);
+    std::memset(&bones[1], 0xFF, sizeof(bones)-1);
 }
 
 skelzonekey::skelzonekey(skelmodel::skelmesh *m, const skelmodel::tri &t) : blend(-1)
 {
-    memset(bones, 0xFF, sizeof(bones));
+    std::memset(bones, 0xFF, sizeof(bones));
     addbones(m, t);
 }
 
@@ -582,7 +582,7 @@ void skelzonekey::subtract(const skelzonekey &o)
         } while(j < static_cast<int>(sizeof(o.bones)) && bones[i] > o.bones[j]);
         goto retry;
     }
-    memset(&bones[len], 0xFF, sizeof(bones) - len);
+    std::memset(&bones[len], 0xFF, sizeof(bones) - len);
 }
 
 bool skelzonekey::hasbone(int n)
