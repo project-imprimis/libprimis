@@ -254,15 +254,15 @@ const void obj::objmeshgroup::flushmesh(string meshname, vertmesh *curmesh, vect
     if(verts.length())
     {
         curmesh->verts = new vert[verts.length()];
-        memcpy(curmesh->verts, verts.getbuf(), verts.length()*sizeof(vert));
+        std::memcpy(curmesh->verts, verts.getbuf(), verts.length()*sizeof(vert));
         curmesh->tcverts = new tcvert[verts.length()];
-        memcpy(curmesh->tcverts, tcverts.getbuf(), tcverts.length()*sizeof(tcvert));
+        std::memcpy(curmesh->tcverts, tcverts.getbuf(), tcverts.length()*sizeof(tcvert));
     }
     curmesh->numtris = tris.length();
     if(tris.length())
     {
         curmesh->tris = new tri[tris.length()];
-        memcpy(curmesh->tris, tris.getbuf(), tris.length()*sizeof(tri));
+        std::memcpy(curmesh->tris, tris.getbuf(), tris.length()*sizeof(tri));
     }
     if(attrib.empty())
     {
