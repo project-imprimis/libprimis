@@ -33,7 +33,7 @@
 
 bool htcmp(const skelzonekey &x, const skelhitdata::skelzoneinfo &y)
 {
-    return !memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
+    return !std::memcmp(x.bones, y.key.bones, sizeof(x.bones)) && (x.bones[1] == 0xFF || x.blend == y.key.blend);
 }
 
 uint hthash(const skelzonekey &k)
