@@ -317,7 +317,7 @@ void gl_drawhud(int crosshairindex, void(* hud2d)())
                            curfps[3]  = { 0, 0, 0 };
                 if(totalmillis - lastfps >= statrate)
                 {
-                    memcpy(prevfps, curfps, sizeof(prevfps));
+                    std::memcpy(prevfps, curfps, sizeof(prevfps));
                     lastfps = totalmillis - (totalmillis%statrate);
                 }
                 int nextfps[3];
