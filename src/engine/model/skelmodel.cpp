@@ -443,7 +443,7 @@ void skelmodel::skeleton::applybonemask(ushort *mask, uchar *partmask, int parti
         return;
     }
     uchar *expansion = new uchar[numbones];
-    memset(expansion, *mask&Bonemask_Not ? 1 : 0, numbones);
+    std::memset(expansion, *mask&Bonemask_Not ? 1 : 0, numbones);
     while(*mask!=Bonemask_End)
     {
         expandbonemask(expansion, *mask&Bonemask_Bone, *mask&Bonemask_Not ? 0 : 1);
@@ -1042,7 +1042,7 @@ void skelmodel::skelmeshgroup::genvbo(vbocacheentry &vc)
                 htlen *= 2;
             }
             int *htdata = new int[htlen];
-            memset(htdata, -1, htlen*sizeof(int));
+            std::memset(htdata, -1, htlen*sizeof(int));
             GENVBOSTAT(vvertg);
             delete[] htdata;
         }
@@ -1629,7 +1629,7 @@ skelmodel::animpartmask *skelmodel::skelpart::newpartmask()
 {
     animpartmask *p = reinterpret_cast<animpartmask *>(new uchar[sizeof(animpartmask) + static_cast<skelmeshgroup *>(meshes)->skel->numbones-1]);
     p->numbones = (static_cast<skelmeshgroup *>(meshes))->skel->numbones;
-    memset(p->bones, 0, p->numbones);
+    std::memset(p->bones, 0, p->numbones);
     return p;
 }
 
