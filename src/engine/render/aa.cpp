@@ -438,7 +438,7 @@ namespace //internal functions incl. AA implementations
             return;
         }
         int edges[33];
-        memset(edges, -1, sizeof(edges));
+        std::memset(edges, -1, sizeof(edges));
         for(int i = 0; i < 2; ++i)
         {
             for(int j = 0; j < 2; ++j)
@@ -452,7 +452,7 @@ namespace //internal functions incl. AA implementations
                 }
             }
         }
-        memset(smaasearchdata, 0, sizeof(smaasearchdata));
+        std::memset(smaasearchdata, 0, sizeof(smaasearchdata));
         for(int y = 0; y < 33; ++y)
         {
             for(int x = 0; x < 33; ++x)
@@ -762,7 +762,7 @@ namespace //internal functions incl. AA implementations
         {
             return;
         }
-        memset(smaaareadata, 0, sizeof(smaaareadata));
+        std::memset(smaaareadata, 0, sizeof(smaaareadata));
         for(int offset = 0; offset < static_cast<int>(sizeof(offsetsortho)/sizeof(offsetsortho[0])); ++offset)
         {
             for(int pattern = 0; pattern < 16; ++pattern)
