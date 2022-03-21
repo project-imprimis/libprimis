@@ -436,7 +436,7 @@ static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum
             buf = new uchar[tw*th*bpp];
             for(int i = 0; i < th; ++i)
             {
-                memcpy(&buf[i*tw*bpp], &(const_cast<uchar *>(reinterpret_cast<const uchar *>(pixels)))[i*pitch], tw*bpp);
+                std::memcpy(&buf[i*tw*bpp], &(const_cast<uchar *>(reinterpret_cast<const uchar *>(pixels)))[i*pitch], tw*bpp);
             }
         }
     }
@@ -1571,7 +1571,7 @@ static void mergevslot(VSlot &dst, const VSlot &src, int diff, Slot *slot = null
                 SlotShaderParam &dp = dst.params[j];
                 if(sp.name == dp.name)
                 {
-                    memcpy(dp.val, sp.val, sizeof(dp.val));
+                    std::memcpy(dp.val, sp.val, sizeof(dp.val));
                     goto nextparam; //bail out of loop
                 }
             }
