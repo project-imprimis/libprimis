@@ -1672,7 +1672,7 @@ static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
         for(int i = 0; i < src.params.length(); i++)
         {
             const SlotShaderParam &sp = src.params[i], &dp = dst.params[i];
-            if(sp.name != dp.name || memcmp(sp.val, dp.val, sizeof(sp.val)))
+            if(sp.name != dp.name || std::memcmp(sp.val, dp.val, sizeof(sp.val)))
             {
                 return false;
             }
