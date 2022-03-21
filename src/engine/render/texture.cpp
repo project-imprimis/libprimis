@@ -1757,6 +1757,7 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
     buf.put(0xFF);
 }
 
+//used in iengine.h
 void packvslot(vector<uchar> &buf, int index)
 {
     if(vslots.inrange(index))
@@ -1769,6 +1770,7 @@ void packvslot(vector<uchar> &buf, int index)
     }
 }
 
+//used in iengine.h
 void packvslot(vector<uchar> &buf, const VSlot *vs)
 {
     if(vs)
