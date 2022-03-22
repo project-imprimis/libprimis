@@ -186,7 +186,7 @@ namespace
 
     void findvisiblevas()
     {
-        memset(vasort, 0, sizeof(vasort));
+        std::memset(vasort, 0, sizeof(vasort));
         findvisiblevas<false, false>(varoot);
         sortvisiblevas();
     }
@@ -1790,7 +1790,7 @@ namespace
 
         void clear()
         {
-            memset(table, -1, sizeof(table));
+            std::memset(table, -1, sizeof(table));
             chain.clear();
             verts.clear();
         }
@@ -2034,7 +2034,7 @@ namespace
         {
             return;
         }
-        memset(m.draws, -1, sizeof(m.draws));
+        std::memset(m.draws, -1, sizeof(m.draws));
 
         shadowmapping = m.type;
         shadoworigin = m.origin;
@@ -2153,10 +2153,10 @@ void vfc::visiblecubes(bool cull)
     }
     else
     {
-        memset(vfcP, 0, sizeof(vfcP));
+        std::memset(vfcP, 0, sizeof(vfcP));
         vfcDfog = farplane;
-        memset(vfcDnear, 0, sizeof(vfcDnear));
-        memset(vfcDfar, 0, sizeof(vfcDfar));
+        std::memset(vfcDnear, 0, sizeof(vfcDnear));
+        std::memset(vfcDfar, 0, sizeof(vfcDfar));
         visibleva = nullptr;
         for(int i = 0; i < valist.length(); i++)
         {
@@ -2705,7 +2705,7 @@ int findalphavas()
     alphafrontsx1 = alphafrontsy1 = alphabacksx1 = alphabacksy1 = alpharefractsx1 = alpharefractsy1 = 1;
     alphafrontsx2 = alphafrontsy2 = alphabacksx2 = alphabacksy2 = alpharefractsx2 = alpharefractsy2 = -1;
     alphabackvas = alpharefractvas = 0;
-    memset(alphatiles, 0, sizeof(alphatiles));
+    std::memset(alphatiles, 0, sizeof(alphatiles));
     for(vtxarray *va = visibleva; va; va = va->next)
     {
         if(va->alphabacktris || va->alphafronttris || va->refracttris)
@@ -3617,7 +3617,7 @@ void batchshadowmapmodels(bool skipmesh)
 
 void findshadowvas()
 {
-    memset(vasort, 0, sizeof(vasort));
+    std::memset(vasort, 0, sizeof(vasort));
     switch(shadowmapping)
     {
         case ShadowMap_Reflect:
