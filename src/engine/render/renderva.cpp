@@ -1877,7 +1877,7 @@ namespace
                 d.next = -1;
                 shadowdraws.push_back(d);
 
-                memcpy(indexes + offset, shadowtris[i].data(), shadowtris[i].size()*sizeof(ushort));
+                std::memcpy(indexes + offset, shadowtris[i].data(), shadowtris[i].size()*sizeof(ushort));
                 offset += shadowtris[i].size();
 
                 shadowtris[i].clear();
