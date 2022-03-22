@@ -57,7 +57,7 @@ namespace
         timer &t = timers.add();
         t.name = name;
         t.gpu = gpu;
-        memset(t.query, 0, sizeof(t.query));
+        std::memset(t.query, 0, sizeof(t.query));
         if(gpu)
         {
             glGenQueries(timer::Timer_MaxQuery, t.query);
