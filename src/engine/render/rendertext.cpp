@@ -299,7 +299,7 @@ void tabify(const char *str, int *numtabs)
     }
     int len = std::strlen(str);
     char *tstr = newstring(len + tabs);
-    memcpy(tstr, str, len);
+    std::memcpy(tstr, str, len);
     memset(&tstr[len], '\t', tabs);
     tstr[len+tabs] = '\0';
     stringret(tstr);
