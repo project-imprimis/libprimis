@@ -338,7 +338,7 @@ static int addlocalparam(Shader &s, const char *name, int loc, int size, GLenum 
     if(idx >= s.localparamremap.length())
     {
         int n = idx + 1 - s.localparamremap.length();
-        memset(s.localparamremap.pad(n), 0xFF, n);
+        std::memset(s.localparamremap.pad(n), 0xFF, n);
     }
     s.localparamremap[idx] = s.localparams.length();
     LocalShaderParamState &l = s.localparams.add();
@@ -356,7 +356,7 @@ GlobalShaderParamState *getglobalparam(const char *name)
     {
         param = &globalparams[name];
         param->name = name;
-        memset(param->buf, -1, sizeof(param->buf));
+        std::memset(param->buf, -1, sizeof(param->buf));
         param->version = -1;
     }
     return param;
@@ -965,16 +965,16 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         {
             continue;
         }
-        memset(vspragma, ' ', len);
+        std::memset(vspragma, ' ', len);
         vspragma += len;
         if(!std::strncmp(vspragma, "override", olen))
         {
-            memset(vspragma, ' ', olen);
+            std::memset(vspragma, ' ', olen);
             vspragma += olen;
             char *end = vspragma + std::strcspn(vspragma, "\n\r");
             end += std::strspn(end, "\n\r");
             int endlen = std::strcspn(end, "\n\r");
-            memset(end, ' ', endlen);
+            std::memset(end, ' ', endlen);
         }
     }
     for(char *pspragma = psv.getbuf();; pschanged = true)
@@ -988,16 +988,16 @@ static void gengenericvariant(Shader &s, const char *sname, const char *vs, cons
         {
             continue;
         }
-        memset(pspragma, ' ', len);
+        std::memset(pspragma, ' ', len);
         pspragma += len;
         if(!std::strncmp(pspragma, "override", olen))
         {
-            memset(pspragma, ' ', olen);
+            std::memset(pspragma, ' ', olen);
             pspragma += olen;
             char *end = pspragma + std::strcspn(pspragma, "\n\r");
             end += std::strspn(end, "\n\r");
             int endlen = std::strcspn(end, "\n\r");
-            memset(end, ' ', endlen);
+            std::memset(end, ' ', endlen);
         }
     }
     row += rowoffset;
