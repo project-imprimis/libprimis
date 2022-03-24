@@ -322,7 +322,7 @@ namespace gle
             }
             //void pointer warning!
             void *dst = glMapBufferRange_(GL_ARRAY_BUFFER, vbooffset, attribbuf.length(), GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT|GL_MAP_UNSYNCHRONIZED_BIT);
-            memcpy(dst, attribbuf.getbuf(), attribbuf.length());
+            std::memcpy(dst, attribbuf.getbuf(), attribbuf.length());
             glUnmapBuffer(GL_ARRAY_BUFFER);
         }
         else
