@@ -96,7 +96,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
     {
         size_t carry = std::min(len, static_cast<size_t>(Zip_DirectorySize-1)), next = std::min(sizeof(buf) - carry, static_cast<size_t>(offset - end));
         offset -= next;
-        memmove(&buf[next], buf, carry);
+        std::memmove(&buf[next], buf, carry);
         if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, next, f) != next)
         {
             return false;
