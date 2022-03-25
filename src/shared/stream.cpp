@@ -1766,7 +1766,7 @@ struct utf8stream : stream
                 break;
             }
             size_t n = std::min(len - next, bufcarry - bufread);
-            uchar *endline = static_cast<uchar *>(memchr(&buf[bufread], '\n', n));
+            uchar *endline = static_cast<uchar *>(std::memchr(&buf[bufread], '\n', n));
             if(endline)
             {
                 n = endline+1 - &buf[bufread];
