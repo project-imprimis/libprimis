@@ -106,6 +106,21 @@ static bool skeltriintersect(vec a, vec b, vec c, vec o,
     return true;
 }
 
+int skelbih::node::axis() const
+{
+    return child[0]>>14;
+}
+
+int skelbih::node::childindex(int which) const
+{
+    return child[which]&0x3FFF;
+}
+
+bool skelbih::node::isleaf(int which) const
+{
+    return (child[1]&(1<<(14+which)))!=0;
+}
+
 vec skelbih::calccenter() const
 {
     return vec(bbmin).add(bbmax).mul(0.5f);
