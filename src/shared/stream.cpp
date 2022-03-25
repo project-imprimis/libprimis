@@ -1734,7 +1734,7 @@ struct utf8stream : stream
                 break;
             }
             size_t n = std::min(len - next, bufcarry - bufread);
-            memcpy(&(static_cast<uchar *>(dst))[next], &buf[bufread], n);
+            std::memcpy(&(static_cast<uchar *>(dst))[next], &buf[bufread], n);
             next += n;
             bufread += n;
         }
@@ -1772,7 +1772,7 @@ struct utf8stream : stream
                 n = endline+1 - &buf[bufread];
                 len = next + n;
             }
-            memcpy(&(reinterpret_cast<uchar *>(dst))[next], &buf[bufread], n);
+            std::memcpy(&(reinterpret_cast<uchar *>(dst))[next], &buf[bufread], n);
             next += n;
             bufread += n;
         }
