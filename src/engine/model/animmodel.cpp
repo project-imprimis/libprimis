@@ -584,6 +584,22 @@ void animmodel::meshgroup::bindbones(void *wv, void *bv, int stride)
 
 //part
 
+animmodel::part::part(animmodel *model, int index) : model(model), index(index), meshes(nullptr), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
+{
+    for(int k = 0; k < maxanimparts; ++k)
+    {
+        anims[k] = nullptr;
+    }
+}
+
+animmodel::part::~part()
+{
+    for(int k = 0; k < maxanimparts; ++k)
+    {
+        delete[] anims[k];
+    }
+}
+
 void animmodel::part::cleanup()
 {
     if(meshes)

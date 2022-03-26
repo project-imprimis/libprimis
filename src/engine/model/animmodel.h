@@ -425,20 +425,8 @@ class animmodel : public model
                 int numanimparts;
                 float pitchscale, pitchoffset, pitchmin, pitchmax;
 
-                part(animmodel *model, int index = 0) : model(model), index(index), meshes(nullptr), numanimparts(1), pitchscale(1), pitchoffset(0), pitchmin(0), pitchmax(0)
-                {
-                    for(int k = 0; k < maxanimparts; ++k)
-                    {
-                        anims[k] = nullptr;
-                    }
-                }
-                virtual ~part()
-                {
-                    for(int k = 0; k < maxanimparts; ++k)
-                    {
-                        delete[] anims[k];
-                    }
-                }
+                part(animmodel *model, int index = 0);
+                virtual ~part();
 
                 virtual void cleanup();
                 void disablepitch();
