@@ -462,6 +462,21 @@ void animmodel::Mesh::fixqtangent(quat &q, float bt)
 
 //meshgroup
 
+animmodel::meshgroup::meshgroup() : shared(0), name(nullptr), next(nullptr)
+{
+}
+
+animmodel::meshgroup::~meshgroup()
+{
+    delete[] name;
+    meshes.deletecontents();
+    if(next)
+    {
+        delete next;
+        next = nullptr;
+    }
+}
+
 void animmodel::meshgroup::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &t)
 {
     LOOP_RENDER_MESHES(Mesh, m, m.calcbb(bbmin, bbmax, t));

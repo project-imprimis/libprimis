@@ -346,20 +346,8 @@ class animmodel : public model
                 char *name;
                 vector<Mesh *> meshes;
 
-                meshgroup() : shared(0), name(nullptr), next(nullptr)
-                {
-                }
-
-                virtual ~meshgroup()
-                {
-                    delete[] name;
-                    meshes.deletecontents();
-                    if(next)
-                    {
-                        delete next;
-                        next = nullptr;
-                    }
-                }
+                meshgroup();
+                virtual ~meshgroup();
 
                 virtual int findtag(const char *name)
                 {
