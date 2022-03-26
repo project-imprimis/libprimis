@@ -83,7 +83,7 @@ uint hthash(const animmodel::shaderparams &k)
 
 bool htcmp(const animmodel::shaderparams &x, const animmodel::shaderparams &y)
 {
-    return !memcmp(&x, &y, sizeof(animmodel::shaderparams));
+    return !std::memcmp(&x, &y, sizeof(animmodel::shaderparams));
 }
 
 //animmodel
