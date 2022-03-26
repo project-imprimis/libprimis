@@ -15,12 +15,6 @@ extern int fullbrightmodels, testtags, debugcolmesh;
 class animmodel : public model
 {
     public:
-        struct animspec
-        {
-            int frame, range;
-            float speed;
-            int priority;
-        };
 
         struct AnimPos
         {
@@ -450,8 +444,14 @@ class animmodel : public model
                 bool animated() const;
                 virtual void loaded();
             private:
-                vector<animspec> *anims[maxanimparts];
+                struct animspec
+                {
+                    int frame, range;
+                    float speed;
+                    int priority;
+                };
 
+                vector<animspec> *anims[maxanimparts];
         };
 
         enum
