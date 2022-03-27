@@ -197,6 +197,7 @@
     <ClCompile Include="..\engine\world\worldio.cpp" />
     <ClCompile Include="..\shared\geom.cpp" />
     <ClCompile Include="..\shared\glemu.cpp" />
+    <ClCompile Include="..\shared\matrix.cpp" />
     <ClCompile Include="..\shared\stream.cpp" />
     <ClCompile Include="..\shared\tools.cpp" />
     <ClCompile Include="..\shared\zip.cpp" />

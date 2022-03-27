@@ -7,6 +7,9 @@
     <ClCompile Include="..\shared\glemu.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="..\shared\matrix.cpp">
+      <Filter>shared</Filter>
+    </ClCompile>
     <ClCompile Include="..\shared\stream.cpp">
       <Filter>shared</Filter>
     </ClCompile>

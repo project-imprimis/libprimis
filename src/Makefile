@@ -23,6 +23,7 @@ endif
 CLIENT_OBJS= \
 	shared/geom.o \
 	shared/glemu.o \
+	shared/matrix.o \
 	shared/stream.o \
 	shared/tools.o \
 	shared/zip.o \
