@@ -130,31 +130,6 @@ struct quat : vec4<float>
 
     quat &normalize() { vec4<float>::normalize(); return *this; }
 
-    void calcangleaxis(float &angle, vec &axis) const
-    {
-        float rr = dot3(*this);
-        if(rr>0)
-        {
-            angle = 2*acosf(w);
-            axis = vec(x, y, z).mul(1/rr);
-        }
-        else { angle = 0; axis = vec(0, 0, 1); }
-    }
-
-    vec calcangles() const
-    {
-        vec4<float> qq = vec4<float>(*this).square();
-        float rr = qq.x + qq.y + qq.z + qq.w,
-              t = x*y + z*w;
-        if(fabs(t) > 0.49999f*rr)
-        {
-            return t < 0 ? vec(-2*atan2f(x, w), -M_PI/2, 0) : vec(2*atan2f(x, w), M_PI/2, 0);
-        }
-        return vec(atan2f(2*(y*w - x*z), qq.x - qq.y - qq.z + qq.w),
-                   asinf(2*t/rr),
-                   atan2f(2*(x*w - y*z), -qq.x + qq.y - qq.z + qq.w));
-    }
-
     vec rotate(const vec &v) const
     {
         return vec().cross(*this, vec().cross(*this, v).madd(v, w)).mul(2).add(v);
