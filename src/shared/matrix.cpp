@@ -103,6 +103,13 @@ void matrix3::transpose()
     swap(b.z, c.y);
 }
 
+void matrix3::transpose(const matrix3 &m)
+{
+    a = vec(m.a.x, m.b.x, m.c.x);
+    b = vec(m.a.y, m.b.y, m.c.y);
+    c = vec(m.a.z, m.b.z, m.c.z);
+}
+
 void matrix3::invert(const matrix3 &o)
 {
     vec unscale(1/o.a.squaredlen(), 1/o.b.squaredlen(), 1/o.c.squaredlen());
