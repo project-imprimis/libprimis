@@ -4,7 +4,7 @@ var geom_8h =
     [ "vec", "structvec.html", "structvec" ],
     [ "bvec", "structbvec.html", null ],
     [ "vec4< T >", "structvec4.html", "structvec4" ],
-    [ "matrix3", "structmatrix3.html", null ],
+    [ "matrix3", "classmatrix3.html", "classmatrix3" ],
     [ "matrix4x3", "structmatrix4x3.html", null ],
     [ "ivec", "structivec.html", null ],
     [ "ivec2", "structivec2.html", null ],

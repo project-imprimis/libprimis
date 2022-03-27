@@ -120,6 +120,22 @@ $(document).ready(function(){initNavTree('structmatrix4.html',''); initResizable
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a107f01892a62fc4c4c33ab994dd5846c"><td class="memTemplParams" colspan="2"><a id="a107f01892a62fc4c4c33ab994dd5846c" name="a107f01892a62fc4c4c33ab994dd5846c"></a>
+template&lt;class T , class U &gt; </td></tr>
+<tr class="memitem:a107f01892a62fc4c4c33ab994dd5846c"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>transformnormal</b> (const U &amp;in) const</td></tr>
+<tr class="separator:a107f01892a62fc4c4c33ab994dd5846c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cf2f2de763b5da5fa999e797af00a5e"><td class="memTemplParams" colspan="2"><a id="a3cf2f2de763b5da5fa999e797af00a5e" name="a3cf2f2de763b5da5fa999e797af00a5e"></a>
+template&lt;class T , class U &gt; </td></tr>
+<tr class="memitem:a3cf2f2de763b5da5fa999e797af00a5e"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>transform</b> (const U &amp;in) const</td></tr>
+<tr class="separator:a3cf2f2de763b5da5fa999e797af00a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e233a27c52922cbd684d95864fc151e"><td class="memTemplParams" colspan="2"><a id="a6e233a27c52922cbd684d95864fc151e" name="a6e233a27c52922cbd684d95864fc151e"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:a6e233a27c52922cbd684d95864fc151e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structvec.html">vec</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>perspectivetransform</b> (const T &amp;in) const</td></tr>
+<tr class="separator:a6e233a27c52922cbd684d95864fc151e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad863697403586b33bcd1fcb60158b77a"><td class="memTemplParams" colspan="2"><a id="ad863697403586b33bcd1fcb60158b77a" name="ad863697403586b33bcd1fcb60158b77a"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:ad863697403586b33bcd1fcb60158b77a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>mult</b> (const <a class="el" href="structmatrix4.html">matrix4</a> &amp;x, const <a class="el" href="structmatrix4.html">matrix4</a> &amp;y)</td></tr>
+<tr class="separator:ad863697403586b33bcd1fcb60158b77a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac83aa77b21e5413585222618284960b"><td class="memItemLeft" align="right" valign="top"><a id="aac83aa77b21e5413585222618284960b" name="aac83aa77b21e5413585222618284960b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>matrix4</b> (const float *m)</td></tr>
 <tr class="separator:aac83aa77b21e5413585222618284960b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,18 +149,14 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>matrix4</b> (const <a class="el" href="structmatrix4x3.html">matrix4x3</a> &amp;m)</td></tr>
 <tr class="separator:a42400454f0e98c1096f494f8a4e33b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb214a82c05afdfc96703954b212f28b"><td class="memItemLeft" align="right" valign="top"><a id="abb214a82c05afdfc96703954b212f28b" name="abb214a82c05afdfc96703954b212f28b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>matrix4</b> (const <a class="el" href="structmatrix3.html">matrix3</a> &amp;rot, const <a class="el" href="structvec.html">vec</a> &amp;trans)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>matrix4</b> (const <a class="el" href="classmatrix3.html">matrix3</a> &amp;rot, const <a class="el" href="structvec.html">vec</a> &amp;trans)</td></tr>
 <tr class="separator:abb214a82c05afdfc96703954b212f28b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5a0c75960aa283c6f1ee2cc86119a5f"><td class="memItemLeft" align="right" valign="top"><a id="ad5a0c75960aa283c6f1ee2cc86119a5f" name="ad5a0c75960aa283c6f1ee2cc86119a5f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>mul</b> (const <a class="el" href="structmatrix4.html">matrix4</a> &amp;x, const <a class="el" href="structmatrix3.html">matrix3</a> &amp;y)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>mul</b> (const <a class="el" href="structmatrix4.html">matrix4</a> &amp;x, const <a class="el" href="classmatrix3.html">matrix3</a> &amp;y)</td></tr>
 <tr class="separator:ad5a0c75960aa283c6f1ee2cc86119a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd601cafab64fcbdac5ef3dbb4147fa0"><td class="memItemLeft" align="right" valign="top"><a id="afd601cafab64fcbdac5ef3dbb4147fa0" name="afd601cafab64fcbdac5ef3dbb4147fa0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>mul</b> (const <a class="el" href="structmatrix3.html">matrix3</a> &amp;y)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>mul</b> (const <a class="el" href="classmatrix3.html">matrix3</a> &amp;y)</td></tr>
 <tr class="separator:afd601cafab64fcbdac5ef3dbb4147fa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad863697403586b33bcd1fcb60158b77a"><td class="memTemplParams" colspan="2"><a id="ad863697403586b33bcd1fcb60158b77a" name="ad863697403586b33bcd1fcb60158b77a"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad863697403586b33bcd1fcb60158b77a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>mult</b> (const <a class="el" href="structmatrix4.html">matrix4</a> &amp;x, const <a class="el" href="structmatrix4.html">matrix4</a> &amp;y)</td></tr>
-<tr class="separator:ad863697403586b33bcd1fcb60158b77a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f86bb677c991ef15f7d39fef36c07ac"><td class="memItemLeft" align="right" valign="top"><a id="a4f86bb677c991ef15f7d39fef36c07ac" name="a4f86bb677c991ef15f7d39fef36c07ac"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>mul</b> (const <a class="el" href="structmatrix4.html">matrix4</a> &amp;x, const <a class="el" href="structmatrix4.html">matrix4</a> &amp;y)</td></tr>
 <tr class="separator:a4f86bb677c991ef15f7d39fef36c07ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -271,24 +283,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>transform</b> (const 
 <tr class="memitem:acafe1c74933bb0ae539fbf708f38903b"><td class="memItemLeft" align="right" valign="top"><a id="acafe1c74933bb0ae539fbf708f38903b" name="acafe1c74933bb0ae539fbf708f38903b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>transform</b> (const <a class="el" href="structvec4.html">vec4</a>&lt; float &gt; &amp;in, <a class="el" href="structvec4.html">vec4</a>&lt; float &gt; &amp;out) const</td></tr>
 <tr class="separator:acafe1c74933bb0ae539fbf708f38903b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3cf2f2de763b5da5fa999e797af00a5e"><td class="memTemplParams" colspan="2"><a id="a3cf2f2de763b5da5fa999e797af00a5e" name="a3cf2f2de763b5da5fa999e797af00a5e"></a>
-template&lt;class T , class U &gt; </td></tr>
-<tr class="memitem:a3cf2f2de763b5da5fa999e797af00a5e"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>transform</b> (const U &amp;in) const</td></tr>
-<tr class="separator:a3cf2f2de763b5da5fa999e797af00a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e233a27c52922cbd684d95864fc151e"><td class="memTemplParams" colspan="2"><a id="a6e233a27c52922cbd684d95864fc151e" name="a6e233a27c52922cbd684d95864fc151e"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:a6e233a27c52922cbd684d95864fc151e"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structvec.html">vec</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>perspectivetransform</b> (const T &amp;in) const</td></tr>
-<tr class="separator:a6e233a27c52922cbd684d95864fc151e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7480b7527edfdcdaaacd65f1017844c"><td class="memItemLeft" align="right" valign="top"><a id="ab7480b7527edfdcdaaacd65f1017844c" name="ab7480b7527edfdcdaaacd65f1017844c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>transformnormal</b> (const <a class="el" href="structvec.html">vec</a> &amp;in, <a class="el" href="structvec.html">vec</a> &amp;out) const</td></tr>
 <tr class="separator:ab7480b7527edfdcdaaacd65f1017844c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbf3a2eb6790ef0d73ad717ff64dd30d"><td class="memItemLeft" align="right" valign="top"><a id="adbf3a2eb6790ef0d73ad717ff64dd30d" name="adbf3a2eb6790ef0d73ad717ff64dd30d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>transformnormal</b> (const <a class="el" href="structvec.html">vec</a> &amp;in, <a class="el" href="structvec4.html">vec4</a>&lt; float &gt; &amp;out) const</td></tr>
 <tr class="separator:adbf3a2eb6790ef0d73ad717ff64dd30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a107f01892a62fc4c4c33ab994dd5846c"><td class="memTemplParams" colspan="2"><a id="a107f01892a62fc4c4c33ab994dd5846c" name="a107f01892a62fc4c4c33ab994dd5846c"></a>
-template&lt;class T , class U &gt; </td></tr>
-<tr class="memitem:a107f01892a62fc4c4c33ab994dd5846c"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>transformnormal</b> (const U &amp;in) const</td></tr>
-<tr class="separator:a107f01892a62fc4c4c33ab994dd5846c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55f147946a1c28154af6fe1c819f8e4e"><td class="memItemLeft" align="right" valign="top"><a id="a55f147946a1c28154af6fe1c819f8e4e" name="a55f147946a1c28154af6fe1c819f8e4e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>transposedtransform</b> (const <a class="el" href="structvec.html">vec</a> &amp;in, <a class="el" href="structvec.html">vec</a> &amp;out) const</td></tr>
 <tr class="separator:a55f147946a1c28154af6fe1c819f8e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
