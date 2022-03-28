@@ -26,10 +26,115 @@
 #include "skelmodel.h"
 #include "vertmodel.h"
 
+//==============================================================================
+// vertmodel::vertmesh object
+//==============================================================================
+
+vertmodel::vertmesh::vertmesh() : verts(0), tcverts(0), tris(0)
+{
+}
+
+vertmodel::vertmesh::~vertmesh()
+{
+    delete[] verts;
+    delete[] tcverts;
+    delete[] tris;
+}
+
+void vertmodel::vertmesh::smoothnorms(float limit, bool areaweight)
+{
+    if((static_cast<vertmeshgroup *>(group))->numframes == 1)
+    {
+        Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
+    }
+    else
+    {
+        buildnorms(areaweight);
+    }
+}
+
+void vertmodel::vertmesh::buildnorms(bool areaweight)
+{
+    Mesh::buildnorms(verts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
+}
+
+void vertmodel::vertmesh::calctangents(bool areaweight)
+{
+    Mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
+}
+
+void vertmodel::vertmesh::calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
+{
+    for(int j = 0; j < numverts; ++j)
+    {
+        vec v = m.transform(verts[j].pos);
+        bbmin.min(v);
+        bbmax.max(v);
+    }
+}
+
+void vertmodel::vertmesh::genBIH(BIH::mesh &m)
+{
+    m.tris = reinterpret_cast<const BIH::tri *>(tris);
+    m.numtris = numtris;
+    m.pos = reinterpret_cast<const uchar *>(&verts->pos);
+    m.posstride = sizeof(vert);
+    m.tc = reinterpret_cast<const uchar *>(&tcverts->tc);
+    m.tcstride = sizeof(tcvert);
+}
+
+void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
+{
+    for(int j = 0; j < numtris; ++j)
+    {
+        triangle t;
+        t.a = m.transform(verts[tris[j].vert[0]].pos);
+        t.b = m.transform(verts[tris[j].vert[1]].pos);
+        t.c = m.transform(verts[tris[j].vert[2]].pos);
+        out.push_back(t);
+    }
+}
+
+void vertmodel::vertmesh::assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
+{
+    vv.pos = vec4<half>(v.pos, 1);
+    vv.tc = tc.tc;
+    vv.tangent = v.tangent;
+}
+
+int vertmodel::vertmesh::genvbo(vector<ushort> &idxs, int offset)
+{
+    voffset = offset;
+    eoffset = idxs.length();
+    for(int i = 0; i < numtris; ++i)
+    {
+        tri &t = tris[i];
+        for(int j = 0; j < 3; ++j)
+        {
+            idxs.add(voffset+t.vert[j]);
+        }
+    }
+    minvert = voffset;
+    maxvert = voffset + numverts-1;
+    elen = idxs.length()-eoffset;
+    return numverts;
+}
+
+void vertmodel::vertmesh::render(const AnimState *as, skin &s, vbocacheentry &vc)
+{
+    if(!Shader::lastshader)
+    {
+        return;
+    }
+    glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
+    glde++;
+    xtravertsva += numverts;
+}
 
 //==============================================================================
 // vertmodel::vertmeshgroup object
 //==============================================================================
+
 vertmodel::vertmeshgroup::vertmeshgroup()
     : numframes(0), tags(nullptr), numtags(0), edata(nullptr), ebuf(0), vlen(0), vertsize(0), vdata(nullptr)
 {

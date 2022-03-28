@@ -52,77 +52,17 @@ struct vertmodel : animmodel
         int voffset, eoffset, elen;
         ushort minvert, maxvert;
 
-        vertmesh() : verts(0), tcverts(0), tris(0)
-        {
-        }
+        vertmesh();
+        virtual ~vertmesh();
 
-        virtual ~vertmesh()
-        {
-            delete[] verts;
-            delete[] tcverts;
-            delete[] tris;
-        }
+        void smoothnorms(float limit = 0, bool areaweight = true);
+        void buildnorms(bool areaweight = true);
+        void calctangents(bool areaweight = true);
+        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m);
+        void genBIH(BIH::mesh &m);
+        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
 
-        void smoothnorms(float limit = 0, bool areaweight = true)
-        {
-            if((static_cast<vertmeshgroup *>(group))->numframes == 1)
-            {
-                Mesh::smoothnorms(verts, numverts, tris, numtris, limit, areaweight);
-            }
-            else
-            {
-                buildnorms(areaweight);
-            }
-        }
-
-        void buildnorms(bool areaweight = true)
-        {
-            Mesh::buildnorms(verts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
-        }
-
-        void calctangents(bool areaweight = true)
-        {
-            Mesh::calctangents(verts, tcverts, numverts, tris, numtris, areaweight, (static_cast<vertmeshgroup *>(group))->numframes);
-        }
-
-        void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m)
-        {
-            for(int j = 0; j < numverts; ++j)
-            {
-                vec v = m.transform(verts[j].pos);
-                bbmin.min(v);
-                bbmax.max(v);
-            }
-        }
-
-        void genBIH(BIH::mesh &m)
-        {
-            m.tris = reinterpret_cast<const BIH::tri *>(tris);
-            m.numtris = numtris;
-            m.pos = reinterpret_cast<const uchar *>(&verts->pos);
-            m.posstride = sizeof(vert);
-            m.tc = reinterpret_cast<const uchar *>(&tcverts->tc);
-            m.tcstride = sizeof(tcvert);
-        }
-
-        void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m)
-        {
-            for(int j = 0; j < numtris; ++j)
-            {
-                triangle t;
-                t.a = m.transform(verts[tris[j].vert[0]].pos);
-                t.b = m.transform(verts[tris[j].vert[1]].pos);
-                t.c = m.transform(verts[tris[j].vert[2]].pos);
-                out.push_back(t);
-            }
-        }
-
-        static void assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
-        {
-            vv.pos = vec4<half>(v.pos, 1);
-            vv.tc = tc.tc;
-            vv.tangent = v.tangent;
-        }
+        static void assignvert(vvertg &vv, int j, tcvert &tc, vert &v);
 
         template<class T>
         int genvbo(vector<ushort> &idxs, int offset, vector<T> &vverts, int *htdata, int htlen)
@@ -164,23 +104,7 @@ struct vertmodel : animmodel
             return vverts.length()-voffset;
         }
 
-        int genvbo(vector<ushort> &idxs, int offset)
-        {
-            voffset = offset;
-            eoffset = idxs.length();
-            for(int i = 0; i < numtris; ++i)
-            {
-                tri &t = tris[i];
-                for(int j = 0; j < 3; ++j)
-                {
-                    idxs.add(voffset+t.vert[j]);
-                }
-            }
-            minvert = voffset;
-            maxvert = voffset + numverts-1;
-            elen = idxs.length()-eoffset;
-            return numverts;
-        }
+        int genvbo(vector<ushort> &idxs, int offset);
 
         template<class T>
         static void fillvert(T &vv, int j, tcvert &tc, vert &v)
@@ -234,16 +158,7 @@ struct vertmodel : animmodel
             //==================================================================
         }
 
-        void render(const AnimState *as, skin &s, vbocacheentry &vc)
-        {
-            if(!Shader::lastshader)
-            {
-                return;
-            }
-            glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
-            glde++;
-            xtravertsva += numverts;
-        }
+        void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
     struct tag
