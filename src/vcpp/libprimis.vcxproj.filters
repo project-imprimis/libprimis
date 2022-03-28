@@ -33,6 +33,7 @@
     <ClCompile Include="..\engine\model\obj.cpp" />
     <ClCompile Include="..\engine\model\ragdoll.cpp" />
     <ClCompile Include="..\engine\model\skelmodel.cpp" />
+    <ClCompile Include="..\engine\model\vertmodel.cpp" />
     <ClCompile Include="..\engine\render\aa.cpp" />
     <ClCompile Include="..\engine\render\ao.cpp" />
     <ClCompile Include="..\engine\render\csm.cpp" />

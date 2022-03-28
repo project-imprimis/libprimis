@@ -42,6 +42,7 @@ CLIENT_OBJS= \
 	engine/model/obj.o \
 	engine/model/ragdoll.o \
 	engine/model/skelmodel.o \
+	engine/model/vertmodel.o \
 	engine/render/aa.o \
 	engine/render/ao.o \
 	engine/render/csm.o \
