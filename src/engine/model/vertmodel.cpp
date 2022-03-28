@@ -27,6 +27,39 @@
 #include "vertmodel.h"
 
 //==============================================================================
+// vertmodel object
+//==============================================================================
+
+vertmodel::meshgroup * vertmodel::loadmeshes(const char *name, float smooth)
+{
+    vertmeshgroup *group = newmeshes();
+    if(!group->load(name, smooth))
+    {
+        delete group;
+        return nullptr;
+    }
+    return group;
+}
+
+vertmodel::meshgroup * vertmodel::sharemeshes(const char *name, float smooth)
+{
+    if(!meshgroups.access(name))
+    {
+        meshgroup *group = loadmeshes(name, smooth);
+        if(!group)
+        {
+            return nullptr;
+        }
+        meshgroups.add(group);
+    }
+    return meshgroups[name];
+}
+
+vertmodel::vertmodel(const char *name) : animmodel(name)
+{
+}
+
+//==============================================================================
 // vertmodel::vertmesh object
 //==============================================================================
 

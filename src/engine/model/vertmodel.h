@@ -240,34 +240,10 @@ struct vertmodel : animmodel
 
     virtual vertmeshgroup *newmeshes() = 0;
 
-    meshgroup *loadmeshes(const char *name, float smooth = 2)
-    {
-        vertmeshgroup *group = newmeshes();
-        if(!group->load(name, smooth))
-        {
-            delete group;
-            return nullptr;
-        }
-        return group;
-    }
+    meshgroup *loadmeshes(const char *name, float smooth = 2);
+    meshgroup *sharemeshes(const char *name, float smooth = 2);
 
-    meshgroup *sharemeshes(const char *name, float smooth = 2)
-    {
-        if(!meshgroups.access(name))
-        {
-            meshgroup *group = loadmeshes(name, smooth);
-            if(!group)
-            {
-                return nullptr;
-            }
-            meshgroups.add(group);
-        }
-        return meshgroups[name];
-    }
-
-    vertmodel(const char *name) : animmodel(name)
-    {
-    }
+    vertmodel(const char *name);
 };
 
 template<class MDL>
