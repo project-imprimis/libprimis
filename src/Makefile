@@ -16,6 +16,12 @@ CXXFLAGS= -O3 -ffast-math -std=c++17 -march=x86-64 -Wall -fsigned-char -fno-rtti
 
 COVERAGE_BUILD ?= 0
 
+# Directory where the library will be placed
+LIBRARY_DIR=../
+
+# Filename of the library
+LIBRARY_NAME=libprimis.so
+
 ifeq (1,$(COVERAGE_BUILD))
 	CXXFLAGS += --coverage -fno-inline -fno-inline-small-functions -fno-default-inline
 endif
@@ -81,11 +87,21 @@ CLIENT_OBJS= \
 	engine/world/world.o \
 	engine/world/worldio.o \
 
+all: clean client emplace
+
 #default: compiles the library and places it in the same directory as this file
 default: client
 
-#install/emplace: places the library into the /usr/lib directory
+#install: Build client and place in the root of the Git repository
 install: client emplace
+
+#install-user: Build client and place in the user's XDG lib directory
+install-user: LIBRARY_DIR=~/.local/lib/
+install-user: client emplace
+
+#install-system: Build client and place in /usr/lib (requires root)
+install-system: LIBRARY_DIR=/usr/lib/
+install-system: client emplace
 
 clean:
 	-$(RM) -r $(CLIENT_OBJS)
@@ -104,5 +120,4 @@ client: $(CLIENT_OBJS)
 endif
 
 emplace:
-	sudo cp libprimis.so /usr/lib/libprimis.so
-
+	cp libprimis.so $(LIBRARY_DIR)$(LIBRARY_NAME)
