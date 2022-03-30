@@ -301,11 +301,6 @@ struct Shader
         return (type & Shader_Dynamic) != 0;
     }
 
-    bool isnull() const
-    {
-        return (this == nullptr);
-    }
-
     int numvariants(int row) const
     {
         if(row < 0 || row >= maxvariantrows || !variantrows)
@@ -368,7 +363,7 @@ struct Shader
 
     void setvariant(int col, int row)
     {
-        if(isnull() || !loaded())
+        if(!loaded())
         {
             return;
         }
@@ -378,7 +373,7 @@ struct Shader
 
     void setvariant(int col, int row, Slot &slot)
     {
-        if(isnull() || !loaded())
+        if(!loaded())
         {
             return;
         }
@@ -389,7 +384,7 @@ struct Shader
 
     void setvariant(int col, int row, Slot &slot, VSlot &vslot)
     {
-        if(isnull() || !loaded())
+        if(!loaded())
         {
             return;
         }
@@ -408,7 +403,7 @@ struct Shader
 
     void set()
     {
-        if(isnull() || !loaded())
+        if(!loaded())
         {
             return;
         }
@@ -418,7 +413,7 @@ struct Shader
 
     void set(Slot &slot)
     {
-        if(isnull() || !loaded())
+        if(!loaded())
         {
             return;
         }
@@ -429,7 +424,7 @@ struct Shader
 
     void set(Slot &slot, VSlot &vslot)
     {
-        if(isnull() || !loaded())
+        if(!loaded())
         {
             return;
         }
