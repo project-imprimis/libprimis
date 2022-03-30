@@ -15,6 +15,7 @@
 
 #include "model/model.h"
 #include "model/ragdoll.h"
+#include "octaworld.h"
 
 //extentity
 
