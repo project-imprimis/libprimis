@@ -5,18 +5,18 @@ agent:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: 'Block #1'
+  - name: Building
     task:
       jobs:
-        - name: 'Job #1'
+        - name: Clean and production build
           commands:
             - checkout
             - sem-version cpp 9
             - sudo apt-get update
             - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev
             - git submodule update --init --remote src/libprimis-headers
-            - make -C src clean
-            - make -C src -j3
+            - cmake --configure .
+            - cmake --build . --clean-first
     dependencies: []
   - name: Testing
     dependencies: []
