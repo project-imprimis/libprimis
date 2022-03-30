@@ -1,5 +1,5 @@
 #ifndef RENDERPARTICLES_H_
-#define RENDERPARTICLES
+#define RENDERPARTICLES_H_
 
 extern int particlelayers;
 extern int numanims;
