@@ -15,8 +15,7 @@ blocks:
             - sudo apt-get update
             - sudo apt-get install -y libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev
             - git submodule update --init --remote src/libprimis-headers
-            - make -C src clean
-            - make -C src -j3
+            - cmake --build . --clean-first
     dependencies: []
   - name: Testing
     dependencies: []
