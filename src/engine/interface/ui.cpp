@@ -22,6 +22,7 @@
 
 #include "world/entities.h"
 #include "world/octaedit.h"
+#include "world/octaworld.h"
 #include "world/bih.h"
 
 #include "render/hud.h"
