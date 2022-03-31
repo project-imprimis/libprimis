@@ -40,10 +40,10 @@ namespace
             bool scissor = allsx1 > -1 || allsy1 > -1 || allsx2 < 1 || allsy2 < 1;
             if(scissor)
             {
-                int x1 = static_cast<int>(std::floor((allsx1*0.5f+0.5f)*vieww)),
-                    y1 = static_cast<int>(std::floor((allsy1*0.5f+0.5f)*viewh)),
-                    x2 = static_cast<int>(std::ceil((allsx2*0.5f+0.5f)*vieww)),
-                    y2 = static_cast<int>(std::ceil((allsy2*0.5f+0.5f)*viewh));
+                int x1 = static_cast<int>(std::floor((allsx1*0.5f+0.5f)*static_cast<float>(vieww))),
+                    y1 = static_cast<int>(std::floor((allsy1*0.5f+0.5f)*static_cast<float>(viewh))),
+                    x2 = static_cast<int>(std::ceil((allsx2*0.5f+0.5f)*static_cast<float>(vieww))),
+                    y2 = static_cast<int>(std::ceil((allsy2*0.5f+0.5f)*static_cast<float>(viewh)));
                 glEnable(GL_SCISSOR_TEST);
                 glScissor(x1, y1, x2 - x1, y2 - y1);
             }
@@ -104,10 +104,10 @@ void GBuffer::rendertransparent()
         bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
         if(scissor)
         {
-            int x1 = static_cast<int>(std::floor(std::max(sx1*0.5f+0.5f-refractmargin*viewh/vieww, 0.0f)*vieww)),
-                y1 = static_cast<int>(std::floor(std::max(sy1*0.5f+0.5f-refractmargin, 0.0f)*viewh)),
-                x2 = static_cast<int>(std::ceil(std::min(sx2*0.5f+0.5f+refractmargin*viewh/vieww, 1.0f)*vieww)),
-                y2 = static_cast<int>(std::ceil(std::min(sy2*0.5f+0.5f+refractmargin, 1.0f)*viewh));
+            int x1 = static_cast<int>(std::floor(std::max(sx1*0.5f+0.5f-refractmargin*static_cast<float>(viewh)/static_cast<float>(vieww), 0.0f)*static_cast<float>(vieww))),
+                y1 = static_cast<int>(std::floor(std::max(sy1*0.5f+0.5f-refractmargin, 0.0f)*static_cast<float>(viewh))),
+                x2 = static_cast<int>(std::ceil(std::min(sx2*0.5f+0.5f+refractmargin*static_cast<float>(viewh)/static_cast<float>(vieww), 1.0f)*static_cast<float>(vieww))),
+                y2 = static_cast<int>(std::ceil(std::min(sy2*0.5f+0.5f+refractmargin, 1.0f)*static_cast<float>(viewh)));
             glEnable(GL_SCISSOR_TEST);
             glScissor(x1, y1, x2 - x1, y2 - y1);
         }
@@ -162,8 +162,8 @@ void GBuffer::rendertransparent()
     {
         glEnable(GL_STENCIL_TEST);
     }
-    matrix4 raymatrix(vec(-0.5f*vieww*projmatrix.a.x, 0, 0.5f*vieww - 0.5f*vieww*projmatrix.c.x),
-                      vec(0, -0.5f*viewh*projmatrix.b.y, 0.5f*viewh - 0.5f*viewh*projmatrix.c.y));
+    matrix4 raymatrix(vec(-0.5f*static_cast<float>(vieww)*projmatrix.a.x, 0, 0.5f*static_cast<float>(vieww) - 0.5f*static_cast<float>(vieww)*projmatrix.c.x),
+                      vec(0, -0.5f*static_cast<float>(viewh)*projmatrix.b.y, 0.5f*static_cast<float>(viewh) - 0.5f*static_cast<float>(viewh)*projmatrix.c.y));
     raymatrix.muld(cammatrix);
     GLOBALPARAM(raymatrix, raymatrix);
     GLOBALPARAM(linearworldmatrix, linearworldmatrix);
@@ -264,10 +264,10 @@ void GBuffer::rendertransparent()
             bool scissor = sx1 > -1 || sy1 > -1 || sx2 < 1 || sy2 < 1;
             if(scissor)
             {
-                int x1 = static_cast<int>(std::floor((sx1*0.5f+0.5f)*vieww)),
-                    y1 = static_cast<int>(std::floor((sy1*0.5f+0.5f)*viewh)),
-                    x2 = static_cast<int>(std::ceil((sx2*0.5f+0.5f)*vieww)),
-                    y2 = static_cast<int>(std::ceil((sy2*0.5f+0.5f)*viewh));
+                int x1 = static_cast<int>(std::floor((sx1*0.5f+0.5f)*static_cast<float>(vieww))),
+                    y1 = static_cast<int>(std::floor((sy1*0.5f+0.5f)*static_cast<float>(viewh))),
+                    x2 = static_cast<int>(std::ceil((sx2*0.5f+0.5f)*static_cast<float>(vieww))),
+                    y2 = static_cast<int>(std::ceil((sy2*0.5f+0.5f)*static_cast<float>(viewh)));
                 glEnable(GL_SCISSOR_TEST);
                 glScissor(x1, y1, x2 - x1, y2 - y1);
             }
@@ -317,6 +317,10 @@ void GBuffer::rendertransparent()
             case 3:
             {
                 rendertransparentmodelbatches(layer+1);
+                break;
+            }
+            default:
+            {
                 break;
             }
         }
