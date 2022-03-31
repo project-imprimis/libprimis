@@ -9,5 +9,9 @@ var searchData=
   ['getmaterial_6',['getmaterial',['../iengine_8h.html#a4d577a3829b4d91de604f81aa4709d6e',1,'iengine.h']]],
   ['getworldsize_7',['getworldsize',['../iengine_8h.html#acc0da2105414ddfd60e389e47d697a93',1,'iengine.h']]],
   ['gl_5fcheckextensions_8',['gl_checkextensions',['../iengine_8h.html#a68b24a3cbcf84d995697c41934dc74d6',1,'iengine.h']]],
-  ['growbuf_9',['growbuf',['../structvector.html#a500a5fefd99c45e122ffdedaf8cb55b6',1,'vector']]]
+  ['gl_5fdrawframe_9',['gl_drawframe',['../iengine_8h.html#ab159dfadc5fe66ba15fe39184f831629',1,'iengine.h']]],
+  ['gl_5finit_10',['gl_init',['../iengine_8h.html#acc19403a720bda8d74dcad7109f33a79',1,'iengine.h']]],
+  ['gl_5fresize_11',['gl_resize',['../iengine_8h.html#a444f839aefe4337c63821a9a5953a067',1,'iengine.h']]],
+  ['gl_5fsetupframe_12',['gl_setupframe',['../iengine_8h.html#a32f3b0225eb75fb287a510e709f8b82e',1,'iengine.h']]],
+  ['growbuf_13',['growbuf',['../structvector.html#a500a5fefd99c45e122ffdedaf8cb55b6',1,'vector']]]
 ];

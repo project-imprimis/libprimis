@@ -161,7 +161,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SELECT_CUBE</b>(x,  y,  z)&#160;&#160;&#160;<a class="el" href="iengine_8h.html#a0f7823631f3789786a0334f712444101">blockcube</a>(x, y, z, sel, sel.grid)</td></tr>
 <tr class="separator:a251d6c08e05eba0953abb7f2ce326aab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bd205516bccc411153652eec585370a"><td class="memItemLeft" align="right" valign="top"><a id="a5bd205516bccc411153652eec585370a" name="a5bd205516bccc411153652eec585370a"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>PROTECT_SEL</b>(f)&#160;&#160;&#160;{ <a class="el" href="structundoblock.html">undoblock</a> *_u = newundocube(sel); f; if(_u) { pasteundoblock(_u-&gt;block(), _u-&gt;gridmap()); freeundo(_u); } }</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>PROTECT_SEL</b>(f)&#160;&#160;&#160;{ <a class="el" href="structundoblock.html">undoblock</a> *_u = <a class="el" href="iengine_8h.html#a394c528144448c892935863b3b50fdea">newundocube</a>(sel); f; if(_u) { pasteundoblock(_u-&gt;block(), _u-&gt;gridmap()); <a class="el" href="iengine_8h.html#adaf574f15e0c0f6edbc2de03793584e3">freeundo</a>(_u); } }</td></tr>
 <tr class="separator:a5bd205516bccc411153652eec585370a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3475bdc83131de0b8eb7e7b82e868571"><td class="memItemLeft" align="right" valign="top"><a id="a3475bdc83131de0b8eb7e7b82e868571" name="a3475bdc83131de0b8eb7e7b82e868571"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>DIMENSION</b>(orient)&#160;&#160;&#160;((orient)&gt;&gt;1)</td></tr>

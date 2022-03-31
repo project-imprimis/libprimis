@@ -11,8 +11,10 @@ var searchData=
   ['hashtable_8',['hashtable',['../structhashtable.html',1,'']]],
   ['hashtable_3c_20cube_3a_3acfkey_2c_20cube_3a_3acfpolys_20_3e_9',['hashtable&lt; cube::cfkey, cube::cfpolys &gt;',['../structhashtable.html',1,'']]],
   ['hashtableentry_10',['hashtableentry',['../structhashtableentry.html',1,'']]],
-  ['haveselent_11',['haveselent',['../iengine_8h.html#a29b1538f06e1c2b2dd6644db6e3a120c',1,'iengine.h']]],
-  ['heapchild_12',['heapchild',['../structvector.html#a960f7ccf713e2e29475b4534607573a5',1,'vector']]],
-  ['heapparent_13',['heapparent',['../structvector.html#ad5053033279ea5d16860228c1fb460b3',1,'vector']]],
-  ['htfind_14',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
+  ['havesel_11',['havesel',['../iengine_8h.html#a5abb2a04b9c6758fa2aee47bb7ebe3c4',1,'iengine.h']]],
+  ['haveselent_12',['haveselent',['../iengine_8h.html#a29b1538f06e1c2b2dd6644db6e3a120c',1,'iengine.h']]],
+  ['heapchild_13',['heapchild',['../structvector.html#a960f7ccf713e2e29475b4534607573a5',1,'vector']]],
+  ['heapparent_14',['heapparent',['../structvector.html#ad5053033279ea5d16860228c1fb460b3',1,'vector']]],
+  ['hmapedit_15',['hmapedit',['../iengine_8h.html#ae7a734b768e6f702bba8fcaf872f7be6',1,'iengine.h']]],
+  ['htfind_16',['htfind',['../structvector.html#aeb422be9160e47b6960ac83078e725bc',1,'vector']]]
 ];

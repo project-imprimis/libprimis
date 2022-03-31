@@ -8,5 +8,6 @@ var searchData=
   ['clear_5fsound_5',['clear_sound',['../iengine_8h.html#accdda0ec78bdb369b1e7bf8df2b611ff',1,'iengine.h']]],
   ['cleargamma_6',['cleargamma',['../iengine_8h.html#a766a4f5369dd6e992d67fb43eae37d9f',1,'iengine.h']]],
   ['clearmapcrc_7',['clearmapcrc',['../iengine_8h.html#a8db3c9d89b1bcf07023f08b8d0884920',1,'iengine.h']]],
-  ['countselchild_8',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]]
+  ['clearshadowcache_8',['clearshadowcache',['../iengine_8h.html#a279b07f34d381a6947e84a1c8289b582',1,'iengine.h']]],
+  ['countselchild_9',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]]
 ];

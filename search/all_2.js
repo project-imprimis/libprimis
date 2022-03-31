@@ -14,11 +14,12 @@ var searchData=
   ['clear_5fsound_11',['clear_sound',['../iengine_8h.html#accdda0ec78bdb369b1e7bf8df2b611ff',1,'iengine.h']]],
   ['cleargamma_12',['cleargamma',['../iengine_8h.html#a766a4f5369dd6e992d67fb43eae37d9f',1,'iengine.h']]],
   ['clearmapcrc_13',['clearmapcrc',['../iengine_8h.html#a8db3c9d89b1bcf07023f08b8d0884920',1,'iengine.h']]],
-  ['collidetype_14',['collidetype',['../structphysent.html#a9559739316e0d2b54f939194a7259542',1,'physent']]],
-  ['command_2eh_15',['command.h',['../command_8h.html',1,'']]],
-  ['consts_2eh_16',['consts.h',['../consts_8h.html',1,'']]],
-  ['countselchild_17',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]],
-  ['cube_18',['cube',['../classcube.html',1,'']]],
-  ['cube_2eh_19',['cube.h',['../cube_8h.html',1,'']]],
-  ['cubeworld_20',['cubeworld',['../structcubeworld.html',1,'']]]
+  ['clearshadowcache_14',['clearshadowcache',['../iengine_8h.html#a279b07f34d381a6947e84a1c8289b582',1,'iengine.h']]],
+  ['collidetype_15',['collidetype',['../structphysent.html#a9559739316e0d2b54f939194a7259542',1,'physent']]],
+  ['command_2eh_16',['command.h',['../command_8h.html',1,'']]],
+  ['consts_2eh_17',['consts.h',['../consts_8h.html',1,'']]],
+  ['countselchild_18',['countselchild',['../iengine_8h.html#a178fd04e0576d2b18bdddaeee72f7a95',1,'iengine.h']]],
+  ['cube_19',['cube',['../classcube.html',1,'']]],
+  ['cube_2eh_20',['cube.h',['../cube_8h.html',1,'']]],
+  ['cubeworld_21',['cubeworld',['../structcubeworld.html',1,'']]]
 ];
