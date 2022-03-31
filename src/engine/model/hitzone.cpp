@@ -21,7 +21,6 @@
 
 #include "world/entities.h"
 #include "world/octaworld.h"
-#include "world/physics.h"
 #include "world/bih.h"
 
 #include "model.h"

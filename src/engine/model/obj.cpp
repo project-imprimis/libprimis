@@ -10,7 +10,6 @@
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
 
-#include "render/radiancehints.h"
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/renderwindow.h"

@@ -13,7 +13,6 @@
 #include "interface/console.h"
 #include "interface/control.h"
 
-#include "render/radiancehints.h"
 #include "render/rendergl.h"
 
 #include "world/entities.h"
@@ -543,6 +542,24 @@ void ragdolldata::move(dynent *pl, float ts)
     constrain();
     calctris();
     calcboundsphere();
+}
+
+bool ragdolldata::collidevert(const vec &pos, const vec &dir, float radius)
+{
+    static struct vertent : physent
+    {
+        vertent()
+        {
+            type = PhysEnt_Bounce;
+            radius = xradius = yradius = eyeheight = aboveeye = 1;
+        }
+    } v;
+    v.o = pos;
+    if(v.radius != radius)
+    {
+        v.radius = v.xradius = v.yradius = v.eyeheight = v.aboveeye = radius;
+    }
+    return collide(&v, dir, 0, false);
 }
 
 FVAR(ragdolleyesmooth, 0, 0.5f, 1);

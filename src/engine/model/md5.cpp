@@ -14,7 +14,6 @@
 #include "../../shared/glexts.h"
 #include "../../shared/stream.h"
 
-#include "render/radiancehints.h"
 #include "render/rendergl.h"
 #include "render/rendermodel.h"
 #include "render/renderwindow.h"
@@ -35,8 +34,6 @@
 #include "skelmodel.h"
 
 #include "md5.h"
-
-#include "interface/console.h"
 
 md5::md5(const char *name) : skelloader(name) {}
 

@@ -115,23 +115,7 @@ class ragdolldata
         void applyrotfriction(float ts);
         void tryunstick(float speed);
 
-        static inline bool collidevert(const vec &pos, const vec &dir, float radius)
-        {
-            static struct vertent : physent
-            {
-                vertent()
-                {
-                    type = PhysEnt_Bounce;
-                    radius = xradius = yradius = eyeheight = aboveeye = 1;
-                }
-            } v;
-            v.o = pos;
-            if(v.radius != radius)
-            {
-                v.radius = v.xradius = v.yradius = v.eyeheight = v.aboveeye = radius;
-            }
-            return collide(&v, dir, 0, false);
-        }
+        bool collidevert(const vec &pos, const vec &dir, float radius);
 };
 
 extern void cleanragdoll(dynent *d);

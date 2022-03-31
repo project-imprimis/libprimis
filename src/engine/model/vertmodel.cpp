@@ -9,7 +9,6 @@
 #include "interface/console.h"
 #include "interface/control.h"
 
-#include "render/radiancehints.h"
 #include "render/rendergl.h"
 #include "render/renderlights.h"
 #include "render/rendermodel.h"
@@ -17,13 +16,11 @@
 
 #include "world/entities.h"
 #include "world/octaworld.h"
-#include "world/physics.h"
 #include "world/bih.h"
 
 #include "model.h"
 #include "ragdoll.h"
 #include "animmodel.h"
-#include "skelmodel.h"
 #include "vertmodel.h"
 
 //==============================================================================
