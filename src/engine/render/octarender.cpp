@@ -1644,7 +1644,7 @@ namespace
 
     vtxarray *newva(const ivec &o, int size)
     {
-        vtxarray *va = new vtxarray;
+        auto *va = new vtxarray;
         va->parent = nullptr;
         va->o = o;
         va->size = size;
