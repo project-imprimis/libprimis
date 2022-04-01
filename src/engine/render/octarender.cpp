@@ -1359,7 +1359,14 @@ namespace
     {
         ivec slope, origin;
         int axis;
+
+        edgegroup();
     };
+
+    edgegroup::edgegroup()
+    {
+        axis = 0;
+    }
 
     inline uint hthash(const edgegroup &g)
     {
