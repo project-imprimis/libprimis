@@ -112,7 +112,7 @@ namespace
         vboinfo &vbi = vbos[vbo];
         vbi.uses = numva;
         vbi.data = new uchar[len];
-        memcpy(vbi.data, buf, len);
+        std::memcpy(vbi.data, buf, len);
 
         for(int i = 0; i < numva; ++i)
         {
@@ -488,7 +488,7 @@ namespace
                 if(va->matsurfs)
                 {
                     va->matbuf = new materialsurface[matsurfs.size()];
-                    memcpy(va->matbuf, matsurfs.data(), matsurfs.size()*sizeof(materialsurface));
+                    std::memcpy(va->matbuf, matsurfs.data(), matsurfs.size()*sizeof(materialsurface));
                     for(uint i = 0; i < matsurfs.size(); i++)
                     {
                         materialsurface &m = matsurfs[i];
@@ -519,7 +519,7 @@ namespace
                 if(va->sky)
                 {
                     ushort *skydata = reinterpret_cast<ushort *>(addvbo(va, VBO_SkyBuf, va->sky, sizeof(ushort)));
-                    memcpy(skydata, skyindices.getbuf(), va->sky*sizeof(ushort));
+                    std::memcpy(skydata, skyindices.getbuf(), va->sky*sizeof(ushort));
                     if(va->voffset)
                     {
                         for(int i = 0; i < va->sky; ++i)
@@ -559,7 +559,7 @@ namespace
 
                         if(t.tris.length())
                         {
-                            memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
+                            std::memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
                             for(int j = 0; j < t.tris.length(); j++)
                             {
                                 curbuf[j] += va->voffset;
@@ -632,7 +632,7 @@ namespace
                         e.maxvert = 0;
                         if(t.tris.length())
                         {
-                            memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
+                            std::memcpy(curbuf, t.tris.getbuf(), t.tris.length() * sizeof(ushort));
                             for(int j = 0; j < t.tris.length(); j++)
                             {
                                 curbuf[j] += va->voffset;
