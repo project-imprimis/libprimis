@@ -916,7 +916,7 @@ namespace
         { vec( 0, -1,  0), vec( 0,  1,  0), vec( 1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0), vec(-1,  0,  0) },
     };
 
-    void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, int *index, int numverts, int tj)
+    void addtris(VSlot &vslot, int orient, const sortkey &key, vertex *verts, const int *index, int numverts, int tj)
     {
         int &total = key.tex == Default_Sky ? vc.skytris : vc.worldtris,
              edge  = orient*(Face_MaxVerts+1);
