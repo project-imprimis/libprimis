@@ -1574,7 +1574,7 @@ static void compileunescapestring(vector<uint> &code, const char *&p, bool macro
     code.add(macro ? Code_Macro : Code_Val|Ret_String);
     char *buf = reinterpret_cast<char *>(code.reserve(static_cast<int>(end-p)/sizeof(uint) + 1).buf);
     int len = unescapestring(buf, p, end);
-    memset(&buf[len], 0, sizeof(uint) - len%sizeof(uint));
+    std::memset(&buf[len], 0, sizeof(uint) - len%sizeof(uint));
     code.last() |= len<<8;
     code.advance(len/sizeof(uint) + 1);
     p = end;
@@ -2232,7 +2232,7 @@ static bool compileblockstr(vector<uint> &code, const char *str, const char *end
         }
     }
 done:
-    memset(&buf[len], '\0', sizeof(uint)-len%sizeof(uint));
+    std::memset(&buf[len], '\0', sizeof(uint)-len%sizeof(uint));
     code.advance(len/sizeof(uint)+1);
     code[start] |= len<<8;
     return true;
