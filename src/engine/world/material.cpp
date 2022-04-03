@@ -284,7 +284,7 @@ namespace
             {
                 n.o[r] = m[i].o[r];
                 n.rsize += m[i].rsize;
-                memmove(&m[i], &m[i+1], (sz - (i+1)) * sizeof(materialsurface));
+                std::memmove(&m[i], &m[i+1], (sz - (i+1)) * sizeof(materialsurface));
                 return 1;
             }
         }
@@ -794,7 +794,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
         {
             if(start!=matbuf)
             {
-                memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+                std::memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
             }
             matbuf += mergemats(matbuf, cur-start);
         }
@@ -811,7 +811,7 @@ int optimizematsurfs(materialsurface *matbuf, int matsurfs)
         {
             if(start!=matbuf)
             {
-                memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
+                std::memmove(matbuf, start, (cur-start)*sizeof(materialsurface));
             }
             matbuf += cur-start;
         }
