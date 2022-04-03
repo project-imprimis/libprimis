@@ -78,7 +78,7 @@ void EditLine::prepend(const char *str)
     int slen = std::strlen(str);
     if(!grow(slen + len, "%s%s", str, text ? text : ""))
     {
-        memmove(&text[slen], text, len + 1);
+        std::memmove(&text[slen], text, len + 1);
         memcpy(text, str, slen + 1);
     }
     len += slen;
@@ -152,7 +152,7 @@ void EditLine::del(int start, int count)
     {
         count = len - start - 1;
     }
-    memmove(&text[start], &text[start+count], len + 1 - (start + count));
+    std::memmove(&text[start], &text[start+count], len + 1 - (start + count));
     len -= count;
 }
 
@@ -174,7 +174,7 @@ void EditLine::insert(char *str, int start, int count)
     }
     start = std::clamp(start, 0, len);
     grow(len + count, "%s", text ? text : "");
-    memmove(&text[start + count], &text[start], len - start + 1);
+    std::memmove(&text[start + count], &text[start], len - start + 1);
     memcpy(&text[start], str, count);
     len += count;
 }
