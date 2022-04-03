@@ -157,7 +157,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
                     {
                         continue;
                     }
-                    memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
+                    std::memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
                     surf.verts = offset;
                     offset += numverts;
                 }
@@ -176,7 +176,7 @@ void setsurface(cube &c, int orient, const surfaceinfo &src, const vertinfo *src
                         continue;
                     }
                     offset -= numverts;
-                    memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
+                    std::memmove(ext->verts() + offset, c.ext->verts() + surf.verts, numverts*sizeof(vertinfo));
                     surf.verts = offset;
                 }
             }
