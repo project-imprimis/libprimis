@@ -319,10 +319,6 @@ void GBuffer::rendertransparent()
                 rendertransparentmodelbatches(layer+1);
                 break;
             }
-            default:
-            {
-                break;
-            }
         }
 
         if(wireframe && editmode)
