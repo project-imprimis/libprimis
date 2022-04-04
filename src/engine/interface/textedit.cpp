@@ -61,13 +61,13 @@ void EditLine::set(const char *str, int slen)
         slen = std::strlen(str);
         if(!grow(slen, "%s", str))
         {
-            memcpy(text, str, slen + 1);
+            std::memcpy(text, str, slen + 1);
         }
     }
     else
     {
         grow(slen);
-        memcpy(text, str, slen);
+        std::memcpy(text, str, slen);
         text[slen] = '\0';
     }
     len = slen;
@@ -79,7 +79,7 @@ void EditLine::prepend(const char *str)
     if(!grow(slen + len, "%s%s", str, text ? text : ""))
     {
         std::memmove(&text[slen], text, len + 1);
-        memcpy(text, str, slen + 1);
+        std::memcpy(text, str, slen + 1);
     }
     len += slen;
 }
@@ -89,7 +89,7 @@ void EditLine::append(const char *str)
     int slen = std::strlen(str);
     if(!grow(len + slen, "%s%s", text ? text : "", str))
     {
-        memcpy(&text[len], str, slen + 1);
+        std::memcpy(&text[len], str, slen + 1);
     }
     len += slen;
 }
@@ -175,7 +175,7 @@ void EditLine::insert(char *str, int start, int count)
     start = std::clamp(start, 0, len);
     grow(len + count, "%s", text ? text : "");
     std::memmove(&text[start + count], &text[start], len - start + 1);
-    memcpy(&text[start], str, count);
+    std::memcpy(&text[start], str, count);
     len += count;
 }
 
@@ -448,7 +448,7 @@ char *Editor::tostring()
     for(int i = 0; i < lines.length(); i++)
     {
         EditLine &l = lines[i];
-        memcpy(&str[offset], l.text, l.len);
+        std::memcpy(&str[offset], l.text, l.len);
         offset += l.len;
         str[offset++] = '\n';
     }
