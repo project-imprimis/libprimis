@@ -366,7 +366,7 @@ void viewrh()
 void clearradiancehintscache()
 {
     rh.clearcache();
-    memset(rhclearmasks, 0, sizeof(rhclearmasks));
+    std::memset(rhclearmasks, 0, sizeof(rhclearmasks));
 }
 
 bool useradiancehints()
@@ -597,7 +597,7 @@ void radiancehints::renderslices()
         }
 
         uint clearmasks[(rhmaxgrid+2+31)/32];
-        memset(clearmasks, 0xFF, sizeof(clearmasks));
+        std::memset(clearmasks, 0xFF, sizeof(clearmasks));
 
         int sy = rhrect ? i*sh : 0;
         for(int j = sh; --j >= 0;) //note reverse iteration
