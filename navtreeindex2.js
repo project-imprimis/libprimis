@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663":[10,0,39,0],
+"structundoblock.html#ac7993663dac147f8134a9f24ec91a876":[10,0,39,2],
 "structundoent.html":[10,0,40],
 "structundolist.html":[10,0,41],
 "structvec.html":[10,0,42],
