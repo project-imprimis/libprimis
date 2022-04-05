@@ -63,28 +63,9 @@ struct skelmodel : animmodel
             float weights[4];
             uchar bones[4], interpbones[4];
 
-            blendcombo() : uses(1)
-            {
-            }
+            blendcombo();
 
-            bool operator==(const blendcombo &c) const
-            {
-                for(int k = 0; k < 4; ++k)
-                {
-                    if(bones[k] != c.bones[k])
-                    {
-                        return false;
-                    }
-                }
-                for(int k = 0; k < 4; ++k)
-                {
-                    if(weights[k] != c.weights[k])
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
+            bool operator==(const blendcombo &c) const;
 
             int size() const;
             static bool sortcmp(const blendcombo &x, const blendcombo &y);

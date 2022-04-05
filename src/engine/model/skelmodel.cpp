@@ -38,6 +38,29 @@ VAR(maxskelanimdata, 1, 192, 0); //sets maximum number of gpu bones
 
 hashnameset<skelmodel::skeleton *> skelmodel::skeletons;
 
+skelmodel::blendcombo::blendcombo() : uses(1)
+{
+}
+
+bool skelmodel::blendcombo::operator==(const blendcombo &c) const
+{
+    for(int k = 0; k < 4; ++k)
+    {
+        if(bones[k] != c.bones[k])
+        {
+            return false;
+        }
+    }
+    for(int k = 0; k < 4; ++k)
+    {
+        if(weights[k] != c.weights[k])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep)
 {
     int len = sep ? std::strlen(name) : 0;
