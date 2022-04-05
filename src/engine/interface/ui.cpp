@@ -2775,7 +2775,6 @@ namespace UI
     {
         floatret(FONTH*uicontextscale);
     }
-    COMMANDN(uicontextscale, uicontextscalecmd, "");
 
     struct Console : Filler
     {
@@ -4350,6 +4349,7 @@ namespace UI
         }
     };
 
+    //new ui command
     void newui(char *name, char *contents, char *onshow, char *onhide)
     {
         Window *window = windows.find(name, nullptr);
@@ -4364,8 +4364,8 @@ namespace UI
         }
         windows[name] = new Window(name, contents, onshow, onhide);
     }
-    COMMAND(newui, "ssss");
 
+    //command
     void uiallowinput(int *val)
     {
         if(window)
@@ -4377,8 +4377,8 @@ namespace UI
             intret(window->allowinput ? 1 : 0);
         }
     }
-    COMMAND(uiallowinput, "b");
 
+    //command
     void uieschide (int *val)
     {
         if(window)
@@ -4390,7 +4390,6 @@ namespace UI
             }
         }
     }
-    COMMAND(uieschide, "b");
 
     bool showui(const char *name)
     {
@@ -4676,6 +4675,11 @@ namespace UI
         addcommand("uiprefabpreview", reinterpret_cast<identfun>(+[] (char *prefab, int *color, float *minw, float *minh, uint *children) { BUILD(PrefabPreview, o, o->setup(prefab, *color, *minw, *minh), children); }), "siffe", Id_Command);
         addcommand("uislotview", reinterpret_cast<identfun>(+[] (int *index, float *minw, float *minh, uint *children) { BUILD(SlotViewer, o, o->setup(*index, *minw, *minh), children); }), "iffe", Id_Command);
         addcommand("uivslotview", reinterpret_cast<identfun>(+[] (int *index, float *minw, float *minh, uint *children) { BUILD(VSlotViewer, o, o->setup(*index, *minw, *minh), children); }), "iffe", Id_Command);
+
+        addcommand("uicontextscale", (identfun)uicontextscalecmd, "", Id_Command);
+        addcommand("newui", (identfun)newui, "ssss", Id_Command);
+        addcommand("uiallowinput", (identfun)uiallowinput, "b", Id_Command);
+        addcommand("uieschide", (identfun)uieschide, "b", Id_Command);
     }
 
     bool hascursor()
