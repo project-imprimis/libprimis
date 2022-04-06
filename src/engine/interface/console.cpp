@@ -330,7 +330,7 @@ namespace
     {
         ENUMERATE(keyms, KeyM, km,
         {
-            if(!std::strcasecmp(km.name, key))
+            if(!strcasecmp(km.name, key))
             {
                 return &km;
             }
