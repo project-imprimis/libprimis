@@ -1703,7 +1703,7 @@ static bool getbool(const char *s)
         case '0':
         {
             char *end;
-            int val = static_cast<int>(strtoul(const_cast<char *>(s), &end, 0));
+            int val = static_cast<int>(std::strtoul(const_cast<char *>(s), &end, 0));
             if(val)
             {
                 return true;
@@ -2833,7 +2833,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                 case Value_CAny:
                 {
                     char *end = const_cast<char *>(idname.str);
-                    int val = static_cast<int>(strtoul(idname.str, &end, 0));
+                    int val = static_cast<int>(std::strtoul(idname.str, &end, 0));
                     if(end < idname.end())
                     {
                         compilestr(code, idname, rettype==Value_CAny);
