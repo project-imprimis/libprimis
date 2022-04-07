@@ -4676,10 +4676,10 @@ namespace UI
         addcommand("uislotview", reinterpret_cast<identfun>(+[] (int *index, float *minw, float *minh, uint *children) { BUILD(SlotViewer, o, o->setup(*index, *minw, *minh), children); }), "iffe", Id_Command);
         addcommand("uivslotview", reinterpret_cast<identfun>(+[] (int *index, float *minw, float *minh, uint *children) { BUILD(VSlotViewer, o, o->setup(*index, *minw, *minh), children); }), "iffe", Id_Command);
 
-        addcommand("uicontextscale", (identfun)uicontextscalecmd, "", Id_Command);
-        addcommand("newui", (identfun)newui, "ssss", Id_Command);
-        addcommand("uiallowinput", (identfun)uiallowinput, "b", Id_Command);
-        addcommand("uieschide", (identfun)uieschide, "b", Id_Command);
+        addcommand("uicontextscale", reinterpret_cast<identfun>(uicontextscalecmd), "", Id_Command);
+        addcommand("newui", reinterpret_cast<identfun>(newui), "ssss", Id_Command);
+        addcommand("uiallowinput", reinterpret_cast<identfun>(uiallowinput), "b", Id_Command);
+        addcommand("uieschide", reinterpret_cast<identfun>(uieschide), "b", Id_Command);
     }
 
     bool hascursor()
