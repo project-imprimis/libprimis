@@ -49,11 +49,11 @@ bool execfile(const char *cfgfile, bool msg)
     return true;
 }
 
+//cmd
 static void exec(char *file, int *msg)
 {
     intret(execfile(file, *msg != 0) ? 1 : 0);
 }
-static bool dummy_exec = addcommand("exec", (identfun)exec, "sb", Id_Command);
 
 const char *escapestring(const char *s)
 {
@@ -81,7 +81,6 @@ static void escapecmd(char *s)
 {
     result(escapestring(s));
 }
-static bool dummy_escapecmd = addcommand("escape", (identfun)escapecmd, "s", Id_Command);
 
 static void unescapecmd(char *s)
 {
@@ -90,7 +89,6 @@ static void unescapecmd(char *s)
     unescapestring(d, s, &s[len]);
     stringret(d);
 }
-static bool dummy_unescapecmd = addcommand("unescape", (identfun)unescapecmd, "s", Id_Command);
 
 const char *escapeid(const char *s)
 {
@@ -231,7 +229,6 @@ void writecfg(const char *savedconfig, const char *autoexec, const char *default
     writecompletions(f);
     delete f;
 }
-static bool dummy_writecfg = addcommand("writecfg", (identfun)writecfg, "s", Id_Command);
 
 void changedvars()
 {
@@ -243,7 +240,6 @@ void changedvars()
         printvar(ids[i]);
     }
 }
-static bool dummy_changedvars = addcommand("changedvars", (identfun)changedvars, "", Id_Command);
 
 static string retbuf[4];
 static int retidx = 0;
@@ -292,7 +288,6 @@ void numberret(double v)
     }
 }
 
-bool docmd = addcommand("do", reinterpret_cast<identfun>(+[] (uint *body) { executeret(body, *commandret); }), "e", Id_Do);
 
 static void doargs(uint *body)
 {
@@ -307,12 +302,6 @@ static void doargs(uint *body)
         executeret(body, *commandret);
     }
 }
-static bool dummy_doargs = addcommand("doargs", (identfun)doargs, "e", Id_DoArgs);
-
-bool ifcmd = addcommand("if", reinterpret_cast<identfun>(+[] (tagval *cond, uint *t, uint *f) { executeret(getbool(*cond) ? t : f, *commandret); }), "tee", Id_If);
-bool boolcmd = addcommand("?", reinterpret_cast<identfun>(+[] (tagval *cond, tagval *t, tagval *f) { result(*(getbool(*cond) ? t : f)); }), "tTT", Id_Command);
-
-bool _icmd_pushif = addcommand("pushif", reinterpret_cast<identfun>(+[] (ident *id, tagval *v, uint *code) { { if(id->type != Id_Alias || id->index < Max_Args) { return; } if(getbool(*v)) { identstack stack; pusharg(*id, *v, stack); v->type = Value_Null; id->flags &= ~Idf_Unknown; executeret(code, *commandret); poparg(*id); } }; }), "rTe", Id_Command);
 
 void loopiter(ident *id, identstack &stack, const tagval &v)
 {
@@ -385,12 +374,6 @@ static void doloop(ident &id, int offset, int n, int step, uint *body)
     }
     poparg(id);
 }
-bool _icmd_loop = addcommand("loop", reinterpret_cast<identfun>(+[] (ident *id, int *n, uint *body) { doloop(*id, 0, *n, 1, body); }), "rie", Id_Command);
-bool looppluscmd = addcommand("loop+", reinterpret_cast<identfun>(+[] (ident *id, int *offset, int *n, uint *body) { doloop(*id, *offset, *n, 1, body); }), "riie", Id_Command);
-bool loopstarcmd = addcommand("loop*", reinterpret_cast<identfun>(+[] (ident *id, int *step, int *n, uint *body) { doloop(*id, 0, *n, *step, body); }), "riie", Id_Command);
-bool loopstarplus = addcommand("loop+*", reinterpret_cast<identfun>(+[] (ident *id, int *offset, int *step, int *n, uint *body) { doloop(*id, *offset, *n, *step, body); }), "riiie", Id_Command);
-
-bool whilecmd = addcommand("while", reinterpret_cast<identfun>(+[] (uint *cond, uint *body) { while(executebool(cond)) execute(body); }), "ee", Id_Command);
 
 static void loopconc(ident &id, int offset, int n, uint *body, bool space)
 {
@@ -421,20 +404,16 @@ static void loopconc(ident &id, int offset, int n, uint *body, bool space)
     s.add('\0');
     commandret->setstr(s.disown());
 }
-bool _icmd_loopconcat = addcommand("loopconcat", reinterpret_cast<identfun>(+[] (ident *id, int *n, uint *body) { loopconc(*id, 0, *n, body, true); }), "rie", Id_Command);
-bool loopconcatplus = addcommand("loopconcat+", reinterpret_cast<identfun>(+[] (ident *id, int *offset, int *n, uint *body) { loopconc(*id, *offset, *n, body, true); }), "riie", Id_Command);
 
 void concat(tagval *v, int n)
 {
     commandret->setstr(conc(v, n, true));
 }
-static bool dummy_concat = addcommand("concat", (identfun)concat, "V", Id_Command);
 
 void concatword(tagval *v, int n)
 {
     commandret->setstr(conc(v, n, false));
 }
-static bool dummy_concatword = addcommand("concatword", (identfun)concatword, "V", Id_Command);
 
 void append(ident *id, tagval *v, bool space)
 {
@@ -462,8 +441,6 @@ void append(ident *id, tagval *v, bool space)
     }
 
 }
-bool _icmd_append = addcommand("append", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, true); }), "rt", Id_Command);
-bool _icmd_appendword = addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, false); }), "rt", Id_Command);
 
 void result(tagval &v)
 {
@@ -480,12 +457,6 @@ void result(const char *s)
 {
     commandret->setstr(newstring(s));
 }
-
-bool _icmd_result = addcommand("result", reinterpret_cast<identfun>(+[] (tagval *v) { { *commandret = *v; v->type = Value_Null; }; }), "T", Id_Result);
-
-
-
-  ;
 
 void format(tagval *args, int numargs)
 {
@@ -519,7 +490,6 @@ void format(tagval *args, int numargs)
     s.add('\0');
     commandret->setstr(s.disown());
 }
-static bool dummy_format = addcommand("format", (identfun)format, "V", Id_Command);
 
 static const char *liststart      = nullptr,
                   *listend        = nullptr,
@@ -682,7 +652,6 @@ void listlencmd(const char *s)
 {
     intret(listlen(s));
 }
-static bool dummy_listlencmd = addcommand("listlen", (identfun)listlencmd, "s", Id_Command);
 
 void at(tagval *args, int numargs)
 {
@@ -711,7 +680,6 @@ void at(tagval *args, int numargs)
     }
     commandret->setstr(listelem(start, end, qstart));
 }
-static bool dummy_at = addcommand("at", (identfun)at, "si1V", Id_Command);
 
 void substr(char *s, int *start, int *count, int *numargs)
 {
@@ -719,7 +687,6 @@ void substr(char *s, int *start, int *count, int *numargs)
         offset = std::clamp(*start, 0, len);
     commandret->setstr(newstring(&s[offset], *numargs >= 3 ? std::clamp(*count, 0, len - offset) : len - offset));
 }
-static bool dummy_substr = addcommand("substr", (identfun)substr, "siiN", Id_Command);
 
 void sublist(const char *s, int *skip, int *count, int *numargs)
 {
@@ -753,7 +720,6 @@ void sublist(const char *s, int *skip, int *count, int *numargs)
     }
     commandret->setstr(newstring(list, qend - list));
 }
-static bool dummy_sublist = addcommand("sublist", (identfun)sublist, "siiN", Id_Command);
 
 void stripcolors(char *s)
 {
@@ -762,7 +728,6 @@ void stripcolors(char *s)
     filtertext(d, s, true, false, len);
     stringret(d);
 }
-static bool dummy_stripcolors = addcommand("stripcolors", (identfun)stripcolors, "s", Id_Command);
 
 static void setiter(ident &id, char *val, identstack &stack)
 {
@@ -814,7 +779,6 @@ found: //if element is found in list
         poparg(*id);
     }
 }
-static bool dummy_listfind = addcommand("listfind", (identfun)listfind, "rse", Id_Command);
 
 //note: the goto here is the opposite of listfind above: goto triggers when elem not found
 void listfindeq(char *list, int *val, int *skip)
@@ -839,7 +803,6 @@ void listfindeq(char *list, int *val, int *skip)
 notfound:
     intret(-1);
 }
-static bool dummy_listfindeq = addcommand("listfind=", (identfun)listfindeq, "sii", Id_Command);
 
 void listassoceq(char *list, int *val)
 {
@@ -859,7 +822,6 @@ void listassoceq(char *list, int *val)
         }
     }
 }
-static bool dummy_listassoceq = addcommand("listassoc=", (identfun)listassoceq, "si", Id_Command);
 
 void looplist(ident *id, const char *list, const uint *body)
 {
@@ -879,7 +841,6 @@ void looplist(ident *id, const char *list, const uint *body)
         poparg(*id);
     }
 }
-static bool dummy_looplist = addcommand("looplist", (identfun)looplist, "rse", Id_Command);
 
 void looplist2(ident *id, ident *id2, const char *list, const uint *body)
 {
@@ -901,7 +862,6 @@ void looplist2(ident *id, ident *id2, const char *list, const uint *body)
         poparg(*id2);
     }
 }
-static bool dummy_looplist2 = addcommand("looplist2", (identfun)looplist2, "rrse", Id_Command);
 
 void looplist3(ident *id, ident *id2, ident *id3, const char *list, const uint *body)
 {
@@ -925,7 +885,6 @@ void looplist3(ident *id, ident *id2, ident *id3, const char *list, const uint *
         poparg(*id3);
     }
 }
-static bool dummy_looplist3 = addcommand("looplist3", (identfun)looplist3, "rrrse", Id_Command);
 
 void looplistconc(ident *id, const char *list, const uint *body, bool space)
 {
@@ -958,8 +917,6 @@ void looplistconc(ident *id, const char *list, const uint *body, bool space)
     r.add('\0');
     commandret->setstr(r.disown());
 }
-bool _icmd_looplistconcat = addcommand("looplistconcat", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, true); }), "rse", Id_Command);
-bool _icmd_looplistconcatword = addcommand("looplistconcatword", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, false); }), "rse", Id_Command);
 
 void listcount(ident *id, const char *list, const uint *body)
 {
@@ -985,7 +942,6 @@ void listcount(ident *id, const char *list, const uint *body)
     }
     intret(r);
 }
-static bool dummy_listcount = addcommand("listcount", (identfun)listcount, "rse", Id_Command);
 
 void prettylist(const char *s, const char *conj)
 {
@@ -1018,7 +974,6 @@ void prettylist(const char *s, const char *conj)
     p.add('\0');
     commandret->setstr(p.disown());
 }
-static bool dummy_prettylist = addcommand("prettylist", (identfun)prettylist, "ss", Id_Command);
 
 //returns the int position of the needle inside the passed list
 int listincludes(const char *list, const char *needle, int needlelen)
@@ -1035,12 +990,6 @@ int listincludes(const char *list, const char *needle, int needlelen)
     }
     return -1;
 }
-bool _icmd_indexof = addcommand("indexof", reinterpret_cast<identfun>(+[] (char *list, char *elem) { intret(listincludes(list, elem, std::strlen(elem))); }), "ss", Id_Command);
-
-bool _icmd_listdel = addcommand("listdel", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; ; for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);) { int len = end - start; if(listincludes(elems, start, len) < 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
-bool _icmd_listintersect = addcommand("listintersect", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; ; for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);) { int len = end - start; if(listincludes(elems, start, len) >= 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
-bool _icmd_listunion = addcommand("listunion", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; p.put(list, std::strlen(list)); for(const char *start, *end, *qstart, *qend; parselist(elems, start, end, qstart, qend);) { int len = end - start; if(listincludes(list, start, len) < 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
-
 
 void listsplice(const char *s, const char *vals, int *skip, int *count)
 {
@@ -1098,7 +1047,6 @@ void listsplice(const char *s, const char *vals, int *skip, int *count)
     p.add('\0');
     commandret->setstr(p.disown());
 }
-static bool dummy_listsplice = addcommand("listsplice", (identfun)listsplice, "ssii", Id_Command);
 
 //executes the body for each file in the given path, using ident passed
 void loopfiles(ident *id, char *dir, char *ext, uint *body)
@@ -1122,7 +1070,6 @@ void loopfiles(ident *id, char *dir, char *ext, uint *body)
         poparg(*id);
     }
 }
-static bool dummy_loopfiles = addcommand("loopfiles", (identfun)loopfiles, "rsse", Id_Command);
 
 void findfile_(char *name)
 {
@@ -1134,7 +1081,6 @@ void findfile_(char *name)
         fileexists(fname, "e") || findfile(fname, "e") ? 1 : 0
     );
 }
-static bool dummy_findfile_ = addcommand("findfile", (identfun)findfile_, "s", Id_Command);
 
 struct SortItem
 {
@@ -1276,8 +1222,6 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
     sorted[offset] = '\0';
     commandret->setstr(sorted);
 }
-static bool dummy_sortlist = addcommand("sortlist", (identfun)sortlist, "srree", Id_Command);
-bool _icmd_uniquelist = addcommand("uniquelist", reinterpret_cast<identfun>(+[] (char *list, ident *x, ident *y, uint *body) { sortlist(list, x, y, nullptr, body); }), "srre", Id_Command);
 
 void initmathcmds()
 {
@@ -1453,9 +1397,6 @@ void initstrcmds()
     addcommand("strsplice", (identfun)strsplice, "ssii", Id_Command);
     addcommand("strreplace", reinterpret_cast<identfun>(+[] (char *s, char *o, char *n, char *n2) { commandret->setstr(strreplace(s, o, n, n2[0] ? n2 : n)); }), "ssss", Id_Command);
 }
-
-bool _icmd_getmillis = addcommand("getmillis", reinterpret_cast<identfun>(+[] (int *total) { intret(*total ? totalmillis : lastmillis); }), "i", Id_Command);
-
 struct sleepcmd
 {
     int delay, millis, flags;
@@ -1471,8 +1412,6 @@ void addsleep(int *msec, char *cmd)
     s.command = newstring(cmd);
     s.flags = identflags;
 }
-
-static bool dummy_addsleep = addcommand("sleep", (identfun)addsleep, "is", Id_Command);
 
 void checksleep(int millis)
 {
@@ -1521,4 +1460,62 @@ void clearsleep_(int *clearoverrides)
     clearsleep(*clearoverrides!=0 || identflags&Idf_Overridden);
 }
 
-static bool dummy_clearsleep_ = addcommand("clearsleep", (identfun)clearsleep_, "i", Id_Command);
+void initcontrolcmds()
+{
+    addcommand("exec", (identfun)exec, "sb", Id_Command);
+    addcommand("escape", (identfun)escapecmd, "s", Id_Command);
+    addcommand("unescape", (identfun)unescapecmd, "s", Id_Command);
+    addcommand("writecfg", (identfun)writecfg, "s", Id_Command);
+    addcommand("changedvars", (identfun)changedvars, "", Id_Command);
+    addcommand("doargs", (identfun)doargs, "e", Id_DoArgs);
+
+    addcommand("if", reinterpret_cast<identfun>(+[] (tagval *cond, uint *t, uint *f) { executeret(getbool(*cond) ? t : f, *commandret); }), "tee", Id_If);
+    addcommand("?", reinterpret_cast<identfun>(+[] (tagval *cond, tagval *t, tagval *f) { result(*(getbool(*cond) ? t : f)); }), "tTT", Id_Command);
+
+    addcommand("pushif", reinterpret_cast<identfun>(+[] (ident *id, tagval *v, uint *code) { { if(id->type != Id_Alias || id->index < Max_Args) { return; } if(getbool(*v)) { identstack stack; pusharg(*id, *v, stack); v->type = Value_Null; id->flags &= ~Idf_Unknown; executeret(code, *commandret); poparg(*id); } }; }), "rTe", Id_Command);
+    addcommand("do", reinterpret_cast<identfun>(+[] (uint *body) { executeret(body, *commandret); }), "e", Id_Do);
+    addcommand("append", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, true); }), "rt", Id_Command);
+    addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, false); }), "rt", Id_Command);
+    addcommand("result", reinterpret_cast<identfun>(+[] (tagval *v) { { *commandret = *v; v->type = Value_Null; }; }), "T", Id_Result);
+    addcommand("concat", (identfun)concat, "V", Id_Command);
+    addcommand("concatword", (identfun)concatword, "V", Id_Command);
+    addcommand("format", (identfun)format, "V", Id_Command);
+
+    addcommand("listlen", (identfun)listlencmd, "s", Id_Command);
+    addcommand("at", (identfun)at, "si1V", Id_Command);
+    addcommand("substr", (identfun)substr, "siiN", Id_Command);
+    addcommand("sublist", (identfun)sublist, "siiN", Id_Command);
+    addcommand("stripcolors", (identfun)stripcolors, "s", Id_Command);
+    addcommand("listcount", (identfun)listcount, "rse", Id_Command);
+    addcommand("listfind", (identfun)listfind, "rse", Id_Command);
+    addcommand("listfind=", (identfun)listfindeq, "sii", Id_Command);
+    addcommand("loop", reinterpret_cast<identfun>(+[] (ident *id, int *n, uint *body) { doloop(*id, 0, *n, 1, body); }), "rie", Id_Command);
+    addcommand("loop+", reinterpret_cast<identfun>(+[] (ident *id, int *offset, int *n, uint *body) { doloop(*id, *offset, *n, 1, body); }), "riie", Id_Command);
+    addcommand("loop*", reinterpret_cast<identfun>(+[] (ident *id, int *step, int *n, uint *body) { doloop(*id, 0, *n, *step, body); }), "riie", Id_Command);
+    addcommand("loop+*", reinterpret_cast<identfun>(+[] (ident *id, int *offset, int *step, int *n, uint *body) { doloop(*id, *offset, *n, *step, body); }), "riiie", Id_Command);
+    addcommand("loopconcat", reinterpret_cast<identfun>(+[] (ident *id, int *n, uint *body) { loopconc(*id, 0, *n, body, true); }), "rie", Id_Command);
+    addcommand("loopconcat+", reinterpret_cast<identfun>(+[] (ident *id, int *offset, int *n, uint *body) { loopconc(*id, *offset, *n, body, true); }), "riie", Id_Command);
+
+    addcommand("while", reinterpret_cast<identfun>(+[] (uint *cond, uint *body) { while(executebool(cond)) execute(body); }), "ee", Id_Command);
+
+    addcommand("looplist", (identfun)looplist, "rse", Id_Command);
+    addcommand("looplist2", (identfun)looplist2, "rrse", Id_Command);
+    addcommand("looplist3", (identfun)looplist3, "rrrse", Id_Command);
+    addcommand("listassoc=", (identfun)listassoceq, "si", Id_Command);
+    addcommand("looplistconcat", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, true); }), "rse", Id_Command);
+    addcommand("looplistconcatword", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, false); }), "rse", Id_Command);
+    addcommand("prettylist", (identfun)prettylist, "ss", Id_Command);
+    addcommand("indexof", reinterpret_cast<identfun>(+[] (char *list, char *elem) { intret(listincludes(list, elem, std::strlen(elem))); }), "ss", Id_Command);
+
+    addcommand("listdel", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; ; for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);) { int len = end - start; if(listincludes(elems, start, len) < 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
+    addcommand("listintersect", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; ; for(const char *start, *end, *qstart, *qend; parselist(list, start, end, qstart, qend);) { int len = end - start; if(listincludes(elems, start, len) >= 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
+    addcommand("listunion", reinterpret_cast<identfun>(+[] (const char *list, const char *elems) { { vector<char> p; p.put(list, std::strlen(list)); for(const char *start, *end, *qstart, *qend; parselist(elems, start, end, qstart, qend);) { int len = end - start; if(listincludes(list, start, len) < 0) { if(!p.empty()) p.add(' '); p.put(qstart, qend-qstart); } } p.add('\0'); commandret->setstr(p.disown()); }; }), "ss", Id_Command);
+    addcommand("loopfiles", (identfun)loopfiles, "rsse", Id_Command);
+    addcommand("listsplice", (identfun)listsplice, "ssii", Id_Command);
+    addcommand("findfile", (identfun)findfile_, "s", Id_Command);
+    addcommand("sortlist", (identfun)sortlist, "srree", Id_Command);
+    addcommand("uniquelist", reinterpret_cast<identfun>(+[] (char *list, ident *x, ident *y, uint *body) { sortlist(list, x, y, nullptr, body); }), "srre", Id_Command);
+    addcommand("getmillis", reinterpret_cast<identfun>(+[] (int *total) { intret(*total ? totalmillis : lastmillis); }), "i", Id_Command);
+    addcommand("sleep", (identfun)addsleep, "is", Id_Command);
+    addcommand("clearsleep", (identfun)clearsleep_, "i", Id_Command);
+}
