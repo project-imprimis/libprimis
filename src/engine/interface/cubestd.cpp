@@ -1396,6 +1396,13 @@ void initstrcmds()
 
     addcommand("strsplice", reinterpret_cast<identfun>(strsplice), "ssii", Id_Command);
     addcommand("strreplace", reinterpret_cast<identfun>(+[] (char *s, char *o, char *n, char *n2) { commandret->setstr(strreplace(s, o, n, n2[0] ? n2 : n)); }), "ssss", Id_Command);
+    addcommand("substr", reinterpret_cast<identfun>(substr), "siiN", Id_Command);
+    addcommand("stripcolors", reinterpret_cast<identfun>(stripcolors), "s", Id_Command);
+    addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, false); }), "rt", Id_Command);
+    addcommand("concat", reinterpret_cast<identfun>(concat), "V", Id_Command);
+    addcommand("concatword", reinterpret_cast<identfun>(concatword), "V", Id_Command);
+    addcommand("format", reinterpret_cast<identfun>(format), "V", Id_Command);
+
 }
 struct sleepcmd
 {
@@ -1475,18 +1482,11 @@ void initcontrolcmds()
     addcommand("pushif", reinterpret_cast<identfun>(+[] (ident *id, tagval *v, uint *code) { { if(id->type != Id_Alias || id->index < Max_Args) { return; } if(getbool(*v)) { identstack stack; pusharg(*id, *v, stack); v->type = Value_Null; id->flags &= ~Idf_Unknown; executeret(code, *commandret); poparg(*id); } }; }), "rTe", Id_Command);
     addcommand("do", reinterpret_cast<identfun>(+[] (uint *body) { executeret(body, *commandret); }), "e", Id_Do);
     addcommand("append", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, true); }), "rt", Id_Command);
-    addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, false); }), "rt", Id_Command);
     addcommand("result", reinterpret_cast<identfun>(+[] (tagval *v) { { *commandret = *v; v->type = Value_Null; }; }), "T", Id_Result);
-
-    addcommand("concat", reinterpret_cast<identfun>(concat), "V", Id_Command);
-    addcommand("concatword", reinterpret_cast<identfun>(concatword), "V", Id_Command);
-    addcommand("format", reinterpret_cast<identfun>(format), "V", Id_Command);
 
     addcommand("listlen", reinterpret_cast<identfun>(listlencmd), "s", Id_Command);
     addcommand("at", reinterpret_cast<identfun>(at), "si1V", Id_Command);
-    addcommand("substr", reinterpret_cast<identfun>(substr), "siiN", Id_Command);
     addcommand("sublist", reinterpret_cast<identfun>(sublist), "siiN", Id_Command);
-    addcommand("stripcolors", reinterpret_cast<identfun>(stripcolors), "s", Id_Command);
     addcommand("listcount", reinterpret_cast<identfun>(listcount), "rse", Id_Command);
     addcommand("listfind", reinterpret_cast<identfun>(listfind), "rse", Id_Command);
     addcommand("listfind=", reinterpret_cast<identfun>(listfindeq), "sii", Id_Command);
