@@ -289,6 +289,23 @@ namespace
         }
     };
 
+
+    KeyM *keypressed = nullptr;
+    char *keyaction = nullptr;
+
+    void KeyM::clear(int type)
+    {
+        char *&binding = actions[type];
+        if(binding[0])
+        {
+            if(!keypressed || keyaction!=binding)
+            {
+                delete[] binding;
+            }
+            binding = newstring("");
+        }
+    }
+
     hashtable<int, KeyM> keyms(128);
 
     void keymap(int *code, char *key)
@@ -304,9 +321,6 @@ namespace
         km.name = newstring(key);
     }
     COMMAND(keymap, "is");
-
-    KeyM *keypressed = nullptr;
-    char *keyaction = nullptr;
 
     void searchbinds(char *action, int type)
     {
@@ -428,19 +442,6 @@ namespace
         searchbinds(action, KeyM::Action_Editing);
     }
     COMMAND(searcheditbinds, "s");
-
-    void KeyM::clear(int type)
-    {
-        char *&binding = actions[type];
-        if(binding[0])
-        {
-            if(!keypressed || keyaction!=binding)
-            {
-                delete[] binding;
-            }
-            binding = newstring("");
-        }
-    }
 
     void clearbinds()
     {
