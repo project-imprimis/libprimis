@@ -1001,11 +1001,6 @@ Editor *useeditor(const char *name, int mode, bool focus, const char *initval)
     return e;
 }
 
-#define TEXTCOMMAND(f, s, d, body) ICOMMAND(f, s, d,\
-    if(!textfocus || identflags&Idf_Overridden) return;\
-    body\
-)
-
 void textlist()
 {
     vector<char> s;
