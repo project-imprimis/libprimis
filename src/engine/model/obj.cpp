@@ -234,7 +234,7 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     }
     for(int i = 0; i < 3; ++i)
     {
-        v[i] = strtod(s, &s);
+        v[i] = std::strtod(s, &s);
         while(isspace(*s))
         {
             s++;
