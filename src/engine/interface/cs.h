@@ -92,7 +92,7 @@ enum
     { \
         /* not all platforms (windows) can parse hexadecimal integers via strtod */ \
         char *end; \
-        double val = strtod(s, &end); \
+        double val = std::strtod(s, &end); \
         return val || end==s || (*end!='x' && *end!='X') ? type(val) : type(parseint(s)); \
     }
 PARSEFLOAT(float, float)
