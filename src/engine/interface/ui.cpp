@@ -4536,7 +4536,7 @@ namespace UI
             {
                 const char *s = t->getstr();
                 char *end;
-                float val = strtod(s, &end);
+                float val = std::strtod(s, &end);
                 return *end == 'p' ? val/size : val;
             }
         }
