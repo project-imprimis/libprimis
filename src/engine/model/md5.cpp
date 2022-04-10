@@ -203,7 +203,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
             {
                 for(char *src = buf, *next = src; numdata < animdatalen; numdata++, src = next)
                 {
-                    animdata[numdata] = strtod(src, &next);
+                    animdata[numdata] = std::strtod(src, &next);
                     if(next <= src)
                     {
                         break;
