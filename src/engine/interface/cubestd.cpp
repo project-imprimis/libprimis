@@ -623,7 +623,7 @@ static char *listelem(const char *start = liststart, const char *end = listend, 
     }
     else
     {
-        memcpy(s, start, len);
+        std::memcpy(s, start, len);
         s[len] = '\0';
     }
     return s;
@@ -1216,7 +1216,7 @@ void sortlist(char *list, ident *x, ident *y, uint *body, uint *unique)
         {
             sorted[offset++] = ' ';
         }
-        memcpy(&sorted[offset], item.quotestart, len);
+        std::memcpy(&sorted[offset], item.quotestart, len);
         offset += len;
     }
     sorted[offset] = '\0';
@@ -1363,15 +1363,15 @@ void strsplice(const char *s, const char *vals, int *skip, int *count)
     char *p = newstring(slen - len + vlen);
     if(offset)
     {
-        memcpy(p, s, offset);
+        std::memcpy(p, s, offset);
     }
     if(vlen)
     {
-        memcpy(&p[offset], vals, vlen);
+        std::memcpy(&p[offset], vals, vlen);
     }
     if(offset + len < slen)
     {
-        memcpy(&p[offset + vlen], &s[offset + len], slen - (offset + len));
+        std::memcpy(&p[offset + vlen], &s[offset + len], slen - (offset + len));
     }
     p[slen - len + vlen] = '\0';
     commandret->setstr(p);
