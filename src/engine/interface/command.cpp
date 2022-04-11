@@ -41,6 +41,111 @@ IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
 
 VARN(numargs, _numargs, Max_Args, 0, 0);
 
+int getint(const identval &v, int type)
+{
+    switch(type)
+    {
+        case Value_Float:
+        {
+            return int(v.f);
+        }
+        case Value_Integer:
+        {
+            return int(v.i);
+        }
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return parseint(v.s);
+        }
+        default:
+        {
+            return int(0);
+        }
+    }
+}
+
+int tagval::getint() const
+{
+    return ::getint(*this, type);
+}
+
+int ident::getint() const
+{
+    return ::getint(val, valtype);
+}
+
+float getfloat(const identval &v, int type)
+{
+    switch(type)
+    {
+        case Value_Float:
+        {
+            return float(v.f);
+        }
+        case Value_Integer:
+        {
+            return float(v.i);
+        }
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return parsefloat(v.s);
+        }
+        default:
+        {
+            return float(0);
+        }
+    }
+}
+
+float tagval::getfloat() const
+{
+    return ::getfloat(*this, type);
+}
+
+float ident::getfloat() const
+{
+    return ::getfloat(val, valtype);
+}
+
+double getnumber(const identval &v, int type)
+{
+    switch(type)
+    {
+        case Value_Float:
+        {
+            return double(v.f);
+        }
+        case Value_Integer:
+        {
+            return double(v.i);
+        }
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return parsenumber(v.s);
+        }
+        default:
+        {
+            return double(0);
+        }
+    }
+}
+
+double tagval::getnumber() const
+{
+    return ::getnumber(*this, type);
+}
+
+double ident::getnumber() const
+{
+    return ::getnumber(val, valtype);
+}
+
 void freearg(tagval &v)
 {
     switch(v.type)
