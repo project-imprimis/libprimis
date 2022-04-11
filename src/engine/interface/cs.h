@@ -98,45 +98,110 @@ enum
 PARSEFLOAT(float, float)
 PARSEFLOAT(number, double)
 
-//defines three getter functions, kind of like a bastard template (though we want the fxns to have different names)
-// very fun!
-#define GETNUMBER(name, ret) \
-    inline ret get##name(const identval &v, int type) \
-    { \
-        switch(type) \
-        { \
-            case Value_Float: \
-            { \
-                return ret(v.f); \
-            } \
-            case Value_Integer: \
-            { \
-                return ret(v.i); \
-            } \
-            case Value_String: \
-            case Value_Macro: \
-            case Value_CString: \
-            { \
-                return parse##name(v.s); \
-            } \
-            default: \
-            { \
-                return ret(0); \
-            } \
-        } \
-    } \
-    inline ret tagval::get##name() const \
-    { \
-        return ::get##name(*this, type); \
-    } \
-    inline ret ident::get##name() const \
-    { \
-        return ::get##name(val, valtype); \
+inline int getint(const identval &v, int type)
+{
+    switch(type)
+    {
+        case Value_Float:
+        {
+            return int(v.f);
+        }
+        case Value_Integer:
+        {
+            return int(v.i);
+        }
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return parseint(v.s);
+        }
+        default:
+        {
+            return int(0);
+        }
     }
+}
 
-GETNUMBER(int, int)
-GETNUMBER(float, float)
-GETNUMBER(number, double)
+inline int tagval::getint() const
+{
+    return ::getint(*this, type);
+}
+
+inline int ident::getint() const
+{
+    return ::getint(val, valtype);
+}
+
+inline float getfloat(const identval &v, int type)
+{
+    switch(type)
+    {
+        case Value_Float:
+        {
+            return float(v.f);
+        }
+        case Value_Integer:
+        {
+            return float(v.i);
+        }
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return parsefloat(v.s);
+        }
+        default:
+        {
+            return float(0);
+        }
+    }
+}
+
+inline float tagval::getfloat() const
+{
+    return ::getfloat(*this, type);
+}
+
+inline float ident::getfloat() const
+{
+    return ::getfloat(val, valtype);
+}
+
+inline double getnumber(const identval &v, int type)
+{
+    switch(type)
+    {
+        case Value_Float:
+        {
+            return double(v.f);
+        }
+        case Value_Integer:
+        {
+            return double(v.i);
+        }
+        case Value_String:
+        case Value_Macro:
+        case Value_CString:
+        {
+            return parsenumber(v.s);
+        }
+        default:
+        {
+            return double(0);
+        }
+    }
+}
+
+inline double tagval::getnumber() const
+{
+    return ::getnumber(*this, type);
+}
+
+inline double ident::getnumber() const
+{
+    return ::getnumber(val, valtype);
+}
 
 #define UNDOARGS \
     identstack argstack[Max_Args]; \
