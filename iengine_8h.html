@@ -192,9 +192,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>initsdl</b> ()</td></
 void&#160;</td><td class="memItemRight" valign="bottom"><b>initmathcmds</b> ()</td></tr>
 <tr class="memdesc:a0d19c32983e57d6e39c221333defc631"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds math commands to the cubescript interpreter. <br /></td></tr>
 <tr class="separator:a0d19c32983e57d6e39c221333defc631"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae83659cc94c57268eb698b0b12c55e33"><td class="memItemLeft" align="right" valign="top"><a id="ae83659cc94c57268eb698b0b12c55e33" name="ae83659cc94c57268eb698b0b12c55e33"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initstrcmds</b> ()</td></tr>
-<tr class="memdesc:ae83659cc94c57268eb698b0b12c55e33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds string commands to the cubescript interpreter. <br /></td></tr>
+<tr class="memitem:ae83659cc94c57268eb698b0b12c55e33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ae83659cc94c57268eb698b0b12c55e33">initstrcmds</a> ()</td></tr>
+<tr class="memdesc:ae83659cc94c57268eb698b0b12c55e33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds string commands to the cubescript interpreter.  <a href="iengine_8h.html#ae83659cc94c57268eb698b0b12c55e33">More...</a><br /></td></tr>
 <tr class="separator:ae83659cc94c57268eb698b0b12c55e33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa501d4482fd280a413f71443b73f8666"><td class="memItemLeft" align="right" valign="top"><a id="aa501d4482fd280a413f71443b73f8666" name="aa501d4482fd280a413f71443b73f8666"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>initcontrolcmds</b> ()</td></tr>
@@ -2297,6 +2296,43 @@ false if no entities selected </dd></dl>
 <p>Loads stains into the global stains array. </p>
 <p >Sets up each entry in the stains global variable array using init() method and then preloads them.</p>
 <p >Fails to do anything if initing is set (early game loading time). </p>
+
+</div>
+</div>
+<a id="ae83659cc94c57268eb698b0b12c55e33" name="ae83659cc94c57268eb698b0b12c55e33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae83659cc94c57268eb698b0b12c55e33">&#9670;&nbsp;</a></span>initstrcmds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void initstrcmds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds string commands to the cubescript interpreter. </p>
+<p ><code>echo</code> echoes the arguments passed directly to the console</p>
+<p ><code>error</code></p>
+<p ><code>strstr</code></p>
+<p ><code>strlen</code> returns the length of the string passed</p>
+<p ><code>strcode</code></p>
+<p ><code>codestr</code></p>
+<p ><code>struni</code></p>
+<p ><code>unistr</code></p>
+<p ><code>strlower</code> converts the string to lowercase</p>
+<p ><code>strupper</code> converts the string to uppercase</p>
+<p ><code>strsplice</code></p>
+<p ><code>strreplace</code></p>
+<p ><code>substr</code></p>
+<p ><code>stripcolors</code> strips any color formatting from the argument passed</p>
+<p ><code>appendword</code></p>
+<p ><code>concat</code> concatenates the strings passed, without inserting spaces between arguments</p>
+<p ><code>concatword</code> concatenates the strings passed, adding a space between each argument</p>
+<p ><code>format</code> nicely formats the string passed </p>
 
 </div>
 </div>
