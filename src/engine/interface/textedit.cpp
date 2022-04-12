@@ -1015,9 +1015,6 @@ void textlist()
     s.add('\0');
     result(s.getbuf());
 }
-COMMAND(textlist, "");
-
-ICOMMAND(textshow, "", (), if(!textfocus || identflags&Idf_Overridden) return; /* @DEBUG return the start of the buffer*/ EditLine line; line.combinelines(textfocus->lines); result(line.text); line.clear();)
 
 void textfocuscmd(char *name, int *mode)
 {
@@ -1034,10 +1031,6 @@ void textfocuscmd(char *name, int *mode)
         result(editors.last()->name);
     }
 }
-COMMANDN(textfocus, textfocuscmd, "si");
-
-ICOMMAND(textprev, "", (), if(!textfocus || identflags&Idf_Overridden) return; editors.insert(0, textfocus); editors.pop();); // return to the previous editor
-ICOMMAND(textmode, "i", (int *m), if(!textfocus || identflags&Idf_Overridden) return; /* (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args*/ if(*m) { textfocus->mode = *m; } else { intret(textfocus->mode); })
 
 void textsave(char *file)
 {
@@ -1047,7 +1040,7 @@ void textsave(char *file)
     }
     textfocus->save();
 }
-COMMAND(textsave, "s");
+
 
 void textload(char *file)
 {
@@ -1061,7 +1054,7 @@ void textload(char *file)
         result(textfocus->filename);
     }
 }
-COMMAND(textload, "s");
+
 
 void textinit(char *name, char *file, char *initval)
 {
@@ -1084,17 +1077,24 @@ void textinit(char *name, char *file, char *initval)
         e->load();
     }
 }
-COMMAND(textinit, "sss"); // loads into named editor if no file assigned and editor has been rendered
 
 static const char * pastebuffer = "#pastebuffer";
 
-ICOMMAND(textcopy, "", (), if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->copyselectionto(b););
-ICOMMAND(textpaste, "", (), if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->insertallfrom(b););
-ICOMMAND(textmark, "i", (int *m), if(!textfocus || identflags&Idf_Overridden) return; /* (1=mark, 2=unmark), return current mark setting if no args*/ if(*m) { textfocus->mark(*m==1); } else { intret(textfocus->region() ? 1 : 2); });
-ICOMMAND(textselectall, "", (), if(!textfocus || identflags&Idf_Overridden) return; textfocus->selectall(););
-ICOMMAND(textclear, "", (), if(!textfocus || identflags&Idf_Overridden) return; textfocus->clear(););
-ICOMMAND(textcurrentline, "", (), if(!textfocus || identflags&Idf_Overridden) return; result(textfocus->currentline().text););
-
-ICOMMAND(textexec, "i", (int *selected), if(!textfocus || identflags&Idf_Overridden) return; /* execute script commands from the buffer (0=all, 1=selected region only)*/ char *script = *selected ? textfocus->selectiontostring() : textfocus->tostring(); execute(script); delete[] script;)
-
-
+void inittextcmds()
+{
+    addcommand("textinit", (identfun)textinit, "sss", Id_Command); // loads into named editor if no file assigned and editor has been rendered
+    addcommand("textlist", (identfun)textlist, "", Id_Command);
+    addcommand("textshow", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; /* @DEBUG return the start of the buffer*/ EditLine line; line.combinelines(textfocus->lines); result(line.text); line.clear();; }), "", Id_Command);
+    addcommand("textfocus", (identfun)textfocuscmd, "si", Id_Command);
+    addcommand("textprev", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; editors.insert(0, textfocus); editors.pop();; }), "", Id_Command);; // return to the previous editor
+    addcommand("textmode", reinterpret_cast<identfun>(+[] (int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args*/ if(*m) { textfocus->mode = *m; } else { intret(textfocus->mode); }; }), "i", Id_Command);
+    addcommand("textsave", (identfun)textsave, "s", Id_Command);
+    addcommand("textload", (identfun)textload, "s", Id_Command);
+    addcommand("textcopy", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->copyselectionto(b);; }), "", Id_Command);;
+    addcommand("textpaste", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->insertallfrom(b);; }), "", Id_Command);;
+    addcommand("textmark", reinterpret_cast<identfun>(+[] (int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1=mark, 2=unmark), return current mark setting if no args*/ if(*m) { textfocus->mark(*m==1); } else { intret(textfocus->region() ? 1 : 2); }; }), "i", Id_Command);;
+    addcommand("textselectall", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; textfocus->selectall();; }), "", Id_Command);;
+    addcommand("textclear", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; textfocus->clear();; }), "", Id_Command);;
+    addcommand("textcurrentline", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; result(textfocus->currentline().text);; }), "", Id_Command);;
+    addcommand("textexec", reinterpret_cast<identfun>(+[] (int *selected) { if(!textfocus || identflags&Idf_Overridden) return; /* execute script commands from the buffer (0=all, 1=selected region only)*/ char *script = *selected ? textfocus->selectiontostring() : textfocus->tostring(); execute(script); delete[] script;; }), "i", Id_Command);
+}
