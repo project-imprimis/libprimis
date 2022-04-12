@@ -899,36 +899,6 @@ struct DefVar : identval
 
 hashnameset<DefVar> defvars;
 
-#define DEFVAR(cmdname, fmt, args, body) \
-    ICOMMAND(cmdname, fmt, args, \
-    { \
-        if(idents.access(name)) \
-        { \
-            debugcode("cannot redefine %s as a variable", name); \
-            return; \
-        } \
-        name = newstring(name); \
-        DefVar &def = defvars[name]; \
-        def.name = name; \
-        def.onchange = onchange[0] ? compilecode(onchange) : nullptr; \
-        body; \
-    });
-#define DEFIVAR(cmdname, flags) \
-    DEFVAR(cmdname, "siiis", (char *name, int *min, int *cur, int *max, char *onchange), \
-        def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, flags))
-#define DEFFVAR(cmdname, flags) \
-    DEFVAR(cmdname, "sfffs", (char *name, float *min, float *cur, float *max, char *onchange), \
-        def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, flags))
-#define DEFSVAR(cmdname, flags) \
-    DEFVAR(cmdname, "sss", (char *name, char *cur, char *onchange), \
-        def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, flags))
-
-DEFIVAR(defvar, 0);
-DEFIVAR(defvarp, Idf_Persist);
-DEFFVAR(deffvar, 0);
-DEFFVAR(deffvarp, Idf_Persist);
-DEFSVAR(defsvar, 0);
-DEFSVAR(defsvarp, Idf_Persist);
 
 #define GETVAR_(id, vartype, name, retval) \
     ident *id = idents.access(name); \
@@ -1037,16 +1007,10 @@ float getfvarmax(const char *name)
     return id->maxvalf;
 }
 
-ICOMMAND(getvarmin, "s", (char *s), intret(getvarmin(s)));
-ICOMMAND(getvarmax, "s", (char *s), intret(getvarmax(s)));
-ICOMMAND(getfvarmin, "s", (char *s), floatret(getfvarmin(s)));
-ICOMMAND(getfvarmax, "s", (char *s), floatret(getfvarmax(s)));
-
 bool identexists(const char *name)
 {
     return idents.access(name) != nullptr;
 }
-ICOMMAND(identexists, "s", (char *s), intret(identexists(s) ? 1 : 0));
 
 ident *getident(const char *name)
 {
@@ -1073,8 +1037,6 @@ const char *getalias(const char *name)
     ident *i = idents.access(name);
     return i && i->type==Id_Alias && (i->index >= Max_Args || aliasstack->usedargs&(1<<i->index)) ? i->getstr() : "";
 }
-
-ICOMMAND(getalias, "s", (char *s), result(getalias(s)));
 
 int clampvar(ident *id, int val, int minval, int maxval)
 {
@@ -5271,4 +5233,19 @@ bool execidentbool(const char *name, bool noid, bool lookup)
 {
     ident *id = idents.access(name);
     return id ? executebool(id, nullptr, 0, lookup) : noid;
+}
+
+void initcscmds()
+{
+    addcommand("defvar", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0); }; }), "siiis", Id_Command);
+    addcommand("defvarp", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist); }; }), "siiis", Id_Command);
+    addcommand("deffvar", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, 0); }; }), "sfffs", Id_Command);
+    addcommand("deffvarp", reinterpret_cast<identfun>(+[] (char *name, float *min, float *cur, float *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.f = fvariable(name, *min, *cur, *max, &def.f, def.onchange ? DefVar::changed : nullptr, Idf_Persist); }; }), "sfffs", Id_Command);
+    addcommand("defsvar", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, 0); }; }), "sss", Id_Command);
+    addcommand("defsvarp", reinterpret_cast<identfun>(+[] (char *name, char *cur, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.s = svariable(name, cur, &def.s, def.onchange ? DefVar::changed : nullptr, Idf_Persist); }; }), "sss", Id_Command);
+    addcommand("getvarmin", reinterpret_cast<identfun>(+[] (char *s) { intret(getvarmin(s)); }), "s", Id_Command);
+    addcommand("getfvarmin", reinterpret_cast<identfun>(+[] (char *s) { floatret(getfvarmin(s)); }), "s", Id_Command);
+    addcommand("getfvarmax", reinterpret_cast<identfun>(+[] (char *s) { floatret(getfvarmax(s)); }), "s", Id_Command);
+    addcommand("identexists", reinterpret_cast<identfun>(+[] (char *s) { intret(identexists(s) ? 1 : 0); }), "s", Id_Command);
+    addcommand("getalias", reinterpret_cast<identfun>(+[] (char *s) { result(getalias(s)); }), "s", Id_Command);
 }
