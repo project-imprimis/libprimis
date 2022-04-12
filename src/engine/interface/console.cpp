@@ -108,13 +108,11 @@ namespace
             }
         }
     }
-    COMMAND(fullconsole, "iN$");
 
     void toggleconsole()
     {
         UI::toggleui("fullconsole");
     }
-    COMMAND(toggleconsole, "");
 
     VARP(consize, 0, 5, 100);                   //font size of the console text
     VARP(miniconsize, 0, 5, 100);               //miniature console font size
@@ -152,13 +150,11 @@ namespace
     {
         setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n);
     }
-    COMMANDN(conskip, conskipcmd, "i");
 
     void miniconskipcmd(int *n)
     {
         setconskip(miniconskip, miniconfilter, *n);
     }
-    COMMANDN(miniconskip, miniconskipcmd, "i");
 
     void clearconsole()
     {
@@ -168,7 +164,6 @@ namespace
             conlines.pop_back();
         }
     }
-    COMMAND(clearconsole, "");
 
     float drawconlines(int conskip, int confade, float conwidth, float conheight, float conoff, int filter, float y = 0, int dir = 1)
     {
@@ -320,7 +315,6 @@ namespace
         delete[] km.name;
         km.name = newstring(key);
     }
-    COMMAND(keymap, "is");
 
     void searchbinds(char *action, int type)
     {
@@ -393,79 +387,66 @@ namespace
     {
         bindkey(key, action, KeyM::Action_Default, "bind");
     }
-    COMMAND(bind, "ss");
 
     void specbind(char *key, char *action)
     {
         bindkey(key, action, KeyM::Action_Spectator, "specbind");
     }
-    COMMAND(specbind, "ss");
 
     void editbind(char *key, char *action)
     {
         bindkey(key, action, KeyM::Action_Editing, "editbind");
     }
-    COMMAND(editbind, "ss");
 
     void getbindcmd(char *key)
     {
         getbind(key, KeyM::Action_Default);
     }
-    COMMANDN(getbind, getbindcmd, "s");
 
     void getspecbind(char *key)
     {
         getbind(key, KeyM::Action_Spectator);
     }
-    COMMAND(getspecbind, "s");
 
     void geteditbind(char *key)
     {
         getbind(key, KeyM::Action_Editing);
     }
-    COMMAND(geteditbind, "s");
 
     void searchbindscmd(char *action)
     {
         searchbinds(action, KeyM::Action_Default);
     }
-    COMMANDN(searchbinds, searchbindscmd, "s");
 
     void searchspecbinds(char *action)
     {
         searchbinds(action, KeyM::Action_Spectator);
     }
-    COMMAND(searchspecbinds, "s");
 
     void searcheditbinds(char *action)
     {
         searchbinds(action, KeyM::Action_Editing);
     }
-    COMMAND(searcheditbinds, "s");
 
     void clearbinds()
     {
         ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
     }
-    COMMAND(clearbinds, "");
 
     void clearspecbinds()
     {
         ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
     }
-    COMMAND(clearspecbinds, "");
 
     void cleareditbinds()
     {
         ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
     }
-    COMMAND(cleareditbinds, "");
 
     void clearallbinds()
     {
         ENUMERATE(keyms, KeyM, km, km.clear());
     }
-    COMMAND(clearallbinds, "");
 
     void inputcommand(char *init, char *action = nullptr, char *prompt = nullptr, char *flags = nullptr) // turns input to the command line on or off
     {
@@ -518,13 +499,11 @@ namespace
             commandflags |= CmdFlags_Complete|CmdFlags_Execute;
         }
     }
-    COMMAND(inputcommand, "ssss");
 
     void saycommand(char *init)
     {
         inputcommand(init);
     }
-    COMMAND(saycommand, "C");
 
     void pasteconsole()
     {
@@ -640,7 +619,6 @@ namespace
             inhistory = false;
         }
     }
-    COMMANDN(history, historycmd, "i");
 
     struct releaseaction
     {
@@ -659,7 +637,6 @@ namespace
     {
         addreleaseaction(newstring(s));
     }
-    COMMAND(onrelease, "s");
 
     void execbind(KeyM &k, bool isdown)
     {
@@ -1032,13 +1009,11 @@ namespace
     {
         addcomplete(command, Files_Directory, dir, ext);
     }
-    COMMANDN(complete, addfilecomplete, "sss");
 
     void addlistcomplete(char *command, char *list)
     {
         addcomplete(command, Files_List, list, nullptr);
     }
-    COMMANDN(listcomplete, addlistcomplete, "ss");
 
     void complete(char *s, int maxlen, const char *cmdprefix)
     {
@@ -1296,4 +1271,33 @@ void writecompletions(stream *f)
             f->printf("complete %s %s %s\n", escapeid(k), escapestring(v->dir), escapestring(v->ext ? v->ext : "*"));
         }
     }
+}
+
+void initconsolecmds()
+{
+    addcommand("fullconsole", (identfun)fullconsole, "iN$", Id_Command);
+    addcommand("toggleconsole", (identfun)toggleconsole, "", Id_Command);
+    addcommand("conskip", (identfun)conskipcmd, "i", Id_Command);
+    addcommand("miniconskip", (identfun)miniconskipcmd, "i", Id_Command);
+    addcommand("clearconsole", (identfun)clearconsole, "", Id_Command);
+    addcommand("keymap", (identfun)keymap, "is", Id_Command);
+    addcommand("bind", (identfun)bind, "ss", Id_Command);
+    addcommand("specbind", (identfun)specbind, "ss", Id_Command);
+    addcommand("editbind", (identfun)editbind, "ss", Id_Command);
+    addcommand("getbind", (identfun)getbindcmd, "s", Id_Command);
+    addcommand("getspecbind", (identfun)getspecbind, "s", Id_Command);
+    addcommand("geteditbind", (identfun)geteditbind, "s", Id_Command);
+    addcommand("searchbinds", (identfun)searchbindscmd, "s", Id_Command);
+    addcommand("searchspecbinds", (identfun)searchspecbinds, "s", Id_Command);
+    addcommand("searcheditbinds", (identfun)searcheditbinds, "s", Id_Command);
+    addcommand("clearbinds", (identfun)clearbinds, "", Id_Command);
+    addcommand("clearspecbinds", (identfun)clearspecbinds, "", Id_Command);
+    addcommand("cleareditbinds", (identfun)cleareditbinds, "", Id_Command);
+    addcommand("clearallbinds", (identfun)clearallbinds, "", Id_Command);
+    addcommand("inputcommand", (identfun)inputcommand, "ssss", Id_Command);
+    addcommand("saycommand", (identfun)saycommand, "C", Id_Command);
+    addcommand("history", (identfun)historycmd, "i", Id_Command);
+    addcommand("onrelease", (identfun)onrelease, "s", Id_Command);
+    addcommand("complete", (identfun)addfilecomplete, "sss", Id_Command);
+    addcommand("listcomplete", (identfun)addlistcomplete, "ss", Id_Command);
 }
