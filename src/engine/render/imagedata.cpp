@@ -310,8 +310,8 @@ void ImageData::texoffset(int xoffset, int yoffset)
     for(int y = 0; y < h; ++y)
     {
         uchar *dst = static_cast<uchar *>(d.data)+((y+yoffset)%d.h)*d.pitch;
-        memcpy(dst+xoffset*bpp, src, (w-xoffset)*bpp);
-        memcpy(dst, src+(w-xoffset)*bpp, xoffset*bpp);
+        std::memcpy(dst+xoffset*bpp, src, (w-xoffset)*bpp);
+        std::memcpy(dst, src+(w-xoffset)*bpp, xoffset*bpp);
         src += pitch;
     }
     replace(d);
@@ -332,7 +332,7 @@ void ImageData::texcrop(int x, int y, int w, int h)
           *dst = d.data;
     for(int y = 0; y < h; ++y)
     {
-        memcpy(dst, src, w*bpp);
+        std::memcpy(dst, src, w*bpp);
         src += pitch;
         dst += d.pitch;
     }
