@@ -190,23 +190,6 @@ VARF(dragging, 0, 0, 1,
 
 int moving = 0;
 
-void movingcmd(int *n)
-{
-    if(*n >= 0)
-    {
-        if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1))))
-        {
-            moving = 0;
-        }
-        else if(!moving)
-        {
-            moving = 1;
-        }
-    }
-    intret(moving);
-}
-COMMANDN(moving, movingcmd, "b");
-
 VARF(gridpower, 0, 3, 12,
 {
     if(dragging)
@@ -283,72 +266,6 @@ void reorient()
     sel.orient = orient;
 }
 
-void selextend()
-{
-    if(noedit(true))
-    {
-        return;
-    }
-    for(int i = 0; i < 3; ++i)
-    {
-        if(cur[i]<sel.o[i])
-        {
-            sel.s[i] += (sel.o[i]-cur[i])/sel.grid;
-            sel.o[i] = cur[i];
-        }
-        else if(cur[i]>=sel.o[i]+sel.s[i]*sel.grid)
-        {
-            sel.s[i] = (cur[i]-sel.o[i])/sel.grid+1;
-        }
-    }
-}
-
-COMMAND(entcancel, "");
-COMMAND(cubecancel, "");
-COMMAND(cancelsel, "");
-COMMAND(reorient, "");
-COMMAND(selextend, "");
-
-void selmoved()
-{
-    if(noedit(true))
-    {
-        return;
-    }
-    intret(sel.o != savedsel.o ? 1 : 0);
-}
-COMMAND(selmoved, "");
-
-void selsave()
-{
-    if(noedit(true))
-    {
-        return;
-    }
-    savedsel = sel;
-}
-COMMAND(selsave, "");
-
-void selrestore()
-{
-    if(noedit(true))
-    {
-        return;
-    }
-    sel = savedsel;
-}
-COMMAND(selrestore, "");
-
-void selswap()
-{
-    if(noedit(true))
-    {
-        return;
-    }
-    std::swap(sel, savedsel);
-}
-COMMAND(selswap, "");
-
 ///////// selection support /////////////
 
 cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a world cube, based on coordinates mapped by the block
@@ -372,34 +289,6 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 
 int selchildcount = 0,
     selchildmat = -1;
-
-void haveselcmd()
-{
-    intret(havesel ? selchildcount : 0);
-}
-COMMANDN(havesel, haveselcmd, "");
-
-void selchildcountcmd()
-{
-    if(selchildcount < 0)
-    {
-        result(tempformatstring("1/%d", -selchildcount));
-    }
-    else
-    {
-        intret(selchildcount);
-    }
-}
-COMMANDN(selchildcount, selchildcountcmd, "");
-
-void selchildmatcmd(char *prefix)
-{
-    if(selchildmat > 0)
-    {
-        result(getmaterialdesc(selchildmat, prefix));
-    }
-}
-COMMANDN(selchildmat, selchildmatcmd, "s");
 
 void countselchild(cube *c, const ivec &cor, int size)
 {
@@ -678,13 +567,6 @@ void pruneundos(int maxremain)                          // bound memory
         freeundo(u);
     }
 }
-
-void clearundos()
-{
-    pruneundos(0);
-}
-
-COMMAND(clearundos, ""); //run pruneundos but with a cache size of zero
 
 undoblock *newundocube(const selinfo &s)
 {
@@ -1113,18 +995,6 @@ void cleanupprefabs()
     ENUMERATE(prefabs, prefab, p, p.cleanup());
 }
 
-void delprefab(char *name)
-{
-    prefab *p = prefabs.access(name);
-    if(p)
-    {
-        p->cleanup();
-        prefabs.remove(name);
-        conoutf("deleted prefab %s", name);
-    }
-}
-COMMAND(delprefab, "s");
-
 void pasteundoblock(block3 *b, uchar *g)
 {
     cube *s = b->c();
@@ -1148,61 +1018,6 @@ void unpackundocube(ucharbuf buf, uchar *outbuf)
     rootworld.changed(*b, false);
     freeblock(b);
 }
-/* saveprefab: saves the current selection to a prefab file
- *
- * Parameters:
- *  char * name: a string containing the name of the prefab to save (sans file type)
- * Returns:
- *  void
- * Effects:
- * Using the global variables for selection information, writes the current selection
- * to a prefab file with the given name. Does not save slot information, so pasting
- * into a map with a different texture slot list will result in meaningless textures.
- *
- */
-void saveprefab(char *name)
-{
-    if(!name[0] || noedit(true) || (nompedit && multiplayer))
-    {
-        multiplayerwarn();
-        return;
-    }
-    prefab *b = prefabs.access(name);
-    if(!b)
-    {
-        b = &prefabs[name];
-        b->name = newstring(name);
-    }
-    if(b->copy)
-    {
-        freeblock(b->copy);
-    }
-    PROTECT_SEL(b->copy = blockcopy(block3(sel), sel.grid));
-    rootworld.changed(sel);
-    DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
-    path(filename);
-    stream *f = opengzfile(filename, "wb");
-    if(!f)
-    {
-        conoutf(Console_Error, "could not write prefab to %s", filename);
-        return;
-    }
-    prefabheader hdr;
-    std::string headermagic = "OEBR";
-    std::copy(headermagic.begin(), headermagic.end(), hdr.magic);
-    hdr.version = 0;
-    f->write(&hdr, sizeof(hdr));
-    streambuf<uchar> s(f);
-    if(!packblock(*b->copy, s))
-    {
-        delete f;
-        conoutf(Console_Error, "could not pack prefab %s", filename);
-        return;
-    }
-    delete f;
-    conoutf("wrote prefab file %s", filename);
-}
-COMMAND(saveprefab, "s");
 
 void makeundo(selinfo &s)
 {
@@ -1289,21 +1104,6 @@ prefab *loadprefab(const char *name, bool msg = true)
 
     return b;
 }
-
-static void pasteprefab(char *name)
-{
-    if(!name[0] || noedit() || (nompedit && multiplayer))
-    {
-        multiplayerwarn();
-        return;
-    }
-    prefab *b = loadprefab(name, true);
-    if(b)
-    {
-        pasteblock(*b->copy, sel, true);
-    }
-}
-COMMAND(pasteprefab, "s");
 
 class prefabmesh
 {
@@ -1979,33 +1779,249 @@ void rendertexturepanel(int w, int h)
         resethudshader();
     }
 }
-//defines editing readonly variables, useful for the HUD
-#define EDITSTAT(name, type, val) \
-    void editstat##name() \
-    { \
-        static int laststat = 0; \
-        static type prevstat = 0; \
-        static type curstat = 0; \
-        if(totalmillis - laststat >= statrate) \
+
+void initoctaeditcmds()
+{
+    //some of these commands use code only needed for the command itself, so
+    //they are declared as lambdas inside the local scope
+
+    //others use functions in the global namespace, which are implemented elsewhere
+    //in this file
+
+    //static to make sure that these lambdas have constant location in memory for identmap to look up
+    static auto movingcmd = [] (int *n)
+    {
+        if(*n >= 0)
+        {
+            if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1))))
+            {
+                moving = 0;
+            }
+            else if(!moving)
+            {
+                moving = 1;
+            }
+        }
+        intret(moving);
+    };
+    //unary + operator converts to function pointer
+    addcommand("moving",        reinterpret_cast<identfun>(+movingcmd), "b", Id_Command);
+
+    addcommand("entcancel",     reinterpret_cast<identfun>(entcancel), "", Id_Command); ///
+    addcommand("cubecancel",    reinterpret_cast<identfun>(cubecancel), "", Id_Command); ///
+    addcommand("cancelsel",     reinterpret_cast<identfun>(cancelsel), "", Id_Command); ///
+    addcommand("reorient",      reinterpret_cast<identfun>(reorient), "", Id_Command); ///
+
+    static auto selextend = [] ()
+    {
+        if(noedit(true))
+        {
+            return;
+        }
+        for(int i = 0; i < 3; ++i)
+        {
+            if(cur[i]<sel.o[i])
+            {
+                sel.s[i] += (sel.o[i]-cur[i])/sel.grid;
+                sel.o[i] = cur[i];
+            }
+            else if(cur[i]>=sel.o[i]+sel.s[i]*sel.grid)
+            {
+                sel.s[i] = (cur[i]-sel.o[i])/sel.grid+1;
+            }
+        }
+    };
+    addcommand("selextend",     reinterpret_cast<identfun>(+selextend), "", Id_Command);
+
+    static auto selmoved = [] ()
+    {
+        if(noedit(true))
+        {
+            return;
+        }
+        intret(sel.o != savedsel.o ? 1 : 0);
+    };
+
+    static auto selsave = [] ()
+    {
+        if(noedit(true))
+        {
+            return;
+        }
+        savedsel = sel;
+    };
+
+    static auto selrestore = [] ()
+    {
+        if(noedit(true))
+        {
+            return;
+        }
+        sel = savedsel;
+    };
+
+    static auto selswap = [] ()
+    {
+        if(noedit(true))
+        {
+            return;
+        }
+        std::swap(sel, savedsel);
+    };
+
+    addcommand("selmoved",      reinterpret_cast<identfun>(+selmoved), "", Id_Command);
+    addcommand("selsave",       reinterpret_cast<identfun>(+selsave), "", Id_Command);
+    addcommand("selrestore",    reinterpret_cast<identfun>(+selrestore), "", Id_Command);
+    addcommand("selswap",       reinterpret_cast<identfun>(+selswap), "", Id_Command);
+
+    static auto haveselcmd = [] ()
+    {
+        intret(havesel ? selchildcount : 0);
+    };
+
+    addcommand("havesel",       reinterpret_cast<identfun>(+haveselcmd), "", Id_Command);
+
+
+    static auto selchildcountcmd = [] ()
+    {
+        if(selchildcount < 0)
+        {
+            result(tempformatstring("1/%d", -selchildcount));
+        }
+        else
+        {
+            intret(selchildcount);
+        }
+    };
+    addcommand("selchildnum", reinterpret_cast<identfun>(+selchildcountcmd), "", Id_Command);
+
+
+    static auto selchildmatcmd = [] (char *prefix)
+    {
+        if(selchildmat > 0)
+        {
+            result(getmaterialdesc(selchildmat, prefix));
+        }
+    };
+    addcommand("selchildmat",   reinterpret_cast<identfun>(+selchildmatcmd), "s", Id_Command);
+
+    static auto clearundos = [] ()
+    {
+        pruneundos(0);
+    };
+    addcommand("clearundos",    reinterpret_cast<identfun>(+clearundos), "", Id_Command); //run pruneundos but with a cache size of zero
+    
+    static auto delprefab = [] (char *name)
+    {
+        prefab *p = prefabs.access(name);
+        if(p)
+        {
+            p->cleanup();
+            prefabs.remove(name);
+            conoutf("deleted prefab %s", name);
+        }
+    };
+    addcommand("delprefab",     reinterpret_cast<identfun>(+delprefab), "s", Id_Command);
+
+    /* saveprefab: saves the current selection to a prefab file
+     *
+     * Parameters:
+     *  char * name: a string containing the name of the prefab to save (sans file type)
+     * Returns:
+     *  void
+     * Effects:
+     * Using the global variables for selection information, writes the current selection
+     * to a prefab file with the given name. Does not save slot information, so pasting
+     * into a map with a different texture slot list will result in meaningless textures.
+     *
+     */
+    static auto saveprefab = [] (char *name)
+    {
+        if(!name[0] || noedit(true) || (nompedit && multiplayer))
+        {
+            multiplayerwarn();
+            return;
+        }
+        prefab *b = prefabs.access(name);
+        if(!b)
+        {
+            b = &prefabs[name];
+            b->name = newstring(name);
+        }
+        if(b->copy)
+        {
+            freeblock(b->copy);
+        }
+        PROTECT_SEL(b->copy = blockcopy(block3(sel), sel.grid));
+        rootworld.changed(sel);
+        DEF_FORMAT_STRING(filename, "media/prefab/%s.obr", name);
+        path(filename);
+        stream *f = opengzfile(filename, "wb");
+        if(!f)
+        {
+            conoutf(Console_Error, "could not write prefab to %s", filename);
+            return;
+        }
+        prefabheader hdr;
+        std::string headermagic = "OEBR";
+        std::copy(headermagic.begin(), headermagic.end(), hdr.magic);
+        hdr.version = 0;
+        f->write(&hdr, sizeof(hdr));
+        streambuf<uchar> s(f);
+        if(!packblock(*b->copy, s))
+        {
+            delete f;
+            conoutf(Console_Error, "could not pack prefab %s", filename);
+            return;
+        }
+        delete f;
+        conoutf("wrote prefab file %s", filename);
+    };
+    addcommand("saveprefab",    reinterpret_cast<identfun>(+saveprefab), "s", Id_Command);
+
+    static auto pasteprefab = [] (char *name)
+    {
+        if(!name[0] || noedit() || (nompedit && multiplayer))
+        {
+            multiplayerwarn();
+            return;
+        }
+        prefab *b = loadprefab(name, true);
+        if(b)
+        {
+            pasteblock(*b->copy, sel, true);
+        }
+    };
+    addcommand("pasteprefab",   reinterpret_cast<identfun>(+pasteprefab), "s", Id_Command);
+
+    //defines editing readonly variables, useful for the HUD
+    #define EDITSTAT(name, val) \
+        static auto name = [] () \
         { \
-            prevstat = curstat; \
-            laststat = totalmillis - (totalmillis%statrate); \
-        } \
-        if(prevstat == curstat) curstat = (val); \
-        type##ret(curstat); \
-    } \
-    COMMAND(editstat##name, "");
+            static int laststat = 0; \
+            static int prevstat = 0; \
+            static int curstat = 0; \
+            if(totalmillis - laststat >= statrate) \
+            { \
+                prevstat = curstat; \
+                laststat = totalmillis - (totalmillis%statrate); \
+            } \
+            if(prevstat == curstat) curstat = (val); \
+            intret(curstat); \
+        }; \
+        addcommand(#name, reinterpret_cast<identfun>(+name), "", Id_Command);
 
-EDITSTAT(wtr, int, wtris);
-EDITSTAT(vtr, int, (vtris*100)/std::max(wtris, 1));
-EDITSTAT(wvt, int, wverts);
-EDITSTAT(vvt, int, (vverts*100)/std::max(wverts, 1));
-EDITSTAT(evt, int, xtraverts);
-EDITSTAT(eva, int, xtravertsva);
-EDITSTAT(octa, int, allocnodes*8);
-EDITSTAT(va, int, allocva);
-EDITSTAT(glde, int, glde);
-EDITSTAT(geombatch, int, gbatches);
-EDITSTAT(oq, int, getnumqueries());
+    EDITSTAT(wtr, wtris);
+    EDITSTAT(vtr, (vtris*100)/std::max(wtris, 1));
+    EDITSTAT(wvt, wverts);
+    EDITSTAT(vvt, (vverts*100)/std::max(wverts, 1));
+    EDITSTAT(evt, xtraverts);
+    EDITSTAT(eva, xtravertsva);
+    EDITSTAT(octa, allocnodes*8);
+    EDITSTAT(va, allocva);
+    EDITSTAT(gldes, glde);
+    EDITSTAT(geombatch, gbatches);
+    EDITSTAT(oq, getnumqueries());
 
-#undef EDITSTAT
+    #undef EDITSTAT
+}
