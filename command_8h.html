@@ -274,30 +274,6 @@ Macros</h2></td></tr>
 <tr class="memitem:a7dc72c9ac98d095e54ef998ba3d42dd6"><td class="memItemLeft" align="right" valign="top"><a id="a7dc72c9ac98d095e54ef998ba3d42dd6" name="a7dc72c9ac98d095e54ef998ba3d42dd6"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SVARFR</b>(name,  cur,  body)&#160;&#160;&#160;SVARF_(name, name, cur, body, Idf_Override)</td></tr>
 <tr class="separator:a7dc72c9ac98d095e54ef998ba3d42dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acca0fdcf153aa20bf4882441345d8abc"><td class="memItemLeft" align="right" valign="top"><a id="acca0fdcf153aa20bf4882441345d8abc" name="acca0fdcf153aa20bf4882441345d8abc"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ICOMMANDNAME</b>(name)&#160;&#160;&#160;_icmd_##name</td></tr>
-<tr class="separator:acca0fdcf153aa20bf4882441345d8abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a9194e255d0bbc60c1abb40f9c22ec0"><td class="memItemLeft" align="right" valign="top"><a id="a3a9194e255d0bbc60c1abb40f9c22ec0" name="a3a9194e255d0bbc60c1abb40f9c22ec0"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ICOMMANDSNAME</b>&#160;&#160;&#160;_icmds_</td></tr>
-<tr class="separator:a3a9194e255d0bbc60c1abb40f9c22ec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a827f33f5ce2154c4df04179c90f72ab2"><td class="memItemLeft" align="right" valign="top"><a id="a827f33f5ce2154c4df04179c90f72ab2" name="a827f33f5ce2154c4df04179c90f72ab2"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ICOMMANDKNS</b>(name,  type,  cmdname,  nargs,  proto,  b)&#160;&#160;&#160;    bool cmdname = addcommand(name, reinterpret_cast&lt;identfun&gt;(+[] proto { b; }), nargs, type); \</td></tr>
-<tr class="separator:a827f33f5ce2154c4df04179c90f72ab2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7d3e763b6df005c110a38afeceb7546"><td class="memItemLeft" align="right" valign="top"><a id="aa7d3e763b6df005c110a38afeceb7546" name="aa7d3e763b6df005c110a38afeceb7546"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ICOMMANDKN</b>(name,  type,  cmdname,  nargs,  proto,  b)&#160;&#160;&#160;ICOMMANDKNS(#name, type, cmdname, nargs, proto, b)</td></tr>
-<tr class="separator:aa7d3e763b6df005c110a38afeceb7546"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac49a5b72d55e072db0baf9df466f2a3c"><td class="memItemLeft" align="right" valign="top"><a id="ac49a5b72d55e072db0baf9df466f2a3c" name="ac49a5b72d55e072db0baf9df466f2a3c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ICOMMANDK</b>(name,  type,  nargs,  proto,  b)&#160;&#160;&#160;ICOMMANDKN(name, type, ICOMMANDNAME(name), nargs, proto, b)</td></tr>
-<tr class="separator:ac49a5b72d55e072db0baf9df466f2a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79629d3b6a52236541d2f3592c407c82"><td class="memItemLeft" align="right" valign="top"><a id="a79629d3b6a52236541d2f3592c407c82" name="a79629d3b6a52236541d2f3592c407c82"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ICOMMANDNS</b>(name,  cmdname,  nargs,  proto,  b)&#160;&#160;&#160;ICOMMANDKNS(name, Id_Command, cmdname, nargs, proto, b)</td></tr>
-<tr class="separator:a79629d3b6a52236541d2f3592c407c82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a985370fc88e3f31729b33aad36da695e"><td class="memItemLeft" align="right" valign="top"><a id="a985370fc88e3f31729b33aad36da695e" name="a985370fc88e3f31729b33aad36da695e"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ICOMMANDN</b>(name,  cmdname,  nargs,  proto,  b)&#160;&#160;&#160;ICOMMANDNS(#name, cmdname, nargs, proto, b)</td></tr>
-<tr class="separator:a985370fc88e3f31729b33aad36da695e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6792668e9f38faaf86c7668857fde352"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a6792668e9f38faaf86c7668857fde352">ICOMMAND</a>(name,  nargs,  proto,  b)&#160;&#160;&#160;ICOMMANDN(name, ICOMMANDNAME(name), nargs, proto, b)</td></tr>
-<tr class="memdesc:a6792668e9f38faaf86c7668857fde352"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an inline command.  <a href="command_8h.html#a6792668e9f38faaf86c7668857fde352">More...</a><br /></td></tr>
-<tr class="separator:a6792668e9f38faaf86c7668857fde352"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -509,60 +485,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>identflags</b></td></t
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Script binding functionality. </p>
-</div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a6792668e9f38faaf86c7668857fde352" name="a6792668e9f38faaf86c7668857fde352"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6792668e9f38faaf86c7668857fde352">&#9670;&nbsp;</a></span>ICOMMAND</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ICOMMAND</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">name, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">nargs, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">proto, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">b&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td>&#160;&#160;&#160;ICOMMANDN(name, ICOMMANDNAME(name), nargs, proto, b)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Creates an inline command. </p>
-<p >Creates an inline command which is assigned to the global identmap hash table.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">name</td><td>the name of the command to make </td></tr>
-    <tr><td class="paramname">nargs</td><td>the cubescript paramater signature </td></tr>
-    <tr><td class="paramname">proto</td><td>the C++ function call signature </td></tr>
-    <tr><td class="paramname">b</td><td>the body of the function to call </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

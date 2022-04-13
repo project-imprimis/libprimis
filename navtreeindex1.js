@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"md_engine.html#autotoc_md158":[6,4,1,4,0],
+"md_engine.html#autotoc_md159":[6,4,2],
 "md_engine.html#autotoc_md16":[6,1,0,1,3],
 "md_engine.html#autotoc_md160":[6,4,2,0],
 "md_engine.html#autotoc_md161":[6,4,2,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "structselinfo.html":[10,0,30],
 "structsortless.html":[10,0,33],
 "structsortnameless.html":[10,0,34],
-"structstream.html":[10,0,35],
-"structstringslice.html":[10,0,36],
-"structsvec.html":[10,0,37]
+"structstream.html":[10,0,35]
 };

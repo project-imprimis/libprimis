@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"structstringslice.html":[10,0,36],
+"structsvec.html":[10,0,37],
 "structtagval.html":[10,0,38],
 "structundoblock.html":[10,0,39],
 "structundoblock.html#a0fb516658877a3ab5933b04708332a3b":[10,0,39,1],
