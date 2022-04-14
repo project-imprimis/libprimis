@@ -405,11 +405,6 @@ static void loopconc(ident &id, int offset, int n, uint *body, bool space)
     commandret->setstr(s.disown());
 }
 
-void concat(tagval *v, int n)
-{
-    commandret->setstr(conc(v, n, true));
-}
-
 void concatword(tagval *v, int n)
 {
     commandret->setstr(conc(v, n, false));
@@ -681,13 +676,6 @@ void at(tagval *args, int numargs)
     commandret->setstr(listelem(start, end, qstart));
 }
 
-void substr(char *s, int *start, int *count, int *numargs)
-{
-    int len = std::strlen(s),
-        offset = std::clamp(*start, 0, len);
-    commandret->setstr(newstring(&s[offset], *numargs >= 3 ? std::clamp(*count, 0, len - offset) : len - offset));
-}
-
 void sublist(const char *s, int *skip, int *count, int *numargs)
 {
     int offset = std::max(*skip, 0),
@@ -719,14 +707,6 @@ void sublist(const char *s, int *skip, int *count, int *numargs)
         }
     }
     commandret->setstr(newstring(list, qend - list));
-}
-
-void stripcolors(char *s)
-{
-    int len = std::strlen(s);
-    char *d = newstring(len);
-    filtertext(d, s, true, false, len);
-    stringret(d);
 }
 
 static void setiter(ident &id, char *val, identstack &stack)
@@ -1354,29 +1334,6 @@ char *strreplace(const char *s, const char *oldval, const char *newval, const ch
     }
 }
 
-void strsplice(const char *s, const char *vals, int *skip, int *count)
-{
-    int slen   = std::strlen(s),
-        vlen   = std::strlen(vals),
-        offset = std::clamp(*skip, 0, slen),
-        len    = std::clamp(*count, 0, slen - offset);
-    char *p = newstring(slen - len + vlen);
-    if(offset)
-    {
-        std::memcpy(p, s, offset);
-    }
-    if(vlen)
-    {
-        std::memcpy(&p[offset], vals, vlen);
-    }
-    if(offset + len < slen)
-    {
-        std::memcpy(&p[offset + vlen], &s[offset + len], slen - (offset + len));
-    }
-    p[slen - len + vlen] = '\0';
-    commandret->setstr(p);
-}
-
 //external api function, for loading the string manip functions into the global hashtable
 void initstrcmds()
 {
@@ -1394,16 +1351,58 @@ void initstrcmds()
     addcommand("strlower", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubelower(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
     addcommand("strupper", reinterpret_cast<identfun>(+[] (char *s) { { int len = std::strlen(s); char *m = newstring(len); for(int i = 0; i < static_cast<int>(len); ++i) { m[i] = cubeupper(s[i]); } m[len] = '\0'; stringret(m); }; }), "s", Id_Command);
 
-    addcommand("strsplice", reinterpret_cast<identfun>(strsplice), "ssii", Id_Command);
+    static auto strsplice = [] (const char *s, const char *vals, int *skip, int *count)
+    {
+        int slen   = std::strlen(s),
+            vlen   = std::strlen(vals),
+            offset = std::clamp(*skip, 0, slen),
+            len    = std::clamp(*count, 0, slen - offset);
+        char *p = newstring(slen - len + vlen);
+        if(offset)
+        {
+            std::memcpy(p, s, offset);
+        }
+        if(vlen)
+        {
+            std::memcpy(&p[offset], vals, vlen);
+        }
+        if(offset + len < slen)
+        {
+            std::memcpy(&p[offset + vlen], &s[offset + len], slen - (offset + len));
+        }
+        p[slen - len + vlen] = '\0';
+        commandret->setstr(p);
+    };
+    addcommand("strsplice", reinterpret_cast<identfun>(+strsplice), "ssii", Id_Command);
     addcommand("strreplace", reinterpret_cast<identfun>(+[] (char *s, char *o, char *n, char *n2) { commandret->setstr(strreplace(s, o, n, n2[0] ? n2 : n)); }), "ssss", Id_Command);
-    addcommand("substr", reinterpret_cast<identfun>(substr), "siiN", Id_Command);
-    addcommand("stripcolors", reinterpret_cast<identfun>(stripcolors), "s", Id_Command);
+
+    static auto substr = [] (char *s, int *start, int *count, int *numargs)
+    {
+        int len = std::strlen(s),
+            offset = std::clamp(*start, 0, len);
+        commandret->setstr(newstring(&s[offset], *numargs >= 3 ? std::clamp(*count, 0, len - offset) : len - offset));
+    };
+    addcommand("substr", reinterpret_cast<identfun>(+substr), "siiN", Id_Command);
+
+    static auto stripcolors = [] (char *s)
+    {
+        int len = std::strlen(s);
+        char *d = newstring(len);
+        filtertext(d, s, true, false, len);
+        stringret(d);
+    };
+    addcommand("stripcolors", reinterpret_cast<identfun>(+stripcolors), "s", Id_Command);
     addcommand("appendword", reinterpret_cast<identfun>(+[] (ident *id, tagval *v) { append(id, v, false); }), "rt", Id_Command);
-    addcommand("concat", reinterpret_cast<identfun>(concat), "V", Id_Command);
+
+    static auto concat = [] (tagval *v, int n)
+    {
+        commandret->setstr(conc(v, n, true));
+    };
+    addcommand("concat", reinterpret_cast<identfun>(+concat), "V", Id_Command);
     addcommand("concatword", reinterpret_cast<identfun>(concatword), "V", Id_Command);
     addcommand("format", reinterpret_cast<identfun>(format), "V", Id_Command);
-
 }
+
 struct sleepcmd
 {
     int delay, millis, flags;
