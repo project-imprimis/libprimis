@@ -133,6 +133,14 @@ void animmodel::AnimPos::setframes(const animinfo &info)
     }
 }
 
+bool animmodel::AnimPos::operator==(const AnimPos &a) const
+{
+    return fr1==a.fr1 && fr2==a.fr2 && (fr1==fr2 || t==a.t);
+}
+bool animmodel::AnimPos::operator!=(const AnimPos &a) const
+{
+    return fr1!=a.fr1 || fr2!=a.fr2 || (fr1!=fr2 && t!=a.t);
+}
 // ShaderParamsKey
 
 bool animmodel::ShaderParamsKey::checkversion()

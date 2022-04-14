@@ -23,14 +23,8 @@ class animmodel : public model
 
             void setframes(const animinfo &info);
 
-            bool operator==(const AnimPos &a) const
-            {
-                return fr1==a.fr1 && fr2==a.fr2 && (fr1==fr2 || t==a.t);
-            }
-            bool operator!=(const AnimPos &a) const
-            {
-                return fr1!=a.fr1 || fr2!=a.fr2 || (fr1!=fr2 && t!=a.t);
-            }
+            bool operator==(const AnimPos &a) const;
+            bool operator!=(const AnimPos &a) const;
         };
 
         class part;
