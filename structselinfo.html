@@ -112,6 +112,11 @@ $(document).ready(function(){initNavTree('structselinfo.html',''); initResizable
   <div class="headertitle"><div class="title">selinfo Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>A representation of a rectangular volume of cubes.  
+ <a href="structselinfo.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="octa_8h_source.html">octa.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -121,8 +126,8 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const</td>
 <tr class="memitem:aeb8060fcec6624b27fd6a15262ba1e1d"><td class="memItemLeft" align="right" valign="top"><a id="aeb8060fcec6624b27fd6a15262ba1e1d" name="aeb8060fcec6624b27fd6a15262ba1e1d"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>us</b> (int d) const</td></tr>
 <tr class="separator:aeb8060fcec6624b27fd6a15262ba1e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bdce764fe16692a629ed9989f52d5d7"><td class="memItemLeft" align="right" valign="top"><a id="a0bdce764fe16692a629ed9989f52d5d7" name="a0bdce764fe16692a629ed9989f52d5d7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="structselinfo.html">selinfo</a> &amp;sel) const</td></tr>
+<tr class="memitem:a0bdce764fe16692a629ed9989f52d5d7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">operator==</a> (const <a class="el" href="structselinfo.html">selinfo</a> &amp;sel) const</td></tr>
+<tr class="memdesc:a0bdce764fe16692a629ed9989f52d5d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the two selections occupy the same space.  <a href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">More...</a><br /></td></tr>
 <tr class="separator:a0bdce764fe16692a629ed9989f52d5d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4010da847931a5c2b27e19a9a2432f66"><td class="memItemLeft" align="right" valign="top"><a id="a4010da847931a5c2b27e19a9a2432f66" name="a4010da847931a5c2b27e19a9a2432f66"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>validate</b> ()</td></tr>
@@ -145,19 +150,108 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>cy</b></td></tr>
 <tr class="memitem:a70e7f6f5e03f4dde48a627c1607136aa"><td class="memItemLeft" align="right" valign="top"><a id="a70e7f6f5e03f4dde48a627c1607136aa" name="a70e7f6f5e03f4dde48a627c1607136aa"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>cys</b></td></tr>
 <tr class="separator:a70e7f6f5e03f4dde48a627c1607136aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8353821d8834bf1fd29564adadc742d"><td class="memItemLeft" align="right" valign="top"><a id="ae8353821d8834bf1fd29564adadc742d" name="ae8353821d8834bf1fd29564adadc742d"></a>
-<a class="el" href="structivec.html">ivec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>o</b></td></tr>
+<tr class="memitem:ae8353821d8834bf1fd29564adadc742d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structivec.html">ivec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a></td></tr>
 <tr class="separator:ae8353821d8834bf1fd29564adadc742d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4046419c26164eb9aa5a2643e5bff00"><td class="memItemLeft" align="right" valign="top"><a id="ae4046419c26164eb9aa5a2643e5bff00" name="ae4046419c26164eb9aa5a2643e5bff00"></a>
-<a class="el" href="structivec.html">ivec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>s</b></td></tr>
+<tr class="memitem:ae4046419c26164eb9aa5a2643e5bff00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structivec.html">ivec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a></td></tr>
 <tr class="separator:ae4046419c26164eb9aa5a2643e5bff00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7e357c2f1b3e3baed4761f45d8653eb"><td class="memItemLeft" align="right" valign="top"><a id="ac7e357c2f1b3e3baed4761f45d8653eb" name="ac7e357c2f1b3e3baed4761f45d8653eb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>grid</b></td></tr>
+<tr class="memitem:ac7e357c2f1b3e3baed4761f45d8653eb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a></td></tr>
 <tr class="separator:ac7e357c2f1b3e3baed4761f45d8653eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25ac5bf8a2bb25a9f96317d8badf2ce7"><td class="memItemLeft" align="right" valign="top"><a id="a25ac5bf8a2bb25a9f96317d8badf2ce7" name="a25ac5bf8a2bb25a9f96317d8badf2ce7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>orient</b></td></tr>
+<tr class="memitem:a25ac5bf8a2bb25a9f96317d8badf2ce7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a></td></tr>
 <tr class="separator:a25ac5bf8a2bb25a9f96317d8badf2ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >A representation of a rectangular volume of cubes. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a0bdce764fe16692a629ed9989f52d5d7" name="a0bdce764fe16692a629ed9989f52d5d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bdce764fe16692a629ed9989f52d5d7">&#9670;&nbsp;</a></span>operator==()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool selinfo::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structselinfo.html">selinfo</a> &amp;&#160;</td>
+          <td class="paramname"><em>sel</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether the two selections occupy the same space. </p>
+<p >Requires that the two selections are occupying the same volume in the world space, and both are of the same gridpower and orientation (selected face). Otherwise, false is returned. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac7e357c2f1b3e3baed4761f45d8653eb" name="ac7e357c2f1b3e3baed4761f45d8653eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7e357c2f1b3e3baed4761f45d8653eb">&#9670;&nbsp;</a></span>grid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int selinfo::grid</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >the gridpower of the selection </p>
+
+</div>
+</div>
+<a id="ae8353821d8834bf1fd29564adadc742d" name="ae8353821d8834bf1fd29564adadc742d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8353821d8834bf1fd29564adadc742d">&#9670;&nbsp;</a></span>o</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structivec.html">ivec</a> selinfo::o</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >the coordinates from which the selection starts </p>
+
+</div>
+</div>
+<a id="a25ac5bf8a2bb25a9f96317d8badf2ce7" name="a25ac5bf8a2bb25a9f96317d8badf2ce7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25ac5bf8a2bb25a9f96317d8badf2ce7">&#9670;&nbsp;</a></span>orient</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int selinfo::orient</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >the orientation of the selection </p>
+
+</div>
+</div>
+<a id="ae4046419c26164eb9aa5a2643e5bff00" name="ae4046419c26164eb9aa5a2643e5bff00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4046419c26164eb9aa5a2643e5bff00">&#9670;&nbsp;</a></span>s</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structivec.html">ivec</a> selinfo::s</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >the offset vector conveying the size of the selection </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="octa_8h_source.html">octa.h</a></li>
 </ul>

@@ -30,7 +30,7 @@ var annotated_dup =
     [ "matrix4x3", "structmatrix4x3.html", null ],
     [ "modelattach", "structmodelattach.html", null ],
     [ "physent", "structphysent.html", "structphysent" ],
-    [ "selinfo", "structselinfo.html", null ],
+    [ "selinfo", "structselinfo.html", "structselinfo" ],
     [ "Slot", "structSlot.html", "structSlot" ],
     [ "SlotShaderParam", "structSlotShaderParam.html", null ],
     [ "sortless", "structsortless.html", null ],

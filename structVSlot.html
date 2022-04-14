@@ -112,6 +112,11 @@ $(document).ready(function(){initNavTree('structVSlot.html',''); initResizable()
   <div class="headertitle"><div class="title">VSlot Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>A virtual texture slot.  
+ <a href="structVSlot.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="slot_8h_source.html">slot.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for VSlot:</div>
 <div class="dyncontent">
@@ -197,7 +202,11 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>refractscale</b></td
 <a class="el" href="structvec.html">vec</a>&#160;</td><td class="memItemRight" valign="bottom"><b>refractcolor</b></td></tr>
 <tr class="separator:ad63f26d0a28e69cac0c145ee3bb84faf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >A virtual texture slot. </p>
+<p >A virtual texture slot ("VSlot") is a derivative of a standard texture slot; it contains modification information (such as rotation, translation, tinting, and modifications to other shader settings) but not the fundamental attributes of a texture.</p>
+<p >Each <a class="el" href="structVSlot.html" title="A virtual texture slot.">VSlot</a> must point to a normal slot to have any meaning; it is from this slot object where the <a class="el" href="structVSlot.html" title="A virtual texture slot.">VSlot</a> gets the attributes of its texture files and shader definition information. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>/github/workspace/src/libprimis-headers/<a class="el" href="slot_8h_source.html">slot.h</a></li>
 </ul>
 </div><!-- contents -->

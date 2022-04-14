@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['havesel_0',['havesel',['../iengine_8h.html#a5abb2a04b9c6758fa2aee47bb7ebe3c4',1,'iengine.h']]],
-  ['hmapedit_1',['hmapedit',['../iengine_8h.html#ae7a734b768e6f702bba8fcaf872f7be6',1,'iengine.h']]]
+  ['grid_0',['grid',['../structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb',1,'selinfo']]]
 ];

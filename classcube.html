@@ -114,6 +114,11 @@ $(document).ready(function(){initNavTree('classcube.html',''); initResizable(); 
   <div class="headertitle"><div class="title">cube Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>The fundemental building block of the octree world, representing a 3D cube.  
+ <a href="classcube.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="octa_8h_source.html">octa.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -127,14 +132,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>issolid</b> () const<
 <tr class="memitem:ac7983aa3d12a0ebca7bc96c9dfab014e"><td class="memItemLeft" align="right" valign="top"><a id="ac7983aa3d12a0ebca7bc96c9dfab014e" name="ac7983aa3d12a0ebca7bc96c9dfab014e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setmat</b> (ushort mat, ushort matmask, ushort filtermat, ushort filtermask, int filtergeom)</td></tr>
 <tr class="separator:ac7983aa3d12a0ebca7bc96c9dfab014e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad021c8603b10362cab202af1f5caf0b2"><td class="memItemLeft" align="right" valign="top"><a id="ad021c8603b10362cab202af1f5caf0b2" name="ad021c8603b10362cab202af1f5caf0b2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>discardchildren</b> (bool fixtex=false, int depth=0)</td></tr>
+<tr class="memitem:ad021c8603b10362cab202af1f5caf0b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#ad021c8603b10362cab202af1f5caf0b2">discardchildren</a> (bool fixtex=false, int depth=0)</td></tr>
+<tr class="memdesc:ad021c8603b10362cab202af1f5caf0b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">discards children  <a href="classcube.html#ad021c8603b10362cab202af1f5caf0b2">More...</a><br /></td></tr>
 <tr class="separator:ad021c8603b10362cab202af1f5caf0b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61edd51dddd8eaae36e411eae156caeb"><td class="memItemLeft" align="right" valign="top"><a id="a61edd51dddd8eaae36e411eae156caeb" name="a61edd51dddd8eaae36e411eae156caeb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>calcmerges</b> (<a class="el" href="classcube.html">cube</a> *root)</td></tr>
+<tr class="memitem:a61edd51dddd8eaae36e411eae156caeb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#a61edd51dddd8eaae36e411eae156caeb">calcmerges</a> (<a class="el" href="classcube.html">cube</a> *root)</td></tr>
+<tr class="memdesc:a61edd51dddd8eaae36e411eae156caeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Merges adjacent faces that can be losslessly merged.  <a href="classcube.html#a61edd51dddd8eaae36e411eae156caeb">More...</a><br /></td></tr>
 <tr class="separator:a61edd51dddd8eaae36e411eae156caeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2faf100108da8f40d88473baafb9be61"><td class="memItemLeft" align="right" valign="top"><a id="a2faf100108da8f40d88473baafb9be61" name="a2faf100108da8f40d88473baafb9be61"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isvalidcube</b> ()</td></tr>
+<tr class="memitem:a2faf100108da8f40d88473baafb9be61"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcube.html#a2faf100108da8f40d88473baafb9be61">isvalidcube</a> ()</td></tr>
+<tr class="memdesc:a2faf100108da8f40d88473baafb9be61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the cube is valid.  <a href="classcube.html#a2faf100108da8f40d88473baafb9be61">More...</a><br /></td></tr>
 <tr class="separator:a2faf100108da8f40d88473baafb9be61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -181,7 +186,129 @@ uint&#160;</td><td class="memItemRight" valign="bottom"><b>hthash</b> (const cub
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const cube::pedge &amp;x, const cube::pedge &amp;y)</td></tr>
 <tr class="separator:aa4e8c6625f9782146625993e199dd9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >The fundemental building block of the octree world, representing a 3D cube. </p>
+<p >The main rendered object in the world is an octree (8-leaf tree) comprising of objects of this type. Each cube object has its own deformation information, texture information, and a handful of utility functions as well as pointing to up to eight children in a fractal manner.</p>
+<p >Cube objects are the game-facing abstraction which the renderer itself does not use; they are converted to <code>vertex arrays</code> by the engine which requires calculation by itself. However, the octree structure is capable of a relatively simple and effective representation of detail over several orders of magnitude.</p>
+<p >The integer indices for the textures are shown below. </p><div class="fragment"><div class="line">+z</div>
+<div class="line"> |  /+x</div>
+<div class="line"> | /</div>
+<div class="line"> |/___+y</div>
+<div class="line">    ______</div>
+<div class="line">   /.    /|</div>
+<div class="line">  / . 5 / |</div>
+<div class="line"> /__.__/  |</div>
+<div class="line"> |  ...|3./</div>
+<div class="line"> | .0  | /</div>
+<div class="line"> |.    |/</div>
+<div class="line"> .-----/</div>
+<div class="line">    ______</div>
+<div class="line">   /|    .|</div>
+<div class="line">  / |  1. |</div>
+<div class="line"> /..|...  |</div>
+<div class="line"> |2 |-----/</div>
+<div class="line"> | /   . /</div>
+<div class="line"> |/   4./</div>
+<div class="line"> .-----/</div>
+</div><!-- fragment --><p >The integer indices of the 8 children are shown below. </p><div class="fragment"><div class="line">       ^ +z</div>
+<div class="line">       |</div>
+<div class="line">     __________</div>
+<div class="line">    /  4 /  5 /</div>
+<div class="line">   /____/____/.</div>
+<div class="line">  /  6 /  7 / .</div>
+<div class="line"> /____/____/  .</div>
+<div class="line">.    _____.___.</div>
+<div class="line">.   /  0 /. 1 /     +x</div>
+<div class="line">.  /____/_.__/    -&gt;</div>
+<div class="line">. /  2 / 3. /</div>
+<div class="line">./____/___./</div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line">    / +y</div>
+<div class="line">   |/</div>
+</div><!-- fragment --><p >The integer indices of the 12 edges are shown below. </p><div class="fragment"><div class="line">         ^ +z</div>
+<div class="line">         |</div>
+<div class="line">         |  2</div>
+<div class="line">       __________</div>
+<div class="line">      /         /</div>
+<div class="line">   5 /.8       /.</div>
+<div class="line">    / .   3   / .</div>
+<div class="line">   /_________/  .9</div>
+<div class="line">  . . ._____.___.</div>
+<div class="line">10.   /  0  .   /     +x</div>
+<div class="line">  . 4/    11.  /    -&gt;</div>
+<div class="line">  . /       . /6</div>
+<div class="line">  ./________./</div>
+<div class="line">       1</div>
+<div class="line"> </div>
+<div class="line">      / +y</div>
+<div class="line">     |/</div>
+</div><!-- fragment --> </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a61edd51dddd8eaae36e411eae156caeb" name="a61edd51dddd8eaae36e411eae156caeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61edd51dddd8eaae36e411eae156caeb">&#9670;&nbsp;</a></span>calcmerges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cube::calcmerges </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcube.html">cube</a> *&#160;</td>
+          <td class="paramname"><em>root</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Merges adjacent faces that can be losslessly merged. </p>
+<p >Merges adjacent faces, provided that the resulting cube created is no larger than the <code>maxmerge</code> gridpower size. Faces resulting from the merge process are always lossless; therefore the previously existing cubes must be coplanar prior to the merge request.</p>
+<p >Applies to all children of the cube passed, usually the world root.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>the cube object with which all children under will be merged </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad021c8603b10362cab202af1f5caf0b2" name="ad021c8603b10362cab202af1f5caf0b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad021c8603b10362cab202af1f5caf0b2">&#9670;&nbsp;</a></span>discardchildren()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cube::discardchildren </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>fixtex</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>depth</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>discards children </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fixtex</td><td>toggles fixing the texture of the resulting cube </td></tr>
+    <tr><td class="paramname">depth</td><td>at which to stop discarding </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ace6395d626569d6a0ab7c6ec6f6abd4a" name="ace6395d626569d6a0ab7c6ec6f6abd4a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ace6395d626569d6a0ab7c6ec6f6abd4a">&#9670;&nbsp;</a></span>isempty()</h2>
 
@@ -207,6 +334,26 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>htcmp</b> (const cube
 
 <p>returns if the cube is empty (face 0 does not exist) </p>
 <p >note that a non-empty (but distorted) cube missing faces for an axis is impossible unless there are no faces at all (impossible to construct a 3d cube otherwise) </p>
+
+</div>
+</div>
+<a id="a2faf100108da8f40d88473baafb9be61" name="a2faf100108da8f40d88473baafb9be61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2faf100108da8f40d88473baafb9be61">&#9670;&nbsp;</a></span>isvalidcube()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cube::isvalidcube </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns whether the cube is valid. </p>
+<p >If the cube is not convex, this function returns true, otherwise it returns false. </p>
 
 </div>
 </div>

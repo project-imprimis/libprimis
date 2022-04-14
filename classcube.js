@@ -1,7 +1,10 @@
 var classcube =
 [
+    [ "calcmerges", "classcube.html#a61edd51dddd8eaae36e411eae156caeb", null ],
+    [ "discardchildren", "classcube.html#ad021c8603b10362cab202af1f5caf0b2", null ],
     [ "isempty", "classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a", null ],
     [ "issolid", "classcube.html#a5bd59248e1c0b30104036600a5f5c964", null ],
+    [ "isvalidcube", "classcube.html#a2faf100108da8f40d88473baafb9be61", null ],
     [ "children", "classcube.html#aafb02cf1aa0596ea8677b84654da9e79", null ],
     [ "edges", "classcube.html#aeb55655cef2a95f24d7456e9422c2aff", null ],
     [ "escaped", "classcube.html#a5dc26caa3de7b4aa133a42c1a224e4fe", null ],

@@ -9,7 +9,7 @@ var searchData=
   ['regular_5fparticle_5fsplash_6',['regular_particle_splash',['../iengine_8h.html#a6bfd22d6a168826720612b334681e9ee',1,'iengine.h']]],
   ['remaining_7',['remaining',['../structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e',1,'databuf']]],
   ['remip_8',['remip',['../structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2',1,'cubeworld']]],
-  ['remove_9',['remove',['../structvector.html#a32cb8f72325a5f52298ffac9abd8d102',1,'vector::remove(int i, int n)'],['../structvector.html#a515096bf4dcf9d9aeda81ece3c8b24b6',1,'vector::remove(int i)']]],
+  ['remove_9',['remove',['../structvector.html#a515096bf4dcf9d9aeda81ece3c8b24b6',1,'vector::remove(int i)'],['../structvector.html#a32cb8f72325a5f52298ffac9abd8d102',1,'vector::remove(int i, int n)']]],
   ['removeheap_10',['removeheap',['../structvector.html#aae7414b428036a6a109e2a40976e0eb1',1,'vector']]],
   ['removeobj_11',['removeobj',['../structvector.html#a10daba22a06b056f79048f614dccbd52',1,'vector']]],
   ['removeunordered_12',['removeunordered',['../structvector.html#a6a92723c52a0b1a02c2ad43e2a7672de',1,'vector']]],
@@ -21,8 +21,9 @@ var searchData=
   ['rotate_18',['rotate',['../classmatrix3.html#a94706f22576bc05015a3878cf432ad68',1,'matrix3::rotate(float ck, float sk, const vec &amp;axis)'],['../classmatrix3.html#ad2920582213c76b927e34d8c728788b0',1,'matrix3::rotate(float angle, const vec &amp;axis)']]],
   ['rotate_5faround_5fx_19',['rotate_around_x',['../classmatrix3.html#aa9ee52a37dedb7274cf417c3b80dadc5',1,'matrix3::rotate_around_x(const vec2 &amp;sc)'],['../classmatrix3.html#a5a2fb2cc1bc9f4f6e0e37efb0178071f',1,'matrix3::rotate_around_x(float angle)']]],
   ['rotate_5faround_5fy_20',['rotate_around_y',['../classmatrix3.html#af96633ad982c5dd437f0b94fe56e9aac',1,'matrix3::rotate_around_y(const vec2 &amp;sc)'],['../classmatrix3.html#a3149678da441ea68f86691bd815bc1d7',1,'matrix3::rotate_around_y(float angle)']]],
-  ['rotate_5faround_5fz_21',['rotate_around_z',['../classmatrix3.html#a6e69e571c42788f5571c04788fbaa372',1,'matrix3::rotate_around_z(float angle)'],['../classmatrix3.html#a1c96c8a5f7ffb9af8c34bd5b3025e171',1,'matrix3::rotate_around_z(const vec2 &amp;sc)']]],
-  ['rowx_22',['rowx',['../classmatrix3.html#a2c6c8150a74fbeaf6cf3615af182124c',1,'matrix3']]],
-  ['rowy_23',['rowy',['../classmatrix3.html#af98b0332aaed09449051de82c4c76367',1,'matrix3']]],
-  ['rowz_24',['rowz',['../classmatrix3.html#aa8b1d1ca48d9aa8660951e6eeda9da90',1,'matrix3']]]
+  ['rotate_5faround_5fz_21',['rotate_around_z',['../classmatrix3.html#a1c96c8a5f7ffb9af8c34bd5b3025e171',1,'matrix3::rotate_around_z(const vec2 &amp;sc)'],['../classmatrix3.html#a6e69e571c42788f5571c04788fbaa372',1,'matrix3::rotate_around_z(float angle)']]],
+  ['rotatebb_22',['rotatebb',['../iengine_8h.html#ad3829f52d805a155e1169cee90348080',1,'iengine.h']]],
+  ['rowx_23',['rowx',['../classmatrix3.html#a2c6c8150a74fbeaf6cf3615af182124c',1,'matrix3']]],
+  ['rowy_24',['rowy',['../classmatrix3.html#af98b0332aaed09449051de82c4c76367',1,'matrix3']]],
+  ['rowz_25',['rowz',['../classmatrix3.html#aa8b1d1ca48d9aa8660951e6eeda9da90',1,'matrix3']]]
 ];

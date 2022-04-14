@@ -2,7 +2,7 @@ var octa_8h =
 [
     [ "facebounds", "structfacebounds.html", null ],
     [ "cube", "classcube.html", "classcube" ],
-    [ "selinfo", "structselinfo.html", null ],
+    [ "selinfo", "structselinfo.html", "structselinfo" ],
     [ "block3", "structblock3.html", null ],
     [ "editinfo", "structeditinfo.html", null ],
     [ "undoent", "structundoent.html", null ],

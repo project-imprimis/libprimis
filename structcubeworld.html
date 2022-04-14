@@ -136,17 +136,17 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>load_world</b> (const
 <tr class="memitem:ac2793ba734b2561823d72b5e5fd8c360"><td class="memItemLeft" align="right" valign="top"><a id="ac2793ba734b2561823d72b5e5fd8c360" name="ac2793ba734b2561823d72b5e5fd8c360"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>save_world</b> (const char *mname, const char *gameident)</td></tr>
 <tr class="separator:ac2793ba734b2561823d72b5e5fd8c360"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab674bb2b758999fdd377ef5bc7561f98"><td class="memItemLeft" align="right" valign="top"><a id="ab674bb2b758999fdd377ef5bc7561f98" name="ab674bb2b758999fdd377ef5bc7561f98"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>compactvslots</b> (bool cull=false)</td></tr>
+<tr class="memitem:ab674bb2b758999fdd377ef5bc7561f98"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">compactvslots</a> (bool cull=false)</td></tr>
+<tr class="memdesc:ab674bb2b758999fdd377ef5bc7561f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes unnecessary virtual texture slots.  <a href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">More...</a><br /></td></tr>
 <tr class="separator:ab674bb2b758999fdd377ef5bc7561f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d185066964d4ad931110e765d0648a8"><td class="memItemLeft" align="right" valign="top"><a id="a8d185066964d4ad931110e765d0648a8" name="a8d185066964d4ad931110e765d0648a8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>genprefabmesh</b> (prefab &amp;p)</td></tr>
 <tr class="separator:a8d185066964d4ad931110e765d0648a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98a1ad1ac154aaeea6fc6954b3670fe5"><td class="memItemLeft" align="right" valign="top"><a id="a98a1ad1ac154aaeea6fc6954b3670fe5" name="a98a1ad1ac154aaeea6fc6954b3670fe5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>octarender</b> ()</td></tr>
+<tr class="memitem:a98a1ad1ac154aaeea6fc6954b3670fe5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">octarender</a> ()</td></tr>
+<tr class="memdesc:a98a1ad1ac154aaeea6fc6954b3670fe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates vertex arrays for the octree world.  <a href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">More...</a><br /></td></tr>
 <tr class="separator:a98a1ad1ac154aaeea6fc6954b3670fe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a445b1bb007a38a2449bac939748c0d92"><td class="memItemLeft" align="right" valign="top"><a id="a445b1bb007a38a2449bac939748c0d92" name="a445b1bb007a38a2449bac939748c0d92"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>cleanupva</b> ()</td></tr>
+<tr class="memitem:a445b1bb007a38a2449bac939748c0d92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cleanupva</a> ()</td></tr>
+<tr class="memdesc:a445b1bb007a38a2449bac939748c0d92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys vertex arrays for the octree world.  <a href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">More...</a><br /></td></tr>
 <tr class="separator:a445b1bb007a38a2449bac939748c0d92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d586f0ba0d3ca1a5d087d91cff42a5d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">raycube</a> (const <a class="el" href="structvec.html">vec</a> &amp;o, const <a class="el" href="structvec.html">vec</a> &amp;ray, float radius=0, int mode=3, int size=0, <a class="el" href="structextentity.html">extentity</a> *t=0)</td></tr>
 <tr class="memdesc:a2d586f0ba0d3ca1a5d087d91cff42a5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the distance before a ray hits a cube.  <a href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">More...</a><br /></td></tr>
@@ -215,6 +215,47 @@ Public Attributes</h2></td></tr>
 
 <p>Calculates normals and re-calculates geometry. </p>
 <p >Re-mips the cube structure of the level to remove unnecessary nodes, then calculates normal maps for corners. </p>
+
+</div>
+</div>
+<a id="a445b1bb007a38a2449bac939748c0d92" name="a445b1bb007a38a2449bac939748c0d92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a445b1bb007a38a2449bac939748c0d92">&#9670;&nbsp;</a></span>cleanupva()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cubeworld::cleanupva </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Destroys vertex arrays for the octree world. </p>
+<p >Cleans up the geometry objects used by the renderer to render the octree world. </p>
+
+</div>
+</div>
+<a id="ab674bb2b758999fdd377ef5bc7561f98" name="ab674bb2b758999fdd377ef5bc7561f98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab674bb2b758999fdd377ef5bc7561f98">&#9670;&nbsp;</a></span>compactvslots()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int cubeworld::compactvslots </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>cull</em> = <code>false</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Removes unnecessary virtual texture slots. </p>
+<p >Checks and removes unused virtual texture slots (vslots) from the octree world. </p>
 
 </div>
 </div>
@@ -304,6 +345,26 @@ Public Attributes</h2></td></tr>
 <p>Returns the material bitmask value at the given location. </p>
 <p >Given a world location, returns the material bitmask at the specified location. This bitmask may be the sum of multiple materials if present. Returns 0 (air) if the location specified has no material or is outside the world.</p>
 <dl class="section return"><dt>Returns</dt><dd>an integer corresponding to the material(s) at the specified location </dd></dl>
+
+</div>
+</div>
+<a id="a98a1ad1ac154aaeea6fc6954b3670fe5" name="a98a1ad1ac154aaeea6fc6954b3670fe5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98a1ad1ac154aaeea6fc6954b3670fe5">&#9670;&nbsp;</a></span>octarender()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cubeworld::octarender </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates vertex arrays for the octree world. </p>
+<p >Creates vertex arrays, geometry objects used by the renderer to render the world. </p>
 
 </div>
 </div>

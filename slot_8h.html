@@ -124,10 +124,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSlotShaderParam.html">SlotShaderParam</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSlot.html">Slot</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A representation of a texture inside the engine.  <a href="structSlot.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSlot_1_1Tex.html">Slot::Tex</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structVSlot.html">VSlot</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A virtual texture slot.  <a href="structVSlot.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDecalSlot.html">DecalSlot</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -201,7 +203,7 @@ std::vector&lt; int * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Texture slot objects. </p>
 <p >The texture slot objects expose the data structures used to organize geometry texture information and encode it in a level. A vector containing a series of slot objects is associated with every cube object, allowing every cube face to reference a slot "palette" containing many texture + shader combinations without requiring much data stored on the client.</p>
-<p >Furthermore, a <code><a class="el" href="structVSlot.html">VSlot</a></code> object is defined, which defines a virtual texture slot. These are derived from a "real" texture slot, and can have one or more shader modifiers applied to it: color, scale, rotation etc. </p>
+<p >Furthermore, a <code><a class="el" href="structVSlot.html" title="A virtual texture slot.">VSlot</a></code> object is defined, which defines a virtual texture slot. These are derived from a "real" texture slot, and can have one or more shader modifiers applied to it: color, scale, rotation etc. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
