@@ -203,9 +203,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>initmathcmds</b> ()</
 <tr class="memitem:ae83659cc94c57268eb698b0b12c55e33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ae83659cc94c57268eb698b0b12c55e33">initstrcmds</a> ()</td></tr>
 <tr class="memdesc:ae83659cc94c57268eb698b0b12c55e33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds string commands to the cubescript interpreter.  <a href="iengine_8h.html#ae83659cc94c57268eb698b0b12c55e33">More...</a><br /></td></tr>
 <tr class="separator:ae83659cc94c57268eb698b0b12c55e33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa501d4482fd280a413f71443b73f8666"><td class="memItemLeft" align="right" valign="top"><a id="aa501d4482fd280a413f71443b73f8666" name="aa501d4482fd280a413f71443b73f8666"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initcontrolcmds</b> ()</td></tr>
-<tr class="memdesc:aa501d4482fd280a413f71443b73f8666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds program control commands to the cubescript interpreter. <br /></td></tr>
+<tr class="memitem:aa501d4482fd280a413f71443b73f8666"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#aa501d4482fd280a413f71443b73f8666">initcontrolcmds</a> ()</td></tr>
+<tr class="memdesc:aa501d4482fd280a413f71443b73f8666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds program control commands to the cubescript interpreter.  <a href="iengine_8h.html#aa501d4482fd280a413f71443b73f8666">More...</a><br /></td></tr>
 <tr class="separator:aa501d4482fd280a413f71443b73f8666"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a854a7fa3ef73a476783bd66c955b99de"><td class="memItemLeft" align="right" valign="top"><a id="a854a7fa3ef73a476783bd66c955b99de" name="a854a7fa3ef73a476783bd66c955b99de"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>interceptkey</b> (int sym)</td></tr>
@@ -2250,6 +2249,52 @@ false if no entities selected </dd></dl>
 
 <p>Flushes all queued mouse events. </p>
 <p >For all SDL_MOUSEMOTION events currently queued in SDL's event queue, this function dumps them one by one while doing nothing. This is used to clear any mouse events which may happen while the game is starting up, to ensure the cursor spawns in the middle of the screen. </p>
+
+</div>
+</div>
+<a id="aa501d4482fd280a413f71443b73f8666" name="aa501d4482fd280a413f71443b73f8666"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa501d4482fd280a413f71443b73f8666">&#9670;&nbsp;</a></span>initcontrolcmds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void initcontrolcmds </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds program control commands to the cubescript interpreter. </p>
+<p ><code>exec</code></p>
+<p ><code>escape</code></p>
+<p ><code>unescape</code></p>
+<p ><code>writecfg</code></p>
+<p ><code>changedvars</code></p>
+<p ><code>doargs</code></p>
+<p ><code>if</code></p>
+<p ><code>?</code></p>
+<p ><code>pushif</code></p>
+<p ><code>do</code></p>
+<p ><code>append</code></p>
+<p ><code>result</code></p>
+<p ><code>listlen</code></p>
+<p ><code>at</code></p>
+<p ><code>sublist</code></p>
+<p ><code>listcount</code></p>
+<p ><code>at</code></p>
+<p ><code>sublist</code></p>
+<p ><code>listcount</code></p>
+<p ><code>listfind</code></p>
+<p ><code>listfind=</code></p>
+<p ><code>loop</code></p>
+<p ><code>loop+</code></p>
+<p ><code>loop*</code></p>
+<p ><code>loop+*</code></p>
+<p ><code>loopconcat</code></p>
+<p ><code>loopconcat+</code> </p>
 
 </div>
 </div>
