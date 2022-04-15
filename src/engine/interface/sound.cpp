@@ -420,6 +420,7 @@ Mix_Music *loadmusic(const char *name)
     return music;
 }
 
+//cmd
 void startmusic(char *name, char *cmd)
 {
     if(nosound)
@@ -456,7 +457,6 @@ void startmusic(char *name, char *cmd)
         }
     }
 }
-COMMANDN(music, startmusic, "ss");
 
 static Mix_Chunk *loadwav(const char *name)
 {
@@ -620,54 +620,6 @@ static struct SoundType
         return chan.inuse && config.hasslot(chan.slot, slots);
     }
 } gamesounds("game/"), mapsounds("mapsound/"); //init for default directories
-
-void registersound(char *name, int *vol)
-{
-    intret(gamesounds.addsound(name, *vol, 0));
-}
-COMMAND(registersound, "si");
-
-void mapsound(char *name, int *vol, int *maxuses)
-{
-    intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : std::max(1, *maxuses)));
-}
-COMMAND(mapsound, "sii");
-
-void altsound(char *name, int *vol)
-{
-    gamesounds.addalt(name, *vol);
-}
-COMMAND(altsound, "si");
-
-void altmapsound(char *name, int *vol)
-{
-    mapsounds.addalt(name, *vol);
-}
-COMMAND(altmapsound, "si");
-
-void numsounds()
-{
-    intret(gamesounds.configs.length());
-}
-COMMAND(numsounds, "");
-
-void nummapsounds()
-{
-    intret(mapsounds.configs.length());
-}
-COMMAND(nummapsounds, "");
-
-void soundreset()
-{
-    gamesounds.reset();
-}
-COMMAND(soundreset, "");
-
-void mapsoundreset()
-{
-    mapsounds.reset();
-}
-COMMAND(mapsoundreset, "");
 
 //free all channels
 void resetchannels()
@@ -964,7 +916,6 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
     }
     return playing;
 }
-COMMAND(playsound, "i"); //i: the index of the sound to be played
 
 bool stopsound(int n, int chanid, int fade)
 {
@@ -1133,4 +1084,61 @@ void resetsound()
         musicfile = musicdonecmd = nullptr;
     }
 }
-COMMAND(resetsound, ""); //stop all sounds and re-play background music
+
+void initsoundcmds()
+{
+
+    addcommand("music", reinterpret_cast<identfun>(startmusic), "ss", Id_Command);
+    addcommand("playsound", reinterpret_cast<identfun>(playsound), "i", Id_Command); //i: the index of the sound to be played
+    addcommand("resetsound", reinterpret_cast<identfun>(resetsound), "", Id_Command); //stop all sounds and re-play background music
+
+    static auto registersound = [] (char *name, int *vol)
+    {
+        intret(gamesounds.addsound(name, *vol, 0));
+    };
+
+    static auto mapsound = [] (char *name, int *vol, int *maxuses)
+    {
+        intret(mapsounds.addsound(name, *vol, *maxuses < 0 ? 0 : std::max(1, *maxuses)));
+    };
+
+    static auto altsound = [] (char *name, int *vol)
+    {
+        gamesounds.addalt(name, *vol);
+    };
+
+    static auto altmapsound = [] (char *name, int *vol)
+    {
+        mapsounds.addalt(name, *vol);
+    };
+
+    static auto numsounds = [] ()
+    {
+        intret(gamesounds.configs.length());
+    };
+
+    static auto nummapsounds = [] ()
+    {
+        intret(mapsounds.configs.length());
+    };
+
+    static auto soundreset = [] ()
+    {
+        gamesounds.reset();
+    };
+
+    static auto mapsoundreset = [] ()
+    {
+        mapsounds.reset();
+    };
+
+    addcommand("registersound", reinterpret_cast<identfun>(+registersound), "si", Id_Command);
+    addcommand("mapsound", reinterpret_cast<identfun>(+mapsound), "sii", Id_Command);
+    addcommand("altsound", reinterpret_cast<identfun>(+altsound), "si", Id_Command);
+    addcommand("altmapsound", reinterpret_cast<identfun>(+altmapsound), "si", Id_Command);
+    addcommand("numsounds", reinterpret_cast<identfun>(+numsounds), "", Id_Command);
+    addcommand("nummapsounds", reinterpret_cast<identfun>(+nummapsounds), "", Id_Command);
+    addcommand("soundreset", reinterpret_cast<identfun>(+soundreset), "", Id_Command);
+    addcommand("mapsoundreset", reinterpret_cast<identfun>(+mapsoundreset), "", Id_Command);
+
+}
