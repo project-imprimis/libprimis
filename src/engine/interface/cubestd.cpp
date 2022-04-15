@@ -803,69 +803,6 @@ void listassoceq(char *list, int *val)
     }
 }
 
-void looplist(ident *id, const char *list, const uint *body)
-{
-    if(id->type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack;
-    int n = 0;
-    for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++)
-    {
-        setiter(*id, listelem(start, end, qstart), stack);
-        execute(body);
-    }
-    if(n)
-    {
-        poparg(*id);
-    }
-}
-
-void looplist2(ident *id, ident *id2, const char *list, const uint *body)
-{
-    if(id->type!=Id_Alias || id2->type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack, stack2;
-    int n = 0;
-    for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n += 2)
-    {
-        setiter(*id, listelem(start, end, qstart), stack);
-        setiter(*id2, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack2);
-        execute(body);
-    }
-    if(n)
-    {
-        poparg(*id);
-        poparg(*id2);
-    }
-}
-
-void looplist3(ident *id, ident *id2, ident *id3, const char *list, const uint *body)
-{
-    if(id->type!=Id_Alias || id2->type!=Id_Alias || id3->type!=Id_Alias)
-    {
-        return;
-    }
-    identstack stack, stack2, stack3;
-    int n = 0;
-    for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n += 3)
-    {
-        setiter(*id, listelem(start, end, qstart), stack);
-        setiter(*id2, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack2);
-        setiter(*id3, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack3);
-        execute(body);
-    }
-    if(n)
-    {
-        poparg(*id);
-        poparg(*id2);
-        poparg(*id3);
-    }
-}
-
 void looplistconc(ident *id, const char *list, const uint *body, bool space)
 {
     if(id->type!=Id_Alias)
@@ -1498,9 +1435,72 @@ void initcontrolcmds()
 
     addcommand("while", reinterpret_cast<identfun>(+[] (uint *cond, uint *body) { while(executebool(cond)) execute(body); }), "ee", Id_Command);
 
-    addcommand("looplist", reinterpret_cast<identfun>(looplist), "rse", Id_Command);
-    addcommand("looplist2", reinterpret_cast<identfun>(looplist2), "rrse", Id_Command);
-    addcommand("looplist3", reinterpret_cast<identfun>(looplist3), "rrrse", Id_Command);
+    static auto looplist = [] (ident *id, const char *list, const uint *body)
+    {
+        if(id->type!=Id_Alias)
+        {
+            return;
+        }
+        identstack stack;
+        int n = 0;
+        for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n++)
+        {
+            setiter(*id, listelem(start, end, qstart), stack);
+            execute(body);
+        }
+        if(n)
+        {
+            poparg(*id);
+        }
+    };
+
+    static auto looplist2 = [] (ident *id, ident *id2, const char *list, const uint *body)
+    {
+        if(id->type!=Id_Alias || id2->type!=Id_Alias)
+        {
+            return;
+        }
+        identstack stack, stack2;
+        int n = 0;
+        for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n += 2)
+        {
+            setiter(*id, listelem(start, end, qstart), stack);
+            setiter(*id2, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack2);
+            execute(body);
+        }
+        if(n)
+        {
+            poparg(*id);
+            poparg(*id2);
+        }
+    };
+
+    static auto looplist3 = [] (ident *id, ident *id2, ident *id3, const char *list, const uint *body)
+    {
+        if(id->type!=Id_Alias || id2->type!=Id_Alias || id3->type!=Id_Alias)
+        {
+            return;
+        }
+        identstack stack, stack2, stack3;
+        int n = 0;
+        for(const char *s = list, *start, *end, *qstart; parselist(s, start, end, qstart); n += 3)
+        {
+            setiter(*id, listelem(start, end, qstart), stack);
+            setiter(*id2, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack2);
+            setiter(*id3, parselist(s, start, end, qstart) ? listelem(start, end, qstart) : newstring(""), stack3);
+            execute(body);
+        }
+        if(n)
+        {
+            poparg(*id);
+            poparg(*id2);
+            poparg(*id3);
+        }
+    };
+    addcommand("looplist", reinterpret_cast<identfun>(+looplist), "rse", Id_Command);
+    addcommand("looplist2", reinterpret_cast<identfun>(+looplist2), "rrse", Id_Command);
+    addcommand("looplist3", reinterpret_cast<identfun>(+looplist3), "rrrse", Id_Command);
+
     addcommand("listassoc=", reinterpret_cast<identfun>(listassoceq), "si", Id_Command);
     addcommand("looplistconcat", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, true); }), "rse", Id_Command);
     addcommand("looplistconcatword", reinterpret_cast<identfun>(+[] (ident *id, char *list, uint *body) { looplistconc(id, list, body, false); }), "rse", Id_Command);
