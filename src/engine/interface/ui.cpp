@@ -4439,49 +4439,6 @@ namespace UI
         return window && std::find(world->children.begin(), world->children.end(), window) != world->children.end();
     }
 
-    void showuicmd(char * name)
-    {
-        intret(showui(name) ? 1 : 0);
-    }
-
-    void hideuicmd(char * name)
-    {
-        intret(hideui(name) ? 1 : 0);
-    }
-
-    void hidetopuicmd()
-    {
-        intret(world->hidetop() ? 1 : 0);
-    }
-
-    void hidealluicmd()
-    {
-        intret(world->hideall());
-    }
-
-    void toggleuicmd(char * name)
-    {
-        intret(toggleui(name) ? 1 : 0);
-    }
-
-    void holduicmd(char * name, int * down)
-    {
-        holdui(name, *down!=0);
-    }
-
-    void uivisiblecmd(char * name)
-    {
-        intret(uivisible(name) ? 1 : 0);
-    }
-
-    void uinamecmd()
-    {
-        if(window)
-        {
-            result(window->name);
-        }
-    }
-
     void ifstateval(bool state, tagval * t, tagval * f)
     {
         if(state)
@@ -4571,14 +4528,58 @@ namespace UI
 
     void inituicmds()
     {
-        addcommand("showui",        reinterpret_cast<identfun>(showuicmd),   "s",    Id_Command);
-        addcommand("hideui",        reinterpret_cast<identfun>(hideuicmd),   "s",    Id_Command);
-        addcommand("hidetopui",     reinterpret_cast<identfun>(hidetopuicmd),"",     Id_Command);
-        addcommand("hideallui",     reinterpret_cast<identfun>(hidealluicmd),"",     Id_Command);
-        addcommand("toggleui",      reinterpret_cast<identfun>(toggleuicmd), "s",    Id_Command);
-        addcommand("holdui",        reinterpret_cast<identfun>(holduicmd),   "sD",   Id_Command);
-        addcommand("uivisiblecmd",  reinterpret_cast<identfun>(uivisible),   "s",    Id_Command);
-        addcommand("uiname",        reinterpret_cast<identfun>(uinamecmd),   "",     Id_Command);
+
+        static auto showuicmd = [] (char * name)
+        {
+            intret(showui(name) ? 1 : 0);
+        };
+
+        static auto hideuicmd = [] (char * name)
+        {
+            intret(hideui(name) ? 1 : 0);
+        };
+
+        static auto hidetopuicmd = [] ()
+        {
+            intret(world->hidetop() ? 1 : 0);
+        };
+
+        static auto hidealluicmd = [] ()
+        {
+            intret(world->hideall());
+        };
+
+        static auto toggleuicmd = [] (char * name)
+        {
+            intret(toggleui(name) ? 1 : 0);
+        };
+
+        static auto holduicmd = [] (char * name, int * down)
+        {
+            holdui(name, *down!=0);
+        };
+
+        static auto uivisiblecmd = [] (char * name)
+        {
+            intret(uivisible(name) ? 1 : 0);
+        };
+
+        addcommand("showui",        reinterpret_cast<identfun>(+showuicmd),   "s",    Id_Command);
+        addcommand("hideui",        reinterpret_cast<identfun>(+hideuicmd),   "s",    Id_Command);
+        addcommand("hidetopui",     reinterpret_cast<identfun>(+hidetopuicmd),"",     Id_Command);
+        addcommand("hideallui",     reinterpret_cast<identfun>(+hidealluicmd),"",     Id_Command);
+        addcommand("toggleui",      reinterpret_cast<identfun>(+toggleuicmd), "s",    Id_Command);
+        addcommand("holdui",        reinterpret_cast<identfun>(+holduicmd),   "sD",   Id_Command);
+        addcommand("uivisible",     reinterpret_cast<identfun>(+uivisiblecmd),"s",    Id_Command);
+
+        static auto uinamecmd = [] ()
+        {
+            if(window)
+            {
+                result(window->name);
+            }
+        };
+        addcommand("uiname",        reinterpret_cast<identfun>(+uinamecmd),   "",     Id_Command);
 
         #define DOSTATE(flags, func) \
             addcommand("ui" #func, reinterpret_cast<identfun>(+[] (uint *t, uint *f) { executeret(buildparent && buildparent->haschildstate(flags) ? t : f); }), "ee", Id_Command); \
