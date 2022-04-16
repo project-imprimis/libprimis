@@ -4505,17 +4505,6 @@ namespace UI
         }
     }
 
-    template<class T>
-    void buildobject( std::function<void(T)> func, uint * contents)
-    {
-        if(buildparent)
-        {
-            T *o = buildparent->buildtype<T>();
-            func(*o);
-            o->buildchildren(contents);
-        }
-    }
-
     static float parsepixeloffset(const tagval *t, int size)
     {
         switch(t->type)
