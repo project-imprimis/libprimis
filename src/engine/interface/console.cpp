@@ -146,16 +146,6 @@ namespace
         }
     }
 
-    void conskipcmd(int *n)
-    {
-        setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n);
-    }
-
-    void miniconskipcmd(int *n)
-    {
-        setconskip(miniconskip, miniconfilter, *n);
-    }
-
     void clearconsole()
     {
         while(conlines.size())
@@ -381,71 +371,6 @@ namespace
             len--;
         }
         binding = newstring(action, len);
-    }
-
-    void bind(char *key, char *action)
-    {
-        bindkey(key, action, KeyM::Action_Default, "bind");
-    }
-
-    void specbind(char *key, char *action)
-    {
-        bindkey(key, action, KeyM::Action_Spectator, "specbind");
-    }
-
-    void editbind(char *key, char *action)
-    {
-        bindkey(key, action, KeyM::Action_Editing, "editbind");
-    }
-
-    void getbindcmd(char *key)
-    {
-        getbind(key, KeyM::Action_Default);
-    }
-
-    void getspecbind(char *key)
-    {
-        getbind(key, KeyM::Action_Spectator);
-    }
-
-    void geteditbind(char *key)
-    {
-        getbind(key, KeyM::Action_Editing);
-    }
-
-    void searchbindscmd(char *action)
-    {
-        searchbinds(action, KeyM::Action_Default);
-    }
-
-    void searchspecbinds(char *action)
-    {
-        searchbinds(action, KeyM::Action_Spectator);
-    }
-
-    void searcheditbinds(char *action)
-    {
-        searchbinds(action, KeyM::Action_Editing);
-    }
-
-    void clearbinds()
-    {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
-    }
-
-    void clearspecbinds()
-    {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
-    }
-
-    void cleareditbinds()
-    {
-        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
-    }
-
-    void clearallbinds()
-    {
-        ENUMERATE(keyms, KeyM, km, km.clear());
     }
 
     void inputcommand(char *init, char *action = nullptr, char *prompt = nullptr, char *flags = nullptr) // turns input to the command line on or off
@@ -1275,29 +1200,106 @@ void writecompletions(stream *f)
 
 void initconsolecmds()
 {
-    addcommand("fullconsole", (identfun)fullconsole, "iN$", Id_Command);
-    addcommand("toggleconsole", (identfun)toggleconsole, "", Id_Command);
-    addcommand("conskip", (identfun)conskipcmd, "i", Id_Command);
-    addcommand("miniconskip", (identfun)miniconskipcmd, "i", Id_Command);
-    addcommand("clearconsole", (identfun)clearconsole, "", Id_Command);
-    addcommand("keymap", (identfun)keymap, "is", Id_Command);
-    addcommand("bind", (identfun)bind, "ss", Id_Command);
-    addcommand("specbind", (identfun)specbind, "ss", Id_Command);
-    addcommand("editbind", (identfun)editbind, "ss", Id_Command);
-    addcommand("getbind", (identfun)getbindcmd, "s", Id_Command);
-    addcommand("getspecbind", (identfun)getspecbind, "s", Id_Command);
-    addcommand("geteditbind", (identfun)geteditbind, "s", Id_Command);
-    addcommand("searchbinds", (identfun)searchbindscmd, "s", Id_Command);
-    addcommand("searchspecbinds", (identfun)searchspecbinds, "s", Id_Command);
-    addcommand("searcheditbinds", (identfun)searcheditbinds, "s", Id_Command);
-    addcommand("clearbinds", (identfun)clearbinds, "", Id_Command);
-    addcommand("clearspecbinds", (identfun)clearspecbinds, "", Id_Command);
-    addcommand("cleareditbinds", (identfun)cleareditbinds, "", Id_Command);
-    addcommand("clearallbinds", (identfun)clearallbinds, "", Id_Command);
-    addcommand("inputcommand", (identfun)inputcommand, "ssss", Id_Command);
-    addcommand("saycommand", (identfun)saycommand, "C", Id_Command);
-    addcommand("history", (identfun)historycmd, "i", Id_Command);
-    addcommand("onrelease", (identfun)onrelease, "s", Id_Command);
-    addcommand("complete", (identfun)addfilecomplete, "sss", Id_Command);
-    addcommand("listcomplete", (identfun)addlistcomplete, "ss", Id_Command);
+    addcommand("fullconsole", reinterpret_cast<identfun>(fullconsole), "iN$", Id_Command);
+    addcommand("toggleconsole", reinterpret_cast<identfun>(toggleconsole), "", Id_Command);
+
+    static auto conskipcmd = [] (int *n)
+    {
+        setconskip(conskip, UI::uivisible("fullconsole") ? fullconfilter : confilter, *n);
+    };
+    addcommand("conskip", reinterpret_cast<identfun>(+conskipcmd), "i", Id_Command);
+
+
+    static auto miniconskipcmd = [] (int *n)
+    {
+        setconskip(miniconskip, miniconfilter, *n);
+    };
+    addcommand("miniconskip", reinterpret_cast<identfun>(+miniconskipcmd), "i", Id_Command);
+
+    addcommand("clearconsole", reinterpret_cast<identfun>(clearconsole), "", Id_Command);
+    addcommand("keymap", reinterpret_cast<identfun>(keymap), "is", Id_Command);
+
+    static auto bind = [] (char *key, char *action)
+    {
+        bindkey(key, action, KeyM::Action_Default, "bind");
+    };
+    addcommand("bind", reinterpret_cast<identfun>(+bind), "ss", Id_Command);
+
+    static auto specbind = [] (char *key, char *action)
+    {
+        bindkey(key, action, KeyM::Action_Spectator, "specbind");
+    };
+    addcommand("specbind", reinterpret_cast<identfun>(+specbind), "ss", Id_Command);
+
+    static auto editbind = [] (char *key, char *action)
+    {
+        bindkey(key, action, KeyM::Action_Editing, "editbind");
+    };
+    addcommand("editbind", reinterpret_cast<identfun>(+editbind), "ss", Id_Command);
+
+    static auto getbindcmd = [] (char *key)
+    {
+        getbind(key, KeyM::Action_Default);
+    };
+    addcommand("getbind", reinterpret_cast<identfun>(+getbindcmd), "s", Id_Command);
+
+    static auto getspecbind = [] (char *key)
+    {
+        getbind(key, KeyM::Action_Spectator);
+    };
+    addcommand("getspecbind", reinterpret_cast<identfun>(+getspecbind), "s", Id_Command);
+
+    static auto geteditbind = [] (char *key)
+    {
+        getbind(key, KeyM::Action_Editing);
+    };
+    addcommand("geteditbind", reinterpret_cast<identfun>(+geteditbind), "s", Id_Command);
+
+    static auto searchbindscmd = [] (char *action)
+    {
+        searchbinds(action, KeyM::Action_Default);
+    };
+    addcommand("searchbinds", reinterpret_cast<identfun>(+searchbindscmd), "s", Id_Command);
+
+    static auto searchspecbinds = [] (char *action)
+    {
+        searchbinds(action, KeyM::Action_Spectator);
+    };
+    addcommand("searchspecbinds", reinterpret_cast<identfun>(+searchspecbinds), "s", Id_Command);
+
+    static auto searcheditbinds = [] (char *action)
+    {
+        searchbinds(action, KeyM::Action_Editing);
+    };
+    addcommand("searcheditbinds", reinterpret_cast<identfun>(+searcheditbinds), "s", Id_Command);
+
+    static auto clearbinds = [] ()
+    {
+        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Default));
+    };
+    addcommand("clearbinds", reinterpret_cast<identfun>(+clearbinds), "", Id_Command);
+
+    static auto clearspecbinds = [] ()
+    {
+        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Spectator));
+    };
+    addcommand("clearspecbinds", reinterpret_cast<identfun>(+clearspecbinds), "", Id_Command);
+
+    static auto cleareditbinds = [] ()
+    {
+        ENUMERATE(keyms, KeyM, km, km.clear(KeyM::Action_Editing));
+    };
+    addcommand("cleareditbinds", reinterpret_cast<identfun>(+cleareditbinds), "", Id_Command);
+
+    static auto clearallbinds = [] ()
+    {
+        ENUMERATE(keyms, KeyM, km, km.clear());
+    };
+    addcommand("clearallbinds", reinterpret_cast<identfun>(+clearallbinds), "", Id_Command);
+    addcommand("inputcommand", reinterpret_cast<identfun>(inputcommand), "ssss", Id_Command);
+    addcommand("saycommand", reinterpret_cast<identfun>(saycommand), "C", Id_Command);
+    addcommand("history", reinterpret_cast<identfun>(historycmd), "i", Id_Command);
+    addcommand("onrelease", reinterpret_cast<identfun>(onrelease), "s", Id_Command);
+    addcommand("complete", reinterpret_cast<identfun>(addfilecomplete), "sss", Id_Command);
+    addcommand("listcomplete", reinterpret_cast<identfun>(addlistcomplete), "ss", Id_Command);
 }
