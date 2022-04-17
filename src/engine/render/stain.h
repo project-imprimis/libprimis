@@ -12,7 +12,6 @@ enum
 
 class stainrenderer;
 
-extern void initstains();
 extern void clearstains();
 extern bool renderstains(int sbuf, bool gbuf, int layer = 0);
 extern void cleanupstains();
