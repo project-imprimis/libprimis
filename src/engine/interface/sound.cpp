@@ -947,12 +947,6 @@ void stopmapsounds()
     }
 }
 
-void clearmapsounds()
-{
-    stopmapsounds();
-    mapsounds.clear();
-}
-
 //check map entities to see what sounds need to be played because of them
 void checkmapsounds()
 {
