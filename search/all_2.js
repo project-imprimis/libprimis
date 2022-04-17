@@ -13,7 +13,7 @@ var searchData=
   ['children_10',['children',['../classcube.html#aafb02cf1aa0596ea8677b84654da9e79',1,'cube']]],
   ['cleanragdoll_11',['cleanragdoll',['../iengine_8h.html#a8f4eefe05d6feb452f8192a1bef539eb',1,'iengine.h']]],
   ['cleanupva_12',['cleanupva',['../structcubeworld.html#a445b1bb007a38a2449bac939748c0d92',1,'cubeworld']]],
-  ['clear_5fconsole_13',['clear_console',['../iengine_8h.html#a987a4b8a8a13578290fa823de80b6424',1,'iengine.h']]],
+  ['clear_5fconsole_13',['clear_console',['../iengine_8h.html#a3cffe15b7e5d10a108f1734a9640a2c7',1,'iengine.h']]],
   ['clear_5fsound_14',['clear_sound',['../iengine_8h.html#accdda0ec78bdb369b1e7bf8df2b611ff',1,'iengine.h']]],
   ['cleargamma_15',['cleargamma',['../iengine_8h.html#a766a4f5369dd6e992d67fb43eae37d9f',1,'iengine.h']]],
   ['clearmapcrc_16',['clearmapcrc',['../iengine_8h.html#a8db3c9d89b1bcf07023f08b8d0884920',1,'iengine.h']]],

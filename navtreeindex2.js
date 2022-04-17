@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"structivec2.html":[10,0,24],
 "structmatrix4.html":[10,0,26],
 "structmatrix4x3.html":[10,0,27],
 "structmodelattach.html":[10,0,28],
