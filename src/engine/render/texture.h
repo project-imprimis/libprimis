@@ -178,7 +178,7 @@ struct SlotShaderParamState : LocalShaderParamState
         size = 1;
         format = GL_FLOAT_VEC4;
         flags = p.flags;
-        memcpy(val, p.val, sizeof(val));
+        std::memcpy(val, p.val, sizeof(val));
     }
 };
 
@@ -488,23 +488,23 @@ struct GlobalShaderParam
 
     void set(const matrix2 &m)
     {
-        memcpy(resolve()->fval, m.a.v, sizeof(m));
+        std::memcpy(resolve()->fval, m.a.v, sizeof(m));
     }
 
     void set(const matrix3 &m)
     {
-        memcpy(resolve()->fval, m.a.v, sizeof(m));
+        std::memcpy(resolve()->fval, m.a.v, sizeof(m));
     }
 
     void set(const matrix4 &m)
     {
-        memcpy(resolve()->fval, m.a.v, sizeof(m));
+        std::memcpy(resolve()->fval, m.a.v, sizeof(m));
     }
 
     template<class T>
     void setv(const T *v, int n = 1)
     {
-        memcpy(resolve()->buf, v, n*sizeof(T));
+        std::memcpy(resolve()->buf, v, n*sizeof(T));
     }
 
     void seti(int x = 0, int y = 0, int z = 0, int w = 0)
