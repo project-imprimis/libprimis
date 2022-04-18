@@ -213,6 +213,10 @@ namespace UI
     static Object *buildparent = nullptr;
     static int buildchild = -1;
 
+    //type: the type of object to build
+    //o the name of the temp variable to use
+    //setup: a snippet of c++ to run to set up the object
+    //contents: the content passed to the buildchildren() call
     #define BUILD(type, o, setup, contents) do { \
         if(buildparent) \
         { \
