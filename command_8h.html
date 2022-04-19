@@ -130,6 +130,7 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structidentstack.html">identstack</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structident.html">ident</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An object representing all Cubescript objects.  <a href="structident.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionident_1_1identvalptr.html">ident::identvalptr</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,10 +138,10 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:aa6b1b2ba9aa3a9892cf6fff5aaada898"><td class="memItemLeft" align="right" valign="top"><a id="aa6b1b2ba9aa3a9892cf6fff5aaada898" name="aa6b1b2ba9aa3a9892cf6fff5aaada898"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>KEYWORD</b>(name,  type)&#160;&#160;&#160;static bool dummy_##type = addcommand(#name, (identfun)nullptr, nullptr, type)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>KEYWORD</b>(name,  type)&#160;&#160;&#160;static bool dummy_##type = <a class="el" href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">addcommand</a>(#name, (identfun)nullptr, nullptr, type)</td></tr>
 <tr class="separator:aa6b1b2ba9aa3a9892cf6fff5aaada898"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab411d379ad0dd1b0cb2be990b51bb0ea"><td class="memItemLeft" align="right" valign="top"><a id="ab411d379ad0dd1b0cb2be990b51bb0ea" name="ab411d379ad0dd1b0cb2be990b51bb0ea"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMANDKN</b>(name,  type,  fun,  nargs)&#160;&#160;&#160;static bool dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMANDKN</b>(name,  type,  fun,  nargs)&#160;&#160;&#160;static bool dummy_##fun = <a class="el" href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">addcommand</a>(#name, (identfun)fun, nargs, type)</td></tr>
 <tr class="separator:ab411d379ad0dd1b0cb2be990b51bb0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00f758ce3b67dd9a3a26f5ba1d63fefc"><td class="memItemLeft" align="right" valign="top"><a id="a00f758ce3b67dd9a3a26f5ba1d63fefc" name="a00f758ce3b67dd9a3a26f5ba1d63fefc"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMANDK</b>(name,  type,  nargs)&#160;&#160;&#160;COMMANDKN(name, type, name, nargs)</td></tr>
@@ -152,7 +153,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMAND</b>(name,  nargs)&#160;&#160;&#160;COMMANDN(name, name, nargs)</td></tr>
 <tr class="separator:a286a642d141f8a1c28bb04f7c7c1dd03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c18dfc8a385d958725e5254e63770e1"><td class="memItemLeft" align="right" valign="top"><a id="a5c18dfc8a385d958725e5254e63770e1" name="a5c18dfc8a385d958725e5254e63770e1"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>VAR_</b>(name,  global,  min,  cur,  max,  persist)&#160;&#160;&#160;int global = variable(#name, min, cur, max, &amp;global, nullptr, persist)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>VAR_</b>(name,  global,  min,  cur,  max,  persist)&#160;&#160;&#160;int global = <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>(#name, min, cur, max, &amp;global, nullptr, persist)</td></tr>
 <tr class="separator:a5c18dfc8a385d958725e5254e63770e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9e42152d433faa24d031c8c9b2bf3ae"><td class="memItemLeft" align="right" valign="top"><a id="aa9e42152d433faa24d031c8c9b2bf3ae" name="aa9e42152d433faa24d031c8c9b2bf3ae"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>VARN</b>(name,  global,  min,  cur,  max)&#160;&#160;&#160;VAR_(name, global, min, cur, max, 0)</td></tr>
@@ -173,7 +174,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>VARR</b>(name,  min,  cur,  max)&#160;&#160;&#160;VAR_(name, name, min, cur, max, Idf_Override)</td></tr>
 <tr class="separator:a1f3ccb86416fcbc2ee9d6333bea60748"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa959749ca2750dd04b0dc2c18318ecaa"><td class="memItemLeft" align="right" valign="top"><a id="aa959749ca2750dd04b0dc2c18318ecaa" name="aa959749ca2750dd04b0dc2c18318ecaa"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>VARF_</b>(name,  global,  min,  cur,  max,  body,  persist)&#160;&#160;&#160;    int global = variable(#name, min, cur, max, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist); /* assign variable, needs fxn prototype declared above */</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>VARF_</b>(name,  global,  min,  cur,  max,  body,  persist)&#160;&#160;&#160;    int global = <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>(#name, min, cur, max, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist); /* assign <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>, needs fxn prototype declared above */</td></tr>
 <tr class="separator:aa959749ca2750dd04b0dc2c18318ecaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e1b19d5ab98b3a332590497cee743e3"><td class="memItemLeft" align="right" valign="top"><a id="a3e1b19d5ab98b3a332590497cee743e3" name="a3e1b19d5ab98b3a332590497cee743e3"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>VARFN</b>(name,  global,  min,  cur,  max,  body)&#160;&#160;&#160;VARF_(name, global, min, cur, max, body, 0)</td></tr>
@@ -191,13 +192,13 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>VARFNP</b>(name,  global,  min,  cur,  max,  body)&#160;&#160;&#160;VARF_(name, global, min, cur, max, body, Idf_Persist)</td></tr>
 <tr class="separator:a8abc063cb66de5b03e956770dd8a5f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b9c918fe4843644b895c0079301524b"><td class="memItemLeft" align="right" valign="top"><a id="a1b9c918fe4843644b895c0079301524b" name="a1b9c918fe4843644b895c0079301524b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>HVAR_</b>(name,  global,  min,  cur,  max,  persist)&#160;&#160;&#160;int global = variable(#name, min, cur, max, &amp;global, nullptr, persist | Idf_Hex)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>HVAR_</b>(name,  global,  min,  cur,  max,  persist)&#160;&#160;&#160;int global = <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>(#name, min, cur, max, &amp;global, nullptr, persist | Idf_Hex)</td></tr>
 <tr class="separator:a1b9c918fe4843644b895c0079301524b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ea7dac6847aea90fb3021224363f024"><td class="memItemLeft" align="right" valign="top"><a id="a9ea7dac6847aea90fb3021224363f024" name="a9ea7dac6847aea90fb3021224363f024"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>HVARP</b>(name,  min,  cur,  max)&#160;&#160;&#160;HVAR_(name, name, min, cur, max, Idf_Persist)</td></tr>
 <tr class="separator:a9ea7dac6847aea90fb3021224363f024"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b0f067ff14bdcbfdef6a3c28ee9ef14"><td class="memItemLeft" align="right" valign="top"><a id="a1b0f067ff14bdcbfdef6a3c28ee9ef14" name="a1b0f067ff14bdcbfdef6a3c28ee9ef14"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>HVARF_</b>(name,  global,  min,  cur,  max,  body,  persist)&#160;&#160;&#160;    int global = variable(#name, min, cur, max, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist | Idf_Hex); /* assign variable, needs fxn prototype declared above */</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>HVARF_</b>(name,  global,  min,  cur,  max,  body,  persist)&#160;&#160;&#160;    int global = <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>(#name, min, cur, max, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist | Idf_Hex); /* assign <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>, needs fxn prototype declared above */</td></tr>
 <tr class="separator:a1b0f067ff14bdcbfdef6a3c28ee9ef14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad945b8bd406be15e215225be5a230cbc"><td class="memItemLeft" align="right" valign="top"><a id="ad945b8bd406be15e215225be5a230cbc" name="ad945b8bd406be15e215225be5a230cbc"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>CVAR_</b>(name,  cur,  init,  body,  persist)&#160;&#160;&#160;<a class="el" href="structbvec.html">bvec</a> name = bvec::hexcolor(cur); HVARF_(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)</td></tr>
@@ -227,7 +228,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>CVAR1FR</b>(name,  cur,  body)&#160;&#160;&#160;CVAR1_(name, cur, body, Idf_Override)</td></tr>
 <tr class="separator:a0554b924c3e6554d0e8c7d38836584f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c5fad15fe84f1231fdfeecc87b6ae8c"><td class="memItemLeft" align="right" valign="top"><a id="a5c5fad15fe84f1231fdfeecc87b6ae8c" name="a5c5fad15fe84f1231fdfeecc87b6ae8c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>FVAR_</b>(name,  global,  min,  cur,  max,  persist)&#160;&#160;&#160;float global = fvariable(#name, min, cur, max, &amp;global, nullptr, persist)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>FVAR_</b>(name,  global,  min,  cur,  max,  persist)&#160;&#160;&#160;float global = <a class="el" href="command_8h.html#ac66ac8708b0006348290d7f34d799723">fvariable</a>(#name, min, cur, max, &amp;global, nullptr, persist)</td></tr>
 <tr class="separator:a5c5fad15fe84f1231fdfeecc87b6ae8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae817fcd6179a021e1c9109efaaf0af04"><td class="memItemLeft" align="right" valign="top"><a id="ae817fcd6179a021e1c9109efaaf0af04" name="ae817fcd6179a021e1c9109efaaf0af04"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>FVARNP</b>(name,  global,  min,  cur,  max)&#160;&#160;&#160;FVAR_(name, global, min, cur, max, Idf_Persist)</td></tr>
@@ -242,7 +243,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>FVARR</b>(name,  min,  cur,  max)&#160;&#160;&#160;FVAR_(name, name, min, cur, max, Idf_Override)</td></tr>
 <tr class="separator:a4bc944dcf497bb8b116947fc2343f4fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79b62df26f0e7f2a3f625c6f14f2f6c9"><td class="memItemLeft" align="right" valign="top"><a id="a79b62df26f0e7f2a3f625c6f14f2f6c9" name="a79b62df26f0e7f2a3f625c6f14f2f6c9"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>FVARF_</b>(name,  global,  min,  cur,  max,  body,  persist)&#160;&#160;&#160;    float global = fvariable(#name, min, cur, max, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist); /* assign variable, needs fxn prototype declared above */ \</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>FVARF_</b>(name,  global,  min,  cur,  max,  body,  persist)&#160;&#160;&#160;    float global = <a class="el" href="command_8h.html#ac66ac8708b0006348290d7f34d799723">fvariable</a>(#name, min, cur, max, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist); /* assign <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>, needs fxn prototype declared above */ \</td></tr>
 <tr class="separator:a79b62df26f0e7f2a3f625c6f14f2f6c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa358b362f494c9cb5dc66ba306c994d"><td class="memItemLeft" align="right" valign="top"><a id="afa358b362f494c9cb5dc66ba306c994d" name="afa358b362f494c9cb5dc66ba306c994d"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>FVARF</b>(name,  min,  cur,  max,  body)&#160;&#160;&#160;FVARF_(name, name, min, cur, max, body, 0)</td></tr>
@@ -254,7 +255,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>FVARFR</b>(name,  min,  cur,  max,  body)&#160;&#160;&#160;FVARF_(name, name, min, cur, max, body, Idf_Override)</td></tr>
 <tr class="separator:a6e51891be7f8ea7b6069b1dfa38d8b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6357160744ea634d813a9ba193d19ed8"><td class="memItemLeft" align="right" valign="top"><a id="a6357160744ea634d813a9ba193d19ed8" name="a6357160744ea634d813a9ba193d19ed8"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SVAR_</b>(name,  global,  cur,  persist)&#160;&#160;&#160;char *global = svariable(#name, cur, &amp;global, nullptr, persist)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SVAR_</b>(name,  global,  cur,  persist)&#160;&#160;&#160;char *global = <a class="el" href="command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb">svariable</a>(#name, cur, &amp;global, nullptr, persist)</td></tr>
 <tr class="separator:a6357160744ea634d813a9ba193d19ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28bf2951ed3534dfbb3be0ec636fe940"><td class="memItemLeft" align="right" valign="top"><a id="a28bf2951ed3534dfbb3be0ec636fe940" name="a28bf2951ed3534dfbb3be0ec636fe940"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SVAR</b>(name,  cur)&#160;&#160;&#160;SVAR_(name, name, cur, 0)</td></tr>
@@ -266,7 +267,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SVARR</b>(name,  cur)&#160;&#160;&#160;SVAR_(name, name, cur, Idf_Override)</td></tr>
 <tr class="separator:ab62bfe75ecd5fc7a0f003a4e3f800bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f86e8c10b33db20226d3d9c28408506"><td class="memItemLeft" align="right" valign="top"><a id="a8f86e8c10b33db20226d3d9c28408506" name="a8f86e8c10b33db20226d3d9c28408506"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>SVARF_</b>(name,  global,  cur,  body,  persist)&#160;&#160;&#160;    char *global = svariable(#name, cur, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist); /* assign variable, needs fxn prototype declared above */</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SVARF_</b>(name,  global,  cur,  body,  persist)&#160;&#160;&#160;    char *global = <a class="el" href="command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb">svariable</a>(#name, cur, &amp;global, [] (<a class="el" href="structident.html">ident</a> *) { body; }, persist); /* assign <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>, needs fxn prototype declared above */</td></tr>
 <tr class="separator:a8f86e8c10b33db20226d3d9c28408506"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b74e3f41e27e1232bdb59e590376d9b"><td class="memItemLeft" align="right" valign="top"><a id="a6b74e3f41e27e1232bdb59e590376d9b" name="a6b74e3f41e27e1232bdb59e590376d9b"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SVARF</b>(name,  cur,  body)&#160;&#160;&#160;SVARF_(name, name, cur, body, 0)</td></tr>
@@ -338,119 +339,71 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aeabb5440e15ac3e1a81c242116db926d"><td class="memItemLeft" align="right" valign="top"><a id="aeabb5440e15ac3e1a81c242116db926d" name="aeabb5440e15ac3e1a81c242116db926d"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>intstr</b> (int v)</td></tr>
-<tr class="separator:aeabb5440e15ac3e1a81c242116db926d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21cd226150059e3a302cfdbb389541c5"><td class="memItemLeft" align="right" valign="top"><a id="a21cd226150059e3a302cfdbb389541c5" name="a21cd226150059e3a302cfdbb389541c5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>intret</b> (int v)</td></tr>
+<tr class="memitem:a21cd226150059e3a302cfdbb389541c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a21cd226150059e3a302cfdbb389541c5">intret</a> (int v)</td></tr>
+<tr class="memdesc:a21cd226150059e3a302cfdbb389541c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an integer value from a Cubescript command.  <a href="command_8h.html#a21cd226150059e3a302cfdbb389541c5">More...</a><br /></td></tr>
 <tr class="separator:a21cd226150059e3a302cfdbb389541c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1386a6fe80a0cb12555790368a67798e"><td class="memItemLeft" align="right" valign="top"><a id="a1386a6fe80a0cb12555790368a67798e" name="a1386a6fe80a0cb12555790368a67798e"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>floatstr</b> (float v)</td></tr>
 <tr class="separator:a1386a6fe80a0cb12555790368a67798e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d7aa3bf7cb9299fbde9e836d399e50a"><td class="memItemLeft" align="right" valign="top"><a id="a3d7aa3bf7cb9299fbde9e836d399e50a" name="a3d7aa3bf7cb9299fbde9e836d399e50a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>floatret</b> (float v)</td></tr>
+<tr class="memitem:a3d7aa3bf7cb9299fbde9e836d399e50a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a3d7aa3bf7cb9299fbde9e836d399e50a">floatret</a> (float v)</td></tr>
+<tr class="memdesc:a3d7aa3bf7cb9299fbde9e836d399e50a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a float value from a Cubescript command.  <a href="command_8h.html#a3d7aa3bf7cb9299fbde9e836d399e50a">More...</a><br /></td></tr>
 <tr class="separator:a3d7aa3bf7cb9299fbde9e836d399e50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1d457061cc41c554293a71997a3fc2c"><td class="memItemLeft" align="right" valign="top"><a id="ac1d457061cc41c554293a71997a3fc2c" name="ac1d457061cc41c554293a71997a3fc2c"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>numberstr</b> (double v)</td></tr>
-<tr class="separator:ac1d457061cc41c554293a71997a3fc2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d3583686dd00a0c7aa57a1330f28a4e"><td class="memItemLeft" align="right" valign="top"><a id="a2d3583686dd00a0c7aa57a1330f28a4e" name="a2d3583686dd00a0c7aa57a1330f28a4e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>numberret</b> (double v)</td></tr>
-<tr class="separator:a2d3583686dd00a0c7aa57a1330f28a4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a080ad9f3a643e2a155813f3cbdc2d48c"><td class="memItemLeft" align="right" valign="top"><a id="a080ad9f3a643e2a155813f3cbdc2d48c" name="a080ad9f3a643e2a155813f3cbdc2d48c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stringret</b> (char *s)</td></tr>
+<tr class="memitem:a080ad9f3a643e2a155813f3cbdc2d48c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a080ad9f3a643e2a155813f3cbdc2d48c">stringret</a> (char *s)</td></tr>
+<tr class="memdesc:a080ad9f3a643e2a155813f3cbdc2d48c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string value from a Cubescript command.  <a href="command_8h.html#a080ad9f3a643e2a155813f3cbdc2d48c">More...</a><br /></td></tr>
 <tr class="separator:a080ad9f3a643e2a155813f3cbdc2d48c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20c44dd134bca771f580267fcdf84d16"><td class="memItemLeft" align="right" valign="top"><a id="a20c44dd134bca771f580267fcdf84d16" name="a20c44dd134bca771f580267fcdf84d16"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>result</b> (<a class="el" href="structtagval.html">tagval</a> &amp;v)</td></tr>
-<tr class="separator:a20c44dd134bca771f580267fcdf84d16"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ce0f65be2f8547eba24228363753ba7"><td class="memItemLeft" align="right" valign="top"><a id="a0ce0f65be2f8547eba24228363753ba7" name="a0ce0f65be2f8547eba24228363753ba7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>result</b> (const char *s)</td></tr>
+<tr class="memitem:a0ce0f65be2f8547eba24228363753ba7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a0ce0f65be2f8547eba24228363753ba7">result</a> (const char *s)</td></tr>
+<tr class="memdesc:a0ce0f65be2f8547eba24228363753ba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an alias' name from a Cubescript command.  <a href="command_8h.html#a0ce0f65be2f8547eba24228363753ba7">More...</a><br /></td></tr>
 <tr class="separator:a0ce0f65be2f8547eba24228363753ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79bba01336acd4dc1bdf874c2593e224"><td class="memItemLeft" align="right" valign="top"><a id="a79bba01336acd4dc1bdf874c2593e224" name="a79bba01336acd4dc1bdf874c2593e224"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>parseint</b> (const char *s)</td></tr>
+<tr class="memitem:a79bba01336acd4dc1bdf874c2593e224"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a79bba01336acd4dc1bdf874c2593e224">parseint</a> (const char *s)</td></tr>
+<tr class="memdesc:a79bba01336acd4dc1bdf874c2593e224"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the string passed as an integer.  <a href="command_8h.html#a79bba01336acd4dc1bdf874c2593e224">More...</a><br /></td></tr>
 <tr class="separator:a79bba01336acd4dc1bdf874c2593e224"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2537cb8648f7eddfcf49ebc1073e9cbc"><td class="memItemLeft" align="right" valign="top"><a id="a2537cb8648f7eddfcf49ebc1073e9cbc" name="a2537cb8648f7eddfcf49ebc1073e9cbc"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>variable</b> (const char *name, int min, int cur, int max, int *storage, identfun fun, int flags)</td></tr>
+<tr class="memitem:a2537cb8648f7eddfcf49ebc1073e9cbc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a> (const char *name, int min, int cur, int max, int *storage, identfun fun, int flags)</td></tr>
+<tr class="memdesc:a2537cb8648f7eddfcf49ebc1073e9cbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers an int variable in the Cubescript ident table.  <a href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">More...</a><br /></td></tr>
 <tr class="separator:a2537cb8648f7eddfcf49ebc1073e9cbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac66ac8708b0006348290d7f34d799723"><td class="memItemLeft" align="right" valign="top"><a id="ac66ac8708b0006348290d7f34d799723" name="ac66ac8708b0006348290d7f34d799723"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>fvariable</b> (const char *name, float min, float cur, float max, float *storage, identfun fun, int flags)</td></tr>
+<tr class="memitem:ac66ac8708b0006348290d7f34d799723"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#ac66ac8708b0006348290d7f34d799723">fvariable</a> (const char *name, float min, float cur, float max, float *storage, identfun fun, int flags)</td></tr>
+<tr class="memdesc:ac66ac8708b0006348290d7f34d799723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a float variable in the Cubescript ident table.  <a href="command_8h.html#ac66ac8708b0006348290d7f34d799723">More...</a><br /></td></tr>
 <tr class="separator:ac66ac8708b0006348290d7f34d799723"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab29b0234f89f7f46fbaea112b66dc0bb"><td class="memItemLeft" align="right" valign="top"><a id="ab29b0234f89f7f46fbaea112b66dc0bb" name="ab29b0234f89f7f46fbaea112b66dc0bb"></a>
-char *&#160;</td><td class="memItemRight" valign="bottom"><b>svariable</b> (const char *name, const char *cur, char **storage, identfun fun, int flags)</td></tr>
+<tr class="memitem:ab29b0234f89f7f46fbaea112b66dc0bb"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb">svariable</a> (const char *name, const char *cur, char **storage, identfun fun, int flags)</td></tr>
+<tr class="memdesc:ab29b0234f89f7f46fbaea112b66dc0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a C string variable in the Cubescript ident table.  <a href="command_8h.html#ab29b0234f89f7f46fbaea112b66dc0bb">More...</a><br /></td></tr>
 <tr class="separator:ab29b0234f89f7f46fbaea112b66dc0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6acd0b43e7c56d6f828680837f405355"><td class="memItemLeft" align="right" valign="top"><a id="a6acd0b43e7c56d6f828680837f405355" name="a6acd0b43e7c56d6f828680837f405355"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setvar</b> (const char *name, int i, bool dofunc=true, bool doclamp=true)</td></tr>
+<tr class="memitem:a6acd0b43e7c56d6f828680837f405355"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a6acd0b43e7c56d6f828680837f405355">setvar</a> (const char *name, int i, bool dofunc=true, bool doclamp=true)</td></tr>
+<tr class="memdesc:a6acd0b43e7c56d6f828680837f405355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a Cubescript integer value to the given value.  <a href="command_8h.html#a6acd0b43e7c56d6f828680837f405355">More...</a><br /></td></tr>
 <tr class="separator:a6acd0b43e7c56d6f828680837f405355"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61f8df897a1c2017b241a9ad595ef042"><td class="memItemLeft" align="right" valign="top"><a id="a61f8df897a1c2017b241a9ad595ef042" name="a61f8df897a1c2017b241a9ad595ef042"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setfvar</b> (const char *name, float f, bool dofunc=true, bool doclamp=true)</td></tr>
+<tr class="memitem:a61f8df897a1c2017b241a9ad595ef042"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a61f8df897a1c2017b241a9ad595ef042">setfvar</a> (const char *name, float f, bool dofunc=true, bool doclamp=true)</td></tr>
+<tr class="memdesc:a61f8df897a1c2017b241a9ad595ef042"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a Cubescript float value to the given value.  <a href="command_8h.html#a61f8df897a1c2017b241a9ad595ef042">More...</a><br /></td></tr>
 <tr class="separator:a61f8df897a1c2017b241a9ad595ef042"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63fd92ba10830b3f0d68bdb43c312441"><td class="memItemLeft" align="right" valign="top"><a id="a63fd92ba10830b3f0d68bdb43c312441" name="a63fd92ba10830b3f0d68bdb43c312441"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setsvar</b> (const char *name, const char *str, bool dofunc=true)</td></tr>
+<tr class="memitem:a63fd92ba10830b3f0d68bdb43c312441"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a63fd92ba10830b3f0d68bdb43c312441">setsvar</a> (const char *name, const char *str, bool dofunc=true)</td></tr>
+<tr class="memdesc:a63fd92ba10830b3f0d68bdb43c312441"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a Cubescript string value to the given value.  <a href="command_8h.html#a63fd92ba10830b3f0d68bdb43c312441">More...</a><br /></td></tr>
 <tr class="separator:a63fd92ba10830b3f0d68bdb43c312441"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33b3afb43fea6dd2a1d8b223c2752e07"><td class="memItemLeft" align="right" valign="top"><a id="a33b3afb43fea6dd2a1d8b223c2752e07" name="a33b3afb43fea6dd2a1d8b223c2752e07"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>addcommand</b> (const char *name, identfun fun, const char *narg, int type=Id_Command)</td></tr>
+<tr class="memitem:a33b3afb43fea6dd2a1d8b223c2752e07"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">addcommand</a> (const char *name, identfun fun, const char *narg, int type=Id_Command)</td></tr>
+<tr class="memdesc:a33b3afb43fea6dd2a1d8b223c2752e07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a command in the Cubescript ident table.  <a href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">More...</a><br /></td></tr>
 <tr class="separator:a33b3afb43fea6dd2a1d8b223c2752e07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7d893fef5311ba8180d054a5deccb56"><td class="memItemLeft" align="right" valign="top"><a id="ab7d893fef5311ba8180d054a5deccb56" name="ab7d893fef5311ba8180d054a5deccb56"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>identexists</b> (const char *name)</td></tr>
-<tr class="separator:ab7d893fef5311ba8180d054a5deccb56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3b67523a00aa5e380ecd5408a919a3f"><td class="memItemLeft" align="right" valign="top"><a id="ad3b67523a00aa5e380ecd5408a919a3f" name="ad3b67523a00aa5e380ecd5408a919a3f"></a>
-<a class="el" href="structident.html">ident</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getident</b> (const char *name)</td></tr>
+<tr class="memitem:ad3b67523a00aa5e380ecd5408a919a3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structident.html">ident</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#ad3b67523a00aa5e380ecd5408a919a3f">getident</a> (const char *name)</td></tr>
+<tr class="memdesc:ad3b67523a00aa5e380ecd5408a919a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the pointer to the ident object with the given CS alias.  <a href="command_8h.html#ad3b67523a00aa5e380ecd5408a919a3f">More...</a><br /></td></tr>
 <tr class="separator:ad3b67523a00aa5e380ecd5408a919a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b3fd756bd78edaaf8569836ec6b03ec"><td class="memItemLeft" align="right" valign="top"><a id="a7b3fd756bd78edaaf8569836ec6b03ec" name="a7b3fd756bd78edaaf8569836ec6b03ec"></a>
-<a class="el" href="structident.html">ident</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>newident</b> (const char *name, int flags=0)</td></tr>
-<tr class="separator:a7b3fd756bd78edaaf8569836ec6b03ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08208a18fa8933effd05cc66300f3e2b"><td class="memItemLeft" align="right" valign="top"><a id="a08208a18fa8933effd05cc66300f3e2b" name="a08208a18fa8933effd05cc66300f3e2b"></a>
-<a class="el" href="structident.html">ident</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>readident</b> (const char *name)</td></tr>
-<tr class="separator:a08208a18fa8933effd05cc66300f3e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5cdcc1201bed4b6f929e34376657012"><td class="memItemLeft" align="right" valign="top"><a id="ad5cdcc1201bed4b6f929e34376657012" name="ad5cdcc1201bed4b6f929e34376657012"></a>
-<a class="el" href="structident.html">ident</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>writeident</b> (const char *name, int flags=0)</td></tr>
-<tr class="separator:ad5cdcc1201bed4b6f929e34376657012"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ca4ab98a3235d19d3c64d815a989289"><td class="memItemLeft" align="right" valign="top"><a id="a6ca4ab98a3235d19d3c64d815a989289" name="a6ca4ab98a3235d19d3c64d815a989289"></a>
-uint *&#160;</td><td class="memItemRight" valign="bottom"><b>compilecode</b> (const char *p)</td></tr>
-<tr class="separator:a6ca4ab98a3235d19d3c64d815a989289"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4c0812ab7b933e9ca3a712006649aed"><td class="memItemLeft" align="right" valign="top"><a id="ad4c0812ab7b933e9ca3a712006649aed" name="ad4c0812ab7b933e9ca3a712006649aed"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>freecode</b> (uint *p)</td></tr>
-<tr class="separator:ad4c0812ab7b933e9ca3a712006649aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a658df2347c76a850ea2534f3557e9486"><td class="memItemLeft" align="right" valign="top"><a id="a658df2347c76a850ea2534f3557e9486" name="a658df2347c76a850ea2534f3557e9486"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>execute</b> (const uint *code)</td></tr>
 <tr class="separator:a658df2347c76a850ea2534f3557e9486"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a997e6a66f75a4018e093db453af70dad"><td class="memItemLeft" align="right" valign="top"><a id="a997e6a66f75a4018e093db453af70dad" name="a997e6a66f75a4018e093db453af70dad"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>execute</b> (const char *p)</td></tr>
+<tr class="memitem:a997e6a66f75a4018e093db453af70dad"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a997e6a66f75a4018e093db453af70dad">execute</a> (const char *p)</td></tr>
+<tr class="memdesc:a997e6a66f75a4018e093db453af70dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the contents of the string passed.  <a href="command_8h.html#a997e6a66f75a4018e093db453af70dad">More...</a><br /></td></tr>
 <tr class="separator:a997e6a66f75a4018e093db453af70dad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acea181be69ffff48cc9c24cf634b48b3"><td class="memItemLeft" align="right" valign="top"><a id="acea181be69ffff48cc9c24cf634b48b3" name="acea181be69ffff48cc9c24cf634b48b3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>execute</b> (<a class="el" href="structident.html">ident</a> *id, <a class="el" href="structtagval.html">tagval</a> *args, int numargs, bool lookup=false)</td></tr>
-<tr class="separator:acea181be69ffff48cc9c24cf634b48b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93c2484e04b478cd5ac6cdef26a8edf1"><td class="memItemLeft" align="right" valign="top"><a id="a93c2484e04b478cd5ac6cdef26a8edf1" name="a93c2484e04b478cd5ac6cdef26a8edf1"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>execident</b> (const char *name, int noid=0, bool lookup=false)</td></tr>
 <tr class="separator:a93c2484e04b478cd5ac6cdef26a8edf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fcb46802e84df13f036b3ef4e71b217"><td class="memItemLeft" align="right" valign="top"><a id="a7fcb46802e84df13f036b3ef4e71b217" name="a7fcb46802e84df13f036b3ef4e71b217"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>executebool</b> (const uint *code)</td></tr>
 <tr class="separator:a7fcb46802e84df13f036b3ef4e71b217"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98815b7c9bb81dbae90024f8ba5f05f1"><td class="memItemLeft" align="right" valign="top"><a id="a98815b7c9bb81dbae90024f8ba5f05f1" name="a98815b7c9bb81dbae90024f8ba5f05f1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>executebool</b> (const char *p)</td></tr>
-<tr class="separator:a98815b7c9bb81dbae90024f8ba5f05f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef513ad56712be0274fd81659035ab05"><td class="memItemLeft" align="right" valign="top"><a id="aef513ad56712be0274fd81659035ab05" name="aef513ad56712be0274fd81659035ab05"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>executebool</b> (<a class="el" href="structident.html">ident</a> *id, <a class="el" href="structtagval.html">tagval</a> *args, int numargs, bool lookup=false)</td></tr>
-<tr class="separator:aef513ad56712be0274fd81659035ab05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac34a239891206ba25b2a5c833756f8fa"><td class="memItemLeft" align="right" valign="top"><a id="ac34a239891206ba25b2a5c833756f8fa" name="ac34a239891206ba25b2a5c833756f8fa"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>execidentbool</b> (const char *name, bool noid=false, bool lookup=false)</td></tr>
-<tr class="separator:ac34a239891206ba25b2a5c833756f8fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e5803cc209ddd0bfcbbb57c0480f974"><td class="memItemLeft" align="right" valign="top"><a id="a6e5803cc209ddd0bfcbbb57c0480f974" name="a6e5803cc209ddd0bfcbbb57c0480f974"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>execfile</b> (const char *cfgfile, bool msg=true)</td></tr>
+<tr class="memitem:a6e5803cc209ddd0bfcbbb57c0480f974"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a6e5803cc209ddd0bfcbbb57c0480f974">execfile</a> (const char *cfgfile, bool msg=true)</td></tr>
+<tr class="memdesc:a6e5803cc209ddd0bfcbbb57c0480f974"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the contents of the referenced file.  <a href="command_8h.html#a6e5803cc209ddd0bfcbbb57c0480f974">More...</a><br /></td></tr>
 <tr class="separator:a6e5803cc209ddd0bfcbbb57c0480f974"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f30336eabff5118987afebeed4df69d"><td class="memItemLeft" align="right" valign="top"><a id="a2f30336eabff5118987afebeed4df69d" name="a2f30336eabff5118987afebeed4df69d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>alias</b> (const char *name, const char *action)</td></tr>
-<tr class="separator:a2f30336eabff5118987afebeed4df69d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20b5ef16ec5ad90369a8fd98a0178fa2"><td class="memItemLeft" align="right" valign="top"><a id="a20b5ef16ec5ad90369a8fd98a0178fa2" name="a20b5ef16ec5ad90369a8fd98a0178fa2"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>escapestring</b> (const char *s)</td></tr>
+<tr class="memitem:a20b5ef16ec5ad90369a8fd98a0178fa2"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2">escapestring</a> (const char *s)</td></tr>
+<tr class="memdesc:a20b5ef16ec5ad90369a8fd98a0178fa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces C style excape characters with Cubescript ones.  <a href="command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2">More...</a><br /></td></tr>
 <tr class="separator:a20b5ef16ec5ad90369a8fd98a0178fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab72e4faf0603d5ec03e2422c76a40e0c"><td class="memItemLeft" align="right" valign="top"><a id="ab72e4faf0603d5ec03e2422c76a40e0c" name="ab72e4faf0603d5ec03e2422c76a40e0c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>explodelist</b> (const char *s, <a class="el" href="structvector.html">vector</a>&lt; char * &gt; &amp;elems, int limit=-1)</td></tr>
-<tr class="separator:ab72e4faf0603d5ec03e2422c76a40e0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a0296e4a02d14e3f16f069b69c1106f"><td class="memItemLeft" align="right" valign="top"><a id="a7a0296e4a02d14e3f16f069b69c1106f" name="a7a0296e4a02d14e3f16f069b69c1106f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>printvar</b> (<a class="el" href="structident.html">ident</a> *id, int i)</td></tr>
+<tr class="memitem:a7a0296e4a02d14e3f16f069b69c1106f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a7a0296e4a02d14e3f16f069b69c1106f">printvar</a> (<a class="el" href="structident.html">ident</a> *id, int i)</td></tr>
+<tr class="memdesc:a7a0296e4a02d14e3f16f069b69c1106f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints out the formatted variable.  <a href="command_8h.html#a7a0296e4a02d14e3f16f069b69c1106f">More...</a><br /></td></tr>
 <tr class="separator:a7a0296e4a02d14e3f16f069b69c1106f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e8bc55a9398bb67e53e15a0cde66e08"><td class="memItemLeft" align="right" valign="top"><a id="a8e8bc55a9398bb67e53e15a0cde66e08" name="a8e8bc55a9398bb67e53e15a0cde66e08"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>clampvar</b> (<a class="el" href="structident.html">ident</a> *id, int i, int minval, int maxval)</td></tr>
+<tr class="memitem:a8e8bc55a9398bb67e53e15a0cde66e08"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#a8e8bc55a9398bb67e53e15a0cde66e08">clampvar</a> (<a class="el" href="structident.html">ident</a> *id, int i, int minval, int maxval)</td></tr>
+<tr class="memdesc:a8e8bc55a9398bb67e53e15a0cde66e08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifies the value passed to fall within the boundaries passed.  <a href="command_8h.html#a8e8bc55a9398bb67e53e15a0cde66e08">More...</a><br /></td></tr>
 <tr class="separator:a8e8bc55a9398bb67e53e15a0cde66e08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8416271321166c4bb2e1dfd5848e1ee6"><td class="memItemLeft" align="right" valign="top"><a id="a8416271321166c4bb2e1dfd5848e1ee6" name="a8416271321166c4bb2e1dfd5848e1ee6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>loopiter</b> (<a class="el" href="structident.html">ident</a> *id, <a class="el" href="structidentstack.html">identstack</a> &amp;stack, int i)</td></tr>
@@ -464,8 +417,8 @@ const char *&#160;</td><td class="memItemRight" valign="bottom"><b>escapeid</b> 
 <tr class="memitem:aa1fd1eebd1801363552d1a6f17e6badc"><td class="memItemLeft" align="right" valign="top"><a id="aa1fd1eebd1801363552d1a6f17e6badc" name="aa1fd1eebd1801363552d1a6f17e6badc"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>writecfg</b> (const char *savedconfig, const char *autoexec=nullptr, const char *defaultconfig=nullptr, const char *name=nullptr)</td></tr>
 <tr class="separator:aa1fd1eebd1801363552d1a6f17e6badc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad97d745d2a01ec6f7b780d792e082e08"><td class="memItemLeft" align="right" valign="top"><a id="ad97d745d2a01ec6f7b780d792e082e08" name="ad97d745d2a01ec6f7b780d792e082e08"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>checksleep</b> (int millis)</td></tr>
+<tr class="memitem:ad97d745d2a01ec6f7b780d792e082e08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#ad97d745d2a01ec6f7b780d792e082e08">checksleep</a> (int millis)</td></tr>
+<tr class="memdesc:ad97d745d2a01ec6f7b780d792e082e08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the cubescript sleep queue.  <a href="command_8h.html#ad97d745d2a01ec6f7b780d792e082e08">More...</a><br /></td></tr>
 <tr class="separator:ad97d745d2a01ec6f7b780d792e082e08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f0e73b474d1509b303b501465b025ef"><td class="memItemLeft" align="right" valign="top"><a id="a7f0e73b474d1509b303b501465b025ef" name="a7f0e73b474d1509b303b501465b025ef"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>initidents</b> ()</td></tr>
@@ -476,8 +429,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>clear_command</b> ()<
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ae653e8a430e6baa97073fbaa061abfb2"><td class="memItemLeft" align="right" valign="top"><a id="ae653e8a430e6baa97073fbaa061abfb2" name="ae653e8a430e6baa97073fbaa061abfb2"></a>
-std::queue&lt; <a class="el" href="structident.html">ident</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>triggerqueue</b></td></tr>
+<tr class="memitem:ae653e8a430e6baa97073fbaa061abfb2"><td class="memItemLeft" align="right" valign="top">std::queue&lt; <a class="el" href="structident.html">ident</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="command_8h.html#ae653e8a430e6baa97073fbaa061abfb2">triggerqueue</a></td></tr>
 <tr class="separator:ae653e8a430e6baa97073fbaa061abfb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf183f2dd9db02ed8e5199922459cbaa"><td class="memItemLeft" align="right" valign="top"><a id="abf183f2dd9db02ed8e5199922459cbaa" name="abf183f2dd9db02ed8e5199922459cbaa"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>identflags</b></td></tr>
@@ -485,7 +437,817 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>identflags</b></td></t
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Script binding functionality. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a33b3afb43fea6dd2a1d8b223c2752e07" name="a33b3afb43fea6dd2a1d8b223c2752e07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33b3afb43fea6dd2a1d8b223c2752e07">&#9670;&nbsp;</a></span>addcommand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool addcommand </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">identfun&#160;</td>
+          <td class="paramname"><em>fun</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>narg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>type</em> = <code>Id_Command</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Registers a command in the Cubescript ident table. </p>
+<p >The arguments of the function passed are cast away, so they are reconstructed using the char * string passed to <code>narg</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>of the command in Cubescript </td></tr>
+    <tr><td class="paramname">fun</td><td>a function pointer to be called when the command is executed </td></tr>
+    <tr><td class="paramname">a</td><td>string containing the arguments of the function </td></tr>
+    <tr><td class="paramname">type</td><td>the type of the command to create </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad97d745d2a01ec6f7b780d792e082e08" name="ad97d745d2a01ec6f7b780d792e082e08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad97d745d2a01ec6f7b780d792e082e08">&#9670;&nbsp;</a></span>checksleep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void checksleep </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>millis</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Processes the cubescript sleep queue. </p>
+<p >At most, one sleep command is removed from the queue per cycle. Removes queued sleep commands as they expire, which stops CS commands from executing for a certain period of time.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">millis</td><td>the current timestamp </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8e8bc55a9398bb67e53e15a0cde66e08" name="a8e8bc55a9398bb67e53e15a0cde66e08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e8bc55a9398bb67e53e15a0cde66e08">&#9670;&nbsp;</a></span>clampvar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int clampvar </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structident.html">ident</a> *&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>minval</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>maxval</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifies the value passed to fall within the boundaries passed. </p>
+<p >Clamps the value i to within minval and maxval. If id is a hex variable, issues a warning about clamping. i is a regular free variable and does not necessarily have anything to do with the ident passed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the ident object to check the hex-ness of </td></tr>
+    <tr><td class="paramname">i</td><td>the value to clamp </td></tr>
+    <tr><td class="paramname">minval</td><td>the lowest value to clamp to </td></tr>
+    <tr><td class="paramname">maxval</td><td>the largest value to clamp to </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a20b5ef16ec5ad90369a8fd98a0178fa2" name="a20b5ef16ec5ad90369a8fd98a0178fa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20b5ef16ec5ad90369a8fd98a0178fa2">&#9670;&nbsp;</a></span>escapestring()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char * escapestring </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Replaces C style excape characters with Cubescript ones. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>the string to convert</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a string containing the escaped changes </dd></dl>
+
+</div>
+</div>
+<a id="a6e5803cc209ddd0bfcbbb57c0480f974" name="a6e5803cc209ddd0bfcbbb57c0480f974"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e5803cc209ddd0bfcbbb57c0480f974">&#9670;&nbsp;</a></span>execfile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool execfile </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>cfgfile</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>msg</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Executes the contents of the referenced file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cfgfile</td><td>the relative director of the file to execute </td></tr>
+    <tr><td class="paramname">msg</td><td>whether to print to console a failure message</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the file was successfully loaded </dd>
+<dd>
+false if the file was not found </dd></dl>
+
+</div>
+</div>
+<a id="a997e6a66f75a4018e093db453af70dad" name="a997e6a66f75a4018e093db453af70dad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a997e6a66f75a4018e093db453af70dad">&#9670;&nbsp;</a></span>execute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int execute </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Executes the contents of the string passed. </p>
+<p >Parses and executes the line of Cubescript given.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">the</td><td>C string containing the code to execute </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3d7aa3bf7cb9299fbde9e836d399e50a" name="a3d7aa3bf7cb9299fbde9e836d399e50a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d7aa3bf7cb9299fbde9e836d399e50a">&#9670;&nbsp;</a></span>floatret()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void floatret </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a float value from a Cubescript command. </p>
+<p >When writing a CS command, this function returns a float value to the inheriting CS environment.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the value to return </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac66ac8708b0006348290d7f34d799723" name="ac66ac8708b0006348290d7f34d799723"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac66ac8708b0006348290d7f34d799723">&#9670;&nbsp;</a></span>fvariable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float fvariable </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>cur</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>storage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">identfun&#160;</td>
+          <td class="paramname"><em>fun</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Registers a float variable in the Cubescript ident table. </p>
+<p >Adds a float variable to the Cubescript ident table. The name of the Cubescript variable does not necessarily need to correspond to the C++ variable's name.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>the name of the aliased variable in Cubescript </td></tr>
+    <tr><td class="paramname">min</td><td>the minimum value the variable can be set at </td></tr>
+    <tr><td class="paramname">cur</td><td>the starting value of the variable </td></tr>
+    <tr><td class="paramname">max</td><td>the maximum value the variable can be set at </td></tr>
+    <tr><td class="paramname">storage</td><td>the pointer to the variable to be aliased to Cubescript </td></tr>
+    <tr><td class="paramname">fun</td><td>a function pointer to be called upon modification of the variable </td></tr>
+    <tr><td class="paramname">flags</td><td>the handling flags for the variable</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the value cur passed </dd></dl>
+
+</div>
+</div>
+<a id="ad3b67523a00aa5e380ecd5408a919a3f" name="ad3b67523a00aa5e380ecd5408a919a3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3b67523a00aa5e380ecd5408a919a3f">&#9670;&nbsp;</a></span>getident()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structident.html">ident</a> * getident </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the pointer to the ident object with the given CS alias. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">the</td><td>name of the cubescript object to get</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The address of the ident object. </dd></dl>
+
+</div>
+</div>
+<a id="a21cd226150059e3a302cfdbb389541c5" name="a21cd226150059e3a302cfdbb389541c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21cd226150059e3a302cfdbb389541c5">&#9670;&nbsp;</a></span>intret()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void intret </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns an integer value from a Cubescript command. </p>
+<p >When writing a CS command, this function returns an integer value to the inheriting CS environment.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the value to return </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a79bba01336acd4dc1bdf874c2593e224" name="a79bba01336acd4dc1bdf874c2593e224"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79bba01336acd4dc1bdf874c2593e224">&#9670;&nbsp;</a></span>parseint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int parseint </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the string passed as an integer. </p>
+<p >Parses the entire string, returning the value of the passed value as an integer. The value of this value will always be greater than zero unless there is an overflow beyond the size of <code>int</code>. The output may be converted by a trailing radix digit as described in <code>strtoul</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>the string to turn into an integer </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7a0296e4a02d14e3f16f069b69c1106f" name="a7a0296e4a02d14e3f16f069b69c1106f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a0296e4a02d14e3f16f069b69c1106f">&#9670;&nbsp;</a></span>printvar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void printvar </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structident.html">ident</a> *&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Prints out the formatted variable. </p>
+<p >The param is intended to represent the value the ident object represents.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the ident object to print out </td></tr>
+    <tr><td class="paramname">i</td><td>the value to print out the variable equalling. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0ce0f65be2f8547eba24228363753ba7" name="a0ce0f65be2f8547eba24228363753ba7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ce0f65be2f8547eba24228363753ba7">&#9670;&nbsp;</a></span>result()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void result </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns an alias' name from a Cubescript command. </p>
+<p >When writing a CS command, this functions a string value representing the name of a Cubescript object to the inheriting CS environment.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>the name of the ident to return </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a61f8df897a1c2017b241a9ad595ef042" name="a61f8df897a1c2017b241a9ad595ef042"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61f8df897a1c2017b241a9ad595ef042">&#9670;&nbsp;</a></span>setfvar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setfvar </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>dofunc</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>doclamp</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets a Cubescript float value to the given value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>the name of the cubescript alias to change </td></tr>
+    <tr><td class="paramname">i</td><td>the value to set </td></tr>
+    <tr><td class="paramname">dofunc</td><td>whether to run the onchange function </td></tr>
+    <tr><td class="paramname">doclamp</td><td>whether to clamp the value to the specified limits </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a63fd92ba10830b3f0d68bdb43c312441" name="a63fd92ba10830b3f0d68bdb43c312441"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63fd92ba10830b3f0d68bdb43c312441">&#9670;&nbsp;</a></span>setsvar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setsvar </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>str</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>dofunc</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets a Cubescript string value to the given value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>the name of the cubescript alias to change </td></tr>
+    <tr><td class="paramname">i</td><td>the value to set </td></tr>
+    <tr><td class="paramname">dofunc</td><td>whether to run the onchange function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6acd0b43e7c56d6f828680837f405355" name="a6acd0b43e7c56d6f828680837f405355"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6acd0b43e7c56d6f828680837f405355">&#9670;&nbsp;</a></span>setvar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void setvar </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>dofunc</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>doclamp</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets a Cubescript integer value to the given value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>the name of the cubescript alias to change </td></tr>
+    <tr><td class="paramname">i</td><td>the value to set </td></tr>
+    <tr><td class="paramname">dofunc</td><td>whether to run the onchange function </td></tr>
+    <tr><td class="paramname">doclamp</td><td>whether to clamp the value to the specified limits </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a080ad9f3a643e2a155813f3cbdc2d48c" name="a080ad9f3a643e2a155813f3cbdc2d48c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a080ad9f3a643e2a155813f3cbdc2d48c">&#9670;&nbsp;</a></span>stringret()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void stringret </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a string value from a Cubescript command. </p>
+<p >When writing a CS command, this function returns a string value to the inheriting CS environment.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the value to return </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab29b0234f89f7f46fbaea112b66dc0bb" name="ab29b0234f89f7f46fbaea112b66dc0bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab29b0234f89f7f46fbaea112b66dc0bb">&#9670;&nbsp;</a></span>svariable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char * svariable </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>cur</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char **&#160;</td>
+          <td class="paramname"><em>storage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">identfun&#160;</td>
+          <td class="paramname"><em>fun</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Registers a C string variable in the Cubescript ident table. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>the name of the aliased variable in Cubescript </td></tr>
+    <tr><td class="paramname">cur</td><td>the starting value of the variable </td></tr>
+    <tr><td class="paramname">storage</td><td>the pointer to the pointer to the variable to be aliased to Cubescript </td></tr>
+    <tr><td class="paramname">fun</td><td>a function pointer to be called upon modification of the variable </td></tr>
+    <tr><td class="paramname">flags</td><td>the handling flags for the variable</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the value cur passed </dd></dl>
+
+</div>
+</div>
+<a id="a2537cb8648f7eddfcf49ebc1073e9cbc" name="a2537cb8648f7eddfcf49ebc1073e9cbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2537cb8648f7eddfcf49ebc1073e9cbc">&#9670;&nbsp;</a></span>variable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int variable </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cur</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>storage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">identfun&#160;</td>
+          <td class="paramname"><em>fun</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Registers an int variable in the Cubescript ident table. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>the name of the aliased variable in Cubescript </td></tr>
+    <tr><td class="paramname">min</td><td>the minimum value the variable can be set at </td></tr>
+    <tr><td class="paramname">cur</td><td>the starting value of the variable </td></tr>
+    <tr><td class="paramname">max</td><td>the maximum value the variable can be set at </td></tr>
+    <tr><td class="paramname">storage</td><td>the pointer to the variable to be aliased to Cubescript </td></tr>
+    <tr><td class="paramname">fun</td><td>a function pointer to be called upon modification of the variable </td></tr>
+    <tr><td class="paramname">flags</td><td>the handling flags for the variable</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the value cur passed </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ae653e8a430e6baa97073fbaa061abfb2" name="ae653e8a430e6baa97073fbaa061abfb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae653e8a430e6baa97073fbaa061abfb2">&#9670;&nbsp;</a></span>triggerqueue</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::queue&lt;<a class="el" href="structident.html">ident</a> *&gt; triggerqueue</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >A queue of game events for the engine to process </p>
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
