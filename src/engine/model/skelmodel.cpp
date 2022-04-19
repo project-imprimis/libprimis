@@ -17,6 +17,7 @@
 
 #include "interface/console.h"
 #include "interface/control.h"
+#include "interface/cs.h"
 
 #include "render/rendergl.h"
 #include "render/renderlights.h"

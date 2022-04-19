@@ -161,6 +161,7 @@ inline void numberformat(char *buf, double v, int len = 20)
     }
 }
 
+extern const char *intstr(int v);
 
 inline const char *getstr(const identval &v, int type)
 {
@@ -361,11 +362,25 @@ extern void printvar(ident *id, int i);
 
 extern void clearoverrides();
 
-extern void checksleep(int millis);
 extern void clearsleep(bool clearoverrides = true);
 
 extern char *executestr(const uint *code);
 extern char *executestr(const char *p);
 extern char *executestr(ident *id, tagval *args, int numargs, bool lookup = false);
+extern bool identexists(const char *name);
+extern ident *newident(const char *name, int flags = 0);
+extern ident *readident(const char *name);
+extern ident *writeident(const char *name, int flags = 0);
+extern uint *compilecode(const char *p);
+extern void freecode(uint *p);
+extern int execute(ident *id, tagval *args, int numargs, bool lookup = false);
+extern bool executebool(const char *p);
+extern bool executebool(ident *id, tagval *args, int numargs, bool lookup = false);
+extern bool execidentbool(const char *name, bool noid = false, bool lookup = false);
+extern void alias(const char *name, const char *action);
+extern void explodelist(const char *s, vector<char *> &elems, int limit = -1);
+extern void result(tagval &v);
+extern void numberret(double v);
+extern const char *numberstr(double v);
 
 #endif

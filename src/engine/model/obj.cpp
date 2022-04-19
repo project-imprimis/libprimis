@@ -17,6 +17,7 @@
 
 #include "interface/console.h"
 #include "interface/control.h"
+#include "interface/cs.h"
 
 #include "world/entities.h"
 #include "world/octaworld.h"

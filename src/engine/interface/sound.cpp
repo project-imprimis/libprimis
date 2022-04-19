@@ -6,6 +6,7 @@
 
 #include "console.h"
 #include "control.h"
+#include "cs.h"
 #include "input.h"
 #include "menus.h"
 
