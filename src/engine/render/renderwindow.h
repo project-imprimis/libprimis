@@ -8,11 +8,8 @@ extern SDL_Window *screen;
 extern int scr_w, scr_h;
 extern int screenw, screenh;
 
-extern void setupscreen();
-extern void restoregamma();
 extern void cleargamma();
 extern void restorevsync();
-extern void resetfpshistory();
 extern void limitfps(int &millis, int curmillis);
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);
 
