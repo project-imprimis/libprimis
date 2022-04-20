@@ -1,0 +1,28 @@
+name: Makefile CI (Clang)
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Update package list
+      run: sudo apt-get update
+
+    - name: Install dependencies
+      run: sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libglew-dev clang
+
+    - name: Build
+      run: make CXX=clang -C src -j4
+
+    - name: Upload libprimis.so artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: libprimis-linux
+        path: ./src/libprimis.so
