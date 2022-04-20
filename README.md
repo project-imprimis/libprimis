@@ -2,6 +2,7 @@
 
 [![windows](https://github.com/project-imprimis/libprimis/actions/workflows/msbuild.yml/badge.svg)](https://github.com/project-imprimis/libprimis/actions/workflows/msbuild.yml)
 [![ubuntu](https://github.com/project-imprimis/libprimis/actions/workflows/makefile.yml/badge.svg)](https://github.com/project-imprimis/libprimis/actions/workflows/makefile.yml)
+[![ubuntu](https://github.com/project-imprimis/libprimis/actions/workflows/clang.yml/badge.svg)](https://github.com/project-imprimis/libprimis/actions/workflows/clang.yml)
 
 ## Documentation
 
