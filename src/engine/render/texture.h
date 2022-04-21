@@ -28,7 +28,7 @@ extern bool settexture(const char *name, int clamp = 0);
 extern void scaletexture(uchar * RESTRICT src, uint sw, uint sh, uint bpp, uint pitch, uchar * RESTRICT dst, uint dw, uint dh);
 extern void reorientnormals(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
 extern void reorienttexture(uchar * RESTRICT src, int sw, int sh, int bpp, int stride, uchar * RESTRICT dst, bool flipx, bool flipy, bool swapxy);
-extern GLenum texformat(int bpp, bool swizzle = false);
+extern GLenum texformat(int bpp);
 
 struct GlobalShaderParamState
 {
@@ -258,16 +258,16 @@ struct Shader
         delete[] variantrows;
     }
 
-    void allocparams(Slot *slot = nullptr);
+    void allocparams();
     void setslotparams(Slot &slot);
     void setslotparams(Slot &slot, VSlot &vslot);
     void bindprograms();
 
-    void flushparams(Slot *slot = nullptr)
+    void flushparams()
     {
         if(!used)
         {
-            allocparams(slot);
+            allocparams();
             used = true;
         }
         for(int i = 0; i < globalparams.length(); i++)
@@ -378,7 +378,7 @@ struct Shader
             return;
         }
         setvariant_(col, row);
-        lastshader->flushparams(&slot);
+        lastshader->flushparams();
         lastshader->setslotparams(slot);
     }
 
@@ -389,7 +389,7 @@ struct Shader
             return;
         }
         setvariant_(col, row);
-        lastshader->flushparams(&slot);
+        lastshader->flushparams();
         lastshader->setslotparams(slot, vslot);
     }
 
@@ -418,7 +418,7 @@ struct Shader
             return;
         }
         set_();
-        lastshader->flushparams(&slot);
+        lastshader->flushparams();
         lastshader->setslotparams(slot);
     }
 
@@ -429,7 +429,7 @@ struct Shader
             return;
         }
         set_();
-        lastshader->flushparams(&slot);
+        lastshader->flushparams();
         lastshader->setslotparams(slot, vslot);
     }
 
@@ -540,7 +540,7 @@ struct GlobalShaderParam
     }
 
     template<class T>
-    T *reserve(int n = 1)
+    T *reserve()
     {
         return (T *)resolve()->buf;
     }

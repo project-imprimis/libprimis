@@ -237,7 +237,7 @@ extern int classifyface(const cube &c, int orient, const ivec &co, int size);
 extern int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat = Mat_Air, ushort nmat = Mat_Alpha, ushort matmask = Mat_Alpha);
 extern int visibleorient(const cube &c, int orient);
 extern void genfaceverts(const cube &c, int orient, ivec v[4]);
-extern int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts);
+extern int calcmergedsize(const ivec &co, int size, const vertinfo *verts, int numverts);
 extern void invalidatemerges(cube &c);
 extern void remip();
 

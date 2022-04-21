@@ -113,7 +113,7 @@ vector<SoundChannel> channels;
 int maxchannels = 0;
 
 //creates a new SoundChannel object with passed properties
-SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, extentity *ent = nullptr, int flags = 0, int radius = 0)
+SoundChannel &newchannel(int n, soundslot *slot, const vec *loc = nullptr, extentity *ent = nullptr, int radius = 0)
 {
     if(ent)
     {
@@ -890,7 +890,7 @@ int playsound(int n, const vec *loc = nullptr, extentity *ent = nullptr, int fla
     {
         return -1;
     }
-    SoundChannel &chan = newchannel(chanid, &slot, loc, ent, flags, radius);
+    SoundChannel &chan = newchannel(chanid, &slot, loc, ent, radius);
     updatechannel(chan);
     int playing = -1;
     //some ugly ternary assignments

@@ -258,8 +258,8 @@ void cascadedshadowmap::bindparams()
 
     static GlobalShaderParam csmtc("csmtc"),
                              csmoffset("csmoffset");
-    vec4<float> *csmtcv = csmtc.reserve<vec4<float>>(csmsplits);
-    vec  *csmoffsetv = csmoffset.reserve<vec>(csmsplits);
+    vec4<float> *csmtcv = csmtc.reserve<vec4<float>>();
+    vec  *csmoffsetv = csmoffset.reserve<vec>();
     for(int i = 0; i < csmsplits; ++i)
     {
         cascadedshadowmap::splitinfo &split = splits[i];

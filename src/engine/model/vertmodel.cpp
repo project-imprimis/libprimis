@@ -134,7 +134,7 @@ void vertmodel::vertmesh::genshadowmesh(std::vector<triangle> &out, const matrix
     }
 }
 
-void vertmodel::vertmesh::assignvert(vvertg &vv, int j, tcvert &tc, vert &v)
+void vertmodel::vertmesh::assignvert(vvertg &vv, tcvert &tc, vert &v)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = tc.tc;
@@ -158,18 +158,6 @@ int vertmodel::vertmesh::genvbo(vector<ushort> &idxs, int offset)
     elen = idxs.length()-eoffset;
     return numverts;
 }
-
-void vertmodel::vertmesh::render(const AnimState *as, skin &s, vbocacheentry &vc)
-{
-    if(!Shader::lastshader)
-    {
-        return;
-    }
-    glDrawRangeElements_(GL_TRIANGLES, minvert, maxvert, elen, GL_UNSIGNED_SHORT, &(static_cast<vertmeshgroup *>(group))->edata[eoffset]);
-    glde++;
-    xtravertsva += numverts;
-}
-
 //==============================================================================
 // vertmodel::vertmeshgroup object
 //==============================================================================
@@ -257,11 +245,6 @@ bool vertmodel::vertmeshgroup::addtag(const char *name, const matrix4x3 &matrix)
 int vertmodel::vertmeshgroup::totalframes() const
 {
     return numframes;
-}
-
-void vertmodel::vertmeshgroup::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
-{
-    n.mul(m, tags[i].matrix);
 }
 
 void vertmodel::vertmeshgroup::calctagmatrix(part *p, int i, const AnimState &as, matrix4 &matrix)
@@ -375,90 +358,5 @@ void vertmodel::vertmeshgroup::cleanup()
     {
         glDeleteBuffers(1, &ebuf);
         ebuf = 0;
-    }
-}
-
-void vertmodel::vertmeshgroup::preload(part *p)
-{
-    if(numframes > 1)
-    {
-        return;
-    }
-    if(!vbocache->vbuf)
-    {
-        genvbo(*vbocache);
-    }
-}
-
-void vertmodel::vertmeshgroup::render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
-{
-    if(as->cur.anim & Anim_NoRender)
-    {
-        for(int i = 0; i < p->links.length(); i++)
-        {
-            calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
-        }
-        return;
-    }
-    vbocacheentry *vc = nullptr;
-    if(numframes<=1)
-    {
-        vc = vbocache;
-    }
-    else
-    {
-        for(int i = 0; i < maxvbocache; ++i)
-        {
-            vbocacheentry &c = vbocache[i];
-            if(!c.vbuf)
-            {
-                continue;
-            }
-            if(c.as==*as)
-            {
-                vc = &c;
-                break;
-            }
-        }
-        if(!vc)
-        {
-            for(int i = 0; i < maxvbocache; ++i)
-            {
-                vc = &vbocache[i];
-                if(!vc->vbuf || vc->millis < lastmillis)
-                {
-                    break;
-                }
-            }
-        }
-    }
-    if(!vc->vbuf)
-    {
-        genvbo(*vc);
-    }
-    if(numframes>1)
-    {
-        if(vc->as!=*as)
-        {
-            vc->as = *as;
-            vc->millis = lastmillis;
-            LOOP_RENDER_MESHES(vertmesh, m,
-            {
-                m.interpverts(*as, reinterpret_cast<vvert *>(vdata), p->skins[i]);
-            });
-            gle::bindvbo(vc->vbuf);
-            glBufferData(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
-        }
-        vc->millis = lastmillis;
-    }
-    bindvbo(as, p, *vc);
-    LOOP_RENDER_MESHES(vertmesh, m,
-    {
-        p->skins[i].bind(m, as);
-        m.render(as, p->skins[i], *vc);
-    });
-    for(int i = 0; i < p->links.length(); i++)
-    {
-        calctagmatrix(p, p->links[i].tag, *as, p->links[i].matrix);
     }
 }

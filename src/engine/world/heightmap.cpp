@@ -43,7 +43,7 @@ namespace hmap
     }
     COMMAND(hmapselect, "");
 
-    bool isheightmap(int o, int d, bool empty, cube &c)
+    bool isheightmap(int o, bool empty, cube &c)
     {
         return havesel ||
             (empty && c.isempty()) ||
@@ -128,7 +128,7 @@ namespace hmap
             forcemip(*c, false);
         }
         c->discardchildren(true);
-        if(!isheightmap(sel.orient, d, true, *c))
+        if(!isheightmap(sel.orient, true, *c))
         {
             return nullptr;
         }

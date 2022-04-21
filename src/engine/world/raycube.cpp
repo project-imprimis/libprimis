@@ -107,7 +107,7 @@ namespace
         }
 
 
-    bool raycubeintersect(const clipplanes &p, const cube &c, const vec &v, const vec &ray, const vec &invray, float maxdist, float &dist)
+    bool raycubeintersect(const clipplanes &p, const vec &v, const vec &ray, const vec &invray, float maxdist, float &dist)
     {
         int entry   = -1,
             bbentry = -1;
@@ -193,7 +193,7 @@ namespace
     #undef ENT_INTERSECT
     #undef ENT_SEL_INTERSECT
     //======================================
-    float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, extentity *t)
+    float disttooutsideent(const vec &o, const vec &ray, float radius, extentity *t)
     {
         vec eo, es;
         int orient;
@@ -417,7 +417,7 @@ float cubeworld::raycube(const vec &o, const vec &ray, float radius, int mode, i
         {
             const clipplanes &p = getclipplanes(c, lo, lsize);
             float f = 0;
-            if(raycubeintersect(p, c, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
+            if(raycubeintersect(p, v, ray, invray, dent-dist, f) && (dist+f>0 || !(mode&Ray_SkipFirst)) && (!(mode&Ray_ClipMat) || (c.material&MatFlag_Clip)!=Mat_NoClip))
             {
                 return std::min(dent, dist+f);
             }
@@ -488,7 +488,7 @@ float rayent(const vec &o, const vec &ray, float radius, int mode, int size, int
     float dist = rootworld.raycube(o, ray, radius, mode, size);
     if((mode&Ray_Ents) == Ray_Ents)
     {
-        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, mode, nullptr);
+        float dent = disttooutsideent(o, ray, dist < 0 ? 1e16f : dist, nullptr);
         if(dent < 1e15f && (dist < 0 || dent < dist))
         {
             dist = dent;

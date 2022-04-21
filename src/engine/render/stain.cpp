@@ -204,7 +204,7 @@ class stainbuffer
             return tri;
         }
 
-        void addstain(staininfo &d)
+        void addstain()
         {
             dirty = true;
         }
@@ -479,7 +479,7 @@ class stainrenderer
             gle::enablecolor();
         }
 
-        static void cleanuprenderstate(int sbuf, bool gbuf, int layer)
+        static void cleanuprenderstate(int sbuf, bool gbuf)
         {
             gle::clearvbo();
 
@@ -630,7 +630,7 @@ class stainrenderer
                 d.millis = lastmillis;
                 d.startvert = buf.lastvert;
                 d.endvert = buf.endvert;
-                buf.addstain(d);
+                buf.addstain();
             }
         }
 
@@ -1122,7 +1122,7 @@ bool renderstains(int sbuf, bool gbuf, int layer)
     {
         return false;
     }
-    stainrenderer::cleanuprenderstate(sbuf, gbuf, layer);
+    stainrenderer::cleanuprenderstate(sbuf, gbuf);
     return true;
 }
 

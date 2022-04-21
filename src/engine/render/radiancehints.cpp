@@ -426,7 +426,7 @@ void radiancehints::bindparams()
     float step = 2*splits[0].bounds/rhgrid;
     GLOBALPARAMF(rhnudge, rhnudge*step);
     static GlobalShaderParam rhtc("rhtc");
-    vec4<float> *rhtcv = rhtc.reserve<vec4<float>>(rhsplits);
+    vec4<float> *rhtcv = rhtc.reserve<vec4<float>>();
     for(int i = 0; i < rhsplits; ++i)
     {
         splitinfo &split = splits[i];
