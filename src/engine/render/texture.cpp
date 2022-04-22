@@ -2935,6 +2935,97 @@ void setldrnotexture()
     ldrnotextureshader->set();
 }
 
+//globalshaderparam
+
+GlobalShaderParam::GlobalShaderParam(const char *name) : name(name), param(nullptr) {}
+
+GlobalShaderParamState *GlobalShaderParam::resolve()
+{
+    extern GlobalShaderParamState *getglobalparam(const char *name);
+    if(!param)
+    {
+        param = getglobalparam(name);
+    }
+    param->changed();
+    return param;
+}
+
+void GlobalShaderParam::setf(float x, float y, float z, float w)
+{
+    GlobalShaderParamState *g = resolve();
+    g->fval[0] = x;
+    g->fval[1] = y;
+    g->fval[2] = z;
+    g->fval[3] = w;
+}
+
+void GlobalShaderParam::set(const vec &v, float w)
+{
+    setf(v.x, v.y, v.z, w);
+}
+
+void GlobalShaderParam::set(const vec2 &v, float z, float w)
+{
+    setf(v.x, v.y, z, w);
+}
+
+void GlobalShaderParam::set(const vec4<float> &v)
+{
+    setf(v.x, v.y, v.z, v.w);
+}
+
+void GlobalShaderParam::set(const plane &p)
+{
+    setf(p.x, p.y, p.z, p.offset);
+}
+
+void GlobalShaderParam::set(const matrix2 &m)
+{
+    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
+}
+
+void GlobalShaderParam::set(const matrix3 &m)
+{
+    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
+}
+
+void GlobalShaderParam::set(const matrix4 &m)
+{
+    std::memcpy(resolve()->fval, m.a.v, sizeof(m));
+}
+
+void GlobalShaderParam::seti(int x, int y, int z, int w)
+{
+    GlobalShaderParamState *g = resolve();
+    g->ival[0] = x;
+    g->ival[1] = y;
+    g->ival[2] = z;
+    g->ival[3] = w;
+}
+void GlobalShaderParam::set(const ivec &v, int w)
+{
+    seti(v.x, v.y, v.z, w);
+}
+
+void GlobalShaderParam::set(const ivec2 &v, int z, int w)
+{
+    seti(v.x, v.y, z, w);
+}
+
+void GlobalShaderParam::set(const vec4<int> &v)
+{
+    seti(v.x, v.y, v.z, v.w);
+}
+
+void GlobalShaderParam::setu(uint x, uint y, uint z, uint w)
+{
+    GlobalShaderParamState *g = resolve();
+    g->uval[0] = x;
+    g->uval[1] = y;
+    g->uval[2] = z;
+    g->uval[3] = w;
+}
+
 //localshaderparam
 
 LocalShaderParam::LocalShaderParam(const char *name) : name(name), loc(-1) {}

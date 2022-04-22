@@ -439,111 +439,34 @@ struct Shader
     static int uniformlocversion();
 };
 
-struct GlobalShaderParam
+class GlobalShaderParam
 {
-    const char *name;
-    GlobalShaderParamState *param;
+    public:
+        GlobalShaderParam(const char *name);
 
-    GlobalShaderParam(const char *name) : name(name), param(nullptr) {}
+        GlobalShaderParamState *resolve();
+        void setf(float x = 0, float y = 0, float z = 0, float w = 0);
+        void set(const vec &v, float w = 0);
+        void set(const vec2 &v, float z = 0, float w = 0);
+        void set(const vec4<float> &v);
+        void set(const plane &p);
+        void set(const matrix2 &m);
+        void set(const matrix3 &m);
+        void set(const matrix4 &m);
+        void seti(int x = 0, int y = 0, int z = 0, int w = 0);
+        void set(const ivec &v, int w = 0);
+        void set(const ivec2 &v, int z = 0, int w = 0);
+        void set(const vec4<int> &v);
+        void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0);
 
-    GlobalShaderParamState *resolve()
-    {
-        extern GlobalShaderParamState *getglobalparam(const char *name);
-        if(!param)
+        template<class T>
+        T *reserve()
         {
-            param = getglobalparam(name);
+            return (T *)resolve()->buf;
         }
-        param->changed();
-        return param;
-    }
-
-    void setf(float x = 0, float y = 0, float z = 0, float w = 0)
-    {
-        GlobalShaderParamState *g = resolve();
-        g->fval[0] = x;
-        g->fval[1] = y;
-        g->fval[2] = z;
-        g->fval[3] = w;
-    }
-
-    void set(const vec &v, float w = 0)
-    {
-        setf(v.x, v.y, v.z, w);
-    }
-
-    void set(const vec2 &v, float z = 0, float w = 0)
-    {
-        setf(v.x, v.y, z, w);
-    }
-
-    void set(const vec4<float> &v)
-    {
-        setf(v.x, v.y, v.z, v.w);
-    }
-
-    void set(const plane &p)
-    {
-        setf(p.x, p.y, p.z, p.offset);
-    }
-
-    void set(const matrix2 &m)
-    {
-        std::memcpy(resolve()->fval, m.a.v, sizeof(m));
-    }
-
-    void set(const matrix3 &m)
-    {
-        std::memcpy(resolve()->fval, m.a.v, sizeof(m));
-    }
-
-    void set(const matrix4 &m)
-    {
-        std::memcpy(resolve()->fval, m.a.v, sizeof(m));
-    }
-
-    template<class T>
-    void setv(const T *v, int n = 1)
-    {
-        std::memcpy(resolve()->buf, v, n*sizeof(T));
-    }
-
-    void seti(int x = 0, int y = 0, int z = 0, int w = 0)
-    {
-        GlobalShaderParamState *g = resolve();
-        g->ival[0] = x;
-        g->ival[1] = y;
-        g->ival[2] = z;
-        g->ival[3] = w;
-    }
-    void set(const ivec &v, int w = 0)
-    {
-        seti(v.x, v.y, v.z, w);
-    }
-
-    void set(const ivec2 &v, int z = 0, int w = 0)
-    {
-        seti(v.x, v.y, z, w);
-    }
-
-    void set(const vec4<int> &v)
-    {
-        seti(v.x, v.y, v.z, v.w);
-    }
-
-    void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0)
-    {
-        GlobalShaderParamState *g = resolve();
-        g->uval[0] = x;
-        g->uval[1] = y;
-        g->uval[2] = z;
-        g->uval[3] = w;
-    }
-
-    template<class T>
-    T *reserve()
-    {
-        return (T *)resolve()->buf;
-    }
+    private:
+        const char *name;
+        GlobalShaderParamState *param;
 };
 
 class LocalShaderParam
