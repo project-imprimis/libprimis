@@ -546,348 +546,42 @@ struct GlobalShaderParam
     }
 };
 
-struct LocalShaderParam
+class LocalShaderParam
 {
-    const char *name;
-    int loc;
+    public:
+        LocalShaderParam(const char *name);
 
-    LocalShaderParam(const char *name) : name(name), loc(-1) {}
+        LocalShaderParamState *resolve();
 
-    LocalShaderParamState *resolve()
-    {
-        Shader *s = Shader::lastshader;
-        if(!s)
-        {
-            return nullptr;
-        }
-        if(!s->localparamremap.inrange(loc))
-        {
-            extern int getlocalparam(const char *name);
-            if(loc == -1)
-            {
-                loc = getlocalparam(name);
-            }
-            if(!s->localparamremap.inrange(loc))
-            {
-                return nullptr;
-            }
-        }
-        uchar remap = s->localparamremap[loc];
-        return s->localparams.inrange(remap) ? &s->localparams[remap] : nullptr;
-    }
-
-    void setf(float x = 0, float y = 0, float z = 0, float w = 0)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b) switch(b->format)
-        {
-            case GL_BOOL:
-            case GL_FLOAT:
-            {
-                glUniform1f(b->loc, x);
-                break;
-            }
-            case GL_BOOL_VEC2:
-            case GL_FLOAT_VEC2:
-            {
-                glUniform2f(b->loc, x, y);
-                break;
-            }
-            case GL_BOOL_VEC3:
-            case GL_FLOAT_VEC3:
-            {
-                glUniform3f(b->loc, x, y, z);
-                break;
-            }
-            case GL_BOOL_VEC4:
-            case GL_FLOAT_VEC4:
-            {
-                glUniform4f(b->loc, x, y, z, w);
-                break;
-            }
-            case GL_INT:
-            {
-                glUniform1i(b->loc, static_cast<int>(x));
-                break;
-            }
-            case GL_INT_VEC2:
-            {
-                glUniform2i(b->loc, static_cast<int>(x), static_cast<int>(y));
-                break;
-            }
-            case GL_INT_VEC3:
-            {
-                glUniform3i(b->loc, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z));
-                break;
-            }
-            case GL_INT_VEC4:
-            {
-                glUniform4i(b->loc, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), static_cast<int>(w));
-                break;
-            }
-            case GL_UNSIGNED_INT:
-            {
-                glUniform1ui_(b->loc, static_cast<uint>(x));
-                break;
-            }
-            case GL_UNSIGNED_INT_VEC2:
-            {
-                glUniform2ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y));
-                break;
-            }
-            case GL_UNSIGNED_INT_VEC3:
-            {
-                glUniform3ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z));
-                break;
-            }
-            case GL_UNSIGNED_INT_VEC4:
-            {
-                glUniform4ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z), static_cast<uint>(w));
-                break;
-            }
-        }
-    }
-
-    void set(const vec &v, float w = 0)
-    {
-        setf(v.x, v.y, v.z, w);
-    }
-
-    void set(const vec2 &v, float z = 0, float w = 0)
-    {
-        setf(v.x, v.y, z, w);
-    }
-
-    void set(const vec4<float> &v)
-    {
-        setf(v.x, v.y, v.z, v.w);
-    }
-
-    void set(const plane &p)
-    {
-        setf(p.x, p.y, p.z, p.offset);
-    }
-
-    void setv(const float *f, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform1fv(b->loc, n, f);
-        }
-    }
-
-    void setv(const vec *v, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform3fv(b->loc, n, v->v);
-        }
-    }
-
-    void setv(const vec2 *v, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform2fv(b->loc, n, v->v);
-        }
-    }
-
-    void setv(const vec4<float> *v, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform4fv(b->loc, n, v->v);
-        }
-    }
-
-    void setv(const plane *p, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform4fv(b->loc, n, p->v);
-        }
-    }
-
-    void setv(const matrix2 *m, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniformMatrix2fv(b->loc, n, GL_FALSE, m->a.v);
-        }
-    }
-
-    void setv(const matrix3 *m, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniformMatrix3fv(b->loc, n, GL_FALSE, m->a.v);
-        }
-    }
-
-    void setv(const matrix4 *m, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniformMatrix4fv(b->loc, n, GL_FALSE, m->a.v);
-        }
-    }
-
-    void set(const matrix2 &m)
-    {
-        setv(&m);
-    }
-
-    void set(const matrix3 &m)
-    {
-        setv(&m);
-    }
-
-    void set(const matrix4 &m)
-    {
-        setv(&m);
-    }
-
-    template<class T>
-    void sett(T x, T y, T z, T w)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            switch(b->format)
-            {
-                case GL_FLOAT:
-                {
-                    glUniform1f(b->loc, x);
-                    break;
-                }
-                case GL_FLOAT_VEC2:
-                {
-                    glUniform2f(b->loc, x, y);
-                    break;
-                }
-                case GL_FLOAT_VEC3:
-                {
-                    glUniform3f(b->loc, x, y, z);
-                    break;
-                }
-                case GL_FLOAT_VEC4:
-                {
-                    glUniform4f(b->loc, x, y, z, w);
-                    break;
-                }
-                case GL_BOOL:
-                case GL_INT:
-                {
-                    glUniform1i(b->loc, x);
-                    break;
-                }
-                case GL_BOOL_VEC2:
-                case GL_INT_VEC2:
-                {
-                    glUniform2i(b->loc, x, y);
-                    break;
-                }
-                case GL_BOOL_VEC3:
-                case GL_INT_VEC3:
-                {
-                    glUniform3i(b->loc, x, y, z);
-                    break;
-                }
-                case GL_BOOL_VEC4:
-                case GL_INT_VEC4:
-                {
-                    glUniform4i(b->loc, x, y, z, w);
-                    break;
-                }
-                case GL_UNSIGNED_INT:
-                {
-                    glUniform1ui_(b->loc, x);
-                    break;
-                }
-                case GL_UNSIGNED_INT_VEC2:
-                {
-                    glUniform2ui_(b->loc, x, y);
-                    break;
-                }
-                case GL_UNSIGNED_INT_VEC3:
-                {
-                    glUniform3ui_(b->loc, x, y, z);
-                    break;
-                }
-                case GL_UNSIGNED_INT_VEC4:
-                {
-                    glUniform4ui_(b->loc, x, y, z, w);
-                    break;
-                }
-            }
-        }
-    }
-    void seti(int x = 0, int y = 0, int z = 0, int w = 0)
-    {
-        sett<int>(x, y, z, w);
-    }
-
-    void set(const ivec &v, int w = 0)
-    {
-        seti(v.x, v.y, v.z, w);
-    }
-
-    void set(const ivec2 &v, int z = 0, int w = 0)
-    {
-        seti(v.x, v.y, z, w);
-    }
-
-    void set(const vec4<int> &v)
-    {
-        seti(v.x, v.y, v.z, v.w);
-    }
-
-    void setv(const int *i, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform1iv(b->loc, n, i);
-        }
-    }
-    void setv(const ivec *v, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform3iv(b->loc, n, v->v);
-        }
-    }
-    void setv(const ivec2 *v, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform2iv(b->loc, n, v->v);
-        }
-    }
-    void setv(const vec4<int> *v, int n = 1)
-    {
-        ShaderParamBinding *b = resolve();
-        if(b)
-        {
-            glUniform4iv(b->loc, n, v->v);
-        }
-    }
-
-    void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0)
-    {
-        sett<uint>(x, y, z, w);
-    }
-    void setv(const uint *u, int n = 1) { ShaderParamBinding *b = resolve(); if(b) glUniform1uiv_(b->loc, n, u); }
+        void setf(float x = 0, float y = 0, float z = 0, float w = 0);
+        void set(const vec &v, float w = 0);
+        void set(const vec2 &v, float z = 0, float w = 0);
+        void set(const vec4<float> &v);
+        void set(const plane &p);
+        void setv(const vec *v, int n = 1);
+        void setv(const vec2 *v, int n = 1);
+        void setv(const vec4<float> *v, int n = 1);
+        void setv(const plane *p, int n = 1);
+        void setv(const float *f, int n);
+        void setv(const matrix2 *m, int n = 1);
+        void setv(const matrix3 *m, int n = 1);
+        void setv(const matrix4 *m, int n = 1);
+        void set(const matrix2 &m);
+        void set(const matrix3 &m);
+        void set(const matrix4 &m);
+        void seti(int x = 0, int y = 0, int z = 0, int w = 0);
+        void set(const ivec &v, int w = 0);
+        void set(const ivec2 &v, int z = 0, int w = 0);
+        void set(const vec4<int> &v);
+        void setv(const int *i, int n = 1);
+        void setv(const ivec *v, int n = 1);
+        void setv(const ivec2 *v, int n = 1);
+        void setv(const vec4<int> *v, int n = 1);
+        void setu(uint x = 0, uint y = 0, uint z = 0, uint w = 0);
+        void setv(const uint *u, int n = 1);
+    private:
+        const char *name;
+        int loc;
 };
 
 #define LOCALPARAM(name, vals) do { static LocalShaderParam param( #name ); param.set(vals); } while(0)
