@@ -120,17 +120,17 @@ $(document).ready(function(){initNavTree('structselinfo.html',''); initResizable
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1cc7c0b854bfdc8efb706421b4045ee8"><td class="memItemLeft" align="right" valign="top"><a id="a1cc7c0b854bfdc8efb706421b4045ee8" name="a1cc7c0b854bfdc8efb706421b4045ee8"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const</td></tr>
+<tr class="memitem:a1cc7c0b854bfdc8efb706421b4045ee8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8">size</a> () const</td></tr>
+<tr class="memdesc:a1cc7c0b854bfdc8efb706421b4045ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the volume of the selection.  <a href="structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8">More...</a><br /></td></tr>
 <tr class="separator:a1cc7c0b854bfdc8efb706421b4045ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb8060fcec6624b27fd6a15262ba1e1d"><td class="memItemLeft" align="right" valign="top"><a id="aeb8060fcec6624b27fd6a15262ba1e1d" name="aeb8060fcec6624b27fd6a15262ba1e1d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>us</b> (int d) const</td></tr>
+<tr class="memitem:aeb8060fcec6624b27fd6a15262ba1e1d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d">us</a> (int d) const</td></tr>
+<tr class="memdesc:aeb8060fcec6624b27fd6a15262ba1e1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the absolute size of the selection along the specified axis.  <a href="structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d">More...</a><br /></td></tr>
 <tr class="separator:aeb8060fcec6624b27fd6a15262ba1e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bdce764fe16692a629ed9989f52d5d7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">operator==</a> (const <a class="el" href="structselinfo.html">selinfo</a> &amp;sel) const</td></tr>
 <tr class="memdesc:a0bdce764fe16692a629ed9989f52d5d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the two selections occupy the same space.  <a href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">More...</a><br /></td></tr>
 <tr class="separator:a0bdce764fe16692a629ed9989f52d5d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4010da847931a5c2b27e19a9a2432f66"><td class="memItemLeft" align="right" valign="top"><a id="a4010da847931a5c2b27e19a9a2432f66" name="a4010da847931a5c2b27e19a9a2432f66"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>validate</b> ()</td></tr>
+<tr class="memitem:a4010da847931a5c2b27e19a9a2432f66"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structselinfo.html#a4010da847931a5c2b27e19a9a2432f66">validate</a> ()</td></tr>
+<tr class="memdesc:a4010da847931a5c2b27e19a9a2432f66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keeps the selection within the world.  <a href="structselinfo.html#a4010da847931a5c2b27e19a9a2432f66">More...</a><br /></td></tr>
 <tr class="separator:a4010da847931a5c2b27e19a9a2432f66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -191,6 +191,98 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>cys</b></td></tr>
 
 </div>
 </div>
+<a id="a1cc7c0b854bfdc8efb706421b4045ee8" name="a1cc7c0b854bfdc8efb706421b4045ee8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cc7c0b854bfdc8efb706421b4045ee8">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int selinfo::size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the volume of the selection. </p>
+<p >The volume returned is in the units of the gridpower being used, so selections with the same cube dimensions but different gridpowers will have the same volume.</p>
+<dl class="section return"><dt>Returns</dt><dd>the volume of the selection (l*w*h) </dd></dl>
+
+</div>
+</div>
+<a id="aeb8060fcec6624b27fd6a15262ba1e1d" name="aeb8060fcec6624b27fd6a15262ba1e1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb8060fcec6624b27fd6a15262ba1e1d">&#9670;&nbsp;</a></span>us()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int selinfo::us </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>d</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the absolute size of the selection along the specified axis. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td>the dimension to query (0 for x, 1 for y, 2 for z)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the absolute size of the selection along that axis </dd></dl>
+
+</div>
+</div>
+<a id="a4010da847931a5c2b27e19a9a2432f66" name="a4010da847931a5c2b27e19a9a2432f66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4010da847931a5c2b27e19a9a2432f66">&#9670;&nbsp;</a></span>validate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool selinfo::validate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Keeps the selection within the world. </p>
+<dl class="section return"><dt>Returns</dt><dd>false if the selection attempts to leave the bounds of the world </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="ac7e357c2f1b3e3baed4761f45d8653eb" name="ac7e357c2f1b3e3baed4761f45d8653eb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac7e357c2f1b3e3baed4761f45d8653eb">&#9670;&nbsp;</a></span>grid</h2>
@@ -203,7 +295,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>cys</b></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >the gridpower of the selection </p>
+<p >the gridscale of the selection </p>
 
 </div>
 </div>

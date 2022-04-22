@@ -12,7 +12,7 @@ var searchData=
   ['setvar_9',['setvar',['../command_8h.html#a6acd0b43e7c56d6f828680837f405355',1,'command.h']]],
   ['setyaw_10',['setyaw',['../classmatrix3.html#ac48dbf8d8d6a8cbead923c296f413316',1,'matrix3']]],
   ['shrink_11',['shrink',['../structvector.html#aee8f5fea5bb485f72d4044a6b121e264',1,'vector']]],
-  ['size_12',['size',['../structhashbase.html#a600b191339f6da94d03bd9d69bcd9baf',1,'hashbase::size()'],['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size()']]],
+  ['size_12',['size',['../structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8',1,'selinfo::size()'],['../structhashbase.html#a600b191339f6da94d03bd9d69bcd9baf',1,'hashbase::size()'],['../structundoblock.html#a0fb516658877a3ab5933b04708332a3b',1,'undoblock::size()']]],
   ['slot_13',['Slot',['../structSlot.html',1,'']]],
   ['slot_2eh_14',['slot.h',['../slot_8h.html',1,'']]],
   ['slotshaderparam_15',['SlotShaderParam',['../structSlotShaderParam.html',1,'']]],

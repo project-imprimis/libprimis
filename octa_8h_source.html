@@ -271,239 +271,240 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="line"><a id="l00282" name="l00282"></a><span class="lineno"><a class="line" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">  282</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>, </div>
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno"><a class="line" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">  283</a></span>        <a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>; </div>
 <div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    <a class="code hl_struct" href="structselinfo.html">selinfo</a>() : corner(0), cx(0), cxs(0), cy(0), cys(0), <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>(0, 0, 0), <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>(0, 0, 0), <a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>(8), <a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>(0) {}</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="keywordtype">int</span> size()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x*<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y*<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z;</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    }</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    <span class="keywordtype">int</span> us(<span class="keywordtype">int</span> d)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>[d]*<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    }</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span> </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno"><a class="line" href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">  302</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">operator==</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structselinfo.html">selinfo</a> &amp;sel)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>==sel.<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a> &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>==sel.<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a> &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>==sel.<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> &amp;&amp; <a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>==sel.<a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>;</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    }</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span> </div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    <span class="keywordtype">bool</span> validate()</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    {</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        <span class="keyword">extern</span> <span class="keywordtype">int</span> worldsize;</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        <span class="keywordflow">if</span>(grid &lt;= 0 || grid &gt;= worldsize)</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        {</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        }</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x &gt;= worldsize || <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y &gt;= worldsize || <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z &gt;= worldsize)</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>        {</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        }</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x &lt; 0)</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>        {</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>            <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x -= (<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> - 1 - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>            <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x = 0;</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        }</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y &lt; 0)</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>        {</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>            <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y -= (<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> - 1 - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>            <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y = 0;</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>        }</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z &lt; 0)</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        {</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>            <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z -= (<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> - 1 - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>            <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z = 0;</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        }</div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x = std::clamp(<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x, 0, (worldsize - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>);</div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y = std::clamp(<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y, 0, (worldsize - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>);</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z = std::clamp(<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z, 0, (worldsize - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>);</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x &gt; 0 &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y &gt; 0 &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z &gt; 0;</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    }</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>};</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span> </div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno"><a class="line" href="structblock3.html">  340</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structblock3.html">block3</a></div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>{</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>    <a class="code hl_struct" href="structivec.html">ivec</a> o, s;</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>    <span class="keywordtype">int</span> grid, orient;</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    <a class="code hl_struct" href="structblock3.html">block3</a>() {}</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>    <a class="code hl_struct" href="structblock3.html">block3</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structselinfo.html">selinfo</a> &amp;sel) : o(sel.<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>), s(sel.<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>), grid(sel.<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>), orient(sel.<a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>) {}</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span> </div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>    <a class="code hl_class" href="classcube.html">cube</a> *c()</div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>    {</div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span><a class="code hl_class" href="classcube.html">cube</a> *<span class="keyword">&gt;</span>(<span class="keyword">this</span>+1);</div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>    }</div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span> </div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>    <span class="keywordtype">int</span> size()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        <span class="keywordflow">return</span> s.x*s.y*s.z;</div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    }</div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>};</div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span> </div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno"><a class="line" href="structeditinfo.html">  358</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structeditinfo.html">editinfo</a></div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>{</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>    <a class="code hl_struct" href="structblock3.html">block3</a> *copy;</div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>    <a class="code hl_struct" href="structeditinfo.html">editinfo</a>() : copy(<span class="keyword">nullptr</span>) {}</div>
-<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>};</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span> </div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno"><a class="line" href="structundoent.html">  364</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundoent.html">undoent</a></div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>{</div>
-<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>    <span class="keywordtype">int</span> i;</div>
-<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>    <a class="code hl_struct" href="structentity.html">entity</a> e;</div>
-<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>};</div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span> </div>
-<div class="line"><a id="l00370" name="l00370"></a><span class="lineno"><a class="line" href="structundoblock.html">  370</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundoblock.html">undoblock</a> </div>
-<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>{</div>
-<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *prev, *next;</div>
-<div class="line"><a id="l00373" name="l00373"></a><span class="lineno"><a class="line" href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">  373</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">size</a>,       </div>
-<div class="line"><a id="l00374" name="l00374"></a><span class="lineno"><a class="line" href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">  374</a></span>        <a class="code hl_variable" href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">timestamp</a>,  </div>
-<div class="line"><a id="l00375" name="l00375"></a><span class="lineno"><a class="line" href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">  375</a></span>        <a class="code hl_variable" href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">numents</a>;    </div>
-<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    <a class="code hl_struct" href="structblock3.html">block3</a> *block()</div>
-<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>    {</div>
-<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span><a class="code hl_struct" href="structblock3.html">block3</a> *<span class="keyword">&gt;</span>(<span class="keyword">this</span> + 1);</div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>    }</div>
-<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span> </div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    uchar *gridmap()</div>
-<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>    {</div>
-<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>        <a class="code hl_struct" href="structblock3.html">block3</a> *ub = block();</div>
-<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span>uchar *<span class="keyword">&gt;</span>(ub-&gt;c() + ub-&gt;size());</div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>    }</div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span> </div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>    <a class="code hl_struct" href="structundoent.html">undoent</a> *ents()</div>
-<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>    {</div>
-<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span><a class="code hl_struct" href="structundoent.html">undoent</a> *<span class="keyword">&gt;</span>(<span class="keyword">this</span> + 1);</div>
-<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>    }</div>
-<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>};</div>
-<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span> </div>
-<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span><span class="keyword">extern</span> <span class="keywordtype">int</span> selchildcount, selchildmat;</div>
-<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span> </div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno"><a class="line" href="octa_8h.html#a4430b561a204df665b15f88337201173">  399</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="octa_8h.html#a4430b561a204df665b15f88337201173">setcubefaces</a>(<a class="code hl_class" href="classcube.html">cube</a> &amp;c, uint face)</div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>{</div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>    c.<a class="code hl_variable" href="classcube.html#a2260c52d69daed945371581af8dcf637">faces</a>[0] = c.<a class="code hl_variable" href="classcube.html#a2260c52d69daed945371581af8dcf637">faces</a>[1] = c.<a class="code hl_variable" href="classcube.html#a2260c52d69daed945371581af8dcf637">faces</a>[2] = face;</div>
-<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>}</div>
-<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span> </div>
-<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span><span class="preprocessor">#define EDGE_GET(edge, coord) ((coord) ? (edge)&gt;&gt;4 : (edge)&amp;0xF)</span></div>
-<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span><span class="preprocessor">#define EDGE_SET(edge, coord, val) ((edge) = ((coord) ? ((edge)&amp;0xF)|((val)&lt;&lt;4) : ((edge)&amp;0xF0)|(val)))</span></div>
-<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span> </div>
-<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span><span class="preprocessor">#define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)&lt;&lt;2)+((y)&lt;&lt;1)+(x))])</span></div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span> </div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno"><a class="line" href="structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8">  295</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8">size</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x*<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y*<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z;</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    }</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span> </div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno"><a class="line" href="structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d">  307</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d">us</a>(<span class="keywordtype">int</span> d)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>[d]*<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    }</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno"><a class="line" href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">  319</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">operator==</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structselinfo.html">selinfo</a> &amp;sel)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>==sel.<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a> &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>==sel.<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a> &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>==sel.<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> &amp;&amp; <a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>==sel.<a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>;</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    }</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno"><a class="line" href="structselinfo.html#a4010da847931a5c2b27e19a9a2432f66">  329</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="structselinfo.html#a4010da847931a5c2b27e19a9a2432f66">validate</a>()</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>    {</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>        <span class="keyword">extern</span> <span class="keywordtype">int</span> worldsize;</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>        <span class="keywordflow">if</span>(grid &lt;= 0 || grid &gt;= worldsize)</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>        {</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        }</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x &gt;= worldsize || <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y &gt;= worldsize || <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z &gt;= worldsize)</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        {</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>        }</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x &lt; 0)</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>        {</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>            <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x -= (<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> - 1 - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>            <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x = 0;</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        }</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y &lt; 0)</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        {</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>            <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y -= (<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> - 1 - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>            <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y = 0;</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>        }</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z &lt; 0)</div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>        {</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>            <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z -= (<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a> - 1 - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>;</div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>            <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z = 0;</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        }</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>        <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x = std::clamp(<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x, 0, (worldsize - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.x)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>);</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>        <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y = std::clamp(<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y, 0, (worldsize - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.y)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>);</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>        <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z = std::clamp(<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z, 0, (worldsize - <a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>.z)/<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>);</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.x &gt; 0 &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.y &gt; 0 &amp;&amp; <a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>.z &gt; 0;</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>    }</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>};</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span> </div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno"><a class="line" href="structblock3.html">  367</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structblock3.html">block3</a></div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>{</div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>    <a class="code hl_struct" href="structivec.html">ivec</a> o, s;</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>    <span class="keywordtype">int</span> grid, orient;</div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>    <a class="code hl_struct" href="structblock3.html">block3</a>() {}</div>
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>    <a class="code hl_struct" href="structblock3.html">block3</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structselinfo.html">selinfo</a> &amp;sel) : o(sel.<a class="code hl_variable" href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">o</a>), s(sel.<a class="code hl_variable" href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">s</a>), grid(sel.<a class="code hl_variable" href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">grid</a>), orient(sel.<a class="code hl_variable" href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">orient</a>) {}</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span> </div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>    <a class="code hl_class" href="classcube.html">cube</a> *c()</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>    {</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span><a class="code hl_class" href="classcube.html">cube</a> *<span class="keyword">&gt;</span>(<span class="keyword">this</span>+1);</div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    }</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>    <span class="keywordtype">int</span> size()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>        <span class="keywordflow">return</span> s.x*s.y*s.z;</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    }</div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>};</div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span> </div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno"><a class="line" href="structeditinfo.html">  385</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structeditinfo.html">editinfo</a></div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>{</div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>    <a class="code hl_struct" href="structblock3.html">block3</a> *copy;</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>    <a class="code hl_struct" href="structeditinfo.html">editinfo</a>() : copy(<span class="keyword">nullptr</span>) {}</div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>};</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span> </div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno"><a class="line" href="structundoent.html">  391</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundoent.html">undoent</a></div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>{</div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>    <span class="keywordtype">int</span> i;</div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>    <a class="code hl_struct" href="structentity.html">entity</a> e;</div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span>};</div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span> </div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno"><a class="line" href="structundoblock.html">  397</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundoblock.html">undoblock</a> </div>
+<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>{</div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *prev, *next;</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno"><a class="line" href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">  400</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">size</a>,       </div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno"><a class="line" href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">  401</a></span>        <a class="code hl_variable" href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">timestamp</a>,  </div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno"><a class="line" href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">  402</a></span>        <a class="code hl_variable" href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">numents</a>;    </div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>    <a class="code hl_struct" href="structblock3.html">block3</a> *block()</div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>    {</div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span><a class="code hl_struct" href="structblock3.html">block3</a> *<span class="keyword">&gt;</span>(<span class="keyword">this</span> + 1);</div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>    }</div>
 <div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span> </div>
-<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span><span class="keyword">inline</span> <span class="keywordtype">int</span> octadim(<span class="keywordtype">int</span> d)</div>
-<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>{</div>
-<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>    <span class="keywordflow">return</span> 1&lt;&lt;d;</div>
-<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>}</div>
-<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span> </div>
-<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span><span class="comment">//note that these macros actually loop in the opposite order: e.g. loopxy runs a for loop of x inside y</span></div>
-<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span><span class="preprocessor">#define LOOP_XY(b)        for(int y = 0; y &lt; (b).s[C[DIMENSION((b).orient)]]; ++y) for(int x = 0; x &lt; (b).s[R[DIMENSION((b).orient)]]; ++x)</span></div>
-<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span><span class="preprocessor">#define LOOP_XYZ(b, r, f) { for(int z = 0; z &lt; (b).s[D[DIMENSION((b).orient)]]; ++z) LOOP_XY((b)) { cube &amp;c = blockcube(x,y,z,b,r); f; } }</span></div>
-<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span><span class="preprocessor">#define LOOP_SEL_XYZ(f)    { if(local) makeundo(); LOOP_XYZ(sel, sel.grid, f); rootworld.changed(sel); }</span></div>
-<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span><span class="preprocessor">#define SELECT_CUBE(x, y, z) blockcube(x, y, z, sel, sel.grid)</span></div>
-<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span> </div>
-<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span><span class="comment">// guard against subdivision</span></div>
-<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span><span class="preprocessor">#define PROTECT_SEL(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundoblock(_u-&gt;block(), _u-&gt;gridmap()); freeundo(_u); } }</span></div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>    uchar *gridmap()</div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>    {</div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>        <a class="code hl_struct" href="structblock3.html">block3</a> *ub = block();</div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span>uchar *<span class="keyword">&gt;</span>(ub-&gt;c() + ub-&gt;size());</div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>    }</div>
+<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span> </div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>    <a class="code hl_struct" href="structundoent.html">undoent</a> *ents()</div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>    {</div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>        <span class="keywordflow">return</span> <span class="keyword">reinterpret_cast&lt;</span><a class="code hl_struct" href="structundoent.html">undoent</a> *<span class="keyword">&gt;</span>(<span class="keyword">this</span> + 1);</div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span>    }</div>
+<div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span>};</div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span> </div>
+<div class="line"><a id="l00421" name="l00421"></a><span class="lineno">  421</span><span class="keyword">extern</span> <span class="keywordtype">int</span> selchildcount, selchildmat;</div>
 <div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span> </div>
-<div class="line"><a id="l00423" name="l00423"></a><span class="lineno">  423</span><span class="preprocessor">#define DIMENSION(orient)  ((orient)&gt;&gt;1)</span></div>
-<div class="line"><a id="l00424" name="l00424"></a><span class="lineno">  424</span><span class="preprocessor">#define DIM_COORD(orient)  ((orient)&amp;1)</span></div>
-<div class="line"><a id="l00425" name="l00425"></a><span class="lineno">  425</span><span class="preprocessor">#define OPPOSITE(orient)   ((orient)^1)</span></div>
-<div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span> </div>
-<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span><span class="keyword">extern</span> <a class="code hl_struct" href="structivec.html">ivec</a> lu;</div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span><span class="keyword">extern</span> <span class="keywordtype">int</span> lusize;</div>
-<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span><span class="keyword">struct </span>prefab;</div>
-<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span><span class="keyword">struct </span>clipplanes;</div>
-<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span> </div>
-<div class="line"><a id="l00432" name="l00432"></a><span class="lineno"><a class="line" href="structcubeworld.html">  432</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcubeworld.html">cubeworld</a></div>
-<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span>{</div>
-<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span>        <a class="code hl_class" href="classcube.html">cube</a> *worldroot = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span> </div>
-<div class="line"><a id="l00447" name="l00447"></a><span class="lineno"><a class="line" href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">  447</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">lookupmaterial</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v);</div>
-<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span> </div>
-<div class="line"><a id="l00460" name="l00460"></a><span class="lineno"><a class="line" href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">  460</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">emptymap</a>(<span class="keywordtype">int</span> factor, <span class="keywordtype">bool</span> force, <span class="keywordtype">bool</span> usecfg = <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span> </div>
-<div class="line"><a id="l00470" name="l00470"></a><span class="lineno"><a class="line" href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">  470</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">enlargemap</a>(<span class="keywordtype">bool</span> force);</div>
-<div class="line"><a id="l00471" name="l00471"></a><span class="lineno">  471</span>        <span class="keywordtype">bool</span> modifyoctaent(<span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> <span class="keywordtype">id</span>, <a class="code hl_struct" href="structextentity.html">extentity</a> &amp;e);</div>
-<div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span>        <span class="keywordtype">void</span> shrinkmap();</div>
-<div class="line"><a id="l00473" name="l00473"></a><span class="lineno">  473</span>        <span class="keywordtype">bool</span> load_world(<span class="keyword">const</span> <span class="keywordtype">char</span> *mname, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameident, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameinfo = <span class="keyword">nullptr</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *cname = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a id="l00474" name="l00474"></a><span class="lineno">  474</span>        <span class="keywordtype">bool</span> save_world(<span class="keyword">const</span> <span class="keywordtype">char</span> *mname, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameident);</div>
+<div class="line"><a id="l00426" name="l00426"></a><span class="lineno"><a class="line" href="octa_8h.html#a4430b561a204df665b15f88337201173">  426</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="octa_8h.html#a4430b561a204df665b15f88337201173">setcubefaces</a>(<a class="code hl_class" href="classcube.html">cube</a> &amp;c, uint face)</div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>{</div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>    c.<a class="code hl_variable" href="classcube.html#a2260c52d69daed945371581af8dcf637">faces</a>[0] = c.<a class="code hl_variable" href="classcube.html#a2260c52d69daed945371581af8dcf637">faces</a>[1] = c.<a class="code hl_variable" href="classcube.html#a2260c52d69daed945371581af8dcf637">faces</a>[2] = face;</div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>}</div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span> </div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span><span class="preprocessor">#define EDGE_GET(edge, coord) ((coord) ? (edge)&gt;&gt;4 : (edge)&amp;0xF)</span></div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span><span class="preprocessor">#define EDGE_SET(edge, coord, val) ((edge) = ((coord) ? ((edge)&amp;0xF)|((val)&lt;&lt;4) : ((edge)&amp;0xF0)|(val)))</span></div>
+<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span> </div>
+<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span><span class="preprocessor">#define CUBE_EDGE(c, d, x, y) ((c).edges[(((d)&lt;&lt;2)+((y)&lt;&lt;1)+(x))])</span></div>
+<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span> </div>
+<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span><span class="keyword">inline</span> <span class="keywordtype">int</span> octadim(<span class="keywordtype">int</span> d)</div>
+<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>{</div>
+<div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span>    <span class="keywordflow">return</span> 1&lt;&lt;d;</div>
+<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span>}</div>
+<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span> </div>
+<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span><span class="comment">//note that these macros actually loop in the opposite order: e.g. loopxy runs a for loop of x inside y</span></div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span><span class="preprocessor">#define LOOP_XY(b)        for(int y = 0; y &lt; (b).s[C[DIMENSION((b).orient)]]; ++y) for(int x = 0; x &lt; (b).s[R[DIMENSION((b).orient)]]; ++x)</span></div>
+<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span><span class="preprocessor">#define LOOP_XYZ(b, r, f) { for(int z = 0; z &lt; (b).s[D[DIMENSION((b).orient)]]; ++z) LOOP_XY((b)) { cube &amp;c = blockcube(x,y,z,b,r); f; } }</span></div>
+<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span><span class="preprocessor">#define LOOP_SEL_XYZ(f)    { if(local) makeundo(); LOOP_XYZ(sel, sel.grid, f); rootworld.changed(sel); }</span></div>
+<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span><span class="preprocessor">#define SELECT_CUBE(x, y, z) blockcube(x, y, z, sel, sel.grid)</span></div>
+<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span> </div>
+<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span><span class="comment">// guard against subdivision</span></div>
+<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span><span class="preprocessor">#define PROTECT_SEL(f) { undoblock *_u = newundocube(sel); f; if(_u) { pasteundoblock(_u-&gt;block(), _u-&gt;gridmap()); freeundo(_u); } }</span></div>
+<div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span> </div>
+<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span><span class="preprocessor">#define DIMENSION(orient)  ((orient)&gt;&gt;1)</span></div>
+<div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span><span class="preprocessor">#define DIM_COORD(orient)  ((orient)&amp;1)</span></div>
+<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span><span class="preprocessor">#define OPPOSITE(orient)   ((orient)^1)</span></div>
+<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span> </div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span><span class="keyword">extern</span> <a class="code hl_struct" href="structivec.html">ivec</a> lu;</div>
+<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span><span class="keyword">extern</span> <span class="keywordtype">int</span> lusize;</div>
+<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span><span class="keyword">struct </span>prefab;</div>
+<div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span><span class="keyword">struct </span>clipplanes;</div>
+<div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span> </div>
+<div class="line"><a id="l00459" name="l00459"></a><span class="lineno"><a class="line" href="structcubeworld.html">  459</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structcubeworld.html">cubeworld</a></div>
+<div class="line"><a id="l00460" name="l00460"></a><span class="lineno">  460</span>{</div>
+<div class="line"><a id="l00461" name="l00461"></a><span class="lineno">  461</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00462" name="l00462"></a><span class="lineno">  462</span>        <a class="code hl_class" href="classcube.html">cube</a> *worldroot = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00463" name="l00463"></a><span class="lineno">  463</span> </div>
+<div class="line"><a id="l00474" name="l00474"></a><span class="lineno"><a class="line" href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">  474</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="structcubeworld.html#a6818f64cfc8a9cff6b26e46bf948e2d4">lookupmaterial</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;v);</div>
 <div class="line"><a id="l00475" name="l00475"></a><span class="lineno">  475</span> </div>
-<div class="line"><a id="l00482" name="l00482"></a><span class="lineno"><a class="line" href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">  482</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">compactvslots</a>(<span class="keywordtype">bool</span> cull = <span class="keyword">false</span>);</div>
-<div class="line"><a id="l00483" name="l00483"></a><span class="lineno">  483</span>        <span class="keywordtype">void</span> genprefabmesh(prefab &amp;p);</div>
-<div class="line"><a id="l00484" name="l00484"></a><span class="lineno">  484</span> </div>
-<div class="line"><a id="l00491" name="l00491"></a><span class="lineno"><a class="line" href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">  491</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">octarender</a>();</div>
-<div class="line"><a id="l00492" name="l00492"></a><span class="lineno">  492</span> </div>
-<div class="line"><a id="l00499" name="l00499"></a><span class="lineno"><a class="line" href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">  499</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cleanupva</a>();</div>
-<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span> </div>
-<div class="line"><a id="l00511" name="l00511"></a><span class="lineno"><a class="line" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">  511</a></span>        <span class="keywordtype">float</span> <a class="code hl_function" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">raycube</a>   (<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> radius = 0, <span class="keywordtype">int</span> mode = 3, <span class="keywordtype">int</span> size = 0, <a class="code hl_struct" href="structextentity.html">extentity</a> *t = 0);</div>
-<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>        <span class="keywordtype">bool</span> octacollide(<a class="code hl_struct" href="structphysent.html">physent</a> *d, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir, <span class="keywordtype">float</span> cutoff, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bo, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bs);</div>
-<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>        <a class="code hl_class" href="classcube.html">cube</a> &amp;lookupcube(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;to, <span class="keywordtype">int</span> tsize = 0, <a class="code hl_struct" href="structivec.html">ivec</a> &amp;ro = lu, <span class="keywordtype">int</span> &amp;rsize = lusize);</div>
-<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>        <span class="keywordtype">bool</span> bboccluded(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bo, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;br);</div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>        <span class="keywordtype">void</span> findtjoints();</div>
-<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>        <span class="keywordtype">void</span> allchanged(<span class="keywordtype">bool</span> load = <span class="keyword">false</span>);</div>
-<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>        <span class="keyword">const</span> <a class="code hl_class" href="classcube.html">cube</a> &amp;neighborcube(<span class="keywordtype">int</span> orient, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;co, <span class="keywordtype">int</span> size, <a class="code hl_struct" href="structivec.html">ivec</a> &amp;ro, <span class="keywordtype">int</span> &amp;rsize);</div>
-<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span> </div>
-<div class="line"><a id="l00525" name="l00525"></a><span class="lineno"><a class="line" href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">  525</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">calclight</a>();</div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>        <span class="keywordtype">float</span> shadowray(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> radius, <span class="keywordtype">int</span> mode, <a class="code hl_struct" href="structextentity.html">extentity</a> *t = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>        <span class="keywordtype">void</span> changed(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bbmin, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bbmax, <span class="keywordtype">bool</span> commit = <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>        <span class="keywordtype">void</span> changed(<span class="keyword">const</span> <a class="code hl_struct" href="structblock3.html">block3</a> &amp;sel, <span class="keywordtype">bool</span> commit = <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>        clipplanes &amp;getclipbounds(<span class="keyword">const</span> <a class="code hl_class" href="classcube.html">cube</a> &amp;c, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;o, <span class="keywordtype">int</span> size, <span class="keywordtype">int</span> offset);</div>
-<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>        <span class="keywordtype">void</span> calcnormals(<span class="keywordtype">bool</span> lerptjoints);</div>
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span> </div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno"><a class="line" href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">  539</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">remip</a>();</div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>};</div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span> </div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span><span class="keyword">extern</span> <a class="code hl_struct" href="structcubeworld.html">cubeworld</a> rootworld;</div>
-<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span> </div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno"><a class="line" href="structundolist.html">  544</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundolist.html">undolist</a></div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>{</div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *first, *last;</div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span> </div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>    <a class="code hl_struct" href="structundolist.html">undolist</a>() : first(<span class="keyword">nullptr</span>), last(<span class="keyword">nullptr</span>) {}</div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span> </div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>    <span class="keywordtype">bool</span> empty() { <span class="keywordflow">return</span> !first; }</div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span> </div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>    <span class="keywordtype">void</span> add(<a class="code hl_struct" href="structundoblock.html">undoblock</a> *u)</div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>    {</div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>        u-&gt;next = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>        u-&gt;prev = last;</div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>        <span class="keywordflow">if</span>(!first)</div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>        {</div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>            first = last = u;</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>        }</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>        {</div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>            last-&gt;next = u;</div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>            last = u;</div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>        }</div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>    }</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span> </div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *popfirst()</div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>    {</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = first;</div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>        first = first-&gt;next;</div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>        <span class="keywordflow">if</span>(first)</div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>        {</div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>            first-&gt;prev = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>        }</div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>        {</div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>            last = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>        }</div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>        <span class="keywordflow">return</span> u;</div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>    }</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span> </div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *poplast()</div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>    {</div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = last;</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>        last = last-&gt;prev;</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>        <span class="keywordflow">if</span>(last)</div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>        {</div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>            last-&gt;next = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>        }</div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>        {</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>            first = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>        }</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>        <span class="keywordflow">return</span> u;</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    }</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>};</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span> </div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span><span class="preprocessor">#endif </span><span class="comment">/* OCTA_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00487" name="l00487"></a><span class="lineno"><a class="line" href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">  487</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">emptymap</a>(<span class="keywordtype">int</span> factor, <span class="keywordtype">bool</span> force, <span class="keywordtype">bool</span> usecfg = <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00488" name="l00488"></a><span class="lineno">  488</span> </div>
+<div class="line"><a id="l00497" name="l00497"></a><span class="lineno"><a class="line" href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">  497</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="structcubeworld.html#a5b0a574f37d4613b6fa97d80d10984ce">enlargemap</a>(<span class="keywordtype">bool</span> force);</div>
+<div class="line"><a id="l00498" name="l00498"></a><span class="lineno">  498</span>        <span class="keywordtype">bool</span> modifyoctaent(<span class="keywordtype">int</span> flags, <span class="keywordtype">int</span> <span class="keywordtype">id</span>, <a class="code hl_struct" href="structextentity.html">extentity</a> &amp;e);</div>
+<div class="line"><a id="l00499" name="l00499"></a><span class="lineno">  499</span>        <span class="keywordtype">void</span> shrinkmap();</div>
+<div class="line"><a id="l00500" name="l00500"></a><span class="lineno">  500</span>        <span class="keywordtype">bool</span> load_world(<span class="keyword">const</span> <span class="keywordtype">char</span> *mname, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameident, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameinfo = <span class="keyword">nullptr</span>, <span class="keyword">const</span> <span class="keywordtype">char</span> *cname = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00501" name="l00501"></a><span class="lineno">  501</span>        <span class="keywordtype">bool</span> save_world(<span class="keyword">const</span> <span class="keywordtype">char</span> *mname, <span class="keyword">const</span> <span class="keywordtype">char</span> *gameident);</div>
+<div class="line"><a id="l00502" name="l00502"></a><span class="lineno">  502</span> </div>
+<div class="line"><a id="l00509" name="l00509"></a><span class="lineno"><a class="line" href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">  509</a></span>        <span class="keywordtype">int</span> <a class="code hl_function" href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">compactvslots</a>(<span class="keywordtype">bool</span> cull = <span class="keyword">false</span>);</div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>        <span class="keywordtype">void</span> genprefabmesh(prefab &amp;p);</div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span> </div>
+<div class="line"><a id="l00518" name="l00518"></a><span class="lineno"><a class="line" href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">  518</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">octarender</a>();</div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span> </div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno"><a class="line" href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">  526</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a445b1bb007a38a2449bac939748c0d92">cleanupva</a>();</div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span> </div>
+<div class="line"><a id="l00538" name="l00538"></a><span class="lineno"><a class="line" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">  538</a></span>        <span class="keywordtype">float</span> <a class="code hl_function" href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">raycube</a>   (<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> radius = 0, <span class="keywordtype">int</span> mode = 3, <span class="keywordtype">int</span> size = 0, <a class="code hl_struct" href="structextentity.html">extentity</a> *t = 0);</div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>        <span class="keywordtype">bool</span> octacollide(<a class="code hl_struct" href="structphysent.html">physent</a> *d, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;dir, <span class="keywordtype">float</span> cutoff, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bo, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bs);</div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>        <a class="code hl_class" href="classcube.html">cube</a> &amp;lookupcube(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;to, <span class="keywordtype">int</span> tsize = 0, <a class="code hl_struct" href="structivec.html">ivec</a> &amp;ro = lu, <span class="keywordtype">int</span> &amp;rsize = lusize);</div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>        <span class="keywordtype">bool</span> bboccluded(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bo, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;br);</div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>        <span class="keywordtype">void</span> findtjoints();</div>
+<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span>        <span class="keywordtype">void</span> allchanged(<span class="keywordtype">bool</span> load = <span class="keyword">false</span>);</div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>        <span class="keyword">const</span> <a class="code hl_class" href="classcube.html">cube</a> &amp;neighborcube(<span class="keywordtype">int</span> orient, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;co, <span class="keywordtype">int</span> size, <a class="code hl_struct" href="structivec.html">ivec</a> &amp;ro, <span class="keywordtype">int</span> &amp;rsize);</div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span> </div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno"><a class="line" href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">  552</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">calclight</a>();</div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>        <span class="keywordtype">float</span> shadowray(<span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;o, <span class="keyword">const</span> <a class="code hl_struct" href="structvec.html">vec</a> &amp;ray, <span class="keywordtype">float</span> radius, <span class="keywordtype">int</span> mode, <a class="code hl_struct" href="structextentity.html">extentity</a> *t = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>        <span class="keywordtype">void</span> changed(<span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bbmin, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;bbmax, <span class="keywordtype">bool</span> commit = <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>        <span class="keywordtype">void</span> changed(<span class="keyword">const</span> <a class="code hl_struct" href="structblock3.html">block3</a> &amp;sel, <span class="keywordtype">bool</span> commit = <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>        clipplanes &amp;getclipbounds(<span class="keyword">const</span> <a class="code hl_class" href="classcube.html">cube</a> &amp;c, <span class="keyword">const</span> <a class="code hl_struct" href="structivec.html">ivec</a> &amp;o, <span class="keywordtype">int</span> size, <span class="keywordtype">int</span> offset);</div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>        <span class="keywordtype">void</span> calcnormals(<span class="keywordtype">bool</span> lerptjoints);</div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span> </div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno"><a class="line" href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">  566</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">remip</a>();</div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>};</div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span> </div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span><span class="keyword">extern</span> <a class="code hl_struct" href="structcubeworld.html">cubeworld</a> rootworld;</div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span> </div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno"><a class="line" href="structundolist.html">  571</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structundolist.html">undolist</a></div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>{</div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *first, *last;</div>
+<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span> </div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>    <a class="code hl_struct" href="structundolist.html">undolist</a>() : first(<span class="keyword">nullptr</span>), last(<span class="keyword">nullptr</span>) {}</div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span> </div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>    <span class="keywordtype">bool</span> empty() { <span class="keywordflow">return</span> !first; }</div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span> </div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>    <span class="keywordtype">void</span> add(<a class="code hl_struct" href="structundoblock.html">undoblock</a> *u)</div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>    {</div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>        u-&gt;next = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>        u-&gt;prev = last;</div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>        <span class="keywordflow">if</span>(!first)</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>        {</div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>            first = last = u;</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>        }</div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>        {</div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>            last-&gt;next = u;</div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>            last = u;</div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>        }</div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    }</div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span> </div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *popfirst()</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>    {</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = first;</div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>        first = first-&gt;next;</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>        <span class="keywordflow">if</span>(first)</div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>        {</div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>            first-&gt;prev = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>        }</div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>        {</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>            last = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>        }</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>        <span class="keywordflow">return</span> u;</div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>    }</div>
+<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span> </div>
+<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span>    <a class="code hl_struct" href="structundoblock.html">undoblock</a> *poplast()</div>
+<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span>    {</div>
+<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span>        <a class="code hl_struct" href="structundoblock.html">undoblock</a> *u = last;</div>
+<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span>        last = last-&gt;prev;</div>
+<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span>        <span class="keywordflow">if</span>(last)</div>
+<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span>        {</div>
+<div class="line"><a id="l00615" name="l00615"></a><span class="lineno">  615</span>            last-&gt;next = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00616" name="l00616"></a><span class="lineno">  616</span>        }</div>
+<div class="line"><a id="l00617" name="l00617"></a><span class="lineno">  617</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00618" name="l00618"></a><span class="lineno">  618</span>        {</div>
+<div class="line"><a id="l00619" name="l00619"></a><span class="lineno">  619</span>            first = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00620" name="l00620"></a><span class="lineno">  620</span>        }</div>
+<div class="line"><a id="l00621" name="l00621"></a><span class="lineno">  621</span>        <span class="keywordflow">return</span> u;</div>
+<div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>    }</div>
+<div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span>};</div>
+<div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span> </div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span><span class="preprocessor">#endif </span><span class="comment">/* OCTA_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="aclasscube_html"><div class="ttname"><a href="classcube.html">cube</a></div><div class="ttdoc">The fundemental building block of the octree world, representing a 3D cube.</div><div class="ttdef"><b>Definition:</b> octa.h:102</div></div>
 <div class="ttc" id="aclasscube_html_a2260c52d69daed945371581af8dcf637"><div class="ttname"><a href="classcube.html#a2260c52d69daed945371581af8dcf637">cube::faces</a></div><div class="ttdeci">uint faces[3]</div><div class="ttdef"><b>Definition:</b> octa.h:110</div></div>
 <div class="ttc" id="aclasscube_html_a2faf100108da8f40d88473baafb9be61"><div class="ttname"><a href="classcube.html#a2faf100108da8f40d88473baafb9be61">cube::isvalidcube</a></div><div class="ttdeci">bool isvalidcube()</div><div class="ttdoc">Returns whether the cube is valid.</div></div>
@@ -520,10 +521,10 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="ttc" id="aclasscube_html_aeb55655cef2a95f24d7456e9422c2aff"><div class="ttname"><a href="classcube.html#aeb55655cef2a95f24d7456e9422c2aff">cube::edges</a></div><div class="ttdeci">uchar edges[12]</div><div class="ttdef"><b>Definition:</b> octa.h:108</div></div>
 <div class="ttc" id="aclasscube_html_afd1fe0c107339a3c20060cda213b8aa5"><div class="ttname"><a href="classcube.html#afd1fe0c107339a3c20060cda213b8aa5">cube::texture</a></div><div class="ttdeci">ushort texture[6]</div><div class="ttdef"><b>Definition:</b> octa.h:112</div></div>
 <div class="ttc" id="aocta_8h_html_a1eb1a9d704d2a37241ea5ccac905cae2"><div class="ttname"><a href="octa_8h.html#a1eb1a9d704d2a37241ea5ccac905cae2">facesolid</a></div><div class="ttdeci">constexpr uint facesolid</div><div class="ttdef"><b>Definition:</b> octa.h:21</div></div>
-<div class="ttc" id="aocta_8h_html_a4430b561a204df665b15f88337201173"><div class="ttname"><a href="octa_8h.html#a4430b561a204df665b15f88337201173">setcubefaces</a></div><div class="ttdeci">void setcubefaces(cube &amp;c, uint face)</div><div class="ttdoc">sets the faces to a given value face given</div><div class="ttdef"><b>Definition:</b> octa.h:399</div></div>
+<div class="ttc" id="aocta_8h_html_a4430b561a204df665b15f88337201173"><div class="ttname"><a href="octa_8h.html#a4430b561a204df665b15f88337201173">setcubefaces</a></div><div class="ttdeci">void setcubefaces(cube &amp;c, uint face)</div><div class="ttdoc">sets the faces to a given value face given</div><div class="ttdef"><b>Definition:</b> octa.h:426</div></div>
 <div class="ttc" id="aocta_8h_html_a9392cbbd2ed30129294d84c5032432af"><div class="ttname"><a href="octa_8h.html#a9392cbbd2ed30129294d84c5032432af">faceempty</a></div><div class="ttdeci">constexpr uint faceempty</div><div class="ttdef"><b>Definition:</b> octa.h:20</div></div>
-<div class="ttc" id="astructblock3_html"><div class="ttname"><a href="structblock3.html">block3</a></div><div class="ttdef"><b>Definition:</b> octa.h:341</div></div>
-<div class="ttc" id="astructcubeworld_html"><div class="ttname"><a href="structcubeworld.html">cubeworld</a></div><div class="ttdef"><b>Definition:</b> octa.h:433</div></div>
+<div class="ttc" id="astructblock3_html"><div class="ttname"><a href="structblock3.html">block3</a></div><div class="ttdoc">A representation of a rectangular volume of cubes, with less metadata.</div><div class="ttdef"><b>Definition:</b> octa.h:368</div></div>
+<div class="ttc" id="astructcubeworld_html"><div class="ttname"><a href="structcubeworld.html">cubeworld</a></div><div class="ttdef"><b>Definition:</b> octa.h:460</div></div>
 <div class="ttc" id="astructcubeworld_html_a12e042d30ab218c7764519e10008adef"><div class="ttname"><a href="structcubeworld.html#a12e042d30ab218c7764519e10008adef">cubeworld::emptymap</a></div><div class="ttdeci">bool emptymap(int factor, bool force, bool usecfg=true)</div><div class="ttdoc">Clears the old level and creates a new one.</div></div>
 <div class="ttc" id="astructcubeworld_html_a2d586f0ba0d3ca1a5d087d91cff42a5d"><div class="ttname"><a href="structcubeworld.html#a2d586f0ba0d3ca1a5d087d91cff42a5d">cubeworld::raycube</a></div><div class="ttdeci">float raycube(const vec &amp;o, const vec &amp;ray, float radius=0, int mode=3, int size=0, extentity *t=0)</div><div class="ttdoc">Returns the distance before a ray hits a cube.</div></div>
 <div class="ttc" id="astructcubeworld_html_a2fe409c8dd963be4883f4c8870c0f6c2"><div class="ttname"><a href="structcubeworld.html#a2fe409c8dd963be4883f4c8870c0f6c2">cubeworld::remip</a></div><div class="ttdeci">void remip()</div><div class="ttdoc">Reduces the number of cubes on the level losslessly.</div></div>
@@ -533,7 +534,7 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="ttc" id="astructcubeworld_html_a98a1ad1ac154aaeea6fc6954b3670fe5"><div class="ttname"><a href="structcubeworld.html#a98a1ad1ac154aaeea6fc6954b3670fe5">cubeworld::octarender</a></div><div class="ttdeci">void octarender()</div><div class="ttdoc">Creates vertex arrays for the octree world.</div></div>
 <div class="ttc" id="astructcubeworld_html_a9eac3f5488f4c52b15ce1de57d31cfcc"><div class="ttname"><a href="structcubeworld.html#a9eac3f5488f4c52b15ce1de57d31cfcc">cubeworld::calclight</a></div><div class="ttdeci">void calclight()</div><div class="ttdoc">Calculates normals and re-calculates geometry.</div></div>
 <div class="ttc" id="astructcubeworld_html_ab674bb2b758999fdd377ef5bc7561f98"><div class="ttname"><a href="structcubeworld.html#ab674bb2b758999fdd377ef5bc7561f98">cubeworld::compactvslots</a></div><div class="ttdeci">int compactvslots(bool cull=false)</div><div class="ttdoc">Removes unnecessary virtual texture slots.</div></div>
-<div class="ttc" id="astructeditinfo_html"><div class="ttname"><a href="structeditinfo.html">editinfo</a></div><div class="ttdef"><b>Definition:</b> octa.h:359</div></div>
+<div class="ttc" id="astructeditinfo_html"><div class="ttname"><a href="structeditinfo.html">editinfo</a></div><div class="ttdef"><b>Definition:</b> octa.h:386</div></div>
 <div class="ttc" id="astructentity_html"><div class="ttname"><a href="structentity.html">entity</a></div><div class="ttdoc">Entity data capable of being saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:100</div></div>
 <div class="ttc" id="astructextentity_html"><div class="ttname"><a href="structextentity.html">extentity</a></div><div class="ttdoc">Extended entity data not of the subset which is saved to disk.</div><div class="ttdef"><b>Definition:</b> ents.h:111</div></div>
 <div class="ttc" id="astructfacebounds_html"><div class="ttname"><a href="structfacebounds.html">facebounds</a></div><div class="ttdef"><b>Definition:</b> octa.h:12</div></div>
@@ -542,17 +543,20 @@ $(document).ready(function(){initNavTree('octa_8h_source.html',''); initResizabl
 <div class="ttc" id="astructivec_html"><div class="ttname"><a href="structivec.html">ivec</a></div><div class="ttdef"><b>Definition:</b> geom.h:1424</div></div>
 <div class="ttc" id="astructphysent_html"><div class="ttname"><a href="structphysent.html">physent</a></div><div class="ttdoc">A base object representing a class.</div><div class="ttdef"><b>Definition:</b> ents.h:129</div></div>
 <div class="ttc" id="astructselinfo_html"><div class="ttname"><a href="structselinfo.html">selinfo</a></div><div class="ttdoc">A representation of a rectangular volume of cubes.</div><div class="ttdef"><b>Definition:</b> octa.h:277</div></div>
-<div class="ttc" id="astructselinfo_html_a0bdce764fe16692a629ed9989f52d5d7"><div class="ttname"><a href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">selinfo::operator==</a></div><div class="ttdeci">bool operator==(const selinfo &amp;sel) const</div><div class="ttdoc">Returns whether the two selections occupy the same space.</div><div class="ttdef"><b>Definition:</b> octa.h:302</div></div>
+<div class="ttc" id="astructselinfo_html_a0bdce764fe16692a629ed9989f52d5d7"><div class="ttname"><a href="structselinfo.html#a0bdce764fe16692a629ed9989f52d5d7">selinfo::operator==</a></div><div class="ttdeci">bool operator==(const selinfo &amp;sel) const</div><div class="ttdoc">Returns whether the two selections occupy the same space.</div><div class="ttdef"><b>Definition:</b> octa.h:319</div></div>
+<div class="ttc" id="astructselinfo_html_a1cc7c0b854bfdc8efb706421b4045ee8"><div class="ttname"><a href="structselinfo.html#a1cc7c0b854bfdc8efb706421b4045ee8">selinfo::size</a></div><div class="ttdeci">int size() const</div><div class="ttdoc">Returns the volume of the selection.</div><div class="ttdef"><b>Definition:</b> octa.h:295</div></div>
 <div class="ttc" id="astructselinfo_html_a25ac5bf8a2bb25a9f96317d8badf2ce7"><div class="ttname"><a href="structselinfo.html#a25ac5bf8a2bb25a9f96317d8badf2ce7">selinfo::orient</a></div><div class="ttdeci">int orient</div><div class="ttdef"><b>Definition:</b> octa.h:283</div></div>
+<div class="ttc" id="astructselinfo_html_a4010da847931a5c2b27e19a9a2432f66"><div class="ttname"><a href="structselinfo.html#a4010da847931a5c2b27e19a9a2432f66">selinfo::validate</a></div><div class="ttdeci">bool validate()</div><div class="ttdoc">Keeps the selection within the world.</div><div class="ttdef"><b>Definition:</b> octa.h:329</div></div>
 <div class="ttc" id="astructselinfo_html_ac7e357c2f1b3e3baed4761f45d8653eb"><div class="ttname"><a href="structselinfo.html#ac7e357c2f1b3e3baed4761f45d8653eb">selinfo::grid</a></div><div class="ttdeci">int grid</div><div class="ttdef"><b>Definition:</b> octa.h:282</div></div>
 <div class="ttc" id="astructselinfo_html_ae4046419c26164eb9aa5a2643e5bff00"><div class="ttname"><a href="structselinfo.html#ae4046419c26164eb9aa5a2643e5bff00">selinfo::s</a></div><div class="ttdeci">ivec s</div><div class="ttdef"><b>Definition:</b> octa.h:281</div></div>
 <div class="ttc" id="astructselinfo_html_ae8353821d8834bf1fd29564adadc742d"><div class="ttname"><a href="structselinfo.html#ae8353821d8834bf1fd29564adadc742d">selinfo::o</a></div><div class="ttdeci">ivec o</div><div class="ttdef"><b>Definition:</b> octa.h:280</div></div>
-<div class="ttc" id="astructundoblock_html"><div class="ttname"><a href="structundoblock.html">undoblock</a></div><div class="ttdef"><b>Definition:</b> octa.h:371</div></div>
-<div class="ttc" id="astructundoblock_html_a0fb516658877a3ab5933b04708332a3b"><div class="ttname"><a href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">undoblock::size</a></div><div class="ttdeci">int size</div><div class="ttdef"><b>Definition:</b> octa.h:373</div></div>
-<div class="ttc" id="astructundoblock_html_a1dec53ad5f85909e6796642ea8e4b663"><div class="ttname"><a href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">undoblock::numents</a></div><div class="ttdeci">int numents</div><div class="ttdef"><b>Definition:</b> octa.h:375</div></div>
-<div class="ttc" id="astructundoblock_html_ac7993663dac147f8134a9f24ec91a876"><div class="ttname"><a href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">undoblock::timestamp</a></div><div class="ttdeci">int timestamp</div><div class="ttdef"><b>Definition:</b> octa.h:374</div></div>
-<div class="ttc" id="astructundoent_html"><div class="ttname"><a href="structundoent.html">undoent</a></div><div class="ttdef"><b>Definition:</b> octa.h:365</div></div>
-<div class="ttc" id="astructundolist_html"><div class="ttname"><a href="structundolist.html">undolist</a></div><div class="ttdef"><b>Definition:</b> octa.h:545</div></div>
+<div class="ttc" id="astructselinfo_html_aeb8060fcec6624b27fd6a15262ba1e1d"><div class="ttname"><a href="structselinfo.html#aeb8060fcec6624b27fd6a15262ba1e1d">selinfo::us</a></div><div class="ttdeci">int us(int d) const</div><div class="ttdoc">Returns the absolute size of the selection along the specified axis.</div><div class="ttdef"><b>Definition:</b> octa.h:307</div></div>
+<div class="ttc" id="astructundoblock_html"><div class="ttname"><a href="structundoblock.html">undoblock</a></div><div class="ttdef"><b>Definition:</b> octa.h:398</div></div>
+<div class="ttc" id="astructundoblock_html_a0fb516658877a3ab5933b04708332a3b"><div class="ttname"><a href="structundoblock.html#a0fb516658877a3ab5933b04708332a3b">undoblock::size</a></div><div class="ttdeci">int size</div><div class="ttdef"><b>Definition:</b> octa.h:400</div></div>
+<div class="ttc" id="astructundoblock_html_a1dec53ad5f85909e6796642ea8e4b663"><div class="ttname"><a href="structundoblock.html#a1dec53ad5f85909e6796642ea8e4b663">undoblock::numents</a></div><div class="ttdeci">int numents</div><div class="ttdef"><b>Definition:</b> octa.h:402</div></div>
+<div class="ttc" id="astructundoblock_html_ac7993663dac147f8134a9f24ec91a876"><div class="ttname"><a href="structundoblock.html#ac7993663dac147f8134a9f24ec91a876">undoblock::timestamp</a></div><div class="ttdeci">int timestamp</div><div class="ttdef"><b>Definition:</b> octa.h:401</div></div>
+<div class="ttc" id="astructundoent_html"><div class="ttname"><a href="structundoent.html">undoent</a></div><div class="ttdef"><b>Definition:</b> octa.h:392</div></div>
+<div class="ttc" id="astructundolist_html"><div class="ttname"><a href="structundolist.html">undolist</a></div><div class="ttdef"><b>Definition:</b> octa.h:572</div></div>
 <div class="ttc" id="astructvec_html"><div class="ttname"><a href="structvec.html">vec</a></div><div class="ttdoc">three dimensional vector object</div><div class="ttdef"><b>Definition:</b> geom.h:157</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
