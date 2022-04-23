@@ -420,7 +420,7 @@ void screenres(int w, int h)
         initwarning("screen resolution");
     }
 }
-COMMAND(screenres, "ii");
+
 
 static void setgamma(int val)
 {
@@ -622,7 +622,6 @@ void resetgl()
     reloadtextures();
     rootworld.allchanged(true);
 }
-COMMAND(resetgl, "");
 
 /* limitfps: uses SDL_Delay to delay a frame, given the time the last frame was
  * rendered and the current time
@@ -740,4 +739,10 @@ void getfpscmd(int *raw)
         intret(fps);
     }
 }
-COMMANDN(getfps, getfpscmd, "i");
+
+void initrenderwindowcmds()
+{
+    addcommand("getfps", reinterpret_cast<identfun>(getfpscmd), "i", Id_Command);
+    addcommand("resetgl", reinterpret_cast<identfun>(resetgl), "", Id_Command);
+    addcommand("screenres", reinterpret_cast<identfun>(screenres), "ii", Id_Command);
+}

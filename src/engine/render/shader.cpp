@@ -1511,7 +1511,7 @@ void defershader(int *type, const char *name, const char *contents)
     s.type = Shader_Deferred | (*type & ~Shader_Invalid);
     s.standard = standardshaders;
 }
-COMMAND(defershader, "iss");
+
 
 void Shader::force()
 {
@@ -1583,7 +1583,7 @@ Shader *useshaderbyname(const char *name)
     s->forced = true;
     return s;
 }
-COMMANDN(forceshader, useshaderbyname, "s");
+
 
 //=====================================================================GENSHADER
 #define GENSHADER(cond, body) \
@@ -1635,7 +1635,7 @@ void shader(int *type, char *name, char *vs, char *ps)
     }
     slotparams.shrink(0);
 }
-COMMAND(shader, "isss");
+
 
 void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *maxvariants)
 {
@@ -1673,7 +1673,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
 }
 #undef GENSHADER
 //==============================================================================
-COMMAND(variantshader, "isissi");
+
 
 void setshader(char *name)
 {
@@ -1688,7 +1688,7 @@ void setshader(char *name)
         slotshader = s;
     }
 }
-COMMAND(setshader, "s");
+
 
 void resetslotshader()
 {
@@ -1808,12 +1808,6 @@ bool shouldreuseparams(Slot &s, VSlot &p)
 }
 
 
-void isshaderdefinedcmd(const char * name)
-{
-    intret(lookupshaderbyname(name) ? 1 : 0);
-}
-COMMANDN(isshaderdefined, isshaderdefinedcmd, "s");
-
 static hashset<const char *> shaderparamnames(256);
 
 const char *getshaderparamname(const char *name, bool insert)
@@ -1848,18 +1842,6 @@ void addslotparam(const char *name, float x, float y, float z, float w, int flag
     SlotShaderParam param = {name, -1, flags, {x, y, z, w}};
     slotparams.add(param);
 }
-
-void setshaderparamcmd(char *name, float *x, float *y, float *z, float *w)
-{
-    addslotparam(name, *x, *y, *z, *w);
-}
-COMMANDN(setshaderparam, setshaderparamcmd, "sfFFf");
-
-void reuseuniformparamcmd(char *name, float *x, float *y, float *z, float *w)
-{
-    addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE);
-}
-COMMANDN(reuseuniformparam, reuseuniformparamcmd, "sfFFf");
 
 static constexpr int numpostfxbinds = 10;
 
@@ -2056,7 +2038,7 @@ void clearpostfx()
     postfxpasses.clear();
     cleanuppostfx(false);
 }
-COMMAND(clearpostfx, "");
+
 
 void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, float *y, float *z, float *w)
 {
@@ -2086,7 +2068,7 @@ void addpostfxcmd(char *name, int *bind, int *scale, char *inputs, float *x, flo
     freemask &= (1<<numpostfxbinds)-1;
     addpostfx(name, std::clamp(*bind, 0, numpostfxbinds-1), std::max(*scale, 0), inputmask, freemask, vec4<float>(*x, *y, *z, *w));
 }
-COMMANDN(addpostfx, addpostfxcmd, "siisffff");
+
 
 void setpostfx(char *name, float *x, float *y, float *z, float *w)
 {
@@ -2095,8 +2077,7 @@ void setpostfx(char *name, float *x, float *y, float *z, float *w)
     {
         addpostfx(name, 0, 0, 1, 1, vec4<float>(*x, *y, *z, *w));
     }
-}
-COMMAND(setpostfx, "sffff"); //add a postfx shader to the global vector, with name & 4d pos vector
+} //add a postfx shader to the global vector, with name & 4d pos vector
 
 void cleanupshaders()
 {
@@ -2156,7 +2137,6 @@ void resetshaders()
     rootworld.allchanged(true);
     glerror();
 }
-COMMAND(resetshaders, "");
 
 FVAR(blursigma, 0.005f, 0.5f, 2.0f);
 
@@ -2216,3 +2196,18 @@ void setblurshader(int pass, int size, int radius, float *weights, float *offset
     LOCALPARAMV(offsets, scaledoffsets, 8);
 }
 
+void initshadercmds()
+{
+    addcommand("defershader", reinterpret_cast<identfun>(defershader), "iss", Id_Command);
+    addcommand("forceshader", reinterpret_cast<identfun>(useshaderbyname), "s", Id_Command);
+    addcommand("shader", reinterpret_cast<identfun>(shader), "isss", Id_Command);
+    addcommand("variantshader", reinterpret_cast<identfun>(variantshader), "isissi", Id_Command);
+    addcommand("setshader", reinterpret_cast<identfun>(setshader), "s", Id_Command);
+    addcommand("isshaderdefined", reinterpret_cast<identfun>(+[](const char* name){intret(lookupshaderbyname(name) ? 1 : 0);}), "s", Id_Command);
+    addcommand("setshaderparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w);}), "sfFFf", Id_Command);
+    addcommand("reuseuniformparam", reinterpret_cast<identfun>(+[](char *name, float *x, float *y, float *z, float *w){addslotparam(name, *x, *y, *z, *w, SlotShaderParam::REUSE);}), "sfFFf", Id_Command);
+    addcommand("clearpostfx", reinterpret_cast<identfun>(clearpostfx), "", Id_Command);
+    addcommand("addpostfx", reinterpret_cast<identfun>(addpostfxcmd), "siisffff", Id_Command);
+    addcommand("setpostfx", reinterpret_cast<identfun>(setpostfx), "sffff", Id_Command);
+    addcommand("resetshaders", reinterpret_cast<identfun>(resetshaders), "", Id_Command);
+}
