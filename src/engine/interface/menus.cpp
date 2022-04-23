@@ -54,22 +54,15 @@ namespace
         }
     }
 
-    //executes applychanges()
-    COMMAND(applychanges, "");
-
     //returns if there are pending changes or not enqueued
     void pendingchanges (int *idx)
-    {
-        if(needsapply.inrange(*idx))
-        {
-            result(needsapply[*idx].desc);
+    {>
         }
         else if(*idx < 0)
         {
             intret(needsapply.length());
         }
     }
-    COMMAND(pendingchanges, "b");
 
     int lastmainmenu = -1;
 }
@@ -150,4 +143,10 @@ void clearmainmenu()
         mainmenu = 0;
         UI::hideui(nullptr);
     }
+}
+
+void initmenuscmds()
+{
+    addcommand("applychanges", reinterpret_cast<identfun>(applychanges), "", Id_Command);
+    addcommand("pendingchanges", reinterpret_cast<identfun>(pendingchanges), "b", Id_Command); 
 }

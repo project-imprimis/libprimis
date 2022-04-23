@@ -768,10 +768,9 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
     return dirs;
 }
 
-void addzipcmd(const char *name, const char *mount, const char *strip)
+void initzipcmds() 
 {
-    addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr);
+    addcommand("addzip", reinterpret_cast<identfun>(+[](const char *name, const char *mount, const char *strip){addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr);}), "sss", Id_Command);
+    addcommand("removezip", reinterpret_cast<identfun>(removezip), "s", Id_Command);
 }
-COMMANDN(addzip, addzipcmd, "sss");
 
-COMMAND(removezip, "s");
