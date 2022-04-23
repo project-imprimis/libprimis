@@ -714,14 +714,14 @@ void reloadfonts()
 
 void initrendertextcmds()
 {
-    addcommand("fontalias", reinterpret_cast<identfun>fontalias, "ss", Id_Command);
-    addcommand("tabify", reinterpret_cast<identfun>tabify, "si", Id_Command);
-    addcommand("font", reinterpret_cast<identfun>newfont, "ssiii", Id_Command);
-    addcommand("fontborder", reinterpret_cast<identfun>fontborder, "ff", Id_Command);
-    addcommand("fontoutline", reinterpret_cast<identfun>fontoutline, "ff", Id_Command);
-    addcommand("fontoffset", reinterpret_cast<identfun>fontoffset, "s", Id_Command);
-    addcommand("fontscale", reinterpret_cast<identfun>fontscale, "i", Id_Command);
-    addcommand("fonttex", reinterpret_cast<identfun>fonttex, "s", Id_Command);
-    addcommand("fontchar", reinterpret_cast<identfun>fontchar, "fffffff", Id_Command);
-    addcommand("fontskip", reinterpret_cast<identfun>fontskip, "i", Id_Command);
+    addcommand("fontalias", reinterpret_cast<identfun>(fontalias), "ss", Id_Command);
+    addcommand("tabify", reinterpret_cast<identfun>(tabify), "si", Id_Command);
+    addcommand("font", reinterpret_cast<identfun>(newfont), "ssiii", Id_Command);
+    addcommand("fontborder", reinterpret_cast<identfun>(fontborder), "ff", Id_Command);
+    addcommand("fontoutline", reinterpret_cast<identfun>(fontoutline), "ff", Id_Command);
+    addcommand("fontoffset", reinterpret_cast<identfun>(fontoffset), "s", Id_Command);
+    addcommand("fontscale", reinterpret_cast<identfun>(fontscale), "i", Id_Command);
+    addcommand("fonttex", reinterpret_cast<identfun>(fonttex), "s", Id_Command);
+    addcommand("fontchar", reinterpret_cast<identfun>(fontchar), "fffffff", Id_Command);
+    addcommand("fontskip", reinterpret_cast<identfun>(fontskip), "i", Id_Command);
 }
