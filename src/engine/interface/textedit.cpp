@@ -1082,14 +1082,14 @@ static const char * pastebuffer = "#pastebuffer";
 
 void inittextcmds()
 {
-    addcommand("textinit", (identfun)textinit, "sss", Id_Command); // loads into named editor if no file assigned and editor has been rendered
-    addcommand("textlist", (identfun)textlist, "", Id_Command);
+    addcommand("textinit", reinterpret_cast<identfun>(textinit), "sss", Id_Command); // loads into named editor if no file assigned and editor has been rendered
+    addcommand("textlist", reinterpret_cast<identfun>(textlist), "", Id_Command);
     addcommand("textshow", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; /* @DEBUG return the start of the buffer*/ EditLine line; line.combinelines(textfocus->lines); result(line.text); line.clear();; }), "", Id_Command);
-    addcommand("textfocus", (identfun)textfocuscmd, "si", Id_Command);
+    addcommand("textfocus", reinterpret_cast<identfun>(textfocuscmd), "si", Id_Command);
     addcommand("textprev", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; editors.insert(0, textfocus); editors.pop();; }), "", Id_Command);; // return to the previous editor
     addcommand("textmode", reinterpret_cast<identfun>(+[] (int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1= keep while focused, 2= keep while used in gui, 3= keep forever (i.e. until mode changes)) topmost editor, return current setting if no args*/ if(*m) { textfocus->mode = *m; } else { intret(textfocus->mode); }; }), "i", Id_Command);
-    addcommand("textsave", (identfun)textsave, "s", Id_Command);
-    addcommand("textload", (identfun)textload, "s", Id_Command);
+    addcommand("textsave", reinterpret_cast<identfun>(textsave), "s", Id_Command);
+    addcommand("textload", reinterpret_cast<identfun>(textload), "s", Id_Command);
     addcommand("textcopy", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->copyselectionto(b);; }), "", Id_Command);;
     addcommand("textpaste", reinterpret_cast<identfun>(+[] () { if(!textfocus || identflags&Idf_Overridden) return; Editor *b = useeditor(pastebuffer, Editor_Forever, false); textfocus->insertallfrom(b);; }), "", Id_Command);;
     addcommand("textmark", reinterpret_cast<identfun>(+[] (int *m) { if(!textfocus || identflags&Idf_Overridden) return; /* (1=mark, 2=unmark), return current mark setting if no args*/ if(*m) { textfocus->mark(*m==1); } else { intret(textfocus->region() ? 1 : 2); }; }), "i", Id_Command);;

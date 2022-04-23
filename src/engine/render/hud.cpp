@@ -164,11 +164,6 @@ namespace
         }
     }
 
-    void loadcrosshaircmd(const char *name, int *i)
-    {
-        loadcrosshair(name, *i);
-    }
-
     void getcrosshair(int *i)
     {
         const char *name = "";
@@ -481,6 +476,6 @@ void damageblend(int n)
 
 void inithudcmds()
 {
-    addcommand("loadcrosshair", (identfun)loadcrosshaircmd, "si", Id_Command);
-    addcommand("getcrosshair", (identfun)getcrosshair, "i", Id_Command);
+    addcommand("loadcrosshair", reinterpret_cast<identfun>(+[](const char *name, int *i){loadcrosshair(name, *i);}), "si", Id_Command);
+    addcommand("getcrosshair", reinterpret_cast<identfun>(getcrosshair), "i", Id_Command);
 }
