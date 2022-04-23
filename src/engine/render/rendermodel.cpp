@@ -100,28 +100,24 @@ static void mdlcullface(int *cullface)
     checkmdl();
     loadingmodel->setcullface(*cullface);
 }
-COMMAND(mdlcullface, "i");
 
 static void mdlcolor(float *r, float *g, float *b)
 {
     checkmdl();
     loadingmodel->setcolor(vec(*r, *g, *b));
 }
-COMMAND(mdlcolor, "fff");
 
 static void mdlcollide(int *collide)
 {
     checkmdl();
     loadingmodel->collide = *collide!=0 ? (loadingmodel->collide ? loadingmodel->collide : Collide_OrientedBoundingBox) : Collide_None;
 }
-COMMAND(mdlcollide, "i");
 
 static void mdlellipsecollide(int *collide)
 {
     checkmdl();
     loadingmodel->collide = *collide!=0 ? Collide_Ellipse : Collide_None;
 }
-COMMAND(mdlellipsecollide, "i");
 
 static void mdltricollide(char *collide)
 {
@@ -137,7 +133,6 @@ static void mdltricollide(char *collide)
     }
     loadingmodel->collide = val ? Collide_TRI : Collide_None;
 }
-COMMAND(mdltricollide, "s");
 
 static void mdlspec(float *percent)
 {
@@ -145,28 +140,24 @@ static void mdlspec(float *percent)
     float spec = *percent > 0 ? *percent/100.0f : 0.0f;
     loadingmodel->setspec(spec);
 }
-COMMAND(mdlspec, "f");
 
 static void mdlgloss(int *gloss)
 {
     checkmdl();
     loadingmodel->setgloss(std::clamp(*gloss, 0, 2));
 }
-COMMAND(mdlgloss, "i");
 
 static void mdlalphatest(float *cutoff)
 {
     checkmdl();
     loadingmodel->setalphatest(std::max(0.0f, std::min(1.0f, *cutoff)));
 }
-COMMAND(mdlalphatest, "f");
 
 static void mdldepthoffset(int *offset)
 {
     checkmdl();
     loadingmodel->depthoffset = *offset!=0;
 }
-COMMAND(mdldepthoffset, "i");
 
 static void mdlglow(float *percent, float *delta, float *pulse)
 {
@@ -177,21 +168,20 @@ static void mdlglow(float *percent, float *delta, float *pulse)
     glowdelta -= glow;
     loadingmodel->setglow(glow, glowdelta, glowpulse);
 }
-COMMAND(mdlglow, "fff");
 
 static void mdlfullbright(float *fullbright)
 {
     checkmdl();
     loadingmodel->setfullbright(*fullbright);
 }
-COMMAND(mdlfullbright, "f");
+
 
 static void mdlshader(char *shader)
 {
     checkmdl();
     loadingmodel->setshader(lookupshaderbyname(shader));
 }
-COMMAND(mdlshader, "s");
+
 
 //assigns a new spin speed in three euler angles for the model object currently being loaded
 static void mdlspin(float *yaw, float *pitch, float *roll)
@@ -201,7 +191,6 @@ static void mdlspin(float *yaw, float *pitch, float *roll)
     loadingmodel->spinpitch = *pitch;
     loadingmodel->spinroll = *roll;
 }
-COMMAND(mdlspin, "fff");
 
 //assigns a new scale factor in % for the model object currently being loaded
 static void mdlscale(float *percent)
@@ -210,7 +199,6 @@ static void mdlscale(float *percent)
     float scale = *percent > 0 ? *percent/100.0f : 1.0f;
     loadingmodel->scale = scale;
 }
-COMMAND(mdlscale, "f");
 
 //assigns translation in x,y,z in cube units for the model object currently being loaded
 static void mdltrans(float *x, float *y, float *z)
@@ -218,7 +206,6 @@ static void mdltrans(float *x, float *y, float *z)
     checkmdl();
     loadingmodel->translate = vec(*x, *y, *z);
 }
-COMMAND(mdltrans, "fff");
 
 //assigns angle to the offsetyaw field of the model object currently being loaded
 static void mdlyaw(float *angle)
@@ -226,7 +213,7 @@ static void mdlyaw(float *angle)
     checkmdl();
     loadingmodel->offsetyaw = *angle;
 }
-COMMAND(mdlyaw, "f");
+
 
 //assigns angle to the offsetpitch field of the model object currently being loaded
 static void mdlpitch(float *angle)
@@ -234,7 +221,6 @@ static void mdlpitch(float *angle)
     checkmdl();
     loadingmodel->offsetpitch = *angle;
 }
-COMMAND(mdlpitch, "f");
 
 //assigns angle to the offsetroll field of the model object currently being loaded
 static void mdlroll(float *angle)
@@ -242,7 +228,6 @@ static void mdlroll(float *angle)
     checkmdl();
     loadingmodel->offsetroll = *angle;
 }
-COMMAND(mdlroll, "f");
 
 //assigns shadow to the shadow field of the model object currently being loaded
 static void mdlshadow(int *shadow)
@@ -250,7 +235,6 @@ static void mdlshadow(int *shadow)
     checkmdl();
     loadingmodel->shadow = *shadow!=0;
 }
-COMMAND(mdlshadow, "i");
 
 //assigns alphashadow to the alphashadow field of the model object currently being loaded
 static void mdlalphashadow(int *alphashadow)
@@ -258,7 +242,6 @@ static void mdlalphashadow(int *alphashadow)
     checkmdl();
     loadingmodel->alphashadow = *alphashadow!=0;
 }
-COMMAND(mdlalphashadow, "i");
 
 //assigns rad, h, eyeheight to the fields of the model object currently being loaded
 static void mdlbb(float *rad, float *h, float *eyeheight)
@@ -268,14 +251,12 @@ static void mdlbb(float *rad, float *h, float *eyeheight)
     loadingmodel->collideheight = *h;
     loadingmodel->eyeheight = *eyeheight;
 }
-COMMAND(mdlbb, "fff");
 
 static void mdlextendbb(float *x, float *y, float *z)
 {
     checkmdl();
     loadingmodel->bbextend = vec(*x, *y, *z);
 }
-COMMAND(mdlextendbb, "fff");
 
 /* mdlname
  *
@@ -286,7 +267,6 @@ static void mdlname()
     checkmdl();
     result(loadingmodel->name);
 }
-COMMAND(mdlname, "");
 
 //========================================================= CHECK_RAGDOLL
 #define CHECK_RAGDOLL \
@@ -325,7 +305,6 @@ static void rdvert(float *x, float *y, float *z, float *radius)
     v.radius = *radius > 0 ? *radius : 1;
     ragdoll->verts.push_back(v);
 }
-COMMAND(rdvert, "ffff");
 
 /* ragdoll eye level: sets the ragdoll's eye point to the level passed
  * implicitly modifies the ragdoll selected by CHECK_RAGDOLL
@@ -335,7 +314,6 @@ static void rdeye(int *v)
     CHECK_RAGDOLL;
     ragdoll->eye = *v;
 }
-COMMAND(rdeye, "i");
 
 static void rdtri(int *v1, int *v2, int *v3)
 {
@@ -346,7 +324,6 @@ static void rdtri(int *v1, int *v2, int *v3)
     t.vert[2] = *v3;
     ragdoll->tris.emplace_back(t);
 }
-COMMAND(rdtri, "iii");
 
 static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
 {
@@ -363,7 +340,6 @@ static void rdjoint(int *n, int *t, int *v1, int *v2, int *v3)
     j.vert[2] = *v3;
     ragdoll->joints.push_back(j);
 }
-COMMAND(rdjoint, "iibbb");
 
 static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 {
@@ -375,7 +351,6 @@ static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
     d.maxdist = std::max(*maxdist, *mindist);
     ragdoll->distlimits.push_back(d);
 }
-COMMAND(rdlimitdist, "iiff");
 
 static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
 {
@@ -387,14 +362,12 @@ static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, 
     r.maxtrace = 1 + 2*std::cos(r.maxangle);
     r.middle = matrix3(quat(*qx, *qy, *qz, *qw));
 }
-COMMAND(rdlimitrot, "iifffff");
 
 static void rdanimjoints(int *on)
 {
     CHECK_RAGDOLL;
     ragdoll->animjoints = *on!=0;
 }
-COMMAND(rdanimjoints, "i");
 
 #undef CHECK_RAGDOLL
 //==============================================================================
@@ -427,13 +400,11 @@ void mapmodelreset(int *n)
     }
     mapmodels.resize(std::clamp(*n, 0, static_cast<int>(mapmodels.size())));
 }
-COMMAND(mapmodelreset, "i");
 
 const char *mapmodelname(int i)
 {
     return (static_cast<int>(mapmodels.size()) > i) ? mapmodels[i].name : nullptr;
 }
-COMMAND(mapmodel, "s");
 
 void mapmodelnamecmd(int *index, int *prefix)
 {
@@ -442,19 +413,16 @@ void mapmodelnamecmd(int *index, int *prefix)
         result(mapmodels[*index].name[0] ? mapmodels[*index].name + (*prefix ? 0 : mmprefixlen) : "");
     }
 }
-COMMANDN(mapmodelname, mapmodelnamecmd, "ii");
 
 void mapmodelloaded(int *index)
 {
     intret(static_cast<int>(mapmodels.size()) > *index && mapmodels[*index].m ? 1 : 0);
 }
-COMMAND(mapmodelloaded, "i");
 
 void nummapmodels()
 {
     intret(mapmodels.size());
 }
-COMMAND(nummapmodels, "");
 
 // model registry
 
@@ -672,7 +640,6 @@ static void clearmodel(char *name)
     delete m;
     conoutf("cleared model %s", name);
 }
-COMMAND(clearmodel, "s"); //removes the model with the name string given; returns error message to game if not possible to unload
 
 static bool modeloccluded(const vec &center, float radius)
 {
@@ -1451,7 +1418,6 @@ void findanimscmd(char *name)
     buf.add('\0');
     result(buf.getbuf());
 }
-COMMANDN(findanims, findanimscmd, "s");
 
 //literally goes and attempts a textureload for png, jpg four times using the inside of the if statement
 
@@ -1509,3 +1475,43 @@ void setbbfrommodel(dynent *d, const char *mdl)
     }
 }
 
+void initrendermodelcmds()
+{
+    addcommand("mdlcullface", reinterpret_cast<identfun>(mdlcullface), "i", Id_Command);
+    addcommand("mdlcolor", reinterpret_cast<identfun>(mdlcolor), "fff", Id_Command);
+    addcommand("mdlcollide", reinterpret_cast<identfun>(mdlcollide), "i", Id_Command);
+    addcommand("mdlellipsecollide", reinterpret_cast<identfun>(mdlellipsecollide), "i", Id_Command);
+    addcommand("mdltricollide", reinterpret_cast<identfun>(mdltricollide), "s", Id_Command);
+    addcommand("mdlspec", reinterpret_cast<identfun>(mdlspec), "f", Id_Command);
+    addcommand("mdlgloss", reinterpret_cast<identfun>(mdlgloss), "i", Id_Command);
+    addcommand("mdlalphatest", reinterpret_cast<identfun>(mdlalphatest), "f", Id_Command);
+    addcommand("mdldepthoffset", reinterpret_cast<identfun>(mdldepthoffset), "i", Id_Command);
+    addcommand("mdlglow", reinterpret_cast<identfun>(mdlglow), "fff", Id_Command);
+    addcommand("mdlfullbright", reinterpret_cast<identfun>(mdlfullbright), "f", Id_Command);
+    addcommand("mdlshader", reinterpret_cast<identfun>(mdlshader), "s", Id_Command);
+    addcommand("mdlspin", reinterpret_cast<identfun>(mdlspin), "fff", Id_Command);
+    addcommand("mdlscale", reinterpret_cast<identfun>(mdlscale), "f", Id_Command);
+    addcommand("mdltrans", reinterpret_cast<identfun>(mdltrans), "fff", Id_Command);
+    addcommand("mdlyaw", reinterpret_cast<identfun>(mdlyaw), "f", Id_Command);
+    addcommand("mdlpitch", reinterpret_cast<identfun>(mdlpitch), "f", Id_Command);
+    addcommand("mdlroll", reinterpret_cast<identfun>(mdlroll), "f", Id_Command);
+    addcommand("mdlshadow", reinterpret_cast<identfun>(mdlshadow), "i", Id_Command);
+    addcommand("mdlalphashadow", reinterpret_cast<identfun>(mdlalphashadow), "i", Id_Command);
+    addcommand("mdlbb", reinterpret_cast<identfun>(mdlbb), "fff", Id_Command);
+    addcommand("mdlextendbb", reinterpret_cast<identfun>(mdlextendbb), "fff", Id_Command);
+    addcommand("mdlname", reinterpret_cast<identfun>(mdlname), "", Id_Command);
+    addcommand("rdvert", reinterpret_cast<identfun>(rdvert), "ffff", Id_Command);
+    addcommand("rdeye", reinterpret_cast<identfun>(rdeye), "i", Id_Command);
+    addcommand("rdtri", reinterpret_cast<identfun>(rdtri), "iii", Id_Command);
+    addcommand("rdjoint", reinterpret_cast<identfun>(rdjoint), "iibbb", Id_Command);
+    addcommand("rdlimitdist", reinterpret_cast<identfun>(rdlimitdist), "iiff", Id_Command);
+    addcommand("rdlimitrot", reinterpret_cast<identfun>(rdlimitrot), "iifffff", Id_Command);
+    addcommand("rdanimjoints", reinterpret_cast<identfun>(rdanimjoints), "i", Id_Command);
+    addcommand("mapmodelreset", reinterpret_cast<identfun>(mapmodelreset), "i", Id_Command);
+    addcommand("mapmodel", reinterpret_cast<identfun>(mapmodel), "s", Id_Command);
+    addcommand("mapmodelname", reinterpret_cast<identfun>(mapmodelnamecmd), "ii", Id_Command);
+    addcommand("mapmodelloaded", reinterpret_cast<identfun>(mapmodelloaded), "i", Id_Command);
+    addcommand("nummapmodels", reinterpret_cast<identfun>(nummapmodels), "", Id_Command);
+    addcommand("clearmodel", reinterpret_cast<identfun>(clearmodel), "s", Id_Command);
+    addcommand("findanims", reinterpret_cast<identfun>(findanimscmd), "s", Id_Command);
+}
