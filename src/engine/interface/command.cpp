@@ -538,14 +538,6 @@ static void debugcodeline(const char *p, const char *fmt, ...)
     dodebugalias();
 }
 
-static void nodebugcmd(uint *body)
-{
-    nodebug++;
-    executeret(body, *commandret);
-    nodebug--;
-}
-COMMANDN(nodebug, nodebugcmd, "e");
-
 void addident(ident *id)
 {
     addident(*id);
@@ -611,7 +603,6 @@ void pushcmd(ident *id, tagval *v, uint *code)
     executeret(code, *commandret);
     poparg(*id);
 }
-COMMANDN(push, pushcmd, "rTe");
 
 static void pushalias(ident &id, identstack &stack)
 {
@@ -5248,4 +5239,7 @@ void initcscmds()
     addcommand("getfvarmax", reinterpret_cast<identfun>(+[] (char *s) { floatret(getfvarmax(s)); }), "s", Id_Command);
     addcommand("identexists", reinterpret_cast<identfun>(+[] (char *s) { intret(identexists(s) ? 1 : 0); }), "s", Id_Command);
     addcommand("getalias", reinterpret_cast<identfun>(+[] (char *s) { result(getalias(s)); }), "s", Id_Command);
+
+    addcommand("nodebug", reinterpret_cast<identfun>(+[] (uint *body){nodebug++; executeret(body, *commandret); nodebug--;}), "e", Id_Command);
+    addcommand("push", reinterpret_cast<identfun>(pushcmd), "rTe", Id_Command);
 }
