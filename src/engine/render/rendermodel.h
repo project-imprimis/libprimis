@@ -1,6 +1,8 @@
 #ifndef RENDERMODEL_H_
 #define RENDERMODEL_H_
 
+#include "world/octaworld.h"
+
 struct mapmodelinfo { string name; model *m, *collide; };
 
 extern std::vector<mapmodelinfo> mapmodels;

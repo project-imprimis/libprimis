@@ -29,6 +29,7 @@
 #include "model.h"
 #include "ragdoll.h"
 #include "animmodel.h"
+#include "world/octaworld.h"
 
 //animmodel
 VARP(fullbrightmodels, 0, 0, 200); //sets minimum amount of brightness for a model: 200 is 100% brightness
