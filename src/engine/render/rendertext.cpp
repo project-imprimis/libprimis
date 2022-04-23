@@ -56,7 +56,6 @@ static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *sc
     fontdef = f;
     fontdeftex = 0;
 }
-COMMANDN(font, newfont, "ssiii");
 
 //sets the fontdef gvar's bordermin/max to the values passed
 static void fontborder(float *bordermin, float *bordermax)
@@ -68,7 +67,6 @@ static void fontborder(float *bordermin, float *bordermax)
     fontdef->bordermin = *bordermin;
     fontdef->bordermax = std::max(*bordermax, *bordermin+0.01f);
 }
-COMMAND(fontborder, "ff");
 
 //sets the fontdef gvar's outlinemin/max to the values passed
 static void fontoutline(float *outlinemin, float *outlinemax)
@@ -80,7 +78,6 @@ static void fontoutline(float *outlinemin, float *outlinemax)
     fontdef->outlinemin = std::min(*outlinemin, *outlinemax-0.01f);
     fontdef->outlinemax = *outlinemax;
 }
-COMMAND(fontoutline, "ff");
 
 /* fontoffset
  * sets the character offset for the currently loaded font
@@ -99,7 +96,6 @@ static void fontoffset(char *c)
     }
     fontdef->charoffset = c[0];
 }
-COMMAND(fontoffset, "s");
 
 /* fontscale
  * sets the global scale for fonts
@@ -119,7 +115,7 @@ static void fontscale(int *scale)
 
 fontdef->scale = *scale > 0 ? *scale : fontdef->defaulth;
 }
-COMMAND(fontscale, "i");
+
 
 /* fonttex
  * adds a texture for fonts to be loaded from
@@ -145,7 +141,6 @@ static void fonttex(char *s)
     fontdeftex = fontdef->texs.length();
     fontdef->texs.add(t);
 }
-COMMAND(fonttex, "s");
 
 /* fontchar
  * adds an entry to the fontdef vector
@@ -168,7 +163,6 @@ static void fontchar(float *x, float *y, float *w, float *h, float *offsetx, flo
     c.advance = *advance ? *advance : c.offsetx + c.w;
     c.tex = fontdeftex;
 }
-COMMAND(fontchar, "fffffff");
 
 /* fontskip
  * addes an entry to the fontdef vector, which is empty
@@ -186,7 +180,6 @@ static void fontskip(int *n)
         c.tex = 0;
     }
 }
-COMMAND(fontskip, "i");
 
 /* fontalias
  * copies an entry in the fontdef vector to another one
@@ -218,7 +211,6 @@ static void fontalias(const char *dst, const char *src)
     fontdef = d;
     fontdeftex = d->texs.length()-1;
 }
-COMMAND(fontalias, "ss");
 
 font *findfont(const char *name)
 {
@@ -304,7 +296,6 @@ void tabify(const char *str, int *numtabs)
     tstr[len+tabs] = '\0';
     stringret(tstr);
 }
-COMMAND(tabify, "si");
 
 void draw_textf(const char *fstr, float left, float top, ...)
 {
@@ -721,3 +712,16 @@ void reloadfonts()
     );
 }
 
+void initrendertextcmds()
+{
+    addcommand("fontalias", reinterpret_cast<identfun>(fontalias), "ss", Id_Command);
+    addcommand("tabify", reinterpret_cast<identfun>(tabify), "si", Id_Command);
+    addcommand("font", reinterpret_cast<identfun>(newfont), "ssiii", Id_Command);
+    addcommand("fontborder", reinterpret_cast<identfun>(fontborder), "ff", Id_Command);
+    addcommand("fontoutline", reinterpret_cast<identfun>(fontoutline), "ff", Id_Command);
+    addcommand("fontoffset", reinterpret_cast<identfun>(fontoffset), "s", Id_Command);
+    addcommand("fontscale", reinterpret_cast<identfun>(fontscale), "i", Id_Command);
+    addcommand("fonttex", reinterpret_cast<identfun>(fonttex), "s", Id_Command);
+    addcommand("fontchar", reinterpret_cast<identfun>(fontchar), "fffffff", Id_Command);
+    addcommand("fontskip", reinterpret_cast<identfun>(fontskip), "i", Id_Command);
+}

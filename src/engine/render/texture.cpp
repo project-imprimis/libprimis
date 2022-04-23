@@ -1214,8 +1214,6 @@ void texturereset(int *n)
     }
 }
 
-COMMAND(texturereset, "i");
-
 void materialreset()
 {
     if(!(identflags&Idf_Overridden) && !allowediting)
@@ -1229,8 +1227,6 @@ void materialreset()
     }
 }
 
-COMMAND(materialreset, "");
-
 void decalreset(int *n)
 {
     if(!(identflags&Idf_Overridden) && !allowediting)
@@ -1241,8 +1237,6 @@ void decalreset(int *n)
     resetslotshader();
     decalslots.deletecontents(*n);
 }
-
-COMMAND(decalreset, "i");
 
 static int compactedvslots = 0,
            compactvslotsprogress = 0,
@@ -1444,14 +1438,6 @@ int cubeworld::compactvslots(bool cull)
     vslots.setsize(compactedvslots);
     return total;
 }
-
-void compactvslotscmd(int *cull)
-{
-    multiplayerwarn();
-    rootworld.compactvslots(*cull!=0);
-    rootworld.allchanged();
-}
-COMMANDN(compactvslots, compactvslotscmd, "i");
 
 static void clampvslotoffset(VSlot &dst, Slot *slot = nullptr)
 {
@@ -2043,7 +2029,6 @@ static void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset
         propagatevslot(&vs, (1 << VSlot_Num) - 1);
     }
 }
-COMMAND(texture, "ssiiif");
 
 void texgrass(char *name)
 {
@@ -2055,7 +2040,6 @@ void texgrass(char *name)
     delete[] s.grass;
     s.grass = name[0] ? newstring(makerelpath("media/texture", name)) : nullptr;
 }
-COMMAND(texgrass, "s");
 
 void texscroll(float *scrollS, float *scrollT)
 {
@@ -2067,7 +2051,6 @@ void texscroll(float *scrollS, float *scrollT)
     s.variants->scroll = vec2(*scrollS/1000.0f, *scrollT/1000.0f);
     propagatevslot(s.variants, 1 << VSlot_Scroll);
 }
-COMMAND(texscroll, "ff");
 
 void texoffset_(int *xoffset, int *yoffset)
 {
@@ -2079,7 +2062,6 @@ void texoffset_(int *xoffset, int *yoffset)
     s.variants->offset = ivec2(*xoffset, *yoffset).max(0);
     propagatevslot(s.variants, 1 << VSlot_Offset);
 }
-COMMANDN(texoffset, texoffset_, "ii");
 
 void texrotate_(int *rot)
 {
@@ -2091,8 +2073,6 @@ void texrotate_(int *rot)
     s.variants->rotation = std::clamp(*rot, 0, 7);
     propagatevslot(s.variants, 1 << VSlot_Rotation);
 }
-COMMANDN(texrotate, texrotate_, "i");
-
 
 void texangle_(float *a)
 {
@@ -2104,8 +2084,6 @@ void texangle_(float *a)
     s.variants->angle = vec(*a, std::sin(RAD**a), std::cos(RAD**a));
     propagatevslot(s.variants, 1 << VSlot_Angle);
 }
-COMMANDN(texangle, texangle_, "f");
-
 
 void texscale(float *scale)
 {
@@ -2117,7 +2095,6 @@ void texscale(float *scale)
     s.variants->scale = *scale <= 0 ? 1 : *scale;
     propagatevslot(s.variants, 1 << VSlot_Scale);
 }
-COMMAND(texscale, "f");
 
 void texalpha(float *front, float *back)
 {
@@ -2130,7 +2107,6 @@ void texalpha(float *front, float *back)
     s.variants->alphaback = std::clamp(*back, 0.0f, 1.0f);
     propagatevslot(s.variants, 1 << VSlot_Alpha);
 }
-COMMAND(texalpha, "ff");
 
 void texcolor(float *r, float *g, float *b)
 {
@@ -2142,7 +2118,6 @@ void texcolor(float *r, float *g, float *b)
     s.variants->colorscale = vec(std::clamp(*r, 0.0f, 2.0f), std::clamp(*g, 0.0f, 2.0f), std::clamp(*b, 0.0f, 2.0f));
     propagatevslot(s.variants, 1 << VSlot_Color);
 }
-COMMAND(texcolor, "fff");
 
 void texrefract(float *k, float *r, float *g, float *b)
 {
@@ -2162,7 +2137,6 @@ void texrefract(float *k, float *r, float *g, float *b)
     }
     propagatevslot(s.variants, 1 << VSlot_Refract);
 }
-COMMAND(texrefract, "ffff");
 
 void texsmooth(int *id, int *angle)
 {
@@ -2173,7 +2147,6 @@ void texsmooth(int *id, int *angle)
     Slot &s = *defslot;
     s.smooth = smoothangle(*id, *angle);
 }
-COMMAND(texsmooth, "ib");
 
 void decaldepth(float *depth, float *fade)
 {
@@ -2185,7 +2158,6 @@ void decaldepth(float *depth, float *fade)
     s.depth = std::clamp(*depth, 1e-3f, 1e3f);
     s.fade = std::clamp(*fade, 0.0f, s.depth);
 }
-COMMAND(decaldepth, "ff");
 
 int DecalSlot::cancombine(int type) const
 {
@@ -2729,8 +2701,6 @@ void reloadtex(char *name)
     }
 }
 
-COMMAND(reloadtex, "s");
-
 void reloadtextures()
 {
     int reloaded = 0;
@@ -2926,8 +2896,6 @@ void screenshot(char *filename)
     glReadPixels(0, 0, screenw, screenh, GL_RGB, GL_UNSIGNED_BYTE, image.data);
     savepng(path(buf), image, true);
 }
-
-COMMAND(screenshot, "s");
 
 //used in libprimis api, avoids having to provide entire Shader iface
 void setldrnotexture()
@@ -3373,3 +3341,24 @@ void LocalShaderParam::setv(const uint *u, int n)
         glUniform1uiv_(b->loc, n, u);
     }
 }
+void inittexturecmds() {
+    addcommand("texturereset", reinterpret_cast<identfun>(texturereset), "i", Id_Command);
+    addcommand("materialreset", reinterpret_cast<identfun>(materialreset), "", Id_Command);
+    addcommand("decalreset", reinterpret_cast<identfun>(decalreset), "i", Id_Command);
+    addcommand("compactvslots", reinterpret_cast<identfun>(+[](int *cull){multiplayerwarn();rootworld.compactvslots(*cull!=0);rootworld.allchanged();}), "i", Id_Command);
+    addcommand("texture", reinterpret_cast<identfun>(texture), "ssiiif", Id_Command);
+    addcommand("texgrass", reinterpret_cast<identfun>(texgrass), "s", Id_Command);
+    addcommand("texscroll", reinterpret_cast<identfun>(texscroll), "ff", Id_Command);
+    addcommand("texoffset", reinterpret_cast<identfun>(texoffset_), "ii", Id_Command);
+    addcommand("texrotate", reinterpret_cast<identfun>(texrotate_), "i", Id_Command);
+    addcommand("texangle", reinterpret_cast<identfun>(texangle_), "f", Id_Command);
+    addcommand("texscale", reinterpret_cast<identfun>(texscale), "f", Id_Command);
+    addcommand("texalpha", reinterpret_cast<identfun>(texalpha), "ff", Id_Command);
+    addcommand("texcolor", reinterpret_cast<identfun>(texcolor), "fff", Id_Command);
+    addcommand("texrefract", reinterpret_cast<identfun>(texrefract), "ffff", Id_Command);
+    addcommand("texsmooth", reinterpret_cast<identfun>(texsmooth), "ib", Id_Command);
+    addcommand("decaldepth", reinterpret_cast<identfun>(decaldepth), "ff", Id_Command);
+    addcommand("reloadtex", reinterpret_cast<identfun>(reloadtex), "s", Id_Command);
+    addcommand("screenshot", reinterpret_cast<identfun>(screenshot), "s", Id_Command);
+}
+

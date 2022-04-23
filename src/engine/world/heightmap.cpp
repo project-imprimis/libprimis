@@ -26,7 +26,6 @@ namespace hmap
     {
         textures.setsize(0);
     }
-    COMMANDN(hmapcancel, cancel, "");
 
     void hmapselect()
     {
@@ -41,8 +40,7 @@ namespace hmap
             textures.remove(i);
         }
     }
-    COMMAND(hmapselect, "");
-
+        
     bool isheightmap(int o, bool empty, cube &c)
     {
         return havesel ||
@@ -71,7 +69,6 @@ namespace hmap
         brushminx = brushminy = maxbrush;
         paintbrush = false;
     }
-    COMMAND(clearhbrush, "");
 
     void hbrushvert(int *x, int *y, int *v)
     {
@@ -88,7 +85,6 @@ namespace hmap
         brushminx = std::max(0,          std::min(brushminx, *x-1));
         brushminy = std::max(0,          std::min(brushminy, *y-1));
     }
-    COMMAND(hbrushvert, "iii");
 
     static constexpr int painted = 1,
                          nothmap = 2,
@@ -533,4 +529,12 @@ namespace hmap
         changes.s.sub(changes.o).shr(gridpower).add(1);
         rootworld.changed(changes);
     }
+}
+
+void initheightmapcmds()
+{
+    addcommand("hmapcancel", reinterpret_cast<identfun>(hmap::cancel), "", Id_Command);
+    addcommand("hmapselect", reinterpret_cast<identfun>(hmap::hmapselect), "", Id_Command);
+    addcommand("clearhbrush", reinterpret_cast<identfun>(hmap::clearhbrush), "", Id_Command);
+    addcommand("hbrushvert", reinterpret_cast<identfun>(hmap::hbrushvert), "iii", Id_Command);
 }

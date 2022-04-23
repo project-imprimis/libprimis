@@ -164,12 +164,6 @@ namespace
         }
     }
 
-    void loadcrosshaircmd(const char *name, int *i)
-    {
-        loadcrosshair(name, *i);
-    }
-    COMMANDN(loadcrosshair, loadcrosshaircmd, "si");
-
     void getcrosshair(int *i)
     {
         const char *name = "";
@@ -183,7 +177,6 @@ namespace
         }
         result(name);
     }
-    COMMAND(getcrosshair, "i");
 
     void drawcrosshair(int w, int h, int crosshairindex)
     {
@@ -479,4 +472,10 @@ void damageblend(int n)
         damageblendmillis = lastmillis;
     }
     damageblendmillis += std::clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
+}
+
+void inithudcmds()
+{
+    addcommand("loadcrosshair", reinterpret_cast<identfun>(+[](const char *name, int *i){loadcrosshair(name, *i);}), "si", Id_Command);
+    addcommand("getcrosshair", reinterpret_cast<identfun>(getcrosshair), "i", Id_Command);
 }
