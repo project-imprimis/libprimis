@@ -168,7 +168,6 @@ namespace
     {
         loadcrosshair(name, *i);
     }
-    COMMANDN(loadcrosshair, loadcrosshaircmd, "si");
 
     void getcrosshair(int *i)
     {
@@ -479,4 +478,10 @@ void damageblend(int n)
         damageblendmillis = lastmillis;
     }
     damageblendmillis += std::clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
+}
+
+void inithudcmds()
+{
+    addcommand("loadcrosshair", (identfun)loadcrosshaircmd, "si", Id_Command);
+    addcommand("getcrosshair", (identfun)getcrosshair, "i", Id_Command);
 }
