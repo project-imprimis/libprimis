@@ -738,8 +738,6 @@ void resetvar(char *name)
     }
 }
 
-COMMAND(resetvar, "s");
-
 void setarg(ident &id, tagval &v)
 {
     if(aliasstack->usedargs&(1<<id.index))
@@ -833,13 +831,6 @@ void alias(const char *name, tagval &v)
 {
     setalias(name, v);
 }
-
-void aliascmd(const char *name, tagval *v)
-{
-    setalias(name, *v);
-    v->type = Value_Null;
-}
-COMMANDN(alias, aliascmd, "sT");
 
 // variables and commands are registered through globals, see cube.h
 
@@ -5242,4 +5233,6 @@ void initcscmds()
 
     addcommand("nodebug", reinterpret_cast<identfun>(+[] (uint *body){nodebug++; executeret(body, *commandret); nodebug--;}), "e", Id_Command);
     addcommand("push", reinterpret_cast<identfun>(pushcmd), "rTe", Id_Command);
+    addcommand("alias", reinterpret_cast<identfun>(+[] (const char *name, tagval *v){ setalias(name, *v); v->type = Value_Null;}), "sT", Id_Command);
+    addcommand("resetvar", reinterpret_cast<identfun>(resetvar), "s", Id_Command);
 }
