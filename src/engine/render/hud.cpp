@@ -182,7 +182,6 @@ namespace
         }
         result(name);
     }
-    COMMAND(getcrosshair, "i");
 
     void drawcrosshair(int w, int h, int crosshairindex)
     {

@@ -263,8 +263,6 @@ void mapcfgname()
     result(cfgname);
 }
 
-COMMAND(mapcfgname, "");
-
 void backup(const char *name, const char *backupname)
 {
     string backupfile;
@@ -1260,4 +1258,9 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
         conoutf(Console_Echo, "%s", maptitle);
     }
     return true;
+}
+
+void initworldiocmds()
+{
+    addcommand("mapcfgname", (identfun)mapcfgname, "", Id_Command);
 }
