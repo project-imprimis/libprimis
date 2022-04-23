@@ -56,7 +56,10 @@ namespace
 
     //returns if there are pending changes or not enqueued
     void pendingchanges (int *idx)
-    {>
+    {
+        if(needsapply.inrange(*idx))
+        {
+            result(needsapply[*idx].desc);
         }
         else if(*idx < 0)
         {
