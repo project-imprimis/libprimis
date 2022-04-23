@@ -14,7 +14,7 @@
 #include "world/octaedit.h"
 
 //internally relevant functionality
-namespace
+namespace 
 {
     struct Change
     {
@@ -54,9 +54,6 @@ namespace
         }
     }
 
-    //executes applychanges()
-    COMMAND(applychanges, "");
-
     //returns if there are pending changes or not enqueued
     void pendingchanges (int *idx)
     {
@@ -69,7 +66,6 @@ namespace
             intret(needsapply.length());
         }
     }
-    COMMAND(pendingchanges, "b");
 
     int lastmainmenu = -1;
 }
@@ -150,4 +146,10 @@ void clearmainmenu()
         mainmenu = 0;
         UI::hideui(nullptr);
     }
+}
+
+void initmenuscmds()
+{
+    addcommand("applychanges", reinterpret_cast<identfun>(applychanges), "", Id_Command);
+    addcommand("pendingchanges", reintterpret_cast<identfun>(pendingchanges), "b", Id_Command); 
 }
