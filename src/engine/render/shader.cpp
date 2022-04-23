@@ -646,6 +646,189 @@ static void setslotparam(SlotShaderParamState &l, const float *val)
         SETSLOTPARAM(l, unimask, i, l.val); \
     }
 
+//shader
+
+Shader::Shader() : name(nullptr), vsstr(nullptr), psstr(nullptr), defer(nullptr), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(nullptr), variantrows(nullptr), standard(false), forced(false), used(false), reusevs(nullptr), reuseps(nullptr), owner(nullptr)
+{
+}
+
+Shader::~Shader()
+{
+    delete[] name;
+    delete[] vsstr;
+    delete[] psstr;
+    delete[] defer;
+    delete[] variantrows;
+}
+
+void Shader::flushparams()
+{
+    if(!used)
+    {
+        allocparams();
+        used = true;
+    }
+    for(int i = 0; i < globalparams.length(); i++)
+    {
+        globalparams[i].flush();
+    }
+}
+
+bool Shader::invalid() const
+{
+    return (type & Shader_Invalid) != 0;
+}
+bool Shader::deferred() const
+{
+    return (type & Shader_Deferred) != 0;
+}
+bool Shader::loaded() const
+{
+    return !(type&(Shader_Deferred | Shader_Invalid));
+}
+
+bool Shader::hasoption() const
+{
+    return (type & Shader_Option) != 0;
+}
+
+bool Shader::isdynamic() const
+{
+    return (type & Shader_Dynamic) != 0;
+}
+
+int Shader::numvariants(int row) const
+{
+    if(row < 0 || row >= maxvariantrows || !variantrows)
+    {
+        return 0;
+    }
+    return variantrows[row+1] - variantrows[row];
+}
+
+Shader *Shader::getvariant(int col, int row) const
+{
+    if(row < 0 || row >= maxvariantrows || col < 0 || !variantrows)
+    {
+        return nullptr;
+    }
+    int start = variantrows[row],
+        end = variantrows[row+1];
+    return col < end - start ? variants[start + col] : nullptr;
+}
+
+void Shader::addvariant(int row, Shader *s)
+{
+    if(row < 0 || row >= maxvariantrows || variants.length() >= USHRT_MAX)
+    {
+        return;
+    }
+    if(!variantrows)
+    {
+        variantrows = new ushort[maxvariantrows+1];
+        memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
+    }
+    variants.insert(variantrows[row+1], s);
+    for(int i = row+1; i <= maxvariantrows; ++i)
+    {
+        ++variantrows[i];
+    }
+}
+
+void Shader::setvariant_(int col, int row)
+{
+    Shader *s = this;
+    if(variantrows)
+    {
+        int start = variantrows[row],
+            end   = variantrows[row+1];
+        for(col = std::min(start + col, end-1); col >= start; --col)
+        {
+            if(!variants[col]->invalid())
+            {
+                s = variants[col];
+                break;
+            }
+        }
+    }
+    if(lastshader!=s)
+    {
+        s->bindprograms();
+    }
+}
+
+void Shader::setvariant(int col, int row)
+{
+    if(!loaded())
+    {
+        return;
+    }
+    setvariant_(col, row);
+    lastshader->flushparams();
+}
+
+void Shader::setvariant(int col, int row, Slot &slot)
+{
+    if(!loaded())
+    {
+        return;
+    }
+    setvariant_(col, row);
+    lastshader->flushparams();
+    lastshader->setslotparams(slot);
+}
+
+void Shader::setvariant(int col, int row, Slot &slot, VSlot &vslot)
+{
+    if(!loaded())
+    {
+        return;
+    }
+    setvariant_(col, row);
+    lastshader->flushparams();
+    lastshader->setslotparams(slot, vslot);
+}
+
+void Shader::set_()
+{
+    if(lastshader!=this)
+    {
+        bindprograms();
+    }
+}
+
+void Shader::set()
+{
+    if(!loaded())
+    {
+        return;
+    }
+    set_();
+    lastshader->flushparams();
+}
+
+void Shader::set(Slot &slot)
+{
+    if(!loaded())
+    {
+        return;
+    }
+    set_();
+    lastshader->flushparams();
+    lastshader->setslotparams(slot);
+}
+
+void Shader::set(Slot &slot, VSlot &vslot)
+{
+    if(!loaded())
+    {
+        return;
+    }
+    set_();
+    lastshader->flushparams();
+    lastshader->setslotparams(slot, vslot);
+}
+
 void Shader::setslotparams(Slot &slot)
 {
     uint unimask = 0;

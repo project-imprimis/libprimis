@@ -245,194 +245,31 @@ struct Shader
     vector<FragDataLoc> fragdatalocs;
     const void *owner;
 
-    Shader() : name(nullptr), vsstr(nullptr), psstr(nullptr), defer(nullptr), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(nullptr), variantrows(nullptr), standard(false), forced(false), used(false), reusevs(nullptr), reuseps(nullptr), owner(nullptr)
-    {
-    }
-
-    ~Shader()
-    {
-        delete[] name;
-        delete[] vsstr;
-        delete[] psstr;
-        delete[] defer;
-        delete[] variantrows;
-    }
-
+    Shader();
+    ~Shader();
     void allocparams();
     void setslotparams(Slot &slot);
     void setslotparams(Slot &slot, VSlot &vslot);
     void bindprograms();
 
-    void flushparams()
-    {
-        if(!used)
-        {
-            allocparams();
-            used = true;
-        }
-        for(int i = 0; i < globalparams.length(); i++)
-        {
-            globalparams[i].flush();
-        }
-    }
-
+    void flushparams();
     void force();
-
-    bool invalid() const
-    {
-        return (type & Shader_Invalid) != 0;
-    }
-    bool deferred() const
-    {
-        return (type & Shader_Deferred) != 0;
-    }
-    bool loaded() const
-    {
-        return !(type&(Shader_Deferred | Shader_Invalid));
-    }
-
-    bool hasoption() const
-    {
-        return (type & Shader_Option) != 0;
-    }
-
-    bool isdynamic() const
-    {
-        return (type & Shader_Dynamic) != 0;
-    }
-
-    int numvariants(int row) const
-    {
-        if(row < 0 || row >= maxvariantrows || !variantrows)
-        {
-            return 0;
-        }
-        return variantrows[row+1] - variantrows[row];
-    }
-
-    Shader *getvariant(int col, int row) const
-    {
-        if(row < 0 || row >= maxvariantrows || col < 0 || !variantrows)
-        {
-            return nullptr;
-        }
-        int start = variantrows[row],
-            end = variantrows[row+1];
-        return col < end - start ? variants[start + col] : nullptr;
-    }
-
-    void addvariant(int row, Shader *s)
-    {
-        if(row < 0 || row >= maxvariantrows || variants.length() >= USHRT_MAX)
-        {
-            return;
-        }
-        if(!variantrows)
-        {
-            variantrows = new ushort[maxvariantrows+1];
-            memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
-        }
-        variants.insert(variantrows[row+1], s);
-        for(int i = row+1; i <= maxvariantrows; ++i)
-        {
-            ++variantrows[i];
-        }
-    }
-
-    void setvariant_(int col, int row)
-    {
-        Shader *s = this;
-        if(variantrows)
-        {
-            int start = variantrows[row],
-                end   = variantrows[row+1];
-            for(col = std::min(start + col, end-1); col >= start; --col)
-            {
-                if(!variants[col]->invalid())
-                {
-                    s = variants[col];
-                    break;
-                }
-            }
-        }
-        if(lastshader!=s)
-        {
-            s->bindprograms();
-        }
-    }
-
-    void setvariant(int col, int row)
-    {
-        if(!loaded())
-        {
-            return;
-        }
-        setvariant_(col, row);
-        lastshader->flushparams();
-    }
-
-    void setvariant(int col, int row, Slot &slot)
-    {
-        if(!loaded())
-        {
-            return;
-        }
-        setvariant_(col, row);
-        lastshader->flushparams();
-        lastshader->setslotparams(slot);
-    }
-
-    void setvariant(int col, int row, Slot &slot, VSlot &vslot)
-    {
-        if(!loaded())
-        {
-            return;
-        }
-        setvariant_(col, row);
-        lastshader->flushparams();
-        lastshader->setslotparams(slot, vslot);
-    }
-
-    void set_()
-    {
-        if(lastshader!=this)
-        {
-            bindprograms();
-        }
-    }
-
-    void set()
-    {
-        if(!loaded())
-        {
-            return;
-        }
-        set_();
-        lastshader->flushparams();
-    }
-
-    void set(Slot &slot)
-    {
-        if(!loaded())
-        {
-            return;
-        }
-        set_();
-        lastshader->flushparams();
-        lastshader->setslotparams(slot);
-    }
-
-    void set(Slot &slot, VSlot &vslot)
-    {
-        if(!loaded())
-        {
-            return;
-        }
-        set_();
-        lastshader->flushparams();
-        lastshader->setslotparams(slot, vslot);
-    }
-
+    bool invalid() const;
+    bool deferred() const;
+    bool loaded() const;
+    bool hasoption() const;
+    bool isdynamic() const;
+    int numvariants(int row) const;
+    Shader *getvariant(int col, int row) const;
+    void addvariant(int row, Shader *s);
+    void setvariant_(int col, int row);
+    void setvariant(int col, int row);
+    void setvariant(int col, int row, Slot &slot);
+    void setvariant(int col, int row, Slot &slot, VSlot &vslot);
+    void set_();
+    void set();
+    void set(Slot &slot);
+    void set(Slot &slot, VSlot &vslot);
     bool compile();
     void cleanup(bool full = false);
 
