@@ -648,7 +648,7 @@ static void setslotparam(SlotShaderParamState &l, const float *val)
 
 //shader
 
-Shader::Shader() : name(nullptr), vsstr(nullptr), psstr(nullptr), defer(nullptr), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(nullptr), variantrows(nullptr), standard(false), forced(false), used(false), reusevs(nullptr), reuseps(nullptr), owner(nullptr)
+Shader::Shader() : name(nullptr), vsstr(nullptr), psstr(nullptr), defer(nullptr), type(Shader_Default), program(0), vsobj(0), psobj(0), variantshader(nullptr), standard(false), forced(false), reusevs(nullptr), reuseps(nullptr), owner(nullptr), variantrows(nullptr), used(false)
 {
 }
 
@@ -685,11 +685,6 @@ bool Shader::deferred() const
 bool Shader::loaded() const
 {
     return !(type&(Shader_Deferred | Shader_Invalid));
-}
-
-bool Shader::hasoption() const
-{
-    return (type & Shader_Option) != 0;
 }
 
 bool Shader::isdynamic() const

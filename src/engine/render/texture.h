@@ -224,56 +224,59 @@ struct FragDataLoc
     FragDataLoc(const char *name = nullptr, int loc = -1, GLenum format = GL_FALSE, int index = 0) : name(name), loc(loc), format(format), index(index) {}
 };
 
-struct Shader
+class Shader
 {
-    static Shader *lastshader;
+    public:
+        static Shader *lastshader;
 
-    char *name, *vsstr, *psstr, *defer;
-    int type;
-    GLuint program, vsobj, psobj;
-    vector<SlotShaderParamState> defaultparams;
-    vector<GlobalShaderParamUse> globalparams;
-    vector<LocalShaderParamState> localparams;
-    vector<uchar> localparamremap;
-    Shader *variantshader;
-    vector<Shader *> variants;
-    ushort *variantrows;
-    bool standard, forced, used;
-    Shader *reusevs, *reuseps;
-    vector<UniformLoc> uniformlocs;
-    vector<AttribLoc> attriblocs;
-    vector<FragDataLoc> fragdatalocs;
-    const void *owner;
+        char *name, *vsstr, *psstr, *defer;
+        int type;
+        GLuint program, vsobj, psobj;
+        vector<SlotShaderParamState> defaultparams;
+        vector<GlobalShaderParamUse> globalparams;
+        vector<LocalShaderParamState> localparams;
+        vector<uchar> localparamremap;
+        Shader *variantshader;
+        vector<Shader *> variants;
+        bool standard, forced;
+        Shader *reusevs, *reuseps;
+        vector<UniformLoc> uniformlocs;
+        vector<AttribLoc> attriblocs;
+        vector<FragDataLoc> fragdatalocs;
+        const void *owner;
 
-    Shader();
-    ~Shader();
-    void allocparams();
-    void setslotparams(Slot &slot);
-    void setslotparams(Slot &slot, VSlot &vslot);
-    void bindprograms();
+        Shader();
+        ~Shader();
 
-    void flushparams();
-    void force();
-    bool invalid() const;
-    bool deferred() const;
-    bool loaded() const;
-    bool hasoption() const;
-    bool isdynamic() const;
-    int numvariants(int row) const;
-    Shader *getvariant(int col, int row) const;
-    void addvariant(int row, Shader *s);
-    void setvariant_(int col, int row);
-    void setvariant(int col, int row);
-    void setvariant(int col, int row, Slot &slot);
-    void setvariant(int col, int row, Slot &slot, VSlot &vslot);
-    void set_();
-    void set();
-    void set(Slot &slot);
-    void set(Slot &slot, VSlot &vslot);
-    bool compile();
-    void cleanup(bool full = false);
+        void flushparams();
+        void force();
+        bool invalid() const;
+        bool deferred() const;
+        bool loaded() const;
+        bool isdynamic() const;
+        int numvariants(int row) const;
+        Shader *getvariant(int col, int row) const;
+        void addvariant(int row, Shader *s);
+        void setvariant(int col, int row);
+        void setvariant(int col, int row, Slot &slot);
+        void setvariant(int col, int row, Slot &slot, VSlot &vslot);
+        void set();
+        void set(Slot &slot);
+        void set(Slot &slot, VSlot &vslot);
+        bool compile();
+        void cleanup(bool full = false);
 
-    static int uniformlocversion();
+        static int uniformlocversion();
+    private:
+        ushort *variantrows;
+        bool used;
+        void allocparams();
+        void setslotparams(Slot &slot);
+        void setslotparams(Slot &slot, VSlot &vslot);
+        void bindprograms();
+        void setvariant_(int col, int row);
+        void set_();
+
 };
 
 class GlobalShaderParam
