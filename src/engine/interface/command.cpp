@@ -5217,7 +5217,7 @@ bool execidentbool(const char *name, bool noid, bool lookup)
 
 void initcscmds()
 {
-    addcommand("local", reinterpret_cast<identfun>(nullptr), nullptr, Id_Local);
+    addcommand("local", static_cast<identfun>(nullptr), nullptr, Id_Local);
 
     addcommand("defvar", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, 0); }; }), "siiis", Id_Command);
     addcommand("defvarp", reinterpret_cast<identfun>(+[] (char *name, int *min, int *cur, int *max, char *onchange) { { if(idents.access(name)) { debugcode("cannot redefine %s as a variable", name); return; } name = newstring(name); DefVar &def = defvars[name]; def.name = name; def.onchange = onchange[0] ? compilecode(onchange) : nullptr; def.i = variable(name, *min, *cur, *max, &def.i, def.onchange ? DefVar::changed : nullptr, Idf_Persist); }; }), "siiis", Id_Command);
