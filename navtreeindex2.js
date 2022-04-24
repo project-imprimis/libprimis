@@ -1,5 +1,19 @@
 var NAVTREEINDEX2 =
 {
+"structdatabuf.html#a531caf46f8bf35bb2a16b4e7bc294b6c":[10,0,6,8],
+"structdatabuf.html#a7c8c5031dcedbf681924e5166ea190ae":[10,0,6,3],
+"structdatabuf.html#a96a3266c8d62a2bb467c133e815fb216":[10,0,6,5],
+"structdatabuf.html#a9e6bb0d4a4c7e47495c1b33d9856337e":[10,0,6,7],
+"structdatabuf.html#ac462a5159900a306d67117cabbbf17db":[10,0,6,0],
+"structdatabuf.html#ae66739c6506f6208d2815222b1da6f6f":[10,0,6,1],
+"structdatabuf.html#af6060c72019fdeaf82ea0810091800b6":[10,0,6,4],
+"structdynent.html":[10,0,8],
+"structdynent.html#a093fb4ab684f252e4b315fbef20ee213":[10,0,8,0],
+"structdynent.html#a328ca39121b002c30b585162adec026b":[10,0,8,2],
+"structdynent.html#a4d1a81af37056f80ad90cee60b9ecca8":[10,0,8,1],
+"structdynent.html#afaa0d5d6115b157e1b9bf3d61ee42543":[10,0,8,3],
+"structeditinfo.html":[10,0,9],
+"structentity.html":[10,0,10],
 "structentity.html#a525c90c5512cbb504f7ac9ab7014336f":[10,0,10,1],
 "structentity.html#a70fab3b3b43a8fa51e997d7b13d74dac":[10,0,10,0],
 "structentity.html#a8149790bddae92665ede0d60432f2dee":[10,0,10,2],
@@ -137,8 +151,9 @@ var NAVTREEINDEX2 =
 "structvslotmap.html":[10,0,47],
 "structvslotref.html":[10,0,48],
 "tools_8h.html":[11,0,0,0,8],
-"tools_8h.html#a5c7af8666d89a580098180b2a3204469":[11,0,0,0,8,13],
-"tools_8h.html#ac689abc18c3afee2ad0016533bcab8f4":[11,0,0,0,8,14],
+"tools_8h.html#a5c7af8666d89a580098180b2a3204469":[11,0,0,0,8,14],
+"tools_8h.html#ac348a3a9d5cdd66464d88daffe36a73a":[11,0,0,0,8,13],
+"tools_8h.html#ac689abc18c3afee2ad0016533bcab8f4":[11,0,0,0,8,15],
 "tools_8h_source.html":[11,0,0,0,8],
 "unionident_1_1identvalptr.html":[10,0,20,0]
 };
