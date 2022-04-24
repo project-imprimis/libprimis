@@ -263,7 +263,6 @@ void printcube()
     conoutf(Console_Debug, " y  %.8x", c.faces[1]);
     conoutf(Console_Debug, " z  %.8x", c.faces[2]);
 }
-COMMAND(printcube, "");
 
 bool cube::isvalidcube()
 {
@@ -2582,4 +2581,9 @@ void cube::calcmerges(cube * root)
 {
     genmergeprogress = 0;
     genmerges(root);
+}
+
+void initoctaworldcmds() 
+{
+    addcommand("printcube", reinterpret_cast<identfun>(printcube), "", Id_Command);
 }

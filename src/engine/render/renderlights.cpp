@@ -348,13 +348,6 @@ bool usepacknorm()
     return forcepacknorm || msaasamples || !useavatarmask();
 }
 
-void usepacknormcmd()
-{
-    intret(usepacknorm() ? 1 : 0);
-}
-
-COMMANDN(usepacknorm, usepacknormcmd, "");
-
 void maskgbuffer(const char *mask)
 {
     GLenum drawbufs[4];
@@ -4204,3 +4197,7 @@ void cleanuplights()
     cleanupaa();
 }
 
+void initrenderlightscmds() 
+{
+    addcommand("usepacknorm", reinterpret_cast<identfun>(+[](){intret(usepacknorm() ? 1 : 0);}), "", Id_Command);
+}
