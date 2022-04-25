@@ -51,6 +51,13 @@ bool BIH::node::isleaf(int which) const
     return (child[1]&(1<<(14+which)))!=0;
 }
 
+bool BIH::tribb::outside(const ivec &bo, const ivec &br) const
+{
+    return std::abs(bo.x - center.x) > br.x + radius.x ||
+           std::abs(bo.y - center.y) > br.y + radius.y ||
+           std::abs(bo.z - center.z) > br.z + radius.z;
+}
+
 bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode)
 {
     const tri &t = m.tris[tidx];
