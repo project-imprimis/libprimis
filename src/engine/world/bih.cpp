@@ -36,6 +36,21 @@
 
 constexpr float maxcollidedistance = -1e9f;
 
+int BIH::node::axis() const
+{
+    return child[0]>>14;
+}
+
+int BIH::node::childindex(int which) const
+{
+    return child[which]&0x3FFF;
+}
+
+bool BIH::node::isleaf(int which) const
+{
+    return (child[1]&(1<<(14+which)))!=0;
+}
+
 bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode)
 {
     const tri &t = m.tris[tidx];

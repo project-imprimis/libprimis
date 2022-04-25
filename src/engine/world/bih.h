@@ -8,20 +8,9 @@ class BIH
             short split[2];
             ushort child[2];
 
-            int axis() const
-            {
-                return child[0]>>14;
-            }
-
-            int childindex(int which) const
-            {
-                return child[which]&0x3FFF;
-            }
-
-            bool isleaf(int which) const
-            {
-                return (child[1]&(1<<(14+which)))!=0;
-            }
+            int axis() const;
+            int childindex(int which) const;
+            bool isleaf(int which) const;
         };
 
         struct tri
