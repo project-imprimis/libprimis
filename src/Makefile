@@ -1,5 +1,5 @@
 # cpp Makefile for libprimis
-# intended for g++ c++17 and linux builds only, use vcpp project for Windows builds
+# intended for g++/clang c++17 on linux builds only, use vcpp project for Windows builds
 
 # -o3: slowest compile times, but fastest code
 # -ffast-math: force less accurate but faster floating point calcs
