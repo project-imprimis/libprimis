@@ -51,16 +51,9 @@ class BIH
             int flags;
             vec bbmin, bbmax;
 
-            mesh() : numnodes(0), numtris(0), tex(nullptr), flags(0) {}
-
-            vec getpos(int i) const
-            {
-                return *reinterpret_cast<const vec *>(pos + i*posstride);
-            }
-            vec2 gettc(int i) const
-            {
-                return *reinterpret_cast<const vec2 *>(tc + i*tcstride);
-            }
+            mesh();
+            vec getpos(int i) const;
+            vec2 gettc(int i) const;
         };
 
         BIH(vector<mesh> &buildmeshes);

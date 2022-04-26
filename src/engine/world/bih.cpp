@@ -58,6 +58,17 @@ bool BIH::tribb::outside(const ivec &bo, const ivec &br) const
            std::abs(bo.z - center.z) > br.z + radius.z;
 }
 
+BIH::mesh::mesh() : numnodes(0), numtris(0), tex(nullptr), flags(0) {}
+
+vec BIH::mesh::getpos(int i) const
+{
+    return *reinterpret_cast<const vec *>(pos + i*posstride);
+}
+vec2 BIH::mesh::gettc(int i) const
+{
+    return *reinterpret_cast<const vec2 *>(tc + i*tcstride);
+}
+
 bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode)
 {
     const tri &t = m.tris[tidx];
