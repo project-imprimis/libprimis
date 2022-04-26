@@ -20,20 +20,6 @@
 
 #include "model/model.h"
 
-/* diagram of a,b,c,n vectors
- * a is the vector between the origin and the point 0 indicated
- * n is the triangle normal
- * b,c are displacement vectors from 1->2
- *            →       →
- *            a       n
- *             0__________
- *            / \
- *        →  /   \  →
- *        b /     \ c
- *         /       \
- *        1_________2
- */
-
 constexpr float maxcollidedistance = -1e9f;
 
 int BIH::node::axis() const
@@ -68,6 +54,21 @@ vec2 BIH::mesh::gettc(int i) const
 {
     return *reinterpret_cast<const vec2 *>(tc + i*tcstride);
 }
+
+/* diagram of a,b,c,n vectors
+ * a is the vector between the origin and the point 0 indicated
+ * n is the triangle normal
+ * b,c are displacement vectors from 1->2
+ * there is no explicit vector from points 1 to 2
+ *            →       →
+ *            a       n
+ *             0—————————>
+ *            / \
+ *        →  /   \  →
+ *        b /     \ c
+ *         /       \
+ *        1—————————2
+ */
 
 bool BIH::triintersect(const mesh &m, int tidx, const vec &mo, const vec &mray, float maxdist, float &dist, int mode)
 {
