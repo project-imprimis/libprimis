@@ -756,6 +756,13 @@ void skelmodel::skeleton::genragdollbones(ragdolldata &d, skelcacheentry &sc, pa
     }
 }
 
+void skelmodel::skeleton::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
+{
+    matrix4x3 t;
+    t.mul(bones[tags[i].bone].base, tags[i].matrix);
+    n.mul(m, t);
+}
+
 void skelmodel::skeleton::calctags(part *p, skelcacheentry *sc)
 {
     for(int i = 0; i < p->links.length(); i++)
@@ -1094,7 +1101,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             LOOP_RENDER_MESHES(skelmesh, m,
             {
                 p->skins[i].bind(m, as);
-                m.render();
+                m.render(as, p->skins[i], *vbocache);
             });
         }
         skel->calctags(p);
@@ -1129,13 +1136,13 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             (animcacheentry &)vc = sc;
             LOOP_RENDER_MESHES(skelmesh, m,
             {
-                m.interpverts(sc.bdata, bc ? bc->bdata : nullptr, reinterpret_cast<vvert *>(vdata));
+                m.interpverts(sc.bdata, bc ? bc->bdata : nullptr, reinterpret_cast<vvert *>(vdata), p->skins[i]);
             });
             gle::bindvbo(vc.vbuf);
             glBufferData(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
         }
 
-        bindvbo(as, p, vc);
+        bindvbo(as, p, vc, &sc, bc);
 
         LOOP_RENDER_MESHES(skelmesh, m,
         {
@@ -1144,7 +1151,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
             {
                 skel->setgpubones(sc, bc, vblends);
             }
-            m.render();
+            m.render(as, p->skins[i], vc);
         });
     }
 
@@ -1341,14 +1348,14 @@ void skelmodel::skelmesh::genshadowmesh(std::vector<triangle> &out, const matrix
     }
 }
 
-void skelmodel::skelmesh::assignvert(vvertg &vv, vert &v)
+void skelmodel::skelmesh::assignvert(vvertg &vv, int j, vert &v, blendcombo &c)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;
     vv.tangent = v.tangent;
 }
 
-void skelmodel::skelmesh::assignvert(vvertgw &vv, vert &v, blendcombo &c)
+void skelmodel::skelmesh::assignvert(vvertgw &vv, int j, vert &v, blendcombo &c)
 {
     vv.pos = vec4<half>(v.pos, 1);
     vv.tc = v.tc;
@@ -1396,7 +1403,7 @@ void skelmodel::skelmesh::setshader(Shader *s, int row)
     }
 }
 
-void skelmodel::skelmesh::render()
+void skelmodel::skelmesh::render(const AnimState *as, skin &s, vbocacheentry &vc)
 {
     if(!Shader::lastshader)
     {
@@ -1447,7 +1454,7 @@ int skelmodel::skelmeshgroup::totalframes() const
     return std::max(skel->numframes, 1);
 }
 
-void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc)
+void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheentry &vc, skelcacheentry *sc, blendcacheentry *bc)
 {
     if(!skel->numframes)
     {
@@ -1461,6 +1468,11 @@ void skelmodel::skelmeshgroup::bindvbo(const AnimState *as, part *p, vbocacheent
     {
         bindvbo<vvert>(as, p, vc);
     }
+}
+
+void skelmodel::skelmeshgroup::concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n)
+{
+    skel->concattagtransform(p, i, m, n);
 }
 
 int skelmodel::skelmeshgroup::addblendcombo(const blendcombo &c)
@@ -1597,6 +1609,23 @@ void skelmodel::skelmeshgroup::intersect(const AnimState *as, float pitch, const
     skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
     intersect(hitdata, p, sc, o, ray);
     skel->calctags(p, &sc);
+}
+
+void skelmodel::skelmeshgroup::preload(part *p)
+{
+    if(!skel->canpreload())
+    {
+        return;
+    }
+    if(skel->shouldcleanup())
+    {
+        skel->cleanup();
+    }
+    skel->preload();
+    if(!vbocache->vbuf)
+    {
+        genvbo(*vbocache);
+    }
 }
 
 // skelpart

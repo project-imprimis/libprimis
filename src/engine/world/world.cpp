@@ -44,6 +44,11 @@ namespace entities
         return ents;
     }
 
+    const char *entmodel(const entity &e)
+    {
+        return nullptr;
+    }
+
     extentity *newentity()
     {
         return new extentity();
@@ -569,7 +574,7 @@ void entitiesinoctanodes()
 void entselectionbox(const entity &e, vec &eo, vec &es)
 {
     model *m = nullptr;
-    const char *mname = nullptr;
+    const char *mname = entities::entmodel(e);
     if(mname && (m = loadmodel(mname)))
     {
         m->collisionbox(eo, es);

@@ -106,7 +106,7 @@ Shader *generateshader(const char *name, const char *fmt, ...)
     return s;
 }
 
-static void showglslinfo(GLenum type, GLuint obj, const char *name)
+static void showglslinfo(GLenum type, GLuint obj, const char *name, const char **parts = nullptr, int numparts = 0)
 {
     GLint length = 0;
     if(type)
@@ -123,7 +123,7 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name)
     }
 }
 
-static void compileglslshader(GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
+static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *def, const char *name, bool msg = true)
 {
     const char *source = def + std::strspn(def, " \t\r\n");
     char *modsource = nullptr;
@@ -187,14 +187,14 @@ static void compileglslshader(GLenum type, GLuint &obj, const char *def, const c
     {
         if(msg)
         {
-            showglslinfo(type, obj, name);
+            showglslinfo(type, obj, name, parts, numparts);
         }
         glDeleteShader(obj);
         obj = 0;
     }
     else if(debugshader > 1 && msg)
     {
-        showglslinfo(type, obj, name);
+        showglslinfo(type, obj, name, parts, numparts);
     }
     if(modsource)
     {
@@ -894,7 +894,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(GL_VERTEX_SHADER,   vsobj, vsstr, name, debugshader || !variantshader);
+        compileglslshader(*this, GL_VERTEX_SHADER,   vsobj, vsstr, name, debugshader || !variantshader);
     }
     if(!psstr)
     {
@@ -902,7 +902,7 @@ bool Shader::compile()
     }
     else
     {
-        compileglslshader(GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
+        compileglslshader(*this, GL_FRAGMENT_SHADER, psobj, psstr, name, debugshader || !variantshader);
     }
     linkglslprogram(*this, !variantshader);
     return program!=0;
@@ -1082,7 +1082,7 @@ static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
 }
 
 // adds to uniformlocs vector defined uniformlocs
-static void genuniformlocs(Shader &s, const char *vs, Shader *reusevs)
+static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *reusevs, Shader *reuseps)
 {
     static int len = std::strlen("//:uniform");
     string name, blockname;
@@ -1169,7 +1169,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     s.attriblocs.setsize(0);
     s.uniformlocs.setsize(0);
     genattriblocs(s, vs, s.reusevs);
-    genuniformlocs(s, vs, s.reusevs);
+    genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
     s.fragdatalocs.setsize(0);
     if(s.reuseps) //probably always true? its else was removed in shader cleanup
     {

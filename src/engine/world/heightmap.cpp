@@ -40,7 +40,7 @@ namespace hmap
             textures.remove(i);
         }
     }
-        
+
     bool isheightmap(int o, bool empty, cube &c)
     {
         return havesel ||

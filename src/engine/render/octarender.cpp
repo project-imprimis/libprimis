@@ -1730,7 +1730,7 @@ namespace
                 mf.numverts = surf.numverts;
                 mf.verts = c.ext->verts() + surf.verts;
                 mf.tjoints = -1;
-                int level = calcmergedsize(co, size, mf.verts, mf.numverts&Face_MaxVerts);
+                int level = calcmergedsize(i, co, size, mf.verts, mf.numverts&Face_MaxVerts);
                 if(level > minlevel)
                 {
                     maxlevel = std::max(maxlevel, level);

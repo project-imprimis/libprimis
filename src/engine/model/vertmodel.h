@@ -59,7 +59,7 @@ struct vertmodel : animmodel
         void genBIH(BIH::mesh &m);
         void genshadowmesh(std::vector<triangle> &out, const matrix4x3 &m);
 
-        static void assignvert(vvertg &vv, tcvert &tc, vert &v);
+        static void assignvert(vvertg &vv, int j, tcvert &tc, vert &v);
 
         template<class T>
         int genvbo(vector<ushort> &idxs, int offset, vector<T> &vverts, int *htdata, int htlen)
@@ -76,7 +76,7 @@ struct vertmodel : animmodel
                     vert &v = verts[index];
                     tcvert &tc = tcverts[index];
                     T vv;
-                    assignvert(vv, tc, v);
+                    assignvert(vv, index, tc, v);
                     int htidx = hthash(v.pos)&(htlen-1);
                     for(int k = 0; k < htlen; ++k)
                     {
@@ -104,7 +104,7 @@ struct vertmodel : animmodel
         int genvbo(vector<ushort> &idxs, int offset);
 
         template<class T>
-        static void fillvert(T &vv, tcvert &tc)
+        static void fillvert(T &vv, int j, tcvert &tc, vert &v)
         {
             vv.tc = tc.tc;
         }
@@ -115,12 +115,12 @@ struct vertmodel : animmodel
             vdata += voffset;
             for(int i = 0; i < numverts; ++i)
             {
-                fillvert(vdata[i], tcverts[i]);
+                fillvert(vdata[i], i, tcverts[i], verts[i]);
             }
         }
 
         template<class T>
-        void interpverts(const AnimState &as, T * RESTRICT vdata)
+        void interpverts(const AnimState &as, T * RESTRICT vdata, skin &s)
         {
             vdata += voffset;
             const vert * RESTRICT vert1 = &verts[as.cur.fr1 * numverts],
@@ -154,6 +154,8 @@ struct vertmodel : animmodel
             #undef IP_VERT_P
             //==================================================================
         }
+
+        void render(const AnimState *as, skin &s, vbocacheentry &vc);
     };
 
     struct tag
@@ -189,6 +191,7 @@ struct vertmodel : animmodel
         int findtag(const char *name);
 
         int totalframes() const;
+        void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n);
         void calctagmatrix(part *p, int i, const AnimState &as, matrix4 &matrix);
 
         void genvbo(vbocacheentry &vc);
@@ -226,8 +229,10 @@ struct vertmodel : animmodel
 
         void bindvbo(const AnimState *as, part *p, vbocacheentry &vc);
         void cleanup();
+        void preload(part *p);
+        void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p);
 
-        virtual bool load(const char *, float) = 0;
+        virtual bool load(const char *name, float smooth) = 0;
     };
 
     virtual vertmeshgroup *newmeshes() = 0;

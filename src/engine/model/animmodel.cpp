@@ -187,7 +187,7 @@ void animmodel::skin::setkey()
     key = &ShaderParamsKey::keys[*this];
 }
 
-void animmodel::skin::setshaderparams(const AnimState *as, bool skinned)
+void animmodel::skin::setshaderparams(Mesh &m, const AnimState *as, bool skinned)
 {
     if(!Shader::lastshader)
     {
@@ -330,7 +330,7 @@ void animmodel::skin::preloadshader()
     }
 }
 
-void animmodel::skin::setshader(Mesh &m)
+void animmodel::skin::setshader(Mesh &m, const AnimState *as)
 {
     m.setshader(loadshader(), transparentlayer ? 1 : 0);
 }
@@ -361,7 +361,7 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
                 lasttex = tex;
             }
             SETMODELSHADER(b, alphashadowmodel);
-            setshaderparams(as, false);
+            setshaderparams(b, as, false);
         }
         else
         {
@@ -400,8 +400,8 @@ void animmodel::skin::bind(Mesh &b, const AnimState *as)
     {
         glActiveTexture_(GL_TEXTURE0);
     }
-    setshader(b);
-    setshaderparams(as);
+    setshader(b, as);
+    setshaderparams(b, as);
 }
 
 #undef SETMODELSHADER
@@ -766,7 +766,7 @@ void animmodel::part::preloadmeshes()
     }
 }
 
-void animmodel::part::getdefaultanim(animinfo &info)
+void animmodel::part::getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d)
 {
     info.frame = 0;
     info.range = 1;
@@ -822,7 +822,7 @@ bool animmodel::part::calcanim(int animpart, int anim, int basetime, int basetim
         }
         else
         {
-            getdefaultanim(info);
+            getdefaultanim(info, anim, static_cast<uint>(varseed + info.basetime), d);
         }
     }
 

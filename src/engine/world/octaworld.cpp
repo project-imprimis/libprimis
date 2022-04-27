@@ -379,7 +379,7 @@ int cubeworld::lookupmaterial(const vec &v)
 const cube *neighborstack[32];
 int neighbordepth = -1;
 
-const cube &cubeworld::neighborcube(int orient, const ivec &co, int size, ivec &ro, int &rsize)
+const cube &cubeworld::neighborcube(const cube &c, int orient, const ivec &co, int size, ivec &ro, int &rsize)
 {
     ivec n = co;
     int dim = DIMENSION(orient);
@@ -1335,7 +1335,7 @@ bool visibleface(const cube &c, int orient, const ivec &co, int size, ushort mat
     }
     ivec no;
     int nsize;
-    const cube &o = ::rootworld.neighborcube(orient, co, size, no, nsize);
+    const cube &o = ::rootworld.neighborcube(c, orient, co, size, no, nsize);
     int opp = OPPOSITE(orient);
     if(nsize > size || (nsize == size && !o.children))
     {
@@ -1419,7 +1419,7 @@ int classifyface(const cube &c, int orient, const ivec &co, int size)
     }
     ivec no;
     int nsize;
-    const cube &o = ::rootworld.neighborcube(orient, co, size, no, nsize);
+    const cube &o = ::rootworld.neighborcube(c, orient, co, size, no, nsize);
     if(&o==&c)
     {
         return 0;
@@ -1580,7 +1580,7 @@ int visibletris(const cube &c, int orient, const ivec &co, int size, ushort vmat
     }
     ivec no;
     int nsize;
-    const cube &o = ::rootworld.neighborcube(orient, co, size, no, nsize);
+    const cube &o = ::rootworld.neighborcube(c, orient, co, size, no, nsize);
     if((c.material&matmask) == nmat)
     {
         nmat = Mat_Air;
@@ -1862,7 +1862,7 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
 {
     ivec no;
     int nsize;
-    const cube &nc = rootworld.neighborcube(orient, co, size, no, nsize);
+    const cube &nc = rootworld.neighborcube(cu, orient, co, size, no, nsize);
     facebounds mincf;
     mincf.u1 = orig.u2;
     mincf.u2 = orig.u1;
@@ -2187,7 +2187,7 @@ bool cube::genpoly(int orient, const ivec &o, int size, int vis, ivec &n, int &o
     return true;
 }
 
-bool cube::poly::mergepolys(hashset<plink> &links, std::vector<plink *> &queue, int owner, poly &q, const pedge &e)
+bool cube::poly::mergepolys(int orient, hashset<plink> &links, std::vector<plink *> &queue, int owner, poly &q, const pedge &e)
 {
     int pe = -1,
         qe = -1;
@@ -2300,7 +2300,7 @@ bool cube::poly::mergepolys(hashset<plink> &links, std::vector<plink *> &queue, 
     return true;
 }
 
-void cube::addmerge(int orient, const ivec &n, int offset, poly &p)
+void cube::addmerge(int orient, const ivec &co, const ivec &n, int offset, poly &p)
 {
     merged |= 1<<orient;
     if(!p.numverts)
@@ -2372,14 +2372,14 @@ void cube::clearmerge(int orient)
     }
 }
 
-void cube::addmerges(int orient, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::addmerges(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
     for(uint i = 0; i < polys.size(); i++)
     {
         poly &p = polys[i];
         if(p.merged)
         {
-            (*p.c).addmerge(orient, n, offset, p);
+            (*p.c).addmerge(orient, co, n, offset, p);
         }
         else
         {
@@ -2388,11 +2388,11 @@ void cube::addmerges(int orient, const ivec &n, int offset, std::vector<poly> &p
     }
 }
 
-void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &polys)
+void cube::mergepolys(int orient, const ivec &co, const ivec &n, int offset, std::vector<poly> &polys)
 {
     if(polys.size() <= 1)
     {
-        addmerges(orient, n, offset, polys);
+        addmerges(orient, co, n, offset, polys);
         return;
     }
     hashset<plink> links(polys.size() <= 32 ? 128 : 1024);
@@ -2426,14 +2426,14 @@ void cube::mergepolys(int orient, const ivec &n, int offset, std::vector<poly> &
             plink &l = *queue[i];
             if(l.polys[0] >= 0 && l.polys[1] >= 0)
             {
-                polys[l.polys[0]].mergepolys(links, nextqueue, l.polys[0], polys[l.polys[1]], l);
+                polys[l.polys[0]].mergepolys(orient, links, nextqueue, l.polys[0], polys[l.polys[1]], l);
             }
         }
         queue.clear();
         queue.insert(queue.end(), nextqueue.begin(), nextqueue.end());
         nextqueue.clear();
     }
-    addmerges(orient, n, offset, polys);
+    addmerges(orient, co, n, offset, polys);
 }
 
 static int genmergeprogress = 0;
@@ -2484,7 +2484,7 @@ void cube::genmerges(cube * root, const ivec &o, int size)
                     {
                         if(genpoly(j, co, size, vis, k.n, k.offset, p) && p.merged)
                         {
-                            this[i].addmerge( j, k.n, k.offset, p);
+                            this[i].addmerge( j, co, k.n, k.offset, p);
                             continue;
                         }
                     }
@@ -2496,7 +2496,7 @@ void cube::genmerges(cube * root, const ivec &o, int size)
         {
             ENUMERATE_KT(cpolys, cfkey, key, cfpolys, val,
             {
-                mergepolys(key.orient, key.n, key.offset, val.polys);
+                mergepolys(key.orient, co, key.n, key.offset, val.polys);
             });
             cpolys.clear();
         }
@@ -2504,7 +2504,7 @@ void cube::genmerges(cube * root, const ivec &o, int size)
     --neighbordepth;
 }
 
-int calcmergedsize(const ivec &co, int size, const vertinfo *verts, int numverts)
+int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts)
 {
     ushort x1 = verts[0].x,
            y1 = verts[0].y,

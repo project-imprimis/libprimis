@@ -362,6 +362,11 @@ bool editmoveplane(const vec &o, const vec &ray, int d, float off, vec &handle, 
     return true;
 }
 
+namespace hmap
+{
+    bool isheightmap(int o, int d, bool empty, cube &c);
+}
+
 //////////// ready changes to vertex arrays ////////////
 
 static bool haschanged = false;

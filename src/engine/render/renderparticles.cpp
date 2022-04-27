@@ -230,9 +230,9 @@ class partrenderer
         {
         }
 
-        virtual void init(int) { }
+        virtual void init(int n) { }
         virtual void reset() = 0;
-        virtual void resettracked(physent *) { }
+        virtual void resettracked(physent *owner) { }
         virtual particle *addpart(const vec &o, const vec &d, int fade, int color, float size, int gravity = 0) = 0;
         virtual void update() { }
         virtual void render() = 0;
@@ -240,7 +240,7 @@ class partrenderer
         virtual int count() = 0; //for debug
         virtual void cleanup() {}
 
-        virtual void seedemitter(particleemitter &, const vec &, const vec &, int, float, int)
+        virtual void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
         {
         }
 
@@ -355,7 +355,7 @@ class listrenderer : public partrenderer
         }
 
     private:
-        virtual void killpart(listparticle *)
+        virtual void killpart(listparticle *p)
         {
         }
 
@@ -522,7 +522,7 @@ class meterrenderer : public listrenderer
             glEnable(GL_BLEND);
         }
 
-        void renderpart(listparticle *p, const vec &o, const vec &, int, int)
+        void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
         {
             int basetype = type&0xFF;
             float scale  = FONTH*p->size/80.0f,
@@ -624,7 +624,7 @@ struct textrenderer : listrenderer
         }
     }
 
-    void renderpart(listparticle *p, const vec &o, const vec &, int blend, int)
+    void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
     {
         float scale = p->size/80.0f,
               xoff = -text_width(p->text)/2,
@@ -648,13 +648,13 @@ struct textrenderer : listrenderer
 static textrenderer texts;
 
 template<int T>
-static void modifyblend(int &blend)
+static void modifyblend(const vec &o, int &blend)
 {
     blend = std::min(blend<<2, 255);
 }
 
 template<int T>
-static void genpos(const vec &o, const vec &, float size, int, int, partvert *vs)
+static void genpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs)
 {
     vec udir = vec(camup).sub(camright).mul(size),
         vdir = vec(camup).add(camright).mul(size);
@@ -665,7 +665,7 @@ static void genpos(const vec &o, const vec &, float size, int, int, partvert *vs
 }
 
 template<>
-void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int, int, partvert *vs)
+void genpos<PT_TAPE>(const vec &o, const vec &d, float size, int ts, int grav, partvert *vs)
 {
     vec dir1 = vec(d).sub(o),
         dir2 = vec(d).sub(camera1->o), c;
@@ -689,7 +689,7 @@ void genpos<PT_TRAIL>(const vec &o, const vec &d, float size, int ts, int grav, 
 }
 
 template<int T>
-void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int)
+void genrotpos(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
 {
     genpos<T>(o, d, size, grav, ts, vs);
 }
@@ -710,7 +710,7 @@ static const vec2 rotcoeffs[32][4] =
 };
 
 template<>
-void genrotpos<PT_PART>(const vec &o, const vec &, float size, int, int, partvert *vs, int rot)
+void genrotpos<PT_PART>(const vec &o, const vec &d, float size, int grav, int ts, partvert *vs, int rot)
 {
     const vec2 *coeffs = rotcoeffs[rot];
     vs[0].pos = vec(o).madd(camright, coeffs[0].x*size).madd(camup, coeffs[0].y*size);
@@ -739,7 +739,7 @@ void seedpos(particleemitter &pe, const vec &o, const vec &d, int fade, float si
 }
 
 template<>
-void seedpos<PT_TAPE>(particleemitter &pe, const vec &, const vec &d, int, float size, int)
+void seedpos<PT_TAPE>(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int grav)
 {
     pe.extendbb(d, size);
 }
@@ -887,7 +887,7 @@ struct varenderer : partrenderer
         {
             p->fade = -1; //mark to remove on next pass (i.e. after render)
         }
-        modifyblend<T>(blend);
+        modifyblend<T>(o, blend);
         if(regen)
         {
             p->flags &= ~0x80;
@@ -1210,13 +1210,13 @@ struct fireballrenderer : listrenderer
         sphere::cleanup();
     }
 
-    void seedemitter(particleemitter &pe, const vec &o, const vec &, int fade, float size, int)
+    void seedemitter(particleemitter &pe, const vec &o, const vec &d, int fade, float size, int gravity)
     {
         pe.maxfade = std::max(pe.maxfade, fade);
         pe.extendbb(o, (size+1+pe.ent->attr2)*wobble);
     }
 
-    void renderpart(listparticle *p, const vec &o, const vec &, int blend, int ts)
+    void renderpart(listparticle *p, const vec &o, const vec &d, int blend, int ts)
     {
         float pmax = p->val,
               size = p->fade ? static_cast<float>(ts)/p->fade : 1,

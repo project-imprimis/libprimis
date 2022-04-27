@@ -88,12 +88,12 @@ class animmodel : public model
             bool alphatested() const;
             bool decaled() const;
             void setkey();
-            void setshaderparams(const AnimState *as, bool skinned = true);
+            void setshaderparams(Mesh &m, const AnimState *as, bool skinned = true);
             Shader *loadshader();
             void cleanup();
             void preloadBIH();
             void preloadshader();
-            void setshader(Mesh &m);
+            void setshader(Mesh &m, const AnimState *as);
             void bind(Mesh &b, const AnimState *as);
         };
 
@@ -115,13 +115,13 @@ class animmodel : public model
                     delete[] name;
                 }
 
-                virtual void calcbb(vec &, vec &, const matrix4x3 &) {}
+                virtual void calcbb(vec &bbmin, vec &bbmax, const matrix4x3 &m) {}
 
-                virtual void genBIH(BIH::mesh &) {}
+                virtual void genBIH(BIH::mesh &m) {}
 
                 void genBIH(skin &s, vector<BIH::mesh> &bih, const matrix4x3 &t);
 
-                virtual void genshadowmesh(std::vector<triangle> &, const matrix4x3 &)
+                virtual void genshadowmesh(std::vector<triangle> &tris, const matrix4x3 &m)
                 {
                 }
 
@@ -337,12 +337,12 @@ class animmodel : public model
                 meshgroup();
                 virtual ~meshgroup();
 
-                virtual int findtag(const char *)
+                virtual int findtag(const char *name)
                 {
                     return -1;
                 }
 
-                virtual void concattagtransform(part *, int, const matrix4x3 &, matrix4x3 &) {}
+                virtual void concattagtransform(part *p, int i, const matrix4x3 &m, matrix4x3 &n) {}
 
                 #define LOOP_RENDER_MESHES(type, name, body) do { \
                     for(int i = 0; i < meshes.length(); i++) \
@@ -374,9 +374,9 @@ class animmodel : public model
                 int clipframes(int i, int n) const;
 
                 virtual void cleanup() {}
-                virtual void preload(part *) {}
-                virtual void render(const AnimState *, float, const vec &, const vec &, dynent *, part *) {}
-                virtual void intersect(const AnimState *, float, const vec &, const vec &, dynent *, part *, const vec &, const vec &) {}
+                virtual void preload(part *p) {}
+                virtual void render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p) {}
+                virtual void intersect(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p, const vec &o, const vec &ray) {}
 
                 void bindpos(GLuint ebuf, GLuint vbuf, void *v, int stride, int type, int size);
                 void bindpos(GLuint ebuf, GLuint vbuf, vec *v, int stride);
@@ -428,7 +428,7 @@ class animmodel : public model
                 void preloadBIH();
                 void preloadshaders();
                 void preloadmeshes();
-                virtual void getdefaultanim(animinfo &);
+                virtual void getdefaultanim(animinfo &info, int anim, uint varseed, dynent *d);
                 bool calcanim(int animpart, int anim, int basetime, int basetime2, dynent *d, int interp, animinfo &info, int &animinterptime);
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray);
                 void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, const vec &o, const vec &ray, AnimState *as);
@@ -562,7 +562,7 @@ class animmodel : public model
         static void disablevbo();
         void endrender();
     protected:
-        virtual int linktype(animmodel *, part *) const
+        virtual int linktype(animmodel *m, part *p) const
         {
             return Link_Tag;
         }

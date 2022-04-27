@@ -355,7 +355,7 @@ int formatsize(GLenum format)
     }
 }
 
-static void resizetexture(int w, int h, bool mipmap, GLenum target, int compress, int &tw, int &th)
+static void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int compress, int &tw, int &th)
 {
     int hwlimit = target==GL_TEXTURE_CUBE_MAP ? hwcubetexsize : hwtexsize,
         sizelimit = mipmap && maxtexsize ? std::min(maxtexsize, hwlimit) : hwlimit;
@@ -393,7 +393,7 @@ static void resizetexture(int w, int h, bool mipmap, GLenum target, int compress
     }
 }
 
-static int texalign(int w, int bpp)
+static int texalign(const void *data, int w, int bpp)
 {
     int stride = w*bpp;
     if(stride&1)
@@ -425,7 +425,7 @@ static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum
     else if(tw*bpp != pitch)
     {
         row = pitch/bpp;
-        rowalign = texalign(pitch, 1);
+        rowalign = texalign(pixels, pitch, 1);
         while(rowalign > 0 && ((row*bpp + rowalign - 1)/rowalign)*rowalign != pitch)
         {
             rowalign >>= 1;
@@ -447,7 +447,7 @@ static void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum
         {
             pitch = tw*bpp;
         }
-        int srcalign = row > 0 ? rowalign : texalign(pitch, 1);
+        int srcalign = row > 0 ? rowalign : texalign(src, pitch, 1);
         if(align != srcalign)
         {
             glPixelStorei(GL_UNPACK_ALIGNMENT, align = srcalign);
@@ -572,7 +572,7 @@ const GLint *swizzlemask(GLenum format)
     return nullptr;
 }
 
-static void setuptexparameters(int tnum, int clamp, int filter, GLenum format, GLenum target, bool swizzle)
+void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLenum format, GLenum target, bool swizzle)
 {
     glBindTexture(target, tnum);
     glTexParameteri(target, GL_TEXTURE_WRAP_S, clamp&1 ? GL_CLAMP_TO_EDGE : (clamp&0x100 ? GL_MIRRORED_REPEAT : GL_REPEAT));
@@ -807,7 +807,7 @@ void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int fi
            type = textype(component, format);
     if(tnum)
     {
-        setuptexparameters(tnum, clamp, filter, format, target, swizzle);
+        setuptexparameters(tnum, pixels, clamp, filter, format, target, swizzle);
     }
     if(!pw)
     {
@@ -822,7 +822,7 @@ void createtexture(int tnum, int w, int h, const void *pixels, int clamp, int fi
     bool mipmap = filter > 1;
     if(resize && pixels)
     {
-        resizetexture(w, h, mipmap, target, 0, tw, th);
+        resizetexture(w, h, mipmap, false, target, 0, tw, th);
     }
     uploadtexture(subtarget, component, tw, th, format, type, pixels, pw, ph, pitch, mipmap);
 }
@@ -832,7 +832,7 @@ void createcompressedtexture(int tnum, int w, int h, const uchar *data, int alig
     GLenum target = textarget(subtarget);
     if(tnum)
     {
-        setuptexparameters(tnum, clamp, filter, format, target, swizzle);
+        setuptexparameters(tnum, data, clamp, filter, format, target, swizzle);
     }
     uploadcompressedtexture(target, subtarget, format, w, h, data, align, blocksize, levels, filter > 1);
 }
@@ -842,7 +842,7 @@ void create3dtexture(int tnum, int w, int h, int d, const void *pixels, int clam
     GLenum format = GL_FALSE, type = textype(component, format);
     if(tnum)
     {
-        setuptexparameters(tnum, clamp, filter, format, target, swizzle);
+        setuptexparameters(tnum, pixels, clamp, filter, format, target, swizzle);
     }
     glTexImage3D_(target, 0, component, w, h, d, 0, format, type, pixels);
 }
@@ -852,7 +852,7 @@ hashnameset<Texture> textures;
 
 Texture *notexture = nullptr; // used as default, ensured to be loaded
 
-GLenum texformat(int bpp)
+GLenum texformat(int bpp, bool swizzle)
 {
     switch(bpp)
     {
@@ -949,7 +949,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
 
     bool swizzle = !(clamp&0x10000);
     GLenum format;
-    format = texformat(s.bpp);
+    format = texformat(s.bpp, swizzle);
     t->bpp = s.bpp;
     if(alphaformat(format))
     {
@@ -982,7 +982,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     }
     else
     {
-        resizetexture(t->w, t->h, mipit, GL_TEXTURE_2D, compress, t->w, t->h);
+        resizetexture(t->w, t->h, mipit, canreduce, GL_TEXTURE_2D, compress, t->w, t->h);
         createtexture(t->id, t->w, t->h, s.data, clamp, filter, format, GL_TEXTURE_2D, t->xs, t->ys, s.pitch, false, format, swizzle);
     }
     return t;
@@ -2892,7 +2892,7 @@ void screenshot(char *filename)
     }
 
     ImageData image(screenw, screenh, 3);
-    glPixelStorei(GL_PACK_ALIGNMENT, texalign(screenw, 3));
+    glPixelStorei(GL_PACK_ALIGNMENT, texalign(image.data, screenw, 3));
     glReadPixels(0, 0, screenw, screenh, GL_RGB, GL_UNSIGNED_BYTE, image.data);
     savepng(path(buf), image, true);
 }

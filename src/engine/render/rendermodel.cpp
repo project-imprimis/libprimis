@@ -732,7 +732,7 @@ static void enablecullmodelquery()
     startbb();
 }
 
-static void rendercullmodelquery(dynent *d, const vec &center, float radius)
+static void rendercullmodelquery(model *m, dynent *d, const vec &center, float radius)
 {
     if(std::fabs(camera1->o.x-center.x) < radius+1 &&
        std::fabs(camera1->o.y-center.y) < radius+1 &&
@@ -752,7 +752,7 @@ static void rendercullmodelquery(dynent *d, const vec &center, float radius)
     endquery();
 }
 
-static int cullmodel(const vec &center, float radius, int flags, dynent *d = nullptr)
+static int cullmodel(model *m, const vec &center, float radius, int flags, dynent *d = nullptr)
 {
     if(flags&Model_CullDist && (center.dist(camera1->o) / radius) > maxmodelradiusdistance)
     {
@@ -964,7 +964,7 @@ void rendermodelbatches()
         {
             batchedmodel &bm = batchedmodels[j];
             j = bm.next;
-            bm.culled = cullmodel(bm.center, bm.radius, bm.flags, bm.d);
+            bm.culled = cullmodel(b.m, bm.center, bm.radius, bm.flags, bm.d);
             if(bm.culled || bm.flags&Model_OnlyShadow)
             {
                 continue;
@@ -1024,7 +1024,7 @@ void rendermodelbatches()
                         enablecullmodelquery();
                         queried = true;
                     }
-                    rendercullmodelquery(bm.d, bm.center, bm.radius);
+                    rendercullmodelquery(b.m, bm.d, bm.center, bm.radius);
                 }
             }
             if(queried)
@@ -1051,7 +1051,7 @@ void rendertransparentmodelbatches(int stencil)
         {
             batchedmodel &bm = batchedmodels[j];
             j = bm.next;
-            bm.culled = cullmodel(bm.center, bm.radius, bm.flags, bm.d);
+            bm.culled = cullmodel(b.m, bm.center, bm.radius, bm.flags, bm.d);
             if(bm.culled || !(bm.colorscale.a < 1 || bm.flags&Model_ForceTransparent) || bm.flags&Model_OnlyShadow)
             {
                 continue;
@@ -1188,7 +1188,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
             return;
         }
     }
-    else if(flags&(Model_CullVFC|Model_CullDist|Model_CullOccluded) && cullmodel(center, radius, flags))
+    else if(flags&(Model_CullVFC|Model_CullDist|Model_CullOccluded) && cullmodel(m, center, radius, flags))
     {
         return;
     }
@@ -1284,13 +1284,13 @@ hasboundbox:
 
     if(flags&Model_NoBatch)
     {
-        int culled = cullmodel(center, radius, flags, d);
+        int culled = cullmodel(m, center, radius, flags, d);
         if(culled)
         {
             if(culled&(Model_CullOccluded|Model_CullQuery) && flags&Model_CullQuery)
             {
                 enablecullmodelquery();
-                rendercullmodelquery(d, center, radius);
+                rendercullmodelquery(m, d, center, radius);
                 endbb();
             }
             return;

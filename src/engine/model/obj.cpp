@@ -125,7 +125,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
                 copystring(meshname, name, std::min(namelen+1, sizeof(meshname)));
                 if(curmesh)
                 {
-                    flushmesh(curmesh, verts, tcverts, tris, attrib[2], smooth);
+                    flushmesh(meshname, curmesh, verts, tcverts, tris, attrib[2], smooth);
                 }
                 curmesh = nullptr;
                 break;
@@ -219,7 +219,7 @@ bool obj::objmeshgroup::load(const char *filename, float smooth)
     }
     if(curmesh)
     {
-        flushmesh(curmesh, verts, tcverts, tris, attrib[2], smooth);
+        flushmesh(meshname, curmesh, verts, tcverts, tris, attrib[2], smooth);
     }
     delete file;
     return true;
@@ -247,7 +247,7 @@ void obj::objmeshgroup::parsevert(char *s, std::vector<vec> &out)
     }
 }
 
-void obj::objmeshgroup::flushmesh(vertmesh *curmesh, vector<vert> verts, vector<tcvert> tcverts,
+const void obj::objmeshgroup::flushmesh(string meshname, vertmesh *curmesh, vector<vert> verts, vector<tcvert> tcverts,
                                    vector<tri> tris, std::vector<vec> attrib, float smooth)
 {
     curmesh->numverts = verts.length();
