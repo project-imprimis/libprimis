@@ -1057,7 +1057,7 @@ VAR(debuggz, 0, 0, 1); //toggles gz checking routines
 
 struct gzstream : stream
 {
-    enum
+    enum GzHeader
     {
         MAGIC1   = 0x1F,
         MAGIC2   = 0x8B,
@@ -1065,7 +1065,7 @@ struct gzstream : stream
         OS_UNIX  = 0x03
     };
 
-    enum
+    enum GzFlags
     {
         F_ASCII    = 0x01,
         F_CRC      = 0x02,
@@ -1528,7 +1528,7 @@ struct gzstream : stream
 
 struct utf8stream : stream
 {
-    enum
+    enum Size
     {
         Buffer_Size = 4096
     };

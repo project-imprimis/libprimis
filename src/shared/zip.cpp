@@ -3,7 +3,7 @@
 
 #include "../engine/interface/console.h"
 
-enum
+enum ZipFlags
 {
     Zip_LocalFileSignature  = 0x04034B50,
     Zip_LocalFileSize       = 30,
