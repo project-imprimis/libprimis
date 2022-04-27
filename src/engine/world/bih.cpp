@@ -419,7 +419,7 @@ BIH::BIH(vector<mesh> &buildmeshes)
 
     nummeshes = buildmeshes.length();
     meshes = new mesh[nummeshes];
-    memcpy(meshes, buildmeshes.getbuf(), sizeof(mesh)*buildmeshes.length());
+    std::memcpy(meshes, buildmeshes.getbuf(), sizeof(mesh)*buildmeshes.length());
     tribbs = new tribb[numtris];
     tribb *dsttri = tribbs;
     for(int i = 0; i < nummeshes; ++i)
