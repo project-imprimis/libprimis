@@ -130,6 +130,7 @@
     <ClInclude Include="..\engine\world\material.h" />
     <ClInclude Include="..\engine\world\mpr.h" />
     <ClInclude Include="..\engine\world\octaedit.h" />
+    <ClInclude Include="..\engine\world\octacube.h" />
     <ClInclude Include="..\engine\world\physics.h" />
     <ClInclude Include="..\engine\world\raycube.h" />
     <ClInclude Include="..\engine\world\worldio.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\engine\world\mpr.cpp" />
     <ClCompile Include="..\engine\world\octaworld.cpp" />
     <ClCompile Include="..\engine\world\octaedit.cpp" />
+    <ClCompile Include="..\engine\world\octacube.cpp" />
     <ClCompile Include="..\engine\world\physics.cpp" />
     <ClCompile Include="..\engine\world\raycube.cpp" />
     <ClCompile Include="..\engine\world\world.cpp" />
