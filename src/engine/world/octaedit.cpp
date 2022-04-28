@@ -1273,7 +1273,7 @@ void cubeworld::genprefabmesh(prefab &p)
     --neighbordepth;
     r.setup(p);
 
-    freeocta(worldroot);
+    worldroot->freeocta();
 
     worldroot = oldworldroot;
     worldscale = oldworldscale;

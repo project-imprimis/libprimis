@@ -149,20 +149,6 @@ int familysize(const cube &c)
     return size;
 }
 
-void freeocta(cube *c)
-{
-    if(!c)
-    {
-        return;
-    }
-    for(int i = 0; i < 8; ++i)
-    {
-        c[i].discardchildren();
-    }
-    delete[] c;
-    allocnodes--;
-}
-
 void getcubevector(cube &c, int d, int x, int y, int z, ivec &p)
 {
     ivec v(d, x, y, z);
@@ -691,7 +677,7 @@ static bool remip(cube &c, const ivec &co, int size)
     n.children = nullptr;
     if(!subdividecube(n, false, false))
     {
-        freeocta(n.children);
+        n.children->freeocta();
         return false;
     }
     cube *nh = n.children;
@@ -702,7 +688,7 @@ static bool remip(cube &c, const ivec &co, int size)
            ch[i].faces[1] != nh[i].faces[1] ||
            ch[i].faces[2] != nh[i].faces[2])
         {
-            freeocta(nh);
+            nh->freeocta();
             return false;
         }
 
@@ -717,7 +703,7 @@ static bool remip(cube &c, const ivec &co, int size)
             {
                 if(ch[i].texture[orient] != n.texture[orient])
                 {
-                    freeocta(nh);
+                    nh->freeocta();
                     return false;
                 }
                 vis[orient] |= 1<<i;
@@ -737,12 +723,12 @@ static bool remip(cube &c, const ivec &co, int size)
             }
             if(vis[orient]&mask && (vis[orient]&mask)!=mask)
             {
-                freeocta(nh);
+                nh->freeocta();
                 return false;
             }
         }
     }
-    freeocta(nh);
+    nh->freeocta();
     c.discardchildren();
     for(int i = 0; i < 3; ++i)
     {

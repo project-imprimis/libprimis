@@ -215,7 +215,6 @@ extern cubeext *newcubeext(cube &c, int maxverts = 0, bool init = true);
 extern void getcubevector(cube &c, int d, int x, int y, int z, ivec &p);
 extern void setcubevector(cube &c, int d, int x, int y, int z, const ivec &p);
 extern int familysize(const cube &c);
-extern void freeocta(cube *c);
 extern void validatec(cube *c, int size = 0);
 
 extern const cube *neighborstack[32];
@@ -239,7 +238,6 @@ extern int visibleorient(const cube &c, int orient);
 extern void genfaceverts(const cube &c, int orient, ivec v[4]);
 extern int calcmergedsize(int orient, const ivec &co, int size, const vertinfo *verts, int numverts);
 extern void invalidatemerges(cube &c);
-extern void remip();
 extern void mincubeface(const cube &cu, int orient, const ivec &o, int size, const facebounds &orig, facebounds &cf, ushort nmat, ushort matmask);
 
 inline cubeext &ext(cube &c)

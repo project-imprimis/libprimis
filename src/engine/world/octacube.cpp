@@ -10,13 +10,9 @@
 
 #include "light.h"
 #include "octaworld.h"
-#include "raycube.h"
 #include "world.h"
 
-#include "interface/console.h"
-
 #include "render/octarender.h"
-#include "render/renderwindow.h"
 
 VAR(maxmerge, 0, 6, 12); //max gridpower to remip merge
 VAR(minface, 0, 4, 12);
@@ -70,6 +66,16 @@ bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebound
 
 // this cube static private object needs to be defined in a cpp file
 hashtable<cube::cfkey, cube::cfpolys> cube::cpolys;
+
+void cube::freeocta()
+{
+    for(int i = 0; i < 8; ++i)
+    {
+        this[i].discardchildren();
+    }
+    delete[] this;
+    allocnodes--;
+}
 
 void cube::freecubeext(cube &c)
 {
