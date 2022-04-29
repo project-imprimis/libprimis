@@ -1,7 +1,7 @@
 #ifndef OCTAWORLD_H_
 #define OCTAWORLD_H_
 
-enum
+enum BlendMapLayers
 {
     BlendLayer_Top    = (1<<5),
     BlendLayer_Bottom = (1<<6),
@@ -66,7 +66,7 @@ struct octaentities
     }
 };
 
-enum
+enum OcclusionLevels
 {
     Occlude_Nothing = 0,
     Occlude_Geom,
@@ -74,7 +74,7 @@ enum
     Occlude_Parent
 };
 
-enum
+enum CubeMerges
 {
     Merge_Origin = 1<<0,
     Merge_Part   = 1<<1,
@@ -136,7 +136,7 @@ struct cubeext
     }
 };
 
-enum
+enum CubeFaceOrientation
 {
     Orient_Left = 0,
     Orient_Right,
