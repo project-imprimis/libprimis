@@ -189,7 +189,7 @@ void GBuffer::rendertransparent()
                 sy1 = matliquidsy1;
                 sx2 = matliquidsx2;
                 sy2 = matliquidsy2;
-                memcpy(tiles, matliquidtiles, sizeof(tiles));
+                std::memcpy(tiles, matliquidtiles, sizeof(tiles));
                 break;
             }
             case 1:
@@ -202,7 +202,7 @@ void GBuffer::rendertransparent()
                 sy1 = alphabacksy1;
                 sx2 = alphabacksx2;
                 sy2 = alphabacksy2;
-                memcpy(tiles, alphatiles, sizeof(tiles));
+                std::memcpy(tiles, alphatiles, sizeof(tiles));
                 break;
             }
             case 2:
@@ -215,7 +215,7 @@ void GBuffer::rendertransparent()
                 sy1 = alphafrontsy1;
                 sx2 = alphafrontsx2;
                 sy2 = alphafrontsy2;
-                memcpy(tiles, alphatiles, sizeof(tiles));
+                std::memcpy(tiles, alphatiles, sizeof(tiles));
                 if(hasmats&2)
                 {
                     sx1 = std::min(sx1, matsolidsx1);
@@ -239,7 +239,7 @@ void GBuffer::rendertransparent()
                 sy1 = transmdlsy1;
                 sx2 = transmdlsx2;
                 sy2 = transmdlsy2;
-                memcpy(tiles, transmdltiles, sizeof(tiles));
+                std::memcpy(tiles, transmdltiles, sizeof(tiles));
                 break;
             }
             default:
