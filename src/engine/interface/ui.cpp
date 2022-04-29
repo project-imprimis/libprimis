@@ -146,7 +146,7 @@ namespace UI
     }
     namespace
     {
-        enum
+        enum Alignment
         {
             Align_Mask = 0xF,
 
@@ -165,7 +165,7 @@ namespace UI
             Align_Bottom  = 3 << 2,
         };
 
-        enum
+        enum ClampDirection
         {
             Clamp_Mask    = 0xF0,
             Clamp_Left    = 0x10,
@@ -176,7 +176,7 @@ namespace UI
             NO_ADJUST     = Align_HNone | Align_VNone,
         };
 
-        enum
+        enum ElementState
         {
             State_Hover       = 1 << 0,
             State_Press       = 1 << 1,
@@ -195,13 +195,13 @@ namespace UI
             State_HoldMask = State_Hold | State_AltHold | State_EscHold
         };
 
-        enum
+        enum ElementBlend
         {
             Blend_Alpha,
             Blend_Mod
         };
 
-        enum
+        enum ChangeDrawFlags
         {
             Change_Shader = 1 << 0,
             Change_Color  = 1 << 1,
