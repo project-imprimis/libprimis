@@ -1047,7 +1047,6 @@ struct varenderer : partrenderer
     }
 };
 typedef varenderer<PT_PART> quadrenderer;
-typedef varenderer<PT_TAPE> taperenderer;
 typedef varenderer<PT_TRAIL> trailrenderer;
 
 // explosions
@@ -1301,9 +1300,9 @@ static partrenderer *parts[] =
     new quadrenderer("<grey>media/particle/smoke.png", PT_PART|PT_FLIP|PT_LERP),               // smoke
     new quadrenderer("<grey>media/particle/steam.png", PT_PART|PT_FLIP),                       // steam
     new quadrenderer("<grey>media/particle/flames.png", PT_PART|PT_HFLIP|PT_RND4|PT_BRIGHT),   // flame
-    new taperenderer("media/particle/flare.png", PT_TAPE|PT_BRIGHT),                           // streak
-    new taperenderer("media/particle/rail_trail.png", PT_TAPE|PT_FEW|PT_BRIGHT),               // rail trail
-    new taperenderer("media/particle/pulse_side.png", PT_TAPE|PT_FEW|PT_BRIGHT),               // pulse side
+    new varenderer<PT_TAPE>("media/particle/flare.png", PT_TAPE|PT_BRIGHT),                           // streak
+    new varenderer<PT_TAPE>("media/particle/rail_trail.png", PT_TAPE|PT_FEW|PT_BRIGHT),               // rail trail
+    new varenderer<PT_TAPE>("media/particle/pulse_side.png", PT_TAPE|PT_FEW|PT_BRIGHT),               // pulse side
     new quadrenderer("media/particle/pulse_front.png", PT_PART|PT_FLIP|PT_FEW|PT_BRIGHT),      // pulse front
     &fireballs,                                                                                // explosion fireball
     &pulsebursts,                                                                              // pulse burst
