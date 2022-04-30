@@ -1283,14 +1283,6 @@ static fireballrenderer fireballs("media/particle/explosion.png"), pulsebursts("
 
 //end explosion code
 
-struct softvarenderer<PT_PART> : varenderer<PT_PART>
-{
-    softvarenderer<PT_PART>(const char *texname, int type, int stain = -1)
-        : varenderer<PT_PART>(texname, type|PT_SOFT, stain)
-    {
-    }
-};
-
 static partrenderer *parts[] =
 {
     new varenderer<PT_PART>("<grey>media/particle/blood.png", PT_PART|PT_FLIP|PT_MOD|PT_RND4|PT_COLLIDE, Stain_Blood), // blood spats (note: rgb is inverted)
