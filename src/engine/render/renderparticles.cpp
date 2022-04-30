@@ -1047,7 +1047,6 @@ struct varenderer : partrenderer
     }
 };
 typedef varenderer<PT_PART> quadrenderer;
-typedef varenderer<PT_TRAIL> trailrenderer;
 
 // explosions
 
@@ -1296,7 +1295,7 @@ struct softquadrenderer : quadrenderer
 static partrenderer *parts[] =
 {
     new quadrenderer("<grey>media/particle/blood.png", PT_PART|PT_FLIP|PT_MOD|PT_RND4|PT_COLLIDE, Stain_Blood), // blood spats (note: rgb is inverted)
-    new trailrenderer("media/particle/base.png", PT_TRAIL|PT_LERP),                            // water, entity
+    new varenderer<PT_TRAIL>("media/particle/base.png", PT_TRAIL|PT_LERP),                            // water, entity
     new quadrenderer("<grey>media/particle/smoke.png", PT_PART|PT_FLIP|PT_LERP),               // smoke
     new quadrenderer("<grey>media/particle/steam.png", PT_PART|PT_FLIP),                       // steam
     new quadrenderer("<grey>media/particle/flames.png", PT_PART|PT_HFLIP|PT_RND4|PT_BRIGHT),   // flame
