@@ -662,7 +662,7 @@ bool cubeworld::emptymap(int scale, bool force, bool usecfg)    // main empty wo
     setvar("mapsize", 1<<worldscale, true, false);
     setvar("emptymap", 1, true, false);
     texmru.clear();
-    worldroot->freeocta();
+    freeocta(worldroot);
     worldroot = newcubes(faceempty);
     for(int i = 0; i < 4; ++i)
     {
@@ -783,7 +783,7 @@ void cubeworld::shrinkmap()
     }
     cube *root = worldroot[octant].children; //change worldroot to cube 0
     worldroot[octant].children = nullptr; //free the old largest cube
-    worldroot->freeocta();
+    freeocta(worldroot);
     worldroot = root;
     worldscale--;
     worldsize /= 2;

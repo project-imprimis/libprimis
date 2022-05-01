@@ -1074,7 +1074,7 @@ bool cubeworld::load_world(const char *mname, const char *gameident, const char 
     renderbackground("loading...", mapshot, mname, gameinfo);
     setvar("mapversion", hdr.version, true, false);
     renderprogress(0, "clearing world...");
-    worldroot->freeocta();
+    freeocta(worldroot);
     worldroot = nullptr;
     int worldscale = 0;
     while(1<<worldscale < hdr.worldsize)
