@@ -8,7 +8,7 @@
 
 namespace gle
 {
-    enum
+    enum GLAttributes
     {
         Attribute_Vertex        = 0,
         Attribute_Color         = 1,
