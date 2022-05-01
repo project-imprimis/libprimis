@@ -279,14 +279,6 @@ enum
     OctaSave_Normal
 };
 
-static constexpr uint layerdup (1<<7); //if numverts is larger than this, get additional precision
-
-struct polysurfacecompat
-{
-    uchar lmid[2];
-    uchar verts, numverts;
-};
-
 static int savemapprogress = 0;
 
 void savec(cube *c, const ivec &o, int size, stream *f)
@@ -477,6 +469,14 @@ cube *loadchildren(stream *f, const ivec &co, int size, bool &failed);
 
 void loadc(stream *f, cube &c, const ivec &co, int size, bool &failed)
 {
+    static constexpr uint layerdup (1<<7); //if numverts is larger than this, get additional precision
+
+    struct polysurfacecompat
+    {
+        uchar lmid[2];
+        uchar verts, numverts;
+    };
+
     int octsav = f->getchar();
     switch(octsav&0x7)
     {
