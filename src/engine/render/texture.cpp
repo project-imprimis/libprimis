@@ -2595,16 +2595,6 @@ Texture *Slot::loadthumbnail()
 
 // environment mapped reflections
 
-extern const cubemapside cubemapsides[6] =
-{
-    { GL_TEXTURE_CUBE_MAP_NEGATIVE_X, "lf", false, true,  true  },
-    { GL_TEXTURE_CUBE_MAP_POSITIVE_X, "rt", true,  false, true  },
-    { GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, "bk", false, false, false },
-    { GL_TEXTURE_CUBE_MAP_POSITIVE_Y, "ft", true,  true,  false },
-    { GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, "dn", true,  false, true  },
-    { GL_TEXTURE_CUBE_MAP_POSITIVE_Z, "up", true,  false, true  },
-};
-
 void cleanuptexture(Texture *t)
 {
     delete[] t->alphamask;
