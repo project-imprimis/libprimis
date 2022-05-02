@@ -29,6 +29,7 @@ var iengine_8h =
     [ "findmaterial", "iengine_8h.html#af1a38a2e34aad80b862a0c5915ecb101", null ],
     [ "fixmapname", "iengine_8h.html#a46e5679d080c44b3b86c1f2fb00d80f8", null ],
     [ "flushpreloadedmodels", "iengine_8h.html#a95b4e3078d70b43f1c604cf664003190", null ],
+    [ "freeocta", "iengine_8h.html#ac0946da0826cc54e129d62038cba2986", null ],
     [ "freeundo", "iengine_8h.html#adaf574f15e0c0f6edbc2de03793584e3", null ],
     [ "getclockmillis", "iengine_8h.html#a0834d53419f37bf4891ce417e2d9ef16", null ],
     [ "getcursorpos", "iengine_8h.html#a3161f6bab070a19e58191cc1e37193f8", null ],

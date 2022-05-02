@@ -563,6 +563,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>clearlightcache</b> (
 <tr class="memitem:aa3cced7ce0824f6aca8654816a1317b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#aa3cced7ce0824f6aca8654816a1317b4">initoctaworldcmds</a> ()</td></tr>
 <tr class="memdesc:aa3cced7ce0824f6aca8654816a1317b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes octaworld Cubescript commands.  <a href="iengine_8h.html#aa3cced7ce0824f6aca8654816a1317b4">More...</a><br /></td></tr>
 <tr class="separator:aa3cced7ce0824f6aca8654816a1317b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0946da0826cc54e129d62038cba2986"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="iengine_8h.html#ac0946da0826cc54e129d62038cba2986">freeocta</a> (<a class="el" href="classcube.html">cube</a> *c)</td></tr>
+<tr class="memdesc:ac0946da0826cc54e129d62038cba2986"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes a cube and its children.  <a href="iengine_8h.html#ac0946da0826cc54e129d62038cba2986">More...</a><br /></td></tr>
+<tr class="separator:ac0946da0826cc54e129d62038cba2986"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a453f0195856eaaef52185f1aaa88cd4b"><td class="memItemLeft" align="right" valign="top"><a id="a453f0195856eaaef52185f1aaa88cd4b" name="a453f0195856eaaef52185f1aaa88cd4b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>getcubevector</b> (<a class="el" href="classcube.html">cube</a> &amp;c, int d, int x, int y, int z, <a class="el" href="structivec.html">ivec</a> &amp;p)</td></tr>
 <tr class="separator:a453f0195856eaaef52185f1aaa88cd4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1951,6 +1954,33 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>clientmap</b></td><
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">msg</td><td>toggles rendering a loading progress meter </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac0946da0826cc54e129d62038cba2986" name="ac0946da0826cc54e129d62038cba2986"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0946da0826cc54e129d62038cba2986">&#9670;&nbsp;</a></span>freeocta()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void freeocta </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcube.html">cube</a> *&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Deletes a cube and its children. </p>
+<p >Recursively deletes child members of the cube passed, then deletes the cube itself. The node allocation counter is also decreased to correspond to the removed cubes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>the cube object to be deleted </td></tr>
   </table>
   </dd>
 </dl>

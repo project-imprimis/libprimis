@@ -12,7 +12,7 @@ var searchData=
   ['floatret_9',['floatret',['../command_8h.html#a3d7aa3bf7cb9299fbde9e836d399e50a',1,'command.h']]],
   ['floor_10',['floor',['../structphysent.html#a003b18e03d94a5d20e8ee050c4148cbf',1,'physent']]],
   ['flushpreloadedmodels_11',['flushpreloadedmodels',['../iengine_8h.html#a95b4e3078d70b43f1c604cf664003190',1,'iengine.h']]],
-  ['freeocta_12',['freeocta',['../classcube.html#a25bea2f9ca32f23d552c3f4ac2967565',1,'cube']]],
+  ['freeocta_12',['freeocta',['../iengine_8h.html#ac0946da0826cc54e129d62038cba2986',1,'iengine.h']]],
   ['freeundo_13',['freeundo',['../iengine_8h.html#adaf574f15e0c0f6edbc2de03793584e3',1,'iengine.h']]],
   ['fullscreen_14',['fullscreen',['../iengine_8h.html#adc359d0ba0a207e69da999c40bf762c8',1,'iengine.h']]],
   ['fvariable_15',['fvariable',['../command_8h.html#ac66ac8708b0006348290d7f34d799723',1,'command.h']]]

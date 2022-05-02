@@ -2,7 +2,6 @@ var classcube =
 [
     [ "calcmerges", "classcube.html#a61edd51dddd8eaae36e411eae156caeb", null ],
     [ "discardchildren", "classcube.html#ad021c8603b10362cab202af1f5caf0b2", null ],
-    [ "freeocta", "classcube.html#a25bea2f9ca32f23d552c3f4ac2967565", null ],
     [ "isempty", "classcube.html#ace6395d626569d6a0ab7c6ec6f6abd4a", null ],
     [ "issolid", "classcube.html#a5bd59248e1c0b30104036600a5f5c964", null ],
     [ "isvalidcube", "classcube.html#a2faf100108da8f40d88473baafb9be61", null ],
