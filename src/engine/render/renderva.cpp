@@ -709,7 +709,7 @@ namespace
         endquery();
     }
 
-    enum
+    enum RenderPass
     {
         RenderPass_GBuffer = 0,
         RenderPass_Z,
