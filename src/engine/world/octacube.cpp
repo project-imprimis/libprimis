@@ -33,7 +33,7 @@ bool notouchingface(const cube &c, int orient)
     return DIM_COORD(orient) ? (face&0x80808080)==0 : ((0x88888888-face)&0x08080808) == 0;
 }
 
-bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebounds &orig)
+static bool mincubeface(const cube &cu, int orient, const ivec &co, int size, facebounds &orig)
 {
     ivec no;
     int nsize;
