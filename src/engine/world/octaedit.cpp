@@ -293,30 +293,35 @@ int selchildcount = 0,
 void countselchild(cube *c, const ivec &cor, int size)
 {
     ivec ss = ivec(sel.s).mul(sel.grid);
-    LOOP_OCTA_BOX_SIZE(cor, size, sel.o, ss)
+    uchar possible = octaboxoverlap(cor, size, sel.o, ivec(sel.o).add(ss));
+    for(int i = 0; i < 8; ++i)
     {
-        ivec o(i, cor, size);
-        if(c[i].children)
+        if(possible&(1<<i))
         {
-            countselchild(c[i].children, o, size/2);
-        }
-        else
-        {
-            selchildcount++;
-            if(c[i].material != Mat_Air && selchildmat != Mat_Air)
+            ivec o(i, cor, size);
+            if(c[i].children)
             {
-                if(selchildmat < 0)
+                countselchild(c[i].children, o, size/2);
+            }
+            else
+            {
+                selchildcount++;
+                if(c[i].material != Mat_Air && selchildmat != Mat_Air)
                 {
-                    selchildmat = c[i].material;
-                }
-                else if(selchildmat != c[i].material)
-                {
-                    selchildmat = Mat_Air;
+                    if(selchildmat < 0)
+                    {
+                        selchildmat = c[i].material;
+                    }
+                    else if(selchildmat != c[i].material)
+                    {
+                        selchildmat = Mat_Air;
+                    }
                 }
             }
         }
     }
 }
+
 
 void normalizelookupcube(const ivec &o)
 {
