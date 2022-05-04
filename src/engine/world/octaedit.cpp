@@ -290,6 +290,7 @@ cube &blockcube(int x, int y, int z, const block3 &b, int rgrid) // looks up a w
 int selchildcount = 0,
     selchildmat = -1;
 
+//used in iengine.h
 void countselchild(cube *c, const ivec &cor, int size)
 {
     ivec ss = ivec(sel.s).mul(sel.grid);
@@ -322,7 +323,7 @@ void countselchild(cube *c, const ivec &cor, int size)
     }
 }
 
-
+//used in iengine.h
 void normalizelookupcube(const ivec &o)
 {
     if(lusize>gridsize)
@@ -340,6 +341,7 @@ void normalizelookupcube(const ivec &o)
     lusize = gridsize;
 }
 
+//used in iengine.h
 void updateselection()
 {
     sel.o.x = std::min(lastcur.x, cur.x);
