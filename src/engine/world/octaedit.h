@@ -18,7 +18,6 @@ extern void forcenextundo();
 extern void multiplayerwarn();
 extern void cancelsel();
 extern void rendertexturepanel(int w, int h);
-extern void commitchanges(bool force = false);
 extern bool noedit(bool view = false, bool msg = true);
 
 extern void compactmruvslots();

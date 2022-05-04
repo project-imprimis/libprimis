@@ -418,7 +418,7 @@ static void readychanges(const ivec &bbmin, const ivec &bbmax, cube *c, const iv
     }
 }
 
-void commitchanges(bool force)
+static void commitchanges(bool force = false)
 {
     if(!force && !haschanged)
     {
