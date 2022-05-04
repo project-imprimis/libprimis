@@ -16,7 +16,6 @@ extern bool reloadtexture(Texture &tex);
 extern bool reloadtexture(const char *name);
 extern void clearslots();
 extern void compacteditvslots();
-extern void compactmruvslots();
 extern void compactvslots(cube *c, int n = 8);
 extern void compactvslot(int &index);
 extern void compactvslot(VSlot &vs);
