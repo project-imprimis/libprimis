@@ -204,7 +204,7 @@ class stainbuffer
             return tri;
         }
 
-        void addstain(staininfo &d)
+        void addstain()
         {
             dirty = true;
         }
@@ -630,7 +630,7 @@ class stainrenderer
                 d.millis = lastmillis;
                 d.startvert = buf.lastvert;
                 d.endvert = buf.endvert;
-                buf.addstain(d);
+                buf.addstain();
             }
         }
 
