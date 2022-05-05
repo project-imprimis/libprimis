@@ -147,7 +147,7 @@ void addparticleemitters()
     regenemitters = false;
 }
 //particle types
-enum
+enum ParticleTypes
 {
     PT_PART = 0,
     PT_TAPE,
@@ -159,7 +159,7 @@ enum
     PT_FIREBALL,
 };
 //particle properties
-enum
+enum ParticleProperties
 {
     PT_MOD       = 1<<8,
     PT_RND4      = 1<<9,
