@@ -1536,7 +1536,7 @@ void remapvslots(cube &c, bool delta, const VSlot &ds, int orient, bool &findrep
 void compactmruvslots()
 {
     remappedvslots.clear();
-    for(uint i = texmru.size(); --i >=0;) //note reverse iteration
+    for(int i = static_cast<int>(texmru.size()); --i >=0;) //note reverse iteration
     {
         if(vslots.inrange(texmru[i]))
         {
@@ -1547,11 +1547,11 @@ void compactmruvslots()
                 continue;
             }
         }
-        if(static_cast<uint>(curtexindex) > i)
+        if(curtexindex > i)
         {
             curtexindex--;
         }
-        else if(static_cast<uint>(curtexindex) == i)
+        else if(curtexindex == i)
         {
             curtexindex = -1;
         }
