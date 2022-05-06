@@ -137,21 +137,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:aa6b1b2ba9aa3a9892cf6fff5aaada898"><td class="memItemLeft" align="right" valign="top"><a id="aa6b1b2ba9aa3a9892cf6fff5aaada898" name="aa6b1b2ba9aa3a9892cf6fff5aaada898"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>KEYWORD</b>(name,  type)&#160;&#160;&#160;static bool dummy_##type = <a class="el" href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">addcommand</a>(#name, (identfun)nullptr, nullptr, type)</td></tr>
-<tr class="separator:aa6b1b2ba9aa3a9892cf6fff5aaada898"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab411d379ad0dd1b0cb2be990b51bb0ea"><td class="memItemLeft" align="right" valign="top"><a id="ab411d379ad0dd1b0cb2be990b51bb0ea" name="ab411d379ad0dd1b0cb2be990b51bb0ea"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMANDKN</b>(name,  type,  fun,  nargs)&#160;&#160;&#160;static bool dummy_##fun = <a class="el" href="command_8h.html#a33b3afb43fea6dd2a1d8b223c2752e07">addcommand</a>(#name, (identfun)fun, nargs, type)</td></tr>
-<tr class="separator:ab411d379ad0dd1b0cb2be990b51bb0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00f758ce3b67dd9a3a26f5ba1d63fefc"><td class="memItemLeft" align="right" valign="top"><a id="a00f758ce3b67dd9a3a26f5ba1d63fefc" name="a00f758ce3b67dd9a3a26f5ba1d63fefc"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMANDK</b>(name,  type,  nargs)&#160;&#160;&#160;COMMANDKN(name, type, name, nargs)</td></tr>
-<tr class="separator:a00f758ce3b67dd9a3a26f5ba1d63fefc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a796df8003ae0bdf08c953618fa7133b5"><td class="memItemLeft" align="right" valign="top"><a id="a796df8003ae0bdf08c953618fa7133b5" name="a796df8003ae0bdf08c953618fa7133b5"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMANDN</b>(name,  fun,  nargs)&#160;&#160;&#160;COMMANDKN(name, Id_Command, fun, nargs)</td></tr>
-<tr class="separator:a796df8003ae0bdf08c953618fa7133b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a286a642d141f8a1c28bb04f7c7c1dd03"><td class="memItemLeft" align="right" valign="top"><a id="a286a642d141f8a1c28bb04f7c7c1dd03" name="a286a642d141f8a1c28bb04f7c7c1dd03"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>COMMAND</b>(name,  nargs)&#160;&#160;&#160;COMMANDN(name, name, nargs)</td></tr>
-<tr class="separator:a286a642d141f8a1c28bb04f7c7c1dd03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c18dfc8a385d958725e5254e63770e1"><td class="memItemLeft" align="right" valign="top"><a id="a5c18dfc8a385d958725e5254e63770e1" name="a5c18dfc8a385d958725e5254e63770e1"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>VAR_</b>(name,  global,  min,  cur,  max,  persist)&#160;&#160;&#160;int global = <a class="el" href="command_8h.html#a2537cb8648f7eddfcf49ebc1073e9cbc">variable</a>(#name, min, cur, max, &amp;global, nullptr, persist)</td></tr>
 <tr class="separator:a5c18dfc8a385d958725e5254e63770e1"><td class="memSeparator" colspan="2">&#160;</td></tr>

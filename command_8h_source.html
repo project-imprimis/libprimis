@@ -458,82 +458,75 @@ $(document).ready(function(){initNavTree('command_8h_source.html',''); initResiz
 <div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span><span class="comment"> *  The macro kludges themselves register commands or values within some vector&lt;&gt;-s which keeps track of all cmds/vars</span></div>
 <div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span> </div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span><span class="comment">//command macros</span></div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span><span class="preprocessor">#define KEYWORD(name, type) static bool dummy_##type = addcommand(#name, (identfun)nullptr, nullptr, type)</span></div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span><span class="preprocessor">#define COMMANDKN(name, type, fun, nargs) static bool dummy_##fun = addcommand(#name, (identfun)fun, nargs, type)</span></div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span><span class="preprocessor">#define COMMANDK(name, type, nargs) COMMANDKN(name, type, name, nargs)</span></div>
-<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span><span class="preprocessor">#define COMMANDN(name, fun, nargs) COMMANDKN(name, Id_Command, fun, nargs)</span></div>
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span><span class="preprocessor">#define COMMAND(name, nargs) COMMANDN(name, name, nargs)</span></div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span> </div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span><span class="comment">//integer var macros</span></div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span><span class="comment">//VAR_, _VARF, VARM_ are templates for &quot;normal&quot; macros that do not execute an inline function</span></div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span><span class="preprocessor">#define VAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &amp;global, nullptr, persist)</span></div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span><span class="preprocessor">#define VARN(name, global, min, cur, max) VAR_(name, global, min, cur, max, 0)</span></div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><span class="preprocessor">#define VARNP(name, global, min, cur, max) VAR_(name, global, min, cur, max, Idf_Persist)</span></div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span><span class="preprocessor">#define VARNR(name, global, min, cur, max) VAR_(name, global, min, cur, max, Idf_Override)</span></div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span><span class="preprocessor">#define VAR(name, min, cur, max) VAR_(name, name, min, cur, max, 0)</span></div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span><span class="preprocessor">#define VARP(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Persist)</span></div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span><span class="preprocessor">#define VARR(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Override)</span></div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span> </div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span><span class="comment">//variable with inline function to be executed on change (VARiable with Function = VARF)</span></div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span><span class="preprocessor">#define VARF_(name, global, min, cur, max, body, persist) \</span></div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span><span class="preprocessor">    int global = variable(#name, min, cur, max, &amp;global, [] (ident *) { body; }, persist); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span> </div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span><span class="preprocessor">#define VARFN(name, global, min, cur, max, body) VARF_(name, global, min, cur, max, body, 0)</span></div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span><span class="preprocessor">#define VARF(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, 0)</span></div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span><span class="preprocessor">#define VARFP(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, Idf_Persist)</span></div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span><span class="preprocessor">#define VARFR(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, Idf_Override)</span></div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span><span class="preprocessor">#define VARFNP(name, global, min, cur, max, body) VARF_(name, global, min, cur, max, body, Idf_Persist)</span></div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span> </div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span><span class="comment">//hexadecimal var macros</span></div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span><span class="preprocessor">#define HVAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &amp;global, nullptr, persist | Idf_Hex)</span></div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span><span class="preprocessor">#define HVARP(name, min, cur, max) HVAR_(name, name, min, cur, max, Idf_Persist)</span></div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span> </div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span><span class="comment">//hex variable with function to be executed on change (Hexadecimal VARiable with Function = HVARF)</span></div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span><span class="comment">//the CVAR series of macros borrows the HVARF macro as it deals with hex colors</span></div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span><span class="preprocessor">#define HVARF_(name, global, min, cur, max, body, persist) \</span></div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span><span class="preprocessor">    int global = variable(#name, min, cur, max, &amp;global, [] (ident *) { body; }, persist | Idf_Hex); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span> </div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span><span class="comment">//color var macros</span></div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span><span class="preprocessor">#define CVAR_(name, cur, init, body, persist) bvec name = bvec::hexcolor(cur); HVARF_(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)</span></div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span><span class="preprocessor">#define CVARP(name, cur) CVAR_(name, cur, , , Idf_Persist)</span></div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span><span class="preprocessor">#define CVARR(name, cur) CVAR_(name, cur, , , Idf_Override)</span></div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span><span class="preprocessor">#define CVARFP(name, cur, body) CVAR_(name, cur, , body, Idf_Persist)</span></div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span><span class="preprocessor">#define CVAR0_(name, cur, body, persist) CVAR_(name, cur, { if(!_##name) _##name = cur; }, body, persist)</span></div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span><span class="preprocessor">#define CVAR0R(name, cur) CVAR0_(name, cur, , Idf_Override)</span></div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span><span class="preprocessor">#define CVAR1_(name, cur, body, persist) CVAR_(name, cur, { if(_##name &lt;= 255) _##name |= (_##name&lt;&lt;8) | (_##name&lt;&lt;16); }, body, persist)</span></div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span><span class="preprocessor">#define CVAR1R(name, cur) CVAR1_(name, cur, , Idf_Override)</span></div>
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="preprocessor">#define CVAR1FR(name, cur, body) CVAR1_(name, cur, body, Idf_Override)</span></div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span><span class="comment">//integer var macros</span></div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span><span class="comment">//VAR_, _VARF, VARM_ are templates for &quot;normal&quot; macros that do not execute an inline function</span></div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span><span class="preprocessor">#define VAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &amp;global, nullptr, persist)</span></div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span><span class="preprocessor">#define VARN(name, global, min, cur, max) VAR_(name, global, min, cur, max, 0)</span></div>
+<div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span><span class="preprocessor">#define VARNP(name, global, min, cur, max) VAR_(name, global, min, cur, max, Idf_Persist)</span></div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span><span class="preprocessor">#define VARNR(name, global, min, cur, max) VAR_(name, global, min, cur, max, Idf_Override)</span></div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span><span class="preprocessor">#define VAR(name, min, cur, max) VAR_(name, name, min, cur, max, 0)</span></div>
+<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span><span class="preprocessor">#define VARP(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Persist)</span></div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span><span class="preprocessor">#define VARR(name, min, cur, max) VAR_(name, name, min, cur, max, Idf_Override)</span></div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span> </div>
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span><span class="comment">//variable with inline function to be executed on change (VARiable with Function = VARF)</span></div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><span class="preprocessor">#define VARF_(name, global, min, cur, max, body, persist) \</span></div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span><span class="preprocessor">    int global = variable(#name, min, cur, max, &amp;global, [] (ident *) { body; }, persist); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span> </div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span><span class="preprocessor">#define VARFN(name, global, min, cur, max, body) VARF_(name, global, min, cur, max, body, 0)</span></div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span><span class="preprocessor">#define VARF(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, 0)</span></div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span><span class="preprocessor">#define VARFP(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, Idf_Persist)</span></div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span><span class="preprocessor">#define VARFR(name, min, cur, max, body) VARF_(name, name, min, cur, max, body, Idf_Override)</span></div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span><span class="preprocessor">#define VARFNP(name, global, min, cur, max, body) VARF_(name, global, min, cur, max, body, Idf_Persist)</span></div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span> </div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span><span class="comment">//hexadecimal var macros</span></div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span><span class="preprocessor">#define HVAR_(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &amp;global, nullptr, persist | Idf_Hex)</span></div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span><span class="preprocessor">#define HVARP(name, min, cur, max) HVAR_(name, name, min, cur, max, Idf_Persist)</span></div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span> </div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span><span class="comment">//hex variable with function to be executed on change (Hexadecimal VARiable with Function = HVARF)</span></div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span><span class="comment">//the CVAR series of macros borrows the HVARF macro as it deals with hex colors</span></div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span><span class="preprocessor">#define HVARF_(name, global, min, cur, max, body, persist) \</span></div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span><span class="preprocessor">    int global = variable(#name, min, cur, max, &amp;global, [] (ident *) { body; }, persist | Idf_Hex); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span> </div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span><span class="comment">//color var macros</span></div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span><span class="preprocessor">#define CVAR_(name, cur, init, body, persist) bvec name = bvec::hexcolor(cur); HVARF_(name, _##name, 0, cur, 0xFFFFFF, { init; name = bvec::hexcolor(_##name); body; }, persist)</span></div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span><span class="preprocessor">#define CVARP(name, cur) CVAR_(name, cur, , , Idf_Persist)</span></div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span><span class="preprocessor">#define CVARR(name, cur) CVAR_(name, cur, , , Idf_Override)</span></div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span><span class="preprocessor">#define CVARFP(name, cur, body) CVAR_(name, cur, , body, Idf_Persist)</span></div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span><span class="preprocessor">#define CVAR0_(name, cur, body, persist) CVAR_(name, cur, { if(!_##name) _##name = cur; }, body, persist)</span></div>
+<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span><span class="preprocessor">#define CVAR0R(name, cur) CVAR0_(name, cur, , Idf_Override)</span></div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span><span class="preprocessor">#define CVAR1_(name, cur, body, persist) CVAR_(name, cur, { if(_##name &lt;= 255) _##name |= (_##name&lt;&lt;8) | (_##name&lt;&lt;16); }, body, persist)</span></div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span><span class="preprocessor">#define CVAR1R(name, cur) CVAR1_(name, cur, , Idf_Override)</span></div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span><span class="preprocessor">#define CVAR1FR(name, cur, body) CVAR1_(name, cur, body, Idf_Override)</span></div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span> </div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span><span class="comment">//float var macros</span></div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span><span class="preprocessor">#define FVAR_(name, global, min, cur, max, persist) float global = fvariable(#name, min, cur, max, &amp;global, nullptr, persist)</span></div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span><span class="preprocessor">#define FVARNP(name, global, min, cur, max) FVAR_(name, global, min, cur, max, Idf_Persist)</span></div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span><span class="preprocessor">#define FVAR(name, min, cur, max) FVAR_(name, name, min, cur, max, 0)</span></div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span><span class="preprocessor">#define FVARP(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Persist)</span></div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span><span class="preprocessor">#define FVARR(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Override)</span></div>
 <div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span> </div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span><span class="comment">//float var macros</span></div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="preprocessor">#define FVAR_(name, global, min, cur, max, persist) float global = fvariable(#name, min, cur, max, &amp;global, nullptr, persist)</span></div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><span class="preprocessor">#define FVARNP(name, global, min, cur, max) FVAR_(name, global, min, cur, max, Idf_Persist)</span></div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span><span class="preprocessor">#define FVAR(name, min, cur, max) FVAR_(name, name, min, cur, max, 0)</span></div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="preprocessor">#define FVARP(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Persist)</span></div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span><span class="preprocessor">#define FVARR(name, min, cur, max) FVAR_(name, name, min, cur, max, Idf_Override)</span></div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span> </div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span><span class="comment">//float variable with function to be executed on change (Float VARiable with Function = FVARF)</span></div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span><span class="preprocessor">#define FVARF_(name, global, min, cur, max, body, persist) \</span></div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span><span class="preprocessor">    float global = fvariable(#name, min, cur, max, &amp;global, [] (ident *) { body; }, persist); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"> \</span></div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span><span class="preprocessor"></span> </div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span><span class="preprocessor">#define FVARF(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, 0)</span></div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span><span class="preprocessor">#define FVARFP(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Persist)</span></div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span><span class="preprocessor">#define FVARFR(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Override)</span></div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span> </div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span><span class="comment">//string var macros</span></div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span><span class="preprocessor">#define SVAR_(name, global, cur, persist) char *global = svariable(#name, cur, &amp;global, nullptr, persist)</span></div>
-<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span><span class="preprocessor">#define SVAR(name, cur) SVAR_(name, name, cur, 0)</span></div>
-<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span><span class="preprocessor">#define SVARP(name, cur) SVAR_(name, name, cur, Idf_Persist)</span></div>
-<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span><span class="preprocessor">#define SVARR(name, cur) SVAR_(name, name, cur, Idf_Override)</span></div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span><span class="comment">//float variable with function to be executed on change (Float VARiable with Function = FVARF)</span></div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span><span class="preprocessor">#define FVARF_(name, global, min, cur, max, body, persist) \</span></div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span><span class="preprocessor">    float global = fvariable(#name, min, cur, max, &amp;global, [] (ident *) { body; }, persist); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"> \</span></div>
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span><span class="preprocessor"></span> </div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="preprocessor">#define FVARF(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, 0)</span></div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span><span class="preprocessor">#define FVARFP(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Persist)</span></div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span><span class="preprocessor">#define FVARFR(name, min, cur, max, body) FVARF_(name, name, min, cur, max, body, Idf_Override)</span></div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span> </div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span><span class="comment">//string var macros</span></div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span><span class="preprocessor">#define SVAR_(name, global, cur, persist) char *global = svariable(#name, cur, &amp;global, nullptr, persist)</span></div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span><span class="preprocessor">#define SVAR(name, cur) SVAR_(name, name, cur, 0)</span></div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span><span class="preprocessor">#define SVARP(name, cur) SVAR_(name, name, cur, Idf_Persist)</span></div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span><span class="preprocessor">#define SVARR(name, cur) SVAR_(name, name, cur, Idf_Override)</span></div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span> </div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span><span class="comment">//string variable with function to be executed on change (Float VARiable with Function = FVARF)</span></div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span><span class="preprocessor">#define SVARF_(name, global, cur, body, persist) \</span></div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span><span class="preprocessor">    char *global = svariable(#name, cur, &amp;global, [] (ident *) { body; }, persist); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span> </div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span><span class="preprocessor">#define SVARF(name, cur, body) SVARF_(name, name, cur, body, 0)</span></div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span><span class="preprocessor">#define SVARFR(name, cur, body) SVARF_(name, name, cur, body, Idf_Override)</span></div>
 <div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span> </div>
-<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span><span class="comment">//string variable with function to be executed on change (Float VARiable with Function = FVARF)</span></div>
-<div class="line"><a id="l00608" name="l00608"></a><span class="lineno">  608</span><span class="preprocessor">#define SVARF_(name, global, cur, body, persist) \</span></div>
-<div class="line"><a id="l00609" name="l00609"></a><span class="lineno">  609</span><span class="preprocessor">    char *global = svariable(#name, cur, &amp;global, [] (ident *) { body; }, persist); </span><span class="comment">/* assign variable, needs fxn prototype declared above */</span><span class="preprocessor"></span></div>
-<div class="line"><a id="l00610" name="l00610"></a><span class="lineno">  610</span> </div>
-<div class="line"><a id="l00611" name="l00611"></a><span class="lineno">  611</span><span class="preprocessor">#define SVARF(name, cur, body) SVARF_(name, name, cur, body, 0)</span></div>
-<div class="line"><a id="l00612" name="l00612"></a><span class="lineno">  612</span><span class="preprocessor">#define SVARFR(name, cur, body) SVARF_(name, name, cur, body, Idf_Override)</span></div>
-<div class="line"><a id="l00613" name="l00613"></a><span class="lineno">  613</span> </div>
-<div class="line"><a id="l00614" name="l00614"></a><span class="lineno">  614</span><span class="preprocessor">#endif </span><span class="comment">/* COMMAND_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span><span class="preprocessor">#endif </span><span class="comment">/* COMMAND_H_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="acommand_8h_html_a080ad9f3a643e2a155813f3cbdc2d48c"><div class="ttname"><a href="command_8h.html#a080ad9f3a643e2a155813f3cbdc2d48c">stringret</a></div><div class="ttdeci">void stringret(char *s)</div><div class="ttdoc">Returns a string value from a Cubescript command.</div></div>
 <div class="ttc" id="acommand_8h_html_a0ce0f65be2f8547eba24228363753ba7"><div class="ttname"><a href="command_8h.html#a0ce0f65be2f8547eba24228363753ba7">result</a></div><div class="ttdeci">void result(const char *s)</div><div class="ttdoc">Returns an alias' name from a Cubescript command.</div></div>
 <div class="ttc" id="acommand_8h_html_a20b5ef16ec5ad90369a8fd98a0178fa2"><div class="ttname"><a href="command_8h.html#a20b5ef16ec5ad90369a8fd98a0178fa2">escapestring</a></div><div class="ttdeci">const char * escapestring(const char *s)</div><div class="ttdoc">Replaces C style excape characters with Cubescript ones.</div></div>
