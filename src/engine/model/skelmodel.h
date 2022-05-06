@@ -134,30 +134,10 @@ struct skelmodel : animmodel
         uchar *partmask;
         ragdolldata *ragdoll;
 
-        animcacheentry() : ragdoll(nullptr)
-        {
-            for(int k = 0; k < maxanimparts; ++k)
-            {
-                as[k].cur.fr1 = as[k].prev.fr1 = -1;
-            }
-        }
+        animcacheentry();
 
-        bool operator==(const animcacheentry &c) const
-        {
-            for(int i = 0; i < maxanimparts; ++i)
-            {
-                if(as[i]!=c.as[i])
-                {
-                    return false;
-                }
-            }
-            return pitch==c.pitch && partmask==c.partmask && ragdoll==c.ragdoll && (!ragdoll || std::min(millis, c.millis) >= ragdoll->lastmove);
-        }
-
-        bool operator!=(const animcacheentry &c) const
-        {
-            return !operator==(c);
-        }
+        bool operator==(const animcacheentry &c) const;
+        bool operator!=(const animcacheentry &c) const;
     };
 
     struct vbocacheentry : animcacheentry
