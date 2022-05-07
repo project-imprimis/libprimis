@@ -366,7 +366,7 @@ namespace UI
                 state &= ~flags;
                 if(childstate & flags)
                 {
-                    loopchildren([flags, this] (Object * o) { if((o->state | o->childstate) & flags) o->clearstate(flags); });
+                    loopchildren([flags] (Object * o) { if((o->state | o->childstate) & flags) o->clearstate(flags); });
                     childstate &= ~flags;
                 }
             }
@@ -410,7 +410,7 @@ namespace UI
 
             virtual void draw(float sx, float sy)
             {
-                loopchildren( [sx, sy, this] (Object * o)
+                loopchildren( [sx, sy] (Object * o)
                 {
                     if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                     {
@@ -721,7 +721,7 @@ namespace UI
             Object *find(const char *name, bool recurse = true, const Object *exclude = nullptr)
             {
                 Object * out = nullptr;
-                loopchildren( [&out, name, recurse, exclude] (Object * o)
+                loopchildren( [&out, name, exclude] (Object * o)
                 {
                     if(o != exclude && o->isnamed(name))
                     {
@@ -1468,14 +1468,14 @@ namespace UI
 
         void draw(float sx, float sy)
         {
-            loopchildrange(static_cast<uint>(columns), children.size(), [sx, sy, this] (Object * o)
+            loopchildrange(static_cast<uint>(columns), children.size(), [sx, sy] (Object * o)
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                 {
                     o->draw(sx + o->x, sy + o->y);
                 }
             });
-            loopchildrange(0, static_cast<uint>(columns), [sx, sy, this] (Object * o)
+            loopchildrange(0, static_cast<uint>(columns), [sx, sy] (Object * o)
             {
                 if(!isfullyclipped(sx + o->x, sy + o->y, o->w, o->h))
                 {
