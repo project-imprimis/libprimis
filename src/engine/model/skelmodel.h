@@ -700,7 +700,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
     typedef modelcommands<MDL, struct MDL::skelmesh> commands;
     typedef struct MDL::skeleton skeleton;
     typedef struct MDL::skelmeshgroup meshgroup;
-    typedef struct MDL::skelpart part;
+    typedef class  MDL::skelpart part;
     typedef struct MDL::skin skin;
     typedef struct MDL::boneinfo boneinfo;
     typedef struct MDL::skelanimspec animspec;
