@@ -953,7 +953,6 @@ void Shader::cleanup(bool full)
 
         defaultparams.setsize(0);
         attriblocs.clear();
-        fragdatalocs.setsize(0);
         uniformlocs.clear();
         reusevs = reuseps = nullptr;
     }
@@ -1170,11 +1169,6 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     s.uniformlocs.clear();
     genattriblocs(s, vs, s.reusevs);
     genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
-    s.fragdatalocs.setsize(0);
-    if(s.reuseps) //probably always true? its else was removed in shader cleanup
-    {
-        s.fragdatalocs = s.reuseps->fragdatalocs;
-    }
     if(!s.compile())
     {
         s.cleanup(true);

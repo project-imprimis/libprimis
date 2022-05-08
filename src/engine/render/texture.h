@@ -152,7 +152,6 @@ class Shader
         Shader *reusevs, *reuseps;
         std::vector<UniformLoc> uniformlocs;
         std::vector<AttribLoc> attriblocs;
-        vector<FragDataLoc> fragdatalocs;
         const void *owner;
 
         Shader();
