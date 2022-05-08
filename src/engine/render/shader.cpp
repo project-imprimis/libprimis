@@ -310,7 +310,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
             SlotShaderParamState &param = s.defaultparams[i];
             param.loc = glGetUniformLocation(s.program, param.name);
         }
-        for(int i = 0; i < s.uniformlocs.length(); i++)
+        for(uint i = 0; i < s.uniformlocs.size(); i++)
         {
             bindglsluniform(s, s.uniformlocs[i]);
         }
@@ -420,7 +420,7 @@ static void setglsluniformformat(Shader &s, const char *name, GLenum format, int
             return;
         }
     }
-    for(int j = 0; j < s.uniformlocs.length(); j++)
+    for(uint j = 0; j < s.uniformlocs.size(); j++)
     {
         if(s.uniformlocs[j].loc == loc)
         {
@@ -954,7 +954,7 @@ void Shader::cleanup(bool full)
         defaultparams.setsize(0);
         attriblocs.clear();
         fragdatalocs.setsize(0);
-        uniformlocs.setsize(0);
+        uniformlocs.clear();
         reusevs = reuseps = nullptr;
     }
     else
@@ -1098,11 +1098,11 @@ static void genuniformlocs(Shader &s, const char *vs, const char *ps, Shader *re
             int numargs = std::sscanf(vs, "//:uniform %100s %100s %d %d", name, blockname, &binding, &stride);
             if(numargs >= 3)
             {
-                s.uniformlocs.add(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
+                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name), getshaderparamname(blockname), binding, numargs >= 4 ? stride : 0));
             }
             else if(numargs >= 1)
             {
-                s.uniformlocs.add(UniformLoc(getshaderparamname(name)));
+                s.uniformlocs.emplace_back(UniformLoc(getshaderparamname(name)));
             }
             vs += len;
         }
@@ -1167,7 +1167,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
         }
     }
     s.attriblocs.clear();
-    s.uniformlocs.setsize(0);
+    s.uniformlocs.clear();
     genattriblocs(s, vs, s.reusevs);
     genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
     s.fragdatalocs.setsize(0);
@@ -1552,7 +1552,7 @@ int Shader::uniformlocversion()
     version = 0;
     ENUMERATE(shaders, Shader, s,
     {
-        for(int j = 0; j < s.uniformlocs.length(); j++)
+        for(uint j = 0; j < s.uniformlocs.size(); j++)
         {
             s.uniformlocs[j].version = -1;
         }

@@ -947,7 +947,7 @@ void skelmodel::skeleton::setgpubones(skelcacheentry &sc, blendcacheentry *bc, i
     {
         return;
     }
-    if(Shader::lastshader->uniformlocs.length() < 1)
+    if(Shader::lastshader->uniformlocs.size() < 1)
     {
         return;
     }
