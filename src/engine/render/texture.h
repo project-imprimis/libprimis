@@ -151,7 +151,7 @@ class Shader
         bool standard, forced;
         Shader *reusevs, *reuseps;
         vector<UniformLoc> uniformlocs;
-        vector<AttribLoc> attriblocs;
+        std::vector<AttribLoc> attriblocs;
         vector<FragDataLoc> fragdatalocs;
         const void *owner;
 

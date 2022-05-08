@@ -273,7 +273,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
         glAttachShader(s.program, s.vsobj);
         glAttachShader(s.program, s.psobj);
         uint attribs = 0;
-        for(int i = 0; i < s.attriblocs.length(); i++)
+        for(uint i = 0; i < s.attriblocs.size(); i++)
         {
             AttribLoc &a = s.attriblocs[i];
             glBindAttribLocation(s.program, a.loc, a.name);
@@ -952,7 +952,7 @@ void Shader::cleanup(bool full)
         variantrows = nullptr;
 
         defaultparams.setsize(0);
-        attriblocs.setsize(0);
+        attriblocs.clear();
         fragdatalocs.setsize(0);
         uniformlocs.setsize(0);
         reusevs = reuseps = nullptr;
@@ -1074,7 +1074,7 @@ static void genattriblocs(Shader &s, const char *vs, Shader *reusevs)
         {
             if(std::sscanf(vs, "//:attrib %100s %d", name, &loc) == 2)
             {
-                s.attriblocs.add(AttribLoc(getshaderparamname(name), loc));
+                s.attriblocs.emplace_back(AttribLoc(getshaderparamname(name), loc));
             }
             vs += len;
         }
@@ -1166,7 +1166,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
             s.defaultparams.add(slotparams[i]);
         }
     }
-    s.attriblocs.setsize(0);
+    s.attriblocs.clear();
     s.uniformlocs.setsize(0);
     genattriblocs(s, vs, s.reusevs);
     genuniformlocs(s, vs, ps, s.reusevs, s.reuseps);
