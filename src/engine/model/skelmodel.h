@@ -72,8 +72,7 @@ struct skelmodel : animmodel
             int addweight(int sorted, float weight, int bone);
             void finalize(int sorted);
 
-            template<class T>
-            void serialize(T &v)
+            void serialize(skelmodel::vvertgw &v)
             {
                 if(interpindex >= 0)
                 {
