@@ -895,33 +895,78 @@ ident* getvar(int vartype, const char *name)
     return id;
 }
 
-#define OVERRIDEVAR(errorval, saveval, resetval, clearval) \
-    if(identflags&Idf_Overridden || id->flags&Idf_Override) \
-    { \
-        if(id->flags&Idf_Persist) \
-        { \
-            debugcode("cannot override persistent variable %s", id->name); \
-            errorval; \
-        } \
-        if(!(id->flags&Idf_Overridden)) \
-        { \
-            saveval; \
-            id->flags |= Idf_Overridden; \
-        } \
-        else \
-        { \
-            clearval; \
-        } \
-    } \
-    else \
-    { \
-        if(id->flags&Idf_Overridden) \
-        { \
-            resetval; \
-            id->flags &= ~Idf_Overridden; \
-        } \
-        clearval; \
+/**
+ * @brief Overwrite an ident's array with an array comming from storage.
+ * @tparam T the array data type, typically StringVar.
+ * @param id the StringVar identifier.
+ * @param dst the string that will be overwritten by the `src`.
+ * @param src the string that will be written to `dest`.
+ */
+template <class T> void storevalarray(ident *id, T &dst, T *src) {
+
+    if(identflags&Idf_Overridden || id->flags&Idf_Override)
+    {
+        if(id->flags&Idf_Persist)
+        {
+            // Return error.
+            debugcode("Cannot override persistent variable %s", id->name);
+            return;
+        }
+        if(!(id->flags&Idf_Overridden))
+        {
+            // Save source array.
+            dst = *src;
+            id->flags |= Idf_Overridden;
+        }
+        else
+        {
+            // Reset source array.
+            delete[] *src;
+        }
     }
+    else
+    {
+        if(id->flags&Idf_Overridden)
+        {
+            // Reset saved array.
+            delete[] dst;
+            id->flags &= ~Idf_Overridden;
+        }
+        // Reset source array.
+        delete[] *src;
+    }
+}
+
+/**
+ * @brief Overwrite an ident's value with a value comming from storage.
+ * @tparam T the data type, whether integer or float.
+ * @param id the identifier, whether integer.
+ * @param dst the value that will be overwritten by the `src`.
+ * @param src the value that will be written to `dest`.
+ */
+template <class T> void storeval(ident *id, T &dst, T *src) {
+
+    if(identflags&Idf_Overridden || id->flags&Idf_Override)
+    {
+        if(id->flags&Idf_Persist)
+        {
+            // Return error.
+            debugcode("Cannot override persistent variable %s", id->name);
+            return;
+        }
+        if(!(id->flags&Idf_Overridden))
+        {
+            // Save value.
+            dst = *src;
+            id->flags |= Idf_Overridden;
+        }
+    }
+    if(id->flags&Idf_Overridden)
+    {
+        // Reset value.
+        id->flags &= ~Idf_Overridden;
+    }
+}
 
 void setvar(const char *name, int i, bool dofunc, bool doclamp)
 {
@@ -931,7 +976,7 @@ void setvar(const char *name, int i, bool dofunc, bool doclamp)
         return;
     }
 
-    OVERRIDEVAR(return, id->overrideval.i = *id->storage.i, , )
+    storeval(id, id->overrideval.i, id->storage.i);
     if(doclamp)
     {
         *id->storage.i = std::clamp(i, id->minval, id->maxval);
@@ -953,7 +998,7 @@ void setfvar(const char *name, float f, bool dofunc, bool doclamp)
         return;
     }
 
-    OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
+    storeval(id, id->overrideval.f, id->storage.f);
     if(doclamp)
     {
         *id->storage.f = std::clamp(f, id->minvalf, id->maxvalf);
@@ -975,7 +1020,7 @@ void setsvar(const char *name, const char *str, bool dofunc)
         return;
     }
 
-    OVERRIDEVAR(return, id->overrideval.s = *id->storage.s, delete[] id->overrideval.s, delete[] *id->storage.s);
+    storevalarray(id, id->overrideval.s, id->storage.s);
     *id->storage.s = newstring(str);
     if(dofunc)
     {
@@ -1097,7 +1142,7 @@ void setvarchecked(ident *id, int val)
     }
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
-        OVERRIDEVAR(return, id->overrideval.i = *id->storage.i, , )
+        storeval(id, id->overrideval.i, id->storage.i);
         if(val < id->minval || val > id->maxval)
         {
             val = clampvar(id, val, id->minval, id->maxval);
@@ -1151,7 +1196,7 @@ void setfvarchecked(ident *id, float val)
     }
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
-        OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
+        storeval(id, id->overrideval.f, id->storage.f);
         if(val < id->minvalf || val > id->maxvalf)
         {
             val = clampfvar(id, val, id->minvalf, id->maxvalf);
@@ -1173,7 +1218,7 @@ void setsvarchecked(ident *id, const char *val)
     }
     else if(!(id->flags&Idf_Override) || identflags&Idf_Overridden || allowediting)
     {
-        OVERRIDEVAR(return, id->overrideval.s = *id->storage.s, delete[] id->overrideval.s, delete[] *id->storage.s);
+        storevalarray(id, id->overrideval.s, id->storage.s);
         *id->storage.s = newstring(val);
         id->changed();
         if(id->flags&Idf_Override && !(identflags&Idf_Overridden))
