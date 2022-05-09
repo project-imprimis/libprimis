@@ -1572,11 +1572,57 @@ static char *cutword(const char *&p)
     return p!=word ? newstring(word, p-word) : nullptr;
 }
 
-#define RET_CODE(type, defaultret) ((type) >= Value_Any ? ((type) == Value_CString ? Ret_String : (defaultret)) : (type) << Code_Ret)
-#define RET_CODE_INT(type) RET_CODE(type, Ret_Integer)
-#define RET_CODE_FLOAT(type) RET_CODE(type, Ret_Float)
-#define RET_CODE_ANY(type) RET_CODE(type, 0)
-#define RET_CODE_STRING(type) ((type) >= Value_Any ? Ret_String : (type) << Code_Ret)
+/**
+ * @brief The functions compares the `type` with other types from an enum. Types
+ * lower than Value_Any are primitives, so we are not interested in those.
+ * @param type the kind of token, such as code, macro, indent, csrting, etc.
+ * @param defaultret the default return type flag to return (either null, integer, or float).
+ * @return int the type flag
+ */
+
+int ret_code(int type, int defaultret) {
+    // If value is bigger than a primitive:
+    if (type >= Value_Any) {
+        // If the value type is CString:
+        if (type == Value_CString) {
+            // Return string type flag.
+            return Ret_String;
+        } else {
+            // Return the default type flag.
+            return defaultret;
+        }
+    }
+    // Return type * 2 ^ Core_Ret.
+    return type << Code_Ret;
+}
+
+int ret_code_int(int type) {
+    return ret_code(type, Ret_Integer);
+}
+
+int ret_code_float(int type) {
+    return ret_code(type, Ret_Float);
+}
+
+int ret_code_any(int type) {
+    return ret_code(type, 0);
+}
+
+/**
+ * @brief Return a string type flag for any type that is not a primitive.
+ * @param type the kind of token, such as code, macro, indent, csrting, etc.
+ * @return int the type flag
+ */
+int ret_code_string(int type) {
+    // If value is bigger than a primitive:
+    if (type >= Value_Any) {
+        // Return string type flag.
+        return Ret_String;
+    }
+
+    // Return type * 2 ^ Core_Ret.
+    return type << Code_Ret;
+}
 
 static void compilestr(vector<uint> &code, const char *word, int len, bool macro = false)
 {
@@ -1927,7 +1973,7 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                 {
                     case Id_Var:
                     {
-                        code.add(Code_IntVar|RET_CODE_INT(ltype)|(id->index<<8));
+                        code.add(Code_IntVar|ret_code_int(ltype)|(id->index<<8));
                         switch(ltype)
                         {
                             case Value_Pop:
@@ -1950,7 +1996,7 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                     }
                     case Id_FloatVar:
                     {
-                        code.add(Code_FloatVar|RET_CODE_FLOAT(ltype)|(id->index<<8));
+                        code.add(Code_FloatVar|ret_code_float(ltype)|(id->index<<8));
                         switch(ltype)
                         {
                             case Value_Pop:
@@ -1990,7 +2036,7 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                             }
                             default:
                             {
-                                code.add(Code_StrVar|RET_CODE_STRING(ltype)|(id->index<<8));
+                                code.add(Code_StrVar|ret_code_string(ltype)|(id->index<<8));
                                 break;
                             }
                         }
@@ -2019,7 +2065,7 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                             }
                             default:
                             {
-                                code.add((id->index < Max_Args ? Code_LookupArg : Code_Lookup)|RET_CODE_STRING(ltype)|(id->index<<8));
+                                code.add((id->index < Max_Args ? Code_LookupArg : Code_Lookup)|ret_code_string(ltype)|(id->index<<8));
                                 break;
                             }
                         }
@@ -2130,12 +2176,12 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
                                 }
                             }
                         }
-                        code.add(comtype|RET_CODE_ANY(ltype)|(id->index<<8));
-                        code.add((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | RET_CODE_ANY(ltype));
+                        code.add(comtype|ret_code_any(ltype)|(id->index<<8));
+                        code.add((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | ret_code_any(ltype));
                         goto done;
                     compilecomv:
-                        code.add(comtype|RET_CODE_ANY(ltype)|(numargs<<8)|(id->index<<13));
-                        code.add((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | RET_CODE_ANY(ltype));
+                        code.add(comtype|ret_code_any(ltype)|(numargs<<8)|(id->index<<13));
+                        code.add((prevargs >= Max_Results ? Code_Exit : Code_ResultArg) | ret_code_any(ltype));
                         goto done;
                     }
                     default:
@@ -2165,7 +2211,7 @@ static void compilelookup(vector<uint> &code, const char *&p, int ltype, int pre
         }
         default:
         {
-            code.add(Code_LookupU|RET_CODE_ANY(ltype));
+            code.add(Code_LookupU|ret_code_any(ltype));
             break;
         }
     }
@@ -2499,12 +2545,12 @@ done:
     {
         if(prevargs >= Max_Results)
         {
-            code.add(Code_ConCM|RET_CODE_ANY(wordtype)|(concs<<8));
-            code.add(Code_Exit|RET_CODE_ANY(wordtype));
+            code.add(Code_ConCM|ret_code_any(wordtype)|(concs<<8));
+            code.add(Code_Exit|ret_code_any(wordtype));
         }
         else
         {
-            code.add(Code_ConCW|RET_CODE_ANY(wordtype)|(concs<<8));
+            code.add(Code_ConCW|ret_code_any(wordtype)|(concs<<8));
         }
     }
     switch(wordtype)
@@ -2669,7 +2715,7 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
             {
                 code.add(Code_Enter);
                 compilestatements(code, p, wordtype > Value_Any ? Value_CAny : Value_Any, ')');
-                code.add(Code_Exit|RET_CODE_ANY(wordtype));
+                code.add(Code_Exit|ret_code_any(wordtype));
             }
             else
             {
@@ -2677,7 +2723,7 @@ static bool compilearg(vector<uint> &code, const char *&p, int wordtype, int pre
                 compilestatements(code, p, wordtype > Value_Any ? Value_CAny : Value_Any, ')', prevargs);
                 if(code.length() > start)
                 {
-                    code.add(Code_ResultArg|RET_CODE_ANY(wordtype));
+                    code.add(Code_ResultArg|ret_code_any(wordtype));
                 }
                 else
                 {
@@ -3159,10 +3205,10 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                 }
                             }
                         }
-                        code.add(comtype|RET_CODE_ANY(rettype)|(id->index<<8));
+                        code.add(comtype|ret_code_any(rettype)|(id->index<<8));
                         break;
                     compilecomv:
-                        code.add(comtype|RET_CODE_ANY(rettype)|(numargs<<8)|(id->index<<13));
+                        code.add(comtype|ret_code_any(rettype)|(numargs<<8)|(id->index<<13));
                         break;
                     }
                     case Id_Local:
@@ -3190,7 +3236,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_Code, prevargs);
                         }
-                        code.add((more ? Code_Do : Code_Null) | RET_CODE_ANY(rettype));
+                        code.add((more ? Code_Do : Code_Null) | ret_code_any(rettype));
                         break;
                     }
                     case Id_DoArgs:
@@ -3199,7 +3245,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_Code, prevargs);
                         }
-                        code.add((more ? Code_DoArgs : Code_Null) | RET_CODE_ANY(rettype));
+                        code.add((more ? Code_DoArgs : Code_Null) | ret_code_any(rettype));
                         break;
                     }
                     case Id_If:
@@ -3210,7 +3256,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         }
                         if(!more) //more can be affected by above assignment
                         {
-                            code.add(Code_Null | RET_CODE_ANY(rettype));
+                            code.add(Code_Null | ret_code_any(rettype));
                         }
                         else
                         {
@@ -3219,7 +3265,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                             if(!more)
                             {
                                 code.add(Code_Pop);
-                                code.add(Code_Null | RET_CODE_ANY(rettype));
+                                code.add(Code_Null | ret_code_any(rettype));
                             }
                             else
                             {
@@ -3232,7 +3278,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     {
                                         code[start1] = (len1<<8) | Code_JumpFalse;
                                         code[start1+1] = Code_EnterResult;
-                                        code[start1+len1] = (code[start1+len1]&~Code_RetMask) | RET_CODE_ANY(rettype);
+                                        code[start1+len1] = (code[start1+len1]&~Code_RetMask) | ret_code_any(rettype);
                                         break;
                                     }
                                     compileblock(code);
@@ -3246,10 +3292,10 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                         {
                                             code[start1] = ((start2-start1)<<8) | Code_JumpFalse;
                                             code[start1+1] = Code_EnterResult;
-                                            code[start1+len1] = (code[start1+len1]&~Code_RetMask) | RET_CODE_ANY(rettype);
+                                            code[start1+len1] = (code[start1+len1]&~Code_RetMask) | ret_code_any(rettype);
                                             code[start2] = (len2<<8) | Code_Jump;
                                             code[start2+1] = Code_EnterResult;
-                                            code[start2+len2] = (code[start2+len2]&~Code_RetMask) | RET_CODE_ANY(rettype);
+                                            code[start2+len2] = (code[start2+len2]&~Code_RetMask) | ret_code_any(rettype);
                                             break;
                                         }
                                         else if(op1 == (Code_Empty|(len1<<8)))
@@ -3257,12 +3303,12 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                             code[start1] = Code_Null | (inst2&Code_RetMask);
                                             code[start2] = (len2<<8) | Code_JumpTrue;
                                             code[start2+1] = Code_EnterResult;
-                                            code[start2+len2] = (code[start2+len2]&~Code_RetMask) | RET_CODE_ANY(rettype);
+                                            code[start2+len2] = (code[start2+len2]&~Code_RetMask) | ret_code_any(rettype);
                                             break;
                                         }
                                     }
                                 }
-                                code.add(Code_Com|RET_CODE_ANY(rettype)|(id->index<<8));
+                                code.add(Code_Com|ret_code_any(rettype)|(id->index<<8));
                             }
                         }
                         break;
@@ -3273,7 +3319,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_Any, prevargs);
                         }
-                        code.add((more ? Code_Result : Code_Null) | RET_CODE_ANY(rettype));
+                        code.add((more ? Code_Result : Code_Null) | ret_code_any(rettype));
                         break;
                     }
                     case Id_Not:
@@ -3282,7 +3328,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         {
                             more = compilearg(code, p, Value_CAny, prevargs);
                         }
-                        code.add((more ? Code_Not : Code_True) | RET_CODE_ANY(rettype));
+                        code.add((more ? Code_Not : Code_True) | ret_code_any(rettype));
                         break;
                     }
                     case Id_And:
@@ -3294,7 +3340,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                         }
                         if(!more) //more can be affected by above assignment
                         {
-                            code.add((id->type == Id_And ? Code_True : Code_False) | RET_CODE_ANY(rettype));
+                            code.add((id->type == Id_And ? Code_True : Code_False) | ret_code_any(rettype));
                         }
                         else
                         {
@@ -3321,7 +3367,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                 {
                                     numargs++;
                                 }
-                                code.add(Code_ComV|RET_CODE_ANY(rettype)|(numargs<<8)|(id->index<<13));
+                                code.add(Code_ComV|ret_code_any(rettype)|(numargs<<8)|(id->index<<13));
                             }
                             else
                             {
@@ -3333,7 +3379,7 @@ static void compilestatements(vector<uint> &code, const char *&p, int rettype, i
                                     uint len = code[start]>>8;
                                     code[start] = ((end-(start+1))<<8) | op;
                                     code[start+1] = Code_Enter;
-                                    code[start+len] = (code[start+len]&~Code_RetMask) | RET_CODE_ANY(rettype);
+                                    code[start+len] = (code[start+len]&~Code_RetMask) | ret_code_any(rettype);
                                     start += len+1;
                                 }
                             }
