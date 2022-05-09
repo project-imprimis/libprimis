@@ -879,15 +879,21 @@ struct DefVar : identval
 
 hashnameset<DefVar> defvars;
 
-
-#define GETVAR_(id, vartype, name, retval) \
-    ident *id = idents.access(name); \
-    if(!id || id->type!=vartype) \
-    { \
-        return retval; \
+/**
+ * @brief Gets the CubeScript variable.
+ * @param vartype the identifier, such as float, integer, var, or command.
+ * @param name the variable's name.
+ * @return ident* the pointer to the variable.
+ */
+ident* getvar(int vartype, const char *name)
+{
+    ident *id = idents.access(name);
+    if(!id || id->type!=vartype)
+    {
+        return nullptr;
     }
-
-#define GETVAR(id, name, retval) GETVAR_(id, Id_Var, name, retval)
+    return id;
+}
 
 #define OVERRIDEVAR(errorval, saveval, resetval, clearval) \
     if(identflags&Idf_Overridden || id->flags&Idf_Override) \
@@ -919,7 +925,12 @@ hashnameset<DefVar> defvars;
 
 void setvar(const char *name, int i, bool dofunc, bool doclamp)
 {
-    GETVAR(id, name, );
+    ident *id = getvar(Id_Var, name);
+    if(!id)
+    {
+        return;
+    }
+
     OVERRIDEVAR(return, id->overrideval.i = *id->storage.i, , )
     if(doclamp)
     {
@@ -936,7 +947,12 @@ void setvar(const char *name, int i, bool dofunc, bool doclamp)
 }
 void setfvar(const char *name, float f, bool dofunc, bool doclamp)
 {
-    GETVAR_(id, Id_FloatVar, name, );
+    ident *id = getvar(Id_FloatVar, name);
+    if(!id)
+    {
+        return;
+    }
+
     OVERRIDEVAR(return, id->overrideval.f = *id->storage.f, , );
     if(doclamp)
     {
@@ -953,7 +969,12 @@ void setfvar(const char *name, float f, bool dofunc, bool doclamp)
 }
 void setsvar(const char *name, const char *str, bool dofunc)
 {
-    GETVAR_(id, Id_StringVar, name, );
+    ident *id = getvar(Id_StringVar, name);
+    if(!id)
+    {
+        return;
+    }
+
     OVERRIDEVAR(return, id->overrideval.s = *id->storage.s, delete[] id->overrideval.s, delete[] *id->storage.s);
     *id->storage.s = newstring(str);
     if(dofunc)
@@ -963,27 +984,47 @@ void setsvar(const char *name, const char *str, bool dofunc)
 }
 int getvar(const char *name)
 {
-    GETVAR(id, name, 0);
+    ident *id = getvar(Id_Var, name);
+    if(!id)
+    {
+        return 0;
+    }
     return *id->storage.i;
 }
 int getvarmin(const char *name)
 {
-    GETVAR(id, name, 0);
+    ident *id = getvar(Id_Var, name);
+    if(!id)
+    {
+        return 0;
+    }
     return id->minval;
 }
 int getvarmax(const char *name)
 {
-    GETVAR(id, name, 0);
+    ident *id = getvar(Id_Var, name);
+    if(!id)
+    {
+        return 0;
+    }
     return id->maxval;
 }
 float getfvarmin(const char *name)
 {
-    GETVAR_(id, Id_FloatVar, name, 0);
+    ident *id = getvar(Id_FloatVar, name);
+    if(!id)
+    {
+        return 0;
+    }
     return id->minvalf;
 }
 float getfvarmax(const char *name)
 {
-    GETVAR_(id, Id_FloatVar, name, 0);
+    ident *id = getvar(Id_FloatVar, name);
+    if(!id)
+    {
+        return 0;
+    }
     return id->maxvalf;
 }
 
