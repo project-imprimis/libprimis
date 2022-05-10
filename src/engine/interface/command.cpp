@@ -4181,34 +4181,93 @@ static const uint *runcode(const uint *code, tagval &result)
             {
                 continue;
             }
-            #define RETOP(op, val) \
-                case op: \
-                    freearg(result); \
-                    val; \
-                    continue;
-            RETOP(Code_Null|Ret_Null, result.setnull())
-            RETOP(Code_Null|Ret_String, result.setstr(newstring("")))
-            RETOP(Code_Null|Ret_Integer, result.setint(0))
-            RETOP(Code_Null|Ret_Float, result.setfloat(0.0f))
-
-            RETOP(Code_False|Ret_String, result.setstr(newstring("0")))
+            case Code_Null|Ret_Null:
+            {
+                freearg(result);
+                result.setnull();
+                continue;
+            }
+            case Code_Null|Ret_String:
+            {
+                freearg(result);
+                result.setstr(newstring(""));
+                continue;
+            }
+            case Code_Null|Ret_Integer:
+            {
+                freearg(result);
+                result.setint(0);
+                continue;
+            }
+            case Code_Null|Ret_Float:
+            {
+                freearg(result);
+                result.setfloat(0.0f);
+                continue;
+            }
+            case Code_False|Ret_String:
+            {
+                freearg(result);
+                result.setstr(newstring("0"));
+                continue;
+            }
             case Code_False|Ret_Null:
-            RETOP(Code_False|Ret_Integer, result.setint(0))
-            RETOP(Code_False|Ret_Float, result.setfloat(0.0f))
-
-            RETOP(Code_True|Ret_String, result.setstr(newstring("1")))
+            case Code_False|Ret_Integer:
+            {
+                freearg(result);
+                result.setint(0);
+                continue;
+            }
+            case Code_False|Ret_Float:
+            {
+                freearg(result);
+                result.setfloat(0.0f);
+                continue;
+            }
+            case Code_True|Ret_String:
+            {
+                freearg(result);
+                result.setstr(newstring("1"));
+                continue;
+            }
             case Code_True|Ret_Null:
-            RETOP(Code_True|Ret_Integer, result.setint(1))
-            RETOP(Code_True|Ret_Float, result.setfloat(1.0f))
-
-            #define RETPOP(op, val) \
-                RETOP(op, { --numargs; val; freearg(args[numargs]); })
-
-            RETPOP(Code_Not|Ret_String, result.setstr(newstring(getbool(args[numargs]) ? "0" : "1")))
+            case Code_True|Ret_Integer:
+            {
+                freearg(result);
+                result.setint(1);
+                continue;
+            }
+            case Code_True|Ret_Float:
+            {
+                freearg(result);
+                result.setfloat(1.0f);
+                continue;
+            }
+            case Code_Not|Ret_String:
+            {
+                freearg(result);
+                --numargs;
+                result.setstr(newstring(getbool(args[numargs]) ? "0" : "1"));
+                freearg(args[numargs]);
+                continue;
+            }
             case Code_Not|Ret_Null:
-            RETPOP(Code_Not|Ret_Integer, result.setint(getbool(args[numargs]) ? 0 : 1))
-            RETPOP(Code_Not|Ret_Float, result.setfloat(getbool(args[numargs]) ? 0.0f : 1.0f))
-
+            case Code_Not|Ret_Integer:
+            {
+                freearg(result);
+                --numargs;
+                result.setint(getbool(args[numargs]) ? 0 : 1);
+                freearg(args[numargs]);
+                continue;
+            }
+            case Code_Not|Ret_Float:
+            {
+                freearg(result);
+                --numargs;
+                result.setfloat(getbool(args[numargs]) ? 0.0f : 1.0f);
+                freearg(args[numargs]);
+                continue;
+            }
             case Code_Pop:
             {
                 freearg(args[--numargs]);
