@@ -4875,7 +4875,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 setfvarchecked(identmap[op>>8], args[--numargs].f);
                 continue;
             }
-            #define OFFSETARG(n) offset+n
             case Code_Com|Ret_Null:
             case Code_Com|Ret_String:
             case Code_Com|Ret_Float:
@@ -4902,7 +4901,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 freeargs(args, numargs, offset);
                 continue;
             }
-            #undef OFFSETARG
 
             case Code_ComV|Ret_Null:
             case Code_ComV|Ret_String:
