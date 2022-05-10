@@ -2997,7 +2997,6 @@ LocalShaderParamState *LocalShaderParam::resolve()
     }
     if(!s->localparamremap.inrange(loc))
     {
-        extern int getlocalparam(const char *name);
         if(loc == -1)
         {
             loc = getlocalparam(name);

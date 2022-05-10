@@ -396,6 +396,7 @@ extern bool shouldreuseparams(Slot &s, VSlot &p);
 extern void setupshaders();
 extern void reloadshaders();
 extern void cleanupshaders();
+extern int getlocalparam(const char *name);
 
 const int maxblurradius = 7;
 
