@@ -4181,26 +4181,72 @@ static const uint *runcode(const uint *code, tagval &result)
             {
                 continue;
             }
-
-            // Set result to null, empty, or 0 values.
-            case Code_Null|Ret_Null: freearg(result); result.setnull(); continue;
-            case Code_Null|Ret_String: freearg(result); result.setstr(newstring("")); continue;
-            case Code_Null|Ret_Integer: freearg(result); result.setint(0); continue;
-            case Code_Null|Ret_Float: freearg(result); result.setfloat(0.0f); continue;
-
-            // Set result to 0 values.
-            case Code_False|Ret_String: freearg(result); result.setstr(newstring("0")); continue;
-            case Code_False|Ret_Null: // Fallthrough to next case.
-            case Code_False|Ret_Integer: freearg(result); result.setint(0); continue;
-            case Code_False|Ret_Float: freearg(result); result.setfloat(0.0f); continue;
-
-            // Set result to 1 values.
-            case Code_True|Ret_String: freearg(result); result.setstr(newstring("1")); continue;
-            case Code_True|Ret_Null: // Fallthrough to next case.
-            case Code_True|Ret_Integer: freearg(result); result.setint(1); continue;
-            case Code_True|Ret_Float: freearg(result); result.setfloat(1.0f); continue;
-
-            // Negate string values. Flip 0's and 1's.
+            // For Code_Null cases, set results to null, empty, or 0 values.
+            case Code_Null|Ret_Null:
+            {
+                freearg(result);
+                result.setnull();
+                continue;
+            }
+            case Code_Null|Ret_String:
+            {
+                freearg(result);
+                result.setstr(newstring(""));
+                continue;
+            }
+            case Code_Null|Ret_Integer:
+            {
+                freearg(result);
+                result.setint(0);
+                continue;
+            }
+            case Code_Null|Ret_Float:
+            {
+                freearg(result);
+                result.setfloat(0.0f);
+                continue;
+            }
+            // For Code_False cases, set results to 0 values.
+            case Code_False|Ret_String:
+            {
+                freearg(result);
+                result.setstr(newstring("0"));
+                continue;
+            }
+            case Code_False|Ret_Null: // Falltrough to next case.
+            case Code_False|Ret_Integer:
+            {
+                freearg(result);
+                result.setint(0);
+                continue;
+            }
+            case Code_False|Ret_Float:
+            {
+                freearg(result);
+                result.setfloat(0.0f);
+                continue;
+            }
+            // For Code_False cases, set results to 1 values.
+            case Code_True|Ret_String:
+            {
+                freearg(result);
+                result.setstr(newstring("1"));
+                continue;
+            }
+            case Code_True|Ret_Null: // Falltrough to next case.
+            case Code_True|Ret_Integer:
+            {
+                freearg(result);
+                result.setint(1);
+                continue;
+            }
+            case Code_True|Ret_Float:
+            {
+                freearg(result);
+                result.setfloat(1.0f);
+                continue;
+            }
+            // For Code_Not cases, negate values (flip 0's and 1's).
             case Code_Not|Ret_String:
             {
                 freearg(result);
@@ -4210,7 +4256,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 continue;
             }
             case Code_Not|Ret_Null: // Falltrough to next case.
-            // Negate integer values. Flip 0's and 1's.
             case Code_Not|Ret_Integer:
             {
                 freearg(result);
@@ -4219,7 +4264,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 freearg(args[numargs]);
                 continue;
             }
-            // Negate float values. Flip 0's and 1's.
             case Code_Not|Ret_Float:
             {
                 freearg(result);
@@ -4228,7 +4272,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 freearg(args[numargs]);
                 continue;
             }
-
             case Code_Pop:
             {
                 freearg(args[--numargs]);
@@ -4836,7 +4879,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 setfvarchecked(identmap[op>>8], args[--numargs].f);
                 continue;
             }
-            #define OFFSETARG(n) offset+n
             case Code_Com|Ret_Null:
             case Code_Com|Ret_String:
             case Code_Com|Ret_Float:
@@ -4863,7 +4905,6 @@ static const uint *runcode(const uint *code, tagval &result)
                 freeargs(args, numargs, offset);
                 continue;
             }
-            #undef OFFSETARG
 
             case Code_ComV|Ret_Null:
             case Code_ComV|Ret_String:
