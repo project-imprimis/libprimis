@@ -142,9 +142,9 @@ class Shader
         char *name, *vsstr, *psstr, *defer;
         int type;
         GLuint program, vsobj, psobj;
-        vector<SlotShaderParamState> defaultparams;
-        vector<GlobalShaderParamUse> globalparams;
-        vector<LocalShaderParamState> localparams;
+        std::vector<SlotShaderParamState> defaultparams;
+        std::vector<GlobalShaderParamUse> globalparams;
+        std::vector<LocalShaderParamState> localparams;
         vector<uchar> localparamremap;
         Shader *variantshader;
         vector<Shader *> variants;

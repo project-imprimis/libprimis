@@ -3007,7 +3007,7 @@ LocalShaderParamState *LocalShaderParam::resolve()
         }
     }
     uchar remap = s->localparamremap[loc];
-    return s->localparams.inrange(remap) ? &s->localparams[remap] : nullptr;
+    return (s->localparams.size() > remap) ? &s->localparams[remap] : nullptr;
 }
 
 void LocalShaderParam::setf(float x, float y, float z, float w)
