@@ -35,14 +35,8 @@ class animmodel : public model
             AnimPos cur, prev;
             float interp;
 
-            bool operator==(const AnimState &a) const
-            {
-                return cur==a.cur && (interp<1 ? interp==a.interp && prev==a.prev : a.interp>=1);
-            }
-            bool operator!=(const AnimState &a) const
-            {
-                return cur!=a.cur || (interp<1 ? interp!=a.interp || prev!=a.prev : a.interp<1);
-            }
+            bool operator==(const AnimState &a) const;
+            bool operator!=(const AnimState &a) const;
         };
 
         struct linkedpart;
