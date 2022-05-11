@@ -946,7 +946,7 @@ namespace
         if(cmdprefix)
         {
             cmdlen = std::strlen(cmdprefix);
-            if(strncmp(s, cmdprefix, cmdlen))
+            if(std::strncmp(s, cmdprefix, cmdlen))
             {
                 prependstring(s, cmdprefix, maxlen);
             }
@@ -977,7 +977,7 @@ namespace
             f->update();
             for(int i = 0; i < f->files.length(); i++)
             {
-                if(strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
+                if(std::strncmp(f->files[i], &s[commandsize], completesize+cmdlen-commandsize)==0 &&
                           (!lastcomplete || std::strcmp(f->files[i], lastcomplete) > 0) &&
                           (!nextcomplete || std::strcmp(f->files[i], nextcomplete) < 0))
                 {
@@ -990,7 +990,7 @@ namespace
         else // complete using command or var (ident) names
         {
             ENUMERATE(idents, ident, id,
-                if(strncmp(id.name, &s[cmdlen], completesize)==0 &&
+                if(std::strncmp(id.name, &s[cmdlen], completesize)==0 &&
                           (!lastcomplete || std::strcmp(id.name, lastcomplete) > 0) &&
                           (!nextcomplete || std::strcmp(id.name, nextcomplete) < 0))
                 {
