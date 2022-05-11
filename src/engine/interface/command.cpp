@@ -39,7 +39,7 @@ int stridx = 0;
 IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
           *aliasstack = &noalias;
 
-VARN(numargs, _numargs, Max_Args, 0, 0);
+int _numargs = variable("numargs", Max_Args, 0, 0, &_numargs, nullptr, 0);
 
 int getint(const identval &v, int type)
 {
