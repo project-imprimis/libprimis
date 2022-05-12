@@ -10,15 +10,27 @@
 # -fno-rtti: disable runtime type interpretation, it's not used
 # -fpic: compile position independent code for library creation
 
-CXXFLAGS= -O3 -ffast-math -std=c++17 -march=x86-64 -Wall -fsigned-char -fno-rtti -fpic
+CXXFLAGS= -O3 -ffast-math -march=x86-64 -Wall -fsigned-char -fno-rtti -fpic
 
-	CLIENT_INCLUDES= -Ishared -Iengine $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
+CLIENT_INCLUDES= -Ishared -Iengine $(INCLUDES) -I/usr/X11R6/include `sdl2-config --cflags`
 
 COVERAGE_BUILD ?= 0
+
+CPP_20 ?= 0
+
+# if you want to compile with coverage flags, use `make -Csrc COVERAGE_BUILD=1`
 
 ifeq (1,$(COVERAGE_BUILD))
 	CXXFLAGS += --coverage -fno-inline -fno-inline-small-functions -fno-default-inline
 endif
+
+# if you want to compile with c++20, use `make -Csrc CPP_20=1`, else c++17
+ifeq (1,$(CPP_20))
+	CXXFLAGS += -std=c++20
+else
+	CXXFLAGS += -std=c++17
+endif
+
 #list of source code files to be compiled
 CLIENT_OBJS= \
 	shared/geom.o \

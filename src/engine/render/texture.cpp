@@ -2997,7 +2997,6 @@ LocalShaderParamState *LocalShaderParam::resolve()
     }
     if(!s->localparamremap.inrange(loc))
     {
-        extern int getlocalparam(const char *name);
         if(loc == -1)
         {
             loc = getlocalparam(name);
@@ -3008,77 +3007,80 @@ LocalShaderParamState *LocalShaderParam::resolve()
         }
     }
     uchar remap = s->localparamremap[loc];
-    return s->localparams.inrange(remap) ? &s->localparams[remap] : nullptr;
+    return (s->localparams.size() > remap) ? &s->localparams[remap] : nullptr;
 }
 
 void LocalShaderParam::setf(float x, float y, float z, float w)
 {
     ShaderParamBinding *b = resolve();
-    if(b) switch(b->format)
+    if(b)
     {
-        case GL_BOOL:
-        case GL_FLOAT:
+        switch(b->format)
         {
-            glUniform1f(b->loc, x);
-            break;
-        }
-        case GL_BOOL_VEC2:
-        case GL_FLOAT_VEC2:
-        {
-            glUniform2f(b->loc, x, y);
-            break;
-        }
-        case GL_BOOL_VEC3:
-        case GL_FLOAT_VEC3:
-        {
-            glUniform3f(b->loc, x, y, z);
-            break;
-        }
-        case GL_BOOL_VEC4:
-        case GL_FLOAT_VEC4:
-        {
-            glUniform4f(b->loc, x, y, z, w);
-            break;
-        }
-        case GL_INT:
-        {
-            glUniform1i(b->loc, static_cast<int>(x));
-            break;
-        }
-        case GL_INT_VEC2:
-        {
-            glUniform2i(b->loc, static_cast<int>(x), static_cast<int>(y));
-            break;
-        }
-        case GL_INT_VEC3:
-        {
-            glUniform3i(b->loc, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z));
-            break;
-        }
-        case GL_INT_VEC4:
-        {
-            glUniform4i(b->loc, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), static_cast<int>(w));
-            break;
-        }
-        case GL_UNSIGNED_INT:
-        {
-            glUniform1ui_(b->loc, static_cast<uint>(x));
-            break;
-        }
-        case GL_UNSIGNED_INT_VEC2:
-        {
-            glUniform2ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y));
-            break;
-        }
-        case GL_UNSIGNED_INT_VEC3:
-        {
-            glUniform3ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z));
-            break;
-        }
-        case GL_UNSIGNED_INT_VEC4:
-        {
-            glUniform4ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z), static_cast<uint>(w));
-            break;
+            case GL_BOOL:
+            case GL_FLOAT:
+            {
+                glUniform1f(b->loc, x);
+                break;
+            }
+            case GL_BOOL_VEC2:
+            case GL_FLOAT_VEC2:
+            {
+                glUniform2f(b->loc, x, y);
+                break;
+            }
+            case GL_BOOL_VEC3:
+            case GL_FLOAT_VEC3:
+            {
+                glUniform3f(b->loc, x, y, z);
+                break;
+            }
+            case GL_BOOL_VEC4:
+            case GL_FLOAT_VEC4:
+            {
+                glUniform4f(b->loc, x, y, z, w);
+                break;
+            }
+            case GL_INT:
+            {
+                glUniform1i(b->loc, static_cast<int>(x));
+                break;
+            }
+            case GL_INT_VEC2:
+            {
+                glUniform2i(b->loc, static_cast<int>(x), static_cast<int>(y));
+                break;
+            }
+            case GL_INT_VEC3:
+            {
+                glUniform3i(b->loc, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z));
+                break;
+            }
+            case GL_INT_VEC4:
+            {
+                glUniform4i(b->loc, static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), static_cast<int>(w));
+                break;
+            }
+            case GL_UNSIGNED_INT:
+            {
+                glUniform1ui_(b->loc, static_cast<uint>(x));
+                break;
+            }
+            case GL_UNSIGNED_INT_VEC2:
+            {
+                glUniform2ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y));
+                break;
+            }
+            case GL_UNSIGNED_INT_VEC3:
+            {
+                glUniform3ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z));
+                break;
+            }
+            case GL_UNSIGNED_INT_VEC4:
+            {
+                glUniform4ui_(b->loc, static_cast<uint>(x), static_cast<uint>(y), static_cast<uint>(z), static_cast<uint>(w));
+                break;
+            }
         }
     }
 }

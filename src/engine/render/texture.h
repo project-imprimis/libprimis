@@ -142,9 +142,9 @@ class Shader
         char *name, *vsstr, *psstr, *defer;
         int type;
         GLuint program, vsobj, psobj;
-        vector<SlotShaderParamState> defaultparams;
-        vector<GlobalShaderParamUse> globalparams;
-        vector<LocalShaderParamState> localparams;
+        std::vector<SlotShaderParamState> defaultparams;
+        std::vector<GlobalShaderParamUse> globalparams;
+        std::vector<LocalShaderParamState> localparams;
         vector<uchar> localparamremap;
         Shader *variantshader;
         vector<Shader *> variants;
@@ -257,11 +257,9 @@ class LocalShaderParam
 
 #define LOCALPARAM(name, vals) do { static LocalShaderParam param( #name ); param.set(vals); } while(0)
 #define LOCALPARAMF(name, ...) do { static LocalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
-#define LOCALPARAMI(name, ...) do { static LocalShaderParam param( #name ); param.seti(__VA_ARGS__); } while(0)
 #define LOCALPARAMV(name, vals, num) do { static LocalShaderParam param( #name ); param.setv(vals, num); } while(0)
 #define GLOBALPARAM(name, vals) do { static GlobalShaderParam param( #name ); param.set(vals); } while(0)
 #define GLOBALPARAMF(name, ...) do { static GlobalShaderParam param( #name ); param.setf(__VA_ARGS__); } while(0)
-#define GLOBALPARAMI(name, ...) do { static GlobalShaderParam param( #name ); param.seti(__VA_ARGS__); } while(0)
 #define GLOBALPARAMV(name, vals, num) do { static GlobalShaderParam param( #name ); param.setv(vals, num); } while(0)
 
 #define SETSHADER(name, ...) \
@@ -396,6 +394,7 @@ extern bool shouldreuseparams(Slot &s, VSlot &p);
 extern void setupshaders();
 extern void reloadshaders();
 extern void cleanupshaders();
+extern int getlocalparam(const char *name);
 
 const int maxblurradius = 7;
 

@@ -41,6 +41,72 @@ IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
 
 int _numargs = variable("numargs", Max_Args, 0, 0, &_numargs, nullptr, 0);
 
+//tagval object
+
+void tagval::setint(int val)
+{
+    type = Value_Integer;
+    i = val;
+}
+
+void tagval::setfloat(float val)
+{
+    type = Value_Float;
+    f = val;
+}
+
+void tagval::setnumber(double val)
+{
+    i = static_cast<int>(val);
+    if(val == i)
+    {
+        type = Value_Integer;
+    }
+    else
+    {
+        type = Value_Float;
+        f = val;
+    }
+}
+
+void tagval::setstr(char *val)
+{
+    type = Value_String;
+    s = val;
+}
+
+void tagval::setnull()
+{
+    type = Value_Null;
+    i = 0;
+}
+
+void tagval::setcode(const uint *val)
+{
+    type = Value_Code;
+    code = val;
+}
+
+void tagval::setmacro(const uint *val)
+{
+    type = Value_Macro;
+    code = val;
+}
+
+void tagval::setcstr(const char *val)
+{
+    type = Value_CString;
+    cstr = val;
+}
+
+void tagval::setident(ident *val)
+{
+    type = Value_Ident;
+    id = val;
+}
+
+//end tagval
+
 int getint(const identval &v, int type)
 {
     switch(type)
@@ -1232,15 +1298,30 @@ void setsvarchecked(ident *id, const char *val)
 
 bool addcommand(const char *name, identfun fun, const char *args, int type)
 {
+    /* the argmask is of type unsigned int, but it acts as a bitmap corresponding
+     * to each argument passed.
+     *
+     * for parameters of type i,b,f, F, t, T, E, N, D the value is set to 0
+     * for parameters named S s e r $ (symbolic values) the value is set to 1
+     */
     uint argmask = 0;
+
+    //the number of arguments. format stri
     int numargs = 0;
     bool limit = true;
     if(args)
     {
+        /* parse the format string passed to it (*args)
+         * and set various properties about the parameter string using it
+         * usually up to Max_CommandArgs are allowed in a single command
+         *
+         * these values must be set to pass to the ident::ident() constructor
+         */
         for(const char *fmt = args; *fmt; fmt++)
         {
             switch(*fmt)
             {
+                //normal arguments
                 case 'i':
                 case 'b':
                 case 'f':
@@ -1257,6 +1338,7 @@ bool addcommand(const char *name, identfun fun, const char *args, int type)
                     }
                     break;
                 }
+                //special arguments: these will flip the corresponding bit in the argmask
                 case 'S':
                 case 's':
                 case 'e':
@@ -1270,23 +1352,28 @@ bool addcommand(const char *name, identfun fun, const char *args, int type)
                     }
                     break;
                 }
+                //these are formatting flags, they do not add to numargs
                 case '1':
                 case '2':
                 case '3':
                 case '4':
                 {
+                    //shift the argstring down by the value 1,2,3,4 minus the char for 0 (so int 1 2 3 4) then down one extra element
                     if(numargs < Max_Args)
                     {
                         fmt -= *fmt-'0'+1;
                     }
                     break;
                 }
+                //these flags determine whether the limit flag is set, they do not add to numargs
+                //the limit flag limits the number of parameters to Max_CommandArgs
                 case 'C':
                 case 'V':
                 {
                     limit = false;
                     break;
                 }
+                //kill the engine if one of the above parameter types above are not used
                 default:
                 {
                     fatal("builtin %s declared with illegal type: %s", name, args);
@@ -1299,6 +1386,8 @@ bool addcommand(const char *name, identfun fun, const char *args, int type)
     {
         fatal("builtin %s declared with too many args: %d", name, numargs);
     }
+    //calls the ident() constructor to create a new ident object, then addident adds it to the
+    //global hash table
     addident(ident(type, name, args, argmask, numargs, reinterpret_cast<void *>(fun)));
     return false;
 }

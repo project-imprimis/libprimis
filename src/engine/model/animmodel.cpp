@@ -141,6 +141,18 @@ bool animmodel::AnimPos::operator!=(const AnimPos &a) const
 {
     return fr1!=a.fr1 || fr2!=a.fr2 || (fr1!=fr2 && t!=a.t);
 }
+
+// AnimState
+
+bool animmodel::AnimState::operator==(const AnimState &a) const
+{
+    return cur==a.cur && (interp<1 ? interp==a.interp && prev==a.prev : a.interp>=1);
+}
+bool animmodel::AnimState::operator!=(const AnimState &a) const
+{
+    return cur!=a.cur || (interp<1 ? interp!=a.interp || prev!=a.prev : a.interp<1);
+}
+
 // ShaderParamsKey
 
 bool animmodel::ShaderParamsKey::checkversion()
