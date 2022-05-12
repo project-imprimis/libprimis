@@ -62,7 +62,7 @@ std::vector<std::string> entnames;
 VARP(showparticles,  0, 1, 1);                  //toggles showing billboarded particles
 VAR(cullparticles,   0, 1, 1);                  //toggles culling particles beyond fog distance
 VAR(replayparticles, 0, 1, 1);                  //toggles re-rendering previously generated particles
-VARN(seedparticles, seedmillis, 0, 3000, 10000);//sets the time between seeding particles
+int seedmillis = variable("seedparticles", 0, 3000, 10000, &seedmillis, nullptr, 0);//sets the time between seeding particles
 VAR(debugparticlecull, 0, 0, 1);                //print out console information about particles culled
 VAR(debugparticleseed, 0, 0, 1);                //print out radius/maxfade info for particles upon spawn
 
@@ -1378,7 +1378,7 @@ void removetrackedparticles(physent *owner)
     }
 }
 
-VARN(debugparticles, debugparts, 0, 0, 1);
+int debugparts = variable("debugparticles", 0, 0, 1, &debugparts, nullptr, 0);
 
 void debugparticles()
 {
