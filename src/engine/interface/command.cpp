@@ -1298,39 +1298,54 @@ void setsvarchecked(ident *id, const char *val)
 
 bool addcommand(const char *name, identfun fun, const char *args, int type)
 {
-    /* the argmask is of type unsigned int, but it acts as a bitmap corresponding
-     * to each argument passed.
+    /**
+     * @brief The argmask is of type unsigned int, but it acts as a bitmap
+     * corresponding to each argument passed.
      *
-     * for parameters of type i,b,f, F, t, T, E, N, D the value is set to 0
-     * for parameters named S s e r $ (symbolic values) the value is set to 1
+     * For parameters of type i, b, f, F, t, T, E, N, D the value is set to 0.
+     * For parameters named S s e r $ (symbolic values) the value is set to 1.
      */
     uint argmask = 0;
 
-    //the number of arguments. format stri
+    // The number of arguments in format string.
     int numargs = 0;
     bool limit = true;
     if(args)
     {
-        /* parse the format string passed to it (*args)
-         * and set various properties about the parameter string using it
-         * usually up to Max_CommandArgs are allowed in a single command
+        /**
+         * @brief Parse the format string *args, and set various
+         * properties about the parameters of the indent. Usually up to
+         * Max_CommandArgs are allowed in a single command. These values must
+         * be set to pass to the ident::ident() constructor.
          *
-         * these values must be set to pass to the ident::ident() constructor
+         * Arguments are passed to the argmask bit by bit. A command that is
+         * "iSsiiSSi" will get an argmask of 00000000000000000000000001100110.
+         * Theoretically the argmask can accommodate up to a 32 parameter
+         * command.
+         *
+         * For example, a command called "createBoxAtCoordinates x y" with two
+         * parameters could be invoked by calling "createBoxAtCoordinates 2 5"
+         * and the argstring would be "ii".
+         *
+         * Note that boolean is actually integral-typed in cubescript. Booleans
+         * are an integer in functions because a function with a parameter
+         * string "bb" still will look like foo(int *, int *).
          */
+
         for(const char *fmt = args; *fmt; fmt++)
         {
             switch(*fmt)
             {
                 //normal arguments
-                case 'i':
-                case 'b':
-                case 'f':
+                case 'i': // (int *)
+                case 'b': // (int *) refers to boolean
+                case 'f': // (float *)
                 case 'F':
                 case 't':
                 case 'T':
                 case 'E':
                 case 'N':
-                case 'D':
+                case 'D': // (int *)
                 {
                     if(numargs < Max_Args)
                     {
@@ -1340,8 +1355,8 @@ bool addcommand(const char *name, identfun fun, const char *args, int type)
                 }
                 //special arguments: these will flip the corresponding bit in the argmask
                 case 'S':
-                case 's':
-                case 'e':
+                case 's': // (char *) refers to string
+                case 'e': // (uint *)
                 case 'r':
                 case '$':
                 {
@@ -1368,7 +1383,7 @@ bool addcommand(const char *name, identfun fun, const char *args, int type)
                 //these flags determine whether the limit flag is set, they do not add to numargs
                 //the limit flag limits the number of parameters to Max_CommandArgs
                 case 'C':
-                case 'V':
+                case 'V': // (tagval *args, int numargs)
                 {
                     limit = false;
                     break;
