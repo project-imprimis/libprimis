@@ -16,10 +16,12 @@ src/tess_server
 *.srctrldb
 *.srctrlbm
 *.srctrlprj
-# Files auto-produced by VSCode.
-.vscode/
 .ionide
 # Files auto-produced by CMake
 cmake-build-*/
 # Documentation files in the docs folder.
 docs
+# C/C++ language server cache.
+.ccls-cache/
+# Ignore Code Spell Checker plugin files.
+cspell.json
