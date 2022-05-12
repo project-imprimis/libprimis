@@ -41,6 +41,72 @@ IdentLink noalias = { nullptr, nullptr, (1<<Max_Args)-1, nullptr },
 
 VARN(numargs, _numargs, Max_Args, 0, 0);
 
+//tagval object
+
+void tagval::setint(int val)
+{
+    type = Value_Integer;
+    i = val;
+}
+
+void tagval::setfloat(float val)
+{
+    type = Value_Float;
+    f = val;
+}
+
+void tagval::setnumber(double val)
+{
+    i = static_cast<int>(val);
+    if(val == i)
+    {
+        type = Value_Integer;
+    }
+    else
+    {
+        type = Value_Float;
+        f = val;
+    }
+}
+
+void tagval::setstr(char *val)
+{
+    type = Value_String;
+    s = val;
+}
+
+void tagval::setnull()
+{
+    type = Value_Null;
+    i = 0;
+}
+
+void tagval::setcode(const uint *val)
+{
+    type = Value_Code;
+    code = val;
+}
+
+void tagval::setmacro(const uint *val)
+{
+    type = Value_Macro;
+    code = val;
+}
+
+void tagval::setcstr(const char *val)
+{
+    type = Value_CString;
+    cstr = val;
+}
+
+void tagval::setident(ident *val)
+{
+    type = Value_Ident;
+    id = val;
+}
+
+//end tagval
+
 int getint(const identval &v, int type)
 {
     switch(type)
