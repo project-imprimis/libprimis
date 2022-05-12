@@ -1,5 +1,4 @@
 {
-    // CCLS path to headers. The "include" commands should match the Makefile.
     "ccls.clang.extraArgs": [
         "-Ishared",
         "-Iengine",
