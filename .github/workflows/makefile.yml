@@ -1,4 +1,4 @@
-name: Makefile CI
+name: Makefile CI (GCC C++17)
 
 on: [push]
 
