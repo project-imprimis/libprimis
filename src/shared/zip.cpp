@@ -70,7 +70,7 @@ struct ziparchive
         delete[] name;
         if(data)
         {
-            fclose(data);
+            std::fclose(data);
             data = nullptr;
         }
     }
@@ -354,7 +354,7 @@ bool addzip(const char *name, const char *mount = nullptr, const char *strip = n
     if(!findzipdirectory(f, h) || !readzipdirectory(pname, f, h.entries, h.offset, h.size, files))
     {
         conoutf(Console_Error, "could not read directory in zip %s", pname);
-        fclose(f);
+        std::fclose(f);
         return false;
     }
     ziparchive *arch = new ziparchive;
