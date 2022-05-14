@@ -250,7 +250,7 @@ static bool checkprefix(std::vector<zipfile> &files, const char *prefix, int pre
 {
     for(uint i = 0; i < files.size(); i++)
     {
-        if(!strncmp(files[i].name, prefix, prefixlen))
+        if(!std::strncmp(files[i].name, prefix, prefixlen))
         {
             return false;
         }
@@ -314,7 +314,7 @@ static void mountzip(ziparchive &arch, std::vector<zipfile> &files, const char *
     for(uint i = 0; i < files.size(); i++)
     {
         zipfile &f = files[i];
-        formatstring(fname, "%s%s", mdir, striplen && !strncmp(f.name, stripdir, striplen) ? &f.name[striplen] : f.name);
+        formatstring(fname, "%s%s", mdir, striplen && !std::strncmp(f.name, stripdir, striplen) ? &f.name[striplen] : f.name);
         if(arch.files.access(fname))
         {
             continue;
@@ -730,7 +730,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
         int oldsize = files.length();
         ENUMERATE(arch->files, zipfile, f,
         {
-            if(strncmp(f.name, dir, dirsize))
+            if(std::strncmp(f.name, dir, dirsize))
             {
                 continue;
             }
@@ -753,7 +753,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
                 if(namelen > extsize)
                 {
                     namelen -= extsize;
-                    if(name[namelen] == '.' && strncmp(name+namelen+1, ext, extsize-1)==0)
+                    if(name[namelen] == '.' && std::strncmp(name+namelen+1, ext, extsize-1)==0)
                     {
                         files.add(newstring(name, namelen));
                     }
