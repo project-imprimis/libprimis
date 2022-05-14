@@ -13,13 +13,49 @@
 
 #include "render/renderwindow.h"
 
+namespace
+{
+    // logging
+    constexpr int logstrlen = 512;
+
+    void writelog(FILE *file, const char *buf)
+    {
+        static uchar ubuf[512];
+        size_t len = std::strlen(buf),
+               carry = 0;
+        while(carry < len)
+        {
+            size_t numu = encodeutf8(ubuf, sizeof(ubuf)-1, &(reinterpret_cast<const uchar*>(buf))[carry], len - carry, &carry);
+            if(carry >= len)
+            {
+                ubuf[numu++] = '\n';
+            }
+            fwrite(ubuf, 1, numu, file);
+        }
+    }
+
+    void writelogv(FILE *file, const char *fmt, va_list args)
+    {
+        static char buf[logstrlen];
+        vformatstring(buf, fmt, args, sizeof(buf));
+        writelog(file, buf);
+    }
+
+    int clockrealbase = 0,
+        clockvirtbase = 0;
+
+    void clockreset()
+    {
+        clockrealbase = SDL_GetTicks();
+        clockvirtbase = totalmillis;
+    }
+}
+
+
 bool inbetweenframes = false,
      renderedframe = true;
 
-// logging
-
-static const int logstrlen = 512;
-FILE *logfile = nullptr;
+FILE *logfile = nullptr; //used in iengine.h
 
 FILE *getlogfile()
 {
@@ -37,29 +73,6 @@ FILE *getlogfile()
 bool initsdl()
 {
     return (SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0 ? false : true);
-}
-
-static void writelog(FILE *file, const char *buf)
-{
-    static uchar ubuf[512];
-    size_t len = std::strlen(buf),
-           carry = 0;
-    while(carry < len)
-    {
-        size_t numu = encodeutf8(ubuf, sizeof(ubuf)-1, &(reinterpret_cast<const uchar*>(buf))[carry], len - carry, &carry);
-        if(carry >= len)
-        {
-            ubuf[numu++] = '\n';
-        }
-        fwrite(ubuf, 1, numu, file);
-    }
-}
-
-static void writelogv(FILE *file, const char *fmt, va_list args)
-{
-    static char buf[logstrlen];
-    vformatstring(buf, fmt, args, sizeof(buf));
-    writelog(file, buf);
 }
 
 void logoutfv(const char *fmt, va_list args, FILE *f)
@@ -129,13 +142,6 @@ bool initwarning(const char *desc, int level, int type)
     return false;
 }
 
-static int clockrealbase = 0,
-           clockvirtbase = 0;
-static void clockreset()
-{
-    clockrealbase = SDL_GetTicks();
-    clockvirtbase = totalmillis;
-}
 VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
 VARFP(clockfix, 0, 0, 1, clockreset());
 
