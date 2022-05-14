@@ -1,0 +1,8 @@
+{
+    "ccls.clang.extraArgs": [
+        "-Ishared",
+        "-Iengine",
+        "-I/usr/X11R6/include",
+        "`sdl2-config --cflags`"
+    ],
+}
