@@ -4317,7 +4317,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 result.setstr(newstring("0"));
                 continue;
             }
-            case Code_False|Ret_Null: // Falltrough to next case.
+            case Code_False|Ret_Null: // Null case left empty intentionally.
             case Code_False|Ret_Integer:
             {
                 freearg(result);
@@ -4337,7 +4337,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 result.setstr(newstring("1"));
                 continue;
             }
-            case Code_True|Ret_Null: // Falltrough to next case.
+            case Code_True|Ret_Null: // Null case left empty intentionally.
             case Code_True|Ret_Integer:
             {
                 freearg(result);
@@ -4359,7 +4359,7 @@ static const uint *runcode(const uint *code, tagval &result)
                 freearg(args[numargs]);
                 continue;
             }
-            case Code_Not|Ret_Null: // Falltrough to next case.
+            case Code_Not|Ret_Null: // Null case left empty intentionally.
             case Code_Not|Ret_Integer:
             {
                 freearg(result);

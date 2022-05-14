@@ -25,3 +25,5 @@ docs
 .ccls-cache/
 # Ignore Code Spell Checker plugin files.
 cspell.json
+# Ignore html folder produced by Doxygen/Doxywizard.
+html/
