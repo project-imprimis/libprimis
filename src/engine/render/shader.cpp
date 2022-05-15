@@ -642,7 +642,7 @@ static void setslotparam(SlotShaderParamState &l, const float *val)
         SETSLOTPARAM(l, unimask, p.loc, p.val); \
     }
 #define SETDEFAULTPARAMS \
-    for(int i = 0; i < defaultparams.size(); i++) \
+    for(uint i = 0; i < defaultparams.size(); i++) \
     { \
         SlotShaderParamState &l = defaultparams[i]; \
         SETSLOTPARAM(l, unimask, i, l.val); \
@@ -867,7 +867,7 @@ void Shader::setslotparams(Slot &slot, VSlot &vslot)
     else
     {
         SETSLOTPARAMS(slot.params)
-        for(int i = 0; i < defaultparams.size(); i++)
+        for(uint i = 0; i < defaultparams.size(); i++)
         {
             SlotShaderParamState &l = defaultparams[i];
             SETSLOTPARAM(l, unimask, i, l.flags&SlotShaderParam::REUSE ? findslotparam(vslot, l.name, l.val) : l.val);
@@ -960,7 +960,7 @@ void Shader::cleanup(bool full)
     }
     else
     {
-        for(int i = 0; i < defaultparams.size(); i++)
+        for(uint i = 0; i < defaultparams.size(); i++)
         {
             defaultparams[i].loc = -1;
         }
@@ -1155,7 +1155,7 @@ Shader *newshader(int type, const char *name, const char *vs, const char *ps, Sh
     }
     if(variant)
     {
-        for(int i = 0; i < variant->defaultparams.size(); i++)
+        for(uint i = 0; i < variant->defaultparams.size(); i++)
         {
             s.defaultparams.emplace_back(variant->defaultparams[i]);
         }
@@ -1376,7 +1376,7 @@ static void genuniformdefs(vector<char> &vsbuf, vector<char> &psbuf, const char 
     psbuf.put(ps, psmain - ps);
     if(variant)
     {
-        for(int i = 0; i < variant->defaultparams.size(); i++)
+        for(uint i = 0; i < variant->defaultparams.size(); i++)
         {
             DEF_FORMAT_STRING(uni, "\nuniform vec4 %s;\n", variant->defaultparams[i].name);
             vsbuf.put(uni, std::strlen(uni));
