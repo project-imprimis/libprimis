@@ -546,7 +546,6 @@ class animmodel : public model
         }
 
         static bool enabletc, enablebones, enabletangents;
-        static float sizescale;
         static int matrixpos;
 
         void startrender();
@@ -563,6 +562,7 @@ class animmodel : public model
         int intersect(int anim, int basetime, int basetime2, const vec &pos, float yaw, float pitch, float roll, dynent *d, modelattach *a, float size, const vec &o, const vec &ray, float &dist, int mode);
 
         static matrix4 matrixstack[64];
+        static float sizescale;
 
     private:
         void intersect(int anim, int basetime, int basetime2, float pitch, const vec &axis, const vec &forward, dynent *d, modelattach *a, const vec &o, const vec &ray);
