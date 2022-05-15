@@ -97,7 +97,7 @@ static bool findzipdirectory(FILE *f, zipdirectoryheader &hdr)
         size_t carry = std::min(len, static_cast<size_t>(Zip_DirectorySize-1)), next = std::min(sizeof(buf) - carry, static_cast<size_t>(offset - end));
         offset -= next;
         std::memmove(&buf[next], buf, carry);
-        if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, next, f) != next)
+        if(next + carry < Zip_DirectorySize || fseek(f, offset, SEEK_SET) < 0 || std::fread(buf, 1, next, f) != next)
         {
             return false;
         }
@@ -141,7 +141,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
 {
     uchar *buf = new uchar[size],
           *src = buf;
-    if(!buf || fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, size, f) != size)
+    if(!buf || fseek(f, offset, SEEK_SET) < 0 || std::fread(buf, 1, size, f) != size)
     {
         delete[] buf;
         return false;
@@ -208,7 +208,7 @@ static bool readzipdirectory(const char *archname, FILE *f, int entries, int off
 static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
 {
     uchar buf[Zip_LocalFileSize];
-    if(fseek(f, offset, SEEK_SET) < 0 || fread(buf, 1, Zip_LocalFileSize, f) != Zip_LocalFileSize)
+    if(fseek(f, offset, SEEK_SET) < 0 || std::fread(buf, 1, Zip_LocalFileSize, f) != Zip_LocalFileSize)
     {
         return false;
     }
@@ -437,7 +437,7 @@ struct zipstream : stream
             }
         }
         uint remaining = info->offset + info->compressedsize - reading,
-             n = arch->owner == this ? fread(zfile.next_in + zfile.avail_in, 1, std::min(size, remaining), arch->data) : 0U;
+             n = arch->owner == this ? std::fread(zfile.next_in + zfile.avail_in, 1, std::min(size, remaining), arch->data) : 0U;
         zfile.avail_in += n;
         reading += n;
     }
@@ -641,7 +641,7 @@ struct zipstream : stream
                 }
                 arch->owner = this;
             }
-            size_t n = fread(buf, 1, std::min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
+            size_t n = std::fread(buf, 1, std::min(len, static_cast<size_t>(info->size + info->offset - reading)), arch->data);
             reading += n;
             if(n < len)
             {
