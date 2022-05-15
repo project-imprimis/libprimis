@@ -1179,9 +1179,9 @@ VAR(smdynshadow, 0, 1, 1); //`s`hadow `m`ap `dyn`amic `shadow`
 VAR(lightpassesused, 1, 0, 0); //read only: number of passes to render lights
 VAR(lightsvisible, 1, 0, 0);   //read only: lights being drawn
 VAR(lightsoccluded, 1, 0, 0);  //read only: lights not being drawn
-VARN(lightbatches, lightbatchesused, 1, 0, 0);
-VARN(lightbatchrects, lightbatchrectsused, 1, 0, 0);
-VARN(lightbatchstacks, lightbatchstacksused, 1, 0, 0);
+int lightbatchesused = variable("lightbatches", 1, 0, 0, &lightbatchesused, nullptr, 0);
+int lightbatchrectsused = variable("lightbatchrects", 1, 0, 0, &lightbatchrectsused, nullptr, 0);
+int lightbatchstacksused = variable("lightbatchstacks", 1, 0, 0, &lightbatchstacksused, nullptr, 0);
 
 static void setsmnoncomparemode() // use texture gather
 {
@@ -1861,8 +1861,8 @@ static bool sortlights(int x, int y)
 
 VAR(lighttilealignw, 1, 16, 256); // x tiling size for lights inside the shadow cache (pixel grid size to snap to)
 VAR(lighttilealignh, 1, 16, 256); // y tiling size for lights
-VARN(lighttilew, lighttilemaxw, 1, 10, lighttilemaxwidth);
-VARN(lighttileh, lighttilemaxh, 1, 10, lighttilemaxheight);
+int lighttilemaxw = variable("lighttilew", 1, 10, lighttilemaxwidth, &lighttilemaxw, nullptr, 0);
+int lighttilemaxh = variable("lighttileh", 1, 10, lighttilemaxheight, &lighttilemaxh, nullptr, 0);
 
 int lighttilew     = 0,
     lighttileh     = 0,
