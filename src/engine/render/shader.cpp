@@ -716,7 +716,7 @@ Shader *Shader::getvariant(int col, int row) const
 
 void Shader::addvariant(int row, Shader *s)
 {
-    if(row < 0 || row >= maxvariantrows || variants.length() >= USHRT_MAX)
+    if(row < 0 || row >= maxvariantrows || variants.size() >= USHRT_MAX)
     {
         return;
     }
@@ -725,7 +725,7 @@ void Shader::addvariant(int row, Shader *s)
         variantrows = new ushort[maxvariantrows+1];
         memset(variantrows, 0, (maxvariantrows+1)*sizeof(ushort));
     }
-    variants.insert(variantrows[row+1], s);
+    variants.insert(variants.begin() + variantrows[row+1], s);
     for(int i = row+1; i <= maxvariantrows; ++i)
     {
         ++variantrows[i];
@@ -948,7 +948,7 @@ void Shader::cleanup(bool full)
         psstr = nullptr;
         defer = nullptr;
 
-        variants.setsize(0);
+        variants.clear();
 
         delete[] variantrows;
         variantrows = nullptr;
@@ -1653,7 +1653,7 @@ void variantshader(int *type, char *name, int *row, char *vs, char *ps, int *max
     if(*maxvariants > 0)
     {
         DEF_FORMAT_STRING(info, "shader %s", name);
-        renderprogress(std::min(s->variants.length() / static_cast<float>(*maxvariants), 1.0f), info);
+        renderprogress(std::min(s->variants.size() / static_cast<float>(*maxvariants), 1.0f), info);
     }
     vector<char> vsbuf, psbuf, vsbak, psbak;
     GENSHADER(s->defaultparams.size(), genuniformdefs(vsbuf, psbuf, vs, ps, s));
@@ -2102,7 +2102,7 @@ void reloadshaders()
             {
                 s.cleanup(true);
             }
-            for(int i = 0; i < s.variants.length(); i++)
+            for(uint i = 0; i < s.variants.size(); i++)
             {
                 Shader *v = s.variants[i];
                 if((v->reusevs && v->reusevs->invalid()) ||
