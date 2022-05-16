@@ -1345,20 +1345,21 @@ struct sleepcmd
     int delay, millis, flags;
     char *command;
 };
-vector<sleepcmd> sleepcmds;
+std::vector<sleepcmd> sleepcmds;
 
 void addsleep(int *msec, char *cmd)
 {
-    sleepcmd &s = sleepcmds.add();
+    sleepcmd s;
     s.delay = std::max(*msec, 1);
     s.millis = lastmillis;
     s.command = newstring(cmd);
     s.flags = identflags;
+    sleepcmds.push_back(s);
 }
 
 void checksleep(int millis)
 {
-    for(int i = 0; i < sleepcmds.length(); i++)
+    for(uint i = 0; i < sleepcmds.size(); i++)
     {
         sleepcmd &s = sleepcmds[i];
         if(millis - s.millis >= s.delay)
@@ -1370,9 +1371,10 @@ void checksleep(int millis)
             execute(cmd);
             identflags = oldflags;
             delete[] cmd;
-            if(sleepcmds.inrange(i) && !sleepcmds[i].command)
+            if(sleepcmds.size() > i && !sleepcmds[i].command)
             {
-                sleepcmds.remove(i--);
+                sleepcmds.erase(sleepcmds.begin() + i);
+                i--;
             }
         }
     }
@@ -1381,7 +1383,7 @@ void checksleep(int millis)
 void clearsleep(bool clearoverrides)
 {
     int len = 0;
-    for(int i = 0; i < sleepcmds.length(); i++)
+    for(uint i = 0; i < sleepcmds.size(); i++)
     {
         if(sleepcmds[i].command)
         {
@@ -1395,7 +1397,7 @@ void clearsleep(bool clearoverrides)
             }
         }
     }
-    sleepcmds.shrink(len);
+    sleepcmds.resize(len);
 }
 
 void clearsleep_(int *clearoverrides)
