@@ -91,19 +91,19 @@ bool skelmodel::animcacheentry::operator!=(const animcacheentry &c) const
 skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, char sep)
 {
     int len = sep ? std::strlen(name) : 0;
-    for(int i = 0; i < skelanims.length(); i++)
+    for(uint i = 0; i < skelanims.size(); i++)
     {
-        if(skelanims[i].name)
+        if(!skelanims[i].name.empty())
         {
             if(sep)
             {
-                const char *end = std::strchr(skelanims[i].name, ':');
-                if(end && end - skelanims[i].name == len && !std::memcmp(name, skelanims[i].name, len))
+                const char *end = std::strchr(skelanims[i].name.c_str(), ':');
+                if(end && end - skelanims[i].name.c_str() == len && !std::memcmp(name, skelanims[i].name.c_str(), len))
                 {
                     return &skelanims[i];
                 }
             }
-            if(!std::strcmp(name, skelanims[i].name))
+            if(!std::strcmp(name, skelanims[i].name.c_str()))
             {
                 return &skelanims[i];
             }
@@ -114,9 +114,11 @@ skelmodel::skelanimspec *skelmodel::skeleton::findskelanim(const char *name, cha
 
 skelmodel::skelanimspec &skelmodel::skeleton::addskelanim(const char *name)
 {
-    skelanimspec &sa = skelanims.add();
+    skelanimspec s;
+    skelanims.emplace_back();
+    skelanimspec & sa = skelanims.back();
     sa.name = name ? newstring(name) : nullptr;
-    return sa;
+    return skelanims.back();
 }
 
 int skelmodel::skeleton::findbone(const char *name)
@@ -133,9 +135,9 @@ int skelmodel::skeleton::findbone(const char *name)
 
 int skelmodel::skeleton::findtag(const char *name)
 {
-    for(int i = 0; i < tags.length(); i++)
+    for(uint i = 0; i < tags.size(); i++)
     {
-        if(!std::strcmp(tags[i].name, name))
+        if(!std::strcmp(tags[i].name.c_str(), name))
         {
             return i;
         }
@@ -158,8 +160,9 @@ bool skelmodel::skeleton::addtag(const char *name, int bone, const matrix4x3 &ma
     }
     else
     {
-        tag &t = tags.add();
-        t.name = newstring(name);
+        tags.emplace_back();
+        tag & t = tags.back();
+        t.name.append(name);
         t.bone = bone;
         t.matrix = matrix;
     }
@@ -223,7 +226,7 @@ void skelmodel::skeleton::remapbones()
         info.ragdollindex = -1;
     }
     numgpubones = 0;
-    for(int i = 0; i < users.length(); i++)
+    for(uint i = 0; i < users.size(); i++)
     {
         skelmeshgroup *group = users[i];
         for(int j = 0; j < group->blendcombos.length(); j++) //loop j
@@ -280,7 +283,7 @@ void skelmodel::skeleton::remapbones()
         }
     }
     numinterpbones = numgpubones;
-    for(int i = 0; i < tags.length(); i++)
+    for(uint i = 0; i < tags.size(); i++)
     {
         boneinfo &info = bones[tags[i].bone];
         if(info.interpindex < 0)
@@ -385,7 +388,7 @@ int skelmodel::skeleton::findpitchdep(int bone)
 
 int skelmodel::skeleton::findpitchcorrect(int bone)
 {
-    for(int i = 0; i < pitchcorrects.length(); i++)
+    for(uint i = 0; i < pitchcorrects.size(); i++)
     {
         if(bone <= pitchcorrects[i].bone)
         {
@@ -402,7 +405,7 @@ void skelmodel::skeleton::initpitchdeps()
     {
         return;
     }
-    for(int i = 0; i < pitchtargets.length(); i++)
+    for(uint i = 0; i < pitchtargets.size(); i++)
     {
         pitchtarget &t = pitchtargets[i];
         t.deps = -1;
@@ -422,7 +425,7 @@ void skelmodel::skeleton::initpitchdeps()
             }
         }
     }
-    for(int i = 0; i < pitchtargets.length(); i++)
+    for(uint i = 0; i < pitchtargets.size(); i++)
     {
         pitchtarget &t = pitchtargets[i];
         int j = findpitchdep(t.bone);
@@ -441,7 +444,7 @@ void skelmodel::skeleton::initpitchdeps()
             }
         }
     }
-    for(int i = 0; i < pitchcorrects.length(); i++)
+    for(uint i = 0; i < pitchcorrects.size(); i++)
     {
         pitchcorrect &c = pitchcorrects[i];
         bones[c.bone].correctindex = i;
@@ -551,17 +554,17 @@ float skelmodel::skeleton::calcdeviation(const vec &axis, const vec &forward, co
 
 void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const vec &forward)
 {
-    for(int i = 0; i < pitchtargets.length(); i++)
+    for(uint i = 0; i < pitchtargets.size(); i++)
     {
         pitchtarget &t = pitchtargets[i];
         t.deviated = calcdeviation(axis, forward, t.pose, pitchdeps[t.deps].pose);
     }
-    for(int i = 0; i < pitchcorrects.length(); i++)
+    for(uint i = 0; i < pitchcorrects.size(); i++)
     {
         pitchcorrect &c = pitchcorrects[i];
         c.pitchangle = c.pitchtotal = 0;
     }
-    for(int j = 0; j < pitchtargets.length(); j++)
+    for(uint j = 0; j < pitchtargets.size(); j++)
     {
         pitchtarget &t = pitchtargets[j];
         float tpitch = pitch - t.deviated;
@@ -573,7 +576,7 @@ void skelmodel::skeleton::calcpitchcorrects(float pitch, const vec &axis, const 
         {
             tpitch = std::clamp(tpitch, t.pitchmin, t.pitchmax);
         }
-        for(int i = 0; i < pitchcorrects.length(); i++)
+        for(uint i = 0; i < pitchcorrects.size(); i++)
         {
             pitchcorrect &c = pitchcorrects[i];
             if(c.target != j)
@@ -813,7 +816,7 @@ void skelmodel::skeleton::calctags(part *p, skelcacheentry *sc)
 
 void skelmodel::skeleton::cleanup(bool full)
 {
-    for(int i = 0; i < skelcache.length(); i++)
+    for(uint i = 0; i < skelcache.size(); i++)
     {
         skelcacheentry &sc = skelcache[i];
         for(int j = 0; j < maxanimparts; ++j)
@@ -823,11 +826,11 @@ void skelmodel::skeleton::cleanup(bool full)
         delete[] sc.bdata;
         sc.bdata = nullptr;
     }
-    skelcache.setsize(0);
+    skelcache.clear();
     blendoffsets.clear();
     if(full)
     {
-        for(int i = 0; i < users.length(); i++)
+        for(uint i = 0; i < users.size(); i++)
         {
             users[i]->cleanup();
         }
@@ -861,7 +864,7 @@ skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(part *p, const An
     uchar *partmask = (reinterpret_cast<skelpart *>(as->owner))->partmask;
     skelcacheentry *sc = nullptr;
     bool match = false;
-    for(int i = 0; i < skelcache.length(); i++)
+    for(uint i = 0; i < skelcache.size(); i++)
     {
         skelcacheentry &c = skelcache[i];
         for(int j = 0; j < numanimparts; ++j)
@@ -887,7 +890,8 @@ skelmodel::skelcacheentry &skelmodel::skeleton::checkskelcache(part *p, const An
     }
     if(!sc)
     {
-        sc = &skelcache.add();
+        skelcache.emplace_back(skelcacheentry());
+        sc = &skelcache.back();
     }
     if(!match)
     {
@@ -966,7 +970,7 @@ skelmodel::skelmeshgroup::~skelmeshgroup()
     {
         if(skel->shared)
         {
-            skel->users.removeobj(this);
+            skel->users.erase(std::find(skel->users.begin(), skel->users.end(), this));
         }
         else
         {
@@ -1447,7 +1451,7 @@ void skelmodel::skelmeshgroup::shareskeleton(const char *name)
     if(!name)
     {
         skel = new skeleton;
-        skel->users.add(this);
+        skel->users.push_back(this);
         return;
     }
 
@@ -1461,7 +1465,7 @@ void skelmodel::skelmeshgroup::shareskeleton(const char *name)
         skel->name = newstring(name);
         skeletons.add(skel);
     }
-    skel->users.add(this);
+    skel->users.push_back(this);
     skel->shared++;
 }
 

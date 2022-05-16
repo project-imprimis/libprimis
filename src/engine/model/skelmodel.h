@@ -303,27 +303,16 @@ struct skelmodel : animmodel
 
     struct tag
     {
-        char *name;
+        std::string name;
         int bone;
         matrix4x3 matrix;
 
-        tag() : name(nullptr) {}
-        ~tag()
-        {
-            delete[] name;
-        }
     };
 
     struct skelanimspec
     {
-        char *name;
+        std::string name;
         int frame, range;
-
-        skelanimspec() : name(nullptr), frame(0), range(0) {}
-        ~skelanimspec()
-        {
-            delete[] name;
-        }
     };
 
     struct boneinfo
@@ -372,20 +361,20 @@ struct skelmodel : animmodel
     {
         char *name;
         int shared;
-        vector<skelmeshgroup *> users;
+        std::vector<skelmeshgroup *> users;
         boneinfo *bones;
         int numbones, numinterpbones, numgpubones, numframes;
         dualquat *framebones;
-        vector<skelanimspec> skelanims;
-        vector<tag> tags;
+        std::vector<skelanimspec> skelanims;
+        std::vector<tag> tags;
         std::vector<antipode> antipodes;
         ragdollskel *ragdoll;
         std::vector<pitchdep> pitchdeps;
-        vector<pitchtarget> pitchtargets;
-        vector<pitchcorrect> pitchcorrects;
+        std::vector<pitchtarget> pitchtargets;
+        std::vector<pitchcorrect> pitchcorrects;
 
         bool usegpuskel;
-        vector<skelcacheentry> skelcache;
+        std::vector<skelcacheentry> skelcache;
         hashtable<GLuint, int> blendoffsets;
 
         skeleton() : name(nullptr), shared(0), bones(nullptr), numbones(0), numinterpbones(0), numgpubones(0), numframes(0), framebones(nullptr), ragdoll(nullptr), usegpuskel(false), blendoffsets(32)
@@ -402,7 +391,7 @@ struct skelmodel : animmodel
                 delete ragdoll;
                 ragdoll = nullptr;
             }
-            for(int i = 0; i < skelcache.length(); i++)
+            for(uint i = 0; i < skelcache.size(); i++)
             {
                 delete[] skelcache[i].bdata;
             }
@@ -829,18 +818,19 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
             conoutf("\frcould not find bone %s to pitch target", name);
             return;
         }
-        for(int i = 0; i < skel->pitchtargets.length(); i++)
+        for(uint i = 0; i < skel->pitchtargets.size(); i++)
         {
             if(skel->pitchtargets[i].bone == bone)
             {
                 return;
             }
         }
-        pitchtarget &t = skel->pitchtargets.add();
+        pitchtarget t;
         t.bone = bone;
         t.frame = sa->frame + std::clamp(*frameoffset, 0, sa->range-1);
         t.pitchmin = *pitchmin;
         t.pitchmax = *pitchmax;
+        skel->pitchtargets.push_back(t);
     }
 
     static void setpitchcorrect(char *name, char *targetname, float *scale, float *pitchmin, float *pitchmax)
@@ -869,7 +859,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         int targetbone = skel->findbone(targetname), target = -1;
         if(targetbone >= 0)
         {
-            for(int i = 0; i < skel->pitchtargets.length(); i++)
+            for(uint i = 0; i < skel->pitchtargets.size(); i++)
             {
                 if(skel->pitchtargets[i].bone == targetbone)
                 {
@@ -889,8 +879,8 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
         c.pitchmin = *pitchmin;
         c.pitchmax = *pitchmax;
         c.pitchscale = *scale;
-        int pos = skel->pitchcorrects.length();
-        for(int i = 0; i < skel->pitchcorrects.length(); i++)
+        uint pos = skel->pitchcorrects.size();
+        for(int i = 0; i < skel->pitchcorrects.size(); i++)
         {
             if(bone <= skel->pitchcorrects[i].bone)
             {
@@ -898,7 +888,7 @@ struct skelcommands : modelcommands<MDL, struct MDL::skelmesh>
                 break;
             }
         }
-        skel->pitchcorrects.insert(pos, c);
+        skel->pitchcorrects.insert(skel->pitchcorrects.begin() + pos, c);
     }
 
     //attempts to give a model object an animation by the name of *anim parameter
