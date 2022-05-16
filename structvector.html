@@ -2113,7 +2113,8 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Removes elements until i are left. </p>
-<p >The vector's values beyond i are all dropped. leaving a vector of size i as the remainder.</p>
+<p >The vector's values beyond i are all dropped, leaving a vector of size i as the remainder. Has no effect if the size to shrink to is equal to or larger than the vector was originally.</p>
+<p >The std::vector equivalent to this function is to call <code>resize()</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">i</td><td>the last index in the array to keep </td></tr>
