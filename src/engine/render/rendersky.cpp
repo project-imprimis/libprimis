@@ -31,7 +31,6 @@
 #include "world/octaworld.h"
 #include "world/raycube.h"
 
-VARNR(skytexture, useskytexture, 0, 0, 1);       //toggles rendering sky texture instead of nothing on skytex'd geometry
 VARFR(skyshadow, 0, 0, 1, clearshadowcache());   //toggles rsm features in renderva.cpp
 
 int explicitsky = 0;
@@ -39,6 +38,8 @@ int explicitsky = 0;
 // internally relevant functionality
 namespace
 {
+    VARNR(skytexture, useskytexture, 0, 0, 1);       //toggles rendering sky texture instead of nothing on skytex'd geometry
+
     Texture *sky[6] = { 0, 0, 0, 0, 0, 0 };
 
     void loadsky(const char *basename, Texture *texs[6])
