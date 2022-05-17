@@ -103,16 +103,17 @@ void ragdollskel::setupjoints()
 
 void ragdollskel::setuprotfrictions()
 {
-    rotfrictions.shrink(0);
+    rotfrictions.clear();
     for(uint i = 0; i < tris.size(); i++)
     {
         for(uint j = i+1; j < tris.size(); j++)
         {
             if(tris[i].shareverts(tris[j]))
             {
-                rotfriction &r = rotfrictions.add();
+                rotfriction r;
                 r.tri[0] = i;
                 r.tri[1] = j;
+                rotfrictions.push_back(r);
             }
         }
     }
@@ -334,7 +335,7 @@ void ragdolldata::applyrotlimit(ragdollskel::tri &t1, ragdollskel::tri &t2, floa
 void ragdolldata::constrainrot()
 {
     calctris();
-    for(int i = 0; i < skel->rotlimits.length(); i++)
+    for(uint i = 0; i < skel->rotlimits.size(); i++)
     {
         ragdollskel::rotlimit &r = skel->rotlimits[i];
         matrix3 rot;
@@ -355,7 +356,7 @@ void ragdolldata::constrainrot()
 
 void ragdolldata::calcrotfriction()
 {
-    for(int i = 0; i < skel->rotfrictions.length(); i++)
+    for(uint i = 0; i < skel->rotfrictions.size(); i++)
     {
         ragdollskel::rotfriction &r = skel->rotfrictions[i];
         r.middle.transposemul(tris[r.tri[0]], tris[r.tri[1]]);
@@ -367,7 +368,7 @@ void ragdolldata::applyrotfriction(float ts)
     calctris();
     float stopangle = 2*M_PI*ts*ragdollrotfricstop,
           rotfric = 1.0f - std::pow(ragdollrotfric, ts*1000.0f/ragdolltimestepmin);
-    for(int i = 0; i < skel->rotfrictions.length(); i++)
+    for(uint i = 0; i < skel->rotfrictions.size(); i++)
     {
         ragdollskel::rotfriction &r = skel->rotfrictions[i];
         matrix3 rot;

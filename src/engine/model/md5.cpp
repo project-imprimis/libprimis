@@ -93,8 +93,8 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
     {
         return nullptr;
     }
-    vector<md5hierarchy> hierarchy;
-    vector<md5joint> basejoints;
+    std::vector<md5hierarchy> hierarchy;
+    std::vector<md5joint> basejoints;
     int animdatalen = 0,
         animframes = 0;
     float *animdata = nullptr;
@@ -155,7 +155,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 md5hierarchy h;
                 if(std::sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
                 {
-                    hierarchy.add(h);
+                    hierarchy.push_back(h);
                 }
             }
         }
@@ -171,10 +171,10 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                     j.orient.x = -j.orient.x;
                     j.orient.z = -j.orient.z;
                     j.orient.restorew();
-                    basejoints.add(j);
+                    basejoints.push_back(j);
                 }
             }
-            if(basejoints.length()!=skel->numbones)
+            if(basejoints.size()!=skel->numbones)
             {
                 delete f;
                 if(animdata)
@@ -212,7 +212,7 @@ md5::skelanimspec *md5::md5meshgroup::loadanim(const char *filename)
                 }
             }
             dualquat *frame = &animbones[tmp*skel->numbones];
-            for(int i = 0; i < basejoints.length(); i++)
+            for(uint i = 0; i < basejoints.size(); i++)
             {
                 md5hierarchy &h = hierarchy[i];
                 md5joint j = basejoints[i];
@@ -284,7 +284,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
         return false;
     }
     char buf[512]; //presumably this will fail with lines over 512 char long
-    vector<md5joint> basejoints;
+    std::vector<md5joint> basejoints;
     while(f->getline(buf, sizeof(buf)))
     {
         int tmp;
@@ -359,19 +359,19 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
                     j.pos.y = -j.pos.y;
                     j.orient.x = -j.orient.x;
                     j.orient.z = -j.orient.z;
-                    if(basejoints.length()<skel->numbones)
+                    if(basejoints.size()<skel->numbones)
                     {
-                        if(!skel->bones[basejoints.length()].name)
+                        if(!skel->bones[basejoints.size()].name)
                         {
-                            skel->bones[basejoints.length()].name = newstring(name);
+                            skel->bones[basejoints.size()].name = newstring(name);
                         }
-                        skel->bones[basejoints.length()].parent = parent;
+                        skel->bones[basejoints.size()].parent = parent;
                     }
                     j.orient.restorew();
-                    basejoints.add(j);
+                    basejoints.push_back(j);
                 }
             }
-            if(basejoints.length()!=skel->numbones)
+            if(basejoints.size()!=skel->numbones)
             {
                 delete f;
                 return false;
@@ -396,7 +396,7 @@ bool md5::md5meshgroup::loadmesh(const char *filename, float smooth)
     if(skel->shared <= 1)
     {
         skel->linkchildren();
-        for(int i = 0; i < basejoints.length(); i++)
+        for(uint i = 0; i < basejoints.size(); i++)
         {
             boneinfo &b = skel->bones[i];
             b.base = dualquat(basejoints[i].orient, basejoints[i].pos);
@@ -454,7 +454,7 @@ void md5::md5mesh::cleanup()
     weightinfo = nullptr;
 }
 
-void md5::md5mesh::buildverts(vector<md5joint> &joints)
+void md5::md5mesh::buildverts(std::vector<md5joint> &joints)
 {
     for(int i = 0; i < numverts; ++i)
     {

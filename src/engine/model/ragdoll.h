@@ -47,14 +47,14 @@ class ragdollskel
             float maxangle, maxtrace;
             matrix3 middle;
         };
-        vector<rotlimit> rotlimits;
+        std::vector<rotlimit> rotlimits;
 
         struct rotfriction
         {
             int tri[2];
             matrix3 middle;
         };
-        vector<rotfriction> rotfrictions;
+        std::vector<rotfriction> rotfrictions;
 
         struct distlimit
         {

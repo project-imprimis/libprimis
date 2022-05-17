@@ -355,12 +355,13 @@ static void rdlimitdist(int *v1, int *v2, float *mindist, float *maxdist)
 static void rdlimitrot(int *t1, int *t2, float *maxangle, float *qx, float *qy, float *qz, float *qw)
 {
     CHECK_RAGDOLL;
-    ragdollskel::rotlimit &r = ragdoll->rotlimits.add();
+    ragdollskel::rotlimit r;
     r.tri[0] = *t1;
     r.tri[1] = *t2;
     r.maxangle = *maxangle * RAD;
     r.maxtrace = 1 + 2*std::cos(r.maxangle);
     r.middle = matrix3(quat(*qx, *qy, *qz, *qw));
+    ragdoll->rotlimits.push_back(r);
 }
 
 static void rdanimjoints(int *on)
@@ -667,21 +668,21 @@ struct modelbatch
     model *m;
     int flags, batched;
 };
-static vector<batchedmodel> batchedmodels;
-static vector<modelbatch> batches;
-static vector<modelattach> modelattached;
+static std::vector<batchedmodel> batchedmodels;
+static std::vector<modelbatch> batches;
+static std::vector<modelattach> modelattached;
 
 void resetmodelbatches()
 {
-    batchedmodels.setsize(0);
-    batches.setsize(0);
-    modelattached.setsize(0);
+    batchedmodels.clear();
+    batches.clear();
+    modelattached.clear();
 }
 
 void addbatchedmodel(model *m, batchedmodel &bm, int idx)
 {
     modelbatch *b = nullptr;
-    if(batches.inrange(m->batch))
+    if(batches.size() > m->batch)
     {
         b = &batches[m->batch];
         if(b->m == m && (b->flags & Model_Mapmodel) == (bm.flags & Model_Mapmodel))
@@ -689,8 +690,9 @@ void addbatchedmodel(model *m, batchedmodel &bm, int idx)
             goto foundbatch; //skip some shit
         }
     }
-    m->batch = batches.length();
-    b = &batches.add();
+    m->batch = batches.size();
+    batches.emplace_back();
+    b = &batches.back();
     b->m = m;
     b->flags = 0;
     b->batched = -1;
@@ -805,7 +807,7 @@ static int shadowmaskmodel(const vec &center, float radius)
 
 void shadowmaskbatchedmodels(bool dynshadow)
 {
-    for(int i = 0; i < batchedmodels.length(); i++)
+    for(uint i = 0; i < batchedmodels.size(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&(Model_Mapmodel | Model_NoShadow)) //mapmodels are not dynamic models by definition
@@ -819,7 +821,7 @@ void shadowmaskbatchedmodels(bool dynshadow)
 int batcheddynamicmodels()
 {
     int visible = 0;
-    for(int i = 0; i < batchedmodels.length(); i++)
+    for(uint i = 0; i < batchedmodels.size(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
@@ -828,7 +830,7 @@ int batcheddynamicmodels()
         }
         visible |= b.visible;
     }
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         if(!(b.flags&Model_Mapmodel) || !b.m->animated())
@@ -848,7 +850,7 @@ int batcheddynamicmodels()
 int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 {
     int vis = 0;
-    for(int i = 0; i < batchedmodels.length(); i++)
+    for(uint i = 0; i < batchedmodels.size(); i++)
     {
         batchedmodel &b = batchedmodels[i];
         if(b.flags&Model_Mapmodel) //mapmodels are not dynamic models by definition
@@ -862,7 +864,7 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
             ++vis;
         }
     }
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         if(!(b.flags&Model_Mapmodel) || !b.m->animated())
@@ -886,7 +888,7 @@ int batcheddynamicmodelbounds(int mask, vec &bbmin, vec &bbmax)
 
 void rendershadowmodelbatches(bool dynmodel)
 {
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         if(!b.m->shadow || (!dynmodel && (!(b.flags&Model_Mapmodel) || b.m->animated())))
@@ -919,7 +921,7 @@ void rendershadowmodelbatches(bool dynmodel)
 void rendermapmodelbatches()
 {
     enableaamask();
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         if(!(b.flags&Model_Mapmodel))
@@ -952,7 +954,7 @@ void rendermodelbatches()
     memset(transmdltiles, 0, sizeof(transmdltiles));
 
     enableaamask();
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
@@ -1039,7 +1041,7 @@ void rendermodelbatches()
 void rendertransparentmodelbatches(int stencil)
 {
     enableaamask(stencil);
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
@@ -1091,14 +1093,14 @@ static int modelquerybatches = -1,
 void startmodelquery(occludequery *query)
 {
     modelquery = query;
-    modelquerybatches = batches.length();
-    modelquerymodels = batchedmodels.length();
-    modelqueryattached = modelattached.length();
+    modelquerybatches = batches.size();
+    modelquerymodels = batchedmodels.size();
+    modelqueryattached = modelattached.size();
 }
 
 void endmodelquery()
 {
-    if(batchedmodels.length() == modelquerymodels)
+    if(batchedmodels.size() == modelquerymodels)
     {
         modelquery->fragments = 0;
         modelquery = nullptr;
@@ -1106,7 +1108,7 @@ void endmodelquery()
     }
     enableaamask();
     startquery(modelquery);
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         int j = b.batched;
@@ -1127,21 +1129,21 @@ void endmodelquery()
     }
     endquery();
     modelquery = nullptr;
-    batches.setsize(modelquerybatches);
-    batchedmodels.setsize(modelquerymodels);
-    modelattached.setsize(modelqueryattached);
+    batches.resize(modelquerybatches);
+    batchedmodels.resize(modelquerymodels);
+    modelattached.resize(modelqueryattached);
     disableaamask();
 }
 
 void clearbatchedmapmodels()
 {
-    for(int i = 0; i < batches.length(); i++)
+    for(uint i = 0; i < batches.size(); i++)
     {
         modelbatch &b = batches[i];
         if(b.flags&Model_Mapmodel)
         {
-            batchedmodels.setsize(b.batched);
-            batches.setsize(i);
+            batchedmodels.resize(b.batched);
+            batches.resize(i);
             break;
         }
     }
@@ -1192,8 +1194,8 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     {
         return;
     }
-
-    batchedmodel &b = batchedmodels.add();
+    batchedmodels.emplace_back();
+    batchedmodel &b = batchedmodels.back();
     b.pos = o;
     b.center = center;
     b.radius = radius;
@@ -1209,7 +1211,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
     b.visible = visible;
     b.d = nullptr;
     b.attached = -1;
-    addbatchedmodel(m, b, batchedmodels.length()-1);
+    addbatchedmodel(m, b, batchedmodels.size()-1);
 }
 
 void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, dynent *d, modelattach *a, int basetime, int basetime2, float size, const vec4<float> &color)
@@ -1320,7 +1322,8 @@ hasboundbox:
         return;
     }
 
-    batchedmodel &b = batchedmodels.add();
+    batchedmodels.emplace_back();
+    batchedmodel & b = batchedmodels.back();
     b.pos = o;
     b.center = center;
     b.radius = radius;
@@ -1335,19 +1338,19 @@ hasboundbox:
     b.flags = flags;
     b.visible = 0;
     b.d = d;
-    b.attached = a ? modelattached.length() : -1;
+    b.attached = a ? modelattached.size() : -1;
     if(a)
     {
         for(int i = 0;; i++)
         {
-            modelattached.add(a[i]);
+            modelattached.push_back(a[i]);
             if(!a[i].tag)
             {
                 break;
             }
         }
     }
-    addbatchedmodel(m, b, batchedmodels.length()-1);
+    addbatchedmodel(m, b, batchedmodels.size()-1);
 }
 
 int intersectmodel(const char *mdl, int anim, const vec &pos, float yaw, float pitch, float roll, const vec &o, const vec &ray, float &dist, int mode, dynent *d, modelattach *a, int basetime, int basetime2, float size)
