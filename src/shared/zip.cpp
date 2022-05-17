@@ -232,11 +232,11 @@ static bool readlocalfileheader(FILE *f, ziplocalfileheader &h, uint offset)
     return true;
 }
 
-static vector<ziparchive *> archives;
+static std::vector<ziparchive *> archives;
 
 ziparchive *findzip(const char *name)
 {
-    for(int i = 0; i < archives.length(); i++)
+    for(uint i = 0; i < archives.size(); i++)
     {
         if(!std::strcmp(name, archives[i]->name))
         {
@@ -361,7 +361,7 @@ bool addzip(const char *name, const char *mount = nullptr, const char *strip = n
     arch->name = newstring(pname);
     arch->data = f;
     mountzip(*arch, files, mount, strip);
-    archives.add(arch);
+    archives.push_back(arch);
     conoutf("added zip %s", pname);
     return true;
 }
@@ -388,7 +388,7 @@ bool removezip(const char *name)
         return false;
     }
     conoutf("removed zip %s", exists->name);
-    archives.removeobj(exists);
+    archives.erase(std::find(archives.begin(), archives.end(), exists));
     delete exists;
     return true;
 }
@@ -688,7 +688,7 @@ stream *openzipfile(const char *name, const char *mode)
             return nullptr;
         }
     }
-    for(int i = archives.length(); --i >=0;) //note reverse iteration
+    for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
         zipfile *f = arch->files.access(name);
@@ -708,7 +708,7 @@ stream *openzipfile(const char *name, const char *mode)
 
 bool findzipfile(const char *name)
 {
-    for(int i = archives.length(); --i >=0;) //note reverse iteration
+    for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
         if(arch->files.access(name))
@@ -724,7 +724,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
     size_t extsize = ext ? std::strlen(ext)+1 : 0,
            dirsize = std::strlen(dir);
     int dirs = 0;
-    for(int i = archives.length(); --i >=0;) //note reverse iteration
+    for(int i = archives.size(); --i >=0;) //note reverse iteration
     {
         ziparchive *arch = archives[i];
         int oldsize = files.length();
@@ -768,7 +768,7 @@ int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
     return dirs;
 }
 
-void initzipcmds() 
+void initzipcmds()
 {
     addcommand("addzip", reinterpret_cast<identfun>(+[](const char *name, const char *mount, const char *strip){addzip(name, mount[0] ? mount : nullptr, strip[0] ? strip : nullptr);}), "sss", Id_Command);
     addcommand("removezip", reinterpret_cast<identfun>(removezip), "s", Id_Command);
