@@ -41,9 +41,9 @@ static void newfont(char *name, char *tex, int *defaultw, int *defaulth, int *sc
     {
         f->name = newstring(name);
     }
-    f->texs.shrink(0);
-    f->texs.add(textureload(tex));
-    f->chars.shrink(0);
+    f->texs.clear();
+    f->texs.push_back(textureload(tex));
+    f->chars.clear();
     f->charoffset = '!';
     f->defaultw = *defaultw;
     f->defaulth = *defaulth;
@@ -130,7 +130,7 @@ static void fonttex(char *s)
         return;
     }
     Texture *t = textureload(s);
-    for(int i = 0; i < fontdef->texs.length(); i++)
+    for(uint i = 0; i < fontdef->texs.size(); i++)
     {
         if(fontdef->texs[i] == t)
         {
@@ -138,8 +138,8 @@ static void fonttex(char *s)
             return;
         }
     }
-    fontdeftex = fontdef->texs.length();
-    fontdef->texs.add(t);
+    fontdeftex = fontdef->texs.size();
+    fontdef->texs.push_back(t);
 }
 
 /* fontchar
@@ -153,7 +153,8 @@ static void fontchar(float *x, float *y, float *w, float *h, float *offsetx, flo
     {
         return;
     }
-    font::charinfo &c = fontdef->chars.add();
+    fontdef->chars.emplace_back();
+    font::charinfo &c = fontdef->chars.back();
     c.x = *x;
     c.y = *y;
     c.w = *w ? *w : fontdef->defaultw;
@@ -175,7 +176,8 @@ static void fontskip(int *n)
     }
     for(int i = 0; i < std::max(*n, 1); ++i)
     {
-        font::charinfo &c = fontdef->chars.add();
+        fontdef->chars.emplace_back();
+        font::charinfo &c = fontdef->chars.back();
         c.x = c.y = c.w = c.h = c.offsetx = c.offsety = c.advance = 0;
         c.tex = 0;
     }
@@ -209,7 +211,7 @@ static void fontalias(const char *dst, const char *src)
     d->outlinemax = s->outlinemax;
 
     fontdef = d;
-    fontdeftex = d->texs.length()-1;
+    fontdeftex = d->texs.size()-1;
 }
 
 font *findfont(const char *name)
@@ -465,7 +467,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                 TEXTCOLOR(i) /*textcolor *must* be defined before runtime, it is not defined above here*/ \
             } \
         }\
-        else if(curfont->chars.inrange(c-curfont->charoffset))\
+        else if(curfont->chars.size() > c-curfont->charoffset)\
         {\
             float cw = scale*curfont->chars[c-curfont->charoffset].advance;\
             if(cw <= 0) \
@@ -487,7 +489,7 @@ static void text_color(char c, char *stack, int size, int &sp, bvec color, int a
                         } \
                         continue; \
                     } \
-                    if(!curfont->chars.inrange(c-curfont->charoffset)) \
+                    if(!curfont->chars.size() > c-curfont->charoffset) \
                     { \
                         break; \
                     } \
@@ -702,7 +704,7 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
 void reloadfonts()
 {
     ENUMERATE(fonts, font, f,
-        for(int i = 0; i < f.texs.length(); i++)
+        for(uint i = 0; i < f.texs.size(); i++)
         {
             if(!reloadtexture(*f.texs[i]))
             {

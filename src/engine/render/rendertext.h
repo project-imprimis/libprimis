@@ -9,8 +9,8 @@ struct font
     };
 
     char *name;
-    vector<Texture *> texs;
-    vector<charinfo> chars;
+    std::vector<Texture *> texs;
+    std::vector<charinfo> chars;
     int charoffset, defaultw, defaulth, scale;
     float bordermin, bordermax, outlinemin, outlinemax;
 
