@@ -1502,7 +1502,7 @@ void initrendermodelcmds()
     addcommand("mdlalphashadow", reinterpret_cast<identfun>(mdlalphashadow), "i", Id_Command);
     addcommand("mdlbb", reinterpret_cast<identfun>(mdlbb), "fff", Id_Command);
     addcommand("mdlextendbb", reinterpret_cast<identfun>(mdlextendbb), "fff", Id_Command);
-    addcommand("mdlname", reinterpret_cast<identfun>(mdlname), "", Id_Command);
+    addcommand("mdlname", reinterpret_cast<identfun>(mdlname));
     addcommand("rdvert", reinterpret_cast<identfun>(rdvert), "ffff", Id_Command);
     addcommand("rdeye", reinterpret_cast<identfun>(rdeye), "i", Id_Command);
     addcommand("rdtri", reinterpret_cast<identfun>(rdtri), "iii", Id_Command);
@@ -1514,7 +1514,7 @@ void initrendermodelcmds()
     addcommand("mapmodel", reinterpret_cast<identfun>(mapmodel), "s", Id_Command);
     addcommand("mapmodelname", reinterpret_cast<identfun>(mapmodelnamecmd), "ii", Id_Command);
     addcommand("mapmodelloaded", reinterpret_cast<identfun>(mapmodelloaded), "i", Id_Command);
-    addcommand("nummapmodels", reinterpret_cast<identfun>(nummapmodels), "", Id_Command);
+    addcommand("nummapmodels", reinterpret_cast<identfun>(nummapmodels));
     addcommand("clearmodel", reinterpret_cast<identfun>(clearmodel), "s", Id_Command);
     addcommand("findanims", reinterpret_cast<identfun>(findanimscmd), "s", Id_Command);
 }

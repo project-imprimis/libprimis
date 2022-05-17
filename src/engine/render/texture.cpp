@@ -3335,7 +3335,7 @@ void LocalShaderParam::setv(const uint *u, int n)
 }
 void inittexturecmds() {
     addcommand("texturereset", reinterpret_cast<identfun>(texturereset), "i", Id_Command);
-    addcommand("materialreset", reinterpret_cast<identfun>(materialreset), "", Id_Command);
+    addcommand("materialreset", reinterpret_cast<identfun>(materialreset));
     addcommand("decalreset", reinterpret_cast<identfun>(decalreset), "i", Id_Command);
     addcommand("compactvslots", reinterpret_cast<identfun>(+[](int *cull){multiplayerwarn();rootworld.compactvslots(*cull!=0);rootworld.allchanged();}), "i", Id_Command);
     addcommand("texture", reinterpret_cast<identfun>(texture), "ssiiif", Id_Command);

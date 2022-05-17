@@ -4617,8 +4617,8 @@ namespace UI
         addcommand("uitarget", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Target, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
         addcommand("uiclip", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Clipper, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
         addcommand("uiscroll", reinterpret_cast<identfun>(+[] (float *clipw, float *cliph, uint *children) { BUILD(Scroller, o, o->setup(*clipw, *cliph), children); }), "ffe", Id_Command);
-        addcommand("uihscrolloffset", reinterpret_cast<identfun>(+[] () { { if(buildparent && buildparent->istype<Scroller>()) { Scroller *scroller = static_cast<Scroller *>(buildparent); floatret(scroller->offsetx); } }; }), "", Id_Command);
-        addcommand("uivscrolloffset", reinterpret_cast<identfun>(+[] () { { if(buildparent && buildparent->istype<Scroller>()) { Scroller *scroller = static_cast<Scroller *>(buildparent); floatret(scroller->offsety); } }; }), "", Id_Command);
+        addcommand("uihscrolloffset", reinterpret_cast<identfun>(+[] () { { if(buildparent && buildparent->istype<Scroller>()) { Scroller *scroller = static_cast<Scroller *>(buildparent); floatret(scroller->offsetx); } }; }));
+        addcommand("uivscrolloffset", reinterpret_cast<identfun>(+[] () { { if(buildparent && buildparent->istype<Scroller>()) { Scroller *scroller = static_cast<Scroller *>(buildparent); floatret(scroller->offsety); } }; }));
         addcommand("uihscrollbar", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(HorizontalScrollBar, o, o->setup(), children); }), "e", Id_Command);
         addcommand("uivscrollbar", reinterpret_cast<identfun>(+[] (uint *children) { BUILD(VerticalScrollBar, o, o->setup(), children); }), "e", Id_Command);
         addcommand("uiscrollarrow", reinterpret_cast<identfun>(+[] (float *dir, uint *children) { BUILD(ScrollArrow, o, o->setup(*dir), children); }), "fe", Id_Command);
@@ -4653,7 +4653,7 @@ namespace UI
         addcommand("uiwrapcontext", reinterpret_cast<identfun>(+[] (tagval *text, float *wrap, float *scale, uint *children) { buildtext(*text, *scale, FONTH*uicontextscale, Color(255, 255, 255), *wrap, children); }), "tffe", Id_Command);
         addcommand("uitexteditor", reinterpret_cast<identfun>(+[] (char *name, int *length, int *height, float *scale, char *initval, int *mode, uint *children) { BUILD(TextEditor, o, o->setup(name, *length, *height, (*scale <= 0 ? 1 : *scale) * uitextscale, initval, *mode <= 0 ? Editor_Forever : *mode), children); }), "siifsie", Id_Command);
         addcommand("uifont", reinterpret_cast<identfun>(+[] (char *name, uint *children) { BUILD(Font, o, o->setup(name), children); }), "se", Id_Command);
-        addcommand("uiabovehud", reinterpret_cast<identfun>(+[] () { { if(window) window->abovehud = true; }; }), "", Id_Command);;
+        addcommand("uiabovehud", reinterpret_cast<identfun>(+[] () { { if(window) window->abovehud = true; }; }));;
         addcommand("uiconsole", reinterpret_cast<identfun>(+[] (float *minw, float *minh, uint *children) { BUILD(Console, o, o->setup(*minw, *minh), children); }), "ffe", Id_Command);
         addcommand("uifield", reinterpret_cast<identfun>(+[] (ident *var, int *length, uint *onchange, float *scale, uint *children) { BUILD(Field, o, o->setup(var, *length, onchange, (*scale <= 0 ? 1 : *scale) * uitextscale), children); }), "riefe", Id_Command);
         addcommand("uikeyfield", reinterpret_cast<identfun>(+[] (ident *var, int *length, uint *onchange, float *scale, uint *children) { BUILD(KeyField, o, o->setup(var, *length, onchange, (*scale <= 0 ? 1 : *scale) * uitextscale), children); }), "riefe", Id_Command);
@@ -4667,7 +4667,7 @@ namespace UI
         addcommand("uislotview", reinterpret_cast<identfun>(+[] (int *index, float *minw, float *minh, uint *children) { BUILD(SlotViewer, o, o->setup(*index, *minw, *minh), children); }), "iffe", Id_Command);
         addcommand("uivslotview", reinterpret_cast<identfun>(+[] (int *index, float *minw, float *minh, uint *children) { BUILD(VSlotViewer, o, o->setup(*index, *minw, *minh), children); }), "iffe", Id_Command);
 
-        addcommand("uicontextscale", reinterpret_cast<identfun>(uicontextscalecmd), "", Id_Command);
+        addcommand("uicontextscale", reinterpret_cast<identfun>(uicontextscalecmd));
         addcommand("newui", reinterpret_cast<identfun>(newui), "ssss", Id_Command);
         addcommand("uiallowinput", reinterpret_cast<identfun>(uiallowinput), "b", Id_Command);
         addcommand("uieschide", reinterpret_cast<identfun>(uieschide), "b", Id_Command);
