@@ -692,9 +692,9 @@ void skelmodel::skeleton::interpbones(const AnimState *as, float pitch, const ve
             {
                 continue;
             }
-            if(as->cur.anim & Anim_NoPitch || (as->interp < 1 && as->prev.anim & Anim_NoPitch))
+            if(as->cur.anim & EntAnim::NoPitch || (as->interp < 1 && as->prev.anim & EntAnim::NoPitch))
             {
-                angle *= (as->cur.anim & Anim_NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & Anim_NoPitch ? 0 : 1 - as->interp);
+                angle *= (as->cur.anim & EntAnim::NoPitch ? 0 : as->interp) + (as->interp < 1 && as->prev.anim & EntAnim::NoPitch ? 0 : 1 - as->interp);
             }
             sc.bdata[b.interpindex].mulorient(quat(axis, angle*RAD), b.base);
         }
@@ -1121,7 +1121,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
 
     if(!skel->numframes)
     {
-        if(!(as->cur.anim & Anim_NoRender))
+        if(!(as->cur.anim & EntAnim::NoRender))
         {
             if(!vbocache->vbuf)
             {
@@ -1139,7 +1139,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
     }
 
     skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? nullptr : d->ragdoll);
-    if(!(as->cur.anim & Anim_NoRender))
+    if(!(as->cur.anim & EntAnim::NoRender))
     {
         int owner = &sc-&skel->skelcache[0];
         vbocacheentry &vc = skel->usegpuskel ? *vbocache : checkvbocache(sc, owner);
@@ -1187,7 +1187,7 @@ void skelmodel::skelmeshgroup::render(const AnimState *as, float pitch, const ve
 
     skel->calctags(p, &sc);
 
-    if(as->cur.anim & Anim_Ragdoll && skel->ragdoll && !d->ragdoll)
+    if(as->cur.anim & EntAnim::Ragdoll && skel->ragdoll && !d->ragdoll)
     {
         d->ragdoll = new ragdolldata(skel->ragdoll, p->model->scale);
         skel->initragdoll(*d->ragdoll, sc, p);

@@ -501,7 +501,7 @@ struct skelmodel : animmodel
         {
             T *vverts = 0;
             bindpos(ebuf, vc.vbuf, &vverts->pos, vertsize);
-            if(as->cur.anim & Anim_NoSkin)
+            if(as->cur.anim & EntAnim::NoSkin)
             {
                 if(enabletangents)
                 {

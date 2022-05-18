@@ -151,8 +151,8 @@ bool animinfo::operator==(const animinfo &o) const
 {
     return frame==o.frame
         && range==o.range
-        && (anim&(Anim_SetTime | Anim_Dir)) == (o.anim & (Anim_SetTime | Anim_Dir))
-        && (anim & Anim_SetTime || basetime == o.basetime)
+        && (anim&(EntAnim::SetTime | EntAnim::Dir)) == (o.anim & (EntAnim::SetTime | EntAnim::Dir))
+        && (anim & EntAnim::SetTime || basetime == o.basetime)
         && speed == o.speed;
 }
 
@@ -160,8 +160,8 @@ bool animinfo::operator!=(const animinfo &o) const
 {
     return frame!=o.frame
         || range!=o.range
-        || (anim&(Anim_SetTime | Anim_Dir)) != (o.anim & (Anim_SetTime | Anim_Dir))
-        || (!(anim & Anim_SetTime) && basetime != o.basetime)
+        || (anim&(EntAnim::SetTime | EntAnim::Dir)) != (o.anim & (EntAnim::SetTime | EntAnim::Dir))
+        || (!(anim & EntAnim::SetTime) && basetime != o.basetime)
         || speed != o.speed;
 }
 

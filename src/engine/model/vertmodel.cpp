@@ -392,7 +392,7 @@ void vertmodel::vertmeshgroup::preload(part *p)
 
 void vertmodel::vertmeshgroup::render(const AnimState *as, float pitch, const vec &axis, const vec &forward, dynent *d, part *p)
 {
-    if(as->cur.anim & Anim_NoRender)
+    if(as->cur.anim & EntAnim::NoRender)
     {
         for(int i = 0; i < p->links.length(); i++)
         {
